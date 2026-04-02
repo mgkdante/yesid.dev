@@ -1,0 +1,46 @@
+# yesid. Pipeline
+
+**Data infrastructure that moves.**
+
+## What This Is
+
+The repo for yesid., a freelance SQL and data infrastructure brand. Portfolio, tooling, and workflow systems.
+
+## How It Works
+
+Work is split between two tools:
+
+- **Claude.ai project** — planning, specs, reviews, learning
+- **Cursor + Claude Code** — building, logging, handoffs
+
+Claude Code follows `CLAUDE.md`. Every piece of work has a slice spec, a dev log, and a handoff report.
+
+## Structure
+
+```
+├── CLAUDE.md                # Rules for Claude Code
+├── brand/                   # Colors, tokens, logos, brand guide
+├── docs/
+│   ├── PLAN.md              # Master plan (all slices)
+│   ├── ARCHITECTURE.md      # System architecture (auto-updated)
+│   ├── WORKFLOW.md          # How-to cheat sheet
+│   ├── slices/              # Build specs
+│   ├── devlog/              # Work logs
+│   └── handoffs/            # Completion reports
+├── src/                     # Code
+├── scripts/                 # Utilities
+└── tests/                   # Tests
+```
+
+## For a New Dev or AI
+
+1. Read `CLAUDE.md`
+2. Read `docs/PLAN.md`
+3. Read `docs/ARCHITECTURE.md`
+4. Find the active slice in `docs/slices/`
+5. Check recent logs in `docs/devlog/`
+
+## Brand
+
+Primary `#E07800` · Accent `#FFB627` · Inter + JetBrains Mono · Dark theme default.
+Full guide: `brand/yesid_brand_guide.pdf`

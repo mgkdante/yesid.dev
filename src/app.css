@@ -1,0 +1,49 @@
+/* Brand CSS custom properties (--bg-primary, --text-primary, etc.) */
+@import '$lib/styles/tokens.css';
+
+/* Tailwind CSS v4 (CSS-first config, no tailwind.config.js needed) */
+@import 'tailwindcss';
+
+/*
+  Brand design tokens translated from brand/tailwind.brand.js into Tailwind v4's
+  CSS-first @theme format. The source file is kept as documentation.
+
+  v4 naming convention: --color-* generates bg-*, text-*, border-* utilities.
+  --font-* generates font-* utilities. --radius-* generates rounded-* utilities.
+*/
+@theme {
+  /* Brand colors — static palette, not theme-switching */
+  --color-brand-primary: #E07800;
+  --color-brand-accent: #FFB627;
+  --color-brand-primary-hover: #C96A00;
+  --color-brand-accent-hover: #E5A220;
+
+  /* Dark palette */
+  --color-dark-bg: #141414;
+  --color-dark-surface: #1E1E1E;
+  --color-dark-elevated: #2A2A2A;
+  --color-dark-border: #3A3A3A;
+
+  /* Light palette */
+  --color-light-bg: #FAFAF8;
+  --color-light-surface: #F0EDE5;
+  --color-light-elevated: #FFFFFF;
+  --color-light-border: #D8D4CA;
+
+  /* Font families */
+  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* Border radius */
+  --radius-brand: 8px;
+  --radius-brand-lg: 12px;
+  --radius-brand-xl: 16px;
+}
+
+/* Dark theme is the default — tokens.css handles var(--bg-primary) etc.
+   This ensures a clean base before any components load. */
+html {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
