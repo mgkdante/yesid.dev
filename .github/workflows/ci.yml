@@ -28,7 +28,7 @@ jobs:
         run: bunx svelte-check --tsconfig ./tsconfig.json
 
       - name: Unit tests
-        run: bun test
+        run: bun run test
 
       - name: Build
         run: bun run build
