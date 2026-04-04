@@ -59,12 +59,17 @@
 	});
 
 	// Map scroll progress to video currentTime.
-	// requestVideoFrameCallback would be ideal but has poor Safari support —
-	// direct currentTime assignment is the proven pattern (Apple.com uses it).
+	// WHY the multiplier: scrollProgress ranges 0-1 across the ENTIRE page, but
+	// the hero is only visible for the first ~15%. Without a multiplier the 8s
+	// video barely moves while the hero is on screen. A 6x multiplier plays the
+	// full video roughly within the hero's visible scroll range, then clamps.
+	const SCROLL_SPEED = 6;
+
 	$effect(() => {
 		if (reducedMotion) return;
 		if (!videoEl || !videoPrimed || !videoEl.duration || isNaN(videoEl.duration)) return;
-		videoEl.currentTime = scrollProgress * videoEl.duration;
+		const t = Math.min(videoEl.duration, scrollProgress * SCROLL_SPEED * videoEl.duration);
+		videoEl.currentTime = t;
 	});
 
 	// GSAP overlay animations — fade SQL fragments in/out at scroll thresholds.
