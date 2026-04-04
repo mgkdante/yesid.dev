@@ -25,13 +25,45 @@
 
 	let videoEl: HTMLVideoElement | undefined = $state(undefined);
 	let overlayContainer: HTMLDivElement | undefined = $state(undefined);
+	// WHY videoPrimed: Browsers won't render seek frames on a video that has
+	// never been played. A brief play() → pause() cycle "primes" the decoder
+	// so that setting currentTime actually updates the visible frame.
+	let videoPrimed = $state(false);
+
+	// Prime the video once metadata is available so currentTime seeking works.
+	onMount(() => {
+		if (reducedMotion || !videoEl) return;
+
+		const prime = () => {
+			if (!videoEl) return;
+			const playPromise = videoEl.play();
+			if (playPromise) {
+				playPromise.then(() => {
+					videoEl!.pause();
+					videoEl!.currentTime = 0;
+					videoPrimed = true;
+				}).catch(() => {
+					// Autoplay blocked (e.g., low-power mode) — still allow seeking,
+					// some browsers render seek frames even without priming.
+					videoPrimed = true;
+				});
+			}
+		};
+
+		if (videoEl.readyState >= 2) {
+			prime();
+		} else {
+			videoEl.addEventListener('loadeddata', prime, { once: true });
+			return () => videoEl?.removeEventListener('loadeddata', prime);
+		}
+	});
 
 	// Map scroll progress to video currentTime.
 	// requestVideoFrameCallback would be ideal but has poor Safari support —
 	// direct currentTime assignment is the proven pattern (Apple.com uses it).
 	$effect(() => {
 		if (reducedMotion) return;
-		if (!videoEl || !videoEl.duration || isNaN(videoEl.duration)) return;
+		if (!videoEl || !videoPrimed || !videoEl.duration || isNaN(videoEl.duration)) return;
 		videoEl.currentTime = scrollProgress * videoEl.duration;
 	});
 
