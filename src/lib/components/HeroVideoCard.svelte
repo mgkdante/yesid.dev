@@ -58,9 +58,10 @@
 			const start = parseFloat(el.dataset.start ?? '0');
 			const end = parseFloat(el.dataset.end ?? '1');
 			const inRange = scrollProgress >= start && scrollProgress <= end;
-			const progress = inRange
-				? Math.min(1, (scrollProgress - start) / (Math.min(end, start + 0.1) - start))
-				: 0;
+			const range = Math.min(end, start + 0.1) - start;
+			const progress = inRange && range > 0
+				? Math.min(1, (scrollProgress - start) / range)
+				: inRange ? 1 : 0;
 
 			gsap.to(el, {
 				opacity: progress,

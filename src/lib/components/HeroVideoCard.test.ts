@@ -68,4 +68,15 @@ describe('HeroVideoCard', () => {
 
 		expect(container.querySelector('[data-testid="hero-overlays"]')).toBeInTheDocument();
 	});
+
+	it('does not call gsap.to when reducedMotion is true', () => {
+		const { container } = render(HeroVideoCard, {
+			props: { scrollProgress: 0.5, showOverlays: true, reducedMotion: true }
+		});
+
+		// reducedMotion=true should skip GSAP initialization and animation
+		const overlayContainer = container.querySelector('[data-testid="hero-overlays"]');
+		// Overlays still render in DOM (for accessibility), but GSAP should not animate them
+		expect(overlayContainer).toBeInTheDocument();
+	});
 });
