@@ -1,147 +1,303 @@
 <!--
-  Hero banner: split layout with bold typography left, scroll-linked video right.
-  Three layers:
-    1. Transparent — lets the fixed gradient from +page.svelte show through
-    2. Content: badge, headline, subtitle, CTAs, SQL decoration
-    3. Contained video card: art background + scroll-linked video in a rounded box
+  Hero banner: scroll-driven SVG metro network animation (Slice A).
+  Uses Yesid's hand-built montreal_map.svg.
 
-  The video component maps scrollProgress to <video>.currentTime for a
-  cinematic scroll-linked playback effect.
+  Phase 1 (0-3%)   — Berri-UQAM dot + "yesid" + "SCROLL DOWN" visible at load
+  Phase 1b (3-15%)  — Dot + text pulse (light on/off, opacity)
+  Phase 2 (17-45%)  — "yesid" + "SCROLL DOWN" fade out, lines draw outward
+  Phase 3 (47-58%)  — Station nodes appear
+  Phase 4 (58-65%)  — Labels fade in
+  Phase 5 (65-95%)  — Zoom into Berri-UQAM (fills viewport with orange from the node itself)
+  Phase 6 (95-100%) — Hold fully orange (handoff → Slice C)
 -->
 <script lang="ts">
-	import { heroContent, formatStopLabel, getStopByType } from '$lib/data';
+	import { onMount, onDestroy, tick } from 'svelte';
+	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { registerGsapPlugins, gsap, ScrollTrigger, CustomEase } from '$lib/motion/utils/gsap.js';
+	import { heroAnimContent, heroContent } from '$lib/data';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { magnetic } from '$lib/motion/actions/magnetic.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
-	import { prefersReducedMotion } from '$lib/motion/stores';
-	import HeroVideoCard from './HeroVideoCard.svelte';
-	import ScrollPrompt from './ScrollPrompt.svelte';
+	import MetroNetwork from '$lib/motion/svg/MetroNetwork.svelte';
 
-	// Resolve hero content for current locale
-	const badge = resolveLocale(heroContent.badge, 'en');
-	const h1 = resolveLocale(heroContent.headline.line1, 'en');
-	const h2 = resolveLocale(heroContent.headline.line2, 'en');
-	const h3 = resolveLocale(heroContent.headline.line3, 'en');
-	const subtitle = resolveLocale(heroContent.subtitle, 'en');
-	const ctaWork = resolveLocale(heroContent.ctaWork, 'en');
-	const ctaContact = resolveLocale(heroContent.ctaContact, 'en');
-	const sql1 = resolveLocale(heroContent.sqlDecoration.line1, 'en');
-	const sql2 = resolveLocale(heroContent.sqlDecoration.line2, 'en');
-	const departureLabel = formatStopLabel(getStopByType('hero')!);
+	let pinContainer: HTMLDivElement;
+	let svgWrapper: HTMLDivElement;
+	let scrollPrompt: HTMLParagraphElement;
+	let networkComponent: ReturnType<typeof MetroNetwork>;
+	let reducedMotion = false;
 
-	let {
-		scrollProgress = 0
-	}: {
-		scrollProgress?: number;
-	} = $props();
+	const scrollDownLabel = resolveLocale(heroAnimContent.scrollDown, 'en');
+	const badgeLabel = resolveLocale(heroContent.badge, 'en');
+	const headlineLine1 = resolveLocale(heroContent.headline.line1, 'en');
+	const headlineLine2 = resolveLocale(heroContent.headline.line2, 'en');
+	const headlineLine3 = resolveLocale(heroContent.headline.line3, 'en');
+	const subtitleText = resolveLocale(heroContent.subtitle, 'en');
+	const ctaWorkLabel = resolveLocale(heroContent.ctaWork, 'en');
+	const ctaContactLabel = resolveLocale(heroContent.ctaContact, 'en');
+	const sqlLine1 = resolveLocale(heroContent.sqlDecoration.line1, 'en');
+	const sqlLine2 = resolveLocale(heroContent.sqlDecoration.line2, 'en');
+
+	let heroTextContainer: HTMLDivElement;
+	let heroDot: HTMLSpanElement;
+
+	let cleanup: (() => void) | undefined;
+	onDestroy(() => cleanup?.());
+
+	onMount(async () => {
+		reducedMotion = isPrefersReducedMotion();
+
+		await tick();
+		await new Promise((r) => setTimeout(r, 300));
+
+		const svg = pinContainer?.querySelector('[data-testid="metro-network"]');
+		if (!svg) return;
+
+		if (reducedMotion) {
+			svg.querySelectorAll('.metro-line, .metro-station, .metro-bg, .metro-label, .metro-berri').forEach((el) => {
+				(el as HTMLElement).style.opacity = '0.2';
+			});
+			return;
+		}
+
+		registerGsapPlugins();
+		CustomEase.create('networkDraw', 'M0,0 C0.2,0.6 0.4,1 1,1');
+
+		const lines = svg.querySelectorAll('.metro-line');
+		const stations = svg.querySelectorAll('.metro-station:not(.metro-berri)');
+		const berri = svg.querySelector('.metro-berri');
+		const bg = svg.querySelectorAll('.metro-bg');
+		const labels = svg.querySelectorAll('.metro-label');
+
+		if (!berri) return;
+
+		// Calculate the exact pixel position of Berri-UQAM relative to svgWrapper.
+		// This accounts for preserveAspectRatio letterboxing on any screen size.
+		function updateZoomOrigin() {
+			const berriRect = berri!.getBoundingClientRect();
+			const wrapperRect = svgWrapper.getBoundingClientRect();
+			const berriCenterX = berriRect.x + berriRect.width / 2 - wrapperRect.x;
+			const berriCenterY = berriRect.y + berriRect.height / 2 - wrapperRect.y;
+			const pctX = (berriCenterX / wrapperRect.width) * 100;
+			const pctY = (berriCenterY / wrapperRect.height) * 100;
+			svgWrapper.style.transformOrigin = `${pctX}% ${pctY}%`;
+		}
+		updateZoomOrigin();
+		// Recalculate on resize so it stays accurate on any screen
+		window.addEventListener('resize', updateZoomOrigin);
+
+		const tl = gsap.timeline();
+
+		// === Phase 1 (0-3%): Berri-UQAM + background appear ===
+		// Dot and text are already visible at load (opacity:1 in markup)
+		tl.to(berri, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
+		tl.to(bg, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
+
+		// === Phase 1b (3-15%): Light on/off pulse — dot, brand, and scroll text ===
+		tl.to(berri, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
+		tl.to(scrollPrompt, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
+
+		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
+		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
+
+
+		tl.to(berri, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
+		tl.to(scrollPrompt, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
+
+		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.10);
+		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.10);
+
+
+		tl.to(berri, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
+		tl.to(scrollPrompt, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
+
+		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
+		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
+
+
+		// === Phase 2 (17-45%): "yesid" fades out, "SCROLL DOWN" fades out, lines draw ===
+		tl.to(scrollPrompt, { opacity: 0, duration: 0.04, ease: 'power2.in' }, 0.17);
+
+		lines.forEach((line, i) => {
+			const stagger = i * 0.02;
+			tl.set(line, { opacity: 1 }, 0.17 + stagger);
+			tl.fromTo(line,
+				{ drawSVG: '0%' },
+				{ drawSVG: '100%', duration: 0.22, ease: 'networkDraw' },
+				0.17 + stagger
+			);
+		});
+
+		// === Phase 3 (47-58%): Station nodes appear AFTER lines ===
+		tl.to(stations, {
+			opacity: 1,
+			duration: 0.08,
+			stagger: 0.002,
+			ease: 'power1.out'
+		}, 0.47);
+
+		// === Phase 4 (58-65%): Labels fade in ===
+		tl.to(labels, {
+			opacity: 0.6,
+			duration: 0.07,
+			stagger: 0.001,
+			ease: 'power1.out'
+		}, 0.58);
+
+		// === Phase 5 (65-95%): Zoom into Berri-UQAM ===
+		// No fading lines — they disappear naturally as the node fills the viewport
+		// No orange overlay — the orange comes 100% from the SVG node
+		// Scale calculated dynamically so the node fills any screen size
+		function calcZoomScale(): number {
+			const rect = berri!.getBoundingClientRect();
+			const screen = Math.max(window.innerWidth, window.innerHeight);
+			const node = Math.max(rect.width, rect.height);
+			// 2x headroom ensures full orange coverage even on wide desktops
+			return Math.ceil((screen / node) * 2);
+		}
+
+		const zoomTween = tl.to(svgWrapper, {
+			scale: calcZoomScale(),
+			duration: 0.3,
+			ease: 'power2.inOut',
+		}, 0.65);
+
+		// Recalculate zoom scale AND transform-origin on resize
+		function onResize() {
+			updateZoomOrigin();
+			// Update the tween's end scale for the new screen/node ratio
+			zoomTween.vars.scale = calcZoomScale();
+			zoomTween.invalidate();
+			ScrollTrigger.refresh();
+		}
+		window.removeEventListener('resize', updateZoomOrigin); // remove the earlier one
+		window.addEventListener('resize', onResize);
+
+		// === Phase 6 (95-100%): Hold ===
+		tl.set({}, {}, 1);
+
+		ScrollTrigger.create({
+			trigger: pinContainer,
+			start: 'top top',
+			end: '+=800%',
+			pin: true,
+			scrub: 1,
+			animation: tl,
+		});
+
+		cleanup = () => {
+			tl.kill();
+			window.removeEventListener('resize', onResize);
+			ScrollTrigger.getAll().forEach((st) => {
+				if (st.trigger === pinContainer) st.kill();
+			});
+		};
+	});
 </script>
 
 <section
-	class="relative flex min-h-screen items-start overflow-hidden pt-24 md:items-center md:pt-0"
+	class="relative"
 	data-testid="hero-banner"
+	style="min-height: {reducedMotion ? '100vh' : '900vh'};"
 >
-	<!-- No opaque background — the fixed gradient from +page.svelte shows through -->
-
-	<!-- Content: flex-col on mobile (text then card), flex-row on desktop -->
-	<div class="relative z-20 mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-6 pr-10 md:flex-row md:items-center md:gap-12 md:pr-[72px]">
-
-		<!-- Left side: text content -->
-		<div class="flex-1">
-			<!-- "AVAILABLE FOR HIRE" badge -->
-			<div class="mb-8" use:reveal={{ delay: 0 }}>
-				<span
-					class="inline-flex items-center gap-2 rounded-full bg-[#E07800] px-4 py-1.5 text-xs font-bold tracking-wide text-[#141414] shadow-[0_0_20px_rgba(224,120,0,0.4)]"
-					data-testid="hire-badge"
-				>
-					<span class="h-2 w-2 animate-pulse rounded-full bg-[#141414]"></span>
-					{badge}
-				</span>
-			</div>
-
-			<!-- Station label -->
-			<div
-				class="mb-4 font-mono text-xs tracking-[3px] text-[#E07800] md:text-sm"
-				use:reveal={{ delay: 100 }}
-			>
-				{departureLabel}
-			</div>
-
-			<!-- Headline -->
-			<div use:reveal={{ delay: 200 }}>
-				<h1 class="font-heading text-5xl font-black leading-[0.95] tracking-tight text-[var(--text-primary)] md:text-7xl lg:text-8xl">
-					{h1}<br />
-					{h2}<span class="text-[#E07800]">.</span><br />
-					<span class="text-3xl font-extrabold text-[#E07800] md:text-5xl lg:text-6xl">{h3}</span>
-				</h1>
-			</div>
-
-			<!-- Subtitle -->
-			<p
-				class="mt-6 max-w-md text-base leading-relaxed text-[var(--text-secondary)] md:text-lg"
-				use:reveal={{ delay: 300 }}
-			>
-				{subtitle}
-			</p>
-
-			<!-- CTA buttons -->
-			<div class="mt-8 flex flex-wrap gap-3" use:reveal={{ delay: 400 }}>
-				<a
-					href="/work"
-					class="inline-flex items-center rounded-lg bg-[#E07800] px-6 py-3 text-sm font-bold text-[#141414] transition-colors hover:bg-[#C96A00]"
-					data-testid="cta-work"
-					use:magnetic={{ strength: 4, radius: 60 }}
-				>
-					{ctaWork}
-				</a>
-				<a
-					href="/contact"
-					class="inline-flex items-center rounded-lg border border-[#3a3a3a] px-6 py-3 text-sm font-semibold text-[var(--text-primary)] transition-colors hover:border-[#E07800] hover:text-[#E07800]"
-					data-testid="cta-contact"
-					use:magnetic={{ strength: 4, radius: 60 }}
-				>
-					{ctaContact}
-				</a>
-			</div>
-
-			<!-- SQL decoration -->
-			<div
-				class="mt-12 font-mono text-sm leading-relaxed text-[#888] md:text-base"
-				aria-hidden="true"
-				use:reveal={{ delay: 500, direction: 'left' }}
-			>
-				{sql1}<br />
-				{sql2}
-			</div>
-
-			<!-- Scroll prompt -->
-			<div class="mt-8">
-				<ScrollPrompt />
-			</div>
+	<div
+		bind:this={pinContainer}
+		class="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#141414]"
+	>
+		<!-- SVG wrapper — zooms into Berri-UQAM -->
+		<div
+			bind:this={svgWrapper}
+			class="absolute inset-0 flex items-center justify-center px-4 pr-12 md:pr-20"
+		>
+			<MetroNetwork bind:this={networkComponent} />
 		</div>
 
-		<!-- Right side: contained video card (visible on all viewports) -->
-		<div class="w-full max-w-lg md:w-[55%] md:flex-shrink-0" use:reveal={{ delay: 300 }}>
-			<div class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[#2a2a2a]/50 shadow-[0_0_40px_rgba(224,120,0,0.08)]">
-				<!-- Art background inside card (clipped to rounded corners) -->
-				<div class="absolute inset-0 overflow-hidden rounded-2xl">
-					<div
-						class="absolute inset-0"
-						style="
-							background-image: url('/images/hero-station-art.webp');
-							background-size: cover;
-							background-position: center;
-						"
+		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
+		<div
+			bind:this={heroTextContainer}
+			class="absolute inset-0 flex items-center justify-center px-6 pr-12 opacity-0 md:pr-20"
+			data-testid="hero-text-container"
+		>
+			<div class="flex w-full max-w-5xl items-center gap-8">
+				<!-- Left: headline + CTAs -->
+				<div class="flex-1">
+					<span
+						class="mb-4 inline-block rounded border border-[#E07800] px-3 py-1 font-mono text-[10px] tracking-[3px] text-[#E07800] md:text-xs"
+						data-testid="hero-badge"
+						data-hero-stagger="3"
 					>
-						<div class="absolute inset-0 bg-[#141414]/30"></div>
+						{badgeLabel}
+					</span>
+
+					<h1 class="font-heading font-extrabold leading-[0.95]">
+						<span
+							class="block text-5xl text-[var(--text-primary)] md:text-7xl"
+							data-testid="hero-line1"
+						>
+							<span data-hero-stagger="1">{headlineLine1}</span>
+						</span>
+						<span
+							class="block text-5xl text-[var(--text-primary)] md:text-7xl"
+							data-testid="hero-line2"
+						>
+							<span data-hero-stagger="1">{headlineLine2}</span><span
+								bind:this={heroDot}
+								class="text-[#E07800]"
+								data-testid="hero-dot"
+							>.</span>
+						</span>
+						<span
+							class="mt-2 block text-2xl text-[#999] md:text-4xl"
+							data-testid="hero-line3"
+						>
+							<span data-hero-stagger="2">{headlineLine3}</span>
+						</span>
+					</h1>
+
+					<p
+						class="mt-5 max-w-md text-sm leading-relaxed text-[var(--text-secondary)] md:text-base"
+						data-testid="hero-subtitle"
+						data-hero-stagger="3"
+					>
+						{subtitleText}
+					</p>
+
+					<div class="mt-6 flex flex-wrap gap-3" data-hero-stagger="3">
+						<a
+							href="/work"
+							class="inline-flex items-center rounded-lg bg-[#E07800] px-6 py-3 text-sm font-semibold text-[#141414] transition-colors hover:bg-[#C96A00]"
+							data-testid="hero-cta-work"
+						>
+							{ctaWorkLabel}
+						</a>
+						<a
+							href="/contact"
+							class="inline-flex items-center rounded-lg border border-[var(--border)] px-6 py-3 text-sm font-semibold text-[var(--text-primary)] transition-colors hover:border-[#E07800] hover:text-[#E07800]"
+							data-testid="hero-cta-contact"
+						>
+							{ctaContactLabel}
+						</a>
 					</div>
 				</div>
 
-				<!-- Scroll-linked video + code overlays -->
-				<HeroVideoCard
-					{scrollProgress}
-					reducedMotion={$prefersReducedMotion}
-				/>
+				<!-- Right: SQL decoration (desktop only) -->
+				<div
+					class="hidden border-l border-[#333] pl-8 md:block"
+					style="flex: 0.7;"
+					data-testid="hero-sql"
+					data-hero-stagger="4"
+				>
+					<code class="block font-mono text-sm leading-loose text-[#E07800] opacity-70">
+						{sqlLine1}<br />
+						{sqlLine2}
+					</code>
+				</div>
 			</div>
 		</div>
+
+		<!-- "SCROLL DOWN" — visible at load -->
+		<p
+			bind:this={scrollPrompt}
+			class="pointer-events-none absolute bottom-[10%] left-1/2 -translate-x-1/2 font-mono text-sm tracking-[4px] text-[#E07800] md:text-base"
+		>
+			{scrollDownLabel}
+		</p>
 	</div>
 </section>
