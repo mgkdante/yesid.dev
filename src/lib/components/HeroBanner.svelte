@@ -1,14 +1,17 @@
 <!--
-  Hero banner: scroll-driven SVG metro network animation (Slice A).
+  Hero banner: scroll-driven SVG metro network animation (Slice A + Slice C).
   Uses Yesid's hand-built montreal_map.svg.
 
-  Phase 1 (0-3%)   — Berri-UQAM dot + "yesid" + "SCROLL DOWN" visible at load
-  Phase 1b (3-15%)  — Dot + text pulse (light on/off, opacity)
-  Phase 2 (17-45%)  — "yesid" + "SCROLL DOWN" fade out, lines draw outward
-  Phase 3 (47-58%)  — Station nodes appear
-  Phase 4 (58-65%)  — Labels fade in
-  Phase 5 (65-95%)  — Zoom into Berri-UQAM (fills viewport with orange from the node itself)
-  Phase 6 (95-100%) — Hold fully orange (handoff → Slice C)
+  Phase 1 (0-3%)    — Berri-UQAM dot + "yesid" + "SCROLL DOWN" visible at load
+  Phase 1b (3-15%)   — Dot + text pulse (light on/off, opacity)
+  Phase 2 (17-45%)   — "yesid" + "SCROLL DOWN" fade out, lines draw outward
+  Phase 3 (47-58%)   — Station nodes appear
+  Phase 4 (58-65%)   — Labels fade in
+  Phase 5 (65-95%)   — Zoom into Berri-UQAM (fills viewport with orange from the node itself)
+  Phase 6 (100%)     — Cross-fade SVG out → hero text container in (both orange, seamless)
+  Phase 7 (105-140%) — Zoom out hero text container (scale→1), revealing headline
+  Phase 8 (110-142%) — Text elements stagger in during zoom-out
+  Phase 9 (150%)     — Hold — hero fully visible, user reads
 -->
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
@@ -54,6 +57,9 @@
 			svg.querySelectorAll('.metro-line, .metro-station, .metro-bg, .metro-label, .metro-berri').forEach((el) => {
 				(el as HTMLElement).style.opacity = '0.2';
 			});
+			// Show hero text statically — no animation
+			heroTextContainer.style.opacity = '1';
+			heroTextContainer.style.transform = 'scale(1)';
 			return;
 		}
 
@@ -80,6 +86,34 @@
 			svgWrapper.style.transformOrigin = `${pctX}% ${pctY}%`;
 		}
 		updateZoomOrigin();
+
+		// Calculate initial scale for hero text container so the dot fills viewport.
+		function calcHeroTextScale(): number {
+			const dotRect = heroDot.getBoundingClientRect();
+			const screen = Math.max(window.innerWidth, window.innerHeight);
+			const dot = Math.max(dotRect.width, dotRect.height);
+			if (dot === 0) return 100; // fallback before layout
+			return Math.ceil((screen / dot) * 2);
+		}
+
+		// Set transform-origin on hero text container to the dot's pixel position.
+		function updateHeroTextOrigin() {
+			const dotRect = heroDot.getBoundingClientRect();
+			const containerRect = heroTextContainer.getBoundingClientRect();
+			const dotCenterX = dotRect.x + dotRect.width / 2 - containerRect.x;
+			const dotCenterY = dotRect.y + dotRect.height / 2 - containerRect.y;
+			const pctX = (dotCenterX / containerRect.width) * 100;
+			const pctY = (dotCenterY / containerRect.height) * 100;
+			heroTextContainer.style.transformOrigin = `${pctX}% ${pctY}%`;
+		}
+		updateHeroTextOrigin();
+
+		gsap.set(heroTextContainer, { scale: calcHeroTextScale() });
+
+		// All text elements start invisible — dot stays visible as the orange.
+		const staggerEls = heroTextContainer.querySelectorAll('[data-hero-stagger]');
+		gsap.set(staggerEls, { opacity: 0 });
+
 		// Recalculate on resize so it stays accurate on any screen
 		window.addEventListener('resize', updateZoomOrigin);
 
@@ -159,24 +193,75 @@
 			ease: 'power2.inOut',
 		}, 0.65);
 
+		// === Phase 6 (Slice C): Cross-fade SVG → hero text container ===
+		// At this point, svgWrapper is fully zoomed (orange fills screen).
+		// heroTextContainer is also scaled up so its dot fills the screen.
+		// Cross-fade: SVG out, text container in. Visually seamless — both are orange.
+		tl.to(svgWrapper, { opacity: 0, duration: 0.05, ease: 'power2.inOut' }, 1.0);
+		tl.to(heroTextContainer, { opacity: 1, duration: 0.05, ease: 'power2.inOut' }, 1.0);
+
+		// === Phase 7 (Slice C): Zoom out — scale hero text container down to 1 ===
+		const heroZoomTween = tl.to(heroTextContainer, {
+			scale: 1,
+			duration: 0.35,
+			ease: 'power2.out',
+		}, 1.05);
+
+		// === Phase 8 (Slice C): Text elements stagger in during zoom-out ===
+		const stagger1 = heroTextContainer.querySelectorAll('[data-hero-stagger="1"]');
+		const stagger2 = heroTextContainer.querySelectorAll('[data-hero-stagger="2"]');
+		const stagger3 = heroTextContainer.querySelectorAll('[data-hero-stagger="3"]');
+		const stagger4 = heroTextContainer.querySelectorAll('[data-hero-stagger="4"]');
+
+		tl.to(stagger1, {
+			opacity: 1,
+			duration: 0.15,
+			stagger: 0.02,
+			ease: 'power1.out',
+		}, 1.10);
+
+		tl.to(stagger2, {
+			opacity: 1,
+			duration: 0.12,
+			ease: 'power1.out',
+		}, 1.18);
+
+		tl.to(stagger3, {
+			opacity: 1,
+			duration: 0.10,
+			stagger: 0.02,
+			ease: 'power1.out',
+		}, 1.25);
+
+		tl.to(stagger4, {
+			opacity: 1,
+			duration: 0.10,
+			ease: 'power1.out',
+		}, 1.32);
+
+		// === Phase 9: Hold — hero fully visible, user reads ===
+		tl.set({}, {}, 1.5);
+
 		// Recalculate zoom scale AND transform-origin on resize
 		function onResize() {
 			updateZoomOrigin();
-			// Update the tween's end scale for the new screen/node ratio
 			zoomTween.vars.scale = calcZoomScale();
 			zoomTween.invalidate();
+			// Update hero text zoom-out values
+			updateHeroTextOrigin();
+			const newHeroScale = calcHeroTextScale();
+			gsap.set(heroTextContainer, { scale: newHeroScale });
+			heroZoomTween.vars.scale = 1;
+			heroZoomTween.invalidate();
 			ScrollTrigger.refresh();
 		}
 		window.removeEventListener('resize', updateZoomOrigin); // remove the earlier one
 		window.addEventListener('resize', onResize);
 
-		// === Phase 6 (95-100%): Hold ===
-		tl.set({}, {}, 1);
-
 		ScrollTrigger.create({
 			trigger: pinContainer,
 			start: 'top top',
-			end: '+=800%',
+			end: '+=1200%',
 			pin: true,
 			scrub: 1,
 			animation: tl,
@@ -195,7 +280,7 @@
 <section
 	class="relative"
 	data-testid="hero-banner"
-	style="min-height: {reducedMotion ? '100vh' : '900vh'};"
+	style="min-height: {reducedMotion ? '100vh' : '1300vh'};"
 >
 	<div
 		bind:this={pinContainer}
