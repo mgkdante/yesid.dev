@@ -1,15 +1,14 @@
 <!--
   SkillsJourney: horizontal scroll CTA section placed after the hero.
   Pinned section that scrolls horizontally, revealing panels with large
-  narrative text (SplitText effects), tech stack SVG icons, and ending
-  with a CTA button. The metro/train metaphor bridges to digital infrastructure.
+  narrative text (SplitText effects), tech stack SVG icons in their own
+  row below the text, and ending with a CTA button.
+
+  Icons are interactive — each has a unique GSAP hover animation (bounce,
+  wiggle, spin, pulse, etc.) triggered on mouseenter/mouseleave.
 
   Data-driven — panels come from skillsJourneyPanels in the data layer.
   Adding/removing a panel means editing the data array only.
-
-  Icons are embedded inline with the text near their associated highlight
-  words — gsap.com "Animate Anything" style. Some icons have a subtle
-  parallax counter-scroll effect for depth.
 
   Reduced motion: panels stack vertically, no horizontal scroll or SplitText.
 -->
@@ -19,7 +18,7 @@
 	import { registerGsapPlugins, gsap, ScrollTrigger, SplitText } from '$lib/motion/utils/gsap.js';
 	import { skillsJourneyPanels, skillsJourneyCta } from '$lib/data';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import type { SkillIcon, JourneySkill } from '$lib/data/types.js';
+	import type { SkillIcon } from '$lib/data/types.js';
 
 	let reducedMotion = $state(false);
 
@@ -32,6 +31,9 @@
 	let splitInstances: { revert: () => void }[] = [];
 	let tweens: { kill: () => void }[] = [];
 
+	// Track hover event listeners for cleanup
+	let hoverCleanups: (() => void)[] = [];
+
 	// Resolve CTA strings once at init — they don't change
 	const ctaPromptText = resolveLocale(skillsJourneyCta.prompt, 'en');
 	const ctaButtonText = resolveLocale(skillsJourneyCta.button, 'en');
@@ -41,10 +43,10 @@
 
 	/**
 	 * Renders an inline SVG icon for a given SkillIcon type.
-	 * Sized at 48x48 for inline text visibility. Simple line-art style:
+	 * Sized at 56x56 for the icon row below text. Simple line-art style:
 	 * white strokes with orange accents.
 	 */
-	function renderSkillIcon(icon: SkillIcon, size = 48): string {
+	function renderSkillIcon(icon: SkillIcon, size = 56): string {
 		const base = `xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"`;
 
 		switch (icon) {
@@ -117,80 +119,116 @@
 	}
 
 	/**
-	 * Builds panel HTML with icons embedded inline near highlight words.
-	 * Icons appear right before their associated highlight word, floating
-	 * between words at roughly the same visual size as the heading text.
-	 *
-	 * Strategy: pair each skill with a highlight word (round-robin if
-	 * counts differ). Insert the icon span just before the matched word.
+	 * Wraps highlight words in styled spans for GSAP animation.
+	 * Simplified from the old buildPanelContent — icons are no longer inline.
 	 */
-	function buildPanelContent(
+	function markHighlightWords(
 		text: string,
 		highlights: readonly string[],
-		effect: string,
-		skills: readonly JourneySkill[]
+		effect: string
 	): string {
-		// Map each highlight word to the skills that should appear before it.
-		// Distribute skills across highlights round-robin style.
-		const highlightSkillMap = new Map<string, JourneySkill[]>();
-		for (const h of highlights) {
-			highlightSkillMap.set(h.toLowerCase(), []);
-		}
-
-		skills.forEach((skill, idx) => {
-			if (highlights.length > 0) {
-				const targetHighlight = highlights[idx % highlights.length];
-				const bucket = highlightSkillMap.get(targetHighlight.toLowerCase());
-				if (bucket) bucket.push(skill);
-			}
-		});
-
 		let result = text;
-
-		// Process each highlight word: inject icons before it and wrap in highlight span
 		for (const word of highlights) {
 			const regex = new RegExp(`(${word})`, 'i');
-			const associatedSkills = highlightSkillMap.get(word.toLowerCase()) || [];
-
-			// Build inline icon HTML for skills associated with this word
-			const iconHtml = associatedSkills
-				.map(
-					(skill) =>
-						`<span class="journey-inline-icon inline-flex items-baseline align-baseline mx-1" data-testid="journey-skill-${skill.id}" data-parallax-icon aria-label="${skill.name}">` +
-						renderSkillIcon(skill.icon, 48) +
-						`</span>`
-				)
-				.join('');
-
-			// Place icons just before the highlight word
 			result = result.replace(
 				regex,
-				`${iconHtml}<span class="highlight-word highlight-${effect}" data-highlight="${effect}">$1</span>`
+				`<span class="highlight-word highlight-${effect}" data-highlight="${effect}">$1</span>`
 			);
 		}
-
-		// Any remaining skills that did not get attached to a highlight word
-		// (happens when there are more skills than highlights and skills overflow).
-		// Append them at the end.
-		const placedSkillIds = new Set(
-			Array.from(highlightSkillMap.values())
-				.flat()
-				.map((s) => s.id)
-		);
-		const unplacedSkills = skills.filter((s) => !placedSkillIds.has(s.id));
-		if (unplacedSkills.length > 0) {
-			const trailingIcons = unplacedSkills
-				.map(
-					(skill) =>
-						` <span class="journey-inline-icon inline-flex items-baseline align-baseline mx-1" data-testid="journey-skill-${skill.id}" data-parallax-icon aria-label="${skill.name}">` +
-						renderSkillIcon(skill.icon, 48) +
-						`</span>`
-				)
-				.join('');
-			result += trailingIcons;
-		}
-
 		return result;
+	}
+
+	/**
+	 * Applies a unique GSAP hover animation based on the skill icon type.
+	 * Each icon gets a distinct effect for variety and delight.
+	 */
+	function applyHoverEffect(container: HTMLElement, iconType: string): void {
+		const svgEl = container.querySelector('svg');
+		const nameEl = container.querySelector('[data-skill-name]');
+
+		const onEnter = () => {
+			// Animate the skill name text on hover — orange + lift
+			if (nameEl) {
+				gsap.to(nameEl, { color: '#E07800', y: -3, duration: 0.3, ease: 'power2.out' });
+			}
+
+			if (!svgEl) return;
+
+			switch (iconType) {
+				case 'sql':
+					// Scale up + slight rotate + glow shadow on the container
+					gsap.to(svgEl, { scale: 1.2, rotation: 5, duration: 0.4, ease: 'back.out(1.7)' });
+					gsap.to(container, { boxShadow: '0 0 20px rgba(224, 120, 0, 0.4)', duration: 0.4 });
+					break;
+				case 'typescript':
+					// Bounce up with elastic ease
+					gsap.to(svgEl, { y: -10, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
+					break;
+				case 'python':
+					// Wiggle rotation: -10 -> 10 -> 0 with spring feel
+					gsap.to(svgEl, {
+						keyframes: [
+							{ rotation: -10, duration: 0.15 },
+							{ rotation: 10, duration: 0.15 },
+							{ rotation: -5, duration: 0.1 },
+							{ rotation: 0, duration: 0.1 },
+						],
+						ease: 'power1.inOut',
+					});
+					break;
+				case 'sveltekit':
+					// Spin 360 degrees
+					gsap.to(svgEl, { rotation: 360, duration: 0.6, ease: 'power2.inOut' });
+					break;
+				case 'gsap':
+					// Scale pulse: 1 -> 1.3 -> 1 with back.out
+					gsap.to(svgEl, {
+						keyframes: [
+							{ scale: 1.3, duration: 0.25 },
+							{ scale: 1, duration: 0.25 },
+						],
+						ease: 'back.out(1.7)',
+					});
+					break;
+				case 'powerbi':
+					// Bars grow taller — scaleY stretch
+					gsap.to(svgEl, { scaleY: 1.2, transformOrigin: 'bottom center', duration: 0.4, ease: 'power2.out' });
+					break;
+				case 'docker':
+					// Slide up and back with a bounce
+					gsap.to(svgEl, {
+						keyframes: [
+							{ y: -15, duration: 0.25, ease: 'power2.out' },
+							{ y: 0, duration: 0.4, ease: 'bounce.out' },
+						],
+					});
+					break;
+				default:
+					gsap.to(svgEl, { scale: 1.15, duration: 0.3, ease: 'power2.out' });
+			}
+		};
+
+		const onLeave = () => {
+			// Revert name text
+			if (nameEl) {
+				gsap.to(nameEl, { color: 'rgba(255,255,255,0.5)', y: 0, duration: 0.3, ease: 'power2.out' });
+			}
+
+			if (!svgEl) return;
+
+			// Reset all icon transforms back to rest state
+			gsap.to(svgEl, { scale: 1, rotation: 0, y: 0, scaleY: 1, duration: 0.3, ease: 'power2.out' });
+			gsap.to(container, { boxShadow: 'none', duration: 0.3 });
+		};
+
+		container.addEventListener('mouseenter', onEnter);
+		container.addEventListener('mouseleave', onLeave);
+
+		// Return cleanup function
+		hoverCleanups.push(() => {
+			container.removeEventListener('mouseenter', onEnter);
+			container.removeEventListener('mouseleave', onLeave);
+		});
 	}
 
 	onMount(() => {
@@ -317,32 +355,20 @@
 			});
 		});
 
-		// Parallax effect on inline icons — translate slightly opposite to scroll
-		// direction for depth. Uses the main horizontal tween's progress via
-		// containerAnimation so the offset tracks the scroll precisely.
-		const parallaxIcons = track.querySelectorAll<HTMLElement>('[data-parallax-icon]');
-		parallaxIcons.forEach((iconEl, i) => {
-			// Alternate direction and magnitude for visual variety
-			const xOffset = i % 2 === 0 ? 30 : -25;
-			const yOffset = i % 3 === 0 ? -8 : 6;
-
-			const pTween = gsap.to(iconEl, {
-				x: xOffset,
-				y: yOffset,
-				ease: 'none',
-				scrollTrigger: {
-					trigger: iconEl,
-					containerAnimation: tween,
-					start: 'left right',
-					end: 'right left',
-					scrub: true,
-				},
-			});
-			tweens.push(pTween);
+		// Set up interactive GSAP hover effects on skill icon containers.
+		// Each icon type gets a unique animation for variety and delight.
+		const iconContainers = track.querySelectorAll<HTMLElement>('[data-skill-hover]');
+		iconContainers.forEach((container) => {
+			const iconType = container.dataset.skillHover || '';
+			applyHoverEffect(container, iconType);
 		});
 	});
 
 	onDestroy(() => {
+		// Clean up hover event listeners
+		hoverCleanups.forEach((cleanup) => cleanup());
+		hoverCleanups = [];
+
 		// Clean up all GSAP artifacts to prevent memory leaks
 		tweens.forEach((t) => t.kill());
 		tweens = [];
@@ -356,14 +382,15 @@
 <!--
   Outer section: height set to allow ScrollTrigger pinning.
   scrollDistance = track.scrollWidth - window.innerWidth. We use
-  totalPanelCount * 150vh to guarantee enough vertical room for the pin.
+  totalPanelCount * 200vh to guarantee enough vertical room for the pin,
+  ensuring the CTA button panel is fully reachable in the horizontal scroll.
   In reduced motion mode, panels are stacked vertically so we use auto height.
   No background — transparent so the page's own gradient shows through.
 -->
 <section
 	data-testid="skills-journey"
 	class="relative"
-	style="height: {reducedMotion ? 'auto' : `${totalPanelCount * 150}vh`};"
+	style="height: {reducedMotion ? 'auto' : `${totalPanelCount * 200}vh`};"
 >
 	{#if reducedMotion}
 		<!-- Reduced motion: vertical stack, no animation -->
@@ -378,15 +405,28 @@
 						{resolveLocale(panel.label, 'en')}
 					</p>
 
-					<!-- Panel text with inline icons -->
+					<!-- Panel text with highlighted words -->
 					<p class="font-heading text-4xl font-bold leading-tight text-[var(--text-primary)] md:text-5xl lg:text-6xl">
-						{@html buildPanelContent(
+						{@html markHighlightWords(
 							resolveLocale(panel.text, 'en'),
 							panel.highlightWords,
-							panel.highlightEffect,
-							panel.skills
+							panel.highlightEffect
 						)}
 					</p>
+
+					<!-- Skill icons row below text -->
+					<div class="mt-8 flex flex-wrap gap-4">
+						{#each panel.skills as skill (skill.id)}
+							<div
+								data-testid="journey-skill-{skill.id}"
+								class="flex flex-col items-center gap-2 rounded-lg border border-white/10 px-4 py-3"
+								aria-label="{skill.name}"
+							>
+								{@html renderSkillIcon(skill.icon, 56)}
+								<span class="text-xs font-mono text-white/50 tracking-wide">{skill.name}</span>
+							</div>
+						{/each}
+					</div>
 				</div>
 			{/each}
 
@@ -437,18 +477,32 @@
 							{resolveLocale(panel.label, 'en')}
 						</p>
 
-						<!-- Panel text with inline icons (SplitText target) -->
+						<!-- Panel text with highlighted words (SplitText target) -->
 						<p
 							data-panel-text
 							class="font-heading text-4xl font-bold leading-tight text-[var(--text-primary)] md:text-5xl lg:text-6xl"
 						>
-							{@html buildPanelContent(
+							{@html markHighlightWords(
 								resolveLocale(panel.text, 'en'),
 								panel.highlightWords,
-								panel.highlightEffect,
-								panel.skills
+								panel.highlightEffect
 							)}
 						</p>
+
+						<!-- Skill icons row — interactive with GSAP hover effects -->
+						<div class="mt-10 flex flex-wrap gap-5">
+							{#each panel.skills as skill (skill.id)}
+								<div
+									data-testid="journey-skill-{skill.id}"
+									data-skill-hover="{skill.icon}"
+									class="group flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-white/10 px-5 py-4 transition-colors hover:border-[#E07800]/30"
+									aria-label="{skill.name}"
+								>
+									{@html renderSkillIcon(skill.icon, 56)}
+									<span data-skill-name class="text-xs font-mono text-white/50 tracking-wide transition-colors">{skill.name}</span>
+								</div>
+							{/each}
+						</div>
 					</div>
 				{/each}
 
