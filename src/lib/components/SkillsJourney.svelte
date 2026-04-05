@@ -6,6 +6,7 @@
 
   Icons are interactive — each has a unique GSAP hover animation (bounce,
   wiggle, spin, pulse, etc.) triggered on mouseenter/mouseleave.
+  Icons also have scroll-linked entrance animations (scale from 0 with bounce).
 
   Data-driven — panels come from skillsJourneyPanels in the data layer.
   Adding/removing a panel means editing the data array only.
@@ -341,6 +342,7 @@
 					});
 					tweens.push(solidTween);
 				} else if (effect === 'gradient') {
+					// Panel 4: base gradient reveal for "motion" and "unforgettable"
 					highlightTween = gsap.to(hw, {
 						opacity: 1,
 						backgroundImage: 'linear-gradient(90deg, #E07800, #FFB627)',
@@ -356,6 +358,42 @@
 							scrub: true,
 						},
 					});
+
+					// Panel 4 "motion": one full 360-degree rotation tied to scroll
+					const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
+					if (highlightText === 'motion') {
+						const rotateTween = gsap.to(hw, {
+							rotation: 360,
+							ease: 'none',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 30%',
+								end: 'left 5%',
+								scrub: true,
+							},
+						});
+						tweens.push(rotateTween);
+					}
+
+					// Panel 4 "unforgettable": scale pulse that repeats 2 times
+					if (highlightText === 'unforgettable') {
+						const pulseTween = gsap.to(hw, {
+							scale: 1.15,
+							duration: 0.4,
+							yoyo: true,
+							repeat: 3, // 2 full cycles = 4 half-cycles (up-down-up-down)
+							ease: 'power1.inOut',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 25%',
+								end: 'left 5%',
+								scrub: true,
+							},
+						});
+						tweens.push(pulseTween);
+					}
 				} else if (effect === 'wave') {
 					const waveSplit = new SplitText(hw, { type: 'chars' });
 					splitInstances.push(waveSplit);
@@ -371,6 +409,43 @@
 							scrub: true,
 						},
 					});
+
+					// Panel 3 "understand": standout POP animation.
+					// Scales bigger (1.3x), turns orange, adds a glow shadow,
+					// then pulses once (1.3 -> 1.4 -> 1.3).
+					const waveText = hw.textContent?.toLowerCase().trim() ?? '';
+					if (waveText === 'understand') {
+						const popTween = gsap.to(hw, {
+							scale: 1.3,
+							color: '#E07800',
+							textShadow: '0 0 20px rgba(224,120,0,0.6), 0 0 40px rgba(224,120,0,0.3)',
+							ease: 'power2.out',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 30%',
+								end: 'left 15%',
+								scrub: true,
+							},
+						});
+						tweens.push(popTween);
+
+						// Pulse after reaching full scale: 1.3 -> 1.4 -> 1.3
+						const pulsePopTween = gsap.to(hw, {
+							scale: 1.4,
+							ease: 'power1.inOut',
+							yoyo: true,
+							repeat: 1,
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 15%',
+								end: 'left 2%',
+								scrub: true,
+							},
+						});
+						tweens.push(pulsePopTween);
+					}
 				} else if (effect === 'charReveal') {
 					const revealSplit = new SplitText(hw, { type: 'chars' });
 					splitInstances.push(revealSplit);
@@ -386,6 +461,28 @@
 							scrub: true,
 						},
 					});
+
+					// Panel 2 "data, logic, pixels": bounce/jump after char reveal.
+					// Each highlight word jumps up and back down with back.out ease,
+					// staggered slightly between the three words via offset start positions.
+					const allCharRevealWords = el.querySelectorAll<HTMLElement>('.highlight-charReveal');
+					const wordIndex = Array.from(allCharRevealWords).indexOf(hw);
+					const jumpTween = gsap.fromTo(hw,
+						{ y: 0 },
+						{
+							y: -20,
+							ease: 'back.out(1.7)',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								// Stagger start positions: each word jumps 3% later in scroll
+								start: `left ${28 - (wordIndex * 3)}%`,
+								end: `left ${22 - (wordIndex * 3)}%`,
+								scrub: true,
+							},
+						}
+					);
+					tweens.push(jumpTween);
 				}
 
 				if (highlightTween) tweens.push(highlightTween);
@@ -399,6 +496,55 @@
 			const iconType = container.dataset.skillHover || '';
 			applyHoverEffect(container, iconType);
 		});
+
+		// Scroll-linked entrance animations for skill icons.
+		// As each panel scrolls into view, its icons scale up from 0 with a bounce.
+		const panelDivs = track.querySelectorAll<HTMLElement>('[data-testid^="journey-panel-"]');
+		panelDivs.forEach((panelDiv) => {
+			const icons = panelDiv.querySelectorAll<HTMLElement>('[data-skill-hover]');
+			if (icons.length === 0) return;
+
+			// Set initial state: icons start invisible and at scale 0
+			gsap.set(Array.from(icons), { scale: 0, opacity: 0 });
+
+			const iconTween = gsap.to(Array.from(icons), {
+				scale: 1,
+				opacity: 1,
+				stagger: 0.1,
+				ease: 'back.out(1.7)',
+				scrollTrigger: {
+					trigger: panelDiv,
+					containerAnimation: tween,
+					start: 'left 70%',
+					end: 'left 40%',
+					scrub: true,
+				},
+			});
+			tweens.push(iconTween);
+		});
+
+		// Panel 5 CTA button: pulsing glow shadow after button scrolls into view.
+		// The glow repeats infinitely with yoyo so it breathes in and out.
+		const ctaButton = track.querySelector<HTMLElement>('[data-testid="journey-cta-button"]');
+		if (ctaButton) {
+			// Trigger the infinite glow once the CTA button panel enters the viewport
+			ScrollTrigger.create({
+				trigger: ctaButton,
+				containerAnimation: tween,
+				start: 'left 80%',
+				once: true, // Fire only once — the glow then runs forever
+				onEnter: () => {
+					const glowTween = gsap.to(ctaButton, {
+						boxShadow: '0 0 40px rgba(224,120,0,0.6), 0 0 80px rgba(224,120,0,0.2)',
+						duration: 1.5,
+						yoyo: true,
+						repeat: -1,
+						ease: 'sine.inOut',
+					});
+					tweens.push(glowTween);
+				},
+			});
+		}
 	});
 
 	onDestroy(() => {
