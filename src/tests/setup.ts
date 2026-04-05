@@ -115,14 +115,16 @@ vi.mock('gsap/CustomEase', () => ({
 }));
 
 // SplitText splits text nodes into chars/words/lines for GSAP animation.
-// Return stub arrays so consumers can iterate without DOM measurement.
+// Return a proper class stub so `new SplitText(...)` works in jsdom tests.
+// The real SplitText measures DOM nodes; in tests we only care that the
+// interface (chars, words, lines, revert) exists, not the animation output.
 vi.mock('gsap/SplitText', () => ({
-	SplitText: vi.fn(() => ({
-		chars: [],
-		words: [],
-		lines: [],
-		revert: vi.fn()
-	}))
+	SplitText: class {
+		chars: Element[] = [];
+		words: Element[] = [];
+		lines: Element[] = [];
+		revert = vi.fn();
+	}
 }));
 
 // Mock @threlte/core for component tests.
