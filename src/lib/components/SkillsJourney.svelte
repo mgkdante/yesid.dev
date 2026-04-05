@@ -25,6 +25,7 @@
 	// DOM refs bound via bind:this — not reactive state, only used in onMount
 	let pinContainer: HTMLDivElement;
 	let track: HTMLDivElement;
+	let sectionEl: HTMLElement;
 
 	// Refs for GSAP cleanup
 	let scrollTriggerInstance: { kill: () => void } | undefined;
@@ -40,6 +41,11 @@
 
 	// Total panels: data panels + CTA prompt + CTA button
 	const totalPanelCount = skillsJourneyPanels.length + 2;
+
+	// Section height set dynamically in onMount once scrollDistance is known.
+	// Formula: viewportHeight + scrollDistance = exact room for the pin with no empty scroll.
+	// SSR fallback uses totalPanelCount * 100vh — close enough until JS runs.
+	let sectionHeight = $state(`${totalPanelCount * 100}vh`);
 
 	/**
 	 * Renders an inline SVG icon for a given SkillIcon type.
@@ -239,8 +245,16 @@
 
 		if (!pinContainer || !track) return;
 
-		// Calculate total scroll distance — how far the track must translate
+		// Calculate total scroll distance — how far the track must translate.
+		// On narrow viewports the track is proportionally shorter, so scrollDistance
+		// is smaller. The section height must match exactly: viewportHeight + scrollDistance.
+		// Too much height = empty scroll after content ends. Too little = pin ends early.
 		const scrollDistance = track.scrollWidth - window.innerWidth;
+
+		// Set section height precisely so ScrollTrigger pin has exactly enough room.
+		// viewport height (100vh) for the pinned frame itself, plus the scroll distance
+		// for the horizontal travel. This works at every viewport width.
+		sectionHeight = `${window.innerHeight + scrollDistance}px`;
 
 		// Main horizontal scroll tween — translates the track leftward
 		const tween = gsap.to(track, {
@@ -257,7 +271,7 @@
 			scrub: 1,
 			pin: true,
 			anticipatePin: 1,
-			end: () => '+=' + scrollDistance,
+			end: () => '+=' + (track.scrollWidth - window.innerWidth),
 		});
 
 		// Animate each panel's text using containerAnimation — the correct GSAP
@@ -292,20 +306,43 @@
 				let highlightTween: { kill: () => void } | undefined;
 
 				if (effect === 'scale') {
+					// Panel 1 "foundation": gradient-to-solid orange reveal.
+					// First apply an orange-yellow gradient on scroll...
 					highlightTween = gsap.to(hw, {
+						opacity: 1,
 						scale: 1.2,
-						color: '#E07800',
+						backgroundImage: 'linear-gradient(90deg, #E07800, #FFB627)',
+						backgroundClip: 'text',
+						webkitBackgroundClip: 'text',
+						webkitTextFillColor: 'transparent',
 						ease: 'power2.out',
 						scrollTrigger: {
 							trigger: el,
 							containerAnimation: tween,
 							start: 'left 60%',
-							end: 'left 30%',
+							end: 'left 40%',
 							scrub: true,
 						},
 					});
+
+					// ...then transition to solid orange by removing the gradient
+					const solidTween = gsap.to(hw, {
+						backgroundImage: 'none',
+						webkitTextFillColor: '#E07800',
+						color: '#E07800',
+						ease: 'power2.out',
+						scrollTrigger: {
+							trigger: el,
+							containerAnimation: tween,
+							start: 'left 40%',
+							end: 'left 25%',
+							scrub: true,
+						},
+					});
+					tweens.push(solidTween);
 				} else if (effect === 'gradient') {
 					highlightTween = gsap.to(hw, {
+						opacity: 1,
 						backgroundImage: 'linear-gradient(90deg, #E07800, #FFB627)',
 						backgroundClip: 'text',
 						webkitBackgroundClip: 'text',
@@ -380,17 +417,20 @@
 </script>
 
 <!--
-  Outer section: height set to allow ScrollTrigger pinning.
-  scrollDistance = track.scrollWidth - window.innerWidth. We use
-  totalPanelCount * 200vh to guarantee enough vertical room for the pin,
-  ensuring the CTA button panel is fully reachable in the horizontal scroll.
+  Outer section: height set dynamically in onMount to exactly
+  window.innerHeight + scrollDistance (track.scrollWidth - window.innerWidth).
+  This formula ensures ScrollTrigger pin has exactly the right room:
+  - Too much height = empty scroll dead zone after content ends (the old bug)
+  - Too little = pin releases before the last panel is reached
+  SSR fallback: totalPanelCount * 100vh (overridden immediately on mount).
   In reduced motion mode, panels are stacked vertically so we use auto height.
   No background — transparent so the page's own gradient shows through.
 -->
 <section
+	bind:this={sectionEl}
 	data-testid="skills-journey"
 	class="relative"
-	style="height: {reducedMotion ? 'auto' : `${totalPanelCount * 200}vh`};"
+	style="height: {reducedMotion ? 'auto' : sectionHeight};"
 >
 	{#if reducedMotion}
 		<!-- Reduced motion: vertical stack, no animation -->

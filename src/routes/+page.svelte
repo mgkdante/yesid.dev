@@ -25,7 +25,6 @@
 	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
-	import TrainJourney from '$lib/motion/svg/TrainJourney.svelte';
 	import ServiceStation from '$lib/components/ServiceStation.svelte';
 	import HeroBanner from '$lib/components/HeroBanner.svelte';
 	import FeaturedWork from '$lib/components/FeaturedWork.svelte';
@@ -35,7 +34,6 @@
 	import SkillsJourney from '$lib/components/SkillsJourney.svelte';
 
 	let localProgress = $state(0);
-	let trainVelocity = $state(0);
 	let scrollWrapper: HTMLDivElement;
 	let glowOverlay: HTMLDivElement;
 
@@ -84,10 +82,8 @@
 			trigger: scrollWrapper,
 			start: 'top top',
 			end: 'bottom bottom',
-			onUpdate: (self: { progress: number; getVelocity?: () => number }) => {
+			onUpdate: (self: { progress: number }) => {
 				localProgress = self.progress;
-				const rawVelocity = Math.abs(self.getVelocity?.() ?? 0);
-				trainVelocity = Math.min(1, rawVelocity / 3000);
 			}
 		});
 
@@ -159,12 +155,6 @@
 			</div>
 		{/each}
 
-		<!-- Train: LAST child = paints on top of track + nodes -->
-		<TrainJourney
-			scrollProgress={localProgress}
-			reducedMotion={$prefersReducedMotion}
-			velocity={trainVelocity}
-		/>
 	</div>
 
 	<!-- Layer 4: Scrollable HTML Content -->
