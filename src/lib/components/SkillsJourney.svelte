@@ -16,7 +16,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, ScrollTrigger, SplitText } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap, ScrollTrigger, SplitText, MorphSVGPlugin } from '$lib/motion/utils/gsap.js';
 	import { skillsJourneyPanels, skillsJourneyCta } from '$lib/data';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import type { SkillIcon } from '$lib/data/types.js';
@@ -35,6 +35,7 @@
 
 	// Track hover event listeners for cleanup
 	let hoverCleanups: (() => void)[] = [];
+
 
 	// Resolve CTA strings once at init — they don't change
 	const ctaPromptText = resolveLocale(skillsJourneyCta.prompt, 'en');
@@ -279,27 +280,40 @@
 		// Too much height = empty scroll after content ends. Too little = pin ends early.
 		const scrollDistance = track.scrollWidth - window.innerWidth;
 
-		// Set section height precisely so ScrollTrigger pin has exactly enough room.
-		// viewport height (100vh) for the pinned frame itself, plus the scroll distance
-		// for the horizontal travel. This works at every viewport width.
-		sectionHeight = `${window.innerHeight + scrollDistance}px`;
-
-		// Main horizontal scroll tween — translates the track leftward
+		// Simple horizontal scroll tween — no artificial hold zones.
 		const tween = gsap.to(track, {
 			x: -scrollDistance,
 			ease: 'none',
 		});
 		tweens.push(tween);
 
-		// Pin the container and scrub the horizontal tween with vertical scroll.
-		// end uses scrollDistance so the pin lasts exactly as long as the track is wide.
+		// Section height multiplier slows horizontal travel.
+		// Mobile gets a bigger multiplier because touch swipes cover more
+		// scroll distance per gesture than desktop wheels/trackpads.
+		const isMobile = window.innerWidth < 768;
+		const scrollMultiplier = isMobile ? 1.8 : 1.4;
+		const paddedDistance = scrollDistance * scrollMultiplier;
+		sectionHeight = `${window.innerHeight + paddedDistance}px`;
+
+		// Build snap points: one per panel. This gives a natural "land on
+		// each panel" feel — a quick swipe on trackpad/mobile snaps to the
+		// nearest panel instead of stopping mid-transition.
+		const panelCount = totalPanelCount;
+		const snapPoints = Array.from({ length: panelCount }, (_, i) => i / (panelCount - 1));
+
 		scrollTriggerInstance = ScrollTrigger.create({
 			trigger: pinContainer,
 			animation: tween,
 			scrub: 1,
 			pin: true,
 			anticipatePin: 1,
-			end: () => '+=' + (track.scrollWidth - window.innerWidth),
+			end: () => '+=' + paddedDistance,
+			snap: {
+				snapTo: snapPoints,
+				duration: { min: 0.2, max: 0.6 },
+				delay: 0.1,
+				ease: 'power1.inOut',
+			},
 		});
 
 		// Animate each panel's text using containerAnimation — the correct GSAP
@@ -307,10 +321,15 @@
 		// containerAnimation ties each panel's ScrollTrigger to the horizontal tween's
 		// progress rather than raw vertical scroll position.
 		const panelEls = track.querySelectorAll<HTMLElement>('[data-panel-text]');
-		panelEls.forEach((el) => {
+		panelEls.forEach((el, panelTextIdx) => {
 			const panelId = el.closest('[data-testid]')?.getAttribute('data-testid') ?? '';
 			const split = new SplitText(el, { type: 'words,chars' });
 			splitInstances.push(split);
+
+			// Panel 1 is already visible when the section pins — its animations
+			// fire on VERTICAL scroll (as the user arrives at the section) rather
+			// than on horizontal scroll progress like panels 2–4.
+			const isFirstPanel = panelTextIdx === 0;
 
 			// Non-highlight words: no animation — static white text.
 			// Only keyword highlight words get scroll-linked effects.
@@ -327,6 +346,7 @@
 					// Chars start sunken, dim, disconnected below the baseline.
 					// Rise with controlled, weighted motion and lock into position
 					// like building blocks being placed. No bounce or elastic.
+					// Animated on VERTICAL scroll as the section enters the viewport.
 					const fSplit = new SplitText(hw, { type: 'chars' });
 					splitInstances.push(fSplit);
 					fSplit.chars.forEach((char, i) => {
@@ -346,10 +366,9 @@
 						stagger: { each: 0.03, from: 'start' },
 						ease: 'power2.out',
 						scrollTrigger: {
-							trigger: hw,
-							containerAnimation: tween,
-							start: 'left 55%',
-							end: 'left 15%',
+							trigger: pinContainer,
+							start: 'top 35%',
+							end: 'top -5%',
 							scrub: true,
 						},
 					});
@@ -538,13 +557,16 @@
 
 				} else if (effect === 'gradient') {
 					if (highlightText === 'motion') {
-						// Panel 4 "motion": orange color + 360deg rotation (KEPT)
+						// Panel 4 "motion": orange color + 360deg rotation.
+						// Rotate from the CENTER of the word so it spins in place
+						// rather than orbiting around its left edge.
+						gsap.set(hw, { transformOrigin: 'center center' });
 						const motionTl = gsap.timeline({
 							scrollTrigger: {
 								trigger: hw,
 								containerAnimation: tween,
-								start: 'left 55%',
-								end: 'left 8%',
+								start: 'left 75%',
+								end: 'left 10%',
 								scrub: true,
 							},
 						});
@@ -608,30 +630,87 @@
 			applyHoverEffect(container, iconType);
 		});
 
-		// Scroll-linked entrance animations for skill icons.
-		// As each panel scrolls into view, its icons scale up from 0 with a bounce.
+		// Scroll-linked icon morph + entrance.
+		// Icons scale from 0 while their internal SVG paths morph from
+		// simple circles into the final icon shapes. After the morph
+		// completes, hover effects still work because they target the
+		// container/SVG, not individual paths.
 		const panelDivs = track.querySelectorAll<HTMLElement>('[data-testid^="journey-panel-"]');
-		panelDivs.forEach((panelDiv) => {
+		panelDivs.forEach((panelDiv, panelIdx) => {
 			const icons = panelDiv.querySelectorAll<HTMLElement>('[data-skill-hover]');
 			if (icons.length === 0) return;
+
+			// Panel 1 is already on-screen when the section pins, so its trigger
+			// needs to fire at the very start of horizontal scroll (progress 0→15%).
+			// Other panels trigger normally as they enter from the right.
+			const isFirstPanel = panelIdx === 0;
 
 			// Set initial state: icons start invisible and at scale 0
 			gsap.set(Array.from(icons), { scale: 0, opacity: 0 });
 
+			// Scale + fade entrance.
+			// Panel 1: vertical scroll trigger (section entering viewport).
+			// Panels 2+: horizontal containerAnimation trigger.
 			const iconTween = gsap.to(Array.from(icons), {
 				scale: 1,
 				opacity: 1,
 				stagger: 0.1,
 				ease: 'back.out(1.7)',
-				scrollTrigger: {
-					trigger: panelDiv,
-					containerAnimation: tween,
-					start: 'left 50%',
-					end: 'left 25%',
-					scrub: true,
-				},
+				scrollTrigger: isFirstPanel
+					? { trigger: pinContainer, start: 'top 30%', end: 'top -5%', scrub: true }
+					: { trigger: panelDiv, containerAnimation: tween, start: 'left 50%', end: 'left 25%', scrub: true },
 			});
 			tweens.push(iconTween);
+
+			// Morph each icon's SVG paths: circle → final icon form.
+			// convertToPath turns rects/circles/lines into <path> elements
+			// so MorphSVGPlugin can interpolate between them.
+			const startCircle = 'M12,4 A8,8 0 1,1 12,20 A8,8 0 1,1 12,4 Z';
+
+			icons.forEach((container) => {
+				const svg = container.querySelector('svg');
+				if (!svg) return;
+
+				// Convert basic SVG shapes to <path> for morphing.
+				// <text> elements (e.g. "TS" in TypeScript) are left unchanged.
+				// Convert basic SVG shapes to <path> one-by-one.
+				// convertToPath replaces the element in the DOM with a <path>.
+				const convertible = svg.querySelectorAll('rect, circle, line, ellipse, polygon, polyline');
+				convertible.forEach((el) => {
+					MorphSVGPlugin.convertToPath(el as unknown as string);
+				});
+
+				// Morph all <path> elements from a circle to their final form
+				const paths = svg.querySelectorAll<SVGPathElement>('path');
+				paths.forEach((p) => {
+					const finalD = p.getAttribute('d') || '';
+					if (!finalD) return;
+					p.setAttribute('d', startCircle);
+
+					const morphTween = gsap.to(p, {
+						morphSVG: finalD,
+						ease: 'power2.inOut',
+						scrollTrigger: isFirstPanel
+							? { trigger: pinContainer, start: 'top 25%', end: 'top -5%', scrub: true }
+							: { trigger: panelDiv, containerAnimation: tween, start: 'left 45%', end: 'left 20%', scrub: true },
+					});
+					tweens.push(morphTween);
+				});
+
+				// Fade in <text> elements slightly later (they can't morph)
+				const textEls = svg.querySelectorAll('text');
+				textEls.forEach((t) => {
+					gsap.set(t, { opacity: 0 });
+					const textTween = gsap.to(t, {
+						opacity: 1,
+						ease: 'power2.in',
+						scrollTrigger: isFirstPanel
+							? { trigger: pinContainer, start: 'top 15%', end: 'top -5%', scrub: true }
+							: { trigger: panelDiv, containerAnimation: tween, start: 'left 35%', end: 'left 20%', scrub: true },
+					});
+					tweens.push(textTween);
+				});
+			});
 		});
 
 		// Panel 5 CTA: "Your next stop?" — separate "stop" for brake effect
@@ -770,7 +849,7 @@
 			{#each skillsJourneyPanels as panel (panel.id)}
 				<div
 					data-testid="journey-panel-{panel.id}"
-					class="mb-16 last:mb-0"
+					class="relative mb-16 last:mb-0"
 				>
 					<!-- Panel label -->
 					<p class="mb-4 font-mono text-xs tracking-[3px] text-[#E07800] uppercase">
@@ -840,7 +919,7 @@
 				{#each skillsJourneyPanels as panel (panel.id)}
 					<div
 						data-testid="journey-panel-{panel.id}"
-						class="flex h-full w-screen flex-shrink-0 flex-col justify-center px-12 md:px-20 lg:px-32"
+						class="relative flex h-full w-screen flex-shrink-0 flex-col justify-center px-12 md:px-20 lg:px-32"
 					>
 						<!-- Panel label -->
 						<p class="mb-6 font-mono text-xs tracking-[3px] text-[#E07800] uppercase">
@@ -882,7 +961,7 @@
 				<!-- Combined CTA panel: pulsing dot, prompt heading, and CTA button -->
 				<div
 					data-testid="journey-cta-prompt"
-					class="flex h-full w-screen flex-shrink-0 flex-col items-center justify-center gap-10"
+					class="relative flex h-full w-screen flex-shrink-0 flex-col items-center justify-center gap-10"
 				>
 					<div class="flex items-center gap-4">
 						<span class="h-4 w-4 rounded-full bg-[#E07800] animate-pulse"></span>

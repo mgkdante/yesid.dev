@@ -118,6 +118,15 @@ vi.mock('gsap/CustomEase', () => ({
 	}
 }));
 
+// MorphSVGPlugin morphs SVG <path> elements. convertToPath converts basic
+// SVG shapes (rect, circle, etc.) to path elements. In jsdom we stub it
+// as a no-op since there's no real SVG rendering.
+vi.mock('gsap/MorphSVGPlugin', () => ({
+	MorphSVGPlugin: {
+		convertToPath: vi.fn(() => []),
+	}
+}));
+
 // SplitText splits text nodes into chars/words/lines for GSAP animation.
 // Return a proper class stub so `new SplitText(...)` works in jsdom tests.
 // The real SplitText measures DOM nodes; in tests we only care that the

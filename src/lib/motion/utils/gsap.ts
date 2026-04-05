@@ -9,14 +9,15 @@ import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { CustomEase } from 'gsap/CustomEase';
 import { SplitText } from 'gsap/SplitText';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 
 let registered = false;
 
 export function registerGsapPlugins(): void {
 	if (registered) return;
-	gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText);
+	gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin);
 	registered = true;
 }
 
 // Re-export for convenience so motion code only needs one import source.
-export { gsap, ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText };
+export { gsap, ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin };

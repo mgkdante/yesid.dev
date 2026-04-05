@@ -25,12 +25,13 @@ describe('registerGsapPlugins', () => {
 		const { DrawSVGPlugin } = await import('gsap/DrawSVGPlugin');
 		const { CustomEase } = await import('gsap/CustomEase');
 		const { SplitText } = await import('gsap/SplitText');
+		const { MorphSVGPlugin } = await import('gsap/MorphSVGPlugin');
 		const { registerGsapPlugins } = await import('./gsap.js');
 
 		registerGsapPlugins();
 
 		expect(gsap.registerPlugin).toHaveBeenCalledWith(
-			ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText
+			ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin
 		);
 	});
 
@@ -72,5 +73,10 @@ describe('registerGsapPlugins', () => {
 	it('re-exports SplitText', async () => {
 		const { SplitText } = await import('./gsap.js');
 		expect(SplitText).toBeDefined();
+	});
+
+	it('re-exports MorphSVGPlugin', async () => {
+		const { MorphSVGPlugin } = await import('./gsap.js');
+		expect(MorphSVGPlugin).toBeDefined();
 	});
 });

@@ -49,7 +49,7 @@ src/
 │   │   ├── ProjectGrid.svelte   # responsive grid of ProjectCards
 │   │   ├── Hero.svelte          # hero block (heading, subheading, CTA buttons)
 │   │   ├── HeroBanner.svelte    # ← Slice 06d: split hero with art bg + bold type + typewriter scroll prompt
-│   │   ├── SkillsJourney.svelte # ← Slice B: horizontal scroll CTA (5 panels, per-word GSAP anims, icons)
+│   │   ├── SkillsJourney.svelte # ← Slice B/B+: horizontal scroll CTA (5 panels, per-word GSAP anims, MorphSVGPlugin icon morphs, snap)
 │   │   ├── FeaturedWork.svelte  # ← Slice 06d: featured projects grid (stop 05)
 │   │   ├── AboutBento.svelte    # ← Slice 06d: mini bento grid about teaser (stop 06)
 │   │   ├── BlogCard.svelte      # ← Slice 06d: individual blog post card
@@ -79,7 +79,7 @@ src/
 │       │   ├── StationNodes.svelte  # IcosahedronGeometry per station, glow on activeStation
 │       │   └── PostProcessing.svelte # EffectComposer + bloom post-processing
 │       ├── utils/
-│       │   ├── gsap.ts          # registerGsapPlugins(), re-exports gsap/ScrollTrigger/SplitText
+│       │   ├── gsap.ts          # registerGsapPlugins(), re-exports gsap/ScrollTrigger/SplitText/MorphSVGPlugin
 │       │   ├── stagger.ts       # stagger(index, baseDelay) timing calculator
 │       │   └── index.ts         # barrel export
 │       └── index.ts             # top-level barrel — import from '$lib/motion'

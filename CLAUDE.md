@@ -19,6 +19,8 @@ This project uses **Bun**, not Node.js.
 
 ## How You Work
 
+Always review: "C:\Users\otalo\Yesito\Projects\yesid.dev\yesid-pipeline-workflow.md"
+
 Your job: receive a slice spec, build it exactly, document what you did, hand it back.
 
 ### The Slice System
@@ -148,6 +150,13 @@ Visual, interactive, and motion-based features cannot be verified by tests alone
    - **Approve:** "looks good", "ship it", "approved", or similar. NOW write the handoff report.
    - **Report issues:** Describe what's broken, wrong, or needs adjustment. Fix each issue, run tests again, and return to step 3.
 5. Each round of test-and-fix is an **iteration**. There is no iteration limit.
+6. **After approval + handoff report:** Update all docs (devlog, handoff, PLAN.md, ARCHITECTURE.md, CLAUDE.md, tree.txt, memory). Then **commit and push to GitHub**:
+   ```bash
+   git add -A
+   git commit -m "feat: complete slice NN — [short description]"
+   git push
+   ```
+   Every completed slice must be pushed. No exceptions.
 
 **Rules:**
 
@@ -155,6 +164,7 @@ Visual, interactive, and motion-based features cannot be verified by tests alone
 - Never skip the check-in because "tests pass." Tests don't catch visual bugs.
 - Never say "I think this should work" — let Yesid confirm on his screen.
 - If Yesid's feedback is ambiguous, ask a clarifying question before changing code.
+- **Always push to GitHub after a slice is complete.** No slice is done until it's pushed.
 
 **Handoff report must include an Iterations section:**
 
@@ -220,16 +230,19 @@ static/
 └── lottie/                 # Station Lottie animations
 ```
 
-## Active Slice
+## Completed Slices
 
-**Slice B+ — Geometric Shape Morphs for SkillsJourney** (NEXT)
 - Slice A complete — handoff at `docs/handoffs/handoff-slice-a-svg-hero.md`
 - Slice B complete — handoff at `docs/handoffs/handoff-slice-b.md`
 - Slice C complete — handoff at `docs/handoffs/handoff-slice-c-zoom-transition.md`
-- **Goal:** Add SVG shapes near keywords that morph via MorphSVGPlugin on scroll
-- **Shape mapping:** See `memory/project_slice_b_shapes.md` for keyword→shape table
-- **Reference images:** `static/svg/` — Yesid-provided target shape references for logic, pixels, station, understand, motion
-- Key file: `src/lib/components/SkillsJourney.svelte`
+- Slice B+ complete — handoff at `docs/handoffs/handoff-slice-b-plus.md`
+
+## Active Slice
+
+**Slice 07 — Blog System (yesid.dev/blog)** (NEXT)
+- Build `/blog` listing page and `/blog/[slug]` detail pages
+- Blog data already reads from markdown files in `src/content/blog/`
+- Spec to be written in `docs/slices/slice-07-blog.md`
 - GSAP plugins available: SplitText, DrawSVGPlugin, CustomEase, ScrollTrigger, MotionPathPlugin, MorphSVGPlugin (all free)
 
 ## Brand Rules (Non-Negotiable)
