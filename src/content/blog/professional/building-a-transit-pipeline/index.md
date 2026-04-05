@@ -2,7 +2,10 @@
 title: Building a Transit Data Pipeline
 excerpt: How I designed an ELT pipeline to process real-time GTFS feeds for a Quebec transit operator — from ingestion to dashboard.
 date: 2026-03-15
+lang: en
+category: professional
 tags: [etl, postgresql, python, case-study]
+animation: stagger
 external: false
 ---
 

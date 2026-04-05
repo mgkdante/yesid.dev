@@ -2,7 +2,10 @@
 title: Why I Left ORM for Raw SQL
 excerpt: After years of fighting with ORMs, I switched to raw SQL and never looked back. Here is what I learned about control, performance, and knowing your database.
 date: 2026-04-01
+lang: en
+category: professional
 tags: [sql, postgresql, opinion]
+animation: draw
 external: false
 ---
 

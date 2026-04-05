@@ -194,7 +194,7 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | C   | Zoom transition between hero + journey                 | complete | A          | 1             |
 | B   | Animated wordmark + horizontal scroll CTA              | complete | A, C       | 2             |
 | B+  | Icon morphs + scroll UX for SkillsJourney              | complete | B          | 1-2           |
-| 07  | Blog system (markdown content + /blog routes)          | **next** | 06d        | 1-2           |
+| 07  | Blog system (markdown content + /blog routes)          | complete | 06d        | 1-2           |
 | 08  | Work pages (index + FLIP filter + detail)              | planned  | 02, 03, 07 | 1-2           |
 | 09  | About + Contact pages (bento grid /about)              | planned  | 02, 03, 07 | 1             |
 | 10  | SEO + metadata                                         | planned  | 07, 08, 09 | 1             |
@@ -298,8 +298,8 @@ Skill icons morph from circles to their final forms via MorphSVGPlugin on scroll
 
 ### Slice 07 — Blog System (yesid.dev/blog)
 
-**Status:** planned
-Build `/blog` listing page and `/blog/[slug]` detail pages. Blog data already reads from markdown files. This slice adds the route pages, mdsvex rendering for full content, and cross-posting to LinkedIn.
+**Status:** complete (approved 2026-04-05)
+Full blog system with two content lanes: professional (`/blog`, orange accent) and personal (`/blog/personal`, yellow accent). Per-post folders with YAML frontmatter, parsed at build time via `import.meta.glob`. Markdown rendered to HTML via `marked` (not mdsvex — mdsvex had issues with `<` chars). SVG illustrations with 4 GSAP entrance animation types + MorphSVGPlugin hover morph to geometric shapes. Client-side search, tag filtering, date range filtering, and language filtering. Template file for easy post creation. See `docs/handoffs/handoff-slice-07.md`.
 
 ### Slice 08 — Work Pages (Index + FLIP Filter + Detail)
 
@@ -510,6 +510,12 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 | 2026-04-05 | containerAnimation + scrub for all effects       | Pure scrub with containerAnimation naturally reverses on scroll back; no toggleActions/yoyo                                                 |
 | 2026-04-05 | No animation on non-keyword text                 | Static white text for uniform look + lighter performance; only keywords get effects                                                         |
 | 2026-04-05 | Shape morphs deferred to Slice B+                | MorphSVGPlugin shapes separated from text animations for cleaner delivery                                                                   |
+| 2026-04-05 | `marked` over mdsvex for blog content rendering  | mdsvex had parse errors with `<` characters in inline code/content; `marked` is simpler and more reliable                                   |
+| 2026-04-05 | Per-post folders (`category/slug/index.md`)      | Allows co-located assets (images, diagrams) per post in the future                                                                          |
+| 2026-04-05 | Deterministic SVG fallback from slug hash        | Every post gets the same illustration even without explicit SVG assignment — consistent across builds                                        |
+| 2026-04-05 | MorphSVGPlugin hover morph on blog SVGs          | Already loaded from Slice B+ — reuses plugin for delightful micro-interaction on hover/tap                                                  |
+| 2026-04-05 | Client-side blog filtering (search/tags/date/lang)| 7 posts total — no benefit to server-side filtering; keeps UX snappy                                                                       |
+| 2026-04-05 | Two blog content lanes (professional + personal) | Separates brand-facing technical content from personal interests; different accent colors (#E07800 vs #FFB627)                              |
 
 
 ## Rules

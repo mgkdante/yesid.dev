@@ -83,13 +83,29 @@ export interface SiteMeta {
 	links: SiteLinks;
 }
 
+// Blog content categories. Professional is the default brand-facing lane.
+// Personal is a warmer "off the clock" section with different accent color.
+export type BlogCategory = 'professional' | 'personal';
+
+// SVG animation types available for blog post illustrations.
+// Each maps to a different GSAP plugin/technique.
+export type BlogAnimation = 'draw' | 'morph' | 'draw-fill' | 'stagger';
+
 export interface BlogPost {
 	slug: string;
 	title: LocalizedString;
 	excerpt: LocalizedString;
 	// ISO date string (YYYY-MM-DD)
 	date: string;
+	// Language this post was written in — no translation, just native language
+	lang: Locale;
+	// Which content lane this post belongs to
+	category: BlogCategory;
 	tags: string[];
+	// Which GSAP animation plays on this post's SVG illustration
+	animation: BlogAnimation;
+	// Resolved path to the SVG illustration (custom or fallback)
+	svg: string;
 	// URL to the full post — internal (/blog/slug) or external (LinkedIn)
 	url: string;
 	// Whether the post is hosted externally (opens in new tab)

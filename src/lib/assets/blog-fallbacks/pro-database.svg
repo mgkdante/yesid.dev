@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Top ellipse -->
+  <ellipse cx="24" cy="12" rx="12" ry="5" />
+  <!-- Middle shelf ellipse -->
+  <ellipse cx="24" cy="24" rx="12" ry="5" />
+  <!-- Bottom ellipse -->
+  <ellipse cx="24" cy="36" rx="12" ry="5" />
+  <!-- Left vertical line -->
+  <line x1="12" y1="12" x2="12" y2="36" />
+  <!-- Right vertical line -->
+  <line x1="36" y1="12" x2="36" y2="36" />
+</svg>

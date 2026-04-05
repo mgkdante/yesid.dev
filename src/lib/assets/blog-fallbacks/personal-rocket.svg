@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#FFB627" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Rocket body -->
+  <path d="M24,6 C24,6 30,14 30,28 L18,28 C18,14 24,6 24,6Z" />
+  <!-- Nose cone tip (already part of body path) -->
+  <!-- Window -->
+  <circle cx="24" cy="19" r="3" />
+  <!-- Left fin -->
+  <path d="M18,28 L12,36 L18,34Z" />
+  <!-- Right fin -->
+  <path d="M30,28 L36,36 L30,34Z" />
+  <!-- Exhaust flames -->
+  <path d="M20,28 L22,34 L24,30 L26,34 L28,28" />
+</svg>

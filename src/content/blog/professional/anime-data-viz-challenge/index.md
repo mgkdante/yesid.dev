@@ -2,7 +2,10 @@
 title: The Anime Data Viz Challenge
 excerpt: I visualized 10 years of MyAnimeList data using SQL and Power BI. The results surprised me — and taught me something about storytelling with data.
 date: 2026-03-01
-tags: [data-viz, power-bi, fun]
+lang: en
+category: professional
+tags: [dataviz, power-bi, fun]
+animation: morph
 external: false
 ---
 

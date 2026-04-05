@@ -3,7 +3,7 @@
 // structure changes in a future refactor.
 
 // Types
-export type { Locale, LocalizedString, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect } from './types.js';
+export type { Locale, LocalizedString, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect } from './types.js';
 
 // Locale utilities
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
@@ -18,7 +18,7 @@ export { services } from './services.js';
 export { siteMeta } from './meta.js';
 
 // Blog data
-export { blogPosts, getLatestPosts, getPostBySlug } from './blog.js';
+export { blogPosts, getLatestPosts, getPostBySlug, getPostHtml, getPostsByCategory, getTagsForCategory, getPostsByTag, getLanguagesForCategory, getSvgContent, getSvgContentsForPosts, resolveAnimation, resolveSvgFallbackName } from './blog.js';
 
 // Metro line (data-driven stop system)
 export { metroStops, TOTAL_STOPS, formatStopLabel, formatServicesLabel, getStopByType } from './metro.js';

@@ -152,6 +152,74 @@ Two systems coexist and serve different purposes:
 | `jsdom` | ^29.0.1 | DOM environment for unit tests |
 | `@types/three` | ^0.183.1 | TypeScript types for Three.js |
 
+## Blog System (Slice 07)
+
+Two content lanes served from markdown files at build time:
+
+```
+src/content/blog/
+├── professional/                # Orange accent (#E07800) — data, SQL, infra
+│   ├── why-i-left-orm-for-raw-sql/index.md
+│   ├── building-a-transit-pipeline/index.md
+│   ├── anime-data-viz-challenge/index.md
+│   ├── lorem-data-warehousing/index.md
+│   └── lorem-etl-patterns/index.md
+├── personal/                    # Yellow accent (#FFB627) — trains, space, etc.
+│   ├── lorem-transit-future/index.md
+│   └── lorem-space-exploration/index.md
+└── _template.md                 # Copy-paste starting point for new posts
+
+src/routes/blog/
+├── +page.svelte / +page.ts      # Professional listing
+├── personal/
+│   └── +page.svelte / +page.ts  # Personal Corner listing
+└── [slug]/
+    └── +page.svelte / +page.ts  # Post detail
+```
+
+### Data flow
+
+1. `import.meta.glob('../../content/blog/**/*.md', { as: 'raw', eager: true })` loads all markdown at build time
+2. `parseFrontmatter()` extracts YAML metadata (title, date, tags, lang, category, animation, svg)
+3. `BlogPost[]` objects are created with resolved slugs, SVG paths, and fallback values
+4. Route `+page.ts` loaders filter by category and resolve SVG contents
+5. `marked` renders markdown body to HTML on the detail page
+6. `BlogListingPage` renders listings with search/filter; `BlogDetailHeader` + `BlogContent` render detail
+
+### Key types
+
+```ts
+type BlogCategory = 'professional' | 'personal';
+type BlogAnimation = 'draw' | 'morph' | 'draw-fill' | 'stagger';
+
+interface BlogPost {
+  slug: string;
+  title: LocalizedString;
+  date: string;          // YYYY-MM-DD
+  excerpt: LocalizedString;
+  lang: Locale;
+  category: BlogCategory;
+  tags: string[];
+  animation: BlogAnimation;
+  svg: string;           // resolved path to SVG illustration
+}
+```
+
+### SVG illustrations
+
+- Each post can specify `svg: name` in frontmatter for a custom illustration
+- Without one, `resolveSvgFallbackName(slug)` picks a deterministic fallback from slug hash
+- `BlogSvgIcon` component renders SVG + applies GSAP entrance animation (draw/morph/draw-fill/stagger)
+- Hover: MorphSVGPlugin morphs all paths to a random geometric shape; mouseleave morphs back
+- Mobile: tap toggles the morph effect
+
+### Filtering (client-side)
+
+- Search: matches title + excerpt (case-insensitive)
+- Tags: chip-based sidebar filter (multi-select)
+- Date range: native HTML date inputs
+- Language: dropdown filter on post `lang` field
+
 ## Static Assets
 
 ```

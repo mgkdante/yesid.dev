@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Left angle bracket < -->
+  <polyline points="16,14 6,24 16,34" />
+  <!-- Forward slash / -->
+  <line x1="21" y1="34" x2="27" y2="14" />
+  <!-- Right angle bracket > -->
+  <polyline points="32,14 42,24 32,34" />
+</svg>
