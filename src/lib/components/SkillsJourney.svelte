@@ -341,14 +341,16 @@
 				const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
 
 				if (effect === 'scale') {
-					// Panel 1 "foundation": grey→orange + scale 1→1.2x.
-					// fromTo guarantees both start AND end values, so scrub
-					// fully reverses when scrolling back.
-					const scaleTween = gsap.fromTo(hw,
-						{ scale: 1, color: '#999' },
+					// Panel 1 "foundation": grey → orange with HARD pulse glow.
+					// No scale (was getting stuck). Instead: color shift + massive text glow.
+					const glowTween = gsap.fromTo(hw,
 						{
-							scale: 1.2,
+							color: '#999',
+							textShadow: '0 0 0px rgba(224,120,0,0)',
+						},
+						{
 							color: '#E07800',
+							textShadow: '0 0 30px rgba(224,120,0,0.8), 0 0 60px rgba(224,120,0,0.4), 0 0 100px rgba(224,120,0,0.2)',
 							ease: 'power2.out',
 							scrollTrigger: {
 								trigger: el,
@@ -359,7 +361,7 @@
 							},
 						}
 					);
-					tweens.push(scaleTween);
+					tweens.push(glowTween);
 
 				} else if (effect === 'charReveal') {
 					// Panel 2 "data", "logic", "pixels": char-by-char opacity reveal
