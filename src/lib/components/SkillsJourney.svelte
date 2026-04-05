@@ -126,8 +126,28 @@
 	}
 
 	/**
+	 * Maps highlight words to their target color per the design spec.
+	 * Panel 1: "foundation" → orange
+	 * Panel 2: "data" → orange, "logic" → yellow, "pixels" → orange
+	 * Panel 3: "Stations" → yellow, "understand" → orange
+	 * Panel 4: "motion" → orange/gradient, "unforgettable" → orange
+	 */
+	const highlightColorMap: Record<string, string> = {
+		foundation: '#E07800',
+		data: '#E07800',
+		logic: '#FFB627',
+		pixels: '#E07800',
+		stations: '#FFB627',
+		understand: '#E07800',
+		motion: '#E07800',
+		unforgettable: '#E07800',
+	};
+
+	/**
 	 * Wraps highlight words in styled spans for GSAP animation.
-	 * Simplified from the old buildPanelContent — icons are no longer inline.
+	 * Each highlight span gets its target color applied directly so the
+	 * word is always visible at its scroll position (no opacity:0 bugs).
+	 * transformOrigin: 'left bottom' prevents scale-ups from overlapping text.
 	 */
 	function markHighlightWords(
 		text: string,
@@ -137,9 +157,10 @@
 		let result = text;
 		for (const word of highlights) {
 			const regex = new RegExp(`(${word})`, 'i');
+			const color = highlightColorMap[word.toLowerCase()] || '#E07800';
 			result = result.replace(
 				regex,
-				`<span class="highlight-word highlight-${effect}" data-highlight="${effect}" style="display:inline-block">$1</span>`
+				`<span class="highlight-word highlight-${effect}" data-highlight="${effect}" style="display:inline-block; color:${color}; transform-origin:left bottom">$1</span>`
 			);
 		}
 		return result;
@@ -281,35 +302,42 @@
 		// progress rather than raw vertical scroll position.
 		const panelEls = track.querySelectorAll<HTMLElement>('[data-panel-text]');
 		panelEls.forEach((el) => {
+			const panelId = el.closest('[data-testid]')?.getAttribute('data-testid') ?? '';
 			const split = new SplitText(el, { type: 'words,chars' });
 			splitInstances.push(split);
 
-			// Stagger text reveal as the panel scrolls into view
-			const wordTween = gsap.from(split.words.length > 0 ? split.words : [el], {
-				opacity: 0,
-				y: 30,
-				stagger: 0.05,
-				ease: 'power2.out',
-				scrollTrigger: {
-					trigger: el,
-					containerAnimation: tween,
-					start: 'left 80%',
-					end: 'left 30%',
-					scrub: true,
-				},
-			});
-			tweens.push(wordTween);
+			// Non-highlight words: fade in with stagger (opacity 0→1, y 20→0).
+			// Filter out words inside highlight spans so they get their own effects.
+			const nonHighlightWords = split.words.filter(
+				(w: Element) => !w.closest('.highlight-word')
+			);
+			if (nonHighlightWords.length > 0) {
+				const wordTween = gsap.from(nonHighlightWords, {
+					opacity: 0,
+					y: 20,
+					stagger: 0.05,
+					ease: 'power2.out',
+					scrollTrigger: {
+						trigger: el,
+						containerAnimation: tween,
+						start: 'left 80%',
+						end: 'left 30%',
+						scrub: true,
+					},
+				});
+				tweens.push(wordTween);
+			}
 
-			// Highlight words: apply effect-specific animations
+			// Highlight words: apply effect-specific animations per panel
 			const highlights = el.querySelectorAll<HTMLElement>('.highlight-word');
 			highlights.forEach((hw) => {
 				const effect = hw.dataset.highlight;
-				let highlightTween: { kill: () => void } | undefined;
+				const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
 
 				if (effect === 'scale') {
-					// Panel 1 "foundation": gradient-to-solid orange reveal.
-					// First apply an orange-yellow gradient on scroll...
-					highlightTween = gsap.to(hw, {
+					// Panel 1 "foundation": gradient reveal then solid orange + scale 1.2x.
+					// Phase 1: orange→yellow gradient reveal
+					const gradientTween = gsap.to(hw, {
 						opacity: 1,
 						scale: 1.2,
 						backgroundImage: 'linear-gradient(90deg, #E07800, #FFB627)',
@@ -325,8 +353,9 @@
 							scrub: true,
 						},
 					});
+					tweens.push(gradientTween);
 
-					// ...then transition to solid orange by removing the gradient
+					// Phase 2: transition to solid orange #E07800
 					const solidTween = gsap.to(hw, {
 						backgroundImage: 'none',
 						webkitTextFillColor: '#E07800',
@@ -341,115 +370,13 @@
 						},
 					});
 					tweens.push(solidTween);
-				} else if (effect === 'gradient') {
-					// Panel 4: base gradient reveal for "motion" and "unforgettable"
-					highlightTween = gsap.to(hw, {
-						opacity: 1,
-						backgroundImage: 'linear-gradient(90deg, #E07800, #FFB627)',
-						backgroundClip: 'text',
-						webkitBackgroundClip: 'text',
-						webkitTextFillColor: 'transparent',
-						ease: 'none',
-						scrollTrigger: {
-							trigger: el,
-							containerAnimation: tween,
-							start: 'left 60%',
-							end: 'left 30%',
-							scrub: true,
-						},
-					});
 
-					// Panel 4 "motion": one full 360-degree rotation tied to scroll
-					const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
-					if (highlightText === 'motion') {
-						const rotateTween = gsap.to(hw, {
-							rotation: 360,
-							ease: 'none',
-							scrollTrigger: {
-								trigger: el,
-								containerAnimation: tween,
-								start: 'left 30%',
-								end: 'left 5%',
-								scrub: true,
-							},
-						});
-						tweens.push(rotateTween);
-					}
-
-					// Panel 4 "unforgettable": scale pulse that repeats 2 times
-					if (highlightText === 'unforgettable') {
-						const pulseTween = gsap.to(hw, {
-							scale: 1.15,
-							duration: 0.4,
-							yoyo: true,
-							repeat: 3, // 2 full cycles = 4 half-cycles (up-down-up-down)
-							ease: 'power1.inOut',
-							scrollTrigger: {
-								trigger: el,
-								containerAnimation: tween,
-								start: 'left 25%',
-								end: 'left 5%',
-								scrub: true,
-							},
-						});
-						tweens.push(pulseTween);
-					}
-				} else if (effect === 'wave') {
-					const waveSplit = new SplitText(hw, { type: 'chars' });
-					splitInstances.push(waveSplit);
-					highlightTween = gsap.from(waveSplit.chars.length > 0 ? waveSplit.chars : [hw], {
-						y: -15,
-						stagger: { each: 0.03, from: 'start' },
-						ease: 'sine.inOut',
-						scrollTrigger: {
-							trigger: el,
-							containerAnimation: tween,
-							start: 'left 60%',
-							end: 'left 30%',
-							scrub: true,
-						},
-					});
-
-					// Panel 3 "understand": standout POP animation.
-					// Scales bigger (1.3x), turns orange, adds a glow shadow,
-					// then pulses once (1.3 -> 1.4 -> 1.3).
-					const waveText = hw.textContent?.toLowerCase().trim() ?? '';
-					if (waveText === 'understand') {
-						const popTween = gsap.to(hw, {
-							scale: 1.3,
-							color: '#E07800',
-							textShadow: '0 0 20px rgba(224,120,0,0.6), 0 0 40px rgba(224,120,0,0.3)',
-							ease: 'power2.out',
-							scrollTrigger: {
-								trigger: el,
-								containerAnimation: tween,
-								start: 'left 30%',
-								end: 'left 15%',
-								scrub: true,
-							},
-						});
-						tweens.push(popTween);
-
-						// Pulse after reaching full scale: 1.3 -> 1.4 -> 1.3
-						const pulsePopTween = gsap.to(hw, {
-							scale: 1.4,
-							ease: 'power1.inOut',
-							yoyo: true,
-							repeat: 1,
-							scrollTrigger: {
-								trigger: el,
-								containerAnimation: tween,
-								start: 'left 15%',
-								end: 'left 2%',
-								scrub: true,
-							},
-						});
-						tweens.push(pulsePopTween);
-					}
 				} else if (effect === 'charReveal') {
+					// Panel 2 "data", "logic", "pixels": char-by-char opacity reveal
 					const revealSplit = new SplitText(hw, { type: 'chars' });
 					splitInstances.push(revealSplit);
-					highlightTween = gsap.from(revealSplit.chars.length > 0 ? revealSplit.chars : [hw], {
+					const charTargets = revealSplit.chars.length > 0 ? revealSplit.chars : [hw];
+					const charTween = gsap.from(charTargets, {
 						opacity: 0,
 						stagger: 0.04,
 						ease: 'power1.in',
@@ -461,31 +388,151 @@
 							scrub: true,
 						},
 					});
+					tweens.push(charTween);
 
-					// Panel 2 "data, logic, pixels": bounce/jump after char reveal.
-					// Each highlight word jumps up and back down with back.out ease,
-					// staggered slightly between the three words via offset start positions.
+					// Bounce: y: 0 → -20 → 0 (timeline within scroll range, fully reversible).
+					// The target color is applied in the same tween so the word
+					// lands at its spec color after the bounce.
+					const targetColor = highlightColorMap[highlightText] || '#E07800';
 					const allCharRevealWords = el.querySelectorAll<HTMLElement>('.highlight-charReveal');
 					const wordIndex = Array.from(allCharRevealWords).indexOf(hw);
-					const jumpTween = gsap.fromTo(hw,
-						{ y: 0 },
-						{
-							y: -20,
-							ease: 'back.out(1.7)',
+					const bounceTl = gsap.timeline({
+						scrollTrigger: {
+							trigger: el,
+							containerAnimation: tween,
+							// Stagger start positions: each word bounces 3% later
+							start: `left ${28 - (wordIndex * 3)}%`,
+							end: `left ${16 - (wordIndex * 3)}%`,
+							scrub: true,
+						},
+					});
+					// Up phase: y → -20 with target color
+					bounceTl.to(hw, { y: -20, color: targetColor, ease: 'power2.out', duration: 0.5 });
+					// Down phase: y → 0 (bounce landing)
+					bounceTl.to(hw, { y: 0, ease: 'back.out(1.7)', duration: 0.5 });
+					tweens.push(bounceTl);
+
+				} else if (effect === 'wave') {
+					if (highlightText === 'stations') {
+						// Panel 3 "Stations": chars wave with sine y-offset ripple
+						const waveSplit = new SplitText(hw, { type: 'chars' });
+						splitInstances.push(waveSplit);
+						const waveTargets = waveSplit.chars.length > 0 ? waveSplit.chars : [hw];
+						// Ripple up then back to 0 within the scroll range
+						const waveTl = gsap.timeline({
 							scrollTrigger: {
 								trigger: el,
 								containerAnimation: tween,
-								// Stagger start positions: each word jumps 3% later in scroll
-								start: `left ${28 - (wordIndex * 3)}%`,
-								end: `left ${22 - (wordIndex * 3)}%`,
+								start: 'left 60%',
+								end: 'left 30%',
 								scrub: true,
 							},
-						}
-					);
-					tweens.push(jumpTween);
-				}
+						});
+						waveTl.to(waveTargets, {
+							y: -15,
+							stagger: { each: 0.03, from: 'start' },
+							ease: 'sine.inOut',
+							duration: 0.5,
+						});
+						waveTl.to(waveTargets, {
+							y: 0,
+							color: '#FFB627',
+							stagger: { each: 0.03, from: 'start' },
+							ease: 'sine.inOut',
+							duration: 0.5,
+						});
+						tweens.push(waveTl);
 
-				if (highlightTween) tweens.push(highlightTween);
+					} else if (highlightText === 'understand') {
+						// Panel 3 "understand": scale 1→1.2 + orange + glow shadow.
+						// transformOrigin: left bottom is set in the HTML markup.
+						const popTween = gsap.to(hw, {
+							scale: 1.2,
+							color: '#E07800',
+							textShadow: '0 0 20px rgba(224,120,0,0.5)',
+							ease: 'power2.out',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 30%',
+								end: 'left 10%',
+								scrub: true,
+							},
+						});
+						tweens.push(popTween);
+					}
+
+				} else if (effect === 'gradient') {
+					if (highlightText === 'motion') {
+						// Panel 4 "motion": gradient sweep + 360deg rotation tied to scroll.
+						// Gradient reveal phase
+						const motionGradient = gsap.to(hw, {
+							opacity: 1,
+							backgroundImage: 'linear-gradient(90deg, #E07800, #FFB627)',
+							backgroundClip: 'text',
+							webkitBackgroundClip: 'text',
+							webkitTextFillColor: 'transparent',
+							ease: 'none',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 60%',
+								end: 'left 40%',
+								scrub: true,
+							},
+						});
+						tweens.push(motionGradient);
+
+						// Rotation: full 360deg, tied to scroll so it reverses
+						const rotateTween = gsap.to(hw, {
+							rotation: 360,
+							ease: 'none',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 40%',
+								end: 'left 5%',
+								scrub: true,
+							},
+						});
+						tweens.push(rotateTween);
+
+					} else if (highlightText === 'unforgettable') {
+						// Panel 4 "unforgettable": scale 1→1.2 + orange + pulse oscillation.
+						// transformOrigin: left bottom is set in the HTML markup.
+						// Scale + color phase
+						const unforgettableScale = gsap.to(hw, {
+							opacity: 1,
+							scale: 1.2,
+							color: '#E07800',
+							ease: 'power2.out',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 40%',
+								end: 'left 25%',
+								scrub: true,
+							},
+						});
+						tweens.push(unforgettableScale);
+
+						// Pulse oscillation: 1.2 → 1.1 → 1.2 (yoyo within scroll)
+						const pulseTween = gsap.to(hw, {
+							scale: 1.1,
+							yoyo: true,
+							repeat: 3,
+							ease: 'power1.inOut',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 25%',
+								end: 'left 5%',
+								scrub: true,
+							},
+						});
+						tweens.push(pulseTween);
+					}
+				}
 			});
 		});
 
@@ -523,19 +570,55 @@
 			tweens.push(iconTween);
 		});
 
-		// Panel 5 CTA button: pulsing glow shadow after button scrolls into view.
-		// The glow repeats infinitely with yoyo so it breathes in and out.
+		// Panel 5 CTA: char-by-char reveal for "Your next stop?" text
+		const ctaPanel = track.querySelector<HTMLElement>('[data-testid="journey-cta-prompt"]');
+		const ctaTextEl = ctaPanel?.querySelector<HTMLElement>('[data-cta-text]');
+		if (ctaTextEl) {
+			const ctaSplit = new SplitText(ctaTextEl, { type: 'chars' });
+			splitInstances.push(ctaSplit);
+			const ctaCharTween = gsap.from(ctaSplit.chars.length > 0 ? ctaSplit.chars : [ctaTextEl], {
+				opacity: 0,
+				stagger: 0.04,
+				ease: 'power1.in',
+				scrollTrigger: {
+					trigger: ctaPanel!,
+					containerAnimation: tween,
+					start: 'left 70%',
+					end: 'left 40%',
+					scrub: true,
+				},
+			});
+			tweens.push(ctaCharTween);
+		}
+
+		// Panel 5 CTA button: scale in with elastic ease, then exaggerated pulsing glow.
 		const ctaButton = track.querySelector<HTMLElement>('[data-testid="journey-cta-button"]');
 		if (ctaButton) {
-			// Trigger the infinite glow once the CTA button panel enters the viewport
+			// Scale entrance tied to scroll
+			gsap.set(ctaButton, { scale: 0, opacity: 0 });
+			const ctaBtnEntrance = gsap.to(ctaButton, {
+				scale: 1,
+				opacity: 1,
+				ease: 'elastic.out(1, 0.4)',
+				scrollTrigger: {
+					trigger: ctaPanel!,
+					containerAnimation: tween,
+					start: 'left 50%',
+					end: 'left 25%',
+					scrub: true,
+				},
+			});
+			tweens.push(ctaBtnEntrance);
+
+			// Exaggerated pulsing glow — fires once CTA enters, loops forever
 			ScrollTrigger.create({
 				trigger: ctaButton,
 				containerAnimation: tween,
 				start: 'left 80%',
-				once: true, // Fire only once — the glow then runs forever
+				once: true,
 				onEnter: () => {
 					const glowTween = gsap.to(ctaButton, {
-						boxShadow: '0 0 40px rgba(224,120,0,0.6), 0 0 80px rgba(224,120,0,0.2)',
+						boxShadow: '0 0 60px rgba(224,120,0,0.8), 0 0 120px rgba(224,120,0,0.4), 0 0 200px rgba(224,120,0,0.2)',
 						duration: 1.5,
 						yoyo: true,
 						repeat: -1,
@@ -661,10 +744,13 @@
 							{resolveLocale(panel.label, 'en')}
 						</p>
 
-						<!-- Panel text with highlighted words (SplitText target) -->
+						<!-- Panel text with highlighted words (SplitText target).
+							 Panel 1 (foundation): muted grey #999 base for non-highlight text.
+							 Panels 2-4: white #f5f5f5 for non-highlight words. -->
 						<p
 							data-panel-text
-							class="font-heading text-4xl font-bold leading-tight text-[var(--text-primary)] md:text-5xl lg:text-6xl"
+							class="font-heading text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
+							style="color: {panel.id === 'foundation' ? '#999' : '#f5f5f5'};"
 						>
 							{@html markHighlightWords(
 								resolveLocale(panel.text, 'en'),
@@ -697,7 +783,7 @@
 				>
 					<div class="flex items-center gap-4">
 						<span class="h-4 w-4 rounded-full bg-[#E07800] animate-pulse"></span>
-						<p class="font-heading text-4xl font-bold text-[var(--text-primary)] md:text-5xl lg:text-6xl">
+						<p data-cta-text class="font-heading text-4xl font-bold text-[var(--text-primary)] md:text-5xl lg:text-6xl">
 							{ctaPromptText}
 						</p>
 					</div>
