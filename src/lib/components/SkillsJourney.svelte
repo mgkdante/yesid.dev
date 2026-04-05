@@ -152,12 +152,18 @@
 	function markHighlightWords(
 		text: string,
 		highlights: readonly string[],
-		effect: string
+		effect: string,
+		panelId?: string
 	): string {
 		let result = text;
 		for (const word of highlights) {
 			const regex = new RegExp(`(${word})`, 'i');
-			const color = highlightColorMap[word.toLowerCase()] || '#E07800';
+			// For 'scale' effect (panel 1), words START at the base text color
+			// and GSAP animates them to their target color on scroll.
+			// Other effects pre-set the color so the word is always visible.
+			const color = effect === 'scale'
+				? 'inherit'
+				: (highlightColorMap[word.toLowerCase()] || '#E07800');
 			result = result.replace(
 				regex,
 				`<span class="highlight-word highlight-${effect}" data-highlight="${effect}" style="display:inline-block; color:${color}; transform-origin:left bottom">$1</span>`
@@ -335,41 +341,21 @@
 				const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
 
 				if (effect === 'scale') {
-					// Panel 1 "foundation": gradient reveal then solid orange + scale 1.2x.
-					// Phase 1: orange→yellow gradient reveal
-					const gradientTween = gsap.to(hw, {
-						opacity: 1,
+					// Panel 1 "foundation": starts grey (inherited), animates to
+					// orange + scale 1.2x on scroll. Fully reversible with scrub.
+					const scaleTween = gsap.to(hw, {
 						scale: 1.2,
-						backgroundImage: 'linear-gradient(90deg, #E07800, #FFB627)',
-						backgroundClip: 'text',
-						webkitBackgroundClip: 'text',
-						webkitTextFillColor: 'transparent',
-						ease: 'power2.out',
-						scrollTrigger: {
-							trigger: el,
-							containerAnimation: tween,
-							start: 'left 60%',
-							end: 'left 40%',
-							scrub: true,
-						},
-					});
-					tweens.push(gradientTween);
-
-					// Phase 2: transition to solid orange #E07800
-					const solidTween = gsap.to(hw, {
-						backgroundImage: 'none',
-						webkitTextFillColor: '#E07800',
 						color: '#E07800',
 						ease: 'power2.out',
 						scrollTrigger: {
 							trigger: el,
 							containerAnimation: tween,
-							start: 'left 40%',
-							end: 'left 25%',
+							start: 'left 60%',
+							end: 'left 30%',
 							scrub: true,
 						},
 					});
-					tweens.push(solidTween);
+					tweens.push(scaleTween);
 
 				} else if (effect === 'charReveal') {
 					// Panel 2 "data", "logic", "pixels": char-by-char opacity reveal

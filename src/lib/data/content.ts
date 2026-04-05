@@ -66,7 +66,7 @@ export const skillsJourneyPanels: readonly JourneyPanel[] = [
 	{
 		id: 'foundation',
 		label: { en: '01 — FOUNDATION' },
-		text: { en: 'Every system starts at the foundation.' },
+		text: { en: 'Every system starts at the foundation' },
 		highlightWords: ['foundation'],
 		highlightEffect: 'scale',
 		skills: [
@@ -76,7 +76,7 @@ export const skillsJourneyPanels: readonly JourneyPanel[] = [
 	{
 		id: 'routes',
 		label: { en: '02 — ROUTES' },
-		text: { en: 'Routes that move data, logic, and pixels.' },
+		text: { en: 'Routes that move data, logic, and pixels' },
 		highlightWords: ['data', 'logic', 'pixels'],
 		highlightEffect: 'charReveal',
 		skills: [
@@ -87,7 +87,7 @@ export const skillsJourneyPanels: readonly JourneyPanel[] = [
 	{
 		id: 'stations',
 		label: { en: '03 — STATIONS' },
-		text: { en: 'Stations where users stop and understand.' },
+		text: { en: 'Stations where users stop and understand' },
 		highlightWords: ['Stations', 'understand'],
 		highlightEffect: 'wave',
 		skills: [
@@ -98,7 +98,7 @@ export const skillsJourneyPanels: readonly JourneyPanel[] = [
 	{
 		id: 'motion',
 		label: { en: '04 — MOTION' },
-		text: { en: 'The motion that makes the ride unforgettable.' },
+		text: { en: 'The motion that makes the ride unforgettable' },
 		highlightWords: ['motion', 'unforgettable'],
 		highlightEffect: 'gradient',
 		skills: [
