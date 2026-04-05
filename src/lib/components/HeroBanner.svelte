@@ -424,7 +424,7 @@
 			bind:this={scrollPrompt}
 			class="scroll-prompt pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-lg tracking-[4px] text-[#E07800] md:text-2xl"
 		>
-			{scrollDownLabel}
+			{scrollDownLabel}<span class="typewriter-cursor" aria-hidden="true">_</span>
 		</p>
 	</div>
 </section>
@@ -434,36 +434,27 @@
 	   overflow:hidden clips characters that haven't appeared yet.
 	   white-space:nowrap prevents line breaks mid-animation.
 	   The cursor blink is a separate animation on border-right. */
+	/* Typewriter: overflow clips untyped chars. The _ cursor is a real <span>
+	   inside the text that blinks forever. Width includes 23 chars (22 text + 1 cursor). */
 	.scroll-prompt {
 		overflow: hidden;
 		white-space: nowrap;
-		/* Underscore cursor that blinks forever */
-		border-bottom: 3px solid #e07800;
-		padding-bottom: 2px;
 		width: 0;
-		/* "NEXT STOP: SCROLL DOWN" = 22 chars. tracking-[4px] adds 4px per gap (21 gaps).
-		   calc(22ch + 84px) is the full rendered width including letter-spacing. */
-		animation:
-			typewriter 2s steps(22, end) 0.5s both,
-			cursor-blink 0.7s step-end 0.5s infinite;
+		/* 22 text chars + 1 cursor char = 23ch, plus 22 letter-spacing gaps × 4px = 88px */
+		animation: typewriter 2s steps(23, end) 0.5s both;
+	}
+
+	.typewriter-cursor {
+		animation: cursor-blink 0.6s step-end infinite;
 	}
 
 	@keyframes typewriter {
-		from {
-			width: 0;
-		}
-		to {
-			width: calc(22ch + 84px);
-		}
+		from { width: 0; }
+		to { width: calc(23ch + 88px); }
 	}
 
 	@keyframes cursor-blink {
-		from,
-		to {
-			border-bottom-color: transparent;
-		}
-		50% {
-			border-bottom-color: #e07800;
-		}
+		from, to { opacity: 1; }
+		50% { opacity: 0; }
 	}
 </style>

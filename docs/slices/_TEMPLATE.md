@@ -27,6 +27,12 @@ Claude Code reads this literally. Be precise.]
 [Concepts Yesid should understand after this slice.
 One resource link per concept.]
 
+### [Concept Name]
+**What it is:** [1-2 sentences]
+**Why it matters:** [Connect to something Yesid already knows]
+**Try this:** [Specific hands-on exercise in the code]
+**Go deeper:** [One link]
+
 ## Verify
 1. [Step to confirm it works]
 2. [Step to confirm it works]

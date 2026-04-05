@@ -7,6 +7,7 @@ import { describe, it, expect } from 'vitest';
 import { projects } from './projects.js';
 import { services } from './services.js';
 import { siteMeta } from './meta.js';
+import { blogPosts } from './blog.js';
 
 const VALID_STATUSES = ['public', 'private', 'wip'] as const;
 
@@ -65,9 +66,12 @@ describe('projects data integrity', () => {
 });
 
 describe('services data integrity', () => {
-	it('there are exactly 4 services', () => {
-		// Spec requires exactly 4 — UI layout is designed around this count
-		expect(services).toHaveLength(4);
+	// WHY no hardcoded count: the station system is data-driven. Adding a service
+	// means adding one object to services.ts — no component changes. Tests validate
+	// structural integrity (unique, sequential, valid refs), not a fixed count.
+
+	it('at least 1 service exists', () => {
+		expect(services.length).toBeGreaterThanOrEqual(1);
 	});
 
 	it('all services have a non-empty English title', () => {
@@ -79,6 +83,48 @@ describe('services data integrity', () => {
 	it('all services have a non-empty English description', () => {
 		services.forEach((s) => {
 			expect(s.description.en.trim()).not.toBe('');
+		});
+	});
+
+	it('all services have a unique id', () => {
+		const ids = services.map((s) => s.id);
+		expect(new Set(ids).size).toBe(ids.length);
+	});
+
+	it('all service ids are non-empty strings', () => {
+		services.forEach((s) => {
+			expect(s.id.trim()).not.toBe('');
+		});
+	});
+
+	it('all services have unique station numbers', () => {
+		const stations = services.map((s) => s.station);
+		expect(new Set(stations).size).toBe(stations.length);
+	});
+
+	it('station numbers are sequential starting from 1 with no gaps', () => {
+		const stations = services.map((s) => s.station).sort((a, b) => a - b);
+		const expected = Array.from({ length: services.length }, (_, i) => i + 1);
+		expect(stations).toEqual(expected);
+	});
+
+	it('station count equals services count (every service has a station)', () => {
+		const stationCount = new Set(services.map((s) => s.station)).size;
+		expect(stationCount).toBe(services.length);
+	});
+
+	it('relatedProjects is an array on every service', () => {
+		services.forEach((s) => {
+			expect(Array.isArray(s.relatedProjects)).toBe(true);
+		});
+	});
+
+	it('all relatedProjects slugs exist in the projects array', () => {
+		const validSlugs = new Set(projects.map((p) => p.slug));
+		services.forEach((s) => {
+			s.relatedProjects.forEach((slug) => {
+				expect(validSlugs.has(slug), `slug "${slug}" in service "${s.id}" not found in projects`).toBe(true);
+			});
 		});
 	});
 });
@@ -103,5 +149,50 @@ describe('siteMeta data integrity', () => {
 
 	it('github link is present', () => {
 		expect(siteMeta.links.github.trim()).not.toBe('');
+	});
+});
+
+describe('blogPosts data integrity', () => {
+	it('at least 3 blog posts exist', () => {
+		expect(blogPosts.length).toBeGreaterThanOrEqual(3);
+	});
+
+	it('all slugs are unique', () => {
+		const slugs = blogPosts.map((p) => p.slug);
+		expect(new Set(slugs).size).toBe(slugs.length);
+	});
+
+	it('all slugs are URL-safe', () => {
+		const urlSafe = /^[a-z0-9-]+$/;
+		blogPosts.forEach((p) => {
+			expect(p.slug).toMatch(urlSafe);
+		});
+	});
+
+	it('all required LocalizedString fields have non-empty English values', () => {
+		blogPosts.forEach((p) => {
+			expect(p.title.en.trim()).not.toBe('');
+			expect(p.excerpt.en.trim()).not.toBe('');
+		});
+	});
+
+	it('all dates are valid ISO date strings', () => {
+		const isoDate = /^\d{4}-\d{2}-\d{2}$/;
+		blogPosts.forEach((p) => {
+			expect(p.date).toMatch(isoDate);
+			expect(new Date(p.date).toString()).not.toBe('Invalid Date');
+		});
+	});
+
+	it('all posts have at least one tag', () => {
+		blogPosts.forEach((p) => {
+			expect(p.tags.length).toBeGreaterThan(0);
+		});
+	});
+
+	it('all posts have a non-empty url', () => {
+		blogPosts.forEach((p) => {
+			expect(p.url.trim()).not.toBe('');
+		});
 	});
 });
