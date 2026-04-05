@@ -415,12 +415,48 @@
 			</div>
 		</div>
 
-		<!-- "SCROLL DOWN" — visible at load -->
+		<!-- "SCROLL DOWN" — visible at load, typewriter reveal, raised toward center -->
 		<p
 			bind:this={scrollPrompt}
-			class="pointer-events-none absolute bottom-[10%] left-1/2 -translate-x-1/2 font-mono text-sm tracking-[4px] text-[#E07800] md:text-base"
+			class="scroll-prompt pointer-events-none absolute bottom-[35%] left-1/2 -translate-x-1/2 font-mono text-base tracking-[4px] text-[#E07800] md:text-lg"
 		>
 			{scrollDownLabel}
 		</p>
 	</div>
 </section>
+
+<style>
+	/* Typewriter reveal for the scroll prompt.
+	   overflow:hidden clips characters that haven't appeared yet.
+	   white-space:nowrap prevents line breaks mid-animation.
+	   The cursor blink is a separate animation on border-right. */
+	.scroll-prompt {
+		overflow: hidden;
+		white-space: nowrap;
+		border-right: 2px solid #e07800;
+		/* "NEXT STOP: SCROLL DOWN" is ~22 chars — steps(22) reveals one char per step */
+		animation:
+			typewriter 1.8s steps(22, end) 0.3s both,
+			cursor-blink 0.7s step-end 0.3s 4;
+	}
+
+	@keyframes typewriter {
+		from {
+			width: 0;
+		}
+		to {
+			/* ch unit: 1ch = width of "0" in the current font — a reliable proxy for monospace char width */
+			width: 22ch;
+		}
+	}
+
+	@keyframes cursor-blink {
+		from,
+		to {
+			border-color: transparent;
+		}
+		50% {
+			border-color: #e07800;
+		}
+	}
+</style>

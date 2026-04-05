@@ -75,7 +75,11 @@ vi.mock('gsap', () => {
 		set: vi.fn().mockReturnThis(),
 		progress: vi.fn().mockReturnThis(),
 		kill: vi.fn(),
-		pause: vi.fn().mockReturnThis()
+		pause: vi.fn().mockReturnThis(),
+		// GSAP timelines expose a .then() Promise-like API. Stub it so any code
+		// that calls tl.then(...) in tests (e.g. the page-load wordmark animation)
+		// doesn't throw "tl.then is not a function".
+		then: vi.fn((cb: () => void) => { cb(); return mockTimeline; })
 	};
 	return {
 		gsap: {

@@ -113,6 +113,12 @@
 		if (isPrefersReducedMotion() || typeof window === 'undefined') return;
 		registerGsapPlugins();
 		splitInstance = new SplitText(wordmarkEl, { type: 'chars' });
+
+		// Play the first effect on page load so the site feels alive immediately.
+		// Short delay lets the page paint first so the animation isn't clipped.
+		setTimeout(() => {
+			handleWordmarkHover();
+		}, 500);
 	});
 
 	onDestroy(() => {
@@ -136,6 +142,7 @@
 			data-testid="nav-wordmark"
 			class="font-heading text-xl font-bold text-[var(--text-primary)] inline-flex items-baseline"
 			onmouseenter={handleWordmarkHover}
+			onclick={handleWordmarkHover}
 		>
 			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
 				data-testid="nav-period"
