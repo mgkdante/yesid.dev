@@ -19,7 +19,7 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { services, siteMeta, metroStops, TOTAL_STOPS, formatStopLabel, formatServicesLabel, getStopByType, ctaContent } from '$lib/data';
+	import { services, siteMeta, TOTAL_STOPS, formatStopLabel, formatServicesLabel, getStopByType, ctaContent } from '$lib/data';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
@@ -54,27 +54,6 @@
 		)
 	);
 
-	// Rail-level active index across all stops
-	let activeIndex = $derived(
-		localProgress <= 0.02 ? -1 : Math.min(
-			TOTAL_STOPS - 1,
-			Math.floor(localProgress * TOTAL_STOPS)
-		)
-	);
-
-	// Progressive fill: station nodes that have been passed stay lit.
-	function isStationReached(index: number): boolean {
-		if (TOTAL_STOPS <= 1) return localProgress > 0;
-		return localProgress >= index / (TOTAL_STOPS - 1);
-	}
-
-	// Station positions on the rail (evenly distributed, ending before container bottom)
-	function stationTop(index: number): number {
-		return TOTAL_STOPS <= 1 ? 50 : 5 + (index / (TOTAL_STOPS - 1)) * 77;
-	}
-
-	// Station labels derived from metro.ts — auto-updates when services change
-	const stationLabels = metroStops.map((s) => resolveLocale(s.label, 'en'));
 
 	onMount(() => {
 		registerGsapPlugins();
@@ -118,46 +97,7 @@
 		aria-hidden="true"
 	></div>
 
-	<!-- Layer 2: Fixed right-rail + train — single container so DOM order
-	     guarantees the train paints ON TOP of the track line and station nodes -->
-	<!-- Rail: below nav (top-16), above footer zone (bottom-20), clipped -->
-	<div class="fixed right-3 top-16 bottom-20 z-40 w-8 overflow-hidden md:right-6" aria-hidden="true">
-		<!-- Rail background track -->
-		<div class="pointer-events-none absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 bg-[#2a2a2a]"></div>
-
-		<!-- Rail progress fill -->
-		<div
-			class="pointer-events-none absolute left-1/2 top-0 w-[3px] -translate-x-1/2 bg-[#E07800]"
-			style="height: {localProgress * 100}%"
-		></div>
-
-		<!-- Station nodes for all stops -->
-		{#each stationLabels as label, i}
-			{@const isTerminal = i === stationLabels.length - 1}
-			{@const isActive = i === activeIndex}
-			{@const isReached = isStationReached(i)}
-			<div
-				class="pointer-events-none absolute left-1/2 -translate-x-1/2 transition-all duration-300"
-				style="top: {stationTop(i)}%;"
-			>
-				<div
-					class="rounded-full transition-all duration-300
-						{isTerminal
-							? 'h-4 w-4'
-							: 'h-3 w-3'}
-						{isActive
-							? 'bg-[#E07800] shadow-[0_0_12px_#E07800,0_0_24px_rgba(224,120,0,0.3)]'
-							: isReached
-								? 'bg-[#E07800] opacity-60'
-								: 'bg-[#333]'}
-						border border-[#E07800]/30"
-				></div>
-			</div>
-		{/each}
-
-	</div>
-
-	<!-- Layer 4: Scrollable HTML Content -->
+	<!-- Scrollable HTML Content -->
 	<div bind:this={scrollWrapper} class="relative z-30">
 		<!-- STOP 00: Hero / Departure (self-managed ScrollTrigger) -->
 		<HeroBanner />

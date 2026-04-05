@@ -74,6 +74,10 @@
 
 		if (!berri) return;
 
+		// Show Berri-UQAM dot immediately on load (before scroll starts)
+		// so the intro screen isn't just black — the dot anchors the scene.
+		(berri as HTMLElement).style.opacity = '1';
+
 		// Calculate the exact pixel position of Berri-UQAM relative to svgWrapper.
 		// This accounts for preserveAspectRatio letterboxing on any screen size.
 		function updateZoomOrigin() {
@@ -418,7 +422,7 @@
 		<!-- "SCROLL DOWN" — visible at load, typewriter reveal, raised toward center -->
 		<p
 			bind:this={scrollPrompt}
-			class="scroll-prompt pointer-events-none absolute bottom-[35%] left-1/2 -translate-x-1/2 font-mono text-base tracking-[4px] text-[#E07800] md:text-lg"
+			class="scroll-prompt pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-lg tracking-[4px] text-[#E07800] md:text-2xl"
 		>
 			{scrollDownLabel}
 		</p>
@@ -433,11 +437,15 @@
 	.scroll-prompt {
 		overflow: hidden;
 		white-space: nowrap;
-		border-right: 2px solid #e07800;
-		/* "NEXT STOP: SCROLL DOWN" is ~22 chars — steps(22) reveals one char per step */
+		/* Underscore cursor that blinks forever */
+		border-bottom: 3px solid #e07800;
+		padding-bottom: 2px;
+		width: 0;
+		/* "NEXT STOP: SCROLL DOWN" = 22 chars. tracking-[4px] adds 4px per gap (21 gaps).
+		   calc(22ch + 84px) is the full rendered width including letter-spacing. */
 		animation:
-			typewriter 1.8s steps(22, end) 0.3s both,
-			cursor-blink 0.7s step-end 0.3s 4;
+			typewriter 2s steps(22, end) 0.5s both,
+			cursor-blink 0.7s step-end 0.5s infinite;
 	}
 
 	@keyframes typewriter {
@@ -445,18 +453,17 @@
 			width: 0;
 		}
 		to {
-			/* ch unit: 1ch = width of "0" in the current font — a reliable proxy for monospace char width */
-			width: 22ch;
+			width: calc(22ch + 84px);
 		}
 	}
 
 	@keyframes cursor-blink {
 		from,
 		to {
-			border-color: transparent;
+			border-bottom-color: transparent;
 		}
 		50% {
-			border-color: #e07800;
+			border-bottom-color: #e07800;
 		}
 	}
 </style>
