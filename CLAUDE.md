@@ -50,8 +50,15 @@ Every time you create or modify a file, you MUST:
    - The slice's handoff report at `docs/handoffs/handoff-slice-NN.md`
 
 3. **Update the file tree** at `tree.txt` (project root). Run:
+
    ```bash
-   tree -I "node_modules|.git|.remember|bun.lockb|.svelte-kit|.vercel|dist|build|*.log|.DS_Store" --charset ascii > tree.txt
+   ##On Windows, use this command to generate tree.txt instead of `tree -I`:
+   
+   cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"
+   
+   ##Or use PowerShell:
+   
+   Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\.remember|bun\.lockb|\.svelte-kit|\.vercel|\.DS_Store' } | Out-File tree.txt -Encoding utf8
    ```
    On Windows (if tree doesn't support -I), generate it manually.
    This file is the project's self-portrait. Keep it current.
@@ -124,6 +131,53 @@ Link to docs/tutorials for deeper reading.]
 [Steps to confirm this slice works correctly]
 ```
 
+------
+
+### Iteration Protocol (Mandatory for All Slices)
+
+**You are NOT done when the code works. You are done when Yesid says you are done.**
+
+Visual, interactive, and motion-based features cannot be verified by tests alone. After you complete a slice, Yesid must test it on localhost before the handoff report is written.
+
+**Steps:**
+
+1. Finish all acceptance criteria. Run `bun run test` and `bun run check`. Both must pass.
+2. Make sure `bun run dev` is running.
+3. **STOP coding.** Ask Yesid to test on `http://localhost:5173/`. Tell him specifically what to check (list the key behaviors from the slice spec's Verify section).
+4. Wait for Yesid's response. He will either:
+   - **Approve:** "looks good", "ship it", "approved", or similar. NOW write the handoff report.
+   - **Report issues:** Describe what's broken, wrong, or needs adjustment. Fix each issue, run tests again, and return to step 3.
+5. Each round of test-and-fix is an **iteration**. There is no iteration limit.
+
+**Rules:**
+
+- Never write the handoff report before Yesid approves.
+- Never skip the check-in because "tests pass." Tests don't catch visual bugs.
+- Never say "I think this should work" — let Yesid confirm on his screen.
+- If Yesid's feedback is ambiguous, ask a clarifying question before changing code.
+
+**Handoff report must include an Iterations section:**
+
+```markdown
+## Iterations
+
+| # | What Yesid Reported | What Was Fixed | Files Changed |
+|---|---------------------|----------------|---------------|
+| 1 | [feedback] | [fix] | [files] |
+| 2 | [feedback] | [fix] | [files] |
+| Final | Approved | — | — |
+```
+
+If Yesid approved on the first try (no iterations needed), write:
+
+```markdown
+## Iterations
+
+Approved on first test. No iterations needed.
+```
+
+------
+
 ## Code Standards
 
 - **Language:** Use clear, readable code over clever code.
@@ -135,48 +189,47 @@ Link to docs/tutorials for deeper reading.]
 
 ## Current Repo Structure
 
+See `tree.txt` for the full file tree (updated every slice). Key directories:
+
 ```
-yesid-pipeline/
-|   .gitignore
-|   CLAUDE.md
-|   favicon.svg
-|   README.md
-|   tree.txt
-|
-+---.remember/          (gitignored, local only)
-+---brand/
-|       colors.json
-|       favicon.svg
-|       logo-monogram-dark.svg
-|       logo-monogram-light.svg
-|       logo-monogram-orange.svg
-|       logo-wordmark-dark.svg
-|       logo-wordmark-light.svg
-|       README.md
-|       tailwind.brand.js
-|       tailwind_brand.js
-|       tokens.css
-|       tokens.json
-|       yesid_brand_guide.pdf
-|
-+---docs/
-|   |   ARCHITECTURE.md
-|   |   FUTURE_PHASES.md
-|   |   PLAN.md
-|   |   reference-upwork-lane-analysis.md
-|   |   WORKFLOW.md
-|   |
-|   +---devlog/
-|   +---handoffs/
-|   \---slices/
-|           _TEMPLATE.md
-|
-+---scripts/
-+---src/
-\---tests/
+src/
+├── content/blog/           # Markdown blog posts with YAML frontmatter
+├── lib/
+│   ├── data/               # Typed data layer: types, services, projects, blog, meta
+│   ├── components/         # UI components: HeroBanner, ServiceStation, FeaturedWork,
+│   │                       #   AboutBento, BlogCard, BlogFeed, StationDivider, etc.
+│   └── motion/
+│       ├── actions/        # Svelte actions: boop, reveal, magnetic, ripple, tilt
+│       ├── stores/         # Scroll position, reduced-motion preference
+│       ├── components/     # ScrollRail, LottiePlayer
+│       ├── three/          # Threlte scenes: WagonScene (hero), HeroScene (data-flow)
+│       ├── svg/            # SVG train + journey animation
+│       └── utils/          # GSAP helpers, stagger calculator
+├── routes/
+│   ├── +page.svelte        # Home: 8-stop metro journey
+│   └── preview/            # Dev-only 3D preview
+├── tests/                  # Test setup
+docs/
+├── slices/                 # Slice specs
+├── handoffs/               # Handoff reports + iteration feedback
+├── devlog/                 # Daily dev logs
+├── superpowers/specs/      # Design specs from brainstorming
+static/
+├── models/                 # 3D assets (metro-wagon.glb)
+├── images/                 # Hero background art, montreal-metro.svg
+└── lottie/                 # Station Lottie animations
 ```
 
-**Note:** `brand/` contains two tailwind files: `tailwind.brand.js` and `tailwind_brand.js`. Resolve which one is canonical in slice 01 and delete the duplicate.
+## Active Slice
+
+**Slice B — Animated Wordmark + Text Effects** (next up)
+- Slice A complete — handoff at `docs/handoffs/handoff-slice-a-svg-hero.md`
+- Slice C complete — handoff at `docs/handoffs/handoff-slice-c-zoom-transition.md`
+- **Slice B:** Animate the "yesid." navbar wordmark (GSAP-style, like gsap.com logo) + hero text effects
+- Reference: https://gsap.com/ — each letter in "GSAP" is an SVG with individual animation
+- Current wordmark: plain text in `Nav.svelte` (`<a>yesid<span class="text-brand-primary">.</span></a>`)
+- Key files: `Nav.svelte`, `HeroBanner.svelte`
+- GSAP plugins available: SplitText, DrawSVGPlugin, CustomEase, ScrollTrigger, MotionPathPlugin, MorphSVGPlugin (all free)
 
 ## Brand Rules (Non-Negotiable)
 
