@@ -3,7 +3,7 @@
 // structure changes in a future refactor.
 
 // Types
-export type { Locale, LocalizedString, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta } from './types.js';
+export type { Locale, LocalizedString, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect } from './types.js';
 
 // Locale utilities
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
@@ -16,3 +16,13 @@ export { services } from './services.js';
 
 // Site metadata
 export { siteMeta } from './meta.js';
+
+// Blog data
+export { blogPosts, getLatestPosts, getPostBySlug } from './blog.js';
+
+// Metro line (data-driven stop system)
+export { metroStops, TOTAL_STOPS, formatStopLabel, formatServicesLabel, getStopByType } from './metro.js';
+export type { MetroStop } from './metro.js';
+
+// Centralized UI content (i18n)
+export { heroAnimContent, heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
