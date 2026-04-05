@@ -330,39 +330,46 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 **You'll learn:** E2E testing, performance profiling, responsive QA, accessibility verification.
 
 ### Slice 12 — Standardization (Scalable, Componentized, Data-Driven)
+
 **Status:** planned
 Audit the entire codebase for consistency and scalability. Ensure all repeating patterns are extracted into reusable components. Verify all content is data-driven (no hardcoded text in templates). Standardize component APIs (props, slots, events). Extract shared animation patterns into reusable utilities. Ensure adding a new service/project/blog post is a single data-file edit.
 
 **Scope:** Component API consistency, data-driven content audit, shared animation utilities, prop interface standardization, documentation of component patterns.
 
 ### Slice 13 — Cloud Content Layer (Edit + Publish Without Code)
+
 **Status:** planned
 Connect the data-driven content (projects, services, blog posts, site meta) to a cloud-editable source so Yesid can add/edit content without opening the codebase. When content is published or updated in the cloud, the site rebuilds and deploys automatically.
 
 **Options to evaluate:**
+
 - **Headless CMS** (Sanity, Contentful, Storyblok) — structured content, visual editor, webhooks to trigger Vercel rebuild
 - **Notion as CMS** — Yesid already uses Notion; API pulls content at build time; familiar editing UX
 - **Markdown in cloud storage** (Google Drive, Dropbox, GitHub content repo) — keep markdown workflow, sync to repo via webhook/action
 - **Keystatic** — git-based CMS with visual editor, content stays in repo as markdown/JSON
 
 **Key requirements:**
-- Content types: projects, services, blog posts, site metadata
+
+- Content types: projects, services, blog posts, site metadata, skill journey, about info, anything and everything that can make the site be changed on the go. Front-end, back-end and data layer are separate but recomposes on any one's change.
 - Editing: visual/familiar interface (not code editors)
 - Publishing: edit → save → site auto-rebuilds on Vercel
 - Schema: matches existing TypeScript interfaces (Project, Service, BlogPost, SiteMeta)
 - Fallback: if CMS is down, site still builds from last-known content
+- Locale language built in strucuture
 
 **Scope:** CMS selection, content schema migration, build-time data fetching, webhook-triggered rebuilds, editorial workflow documentation for Yesid.
 
 **Why after Slice 12:** Standardization ensures all content is already cleanly data-driven and every content type has a consistent interface. The cloud layer plugs into those interfaces — it doesn't create them.
 
 ### Slice 14 — Mobile UI/UX Optimization
+
 **Status:** planned
 Full mobile audit: touch targets, scroll behavior, animation performance on low-end devices, viewport issues, text readability, tap feedback. SkillsJourney scroll tuning (velocity detection, adaptive multipliers). Responsive breakpoint audit for all components. Test at 375px, 390px, 414px, 768px.
 
 **Scope:** Touch interaction polish, scroll performance, responsive fixes, mobile-specific animation tuning, viewport debugging.
 
 ### Slice 15 — Scroll Smoothness + Animation Polish
+
 **Status:** planned
 Fine-tune all scroll-linked animations across the site. Consider ScrollSmoother plugin. Optimize GSAP tween count. Fix any jank on 60fps targets. Polish snap behavior, scrub timing, and transition curves. Performance profiling with Chrome DevTools.
 

@@ -13,9 +13,6 @@
 			&copy; {year} <span class="font-heading font-semibold text-[var(--text-primary)]">yesid<span class="text-brand-primary">.</span></span>
 		</p>
 
-		<p class="text-[10px] text-[var(--text-muted)]">
-			3D model "Montreal Metro" by <a href="https://sketchfab.com/mamontnikita62" target="_blank" rel="noopener noreferrer" class="hover:text-brand-primary">mamont nikita</a>, CC BY 4.0
-		</p>
 
 		<div class="flex items-center gap-4">
 			{#if siteMeta.links.github}
