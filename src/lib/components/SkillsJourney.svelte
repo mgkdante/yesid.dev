@@ -341,9 +341,9 @@
 				const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
 
 				if (effect === 'scale') {
-					// Panel 1 "foundation": grey → orange with pulsing glow.
-					// Uses toggleActions (not scrub) so it properly reverses
-					// when the panel leaves view. Pulse via yoyo repeat.
+					// Panel 1 "foundation": grey → orange + glow, scrubbed to scroll.
+					// Pure scrub with containerAnimation naturally reverses on scroll back.
+					// No toggleActions/yoyo/repeat — those desync from scroll position.
 					const glowTween = gsap.fromTo(hw,
 						{
 							color: '#999',
@@ -351,16 +351,13 @@
 						},
 						{
 							color: '#E07800',
-							textShadow: '0 0 40px rgba(224,120,0,0.9), 0 0 80px rgba(224,120,0,0.5), 0 0 120px rgba(224,120,0,0.25)',
-							duration: 0.6,
-							ease: 'power2.out',
-							yoyo: true,
-							repeat: 3,
+							textShadow: '0 0 30px rgba(224,120,0,0.8), 0 0 60px rgba(224,120,0,0.4)',
 							scrollTrigger: {
 								trigger: el,
 								containerAnimation: tween,
 								start: 'left 70%',
-								toggleActions: 'play reverse play reverse',
+								end: 'left 30%',
+								scrub: true,
 							},
 						}
 					);
@@ -391,20 +388,19 @@
 					const targetColor = highlightColorMap[highlightText] || '#E07800';
 					const allCharRevealWords = el.querySelectorAll<HTMLElement>('.highlight-charReveal');
 					const wordIndex = Array.from(allCharRevealWords).indexOf(hw);
+					// Wider scroll range so the full up-and-down completes.
+					// Simpler eases (no back.out) for reliable scrub behavior.
 					const bounceTl = gsap.timeline({
 						scrollTrigger: {
 							trigger: el,
 							containerAnimation: tween,
-							// Stagger start positions: each word bounces 3% later
-							start: `left ${28 - (wordIndex * 3)}%`,
-							end: `left ${16 - (wordIndex * 3)}%`,
+							start: `left ${40 - (wordIndex * 5)}%`,
+							end: `left ${10 - (wordIndex * 5)}%`,
 							scrub: true,
 						},
 					});
-					// Up phase: y → -20 with target color
 					bounceTl.to(hw, { y: -20, color: targetColor, ease: 'power2.out', duration: 0.5 });
-					// Down phase: y → 0 (bounce landing)
-					bounceTl.to(hw, { y: 0, ease: 'back.out(1.7)', duration: 0.5 });
+					bounceTl.to(hw, { y: 0, ease: 'power2.in', duration: 0.5 });
 					tweens.push(bounceTl);
 
 				} else if (effect === 'wave') {
@@ -439,18 +435,18 @@
 						tweens.push(waveTl);
 
 					} else if (highlightText === 'understand') {
-						// Panel 3 "understand": scale 1→1.2 + orange + glow shadow.
-						// transformOrigin: left bottom is set in the HTML markup.
+						// Panel 3 "understand": scale 1→1.1 + orange + glow shadow.
+						// Reduced from 1.2 to 1.1 to prevent overlapping adjacent text.
 						const popTween = gsap.to(hw, {
-							scale: 1.2,
+							scale: 1.1,
 							color: '#E07800',
 							textShadow: '0 0 20px rgba(224,120,0,0.5)',
 							ease: 'power2.out',
 							scrollTrigger: {
 								trigger: el,
 								containerAnimation: tween,
-								start: 'left 30%',
-								end: 'left 10%',
+								start: 'left 40%',
+								end: 'left 15%',
 								scrub: true,
 							},
 						});
@@ -459,73 +455,38 @@
 
 				} else if (effect === 'gradient') {
 					if (highlightText === 'motion') {
-						// Panel 4 "motion": gradient sweep + 360deg rotation tied to scroll.
-						// Gradient reveal phase
-						const motionGradient = gsap.to(hw, {
-							opacity: 1,
-							backgroundImage: 'linear-gradient(90deg, #E07800, #FFB627)',
-							backgroundClip: 'text',
-							webkitBackgroundClip: 'text',
-							webkitTextFillColor: 'transparent',
-							ease: 'none',
+						// Panel 4 "motion": orange color + 360deg rotation on scrub.
+						// Gradient via CSS backgroundImage is not animatable by GSAP
+						// (causes text to disappear). Use plain color instead.
+						const motionTl = gsap.timeline({
 							scrollTrigger: {
 								trigger: el,
 								containerAnimation: tween,
 								start: 'left 60%',
-								end: 'left 40%',
+								end: 'left 10%',
 								scrub: true,
 							},
 						});
-						tweens.push(motionGradient);
-
-						// Rotation: full 360deg, tied to scroll so it reverses
-						const rotateTween = gsap.to(hw, {
-							rotation: 360,
-							ease: 'none',
-							scrollTrigger: {
-								trigger: el,
-								containerAnimation: tween,
-								start: 'left 40%',
-								end: 'left 5%',
-								scrub: true,
-							},
-						});
-						tweens.push(rotateTween);
+						motionTl.to(hw, { color: '#E07800', duration: 0.3 });
+						motionTl.to(hw, { rotation: 360, ease: 'none', duration: 0.7 }, 0);
+						tweens.push(motionTl);
 
 					} else if (highlightText === 'unforgettable') {
-						// Panel 4 "unforgettable": scale 1→1.2 + orange + pulse oscillation.
-						// transformOrigin: left bottom is set in the HTML markup.
-						// Scale + color phase
-						const unforgettableScale = gsap.to(hw, {
-							opacity: 1,
-							scale: 1.2,
+						// Panel 4 "unforgettable": scale + orange + glow, pure scrub.
+						// No yoyo/repeat — single smooth transition that reverses on scroll back.
+						const unforgettableTween = gsap.to(hw, {
+							scale: 1.15,
 							color: '#E07800',
-							ease: 'power2.out',
+							textShadow: '0 0 20px rgba(224,120,0,0.5)',
 							scrollTrigger: {
 								trigger: el,
 								containerAnimation: tween,
 								start: 'left 40%',
-								end: 'left 25%',
+								end: 'left 15%',
 								scrub: true,
 							},
 						});
-						tweens.push(unforgettableScale);
-
-						// Pulse oscillation: 1.2 → 1.1 → 1.2 (yoyo within scroll)
-						const pulseTween = gsap.to(hw, {
-							scale: 1.1,
-							yoyo: true,
-							repeat: 3,
-							ease: 'power1.inOut',
-							scrollTrigger: {
-								trigger: el,
-								containerAnimation: tween,
-								start: 'left 25%',
-								end: 'left 5%',
-								scrub: true,
-							},
-						});
-						tweens.push(pulseTween);
+						tweens.push(unforgettableTween);
 					}
 				}
 			});
