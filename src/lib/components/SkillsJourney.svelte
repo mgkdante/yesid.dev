@@ -7,6 +7,10 @@
   Data-driven — panels come from skillsJourneyPanels in the data layer.
   Adding/removing a panel means editing the data array only.
 
+  Icons are embedded inline with the text near their associated highlight
+  words — gsap.com "Animate Anything" style. Some icons have a subtle
+  parallax counter-scroll effect for depth.
+
   Reduced motion: panels stack vertically, no horizontal scroll or SplitText.
 -->
 <script lang="ts">
@@ -15,7 +19,7 @@
 	import { registerGsapPlugins, gsap, ScrollTrigger, SplitText } from '$lib/motion/utils/gsap.js';
 	import { skillsJourneyPanels, skillsJourneyCta } from '$lib/data';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import type { SkillIcon } from '$lib/data/types.js';
+	import type { SkillIcon, JourneySkill } from '$lib/data/types.js';
 
 	let reducedMotion = $state(false);
 
@@ -36,30 +40,12 @@
 	const totalPanelCount = skillsJourneyPanels.length + 2;
 
 	/**
-	 * Wraps highlight words in the panel text with <span> elements.
-	 * The component uses {@html} to render so SplitText can target them.
-	 * Matched words get a data attribute for GSAP targeting and the
-	 * appropriate highlight effect class.
-	 */
-	function markHighlightWords(text: string, highlights: readonly string[], effect: string): string {
-		let result = text;
-		for (const word of highlights) {
-			// Case-insensitive match for the first occurrence of each highlight word
-			const regex = new RegExp(`(${word})`, 'i');
-			result = result.replace(
-				regex,
-				`<span class="highlight-word highlight-${effect}" data-highlight="${effect}">$1</span>`
-			);
-		}
-		return result;
-	}
-
-	/**
 	 * Renders an inline SVG icon for a given SkillIcon type.
-	 * Simple line-art style: white strokes with orange accents, 24x24 viewBox, 1.5px stroke.
+	 * Sized at 48x48 for inline text visibility. Simple line-art style:
+	 * white strokes with orange accents.
 	 */
-	function renderSkillIcon(icon: SkillIcon): string {
-		const base = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"';
+	function renderSkillIcon(icon: SkillIcon, size = 48): string {
+		const base = `xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"`;
 
 		switch (icon) {
 			case 'sql':
@@ -130,6 +116,83 @@
 		}
 	}
 
+	/**
+	 * Builds panel HTML with icons embedded inline near highlight words.
+	 * Icons appear right before their associated highlight word, floating
+	 * between words at roughly the same visual size as the heading text.
+	 *
+	 * Strategy: pair each skill with a highlight word (round-robin if
+	 * counts differ). Insert the icon span just before the matched word.
+	 */
+	function buildPanelContent(
+		text: string,
+		highlights: readonly string[],
+		effect: string,
+		skills: readonly JourneySkill[]
+	): string {
+		// Map each highlight word to the skills that should appear before it.
+		// Distribute skills across highlights round-robin style.
+		const highlightSkillMap = new Map<string, JourneySkill[]>();
+		for (const h of highlights) {
+			highlightSkillMap.set(h.toLowerCase(), []);
+		}
+
+		skills.forEach((skill, idx) => {
+			if (highlights.length > 0) {
+				const targetHighlight = highlights[idx % highlights.length];
+				const bucket = highlightSkillMap.get(targetHighlight.toLowerCase());
+				if (bucket) bucket.push(skill);
+			}
+		});
+
+		let result = text;
+
+		// Process each highlight word: inject icons before it and wrap in highlight span
+		for (const word of highlights) {
+			const regex = new RegExp(`(${word})`, 'i');
+			const associatedSkills = highlightSkillMap.get(word.toLowerCase()) || [];
+
+			// Build inline icon HTML for skills associated with this word
+			const iconHtml = associatedSkills
+				.map(
+					(skill) =>
+						`<span class="journey-inline-icon inline-flex items-baseline align-baseline mx-1" data-testid="journey-skill-${skill.id}" data-parallax-icon aria-label="${skill.name}">` +
+						renderSkillIcon(skill.icon, 48) +
+						`</span>`
+				)
+				.join('');
+
+			// Place icons just before the highlight word
+			result = result.replace(
+				regex,
+				`${iconHtml}<span class="highlight-word highlight-${effect}" data-highlight="${effect}">$1</span>`
+			);
+		}
+
+		// Any remaining skills that did not get attached to a highlight word
+		// (happens when there are more skills than highlights and skills overflow).
+		// Append them at the end.
+		const placedSkillIds = new Set(
+			Array.from(highlightSkillMap.values())
+				.flat()
+				.map((s) => s.id)
+		);
+		const unplacedSkills = skills.filter((s) => !placedSkillIds.has(s.id));
+		if (unplacedSkills.length > 0) {
+			const trailingIcons = unplacedSkills
+				.map(
+					(skill) =>
+						` <span class="journey-inline-icon inline-flex items-baseline align-baseline mx-1" data-testid="journey-skill-${skill.id}" data-parallax-icon aria-label="${skill.name}">` +
+						renderSkillIcon(skill.icon, 48) +
+						`</span>`
+				)
+				.join('');
+			result += trailingIcons;
+		}
+
+		return result;
+	}
+
 	onMount(() => {
 		reducedMotion = isPrefersReducedMotion();
 		if (reducedMotion) return;
@@ -138,41 +201,48 @@
 
 		if (!pinContainer || !track) return;
 
-		// Horizontal scroll: translate the track leftward as user scrolls
+		// Calculate total scroll distance — how far the track must translate
+		const scrollDistance = track.scrollWidth - window.innerWidth;
+
+		// Main horizontal scroll tween — translates the track leftward
 		const tween = gsap.to(track, {
-			x: () => -(track.scrollWidth - window.innerWidth),
+			x: -scrollDistance,
 			ease: 'none',
 		});
 		tweens.push(tween);
 
+		// Pin the container and scrub the horizontal tween with vertical scroll.
+		// end uses scrollDistance so the pin lasts exactly as long as the track is wide.
 		scrollTriggerInstance = ScrollTrigger.create({
 			trigger: pinContainer,
 			animation: tween,
 			scrub: 1,
 			pin: true,
-			end: () => '+=' + track.scrollWidth,
+			anticipatePin: 1,
+			end: () => '+=' + scrollDistance,
 		});
 
-		// Animate each panel's text with SplitText on scroll
+		// Animate each panel's text using containerAnimation — the correct GSAP
+		// pattern for triggering animations inside a horizontally-scrolling container.
+		// containerAnimation ties each panel's ScrollTrigger to the horizontal tween's
+		// progress rather than raw vertical scroll position.
 		const panelEls = track.querySelectorAll<HTMLElement>('[data-panel-text]');
-		panelEls.forEach((el, i) => {
+		panelEls.forEach((el) => {
 			const split = new SplitText(el, { type: 'words,chars' });
 			splitInstances.push(split);
 
-			// Stagger text reveal per panel — each panel occupies 1/totalPanelCount of scroll
-			const panelStart = i / totalPanelCount;
-			const panelEnd = (i + 0.6) / totalPanelCount;
-
+			// Stagger text reveal as the panel scrolls into view
 			const wordTween = gsap.from(split.words.length > 0 ? split.words : [el], {
 				opacity: 0,
 				y: 30,
 				stagger: 0.05,
 				ease: 'power2.out',
 				scrollTrigger: {
-					trigger: pinContainer,
-					start: () => `top+=${panelStart * track.scrollWidth} top`,
-					end: () => `top+=${panelEnd * track.scrollWidth} top`,
-					scrub: 1,
+					trigger: el,
+					containerAnimation: tween,
+					start: 'left 80%',
+					end: 'left 30%',
+					scrub: true,
 				},
 			});
 			tweens.push(wordTween);
@@ -181,9 +251,6 @@
 			const highlights = el.querySelectorAll<HTMLElement>('.highlight-word');
 			highlights.forEach((hw) => {
 				const effect = hw.dataset.highlight;
-				const highlightStart = (i + 0.3) / totalPanelCount;
-				const highlightEnd = (i + 0.7) / totalPanelCount;
-
 				let highlightTween: { kill: () => void } | undefined;
 
 				if (effect === 'scale') {
@@ -192,10 +259,11 @@
 						color: '#E07800',
 						ease: 'power2.out',
 						scrollTrigger: {
-							trigger: pinContainer,
-							start: () => `top+=${highlightStart * track.scrollWidth} top`,
-							end: () => `top+=${highlightEnd * track.scrollWidth} top`,
-							scrub: 1,
+							trigger: el,
+							containerAnimation: tween,
+							start: 'left 60%',
+							end: 'left 30%',
+							scrub: true,
 						},
 					});
 				} else if (effect === 'gradient') {
@@ -206,10 +274,11 @@
 						webkitTextFillColor: 'transparent',
 						ease: 'none',
 						scrollTrigger: {
-							trigger: pinContainer,
-							start: () => `top+=${highlightStart * track.scrollWidth} top`,
-							end: () => `top+=${highlightEnd * track.scrollWidth} top`,
-							scrub: 1,
+							trigger: el,
+							containerAnimation: tween,
+							start: 'left 60%',
+							end: 'left 30%',
+							scrub: true,
 						},
 					});
 				} else if (effect === 'wave') {
@@ -220,10 +289,11 @@
 						stagger: { each: 0.03, from: 'start' },
 						ease: 'sine.inOut',
 						scrollTrigger: {
-							trigger: pinContainer,
-							start: () => `top+=${highlightStart * track.scrollWidth} top`,
-							end: () => `top+=${highlightEnd * track.scrollWidth} top`,
-							scrub: 1,
+							trigger: el,
+							containerAnimation: tween,
+							start: 'left 60%',
+							end: 'left 30%',
+							scrub: true,
 						},
 					});
 				} else if (effect === 'charReveal') {
@@ -234,16 +304,41 @@
 						stagger: 0.04,
 						ease: 'power1.in',
 						scrollTrigger: {
-							trigger: pinContainer,
-							start: () => `top+=${highlightStart * track.scrollWidth} top`,
-							end: () => `top+=${highlightEnd * track.scrollWidth} top`,
-							scrub: 1,
+							trigger: el,
+							containerAnimation: tween,
+							start: 'left 60%',
+							end: 'left 30%',
+							scrub: true,
 						},
 					});
 				}
 
 				if (highlightTween) tweens.push(highlightTween);
 			});
+		});
+
+		// Parallax effect on inline icons — translate slightly opposite to scroll
+		// direction for depth. Uses the main horizontal tween's progress via
+		// containerAnimation so the offset tracks the scroll precisely.
+		const parallaxIcons = track.querySelectorAll<HTMLElement>('[data-parallax-icon]');
+		parallaxIcons.forEach((iconEl, i) => {
+			// Alternate direction and magnitude for visual variety
+			const xOffset = i % 2 === 0 ? 30 : -25;
+			const yOffset = i % 3 === 0 ? -8 : 6;
+
+			const pTween = gsap.to(iconEl, {
+				x: xOffset,
+				y: yOffset,
+				ease: 'none',
+				scrollTrigger: {
+					trigger: iconEl,
+					containerAnimation: tween,
+					start: 'left right',
+					end: 'right left',
+					scrub: true,
+				},
+			});
+			tweens.push(pTween);
 		});
 	});
 
@@ -260,12 +355,15 @@
 
 <!--
   Outer section: height set to allow ScrollTrigger pinning.
+  scrollDistance = track.scrollWidth - window.innerWidth. We use
+  totalPanelCount * 150vh to guarantee enough vertical room for the pin.
   In reduced motion mode, panels are stacked vertically so we use auto height.
+  No background — transparent so the page's own gradient shows through.
 -->
 <section
 	data-testid="skills-journey"
-	class="relative bg-[#141414]"
-	style="height: {reducedMotion ? 'auto' : `${totalPanelCount * 100}vh`};"
+	class="relative"
+	style="height: {reducedMotion ? 'auto' : `${totalPanelCount * 150}vh`};"
 >
 	{#if reducedMotion}
 		<!-- Reduced motion: vertical stack, no animation -->
@@ -280,25 +378,15 @@
 						{resolveLocale(panel.label, 'en')}
 					</p>
 
-					<!-- Panel text -->
+					<!-- Panel text with inline icons -->
 					<p class="font-heading text-4xl font-bold leading-tight text-[var(--text-primary)] md:text-5xl lg:text-6xl">
-						{resolveLocale(panel.text, 'en')}
+						{@html buildPanelContent(
+							resolveLocale(panel.text, 'en'),
+							panel.highlightWords,
+							panel.highlightEffect,
+							panel.skills
+						)}
 					</p>
-
-					<!-- Skill icons -->
-					<div class="mt-8 flex flex-wrap gap-6">
-						{#each panel.skills as skill (skill.id)}
-							<div
-								data-testid="journey-skill-{skill.id}"
-								class="flex flex-col items-center gap-2"
-							>
-								<div class="flex h-12 w-12 items-center justify-center rounded-lg border border-[#E07800]/20 bg-[#1a1a1a]">
-									{@html renderSkillIcon(skill.icon)}
-								</div>
-								<span class="text-xs text-[var(--text-secondary)]">{skill.name}</span>
-							</div>
-						{/each}
-					</div>
 				</div>
 			{/each}
 
@@ -349,32 +437,18 @@
 							{resolveLocale(panel.label, 'en')}
 						</p>
 
-						<!-- Panel text (SplitText target) -->
+						<!-- Panel text with inline icons (SplitText target) -->
 						<p
 							data-panel-text
 							class="font-heading text-4xl font-bold leading-tight text-[var(--text-primary)] md:text-5xl lg:text-6xl"
 						>
-							{@html markHighlightWords(
+							{@html buildPanelContent(
 								resolveLocale(panel.text, 'en'),
 								panel.highlightWords,
-								panel.highlightEffect
+								panel.highlightEffect,
+								panel.skills
 							)}
 						</p>
-
-						<!-- Skill icons -->
-						<div class="mt-12 flex flex-wrap gap-8">
-							{#each panel.skills as skill (skill.id)}
-								<div
-									data-testid="journey-skill-{skill.id}"
-									class="flex flex-col items-center gap-2"
-								>
-									<div class="flex h-14 w-14 items-center justify-center rounded-lg border border-[#E07800]/20 bg-[#1a1a1a]">
-										{@html renderSkillIcon(skill.icon)}
-									</div>
-									<span class="text-xs text-[var(--text-secondary)]">{skill.name}</span>
-								</div>
-							{/each}
-						</div>
 					</div>
 				{/each}
 
