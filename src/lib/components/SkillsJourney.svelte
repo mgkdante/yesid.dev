@@ -341,8 +341,9 @@
 				const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
 
 				if (effect === 'scale') {
-					// Panel 1 "foundation": grey → orange with HARD pulse glow.
-					// No scale (was getting stuck). Instead: color shift + massive text glow.
+					// Panel 1 "foundation": grey → orange with pulsing glow.
+					// Uses toggleActions (not scrub) so it properly reverses
+					// when the panel leaves view. Pulse via yoyo repeat.
 					const glowTween = gsap.fromTo(hw,
 						{
 							color: '#999',
@@ -350,14 +351,16 @@
 						},
 						{
 							color: '#E07800',
-							textShadow: '0 0 30px rgba(224,120,0,0.8), 0 0 60px rgba(224,120,0,0.4), 0 0 100px rgba(224,120,0,0.2)',
+							textShadow: '0 0 40px rgba(224,120,0,0.9), 0 0 80px rgba(224,120,0,0.5), 0 0 120px rgba(224,120,0,0.25)',
+							duration: 0.6,
 							ease: 'power2.out',
+							yoyo: true,
+							repeat: 3,
 							scrollTrigger: {
 								trigger: el,
 								containerAnimation: tween,
-								start: 'left 80%',
-								end: 'left 40%',
-								scrub: true,
+								start: 'left 70%',
+								toggleActions: 'play reverse play reverse',
 							},
 						}
 					);
