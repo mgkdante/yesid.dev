@@ -434,23 +434,28 @@
 	   overflow:hidden clips characters that haven't appeared yet.
 	   white-space:nowrap prevents line breaks mid-animation.
 	   The cursor blink is a separate animation on border-right. */
-	/* Typewriter: overflow clips untyped chars. The _ cursor is a real <span>
-	   inside the text that blinks forever. Width includes 23 chars (22 text + 1 cursor). */
+	/* Typewriter: overflow clips untyped chars. The _ cursor is absolutely
+	   positioned at right:0 so it rides the clipping edge as width grows.
+	   This means the cursor is always visible at the typing position. */
 	.scroll-prompt {
+		position: relative;
 		overflow: hidden;
 		white-space: nowrap;
 		width: 0;
-		/* 22 text chars + 1 cursor char = 23ch, plus 22 letter-spacing gaps × 4px = 88px */
-		animation: typewriter 2s steps(23, end) 0.5s both;
+		/* 22 text chars, 21 letter-spacing gaps × 4px = 84px */
+		animation: typewriter 2s steps(22, end) 0.5s both;
 	}
 
 	.typewriter-cursor {
+		position: absolute;
+		right: 0;
+		top: 0;
 		animation: cursor-blink 0.6s step-end infinite;
 	}
 
 	@keyframes typewriter {
 		from { width: 0; }
-		to { width: calc(23ch + 88px); }
+		to { width: calc(22ch + 84px); }
 	}
 
 	@keyframes cursor-blink {
