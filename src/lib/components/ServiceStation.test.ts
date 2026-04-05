@@ -24,9 +24,9 @@ const mockServiceNoProjects: Service = {
 const mockServicePrivateOnly: Service = {
 	id: 'private-only',
 	title: { en: 'Private Projects Only' },
-	description: { en: 'All related projects are private.' },
+	description: { en: 'All related projects are private or nonexistent.' },
 	station: 3,
-	relatedProjects: ['transit-data-pipeline']
+	relatedProjects: ['nonexistent-project-slug']
 };
 
 describe('ServiceStation', () => {

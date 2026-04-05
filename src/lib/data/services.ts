@@ -80,3 +80,23 @@ export const services: readonly Service[] = [
 		relatedProjects: ['yesid-dev']
 	}
 ];
+
+// --- Helper functions ---
+// Co-located with the services array for the same reason as in projects.ts:
+// helpers and data they query are always changed together.
+
+/**
+ * Returns the service with the given ID, or undefined if not found.
+ * Used on work detail pages to resolve the service a project links to.
+ */
+export function getServiceById(id: string): Service | undefined {
+	return services.find((s) => s.id === id);
+}
+
+/**
+ * Returns all services where visible is not explicitly false.
+ * Used to populate service filters and station listings.
+ */
+export function getVisibleServices(): readonly Service[] {
+	return services.filter((s) => s.visible !== false);
+}

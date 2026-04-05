@@ -4,6 +4,8 @@ import {
 	getFeaturedProjects,
 	getPublicProjects,
 	getAllTags,
+	getProjectsByService,
+	getServiceIdsForProjects,
 	projects
 } from './projects.js';
 
@@ -91,5 +93,36 @@ describe('getAllTags', () => {
 		tags.forEach((tag) => {
 			expect(tag.trim()).not.toBe('');
 		});
+	});
+});
+
+describe('getProjectsByService', () => {
+	it('returns projects linked to a given service ID', () => {
+		const results = getProjectsByService('sql-development');
+		expect(results.length).toBeGreaterThan(0);
+		results.forEach((p) => {
+			expect(p.relatedServices).toContain('sql-development');
+		});
+	});
+
+	it('excludes private projects', () => {
+		const results = getProjectsByService('sql-development');
+		results.forEach((p) => {
+			expect(p.status).not.toBe('private');
+		});
+	});
+
+	it('returns empty array for unknown service ID', () => {
+		expect(getProjectsByService('nonexistent')).toEqual([]);
+	});
+});
+
+describe('getServiceIdsForProjects', () => {
+	it('returns deduplicated sorted service IDs from public projects', () => {
+		const ids = getServiceIdsForProjects();
+		expect(ids.length).toBeGreaterThan(0);
+		const sorted = [...ids].sort();
+		expect(ids).toEqual(sorted);
+		expect(new Set(ids).size).toBe(ids.length);
 	});
 });

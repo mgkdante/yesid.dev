@@ -9,10 +9,10 @@ export type { Locale, LocalizedString, ProjectSection, ProjectStatus, Project, S
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
 
 // Project data + helpers
-export { projects, getProjectBySlug, getFeaturedProjects, getPublicProjects, getAllTags } from './projects.js';
+export { projects, getProjectBySlug, getFeaturedProjects, getPublicProjects, getAllTags, getProjectsByService, getServiceIdsForProjects } from './projects.js';
 
 // Services data
-export { services } from './services.js';
+export { services, getServiceById, getVisibleServices } from './services.js';
 
 // Site metadata
 export { siteMeta } from './meta.js';

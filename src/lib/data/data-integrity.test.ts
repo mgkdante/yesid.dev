@@ -63,6 +63,22 @@ describe('projects data integrity', () => {
 		const featured = projects.filter((p) => p.featured);
 		expect(featured.length).toBeGreaterThan(0);
 	});
+
+	it('all projects have a relatedServices array with at least one entry', () => {
+		projects.forEach((p) => {
+			expect(Array.isArray(p.relatedServices)).toBe(true);
+			expect(p.relatedServices.length).toBeGreaterThan(0);
+		});
+	});
+
+	it('all relatedServices IDs reference existing service IDs', () => {
+		const validServiceIds = new Set(services.map((s) => s.id));
+		projects.forEach((p) => {
+			p.relatedServices.forEach((sid) => {
+				expect(validServiceIds.has(sid), `service "${sid}" in project "${p.slug}" not found`).toBe(true);
+			});
+		});
+	});
 });
 
 describe('services data integrity', () => {
@@ -125,6 +141,15 @@ describe('services data integrity', () => {
 			s.relatedProjects.forEach((slug) => {
 				expect(validSlugs.has(slug), `slug "${slug}" in service "${s.id}" not found in projects`).toBe(true);
 			});
+		});
+	});
+
+	it('all services with svg field reference a valid filename', () => {
+		services.forEach((s) => {
+			if (s.svg) {
+				expect(s.svg.trim()).not.toBe('');
+				expect(s.svg).toMatch(/\.svg$/);
+			}
 		});
 	});
 });

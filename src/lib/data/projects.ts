@@ -182,4 +182,25 @@ export function getAllTags(): string[] {
 	return [...new Set(allTags)].sort();
 }
 
+/**
+ * Returns all non-private projects linked to a given service ID.
+ * Used on service detail pages and the work listing to show related projects.
+ */
+export function getProjectsByService(serviceId: string): readonly Project[] {
+	return projects.filter(
+		(p) => p.status !== 'private' && p.relatedServices.includes(serviceId)
+	);
+}
+
+/**
+ * Returns deduplicated, sorted service IDs from all public projects.
+ * Used to build service filter UI on the work listing page.
+ */
+export function getServiceIdsForProjects(): string[] {
+	const ids = projects
+		.filter((p) => p.status !== 'private')
+		.flatMap((p) => p.relatedServices);
+	return [...new Set(ids)].sort();
+}
+
 export { projects };

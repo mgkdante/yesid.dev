@@ -23,7 +23,7 @@ describe('Home page', () => {
 		expect(container.querySelector('[data-testid="station-sql-development"]')).toBeInTheDocument();
 		expect(container.querySelector('[data-testid="station-data-pipeline"]')).toBeInTheDocument();
 		expect(container.querySelector('[data-testid="station-analytics-reporting"]')).toBeInTheDocument();
-		expect(container.querySelector('[data-testid="station-database-performance"]')).toBeInTheDocument();
+		expect(container.querySelector('[data-testid="station-database-engineering"]')).toBeInTheDocument();
 	});
 
 	it('each station has its service title', () => {
@@ -31,7 +31,7 @@ describe('Home page', () => {
 		expect(screen.getByText('SQL Development & Optimization')).toBeInTheDocument();
 		expect(screen.getByText('Data Pipeline Architecture')).toBeInTheDocument();
 		expect(screen.getByText('Analytics & Reporting Systems')).toBeInTheDocument();
-		expect(screen.getByText('Database Performance Tuning')).toBeInTheDocument();
+		expect(screen.getByText('Database Engineering')).toBeInTheDocument();
 	});
 
 	it('renders the featured work section', () => {
