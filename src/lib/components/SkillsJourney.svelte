@@ -341,20 +341,24 @@
 				const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
 
 				if (effect === 'scale') {
-					// Panel 1 "foundation": starts grey (inherited), animates to
-					// orange + scale 1.2x on scroll. Fully reversible with scrub.
-					const scaleTween = gsap.to(hw, {
-						scale: 1.2,
-						color: '#E07800',
-						ease: 'power2.out',
-						scrollTrigger: {
-							trigger: el,
-							containerAnimation: tween,
-							start: 'left 60%',
-							end: 'left 30%',
-							scrub: true,
-						},
-					});
+					// Panel 1 "foundation": grey→orange + scale 1→1.2x.
+					// fromTo guarantees both start AND end values, so scrub
+					// fully reverses when scrolling back.
+					const scaleTween = gsap.fromTo(hw,
+						{ scale: 1, color: '#999' },
+						{
+							scale: 1.2,
+							color: '#E07800',
+							ease: 'power2.out',
+							scrollTrigger: {
+								trigger: el,
+								containerAnimation: tween,
+								start: 'left 80%',
+								end: 'left 40%',
+								scrub: true,
+							},
+						}
+					);
 					tweens.push(scaleTween);
 
 				} else if (effect === 'charReveal') {
