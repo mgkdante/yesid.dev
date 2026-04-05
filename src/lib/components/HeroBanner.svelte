@@ -87,23 +87,54 @@
 		}
 		updateZoomOrigin();
 
-		// Calculate initial scale for hero text container so the dot fills viewport.
-		function calcHeroTextScale(): number {
-			const dotRect = heroDot.getBoundingClientRect();
-			const screen = Math.max(window.innerWidth, window.innerHeight);
-			const dot = Math.max(dotRect.width, dotRect.height);
-			if (dot === 0) return 100; // fallback before layout
-			return Math.ceil((screen / dot) * 2);
+		// Find the actual rendered position and size of the "." glyph.
+		// Strategy: use a DOM probe for the baseline (reliable), then
+		// Canvas measureText for glyph metrics (ascent/descent of ".").
+		function getDotGlyphCenter(): { x: number; y: number; size: number } {
+			const spanRect = heroDot.getBoundingClientRect();
+			const computed = window.getComputedStyle(heroDot);
+			const fontSize = parseFloat(computed.fontSize);
+
+			// Canvas: measure actual glyph dimensions
+			const canvas = document.createElement('canvas');
+			const ctx = canvas.getContext('2d')!;
+			ctx.font = `${computed.fontWeight} ${fontSize}px ${computed.fontFamily}`;
+			const m = ctx.measureText('.');
+			const glyphW = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
+			const glyphH = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+
+			// X: centered in the span
+			const x = spanRect.x + spanRect.width / 2;
+
+			// Y: find baseline with a zero-height inline-block probe element.
+			// This is the only reliable cross-font way to locate the baseline
+			// in the actual browser layout (no font-metric estimation needed).
+			const probe = document.createElement('span');
+			probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline;overflow:hidden;';
+			heroDot.parentElement!.insertBefore(probe, heroDot);
+			const baselineY = probe.getBoundingClientRect().top;
+			probe.remove();
+
+			// Glyph center Y = baseline - ascent above baseline + half glyph height
+			const y = baselineY - m.actualBoundingBoxAscent + glyphH / 2;
+
+			return { x, y, size: Math.max(glyphW, glyphH) };
 		}
 
-		// Set transform-origin on hero text container to the dot's pixel position.
+		// Scale so the dot glyph fills the viewport
+		function calcHeroTextScale(): number {
+			const glyph = getDotGlyphCenter();
+			const screen = Math.max(window.innerWidth, window.innerHeight);
+			if (glyph.size === 0) return 200;
+			return Math.ceil((screen / glyph.size) * 2);
+		}
+
+		// Transform-origin at the dot glyph's visual center
 		function updateHeroTextOrigin() {
-			const dotRect = heroDot.getBoundingClientRect();
+			const glyph = getDotGlyphCenter();
 			const containerRect = heroTextContainer.getBoundingClientRect();
-			const dotCenterX = dotRect.x + dotRect.width / 2 - containerRect.x;
-			const dotCenterY = dotRect.y + dotRect.height / 2 - containerRect.y;
-			const pctX = (dotCenterX / containerRect.width) * 100;
-			const pctY = (dotCenterY / containerRect.height) * 100;
+			const pctX = ((glyph.x - containerRect.x) / containerRect.width) * 100;
+			const pctY = ((glyph.y - containerRect.y) / containerRect.height) * 100;
 			heroTextContainer.style.transformOrigin = `${pctX}% ${pctY}%`;
 		}
 		updateHeroTextOrigin();
@@ -199,6 +230,13 @@
 		// Cross-fade: SVG out, text container in. Visually seamless — both are orange.
 		tl.to(svgWrapper, { opacity: 0, duration: 0.05, ease: 'power2.inOut' }, 1.0);
 		tl.to(heroTextContainer, { opacity: 1, duration: 0.05, ease: 'power2.inOut' }, 1.0);
+
+		// Fade out the dark background so the page gradient shows through
+		tl.to(pinContainer, {
+			backgroundColor: 'transparent',
+			duration: 0.20,
+			ease: 'power1.out',
+		}, 1.10);
 
 		// === Phase 7 (Slice C): Zoom out — scale hero text container down to 1 ===
 		const heroZoomTween = tl.to(heroTextContainer, {
