@@ -200,10 +200,11 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 10  | SEO + metadata                                         | planned  | 07, 08, 09 | 1             |
 | 11  | E2E test suite + performance + brand QA                | planned  | 07, 08, 09 | 1-2           |
 | 12  | Standardization (scalable, componentized, data-driven) | planned  | B+, 06d    | 1-2           |
-| 13  | Mobile UI/UX optimization                              | planned  | 12, B+     | 1-2           |
-| 14  | Scroll smoothness + animation polish                   | planned  | B+, 13     | 1             |
-| 15  | Repo cleanup for public release                        | planned  | 10, 11     | 0.5           |
-| 16  | Deploy to Vercel + DNS cutover                         | planned  | 15         | 1             |
+| 13  | Cloud content layer (edit + publish without code)      | planned  | 12         | 1-2           |
+| 14  | Mobile UI/UX optimization                              | planned  | 12, B+     | 1-2           |
+| 15  | Scroll smoothness + animation polish                   | planned  | B+, 14     | 1             |
+| 16  | Repo cleanup for public release                        | planned  | 10, 11     | 0.5           |
+| 17  | Deploy to Vercel + DNS cutover                         | planned  | 16         | 1             |
 
 
 ## Slice Summaries
@@ -334,19 +335,40 @@ Audit the entire codebase for consistency and scalability. Ensure all repeating 
 
 **Scope:** Component API consistency, data-driven content audit, shared animation utilities, prop interface standardization, documentation of component patterns.
 
-### Slice 13 — Mobile UI/UX Optimization
+### Slice 13 — Cloud Content Layer (Edit + Publish Without Code)
+**Status:** planned
+Connect the data-driven content (projects, services, blog posts, site meta) to a cloud-editable source so Yesid can add/edit content without opening the codebase. When content is published or updated in the cloud, the site rebuilds and deploys automatically.
+
+**Options to evaluate:**
+- **Headless CMS** (Sanity, Contentful, Storyblok) — structured content, visual editor, webhooks to trigger Vercel rebuild
+- **Notion as CMS** — Yesid already uses Notion; API pulls content at build time; familiar editing UX
+- **Markdown in cloud storage** (Google Drive, Dropbox, GitHub content repo) — keep markdown workflow, sync to repo via webhook/action
+- **Keystatic** — git-based CMS with visual editor, content stays in repo as markdown/JSON
+
+**Key requirements:**
+- Content types: projects, services, blog posts, site metadata
+- Editing: visual/familiar interface (not code editors)
+- Publishing: edit → save → site auto-rebuilds on Vercel
+- Schema: matches existing TypeScript interfaces (Project, Service, BlogPost, SiteMeta)
+- Fallback: if CMS is down, site still builds from last-known content
+
+**Scope:** CMS selection, content schema migration, build-time data fetching, webhook-triggered rebuilds, editorial workflow documentation for Yesid.
+
+**Why after Slice 12:** Standardization ensures all content is already cleanly data-driven and every content type has a consistent interface. The cloud layer plugs into those interfaces — it doesn't create them.
+
+### Slice 14 — Mobile UI/UX Optimization
 **Status:** planned
 Full mobile audit: touch targets, scroll behavior, animation performance on low-end devices, viewport issues, text readability, tap feedback. SkillsJourney scroll tuning (velocity detection, adaptive multipliers). Responsive breakpoint audit for all components. Test at 375px, 390px, 414px, 768px.
 
 **Scope:** Touch interaction polish, scroll performance, responsive fixes, mobile-specific animation tuning, viewport debugging.
 
-### Slice 14 — Scroll Smoothness + Animation Polish
+### Slice 15 — Scroll Smoothness + Animation Polish
 **Status:** planned
 Fine-tune all scroll-linked animations across the site. Consider ScrollSmoother plugin. Optimize GSAP tween count. Fix any jank on 60fps targets. Polish snap behavior, scrub timing, and transition curves. Performance profiling with Chrome DevTools.
 
 **Scope:** Animation timing polish, scroll performance optimization, GSAP tween audit, frame rate verification.
 
-### Slice 15 — Repo Cleanup for Public Release
+### Slice 16 — Repo Cleanup for Public Release
 
 Strip pipeline/workflow artifacts. Public repo = clean portfolio site.
 
@@ -365,7 +387,7 @@ Yesid confirms backup is done. Only then does Claude Code proceed.
 
 **Tests:** Existing tests pass. Build succeeds. No references to removed files.
 
-### Slice 16 — Deploy to Vercel + DNS Cutover
+### Slice 17 — Deploy to Vercel + DNS Cutover
 
 Connect repo to Vercel. Configure build (Bun). Auto-deploy main, preview on PRs. Test preview. Update yesid.dev DNS. Verify live + CI/CD end to end.
 
