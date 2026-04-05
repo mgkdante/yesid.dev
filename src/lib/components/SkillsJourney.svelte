@@ -40,8 +40,8 @@
 	const ctaPromptText = resolveLocale(skillsJourneyCta.prompt, 'en');
 	const ctaButtonText = resolveLocale(skillsJourneyCta.button, 'en');
 
-	// Total panels: data panels + CTA prompt + CTA button
-	const totalPanelCount = skillsJourneyPanels.length + 2;
+	// Total panels: data panels + one combined CTA panel (prompt + button)
+	const totalPanelCount = skillsJourneyPanels.length + 1;
 
 	// Section height set dynamically in onMount once scrollDistance is known.
 	// Formula: viewportHeight + scrollDistance = exact room for the pin with no empty scroll.
@@ -139,7 +139,7 @@
 			const regex = new RegExp(`(${word})`, 'i');
 			result = result.replace(
 				regex,
-				`<span class="highlight-word highlight-${effect}" data-highlight="${effect}">$1</span>`
+				`<span class="highlight-word highlight-${effect}" data-highlight="${effect}" style="display:inline-block">$1</span>`
 			);
 		}
 		return result;
@@ -616,25 +616,23 @@
 				</div>
 			{/each}
 
-			<!-- CTA prompt -->
-			<div data-testid="journey-cta-prompt" class="mb-8 text-center">
-				<div class="inline-flex items-center gap-3">
+			<!-- Combined CTA panel: prompt + button in one block -->
+			<div data-testid="journey-cta-prompt" class="text-center">
+				<div class="mb-8 inline-flex items-center gap-3">
 					<span class="h-3 w-3 rounded-full bg-[#E07800] animate-pulse"></span>
 					<p class="font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
 						{ctaPromptText}
 					</p>
 				</div>
-			</div>
-
-			<!-- CTA button -->
-			<div class="text-center">
-				<a
-					href="/contact"
-					data-testid="journey-cta-button"
-					class="inline-flex items-center rounded-lg bg-[#E07800] px-8 py-4 text-lg font-semibold text-[#141414] shadow-[0_0_24px_rgba(224,120,0,0.3)] transition-colors hover:bg-[#C96A00]"
-				>
-					{ctaButtonText}
-				</a>
+				<div>
+					<a
+						href="/contact"
+						data-testid="journey-cta-button"
+						class="inline-flex items-center rounded-lg bg-[#E07800] px-8 py-4 text-lg font-semibold text-[#141414] shadow-[0_0_24px_rgba(224,120,0,0.3)] transition-colors hover:bg-[#C96A00]"
+					>
+						{ctaButtonText}
+					</a>
+				</div>
 			</div>
 		</div>
 	{:else}
@@ -692,10 +690,10 @@
 					</div>
 				{/each}
 
-				<!-- CTA prompt panel -->
+				<!-- Combined CTA panel: pulsing dot, prompt heading, and CTA button -->
 				<div
 					data-testid="journey-cta-prompt"
-					class="flex h-full w-screen flex-shrink-0 flex-col items-center justify-center"
+					class="flex h-full w-screen flex-shrink-0 flex-col items-center justify-center gap-10"
 				>
 					<div class="flex items-center gap-4">
 						<span class="h-4 w-4 rounded-full bg-[#E07800] animate-pulse"></span>
@@ -703,12 +701,6 @@
 							{ctaPromptText}
 						</p>
 					</div>
-				</div>
-
-				<!-- CTA button panel -->
-				<div
-					class="flex h-full w-screen flex-shrink-0 flex-col items-center justify-center"
-				>
 					<a
 						href="/contact"
 						data-testid="journey-cta-button"
