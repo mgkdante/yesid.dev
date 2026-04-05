@@ -72,6 +72,7 @@ vi.mock('gsap', () => {
 		to: vi.fn().mockReturnThis(),
 		from: vi.fn().mockReturnThis(),
 		fromTo: vi.fn().mockReturnThis(),
+		set: vi.fn().mockReturnThis(),
 		progress: vi.fn().mockReturnThis(),
 		kill: vi.fn(),
 		pause: vi.fn().mockReturnThis()
@@ -101,6 +102,27 @@ vi.mock('gsap/ScrollTrigger', () => ({
 
 vi.mock('gsap/MotionPathPlugin', () => ({
 	MotionPathPlugin: {}
+}));
+
+vi.mock('gsap/DrawSVGPlugin', () => ({
+	DrawSVGPlugin: {}
+}));
+
+vi.mock('gsap/CustomEase', () => ({
+	CustomEase: {
+		create: vi.fn(() => 'custom')
+	}
+}));
+
+// SplitText splits text nodes into chars/words/lines for GSAP animation.
+// Return stub arrays so consumers can iterate without DOM measurement.
+vi.mock('gsap/SplitText', () => ({
+	SplitText: vi.fn(() => ({
+		chars: [],
+		words: [],
+		lines: [],
+		revert: vi.fn()
+	}))
 }));
 
 // Mock @threlte/core for component tests.
