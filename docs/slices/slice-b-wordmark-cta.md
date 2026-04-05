@@ -1,6 +1,6 @@
 # Slice B — Animated Wordmark + Horizontal Scroll CTA
 
-## Status: IN PROGRESS (Session 2 needed)
+## Status: COMPLETE — Approved 2026-04-05
 
 ## Goal
 Add personality and a clear CTA to the site with two features:
@@ -48,27 +48,27 @@ Add personality and a clear CTA to the site with two features:
 - [x] `bun run check` passes (0 errors)
 - [x] Slices A+C hero animation unchanged
 
-### Part 3b: Scroll-Linked Text Animations — NOT WORKING
-- [ ] Panel 1: "foundation" starts grey, glows orange on scroll, REVERSES on scroll back
-- [ ] Panel 2: "data" (orange), "logic" (yellow), "pixels" (orange) — char reveal + bounce that returns to y:0
-- [ ] Panel 3: "Stations" (yellow) wave, "understand" (orange) dramatic pop with glow
-- [ ] Panel 4: "motion" (gradient) rotates 360°, "unforgettable" (orange) pulses
-- [ ] All animations reverse when scrolling back
-- [ ] Scale-ups don't overlap adjacent text
+### Part 3b: Scroll-Linked Text Animations — DONE
+- [x] Panel 1: "foundation" structural assembly → orange
+- [x] Panel 2: "data" scramble, "logic" precise assembly, "pixels" fragmented particles
+- [x] Panel 3: "Stations" wave (yellow), "understand" disorder→comprehension (orange)
+- [x] Panel 4: "motion" rotation (orange), "unforgettable" ghosted→permanent (orange)
+- [x] CTA "stop" train brake → yellow
+- [x] All animations reverse when scrolling back
+- [x] No animation on non-keyword text (static white)
+- [x] Per-word triggers (`trigger: hw`) for accurate timing
+- [x] Works on mobile — "stop" completes by center of viewport
 
-**Root cause:** GSAP `containerAnimation` pattern with `scrub`/`toggleActions` doesn't reverse properly. Need to consult GSAP MCP for correct approach.
+### Part 4: Geometric Shape Morphs — MOVED TO SLICE B+
+- Deferred to new slice with updated shape mapping
+- See `memory/project_slice_b_shapes.md`
 
-### Part 4: Geometric Shape Morphs — NOT STARTED
-- [ ] SVG shapes float near keywords, morph via MorphSVGPlugin on scroll
-- [ ] See `memory/project_slice_b_shapes.md` for exact shape→keyword mapping
-
-### Part 5: Cleanup — NOT STARTED
+### Part 5: Cleanup — DONE
 - [x] Train journey removed from home page
 - [x] Scroll rail removed from layout
 - [x] Native scrollbar visible
-- [ ] Mobile horizontal scroll timing (was too fast)
-- [ ] Dev log update
-- [ ] Handoff report (after Yesid approves)
+- [x] Dev log update
+- [x] Handoff report: `docs/handoffs/handoff-slice-b.md`
 
 ## Tech Stack Displayed
 SQL (PostgreSQL + SQL Server), TypeScript, Python, SvelteKit, GSAP, Power BI, Docker

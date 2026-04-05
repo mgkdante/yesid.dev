@@ -312,27 +312,9 @@
 			const split = new SplitText(el, { type: 'words,chars' });
 			splitInstances.push(split);
 
-			// Non-highlight words: fade in with stagger (opacity 0→1, y 20→0).
-			// Filter out words inside highlight spans so they get their own effects.
-			const nonHighlightWords = split.words.filter(
-				(w: Element) => !w.closest('.highlight-word')
-			);
-			if (nonHighlightWords.length > 0) {
-				const wordTween = gsap.from(nonHighlightWords, {
-					opacity: 0,
-					y: 20,
-					stagger: 0.05,
-					ease: 'power2.out',
-					scrollTrigger: {
-						trigger: el,
-						containerAnimation: tween,
-						start: 'left 80%',
-						end: 'left 30%',
-						scrub: true,
-					},
-				});
-				tweens.push(wordTween);
-			}
+			// Non-highlight words: no animation — static white text.
+			// Only keyword highlight words get scroll-linked effects.
+			// This keeps text uniform and reduces GSAP tween count.
 
 			// Highlight words: apply effect-specific animations per panel
 			const highlights = el.querySelectorAll<HTMLElement>('.highlight-word');
@@ -341,81 +323,166 @@
 				const highlightText = hw.textContent?.toLowerCase().trim() ?? '';
 
 				if (effect === 'scale') {
-					// Panel 1 "foundation": grey → orange + glow, scrubbed to scroll.
-					// Pure scrub with containerAnimation naturally reverses on scroll back.
-					// No toggleActions/yoyo/repeat — those desync from scroll position.
-					const glowTween = gsap.fromTo(hw,
-						{
-							color: '#999',
-							textShadow: '0 0 0px rgba(224,120,0,0)',
+					// Panel 1 "foundation": structural assembly.
+					// Chars start sunken, dim, disconnected below the baseline.
+					// Rise with controlled, weighted motion and lock into position
+					// like building blocks being placed. No bounce or elastic.
+					const fSplit = new SplitText(hw, { type: 'chars' });
+					splitInstances.push(fSplit);
+					fSplit.chars.forEach((char, i) => {
+						gsap.set(char, {
+							y: 25 + (i % 4) * 5,
+							x: ((i % 3) - 1) * 4,
+							opacity: 0.2,
+							filter: 'blur(1px)',
+						});
+					});
+					const fTween = gsap.to(fSplit.chars, {
+						y: 0,
+						x: 0,
+						opacity: 1,
+						filter: 'blur(0px)',
+						color: '#E07800',
+						stagger: { each: 0.03, from: 'start' },
+						ease: 'power2.out',
+						scrollTrigger: {
+							trigger: hw,
+							containerAnimation: tween,
+							start: 'left 55%',
+							end: 'left 15%',
+							scrub: true,
 						},
-						{
-							color: '#E07800',
-							textShadow: '0 0 30px rgba(224,120,0,0.8), 0 0 60px rgba(224,120,0,0.4)',
-							scrollTrigger: {
-								trigger: el,
-								containerAnimation: tween,
-								start: 'left 70%',
-								end: 'left 30%',
-								scrub: true,
-							},
-						}
-					);
-					tweens.push(glowTween);
+					});
+					tweens.push(fTween);
 
 				} else if (effect === 'charReveal') {
-					// Panel 2 "data", "logic", "pixels": char-by-char opacity reveal
-					const revealSplit = new SplitText(hw, { type: 'chars' });
-					splitInstances.push(revealSplit);
-					const charTargets = revealSplit.chars.length > 0 ? revealSplit.chars : [hw];
-					const charTween = gsap.from(charTargets, {
-						opacity: 0,
-						stagger: 0.04,
-						ease: 'power1.in',
-						scrollTrigger: {
-							trigger: el,
-							containerAnimation: tween,
-							start: 'left 60%',
-							end: 'left 30%',
-							scrub: true,
-						},
-					});
-					tweens.push(charTween);
+					// Panel 2: each keyword gets a unique per-word effect.
+					if (highlightText === 'data') {
+						// Text scramble: chars cycle through random symbols then
+						// resolve one-by-one into the correct letters. Uses onUpdate
+						// for real-time char replacement scrubbed to scroll position.
+						const dSplit = new SplitText(hw, { type: 'chars' });
+						splitInstances.push(dSplit);
+						const originalDataChars = dSplit.chars.map((c) => c.textContent || '');
+						const scramblePool = '!<>-_\\/[]{}=+*^?#01234ABCDEF';
 
-					// Bounce: y: 0 → -20 → 0 (timeline within scroll range, fully reversible).
-					// The target color is applied in the same tween so the word
-					// lands at its spec color after the bounce.
-					const targetColor = highlightColorMap[highlightText] || '#E07800';
-					const allCharRevealWords = el.querySelectorAll<HTMLElement>('.highlight-charReveal');
-					const wordIndex = Array.from(allCharRevealWords).indexOf(hw);
-					// Wider scroll range so the full up-and-down completes.
-					// Simpler eases (no back.out) for reliable scrub behavior.
-					const bounceTl = gsap.timeline({
-						scrollTrigger: {
-							trigger: el,
+						dSplit.chars.forEach((char, i) => {
+							char.textContent = scramblePool[(i * 7) % scramblePool.length];
+							gsap.set(char, { opacity: 0.3 });
+						});
+
+						const scrambleST = ScrollTrigger.create({
+							trigger: hw,
 							containerAnimation: tween,
-							start: `left ${40 - (wordIndex * 5)}%`,
-							end: `left ${10 - (wordIndex * 5)}%`,
-							scrub: true,
-						},
-					});
-					bounceTl.to(hw, { y: -20, color: targetColor, ease: 'power2.out', duration: 0.5 });
-					bounceTl.to(hw, { y: 0, ease: 'power2.in', duration: 0.5 });
-					tweens.push(bounceTl);
+							start: 'left 55%',
+							end: 'left 15%',
+							onUpdate: (self) => {
+								const p = self.progress;
+								dSplit.chars.forEach((charEl, i) => {
+									const threshold = (i + 0.8) / originalDataChars.length;
+									if (p >= threshold) {
+										charEl.textContent = originalDataChars[i];
+										gsap.set(charEl, { opacity: 1 });
+									} else {
+										// Cycle through symbols — Date.now gives rapid cycling while scrolling
+										const idx = (i * 7 + Math.floor(Date.now() / 60)) % scramblePool.length;
+										charEl.textContent = scramblePool[idx];
+										gsap.set(charEl, { opacity: 0.3 + p * 0.5 });
+									}
+								});
+							},
+							onLeaveBack: () => {
+								dSplit.chars.forEach((charEl, i) => {
+									charEl.textContent = scramblePool[(i * 7) % scramblePool.length];
+									gsap.set(charEl, { opacity: 0.3 });
+								});
+							},
+							onLeave: () => {
+								dSplit.chars.forEach((charEl, i) => {
+									charEl.textContent = originalDataChars[i];
+									gsap.set(charEl, { opacity: 1 });
+								});
+							},
+						});
+						tweens.push(scrambleST);
+
+					} else if (highlightText === 'logic') {
+						// Precise assembly: chars start spread from center with blur,
+						// converge inward with mathematical precision.
+						const lSplit = new SplitText(hw, { type: 'chars' });
+						splitInstances.push(lSplit);
+						const lCenter = (lSplit.chars.length - 1) / 2;
+						lSplit.chars.forEach((char, i) => {
+							gsap.set(char, {
+								x: (i - lCenter) * 6,
+								opacity: 0.3,
+								filter: 'blur(1px)',
+							});
+						});
+						const lTween = gsap.to(lSplit.chars, {
+							x: 0,
+							opacity: 1,
+							filter: 'blur(0px)',
+							stagger: { each: 0.04, from: 'center' },
+							ease: 'power3.inOut',
+							scrollTrigger: {
+								trigger: hw,
+								containerAnimation: tween,
+								start: 'left 55%',
+								end: 'left 15%',
+								scrub: true,
+							},
+						});
+						tweens.push(lTween);
+
+					} else if (highlightText === 'pixels') {
+						// Fragmented particles: chars start as blocky fragments —
+						// tiny, rotated, blurred, scattered. Snap and cluster into
+						// clean typography like resolution increasing.
+						const pSplit = new SplitText(hw, { type: 'chars' });
+						splitInstances.push(pSplit);
+						pSplit.chars.forEach((char, i) => {
+							gsap.set(char, {
+								scale: 0.3 + (i % 3) * 0.1,
+								rotation: (i % 2 === 0 ? 1 : -1) * (15 + (i % 4) * 10),
+								opacity: 0.15,
+								filter: 'blur(4px)',
+								x: (i % 2 === 0 ? 1 : -1) * (4 + (i % 3) * 3),
+								y: (i % 3 === 0 ? -1 : 1) * (3 + (i % 4) * 2),
+							});
+						});
+						const pTween = gsap.to(pSplit.chars, {
+							scale: 1,
+							rotation: 0,
+							opacity: 1,
+							filter: 'blur(0px)',
+							x: 0,
+							y: 0,
+							stagger: 0.03,
+							ease: 'power2.out',
+							scrollTrigger: {
+								trigger: hw,
+								containerAnimation: tween,
+								start: 'left 55%',
+								end: 'left 15%',
+								scrub: true,
+							},
+						});
+						tweens.push(pTween);
+					}
 
 				} else if (effect === 'wave') {
 					if (highlightText === 'stations') {
-						// Panel 3 "Stations": chars wave with sine y-offset ripple
+						// Panel 3 "Stations": chars wave with sine y-offset ripple (KEPT)
 						const waveSplit = new SplitText(hw, { type: 'chars' });
 						splitInstances.push(waveSplit);
 						const waveTargets = waveSplit.chars.length > 0 ? waveSplit.chars : [hw];
-						// Ripple up then back to 0 within the scroll range
 						const waveTl = gsap.timeline({
 							scrollTrigger: {
-								trigger: el,
+								trigger: hw,
 								containerAnimation: tween,
-								start: 'left 60%',
-								end: 'left 30%',
+								start: 'left 55%',
+								end: 'left 20%',
 								scrub: true,
 							},
 						});
@@ -435,35 +502,49 @@
 						tweens.push(waveTl);
 
 					} else if (highlightText === 'understand') {
-						// Panel 3 "understand": scale 1→1.1 + orange + glow shadow.
-						// Reduced from 1.2 to 1.1 to prevent overlapping adjacent text.
-						const popTween = gsap.to(hw, {
-							scale: 1.1,
+						// Panel 3 "understand": disorder → comprehension.
+						// Chars start scattered, blurred, dim with random offsets and
+						// rotation. Gradually resolve into order — a thought clicking.
+						const uSplit = new SplitText(hw, { type: 'chars' });
+						splitInstances.push(uSplit);
+						uSplit.chars.forEach((char, i) => {
+							gsap.set(char, {
+								x: (i % 2 === 0 ? 1 : -1) * (6 + (i % 5) * 3),
+								y: (i % 3 === 0 ? -1 : 1) * (4 + (i % 4) * 3),
+								rotation: (i % 2 === 0 ? 1 : -1) * (5 + (i % 6) * 4),
+								opacity: 0.15,
+								filter: 'blur(3px)',
+							});
+						});
+						const uTween = gsap.to(uSplit.chars, {
+							x: 0,
+							y: 0,
+							rotation: 0,
+							opacity: 1,
+							filter: 'blur(0px)',
 							color: '#E07800',
-							textShadow: '0 0 20px rgba(224,120,0,0.5)',
+							stagger: { each: 0.02, from: 'random' },
 							ease: 'power2.out',
 							scrollTrigger: {
-								trigger: el,
+								trigger: hw,
 								containerAnimation: tween,
-								start: 'left 40%',
+								start: 'left 55%',
 								end: 'left 15%',
 								scrub: true,
 							},
 						});
-						tweens.push(popTween);
+						tweens.push(uTween);
 					}
 
 				} else if (effect === 'gradient') {
 					if (highlightText === 'motion') {
-						// Panel 4 "motion": orange color + 360deg rotation on scrub.
-						// Gradient via CSS backgroundImage is not animatable by GSAP
-						// (causes text to disappear). Use plain color instead.
+						// Panel 4 "motion": orange color + 360deg rotation (KEPT)
 						const motionTl = gsap.timeline({
 							scrollTrigger: {
-								trigger: el,
+								trigger: hw,
 								containerAnimation: tween,
-								start: 'left 60%',
-								end: 'left 10%',
+								start: 'left 55%',
+								end: 'left 8%',
 								scrub: true,
 							},
 						});
@@ -472,21 +553,48 @@
 						tweens.push(motionTl);
 
 					} else if (highlightText === 'unforgettable') {
-						// Panel 4 "unforgettable": scale + orange + glow, pure scrub.
-						// No yoyo/repeat — single smooth transition that reverses on scroll back.
-						const unforgettableTween = gsap.to(hw, {
-							scale: 1.15,
-							color: '#E07800',
-							textShadow: '0 0 20px rgba(224,120,0,0.5)',
+						// Panel 4 "unforgettable": ghosted → permanent.
+						// Chars start barely visible, drifting — a memory slipping away.
+						// Gradually reclaim solidity, becoming emotionally stamped.
+						const ufSplit = new SplitText(hw, { type: 'chars' });
+						splitInstances.push(ufSplit);
+						ufSplit.chars.forEach((char, i) => {
+							gsap.set(char, {
+								opacity: 0.06,
+								y: (i % 2 === 0 ? -1 : 1) * (2 + (i % 3)),
+								filter: 'blur(2px)',
+								scale: 0.95,
+							});
+						});
+						// Two-phase: ghost becomes visible, then crisp and permanent
+						const ufTl = gsap.timeline({
 							scrollTrigger: {
-								trigger: el,
+								trigger: hw,
 								containerAnimation: tween,
-								start: 'left 40%',
-								end: 'left 15%',
+								start: 'left 55%',
+								end: 'left 8%',
 								scrub: true,
 							},
 						});
-						tweens.push(unforgettableTween);
+						ufTl.to(ufSplit.chars, {
+							opacity: 0.5,
+							y: 0,
+							filter: 'blur(1px)',
+							scale: 1,
+							stagger: 0.015,
+							duration: 0.5,
+							ease: 'power1.out',
+						});
+						ufTl.to(ufSplit.chars, {
+							opacity: 1,
+							filter: 'blur(0px)',
+							color: '#E07800',
+							textShadow: '0 0 12px rgba(224,120,0,0.3)',
+							stagger: 0.01,
+							duration: 0.5,
+							ease: 'power2.out',
+						});
+						tweens.push(ufTl);
 					}
 				}
 			});
@@ -518,33 +626,68 @@
 				scrollTrigger: {
 					trigger: panelDiv,
 					containerAnimation: tween,
-					start: 'left 70%',
-					end: 'left 40%',
+					start: 'left 50%',
+					end: 'left 25%',
 					scrub: true,
 				},
 			});
 			tweens.push(iconTween);
 		});
 
-		// Panel 5 CTA: char-by-char reveal for "Your next stop?" text
+		// Panel 5 CTA: "Your next stop?" — separate "stop" for brake effect
 		const ctaPanel = track.querySelector<HTMLElement>('[data-testid="journey-cta-prompt"]');
 		const ctaTextEl = ctaPanel?.querySelector<HTMLElement>('[data-cta-text]');
 		if (ctaTextEl) {
 			const ctaSplit = new SplitText(ctaTextEl, { type: 'chars' });
 			splitInstances.push(ctaSplit);
-			const ctaCharTween = gsap.from(ctaSplit.chars.length > 0 ? ctaSplit.chars : [ctaTextEl], {
-				opacity: 0,
-				stagger: 0.04,
-				ease: 'power1.in',
-				scrollTrigger: {
-					trigger: ctaPanel!,
-					containerAnimation: tween,
-					start: 'left 70%',
-					end: 'left 40%',
-					scrub: true,
-				},
-			});
-			tweens.push(ctaCharTween);
+
+			// Separate "stop" chars (inside highlight-brake span) from others
+			const stopHighlight = ctaTextEl.querySelector('.highlight-brake');
+			const allCtaChars = Array.from(ctaSplit.chars) as HTMLElement[];
+			const stopChars = stopHighlight
+				? allCtaChars.filter((c) => stopHighlight.contains(c))
+				: [];
+			const otherChars = allCtaChars.filter((c) => !stopChars.includes(c));
+
+			// Non-stop chars: no animation — static white text.
+			// Only "stop" keyword gets the brake effect.
+
+			// "stop" chars: train braking into station.
+			// Subtle initial momentum (small offset + slight stretch + blur),
+			// then decelerate and lock into crisp yellow position.
+			// Values kept small so the word is always readable even at progress 0.
+			if (stopChars.length > 0) {
+				stopChars.forEach((char, i) => {
+					gsap.set(char, {
+						x: 10 - (i * 2),
+						scaleX: 1.04,
+						opacity: 0.75,
+						filter: 'blur(0.5px)',
+					});
+				});
+
+				// Start at 75% (entering from right), complete by 50% (center).
+				// Completing by center ensures the animation finishes on any
+				// screen width, including mobile where the word can't scroll
+				// as far left before the pin releases.
+				const brakeTween = gsap.to(stopChars, {
+					x: 0,
+					scaleX: 1,
+					opacity: 1,
+					filter: 'blur(0px)',
+					color: '#FFB627',
+					stagger: 0.04,
+					ease: 'power3.out',
+					scrollTrigger: {
+						trigger: stopHighlight!,
+						containerAnimation: tween,
+						start: 'left 75%',
+						end: 'left 50%',
+						scrub: true,
+					},
+				});
+				tweens.push(brakeTween);
+			}
 		}
 
 		// Panel 5 CTA button: scale in with elastic ease, then exaggerated pulsing glow.
@@ -559,8 +702,8 @@
 				scrollTrigger: {
 					trigger: ctaPanel!,
 					containerAnimation: tween,
-					start: 'left 50%',
-					end: 'left 25%',
+					start: 'left 40%',
+					end: 'left 15%',
 					scrub: true,
 				},
 			});
@@ -570,7 +713,7 @@
 			ScrollTrigger.create({
 				trigger: ctaButton,
 				containerAnimation: tween,
-				start: 'left 80%',
+				start: 'left 40%',
 				once: true,
 				onEnter: () => {
 					const glowTween = gsap.to(ctaButton, {
@@ -596,7 +739,11 @@
 		tweens = [];
 		scrollTriggerInstance?.kill();
 		scrollTriggerInstance = undefined;
-		splitInstances.forEach((s) => s.revert());
+		// Revert in reverse order — inner SplitText instances must revert
+		// before outer ones to avoid operating on already-restored DOM nodes
+		for (let i = splitInstances.length - 1; i >= 0; i--) {
+			splitInstances[i].revert();
+		}
 		splitInstances = [];
 	});
 </script>
@@ -701,12 +848,12 @@
 						</p>
 
 						<!-- Panel text with highlighted words (SplitText target).
-							 Panel 1 (foundation): muted grey #999 base for non-highlight text.
-							 Panels 2-4: white #f5f5f5 for non-highlight words. -->
+							 All panels use white #f5f5f5 base. GSAP animates highlight
+							 words to their target color (orange/yellow) per the color map. -->
 						<p
 							data-panel-text
 							class="font-heading text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
-							style="color: {panel.id === 'foundation' ? '#999' : '#f5f5f5'};"
+							style="color: #f5f5f5;"
 						>
 							{@html markHighlightWords(
 								resolveLocale(panel.text, 'en'),
@@ -740,7 +887,7 @@
 					<div class="flex items-center gap-4">
 						<span class="h-4 w-4 rounded-full bg-[#E07800] animate-pulse"></span>
 						<p data-cta-text class="font-heading text-4xl font-bold text-[var(--text-primary)] md:text-5xl lg:text-6xl">
-							{ctaPromptText}
+							{@html ctaPromptText.replace(/\b(stop)\b/i, '<span class="highlight-word highlight-brake" data-highlight="brake" style="display:inline-block; transform-origin:center bottom">$1</span>')}
 						</p>
 					</div>
 					<a

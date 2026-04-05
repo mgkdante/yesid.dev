@@ -222,19 +222,14 @@ static/
 
 ## Active Slice
 
-**Slice B — Animated Wordmark + Horizontal Scroll CTA** (IN PROGRESS)
+**Slice B+ — Geometric Shape Morphs for SkillsJourney** (NEXT)
 - Slice A complete — handoff at `docs/handoffs/handoff-slice-a-svg-hero.md`
+- Slice B complete — handoff at `docs/handoffs/handoff-slice-b.md`
 - Slice C complete — handoff at `docs/handoffs/handoff-slice-c-zoom-transition.md`
-- **Slice B status:** Read `memory/project_slice_b_status.md` for full details
-- **What works:** Nav wordmark hover (4 effects), typewriter, SkillsJourney horizontal scroll, icons, CTA
-- **What's broken:** Scroll-linked text animations (color, glow, bounce, scale) don't reverse properly with GSAP `containerAnimation`. Need to use GSAP MCP (`mcp__gsap-master__get_gsap_api_expert` with "containerAnimation") to get the correct pattern.
-- **Next:** Fix scroll animations per panel spec, then add geometric shape morphs (MorphSVGPlugin)
-- Key files: `SkillsJourney.svelte`, `Nav.svelte`, `HeroBanner.svelte`
-- Slice spec: `docs/slices/slice-b-wordmark-cta.md`
-- Design spec: `docs/superpowers/specs/2026-04-04-slice-b-wordmark-cta-design.md`
-- Panel animation spec: `.superpowers/brainstorm/15385-1775358896/content/panel-colors-anims.html`
-- Current wordmark: plain text in `Nav.svelte` (`<a>yesid<span class="text-brand-primary">.</span></a>`)
-- Key files: `Nav.svelte`, `HeroBanner.svelte`
+- **Goal:** Add SVG shapes near keywords that morph via MorphSVGPlugin on scroll
+- **Shape mapping:** See `memory/project_slice_b_shapes.md` for keyword→shape table
+- **Reference images:** `static/svg/` — Yesid-provided target shape references for logic, pixels, station, understand, motion
+- Key file: `src/lib/components/SkillsJourney.svelte`
 - GSAP plugins available: SplitText, DrawSVGPlugin, CustomEase, ScrollTrigger, MotionPathPlugin, MorphSVGPlugin (all free)
 
 ## Brand Rules (Non-Negotiable)
