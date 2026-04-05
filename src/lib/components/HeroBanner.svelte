@@ -16,7 +16,7 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, ScrollTrigger, CustomEase, SplitText } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap, ScrollTrigger, CustomEase } from '$lib/motion/utils/gsap.js';
 	import { heroAnimContent, heroContent } from '$lib/data';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import MetroNetwork from '$lib/motion/svg/MetroNetwork.svelte';
@@ -66,20 +66,26 @@
 		registerGsapPlugins();
 		CustomEase.create('networkDraw', 'M0,0 C0.2,0.6 0.4,1 1,1');
 
-		// Typewriter: reveal scroll prompt chars one by one using GSAP SplitText.
-		// No CSS overflow/width tricks — SplitText handles visibility via opacity.
+		// Classic JS typewriter: write one character at a time with a trailing
+		// underscore cursor. The _ follows the typing position exactly.
 		if (scrollPrompt) {
-			const promptSplit = new SplitText(scrollPrompt, { type: 'chars' });
-			// Hide all chars + cursor initially
-			gsap.set(promptSplit.chars, { opacity: 0 });
-			// Reveal chars one by one, cursor blinks via CSS
-			gsap.to(promptSplit.chars, {
-				opacity: 1,
-				stagger: 0.07,
-				duration: 0.01,
-				ease: 'none',
-				delay: 0.5,
-			});
+			const fullText = scrollDownLabel;
+			scrollPrompt.textContent = '_';
+			let charIndex = 0;
+			const typeInterval = setInterval(() => {
+				charIndex++;
+				if (charIndex <= fullText.length) {
+					scrollPrompt.textContent = fullText.substring(0, charIndex) + '_';
+				} else {
+					clearInterval(typeInterval);
+					// After typing, blink the cursor forever
+					let cursorVisible = true;
+					setInterval(() => {
+						cursorVisible = !cursorVisible;
+						scrollPrompt.textContent = fullText + (cursorVisible ? '_' : '\u00A0');
+					}, 500);
+				}
+			}, 80);
 		}
 
 		const lines = svg.querySelectorAll('.metro-line');
@@ -440,7 +446,7 @@
 			bind:this={scrollPrompt}
 			class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-lg tracking-[4px] text-[#E07800] md:text-2xl"
 		>
-			{scrollDownLabel}<span class="typewriter-cursor" aria-hidden="true">_</span>
+			{scrollDownLabel}
 		</p>
 	</div>
 </section>
@@ -450,13 +456,4 @@
 	   overflow:hidden clips characters that haven't appeared yet.
 	   white-space:nowrap prevents line breaks mid-animation.
 	   The cursor blink is a separate animation on border-right. */
-	/* Blinking underscore cursor — always visible, blinks forever */
-	:global(.typewriter-cursor) {
-		animation: cursor-blink 0.6s step-end infinite;
-	}
-
-	@keyframes cursor-blink {
-		from, to { opacity: 1; }
-		50% { opacity: 0; }
-	}
 </style>
