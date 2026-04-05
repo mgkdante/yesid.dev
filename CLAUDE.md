@@ -204,10 +204,15 @@ See `tree.txt` for the full file tree (updated every slice). Key directories:
 ```
 src/
 ├── content/blog/           # Markdown blog posts with YAML frontmatter
+│   ├── professional/       #   Data/SQL/infra posts (orange accent)
+│   ├── personal/           #   Personal posts (yellow accent)
+│   └── _template.md        #   Copy-paste template for new posts
 ├── lib/
 │   ├── data/               # Typed data layer: types, services, projects, blog, meta
 │   ├── components/         # UI components: HeroBanner, ServiceStation, FeaturedWork,
-│   │                       #   AboutBento, BlogCard, BlogFeed, StationDivider, etc.
+│   │                       #   AboutBento, BlogCard, BlogFeed, BlogListingPage,
+│   │                       #   BlogRow, BlogSvgIcon, BlogDetailHeader, BlogContent,
+│   │                       #   BlogFilterSidebar, BlogFilterMobile, StationDivider, etc.
 │   └── motion/
 │       ├── actions/        # Svelte actions: boop, reveal, magnetic, ripple, tilt
 │       ├── stores/         # Scroll position, reduced-motion preference
@@ -217,6 +222,10 @@ src/
 │       └── utils/          # GSAP helpers, stagger calculator
 ├── routes/
 │   ├── +page.svelte        # Home: 8-stop metro journey
+│   ├── blog/               # Blog system (Slice 07)
+│   │   ├── +page.svelte    #   Professional listing
+│   │   ├── personal/       #   Personal Corner listing
+│   │   └── [slug]/         #   Post detail page
 │   └── preview/            # Dev-only 3D preview
 ├── tests/                  # Test setup
 docs/
@@ -236,14 +245,15 @@ static/
 - Slice B complete — handoff at `docs/handoffs/handoff-slice-b.md`
 - Slice C complete — handoff at `docs/handoffs/handoff-slice-c-zoom-transition.md`
 - Slice B+ complete — handoff at `docs/handoffs/handoff-slice-b-plus.md`
+- Slice 07 complete — handoff at `docs/handoffs/handoff-slice-07.md`
 
 ## Active Slice
 
-**Slice 07 — Blog System (yesid.dev/blog)** (NEXT)
-- Build `/blog` listing page and `/blog/[slug]` detail pages
-- Blog data already reads from markdown files in `src/content/blog/`
-- Spec to be written in `docs/slices/slice-07-blog.md`
-- GSAP plugins available: SplitText, DrawSVGPlugin, CustomEase, ScrollTrigger, MotionPathPlugin, MorphSVGPlugin (all free)
+**Slice 08 — Work Pages (index + FLIP filter + detail)** (NEXT)
+- Build `/work` listing page with ProjectGrid + animated tag filtering (FLIP)
+- Build `/work/[slug]` detail pages with scroll-reveal sections and stagger-animated tech tags
+- 404 for invalid slugs
+- Depends on: Slices 02, 03, 07
 
 ## Brand Rules (Non-Negotiable)
 

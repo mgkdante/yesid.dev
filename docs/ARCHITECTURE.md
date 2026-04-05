@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-05
+**Last updated:** 2026-04-05 (Slice 07)
 
 ## Stack
 
@@ -54,6 +54,13 @@ src/
 │   │   ├── AboutBento.svelte    # ← Slice 06d: mini bento grid about teaser (stop 06)
 │   │   ├── BlogCard.svelte      # ← Slice 06d: individual blog post card
 │   │   ├── BlogFeed.svelte      # ← Slice 06d: latest blog posts section (stop 07)
+│   │   ├── BlogListingPage.svelte  # ← Slice 07: shared listing page (search, filters, tag sidebar)
+│   │   ├── BlogRow.svelte          # ← Slice 07: post row for listings (SVG, title, excerpt, tags)
+│   │   ├── BlogFilterSidebar.svelte # ← Slice 07: desktop tag filter sidebar
+│   │   ├── BlogFilterMobile.svelte  # ← Slice 07: mobile filter controls
+│   │   ├── BlogDetailHeader.svelte  # ← Slice 07: post detail header (title, date, SVG)
+│   │   ├── BlogContent.svelte      # ← Slice 07: rendered markdown with typography styles
+│   │   ├── BlogSvgIcon.svelte      # ← Slice 07: SVG renderer with GSAP entrance + MorphSVG hover
 │   │   └── StationDivider.svelte # ← Slice 06d: yellow/black hazard stripe between stops
 │   └── motion/          # ← Added in Slice 04
 │       ├── actions/
@@ -98,6 +105,15 @@ src/
     ├── +layout.svelte   # Root layout: Nav + ScrollRail + page content + Footer + page transitions
     ├── +page.ts         # SSR disabled (Three.js/GSAP need browser APIs)
     ├── +page.svelte     # Home: hero + SkillsJourney horizontal scroll + services + projects + about + blog + CTA
+    ├── blog/            # ← Slice 07: blog system
+    │   ├── +page.svelte     # Professional blog listing
+    │   ├── +page.ts         # Loads professional posts, tags, SVGs
+    │   ├── personal/
+    │   │   ├── +page.svelte # Personal Corner listing (yellow accent)
+    │   │   └── +page.ts     # Loads personal posts, tags, SVGs
+    │   └── [slug]/
+    │       ├── +page.svelte # Post detail page (centered max-w-2xl)
+    │       └── +page.ts     # Loads post data, SVG, rendered HTML
     └── preview/
         ├── +page.ts     # SSR disabled
         └── +page.svelte # Dev-only 3D scene preview with slider controls
@@ -151,6 +167,8 @@ Two systems coexist and serve different purposes:
 | `@playwright/test` | ^1.58.2 | E2E browser testing |
 | `jsdom` | ^29.0.1 | DOM environment for unit tests |
 | `@types/three` | ^0.183.1 | TypeScript types for Three.js |
+| `marked` | ^* | Markdown-to-HTML rendering for blog posts (used instead of mdsvex for content) |
+| `mdsvex` | ^* | Svelte markdown preprocessor (enables `.md` as SvelteKit page extension) |
 
 ## Blog System (Slice 07)
 
