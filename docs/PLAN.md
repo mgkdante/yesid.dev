@@ -183,6 +183,10 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 05 | Layout shell + scroll progress rail | complete | 03, 04 | 1 |
 | 06 | Home page: train journey + hero 3D scene | complete | 02, 04, 05 | 2-3 |
 | 06d | Home page redesign: Metro System Evolved | complete | 06 | 3-4 |
+| A | SVG metro hero (experimental) | complete | 06d | 1 |
+| C | Zoom transition between hero + journey | complete | A | 1 |
+| B | Animated wordmark + horizontal scroll CTA | complete | A, C | 2 |
+| B+ | Geometric shape morphs for SkillsJourney | ready | B | 1-2 |
 | 06f | Scroll-linked video hero (replace 3D fab) | planned | 06d | 1 |
 | 06e | Blog system (markdown content + /blog routes) | planned | 06d | 1-2 |
 | 07 | Work pages (index + FLIP filter + detail) | planned | 02, 03, 05 | 1-2 |
@@ -252,6 +256,22 @@ The centerpiece. Build the scroll-driven train journey:
 Full 8-stop metro journey: hero, 4 services, featured work, about bento, blog, terminal CTA. Data-driven metro line (`metro.ts`): stop numbers auto-compute from services. Centralized i18n content (`content.ts`). Bird's-eye 2-wagon train SVG. Fullscreen metro-themed hamburger menu with glow. Rail scoped to main body. Hidden browser scrollbar. 3D wagon renders via Threlte/Draco (to be replaced with video in 06f).
 
 Handoff: `docs/handoffs/handoff-slice-06d.md`
+
+### Slice A — SVG Metro Hero (Experimental)
+**Status:** complete
+SVG-based metro hero replacing 3D Threlte scene. Lighter, faster, more stylized. Berri-UQAM station art as background. See `docs/handoffs/handoff-slice-a-svg-hero.md`.
+
+### Slice C — Zoom Transition
+**Status:** complete
+Smooth zoom transition between hero banner and SkillsJourney section. See `docs/handoffs/handoff-slice-c-zoom-transition.md`.
+
+### Slice B — Animated Wordmark + Horizontal Scroll CTA
+**Status:** complete (approved 2026-04-05)
+Nav wordmark hover animations (4 cycling SplitText effects). SkillsJourney: 5-panel horizontal scroll section with 7 unique cinematic per-keyword text animations (foundation assembly, data scramble, logic convergence, pixels fragmentation, understand comprehension, unforgettable persistence, stop brake). CTA with pulsing glow button. All effects scrubbed to scroll via `containerAnimation`, per-word triggers. See `docs/handoffs/handoff-slice-b.md`.
+
+### Slice B+ — Geometric Shape Morphs
+**Status:** ready
+SVG shapes beside/above each keyword that morph from generic geometry (circle, square, triangle, hexagon) into meaning-specific icons via MorphSVGPlugin. Reference SVGs in `static/svg/`. Shapes are `<path>` elements (not rects). See `docs/slices/slice-b-plus-shape-morphs.md`.
 
 ### Slice 06f — Scroll-Linked Video Hero
 **Status:** planned
@@ -407,6 +427,13 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 | 2026-04-03 | Data-driven metro line (metro.ts) | Stop numbers auto-compute. Adding a service extends the entire rail. |
 | 2026-04-03 | Centralized i18n content (content.ts) | All UI strings in one place for future French/Spanish translations |
 | 2026-04-03 | Replace 3D fab with scroll-linked video | Google Flow video provides better visual impact than the raw GLB model |
+| 2026-04-04 | Experimental slices (A, B, C) for hero + journey | Rapid prototyping of SVG hero, zoom transition, and horizontal scroll CTA |
+| 2026-04-04 | GSAP all plugins free | SplitText, DrawSVGPlugin, MorphSVGPlugin, CustomEase — all available at no cost |
+| 2026-04-05 | SkillsJourney horizontal scroll section | 5-panel horizontal scroll with data-driven panels, replacing train journey on home page |
+| 2026-04-05 | Per-word GSAP triggers (trigger: hw) | Using individual word elements as ScrollTrigger targets instead of paragraph for accurate timing |
+| 2026-04-05 | containerAnimation + scrub for all effects | Pure scrub with containerAnimation naturally reverses on scroll back; no toggleActions/yoyo |
+| 2026-04-05 | No animation on non-keyword text | Static white text for uniform look + lighter performance; only keywords get effects |
+| 2026-04-05 | Shape morphs deferred to Slice B+ | MorphSVGPlugin shapes separated from text animations for cleaner delivery |
 
 ## Rules
 

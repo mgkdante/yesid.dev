@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-03
+**Last updated:** 2026-04-05
 
 ## Stack
 
@@ -48,7 +48,8 @@ src/
 │   │   ├── ProjectCard.svelte   # clickable project card with boop hover
 │   │   ├── ProjectGrid.svelte   # responsive grid of ProjectCards
 │   │   ├── Hero.svelte          # hero block (heading, subheading, CTA buttons)
-│   │   ├── HeroBanner.svelte    # ← Slice 06d: split hero with 3D wagon + art bg + bold type
+│   │   ├── HeroBanner.svelte    # ← Slice 06d: split hero with art bg + bold type + typewriter scroll prompt
+│   │   ├── SkillsJourney.svelte # ← Slice B: horizontal scroll CTA (5 panels, per-word GSAP anims, icons)
 │   │   ├── FeaturedWork.svelte  # ← Slice 06d: featured projects grid (stop 05)
 │   │   ├── AboutBento.svelte    # ← Slice 06d: mini bento grid about teaser (stop 06)
 │   │   ├── BlogCard.svelte      # ← Slice 06d: individual blog post card
@@ -78,7 +79,7 @@ src/
 │       │   ├── StationNodes.svelte  # IcosahedronGeometry per station, glow on activeStation
 │       │   └── PostProcessing.svelte # EffectComposer + bloom post-processing
 │       ├── utils/
-│       │   ├── gsap.ts          # registerGsapPlugins(), re-exports gsap/ScrollTrigger
+│       │   ├── gsap.ts          # registerGsapPlugins(), re-exports gsap/ScrollTrigger/SplitText
 │       │   ├── stagger.ts       # stagger(index, baseDelay) timing calculator
 │       │   └── index.ts         # barrel export
 │       └── index.ts             # top-level barrel — import from '$lib/motion'
@@ -96,7 +97,7 @@ src/
 └── routes/
     ├── +layout.svelte   # Root layout: Nav + ScrollRail + page content + Footer + page transitions
     ├── +page.ts         # SSR disabled (Three.js/GSAP need browser APIs)
-    ├── +page.svelte     # Home page: 8-stop metro journey (hero, services, projects, about, blog, CTA)
+    ├── +page.svelte     # Home: hero + SkillsJourney horizontal scroll + services + projects + about + blog + CTA
     └── preview/
         ├── +page.ts     # SSR disabled
         └── +page.svelte # Dev-only 3D scene preview with slider controls
@@ -150,3 +151,13 @@ Two systems coexist and serve different purposes:
 | `@playwright/test` | ^1.58.2 | E2E browser testing |
 | `jsdom` | ^29.0.1 | DOM environment for unit tests |
 | `@types/three` | ^0.183.1 | TypeScript types for Three.js |
+
+## Static Assets
+
+```
+static/
+├── images/              # Hero background art
+├── models/              # 3D assets (metro-wagon.glb)
+├── lottie/              # Station Lottie animations
+└── svg/                 # ← Slice B+: shape morph reference SVGs (foundation, data, logic, etc.)
+```
