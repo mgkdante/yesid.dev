@@ -43,6 +43,12 @@ export interface Project {
 	featured: boolean;
 	repoUrl?: string;
 	liveUrl?: string;
+	// Service IDs this project is associated with. SVGs cascade from services.
+	// A project can link to 1+ services. IDs must match existing service.id values.
+	relatedServices: string[];
+	// GitHub raw README URL for auto-import as the last content section.
+	// Fetched in SvelteKit load(). Omit if no README should be shown.
+	readmeUrl?: string;
 	sections: ProjectSection[];
 }
 
@@ -63,6 +69,12 @@ export interface Service {
 	// Some marketplace Lotties have their "complete" state at frame 0 instead of the last
 	// frame. Reversing makes the animation build up as the user scrolls down.
 	lottieReverse?: boolean;
+	// SVG illustration filename for work page cards and detail pages.
+	// Each service gets one SVG that cascades to all linked projects.
+	svg?: string;
+	// When false, this service is hidden from listings and filters.
+	// Allows toggling services on/off without deleting data. Defaults to true.
+	visible?: boolean;
 	// Slugs of projects to show at this station. Must exist in the projects array.
 	relatedProjects: string[];
 }

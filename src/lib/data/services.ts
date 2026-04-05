@@ -1,6 +1,6 @@
 import type { Service } from './types.js';
 
-// Four core service offerings. English-only for now.
+// Six core service offerings. English-only for now.
 // Station numbers are sequential (1-4) matching the train journey order defined in
 // MOTION.md. The station system is data-driven: adding a 5th service means adding one
 // object here with station: 5 — no component or layout changes needed.
@@ -16,7 +16,9 @@ export const services: readonly Service[] = [
 		},
 		station: 1,
 		icon: 'station-sql.json',
-		relatedProjects: ['transit-data-pipeline']
+		svg: 'service-sql.svg',
+		visible: true,
+		relatedProjects: ['transit-data-pipeline', 'lorem-query-optimizer', 'lorem-database-migration']
 	},
 	{
 		id: 'data-pipeline',
@@ -26,6 +28,8 @@ export const services: readonly Service[] = [
 		},
 		station: 2,
 		icon: 'station-pipeline.json',
+		svg: 'service-pipeline.svg',
+		visible: true,
 		relatedProjects: ['transit-data-pipeline']
 	},
 	{
@@ -36,17 +40,43 @@ export const services: readonly Service[] = [
 		},
 		station: 3,
 		icon: 'station-analytics.json',
-		relatedProjects: ['transit-data-pipeline']
+		svg: 'service-reporting.svg',
+		visible: true,
+		relatedProjects: ['transit-data-pipeline', 'lorem-analytics-dashboard', 'lorem-retool-admin']
 	},
 	{
-		id: 'database-performance',
-		title: { en: 'Database Performance Tuning' },
+		id: 'database-engineering',
+		title: { en: 'Database Engineering' },
 		description: {
-			en: 'Diagnose slow queries, missing indexes, and schema bottlenecks. Targeted fixes that reduce query time without rewriting your application.'
+			en: 'Design, migrate, and tune databases for performance. Schema modeling, index optimization, and migration strategy built for reliability.'
 		},
 		station: 4,
 		icon: 'station-performance.json',
 		lottieReverse: true,
-		relatedProjects: []
+		svg: 'service-database.svg',
+		visible: true,
+		relatedProjects: ['lorem-database-migration', 'lorem-query-optimizer']
+	},
+	{
+		id: 'internal-tooling',
+		title: { en: 'Internal Tooling' },
+		description: {
+			en: 'Build admin panels and workflow tools that replace spreadsheets. Retool, custom dashboards, and approval systems designed for operations teams.'
+		},
+		station: 5,
+		svg: 'service-tooling.svg',
+		visible: true,
+		relatedProjects: ['lorem-retool-admin']
+	},
+	{
+		id: 'web-development',
+		title: { en: 'Web Development' },
+		description: {
+			en: 'Data-driven web apps and authenticated portals. Full-stack development with SvelteKit, responsive design, and API integration.'
+		},
+		station: 6,
+		svg: 'service-web.svg',
+		visible: true,
+		relatedProjects: ['yesid-dev']
 	}
 ];

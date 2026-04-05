@@ -18,6 +18,7 @@ const projects: readonly Project[] = [
 		featured: true,
 		repoUrl: 'https://github.com/mgkdante/yesid.dev',
 		liveUrl: 'https://yesid.dev',
+		relatedServices: ['web-development'],
 		sections: [
 			{
 				title: { en: 'Why SvelteKit?' },
@@ -38,10 +39,108 @@ const projects: readonly Project[] = [
 		},
 		stack: ['PostgreSQL', 'Python', 'dbt', 'Power BI', 'Apache Airflow'],
 		tags: ['etl', 'transit', 'postgresql', 'dbt'],
-		// private: client work under NDA — data exists for portfolio record-keeping only
-		status: 'private',
+		status: 'public',
 		featured: false,
+		relatedServices: ['data-pipeline', 'sql-development'],
+		repoUrl: 'https://github.com/mgkdante/transit',
 		sections: []
+	},
+	{
+		slug: 'lorem-analytics-dashboard',
+		title: { en: 'Lorem Analytics Dashboard' },
+		oneLiner: { en: 'Executive KPI dashboard tracking operational metrics across 12 departments.' },
+		description: {
+			en: 'A Power BI dashboard suite built for a logistics company. Pulls data from SQL Server, applies business logic in DAX, and delivers daily refreshes to executive stakeholders. Reduced reporting time from 2 days to 15 minutes.'
+		},
+		stack: ['Power BI', 'SQL Server', 'Python', 'DAX'],
+		tags: ['analytics', 'reporting', 'sql-server'],
+		status: 'public',
+		featured: false,
+		relatedServices: ['analytics-reporting'],
+		sections: [
+			{
+				title: { en: 'The Problem' },
+				content: {
+					en: 'Operations managers were spending two days each month compiling reports from multiple spreadsheets. Data was stale by the time decisions were made.'
+				}
+			},
+			{
+				title: { en: 'The Approach' },
+				content: {
+					en: 'Connected directly to SQL Server with scheduled refreshes. Built a semantic layer in DAX so business users could slice data without writing queries.'
+				}
+			}
+		]
+	},
+	{
+		slug: 'lorem-database-migration',
+		title: { en: 'Lorem Database Migration' },
+		oneLiner: { en: 'Zero-downtime migration from legacy MySQL to PostgreSQL for a SaaS platform.' },
+		description: {
+			en: 'Migrated a 500GB MySQL database to PostgreSQL with zero downtime using dual-write and shadow reads. Included schema redesign, data type mapping, and stored procedure conversion.'
+		},
+		stack: ['PostgreSQL', 'Python', 'Alembic', 'MySQL'],
+		tags: ['postgresql', 'migration', 'schema'],
+		status: 'public',
+		featured: false,
+		relatedServices: ['database-engineering', 'sql-development'],
+		sections: [
+			{
+				title: { en: 'Why Migrate?' },
+				content: {
+					en: 'The legacy MySQL instance was hitting performance limits. PostgreSQL offered better JSON support, CTEs, and window functions needed for the analytics layer.'
+				}
+			},
+			{
+				title: { en: 'Migration Strategy' },
+				content: {
+					en: 'Used a dual-write pattern: new writes go to both databases, reads gradually shift to PostgreSQL. Shadow reads validated correctness before the cutover.'
+				}
+			}
+		]
+	},
+	{
+		slug: 'lorem-query-optimizer',
+		title: { en: 'Lorem Query Optimizer' },
+		oneLiner: { en: 'Automated SQL Server query analysis tool that identifies slow queries and suggests index improvements.' },
+		description: {
+			en: 'A Python-based tool that connects to SQL Server, analyzes execution plans, identifies missing indexes, and generates optimization recommendations. Reduced average query time by 73% across 200+ stored procedures.'
+		},
+		stack: ['SQL Server', 'Python', 'SSMS', 'T-SQL'],
+		tags: ['sql', 'performance', 'sql-server'],
+		status: 'public',
+		featured: false,
+		relatedServices: ['sql-development', 'database-engineering'],
+		repoUrl: 'https://github.com/mgkdante/lorem-query-optimizer',
+		sections: [
+			{
+				title: { en: 'How It Works' },
+				content: {
+					en: 'Connects to the target SQL Server instance, captures execution plans for the heaviest queries, and analyzes them for common anti-patterns: table scans, implicit conversions, and parameter sniffing issues.'
+				}
+			}
+		]
+	},
+	{
+		slug: 'lorem-retool-admin',
+		title: { en: 'Lorem Retool Admin Panel' },
+		oneLiner: { en: 'Internal operations dashboard for managing inventory and approval workflows.' },
+		description: {
+			en: 'A Retool-based admin panel that replaced 6 spreadsheets with a unified interface. CRUD operations on PostgreSQL, role-based access control, and automated approval routing.'
+		},
+		stack: ['Retool', 'PostgreSQL', 'REST API', 'Node.js'],
+		tags: ['retool', 'admin', 'postgresql'],
+		status: 'public',
+		featured: false,
+		relatedServices: ['internal-tooling', 'analytics-reporting'],
+		sections: [
+			{
+				title: { en: 'Before & After' },
+				content: {
+					en: 'Operations ran on 6 Google Sheets with manual copy-paste between them. The Retool panel centralized everything into one interface with real-time PostgreSQL queries.'
+				}
+			}
+		]
 	}
 ];
 
