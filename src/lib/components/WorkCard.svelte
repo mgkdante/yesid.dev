@@ -9,6 +9,8 @@
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
+	import { tilt } from '$lib/motion/actions/tilt.js';
+	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import WorkSvgIcon from './WorkSvgIcon.svelte';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
@@ -65,6 +67,7 @@
 	data-testid="work-card"
 	data-flip-id={project.slug}
 	use:reveal={{ delay: stagger(index, 80) }}
+	use:tilt={{ maxDeg: 1.5 }}
 	onmouseenter={() => (cardHovered = true)}
 	onmouseleave={() => (cardHovered = false)}
 >
@@ -158,6 +161,7 @@
 				{#each displayTags as tag}
 					<span
 						class="rounded border border-[#E07800]/30 px-1.5 py-0.5 font-mono text-[10px] text-[#E07800]"
+						use:magnetic={{ strength: 2, radius: 30 }}
 					>
 						{tag}
 					</span>
@@ -176,7 +180,7 @@
 <style>
 	.work-card:hover article {
 		border-color: color-mix(in srgb, #E07800 50%, transparent);
-		box-shadow: 0 0 20px color-mix(in srgb, #E07800 10%, transparent);
+		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
 	/* Strip WorkSvgIcon container border/bg when nested in card badges */

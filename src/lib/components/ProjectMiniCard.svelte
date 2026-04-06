@@ -23,10 +23,16 @@
 
 <a
 	href="/work/{project.slug}"
-	class="project-mini-card group"
+	class="project-mini-card group relative overflow-hidden"
 	data-testid="project-mini-card"
 	use:reveal={{ direction: 'up', delay: 50 + index * 80 }}
 >
+	<!-- Radial-gradient glow overlay — matches standard card hover system -->
+	<div
+		class="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+		style="background: radial-gradient(ellipse at 50% 50%, rgba(224, 120, 0, 0.06), transparent 70%);"
+	></div>
+
 	<div class="card-body">
 		<h3 class="card-title">{title}</h3>
 		<p class="card-liner">{oneLiner}</p>
@@ -56,12 +62,12 @@
 		border: 1px solid #2a2a2a;
 		border-radius: 0.75rem;
 		text-decoration: none;
-		transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+		transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 	}
 
 	.project-mini-card:hover {
 		border-color: rgba(224, 120, 0, 0.5);
-		box-shadow: 0 0 20px rgba(224, 120, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
 		transform: translateY(-2px);
 	}
 

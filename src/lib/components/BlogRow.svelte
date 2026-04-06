@@ -8,6 +8,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
+	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
 
@@ -73,6 +74,7 @@
 					<span
 						class="rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors duration-200 md:text-xs"
 						style="border-color: color-mix(in srgb, {accentColor} 60%, transparent); color: {accentColor};"
+						use:magnetic={{ strength: 2, radius: 30 }}
 					>
 						{tag}
 					</span>
