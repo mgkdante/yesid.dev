@@ -23,6 +23,15 @@
 		serviceSvgContents: Record<string, string>;
 		readmeHtml?: string;
 	} = $props();
+
+	// Collapsible section state — all expanded by default
+	let overviewOpen = $state(true);
+	let sectionOpen = $state<boolean[]>(project.sections.map(() => true));
+	let readmeOpen = $state(true);
+
+	function toggleSection(index: number) {
+		sectionOpen[index] = !sectionOpen[index];
+	}
 </script>
 
 <article class="mx-auto max-w-4xl px-4 pb-16 pt-8" data-testid="work-detail-page">
@@ -79,32 +88,42 @@
 		<div class="min-w-0 flex-1 space-y-6">
 			<!-- Project description — boxed card with "Overview" label, matching section style -->
 			<div
-				class="section-card rounded-lg border-l-[3px] border-[#E07800] bg-[#141414] p-6"
+				class="section-card rounded-lg border-l-[3px] border-[#E07800] bg-[#141414]"
 				use:reveal={{ direction: 'up', delay: 100 }}
 			>
-				<div class="mb-2 flex items-center gap-2">
-					<!-- Overview icon (eye) -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<button
+					class="flex w-full items-center gap-2 p-6 pb-0 text-left"
+					onclick={() => overviewOpen = !overviewOpen}
+				>
 					<svg class="h-4 w-4 shrink-0 text-[#E07800]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 						<circle cx="8" cy="8" r="2.5" />
 						<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" />
 					</svg>
-					<h2 class="font-heading text-lg font-bold" style="color: #E07800;">
+					<h2 class="flex-1 font-heading text-lg font-bold" style="color: #E07800;">
 						Overview
 					</h2>
+					<span class="section-chevron text-xs text-[#666]" class:rotated={overviewOpen}>▸</span>
+				</button>
+				<div class="section-body" class:expanded={overviewOpen}>
+					<div class="px-6 pb-6 pt-3">
+						<p class="text-sm leading-relaxed text-[#ccc] md:text-base">
+							{resolveLocale(project.description, 'en')}
+						</p>
+					</div>
 				</div>
-				<p class="text-sm leading-relaxed text-[#ccc] md:text-base">
-					{resolveLocale(project.description, 'en')}
-				</p>
 			</div>
 
 			<!-- Project sections as styled case-study cards -->
 			{#each project.sections as section, i}
 				<div
-					class="section-card rounded-lg border-l-[3px] border-[#E07800] bg-[#141414] p-6"
+					class="section-card rounded-lg border-l-[3px] border-[#E07800] bg-[#141414]"
 					use:reveal={{ direction: 'up', delay: 150 + i * 80 }}
 				>
-					<div class="mb-2 flex items-center gap-2.5">
-						<!-- Numbered indicator — small orange circle with section number -->
+					<button
+						class="flex w-full items-center gap-2.5 p-6 pb-0 text-left"
+						onclick={() => toggleSection(i)}
+					>
 						<span
 							class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-bold text-[#0a0a0a]"
 							style="background-color: #E07800;"
@@ -112,39 +131,48 @@
 						>
 							{i + 1}
 						</span>
-						<h2 class="font-heading text-lg font-bold" style="color: #E07800;">
+						<h2 class="flex-1 font-heading text-lg font-bold" style="color: #E07800;">
 							{resolveLocale(section.title, 'en')}
 						</h2>
+						<span class="section-chevron text-xs text-[#666]" class:rotated={sectionOpen[i]}>▸</span>
+					</button>
+					<div class="section-body" class:expanded={sectionOpen[i]}>
+						<div class="px-6 pb-6 pt-3">
+							<p class="text-sm leading-relaxed text-[#ccc]">
+								{resolveLocale(section.content, 'en')}
+							</p>
+						</div>
 					</div>
-					<p class="text-sm leading-relaxed text-[#ccc]">
-						{resolveLocale(section.content, 'en')}
-					</p>
 				</div>
 			{/each}
 
 			<!-- README section (if provided) -->
 			{#if readmeHtml}
 				<div
-					class="section-card mt-2 rounded-lg border-l-[3px] border-[#E07800] bg-[#141414] p-6"
+					class="section-card mt-2 rounded-lg border-l-[3px] border-[#E07800] bg-[#141414]"
 					use:reveal={{ direction: 'up', delay: 200 }}
 				>
-					<!-- Header with GitHub icon -->
-					<div class="mb-4 flex items-center gap-2">
+					<button
+						class="flex w-full items-center gap-2 p-6 pb-0 text-left"
+						onclick={() => readmeOpen = !readmeOpen}
+					>
 						<svg
-							class="h-5 w-5 text-[#E07800]"
+							class="h-5 w-5 shrink-0 text-[#E07800]"
 							viewBox="0 0 16 16"
 							fill="currentColor"
 							aria-hidden="true"
 						>
 							<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
 						</svg>
-						<h2 class="font-heading text-lg font-bold" style="color: #E07800;">
+						<h2 class="flex-1 font-heading text-lg font-bold" style="color: #E07800;">
 							Repository README
 						</h2>
-					</div>
-					<!-- Rendered markdown — uses same typography as BlogContent -->
-					<div class="readme-content">
-						{@html readmeHtml}
+						<span class="section-chevron text-xs text-[#666]" class:rotated={readmeOpen}>▸</span>
+					</button>
+					<div class="section-body" class:expanded={readmeOpen}>
+						<div class="readme-content px-6 pb-6 pt-3">
+							{@html readmeHtml}
+						</div>
 					</div>
 				</div>
 			{/if}
@@ -164,6 +192,26 @@
 	}
 	.section-card:hover {
 		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
+	}
+
+	/* Collapsible section animation */
+	.section-chevron {
+		display: inline-block;
+		transition: transform 0.25s ease;
+	}
+	.section-chevron.rotated {
+		transform: rotate(90deg);
+	}
+	.section-body {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.3s ease;
+	}
+	.section-body.expanded {
+		grid-template-rows: 1fr;
+	}
+	.section-body > div {
+		overflow: hidden;
 	}
 
 	/* README typography — mirrors BlogContent.svelte styles so markdown looks consistent */
