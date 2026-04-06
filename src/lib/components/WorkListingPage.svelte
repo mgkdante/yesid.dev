@@ -19,6 +19,7 @@
 	import WorkCard from './WorkCard.svelte';
 	import WorkFilterSidebar from './WorkFilterSidebar.svelte';
 	import WorkFilterMobile from './WorkFilterMobile.svelte';
+	import GradientSeparator from './GradientSeparator.svelte';
 
 	let {
 		projects,
@@ -137,6 +138,8 @@
 			{resolveLocale(content.subtitle, 'en')}
 		</p>
 	</div>
+
+	<GradientSeparator />
 
 	<!-- Mobile filter (hidden on md+) -->
 	<WorkFilterMobile

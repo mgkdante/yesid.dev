@@ -12,6 +12,7 @@
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
+	import GradientSeparator from './GradientSeparator.svelte';
 
 	let {
 		posts,
@@ -132,6 +133,8 @@
 			</svg>
 		</div>
 	</div>
+
+	<GradientSeparator />
 
 	<!-- Mobile filter -->
 	<BlogFilterMobile
