@@ -197,13 +197,14 @@
 		width: 100%;
 	}
 
-	/* lg size: allow the SVG to scale up to fill width */
-	.data-flow-diagram.size-lg svg {
+	/* Both sizes: scale SVG to fit container width, preserving aspect ratio */
+	.data-flow-diagram svg {
 		width: 100%;
 		height: auto;
+		max-width: 100%;
 	}
 
-	/* Allow horizontal scroll when stack has many items (mainly sm size) */
+	/* Allow horizontal scroll only when SVG would be unreadably small */
 	.data-flow-diagram.scrollable {
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;

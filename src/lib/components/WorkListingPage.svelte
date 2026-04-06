@@ -186,7 +186,7 @@
 					{resolveLocale(content.emptyState, 'en')}
 				</p>
 			{:else}
-				<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+				<div class="grid grid-cols-1 gap-6">
 					{#each filteredProjects as project, i (project.slug)}
 						<WorkCard
 							{project}

@@ -115,19 +115,19 @@
 				<div class="mt-3 flex flex-wrap gap-1.5">
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-1.5 rounded-full border bg-[#141414] px-2 py-0.5"
+							class="inline-flex items-center gap-2 rounded-full border bg-[#141414] px-3 py-1.5"
 							style="border-color: rgba(224, 120, 0, 0.35);"
 						>
 							{#if serviceSvgContents[service.id]}
 								<div class="service-badge-icon" aria-hidden="true">
 									<WorkSvgIcon
 										svgContent={serviceSvgContents[service.id]}
-										size={20}
+										size={28}
 										hovered={cardHovered}
 									/>
 								</div>
 							{/if}
-							<span class="font-mono text-[9px] leading-tight text-[var(--text-primary)] md:text-[10px]">
+							<span class="font-mono text-[10px] leading-tight text-[var(--text-primary)] md:text-xs">
 								{resolveLocale(service.title, 'en')}
 							</span>
 						</div>
