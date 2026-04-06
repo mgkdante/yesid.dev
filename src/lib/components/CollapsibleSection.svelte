@@ -9,7 +9,7 @@
 
 	let {
 		title,
-		open = true,
+		open = $bindable(true),
 		index = null,
 		accentColor = '#E07800',
 		collapsible = true,
@@ -25,13 +25,10 @@
 		children?: Snippet;
 	} = $props();
 
-	// open prop is intentionally used only as an initial seed — not reactively tracked.
-	// The component manages its own toggle state after mount; this is by design.
-	// eslint-disable-next-line svelte/state_referenced_locally
-	let isOpen = $state(open);
-
+	// WHY $bindable: parents like WorkDetailPage need to read open state
+	// to sync sibling elements (e.g. desktop ToC collapses with README section).
 	function toggle() {
-		if (collapsible) isOpen = !isOpen;
+		if (collapsible) open = !open;
 	}
 </script>
 
@@ -68,7 +65,7 @@
 		-->
 		<button
 			type="button"
-			aria-expanded={isOpen}
+			aria-expanded={open}
 			class="section-header flex w-full items-center gap-2.5 px-6 py-4 text-left"
 			onclick={toggle}
 		>
@@ -76,7 +73,7 @@
 
 			<svg
 				class="section-chevron h-5 w-5 shrink-0 text-[#555]"
-				class:rotated={isOpen}
+				class:rotated={open}
 				viewBox="0 0 20 20"
 				fill="currentColor"
 				aria-hidden="true"
@@ -97,7 +94,7 @@
 	<div
 		role="region"
 		class="section-body overflow-hidden"
-		class:expanded={collapsible ? isOpen : true}
+		class:expanded={collapsible ? open : true}
 	>
 		<div class="min-h-0 overflow-hidden">
 			<div class="px-6 pb-6 pt-3">
