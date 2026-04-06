@@ -250,7 +250,13 @@ static/
 
 ## Active Slice
 
-None — next slice TBD (Slice 09 Services pages or Home rework)
+**Slice 09 — Services Pages (/services + /services/[id])** (NEXT)
+- Build `/services` index: showcase all capabilities with visual cards, linked projects
+- Build `/services/[id]` detail: deep dive into each service — what it is, how it helps, example projects (linking back to /work/[slug]), stack used
+- Data-driven, cloud-ready (LocalizedString), i18n-compliant
+- Services are the heart of the site — connects projects, skills, and client value
+- Service badges in work pages already link to `/services/[id]` (currently 404)
+- Depends on: Slices 02, 08
 
 ## Brand Rules (Non-Negotiable)
 

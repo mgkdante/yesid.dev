@@ -48,6 +48,8 @@ Routes:
   /                  -> Home (train journey: hero → stations → CTA)
   /work              -> Project index (card grid, filterable by tag)
   /work/[slug]       -> Project detail (rendered from data)
+  /services          -> Services index (all capabilities, linked to projects)
+  /services/[id]     -> Service detail (deep dive, related projects, stack)
   /about             -> Bio, focus areas, skills
   /contact           -> Links (email, GitHub, LinkedIn, Upwork)
 
@@ -195,8 +197,9 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | B   | Animated wordmark + horizontal scroll CTA              | complete | A, C       | 2             |
 | B+  | Icon morphs + scroll UX for SkillsJourney              | complete | B          | 1-2           |
 | 07  | Blog system (markdown content + /blog routes)          | complete | 06d        | 1-2           |
-| 08  | Work pages (index + FLIP filter + detail)              | planned  | 02, 03, 07 | 1-2           |
-| 09  | About + Contact pages (bento grid /about)              | planned  | 02, 03, 07 | 1             |
+| 08  | Work pages (index + FLIP filter + detail)              | complete | 02, 03, 07 | 1-2           |
+| 09  | Services pages (/services + /services/[id])            | planned  | 02, 08     | 2-3           |
+| 09b | About + Contact pages (bento grid /about)              | planned  | 02, 03, 07 | 1             |
 | 10  | SEO + metadata                                         | planned  | 07, 08, 09 | 1             |
 | 11  | E2E test suite + performance + brand QA                | planned  | 07, 08, 09 | 1-2           |
 | 12  | Standardization (scalable, componentized, data-driven) | planned  | B+, 06d    | 1-2           |
