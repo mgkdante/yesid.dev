@@ -7,15 +7,14 @@
   Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
 -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { tick } from 'svelte';
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
-	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, Flip } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap, Flip, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import WorkCard from './WorkCard.svelte';
 	import WorkFilterSidebar from './WorkFilterSidebar.svelte';
 	import WorkFilterMobile from './WorkFilterMobile.svelte';
@@ -126,11 +125,41 @@
 	);
 
 	let hasActiveFilters = $derived(!!activeService || !!activeTag);
+
+	onMount(() => {
+		// WHY: if user prefers reduced motion, skip all animation and just make elements visible
+		if (isPrefersReducedMotion()) {
+			document.querySelectorAll<HTMLElement>('[data-batch="work-item"]').forEach(el => {
+				el.style.opacity = '1';
+			});
+			return;
+		}
+
+		registerGsapPlugins();
+
+		// WHY: ScrollTrigger.batch() groups elements that enter the viewport together
+		// into a single wave, producing a staggered cascade rather than N independent tweens.
+		// once:true means it won't re-fire after FLIP filter changes — FLIP handles post-filter visibility.
+		ScrollTrigger.batch('[data-batch="work-item"]', {
+			start: 'top 85%',
+			onEnter: (batch) => {
+				gsap.fromTo(batch,
+					{ opacity: 0, y: 20 },
+					{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
+				);
+			},
+			once: true
+		});
+
+		return () => {
+			ScrollTrigger.getAll().forEach(t => t.kill());
+		};
+	});
 </script>
 
 <div data-testid="work-listing" class="pb-16">
 	<!-- Header -->
-	<div class="mb-8" use:reveal>
+	<div class="mb-8" data-batch="work-item">
 		<h1 class="font-heading text-2xl font-bold text-[var(--text-primary)] md:text-3xl">
 			{resolveLocale(content.heading, 'en')}
 		</h1>
@@ -197,9 +226,9 @@
 			{:else}
 				<div class="flex flex-col gap-4">
 					{#each filteredProjects as project, i (project.slug)}
-						<div class="flex gap-4">
+						<div class="flex gap-4" data-batch="work-item">
 							<!-- Metro line + station badge -->
-							<div class="flex flex-col items-center" use:reveal={{ delay: stagger(i, 80) }}>
+							<div class="flex flex-col items-center">
 								<div
 									class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold"
 									style="background: #E07800; color: #000;"
@@ -219,3 +248,17 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
+	:global([data-batch="work-item"]) {
+		opacity: 0;
+	}
+
+	/* WHY: respect prefers-reduced-motion — show items immediately without animation */
+	@media (prefers-reduced-motion: reduce) {
+		:global([data-batch="work-item"]) {
+			opacity: 1;
+		}
+	}
+</style>

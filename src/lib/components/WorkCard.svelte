@@ -9,11 +9,9 @@
 <script lang="ts">
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
-	import { stagger } from '$lib/motion/utils/stagger.js';
 	import WorkSvgIcon from './WorkSvgIcon.svelte';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 
@@ -70,7 +68,7 @@
 	class="work-card group block"
 	data-testid="work-card"
 	data-flip-id={project.slug}
-	use:reveal={{ delay: stagger(index, 80) }}
+	data-batch="work-item"
 	onmouseenter={() => (cardHovered = true)}
 	onmouseleave={() => (cardHovered = false)}
 >
