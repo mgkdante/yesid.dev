@@ -58,12 +58,13 @@
 			</h3>
 			<div bind:this={tagsContainer} class="flex flex-wrap gap-1.5">
 				{#each project.stack as tech}
-					<span
+					<a
+						href="/work?tag={tech}"
 						data-animate="tag"
-						class="sidebar-tag rounded-sm border border-[#2a2a2a] bg-[#1a1a1a] px-2 py-0.5 font-mono text-[10px] text-[var(--text-primary)] md:text-xs"
+						class="sidebar-tag rounded-sm border border-[#2a2a2a] bg-[#1a1a1a] px-2 py-0.5 font-mono text-[10px] text-[var(--text-primary)] no-underline md:text-xs"
 					>
 						{tech}
-					</span>
+					</a>
 				{/each}
 			</div>
 		</div>

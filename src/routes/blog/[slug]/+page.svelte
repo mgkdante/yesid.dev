@@ -27,6 +27,7 @@
 			post={data.post}
 			svgContent={data.svgContent}
 			{accentColor}
+			readingTime={data.readingTime}
 		/>
 	</div>
 

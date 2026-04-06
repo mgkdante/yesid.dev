@@ -14,19 +14,29 @@
 	let {
 		post,
 		svgContent = '',
-		accentColor = '#E07800'
+		accentColor = '#E07800',
+		readingTime = 0
 	}: {
 		post: BlogPost;
 		svgContent?: string;
 		accentColor?: string;
+		readingTime?: number;
 	} = $props();
+
+	const labels = {
+		backDispatches: { en: '\u2190 back to dispatches' },
+		backPersonal: { en: '\u2190 back to personal corner' },
+		minRead: { en: 'min read' }
+	};
 
 	let headerEl: HTMLDivElement;
 	let backHref = $derived(
 		post.category === 'personal' ? '/blog/personal' : '/blog'
 	);
 	let backLabel = $derived(
-		post.category === 'personal' ? '\u2190 back to personal corner' : '\u2190 back to dispatches'
+		post.category === 'personal'
+			? resolveLocale(labels.backPersonal, 'en')
+			: resolveLocale(labels.backDispatches, 'en')
 	);
 
 	onMount(() => {
@@ -73,6 +83,11 @@
 				<span class="font-mono text-[10px] text-[var(--text-muted)] md:text-xs">
 					{post.date}
 				</span>
+				{#if readingTime > 0}
+					<span class="font-mono text-[10px] text-[var(--text-muted)]">
+						&middot; {readingTime} {resolveLocale(labels.minRead, 'en')}
+					</span>
+				{/if}
 				<span class="font-mono text-[10px] text-[var(--text-muted)]">
 					&middot; {post.lang}
 				</span>
