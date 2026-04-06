@@ -14,6 +14,7 @@
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 	import ProjectMiniCard from './ProjectMiniCard.svelte';
 	import CollapsibleSection from './CollapsibleSection.svelte';
+	import GradientSeparator from './GradientSeparator.svelte';
 
 	let {
 		service,
@@ -113,7 +114,7 @@
 				</div>
 			</header>
 
-			<div class="gradient-divider"></div>
+			<GradientSeparator maxWidth="72rem" />
 		</div>
 
 		<!-- Centered content area — exact WorkDetailPage section pattern -->
@@ -321,13 +322,6 @@
 	}
 
 	.stack-area { margin-top: 1.25rem; }
-
-	.gradient-divider {
-		height: 2px;
-		border-radius: 999px;
-		margin-top: 2rem;
-		background: linear-gradient(90deg, #E07800 0%, #FFB627 40%, #2a2a2a 100%);
-	}
 
 	/* Centered content — same max-w-6xl as WorkDetailPage */
 	.centered-content {

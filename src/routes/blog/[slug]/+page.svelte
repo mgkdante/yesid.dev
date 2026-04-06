@@ -9,6 +9,7 @@
 	import BlogContent from '$lib/components/BlogContent.svelte';
 	import ReadingProgressBar from '$lib/components/ReadingProgressBar.svelte';
 	import TableOfContents from '$lib/components/TableOfContents.svelte';
+	import GradientSeparator from '$lib/components/GradientSeparator.svelte';
 
 	let { data } = $props();
 
@@ -33,6 +34,8 @@
 			readingTime={data.readingTime}
 		/>
 	</div>
+
+	<GradientSeparator maxWidth="64rem" />
 
 	<!-- Mobile ToC toggle — shown below 2xl -->
 	<div class="mx-auto mt-6 max-w-5xl 2xl:hidden">

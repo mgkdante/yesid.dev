@@ -12,6 +12,7 @@
 	import TableOfContents from './TableOfContents.svelte';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 	import CollapsibleSection from './CollapsibleSection.svelte';
+	import GradientSeparator from './GradientSeparator.svelte';
 
 	let {
 		project,
@@ -68,6 +69,8 @@
 			{/if}
 			<div class="mt-6 h-0.5 rounded-full" style="background: linear-gradient(90deg, #E07800 0%, #FFB627 40%, #2a2a2a 100%);"></div>
 		</header>
+
+		<GradientSeparator maxWidth="72rem" />
 
 		<!-- Mobile sidebar -->
 		<div class="mb-8 lg:hidden">
