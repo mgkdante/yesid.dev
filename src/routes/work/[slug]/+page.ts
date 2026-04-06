@@ -3,6 +3,7 @@
 // 404s for unknown slugs or private projects.
 
 import { error } from '@sveltejs/kit';
+import { marked } from 'marked';
 import { getProjectBySlug, getServiceById } from '$lib/data';
 import type { Service } from '$lib/data/types.js';
 
@@ -33,13 +34,14 @@ export async function load({ params, fetch }) {
 		}
 	}
 
-	// Fetch README if URL is set (GitHub raw content, etc.)
+	// Fetch README and convert markdown → HTML (GitHub raw content)
 	let readmeHtml: string | undefined;
 	if (project.readmeUrl) {
 		try {
 			const res = await fetch(project.readmeUrl);
 			if (res.ok) {
-				readmeHtml = await res.text();
+				const rawMarkdown = await res.text();
+				readmeHtml = await marked.parse(rawMarkdown);
 			}
 		} catch {
 			// README fetch failed — skip, detail page renders without README section

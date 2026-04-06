@@ -35,7 +35,7 @@ const projects: readonly Project[] = [
 			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.'
 		},
 		description: {
-			en: 'A production data pipeline ingesting GTFS-RT feeds, transforming them with dbt, and surfacing KPIs in a Power BI dashboard. Built for a transit authority in Quebec. Under NDA — repository and client details are private.'
+			en: 'A production data pipeline ingesting GTFS-RT feeds, transforming them with dbt, and surfacing KPIs in a Power BI dashboard. Built for a transit authority in Quebec.'
 		},
 		stack: ['PostgreSQL', 'Python', 'dbt', 'Power BI', 'Apache Airflow'],
 		tags: ['etl', 'transit', 'postgresql', 'dbt'],
@@ -43,6 +43,7 @@ const projects: readonly Project[] = [
 		featured: false,
 		relatedServices: ['data-pipeline', 'sql-development'],
 		repoUrl: 'https://github.com/mgkdante/transit',
+		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
 		sections: []
 	},
 	{
