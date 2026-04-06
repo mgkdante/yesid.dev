@@ -258,15 +258,15 @@ static/
 - Slice 08 complete — handoff at `docs/handoffs/handoff-slice-08.md`
 - Slice 09 complete — handoff at `docs/handoffs/handoff-slice-09.md`
 - Slice 09c-1 complete — handoff at `docs/handoffs/handoff-slice-09c1.md`
+- Slice 09c-2a complete — handoff at `docs/handoffs/handoff-slice-09c2a.md`
 
 ## Active Slice
 
-**Slice 09c-2 — Polish Enhancements + Layout Rethink** (NEXT)
-- Spec: `docs/slices/slice-09c2-polish-enhancements.md`
-- Layout audit of blog + work pages against award-winning sites (using /web-designer)
-- cursorGlow action, reading progress bar, animated gradient border
-- ScrollTrigger.batch() for listing entrances, code copy button, heading anchors
-- Metro line connectors, station badges, next/prev stop nav, animated dashed separators
+**Slice 09c-2b — Polish Enhancements** (NEXT)
+- Spec: `docs/slices/slice-09c2-polish-enhancements.md` (ME + MT sections)
+- cursorGlow action, animated gradient border on WorkCard hover
+- ScrollTrigger.batch() for listing entrances
+- Animated metro line drawing, animated dashed separators (DrawSVGPlugin)
 
 ## Brand Rules (Non-Negotiable)
 
