@@ -11,6 +11,8 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import WorkDetailSidebar from './WorkDetailSidebar.svelte';
+	import TableOfContents from './TableOfContents.svelte';
+	import DataFlowDiagram from './DataFlowDiagram.svelte';
 
 	let {
 		project,
@@ -28,6 +30,13 @@
 	let overviewOpen = $state(true);
 	let sectionOpen = $state<boolean[]>(project.sections.map(() => true));
 	let readmeOpen = $state(true);
+
+	// ToC component ref — used to get HTML with injected heading ids
+	let tocRef: TableOfContents | undefined = $state();
+	// Derive the processed README HTML with heading ids injected by the ToC parser
+	let processedReadmeHtml = $derived(
+		tocRef ? tocRef.getProcessedHtml() : (readmeHtml ?? '')
+	);
 
 	function toggleSection(index: number) {
 		sectionOpen[index] = !sectionOpen[index];
@@ -56,17 +65,10 @@
 			{resolveLocale(project.oneLiner, 'en')}
 		</p>
 
-		<!-- Auto-generated pipeline from project stack — prominent visual element -->
+		<!-- Auto-generated DrawSVG pipeline diagram from project stack -->
 		{#if project.stack.length > 0}
-			<div class="mt-5 flex flex-wrap items-center gap-1" use:reveal={{ direction: 'up', delay: 80 }}>
-				{#each project.stack as tech, i}
-					<span class="font-mono text-xs text-[#E07800] md:text-sm">{tech}</span>
-					{#if i < project.stack.length - 1}
-						<svg class="h-3 w-3 shrink-0 text-[#555]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-							<path d="M6 3l5 5-5 5" />
-						</svg>
-					{/if}
-				{/each}
+			<div class="mt-5" use:reveal={{ direction: 'up', delay: 80 }}>
+				<DataFlowDiagram stack={project.stack} size="lg" />
 			</div>
 		{/if}
 
@@ -93,7 +95,7 @@
 			>
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<button
-					class="flex w-full items-center gap-2 p-6 pb-0 text-left"
+					class="flex w-full items-center gap-2 px-6 py-4 text-left"
 					onclick={() => overviewOpen = !overviewOpen}
 				>
 					<svg class="h-4 w-4 shrink-0 text-[#E07800]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -121,7 +123,7 @@
 					use:reveal={{ direction: 'up', delay: 150 + i * 80 }}
 				>
 					<button
-						class="flex w-full items-center gap-2.5 p-6 pb-0 text-left"
+						class="flex w-full items-center gap-2.5 px-6 py-4 text-left"
 						onclick={() => toggleSection(i)}
 					>
 						<span
@@ -146,14 +148,14 @@
 				</div>
 			{/each}
 
-			<!-- README section (if provided) -->
+			<!-- README section (if provided) — includes ToC sidebar on desktop -->
 			{#if readmeHtml}
 				<div
 					class="section-card mt-2 rounded-lg border-l-[3px] border-[#E07800] bg-[#141414]"
 					use:reveal={{ direction: 'up', delay: 200 }}
 				>
 					<button
-						class="flex w-full items-center gap-2 p-6 pb-0 text-left"
+						class="flex w-full items-center gap-2 px-6 py-4 text-left"
 						onclick={() => readmeOpen = !readmeOpen}
 					>
 						<svg
@@ -170,8 +172,17 @@
 						<span class="section-chevron text-xs text-[#666]" class:rotated={readmeOpen}>▸</span>
 					</button>
 					<div class="section-body" class:expanded={readmeOpen}>
-						<div class="readme-content px-6 pb-6 pt-3">
-							{@html readmeHtml}
+						<!-- Mobile ToC toggle — shown above content on small screens -->
+						<div class="px-6 pt-3">
+							<TableOfContents bind:this={tocRef} html={readmeHtml} />
+						</div>
+						<!-- README content + desktop ToC sidebar -->
+						<div class="flex gap-6 px-6 pb-6">
+							<div class="readme-content min-w-0 flex-1">
+								{@html processedReadmeHtml}
+							</div>
+							<!-- Desktop ToC sidebar — positioned to the right of readme content -->
+							<TableOfContents html={readmeHtml} class="hidden lg:block" />
 						</div>
 					</div>
 				</div>

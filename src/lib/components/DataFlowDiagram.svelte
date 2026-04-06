@@ -1,10 +1,14 @@
 <!--
   Auto-generates a horizontal pipeline SVG from a project's tech stack.
-  Each technology becomes a rounded-rect node with text label, connected
-  by dashed lines. Colors alternate between orange and yellow brand colors.
-  GSAP entrance: nodes stagger in, then connecting lines draw via DrawSVG.
-  Horizontally scrollable when more than 4 items on small screens.
-  Respects prefers-reduced-motion.
+  Each technology becomes a rounded-rect node with the tech name as text inside.
+  Nodes are connected by dashed lines with small dot markers traveling along them.
+  GSAP DrawSVG entrance: nodes stagger in (scale 0->1, opacity 0->1),
+  then connecting lines draw left-to-right, then dots animate along paths.
+  Colors alternate between #E07800 and #FFB627.
+  Responsive: horizontally scrollable on mobile when stack has >4 items.
+  Respects prefers-reduced-motion — static render without animation.
+  Props: { stack: string[]; size?: 'sm' | 'lg' }
+    sm = card size (~40px height), lg = detail page (~80px height)
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
@@ -13,35 +17,38 @@
 
 	let {
 		stack,
-		accentColor = '#E07800'
+		size = 'sm' as 'sm' | 'lg'
 	}: {
 		stack: string[];
-		accentColor?: string;
+		size?: 'sm' | 'lg';
 	} = $props();
 
 	let container: HTMLDivElement;
 
-	// Layout constants
-	const NODE_WIDTH = 70;
-	const NODE_HEIGHT = 28;
-	const GAP = 20;
-	const PADDING_X = 10;
-	const PADDING_Y = 8;
 	const BRAND_COLORS = ['#E07800', '#FFB627'];
 
-	// Dynamic viewBox calculation based on stack length
-	let svgWidth = $derived(PADDING_X * 2 + stack.length * NODE_WIDTH + (stack.length - 1) * GAP);
-	let svgHeight = $derived(PADDING_Y * 2 + NODE_HEIGHT);
+	// Size-dependent layout constants — sm fits inside cards, lg is prominent on detail pages
+	let cfg = $derived(size === 'lg'
+		? { nodeW: 110, nodeH: 36, gap: 32, padX: 14, padY: 22, fontSize: 11, rx: 8, dotR: 3, strokeW: 2, lineStroke: 1.8 }
+		: { nodeW: 70, nodeH: 22, gap: 16, padX: 8, padY: 9, fontSize: 8, rx: 5, dotR: 2, strokeW: 1.5, lineStroke: 1.2 }
+	);
 
-	// Pre-compute node positions so both the SVG and GSAP use the same data
+	// Dynamic viewBox calculation based on stack length and size config
+	let svgWidth = $derived(cfg.padX * 2 + stack.length * cfg.nodeW + Math.max(0, stack.length - 1) * cfg.gap);
+	let svgHeight = $derived(cfg.padY * 2 + cfg.nodeH);
+
+	// Pre-compute node center positions for SVG placement and GSAP
 	let nodes = $derived(
 		stack.map((tech, i) => ({
-			x: PADDING_X + i * (NODE_WIDTH + GAP),
-			y: PADDING_Y,
+			x: cfg.padX + i * (cfg.nodeW + cfg.gap),
+			y: cfg.padY,
 			label: tech,
 			color: BRAND_COLORS[i % BRAND_COLORS.length]
 		}))
 	);
+
+	// Max label length based on node width and font size
+	let maxLabelLen = $derived(size === 'lg' ? 14 : 10);
 
 	onMount(() => {
 		if (isPrefersReducedMotion() || !container) return;
@@ -49,26 +56,61 @@
 
 		const nodeEls = container.querySelectorAll('.df-node');
 		const lineEls = container.querySelectorAll('.df-line');
+		const dotEls = container.querySelectorAll('.df-dot');
 
-		// Stagger-in nodes
-		gsap.set(nodeEls, { opacity: 0, y: 10 });
+		// 1. Stagger-in nodes: scale from 0 and fade in
+		gsap.set(nodeEls, { opacity: 0, scale: 0, transformOrigin: 'center center' });
 		gsap.to(nodeEls, {
 			opacity: 1,
-			y: 0,
-			duration: 0.4,
-			stagger: 0.08,
-			ease: 'power2.out'
+			scale: 1,
+			duration: 0.5,
+			stagger: 0.09,
+			ease: 'back.out(1.5)'
 		});
 
-		// Draw connecting lines after nodes land
+		// 2. Draw connecting lines left-to-right after nodes land
 		if (lineEls.length > 0) {
 			gsap.set(lineEls, { drawSVG: '0%' });
 			gsap.to(lineEls, {
 				drawSVG: '100%',
 				duration: 0.5,
-				stagger: 0.06,
+				stagger: 0.07,
 				ease: 'power2.inOut',
-				delay: 0.3
+				delay: stack.length * 0.09 + 0.2
+			});
+		}
+
+		// 3. After lines draw, animate dots along the connection paths
+		if (dotEls.length > 0) {
+			const dotDelay = stack.length * 0.09 + 0.2 + (stack.length - 1) * 0.07 + 0.3;
+			dotEls.forEach((dot, i) => {
+				const lineEl = lineEls[i] as SVGLineElement | undefined;
+				if (!lineEl) return;
+
+				// Dots travel from x1 to x2 along the line's y-center
+				const x1 = parseFloat(lineEl.getAttribute('x1') ?? '0');
+				const x2 = parseFloat(lineEl.getAttribute('x2') ?? '0');
+				const cy = parseFloat(lineEl.getAttribute('y1') ?? '0');
+
+				gsap.set(dot, { attr: { cx: x1, cy }, opacity: 0 });
+				gsap.to(dot, {
+					attr: { cx: x2 },
+					opacity: 1,
+					duration: 0.8,
+					ease: 'power1.inOut',
+					delay: dotDelay + i * 0.12,
+					// After reaching the end, pulse and fade out gently
+					onComplete: () => {
+						gsap.to(dot, {
+							attr: { r: cfg.dotR * 1.6 },
+							opacity: 0.3,
+							duration: 0.5,
+							ease: 'power1.out',
+							yoyo: true,
+							repeat: -1
+						});
+					}
+				});
 			});
 		}
 	});
@@ -78,6 +120,7 @@
 	bind:this={container}
 	class="data-flow-diagram"
 	class:scrollable={stack.length > 4}
+	class:size-lg={size === 'lg'}
 >
 	<svg
 		viewBox="0 0 {svgWidth} {svgHeight}"
@@ -92,43 +135,57 @@
 			{#if i > 0}
 				<line
 					class="df-line"
-					x1={nodes[i - 1].x + NODE_WIDTH}
-					y1={PADDING_Y + NODE_HEIGHT / 2}
+					x1={nodes[i - 1].x + cfg.nodeW}
+					y1={cfg.padY + cfg.nodeH / 2}
 					x2={node.x}
-					y2={PADDING_Y + NODE_HEIGHT / 2}
-					stroke={accentColor}
-					stroke-width="1.5"
-					stroke-dasharray="4 3"
+					y2={cfg.padY + cfg.nodeH / 2}
+					stroke={BRAND_COLORS[(i - 1) % BRAND_COLORS.length]}
+					stroke-width={cfg.lineStroke}
+					stroke-dasharray="5 3"
 					stroke-opacity="0.5"
 				/>
 			{/if}
 		{/each}
 
-		<!-- Nodes -->
+		<!-- Traveling dot markers for each connection -->
+		{#each nodes as _, i}
+			{#if i > 0}
+				<circle
+					class="df-dot"
+					cx={nodes[i - 1].x + cfg.nodeW}
+					cy={cfg.padY + cfg.nodeH / 2}
+					r={cfg.dotR}
+					fill={BRAND_COLORS[(i - 1) % BRAND_COLORS.length]}
+					opacity="0.8"
+				/>
+			{/if}
+		{/each}
+
+		<!-- Nodes: rounded rect with centered text label -->
 		{#each nodes as node}
 			<g class="df-node">
 				<rect
 					x={node.x}
 					y={node.y}
-					width={NODE_WIDTH}
-					height={NODE_HEIGHT}
-					rx="6"
-					ry="6"
+					width={cfg.nodeW}
+					height={cfg.nodeH}
+					rx={cfg.rx}
+					ry={cfg.rx}
 					fill="none"
 					stroke={node.color}
-					stroke-width="1.5"
-					stroke-opacity="0.7"
+					stroke-width={cfg.strokeW}
+					stroke-opacity="0.75"
 				/>
 				<text
-					x={node.x + NODE_WIDTH / 2}
-					y={node.y + NODE_HEIGHT / 2}
+					x={node.x + cfg.nodeW / 2}
+					y={node.y + cfg.nodeH / 2}
 					text-anchor="middle"
 					dominant-baseline="central"
 					fill={node.color}
-					font-size="8"
+					font-size={cfg.fontSize}
 					font-family="'JetBrains Mono', monospace"
 				>
-					{node.label.length > 10 ? node.label.slice(0, 9) + '...' : node.label}
+					{node.label.length > maxLabelLen ? node.label.slice(0, maxLabelLen - 1) + '\u2026' : node.label}
 				</text>
 			</g>
 		{/each}
@@ -140,7 +197,13 @@
 		width: 100%;
 	}
 
-	/* Allow horizontal scroll when stack has many items */
+	/* lg size: allow the SVG to scale up to fill width */
+	.data-flow-diagram.size-lg svg {
+		width: 100%;
+		height: auto;
+	}
+
+	/* Allow horizontal scroll when stack has many items (mainly sm size) */
 	.data-flow-diagram.scrollable {
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;

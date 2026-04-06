@@ -11,6 +11,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import WorkSvgIcon from './WorkSvgIcon.svelte';
+	import DataFlowDiagram from './DataFlowDiagram.svelte';
 
 	let {
 		project,
@@ -99,7 +100,7 @@
 				{resolveLocale(project.oneLiner, 'en')}
 			</p>
 
-			<!-- Service badges row — bigger SVGs (28px) with name labels -->
+			<!-- Service badges row — SVGs with MorphSVG on card hover -->
 			{#if projectServices.length > 0}
 				<div class="mt-3 flex flex-wrap gap-1.5">
 					{#each projectServices as service}
@@ -108,8 +109,12 @@
 							style="border-color: rgba(224, 120, 0, 0.35);"
 						>
 							{#if serviceSvgContents[service.id]}
-								<div class="service-badge-icon flex shrink-0 items-center justify-center overflow-hidden" aria-hidden="true">
-									{@html serviceSvgContents[service.id]}
+								<div class="service-badge-icon" aria-hidden="true">
+									<WorkSvgIcon
+										svgContent={serviceSvgContents[service.id]}
+										size={20}
+										hovered={cardHovered}
+									/>
 								</div>
 							{/if}
 							<span class="font-mono text-[9px] leading-tight text-[var(--text-primary)] md:text-[10px]">
@@ -120,24 +125,16 @@
 				</div>
 			{/if}
 
-			<!-- Tech stack inline diagram -->
+			<!-- Tech stack SVG diagram with DrawSVG animation -->
 			{#if displayStack.length > 0}
 				<div class="mt-3">
 					<div class="mb-1 font-mono text-[8px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
 						{resolveLocale(stackLabel, 'en')}
 					</div>
-					<div class="flex flex-wrap items-center gap-0">
-						{#each displayStack as tech, i}
-							<span class="font-mono text-[9px] text-[#E07800]/80 md:text-[10px]">{tech}</span>
-							{#if i < displayStack.length - 1}
-								<!-- Dashed connector between stack nodes -->
-								<span class="mx-1 inline-block h-px w-3 border-t border-dashed border-[#E07800]/40"></span>
-							{/if}
-						{/each}
-						{#if project.stack.length > 5}
-							<span class="ml-1 font-mono text-[8px] text-[var(--text-muted)]">+{project.stack.length - 5}</span>
-						{/if}
-					</div>
+					<DataFlowDiagram stack={displayStack} size="sm" />
+					{#if project.stack.length > 5}
+						<span class="mt-0.5 block font-mono text-[8px] text-[var(--text-muted)]">+{project.stack.length - 5} more</span>
+					{/if}
 				</div>
 			{/if}
 
@@ -167,15 +164,10 @@
 		box-shadow: 0 0 20px color-mix(in srgb, #E07800 10%, transparent);
 	}
 
-	/* Force service badge inline SVG to 28px */
-	.service-badge-icon {
-		width: 28px;
-		height: 28px;
-	}
-
-	.service-badge-icon :global(svg) {
-		width: 28px;
-		height: 28px;
-		display: block;
+	/* Strip WorkSvgIcon container border/bg when nested in card badges */
+	.service-badge-icon :global(.work-svg-icon) {
+		border: none;
+		background: transparent;
+		border-radius: 0;
 	}
 </style>
