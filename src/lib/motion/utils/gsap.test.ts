@@ -26,6 +26,7 @@ describe('registerGsapPlugins', () => {
 		const { CustomEase } = await import('gsap/CustomEase');
 		const { SplitText } = await import('gsap/SplitText');
 		const { MorphSVGPlugin } = await import('gsap/MorphSVGPlugin');
+		// @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
 		const { Flip } = await import('gsap/Flip');
 		const { registerGsapPlugins } = await import('./gsap.js');
 
