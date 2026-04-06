@@ -24,5 +24,8 @@ export { blogPosts, getLatestPosts, getPostBySlug, getPostHtml, getPostsByCatego
 export { metroStops, TOTAL_STOPS, formatStopLabel, formatServicesLabel, getStopByType } from './metro.js';
 export type { MetroStop } from './metro.js';
 
+// Service SVG loading
+export { fetchServiceSvgContents, getServiceSvgUrl } from './serviceSvg.js';
+
 // Centralized UI content (i18n)
 export { heroAnimContent, heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
