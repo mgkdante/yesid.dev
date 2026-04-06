@@ -114,7 +114,7 @@
 				</div>
 			</header>
 
-			<GradientSeparator maxWidth="72rem" />
+			<GradientSeparator />
 		</div>
 
 		<!-- Centered content area — exact WorkDetailPage section pattern -->

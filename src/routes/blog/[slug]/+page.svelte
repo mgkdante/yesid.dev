@@ -35,7 +35,7 @@
 		/>
 	</div>
 
-	<GradientSeparator maxWidth="64rem" />
+	<GradientSeparator />
 
 	<!-- Mobile ToC toggle — shown below 2xl -->
 	<div class="mx-auto mt-6 max-w-5xl 2xl:hidden">

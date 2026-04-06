@@ -1,323 +1,175 @@
-# CLAUDE.md
+# CLAUDE.md — yesid.dev
 
-## Identity
+## Project
 
-You are working on **yesid.** — a freelance SQL development and data infrastructure brand.
-Owner: Yesid O., Montreal, QC.
-Stack: PostgreSQL, SQL Server, Retool, Power BI, Python, SvelteKit (learning).
-Brand colors, tokens, and assets live in `/brand/`.
+Freelance SQL/data infrastructure brand. SvelteKit + Tailwind + GSAP + Threlte.
+Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627` yellow, Inter + JetBrains Mono.
 
 ## Runtime
 
-This project uses **Bun**, not Node.js.
-- Use `bun install` not `npm install`
-- Use `bun run` not `npm run`
-- Use `bun run test` for Vitest
-- Use `bunx` not `npx`
-- `bun.lockb` is the lockfile, not `package-lock.json`
-- If a tool or library has Bun-specific setup, use it
+**Bun only. Never npm/npx/node.** OS: Windows.
+- `bun install`, `bun run dev`, `bun run test`, `bun run check`, `bunx`
+- Lockfile: `bun.lockb`
 
-## How You Work
+## Slice System
 
-Always review: "C:\Users\otalo\Yesito\Projects\yesid.dev\yesid-pipeline-workflow.md"
+All work lives in slices. A slice = spec + acceptance criteria + defined output.
+Slice template: `docs/slices/_TEMPLATE.md`
 
-Your job: receive a slice spec, build it exactly, document what you did, hand it back.
+1. Read the active slice spec in `docs/slices/` before touching anything.
+2. Build exactly what the spec says. No more, no less.
+3. Ambiguity: write your assumption in the devlog and proceed.
+4. Impossible spec: document why in devlog and stop.
+5. No spec: stop and say so.
 
-### The Slice System
+**Active slice:** 09c-2b — Polish Enhancements (`docs/slices/slice-09c2-polish-enhancements.md`)
 
-All work is organized into **slices**. A slice is a self-contained unit of work with:
-- A spec in `docs/slices/slice-NN-name.md`
-- Clear acceptance criteria
-- A defined output
-- Use template: `slices/_TEMPLATE.md`
+## Iteration Protocol (MANDATORY — READ THIS TWICE)
 
-**Rules:**
+**You are done when Yesid says you are done.** Tests passing is necessary but not sufficient.
 
-1. Before starting ANY work, read the active slice spec in `docs/slices/`.
-2. Do exactly what the spec says. No more, no less.
-3. If the spec is ambiguous, write your assumption in the dev log and proceed. Do not stop to ask.
-4. If the spec is wrong or impossible, document why in the dev log and stop.
-5. Never start a new slice without a spec. If there's no spec, say so and stop.
+### Per-task flow (never skip, never batch):
 
-### File Change Protocol
-
-Every time you create or modify a file, you MUST:
-
-1. **Update the dev log** at `docs/devlog/YYYY-MM-DD.md` with:
-   - What file changed
-   - What changed and why
+1. Implement ONE task from the slice spec.
+2. Run `bun run test` and `bun run check`. Both must pass.
+3. **STOP. Do not continue to the next task.** Tell Yesid:
+   - What you built (one sentence)
+   - What to check on `http://localhost:5173/` (specific behaviors, not vague)
    - Any decisions you made
+4. **Wait for Yesid's response.** Do not write more code until he replies.
+5. If Yesid reports issues: fix, retest, STOP again, ask him to re-check.
+6. If Yesid approves: move to the next task. Repeat from step 1.
 
-2. **Update relevant docs** if behavior or structure changed:
-   - `docs/ARCHITECTURE.md` for structural changes
-   - `README.md` if setup/usage changed
-   - The slice's handoff report at `docs/handoffs/handoff-slice-NN.md`
+### Slice closing (only after ALL tasks approved):
 
-3. **Update the file tree** at `tree.txt` (project root). Run:
-
-   ```bash
-   ##On Windows, use this command to generate tree.txt instead of `tree -I`:
-   
+1. Write handoff report: `docs/handoffs/_TEMPLATE.md`
+2. Update devlog: `docs/devlog/_TEMPLATE.md`
+3. Update `docs/ARCHITECTURE.md` if structure changed
+4. Update `README.md` if setup/usage changed
+5. Regenerate `tree.txt`:
+   ```powershell
    cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"
-   
-   ##Or use PowerShell:
-   
-   Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\.remember|bun\.lockb|\.svelte-kit|\.vercel|\.DS_Store' } | Out-File tree.txt -Encoding utf8
    ```
-   On Windows (if tree doesn't support -I), generate it manually.
-   This file is the project's self-portrait. Keep it current.
-
-4. **Add inline comments** explaining WHY, not what. The code shows what. Comments show why.
-
-### Dev Log Format
-
-```markdown
-# Dev Log — YYYY-MM-DD
-
-## Slice: [slice number and name]
-
-### Session Start
-- **Time:** HH:MM
-- **Slice spec:** docs/slices/slice-NN-name.md
-- **Goal:** [one sentence]
-
-### Work Done
-- [ ] Task from spec
-  - Files changed: `path/to/file`
-  - Decision: [any judgment call you made]
-  - Learning note: [brief explanation of WHY this works, for Yesid]
-
-### Blockers / Questions
-- [anything that needs human decision]
-
-### Session End
-- **Files created:** [list]
-- **Files modified:** [list]
-- **Tests passing:** [yes/no/na]
-- **Ready for handoff:** [yes/no]
-```
-
-### Handoff Report Format
-
-When a slice is complete, create `docs/handoffs/handoff-slice-NN.md`:
-
-```markdown
-# Handoff: Slice NN — [Name]
-
-## Summary
-[2-3 sentences: what was built and why it matters]
-
-## What Was Built
-- [file]: [purpose]
-- [file]: [purpose]
-
-## Files Modified
-- [file]: [what changed and why]
-- [file]: [what changed and why]
-
-## How It Works
-[Brief technical explanation. Write it so a new dev or AI can understand
-the system without reading every file.]
-
-## Decisions Made
-| Decision | Why | Alternative Considered |
-|----------|-----|----------------------|
-| ... | ... | ... |
-
-## What Yesid Should Know
-[Learning notes. Explain concepts that were new or non-obvious.
-Link to docs/tutorials for deeper reading.]
-
-## What Comes Next
-[What slice should follow this one, and why]
-
-## How to Verify
-[Steps to confirm this slice works correctly]
-```
-
-------
-
-### Iteration Protocol (Mandatory for All Slices)
-
-**You are NOT done when the code works. You are done when Yesid says you are done.**
-
-Visual, interactive, and motion-based features cannot be verified by tests alone. After you complete a slice, Yesid must test it on localhost before the handoff report is written.
-
-**Steps:**
-
-1. Finish all acceptance criteria. Run `bun run test` and `bun run check`. Both must pass.
-2. Make sure `bun run dev` is running.
-3. **STOP coding.** Ask Yesid to test on `http://localhost:5173/`. Tell him specifically what to check (list the key behaviors from the slice spec's Verify section).
-4. Wait for Yesid's response. He will either:
-   - **Approve:** "looks good", "ship it", "approved", or similar. NOW write the handoff report.
-   - **Report issues:** Describe what's broken, wrong, or needs adjustment. Fix each issue, run tests again, and return to step 3.
-5. Each round of test-and-fix is an **iteration**. There is no iteration limit.
-6. **After approval + handoff report:** Update all docs (devlog, handoff, PLAN.md, ARCHITECTURE.md, CLAUDE.md, tree.txt, memory). Then **commit and push to GitHub**:
+6. Commit and push:
    ```bash
-   git add -A
-   git commit -m "feat: complete slice NN — [short description]"
-   git push
+   git add -A && git commit -m "feat: complete slice NN — [short desc]" && git push
    ```
-   Every completed slice must be pushed. No exceptions.
 
-**Rules:**
+### Iteration rules:
 
-- Never write the handoff report before Yesid approves.
-- Never skip the check-in because "tests pass." Tests don't catch visual bugs.
-- Never say "I think this should work" — let Yesid confirm on his screen.
-- If Yesid's feedback is ambiguous, ask a clarifying question before changing code.
-- **Always push to GitHub after a slice is complete.** No slice is done until it's pushed.
+- **Never batch multiple tasks.** One task, one approval, then next.
+- **Never write the handoff before approval.**
+- **Never say "I think this should work."** Yesid confirms on his screen.
+- **Never continue coding after completing a task.** The STOP is mandatory.
+- Ambiguous feedback: ask a clarifying question before changing code.
 
-**Handoff report must include an Iterations section:**
+## File Change Protocol
 
-```markdown
-## Iterations
+Every file change requires:
+1. **Devlog entry** — use `docs/devlog/_TEMPLATE.md`
+2. **Doc updates** — `ARCHITECTURE.md` for structure, `README.md` for setup
+3. **tree.txt** — regenerated on slice close (PowerShell command above)
+4. **Handoff** — use `docs/handoffs/_TEMPLATE.md` (only after approval)
 
-| # | What Yesid Reported | What Was Fixed | Files Changed |
-|---|---------------------|----------------|---------------|
-| 1 | [feedback] | [fix] | [files] |
-| 2 | [feedback] | [fix] | [files] |
-| Final | Approved | — | — |
+## Testing (Vitest + Bun)
+
+Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postprocessing, canvas, matchMedia, IntersectionObserver). Don't re-mock per-file unless overriding.
+
+### After every test run, print this table:
+
+```
+| Test File | Test Name | Status | Failure Reason |
+|-----------|-----------|--------|----------------|
+| src/...   | it(...)   | PASS   |                |
+| src/...   | it(...)   | FAIL   | Expected X, got Y (line NN) |
 ```
 
-If Yesid approved on the first try (no iterations needed), write:
+- For failures: show expected vs actual, error message, assertion line
+- **Never say "some tests failed" without listing every failure by name**
+- If all pass, still list what ran
 
-```markdown
-## Iterations
+### When creating or modifying tests:
 
-Approved on first test. No iterations needed.
-```
+- Maintain `docs/TESTS.md`
+- For each test: name (describe > it), what it validates (plain English), key assertions, setup notes
+- Update `docs/TESTS.md` on every test add/change/delete
 
-------
+### Test boundaries:
+
+- Component tests: `@testing-library/svelte`
+- Visual/animation correctness: Playwright E2E, not Vitest
+- Vitest verifies invocation and structure, not rendered output
 
 ## Code Standards
 
-- **Language:** Use clear, readable code over clever code.
-- **Comments:** Explain WHY, not what. Every non-obvious decision gets a comment.
-- **Naming:** Descriptive names. No abbreviations unless universal (db, api, url).
-- **Error handling:** Always handle errors. Never silently swallow them.
-- **Types:** Use TypeScript for all new JS/TS files.
-- **Tests:** Every slice ships code AND tests. No code without tests.
+- TypeScript for all new files
+- Comments explain WHY, not what
+- Descriptive names, no abbreviations (except db, api, url)
+- Always handle errors, never swallow silently
+- Every slice ships code AND tests
 
-## Current Repo Structure
+## Plugins (`/plugin` to manage)
 
-See `tree.txt` for the full file tree (updated every slice). Key directories:
+### Design Phase (planning layouts, user flows, copy)
+- Design Research, UX Strategy, UI UX Promax
+- Brand Voice (copy and tone)
+- Reference: `/brand/yesid_brand_guide.pdf`, `docs/superpowers/specs/`
 
-```
-src/
-├── content/blog/           # Markdown blog posts with YAML frontmatter
-│   ├── professional/       #   Data/SQL/infra posts (orange accent)
-│   ├── personal/           #   Personal posts (yellow accent)
-│   └── _template.md        #   Copy-paste template for new posts
-├── lib/
-│   ├── data/               # Typed data layer: types, services, projects, blog, meta
-│   ├── components/         # UI components: HeroBanner, ServiceStation, FeaturedWork,
-│   │                       #   AboutBento, BlogCard, BlogFeed, BlogListingPage,
-│   │                       #   BlogRow, BlogSvgIcon, BlogDetailHeader, BlogContent,
-│   │                       #   BlogFilterSidebar, BlogFilterMobile, StationDivider,
-│   │                       #   StationTabs, ServiceCard, ServiceListingPage,
-│   │                       #   CollapsibleSection, FilterGroup,
-│   │                       #   ServiceDetailPage, ServiceNav, ProofStrip,
-│   │                       #   ProjectMiniCard, WorkCard, WorkDetailPage, etc.
-│   └── motion/
-│       ├── actions/        # Svelte actions: boop, reveal, magnetic, ripple, tilt
-│       ├── stores/         # Scroll position, reduced-motion preference
-│       ├── components/     # ScrollRail, LottiePlayer
-│       ├── three/          # Threlte scenes: WagonScene (hero), HeroScene (data-flow)
-│       ├── svg/            # SVG train + journey animation
-│       └── utils/          # GSAP helpers, stagger calculator
-├── routes/
-│   ├── +page.svelte        # Home: 8-stop metro journey
-│   ├── blog/               # Blog system (Slice 07)
-│   │   ├── +page.svelte    #   Professional listing
-│   │   ├── personal/       #   Personal Corner listing
-│   │   └── [slug]/         #   Post detail page
-│   ├── services/           # Services system (Slice 09)
-│   │   ├── +page.svelte    #   Full-viewport kinetic scroll index
-│   │   └── [id]/           #   Service detail page
-│   └── preview/            # Dev-only 3D preview
-├── tests/                  # Test setup
-docs/
-├── slices/                 # Slice specs
-├── handoffs/               # Handoff reports + iteration feedback
-├── devlog/                 # Daily dev logs
-├── superpowers/specs/      # Design specs from brainstorming
-static/
-├── models/                 # 3D assets (metro-wagon.glb)
-├── images/                 # Hero background art, montreal-metro.svg
-└── lottie/                 # Station Lottie animations
-```
+### Build Phase (generating components, iterating)
+- Frontend Design Pro, Web Designer, UI Design (component generation)
+- Frontend Design, Prototyping Testing (iteration)
+- Chrome Devtools (browser debugging)
+- TypeScript LSP (real-time type errors)
+- Context7 (live docs: SvelteKit, GSAP, Threlte, etc.)
+- Check `src/lib/components/` before creating new ones
+- Reference: `docs/ARCHITECTURE.md`, `tree.txt`, `vitest.setup.ts`
+
+### Quality Phase (before any commit)
+- Code Review
+- Designer Toolkit (design system consistency)
+- `bun run test` and `bun run check` must both pass
+- Brand compliance: colors, fonts, dark theme, "yesid." formatting
+
+### Meta (always active)
+- Remember (persist decisions across sessions)
+- Claude Code Setup, Everything Claude Code (tooling reference)
+- Superpowers (general enhancement)
+
+### MCP Servers (`.claude/settings.json`)
+- GitHub MCP for PRs and repo management
+- Playwright MCP for E2E browser testing (slice 10+)
+
+### Custom slash commands: `.claude/commands/`
+
+## Brand (Non-Negotiable)
+
+- Primary: `#E07800` / Accent: `#FFB627`
+- Fonts: Inter (headings/body), JetBrains Mono (code)
+- Dark theme default. "yesid." always lowercase, dot always orange.
+- Full guide: `/brand/yesid_brand_guide.pdf`
+
+## Never
+
+- Delete files without slice spec instruction
+- Refactor outside current slice scope
+- Install packages without devlog entry
+- Skip devlog, handoff, or tree.txt update
+- Use npm or npx
+- Continue to next task without Yesid's approval
 
 ## Completed Slices
 
-- Slice A complete — handoff at `docs/handoffs/handoff-slice-a-svg-hero.md`
-- Slice B complete — handoff at `docs/handoffs/handoff-slice-b.md`
-- Slice C complete — handoff at `docs/handoffs/handoff-slice-c-zoom-transition.md`
-- Slice B+ complete — handoff at `docs/handoffs/handoff-slice-b-plus.md`
-- Slice 07 complete — handoff at `docs/handoffs/handoff-slice-07.md`
-- Slice 08 complete — handoff at `docs/handoffs/handoff-slice-08.md`
-- Slice 09 complete — handoff at `docs/handoffs/handoff-slice-09.md`
-- Slice 09c-1 complete — handoff at `docs/handoffs/handoff-slice-09c1.md`
-- Slice 09c-2a complete — handoff at `docs/handoffs/handoff-slice-09c2a.md`
+A, B, B+, C, 07, 08, 09, 09c-1, 09c-2a — handoffs in `docs/handoffs/`
 
-## Active Slice
+## Repo Structure
 
-**Slice 09c-2b — Polish Enhancements** (NEXT)
-- Spec: `docs/slices/slice-09c2-polish-enhancements.md` (ME + MT sections)
-- cursorGlow action, animated gradient border on WorkCard hover
-- ScrollTrigger.batch() for listing entrances
-- Animated metro line drawing, animated dashed separators (DrawSVGPlugin)
-
-## Brand Rules (Non-Negotiable)
-
-- Primary color: `#E07800` (orange)
-- Accent color: `#FFB627` (yellow)
-- Font: Inter for headings/body, JetBrains Mono for code
-- Dark theme is default
-- The dot in "yesid." is always orange
-- Logo is always lowercase
-- See `/brand/yesid_brand_guide.pdf` for full rules
-
-## Workflow: Web Development
-
-### Active Plugin Stack (use based on current task)
-
-#### Design Phase
-- Design Research, UX Strategy, UI UX Promax → when planning layouts or user flows
-- Brand Voice → when writing copy or choosing tone
-
-#### Build Phase
-- Frontend Design Pro, Web Designer, UI Design → when generating components
-- Frontend Design, Prototyping Testing → when iterating on implementations
-- Chrome Devtools → when debugging in browser
-
-#### Quality Phase
-- Code Review → before any commit
-- Designer Toolkit → for design system consistency checks
-
-#### Meta
-- Remember → persist decisions across sessions
-- Claude Code Setup, Everything Claude Code → reference for tooling questions
-- Superpowers → general enhancement
-
-### Workflow Rules
-1. Before starting ANY task, identify which phase it falls under. Load only those plugins.
-2. Never skip Code Review before committing.
-3. Use Remember to log architectural decisions so future sessions don't re-debate them.
-4. When building UI, reference the brand system: dark aesthetic, amber/orange palette, Inter/JetBrains Mono type system.
-5. Always check existing components before creating new ones.
-6. Run the dev server and visually verify changes, don't just assume they work.
-
-### Project Context
-- Stack: SvelteKit, Tailwind, Three.js/Threlte, GSAP
-- Domain: yesid.dev
-- Brand: transit-focused, dark theme, amber accents
-
-## What You Never Do
-
-1. Never delete files without explicit instruction in the slice spec.
-2. Never refactor code outside the current slice scope.
-3. Never install packages without documenting why in the dev log.
-4. Never skip the dev log, handoff report, or tree.txt update.
-5. Never make up requirements. Build what the spec says.
-6. Never use npm or npx. This project uses Bun.
+See `tree.txt` for full tree. Key paths:
+- `src/lib/components/` — UI components
+- `src/lib/motion/` — actions, stores, GSAP utils, Threlte scenes, SVG animations
+- `src/lib/data/` — types, services, projects, blog data
+- `src/routes/` — home, blog/, services/, preview/
+- `src/content/blog/` — markdown posts (professional/, personal/)
+- `docs/slices/` — specs (template: `_TEMPLATE.md`)
+- `docs/handoffs/` — reports (template: `_TEMPLATE.md`)
+- `docs/devlog/` — logs (template: `_TEMPLATE.md`)
+- `static/` — models, images, lottie

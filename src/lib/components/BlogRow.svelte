@@ -49,13 +49,21 @@
 	<div class="flex gap-3">
 		<!-- Metro line column: station badge + vertical connector -->
 		<div class="flex flex-col items-center">
-			<!-- Station badge: numbered circle with accent background -->
-			<div
-				class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold text-[#0a0a0a]"
-				style="background-color: {accentColor};"
-				data-testid="station-badge"
-			>
-				{stationNumber}
+			<!-- Station badge: numbered circle with sonar pulse radiating outward -->
+			<div class="station-badge-wrapper">
+				<!-- WHY: stagger delay based on index so badges pulse at offset intervals,
+				     avoiding all badges pulsing simultaneously (feels more organic) -->
+				<div
+					class="station-pulse"
+					style="animation-delay: {index * 0.4}s;"
+				></div>
+				<div
+					class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold text-[#0a0a0a]"
+					style="background-color: {accentColor};"
+					data-testid="station-badge"
+				>
+					{stationNumber}
+				</div>
 			</div>
 			<!-- Vertical metro line connecting stations — SVG for DrawSVGPlugin animation -->
 			<svg
@@ -88,7 +96,7 @@
 			<!-- Subtle glow on hover -->
 			<div
 				class="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-				style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), color-mix(in srgb, {accentColor} 12%, transparent), transparent 60%);"
+				style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), color-mix(in srgb, {accentColor} 6%, transparent), transparent 60%);"
 			></div>
 
 			<!-- SVG icon -->
@@ -145,5 +153,42 @@
 	.metro-line-svg {
 		display: block;
 		min-height: 20px;
+	}
+
+	/* WHY: wrapper provides a positioning context for the absolute pulse ring */
+	.station-badge-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	/* WHY: sonar ping effect radiating from the badge center —
+	   absolute positioning keeps it centred without affecting layout */
+	.station-pulse {
+		position: absolute;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: rgba(224, 120, 0, 0.5);
+		animation: station-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+	}
+
+	@keyframes station-ping {
+		0% {
+			transform: scale(1);
+			opacity: 0.6;
+		}
+		75%, 100% {
+			transform: scale(2.5);
+			opacity: 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.station-pulse {
+			animation: none;
+			display: none;
+		}
 	}
 </style>

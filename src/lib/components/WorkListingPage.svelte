@@ -14,11 +14,11 @@
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, Flip, ScrollTrigger, DrawSVGPlugin } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap, Flip, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import WorkCard from './WorkCard.svelte';
 	import WorkFilterSidebar from './WorkFilterSidebar.svelte';
 	import WorkFilterMobile from './WorkFilterMobile.svelte';
-	import GradientSeparator from './GradientSeparator.svelte';
+
 
 	let {
 		projects,
@@ -88,10 +88,13 @@
 
 		if (flipState && !isPrefersReducedMotion()) {
 			const cards = document.querySelectorAll('[data-flip-id]');
-			// WHY: use:reveal re-initializes on re-render and sets opacity:0.
-			// Kill those competing tweens and reset cards to visible before FLIP
-			// compares old vs new state — otherwise FLIP animates TO opacity:0.
+			// WHY: batch CSS sets parent wrappers to opacity:0. After a filter change,
+			// new DOM elements have that CSS default. We must reset BOTH the batch
+			// wrappers AND the inner cards to visible before FLIP runs.
+			const batchItems = document.querySelectorAll('[data-batch="work-item"]');
 			gsap.killTweensOf(cards);
+			gsap.killTweensOf(batchItems);
+			gsap.set(batchItems, { opacity: 1, y: 0 });
 			gsap.set(cards, { opacity: 1, y: 0, x: 0, scale: 1 });
 
 			Flip.from(flipState, {
@@ -147,18 +150,6 @@
 					{ opacity: 0, y: 20 },
 					{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
 				);
-
-				// WHY: DrawSVGPlugin animates the gradient line from 0% to 100% length,
-				// reinforcing the metro journey metaphor as each card enters the viewport
-				const lines = Array.from(batch as Element[]).flatMap((el: Element) =>
-					Array.from(el.querySelectorAll('[data-metro-line] line'))
-				);
-				if (lines.length > 0) {
-					gsap.fromTo(lines,
-						{ drawSVG: '0%' },
-						{ drawSVG: '100%', duration: 0.4, stagger: 0.08, delay: 0.3, ease: 'power2.out' }
-					);
-				}
 			},
 			once: true
 		});
@@ -179,8 +170,6 @@
 			{resolveLocale(content.subtitle, 'en')}
 		</p>
 	</div>
-
-	<GradientSeparator />
 
 	<!-- Mobile filter (hidden on md+) -->
 	<WorkFilterMobile
@@ -241,11 +230,19 @@
 						<div class="flex gap-4" data-batch="work-item">
 							<!-- Metro line + station badge -->
 							<div class="flex flex-col items-center">
-								<div
-									class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold"
-									style="background: #E07800; color: #000;"
-								>
-									{String(i + 1).padStart(2, '0')}
+								<!-- Station badge with sonar pulse effect -->
+								<div class="station-badge-wrapper">
+									<!-- WHY: stagger delay per card index so pulses feel organic, not synchronized -->
+									<div
+										class="station-pulse"
+										style="animation-delay: {i * 0.4}s;"
+									></div>
+									<div
+										class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold"
+										style="background: #E07800; color: #000;"
+									>
+										{String(i + 1).padStart(2, '0')}
+									</div>
 								</div>
 								<!-- WHY: SVG line with gradient for DrawSVGPlugin — gradient ID scoped per card via index -->
 								<svg
@@ -295,16 +292,47 @@
 		}
 	}
 
-	/* WHY: metro line starts hidden so DrawSVGPlugin can animate the draw-in on scroll enter */
-	:global([data-metro-line] line) {
-		stroke-dasharray: 1000;
-		stroke-dashoffset: 1000;
+	/* WHY: metro lines show with the card entrance — no separate draw animation.
+	   The batch fade-in on the parent wrapper reveals everything together. */
+	@media (prefers-reduced-motion: reduce) {
+		:global([data-metro-line] line) {
+		}
+	}
+
+	/* WHY: wrapper provides a positioning context for the absolute pulse ring */
+	.station-badge-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	/* WHY: sonar ping effect radiating from the badge center —
+	   absolute positioning keeps it centred without affecting layout */
+	.station-pulse {
+		position: absolute;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: rgba(224, 120, 0, 0.5);
+		animation: station-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+	}
+
+	@keyframes station-ping {
+		0% {
+			transform: scale(1);
+			opacity: 0.6;
+		}
+		75%, 100% {
+			transform: scale(2.5);
+			opacity: 0;
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		:global([data-metro-line] line) {
-			stroke-dasharray: none;
-			stroke-dashoffset: 0;
+		.station-pulse {
+			animation: none;
+			display: none;
 		}
 	}
 </style>

@@ -67,10 +67,9 @@
 					<DataFlowDiagram stack={project.stack} size="lg" />
 				</div>
 			{/if}
-			<div class="mt-6 h-0.5 rounded-full" style="background: linear-gradient(90deg, #E07800 0%, #FFB627 40%, #2a2a2a 100%);"></div>
 		</header>
 
-		<GradientSeparator maxWidth="72rem" />
+		<GradientSeparator />
 
 		<!-- Mobile sidebar -->
 		<div class="mb-8 lg:hidden">

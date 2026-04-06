@@ -10,11 +10,11 @@
 	import type { BlogPost, Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, ScrollTrigger, DrawSVGPlugin } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
-	import GradientSeparator from './GradientSeparator.svelte';
+
 
 	let {
 		posts,
@@ -105,6 +105,24 @@
 		!!activeTag || !!activeLang || searchQuery.trim() !== '' || dateFrom !== '' || dateTo !== ''
 	);
 
+	// WHY: after a filter change, Svelte re-renders BlogRow elements which start
+	// at opacity:0 from the batch CSS. The batch onEnter (once:true) already fired
+	// on initial load, so it won't re-fire. This effect resets new items to visible.
+	let batchFired = false;
+	$effect(() => {
+		// Subscribe to filteredPosts so this runs on every filter change
+		filteredPosts;
+		if (batchFired && typeof document !== 'undefined') {
+			// Use tick-level delay so Svelte finishes rendering new DOM first
+			requestAnimationFrame(() => {
+				document.querySelectorAll<HTMLElement>('[data-batch="blog-item"]').forEach(el => {
+					el.style.opacity = '1';
+					el.style.transform = 'translateY(0)';
+				});
+			});
+		}
+	});
+
 	onMount(() => {
 		// WHY: if user prefers reduced motion, skip all animation and just make elements visible
 		if (isPrefersReducedMotion()) {
@@ -121,22 +139,11 @@
 		ScrollTrigger.batch('[data-batch="blog-item"]', {
 			start: 'top 85%',
 			onEnter: (batch) => {
+				batchFired = true;
 				gsap.fromTo(batch,
 					{ opacity: 0, y: 20 },
 					{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
 				);
-
-				// WHY: DrawSVGPlugin animates the line from 0% to 100% length,
-				// creating a drawing-in effect on scroll that reinforces the metro journey metaphor
-				const lines = Array.from(batch as Element[]).flatMap((el: Element) =>
-					Array.from(el.querySelectorAll('[data-metro-line] line'))
-				);
-				if (lines.length > 0) {
-					gsap.fromTo(lines,
-						{ drawSVG: '0%' },
-						{ drawSVG: '100%', duration: 0.4, stagger: 0.08, delay: 0.3, ease: 'power2.out' }
-					);
-				}
 			},
 			once: true
 		});
@@ -176,8 +183,6 @@
 			</svg>
 		</div>
 	</div>
-
-	<GradientSeparator />
 
 	<!-- Mobile filter -->
 	<BlogFilterMobile
@@ -264,17 +269,4 @@
 		}
 	}
 
-	/* WHY: metro line starts hidden (dashoffset = full length) so DrawSVGPlugin
-	   can animate it drawing in from 0% to 100% on scroll enter */
-	:global([data-metro-line] line) {
-		stroke-dasharray: 1000;
-		stroke-dashoffset: 1000;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		:global([data-metro-line] line) {
-			stroke-dasharray: none;
-			stroke-dashoffset: 0;
-		}
-	}
 </style>

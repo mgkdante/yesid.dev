@@ -107,9 +107,4 @@
 		{/if}
 	</div>
 
-	<!-- Gradient divider — wider orange-to-yellow-to-dark sweep matching work detail page -->
-	<div
-		class="mt-6 h-0.5 rounded-full"
-		style="background: linear-gradient(90deg, {accentColor} 0%, #FFB627 40%, #2a2a2a 100%);"
-	></div>
 </div>

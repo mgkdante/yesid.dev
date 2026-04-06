@@ -175,45 +175,23 @@
 		<!-- Subtle glow on hover -->
 		<div
 			class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-			style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), {gradientColors[0]}18, transparent 60%);"
+			style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), {gradientColors[0]}0a, transparent 60%);"
 		></div>
 	</article>
 </a>
 
 <style>
-	@property --angle {
-		syntax: '<angle>';
-		initial-value: 0deg;
-		inherits: false;
-	}
-
-	.work-card-article {
-		border-color: #2a2a2a;
-	}
-
+	/* WHY: same hover pattern as BlogRow — subtle border glow + shadow,
+	   no rotating gradient (that was visually distracting on cards) */
 	.work-card:hover .work-card-article {
-		border-color: transparent;
-		background-image: conic-gradient(from var(--angle), #E07800, #FFB627, transparent 40%, #E07800);
-		background-origin: border-box;
-		background-clip: padding-box, border-box;
-		animation: rotate-gradient-border 3s linear infinite;
+		border-color: color-mix(in srgb, #E07800 50%, transparent);
 		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
-	@keyframes rotate-gradient-border {
-		to { --angle: 360deg; }
-	}
-
+	/* Strip WorkSvgIcon container border/bg when nested in card badges */
 	.service-badge-icon :global(.work-svg-icon) {
 		border: none;
 		background: transparent;
 		border-radius: 0;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.work-card:hover .work-card-article {
-			animation: none;
-			border-color: #E07800;
-		}
 	}
 </style>

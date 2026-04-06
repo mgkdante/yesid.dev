@@ -1,0 +1,181 @@
+<h2>Slice 09c-2b — Polish Enhancements Design</h2>
+<p class="subtitle">6 features, all working together to deepen the metro/transit brand</p>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+
+  <!-- ME-1: cursorGlow -->
+  <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 70% 40%, rgba(224,120,0,0.12), transparent 60%); pointer-events: none;"></div>
+    <div style="position: relative; z-index: 1;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span style="background: #E07800; color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: monospace;">ME-1</span>
+        <h3 style="margin: 0; font-size: 16px;">cursorGlow Action</h3>
+      </div>
+      <p style="font-size: 13px; color: #999; line-height: 1.5;">
+        Svelte action (<code>use:cursorGlow</code>) tracks <code>pointermove</code> and updates <code>--glow-x</code>, <code>--glow-y</code> CSS custom properties. The existing static radial-gradient on BlogRow and WorkCard follows the cursor.
+      </p>
+      <div style="margin-top: 12px; padding: 12px; background: #141414; border-radius: 8px; font-family: monospace; font-size: 11px; color: #E07800;">
+        Pattern: same as tilt.ts<br>
+        Targets: BlogRow, WorkCard<br>
+        Disabled: touch devices, reduced-motion
+      </div>
+    </div>
+  </div>
+
+  <!-- ME-3: Gradient border -->
+  <div style="background: #1a1a1a; border-radius: 12px; padding: 24px; position: relative; overflow: hidden;">
+    <!-- Animated gradient border simulation -->
+    <div style="position: absolute; inset: 0; border-radius: 12px; padding: 2px; background: conic-gradient(from 45deg, #E07800, #FFB627, transparent, #E07800); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude;"></div>
+    <div style="position: relative; z-index: 1;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span style="background: #FFB627; color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: monospace;">ME-3</span>
+        <h3 style="margin: 0; font-size: 16px;">Animated Gradient Border</h3>
+      </div>
+      <p style="font-size: 13px; color: #999; line-height: 1.5;">
+        Pure CSS using <code>@property --angle</code> + <code>conic-gradient</code>. The border rotates on hover, paused by default. Replaces the static border-color transition on WorkCard.
+      </p>
+      <div style="margin-top: 12px; padding: 12px; background: #141414; border-radius: 8px; font-family: monospace; font-size: 11px; color: #FFB627;">
+        @property --angle: 0deg → 360deg<br>
+        conic-gradient(from var(--angle), ...)<br>
+        animation-play-state: paused → running
+      </div>
+    </div>
+  </div>
+
+  <!-- ME-4: ScrollTrigger.batch -->
+  <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+      <span style="background: #E07800; color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: monospace;">ME-4</span>
+      <h3 style="margin: 0; font-size: 16px;">ScrollTrigger.batch()</h3>
+    </div>
+    <p style="font-size: 13px; color: #999; line-height: 1.5;">
+      Replaces individual <code>use:reveal</code> on listing pages. One parent-level batch watches ALL children (headers, filters, cards). Elements entering together cascade as a wave.
+    </p>
+    <!-- Wave animation demo -->
+    <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span style="font-size: 10px; color: #666; font-family: monospace; width: 50px;">wave 1</span>
+        <div style="height: 8px; background: linear-gradient(90deg, #E07800, #FFB627); border-radius: 4px; width: 80%; animation: wave1 2s ease-in-out infinite;"></div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span style="font-size: 10px; color: #666; font-family: monospace; width: 50px;">wave 2</span>
+        <div style="height: 8px; background: linear-gradient(90deg, #E07800, #FFB627); border-radius: 4px; width: 60%; animation: wave1 2s ease-in-out 0.3s infinite;"></div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span style="font-size: 10px; color: #666; font-family: monospace; width: 50px;">wave 3</span>
+        <div style="height: 8px; background: linear-gradient(90deg, #E07800, #FFB627); border-radius: 4px; width: 40%; animation: wave1 2s ease-in-out 0.6s infinite;"></div>
+      </div>
+    </div>
+    <div style="margin-top: 12px; padding: 12px; background: #141414; border-radius: 8px; font-family: monospace; font-size: 11px; color: #E07800;">
+      Pages: BlogListingPage, WorkListingPage<br>
+      Targets: headers, filters, cards — everything<br>
+      Stagger: 0.08s within each batch
+    </div>
+  </div>
+
+  <!-- MT-1: Metro line drawing -->
+  <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+      <span style="background: #E07800; color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: monospace;">MT-1</span>
+      <h3 style="margin: 0; font-size: 16px;">Metro Line Drawing</h3>
+    </div>
+    <p style="font-size: 13px; color: #999; line-height: 1.5;">
+      Replace CSS <code>div</code> metro line in BlogRow with SVG <code>&lt;line&gt;</code>. DrawSVGPlugin animates each segment as the row enters via batch. Line "grows" downward connecting stations.
+    </p>
+    <!-- Visual demo: station + line -->
+    <div style="margin-top: 16px; display: flex; gap: 16px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0;">
+        <div style="width: 28px; height: 28px; border-radius: 50%; background: #E07800; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 10px; font-weight: 700; color: #000;">01</div>
+        <svg width="2" height="40" style="display: block;"><line x1="1" y1="0" x2="1" y2="40" stroke="#E07800" stroke-width="2" stroke-dasharray="40" stroke-dashoffset="0"><animate attributeName="stroke-dashoffset" from="40" to="0" dur="1s" fill="freeze" repeatCount="indefinite"/></line></svg>
+        <div style="width: 28px; height: 28px; border-radius: 50%; background: #E07800; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 10px; font-weight: 700; color: #000;">02</div>
+        <svg width="2" height="40" style="display: block;"><line x1="1" y1="0" x2="1" y2="40" stroke="#E07800" stroke-width="2" stroke-dasharray="40" stroke-dashoffset="0"><animate attributeName="stroke-dashoffset" from="40" to="0" dur="1s" begin="0.5s" fill="freeze" repeatCount="indefinite"/></line></svg>
+        <div style="width: 28px; height: 28px; border-radius: 50%; background: #E07800; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 10px; font-weight: 700; color: #000;">03</div>
+      </div>
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center;">
+        <div style="background: #141414; border: 1px solid #333; border-radius: 8px; padding: 12px; font-size: 12px; color: #ccc;">Blog post card content...</div>
+        <div style="background: #141414; border: 1px solid #333; border-radius: 8px; padding: 12px; font-size: 12px; color: #ccc;">Blog post card content...</div>
+        <div style="background: #141414; border: 1px solid #333; border-radius: 8px; padding: 12px; font-size: 12px; color: #ccc;">Blog post card content...</div>
+      </div>
+    </div>
+    <div style="margin-top: 12px; padding: 12px; background: #141414; border-radius: 8px; font-family: monospace; font-size: 11px; color: #E07800;">
+      Approach: Segmented SVGs per row<br>
+      Orchestrated by ScrollTrigger.batch()<br>
+      Also applies to WorkListingPage metro column
+    </div>
+  </div>
+
+  <!-- MT-2: Badge pulse -->
+  <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+      <span style="background: #FFB627; color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: monospace;">MT-2</span>
+      <h3 style="margin: 0; font-size: 16px;">Station Badge Pulse</h3>
+    </div>
+    <p style="font-size: 13px; color: #999; line-height: 1.5;">
+      Continuous sonar ping/pulse radiating outward from each station badge. Pure CSS <code>box-shadow</code> animation. Like active stations on a live transit map.
+    </p>
+    <div style="margin-top: 20px; display: flex; gap: 24px; justify-content: center;">
+      <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+        <div style="position: absolute; width: 28px; height: 28px; border-radius: 50%; background: rgba(224,120,0,0.3); animation: ping 2s cubic-bezier(0,0,0.2,1) infinite;"></div>
+        <div style="width: 28px; height: 28px; border-radius: 50%; background: #E07800; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 10px; font-weight: 700; color: #000; position: relative; z-index: 1;">01</div>
+      </div>
+      <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+        <div style="position: absolute; width: 28px; height: 28px; border-radius: 50%; background: rgba(224,120,0,0.3); animation: ping 2s cubic-bezier(0,0,0.2,1) 0.7s infinite;"></div>
+        <div style="width: 28px; height: 28px; border-radius: 50%; background: #E07800; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 10px; font-weight: 700; color: #000; position: relative; z-index: 1;">02</div>
+      </div>
+      <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+        <div style="position: absolute; width: 28px; height: 28px; border-radius: 50%; background: rgba(224,120,0,0.3); animation: ping 2s cubic-bezier(0,0,0.2,1) 1.4s infinite;"></div>
+        <div style="width: 28px; height: 28px; border-radius: 50%; background: #E07800; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 10px; font-weight: 700; color: #000; position: relative; z-index: 1;">03</div>
+      </div>
+    </div>
+    <div style="margin-top: 16px; padding: 12px; background: #141414; border-radius: 8px; font-family: monospace; font-size: 11px; color: #FFB627;">
+      CSS animation: scale(1→2.5) + opacity(0.4→0)<br>
+      Duration: 2s, infinite, staggered per badge<br>
+      Reduced-motion: static, no pulse
+    </div>
+  </div>
+
+  <!-- MT-4: Dashed separators -->
+  <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+      <span style="background: #E07800; color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-family: monospace;">MT-4</span>
+      <h3 style="margin: 0; font-size: 16px;">Animated Dashed Separators</h3>
+    </div>
+    <p style="font-size: 13px; color: #999; line-height: 1.5;">
+      New <code>DashedSeparator.svelte</code> component — global, used between all major sections site-wide. SVG dashed line draws in from left via DrawSVGPlugin on scroll enter.
+    </p>
+    <!-- Demo -->
+    <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+      <div style="background: #141414; border-radius: 6px; padding: 10px 16px; font-size: 11px; color: #666; width: 100%; text-align: center;">Section A content</div>
+      <svg width="100%" height="8" style="display: block;">
+        <line x1="0" y1="4" x2="100%" y2="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="8 6" stroke-linecap="round" opacity="0.6">
+          <animate attributeName="stroke-dashoffset" from="100" to="0" dur="1.5s" fill="freeze" repeatCount="indefinite"/>
+        </line>
+      </svg>
+      <div style="background: #141414; border-radius: 6px; padding: 10px 16px; font-size: 11px; color: #666; width: 100%; text-align: center;">Section B content</div>
+    </div>
+    <div style="margin-top: 12px; padding: 12px; background: #141414; border-radius: 8px; font-family: monospace; font-size: 11px; color: #E07800;">
+      Scope: global (home, blog, work, services)<br>
+      Replaces StationDivider where appropriate<br>
+      DrawSVGPlugin: drawSVG: "0%" → "100%"
+    </div>
+  </div>
+
+</div>
+
+<style>
+  @keyframes ping {
+    0% { transform: scale(1); opacity: 0.4; }
+    75%, 100% { transform: scale(2.5); opacity: 0; }
+  }
+  @keyframes wave1 {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  code {
+    background: #2a2a2a;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #FFB627;
+  }
+</style>
