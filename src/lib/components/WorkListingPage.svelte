@@ -1,7 +1,9 @@
 <!--
-  Full work listing page layout: header, service filter pills, tag filter pills,
-  and a card grid with GSAP Flip animation on filter changes.
+  Full work listing page layout: header, sidebar filters (desktop) / collapsible
+  filter (mobile), and a card grid with GSAP Flip animation on filter changes.
   Service + tag filters use AND logic with URL params via goto().
+  Desktop: sticky left sidebar (~220px) + main grid on the right.
+  Mobile: collapsible filter button above the grid.
   Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
 -->
 <script lang="ts">
@@ -14,6 +16,8 @@
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap, Flip } from '$lib/motion/utils/gsap.js';
 	import WorkCard from './WorkCard.svelte';
+	import WorkFilterSidebar from './WorkFilterSidebar.svelte';
+	import WorkFilterMobile from './WorkFilterMobile.svelte';
 
 	let {
 		projects,
@@ -33,10 +37,8 @@
 	const content = {
 		heading: { en: 'Work' },
 		subtitle: { en: 'Projects, pipelines, and systems I have built.' },
-		allFilter: { en: 'All' },
 		emptyState: { en: 'No projects match the selected filters.' },
-		servicesLabel: { en: 'Services' },
-		tagsLabel: { en: 'Tags' }
+		clearFilters: { en: 'clear filters' }
 	};
 
 	// Filter state — read from URL params
@@ -130,120 +132,71 @@
 		</p>
 	</div>
 
-	<!-- Service filter row -->
-	<div class="mb-3" use:reveal={{ delay: 50 }}>
-		<div class="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-			{resolveLocale(content.servicesLabel, 'en')}
+	<!-- Mobile filter (hidden on md+) -->
+	<WorkFilterMobile
+		{serviceIds}
+		{serviceMap}
+		tags={allTags}
+		{activeService}
+		{activeTag}
+		onServiceSelect={handleServiceSelect}
+		onTagSelect={handleTagSelect}
+	/>
+
+	<!-- Desktop: sidebar + grid layout -->
+	<div class="flex gap-8">
+		<!-- Sticky sidebar filter (hidden below md) -->
+		<div class="hidden shrink-0 md:block md:sticky md:top-20 md:self-start">
+			<WorkFilterSidebar
+				{serviceIds}
+				{serviceMap}
+				tags={allTags}
+				{activeService}
+				{activeTag}
+				onServiceSelect={handleServiceSelect}
+				onTagSelect={handleTagSelect}
+			/>
 		</div>
-		<div class="flex flex-wrap gap-2">
-			<button
-				class="filter-pill"
-				class:active={!activeService}
-				onclick={() => handleServiceSelect(null)}
-				data-testid="service-filter-all"
-			>
-				{resolveLocale(content.allFilter, 'en')}
-			</button>
-			{#each serviceIds as svcId}
-				<button
-					class="filter-pill"
-					class:active={activeService === svcId}
-					onclick={() => handleServiceSelect(activeService === svcId ? null : svcId)}
-					data-testid="service-filter-{svcId}"
-				>
-					{serviceMap.get(svcId) ?? svcId}
-				</button>
-			{/each}
+
+		<!-- Main content area -->
+		<div class="min-w-0 flex-1">
+			<!-- Active filter summary -->
+			{#if hasActiveFilters}
+				<div class="mb-4 flex items-center gap-2">
+					<span class="text-xs text-[var(--text-muted)]">
+						{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
+					</span>
+					<button
+						class="font-mono text-[10px] text-[#E07800] underline transition-colors hover:text-[var(--text-primary)]"
+						onclick={() => {
+							const url = new URL($page.url);
+							url.searchParams.delete('service');
+							url.searchParams.delete('tag');
+							goto(url.toString(), { replaceState: true, noScroll: true });
+						}}
+					>
+						{resolveLocale(content.clearFilters, 'en')}
+					</button>
+				</div>
+			{/if}
+
+			<!-- Card grid -->
+			{#if filteredProjects.length === 0}
+				<p class="py-12 text-center text-sm text-[var(--text-muted)]" data-testid="work-empty-state">
+					{resolveLocale(content.emptyState, 'en')}
+				</p>
+			{:else}
+				<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+					{#each filteredProjects as project, i (project.slug)}
+						<WorkCard
+							{project}
+							{services}
+							{serviceSvgContents}
+							index={i}
+						/>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</div>
-
-	<!-- Tag filter row -->
-	<div class="mb-6" use:reveal={{ delay: 100 }}>
-		<div class="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-			{resolveLocale(content.tagsLabel, 'en')}
-		</div>
-		<div class="flex flex-wrap gap-2">
-			<button
-				class="filter-pill"
-				class:active={!activeTag}
-				onclick={() => handleTagSelect(null)}
-				data-testid="tag-filter-all"
-			>
-				{resolveLocale(content.allFilter, 'en')}
-			</button>
-			{#each allTags as tag}
-				<button
-					class="filter-pill"
-					class:active={activeTag === tag}
-					onclick={() => handleTagSelect(activeTag === tag ? null : tag)}
-					data-testid="tag-filter-{tag}"
-				>
-					{tag}
-				</button>
-			{/each}
-		</div>
-	</div>
-
-	<!-- Active filter summary -->
-	{#if hasActiveFilters}
-		<div class="mb-4 flex items-center gap-2">
-			<span class="text-xs text-[var(--text-muted)]">
-				{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
-			</span>
-			<button
-				class="font-mono text-[10px] text-[#E07800] underline transition-colors hover:text-[var(--text-primary)]"
-				onclick={() => {
-					const url = new URL($page.url);
-					url.searchParams.delete('service');
-					url.searchParams.delete('tag');
-					goto(url.toString(), { replaceState: true, noScroll: true });
-				}}
-			>
-				clear filters
-			</button>
-		</div>
-	{/if}
-
-	<!-- Card grid -->
-	{#if filteredProjects.length === 0}
-		<p class="py-12 text-center text-sm text-[var(--text-muted)]" data-testid="work-empty-state">
-			{resolveLocale(content.emptyState, 'en')}
-		</p>
-	{:else}
-		<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-			{#each filteredProjects as project, i (project.slug)}
-				<WorkCard
-					{project}
-					{serviceSvgContents}
-					index={i}
-				/>
-			{/each}
-		</div>
-	{/if}
 </div>
-
-<style>
-	/* Filter pill base and active states */
-	.filter-pill {
-		padding: 0.25rem 0.75rem;
-		border-radius: 9999px;
-		border: 1px solid #2a2a2a;
-		background: transparent;
-		color: var(--text-secondary);
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.filter-pill:hover {
-		border-color: color-mix(in srgb, #E07800 50%, transparent);
-		color: var(--text-primary);
-	}
-
-	.filter-pill.active {
-		background: #E07800;
-		border-color: #E07800;
-		color: #0a0a0a;
-	}
-</style>

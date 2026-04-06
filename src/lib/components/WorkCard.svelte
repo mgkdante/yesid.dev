@@ -1,11 +1,12 @@
 <!--
   Single project card for the /work listing page.
-  Layout: gradient thumbnail → title → one-liner → service SVGs → tag pills.
+  Layout: gradient thumbnail (tall) -> title -> one-liner -> service badges (SVG + name)
+         -> tech stack inline diagram -> tag pills.
   Full card is a link to /work/{slug}. Hover triggers border glow + SVG morph.
   Entrance via use:reveal with stagger delay from index.
 -->
 <script lang="ts">
-	import type { Project } from '$lib/data/types.js';
+	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
@@ -13,10 +14,12 @@
 
 	let {
 		project,
+		services = [],
 		serviceSvgContents = {},
 		index = 0
 	}: {
 		project: Project;
+		services?: readonly Service[];
 		serviceSvgContents: Record<string, string>;
 		index?: number;
 	} = $props();
@@ -26,8 +29,18 @@
 	// Show at most 4 tags to keep the card compact
 	let displayTags = $derived(project.tags.slice(0, 4));
 
-	// Gradient color based on the first related service's position in the palette
-	// Creates visual variety across cards without requiring thumbnails
+	// Show at most 5 stack items in the inline diagram to keep cards compact
+	let displayStack = $derived(project.stack.slice(0, 5));
+
+	// Resolve service objects for this project so we can show title labels
+	let projectServices = $derived(
+		project.relatedServices
+			.map((id) => services.find((s) => s.id === id))
+			.filter((s): s is Service => !!s)
+	);
+
+	// Gradient color based on the first related service's position in the palette.
+	// Creates visual variety across cards without requiring thumbnails.
 	const SERVICE_GRADIENTS: Record<string, [string, string]> = {
 		'sql-development': ['#E07800', '#c06000'],
 		'data-pipeline': ['#FFB627', '#d99a10'],
@@ -40,6 +53,9 @@
 	let gradientColors = $derived(
 		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['#E07800', '#FFB627']
 	);
+
+	// i18n label for tech stack section
+	const stackLabel = { en: 'Tech Stack' };
 </script>
 
 <a
@@ -54,9 +70,9 @@
 	<article
 		class="relative flex h-full flex-col overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
 	>
-		<!-- Gradient placeholder thumbnail -->
+		<!-- Gradient placeholder thumbnail — taller for future screenshots -->
 		<div
-			class="flex h-[120px] items-center justify-center"
+			class="flex h-[170px] items-center justify-center"
 			style="background: linear-gradient(135deg, {gradientColors[0]}22, {gradientColors[1]}11);"
 		>
 			<!-- Show first service SVG in the thumbnail area if available -->
@@ -83,18 +99,45 @@
 				{resolveLocale(project.oneLiner, 'en')}
 			</p>
 
-			<!-- Service SVG icons row -->
-			{#if project.relatedServices.length > 0}
-				<div class="mt-3 flex gap-1.5">
-					{#each project.relatedServices as serviceId}
-						{#if serviceSvgContents[serviceId]}
-							<WorkSvgIcon
-								svgContent={serviceSvgContents[serviceId]}
-								size={20}
-								hovered={cardHovered}
-							/>
-						{/if}
+			<!-- Service badges row — bigger SVGs (28px) with name labels -->
+			{#if projectServices.length > 0}
+				<div class="mt-3 flex flex-wrap gap-1.5">
+					{#each projectServices as service}
+						<div
+							class="inline-flex items-center gap-1.5 rounded-full border bg-[#141414] px-2 py-0.5"
+							style="border-color: rgba(224, 120, 0, 0.35);"
+						>
+							{#if serviceSvgContents[service.id]}
+								<div class="service-badge-icon flex shrink-0 items-center justify-center overflow-hidden" aria-hidden="true">
+									{@html serviceSvgContents[service.id]}
+								</div>
+							{/if}
+							<span class="font-mono text-[9px] leading-tight text-[var(--text-primary)] md:text-[10px]">
+								{resolveLocale(service.title, 'en')}
+							</span>
+						</div>
 					{/each}
+				</div>
+			{/if}
+
+			<!-- Tech stack inline diagram -->
+			{#if displayStack.length > 0}
+				<div class="mt-3">
+					<div class="mb-1 font-mono text-[8px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+						{resolveLocale(stackLabel, 'en')}
+					</div>
+					<div class="flex flex-wrap items-center gap-0">
+						{#each displayStack as tech, i}
+							<span class="font-mono text-[9px] text-[#E07800]/80 md:text-[10px]">{tech}</span>
+							{#if i < displayStack.length - 1}
+								<!-- Dashed connector between stack nodes -->
+								<span class="mx-1 inline-block h-px w-3 border-t border-dashed border-[#E07800]/40"></span>
+							{/if}
+						{/each}
+						{#if project.stack.length > 5}
+							<span class="ml-1 font-mono text-[8px] text-[var(--text-muted)]">+{project.stack.length - 5}</span>
+						{/if}
+					</div>
 				</div>
 			{/if}
 
@@ -122,5 +165,17 @@
 	.work-card:hover article {
 		border-color: color-mix(in srgb, #E07800 50%, transparent);
 		box-shadow: 0 0 20px color-mix(in srgb, #E07800 10%, transparent);
+	}
+
+	/* Force service badge inline SVG to 28px */
+	.service-badge-icon {
+		width: 28px;
+		height: 28px;
+	}
+
+	.service-badge-icon :global(svg) {
+		width: 28px;
+		height: 28px;
+		display: block;
 	}
 </style>
