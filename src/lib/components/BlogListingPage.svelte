@@ -4,11 +4,13 @@
   Includes: search, tag filter, date range filter.
 -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { BlogPost, Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
+	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
@@ -102,11 +104,40 @@
 	let hasActiveFilters = $derived(
 		!!activeTag || !!activeLang || searchQuery.trim() !== '' || dateFrom !== '' || dateTo !== ''
 	);
+
+	onMount(() => {
+		// WHY: if user prefers reduced motion, skip all animation and just make elements visible
+		if (isPrefersReducedMotion()) {
+			document.querySelectorAll<HTMLElement>('[data-batch="blog-item"]').forEach(el => {
+				el.style.opacity = '1';
+			});
+			return;
+		}
+
+		registerGsapPlugins();
+
+		// WHY: ScrollTrigger.batch() groups elements that enter the viewport together
+		// into a single wave, producing a staggered cascade rather than N independent tweens
+		ScrollTrigger.batch('[data-batch="blog-item"]', {
+			start: 'top 85%',
+			onEnter: (batch) => {
+				gsap.fromTo(batch,
+					{ opacity: 0, y: 20 },
+					{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
+				);
+			},
+			once: true
+		});
+
+		return () => {
+			ScrollTrigger.getAll().forEach(t => t.kill());
+		};
+	});
 </script>
 
 <div data-testid="blog-listing" class="pb-16">
 	<!-- Header -->
-	<div class="mb-6" use:reveal>
+	<div class="mb-6" data-batch="blog-item">
 		<h1 class="font-heading text-2xl font-bold text-[var(--text-primary)] md:text-3xl">
 			{heading}
 		</h1>
@@ -116,7 +147,7 @@
 	</div>
 
 	<!-- Search bar (full width, above sidebar+content) -->
-	<div class="mb-4" use:reveal={{ delay: 50 }}>
+	<div class="mb-4" data-batch="blog-item">
 		<div class="relative">
 			<input
 				type="text"
@@ -207,5 +238,17 @@
 	input:focus {
 		border-color: var(--accent);
 		box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 15%, transparent);
+	}
+
+	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
+	:global([data-batch="blog-item"]) {
+		opacity: 0;
+	}
+
+	/* WHY: respect prefers-reduced-motion — show items immediately without animation */
+	@media (prefers-reduced-motion: reduce) {
+		:global([data-batch="blog-item"]) {
+			opacity: 1;
+		}
 	}
 </style>

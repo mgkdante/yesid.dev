@@ -7,10 +7,8 @@
 	import type { BlogPost } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { boop } from '$lib/motion/actions/boop.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
-	import { stagger } from '$lib/motion/utils/stagger.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
 
 	let {
@@ -42,8 +40,8 @@
 	rel={post.external ? 'noopener noreferrer' : undefined}
 	class="group block"
 	data-testid="blog-row"
+	data-batch="blog-item"
 	use:boop={{ scale: 1.015, timing: 300 }}
-	use:reveal={{ delay: stagger(index, 80) }}
 	onmouseenter={() => (cardHovered = true)}
 	onmouseleave={() => (cardHovered = false)}
 >
