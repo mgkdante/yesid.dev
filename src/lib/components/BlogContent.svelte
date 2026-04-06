@@ -1,35 +1,72 @@
 <!--
   Styled wrapper for rendered markdown blog content.
   Provides typography styles for headings, code blocks, blockquotes, lists, links.
-  Uses CollapsibleSection with collapsible=false — card presentation only, no toggle.
+  Editorial reading layout — no card frame, content breathes freely.
+  Features: heading anchor links on hover, code copy buttons on pre blocks.
 -->
 <script lang="ts">
-	import CollapsibleSection from './CollapsibleSection.svelte';
+	import { onMount } from 'svelte';
 
 	let {
 		accentColor = '#E07800',
-		contentTitle = 'Article',
 		children
 	}: {
 		accentColor?: string;
-		contentTitle?: string;
 		children: import('svelte').Snippet;
 	} = $props();
+
+	let contentEl: HTMLDivElement;
+
+	onMount(() => {
+		if (!contentEl) return;
+
+		// Add copy buttons to all <pre> elements for code block clipboard support
+		const preElements = contentEl.querySelectorAll('pre');
+
+		preElements.forEach((pre) => {
+			// Ensure pre is positioned so the absolute button works
+			pre.style.position = 'relative';
+
+			const btn = document.createElement('button');
+			btn.className = 'copy-btn';
+			btn.textContent = 'Copy';
+			btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+			btn.addEventListener('click', async () => {
+				const code = pre.querySelector('code');
+				if (!code) return;
+
+				try {
+					await navigator.clipboard.writeText(code.textContent ?? '');
+					btn.textContent = '\u2713';
+					setTimeout(() => {
+						btn.textContent = 'Copy';
+					}, 2000);
+				} catch {
+					// Clipboard API may fail in insecure contexts — fail silently
+					btn.textContent = 'Error';
+					setTimeout(() => {
+						btn.textContent = 'Copy';
+					}, 2000);
+				}
+			});
+
+			pre.appendChild(btn);
+		});
+	});
 </script>
 
-<!-- CollapsibleSection with collapsible=false gives the card frame without a toggle button -->
+<!-- Editorial reading layout — no card frame, content breathes freely -->
 <div class="mt-8" data-testid="blog-content">
-	<CollapsibleSection title={contentTitle} collapsible={false} accentColor={accentColor}>
-		<div class="blog-content" style="--blog-accent: {accentColor};">
-			{@render children()}
-		</div>
-	</CollapsibleSection>
+	<div class="blog-content" style="--blog-accent: {accentColor};" bind:this={contentEl}>
+		{@render children()}
+	</div>
 </div>
 
 <style>
 	/* Prose container — comfortable reading width */
 	.blog-content {
-		max-width: 65ch;
+		max-width: 72ch;
 		font-size: 0.9375rem;
 		line-height: 1.8;
 		color: #ccc;
@@ -50,6 +87,28 @@
 	.blog-content :global(h2) { font-size: 1.25rem; font-weight: 700; }
 	.blog-content :global(h3) { font-size: 1.1rem; font-weight: 600; }
 	.blog-content :global(h4) { font-size: 1rem; font-weight: 600; }
+
+	/* Heading anchor links — '#' slides in from the left on hover */
+	.blog-content :global(h2),
+	.blog-content :global(h3) {
+		position: relative;
+	}
+	.blog-content :global(h2)::before,
+	.blog-content :global(h3)::before {
+		content: '#';
+		position: absolute;
+		right: 100%;
+		margin-right: 0.5rem;
+		color: var(--blog-accent);
+		opacity: 0;
+		transform: translateX(-4px);
+		transition: opacity 0.2s ease, transform 0.2s ease;
+	}
+	.blog-content :global(h2):hover::before,
+	.blog-content :global(h3):hover::before {
+		opacity: 0.6;
+		transform: translateX(0);
+	}
 
 	/* Paragraphs */
 	.blog-content :global(p) {
@@ -89,6 +148,30 @@
 		padding: 0;
 		border: none;
 		font-size: inherit;
+	}
+
+	/* Code copy button — hidden by default, shown on pre:hover */
+	.blog-content :global(.copy-btn) {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		padding: 0.25rem 0.5rem;
+		font-size: 0.75rem;
+		font-family: 'Inter', sans-serif;
+		color: #999;
+		background: #1a1a1a;
+		border: 1px solid #2a2a2a;
+		border-radius: 0.25rem;
+		cursor: pointer;
+		opacity: 0;
+		transition: opacity 0.15s ease;
+	}
+	.blog-content :global(pre:hover .copy-btn) {
+		opacity: 1;
+	}
+	.blog-content :global(.copy-btn:hover) {
+		color: #f5f5f0;
+		background: #2a2a2a;
 	}
 
 	/* Inline code */

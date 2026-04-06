@@ -2,12 +2,13 @@
   Blog post detail page — /blog/[slug]
   Renders pre-rendered markdown HTML with title + side SVG icon layout.
   ToC absolutely positioned in the left page margin (2xl+), content stays centered.
+  ReadingProgressBar tracks scroll progress through the blog content.
 -->
 <script lang="ts">
 	import BlogDetailHeader from '$lib/components/BlogDetailHeader.svelte';
 	import BlogContent from '$lib/components/BlogContent.svelte';
+	import ReadingProgressBar from '$lib/components/ReadingProgressBar.svelte';
 	import TableOfContents from '$lib/components/TableOfContents.svelte';
-	import { resolveLocale } from '$lib/data/locale.js';
 
 	let { data } = $props();
 
@@ -20,6 +21,8 @@
 		tocRef ? tocRef.getProcessedHtml() : data.html
 	);
 </script>
+
+<ReadingProgressBar {accentColor} />
 
 <article class="pb-16">
 	<div class="mx-auto max-w-5xl">
@@ -47,7 +50,7 @@
 
 		<!-- Main content — full width, not affected by ToC -->
 		<div class="min-w-0">
-			<BlogContent accentColor={accentColor} contentTitle={resolveLocale(data.post.title, 'en')}>
+			<BlogContent accentColor={accentColor}>
 				{@html processedHtml}
 			</BlogContent>
 		</div>
