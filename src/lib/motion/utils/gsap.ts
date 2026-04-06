@@ -10,14 +10,16 @@ import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { CustomEase } from 'gsap/CustomEase';
 import { SplitText } from 'gsap/SplitText';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+// @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
+import { Flip } from 'gsap/Flip';
 
 let registered = false;
 
 export function registerGsapPlugins(): void {
 	if (registered) return;
-	gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin);
+	gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin, Flip);
 	registered = true;
 }
 
 // Re-export for convenience so motion code only needs one import source.
-export { gsap, ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin };
+export { gsap, ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin, Flip };
