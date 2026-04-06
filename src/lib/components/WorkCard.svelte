@@ -1,9 +1,10 @@
 <!--
   Single project card for the /work listing page.
-  Layout: gradient thumbnail (tall) -> title -> one-liner -> service badges (SVG + name)
+  Layout: short gradient banner (120px) -> title -> description -> service badges
          -> tech stack inline diagram -> tag pills.
-  Full card is a link to /work/{slug}. Hover triggers border glow + SVG morph.
-  Entrance via use:reveal with stagger delay from index.
+  Banner shows project image if available, otherwise a gradient with a subtle
+  WorkSvgIcon at the right. Full card is a link to /work/{slug}.
+  Hover triggers border glow + SVG morph. Entrance via use:reveal with stagger delay.
 -->
 <script lang="ts">
 	import type { Project, Service } from '$lib/data/types.js';
@@ -73,12 +74,12 @@
 	onmouseleave={() => (cardHovered = false)}
 >
 	<article
-		class="relative flex h-full flex-col overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
+		class="relative overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
 		use:tilt={{ maxDeg: 1.5 }}
 	>
-		<!-- Thumbnail: project image if set, gradient placeholder with SVG fallback -->
+		<!-- Gradient banner: short (120px), full-width. Image or gradient+icon fallback -->
 		{#if project.image}
-			<div class="h-[280px] overflow-hidden">
+			<div class="h-[120px] overflow-hidden">
 				<img
 					src="/images/work/{project.image}"
 					alt={resolveLocale(project.title, 'en')}
@@ -88,11 +89,11 @@
 			</div>
 		{:else}
 			<div
-				class="flex h-[280px] items-center justify-center"
+				class="flex h-[120px] items-center justify-end pr-6"
 				style="background: linear-gradient(135deg, {gradientColors[0]}22, {gradientColors[1]}11);"
 			>
 				{#if project.relatedServices[0] && serviceSvgContents[project.relatedServices[0]]}
-					<div class="opacity-60 transition-opacity duration-300 group-hover:opacity-90">
+					<div class="opacity-30 transition-opacity duration-300 group-hover:opacity-50">
 						<WorkSvgIcon
 							svgContent={serviceSvgContents[project.relatedServices[0]]}
 							size={72}
@@ -103,15 +104,15 @@
 			</div>
 		{/if}
 
-		<!-- Content area -->
-		<div class="flex flex-1 flex-col p-4">
-			<!-- Title -->
-			<h3 class="text-sm font-bold text-[var(--text-primary)] transition-colors duration-300 group-hover:text-[#E07800] md:text-base">
+		<!-- Content area — all content stacks naturally below the banner -->
+		<div class="p-4">
+			<!-- Title below the gradient, not overlaid -->
+			<h3 class="text-base font-bold text-[var(--text-primary)] transition-colors duration-300 group-hover:text-[#E07800] md:text-lg">
 				{resolveLocale(project.title, 'en')}
 			</h3>
 
-			<!-- One-liner -->
-			<p class="mt-1.5 line-clamp-2 text-xs leading-relaxed text-[var(--text-secondary)] md:text-sm">
+			<!-- Description -->
+			<p class="mt-1.5 text-sm leading-relaxed text-[var(--text-secondary)]">
 				{resolveLocale(project.oneLiner, 'en')}
 			</p>
 
@@ -159,7 +160,7 @@
 			{/if}
 
 			<!-- Tags as small pills -->
-			<div class="mt-auto flex flex-wrap gap-1 pt-3">
+			<div class="flex flex-wrap gap-1 pt-3">
 				{#each displayTags as tag}
 					<span
 						class="rounded border border-[#E07800]/30 px-1.5 py-0.5 font-mono text-[10px] text-[#E07800]"

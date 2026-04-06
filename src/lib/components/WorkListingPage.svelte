@@ -191,14 +191,24 @@
 					{resolveLocale(content.emptyState, 'en')}
 				</p>
 			{:else}
-				<div class="grid grid-cols-1 gap-6">
+				<div class="flex flex-col gap-4">
 					{#each filteredProjects as project, i (project.slug)}
-						<WorkCard
-							{project}
-							{services}
-							{serviceSvgContents}
-							index={i}
-						/>
+						<div class="flex gap-4">
+							<!-- Metro line + station badge -->
+							<div class="flex flex-col items-center">
+								<div
+									class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold"
+									style="background: #E07800; color: #000;"
+								>
+									{String(i + 1).padStart(2, '0')}
+								</div>
+								<div class="w-0.5 flex-1" style="background: linear-gradient(to bottom, #E07800, #FFB627);"></div>
+							</div>
+							<!-- Card -->
+							<div class="min-w-0 flex-1">
+								<WorkCard {project} {services} {serviceSvgContents} index={i} />
+							</div>
+						</div>
 					{/each}
 				</div>
 			{/if}
