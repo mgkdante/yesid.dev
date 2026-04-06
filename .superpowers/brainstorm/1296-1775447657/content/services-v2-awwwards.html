@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services Page — Design Directions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #f5f5f0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    padding: 32px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  h1 span { color: #E07800; }
+
+  .subtitle {
+    color: #888;
+    font-size: 0.95rem;
+    margin-bottom: 48px;
+    max-width: 600px;
+  }
+
+  .inspiration {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+    font-size: 0.85rem;
+    color: #999;
+    line-height: 1.7;
+  }
+  .inspiration strong { color: #E07800; }
+  .inspiration em { color: #ccc; font-style: normal; }
+
+  /* --- Option sections --- */
+  .option-section {
+    margin-bottom: 64px;
+    border: 1px solid #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+  .option-section:hover { border-color: #333; }
+  .option-section.selected { border-color: #E07800; }
+
+  .option-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 28px;
+    background: #111;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .option-letter {
+    width: 40px; height: 40px;
+    border: 2px solid #E07800;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #E07800;
+    flex-shrink: 0;
+  }
+  .option-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .option-tag {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .option-body { padding: 28px; }
+  .option-desc {
+    color: #bbb;
+    font-size: 0.9rem;
+    max-width: 700px;
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+  .option-desc strong { color: #f5f5f0; font-weight: 600; }
+
+  /* Mockup frame */
+  .mockup-frame {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .mockup-chrome {
+    background: #161616;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #222;
+  }
+  .mockup-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #333;
+  }
+  .mockup-url {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #555;
+    margin-left: 8px;
+  }
+  .mockup-canvas {
+    padding: 0;
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* GSAP chips */
+  .gsap-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 16px;
+  }
+  .gsap-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: #1a1200;
+    color: #FFB627;
+    border: 1px solid #332800;
+  }
+
+  /* Signature callout */
+  .signature {
+    background: linear-gradient(135deg, #1a0e00 0%, #0d0d0d 100%);
+    border-left: 3px solid #E07800;
+    padding: 16px 20px;
+    margin-top: 20px;
+    border-radius: 0 6px 6px 0;
+  }
+  .signature-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: #E07800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 4px;
+  }
+  .signature-text {
+    font-size: 0.85rem;
+    color: #ccc;
+    line-height: 1.6;
+  }
+
+  /* Selection indicator */
+  .select-hint {
+    text-align: center;
+    color: #444;
+    font-size: 0.75rem;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
+<script>
+  function selectOption(el) {
+    document.querySelectorAll('.option-section').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    const choice = el.dataset.choice;
+    // Post to parent if in iframe, or log
+    if (window.__superpowers_select) window.__superpowers_select(choice);
+    console.log('Selected:', choice);
+  }
+</script>
+</head>
+<body>
+
+<h1>Services Page — <span>Round 2</span></h1>
+<p class="subtitle">Three award-level directions inspired by Lusion, Linear, and David Langarica. Each leverages your GSAP stack and metro identity. Click to select.</p>
+
+<div class="inspiration">
+  <strong>Research insights:</strong> Award-winning services pages <em>prove capabilities through storytelling</em>, not lists.
+  Lusion shows services through featured work. Linear uses granular type hierarchy with animated grid patterns.
+  David Langarica uses color-coded cards with cycling role animations.<br><br>
+  <strong>Your assets:</strong> 6 service SVGs, GSAP (SplitText, MorphSVGPlugin, ScrollTrigger, DrawSVGPlugin),
+  Inter + JetBrains Mono, dark theme, orange/yellow accent, metro metaphor.
+</div>
+
+<!-- ═══════════════════════════════════════════ OPTION A ═══════════════════════════════════════════ -->
+<div class="option-section" data-choice="a" onclick="selectOption(this)">
+  <div class="option-header">
+    <div class="option-letter">A</div>
+    <div class="option-title">The Kinetic Scroll — Full-Viewport Service Reveals</div>
+    <div class="option-tag">immersive / lusion-inspired</div>
+  </div>
+  <div class="option-body">
+    <p class="option-desc">
+      Each service occupies the <strong>full viewport</strong>. As you scroll, the service SVG draws itself in (DrawSVGPlugin),
+      the title splits and animates in with SplitText, and a brief value prop fades up. Scroll snapping locks each service.
+      A <strong>thin vertical metro line</strong> on the left tracks progress with station dots that fill as you pass each service.
+      The bottom of each viewport shows a <strong>"proof strip"</strong> — mini project thumbnails that link to /work/[slug].
+      Clicking the service title or a "deep dive" CTA navigates to /services/[id].
+    </p>
+
+    <div class="mockup-frame">
+      <div class="mockup-chrome">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <span class="mockup-url">yesid.dev/services</span>
+      </div>
+      <div class="mockup-canvas" style="min-height:580px;background:#0a0a0a;">
+        <!-- Metro line left side -->
+        <div style="position:absolute;left:40px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#E07800 0%,#E07800 33%,#333 33%,#333 100%);"></div>
+        <!-- Station dots -->
+        <div style="position:absolute;left:33px;top:60px;width:16px;height:16px;border-radius:50%;background:#E07800;border:2px solid #E07800;"></div>
+        <div style="position:absolute;left:33px;top:220px;width:16px;height:16px;border-radius:50%;background:transparent;border:2px solid #444;"></div>
+        <div style="position:absolute;left:33px;top:380px;width:16px;height:16px;border-radius:50%;background:transparent;border:2px solid #333;"></div>
+
+        <!-- Current service — full viewport -->
+        <div style="position:absolute;left:80px;top:40px;right:40px;">
+          <!-- Station number -->
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:#E07800;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px;">
+            Service 01 / 06
+          </div>
+
+          <!-- Big title with kinetic feel -->
+          <div style="font-size:clamp(2.2rem,5vw,3.5rem);font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:20px;">
+            <span style="color:#f5f5f0;">SQL</span><br>
+            <span style="color:#f5f5f0;">Development</span>
+            <span style="color:#E07800;">.</span>
+          </div>
+
+          <!-- SVG area - draws in on scroll -->
+          <div style="position:absolute;right:0;top:20px;width:220px;height:220px;border:1px dashed #222;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <div style="color:#333;font-family:'JetBrains Mono',monospace;font-size:0.7rem;text-align:center;">
+              SVG draws in<br>via DrawSVGPlugin<br>
+              <span style="color:#E07800;">scroll-linked</span>
+            </div>
+          </div>
+
+          <!-- Value prop -->
+          <p style="color:#999;font-size:0.95rem;max-width:420px;line-height:1.7;margin-bottom:24px;">
+            Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. Built for correctness and performance.
+          </p>
+
+          <!-- Stack pills -->
+          <div style="display:flex;gap:8px;margin-bottom:32px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;padding:4px 12px;border:1px solid #333;border-radius:2px;color:#888;">PostgreSQL</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;padding:4px 12px;border:1px solid #333;border-radius:2px;color:#888;">SQL Server</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;padding:4px 12px;border:1px solid #333;border-radius:2px;color:#888;">T-SQL</span>
+          </div>
+
+          <!-- CTA -->
+          <a style="display:inline-flex;align-items:center;gap:8px;color:#E07800;font-size:0.85rem;font-weight:600;text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;">
+            Deep dive <span style="font-size:1.1rem;">&#8594;</span>
+          </a>
+        </div>
+
+        <!-- Proof strip at bottom -->
+        <div style="position:absolute;bottom:0;left:0;right:0;background:#111;border-top:1px solid #1a1a1a;padding:16px 80px;display:flex;align-items:center;gap:16px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#555;text-transform:uppercase;letter-spacing:0.1em;flex-shrink:0;">Proof</span>
+          <div style="display:flex;gap:10px;">
+            <div style="width:64px;height:40px;background:#1a1a1a;border:1px solid #282828;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:0.55rem;color:#666;">Transit</span>
+            </div>
+            <div style="width:64px;height:40px;background:#1a1a1a;border:1px solid #282828;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:0.55rem;color:#666;">Query Opt.</span>
+            </div>
+            <div style="width:64px;height:40px;background:#1a1a1a;border:1px solid #282828;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:0.55rem;color:#666;">DB Migr.</span>
+            </div>
+          </div>
+          <span style="font-size:0.7rem;color:#444;margin-left:auto;">3 projects</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gsap-chips">
+      <span class="gsap-chip">ScrollTrigger snap</span>
+      <span class="gsap-chip">DrawSVGPlugin</span>
+      <span class="gsap-chip">SplitText</span>
+      <span class="gsap-chip">scrub: true</span>
+    </div>
+
+    <div class="signature">
+      <div class="signature-label">Signature Move</div>
+      <div class="signature-text">SVG illustrations draw themselves into existence as each service scrolls into view. The metro progress line on the left connects the entire journey. Each viewport is a destination.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ OPTION B ═══════════════════════════════════════════ -->
+<div class="option-section" data-choice="b" onclick="selectOption(this)">
+  <div class="option-header">
+    <div class="option-letter">B</div>
+    <div class="option-title">The Editorial Grid — Magazine-Style Asymmetry</div>
+    <div class="option-tag">editorial / linear-inspired</div>
+  </div>
+  <div class="option-body">
+    <p class="option-desc">
+      Think editorial magazine layout. A <strong>bold hero</strong> with oversized "What I Build" text (SplitText reveal).
+      Below, services are presented in an <strong>asymmetric 2-column grid</strong> where items alternate between large and small.
+      The first 2 services (SQL + Pipeline — your bread and butter) get <strong>large hero cards</strong> with the SVG illustration,
+      full description, stack, and project count. The remaining 4 get <strong>compact editorial rows</strong> — title, one-liner, station number.
+      All cards reveal with staggered <code>use:reveal</code>. Hover on any card shows a <strong>MorphSVG transition</strong> on the service icon.
+      No scroll snapping — natural scroll with sticky section headers.
+    </p>
+
+    <div class="mockup-frame">
+      <div class="mockup-chrome">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <span class="mockup-url">yesid.dev/services</span>
+      </div>
+      <div class="mockup-canvas" style="min-height:620px;background:#0a0a0a;padding:40px;">
+        <!-- Hero -->
+        <div style="margin-bottom:48px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#E07800;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px;">
+            Capabilities
+          </div>
+          <div style="font-size:clamp(2.5rem,6vw,4rem);font-weight:900;letter-spacing:-0.05em;line-height:0.95;">
+            What I<br>
+            <span style="color:#E07800;">Build</span><span style="color:#FFB627;">.</span>
+          </div>
+          <p style="color:#777;font-size:0.85rem;margin-top:12px;max-width:380px;line-height:1.6;">
+            Data infrastructure, tools, and systems that move your business forward.
+          </p>
+        </div>
+
+        <!-- Asymmetric grid -->
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:16px;">
+          <!-- Large card: SQL -->
+          <div style="background:#111;border:1px solid #1a1a1a;border-radius:8px;padding:28px;grid-row:span 2;display:flex;flex-direction:column;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#555;">01</div>
+              <div style="width:80px;height:80px;border:1px dashed #222;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:0.55rem;color:#444;">SVG</span>
+              </div>
+            </div>
+            <div style="font-size:1.5rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:8px;">SQL Development</div>
+            <p style="color:#888;font-size:0.8rem;line-height:1.6;flex:1;">Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. From complex reporting queries to stored procedures.</p>
+            <div style="display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;padding:3px 8px;background:#1a1a1a;border-radius:2px;color:#777;">PostgreSQL</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;padding:3px 8px;background:#1a1a1a;border-radius:2px;color:#777;">SQL Server</span>
+            </div>
+            <div style="margin-top:12px;font-size:0.75rem;color:#E07800;">3 projects &#8594;</div>
+          </div>
+
+          <!-- Small card: Pipeline -->
+          <div style="background:#111;border:1px solid #1a1a1a;border-radius:8px;padding:20px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#555;margin-bottom:8px;">02</div>
+            <div style="font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px;">Data Pipeline</div>
+            <p style="color:#777;font-size:0.75rem;line-height:1.5;">ELT/ETL pipelines that move data reliably.</p>
+            <div style="font-size:0.7rem;color:#E07800;margin-top:10px;">1 project &#8594;</div>
+          </div>
+
+          <!-- Small card: Analytics -->
+          <div style="background:#111;border:1px solid #1a1a1a;border-radius:8px;padding:20px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#555;margin-bottom:8px;">03</div>
+            <div style="font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px;">Analytics & Reporting</div>
+            <p style="color:#777;font-size:0.75rem;line-height:1.5;">Actionable dashboards with Power BI and Retool.</p>
+            <div style="font-size:0.7rem;color:#E07800;margin-top:10px;">3 projects &#8594;</div>
+          </div>
+        </div>
+
+        <!-- Compact editorial rows for remaining -->
+        <div style="border-top:1px solid #1a1a1a;margin-top:8px;">
+          <div style="display:flex;align-items:center;padding:16px 0;border-bottom:1px solid #111;gap:16px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#444;width:20px;">04</span>
+            <span style="font-weight:600;font-size:0.9rem;flex:1;">Database Engineering</span>
+            <span style="color:#666;font-size:0.75rem;">Schema, migration, performance</span>
+            <span style="color:#E07800;font-size:0.75rem;">&#8594;</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:16px 0;border-bottom:1px solid #111;gap:16px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#444;width:20px;">05</span>
+            <span style="font-weight:600;font-size:0.9rem;flex:1;">Internal Tooling</span>
+            <span style="color:#666;font-size:0.75rem;">Admin panels, workflow tools</span>
+            <span style="color:#E07800;font-size:0.75rem;">&#8594;</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:16px 0;gap:16px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#444;width:20px;">06</span>
+            <span style="font-weight:600;font-size:0.9rem;flex:1;">Web Development</span>
+            <span style="color:#666;font-size:0.75rem;">SvelteKit, APIs, portals</span>
+            <span style="color:#E07800;font-size:0.75rem;">&#8594;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gsap-chips">
+      <span class="gsap-chip">SplitText hero</span>
+      <span class="gsap-chip">stagger reveal</span>
+      <span class="gsap-chip">MorphSVG hover</span>
+      <span class="gsap-chip">use:reveal</span>
+    </div>
+
+    <div class="signature">
+      <div class="signature-label">Signature Move</div>
+      <div class="signature-text">Asymmetric grid that breaks the uniform card grid trap. Core services dominate the viewport with large editorial cards; supporting services sit in clean typographic rows. Typography does 80% of the visual work.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ OPTION C ═══════════════════════════════════════════ -->
+<div class="option-section" data-choice="c" onclick="selectOption(this)">
+  <div class="option-header">
+    <div class="option-letter">C</div>
+    <div class="option-title">The Data Flow — Horizontal Scroll Service Map</div>
+    <div class="option-tag">interactive / skills-journey-inspired</div>
+  </div>
+  <div class="option-body">
+    <p class="option-desc">
+      Reuse the <strong>horizontal scroll pattern from SkillsJourney</strong> (Slice B) but for services.
+      A hero section with "What I Build" drops into a <strong>horizontal scroll container</strong> where each service is a full-width panel.
+      Each panel: large SVG animation (DrawSVGPlugin), title with SplitText animation,
+      brief value prop, stack chips, and linked project mini-cards.
+      A <strong>progress bar at the top</strong> shows "Service 01/06" advancing horizontally.
+      The metro line runs <strong>horizontally</strong> through all panels, connecting them as a data flow.
+      After the horizontal scroll, a <strong>vertical CTA section</strong>: "See these in action" linking to /work.
+    </p>
+
+    <div class="mockup-frame">
+      <div class="mockup-chrome">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <span class="mockup-url">yesid.dev/services</span>
+      </div>
+      <div class="mockup-canvas" style="min-height:540px;background:#0a0a0a;position:relative;">
+        <!-- Horizontal progress bar -->
+        <div style="position:absolute;top:0;left:0;right:0;background:#111;border-bottom:1px solid #1a1a1a;padding:10px 32px;display:flex;align-items:center;justify-content:space-between;z-index:2;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#E07800;letter-spacing:0.15em;text-transform:uppercase;">Service 01 / 06</span>
+          <!-- Progress dots -->
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#E07800;"></div>
+            <div style="width:24px;height:2px;background:#333;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;border:1.5px solid #333;"></div>
+            <div style="width:24px;height:2px;background:#222;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;border:1.5px solid #333;"></div>
+            <div style="width:24px;height:2px;background:#222;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;border:1.5px solid #222;"></div>
+            <div style="width:24px;height:2px;background:#222;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;border:1.5px solid #222;"></div>
+            <div style="width:24px;height:2px;background:#222;"></div>
+            <div style="width:10px;height:10px;border-radius:50%;border:1.5px solid #222;"></div>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#444;">scroll &#8594;</span>
+        </div>
+
+        <!-- Panel content -->
+        <div style="padding:60px 48px 40px;">
+          <!-- Horizontal metro line through content -->
+          <div style="position:absolute;left:0;right:0;top:250px;height:2px;background:linear-gradient(to right,#E07800 0%,#E07800 18%,#333 18%,#222 100%);z-index:1;"></div>
+
+          <div style="display:flex;gap:60px;align-items:flex-start;position:relative;z-index:2;">
+            <!-- Left: SVG illustration area -->
+            <div style="width:260px;height:260px;flex-shrink:0;border:1px dashed #1a1a1a;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#0d0d0d;">
+              <div style="text-align:center;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:#333;margin-bottom:8px;">service-sql.svg</div>
+                <div style="font-size:0.6rem;color:#E07800;">DrawSVGPlugin</div>
+                <div style="font-size:0.6rem;color:#555;">animates on panel enter</div>
+              </div>
+            </div>
+
+            <!-- Right: Content -->
+            <div style="flex:1;padding-top:8px;">
+              <div style="font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:16px;">
+                SQL<br>Development<span style="color:#E07800;">.</span>
+              </div>
+              <p style="color:#999;font-size:0.9rem;max-width:380px;line-height:1.7;margin-bottom:20px;">
+                Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. From complex reporting queries to stored procedures, built for correctness and performance.
+              </p>
+
+              <!-- Stack -->
+              <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:4px 10px;border:1px solid #282828;border-radius:2px;color:#777;">PostgreSQL</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:4px 10px;border:1px solid #282828;border-radius:2px;color:#777;">SQL Server</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:4px 10px;border:1px solid #282828;border-radius:2px;color:#777;">T-SQL</span>
+              </div>
+
+              <!-- Linked projects -->
+              <div style="display:flex;gap:10px;">
+                <div style="background:#111;border:1px solid #1a1a1a;border-radius:6px;padding:10px 14px;flex:1;">
+                  <div style="font-size:0.75rem;font-weight:600;margin-bottom:2px;">Transit Pipeline</div>
+                  <div style="font-size:0.6rem;color:#666;">End-to-end ELT for transit ops</div>
+                </div>
+                <div style="background:#111;border:1px solid #1a1a1a;border-radius:6px;padding:10px 14px;flex:1;">
+                  <div style="font-size:0.75rem;font-weight:600;margin-bottom:2px;">Query Optimizer</div>
+                  <div style="font-size:0.6rem;color:#666;">SQL Server analysis tool</div>
+                </div>
+              </div>
+
+              <!-- CTA -->
+              <a style="display:inline-flex;align-items:center;gap:8px;color:#E07800;font-size:0.8rem;font-weight:600;text-decoration:none;margin-top:16px;">
+                Deep dive <span>&#8594;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gsap-chips">
+      <span class="gsap-chip">containerAnimation</span>
+      <span class="gsap-chip">ScrollTrigger horizontal</span>
+      <span class="gsap-chip">DrawSVGPlugin</span>
+      <span class="gsap-chip">SplitText per-panel</span>
+      <span class="gsap-chip">snap</span>
+    </div>
+
+    <div class="signature">
+      <div class="signature-label">Signature Move</div>
+      <div class="signature-text">The horizontal scroll transforms /services into a journey — same pattern as SkillsJourney but content-rich. The metro line runs horizontally through all panels, visually connecting services as a continuous data pipeline. Familiar interaction reused in a new context.</div>
+    </div>
+  </div>
+</div>
+
+<p class="select-hint">click any option to select &middot; or tell me in terminal</p>
+
+</body>
+</html>

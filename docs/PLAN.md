@@ -198,7 +198,7 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | B+  | Icon morphs + scroll UX for SkillsJourney              | complete | B          | 1-2           |
 | 07  | Blog system (markdown content + /blog routes)          | complete | 06d        | 1-2           |
 | 08  | Work pages (index + FLIP filter + detail)              | complete | 02, 03, 07 | 1-2           |
-| 09  | Services pages (/services + /services/[id])            | planned  | 02, 08     | 2-3           |
+| 09  | Services pages (/services + /services/[id])            | ready    | 02, 08     | 2-3           |
 | 09b | About + Contact pages (bento grid /about)              | planned  | 02, 03, 07 | 1             |
 | 10  | SEO + metadata                                         | planned  | 07, 08, 09 | 1             |
 | 11  | E2E test suite + performance + brand QA                | planned  | 07, 08, 09 | 1-2           |
@@ -311,7 +311,25 @@ Full blog system with two content lanes: professional (`/blog`, orange accent) a
 **Tests:** Index shows all public projects. Tag filter animates correctly. Detail renders from slug. Tech tags stagger. 404 on bad slug.
 **You'll learn:** Dynamic routes ([slug]), FLIP animation, data-driven filtering, scroll-reveal composition.
 
-### Slice 09 — About + Contact Pages
+### Slice 09 — Services Pages (/services + /services/[id])
+
+**Status:** ready (design approved 2026-04-06)
+**Design:** "The Kinetic Scroll" — full-viewport service reveals with station tab navigation, vertical metro line, DrawSVGPlugin animations, and proof strips. Inspired by Lusion, Linear, David Langarica portfolio patterns.
+
+**Index page:** Each service occupies 100vh with ScrollTrigger snap. Station tabs (top, sticky), metro line (left, desktop), service content per viewport (kinetic title, SVG draw-in, stack pills, CTA), proof strip (bottom, related projects).
+
+**Detail page:** Station tabs (navigate mode), hero (SVG + title + stack), collapsible sections (value prop, deliverables, custom), related projects band, prev/next navigation. Reuses WorkDetailPage collapsible section pattern.
+
+**Key decisions:** StationTabs component shared between index and detail (DRY). All content through LocalizedString. Data model extended with optional fields (backward compatible). 6 new components.
+
+**Design spec:** `docs/superpowers/specs/2026-04-06-slice-09-services-design.md`
+**Implementation plan:** `docs/superpowers/plans/2026-04-06-slice-09-services.md`
+**Visual mockups:** `docs/superpowers/mockups/slice-09-services-*.html`
+
+**Tests:** Data layer backward compat, component render tests, route 404, bidirectional navigation, a11y.
+**You'll learn:** ScrollTrigger snap, DrawSVGPlugin, SplitText, full-viewport layouts, DRY component reuse across routes.
+
+### Slice 09b — About + Contact Pages
 
 About: bio section (fade entrance), focus areas, skills (stagger tags). Contact: links from SiteMeta with stagger entrance and boop hover on icons.
 

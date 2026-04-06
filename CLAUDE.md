@@ -29,8 +29,10 @@ All work is organized into **slices**. A slice is a self-contained unit of work 
 - A spec in `docs/slices/slice-NN-name.md`
 - Clear acceptance criteria
 - A defined output
+- Use template: `slices/_TEMPLATE.md`
 
 **Rules:**
+
 1. Before starting ANY work, read the active slice spec in `docs/slices/`.
 2. Do exactly what the spec says. No more, no less.
 3. If the spec is ambiguous, write your assumption in the dev log and proceed. Do not stop to ask.
@@ -250,11 +252,15 @@ static/
 
 ## Active Slice
 
-**Slice 09 — Services Pages (/services + /services/[id])** (NEXT)
-- Build `/services` index: showcase all capabilities with visual cards, linked projects
-- Build `/services/[id]` detail: deep dive into each service — what it is, how it helps, example projects (linking back to /work/[slug]), stack used
-- Data-driven, cloud-ready (LocalizedString), i18n-compliant
-- Services are the heart of the site — connects projects, skills, and client value
+**Slice 09 — Services Pages (/services + /services/[id])** (IN PROGRESS)
+- Design: "The Kinetic Scroll" — full-viewport service reveals with station tab navigation
+- Design spec: `docs/superpowers/specs/2026-04-06-slice-09-services-design.md`
+- Implementation plan: `docs/superpowers/plans/2026-04-06-slice-09-services.md`
+- Visual mockups: `docs/superpowers/mockups/slice-09-services-index.html` + `slice-09-services-detail.html`
+- Slice spec: `docs/slices/slice-09-services.md`
+- `/services` index: full-viewport scroll, station tabs, metro line, DrawSVGPlugin, proof strips
+- `/services/[id]` detail: station tabs, collapsible sections, related projects, prev/next nav
+- Data-driven, i18n-ready (LocalizedString), cloud-ready, DRY, componentized, scalable
 - Service badges in work pages already link to `/services/[id]` (currently 404)
 - Depends on: Slices 02, 08
 
@@ -267,6 +273,41 @@ static/
 - The dot in "yesid." is always orange
 - Logo is always lowercase
 - See `/brand/yesid_brand_guide.pdf` for full rules
+
+## Workflow: Web Development
+
+### Active Plugin Stack (use based on current task)
+
+#### Design Phase
+- Design Research, UX Strategy, UI UX Promax → when planning layouts or user flows
+- Brand Voice → when writing copy or choosing tone
+
+#### Build Phase
+- Frontend Design Pro, Web Designer, UI Design → when generating components
+- Frontend Design, Prototyping Testing → when iterating on implementations
+- Chrome Devtools → when debugging in browser
+
+#### Quality Phase
+- Code Review → before any commit
+- Designer Toolkit → for design system consistency checks
+
+#### Meta
+- Remember → persist decisions across sessions
+- Claude Code Setup, Everything Claude Code → reference for tooling questions
+- Superpowers → general enhancement
+
+### Workflow Rules
+1. Before starting ANY task, identify which phase it falls under. Load only those plugins.
+2. Never skip Code Review before committing.
+3. Use Remember to log architectural decisions so future sessions don't re-debate them.
+4. When building UI, reference the brand system: dark aesthetic, amber/orange palette, Inter/JetBrains Mono type system.
+5. Always check existing components before creating new ones.
+6. Run the dev server and visually verify changes, don't just assume they work.
+
+### Project Context
+- Stack: SvelteKit, Tailwind, Three.js/Threlte, GSAP
+- Domain: yesid.dev
+- Brand: transit-focused, dark theme, amber accents
 
 ## What You Never Do
 
