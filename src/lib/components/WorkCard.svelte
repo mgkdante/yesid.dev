@@ -67,12 +67,12 @@
 	data-testid="work-card"
 	data-flip-id={project.slug}
 	use:reveal={{ delay: stagger(index, 80) }}
-	use:tilt={{ maxDeg: 1.5 }}
 	onmouseenter={() => (cardHovered = true)}
 	onmouseleave={() => (cardHovered = false)}
 >
 	<article
 		class="relative flex h-full flex-col overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
+		use:tilt={{ maxDeg: 1.5 }}
 	>
 		<!-- Thumbnail: project image if set, gradient placeholder with SVG fallback -->
 		{#if project.image}

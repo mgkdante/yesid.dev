@@ -87,12 +87,17 @@
 
 		if (flipState && !isPrefersReducedMotion()) {
 			const cards = document.querySelectorAll('[data-flip-id]');
+			// WHY: use:reveal re-initializes on re-render and sets opacity:0.
+			// Kill those competing tweens and reset cards to visible before FLIP
+			// compares old vs new state — otherwise FLIP animates TO opacity:0.
+			gsap.killTweensOf(cards);
+			gsap.set(cards, { opacity: 1, y: 0, x: 0, scale: 1 });
+
 			Flip.from(flipState, {
 				targets: cards,
 				duration: 0.5,
 				ease: 'power2.inOut',
 				stagger: 0.05,
-				absolute: true,
 				onEnter: (els) =>
 					gsap.fromTo(
 						els,
