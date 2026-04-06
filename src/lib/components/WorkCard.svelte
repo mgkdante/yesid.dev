@@ -12,6 +12,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
+	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import WorkSvgIcon from './WorkSvgIcon.svelte';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
@@ -74,8 +75,9 @@
 	onmouseleave={() => (cardHovered = false)}
 >
 	<article
-		class="relative overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
+		class="work-card-article relative overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
 		use:tilt={{ maxDeg: 1.5 }}
+		use:cursorGlow
 	>
 		<!-- Gradient banner: short (120px), full-width. Image or gradient+icon fallback -->
 		{#if project.image}
@@ -175,21 +177,45 @@
 		<!-- Subtle glow on hover -->
 		<div
 			class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-			style="box-shadow: 0 0 20px {gradientColors[0]}15; border: 1px solid {gradientColors[0]}40;"
+			style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), {gradientColors[0]}18, transparent 60%);"
 		></div>
 	</article>
 </a>
 
 <style>
-	.work-card:hover article {
-		border-color: color-mix(in srgb, #E07800 50%, transparent);
+	@property --angle {
+		syntax: '<angle>';
+		initial-value: 0deg;
+		inherits: false;
+	}
+
+	.work-card-article {
+		border-color: #2a2a2a;
+	}
+
+	.work-card:hover .work-card-article {
+		border-color: transparent;
+		background-image: conic-gradient(from var(--angle), #E07800, #FFB627, transparent 40%, #E07800);
+		background-origin: border-box;
+		background-clip: padding-box, border-box;
+		animation: rotate-gradient-border 3s linear infinite;
 		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
-	/* Strip WorkSvgIcon container border/bg when nested in card badges */
+	@keyframes rotate-gradient-border {
+		to { --angle: 360deg; }
+	}
+
 	.service-badge-icon :global(.work-svg-icon) {
 		border: none;
 		background: transparent;
 		border-radius: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.work-card:hover .work-card-article {
+			animation: none;
+			border-color: #E07800;
+		}
 	}
 </style>
