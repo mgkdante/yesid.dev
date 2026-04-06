@@ -1,11 +1,27 @@
 <!--
   Desktop sidebar: language filter + date range + tag filters + corner link.
   Hidden on mobile — BlogFilterMobile handles that.
+
+  WHY: button groups (language + tags) are now delegated to FilterGroup so the
+  active/tag-active styles live in one place. Date range and corner link stay inline
+  because they are not button group patterns.
 -->
 <script lang="ts">
 	import type { Locale } from '$lib/data/types.js';
+	import { resolveLocale } from '$lib/data/locale.js';
+	import FilterGroup from './FilterGroup.svelte';
 
-	const LANG_LABELS: Record<Locale, string> = { en: 'English', fr: 'Fran\u00e7ais', es: 'Espa\u00f1ol' };
+	const LANG_LABELS: Record<Locale, string> = { en: 'English', fr: 'Français', es: 'Español' };
+
+	// WHY: all user-facing labels go through resolveLocale so the sidebar is ready
+	// for future i18n without changing component logic.
+	const labels = {
+		language: { en: 'Language' },
+		dateRange: { en: 'Date Range' },
+		from: { en: 'From' },
+		to: { en: 'To' },
+		tags: { en: 'Tags' }
+	};
 
 	let {
 		tags,
@@ -33,40 +49,27 @@
 </script>
 
 <aside class="hidden w-40 shrink-0 md:block" data-testid="blog-filter-sidebar">
-	<!-- Language filter -->
+	<!-- Language filter — only shown when more than one language exists -->
 	{#if languages.length > 1}
-		<div class="font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-			Language
-		</div>
-		<div class="mt-2 flex flex-col gap-1 mb-5">
-			<button
-				class="rounded px-2 py-1 text-left text-xs transition-colors"
-				class:active={activeLang === null}
-				style="--accent: {accentColor};"
-				onclick={() => onLangSelect(null)}
-			>
-				All
-			</button>
-			{#each languages as lang}
-				<button
-					class="rounded border border-[#2a2a2a] px-2 py-1 text-left text-xs text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-					class:tag-active={activeLang === lang}
-					style="--accent: {accentColor};"
-					onclick={() => onLangSelect(lang)}
-				>
-					{LANG_LABELS[lang]}
-				</button>
-			{/each}
+		<div class="mb-5">
+			<FilterGroup
+				label={resolveLocale(labels.language, 'en')}
+				items={languages.map((lang) => ({ key: lang, label: LANG_LABELS[lang] }))}
+				activeKey={activeLang}
+				{accentColor}
+				allowDeselect={false}
+				onSelect={(key) => onLangSelect(key as Locale | null)}
+			/>
 		</div>
 	{/if}
 
-	<!-- Date range -->
+	<!-- Date range — inline, not a button group -->
 	<div class="font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-		Date Range
+		{resolveLocale(labels.dateRange, 'en')}
 	</div>
 	<div class="mt-2 flex flex-col gap-1.5">
 		<label class="text-[9px] text-[var(--text-muted)]">
-			From
+			{resolveLocale(labels.from, 'en')}
 			<input
 				type="date"
 				bind:value={dateFrom}
@@ -75,7 +78,7 @@
 			/>
 		</label>
 		<label class="text-[9px] text-[var(--text-muted)]">
-			To
+			{resolveLocale(labels.to, 'en')}
 			<input
 				type="date"
 				bind:value={dateTo}
@@ -85,34 +88,19 @@
 		</label>
 	</div>
 
-	<!-- Tags -->
+	<!-- Tags filter — delegated to FilterGroup -->
 	<div class="mt-5 border-t border-dashed border-[#333] pt-3">
-		<div class="font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-			Tags
-		</div>
-		<div class="mt-2 flex flex-col gap-1">
-			<button
-				class="rounded px-2 py-1 text-left text-xs transition-colors"
-				class:active={activeTag === null}
-				style="--accent: {accentColor};"
-				onclick={() => onTagSelect(null)}
-			>
-				All
-			</button>
-			{#each tags as tag}
-				<button
-					class="rounded border border-[#2a2a2a] px-2 py-1 text-left text-xs text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-					class:tag-active={activeTag === tag}
-					style="--accent: {accentColor};"
-					onclick={() => onTagSelect(tag)}
-				>
-					{tag}
-				</button>
-			{/each}
-		</div>
+		<FilterGroup
+			label={resolveLocale(labels.tags, 'en')}
+			items={tags.map((tag) => ({ key: tag, label: tag }))}
+			activeKey={activeTag}
+			{accentColor}
+			allowDeselect={false}
+			onSelect={onTagSelect}
+		/>
 	</div>
 
-	<!-- Corner link -->
+	<!-- Corner link — inline, not a button group -->
 	{#if cornerLink}
 		<div class="mt-5 border-t border-dashed border-[#333] pt-3">
 			<a
@@ -128,15 +116,3 @@
 		</div>
 	{/if}
 </aside>
-
-<style>
-	.active {
-		background: var(--accent);
-		color: #f5f5f0;
-	}
-	.tag-active {
-		border-color: var(--accent) !important;
-		color: var(--accent) !important;
-		background: color-mix(in srgb, var(--accent) 10%, transparent);
-	}
-</style>
