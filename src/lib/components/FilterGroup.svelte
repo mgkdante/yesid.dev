@@ -10,6 +10,11 @@
 -->
 <script lang="ts">
 	import { ripple } from '$lib/motion/actions/ripple.js';
+	import { resolveLocale } from '$lib/data/locale.js';
+
+	// WHY: allLabel is LocalizedString so "All" can be translated in future i18n without
+	// changing the component. Callers that don't pass it get the English default.
+	const defaultAllLabel = { en: 'All' };
 
 	let {
 		label,
@@ -17,6 +22,7 @@
 		activeKey = null,
 		accentColor = '#E07800',
 		allowDeselect = true,
+		allLabel = defaultAllLabel,
 		onSelect,
 		testIdPrefix = undefined
 	}: {
@@ -25,6 +31,7 @@
 		activeKey?: string | null;
 		accentColor?: string;
 		allowDeselect?: boolean;
+		allLabel?: { en: string; fr?: string; es?: string };
 		onSelect: (key: string | null) => void;
 		testIdPrefix?: string | undefined;
 	} = $props();
@@ -52,7 +59,7 @@
 			onclick={() => onSelect(null)}
 			use:ripple={{ color: accentColor }}
 		>
-			All
+			{resolveLocale(allLabel, 'en')}
 		</button>
 		{#each items as item}
 			<button

@@ -57,8 +57,10 @@
 		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['#E07800', '#FFB627']
 	);
 
-	// i18n label for tech stack section
+	// i18n labels — all user-facing strings go through LocalizedString so future
+	// translations can be added without changing component logic.
 	const stackLabel = { en: 'Tech Stack' };
+	const servicesLabel = { en: 'Services' };
 </script>
 
 <a
@@ -117,7 +119,7 @@
 			{#if projectServices.length > 0}
 				<div class="mt-3">
 					<div class="mb-1.5 font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)] md:text-[10px]">
-						Services
+						{resolveLocale(servicesLabel, 'en')}
 					</div>
 					<div class="flex flex-wrap gap-1.5">
 					{#each projectServices as service}

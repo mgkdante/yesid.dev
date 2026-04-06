@@ -40,6 +40,17 @@
 
 	// svgMorphed tracks the SVG morph box hover/click state
 	let svgMorphed = $state(false);
+
+	// WHY: all user-facing strings go through LocalizedString so the page is ready
+	// for future i18n without changing component logic.
+	const labels = {
+		backLink: { en: '\u2190 All Services' },
+		serviceCounter: { en: 'Service' },
+		valueProposition: { en: 'How This Helps You' },
+		deliverables: { en: 'Typical Deliverables' },
+		builtWith: { en: 'Built with' },
+		seeAllWork: { en: 'See all work \u2192' }
+	};
 </script>
 
 <div class="service-detail" data-testid="service-detail-page">
@@ -58,7 +69,7 @@
 				class="back-link"
 				use:boop={{ scale: 1.05, timing: 200 }}
 			>
-				&larr; All Services
+				{resolveLocale(labels.backLink, 'en')}
 			</a>
 
 			<header class="hero-layout" use:reveal={{ direction: 'up', delay: 0 }}>
@@ -81,7 +92,7 @@
 
 				<div class="hero-text">
 					<span class="station-counter">
-						Service {stationNum} / {totalStr}
+						{resolveLocale(labels.serviceCounter, 'en')} {stationNum} / {totalStr}
 					</span>
 
 					<h1 class="detail-title">
@@ -110,7 +121,7 @@
 			<!-- Value Proposition -->
 			{#if service.valueProposition}
 				<div use:reveal={{ direction: 'up', delay: 100 }}>
-					<CollapsibleSection title="How This Helps You" open={true}>
+					<CollapsibleSection title={resolveLocale(labels.valueProposition, 'en')} open={true}>
 						{#snippet icon()}
 							<svg class="h-4 w-4 shrink-0 text-[#E07800]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 								<circle cx="8" cy="8" r="2.5" />
@@ -127,7 +138,7 @@
 			<!-- Deliverables -->
 			{#if service.deliverables && service.deliverables.length > 0}
 				<div use:reveal={{ direction: 'up', delay: 150 }}>
-					<CollapsibleSection title="Typical Deliverables" open={true}>
+					<CollapsibleSection title={resolveLocale(labels.deliverables, 'en')} open={true}>
 						{#snippet icon()}
 							<svg class="h-4 w-4 shrink-0 text-[#E07800]" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 								<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
@@ -163,8 +174,8 @@
 		{#if relatedProjects.length > 0}
 			<div class="centered-content" style="margin-top: 2.5rem;">
 				<div class="related-header" use:reveal={{ direction: 'up', delay: 100 }}>
-					<h2 class="related-title">Built with {title}</h2>
-					<a href="/work" class="related-link">See all work &rarr;</a>
+					<h2 class="related-title">{resolveLocale(labels.builtWith, 'en')} {title}</h2>
+					<a href="/work" class="related-link">{resolveLocale(labels.seeAllWork, 'en')}</a>
 				</div>
 
 				<div class="projects-grid">
