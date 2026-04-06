@@ -43,6 +43,9 @@ export interface Project {
 	featured: boolean;
 	repoUrl?: string;
 	liveUrl?: string;
+	// Project thumbnail/hero image filename in static/images/work/.
+	// If omitted, cards show a gradient placeholder. Detail pages show no hero image.
+	image?: string;
 	// Service IDs this project is associated with. SVGs cascade from services.
 	// A project can link to 1+ services. IDs must match existing service.id values.
 	relatedServices: string[];

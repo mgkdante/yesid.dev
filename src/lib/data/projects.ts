@@ -18,6 +18,7 @@ const projects: readonly Project[] = [
 		featured: true,
 		repoUrl: 'https://github.com/mgkdante/yesid.dev',
 		liveUrl: 'https://yesid.dev',
+		image: 'yesid-dev.png',
 		relatedServices: ['web-development'],
 		sections: [
 			{
