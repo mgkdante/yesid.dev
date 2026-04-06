@@ -216,6 +216,7 @@ src/
 │   │                       #   BlogRow, BlogSvgIcon, BlogDetailHeader, BlogContent,
 │   │                       #   BlogFilterSidebar, BlogFilterMobile, StationDivider,
 │   │                       #   StationTabs, ServiceCard, ServiceListingPage,
+│   │                       #   CollapsibleSection, FilterGroup,
 │   │                       #   ServiceDetailPage, ServiceNav, ProofStrip,
 │   │                       #   ProjectMiniCard, WorkCard, WorkDetailPage, etc.
 │   └── motion/
@@ -256,17 +257,16 @@ static/
 - Slice 07 complete — handoff at `docs/handoffs/handoff-slice-07.md`
 - Slice 08 complete — handoff at `docs/handoffs/handoff-slice-08.md`
 - Slice 09 complete — handoff at `docs/handoffs/handoff-slice-09.md`
+- Slice 09c-1 complete — handoff at `docs/handoffs/handoff-slice-09c1.md`
 
 ## Active Slice
 
-**Slice 09c — Blog + Work + Services Polish & DRY Pass** (NEXT)
-- Spec: `docs/slices/slice-09c-polish.md`
-- Enhance existing blog, work, and services pages with micro-interactions
-- Add `use:tilt`, `use:magnetic`, `use:cursorGlow` to cards
-- Reading progress bar, code copy button, heading anchors for blog
-- Metro line connectors, station badges, "Next Stop" nav
-- DRY: extract CollapsibleSection, shared filter patterns, standardize hover effects
-- Service badges on work pages now link to `/services/[id]` (working!)
+**Slice 09c-2 — Polish Enhancements + Layout Rethink** (NEXT)
+- Spec: `docs/slices/slice-09c2-polish-enhancements.md`
+- Layout audit of blog + work pages against award-winning sites (using /web-designer)
+- cursorGlow action, reading progress bar, animated gradient border
+- ScrollTrigger.batch() for listing entrances, code copy button, heading anchors
+- Metro line connectors, station badges, next/prev stop nav, animated dashed separators
 
 ## Brand Rules (Non-Negotiable)
 

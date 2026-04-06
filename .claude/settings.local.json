@@ -6,7 +6,8 @@
       "WebFetch(domain:www.wavespace.agency)",
       "mcp__plugin_everything-claude-code_exa__web_search_exa",
       "WebFetch(domain:lusion.co)",
-      "WebFetch(domain:www.davidlangarica.dev)"
+      "WebFetch(domain:www.davidlangarica.dev)",
+      "WebSearch"
     ]
   }
 }
