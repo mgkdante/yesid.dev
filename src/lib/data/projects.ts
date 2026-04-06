@@ -59,6 +59,8 @@ const projects: readonly Project[] = [
 		status: 'public',
 		featured: false,
 		relatedServices: ['analytics-reporting'],
+		repoUrl: 'https://github.com/zen-browser',
+		readmeUrl: 'https://github.com/zen-browser/desktop/blob/dev/README.md',
 		sections: [
 			{
 				title: { en: 'The Problem' },
@@ -86,6 +88,8 @@ const projects: readonly Project[] = [
 		status: 'public',
 		featured: false,
 		relatedServices: ['database-engineering', 'sql-development'],
+		repoUrl: 'https://github.com/oven-sh/bun',
+		readmeUrl: 'https://github.com/oven-sh/bun/blob/main/README.md',
 		sections: [
 			{
 				title: { en: 'Why Migrate?' },

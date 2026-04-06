@@ -246,14 +246,11 @@ static/
 - Slice C complete — handoff at `docs/handoffs/handoff-slice-c-zoom-transition.md`
 - Slice B+ complete — handoff at `docs/handoffs/handoff-slice-b-plus.md`
 - Slice 07 complete — handoff at `docs/handoffs/handoff-slice-07.md`
+- Slice 08 complete — handoff at `docs/handoffs/handoff-slice-08.md`
 
 ## Active Slice
 
-**Slice 08 — Work Pages (index + FLIP filter + detail)** (NEXT)
-- Build `/work` listing page with ProjectGrid + animated tag filtering (FLIP)
-- Build `/work/[slug]` detail pages with scroll-reveal sections and stagger-animated tech tags
-- 404 for invalid slugs
-- Depends on: Slices 02, 03, 07
+None — next slice TBD (Slice 09 Services pages or Home rework)
 
 ## Brand Rules (Non-Negotiable)
 

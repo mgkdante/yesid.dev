@@ -46,4 +46,25 @@
 html {
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* Brand scrollbar — orange thumb on dark track, site-wide */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(224, 120, 0, 0.4) transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(224, 120, 0, 0.35);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(224, 120, 0, 0.6);
 }

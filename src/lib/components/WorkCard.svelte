@@ -73,7 +73,7 @@
 	>
 		<!-- Thumbnail: project image if set, gradient placeholder with SVG fallback -->
 		{#if project.image}
-			<div class="h-[170px] overflow-hidden">
+			<div class="h-[280px] overflow-hidden">
 				<img
 					src="/images/work/{project.image}"
 					alt={resolveLocale(project.title, 'en')}
@@ -83,14 +83,14 @@
 			</div>
 		{:else}
 			<div
-				class="flex h-[170px] items-center justify-center"
+				class="flex h-[280px] items-center justify-center"
 				style="background: linear-gradient(135deg, {gradientColors[0]}22, {gradientColors[1]}11);"
 			>
 				{#if project.relatedServices[0] && serviceSvgContents[project.relatedServices[0]]}
 					<div class="opacity-60 transition-opacity duration-300 group-hover:opacity-90">
 						<WorkSvgIcon
 							svgContent={serviceSvgContents[project.relatedServices[0]]}
-							size={48}
+							size={72}
 							hovered={cardHovered}
 						/>
 					</div>
@@ -112,7 +112,11 @@
 
 			<!-- Service badges row — SVGs with MorphSVG on card hover -->
 			{#if projectServices.length > 0}
-				<div class="mt-3 flex flex-wrap gap-1.5">
+				<div class="mt-3">
+					<div class="mb-1.5 font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)] md:text-[10px]">
+						Services
+					</div>
+					<div class="flex flex-wrap gap-1.5">
 					{#each projectServices as service}
 						<div
 							class="inline-flex items-center gap-2 rounded-full border bg-[#141414] px-3 py-1.5"
@@ -132,13 +136,14 @@
 							</span>
 						</div>
 					{/each}
+					</div>
 				</div>
 			{/if}
 
 			<!-- Tech stack SVG diagram with DrawSVG animation -->
 			{#if displayStack.length > 0}
 				<div class="mt-3">
-					<div class="mb-1 font-mono text-[8px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+					<div class="mb-1.5 font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)] md:text-[10px]">
 						{resolveLocale(stackLabel, 'en')}
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />

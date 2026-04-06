@@ -101,11 +101,11 @@ describe('TableOfContents', () => {
 		mockEl.scrollIntoView = vi.fn();
 		document.body.appendChild(mockEl);
 
-		// Click the first ToC link (desktop)
+		// Click the first ToC entry link (skip the header toggle button)
 		const desktopNav = screen.getByTestId('toc-desktop');
-		const firstButton = desktopNav.querySelector('button');
-		expect(firstButton).not.toBeNull();
-		await fireEvent.click(firstButton!);
+		const tocLink = desktopNav.querySelector('.toc-link');
+		expect(tocLink).not.toBeNull();
+		await fireEvent.click(tocLink!);
 
 		expect(mockEl.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
 

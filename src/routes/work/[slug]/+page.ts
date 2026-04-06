@@ -37,8 +37,13 @@ export async function load({ params, fetch }) {
 	// Fetch README and convert markdown → HTML (GitHub raw content)
 	let readmeHtml: string | undefined;
 	if (project.readmeUrl) {
+		// Auto-convert GitHub blob URLs to raw content URLs
+		let readmeUrl = project.readmeUrl;
+		if (readmeUrl.includes('github.com') && readmeUrl.includes('/blob/')) {
+			readmeUrl = readmeUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+		}
 		try {
-			const res = await fetch(project.readmeUrl);
+			const res = await fetch(readmeUrl);
 			if (res.ok) {
 				const rawMarkdown = await res.text();
 				readmeHtml = await marked.parse(rawMarkdown);

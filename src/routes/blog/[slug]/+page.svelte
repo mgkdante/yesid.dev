@@ -1,7 +1,7 @@
 <!--
   Blog post detail page — /blog/[slug]
   Renders pre-rendered markdown HTML with title + side SVG icon layout.
-  ToC on the left (desktop sticky, mobile toggle). Premium card styling.
+  ToC absolutely positioned in the left page margin (2xl+), content stays centered.
 -->
 <script lang="ts">
 	import BlogDetailHeader from '$lib/components/BlogDetailHeader.svelte';
@@ -14,37 +14,37 @@
 		data.post.category === 'personal' ? '#FFB627' : '#E07800'
 	);
 
-	// ToC ref — used to get HTML with injected heading ids for scroll-to links
 	let tocRef: TableOfContents | undefined = $state();
 	let processedHtml = $derived(
 		tocRef ? tocRef.getProcessedHtml() : data.html
 	);
 </script>
 
-<article class="mx-auto max-w-5xl pb-16">
-	<BlogDetailHeader
-		post={data.post}
-		svgContent={data.svgContent}
-		{accentColor}
-	/>
-
-	<!-- Mobile ToC toggle — shown above content on small screens -->
-	<div class="mt-6 lg:hidden">
-		<TableOfContents bind:this={tocRef} html={data.html} />
+<article class="pb-16">
+	<div class="mx-auto max-w-5xl">
+		<BlogDetailHeader
+			post={data.post}
+			svgContent={data.svgContent}
+			{accentColor}
+		/>
 	</div>
 
-	<!-- Three-column layout: ToC left | Content center | (empty right for balance) -->
-	<div class="mt-6 flex gap-6">
-		<!-- Desktop ToC — separate sticky card on the LEFT -->
-		<div class="hidden lg:block">
-			<div class="sticky top-20 w-[180px] shrink-0 rounded-lg border border-[#2a2a2a] bg-[#141414] p-4">
-				<div class="mb-2 font-mono text-[10px] font-bold uppercase tracking-wider text-[#666]">On this page</div>
-				<TableOfContents bind:this={tocRef} html={data.html} class="toc-embedded" />
-			</div>
-		</div>
+	<!-- Mobile ToC toggle — shown below 2xl -->
+	<div class="mx-auto mt-6 max-w-5xl 2xl:hidden">
+		<TableOfContents html={data.html} />
+	</div>
 
-		<!-- Main content area — full width within its column -->
-		<div class="min-w-0 flex-1">
+	<!-- Content: centered at max-w-5xl, ToC in left margin via absolute positioning -->
+	<div class="relative mx-auto mt-6 max-w-5xl">
+		<!-- ToC: absolutely positioned in left page margin -->
+		<aside class="absolute inset-y-0 right-full mr-3 hidden 2xl:block">
+			<div class="sticky top-20 w-[180px] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#141414] p-4">
+				<TableOfContents bind:this={tocRef} html={data.html} embedded />
+			</div>
+		</aside>
+
+		<!-- Main content — full width, not affected by ToC -->
+		<div class="min-w-0">
 			<BlogContent {accentColor}>
 				{@html processedHtml}
 			</BlogContent>
