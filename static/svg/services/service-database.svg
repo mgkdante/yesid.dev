@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Table 1 (top-left) -->
+  <rect x="4" y="6" width="16" height="14" rx="2" stroke="#E07800" stroke-width="1.5" fill="none"/>
+  <rect x="4" y="6" width="16" height="14" rx="2" fill="#E0780015"/>
+  <!-- Table 1 header divider -->
+  <line x1="4" y1="12" x2="20" y2="12" stroke="#E07800" stroke-width="1"/>
+  <!-- Table 2 (top-right) -->
+  <rect x="28" y="6" width="16" height="14" rx="2" stroke="#E07800" stroke-width="1.5" fill="none"/>
+  <rect x="28" y="6" width="16" height="14" rx="2" fill="#E0780015"/>
+  <!-- Table 2 header divider -->
+  <line x1="28" y1="12" x2="44" y2="12" stroke="#E07800" stroke-width="1"/>
+  <!-- Table 3 (bottom-center) -->
+  <rect x="13" y="30" width="22" height="14" rx="2" stroke="#FFB627" stroke-width="1.5" fill="none"/>
+  <rect x="13" y="30" width="22" height="14" rx="2" fill="#FFB62715"/>
+  <!-- Table 3 header divider -->
+  <line x1="13" y1="36" x2="35" y2="36" stroke="#FFB627" stroke-width="1"/>
+  <!-- Relationship line: table 1 to table 3 -->
+  <polyline points="12,20 12,25 20,30" stroke="#FFB627" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Relationship line: table 2 to table 3 -->
+  <polyline points="36,20 36,25 28,30" stroke="#FFB627" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Join dot at table 3 left -->
+  <circle cx="20" cy="30" r="1.5" fill="#FFB62740"/>
+  <!-- Join dot at table 3 right -->
+  <circle cx="28" cy="30" r="1.5" fill="#FFB62740"/>
+</svg>
