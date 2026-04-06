@@ -9,6 +9,7 @@
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
+	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
 
@@ -74,11 +75,12 @@
 			class:p-4={!featured}
 			class:md\:p-5={!featured}
 			style="--accent: {accentColor};"
+			use:cursorGlow
 		>
 			<!-- Subtle glow on hover -->
 			<div
 				class="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-				style="background: radial-gradient(ellipse at 0% 50%, color-mix(in srgb, {accentColor} 8%, transparent), transparent 70%);"
+				style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), color-mix(in srgb, {accentColor} 12%, transparent), transparent 60%);"
 			></div>
 
 			<!-- SVG icon -->
