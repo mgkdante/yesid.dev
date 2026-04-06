@@ -68,15 +68,12 @@
 
 		<!-- Content card -->
 		<article
-			class="blog-row relative flex min-w-0 flex-1 items-start gap-4 overflow-hidden rounded-xl bg-[#1a1a1a]/80 backdrop-blur-sm transition-all duration-300 md:gap-5"
-			class:border-2={featured}
-			class:border={!featured}
-			class:border-\[\#2a2a2a\]={!featured}
+			class="blog-row relative flex min-w-0 flex-1 items-start gap-4 overflow-hidden rounded-xl border border-[#2a2a2a] bg-[#1a1a1a]/80 backdrop-blur-sm transition-all duration-300 md:gap-5"
 			class:p-5={featured}
 			class:md\:p-6={featured}
 			class:p-4={!featured}
 			class:md\:p-5={!featured}
-			style="--accent: {accentColor}; {featured ? `border-color: ${accentColor};` : ''}"
+			style="--accent: {accentColor};"
 		>
 			<!-- Subtle glow on hover -->
 			<div
@@ -129,7 +126,7 @@
 
 <style>
 	.blog-row:hover {
-		border-color: color-mix(in srgb, var(--accent) 50%, transparent);
-		box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 10%, transparent);
+		border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+		box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 8%, transparent);
 	}
 </style>

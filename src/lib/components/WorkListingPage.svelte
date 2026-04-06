@@ -13,6 +13,7 @@
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
+	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap, Flip } from '$lib/motion/utils/gsap.js';
 	import WorkCard from './WorkCard.svelte';
@@ -195,7 +196,7 @@
 					{#each filteredProjects as project, i (project.slug)}
 						<div class="flex gap-4">
 							<!-- Metro line + station badge -->
-							<div class="flex flex-col items-center">
+							<div class="flex flex-col items-center" use:reveal={{ delay: stagger(i, 80) }}>
 								<div
 									class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold"
 									style="background: #E07800; color: #000;"

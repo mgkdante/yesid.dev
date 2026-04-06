@@ -5,7 +5,9 @@ export function load({ params }: { params: { slug: string } }) {
 	const post = getPostBySlug(params.slug);
 	if (!post) error(404, 'Post not found');
 
-	const html = getPostHtml(params.slug);
+	// Strip the first <h1> from rendered HTML — BlogDetailHeader already shows the title
+	const rawHtml = getPostHtml(params.slug);
+	const html = rawHtml.replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>\s*/, '');
 	const svgContent = getSvgContent(post);
 
 	// Strip HTML tags, count words, estimate reading time at 200 wpm

@@ -27,30 +27,28 @@ describe('BlogRow', () => {
 		expect(getByText('Test Post Title')).toBeTruthy();
 	});
 
-	it('renders featured border-2 when featured=true', () => {
+	it('renders larger padding when featured=true', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0, featured: true, accentColor: '#E07800' }
 		});
 		const article = container.querySelector('article');
-		expect(article?.classList.contains('border-2')).toBe(true);
+		expect(article?.classList.contains('p-5')).toBe(true);
 	});
 
-	it('renders normal border (not border-2) when featured=false', () => {
+	it('renders normal padding when featured=false', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0, featured: false }
 		});
 		const article = container.querySelector('article');
-		expect(article?.classList.contains('border-2')).toBe(false);
-		expect(article?.classList.contains('border')).toBe(true);
+		expect(article?.classList.contains('p-4')).toBe(true);
 	});
 
-	it('renders normal border by default when featured is not set', () => {
+	it('renders normal padding by default when featured is not set', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0 }
 		});
 		const article = container.querySelector('article');
-		expect(article?.classList.contains('border-2')).toBe(false);
-		expect(article?.classList.contains('border')).toBe(true);
+		expect(article?.classList.contains('p-4')).toBe(true);
 	});
 
 	it('renders station badge with zero-padded index', () => {
