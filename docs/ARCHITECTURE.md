@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-05 (Slice 07)
+**Last updated:** 2026-04-06 (Slice 09)
 
 ## Stack
 
@@ -31,7 +31,7 @@ src/
 │   │   ├── types.ts     # Locale, LocalizedString, Project, Service, SiteMeta, BlogPost
 │   │   ├── locale.ts    # resolveLocale(), DEFAULT_LOCALE, SUPPORTED_LOCALES
 │   │   ├── projects.ts  # Project seed data + getProjectBySlug, getFeaturedProjects, etc.
-│   │   ├── services.ts  # Service seed data (4 services, with station/id/relatedProjects)
+│   │   ├── services.ts  # Service seed data (6 services, with station/id/relatedProjects + detail fields)
 │   │   ├── blog.ts      # Blog posts from markdown files (import.meta.glob) + getLatestPosts, getPostBySlug
 │   │   ├── metro.ts     # ← Slice 06d: data-driven metro line (auto-computes stops from services)
 │   │   ├── content.ts   # ← Slice 06d: centralized UI strings as LocalizedString (hero, about, CTA)
@@ -42,7 +42,7 @@ src/
 │   │   ├── Footer.svelte        # minimal footer: brand name, year, social links, 3D model attribution
 │   │   ├── TagList.svelte       # string[] → stagger-revealed pill badges
 │   │   ├── SectionHeader.svelte # h2 heading + optional subtitle
-│   │   ├── ServiceCard.svelte   # service tile (title, description, icon placeholder)
+│   │   ├── ServiceCard.svelte   # ← Slice 09: per-viewport service content block (SVG morph box, stack pills, CTA)
 │   │   ├── ServiceStation.svelte # station-sign card: number, indicator light, 400x400 scroll-linked Lottie, tilt
 │   │   ├── ScrollPrompt.svelte  # animated scroll-down chevron for hero
 │   │   ├── ProjectCard.svelte   # clickable project card with boop hover
@@ -61,7 +61,23 @@ src/
 │   │   ├── BlogDetailHeader.svelte  # ← Slice 07: post detail header (title, date, SVG)
 │   │   ├── BlogContent.svelte      # ← Slice 07: rendered markdown with typography styles
 │   │   ├── BlogSvgIcon.svelte      # ← Slice 07: SVG renderer with GSAP entrance + MorphSVG hover
-│   │   └── StationDivider.svelte # ← Slice 06d: yellow/black hazard stripe between stops
+│   │   ├── StationDivider.svelte # ← Slice 06d: yellow/black hazard stripe between stops
+│   │   ├── StationTabs.svelte      # ← Slice 09: reusable station tab nav (scroll mode + navigate mode)
+│   │   ├── ServiceListingPage.svelte # ← Slice 09: full-viewport kinetic scroll layout for /services
+│   │   ├── ServiceDetailPage.svelte  # ← Slice 09: consultative deep dive for /services/[id]
+│   │   ├── ServiceNav.svelte        # ← Slice 09: prev/next service navigation
+│   │   ├── ProofStrip.svelte        # ← Slice 09: bottom strip showing related projects
+│   │   ├── ProjectMiniCard.svelte   # ← Slice 09: reusable project card for outside /work
+│   │   ├── WorkSvgIcon.svelte       # ← Slice 08: SVG icon renderer with morph on hover
+│   │   ├── WorkFilterMobile.svelte  # ← Slice 08: mobile filter controls for /work
+│   │   ├── WorkFilterSidebar.svelte # ← Slice 08: desktop filter sidebar for /work
+│   │   ├── WorkDetailSidebar.svelte # ← Slice 08: project detail sidebar
+│   │   ├── WorkServiceBadge.svelte  # ← Slice 08: service badge with SVG for work cards
+│   │   ├── WorkListingPage.svelte   # ← Slice 08: FLIP grid listing for /work
+│   │   ├── WorkCard.svelte          # ← Slice 08: project card with gradient thumb + SVG morph
+│   │   ├── WorkDetailPage.svelte    # ← Slice 08: project detail with collapsible sections + ToC
+│   │   ├── DataFlowDiagram.svelte   # ← Slice 08: tech stack flow visualization
+│   │   └── TableOfContents.svelte   # ← Slice 08: README table of contents
 │   └── motion/          # ← Added in Slice 04
 │       ├── actions/
 │       │   ├── boop.ts          # use:boop — hover transform burst
@@ -114,6 +130,12 @@ src/
     │   └── [slug]/
     │       ├── +page.svelte # Post detail page (centered max-w-2xl)
     │       └── +page.ts     # Loads post data, SVG, rendered HTML
+    ├── services/        # ← Slice 09: services system
+    │   ├── +page.svelte     # Services listing (full-viewport scroll)
+    │   ├── +page.ts         # Loads all visible services, SVGs, project maps
+    │   └── [id]/
+    │       ├── +page.svelte # Service detail page
+    │       └── +page.ts     # Loads service by ID, adjacent services, related projects
     └── preview/
         ├── +page.ts     # SSR disabled
         └── +page.svelte # Dev-only 3D scene preview with slider controls

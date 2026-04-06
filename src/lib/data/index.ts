@@ -3,7 +3,7 @@
 // structure changes in a future refactor.
 
 // Types
-export type { Locale, LocalizedString, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect } from './types.js';
+export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect } from './types.js';
 
 // Locale utilities
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
@@ -12,7 +12,7 @@ export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
 export { projects, getProjectBySlug, getFeaturedProjects, getPublicProjects, getAllTags, getProjectsByService, getServiceIdsForProjects } from './projects.js';
 
 // Services data
-export { services, getServiceById, getVisibleServices } from './services.js';
+export { services, getServiceById, getVisibleServices, getAdjacentServices } from './services.js';
 
 // Site metadata
 export { siteMeta } from './meta.js';

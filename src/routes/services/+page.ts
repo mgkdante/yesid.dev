@@ -1,0 +1,21 @@
+// Load function for /services index page.
+// Fetches all visible services, their SVG illustrations, and related projects
+// for the ProofStrip component on each service viewport.
+import {
+	getVisibleServices,
+	getProjectsByService,
+	fetchServiceSvgContents
+} from '$lib/data';
+
+export async function load({ fetch }) {
+	const services = getVisibleServices();
+	const serviceSvgContents = await fetchServiceSvgContents(fetch);
+
+	// Pre-resolve related projects for each service (for ProofStrip)
+	const serviceProjects: Record<string, ReturnType<typeof getProjectsByService>> = {};
+	for (const service of services) {
+		serviceProjects[service.id] = getProjectsByService(service.id);
+	}
+
+	return { services, serviceSvgContents, serviceProjects };
+}

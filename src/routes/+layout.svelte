@@ -8,9 +8,13 @@
 
 	let { children } = $props();
 
-	// Home page manages its own layout (fixed 3D bg + full-width sections).
+	// Home and services pages manage their own layout (full-width, no max-width).
 	// All other pages get the centered, padded container.
 	let isHome = $derived($page.url.pathname === '/');
+	let isFullWidth = $derived(isHome || $page.url.pathname.startsWith('/services'));
+	// Hide footer on the services listing page — it has its own scroll container.
+	// Footer shows on detail pages and all other pages.
+	let hideFooter = $derived($page.url.pathname === '/services');
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -20,15 +24,17 @@
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="{isHome ? 'flex-1' : 'mx-auto w-full max-w-5xl flex-1 px-6 pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="{isFullWidth ? 'flex-1 pt-16' : 'mx-auto w-full max-w-5xl flex-1 px-6 pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
-	<div class="relative z-[45]">
-		<Footer />
-	</div>
+	{#if !hideFooter}
+		<div class="relative z-[45]">
+			<Footer />
+		</div>
+	{/if}
 </div>
 
 <style>

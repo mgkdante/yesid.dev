@@ -1,28 +1,272 @@
+<!--
+  Per-viewport service content block for the /services index page.
+  Single SVG element repositioned: desktop right, mobile centered above.
+  Full available width — no max-width constraints.
+-->
 <script lang="ts">
-	// icon is a string identifier (e.g. 'database') — rendered as text placeholder
-	// until an icon library is integrated in a future slice.
-	let { title, description, icon }: { title: string; description: string; icon?: string } =
-		$props();
+	import type { Service } from '$lib/data/types.js';
+	import { resolveLocale } from '$lib/data/locale.js';
+
+	let {
+		service,
+		svgContent,
+		index,
+		total
+	}: {
+		service: Service;
+		svgContent: string;
+		index: number;
+		total: number;
+	} = $props();
+
+	let svgMorphed = $state(false);
+	let stationNum = $derived(String(service.station).padStart(2, '0'));
+	let totalStr = $derived(String(total).padStart(2, '0'));
+	let title = $derived(resolveLocale(service.title, 'en'));
+	let description = $derived(resolveLocale(service.description, 'en'));
+	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, 'en') : null);
 </script>
 
-<article
-	class="rounded-brand-lg border border-[var(--border)] bg-[var(--bg-surface)] p-6 hover:border-brand-primary"
-	data-testid="service-card"
+<section
+	class="service-viewport"
+	data-testid="service-card-{service.id}"
+	id="service-{service.id}"
 >
-	{#if icon}
-		<!-- Placeholder: renders the icon identifier as text. Swap for SVG in a future slice. -->
-		<div
-			class="mb-4 flex h-10 w-10 items-center justify-center rounded-brand bg-[var(--bg-elevated)] font-mono text-sm text-brand-primary"
-			data-testid="service-icon"
-			aria-hidden="true"
-		>
-			{icon}
+	<div class="viewport-inner">
+		<!-- Text content -->
+		<div class="service-text">
+			<span class="station-counter">
+				Service {stationNum} / {totalStr}
+			</span>
+
+			<h2 class="service-title">
+				{title}<span class="title-dot">.</span>
+			</h2>
+
+			{#if subtitle}
+				<p class="service-subtitle">{subtitle}</p>
+			{/if}
+
+			<p class="service-description">{description}</p>
+
+			{#if service.stack && service.stack.length > 0}
+				<div class="stack-pills">
+					{#each service.stack as tech}
+						<span class="stack-pill">{tech}</span>
+					{/each}
+				</div>
+			{/if}
+
+			<a href="/services/{service.id}" class="deep-dive-cta">
+				Deep dive &rarr;
+			</a>
 		</div>
-	{/if}
-	<h3 class="mb-2 font-heading font-semibold text-[var(--text-primary)] text-[var(--text-h3)]">
-		{title}
-	</h3>
-	<p class="leading-relaxed text-[var(--text-body)] text-[var(--text-secondary)]">
-		{description}
-	</p>
-</article>
+
+		<!-- SVG illustration — rounded box that morphs to circle on hover/tap -->
+		{#if svgContent}
+			<button
+				type="button"
+				class="service-svg-box {svgMorphed ? 'morphed' : ''}"
+				data-testid="service-card-svg"
+				onmouseenter={() => svgMorphed = true}
+				onmouseleave={() => svgMorphed = false}
+				onclick={() => svgMorphed = !svgMorphed}
+				aria-label="Service illustration"
+			>
+				<div class="svg-inner">
+					{@html svgContent}
+				</div>
+			</button>
+		{/if}
+	</div>
+</section>
+
+<style>
+	.service-viewport {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: 100vh;
+		padding: 0 3rem;
+	}
+
+	.viewport-inner {
+		display: flex;
+		align-items: center;
+		gap: 4rem;
+		width: 100%;
+	}
+
+	.service-text {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.station-counter {
+		display: block;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: #E07800;
+		margin-bottom: 1rem;
+	}
+
+	.service-title {
+		font-family: 'Inter', sans-serif;
+		font-size: clamp(2rem, 4vw, 3.5rem);
+		font-weight: 800;
+		color: var(--text-primary, #f5f5f0);
+		line-height: 1.1;
+		margin-bottom: 0.5rem;
+	}
+
+	.title-dot { color: #E07800; }
+
+	.service-subtitle {
+		font-size: 1.125rem;
+		color: #555;
+		margin-bottom: 1rem;
+		font-style: italic;
+	}
+
+	.service-description {
+		font-size: 1rem;
+		line-height: 1.7;
+		color: var(--text-secondary, #999);
+		max-width: 55ch;
+		margin-bottom: 1.5rem;
+	}
+
+	.stack-pills {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.stack-pill {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.7rem;
+		padding: 0.25rem 0.625rem;
+		border: 1px solid var(--border, #282828);
+		border-radius: 999px;
+		color: #888;
+		background: transparent;
+		cursor: default;
+		transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
+	}
+	.stack-pill:hover {
+		color: #E07800;
+		border-color: #E07800;
+		background: rgba(224, 120, 0, 0.08);
+		transform: translateY(-1px);
+	}
+
+	.deep-dive-cta {
+		display: inline-block;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: #E07800;
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: border-color 0.2s;
+	}
+	.deep-dive-cta:hover {
+		border-bottom-color: #E07800;
+	}
+
+	/* SVG container — rounded box that morphs to circle on hover/tap */
+	.service-svg-box {
+		flex: 0 0 240px;
+		width: 240px;
+		height: 240px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 1.25rem;
+		border: 1px solid var(--border, #1a1a1a);
+		background: #1a1a1a;
+		padding: 2rem;
+		cursor: pointer;
+		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+		            border-color 0.3s ease,
+		            border-radius 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+		            box-shadow 0.4s ease;
+	}
+
+	/* Hover morph — CSS handles desktop, JS class handles mobile tap */
+	.service-svg-box:hover,
+	.service-svg-box:global(.morphed) {
+		border-color: #E07800;
+		border-radius: 50%;
+		transform: scale(1.06) rotate(3deg);
+		box-shadow: 0 0 24px rgba(224, 120, 0, 0.2), 0 0 60px rgba(224, 120, 0, 0.08);
+	}
+
+	.svg-inner {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.svg-inner :global(svg) {
+		width: 100%;
+		height: 100%;
+		max-width: 180px;
+		max-height: 180px;
+	}
+
+	/* Mobile: SVG above text, smaller */
+	@media (max-width: 767px) {
+		.service-viewport {
+			padding: 0 1.25rem;
+		}
+		.viewport-inner {
+			flex-direction: column-reverse;
+			gap: 1.5rem;
+			text-align: left;
+		}
+		.service-svg-box {
+			flex: none;
+			width: 140px;
+			height: 140px;
+			padding: 1.25rem;
+			align-self: flex-start;
+		}
+		.service-description {
+			max-width: none;
+		}
+	}
+
+	/* Large desktop: more breathing room, bigger SVG */
+	@media (min-width: 1024px) {
+		.service-viewport {
+			padding: 0 5rem;
+		}
+		.service-svg-box {
+			flex: 0 0 320px;
+			width: 320px;
+			height: 320px;
+			padding: 2.5rem;
+		}
+		.svg-inner :global(svg) {
+			max-width: 240px;
+			max-height: 240px;
+		}
+	}
+
+	@media (min-width: 1440px) {
+		.service-viewport {
+			padding: 0 8rem;
+		}
+		.service-svg-box {
+			flex: 0 0 360px;
+			width: 360px;
+			height: 360px;
+		}
+	}
+</style>

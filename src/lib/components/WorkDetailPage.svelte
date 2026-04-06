@@ -76,50 +76,97 @@
 		<div class="flex gap-10">
 			<!-- Content column -->
 			<div class="min-w-0 flex-1 space-y-6">
-				<!-- Overview card -->
-				<div class="section-card rounded-lg border-l-[3px] border-[#E07800] bg-[#141414]" use:reveal={{ direction: 'up', delay: 100 }}>
-					<button class="flex w-full items-center gap-2 px-6 py-4 text-left" onclick={() => overviewOpen = !overviewOpen}>
-						<svg class="h-4 w-4 shrink-0 text-[#E07800]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-							<circle cx="8" cy="8" r="2.5" />
-							<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" />
-						</svg>
-						<h2 class="flex-1 font-heading text-lg font-bold" style="color: #E07800;">Overview</h2>
-						<svg class="section-chevron h-5 w-5 shrink-0 text-[#555]" class:rotated={overviewOpen} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-							<path d="M8 4l7 6-7 6V4z" />
-						</svg>
-					</button>
-					<div class="section-body" class:expanded={overviewOpen}>
-						<div class="px-6 pb-6 pt-3">
-							<p class="text-sm leading-relaxed text-[#ccc] md:text-base">
-								{resolveLocale(project.description, 'en')}
-							</p>
-						</div>
-					</div>
-				</div>
+<!-- Overview card -->
+<div
+	class="section-card rounded-lg border-l-[3px] border-[#E07800] bg-[#141414]"
+	use:reveal={{ direction: 'up', delay: 100 }}
+>
+	<button
+		class="flex w-full items-center gap-2 px-6 py-4 text-left"
+		onclick={() => (overviewOpen = !overviewOpen)}
+	>
+		<svg
+			class="h-4 w-4 shrink-0 text-[#E07800]"
+			viewBox="0 0 16 16"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="1.5"
+			aria-hidden="true"
+		>
+			<circle cx="8" cy="8" r="2.5" />
+			<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" />
+		</svg>
 
-				<!-- Project sections -->
-				{#each project.sections as section, i}
-					<div class="section-card rounded-lg border-l-[3px] border-[#E07800] bg-[#141414]" use:reveal={{ direction: 'up', delay: 150 + i * 80 }}>
-						<button class="flex w-full items-center gap-2.5 px-6 py-4 text-left" onclick={() => toggleSection(i)}>
-							<span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-bold text-[#0a0a0a]" style="background-color: #E07800;" aria-hidden="true">
-								{i + 1}
-							</span>
-							<h2 class="flex-1 font-heading text-lg font-bold" style="color: #E07800;">
-								{resolveLocale(section.title, 'en')}
-							</h2>
-							<svg class="section-chevron h-5 w-5 shrink-0 text-[#555]" class:rotated={sectionOpen[i]} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-								<path d="M8 4l7 6-7 6V4z" />
-							</svg>
-						</button>
-						<div class="section-body" class:expanded={sectionOpen[i]}>
-							<div class="px-6 pb-6 pt-3">
-								<p class="text-sm leading-relaxed text-[#ccc]">
-									{resolveLocale(section.content, 'en')}
-								</p>
-							</div>
-						</div>
-					</div>
-				{/each}
+		<h2 class="flex-1 font-heading text-lg font-bold" style="color: #E07800;">
+			Overview
+		</h2>
+
+		<svg
+			class="section-chevron h-5 w-5 shrink-0 text-[#555]"
+			class:rotated={overviewOpen}
+			viewBox="0 0 20 20"
+			fill="currentColor"
+			aria-hidden="true"
+		>
+			<path d="M8 4l7 6-7 6V4z" />
+		</svg>
+	</button>
+
+	<div class="section-body overflow-hidden" class:expanded={overviewOpen}>
+		<div class="min-h-0 overflow-hidden">
+			<div class="px-6 pb-6 pt-3">
+				<p class="text-sm leading-relaxed text-[#ccc] md:text-base">
+					{resolveLocale(project.description, 'en')}
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Project sections -->
+{#each project.sections as section, i}
+	<div
+		class="section-card rounded-lg border-l-[3px] border-[#E07800] bg-[#141414]"
+		use:reveal={{ direction: 'up', delay: 150 + i * 80 }}
+	>
+		<button
+			class="flex w-full items-center gap-2.5 px-6 py-4 text-left"
+			onclick={() => toggleSection(i)}
+		>
+			<span
+				class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-bold text-[#0a0a0a]"
+				style="background-color: #E07800;"
+				aria-hidden="true"
+			>
+				{i + 1}
+			</span>
+
+			<h2 class="flex-1 font-heading text-lg font-bold" style="color: #E07800;">
+				{resolveLocale(section.title, 'en')}
+			</h2>
+
+			<svg
+				class="section-chevron h-5 w-5 shrink-0 text-[#555]"
+				class:rotated={sectionOpen[i]}
+				viewBox="0 0 20 20"
+				fill="currentColor"
+				aria-hidden="true"
+			>
+				<path d="M8 4l7 6-7 6V4z" />
+			</svg>
+		</button>
+
+		<div class="section-body overflow-hidden" class:expanded={sectionOpen[i]}>
+			<div class="min-h-0 overflow-hidden">
+				<div class="px-6 pb-6 pt-3">
+					<p class="text-sm leading-relaxed text-[#ccc]">
+						{resolveLocale(section.content, 'en')}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+{/each}
 
 				<!-- README section — relative wrapper anchors the ToC at this height -->
 				{#if readmeHtml}
@@ -174,27 +221,13 @@
 		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
-	.section-toggle {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		background: none;
-		border: none;
-		cursor: pointer;
-		padding: 4px;
-		border-radius: 4px;
-		transition: background-color 0.15s ease;
-	}
-	.section-toggle:hover {
-		background-color: rgba(224, 120, 0, 0.1);
-	}
 	.section-chevron {
 		transition: transform 0.25s ease, color 0.15s ease;
 	}
 	.section-chevron.rotated {
 		transform: rotate(90deg);
 	}
-	.section-toggle:hover .section-chevron {
+	button:hover .section-chevron {
 		color: #E07800;
 	}
 

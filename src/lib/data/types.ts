@@ -15,6 +15,14 @@ export interface LocalizedString {
 	es?: string;
 }
 
+// A content block inside a service's detail page.
+// Same pattern as ProjectSection — separating sections from the main description
+// allows rich detail pages without bloating the listing-level fields.
+export interface ServiceSection {
+	title: LocalizedString;
+	content: LocalizedString;
+}
+
 // A single content block inside a project's detail page.
 // Separating sections from the main description allows long-form case studies
 // without bloating the Project summary fields used in listings.
@@ -80,6 +88,20 @@ export interface Service {
 	visible?: boolean;
 	// Slugs of projects to show at this station. Must exist in the projects array.
 	relatedProjects: string[];
+
+	// --- Detail page fields (all optional for backward compat) ---
+	// Optional qualifier shown below title (e.g., "& Optimization")
+	subtitle?: LocalizedString;
+	// 2-3 paragraph deep dive for the detail page
+	longDescription?: LocalizedString;
+	// "How this helps you" — client-facing value proposition
+	valueProposition?: LocalizedString;
+	// Typical deliverables list
+	deliverables?: LocalizedString[];
+	// Tools/technologies used in this service (not localized — tech names are universal)
+	stack?: string[];
+	// Custom collapsible content blocks for the detail page
+	sections?: ServiceSection[];
 }
 
 export interface SiteLinks {

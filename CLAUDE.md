@@ -214,7 +214,10 @@ src/
 │   ├── components/         # UI components: HeroBanner, ServiceStation, FeaturedWork,
 │   │                       #   AboutBento, BlogCard, BlogFeed, BlogListingPage,
 │   │                       #   BlogRow, BlogSvgIcon, BlogDetailHeader, BlogContent,
-│   │                       #   BlogFilterSidebar, BlogFilterMobile, StationDivider, etc.
+│   │                       #   BlogFilterSidebar, BlogFilterMobile, StationDivider,
+│   │                       #   StationTabs, ServiceCard, ServiceListingPage,
+│   │                       #   ServiceDetailPage, ServiceNav, ProofStrip,
+│   │                       #   ProjectMiniCard, WorkCard, WorkDetailPage, etc.
 │   └── motion/
 │       ├── actions/        # Svelte actions: boop, reveal, magnetic, ripple, tilt
 │       ├── stores/         # Scroll position, reduced-motion preference
@@ -228,6 +231,9 @@ src/
 │   │   ├── +page.svelte    #   Professional listing
 │   │   ├── personal/       #   Personal Corner listing
 │   │   └── [slug]/         #   Post detail page
+│   ├── services/           # Services system (Slice 09)
+│   │   ├── +page.svelte    #   Full-viewport kinetic scroll index
+│   │   └── [id]/           #   Service detail page
 │   └── preview/            # Dev-only 3D preview
 ├── tests/                  # Test setup
 docs/
@@ -249,20 +255,18 @@ static/
 - Slice B+ complete — handoff at `docs/handoffs/handoff-slice-b-plus.md`
 - Slice 07 complete — handoff at `docs/handoffs/handoff-slice-07.md`
 - Slice 08 complete — handoff at `docs/handoffs/handoff-slice-08.md`
+- Slice 09 complete — handoff at `docs/handoffs/handoff-slice-09.md`
 
 ## Active Slice
 
-**Slice 09 — Services Pages (/services + /services/[id])** (IN PROGRESS)
-- Design: "The Kinetic Scroll" — full-viewport service reveals with station tab navigation
-- Design spec: `docs/superpowers/specs/2026-04-06-slice-09-services-design.md`
-- Implementation plan: `docs/superpowers/plans/2026-04-06-slice-09-services.md`
-- Visual mockups: `docs/superpowers/mockups/slice-09-services-index.html` + `slice-09-services-detail.html`
-- Slice spec: `docs/slices/slice-09-services.md`
-- `/services` index: full-viewport scroll, station tabs, metro line, DrawSVGPlugin, proof strips
-- `/services/[id]` detail: station tabs, collapsible sections, related projects, prev/next nav
-- Data-driven, i18n-ready (LocalizedString), cloud-ready, DRY, componentized, scalable
-- Service badges in work pages already link to `/services/[id]` (currently 404)
-- Depends on: Slices 02, 08
+**Slice 09c — Blog + Work + Services Polish & DRY Pass** (NEXT)
+- Spec: `docs/slices/slice-09c-polish.md`
+- Enhance existing blog, work, and services pages with micro-interactions
+- Add `use:tilt`, `use:magnetic`, `use:cursorGlow` to cards
+- Reading progress bar, code copy button, heading anchors for blog
+- Metro line connectors, station badges, "Next Stop" nav
+- DRY: extract CollapsibleSection, shared filter patterns, standardize hover effects
+- Service badges on work pages now link to `/services/[id]` (working!)
 
 ## Brand Rules (Non-Negotiable)
 

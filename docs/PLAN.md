@@ -313,21 +313,16 @@ Full blog system with two content lanes: professional (`/blog`, orange accent) a
 
 ### Slice 09 — Services Pages (/services + /services/[id])
 
-**Status:** ready (design approved 2026-04-06)
-**Design:** "The Kinetic Scroll" — full-viewport service reveals with station tab navigation, vertical metro line, DrawSVGPlugin animations, and proof strips. Inspired by Lusion, Linear, David Langarica portfolio patterns.
+**Status:** complete (2026-04-06)
+**Design:** "The Kinetic Scroll" — full-viewport service reveals with station tab navigation, vertical metro line, hazard stripes, SVG morph boxes, and proof strips.
 
-**Index page:** Each service occupies 100vh with ScrollTrigger snap. Station tabs (top, sticky), metro line (left, desktop), service content per viewport (kinetic title, SVG draw-in, stack pills, CTA), proof strip (bottom, related projects).
+**Index page:** Each service occupies 100vh with CSS scroll snap. StationTabs (top, sticky, hazard stripe), metro line (left, desktop), ServiceCard per viewport (title, description, stack pills, SVG morph box, "Deep dive" CTA), ProofStrip (bottom, hazard stripe). Footer appears after scrolling past last station.
 
-**Detail page:** Station tabs (navigate mode), hero (SVG + title + stack), collapsible sections (value prop, deliverables, custom), related projects band, prev/next navigation. Reuses WorkDetailPage collapsible section pattern.
+**Detail page:** StationTabs (navigate mode), hero (SVG morph box + title + DataFlowDiagram), collapsible sections (value prop, deliverables, custom — all open by default), ProjectMiniCard grid for related projects, ServiceNav prev/next.
 
-**Key decisions:** StationTabs component shared between index and detail (DRY). All content through LocalizedString. Data model extended with optional fields (backward compatible). 6 new components.
+**Key decisions:** StationTabs shared between index and detail (DRY). ProjectMiniCard reusable for project references outside /work. All content through LocalizedString. Service data model extended with optional fields (backward compatible). 7 new components + 1 reusable card.
 
-**Design spec:** `docs/superpowers/specs/2026-04-06-slice-09-services-design.md`
-**Implementation plan:** `docs/superpowers/plans/2026-04-06-slice-09-services.md`
-**Visual mockups:** `docs/superpowers/mockups/slice-09-services-*.html`
-
-**Tests:** Data layer backward compat, component render tests, route 404, bidirectional navigation, a11y.
-**You'll learn:** ScrollTrigger snap, DrawSVGPlugin, SplitText, full-viewport layouts, DRY component reuse across routes.
+**Handoff:** `docs/handoffs/handoff-slice-09.md`
 
 ### Slice 09b — About + Contact Pages
 
@@ -335,6 +330,43 @@ About: bio section (fade entrance), focus areas, skills (stagger tags). Contact:
 
 **Tests:** Pages render. Links valid. Content matches data. Hover interactions work.
 **You'll learn:** Static pages with motion, keeping animation restrained when content is primary.
+
+### Slice 09c — Blog + Work + Services Polish & DRY Pass
+
+**Status:** planned (spec ready: `docs/slices/slice-09c-polish.md`)
+**Goal:** Enhance existing blog, work, and services pages with award-winning micro-interactions and styling. Componentize shared patterns across all three sections. DRY audit and consolidation.
+
+**Enhancements (keep existing components, enhance only):**
+
+Quick wins:
+- Add `use:tilt` to WorkCard (already built, unused)
+- Add `use:magnetic` to tag pills across blog + work
+- Add `use:ripple` to filter buttons
+- Add reading time ("8 min read") to BlogDetailHeader
+- Make WorkDetailSidebar tech tags clickable → `/work?tag=X`
+
+Medium effort:
+- Cursor-following glow on BlogRow + WorkCard (new `use:cursorGlow` action)
+- Reading progress bar on blog detail pages
+- Animated gradient border on WorkCard hover
+- ScrollTrigger.batch() for listing card entrance waves
+- Code block copy button in BlogContent
+- Heading anchor links (#) in BlogContent
+
+Metro/transit brand:
+- Metro line connector between blog listing rows
+- Station number badges on BlogRow + WorkCard
+- "Next Stop / Previous Stop" nav on WorkDetailPage (reuse ServiceNav pattern)
+- Animated dashed line separators (DrawSVGPlugin)
+
+DRY consolidation:
+- Extract shared collapsible section pattern into reusable component
+- Audit for hardcoded content → move to data layer
+- Standardize card hover patterns across WorkCard, BlogRow, ProjectMiniCard
+- Extract shared filter sidebar pattern (blog + work use similar filters)
+
+**Tests:** Existing tests remain green. New interactions respect `prefers-reduced-motion`.
+**You'll learn:** Advanced micro-interactions, CSS `@property` animations, component consolidation, DRY architecture.
 
 ### Slice 10 — SEO + Metadata
 
