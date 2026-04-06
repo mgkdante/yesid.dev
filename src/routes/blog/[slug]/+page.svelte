@@ -7,6 +7,7 @@
 	import BlogDetailHeader from '$lib/components/BlogDetailHeader.svelte';
 	import BlogContent from '$lib/components/BlogContent.svelte';
 	import TableOfContents from '$lib/components/TableOfContents.svelte';
+	import { resolveLocale } from '$lib/data/locale.js';
 
 	let { data } = $props();
 
@@ -45,7 +46,7 @@
 
 		<!-- Main content — full width, not affected by ToC -->
 		<div class="min-w-0">
-			<BlogContent {accentColor}>
+			<BlogContent accentColor={accentColor} contentTitle={resolveLocale(data.post.title, 'en')}>
 				{@html processedHtml}
 			</BlogContent>
 		</div>

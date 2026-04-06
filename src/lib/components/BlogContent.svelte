@@ -1,37 +1,32 @@
 <!--
   Styled wrapper for rendered markdown blog content.
   Provides typography styles for headings, code blocks, blockquotes, lists, links.
+  Uses CollapsibleSection with collapsible=false — card presentation only, no toggle.
 -->
 <script lang="ts">
+	import CollapsibleSection from './CollapsibleSection.svelte';
+
 	let {
 		accentColor = '#E07800',
+		contentTitle = 'Article',
 		children
 	}: {
 		accentColor?: string;
+		contentTitle?: string;
 		children: import('svelte').Snippet;
 	} = $props();
 </script>
 
-<!-- Card wrapper — orange accent left border + dark bg, matching work detail page sections -->
-<div
-	class="blog-card mt-8 rounded-lg border-l-[3px] bg-[#141414] p-6"
-	style="border-color: {accentColor};"
-	data-testid="blog-content"
->
-	<div class="blog-content" style="--blog-accent: {accentColor};">
-		{@render children()}
-	</div>
+<!-- CollapsibleSection with collapsible=false gives the card frame without a toggle button -->
+<div class="mt-8" data-testid="blog-content">
+	<CollapsibleSection title={contentTitle} collapsible={false} accentColor={accentColor}>
+		<div class="blog-content" style="--blog-accent: {accentColor};">
+			{@render children()}
+		</div>
+	</CollapsibleSection>
 </div>
 
 <style>
-	/* Card hover glow — subtle orange glow matching work detail page section-card */
-	.blog-card {
-		transition: box-shadow 0.25s ease, border-color 0.25s ease;
-	}
-	.blog-card:hover {
-		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
-	}
-
 	/* Prose container — comfortable reading width */
 	.blog-content {
 		max-width: 65ch;
