@@ -71,22 +71,32 @@
 	<article
 		class="relative flex h-full flex-col overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
 	>
-		<!-- Gradient placeholder thumbnail — taller for future screenshots -->
-		<div
-			class="flex h-[170px] items-center justify-center"
-			style="background: linear-gradient(135deg, {gradientColors[0]}22, {gradientColors[1]}11);"
-		>
-			<!-- Show first service SVG in the thumbnail area if available -->
-			{#if project.relatedServices[0] && serviceSvgContents[project.relatedServices[0]]}
-				<div class="opacity-60 transition-opacity duration-300 group-hover:opacity-90">
-					<WorkSvgIcon
-						svgContent={serviceSvgContents[project.relatedServices[0]]}
-						size={48}
-						hovered={cardHovered}
-					/>
-				</div>
-			{/if}
-		</div>
+		<!-- Thumbnail: project image if set, gradient placeholder with SVG fallback -->
+		{#if project.image}
+			<div class="h-[170px] overflow-hidden">
+				<img
+					src="/images/work/{project.image}"
+					alt={resolveLocale(project.title, 'en')}
+					class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+					loading="lazy"
+				/>
+			</div>
+		{:else}
+			<div
+				class="flex h-[170px] items-center justify-center"
+				style="background: linear-gradient(135deg, {gradientColors[0]}22, {gradientColors[1]}11);"
+			>
+				{#if project.relatedServices[0] && serviceSvgContents[project.relatedServices[0]]}
+					<div class="opacity-60 transition-opacity duration-300 group-hover:opacity-90">
+						<WorkSvgIcon
+							svgContent={serviceSvgContents[project.relatedServices[0]]}
+							size={48}
+							hovered={cardHovered}
+						/>
+					</div>
+				{/if}
+			</div>
+		{/if}
 
 		<!-- Content area -->
 		<div class="flex flex-1 flex-col p-4">

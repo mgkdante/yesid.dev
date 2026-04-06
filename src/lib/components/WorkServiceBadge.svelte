@@ -22,23 +22,22 @@
 	let badgeHovered = $state(false);
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-	class="service-badge inline-flex items-center gap-2 rounded-full border bg-[#1a1a1a] px-4 py-2.5"
+<!-- Clickable badge → /services/{service.id} (page built in future slice, 404 until then) -->
+<a
+	href="/services/{service.id}"
+	class="service-badge inline-flex items-center gap-2 rounded-full border bg-[#1a1a1a] px-4 py-2.5 no-underline"
 	style="border-color: rgba(224, 120, 0, 0.4);"
 	data-testid="work-service-badge"
 	onmouseenter={() => (badgeHovered = true)}
 	onmouseleave={() => (badgeHovered = false)}
-	role="presentation"
 >
-	<!-- WorkSvgIcon with morph on hover/tap — replaces raw {@html} -->
 	{#if svgContent}
 		<WorkSvgIcon {svgContent} size={28} hovered={badgeHovered} />
 	{/if}
 	<span class="font-mono text-xs leading-tight text-[var(--text-primary)] md:text-[13px]">
 		{resolveLocale(service.title, 'en')}
 	</span>
-</div>
+</a>
 
 <style>
 	/* Force WorkSvgIcon container to not add its own border/bg at badge size */
