@@ -30,7 +30,7 @@
 	import FeaturedWork from '$lib/components/FeaturedWork.svelte';
 	import AboutBento from '$lib/components/AboutBento.svelte';
 	import BlogFeed from '$lib/components/BlogFeed.svelte';
-	import StationDivider from '$lib/components/StationDivider.svelte';
+	import GradientSeparator from '$lib/components/GradientSeparator.svelte';
 	import SkillsJourney from '$lib/components/SkillsJourney.svelte';
 
 	let localProgress = $state(0);
@@ -102,32 +102,34 @@
 		<!-- STOP 00: Hero / Departure (self-managed ScrollTrigger) -->
 		<HeroBanner />
 
-		<!-- Skills Journey: horizontal scroll CTA (Slice B) -->
-		<SkillsJourney />
-
-		<StationDivider label={formatServicesLabel()} />
+		<GradientSeparator label={formatServicesLabel()} />
 
 		<!-- STOPS 01-04: Services -->
 		{#each services as service, i (service.id)}
 			<ServiceStation {service} index={i} active={i === serviceActiveIndex} />
 		{/each}
 
-		<StationDivider label={formatStopLabel(getStopByType('featured')!)} />
+		<GradientSeparator label={formatStopLabel(getStopByType('featured')!)} />
 
 		<!-- STOP 05: Featured Work -->
 		<FeaturedWork />
 
-		<StationDivider label={formatStopLabel(getStopByType('about')!)} />
+		<GradientSeparator label={formatStopLabel(getStopByType('about')!)} />
 
 		<!-- STOP 06: Who's Driving (About Bento) -->
 		<AboutBento />
 
-		<StationDivider label={formatStopLabel(getStopByType('blog')!)} />
+		<GradientSeparator label={formatStopLabel(getStopByType('blog')!)} />
 
 		<!-- STOP 07: Dispatches (Blog Feed) -->
 		<BlogFeed />
 
-		<StationDivider />
+		<GradientSeparator />
+
+				<!-- Skills Journey: horizontal scroll CTA (Slice B) -->
+				<SkillsJourney />
+
+				<GradientSeparator />
 
 		<!-- TERMINAL: CTA -->
 		<section
