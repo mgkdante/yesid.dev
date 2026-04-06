@@ -12,11 +12,26 @@
 	} = $props();
 </script>
 
-<div class="blog-content mt-8" style="--blog-accent: {accentColor};" data-testid="blog-content">
-	{@render children()}
+<!-- Card wrapper — orange accent left border + dark bg, matching work detail page sections -->
+<div
+	class="blog-card mt-8 rounded-lg border-l-[3px] bg-[#141414] p-6"
+	style="border-color: {accentColor};"
+	data-testid="blog-content"
+>
+	<div class="blog-content" style="--blog-accent: {accentColor};">
+		{@render children()}
+	</div>
 </div>
 
 <style>
+	/* Card hover glow — subtle orange glow matching work detail page section-card */
+	.blog-card {
+		transition: box-shadow 0.25s ease, border-color 0.25s ease;
+	}
+	.blog-card:hover {
+		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
+	}
+
 	/* Prose container — comfortable reading width */
 	.blog-content {
 		max-width: 65ch;
@@ -61,9 +76,9 @@
 		text-decoration: underline;
 	}
 
-	/* Fenced code blocks */
+	/* Fenced code blocks — slightly darker than card bg for contrast */
 	.blog-content :global(pre) {
-		background: #141414;
+		background: #0f0f0f;
 		border: 1px solid #2a2a2a;
 		border-radius: 0.375rem;
 		padding: 0.875rem 1rem;
