@@ -14,7 +14,7 @@
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, Flip, ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap, Flip, ScrollTrigger, DrawSVGPlugin } from '$lib/motion/utils/gsap.js';
 	import WorkCard from './WorkCard.svelte';
 	import WorkFilterSidebar from './WorkFilterSidebar.svelte';
 	import WorkFilterMobile from './WorkFilterMobile.svelte';
@@ -147,6 +147,18 @@
 					{ opacity: 0, y: 20 },
 					{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
 				);
+
+				// WHY: DrawSVGPlugin animates the gradient line from 0% to 100% length,
+				// reinforcing the metro journey metaphor as each card enters the viewport
+				const lines = Array.from(batch as Element[]).flatMap((el: Element) =>
+					Array.from(el.querySelectorAll('[data-metro-line] line'))
+				);
+				if (lines.length > 0) {
+					gsap.fromTo(lines,
+						{ drawSVG: '0%' },
+						{ drawSVG: '100%', duration: 0.4, stagger: 0.08, delay: 0.3, ease: 'power2.out' }
+					);
+				}
 			},
 			once: true
 		});
@@ -235,7 +247,28 @@
 								>
 									{String(i + 1).padStart(2, '0')}
 								</div>
-								<div class="w-0.5 flex-1" style="background: linear-gradient(to bottom, #E07800, #FFB627);"></div>
+								<!-- WHY: SVG line with gradient for DrawSVGPlugin — gradient ID scoped per card via index -->
+								<svg
+									class="flex-1 block"
+									width="2"
+									viewBox="0 0 2 100"
+									preserveAspectRatio="none"
+									aria-hidden="true"
+									data-metro-line
+									style="min-height: 20px;"
+								>
+									<defs>
+										<linearGradient id="metro-grad-{i}" x1="0" y1="0" x2="0" y2="1">
+											<stop offset="0%" stop-color="#E07800" />
+											<stop offset="100%" stop-color="#FFB627" />
+										</linearGradient>
+									</defs>
+									<line
+										x1="1" y1="0" x2="1" y2="100"
+										stroke="url(#metro-grad-{i})"
+										stroke-width="2"
+									/>
+								</svg>
 							</div>
 							<!-- Card -->
 							<div class="min-w-0 flex-1">
@@ -259,6 +292,19 @@
 	@media (prefers-reduced-motion: reduce) {
 		:global([data-batch="work-item"]) {
 			opacity: 1;
+		}
+	}
+
+	/* WHY: metro line starts hidden so DrawSVGPlugin can animate the draw-in on scroll enter */
+	:global([data-metro-line] line) {
+		stroke-dasharray: 1000;
+		stroke-dashoffset: 1000;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global([data-metro-line] line) {
+			stroke-dasharray: none;
+			stroke-dashoffset: 0;
 		}
 	}
 </style>

@@ -10,7 +10,7 @@
 	import type { BlogPost, Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap, ScrollTrigger, DrawSVGPlugin } from '$lib/motion/utils/gsap.js';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
@@ -125,6 +125,18 @@
 					{ opacity: 0, y: 20 },
 					{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
 				);
+
+				// WHY: DrawSVGPlugin animates the line from 0% to 100% length,
+				// creating a drawing-in effect on scroll that reinforces the metro journey metaphor
+				const lines = Array.from(batch as Element[]).flatMap((el: Element) =>
+					Array.from(el.querySelectorAll('[data-metro-line] line'))
+				);
+				if (lines.length > 0) {
+					gsap.fromTo(lines,
+						{ drawSVG: '0%' },
+						{ drawSVG: '100%', duration: 0.4, stagger: 0.08, delay: 0.3, ease: 'power2.out' }
+					);
+				}
 			},
 			once: true
 		});
@@ -249,6 +261,20 @@
 	@media (prefers-reduced-motion: reduce) {
 		:global([data-batch="blog-item"]) {
 			opacity: 1;
+		}
+	}
+
+	/* WHY: metro line starts hidden (dashoffset = full length) so DrawSVGPlugin
+	   can animate it drawing in from 0% to 100% on scroll enter */
+	:global([data-metro-line] line) {
+		stroke-dasharray: 1000;
+		stroke-dashoffset: 1000;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global([data-metro-line] line) {
+			stroke-dasharray: none;
+			stroke-dashoffset: 0;
 		}
 	}
 </style>

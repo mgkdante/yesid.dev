@@ -57,12 +57,22 @@
 			>
 				{stationNumber}
 			</div>
-			<!-- Vertical metro line connecting stations -->
-			<div
-				class="w-0.5 flex-1"
-				style="background-color: {accentColor};"
+			<!-- Vertical metro line connecting stations — SVG for DrawSVGPlugin animation -->
+			<svg
+				class="metro-line-svg flex-1"
+				width="2"
+				viewBox="0 0 2 100"
+				preserveAspectRatio="none"
+				aria-hidden="true"
 				data-testid="metro-line"
-			></div>
+				data-metro-line
+			>
+				<line
+					x1="1" y1="0" x2="1" y2="100"
+					stroke={accentColor}
+					stroke-width="2"
+				/>
+			</svg>
 		</div>
 
 		<!-- Content card -->
@@ -128,5 +138,12 @@
 	.blog-row:hover {
 		border-color: color-mix(in srgb, var(--accent) 30%, transparent);
 		box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 8%, transparent);
+	}
+
+	/* WHY: SVG metro line needs display:block to avoid inline baseline gap,
+	   and a min-height so very short posts still show a line segment */
+	.metro-line-svg {
+		display: block;
+		min-height: 20px;
 	}
 </style>
