@@ -9,7 +9,7 @@
 	<meta name="description" content="Projects, pipelines, and systems built by yesid. — freelance SQL development and data infrastructure." />
 </svelte:head>
 
-<main class="mx-auto max-w-5xl px-4 pt-12 md:px-8">
+<main class="mx-auto max-w-5xl px-4 md:px-8">
 	<WorkListingPage
 		projects={data.projects}
 		allTags={data.tags}

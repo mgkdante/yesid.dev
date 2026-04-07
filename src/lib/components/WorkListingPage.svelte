@@ -244,25 +244,19 @@
 										{String(i + 1).padStart(2, '0')}
 									</div>
 								</div>
-								<!-- WHY: SVG line with gradient for DrawSVGPlugin — gradient ID scoped per card via index -->
+								<!-- WHY: SVG line connecting stations — direct color avoids url(#id)
+								     paint-server resolution failures in SvelteKit SPA routing -->
 								<svg
-									class="flex-1 block"
+									class="metro-line-svg flex-1"
 									width="2"
 									viewBox="0 0 2 100"
 									preserveAspectRatio="none"
 									aria-hidden="true"
 									data-metro-line
-									style="min-height: 20px;"
 								>
-									<defs>
-										<linearGradient id="metro-grad-{i}" x1="0" y1="0" x2="0" y2="1">
-											<stop offset="0%" stop-color="#E07800" />
-											<stop offset="100%" stop-color="#FFB627" />
-										</linearGradient>
-									</defs>
 									<line
 										x1="1" y1="0" x2="1" y2="100"
-										stroke="url(#metro-grad-{i})"
+										stroke="#E07800"
 										stroke-width="2"
 									/>
 								</svg>
@@ -292,11 +286,11 @@
 		}
 	}
 
-	/* WHY: metro lines show with the card entrance — no separate draw animation.
-	   The batch fade-in on the parent wrapper reveals everything together. */
-	@media (prefers-reduced-motion: reduce) {
-		:global([data-metro-line] line) {
-		}
+	/* WHY: SVG metro line needs display:block to avoid inline baseline gap,
+	   and a min-height so very short cards still show a line segment */
+	.metro-line-svg {
+		display: block;
+		min-height: 20px;
 	}
 
 	/* WHY: wrapper provides a positioning context for the absolute pulse ring */

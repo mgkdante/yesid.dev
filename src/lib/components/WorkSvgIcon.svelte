@@ -32,6 +32,9 @@
 	const SHAPE_KEYS = Object.keys(SHAPES) as (keyof typeof SHAPES)[];
 
 	let isHovered = false;
+	// WHY: blocks hover/tap interaction until the entrance draw-fill animation
+	// finishes — hovering mid-draw can interrupt and break the animation
+	let entranceDone = false;
 	let originalPaths: string[] = [];
 	let svgPaths: SVGPathElement[] = [];
 	// Avoid repeating the same shape twice in a row
@@ -47,7 +50,7 @@
 	}
 
 	function handleMouseEnter() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0 || isHovered) return;
+		if (isPrefersReducedMotion() || svgPaths.length === 0 || isHovered || !entranceDone) return;
 		isHovered = true;
 
 		const shape = pickRandomShape();
@@ -64,7 +67,7 @@
 	let isMorphed = false;
 
 	function handleTap() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0) return;
+		if (isPrefersReducedMotion() || svgPaths.length === 0 || !entranceDone) return;
 
 		if (isMorphed) {
 			svgPaths.forEach((path, i) => {
@@ -91,7 +94,7 @@
 	}
 
 	function handleMouseLeave() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0 || !isHovered) return;
+		if (isPrefersReducedMotion() || svgPaths.length === 0 || !isHovered || !entranceDone) return;
 		isHovered = false;
 
 		svgPaths.forEach((path, i) => {
@@ -134,7 +137,7 @@
 
 		// Draw-fill: draw strokes first, then soft fill
 		gsap.set(svgPaths, { drawSVG: '0%', fillOpacity: 0 });
-		const tl = gsap.timeline();
+		const tl = gsap.timeline({ onComplete: () => { entranceDone = true; } });
 		tl.to(svgPaths, {
 			drawSVG: '100%',
 			duration: 1,

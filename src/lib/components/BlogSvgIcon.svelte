@@ -37,6 +37,9 @@
 
 
 	let isHovered = false;
+	// WHY: blocks hover/tap interaction until the entrance animation finishes —
+	// hovering mid-draw/morph can interrupt and break the animation
+	let entranceDone = false;
 	let originalPaths: string[] = [];
 	let svgPaths: SVGPathElement[] = [];
 	// Random shape on each hover — never the same twice in a row
@@ -52,7 +55,7 @@
 	}
 
 	function handleMouseEnter() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0 || isHovered) return;
+		if (isPrefersReducedMotion() || svgPaths.length === 0 || isHovered || !entranceDone) return;
 		isHovered = true;
 
 		const shape = pickRandomShape();
@@ -70,7 +73,7 @@
 	let isMorphed = false;
 
 	function handleTap() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0) return;
+		if (isPrefersReducedMotion() || svgPaths.length === 0 || !entranceDone) return;
 
 		if (isMorphed) {
 			// Revert to original
@@ -99,7 +102,7 @@
 	}
 
 	function handleMouseLeave() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0 || !isHovered) return;
+		if (isPrefersReducedMotion() || svgPaths.length === 0 || !isHovered || !entranceDone) return;
 		isHovered = false;
 
 		// Morph back to originals
@@ -125,32 +128,32 @@
 
 	// --- Entrance animations ---
 
-	function animateDraw(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars) {
+	function animateDraw(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars, onDone?: () => void) {
 		gsap.set(paths, { drawSVG: '0%' });
-		gsap.to(paths, {
+		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig, onComplete: onDone });
+		tl.to(paths, {
 			drawSVG: '100%',
 			duration: 1.2,
 			stagger: 0.15,
-			ease: 'power2.inOut',
-			scrollTrigger: scrollTriggerConfig
+			ease: 'power2.inOut'
 		});
 	}
 
-	function animateMorph(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars) {
+	function animateMorph(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars, onDone?: () => void) {
 		gsap.set(paths, { opacity: 0, scale: 0.3, transformOrigin: 'center center' });
-		gsap.to(paths, {
+		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig, onComplete: onDone });
+		tl.to(paths, {
 			opacity: 1,
 			scale: 1,
 			duration: 0.8,
 			stagger: 0.1,
-			ease: 'back.out(1.7)',
-			scrollTrigger: scrollTriggerConfig
+			ease: 'back.out(1.7)'
 		});
 	}
 
-	function animateDrawFill(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars) {
+	function animateDrawFill(paths: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars, onDone?: () => void) {
 		gsap.set(paths, { drawSVG: '0%', fillOpacity: 0 });
-		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig });
+		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig, onComplete: onDone });
 		tl.to(paths, {
 			drawSVG: '100%',
 			duration: 1,
@@ -165,15 +168,15 @@
 		}, '-=0.3');
 	}
 
-	function animateStagger(elements: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars) {
+	function animateStagger(elements: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars, onDone?: () => void) {
 		gsap.set(elements, { y: 12, opacity: 0 });
-		gsap.to(elements, {
+		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig, onComplete: onDone });
+		tl.to(elements, {
 			y: 0,
 			opacity: 1,
 			duration: 0.5,
 			stagger: 0.08,
-			ease: 'back.out(1.4)',
-			scrollTrigger: scrollTriggerConfig
+			ease: 'back.out(1.4)'
 		});
 	}
 
@@ -204,18 +207,20 @@
 			once: true
 		} : undefined;
 
+		const onDone = () => { entranceDone = true; };
+
 		switch (animation) {
 			case 'draw':
-				animateDraw(svgPaths, scrollTriggerConfig);
+				animateDraw(svgPaths, scrollTriggerConfig, onDone);
 				break;
 			case 'morph':
-				animateMorph(svgPaths, scrollTriggerConfig);
+				animateMorph(svgPaths, scrollTriggerConfig, onDone);
 				break;
 			case 'draw-fill':
-				animateDrawFill(svgPaths, scrollTriggerConfig);
+				animateDrawFill(svgPaths, scrollTriggerConfig, onDone);
 				break;
 			case 'stagger':
-				animateStagger(svgPaths, scrollTriggerConfig);
+				animateStagger(svgPaths, scrollTriggerConfig, onDone);
 				break;
 		}
 	});
