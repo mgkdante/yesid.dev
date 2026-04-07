@@ -23,6 +23,9 @@
 		tags: { en: 'Tags' }
 	};
 
+	// WHY: date range section is not a FilterGroup, so it needs its own collapse state
+	let dateOpen = $state(true);
+
 	let {
 		tags,
 		languages = [],
@@ -48,7 +51,7 @@
 	} = $props();
 </script>
 
-<aside class="hidden w-40 shrink-0 md:block" data-testid="blog-filter-sidebar">
+<aside class="hidden w-40 shrink-0 md:block max-h-[calc(100vh-6rem)] overflow-y-auto" data-testid="blog-filter-sidebar">
 	<!-- Language filter — only shown when more than one language exists -->
 	{#if languages.length > 1}
 		<div class="mb-5">
@@ -58,35 +61,42 @@
 				activeKey={activeLang}
 				{accentColor}
 				allowDeselect={false}
+				collapsible={true}
 				onSelect={(key) => onLangSelect(key as Locale | null)}
 			/>
 		</div>
 	{/if}
 
-	<!-- Date range — inline, not a button group -->
-	<div class="font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+	<!-- Date range — inline, not a FilterGroup, so collapse logic is inline -->
+	<button
+		class="flex w-full items-center justify-between font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+		onclick={() => (dateOpen = !dateOpen)}
+	>
 		{resolveLocale(labels.dateRange, 'en')}
-	</div>
-	<div class="mt-2 flex flex-col gap-1.5">
-		<label class="text-[9px] text-[var(--text-muted)]">
-			{resolveLocale(labels.from, 'en')}
-			<input
-				type="date"
-				bind:value={dateFrom}
-				class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-[10px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
-				style="--accent: {accentColor}; color-scheme: dark;"
-			/>
-		</label>
-		<label class="text-[9px] text-[var(--text-muted)]">
-			{resolveLocale(labels.to, 'en')}
-			<input
-				type="date"
-				bind:value={dateTo}
-				class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-[10px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
-				style="--accent: {accentColor}; color-scheme: dark;"
-			/>
-		</label>
-	</div>
+		<span class="text-[8px] transition-transform" class:rotate-180={dateOpen}>▼</span>
+	</button>
+	{#if dateOpen}
+		<div class="mt-2 flex flex-col gap-1.5">
+			<label class="text-[9px] text-[var(--text-muted)]">
+				{resolveLocale(labels.from, 'en')}
+				<input
+					type="date"
+					bind:value={dateFrom}
+					class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-[10px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+					style="--accent: {accentColor}; color-scheme: dark;"
+				/>
+			</label>
+			<label class="text-[9px] text-[var(--text-muted)]">
+				{resolveLocale(labels.to, 'en')}
+				<input
+					type="date"
+					bind:value={dateTo}
+					class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-[10px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+					style="--accent: {accentColor}; color-scheme: dark;"
+				/>
+			</label>
+		</div>
+	{/if}
 
 	<!-- Tags filter — delegated to FilterGroup -->
 	<div class="mt-5 border-t border-dashed border-[#333] pt-3">
@@ -96,6 +106,7 @@
 			activeKey={activeTag}
 			{accentColor}
 			allowDeselect={false}
+			collapsible={true}
 			onSelect={onTagSelect}
 		/>
 	</div>

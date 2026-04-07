@@ -6,13 +6,18 @@
 - Fixed invisible metro lines on `/work` listing page (SVG gradient `url(#id)` paint-server broken in SPA context)
 - Added hover/tap lock during SVG entrance animations in BlogSvgIcon and WorkSvgIcon
 - Removed excess top padding on `/work` route
+- Fixed "clear filters" button not resetting card visibility on `/work`
+- Added tech stack filter (third filter dimension) to `/work` page
+- Matched `/work` side padding to `/blog` (removed redundant `<main>` wrapper)
+- Made desktop filter sidebars and mobile filter panels scrollable when content overflows
+- Made all filter sections (Services, Tech Stack, Tags, Language, Date Range) collapsible on desktop
 
 **Intentionally not implemented:**
 - SVG gradient on metro lines (dropped in favor of direct color; gradient was imperceptible on 2px line and `url(#id)` is unreliable in SvelteKit SPA routing)
 
 ## 2. High-Level Summary
 
-This session resolved the final two bugs from the 09c-2b iteration cycle and a layout tweak. The metro line SVGs in WorkListingPage were structurally correct but used `url(#metro-grad-{i})` gradient references that silently fail in SvelteKit's client-side navigation. Replaced with direct `stroke="#E07800"` matching BlogRow's working pattern. Both SVG icon components (Blog + Work) now block hover/tap morph interactions during the entrance draw/fill animation via an `entranceDone` flag set by GSAP's `onComplete` callback.
+This session resolved bugs, added features, and polished the work/blog listing UX across two sub-sessions. Metro line SVGs fixed (gradient `url(#id)` → direct color). SVG icon hover locked during entrance animations. "Clear filters" fixed with `batchFired` + `$effect` pattern. Tech stack added as a third filter dimension with `getAllStackItems()` helper. Work route padding matched to blog by removing redundant `<main>` wrapper. Filter sidebars made scrollable with `max-h` + `overflow-y-auto`. All FilterGroup sections made collapsible with `collapsible`/`startOpen` props; blog date range section collapsible inline.
 
 ## 3. Files Created
 
@@ -25,14 +30,23 @@ This session resolved the final two bugs from the 09c-2b iteration cycle and a l
 
 | File | What Changed | Why |
 |------|-------------|-----|
-| `src/lib/components/WorkListingPage.svelte` | Replaced SVG gradient metro lines with direct color stroke; added `.metro-line-svg` CSS class | SVG `url(#id)` paint references don't resolve in SvelteKit SPA routing |
+| `src/lib/components/WorkListingPage.svelte` | Replaced SVG gradient metro lines with direct color; added `batchFired` + `$effect` for filter visibility; added `activeStack` filter; added `stack` prop pass-through | Metro line fix, clear filters fix, tech stack filter |
 | `src/lib/components/WorkSvgIcon.svelte` | Added `entranceDone` flag; guarded all hover/tap handlers; added `onComplete` to entrance timeline | Prevent hover morph from interrupting draw-fill entrance animation |
 | `src/lib/components/BlogSvgIcon.svelte` | Added `entranceDone` flag; guarded all hover/tap handlers; threaded `onDone` callback through all 4 animation functions | Same hover-during-entrance protection for all animation types |
-| `src/routes/work/+page.svelte` | Removed `pt-12` from `<main>` wrapper | Excess top padding above "Work" heading |
+| `src/routes/work/+page.svelte` | Removed redundant `<main class="mx-auto max-w-5xl px-4 md:px-8">` wrapper | Root layout already provides padding; double wrapper caused narrower content |
+| `src/routes/work/+page.ts` | Added `getAllStackItems()` import and `stackItems` to load data | Provide tech stack items for filter UI |
+| `src/lib/data/projects.ts` | Added `getAllStackItems()` function | Extract deduplicated sorted tech stack from public projects |
+| `src/lib/data/index.ts` | Added `getAllStackItems` to barrel export | Make new helper accessible via `$lib/data` |
+| `src/lib/components/FilterGroup.svelte` | Added `collapsible` and `startOpen` props; toggle label with chevron | Collapsible filter sections on desktop |
+| `src/lib/components/WorkFilterSidebar.svelte` | Added stack section; enabled `collapsible` on all FilterGroups; added `max-h` + `overflow-y-auto` | Tech stack filter, collapsible sections, scrollable |
+| `src/lib/components/WorkFilterMobile.svelte` | Added stack section; added `max-h-[60vh] overflow-y-auto` | Tech stack filter on mobile, scrollable panel |
+| `src/lib/components/BlogFilterSidebar.svelte` | Enabled `collapsible` on FilterGroups; made date range collapsible inline; added `max-h` + `overflow-y-auto` | Collapsible sections, scrollable |
+| `src/lib/components/BlogFilterMobile.svelte` | Added `max-h-[60vh] overflow-y-auto` | Scrollable mobile filter panel |
 
 ## 5. Data Model Changes
 
-No data model changes.
+- Added `getAllStackItems()` to `projects.ts` — extracts deduplicated, sorted tech stack strings from all public projects. Same pattern as `getAllTags()`.
+- No type/interface changes.
 
 ## 6. Commands Executed
 
@@ -60,6 +74,10 @@ No errors encountered.
 | 1 | Metro lines invisible on /work | Replaced gradient `url(#id)` with direct color | `WorkListingPage.svelte` |
 | 2 | Hover during entrance breaks animation | Added `entranceDone` flag to both icon components | `BlogSvgIcon.svelte`, `WorkSvgIcon.svelte` |
 | 3 | Too much top padding on /work | Removed `pt-12` from route wrapper | `+page.svelte` |
+| 4 | Clear filters broken + add tech stack filter | `batchFired` effect + `getAllStackItems()` + stack filter UI | `WorkListingPage`, `projects.ts`, filter components |
+| 5 | Work padding doesn't match blog | Removed redundant `<main>` wrapper (root layout already provides) | `+page.svelte` |
+| 6 | Filter sidebars should scroll when needed | Added `max-h` + `overflow-y-auto` to all 4 filter components | Sidebar + mobile filter components |
+| 7 | Filter sections should be collapsible | Added `collapsible`/`startOpen` to FilterGroup; inline collapse for date range | `FilterGroup.svelte`, both sidebars |
 | Final | Approved | -- | -- |
 
 ## 10. Assumptions Made
@@ -81,7 +99,7 @@ No errors encountered.
 
 ## 13. Next Recommended Slice
 
-Slice 09c-2b is now fully complete. All enhancements from the 09c-2 spec have been implemented and approved. The next slice should be determined by Yesid based on priority — potential candidates include home page rework integration or new feature slices.
+Slice 09b — About + Contact Pages. Per PLAN.md: bio section with fade entrance, focus areas, skills with stagger tags, contact links from SiteMeta with boop hover. Depends on slices 02, 03, 07. Estimated 1 session.
 
 ## 14. Final Status
 

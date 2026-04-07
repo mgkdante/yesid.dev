@@ -15,29 +15,34 @@
 		serviceIds,
 		serviceMap,
 		tags,
+		stack = [],
 		activeService = null,
 		activeTag = null,
+		activeStack = null,
 		onServiceSelect,
-		onTagSelect
+		onTagSelect,
+		onStackSelect
 	}: {
 		serviceIds: readonly string[];
 		serviceMap: Map<string, string>;
 		tags: readonly string[];
+		stack?: readonly string[];
 		activeService: string | null;
 		activeTag: string | null;
+		activeStack?: string | null;
 		onServiceSelect: (serviceId: string | null) => void;
 		onTagSelect: (tag: string | null) => void;
+		onStackSelect?: (stack: string | null) => void;
 	} = $props();
 
-	// WHY: all user-facing labels go through resolveLocale so the sidebar is ready
-	// for future i18n without changing component logic.
 	const labels = {
 		services: { en: 'Services' },
-		tags: { en: 'Tags' }
+		tags: { en: 'Tags' },
+		stack: { en: 'Tech Stack' }
 	};
 </script>
 
-<aside class="w-[220px] shrink-0" data-testid="work-filter-sidebar">
+<aside class="w-[220px] shrink-0 max-h-[calc(100vh-6rem)] overflow-y-auto" data-testid="work-filter-sidebar">
 	<!-- Services section — delegated to FilterGroup with deselect enabled -->
 	<div class="mb-5">
 		<FilterGroup
@@ -45,10 +50,27 @@
 			items={serviceIds.map((id) => ({ key: id, label: serviceMap.get(id) ?? id }))}
 			activeKey={activeService}
 			allowDeselect={true}
+			collapsible={true}
 			onSelect={(key) => onServiceSelect(key)}
 			testIdPrefix="service-filter"
 		/>
 	</div>
+
+	<!-- Tech Stack section -->
+	{#if stack.length > 0 && onStackSelect}
+		<div class="border-t border-dashed border-[#333] pt-3 mb-5">
+			<FilterGroup
+				label={resolveLocale(labels.stack, 'en')}
+				items={stack.map((s) => ({ key: s, label: s }))}
+				activeKey={activeStack}
+				allowDeselect={true}
+				collapsible={true}
+				startOpen={false}
+				onSelect={(key) => onStackSelect(key)}
+				testIdPrefix="stack-filter"
+			/>
+		</div>
+	{/if}
 
 	<!-- Tags section — delegated to FilterGroup with deselect enabled -->
 	<div class="border-t border-dashed border-[#333] pt-3">
@@ -57,6 +79,8 @@
 			items={tags.map((tag) => ({ key: tag, label: tag }))}
 			activeKey={activeTag}
 			allowDeselect={true}
+			collapsible={true}
+			startOpen={false}
 			onSelect={(key) => onTagSelect(key)}
 			testIdPrefix="tag-filter"
 		/>

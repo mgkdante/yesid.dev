@@ -209,4 +209,15 @@ export function getServiceIdsForProjects(): string[] {
 	return [...new Set(ids)].sort();
 }
 
+/**
+ * Returns deduplicated, sorted tech stack items from all public projects.
+ * Used to build tech stack filter UI on the work listing page.
+ */
+export function getAllStackItems(): string[] {
+	const stacks = projects
+		.filter((p) => p.status !== 'private')
+		.flatMap((p) => p.stack);
+	return [...new Set(stacks)].sort();
+}
+
 export { projects };

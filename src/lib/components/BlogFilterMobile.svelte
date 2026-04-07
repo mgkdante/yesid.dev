@@ -49,7 +49,7 @@
 	</div>
 
 	{#if open}
-		<div class="mb-4 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
+		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
 			<!-- Language filter -->
 			{#if languages.length > 1}
 				<div class="font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">

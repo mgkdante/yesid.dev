@@ -23,12 +23,14 @@
 	let {
 		projects,
 		allTags,
+		allStack = [],
 		serviceIds,
 		services,
 		serviceSvgContents
 	}: {
 		projects: readonly Project[];
 		allTags: readonly string[];
+		allStack?: readonly string[];
 		serviceIds: readonly string[];
 		services: readonly Service[];
 		serviceSvgContents: Record<string, string>;
@@ -45,8 +47,9 @@
 	// Filter state — read from URL params
 	let activeService = $derived($page.url.searchParams.get('service'));
 	let activeTag = $derived($page.url.searchParams.get('tag'));
+	let activeStack = $derived($page.url.searchParams.get('stack'));
 
-	// Apply filters: service + tag use AND logic
+	// Apply filters: service + tag + stack use AND logic
 	let filteredProjects = $derived.by(() => {
 		let result = [...projects];
 
@@ -58,11 +61,15 @@
 			result = result.filter((p) => p.tags.includes(activeTag!));
 		}
 
+		if (activeStack) {
+			result = result.filter((p) => p.stack.includes(activeStack!));
+		}
+
 		return result;
 	});
 
 	// FLIP animation on filter changes
-	async function updateFilter(type: 'service' | 'tag', value: string | null) {
+	async function updateFilter(type: 'service' | 'tag' | 'stack', value: string | null) {
 		// Capture pre-filter layout for FLIP
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let flipState: any = null;
@@ -122,12 +129,33 @@
 		updateFilter('tag', tag);
 	}
 
+	function handleStackSelect(stack: string | null) {
+		updateFilter('stack', stack);
+	}
+
 	// Build a lookup from service ID to service title for the filter pills
 	let serviceMap = $derived(
 		new Map(services.map((s) => [s.id, resolveLocale(s.title, 'en')]))
 	);
 
-	let hasActiveFilters = $derived(!!activeService || !!activeTag);
+	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack);
+
+	// WHY: after a filter change, Svelte re-renders work items which start at
+	// opacity:0 from the batch CSS. The batch onEnter (once:true) already fired
+	// on initial load, so it won't re-fire. This effect resets new items to visible.
+	let batchFired = false;
+	$effect(() => {
+		// Subscribe to filteredProjects so this runs on every filter change
+		filteredProjects;
+		if (batchFired && typeof document !== 'undefined') {
+			requestAnimationFrame(() => {
+				document.querySelectorAll<HTMLElement>('[data-batch="work-item"]').forEach(el => {
+					el.style.opacity = '1';
+					el.style.transform = 'translateY(0)';
+				});
+			});
+		}
+	});
 
 	onMount(() => {
 		// WHY: if user prefers reduced motion, skip all animation and just make elements visible
@@ -146,6 +174,7 @@
 		ScrollTrigger.batch('[data-batch="work-item"]', {
 			start: 'top 85%',
 			onEnter: (batch) => {
+				batchFired = true;
 				gsap.fromTo(batch,
 					{ opacity: 0, y: 20 },
 					{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
@@ -176,10 +205,13 @@
 		{serviceIds}
 		{serviceMap}
 		tags={allTags}
+		stack={allStack}
 		{activeService}
 		{activeTag}
+		{activeStack}
 		onServiceSelect={handleServiceSelect}
 		onTagSelect={handleTagSelect}
+		onStackSelect={handleStackSelect}
 	/>
 
 	<!-- Desktop: sidebar + grid layout -->
@@ -190,10 +222,13 @@
 				{serviceIds}
 				{serviceMap}
 				tags={allTags}
+				stack={allStack}
 				{activeService}
 				{activeTag}
+				{activeStack}
 				onServiceSelect={handleServiceSelect}
 				onTagSelect={handleTagSelect}
+				onStackSelect={handleStackSelect}
 			/>
 		</div>
 
@@ -207,11 +242,10 @@
 					</span>
 					<button
 						class="font-mono text-[10px] text-[#E07800] underline transition-colors hover:text-[var(--text-primary)]"
-						onclick={() => {
-							const url = new URL($page.url);
-							url.searchParams.delete('service');
-							url.searchParams.delete('tag');
-							goto(url.toString(), { replaceState: true, noScroll: true });
+						onclick={async () => {
+							await updateFilter('service', null);
+							await updateFilter('tag', null);
+							await updateFilter('stack', null);
 						}}
 					>
 						{resolveLocale(content.clearFilters, 'en')}

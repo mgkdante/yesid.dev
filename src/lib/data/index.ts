@@ -9,7 +9,7 @@ export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectSt
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
 
 // Project data + helpers
-export { projects, getProjectBySlug, getFeaturedProjects, getPublicProjects, getAllTags, getProjectsByService, getServiceIdsForProjects } from './projects.js';
+export { projects, getProjectBySlug, getFeaturedProjects, getPublicProjects, getAllTags, getAllStackItems, getProjectsByService, getServiceIdsForProjects } from './projects.js';
 
 // Services data
 export { services, getServiceById, getVisibleServices, getAdjacentServices } from './services.js';

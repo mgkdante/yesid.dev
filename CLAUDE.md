@@ -22,7 +22,7 @@ Slice template: `docs/slices/_TEMPLATE.md`
 4. Impossible spec: document why in devlog and stop.
 5. No spec: stop and say so.
 
-**Active slice:** 09c-2b — Polish Enhancements (`docs/slices/slice-09c2-polish-enhancements.md`)
+**Active slice:** 09b — About + Contact Pages (spec TBD)
 
 ## Iteration Protocol (MANDATORY — READ THIS TWICE)
 
@@ -93,6 +93,13 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 - Maintain `docs/TESTS.md`
 - For each test: name (describe > it), what it validates (plain English), key assertions, setup notes
 - Update `docs/TESTS.md` on every test add/change/delete
+- **Place entries under the correct category by file path:**
+  - `## Data Layer` — tests in `src/lib/data/`
+  - `## Components` — tests in `src/lib/components/`
+  - `## Motion` — tests in `src/lib/motion/`
+  - `## Routes` — tests in `src/routes/`
+- Never append to the bottom. Find the right section, add the entry there.
+- Co-locate test files next to the code they test. Never use a top-level `tests/` folder.
 
 ### Test boundaries:
 
@@ -159,7 +166,7 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 
 ## Completed Slices
 
-A, B, B+, C, 07, 08, 09, 09c-1, 09c-2a — handoffs in `docs/handoffs/`
+A, B, B+, C, 07, 08, 09, 09c-1, 09c-2a, 09c-2b — handoffs in `docs/handoffs/`
 
 ## Repo Structure
 

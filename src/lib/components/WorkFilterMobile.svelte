@@ -11,35 +11,41 @@
 		serviceIds,
 		serviceMap,
 		tags,
+		stack = [],
 		activeService = null,
 		activeTag = null,
+		activeStack = null,
 		onServiceSelect,
-		onTagSelect
+		onTagSelect,
+		onStackSelect
 	}: {
 		serviceIds: readonly string[];
 		serviceMap: Map<string, string>;
 		tags: readonly string[];
+		stack?: readonly string[];
 		activeService: string | null;
 		activeTag: string | null;
+		activeStack?: string | null;
 		onServiceSelect: (serviceId: string | null) => void;
 		onTagSelect: (tag: string | null) => void;
+		onStackSelect?: (stack: string | null) => void;
 	} = $props();
 
 	let open = $state(false);
 
-	// i18n labels
 	const labels = {
 		filters: { en: 'Filters' },
 		services: { en: 'Services' },
 		tags: { en: 'Tags' },
+		stack: { en: 'Tech Stack' },
 		all: { en: 'All' },
 		showing: { en: 'Showing' }
 	};
 
-	// Summary text for the "Showing:" indicator
 	let summary = $derived.by(() => {
 		const parts: string[] = [];
 		if (activeService) parts.push(serviceMap.get(activeService) ?? activeService);
+		if (activeStack) parts.push(activeStack);
 		if (activeTag) parts.push(activeTag);
 		return parts.length > 0 ? parts.join(' + ') : resolveLocale(labels.all, 'en');
 	});
@@ -61,7 +67,7 @@
 	</div>
 
 	{#if open}
-		<div class="mb-4 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
+		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
 			<!-- Service filter -->
 			<div class="font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
 				{resolveLocale(labels.services, 'en')}
@@ -84,6 +90,33 @@
 					</button>
 				{/each}
 			</div>
+
+			<!-- Tech Stack -->
+			{#if stack.length > 0 && onStackSelect}
+				<div class="mt-3 border-t border-dashed border-[#333] pt-2">
+					<div class="font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+						{resolveLocale(labels.stack, 'en')}
+					</div>
+					<div class="mt-1.5 flex flex-wrap gap-1.5">
+						<button
+							class="rounded px-2 py-1 text-[10px] transition-colors"
+							class:m-active={activeStack === null}
+							onclick={() => onStackSelect(null)}
+						>
+							{resolveLocale(labels.all, 'en')}
+						</button>
+						{#each stack as item}
+							<button
+								class="rounded border border-[#2a2a2a] px-2 py-1 text-[10px] text-[var(--text-muted)] transition-colors"
+								class:m-tag-active={activeStack === item}
+								onclick={() => onStackSelect(activeStack === item ? null : item)}
+							>
+								{item}
+							</button>
+						{/each}
+					</div>
+				</div>
+			{/if}
 
 			<!-- Tags -->
 			<div class="mt-3 border-t border-dashed border-[#333] pt-2">
