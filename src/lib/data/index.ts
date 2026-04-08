@@ -3,7 +3,7 @@
 // structure changes in a future refactor.
 
 // Types
-export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect } from './types.js';
+export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect, AboutPolaroid, AboutIdentity, AboutMetric, AboutMethodStep, AboutTestimonial, AboutInterest, TechCategory, TechStackItem, AboutClientLogo, AboutWeatherConfig, AboutCta, AboutContent, ContactContent, ContactInfoTerminal, ContactFormTerminal, ContactValidation, ContactSuccess, ContactTerminalField } from './types.js';
 
 // Locale utilities
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
@@ -29,3 +29,9 @@ export { fetchServiceSvgContents, getServiceSvgUrl } from './serviceSvg.js';
 
 // Centralized UI content (i18n)
 export { heroAnimContent, heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
+
+// About page content (full-page bento dashboard)
+export { aboutPageContent } from './about-page.js';
+
+// Contact page content
+export { contactContent } from './contact-page.js';
