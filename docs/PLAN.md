@@ -201,7 +201,7 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 09  | Services pages (/services + /services/[id])            | ready    | 02, 08     | 2-3           |
 | 09b | About + Contact pages (bento grid /about)              | complete | 02, 03, 09 | 3-4           |
 | 10  | Tech Stack page (/tech-stack interactive diagram)      | planned  | 09b        | 2-3           |
-| 11  | Navbar research + redesign                             | planned  | 10         | 1-2           |
+| 11  | Navbar research + redesign + 404 page                  | planned  | 10         | 1-2           |
 | 12  | Footer research + redesign                             | planned  | 11         | 1             |
 | 13  | Home page rework (post-hero, archive SkillsJourney)    | planned  | 10, 11, 12 | 2-3           |
 | 14  | SEO + metadata                                         | planned  | 07, 08, 09 | 1             |
@@ -374,21 +374,62 @@ DRY consolidation:
 **Tests:** Existing tests remain green. New interactions respect `prefers-reduced-motion`.
 **You'll learn:** Advanced micro-interactions, CSS `@property` animations, component consolidation, DRY architecture.
 
-### Slice 10 — Home Page Rework (Post-Hero)
+### Slice 10 — Tech Stack Page (/tech-stack)
 
 **Status:** planned
-**Depends on:** 09b (About + Contact complete gives clarity on site identity)
-**Rationale:** After building all route pages (blog, work, services, about, contact), Yesid has much clearer vision of what the site is about. The home page (after the hero) was built before subsites existed. Now it can be reworked with full context of what each section leads to.
+**Depends on:** 09b
+**Goal:** Build a dedicated `/tech-stack` route with an interactive diagram showing how skills connect — not just a list of badges, but a meaningful visualization of how databases, pipelines, dashboards, tools, languages, and frameworks fit together in the Digital Infrastructure umbrella.
+
+**Why:** Stand out from applicants at Alto Train, CDPQ Infra, Upwork. CTOs and hiring managers should see deep understanding of the tech landscape. Visitors should be able to learn from the site — understand what each skill is and how it fits in the big scheme.
 
 **Scope:**
-- Rework home page sections after the hero (stops 01-08 in current metro journey)
-- **Archive SkillsJourney:** Deactivate the horizontal scroll CTA section. Keep the code intact but disable rendering. It will return later — optimized and refined — in a future polish slice.
-- Redesign the flow from hero → services preview → work preview → about teaser → blog teaser → CTA
-- Apply learnings from route pages (bento patterns, metro branding, proof elements)
-- Ensure data-driven: all content through content.ts / data layer
-- Mobile-first: optimize the home scroll experience
+- Interactive diagram showing tech relationships (PostgreSQL → feeds → Power BI, Python → builds → pipelines, etc.)
+- Categories: databases, languages, frameworks, tools
+- Each tech item links to relevant services and projects
+- Reuses `TechStackItem` data from about page (central source of truth)
+- May revise the About page tech stack card post-implementation
 
-**Why now:** Building About + Contact is the last route page. After that, Yesid has seen every section of the site and can design a home page that properly introduces and connects them all. The SkillsJourney was an early experiment — good concept, needs refinement, but shouldn't block the home rework.
+**Note:** The existing About page tech stack card stays as-is for now. May need revision after this route is built.
+
+### Slice 11 — Navbar Research + Redesign + 404 Page
+
+**Status:** planned
+**Depends on:** 10
+**Goal:** Deep research into great navbar patterns for yesid.dev's use case, then redesign. Also build a branded 404 error page.
+
+**Navbar research scope:**
+- Evaluate: full-screen overlay, iOS floating tab bar, hamburger menu, sticky header, breadcrumb nav, hybrid approaches
+- Research award-winning portfolio navbars for inspiration
+- Pick the best approach for yesid.dev and implement
+
+**404 page scope:**
+- Infrastructure/construction theme — consistent with Digital Infrastructure brand
+- SVG illustrations: construction signs, black-and-yellow hazard stripes, "do not pass" barriers, road cones, detour arrows
+- Metro branding: station-themed error messaging ("This station is under construction" / "Route not found")
+- Animated elements: blinking construction lights, animated hazard tape
+- Links back to home, services, work — help visitors find their way
+- Data-driven copy via `LocalizedString`
+
+**Tests:** Nav renders correctly at all breakpoints. 404 page renders with all elements. Navigation from 404 works.
+
+### Slice 12 — Footer Research + Redesign
+
+**Status:** planned
+**Depends on:** 11
+**Goal:** Deep research into great footer patterns for the use case, then redesign. Evaluate: mega footer, minimal footer, CTA footer, sitemap footer, newsletter footer, etc. Pick the best approach and implement.
+
+### Slice 13 — Home Page Rework (Post-Hero)
+
+**Status:** planned
+**Depends on:** 10, 11, 12 (tech stack + nav + footer locked before redesigning home)
+**Rationale:** After building all route pages AND locking the nav/footer, Yesid has full context to design a home page that properly introduces and connects everything.
+
+**Scope:**
+- Rework home page sections after the hero
+- **Archive SkillsJourney:** Keep code, disable rendering. Returns in a future polish slice.
+- Redesign flow: hero → services preview → work preview → about teaser → blog teaser → CTA
+- Apply learnings from all route pages (bento patterns, metro branding, proof elements)
+- Data-driven, mobile-first
 
 **SkillsJourney plan:**
 1. Add a feature flag or conditional render to disable SkillsJourney on home
