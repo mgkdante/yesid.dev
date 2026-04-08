@@ -11,6 +11,50 @@ Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627
 - `bun install`, `bun run dev`, `bun run test`, `bun run check`, `bunx`
 - Lockfile: `bun.lockb`
 
+## Workflow
+
+### Session types
+
+Every session is one of three types. Declare which at the start.
+
+| Type | What happens | Artifacts |
+|------|-------------|-----------|
+| **Planning** | Brainstorm, write/refine spec, break slice into sub-slices, estimate sessions | `docs/brainstorm/`, `docs/slices/` |
+| **Implementation** | One sub-slice, task by task per Iteration Protocol | Code, tests, devlog |
+| **Closing** | Docs, handoff, devlog, tree.txt, commit | `docs/handoffs/`, `docs/devlog/` |
+
+At session start, always scan for uncommitted changes or commits made outside Claude Code. Document anything found in the devlog to keep docs in sync. Also update `docs/TESTS.md` and `docs/test_helper.md` if any test changes occurred outside the session.
+
+### Sub-slice convention
+
+Split slices into sub-slices (10a, 10b, 10c...) when 6+ tasks or multiple concerns. Each sub-slice gets its own handoff. Naming follows existing pattern (e.g. `slice-09c-1`, `slice-09c-2a`).
+
+### Hard rule: sub-slices may need multiple sessions
+
+This is non-negotiable. When planning, ALWAYS estimate how many sessions each sub-slice will take and tell Yesid upfront. Never assume a sub-slice fits in one session. Plan for multi-session sub-slices by default.
+
+### Hard rule: never advance without approval
+
+Dependent tasks run sequentially, one approval between each. No exceptions. This applies at every level: task → sub-slice → slice. Already enforced in Iteration Protocol below; restated here because it governs the entire workflow, not just implementation.
+
+### Parallel agents
+
+Independent tasks (no dependency on each other) MAY use parallel agents for research/exploration, but ONLY if Yesid approves it first. Never self-decide to parallelize. If parallelizing would scatter thinking or degrade output quality, recommend sequential instead and explain why.
+
+### Brainstorm artifacts
+
+`docs/brainstorm/` is scratchpad. Nothing there is a commitment until promoted to `docs/slices/`.
+
+### Slice lifecycle
+
+```
+Plan → Split into sub-slices → Estimate sessions per sub-slice
+→ Implement A (may span multiple sessions, task by task with approval)
+→ Handoff A
+→ Implement B → Handoff B → ...
+→ Final docs → Devlog → Commit
+```
+
 ## Slice System
 
 All work lives in slices. A slice = spec + acceptance criteria + defined output.
@@ -22,7 +66,10 @@ Slice template: `docs/slices/_TEMPLATE.md`
 4. Impossible spec: document why in devlog and stop.
 5. No spec: stop and say so.
 
-**Active slice:** 10 — Tech Stack Page (spec: TBD)
+**Active slice:** 10 — Tech Stack "The Control Room"
+- Slice spec: `docs/slices/slice-10-tech-stack.md`
+- Design spec: `docs/superpowers/specs/2026-04-08-tech-stack-page-design.md`
+- 8 sub-tasks (10a-10h), one session each. Start with 10a (data layer + types).
 
 ## Iteration Protocol (MANDATORY — READ THIS TWICE)
 
@@ -46,11 +93,12 @@ Slice template: `docs/slices/_TEMPLATE.md`
 2. Update devlog: `docs/devlog/_TEMPLATE.md`
 3. Update `docs/ARCHITECTURE.md` if structure changed
 4. Update `README.md` if setup/usage changed
-5. Regenerate `tree.txt`:
+5. Update `docs/TESTS.md` and `docs/test_helper.md` if tests were added/changed/removed
+6. Regenerate `tree.txt`:
    ```powershell
    cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"
    ```
-6. Commit and push:
+7. Commit and push:
    ```bash
    git add -A && git commit -m "feat: complete slice NN — [short desc]" && git push
    ```
@@ -78,7 +126,7 @@ Every file change requires:
    - New z-index value introduced anywhere
    - New animation-related CSS added
    Document what changed, why, and where it's consumed. Never add a token without a CSS.md entry.
-6. **Tests.md88** update `docs/css.md`
+6. **TESTS.md** — update `docs/TESTS.md`
 
 ## Testing (Vitest + Bun)
 

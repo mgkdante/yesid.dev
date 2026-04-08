@@ -200,7 +200,7 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 08  | Work pages (index + FLIP filter + detail)              | complete | 02, 03, 07 | 1-2           |
 | 09  | Services pages (/services + /services/[id])            | ready    | 02, 08     | 2-3           |
 | 09b | About + Contact pages (bento grid /about)              | complete | 02, 03, 09 | 3-4           |
-| 10  | Tech Stack page (/tech-stack interactive diagram)      | planned  | 09b        | 2-3           |
+| 10  | Tech Stack page: "The Control Room" (/tech-stack)       | spec approved | 09b   | 6-8           |
 | 11  | Navbar research + redesign + 404 page                  | planned  | 10         | 1-2           |
 | 12  | Footer research + redesign                             | planned  | 11         | 1             |
 | 13  | Home page rework (post-hero, archive SkillsJourney)    | planned  | 10, 11, 12 | 2-3           |
@@ -374,22 +374,48 @@ DRY consolidation:
 **Tests:** Existing tests remain green. New interactions respect `prefers-reduced-motion`.
 **You'll learn:** Advanced micro-interactions, CSS `@property` animations, component consolidation, DRY architecture.
 
-### Slice 10 — Tech Stack Page (/tech-stack)
+### Slice 10 — Tech Stack Page: "The Control Room" (/tech-stack)
 
-**Status:** planned
+**Status:** spec approved (2026-04-08)
 **Depends on:** 09b
-**Goal:** Build a dedicated `/tech-stack` route with an interactive diagram showing how skills connect — not just a list of badges, but a meaningful visualization of how databases, pipelines, dashboards, tools, languages, and frameworks fit together in the Digital Infrastructure umbrella.
+**Spec:** `docs/superpowers/specs/2026-04-08-tech-stack-page-design.md`
+**Est. Sessions:** 6-8 (one per task below)
 
-**Why:** Stand out from applicants at Alto Train, CDPQ Infra, Upwork. CTOs and hiring managers should see deep understanding of the tech landscape. Visitors should be able to learn from the site — understand what each skill is and how it fits in the big scheme.
+**Vision:** Interactive "Control Room" diagram showing how 34 technologies connect across 9 infrastructure layers and 7 domain clusters. Educational-grade content (The Odin Project standard) that teaches what each tech does, why it was chosen, and how it fits. "Build Your Stack" configurator converts exploration into contact. Fully data-driven — adding a tech = one markdown file, zero code changes.
 
-**Scope:**
-- Interactive diagram showing tech relationships (PostgreSQL → feeds → Power BI, Python → builds → pipelines, etc.)
-- Categories: databases, languages, frameworks, tools
-- Each tech item links to relevant services and projects
-- Reuses `TechStackItem` data from about page (central source of truth)
-- May revise the About page tech stack card post-implementation
+**Three goals:** (1) Sell more via education-as-trust, (2) Marketing/SEO exposure via shareable interactive diagram, (3) Genuinely help people learn how tech stacks work.
 
-**Note:** The existing About page tech stack card stays as-is for now. May need revision after this route is built.
+**Architecture:** "The Control Room" — 4-zone page:
+- Zone 1: Hero (terminal-style, stats strip, two CTAs)
+- Zone 2: Interactive diagram (CSS Grid tiers + SVG connections + GSAP DrawSVG/MotionPath)
+- Zone 3: Build Your Stack configurator (domain checkboxes → recommended stack + scenario card)
+- Zone 4: Terminal CTA
+
+**Data model:** Dual categorization — each tech has an `InfraLayer` (where it sits vertically) + `DomainCluster[]` (what problems it solves). `connectsTo` edges define directional relationships. Content in Keystatic-ready markdown (`src/content/stack/[id].md`). `StackScenario` objects define recommended combos.
+
+**Key interactions:** Hover highlights connections, click opens sidebar mini-essay, domain filter pills (composable), Build Your Stack mode with scenario generation. Mobile: vertical accordion + bottom sheet.
+
+**34 items across:** Data (3), Backend (9), API (1), Frontend (7+Lottie), Mobile (2), Analytics (6), DevOps (4), Testing (2), Systems (C++, Rust in backend table but `layer: 'systems'`).
+
+**Tasks (one session each):**
+
+1. **10a — Data layer + types + markdown content structure:** Expand `TechStackItem` interface, create `InfraLayer`, `DomainCluster`, `StackScenario` types. Set up `src/content/stack/` folder with markdown + frontmatter. Write `import.meta.glob` parser. Write all 34 markdown files (frontmatter only, prose TBD). Data validation tests.
+
+2. **10b — Diagram layout + static nodes:** `StackDiagram.svelte` with CSS Grid tiers. `StackNode.svelte` cards with icons. Tier labels (JetBrains Mono). Responsive: desktop grid → mobile vertical accordion. No animation yet, no connections. Component tests.
+
+3. **10c — SVG connections + GSAP animation:** `StackConnections.svelte` SVG overlay. Calculate node positions via `getBoundingClientRect()`. Draw cubic bezier paths. GSAP DrawSVG entrance animation (layer-by-layer stagger). MotionPath data packet dots. Resize handler. Reduced motion support.
+
+4. **10d — Node interaction + sidebar:** Hover states (scale, glow, connected highlight). Click → `StackSidebar.svelte` slides in with markdown content. Dimming of unrelated nodes. Keyboard navigation (Tab, Enter, Escape, arrows). Mobile: `StackBottomSheet.svelte` with tap + swipe.
+
+5. **10e — Domain filters:** `StackFilters.svelte` pill bar. Toggle behavior (multiple active). Bridge node treatment for multi-domain items. Filter + node interaction composability. Connection line filtering.
+
+6. **10f — Build Your Stack configurator:** `StackConfigurator.svelte` domain selector. `StackScenarioCard.svelte` summary. Pre-written scenarios + auto-generation fallback from `connectsTo` graph. Mini flow diagram in summary card with DrawSVG. CTA integration.
+
+7. **10g — Hero + CTA + page shell:** `TechStackPage.svelte` assembling all zones. Terminal-style hero. Stats strip. Action buttons. Bottom CTA (reuse AboutCta pattern). Route setup (`/tech-stack`). Full-page integration test.
+
+8. **10h — Content writing + polish:** Write all 34 mini-essays (What it is, Why I use it, In Practice). Write 7 scenario summaries. Polish animations, timing, mobile UX. Cross-browser testing. Final brand QA.
+
+**Note:** The existing About page tech stack card stays as-is. Will reference the same expanded data source (backward compatible).
 
 ### Slice 11 — Navbar Research + Redesign + 404 Page
 
