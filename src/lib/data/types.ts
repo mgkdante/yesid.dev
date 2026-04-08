@@ -241,10 +241,74 @@ export interface AboutInterest {
 // When cloud layer arrives (Slice 14), this cascades to services/projects.
 export type TechCategory = 'databases' | 'languages' | 'tools' | 'frameworks';
 
-export interface TechStackItem {
+// Legacy tech stack item — used by About page bento dashboard only.
+// Slice 10 expanded TechStackItem supersedes this for /tech-stack.
+export interface AboutTechItem {
 	name: string;
 	category: TechCategory;
-	relatedServices: readonly string[]; // service IDs — cascade-ready
+	relatedServices: readonly string[];
+}
+
+// --- Tech Stack Page types (Slice 10) ---
+
+// Infrastructure layers — vertical tiers in the Control Room diagram.
+export type InfraLayer =
+	| 'data'
+	| 'backend'
+	| 'api'
+	| 'frontend'
+	| 'mobile'
+	| 'analytics'
+	| 'devops'
+	| 'testing'
+	| 'systems';
+
+// Domain clusters — horizontal groupings across layers.
+export type DomainCluster =
+	| 'data-engineering'
+	| 'web-development'
+	| 'mobile-development'
+	| 'analytics-bi'
+	| 'systems-programming'
+	| 'devops-infra'
+	| 'internal-tooling';
+
+// Proficiency levels for each technology.
+export type Proficiency = 'expert' | 'proficient' | 'familiar';
+
+// Expanded tech stack item for /tech-stack "Control Room" diagram.
+// Each item maps to a markdown file in src/content/stack/[id].md.
+export interface TechStackItem {
+	id: string;
+	name: string;
+	layer: InfraLayer;
+	domains: DomainCluster[];
+	connectsTo: string[];
+	relatedServices: string[];
+	relatedProjects: string[];
+	icon: string;
+	proficiency: Proficiency;
+	// Optional custom context phrases for connections.
+	// Keys are target tech IDs, values are short context strings.
+	// When omitted, context is auto-derived from domain/layer data.
+	connectionNotes?: Record<string, string>;
+}
+
+// A directional connection with a human-readable context phrase.
+// Used by the sidebar/panel to explain data flow between technologies.
+export interface TechRelation {
+	itemId: string;
+	itemName: string;
+	contextPhrase: string;
+}
+
+// A recommended stack scenario triggered by domain selection in Build Your Stack.
+export interface StackScenario {
+	id: string;
+	domains: DomainCluster[];
+	recommended: string[];
+	summary: LocalizedString;
+	relatedProjects: string[];
 }
 
 // A client logo for the trust strip.
@@ -279,7 +343,7 @@ export interface AboutContent {
 	metrics: readonly AboutMetric[];
 	methodology: readonly AboutMethodStep[];
 	testimonials: readonly AboutTestimonial[];
-	techStack: readonly TechStackItem[];
+	techStack: readonly AboutTechItem[];
 	interests: readonly AboutInterest[];
 	weather: AboutWeatherConfig;
 	clientLogos: readonly AboutClientLogo[];

@@ -3,7 +3,7 @@
 // structure changes in a future refactor.
 
 // Types
-export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect, AboutPolaroid, AboutIdentity, AboutMetric, AboutMethodStep, AboutTestimonial, AboutInterest, TechCategory, TechStackItem, AboutClientLogo, AboutWeatherConfig, AboutCta, AboutContent, ContactContent, ContactInfoTerminal, ContactFormTerminal, ContactValidation, ContactSuccess, ContactTerminalField } from './types.js';
+export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect, AboutPolaroid, AboutIdentity, AboutMetric, AboutMethodStep, AboutTestimonial, AboutInterest, TechCategory, AboutTechItem, TechStackItem, InfraLayer, DomainCluster, Proficiency, StackScenario, AboutClientLogo, AboutWeatherConfig, AboutCta, AboutContent, ContactContent, ContactInfoTerminal, ContactFormTerminal, ContactValidation, ContactSuccess, ContactTerminalField } from './types.js';
 
 // Locale utilities
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
@@ -35,3 +35,6 @@ export { aboutPageContent } from './about-page.js';
 
 // Contact page content
 export { contactContent } from './contact-page.js';
+
+// Tech stack page data (Slice 10 — "The Control Room")
+export { getAllTechItems, getTechItemById, getTechItemsByLayer, getTechItemsByDomain, getConnections, getIncomingConnections, getTechItemContent, getAllScenarios, getScenarioForDomains, validateTechItems, validateScenarios } from './tech-stack.js';

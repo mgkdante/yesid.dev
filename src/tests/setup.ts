@@ -66,6 +66,17 @@ vi.stubGlobal(
 	}
 );
 
+// jsdom does not implement ResizeObserver. Stub it so StackConnections' debounced
+// resize handler doesn't crash in tests.
+vi.stubGlobal(
+	'ResizeObserver',
+	class {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	}
+);
+
 // Mock GSAP and its plugins for the jsdom test environment.
 // GSAP relies on DOM measurement APIs (getBoundingClientRect, computed styles, scroll
 // position) that jsdom does not fully support. Actions and components that use GSAP
@@ -77,9 +88,11 @@ vi.mock('gsap', () => {
 		from: vi.fn().mockReturnThis(),
 		fromTo: vi.fn().mockReturnThis(),
 		set: vi.fn().mockReturnThis(),
+		call: vi.fn().mockReturnThis(),
 		progress: vi.fn().mockReturnThis(),
 		kill: vi.fn(),
 		pause: vi.fn().mockReturnThis(),
+		duration: vi.fn(() => 0),
 		// GSAP timelines expose a .then() Promise-like API. Stub it so any code
 		// that calls tl.then(...) in tests (e.g. the page-load wordmark animation)
 		// doesn't throw "tl.then is not a function".

@@ -107,6 +107,13 @@ Slice template: `docs/slices/_TEMPLATE.md`
    - If exists: add new file paths to the "How We Use It in This Project" table
    - Update `docs/learn/meta.json` with any new concepts or changed prerequisites
    - In the handoff report, add a "Concepts Documented" section (see handoff template)
+   - **Obsidian format (non-negotiable):**
+     - YAML frontmatter (not blockquotes): `title`, `domain`, `difficulty`, `difficulty_label`, `reading_time`, `tags`, `prerequisites`, `date`
+     - Tags: `learn` + domain name + difficulty label
+     - Prerequisites in frontmatter: `- "[[slug]]"`
+     - All cross-references use `[[slug]]` or `[[slug|Display Text]]` wikilinks
+     - Never relative markdown links (`[text](../path/slug.md)`)
+     - Update `docs/learn/README.md` domain index with wikilink format
 6. Regenerate `tree.txt`:
    ```powershell
    cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"

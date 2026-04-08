@@ -1,9 +1,19 @@
-# [Concept Name]
+---
+title: "[Concept Name]"
+domain: [project-setup | frontend | styling | motion | 3d-graphics | data-layer | testing | devops | patterns | debugging]
+difficulty: [1 | 2 | 3]
+difficulty_label: [beginner | intermediate | advanced]
+reading_time: [X]
+tags:
+  - learn
+  - [domain]
+  - [difficulty_label]
+prerequisites:
+  - "[[prerequisite-slug]]"
+date: [YYYY-MM-DD]
+---
 
-> **Domain:** [project-setup | frontend | styling | motion | 3d-graphics | data-layer | testing | devops | patterns | debugging]
-> **Difficulty:** [1-beginner | 2-intermediate | 3-advanced]
-> **Prerequisites:** [list of other learn doc slugs, or "none"]
-> **Estimated reading time:** [X min]
+# [Concept Name]
 
 ## The Analogy
 
@@ -73,9 +83,9 @@ let doubled = $derived(count * 2);
 
 ## Connections
 
-- **Depends on:** [concept-slug](../domain/slug.md) because [why]
-- **Enables:** [concept-slug](../domain/slug.md) because [why]
-- **Related:** [concept-slug](../domain/slug.md) because [how they interact]
+- **Depends on:** [[concept-slug]] because [why]
+- **Enables:** [[concept-slug]] because [why]
+- **Related:** [[concept-slug]] because [how they interact]
 
 ## Knowledge Check
 

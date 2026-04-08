@@ -11,7 +11,7 @@
 	// Home and services pages manage their own layout (full-width, no max-width).
 	// All other pages get the centered, padded container.
 	let isHome = $derived($page.url.pathname === '/');
-	let isFullWidth = $derived(isHome || $page.url.pathname.startsWith('/services') || $page.url.pathname.startsWith('/about') || $page.url.pathname.startsWith('/contact'));
+	let isFullWidth = $derived(isHome || $page.url.pathname.startsWith('/services') || $page.url.pathname.startsWith('/about') || $page.url.pathname.startsWith('/contact') || $page.url.pathname.startsWith('/tech-stack'));
 	// Hide footer on the services listing page — it has its own scroll container.
 	// Footer shows on detail pages and all other pages.
 	let hideFooter = $derived($page.url.pathname === '/services');

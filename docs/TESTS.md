@@ -1,7 +1,7 @@
 # Test Registry
 
-Last updated: 2026-04-06
-Total tests: 329
+Last updated: 2026-04-08
+Total tests: 480
 Runner: Vitest + Bun (`bun run test`)
 
 ## Test Structure
@@ -28,7 +28,7 @@ Convention: tests live next to the code they test (co-located).
 
 ---
 
-# Components (`src/lib/components/`) — 19 files, 117 tests
+# Components (`src/lib/components/`) — 23 files, 151 tests
 
 ## src/lib/components/BlogRow.test.ts
 
@@ -240,7 +240,32 @@ Convention: tests live next to the code they test (co-located).
 | TagList > renders a single tag correctly | A single tag still renders as a list | `getByText('sql')` in document, `getByRole('list')` in document | `tags: ['sql']` |
 | TagList > uses list semantics for accessibility | Tags use proper `<ul>` / `<li>` elements for screen readers | `getByRole('list')` and `getAllByRole('listitem')` has length 2 | `tags: ['a', 'b']` |
 
-# Data Layer (`src/lib/data/`) — 6 files, 85 tests
+## src/lib/components/StackNode.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackNode | Renders item name, icon placeholder, data attributes, selected/dimmed states, onclick/keydown handlers | 9 |
+
+## src/lib/components/StackDiagram.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackDiagram | Renders tier rows, places nodes in correct layers, skips empty layers, mobile accordion, onselect callback, dimming of non-connected nodes, selected state | 12 |
+
+## src/lib/components/StackPanel.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackPanel > Orientation card | Shows orientation card with stats when no item selected, hides detail | 4 |
+| StackPanel > Detail card | Shows detail card with name, proficiency, relations, projects, CTA, close button, relation click navigation | 8 |
+
+## src/lib/components/StackBottomSheet.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackBottomSheet | Renders bottom sheet, displays item name/proficiency, markdown content, close/backdrop dismiss, prev/next navigation, project badges | 10 |
+
+# Data Layer (`src/lib/data/`) — 7 files, 85 tests
 
 ## src/lib/data/content.test.ts
 

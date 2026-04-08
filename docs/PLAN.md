@@ -556,22 +556,21 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **Status:** planned **Est. Sessions:** 5-6 (across 6 subslices)
 
-**Philosophy:** The codebase should read like a blueprint. An engineer opens the repo and sees: types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 14 (Keystatic) plugs in with zero component changes. This slice is invisible to users. Every page looks and behaves identically before and after. The diff is structural.
+**Philosophy:** The codebase should read like a blueprint. An engineer opens the repo and sees: types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 17 (Keystatic) plugs in with zero component changes. This slice is invisible to users. Every page looks and behaves identically before and after. The diff is structural.
 
 **Key constraint:** Zero visual changes. Zero behavior changes. Pure structural refactor.
 
+**Scope (all subslices combined):** CSS consolidation, CSS.md, service layer, Zod schemas, shared UI shells, motion factories, test utilities, documentation, learning docs refactor.
+
 **Layer diagram:**
 
-**Execution order:** 13a → 13b → 13c → 13d → 13e → 13f. Each builds on the previous. CSS cleanup is foundational. Service layer before schemas because schemas validate what services return. Component standardization after both because components consume from services. Motion after components because motion is applied to components. Tests + docs last because they document the final state.
+**Execution order:** 16a → 16b → 16c → 16d → 16e → 16f -> 16g. Each builds on the previous. CSS cleanup is foundational. Service layer before schemas because schemas validate what services return. Component standardization after both because components consume from services. Motion after components because motion is applied to components. Tests + docs last because they document the final state.
 
 ---
 
-#### Slice 13a — CSS Audit + Consolidation + CSS.md
-
+#### Slice 16a — CSS Audit + Consolidation + CSS.md
 **Status:** planned **Est. Sessions:** 1 **Depends on:** B+, 06d
-
 **Why first:** CSS touches every component. Consolidating it first gives a clean styling foundation before refactoring component APIs and extracting shared shells.
-
 **What:**
 1. Audit every `.svelte` file for inline styles, one-off Tailwind classes, duplicate color/spacing values, and anything not flowing from `tokens.css` or `@theme`
 2. Consolidate into a clear hierarchy:
@@ -598,9 +597,22 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
      3. Map to semantic tokens if it replaces an existing role
      4. Update CSS.md token registry
    - Audit current codebase for any component that hardcodes `brand-primary` where it should use a semantic token (e.g., a section accent that could vary per-service)
+6. **Responsive breakpoint system:**
+   - Define five canonical breakpoints in `tokens.css` as custom properties and in `app.css` as `@theme` screens:
+     - `sm`: 360px (mobile)
+     - `md`: 520px (foldable/large phone)
+     - `lg`: 768px (tablet)
+     - `xl`: 1024px (laptop)
+     - `2xl`: 1440px (desktop)
+   - Audit every component for ad-hoc `max-width`, `min-width`, or Tailwind responsive prefixes that don't align with these five breakpoints. Consolidate to canonical values only.
+   - Establish spacing scale per breakpoint tier: section padding, container max-width, grid gaps, and typography sizes should step predictably across tiers. Document the scale in CSS.md.
+   - Container strategy: one `--container-max` property per breakpoint, consumed by the layout shell. No component sets its own max-width for page-level containment.
+   - Touch target rule: any interactive element must be minimum 44x44px on `sm` and `md` breakpoints.
+   - Typography fluid scaling: headings use `clamp()` between mobile and desktop sizes. Body stays fixed at 16px minimum. Document each clamp formula.
+   - Grid behavior per tier: document how many columns each major layout (services grid, project cards, blog grid) gets at each breakpoint.
+   - No breakpoint logic lives in individual components unless it's layout-specific to that component. Global responsive behavior flows from the layout shell and CSS custom properties.
 
 **Acceptance Criteria:**
-
 - [ ] Zero hardcoded hex colors in any `.svelte` file (all through tokens or @theme)
 - [ ] CSS.md exists and covers all tokens, rules, and patterns
 - [ ] Clear separation: tokens.css (semantic/theme), app.css (brand/global), scoped (component-specific)
@@ -608,10 +620,18 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 - [ ] `bun run test` passes
 - [ ] Adding a new brand color requires exactly 2 file edits (tokens.css + app.css) and zero component changes
 - [ ] Color addition checklist documented in CSS.md
+- [ ] All responsive breakpoints in the codebase use only the five canonical values
+- [ ] Every section/component renders correctly at 360px, 520px, 768px, 1024px, and 1440px
+- [ ] Touch targets meet 44x44px minimum on mobile/foldable
+- [ ] Typography uses `clamp()` for headings with documented min/max values
+- [ ] CSS.md includes a breakpoint reference table showing container width, section padding, grid columns, and heading sizes at each tier
+- [ ] No horizontal scroll at any breakpoint
+- [ ] `--container-max` is the single source of truth for page-width containment
+- [ ] No user gets left behind
 
 ---
 
-#### Slice 13b — Service Layer Extraction
+#### Slice 16b — Service Layer Extraction
 
 **Status:** planned **Est. Sessions:** 1 **Depends on:** 13a
 
@@ -626,7 +646,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 13c — Zod Schema Validation
+#### Slice 16c — Zod Schema Validation
 
 **Status:** planned **Est. Sessions:** 0.5 **Depends on:** 13b
 
@@ -641,7 +661,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 13d — Component API Standardization + Shared UI Shells
+#### Slice 16d — Component API Standardization + Shared UI Shells
 
 **Status:** planned **Est. Sessions:** 1-2 **Depends on:** 13c
 
@@ -658,7 +678,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 13e — Motion Consolidation
+#### Slice 16e — Motion Consolidation
 
 **Status:** planned **Est. Sessions:** 1 **Depends on:** 13d
 
@@ -674,7 +694,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 13f — Test Architecture + Documentation
+#### Slice 16f — Test Architecture + Documentation
 
 **Status:** planned **Est. Sessions:** 0.5-1 **Depends on:** 13e
 
@@ -696,9 +716,40 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **You'll learn:** CSS architecture documentation, service layer pattern (ports & adapters), Zod runtime validation ("parse, don't validate"), DRY component composition with Svelte 5 snippets/slots, test factory pattern, hexagonal architecture lite.
 
+#### Slice 16g — Learning Docs Refactor
+
+**Status:** planned **Est. Sessions:** 1 **Depends on:** 13f
+
+**What:** Full sweep of `docs/learn/` to align with the restructured codebase. Slice 13 moves files, extracts shared shells, introduces service layer + factories, and consolidates motion. Every learn doc that references moved/renamed/refactored code needs its "How We Use It" table and "Worked Example" updated to point to the new locations and patterns. New learn docs created for concepts introduced by 13 (service layer pattern, Zod validation, motion factories, shared UI shells, test factories). `meta.json` updated with new dependency links.
+
+New docs follow the existing `docs/learn/_template.md`.
+
+**Scope:**
+1. Scan every `.md` in `docs/learn/` for file paths that no longer exist. Update to new locations.
+2. Update "Worked Example" code snippets where the pattern changed (e.g., inline GSAP replaced by factory call, direct data import replaced by service call).
+3. Create new learn docs:
+   - `data-layer/service-layer-pattern.md`
+   - `data-layer/zod-validation.md`
+   - `frontend/shared-ui-shells.md`
+   - `motion/motion-factories.md`
+   - `testing/test-factories.md`
+   - `styling/css-architecture-docs.md`
+   - Other pertinent doc
+4. Update `meta.json` with new concepts and revised prerequisites.
+5. Update `docs/learn/README.md` learning paths if domains shifted.
+
+**Acceptance Criteria:**
+
+- [ ] Zero broken file references in any learn doc (every path in "How We Use It" resolves to an existing file)
+- [ ] New learn docs exist for all 13-introduced concepts
+- [ ] `meta.json` reflects the post-13 architecture
+- [ ] `bun run check` passes (no code touched)
+
+----
+
 ### Slice 17 — Cloud Content Layer: Keystatic CMS
 
-**Status:** planned **Depends on:** 13 **Est. Sessions:** 2
+**Status:** planned **Depends on:** 16 **Est. Sessions:** 2
 
 **Decision: Keystatic** — Git-based CMS, content stored as JSON/Markdown in the repo, visual editor via `keystatic-sveltekit` npm package (confirmed compatible with SvelteKit 2 + Svelte 5). $0 forever. No external service dependency. If Keystatic disappears, content remains as plain files.
 
@@ -709,7 +760,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 3. Editing: visual editor at `/keystatic` route during dev (disabled in production)
 4. Publishing: edit in Keystatic → commits JSON/MD to repo → Vercel auto-deploys
 5. Production reads: Keystatic Reader API in service layer (replaces direct `.ts` file imports)
-6. Zod schemas from Slice 13 validate all content at build time
+6. Zod schemas from Slice 16 validate all content at build time
 
 **Content types mapped to Keystatic collections:**
 
@@ -724,7 +775,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 - Service layer implementations swap from reading `.ts` data files to Keystatic Reader API
 - Schemas, types, components, route loaders, tests: ZERO changes
-- This is the payoff of the Slice 13 seam
+- This is the payoff of the Slice 16 seam
 
 **Key requirements:**
 

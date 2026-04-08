@@ -4,17 +4,31 @@
     "type": "split",
     "children": [
       {
-        "id": "ff5a78d44d19ac45",
+        "id": "259f991b41fc89d6",
         "type": "tabs",
         "children": [
           {
-            "id": "a29ba386fceb4407",
+            "id": "be4a656ef62e0d47",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "data-layer/barrel-exports.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "barrel-exports"
             }
           }
         ]
@@ -90,6 +104,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "project-setup/sveltekit-project-structure.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -99,7 +114,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks"
+              "title": "Backlinks for sveltekit-project-structure"
             }
           },
           {
@@ -108,11 +123,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "project-setup/sveltekit-project-structure.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links"
+              "title": "Outgoing links from sveltekit-project-structure"
             }
           },
           {
@@ -150,12 +166,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "project-setup/sveltekit-project-structure.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of sveltekit-project-structure"
             }
           }
         ]
@@ -176,9 +193,13 @@
       "bases:Create new base": false
     }
   },
-  "active": "a29ba386fceb4407",
+  "active": "be4a656ef62e0d47",
   "lastOpenFiles": [
+    "README.md",
+    "project-setup/sveltekit-project-structure.md",
+    "_template.md.tmp.37728.1775667861240",
     "project-setup/bun-runtime.md",
-    "README.md"
+    "_template.md.tmp.37728.1775667844873",
+    "_template.md"
   ]
 }
