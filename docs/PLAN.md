@@ -266,7 +266,7 @@ The centerpiece. Build the scroll-driven train journey:
 - Mobile fallback: no 3D, CSS gradient + simplified SVG paths instead.
 - Run localhost
 
-**Pre-slice work (done in Claude.ai before starting):**
+**Pre-slice work (done in Claude Code before starting):**
 
 - Design SVG train in Figma with named groups for GSAP animation
 - Source 4 Lottie station icons from LottieFiles marketplace
@@ -910,7 +910,7 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 5. CI must be green before merging. No exceptions.
 6. tree.txt updated at the end of every slice.
 7. Motion follows MOTION.md principles. No random animation.
-8. Content decisions happen here (Claude.ai). Code happens in Cursor.
+8. Content decisions and code both happen in Claude Code.
 9. Lottie assets sourced before slice 06 starts.
 10. Every animation respects prefers-reduced-motion.
 11. Station system is fully data-driven. Adding a service = adding one object to services.ts + one Lottie JSON. Zero component/layout changes. Home page, scroll rail, train path, and Threlte nodes all derive from services array length and data. No hardcoded station counts or per-station logic.

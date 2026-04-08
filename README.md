@@ -4,14 +4,11 @@
 
 ## What This Is
 
-The repo for yesid., a freelance SQL and data infrastructure brand. Portfolio, tooling, and workflow systems.
+The repo for yesid., a freelance SQL and digital infrastructure brand. Portfolio, tooling, and workflow systems.
 
 ## How It Works
 
-Work is split between two tools:
-
-- **Claude.ai project** — planning, specs, reviews, learning
-- **Cursor + Claude Code** — building, logging, handoffs
+All work happens in **Claude Code** — planning, specs, building, logging, reviews, handoffs.
 
 Claude Code follows `CLAUDE.md`. Every piece of work has a slice spec, a dev log, and a handoff report.
 

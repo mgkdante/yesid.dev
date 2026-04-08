@@ -25,6 +25,15 @@
 |------|-------------|-----|
 | `src/lib/data/types.ts` | Added X interface | [why] |
 
+## Concepts Documented
+
+| Action | File | Domain |
+|--------|------|--------|
+| Created | `docs/learn/[domain]/[concept].md` | [domain] |
+| Updated | `docs/learn/[domain]/[concept].md` | [domain] |
+
+_See `docs/learn/README.md` for the full knowledge base._
+
 ## 5. Data Model Changes
 
 Describe exactly:

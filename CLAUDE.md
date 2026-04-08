@@ -65,6 +65,7 @@ Slice template: `docs/slices/_TEMPLATE.md`
 3. Ambiguity: write your assumption in the devlog and proceed.
 4. Impossible spec: document why in devlog and stop.
 5. No spec: stop and say so.
+6. **Specs describe outcomes, not implementation.** If a spec says "reduce max rotation from 3 to 1.5 degrees," that's over-prescribing. The real spec is the outcome: "tilt should feel weighty and subtle, not jittery." Extract the desired OUTCOME, then decide the implementation yourself. Log your implementation decisions in the devlog. If a spec mixes outcomes and implementation details, follow the outcome intent.
 
 **Active slice:** 10 — Tech Stack "The Control Room"
 - Slice spec: `docs/slices/slice-10-tech-stack.md`
@@ -79,6 +80,11 @@ Slice template: `docs/slices/_TEMPLATE.md`
 
 1. Implement ONE task from the slice spec.
 2. Run `bun run test` and `bun run check`. Both must pass.
+2b. **Pre-flight visual check (for any task that touches UI).** Before the STOP:
+   - State what you expect the page to look like at desktop (1440px) and mobile (375px)
+   - Flag anything in your own code that might cause layout issues, overflow, or missing content
+   - If you spot a likely visual problem from reading your own code, fix it now before asking Yesid to check
+   - This step exists because iterations 1-3 of most slices were wasted on obvious layout problems that code review would have caught
 3. **STOP. Do not continue to the next task.** Tell Yesid:
    - What you built (one sentence)
    - What to check on `http://localhost:5173/` (specific behaviors, not vague)
@@ -94,6 +100,13 @@ Slice template: `docs/slices/_TEMPLATE.md`
 3. Update `docs/ARCHITECTURE.md` if structure changed
 4. Update `README.md` if setup/usage changed
 5. Update `docs/TESTS.md` and `docs/test_helper.md` if tests were added/changed/removed
+5b. **Update learning docs** in `docs/learn/`:
+   - Identify every concept introduced or heavily used in this slice
+   - For each: check if `docs/learn/[domain]/[concept].md` exists
+   - If missing: create it using `docs/learn/_template.md` — read the actual source files you just wrote, reference real code paths, write for someone who knows SQL but not web dev
+   - If exists: add new file paths to the "How We Use It in This Project" table
+   - Update `docs/learn/meta.json` with any new concepts or changed prerequisites
+   - In the handoff report, add a "Concepts Documented" section (see handoff template)
 6. Regenerate `tree.txt`:
    ```powershell
    cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"
@@ -110,6 +123,7 @@ Slice template: `docs/slices/_TEMPLATE.md`
 - **Never say "I think this should work."** Yesid confirms on his screen.
 - **Never continue coding after completing a task.** The STOP is mandatory.
 - Ambiguous feedback: ask a clarifying question before changing code.
+- **Never close a slice without updating docs/learn/.** Learning docs are as mandatory as the handoff report. If a slice introduced a concept and there's no learn doc for it, the slice isn't done.
 
 ## File Change Protocol
 
@@ -148,7 +162,8 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 ### When creating or modifying tests:
 
 - Maintain `docs/TESTS.md`
-- For each test: name (describe > it), what it validates (plain English), key assertions, setup notes
+- For each test file: file path, describe block name, one-line summary of what the file tests, and count of test cases
+- Individual test names (it blocks) are NOT documented in TESTS.md — they live in the test file itself. TESTS.md is an index for fast Ctrl+F lookup, not a mirror of test code.
 - Update `docs/TESTS.md` on every test add/change/delete
 - **Place entries under the correct category by file path:**
   - `## Data Layer` — tests in `src/lib/data/`
@@ -246,6 +261,7 @@ Three layers, strict separation. Never mix purposes across layers.
 - Use npm or npx
 - Add CSS tokens, @theme values, or scoped styles without updating docs/CSS.md
 - Continue to next task without Yesid's approval
+- Close a slice without updating docs/learn/
 
 ## Completed Slices
 
@@ -262,4 +278,6 @@ See `tree.txt` for full tree. Key paths:
 - `docs/slices/` — specs (template: `_TEMPLATE.md`)
 - `docs/handoffs/` — reports (template: `_TEMPLATE.md`)
 - `docs/devlog/` — logs (template: `_TEMPLATE.md`)
+- `docs/learn/` — learning knowledge base (domain-organized concept docs)
+- `docs/PATTERNS.md` — catalog of reusable solutions from past slices
 - `static/` — models, images, lottie
