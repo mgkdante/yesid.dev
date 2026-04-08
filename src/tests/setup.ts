@@ -1,5 +1,9 @@
 // Extend Vitest's expect with jest-dom matchers (toBeInTheDocument, etc.)
 import '@testing-library/jest-dom/vitest';
+// Configure @testing-library/svelte: sets eventWrapper to Svelte.flushSync so that
+// fireEvent calls flush Svelte's reactive graph before assertions run.
+// Must be imported manually because the vite plugin skips auto-setup when globals:true.
+import '@testing-library/svelte/vitest';
 import { vi } from 'vitest';
 
 // jsdom does not implement HTMLCanvasElement.getContext. lottie-web's CJS module code
@@ -191,5 +195,46 @@ vi.mock('lottie-web', () => ({
 			removeEventListener: vi.fn(),
 			totalFrames: 60
 		}))
+	}
+}));
+
+// Mock $app/forms for Vitest/jsdom environment.
+// `enhance` is a SvelteKit action that intercepts form submits and calls the
+// server action via fetch. In jsdom there is no server, so we simulate it:
+// the action attaches a submit listener that calls the user-supplied callback
+// and resolves with a synthetic `success` result so the success animation fires.
+vi.mock('$app/forms', () => ({
+	enhance: (
+		form: HTMLFormElement,
+		fn?: (input: {
+			formData: FormData;
+			cancel: () => void;
+			formElement: HTMLFormElement;
+			action: URL;
+			submitter: HTMLElement | null;
+		}) => (ctx: { result: { type: string; data?: unknown }; update: () => Promise<void> }) => Promise<void>
+	) => {
+		const handler = async (e: Event) => {
+			e.preventDefault();
+			if (!fn) return;
+			let cancelled = false;
+			const resultHandler = fn({
+				formData: new FormData(form),
+				cancel: () => { cancelled = true; },
+				formElement: form,
+				action: new URL(window.location.href),
+				submitter: null
+			});
+			if (cancelled) return;
+			if (resultHandler && typeof resultHandler === 'function') {
+				await resultHandler({ result: { type: 'success' }, update: async () => {} });
+			}
+		};
+		form.addEventListener('submit', handler);
+		return {
+			destroy() {
+				form.removeEventListener('submit', handler);
+			}
+		};
 	}
 }));

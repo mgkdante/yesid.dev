@@ -5,9 +5,13 @@
   Success: typed sequence after submit.
 -->
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { contactContent } from '$lib/data/contact-page.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
+
+	// Form action result passed from +page.svelte (null when no action has run yet)
+	let { form: formResult }: { form?: { success?: boolean; errors?: Record<string, string> } | null } = $props();
 
 	const c = contactContent;
 
@@ -44,12 +48,8 @@
 		return Object.keys(errors).length;
 	}
 
-	// --- Submit ---
-	async function handleSubmit() {
-		submitted = true;
-		if (!validate()) return;
-
-		// Build typed success sequence
+	// --- Success animation sequence ---
+	async function playSuccessSequence() {
 		const okText = resolveLocale(c.success.fieldOk, 'en');
 		const lines = [
 			{ text: '~ $ send --message', color: 'muted' },
@@ -60,7 +60,7 @@
 			{ text: `→ ${resolveLocale(c.success.sending, 'en')}`, color: 'orange' },
 			{ text: `✓ ${resolveLocale(c.success.sent, 'en')}`, color: 'green' },
 			{ text: `→ ${resolveLocale(c.success.responseTime, 'en')}`, color: 'accent' },
-			{ text: `→ ${resolveLocale(c.success.meanwhile, 'en')}`, color: 'muted' },
+			{ text: `→ ${resolveLocale(c.success.meanwhile, 'en')}`, color: 'muted' }
 		];
 
 		successLines = lines.map((l) => ({ ...l, visible: false }));
@@ -199,7 +199,30 @@
 
 					{#if !showSuccess}
 						<!-- ─── FORM ─── -->
-						<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+						<form
+							method="POST"
+							use:enhance={({ cancel }) => {
+								submitted = true;
+								if (!validate()) {
+									cancel();
+									return;
+								}
+
+								return async ({ result, update }) => {
+									if (result.type === 'success') {
+										await playSuccessSequence();
+									} else if (result.type === 'failure') {
+										// Show server-side error if present
+										const serverErrors = (result as { type: string; data?: { errors?: Record<string, string> } }).data?.errors;
+										if (serverErrors?.form) {
+											errors = { form: serverErrors.form };
+										}
+										await update();
+									}
+								};
+							}}
+							class="mt-3 space-y-3"
+						>
 							<div class="flex flex-col gap-4">
 
 								<!-- Name field -->
@@ -209,6 +232,7 @@
 									</label>
 									<input
 										id="contact-name"
+										name="name"
 										type="text"
 										bind:value={name}
 										placeholder={resolveLocale(c.formTerminal.fields.name.placeholder, 'en')}
@@ -226,6 +250,7 @@
 									</label>
 									<input
 										id="contact-email"
+										name="email"
 										type="email"
 										bind:value={email}
 										placeholder={resolveLocale(c.formTerminal.fields.email.placeholder, 'en')}
@@ -243,6 +268,7 @@
 									</label>
 									<textarea
 										id="contact-message"
+										name="message"
 										bind:value={message}
 										placeholder={resolveLocale(c.formTerminal.fields.message.placeholder, 'en')}
 										rows="5"
@@ -252,6 +278,11 @@
 										<div class="text-[11px] text-[#ff5f57]">✗ {errors.message}</div>
 									{/if}
 								</div>
+
+								<!-- Server-level error (e.g. Web3Forms not configured) -->
+								{#if submitted && errors.form}
+									<div class="mt-0.5 text-[11px] text-[#ff5f57]">✗ {errors.form}</div>
+								{/if}
 
 								<!-- Error summary -->
 								{#if submitted && errorCount() > 0}
