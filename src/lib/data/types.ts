@@ -179,3 +179,162 @@ export interface JourneyPanel {
 	highlightEffect: HighlightEffect;
 	skills: JourneySkill[];
 }
+
+// --- About page types ---
+// Full-page bento dashboard for /about. All content is data-driven and
+// cloud-ready: swap placeholder values in about-page.ts for real content
+// later with zero component changes.
+
+// A polaroid-style photo in the personality section.
+// rotate controls the slight tilt angle for the stacked look.
+export interface AboutPolaroid {
+	src: string;
+	alt: LocalizedString;
+	caption: LocalizedString;
+	rotate: number; // degrees of tilt, -5 to 5
+}
+
+// The hero identity block: headshot, name, title, value proposition.
+export interface AboutIdentity {
+	name: LocalizedString;
+	title: LocalizedString;
+	valueProp: LocalizedString;
+	headshot: string;
+	polaroids: readonly AboutPolaroid[];
+}
+
+// A single stat counter in the metrics row (e.g. "12+ databases shipped").
+// value is a string for flexible formatting ("12+", "3x", "99%").
+export interface AboutMetric {
+	value: string;
+	label: LocalizedString;
+	icon?: string;
+}
+
+// One step in the named methodology (Audit → Optimize → Document → Handoff).
+// station ties into the metro visual language.
+export interface AboutMethodStep {
+	id: string;
+	label: LocalizedString;
+	description: LocalizedString;
+	station: number;
+}
+
+// A client testimonial with specific outcome.
+export interface AboutTestimonial {
+	quote: LocalizedString;
+	author: string;
+	role: LocalizedString;
+	company: string;
+	logo?: string;
+}
+
+// An interest displayed as a diagonal strip with background image.
+// image is B&W by default, turns color on hover via CSS filter.
+export interface AboutInterest {
+	id: string;
+	label: LocalizedString;
+	image: string; // path to background image (static/images/about/interests/)
+}
+
+// Central tech stack source of truth. Categories relate to services.
+// When cloud layer arrives (Slice 14), this cascades to services/projects.
+export type TechCategory = 'databases' | 'languages' | 'tools' | 'frameworks';
+
+export interface TechStackItem {
+	name: string;
+	category: TechCategory;
+	relatedServices: readonly string[]; // service IDs — cascade-ready
+}
+
+// A client logo for the trust strip.
+export interface AboutClientLogo {
+	name: string;
+	src: string;
+	url?: string;
+}
+
+// Weather + location widget. The weather reveals the location.
+// Wordplay header leads the visitor to discover where you're based.
+export interface AboutWeatherConfig {
+	city: LocalizedString;
+	hook: LocalizedString; // wordplay: "Where am I?" / "Home Base"
+	enabled: boolean;
+}
+
+// CTA block — terminal style.
+export interface AboutCta {
+	command: string; // "$ yesid --contact"
+	lines: readonly { text: string; color: 'orange' | 'muted' | 'accent' }[];
+	buttonLabel: LocalizedString;
+	buttonHref: string;
+	availability: LocalizedString;
+	socials: readonly { label: string; href: string; icon: string }[];
+}
+
+// Top-level container for all About page content.
+// Components receive this via props — they never import content directly.
+export interface AboutContent {
+	identity: AboutIdentity;
+	metrics: readonly AboutMetric[];
+	methodology: readonly AboutMethodStep[];
+	testimonials: readonly AboutTestimonial[];
+	techStack: readonly TechStackItem[];
+	interests: readonly AboutInterest[];
+	weather: AboutWeatherConfig;
+	clientLogos: readonly AboutClientLogo[];
+	clientCount: number; // "10+" displayed in counter
+	cta: AboutCta;
+}
+
+// --- Contact page types ---
+
+export interface ContactTerminalField {
+	label: string;
+	placeholder: LocalizedString;
+}
+
+export interface ContactInfoTerminal {
+	title: string;
+	command: string;
+	status: LocalizedString;
+	availability: LocalizedString;
+	location: LocalizedString;
+	responseTime: LocalizedString;
+}
+
+export interface ContactFormTerminal {
+	title: string;
+	command: string;
+	commandOutput: LocalizedString;
+	fields: {
+		name: ContactTerminalField;
+		email: ContactTerminalField;
+		message: ContactTerminalField;
+	};
+	submitLabel: LocalizedString;
+}
+
+export interface ContactValidation {
+	required: LocalizedString;
+	invalidEmail: LocalizedString;
+	errorSummary: LocalizedString;
+}
+
+export interface ContactSuccess {
+	validating: LocalizedString;
+	sending: LocalizedString;
+	sent: LocalizedString;
+	responseTime: LocalizedString;
+	meanwhile: LocalizedString;
+	resetLabel: LocalizedString;
+}
+
+export interface ContactContent {
+	stationLabel: LocalizedString;
+	infoTerminal: ContactInfoTerminal;
+	formTerminal: ContactFormTerminal;
+	validation: ContactValidation;
+	success: ContactSuccess;
+	socials: readonly { label: string; href: string; icon: string }[];
+}
