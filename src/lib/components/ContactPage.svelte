@@ -50,12 +50,13 @@
 		if (!validate()) return;
 
 		// Build typed success sequence
+		const okText = resolveLocale(c.success.fieldOk, 'en');
 		const lines = [
 			{ text: '~ $ send --message', color: 'muted' },
 			{ text: `→ ${resolveLocale(c.success.validating, 'en')}`, color: 'orange' },
-			{ text: '✓ name: OK', color: 'green' },
-			{ text: '✓ email: OK', color: 'green' },
-			{ text: '✓ message: OK', color: 'green' },
+			{ text: `✓ ${c.formTerminal.fields.name.label}: ${okText}`, color: 'green' },
+			{ text: `✓ ${c.formTerminal.fields.email.label}: ${okText}`, color: 'green' },
+			{ text: `✓ ${c.formTerminal.fields.message.label}: ${okText}`, color: 'green' },
 			{ text: `→ ${resolveLocale(c.success.sending, 'en')}`, color: 'orange' },
 			{ text: `✓ ${resolveLocale(c.success.sent, 'en')}`, color: 'green' },
 			{ text: `→ ${resolveLocale(c.success.responseTime, 'en')}`, color: 'accent' },
@@ -130,7 +131,7 @@
 
 					<!-- STATUS section -->
 					<div class="mb-4">
-						<div class="mb-1 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">STATUS</div>
+						<div class="mb-1 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">{resolveLocale(c.infoTerminal.sectionLabels.status, 'en')}</div>
 						<div class="flex items-center gap-2">
 							<span class="text-[#28c840]">●</span>
 							<span class="text-[var(--brand-accent)]">{resolveLocale(c.infoTerminal.status, 'en')}</span>
@@ -142,14 +143,14 @@
 
 					<!-- LOCATION section -->
 					<div class="mb-4">
-						<div class="mb-1 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">LOCATION</div>
+						<div class="mb-1 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">{resolveLocale(c.infoTerminal.sectionLabels.location, 'en')}</div>
 						<div class="text-[var(--text-secondary)]">{resolveLocale(c.infoTerminal.location, 'en')}</div>
 						<div class="mt-1 text-[12px] text-[var(--text-muted)]">{resolveLocale(c.infoTerminal.responseTime, 'en')}</div>
 					</div>
 
 					<!-- CONNECT section -->
 					<div class="mb-4">
-						<div class="mb-2 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">CONNECT</div>
+						<div class="mb-2 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">{resolveLocale(c.infoTerminal.sectionLabels.connect, 'en')}</div>
 						<div class="flex flex-col gap-1">
 							{#each c.socials as social}
 								<a
@@ -283,7 +284,7 @@
 											: line.color === 'accent'
 												? 'text-[var(--brand-accent)]'
 												: 'text-[var(--text-secondary)]'} text-[13px]">
-										{#if line.color === 'muted' && line.text.includes('{work}') || line.color === 'muted' && line.text.includes('{blog}')}
+										{#if line.color === 'muted' && line.text.includes('{work}') && line.text.includes('{blog}')}
 											<!-- meanwhile line: parse {work} and {blog} into links -->
 											{@html line.text
 												.replace('{work}', '<a href="/services" class="text-[var(--brand-primary)] underline underline-offset-2 hover:text-[var(--brand-accent)] transition-colors">work</a>')

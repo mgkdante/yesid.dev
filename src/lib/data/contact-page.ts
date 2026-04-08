@@ -11,6 +11,11 @@ export const contactContent: ContactContent = {
 		availability: { en: 'Booking Q3 2026' },
 		location: { en: 'Montreal, QC, Canada' },
 		responseTime: { en: '~24h response time' },
+		sectionLabels: {
+			status: { en: 'STATUS' },
+			location: { en: 'LOCATION' },
+			connect: { en: 'CONNECT' },
+		},
 	},
 
 	formTerminal: {
@@ -38,6 +43,7 @@ export const contactContent: ContactContent = {
 		responseTime: { en: "I'll get back to you within 24h" },
 		meanwhile: { en: 'Meanwhile, check out my {work} or {blog}' },
 		resetLabel: { en: 'reset --form' },
+		fieldOk: { en: 'OK' },
 	},
 
 	socials: [

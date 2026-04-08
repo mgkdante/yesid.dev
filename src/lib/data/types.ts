@@ -301,6 +301,11 @@ export interface ContactInfoTerminal {
 	availability: LocalizedString;
 	location: LocalizedString;
 	responseTime: LocalizedString;
+	sectionLabels: {
+		status: LocalizedString;
+		location: LocalizedString;
+		connect: LocalizedString;
+	};
 }
 
 export interface ContactFormTerminal {
@@ -328,6 +333,7 @@ export interface ContactSuccess {
 	responseTime: LocalizedString;
 	meanwhile: LocalizedString;
 	resetLabel: LocalizedString;
+	fieldOk: LocalizedString; // "OK" — used in "✓ {field}: OK"
 }
 
 export interface ContactContent {
