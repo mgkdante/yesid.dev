@@ -1,0 +1,165 @@
+<h2>Contact Page — Complete Design</h2>
+<p class="subtitle">Everything locked in. Review each section and confirm.</p>
+
+<!-- SECTION 1: LAYOUT -->
+<h3 style="color:#E07800;margin-top:24px;">1. Page Structure</h3>
+<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;font-size:13px;line-height:2;">
+  <div><span style="color:#E07800;">●</span> Station header: <code style="color:#FFB627;">STOP 10 — CONTACT</code></div>
+  <div><span style="color:#E07800;">●</span> Hazard stripe (top)</div>
+  <div><span style="color:#E07800;">●</span> <strong>Two terminal windows</strong> side by side (desktop)</div>
+  <div style="padding-left:20px;color:#999;">Left: <code>~/info</code> — status, location, social links</div>
+  <div style="padding-left:20px;color:#999;">Right: <code>~/contact</code> — form fields as CLI prompts</div>
+  <div><span style="color:#E07800;">●</span> Hazard stripe (bottom)</div>
+  <div><span style="color:#E07800;">●</span> Footer</div>
+</div>
+
+<!-- SECTION 2: INFO TERMINAL -->
+<h3 style="color:#E07800;margin-top:24px;">2. Info Terminal (Left)</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+  <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;overflow:hidden;">
+    <div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid #2a2a2a;background:#1a1a1a;">
+      <div style="width:8px;height:8px;border-radius:50%;background:#ff5f57;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#febc2e;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#28c840;"></div>
+      <span style="font-family:monospace;font-size:10px;color:#666;margin-left:8px;">yesid@mtl ~ /info</span>
+    </div>
+    <div style="padding:14px;font-family:monospace;font-size:11px;line-height:1.7;">
+      <div style="color:#666;">~ $ yesid --info</div>
+      <div style="color:#E07800;margin-top:6px;font-size:10px;letter-spacing:1px;">STATUS</div>
+      <div style="color:#28c840;">● Available for projects</div>
+      <div style="color:#FFB627;">  Booking Q3 2026</div>
+      <div style="color:#E07800;margin-top:10px;font-size:10px;letter-spacing:1px;">LOCATION</div>
+      <div style="color:#999;">  Montreal, QC, Canada</div>
+      <div style="color:#999;">  ~24h response time</div>
+      <div style="color:#E07800;margin-top:10px;font-size:10px;letter-spacing:1px;">CONNECT</div>
+      <div style="color:#999;padding:2px 4px;border-radius:2px;cursor:pointer;" onmouseenter="this.style.background='rgba(224,120,0,0.15)';this.style.color='#F5F5F0'" onmouseleave="this.style.background='transparent';this.style.color='#999'">→ hello@yesid.dev</div>
+      <div style="color:#999;padding:2px 4px;border-radius:2px;cursor:pointer;" onmouseenter="this.style.background='rgba(224,120,0,0.15)';this.style.color='#F5F5F0'" onmouseleave="this.style.background='transparent';this.style.color='#999'">→ github.com/yesidOT</div>
+      <div style="color:#999;padding:2px 4px;border-radius:2px;cursor:pointer;" onmouseenter="this.style.background='rgba(224,120,0,0.15)';this.style.color='#F5F5F0'" onmouseleave="this.style.background='transparent';this.style.color='#999'">→ linkedin.com/in/yesid</div>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:4px;">
+        <span style="color:#666;">~</span>
+        <span style="display:inline-block;width:7px;height:14px;background:#E07800;animation:blink 1s step-end infinite;"></span>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:13px;line-height:1.8;color:#ccc;">
+    <div><strong style="color:#E07800;">Title bar:</strong> <code>yesid@mtl ~ /info</code></div>
+    <div><strong style="color:#E07800;">Command:</strong> <code>$ yesid --info</code></div>
+    <div><strong style="color:#E07800;">Sections:</strong> STATUS, LOCATION, CONNECT</div>
+    <div><strong style="color:#E07800;">Hover:</strong> CONNECT links highlight like terminal cursor selection (orange tint bg + bright text)</div>
+    <div><strong style="color:#E07800;">Links:</strong> Clickable — email = mailto, GitHub/LinkedIn = new tab</div>
+    <div><strong style="color:#E07800;">Cursor:</strong> Blinking orange block at bottom</div>
+  </div>
+</div>
+
+<!-- SECTION 3: FORM TERMINAL -->
+<h3 style="color:#E07800;margin-top:24px;">3. Form Terminal (Right)</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+  <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;overflow:hidden;">
+    <div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid #2a2a2a;background:#1a1a1a;">
+      <div style="width:8px;height:8px;border-radius:50%;background:#ff5f57;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#febc2e;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#28c840;"></div>
+      <span style="font-family:monospace;font-size:10px;color:#666;margin-left:8px;">yesid@mtl ~ /contact</span>
+    </div>
+    <div style="padding:14px;font-family:monospace;font-size:11px;line-height:1.6;">
+      <div style="color:#666;">~ $ yesid --contact</div>
+      <div style="color:#E07800;">→ Opening contact form...</div>
+      <div style="margin-top:10px;">
+        <div style="color:#E07800;">name<span style="color:#666;">:</span></div>
+        <input type="text" placeholder="Your name" style="width:100%;padding:5px 8px;margin:3px 0 8px;border:1px solid #333;border-radius:4px;background:#0D0D0D;color:#F5F5F0;font-family:monospace;font-size:11px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#E07800'" onblur="this.style.borderColor='#333'" />
+      </div>
+      <div>
+        <div style="color:#E07800;">email<span style="color:#666;">:</span></div>
+        <input type="email" placeholder="you@company.com" style="width:100%;padding:5px 8px;margin:3px 0 8px;border:1px solid #333;border-radius:4px;background:#0D0D0D;color:#F5F5F0;font-family:monospace;font-size:11px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#E07800'" onblur="this.style.borderColor='#333'" />
+      </div>
+      <div>
+        <div style="color:#E07800;">message<span style="color:#666;">:</span></div>
+        <textarea placeholder="Tell me about your project..." rows="3" style="width:100%;padding:5px 8px;margin:3px 0 8px;border:1px solid #333;border-radius:4px;background:#0D0D0D;color:#F5F5F0;font-family:monospace;font-size:11px;outline:none;resize:vertical;box-sizing:border-box;" onfocus="this.style.borderColor='#E07800'" onblur="this.style.borderColor='#333'"></textarea>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+        <span style="color:#666;">~ $</span>
+        <button style="background:#E07800;color:#fff;border:none;padding:6px 16px;border-radius:4px;font-family:monospace;font-size:11px;cursor:pointer;">send --message →</button>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:13px;line-height:1.8;color:#ccc;">
+    <div><strong style="color:#E07800;">Title bar:</strong> <code>yesid@mtl ~ /contact</code></div>
+    <div><strong style="color:#E07800;">Command:</strong> <code>$ yesid --contact</code> + "Opening contact form..."</div>
+    <div><strong style="color:#E07800;">Fields:</strong> name, email, message — mono font, <code>#0D0D0D</code> bg</div>
+    <div><strong style="color:#E07800;">Focus:</strong> Input border glows orange</div>
+    <div><strong style="color:#E07800;">Submit:</strong> <code>$ send --message →</code> button</div>
+    <div><strong style="color:#E07800;">Validation:</strong> Inline <span style="color:#ff5f57;">✗</span> under each field, red border, error count summary</div>
+  </div>
+</div>
+
+<!-- SECTION 4: SUCCESS STATE -->
+<h3 style="color:#E07800;margin-top:24px;">4. Success State</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+  <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;overflow:hidden;">
+    <div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid #2a2a2a;background:#1a1a1a;">
+      <div style="width:8px;height:8px;border-radius:50%;background:#ff5f57;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#febc2e;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#28c840;"></div>
+      <span style="font-family:monospace;font-size:10px;color:#666;margin-left:8px;">yesid@mtl ~ /contact</span>
+    </div>
+    <div style="padding:14px;font-family:monospace;font-size:11px;line-height:1.8;">
+      <div style="color:#666;">~ $ send --message</div>
+      <div style="color:#E07800;">→ Validating fields...</div>
+      <div style="color:#28c840;">✓ name: OK</div>
+      <div style="color:#28c840;">✓ email: OK</div>
+      <div style="color:#28c840;">✓ message: OK</div>
+      <div style="color:#E07800;">→ Sending message...</div>
+      <div style="color:#28c840;font-weight:bold;">✓ Message sent successfully!</div>
+      <div style="color:#FFB627;">→ I'll get back to you within 24h</div>
+      <div style="color:#999;margin-top:6px;">→ Meanwhile, check out my <span style="color:#E07800;text-decoration:underline;">work</span> or <span style="color:#E07800;text-decoration:underline;">blog</span></div>
+      <div style="margin-top:10px;">
+        <span style="color:#666;">~ $</span>
+        <span style="color:#999;padding:4px 12px;border:1px solid #333;border-radius:4px;cursor:pointer;font-size:10px;" onmouseenter="this.style.borderColor='#E07800';this.style.color='#F5F5F0'" onmouseleave="this.style.borderColor='#333';this.style.color='#999'">reset --form</span>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:13px;line-height:1.8;color:#ccc;">
+    <div><strong style="color:#E07800;">Trigger:</strong> On valid submit</div>
+    <div><strong style="color:#E07800;">Animation:</strong> Form fields fade out, typed sequence appears line by line (GSAP)</div>
+    <div><strong style="color:#E07800;">Checks:</strong> <span style="color:#28c840;">✓</span> per field, then send + success</div>
+    <div><strong style="color:#E07800;">Links:</strong> "work" → <code>/services</code>, "blog" → <code>/blog</code></div>
+    <div><strong style="color:#E07800;">Reset:</strong> <code>$ reset --form</code> restores the form</div>
+    <div><strong style="color:#E07800;">Note:</strong> No real backend yet (placeholder). Cloud slice adds real submission.</div>
+  </div>
+</div>
+
+<!-- SECTION 5: MOBILE -->
+<h3 style="color:#E07800;margin-top:24px;">5. Mobile Layout</h3>
+<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;font-size:13px;line-height:2;">
+  <div><span style="color:#E07800;">●</span> Single column — terminals stack vertically</div>
+  <div><span style="color:#E07800;">●</span> <strong>Info terminal first</strong> (context), form terminal second (action)</div>
+  <div><span style="color:#E07800;">●</span> Both terminals full width</div>
+  <div><span style="color:#E07800;">●</span> Same interactions — hover becomes tap on links</div>
+</div>
+
+<!-- SECTION 6: DATA -->
+<h3 style="color:#E07800;margin-top:24px;">6. Data Layer</h3>
+<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;font-size:13px;line-height:2;">
+  <div><span style="color:#E07800;">●</span> All text in <code>contactContent</code> object using <code>LocalizedString</code></div>
+  <div><span style="color:#E07800;">●</span> Terminal commands, labels, placeholders, error messages — all data-driven</div>
+  <div><span style="color:#E07800;">●</span> Social links from <code>siteMeta.links</code> (already exists)</div>
+  <div><span style="color:#E07800;">●</span> Availability text reused from <code>aboutPageContent.cta.availability</code></div>
+  <div><span style="color:#E07800;">●</span> Zero hardcoded strings in template</div>
+</div>
+
+<!-- SECTION 7: ANIMATIONS -->
+<h3 style="color:#E07800;margin-top:24px;">7. Animations</h3>
+<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;font-size:13px;line-height:2;">
+  <div><span style="color:#E07800;">●</span> <strong>Page entrance:</strong> <code>use:reveal</code> on both terminals (stagger left → right)</div>
+  <div><span style="color:#E07800;">●</span> <strong>Info hover:</strong> CSS transition — bg + text color on CONNECT lines</div>
+  <div><span style="color:#E07800;">●</span> <strong>Form focus:</strong> CSS transition — border color glow orange</div>
+  <div><span style="color:#E07800;">●</span> <strong>Submit success:</strong> GSAP typed sequence — lines appear one by one (~150ms stagger)</div>
+  <div><span style="color:#E07800;">●</span> <strong>Blinking cursor:</strong> CSS <code>animate-pulse</code> on both terminals</div>
+</div>
+
+<style>
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  input::placeholder, textarea::placeholder { color: #555; }
+</style>
+
+<p class="subtitle" style="margin-top:24px;color:#28c840;font-weight:bold;">Does this full design look right? If yes, I'll write the spec doc and we move to implementation planning.</p>

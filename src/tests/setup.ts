@@ -198,43 +198,16 @@ vi.mock('lottie-web', () => ({
 	}
 }));
 
-// Mock $app/forms for Vitest/jsdom environment.
-// `enhance` is a SvelteKit action that intercepts form submits and calls the
-// server action via fetch. In jsdom there is no server, so we simulate it:
-// the action attaches a submit listener that calls the user-supplied callback
-// and resolves with a synthetic `success` result so the success animation fires.
-vi.mock('$app/forms', () => ({
-	enhance: (
-		form: HTMLFormElement,
-		fn?: (input: {
-			formData: FormData;
-			cancel: () => void;
-			formElement: HTMLFormElement;
-			action: URL;
-			submitter: HTMLElement | null;
-		}) => (ctx: { result: { type: string; data?: unknown }; update: () => Promise<void> }) => Promise<void>
-	) => {
-		const handler = async (e: Event) => {
-			e.preventDefault();
-			if (!fn) return;
-			let cancelled = false;
-			const resultHandler = fn({
-				formData: new FormData(form),
-				cancel: () => { cancelled = true; },
-				formElement: form,
-				action: new URL(window.location.href),
-				submitter: null
-			});
-			if (cancelled) return;
-			if (resultHandler && typeof resultHandler === 'function') {
-				await resultHandler({ result: { type: 'success' }, update: async () => {} });
-			}
-		};
-		form.addEventListener('submit', handler);
-		return {
-			destroy() {
-				form.removeEventListener('submit', handler);
-			}
-		};
+// Mock global fetch for Web3Forms client-side calls in tests.
+// Returns a successful response so the success animation fires.
+const originalFetch = globalThis.fetch;
+vi.stubGlobal('fetch', async (url: string | URL | Request, init?: RequestInit) => {
+	const urlStr = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url;
+	if (urlStr.includes('web3forms.com')) {
+		return new Response(JSON.stringify({ success: true }), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' },
+		});
 	}
-}));
+	return originalFetch(url, init);
+});

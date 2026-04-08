@@ -2,7 +2,7 @@
 
 ## Project
 
-Freelance SQL/data infrastructure brand. SvelteKit + Tailwind + GSAP + Threlte.
+Freelance Digital Infrastructure. SvelteKit + Tailwind + GSAP + Threlte.
 Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627` yellow, Inter + JetBrains Mono.
 
 ## Runtime
@@ -22,7 +22,7 @@ Slice template: `docs/slices/_TEMPLATE.md`
 4. Impossible spec: document why in devlog and stop.
 5. No spec: stop and say so.
 
-**Active slice:** 09b — About + Contact Pages (spec TBD)
+**Active slice:** 10 — Tech Stack Page (spec: TBD)
 
 ## Iteration Protocol (MANDATORY — READ THIS TWICE)
 
@@ -70,6 +70,15 @@ Every file change requires:
 2. **Doc updates** — `ARCHITECTURE.md` for structure, `README.md` for setup
 3. **tree.txt** — regenerated on slice close (PowerShell command above)
 4. **Handoff** — use `docs/handoffs/_TEMPLATE.md` (only after approval)
+5. **CSS.md** — update `docs/CSS.md` when any of these happen:
+   - New CSS custom property added to `tokens.css`
+   - New `@theme` value added to `app.css`
+   - New component with scoped `<style>` block created
+   - Existing token renamed, removed, or repurposed
+   - New z-index value introduced anywhere
+   - New animation-related CSS added
+   Document what changed, why, and where it's consumed. Never add a token without a CSS.md entry.
+6. **Tests.md88** update `docs/css.md`
 
 ## Testing (Vitest + Bun)
 
@@ -114,6 +123,31 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 - Descriptive names, no abbreviations (except db, api, url)
 - Always handle errors, never swallow silently
 - Every slice ships code AND tests
+
+## CSS Architecture (Non-Negotiable)
+
+Three layers, strict separation. Never mix purposes across layers.
+
+| Layer | File | Purpose | Example |
+|-------|------|---------|---------|
+| Semantic tokens | `src/lib/styles/tokens.css` | Theme-switching CSS custom properties | `var(--bg-primary)`, `var(--text-muted)` |
+| Brand utilities | `src/app.css` `@theme` block | Static brand values that never change with theme | `text-brand-primary`, `bg-brand-accent` |
+| Component scope | `<style>` in `.svelte` | Layout/structure specific to one component | grid templates, position, overflow |
+
+### Rules:
+
+1. **Zero hardcoded colors.** No hex, rgb, or hsl values in `.svelte` files. Use `var(--token)` or Tailwind brand class. If a color doesn't exist as a token, add it to `tokens.css` first.
+2. **Tailwind for composition, scoped styles for structure.** Tailwind handles spacing, typography, flex/grid shortcuts, responsive. Scoped `<style>` handles complex layouts, animations, pseudo-elements, or anything needing more than 3 utilities on one element.
+3. **No `!important`.** If you need it, specificity is wrong. Fix the cascade.
+4. **No inline `style=` attributes** except for dynamic values computed in JS (scroll position, transforms). Static styles never go inline.
+5. **DRY through tokens, not through classes.** If two components share a visual pattern, extract a token or a shared component. Don't create `.my-card-style` utility classes.
+6. **One source of truth per value.** A color, spacing, or font size is defined in exactly one place. Everything else references it.
+7. **Document before adding.** New tokens require a CSS.md entry explaining: name, purpose, where consumed, why existing tokens don't cover the case.
+8. **Mobile-first responsive.** Base styles are mobile. `md:` and `lg:` add complexity. Never write desktop-first then override down.
+9. **Prefer logical properties.** `padding-inline`, `margin-block` over `padding-left`, `margin-top` when direction-agnostic.
+10. **Group related utilities.** In Tailwind class strings, order: layout (flex/grid) → spacing (p/m) → sizing (w/h) → typography (text/font) → color (bg/text/border) → effects (shadow/opacity) → state (hover/focus).
+
+### Reference: `docs/CSS.md` (created in Slice 13a) is the full style guide with every token, every rule, every component's styling rationale.
 
 ## Plugins (`/plugin` to manage)
 
@@ -160,13 +194,14 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 - Delete files without slice spec instruction
 - Refactor outside current slice scope
 - Install packages without devlog entry
-- Skip devlog, handoff, or tree.txt update
+- Skip devlog, slice, handoff, or tree.txt update
 - Use npm or npx
+- Add CSS tokens, @theme values, or scoped styles without updating docs/CSS.md
 - Continue to next task without Yesid's approval
 
 ## Completed Slices
 
-A, B, B+, C, 07, 08, 09, 09c-1, 09c-2a, 09c-2b — handoffs in `docs/handoffs/`
+A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b — handoffs in `docs/handoffs/`
 
 ## Repo Structure
 

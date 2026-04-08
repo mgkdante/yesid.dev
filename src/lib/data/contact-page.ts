@@ -51,4 +51,6 @@ export const contactContent: ContactContent = {
 		{ label: 'GitHub', href: siteMeta.links.github, icon: 'github' },
 		{ label: 'LinkedIn', href: siteMeta.links.linkedin ?? '', icon: 'linkedin' },
 	],
+
+	web3formsKey: '6887fd90-3348-4d31-ba03-bc0e285697b6',
 };

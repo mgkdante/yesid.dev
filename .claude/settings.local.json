@@ -8,7 +8,8 @@
       "WebFetch(domain:lusion.co)",
       "WebFetch(domain:www.davidlangarica.dev)",
       "WebSearch",
-      "WebFetch(domain:colorlib.com)"
+      "WebFetch(domain:colorlib.com)",
+      "Bash(bun run:*)"
     ]
   }
 }

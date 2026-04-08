@@ -1,0 +1,75 @@
+<!--
+  About page identity card — V1 Editorial Glow.
+  Side-by-side: headshot with gradient ring + ambient glow, text right.
+  Metro stop label top-left. Cursor-following glow.
+  All text from data layer via props.
+-->
+<script lang="ts">
+	import type { AboutIdentity } from '$lib/data/types.js';
+	import { resolveLocale } from '$lib/data/locale.js';
+	import { reveal } from '$lib/motion/actions/reveal.js';
+	import { tilt } from '$lib/motion/actions/tilt.js';
+	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+
+	let { identity, stop = '00', label = 'IDENTITY' }: { identity: AboutIdentity; stop?: string; label?: string } = $props();
+
+	const name = $derived(resolveLocale(identity.name, 'en'));
+	const title = $derived(resolveLocale(identity.title, 'en'));
+	const valueProp = $derived(resolveLocale(identity.valueProp, 'en'));
+</script>
+
+<div
+	class="group bento-card relative overflow-hidden rounded-lg border border-[rgba(224,120,0,0.12)] bg-[var(--bg-surface)] p-3"
+	data-testid="about-identity"
+	use:reveal
+	use:tilt={{ maxDeg: 1, perspective: 800 }}
+	use:cursorGlow
+>
+	<!-- Cursor glow overlay -->
+	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.06), transparent 60%);"
+	></div>
+
+	<!-- Ambient glow behind headshot -->
+	<div
+		class="pointer-events-none absolute -top-10 -left-10 h-44 w-44"
+		style="background: radial-gradient(circle, rgba(224,120,0,0.12) 0%, transparent 70%);"
+		aria-hidden="true"
+	></div>
+
+	<div class="relative flex h-full flex-col">
+		<!-- Stop label -->
+		<div class="stop-label">STOP {stop} — {label}</div>
+
+		<div class="flex flex-1 flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
+			<!-- Headshot with gradient ring + availability dot -->
+			<div class="relative shrink-0">
+				<div class="rounded-full bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-accent)] p-[2px]">
+					<img
+						src={identity.headshot}
+						alt={name}
+						class="h-20 w-20 rounded-full object-cover md:h-24 md:w-24"
+						data-testid="about-headshot"
+					/>
+				</div>
+				<!-- Green availability dot -->
+				<div class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-[3px] border-[var(--bg-surface)] bg-emerald-500"></div>
+			</div>
+
+			<!-- Text block -->
+			<div class="text-center md:pt-1 md:text-left">
+				<h2 class="font-heading text-[28px] font-bold leading-tight tracking-tight text-[var(--text-primary)]">
+					{name}
+				</h2>
+				<div class="mt-1.5 font-mono text-[11px] tracking-[3px] uppercase text-[var(--brand-primary)]">
+					{title}
+				</div>
+				<!-- Gradient separator -->
+				<div class="mx-auto mt-4 h-px w-10 md:mx-0" style="background: linear-gradient(90deg, var(--brand-primary), transparent);"></div>
+				<p class="mt-4 max-w-md text-[14px] leading-relaxed text-[var(--text-secondary)]">
+					{valueProp}
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

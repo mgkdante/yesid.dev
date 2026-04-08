@@ -1,0 +1,146 @@
+<h2>Bento Grid — Responsive Layout Strategy</h2>
+<p class="subtitle">Before designing cards, let's lock the grid. The current layout stretches infinitely on wide screens. Pick a containment strategy.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Max-Width Container (centered)</h3>
+      <p>Grid caps at <strong>1400px</strong>, centered on wide screens. Cards never get absurdly wide. Content stays readable. Side margins grow on ultrawide. <em>Used by: Vercel, Linear, Stripe.</em></p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Full Stretch (current)</h3>
+      <p>Grid fills 100% width at all sizes. Dashboard feel. Cards grow with viewport. Risk: on 2560px monitors, cards become very wide and text floats left. <em>Used by: Notion, some dashboards.</em></p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Fluid + Max (hybrid)</h3>
+      <p>Full width up to <strong>1600px</strong>, then centered with generous side padding. Best of both — feels expansive on normal screens, doesn't break on ultrawide. <em>Used by: Apple, Awwwards sites.</em></p>
+    </div>
+  </div>
+</div>
+
+<h2 style="margin-top:32px;">Grid Column Strategy per Breakpoint</h2>
+<p class="subtitle">How many columns at each size? Current: 1 col mobile → 4 col desktop.</p>
+
+<!-- Visual wireframes for each breakpoint -->
+<div style="display:flex;flex-direction:column;gap:24px;margin-top:16px;">
+
+  <!-- Mobile 375px -->
+  <div class="mockup">
+    <div class="mockup-header">📱 Mobile — 375px</div>
+    <div class="mockup-body" style="max-width:375px;margin:0 auto;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">Identity (full width)</div>
+        <div style="display:flex;gap:8px;overflow-x:auto;">
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px 20px;color:#999;font-size:11px;white-space:nowrap;">📸</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px 20px;color:#999;font-size:11px;white-space:nowrap;">📸</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px 20px;color:#999;font-size:11px;white-space:nowrap;">📸</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#FFB627;font-family:monospace;font-size:13px;">5+</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#FFB627;font-family:monospace;font-size:13px;">30+</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#FFB627;font-family:monospace;font-size:13px;">3x</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#FFB627;font-family:monospace;font-size:13px;">99.9%</div>
+        </div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">Method</div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">Testimonials</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:11px;">Stack</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:11px;">Weather</div>
+        </div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:12px;">Interests</div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:12px;">Logos</div>
+        <div style="background:#1E1E1E;border:1px solid #E07800;border-radius:8px;padding:16px;text-align:center;color:#E07800;font-size:12px;">CTA →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tablet 768px -->
+  <div class="mockup">
+    <div class="mockup-header">📋 Tablet — 768px (2 columns)</div>
+    <div class="mockup-body" style="max-width:768px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">Identity (full width)</div>
+        <div style="grid-column:span 2;display:flex;gap:8px;justify-content:center;">
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px 24px;color:#999;font-size:11px;">📸 Polaroid</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px 24px;color:#999;font-size:11px;">📸 Polaroid</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px 24px;color:#999;font-size:11px;">📸 Polaroid</div>
+        </div>
+        <div style="grid-column:span 2;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#FFB627;font-family:monospace;">5+</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#FFB627;font-family:monospace;">30+</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#FFB627;font-family:monospace;">3x</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#FFB627;font-family:monospace;">99.9%</div>
+        </div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">Method</div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">Testimonials</div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:11px;">Stack</div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:11px;">Weather + Interests</div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:12px;">Logos</div>
+        <div style="background:#1E1E1E;border:1px solid #E07800;border-radius:8px;padding:12px;text-align:center;color:#E07800;font-size:12px;">CTA →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop 1280px -->
+  <div class="mockup">
+    <div class="mockup-header">🖥️ Desktop — 1280px (4 columns)</div>
+    <div class="mockup-body" style="max-width:900px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <div style="grid-column:span 3;background:#1E1E1E;border:1px solid rgba(224,120,0,0.15);border-radius:8px;padding:20px;color:#999;font-size:12px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#E07800,#FFB627);flex-shrink:0;"></div>
+            <div>
+              <div style="color:#F5F5F0;font-weight:bold;">Yesid O. · <span style="color:#E07800;font-size:11px;font-family:monospace;">STOP 00</span></div>
+              <div style="font-size:11px;color:#666;">Digital Infrastructure Engineer</div>
+            </div>
+          </div>
+        </div>
+        <div style="grid-row:span 2;background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+          <div>📸 📸</div>
+          <div>📸</div>
+          <div style="font-size:10px;">Polaroids<br>(stacked)</div>
+        </div>
+        <div style="grid-column:span 3;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:10px;text-align:center;color:#FFB627;font-family:monospace;font-size:14px;font-weight:bold;">5+</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:10px;text-align:center;color:#FFB627;font-family:monospace;font-size:14px;font-weight:bold;">30+</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:10px;text-align:center;color:#FFB627;font-family:monospace;font-size:14px;font-weight:bold;">3x</div>
+          <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:10px;text-align:center;color:#FFB627;font-family:monospace;font-size:14px;font-weight:bold;">99.9%</div>
+        </div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">Method (metro line)</div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">Testimonials</div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:11px;">Stack</div>
+        <div style="background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:11px;">☀️ Weather</div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:11px;">Interests</div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:12px;text-align:center;color:#999;font-size:12px;">Logos</div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #E07800;border-radius:8px;padding:12px;text-align:center;color:#E07800;font-size:12px;font-weight:bold;">CTA → /contact</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wide 1920px+ -->
+  <div class="mockup">
+    <div class="mockup-header">🖥️ Ultrawide — 1920px+ (capped at max-width)</div>
+    <div class="mockup-body">
+      <div style="max-width:900px;margin:0 auto;position:relative;">
+        <div style="position:absolute;left:-60px;top:0;bottom:0;width:50px;background:repeating-linear-gradient(0deg,#141414 0px,#141414 20px,#1a1a1a 20px,#1a1a1a 21px);opacity:0.3;border-radius:4px;"></div>
+        <div style="position:absolute;right:-60px;top:0;bottom:0;width:50px;background:repeating-linear-gradient(0deg,#141414 0px,#141414 20px,#1a1a1a 20px,#1a1a1a 21px);opacity:0.3;border-radius:4px;"></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          <div style="grid-column:span 4;background:#1E1E1E;border:1px solid #3A3A3A;border-radius:8px;padding:16px;text-align:center;color:#999;font-size:12px;">
+            Same 4-col grid, centered. Side margins grow. Content stays contained.
+          </div>
+        </div>
+        <div style="text-align:center;color:#666;font-size:11px;margin-top:8px;">← margin grows | max-width: 1400-1600px | margin grows →</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:24px;">First: pick containment (A/B/C above). Then confirm the breakpoint wireframes look right.</p>

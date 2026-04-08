@@ -343,4 +343,5 @@ export interface ContactContent {
 	validation: ContactValidation;
 	success: ContactSuccess;
 	socials: readonly { label: string; href: string; icon: string }[];
+	web3formsKey: string; // Public access key — safe to expose client-side
 }

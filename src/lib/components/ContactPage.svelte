@@ -5,13 +5,9 @@
   Success: typed sequence after submit.
 -->
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { contactContent } from '$lib/data/contact-page.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
-
-	// Form action result passed from +page.svelte (null when no action has run yet)
-	let { form: formResult }: { form?: { success?: boolean; errors?: Record<string, string> } | null } = $props();
 
 	const c = contactContent;
 
@@ -46,6 +42,44 @@
 
 	function errorCount(): number {
 		return Object.keys(errors).length;
+	}
+
+	// --- Submit (client-side — Web3Forms free tier requires client calls) ---
+	let sending = $state(false);
+
+	async function handleSubmit(e: Event) {
+		e.preventDefault();
+		submitted = true;
+		if (!validate()) return;
+
+		sending = true;
+		try {
+			const res = await fetch('https://api.web3forms.com/submit', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					access_key: c.web3formsKey,
+					subject: `New contact from ${name} via yesid.dev`,
+					from_name: name,
+					email,
+					message,
+				}),
+			});
+			const result = await res.json();
+
+			if (!result.success) {
+				errors = { form: 'Failed to send message. Please try again.' };
+				sending = false;
+				return;
+			}
+		} catch {
+			errors = { form: 'Failed to send message. Please try again.' };
+			sending = false;
+			return;
+		}
+
+		sending = false;
+		await playSuccessSequence();
 	}
 
 	// --- Success animation sequence ---
@@ -94,51 +128,37 @@
 	const stationLabel = resolveLocale(c.stationLabel, 'en');
 </script>
 
-<div class="min-h-screen bg-[var(--bg-primary)]" data-testid="page-contact">
-	<div class="mx-auto max-w-[1200px] px-4 py-6 md:px-8">
+<div class="bg-[var(--bg-primary)] pb-16" data-testid="page-contact">
+	<div class="mx-auto max-w-5xl px-6">
 
-		<!-- Station header -->
-		<div class="mb-4 flex items-center gap-2">
-			<div class="h-2 w-2 animate-pulse rounded-full bg-[var(--brand-primary)]"></div>
-			<span class="font-mono text-[11px] tracking-[2px] text-[var(--text-secondary)]">{stationLabel}</span>
+		<!-- Page header (matches Work/Blog pattern) -->
+		<div class="mb-8">
+			<h1 class="font-heading text-2xl font-bold text-[var(--text-primary)] md:text-3xl">
+				Contact
+			</h1>
+			<p class="mt-1 font-mono text-xs text-[var(--brand-primary)]">
+				{stationLabel}
+			</p>
 		</div>
 
-		<!-- Hazard stripe top -->
-		<div class="mb-4 h-[2px]" style="background:repeating-linear-gradient(-45deg,#E07800 0px,#E07800 6px,transparent 6px,transparent 12px);" aria-hidden="true"></div>
-
 		<!-- Two-column terminal grid -->
-		<div class="grid gap-4 md:grid-cols-[1fr_1.1fr]" use:reveal>
+		<div class="grid gap-4 md:grid-cols-[2fr_5fr]" use:reveal>
 
 			<!-- ═══ INFO TERMINAL (left) ═══ -->
 			<div
-				class="overflow-hidden rounded-lg border border-[#2a2a2a] bg-[var(--bg-surface)]"
+				class="flex flex-col overflow-hidden rounded-lg border border-[#2a2a2a] bg-[var(--bg-surface)]"
 				data-testid="contact-info-terminal"
 			>
 				<!-- Title bar -->
-				<div class="flex items-center gap-1.5 border-b border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2">
-					<div class="h-3 w-3 rounded-full bg-[#ff5f57]"></div>
-					<div class="h-3 w-3 rounded-full bg-[#febc2e]"></div>
-					<div class="h-3 w-3 rounded-full bg-[#28c840]"></div>
-					<span class="ml-2 font-mono text-[11px] text-[var(--text-secondary)]">{c.infoTerminal.title}</span>
+				<div class="border-b border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2">
+					<span class="font-mono text-[11px] text-[var(--text-secondary)]">{c.infoTerminal.title}</span>
 				</div>
 
 				<!-- Terminal body -->
-				<div class="bg-[#141414] p-4 font-mono text-sm leading-relaxed">
+				<div class="flex-1 bg-[#141414] p-4 font-mono text-sm leading-relaxed">
 					<!-- Command line -->
 					<div class="mb-4 text-[var(--text-secondary)]">
 						<span class="text-[var(--text-primary)]">~</span> {c.infoTerminal.command}
-					</div>
-
-					<!-- STATUS section -->
-					<div class="mb-4">
-						<div class="mb-1 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">{resolveLocale(c.infoTerminal.sectionLabels.status, 'en')}</div>
-						<div class="flex items-center gap-2">
-							<span class="text-[#28c840]">●</span>
-							<span class="text-[var(--brand-accent)]">{resolveLocale(c.infoTerminal.status, 'en')}</span>
-						</div>
-						<div class="mt-1 pl-4 text-[12px] text-[var(--text-secondary)]">
-							{resolveLocale(c.infoTerminal.availability, 'en')}
-						</div>
 					</div>
 
 					<!-- LOCATION section -->
@@ -180,11 +200,8 @@
 				data-testid="contact-form-terminal"
 			>
 				<!-- Title bar -->
-				<div class="flex items-center gap-1.5 border-b border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2">
-					<div class="h-3 w-3 rounded-full bg-[#ff5f57]"></div>
-					<div class="h-3 w-3 rounded-full bg-[#febc2e]"></div>
-					<div class="h-3 w-3 rounded-full bg-[#28c840]"></div>
-					<span class="ml-2 font-mono text-[11px] text-[var(--text-secondary)]">{c.formTerminal.title}</span>
+				<div class="border-b border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2">
+					<span class="font-mono text-[11px] text-[var(--text-secondary)]">{c.formTerminal.title}</span>
 				</div>
 
 				<!-- Terminal body -->
@@ -200,27 +217,7 @@
 					{#if !showSuccess}
 						<!-- ─── FORM ─── -->
 						<form
-							method="POST"
-							use:enhance={({ cancel }) => {
-								submitted = true;
-								if (!validate()) {
-									cancel();
-									return;
-								}
-
-								return async ({ result, update }) => {
-									if (result.type === 'success') {
-										await playSuccessSequence();
-									} else if (result.type === 'failure') {
-										// Show server-side error if present
-										const serverErrors = (result as { type: string; data?: { errors?: Record<string, string> } }).data?.errors;
-										if (serverErrors?.form) {
-											errors = { form: serverErrors.form };
-										}
-										await update();
-									}
-								};
-							}}
+							onsubmit={handleSubmit}
 							class="mt-3 space-y-3"
 						>
 							<div class="flex flex-col gap-4">
@@ -236,7 +233,7 @@
 										type="text"
 										bind:value={name}
 										placeholder={resolveLocale(c.formTerminal.fields.name.placeholder, 'en')}
-										class="rounded border bg-[#0D0D0D] px-3 py-2 font-mono text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 {fieldBorderClass('name')}"
+										class="rounded border bg-[#0D0D0D] px-4 py-3 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 {fieldBorderClass('name')}"
 									/>
 									{#if submitted && errors.name}
 										<div class="text-[11px] text-[#ff5f57]">✗ {errors.name}</div>
@@ -254,7 +251,7 @@
 										type="email"
 										bind:value={email}
 										placeholder={resolveLocale(c.formTerminal.fields.email.placeholder, 'en')}
-										class="rounded border bg-[#0D0D0D] px-3 py-2 font-mono text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 {fieldBorderClass('email')}"
+										class="rounded border bg-[#0D0D0D] px-4 py-3 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 {fieldBorderClass('email')}"
 									/>
 									{#if submitted && errors.email}
 										<div class="text-[11px] text-[#ff5f57]">✗ {errors.email}</div>
@@ -271,8 +268,8 @@
 										name="message"
 										bind:value={message}
 										placeholder={resolveLocale(c.formTerminal.fields.message.placeholder, 'en')}
-										rows="5"
-										class="rounded border bg-[#0D0D0D] px-3 py-2 font-mono text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
+										rows="6"
+										class="rounded border bg-[#0D0D0D] px-4 py-3 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
 									></textarea>
 									{#if submitted && errors.message}
 										<div class="text-[11px] text-[#ff5f57]">✗ {errors.message}</div>
@@ -341,9 +338,6 @@
 			</div>
 
 		</div>
-
-		<!-- Hazard stripe bottom -->
-		<div class="mt-4 h-[2px]" style="background:repeating-linear-gradient(-45deg,#E07800 0px,#E07800 6px,transparent 6px,transparent 12px);" aria-hidden="true"></div>
 
 	</div>
 </div>

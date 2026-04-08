@@ -1,0 +1,54 @@
+<!--
+  Methodology — Horizontal Pipeline, labels only (compact).
+  AUDIT → OPTIMIZE → DOCUMENT → HANDOFF with numbered dots.
+  Descriptions removed for space. Stop label top-left.
+-->
+<script lang="ts">
+	import type { AboutMethodStep } from '$lib/data/types.js';
+	import { resolveLocale } from '$lib/data/locale.js';
+	import { reveal } from '$lib/motion/actions/reveal.js';
+	import { stagger } from '$lib/motion/utils/stagger.js';
+	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+
+	let { steps, stop = '02', label = 'PROCESS' }: { steps: readonly AboutMethodStep[]; stop?: string; label?: string } = $props();
+</script>
+
+<div
+	class="bento-card group relative h-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] p-3"
+	data-testid="about-method"
+	use:reveal
+	use:cursorGlow
+>
+	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.06), transparent 60%);"
+	></div>
+
+	<div class="relative flex h-full flex-col">
+		<div class="stop-label">STOP {stop} — {label}</div>
+
+		<!-- Horizontal pipeline with descriptions -->
+		<div class="mt-auto mb-auto flex items-start justify-around">
+			{#each steps as step, i}
+				{@const stepLabel = resolveLocale(step.label, 'en')}
+				{@const stepDesc = resolveLocale(step.description, 'en')}
+
+				<!-- Connecting line (not before first) -->
+				{#if i > 0}
+					<div class="mt-3 h-[2px] w-4 flex-shrink-0" style="background: linear-gradient(90deg, var(--brand-primary), rgba(224,120,0,0.3));"></div>
+				{/if}
+
+				<div class="flex flex-col items-center" use:reveal={{ delay: stagger(i, 100) }}>
+					<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-[var(--brand-primary)] bg-[var(--bg-primary)]">
+						<span class="font-mono text-[9px] font-bold text-[var(--brand-primary)]">{step.station}</span>
+					</div>
+					<div class="mt-1 font-mono text-[9px] font-semibold tracking-[1px] text-[var(--brand-primary)]">
+						{stepLabel}
+					</div>
+					<div class="mt-1 max-w-[100px] text-center text-[10px] leading-tight text-[var(--text-secondary)] opacity-60">
+						{stepDesc}
+					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
+</div>

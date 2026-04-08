@@ -199,15 +199,19 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 07  | Blog system (markdown content + /blog routes)          | complete | 06d        | 1-2           |
 | 08  | Work pages (index + FLIP filter + detail)              | complete | 02, 03, 07 | 1-2           |
 | 09  | Services pages (/services + /services/[id])            | ready    | 02, 08     | 2-3           |
-| 09b | About + Contact pages (bento grid /about)              | planned  | 02, 03, 07 | 1             |
-| 10  | SEO + metadata                                         | planned  | 07, 08, 09 | 1             |
-| 11  | E2E test suite + performance + brand QA                | planned  | 07, 08, 09 | 1-2           |
-| 12  | Standardization (scalable, componentized, data-driven) | planned  | B+, 06d    | 1-2           |
-| 13  | Cloud content layer (edit + publish without code)      | planned  | 12         | 1-2           |
-| 14  | Mobile UI/UX optimization                              | planned  | 12, B+     | 1-2           |
-| 15  | Scroll smoothness + animation polish                   | planned  | B+, 14     | 1             |
-| 16  | Repo cleanup for public release                        | planned  | 10, 11     | 0.5           |
-| 17  | Deploy to Vercel + DNS cutover                         | planned  | 16         | 1             |
+| 09b | About + Contact pages (bento grid /about)              | complete | 02, 03, 09 | 3-4           |
+| 10  | Tech Stack page (/tech-stack interactive diagram)      | planned  | 09b        | 2-3           |
+| 11  | Navbar research + redesign                             | planned  | 10         | 1-2           |
+| 12  | Footer research + redesign                             | planned  | 11         | 1             |
+| 13  | Home page rework (post-hero, archive SkillsJourney)    | planned  | 10, 11, 12 | 2-3           |
+| 14  | SEO + metadata                                         | planned  | 07, 08, 09 | 1             |
+| 15  | E2E test suite + performance + brand QA                | planned  | 07, 08, 09 | 1-2           |
+| 16  | Standardization (scalable, componentized, data-driven) | planned  | B+, 06d    | 1-2           |
+| 17  | Cloud content layer (edit + publish without code)      | planned  | 16         | 1-2           |
+| 18  | Mobile UI/UX optimization                              | planned  | 16, B+     | 1-2           |
+| 19  | Scroll smoothness + animation polish                   | planned  | B+, 18     | 1             |
+| 20  | Repo cleanup for public release                        | planned  | 14, 15     | 0.5           |
+| 21  | Deploy to Vercel + DNS cutover                         | planned  | 20         | 1             |
 
 
 ## Slice Summaries
@@ -326,10 +330,12 @@ Full blog system with two content lanes: professional (`/blog`, orange accent) a
 
 ### Slice 09b — About + Contact Pages
 
-About: bio section (fade entrance), focus areas, skills (stagger tags). Contact: links from SiteMeta with stagger entrance and boop hover on icons.
+**Status:** complete (2026-04-07)
+About page: full-viewport bento dashboard (6x4 CSS Grid, 10+ widget cards). Identity, metrics, methodology, testimonials, tech stack, interests, weather, client logos, polaroids, train, CTA terminal. Contact page: dual terminal layout — info terminal (left, ~28%) + form terminal (right, ~70%). Client-side Web3Forms email delivery. Typed success sequence animation. Inline validation. OS-agnostic terminal chrome. Title matches Work/Blog pattern.
 
-**Tests:** Pages render. Links valid. Content matches data. Hover interactions work.
-**You'll learn:** Static pages with motion, keeping animation restrained when content is primary.
+**Key decisions:** Web3Forms free tier is client-side only (server calls blocked). Key stored in data layer (`contactContent.web3formsKey`). No `+page.server.ts` needed. About CTA terminal has scrollable body with themed scrollbar.
+
+**Handoff:** `docs/handoffs/handoff-slice-09b.md`
 
 ### Slice 09c — Blog + Work + Services Polish & DRY Pass
 
@@ -368,67 +374,320 @@ DRY consolidation:
 **Tests:** Existing tests remain green. New interactions respect `prefers-reduced-motion`.
 **You'll learn:** Advanced micro-interactions, CSS `@property` animations, component consolidation, DRY architecture.
 
-### Slice 10 — SEO + Metadata
+### Slice 10 — Home Page Rework (Post-Hero)
 
-Add page-level meta tags (title, description, Open Graph, Twitter cards). Generate sitemap.xml. Add structured data (JSON-LD) for person/organization. Set canonical URLs. Locale-aware meta (serve correct language description per locale). Ensure every page has proper meta from data files.
+**Status:** planned
+**Depends on:** 09b (About + Contact complete gives clarity on site identity)
+**Rationale:** After building all route pages (blog, work, services, about, contact), Yesid has much clearer vision of what the site is about. The home page (after the hero) was built before subsites existed. Now it can be reworked with full context of what each section leads to.
 
-**Tests:** Each page has title and description meta. OG tags present. Sitemap is valid.
-**You'll learn:** SEO fundamentals, Open Graph protocol, structured data, sitemaps.
+**Scope:**
+- Rework home page sections after the hero (stops 01-08 in current metro journey)
+- **Archive SkillsJourney:** Deactivate the horizontal scroll CTA section. Keep the code intact but disable rendering. It will return later — optimized and refined — in a future polish slice.
+- Redesign the flow from hero → services preview → work preview → about teaser → blog teaser → CTA
+- Apply learnings from route pages (bento patterns, metro branding, proof elements)
+- Ensure data-driven: all content through content.ts / data layer
+- Mobile-first: optimize the home scroll experience
 
-### Slice 11 — E2E Test Suite + Performance + Brand QA Pass
+**Why now:** Building About + Contact is the last route page. After that, Yesid has seen every section of the site and can design a home page that properly introduces and connects them all. The SkillsJourney was an early experiment — good concept, needs refinement, but shouldn't block the home rework.
+
+**SkillsJourney plan:**
+1. Add a feature flag or conditional render to disable SkillsJourney on home
+2. Keep all code (SkillsJourney.svelte, journey panels in content.ts, motion utils)
+3. Mark as "archived" in ARCHITECTURE.md
+4. Future slice (TBD) brings it back with: performance optimization, refined animations, better mobile UX
+
+**Tests:** Home page renders without SkillsJourney. New sections pass. Existing hero tests unaffected.
+
+### Slice 14 — SEO + Metadata: Maximum Discoverability
+
+**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 07, 08, 09
+
+**Why this matters more than most devs think:** 90% of portfolio sites have zero structured data, broken OG tags, and no sitemap. Recruiters and clients Google "data engineer Montreal" or "SQL developer transit pipeline" and get LinkedIn results because nobody's portfolio is optimized. This slice makes yesid.dev the result that shows up WITH a rich card, author photo, and site links. It also makes every blog post, project, and service page individually discoverable, not just the home page.
+
+**5 Layers of SEO:**
+
+1. **Page-Level Meta Tags** — Every route gets: `<title>`, `<meta name="description">`, canonical URL, `robots` directive. Titles follow the pattern `Page Name | yesid.` (brand-consistent, under 60 chars). Descriptions are unique per page, 150-160 chars, written for humans not keyword stuffing. All pulled from data layer via a shared `<SeoHead>` component that every +layout.svelte or +page.svelte uses.
+2. **Open Graph + Twitter Cards** — Every page gets: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`, `og:site_name`, `og:locale`. Twitter equivalents: `twitter:card` (summary_large_image), `twitter:title`, `twitter:description`, `twitter:image`. OG images: generate a branded default (orange wordmark on dark bg, 1200x630). Blog posts and projects can override with custom OG images. Service pages use a shared branded template.
+3. **Structured Data (JSON-LD)** — This is the differentiator. Most portfolios skip this entirely. Add:
+   - **Person** schema on home/about: name, jobTitle ("Data Infrastructure Engineer"), url, sameAs (LinkedIn, GitHub), knowsAbout (SQL, Python, PostgreSQL, etc.), worksFor, address (Montreal, QC)
+   - **WebSite** schema on home: name, url, description, author
+   - **BlogPosting** schema on each blog post: headline, datePublished, author, description, image, articleSection
+   - **Service** schema on each service page: name, description, provider (Person), areaServed
+   - **BreadcrumbList** schema on all subpages: structured navigation path (Home > Work > STM Transit Pipeline)
+   - **ProfilePage** schema on about page (new schema type Google supports for personal sites)
+4. **Technical SEO** —
+   - `sitemap.xml` auto-generated at build time from all public routes (home, blog/*, work/*, services/*, about, contact). Use `@sveltejs/kit` prerender entries or a custom build script.
+   - `robots.txt` with sitemap reference, allow all public routes, block /preview and /keystatic (future)
+   - Canonical URLs on every page (prevents duplicate content from trailing slashes or query params)
+   - `<link rel="alternate" hreflang="en">` tags ready for i18n (structure only, fr/es pages come later)
+   - Performance meta: proper `<meta name="viewport">`, `theme-color` (#141414), `color-scheme: dark`
+5. **Social Preview Testing** — Verify every page type renders correctly when shared on LinkedIn, Twitter/X, Slack, Discord, iMessage. This is how recruiters first see the site. A broken preview = invisible. Test with: opengraph.xyz, Twitter Card Validator, LinkedIn Post Inspector.
+
+**Shared Component:**
+
+```
+<SeoHead
+  title="STM Transit Pipeline | yesid."
+  description="Near-real-time GTFS analytics..."
+  ogImage="/og/stm-transit-pipeline.png"
+  type="article"
+  canonical="https://yesid.dev/work/stm-transit-pipeline"
+  jsonLd={blogPostingSchema}
+/>
+```
+
+Every page passes its specific data. The component renders all `<svelte:head>` tags. One place to maintain, every page covered.
+
+**OG Image Strategy:**
+
+- Default branded image: wordmark + tagline on dark bg (1200x630) for pages without custom images
+- Blog posts: auto-generate OG images at build time using satori or a canvas script (title + date + brand colors on dark card)
+- Projects: screenshot or custom graphic per project (manual, added as content)
+- If auto-generation is too complex for this slice, ship with the default branded image for all pages and add per-page images in a polish pass
+
+**Locale-Aware Meta:**
+
+- `og:locale` set to `en_CA` (your base)
+- `og:locale:alternate` ready for `fr_CA` and `es` when translations ship
+- `hreflang` link tags point to self for now, ready to point to locale variants later
+- Description meta uses `resolveLocale()` so it serves French descriptions when fr pages exist
+
+**Acceptance Criteria:**
+
+- [ ] Every public route has unique `<title>` and `<meta name="description">`
+- [ ] Every public route has complete OG tags (title, description, image, url, type)
+- [ ] Every public route has Twitter Card tags
+- [ ] JSON-LD Person schema on home and about pages
+- [ ] JSON-LD BlogPosting schema on every blog post
+- [ ] JSON-LD Service schema on every service page
+- [ ] JSON-LD BreadcrumbList on all subpages
+- [ ] `sitemap.xml` generated at build time, contains all public routes
+- [ ] `robots.txt` references sitemap, blocks /preview
+- [ ] Canonical URLs set on every page
+- [ ] OG image renders correctly when shared (test with opengraph.xyz)
+- [ ] `bun run build` succeeds with all meta in place
+- [ ] `bun run test` passes
+- [ ] Lighthouse SEO score: 100 on all page types
+
+**Out of Scope:**
+
+- Per-page custom OG image generation (use default branded image, upgrade later)
+- Google Search Console setup (do after deploy in Slice 18)
+- Analytics (separate concern)
+- i18n page variants (structure only, actual translations are future)
+
+**You'll learn:** Open Graph protocol, JSON-LD structured data, Schema.org vocabulary, technical SEO (sitemaps, canonical URLs, robots.txt), social preview optimization, `<svelte:head>` patterns in SvelteKit.
+
+### Slice 15 — E2E Test Suite + Performance + Brand QA Pass
 
 Playwright E2E tests: full nav flow, train journey scroll, project detail, all pages at 3 breakpoints. Performance testing: verify frame rate during scroll on home page. Brand verification: colors, fonts, motion consistency. Fix visual/responsive/performance issues. Optional: add easter eggs from MOTION.md section 9.
 
 **Tests:** Full navigation flow. Train journey completes without jank. Responsive at 375px, 768px, 1280px. No mobile overflow. Frame rate above 45fps on scroll. Reduced motion mode works.
 **You'll learn:** E2E testing, performance profiling, responsive QA, accessibility verification.
 
-### Slice 12 — Standardization (Scalable, Componentized, Data-Driven)
+### Slice 16 — Standardization: Ports & Adapters Lite
 
-**Status:** planned
-Audit the entire codebase for consistency and scalability. Ensure all repeating patterns are extracted into reusable components. Verify all content is data-driven (no hardcoded text in templates). Standardize component APIs (props, slots, events). Extract shared animation patterns into reusable utilities. Ensure adding a new service/project/blog post is a single data-file edit.
+**Status:** planned **Est. Sessions:** 5-6 (across 6 subslices)
 
-**Scope:** Component API consistency, data-driven content audit, shared animation utilities, prop interface standardization, documentation of component patterns.
+**Philosophy:** The codebase should read like a blueprint. An engineer opens the repo and sees: types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 14 (Keystatic) plugs in with zero component changes. This slice is invisible to users. Every page looks and behaves identically before and after. The diff is structural.
 
-### Slice 13 — Cloud Content Layer (Edit + Publish Without Code)
+**Key constraint:** Zero visual changes. Zero behavior changes. Pure structural refactor.
 
-**Status:** planned
-Connect the data-driven content (projects, services, blog posts, site meta) to a cloud-editable source so Yesid can add/edit content without opening the codebase. When content is published or updated in the cloud, the site rebuilds and deploys automatically.
+**Layer diagram:**
 
-**Options to evaluate:**
+**Execution order:** 13a → 13b → 13c → 13d → 13e → 13f. Each builds on the previous. CSS cleanup is foundational. Service layer before schemas because schemas validate what services return. Component standardization after both because components consume from services. Motion after components because motion is applied to components. Tests + docs last because they document the final state.
 
-- **Headless CMS** (Sanity, Contentful, Storyblok) — structured content, visual editor, webhooks to trigger Vercel rebuild
-- **Notion as CMS** — Yesid already uses Notion; API pulls content at build time; familiar editing UX
-- **Markdown in cloud storage** (Google Drive, Dropbox, GitHub content repo) — keep markdown workflow, sync to repo via webhook/action
-- **Keystatic** — git-based CMS with visual editor, content stays in repo as markdown/JSON
+---
+
+#### Slice 13a — CSS Audit + Consolidation + CSS.md
+
+**Status:** planned **Est. Sessions:** 1 **Depends on:** B+, 06d
+
+**Why first:** CSS touches every component. Consolidating it first gives a clean styling foundation before refactoring component APIs and extracting shared shells.
+
+**What:**
+1. Audit every `.svelte` file for inline styles, one-off Tailwind classes, duplicate color/spacing values, and anything not flowing from `tokens.css` or `@theme`
+2. Consolidate into a clear hierarchy:
+   - `tokens.css` = CSS custom properties (theme-switching, semantic colors)
+   - `app.css` = Tailwind `@theme` brand tokens + global resets + base typography
+   - Component-scoped `<style>` blocks = only layout/structure specific to that component
+3. Eliminate: hardcoded hex values in components, duplicate utility patterns, conflicting specificity
+4. Create `docs/CSS.md` documenting:
+   - The two-system architecture (tokens.css vs @theme) and when to use which
+   - Every CSS custom property with its purpose and where it's consumed
+   - Rules for component styling (what goes in scoped style vs Tailwind class)
+   - DOM elements that carry styling: what classes/vars they use and why
+   - How to add a new color, spacing value, or component style correctly
+5. **Brand color scalability architecture:**
+   - All brand colors flow from a single source: `tokens.css` defines semantic tokens, `app.css` @theme maps them to Tailwind utilities
+   - Introduce a `--brand-*` naming convention that supports multiple brand colors beyond primary/accent:
+     - `--brand-primary` (#E07800 orange)
+     - `--brand-accent` (#FFB627 yellow)
+     - Future slots follow the same pattern: `--brand-secondary`, `--brand-tertiary`, etc.
+   - Every component references semantic tokens (`--bg-surface`, `--text-heading`), never brand colors directly. Semantic tokens point to brand colors. This means swapping orange for blue = changing one line in tokens.css, not 30 components.
+   - Document the color addition checklist in CSS.md:
+     1. Add `--brand-[name]` to tokens.css
+     2. Add `@theme` entry in app.css so Tailwind generates `bg-brand-[name]`, `text-brand-[name]`, etc.
+     3. Map to semantic tokens if it replaces an existing role
+     4. Update CSS.md token registry
+   - Audit current codebase for any component that hardcodes `brand-primary` where it should use a semantic token (e.g., a section accent that could vary per-service)
+
+**Acceptance Criteria:**
+
+- [ ] Zero hardcoded hex colors in any `.svelte` file (all through tokens or @theme)
+- [ ] CSS.md exists and covers all tokens, rules, and patterns
+- [ ] Clear separation: tokens.css (semantic/theme), app.css (brand/global), scoped (component-specific)
+- [ ] `bun run build` succeeds, site looks identical before/after
+- [ ] `bun run test` passes
+- [ ] Adding a new brand color requires exactly 2 file edits (tokens.css + app.css) and zero component changes
+- [ ] Color addition checklist documented in CSS.md
+
+---
+
+#### Slice 13b — Service Layer Extraction
+
+**Status:** planned **Est. Sessions:** 1 **Depends on:** 13a
+
+**What:** Split data definition from data access. Every content type gets `src/lib/services/*.service.ts` with typed query functions (`getAllProjects()`, `getProjectBySlug()`, `getProjectsByService()`, etc.). Route loaders call services, never data files directly. This is the Slice 14 seam: swap service implementation from reading `.ts` files to reading Keystatic Reader API, everything downstream stays.
+
+**Acceptance Criteria:**
+
+- [ ] No route loader imports from `$lib/data/*.ts` directly (all through services)
+- [ ] Service functions are typed with explicit return types
+- [ ] Every service function has JSDoc
+- [ ] `bun run test` passes
+
+---
+
+#### Slice 13c — Zod Schema Validation
+
+**Status:** planned **Est. Sessions:** 0.5 **Depends on:** 13b
+
+**What:** Every content type gets a Zod schema in `src/lib/schemas/`. Services parse raw data through schemas before returning to loaders. TypeScript interfaces catch build-time errors; Zod catches runtime errors from external data. When Slice 14 feeds content from Keystatic JSON, the schema layer guarantees components never receive malformed data. Shared schemas: `LocalizedStringSchema`, `LocaleSchema`.
+
+**Acceptance Criteria:**
+
+- [ ] Zod schemas exist for Project, Service, BlogPost, SiteMeta, Content, LocalizedString
+- [ ] Services validate data through schemas before returning
+- [ ] Schema validation errors produce clear messages (not generic Zod dumps)
+- [ ] `bun run check` + `bun run test` pass
+
+---
+
+#### Slice 13d — Component API Standardization + Shared UI Shells
+
+**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 13c
+
+**What:** Audit all components. Props use exported TypeScript interfaces. Shared prop patterns extracted: `WithAnimation`, `WithLocale`, `WithTestId`. Blog, work, and services pages repeat layout patterns. Extract into composable shells with slots: `ListingShell` (sidebar + grid + empty state), `DetailShell` (hero + sections + nav + related), `FilterChips` (reusable tag/filter bar), `CardBase` (shared hover/reveal/boop pattern), `CollapsibleSection` (shared with ARIA), `EmptyState`.
+
+**Acceptance Criteria:**
+
+- [ ] Every component exports its props interface
+- [ ] No inline prop types anywhere
+- [ ] Shared ListingShell used by blog, work, and services listing pages
+- [ ] Shared CardBase used by all card variants
+- [ ] All content access through `resolveLocale()`
+- [ ] `bun run test` passes
+
+---
+
+#### Slice 13e — Motion Consolidation
+
+**Status:** planned **Est. Sessions:** 1 **Depends on:** 13d
+
+**What:** Extract ad-hoc inline GSAP calls into reusable timeline factories: `createRevealTimeline()`, `createStaggerTimeline()`, `createMorphAnimation()`. All enforce `prefers-reduced-motion` at the utility level so individual components don't need to check. Target: 80%+ of components use factories instead of raw GSAP.
+
+**Acceptance Criteria:**
+
+- [ ] Motion factories exist in `src/lib/motion/factories/`
+- [ ] 80%+ of components use factories instead of raw GSAP
+- [ ] Reduced-motion enforcement at factory level, not duplicated per component
+- [ ] All existing animations behave identically
+- [ ] `bun run test` passes
+
+---
+
+#### Slice 13f — Test Architecture + Documentation
+
+**Status:** planned **Est. Sessions:** 0.5-1 **Depends on:** 13e
+
+**What:** Test factories for all content types (`createMockProject()`, `createMockBlogPost()`, `createMockService()`) so tests don't repeat data setup. Service tests mock the data source so they work unchanged when Slice 14 swaps it. Updated ARCHITECTURE.md with layer diagram and import rules. `src/lib/README.md` explaining the import hierarchy. Optimize test architecture to avoid slow testing but also that testing covers at least 90% of our code.
+
+**Acceptance Criteria:**
+
+- [ ] Test factories exist for all content types
+- [ ] Service tests mock data source (not real data files)
+- [ ] Consistent test naming: `*.test.ts`
+- [ ] ARCHITECTURE.md reflects layered system with import rules table
+- [ ] `src/lib/README.md` explains the import hierarchy
+- [ ] `bun run test` passes with new test structure
+- [ ] `bun run check` passes
+
+---
+
+**Scope (all subslices combined):** CSS consolidation, CSS.md, service layer, Zod schemas, shared UI shells, motion factories, test utilities, documentation. Does NOT include CMS integration, new features, or visual changes.
+
+**You'll learn:** CSS architecture documentation, service layer pattern (ports & adapters), Zod runtime validation ("parse, don't validate"), DRY component composition with Svelte 5 snippets/slots, test factory pattern, hexagonal architecture lite.
+
+### Slice 17 — Cloud Content Layer: Keystatic CMS
+
+**Status:** planned **Depends on:** 13 **Est. Sessions:** 2
+
+**Decision: Keystatic** — Git-based CMS, content stored as JSON/Markdown in the repo, visual editor via `keystatic-sveltekit` npm package (confirmed compatible with SvelteKit 2 + Svelte 5). $0 forever. No external service dependency. If Keystatic disappears, content remains as plain files.
+
+**How it works:**
+
+1. `keystatic.config.ts` defines collections: projects, services, blog posts, site meta, about content
+2. Collections use `relationship` fields to link between each other (project → services, service → related projects, blog post → tags, etc.)
+3. Editing: visual editor at `/keystatic` route during dev (disabled in production)
+4. Publishing: edit in Keystatic → commits JSON/MD to repo → Vercel auto-deploys
+5. Production reads: Keystatic Reader API in service layer (replaces direct `.ts` file imports)
+6. Zod schemas from Slice 13 validate all content at build time
+
+**Content types mapped to Keystatic collections:**
+
+- `projects` — slug, title (LocalizedString), oneLiner, services (relationship), tags, stack, links, status
+- `services` — id, title (LocalizedString), description, stack, relatedProjects (relationship), detail sections
+- `blog-posts` — slug, title (LocalizedString), date, excerpt, category, tags, lang, body (Markdoc/MD)
+- `site-meta` — name, tagline, description, social links, contact info
+- `content` — hero text, about text, CTA text, now status (all LocalizedString)
+- `other, etc`
+
+**What changes from Slice 13:**
+
+- Service layer implementations swap from reading `.ts` data files to Keystatic Reader API
+- Schemas, types, components, route loaders, tests: ZERO changes
+- This is the payoff of the Slice 13 seam
 
 **Key requirements:**
 
-- Content types: projects, services, blog posts, site metadata, skill journey, about info, anything and everything that can make the site be changed on the go. Front-end, back-end and data layer are separate but recomposes on any one's change.
-- Editing: visual/familiar interface (not code editors)
-- Publishing: edit → save → site auto-rebuilds on Vercel
-- Schema: matches existing TypeScript interfaces (Project, Service, BlogPost, SiteMeta)
-- Fallback: if CMS is down, site still builds from last-known content
-- Locale language built in strucuture
+- Content relationships: project ↔ service bidirectional, service → stack items, blog → tags
+- Shared tech stack vocabulary: single source of truth list, referenced by projects and services
+- Locale support: LocalizedString fields in all collections (en required, fr/es optional)
+- Fallback: if Keystatic Reader fails, site builds from last committed content files (they're in the repo)
+- Dev-only CMS: Keystatic admin UI disabled in production builds (no attack surface)
 
-**Scope:** CMS selection, content schema migration, build-time data fetching, webhook-triggered rebuilds, editorial workflow documentation for Yesid.
+**Scope:** Keystatic config, collection schemas, content migration from .ts to JSON/MD, service layer swap, Reader API integration, editorial workflow documentation.
 
-**Why after Slice 12:** Standardization ensures all content is already cleanly data-driven and every content type has a consistent interface. The cloud layer plugs into those interfaces — it doesn't create them.
+**Why after Slice 13:** The service layer IS the contract. Slice 13 builds it, Slice 14 plugs into it. Without Slice 13's seam, adding Keystatic would require touching every route loader and component.
 
-### Slice 14 — Mobile UI/UX Optimization
+**You'll learn:** Git-based CMS patterns, Keystatic Reader API, content modeling with relationships, Markdoc rendering in Svelte, build-time data fetching.
+
+### Slice 18 — Mobile UI/UX Optimization
 
 **Status:** planned
 Full mobile audit: touch targets, scroll behavior, animation performance on low-end devices, viewport issues, text readability, tap feedback. SkillsJourney scroll tuning (velocity detection, adaptive multipliers). Responsive breakpoint audit for all components. Test at 375px, 390px, 414px, 768px.
 
 **Scope:** Touch interaction polish, scroll performance, responsive fixes, mobile-specific animation tuning, viewport debugging.
 
-### Slice 15 — Scroll Smoothness + Animation Polish
+### Slice 19 — Scroll Smoothness + Animation Polish
 
 **Status:** planned
 Fine-tune all scroll-linked animations across the site. Consider ScrollSmoother plugin. Optimize GSAP tween count. Fix any jank on 60fps targets. Polish snap behavior, scrub timing, and transition curves. Performance profiling with Chrome DevTools.
 
 **Scope:** Animation timing polish, scroll performance optimization, GSAP tween audit, frame rate verification.
 
-### Slice 16 — Repo Cleanup for Public Release
+### Slice 20 — Repo Cleanup for Public Release
 
 Strip pipeline/workflow artifacts. Public repo = clean portfolio site.
 
@@ -447,7 +706,7 @@ Yesid confirms backup is done. Only then does Claude Code proceed.
 
 **Tests:** Existing tests pass. Build succeeds. No references to removed files.
 
-### Slice 17 — Deploy to Vercel + DNS Cutover
+### Slice 21 — Deploy to Vercel + DNS Cutover
 
 Connect repo to Vercel. Configure build (Bun). Auto-deploy main, preview on PRs. Test preview. Update yesid.dev DNS. Verify live + CI/CD end to end.
 
@@ -569,6 +828,10 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 | 2026-04-05 | MorphSVGPlugin hover morph on blog SVGs          | Already loaded from Slice B+ — reuses plugin for delightful micro-interaction on hover/tap                                                  |
 | 2026-04-05 | Client-side blog filtering (search/tags/date/lang)| 7 posts total — no benefit to server-side filtering; keeps UX snappy                                                                       |
 | 2026-04-05 | Two blog content lanes (professional + personal) | Separates brand-facing technical content from personal interests; different accent colors (#E07800 vs #FFB627)                              |
+| 2026-04-07 | Brand = Digital Infrastructure (not just data/SQL) | Current focus is data engineering + SQL, but the brand umbrella covers databases, dashboards, pipelines, internal tools, web systems. All copy reflects broader positioning. |
+| 2026-04-07 | Slice 10 = Home page rework after About/Contact  | Building all route pages gave clarity on site identity. Home (post-hero) was built before subsites. Rework with full context. Archive SkillsJourney (keep code, disable render, bring back optimized later). |
+| 2026-04-07 | No standalone tech stack page                    | About page widget + service detail pages + blog posts cover tools better than a resume-style page. Anti-pattern per conversion research.    |
+| 2026-04-07 | Live weather widget (OpenWeatherMap free tier)    | API key in .env, server-side fetch in +page.server.ts, graceful fallback. Unique personality touch on About page.                           |
 
 
 ## Rules
