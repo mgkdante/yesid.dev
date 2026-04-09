@@ -1,6 +1,6 @@
 <!--
   Floating pill navigation. Centered at top: 16px, full-capsule shape.
-  Three primary links + progress rail below. Menu toggle for overlay (Task 4).
+  Three primary links. Menu toggle for overlay (Task 4).
   Wordmark letters animated via GSAP SplitText on hover (4 rotating effects).
 -->
 <script lang="ts">
@@ -26,14 +26,6 @@
 	function isActive(href: string): boolean {
 		if (href === '/') return pathname === '/';
 		return pathname.startsWith(href);
-	}
-
-	/** Which progress rail segment is active based on current route. -1 = none. */
-	function activeSegment(): number {
-		if (pathname === '/services' || pathname.startsWith('/services/')) return 0;
-		if (pathname === '/work' || pathname.startsWith('/work/')) return 1;
-		if (pathname === '/tech-stack') return 2;
-		return -1;
 	}
 
 	// Lock body scroll when menu is open
@@ -190,19 +182,6 @@
 		</button>
 	</div>
 
-	<!-- Progress rail -->
-	<div
-		data-testid="nav-progress-rail"
-		class="nav-progress-rail pointer-events-none mt-2 flex gap-[3px]"
-	>
-		{#each [0, 1, 2] as idx}
-			<div
-				class="h-[2px] flex-1 rounded-sm transition-colors duration-300
-					{idx === 2 ? 'hidden min-[480px]:block' : ''}
-					{activeSegment() === idx ? 'bg-[#E07800]' : 'bg-[rgba(255,255,255,0.05)]'}"
-			></div>
-		{/each}
-	</div>
 </nav>
 
 <style>
@@ -229,10 +208,6 @@
 		font-size: 13.5px;
 		font-weight: 500;
 		white-space: nowrap;
-	}
-
-	.nav-progress-rail {
-		width: 280px;
 	}
 
 	:global(.nav-link-glow) {

@@ -57,8 +57,4 @@ describe('Nav — Pill Structure', () => {
 		expect(screen.getByTestId('nav-menu-toggle')).toHaveAttribute('aria-label', 'Open menu');
 	});
 
-	it('renders the progress rail', () => {
-		render(Nav);
-		expect(screen.getByTestId('nav-progress-rail')).toBeInTheDocument();
-	});
 });
