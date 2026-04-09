@@ -216,15 +216,16 @@ This is a multi-session slice. Estimated sub-slices:
 | Sub-slice | Scope | Sessions |
 |---|---|---|
 | 13a | Hero fixes (scroll offset, blink sync, headline) + remove old sections + Lenis setup + full-bleed layout | 1 |
-| 13b | Manifesto section (SplitText, full-viewport, capability pills) | 1 |
-| 13c | Proof Reel (featured project cards, impact metrics, scroll animation) | 1 |
-| 13d | Services grid (6 cards, hover, links to /services/[id]) | 1 |
-| 13e | Blog Teaser (2-3 latest posts, minimal strip) + About Strip (narrative brainstorm, layout, animation) | 1-2 |
-| 13f | Dual CTA (buttons, social links, glow effect) | 1 |
-| 13g | Polish pass (section transitions, mobile QA, performance, smooth scroll tuning) | 1 |
-| 13h | Closing (docs, handoff, learn docs, tests, commit) | 1 |
+| 13b | Hero viewport height fix — dvh/svh/lvh, env(safe-area-inset-*), mobile browser chrome shift | 1 |
+| 13c | Manifesto section (SplitText, full-viewport, capability pills) | 1 |
+| 13d | Proof Reel (featured project cards, impact metrics, scroll animation) | 1 |
+| 13e | Services grid (6 cards, hover, links to /services/[id]) | 1 |
+| 13f | Blog Teaser (2-3 latest posts, minimal strip) + About Strip (narrative brainstorm, layout, animation) | 1-2 |
+| 13g | Dual CTA (buttons, social links, glow effect) | 1 |
+| 13h | Polish pass (section transitions, mobile QA, performance, smooth scroll tuning) | 1 |
+| 13i | Closing (docs, handoff, learn docs, tests, commit) | 1 |
 
-**Total: ~8-9 sessions.** Each sub-slice starts with a design brainstorm for that section's specific details (animation timing, exact layout, mobile behavior, hover effects, text styling). Nothing is implemented without Yesid's approval on the design for that section first.
+**Total: ~9-10 sessions.** Each sub-slice starts with a design brainstorm for that section's specific details (animation timing, exact layout, mobile behavior, hover effects, text styling). Nothing is implemented without Yesid's approval on the design for that section first.
 
 ### Multi-Session Quality Protocol
 

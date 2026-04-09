@@ -405,7 +405,33 @@ git commit -m "feat(slice-13a): foundation — hero fixes, lenis, teardown for h
 
 ---
 
-## Sub-slice 13b: Manifesto Section
+## Sub-slice 13b: Hero Viewport Height Fix
+
+> **Goal:** Fix hero scroll animation shifting on mobile browsers when browser chrome (address bar, toolbar) hides/shows. Replace `100vh`/`h-screen` with modern viewport units.
+
+### Task 1: Replace viewport height units in HeroBanner
+
+**Files:**
+
+- Modify: `src/lib/components/HeroBanner.svelte`
+- **Step 1:** Replace `h-screen` with `h-[100svh]` on pin container (with `100vh` fallback)
+- **Step 2:** Update `min-height` on outer section to use `100svh` for reduced-motion branch
+- **Step 3:** Add `padding-bottom: env(safe-area-inset-bottom, 0px)` for notched devices
+- **Step 4:** Run `bun run test && bun run check`
+
+### Task 2: Add CSS viewport height fallback utility
+
+**Files:**
+
+- Modify: `src/app.css`
+- **Step 1:** Add `--vh-full: 100svh` custom property with `@supports not` fallback to `100vh`
+- **Step 2:** Run `bun run test && bun run check`
+
+**Full spec:** `docs/slices/slice-13b-viewport-fix.md`
+
+---
+
+## Sub-slice 13c: Manifesto Section
 
 > **Session start:** Brainstorm exact manifesto text, SplitText animation style, pill design, and mobile layout using visual companion before writing any code.
 
@@ -457,7 +483,7 @@ Run: `bun run test`
 
 ---
 
-## Sub-slice 13c: Proof Reel
+## Sub-slice 13d: Proof Reel
 
 > **Session start:** Brainstorm card layout, which projects to feature, how impact metrics display, hover effects, and mobile stacking using visual companion.
 
@@ -483,7 +509,7 @@ Run: `bun run test`
 
 ---
 
-## Sub-slice 13d: Services Grid
+## Sub-slice 13e: Services Grid
 
 > **Session start:** Brainstorm grid layout, card hover effects, whether to use existing service SVGs, and mobile behavior using visual companion.
 
@@ -509,7 +535,7 @@ Run: `bun run test`
 
 ---
 
-## Sub-slice 13e: Blog Teaser + About Strip
+## Sub-slice 13f: Blog Teaser + About Strip
 
 > **Session start:** Brainstorm blog teaser format (titles only? with dates? horizontal or vertical?), about strip narrative text, and photo/avatar treatment using visual companion.
 
@@ -553,7 +579,7 @@ Run: `bun run test`
 
 ---
 
-## Sub-slice 13f: Dual CTA
+## Sub-slice 13g: Dual CTA
 
 > **Session start:** Brainstorm CTA layout, button copy, background glow effect, and social links styling using visual companion.
 
@@ -586,7 +612,7 @@ Run: `bun run test`
 
 ---
 
-## Sub-slice 13g: Polish Pass
+## Sub-slice 13h: Polish Pass
 
 > **Session start:** Review full page flow from hero to CTA. Identify transition issues, mobile problems, performance bottlenecks.
 
@@ -615,7 +641,7 @@ Run: `bun run test`
 
 ---
 
-## Sub-slice 13h: Closing
+## Sub-slice 13i: Closing
 
 ### Task 1: Documentation
 
