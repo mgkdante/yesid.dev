@@ -10,9 +10,36 @@ import { svelteTesting } from '@testing-library/svelte/vite';
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), svelteTesting()],
 	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}'],
-		environment: 'jsdom',
-		globals: true,
-		setupFiles: ['./src/tests/setup.ts']
-	}
+		// Two projects: "data" for pure logic tests (node, fast),
+		// "dom" for component/motion tests (happy-dom, full mocks).
+		// See docs/superpowers/specs/2026-04-08-testing-optimization-design.md
+		projects: [
+			{
+				extends: true,
+				test: {
+					name: 'data',
+					include: ['src/lib/data/**/*.test.ts'],
+					environment: 'node',
+					globals: true,
+					pool: 'threads',
+					setupFiles: ['./src/tests/setup.data.ts'],
+				},
+			},
+			{
+				extends: true,
+				test: {
+					name: 'dom',
+					include: [
+						'src/lib/components/**/*.test.ts',
+						'src/lib/motion/**/*.test.ts',
+						'src/routes/**/*.test.ts',
+					],
+					environment: 'happy-dom',
+					globals: true,
+					pool: 'threads',
+					setupFiles: ['./src/tests/setup.dom.ts'],
+				},
+			},
+		],
+	},
 });

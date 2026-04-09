@@ -6,7 +6,7 @@ import '@testing-library/jest-dom/vitest';
 import '@testing-library/svelte/vitest';
 import { vi } from 'vitest';
 
-// jsdom does not implement HTMLCanvasElement.getContext. lottie-web's CJS module code
+// happy-dom does not implement HTMLCanvasElement.getContext. lottie-web's CJS module code
 // accesses canvas context at import time. Provide a minimal stub to prevent the
 // "Cannot set properties of null" error.
 HTMLCanvasElement.prototype.getContext = (() => {
@@ -42,20 +42,9 @@ HTMLCanvasElement.prototype.getContext = (() => {
 	};
 })() as unknown as typeof HTMLCanvasElement.prototype.getContext;
 
-// jsdom does not implement window.matchMedia. Provide a no-op stub so any module
-// that reads (prefers-reduced-motion) at import time doesn't crash. Individual tests
-// that need specific values override this with their own vi.stubGlobal / Object.defineProperty.
-Object.defineProperty(window, 'matchMedia', {
-	writable: true,
-	value: (query: string) => ({
-		matches: false,
-		media: query,
-		addEventListener: () => {},
-		removeEventListener: () => {}
-	})
-});
+// NOTE: matchMedia stub REMOVED — happy-dom implements it natively (v9.19.0+).
 
-// jsdom does not implement IntersectionObserver. Stub it so LottiePlayer's 'scroll'
+// happy-dom does not implement IntersectionObserver. Stub it so LottiePlayer's 'scroll'
 // trigger does not throw in tests.
 vi.stubGlobal(
 	'IntersectionObserver',
@@ -66,7 +55,7 @@ vi.stubGlobal(
 	}
 );
 
-// jsdom does not implement ResizeObserver. Stub it so StackConnections' debounced
+// happy-dom does not implement ResizeObserver. Stub it so StackConnections' debounced
 // resize handler doesn't crash in tests.
 vi.stubGlobal(
 	'ResizeObserver',
@@ -77,9 +66,9 @@ vi.stubGlobal(
 	}
 );
 
-// Mock GSAP and its plugins for the jsdom test environment.
+// Mock GSAP and its plugins for the happy-dom test environment.
 // GSAP relies on DOM measurement APIs (getBoundingClientRect, computed styles, scroll
-// position) that jsdom does not fully support. Actions and components that use GSAP
+// position) that happy-dom does not fully support. Actions and components that use GSAP
 // are tested for correct invocation, not for visual animation output — that belongs
 // to Playwright E2E tests in slice 10.
 vi.mock('gsap', () => {
@@ -136,7 +125,7 @@ vi.mock('gsap/CustomEase', () => ({
 }));
 
 // MorphSVGPlugin morphs SVG <path> elements. convertToPath converts basic
-// SVG shapes (rect, circle, etc.) to path elements. In jsdom we stub it
+// SVG shapes (rect, circle, etc.) to path elements. In happy-dom we stub it
 // as a no-op since there's no real SVG rendering.
 vi.mock('gsap/MorphSVGPlugin', () => ({
 	MorphSVGPlugin: {
@@ -145,7 +134,7 @@ vi.mock('gsap/MorphSVGPlugin', () => ({
 }));
 
 // SplitText splits text nodes into chars/words/lines for GSAP animation.
-// Return a proper class stub so `new SplitText(...)` works in jsdom tests.
+// Return a proper class stub so `new SplitText(...)` works in happy-dom tests.
 // The real SplitText measures DOM nodes; in tests we only care that the
 // interface (chars, words, lines, revert) exists, not the animation output.
 vi.mock('gsap/SplitText', () => ({
@@ -158,7 +147,7 @@ vi.mock('gsap/SplitText', () => ({
 }));
 
 // Mock @threlte/core for component tests.
-// Threlte requires WebGL context which jsdom does not provide.
+// Threlte requires WebGL context which happy-dom does not provide.
 vi.mock('@threlte/core', () => ({
 	Canvas: vi.fn(),
 	T: vi.fn(),
@@ -195,7 +184,7 @@ vi.mock('postprocessing', () => ({
 }));
 
 // Mock lottie-web for component tests.
-// lottie-web uses SVG rendering and canvas APIs unavailable in jsdom.
+// lottie-web uses SVG rendering and canvas APIs unavailable in happy-dom.
 vi.mock('lottie-web', () => ({
 	default: {
 		loadAnimation: vi.fn(() => ({

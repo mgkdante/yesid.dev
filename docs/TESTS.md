@@ -4,6 +4,33 @@ Last updated: 2026-04-08
 Total tests: 480
 Runner: Vitest + Bun (`bun run test`)
 
+## Test Architecture
+
+Tests are split into two Vitest projects for performance (slice 10d+):
+
+| Project | Environment | Setup File | Scope | Files |
+|---------|-------------|------------|-------|-------|
+| **data** | `node` | `src/tests/setup.data.ts` | Pure data/logic tests — no DOM | 9 |
+| **dom** | `happy-dom` | `src/tests/setup.dom.ts` | Component, motion, and route tests | 42 |
+
+### Running tests
+
+| Command | What It Does |
+|---------|-------------|
+| `bun run test` | Run all projects |
+| `bunx vitest run --project data` | Run only data tests |
+| `bunx vitest run --project dom` | Run only DOM tests |
+| `bunx vitest run src/path/to/file.test.ts` | Run specific file |
+
+### Config
+
+- `vite.config.ts` — `test.projects` array defines both projects
+- Pool: `threads` (faster IPC than default `forks`, safe since all native deps are mocked)
+- DOM environment: `happy-dom` (2-4x faster than jsdom, Svelte 5 compatible)
+- Data environment: `node` (no DOM overhead for pure logic tests)
+
+---
+
 ## Test Structure
 
 Convention: tests live next to the code they test (co-located).

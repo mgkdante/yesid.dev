@@ -1,10 +1,9 @@
 # Test Suite Guide
 
-Last updated: 2026-04-06
-Total test files: 42
-Total tests: 329
+Last updated: 2026-04-08
+Total test files: 51
+Total tests: 480
 Runner: Vitest + Bun (`bun run test`)
-Setup file: `src/tests/setup.ts` (configured in `vite.config.ts` via `test.setupFiles`)
 
 ---
 
@@ -12,24 +11,39 @@ Setup file: `src/tests/setup.ts` (configured in `vite.config.ts` via `test.setup
 
 ### How the Test Runner Is Configured
 
-Vitest is configured inside `vite.config.ts` (not a separate `vitest.config.ts`):
+Vitest is configured inside `vite.config.ts` using two **projects** (split for performance in slice 10d+):
 
-- **Environment:** `jsdom` — a JavaScript implementation of a browser DOM. It doesn't render pixels, execute CSS, or support WebGL. Tests run in Node.js with a fake browser API.
-- **Globals:** `true` — `describe`, `it`, `expect` are available without importing from `vitest` (though most test files import them explicitly anyway).
-- **Setup file:** `src/tests/setup.ts` runs before every test file. It patches jsdom gaps and mocks libraries that require a real browser.
+| Project | Environment | Setup File | What It Covers |
+|---------|-------------|------------|---------------|
+| **data** | `node` | `src/tests/setup.data.ts` | Pure data/logic tests (9 files). No DOM, no mocks. |
+| **dom** | `happy-dom` | `src/tests/setup.dom.ts` | Component, motion, and route tests (42 files). Full mock suite. |
+
+Other config:
+- **Pool:** `threads` — faster IPC than default `forks`. Safe because all native deps (GSAP, Three.js, lottie) are mocked.
+- **Globals:** `true` — `describe`, `it`, `expect` are available without importing from `vitest`.
 - **svelteTesting() plugin:** Ensures Svelte components compile to their browser (not SSR) entry points during tests.
 
-### What `src/tests/setup.ts` Does
+### Setup Files
 
-The setup file solves one problem: **jsdom is not a real browser.** Many libraries crash on import because they expect canvas rendering, WebGL, CSS media queries, or SVG measurement. The setup file stubs these out so tests can focus on structure and behavior, not rendering.
+**`src/tests/setup.data.ts`** (~5 lines) — only imports jest-dom matchers. Data tests run in Node with zero DOM overhead.
+
+**`src/tests/setup.dom.ts`** (~200 lines) — patches happy-dom gaps and mocks libraries that require a real browser. Detailed below.
+
+**When adding a new mock:** Add it to `setup.dom.ts`. The `setup.data.ts` file should stay minimal — data tests should never need DOM APIs or library mocks.
+
+### What `src/tests/setup.dom.ts` Does
+
+The setup file solves one problem: **happy-dom is not a real browser.** Many libraries crash on import because they expect canvas rendering, WebGL, or SVG measurement. The setup file stubs these out so tests can focus on structure and behavior, not rendering.
 
 #### DOM API Stubs
 
-| What's Stubbed | Why jsdom Needs It | What the Stub Returns |
+| What's Stubbed | Why happy-dom Needs It | What the Stub Returns |
 |---------------|--------------------|-----------------------|
-| `HTMLCanvasElement.prototype.getContext` | lottie-web calls `getContext('2d')` at import time. jsdom returns `null`, causing a crash. | A fake 2D context object with no-op methods (`fillRect`, `drawImage`, `arc`, etc.) and `measureText` returning `{ width: 0 }`. |
-| `window.matchMedia` | Many motion modules check `(prefers-reduced-motion: reduce)` at import time. jsdom doesn't implement `matchMedia`. | An object with `matches: false` (animations enabled by default), plus no-op `addEventListener`/`removeEventListener`. Individual tests override this when they need `matches: true`. |
-| `IntersectionObserver` | `LottiePlayer`'s scroll trigger uses IntersectionObserver, which jsdom doesn't implement. | A class with no-op `observe()`, `unobserve()`, `disconnect()` methods. |
+| `HTMLCanvasElement.prototype.getContext` | lottie-web calls `getContext('2d')` at import time. happy-dom returns `null`, causing a crash. | A fake 2D context object with no-op methods (`fillRect`, `drawImage`, `arc`, etc.) and `measureText` returning `{ width: 0 }`. |
+| `IntersectionObserver` | Kept for test controllability — happy-dom has it but without real layout, callbacks don't fire meaningfully. | A class with no-op `observe()`, `unobserve()`, `disconnect()` methods. |
+| `ResizeObserver` | Same reasoning as IntersectionObserver — our stub is simpler and predictable. | A class with no-op `observe()`, `unobserve()`, `disconnect()` methods. |
+
+**Not stubbed (happy-dom provides natively):** `window.matchMedia` — happy-dom implements it since v9.19.0. Individual tests can still override it with `Object.defineProperty` when they need `matches: true`.
 
 #### Animation Library Mocks (GSAP)
 
@@ -203,7 +217,7 @@ describe('Footer', () => {
 
 ### How Mocks Are Used
 
-**Global mocks** (from `src/tests/setup.ts`) are active in every test file. They handle libraries that crash on import in jsdom — GSAP, Threlte, lottie-web, postprocessing. You don't need to set these up per-file.
+**Global mocks** (from `src/tests/setup.dom.ts`) are active in every DOM project test file. They handle libraries that crash on import in happy-dom — GSAP, Threlte, lottie-web, postprocessing. You don't need to set these up per-file. Data project tests do not have these mocks.
 
 **Per-test overrides** are used when a test needs a specific value. The most common override is `window.matchMedia` to simulate reduced-motion preferences:
 
@@ -260,7 +274,7 @@ Key pattern: when a module reads `matchMedia` at import time, you must call `vi.
 
 5. **Update `docs/TESTS.md`** with the new test entries.
 
-No additional configuration is needed — the `src/**/*.test.ts` glob in `vite.config.ts` picks up any test file automatically.
+No additional configuration is needed — the `include` globs in each Vitest project pick up test files automatically. Data tests go in `src/lib/data/`, component tests go in `src/lib/components/`, and motion tests go in `src/lib/motion/`.
 
 ---
 
@@ -268,11 +282,12 @@ No additional configuration is needed — the `src/**/*.test.ts` glob in `vite.c
 
 | Command | What It Does |
 |---------|-------------|
-| `bun run test` | Run all tests once and exit |
-| `bun run test -- --run src/lib/components/Footer.test.ts` | Run one specific test file |
-| `bun run test -- --watch` | Re-run tests on file changes (interactive mode) |
-| `bun run test -- --reporter=verbose` | Show every test name instead of just pass/fail counts |
-| `bun run test -- --coverage` | Generate a coverage report |
+| `bun run test` | Run all tests (both projects) once and exit |
+| `bunx vitest run --project data` | Run only data project tests |
+| `bunx vitest run --project dom` | Run only DOM project tests |
+| `bunx vitest run src/lib/components/Footer.test.ts` | Run one specific test file |
+| `bun run test:watch` | Re-run tests on file changes (interactive mode) |
+| `bunx vitest run --reporter=verbose` | Show every test name instead of just pass/fail counts |
 | `bun run check` | Run `svelte-check` for type errors (not tests, but required before commits) |
 
 ### Key Imports
