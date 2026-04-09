@@ -88,6 +88,6 @@ export const errorPageContent: ErrorPageContent = {
 	suggestions: [
 		{ label: { en: 'Services', fr: 'Services', es: 'Servicios' }, href: '/services' },
 		{ label: { en: 'Work', fr: 'Projets', es: 'Proyectos' }, href: '/work' },
-		{ label: { en: 'Home', fr: 'Accueil', es: 'Inicio' }, href: '/' }
+		{ label: { en: 'Contact', fr: 'Contact', es: 'Contacto' }, href: '/contact' }
 	]
 } as const;

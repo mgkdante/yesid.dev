@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-09 (Slice 10)
+**Last updated:** 2026-04-09 (Slice 11)
 
 ## Stack
 
@@ -37,9 +37,12 @@ src/
 │   │   ├── content.ts   # ← Slice 06d: centralized UI strings as LocalizedString (hero, about, CTA)
 │   │   ├── meta.ts      # SiteMeta (name, tagline, description, links)
 │   │   ├── tech-stack.ts # ← Slice 10: markdown parser for stack items + scenarios, graph helpers
+│   │   ├── nav.ts       # ← Slice 11: nav links, menu items, 404 error page copy (all LocalizedString)
 │   │   └── index.ts     # Barrel re-export — import from '$lib/data'
 │   ├── components/      # ← Added in Slice 03, enhanced in Slices 04-06, extended in 06d
-│   │   ├── Nav.svelte           # fixed nav bar: wordmark, links, responsive hamburger menu
+│   │   ├── Nav.svelte           # ← Slice 11: floating pill nav — wordmark, adaptive links, menu toggle, SplitText anim
+│   │   ├── MenuOverlay.svelte  # ← Slice 11: fullscreen metro dashboard menu overlay (CSS transitions, stagger)
+│   │   ├── ConstructionScene.svelte # ← Slice 11: inline SVG construction illustration for 404
 │   │   ├── Footer.svelte        # minimal footer: brand name, year, social links, 3D model attribution
 │   │   ├── TagList.svelte       # string[] → stagger-revealed pill badges
 │   │   ├── SectionHeader.svelte # h2 heading + optional subtitle
@@ -129,6 +132,7 @@ src/
 │       ├── building-a-transit-pipeline.md
 │       └── anime-data-viz-challenge.md
 └── routes/
+    ├── +error.svelte    # ← Slice 11: branded 404 page — construction scene, hazard tapes, route suggestions
     ├── +layout.svelte   # Root layout: Nav + ScrollRail + page content + Footer + page transitions
     ├── +page.ts         # SSR disabled (Three.js/GSAP need browser APIs)
     ├── +page.svelte     # Home: hero + SkillsJourney horizontal scroll + services + projects + about + blog + CTA

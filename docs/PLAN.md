@@ -183,36 +183,36 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 ## Slices
 
 
-| #   | Name                                                   | Status   | Depends On | Est. Sessions |
-| --- | ------------------------------------------------------ | -------- | ---------- | ------------- |
-| 01  | Project scaffold + brand + CI pipeline                 | complete | none       | 1             |
-| 02  | Data layer (types, data files, site meta)              | complete | 01         | 1             |
-| 03  | Component library (basic, no motion)                   | complete | 01         | 1-2           |
-| 04  | Motion infrastructure + component enhancement          | complete | 02, 03     | 2-3           |
-| 05  | Layout shell + scroll progress rail                    | complete | 03, 04     | 1             |
-| 06  | Home page: train journey + hero 3D scene               | complete | 02, 04, 05 | 2-3           |
-| 06d | Home page redesign: Metro System Evolved               | complete | 06         | 3-4           |
-| A   | SVG metro hero (experimental)                          | complete | 06d        | 1             |
-| C   | Zoom transition between hero + journey                 | complete | A          | 1             |
-| B   | Animated wordmark + horizontal scroll CTA              | complete | A, C       | 2             |
-| B+  | Icon morphs + scroll UX for SkillsJourney              | complete | B          | 1-2           |
-| 07  | Blog system (markdown content + /blog routes)          | complete | 06d        | 1-2           |
-| 08  | Work pages (index + FLIP filter + detail)              | complete | 02, 03, 07 | 1-2           |
-| 09  | Services pages (/services + /services/[id])            | ready    | 02, 08     | 2-3           |
-| 09b | About + Contact pages (bento grid /about)              | complete | 02, 03, 09 | 3-4           |
-| 10  | Tech Stack page: "The Control Room" (/tech-stack)       | spec approved | 09b   | 6-8           |
-| 11  | Navbar research + redesign + 404 page                  | planned  | 10         | 1-2           |
-| 12  | Footer research + redesign                             | planned  | 11         | 1             |
-| 13  | Home page rework (post-hero, archive SkillsJourney)    | planned  | 10, 11, 12 | 2-3           |
-| 14  | Stack Builder Logic Engine (graph-based recs)          | draft    | 10, 13     | 3-4           |
-| 15  | SEO + metadata                                         | planned  | 07, 08, 09, 14 | 1-2       |
-| 16  | E2E test suite + performance + brand QA                | planned  | 07, 08, 09 | 1-2           |
-| 17  | Standardization (scalable, componentized, data-driven) | planned  | B+, 06d    | 1-2           |
-| 18  | Cloud content layer (edit + publish without code)      | planned  | 17         | 1-2           |
-| 19  | Mobile UI/UX optimization                              | planned  | 17, B+     | 1-2           |
-| 20  | Scroll smoothness + animation polish                   | planned  | B+, 19     | 1             |
-| 21  | Repo cleanup for public release                        | planned  | 15, 16     | 0.5           |
-| 22  | Deploy to Vercel + DNS cutover                         | planned  | 21         | 1             |
+| #   | Name                                                   | Status        | Depends On     | Est. Sessions |
+| --- | ------------------------------------------------------ | ------------- | -------------- | ------------- |
+| 01  | Project scaffold + brand + CI pipeline                 | complete      | none           | 1             |
+| 02  | Data layer (types, data files, site meta)              | complete      | 01             | 1             |
+| 03  | Component library (basic, no motion)                   | complete      | 01             | 1-2           |
+| 04  | Motion infrastructure + component enhancement          | complete      | 02, 03         | 2-3           |
+| 05  | Layout shell + scroll progress rail                    | complete      | 03, 04         | 1             |
+| 06  | Home page: train journey + hero 3D scene               | complete      | 02, 04, 05     | 2-3           |
+| 06d | Home page redesign: Metro System Evolved               | complete      | 06             | 3-4           |
+| A   | SVG metro hero (experimental)                          | complete      | 06d            | 1             |
+| C   | Zoom transition between hero + journey                 | complete      | A              | 1             |
+| B   | Animated wordmark + horizontal scroll CTA              | complete      | A, C           | 2             |
+| B+  | Icon morphs + scroll UX for SkillsJourney              | complete      | B              | 1-2           |
+| 07  | Blog system (markdown content + /blog routes)          | complete      | 06d            | 1-2           |
+| 08  | Work pages (index + FLIP filter + detail)              | complete      | 02, 03, 07     | 1-2           |
+| 09  | Services pages (/services + /services/[id])            | ready         | 02, 08         | 2-3           |
+| 09b | About + Contact pages (bento grid /about)              | complete      | 02, 03, 09     | 3-4           |
+| 10  | Tech Stack page: "The Control Room" (/tech-stack)      | spec approved | 09b            | 6-8           |
+| 11  | Navbar research + redesign + 404 page                  | planned       | 10             | 1-2           |
+| 12  | Footer research + redesign                             | planned       | 11             | 1             |
+| 13  | Home page rework (post-hero, archive SkillsJourney)    | planned       | 10, 11, 12     | 2-3           |
+| 14  | Stack Builder Logic Engine (graph-based recs)          | draft         | 10, 13         | 3-4           |
+| 15  | SEO + metadata                                         | planned       | 07, 08, 09, 14 | 1-2           |
+| 16  | E2E test suite + performance + brand QA                | planned       | 07, 08, 09     | 1-2           |
+| 17  | Standardization (scalable, componentized, data-driven) | planned       | B+, 06d        | 1-2           |
+| 18  | Cloud content layer (edit + publish without code)      | planned       | 17             | 1-2           |
+| 19  | Mobile UI/UX optimization                              | planned       | 17, B+         | 1-2           |
+| 20  | Scroll smoothness + animation polish                   | planned       | B+, 19         | 1             |
+| 21  | Repo cleanup for public release                        | planned       | 15, 16         | 0.5           |
+| 22  | Deploy to Vercel + DNS cutover                         | planned       | 21             | 1             |
 
 
 ## Slice Summaries
@@ -346,6 +346,7 @@ About page: full-viewport bento dashboard (6x4 CSS Grid, 10+ widget cards). Iden
 **Enhancements (keep existing components, enhance only):**
 
 Quick wins:
+
 - Add `use:tilt` to WorkCard (already built, unused)
 - Add `use:magnetic` to tag pills across blog + work
 - Add `use:ripple` to filter buttons
@@ -353,6 +354,7 @@ Quick wins:
 - Make WorkDetailSidebar tech tags clickable → `/work?tag=X`
 
 Medium effort:
+
 - Cursor-following glow on BlogRow + WorkCard (new `use:cursorGlow` action)
 - Reading progress bar on blog detail pages
 - Animated gradient border on WorkCard hover
@@ -361,12 +363,14 @@ Medium effort:
 - Heading anchor links (#) in BlogContent
 
 Metro/transit brand:
+
 - Metro line connector between blog listing rows
 - Station number badges on BlogRow + WorkCard
 - "Next Stop / Previous Stop" nav on WorkDetailPage (reuse ServiceNav pattern)
 - Animated dashed line separators (DrawSVGPlugin)
 
 DRY consolidation:
+
 - Extract shared collapsible section pattern into reusable component
 - Audit for hardcoded content → move to data layer
 - Standardize card hover patterns across WorkCard, BlogRow, ProjectMiniCard
@@ -387,6 +391,7 @@ DRY consolidation:
 **Three goals:** (1) Sell more via education-as-trust, (2) Marketing/SEO exposure via shareable interactive diagram, (3) Genuinely help people learn how tech stacks work.
 
 **Architecture:** "The Control Room" — 4-zone page:
+
 - Zone 1: Hero (terminal-style, stats strip, two CTAs)
 - Zone 2: Interactive diagram (CSS Grid tiers + SVG connections + GSAP DrawSVG/MotionPath)
 - Zone 3: Build Your Stack configurator (domain checkboxes → recommended stack + scenario card)
@@ -401,30 +406,24 @@ DRY consolidation:
 **Tasks (one session each):**
 
 1. **10a — Data layer + types + markdown content structure:** Expand `TechStackItem` interface, create `InfraLayer`, `DomainCluster`, `StackScenario` types. Set up `src/content/stack/` folder with markdown + frontmatter. Write `import.meta.glob` parser. Write all 34 markdown files (frontmatter only, prose TBD). Data validation tests.
-
 2. **10b — Diagram layout + static nodes:** `StackDiagram.svelte` with CSS Grid tiers. `StackNode.svelte` cards with icons. Tier labels (JetBrains Mono). Responsive: desktop grid → mobile vertical accordion. No animation yet, no connections. Component tests.
-
 3. **10c — SVG connections + GSAP animation:** `StackConnections.svelte` SVG overlay. Calculate node positions via `getBoundingClientRect()`. Draw cubic bezier paths. GSAP DrawSVG entrance animation (layer-by-layer stagger). MotionPath data packet dots. Resize handler. Reduced motion support.
-
 4. **10d — Node interaction + sidebar:** Hover states (scale, glow, connected highlight). Click → `StackSidebar.svelte` slides in with markdown content. Dimming of unrelated nodes. Keyboard navigation (Tab, Enter, Escape, arrows). Mobile: `StackBottomSheet.svelte` with tap + swipe.
-
 5. **10e — Domain filters:** `StackFilters.svelte` pill bar. Toggle behavior (multiple active). Bridge node treatment for multi-domain items. Filter + node interaction composability. Connection line filtering.
-
 6. **10f — Build Your Stack configurator:** `StackConfigurator.svelte` domain selector. `StackScenarioCard.svelte` summary. Pre-written scenarios + auto-generation fallback from `connectsTo` graph. Mini flow diagram in summary card with DrawSVG. CTA integration.
-
 7. **10g — Hero + CTA + page shell:** `TechStackPage.svelte` assembling all zones. Terminal-style hero. Stats strip. Action buttons. Bottom CTA (reuse AboutCta pattern). Route setup (`/tech-stack`). Full-page integration test.
-
 8. **10h — Content writing + polish:** Write all 34 mini-essays (What it is, Why I use it, In Practice). Write 7 scenario summaries. Polish animations, timing, mobile UX. Cross-browser testing. Final brand QA.
 
 **Note:** The existing About page tech stack card stays as-is. Will reference the same expanded data source (backward compatible).
 
 ### Slice 11 — Navbar Research + Redesign + 404 Page
 
-**Status:** planned
+**Status:** complete
 **Depends on:** 10
 **Goal:** Deep research into great navbar patterns for yesid.dev's use case, then redesign. Also build a branded 404 error page.
 
 **Navbar research scope:**
+
 - Evaluate: full-screen overlay, iOS floating tab bar, hamburger menu, sticky header, breadcrumb nav, hybrid approaches
 - Research award-winning portfolio navbars for inspiration
 - Animations
@@ -454,6 +453,7 @@ DRY consolidation:
 **Rationale:** After building all route pages AND locking the nav/footer, Yesid has full context to design a home page that properly introduces and connects everything.
 
 **Scope:**
+
 - Rework home page sections after the hero
 - **Archive SkillsJourney:** Keep code, disable rendering. Returns in a future polish slice.
 - Redesign flow: hero → services preview → work preview → about teaser → blog teaser → CTA
@@ -461,6 +461,7 @@ DRY consolidation:
 - Data-driven, mobile-first
 
 **SkillsJourney plan:**
+
 1. Add a feature flag or conditional render to disable SkillsJourney on home
 2. Keep all code (SkillsJourney.svelte, journey panels in content.ts, motion utils)
 3. Mark as "archived" in ARCHITECTURE.md
@@ -480,6 +481,7 @@ Replace hardcoded scenario matching (7 authored scenarios + basic fallback) with
 **Architecture:** Pure functions (zero DOM/framework dependency). Same engine works in browser, server route, or future API. Adding a tech = one markdown file, engine adapts automatically. Keystatic-ready (Slice 18, Cloud Content Layer).
 
 **Tasks:**
+
 1. **14a — Engine core:** Types, role derivation, scoring, selection, ordering, service/project cross-linking. Heavy test coverage.
 2. **14b — Narrative generation:** Template-driven data flow stories that adapt to domain mix + proficiency.
 3. **14c — Enhanced UI:** StackBuilderPanel (tech toggles) + StackRecommendation card (replaces StackConfigurator + StackScenarioCard). Desktop below-diagram + mobile FAB overlay.
@@ -496,18 +498,18 @@ Replace hardcoded scenario matching (7 authored scenarios + basic fallback) with
 1. **Page-Level Meta Tags** — Every route gets: `<title>`, `<meta name="description">`, canonical URL, `robots` directive. Titles follow the pattern `Page Name | yesid.` (brand-consistent, under 60 chars). Descriptions are unique per page, 150-160 chars, written for humans not keyword stuffing. All pulled from data layer via a shared `<SeoHead>` component that every +layout.svelte or +page.svelte uses.
 2. **Open Graph + Twitter Cards** — Every page gets: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`, `og:site_name`, `og:locale`. Twitter equivalents: `twitter:card` (summary_large_image), `twitter:title`, `twitter:description`, `twitter:image`. OG images: generate a branded default (orange wordmark on dark bg, 1200x630). Blog posts and projects can override with custom OG images. Service pages use a shared branded template.
 3. **Structured Data (JSON-LD)** — This is the differentiator. Most portfolios skip this entirely. Add:
-   - **Person** schema on home/about: name, jobTitle ("Data Infrastructure Engineer"), url, sameAs (LinkedIn, GitHub), knowsAbout (SQL, Python, PostgreSQL, etc.), worksFor, address (Montreal, QC)
-   - **WebSite** schema on home: name, url, description, author
-   - **BlogPosting** schema on each blog post: headline, datePublished, author, description, image, articleSection
-   - **Service** schema on each service page: name, description, provider (Person), areaServed
-   - **BreadcrumbList** schema on all subpages: structured navigation path (Home > Work > STM Transit Pipeline)
-   - **ProfilePage** schema on about page (new schema type Google supports for personal sites)
+  - **Person** schema on home/about: name, jobTitle ("Data Infrastructure Engineer"), url, sameAs (LinkedIn, GitHub), knowsAbout (SQL, Python, PostgreSQL, etc.), worksFor, address (Montreal, QC)
+  - **WebSite** schema on home: name, url, description, author
+  - **BlogPosting** schema on each blog post: headline, datePublished, author, description, image, articleSection
+  - **Service** schema on each service page: name, description, provider (Person), areaServed
+  - **BreadcrumbList** schema on all subpages: structured navigation path (Home > Work > STM Transit Pipeline)
+  - **ProfilePage** schema on about page (new schema type Google supports for personal sites)
 4. **Technical SEO** —
-   - `sitemap.xml` auto-generated at build time from all public routes (home, blog/*, work/*, services/*, about, contact). Use `@sveltejs/kit` prerender entries or a custom build script.
-   - `robots.txt` with sitemap reference, allow all public routes, block /preview and /keystatic (future)
-   - Canonical URLs on every page (prevents duplicate content from trailing slashes or query params)
-   - `<link rel="alternate" hreflang="en">` tags ready for i18n (structure only, fr/es pages come later)
-   - Performance meta: proper `<meta name="viewport">`, `theme-color` (#141414), `color-scheme: dark`
+  - `sitemap.xml` auto-generated at build time from all public routes (home, blog/*, work/*, services/*, about, contact). Use `@sveltejs/kit` prerender entries or a custom build script.
+  - `robots.txt` with sitemap reference, allow all public routes, block /preview and /keystatic (future)
+  - Canonical URLs on every page (prevents duplicate content from trailing slashes or query params)
+  - `<link rel="alternate" hreflang="en">` tags ready for i18n (structure only, fr/es pages come later)
+  - Performance meta: proper `<meta name="viewport">`, `theme-color` (#141414), `color-scheme: dark`
 5. **Social Preview Testing** — Verify every page type renders correctly when shared on LinkedIn, Twitter/X, Slack, Discord, iMessage. This is how recruiters first see the site. A broken preview = invisible. Test with: opengraph.xyz, Twitter Card Validator, LinkedIn Post Inspector.
 
 **Shared Component:**
@@ -541,20 +543,20 @@ Every page passes its specific data. The component renders all `<svelte:head>` t
 
 **Acceptance Criteria:**
 
-- [ ] Every public route has unique `<title>` and `<meta name="description">`
-- [ ] Every public route has complete OG tags (title, description, image, url, type)
-- [ ] Every public route has Twitter Card tags
-- [ ] JSON-LD Person schema on home and about pages
-- [ ] JSON-LD BlogPosting schema on every blog post
-- [ ] JSON-LD Service schema on every service page
-- [ ] JSON-LD BreadcrumbList on all subpages
-- [ ] `sitemap.xml` generated at build time, contains all public routes
-- [ ] `robots.txt` references sitemap, blocks /preview
-- [ ] Canonical URLs set on every page
-- [ ] OG image renders correctly when shared (test with opengraph.xyz)
-- [ ] `bun run build` succeeds with all meta in place
-- [ ] `bun run test` passes
-- [ ] Lighthouse SEO score: 100 on all page types
+- Every public route has unique `<title>` and `<meta name="description">`
+- Every public route has complete OG tags (title, description, image, url, type)
+- Every public route has Twitter Card tags
+- JSON-LD Person schema on home and about pages
+- JSON-LD BlogPosting schema on every blog post
+- JSON-LD Service schema on every service page
+- JSON-LD BreadcrumbList on all subpages
+- `sitemap.xml` generated at build time, contains all public routes
+- `robots.txt` references sitemap, blocks /preview
+- Canonical URLs set on every page
+- OG image renders correctly when shared (test with opengraph.xyz)
+- `bun run build` succeeds with all meta in place
+- `bun run test` passes
+- Lighthouse SEO score: 100 on all page types
 
 **Out of Scope:**
 
@@ -589,77 +591,80 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 ---
 
 #### Slice 17a — CSS Audit + Consolidation + CSS.md
+
 **Status:** planned **Est. Sessions:** 1 **Depends on:** B+, 06d
 **Why first:** CSS touches every component. Consolidating it first gives a clean styling foundation before refactoring component APIs and extracting shared shells.
 **What:**
+
 1. Audit every `.svelte` file for inline styles, one-off Tailwind classes, duplicate color/spacing values, and anything not flowing from `tokens.css` or `@theme`
 2. Consolidate into a clear hierarchy:
-   - `tokens.css` = CSS custom properties (theme-switching, semantic colors)
-   - `app.css` = Tailwind `@theme` brand tokens + global resets + base typography
-   - Component-scoped `<style>` blocks = only layout/structure specific to that component
+  - `tokens.css` = CSS custom properties (theme-switching, semantic colors)
+  - `app.css` = Tailwind `@theme` brand tokens + global resets + base typography
+  - Component-scoped `<style>` blocks = only layout/structure specific to that component
 3. Eliminate: hardcoded hex values in components, duplicate utility patterns, conflicting specificity
 4. Create `docs/CSS.md` documenting:
-   - The two-system architecture (tokens.css vs @theme) and when to use which
-   - Every CSS custom property with its purpose and where it's consumed
-   - Rules for component styling (what goes in scoped style vs Tailwind class)
-   - DOM elements that carry styling: what classes/vars they use and why
-   - How to add a new color, spacing value, or component style correctly
+  - The two-system architecture (tokens.css vs @theme) and when to use which
+  - Every CSS custom property with its purpose and where it's consumed
+  - Rules for component styling (what goes in scoped style vs Tailwind class)
+  - DOM elements that carry styling: what classes/vars they use and why
+  - How to add a new color, spacing value, or component style correctly
 5. **Brand color scalability architecture:**
-   - All brand colors flow from a single source: `tokens.css` defines semantic tokens, `app.css` @theme maps them to Tailwind utilities
-   - Introduce a `--brand-*` naming convention that supports multiple brand colors beyond primary/accent:
-     - `--brand-primary` (#E07800 orange)
-     - `--brand-accent` (#FFB627 yellow)
-     - Future slots follow the same pattern: `--brand-secondary`, `--brand-tertiary`, etc.
-   - Every component references semantic tokens (`--bg-surface`, `--text-heading`), never brand colors directly. Semantic tokens point to brand colors. This means swapping orange for blue = changing one line in tokens.css, not 30 components.
-   - Document the color addition checklist in CSS.md:
-     1. Add `--brand-[name]` to tokens.css
-     2. Add `@theme` entry in app.css so Tailwind generates `bg-brand-[name]`, `text-brand-[name]`, etc.
-     3. Map to semantic tokens if it replaces an existing role
-     4. Update CSS.md token registry
-   - Audit current codebase for any component that hardcodes `brand-primary` where it should use a semantic token (e.g., a section accent that could vary per-service)
+  - All brand colors flow from a single source: `tokens.css` defines semantic tokens, `app.css` @theme maps them to Tailwind utilities
+  - Introduce a `--brand-`* naming convention that supports multiple brand colors beyond primary/accent:
+    - `--brand-primary` (#E07800 orange)
+    - `--brand-accent` (#FFB627 yellow)
+    - Future slots follow the same pattern: `--brand-secondary`, `--brand-tertiary`, etc.
+  - Every component references semantic tokens (`--bg-surface`, `--text-heading`), never brand colors directly. Semantic tokens point to brand colors. This means swapping orange for blue = changing one line in tokens.css, not 30 components.
+  - Document the color addition checklist in CSS.md:
+  1. Add `--brand-[name]` to tokens.css
+  2. Add `@theme` entry in app.css so Tailwind generates `bg-brand-[name]`, `text-brand-[name]`, etc.
+  3. Map to semantic tokens if it replaces an existing role
+  4. Update CSS.md token registry
+    dit current codebase for any component that hardcodes `brand-primary` where it should use a semantic token (e.g., a section accent that could vary per-service)
 6. **Responsive breakpoint system:**
-   - Define five canonical breakpoints in `tokens.css` as custom properties and in `app.css` as `@theme` screens:
-     - `sm`: 360px (mobile)
-     - `md`: 520px (foldable/large phone)
-     - `lg`: 768px (tablet)
-     - `xl`: 1024px (laptop)
-     - `2xl`: 1440px (desktop)
-   - Audit every component for ad-hoc `max-width`, `min-width`, or Tailwind responsive prefixes that don't align with these five breakpoints. Consolidate to canonical values only.
-   - Establish spacing scale per breakpoint tier: section padding, container max-width, grid gaps, and typography sizes should step predictably across tiers. Document the scale in CSS.md.
-   - Container strategy: one `--container-max` property per breakpoint, consumed by the layout shell. No component sets its own max-width for page-level containment.
-   - Touch target rule: any interactive element must be minimum 44x44px on `sm` and `md` breakpoints.
-   - Typography fluid scaling: headings use `clamp()` between mobile and desktop sizes. Body stays fixed at 16px minimum. Document each clamp formula.
-   - Grid behavior per tier: document how many columns each major layout (services grid, project cards, blog grid) gets at each breakpoint.
-   - No breakpoint logic lives in individual components unless it's layout-specific to that component. Global responsive behavior flows from the layout shell and CSS custom properties.
-
+  - Define five canonical breakpoints in `tokens.css` as custom properties and in `app.css` as `@theme` screens:
+    - `sm`: 360px (mobile)
+    - `md`: 520px (foldable/large phone)
+    - `lg`: 768px (tablet)
+    - `xl`: 1024px (laptop)
+    - `2xl`: 1440px (desktop)
+  - Audit every component for ad-hoc `max-width`, `min-width`, or Tailwind responsive prefixes that don't align with these five breakpoints. Consolidate to canonical values only.
+  - Establish spacing scale per breakpoint tier: section padding, container max-width, grid gaps, and typography sizes should step predictably across tiers. Document the scale in CSS.md.
+  - Container strategy: one `--container-max` property per breakpoint, consumed by the layout shell. No component sets its own max-width for page-level containment.
+  - Touch target rule: any interactive element must be minimum 44x44px on `sm` and `md` breakpoints.
+  - Typography fluid scaling: headings use `clamp()` between mobile and desktop sizes. Body stays fixed at 16px minimum. Document each clamp formula.
+  - Grid behavior per tier: document how many columns each major layout (services grid, project cards, blog grid) gets at each breakpoint.
+  - No breakpoint logic lives in individual components unless it's layout-specific to that component. Global responsive behavior flows from the layout shell and CSS custom properties.
+  - Use math derived sizes so the system is fully resizable and intuitive automatically
 7. **Animation & GSAP cleanup:**
-   - GSAP does NOT work reliably inside Svelte 5 `$effect()` — timeline callbacks (`onComplete`) never fire. Ref: https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no
-   - Audit every component using GSAP in `$effect()` and migrate to one of:
-     - **Svelte actions** (`use:animate`) for element-lifecycle animations (scroll-triggered, hover, mount). Actions tie directly to DOM lifecycle which GSAP needs.
-     - **CSS transitions** for state-driven open/close/toggle animations. More reliable than GSAP for reactive state changes. MenuOverlay (slice 11b) is the reference implementation.
-   - Create a shared `src/lib/motion/utils/animate.ts` action that wraps GSAP `to`/`from`/`fromTo` with proper `destroy()` cleanup (kills tween + ScrollTrigger).
-   - Components to audit: Nav.svelte (SplitText wordmark in `onMount` — OK but could be action), any future components using GSAP in `$effect()`.
-   - Document the animation strategy in CSS.md: when to use GSAP actions vs CSS transitions vs Svelte transitions.
+  - GSAP does NOT work reliably inside Svelte 5 `$effect()` — timeline callbacks (`onComplete`) never fire. Ref: [https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no](https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no)
+  - Audit every component using GSAP in `$effect()` and migrate to one of:
+    - **Svelte actions** (`use:animate`) for element-lifecycle animations (scroll-triggered, hover, mount). Actions tie directly to DOM lifecycle which GSAP needs.
+    - **CSS transitions** for state-driven open/close/toggle animations. More reliable than GSAP for reactive state changes. MenuOverlay (slice 11b) is the reference implementation.
+  - Create a shared `src/lib/motion/utils/animate.ts` action that wraps GSAP `to`/`from`/`fromTo` with proper `destroy()` cleanup (kills tween + ScrollTrigger).
+  - Components to audit: Nav.svelte (SplitText wordmark in `onMount` — OK but could be action), any future components using GSAP in `$effect()`.
+  - Document the animation strategy in CSS.md: when to use GSAP actions vs CSS transitions vs Svelte transitions.
 
 **Acceptance Criteria:**
-- [ ] Zero hardcoded hex colors in any `.svelte` file (all through tokens or @theme)
-- [ ] CSS.md exists and covers all tokens, rules, and patterns
-- [ ] Clear separation: tokens.css (semantic/theme), app.css (brand/global), scoped (component-specific)
-- [ ] `bun run build` succeeds, site looks identical before/after
-- [ ] `bun run test` passes
-- [ ] Adding a new brand color requires exactly 2 file edits (tokens.css + app.css) and zero component changes
-- [ ] Color addition checklist documented in CSS.md
-- [ ] All responsive breakpoints in the codebase use only the five canonical values
-- [ ] Every section/component renders correctly at 360px, 520px, 768px, 1024px, and 1440px
-- [ ] Touch targets meet 44x44px minimum on mobile/foldable
-- [ ] Typography uses `clamp()` for headings with documented min/max values
-- [ ] CSS.md includes a breakpoint reference table showing container width, section padding, grid columns, and heading sizes at each tier
-- [ ] Zero GSAP usage inside `$effect()` — all migrated to Svelte actions or CSS transitions
-- [ ] Shared `animate.ts` action exists with TypeScript types and `destroy()` cleanup
-- [ ] Animation strategy documented in CSS.md (GSAP actions vs CSS transitions vs Svelte transitions)
-- [ ] No horizontal scroll at any breakpoint
-- [ ] `--container-max` is the single source of truth for page-width containment
-- [ ] No user gets left behind
+
+- Zero hardcoded hex colors in any `.svelte` file (all through tokens or @theme)
+- CSS.md exists and covers all tokens, rules, and patterns
+- Clear separation: tokens.css (semantic/theme), app.css (brand/global), scoped (component-specific)
+- `bun run build` succeeds, site looks identical before/after
+- `bun run test` passes
+- Adding a new brand color requires exactly 2 file edits (tokens.css + app.css) and zero component changes
+- Color addition checklist documented in CSS.md
+- All responsive breakpoints in the codebase use only the five canonical values
+- Every section/component renders correctly at 360px, 520px, 768px, 1024px, and 1440px
+- Touch targets meet 44x44px minimum on mobile/foldable
+- Typography uses `clamp()` for headings with documented min/max values
+- CSS.md includes a breakpoint reference table showing container width, section padding, grid columns, and heading sizes at each tier
+- Zero GSAP usage inside `$effect()` — all migrated to Svelte actions or CSS transitions
+- Shared `animate.ts` action exists with TypeScript types and `destroy()` cleanup
+- Animation strategy documented in CSS.md (GSAP actions vs CSS transitions vs Svelte transitions)
+- No horizontal scroll at any breakpoint
+- `--container-max` is the single source of truth for page-width containment
+- No user gets left behind
 
 ---
 
@@ -671,10 +676,10 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **Acceptance Criteria:**
 
-- [ ] No route loader imports from `$lib/data/*.ts` directly (all through services)
-- [ ] Service functions are typed with explicit return types
-- [ ] Every service function has JSDoc
-- [ ] `bun run test` passes
+- No route loader imports from `$lib/data/*.ts` directly (all through services)
+- Service functions are typed with explicit return types
+- Every service function has JSDoc
+- `bun run test` passes
 
 ---
 
@@ -686,10 +691,10 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **Acceptance Criteria:**
 
-- [ ] Zod schemas exist for Project, Service, BlogPost, SiteMeta, Content, LocalizedString
-- [ ] Services validate data through schemas before returning
-- [ ] Schema validation errors produce clear messages (not generic Zod dumps)
-- [ ] `bun run check` + `bun run test` pass
+- Zod schemas exist for Project, Service, BlogPost, SiteMeta, Content, LocalizedString
+- Services validate data through schemas before returning
+- Schema validation errors produce clear messages (not generic Zod dumps)
+- `bun run check` + `bun run test` pass
 
 ---
 
@@ -701,12 +706,12 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **Acceptance Criteria:**
 
-- [ ] Every component exports its props interface
-- [ ] No inline prop types anywhere
-- [ ] Shared ListingShell used by blog, work, and services listing pages
-- [ ] Shared CardBase used by all card variants
-- [ ] All content access through `resolveLocale()`
-- [ ] `bun run test` passes
+- Every component exports its props interface
+- No inline prop types anywhere
+- Shared ListingShell used by blog, work, and services listing pages
+- Shared CardBase used by all card variants
+- All content access through `resolveLocale()`
+- `bun run test` passes
 
 ---
 
@@ -718,11 +723,11 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **Acceptance Criteria:**
 
-- [ ] Motion factories exist in `src/lib/motion/factories/`
-- [ ] 80%+ of components use factories instead of raw GSAP
-- [ ] Reduced-motion enforcement at factory level, not duplicated per component
-- [ ] All existing animations behave identically
-- [ ] `bun run test` passes
+- Motion factories exist in `src/lib/motion/factories/`
+- 80%+ of components use factories instead of raw GSAP
+- Reduced-motion enforcement at factory level, not duplicated per component
+- All existing animations behave identically
+- `bun run test` passes
 
 ---
 
@@ -734,13 +739,13 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **Acceptance Criteria:**
 
-- [ ] Test factories exist for all content types
-- [ ] Service tests mock data source (not real data files)
-- [ ] Consistent test naming: `*.test.ts`
-- [ ] ARCHITECTURE.md reflects layered system with import rules table
-- [ ] `src/lib/README.md` explains the import hierarchy
-- [ ] `bun run test` passes with new test structure
-- [ ] `bun run check` passes
+- Test factories exist for all content types
+- Service tests mock data source (not real data files)
+- Consistent test naming: `*.test.ts`
+- ARCHITECTURE.md reflects layered system with import rules table
+- `src/lib/README.md` explains the import hierarchy
+- `bun run test` passes with new test structure
+- `bun run check` passes
 
 ---
 
@@ -757,27 +762,28 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 New docs follow the existing `docs/learn/_template.md`.
 
 **Scope:**
+
 1. Scan every `.md` in `docs/learn/` for file paths that no longer exist. Update to new locations.
 2. Update "Worked Example" code snippets where the pattern changed (e.g., inline GSAP replaced by factory call, direct data import replaced by service call).
 3. Create new learn docs:
-   - `data-layer/service-layer-pattern.md`
-   - `data-layer/zod-validation.md`
-   - `frontend/shared-ui-shells.md`
-   - `motion/motion-factories.md`
-   - `testing/test-factories.md`
-   - `styling/css-architecture-docs.md`
-   - Other pertinent doc
+  - `data-layer/service-layer-pattern.md`
+  - `data-layer/zod-validation.md`
+  - `frontend/shared-ui-shells.md`
+  - `motion/motion-factories.md`
+  - `testing/test-factories.md`
+  - `styling/css-architecture-docs.md`
+  - Other pertinent doc
 4. Update `meta.json` with new concepts and revised prerequisites.
 5. Update `docs/learn/README.md` learning paths if domains shifted.
 
 **Acceptance Criteria:**
 
-- [ ] Zero broken file references in any learn doc (every path in "How We Use It" resolves to an existing file)
-- [ ] New learn docs exist for all 13-introduced concepts
-- [ ] `meta.json` reflects the post-13 architecture
-- [ ] `bun run check` passes (no code touched)
+- Zero broken file references in any learn doc (every path in "How We Use It" resolves to an existing file)
+- New learn docs exist for all 13-introduced concepts
+- `meta.json` reflects the post-13 architecture
+- `bun run check` passes (no code touched)
 
-----
+---
 
 ### Slice 18 — Cloud Content Layer: Keystatic CMS
 
@@ -916,72 +922,72 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 ## Decisions Log
 
 
-| Date       | Decision                                         | Rationale                                                                                                                                   |
-| ---------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-01 | Slice-based workflow adopted                     | Prevents scope creep, forces sequential focus                                                                                               |
-| 2026-04-01 | SvelteKit 2 chosen                               | Prior investment (Rail), good DX, Vercel-native                                                                                             |
-| 2026-04-01 | Dark theme only in v1                            | Brand default, reduces scope                                                                                                                |
-| 2026-04-01 | Data-driven architecture                         | Site grows with career, no hardcoded content                                                                                                |
-| 2026-04-01 | No CMS in v1                                     | TS files are simpler, version controlled, type-safe                                                                                         |
-| 2026-04-01 | Future phases parked                             | Ship site before anything else                                                                                                              |
-| 2026-04-02 | Site is a platform, not a snapshot               | Components and data are generic                                                                                                             |
-| 2026-04-02 | TDD integrated into every slice                  | Tests ship with code, CI enforces quality                                                                                                   |
-| 2026-04-02 | GitHub Actions + Vercel CD                       | Automated pipeline from push to production                                                                                                  |
-| 2026-04-02 | Repo cleanup before public                       | Pipeline artifacts archived locally, repo stays clean                                                                                       |
-| 2026-04-02 | Archive path                                     | C:\Users\otalo\Yesito\cloud\yesid-pipeline-archive\                                                                                         |
-| 2026-04-02 | Bun as runtime                                   | Learning opportunity, fast, drop-in npm replacement                                                                                         |
-| 2026-04-02 | tree.txt updated every slice                     | Repo self-documents its structure                                                                                                           |
-| 2026-04-02 | i18n baked into data layer                       | Owner is Colombian in Quebec. EN/FR/ES supported from day one.                                                                              |
-| 2026-04-02 | Motion-first approach adopted                    | Every component ships with animation from day one                                                                                           |
-| 2026-04-02 | Train journey metaphor for home page             | Single continuous narrative tied to brand + career                                                                                          |
-| 2026-04-02 | Threlte for 3D (minimal dark + glowing paths)    | Svelte-native, declarative, typed                                                                                                           |
-| 2026-04-02 | GSAP for scroll choreography                     | Industry standard, ScrollTrigger for scroll-linked                                                                                          |
-| 2026-04-02 | Lottie for train + station icons                 | Lightweight, polished illustration, designed in Figma                                                                                       |
-| 2026-04-02 | Hybrid 3D env + Lottie train                     | Best of both: interactive depth + illustration quality                                                                                      |
-| 2026-04-02 | No 3D on mobile                                  | Performance over spectacle on constrained devices                                                                                           |
-| 2026-04-02 | Extended timeline (4-5 weeks)                    | Ship something memorable over something fast                                                                                                |
-| 2026-04-02 | MOTION.md created                                | Source of truth for motion language, parallel to brand guide                                                                                |
-| 2026-04-02 | SVG train + GSAP MotionPathPlugin                | Train movement is scroll-linked (needs GSAP), not pre-baked                                                                                 |
-| 2026-04-02 | Marketplace Lotties for v1                       | Custom Lotties require After Effects skill; marketplace fills the gap                                                                       |
-| 2026-04-02 | Additive animation architecture                  | New animations = new files, not refactoring existing code                                                                                   |
-| 2026-04-02 | Three animation layers defined                   | Threlte (atmosphere) + GSAP (choreography) + Lottie (illustration)                                                                          |
-| 2026-04-02 | Standardized action/component patterns           | Every motion component checks reduced-motion, cleans up on destroy                                                                          |
-| 2026-04-02 | SEO as dedicated slice (09)                      | Meta tags, OG, sitemap layered after all pages exist                                                                                        |
-| 2026-04-02 | Locale routing deferred                          | URL prefixes (/fr/, /es/) not in v1. Data is ready, routing added when translations exist.                                                  |
-| 2026-04-02 | Service interface evolves in slice 04            | Add station, id, relatedProjects when motion infrastructure exists                                                                          |
-| 2026-04-02 | Layered animation architecture                   | Four independent layers: Svelte actions (interaction) + GSAP (choreography) + Lottie (illustration) + Threlte (atmosphere). Each removable. |
-| 2026-04-02 | SVG train + GSAP MotionPath for movement         | Scroll-linking needs real-time control. Lottie optional for idle polish only.                                                               |
-| 2026-04-02 | Marketplace Lotties recolored to brand           | 4 station icons sourced, recolored (#E07800 family), fixed (bg removed, logos adjusted, text replaced). Done.                               |
-| 2026-04-02 | Data-driven station system                       | No hardcoded station count. services.length determines everything. Adding a service = 1 object + 1 Lottie.                                  |
-| 2026-04-02 | Easter eggs planned                              | Small surprises that reward curiosity (MOTION.md section 9). Implement as time allows.                                                      |
-| 2026-04-02 | MOTION.md v1.1                                   | Updated with layered architecture, SVG train approach, marketplace Lottie strategy, easter eggs, data-driven stations.                      |
-| 2026-04-03 | Metro System Evolved redesign                    | Home page expanded to 8 stops: hero, 4 services, featured work, about bento, blog, CTA                                                      |
-| 2026-04-03 | 3D Montreal metro wagon in hero                  | Sketchfab model (CC BY 4.0, mamont nikita) over AI-generated station art                                                                    |
-| 2026-04-03 | Blog from markdown files                         | `src/content/blog/*.md` with frontmatter, parsed at build time via `import.meta.glob`                                                       |
-| 2026-04-03 | Station dividers with hazard stripes             | Yellow/black repeating gradient between metro stops                                                                                         |
-| 2026-04-03 | Draggable train                                  | Train can be dragged along rail to scroll the page                                                                                          |
-| 2026-04-03 | Rail at viewport edge                            | Rail moved from inside max-w-5xl to fixed right edge of viewport                                                                            |
-| 2026-04-03 | gltf-transform for model optimization            | 88MB Sketchfab GLB → 4.3MB via dedup + Draco compression                                                                                    |
-| 2026-04-03 | Data-driven metro line (metro.ts)                | Stop numbers auto-compute. Adding a service extends the entire rail.                                                                        |
-| 2026-04-03 | Centralized i18n content (content.ts)            | All UI strings in one place for future French/Spanish translations                                                                          |
-| 2026-04-03 | ~~Replace 3D fab with scroll-linked video~~      | SCRAPPED — 06f removed from plan                                                                                                            |
-| 2026-04-04 | Experimental slices (A, B, C) for hero + journey | Rapid prototyping of SVG hero, zoom transition, and horizontal scroll CTA                                                                   |
-| 2026-04-04 | GSAP all plugins free                            | SplitText, DrawSVGPlugin, MorphSVGPlugin, CustomEase — all available at no cost                                                             |
-| 2026-04-05 | SkillsJourney horizontal scroll section          | 5-panel horizontal scroll with data-driven panels, replacing train journey on home page                                                     |
-| 2026-04-05 | Per-word GSAP triggers (trigger: hw)             | Using individual word elements as ScrollTrigger targets instead of paragraph for accurate timing                                            |
-| 2026-04-05 | containerAnimation + scrub for all effects       | Pure scrub with containerAnimation naturally reverses on scroll back; no toggleActions/yoyo                                                 |
-| 2026-04-05 | No animation on non-keyword text                 | Static white text for uniform look + lighter performance; only keywords get effects                                                         |
-| 2026-04-05 | Shape morphs deferred to Slice B+                | MorphSVGPlugin shapes separated from text animations for cleaner delivery                                                                   |
-| 2026-04-05 | `marked` over mdsvex for blog content rendering  | mdsvex had parse errors with `<` characters in inline code/content; `marked` is simpler and more reliable                                   |
-| 2026-04-05 | Per-post folders (`category/slug/index.md`)      | Allows co-located assets (images, diagrams) per post in the future                                                                          |
-| 2026-04-05 | Deterministic SVG fallback from slug hash        | Every post gets the same illustration even without explicit SVG assignment — consistent across builds                                        |
-| 2026-04-05 | MorphSVGPlugin hover morph on blog SVGs          | Already loaded from Slice B+ — reuses plugin for delightful micro-interaction on hover/tap                                                  |
-| 2026-04-05 | Client-side blog filtering (search/tags/date/lang)| 7 posts total — no benefit to server-side filtering; keeps UX snappy                                                                       |
-| 2026-04-05 | Two blog content lanes (professional + personal) | Separates brand-facing technical content from personal interests; different accent colors (#E07800 vs #FFB627)                              |
-| 2026-04-07 | Brand = Digital Infrastructure (not just data/SQL) | Current focus is data engineering + SQL, but the brand umbrella covers databases, dashboards, pipelines, internal tools, web systems. All copy reflects broader positioning. |
-| 2026-04-07 | Slice 10 = Home page rework after About/Contact  | Building all route pages gave clarity on site identity. Home (post-hero) was built before subsites. Rework with full context. Archive SkillsJourney (keep code, disable render, bring back optimized later). |
-| 2026-04-07 | No standalone tech stack page                    | About page widget + service detail pages + blog posts cover tools better than a resume-style page. Anti-pattern per conversion research.    |
-| 2026-04-07 | Live weather widget (OpenWeatherMap free tier)    | API key in .env, server-side fetch in +page.server.ts, graceful fallback. Unique personality touch on About page.                           |
+| Date       | Decision                                           | Rationale                                                                                                                                                                                                    |
+| ---------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-04-01 | Slice-based workflow adopted                       | Prevents scope creep, forces sequential focus                                                                                                                                                                |
+| 2026-04-01 | SvelteKit 2 chosen                                 | Prior investment (Rail), good DX, Vercel-native                                                                                                                                                              |
+| 2026-04-01 | Dark theme only in v1                              | Brand default, reduces scope                                                                                                                                                                                 |
+| 2026-04-01 | Data-driven architecture                           | Site grows with career, no hardcoded content                                                                                                                                                                 |
+| 2026-04-01 | No CMS in v1                                       | TS files are simpler, version controlled, type-safe                                                                                                                                                          |
+| 2026-04-01 | Future phases parked                               | Ship site before anything else                                                                                                                                                                               |
+| 2026-04-02 | Site is a platform, not a snapshot                 | Components and data are generic                                                                                                                                                                              |
+| 2026-04-02 | TDD integrated into every slice                    | Tests ship with code, CI enforces quality                                                                                                                                                                    |
+| 2026-04-02 | GitHub Actions + Vercel CD                         | Automated pipeline from push to production                                                                                                                                                                   |
+| 2026-04-02 | Repo cleanup before public                         | Pipeline artifacts archived locally, repo stays clean                                                                                                                                                        |
+| 2026-04-02 | Archive path                                       | C:\Users\otalo\Yesito\cloud\yesid-pipeline-archive\                                                                                                                                                          |
+| 2026-04-02 | Bun as runtime                                     | Learning opportunity, fast, drop-in npm replacement                                                                                                                                                          |
+| 2026-04-02 | tree.txt updated every slice                       | Repo self-documents its structure                                                                                                                                                                            |
+| 2026-04-02 | i18n baked into data layer                         | Owner is Colombian in Quebec. EN/FR/ES supported from day one.                                                                                                                                               |
+| 2026-04-02 | Motion-first approach adopted                      | Every component ships with animation from day one                                                                                                                                                            |
+| 2026-04-02 | Train journey metaphor for home page               | Single continuous narrative tied to brand + career                                                                                                                                                           |
+| 2026-04-02 | Threlte for 3D (minimal dark + glowing paths)      | Svelte-native, declarative, typed                                                                                                                                                                            |
+| 2026-04-02 | GSAP for scroll choreography                       | Industry standard, ScrollTrigger for scroll-linked                                                                                                                                                           |
+| 2026-04-02 | Lottie for train + station icons                   | Lightweight, polished illustration, designed in Figma                                                                                                                                                        |
+| 2026-04-02 | Hybrid 3D env + Lottie train                       | Best of both: interactive depth + illustration quality                                                                                                                                                       |
+| 2026-04-02 | No 3D on mobile                                    | Performance over spectacle on constrained devices                                                                                                                                                            |
+| 2026-04-02 | Extended timeline (4-5 weeks)                      | Ship something memorable over something fast                                                                                                                                                                 |
+| 2026-04-02 | MOTION.md created                                  | Source of truth for motion language, parallel to brand guide                                                                                                                                                 |
+| 2026-04-02 | SVG train + GSAP MotionPathPlugin                  | Train movement is scroll-linked (needs GSAP), not pre-baked                                                                                                                                                  |
+| 2026-04-02 | Marketplace Lotties for v1                         | Custom Lotties require After Effects skill; marketplace fills the gap                                                                                                                                        |
+| 2026-04-02 | Additive animation architecture                    | New animations = new files, not refactoring existing code                                                                                                                                                    |
+| 2026-04-02 | Three animation layers defined                     | Threlte (atmosphere) + GSAP (choreography) + Lottie (illustration)                                                                                                                                           |
+| 2026-04-02 | Standardized action/component patterns             | Every motion component checks reduced-motion, cleans up on destroy                                                                                                                                           |
+| 2026-04-02 | SEO as dedicated slice (09)                        | Meta tags, OG, sitemap layered after all pages exist                                                                                                                                                         |
+| 2026-04-02 | Locale routing deferred                            | URL prefixes (/fr/, /es/) not in v1. Data is ready, routing added when translations exist.                                                                                                                   |
+| 2026-04-02 | Service interface evolves in slice 04              | Add station, id, relatedProjects when motion infrastructure exists                                                                                                                                           |
+| 2026-04-02 | Layered animation architecture                     | Four independent layers: Svelte actions (interaction) + GSAP (choreography) + Lottie (illustration) + Threlte (atmosphere). Each removable.                                                                  |
+| 2026-04-02 | SVG train + GSAP MotionPath for movement           | Scroll-linking needs real-time control. Lottie optional for idle polish only.                                                                                                                                |
+| 2026-04-02 | Marketplace Lotties recolored to brand             | 4 station icons sourced, recolored (#E07800 family), fixed (bg removed, logos adjusted, text replaced). Done.                                                                                                |
+| 2026-04-02 | Data-driven station system                         | No hardcoded station count. services.length determines everything. Adding a service = 1 object + 1 Lottie.                                                                                                   |
+| 2026-04-02 | Easter eggs planned                                | Small surprises that reward curiosity (MOTION.md section 9). Implement as time allows.                                                                                                                       |
+| 2026-04-02 | MOTION.md v1.1                                     | Updated with layered architecture, SVG train approach, marketplace Lottie strategy, easter eggs, data-driven stations.                                                                                       |
+| 2026-04-03 | Metro System Evolved redesign                      | Home page expanded to 8 stops: hero, 4 services, featured work, about bento, blog, CTA                                                                                                                       |
+| 2026-04-03 | 3D Montreal metro wagon in hero                    | Sketchfab model (CC BY 4.0, mamont nikita) over AI-generated station art                                                                                                                                     |
+| 2026-04-03 | Blog from markdown files                           | `src/content/blog/*.md` with frontmatter, parsed at build time via `import.meta.glob`                                                                                                                        |
+| 2026-04-03 | Station dividers with hazard stripes               | Yellow/black repeating gradient between metro stops                                                                                                                                                          |
+| 2026-04-03 | Draggable train                                    | Train can be dragged along rail to scroll the page                                                                                                                                                           |
+| 2026-04-03 | Rail at viewport edge                              | Rail moved from inside max-w-5xl to fixed right edge of viewport                                                                                                                                             |
+| 2026-04-03 | gltf-transform for model optimization              | 88MB Sketchfab GLB → 4.3MB via dedup + Draco compression                                                                                                                                                     |
+| 2026-04-03 | Data-driven metro line (metro.ts)                  | Stop numbers auto-compute. Adding a service extends the entire rail.                                                                                                                                         |
+| 2026-04-03 | Centralized i18n content (content.ts)              | All UI strings in one place for future French/Spanish translations                                                                                                                                           |
+| 2026-04-03 | ~~Replace 3D fab with scroll-linked video~~        | SCRAPPED — 06f removed from plan                                                                                                                                                                             |
+| 2026-04-04 | Experimental slices (A, B, C) for hero + journey   | Rapid prototyping of SVG hero, zoom transition, and horizontal scroll CTA                                                                                                                                    |
+| 2026-04-04 | GSAP all plugins free                              | SplitText, DrawSVGPlugin, MorphSVGPlugin, CustomEase — all available at no cost                                                                                                                              |
+| 2026-04-05 | SkillsJourney horizontal scroll section            | 5-panel horizontal scroll with data-driven panels, replacing train journey on home page                                                                                                                      |
+| 2026-04-05 | Per-word GSAP triggers (trigger: hw)               | Using individual word elements as ScrollTrigger targets instead of paragraph for accurate timing                                                                                                             |
+| 2026-04-05 | containerAnimation + scrub for all effects         | Pure scrub with containerAnimation naturally reverses on scroll back; no toggleActions/yoyo                                                                                                                  |
+| 2026-04-05 | No animation on non-keyword text                   | Static white text for uniform look + lighter performance; only keywords get effects                                                                                                                          |
+| 2026-04-05 | Shape morphs deferred to Slice B+                  | MorphSVGPlugin shapes separated from text animations for cleaner delivery                                                                                                                                    |
+| 2026-04-05 | `marked` over mdsvex for blog content rendering    | mdsvex had parse errors with `<` characters in inline code/content; `marked` is simpler and more reliable                                                                                                    |
+| 2026-04-05 | Per-post folders (`category/slug/index.md`)        | Allows co-located assets (images, diagrams) per post in the future                                                                                                                                           |
+| 2026-04-05 | Deterministic SVG fallback from slug hash          | Every post gets the same illustration even without explicit SVG assignment — consistent across builds                                                                                                        |
+| 2026-04-05 | MorphSVGPlugin hover morph on blog SVGs            | Already loaded from Slice B+ — reuses plugin for delightful micro-interaction on hover/tap                                                                                                                   |
+| 2026-04-05 | Client-side blog filtering (search/tags/date/lang) | 7 posts total — no benefit to server-side filtering; keeps UX snappy                                                                                                                                         |
+| 2026-04-05 | Two blog content lanes (professional + personal)   | Separates brand-facing technical content from personal interests; different accent colors (#E07800 vs #FFB627)                                                                                               |
+| 2026-04-07 | Brand = Digital Infrastructure (not just data/SQL) | Current focus is data engineering + SQL, but the brand umbrella covers databases, dashboards, pipelines, internal tools, web systems. All copy reflects broader positioning.                                 |
+| 2026-04-07 | Slice 10 = Home page rework after About/Contact    | Building all route pages gave clarity on site identity. Home (post-hero) was built before subsites. Rework with full context. Archive SkillsJourney (keep code, disable render, bring back optimized later). |
+| 2026-04-07 | No standalone tech stack page                      | About page widget + service detail pages + blog posts cover tools better than a resume-style page. Anti-pattern per conversion research.                                                                     |
+| 2026-04-07 | Live weather widget (OpenWeatherMap free tier)     | API key in .env, server-side fetch in +page.server.ts, graceful fallback. Unique personality touch on About page.                                                                                            |
 
 
 ## Rules

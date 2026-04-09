@@ -1,7 +1,7 @@
 # Test Registry
 
 Last updated: 2026-04-09
-Total tests: 503
+Total tests: 525
 Runner: Vitest + Bun (`bun run test`)
 
 ## Test Architecture
@@ -10,8 +10,8 @@ Tests are split into two Vitest projects for performance (slice 10d+):
 
 | Project | Environment | Setup File | Scope | Files |
 |---------|-------------|------------|-------|-------|
-| **data** | `node` | `src/tests/setup.data.ts` | Pure data/logic tests — no DOM | 9 |
-| **dom** | `happy-dom` | `src/tests/setup.dom.ts` | Component, motion, and route tests | 42 |
+| **data** | `node` | `src/tests/setup.data.ts` | Pure data/logic tests — no DOM | 10 |
+| **dom** | `happy-dom` | `src/tests/setup.dom.ts` | Component, motion, and route tests | 47 |
 
 ### Running tests
 
@@ -55,7 +55,7 @@ Convention: tests live next to the code they test (co-located).
 
 ---
 
-# Components (`src/lib/components/`) — 26 files, 174 tests
+# Components (`src/lib/components/`) — 27 files, 181 tests
 
 ## src/lib/components/BlogRow.test.ts
 
@@ -120,6 +120,18 @@ Convention: tests live next to the code they test (co-located).
 | Hero > renders only primary CTA when secondary is omitted | Only the primary CTA appears when secondary is missing | primary in document, secondary not in document | Only `primaryCta` prop |
 | Hero > renders only secondary CTA when primary is omitted | Only the secondary CTA appears when primary is missing | secondary in document, primary not in document | Only `secondaryCta` prop |
 | Hero > renders both CTAs when both are provided | Both CTAs appear side by side | Both `hero-primary-cta` and `hero-secondary-cta` in document | Both CTA props |
+
+## src/lib/components/MenuOverlay.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| MenuOverlay > renders all 6 navigation links | All menu items appear as links | `getByRole('link', { name: /Services/ })` through `/Contact/` all in document | `open: true, pathname: '/'` |
+| MenuOverlay > marks the active link stop as current | The active route link has aria-current | Work link has `aria-current` === `'page'` | `pathname: '/work'` |
+| MenuOverlay > renders metro subtitles | Subtitle copy appears for each item | `getByText('what I build')` and `getByText('open channel')` in document | Standard |
+| MenuOverlay > has dialog role and aria-modal | The overlay is an accessible modal dialog | `getByRole('dialog')` has `aria-modal` === `'true'` | Standard |
+| MenuOverlay > renders the close button | A close button exists in the overlay | `getByLabelText('Close menu')` in document | Standard |
+| MenuOverlay > renders bottom terminal label | The NAVIGATION label appears at bottom | `getByText(/NAVIGATION/)` in document | Standard |
+| MenuOverlay > does not render when closed | Closed state produces no dialog | `queryByRole('dialog')` not in document | `open: false` |
 
 ## src/lib/components/Nav.test.ts
 
@@ -637,7 +649,18 @@ Convention: tests live next to the code they test (co-located).
 | stagger utility > respects a custom randomRange option | A tighter randomRange reduces variance | Result within `deterministic ± 5` across 100 iterations | `randomRange: 0.05` |
 | stagger utility > defaults to randomize: true | Without options, delays vary between calls | 50 calls produce > 1 distinct value for index 3 | Default options |
 
-# Routes (`src/routes/`) — 1 file, 17 tests
+# Routes (`src/routes/`) — 2 files, 23 tests
+
+## src/routes/error.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| 404 Error Page > renders the construction scene | The SVG construction illustration exists | `getByTestId('construction-scene')` in document | Renders `+error.svelte` |
+| 404 Error Page > renders the ROUTE NOT FOUND label | The error label text is visible | `getByText('ROUTE NOT FOUND')` in document | Standard |
+| 404 Error Page > renders the heading | The main heading text is visible | `getByText('This station is under construction')` in document | Standard |
+| 404 Error Page > renders route suggestion links | All 3 suggestion buttons have correct hrefs | Services→`/services`, Work→`/work`, Contact→`/contact` | Standard |
+| 404 Error Page > renders the terminal status line | The terminal decoration exists | `getByTestId('terminal-line')` in document | Standard |
+| 404 Error Page > renders hazard tape accents | Both top and bottom hazard tapes exist | `getAllByTestId('hazard-tape')` length === 2 | Standard |
 
 ## src/routes/home.test.ts
 
@@ -667,10 +690,10 @@ Convention: tests live next to the code they test (co-located).
 
 ```
 Runner:     Vitest v4.1.2
-Timestamp:  2026-04-06 17:38
-Duration:   45.92s
+Timestamp:  2026-04-09 11:52
+Duration:   8.40s
 
-Test Files:  42 passed (42)
-Tests:       329 passed (329)
+Test Files:  57 passed (57)
+Tests:       525 passed (525)
 Failures:    0
 ```
