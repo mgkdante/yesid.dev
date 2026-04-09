@@ -1,6 +1,9 @@
 /* Brand CSS custom properties (--bg-primary, --text-primary, etc.) */
 @import '$lib/styles/tokens.css';
 
+/* Lenis smooth scroll base styles */
+@import 'lenis/dist/lenis.css';
+
 /* Tailwind CSS v4 (CSS-first config, no tailwind.config.js needed) */
 @import 'tailwindcss';
 

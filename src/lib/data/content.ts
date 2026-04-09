@@ -12,18 +12,19 @@ export const heroAnimContent = {
 export const heroContent = {
 	badge: { en: 'AVAILABLE FOR HIRE' } satisfies LocalizedString,
 	headline: {
-		line1: { en: 'DATA' } satisfies LocalizedString,
+		line1: { en: 'DIGITAL' } satisfies LocalizedString,
 		line2: { en: 'INFRA' } satisfies LocalizedString,
 		line3: { en: 'BUILT RIGHT.' } satisfies LocalizedString,
 	},
 	subtitle: {
-		en: 'Freelance SQL development & digital infrastructure. PostgreSQL, SQL Server, Power BI, Retool — from Montreal to your pipeline.'
+		en: 'Freelance digital infrastructure — PostgreSQL, Python, Power BI, SvelteKit — from Montreal to your pipeline.'
 	} satisfies LocalizedString,
 	ctaWork: { en: 'View work →' } satisfies LocalizedString,
 	ctaContact: { en: 'Get in touch' } satisfies LocalizedString,
 	sqlDecoration: {
-		line1: { en: 'SELECT expertise FROM yesid' } satisfies LocalizedString,
-		line2: { en: "WHERE quality = 'excellent';" } satisfies LocalizedString,
+		line1: { en: 'SELECT  y.expertise' } satisfies LocalizedString,
+		line2: { en: 'FROM    yesid AS y' } satisfies LocalizedString,
+		line3: { en: "WHERE   y.work = 'Quality'" } satisfies LocalizedString,
 	},
 } as const;
 

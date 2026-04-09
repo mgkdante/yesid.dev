@@ -4,7 +4,7 @@ import { heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourn
 describe('heroContent', () => {
 	it('has non-empty English strings', () => {
 		expect(heroContent.badge.en.length).toBeGreaterThan(0);
-		expect(heroContent.headline.line1.en).toBe('DATA');
+		expect(heroContent.headline.line1.en).toBe('DIGITAL');
 		expect(heroContent.headline.line2.en).toBe('INFRA');
 		expect(heroContent.headline.line3.en).toBe('BUILT RIGHT.');
 		expect(heroContent.subtitle.en.length).toBeGreaterThan(0);
@@ -12,6 +12,7 @@ describe('heroContent', () => {
 		expect(heroContent.ctaContact.en.length).toBeGreaterThan(0);
 		expect(heroContent.sqlDecoration.line1.en.length).toBeGreaterThan(0);
 		expect(heroContent.sqlDecoration.line2.en.length).toBeGreaterThan(0);
+		expect(heroContent.sqlDecoration.line3.en.length).toBeGreaterThan(0);
 	});
 });
 

@@ -37,6 +37,7 @@
 	const ctaContactLabel = resolveLocale(heroContent.ctaContact, 'en');
 	const sqlLine1 = resolveLocale(heroContent.sqlDecoration.line1, 'en');
 	const sqlLine2 = resolveLocale(heroContent.sqlDecoration.line2, 'en');
+	const sqlLine3 = resolveLocale(heroContent.sqlDecoration.line3, 'en');
 
 	let heroTextContainer: HTMLDivElement;
 	let heroDot: HTMLSpanElement;
@@ -66,6 +67,47 @@
 		registerGsapPlugins();
 		CustomEase.create('networkDraw', 'M0,0 C0.2,0.6 0.4,1 1,1');
 
+		const lines = svg.querySelectorAll('.metro-line');
+		const stations = svg.querySelectorAll('.metro-station:not(.metro-berri)');
+		const berri = svg.querySelector('.metro-berri');
+
+		// Shared blink interval — syncs dot + cursor after typing completes.
+		// Hoisted so cleanup and ScrollTrigger can clear/restart it.
+		let blinkInterval: ReturnType<typeof setInterval> | undefined;
+		let typingComplete = false;
+
+		// Start synced dot + cursor blink. Called after typing finishes
+		// and again when user scrolls back to top.
+		function startBlink() {
+			if (blinkInterval) return; // already blinking
+			// Restore visibility — GSAP timeline fades scrollPrompt during Phase 2,
+			// so we need to force it back when restarting at top.
+			if (scrollPrompt) {
+				scrollPrompt.style.opacity = '1';
+				scrollPrompt.textContent = scrollDownLabel + '_';
+			}
+			if (berri) {
+				(berri as HTMLElement).style.opacity = '1';
+			}
+			let cursorVisible = true;
+			blinkInterval = setInterval(() => {
+				cursorVisible = !cursorVisible;
+				if (scrollPrompt) {
+					scrollPrompt.textContent = scrollDownLabel + (cursorVisible ? '_' : '\u00A0');
+				}
+				if (berri) {
+					(berri as HTMLElement).style.opacity = cursorVisible ? '1' : '0';
+				}
+			}, 500);
+		}
+
+		function stopBlink() {
+			if (blinkInterval) {
+				clearInterval(blinkInterval);
+				blinkInterval = undefined;
+			}
+		}
+
 		// Classic JS typewriter: write one character at a time with a trailing
 		// underscore cursor. The _ follows the typing position exactly.
 		if (scrollPrompt) {
@@ -78,19 +120,11 @@
 					scrollPrompt.textContent = fullText.substring(0, charIndex) + '_';
 				} else {
 					clearInterval(typeInterval);
-					// After typing, blink the cursor forever
-					let cursorVisible = true;
-					setInterval(() => {
-						cursorVisible = !cursorVisible;
-						scrollPrompt.textContent = fullText + (cursorVisible ? '_' : '\u00A0');
-					}, 500);
+					typingComplete = true;
+					startBlink();
 				}
 			}, 80);
 		}
-
-		const lines = svg.querySelectorAll('.metro-line');
-		const stations = svg.querySelectorAll('.metro-station:not(.metro-berri)');
-		const berri = svg.querySelector('.metro-berri');
 		const bg = svg.querySelectorAll('.metro-bg');
 		const labels = svg.querySelectorAll('.metro-label');
 
@@ -329,9 +363,19 @@
 			pin: true,
 			scrub: 1,
 			animation: tl,
+			onUpdate: (self: { progress: number; direction: number }) => {
+				if (self.progress > 0.005) {
+					// Stop idle blink once user scrolls past the threshold — scroll animation takes over
+					stopBlink();
+				} else if (self.progress <= 0.005 && self.direction === -1 && typingComplete) {
+					// Scrolled back to top — restart synced blink
+					startBlink();
+				}
+			},
 		});
 
 		cleanup = () => {
+			stopBlink();
 			tl.kill();
 			window.removeEventListener('resize', onResize);
 			ScrollTrigger.getAll().forEach((st) => {
@@ -435,7 +479,8 @@
 				>
 					<code class="block font-mono text-sm leading-loose text-[#E07800] opacity-70">
 						{sqlLine1}<br />
-						{sqlLine2}
+						{sqlLine2}<br />
+						{sqlLine3}
 					</code>
 				</div>
 			</div>

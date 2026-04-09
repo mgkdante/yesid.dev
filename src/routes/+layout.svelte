@@ -4,12 +4,24 @@
 	import Nav from '$lib/components/Nav.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { siteMeta, buildPersonSchema } from '$lib/data';
+	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
 
 	const personSchema = buildPersonSchema(siteMeta);
 
 	let { children } = $props();
+
+	onMount(() => {
+		if (browser) {
+			initLenis();
+		}
+		return () => {
+			destroyLenis();
+		};
+	});
 
 	// Home and services pages manage their own layout (full-width, no max-width).
 	// All other pages get the centered, padded container.
@@ -30,7 +42,7 @@
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="{isFullWidth ? 'flex-1 pt-20' : 'mx-auto w-full max-w-5xl flex-1 px-6 pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="{isFullWidth ? 'flex-1' : 'mx-auto w-full max-w-5xl flex-1 px-6'} {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}

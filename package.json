@@ -41,6 +41,7 @@
 		"@threlte/core": "^8.5.5",
 		"@threlte/extras": "^9.14.2",
 		"gsap": "^3.14.2",
+		"lenis": "^1.3.21",
 		"lottie-web": "^5.13.0",
 		"marked": "^17.0.6",
 		"mdsvex": "^0.12.7",
