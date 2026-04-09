@@ -20,4 +20,4 @@ Jetpack Compose feels like the mobile equivalent of Svelte's approach to UI: dec
 
 ## In Practice
 
-Jetpack Compose is part of my mobile development growth path, paired with Kotlin. The goal is to build native Android apps that connect to the same backend APIs and databases I architect for web clients — extending the data infrastructure story from dashboard to pocket. Understanding both Compose and Flutter lets me advise clients on native vs. cross-platform tradeoffs from hands-on experience.
+Jetpack Compose is part of my mobile development growth path, paired with Kotlin. The goal is to build native Android apps that connect to the same backend APIs and databases I architect for web clients — extending the digital infrastructure story from dashboard to pocket. Understanding both Compose and Flutter lets me advise clients on native vs. cross-platform tradeoffs from hands-on experience.

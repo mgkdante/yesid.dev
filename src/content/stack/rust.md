@@ -20,4 +20,4 @@ Rust represents the direction I'm growing in systems programming. Its ownership 
 
 ## In Practice
 
-Rust is part of my long-term systems programming development. The immediate practical angle is WebAssembly — Rust compiles to WASM with excellent tooling (wasm-pack, wasm-bindgen), enabling performance-critical code to run in the browser. For a data infrastructure consultant, that means potentially building fast client-side data processing tools, interactive visualizations, or compression utilities that run at native speed without a server round-trip.
+Rust is part of my long-term systems programming development. The immediate practical angle is WebAssembly — Rust compiles to WASM with excellent tooling (wasm-pack, wasm-bindgen), enabling performance-critical code to run in the browser. For a digital infrastructure consultant, that means potentially building fast client-side data processing tools, interactive visualizations, or compression utilities that run at native speed without a server round-trip.

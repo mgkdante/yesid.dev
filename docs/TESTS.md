@@ -55,7 +55,7 @@ Convention: tests live next to the code they test (co-located).
 
 ---
 
-# Components (`src/lib/components/`) — 27 files, 181 tests
+# Components (`src/lib/components/`) — 27 files, 188 tests
 
 ## src/lib/components/BlogRow.test.ts
 
@@ -95,10 +95,17 @@ Convention: tests live next to the code they test (co-located).
 | Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
 |---------------------------|-------------------|----------------|-------------|
 | Footer > renders a footer element | A footer landmark exists in the DOM | `getByTestId('footer')` is in document | Standard |
-| Footer > renders the brand name | The "yesid" brand text is visible | `getByText(/yesid/)` is in document | Standard |
-| Footer > renders the current year | The current calendar year appears in the footer | `getByText(new RegExp(year))` is in document | Dynamically computes `new Date().getFullYear()` |
-| Footer > renders a GitHub link with correct href | The GitHub social link points to the correct profile | `href` === `'https://github.com/mgkdante'`, `target` === `'_blank'`, `rel` contains `'noopener'` | Standard |
-| Footer > renders a LinkedIn link with correct href | The LinkedIn social link points to the correct profile | `href` === `'https://www.linkedin.com/in/otaloray/'`, `target` === `'_blank'`, `rel` contains `'noopener'` | Standard |
+| Footer > renders the yesid wordmark | The wordmark link contains "yesid" | `getByTestId('footer-wordmark')` text contains `'yesid'` | Standard |
+| Footer > renders the current year in copyright | The current year appears in copyright text | `getByText(/© year/)` is in document | Dynamically computes year |
+| Footer > renders footer navigation with aria-label | Footer nav has accessible label | `getByRole('navigation', { name: /footer navigation/i })` | Standard |
+| Footer > renders all 6 site navigation links | All 6 page links are present in footer nav | `nav.querySelectorAll('a').length` === 6 | Standard |
+| Footer > renders links to Services, Work, Blog, Stack, About, Contact | Nav links have correct hrefs | Scoped `querySelectorAll` on nav, check hrefs array | Standard |
+| Footer > renders GitHub social link with target=_blank | GitHub link opens externally | `href`, `target`, `rel` attributes checked | Standard |
+| Footer > renders LinkedIn social link with target=_blank | LinkedIn link opens externally | `href`, `target` attributes checked | Standard |
+| Footer > renders the status bar with system date | Programmatic date appears in YYYY.MM.DD format | `getByText(new RegExp(expectedDate))` | Dynamically computes date |
+| Footer > renders system online status text | Status bar shows online indicator | `getByText(/system online/)` | Standard |
+| Footer > renders location in an address element | Montreal appears in semantic address element | `querySelector('footer address')` text contains `'Montreal'` | Standard |
+| Footer > renders the digital infrastructure tagline | Brand tagline appears | `getByText(/digital infrastructure/)` | Standard |
 
 ## src/lib/components/GradientSeparator.test.ts
 
@@ -322,7 +329,7 @@ Convention: tests live next to the code they test (co-located).
 |----------|---------|-------|
 | StackScenarioCard | Renders scenario summary, recommended tech list, related projects, CTA link, handles auto-generated scenarios | 6 |
 
-# Data Layer (`src/lib/data/`) — 8 files, 113 tests
+# Data Layer (`src/lib/data/`) — 9 files, 123 tests
 
 ## src/lib/data/tech-stack.test.ts
 
@@ -448,7 +455,22 @@ Convention: tests live next to the code they test (co-located).
 | getProjectsByService > returns empty array for unknown service ID | A nonexistent service returns no results | Result equals `[]` | `'nonexistent'` |
 | getServiceIdsForProjects > returns deduplicated sorted service IDs from public projects | Service IDs from public projects are collected, deduped, and sorted | Length > 0, sorted, no duplicates | Standard |
 
-# Motion — Actions (`src/lib/motion/actions/`) — 6 files, 43 tests
+## src/lib/data/schema.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| buildPersonSchema > produces valid JSON | Output is parseable JSON | `JSON.parse(schema)` does not throw | Standard |
+| buildPersonSchema > sets @context to schema.org | Schema context is correct | `parsed['@context']` === `'https://schema.org'` | Standard |
+| buildPersonSchema > sets @type to Person | Schema type is Person | `parsed['@type']` === `'Person'` | Standard |
+| buildPersonSchema > includes owner name | Owner name present | `parsed.name` === `'Yesid O.'` | Standard |
+| buildPersonSchema > includes jobTitle from English locale | Job title resolved from en | `parsed.jobTitle` === `'Digital Infrastructure Consultant'` | Standard |
+| buildPersonSchema > includes url | Site URL present | `parsed.url` === `'https://yesid.dev'` | Standard |
+| buildPersonSchema > includes address with locality, region, country | PostalAddress schema correct | `parsed.address` deep equals expected | Standard |
+| buildPersonSchema > includes sameAs array with social links | Social profiles present | `sameAs` contains GitHub and LinkedIn URLs | Standard |
+| buildPersonSchema > includes knowsAbout array | Skills listed | `knowsAbout` contains `'PostgreSQL'` and `'dbt'` | Standard |
+| buildPersonSchema > includes email | Contact email present | `parsed.email` === `'contact@yesid.dev'` | Standard |
+
+# Motion — Actions (`src/lib/motion/actions/`) — 7 files, 50 tests
 
 ## src/lib/motion/actions/boop.test.ts
 
@@ -520,6 +542,18 @@ Convention: tests live next to the code they test (co-located).
 | tilt action > no-ops on touch devices | The tilt effect is disabled on touch screens | `node.style.transform` === `''` after mousemove | `mockTouchDevice(true)` |
 | tilt action > respects maxDeg parameter | The maximum tilt angle is capped at the specified degrees | `transform` contains `'rotateY(5deg)'` | `maxDeg: 5`, cursor at far edge |
 | tilt action > dead zone: cursor at center produces no transform | Centering the cursor on the element produces no tilt | `node.style.transform` === `''` | Cursor at exact center (100, 100) |
+
+## src/lib/motion/actions/wordmarkHover.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| wordmarkHover action > returns an object with a destroy method | Action returns Svelte action interface | `typeof result.destroy` === `'function'` | Mock GSAP/SplitText, `mockMatchMedia(false)` |
+| wordmarkHover action > registers GSAP plugins on mount | GSAP plugins initialized | `registerGsapPlugins` called | Dynamic import |
+| wordmarkHover action > creates a SplitText instance on the text element | SplitText wraps the text node | `SplitText` called with `(el, { type: 'chars' })` | Dynamic import |
+| wordmarkHover action > does nothing when prefers-reduced-motion is on | Animation skipped for accessibility | `SplitText` not called | `mockMatchMedia(true)`, `mockClear()` |
+| wordmarkHover action > reverts SplitText on destroy | DOM cleaned up on unmount | `splitInstance.revert` called | `mock.instances[0]` |
+| wordmarkHover action > triggers animation on mouseenter | Hover fires GSAP timeline | `gsap.timeline` called after mouseenter | `dispatchEvent(MouseEvent)` |
+| wordmarkHover action > accepts autoPlay option to fire on mount | First effect plays immediately | `gsap.timeline` called on init | `autoPlay: true` |
 
 # Motion — Components (`src/lib/motion/components/`) — 2 files, 13 tests
 

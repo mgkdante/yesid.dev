@@ -5,8 +5,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, SplitText } from '$lib/motion/utils/gsap.js';
+	import { wordmarkHover } from '$lib/motion/actions';
 	import { navLinks } from '$lib/data';
 	import MenuOverlay from './MenuOverlay.svelte';
 
@@ -34,15 +33,9 @@
 		overlayActive = false;
 	}
 
-	// Refs for the wordmark elements
 	let wordmarkEl: HTMLSpanElement;
 	let dotEl: HTMLSpanElement;
-	let splitInstance: InstanceType<typeof SplitText> | undefined;
-
-	// effectIndex cycles through the pool so each hover feels different.
-	let effectIndex = 0;
-	// Guard: prevents overlapping animations when hovering rapidly.
-	let isAnimating = false;
+	let wordmarkAction: ReturnType<typeof wordmarkHover> | undefined;
 
 	function isActive(href: string): boolean {
 		if (href === '/') return pathname === '/';
@@ -53,85 +46,16 @@
 		if (e.key === 'Escape' && menuOpen) menuOpen = false;
 	}
 
-	// --- Wordmark hover animation pool ---
-	// Four distinct effects rotate on each hover so the interaction stays fresh.
-
-	// Bounce: letters jump up with elastic ease then return.
-	const effectBounce = (chars: Element[]) =>
-		gsap
-			.timeline()
-			.fromTo(chars, { y: 0 }, { y: -15, stagger: 0.04, duration: 0.3, ease: 'back.out(1.7)' })
-			.to(chars, { y: 0, stagger: 0.04, duration: 0.3, ease: 'power2.out' }, '>-0.15');
-
-	// Wiggle: letters rotate left then right then snap back with elastic ease.
-	const effectWiggle = (chars: Element[]) =>
-		gsap
-			.timeline()
-			.to(chars, { rotation: 12, stagger: 0.03, duration: 0.15, ease: 'power1.out' })
-			.to(chars, { rotation: -12, stagger: 0.03, duration: 0.15, ease: 'power1.out' })
-			.to(chars, { rotation: 0, stagger: 0.03, duration: 0.3, ease: 'elastic.out(1, 0.3)' });
-
-	// Wave: sine-wave y-offset ripple across letters.
-	const effectWave = (chars: Element[]) =>
-		gsap.timeline().to(chars, {
-			y: -10,
-			stagger: { each: 0.05, from: 'start' },
-			duration: 0.25,
-			ease: 'sine.out',
-			yoyo: true,
-			repeat: 1
-		});
-
-	// Spin: each letter does a full 360 rotation then resets to 0.
-	const effectSpin = (chars: Element[]) =>
-		gsap
-			.timeline()
-			.to(chars, { rotation: 360, stagger: 0.05, duration: 0.5, ease: 'power2.inOut' })
-			.set(chars, { rotation: 0 });
-
-	const effects = [effectBounce, effectWiggle, effectWave, effectSpin];
-
-	function handleWordmarkHover() {
-		// Skip if already animating, user prefers reduced motion, or SplitText not ready.
-		if (isAnimating || isPrefersReducedMotion() || !splitInstance) return;
-		isAnimating = true;
-
-		const tl = effects[effectIndex](splitInstance.chars);
-
-		// The orange dot always pulses on every hover regardless of which effect is active.
-		tl.fromTo(
-			dotEl,
-			{ scale: 1 },
-			{ scale: 1.4, duration: 0.15, ease: 'power2.out', yoyo: true, repeat: 1 },
-			0
-		);
-
-		// Release the guard when the full timeline finishes.
-		tl.then(() => {
-			isAnimating = false;
-		});
-
-		// Advance to the next effect; wrap around after the last one.
-		effectIndex = (effectIndex + 1) % effects.length;
-	}
-
 	onMount(() => {
-		// SplitText manipulates the DOM, so it must run client-side only.
-		// Guard against SSR and reduced-motion preference.
-		if (isPrefersReducedMotion() || typeof window === 'undefined') return;
-		registerGsapPlugins();
-		splitInstance = new SplitText(wordmarkEl, { type: 'chars' });
-
-		// Play the first effect on page load so the site feels alive immediately.
-		// Short delay lets the page paint first so the animation isn't clipped.
-		setTimeout(() => {
-			handleWordmarkHover();
-		}, 500);
+		wordmarkAction = wordmarkHover(wordmarkEl, {
+			dotEl,
+			autoPlay: true,
+			autoPlayDelay: 500
+		});
 	});
 
 	onDestroy(() => {
-		// Restore the original text nodes so the DOM is clean after unmount.
-		splitInstance?.revert();
+		wordmarkAction?.destroy();
 	});
 </script>
 
@@ -152,8 +76,6 @@
 			href="/"
 			data-testid="nav-wordmark"
 			class="inline-flex items-baseline font-heading text-lg font-bold text-[var(--text-primary)]"
-			onmouseenter={handleWordmarkHover}
-			onclick={handleWordmarkHover}
 		>
 			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
 				data-testid="nav-period"

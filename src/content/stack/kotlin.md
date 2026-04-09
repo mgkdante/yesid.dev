@@ -20,4 +20,4 @@ Kotlin is where I'm expanding my mobile and backend capabilities. Its null safet
 
 ## In Practice
 
-Kotlin is part of my mobile development learning path, paired with Jetpack Compose for building native Android interfaces. The language's interoperability with Java means I can work within existing Android codebases without rewriting everything — adopting Kotlin file by file. As I expand from data infrastructure into mobile app development, Kotlin is the bridge between my backend JVM experience and native mobile UIs.
+Kotlin is part of my mobile development learning path, paired with Jetpack Compose for building native Android interfaces. The language's interoperability with Java means I can work within existing Android codebases without rewriting everything — adopting Kotlin file by file. As I expand from digital infrastructure into mobile app development, Kotlin is the bridge between my backend JVM experience and native mobile UIs.

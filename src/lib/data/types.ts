@@ -111,6 +111,19 @@ export interface SiteLinks {
 	upwork?: string;
 }
 
+export interface SiteAddress {
+	locality: string;
+	region: string;
+	country: string;
+}
+
+export interface SiteOwner {
+	name: string;
+	jobTitle: LocalizedString;
+	address: SiteAddress;
+	knowsAbout: readonly string[];
+}
+
 export interface SiteMeta {
 	// name is always "yesid." — brand name is not translated
 	name: string;
@@ -118,6 +131,7 @@ export interface SiteMeta {
 	// description is used for the HTML <meta name="description"> tag
 	description: LocalizedString;
 	links: SiteLinks;
+	owner: SiteOwner;
 }
 
 // Blog content categories. Professional is the default brand-facing lane.

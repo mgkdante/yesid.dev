@@ -175,6 +175,10 @@ Components never read locale fields directly. They call `resolveLocale(field, lo
 import { getFeaturedProjects, resolveLocale, siteMeta } from '$lib/data';
 ```
 
+**SEO schema (Slice 12):** `buildPersonSchema(siteMeta)` in `src/lib/data/schema.ts` produces a JSON-LD Person schema injected into `<svelte:head>` via `+layout.svelte`. All schema fields (name, jobTitle, address, sameAs, knowsAbout) pull from `siteMeta.owner`.
+
+**Shared motion actions:** `wordmarkHover` in `src/lib/motion/actions/wordmarkHover.ts` encapsulates the GSAP SplitText animation pool (bounce, wiggle, wave, spin + dot pulse) used by both `Nav.svelte` and `Footer.svelte`.
+
 ## CSS Architecture
 
 Two systems coexist and serve different purposes:

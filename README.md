@@ -1,6 +1,6 @@
 # yesid. Pipeline
 
-**Data infrastructure that moves.**
+**Digital infrastructure that moves.**
 
 ## What This Is
 

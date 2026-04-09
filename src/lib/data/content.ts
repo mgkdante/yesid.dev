@@ -17,7 +17,7 @@ export const heroContent = {
 		line3: { en: 'BUILT RIGHT.' } satisfies LocalizedString,
 	},
 	subtitle: {
-		en: 'Freelance SQL development & data infrastructure. PostgreSQL, SQL Server, Power BI, Retool — from Montreal to your pipeline.'
+		en: 'Freelance SQL development & digital infrastructure. PostgreSQL, SQL Server, Power BI, Retool — from Montreal to your pipeline.'
 	} satisfies LocalizedString,
 	ctaWork: { en: 'View work →' } satisfies LocalizedString,
 	ctaContact: { en: 'Get in touch' } satisfies LocalizedString,
@@ -31,7 +31,7 @@ export const aboutContent = {
 	name: { en: 'Yesid O.' } satisfies LocalizedString,
 	title: { en: 'Freelance Data Engineer' } satisfies LocalizedString,
 	bio: {
-		en: 'Montreal, QC — building data infrastructure for teams that ship.'
+		en: 'Montreal, QC — building digital infrastructure for teams that ship.'
 	} satisfies LocalizedString,
 	moreLink: { en: '→ More about me' } satisfies LocalizedString,
 	stackLabel: { en: 'STACK' } satisfies LocalizedString,

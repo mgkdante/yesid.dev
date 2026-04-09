@@ -7,7 +7,7 @@
 
 <svelte:head>
 	<title>Services — yesid.</title>
-	<meta name="description" content="Data infrastructure, tools, and systems. SQL development, data pipelines, analytics, database engineering, internal tooling, and web development." />
+	<meta name="description" content="Digital infrastructure, tools, and systems. SQL development, data pipelines, analytics, database engineering, internal tooling, and web development." />
 </svelte:head>
 
 <ServiceListingPage

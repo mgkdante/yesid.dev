@@ -3,7 +3,7 @@
 // structure changes in a future refactor.
 
 // Types
-export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect, AboutPolaroid, AboutIdentity, AboutMetric, AboutMethodStep, AboutTestimonial, AboutInterest, TechCategory, AboutTechItem, TechStackItem, InfraLayer, DomainCluster, Proficiency, StackScenario, AboutClientLogo, AboutWeatherConfig, AboutCta, AboutContent, ContactContent, ContactInfoTerminal, ContactFormTerminal, ContactValidation, ContactSuccess, ContactTerminalField } from './types.js';
+export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteAddress, SiteOwner, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect, AboutPolaroid, AboutIdentity, AboutMetric, AboutMethodStep, AboutTestimonial, AboutInterest, TechCategory, AboutTechItem, TechStackItem, InfraLayer, DomainCluster, Proficiency, StackScenario, AboutClientLogo, AboutWeatherConfig, AboutCta, AboutContent, ContactContent, ContactInfoTerminal, ContactFormTerminal, ContactValidation, ContactSuccess, ContactTerminalField } from './types.js';
 
 // Locale utilities
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
@@ -16,6 +16,9 @@ export { services, getServiceById, getVisibleServices, getAdjacentServices } fro
 
 // Site metadata
 export { siteMeta } from './meta.js';
+
+// JSON-LD schema builder (Slice 12 — SEO)
+export { buildPersonSchema } from './schema.js';
 
 // Blog data
 export { blogPosts, getLatestPosts, getPostBySlug, getPostHtml, getPostsByCategory, getTagsForCategory, getPostsByTag, getLanguagesForCategory, getSvgContent, getSvgContentsForPosts, resolveAnimation, resolveSvgFallbackName } from './blog.js';

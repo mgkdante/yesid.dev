@@ -6,7 +6,7 @@
 
 <svelte:head>
 	<title>Work | yesid.</title>
-	<meta name="description" content="Projects, pipelines, and systems built by yesid. — freelance SQL development and data infrastructure." />
+	<meta name="description" content="Projects, pipelines, and systems built by yesid. — freelance SQL development and digital infrastructure." />
 </svelte:head>
 
 <WorkListingPage

@@ -10,7 +10,7 @@ This document defines the motion language, interaction patterns, 3D art directio
 
 ## 1. Core Metaphor: Data in Transit
 
-The tagline is "Data infrastructure that moves." The motion system makes that literal.
+The tagline is "Digital infrastructure that moves." The motion system makes that literal.
 
 Everything on the site follows the metaphor of **data flowing through infrastructure**:
 - The visitor's scroll is the "query" that moves data through the system
@@ -190,7 +190,7 @@ Layer stack (back to front):
 - 3D environment visible: glowing data paths pulse gently
 - Train sits at platform (SVG, with optional Lottie idle glow)
 - "yesid." wordmark large, centered
-- "Data infrastructure that moves." tagline
+- "Digital infrastructure that moves." tagline
 - Scroll prompt at bottom (animated chevron, SVG + CSS)
 
 **Station 1: SQL Development & Optimization**

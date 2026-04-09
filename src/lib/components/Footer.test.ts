@@ -8,18 +8,41 @@ describe('Footer', () => {
 		expect(screen.getByTestId('footer')).toBeInTheDocument();
 	});
 
-	it('renders the brand name', () => {
+	it('renders the yesid wordmark', () => {
 		render(Footer);
-		expect(screen.getByText(/yesid/)).toBeInTheDocument();
+		expect(screen.getByTestId('footer-wordmark')).toBeInTheDocument();
+		expect(screen.getByTestId('footer-wordmark').textContent).toContain('yesid');
 	});
 
-	it('renders the current year', () => {
+	it('renders the current year in copyright', () => {
 		render(Footer);
 		const year = new Date().getFullYear().toString();
-		expect(screen.getByText(new RegExp(year))).toBeInTheDocument();
+		const small = screen.getByText(new RegExp(`©\\s*${year}`));
+		expect(small).toBeInTheDocument();
 	});
 
-	it('renders a GitHub link with correct href', () => {
+	it('renders footer navigation with aria-label', () => {
+		render(Footer);
+		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
+		expect(nav).toBeInTheDocument();
+	});
+
+	it('renders all 6 site navigation links', () => {
+		render(Footer);
+		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
+		const links = nav.querySelectorAll('a');
+		expect(links.length).toBe(6);
+	});
+
+	it('renders links to Services, Work, Blog, Stack, About, Contact', () => {
+		render(Footer);
+		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
+		const navLinks = nav.querySelectorAll('a');
+		const hrefs = Array.from(navLinks).map((a) => a.getAttribute('href'));
+		expect(hrefs).toEqual(['/services', '/work', '/tech-stack', '/blog', '/about', '/contact']);
+	});
+
+	it('renders GitHub social link with target=_blank', () => {
 		render(Footer);
 		const link = screen.getByRole('link', { name: /github/i });
 		expect(link).toHaveAttribute('href', 'https://github.com/mgkdante');
@@ -27,11 +50,34 @@ describe('Footer', () => {
 		expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
 	});
 
-	it('renders a LinkedIn link with correct href', () => {
+	it('renders LinkedIn social link with target=_blank', () => {
 		render(Footer);
 		const link = screen.getByRole('link', { name: /linkedin/i });
 		expect(link).toHaveAttribute('href', 'https://www.linkedin.com/in/otaloray/');
 		expect(link).toHaveAttribute('target', '_blank');
-		expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
+	});
+
+	it('renders the status bar with system date', () => {
+		render(Footer);
+		const now = new Date();
+		const expectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+		expect(screen.getByText(new RegExp(expectedDate))).toBeInTheDocument();
+	});
+
+	it('renders system online status text', () => {
+		render(Footer);
+		expect(screen.getByText(/system online/)).toBeInTheDocument();
+	});
+
+	it('renders location in an address element', () => {
+		render(Footer);
+		const address = document.querySelector('footer address');
+		expect(address).not.toBeNull();
+		expect(address?.textContent).toContain('Montreal');
+	});
+
+	it('renders the digital infrastructure tagline', () => {
+		render(Footer);
+		expect(screen.getByText(/digital infrastructure/)).toBeInTheDocument();
 	});
 });

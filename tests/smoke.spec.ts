@@ -9,7 +9,7 @@ test('home page loads', async ({ page }) => {
 
 test('tagline is visible', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.getByText('Data infrastructure that moves.')).toBeVisible();
+	await expect(page.getByText('Digital infrastructure that moves.')).toBeVisible();
 });
 
 test('wordmark is visible', async ({ page }) => {

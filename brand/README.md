@@ -1,6 +1,6 @@
 # yesid. brand assets
 
-**Tagline:** Data infrastructure that moves.
+**Tagline:** Digital infrastructure that moves.
 **Adjectives:** Progressive. Bold. Reliable.
 
 ## Files

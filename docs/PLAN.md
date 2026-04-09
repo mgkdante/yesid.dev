@@ -471,7 +471,7 @@ DRY consolidation:
 
 ### Slice 14 — Stack Builder Logic Engine
 
-**Status:** draft **Est. Sessions:** 3-4 **Depends on:** 10, 13
+**Status:** draft **Est. Sessions:** 6 **Depends on:** 10, 13
 **Spec:** `docs/slices/slice-14-stack-builder-logic.md`
 
 Replace hardcoded scenario matching (7 authored scenarios + basic fallback) with a graph-based recommendation engine. Every possible domain combination (127 combos) produces a unique, contextual, educational stack recommendation. Recommendations include ordered tech with role labels, data flow narratives, cross-links to services and projects, proficiency-aware confidence levels, and tech toggle customization.
@@ -574,9 +574,13 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 **Tests:** Full navigation flow. Train journey completes without jank. Responsive at 375px, 768px, 1280px. No mobile overflow. Frame rate above 45fps on scroll. Reduced motion mode works.
 **You'll learn:** E2E testing, performance profiling, responsive QA, accessibility verification.
 
+
+
+**KEEP IN MIND**: Sentry, Posthog and Vercel analytics
+
 ### Slice 17 — Standardization: Ports & Adapters Lite
 
-**Status:** planned **Est. Sessions:** 5-6 (across 6 subslices)
+**Status:** planned **Est. Sessions:** 10 (across 6 subslices)
 
 **Philosophy:** The codebase should read like a blueprint. An engineer opens the repo and sees: types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 18 (Keystatic) plugs in with zero component changes. This slice is invisible to users. Every page looks and behaves identically before and after. The diff is structural.
 
@@ -592,7 +596,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 #### Slice 17a — CSS Audit + Consolidation + CSS.md
 
-**Status:** planned **Est. Sessions:** 1 **Depends on:** B+, 06d
+**Status:** planned **Est. Sessions:** 3 **Depends on:** B+, 06d
 **Why first:** CSS touches every component. Consolidating it first gives a clean styling foundation before refactoring component APIs and extracting shared shells.
 **What:**
 
@@ -670,7 +674,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 #### Slice 17b — Service Layer Extraction
 
-**Status:** planned **Est. Sessions:** 1 **Depends on:** 13a
+**Status:** planned **Est. Sessions:** 2 **Depends on:** 13a
 
 **What:** Split data definition from data access. Every content type gets `src/lib/services/*.service.ts` with typed query functions (`getAllProjects()`, `getProjectBySlug()`, `getProjectsByService()`, etc.). Route loaders call services, never data files directly. This is the Slice 14 seam: swap service implementation from reading `.ts` files to reading Keystatic Reader API, everything downstream stays.
 
@@ -700,7 +704,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 #### Slice 17d — Component API Standardization + Shared UI Shells
 
-**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 13c
+**Status:** planned **Est. Sessions:** 3 **Depends on:** 13c
 
 **What:** Audit all components. Props use exported TypeScript interfaces. Shared prop patterns extracted: `WithAnimation`, `WithLocale`, `WithTestId`. Blog, work, and services pages repeat layout patterns. Extract into composable shells with slots: `ListingShell` (sidebar + grid + empty state), `DetailShell` (hero + sections + nav + related), `FilterChips` (reusable tag/filter bar), `CardBase` (shared hover/reveal/boop pattern), `CollapsibleSection` (shared with ARIA), `EmptyState`.
 
@@ -717,7 +721,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 #### Slice 17e — Motion Consolidation
 
-**Status:** planned **Est. Sessions:** 1 **Depends on:** 13d
+**Status:** planned **Est. Sessions:** 2 **Depends on:** 13d
 
 **What:** Extract ad-hoc inline GSAP calls into reusable timeline factories: `createRevealTimeline()`, `createStaggerTimeline()`, `createMorphAnimation()`. All enforce `prefers-reduced-motion` at the utility level so individual components don't need to check. Target: 80%+ of components use factories instead of raw GSAP.
 
@@ -733,7 +737,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 #### Slice 17f — Test Architecture + Documentation
 
-**Status:** planned **Est. Sessions:** 0.5-1 **Depends on:** 13e
+**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 13e
 
 **What:** Test factories for all content types (`createMockProject()`, `createMockBlogPost()`, `createMockService()`) so tests don't repeat data setup. Service tests mock the data source so they work unchanged when Slice 14 swaps it. Updated ARCHITECTURE.md with layer diagram and import rules. `src/lib/README.md` explaining the import hierarchy. Optimize test architecture to avoid slow testing but also that testing covers at least 90% of our code.
 
@@ -755,7 +759,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 #### Slice 17g — Learning Docs Refactor
 
-**Status:** planned **Est. Sessions:** 1 **Depends on:** 13f
+**Status:** planned **Est. Sessions:** 2 **Depends on:** 13f
 
 **What:** Full sweep of `docs/learn/` to align with the restructured codebase. Slice 13 moves files, extracts shared shells, introduces service layer + factories, and consolidates motion. Every learn doc that references moved/renamed/refactored code needs its "How We Use It" table and "Worked Example" updated to point to the new locations and patterns. New learn docs created for concepts introduced by 13 (service layer pattern, Zod validation, motion factories, shared UI shells, test factories). `meta.json` updated with new dependency links.
 
@@ -787,7 +791,7 @@ New docs follow the existing `docs/learn/_template.md`.
 
 ### Slice 18 — Cloud Content Layer: Keystatic CMS
 
-**Status:** planned **Depends on:** 16 **Est. Sessions:** 2
+**Status:** planned **Depends on:** 16 **Est. Sessions:** 4
 
 **Decision: Keystatic** — Git-based CMS, content stored as JSON/Markdown in the repo, visual editor via `keystatic-sveltekit` npm package (confirmed compatible with SvelteKit 2 + Svelte 5). $0 forever. No external service dependency. If Keystatic disappears, content remains as plain files.
 

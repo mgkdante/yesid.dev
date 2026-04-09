@@ -5,6 +5,9 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import { page } from '$app/stores';
 	import { prefersReducedMotion } from '$lib/motion/stores';
+	import { siteMeta, buildPersonSchema } from '$lib/data';
+
+	const personSchema = buildPersonSchema(siteMeta);
 
 	let { children } = $props();
 
@@ -17,7 +20,10 @@
 	let hideFooter = $derived($page.url.pathname === '/services');
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+	<link rel="icon" href={favicon} />
+	{@html `<script type="application/ld+json">${personSchema}</script>`}
+</svelte:head>
 
 <div class="flex min-h-screen flex-col bg-[var(--bg-primary)] font-body text-[var(--text-primary)]">
 	<Nav pathname={$page.url.pathname} />

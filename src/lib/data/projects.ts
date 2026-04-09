@@ -10,7 +10,7 @@ const projects: readonly Project[] = [
 		title: { en: 'yesid.dev — Portfolio Site' },
 		oneLiner: { en: 'The site you are looking at: a SvelteKit portfolio built slice by slice.' },
 		description: {
-			en: 'A personal brand and portfolio site for a freelance SQL developer and data infrastructure consultant. Built with SvelteKit 2, Svelte 5, Tailwind CSS v4, and deployed to Vercel. Designed to be multilingual (en/fr/es) from day one.'
+			en: 'A personal brand and portfolio site for a freelance SQL developer and digital infrastructure consultant. Built with SvelteKit 2, Svelte 5, Tailwind CSS v4, and deployed to Vercel. Designed to be multilingual (en/fr/es) from day one.'
 		},
 		stack: ['SvelteKit', 'Svelte 5', 'TypeScript', 'Tailwind CSS', 'Vercel'],
 		tags: ['portfolio', 'web', 'svelte'],

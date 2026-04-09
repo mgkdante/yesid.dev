@@ -180,7 +180,7 @@ export const services: readonly Service[] = [
 		visible: true,
 		relatedProjects: ['yesid-dev'],
 		valueProposition: {
-			en: 'Your data infrastructure deserves a frontend that matches. I build web applications that connect directly to your data layer — client portals, internal dashboards, public-facing tools — with the same attention to performance and reliability I bring to the backend.'
+			en: 'Your digital infrastructure deserves a frontend that matches. I build web applications that connect directly to your data layer — client portals, internal dashboards, public-facing tools — with the same attention to performance and reliability I bring to the backend.'
 		},
 		deliverables: [
 			{ en: 'Full-stack SvelteKit application' },

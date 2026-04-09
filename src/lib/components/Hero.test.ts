@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/svelte';
 import Hero from './Hero.svelte';
 
 const baseProps = {
-	heading: 'Data infrastructure that moves.',
+	heading: 'Digital infrastructure that moves.',
 	subheading: 'SQL development and data engineering for teams that need results.'
 };
 
