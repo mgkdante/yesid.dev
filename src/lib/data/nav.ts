@@ -1,0 +1,93 @@
+import type { LocalizedString } from './types.js';
+
+export interface NavLink {
+	label: LocalizedString;
+	href: string;
+	/** 1 = always visible, 2 = hidden on narrow viewports */
+	priority: 1 | 2;
+}
+
+export interface MenuItem {
+	label: LocalizedString;
+	href: string;
+	subtitle: LocalizedString;
+}
+
+export interface ErrorPageContent {
+	label: LocalizedString;
+	heading: LocalizedString;
+	description: LocalizedString;
+	terminalLine: string;
+	suggestions: readonly { label: LocalizedString; href: string }[];
+}
+
+export const navLinks: readonly NavLink[] = [
+	{
+		label: { en: 'Services', fr: 'Services', es: 'Servicios' },
+		href: '/services',
+		priority: 1
+	},
+	{
+		label: { en: 'Work', fr: 'Projets', es: 'Proyectos' },
+		href: '/work',
+		priority: 1
+	},
+	{
+		label: { en: 'Stack', fr: 'Stack', es: 'Stack' },
+		href: '/tech-stack',
+		priority: 2
+	}
+] as const;
+
+export const menuItems: readonly MenuItem[] = [
+	{
+		label: { en: 'Services', fr: 'Services', es: 'Servicios' },
+		href: '/services',
+		subtitle: { en: 'what I build', fr: 'ce que je construis', es: 'lo que construyo' }
+	},
+	{
+		label: { en: 'Work', fr: 'Projets', es: 'Proyectos' },
+		href: '/work',
+		subtitle: { en: 'proof it ships', fr: 'la preuve que ça livre', es: 'prueba de que se entrega' }
+	},
+	{
+		label: { en: 'Stack', fr: 'Stack', es: 'Stack' },
+		href: '/tech-stack',
+		subtitle: { en: 'the toolbox', fr: 'la boîte à outils', es: 'la caja de herramientas' }
+	},
+	{
+		label: { en: 'Blog', fr: 'Blog', es: 'Blog' },
+		href: '/blog',
+		subtitle: { en: 'thoughts in transit', fr: 'pensées en transit', es: 'pensamientos en tránsito' }
+	},
+	{
+		label: { en: 'About', fr: 'À propos', es: 'Acerca de' },
+		href: '/about',
+		subtitle: { en: 'the operator', fr: "l'opérateur", es: 'el operador' }
+	},
+	{
+		label: { en: 'Contact', fr: 'Contact', es: 'Contacto' },
+		href: '/contact',
+		subtitle: { en: 'open channel', fr: 'canal ouvert', es: 'canal abierto' }
+	}
+] as const;
+
+export const errorPageContent: ErrorPageContent = {
+	label: { en: 'ROUTE NOT FOUND', fr: 'ROUTE INTROUVABLE', es: 'RUTA NO ENCONTRADA' },
+	heading: {
+		en: 'This station is under construction',
+		fr: 'Cette station est en construction',
+		es: 'Esta estación está en construcción'
+	},
+	description: {
+		en: "The route you requested doesn't exist or has been rerouted. Here are some active lines:",
+		fr: "La route demandée n'existe pas ou a été redirigée. Voici quelques lignes actives :",
+		es: 'La ruta solicitada no existe o ha sido redirigida. Aquí hay algunas líneas activas:'
+	},
+	terminalLine: '$ route --status 404 // requested path not in service',
+	suggestions: [
+		{ label: { en: 'Services', fr: 'Services', es: 'Servicios' }, href: '/services' },
+		{ label: { en: 'Work', fr: 'Projets', es: 'Proyectos' }, href: '/work' },
+		{ label: { en: 'Home', fr: 'Accueil', es: 'Inicio' }, href: '/' }
+	]
+} as const;

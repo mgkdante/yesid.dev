@@ -38,3 +38,7 @@ export { contactContent } from './contact-page.js';
 
 // Tech stack page data (Slice 10 — "The Control Room")
 export { getAllTechItems, getTechItemById, getTechItemsByLayer, getTechItemsByDomain, getConnections, getIncomingConnections, getTechItemContent, getAllScenarios, getScenarioForDomains, validateTechItems, validateScenarios } from './tech-stack.js';
+
+// Nav data (Slice 11 — Navbar Redesign + 404 Page)
+export { navLinks, menuItems, errorPageContent } from './nav.js';
+export type { NavLink, MenuItem, ErrorPageContent } from './nav.js';
