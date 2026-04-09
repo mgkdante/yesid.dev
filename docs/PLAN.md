@@ -427,9 +427,11 @@ DRY consolidation:
 **Navbar research scope:**
 - Evaluate: full-screen overlay, iOS floating tab bar, hamburger menu, sticky header, breadcrumb nav, hybrid approaches
 - Research award-winning portfolio navbars for inspiration
+- Animations
 - Pick the best approach for yesid.dev and implement
 
 **404 page scope:**
+
 - Infrastructure/construction theme — consistent with Digital Infrastructure brand
 - SVG illustrations: construction signs, black-and-yellow hazard stripes, "do not pass" barriers, road cones, detour arrows
 - Metro branding: station-themed error messaging ("This station is under construction" / "Route not found")
@@ -630,6 +632,15 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
    - Grid behavior per tier: document how many columns each major layout (services grid, project cards, blog grid) gets at each breakpoint.
    - No breakpoint logic lives in individual components unless it's layout-specific to that component. Global responsive behavior flows from the layout shell and CSS custom properties.
 
+7. **Animation & GSAP cleanup:**
+   - GSAP does NOT work reliably inside Svelte 5 `$effect()` — timeline callbacks (`onComplete`) never fire. Ref: https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no
+   - Audit every component using GSAP in `$effect()` and migrate to one of:
+     - **Svelte actions** (`use:animate`) for element-lifecycle animations (scroll-triggered, hover, mount). Actions tie directly to DOM lifecycle which GSAP needs.
+     - **CSS transitions** for state-driven open/close/toggle animations. More reliable than GSAP for reactive state changes. MenuOverlay (slice 11b) is the reference implementation.
+   - Create a shared `src/lib/motion/utils/animate.ts` action that wraps GSAP `to`/`from`/`fromTo` with proper `destroy()` cleanup (kills tween + ScrollTrigger).
+   - Components to audit: Nav.svelte (SplitText wordmark in `onMount` — OK but could be action), any future components using GSAP in `$effect()`.
+   - Document the animation strategy in CSS.md: when to use GSAP actions vs CSS transitions vs Svelte transitions.
+
 **Acceptance Criteria:**
 - [ ] Zero hardcoded hex colors in any `.svelte` file (all through tokens or @theme)
 - [ ] CSS.md exists and covers all tokens, rules, and patterns
@@ -643,6 +654,9 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 - [ ] Touch targets meet 44x44px minimum on mobile/foldable
 - [ ] Typography uses `clamp()` for headings with documented min/max values
 - [ ] CSS.md includes a breakpoint reference table showing container width, section padding, grid columns, and heading sizes at each tier
+- [ ] Zero GSAP usage inside `$effect()` — all migrated to Svelte actions or CSS transitions
+- [ ] Shared `animate.ts` action exists with TypeScript types and `destroy()` cleanup
+- [ ] Animation strategy documented in CSS.md (GSAP actions vs CSS transitions vs Svelte transitions)
 - [ ] No horizontal scroll at any breakpoint
 - [ ] `--container-max` is the single source of truth for page-width containment
 - [ ] No user gets left behind

@@ -8,10 +8,31 @@
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap, SplitText } from '$lib/motion/utils/gsap.js';
 	import { navLinks } from '$lib/data';
+	import MenuOverlay from './MenuOverlay.svelte';
 
 	let { pathname = '/' }: { pathname?: string } = $props();
 
 	let menuOpen = $state(false);
+	// True while overlay is visible (including during close animation).
+	// Pill visual state (compact, z-index, toggle icon) follows this, not menuOpen.
+	let overlayActive = $state(false);
+
+	function toggleMenu() {
+		if (menuOpen) {
+			menuOpen = false;
+		} else if (!overlayActive) {
+			menuOpen = true;
+			overlayActive = true;
+		}
+	}
+
+	function handleOverlayClose() {
+		menuOpen = false;
+	}
+
+	function handleOverlayDone() {
+		overlayActive = false;
+	}
 
 	// Refs for the wordmark elements
 	let wordmarkEl: HTMLSpanElement;
@@ -27,13 +48,6 @@
 		if (href === '/') return pathname === '/';
 		return pathname.startsWith(href);
 	}
-
-	// Lock body scroll when menu is open
-	$effect(() => {
-		if (typeof document !== 'undefined') {
-			document.body.style.overflow = menuOpen ? 'hidden' : '';
-		}
-	});
 
 	function onKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape' && menuOpen) menuOpen = false;
@@ -125,12 +139,13 @@
 
 <nav
 	data-testid="nav"
-	class="fixed top-4 left-0 right-0 z-50 flex flex-col items-center pointer-events-none"
+	class="fixed top-4 left-0 right-0 flex flex-col items-center pointer-events-none"
+	style:z-index={overlayActive ? 70 : 50}
 >
 	<!-- Pill -->
 	<div
 		data-testid="nav-pill"
-		class="nav-pill pointer-events-auto flex items-center gap-0"
+		class="nav-pill pointer-events-auto flex items-center gap-0 {overlayActive ? 'nav-pill-compact' : ''}"
 	>
 		<!-- Wordmark -->
 		<a
@@ -147,11 +162,10 @@
 			>
 		</a>
 
-		<!-- Divider -->
-		<span class="nav-divider" aria-hidden="true"></span>
+		<!-- Divider + links: collapse when menu open -->
+		<span class="nav-divider nav-collapsible {overlayActive ? 'nav-collapsed' : ''}" aria-hidden="true"></span>
 
-		<!-- Nav links -->
-		<div class="flex items-center gap-7">
+		<div class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
 			{#each navLinks as link}
 				<span class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}>
 					<a
@@ -173,16 +187,18 @@
 		<!-- Menu toggle -->
 		<button
 			data-testid="nav-menu-toggle"
-			class="flex flex-col items-end gap-[5px] p-1"
-			aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-			onclick={() => (menuOpen = !menuOpen)}
+			class="menu-toggle {overlayActive ? 'menu-toggle-open' : ''}"
+			aria-label={overlayActive ? 'Close menu' : 'Open menu'}
+			onclick={toggleMenu}
 		>
-			<span class="block h-[1.5px] w-4 rounded-full bg-[#aaa] transition-transform"></span>
-			<span class="block h-[1.5px] w-[11px] rounded-full bg-[#aaa] transition-transform"></span>
+			<span class="menu-toggle-line menu-toggle-top"></span>
+			<span class="menu-toggle-line menu-toggle-bottom"></span>
 		</button>
 	</div>
 
 </nav>
+
+<MenuOverlay open={menuOpen} {pathname} onclose={handleOverlayClose} onanimationdone={handleOverlayDone} />
 
 <style>
 	.nav-pill {
@@ -193,6 +209,12 @@
 		border-radius: 9999px;
 		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
 		padding: 12px 28px;
+		transition: padding 0.25s ease, box-shadow 0.25s ease;
+	}
+	.nav-pill-compact {
+		padding: 12px 20px;
+		box-shadow: none;
+		border-color: rgba(224, 120, 0, 0.15);
 	}
 
 	.nav-divider {
@@ -202,6 +224,25 @@
 		background: rgba(255, 255, 255, 0.08);
 		margin-inline: 20px;
 		flex-shrink: 0;
+	}
+
+	.nav-links {
+		display: flex;
+		align-items: center;
+		gap: 28px;
+	}
+
+	/* Collapse links + divider when menu opens, grow back on close */
+	.nav-collapsible {
+		overflow: hidden;
+		transition: max-width 0.3s ease, opacity 0.2s ease, margin 0.3s ease;
+		max-width: 300px;
+		opacity: 1;
+	}
+	.nav-collapsed {
+		max-width: 0;
+		opacity: 0;
+		margin-inline: 0;
 	}
 
 	.nav-pill-link {
@@ -215,5 +256,48 @@
 	}
 	:global(.nav-link-active) {
 		text-shadow: 0 0 8px rgba(224, 120, 0, 0.5), 0 0 16px rgba(224, 120, 0, 0.2);
+	}
+
+	/* Hamburger → ✕ morph */
+	.menu-toggle {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 5px;
+		padding: 4px;
+		cursor: pointer;
+		background: none;
+		border: none;
+	}
+	.menu-toggle-line {
+		display: block;
+		height: 1.5px;
+		border-radius: 999px;
+		background: #aaa;
+		transition: transform 0.25s ease, width 0.25s ease, background 0.15s;
+		transform-origin: center;
+	}
+	.menu-toggle-top {
+		width: 16px;
+	}
+	.menu-toggle-bottom {
+		width: 11px;
+	}
+	.menu-toggle:hover .menu-toggle-line {
+		background: #fff;
+	}
+
+	/* Open state: morph to ✕ */
+	.menu-toggle-open {
+		z-index: 70;
+		position: relative;
+	}
+	.menu-toggle-open .menu-toggle-top {
+		width: 16px;
+		transform: translateY(3.25px) rotate(45deg);
+	}
+	.menu-toggle-open .menu-toggle-bottom {
+		width: 16px;
+		transform: translateY(-3.25px) rotate(-45deg);
 	}
 </style>
