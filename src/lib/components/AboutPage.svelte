@@ -107,13 +107,18 @@
 			</div>
 		</div>
 
+		<!-- Bottom Stripe -->
+		<div class="px-3 pb-1" aria-hidden="true">
+			<div class="h-1 rounded-sm" style="background:repeating-linear-gradient(-45deg,#FFB627 0px,#FFB627 8px,#141414 8px,#141414 16px);"></div>
+		</div>
+
 	</div>
 </div>
 
 <style>
 	/* Page fills viewport minus nav */
 	.about-page {
-		min-height: calc(100vh - 56px);
+		min-height: calc(100vh - 5rem); /* subtract floating pill nav area */
 		background: var(--bg-primary);
 	}
 
@@ -178,7 +183,7 @@
 				"clients   interests interests interests interests snapshots"
 				"train     weather   cta       cta       cta       snapshots";
 			/* Fill the available viewport height minus nav + header + stripes */
-			height: calc(100vh - 56px - 48px);
+			height: calc(100vh - 5rem - 48px); /* viewport minus pill nav minus stripes/padding */
 		}
 	}
 
