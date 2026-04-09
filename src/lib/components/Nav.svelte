@@ -161,15 +161,17 @@
 		<!-- Nav links -->
 		<div class="flex items-center gap-7">
 			{#each navLinks as link}
-				<a
-					href={link.href}
-					class="nav-pill-link transition-all {isActive(link.href)
-						? 'text-[#E07800] nav-link-active'
-						: 'text-[#aaa] hover:text-[#E07800] hover:nav-link-glow'}"
-					aria-current={isActive(link.href) ? 'page' : undefined}
-				>
-					{link.label.en}
-				</a>
+				<span class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}>
+					<a
+						href={link.href}
+						class="nav-pill-link transition-all {isActive(link.href)
+							? 'text-[#E07800] nav-link-active'
+							: 'text-[#aaa] hover:text-[#E07800] hover:nav-link-glow'}"
+						aria-current={isActive(link.href) ? 'page' : undefined}
+					>
+						{link.label.en}
+					</a>
+				</span>
 			{/each}
 		</div>
 
@@ -196,6 +198,7 @@
 		{#each [0, 1, 2] as idx}
 			<div
 				class="h-[2px] flex-1 rounded-sm transition-colors duration-300
+					{idx === 2 ? 'hidden min-[480px]:block' : ''}
 					{activeSegment() === idx ? 'bg-[#E07800]' : 'bg-[rgba(255,255,255,0.05)]'}"
 			></div>
 		{/each}
