@@ -1,19 +1,19 @@
 <!--
-  Site navigation. Desktop: horizontal links. Mobile: fullscreen metro-themed overlay.
-  The mobile menu evokes a metro station — black bg, yellow/black hazard stripes,
-  numbered stops for each nav link, staggered reveal animation.
+  Floating pill navigation. Centered at top: 16px, full-capsule shape.
+  Three primary links + progress rail below. Menu toggle for overlay (Task 4).
+  Wordmark letters animated via GSAP SplitText on hover (4 rotating effects).
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap, SplitText } from '$lib/motion/utils/gsap.js';
+	import { navLinks } from '$lib/data';
 
 	let { pathname = '/' }: { pathname?: string } = $props();
 
 	let menuOpen = $state(false);
 
-	// Refs for the wordmark elements — bound in the desktop anchor only.
-	// The mobile menu copy stays static (no animation, no bind).
+	// Refs for the wordmark elements
 	let wordmarkEl: HTMLSpanElement;
 	let dotEl: HTMLSpanElement;
 	let splitInstance: InstanceType<typeof SplitText> | undefined;
@@ -23,18 +23,17 @@
 	// Guard: prevents overlapping animations when hovering rapidly.
 	let isAnimating = false;
 
-	const links = [
-		{ label: 'Services', href: '/services' },
-		{ label: 'Work', href: '/work' },
-		{ label: 'Stack', href: '/tech-stack' },
-		{ label: 'Blog', href: '/blog' },
-		{ label: 'About', href: '/about' },
-		{ label: 'Contact', href: '/contact' }
-	];
-
 	function isActive(href: string): boolean {
 		if (href === '/') return pathname === '/';
 		return pathname.startsWith(href);
+	}
+
+	/** Which progress rail segment is active based on current route. -1 = none. */
+	function activeSegment(): number {
+		if (pathname === '/services' || pathname.startsWith('/services/')) return 0;
+		if (pathname === '/work' || pathname.startsWith('/work/')) return 1;
+		if (pathname === '/tech-stack') return 2;
+		return -1;
 	}
 
 	// Lock body scroll when menu is open
@@ -134,16 +133,18 @@
 
 <nav
 	data-testid="nav"
-	class="fixed top-0 left-0 right-0 z-50 border-b border-[var(--border)] bg-[var(--bg-primary)]/90 backdrop-blur-sm"
+	class="fixed top-4 left-0 right-0 z-50 flex flex-col items-center pointer-events-none"
 >
-	<div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-		<!-- Wordmark — each letter is split by SplitText for per-char animation on hover.
-		     inline-flex items-baseline keeps the orange dot visually aligned after SplitText
-		     wraps every char in its own <div>. -->
+	<!-- Pill -->
+	<div
+		data-testid="nav-pill"
+		class="nav-pill pointer-events-auto flex items-center gap-0"
+	>
+		<!-- Wordmark -->
 		<a
 			href="/"
 			data-testid="nav-wordmark"
-			class="font-heading text-xl font-bold text-[var(--text-primary)] inline-flex items-baseline"
+			class="inline-flex items-baseline font-heading text-lg font-bold text-[var(--text-primary)]"
 			onmouseenter={handleWordmarkHover}
 			onclick={handleWordmarkHover}
 		>
@@ -154,130 +155,87 @@
 			>
 		</a>
 
-		<!-- Desktop links -->
-		<ul class="hidden items-center gap-8 md:flex">
-			{#each links as link}
-				<li>
-					<a
-						href={link.href}
-						class="nav-link text-sm font-medium transition-all {isActive(link.href)
-							? 'text-brand-primary nav-glow-active'
-							: 'text-[var(--text-secondary)] hover:text-brand-primary hover:nav-glow'}"
-						aria-current={isActive(link.href) ? 'page' : undefined}
-					>
-						{link.label}
-					</a>
-				</li>
-			{/each}
-		</ul>
+		<!-- Divider -->
+		<span class="nav-divider" aria-hidden="true"></span>
 
-		<!-- Hamburger (mobile) -->
+		<!-- Nav links -->
+		<div class="flex items-center gap-7">
+			{#each navLinks as link}
+				<a
+					href={link.href}
+					class="nav-pill-link transition-all {isActive(link.href)
+						? 'text-[#E07800] nav-link-active'
+						: 'text-[#aaa] hover:text-[#E07800] hover:nav-link-glow'}"
+					aria-current={isActive(link.href) ? 'page' : undefined}
+				>
+					{link.label.en}
+				</a>
+			{/each}
+		</div>
+
+		<!-- Divider -->
+		<span class="nav-divider" aria-hidden="true"></span>
+
+		<!-- Menu toggle -->
 		<button
-			data-testid="nav-hamburger"
-			class="flex flex-col gap-1.5 md:hidden"
+			data-testid="nav-menu-toggle"
+			class="flex flex-col items-end gap-[5px] p-1"
 			aria-label={menuOpen ? 'Close menu' : 'Open menu'}
 			onclick={() => (menuOpen = !menuOpen)}
 		>
-			<span class="block h-0.5 w-5 bg-[var(--text-primary)] transition-transform {menuOpen ? 'translate-y-2 rotate-45' : ''}"></span>
-			<span class="block h-0.5 w-5 bg-[var(--text-primary)] transition-opacity {menuOpen ? 'opacity-0' : ''}"></span>
-			<span class="block h-0.5 w-5 bg-[var(--text-primary)] transition-transform {menuOpen ? '-translate-y-2 -rotate-45' : ''}"></span>
+			<span class="block h-[1.5px] w-4 rounded-full bg-[#aaa] transition-transform"></span>
+			<span class="block h-[1.5px] w-[11px] rounded-full bg-[#aaa] transition-transform"></span>
 		</button>
+	</div>
+
+	<!-- Progress rail -->
+	<div
+		data-testid="nav-progress-rail"
+		class="nav-progress-rail pointer-events-none mt-2 flex gap-[3px]"
+	>
+		{#each [0, 1, 2] as idx}
+			<div
+				class="h-[2px] flex-1 rounded-sm transition-colors duration-300
+					{activeSegment() === idx ? 'bg-[#E07800]' : 'bg-[rgba(255,255,255,0.05)]'}"
+			></div>
+		{/each}
 	</div>
 </nav>
 
-<!-- Fullscreen mobile menu overlay -->
-{#if menuOpen}
-	<div
-		class="fixed inset-0 z-[60] flex flex-col bg-[#141414] md:hidden"
-		role="dialog"
-		aria-modal="true"
-		aria-label="Navigation menu"
-		data-testid="nav-fullscreen-menu"
-	>
-		<!-- Header bar: wordmark + close button -->
-		<div class="flex items-center justify-between px-6 py-4">
-			<span class="font-heading text-xl font-bold text-[var(--text-primary)]">
-				yesid<span class="text-brand-primary">.</span>
-			</span>
-			<button
-				class="flex h-10 w-10 items-center justify-center text-2xl text-[var(--text-primary)]"
-				aria-label="Close menu"
-				onclick={() => (menuOpen = false)}
-			>
-				&times;
-			</button>
-		</div>
-
-		<!-- Hazard stripe accent -->
-		<div
-			class="h-1"
-			style="background: repeating-linear-gradient(-45deg, #FFB627 0px, #FFB627 8px, #141414 8px, #141414 16px);"
-			aria-hidden="true"
-		></div>
-
-		<!-- Navigation links — metro-numbered, large, centered -->
-		<nav class="flex flex-1 flex-col items-center justify-center gap-10">
-			{#each links as link, i}
-				<a
-					href={link.href}
-					class="menu-link group flex items-center gap-4 font-heading text-3xl font-bold transition-all
-						{isActive(link.href)
-							? 'text-brand-primary menu-glow-active'
-							: 'text-[var(--text-primary)] hover:text-brand-primary'}"
-					aria-current={isActive(link.href) ? 'page' : undefined}
-					onclick={() => (menuOpen = false)}
-					style="animation: menu-link-in 300ms ease-out {i * 80}ms both;"
-				>
-					<span class="font-mono text-sm text-[#E07800] opacity-60 group-hover:opacity-100">
-						{String(i + 1).padStart(2, '0')}
-					</span>
-					{link.label}
-				</a>
-			{/each}
-		</nav>
-
-		<!-- Bottom station label -->
-		<div class="px-6 py-6 text-center">
-			<div
-				class="h-0.5 mb-4"
-				style="background: repeating-linear-gradient(-45deg, #FFB627 0px, #FFB627 8px, #141414 8px, #141414 16px);"
-				aria-hidden="true"
-			></div>
-			<div class="font-mono text-[10px] tracking-[3px] text-[#E07800]">
-				TERMINAL — NAVIGATION
-			</div>
-		</div>
-	</div>
-{/if}
-
 <style>
-	@keyframes menu-link-in {
-		from {
-			opacity: 0;
-			transform: translateY(12px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
+	.nav-pill {
+		background: rgba(20, 20, 20, 0.92);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border: 1px solid rgba(224, 120, 0, 0.1);
+		border-radius: 9999px;
+		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+		padding: 12px 28px;
 	}
 
-	/* Desktop nav link glow */
-	:global(.nav-link:hover) {
+	.nav-divider {
+		display: inline-block;
+		width: 1px;
+		height: 18px;
+		background: rgba(255, 255, 255, 0.08);
+		margin-inline: 20px;
+		flex-shrink: 0;
+	}
+
+	.nav-pill-link {
+		font-size: 13.5px;
+		font-weight: 500;
+		white-space: nowrap;
+	}
+
+	.nav-progress-rail {
+		width: 280px;
+	}
+
+	:global(.nav-link-glow) {
 		text-shadow: 0 0 8px rgba(224, 120, 0, 0.6), 0 0 20px rgba(224, 120, 0, 0.3);
 	}
-	:global(.nav-glow-active) {
+	:global(.nav-link-active) {
 		text-shadow: 0 0 8px rgba(224, 120, 0, 0.5), 0 0 16px rgba(224, 120, 0, 0.2);
-	}
-
-	/* Mobile fullscreen menu link glow */
-	.menu-link:hover {
-		text-shadow: 0 0 12px rgba(224, 120, 0, 0.7), 0 0 30px rgba(224, 120, 0, 0.4);
-	}
-	.menu-link:active {
-		text-shadow: 0 0 16px rgba(224, 120, 0, 0.9), 0 0 40px rgba(224, 120, 0, 0.5);
-	}
-	.menu-glow-active {
-		text-shadow: 0 0 10px rgba(224, 120, 0, 0.6), 0 0 24px rgba(224, 120, 0, 0.3);
 	}
 </style>
