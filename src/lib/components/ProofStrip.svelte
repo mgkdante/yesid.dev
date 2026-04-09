@@ -30,7 +30,7 @@
 	<span class="proof-count">{projects.length} {projects.length === 1 ? 'project' : 'projects'}</span>
 </div>
 
-<!-- Hazard stripe — matching the top station tabs stripe -->
+<!-- Hazard stripe — bottom accent -->
 <div
 	aria-hidden="true"
 	style="height: 3px; background: repeating-linear-gradient(-45deg, #FFB627 0px, #FFB627 6px, #141414 6px, #141414 12px);"
@@ -43,8 +43,8 @@
 		gap: 1rem;
 		border-top: 1px solid var(--border, #1a1a1a);
 		background: var(--bg-primary, #141414);
-		padding: 0.625rem 1.25rem;
-		min-height: 40px;
+		padding: 0.875rem 1.5rem;
+		min-height: 48px;
 	}
 
 	.proof-label {

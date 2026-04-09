@@ -24,7 +24,7 @@
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="{isFullWidth ? 'flex-1 pt-16' : 'mx-auto w-full max-w-5xl flex-1 px-6 pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="{isFullWidth ? 'flex-1 pt-20' : 'mx-auto w-full max-w-5xl flex-1 px-6 pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}

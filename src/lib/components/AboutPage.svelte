@@ -107,11 +107,6 @@
 			</div>
 		</div>
 
-		<!-- Bottom Stripe -->
-		<div class="px-3 pb-1" aria-hidden="true">
-			<div class="h-1 rounded-sm" style="background:repeating-linear-gradient(-45deg,#FFB627 0px,#FFB627 8px,#141414 8px,#141414 16px);"></div>
-		</div>
-
 	</div>
 </div>
 
