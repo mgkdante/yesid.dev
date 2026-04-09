@@ -10,6 +10,7 @@
 	import { gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { getTechItemContent, getOutgoingRelations, getIncomingRelations, getTechItemById } from '$lib/data/tech-stack.js';
+	import CollapsibleSection from './CollapsibleSection.svelte';
 
 	let {
 		item,
@@ -149,29 +150,6 @@
 			</button>
 		</div>
 
-		<!-- Relations -->
-		{#if outgoing.length > 0}
-			<div class="sheet-relations" data-testid="relations-outgoing">
-				<span class="relations-label">Sends data to</span>
-				{#each outgoing as rel}
-					<button class="relation-link" onclick={() => handleRelationClick(rel.itemId)}>
-						{rel.itemName} <span class="relation-context">— {rel.contextPhrase}</span>
-					</button>
-				{/each}
-			</div>
-		{/if}
-
-		{#if incoming.length > 0}
-			<div class="sheet-relations" data-testid="relations-incoming">
-				<span class="relations-label">Receives from</span>
-				{#each incoming as rel}
-					<button class="relation-link" onclick={() => handleRelationClick(rel.itemId)}>
-						{rel.itemName} <span class="relation-context">— {rel.contextPhrase}</span>
-					</button>
-				{/each}
-			</div>
-		{/if}
-
 		<!-- Content -->
 		<div class="sheet-body" data-testid="bottomsheet-content">
 			{@html renderedContent}
@@ -186,6 +164,41 @@
 						<span class="project-badge">{formatProjectSlug(slug)}</span>
 					{/each}
 				</div>
+			</div>
+		{/if}
+
+		<!-- Relations (collapsible, between Used in and nav) -->
+		{#if outgoing.length > 0}
+			<div class="sheet-relations" data-testid="relations-outgoing">
+				<CollapsibleSection title="Sends data to ({outgoing.length})" open={false}>
+					<ul class="relations-list">
+						{#each outgoing as rel}
+							<li class="relation-item">
+								<button class="relation-link" onclick={() => handleRelationClick(rel.itemId)}>
+									{rel.itemName}
+								</button>
+								<span class="relation-context">{rel.contextPhrase}</span>
+							</li>
+						{/each}
+					</ul>
+				</CollapsibleSection>
+			</div>
+		{/if}
+
+		{#if incoming.length > 0}
+			<div class="sheet-relations" data-testid="relations-incoming">
+				<CollapsibleSection title="Receives from ({incoming.length})" open={false}>
+					<ul class="relations-list">
+						{#each incoming as rel}
+							<li class="relation-item">
+								<button class="relation-link" onclick={() => handleRelationClick(rel.itemId)}>
+									{rel.itemName}
+								</button>
+								<span class="relation-context">{rel.contextPhrase}</span>
+							</li>
+						{/each}
+					</ul>
+				</CollapsibleSection>
 			</div>
 		{/if}
 
@@ -236,7 +249,7 @@
 		background: var(--bg-surface);
 		border-top: 1px solid var(--border);
 		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-		padding: 0.5rem 1.25rem 1.5rem;
+		padding: 0.5rem 1.25rem 0;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
@@ -338,25 +351,27 @@
 	.sheet-relations {
 		border-top: 1px solid var(--border);
 		padding-top: 0.75rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
 	}
 
-	.relations-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
-		margin-bottom: 0.25rem;
+	.relations-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.375rem;
+	}
+
+	.relation-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
 	}
 
 	.relation-link {
 		background: none;
 		border: none;
-		padding: 0.25rem 0;
+		padding: 0;
 		cursor: pointer;
 		font-family: var(--font-body);
 		font-size: var(--text-small);
@@ -366,8 +381,10 @@
 	}
 
 	.relation-context {
-		font-weight: 400;
+		font-family: var(--font-body);
+		font-size: var(--text-xs);
 		color: var(--text-muted);
+		padding-inline-start: 0.75rem;
 	}
 
 	/* Markdown body */
@@ -463,7 +480,7 @@
 		color: var(--brand-primary);
 	}
 
-	/* CTA */
+	/* CTA — sticky at bottom so it's always visible */
 	.sheet-cta {
 		display: flex;
 		align-items: center;
@@ -478,6 +495,18 @@
 		font-size: var(--text-small);
 		font-weight: 600;
 		text-decoration: none;
+		position: sticky;
+		bottom: 0;
+		margin-top: auto;
+		padding-block: 0.75rem;
+		margin-inline: -1.25rem;
+		padding-inline: 1.25rem;
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+		border-bottom: none;
+		background: var(--bg-surface);
+		box-shadow: 0 -1px 0 var(--border);
 	}
 
 	.sheet-cta:hover {

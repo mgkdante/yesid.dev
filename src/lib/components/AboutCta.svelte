@@ -8,6 +8,7 @@
 	import type { AboutCta } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
+	import TerminalCursor from './TerminalCursor.svelte';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 
 	let { cta, stop = '09', label = 'NEXT' }: { cta: AboutCta; stop?: string; label?: string } = $props();
@@ -65,7 +66,7 @@
 				<!-- Blinking cursor -->
 				<div class="mt-1 flex items-center gap-1">
 					<span class="text-[var(--text-secondary)]">~</span>
-					<span class="inline-block h-4 w-[7px] animate-pulse bg-[var(--brand-primary)]"></span>
+					<TerminalCursor />
 				</div>
 			</div>
 		</div>

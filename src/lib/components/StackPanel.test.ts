@@ -22,15 +22,16 @@ describe('StackPanel', () => {
 			expect(container.querySelector('[data-testid="panel-orientation"]')).toBeTruthy();
 		});
 
-		it('shows "THE CONTROL ROOM" label', () => {
+		it('shows "SELECT A NODE" label', () => {
 			const { getByText } = render(StackPanel, { props: {} });
-			expect(getByText('THE CONTROL ROOM')).toBeTruthy();
+			expect(getByText('SELECT A NODE')).toBeTruthy();
 		});
 
-		it('shows stats', () => {
+		it('shows interaction hints', () => {
 			const { getByText } = render(StackPanel, { props: {} });
-			expect(getByText('9')).toBeTruthy();
-			expect(getByText('layers')).toBeTruthy();
+			expect(getByText('Click a node for details')).toBeTruthy();
+			expect(getByText('Hover to see connections')).toBeTruthy();
+			expect(getByText('Use filters to explore domains')).toBeTruthy();
 		});
 
 		it('does not show detail card', () => {

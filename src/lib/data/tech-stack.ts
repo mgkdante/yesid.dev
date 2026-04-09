@@ -278,7 +278,67 @@ export function getScenarioForDomains(domains: DomainCluster[]): StackScenario |
 		.filter((s) => s.domains.every((d) => sorted.includes(d)))
 		.sort((a, b) => b.domains.length - a.domains.length);
 
-	return partial[0];
+	if (partial[0]) return partial[0];
+
+	// Fallback: auto-generate from the connectsTo graph
+	return generateScenarioFromGraph(domains);
+}
+
+/** Auto-generate a scenario from the connectsTo graph when no authored scenario matches. */
+function generateScenarioFromGraph(domains: DomainCluster[]): StackScenario {
+	// Find all items in the selected domains
+	const domainItems = techItems.filter((item) =>
+		item.domains.some((d) => domains.includes(d)),
+	);
+
+	// Score items by connectivity within the domain set
+	const scores = new Map<string, number>();
+	const domainItemIds = new Set(domainItems.map((i) => i.id));
+
+	for (const item of domainItems) {
+		let score = 0;
+		// Outgoing connections within domain items
+		for (const tid of item.connectsTo) {
+			if (domainItemIds.has(tid)) score += 2;
+		}
+		// Incoming connections within domain items
+		for (const other of domainItems) {
+			if (other.connectsTo.includes(item.id)) score += 1;
+		}
+		// Bonus for bridge nodes (in multiple selected domains)
+		const domainOverlap = item.domains.filter((d) => domains.includes(d)).length;
+		if (domainOverlap >= 2) score += 3;
+		scores.set(item.id, score);
+	}
+
+	// Pick top items by score, up to 5
+	const recommended = [...scores.entries()]
+		.sort((a, b) => b[1] - a[1])
+		.slice(0, 5)
+		.map(([id]) => id);
+
+	// Build summary from domain labels
+	const domainLabels = domains.map((d) => DOMAIN_PHRASES[d]);
+	const summary = domainLabels.length === 1
+		? `A custom stack for ${domainLabels[0]}.`
+		: `A custom stack bridging ${domainLabels.slice(0, -1).join(', ')} and ${domainLabels[domainLabels.length - 1]}.`;
+
+	// Collect related projects from recommended items
+	const projects = new Set<string>();
+	for (const id of recommended) {
+		const item = itemsById.get(id);
+		if (item) {
+			for (const p of item.relatedProjects) projects.add(p);
+		}
+	}
+
+	return {
+		id: `auto-${domains.sort().join('-')}`,
+		domains,
+		recommended,
+		summary: { en: summary },
+		relatedProjects: [...projects],
+	};
 }
 
 // --- Validation helpers (used by tests) ---

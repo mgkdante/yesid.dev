@@ -2,7 +2,7 @@
   Reusable collapsible section card.
   Used in WorkDetailPage, ServiceDetailPage (collapsible=true)
   and BlogContent (collapsible=false, visual card wrapper only).
-  Pattern: border-l-[3px] accent bg-[#141414] card with optional toggle.
+  Pattern: blog-card style — bg-[#1a1a1a] border-[#2a2a2a], white title → orange hover.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -37,8 +37,8 @@
   allowing hover rules to reference the dynamic value without inline duplication.
 -->
 <div
-	class="section-card rounded-lg border-l-[3px] bg-[#141414]"
-	style="--accent: {accentColor}; border-color: {accentColor};"
+	class="section-card rounded-lg border border-[#2a2a2a] bg-[#1a1a1a]"
+	style="--accent: {accentColor};"
 >
 	{#snippet headerContent()}
 		{#if index !== null}
@@ -53,7 +53,7 @@
 			{@render icon()}
 		{/if}
 
-		<h2 class="flex-1 font-heading text-lg font-bold" style="color: {accentColor};">
+		<h2 class="section-title flex-1 font-heading text-lg font-bold text-[var(--text-primary)]">
 			{title}
 		</h2>
 	{/snippet}
@@ -110,10 +110,16 @@
 	.section-card {
 		transition: box-shadow 0.25s ease, border-color 0.25s ease;
 	}
-	/* Uses --accent custom property so hover glow matches any accentColor prop, not just the default orange. */
 	.section-card:hover {
-		box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 10%, transparent),
-					0 2px 8px rgba(0, 0, 0, 0.3);
+		border-color: var(--accent);
+	}
+
+	.section-card:hover .section-title {
+		color: var(--accent);
+	}
+
+	:global(.section-title) {
+		transition: color 0.2s ease;
 	}
 
 	.section-chevron {

@@ -9,14 +9,18 @@
 	let {
 		item,
 		selected = false,
+		hidden = false,
 		dimmed = false,
+		bridge = false,
 		onclick,
 		onmouseenter,
 		onmouseleave,
 	}: {
 		item: TechStackItem;
 		selected?: boolean;
+		hidden?: boolean;
 		dimmed?: boolean;
+		bridge?: boolean;
 		onclick?: (item: TechStackItem) => void;
 		onmouseenter?: (item: TechStackItem) => void;
 		onmouseleave?: () => void;
@@ -56,7 +60,9 @@
 	type="button"
 	class="stack-node"
 	class:selected
+	class:hidden
 	class:dimmed
+	class:bridge
 	data-testid="stack-node-{item.id}"
 	data-layer={item.layer}
 	data-proficiency={item.proficiency}
@@ -87,7 +93,7 @@
 			border-color 0.2s ease,
 			background-color 0.2s ease,
 			transform 0.2s ease,
-			opacity 0.3s ease,
+			opacity 0.4s ease,
 			box-shadow 0.2s ease;
 	}
 
@@ -109,6 +115,19 @@
 		box-shadow: 0 0 16px color-mix(in srgb, var(--brand-primary) 25%, transparent);
 	}
 
+	.stack-node.hidden {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.stack-node.bridge {
+		border-color: var(--brand-accent);
+		box-shadow:
+			0 0 0 1px var(--brand-primary),
+			0 0 12px color-mix(in srgb, var(--brand-accent) 20%, transparent);
+		animation: bridge-pulse 2s ease-in-out infinite;
+	}
+
 	.stack-node.dimmed {
 		opacity: 0.3;
 	}
@@ -116,6 +135,11 @@
 	.stack-node.dimmed:hover {
 		opacity: 0.6;
 		transform: scale(1.02);
+	}
+
+	@keyframes bridge-pulse {
+		0%, 100% { transform: scale(1.0); }
+		50% { transform: scale(1.03); }
 	}
 
 	.node-icon {
@@ -146,6 +170,9 @@
 		}
 		.stack-node:hover {
 			transform: none;
+		}
+		.stack-node.bridge {
+			animation: none;
 		}
 	}
 </style>

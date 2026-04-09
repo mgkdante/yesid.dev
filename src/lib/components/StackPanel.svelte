@@ -12,14 +12,10 @@
 
 	let {
 		item = null,
-		itemCount = 34,
-		layerCount = 9,
 		onclose,
 		onnavigate,
 	}: {
 		item?: TechStackItem | null;
-		itemCount?: number;
-		layerCount?: number;
 		onclose?: () => void;
 		onnavigate?: (itemId: string) => void;
 	} = $props();
@@ -151,26 +147,32 @@
 			</a>
 		</div>
 	{:else}
-		<!-- Orientation Card -->
+		<!-- Hint Card — nudges user to interact -->
 		<div class="panel-orientation" data-testid="panel-orientation">
-			<span class="orientation-label">THE CONTROL ROOM</span>
+			<span class="orientation-label">SELECT A NODE</span>
 			<p class="orientation-text">
-				{itemCount} technologies across {layerCount} infrastructure layers. Click any node to see how it fits
-				in the bigger picture — what it connects to, why it was chosen, and where it's used.
+				Click on any technology in the diagram to learn more about it — what it does,
+				why it was chosen, and which projects use it.
 			</p>
 
-			<div class="orientation-stats">
-				<div class="stat">
-					<span class="stat-value">{layerCount}</span>
-					<span class="stat-label">layers</span>
+			<div class="orientation-hints">
+				<div class="hint-item">
+					<span class="hint-icon" aria-hidden="true">
+						<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="10" r="0.75" fill="currentColor"/></svg>
+					</span>
+					<span class="hint-text">Click a node for details</span>
 				</div>
-				<div class="stat">
-					<span class="stat-value">7</span>
-					<span class="stat-label">domains</span>
+				<div class="hint-item">
+					<span class="hint-icon" aria-hidden="true">
+						<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</span>
+					<span class="hint-text">Hover to see connections</span>
 				</div>
-				<div class="stat">
-					<span class="stat-value">10+</span>
-					<span class="stat-label">projects</span>
+				<div class="hint-item">
+					<span class="hint-icon" aria-hidden="true">
+						<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 7h5M7 4.5v5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+					</span>
+					<span class="hint-text">Use filters to explore domains</span>
 				</div>
 			</div>
 		</div>
@@ -443,31 +445,34 @@
 		margin: 0;
 	}
 
-	.orientation-stats {
+	.orientation-hints {
 		display: flex;
-		gap: 1.5rem;
+		flex-direction: column;
+		gap: 0.75rem;
 		border-top: 1px solid var(--border);
 		padding-top: 1rem;
 	}
 
-	.stat {
+	.hint-item {
 		display: flex;
-		flex-direction: column;
-		gap: 0.125rem;
+		align-items: center;
+		gap: 0.625rem;
 	}
 
-	.stat-value {
-		font-family: var(--font-mono);
-		font-size: var(--text-lg);
-		font-weight: 700;
-		color: var(--text-primary);
+	.hint-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		flex-shrink: 0;
+		color: var(--brand-primary);
 	}
 
-	.stat-label {
+	.hint-text {
 		font-family: var(--font-mono);
 		font-size: var(--text-xs);
-		color: var(--text-muted);
-		text-transform: lowercase;
+		color: var(--text-secondary);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

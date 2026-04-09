@@ -26,6 +26,7 @@
 	const links = [
 		{ label: 'Services', href: '/services' },
 		{ label: 'Work', href: '/work' },
+		{ label: 'Stack', href: '/tech-stack' },
 		{ label: 'Blog', href: '/blog' },
 		{ label: 'About', href: '/about' },
 		{ label: 'Contact', href: '/contact' }

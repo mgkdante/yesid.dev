@@ -8,6 +8,7 @@
 	import { contactContent } from '$lib/data/contact-page.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
+	import TerminalCursor from './TerminalCursor.svelte';
 
 	const c = contactContent;
 
@@ -189,7 +190,7 @@
 					<!-- Blinking cursor -->
 					<div class="flex items-center gap-1">
 						<span class="text-[var(--text-secondary)]">~</span>
-						<span class="inline-block h-4 w-[7px] animate-pulse bg-[var(--brand-primary)]"></span>
+						<TerminalCursor />
 					</div>
 				</div>
 			</div>

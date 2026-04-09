@@ -204,14 +204,15 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 11  | Navbar research + redesign + 404 page                  | planned  | 10         | 1-2           |
 | 12  | Footer research + redesign                             | planned  | 11         | 1             |
 | 13  | Home page rework (post-hero, archive SkillsJourney)    | planned  | 10, 11, 12 | 2-3           |
-| 14  | SEO + metadata                                         | planned  | 07, 08, 09 | 1             |
-| 15  | E2E test suite + performance + brand QA                | planned  | 07, 08, 09 | 1-2           |
-| 16  | Standardization (scalable, componentized, data-driven) | planned  | B+, 06d    | 1-2           |
-| 17  | Cloud content layer (edit + publish without code)      | planned  | 16         | 1-2           |
-| 18  | Mobile UI/UX optimization                              | planned  | 16, B+     | 1-2           |
-| 19  | Scroll smoothness + animation polish                   | planned  | B+, 18     | 1             |
-| 20  | Repo cleanup for public release                        | planned  | 14, 15     | 0.5           |
-| 21  | Deploy to Vercel + DNS cutover                         | planned  | 20         | 1             |
+| 14  | Stack Builder Logic Engine (graph-based recs)          | draft    | 10, 13     | 3-4           |
+| 15  | SEO + metadata                                         | planned  | 07, 08, 09, 14 | 1-2       |
+| 16  | E2E test suite + performance + brand QA                | planned  | 07, 08, 09 | 1-2           |
+| 17  | Standardization (scalable, componentized, data-driven) | planned  | B+, 06d    | 1-2           |
+| 18  | Cloud content layer (edit + publish without code)      | planned  | 17         | 1-2           |
+| 19  | Mobile UI/UX optimization                              | planned  | 17, B+     | 1-2           |
+| 20  | Scroll smoothness + animation polish                   | planned  | B+, 19     | 1             |
+| 21  | Repo cleanup for public release                        | planned  | 15, 16     | 0.5           |
+| 22  | Deploy to Vercel + DNS cutover                         | planned  | 21         | 1             |
 
 
 ## Slice Summaries
@@ -465,9 +466,26 @@ DRY consolidation:
 
 **Tests:** Home page renders without SkillsJourney. New sections pass. Existing hero tests unaffected.
 
-### Slice 14 — SEO + Metadata: Maximum Discoverability
+### Slice 14 — Stack Builder Logic Engine
 
-**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 07, 08, 09
+**Status:** draft **Est. Sessions:** 3-4 **Depends on:** 10, 13
+**Spec:** `docs/slices/slice-14-stack-builder-logic.md`
+
+Replace hardcoded scenario matching (7 authored scenarios + basic fallback) with a graph-based recommendation engine. Every possible domain combination (127 combos) produces a unique, contextual, educational stack recommendation. Recommendations include ordered tech with role labels, data flow narratives, cross-links to services and projects, proficiency-aware confidence levels, and tech toggle customization.
+
+**Sales through education:** The builder teaches visitors what technologies they need and why — demonstrating Yesid's expertise deeply enough to close consulting engagements. Every recommendation links to matching services, shows project evidence, and adapts language to proficiency.
+
+**Architecture:** Pure functions (zero DOM/framework dependency). Same engine works in browser, server route, or future API. Adding a tech = one markdown file, engine adapts automatically. Keystatic-ready (Slice 18, Cloud Content Layer).
+
+**Tasks:**
+1. **14a — Engine core:** Types, role derivation, scoring, selection, ordering, service/project cross-linking. Heavy test coverage.
+2. **14b — Narrative generation:** Template-driven data flow stories that adapt to domain mix + proficiency.
+3. **14c — Enhanced UI:** StackBuilderPanel (tech toggles) + StackRecommendation card (replaces StackConfigurator + StackScenarioCard). Desktop below-diagram + mobile FAB overlay.
+4. **14d — Polish:** Role/alternative data in all 34+ markdown files. Narrative fine-tuning. Accessibility.
+
+### Slice 15 — SEO + Metadata: Maximum Discoverability
+
+**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 07, 08, 09, 14
 
 **Why this matters more than most devs think:** 90% of portfolio sites have zero structured data, broken OG tags, and no sitemap. Recruiters and clients Google "data engineer Montreal" or "SQL developer transit pipeline" and get LinkedIn results because nobody's portfolio is optimized. This slice makes yesid.dev the result that shows up WITH a rich card, author photo, and site links. It also makes every blog post, project, and service page individually discoverable, not just the home page.
 
@@ -539,24 +557,24 @@ Every page passes its specific data. The component renders all `<svelte:head>` t
 **Out of Scope:**
 
 - Per-page custom OG image generation (use default branded image, upgrade later)
-- Google Search Console setup (do after deploy in Slice 18)
+- Google Search Console setup (do after deploy in Slice 22)
 - Analytics (separate concern)
 - i18n page variants (structure only, actual translations are future)
 
 **You'll learn:** Open Graph protocol, JSON-LD structured data, Schema.org vocabulary, technical SEO (sitemaps, canonical URLs, robots.txt), social preview optimization, `<svelte:head>` patterns in SvelteKit.
 
-### Slice 15 — E2E Test Suite + Performance + Brand QA Pass
+### Slice 16 — E2E Test Suite + Performance + Brand QA Pass
 
 Playwright E2E tests: full nav flow, train journey scroll, project detail, all pages at 3 breakpoints. Performance testing: verify frame rate during scroll on home page. Brand verification: colors, fonts, motion consistency. Fix visual/responsive/performance issues. Optional: add easter eggs from MOTION.md section 9.
 
 **Tests:** Full navigation flow. Train journey completes without jank. Responsive at 375px, 768px, 1280px. No mobile overflow. Frame rate above 45fps on scroll. Reduced motion mode works.
 **You'll learn:** E2E testing, performance profiling, responsive QA, accessibility verification.
 
-### Slice 16 — Standardization: Ports & Adapters Lite
+### Slice 17 — Standardization: Ports & Adapters Lite
 
 **Status:** planned **Est. Sessions:** 5-6 (across 6 subslices)
 
-**Philosophy:** The codebase should read like a blueprint. An engineer opens the repo and sees: types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 17 (Keystatic) plugs in with zero component changes. This slice is invisible to users. Every page looks and behaves identically before and after. The diff is structural.
+**Philosophy:** The codebase should read like a blueprint. An engineer opens the repo and sees: types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 18 (Keystatic) plugs in with zero component changes. This slice is invisible to users. Every page looks and behaves identically before and after. The diff is structural.
 
 **Key constraint:** Zero visual changes. Zero behavior changes. Pure structural refactor.
 
@@ -564,11 +582,11 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **Layer diagram:**
 
-**Execution order:** 16a → 16b → 16c → 16d → 16e → 16f -> 16g. Each builds on the previous. CSS cleanup is foundational. Service layer before schemas because schemas validate what services return. Component standardization after both because components consume from services. Motion after components because motion is applied to components. Tests + docs last because they document the final state.
+**Execution order:** 17a → 17b → 17c → 17d → 17e → 17f -> 17g. Each builds on the previous. CSS cleanup is foundational. Service layer before schemas because schemas validate what services return. Component standardization after both because components consume from services. Motion after components because motion is applied to components. Tests + docs last because they document the final state.
 
 ---
 
-#### Slice 16a — CSS Audit + Consolidation + CSS.md
+#### Slice 17a — CSS Audit + Consolidation + CSS.md
 **Status:** planned **Est. Sessions:** 1 **Depends on:** B+, 06d
 **Why first:** CSS touches every component. Consolidating it first gives a clean styling foundation before refactoring component APIs and extracting shared shells.
 **What:**
@@ -631,7 +649,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 16b — Service Layer Extraction
+#### Slice 17b — Service Layer Extraction
 
 **Status:** planned **Est. Sessions:** 1 **Depends on:** 13a
 
@@ -646,7 +664,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 16c — Zod Schema Validation
+#### Slice 17c — Zod Schema Validation
 
 **Status:** planned **Est. Sessions:** 0.5 **Depends on:** 13b
 
@@ -661,7 +679,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 16d — Component API Standardization + Shared UI Shells
+#### Slice 17d — Component API Standardization + Shared UI Shells
 
 **Status:** planned **Est. Sessions:** 1-2 **Depends on:** 13c
 
@@ -678,7 +696,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 16e — Motion Consolidation
+#### Slice 17e — Motion Consolidation
 
 **Status:** planned **Est. Sessions:** 1 **Depends on:** 13d
 
@@ -694,7 +712,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ---
 
-#### Slice 16f — Test Architecture + Documentation
+#### Slice 17f — Test Architecture + Documentation
 
 **Status:** planned **Est. Sessions:** 0.5-1 **Depends on:** 13e
 
@@ -716,7 +734,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 **You'll learn:** CSS architecture documentation, service layer pattern (ports & adapters), Zod runtime validation ("parse, don't validate"), DRY component composition with Svelte 5 snippets/slots, test factory pattern, hexagonal architecture lite.
 
-#### Slice 16g — Learning Docs Refactor
+#### Slice 17g — Learning Docs Refactor
 
 **Status:** planned **Est. Sessions:** 1 **Depends on:** 13f
 
@@ -747,7 +765,7 @@ New docs follow the existing `docs/learn/_template.md`.
 
 ----
 
-### Slice 17 — Cloud Content Layer: Keystatic CMS
+### Slice 18 — Cloud Content Layer: Keystatic CMS
 
 **Status:** planned **Depends on:** 16 **Est. Sessions:** 2
 
@@ -791,21 +809,21 @@ New docs follow the existing `docs/learn/_template.md`.
 
 **You'll learn:** Git-based CMS patterns, Keystatic Reader API, content modeling with relationships, Markdoc rendering in Svelte, build-time data fetching.
 
-### Slice 18 — Mobile UI/UX Optimization
+### Slice 19 — Mobile UI/UX Optimization
 
 **Status:** planned
 Full mobile audit: touch targets, scroll behavior, animation performance on low-end devices, viewport issues, text readability, tap feedback. SkillsJourney scroll tuning (velocity detection, adaptive multipliers). Responsive breakpoint audit for all components. Test at 375px, 390px, 414px, 768px.
 
 **Scope:** Touch interaction polish, scroll performance, responsive fixes, mobile-specific animation tuning, viewport debugging.
 
-### Slice 19 — Scroll Smoothness + Animation Polish
+### Slice 20 — Scroll Smoothness + Animation Polish
 
 **Status:** planned
 Fine-tune all scroll-linked animations across the site. Consider ScrollSmoother plugin. Optimize GSAP tween count. Fix any jank on 60fps targets. Polish snap behavior, scrub timing, and transition curves. Performance profiling with Chrome DevTools.
 
 **Scope:** Animation timing polish, scroll performance optimization, GSAP tween audit, frame rate verification.
 
-### Slice 20 — Repo Cleanup for Public Release
+### Slice 21 — Repo Cleanup for Public Release
 
 Strip pipeline/workflow artifacts. Public repo = clean portfolio site.
 
@@ -824,7 +842,7 @@ Yesid confirms backup is done. Only then does Claude Code proceed.
 
 **Tests:** Existing tests pass. Build succeeds. No references to removed files.
 
-### Slice 21 — Deploy to Vercel + DNS Cutover
+### Slice 22 — Deploy to Vercel + DNS Cutover
 
 Connect repo to Vercel. Configure build (Bun). Auto-deploy main, preview on PRs. Test preview. Update yesid.dev DNS. Verify live + CI/CD end to end.
 

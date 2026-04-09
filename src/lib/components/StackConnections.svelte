@@ -14,10 +14,12 @@
 		items,
 		containerEl,
 		highlightedIds = null,
+		filteredIds = null,
 	}: {
 		items: readonly TechStackItem[];
 		containerEl: HTMLElement | null;
 		highlightedIds?: Set<string> | null;
+		filteredIds?: Set<string> | null;
 	} = $props();
 
 	let svgEl: SVGSVGElement;
@@ -114,6 +116,12 @@
 				};
 			})
 			.filter((p): p is NonNullable<typeof p> => p !== null);
+	}
+
+	/** Determine if a connection path is completely outside the active filter (hide entirely). */
+	function isPathHidden(path: PathData): boolean {
+		if (!filteredIds) return false;
+		return !filteredIds.has(path.sourceId) || !filteredIds.has(path.targetId);
 	}
 
 	/** Determine if a connection path should be highlighted. */
@@ -253,6 +261,7 @@
 	{#each paths as path (path.id)}
 		<path
 			class="connection-path"
+			class:path-hidden={isPathHidden(path)}
 			class:path-highlighted={isPathHighlighted(path)}
 			class:path-dimmed={isPathDimmed(path)}
 			d={path.d}
@@ -263,6 +272,7 @@
 	{#each paths as path (path.id)}
 		<circle
 			class="data-dot"
+			class:dot-hidden={isPathHidden(path)}
 			class:dot-dimmed={isPathDimmed(path)}
 			r="3"
 		/>
@@ -291,6 +301,10 @@
 		stroke-width: 2;
 	}
 
+	.connection-path.path-hidden {
+		opacity: 0;
+	}
+
 	.connection-path.path-dimmed {
 		stroke: color-mix(in srgb, var(--brand-primary) 8%, transparent);
 	}
@@ -299,6 +313,10 @@
 		fill: var(--brand-accent);
 		opacity: 0;
 		transition: opacity 0.3s ease;
+	}
+
+	.data-dot.dot-hidden {
+		opacity: 0 !important;
 	}
 
 	.data-dot.dot-dimmed {

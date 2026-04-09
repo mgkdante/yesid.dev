@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-06 (Slice 09)
+**Last updated:** 2026-04-09 (Slice 10)
 
 ## Stack
 
@@ -36,6 +36,7 @@ src/
 │   │   ├── metro.ts     # ← Slice 06d: data-driven metro line (auto-computes stops from services)
 │   │   ├── content.ts   # ← Slice 06d: centralized UI strings as LocalizedString (hero, about, CTA)
 │   │   ├── meta.ts      # SiteMeta (name, tagline, description, links)
+│   │   ├── tech-stack.ts # ← Slice 10: markdown parser for stack items + scenarios, graph helpers
 │   │   └── index.ts     # Barrel re-export — import from '$lib/data'
 │   ├── components/      # ← Added in Slice 03, enhanced in Slices 04-06, extended in 06d
 │   │   ├── Nav.svelte           # fixed nav bar: wordmark, links, responsive hamburger menu
@@ -77,7 +78,17 @@ src/
 │   │   ├── WorkCard.svelte          # ← Slice 08: project card with gradient thumb + SVG morph
 │   │   ├── WorkDetailPage.svelte    # ← Slice 08: project detail with collapsible sections + ToC
 │   │   ├── DataFlowDiagram.svelte   # ← Slice 08: tech stack flow visualization
-│   │   └── TableOfContents.svelte   # ← Slice 08: README table of contents
+│   │   ├── TableOfContents.svelte   # ← Slice 08: README table of contents
+│   │   ├── StackDiagram.svelte      # ← Slice 10: CSS Grid diagram with tier rows + mobile accordion
+│   │   ├── StackNode.svelte         # ← Slice 10: tech node button (hover/selected/dimmed/bridge)
+│   │   ├── StackConnections.svelte  # ← Slice 10: SVG overlay with DrawSVG + MotionPath dots
+│   │   ├── StackPanel.svelte        # ← Slice 10: desktop detail sidebar (markdown content, relations, CTA)
+│   │   ├── StackBottomSheet.svelte  # ← Slice 10: mobile detail bottom sheet with swipe dismiss
+│   │   ├── StackFilters.svelte      # ← Slice 10: domain filter pill bar (multi-select)
+│   │   ├── StackConfigurator.svelte # ← Slice 10: Build Your Stack domain selector
+│   │   ├── StackScenarioCard.svelte # ← Slice 10: scenario summary card with recommended stack
+│   │   ├── TerminalCursor.svelte    # ← Slice 10: reusable blinking cursor component
+│   │   └── InfraFrame.svelte        # ← Slice 10: infrastructure monitor frame wrapper
 │   └── motion/          # ← Added in Slice 04
 │       ├── actions/
 │       │   ├── boop.ts          # use:boop — hover transform burst

@@ -1,7 +1,7 @@
 # Test Registry
 
-Last updated: 2026-04-08
-Total tests: 480
+Last updated: 2026-04-09
+Total tests: 503
 Runner: Vitest + Bun (`bun run test`)
 
 ## Test Architecture
@@ -55,7 +55,7 @@ Convention: tests live next to the code they test (co-located).
 
 ---
 
-# Components (`src/lib/components/`) — 23 files, 151 tests
+# Components (`src/lib/components/`) — 26 files, 174 tests
 
 ## src/lib/components/BlogRow.test.ts
 
@@ -292,7 +292,33 @@ Convention: tests live next to the code they test (co-located).
 |----------|---------|-------|
 | StackBottomSheet | Renders bottom sheet, displays item name/proficiency, markdown content, close/backdrop dismiss, prev/next navigation, project badges | 10 |
 
-# Data Layer (`src/lib/data/`) — 7 files, 85 tests
+## src/lib/components/StackFilters.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackFilters | Renders "All" pill and domain pills, toggles active state, calls onchange with updated domains array, multi-select, horizontal scroll | 8 |
+
+## src/lib/components/StackConfigurator.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackConfigurator | Renders domain cards with labels/descriptions, toggles selection up to 3 max, calls onchange, shows selected count, deselects on re-click | 9 |
+
+## src/lib/components/StackScenarioCard.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackScenarioCard | Renders scenario summary, recommended tech list, related projects, CTA link, handles auto-generated scenarios | 6 |
+
+# Data Layer (`src/lib/data/`) — 8 files, 113 tests
+
+## src/lib/data/tech-stack.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| tech-stack data validation | All 35 items have unique IDs, valid layers/domains/proficiency, no self-refs, no dangling connectsTo refs | 10 |
+| tech-stack scenario validation | All scenarios have unique IDs, valid domains, existing recommended tech IDs, non-empty summaries | 5 |
+| tech-stack API | getAllTechItems, getTechItemById, getTechItemsByLayer, getTechItemsByDomain, getConnections, getIncomingConnections, getTechItemContent, getAllScenarios, getScenarioForDomains, getOutgoingRelations, getIncomingRelations | 13 |
 
 ## src/lib/data/content.test.ts
 

@@ -21,7 +21,7 @@ Build a `/tech-stack` route with an interactive "Control Room" diagram showing h
 
 The existing About page has 8 `TechStackItem` entries with `name`, `category`, `relatedServices`. This slice expands to 34 items with a richer data model: dual categorization (infrastructure layer + domain clusters), directional `connectsTo` edges, proficiency levels, and per-item educational markdown content.
 
-Keystatic is not yet installed (Slice 17). Content is structured as Keystatic-ready markdown from day one — `import.meta.glob` parsing at build time, zero migration when CMS arrives.
+Keystatic is not yet installed (Slice 18). Content is structured as Keystatic-ready markdown from day one — `import.meta.glob` parsing at build time, zero migration when CMS arrives.
 
 ## Tech Stack
 
@@ -343,7 +343,7 @@ No parallelization. Each task ends with STOP + Yesid approval.
 ## Out of Scope
 
 - Individual `/tech-stack/[id]` sub-routes for SEO (future slice)
-- Keystatic installation and CMS UI (Slice 17)
+- Keystatic installation and CMS UI (Slice 18)
 - About page tech stack card revision (post-slice assessment)
 - Light theme support
 - 3D/Threlte elements (hand-rolled SVG is the approach)

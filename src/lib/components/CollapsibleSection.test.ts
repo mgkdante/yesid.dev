@@ -40,13 +40,12 @@ describe('CollapsibleSection', () => {
 		expect(chevron).toBeNull();
 	});
 
-	it('uses custom accent color', () => {
+	it('uses custom accent color via CSS variable', () => {
 		const { container } = render(CollapsibleSection, {
 			props: { title: 'Yellow', open: true, accentColor: '#FFB627' }
 		});
 		const card = container.querySelector('.section-card') as HTMLElement;
-		// jsdom normalizes hex colors to rgb() — both forms confirm the correct color is applied
-		const borderColor = card.style.borderColor;
-		expect(borderColor === '#FFB627' || borderColor === 'rgb(255, 182, 39)').toBe(true);
+		// Accent color is set as --accent CSS custom property for hover effects
+		expect(card.style.getPropertyValue('--accent')).toBe('#FFB627');
 	});
 });

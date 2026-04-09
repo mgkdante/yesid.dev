@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slice 10g — Hero + CTA + Infra Frame | Visual Companion</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #141414;
+    --bg-surface: #1E1E1E;
+    --bg-elevated: #2A2A2A;
+    --border: #3A3A3A;
+    --text-primary: #F5F5F0;
+    --text-secondary: #999999;
+    --text-muted: #666666;
+    --brand-primary: #E07800;
+    --brand-accent: #FFB627;
+    --font-heading: 'Inter', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* === NAV PLACEHOLDER === */
+  .nav-placeholder {
+    height: 56px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(20,20,20,0.9);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 18px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-placeholder .dot { color: var(--brand-primary); }
+  .nav-placeholder .nav-links { margin-left: auto; display: flex; gap: 2rem; font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+  .nav-placeholder .nav-links .active { color: var(--brand-primary); text-shadow: 0 0 8px rgba(224,120,0,0.5); }
+
+  /* === SECTION DIVIDER === */
+  .section-divider {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+    text-align: center;
+  }
+  .section-divider h2 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--brand-primary);
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ============================================================
+     OPTION A: "SYSTEM BOOT" HERO — Clean, typographic, modern
+     ============================================================ */
+
+  .hero-a {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-a .overline {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--brand-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-a .overline::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--brand-primary);
+  }
+
+  .hero-a h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-a h1 .highlight {
+    color: var(--brand-primary);
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero-a .subtitle {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-a .subtitle .cmd {
+    color: var(--text-primary);
+  }
+
+  .hero-a .subtitle .out {
+    color: var(--text-muted);
+  }
+
+  .hero-a .subtitle .val {
+    color: var(--brand-accent);
+  }
+
+  /* Stats strip */
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hero-stat .value {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .hero-stat .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .hero-stat .led {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    box-shadow: 0 0 6px rgba(224,120,0,0.6);
+    margin-right: 6px;
+    animation: led-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes led-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(224,120,0,0.5); }
+    50% { opacity: 0.7; box-shadow: 0 0 10px rgba(224,120,0,0.8); }
+  }
+
+  /* Action buttons */
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.75rem 1.5rem;
+    background: var(--brand-primary);
+    color: white;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 12px rgba(224,120,0,0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(224,120,0,0.4);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+  }
+
+  /* ============================================================
+     OPTION B: "INFRA PANEL" HERO — Terminal + status board hybrid
+     ============================================================ */
+
+  .hero-b {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .hero-b .panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-surface);
+  }
+
+  .hero-b .panel-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #1a1a1a;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-b .panel-bar .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .hero-b .panel-bar .dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .hero-b .panel-bar .dots span:first-child { background: #ff5f57; }
+  .hero-b .panel-bar .dots span:nth-child(2) { background: #febc2e; }
+  .hero-b .panel-bar .dots span:last-child { background: #28c840; }
+
+  .hero-b .panel-bar .panel-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: 8px;
+  }
+
+  .hero-b .panel-bar .status {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .hero-b .panel-bar .status .led-green {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #28c840;
+    box-shadow: 0 0 6px rgba(40,200,64,0.6);
+  }
+
+  /* Hazard stripe */
+  .hazard-stripe {
+    height: 3px;
+    background: repeating-linear-gradient(-45deg, #FFB627 0px, #FFB627 8px, transparent 8px, transparent 16px);
+  }
+
+  .hero-b .panel-body {
+    padding: 3rem 2.5rem;
+    background: var(--bg-primary);
+  }
+
+  .hero-b h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .hero-b h1 .accent {
+    color: var(--brand-primary);
+  }
+
+  .hero-b .terminal-lines {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 2;
+    margin-bottom: 2rem;
+  }
+
+  .hero-b .terminal-lines .prompt { color: var(--text-primary); }
+  .hero-b .terminal-lines .cmd { color: var(--brand-primary); }
+  .hero-b .terminal-lines .output { color: var(--text-muted); }
+  .hero-b .terminal-lines .value { color: var(--brand-accent); }
+
+  .hero-b .panel-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #1a1a1a;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  .hero-b .panel-footer .sys-info {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .hero-b .panel-footer .sys-info span .num {
+    color: var(--brand-accent);
+    font-weight: 600;
+  }
+
+  /* ============================================================
+     DIAGRAM PLACEHOLDER (shows where existing diagram goes)
+     ============================================================ */
+
+  .diagram-placeholder {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .diagram-box {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+
+  /* ============================================================
+     OPTION: INFRA FRAME wrapping diagram + builder
+     ============================================================ */
+
+  .infra-frame {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .infra-frame .frame {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-surface);
+  }
+
+  .infra-frame .frame-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: #1a1a1a;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .infra-frame .frame-bar .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--brand-primary);
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .infra-frame .frame-bar .tag::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    box-shadow: 0 0 6px rgba(224,120,0,0.6);
+  }
+
+  .infra-frame .frame-bar .frame-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .infra-frame .frame-bar .frame-status {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .infra-frame .frame-bar .frame-status .led-ok {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #28c840;
+    box-shadow: 0 0 4px rgba(40,200,64,0.5);
+  }
+
+  .infra-frame .frame-body {
+    padding: 1rem;
+    background: var(--bg-primary);
+  }
+
+  .infra-frame .frame-footer {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-top: 1px solid var(--border);
+    background: #1a1a1a;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    gap: 2rem;
+  }
+
+  .infra-frame .frame-footer .metric .val {
+    color: var(--brand-accent);
+    font-weight: 600;
+  }
+
+  /* ============================================================
+     CTA SECTION — OPTION A: "Terminal Command"
+     ============================================================ */
+
+  .cta-a {
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .cta-a .cta-panel {
+    border: 1px solid rgba(224,120,0,0.2);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-surface);
+    position: relative;
+  }
+
+  .cta-a .cta-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(224,120,0,0.06), transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-a .cta-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: #1a1a1a;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cta-a .cta-bar .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .cta-a .cta-bar .dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .cta-a .cta-bar .title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: 12px;
+  }
+
+  .cta-a .cta-body {
+    padding: 2.5rem;
+    position: relative;
+  }
+
+  .cta-a .cta-body .terminal-output {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 2;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-a .cta-body .terminal-output .prompt { color: var(--text-primary); }
+  .cta-a .cta-body .terminal-output .cmd { color: var(--brand-primary); }
+  .cta-a .cta-body .terminal-output .out { color: var(--text-secondary); }
+  .cta-a .cta-body .terminal-output .accent { color: var(--brand-accent); }
+  .cta-a .cta-body .terminal-output .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 16px;
+    background: var(--brand-primary);
+    animation: blink 1.2s step-end infinite;
+    vertical-align: text-bottom;
+    margin-left: 4px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .cta-a .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .cta-a .availability {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--brand-accent);
+    text-transform: uppercase;
+  }
+
+  /* ============================================================
+     CTA SECTION — OPTION B: "Minimal Bold"
+     ============================================================ */
+
+  .cta-b {
+    max-width: 1200px;
+    margin: 6rem auto 4rem;
+    padding: 0 1.5rem;
+    text-align: center;
+  }
+
+  .cta-b .hazard-line {
+    width: 60px;
+    height: 3px;
+    background: repeating-linear-gradient(-45deg, #FFB627 0px, #FFB627 4px, transparent 4px, transparent 8px);
+    margin: 0 auto 2rem;
+  }
+
+  .cta-b h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-b h2 .accent { color: var(--brand-primary); }
+
+  .cta-b .sub {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-inline: auto;
+    line-height: 1.6;
+  }
+
+  .cta-b .btn-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .cta-b .avail-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--brand-accent);
+    text-transform: uppercase;
+  }
+
+  /* ============================================================
+     PAGE LAYOUT DEMO — shows full page flow
+     ============================================================ */
+
+  .page-flow {
+    border-top: 3px solid var(--brand-primary);
+    margin-top: 4rem;
+    padding-top: 2rem;
+  }
+
+  .page-flow-label {
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+    padding: 0 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--brand-primary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Zone labels */
+  .zone-marker {
+    max-width: 1200px;
+    margin: 1rem auto;
+    padding: 0 1.5rem;
+  }
+  .zone-marker span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--brand-accent);
+    padding: 4px 10px;
+    border: 1px dashed rgba(255,182,39,0.3);
+    border-radius: 4px;
+  }
+
+  /* Footer placeholder */
+  .footer-placeholder {
+    max-width: 1200px;
+    margin: 4rem auto 0;
+    padding: 2rem 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+    .hero-b .panel-body { padding: 2rem 1.5rem; }
+    .hero-b .panel-footer .sys-info { gap: 1rem; flex-wrap: wrap; }
+    .cta-a .cta-body { padding: 1.5rem; }
+    .infra-frame .frame-footer { flex-wrap: wrap; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav-placeholder">
+  yesid<span class="dot">.</span>
+  <div class="nav-links">
+    <span>Services</span>
+    <span>Work</span>
+    <span>Blog</span>
+    <span class="active">Stack</span>
+    <span>About</span>
+    <span>Contact</span>
+  </div>
+</nav>
+
+<!-- ========================================== -->
+<!-- HERO OPTION A: "System Boot" — Typographic -->
+<!-- ========================================== -->
+
+<div class="section-divider">
+  <h2>Hero Option A — "System Boot" (typographic, open)</h2>
+</div>
+
+<section class="hero-a">
+  <div class="overline">Infrastructure Map</div>
+
+  <h1>
+    The Control<br>
+    <span class="highlight">Room.</span>
+  </h1>
+
+  <div class="subtitle">
+    <div><span class="cmd">~</span> yesid --stack --verbose</div>
+    <div><span class="out">mapping infrastructure</span> <span class="val">... done</span></div>
+    <div><span class="out">34 technologies across 9 layers, 7 domains.</span></div>
+    <div><span class="out">click a node to see how it all connects.</span></div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="value"><span class="led"></span>34</span>
+      <span class="label">technologies</span>
+    </div>
+    <div class="hero-stat">
+      <span class="value">9</span>
+      <span class="label">layers</span>
+    </div>
+    <div class="hero-stat">
+      <span class="value">7</span>
+      <span class="label">domains</span>
+    </div>
+    <div class="hero-stat">
+      <span class="value">10+</span>
+      <span class="label">projects</span>
+    </div>
+  </div>
+
+  <div class="hero-actions">
+    <button class="btn-primary">Explore Diagram <span>&darr;</span></button>
+    <button class="btn-secondary">Build Your Stack <span>&rarr;</span></button>
+  </div>
+</section>
+
+<!-- ================================================ -->
+<!-- HERO OPTION B: "Infra Panel" — Terminal wrapped -->
+<!-- ================================================ -->
+
+<div class="section-divider">
+  <h2>Hero Option B — "Infra Panel" (terminal chrome, contained)</h2>
+</div>
+
+<section class="hero-b">
+  <div class="panel">
+    <!-- Title bar -->
+    <div class="panel-bar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <span class="panel-title">control-room &mdash; infrastructure overview</span>
+      <div class="status">
+        <div class="led-green"></div>
+        All systems operational
+      </div>
+    </div>
+
+    <!-- Hazard stripe -->
+    <div class="hazard-stripe"></div>
+
+    <!-- Body -->
+    <div class="panel-body">
+      <h1>The Control <span class="accent">Room.</span></h1>
+
+      <div class="terminal-lines">
+        <div><span class="prompt">~</span> <span class="cmd">yesid --stack --map</span></div>
+        <div><span class="output">loading infrastructure diagram</span> <span class="value">... done</span></div>
+        <div><span class="output">34 technologies | 9 layers | 7 domains | 10+ projects</span></div>
+        <div><span class="output">select a node to inspect. select domains to filter.</span></div>
+      </div>
+
+      <div class="hero-stats" style="border-color: var(--border);">
+        <div class="hero-stat">
+          <span class="value"><span class="led"></span>34</span>
+          <span class="label">technologies</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">9</span>
+          <span class="label">layers</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">7</span>
+          <span class="label">domains</span>
+        </div>
+        <div class="hero-stat">
+          <span class="value">10+</span>
+          <span class="label">projects</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn-primary">Explore Diagram <span>&darr;</span></button>
+        <button class="btn-secondary">Build Your Stack <span>&rarr;</span></button>
+      </div>
+    </div>
+
+    <!-- Footer status bar -->
+    <div class="panel-footer">
+      <div class="sys-info">
+        <span>NODES: <span class="num">34</span></span>
+        <span>EDGES: <span class="num">87</span></span>
+        <span>LAYERS: <span class="num">9</span></span>
+        <span>DOMAINS: <span class="num">7</span></span>
+      </div>
+      <span>STATION 06 &mdash; INFRASTRUCTURE</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================ -->
+<!-- INFRA FRAME (optional wrapper for diagram area)  -->
+<!-- ================================================ -->
+
+<div class="section-divider">
+  <h2>Infra Frame — Optional wrapper for diagram + builder</h2>
+</div>
+
+<section class="infra-frame">
+  <div class="frame">
+    <div class="frame-bar">
+      <span class="tag">LIVE</span>
+      <span class="frame-title">infrastructure-diagram &mdash; interactive</span>
+      <div class="frame-status">
+        <span class="led-ok"></span>
+        <span>34 nodes active</span>
+      </div>
+    </div>
+    <div class="hazard-stripe"></div>
+    <div class="frame-body">
+      <div class="diagram-box">
+        [ Existing StackDiagram + StackFilters + StackPanel render here ]<br><br>
+        The frame wraps the entire interactive area.<br>
+        Filters sit inside. Panel sits outside (desktop) or overlays (tablet/mobile).
+      </div>
+    </div>
+    <div class="frame-footer">
+      <span class="metric">NODES: <span class="val">34</span></span>
+      <span class="metric">CONNECTIONS: <span class="val">87</span></span>
+      <span class="metric">FILTER: <span class="val">ALL</span></span>
+      <span style="margin-left: auto;">STATION 06 &mdash; CONTROL ROOM</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================ -->
+<!-- CTA OPTION A: "Terminal Command"                 -->
+<!-- ================================================ -->
+
+<div class="section-divider">
+  <h2>CTA Option A — Terminal style (matches Contact page)</h2>
+</div>
+
+<section class="cta-a">
+  <div class="cta-panel">
+    <div class="cta-bar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <span class="title">terminal &mdash; next steps</span>
+    </div>
+    <div class="hazard-stripe"></div>
+    <div class="cta-body">
+      <div class="terminal-output">
+        <div><span class="prompt">~</span> <span class="cmd">yesid --build your-stack</span></div>
+        <div><span class="out">found your stack? let's build it.</span></div>
+        <div><span class="out">whether it's a data pipeline, a web app, or a mobile product &mdash;</span></div>
+        <div><span class="out">the infrastructure is ready.</span></div>
+        <div>&nbsp;</div>
+        <div><span class="accent">&rarr; average response time: &lt; 24h</span></div>
+        <div><span class="prompt">~</span> <span class="cursor"></span></div>
+      </div>
+      <div class="cta-row">
+        <button class="btn-primary">Let's Talk <span>&rarr;</span></button>
+        <span class="availability">Available for Q2 2026</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================ -->
+<!-- CTA OPTION B: "Minimal Bold"                     -->
+<!-- ================================================ -->
+
+<div class="section-divider">
+  <h2>CTA Option B — Minimal bold (typographic, open)</h2>
+</div>
+
+<section class="cta-b">
+  <div class="hazard-line"></div>
+  <h2>Found your stack<span class="accent">?</span><br>Let's build it<span class="accent">.</span></h2>
+  <p class="sub">Whether it's a data pipeline, a web app, or a mobile product — the infrastructure is ready.</p>
+  <div class="btn-row">
+    <button class="btn-primary">Get In Touch <span>&rarr;</span></button>
+    <button class="btn-secondary">View Services</button>
+  </div>
+  <span class="avail-tag">Available for Q2 2026</span>
+</section>
+
+
+<!-- ================================================ -->
+<!-- FULL PAGE FLOW DEMO                              -->
+<!-- ================================================ -->
+
+<div class="page-flow">
+  <div class="page-flow-label">Full page flow (assembled)</div>
+
+  <!-- Hero B chosen for demo -->
+  <div class="zone-marker"><span>Zone 1 &mdash; Hero</span></div>
+
+  <section class="hero-b">
+    <div class="panel">
+      <div class="panel-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="panel-title">control-room &mdash; infrastructure overview</span>
+        <div class="status">
+          <div class="led-green"></div>
+          All systems operational
+        </div>
+      </div>
+      <div class="hazard-stripe"></div>
+      <div class="panel-body">
+        <h1>The Control <span class="accent">Room.</span></h1>
+        <div class="terminal-lines">
+          <div><span class="prompt">~</span> <span class="cmd">yesid --stack --map</span></div>
+          <div><span class="output">loading infrastructure diagram</span> <span class="value">... done</span></div>
+          <div><span class="output">34 technologies | 9 layers | 7 domains | 10+ projects</span></div>
+        </div>
+        <div class="hero-stats" style="border-color: var(--border);">
+          <div class="hero-stat">
+            <span class="value"><span class="led"></span>34</span>
+            <span class="label">technologies</span>
+          </div>
+          <div class="hero-stat"><span class="value">9</span><span class="label">layers</span></div>
+          <div class="hero-stat"><span class="value">7</span><span class="label">domains</span></div>
+          <div class="hero-stat"><span class="value">10+</span><span class="label">projects</span></div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn-primary">Explore Diagram <span>&darr;</span></button>
+          <button class="btn-secondary">Build Your Stack <span>&rarr;</span></button>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <div class="sys-info">
+          <span>NODES: <span class="num">34</span></span>
+          <span>EDGES: <span class="num">87</span></span>
+          <span>LAYERS: <span class="num">9</span></span>
+        </div>
+        <span>STATION 06 &mdash; INFRASTRUCTURE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Diagram zone -->
+  <div class="zone-marker"><span>Zone 2 &mdash; Filters + Diagram + Panel</span></div>
+  <div class="diagram-placeholder">
+    <div class="diagram-box" style="min-height: 300px;">
+      [ StackFilters ]<br><br>
+      [ StackDiagram — 9 layer grid with 34 nodes + SVG connections ]<br><br>
+      [ StackPanel sits to the right (desktop) or overlays (tablet/mobile) ]
+    </div>
+  </div>
+
+  <!-- Build section -->
+  <div class="zone-marker"><span>Zone 3 &mdash; Build Your Stack</span></div>
+  <div class="diagram-placeholder">
+    <div class="diagram-box">
+      [ StackConfigurator — domain checkboxes ]<br>
+      [ StackScenarioCard — recommended stack result ]
+    </div>
+  </div>
+
+  <!-- CTA zone -->
+  <div class="zone-marker"><span>Zone 4 &mdash; CTA</span></div>
+
+  <section class="cta-a">
+    <div class="cta-panel">
+      <div class="cta-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="title">terminal &mdash; next steps</span>
+      </div>
+      <div class="hazard-stripe"></div>
+      <div class="cta-body">
+        <div class="terminal-output">
+          <div><span class="prompt">~</span> <span class="cmd">yesid --build your-stack</span></div>
+          <div><span class="out">found your stack? let's build it.</span></div>
+          <div><span class="out">the infrastructure is ready.</span></div>
+          <div>&nbsp;</div>
+          <div><span class="accent">&rarr; average response time: &lt; 24h</span></div>
+          <div><span class="prompt">~</span> <span class="cursor"></span></div>
+        </div>
+        <div class="cta-row">
+          <button class="btn-primary">Let's Talk <span>&rarr;</span></button>
+          <span class="availability">Available for Q2 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-placeholder">
+    [ Footer ]
+  </div>
+</div>
+
+</body>
+</html>
