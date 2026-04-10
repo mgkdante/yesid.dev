@@ -478,11 +478,19 @@
 					startBlink();
 				}
 			},
-			// After pin releases, allow content to extend beyond the viewport
-			// so the hero can be taller than one screen (mobile).
-			// On scroll back: re-enable clip for the zoom animation.
-			onLeave: () => { pinContainer.style.overflow = 'visible'; },
-			onEnterBack: () => { pinContainer.style.overflow = 'hidden'; },
+			// After pin releases, extend the container to fit all hero content
+			// so it flows naturally beyond one viewport (mobile).
+			onLeave: () => {
+				pinContainer.style.overflow = 'visible';
+				const contentH = heroTextContainer.scrollHeight;
+				if (contentH > pinContainer.clientHeight) {
+					pinContainer.style.height = contentH + 'px';
+				}
+			},
+			onEnterBack: () => {
+				pinContainer.style.overflow = 'hidden';
+				pinContainer.style.height = '';
+			},
 		});
 
 		// On reload at a mid-scroll position, force GSAP to seek the
