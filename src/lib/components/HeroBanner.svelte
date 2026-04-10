@@ -280,6 +280,10 @@
 		const staggerEls = heroTextContainer.querySelectorAll('[data-hero-stagger]');
 		gsap.set(staggerEls, { opacity: 0 });
 
+		// Refresh button starts slightly below for a fade-up entrance
+		const refreshEl = heroTextContainer.querySelector('[data-hero-stagger="7"]');
+		if (refreshEl) gsap.set(refreshEl, { y: 12 });
+
 		// Recalculate on resize so it stays accurate on any screen
 		window.addEventListener('resize', updateZoomOrigin);
 
@@ -380,12 +384,16 @@
 			ease: 'power2.out',
 		}, 1.05);
 
-		// === Phase 8 (Slice C): Text elements stagger in during zoom-out ===
-		const stagger1 = heroTextContainer.querySelectorAll('[data-hero-stagger="1"]');
-		const stagger2 = heroTextContainer.querySelectorAll('[data-hero-stagger="2"]');
-		const stagger3 = heroTextContainer.querySelectorAll('[data-hero-stagger="3"]');
-		const stagger4 = heroTextContainer.querySelectorAll('[data-hero-stagger="4"]');
+		// === Phase 8 (Slice 13d): Text elements stagger in during zoom-out — 7 groups ===
+		const stagger1 = heroTextContainer.querySelectorAll('[data-hero-stagger="1"]'); // Headlines
+		const stagger2 = heroTextContainer.querySelectorAll('[data-hero-stagger="2"]'); // Subheadline
+		const stagger3 = heroTextContainer.querySelectorAll('[data-hero-stagger="3"]'); // Metric cards
+		const stagger4 = heroTextContainer.querySelectorAll('[data-hero-stagger="4"]'); // SQL panel
+		const stagger5 = heroTextContainer.querySelectorAll('[data-hero-stagger="5"]'); // Divider
+		const stagger6 = heroTextContainer.querySelectorAll('[data-hero-stagger="6"]'); // Subtitle + CTAs
+		const stagger7 = heroTextContainer.querySelectorAll('[data-hero-stagger="7"]'); // Refresh button
 
+		// Stagger 1: Headlines ("PIPELINES THAT", "DON'T BREAK.")
 		tl.to(stagger1, {
 			opacity: 1,
 			duration: 0.15,
@@ -393,27 +401,52 @@
 			ease: 'power1.out',
 		}, 1.10);
 
+		// Stagger 2: Subheadline ("Data that tell the truth.")
 		tl.to(stagger2, {
 			opacity: 1,
 			duration: 0.12,
 			ease: 'power1.out',
 		}, 1.18);
 
+		// Stagger 3: Metric cards (left → right)
 		tl.to(stagger3, {
+			opacity: 1,
+			duration: 0.12,
+			ease: 'power1.out',
+		}, 1.22);
+
+		// Stagger 4: SQL panel (fade in)
+		tl.to(stagger4, {
+			opacity: 1,
+			duration: 0.12,
+			ease: 'power1.out',
+		}, 1.26);
+
+		// Stagger 5: Vertical divider
+		tl.to(stagger5, {
+			opacity: 1,
+			duration: 0.10,
+			ease: 'power1.out',
+		}, 1.30);
+
+		// Stagger 6: Subtitle + CTAs
+		tl.to(stagger6, {
 			opacity: 1,
 			duration: 0.10,
 			stagger: 0.02,
 			ease: 'power1.out',
-		}, 1.25);
-
-		tl.to(stagger4, {
-			opacity: 1,
-			duration: 0.10,
-			ease: 'power1.out',
 		}, 1.32);
 
+		// Stagger 7: Refresh button (last, fade up)
+		tl.to(stagger7, {
+			opacity: 1,
+			y: 0,
+			duration: 0.10,
+			ease: 'power1.out',
+		}, 1.38);
+
 		// === Phase 9: Hold — hero fully visible, user reads ===
-		tl.set({}, {}, 1.5);
+		tl.set({}, {}, 1.55);
 
 		// Recalculate zoom scale AND transform-origin on resize
 		function onResize() {
@@ -488,17 +521,17 @@
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
 		<div
 			bind:this={heroTextContainer}
-			class="absolute inset-0 flex items-center justify-center px-6 pr-12 opacity-0 md:pr-20"
+			class="absolute inset-0 flex items-start justify-center overflow-y-auto pt-14 opacity-0 md:items-center md:overflow-visible md:pt-0"
 			data-testid="hero-text-container"
 		>
-			<div class="w-full max-w-6xl">
+			<div class="w-full px-6 md:px-12">
 				<!-- Two-column grid: left text | divider | right SQL -->
 				<div class="hero-grid">
 					<!-- LEFT COLUMN -->
 					<div>
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[clamp(48px,6vw,84px)] text-[var(--text-primary)]"
+								class="block text-[34px] text-[var(--text-primary)] md:text-[clamp(48px,6vw,84px)]"
 								data-testid="hero-line1"
 								data-hero-stagger="1"
 							>
@@ -506,13 +539,13 @@
 							</span>
 						</h1>
 
-						<div class="my-6" data-hero-stagger="3">
+						<div class="my-3 md:my-6" data-hero-stagger="3">
 							<HeroMetrics metrics={heroData.metrics} />
 						</div>
 
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[clamp(48px,6vw,84px)] text-[var(--brand-primary)]"
+								class="block text-[34px] text-[var(--brand-primary)] md:text-[clamp(48px,6vw,84px)]"
 								data-testid="hero-line2"
 							>
 								<span data-hero-stagger="1">DON'T BREAK</span><span
