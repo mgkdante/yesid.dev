@@ -478,13 +478,13 @@
 					startBlink();
 				}
 			},
-			// After pin releases, extend the container to fit all hero content
-			// so it flows naturally beyond one viewport (mobile).
+			// After pin releases, extend container to fit hero content
+			// (two 100dvh sections on mobile = ~200dvh total).
 			onLeave: () => {
 				pinContainer.style.overflow = 'visible';
-				const contentH = heroTextContainer.scrollHeight;
-				if (contentH > pinContainer.clientHeight) {
-					pinContainer.style.height = contentH + 'px';
+				const inner = heroTextContainer.firstElementChild as HTMLElement;
+				if (inner && inner.scrollHeight > pinContainer.clientHeight) {
+					pinContainer.style.height = inner.scrollHeight + 'px';
 				}
 			},
 			onEnterBack: () => {
@@ -536,13 +536,12 @@
 			data-testid="hero-text-container"
 		>
 			<div class="w-full px-6 md:px-12">
-				<!-- Two-column grid: left text | divider | right SQL -->
 				<div class="hero-grid">
-					<!-- LEFT COLUMN -->
-					<div>
+					<!-- LEFT COLUMN: text viewport on mobile (100dvh) -->
+					<div class="hero-viewport-text">
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[34px] text-[var(--text-primary)] md:text-[clamp(48px,6vw,84px)]"
+								class="block text-[42px] text-[var(--text-primary)] md:text-[clamp(48px,6vw,84px)]"
 								data-testid="hero-line1"
 								data-hero-stagger="1"
 							>
@@ -550,13 +549,13 @@
 							</span>
 						</h1>
 
-						<div class="my-6" data-hero-stagger="3">
+						<div class="my-6 md:my-6" data-hero-stagger="3">
 							<HeroMetrics metrics={heroData.metrics} />
 						</div>
 
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[34px] text-[var(--brand-primary)] md:text-[clamp(48px,6vw,84px)]"
+								class="block text-[42px] text-[var(--brand-primary)] md:text-[clamp(48px,6vw,84px)]"
 								data-testid="hero-line2"
 							>
 								<span data-hero-stagger="1">DON'T BREAK</span><span
@@ -568,7 +567,7 @@
 						</h1>
 
 						<div
-							class="mt-2.5 text-[clamp(20px,2.5vw,34px)] font-bold leading-[1.1] text-[var(--text-secondary)]"
+							class="mt-3 text-[22px] font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(20px,2.5vw,34px)]"
 							data-testid="hero-subheadline"
 							data-hero-stagger="2"
 						>
@@ -609,30 +608,31 @@
 						<div class="hero-divider"></div>
 					</div>
 
-					<!-- RIGHT COLUMN: SQL PANEL -->
-					<div data-hero-stagger="4">
-						<HeroSqlPanel
-							rows={heroData.queryRows}
-							queryTime={heroData.queryTime}
-							prompt={sqlPrompt}
-							liveLabel={sqlLiveLabel}
-							{updatedAgo}
-						/>
-					</div>
-				</div>
+					<!-- RIGHT COLUMN: SQL viewport on mobile (100dvh) -->
+					<div class="hero-viewport-sql">
+						<div data-hero-stagger="4">
+							<HeroSqlPanel
+								rows={heroData.queryRows}
+								queryTime={heroData.queryTime}
+								prompt={sqlPrompt}
+								liveLabel={sqlLiveLabel}
+								{updatedAgo}
+							/>
+						</div>
 
-				<!-- REFRESH BUTTON — full width, below grid -->
-				<div class="mt-8 text-center" data-hero-stagger="7">
-					<button
-						class="refresh-btn"
-						data-testid="hero-refresh"
-						onclick={handleRefresh}
-					>
-						<span bind:this={refreshIcon} class="text-xl">&#x21bb;</span>
-						{refreshLabel}
-					</button>
-					<div class="mt-2 font-mono text-[10px] text-[var(--text-dim)]">
-						{refreshHelper}
+						<div class="mt-8 text-center" data-hero-stagger="7">
+							<button
+								class="refresh-btn"
+								data-testid="hero-refresh"
+								onclick={handleRefresh}
+							>
+								<span bind:this={refreshIcon} class="text-xl">&#x21bb;</span>
+								{refreshLabel}
+							</button>
+							<div class="mt-2 font-mono text-[10px] text-[var(--text-dim)]">
+								{refreshHelper}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -697,18 +697,31 @@
 		transform: translateY(-1px);
 	}
 
-	/* Mobile: stacked layout */
+	/* Mobile: two full-viewport stacked sections */
 	@media (max-width: 768px) {
 		.hero-grid {
 			grid-template-columns: 1fr;
 			gap: 0;
+		}
+		.hero-viewport-text {
+			min-height: 100dvh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding-block: 2rem;
+		}
+		.hero-viewport-sql {
+			min-height: 100dvh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding-block: 2rem;
 		}
 		.refresh-btn {
 			width: 100%;
 			justify-content: center;
 			padding: 14px;
 			font-size: 14px;
-			margin-bottom: 14px;
 		}
 	}
 </style>
