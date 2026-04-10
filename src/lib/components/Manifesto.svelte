@@ -59,6 +59,11 @@
 
 	const ticks = manifestoContent.ticks;
 
+	const hiddenLines = manifestoContent.hiddenTransitLines.map((l) => ({
+		name: resolveLocale(l.name, 'en'),
+		color: l.color,
+	}));
+
 	// ── Countdown timer state ────────────────────────────────────────
 	let countdownSeconds = $state(167); // 02:47
 	let countdownDisplay = $derived(
@@ -200,11 +205,17 @@
 	<div class="manifesto__beck-line manifesto__beck-v" style="left:160px;bottom:0;height:180px;"></div>
 	<div class="manifesto__beck-line manifesto__beck-d45" style="bottom:180px;left:160px;width:70px;"></div>
 
-	<!-- Roundels -->
-	<div class="manifesto__roundel manifesto__roundel--orange" style="left:155px;top:116px;">1</div>
-	<div class="manifesto__roundel manifesto__roundel--green" style="right:115px;top:195px;">2</div>
-	<div class="manifesto__roundel manifesto__roundel--blue" style="right:178px;bottom:128px;">4</div>
-	<div class="manifesto__roundel manifesto__roundel--orange" style="left:155px;bottom:176px;">1</div>
+	<!-- Transit line roundels (easter eggs — replace numbered roundels) -->
+	{#each hiddenLines as line, i}
+		<div
+			class="manifesto__roundel manifesto__roundel--transit manifesto__roundel--t{i}"
+			aria-hidden="true"
+			style="--line-color: {line.color}; --line-color-border: {line.color}40; --line-color-bg: {line.color}1A; --line-color-text: {line.color}33;"
+		>
+			<span class="manifesto__roundel-dot"></span>
+			<span class="manifesto__roundel-name">{line.name}</span>
+		</div>
+	{/each}
 
 	<!-- Edge: Left — vertical readouts -->
 	<div data-testid="manifesto-edge-left" class="manifesto__edge-left">
@@ -485,37 +496,45 @@
 		transform: rotate(45deg);
 	}
 
-	/* ── Roundels ────────────────────────────────────────────────── */
+	/* ── Roundels (transit line easter eggs) ─────────────────────── */
 	.manifesto__roundel {
 		position: absolute;
-		width: 24px;
-		height: 24px;
-		border-radius: 50%;
-		border: 1.5px solid;
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		gap: 6px;
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: 9px;
 		font-weight: 600;
+		letter-spacing: 1px;
 		z-index: 2;
 		opacity: 0;
+		white-space: nowrap;
+		pointer-events: none;
 	}
 
-	.manifesto__roundel--orange {
-		border-color: rgba(224,120,0,0.25);
-		color: rgba(224,120,0,0.35);
+	.manifesto__roundel-dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		border: 1.5px solid var(--line-color-border);
+		background: var(--line-color-bg);
+		flex-shrink: 0;
 	}
 
-	.manifesto__roundel--green {
-		border-color: rgba(76,175,80,0.2);
-		color: rgba(76,175,80,0.25);
+	.manifesto__roundel-name {
+		color: var(--line-color-text);
 	}
 
-	.manifesto__roundel--blue {
-		border-color: rgba(66,133,244,0.2);
-		color: rgba(66,133,244,0.25);
-	}
+	/* Scattered positions — 9 transit lines around edges */
+	.manifesto__roundel--t0 { left: 155px; top: 116px; }   /* LIGNE BLEUE */
+	.manifesto__roundel--t1 { right: 115px; top: 195px; }  /* LIGNE VERTE */
+	.manifesto__roundel--t2 { right: 178px; bottom: 210px; } /* LIGNE JAUNE */
+	.manifesto__roundel--t3 { left: 155px; bottom: 176px; } /* REM */
+	.manifesto__roundel--t4 { left: 260px; top: 60px; }    /* 11 VAUDREUIL */
+	.manifesto__roundel--t5 { right: 80px; top: 80px; }    /* 12 SAINT-JÉRÔME */
+	.manifesto__roundel--t6 { left: 80px; top: 260px; }    /* 13 MONT-SAINT-HILAIRE */
+	.manifesto__roundel--t7 { right: 200px; bottom: 128px; } /* 14 CANDIAC */
+	.manifesto__roundel--t8 { left: 300px; bottom: 100px; } /* 15 MASCOUCHE */
 
 	/* ── Edge: Left ──────────────────────────────────────────────── */
 	.manifesto__edge-left {
@@ -772,22 +791,22 @@
 		gap: 8px;
 		margin-bottom: 36px;
 		padding: 8px 16px;
-		border: 1px solid rgba(224,120,0,0.08);
+		border: 1px solid rgba(224,120,0,0.15);
 		border-radius: 4px;
-		background: rgba(224,120,0,0.02);
+		background: rgba(224,120,0,0.04);
 		opacity: 0;
 	}
 
 	.manifesto__prompt-cmd {
 		font-family: var(--font-mono);
 		font-size: 13px;
-		color: rgba(224,120,0,0.65);
+		color: rgba(224,120,0,0.85);
 	}
 
 	.manifesto__prompt-text {
 		font-family: var(--font-mono);
 		font-size: 13px;
-		color: rgba(224,120,0,0.4);
+		color: rgba(224,120,0,0.6);
 	}
 
 	.manifesto__cursor {
@@ -847,10 +866,11 @@
 		font-family: var(--font-mono);
 		font-size: clamp(0.75rem, 1.2vw, 1rem);
 		letter-spacing: 0.04em;
-		color: #666;
-		border: 1px solid rgba(255,255,255,0.07);
+		color: rgba(224,120,0,0.6);
+		border: 1px solid rgba(224,120,0,0.15);
 		border-radius: 9999px;
 		padding: 8px 20px;
+		background: rgba(224,120,0,0.04);
 		text-decoration: none;
 		transition: all 200ms ease;
 		opacity: 0;
@@ -858,9 +878,9 @@
 	}
 
 	.manifesto__pill:hover {
-		border-color: #E07800;
-		color: #E07800;
-		background: rgba(224,120,0,0.06);
+		border-color: rgba(224,120,0,0.4);
+		color: rgba(224,120,0,0.85);
+		background: rgba(224,120,0,0.08);
 	}
 
 	/* ── Ripple keyframes (for ManifestoCanvas) ───────────────────── */
@@ -945,9 +965,12 @@
 		}
 
 		.manifesto__roundel {
-			width: 18px;
-			height: 18px;
-			font-size: 8px;
+			font-size: 7px;
+		}
+
+		.manifesto__roundel-dot {
+			width: 8px;
+			height: 8px;
 		}
 
 		.manifesto__chevrons {

@@ -78,6 +78,17 @@ export const manifestoContent = {
 		directionBadge: { en: 'DIRECTION: CENTRE-VILLE' } satisfies LocalizedString,
 	},
 	ticks: ['0', '80', '160', '240', '320', '400', '480'],
+	hiddenTransitLines: [
+		{ name: { en: 'LIGNE BLEUE' } satisfies LocalizedString, color: '#003DA5' },
+		{ name: { en: 'LIGNE VERTE' } satisfies LocalizedString, color: '#008F4F' },
+		{ name: { en: 'LIGNE JAUNE' } satisfies LocalizedString, color: '#F0CB00' },
+		{ name: { en: 'REM' } satisfies LocalizedString, color: '#78BE20' },
+		{ name: { en: '11 VAUDREUIL/HUDSON' } satisfies LocalizedString, color: '#DA291C' },
+		{ name: { en: '12 SAINT-JÉRÔME' } satisfies LocalizedString, color: '#009B3A' },
+		{ name: { en: '13 MONT-SAINT-HILAIRE' } satisfies LocalizedString, color: '#FFD100' },
+		{ name: { en: '14 CANDIAC' } satisfies LocalizedString, color: '#7B2D8E' },
+		{ name: { en: '15 MASCOUCHE' } satisfies LocalizedString, color: '#0072CE' },
+	],
 } as const;
 
 export const aboutContent = {

@@ -94,6 +94,24 @@ describe('manifestoContent', () => {
 		expect(manifestoContent.ticks.length).toBeGreaterThanOrEqual(5);
 		expect(manifestoContent.ticks[0]).toBe('0');
 	});
+
+	it('has 9 hidden transit line easter eggs with name and color', () => {
+		expect(manifestoContent.hiddenTransitLines).toHaveLength(9);
+		for (const line of manifestoContent.hiddenTransitLines) {
+			expect(line.name.en.length).toBeGreaterThan(0);
+			expect(line.color).toMatch(/^#[0-9A-Fa-f]{6}$/);
+		}
+	});
+
+	it('includes STM, REM, and Exo transit lines', () => {
+		const names = manifestoContent.hiddenTransitLines.map((l) => l.name.en);
+		expect(names).toContain('LIGNE BLEUE');
+		expect(names).toContain('LIGNE VERTE');
+		expect(names).toContain('LIGNE JAUNE');
+		expect(names).toContain('REM');
+		expect(names.some((n) => n.includes('VAUDREUIL'))).toBe(true);
+		expect(names.some((n) => n.includes('MASCOUCHE'))).toBe(true);
+	});
 });
 
 describe('aboutContent', () => {
