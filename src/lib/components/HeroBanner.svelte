@@ -43,7 +43,7 @@
 	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, 'en');
 
 	let heroTextContainer: HTMLDivElement;
-	let heroDot: HTMLSpanElement;
+	let heroDot: SVGSVGElement;
 	let refreshIcon: HTMLSpanElement;
 
 	let heroData: HeroData = $state(INITIAL_HERO_DATA);
@@ -61,6 +61,250 @@
 				refreshIcon.style.transform = 'rotate(0deg)';
 			}, 600);
 		}
+	}
+
+	function measureOverflow(): number {
+		const contentInner = heroTextContainer?.firstElementChild as HTMLElement;
+		return contentInner ? Math.max(0, contentInner.scrollHeight - window.innerHeight) : 0;
+	}
+
+	// Blink state — shared between typewriter (onMount) and ScrollTrigger (buildHeroTimeline)
+	let blinkInterval: ReturnType<typeof setInterval> | undefined;
+	let typingComplete = false;
+
+	function startBlink() {
+		if (blinkInterval) return;
+		if (scrollPrompt) {
+			scrollPrompt.style.opacity = '1';
+			scrollPrompt.textContent = scrollDownLabel + '_';
+		}
+		let cursorVisible = true;
+		blinkInterval = setInterval(() => {
+			cursorVisible = !cursorVisible;
+			if (scrollPrompt) {
+				scrollPrompt.textContent = scrollDownLabel + (cursorVisible ? '_' : '\u00A0');
+			}
+		}, 500);
+	}
+
+	function stopBlink() {
+		if (blinkInterval) {
+			clearInterval(blinkInterval);
+			blinkInterval = undefined;
+		}
+	}
+
+	// Calculate Berri-UQAM position relative to svgWrapper for transform-origin
+	function updateZoomOrigin() {
+		const berri = pinContainer?.querySelector('.metro-berri');
+		if (!berri) return;
+		const berriRect = berri.getBoundingClientRect();
+		const wrapperRect = svgWrapper.getBoundingClientRect();
+		const berriCenterX = berriRect.x + berriRect.width / 2 - wrapperRect.x;
+		const berriCenterY = berriRect.y + berriRect.height / 2 - wrapperRect.y;
+		const pctX = (berriCenterX / wrapperRect.width) * 100;
+		const pctY = (berriCenterY / wrapperRect.height) * 100;
+		svgWrapper.style.transformOrigin = `${pctX}% ${pctY}%`;
+	}
+
+	// The dot is an inline SVG circle — its getBoundingClientRect gives
+	// the exact geometric center with zero measurement error. No canvas
+	// metrics, no baseline probes, no anti-aliasing offset drift.
+	function getDotGlyphCenter(): { x: number; y: number; size: number } {
+		const rect = heroDot.getBoundingClientRect();
+		return {
+			x: rect.x + rect.width / 2,
+			y: rect.y + rect.height / 2,
+			size: Math.max(rect.width, rect.height),
+		};
+	}
+
+	function calcHeroTextScale(): number {
+		const glyph = getDotGlyphCenter();
+		const screen = Math.max(window.innerWidth, window.innerHeight);
+		if (glyph.size === 0) return 250;
+		// 2.5x headroom covers mobile browser chrome hide/show (lvh vs svh gap)
+		return Math.ceil((screen / glyph.size) * 2.5);
+	}
+
+	function calcZoomScale(): number {
+		const berri = pinContainer?.querySelector('.metro-berri');
+		if (!berri) return 100;
+		const rect = berri.getBoundingClientRect();
+		const screen = Math.max(window.innerWidth, window.innerHeight);
+		const node = Math.max(rect.width, rect.height);
+		return Math.ceil((screen / node) * 2.5);
+	}
+
+	function updateHeroTextOrigin() {
+		const glyph = getDotGlyphCenter();
+		const containerRect = heroTextContainer.getBoundingClientRect();
+		const pctX = ((glyph.x - containerRect.x) / containerRect.width) * 100;
+		const pctY = ((glyph.y - containerRect.y) / containerRect.height) * 100;
+		heroTextContainer.style.transformOrigin = `${pctX}% ${pctY}%`;
+	}
+
+	/**
+	 * Build the complete hero scroll-driven timeline.
+	 * Called by gsap.matchMedia() — once per breakpoint match.
+	 * All GSAP objects created here are auto-reverted by matchMedia on breakpoint exit.
+	 */
+	function buildHeroTimeline(mobile: boolean): void {
+		const svg = pinContainer?.querySelector('[data-testid="metro-network"]');
+		if (!svg) return;
+
+		const lines = svg.querySelectorAll('.metro-line');
+		const stations = svg.querySelectorAll('.metro-station:not(.metro-berri)');
+		const berri = svg.querySelector('.metro-berri');
+		const bg = svg.querySelectorAll('.metro-bg');
+		const labels = svg.querySelectorAll('.metro-label');
+		if (!berri) return;
+
+		// Show Berri-UQAM dot immediately
+		(berri as HTMLElement).style.opacity = '1';
+
+		// Measure origins BEFORE applying scale — matchMedia reverts all styles
+		// before calling this, so heroTextContainer is at natural scale=1.
+		updateZoomOrigin();
+		updateHeroTextOrigin();
+
+		// Measure overflow for this breakpoint
+		const heroOverflow = measureOverflow();
+
+		// All text elements start invisible
+		const staggerEls = heroTextContainer.querySelectorAll('[data-hero-stagger]');
+		gsap.set(staggerEls, { opacity: 0 });
+
+		// Refresh button starts slightly below for fade-up entrance
+		const refreshEl = heroTextContainer.querySelector('[data-hero-stagger="7"]');
+		if (refreshEl) gsap.set(refreshEl, { y: 12 });
+
+		// Set initial hero text scale — use gsap.set so matchMedia can revert
+		gsap.set(heroTextContainer, { scale: calcHeroTextScale() });
+
+		// Set section height for this breakpoint
+		sectionMinHeight = mobile ? '1200svh' : '900svh';
+
+		const tl = gsap.timeline();
+
+		// === Phase 1 (0-3%): Berri-UQAM + background appear ===
+		tl.to(berri, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
+		tl.to(bg, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
+
+		// === Phase 1b (3-15%): Light on/off pulse ===
+		tl.to(berri, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
+		tl.to(scrollPrompt, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
+		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
+		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
+		tl.to(berri, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
+		tl.to(scrollPrompt, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
+		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.10);
+		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.10);
+		tl.to(berri, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
+		tl.to(scrollPrompt, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
+		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
+		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
+
+		// === Phase 2 (17-45%): "SCROLL DOWN" fades out, lines draw ===
+		tl.to(scrollPrompt, { opacity: 0, duration: 0.04, ease: 'power2.in' }, 0.17);
+		lines.forEach((line, i) => {
+			const stagger = i * 0.02;
+			tl.set(line, { opacity: 1 }, 0.17 + stagger);
+			tl.fromTo(line,
+				{ drawSVG: '0%' },
+				{ drawSVG: '100%', duration: 0.22, ease: 'networkDraw' },
+				0.17 + stagger
+			);
+		});
+
+		// === Phase 3 (47-58%): Station nodes appear ===
+		tl.to(stations, {
+			opacity: 1, duration: 0.08, stagger: 0.002, ease: 'power1.out'
+		}, 0.47);
+
+		// === Phase 4 (58-65%): Labels fade in ===
+		tl.to(labels, {
+			opacity: 0.6, duration: 0.07, stagger: 0.001, ease: 'power1.out'
+		}, 0.58);
+
+		// === Phase 5 (65-95%): Zoom into Berri-UQAM ===
+		// Function-based: recalculates origin + scale on invalidateOnRefresh.
+		// Origin update MUST happen here (not onRefreshInit) because GSAP
+		// evaluates function-based values AFTER reverting inline styles,
+		// so berri.getBoundingClientRect() returns the natural-scale position.
+		tl.to(svgWrapper, {
+			scale: () => { updateZoomOrigin(); return calcZoomScale(); },
+			duration: 0.3,
+			ease: 'power2.inOut',
+		}, 0.65);
+
+		// === Phase 6: Cross-fade SVG → hero text container ===
+		tl.to(svgWrapper, { opacity: 0, duration: 0.05, ease: 'power2.inOut' }, 1.0);
+		tl.to(heroTextContainer, { opacity: 1, duration: 0.05, ease: 'power2.inOut' }, 1.0);
+
+		// === Phase 7: Zoom out hero text container to scale=1 ===
+		// Function-based so invalidateOnRefresh recalculates heroText origin
+		// at scale=1 (after revert), preventing drift on within-breakpoint resize.
+		tl.to(heroTextContainer, {
+			scale: () => { updateHeroTextOrigin(); return 1; },
+			duration: 0.35,
+			ease: 'power2.out',
+		}, 1.05);
+
+		// === Phase 8: Text elements stagger in during zoom-out ===
+		const s1 = heroTextContainer.querySelectorAll('[data-hero-stagger="1"]');
+		const s2 = heroTextContainer.querySelectorAll('[data-hero-stagger="2"]');
+		const s3 = heroTextContainer.querySelectorAll('[data-hero-stagger="3"]');
+		const s4 = heroTextContainer.querySelectorAll('[data-hero-stagger="4"]');
+		const s5 = heroTextContainer.querySelectorAll('[data-hero-stagger="5"]');
+		const s6 = heroTextContainer.querySelectorAll('[data-hero-stagger="6"]');
+		const s7 = heroTextContainer.querySelectorAll('[data-hero-stagger="7"]');
+
+		tl.to(s1, { opacity: 1, duration: 0.15, stagger: 0.02, ease: 'power1.out' }, 1.10);
+		tl.to(s2, { opacity: 1, duration: 0.12, ease: 'power1.out' }, 1.18);
+		tl.to(s3, { opacity: 1, duration: 0.12, ease: 'power1.out' }, 1.22);
+		tl.to(s4, { opacity: 1, duration: 0.12, ease: 'power1.out' }, 1.26);
+		tl.to(s5, { opacity: 1, duration: 0.10, ease: 'power1.out' }, 1.30);
+		tl.to(s6, { opacity: 1, duration: 0.10, stagger: 0.02, ease: 'power1.out' }, 1.32);
+		tl.to(s7, { opacity: 1, y: 0, duration: 0.10, ease: 'power1.out' }, 1.38);
+
+		// === Phase 9: Hold ===
+		tl.set({}, {}, 1.50);
+
+		// === Phase 10: Scroll through hero content (mobile only) ===
+		if (mobile && heroOverflow > 0) {
+			tl.to(heroTextContainer, {
+				y: () => -measureOverflow(),
+				duration: 0.5,
+				ease: 'none',
+			}, 1.52);
+			tl.set({}, {}, 2.05);
+		}
+
+		// matchMedia rebuilds happen after typing — always allow blink restart
+		const typingDone = true;
+
+		ScrollTrigger.create({
+			trigger: pinContainer,
+			start: 'top top',
+			end: mobile ? '+=1100%' : '+=800%',
+			pin: true,
+			scrub: 1,
+			animation: tl,
+			invalidateOnRefresh: true,
+			onUpdate: (self: { progress: number; direction: number }) => {
+				if (self.progress > 0.005) {
+					stopBlink();
+				} else if (self.progress <= 0.005 && self.direction === -1 && typingDone) {
+					startBlink();
+				}
+			},
+		});
+
+		// Force-sync timeline to current scroll position
+		requestAnimationFrame(() => {
+			ScrollTrigger.refresh();
+		});
 	}
 
 	let cleanup: (() => void) | undefined;
@@ -131,49 +375,9 @@
 		registerGsapPlugins();
 		CustomEase.create('networkDraw', 'M0,0 C0.2,0.6 0.4,1 1,1');
 
-		const lines = svg.querySelectorAll('.metro-line');
-		const stations = svg.querySelectorAll('.metro-station:not(.metro-berri)');
-		const berri = svg.querySelector('.metro-berri');
-
-		// Shared blink interval — syncs dot + cursor after typing completes.
-		// Hoisted so cleanup and ScrollTrigger can clear/restart it.
-		let blinkInterval: ReturnType<typeof setInterval> | undefined;
-		let typingComplete = false;
-
-		// Start synced dot + cursor blink. Called after typing finishes
-		// and again when user scrolls back to top.
-		function startBlink() {
-			if (blinkInterval) return; // already blinking
-			if (scrollPrompt) {
-				scrollPrompt.style.opacity = '1';
-				scrollPrompt.textContent = scrollDownLabel + '_';
-			}
-			if (berri) {
-				(berri as HTMLElement).style.opacity = '1';
-			}
-			let cursorVisible = true;
-			blinkInterval = setInterval(() => {
-				cursorVisible = !cursorVisible;
-				if (scrollPrompt) {
-					scrollPrompt.textContent = scrollDownLabel + (cursorVisible ? '_' : '\u00A0');
-				}
-				if (berri) {
-					(berri as HTMLElement).style.opacity = cursorVisible ? '1' : '0';
-				}
-			}, 500);
-		}
-
-		function stopBlink() {
-			if (blinkInterval) {
-				clearInterval(blinkInterval);
-				blinkInterval = undefined;
-			}
-		}
-
-		// Classic JS typewriter: write one character at a time with a trailing
-		// underscore cursor. SKIP if page is already scrolled (reload mid-hero).
+		// Typewriter: one character at a time with trailing cursor.
+		// Uses component-scope blink functions. SKIP if scrolled past hero.
 		if (shouldLock) {
-			// Lock + event blockers already set at top of onMount.
 			const fullText = scrollDownLabel;
 			scrollPrompt.textContent = '_';
 			let charIndex = 0;
@@ -189,329 +393,74 @@
 				}
 			}, 80);
 		} else if (scrollPrompt) {
-			// Already scrolled — set full text so it's ready when user scrolls
-			// back to top. Don't touch opacity — let GSAP handle it via
-			// ScrollTrigger.refresh() below so the timeline state is correct.
 			scrollPrompt.textContent = scrollDownLabel + '_';
 			typingComplete = true;
-			// Enable normalizeScroll immediately — no typing phase needed
 			ScrollTrigger.normalizeScroll(true);
 		} else {
-			// No scrollPrompt — still enable normalizeScroll for mobile
 			ScrollTrigger.normalizeScroll(true);
 		}
-		const bg = svg.querySelectorAll('.metro-bg');
-		const labels = svg.querySelectorAll('.metro-label');
 
-		if (!berri) return;
+		// Ensure fonts are loaded before glyph measurements — fallback font
+		// metrics differ from Inter, causing transform-origin drift at high scale.
+		await document.fonts.ready;
 
-		// Show Berri-UQAM dot immediately on load (before scroll starts)
-		// so the intro screen isn't just black — the dot anchors the scene.
-		(berri as HTMLElement).style.opacity = '1';
+		// ---- matchMedia: responsive timeline with automatic teardown/rebuild ----
+		let savedProgress: number | null = null;
 
-		// Calculate the exact pixel position of Berri-UQAM relative to svgWrapper.
-		// This accounts for preserveAspectRatio letterboxing on any screen size.
-		function updateZoomOrigin() {
-			const berriRect = berri!.getBoundingClientRect();
-			const wrapperRect = svgWrapper.getBoundingClientRect();
-			const berriCenterX = berriRect.x + berriRect.width / 2 - wrapperRect.x;
-			const berriCenterY = berriRect.y + berriRect.height / 2 - wrapperRect.y;
-			const pctX = (berriCenterX / wrapperRect.width) * 100;
-			const pctY = (berriCenterY / wrapperRect.height) * 100;
-			svgWrapper.style.transformOrigin = `${pctX}% ${pctY}%`;
-		}
-		updateZoomOrigin();
+		const mm = gsap.matchMedia();
 
-		// Find the actual rendered position and size of the "." glyph.
-		// Strategy: use a DOM probe for the baseline (reliable), then
-		// Canvas measureText for glyph metrics (ascent/descent of ".").
-		function getDotGlyphCenter(): { x: number; y: number; size: number } {
-			const spanRect = heroDot.getBoundingClientRect();
-			const computed = window.getComputedStyle(heroDot);
-			const fontSize = parseFloat(computed.fontSize);
+		// Desktop / tablet (>=769px): no Phase 10, 800% scroll range
+		mm.add('(min-width: 769px)', () => {
+			buildHeroTimeline(false);
 
-			// Canvas: measure actual glyph dimensions
-			const canvas = document.createElement('canvas');
-			const ctx = canvas.getContext('2d')!;
-			ctx.font = `${computed.fontWeight} ${fontSize}px ${computed.fontFamily}`;
-			const m = ctx.measureText('.');
-			const glyphW = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
-			const glyphH = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
-
-			// X: centered in the span
-			const x = spanRect.x + spanRect.width / 2;
-
-			// Y: find baseline with a zero-height inline-block probe element.
-			// This is the only reliable cross-font way to locate the baseline
-			// in the actual browser layout (no font-metric estimation needed).
-			const probe = document.createElement('span');
-			probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline;overflow:hidden;';
-			heroDot.parentElement!.insertBefore(probe, heroDot);
-			const baselineY = probe.getBoundingClientRect().top;
-			probe.remove();
-
-			// Glyph center Y = baseline - ascent above baseline + half glyph height
-			const y = baselineY - m.actualBoundingBoxAscent + glyphH / 2;
-
-			return { x, y, size: Math.max(glyphW, glyphH) };
-		}
-
-		// Scale so the dot glyph fills the viewport
-		function calcHeroTextScale(): number {
-			const glyph = getDotGlyphCenter();
-			const screen = Math.max(window.innerWidth, window.innerHeight);
-			if (glyph.size === 0) return 250;
-			// 2.5x headroom covers mobile browser chrome hide/show (lvh vs svh gap)
-			return Math.ceil((screen / glyph.size) * 2.5);
-		}
-
-		// Transform-origin at the dot glyph's visual center
-		function updateHeroTextOrigin() {
-			const glyph = getDotGlyphCenter();
-			const containerRect = heroTextContainer.getBoundingClientRect();
-			const pctX = ((glyph.x - containerRect.x) / containerRect.width) * 100;
-			const pctY = ((glyph.y - containerRect.y) / containerRect.height) * 100;
-			heroTextContainer.style.transformOrigin = `${pctX}% ${pctY}%`;
-		}
-		updateHeroTextOrigin();
-
-		gsap.set(heroTextContainer, { scale: calcHeroTextScale() });
-
-		// Measure content overflow BEFORE GSAP applies scale transform.
-		// On mobile, hero has two 100dvh sections (~200dvh total) inside a 100lvh container.
-		const contentInner = heroTextContainer.firstElementChild as HTMLElement;
-		const heroOverflow = contentInner
-			? Math.max(0, contentInner.scrollHeight - window.innerHeight)
-			: 0;
-
-
-		// All text elements start invisible — dot stays visible as the orange.
-		const staggerEls = heroTextContainer.querySelectorAll('[data-hero-stagger]');
-		gsap.set(staggerEls, { opacity: 0 });
-
-		// Refresh button starts slightly below for a fade-up entrance
-		const refreshEl = heroTextContainer.querySelector('[data-hero-stagger="7"]');
-		if (refreshEl) gsap.set(refreshEl, { y: 12 });
-
-		// Recalculate on resize so it stays accurate on any screen
-		window.addEventListener('resize', updateZoomOrigin);
-
-		const tl = gsap.timeline();
-
-		// === Phase 1 (0-3%): Berri-UQAM + background appear ===
-		// Dot and text are already visible at load (opacity:1 in markup)
-		tl.to(berri, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
-		tl.to(bg, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
-
-		// === Phase 1b (3-15%): Light on/off pulse — dot, brand, and scroll text ===
-		tl.to(berri, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
-		tl.to(scrollPrompt, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
-
-		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
-		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
-
-
-		tl.to(berri, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
-		tl.to(scrollPrompt, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
-
-		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.10);
-		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.10);
-
-
-		tl.to(berri, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
-		tl.to(scrollPrompt, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
-
-		tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
-		tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
-
-
-		// === Phase 2 (17-45%): "yesid" fades out, "SCROLL DOWN" fades out, lines draw ===
-		tl.to(scrollPrompt, { opacity: 0, duration: 0.04, ease: 'power2.in' }, 0.17);
-
-		lines.forEach((line, i) => {
-			const stagger = i * 0.02;
-			tl.set(line, { opacity: 1 }, 0.17 + stagger);
-			tl.fromTo(line,
-				{ drawSVG: '0%' },
-				{ drawSVG: '100%', duration: 0.22, ease: 'networkDraw' },
-				0.17 + stagger
-			);
-		});
-
-		// === Phase 3 (47-58%): Station nodes appear AFTER lines ===
-		tl.to(stations, {
-			opacity: 1,
-			duration: 0.08,
-			stagger: 0.002,
-			ease: 'power1.out'
-		}, 0.47);
-
-		// === Phase 4 (58-65%): Labels fade in ===
-		tl.to(labels, {
-			opacity: 0.6,
-			duration: 0.07,
-			stagger: 0.001,
-			ease: 'power1.out'
-		}, 0.58);
-
-		// === Phase 5 (65-95%): Zoom into Berri-UQAM ===
-		// No fading lines — they disappear naturally as the node fills the viewport
-		// No orange overlay — the orange comes 100% from the SVG node
-		// Scale calculated dynamically so the node fills any screen size
-		function calcZoomScale(): number {
-			const rect = berri!.getBoundingClientRect();
-			const screen = Math.max(window.innerWidth, window.innerHeight);
-			const node = Math.max(rect.width, rect.height);
-			// 2.5x headroom covers mobile browser chrome hide/show (lvh vs svh gap)
-			return Math.ceil((screen / node) * 2.5);
-		}
-
-		const zoomTween = tl.to(svgWrapper, {
-			scale: calcZoomScale(),
-			duration: 0.3,
-			ease: 'power2.inOut',
-		}, 0.65);
-
-		// === Phase 6 (Slice C): Cross-fade SVG → hero text container ===
-		// At this point, svgWrapper is fully zoomed (orange fills screen).
-		// heroTextContainer is also scaled up so its dot fills the screen.
-		// Cross-fade: SVG out, text container in. Visually seamless — both are orange.
-		tl.to(svgWrapper, { opacity: 0, duration: 0.05, ease: 'power2.inOut' }, 1.0);
-		tl.to(heroTextContainer, { opacity: 1, duration: 0.05, ease: 'power2.inOut' }, 1.0);
-
-
-
-		// === Phase 7 (Slice C): Zoom out — scale hero text container down to 1 ===
-		const heroZoomTween = tl.to(heroTextContainer, {
-			scale: 1,
-			duration: 0.35,
-			ease: 'power2.out',
-		}, 1.05);
-
-		// === Phase 8 (Slice 13d): Text elements stagger in during zoom-out — 7 groups ===
-		const stagger1 = heroTextContainer.querySelectorAll('[data-hero-stagger="1"]'); // Headlines
-		const stagger2 = heroTextContainer.querySelectorAll('[data-hero-stagger="2"]'); // Subheadline
-		const stagger3 = heroTextContainer.querySelectorAll('[data-hero-stagger="3"]'); // Metric cards
-		const stagger4 = heroTextContainer.querySelectorAll('[data-hero-stagger="4"]'); // SQL panel
-		const stagger5 = heroTextContainer.querySelectorAll('[data-hero-stagger="5"]'); // Divider
-		const stagger6 = heroTextContainer.querySelectorAll('[data-hero-stagger="6"]'); // Subtitle + CTAs
-		const stagger7 = heroTextContainer.querySelectorAll('[data-hero-stagger="7"]'); // Refresh button
-
-		// Stagger 1: Headlines ("PIPELINES THAT", "DON'T BREAK.")
-		tl.to(stagger1, {
-			opacity: 1,
-			duration: 0.15,
-			stagger: 0.02,
-			ease: 'power1.out',
-		}, 1.10);
-
-		// Stagger 2: Subheadline ("Data that tell the truth.")
-		tl.to(stagger2, {
-			opacity: 1,
-			duration: 0.12,
-			ease: 'power1.out',
-		}, 1.18);
-
-		// Stagger 3: Metric cards (left → right)
-		tl.to(stagger3, {
-			opacity: 1,
-			duration: 0.12,
-			ease: 'power1.out',
-		}, 1.22);
-
-		// Stagger 4: SQL panel (fade in)
-		tl.to(stagger4, {
-			opacity: 1,
-			duration: 0.12,
-			ease: 'power1.out',
-		}, 1.26);
-
-		// Stagger 5: Vertical divider
-		tl.to(stagger5, {
-			opacity: 1,
-			duration: 0.10,
-			ease: 'power1.out',
-		}, 1.30);
-
-		// Stagger 6: Subtitle + CTAs
-		tl.to(stagger6, {
-			opacity: 1,
-			duration: 0.10,
-			stagger: 0.02,
-			ease: 'power1.out',
-		}, 1.32);
-
-		// Stagger 7: Refresh button (last, fade up)
-		tl.to(stagger7, {
-			opacity: 1,
-			y: 0,
-			duration: 0.10,
-			ease: 'power1.out',
-		}, 1.38);
-
-		// === Phase 9: Brief hold — hero first viewport visible ===
-		tl.set({}, {}, 1.50);
-
-		// === Phase 10: Scroll through hero content (mobile: reveals SQL section) ===
-		// On desktop heroOverflow is 0 so this is a no-op.
-		if (heroOverflow > 0) {
-			tl.to(heroTextContainer, {
-				y: -heroOverflow,
-				duration: 0.5,
-				ease: 'none',
-			}, 1.52);
-
-			// Brief hold at bottom
-			tl.set({}, {}, 2.05);
-
-			sectionMinHeight = '1200svh';
-		}
-
-		// Recalculate zoom origins on resize (basic — full resize resilience in future sub-slice)
-		function onResize() {
-			updateZoomOrigin();
-			zoomTween.vars.scale = calcZoomScale();
-			zoomTween.invalidate();
-			updateHeroTextOrigin();
-			const newHeroScale = calcHeroTextScale();
-			gsap.set(heroTextContainer, { scale: newHeroScale });
-			heroZoomTween.vars.scale = 1;
-			heroZoomTween.invalidate();
-			ScrollTrigger.refresh();
-		}
-		window.removeEventListener('resize', updateZoomOrigin); // remove the earlier one
-		window.addEventListener('resize', onResize);
-
-		const st = ScrollTrigger.create({
-			trigger: pinContainer,
-			start: 'top top',
-			end: heroOverflow > 0 ? '+=1100%' : '+=800%',
-			pin: true,
-			scrub: 1,
-			animation: tl,
-			onUpdate: (self: { progress: number; direction: number }) => {
-				if (self.progress > 0.005) {
-					stopBlink();
-				} else if (self.progress <= 0.005 && self.direction === -1 && typingComplete) {
-					startBlink();
+			// Restore scroll position from previous breakpoint
+			if (savedProgress !== null) {
+				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
+				if (st) {
+					const newScrollY = st.start + (savedProgress * (st.end - st.start));
+					window.scrollTo(0, newScrollY);
 				}
-			},
+				savedProgress = null;
+			}
+
+			return () => {
+				// Cleanup: save progress before teardown
+				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
+				if (st) savedProgress = st.progress;
+			};
 		});
 
-		// On reload at a mid-scroll position, force GSAP to seek the
-		// timeline to the current scroll progress. This applies all
-		// tweens (including scroll prompt fade) instantly.
-		requestAnimationFrame(() => {
-			ScrollTrigger.refresh();
+		// Mobile (<769px): Phase 10 content scroll, 1100% scroll range
+		mm.add('(max-width: 768px)', () => {
+			buildHeroTimeline(true);
+
+			if (savedProgress !== null) {
+				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
+				if (st) {
+					const newScrollY = st.start + (savedProgress * (st.end - st.start));
+					window.scrollTo(0, newScrollY);
+				}
+				savedProgress = null;
+			}
+
+			return () => {
+				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
+				if (st) savedProgress = st.progress;
+			};
 		});
+
+		// Sleep/wake: refresh ScrollTrigger when tab becomes visible again
+		function onVisibilityChange() {
+			if (!document.hidden) {
+				ScrollTrigger.refresh();
+			}
+		}
+		document.addEventListener('visibilitychange', onVisibilityChange);
 
 		cleanup = () => {
 			stopBlink();
-			tl.kill();
-			window.removeEventListener('resize', onResize);
-			ScrollTrigger.getAll().forEach((st) => {
-				if (st.trigger === pinContainer) st.kill();
-			});
+			mm.revert(); // kills all animations from both breakpoints
+			document.removeEventListener('visibilitychange', onVisibilityChange);
 		};
 	});
 </script>
@@ -563,11 +512,13 @@
 								class="block text-[48px] text-[var(--brand-primary)] md:text-[clamp(48px,6vw,84px)]"
 								data-testid="hero-line2"
 							>
-								<span data-hero-stagger="1">DON'T BREAK</span><span
+								<span data-hero-stagger="1">DON'T BREAK</span><svg
 									bind:this={heroDot}
-									class="text-[var(--brand-primary)]"
+									class="hero-dot"
 									data-testid="hero-dot"
-								>.</span>
+									viewBox="0 0 10 10"
+									aria-hidden="true"
+								><circle cx="5" cy="5" r="5" fill="currentColor" /></svg>
 							</span>
 						</h1>
 
@@ -654,6 +605,17 @@
 </section>
 
 <style>
+	/* SVG period dot — replaces text "." for pixel-perfect zoom center.
+	   Sized in em so it scales with the heading font-size. */
+	.hero-dot {
+		display: inline-block;
+		width: 0.19em;
+		height: 0.19em;
+		vertical-align: baseline;
+		margin-bottom: 0.03em;
+		color: var(--brand-primary);
+	}
+
 	/* Two-column hero grid: text | divider | SQL panel */
 	.hero-grid {
 		display: grid;

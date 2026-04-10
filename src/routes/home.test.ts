@@ -23,14 +23,14 @@ describe('Home page', () => {
 		expect(screen.getByTestId('hero-line1')).toBeInTheDocument();
 		expect(screen.getByTestId('hero-line1').textContent).toContain('PIPELINES THAT');
 		expect(screen.getByTestId('hero-line2')).toBeInTheDocument();
-		expect(screen.getByTestId('hero-line2').textContent).toContain("DON'T BREAK.");
+		expect(screen.getByTestId('hero-line2').textContent).toContain("DON'T BREAK");
 	});
 
 	it('renders the hero orange dot', () => {
 		render(Page);
 		const dot = screen.getByTestId('hero-dot');
 		expect(dot).toBeInTheDocument();
-		expect(dot.textContent).toBe('.');
+		expect(dot.tagName.toLowerCase()).toBe('svg');
 	});
 
 	it('renders hero subheadline', () => {
