@@ -473,22 +473,16 @@
 			animation: tl,
 			onUpdate: (self: { progress: number; direction: number }) => {
 				if (self.progress > 0.005) {
-					// Stop idle blink once user scrolls past the threshold — scroll animation takes over
 					stopBlink();
 				} else if (self.progress <= 0.005 && self.direction === -1 && typingComplete) {
-					// Scrolled back to top — restart synced blink
 					startBlink();
 				}
-
-				// After all stagger animations complete, allow vertical overflow
-				// so mobile users can scroll within the hero to see SQL panel + refresh.
-				// Revert on scroll-back to keep the zoom animation clipped.
-				if (self.progress > 0.95) {
-					pinContainer.style.overflowY = 'visible';
-				} else {
-					pinContainer.style.overflowY = '';
-				}
 			},
+			// After pin releases, allow content to extend beyond the viewport
+			// so the hero can be taller than one screen (mobile).
+			// On scroll back: re-enable clip for the zoom animation.
+			onLeave: () => { pinContainer.style.overflow = 'visible'; },
+			onEnterBack: () => { pinContainer.style.overflow = 'hidden'; },
 		});
 
 		// On reload at a mid-scroll position, force GSAP to seek the
@@ -530,7 +524,7 @@
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
 		<div
 			bind:this={heroTextContainer}
-			class="absolute inset-0 flex items-start justify-center overflow-y-auto pt-20 opacity-0 md:items-center md:overflow-visible md:pt-0"
+			class="absolute inset-0 flex items-start justify-center pt-20 opacity-0 md:items-center md:pt-0"
 			data-testid="hero-text-container"
 		>
 			<div class="w-full px-6 md:px-12">
