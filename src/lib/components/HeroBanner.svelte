@@ -48,6 +48,7 @@
 
 	let heroData: HeroData = $state(INITIAL_HERO_DATA);
 	let updatedAgo: string = $state('30s ago');
+	let sectionMinHeight = $state('900svh');
 
 	function handleRefresh() {
 		heroData = generateHeroData();
@@ -453,8 +454,8 @@
 			ease: 'power1.out',
 		}, 1.38);
 
-		// === Phase 9: Hold — hero first viewport visible, user reads ===
-		tl.set({}, {}, 1.55);
+		// === Phase 9: Brief hold — hero first viewport visible ===
+		tl.set({}, {}, 1.50);
 
 		// === Phase 10: Scroll through hero content (mobile: reveals SQL section) ===
 		// On desktop heroOverflow is 0 so this is a no-op.
@@ -463,23 +464,48 @@
 				y: -heroOverflow,
 				duration: 0.5,
 				ease: 'none',
-			}, 1.60);
+			}, 1.52);
 
-			// Hold at bottom so user can read SQL + interact with refresh
-			tl.set({}, {}, 2.20);
+			// Brief hold at bottom
+			tl.set({}, {}, 2.05);
+
+			sectionMinHeight = '1200svh';
 		}
 
-		// Recalculate zoom scale AND transform-origin on resize
+		// Store Phase 10 tween reference for resize updates
+		let phase10Tween: gsap.core.Tween | undefined;
+		const phase10Tweens = tl.getChildren().filter(
+			(t: gsap.core.Animation) => 'vars' in t && (t as gsap.core.Tween).vars.y !== undefined
+		) as gsap.core.Tween[];
+		if (phase10Tweens.length > 0) {
+			phase10Tween = phase10Tweens[phase10Tweens.length - 1];
+		}
+
+		// Recalculate everything on resize — zoom, origins, overflow, scroll distance
 		function onResize() {
 			updateZoomOrigin();
 			zoomTween.vars.scale = calcZoomScale();
 			zoomTween.invalidate();
-			// Update hero text zoom-out values
+
 			updateHeroTextOrigin();
 			const newHeroScale = calcHeroTextScale();
 			gsap.set(heroTextContainer, { scale: newHeroScale });
 			heroZoomTween.vars.scale = 1;
 			heroZoomTween.invalidate();
+
+			// Recalculate content overflow for Phase 10
+			const newOverflow = contentInner
+				? Math.max(0, contentInner.scrollHeight - window.innerHeight)
+				: 0;
+			if (phase10Tween) {
+				phase10Tween.vars.y = -newOverflow;
+				phase10Tween.invalidate();
+			}
+
+			// Update scroll distance
+			st.vars.end = newOverflow > 0 ? '+=1100%' : '+=800%';
+			sectionMinHeight = newOverflow > 0 ? '1200svh' : '900svh';
+
 			ScrollTrigger.refresh();
 		}
 		window.removeEventListener('resize', updateZoomOrigin); // remove the earlier one
@@ -497,6 +523,13 @@
 					stopBlink();
 				} else if (self.progress <= 0.005 && self.direction === -1 && typingComplete) {
 					startBlink();
+				}
+
+				// Show scrollbar after metro animation, hide during it
+				if (self.progress > 0.6) {
+					document.documentElement.classList.remove('hide-scrollbar');
+				} else {
+					document.documentElement.classList.add('hide-scrollbar');
 				}
 			},
 		});
@@ -522,7 +555,7 @@
 <section
 	class="relative"
 	data-testid="hero-banner"
-	style="min-height: {reducedMotion ? '100svh' : '1200svh'};"
+	style="min-height: {reducedMotion ? '100svh' : sectionMinHeight};"
 >
 	<div
 		bind:this={pinContainer}
