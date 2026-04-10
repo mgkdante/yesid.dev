@@ -33,6 +33,10 @@ export { fetchServiceSvgContents, getServiceSvgUrl } from './serviceSvg.js';
 // Centralized UI content (i18n)
 export { heroAnimContent, heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
 
+// Hero mock data (Slice 13d)
+export { generateHeroData, INITIAL_HERO_DATA, STM_ROUTES } from './hero-data.js';
+export type { HeroMetric, HeroQueryRow, HeroData } from './hero-data.js';
+
 // About page content (full-page bento dashboard)
 export { aboutPageContent } from './about-page.js';
 

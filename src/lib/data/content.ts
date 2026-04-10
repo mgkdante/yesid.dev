@@ -10,21 +10,25 @@ export const heroAnimContent = {
 } as const;
 
 export const heroContent = {
-	badge: { en: 'AVAILABLE FOR HIRE' } satisfies LocalizedString,
 	headline: {
-		line1: { en: 'DIGITAL' } satisfies LocalizedString,
-		line2: { en: 'INFRA' } satisfies LocalizedString,
-		line3: { en: 'BUILT RIGHT.' } satisfies LocalizedString,
+		line1: { en: 'PIPELINES THAT' } satisfies LocalizedString,
+		line2: { en: "DON'T BREAK." } satisfies LocalizedString,
 	},
+	subheadline: { en: 'Data that tell the truth.' } satisfies LocalizedString,
 	subtitle: {
-		en: 'Freelance digital infrastructure — PostgreSQL, Python, Power BI, SvelteKit — from Montreal to your pipeline.'
+		en: "Building reliable infrastructure for teams that can't afford downtime.",
 	} satisfies LocalizedString,
-	ctaWork: { en: 'View work →' } satisfies LocalizedString,
-	ctaContact: { en: 'Get in touch' } satisfies LocalizedString,
-	sqlDecoration: {
-		line1: { en: 'SELECT  y.expertise' } satisfies LocalizedString,
-		line2: { en: 'FROM    yesid AS y' } satisfies LocalizedString,
-		line3: { en: "WHERE   y.work = 'Quality'" } satisfies LocalizedString,
+	ctaWork: { en: 'See how I build \u2192' } satisfies LocalizedString,
+	ctaContact: { en: "Let's talk" } satisfies LocalizedString,
+	sqlPanel: {
+		prompt: { en: 'yesid@transit:gold>' } satisfies LocalizedString,
+		liveLabel: { en: 'LIVE' } satisfies LocalizedString,
+	},
+	refreshButton: {
+		label: { en: 'PULL FRESH DATA' } satisfies LocalizedString,
+		helper: {
+			en: 'Refreshes metrics + query results from the live pipeline',
+		} satisfies LocalizedString,
 	},
 } as const;
 

@@ -2,17 +2,32 @@ import { describe, it, expect } from 'vitest';
 import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
 
 describe('heroContent', () => {
-	it('has non-empty English strings', () => {
-		expect(heroContent.badge.en.length).toBeGreaterThan(0);
-		expect(heroContent.headline.line1.en).toBe('DIGITAL');
-		expect(heroContent.headline.line2.en).toBe('INFRA');
-		expect(heroContent.headline.line3.en).toBe('BUILT RIGHT.');
+	it('has headline lines as non-empty English strings', () => {
+		expect(heroContent.headline.line1.en).toBe('PIPELINES THAT');
+		expect(heroContent.headline.line2.en).toBe("DON'T BREAK.");
+	});
+
+	it('has subheadline text', () => {
+		expect(heroContent.subheadline.en).toBe('Data that tell the truth.');
+	});
+
+	it('has subtitle text', () => {
 		expect(heroContent.subtitle.en.length).toBeGreaterThan(0);
+	});
+
+	it('has CTA labels', () => {
 		expect(heroContent.ctaWork.en.length).toBeGreaterThan(0);
 		expect(heroContent.ctaContact.en.length).toBeGreaterThan(0);
-		expect(heroContent.sqlDecoration.line1.en.length).toBeGreaterThan(0);
-		expect(heroContent.sqlDecoration.line2.en.length).toBeGreaterThan(0);
-		expect(heroContent.sqlDecoration.line3.en.length).toBeGreaterThan(0);
+	});
+
+	it('has SQL panel labels', () => {
+		expect(heroContent.sqlPanel.prompt.en).toContain('yesid@transit');
+		expect(heroContent.sqlPanel.liveLabel.en).toBe('LIVE');
+	});
+
+	it('has refresh button labels', () => {
+		expect(heroContent.refreshButton.label.en).toContain('PULL');
+		expect(heroContent.refreshButton.helper.en.length).toBeGreaterThan(0);
 	});
 });
 
