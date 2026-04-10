@@ -62,9 +62,6 @@
 		}
 	}
 
-	// Dynamic scroll distance: extended on mobile when hero has two viewports
-	let scrollDistance = $state('900svh');
-
 	let cleanup: (() => void) | undefined;
 	onDestroy(() => cleanup?.());
 
@@ -286,7 +283,6 @@
 			? Math.max(0, contentInner.scrollHeight - window.innerHeight)
 			: 0;
 
-		if (heroOverflow > 0) scrollDistance = '1200svh';
 
 		// All text elements start invisible — dot stays visible as the orange.
 		const staggerEls = heroTextContainer.querySelectorAll('[data-hero-stagger]');
@@ -503,19 +499,6 @@
 					startBlink();
 				}
 			},
-			// After pin releases, extend container to fit hero content
-			// (two 100dvh sections on mobile = ~200dvh total).
-			onLeave: () => {
-				pinContainer.style.overflow = 'visible';
-				const inner = heroTextContainer.firstElementChild as HTMLElement;
-				if (inner && inner.scrollHeight > pinContainer.clientHeight) {
-					pinContainer.style.height = inner.scrollHeight + 'px';
-				}
-			},
-			onEnterBack: () => {
-				pinContainer.style.overflow = 'hidden';
-				pinContainer.style.height = '';
-			},
 		});
 
 		// On reload at a mid-scroll position, force GSAP to seek the
@@ -539,7 +522,7 @@
 <section
 	class="relative"
 	data-testid="hero-banner"
-	style="min-height: {reducedMotion ? '100svh' : scrollDistance};"
+	style="min-height: {reducedMotion ? '100svh' : '1200svh'};"
 >
 	<div
 		bind:this={pinContainer}
@@ -740,7 +723,7 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-			padding-block: 2rem;
+			padding-block: 2rem 4rem;
 		}
 		.refresh-btn {
 			width: 100%;
