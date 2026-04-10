@@ -379,12 +379,7 @@
 		tl.to(svgWrapper, { opacity: 0, duration: 0.05, ease: 'power2.inOut' }, 1.0);
 		tl.to(heroTextContainer, { opacity: 1, duration: 0.05, ease: 'power2.inOut' }, 1.0);
 
-		// Fade out the dark background so the page gradient shows through
-		tl.to(pinContainer, {
-			backgroundColor: 'transparent',
-			duration: 0.20,
-			ease: 'power1.out',
-		}, 1.10);
+
 
 		// === Phase 7 (Slice C): Zoom out — scale hero text container down to 1 ===
 		const heroZoomTween = tl.to(heroTextContainer, {
@@ -528,7 +523,7 @@
 >
 	<div
 		bind:this={pinContainer}
-		class="relative flex w-full items-center justify-center overflow-hidden bg-[#141414]"
+		class="relative flex w-full items-center justify-center overflow-hidden"
 		style="height: 100lvh; padding-bottom: env(safe-area-inset-bottom, 0px);"
 	>
 		<!-- SVG wrapper — zooms into Berri-UQAM -->
