@@ -522,7 +522,7 @@
 </script>
 
 <section
-	class="relative"
+	class="relative circuit-grid"
 	data-testid="hero-banner"
 	style="min-height: {reducedMotion ? '100svh' : sectionMinHeight};"
 >
