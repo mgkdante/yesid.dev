@@ -521,7 +521,7 @@
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
 		<div
 			bind:this={heroTextContainer}
-			class="absolute inset-0 flex items-start justify-center overflow-y-auto pt-14 opacity-0 md:items-center md:overflow-visible md:pt-0"
+			class="absolute inset-0 flex items-start justify-center overflow-y-auto pt-20 opacity-0 md:items-center md:overflow-visible md:pt-0"
 			data-testid="hero-text-container"
 		>
 			<div class="w-full px-6 md:px-12">
