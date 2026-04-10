@@ -37,12 +37,12 @@
 	{@html `<script type="application/ld+json">${personSchema}</script>`}
 </svelte:head>
 
-<div class="flex min-h-screen flex-col bg-[var(--bg-primary)] font-body text-[var(--text-primary)]">
+<div class="circuit-grid flex min-h-screen flex-col bg-[var(--bg-primary)] font-body text-[var(--text-primary)]">
 	<Nav pathname={$page.url.pathname} />
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="circuit-grid {isFullWidth ? 'flex-1' : 'mx-auto w-full max-w-5xl flex-1 px-6'} {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="{isFullWidth ? 'flex-1' : 'mx-auto w-full max-w-5xl flex-1 px-6'} {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}
