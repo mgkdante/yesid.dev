@@ -42,7 +42,7 @@
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="{isFullWidth ? 'flex-1' : 'mx-auto w-full max-w-5xl flex-1 px-6'} {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="circuit-grid {isFullWidth ? 'flex-1' : 'mx-auto w-full max-w-5xl flex-1 px-6'} {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}
