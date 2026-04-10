@@ -17,9 +17,12 @@
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap, ScrollTrigger, CustomEase } from '$lib/motion/utils/gsap.js';
-	import { heroAnimContent, heroContent } from '$lib/data';
+	import { heroAnimContent, heroContent, INITIAL_HERO_DATA, generateHeroData } from '$lib/data';
+	import type { HeroData } from '$lib/data';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import MetroNetwork from '$lib/motion/svg/MetroNetwork.svelte';
+	import HeroMetrics from './HeroMetrics.svelte';
+	import HeroSqlPanel from './HeroSqlPanel.svelte';
 
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;
@@ -28,19 +31,36 @@
 	let reducedMotion = false;
 
 	const scrollDownLabel = resolveLocale(heroAnimContent.scrollDown, 'en');
-	const badgeLabel = resolveLocale(heroContent.badge, 'en');
 	const headlineLine1 = resolveLocale(heroContent.headline.line1, 'en');
 	const headlineLine2 = resolveLocale(heroContent.headline.line2, 'en');
-	const headlineLine3 = resolveLocale(heroContent.headline.line3, 'en');
+	const subheadlineText = resolveLocale(heroContent.subheadline, 'en');
 	const subtitleText = resolveLocale(heroContent.subtitle, 'en');
 	const ctaWorkLabel = resolveLocale(heroContent.ctaWork, 'en');
 	const ctaContactLabel = resolveLocale(heroContent.ctaContact, 'en');
-	const sqlLine1 = resolveLocale(heroContent.sqlDecoration.line1, 'en');
-	const sqlLine2 = resolveLocale(heroContent.sqlDecoration.line2, 'en');
-	const sqlLine3 = resolveLocale(heroContent.sqlDecoration.line3, 'en');
+	const sqlPrompt = resolveLocale(heroContent.sqlPanel.prompt, 'en');
+	const sqlLiveLabel = resolveLocale(heroContent.sqlPanel.liveLabel, 'en');
+	const refreshLabel = resolveLocale(heroContent.refreshButton.label, 'en');
+	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, 'en');
 
 	let heroTextContainer: HTMLDivElement;
 	let heroDot: HTMLSpanElement;
+	let refreshIcon: HTMLSpanElement;
+
+	let heroData: HeroData = $state(INITIAL_HERO_DATA);
+	let updatedAgo: string = $state('30s ago');
+
+	function handleRefresh() {
+		heroData = generateHeroData();
+		updatedAgo = 'just now';
+		if (refreshIcon) {
+			refreshIcon.style.transition = 'transform 0.6s ease';
+			refreshIcon.style.transform = 'rotate(360deg)';
+			setTimeout(() => {
+				refreshIcon.style.transition = 'none';
+				refreshIcon.style.transform = 'rotate(0deg)';
+			}, 600);
+		}
+	}
 
 	let cleanup: (() => void) | undefined;
 	onDestroy(() => cleanup?.());
@@ -471,80 +491,105 @@
 			class="absolute inset-0 flex items-center justify-center px-6 pr-12 opacity-0 md:pr-20"
 			data-testid="hero-text-container"
 		>
-			<div class="flex w-full max-w-5xl items-center gap-8">
-				<!-- Left: headline + CTAs -->
-				<div class="flex-1">
-					<span
-						class="mb-4 inline-block rounded border border-[#E07800] px-3 py-1 font-mono text-[10px] tracking-[3px] text-[#E07800] md:text-xs"
-						data-testid="hero-badge"
-						data-hero-stagger="3"
+			<div class="w-full max-w-6xl">
+				<!-- Two-column grid: left text | divider | right SQL -->
+				<div class="hero-grid">
+					<!-- LEFT COLUMN -->
+					<div>
+						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
+							<span
+								class="block text-[clamp(48px,6vw,84px)] text-[var(--text-primary)]"
+								data-testid="hero-line1"
+								data-hero-stagger="1"
+							>
+								{headlineLine1}
+							</span>
+						</h1>
+
+						<div class="my-6" data-hero-stagger="3">
+							<HeroMetrics metrics={heroData.metrics} />
+						</div>
+
+						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
+							<span
+								class="block text-[clamp(48px,6vw,84px)] text-[var(--brand-primary)]"
+								data-testid="hero-line2"
+							>
+								<span data-hero-stagger="1">DON'T BREAK</span><span
+									bind:this={heroDot}
+									class="text-[var(--brand-primary)]"
+									data-testid="hero-dot"
+								>.</span>
+							</span>
+						</h1>
+
+						<div
+							class="mt-2.5 text-[clamp(20px,2.5vw,34px)] font-bold leading-[1.1] text-[var(--text-secondary)]"
+							data-testid="hero-subheadline"
+							data-hero-stagger="2"
+						>
+							{subheadlineText}
+						</div>
+
+						<p
+							class="mt-5 text-[15px] leading-[1.7] text-[var(--text-secondary)]"
+							data-testid="hero-subtitle"
+							data-hero-stagger="6"
+						>
+							{subtitleText}
+						</p>
+
+						<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
+							<a
+								href="/work"
+								class="inline-flex items-center rounded-lg bg-[var(--brand-primary)] px-6 py-3 text-sm font-bold text-[#141414] transition-colors hover:bg-[var(--brand-primary-hover)]"
+								data-testid="hero-cta-work"
+							>
+								{ctaWorkLabel}
+							</a>
+							<a
+								href="/contact"
+								class="inline-flex items-center rounded-lg border border-[var(--border)] px-6 py-3 text-sm font-semibold text-[var(--text-primary)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
+								data-testid="hero-cta-contact"
+							>
+								{ctaContactLabel}
+							</a>
+						</div>
+					</div>
+
+					<!-- VERTICAL DIVIDER (desktop only) -->
+					<div
+						class="hidden self-stretch md:block"
+						data-hero-stagger="5"
 					>
-						{badgeLabel}
-					</span>
+						<div class="hero-divider"></div>
+					</div>
 
-					<h1 class="font-heading font-extrabold leading-[0.95]">
-						<span
-							class="block text-5xl text-[var(--text-primary)] md:text-7xl"
-							data-testid="hero-line1"
-						>
-							<span data-hero-stagger="1">{headlineLine1}</span>
-						</span>
-						<span
-							class="block text-5xl text-[var(--text-primary)] md:text-7xl"
-							data-testid="hero-line2"
-						>
-							<span data-hero-stagger="1">{headlineLine2}</span><span
-								bind:this={heroDot}
-								class="text-[#E07800]"
-								data-testid="hero-dot"
-							>.</span>
-						</span>
-						<span
-							class="mt-2 block text-2xl text-[#999] md:text-4xl"
-							data-testid="hero-line3"
-						>
-							<span data-hero-stagger="2">{headlineLine3}</span>
-						</span>
-					</h1>
-
-					<p
-						class="mt-5 max-w-md text-sm leading-relaxed text-[var(--text-secondary)] md:text-base"
-						data-testid="hero-subtitle"
-						data-hero-stagger="3"
-					>
-						{subtitleText}
-					</p>
-
-					<div class="mt-6 flex flex-wrap gap-3" data-hero-stagger="3">
-						<a
-							href="/work"
-							class="inline-flex items-center rounded-lg bg-[#E07800] px-6 py-3 text-sm font-semibold text-[#141414] transition-colors hover:bg-[#C96A00]"
-							data-testid="hero-cta-work"
-						>
-							{ctaWorkLabel}
-						</a>
-						<a
-							href="/contact"
-							class="inline-flex items-center rounded-lg border border-[var(--border)] px-6 py-3 text-sm font-semibold text-[var(--text-primary)] transition-colors hover:border-[#E07800] hover:text-[#E07800]"
-							data-testid="hero-cta-contact"
-						>
-							{ctaContactLabel}
-						</a>
+					<!-- RIGHT COLUMN: SQL PANEL -->
+					<div data-hero-stagger="4">
+						<HeroSqlPanel
+							rows={heroData.queryRows}
+							queryTime={heroData.queryTime}
+							prompt={sqlPrompt}
+							liveLabel={sqlLiveLabel}
+							{updatedAgo}
+						/>
 					</div>
 				</div>
 
-				<!-- Right: SQL decoration (desktop only) -->
-				<div
-					class="hidden border-l border-[#333] pl-8 md:block"
-					style="flex: 0.7;"
-					data-testid="hero-sql"
-					data-hero-stagger="4"
-				>
-					<code class="block font-mono text-sm leading-loose text-[#E07800] opacity-70">
-						{sqlLine1}<br />
-						{sqlLine2}<br />
-						{sqlLine3}
-					</code>
+				<!-- REFRESH BUTTON — full width, below grid -->
+				<div class="mt-8 text-center" data-hero-stagger="7">
+					<button
+						class="refresh-btn"
+						data-testid="hero-refresh"
+						onclick={handleRefresh}
+					>
+						<span bind:this={refreshIcon} class="text-xl">&#x21bb;</span>
+						{refreshLabel}
+					</button>
+					<div class="mt-2 font-mono text-[10px] text-[var(--text-dim)]">
+						{refreshHelper}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -560,8 +605,66 @@
 </section>
 
 <style>
-	/* Typewriter reveal for the scroll prompt.
-	   overflow:hidden clips characters that haven't appeared yet.
-	   white-space:nowrap prevents line breaks mid-animation.
-	   The cursor blink is a separate animation on border-right. */
+	/* Two-column hero grid: text | divider | SQL panel */
+	.hero-grid {
+		display: grid;
+		grid-template-columns: 1fr 1px 1fr;
+		gap: 32px;
+		align-items: start;
+	}
+
+	/* Vertical divider with faded ends */
+	.hero-divider {
+		width: 1px;
+		height: 100%;
+		background: linear-gradient(
+			180deg,
+			transparent 0%,
+			var(--border) 15%,
+			var(--border) 85%,
+			transparent 100%
+		);
+	}
+
+	/* Refresh button — orange gradient, glow, JetBrains Mono */
+	.refresh-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
+		color: #141414;
+		border: none;
+		padding: 16px 48px;
+		border-radius: 10px;
+		font-size: 15px;
+		font-weight: 800;
+		font-family: var(--font-mono);
+		letter-spacing: 2px;
+		cursor: pointer;
+		box-shadow:
+			0 0 24px rgba(224, 120, 0, 0.3),
+			0 4px 12px rgba(0, 0, 0, 0.4);
+		transition: box-shadow 0.2s, transform 0.2s;
+	}
+	.refresh-btn:hover {
+		box-shadow:
+			0 0 40px rgba(224, 120, 0, 0.5),
+			0 6px 20px rgba(0, 0, 0, 0.5);
+		transform: translateY(-1px);
+	}
+
+	/* Mobile: stacked layout */
+	@media (max-width: 768px) {
+		.hero-grid {
+			grid-template-columns: 1fr;
+			gap: 0;
+		}
+		.refresh-btn {
+			width: 100%;
+			justify-content: center;
+			padding: 14px;
+			font-size: 14px;
+			margin-bottom: 14px;
+		}
+	}
 </style>
