@@ -472,40 +472,16 @@
 			sectionMinHeight = '1200svh';
 		}
 
-		// Store Phase 10 tween reference for resize updates
-		let phase10Tween: gsap.core.Tween | undefined;
-		const phase10Tweens = tl.getChildren().filter(
-			(t: gsap.core.Animation) => 'vars' in t && (t as gsap.core.Tween).vars.y !== undefined
-		) as gsap.core.Tween[];
-		if (phase10Tweens.length > 0) {
-			phase10Tween = phase10Tweens[phase10Tweens.length - 1];
-		}
-
-		// Recalculate everything on resize — zoom, origins, overflow, scroll distance
+		// Recalculate zoom origins on resize (basic — full resize resilience in future sub-slice)
 		function onResize() {
 			updateZoomOrigin();
 			zoomTween.vars.scale = calcZoomScale();
 			zoomTween.invalidate();
-
 			updateHeroTextOrigin();
 			const newHeroScale = calcHeroTextScale();
 			gsap.set(heroTextContainer, { scale: newHeroScale });
 			heroZoomTween.vars.scale = 1;
 			heroZoomTween.invalidate();
-
-			// Recalculate content overflow for Phase 10
-			const newOverflow = contentInner
-				? Math.max(0, contentInner.scrollHeight - window.innerHeight)
-				: 0;
-			if (phase10Tween) {
-				phase10Tween.vars.y = -newOverflow;
-				phase10Tween.invalidate();
-			}
-
-			// Update scroll distance
-			st.vars.end = newOverflow > 0 ? '+=1100%' : '+=800%';
-			sectionMinHeight = newOverflow > 0 ? '1200svh' : '900svh';
-
 			ScrollTrigger.refresh();
 		}
 		window.removeEventListener('resize', updateZoomOrigin); // remove the earlier one
@@ -523,13 +499,6 @@
 					stopBlink();
 				} else if (self.progress <= 0.005 && self.direction === -1 && typingComplete) {
 					startBlink();
-				}
-
-				// Show scrollbar after metro animation, hide during it
-				if (self.progress > 0.6) {
-					document.documentElement.classList.remove('hide-scrollbar');
-				} else {
-					document.documentElement.classList.add('hide-scrollbar');
 				}
 			},
 		});
@@ -756,7 +725,7 @@
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-			padding-block: 2rem 4rem;
+			padding-block: 2rem 6rem;
 		}
 		.refresh-btn {
 			width: 100%;

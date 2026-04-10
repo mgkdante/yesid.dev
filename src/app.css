@@ -78,14 +78,6 @@ html {
   background: rgba(224, 120, 0, 0.6);
 }
 
-/* Hide scrollbar during metro animation — toggled by HeroBanner GSAP */
-.hide-scrollbar {
-  scrollbar-width: none;
-}
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
 /* Circuit grid background — site-wide except nav/footer.
    Applied via main content wrapper in +layout.svelte or per-section.
    Uses brand orange at very low opacity for a subtle engineering texture. */
