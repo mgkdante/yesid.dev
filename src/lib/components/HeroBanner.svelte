@@ -48,17 +48,60 @@
 	onMount(async () => {
 		reducedMotion = isPrefersReducedMotion();
 
+		// Lock scroll IMMEDIATELY on mount — before any awaits — to close
+		// the gap where the user could scroll before the typewriter starts.
+		// Only lock when at the top (fresh load, not mid-page reload).
+		const shouldLock = !reducedMotion && scrollPrompt && window.scrollY < window.innerHeight * 0.3;
+		const bodyStyle = document.body.style;
+		const htmlStyle = document.documentElement.style;
+
+		if (shouldLock) {
+			bodyStyle.position = 'fixed';
+			bodyStyle.top = '0';
+			bodyStyle.left = '0';
+			bodyStyle.right = '0';
+			bodyStyle.overflow = 'hidden';
+			htmlStyle.overflow = 'hidden';
+		}
+
+		const blockScroll = (e: Event) => e.preventDefault();
+		const blockKeys = (e: KeyboardEvent) => {
+			if (['ArrowDown', 'ArrowUp', 'Space', 'PageDown', 'PageUp'].includes(e.code)) {
+				e.preventDefault();
+			}
+		};
+		if (shouldLock) {
+			document.addEventListener('touchmove', blockScroll, { passive: false });
+			document.addEventListener('wheel', blockScroll, { passive: false });
+			document.addEventListener('keydown', blockKeys, { capture: true });
+		}
+
+		function unlockScroll() {
+			bodyStyle.position = '';
+			bodyStyle.top = '';
+			bodyStyle.left = '';
+			bodyStyle.right = '';
+			bodyStyle.overflow = '';
+			htmlStyle.overflow = '';
+			document.removeEventListener('touchmove', blockScroll);
+			document.removeEventListener('wheel', blockScroll);
+			document.removeEventListener('keydown', blockKeys, { capture: true });
+			// Enable normalizeScroll AFTER unlock — prevents browser chrome
+			// from interfering with ScrollTrigger pin calculations.
+			ScrollTrigger.normalizeScroll(true);
+			ScrollTrigger.refresh();
+		}
+
 		await tick();
 		await new Promise((r) => setTimeout(r, 300));
 
 		const svg = pinContainer?.querySelector('[data-testid="metro-network"]');
-		if (!svg) return;
+		if (!svg) { if (shouldLock) unlockScroll(); return; }
 
 		if (reducedMotion) {
 			svg.querySelectorAll('.metro-line, .metro-station, .metro-bg, .metro-label, .metro-berri').forEach((el) => {
 				(el as HTMLElement).style.opacity = '0.2';
 			});
-			// Show hero text statically — no animation
 			heroTextContainer.style.opacity = '1';
 			heroTextContainer.style.transform = 'scale(1)';
 			return;
@@ -80,8 +123,6 @@
 		// and again when user scrolls back to top.
 		function startBlink() {
 			if (blinkInterval) return; // already blinking
-			// Restore visibility — GSAP timeline fades scrollPrompt during Phase 2,
-			// so we need to force it back when restarting at top.
 			if (scrollPrompt) {
 				scrollPrompt.style.opacity = '1';
 				scrollPrompt.textContent = scrollDownLabel + '_';
@@ -109,8 +150,9 @@
 		}
 
 		// Classic JS typewriter: write one character at a time with a trailing
-		// underscore cursor. The _ follows the typing position exactly.
-		if (scrollPrompt) {
+		// underscore cursor. SKIP if page is already scrolled (reload mid-hero).
+		if (shouldLock) {
+			// Lock + event blockers already set at top of onMount.
 			const fullText = scrollDownLabel;
 			scrollPrompt.textContent = '_';
 			let charIndex = 0;
@@ -122,8 +164,20 @@
 					clearInterval(typeInterval);
 					typingComplete = true;
 					startBlink();
+					unlockScroll();
 				}
 			}, 80);
+		} else if (scrollPrompt) {
+			// Already scrolled — set full text so it's ready when user scrolls
+			// back to top. Don't touch opacity — let GSAP handle it via
+			// ScrollTrigger.refresh() below so the timeline state is correct.
+			scrollPrompt.textContent = scrollDownLabel + '_';
+			typingComplete = true;
+			// Enable normalizeScroll immediately — no typing phase needed
+			ScrollTrigger.normalizeScroll(true);
+		} else {
+			// No scrollPrompt — still enable normalizeScroll for mobile
+			ScrollTrigger.normalizeScroll(true);
 		}
 		const bg = svg.querySelectorAll('.metro-bg');
 		const labels = svg.querySelectorAll('.metro-label');
@@ -185,8 +239,9 @@
 		function calcHeroTextScale(): number {
 			const glyph = getDotGlyphCenter();
 			const screen = Math.max(window.innerWidth, window.innerHeight);
-			if (glyph.size === 0) return 200;
-			return Math.ceil((screen / glyph.size) * 2);
+			if (glyph.size === 0) return 250;
+			// 2.5x headroom covers mobile browser chrome hide/show (lvh vs svh gap)
+			return Math.ceil((screen / glyph.size) * 2.5);
 		}
 
 		// Transform-origin at the dot glyph's visual center
@@ -274,8 +329,8 @@
 			const rect = berri!.getBoundingClientRect();
 			const screen = Math.max(window.innerWidth, window.innerHeight);
 			const node = Math.max(rect.width, rect.height);
-			// 2x headroom ensures full orange coverage even on wide desktops
-			return Math.ceil((screen / node) * 2);
+			// 2.5x headroom covers mobile browser chrome hide/show (lvh vs svh gap)
+			return Math.ceil((screen / node) * 2.5);
 		}
 
 		const zoomTween = tl.to(svgWrapper, {
@@ -356,10 +411,10 @@
 		window.removeEventListener('resize', updateZoomOrigin); // remove the earlier one
 		window.addEventListener('resize', onResize);
 
-		ScrollTrigger.create({
+		const st = ScrollTrigger.create({
 			trigger: pinContainer,
 			start: 'top top',
-			end: '+=1200%',
+			end: '+=800%',
 			pin: true,
 			scrub: 1,
 			animation: tl,
@@ -372,6 +427,13 @@
 					startBlink();
 				}
 			},
+		});
+
+		// On reload at a mid-scroll position, force GSAP to seek the
+		// timeline to the current scroll progress. This applies all
+		// tweens (including scroll prompt fade) instantly.
+		requestAnimationFrame(() => {
+			ScrollTrigger.refresh();
 		});
 
 		cleanup = () => {
@@ -388,11 +450,12 @@
 <section
 	class="relative"
 	data-testid="hero-banner"
-	style="min-height: {reducedMotion ? '100vh' : '1300vh'};"
+	style="min-height: {reducedMotion ? '100svh' : '900svh'};"
 >
 	<div
 		bind:this={pinContainer}
-		class="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#141414]"
+		class="relative flex w-full items-center justify-center overflow-hidden bg-[#141414]"
+		style="height: 100lvh; padding-bottom: env(safe-area-inset-bottom, 0px);"
 	>
 		<!-- SVG wrapper — zooms into Berri-UQAM -->
 		<div

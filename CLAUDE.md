@@ -13,47 +13,29 @@ Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627
 
 ## Workflow
 
+**Full pipeline:** `docs/WORKFLOW.md` — end-to-end process (Research → Brainstorm → Design Spec → Plan → Slice Spec → Implementation → Closing), tool/plugin mappings per phase, quality gates, and proven rhythms from 22+ slices.
+
 ### Session types
 
 Every session is one of three types. Declare which at the start.
 
 | Type | What happens | Artifacts |
 |------|-------------|-----------|
-| **Planning** | Brainstorm, write/refine spec, break slice into sub-slices, estimate sessions | `docs/brainstorm/`, `docs/slices/` |
+| **Planning** | Research, brainstorm, design spec, slice spec | `.superpowers/brainstorm/`, `docs/superpowers/specs/`, `docs/slices/` |
 | **Implementation** | One sub-slice, task by task per Iteration Protocol | Code, tests, devlog |
-| **Closing** | Docs, handoff, devlog, tree.txt, commit | `docs/handoffs/`, `docs/devlog/` |
+| **Closing** | Docs, handoff, learning docs, tree.txt, commit | `docs/handoffs/`, `docs/devlog/`, `docs/learn/` |
 
-At session start, always scan for uncommitted changes or commits made outside Claude Code. Document anything found in the devlog to keep docs in sync. Also update `docs/TESTS.md` and `docs/test_helper.md` if any test changes occurred outside the session.
+**Hard rule:** A session cannot be two types. Planning sessions produce zero code. Implementation sessions don't write specs but can modify on iteration. Closing sessions don't add features.
 
-### Sub-slice convention
+At session start, always scan for uncommitted changes or commits made outside Claude Code. Document anything found in the devlog.
 
-Split slices into sub-slices (10a, 10b, 10c...) when 6+ tasks or multiple concerns. Each sub-slice gets its own handoff. Naming follows existing pattern (e.g. `slice-09c-1`, `slice-09c-2a`).
+### Hard rules
 
-### Hard rule: sub-slices may need multiple sessions
-
-This is non-negotiable. When planning, ALWAYS estimate how many sessions each sub-slice will take and tell Yesid upfront. Never assume a sub-slice fits in one session. Plan for multi-session sub-slices by default.
-
-### Hard rule: never advance without approval
-
-Dependent tasks run sequentially, one approval between each. No exceptions. This applies at every level: task → sub-slice → slice. Already enforced in Iteration Protocol below; restated here because it governs the entire workflow, not just implementation.
-
-### Parallel agents
-
-Independent tasks (no dependency on each other) MAY use parallel agents for research/exploration, but ONLY if Yesid approves it first. Never self-decide to parallelize. If parallelizing would scatter thinking or degrade output quality, recommend sequential instead and explain why.
-
-### Brainstorm artifacts
-
-`docs/brainstorm/` is scratchpad. Nothing there is a commitment until promoted to `docs/slices/`.
-
-### Slice lifecycle
-
-```
-Plan → Split into sub-slices → Estimate sessions per sub-slice
-→ Implement A (may span multiple sessions, task by task with approval)
-→ Handoff A
-→ Implement B → Handoff B → ...
-→ Final docs → Devlog → Commit
-```
+- **Never advance without approval.** Dependent tasks run sequentially, one approval between each. No exceptions. Task → sub-slice → slice.
+- **Sub-slices may need multiple sessions.** Always estimate and tell Yesid upfront. Never assume one session.
+- **Parallel agents require approval.** Independent research/exploration only. Never self-decide to parallelize implementation. If parallelizing would degrade quality, recommend sequential and explain why.
+- **Sub-slice convention:** Split into sub-slices (10a, 10b, 10c...) when 6+ tasks or multiple concerns. Each gets its own handoff. Naming: `slice-09c-1`, `slice-09c-2a`.
+- **Models** Always use Opus or Sonnet. Do not use Haiku. 
 
 ## Slice System
 
@@ -65,14 +47,15 @@ Slice template: `docs/slices/_TEMPLATE.md`
 3. Ambiguity: write your assumption in the devlog and proceed.
 4. Impossible spec: document why in devlog and stop.
 5. No spec: stop and say so.
-6. **Specs describe outcomes, not implementation.** If a spec says "reduce max rotation from 3 to 1.5 degrees," that's over-prescribing. The real spec is the outcome: "tilt should feel weighty and subtle, not jittery." Extract the desired OUTCOME, then decide the implementation yourself. Log your implementation decisions in the devlog. If a spec mixes outcomes and implementation details, follow the outcome intent.
+6. **Specs describe outcomes, not implementation.** Extract the desired OUTCOME, then decide the implementation yourself. Log decisions in the devlog.
 
-**Active slice:** 10 — Tech Stack "The Control Room"
-- Slice spec: `docs/slices/slice-10-tech-stack.md`
-- Design spec: `docs/superpowers/specs/2026-04-08-tech-stack-page-design.md`
-- 8 sub-tasks (10a-10h), one session each. Start with 10a (data layer + types).
+**Active slice:** 13 — Home Page Redesign
+- Plan: `docs/superpowers/plans/2026-04-09-home-page-redesign.md`
+- Design spec: `docs/superpowers/specs/2026-04-09-home-page-redesign.md`
+- 13a (foundation) complete. 13b (manifesto) code done, design pivot pending. 13c (viewport fix) specced.
+- Slice specs: `docs/slices/slice-13b-manifesto.md`, `docs/slices/slice-13c-viewport-fix.md`
 
-## Iteration Protocol (MANDATORY — READ THIS TWICE)
+## Iteration Protocol (MANDATORY)
 
 **You are done when Yesid says you are done.** Tests passing is necessary but not sufficient.
 
@@ -80,11 +63,10 @@ Slice template: `docs/slices/_TEMPLATE.md`
 
 1. Implement ONE task from the slice spec.
 2. Run `bun run test` and `bun run check`. Both must pass.
-2b. **Pre-flight visual check (for any task that touches UI).** Before the STOP:
-   - State what you expect the page to look like at desktop (1440px) and mobile (375px)
-   - Flag anything in your own code that might cause layout issues, overflow, or missing content
-   - If you spot a likely visual problem from reading your own code, fix it now before asking Yesid to check
-   - This step exists because iterations 1-3 of most slices were wasted on obvious layout problems that code review would have caught
+   2b. **Pre-flight visual check (UI tasks only).** Before the STOP:
+   - State expected layout at desktop (1440px) and mobile (375px)
+   - Flag anything that might cause layout issues, overflow, or missing content
+   - Fix obvious visual problems before asking Yesid to check
 3. **STOP. Do not continue to the next task.** Tell Yesid:
    - What you built (one sentence)
    - What to check on `http://localhost:5173/` (specific behaviors, not vague)
@@ -93,36 +75,6 @@ Slice template: `docs/slices/_TEMPLATE.md`
 5. If Yesid reports issues: fix, retest, STOP again, ask him to re-check.
 6. If Yesid approves: move to the next task. Repeat from step 1.
 
-### Slice closing (only after ALL tasks approved):
-
-1. Write handoff report: `docs/handoffs/_TEMPLATE.md`
-2. Update devlog: `docs/devlog/_TEMPLATE.md`
-3. Update `docs/ARCHITECTURE.md` if structure changed
-4. Update `README.md` if setup/usage changed
-5. Update `docs/TESTS.md` and `docs/test_helper.md` if tests were added/changed/removed
-5b. **Update learning docs** in `docs/learn/`:
-   - Identify every concept introduced or heavily used in this slice
-   - For each: check if `docs/learn/[domain]/[concept].md` exists
-   - If missing: create it using `docs/learn/_template.md` — read the actual source files you just wrote, reference real code paths, write for someone who knows SQL but not web dev
-   - If exists: add new file paths to the "How We Use It in This Project" table
-   - Update `docs/learn/meta.json` with any new concepts or changed prerequisites
-   - In the handoff report, add a "Concepts Documented" section (see handoff template)
-   - **Obsidian format (non-negotiable):**
-     - YAML frontmatter (not blockquotes): `title`, `domain`, `difficulty`, `difficulty_label`, `reading_time`, `tags`, `prerequisites`, `date`
-     - Tags: `learn` + domain name + difficulty label
-     - Prerequisites in frontmatter: `- "[[slug]]"`
-     - All cross-references use `[[slug]]` or `[[slug|Display Text]]` wikilinks
-     - Never relative markdown links (`[text](../path/slug.md)`)
-     - Update `docs/learn/README.md` domain index with wikilink format
-6. Regenerate `tree.txt`:
-   ```powershell
-   cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"
-   ```
-7. Commit and push:
-   ```bash
-   git add -A && git commit -m "feat: complete slice NN — [short desc]" && git push
-   ```
-
 ### Iteration rules:
 
 - **Never batch multiple tasks.** One task, one approval, then next.
@@ -130,24 +82,23 @@ Slice template: `docs/slices/_TEMPLATE.md`
 - **Never say "I think this should work."** Yesid confirms on his screen.
 - **Never continue coding after completing a task.** The STOP is mandatory.
 - Ambiguous feedback: ask a clarifying question before changing code.
-- **Never close a slice without updating docs/learn/.** Learning docs are as mandatory as the handoff report. If a slice introduced a concept and there's no learn doc for it, the slice isn't done.
+- **Never close a slice without updating docs/learn/.**
 
-## File Change Protocol
+## Slice Closing (only after ALL tasks approved)
 
-Every file change requires:
-1. **Devlog entry** — use `docs/devlog/_TEMPLATE.md`
-2. **Doc updates** — `ARCHITECTURE.md` for structure, `README.md` for setup
-3. **tree.txt** — regenerated on slice close (PowerShell command above)
-4. **Handoff** — use `docs/handoffs/_TEMPLATE.md` (only after approval)
-5. **CSS.md** — update `docs/CSS.md` when any of these happen:
-   - New CSS custom property added to `tokens.css`
-   - New `@theme` value added to `app.css`
-   - New component with scoped `<style>` block created
-   - Existing token renamed, removed, or repurposed
-   - New z-index value introduced anywhere
-   - New animation-related CSS added
-   Document what changed, why, and where it's consumed. Never add a token without a CSS.md entry.
-6. **TESTS.md** — update `docs/TESTS.md`
+See `docs/WORKFLOW.md` Section 9 for the full 10-step closing checklist. Critical items:
+
+1. Handoff report → `docs/handoffs/_TEMPLATE.md`
+2. Devlog → `docs/devlog/_TEMPLATE.md`
+3. Update `docs/ARCHITECTURE.md`, `README.md`, `docs/TESTS.md` as needed
+4. **Learning docs** → `docs/learn/[domain]/[concept].md` — mandatory, Obsidian format (YAML frontmatter, `[[wikilinks]]`, tags: `learn` + domain + difficulty)
+5. **CSS.md** → update when adding tokens, @theme values, scoped styles, z-index, or animation CSS
+6. **PATTERNS.md** → add any new reusable solutions discovered
+7. Regenerate `tree.txt`:
+   ```powershell
+   cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"
+   ```
+8. Commit: `git add -A && git commit -m "feat: complete slice NN — [short desc]" && git push`
 
 ## Testing (Vitest + Bun)
 
@@ -166,25 +117,13 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 - **Never say "some tests failed" without listing every failure by name**
 - If all pass, still list what ran
 
-### When creating or modifying tests:
+### Test rules:
 
-- Maintain `docs/TESTS.md`
-- For each test file: file path, describe block name, one-line summary of what the file tests, and count of test cases
-- Individual test names (it blocks) are NOT documented in TESTS.md — they live in the test file itself. TESTS.md is an index for fast Ctrl+F lookup, not a mirror of test code.
-- Update `docs/TESTS.md` on every test add/change/delete
-- **Place entries under the correct category by file path:**
-  - `## Data Layer` — tests in `src/lib/data/`
-  - `## Components` — tests in `src/lib/components/`
-  - `## Motion` — tests in `src/lib/motion/`
-  - `## Routes` — tests in `src/routes/`
-- Never append to the bottom. Find the right section, add the entry there.
-- Co-locate test files next to the code they test. Never use a top-level `tests/` folder.
-
-### Test boundaries:
-
-- Component tests: `@testing-library/svelte`
-- Visual/animation correctness: Playwright E2E, not Vitest
-- Vitest verifies invocation and structure, not rendered output
+- Maintain `docs/TESTS.md` — index by category: Data Layer, Components, Motion, Routes
+- Co-locate test files next to the code they test. Never a top-level `tests/` folder.
+- Component tests: `@testing-library/svelte`. Visual/animation: Playwright E2E.
+- Vitest verifies invocation and structure, not rendered output.
+- Update `docs/TESTS.md` on every test add/change/delete — place under correct section, never append to bottom.
 
 ## Code Standards
 
@@ -206,49 +145,49 @@ Three layers, strict separation. Never mix purposes across layers.
 
 ### Rules:
 
-1. **Zero hardcoded colors.** No hex, rgb, or hsl values in `.svelte` files. Use `var(--token)` or Tailwind brand class. If a color doesn't exist as a token, add it to `tokens.css` first.
-2. **Tailwind for composition, scoped styles for structure.** Tailwind handles spacing, typography, flex/grid shortcuts, responsive. Scoped `<style>` handles complex layouts, animations, pseudo-elements, or anything needing more than 3 utilities on one element.
-3. **No `!important`.** If you need it, specificity is wrong. Fix the cascade.
-4. **No inline `style=` attributes** except for dynamic values computed in JS (scroll position, transforms). Static styles never go inline.
-5. **DRY through tokens, not through classes.** If two components share a visual pattern, extract a token or a shared component. Don't create `.my-card-style` utility classes.
-6. **One source of truth per value.** A color, spacing, or font size is defined in exactly one place. Everything else references it.
-7. **Document before adding.** New tokens require a CSS.md entry explaining: name, purpose, where consumed, why existing tokens don't cover the case.
-8. **Mobile-first responsive.** Base styles are mobile. `md:` and `lg:` add complexity. Never write desktop-first then override down.
-9. **Prefer logical properties.** `padding-inline`, `margin-block` over `padding-left`, `margin-top` when direction-agnostic.
-10. **Group related utilities.** In Tailwind class strings, order: layout (flex/grid) → spacing (p/m) → sizing (w/h) → typography (text/font) → color (bg/text/border) → effects (shadow/opacity) → state (hover/focus).
+1. **Zero hardcoded colors.** Use `var(--token)` or Tailwind brand class. Add to `tokens.css` first if missing.
+2. **Tailwind for composition, scoped styles for structure.** Scoped `<style>` for complex layouts, animations, pseudo-elements.
+3. **No `!important`.** Fix the cascade instead.
+4. **No inline `style=`** except dynamic JS values (scroll position, transforms).
+5. **DRY through tokens, not classes.** Extract tokens or shared components, not `.my-card-style` utilities.
+6. **One source of truth per value.** Defined in one place, referenced everywhere.
+7. **Document before adding.** New tokens require a CSS.md entry.
+8. **Mobile-first responsive.** Base = mobile. `md:` and `lg:` add complexity.
+9. **Prefer logical properties.** `padding-inline`, `margin-block` over `padding-left`, `margin-top`.
+10. **Group utilities.** Order: layout → spacing → sizing → typography → color → effects → state.
 
-### Reference: `docs/CSS.md` (created in Slice 13a) is the full style guide with every token, every rule, every component's styling rationale.
+### Full reference: `docs/CSS.md`
 
-## Plugins (`/plugin` to manage)
+## Plugins & Tools
 
-### Design Phase (planning layouts, user flows, copy)
-- Design Research, UX Strategy, UI UX Promax
-- Brand Voice (copy and tone)
+See `docs/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
+
+### Core MCP Servers (every session)
+- **Svelte MCP** — docs, autofixer (Svelte 5 runes)
+- **GSAP Master MCP** — animation patterns, performance, debugging
+- **Context7 MCP** — live docs for any library (Tailwind, Vitest, Lenis, etc.)
+- **Chrome DevTools MCP** — Lighthouse, DOM snapshots, performance traces, competitive scans
+- **Claude Preview** — visual verification after UI tasks
+
+### Additional MCPs
+- GitHub MCP — PRs and repo management
+- Playwright MCP — E2E browser testing
+- Figma MCP — design context and screenshots
+- Three.js MCP — Threlte scene building
+- Vercel MCP — deployment, logs, status
+
+### Key Agents
+- `build-error-resolver` — when `bun run check` fails
+- `code-reviewer` — after every task
+- `tdd-guide` — new features (RED → GREEN → REFACTOR)
+- `planner` / `architect` — complex features and design decisions
+
+### Key Skills
+- `superpowers:brainstorming` — **mandatory** before any plan
+- `superpowers:writing-plans` / `superpowers:executing-plans` — plan lifecycle
+- `superpowers:verification-before-completion` — before claiming done
+- `frontend-design:frontend-design` / `web-designer:web-designer` — design sessions
 - Reference: `/brand/yesid_brand_guide.pdf`, `docs/superpowers/specs/`
-
-### Build Phase (generating components, iterating)
-- Frontend Design Pro, Web Designer, UI Design (component generation)
-- Frontend Design, Prototyping Testing (iteration)
-- Chrome Devtools (browser debugging)
-- TypeScript LSP (real-time type errors)
-- Context7 (live docs: SvelteKit, GSAP, Threlte, etc.)
-- Check `src/lib/components/` before creating new ones
-- Reference: `docs/ARCHITECTURE.md`, `tree.txt`, `vitest.setup.ts`
-
-### Quality Phase (before any commit)
-- Code Review
-- Designer Toolkit (design system consistency)
-- `bun run test` and `bun run check` must both pass
-- Brand compliance: colors, fonts, dark theme, "yesid." formatting
-
-### Meta (always active)
-- Remember (persist decisions across sessions)
-- Claude Code Setup, Everything Claude Code (tooling reference)
-- Superpowers (general enhancement)
-
-### MCP Servers (`.claude/settings.json`)
-- GitHub MCP for PRs and repo management
-- Playwright MCP for E2E browser testing (slice 10+)
 
 ### Custom slash commands: `.claude/commands/`
 
@@ -272,7 +211,7 @@ Three layers, strict separation. Never mix purposes across layers.
 
 ## Completed Slices
 
-A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b — handoffs in `docs/handoffs/`
+01, 02, 03, 04, 05, 06, 06b, 06d, A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b, 10, 10d+, 11, 12, 13a — handoffs in `docs/handoffs/`
 
 ## Repo Structure
 
@@ -280,11 +219,16 @@ See `tree.txt` for full tree. Key paths:
 - `src/lib/components/` — UI components
 - `src/lib/motion/` — actions, stores, GSAP utils, Threlte scenes, SVG animations
 - `src/lib/data/` — types, services, projects, blog data
-- `src/routes/` — home, blog/, services/, preview/
+- `src/routes/` — home, blog/, services/, tech-stack/, contact/
 - `src/content/blog/` — markdown posts (professional/, personal/)
+- `src/content/stack/` — tech stack markdown files (34 items)
 - `docs/slices/` — specs (template: `_TEMPLATE.md`)
 - `docs/handoffs/` — reports (template: `_TEMPLATE.md`)
 - `docs/devlog/` — logs (template: `_TEMPLATE.md`)
+- `docs/superpowers/specs/` — design specs
+- `docs/superpowers/plans/` — implementation plans
 - `docs/learn/` — learning knowledge base (domain-organized concept docs)
+- `docs/WORKFLOW.md` — full pipeline process
 - `docs/PATTERNS.md` — catalog of reusable solutions from past slices
+- `docs/MOTION.md` — animation language and toolkit
 - `static/` — models, images, lottie

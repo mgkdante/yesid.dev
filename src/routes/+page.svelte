@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import HeroBanner from '$lib/components/HeroBanner.svelte';
+	import Manifesto from '$lib/components/Manifesto.svelte';
 </script>
 
 <svelte:head>
@@ -16,6 +17,16 @@
 		<!-- Section 1: Hero (metro SVG animation) -->
 		<HeroBanner />
 
-		<!-- Sections 2-7 added in sub-slices 13b-13f -->
+		<!-- Hard cut: yellow/black dashed line (Von Restorff break) -->
+		<div
+			data-testid="hard-cut"
+			class="h-1 w-full"
+			style="background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);"
+		></div>
+
+		<!-- Section 2: Manifesto (interactive circuit board + transit HUD) -->
+		<Manifesto />
+
+		<!-- Sections 3-7 added in sub-slices 13c-13f -->
 	</div>
 </div>

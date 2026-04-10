@@ -405,7 +405,7 @@ git commit -m "feat(slice-13a): foundation — hero fixes, lenis, teardown for h
 
 ---
 
-## Sub-slice 13b: Hero Viewport Height Fix
+## Sub-slice 13c: Hero Viewport Height Fix
 
 > **Goal:** Fix hero scroll animation shifting on mobile browsers when browser chrome (address bar, toolbar) hides/shows. Replace `100vh`/`h-screen` with modern viewport units.
 
@@ -431,7 +431,7 @@ git commit -m "feat(slice-13a): foundation — hero fixes, lenis, teardown for h
 
 ---
 
-## Sub-slice 13c: Manifesto Section
+## Sub-slice 13b: Manifesto Section
 
 > **Session start:** Brainstorm exact manifesto text, SplitText animation style, pill design, and mobile layout using visual companion before writing any code.
 

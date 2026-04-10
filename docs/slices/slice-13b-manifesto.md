@@ -1,9 +1,9 @@
-# Slice 13c — Manifesto Section
+# Slice 13b — Manifesto Section
 
 **Status:** ready
 **Priority:** 1
 **Estimated effort:** 1 session
-**Depends on:** 13b (hero viewport fix)
+**Depends on:** 13a (hero fixes, Lenis, home teardown)
 
 ## Objective
 

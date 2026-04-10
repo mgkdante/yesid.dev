@@ -60,4 +60,20 @@ describe('Home page', () => {
 		expect(sql).toBeInTheDocument();
 		expect(sql.textContent).toContain('SELECT  y.expertise');
 	});
+
+	it('renders the hard-cut transition between hero and manifesto', () => {
+		render(Page);
+		expect(screen.getByTestId('hard-cut')).toBeInTheDocument();
+	});
+
+	it('renders the manifesto section', () => {
+		render(Page);
+		expect(screen.getByTestId('manifesto-section')).toBeInTheDocument();
+	});
+
+	it('renders manifesto capability pills', () => {
+		render(Page);
+		const pills = screen.getAllByTestId('manifesto-pill');
+		expect(pills).toHaveLength(5);
+	});
 });

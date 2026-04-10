@@ -574,8 +574,6 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 **Tests:** Full navigation flow. Train journey completes without jank. Responsive at 375px, 768px, 1280px. No mobile overflow. Frame rate above 45fps on scroll. Reduced motion mode works.
 **You'll learn:** E2E testing, performance profiling, responsive QA, accessibility verification.
 
-
-
 **KEEP IN MIND**: Sentry, Posthog and Vercel analytics
 
 ### Slice 17 — Standardization: Ports & Adapters Lite
@@ -640,6 +638,11 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
   - Grid behavior per tier: document how many columns each major layout (services grid, project cards, blog grid) gets at each breakpoint.
   - No breakpoint logic lives in individual components unless it's layout-specific to that component. Global responsive behavior flows from the layout shell and CSS custom properties.
   - Use math derived sizes so the system is fully resizable and intuitive automatically
+  - **USE** -> svh = small viewport height
+    lvh = large viewport height
+    dvh = dynamic viewport height
+    env(safe-area-inset-*)
+    and the Visual Viewport API
 7. **Animation & GSAP cleanup:**
   - GSAP does NOT work reliably inside Svelte 5 `$effect()` — timeline callbacks (`onComplete`) never fire. Ref: [https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no](https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no)
   - Audit every component using GSAP in `$effect()` and migrate to one of:

@@ -1,9 +1,9 @@
-# Slice 13b — Hero Viewport Height Fix
+# Slice 13c — Hero Viewport Height Fix
 
 **Status:** ready
 **Priority:** 1
 **Estimated effort:** 1 session
-**Depends on:** 13a (hero fixes, Lenis, home teardown)
+**Depends on:** 13b (manifesto section)
 
 ## Objective
 

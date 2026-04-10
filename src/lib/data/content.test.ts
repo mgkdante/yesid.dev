@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
+import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
 
 describe('heroContent', () => {
 	it('has non-empty English strings', () => {
@@ -13,6 +13,71 @@ describe('heroContent', () => {
 		expect(heroContent.sqlDecoration.line1.en.length).toBeGreaterThan(0);
 		expect(heroContent.sqlDecoration.line2.en.length).toBeGreaterThan(0);
 		expect(heroContent.sqlDecoration.line3.en.length).toBeGreaterThan(0);
+	});
+});
+
+describe('manifestoContent', () => {
+	it('has statement lines as LocalizedString', () => {
+		expect(manifestoContent.statement.line1.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.statement.lineHuge.en).toBe('INFRASTRUCTURE');
+		expect(manifestoContent.statement.line3Part1.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.statement.line3Highlight.en).toBe('OPERATIONS');
+		expect(manifestoContent.statement.line3Part2.en.length).toBeGreaterThan(0);
+	});
+
+	it('has terminal prompt as LocalizedString', () => {
+		expect(manifestoContent.terminal.user.en).toContain('yesid');
+		expect(manifestoContent.terminal.command.en).toContain('cat');
+	});
+
+	it('has exactly 5 capability pills', () => {
+		expect(manifestoContent.pills).toHaveLength(5);
+	});
+
+	it('every pill has an English label and a serviceId', () => {
+		for (const pill of manifestoContent.pills) {
+			expect(pill.label.en.length).toBeGreaterThan(0);
+			expect(pill.serviceId.length).toBeGreaterThan(0);
+		}
+	});
+
+	it('pills map to expected service IDs', () => {
+		const serviceIds = manifestoContent.pills.map((p) => p.serviceId);
+		expect(serviceIds).toEqual([
+			'data-pipeline',
+			'database-engineering',
+			'analytics-reporting',
+			'internal-tooling',
+			'web-development',
+		]);
+	});
+
+	it('has edge decoration text as LocalizedString', () => {
+		expect(manifestoContent.edgeLeft.sectionNumber.en).toContain('SEC');
+		expect(manifestoContent.edgeLeft.sectionName.en).toBe('MANIFESTO');
+		expect(manifestoContent.edgeLeft.location.en).toContain('MTL');
+	});
+
+	it('has right edge with easter egg locations', () => {
+		expect(manifestoContent.edgeRight.src.en).toContain('Sherbrooke');
+		expect(manifestoContent.edgeRight.via.en).toContain('Lennoxville');
+		expect(manifestoContent.edgeRight.dst.en).toContain('Montréal');
+	});
+
+	it('has bottom status bar text', () => {
+		expect(manifestoContent.edgeBottom.connected.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.edgeBottom.line.en).toContain('ORANGE');
+	});
+
+	it('has transit element text', () => {
+		expect(manifestoContent.transit.arrivalLabel.en).toContain('PROCHAIN');
+		expect(manifestoContent.transit.platformBadge.en).toContain('QUAI');
+		expect(manifestoContent.transit.directionBadge.en).toContain('CENTRE-VILLE');
+	});
+
+	it('has measurement tick labels', () => {
+		expect(manifestoContent.ticks.length).toBeGreaterThanOrEqual(5);
+		expect(manifestoContent.ticks[0]).toBe('0');
 	});
 });
 

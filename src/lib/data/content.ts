@@ -28,6 +28,54 @@ export const heroContent = {
 	},
 } as const;
 
+export const manifestoContent = {
+	statement: {
+		line1: { en: 'I BUILD THE' } satisfies LocalizedString,
+		lineHuge: { en: 'INFRASTRUCTURE' } satisfies LocalizedString,
+		line3Part1: { en: 'YOUR' } satisfies LocalizedString,
+		line3Highlight: { en: 'OPERATIONS' } satisfies LocalizedString,
+		line3Part2: { en: 'RUN ON' } satisfies LocalizedString,
+	},
+	terminal: {
+		user: { en: 'yesid@mtl' } satisfies LocalizedString,
+		command: { en: ':~$ cat manifesto.md' } satisfies LocalizedString,
+	},
+	pills: [
+		{ label: { en: 'pipelines' } satisfies LocalizedString, serviceId: 'data-pipeline' },
+		{ label: { en: 'databases' } satisfies LocalizedString, serviceId: 'database-engineering' },
+		{ label: { en: 'dashboards' } satisfies LocalizedString, serviceId: 'analytics-reporting' },
+		{ label: { en: 'internal_tools' } satisfies LocalizedString, serviceId: 'internal-tooling' },
+		{ label: { en: 'web_apps' } satisfies LocalizedString, serviceId: 'web-development' },
+	],
+	edgeLeft: {
+		sectionNumber: { en: 'SEC—02' } satisfies LocalizedString,
+		sectionName: { en: 'MANIFESTO' } satisfies LocalizedString,
+		location: { en: 'MTL—QC' } satisfies LocalizedString,
+	},
+	edgeRight: {
+		lat: { en: 'LAT 45.5017°N' } satisfies LocalizedString,
+		lng: { en: 'LNG 73.5673°W' } satisfies LocalizedString,
+		src: { en: 'SRC Sherbrooke, QC' } satisfies LocalizedString,
+		via: { en: 'VIA Lennoxville, QC' } satisfies LocalizedString,
+		dst: { en: 'DST Montréal, QC' } satisfies LocalizedString,
+		node: { en: 'NODE berri-uqam' } satisfies LocalizedString,
+		status: { en: 'STATUS active' } satisfies LocalizedString,
+	},
+	edgeBottom: {
+		connected: { en: 'CONNECTED' } satisfies LocalizedString,
+		line: { en: 'LIGNE ORANGE' } satisfies LocalizedString,
+		url: { en: 'yesid.dev' } satisfies LocalizedString,
+		version: { en: 'v2.0' } satisfies LocalizedString,
+		scrollHint: { en: 'SCROLL ↓' } satisfies LocalizedString,
+	},
+	transit: {
+		arrivalLabel: { en: 'PROCHAIN / NEXT' } satisfies LocalizedString,
+		platformBadge: { en: 'QUAI / PLATFORM 2' } satisfies LocalizedString,
+		directionBadge: { en: 'DIRECTION: CENTRE-VILLE' } satisfies LocalizedString,
+	},
+	ticks: ['0', '80', '160', '240', '320', '400', '480'],
+} as const;
+
 export const aboutContent = {
 	name: { en: 'Yesid O.' } satisfies LocalizedString,
 	title: { en: 'Freelance Data Engineer' } satisfies LocalizedString,

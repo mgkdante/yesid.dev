@@ -1,0 +1,254 @@
+<!--
+  ManifestoCanvas — Interactive circuit node canvas for the manifesto section.
+  Renders grid-aligned nodes that glow on cursor proximity.
+  Draws trace connections between nearby active nodes.
+  Emits concentric ripple pulses on click/tap.
+  Respects prefers-reduced-motion: static nodes only.
+-->
+<script lang="ts">
+	import { browser } from '$app/environment';
+	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+
+	interface Props {
+		containerEl?: HTMLElement;
+	}
+
+	let { containerEl }: Props = $props();
+
+	const GRID = 80;
+	const PROXIMITY = 120;
+	const TRACE_PROXIMITY = 160;
+
+	let canvas: HTMLCanvasElement;
+	let ctx: CanvasRenderingContext2D | null = null;
+	let warmGlow: HTMLDivElement;
+	let width = 0;
+	let height = 0;
+	let mouseX = -999;
+	let mouseY = -999;
+	let animFrame: number;
+
+	interface CircuitNode {
+		x: number;
+		y: number;
+		baseOpacity: number;
+		currentOpacity: number;
+		targetOpacity: number;
+		size: number;
+		glowSize: number;
+	}
+
+	let nodes: CircuitNode[] = [];
+
+	function generateNodes() {
+		nodes = [];
+		for (let x = GRID; x < width; x += GRID) {
+			for (let y = GRID; y < height; y += GRID) {
+				nodes.push({
+					x,
+					y,
+					baseOpacity: 0.06 + Math.random() * 0.06,
+					currentOpacity: 0,
+					targetOpacity: 0,
+					size: 1.5 + Math.random() * 1.5,
+					glowSize: 0,
+				});
+			}
+		}
+	}
+
+	function resize() {
+		if (!containerEl) return;
+		const rect = containerEl.getBoundingClientRect();
+		width = rect.width;
+		height = rect.height;
+		canvas.width = width;
+		canvas.height = height;
+		generateNodes();
+	}
+
+	function onMouseMove(e: MouseEvent) {
+		if (!containerEl) return;
+		const rect = containerEl.getBoundingClientRect();
+		mouseX = e.clientX - rect.left;
+		mouseY = e.clientY - rect.top;
+		warmGlow.style.left = `${mouseX}px`;
+		warmGlow.style.top = `${mouseY}px`;
+	}
+
+	function onMouseLeave() {
+		mouseX = -999;
+		mouseY = -999;
+		warmGlow.style.left = '50%';
+		warmGlow.style.top = '50%';
+	}
+
+	function onTouchMove(e: TouchEvent) {
+		if (!containerEl) return;
+		const rect = containerEl.getBoundingClientRect();
+		const touch = e.touches[0];
+		mouseX = touch.clientX - rect.left;
+		mouseY = touch.clientY - rect.top;
+		warmGlow.style.left = `${mouseX}px`;
+		warmGlow.style.top = `${mouseY}px`;
+	}
+
+	function onTap(e: MouseEvent) {
+		if (!containerEl) return;
+		const rect = containerEl.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+
+		const outer = document.createElement('div');
+		outer.className = 'manifesto__ripple';
+		outer.style.left = `${x}px`;
+		outer.style.top = `${y}px`;
+		containerEl.appendChild(outer);
+		setTimeout(() => outer.remove(), 1200);
+
+		const inner = document.createElement('div');
+		inner.className = 'manifesto__ripple-inner';
+		inner.style.left = `${x}px`;
+		inner.style.top = `${y}px`;
+		containerEl.appendChild(inner);
+		setTimeout(() => inner.remove(), 800);
+	}
+
+	function animate() {
+		if (!ctx) return;
+		ctx.clearRect(0, 0, width, height);
+
+		const activeNodes: CircuitNode[] = [];
+
+		for (const node of nodes) {
+			const dx = mouseX - node.x;
+			const dy = mouseY - node.y;
+			const dist = Math.sqrt(dx * dx + dy * dy);
+
+			if (dist < PROXIMITY) {
+				const factor = 1 - dist / PROXIMITY;
+				node.targetOpacity = node.baseOpacity + factor * 0.5;
+				node.glowSize = factor * 12;
+				activeNodes.push(node);
+			} else {
+				node.targetOpacity = node.baseOpacity;
+				node.glowSize = Math.max(0, node.glowSize - 0.5);
+			}
+
+			node.currentOpacity += (node.targetOpacity - node.currentOpacity) * 0.15;
+
+			if (node.glowSize > 0.5) {
+				ctx.beginPath();
+				ctx.arc(node.x, node.y, node.glowSize, 0, Math.PI * 2);
+				ctx.fillStyle = `rgba(224,120,0,${node.currentOpacity * 0.3})`;
+				ctx.fill();
+			}
+
+			ctx.beginPath();
+			ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+			ctx.fillStyle = `rgba(224,120,0,${node.currentOpacity})`;
+			ctx.fill();
+		}
+
+		if (activeNodes.length >= 2) {
+			for (let i = 0; i < activeNodes.length; i++) {
+				for (let j = i + 1; j < activeNodes.length; j++) {
+					const a = activeNodes[i];
+					const b = activeNodes[j];
+					const dx = a.x - b.x;
+					const dy = a.y - b.y;
+					const dist = Math.sqrt(dx * dx + dy * dy);
+					if (dist < TRACE_PROXIMITY) {
+						const opacity = (1 - dist / TRACE_PROXIMITY) * 0.25;
+						ctx.beginPath();
+						ctx.moveTo(a.x, a.y);
+						ctx.lineTo(b.x, b.y);
+						ctx.strokeStyle = `rgba(224,120,0,${opacity})`;
+						ctx.lineWidth = 1;
+						ctx.stroke();
+					}
+				}
+			}
+		}
+
+		animFrame = requestAnimationFrame(animate);
+	}
+
+	let initialized = false;
+	let currentContainer: HTMLElement | undefined;
+
+	// Use $effect to react when containerEl becomes available (bind:this timing)
+	$effect(() => {
+		if (!browser || !canvas || !containerEl || initialized) return;
+		initialized = true;
+		currentContainer = containerEl;
+
+		ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		if (isPrefersReducedMotion()) {
+			resize();
+			for (const node of nodes) {
+				ctx!.beginPath();
+				ctx!.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+				ctx!.fillStyle = `rgba(224,120,0,${node.baseOpacity})`;
+				ctx!.fill();
+			}
+			return;
+		}
+
+		resize();
+		animate();
+
+		containerEl.addEventListener('mousemove', onMouseMove);
+		containerEl.addEventListener('mouseleave', onMouseLeave);
+		containerEl.addEventListener('touchmove', onTouchMove, { passive: true });
+		containerEl.addEventListener('click', onTap);
+		window.addEventListener('resize', resize);
+
+		return () => {
+			if (animFrame) cancelAnimationFrame(animFrame);
+			if (currentContainer) {
+				currentContainer.removeEventListener('mousemove', onMouseMove);
+				currentContainer.removeEventListener('mouseleave', onMouseLeave);
+				currentContainer.removeEventListener('touchmove', onTouchMove);
+				currentContainer.removeEventListener('click', onTap);
+			}
+			window.removeEventListener('resize', resize);
+		};
+	});
+</script>
+
+<canvas bind:this={canvas} class="manifesto__canvas" data-testid="manifesto-canvas"></canvas>
+<div
+	bind:this={warmGlow}
+	class="manifesto__warm-glow"
+	style="left:50%;top:50%;"
+></div>
+
+<style>
+	.manifesto__canvas {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+	}
+
+	.manifesto__warm-glow {
+		position: absolute;
+		width: 800px;
+		height: 500px;
+		background: radial-gradient(
+			ellipse,
+			rgba(224, 120, 0, 0.06) 0%,
+			rgba(255, 182, 39, 0.02) 30%,
+			transparent 60%
+		);
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+		transition:
+			left 0.8s ease-out,
+			top 0.8s ease-out;
+		z-index: 0;
+	}
+</style>
