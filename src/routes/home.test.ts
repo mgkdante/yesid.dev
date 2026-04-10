@@ -18,20 +18,12 @@ describe('Home page', () => {
 		expect(screen.getByTestId('metro-network-container')).toBeInTheDocument();
 	});
 
-	it('renders the hero badge', () => {
-		render(Page);
-		expect(screen.getByTestId('hero-badge')).toBeInTheDocument();
-		expect(screen.getByTestId('hero-badge').textContent).toContain('AVAILABLE FOR HIRE');
-	});
-
 	it('renders the hero headline', () => {
 		render(Page);
 		expect(screen.getByTestId('hero-line1')).toBeInTheDocument();
-		expect(screen.getByTestId('hero-line1').textContent).toContain('DIGITAL');
+		expect(screen.getByTestId('hero-line1').textContent).toContain('PIPELINES THAT');
 		expect(screen.getByTestId('hero-line2')).toBeInTheDocument();
-		expect(screen.getByTestId('hero-line2').textContent).toContain('INFRA');
-		expect(screen.getByTestId('hero-line3')).toBeInTheDocument();
-		expect(screen.getByTestId('hero-line3').textContent).toContain('BUILT RIGHT.');
+		expect(screen.getByTestId('hero-line2').textContent).toContain("DON'T BREAK.");
 	});
 
 	it('renders the hero orange dot', () => {
@@ -41,11 +33,18 @@ describe('Home page', () => {
 		expect(dot.textContent).toBe('.');
 	});
 
+	it('renders hero subheadline', () => {
+		render(Page);
+		const sub = screen.getByTestId('hero-subheadline');
+		expect(sub).toBeInTheDocument();
+		expect(sub.textContent).toContain('Data that tell the truth');
+	});
+
 	it('renders hero subtitle', () => {
 		render(Page);
 		const subtitle = screen.getByTestId('hero-subtitle');
 		expect(subtitle).toBeInTheDocument();
-		expect(subtitle.textContent).toContain('Freelance digital infrastructure');
+		expect(subtitle.textContent).toContain('reliable infrastructure');
 	});
 
 	it('renders hero CTAs', () => {
@@ -54,11 +53,22 @@ describe('Home page', () => {
 		expect(screen.getByTestId('hero-cta-contact')).toBeInTheDocument();
 	});
 
-	it('renders hero SQL decoration', () => {
+	it('renders hero metric cards', () => {
 		render(Page);
-		const sql = screen.getByTestId('hero-sql');
-		expect(sql).toBeInTheDocument();
-		expect(sql.textContent).toContain('SELECT  y.expertise');
+		expect(screen.getByTestId('hero-metrics')).toBeInTheDocument();
+		const cards = screen.getAllByTestId('metric-card');
+		expect(cards).toHaveLength(3);
+	});
+
+	it('renders hero SQL panel', () => {
+		render(Page);
+		expect(screen.getByTestId('sql-panel')).toBeInTheDocument();
+		expect(screen.getByTestId('sql-query').textContent).toContain('SELECT');
+	});
+
+	it('renders hero refresh button', () => {
+		render(Page);
+		expect(screen.getByTestId('hero-refresh')).toBeInTheDocument();
 	});
 
 	it('renders the hard-cut transition between hero and manifesto', () => {
