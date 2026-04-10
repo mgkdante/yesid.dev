@@ -479,6 +479,15 @@
 					// Scrolled back to top — restart synced blink
 					startBlink();
 				}
+
+				// After all stagger animations complete, allow vertical overflow
+				// so mobile users can scroll within the hero to see SQL panel + refresh.
+				// Revert on scroll-back to keep the zoom animation clipped.
+				if (self.progress > 0.95) {
+					pinContainer.style.overflowY = 'visible';
+				} else {
+					pinContainer.style.overflowY = '';
+				}
 			},
 		});
 
@@ -539,7 +548,7 @@
 							</span>
 						</h1>
 
-						<div class="my-3 md:my-6" data-hero-stagger="3">
+						<div class="my-6" data-hero-stagger="3">
 							<HeroMetrics metrics={heroData.metrics} />
 						</div>
 
