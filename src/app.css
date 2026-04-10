@@ -42,6 +42,12 @@
   --radius-brand: 8px;
   --radius-brand-lg: 12px;
   --radius-brand-xl: 16px;
+
+  /* Terminal / SQL panel (Slice 13d) */
+  --color-terminal-bg: #0a0a0a;
+  --color-terminal-border: #2a2a2a;
+  --color-dim: #4a4a4a;
+  --color-live: #22c55e;
 }
 
 /* Dark theme is the default — tokens.css handles var(--bg-primary) etc.
@@ -70,4 +76,21 @@ html {
 }
 *::-webkit-scrollbar-thumb:hover {
   background: rgba(224, 120, 0, 0.6);
+}
+
+/* Circuit grid background — site-wide except nav/footer.
+   Applied via main content wrapper in +layout.svelte or per-section.
+   Uses brand orange at very low opacity for a subtle engineering texture. */
+.circuit-grid {
+  position: relative;
+}
+.circuit-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(224,120,0,0.025) 0px, transparent 1px, transparent 80px),
+    repeating-linear-gradient(0deg, rgba(224,120,0,0.025) 0px, transparent 1px, transparent 80px);
+  pointer-events: none;
+  z-index: 0;
 }

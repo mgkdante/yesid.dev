@@ -35,6 +35,10 @@
   --text-primary: #F5F5F0;
   --text-secondary: #999999;
   --text-muted: #666666;
+  --bg-terminal: #0a0a0a;
+  --border-subtle: #2a2a2a;
+  --text-dim: #4a4a4a;
+  --status-live: #22c55e;
 }
 
 [data-theme="light"], .theme-light {
@@ -56,6 +60,10 @@
     --text-primary: #F5F5F0;
     --text-secondary: #999999;
     --text-muted: #666666;
+    --bg-terminal: #0a0a0a;
+    --border-subtle: #2a2a2a;
+    --text-dim: #4a4a4a;
+    --status-live: #22c55e;
   }
 }
 
