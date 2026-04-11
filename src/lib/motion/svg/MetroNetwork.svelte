@@ -3,18 +3,14 @@
   DOM groups for GSAP animation.
 
   SVG structure (from Yesid's Figma export):
-    - Montreal background: the dark city shape (lines 3-6, fill="#1E1E1E")
-    - Text labels: zone names in grey (lines 7-46, fill="#808285")
-    - Stations: orange circles (lines 48-123, fill="#E07800")
-    - Lines: orange stroke paths (lines 124-129, stroke="#E07800")
-    - Berri-UQAM: the biggest station circle (~20px radius, line 113)
+    - Stations: orange filled paths (fill="#E07800"), including REM line stations
+    - Lines: orange stroke paths (stroke="#E07800"), including smooth-curved REM line
+    - Berri-UQAM: the biggest station (~44px diameter, auto-detected)
 
   GSAP targets (set via onMount DOM queries):
     - .metro-line: stroke paths for DrawSVGPlugin
-    - .metro-station: station circles
-    - .metro-berri: the Berri-UQAM origin node
-    - .metro-bg: the Montreal background shape
-    - .metro-label: text labels
+    - .metro-station: station nodes
+    - .metro-berri: the Berri-UQAM origin node (largest station)
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
@@ -44,6 +40,12 @@
 		svg.setAttribute('aria-hidden', 'true');
 		svg.setAttribute('data-testid', 'metro-network');
 		svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+		// Mobile: crop viewBox to a taller region so the SVG renders bigger,
+		// keeping Berri-UQAM at the same ~80% horizontal position
+		const isMobile = window.innerWidth < 768;
+		if (isMobile) {
+			svg.setAttribute('viewBox', '972 300 600 600');
+		}
 		svg.style.overflow = 'visible';
 
 		// Classify elements by their visual role:
