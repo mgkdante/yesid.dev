@@ -189,3 +189,34 @@ export const skillsJourneyCta = {
 	prompt: { en: 'Your next stop?' } satisfies LocalizedString,
 	button: { en: "Let's build together →" } satisfies LocalizedString,
 } as const;
+
+export const closerContent = {
+	heading: { en: 'TERMINUS' } satisfies LocalizedString,
+	headingDot: { en: '.' } satisfies LocalizedString,
+	subheading: { en: 'FIN DE LIGNE \u00B7 END OF LINE' } satisfies LocalizedString,
+	rows: {
+		contact: {
+			label: { en: 'CONTACT' } satisfies LocalizedString,
+			description: { en: 'Start a project together' } satisfies LocalizedString,
+			action: { en: '\u2192 GO' } satisfies LocalizedString,
+		},
+		connect: {
+			label: { en: 'CONNECT' } satisfies LocalizedString,
+			description: { en: 'LinkedIn \u00B7 full-time roles' } satisfies LocalizedString,
+			action: { en: '\u2192 GO' } satisfies LocalizedString,
+		},
+		read: {
+			label: { en: 'READ' } satisfies LocalizedString,
+			action: { en: '\u2192' } satisfies LocalizedString,
+		},
+		about: {
+			label: { en: 'ABOUT' } satisfies LocalizedString,
+			description: { en: 'Yesid O. \u00B7 Montreal' } satisfies LocalizedString,
+			action: { en: '\u2192' } satisfies LocalizedString,
+		},
+	},
+	attribution: {
+		text: { en: 'Graffiti Vectors by Vecteezy' } satisfies LocalizedString,
+		url: 'https://www.vecteezy.com/free-vector/graffiti',
+	},
+} as const;

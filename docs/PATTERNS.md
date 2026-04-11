@@ -62,6 +62,20 @@ When a slice handoff introduces a workaround, a non-obvious fix, or a reusable a
 **Files:** `HeroBanner.svelte`
 **Reuse when:** Extending a scroll-linked timeline with new phases without touching existing phase timing
 
+### Conditional Scroll Handler (Lenis desktop / normalizeScroll mobile)
+**Discovered in:** Slice 13 (scroll smoothness fix)
+**Problem:** Lenis and `ScrollTrigger.normalizeScroll()` both intercept scroll events — using both causes jank, double-smoothing, and broken pin calculations. Mobile also needs browser chrome (address bar) prevention that Lenis can't provide.
+**Solution:** Check `ScrollTrigger.isTouch > 0` at init. Desktop: Lenis with `autoRaf: false` + GSAP ticker bridge. Mobile: `normalizeScroll(true)` for stable pins and chrome prevention. Never combine both. Use `ScrollTrigger.config({ ignoreMobileResize: true })` as a safety net. Use `scrub: true` on desktop (Lenis provides smoothing), `scrub: 0.5` on mobile (small buffer for touch).
+**Files:** `lenis.ts`, `gsap.ts`, `HeroBanner.svelte`
+**Reuse when:** Any site using Lenis + GSAP ScrollTrigger with pinned scroll-driven animations
+
+### Viewport-Responsive Typography: min(vw, vh)
+**Discovered in:** Slice 13 (hero text sizing)
+**Problem:** `clamp()` with `vw` only doesn't account for short viewports (13" laptops, tablets in landscape). Text overflows vertically.
+**Solution:** Use `clamp(min, min(Xvw, Yvh), max)` so font size scales with whichever dimension is smaller. Account for fixed elements (navbar) by reducing the `vh` factor or adding `py-[max(Nvh, Nrem)]` padding.
+**Files:** `HeroBanner.svelte`
+**Reuse when:** Any large display text that needs to fit within a viewport-height-constrained area across varied screen sizes
+
 ### Velocity-Driven Visual Effects
 **Discovered in:** Slice 06b
 **Problem:** Need visual feedback proportional to scroll speed (glow, blur, etc.)

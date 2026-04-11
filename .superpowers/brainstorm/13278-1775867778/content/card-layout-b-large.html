@@ -1,0 +1,94 @@
+<h2>Option B Refined — Large Typography</h2>
+<p class="subtitle">Side-by-side layout with SVG left, bold benefit headline right. Three scale variations.</p>
+
+<div class="cards">
+
+  <!-- B1: Large -->
+  <div class="card" data-choice="b1" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0D0D0D; padding:28px; min-height:280px;">
+      <div style="display:flex; gap:24px; height:100%;">
+        <!-- SVG left -->
+        <div style="width:100px; min-width:100px; height:100px; border-radius:14px; background:rgba(224,120,0,0.08); border:1px solid rgba(224,120,0,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" stroke="#E07800" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <path d="M16 20h16M16 28h10" stroke="#E07800" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <!-- Text right -->
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="color:rgba(255,255,255,0.35); font-size:11px; text-transform:uppercase; letter-spacing:2px;">SQL Development</div>
+          <div style="color:#FFB627; font-size:22px; font-weight:700; line-height:1.25; letter-spacing:-0.3px;">Queries that run in seconds, not minutes</div>
+          <div style="color:rgba(255,255,255,0.55); font-size:13px; line-height:1.5;">Your dashboards load fast. Your team stops waiting for data.</div>
+          <div style="margin-top:auto; padding-top:12px; border-top:1px solid rgba(224,120,0,0.1);">
+            <span style="color:#E07800; font-size:16px; font-weight:700; font-family:monospace;">3x faster</span>
+            <span style="color:rgba(255,255,255,0.35); font-size:11px; margin-left:8px;">avg query improvement</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B1: Large (22px headline)</h3>
+      <p>Bold benefit at 22px. Readable but not dominating. Good balance with the SVG.</p>
+    </div>
+  </div>
+
+  <!-- B2: Very Large -->
+  <div class="card" data-choice="b2" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0D0D0D; padding:28px; min-height:280px;">
+      <div style="display:flex; gap:28px; height:100%;">
+        <!-- SVG left -->
+        <div style="width:110px; min-width:110px; height:110px; border-radius:14px; background:rgba(224,120,0,0.08); border:1px solid rgba(224,120,0,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <svg width="52" height="52" viewBox="0 0 48 48" fill="none">
+            <rect x="8" y="12" width="32" height="24" rx="3" stroke="#E07800" stroke-width="1.5"/>
+            <path d="M14 22l4 4-4 4M22 30h8" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <!-- Text right -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="color:rgba(255,255,255,0.35); font-size:11px; text-transform:uppercase; letter-spacing:2px;">Data Pipelines</div>
+          <div style="color:#FFB627; font-size:28px; font-weight:700; line-height:1.2; letter-spacing:-0.5px;">Your data arrives clean, on time, every morning</div>
+          <div style="color:rgba(255,255,255,0.55); font-size:14px; line-height:1.5;">Reliable pipelines your analysts trust without chasing broken jobs.</div>
+          <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(224,120,0,0.1);">
+            <span style="color:#E07800; font-size:20px; font-weight:700; font-family:monospace;">99.9%</span>
+            <span style="color:rgba(255,255,255,0.35); font-size:11px; margin-left:8px;">pipeline uptime</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B2: Very Large (28px headline)</h3>
+      <p>Benefit headline at 28px — commands attention. The text IS the card. SVG grounds it visually without competing.</p>
+    </div>
+  </div>
+
+  <!-- B3: Statement Scale -->
+  <div class="card" data-choice="b3" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0D0D0D; padding:32px; min-height:300px;">
+      <div style="display:flex; gap:32px; height:100%;">
+        <!-- SVG left -->
+        <div style="width:120px; min-width:120px; height:120px; border-radius:16px; background:rgba(224,120,0,0.08); border:1px solid rgba(224,120,0,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <svg width="56" height="56" viewBox="0 0 48 48" fill="none">
+            <path d="M12 16h24v4H12zM12 24h18v4H12zM12 32h22v4H12z" stroke="#E07800" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <!-- Text right -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="color:rgba(255,255,255,0.35); font-size:11px; text-transform:uppercase; letter-spacing:2px;">Analytics & Reporting</div>
+          <div style="color:#FFB627; font-size:36px; font-weight:700; line-height:1.1; letter-spacing:-0.8px;">Decisions in 15 minutes, not 2 days</div>
+          <div style="color:rgba(255,255,255,0.55); font-size:14px; line-height:1.5;">Dashboards your team trusts, numbers that match across every report.</div>
+          <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(224,120,0,0.1);">
+            <span style="color:#E07800; font-size:24px; font-weight:700; font-family:monospace;">2d &rarr; 15m</span>
+            <span style="color:rgba(255,255,255,0.35); font-size:12px; margin-left:8px;">reporting turnaround</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B3: Statement Scale (36px headline)</h3>
+      <p>Headline at 36px — nearly a manifesto-level statement per card. Bold, Carnegie-forward. Cards become taller. Likely 2-col grid on desktop to give them room, 1-col on mobile.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:24px;">B2 is the sweet spot for a 3-col grid. B3 is bolder but may push to 2-col. Click to select.</p>

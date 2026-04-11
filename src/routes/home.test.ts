@@ -62,8 +62,10 @@ describe('Home page', () => {
 
 	it('renders hero SQL panel', () => {
 		render(Page);
-		expect(screen.getByTestId('sql-panel')).toBeInTheDocument();
-		expect(screen.getByTestId('sql-query').textContent).toContain('SELECT');
+		const panels = screen.getAllByTestId('sql-panel');
+		expect(panels.length).toBeGreaterThanOrEqual(1);
+		const queries = screen.getAllByTestId('sql-query');
+		expect(queries[0].textContent).toContain('SELECT');
 	});
 
 	it('renders hero refresh button', () => {
@@ -96,5 +98,39 @@ describe('Home page', () => {
 		render(Page);
 		const cards = screen.getAllByTestId('proof-card');
 		expect(cards).toHaveLength(3);
+	});
+
+	it('renders the services section', () => {
+		render(Page);
+		expect(screen.getByTestId('services-section')).toBeInTheDocument();
+	});
+
+	it('renders 6 service cards', () => {
+		render(Page);
+		const cards = screen.getAllByTestId('services-card');
+		expect(cards).toHaveLength(6);
+	});
+
+	it('renders service benefit headlines', () => {
+		render(Page);
+		const benefits = screen.getAllByTestId('services-benefit');
+		expect(benefits).toHaveLength(6);
+	});
+
+	it('renders the closer section', () => {
+		render(Page);
+		expect(screen.getByTestId('closer-section')).toBeInTheDocument();
+	});
+
+	it('renders closer departure board with 5 rows', () => {
+		render(Page);
+		const rows = screen.getAllByTestId('closer-row');
+		expect(rows).toHaveLength(5);
+	});
+
+	it('renders closer TERMINUS heading', () => {
+		render(Page);
+		const heading = screen.getByTestId('closer-heading');
+		expect(heading.textContent).toContain('TERMINUS');
 	});
 });

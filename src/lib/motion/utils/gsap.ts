@@ -18,6 +18,10 @@ let registered = false;
 export function registerGsapPlugins(): void {
 	if (registered) return;
 	gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin, Flip);
+	// Ignore viewport height changes < 25% (mobile address bar show/hide).
+	// Prevents ScrollTrigger from recalculating pin positions when browser
+	// chrome appears/disappears. Compatible with Lenis (unlike normalizeScroll).
+	ScrollTrigger.config({ ignoreMobileResize: true });
 	registered = true;
 }
 

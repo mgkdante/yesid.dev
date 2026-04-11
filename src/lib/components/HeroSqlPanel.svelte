@@ -23,7 +23,7 @@
 >
   <!-- Header: prompt + live dot -->
   <div class="mb-4 flex items-center justify-between">
-    <span class="text-[11px] tracking-[1px] text-[var(--text-muted)]" data-testid="sql-prompt">
+    <span class="text-[11px] tracking-[1px] text-[var(--text-muted)] md:text-[13px]" data-testid="sql-prompt">
       {prompt}
     </span>
     <span class="flex items-center gap-1.5 text-[10px] text-[var(--text-dim)]" data-testid="sql-live">
@@ -33,7 +33,7 @@
   </div>
 
   <!-- Query with syntax highlighting -->
-  <div class="text-xs leading-[1.7]" data-testid="sql-query">
+  <div class="text-xs leading-[1.7] md:text-sm md:leading-[1.8]" data-testid="sql-query">
     <span class="text-[var(--brand-primary)]">SELECT</span><br />
     <span class="text-[var(--text-secondary)]">&nbsp;&nbsp;d.route_short_name,</span><br />
     <span class="text-[var(--text-secondary)]">&nbsp;&nbsp;</span><span class="text-[var(--brand-primary)]">round</span><span class="text-[var(--text-secondary)]">(</span><span class="text-[var(--brand-primary)]">avg</span><span class="text-[var(--text-secondary)]">(f.delay_seconds)::numeric, 1)</span><br />
@@ -51,7 +51,7 @@
 
   <!-- Results table -->
   <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
-    <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-xs">
+    <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-xs md:text-sm md:gap-y-1.5">
       <span class="border-b border-[#1a1a1a] pb-1.5 text-[var(--text-muted)]">route</span>
       <span class="border-b border-[#1a1a1a] pb-1.5 text-[var(--text-muted)]">avg_delay_s</span>
       <span class="border-b border-[#1a1a1a] pb-1.5 text-[var(--text-muted)]">vehicles</span>
@@ -61,7 +61,7 @@
         <span class="text-[var(--text-secondary)]">{row.vehicles}</span>
       {/each}
     </div>
-    <div class="mt-2.5 text-[10px] text-[var(--text-dim)]" data-testid="sql-meta">
+    <div class="mt-2.5 text-[10px] text-[var(--text-dim)] md:text-[12px]" data-testid="sql-meta">
       5 rows &middot; {queryTime}s &middot; updated {updatedAgo}
     </div>
   </div>

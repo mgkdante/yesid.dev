@@ -11,7 +11,9 @@
   Phase 6 (100%)     — Cross-fade SVG out → hero text container in (both orange, seamless)
   Phase 7 (105-140%) — Zoom out hero text container (scale→1), revealing headline
   Phase 8 (110-142%) — Text elements stagger in during zoom-out
-  Phase 9 (150%)     — Hold — hero fully visible, user reads
+  Phase 9 (155%)     — Brief hold, then unpin — SQL panel visible on natural scroll
+
+  Scroll: 800% on all breakpoints. Desktop: Lenis + scrub:true. Mobile: normalizeScroll + scrub:0.5.
 -->
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
@@ -48,7 +50,7 @@
 
 	let heroData: HeroData = $state(INITIAL_HERO_DATA);
 	let updatedAgo: string = $state('30s ago');
-	let sectionMinHeight = $state('900svh');
+	const sectionMinHeight = '900svh';
 
 	function handleRefresh() {
 		heroData = generateHeroData();
@@ -61,11 +63,6 @@
 				refreshIcon.style.transform = 'rotate(0deg)';
 			}, 600);
 		}
-	}
-
-	function measureOverflow(): number {
-		const contentInner = heroTextContainer?.firstElementChild as HTMLElement;
-		return contentInner ? Math.max(0, contentInner.scrollHeight - window.innerHeight) : 0;
 	}
 
 	// Blink state — shared between typewriter (onMount) and ScrollTrigger (buildHeroTimeline)
@@ -149,7 +146,7 @@
 	 * Called by gsap.matchMedia() — once per breakpoint match.
 	 * All GSAP objects created here are auto-reverted by matchMedia on breakpoint exit.
 	 */
-	function buildHeroTimeline(mobile: boolean): void {
+	function buildHeroTimeline(): void {
 		const svg = pinContainer?.querySelector('[data-testid="metro-network"]');
 		if (!svg) return;
 
@@ -168,9 +165,6 @@
 		updateZoomOrigin();
 		updateHeroTextOrigin();
 
-		// Measure overflow for this breakpoint
-		const heroOverflow = measureOverflow();
-
 		// All text elements start invisible
 		const staggerEls = heroTextContainer.querySelectorAll('[data-hero-stagger]');
 		gsap.set(staggerEls, { opacity: 0 });
@@ -181,9 +175,6 @@
 
 		// Set initial hero text scale — use gsap.set so matchMedia can revert
 		gsap.set(heroTextContainer, { scale: calcHeroTextScale() });
-
-		// Set section height for this breakpoint
-		sectionMinHeight = mobile ? '1200svh' : '900svh';
 
 		const tl = gsap.timeline();
 
@@ -268,28 +259,22 @@
 		tl.to(s6, { opacity: 1, duration: 0.10, stagger: 0.02, ease: 'power1.out' }, 1.32);
 		tl.to(s7, { opacity: 1, y: 0, duration: 0.10, ease: 'power1.out' }, 1.38);
 
-		// === Phase 9: Hold ===
-		tl.set({}, {}, 1.50);
-
-		// === Phase 10: Scroll through hero content (mobile only) ===
-		if (mobile && heroOverflow > 0) {
-			tl.to(heroTextContainer, {
-				y: () => -measureOverflow(),
-				duration: 0.5,
-				ease: 'none',
-			}, 1.52);
-			tl.set({}, {}, 2.05);
-		}
+		// === Phase 9: Brief hold — let user read headline before unpin ===
+		tl.set({}, {}, 1.55);
 
 		// matchMedia rebuilds happen after typing — always allow blink restart
 		const typingDone = true;
 
+		// Desktop (Lenis): scrub: true = 1:1 tracking, Lenis provides smoothing.
+		// Mobile (normalizeScroll): scrub: 0.5 = small buffer for stable touch feel.
+		const isTouch = ScrollTrigger.isTouch > 0;
+
 		ScrollTrigger.create({
 			trigger: pinContainer,
 			start: 'top top',
-			end: mobile ? '+=1100%' : '+=800%',
+			end: '+=800%',
 			pin: true,
-			scrub: 1,
+			scrub: isTouch ? 0.5 : true,
 			animation: tl,
 			invalidateOnRefresh: true,
 			onUpdate: (self: { progress: number; direction: number }) => {
@@ -351,9 +336,6 @@
 			document.removeEventListener('touchmove', blockScroll);
 			document.removeEventListener('wheel', blockScroll);
 			document.removeEventListener('keydown', blockKeys, { capture: true });
-			// Enable normalizeScroll AFTER unlock — prevents browser chrome
-			// from interfering with ScrollTrigger pin calculations.
-			ScrollTrigger.normalizeScroll(true);
 			ScrollTrigger.refresh();
 		}
 
@@ -395,9 +377,6 @@
 		} else if (scrollPrompt) {
 			scrollPrompt.textContent = scrollDownLabel + '_';
 			typingComplete = true;
-			ScrollTrigger.normalizeScroll(true);
-		} else {
-			ScrollTrigger.normalizeScroll(true);
 		}
 
 		// Ensure fonts are loaded before glyph measurements — fallback font
@@ -411,7 +390,7 @@
 
 		// Desktop / tablet (>=769px): no Phase 10, 800% scroll range
 		mm.add('(min-width: 769px)', () => {
-			buildHeroTimeline(false);
+			buildHeroTimeline();
 
 			// Restore scroll position from previous breakpoint
 			if (savedProgress !== null) {
@@ -432,7 +411,7 @@
 
 		// Mobile (<769px): Phase 10 content scroll, 1100% scroll range
 		mm.add('(max-width: 768px)', () => {
-			buildHeroTimeline(true);
+			buildHeroTimeline();
 
 			if (savedProgress !== null) {
 				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
@@ -486,7 +465,7 @@
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
 		<div
 			bind:this={heroTextContainer}
-			class="absolute inset-0 flex items-start justify-center pt-20 opacity-0 md:items-center md:pt-0"
+			class="absolute inset-0 flex items-start justify-center pt-20 opacity-0 md:items-center md:py-[max(5vh,2.5rem)]"
 			data-testid="hero-text-container"
 		>
 			<div class="w-full px-6 md:px-12">
@@ -495,7 +474,7 @@
 					<div class="hero-viewport-text">
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[56px] text-[var(--text-primary)] md:text-[clamp(72px,8.5vw,120px)]"
+								class="block text-[64px] text-[var(--text-primary)] md:text-[clamp(72px,min(9vw,11vh),130px)]"
 								data-testid="hero-line1"
 								data-hero-stagger="1"
 							>
@@ -509,7 +488,7 @@
 
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[56px] text-[var(--brand-primary)] md:text-[clamp(72px,8.5vw,120px)]"
+								class="block text-[64px] text-[var(--brand-primary)] md:text-[clamp(72px,min(9vw,11vh),130px)]"
 								data-testid="hero-line2"
 							>
 								<span data-hero-stagger="1">DON'T BREAK</span><svg
@@ -523,7 +502,7 @@
 						</h1>
 
 						<div
-							class="mt-3 text-[26px] font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(28px,3.5vw,48px)]"
+							class="mt-3 text-[26px] font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(26px,min(3.5vw,4vh),44px)]"
 							data-testid="hero-subheadline"
 							data-hero-stagger="2"
 						>
@@ -564,8 +543,8 @@
 						<div class="hero-divider"></div>
 					</div>
 
-					<!-- RIGHT COLUMN: SQL viewport on mobile (100dvh) -->
-					<div class="hero-viewport-sql">
+					<!-- RIGHT COLUMN: desktop only (mobile gets its own section below pin) -->
+					<div class="hero-viewport-sql hidden md:block">
 						<div data-hero-stagger="4">
 							<HeroSqlPanel
 								rows={heroData.queryRows}
@@ -601,6 +580,37 @@
 		>
 			{scrollDownLabel}
 		</p>
+	</div>
+
+	<!-- Mobile SQL section — outside the pin, scrolls naturally after hero text.
+	     Same data/handlers as desktop SQL panel. Hidden on md+ (desktop has it in-grid). -->
+	<div class="md:hidden" data-testid="hero-mobile-sql">
+		<!-- Horizontal divider — mirrors the vertical desktop divider -->
+		<div class="hero-divider-h mx-6"></div>
+
+		<div class="w-full px-6 py-10">
+			<HeroSqlPanel
+				rows={heroData.queryRows}
+				queryTime={heroData.queryTime}
+				prompt={sqlPrompt}
+				liveLabel={sqlLiveLabel}
+				{updatedAgo}
+			/>
+
+			<div class="mt-8 text-center">
+				<button
+					class="refresh-btn"
+					data-testid="hero-refresh-mobile"
+					onclick={handleRefresh}
+				>
+					<span class="text-xl">&#x21bb;</span>
+					{refreshLabel}
+				</button>
+				<div class="mt-2 font-mono text-[10px] text-[var(--text-dim)]">
+					{refreshHelper}
+				</div>
+			</div>
+		</div>
 	</div>
 </section>
 
@@ -664,7 +674,19 @@
 		transform: translateY(-1px);
 	}
 
-	/* Mobile: two full-viewport stacked sections */
+	/* Horizontal divider for mobile — faded ends like desktop vertical */
+	.hero-divider-h {
+		height: 1px;
+		background: linear-gradient(
+			90deg,
+			transparent 0%,
+			var(--border) 15%,
+			var(--border) 85%,
+			transparent 100%
+		);
+	}
+
+	/* Mobile: single-column grid */
 	@media (max-width: 768px) {
 		.hero-grid {
 			grid-template-columns: 1fr;
@@ -676,13 +698,6 @@
 			flex-direction: column;
 			justify-content: center;
 			padding-block: 2rem;
-		}
-		.hero-viewport-sql {
-			min-height: 100dvh;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			padding-block: 2rem 6rem;
 		}
 		.refresh-btn {
 			width: 100%;
