@@ -1,0 +1,252 @@
+<h2>Hero Text Reveal — v4</h2>
+<p class="subtitle">Metrics under "PIPELINES THAT", SQL panel raised, mobile "PIPELINES THAT" on one line.</p>
+
+<!-- Desktop mockup -->
+<div class="mockup">
+  <div class="mockup-header">Desktop (1440px)</div>
+  <div class="mockup-body" style="background:#141414; padding:0; font-family:Inter,system-ui,sans-serif; position:relative; overflow:hidden;">
+    <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(224,120,0,0.025) 0px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,rgba(224,120,0,0.025) 0px,transparent 1px,transparent 80px);pointer-events:none;"></div>
+
+    <div style="position:relative;z-index:1;padding:44px 48px 40px;">
+
+      <!-- TWO COLUMN GRID: Left = hero text + metrics, Right = SQL panel, vertical divider -->
+      <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:32px;align-items:start;">
+
+        <!-- LEFT COLUMN -->
+        <div>
+          <!-- Headline line 1 -->
+          <div style="color:#f5f5f0;font-size:84px;font-weight:900;line-height:0.88;letter-spacing:-0.04em;">
+            PIPELINES THAT
+          </div>
+
+          <!-- Metric cards — 3 across, directly under "PIPELINES THAT" -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:24px 0;">
+            <div style="background:#1e1e1e;border:1px solid #3a3a3a;border-radius:10px;padding:14px 16px;">
+              <div style="font-size:9px;color:#666;letter-spacing:2px;font-family:'JetBrains Mono',monospace;margin-bottom:4px;">VEHICLES TRACKED</div>
+              <div style="font-size:36px;font-weight:800;color:#E07800;line-height:1;">1,247</div>
+              <div style="font-size:9px;color:#4a4a4a;font-family:'JetBrains Mono',monospace;margin-top:4px;">STM &middot; LIVE</div>
+            </div>
+            <div style="background:#1e1e1e;border:1px solid #3a3a3a;border-radius:10px;padding:14px 16px;">
+              <div style="font-size:9px;color:#666;letter-spacing:2px;font-family:'JetBrains Mono',monospace;margin-bottom:4px;">AVG DELAY</div>
+              <div style="font-size:36px;font-weight:800;color:#E07800;line-height:1;">47.3<span style="font-size:20px;color:#999;">s</span></div>
+              <div style="font-size:9px;color:#4a4a4a;font-family:'JetBrains Mono',monospace;margin-top:4px;">87.6% COVERAGE</div>
+            </div>
+            <div style="background:#1e1e1e;border:1px solid #3a3a3a;border-radius:10px;padding:14px 16px;">
+              <div style="font-size:9px;color:#666;letter-spacing:2px;font-family:'JetBrains Mono',monospace;margin-bottom:4px;">ROUTES LIVE</div>
+              <div style="font-size:36px;font-weight:800;color:#E07800;line-height:1;">186</div>
+              <div style="font-size:9px;color:#4a4a4a;font-family:'JetBrains Mono',monospace;margin-top:4px;">OF 203 TOTAL</div>
+            </div>
+          </div>
+
+          <!-- Headline line 2 + 3 -->
+          <div style="color:#E07800;font-size:84px;font-weight:900;line-height:0.88;letter-spacing:-0.04em;">
+            DON'T BREAK<span style="color:#E07800;">.</span>
+          </div>
+          <div style="color:#999;font-size:34px;font-weight:700;line-height:1.1;margin-top:10px;">
+            Data that tell the truth.
+          </div>
+
+          <!-- Subtitle -->
+          <p style="color:#999;font-size:15px;line-height:1.7;margin:20px 0 24px;">
+            Building reliable infrastructure for teams that can't afford downtime.
+          </p>
+
+          <!-- CTAs -->
+          <div style="display:flex;gap:14px;">
+            <a style="background:#E07800;color:#141414;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;display:inline-block;cursor:pointer;">See how I build &rarr;</a>
+            <a style="border:1px solid #3a3a3a;color:#f5f5f0;padding:12px 24px;border-radius:8px;font-size:14px;text-decoration:none;display:inline-block;cursor:pointer;">Let's talk</a>
+          </div>
+        </div>
+
+        <!-- VERTICAL DIVIDER -->
+        <div style="background:linear-gradient(180deg, transparent 0%, #3a3a3a 15%, #3a3a3a 85%, transparent 100%);width:1px;align-self:stretch;"></div>
+
+        <!-- RIGHT COLUMN: SQL panel — starts at top, aligned with headline -->
+        <div style="background:#0a0a0a;border:1px solid #2a2a2a;border-radius:12px;padding:22px 24px;font-family:'JetBrains Mono',monospace;">
+          <!-- Header -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <span style="font-size:11px;color:#666;letter-spacing:1px;">yesid@transit:gold&gt;</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:10px;color:#4a4a4a;">
+              <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;display:inline-block;box-shadow:0 0 6px #22c55e;"></span>
+              LIVE
+            </span>
+          </div>
+          <!-- Query -->
+          <div style="font-size:12px;line-height:1.7;">
+            <span style="color:#E07800;">SELECT</span><br>
+            <span style="color:#999;">&nbsp;&nbsp;d.route_short_name,</span><br>
+            <span style="color:#999;">&nbsp;&nbsp;</span><span style="color:#E07800;">round</span><span style="color:#999;">(</span><span style="color:#E07800;">avg</span><span style="color:#999;">(f.delay_seconds)::numeric, 1)</span><br>
+            <span style="color:#999;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#E07800;">AS</span> <span style="color:#999;">avg_delay_s,</span><br>
+            <span style="color:#999;">&nbsp;&nbsp;</span><span style="color:#E07800;">count</span><span style="color:#999;">(</span><span style="color:#E07800;">DISTINCT</span> <span style="color:#999;">f.vehicle_id)</span><br>
+            <span style="color:#999;">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#E07800;">AS</span> <span style="color:#999;">vehicles</span><br>
+            <span style="color:#E07800;">FROM</span> <span style="color:#FFB627;">gold.latest_trip_delay_snapshot</span> <span style="color:#999;">f</span><br>
+            <span style="color:#E07800;">JOIN</span> <span style="color:#FFB627;">gold.dim_route</span> <span style="color:#999;">d</span><br>
+            <span style="color:#999;">&nbsp;&nbsp;</span><span style="color:#E07800;">USING</span> <span style="color:#999;">(provider_id, route_id)</span><br>
+            <span style="color:#E07800;">WHERE</span> <span style="color:#999;">f.delay_seconds</span> <span style="color:#E07800;">IS NOT NULL</span><br>
+            <span style="color:#E07800;">GROUP BY</span> <span style="color:#999;">d.route_short_name</span><br>
+            <span style="color:#E07800;">ORDER BY</span> <span style="color:#999;">vehicles</span> <span style="color:#E07800;">DESC</span><br>
+            <span style="color:#E07800;">LIMIT</span> <span style="color:#FFB627;">5</span><span style="color:#999;">;</span>
+          </div>
+          <!-- Results -->
+          <div style="border-top:1px solid #2a2a2a;margin-top:16px;padding-top:12px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 12px;font-size:12px;">
+              <span style="color:#666;border-bottom:1px solid #1a1a1a;padding-bottom:5px;">route</span>
+              <span style="color:#666;border-bottom:1px solid #1a1a1a;padding-bottom:5px;">avg_delay_s</span>
+              <span style="color:#666;border-bottom:1px solid #1a1a1a;padding-bottom:5px;">vehicles</span>
+              <span style="color:#f5f5f0;">24</span><span style="color:#FFB627;">32.1</span><span style="color:#999;">28</span>
+              <span style="color:#f5f5f0;">80</span><span style="color:#FFB627;">51.7</span><span style="color:#999;">24</span>
+              <span style="color:#f5f5f0;">121</span><span style="color:#FFB627;">18.4</span><span style="color:#999;">22</span>
+              <span style="color:#f5f5f0;">51</span><span style="color:#FFB627;">44.9</span><span style="color:#999;">19</span>
+              <span style="color:#f5f5f0;">165</span><span style="color:#FFB627;">27.6</span><span style="color:#999;">17</span>
+            </div>
+            <div style="margin-top:10px;font-size:10px;color:#4a4a4a;">
+              5 rows &middot; 0.023s &middot; updated 30s ago
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end 3-col grid (left + divider + right) -->
+
+      <!-- BIG REFRESH BUTTON — full width -->
+      <div style="margin-top:32px;text-align:center;">
+        <button style="
+          background:linear-gradient(135deg, #E07800 0%, #C96A00 100%);
+          color:#141414;
+          border:none;
+          padding:16px 48px;
+          border-radius:10px;
+          font-size:15px;
+          font-weight:800;
+          font-family:'JetBrains Mono',monospace;
+          letter-spacing:2px;
+          cursor:pointer;
+          display:inline-flex;
+          align-items:center;
+          gap:10px;
+          box-shadow:0 0 24px rgba(224,120,0,0.3), 0 4px 12px rgba(0,0,0,0.4);
+        " onmouseover="this.style.boxShadow='0 0 40px rgba(224,120,0,0.5), 0 6px 20px rgba(0,0,0,0.5)';this.style.transform='translateY(-1px)';"
+          onmouseout="this.style.boxShadow='0 0 24px rgba(224,120,0,0.3), 0 4px 12px rgba(0,0,0,0.4)';this.style.transform='translateY(0)';">
+          <span style="font-size:20px;">&#x21bb;</span>
+          PULL FRESH DATA
+        </button>
+        <div style="font-size:10px;color:#4a4a4a;margin-top:8px;font-family:'JetBrains Mono',monospace;">
+          Refreshes metrics + query results from the live pipeline
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Mobile mockup -->
+<div class="mockup" style="margin-top:24px;">
+  <div class="mockup-header">Mobile (375px)</div>
+  <div class="mockup-body" style="background:#141414;padding:24px;font-family:Inter,system-ui,sans-serif;max-width:375px;margin:0 auto;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(224,120,0,0.025) 0px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,rgba(224,120,0,0.025) 0px,transparent 1px,transparent 80px);pointer-events:none;"></div>
+
+    <div style="position:relative;z-index:1;">
+      <!-- PIPELINES THAT on one line -->
+      <div style="color:#f5f5f0;font-size:34px;font-weight:900;line-height:0.88;letter-spacing:-0.04em;white-space:nowrap;">
+        PIPELINES THAT
+      </div>
+
+      <!-- Metric cards -->
+      <div style="display:flex;gap:8px;margin:14px 0;overflow-x:auto;">
+        <div style="background:#1e1e1e;border:1px solid #3a3a3a;border-radius:8px;padding:10px 12px;flex:0 0 auto;">
+          <div style="font-size:8px;color:#666;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">VEHICLES</div>
+          <div style="font-size:26px;font-weight:800;color:#E07800;line-height:1;">1,247</div>
+        </div>
+        <div style="background:#1e1e1e;border:1px solid #3a3a3a;border-radius:8px;padding:10px 12px;flex:0 0 auto;">
+          <div style="font-size:8px;color:#666;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">AVG DELAY</div>
+          <div style="font-size:26px;font-weight:800;color:#E07800;line-height:1;">47.3<span style="font-size:14px;color:#999;">s</span></div>
+        </div>
+        <div style="background:#1e1e1e;border:1px solid #3a3a3a;border-radius:8px;padding:10px 12px;flex:0 0 auto;">
+          <div style="font-size:8px;color:#666;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">ROUTES</div>
+          <div style="font-size:26px;font-weight:800;color:#E07800;line-height:1;">186</div>
+        </div>
+      </div>
+
+      <div style="color:#E07800;font-size:34px;font-weight:900;line-height:0.88;letter-spacing:-0.04em;">
+        DON'T BREAK<span style="color:#E07800;">.</span>
+      </div>
+      <div style="color:#999;font-size:20px;font-weight:700;line-height:1.1;margin-top:6px;">
+        Data that tell the truth.
+      </div>
+
+      <p style="color:#999;font-size:13px;line-height:1.5;margin:14px 0;">
+        Building reliable infrastructure for teams that can't afford downtime.
+      </p>
+
+      <!-- SQL panel -->
+      <div style="background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:12px;font-family:'JetBrains Mono',monospace;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:9px;color:#666;">yesid@transit:gold&gt;</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:8px;color:#4a4a4a;">
+            <span style="width:5px;height:5px;background:#22c55e;border-radius:50%;display:inline-block;box-shadow:0 0 4px #22c55e;"></span>LIVE
+          </span>
+        </div>
+        <div style="font-size:10px;line-height:1.5;">
+          <span style="color:#E07800;">SELECT</span> <span style="color:#999;">route_short_name,</span><br>
+          &nbsp;&nbsp;<span style="color:#E07800;">round</span><span style="color:#999;">(</span><span style="color:#E07800;">avg</span><span style="color:#999;">(delay_seconds)::numeric,1)</span><br>
+          <span style="color:#E07800;">FROM</span> <span style="color:#FFB627;">gold.latest_trip_delay_snapshot</span> <span style="color:#999;">f</span><br>
+          <span style="color:#E07800;">JOIN</span> <span style="color:#FFB627;">gold.dim_route</span> <span style="color:#E07800;">USING</span> <span style="color:#999;">(...)</span><br>
+          <span style="color:#E07800;">GROUP BY</span> <span style="color:#999;">1</span> <span style="color:#E07800;">ORDER BY</span> <span style="color:#999;">2</span> <span style="color:#E07800;">DESC</span><br>
+          <span style="color:#E07800;">LIMIT</span> <span style="color:#FFB627;">3</span><span style="color:#999;">;</span>
+        </div>
+        <div style="border-top:1px solid #2a2a2a;margin-top:8px;padding-top:6px;">
+          <div style="display:grid;grid-template-columns:60px 60px;gap:2px 12px;font-size:10px;">
+            <span style="color:#666;">route</span><span style="color:#666;">delay</span>
+            <span style="color:#f5f5f0;">24</span><span style="color:#FFB627;">32.1s</span>
+            <span style="color:#f5f5f0;">80</span><span style="color:#FFB627;">51.7s</span>
+            <span style="color:#f5f5f0;">121</span><span style="color:#FFB627;">18.4s</span>
+          </div>
+          <div style="font-size:8px;color:#4a4a4a;margin-top:4px;">3 rows &middot; 30s ago</div>
+        </div>
+      </div>
+
+      <!-- Refresh button mobile -->
+      <button style="
+        width:100%;
+        background:linear-gradient(135deg, #E07800 0%, #C96A00 100%);
+        color:#141414;
+        border:none;
+        padding:14px;
+        border-radius:10px;
+        font-size:14px;
+        font-weight:800;
+        font-family:'JetBrains Mono',monospace;
+        letter-spacing:2px;
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        box-shadow:0 0 20px rgba(224,120,0,0.3);
+        margin-bottom:14px;
+      ">
+        <span style="font-size:18px;">&#x21bb;</span>
+        PULL FRESH DATA
+      </button>
+
+      <div style="display:flex;gap:10px;">
+        <span style="background:#E07800;color:#141414;padding:10px 16px;border-radius:8px;font-size:12px;font-weight:600;flex:1;text-align:center;">See how I build &rarr;</span>
+        <span style="border:1px solid #3a3a3a;color:#f5f5f0;padding:10px 16px;border-radius:8px;font-size:12px;flex:1;text-align:center;">Let's talk</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options" style="margin-top:20px;">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">&check;</div>
+    <div class="content">
+      <h3>Approve — write the design spec</h3>
+    </div>
+  </div>
+  <div class="option" data-choice="revise" onclick="toggleSelect(this)">
+    <div class="letter">&hellip;</div>
+    <div class="content">
+      <h3>More changes</h3>
+    </div>
+  </div>
+</div>

@@ -569,9 +569,7 @@ Every page passes its specific data. The component renders all `<svelte:head>` t
 
 ### Slice 16 — E2E Test Suite + Performance + Brand QA Pass
 
-Playwright E2E tests: full nav flow, train journey scroll, project detail, all pages at 3 breakpoints. Performance testing: verify frame rate during scroll on home page. Brand verification: colors, fonts, motion consistency. Fix visual/responsive/performance issues. Optional: add easter eggs from MOTION.md section 9.
-
-**Tests:** Full navigation flow. Train journey completes without jank. Responsive at 375px, 768px, 1280px. No mobile overflow. Frame rate above 45fps on scroll. Reduced motion mode works.
+Playwright E2E tests: full nav flow, train journey scroll, project detail, all pages at 3 breakpoints. Performance testing: verify frame rate during scroll on home page. Brand verification: colors, fonts, motion consistency. Fix visual/responsive/performance issues. Optional: add easter eggs from MOTION.md section 9.  
 **You'll learn:** E2E testing, performance profiling, responsive QA, accessibility verification.
 
 **KEEP IN MIND**: Sentry, Posthog and Vercel analytics
@@ -610,7 +608,8 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
   - Rules for component styling (what goes in scoped style vs Tailwind class)
   - DOM elements that carry styling: what classes/vars they use and why
   - How to add a new color, spacing value, or component style correctly
-5. **Brand color scalability architecture:**
+5.  **Make text considerably bigger**  Use the HOME PAGE to extract font style and usage
+6. **Brand color scalability architecture:**
   - All brand colors flow from a single source: `tokens.css` defines semantic tokens, `app.css` @theme maps them to Tailwind utilities
   - Introduce a `--brand-`* naming convention that supports multiple brand colors beyond primary/accent:
     - `--brand-primary` (#E07800 orange)
@@ -623,7 +622,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
   3. Map to semantic tokens if it replaces an existing role
   4. Update CSS.md token registry
     dit current codebase for any component that hardcodes `brand-primary` where it should use a semantic token (e.g., a section accent that could vary per-service)
-6. **Responsive breakpoint system:**
+7. **Responsive breakpoint system:**
   - Define five canonical breakpoints in `tokens.css` as custom properties and in `app.css` as `@theme` screens:
     - `sm`: 360px (mobile)
     - `md`: 520px (foldable/large phone)
@@ -639,11 +638,11 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
   - No breakpoint logic lives in individual components unless it's layout-specific to that component. Global responsive behavior flows from the layout shell and CSS custom properties.
   - Use math derived sizes so the system is fully resizable and intuitive automatically
   - **USE** -> svh = small viewport height
-    lvh = large viewport height
-    dvh = dynamic viewport height
-    env(safe-area-inset-*)
-    and the Visual Viewport API
-7. **Animation & GSAP cleanup:**
+  lvh = large viewport height
+  dvh = dynamic viewport height
+  env(safe-area-inset-*)
+  and the Visual Viewport API
+8. **Animation & GSAP cleanup:**
   - GSAP does NOT work reliably inside Svelte 5 `$effect()` — timeline callbacks (`onComplete`) never fire. Ref: [https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no](https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no)
   - Audit every component using GSAP in `$effect()` and migrate to one of:
     - **Svelte actions** (`use:animate`) for element-lifecycle animations (scroll-triggered, hover, mount). Actions tie directly to DOM lifecycle which GSAP needs.

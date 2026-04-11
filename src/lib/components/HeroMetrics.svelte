@@ -21,19 +21,19 @@
 <div class="grid grid-cols-3 gap-3.5" data-testid="hero-metrics">
   {#each metrics as metric (metric.key)}
     <div
-      class="rounded-[10px] border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3.5 transition-colors duration-300 hover:border-[var(--brand-primary)]"
+      class="rounded-[10px] border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3.5 transition-colors duration-300 hover:border-[var(--brand-primary)] md:px-5 md:py-4"
       data-testid="metric-card"
     >
-      <div class="font-mono text-[9px] tracking-[2px] text-[var(--text-muted)]">
+      <div class="font-mono text-[11px] tracking-[2px] text-[var(--text-muted)] md:text-[13px]">
         {metric.label}
       </div>
       <div
-        class="mt-1 font-heading text-[clamp(28px,2.5vw,36px)] font-extrabold leading-none text-[var(--brand-primary)]"
+        class="mt-1 font-heading text-[clamp(30px,3vw,42px)] font-extrabold leading-none text-[var(--brand-primary)]"
         data-testid="metric-value-{metric.key}"
       >
         {formatValue(metric)}{#if metric.unit}<span class="text-[60%] text-[var(--text-secondary)]">{metric.unit}</span>{/if}
       </div>
-      <div class="mt-1 font-mono text-[9px] text-[var(--text-dim)]">
+      <div class="mt-1.5 font-mono text-[11px] text-[var(--text-dim)] md:text-[12px]">
         {metric.sub}
       </div>
     </div>

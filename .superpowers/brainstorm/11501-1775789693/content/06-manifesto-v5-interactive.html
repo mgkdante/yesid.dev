@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manifesto v5 — Interactive + More Fill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; color: #e8e8e8; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+  .page-header {
+    padding: 20px 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .page-header h1 { font-size: 13px; color: #666; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }
+  .page-header .step { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #E07800; }
+
+  .notes {
+    padding: 16px 32px; font-size: 13px; color: #777;
+    border-bottom: 1px solid rgba(255,255,255,0.04); line-height: 1.6;
+  }
+  .notes strong { color: #E07800; }
+
+  .page-flow { display: flex; flex-direction: column; }
+
+  /* Hero stub */
+  .hero-stub {
+    height: 160px; background: #141414;
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px;
+    position: relative;
+  }
+  .hero-stub .wordmark { font-weight: 900; font-size: 44px; color: #fff; }
+  .hero-stub .wordmark span { color: #E07800; }
+  .hero-stub .headline { font-weight: 800; font-size: 22px; color: #ccc; }
+  .hero-stub .label {
+    position: absolute; bottom: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #333; letter-spacing: 2px;
+  }
+
+  .hard-cut {
+    height: 4px;
+    background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);
+  }
+
+  /* =================== MANIFESTO =================== */
+  .manifesto {
+    position: relative;
+    min-height: 700px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    background: #0f0d0a;
+    cursor: crosshair;
+  }
+
+  /* CSS circuit grid (base layer, always visible) */
+  .manifesto .circuit-grid {
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(224,120,0,0.035) 0px, rgba(224,120,0,0.035) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(0deg, rgba(224,120,0,0.035) 0px, rgba(224,120,0,0.035) 1px, transparent 1px, transparent 80px);
+  }
+
+  /* Interactive canvas layer — nodes + traces + cursor effects */
+  .manifesto .interactive-canvas {
+    position: absolute; inset: 0; z-index: 1;
+  }
+
+  /* Warm glow — follows cursor subtly */
+  .manifesto .warm-glow {
+    position: absolute;
+    width: 800px; height: 500px;
+    background: radial-gradient(ellipse, rgba(224,120,0,0.06) 0%, rgba(255,182,39,0.02) 30%, transparent 60%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: left 0.8s ease-out, top 0.8s ease-out;
+    z-index: 0;
+  }
+
+  /* Stripes — BOLD */
+  .manifesto .stripe-tl { position: absolute; top: 0; left: 0; width: 240px; height: 240px; overflow: hidden; z-index: 2; }
+  .manifesto .stripe-br { position: absolute; bottom: 0; right: 0; width: 240px; height: 240px; overflow: hidden; z-index: 2; }
+  .manifesto .stripe-tl::before, .manifesto .stripe-br::before {
+    content: ''; position: absolute; width: 480px; height: 480px;
+    background: repeating-linear-gradient(-45deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);
+    opacity: 0.18;
+  }
+  .manifesto .stripe-tl::before { top: -240px; left: -240px; }
+  .manifesto .stripe-br::before { bottom: -240px; right: -240px; }
+
+  .manifesto .stripe-tr { position: absolute; top: 0; right: 0; width: 110px; height: 110px; overflow: hidden; z-index: 2; }
+  .manifesto .stripe-bl { position: absolute; bottom: 0; left: 0; width: 110px; height: 110px; overflow: hidden; z-index: 2; }
+  .manifesto .stripe-tr::before, .manifesto .stripe-bl::before {
+    content: ''; position: absolute; width: 220px; height: 220px;
+    background: repeating-linear-gradient(45deg, #FFB627 0px, #FFB627 7px, #0f0d0a 7px, #0f0d0a 14px);
+    opacity: 0.09;
+  }
+  .manifesto .stripe-tr::before { top: -130px; right: -130px; }
+  .manifesto .stripe-bl::before { bottom: -130px; left: -130px; }
+
+  /* =================== DATA FLOW LINES (new fill) =================== */
+  .manifesto .data-flow {
+    position: absolute; inset: 0; z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .manifesto .flow-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(224,120,0,0.1) 30%, rgba(224,120,0,0.15) 50%, rgba(224,120,0,0.1) 70%, transparent 100%);
+    animation: flowRight 8s linear infinite;
+  }
+  .manifesto .flow-line:nth-child(1) { top: 80px; width: 200px; left: -200px; animation-delay: 0s; animation-duration: 10s; }
+  .manifesto .flow-line:nth-child(2) { top: 160px; width: 140px; left: -140px; animation-delay: 3s; animation-duration: 12s; }
+  .manifesto .flow-line:nth-child(3) { top: 320px; width: 180px; left: -180px; animation-delay: 6s; animation-duration: 9s; }
+  .manifesto .flow-line:nth-child(4) { top: 480px; width: 160px; left: -160px; animation-delay: 1s; animation-duration: 11s; }
+  .manifesto .flow-line:nth-child(5) { top: 560px; width: 120px; left: -120px; animation-delay: 4s; animation-duration: 13s; }
+  .manifesto .flow-line:nth-child(6) { top: 240px; width: 100px; left: -100px; animation-delay: 7s; animation-duration: 8s; }
+  .manifesto .flow-line:nth-child(7) { top: 400px; width: 170px; left: -170px; animation-delay: 2s; animation-duration: 10s; }
+
+  /* Vertical data flows too */
+  .manifesto .flow-line-v {
+    position: absolute;
+    width: 1px;
+    background: linear-gradient(180deg, transparent 0%, rgba(255,182,39,0.08) 30%, rgba(255,182,39,0.12) 50%, rgba(255,182,39,0.08) 70%, transparent 100%);
+    animation: flowDown 10s linear infinite;
+  }
+  .manifesto .flow-line-v:nth-child(1) { left: 80px; height: 120px; top: -120px; animation-delay: 2s; animation-duration: 12s; }
+  .manifesto .flow-line-v:nth-child(2) { left: 240px; height: 90px; top: -90px; animation-delay: 5s; animation-duration: 9s; }
+  .manifesto .flow-line-v:nth-child(3) { left: 480px; height: 110px; top: -110px; animation-delay: 0s; animation-duration: 11s; }
+  .manifesto .flow-line-v:nth-child(4) { left: 640px; height: 80px; top: -80px; animation-delay: 7s; animation-duration: 10s; }
+  .manifesto .flow-line-v:nth-child(5) { right: 80px; height: 100px; top: -100px; animation-delay: 3s; animation-duration: 13s; }
+
+  @keyframes flowRight { 0% { transform: translateX(0); } 100% { transform: translateX(calc(100vw + 400px)); } }
+  @keyframes flowDown { 0% { transform: translateY(0); } 100% { transform: translateY(calc(700px + 200px)); } }
+
+  /* =================== EDGE DECORATIONS (kept from v4) =================== */
+  .manifesto .edge-left {
+    position: absolute; left: 20px; top: 50%; transform: translateY(-50%); z-index: 3;
+    display: flex; flex-direction: column; gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .manifesto .edge-left .readout { writing-mode: vertical-rl; text-orientation: mixed; font-size: 9px; letter-spacing: 3px; color: rgba(224,120,0,0.2); text-transform: uppercase; }
+  .manifesto .edge-left .dot-active { width: 6px; height: 6px; border-radius: 50%; background: #E07800; box-shadow: 0 0 8px rgba(224,120,0,0.4); align-self: center; }
+  .manifesto .edge-left .dot-inactive { width: 5px; height: 5px; border-radius: 50%; border: 1px solid rgba(224,120,0,0.15); align-self: center; }
+
+  .manifesto .edge-right {
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 3;
+    display: flex; flex-direction: column; gap: 20px;
+    font-family: 'JetBrains Mono', monospace; text-align: right;
+  }
+  .manifesto .edge-right .coord { font-size: 9px; color: rgba(224,120,0,0.15); letter-spacing: 1px; }
+  .manifesto .edge-right .coord .val { color: rgba(224,120,0,0.25); }
+
+  .manifesto .edge-top {
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 3;
+    display: flex; align-items: flex-start; gap: 80px;
+  }
+  .manifesto .edge-top .tick { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .manifesto .edge-top .tick-line { width: 1px; height: 12px; background: rgba(224,120,0,0.12); }
+  .manifesto .edge-top .tick-label { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: rgba(224,120,0,0.15); letter-spacing: 1px; }
+
+  .manifesto .edge-bottom {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 3;
+    display: flex; align-items: center; gap: 24px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(224,120,0,0.18); letter-spacing: 1px;
+  }
+  .manifesto .edge-bottom .separator { width: 1px; height: 10px; background: rgba(224,120,0,0.1); }
+  .manifesto .edge-bottom .status-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: rgba(224,120,0,0.3);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; box-shadow: 0 0 6px rgba(224,120,0,0.5); } }
+
+  /* =================== CENTER CONTENT =================== */
+  .manifesto .text-content {
+    position: relative; z-index: 10;
+    width: 100%; max-width: 960px;
+    padding: 56px 80px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .manifesto .dev-prompt {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 36px; padding: 8px 16px;
+    border: 1px solid rgba(224,120,0,0.08); border-radius: 4px;
+    background: rgba(224,120,0,0.02);
+  }
+  .manifesto .dev-prompt .cursor { width: 8px; height: 14px; background: #E07800; animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .manifesto .dev-prompt span { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: rgba(224,120,0,0.4); letter-spacing: 0.5px; }
+  .manifesto .dev-prompt .cmd { color: rgba(224,120,0,0.65); }
+
+  .manifesto .statement { text-align: center; width: 100%; }
+  .manifesto .line-small { font-weight: 700; font-size: 26px; letter-spacing: -0.02em; line-height: 1.3; color: rgba(255,255,255,0.45); text-transform: uppercase; }
+  .manifesto .line-huge { font-weight: 900; font-size: 92px; letter-spacing: -0.05em; line-height: 0.85; color: #E07800; text-transform: uppercase; margin: 12px 0; text-shadow: 0 0 80px rgba(224,120,0,0.12); }
+  .manifesto .highlight { color: #E07800; }
+
+  .manifesto .pills {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 40px;
+  }
+  .manifesto .pill {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.04em;
+    color: #666; border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 999px; padding: 6px 16px; transition: all 0.2s; cursor: pointer;
+  }
+  .manifesto .pill:hover { border-color: #E07800; color: #E07800; background: rgba(224,120,0,0.06); }
+
+  /* =================== TAP RIPPLE (mobile) =================== */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(224,120,0,0.4);
+    pointer-events: none;
+    animation: ripple-expand 1.2s ease-out forwards;
+    z-index: 4;
+  }
+  @keyframes ripple-expand {
+    0% { width: 0; height: 0; opacity: 0.6; transform: translate(-50%, -50%); }
+    100% { width: 200px; height: 200px; opacity: 0; transform: translate(-50%, -50%); }
+  }
+  .ripple-inner {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,182,39,0.3);
+    pointer-events: none;
+    animation: ripple-expand-inner 0.8s ease-out forwards;
+    z-index: 4;
+  }
+  @keyframes ripple-expand-inner {
+    0% { width: 0; height: 0; opacity: 0.8; transform: translate(-50%, -50%); }
+    100% { width: 100px; height: 100px; opacity: 0; transform: translate(-50%, -50%); }
+  }
+
+  /* =================== DARK RETURN =================== */
+  .dark-return {
+    height: 100px;
+    background: linear-gradient(180deg, #0f0d0a 0%, #141414 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #333; letter-spacing: 3px;
+  }
+
+  /* =================== ANNOTATIONS =================== */
+  .annotations { padding: 24px 32px; border-top: 1px solid rgba(255,255,255,0.04); }
+  .annotations h3 { font-size: 13px; color: #E07800; font-family: 'JetBrains Mono', monospace; margin-bottom: 16px; letter-spacing: 1px; }
+  .ann-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .ann { padding: 14px; background: rgba(255,255,255,0.015); border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); }
+  .ann h4 { font-size: 10px; color: #FFB627; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; margin-bottom: 4px; }
+  .ann p { font-size: 11px; color: #555; line-height: 1.5; }
+  .ann code { color: #E07800; font-size: 10px; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>yesid.dev — Manifesto v5</h1>
+  <span class="step">step 06 / interactive + data flow</span>
+</div>
+
+<div class="notes">
+  <strong>NEW:</strong> Move your cursor over the manifesto section — nodes glow on proximity, traces light up between nearby nodes, warm glow follows cursor. Click/tap for pulse ripples. Data flow lines animate along the circuit grid. Try it!
+</div>
+
+<div class="page-flow">
+  <div class="hero-stub">
+    <div class="wordmark">yesid<span>.</span></div>
+    <div class="headline">DIGITAL INFRA<span style="color:#555;font-size:16px;"> BUILT RIGHT.</span></div>
+    <div class="label">↑ HERO ENDS HERE</div>
+  </div>
+
+  <div class="hard-cut"></div>
+
+  <div class="manifesto" id="manifesto">
+    <div class="circuit-grid"></div>
+    <canvas class="interactive-canvas" id="nodeCanvas"></canvas>
+    <div class="warm-glow" id="warmGlow"></div>
+
+    <!-- Data flow lines (horizontal) -->
+    <div class="data-flow" id="hFlows">
+      <div class="flow-line"></div><div class="flow-line"></div><div class="flow-line"></div>
+      <div class="flow-line"></div><div class="flow-line"></div><div class="flow-line"></div>
+      <div class="flow-line"></div>
+    </div>
+    <!-- Data flow lines (vertical) -->
+    <div class="data-flow" id="vFlows">
+      <div class="flow-line-v"></div><div class="flow-line-v"></div><div class="flow-line-v"></div>
+      <div class="flow-line-v"></div><div class="flow-line-v"></div>
+    </div>
+
+    <div class="stripe-tl"></div><div class="stripe-br"></div>
+    <div class="stripe-tr"></div><div class="stripe-bl"></div>
+
+    <!-- Edge decorations (from v4) -->
+    <div class="edge-left">
+      <div class="readout">SEC—02</div>
+      <div class="dot-active"></div>
+      <div class="readout">MANIFESTO</div>
+      <div class="dot-inactive"></div><div class="dot-inactive"></div>
+      <div class="readout">MTL—QC</div>
+    </div>
+    <div class="edge-right">
+      <div class="coord">LAT <span class="val">45.5017°N</span></div>
+      <div class="coord">LNG <span class="val">73.5673°W</span></div>
+      <div class="coord">——</div>
+      <div class="coord">NODE <span class="val">berri-uqam</span></div>
+      <div class="coord">STATUS <span class="val">active</span></div>
+    </div>
+    <div class="edge-top">
+      <div class="tick"><div class="tick-line"></div><div class="tick-label">0</div></div>
+      <div class="tick"><div class="tick-line"></div><div class="tick-label">80</div></div>
+      <div class="tick"><div class="tick-line"></div><div class="tick-label">160</div></div>
+      <div class="tick"><div class="tick-line"></div><div class="tick-label">240</div></div>
+      <div class="tick"><div class="tick-line"></div><div class="tick-label">320</div></div>
+      <div class="tick"><div class="tick-line"></div><div class="tick-label">400</div></div>
+      <div class="tick"><div class="tick-line"></div><div class="tick-label">480</div></div>
+    </div>
+    <div class="edge-bottom">
+      <div class="status-dot"></div><span>CONNECTED</span>
+      <div class="separator"></div><span>yesid.dev/manifesto</span>
+      <div class="separator"></div><span>v2.0</span>
+      <div class="separator"></div><span>SCROLL ↓</span>
+    </div>
+
+    <!-- Center content -->
+    <div class="text-content">
+      <div class="dev-prompt">
+        <span class="cmd">yesid@mtl</span><span>:~$ cat manifesto.md</span>
+        <div class="cursor"></div>
+      </div>
+      <div class="statement">
+        <div class="line-small">I BUILD THE</div>
+        <div class="line-huge">INFRA&shy;STRUCTURE</div>
+        <div class="line-small">YOUR <span class="highlight">OPERATIONS</span> RUN ON<span class="highlight">.</span></div>
+      </div>
+      <div class="pills">
+        <span class="pill">pipelines</span>
+        <span class="pill">databases</span>
+        <span class="pill">dashboards</span>
+        <span class="pill">internal_tools</span>
+        <span class="pill">web_apps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dark-return">↓ ACT 2: PROOF REEL ↓</div>
+</div>
+
+<div class="annotations">
+  <h3>INTERACTIVE ELEMENTS — WHAT'S NEW</h3>
+  <div class="ann-grid">
+    <div class="ann">
+      <h4>NODE PROXIMITY GLOW</h4>
+      <p>Circuit nodes within 120px of cursor brighten from 15% to 60% opacity and gain an orange glow. Creates a "scanning" effect — like you're probing a circuit board with a multimeter. Uses canvas for performance.</p>
+    </div>
+    <div class="ann">
+      <h4>TRACE CONNECTIONS</h4>
+      <p>When cursor activates 2+ nearby nodes, faint orange lines draw between them — temporary circuit traces. Fade out over 0.5s when cursor moves away. Suggests live network connections forming.</p>
+    </div>
+    <div class="ann">
+      <h4>WARM GLOW FOLLOWS CURSOR</h4>
+      <p>The radial glow drifts toward cursor position with 800ms ease-out delay. Subtle — the glow's center lags behind the cursor, creating a "heat source" that follows attention. CSS transition only.</p>
+    </div>
+    <div class="ann">
+      <h4>TAP RIPPLE (CLICK/MOBILE)</h4>
+      <p>Click or tap anywhere in the section to emit a concentric ripple pulse — orange ring expanding outward + inner yellow ring. Two rings, different speeds. Like a sonar ping or network broadcast. DOM elements, auto-removed.</p>
+    </div>
+    <div class="ann">
+      <h4>DATA FLOW LINES</h4>
+      <p>Faint horizontal + vertical light traces animate along the grid lines. 7 horizontal (flowing right) + 5 vertical (flowing down). Different speeds and delays. Suggests data packets moving through infrastructure. CSS-only animation.</p>
+    </div>
+    <div class="ann">
+      <h4>PRODUCTION NOTES</h4>
+      <p>Canvas interaction → GSAP in production (already in stack). <code>prefers-reduced-motion</code>: disable data flows + node glow, keep static grid + stripes + edges. Mobile: touch events replace mousemove, tap ripple works natively.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// =================== INTERACTIVE NODE CANVAS ===================
+const manifesto = document.getElementById('manifesto');
+const canvas = document.getElementById('nodeCanvas');
+const ctx = canvas.getContext('2d');
+const warmGlow = document.getElementById('warmGlow');
+
+let width, height, nodes = [], mouseX = -999, mouseY = -999;
+const GRID = 80;
+const PROXIMITY = 120;
+const TRACE_PROXIMITY = 160;
+
+function resize() {
+  const rect = manifesto.getBoundingClientRect();
+  width = rect.width;
+  height = rect.height;
+  canvas.width = width;
+  canvas.height = height;
+
+  // Generate grid nodes
+  nodes = [];
+  for (let x = GRID; x < width; x += GRID) {
+    for (let y = GRID; y < height; y += GRID) {
+      nodes.push({
+        x, y,
+        baseOpacity: 0.08 + Math.random() * 0.08,
+        currentOpacity: 0,
+        targetOpacity: 0,
+        size: 1.5 + Math.random() * 1.5,
+        glowSize: 0
+      });
+    }
+  }
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Mouse tracking (relative to manifesto)
+manifesto.addEventListener('mousemove', (e) => {
+  const rect = manifesto.getBoundingClientRect();
+  mouseX = e.clientX - rect.left;
+  mouseY = e.clientY - rect.top;
+
+  // Move warm glow
+  warmGlow.style.left = (mouseX) + 'px';
+  warmGlow.style.top = (mouseY) + 'px';
+});
+
+manifesto.addEventListener('mouseleave', () => {
+  mouseX = -999; mouseY = -999;
+  warmGlow.style.left = '50%';
+  warmGlow.style.top = '50%';
+});
+
+// Touch support
+manifesto.addEventListener('touchmove', (e) => {
+  const rect = manifesto.getBoundingClientRect();
+  const touch = e.touches[0];
+  mouseX = touch.clientX - rect.left;
+  mouseY = touch.clientY - rect.top;
+  warmGlow.style.left = mouseX + 'px';
+  warmGlow.style.top = mouseY + 'px';
+}, { passive: true });
+
+// Click/tap ripple
+manifesto.addEventListener('click', (e) => {
+  const rect = manifesto.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  // Outer ripple
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  ripple.style.left = x + 'px';
+  ripple.style.top = y + 'px';
+  manifesto.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 1200);
+
+  // Inner ripple (faster, yellow)
+  const inner = document.createElement('div');
+  inner.className = 'ripple-inner';
+  inner.style.left = x + 'px';
+  inner.style.top = y + 'px';
+  manifesto.appendChild(inner);
+  setTimeout(() => inner.remove(), 800);
+});
+
+// Animation loop
+function animate() {
+  ctx.clearRect(0, 0, width, height);
+
+  const activeNodes = [];
+
+  // Update and draw nodes
+  for (const node of nodes) {
+    const dx = mouseX - node.x;
+    const dy = mouseY - node.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < PROXIMITY) {
+      const factor = 1 - (dist / PROXIMITY);
+      node.targetOpacity = node.baseOpacity + factor * 0.5;
+      node.glowSize = factor * 12;
+      activeNodes.push(node);
+    } else {
+      node.targetOpacity = node.baseOpacity;
+      node.glowSize = Math.max(0, node.glowSize - 0.5);
+    }
+
+    // Ease toward target
+    node.currentOpacity += (node.targetOpacity - node.currentOpacity) * 0.15;
+
+    // Draw glow
+    if (node.glowSize > 0.5) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.glowSize, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(224,120,0,${node.currentOpacity * 0.3})`;
+      ctx.fill();
+    }
+
+    // Draw node
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(224,120,0,${node.currentOpacity})`;
+    ctx.fill();
+  }
+
+  // Draw traces between active nodes
+  if (activeNodes.length >= 2) {
+    for (let i = 0; i < activeNodes.length; i++) {
+      for (let j = i + 1; j < activeNodes.length; j++) {
+        const a = activeNodes[i];
+        const b = activeNodes[j];
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < TRACE_PROXIMITY) {
+          const opacity = (1 - dist / TRACE_PROXIMITY) * 0.25;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(224,120,0,${opacity})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>

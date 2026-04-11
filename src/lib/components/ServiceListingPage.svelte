@@ -133,7 +133,6 @@
 		height: calc(100vh - 5rem); /* subtract floating pill nav area (pt-20 = 80px) */
 		display: flex;
 		flex-direction: column;
-		background: var(--bg-primary, #141414);
 		overflow: hidden;
 	}
 

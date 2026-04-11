@@ -1,0 +1,134 @@
+<h2>Manifesto — Capability Pills</h2>
+<p class="subtitle">A row of pills below the manifesto text, each linking to a service page. They ground the bold statement in specifics.</p>
+
+<div class="section">
+  <h3>Pill Labels</h3>
+  <p>The spec suggests: Pipelines, Databases, Dashboards, Internal Tools, Web Apps. But your 6 services are:</p>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 0.5rem; margin-bottom: 1rem;">
+    <tr style="border-bottom: 1px solid #3A3A3A;">
+      <td style="padding: 0.4rem; color: #999; width: 40%;">sql-development</td>
+      <td style="padding: 0.4rem;">SQL</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #3A3A3A;">
+      <td style="padding: 0.4rem; color: #999;">data-pipeline</td>
+      <td style="padding: 0.4rem;">Pipelines</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #3A3A3A;">
+      <td style="padding: 0.4rem; color: #999;">analytics-reporting</td>
+      <td style="padding: 0.4rem;">Dashboards</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #3A3A3A;">
+      <td style="padding: 0.4rem; color: #999;">database-engineering</td>
+      <td style="padding: 0.4rem;">Databases</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #3A3A3A;">
+      <td style="padding: 0.4rem; color: #999;">internal-tooling</td>
+      <td style="padding: 0.4rem;">Internal Tools</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.4rem; color: #999;">web-development</td>
+      <td style="padding: 0.4rem;">Web Apps</td>
+    </tr>
+  </table>
+  <p>All 6 pills, or just 4–5 for a cleaner row? (SQL and Databases overlap visually.)</p>
+</div>
+
+<div class="section">
+  <h3>Pill Style</h3>
+</div>
+
+<div class="cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+
+  <!-- Style A: Ghost outline -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #141414; padding: 2rem 1.5rem; min-height: 140px; display: flex; align-items: center; justify-content: center;">
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+        <span style="border: 1px solid #3A3A3A; color: #999; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Pipelines</span>
+        <span style="border: 1px solid #3A3A3A; color: #999; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Databases</span>
+        <span style="border: 1px solid #3A3A3A; color: #999; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Dashboards</span>
+        <span style="border: 1px solid #3A3A3A; color: #999; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Internal Tools</span>
+        <span style="border: 1px solid #3A3A3A; color: #999; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Web Apps</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Ghost outline pills</h3>
+      <p>Subtle border, muted text (#999). Hover shifts border to orange + text to white. Quiet — doesn't compete with the manifesto text above. Pills feel like metadata.</p>
+    </div>
+  </div>
+
+  <!-- Style B: Filled dark surface -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #141414; padding: 2rem 1.5rem; min-height: 140px; display: flex; align-items: center; justify-content: center;">
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+        <span style="background: #1E1E1E; color: #F5F5F0; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Pipelines</span>
+        <span style="background: #1E1E1E; color: #F5F5F0; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Databases</span>
+        <span style="background: #1E1E1E; color: #F5F5F0; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Dashboards</span>
+        <span style="background: #1E1E1E; color: #F5F5F0; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Internal Tools</span>
+        <span style="background: #1E1E1E; color: #F5F5F0; padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; letter-spacing: 0.05em;">Web Apps</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Filled surface pills</h3>
+      <p>Dark surface (#1E1E1E) fill, white text. Hover fills with orange. More presence than ghost, but still restrained. Feels like nav tags.</p>
+    </div>
+  </div>
+
+  <!-- Style C: Mono code tags -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #141414; padding: 2rem 1.5rem; min-height: 140px; display: flex; align-items: center; justify-content: center;">
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+        <span style="color: #E07800; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.05em;">pipelines</span>
+        <span style="color: #3A3A3A;">·</span>
+        <span style="color: #E07800; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.05em;">databases</span>
+        <span style="color: #3A3A3A;">·</span>
+        <span style="color: #E07800; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.05em;">dashboards</span>
+        <span style="color: #3A3A3A;">·</span>
+        <span style="color: #E07800; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.05em;">internal_tools</span>
+        <span style="color: #3A3A3A;">·</span>
+        <span style="color: #E07800; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.05em;">web_apps</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Mono code-style</h3>
+      <p>JetBrains Mono, lowercase with underscores, dot separators, orange text. No backgrounds or borders. Feels like terminal output — ties back to the SQL decoration in the hero. Hover underlines.</p>
+    </div>
+  </div>
+
+  <!-- Style D: Pill + arrow -->
+  <div class="card" data-choice="d" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #141414; padding: 2rem 1.5rem; min-height: 140px; display: flex; align-items: center; justify-content: center;">
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+        <span style="border: 1px solid #3A3A3A; color: #F5F5F0; padding: 0.4rem 0.8rem 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; display: inline-flex; align-items: center; gap: 0.4rem;">Pipelines <span style="color: #E07800;">→</span></span>
+        <span style="border: 1px solid #3A3A3A; color: #F5F5F0; padding: 0.4rem 0.8rem 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; display: inline-flex; align-items: center; gap: 0.4rem;">Databases <span style="color: #E07800;">→</span></span>
+        <span style="border: 1px solid #3A3A3A; color: #F5F5F0; padding: 0.4rem 0.8rem 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; display: inline-flex; align-items: center; gap: 0.4rem;">Dashboards <span style="color: #E07800;">→</span></span>
+        <span style="border: 1px solid #3A3A3A; color: #F5F5F0; padding: 0.4rem 0.8rem 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; display: inline-flex; align-items: center; gap: 0.4rem;">Internal Tools <span style="color: #E07800;">→</span></span>
+        <span style="border: 1px solid #3A3A3A; color: #F5F5F0; padding: 0.4rem 0.8rem 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-family: Inter, sans-serif; display: inline-flex; align-items: center; gap: 0.4rem;">Web Apps <span style="color: #E07800;">→</span></span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D — Ghost pills with arrow</h3>
+      <p>Like A but with an orange → arrow inside each pill. Makes the "click to explore" intent obvious. Hover fills orange. More call-to-action energy.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem;">
+  <h3>Also: how many pills?</h3>
+  <p>All 6 services, or drop SQL (since "Databases" already covers that perception)? 5 pills = cleaner row on desktop, less wrapping on mobile.</p>
+  <div class="options" style="margin-top: 0.75rem;">
+    <div class="option" data-choice="six" onclick="toggleSelect(this)">
+      <div class="letter">6</div>
+      <div class="content">
+        <h3>All 6: SQL · Pipelines · Dashboards · Databases · Internal Tools · Web Apps</h3>
+        <p>Complete coverage, no service left out</p>
+      </div>
+    </div>
+    <div class="option" data-choice="five" onclick="toggleSelect(this)">
+      <div class="letter">5</div>
+      <div class="content">
+        <h3>Drop SQL: Pipelines · Databases · Dashboards · Internal Tools · Web Apps</h3>
+        <p>Cleaner row, "Databases" covers the SQL perception, SQL detail lives on its own service page</p>
+      </div>
+    </div>
+  </div>
+</div>

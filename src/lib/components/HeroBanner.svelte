@@ -495,7 +495,7 @@
 					<div class="hero-viewport-text">
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[48px] text-[var(--text-primary)] md:text-[clamp(48px,6vw,84px)]"
+								class="block text-[56px] text-[var(--text-primary)] md:text-[clamp(72px,8.5vw,120px)]"
 								data-testid="hero-line1"
 								data-hero-stagger="1"
 							>
@@ -509,7 +509,7 @@
 
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[48px] text-[var(--brand-primary)] md:text-[clamp(48px,6vw,84px)]"
+								class="block text-[56px] text-[var(--brand-primary)] md:text-[clamp(72px,8.5vw,120px)]"
 								data-testid="hero-line2"
 							>
 								<span data-hero-stagger="1">DON'T BREAK</span><svg
@@ -523,7 +523,7 @@
 						</h1>
 
 						<div
-							class="mt-3 text-[22px] font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(20px,2.5vw,34px)]"
+							class="mt-3 text-[26px] font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(28px,3.5vw,48px)]"
 							data-testid="hero-subheadline"
 							data-hero-stagger="2"
 						>
@@ -531,7 +531,7 @@
 						</div>
 
 						<p
-							class="mt-5 text-[15px] leading-[1.7] text-[var(--text-secondary)]"
+							class="mt-5 text-[17px] leading-[1.7] text-[var(--text-secondary)] md:text-[20px]"
 							data-testid="hero-subtitle"
 							data-hero-stagger="6"
 						>
@@ -541,14 +541,14 @@
 						<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
 							<a
 								href="/work"
-								class="inline-flex items-center rounded-lg bg-[var(--brand-primary)] px-6 py-3 text-sm font-bold text-[#141414] transition-colors hover:bg-[var(--brand-primary-hover)]"
+								class="inline-flex items-center rounded-lg bg-[var(--brand-primary)] px-7 py-3.5 text-base font-bold text-[#141414] transition-colors hover:bg-[var(--brand-primary-hover)] md:px-9 md:py-4 md:text-lg"
 								data-testid="hero-cta-work"
 							>
 								{ctaWorkLabel}
 							</a>
 							<a
 								href="/contact"
-								class="inline-flex items-center rounded-lg border border-[var(--border)] px-6 py-3 text-sm font-semibold text-[var(--text-primary)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
+								class="inline-flex items-center rounded-lg border border-[var(--border)] px-7 py-3.5 text-base font-semibold text-[var(--text-primary)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] md:px-9 md:py-4 md:text-lg"
 								data-testid="hero-cta-contact"
 							>
 								{ctaContactLabel}
