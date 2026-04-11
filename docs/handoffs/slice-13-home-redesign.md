@@ -14,12 +14,10 @@
 - 13h: Closer section — departure board terminal, graffiti DrawSVG letters, AZUR blueprints, construction props, floodlight
 - Metro network SVG update — new map with orange REM line (smooth bezier curves), REM stations, mobile viewBox crop for 1.5x scaling
 
-**Intentionally not implemented (deferred to future slices):**
-- Services Grid (13g implementation — spec and plan done)
-- Blog Teaser section
-- About Strip section
-- Dual CTA section
-- Polish Pass (section transitions, mobile QA, performance)
+**Intentionally not implemented (absorbed into Closer section concept):**
+- Blog Teaser section — deferred, mixed into closer
+- About Strip section — deferred, mixed into closer
+- Dual CTA section — deferred, mixed into closer
 
 ## 2. High-Level Summary
 
@@ -107,11 +105,7 @@ No critical errors. Minor iteration issues:
 
 ## 11. Known Gaps / Deferred Work
 
-- **Services Grid (13g):** Spec and plan complete, implementation not started
-- **Blog Teaser:** Not started — needs spec
-- **About Strip:** Not started — needs spec
-- **Dual CTA:** Not started — needs spec
-- **Polish Pass:** Section transitions, mobile QA, performance audit
+- **Blog Teaser, About Strip, Dual CTA:** Not implemented as standalone sections — their intent was absorbed into the Closer section's construction-site concept
 - **Closer section (13h):** ~80% done — floodlight 3D and some construction props pending
 
 ## 12. What Yesid Should Know
@@ -127,7 +121,7 @@ No critical errors. Minor iteration issues:
 
 ## 14. Final Status
 
-**COMPLETE WITH GAPS** — Hero, Manifesto, Proof Reel, and Closer sections are functional. Metro SVG updated with REM line and mobile scaling. Services Grid spec/plan done but not implemented. Blog Teaser, About Strip, and Dual CTA sections deferred.
+**COMPLETE WITH GAPS** — Hero, Manifesto, Proof Reel, Services Grid, and Closer sections are functional. Metro SVG updated with REM line and mobile scaling. Blog Teaser, About Strip, and Dual CTA were absorbed into the Closer section concept. Closer ~80% done (floodlight pending).
 
 ---
 
