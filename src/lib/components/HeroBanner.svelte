@@ -65,42 +65,6 @@
 		}
 	}
 
-	// Programmatic text sizing — measures actual rendered width and scales
-	// font-size so the text fills 100% of viewport width.
-	// Desktop: single line (nowrap). Mobile: wraps, fits widest line.
-	function fitScrollPrompt() {
-		if (!scrollPrompt || !scrollPrompt.textContent?.trim()) return;
-
-		const containerWidth = window.innerWidth;
-		const isMobile = containerWidth < 768;
-		const refSize = 100; // reference font-size in px
-		const refSpacing = -0.8; // letter-spacing at refSize
-
-		scrollPrompt.style.fontSize = `${refSize}px`;
-		scrollPrompt.style.letterSpacing = `${refSpacing}px`;
-
-		let measuredWidth: number;
-
-		if (!isMobile) {
-			// Desktop: force single line, measure scrollWidth
-			scrollPrompt.style.whiteSpace = 'nowrap';
-			measuredWidth = scrollPrompt.scrollWidth;
-		} else {
-			// Mobile: allow wrap, measure widest line via getClientRects
-			scrollPrompt.style.whiteSpace = 'normal';
-			const range = document.createRange();
-			range.selectNodeContents(scrollPrompt);
-			const rects = Array.from(range.getClientRects());
-			measuredWidth = Math.max(...rects.map((r) => r.width), 1);
-		}
-
-		if (measuredWidth <= 0) return;
-
-		const scale = containerWidth / measuredWidth;
-		scrollPrompt.style.fontSize = `${refSize * scale}px`;
-		scrollPrompt.style.letterSpacing = `${refSpacing * scale}px`;
-	}
-
 	// Blink state — shared between typewriter (onMount) and ScrollTrigger (buildHeroTimeline)
 	let blinkInterval: ReturnType<typeof setInterval> | undefined;
 	let typingComplete = false;
@@ -497,7 +461,7 @@
 		<!-- SVG wrapper — zooms into Berri-UQAM -->
 		<div
 			bind:this={svgWrapper}
-			class="absolute inset-0 flex items-center justify-center px-4 pr-12 md:pr-20"
+			class="absolute inset-0 flex items-center justify-center"
 		>
 			<MetroNetwork bind:this={networkComponent} />
 		</div>
@@ -618,7 +582,7 @@
 		     Mobile: wraps to 2 lines at the colon. Desktop: single line. -->
 		<p
 			bind:this={scrollPrompt}
-			class="scroll-prompt pointer-events-none absolute bottom-0 left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-[#E07800] md:whitespace-nowrap md:leading-none"
+			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-[#E07800] md:whitespace-nowrap md:leading-none"
 		>
 		</p>
 	</div>
@@ -727,19 +691,20 @@
 		);
 	}
 
-	/* Full-width billboard text — scales to fill viewport width.
-	   Math: mono char ≈ 0.6em; width = chars * (0.6*fontSize + letterSpacing).
-	   Desktop 23 chars → 8.1vw @ -0.6vw ≈ 98vw.
-	   Mobile 12 chars (longest wrapped line) → 13.6vw @ -0.3vw ≈ 94vw. */
+	/* Full-width billboard text.
+	   Mobile: offset bottom by browser chrome height (lvh - dvh) so text
+	   stays visible when the address bar is showing. */
 	.scroll-prompt {
 		font-size: 13.6vw;
 		letter-spacing: -0.3vw;
+		bottom: calc(100lvh - 100dvh);
 	}
 
 	@media (min-width: 768px) {
 		.scroll-prompt {
 			font-size: 8.1vw;
 			letter-spacing: -0.6vw;
+			bottom: 0;
 		}
 	}
 
