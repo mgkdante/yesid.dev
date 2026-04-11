@@ -461,7 +461,7 @@
 		<!-- SVG wrapper — zooms into Berri-UQAM -->
 		<div
 			bind:this={svgWrapper}
-			class="absolute inset-0 flex items-center justify-center"
+			class="absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
 		>
 			<MetroNetwork bind:this={networkComponent} />
 		</div>
