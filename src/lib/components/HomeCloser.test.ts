@@ -20,7 +20,7 @@ describe('HomeCloser', () => {
 		render(HomeCloser);
 		const sub = screen.getByTestId('closer-subheading');
 		expect(sub).toBeInTheDocument();
-		expect(sub.textContent).toContain('FIN DE LIGNE');
+		expect(sub.textContent).toContain('END OF LINE');
 	});
 
 	it('renders the departure board with 5 rows', () => {
@@ -39,11 +39,11 @@ describe('HomeCloser', () => {
 		expect(rows[0].textContent).toContain('Start a project together');
 	});
 
-	it('renders CONNECT row linking to LinkedIn', () => {
+	it('renders EXPLORE row linking to GitHub', () => {
 		render(HomeCloser);
 		const rows = screen.getAllByTestId('closer-row');
-		expect(rows[1].getAttribute('href')).toContain('linkedin.com');
-		expect(rows[1].textContent).toContain('CONNECT');
+		expect(rows[1].getAttribute('href')).toContain('github.com');
+		expect(rows[1].textContent).toContain('EXPLORE');
 	});
 
 	it('renders 2 READ rows with dynamic blog titles', () => {
@@ -64,12 +64,12 @@ describe('HomeCloser', () => {
 		expect(rows[4].textContent).toContain('Yesid');
 	});
 
-	it('renders social links', () => {
+	it('renders CTA linking to /contact', () => {
 		render(HomeCloser);
-		const socials = screen.getByTestId('closer-socials');
-		expect(socials).toBeInTheDocument();
-		expect(socials.textContent).toContain('LinkedIn');
-		expect(socials.textContent).toContain('GitHub');
+		const cta = screen.getByTestId('closer-cta');
+		expect(cta).toBeInTheDocument();
+		expect(cta.getAttribute('href')).toBe('/contact');
+		expect(cta.textContent).toContain('Initialize connection');
 	});
 
 	it('renders graffiti wrapper for dynamic SVG load', () => {

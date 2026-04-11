@@ -8,11 +8,11 @@ describe('HomeServices', () => {
 		expect(screen.getByTestId('services-section')).toBeInTheDocument();
 	});
 
-	it('renders the section label', () => {
+	it('renders the section heading', () => {
 		render(HomeServices);
-		const label = screen.getByTestId('services-label');
-		expect(label).toBeInTheDocument();
-		expect(label.textContent).toContain('Services');
+		expect(screen.getByTestId('services-heading')).toBeInTheDocument();
+		expect(screen.getByTestId('services-heading').textContent).toContain('SERVICES');
+		expect(screen.getByTestId('services-subheading')).toBeInTheDocument();
 	});
 
 	it('renders 6 service cards', () => {

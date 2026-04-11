@@ -229,7 +229,7 @@ describe('closerContent', () => {
 	it('has heading and subheading', () => {
 		expect(closerContent.heading.en).toBe('TERMINUS');
 		expect(closerContent.headingDot.en).toBe('.');
-		expect(closerContent.subheading.en).toContain('FIN DE LIGNE');
+		expect(closerContent.subheading.en).toContain('END OF LINE');
 	});
 
 	it('has contact row with label, description, and action', () => {
@@ -239,20 +239,20 @@ describe('closerContent', () => {
 	});
 
 	it('has connect row with label, description, and action', () => {
-		expect(closerContent.rows.connect.label.en).toBe('CONNECT');
-		expect(closerContent.rows.connect.description.en).toContain('LinkedIn');
+		expect(closerContent.rows.connect.label.en).toBe('EXPLORE');
+		expect(closerContent.rows.connect.description.en).toContain('GitHub');
 		expect(closerContent.rows.connect.action.en).toContain('GO');
 	});
 
 	it('has read row with label and action', () => {
 		expect(closerContent.rows.read.label.en).toBe('READ');
-		expect(closerContent.rows.read.action.en).toBe('\u2192');
+		expect(closerContent.rows.read.action.en).toBe('cd');
 	});
 
 	it('has about row with label, description, and action', () => {
 		expect(closerContent.rows.about.label.en).toBe('ABOUT');
 		expect(closerContent.rows.about.description.en).toContain('Yesid');
-		expect(closerContent.rows.about.action.en).toBe('\u2192');
+		expect(closerContent.rows.about.action.en).toBe('cd');
 	});
 
 	it('has attribution with text and URL', () => {
