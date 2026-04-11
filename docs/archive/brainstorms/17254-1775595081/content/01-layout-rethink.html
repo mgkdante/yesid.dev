@@ -1,0 +1,180 @@
+<h2>About Dashboard — Full Layout Rethink</h2>
+<p class="subtitle">Addressing all 8 points. Let's lock the grid shape first, then fill it.</p>
+
+<h3 style="color:#E07800;margin-top:24px;">Your 8 Rules</h3>
+<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;font-size:13px;line-height:2;margin-bottom:24px;">
+  <div>✅ <strong>1.</strong> Stack = adaptive (no fixed widths)</div>
+  <div>✅ <strong>2.</strong> Nav bar included in viewport calc (~56px)</div>
+  <div>✅ <strong>3.</strong> Dashboard draws a square (or near-square rectangle)</div>
+  <div>✅ <strong>4.</strong> Snapshots must be readable (bigger)</div>
+  <div>✅ <strong>5.</strong> Process: cut the descriptions, labels only</div>
+  <div>✅ <strong>6.</strong> Order: SELL first → personal second. Metrics right after identity.</div>
+  <div>✅ <strong>7.</strong> DRY CSS (CSS Grid with named areas)</div>
+  <div>✅ <strong>8.</strong> No fixed heights — all cards stretch to fill (grid stretch)</div>
+</div>
+
+<h3 style="color:#E07800;">Viewport Math (13" laptop)</h3>
+<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;font-family:monospace;font-size:12px;line-height:1.8;">
+  <div>Viewport height: <span style="color:#FFB627;">800px</span> (13" MacBook CSS pixels)</div>
+  <div>Nav bar:         <span style="color:#ff5f57;">−56px</span></div>
+  <div>Header + stripe:  <span style="color:#ff5f57;">−30px</span></div>
+  <div>Bottom stripe:    <span style="color:#ff5f57;">−14px</span></div>
+  <div>Grid padding:     <span style="color:#ff5f57;">−16px</span></div>
+  <div style="border-top:1px solid #3a3a3a;margin-top:8px;padding-top:8px;">
+    Available grid: <span style="color:#28c840;font-weight:bold;">~684px</span>
+  </div>
+  <div>Viewport width:  <span style="color:#FFB627;">~1280px</span> (minus 24px padding = 1256px)</div>
+  <div style="border-top:1px solid #3a3a3a;margin-top:8px;padding-top:8px;">
+    Target shape: <span style="color:#28c840;">~1256 × 684px</span> (1.84:1 — wide rectangle, close to square-ish)
+  </div>
+</div>
+
+<h3 style="color:#E07800;margin-top:24px;">New Card Order (SELL first → Personal)</h3>
+<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:16px;font-size:13px;line-height:2;">
+  <div><span style="color:#E07800;font-weight:bold;">SELL:</span> Identity → Metrics → Process (labels only) → Testimonials → Stack → Clients</div>
+  <div><span style="color:#FFB627;font-weight:bold;">PERSONAL:</span> Interests → Weather → Snapshots</div>
+  <div><span style="color:#28c840;font-weight:bold;">ACTION:</span> Train → CTA</div>
+</div>
+
+<h3 style="color:#E07800;margin-top:24px;">Pick a Grid Shape</h3>
+<p class="subtitle">All use CSS Grid named areas. All cards stretch to fill (no voids). All fit 684px height on 13".</p>
+
+<div class="cards">
+
+  <!-- OPTION A: 6x4 -->
+  <div class="card" data-choice="grid-a" onclick="toggleSelect(this)" style="width:100%;">
+    <div class="card-image" style="background:#141414;padding:12px;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(4,1fr);gap:3px;height:280px;max-width:520px;margin:0 auto;">
+        <!-- Row 1 -->
+        <div style="grid-column:span 2;grid-row:span 1;background:#1E1E1E;border:1px solid rgba(224,120,0,0.15);border-radius:4px;padding:6px;display:flex;align-items:center;gap:4px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#E07800,#FFB627);flex-shrink:0;"></div>
+          <div style="font-size:8px;color:#F5F5F0;font-weight:bold;">Identity</div>
+        </div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">METRICS</div>
+          <div style="display:flex;gap:4px;margin-top:4px;">
+            <span style="font-family:monospace;font-size:10px;color:#FFB627;font-weight:bold;">5+</span>
+            <span style="font-family:monospace;font-size:10px;color:#FFB627;font-weight:bold;">30+</span>
+            <span style="font-family:monospace;font-size:10px;color:#FFB627;font-weight:bold;">3x</span>
+            <span style="font-family:monospace;font-size:10px;color:#FFB627;font-weight:bold;">99%</span>
+          </div>
+        </div>
+        <div style="grid-column:span 2;grid-row:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">TESTIMONIALS</div>
+          <div style="font-size:8px;color:#F5F5F0;font-style:italic;margin-top:6px;">"Cut load from 45s to 2s..."</div>
+        </div>
+        <!-- Row 2 -->
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">PROCESS</div>
+          <div style="display:flex;gap:4px;margin-top:6px;">
+            <span style="font-size:7px;color:#E07800;">①AU</span>
+            <span style="font-size:7px;color:#E07800;">②OP</span>
+            <span style="font-size:7px;color:#E07800;">③DO</span>
+            <span style="font-size:7px;color:#E07800;">④HA</span>
+          </div>
+        </div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">STACK</div>
+          <div style="font-size:7px;color:#999;margin-top:4px;">PG · SQL · Py · TS · PBI</div>
+        </div>
+        <!-- Row 3 -->
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">CLIENTS</div>
+          <div style="font-family:monospace;font-size:12px;color:#FFB627;margin-top:4px;">10+</div>
+        </div>
+        <div style="grid-column:span 2;background:#333;border-radius:4px;overflow:hidden;display:flex;">
+          <div style="flex:1;background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;">AN</div>
+          <div style="flex:1;background:#333;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;">VZ</div>
+          <div style="flex:1;background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;">OS</div>
+          <div style="flex:1;background:#333;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;">FD</div>
+        </div>
+        <div style="grid-column:span 2;grid-row:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-size:7px;color:#E07800;">SNAPSHOTS</div>
+          <div style="width:40px;height:50px;background:#333;border:2px solid white;margin-top:4px;transform:rotate(-3deg);border-radius:1px;"></div>
+        </div>
+        <!-- Row 4 -->
+        <div style="grid-column:span 1;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:7px;color:#E07800;">☁ MTL</span>
+        </div>
+        <div style="grid-column:span 1;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:10px;">🚇</span>
+        </div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid rgba(224,120,0,0.2);border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">CTA</div>
+          <div style="font-family:monospace;font-size:7px;color:#666;margin-top:2px;">$ yesid --contact</div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:8px;color:#666;margin-top:6px;">6 cols × 4 rows = 684px ÷ 4 = ~171px per row</div>
+    </div>
+    <div class="card-body">
+      <h3>A) 6×4 Grid — Balanced</h3>
+      <p><strong>Row 1:</strong> Identity[2] + Metrics[2] + Testimonials[2→span 2 rows]<br>
+      <strong>Row 2:</strong> Process[2] + Stack[2] + (testimonials continues)<br>
+      <strong>Row 3:</strong> Clients[2] + Interests[2] + Snapshots[2→span 2 rows]<br>
+      <strong>Row 4:</strong> Weather[1] + Train[1] + CTA[2] + (snapshots continues)<br>
+      Testimonials + Snapshots span 2 rows each for emphasis. Square-ish shape.</p>
+    </div>
+  </div>
+
+  <!-- OPTION B: 5x3 wider -->
+  <div class="card" data-choice="grid-b" onclick="toggleSelect(this)" style="width:100%;">
+    <div class="card-image" style="background:#141414;padding:12px;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(3,1fr);gap:3px;height:280px;max-width:520px;margin:0 auto;">
+        <!-- Row 1 -->
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid rgba(224,120,0,0.15);border-radius:4px;padding:6px;display:flex;align-items:center;gap:4px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#E07800,#FFB627);"></div>
+          <div style="font-size:8px;color:#F5F5F0;font-weight:bold;">Identity</div>
+        </div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">METRICS</div>
+          <div style="font-family:monospace;font-size:10px;color:#FFB627;margin-top:4px;">5+ 30+ 3x 99%</div>
+        </div>
+        <div style="grid-column:span 1;grid-row:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-size:7px;color:#E07800;">SNAP</div>
+          <div style="width:40px;height:55px;background:#333;border:2px solid white;margin-top:4px;transform:rotate(-3deg);"></div>
+        </div>
+        <!-- Row 2 -->
+        <div style="grid-column:span 1;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">PROCESS</div>
+          <div style="font-size:7px;color:#999;margin-top:4px;">①→②→③→④</div>
+        </div>
+        <div style="grid-column:span 1;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">STACK</div>
+        </div>
+        <div style="grid-column:span 2;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">TESTIMONIALS</div>
+          <div style="font-size:8px;color:#F5F5F0;font-style:italic;margin-top:4px;">"Cut load from 45s to 2s"</div>
+        </div>
+        <!-- Row 3 -->
+        <div style="grid-column:span 1;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;padding:6px;">
+          <div style="font-size:7px;color:#E07800;">CLIENTS</div>
+          <div style="font-family:monospace;font-size:12px;color:#FFB627;">10+</div>
+        </div>
+        <div style="grid-column:span 2;background:#333;border-radius:4px;overflow:hidden;display:flex;">
+          <div style="flex:1;background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;">ANIME</div>
+          <div style="flex:1;background:#333;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;">VIZ</div>
+          <div style="flex:1;background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;">OSS</div>
+          <div style="flex:1;background:#333;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;">FOOD</div>
+        </div>
+        <div style="grid-column:span 1;background:linear-gradient(135deg,#1E1E1E,rgba(100,150,255,0.05));border:1px solid #2a2a2a;border-radius:4px;padding:6px;text-align:center;">
+          <div style="font-size:7px;color:#E07800;">☁ MTL</div>
+          <div style="font-family:monospace;font-size:10px;color:#FFB627;">−1°C</div>
+        </div>
+        <div style="grid-column:span 1;display:flex;gap:3px;">
+          <div style="flex:1;background:#1E1E1E;border:1px solid #2a2a2a;border-radius:4px;display:flex;align-items:center;justify-content:center;"><span style="font-size:10px;">🚇</span></div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:8px;color:#666;margin-top:6px;">5 cols × 3 rows = 684px ÷ 3 = ~228px per row</div>
+    </div>
+    <div class="card-body">
+      <h3>B) 5×3 Grid — Fewer Rows, Wider Cards</h3>
+      <p><strong>Row 1:</strong> Identity[2] + Metrics[2] + Snapshots[1→span 2]<br>
+      <strong>Row 2:</strong> Process[1] + Stack[1] + Testimonials[2] + (snap cont.)<br>
+      <strong>Row 3:</strong> Clients[1] + Interests[2] + Weather[1] + Train[1]<br>
+      No CTA row — CTA merges into terminal in the nav or becomes a floating button. Only 3 rows = more height per card.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Pick A or B. Both use CSS Grid named areas (DRY), stretch to fill (no voids), account for nav, and order SELL → PERSONAL.</p>

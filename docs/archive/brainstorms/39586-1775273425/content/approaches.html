@@ -1,0 +1,105 @@
+<h2>Hero Replacement: 3 Approaches</h2>
+<p class="subtitle">Cinematic & premium feel — flexible subject — mix of code + pre-rendered asset</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Scroll-Linked Video + Code Overlays (Recommended)</h3>
+      <p>Your Google Flow video as the base layer, scroll-driven (<code>currentTime = scrollProgress * duration</code>). On top: GSAP-animated code/data overlays — glowing SQL fragments, flowing data particles, or typed-out queries that fade in as the video progresses.</p>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Most cinematic — video carries the premium feel</li>
+            <li>Code overlays tie it to your SQL brand</li>
+            <li>Scroll-linked = Apple product page energy</li>
+            <li>You control the video content (Google Flow)</li>
+            <li>Lightweight: native <code>&lt;video&gt;</code> + GSAP (already installed)</li>
+            <li>Graceful fallback: poster frame + reduced motion</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>Video file = 2-6MB download (mitigated by preload)</li>
+            <li>iOS Safari needs workarounds for scroll-linked video</li>
+            <li>You need to export WebM + MP4 yourself</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Canvas Data Flow Animation (Pure Code)</h3>
+      <p>A full-code Canvas/WebGL animation: flowing data streams, SQL keywords materializing and dissolving, connected node graphs pulsing with the brand orange. Scroll controls speed and density. Think: a living data visualization that breathes as you scroll.</p>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Zero external assets — entirely code-driven</li>
+            <li>Infinitely customizable and interactive</li>
+            <li>Lightweight payload (no video download)</li>
+            <li>Can react to mouse position too (parallax depth)</li>
+            <li>Uniquely "you" — not a stock look</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>Most complex to build and tune</li>
+            <li>Harder to get "cinematic" without careful design</li>
+            <li>Canvas = accessibility challenges</li>
+            <li>Performance tuning needed on mobile</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Lottie Scroll Animation</h3>
+      <p>A curated Lottie animation (from LottieFiles or custom-made in After Effects) driven by scroll progress — similar to how your service stations already use Lottie. Could show data flowing through pipelines, a database schema assembling, or abstract geometric motion.</p>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>LottiePlayer already in your project</li>
+            <li>Scroll-linked Lottie is a known pattern</li>
+            <li>Vector = crisp at any resolution, small file size</li>
+            <li>Tons of free/premium animations on LottieFiles</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>Finding the RIGHT Lottie is hard — most look generic</li>
+            <li>Custom Lottie requires After Effects skills</li>
+            <li>Less cinematic than video — vector feel vs. cinematic feel</li>
+            <li>Complex Lotties can stutter on scroll</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top: 2rem; padding: 1.25rem; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.02);">
+  <h3 style="margin-top:0;">My Recommendation: A (Video + Code Overlays)</h3>
+  <p style="color: #aaa; line-height: 1.6;">
+    Given your answers — <strong>cinematic & premium</strong>, <strong>flexible subject</strong>, <strong>mix of both</strong> — approach A gives you the most bang. The video (which you're already cooking in Google Flow) delivers the cinematic punch. The code overlays (GSAP-animated SQL fragments, data-flow lines) tie it to your SQL brand without the video needing to be data-themed at all. You could show a dramatic abstract, a city scene, or the train decomposition — the overlays contextualize it.
+  </p>
+  <p style="color: #aaa; line-height: 1.6;">
+    Plus, you already have slice-06f specced for scroll-linked video. This approach extends that spec with a code overlay layer — not a rewrite.
+  </p>
+</div>

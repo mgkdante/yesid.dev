@@ -1,0 +1,143 @@
+<h2>STOPS 05, 06, 07 — Stack + Weather + Interests</h2>
+<p class="subtitle">These three sit in the same row. Pick one option per card.</p>
+
+<h3 style="margin-top:24px;color:#E07800;">STOP 05 — STACK</h3>
+<div class="cards">
+  <div class="card" data-choice="s-grouped" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1a1a;padding:20px;">
+      <div style="margin-bottom:12px;">
+        <div style="font-size:10px;color:#666;letter-spacing:2px;margin-bottom:6px;">DATABASES</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="background:#141414;border:1px solid #2a2a2a;border-radius:6px;padding:4px 10px;font-size:12px;color:#999;">PostgreSQL</span>
+          <span style="background:#141414;border:1px solid #2a2a2a;border-radius:6px;padding:4px 10px;font-size:12px;color:#999;">SQL Server</span>
+        </div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:10px;color:#666;letter-spacing:2px;margin-bottom:6px;">LANGUAGES</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="background:#141414;border:1px solid #2a2a2a;border-radius:6px;padding:4px 10px;font-size:12px;color:#999;">Python</span>
+          <span style="background:#141414;border:1px solid #2a2a2a;border-radius:6px;padding:4px 10px;font-size:12px;color:#999;">SvelteKit</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#666;letter-spacing:2px;margin-bottom:6px;">TOOLS</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="background:#141414;border:1px solid #2a2a2a;border-radius:6px;padding:4px 10px;font-size:12px;color:#999;">Power BI</span>
+          <span style="background:#141414;border:1px solid #2a2a2a;border-radius:6px;padding:4px 10px;font-size:12px;color:#999;">Retool</span>
+          <span style="background:#141414;border:1px solid #2a2a2a;border-radius:6px;padding:4px 10px;font-size:12px;color:#999;">Docker</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A) Grouped by Category</h3>
+      <p>Pills grouped under category labels (Databases, Languages, Tools). More organized, shows depth.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="s-flat" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1a1a;padding:20px;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="background:#141414;border:1px solid rgba(224,120,0,0.2);border-radius:6px;padding:6px 12px;font-size:12px;color:#E07800;">PostgreSQL</span>
+        <span style="background:#141414;border:1px solid rgba(224,120,0,0.2);border-radius:6px;padding:6px 12px;font-size:12px;color:#E07800;">SQL Server</span>
+        <span style="background:#141414;border:1px solid rgba(224,120,0,0.2);border-radius:6px;padding:6px 12px;font-size:12px;color:#E07800;">Python</span>
+        <span style="background:#141414;border:1px solid rgba(224,120,0,0.2);border-radius:6px;padding:6px 12px;font-size:12px;color:#E07800;">Power BI</span>
+        <span style="background:#141414;border:1px solid rgba(224,120,0,0.2);border-radius:6px;padding:6px 12px;font-size:12px;color:#E07800;">Retool</span>
+        <span style="background:#141414;border:1px solid rgba(224,120,0,0.2);border-radius:6px;padding:6px 12px;font-size:12px;color:#E07800;">SvelteKit</span>
+        <span style="background:#141414;border:1px solid rgba(224,120,0,0.2);border-radius:6px;padding:6px 12px;font-size:12px;color:#E07800;">Docker</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B) Flat — Orange-Tinted Pills</h3>
+      <p>Current layout but pills have orange border + orange text. No categories. Unified brand color. Simpler.</p>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:32px;color:#E07800;">STOP 06 — WEATHER</h3>
+<div class="cards">
+  <div class="card" data-choice="w-gradient" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1a1a;padding:20px;">
+      <div style="background:linear-gradient(135deg,#1a1a1a,rgba(100,150,255,0.08));border-radius:8px;padding:16px;">
+        <div style="font-size:13px;color:#F5F5F0;font-weight:600;">Montreal</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+          <span style="font-family:monospace;font-size:28px;font-weight:bold;color:#FFB627;">−3°C</span>
+          <span style="font-size:24px;">☁️</span>
+        </div>
+        <div style="font-size:11px;color:#999;margin-top:2px;">Overcast · Feels −8°C</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A) Gradient + Feels-Like</h3>
+      <p>Subtle condition-based gradient tint (blue for cold, warm for sunny). Add "feels like" temp. More informative.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="w-minimal" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1a1a;padding:20px;">
+      <div style="text-align:center;">
+        <div style="font-size:36px;margin-bottom:4px;">☁️</div>
+        <div style="font-family:monospace;font-size:24px;font-weight:bold;color:#FFB627;">−3°C</div>
+        <div style="font-size:12px;color:#999;margin-top:2px;">Montreal</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B) Centered Minimal</h3>
+      <p>Big icon, big temp, city below. Centered. Ultra-clean. Widget feel.</p>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top:32px;color:#E07800;">STOP 07 — INTERESTS</h3>
+<div class="cards">
+  <div class="card" data-choice="i-minicards" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1a1a;padding:20px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">🎌</span>
+          <span style="font-size:13px;color:#999;">Anime</span>
+        </div>
+        <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">📊</span>
+          <span style="font-size:13px;color:#999;">Data viz</span>
+        </div>
+        <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">🔓</span>
+          <span style="font-size:13px;color:#999;">Open source</span>
+        </div>
+        <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">🍁</span>
+          <span style="font-size:13px;color:#999;">MTL food scene</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A) 2×2 Mini-Cards</h3>
+      <p>Each interest in its own mini-card. Darker bg, subtle border. Bento-within-bento. Hover could highlight.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="i-current" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1a1a;padding:20px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;">
+          <span style="font-size:20px;">🎌</span><span style="font-size:14px;color:#999;">Anime</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;">
+          <span style="font-size:20px;">📊</span><span style="font-size:14px;color:#999;">Data viz</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;">
+          <span style="font-size:20px;">🔓</span><span style="font-size:14px;color:#999;">Open source</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;">
+          <span style="font-size:20px;">🍁</span><span style="font-size:14px;color:#999;">MTL food scene</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B) Keep Current — Vertical List</h3>
+      <p>Tall vertical list with hover highlights. Already updated. Simple and readable.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Pick one per section (05, 06, 07). Tell me in terminal like: "05-A, 06-B, 07-A"</p>

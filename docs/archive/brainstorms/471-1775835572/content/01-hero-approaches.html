@@ -1,0 +1,162 @@
+<h2>Hero Text Reveal: 3 Approaches</h2>
+<p class="subtitle">After metro animation zooms into orange dot and reveals "yesid." wordmark, what do users see? Carnegie principle: start with what THEY gain, not what you want to say.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>The Outcome Hero</h3>
+      <p><strong>Headline:</strong> Bold problem-focused statement — what YOU get when you work with me.</p>
+      <div style="background:#141414; border-radius:8px; padding:24px; margin:12px 0; font-family: Inter, sans-serif;">
+        <div style="color:#E07800; font-size:10px; letter-spacing:3px; margin-bottom:12px; border:1px solid #E07800; display:inline-block; padding:4px 10px;">AVAILABLE FOR HIRE</div>
+        <div style="color:#f5f5f0; font-size:42px; font-weight:800; line-height:0.95;">
+          PIPELINES THAT<br>
+          <span style="color:#E07800;">DON'T BREAK</span><span style="color:#E07800;">.</span><br>
+          <span style="color:#999; font-size:24px; font-weight:700;">Dashboards that tell the truth.</span>
+        </div>
+        <p style="color:#999; font-size:13px; margin-top:14px; max-width:380px;">PostgreSQL, Python, Power BI, SvelteKit — from Montreal to your pipeline.</p>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <span style="background:#E07800; color:#141414; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600;">View work &rarr;</span>
+          <span style="border:1px solid #3a3a3a; color:#f5f5f0; padding:8px 16px; border-radius:6px; font-size:12px;">Get in touch</span>
+        </div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Carnegie: leads with their pain/desire</li>
+          <li>Upwork clients scan for outcome promises</li>
+          <li>Easy to implement (text swap)</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Still "text on black" — doesn't solve the emptiness</li>
+          <li>No visual proof, same sparse layout</li>
+          <li>Generic claim without backing</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>The Proof Grid Hero (Digital Flagship Model)</h3>
+      <p><strong>Headline + visual proof:</strong> Viewport-filling statement with interactive elements and trust signals woven between the text lines. The site IS the portfolio piece.</p>
+      <div style="background:#141414; border-radius:8px; padding:24px; margin:12px 0; font-family: Inter, sans-serif; position:relative; overflow:hidden;">
+        <div style="position:absolute; inset:0; background:repeating-linear-gradient(90deg, rgba(224,120,0,0.03) 0px, transparent 1px, transparent 80px), repeating-linear-gradient(0deg, rgba(224,120,0,0.03) 0px, transparent 1px, transparent 80px); pointer-events:none;"></div>
+        <div style="position:relative; z-index:1;">
+          <div style="color:#f5f5f0; font-size:48px; font-weight:900; line-height:0.9; letter-spacing:-0.02em;">
+            YOUR DATA<span style="color:#E07800;">.</span>
+          </div>
+          <div style="display:flex; gap:16px; margin:16px 0; align-items:center;">
+            <div style="background:#1e1e1e; border:1px solid #3a3a3a; border-radius:8px; padding:12px 16px; flex:0 0 auto;">
+              <div style="font-size:9px; color:#999; letter-spacing:2px; font-family:monospace;">DATABASES DESIGNED</div>
+              <div style="font-size:28px; font-weight:800; color:#E07800;">12+</div>
+            </div>
+            <div style="background:#1e1e1e; border:1px solid #3a3a3a; border-radius:8px; padding:12px 16px; flex:0 0 auto;">
+              <div style="font-size:9px; color:#999; letter-spacing:2px; font-family:monospace;">DASHBOARDS SHIPPED</div>
+              <div style="font-size:28px; font-weight:800; color:#E07800;">8+</div>
+            </div>
+            <div style="background:#1e1e1e; border:1px solid #3a3a3a; border-radius:8px; padding:12px 16px; flex:0 0 auto;">
+              <div style="font-size:9px; color:#999; letter-spacing:2px; font-family:monospace;">PIPELINES RUNNING</div>
+              <div style="font-size:28px; font-weight:800; color:#E07800;">24/7</div>
+            </div>
+          </div>
+          <div style="color:#f5f5f0; font-size:48px; font-weight:900; line-height:0.9; letter-spacing:-0.02em;">
+            <span style="color:#E07800;">ENGINEERED</span><br>
+            RIGHT<span style="color:#E07800;">.</span>
+          </div>
+          <div style="display:flex; gap:8px; margin:16px 0; flex-wrap:wrap;">
+            <span style="background:#1e1e1e; border:1px solid #E07800; color:#E07800; padding:4px 10px; border-radius:12px; font-size:10px; font-family:monospace;">PostgreSQL</span>
+            <span style="background:#1e1e1e; border:1px solid #3a3a3a; color:#999; padding:4px 10px; border-radius:12px; font-size:10px; font-family:monospace;">Python</span>
+            <span style="background:#1e1e1e; border:1px solid #3a3a3a; color:#999; padding:4px 10px; border-radius:12px; font-size:10px; font-family:monospace;">Power BI</span>
+            <span style="background:#1e1e1e; border:1px solid #3a3a3a; color:#999; padding:4px 10px; border-radius:12px; font-size:10px; font-family:monospace;">SvelteKit</span>
+            <span style="background:#1e1e1e; border:1px solid #3a3a3a; color:#999; padding:4px 10px; border-radius:12px; font-size:10px; font-family:monospace;">GSAP</span>
+          </div>
+          <p style="color:#999; font-size:13px; max-width:420px;">From Montreal — building reliable infrastructure for teams that can't afford downtime.</p>
+          <div style="display:flex; gap:10px; margin-top:16px;">
+            <span style="background:#E07800; color:#141414; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600;">See how I build &rarr;</span>
+            <span style="border:1px solid #3a3a3a; color:#f5f5f0; padding:8px 16px; border-radius:6px; font-size:12px;">Let's talk</span>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Visual richness — metric cards + tech pills fill the space</li>
+          <li>Metrics don't require clients (databases designed, dashboards shipped)</li>
+          <li>Tech pills show breadth without overwhelming</li>
+          <li>Carnegie: "your data" — starts with THEM</li>
+          <li>Scales: swap metric numbers as you grow, add client logos later</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Metric cards need real numbers (even rough ones)</li>
+          <li>More complex layout to build</li>
+          <li>Risk of feeling like a dashboard if overdone</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>The Live Proof Hero</h3>
+      <p><strong>The site IS the portfolio:</strong> Minimal text, but the hero section itself contains interactive elements that prove your skill — a live mini-dashboard, a running query, an animated data visualization. The craft speaks.</p>
+      <div style="background:#141414; border-radius:8px; padding:24px; margin:12px 0; font-family: Inter, sans-serif; position:relative;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:center;">
+          <div>
+            <div style="color:#E07800; font-size:10px; letter-spacing:3px; margin-bottom:12px; border:1px solid #E07800; display:inline-block; padding:4px 10px;">AVAILABLE FOR HIRE</div>
+            <div style="color:#f5f5f0; font-size:36px; font-weight:800; line-height:0.95;">
+              YOUR NEXT<br>
+              <span style="color:#E07800;">INFRASTRUCTURE</span><br>
+              PARTNER<span style="color:#E07800;">.</span>
+            </div>
+            <p style="color:#999; font-size:13px; margin-top:12px;">PostgreSQL &middot; Python &middot; Power BI &middot; SvelteKit</p>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <span style="background:#E07800; color:#141414; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:600;">View work &rarr;</span>
+              <span style="border:1px solid #3a3a3a; color:#f5f5f0; padding:8px 16px; border-radius:6px; font-size:12px;">Get in touch</span>
+            </div>
+          </div>
+          <div>
+            <div style="background:#0f0d0a; border:1px solid #3a3a3a; border-radius:8px; padding:16px; font-family:monospace;">
+              <div style="font-size:9px; color:#666; margin-bottom:8px;">LIVE &middot; yesid.dev/demo</div>
+              <div style="font-size:11px; color:#E07800;">SELECT</div>
+              <div style="font-size:11px; color:#999;">&nbsp;&nbsp;station_name,</div>
+              <div style="font-size:11px; color:#999;">&nbsp;&nbsp;ridership_count,</div>
+              <div style="font-size:11px; color:#999;">&nbsp;&nbsp;avg_delay_seconds</div>
+              <div style="font-size:11px; color:#E07800;">FROM</div>
+              <div style="font-size:11px; color:#999;">&nbsp;&nbsp;mtl_metro.stations</div>
+              <div style="font-size:11px; color:#E07800;">ORDER BY</div>
+              <div style="font-size:11px; color:#999;">&nbsp;&nbsp;ridership_count DESC</div>
+              <div style="font-size:11px; color:#E07800;">LIMIT <span style="color:#FFB627;">5</span>;</div>
+              <div style="border-top:1px solid #3a3a3a; margin-top:10px; padding-top:8px; font-size:10px; color:#666;">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; color:#999;">
+                  <span>Berri-UQAM</span><span style="color:#FFB627;">847K</span><span>12.3s</span>
+                  <span>Jean-Talon</span><span style="color:#FFB627;">623K</span><span>8.7s</span>
+                  <span>McGill</span><span style="color:#FFB627;">591K</span><span>15.1s</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>The demo IS the proof — no clients needed</li>
+          <li>Shows you can build, not just claim</li>
+          <li>Connects to metro animation (transit data theme)</li>
+          <li>Memorable — "the portfolio that runs live queries"</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Most complex to build and maintain</li>
+          <li>Live demo = more things that can break</li>
+          <li>Might distract from the message</li>
+          <li>Hero text becomes secondary to the demo</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:24px; padding:16px; border:1px solid rgba(224,120,0,0.3); border-radius:8px; background:rgba(224,120,0,0.05);">
+  <h3 style="margin:0 0 8px;">My Recommendation: B (Proof Grid)</h3>
+  <p style="margin:0; font-size:14px; line-height:1.6;">It solves the emptiness with visual richness (metric cards + tech pills woven between headline text), leads with what the visitor gains ("YOUR DATA. ENGINEERED RIGHT."), and scales as you grow — swap numbers, add client logos later. The metrics don't need clients: databases you've designed, dashboards you've shipped (including personal/learning projects), pipelines you've built. It's honest, visual, and Carnegie-approved.</p>
+</div>

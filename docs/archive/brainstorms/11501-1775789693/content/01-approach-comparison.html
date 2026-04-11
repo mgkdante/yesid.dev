@@ -1,0 +1,116 @@
+<h2>Hero + Manifesto Merge: Which Architecture?</h2>
+<p class="subtitle">Research says: max 2-3vh pin, one color break, no text inside pins. Which approach best respects the psychology while feeling cinematic?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Extended Hero (daveholloway model)</h3>
+      <p>Add manifesto as phases 10-12 of the existing 9-phase hero pin. One continuous pinned section at ~1800% scroll.</p>
+      <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:13px;">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="color:#4ade80;font-weight:600;margin-bottom:4px;">Pros</div>
+            <div style="color:#aaa;">Simplest, hero untouched, cohesive identity</div>
+          </div>
+          <div>
+            <div style="color:#f87171;font-weight:600;margin-bottom:4px;">Cons</div>
+            <div style="color:#aaa;">18vh pin (research max: 2-3vh). No "break" moment. Manifesto text inside pin = worst UX combo per NNGroup</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:#E07800;font-family:monospace;">RESEARCH VERDICT: Fails pin ceiling + text-in-pin rule</div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Act Break (digitalflagship model)</h3>
+      <p>Hero at 1200% (untouched). Manifesto is SEPARATE section with warm amber bg shift + SVG circuit texture. "INFRASTRUCTURE" scales viewport-width.</p>
+      <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:13px;">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="color:#4ade80;font-weight:600;margin-bottom:4px;">Pros</div>
+            <div style="color:#aaa;">Creates the Von Restorff "break." Manifesto text can be massive. Brand reinforcement. Separate scroll zones.</div>
+          </div>
+          <div>
+            <div style="color:#f87171;font-weight:600;margin-bottom:4px;">Cons</div>
+            <div style="color:#aaa;">Hero still at 12vh pin. Two separate sections = potential scroll jank at transition.</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:#FFB627;font-family:monospace;">RESEARCH VERDICT: Closest to correct, but hero pin too long</div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybrid Crossfade (jasminegunarto model)</h3>
+      <p>ONE pinned section at ~1600%. Phases 1-9: existing hero. Phase 9-10: bg transitions warm. Phase 10-12: hero scales down, manifesto scales up.</p>
+      <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:13px;">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="color:#4ade80;font-weight:600;margin-bottom:4px;">Pros</div>
+            <div style="color:#aaa;">Seamless crossfade, most cinematic, "infrastructure materializing" metaphor</div>
+          </div>
+          <div>
+            <div style="color:#f87171;font-weight:600;margin-bottom:4px;">Cons</div>
+            <div style="color:#aaa;">16vh pin (worst of all). 12+ phases = scroll fatigue. Most complex technically. Text inside pin.</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:#f87171;font-family:monospace;">RESEARCH VERDICT: Fails pin ceiling, text-in-pin, and complexity</div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="d" onclick="toggleSelect(this)" style="border-color:#E07800;">
+    <div class="letter" style="background:#E07800;color:#141414;">D</div>
+    <div class="content">
+      <h3 style="color:#E07800;">Modified B: "Shortened Hero + Act Break" (my recommendation)</h3>
+      <p>Shorten hero to ~800% (8vh) — pure visual metro animation, no text reading required. Then HARD CUT to manifesto on NORMAL SCROLL (not pinned) with warm amber bg shift.</p>
+      <div style="margin-top:12px;padding:16px;background:rgba(224,120,0,0.06);border:1px solid rgba(224,120,0,0.2);border-radius:8px;font-size:13px;">
+        <div style="font-weight:600;color:#E07800;margin-bottom:8px;">Page Flow:</div>
+        <div style="font-family:monospace;color:#ccc;line-height:1.8;font-size:12px;">
+          <span style="color:#E07800;">[ACT 1a]</span> Hero pin ~800% — metro SVG draws, zooms into Berri, reveals "yesid." wordmark<br>
+          <span style="color:#E07800;">[HARD CUT]</span> — abrupt bg shift, no gradient<br>
+          <span style="color:#FFB627;">[ACT 1b]</span> Manifesto NORMAL SCROLL — warm amber bg + SVG circuit texture<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;"I BUILD THE" <span style="color:#666;">(small)</span> → "<span style="color:#E07800;">INFRASTRUCTURE</span>" <span style="color:#666;">(3x larger, viewport-fill)</span> → "YOUR OPERATIONS RUN ON" <span style="color:#666;">(small)</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;SplitText char reveal on scroll-into-view (not pinned)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;Capability pills stagger in after<br>
+          <span style="color:#666;">[ACT 2]</span> Proof Reel — back to dark<br>
+          <span style="color:#666;">[BREAK]</span> Services Grid — warm amber (reuses break color)<br>
+          <span style="color:#666;">[ACT 3]</span> Blog + About + CTA — dark, orange glow on CTA
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:13px;">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="color:#4ade80;font-weight:600;margin-bottom:4px;">Why this works</div>
+            <div style="color:#aaa;">
+              <strong>Pin ceiling:</strong> 8vh (vs 12-18vh in others) — within research guidelines<br>
+              <strong>No text in pin:</strong> Hero is pure visual animation<br>
+              <strong>Von Restorff break:</strong> Manifesto IS the one color shift<br>
+              <strong>Variable size:</strong> "INFRASTRUCTURE" at 3x = research-optimal ratio<br>
+              <strong>Normal scroll:</strong> Manifesto scrolls naturally = no frustration<br>
+              <strong>Mobile safe:</strong> Pin simplified, manifesto fully responsive
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:24px;padding:16px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid rgba(255,255,255,0.06);">
+  <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Research-backed constraints</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:12px;color:#aaa;">
+    <div><span style="color:#E07800;">1.</span> Pin max: 2-3 viewport heights (NNGroup)</div>
+    <div><span style="color:#E07800;">2.</span> No reading text inside pins (NNGroup)</div>
+    <div><span style="color:#E07800;">3.</span> One color break, singular (Von Restorff)</div>
+    <div><span style="color:#E07800;">4.</span> Break at 60-70% scroll depth (attention curve)</div>
+    <div><span style="color:#E07800;">5.</span> Variable size ratio: 2.5-3.5x (eye tracking)</div>
+    <div><span style="color:#E07800;">6.</span> Never flat dark — always textured (depth perception)</div>
+  </div>
+</div>

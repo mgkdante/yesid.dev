@@ -1,0 +1,103 @@
+<h2>Nav Concept Direction</h2>
+<p class="subtitle">Three primary links (Services, Work, Stack) + menu icon for secondary. Which structural direction feels most "engineered, not designed"?</p>
+
+<div class="cards">
+
+  <!-- Concept A: Command Bar -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;padding:0;overflow:hidden;">
+      <!-- Mock nav -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(224,120,0,0.15);background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);font-family:monospace;">
+        <div style="display:flex;align-items:baseline;gap:2px;">
+          <span style="color:#f5f5f5;font-weight:700;font-size:18px;letter-spacing:-0.5px;">yesid</span><span style="color:#E07800;font-weight:700;font-size:18px;">.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:32px;">
+          <span style="color:#E07800;font-size:11px;letter-spacing:2px;font-family:monospace;">SERVICES</span>
+          <span style="color:#999;font-size:11px;letter-spacing:2px;font-family:monospace;">WORK</span>
+          <span style="color:#999;font-size:11px;letter-spacing:2px;font-family:monospace;">STACK</span>
+          <div style="display:flex;flex-direction:column;gap:3px;cursor:pointer;padding:4px;">
+            <div style="width:16px;height:1.5px;background:#999;"></div>
+            <div style="width:12px;height:1.5px;background:#999;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Subtle line accent -->
+      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(224,120,0,0.3),transparent);"></div>
+      <!-- Content preview -->
+      <div style="padding:40px 24px;color:#666;font-size:12px;text-align:center;">Page content below</div>
+    </div>
+    <div class="card-body">
+      <h3>A — Command Bar</h3>
+      <p>Monospace uppercase links. Minimal hamburger (2 lines, not 3). Terminal aesthetic — feels like a system toolbar. Active link in orange, others muted. Thin gradient line separator.</p>
+    </div>
+  </div>
+
+  <!-- Concept B: Floating Pill -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;padding:40px 24px 60px;overflow:hidden;display:flex;flex-direction:column;align-items:center;">
+      <!-- Floating nav pill -->
+      <div style="display:flex;align-items:center;gap:28px;padding:12px 28px;background:rgba(20,20,20,0.9);border:1px solid rgba(224,120,0,0.12);border-radius:999px;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,0,0,0.4);">
+        <div style="display:flex;align-items:baseline;gap:2px;">
+          <span style="color:#f5f5f5;font-weight:700;font-size:16px;">yesid</span><span style="color:#E07800;font-weight:700;font-size:16px;">.</span>
+        </div>
+        <div style="width:1px;height:16px;background:rgba(255,255,255,0.1);"></div>
+        <div style="display:flex;gap:24px;">
+          <span style="color:#E07800;font-size:13px;font-weight:500;">Services</span>
+          <span style="color:#aaa;font-size:13px;">Work</span>
+          <span style="color:#aaa;font-size:13px;">Stack</span>
+        </div>
+        <div style="width:1px;height:16px;background:rgba(255,255,255,0.1);"></div>
+        <div style="display:flex;flex-direction:column;gap:3px;cursor:pointer;padding:4px;">
+          <div style="width:14px;height:1.5px;background:#aaa;"></div>
+          <div style="width:10px;height:1.5px;background:#aaa;"></div>
+        </div>
+      </div>
+      <!-- Content preview -->
+      <div style="margin-top:40px;color:#666;font-size:12px;">Page content below</div>
+    </div>
+    <div class="card-body">
+      <h3>B — Floating Pill</h3>
+      <p>Centered floating capsule with subtle border glow. Wordmark left, divider, links, divider, menu icon. Hovers above content. Modern SaaS feel — polished but risks looking trendy rather than engineered.</p>
+    </div>
+  </div>
+
+  <!-- Concept C: Split Rail -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;padding:0;overflow:hidden;">
+      <!-- Top bar with wordmark -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px 12px;">
+        <div style="display:flex;align-items:baseline;gap:2px;">
+          <span style="color:#f5f5f5;font-weight:700;font-size:20px;letter-spacing:-0.5px;">yesid</span><span style="color:#E07800;font-weight:700;font-size:20px;">.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:24px;">
+          <span style="color:#E07800;font-size:13px;font-weight:600;">Services</span>
+          <span style="color:#888;font-size:13px;">Work</span>
+          <span style="color:#888;font-size:13px;">Stack</span>
+          <div style="width:24px;height:24px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+            <div style="display:flex;flex-direction:column;gap:2.5px;">
+              <div style="width:10px;height:1.5px;background:#888;"></div>
+              <div style="width:7px;height:1.5px;background:#888;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Accent rail -->
+      <div style="height:2px;margin:0 24px;display:flex;gap:4px;">
+        <div style="flex:1;background:#E07800;border-radius:1px;"></div>
+        <div style="flex:1;background:rgba(255,255,255,0.06);border-radius:1px;"></div>
+        <div style="flex:1;background:rgba(255,255,255,0.06);border-radius:1px;"></div>
+      </div>
+      <!-- Content preview -->
+      <div style="padding:40px 24px;color:#666;font-size:12px;text-align:center;">Page content below</div>
+    </div>
+    <div class="card-body">
+      <h3>C — Split Rail</h3>
+      <p>Full-width bar with segmented progress rail underneath. Active section fills its segment in orange. Feels like a system status bar — the nav IS infrastructure. Menu icon in a bordered box. Wordmark larger, links clean.</p>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:24px;padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;">
+  <p style="font-size:13px;color:#999;margin:0;"><strong style="color:#ccc;">Note:</strong> All three concepts share: 3 primary links + menu icon, animated wordmark hover, no CTA button. The difference is structural personality. Which direction should we develop further?</p>
+</div>

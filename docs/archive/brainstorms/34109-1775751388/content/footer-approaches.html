@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Footer Design — 3 Approaches</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    color: #e0e0e0;
+    font-family: 'Inter', system-ui, sans-serif;
+    padding: 24px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .intro {
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 40px;
+  }
+
+  .approach {
+    margin-bottom: 48px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .approach:hover {
+    border-color: rgba(224, 120, 0, 0.3);
+  }
+  .approach.selected {
+    border-color: #E07800;
+    box-shadow: 0 0 20px rgba(224, 120, 0, 0.15);
+  }
+
+  .approach-header {
+    padding: 16px 24px;
+    background: rgba(255,255,255,0.03);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .approach-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #E07800;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .approach-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #fff;
+  }
+  .approach-subtitle {
+    font-size: 12px;
+    color: #888;
+  }
+  .approach-tags {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: rgba(224, 120, 0, 0.12);
+    color: #E07800;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---- FOOTER MOCKUPS ---- */
+  .footer-mock {
+    background: #111;
+    padding: 0;
+  }
+
+  /* Approach A: Compact Two-Column */
+  .footer-a {
+    padding: 0;
+  }
+  .footer-a .sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #E07800 20%, #E07800 80%, transparent);
+    opacity: 0.2;
+  }
+  .footer-a .body {
+    padding: 48px 40px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: start;
+  }
+  .footer-a .left .wordmark {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .footer-a .left .wordmark .dot { color: #E07800; }
+  .footer-a .left .tagline {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+  .footer-a .left .socials {
+    display: flex;
+    gap: 16px;
+  }
+  .footer-a .left .socials a {
+    font-size: 13px;
+    color: #888;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-a .left .socials a:hover { color: #E07800; }
+
+  .footer-a .right {
+    display: flex;
+    gap: 48px;
+  }
+  .footer-a .col-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .footer-a .col-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .footer-a .col-links a {
+    font-size: 13px;
+    color: #999;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-a .col-links a:hover { color: #E07800; }
+
+  .footer-a .status-bar {
+    margin-top: 0;
+    padding: 16px 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #555;
+  }
+  .footer-a .status-bar .status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #E07800;
+    box-shadow: 0 0 6px #E07800, 0 0 12px rgba(224, 120, 0, 0.3);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .footer-a .bottom-stripe {
+    height: 2px;
+    background: linear-gradient(90deg, #E07800, #FFB627);
+  }
+
+  /* Approach B: Three-Column Balanced */
+  .footer-b .sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 50%, transparent);
+  }
+  .footer-b .body {
+    padding: 48px 40px 20px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .footer-b .brand .wordmark {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .footer-b .brand .wordmark .dot { color: #E07800; }
+  .footer-b .brand .desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    max-width: 220px;
+  }
+
+  .footer-b .col-label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .footer-b .col-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .footer-b .col-links a {
+    font-size: 13px;
+    color: #999;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-b .col-links a:hover { color: #fff; }
+
+  .footer-b .status-bar {
+    padding: 16px 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #555;
+  }
+  .footer-b .status-bar .copyright {
+    font-family: 'Inter', sans-serif;
+  }
+  .footer-b .status-bar .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  /* Approach C: Minimal + Status Bar (Recommended) */
+  .footer-c .sep {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #E07800 20%, #E07800 80%, transparent);
+    opacity: 0.15;
+  }
+  .footer-c .body {
+    padding: 40px 40px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 40px;
+  }
+  .footer-c .left .wordmark {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .footer-c .left .wordmark .dot { color: #E07800; }
+  .footer-c .left .tagline {
+    font-size: 12px;
+    color: #555;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer-c .center {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .footer-c .center a {
+    font-size: 13px;
+    color: #888;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-c .center a:hover { color: #E07800; }
+
+  .footer-c .right {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .footer-c .right a {
+    font-size: 13px;
+    color: #888;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-c .right a:hover { color: #E07800; }
+
+  .footer-c .status-bar {
+    padding: 16px 40px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #444;
+  }
+  .footer-c .status-bar .status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #E07800;
+    box-shadow: 0 0 6px #E07800, 0 0 12px rgba(224, 120, 0, 0.3);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .footer-c .bottom-stripe {
+    height: 2px;
+    background: linear-gradient(90deg, #E07800, #FFB627);
+  }
+
+  /* Pros/cons */
+  .tradeoffs {
+    padding: 16px 24px;
+    background: rgba(255,255,255,0.02);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    font-size: 12px;
+    color: #888;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .tradeoffs h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .tradeoffs .pros h4 { color: #4ade80; }
+  .tradeoffs .cons h4 { color: #f87171; }
+  .tradeoffs ul { padding-left: 16px; }
+  .tradeoffs li { margin-bottom: 4px; }
+
+  .rec {
+    display: inline-block;
+    background: rgba(224, 120, 0, 0.15);
+    color: #E07800;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<h1>Slice 12 — Footer Design Approaches</h1>
+<p class="intro">Click to select your preferred approach. All include: animated wordmark, status bar, SEO schema, favicon change.</p>
+
+<!-- APPROACH A -->
+<div class="approach" onclick="this.classList.toggle('selected')">
+  <div class="approach-header">
+    <div class="approach-letter">A</div>
+    <div>
+      <div class="approach-title">Compact Two-Column + Status Bar</div>
+      <div class="approach-subtitle">Wordmark left, link columns right, monospace status bar bottom</div>
+    </div>
+    <div class="approach-tags"><span class="tag">SEO</span><span class="tag">Infra</span></div>
+  </div>
+  <div class="footer-mock footer-a">
+    <div class="sep"></div>
+    <div class="body">
+      <div class="left">
+        <div class="wordmark">yesid<span class="dot">.</span></div>
+        <div class="tagline">Digital infrastructure that moves.</div>
+        <div class="socials">
+          <a href="#">GitHub</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">Upwork</a>
+        </div>
+      </div>
+      <div class="right">
+        <div>
+          <div class="col-label">// navigate</div>
+          <div class="col-links">
+            <a href="#">Services</a>
+            <a href="#">Work</a>
+            <a href="#">Blog</a>
+            <a href="#">Tech Stack</a>
+          </div>
+        </div>
+        <div>
+          <div class="col-label">// connect</div>
+          <div class="col-links">
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+            <a href="#">contact@yesid.dev</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span>&copy; 2026 yesid<span style="color:#E07800">.</span></span>
+      <span>Montreal, QC &middot; Remote</span>
+      <span><span class="status-dot"></span> system online &mdash; 2026.04.09</span>
+    </div>
+    <div class="bottom-stripe"></div>
+  </div>
+  <div class="tradeoffs">
+    <div class="pros"><h4>Strengths</h4><ul><li>Strong SEO (labeled nav columns, internal links)</li><li>Terminal column labels (// navigate) add infra flavor</li><li>Orange gradient separator + bottom stripe = brand bookend</li></ul></div>
+    <div class="cons"><h4>Considerations</h4><ul><li>More visual weight — heavier footer</li><li>Two link columns may feel like overkill for 7 pages</li></ul></div>
+  </div>
+</div>
+
+<!-- APPROACH B -->
+<div class="approach" onclick="this.classList.toggle('selected')">
+  <div class="approach-header">
+    <div class="approach-letter">B</div>
+    <div>
+      <div class="approach-title">Four-Column Grid (Classic SaaS)</div>
+      <div class="approach-subtitle">Brand column + 3 link columns, clean bottom bar</div>
+    </div>
+    <div class="approach-tags"><span class="tag">Max SEO</span><span class="tag">Clean</span></div>
+  </div>
+  <div class="footer-mock footer-b">
+    <div class="sep"></div>
+    <div class="body">
+      <div class="brand">
+        <div class="wordmark">yesid<span class="dot">.</span></div>
+        <div class="desc">Freelance data infrastructure consultant. PostgreSQL, dbt, Power BI, and Python.</div>
+      </div>
+      <div>
+        <div class="col-label">Navigate</div>
+        <div class="col-links">
+          <a href="#">Services</a>
+          <a href="#">Work</a>
+          <a href="#">Blog</a>
+          <a href="#">Tech Stack</a>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">About</div>
+        <div class="col-links">
+          <a href="#">About Yesid</a>
+          <a href="#">Contact</a>
+          <a href="#">Montreal, QC</a>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Connect</div>
+        <div class="col-links">
+          <a href="#">GitHub</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">Upwork</a>
+          <a href="#">Email</a>
+        </div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span class="copyright">&copy; 2026 Yesid O.</span>
+      <span class="meta">
+        <span>Montreal, QC</span>
+        <span>v2026.04</span>
+      </span>
+    </div>
+  </div>
+  <div class="tradeoffs">
+    <div class="pros"><h4>Strengths</h4><ul><li>Maximum SEO footprint (description + all internal links)</li><li>Professional / established look (Vercel, Linear pattern)</li><li>Room for future pages without redesign</li></ul></div>
+    <div class="cons"><h4>Considerations</h4><ul><li>Less infra/terminal feel — more corporate</li><li>May feel oversized for a 7-page portfolio</li><li>Description in footer is redundant with meta tags</li></ul></div>
+  </div>
+</div>
+
+<!-- APPROACH C (RECOMMENDED) -->
+<div class="approach" onclick="this.classList.toggle('selected')">
+  <div class="approach-header">
+    <div class="approach-letter">C</div>
+    <div>
+      <div class="approach-title">Streamlined + Infra Status Bar <span class="rec">RECOMMENDED</span></div>
+      <div class="approach-subtitle">Wordmark left, flat nav center, socials right, monospace status bar. Best balance.</div>
+    </div>
+    <div class="approach-tags"><span class="tag">SEO</span><span class="tag">Infra</span><span class="tag">Balanced</span></div>
+  </div>
+  <div class="footer-mock footer-c">
+    <div class="sep"></div>
+    <div class="body">
+      <div class="left">
+        <div class="wordmark">yesid<span class="dot">.</span></div>
+        <div class="tagline">// digital infrastructure</div>
+      </div>
+      <div class="center">
+        <a href="#">Services</a>
+        <a href="#">Work</a>
+        <a href="#">Blog</a>
+        <a href="#">Stack</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="right">
+        <a href="#">GitHub</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Upwork</a>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span>&copy; 2026 yesid<span style="color:#E07800">.</span></span>
+      <span>Montreal, QC &middot; Remote</span>
+      <span><span class="status-dot"></span> system online &mdash; 2026.04.09</span>
+    </div>
+    <div class="bottom-stripe"></div>
+  </div>
+  <div class="tradeoffs">
+    <div class="pros"><h4>Strengths</h4><ul><li>All internal links present (SEO) without heavy columns</li><li>Status bar + gradient separator = infra identity</li><li>Scales well: easy to add links without restructuring</li><li>Proportional to a 7-page portfolio site</li></ul></div>
+    <div class="cons"><h4>Considerations</h4><ul><li>Flat nav less scannable than columns at 10+ links</li><li>No room for description text (SEO handled by schema instead)</li></ul></div>
+  </div>
+</div>
+
+</body>
+</html>
