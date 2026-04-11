@@ -1,0 +1,90 @@
+<h2>Manifesto — Pill Hybrid (A + C)</h2>
+<p class="subtitle">JetBrains Mono + underscores for the tech feel, ghost pill border for clickability. Hover confirms they're links.</p>
+
+<div class="section">
+  <h3>Resting state</h3>
+</div>
+
+<div class="mockup">
+  <div class="mockup-header">Desktop — pills below manifesto text</div>
+  <div class="mockup-body" style="background: #141414; padding: 3rem 2rem; text-align: center;">
+    <!-- Manifesto text (context) -->
+    <p style="font-size: 1.8rem; font-weight: 900; color: #F5F5F0; line-height: 1.1; letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: 0.3rem;">
+      I BUILD THE
+    </p>
+    <p style="font-size: 2.2rem; font-weight: 900; color: #E07800; line-height: 1.1; letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: 0.3rem;">
+      INFRASTRUCTURE
+    </p>
+    <p style="font-size: 1.8rem; font-weight: 900; color: #F5F5F0; line-height: 1.1; letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: 0.3rem;">
+      YOUR <span style="color: #E07800;">OPERATIONS</span>
+    </p>
+    <p style="font-size: 1.8rem; font-weight: 900; color: #F5F5F0; line-height: 1.1; letter-spacing: -0.03em; text-transform: uppercase;">
+      RUN ON<span style="color: #E07800;">.</span>
+    </p>
+
+    <!-- Pills -->
+    <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; margin-top: 2.5rem;">
+      <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.45rem 1.1rem; border-radius: 9999px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; text-decoration: none; transition: all 0.2s;">pipelines</a>
+      <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.45rem 1.1rem; border-radius: 9999px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; text-decoration: none; transition: all 0.2s;">databases</a>
+      <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.45rem 1.1rem; border-radius: 9999px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; text-decoration: none; transition: all 0.2s;">dashboards</a>
+      <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.45rem 1.1rem; border-radius: 9999px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; text-decoration: none; transition: all 0.2s;">internal_tools</a>
+      <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.45rem 1.1rem; border-radius: 9999px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; text-decoration: none; transition: all 0.2s;">web_apps</a>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem;">
+  <h3>Hover state</h3>
+</div>
+
+<div class="cards" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+  <div class="card" data-choice="hover-a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #141414; padding: 1.5rem; display: flex; align-items: center; justify-content: center; min-height: 80px;">
+      <span style="border: 1px solid #E07800; color: #F5F5F0; padding: 0.45rem 1.1rem; border-radius: 9999px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em;">databases</span>
+    </div>
+    <div class="card-body">
+      <h3>A — Orange border + white text</h3>
+      <p>Border shifts to #E07800, text shifts to white. Subtle but clear.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hover-b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #141414; padding: 1.5rem; display: flex; align-items: center; justify-content: center; min-height: 80px;">
+      <span style="border: 1px solid #E07800; background: rgba(224, 120, 0, 0.1); color: #E07800; padding: 0.45rem 1.1rem; border-radius: 9999px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em;">databases</span>
+    </div>
+    <div class="card-body">
+      <h3>B — Orange border + tinted fill + orange text</h3>
+      <p>Full orange treatment. Border, text, and faint orange background glow. Unmistakably interactive.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hover-c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #141414; padding: 1.5rem; display: flex; align-items: center; justify-content: center; min-height: 80px;">
+      <span style="border: 1px solid #E07800; background: #E07800; color: #141414; padding: 0.45rem 1.1rem; border-radius: 9999px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; font-weight: 600;">databases</span>
+    </div>
+    <div class="card-body">
+      <h3>C — Full orange fill</h3>
+      <p>Pill fills solid orange, text inverts to dark. Maximum contrast. Strong CTA energy.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem;">
+  <h3>Mobile (375px)</h3>
+  <div class="mockup">
+    <div class="mockup-header">iPhone SE</div>
+    <div class="mockup-body" style="background: #141414; padding: 2rem 1rem; text-align: center; max-width: 375px; margin: 0 auto;">
+      <p style="font-size: 1.2rem; font-weight: 900; color: #F5F5F0; line-height: 1.1; letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: 0.2rem;">I BUILD THE</p>
+      <p style="font-size: 1.5rem; font-weight: 900; color: #E07800; line-height: 1.1; letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: 0.2rem;">INFRASTRUCTURE</p>
+      <p style="font-size: 1.2rem; font-weight: 900; color: #F5F5F0; line-height: 1.1; letter-spacing: -0.03em; text-transform: uppercase; margin-bottom: 0.2rem;">YOUR <span style="color: #E07800;">OPERATIONS</span></p>
+      <p style="font-size: 1.2rem; font-weight: 900; color: #F5F5F0; line-height: 1.1; letter-spacing: -0.03em; text-transform: uppercase;">RUN ON<span style="color: #E07800;">.</span></p>
+      <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center; margin-top: 1.5rem;">
+        <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.35rem 0.8rem; border-radius: 9999px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.03em; text-decoration: none;">pipelines</a>
+        <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.35rem 0.8rem; border-radius: 9999px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.03em; text-decoration: none;">databases</a>
+        <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.35rem 0.8rem; border-radius: 9999px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.03em; text-decoration: none;">dashboards</a>
+        <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.35rem 0.8rem; border-radius: 9999px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.03em; text-decoration: none;">internal_tools</a>
+        <a href="#" style="border: 1px solid #3A3A3A; color: #999; padding: 0.35rem 0.8rem; border-radius: 9999px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; text-decoration: none;">web_apps</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,268 @@
+<h2>Montreal Metro — Full SVG Recreation</h2>
+<p class="subtitle">All 4 lines, all stations, Berri-UQAM as origin. Orange line is the hero.</p>
+
+<div class="mockup">
+  <div class="mockup-header">1:1 Montreal Metro Map (SVG on dark bg)</div>
+  <div class="mockup-body" style="background:#0d0d0d;padding:20px;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:auto;">
+    <svg viewBox="0 0 900 750" width="100%" style="max-width:900px;">
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowBig" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- ============================================ -->
+      <!-- GREEN LINE (Ligne 1 - Verte)                 -->
+      <!-- Angrignon (W) → Honoré-Beaugrand (E)         -->
+      <!-- ============================================ -->
+      <polyline
+        points="
+          45,530
+          85,530
+          115,530
+          145,530
+          175,530
+          205,530
+          235,530
+          270,500
+          310,475
+          350,460
+          390,445
+          425,430
+          460,415
+          490,400
+          520,400
+          555,400
+          575,415
+          600,430
+          630,430
+          660,430
+          690,430
+          720,430
+          750,430
+          780,430
+          805,430
+          830,430
+          855,430
+        "
+        stroke="#2ECC40" stroke-width="4" fill="none" opacity="0.55"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- Green line station dots -->
+      <g fill="#2ECC40" opacity="0.5">
+        <circle cx="45" cy="530" r="3.5"/>  <!-- Angrignon -->
+        <circle cx="85" cy="530" r="3"/>    <!-- Monk -->
+        <circle cx="115" cy="530" r="3"/>   <!-- Jolicoeur -->
+        <circle cx="145" cy="530" r="3"/>   <!-- Verdun -->
+        <circle cx="175" cy="530" r="3"/>   <!-- De l'Église -->
+        <circle cx="205" cy="530" r="3"/>   <!-- LaSalle -->
+        <circle cx="235" cy="530" r="3"/>   <!-- Charlevoix -->
+        <!-- Lionel-Groulx = interchange, drawn separately -->
+        <circle cx="310" cy="475" r="3"/>   <!-- Atwater -->
+        <circle cx="350" cy="460" r="3"/>   <!-- Guy-Concordia -->
+        <circle cx="390" cy="445" r="3"/>   <!-- Peel -->
+        <circle cx="425" cy="430" r="3"/>   <!-- McGill -->
+        <circle cx="460" cy="415" r="3"/>   <!-- Place-des-Arts -->
+        <circle cx="490" cy="400" r="3"/>   <!-- Saint-Laurent -->
+        <!-- Berri-UQAM = interchange, drawn separately -->
+        <circle cx="555" cy="400" r="3"/>   <!-- Beaudry -->
+        <circle cx="575" cy="415" r="3"/>   <!-- Papineau -->
+        <circle cx="600" cy="430" r="3"/>   <!-- Frontenac -->
+        <circle cx="630" cy="430" r="3"/>   <!-- Préfontaine -->
+        <circle cx="660" cy="430" r="3"/>   <!-- Joliette -->
+        <circle cx="690" cy="430" r="3"/>   <!-- Pie-IX -->
+        <circle cx="720" cy="430" r="3"/>   <!-- Viau -->
+        <circle cx="750" cy="430" r="3"/>   <!-- Assomption -->
+        <circle cx="780" cy="430" r="3"/>   <!-- Cadillac -->
+        <circle cx="805" cy="430" r="3"/>   <!-- Langelier -->
+        <circle cx="830" cy="430" r="3"/>   <!-- Radisson -->
+        <circle cx="855" cy="430" r="3.5"/> <!-- Honoré-Beaugrand -->
+      </g>
+
+      <!-- ============================================ -->
+      <!-- ORANGE LINE (Ligne 2 - Orange)               -->
+      <!-- Côte-Vertu (NW) → U-shape → Montmorency (NE) -->
+      <!-- THE STAR LINE                                -->
+      <!-- ============================================ -->
+      <polyline
+        points="
+          120,290
+          155,300
+          190,310
+          220,320
+          250,330
+          280,340
+          305,335
+          310,310
+          305,285
+          290,270
+          270,500
+          310,475
+          350,525
+          380,555
+          400,570
+          420,575
+          445,570
+          470,550
+          490,520
+          510,490
+          520,400
+          530,370
+          545,345
+          565,320
+          590,300
+          620,275
+          645,250
+          665,225
+          685,200
+          700,175
+          710,150
+          720,125
+          735,110
+          755,95
+          780,75
+        "
+        stroke="#E07800" stroke-width="5" fill="none" opacity="0.85"
+        stroke-linecap="round" stroke-linejoin="round"
+        filter="url(#glow)"/>
+
+      <!-- Orange line station dots -->
+      <g fill="#E07800" opacity="0.7">
+        <circle cx="120" cy="290" r="4"/>   <!-- Côte-Vertu -->
+        <circle cx="155" cy="300" r="3.5"/> <!-- Du Collège -->
+        <circle cx="190" cy="310" r="3.5"/> <!-- De la Savane -->
+        <circle cx="220" cy="320" r="3.5"/> <!-- Namur -->
+        <circle cx="250" cy="330" r="3.5"/> <!-- Plamondon -->
+        <circle cx="280" cy="340" r="3.5"/> <!-- Côte-Ste-Catherine -->
+        <!-- Snowdon = interchange -->
+        <circle cx="310" cy="310" r="3.5"/> <!-- Villa-Maria -->
+        <circle cx="305" cy="285" r="3.5"/> <!-- Vendôme -->
+        <circle cx="290" cy="270" r="3.5"/> <!-- Place-Saint-Henri -->
+        <!-- Lionel-Groulx = interchange -->
+        <circle cx="310" cy="475" r="3.5"/> <!-- Georges-Vanier (reuse pos) -->
+        <circle cx="350" cy="525" r="3.5"/> <!-- Lucien-L'Allier -->
+        <circle cx="380" cy="555" r="3.5"/> <!-- Bonaventure -->
+        <circle cx="400" cy="570" r="3.5"/> <!-- Square-Victoria -->
+        <circle cx="420" cy="575" r="3.5"/> <!-- Place-d'Armes -->
+        <circle cx="445" cy="570" r="3.5"/> <!-- Champ-de-Mars -->
+        <circle cx="470" cy="550" r="3.5"/> <!-- unused -->
+        <!-- Berri-UQAM = interchange -->
+        <circle cx="530" cy="370" r="3.5"/> <!-- Sherbrooke -->
+        <circle cx="545" cy="345" r="3.5"/> <!-- Mont-Royal -->
+        <circle cx="565" cy="320" r="3.5"/> <!-- Laurier -->
+        <circle cx="590" cy="300" r="3.5"/> <!-- Rosemont -->
+        <circle cx="620" cy="275" r="3.5"/> <!-- Beaubien -->
+        <!-- Jean-Talon = interchange -->
+        <circle cx="665" cy="225" r="3.5"/> <!-- Jarry -->
+        <circle cx="685" cy="200" r="3.5"/> <!-- Crémazie -->
+        <circle cx="700" cy="175" r="3.5"/> <!-- Sauvé -->
+        <circle cx="710" cy="150" r="3.5"/> <!-- Henri-Bourassa -->
+        <circle cx="720" cy="125" r="3.5"/> <!-- Cartier -->
+        <circle cx="735" cy="110" r="3.5"/> <!-- De la Concorde -->
+        <circle cx="755" cy="95" r="3.5"/>  <!-- Montmorency -->
+      </g>
+
+      <!-- ============================================ -->
+      <!-- BLUE LINE (Ligne 5 - Bleue)                  -->
+      <!-- Snowdon (W) → Saint-Michel (E)               -->
+      <!-- ============================================ -->
+      <polyline
+        points="
+          305,335
+          330,310
+          360,290
+          390,275
+          420,265
+          450,258
+          485,255
+          520,255
+          555,255
+          590,255
+          630,258
+          645,250
+        "
+        stroke="#4A90D9" stroke-width="3.5" fill="none" opacity="0.5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- Blue line station dots -->
+      <g fill="#4A90D9" opacity="0.5">
+        <!-- Snowdon = interchange -->
+        <circle cx="330" cy="310" r="3"/>   <!-- Côte-des-Neiges -->
+        <circle cx="360" cy="290" r="3"/>   <!-- Université-de-Montréal -->
+        <circle cx="390" cy="275" r="3"/>   <!-- Édouard-Montpetit -->
+        <circle cx="420" cy="265" r="3"/>   <!-- Outremont -->
+        <circle cx="450" cy="258" r="3"/>   <!-- Acadie -->
+        <circle cx="485" cy="255" r="3"/>   <!-- Parc -->
+        <circle cx="520" cy="255" r="3"/>   <!-- De Castelnau -->
+        <!-- Jean-Talon = interchange -->
+        <circle cx="590" cy="255" r="3"/>   <!-- Fabre -->
+        <circle cx="630" cy="258" r="3"/>   <!-- D'Iberville -->
+        <circle cx="660" cy="260" r="3.5"/> <!-- Saint-Michel -->
+      </g>
+
+      <!-- ============================================ -->
+      <!-- YELLOW LINE (Ligne 4 - Jaune)                -->
+      <!-- Berri-UQAM → Longueuil                      -->
+      <!-- ============================================ -->
+      <polyline
+        points="
+          520,400
+          545,480
+          570,560
+        "
+        stroke="#FFB627" stroke-width="3" fill="none" opacity="0.5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+      <g fill="#FFB627" opacity="0.5">
+        <circle cx="545" cy="480" r="3"/>   <!-- Jean-Drapeau -->
+        <circle cx="570" cy="560" r="3.5"/> <!-- Longueuil -->
+      </g>
+
+      <!-- ============================================ -->
+      <!-- INTERCHANGE HUBS                             -->
+      <!-- ============================================ -->
+
+      <!-- Lionel-Groulx (Orange + Green) -->
+      <circle cx="270" cy="500" r="8" fill="#0d0d0d" stroke="#E07800" stroke-width="2"/>
+      <circle cx="270" cy="500" r="3" fill="#E07800"/>
+
+      <!-- Snowdon (Orange + Blue) -->
+      <circle cx="305" cy="335" r="8" fill="#0d0d0d" stroke="#E07800" stroke-width="2"/>
+      <circle cx="305" cy="335" r="3" fill="#E07800"/>
+
+      <!-- Jean-Talon (Orange + Blue) -->
+      <circle cx="645" cy="250" r="8" fill="#0d0d0d" stroke="#E07800" stroke-width="2"/>
+      <circle cx="645" cy="250" r="3" fill="#E07800"/>
+
+      <!-- ============================================ -->
+      <!-- BERRI-UQAM — THE ORIGIN                     -->
+      <!-- Orange + Green + Yellow interchange          -->
+      <!-- ============================================ -->
+      <circle cx="520" cy="400" r="18" fill="#E07800" opacity="0.08"/>
+      <circle cx="520" cy="400" r="12" fill="#E07800" opacity="0.15"/>
+      <circle cx="520" cy="400" r="9" fill="#0d0d0d" stroke="#E07800" stroke-width="3" filter="url(#glowBig)"/>
+      <circle cx="520" cy="400" r="4" fill="#E07800"/>
+
+      <!-- Origin label -->
+      <text x="535" y="395" fill="#E07800" font-family="'JetBrains Mono', monospace" font-size="10" opacity="0.7" font-weight="bold">BERRI-UQAM</text>
+      <text x="535" y="410" fill="#E07800" font-family="'JetBrains Mono', monospace" font-size="8" opacity="0.4">ORIGIN</text>
+    </svg>
+  </div>
+</div>
+
+<div style="margin-top:20px;padding:0 8px;">
+  <h3>Notes</h3>
+  <p class="subtitle" style="max-width:650px;">
+    This is an approximation — the final SVG will be traced pixel-accurate from the STM reference map.
+    The orange line's U-shape dominates, blue crosses in the north, green sweeps east-west,
+    yellow stubs south. All station nodes are present.<br/><br/>
+    <strong>For implementation:</strong> Each line is a <code>&lt;polyline&gt;</code> or <code>&lt;path&gt;</code> that DrawSVGPlugin
+    will animate from 0% → 100%. Station dots scale from 0 → 1 as the line passes through.
+    Berri-UQAM is the origin point that everything grows from and that the camera zooms into for Slice C.
+  </p>
+</div>

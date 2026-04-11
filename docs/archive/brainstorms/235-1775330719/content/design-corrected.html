@@ -1,0 +1,165 @@
+<h2>Slice A — Corrected Animation Timeline</h2>
+<p class="subtitle">Network draws → zoom into origin dot → screen fills orange. No text in this slice.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Animation Timeline (scroll-driven)</div>
+  <div class="mockup-body" style="background:#141414;padding:24px 20px;min-height:320px;">
+    <div style="max-width:700px;margin:0 auto;">
+
+      <!-- Timeline bar -->
+      <div style="position:relative;height:40px;margin:20px 0 40px;">
+        <div style="position:absolute;top:18px;left:0;right:0;height:4px;background:#2a2a2a;border-radius:2px;"></div>
+        <div style="position:absolute;top:18px;left:0;width:8%;height:4px;background:#E07800;border-radius:2px 0 0 2px;"></div>
+        <div style="position:absolute;top:18px;left:8%;width:27%;height:4px;background:#E07800;opacity:0.7;"></div>
+        <div style="position:absolute;top:18px;left:35%;width:20%;height:4px;background:#FFB627;opacity:0.6;"></div>
+        <div style="position:absolute;top:18px;left:55%;width:10%;height:4px;background:#2ECC40;opacity:0.5;"></div>
+        <div style="position:absolute;top:18px;left:65%;width:30%;height:4px;background:#E07800;opacity:0.9;"></div>
+        <div style="position:absolute;top:18px;right:0;width:5%;height:4px;background:#E07800;border-radius:0 2px 2px 0;"></div>
+
+        <!-- Labels -->
+        <div style="position:absolute;top:0;left:0;font-size:9px;color:#E07800;font-family:monospace;">0%</div>
+        <div style="position:absolute;top:0;left:8%;font-size:9px;color:#E07800;font-family:monospace;">8%</div>
+        <div style="position:absolute;top:0;left:35%;font-size:9px;color:#FFB627;font-family:monospace;">35%</div>
+        <div style="position:absolute;top:0;left:55%;font-size:9px;color:#2ECC40;font-family:monospace;">55%</div>
+        <div style="position:absolute;top:0;left:65%;font-size:9px;color:#E07800;font-family:monospace;">65%</div>
+        <div style="position:absolute;top:0;right:0;font-size:9px;color:#E07800;font-family:monospace;">100%</div>
+      </div>
+
+      <!-- Phase descriptions -->
+      <div style="font-family:monospace;font-size:11px;line-height:2.4;color:#ccc;">
+        <div>
+          <span style="display:inline-block;width:14px;height:14px;background:#E07800;border-radius:50%;vertical-align:middle;margin-right:8px;"></span>
+          <strong style="color:#E07800;">Phase 1 (0-8%)</strong> — Origin dot fades in at center (scale 0→1 + glow pulse)
+        </div>
+        <div>
+          <span style="display:inline-block;width:14px;height:14px;border:2px solid #E07800;border-radius:2px;vertical-align:middle;margin-right:8px;"></span>
+          <strong style="color:#E07800;">Phase 2 (8-35%)</strong> — Lines draw outward from origin (DrawSVGPlugin 0%→100%, staggered by <code>order</code>)
+        </div>
+        <div>
+          <span style="display:inline-block;width:14px;height:14px;background:#FFB627;border-radius:50%;vertical-align:middle;margin-right:8px;"></span>
+          <strong style="color:#FFB627;">Phase 3 (35-55%)</strong> — Station nodes pop in as lines reach them (scale 0→1, staggered)
+        </div>
+        <div>
+          <span style="display:inline-block;width:14px;height:14px;background:#2ECC40;border-radius:50%;vertical-align:middle;margin-right:8px;box-shadow:0 0 6px #2ECC40;"></span>
+          <strong style="color:#2ECC40;">Phase 4 (55-65%)</strong> — Network complete. Hub nodes pulse, glow intensifies. Brief hold.
+        </div>
+        <div>
+          <span style="display:inline-block;width:14px;height:14px;background:#E07800;border-radius:50%;vertical-align:middle;margin-right:8px;box-shadow:0 0 10px #E07800;"></span>
+          <strong style="color:#E07800;">Phase 5 (65-95%)</strong> — ZOOM INTO origin dot. The dot scales up massively while all lines/nodes fade out. The orange dot grows to fill the viewport.
+        </div>
+        <div>
+          <span style="display:inline-block;width:14px;height:14px;background:#E07800;border-radius:2px;vertical-align:middle;margin-right:8px;"></span>
+          <strong style="color:#E07800;">Phase 6 (95-100%)</strong> — Screen is fully orange. <strong>HANDOFF → Slice C</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Visual storyboard -->
+<div class="mockup" style="margin-top:24px;">
+  <div class="mockup-header">Storyboard: Key Frames</div>
+  <div class="mockup-body" style="background:#141414;padding:20px;display:flex;gap:12px;overflow-x:auto;">
+
+    <!-- Frame 1: Origin dot -->
+    <div style="min-width:140px;text-align:center;">
+      <div style="width:140px;height:90px;background:#0d0d0d;border-radius:8px;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 100 60" width="100">
+          <circle cx="50" cy="30" r="5" fill="#E07800"/>
+          <circle cx="50" cy="30" r="10" fill="none" stroke="#E07800" stroke-width="0.5" opacity="0.3"/>
+        </svg>
+      </div>
+      <div style="font-size:9px;color:#E07800;font-family:monospace;margin-top:6px;">Phase 1: Dot</div>
+    </div>
+
+    <!-- Frame 2: Lines drawing -->
+    <div style="min-width:140px;text-align:center;">
+      <div style="width:140px;height:90px;background:#0d0d0d;border-radius:8px;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 100 60" width="100">
+          <line x1="50" y1="30" x2="20" y2="15" stroke="#E07800" stroke-width="2" opacity="0.7"/>
+          <line x1="50" y1="30" x2="80" y2="15" stroke="#E07800" stroke-width="2" opacity="0.5"/>
+          <line x1="50" y1="30" x2="30" y2="50" stroke="#E07800" stroke-width="1.5" opacity="0.3"/>
+          <circle cx="50" cy="30" r="5" fill="#E07800"/>
+        </svg>
+      </div>
+      <div style="font-size:9px;color:#E07800;font-family:monospace;margin-top:6px;">Phase 2: Lines draw</div>
+    </div>
+
+    <!-- Frame 3: Nodes appear -->
+    <div style="min-width:140px;text-align:center;">
+      <div style="width:140px;height:90px;background:#0d0d0d;border-radius:8px;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 100 60" width="100">
+          <line x1="50" y1="30" x2="20" y2="15" stroke="#E07800" stroke-width="2"/>
+          <line x1="50" y1="30" x2="80" y2="15" stroke="#E07800" stroke-width="2"/>
+          <line x1="50" y1="30" x2="30" y2="50" stroke="#E07800" stroke-width="1.5"/>
+          <line x1="50" y1="30" x2="75" y2="50" stroke="#FFB627" stroke-width="1.5"/>
+          <line x1="20" y1="15" x2="8" y2="8" stroke="#E07800" stroke-width="1" opacity="0.5"/>
+          <line x1="80" y1="15" x2="92" y2="8" stroke="#E07800" stroke-width="1" opacity="0.5"/>
+          <circle cx="50" cy="30" r="5" fill="#E07800"/>
+          <circle cx="20" cy="15" r="3" fill="#E07800"/>
+          <circle cx="80" cy="15" r="3" fill="#E07800"/>
+          <circle cx="30" cy="50" r="2.5" fill="#E07800"/>
+          <circle cx="75" cy="50" r="2.5" fill="#FFB627"/>
+          <circle cx="8" cy="8" r="2" fill="#E07800" opacity="0.5"/>
+          <circle cx="92" cy="8" r="2" fill="#E07800" opacity="0.5"/>
+        </svg>
+      </div>
+      <div style="font-size:9px;color:#FFB627;font-family:monospace;margin-top:6px;">Phase 3: Nodes in</div>
+    </div>
+
+    <!-- Frame 4: Network complete -->
+    <div style="min-width:140px;text-align:center;">
+      <div style="width:140px;height:90px;background:#0d0d0d;border-radius:8px;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 100 60" width="100">
+          <line x1="50" y1="30" x2="20" y2="15" stroke="#E07800" stroke-width="2"/>
+          <line x1="50" y1="30" x2="80" y2="15" stroke="#E07800" stroke-width="2"/>
+          <line x1="50" y1="30" x2="30" y2="50" stroke="#E07800" stroke-width="1.5"/>
+          <line x1="50" y1="30" x2="75" y2="50" stroke="#FFB627" stroke-width="1.5"/>
+          <line x1="20" y1="15" x2="8" y2="8" stroke="#E07800" stroke-width="1"/>
+          <line x1="80" y1="15" x2="92" y2="8" stroke="#E07800" stroke-width="1"/>
+          <circle cx="50" cy="30" r="5" fill="#E07800" filter="url(#g)"/>
+          <circle cx="50" cy="30" r="9" fill="none" stroke="#E07800" stroke-width="0.5" opacity="0.3"/>
+          <circle cx="20" cy="15" r="3" fill="#E07800"/>
+          <circle cx="80" cy="15" r="3" fill="#E07800"/>
+          <circle cx="30" cy="50" r="2.5" fill="#E07800"/>
+          <circle cx="75" cy="50" r="2.5" fill="#FFB627"/>
+          <circle cx="8" cy="8" r="2" fill="#E07800"/>
+          <circle cx="92" cy="8" r="2" fill="#E07800"/>
+        </svg>
+      </div>
+      <div style="font-size:9px;color:#2ECC40;font-family:monospace;margin-top:6px;">Phase 4: Complete</div>
+    </div>
+
+    <!-- Frame 5: Zooming in -->
+    <div style="min-width:140px;text-align:center;">
+      <div style="width:140px;height:90px;background:#0d0d0d;border-radius:8px;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 100 60" width="100">
+          <circle cx="50" cy="30" r="25" fill="#E07800" opacity="0.9"/>
+          <circle cx="50" cy="30" r="30" fill="#E07800" opacity="0.15"/>
+          <!-- Faint remnants of lines -->
+          <line x1="50" y1="30" x2="20" y2="15" stroke="#E07800" stroke-width="1" opacity="0.1"/>
+          <line x1="50" y1="30" x2="80" y2="15" stroke="#E07800" stroke-width="1" opacity="0.1"/>
+        </svg>
+      </div>
+      <div style="font-size:9px;color:#E07800;font-family:monospace;margin-top:6px;">Phase 5: Zoom in</div>
+    </div>
+
+    <!-- Frame 6: Full orange -->
+    <div style="min-width:140px;text-align:center;">
+      <div style="width:140px;height:90px;background:#E07800;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+        <div style="font-size:10px;color:#141414;font-weight:bold;font-family:monospace;">HANDOFF → C</div>
+      </div>
+      <div style="font-size:9px;color:#E07800;font-family:monospace;margin-top:6px;">Phase 6: Full orange</div>
+    </div>
+  </div>
+</div>
+
+<!-- Reduced motion -->
+<div style="margin-top:24px;padding:0 8px;">
+  <h3>Reduced Motion Fallback</h3>
+  <p class="subtitle" style="max-width:600px;">
+    When <code>prefers-reduced-motion</code> is active: skip the animation entirely.
+    Show the fully-drawn network at low opacity as a static background, then immediately
+    show hero text. No zoom, no scroll-linking. The network is decorative only.
+  </p>
+</div>

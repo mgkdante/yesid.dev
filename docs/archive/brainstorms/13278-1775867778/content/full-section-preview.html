@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services Grid — Full Section Preview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Context: Proof Reel ending ── */
+  .proof-reel-ending {
+    background: #0D0D0D;
+    padding: 60px 48px;
+    text-align: center;
+  }
+  .proof-reel-ending .label {
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .proof-reel-ending .hint {
+    color: rgba(255,255,255,0.15);
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  /* ── Hard cut divider ── */
+  .hard-cut {
+    height: 4px;
+    width: 100%;
+    background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);
+  }
+
+  /* ── Services Section ── */
+  .services-section {
+    position: relative;
+    padding: 140px 48px;
+    overflow: hidden;
+  }
+
+  /* Blueprint grid background */
+  .blueprint-grid {
+    position: absolute;
+    inset: 0;
+    background-color: #0D0D0D;
+    background-image:
+      /* Major grid lines */
+      repeating-linear-gradient(90deg, rgba(224,120,0,0.04) 0px, rgba(224,120,0,0.04) 1px, transparent 1px, transparent 120px),
+      repeating-linear-gradient(0deg, rgba(224,120,0,0.04) 0px, rgba(224,120,0,0.04) 1px, transparent 1px, transparent 120px),
+      /* Minor grid lines */
+      repeating-linear-gradient(90deg, rgba(224,120,0,0.015) 0px, rgba(224,120,0,0.015) 1px, transparent 1px, transparent 30px),
+      repeating-linear-gradient(0deg, rgba(224,120,0,0.015) 0px, rgba(224,120,0,0.015) 1px, transparent 1px, transparent 30px);
+    /* Subtle radial glow center */
+    z-index: 0;
+  }
+  .blueprint-grid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(224,120,0,0.03) 0%, transparent 70%);
+  }
+
+  /* Section content */
+  .services-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Section label */
+  .section-label {
+    color: rgba(255,255,255,0.35);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 600;
+    margin-bottom: 48px;
+  }
+
+  /* Grid */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* Card */
+  .service-card {
+    background: rgba(13,13,13,0.8);
+    border: 1px solid rgba(224,120,0,0.1);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+    display: block;
+  }
+  .service-card:hover {
+    border-color: rgba(224,120,0,0.3);
+    transform: translateY(-2px);
+  }
+
+  .card-inner {
+    display: flex;
+    gap: 20px;
+  }
+
+  /* SVG panel */
+  .svg-panel {
+    width: 80px;
+    min-width: 80px;
+    align-self: stretch;
+    border-radius: 12px;
+    background: rgba(224,120,0,0.06);
+    border: 1px solid rgba(224,120,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.3s ease;
+  }
+  .service-card:hover .svg-panel {
+    background: rgba(224,120,0,0.1);
+  }
+
+  .card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .benefit {
+    color: rgba(255,255,255,0.85);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .service-title {
+    color: #FFB627;
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -1px;
+  }
+
+  .metric-row {
+    margin-top: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .metric-value {
+    color: #E07800;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .metric-label {
+    color: rgba(255,255,255,0.4);
+    font-size: 13px;
+  }
+
+  /* View all link */
+  .view-all {
+    margin-top: 48px;
+    text-align: center;
+  }
+  .view-all a {
+    color: rgba(224,120,0,0.7);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s ease;
+    border-bottom: 1px solid rgba(224,120,0,0.2);
+    padding-bottom: 2px;
+  }
+  .view-all a:hover {
+    color: #E07800;
+    border-bottom-color: #E07800;
+  }
+
+  /* ── Context: Blog Teaser start ── */
+  .blog-teaser-start {
+    background: #0D0D0D;
+    padding: 60px 48px;
+    text-align: center;
+  }
+  .blog-teaser-start .label {
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .blog-teaser-start .hint {
+    color: rgba(255,255,255,0.15);
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  /* Hard cut bottom */
+  .hard-cut-bottom {
+    height: 4px;
+    width: 100%;
+    background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);
+  }
+</style>
+</head>
+<body>
+
+<!-- Context: end of Proof Reel -->
+<div class="proof-reel-ending">
+  <div class="label">End of Proof Reel (Section 3)</div>
+  <div class="hint">Scroll down to see the Services Grid</div>
+</div>
+
+<!-- Hard cut divider -->
+<div class="hard-cut"></div>
+
+<!-- ════════ SERVICES SECTION ════════ -->
+<section class="services-section">
+  <!-- Blueprint grid background -->
+  <div class="blueprint-grid"></div>
+
+  <div class="services-content">
+    <!-- Section label -->
+    <div class="section-label">Services</div>
+
+    <!-- 3×2 Grid -->
+    <div class="services-grid">
+
+      <!-- Card 1: SQL -->
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="#E07800" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <path d="M16 20h16M16 28h10" stroke="#E07800" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Queries that run in seconds, not minutes</div>
+            <div class="service-title">SQL Development</div>
+            <div class="metric-row">
+              <span class="metric-value">3x faster</span>
+              <span class="metric-label">avg query improvement</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2: Pipelines -->
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <rect x="8" y="12" width="32" height="24" rx="3" stroke="#E07800" stroke-width="1.5"/>
+              <path d="M14 22l4 4-4 4M22 30h8" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Your data arrives clean, on time, every morning</div>
+            <div class="service-title">Data Pipelines</div>
+            <div class="metric-row">
+              <span class="metric-value">99.9%</span>
+              <span class="metric-label">pipeline uptime</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 3: Analytics -->
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <path d="M12 16h24v4H12zM12 24h18v4H12zM12 32h22v4H12z" stroke="#E07800" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Decisions in 15 minutes, not 2 days</div>
+            <div class="service-title">Analytics & Reporting</div>
+            <div class="metric-row">
+              <span class="metric-value">2d&rarr;15m</span>
+              <span class="metric-label">reporting turnaround</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 4: Database -->
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <ellipse cx="24" cy="14" rx="14" ry="5" stroke="#E07800" stroke-width="1.5"/>
+              <path d="M10 14v20c0 2.76 6.27 5 14 5s14-2.24 14-5V14" stroke="#E07800" stroke-width="1.5"/>
+              <path d="M10 24c0 2.76 6.27 5 14 5s14-2.24 14-5" stroke="#E07800" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Zero-downtime migrations while you sleep</div>
+            <div class="service-title">Database Engineering</div>
+            <div class="metric-row">
+              <span class="metric-value">500GB+</span>
+              <span class="metric-label">migrated safely</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 5: Internal Tooling -->
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <rect x="10" y="10" width="28" height="28" rx="4" stroke="#E07800" stroke-width="1.5"/>
+              <path d="M10 20h28M20 20v18" stroke="#E07800" stroke-width="1.5"/>
+              <circle cx="15" cy="15" r="2" fill="#E07800"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Your team stops copying between spreadsheets</div>
+            <div class="service-title">Internal Tooling</div>
+            <div class="metric-row">
+              <span class="metric-value">80%</span>
+              <span class="metric-label">less manual data entry</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 6: Web Development -->
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="10" width="36" height="24" rx="3" stroke="#E07800" stroke-width="1.5"/>
+              <path d="M6 34h36v4H6z" stroke="#E07800" stroke-width="1.5"/>
+              <path d="M18 18l-4 4 4 4M30 18l4 4-4 4M22 26l4-12" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">A frontend that matches your backend quality</div>
+            <div class="service-title">Web Development</div>
+            <div class="metric-row">
+              <span class="metric-value">100</span>
+              <span class="metric-label">Lighthouse performance</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- View all link -->
+    <div class="view-all">
+      <a href="#">View all services &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- Hard cut divider -->
+<div class="hard-cut-bottom"></div>
+
+<!-- Context: start of Blog Teaser -->
+<div class="blog-teaser-start">
+  <div class="label">Start of Blog Teaser (Section 5)</div>
+  <div class="hint">Next section continues here</div>
+</div>
+
+</body>
+</html>

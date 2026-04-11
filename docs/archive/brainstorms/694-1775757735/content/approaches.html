@@ -1,0 +1,127 @@
+<h2>Slice 13 — Home Page Redesign: 3 Approaches</h2>
+<p class="subtitle">Full-bleed, kinetic, immersive. SVG + GSAP. Which structure fits "Digital Infrastructure"?</p>
+
+<div class="cards">
+
+  <!-- Approach A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#141414;padding:24px;font-family:monospace;min-height:340px;">
+      <!-- Wireframe mockup -->
+      <div style="border:1px solid #E07800;border-radius:4px;padding:8px;margin-bottom:6px;text-align:center;color:#E07800;font-size:10px;">HERO — Metro SVG animation (existing, fixed)</div>
+      <div style="border:1px solid #555;border-radius:4px;padding:8px;margin-bottom:6px;text-align:center;color:#999;font-size:10px;">
+        MANIFESTO — Full-width statement<br>
+        <span style="color:#E07800;font-size:16px;font-weight:bold;">"I build the infrastructure<br>your operations run on."</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div style="border:1px solid #555;border-radius:4px;padding:6px;text-align:center;color:#999;font-size:9px;">PROJECT 1<br><span style="color:#E07800;">73% faster</span></div>
+        <div style="border:1px solid #555;border-radius:4px;padding:6px;text-align:center;color:#999;font-size:9px;">PROJECT 2<br><span style="color:#E07800;">2 days → 15 min</span></div>
+      </div>
+      <div style="border:1px solid #555;border-radius:4px;padding:6px;margin-bottom:6px;text-align:center;color:#999;font-size:10px;">SERVICES — Horizontal scroll cards</div>
+      <div style="border:1px solid #555;border-radius:4px;padding:6px;margin-bottom:6px;text-align:center;color:#999;font-size:10px;">ABOUT — Minimal strip + photo</div>
+      <div style="border:1px solid #E07800;border-radius:4px;padding:8px;text-align:center;color:#E07800;font-size:10px;">CTA — "Let's build together"</div>
+    </div>
+    <div class="card-body">
+      <h3>A — "The Infrastructure Blueprint"</h3>
+      <p><strong>Narrative-first.</strong> Bold manifesto → proof through work → services → CTA. Each section builds the story: "here's what I believe → here's proof → here's how we work together."</p>
+      <div class="pros-cons" style="margin-top:12px;">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Strongest conversion flow — manifesto hooks, proof convinces, CTA converts</li>
+          <li>Impact metrics front and center (employers love numbers)</li>
+          <li>Natural for scroll-driven SplitText reveals</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Manifesto text needs to be compelling (copywriting matters)</li>
+          <li>Less visual variety — relies on typography</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approach B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#141414;padding:24px;font-family:monospace;min-height:340px;">
+      <div style="border:1px solid #E07800;border-radius:4px;padding:8px;margin-bottom:6px;text-align:center;color:#E07800;font-size:10px;">HERO — Metro SVG animation (existing, fixed)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div style="border:1px solid #E07800;border-radius:4px;padding:12px;text-align:center;color:#E07800;font-size:9px;">SQL Dev<br><span style="font-size:16px;">⚡</span></div>
+        <div style="border:1px solid #E07800;border-radius:4px;padding:12px;text-align:center;color:#E07800;font-size:9px;">Pipelines<br><span style="font-size:16px;">⚡</span></div>
+        <div style="border:1px solid #E07800;border-radius:4px;padding:12px;text-align:center;color:#E07800;font-size:9px;">Analytics<br><span style="font-size:16px;">⚡</span></div>
+      </div>
+      <div style="border:1px solid #555;border-radius:4px;padding:8px;margin-bottom:6px;color:#999;font-size:10px;text-align:center;">
+        FEATURED WORK — Full-bleed project cards<br>
+        <span style="color:#666;font-size:9px;">hover reveals details, FLIP transitions to detail page</span>
+      </div>
+      <div style="border:1px solid #555;border-radius:4px;padding:6px;margin-bottom:6px;text-align:center;color:#999;font-size:10px;">MARQUEE — Tech stack logos scrolling</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div style="border:1px solid #555;border-radius:4px;padding:6px;text-align:center;color:#999;font-size:9px;">ABOUT CARD</div>
+        <div style="border:1px solid #E07800;border-radius:4px;padding:6px;text-align:center;color:#E07800;font-size:9px;">CTA CARD</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — "The Showcase Grid"</h3>
+      <p><strong>Work-first.</strong> Services grid → full-bleed project showcases → tech marquee → about + CTA. Let the work speak — projects are the hero after the hero.</p>
+      <div class="pros-cons" style="margin-top:12px;">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Visually rich — every section has distinct visual treatment</li>
+          <li>Projects get maximum screen real estate</li>
+          <li>Tech marquee is an Awwwards staple (Lottie icons + scroll speed)</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Weaker narrative — shows work but doesn't tell a story</li>
+          <li>Services grid after hero may feel abrupt without a bridge</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approach C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#141414;padding:24px;font-family:monospace;min-height:340px;">
+      <div style="border:1px solid #E07800;border-radius:4px;padding:8px;margin-bottom:6px;text-align:center;color:#E07800;font-size:10px;">HERO — Metro SVG animation (existing, fixed)</div>
+      <div style="border:1px solid #FFB627;border-radius:4px;padding:8px;margin-bottom:6px;text-align:center;color:#FFB627;font-size:10px;">
+        PROBLEM — "Your data is stuck in silos."<br>
+        <span style="font-size:9px;color:#999;">Scroll reveals the pain points</span>
+      </div>
+      <div style="border:1px solid #E07800;border-radius:4px;padding:8px;margin-bottom:6px;text-align:center;color:#E07800;font-size:10px;">
+        SOLUTION — "I build the pipes."<br>
+        <span style="font-size:9px;color:#999;">SVG animation: data flowing through infrastructure</span>
+      </div>
+      <div style="border:1px solid #555;border-radius:4px;padding:6px;margin-bottom:6px;text-align:center;color:#999;font-size:10px;">PROOF — Project cards with impact metrics</div>
+      <div style="border:1px solid #555;border-radius:4px;padding:6px;margin-bottom:6px;text-align:center;color:#999;font-size:10px;">METHOD — "How I Work" (3 steps)</div>
+      <div style="border:1px solid #555;border-radius:4px;padding:6px;margin-bottom:6px;text-align:center;color:#999;font-size:10px;">SERVICES — Expandable list</div>
+      <div style="border:1px solid #E07800;border-radius:4px;padding:8px;text-align:center;color:#E07800;font-size:10px;">CTA — Dual: "Hire me" + "Work with me"</div>
+    </div>
+    <div class="card-body">
+      <h3>C — "The Consultative Pitch"</h3>
+      <p><strong>Problem→Solution.</strong> Name the pain → show the fix → prove it works → explain the method → close the deal. Classic consultative sales structure adapted for a portfolio.</p>
+      <div class="pros-cons" style="margin-top:12px;">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Best for dual audience — employers see structured thinking, clients see value</li>
+          <li>SVG data-flow animation could be the wow moment</li>
+          <li>Dual CTA addresses both audiences explicitly</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>More sections = more build time</li>
+          <li>Problem/solution structure can feel salesy if not done well</li>
+          <li>"How I Work" section needs real substance, not filler</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:32px;padding:20px;border:1px solid rgba(224,120,0,0.2);border-radius:8px;background:rgba(224,120,0,0.05);">
+  <h3 style="color:#E07800;margin-bottom:8px;">My recommendation: Hybrid A+C</h3>
+  <p style="color:#ccc;font-size:14px;line-height:1.6;">
+    Take A's manifesto opening and narrative flow, but add C's problem→solution SVG animation as the bridge between hero and work showcase. This gives you:
+  </p>
+  <ul style="color:#999;font-size:13px;line-height:1.8;">
+    <li><strong style="color:#F5F5F0;">Hero</strong> — Metro animation (fixed) → zooms into headline</li>
+    <li><strong style="color:#F5F5F0;">Manifesto</strong> — One bold SplitText statement that defines you</li>
+    <li><strong style="color:#F5F5F0;">Proof Reel</strong> — 2-3 featured projects with impact metrics, full-bleed cards</li>
+    <li><strong style="color:#F5F5F0;">Services</strong> — Horizontal scroll or stacked full-width cards</li>
+    <li><strong style="color:#F5F5F0;">About Strip</strong> — Minimal: name, location, one sentence, photo</li>
+    <li><strong style="color:#F5F5F0;">CTA</strong> — Dual: "Work with me" (freelance) + "Let's connect" (employment)</li>
+  </ul>
+  <p style="color:#666;font-size:12px;margin-top:12px;">All full-bleed, all scroll-driven, all GSAP + SVG. Smooth scroll via Lenis. SplitText for text reveals. Magnetic buttons. No Three.js.</p>
+</div>
