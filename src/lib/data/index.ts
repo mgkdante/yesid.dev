@@ -3,7 +3,7 @@
 // structure changes in a future refactor.
 
 // Types
-export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteAddress, SiteOwner, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect, AboutPolaroid, AboutIdentity, AboutMetric, AboutMethodStep, AboutTestimonial, AboutInterest, TechCategory, AboutTechItem, TechStackItem, InfraLayer, DomainCluster, Proficiency, StackScenario, AboutClientLogo, AboutWeatherConfig, AboutCta, AboutContent, ContactContent, ContactInfoTerminal, ContactFormTerminal, ContactValidation, ContactSuccess, ContactTerminalField } from './types.js';
+export type { Locale, LocalizedString, ServiceSection, ProjectSection, ProjectStatus, Project, Service, SiteLinks, SiteAddress, SiteOwner, SiteMeta, BlogPost, BlogCategory, BlogAnimation, JourneyPanel, JourneySkill, SkillIcon, HighlightEffect, AboutPolaroid, AboutIdentity, AboutMetric, AboutMethodStep, AboutTestimonial, AboutInterest, TechCategory, AboutTechItem, TechStackItem, InfraLayer, DomainCluster, Proficiency, StackScenario, AboutClientLogo, AboutWeatherConfig, AboutCta, AboutContent, ContactContent, ContactInfoTerminal, ContactFormTerminal, ContactValidation, ContactSuccess, ContactTerminalField, ImpactMetric } from './types.js';
 
 // Locale utilities
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES, resolveLocale } from './locale.js';
@@ -31,7 +31,7 @@ export type { MetroStop } from './metro.js';
 export { fetchServiceSvgContents, getServiceSvgUrl } from './serviceSvg.js';
 
 // Centralized UI content (i18n)
-export { heroAnimContent, heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
+export { heroAnimContent, heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent } from './content.js';
 
 // Hero mock data (Slice 13d)
 export { generateHeroData, INITIAL_HERO_DATA, STM_ROUTES } from './hero-data.js';

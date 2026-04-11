@@ -96,7 +96,8 @@ vi.mock('gsap', () => {
 			set: vi.fn(),
 			killTweensOf: vi.fn(),
 			matchMedia: vi.fn(),
-			timeline: vi.fn(() => mockTimeline)
+			timeline: vi.fn(() => mockTimeline),
+			context: vi.fn((fn: () => void) => { fn(); return { revert: vi.fn() }; })
 		}
 	};
 });
@@ -106,7 +107,8 @@ vi.mock('gsap/ScrollTrigger', () => ({
 		create: vi.fn(() => ({ kill: vi.fn() })),
 		refresh: vi.fn(),
 		getAll: vi.fn(() => []),
-		killAll: vi.fn()
+		killAll: vi.fn(),
+		normalizeScroll: vi.fn()
 	}
 }));
 

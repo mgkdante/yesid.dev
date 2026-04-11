@@ -45,7 +45,11 @@ const projects: readonly Project[] = [
 		relatedServices: ['data-pipeline', 'sql-development'],
 		repoUrl: 'https://github.com/mgkdante/transit',
 		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
-		sections: []
+		sections: [],
+		impactMetric: {
+			value: '30s',
+			label: 'Real-time refresh cycles',
+		},
 	},
 	{
 		slug: 'lorem-analytics-dashboard',
@@ -74,7 +78,12 @@ const projects: readonly Project[] = [
 					en: 'Connected directly to SQL Server with scheduled refreshes. Built a semantic layer in DAX so business users could slice data without writing queries.'
 				}
 			}
-		]
+		],
+		impactMetric: {
+			value: '15 min',
+			label: 'Reporting across 12 departments',
+			before: '2 days',
+		},
 	},
 	{
 		slug: 'lorem-database-migration',
@@ -103,7 +112,11 @@ const projects: readonly Project[] = [
 					en: 'Used a dual-write pattern: new writes go to both databases, reads gradually shift to PostgreSQL. Shadow reads validated correctness before the cutover.'
 				}
 			}
-		]
+		],
+		impactMetric: {
+			value: '500 GB',
+			label: 'Zero-downtime migration',
+		},
 	},
 	{
 		slug: 'lorem-query-optimizer',

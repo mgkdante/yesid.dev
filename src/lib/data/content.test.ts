@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta } from './content.js';
+import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent } from './content.js';
+import { getProjectBySlug } from './projects.js';
 
 describe('heroContent', () => {
 	it('has headline lines as non-empty English strings', () => {
@@ -168,5 +169,33 @@ describe('skillsJourneyCta', () => {
 	it('has prompt and button text', () => {
 		expect(skillsJourneyCta.prompt.en).toBeTruthy();
 		expect(skillsJourneyCta.button.en).toBeTruthy();
+	});
+});
+
+describe('proofReelContent', () => {
+	it('has section label and view-all link', () => {
+		expect(proofReelContent.sectionLabel.en).toBe('// PROOF');
+		expect(proofReelContent.viewAllLabel.en).toContain('View all work');
+		expect(proofReelContent.viewAllHref).toBe('/work');
+	});
+
+	it('has exactly 3 featured project slugs', () => {
+		expect(proofReelContent.slugs).toHaveLength(3);
+	});
+
+	it('slugs match existing projects', () => {
+		for (const slug of proofReelContent.slugs) {
+			const project = getProjectBySlug(slug);
+			expect(project).toBeDefined();
+			expect(project?.impactMetric).toBeDefined();
+		}
+	});
+
+	it('slugs are in expected order', () => {
+		expect(proofReelContent.slugs).toEqual([
+			'transit-data-pipeline',
+			'lorem-analytics-dashboard',
+			'lorem-database-migration',
+		]);
 	});
 });

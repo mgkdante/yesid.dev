@@ -6,6 +6,7 @@
 <script lang="ts">
 	import HeroBanner from '$lib/components/HeroBanner.svelte';
 	import Manifesto from '$lib/components/Manifesto.svelte';
+	import ProofReel from '$lib/components/ProofReel.svelte';
 </script>
 
 <svelte:head>
@@ -27,6 +28,15 @@
 		<!-- Section 2: Manifesto (interactive circuit board + transit HUD) -->
 		<Manifesto />
 
-		<!-- Sections 3-7 added in sub-slices 13c-13f -->
+		<!-- Hard cut: yellow/black dashed line (Von Restorff break) -->
+		<div
+			class="h-1 w-full"
+			style="background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);"
+		></div>
+
+		<!-- Section 3: Proof Reel (featured project cards with impact metrics) -->
+		<ProofReel />
+
+		<!-- Sections 4-7 added in sub-slices 13g-13i -->
 	</div>
 </div>

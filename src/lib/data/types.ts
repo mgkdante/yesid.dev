@@ -37,6 +37,15 @@ export interface ProjectSection {
 // 'wip'     — visible but flagged as work-in-progress
 export type ProjectStatus = 'public' | 'private' | 'wip';
 
+// Structured impact metric for project cards and the Proof Reel section.
+// value is a display string ("30s", "500 GB"), label gives context.
+// before is optional — when present, cards show a before→after contrast.
+export interface ImpactMetric {
+	value: string;
+	label: string;
+	before?: string;
+}
+
 export interface Project {
 	// slug is URL-safe, globally unique, and never localised — it's part of the URL
 	slug: string;
@@ -61,6 +70,9 @@ export interface Project {
 	// Fetched in SvelteKit load(). Omit if no README should be shown.
 	readmeUrl?: string;
 	sections: ProjectSection[];
+	// Structured impact metric for proof reel / project cards.
+	// Optional — not all projects have quantifiable impact yet.
+	impactMetric?: ImpactMetric;
 }
 
 export interface Service {

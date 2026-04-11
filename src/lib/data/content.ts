@@ -91,6 +91,19 @@ export const manifestoContent = {
 	],
 } as const;
 
+export const proofReelContent = {
+	sectionLabel: { en: '// PROOF' } satisfies LocalizedString,
+	viewAllLabel: { en: 'View all work \u2192' } satisfies LocalizedString,
+	viewAllHref: '/work',
+	slugs: ['transit-data-pipeline', 'lorem-analytics-dashboard', 'lorem-database-migration'] as const,
+	// Placeholder images — replace with real project screenshots later.
+	images: {
+		'transit-data-pipeline': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&h=400&fit=crop',
+		'lorem-analytics-dashboard': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
+		'lorem-database-migration': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop',
+	},
+} as const;
+
 export const aboutContent = {
 	name: { en: 'Yesid O.' } satisfies LocalizedString,
 	title: { en: 'Freelance Data Engineer' } satisfies LocalizedString,

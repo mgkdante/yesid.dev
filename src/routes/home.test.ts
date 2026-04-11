@@ -86,4 +86,15 @@ describe('Home page', () => {
 		const pills = screen.getAllByTestId('manifesto-pill');
 		expect(pills).toHaveLength(5);
 	});
+
+	it('renders the proof reel section', () => {
+		render(Page);
+		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
+	});
+
+	it('renders 3 proof reel cards', () => {
+		render(Page);
+		const cards = screen.getAllByTestId('proof-card');
+		expect(cards).toHaveLength(3);
+	});
 });
