@@ -84,7 +84,12 @@
 	let graffitiTl: gsap.core.Timeline | undefined;
 
 	async function loadGraffiti(wrapper: Element): Promise<LetterData[]> {
-		const res = await fetch('/svg/graffiti/the-end.svg');
+		let res: Response;
+		try {
+			res = await fetch('/svg/graffiti/the-end.svg');
+		} catch {
+			return []; // Tests run without a server — skip SVG injection
+		}
 		const text = await res.text();
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(text, 'image/svg+xml');
@@ -222,8 +227,10 @@
 			const wrap = sectionEl!.querySelector(`[data-prop="${name}"]`);
 			if (!wrap) return;
 			fetch(`/svg/graffiti/prop-${name}.svg`)
-				.then((r) => r.text())
+				.catch(() => null) // Tests run without a server
+				.then((r) => r?.text())
 				.then((text) => {
+					if (!text) return;
 					const parser = new DOMParser();
 					const doc = parser.parseFromString(text, 'image/svg+xml');
 					const svg = doc.querySelector('svg');

@@ -1,6 +1,15 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HomeCloser from './HomeCloser.svelte';
+
+// Mock fetch to prevent happy-dom from making real HTTP requests during onMount
+const originalFetch = globalThis.fetch;
+beforeEach(() => {
+	globalThis.fetch = vi.fn().mockRejectedValue(new Error('no server'));
+});
+afterEach(() => {
+	globalThis.fetch = originalFetch;
+});
 
 describe('HomeCloser', () => {
 	it('renders the section with correct testid', () => {
