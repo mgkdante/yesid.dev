@@ -20,8 +20,8 @@
 | Modify | `vite.config.ts` | Replace flat `test` with `test.projects` array, happy-dom, threads pool |
 | Modify | `package.json` | happy-dom added to devDependencies (via bun add) |
 | Delete | `src/tests/setup.ts` | Old monolithic setup — removed after migration verified |
-| Modify | `docs/TESTS.md` | Document new project structure and setup files |
-| Modify | `docs/test_helper.md` | Update setup file references |
+| Modify | `docs/reference/TESTS.md` | Document new project structure and setup files |
+| Modify | `docs/archive/test_helper.md` | Update setup file references |
 | Create | `docs/devlog/2026-04-08-testing-optimization.md` | Benchmark results and decisions |
 
 ---
@@ -333,7 +333,7 @@ export default defineConfig({
 	test: {
 		// Two projects: "data" for pure logic tests (node, fast),
 		// "dom" for component/motion tests (happy-dom, full mocks).
-		// See docs/superpowers/specs/2026-04-08-testing-optimization-design.md
+		// See docs/specs/2026-04-08-testing-optimization-design.md
 		projects: [
 			{
 				extends: true,
@@ -467,11 +467,11 @@ Compare baseline (Task 1) vs final (this task):
 ### Task 9: Update Documentation
 
 **Files:**
-- Modify: `docs/TESTS.md`
-- Modify: `docs/test_helper.md`
+- Modify: `docs/reference/TESTS.md`
+- Modify: `docs/archive/test_helper.md`
 - Create: `docs/devlog/2026-04-08-testing-optimization.md`
 
-- [ ] **Step 1: Update docs/TESTS.md**
+- [ ] **Step 1: Update docs/reference/TESTS.md**
 
 Add a new section at the top (after any existing header) explaining the project structure:
 
@@ -501,7 +501,7 @@ Tests are split into two Vitest projects for performance:
 
 Also update any existing references to `src/tests/setup.ts` → the appropriate new file.
 
-- [ ] **Step 2: Update docs/test_helper.md**
+- [ ] **Step 2: Update docs/archive/test_helper.md**
 
 Replace references to `src/tests/setup.ts` with the new two-file structure. Explain which setup file is for which project and when to add mocks to each.
 
@@ -539,7 +539,7 @@ Optimized test suite from ~Xs to ~Ys (Z% improvement).
 - Created: src/tests/setup.data.ts, src/tests/setup.dom.ts
 - Modified: vite.config.ts
 - Deleted: src/tests/setup.ts
-- Modified: docs/TESTS.md, docs/test_helper.md
+- Modified: docs/reference/TESTS.md, docs/archive/test_helper.md
 ```
 
 Fill in actual numbers from benchmarks.

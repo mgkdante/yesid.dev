@@ -15,7 +15,7 @@ Built the centerpiece home page — a scroll-driven train journey between servic
 - `src/routes/+layout.svelte`: Conditional container — home page is full-width, other pages get centered max-w-5xl
 - `src/tests/setup.ts`: Added canvas mock (lottie-web CJS init), @threlte/core mock, postprocessing mock, GSAP timeline mock
 - `src/lib/assets/lottie/*.json` → `static/lottie/`: Moved 4 Lottie files for URL-based serving
-- `docs/ARCHITECTURE.md`: Added all new files to structure diagram
+- `docs/reference/ARCHITECTURE.md`: Added all new files to structure diagram
 - `tree.txt`: Regenerated
 
 ## How It Works

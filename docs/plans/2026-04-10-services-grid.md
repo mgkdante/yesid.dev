@@ -8,8 +8,8 @@
 
 **Tech Stack:** SvelteKit 2, Svelte 5 runes, TypeScript, GSAP (ScrollTrigger, MorphSVGPlugin), Tailwind v4, Vitest + @testing-library/svelte, Bun
 
-**Design spec:** `docs/superpowers/specs/2026-04-10-services-grid-design.md`
-**Approved mockup:** `docs/superpowers/mockups/slice-13g-services-grid.html`
+**Design spec:** `docs/specs/2026-04-10-services-grid-design.md`
+**Approved mockup:** `docs/archive/mockups/slice-13g-services-grid.html`
 
 ---
 
@@ -24,7 +24,7 @@
 | `src/lib/components/HomeServices.test.ts` | Create | Component tests |
 | `src/routes/+page.svelte` | Modify | Import + render HomeServices after ProofReel |
 | `src/routes/home.test.ts` | Modify | Add HomeServices integration tests |
-| `docs/TESTS.md` | Modify | Add HomeServices test entries |
+| `docs/reference/TESTS.md` | Modify | Add HomeServices test entries |
 
 ---
 
@@ -529,7 +529,7 @@ git commit -m "feat(slice-13g): create HomeServices component — card grid + bl
 
 - [ ] **Step 1: Add the MR-73 side elevation SVG and edge detail SVGs to the blueprint-bg div**
 
-This is a large SVG insertion into the blueprint background. Copy the train SVG and edge detail SVGs from the approved mockup at `docs/superpowers/mockups/slice-13g-services-grid.html` — specifically the contents of the `.train-blueprint-full` div and the `.edge-details` div. Insert them inside the `blueprint-bg` div in `HomeServices.svelte`, after the existing grid layers and before the crosshairs.
+This is a large SVG insertion into the blueprint background. Copy the train SVG and edge detail SVGs from the approved mockup at `docs/archive/mockups/slice-13g-services-grid.html` — specifically the contents of the `.train-blueprint-full` div and the `.edge-details` div. Insert them inside the `blueprint-bg` div in `HomeServices.svelte`, after the existing grid layers and before the crosshairs.
 
 Add these wrapper elements and CSS:
 
@@ -807,10 +807,10 @@ git commit -m "feat(slice-13g): add SVG morph hover/tap interaction with MorphSV
 
 ---
 
-### Task 10: Update docs/TESTS.md
+### Task 10: Update docs/reference/TESTS.md
 
 **Files:**
-- Modify: `docs/TESTS.md`
+- Modify: `docs/reference/TESTS.md`
 
 - [ ] **Step 1: Add HomeServices test entries**
 
@@ -845,7 +845,7 @@ Add under the **Data Layer** section:
 - [ ] **Step 2: Commit**
 
 ```bash
-git add docs/TESTS.md
+git add docs/reference/TESTS.md
 git commit -m "docs(slice-13g): add HomeServices tests to TESTS.md"
 ```
 

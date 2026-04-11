@@ -8,7 +8,7 @@
 
 **Tech Stack:** SvelteKit 2 + Svelte 5, TypeScript, Tailwind CSS v4, GSAP (`use:reveal` entrance), Vitest + @testing-library/svelte
 
-**Design spec:** `docs/superpowers/specs/2026-04-07-contact-page-design.md`
+**Design spec:** `docs/specs/2026-04-07-contact-page-design.md`
 
 ---
 
@@ -1012,7 +1012,7 @@ git commit -m "feat(contact): Web3Forms email backend + progressive enhancement"
 ## Task 7: Nav Verification + TESTS.md
 
 **Files:**
-- Modify: `docs/TESTS.md` (add contact test entries)
+- Modify: `docs/reference/TESTS.md` (add contact test entries)
 
 - [ ] **Step 1: Verify nav links**
 
@@ -1022,7 +1022,7 @@ Navigate to `/contact` via the nav bar. Confirm the link works. (Nav.svelte alre
 
 Navigate to `/about`, scroll to CTA, click "Send message →". Confirm it navigates to `/contact`.
 
-- [ ] **Step 3: Update `docs/TESTS.md`**
+- [ ] **Step 3: Update `docs/reference/TESTS.md`**
 
 Under `## Data Layer` add:
 
@@ -1068,7 +1068,7 @@ Under `## Components` add:
 - [ ] **Step 4: Commit**
 
 ```bash
-git add docs/TESTS.md
+git add docs/reference/TESTS.md
 git commit -m "docs: add contact page test entries to TESTS.md"
 ```
 

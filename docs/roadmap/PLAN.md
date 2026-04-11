@@ -3,7 +3,7 @@
 **Owner:** Yesid O.
 **Started:** April 2026
 **Current phase:** A — Portfolio Site
-**Future phases:** See docs/FUTURE_PHASES.md (parked, not active)
+**Future phases:** See docs/roadmap/FUTURE_PHASES.md (parked, not active)
 
 ## Goal
 
@@ -12,7 +12,7 @@ Ship yesid.dev as a memorable, motion-driven portfolio site with a scroll-based 
 ## Design Principles
 
 1. **Data-driven.** Projects, services, skills, and links live in typed data files. The site renders whatever the data contains. Adding a project = adding one object to a file.
-2. **Motion-first.** Every component ships with its animation behavior from day one. Motion is not decoration; it follows the "data in transit" metaphor defined in `docs/MOTION.md`.
+2. **Motion-first.** Every component ships with its animation behavior from day one. Motion is not decoration; it follows the "data in transit" metaphor defined in `docs/reference/MOTION.md`.
 3. **Componentized.** Every repeating UI pattern is a reusable component. Pages compose components. Components don't know about specific projects.
 4. **Tested.** Every component and data layer ships with tests. Tests run on every push. If tests don't pass, code doesn't merge.
 5. **Brand-consistent.** All colors, fonts, spacing come from tokens. Brand guide is source of truth for visuals, MOTION.md is source of truth for movement.
@@ -412,7 +412,7 @@ DRY consolidation:
 
 **Status:** spec approved (2026-04-08)
 **Depends on:** 09b
-**Spec:** `docs/superpowers/specs/2026-04-08-tech-stack-page-design.md`
+**Spec:** `docs/specs/2026-04-08-tech-stack-page-design.md`
 **Est. Sessions:** 6-8 (one per task below)
 
 **Vision:** Interactive "Control Room" diagram showing how 34 technologies connect across 9 infrastructure layers and 7 domain clusters. Educational-grade content (The Odin Project standard) that teaches what each tech does, why it was chosen, and how it fits. "Build Your Stack" configurator converts exploration into contact. Fully data-driven — adding a tech = one markdown file, zero code changes.

@@ -10,7 +10,7 @@
 
 **Runtime:** Bun only. Never npm/npx/node.
 
-**Design spec:** `docs/superpowers/specs/2026-04-11-slice-13h-closer-design.md`
+**Design spec:** `docs/specs/2026-04-11-slice-13h-closer-design.md`
 
 ---
 

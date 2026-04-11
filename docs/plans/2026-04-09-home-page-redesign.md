@@ -12,7 +12,7 @@
 
 **Multi-session:** This slice spans ~8-9 sessions. One sub-slice per session. Each section session starts with a visual companion brainstorm before any code is written.
 
-**Design spec:** `docs/superpowers/specs/2026-04-09-home-page-redesign.md`
+**Design spec:** `docs/specs/2026-04-09-home-page-redesign.md`
 
 ---
 
@@ -647,9 +647,9 @@ Run: `bun run test`
 
 - **Step 1: Write handoff report** using `docs/handoffs/_TEMPLATE.md`
 - **Step 2: Write devlog entry** using `docs/devlog/_TEMPLATE.md`
-- **Step 3: Update `docs/ARCHITECTURE.md`** — new home page section architecture
-- **Step 4: Update `docs/CSS.md`** — any new tokens, Lenis CSS
-- **Step 5: Update `docs/TESTS.md`** — new test files for all 6 components
+- **Step 3: Update `docs/reference/ARCHITECTURE.md`** — new home page section architecture
+- **Step 4: Update `docs/reference/CSS.md`** — any new tokens, Lenis CSS
+- **Step 5: Update `docs/reference/TESTS.md`** — new test files for all 6 components
 - **Step 6: Update `docs/learn/`** — Lenis, SplitText, smooth scroll concepts
 
 ### Task 2: Update README and tree

@@ -8,7 +8,7 @@
 
 **Tech Stack:** SvelteKit 2, Svelte 5 (runes), TypeScript, GSAP (Flip, DrawSVGPlugin, MorphSVGPlugin), Tailwind CSS v4, Vitest, Bun
 
-**Design Spec:** `docs/superpowers/specs/2026-04-05-work-pages-design.md`
+**Design Spec:** `docs/specs/2026-04-05-work-pages-design.md`
 
 ---
 
@@ -998,7 +998,7 @@ git commit -m "feat(slice-08): polish work pages — responsive, animations, fil
 
 **Files:**
 
-- Update: `docs/ARCHITECTURE.md`
+- Update: `docs/reference/ARCHITECTURE.md`
 - Update: `CLAUDE.md` (repo structure section)
 - Update: `tree.txt`
 - Create: `docs/devlog/2026-04-05-slice-08.md`

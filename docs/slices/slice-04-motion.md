@@ -11,7 +11,7 @@ Install the animation toolkit, build reusable motion primitives, update the Serv
 
 ## Context
 
-Slice 03 built 6 static UI components. This slice brings them to life. The motion system has four layers defined in `docs/MOTION.md`:
+Slice 03 built 6 static UI components. This slice brings them to life. The motion system has four layers defined in `docs/reference/MOTION.md`:
 
 1. **Threlte (atmosphere)** — 3D background, built in slice 06
 2. **GSAP (choreography)** — scroll-linked movement, section reveals, built here

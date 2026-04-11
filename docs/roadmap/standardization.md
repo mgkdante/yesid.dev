@@ -382,7 +382,7 @@ Every component's `<style>` block gets audited:
 - Create shared `src/lib/motion/utils/animate.ts` action wrapping GSAP with `destroy()` cleanup
 - Document animation strategy in CSS.md
 
-**9. Create `docs/CSS.md`:**
+**9. Create `docs/reference/CSS.md`:**
 
 - The design system architecture: tokens → @theme → brand primitives → components
 - Every token with purpose, default value, and which components consume it
@@ -460,7 +460,7 @@ The `$lib/data/index.ts` barrel export stays for backward compatibility during m
 
 ### 15 — SEO + Metadata (INSERTED HERE)
 
-> Full spec remains in `docs/PLAN.md` under Slice 15.
+> Full spec remains in `docs/roadmap/PLAN.md` under Slice 15.
 > Built on the service layer from 17b — `<SeoHead>` calls services, not raw data files.
 > This is why 17b comes before 15.
 

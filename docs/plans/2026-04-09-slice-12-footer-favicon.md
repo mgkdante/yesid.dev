@@ -8,7 +8,7 @@
 
 **Tech Stack:** SvelteKit, Svelte 5, GSAP (SplitText), Tailwind v4, Vitest, Bun
 
-**Design spec:** `docs/superpowers/specs/2026-04-09-slice-12-footer-favicon-design.md`
+**Design spec:** `docs/specs/2026-04-09-slice-12-footer-favicon-design.md`
 
 ---
 
@@ -1054,14 +1054,14 @@ Check all pages in browser:
 - Verify status bar shows correct date
 - Mobile responsive check at 375px
 
-- [ ] **Step 4: Update docs/TESTS.md**
+- [ ] **Step 4: Update docs/reference/TESTS.md**
 
 Add entries for new test files:
 - `src/lib/motion/actions/wordmarkHover.test.ts` under **## Motion** section
 - `src/lib/data/schema.test.ts` under **## Data Layer** section
 - Updated `src/lib/components/Footer.test.ts` entry under **## Components** section
 
-- [ ] **Step 5: Update docs/ARCHITECTURE.md if needed**
+- [ ] **Step 5: Update docs/reference/ARCHITECTURE.md if needed**
 
 Add note about JSON-LD schema in the data layer section. Mention the `wordmarkHover` action in the motion layer.
 

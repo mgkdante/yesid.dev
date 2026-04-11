@@ -28,7 +28,7 @@ Major design rework mid-task: replaced the original fixed overlay sidebar with a
 |------|---------|
 | `src/lib/components/StackPanel.svelte` | Morphing panel: orientation card ↔ detail card with relations |
 | `src/lib/components/StackPanel.test.ts` | Panel tests (12 tests: orientation state, detail state, relations, navigation) |
-| `docs/superpowers/specs/2026-04-08-tech-stack-layout-rework.md` | Design spec for layout rework |
+| `docs/specs/2026-04-08-tech-stack-layout-rework.md` | Design spec for layout rework |
 | `docs/slices/slice-10d-plus-testing-optimization.md` | Urgent mid-slice spec for testing pipeline optimization |
 
 ## 4. Files Modified

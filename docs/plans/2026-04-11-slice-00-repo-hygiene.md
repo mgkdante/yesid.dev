@@ -8,7 +8,7 @@
 
 **Tech Stack:** Git, markdown, JSON config
 
-**Design spec:** `docs/superpowers/specs/2026-04-11-slice-00-repo-hygiene-design.md`
+**Design spec:** `docs/specs/2026-04-11-slice-00-repo-hygiene-design.md`
 
 ---
 
@@ -28,7 +28,7 @@ docs/handoffs/handoff-slice-00.md           — CREATE: closing handoff
 
 ```
 CLAUDE.md                                   — MODIFY: active slice, new sections, path updates
-docs/WORKFLOW.md                            — MODIFY: new phases, tool tables, path updates
+docs/reference/WORKFLOW.md                            — MODIFY: new phases, tool tables, path updates
 .gitignore                                  — MODIFY: add .superpowers/brainstorm/
 .claude/settings.local.json                 — MODIFY: disable worktrees
 ```
@@ -53,20 +53,20 @@ docs/archive/mockups/                       — HTML mockups
 docs/superpowers/mockups/*                  → docs/archive/mockups/
 
 # Task 3: Reorganize
-docs/ARCHITECTURE.md                        → docs/reference/ARCHITECTURE.md
-docs/WORKFLOW.md                            → docs/reference/WORKFLOW.md
-docs/MOTION.md                              → docs/reference/MOTION.md
-docs/PATTERNS.md                            → docs/reference/PATTERNS.md
-docs/TESTS.md                               → docs/reference/TESTS.md
-docs/PLAN.md                                → docs/roadmap/PLAN.md
-docs/FUTURE_PHASES.md                       → docs/roadmap/FUTURE_PHASES.md
+docs/reference/ARCHITECTURE.md                        → docs/reference/ARCHITECTURE.md
+docs/reference/WORKFLOW.md                            → docs/reference/WORKFLOW.md
+docs/reference/MOTION.md                              → docs/reference/MOTION.md
+docs/reference/PATTERNS.md                            → docs/reference/PATTERNS.md
+docs/reference/TESTS.md                               → docs/reference/TESTS.md
+docs/roadmap/PLAN.md                                → docs/roadmap/PLAN.md
+docs/roadmap/FUTURE_PHASES.md                       → docs/roadmap/FUTURE_PHASES.md
 docs/plan/standardization.md                → docs/roadmap/standardization.md
-docs/superpowers/specs/*                    → docs/specs/
-docs/superpowers/plans/*                    → docs/plans/
-docs/findings.md                            → docs/research/findings.md
+docs/specs/*                    → docs/specs/
+docs/plans/*                    → docs/plans/
+docs/research/findings.md                            → docs/research/findings.md
 docs/reference-upwork-lane-analysis.md      → docs/research/reference-upwork-lane-analysis.md
 docs/design-psychology-report.md            → DELETE (duplicate of docs/research/design-psychology-report.md)
-docs/test_helper.md                         → docs/archive/test_helper.md
+docs/archive/test_helper.md                         → docs/archive/test_helper.md
 docs/slices/13-handoff-notes.md             → docs/archive/13-handoff-notes.md
 docs/slices/13e-research/                   → docs/archive/13e-research/
 ```
@@ -139,7 +139,7 @@ Create `docs/devlog/slice-00-repo-hygiene.md`:
 
 **Date:** 2026-04-11
 **Branch:** feature/slice-00-repo-hygiene
-**Spec:** docs/superpowers/specs/2026-04-11-slice-00-repo-hygiene-design.md
+**Spec:** docs/specs/2026-04-11-slice-00-repo-hygiene-design.md
 
 ## Session 1
 
@@ -236,18 +236,18 @@ mkdir -p docs/plans
 - [ ] **Step 2: Move evergreen docs to reference/**
 
 ```bash
-git mv docs/ARCHITECTURE.md docs/reference/ARCHITECTURE.md
-git mv docs/WORKFLOW.md docs/reference/WORKFLOW.md
-git mv docs/MOTION.md docs/reference/MOTION.md
-git mv docs/PATTERNS.md docs/reference/PATTERNS.md
-git mv docs/TESTS.md docs/reference/TESTS.md
+git mv docs/reference/ARCHITECTURE.md docs/reference/ARCHITECTURE.md
+git mv docs/reference/WORKFLOW.md docs/reference/WORKFLOW.md
+git mv docs/reference/MOTION.md docs/reference/MOTION.md
+git mv docs/reference/PATTERNS.md docs/reference/PATTERNS.md
+git mv docs/reference/TESTS.md docs/reference/TESTS.md
 ```
 
 - [ ] **Step 3: Move roadmap docs**
 
 ```bash
-git mv docs/PLAN.md docs/roadmap/PLAN.md
-git mv docs/FUTURE_PHASES.md docs/roadmap/FUTURE_PHASES.md
+git mv docs/roadmap/PLAN.md docs/roadmap/PLAN.md
+git mv docs/roadmap/FUTURE_PHASES.md docs/roadmap/FUTURE_PHASES.md
 git mv docs/plan/standardization.md docs/roadmap/standardization.md
 rmdir docs/plan
 ```
@@ -255,14 +255,14 @@ rmdir docs/plan
 - [ ] **Step 4: Promote specs and plans**
 
 ```bash
-git mv docs/superpowers/specs/* docs/specs/
-git mv docs/superpowers/plans/* docs/plans/
+git mv docs/specs/* docs/specs/
+git mv docs/plans/* docs/plans/
 ```
 
 - [ ] **Step 5: Consolidate research files**
 
 ```bash
-git mv docs/findings.md docs/research/findings.md
+git mv docs/research/findings.md docs/research/findings.md
 git mv docs/reference-upwork-lane-analysis.md docs/research/reference-upwork-lane-analysis.md
 git rm docs/design-psychology-report.md
 ```
@@ -272,7 +272,7 @@ git rm docs/design-psychology-report.md
 - [ ] **Step 6: Move misc to archive**
 
 ```bash
-git mv docs/test_helper.md docs/archive/test_helper.md
+git mv docs/archive/test_helper.md docs/archive/test_helper.md
 git mv docs/slices/13-handoff-notes.md docs/archive/13-handoff-notes.md
 git mv docs/slices/13e-research docs/archive/13e-research
 ```
@@ -364,17 +364,17 @@ For every file returned in Step 1, update old paths to new paths:
 
 | Old Path | New Path |
 |----------|----------|
-| `docs/WORKFLOW.md` | `docs/reference/WORKFLOW.md` |
-| `docs/PATTERNS.md` | `docs/reference/PATTERNS.md` |
-| `docs/ARCHITECTURE.md` | `docs/reference/ARCHITECTURE.md` |
-| `docs/MOTION.md` | `docs/reference/MOTION.md` |
-| `docs/TESTS.md` | `docs/reference/TESTS.md` |
-| `docs/PLAN.md` | `docs/roadmap/PLAN.md` |
-| `docs/FUTURE_PHASES.md` | `docs/roadmap/FUTURE_PHASES.md` |
-| `docs/superpowers/specs/` | `docs/specs/` |
-| `docs/superpowers/plans/` | `docs/plans/` |
-| `docs/findings.md` | `docs/research/findings.md` |
-| `docs/test_helper.md` | `docs/archive/test_helper.md` |
+| `docs/reference/WORKFLOW.md` | `docs/reference/WORKFLOW.md` |
+| `docs/reference/PATTERNS.md` | `docs/reference/PATTERNS.md` |
+| `docs/reference/ARCHITECTURE.md` | `docs/reference/ARCHITECTURE.md` |
+| `docs/reference/MOTION.md` | `docs/reference/MOTION.md` |
+| `docs/reference/TESTS.md` | `docs/reference/TESTS.md` |
+| `docs/roadmap/PLAN.md` | `docs/roadmap/PLAN.md` |
+| `docs/roadmap/FUTURE_PHASES.md` | `docs/roadmap/FUTURE_PHASES.md` |
+| `docs/specs/` | `docs/specs/` |
+| `docs/plans/` | `docs/plans/` |
+| `docs/research/findings.md` | `docs/research/findings.md` |
+| `docs/archive/test_helper.md` | `docs/archive/test_helper.md` |
 
 Important: Also update the WORKFLOW.md `**Companion to:**` header line (now at `docs/reference/WORKFLOW.md`) to reference sibling files:
 ```markdown
@@ -443,14 +443,14 @@ Replace the entire "Active slice" block with:
 - [ ] **Step 3: Update all docs path references in CLAUDE.md**
 
 Update every `docs/` reference in the file:
-- `docs/WORKFLOW.md` → `docs/reference/WORKFLOW.md`
-- `docs/PATTERNS.md` → `docs/reference/PATTERNS.md`
-- `docs/ARCHITECTURE.md` → `docs/reference/ARCHITECTURE.md`
-- `docs/MOTION.md` → `docs/reference/MOTION.md`
-- `docs/TESTS.md` → `docs/reference/TESTS.md`
-- `docs/CSS.md` → `docs/reference/CSS.md`
-- `docs/superpowers/specs/` → `docs/specs/`
-- `docs/superpowers/plans/` → `docs/plans/`
+- `docs/reference/WORKFLOW.md` → `docs/reference/WORKFLOW.md`
+- `docs/reference/PATTERNS.md` → `docs/reference/PATTERNS.md`
+- `docs/reference/ARCHITECTURE.md` → `docs/reference/ARCHITECTURE.md`
+- `docs/reference/MOTION.md` → `docs/reference/MOTION.md`
+- `docs/reference/TESTS.md` → `docs/reference/TESTS.md`
+- `docs/reference/CSS.md` → `docs/reference/CSS.md`
+- `docs/specs/` → `docs/specs/`
+- `docs/plans/` → `docs/plans/`
 
 - [ ] **Step 4: Add Git & PR Workflow section**
 
@@ -512,8 +512,8 @@ Add in the "Plugins & Tools" section:
 
 ```markdown
 ### Superpowers Output Paths (Override Defaults)
-- Design specs → `docs/specs/` (not docs/superpowers/specs/)
-- Implementation plans → `docs/plans/` (not docs/superpowers/plans/)
+- Design specs → `docs/specs/` (not docs/specs/)
+- Implementation plans → `docs/plans/` (not docs/plans/)
 - Visual companion HTMLs → ephemeral, `.gitignore`d
 ```
 
@@ -599,8 +599,8 @@ SHIPPED
 - [ ] **Step 2: Update Session Types table**
 
 Update artifact paths in the Session Types table:
-- `docs/superpowers/specs/` → `docs/specs/`
-- `docs/findings.md` → `docs/research/findings.md`
+- `docs/specs/` → `docs/specs/`
+- `docs/research/findings.md` → `docs/research/findings.md`
 
 - [ ] **Step 3: Add Phase 7 — Verification section**
 

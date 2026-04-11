@@ -55,9 +55,9 @@ Footer rebuilt from a minimal 2-link component into a professional 3-section lay
 | `src/content/scenarios/web-plus-data.md` | Content updated | Brand rename |
 | `README.md` | Tagline updated | Brand rename |
 | `brand/README.md` | Tagline updated | Brand rename |
-| `docs/MOTION.md` | Tagline references updated | Brand rename |
-| `docs/ARCHITECTURE.md` | Added SEO schema + wordmarkHover notes | Docs |
-| `docs/TESTS.md` | Updated Footer, added schema + wordmarkHover entries | Docs |
+| `docs/reference/MOTION.md` | Tagline references updated | Brand rename |
+| `docs/reference/ARCHITECTURE.md` | Added SEO schema + wordmarkHover notes | Docs |
+| `docs/reference/TESTS.md` | Updated Footer, added schema + wordmarkHover entries | Docs |
 
 ## Concepts Documented
 

@@ -19,6 +19,6 @@
 
 ## Next: Proof Reel (Section 3)
 
-- Design spec: `docs/superpowers/specs/2026-04-09-home-page-redesign.md` Section 3
-- Plan: `docs/superpowers/plans/2026-04-09-home-page-redesign.md` Sub-slice 13d
+- Design spec: `docs/specs/2026-04-09-home-page-redesign.md` Section 3
+- Plan: `docs/plans/2026-04-09-home-page-redesign.md` Sub-slice 13d
 - Component: `ProofReel.svelte` — featured project cards with impact metrics

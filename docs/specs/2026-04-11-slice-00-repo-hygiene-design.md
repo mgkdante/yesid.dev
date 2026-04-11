@@ -163,8 +163,8 @@ Contents: current sub-slice, task number, branch name, what's merged, what's pen
 
 ```markdown
 ### Superpowers Output Paths (Override Defaults)
-- Design specs → `docs/specs/` (not docs/superpowers/specs/)
-- Implementation plans → `docs/plans/` (not docs/superpowers/plans/)
+- Design specs → `docs/specs/` (not docs/specs/)
+- Implementation plans → `docs/plans/` (not docs/plans/)
 - Visual companion HTMLs → ephemeral, `.gitignore`d
 ```
 
@@ -292,13 +292,13 @@ CONSIDER:
 ### 7. Updated Path References
 
 All docs/ paths in CLAUDE.md update to new locations:
-- `docs/WORKFLOW.md` → `docs/reference/WORKFLOW.md`
-- `docs/PATTERNS.md` → `docs/reference/PATTERNS.md`
-- `docs/ARCHITECTURE.md` → `docs/reference/ARCHITECTURE.md`
-- `docs/MOTION.md` → `docs/reference/MOTION.md`
-- `docs/TESTS.md` → `docs/reference/TESTS.md`
-- `docs/superpowers/specs/` → `docs/specs/`
-- `docs/superpowers/plans/` → `docs/plans/`
+- `docs/reference/WORKFLOW.md` → `docs/reference/WORKFLOW.md`
+- `docs/reference/PATTERNS.md` → `docs/reference/PATTERNS.md`
+- `docs/reference/ARCHITECTURE.md` → `docs/reference/ARCHITECTURE.md`
+- `docs/reference/MOTION.md` → `docs/reference/MOTION.md`
+- `docs/reference/TESTS.md` → `docs/reference/TESTS.md`
+- `docs/specs/` → `docs/specs/`
+- `docs/plans/` → `docs/plans/`
 
 ---
 
@@ -396,8 +396,8 @@ Add:
 ### Task 3: Reorganize docs/ structure
 - Create `docs/reference/` — move evergreen docs
 - Create `docs/roadmap/` — move forward-looking docs
-- Promote `docs/superpowers/specs/` → `docs/specs/`
-- Promote `docs/superpowers/plans/` → `docs/plans/`
+- Promote `docs/specs/` → `docs/specs/`
+- Promote `docs/plans/` → `docs/plans/`
 - Consolidate `docs/research/` — move orphaned files
 - Move misc to `docs/archive/`
 - Remove empty directories
