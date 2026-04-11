@@ -7,11 +7,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { getVisibleServices, resolveLocale } from '$lib/data/index.js';
+	import { getVisibleServices, resolveLocale, servicesGridContent } from '$lib/data/index.js';
 	import { registerGsapPlugins, gsap, ScrollTrigger, MorphSVGPlugin } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 
 	const services = getVisibleServices();
+	const heading = resolveLocale(servicesGridContent.heading, 'en');
+	const headingDot = resolveLocale(servicesGridContent.headingDot, 'en');
+	const subheading = resolveLocale(servicesGridContent.subheading, 'en');
 
 	// Geometric morph targets (48×48 viewBox — matches the service SVGs)
 	const SHAPES = {
@@ -188,21 +191,31 @@
 	data-testid="services-section"
 	class="services-section relative overflow-hidden"
 >
-	<!-- Blueprint background — train SVGs only, no grid lines (matches other sections) -->
+	<!-- Blueprint background — AZUR MPM-10 + MR-73 blueprints layered -->
 	<div class="blueprint-bg absolute inset-0 z-0" aria-hidden="true">
-		<!-- MR-73 side elevation — full-page train blueprint -->
-		<div class="train-svg absolute inset-x-[2%] top-[30px] bottom-[30px] z-0 opacity-[0.07]" aria-hidden="true">
-			<img src="/svg/blueprint/mr73-side-elevation.svg" alt="" class="h-full w-full" />
+		<!-- AZUR side elevation — primary full-page blueprint (centered, faint) -->
+		<div class="train-svg absolute inset-x-[2%] top-[25%] bottom-[25%] z-0 opacity-[0.15]" aria-hidden="true">
+			<img src="/svg/blueprint/azur-side-elevation.svg" alt="" class="h-full w-full" />
 		</div>
 
-		<!-- Edge detail panels -->
-		<div class="edge-details absolute inset-0 z-0 opacity-[0.08] overflow-hidden" aria-hidden="true">
-			<img src="/svg/blueprint/detail-bogie.svg" alt="" class="edge-detail" style="top:20px;left:20px;width:280px;height:220px;" />
-			<img src="/svg/blueprint/detail-door.svg" alt="" class="edge-detail" style="top:20px;right:20px;width:240px;height:260px;" />
-			<img src="/svg/blueprint/detail-interior.svg" alt="" class="edge-detail" style="top:50%;left:15px;transform:translateY(-50%);width:200px;height:320px;" />
-			<img src="/svg/blueprint/detail-handrails.svg" alt="" class="edge-detail" style="top:50%;right:15px;transform:translateY(-50%);width:180px;height:300px;" />
-			<img src="/svg/blueprint/detail-window.svg" alt="" class="edge-detail" style="bottom:20px;left:20px;width:260px;height:180px;" />
-			<img src="/svg/blueprint/detail-seat.svg" alt="" class="edge-detail" style="bottom:20px;left:50%;transform:translateX(-50%);width:220px;height:180px;" />
+		<!-- ALL 12 blueprint SVGs — tiled wall-to-wall, no gaps -->
+		<div class="edge-details absolute inset-0 z-0 opacity-[0.18] overflow-hidden" aria-hidden="true">
+			<!-- Row 1: top band (4 panels spanning full width) -->
+			<img src="/svg/blueprint/azur-front-view.svg" alt="" class="edge-detail" style="top:0;left:0;width:22%;height:38%;" />
+			<img src="/svg/blueprint/detail-bogie.svg" alt="" class="edge-detail" style="top:0;left:22%;width:28%;height:28%;" />
+			<img src="/svg/blueprint/azur-top-view.svg" alt="" class="edge-detail" style="top:0;left:50%;width:28%;height:22%;" />
+			<img src="/svg/blueprint/azur-bogie-detail.svg" alt="" class="edge-detail" style="top:0;right:0;width:22%;height:30%;" />
+			<!-- Row 1 fill: plug gap between bogie+top-view row and middle -->
+			<img src="/svg/blueprint/detail-door.svg" alt="" class="edge-detail" style="top:22%;left:38%;width:18%;height:22%;" />
+			<img src="/svg/blueprint/detail-window.svg" alt="" class="edge-detail" style="top:24%;right:0;width:18%;height:20%;" />
+			<!-- Row 2: middle band (3 panels) -->
+			<img src="/svg/blueprint/azur-cross-section.svg" alt="" class="edge-detail" style="top:38%;left:0;width:20%;height:34%;" />
+			<img src="/svg/blueprint/detail-interior.svg" alt="" class="edge-detail" style="top:40%;left:20%;width:18%;height:30%;" />
+			<img src="/svg/blueprint/detail-handrails.svg" alt="" class="edge-detail" style="top:44%;right:0;width:18%;height:28%;" />
+			<!-- Row 3: bottom band (3 panels spanning full width) -->
+			<img src="/svg/blueprint/mr73-side-elevation.svg" alt="" class="edge-detail" style="bottom:0;left:0;width:38%;height:30%;" />
+			<img src="/svg/blueprint/detail-seat.svg" alt="" class="edge-detail" style="bottom:0;left:38%;width:24%;height:28%;" />
+			<img src="/svg/blueprint/azur-side-elevation.svg" alt="" class="edge-detail" style="bottom:0;right:0;width:38%;height:30%;" />
 		</div>
 
 		<!-- Corner crosshairs -->
@@ -212,21 +225,23 @@
 		<div class="crosshair" style="bottom:24px;right:24px;"></div>
 		<!-- Reference labels -->
 		<span class="ref-label" style="top:16px;right:56px;">SEC-04 / SERVICES</span>
-		<span class="ref-label" style="bottom:16px;left:56px;">DWG: MR73-SIDE-ELEV</span>
-		<span class="ref-label" style="bottom:16px;right:56px;">SCALE 1:48 | REV.B</span>
-		<span class="ref-label" style="top:16px;left:56px;">STM / BOMBARDIER</span>
+		<span class="ref-label" style="bottom:16px;left:56px;">DWG: AZUR-MPM10-ELEV</span>
+		<span class="ref-label" style="bottom:16px;right:56px;">SCALE 1:48 | REV.A</span>
+		<span class="ref-label" style="top:16px;left:56px;">STM / ALSTOM-BBD</span>
 	</div>
 
 	<!-- Content -->
 	<div class="relative z-10">
-		<!-- Section label -->
-		<div
-			data-testid="services-label"
-			data-services-label
-			class="mb-10 font-mono text-xs tracking-[3px] uppercase md:mb-12"
-			style="color: var(--text-muted, #666666);"
-		>
-			Services
+		<!-- Section heading -->
+		<div data-services-label>
+			<h2
+				data-testid="services-heading"
+				class="section-heading"
+			>{heading}<span class="section-dot">{headingDot}</span></h2>
+			<p
+				data-testid="services-subheading"
+				class="section-subheading"
+			>{subheading}</p>
 		</div>
 
 		<!-- 3×2 grid — auto-rows: 1fr for uniform card height -->
@@ -312,6 +327,27 @@
 </section>
 
 <style>
+	/* Section heading — matches Terminus style */
+	.section-heading {
+		font-family: Inter, sans-serif;
+		font-size: clamp(2.5rem, 6vw, 4rem);
+		font-weight: 900;
+		color: var(--text-primary, #f0f0f0);
+		letter-spacing: -2px;
+		margin-block-end: 6px;
+	}
+	.section-dot {
+		color: var(--brand-primary, #e07800);
+	}
+	.section-subheading {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 13px;
+		color: var(--text-muted, #555);
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		margin-block-end: 36px;
+	}
+
 	.services-section {
 		padding: 80px 16px;
 	}
@@ -325,6 +361,10 @@
 	@media (min-width: 1024px) {
 		.services-section {
 			padding: 140px 32px;
+			min-height: 100dvh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
 		}
 	}
 

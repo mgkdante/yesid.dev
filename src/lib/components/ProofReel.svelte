@@ -11,6 +11,9 @@
 	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { prefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 
+	const heading = resolveLocale(proofReelContent.heading, 'en');
+	const headingDot = resolveLocale(proofReelContent.headingDot, 'en');
+	const subheading = resolveLocale(proofReelContent.subheading, 'en');
 	const sectionLabel = resolveLocale(proofReelContent.sectionLabel, 'en');
 	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, 'en');
 
@@ -71,16 +74,18 @@
 <section
 	bind:this={sectionEl}
 	data-testid="proof-reel-section"
-	class="relative py-16 px-6 md:py-24 md:px-12 lg:px-16"
+	class="relative py-16 px-6 md:py-24 md:px-12 lg:px-16 lg:min-h-dvh lg:flex lg:flex-col lg:justify-center"
 >
-	<!-- Section label -->
-	<div
-		data-testid="proof-reel-label"
-		data-proof-label
-		class="mb-8 font-mono text-[11px] tracking-[3px] uppercase md:mb-10"
-		style="color: rgba(224,120,0,0.5);"
-	>
-		{sectionLabel}
+	<!-- Section heading -->
+	<div data-proof-label>
+		<h2
+			data-testid="proof-reel-heading"
+			class="section-heading"
+		>{heading}<span class="section-dot">{headingDot}</span></h2>
+		<p
+			data-testid="proof-reel-subheading"
+			class="section-subheading"
+		>{subheading}</p>
 	</div>
 
 	<!-- 3-card grid -->
@@ -174,6 +179,27 @@
 </section>
 
 <style>
+	/* Section heading — matches Terminus style */
+	.section-heading {
+		font-family: Inter, sans-serif;
+		font-size: clamp(2.5rem, 6vw, 4rem);
+		font-weight: 900;
+		color: var(--text-primary, #f0f0f0);
+		letter-spacing: -2px;
+		margin-block-end: 6px;
+	}
+	.section-dot {
+		color: var(--brand-primary, #e07800);
+	}
+	.section-subheading {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 13px;
+		color: var(--text-muted, #555);
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		margin-block-end: 36px;
+	}
+
 	/* Desktop hover: card border + image turns color */
 	.proof-card:hover {
 		border-color: rgba(224, 120, 0, 0.6) !important;

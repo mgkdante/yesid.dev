@@ -16,6 +16,8 @@
 	const heading = resolveLocale(closerContent.heading, 'en');
 	const headingDot = resolveLocale(closerContent.headingDot, 'en');
 	const subheading = resolveLocale(closerContent.subheading, 'en');
+	const ctaLabel = resolveLocale(closerContent.cta.label, 'en');
+	const ctaHref = closerContent.cta.href;
 	const contactLabel = resolveLocale(closerContent.rows.contact.label, 'en');
 	const contactDesc = resolveLocale(closerContent.rows.contact.description, 'en');
 	const contactAction = resolveLocale(closerContent.rows.contact.action, 'en');
@@ -51,14 +53,14 @@
 			label: connectLabel,
 			description: connectDesc,
 			action: connectAction,
-			href: siteMeta.links.linkedin ?? '#',
+			href: siteMeta.links.github,
 			primary: true,
 		},
 		...latestPosts.map((post) => ({
 			label: readLabel,
 			description: resolveLocale(post.title, 'en'),
 			action: readAction,
-			href: `/blog/${post.category}/${post.slug}`,
+			href: `/blog/${post.slug}`,
 			primary: false,
 		})),
 		{
@@ -68,14 +70,6 @@
 			href: '/about',
 			primary: false,
 		},
-	];
-
-	// Social links
-	const socials = [
-		{ label: 'LinkedIn', href: siteMeta.links.linkedin ?? '#' },
-		{ label: 'GitHub', href: siteMeta.links.github },
-		{ label: 'Upwork', href: siteMeta.links.upwork ?? '#' },
-		{ label: 'Email', href: `mailto:${siteMeta.links.email}` },
 	];
 
 	// Darker base — the floodlight filter brightens the lit areas
@@ -222,62 +216,60 @@
 
 		registerGsapPlugins();
 
-		// Load construction props SVG with floodlight for 3D feel
-		const propsWrap = sectionEl.querySelector('[data-closer-props]');
-		if (propsWrap) {
-			fetch('/svg/graffiti/construction-props.svg')
+		// Load individual construction props with 3D lighting
+		const propFiles = ['cone', 'sign', 'helmet', 'barricade'] as const;
+		propFiles.forEach((name, idx) => {
+			const wrap = sectionEl!.querySelector(`[data-prop="${name}"]`);
+			if (!wrap) return;
+			fetch(`/svg/graffiti/prop-${name}.svg`)
 				.then((r) => r.text())
 				.then((text) => {
 					const parser = new DOMParser();
 					const doc = parser.parseFromString(text, 'image/svg+xml');
 					const svg = doc.querySelector('svg');
 					if (!svg) return;
-					svg.classList.add('closer-props-svg');
+					svg.classList.add('prop-svg');
 
-					// Same floodlight filter for 3D depth
-					const vb = svg.getAttribute('viewBox')?.split(' ').map(Number) ?? [0, 0, 420, 75];
+					// Add floodlight-style 3D lighting
+					const vb = svg.getAttribute('viewBox')?.split(' ').map(Number) ?? [0, 0, 100, 100];
 					const cx = vb[2] / 2;
 					const h = vb[3];
 					const defs = svg.querySelector('defs') || document.createElementNS('http://www.w3.org/2000/svg', 'defs');
 					if (!svg.querySelector('defs')) svg.prepend(defs);
-
+					const filterId = `prop-light-${idx}`;
 					const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-					filter.setAttribute('id', 'props-light');
+					filter.setAttribute('id', filterId);
 					filter.setAttribute('x', '-50%');
 					filter.setAttribute('y', '-50%');
 					filter.setAttribute('width', '200%');
 					filter.setAttribute('height', '200%');
 					filter.innerHTML = `
-						<feDiffuseLighting in="SourceGraphic" result="light" surfaceScale="5" diffuseConstant="1.4" lighting-color="#FFB627">
-							<feSpotLight x="${cx}" y="${h + 200}" z="40" pointsAtX="${cx}" pointsAtY="0" pointsAtZ="0" specularExponent="8" limitingConeAngle="45"/>
+						<feDiffuseLighting in="SourceGraphic" result="light" surfaceScale="4" diffuseConstant="1.3" lighting-color="#FFB627">
+							<feSpotLight x="${cx}" y="${h + 100}" z="50" pointsAtX="${cx}" pointsAtY="0" pointsAtZ="0" specularExponent="8" limitingConeAngle="45"/>
 						</feDiffuseLighting>
-						<feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1.4" k2="0.2" k3="0" k4="0"/>
+						<feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1.3" k2="0.2" k3="0" k4="0"/>
 					`;
 					defs.appendChild(filter);
-
 					const contentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-					contentGroup.setAttribute('filter', 'url(#props-light)');
+					contentGroup.setAttribute('filter', `url(#${filterId})`);
 					const children = Array.from(svg.children).filter(c => c.tagName !== 'defs');
 					children.forEach(c => contentGroup.appendChild(c));
 					svg.appendChild(contentGroup);
 
-					propsWrap.appendChild(svg);
+					wrap.appendChild(svg);
 				});
-		}
+		});
 
 		const headingEl = sectionEl.querySelector('[data-closer-heading]');
 		const subEl = sectionEl.querySelector('[data-closer-sub]');
 		const boardEl = sectionEl.querySelector('[data-closer-board]');
 		const rowEls = sectionEl.querySelectorAll('[data-closer-row]');
 		const graffitiWrap = sectionEl.querySelector('[data-closer-graffiti]');
-		const socialsEl = sectionEl.querySelector('[data-closer-socials]');
-
 		if (!reduced) {
 			gsap.set(headingEl, { opacity: 0, y: 20 });
 			gsap.set(subEl, { opacity: 0 });
 			gsap.set(boardEl, { opacity: 0, scale: 0.98 });
 			gsap.set(rowEls, { opacity: 0, x: -10 });
-			gsap.set(socialsEl, { opacity: 0 });
 		}
 
 		let masterTl: gsap.core.Timeline | undefined;
@@ -312,7 +304,6 @@
 					.to(subEl, { opacity: 1, duration: 0.3 }, '-=0.3')
 					.to(boardEl, { opacity: 1, scale: 1, duration: 0.5 }, '-=0.2')
 					.to(rowEls, { opacity: 1, x: 0, stagger: 0.05, duration: 0.3 }, '-=0.3')
-					.to(socialsEl, { opacity: 1, duration: 0.3 }, '-=0.2')
 					.add(animateGraffiti(letterData), '-=0.4');
 
 				// Hover/tap replay
@@ -334,8 +325,7 @@
 				.to(headingEl, { opacity: 1, y: 0, duration: 0.4 })
 				.to(subEl, { opacity: 1, duration: 0.3 }, '-=0.3')
 				.to(boardEl, { opacity: 1, scale: 1, duration: 0.5 }, '-=0.2')
-				.to(rowEls, { opacity: 1, x: 0, stagger: 0.05, duration: 0.3 }, '-=0.3')
-				.to(socialsEl, { opacity: 1, duration: 0.3 }, '-=0.2');
+				.to(rowEls, { opacity: 1, x: 0, stagger: 0.05, duration: 0.3 }, '-=0.3');
 		}
 
 		return () => {
@@ -388,8 +378,11 @@
 		</svg>
 	</div>
 
-	<!-- Construction props — ground level scene with same lighting -->
-	<div class="closer-props" data-closer-props aria-hidden="true"></div>
+	<!-- Construction props — individual pieces for positioning freedom -->
+	<div class="prop prop-cone" data-prop="cone" aria-hidden="true"></div>
+	<div class="prop prop-sign" data-prop="sign" aria-hidden="true"></div>
+	<div class="prop prop-helmet" data-prop="helmet" aria-hidden="true"></div>
+	<div class="prop prop-barricade" data-prop="barricade" aria-hidden="true"></div>
 
 	<!-- Content -->
 	<div class="closer-content relative z-10">
@@ -401,43 +394,62 @@
 			{subheading}
 		</p>
 
-		<!-- Departure board -->
-		<div data-testid="closer-board" data-closer-board class="closer-board">
-			{#each rows as row}
-				<a
-					href={row.href}
-					data-testid="closer-row"
-					data-closer-row
-					class="closer-row"
-					class:closer-row-primary={row.primary}
-					aria-label="{row.label} — {row.description}"
-					target={row.href.startsWith('http') ? '_blank' : undefined}
-					rel={row.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-				>
-					<span class="closer-row-label">{row.label}</span>
-					<span class="closer-row-desc" class:closer-row-desc-primary={row.primary}>
-						{row.description}
-					</span>
-					<span class="closer-row-action" class:closer-row-action-primary={row.primary}>
-						{row.action}
-					</span>
-				</a>
-			{/each}
+		<!-- Terminal -->
+		<div data-testid="closer-board" data-closer-board class="closer-terminal">
+			<div class="terminal-glow" aria-hidden="true"></div>
+			<!-- Title bar with personal prompt -->
+			<div class="terminal-titlebar">
+				<span class="terminal-status"></span>
+				<span class="terminal-title">yesid@terminus:~/destinations</span>
+			</div>
+			<!-- Terminal body -->
+			<div class="terminal-body">
+				<!-- Welcome line -->
+				<div class="terminal-welcome">
+					<span class="terminal-comment">// where to next?</span>
+				</div>
+				{#each rows as row, i}
+					<a
+						href={row.href}
+						data-testid="closer-row"
+						data-closer-row
+						class="terminal-row"
+						class:terminal-row-primary={row.primary}
+						aria-label="{row.label} — {row.description}"
+						target={row.href.startsWith('http') ? '_blank' : undefined}
+						rel={row.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+					>
+						<span class="terminal-line-num">{String(i + 1).padStart(2, '0')}</span>
+						<span class="terminal-row-label">{row.label}</span>
+						<span class="terminal-row-desc" class:terminal-row-desc-primary={row.primary}>
+							{row.description}
+						</span>
+						<span class="terminal-row-action" class:terminal-row-action-primary={row.primary}>
+							{row.action} {'->'}
+						</span>
+					</a>
+				{/each}
+				<!-- Blinking cursor -->
+				<div class="terminal-cursor-line">
+					<span class="terminal-line-num">&nbsp;</span>
+					<span class="terminal-cursor">_</span>
+				</div>
+			</div>
+			<!-- Status bar -->
+			<div class="terminal-statusbar">
+				<span>Montreal, QC</span>
+				<span>UTF-8</span>
+				<span>{rows.length} destinations</span>
+			</div>
+			<!-- Scanline overlay -->
+			<div class="terminal-scanlines" aria-hidden="true"></div>
 		</div>
 
-		<!-- Social links -->
-		<div data-testid="closer-socials" data-closer-socials class="closer-socials">
-			{#each socials as social}
-				<a
-					href={social.href}
-					class="closer-social-link"
-					target={social.href.startsWith('http') ? '_blank' : undefined}
-					rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-				>
-					{social.label}
-				</a>
-			{/each}
-		</div>
+		<!-- CTA -->
+		<a href={ctaHref} data-testid="closer-cta" class="closer-cta">
+			{ctaLabel} <span class="closer-cta-arrow">-{'>'}</span>
+		</a>
+
 	</div>
 </section>
 
@@ -446,7 +458,7 @@
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
-		padding: 64px 16px 0;
+		padding: 64px 16px 100px;
 		position: relative;
 	}
 
@@ -459,8 +471,8 @@
 		bottom: 100%;
 		width: clamp(400px, 45vw, 650px);
 		height: 42vh;
-		/* Narrow at bottom (matches lens width), wide at top (graffiti area) */
-		clip-path: polygon(48% 100%, 52% 100%, 100% 0%, 0% 0%);
+		/* Narrow base matches floodlight lens (~12px), wide top covers graffiti */
+		clip-path: polygon(49% 100%, 51% 100%, 100% 0%, 0% 0%);
 		background: linear-gradient(
 			to top,
 			rgba(255, 182, 39, 0.08) 0%,
@@ -472,23 +484,25 @@
 		pointer-events: none;
 	}
 
-	/* Construction props — flush to bottom edge, scales with viewport */
-	.closer-props {
+	/* Individual props — absolutely positioned on the ground */
+	.prop {
 		position: absolute;
 		bottom: 0;
-		left: 0;
-		width: 80%;
 		pointer-events: none;
 		z-index: 3;
-		overflow: visible;
 		line-height: 0;
 	}
-	:global(.closer-props-svg) {
+	:global(.prop-svg) {
 		width: 100% !important;
 		height: auto !important;
 		display: block;
-		overflow: visible;
 	}
+
+	/* Desktop prop positions — left cluster, bigger */
+	.prop-cone { left: 2%; width: 50px; }
+	.prop-sign { left: 10%; width: 75px; }
+	.prop-helmet { left: 22%; width: 60px; }
+	.prop-barricade { left: 30%; width: 200px; }
 
 	/* Graffiti wrapper — bottom-right on desktop, behind on mobile */
 	.closer-graffiti-wrap {
@@ -526,25 +540,25 @@
 		overflow: visible;
 	}
 	.closer-floodlight {
-		width: clamp(60px, 8vw, 100px);
+		width: clamp(40px, 5vw, 64px);
 		height: auto;
 		display: block;
 	}
 
 	/* Content area — wide, leaves room for graffiti on the right */
 	.closer-content {
-		max-width: 72%;
+		max-width: 78%;
 		width: 100%;
 		padding-inline-start: clamp(1rem, 4vw, 3rem);
 	}
 
 	.closer-heading {
 		font-family: Inter, sans-serif;
-		font-size: clamp(1.5rem, 4vw, 2rem);
+		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
 		color: var(--text-primary, #f0f0f0);
-		letter-spacing: -1px;
-		margin-block-end: 4px;
+		letter-spacing: -2px;
+		margin-block-end: 6px;
 	}
 	.closer-dot {
 		color: var(--brand-primary, #e07800);
@@ -552,127 +566,287 @@
 
 	.closer-subheading {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 9px;
+		font-size: 13px;
 		color: var(--text-muted, #555);
-		letter-spacing: 1px;
-		margin-block-end: 24px;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		margin-block-end: 36px;
 	}
 
-	/* Departure board */
-	.closer-board {
-		background: rgba(10, 10, 10, 0.92);
-		border: 1px solid #252525;
-		border-radius: 3px;
-		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
-		margin-block-end: 20px;
+	/* ===== Terminal window ===== */
+	.closer-terminal {
+		position: relative;
+		background: rgba(6, 6, 6, 0.96);
+		border: 1px solid #222;
+		border-left: 2px solid var(--brand-primary, #e07800);
+		border-radius: 6px;
+		box-shadow:
+			0 8px 40px rgba(0, 0, 0, 0.7),
+			0 0 60px rgba(224, 120, 0, 0.04);
+		margin-block-end: 32px;
 		overflow: hidden;
+		font-family: 'JetBrains Mono', monospace;
 	}
 
-	.closer-row {
-		display: grid;
-		grid-template-columns: 70px 1fr 50px;
-		padding: 10px 14px;
+	/* Left edge glow */
+	.terminal-glow {
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: 0;
+		width: 80px;
+		background: linear-gradient(to right, rgba(224, 120, 0, 0.06), transparent);
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	/* Title bar */
+	.terminal-titlebar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 20px;
+		background: rgba(20, 20, 20, 0.9);
 		border-bottom: 1px solid #1a1a1a;
+		position: relative;
+		z-index: 2;
+	}
+	.terminal-status {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: #28c840;
+		box-shadow: 0 0 6px rgba(40, 200, 64, 0.4);
+		flex-shrink: 0;
+	}
+	.terminal-title {
+		font-size: 13px;
+		color: #666;
+		letter-spacing: 0.3px;
+	}
+
+	/* Terminal body */
+	.terminal-body {
+		padding: 12px 0;
+		position: relative;
+		z-index: 2;
+	}
+
+	.terminal-welcome {
+		padding: 4px 24px 12px;
+	}
+	.terminal-comment {
+		font-size: 14px;
+		color: #444;
+		font-style: italic;
+	}
+
+	.terminal-row {
+		display: grid;
+		grid-template-columns: 36px 120px 1fr 80px;
+		padding: 16px 24px;
 		align-items: center;
 		text-decoration: none;
 		cursor: pointer;
-		transition: background-color 0.15s;
+		transition: background-color 0.2s;
+		position: relative;
 	}
-	.closer-row:last-child {
-		border-bottom: none;
+	.terminal-row:hover {
+		background-color: rgba(224, 120, 0, 0.05);
 	}
-	.closer-row:hover {
-		background-color: rgba(224, 120, 0, 0.04);
+	.terminal-row:hover .terminal-row-action {
+		color: var(--brand-accent, #ffb627);
 	}
 
-	.closer-row-label {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 9px;
+	.terminal-line-num {
+		font-size: 12px;
+		color: #333;
+		user-select: none;
+	}
+
+	.terminal-row-label {
+		font-size: 14px;
 		font-weight: 700;
 		color: var(--brand-primary, #e07800);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
 	}
 
-	.closer-row-desc {
-		font-size: 10px;
-		color: #999;
+	.terminal-row-desc {
+		font-size: 15px;
+		color: #666;
 	}
-	.closer-row-desc-primary {
-		font-size: 11px;
-		color: #ddd;
+	.terminal-row-desc-primary {
+		font-size: 16px;
+		color: #bbb;
 	}
 
-	.closer-row-action {
+	.terminal-row-action {
 		text-align: right;
-		font-size: 10px;
-		color: #555;
+		font-size: 13px;
+		color: #333;
+		transition: color 0.2s;
 	}
-	.closer-row-action-primary {
+	.terminal-row-action-primary {
 		color: var(--brand-accent, #ffb627);
 		font-weight: 600;
 	}
 
-	/* Social links */
-	.closer-socials {
+	/* Blinking cursor */
+	.terminal-cursor-line {
 		display: flex;
-		gap: 14px;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 9px;
-		margin-block-end: 10px;
+		gap: 8px;
+		padding: 8px 24px 12px;
+		align-items: center;
 	}
-	.closer-social-link {
-		color: #444;
-		text-decoration: none;
-		transition: color 0.15s;
-	}
-	.closer-social-link:hover {
+	.terminal-cursor {
+		font-size: 16px;
 		color: var(--brand-primary, #e07800);
+		animation: blink 1s step-end infinite;
+	}
+	@keyframes blink {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0; }
+	}
+
+	/* Status bar */
+	.terminal-statusbar {
+		display: flex;
+		gap: 24px;
+		padding: 8px 24px;
+		background: rgba(15, 15, 15, 0.9);
+		border-top: 1px solid #1a1a1a;
+		font-size: 11px;
+		color: #444;
+		letter-spacing: 0.3px;
+		position: relative;
+		z-index: 2;
+	}
+
+	/* Subtle scanlines */
+	.terminal-scanlines {
+		position: absolute;
+		inset: 0;
+		background: repeating-linear-gradient(
+			0deg,
+			transparent,
+			transparent 2px,
+			rgba(0, 0, 0, 0.03) 2px,
+			rgba(0, 0, 0, 0.03) 4px
+		);
+		pointer-events: none;
+		z-index: 3;
+	}
+
+	/* ===== CTA ===== */
+	.closer-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--brand-accent, #ffb627);
+		text-decoration: none;
+		padding: 14px 28px;
+		border: 1px solid rgba(255, 182, 39, 0.3);
+		border-radius: 4px;
+		margin-block-end: 28px;
+		transition: all 0.2s;
+		letter-spacing: 0.5px;
+	}
+	.closer-cta:hover {
+		background: rgba(255, 182, 39, 0.08);
+		border-color: rgba(255, 182, 39, 0.6);
+		color: #fff;
+	}
+	.closer-cta-arrow {
+		transition: transform 0.2s;
+	}
+	.closer-cta:hover .closer-cta-arrow {
+		transform: translateX(4px);
 	}
 
 	/* ===== Mobile (<768px) ===== */
 	@media (max-width: 767px) {
 		.closer-section {
-			padding: 48px 16px 0;
+			flex-direction: column;
+			align-items: stretch;
+			justify-content: center;
+			padding: 48px 16px 100px;
 		}
 
 		.closer-content {
 			max-width: 100%;
 			padding-inline-start: 0;
+			order: 1;
 		}
 
-		.closer-beam,
-		.closer-floodlight-wrap {
-			display: none;
-		}
-
-		/* Graffiti moves behind content on mobile */
+		/* Graffiti flows after content on mobile */
 		.closer-graffiti-wrap {
+			position: relative;
 			right: auto;
 			bottom: auto;
-			left: 50%;
-			top: 50%;
-			transform: translate(-50%, -50%);
-			width: 70%;
+			left: auto;
+			top: auto;
+			transform: none;
+			width: clamp(140px, 40vw, 200px);
 			max-width: none;
-			opacity: 0.08;
-			pointer-events: none;
+			opacity: 1;
+			pointer-events: auto;
+			order: 2;
+			margin: 24px auto 0;
+			z-index: 2;
 		}
 
-		.closer-socials {
-			justify-content: flex-start;
+		/* Floodlight on the ground, centered across full width */
+		.closer-floodlight-wrap {
+			position: absolute;
+			bottom: 0;
+			right: auto;
+			left: 50%;
+			transform: translateX(-50%);
+			width: auto;
+			z-index: 4;
+		}
+
+		/* Beam from floodlight up to graffiti — wider spread on mobile */
+		.closer-beam {
+			display: block;
+			width: clamp(280px, 80vw, 400px);
+			height: 35vh;
+			clip-path: polygon(48.5% 100%, 51.5% 100%, 100% 0%, 0% 0%);
+		}
+
+		/* Props cluster around the centered floodlight */
+		.prop-cone {
+			left: calc(50% - 80px);
+			width: 22px;
+		}
+		.prop-sign {
+			left: calc(50% - 50px);
+			width: 36px;
+		}
+		.prop-helmet {
+			left: calc(50% + 24px);
+			width: 28px;
+		}
+		.prop-barricade {
+			left: calc(50% + 50px);
+			width: 80px;
 		}
 	}
 
 	/* ===== Tablet+ (768px+) ===== */
 	@media (min-width: 768px) {
 		.closer-section {
-			padding: 80px 24px 0;
+			padding: 80px 24px 100px;
 		}
 	}
 
 	/* ===== Desktop (1024px+) ===== */
 	@media (min-width: 1024px) {
 		.closer-section {
-			padding: 100px 32px 0;
+			padding: 100px 32px 100px;
 		}
 	}
 </style>

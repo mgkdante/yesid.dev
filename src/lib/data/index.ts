@@ -31,7 +31,7 @@ export type { MetroStop } from './metro.js';
 export { fetchServiceSvgContents, getServiceSvgUrl } from './serviceSvg.js';
 
 // Centralized UI content (i18n)
-export { heroAnimContent, heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent, closerContent } from './content.js';
+export { heroAnimContent, heroContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent, servicesGridContent, closerContent } from './content.js';
 
 // Hero mock data (Slice 13d)
 export { generateHeroData, INITIAL_HERO_DATA, STM_ROUTES } from './hero-data.js';

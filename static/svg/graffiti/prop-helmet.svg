@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 44" fill="none">
+  <!-- Construction Helmet -->
+  <path d="M5,42 Q5,10 32,6 Q60,10 60,42 Z" fill="#FFB627"/>
+  <path d="M15,38 Q15,18 32,14 Q42,16 45,30" fill="none" stroke="#FFD060" stroke-width="1.5" opacity="0.5"/>
+  <path d="M0,40 Q0,42 3,44 L62,44 Q65,42 65,40 L60,38 L5,38 Z" fill="#E6A020"/>
+  <path d="M8,42 L57,42 L55,44 L10,44 Z" fill="#CC8800" opacity="0.4"/>
+  <path d="M32,6 L32,38" stroke="#E6A020" stroke-width="2" opacity="0.6"/>
+</svg>

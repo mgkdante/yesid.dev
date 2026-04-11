@@ -8,10 +8,11 @@ describe('ProofReel', () => {
 		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
 	});
 
-	it('renders the section label', () => {
+	it('renders the section heading', () => {
 		render(ProofReel);
-		expect(screen.getByTestId('proof-reel-label')).toBeInTheDocument();
-		expect(screen.getByTestId('proof-reel-label').textContent).toContain('// PROOF');
+		expect(screen.getByTestId('proof-reel-heading')).toBeInTheDocument();
+		expect(screen.getByTestId('proof-reel-heading').textContent).toContain('PROOF');
+		expect(screen.getByTestId('proof-reel-subheading')).toBeInTheDocument();
 	});
 
 	it('renders exactly 3 project cards', () => {

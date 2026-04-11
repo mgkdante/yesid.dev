@@ -92,6 +92,9 @@ export const manifestoContent = {
 } as const;
 
 export const proofReelContent = {
+	heading: { en: 'PROOF' } satisfies LocalizedString,
+	headingDot: { en: '.' } satisfies LocalizedString,
+	subheading: { en: 'SELECTED WORK' } satisfies LocalizedString,
 	sectionLabel: { en: '// PROOF' } satisfies LocalizedString,
 	viewAllLabel: { en: 'View all work \u2192' } satisfies LocalizedString,
 	viewAllHref: '/work',
@@ -102,6 +105,12 @@ export const proofReelContent = {
 		'lorem-analytics-dashboard': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
 		'lorem-database-migration': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop',
 	},
+} as const;
+
+export const servicesGridContent = {
+	heading: { en: 'SERVICES' } satisfies LocalizedString,
+	headingDot: { en: '.' } satisfies LocalizedString,
+	subheading: { en: 'WHAT I BUILD' } satisfies LocalizedString,
 } as const;
 
 export const aboutContent = {
@@ -193,26 +202,30 @@ export const skillsJourneyCta = {
 export const closerContent = {
 	heading: { en: 'TERMINUS' } satisfies LocalizedString,
 	headingDot: { en: '.' } satisfies LocalizedString,
-	subheading: { en: 'FIN DE LIGNE \u00B7 END OF LINE' } satisfies LocalizedString,
+	subheading: { en: 'END OF LINE' } satisfies LocalizedString,
+	cta: {
+		label: { en: 'Initialize connection' } satisfies LocalizedString,
+		href: '/contact',
+	},
 	rows: {
 		contact: {
 			label: { en: 'CONTACT' } satisfies LocalizedString,
 			description: { en: 'Start a project together' } satisfies LocalizedString,
-			action: { en: '\u2192 GO' } satisfies LocalizedString,
+			action: { en: 'GO' } satisfies LocalizedString,
 		},
 		connect: {
-			label: { en: 'CONNECT' } satisfies LocalizedString,
-			description: { en: 'LinkedIn \u00B7 full-time roles' } satisfies LocalizedString,
-			action: { en: '\u2192 GO' } satisfies LocalizedString,
+			label: { en: 'EXPLORE' } satisfies LocalizedString,
+			description: { en: 'GitHub \u00B7 open-source work' } satisfies LocalizedString,
+			action: { en: 'GO' } satisfies LocalizedString,
 		},
 		read: {
 			label: { en: 'READ' } satisfies LocalizedString,
-			action: { en: '\u2192' } satisfies LocalizedString,
+			action: { en: 'cd' } satisfies LocalizedString,
 		},
 		about: {
 			label: { en: 'ABOUT' } satisfies LocalizedString,
 			description: { en: 'Yesid O. \u00B7 Montreal' } satisfies LocalizedString,
-			action: { en: '\u2192' } satisfies LocalizedString,
+			action: { en: 'cd' } satisfies LocalizedString,
 		},
 	},
 	attribution: {
