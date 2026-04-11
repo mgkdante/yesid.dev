@@ -55,7 +55,7 @@ Convention: tests live next to the code they test (co-located).
 
 ---
 
-# Components (`src/lib/components/`) — 27 files, 188 tests
+# Components (`src/lib/components/`) — 28 files, 197 tests
 
 ## src/lib/components/BlogRow.test.ts
 
@@ -329,7 +329,13 @@ Convention: tests live next to the code they test (co-located).
 |----------|---------|-------|
 | StackScenarioCard | Renders scenario summary, recommended tech list, related projects, CTA link, handles auto-generated scenarios | 6 |
 
-# Data Layer (`src/lib/data/`) — 9 files, 123 tests
+## src/lib/components/HomeServices.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| HomeServices | Section renders with label, 6 cards with benefit headlines, service titles, impact metrics, SVG panels, correct /services/[id] links, view-all link | 9 |
+
+# Data Layer (`src/lib/data/`) — 10 files, 126 tests
 
 ## src/lib/data/tech-stack.test.ts
 
@@ -353,6 +359,9 @@ Convention: tests live next to the code they test (co-located).
 | skillsJourneyPanels > every panel has at least one skill | Each panel contains skill entries | `panel.skills.length` >= 1 for all panels | Standard |
 | skillsJourneyPanels > every panel has at least one highlight word | Each panel has words to visually emphasize | `panel.highlightWords.length` >= 1 for all panels | Standard |
 | skillsJourneyCta > has prompt and button text | The journey CTA has both prompt and button copy | `prompt.en` and `button.en` are truthy | Standard |
+| services — home grid fields > every visible service has a benefitHeadline | All visible services have non-empty benefitHeadline | `service.benefitHeadline.en.length` > 0 for all | Uses `getVisibleServices()` |
+| services — home grid fields > every visible service has an impactMetric with value and label | All visible services have impactMetric with value + label | `impactMetric.value.en` and `impactMetric.label.en` length > 0 | Uses `getVisibleServices()` |
+| services — home grid fields > every visible service has an svg filename | All visible services have svg field | `service.svg.length` > 0 for all | Uses `getVisibleServices()` |
 
 ## src/lib/data/data-integrity.test.ts
 
@@ -700,23 +709,25 @@ Convention: tests live next to the code they test (co-located).
 
 | Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
 |---------------------------|-------------------|----------------|-------------|
-| Home page > renders the app root | The page root container exists | `getByTestId('app-root')` in document | Renders full `+page.svelte` |
-| Home page > renders the hero banner | The hero section exists | `getByTestId('hero-banner')` in document | Standard |
-| Home page > renders the metro network container in the hero | The metro network visualization exists | `getByTestId('metro-network-container')` in document | Standard |
-| Home page > renders all 4 station sections | All 4 service station sections are present | `station-sql-development`, `station-data-pipeline`, `station-analytics-reporting`, `station-database-engineering` in document | Standard |
-| Home page > each station has its service title | All 4 service titles are visible | `getByText('SQL Development & Optimization')`, etc. in document | Standard |
-| Home page > renders the featured work section | The featured projects section exists | `getByTestId('section-featured-work')` in document | Standard |
-| Home page > renders the about bento section | The about section exists | `getByTestId('section-about-bento')` in document | Standard |
-| Home page > renders the blog feed section | The blog section exists | `getByTestId('section-blog-feed')` in document | Standard |
-| Home page > renders the terminal CTA section | The terminal CTA section exists | `getByTestId('section-terminal')` in document | Standard |
-| Home page > renders CTA with correct text | The CTA has the expected copy | Terminal text contains "Let's build something" and "that moves" | Standard |
-| Home page > CTA links exist | The contact and GitHub CTA links exist | `cta-contact` and `cta-github` elements in terminal section | Standard |
-| Home page > renders the hero badge | The "available for hire" badge is visible | `hero-badge` text contains `'AVAILABLE FOR HIRE'` | Standard |
-| Home page > renders the hero headline | The 3-line headline is rendered correctly | `hero-line1` contains `'DATA'`, `hero-line2` contains `'INFRA'`, `hero-line3` contains `'BUILT RIGHT.'` | Standard |
-| Home page > renders the hero orange dot | The brand dot is visible in the headline | `hero-dot` text === `'.'` | Standard |
-| Home page > renders hero subtitle | The subtitle with freelance description is visible | `hero-subtitle` text contains `'Freelance SQL development'` | Standard |
-| Home page > renders hero CTAs | The hero work and contact buttons exist | `hero-cta-work` and `hero-cta-contact` in document | Standard |
-| Home page > renders hero SQL decoration | The decorative SQL snippet is visible | `hero-sql` text contains `'SELECT expertise FROM yesid'` | Standard |
+| Home page > renders the app root | Page root container exists | `getByTestId('app-root')` | Standard |
+| Home page > renders the hero banner | Hero section exists | `getByTestId('hero-banner')` | Standard |
+| Home page > renders the metro network container in the hero | Metro SVG container exists | `getByTestId('metro-network-container')` | Standard |
+| Home page > renders the hero headline | Two-line headline rendered | `hero-line1` contains `'PIPELINES THAT'`, `hero-line2` contains `"DON'T BREAK"` | Standard |
+| Home page > renders the hero orange dot | Brand dot is an SVG element | `hero-dot` tagName is `svg` | Standard |
+| Home page > renders hero subheadline | Subheadline text rendered | `hero-subheadline` contains `'Data that tell the truth'` | Standard |
+| Home page > renders hero subtitle | Subtitle text rendered | `hero-subtitle` contains `'reliable infrastructure'` | Standard |
+| Home page > renders hero CTAs | Work and contact buttons exist | `hero-cta-work`, `hero-cta-contact` | Standard |
+| Home page > renders hero metric cards | 3 metric cards rendered | `hero-metrics` + `getAllByTestId('metric-card')` length 3 | Standard |
+| Home page > renders hero SQL panel | SQL panel(s) rendered with query | `getAllByTestId('sql-panel')` >= 1, query contains `'SELECT'` | Desktop + mobile panels |
+| Home page > renders hero refresh button | Refresh button exists | `getByTestId('hero-refresh')` | Standard |
+| Home page > renders the hard-cut transition | Von Restorff divider exists | `getByTestId('hard-cut')` | Standard |
+| Home page > renders the manifesto section | Manifesto section exists | `getByTestId('manifesto-section')` | Standard |
+| Home page > renders manifesto capability pills | 5 capability pills rendered | `getAllByTestId('manifesto-pill')` length 5 | Standard |
+| Home page > renders the proof reel section | Proof reel section exists | `getByTestId('proof-reel-section')` | Standard |
+| Home page > renders 3 proof reel cards | 3 project cards rendered | `getAllByTestId('proof-card')` length 3 | Standard |
+| Home page > renders the services section | Services section exists | `getByTestId('services-section')` | Standard |
+| Home page > renders 6 service cards | 6 service cards rendered | `getAllByTestId('services-card')` length 6 | Standard |
+| Home page > renders service benefit headlines | 6 benefit headlines rendered | `getAllByTestId('services-benefit')` length 6 | Standard |
 
 ---
 

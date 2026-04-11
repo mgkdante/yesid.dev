@@ -1,0 +1,136 @@
+<h2>B3 v3 — Benefit First, Title as Star</h2>
+<p class="subtitle">Benefit text leads in white (16px). Service title follows as the visual star — yellow, 42px, bold. The benefit earns attention, the title commands it.</p>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px;">
+
+  <!-- Card 1: SQL -->
+  <div style="background:#0D0D0D; border:1px solid rgba(224,120,0,0.1); border-radius:12px; padding:32px; cursor:pointer;" data-choice="approve" onclick="toggleSelect(this)">
+    <div style="display:flex; gap:28px; height:100%; min-height:260px;">
+      <div style="width:140px; min-width:140px; align-self:stretch; border-radius:14px; background:rgba(224,120,0,0.06); border:1px solid rgba(224,120,0,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="20" stroke="#E07800" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <path d="M16 20h16M16 28h10" stroke="#E07800" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; flex:1;">
+        <div style="color:rgba(255,255,255,0.85); font-size:16px; font-weight:500; line-height:1.45;">Queries that run in seconds, not minutes</div>
+        <div style="color:#FFB627; font-size:42px; font-weight:800; line-height:1.05; letter-spacing:-1px; margin-top:4px;">SQL Development</div>
+        <div style="color:rgba(255,255,255,0.55); font-size:16px; line-height:1.55; margin-top:6px;">Your dashboards load fast. Your team stops waiting for data.</div>
+        <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(224,120,0,0.1); display:flex; align-items:baseline; gap:10px;">
+          <span style="color:#E07800; font-size:24px; font-weight:700; font-family:monospace;">3x faster</span>
+          <span style="color:rgba(255,255,255,0.4); font-size:12px;">avg query improvement</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Pipelines -->
+  <div style="background:#0D0D0D; border:1px solid rgba(224,120,0,0.1); border-radius:12px; padding:32px;">
+    <div style="display:flex; gap:28px; height:100%; min-height:260px;">
+      <div style="width:140px; min-width:140px; align-self:stretch; border-radius:14px; background:rgba(224,120,0,0.06); border:1px solid rgba(224,120,0,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none">
+          <rect x="8" y="12" width="32" height="24" rx="3" stroke="#E07800" stroke-width="1.5"/>
+          <path d="M14 22l4 4-4 4M22 30h8" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; flex:1;">
+        <div style="color:rgba(255,255,255,0.85); font-size:16px; font-weight:500; line-height:1.45;">Your data arrives clean, on time, every morning</div>
+        <div style="color:#FFB627; font-size:42px; font-weight:800; line-height:1.05; letter-spacing:-1px; margin-top:4px;">Data Pipelines</div>
+        <div style="color:rgba(255,255,255,0.55); font-size:16px; line-height:1.55; margin-top:6px;">Reliable pipelines your analysts trust without chasing broken jobs.</div>
+        <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(224,120,0,0.1); display:flex; align-items:baseline; gap:10px;">
+          <span style="color:#E07800; font-size:24px; font-weight:700; font-family:monospace;">99.9%</span>
+          <span style="color:rgba(255,255,255,0.4); font-size:12px;">pipeline uptime</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Analytics -->
+  <div style="background:#0D0D0D; border:1px solid rgba(224,120,0,0.1); border-radius:12px; padding:32px;">
+    <div style="display:flex; gap:28px; height:100%; min-height:260px;">
+      <div style="width:140px; min-width:140px; align-self:stretch; border-radius:14px; background:rgba(224,120,0,0.06); border:1px solid rgba(224,120,0,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none">
+          <path d="M12 16h24v4H12zM12 24h18v4H12zM12 32h22v4H12z" stroke="#E07800" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; flex:1;">
+        <div style="color:rgba(255,255,255,0.85); font-size:16px; font-weight:500; line-height:1.45;">Decisions in 15 minutes, not 2 days</div>
+        <div style="color:#FFB627; font-size:42px; font-weight:800; line-height:1.05; letter-spacing:-1px; margin-top:4px;">Analytics & Reporting</div>
+        <div style="color:rgba(255,255,255,0.55); font-size:16px; line-height:1.55; margin-top:6px;">Dashboards your team trusts, numbers that match across every report.</div>
+        <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(224,120,0,0.1); display:flex; align-items:baseline; gap:10px;">
+          <span style="color:#E07800; font-size:24px; font-weight:700; font-family:monospace;">2d &rarr; 15m</span>
+          <span style="color:rgba(255,255,255,0.4); font-size:12px;">reporting turnaround</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: Database -->
+  <div style="background:#0D0D0D; border:1px solid rgba(224,120,0,0.1); border-radius:12px; padding:32px;">
+    <div style="display:flex; gap:28px; height:100%; min-height:260px;">
+      <div style="width:140px; min-width:140px; align-self:stretch; border-radius:14px; background:rgba(224,120,0,0.06); border:1px solid rgba(224,120,0,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none">
+          <ellipse cx="24" cy="14" rx="14" ry="5" stroke="#E07800" stroke-width="1.5"/>
+          <path d="M10 14v20c0 2.76 6.27 5 14 5s14-2.24 14-5V14" stroke="#E07800" stroke-width="1.5"/>
+          <path d="M10 24c0 2.76 6.27 5 14 5s14-2.24 14-5" stroke="#E07800" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; flex:1;">
+        <div style="color:rgba(255,255,255,0.85); font-size:16px; font-weight:500; line-height:1.45;">Zero-downtime migrations while you sleep</div>
+        <div style="color:#FFB627; font-size:42px; font-weight:800; line-height:1.05; letter-spacing:-1px; margin-top:4px;">Database Engineering</div>
+        <div style="color:rgba(255,255,255,0.55); font-size:16px; line-height:1.55; margin-top:6px;">Schemas that scale, indexes that stay fast as your data grows.</div>
+        <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(224,120,0,0.1); display:flex; align-items:baseline; gap:10px;">
+          <span style="color:#E07800; font-size:24px; font-weight:700; font-family:monospace;">500GB+</span>
+          <span style="color:rgba(255,255,255,0.4); font-size:12px;">migrated safely</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 5: Internal Tooling -->
+  <div style="background:#0D0D0D; border:1px solid rgba(224,120,0,0.1); border-radius:12px; padding:32px;">
+    <div style="display:flex; gap:28px; height:100%; min-height:260px;">
+      <div style="width:140px; min-width:140px; align-self:stretch; border-radius:14px; background:rgba(224,120,0,0.06); border:1px solid rgba(224,120,0,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none">
+          <rect x="10" y="10" width="28" height="28" rx="4" stroke="#E07800" stroke-width="1.5"/>
+          <path d="M10 20h28M20 20v18" stroke="#E07800" stroke-width="1.5"/>
+          <circle cx="15" cy="15" r="2" fill="#E07800"/>
+        </svg>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; flex:1;">
+        <div style="color:rgba(255,255,255,0.85); font-size:16px; font-weight:500; line-height:1.45;">Your team stops copying between spreadsheets</div>
+        <div style="color:#FFB627; font-size:42px; font-weight:800; line-height:1.05; letter-spacing:-1px; margin-top:4px;">Internal Tooling</div>
+        <div style="color:rgba(255,255,255,0.55); font-size:16px; line-height:1.55; margin-top:6px;">Admin panels and workflows that centralize operations and kill manual work.</div>
+        <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(224,120,0,0.1); display:flex; align-items:baseline; gap:10px;">
+          <span style="color:#E07800; font-size:24px; font-weight:700; font-family:monospace;">80%</span>
+          <span style="color:rgba(255,255,255,0.4); font-size:12px;">less manual data entry</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 6: Web Development -->
+  <div style="background:#0D0D0D; border:1px solid rgba(224,120,0,0.1); border-radius:12px; padding:32px;">
+    <div style="display:flex; gap:28px; height:100%; min-height:260px;">
+      <div style="width:140px; min-width:140px; align-self:stretch; border-radius:14px; background:rgba(224,120,0,0.06); border:1px solid rgba(224,120,0,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none">
+          <rect x="6" y="10" width="36" height="24" rx="3" stroke="#E07800" stroke-width="1.5"/>
+          <path d="M6 34h36v4H6z" stroke="#E07800" stroke-width="1.5"/>
+          <path d="M18 18l-4 4 4 4M30 18l4 4-4 4M22 26l4-12" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; flex:1;">
+        <div style="color:rgba(255,255,255,0.85); font-size:16px; font-weight:500; line-height:1.45;">A frontend that matches your backend quality</div>
+        <div style="color:#FFB627; font-size:42px; font-weight:800; line-height:1.05; letter-spacing:-1px; margin-top:4px;">Web Development</div>
+        <div style="color:rgba(255,255,255,0.55); font-size:16px; line-height:1.55; margin-top:6px;">Fast, typed, server-rendered apps that connect to your data layer.</div>
+        <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(224,120,0,0.1); display:flex; align-items:baseline; gap:10px;">
+          <span style="color:#E07800; font-size:24px; font-weight:700; font-family:monospace;">100</span>
+          <span style="color:rgba(255,255,255,0.4); font-size:12px;">Lighthouse performance</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:24px;">Reading order: benefit (white, 16px) → SERVICE TITLE (yellow, 42px, bold 800) → description → metric. Carnegie hook leads, title is the star. Click first card to approve.</p>

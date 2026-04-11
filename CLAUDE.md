@@ -8,6 +8,7 @@ Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627
 ## Runtime
 
 **Bun only. Never npm/npx/node.** OS: Windows.
+
 - `bun install`, `bun run dev`, `bun run test`, `bun run check`, `bunx`
 - Lockfile: `bun.lockb`
 
@@ -19,11 +20,13 @@ Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627
 
 Every session is one of three types. Declare which at the start.
 
-| Type | What happens | Artifacts |
-|------|-------------|-----------|
-| **Planning** | Research, brainstorm, design spec, slice spec | `.superpowers/brainstorm/`, `docs/superpowers/specs/`, `docs/slices/` |
-| **Implementation** | One sub-slice, task by task per Iteration Protocol | Code, tests, devlog |
-| **Closing** | Docs, handoff, learning docs, tree.txt, commit | `docs/handoffs/`, `docs/devlog/`, `docs/learn/` |
+
+| Type               | What happens                                       | Artifacts                                                                                                                                                      |
+| ------------------ | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Planning**       | Research, brainstorm, design spec, slice spec      | `.superpowers/brainstorm/`, `docs/superpowers/specs/`, `docs/slices/, C:\Users\otalo\.claude\plugins\cache\claude-plugins-official\superpowers\5.0.7\scripts\` |
+| **Implementation** | One sub-slice, task by task per Iteration Protocol | Code, tests, devlog                                                                                                                                            |
+| **Closing**        | Docs, handoff, learning docs, tree.txt, commit     | `docs/handoffs/`, `docs/devlog/`, `docs/learn/`                                                                                                                |
+
 
 **Hard rule:** A session cannot be two types. Planning sessions produce zero code. Implementation sessions don't write specs but can modify on iteration. Closing sessions don't add features.
 
@@ -35,7 +38,7 @@ At session start, always scan for uncommitted changes or commits made outside Cl
 - **Sub-slices may need multiple sessions.** Always estimate and tell Yesid upfront. Never assume one session.
 - **Parallel agents require approval.** Independent research/exploration only. Never self-decide to parallelize implementation. If parallelizing would degrade quality, recommend sequential and explain why.
 - **Sub-slice convention:** Split into sub-slices (10a, 10b, 10c...) when 6+ tasks or multiple concerns. Each gets its own handoff. Naming: `slice-09c-1`, `slice-09c-2a`.
-- **Models** Always use Opus or Sonnet. Do not use Haiku. 
+- **Models** Always use Opus or Sonnet. Do not use Haiku.
 
 ## Slice System
 
@@ -50,6 +53,7 @@ Slice template: `docs/slices/_TEMPLATE.md`
 6. **Specs describe outcomes, not implementation.** Extract the desired OUTCOME, then decide the implementation yourself. Log decisions in the devlog.
 
 **Active slice:** 13 — Home Page Redesign
+
 - Plan: `docs/superpowers/plans/2026-04-09-home-page-redesign.md`
 - Design spec: `docs/superpowers/specs/2026-04-09-home-page-redesign.md`
 - 13a (foundation) complete. 13b (manifesto) code done, design pivot pending. 13c (viewport fix) specced.
@@ -63,14 +67,14 @@ Slice template: `docs/slices/_TEMPLATE.md`
 
 1. Implement ONE task from the slice spec.
 2. Run `bun run test` and `bun run check`. Both must pass.
-   2b. **Pre-flight visual check (UI tasks only).** Before the STOP:
-   - State expected layout at desktop (1440px) and mobile (375px)
-   - Flag anything that might cause layout issues, overflow, or missing content
-   - Fix obvious visual problems before asking Yesid to check
+  2b. **Pre-flight visual check (UI tasks only).** Before the STOP:
+  - State expected layout at desktop (1440px) and mobile (375px)
+  - Flag anything that might cause layout issues, overflow, or missing content
+  - Fix obvious visual problems before asking Yesid to check
 3. **STOP. Do not continue to the next task.** Tell Yesid:
-   - What you built (one sentence)
-   - What to check on `http://localhost:5173/` (specific behaviors, not vague)
-   - Any decisions you made
+  - What you built (one sentence)
+  - What to check on `http://localhost:5173/` (specific behaviors, not vague)
+  - Any decisions you made
 4. **Wait for Yesid's response.** Do not write more code until he replies.
 5. If Yesid reports issues: fix, retest, STOP again, ask him to re-check.
 6. If Yesid approves: move to the next task. Repeat from step 1.
@@ -95,9 +99,9 @@ See `docs/WORKFLOW.md` Section 9 for the full 10-step closing checklist. Critica
 5. **CSS.md** → update when adding tokens, @theme values, scoped styles, z-index, or animation CSS
 6. **PATTERNS.md** → add any new reusable solutions discovered
 7. Regenerate `tree.txt`:
-   ```powershell
+  ```powershell
    cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"
-   ```
+  ```
 8. Commit: `git add -A && git commit -m "feat: complete slice NN — [short desc]" && git push`
 
 ## Testing (Vitest + Bun)
@@ -137,11 +141,13 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 
 Three layers, strict separation. Never mix purposes across layers.
 
-| Layer | File | Purpose | Example |
-|-------|------|---------|---------|
-| Semantic tokens | `src/lib/styles/tokens.css` | Theme-switching CSS custom properties | `var(--bg-primary)`, `var(--text-muted)` |
-| Brand utilities | `src/app.css` `@theme` block | Static brand values that never change with theme | `text-brand-primary`, `bg-brand-accent` |
-| Component scope | `<style>` in `.svelte` | Layout/structure specific to one component | grid templates, position, overflow |
+
+| Layer           | File                         | Purpose                                          | Example                                  |
+| --------------- | ---------------------------- | ------------------------------------------------ | ---------------------------------------- |
+| Semantic tokens | `src/lib/styles/tokens.css`  | Theme-switching CSS custom properties            | `var(--bg-primary)`, `var(--text-muted)` |
+| Brand utilities | `src/app.css` `@theme` block | Static brand values that never change with theme | `text-brand-primary`, `bg-brand-accent`  |
+| Component scope | `<style>` in `.svelte`       | Layout/structure specific to one component       | grid templates, position, overflow       |
+
 
 ### Rules:
 
@@ -163,6 +169,7 @@ Three layers, strict separation. Never mix purposes across layers.
 See `docs/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
 
 ### Core MCP Servers (every session)
+
 - **Svelte MCP** — docs, autofixer (Svelte 5 runes)
 - **GSAP Master MCP** — animation patterns, performance, debugging
 - **Context7 MCP** — live docs for any library (Tailwind, Vitest, Lenis, etc.)
@@ -170,6 +177,7 @@ See `docs/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
 - **Claude Preview** — visual verification after UI tasks
 
 ### Additional MCPs
+
 - GitHub MCP — PRs and repo management
 - Playwright MCP — E2E browser testing
 - Figma MCP — design context and screenshots
@@ -177,12 +185,14 @@ See `docs/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
 - Vercel MCP — deployment, logs, status
 
 ### Key Agents
+
 - `build-error-resolver` — when `bun run check` fails
 - `code-reviewer` — after every task
 - `tdd-guide` — new features (RED → GREEN → REFACTOR)
 - `planner` / `architect` — complex features and design decisions
 
 ### Key Skills
+
 - `superpowers:brainstorming` — **mandatory** before any plan
 - `superpowers:writing-plans` / `superpowers:executing-plans` — plan lifecycle
 - `superpowers:verification-before-completion` — before claiming done
@@ -216,6 +226,7 @@ See `docs/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
 ## Repo Structure
 
 See `tree.txt` for full tree. Key paths:
+
 - `src/lib/components/` — UI components
 - `src/lib/motion/` — actions, stores, GSAP utils, Threlte scenes, SVG animations
 - `src/lib/data/` — types, services, projects, blog data
@@ -232,3 +243,4 @@ See `tree.txt` for full tree. Key paths:
 - `docs/PATTERNS.md` — catalog of reusable solutions from past slices
 - `docs/MOTION.md` — animation language and toolkit
 - `static/` — models, images, lottie
+

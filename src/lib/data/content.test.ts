@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent } from './content.js';
+import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent, closerContent } from './content.js';
 import { getProjectBySlug } from './projects.js';
+import { getVisibleServices } from './services.js';
 
 describe('heroContent', () => {
 	it('has headline lines as non-empty English strings', () => {
@@ -197,5 +198,65 @@ describe('proofReelContent', () => {
 			'lorem-analytics-dashboard',
 			'lorem-database-migration',
 		]);
+	});
+});
+
+describe('services — home grid fields (Slice 13g)', () => {
+	it('every visible service has a benefitHeadline', () => {
+		for (const service of getVisibleServices()) {
+			expect(service.benefitHeadline, `${service.id} missing benefitHeadline`).toBeDefined();
+			expect(service.benefitHeadline!.en.length, `${service.id} benefitHeadline is empty`).toBeGreaterThan(0);
+		}
+	});
+
+	it('every visible service has an impactMetric with value and label', () => {
+		for (const service of getVisibleServices()) {
+			expect(service.impactMetric, `${service.id} missing impactMetric`).toBeDefined();
+			expect(service.impactMetric!.value.en.length, `${service.id} metric value is empty`).toBeGreaterThan(0);
+			expect(service.impactMetric!.label.en.length, `${service.id} metric label is empty`).toBeGreaterThan(0);
+		}
+	});
+
+	it('every visible service has an svg filename', () => {
+		for (const service of getVisibleServices()) {
+			expect(service.svg, `${service.id} missing svg`).toBeDefined();
+			expect(service.svg!.length, `${service.id} svg is empty`).toBeGreaterThan(0);
+		}
+	});
+});
+
+describe('closerContent', () => {
+	it('has heading and subheading', () => {
+		expect(closerContent.heading.en).toBe('TERMINUS');
+		expect(closerContent.headingDot.en).toBe('.');
+		expect(closerContent.subheading.en).toContain('FIN DE LIGNE');
+	});
+
+	it('has contact row with label, description, and action', () => {
+		expect(closerContent.rows.contact.label.en).toBe('CONTACT');
+		expect(closerContent.rows.contact.description.en.length).toBeGreaterThan(0);
+		expect(closerContent.rows.contact.action.en).toContain('GO');
+	});
+
+	it('has connect row with label, description, and action', () => {
+		expect(closerContent.rows.connect.label.en).toBe('CONNECT');
+		expect(closerContent.rows.connect.description.en).toContain('LinkedIn');
+		expect(closerContent.rows.connect.action.en).toContain('GO');
+	});
+
+	it('has read row with label and action', () => {
+		expect(closerContent.rows.read.label.en).toBe('READ');
+		expect(closerContent.rows.read.action.en).toBe('\u2192');
+	});
+
+	it('has about row with label, description, and action', () => {
+		expect(closerContent.rows.about.label.en).toBe('ABOUT');
+		expect(closerContent.rows.about.description.en).toContain('Yesid');
+		expect(closerContent.rows.about.action.en).toBe('\u2192');
+	});
+
+	it('has attribution with text and URL', () => {
+		expect(closerContent.attribution.text.en).toContain('Vecteezy');
+		expect(closerContent.attribution.url).toContain('vecteezy.com');
 	});
 });

@@ -1,0 +1,375 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - img [ref=e9]
+      - img [ref=e13]
+      - img [ref=e17]
+    - generic [ref=e19]:
+      - img [ref=e22]
+      - img [ref=e26]
+      - img [ref=e30]
+    - generic [ref=e32]:
+      - img [ref=e35]
+      - img [ref=e39]
+      - img [ref=e43]
+    - generic [ref=e45]:
+      - img [ref=e48]
+      - img [ref=e52]
+      - img [ref=e56]
+  - generic [ref=e58] [cursor=pointer]:
+    - generic [ref=e60]: W
+    - generic [ref=e62]: o
+    - generic [ref=e64]: r
+    - generic [ref=e66]: k
+  - generic [ref=e67] [cursor=pointer]:
+    - generic [ref=e69]: S
+    - generic [ref=e71]: e
+    - generic [ref=e73]: r
+    - generic [ref=e75]: v
+    - generic [ref=e77]: i
+    - generic [ref=e79]: c
+    - generic [ref=e81]: e
+    - generic [ref=e83]: s
+  - generic [ref=e84] [cursor=pointer]:
+    - generic [ref=e86]: A
+    - generic [ref=e88]: b
+    - generic [ref=e90]: o
+    - generic [ref=e92]: u
+    - generic [ref=e94]: t
+  - generic [ref=e95] [cursor=pointer]:
+    - generic [ref=e97]: C
+    - generic [ref=e99]: o
+    - generic [ref=e101]: "n"
+    - generic [ref=e103]: t
+    - generic [ref=e105]: a
+    - generic [ref=e107]: c
+    - generic [ref=e109]: t
+  - generic [ref=e110] [cursor=pointer]:
+    - generic [ref=e112]: L
+    - generic [ref=e114]: a
+    - generic [ref=e116]: b
+  - generic [ref=e117] [cursor=pointer]:
+    - generic [ref=e119]: F
+    - generic [ref=e121]: u
+    - generic [ref=e123]: "n"
+    - generic [ref=e125]: S
+    - generic [ref=e127]: t
+    - generic [ref=e129]: u
+    - generic [ref=e131]: f
+    - generic [ref=e133]: f
+  - main [ref=e135]:
+    - region "Hero" [ref=e136]
+    - region "Services" [ref=e141]:
+      - generic [ref=e142]:
+        - heading "Services" [level=2] [ref=e144]
+        - paragraph [ref=e146]:
+          - text: I'm a full stack creative which means I can help take any project from ground zero to an award-worthy launch. If you have a project you'd like to discuss then please
+          - link "get in touch" [ref=e147] [cursor=pointer]:
+            - /url: mailto:hello@daveholloway.uk
+          - text: .
+      - region "Services scroller" [ref=e148]:
+        - generic [ref=e149]:
+          - generic [ref=e151]:
+            - generic [ref=e152]:
+              - generic [ref=e153]:
+                - generic [ref=e154]: WEB
+                - generic [ref=e157]: 06-20-12
+              - generic [ref=e158]:
+                - group [ref=e160]: WEB
+                - generic [ref=e161]:
+                  - generic: SERVICE
+                  - heading "Web Design" [level=3] [ref=e163]
+                - generic [ref=e165]:
+                  - generic [ref=e166]:
+                    - generic [ref=e168]: UI/UX
+                    - generic [ref=e170]: Prototypes
+                    - generic [ref=e172]: Components
+                    - generic [ref=e174]: Design Systems
+                  - generic [ref=e176]:
+                    - generic [ref=e178]: Figma
+                    - generic [ref=e180]: Wireframes
+                    - generic [ref=e182]: Interactions
+                    - generic [ref=e184]: User Journeys
+            - generic [ref=e186]:
+              - generic [ref=e187]: WIR
+              - img [ref=e189]
+              - generic [ref=e190]: PRO
+          - generic [ref=e192]:
+            - generic [ref=e193]:
+              - generic [ref=e194]:
+                - generic [ref=e195]: DEV
+                - generic [ref=e198]: 02-20-03
+              - generic [ref=e199]:
+                - group [ref=e201]: DEV
+                - generic [ref=e202]:
+                  - generic: SERVICE
+                  - heading "Web Development" [level=3] [ref=e204]
+                - generic [ref=e206]:
+                  - generic [ref=e207]:
+                    - generic [ref=e209]: CSS/HTML/JS
+                    - generic [ref=e211]: GSAP
+                    - generic [ref=e213]: Astro
+                    - generic [ref=e215]: Git
+                  - generic [ref=e217]:
+                    - generic [ref=e219]: Wordpress
+                    - generic [ref=e221]: Bricks
+                    - generic [ref=e223]: Agentic
+                    - generic [ref=e225]: Cursor
+            - generic [ref=e227]:
+              - generic [ref=e228]: FRO
+              - img [ref=e230]
+              - generic [ref=e231]: BCK
+          - generic [ref=e233]:
+            - generic [ref=e234]:
+              - generic [ref=e235]:
+                - generic [ref=e236]: STR
+                - generic [ref=e239]: 08-20-15
+              - generic [ref=e240]:
+                - group [ref=e242]: STR
+                - generic [ref=e243]:
+                  - generic: SERVICE
+                  - heading "Brand Strategy" [level=3] [ref=e245]
+                - generic [ref=e247]:
+                  - generic [ref=e248]:
+                    - generic [ref=e250]: Interviews
+                    - generic [ref=e252]: Reports
+                    - generic [ref=e254]: Personality
+                    - generic [ref=e256]: Value Proposition
+                  - generic [ref=e258]:
+                    - generic [ref=e260]: Workshops
+                    - generic [ref=e262]: Naming
+                    - generic [ref=e264]: Values
+                    - generic [ref=e266]: Positioning
+            - generic [ref=e268]:
+              - generic [ref=e269]: B2B
+              - img [ref=e271]
+              - generic [ref=e272]: B2C
+          - generic [ref=e274]:
+            - generic [ref=e275]:
+              - generic [ref=e276]:
+                - generic [ref=e277]: BRD
+                - generic [ref=e280]: 12-20-04
+              - generic [ref=e281]:
+                - group [ref=e283]: BRD
+                - generic [ref=e284]:
+                  - generic: SERVICE
+                  - heading "Brand Design" [level=3] [ref=e286]
+                - generic [ref=e288]:
+                  - generic [ref=e289]:
+                    - generic [ref=e291]: Guidelines
+                    - generic [ref=e293]: Activation
+                    - generic [ref=e295]: Logos
+                    - generic [ref=e297]: Design Systems
+                  - generic [ref=e299]:
+                    - generic [ref=e301]: Concepts
+                    - generic [ref=e303]: Templates
+                    - generic [ref=e305]: Moodboards
+                    - generic [ref=e307]: Assets
+            - generic [ref=e309]:
+              - generic [ref=e310]: CPT
+              - img [ref=e312]
+              - generic [ref=e313]: ACT
+          - generic [ref=e315]:
+            - generic [ref=e316]:
+              - generic [ref=e317]:
+                - generic [ref=e318]: GFK
+                - generic [ref=e321]: 06-20-02
+              - generic [ref=e322]:
+                - group [ref=e324]: GFK
+                - generic [ref=e325]:
+                  - generic: SERVICE
+                  - heading "Graphic Design" [level=3] [ref=e327]
+                - generic [ref=e329]:
+                  - generic [ref=e330]:
+                    - generic [ref=e332]: Artwork
+                    - generic [ref=e334]: Logos
+                    - generic [ref=e336]: Book Design
+                    - generic [ref=e338]: Leaflets
+                  - generic [ref=e340]:
+                    - generic [ref=e342]: Print
+                    - generic [ref=e344]: Environmental
+                    - generic [ref=e346]: Annual Reports
+                    - generic [ref=e348]: Posters
+            - generic [ref=e350]:
+              - generic [ref=e351]: DES
+              - img [ref=e353]
+              - generic [ref=e354]: ART
+          - generic [ref=e356]:
+            - generic [ref=e357]:
+              - generic [ref=e358]:
+                - generic [ref=e359]: MOT
+                - generic [ref=e362]: 06-20-03
+              - generic [ref=e363]:
+                - group [ref=e365]: MOT
+                - generic [ref=e366]:
+                  - generic: SERVICE
+                  - heading "Motion Design" [level=3] [ref=e368]
+                - generic [ref=e370]:
+                  - generic [ref=e371]:
+                    - generic [ref=e373]: Interactions
+                    - generic [ref=e375]: Premiere
+                    - generic [ref=e377]: Animations
+                    - generic [ref=e379]: Lottie
+                  - generic [ref=e381]:
+                    - generic [ref=e383]: After Effects
+                    - generic [ref=e385]: Rive
+                    - generic [ref=e387]: Motion.Page
+                    - generic [ref=e389]: Ai Video
+            - generic [ref=e391]:
+              - generic [ref=e392]: WEB
+              - img [ref=e394]
+              - generic [ref=e395]: VID
+          - generic [ref=e397]:
+            - generic [ref=e398]:
+              - generic [ref=e399]:
+                - generic [ref=e400]: ILL
+                - generic [ref=e403]: 09-20-02
+              - generic [ref=e404]:
+                - group [ref=e406]: ILL
+                - generic [ref=e407]:
+                  - generic: SERVICE
+                  - heading "Illustration" [level=3] [ref=e409]
+                - generic [ref=e411]:
+                  - generic [ref=e412]:
+                    - generic [ref=e414]: 2D
+                    - generic [ref=e416]: Illustrator
+                    - generic [ref=e418]: Graphic
+                  - generic [ref=e420]:
+                    - generic [ref=e422]: Photoshop
+                    - generic [ref=e424]: Vector
+                    - generic [ref=e426]: AI Comps
+                    - generic [ref=e428]: Animated
+            - generic [ref=e430]:
+              - generic [ref=e431]: STA
+              - img [ref=e433]
+              - generic [ref=e434]: ANI
+          - generic [ref=e436]:
+            - generic [ref=e437]:
+              - generic [ref=e438]:
+                - generic [ref=e439]: CRD
+                - generic [ref=e442]: 04-20-07
+              - generic [ref=e443]:
+                - group [ref=e445]: CRD
+                - generic [ref=e446]:
+                  - generic: SERVICE
+                  - heading "Creative Direction" [level=3] [ref=e448]
+                - generic [ref=e450]:
+                  - generic [ref=e451]:
+                    - generic [ref=e453]: Planning
+                    - generic [ref=e455]: Art Direction
+                    - generic [ref=e457]: Leadership
+                  - generic [ref=e459]:
+                    - generic [ref=e461]: Campaigns
+                    - generic [ref=e463]: Pitches
+                    - generic [ref=e465]: Budgeting
+                    - generic [ref=e467]: Presentations
+            - generic [ref=e469]:
+              - generic [ref=e470]: PCH
+              - img [ref=e472]
+              - generic [ref=e473]: DIR
+      - generic:
+        - generic:
+          - img
+        - generic:
+          - img
+        - generic:
+          - img
+        - generic:
+          - img
+        - generic:
+          - img
+    - region "About" [ref=e475]:
+      - generic [ref=e476]:
+        - generic [ref=e477]:
+          - img "Stadium cube" [ref=e480]:
+            - img [ref=e482]
+            - img [ref=e512]
+            - img [ref=e516]
+          - generic:
+            - generic:
+              - img
+        - generic:
+          - generic:
+            - generic:
+              - heading "ABOUT" [level=2]:
+                - generic:
+                  - generic: A
+                  - generic: B
+                  - generic: O
+                  - generic: U
+                  - generic: T
+            - generic:
+              - generic:
+                - generic:
+                  - heading "BIO" [level=3]
+                  - paragraph: For 16 years, I was the owner and Creative Director at a multi-award-winning creative agency working on a diverse range of projects for some of the world's largest organisations. I now work in collaboration with agencies and brands across the globe.
+                  - paragraph: Whether setting the direction through intelligent brand strategy, or tactical execution through digital and offline channels, I help businesses of all sizes to communicate more effectively.
+              - generic:
+                - heading "Roster" [level=3]
+                - list:
+                  - listitem: Kantar
+                  - listitem: NHS England
+                  - listitem: Mother London
+                  - listitem: Linde
+                  - listitem: Leeds City Council
+                  - listitem: Yorkshire Water
+                  - listitem: University of London
+                  - listitem: Silverfish Studios
+                  - listitem: Royal British Legion
+                  - listitem: Savvy Marketing
+                  - listitem: Golley Slater
+          - generic:
+            - generic:
+              - generic:
+                - generic: HOME
+                - generic: "0"
+              - generic: "-"
+              - generic:
+                - generic: AWAY
+                - generic: "0"
+            - generic [ref=e559]:
+              - generic [ref=e560]:
+                - generic [ref=e561]: FWA FOTD x2/
+                - generic [ref=e562]: Awwwards HM x4/
+                - generic [ref=e563]: CSS Design Awards SOTD x1 & SK x4/
+                - generic [ref=e564]: Orpetron SOTM x1 & SOTD x2/
+                - generic [ref=e565]: GSAP SOTD x4/
+                - generic [ref=e566]: Ecomm Design Awards SOTD x1/
+                - generic [ref=e567]: CSS Winner SOTD x4/
+                - generic [ref=e568]: Muzli Honor x1/
+                - generic [ref=e569]: Creativepool Annual x2/
+                - generic [ref=e570]: CSS Nectar SOTD x3/
+                - generic [ref=e571]: Codrops Standout Pick x1/
+                - generic [ref=e572]: Drum DADI Award x1/
+                - generic [ref=e573]: CSS Winner SOTD x4/
+                - generic [ref=e574]: Axiom Silver Medal x1
+                - text: /
+              - generic [ref=e575]:
+                - generic [ref=e576]: FWA FOTD x2/
+                - generic [ref=e577]: Awwwards HM x4/
+                - generic [ref=e578]: CSS Design Awards SOTD x1 & SK x4/
+                - generic [ref=e579]: Orpetron SOTM x1 & SOTD x2/
+                - generic [ref=e580]: GSAP SOTD x4/
+                - generic [ref=e581]: Ecomm Design Awards SOTD x1/
+                - generic [ref=e582]: CSS Winner SOTD x4/
+                - generic [ref=e583]: Muzli Honor x1/
+                - generic [ref=e584]: Creativepool Annual x2/
+                - generic [ref=e585]: CSS Nectar SOTD x3/
+                - generic [ref=e586]: Codrops Standout Pick x1/
+                - generic [ref=e587]: Drum DADI Award x1/
+                - generic [ref=e588]: CSS Winner SOTD x4/
+                - generic [ref=e589]: Axiom Silver Medal x1
+    - region "Contact" [ref=e590]:
+      - generic [ref=e591]:
+        - img [ref=e592]
+        - img "Ready to play?" [ref=e595]
+      - generic [ref=e626]:
+        - paragraph [ref=e627]:
+          - link "hello@daveholloway.uk" [ref=e628] [cursor=pointer]:
+            - /url: mailto:hello@daveholloway.uk
+        - paragraph [ref=e629]:
+          - link "+44 (0)113 460 7989" [ref=e630] [cursor=pointer]:
+            - /url: tel:+441134607989
+        - paragraph [ref=e631]:
+          - link "Book a video call" [ref=e632] [cursor=pointer]:
+            - /url: https://calendly.com/dave_holloway/30min

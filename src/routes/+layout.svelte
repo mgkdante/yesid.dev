@@ -9,6 +9,7 @@
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { siteMeta, buildPersonSchema } from '$lib/data';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
+	import { registerGsapPlugins } from '$lib/motion/utils/gsap.js';
 
 	const personSchema = buildPersonSchema(siteMeta);
 
@@ -16,7 +17,9 @@
 
 	onMount(() => {
 		if (browser) {
-			initLenis();
+			// Register GSAP plugins early so ScrollTrigger.isTouch is available
+			registerGsapPlugins();
+			initLenis(); // Desktop: Lenis smooth scroll / Mobile: normalizeScroll
 		}
 		return () => {
 			destroyLenis();

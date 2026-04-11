@@ -114,6 +114,14 @@ export interface Service {
 	stack?: string[];
 	// Custom collapsible content blocks for the detail page
 	sections?: ServiceSection[];
+
+	// --- Home page Services Grid fields (Slice 13g) ---
+	// Visitor-facing outcome displayed above the service title on the home grid.
+	// Carnegie principle: lead with what the visitor gets, not what you do.
+	benefitHeadline?: LocalizedString;
+	// One proof point per service for the home grid.
+	// value: display string ("3x faster"), label: context ("avg query improvement").
+	impactMetric?: { value: LocalizedString; label: LocalizedString };
 }
 
 export interface SiteLinks {

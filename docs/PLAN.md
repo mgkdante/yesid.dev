@@ -183,36 +183,65 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 ## Slices
 
 
-| #   | Name                                                   | Status        | Depends On     | Est. Sessions |
-| --- | ------------------------------------------------------ | ------------- | -------------- | ------------- |
-| 01  | Project scaffold + brand + CI pipeline                 | complete      | none           | 1             |
-| 02  | Data layer (types, data files, site meta)              | complete      | 01             | 1             |
-| 03  | Component library (basic, no motion)                   | complete      | 01             | 1-2           |
-| 04  | Motion infrastructure + component enhancement          | complete      | 02, 03         | 2-3           |
-| 05  | Layout shell + scroll progress rail                    | complete      | 03, 04         | 1             |
-| 06  | Home page: train journey + hero 3D scene               | complete      | 02, 04, 05     | 2-3           |
-| 06d | Home page redesign: Metro System Evolved               | complete      | 06             | 3-4           |
-| A   | SVG metro hero (experimental)                          | complete      | 06d            | 1             |
-| C   | Zoom transition between hero + journey                 | complete      | A              | 1             |
-| B   | Animated wordmark + horizontal scroll CTA              | complete      | A, C           | 2             |
-| B+  | Icon morphs + scroll UX for SkillsJourney              | complete      | B              | 1-2           |
-| 07  | Blog system (markdown content + /blog routes)          | complete      | 06d            | 1-2           |
-| 08  | Work pages (index + FLIP filter + detail)              | complete      | 02, 03, 07     | 1-2           |
-| 09  | Services pages (/services + /services/[id])            | ready         | 02, 08         | 2-3           |
-| 09b | About + Contact pages (bento grid /about)              | complete      | 02, 03, 09     | 3-4           |
-| 10  | Tech Stack page: "The Control Room" (/tech-stack)      | spec approved | 09b            | 6-8           |
-| 11  | Navbar research + redesign + 404 page                  | planned       | 10             | 1-2           |
-| 12  | Footer research + redesign                             | planned       | 11             | 1             |
-| 13  | Home page rework (post-hero, archive SkillsJourney)    | planned       | 10, 11, 12     | 2-3           |
-| 14  | Stack Builder Logic Engine (graph-based recs)          | draft         | 10, 13         | 3-4           |
-| 15  | SEO + metadata                                         | planned       | 07, 08, 09, 14 | 1-2           |
-| 16  | E2E test suite + performance + brand QA                | planned       | 07, 08, 09     | 1-2           |
-| 17  | Standardization (scalable, componentized, data-driven) | planned       | B+, 06d        | 1-2           |
-| 18  | Cloud content layer (edit + publish without code)      | planned       | 17             | 1-2           |
-| 19  | Mobile UI/UX optimization                              | planned       | 17, B+         | 1-2           |
-| 20  | Scroll smoothness + animation polish                   | planned       | B+, 19         | 1             |
-| 21  | Repo cleanup for public release                        | planned       | 15, 16         | 0.5           |
-| 22  | Deploy to Vercel + DNS cutover                         | planned       | 21             | 1             |
+| #   | Name                                                   | Status                                                                                                 | Depends On     | Est. Sessions |
+| --- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | -------------- | ------------- |
+| 01  | Project scaffold + brand + CI pipeline                 | complete                                                                                               | none           | 1             |
+| 02  | Data layer (types, data files, site meta)              | complete                                                                                               | 01             | 1             |
+| 03  | Component library (basic, no motion)                   | complete                                                                                               | 01             | 1-2           |
+| 04  | Motion infrastructure + component enhancement          | complete                                                                                               | 02, 03         | 2-3           |
+| 05  | Layout shell + scroll progress rail                    | complete                                                                                               | 03, 04         | 1             |
+| 06  | Home page: train journey + hero 3D scene               | complete                                                                                               | 02, 04, 05     | 2-3           |
+| 06d | Home page redesign: Metro System Evolved               | complete                                                                                               | 06             | 3-4           |
+| A   | SVG metro hero (experimental)                          | complete                                                                                               | 06d            | 1             |
+| C   | Zoom transition between hero + journey                 | complete                                                                                               | A              | 1             |
+| B   | Animated wordmark + horizontal scroll CTA              | complete                                                                                               | A, C           | 2             |
+| B+  | Icon morphs + scroll UX for SkillsJourney              | complete                                                                                               | B              | 1-2           |
+| 07  | Blog system (markdown content + /blog routes)          | complete                                                                                               | 06d            | 1-2           |
+| 08  | Work pages (index + FLIP filter + detail)              | complete                                                                                               | 02, 03, 07     | 1-2           |
+| 09  | Services pages (/services + /services/[id])            | ready                                                                                                  | 02, 08         | 2-3           |
+| 09b | About + Contact pages (bento grid /about)              | complete                                                                                               | 02, 03, 09     | 3-4           |
+| 10  | Tech Stack page: "The Control Room" (/tech-stack)      | spec approved                                                                                          | 09b            | 6-8           |
+| 11  | Navbar research + redesign + 404 page                  | planned                                                                                                | 10             | 1-2           |
+| 12  | Footer research + redesign                             | planned                                                                                                | 11             | 1             |
+| 13  | Home page rework (post-hero, archive SkillsJourney)    | planned                                                                                                | 10, 11, 12     | 2-3           |
+| 14  | Stack Builder Logic Engine (graph-based recs)          | deferred — first CD/CI feature post-deploy. See FUTURE_PHASES.md                                       | 10, 13         | 3-4           |
+| 17  | Standardization: Design System + Ports & Adapters      | planned — split execution (see Execution Sequence below)                                               | 13             | 13-14         |
+| 15  | SEO + metadata                                         | planned — built on 17b service layer                                                                   | 13, 17a, 17b   | 1-2           |
+| 16  | E2E test suite + performance + brand QA                | planned — tests final standardized + SEO state                                                         | 15, 17         | 3             |
+| 18  | Cloud content layer (edit + publish without code)      | planned — plugs into 17b service layer seam                                                            | 16, 17         | 4             |
+| 19  | Mobile UI/UX optimization                              | planned                                                                                                | 17, B+         | 2             |
+| 20  | Scroll smoothness + animation polish                   | planned                                                                                                | B+, 19         | 1             |
+| 21  | Repo cleanup for public release                        | planned                                                                                                | 16, 18         | 1             |
+| 22  | Deploy to Vercel + DNS cutover                         | planned                                                                                                | 21             | 1             |
+
+
+### Execution Sequence (Post-Home Page)
+
+Slice 17 executes in two phases, with SEO sandwiched between them. This avoids building SEO on data patterns that 17 will refactor, and ensures E2E tests cover the final architecture.
+
+```
+13 (home page)
+  → 17a (CSS audit + consolidation)
+  → 17b (service layer extraction)
+    → 15 (SEO + metadata — built on service layer, not raw data files)
+  → 17c (Zod schemas — validates SEO structured data too)
+  → 17d (component API standardization)
+  → 17e (motion consolidation)
+  → 17f (test architecture + docs)
+  → 17g (learning docs refactor)
+    → 16 (E2E + QA — tests the FINAL state including SEO)
+      → 18 (Keystatic — plugs into 17b service seam, SEO metadata as first test collection)
+        → 19, 20 (mobile + scroll polish)
+          → 21 (repo cleanup)
+            → 22 (deploy)
+```
+
+**Why this order:**
+1. **17a+17b first** — service layer gives SEO clean data access (`getAllProjects()`, not raw imports)
+2. **15 after 17b** — `<SeoHead>` built once on the right foundation, no refactor needed
+3. **17c-17g after 15** — Zod validates SEO structured data; remaining standardization completes
+4. **16 last before deploy** — E2E tests cover the fully standardized + SEO-equipped site
+5. **18 after 16** — Keystatic plugs into 17b's service seam; SEO metadata becomes first test collection
 
 
 ## Slice Summaries
@@ -469,27 +498,9 @@ DRY consolidation:
 
 **Tests:** Home page renders without SkillsJourney. New sections pass. Existing hero tests unaffected.
 
-### Slice 14 — Stack Builder Logic Engine
-
-**Status:** draft **Est. Sessions:** 6 **Depends on:** 10, 13
-**Spec:** `docs/slices/slice-14-stack-builder-logic.md`
-
-Replace hardcoded scenario matching (7 authored scenarios + basic fallback) with a graph-based recommendation engine. Every possible domain combination (127 combos) produces a unique, contextual, educational stack recommendation. Recommendations include ordered tech with role labels, data flow narratives, cross-links to services and projects, proficiency-aware confidence levels, and tech toggle customization.
-
-**Sales through education:** The builder teaches visitors what technologies they need and why — demonstrating Yesid's expertise deeply enough to close consulting engagements. Every recommendation links to matching services, shows project evidence, and adapts language to proficiency.
-
-**Architecture:** Pure functions (zero DOM/framework dependency). Same engine works in browser, server route, or future API. Adding a tech = one markdown file, engine adapts automatically. Keystatic-ready (Slice 18, Cloud Content Layer).
-
-**Tasks:**
-
-1. **14a — Engine core:** Types, role derivation, scoring, selection, ordering, service/project cross-linking. Heavy test coverage.
-2. **14b — Narrative generation:** Template-driven data flow stories that adapt to domain mix + proficiency.
-3. **14c — Enhanced UI:** StackBuilderPanel (tech toggles) + StackRecommendation card (replaces StackConfigurator + StackScenarioCard). Desktop below-diagram + mobile FAB overlay.
-4. **14d — Polish:** Role/alternative data in all 34+ markdown files. Narrative fine-tuning. Accessibility.
-
 ### Slice 15 — SEO + Metadata: Maximum Discoverability
 
-**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 07, 08, 09, 14
+**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 13, 17a, 17b
 
 **Why this matters more than most devs think:** 90% of portfolio sites have zero structured data, broken OG tags, and no sitemap. Recruiters and clients Google "data engineer Montreal" or "SQL developer transit pipeline" and get LinkedIn results because nobody's portfolio is optimized. This slice makes yesid.dev the result that shows up WITH a rich card, author photo, and site links. It also makes every blog post, project, and service page individually discoverable, not just the home page.
 
@@ -576,224 +587,24 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ### Slice 17 — Standardization: Ports & Adapters Lite
 
-**Status:** planned **Est. Sessions:** 10 (across 6 subslices)
+**Full plan:** [`docs/plan/standardization.md`](plan/standardization.md)
+**Status:** planned **Est. Sessions:** 13-14 (across 7 sub-slices) **Depends on:** 13
 
-**Philosophy:** The codebase should read like a blueprint. An engineer opens the repo and sees: types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 18 (Keystatic) plugs in with zero component changes. This slice is invisible to users. Every page looks and behaves identically before and after. The diff is structural.
+Design system + structural refactor. Brand primitives (terminal chrome, hazard stripes, card base) become shared components. Semantic type scale replaces 275 ad-hoc font-size declarations. All 192 hardcoded hex colors migrate to tokens. Light theme becomes one toggle away. Service layer creates the Keystatic seam.
 
-**Key constraint:** Zero visual changes. Zero behavior changes. Pure structural refactor.
+**Sub-slices:** 17a (design system + CSS) → 17b (service layer) → *15 (SEO)* → 17c (Zod schemas) → 17d (component APIs + shared shells) → 17e (motion factories) → 17f (test architecture + docs) → 17g (learning docs refactor)
 
-**Scope (all subslices combined):** CSS consolidation, CSS.md, service layer, Zod schemas, shared UI shells, motion factories, test utilities, documentation, learning docs refactor.
+**Scope:** Design system (brand primitives, type scale, token lockdown, light theme prep), CSS consolidation, service layer, Zod schemas, shared UI shells, motion factories, test factories, documentation.
 
-**Layer diagram:**
+**Current state (from audit):** 192 hardcoded hex colors (30 files), 275 font-size declarations (40 files), 96 inline style attributes, 5 duplicate terminal implementations, 5 duplicate hazard stripe implementations, zero exported prop interfaces, no service layer, no Zod schemas, no test factories.
 
-**Execution order:** 17a → 17b → 17c → 17d → 17e → 17f -> 17g. Each builds on the previous. CSS cleanup is foundational. Service layer before schemas because schemas validate what services return. Component standardization after both because components consume from services. Motion after components because motion is applied to components. Tests + docs last because they document the final state.
-
----
-
-#### Slice 17a — CSS Audit + Consolidation + CSS.md
-
-**Status:** planned **Est. Sessions:** 3 **Depends on:** B+, 06d
-**Why first:** CSS touches every component. Consolidating it first gives a clean styling foundation before refactoring component APIs and extracting shared shells.
-**What:**
-
-1. Audit every `.svelte` file for inline styles, one-off Tailwind classes, duplicate color/spacing values, and anything not flowing from `tokens.css` or `@theme`
-2. Consolidate into a clear hierarchy:
-  - `tokens.css` = CSS custom properties (theme-switching, semantic colors)
-  - `app.css` = Tailwind `@theme` brand tokens + global resets + base typography
-  - Component-scoped `<style>` blocks = only layout/structure specific to that component
-3. Eliminate: hardcoded hex values in components, duplicate utility patterns, conflicting specificity
-4. Create `docs/CSS.md` documenting:
-  - The two-system architecture (tokens.css vs @theme) and when to use which
-  - Every CSS custom property with its purpose and where it's consumed
-  - Rules for component styling (what goes in scoped style vs Tailwind class)
-  - DOM elements that carry styling: what classes/vars they use and why
-  - How to add a new color, spacing value, or component style correctly
-5.  **Make text considerably bigger**  Use the HOME PAGE to extract font style and usage
-6. **Brand color scalability architecture:**
-  - All brand colors flow from a single source: `tokens.css` defines semantic tokens, `app.css` @theme maps them to Tailwind utilities
-  - Introduce a `--brand-`* naming convention that supports multiple brand colors beyond primary/accent:
-    - `--brand-primary` (#E07800 orange)
-    - `--brand-accent` (#FFB627 yellow)
-    - Future slots follow the same pattern: `--brand-secondary`, `--brand-tertiary`, etc.
-  - Every component references semantic tokens (`--bg-surface`, `--text-heading`), never brand colors directly. Semantic tokens point to brand colors. This means swapping orange for blue = changing one line in tokens.css, not 30 components.
-  - Document the color addition checklist in CSS.md:
-  1. Add `--brand-[name]` to tokens.css
-  2. Add `@theme` entry in app.css so Tailwind generates `bg-brand-[name]`, `text-brand-[name]`, etc.
-  3. Map to semantic tokens if it replaces an existing role
-  4. Update CSS.md token registry
-    dit current codebase for any component that hardcodes `brand-primary` where it should use a semantic token (e.g., a section accent that could vary per-service)
-7. **Responsive breakpoint system:**
-  - Define five canonical breakpoints in `tokens.css` as custom properties and in `app.css` as `@theme` screens:
-    - `sm`: 360px (mobile)
-    - `md`: 520px (foldable/large phone)
-    - `lg`: 768px (tablet)
-    - `xl`: 1024px (laptop)
-    - `2xl`: 1440px (desktop)
-  - Audit every component for ad-hoc `max-width`, `min-width`, or Tailwind responsive prefixes that don't align with these five breakpoints. Consolidate to canonical values only.
-  - Establish spacing scale per breakpoint tier: section padding, container max-width, grid gaps, and typography sizes should step predictably across tiers. Document the scale in CSS.md.
-  - Container strategy: one `--container-max` property per breakpoint, consumed by the layout shell. No component sets its own max-width for page-level containment.
-  - Touch target rule: any interactive element must be minimum 44x44px on `sm` and `md` breakpoints.
-  - Typography fluid scaling: headings use `clamp()` between mobile and desktop sizes. Body stays fixed at 16px minimum. Document each clamp formula.
-  - Grid behavior per tier: document how many columns each major layout (services grid, project cards, blog grid) gets at each breakpoint.
-  - No breakpoint logic lives in individual components unless it's layout-specific to that component. Global responsive behavior flows from the layout shell and CSS custom properties.
-  - Use math derived sizes so the system is fully resizable and intuitive automatically
-  - **USE** -> svh = small viewport height
-  lvh = large viewport height
-  dvh = dynamic viewport height
-  env(safe-area-inset-*)
-  and the Visual Viewport API
-8. **Animation & GSAP cleanup:**
-  - GSAP does NOT work reliably inside Svelte 5 `$effect()` — timeline callbacks (`onComplete`) never fire. Ref: [https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no](https://dev.to/jasper-clarke/integrating-svelte-5-with-gsap-3-54no)
-  - Audit every component using GSAP in `$effect()` and migrate to one of:
-    - **Svelte actions** (`use:animate`) for element-lifecycle animations (scroll-triggered, hover, mount). Actions tie directly to DOM lifecycle which GSAP needs.
-    - **CSS transitions** for state-driven open/close/toggle animations. More reliable than GSAP for reactive state changes. MenuOverlay (slice 11b) is the reference implementation.
-  - Create a shared `src/lib/motion/utils/animate.ts` action that wraps GSAP `to`/`from`/`fromTo` with proper `destroy()` cleanup (kills tween + ScrollTrigger).
-  - Components to audit: Nav.svelte (SplitText wordmark in `onMount` — OK but could be action), any future components using GSAP in `$effect()`.
-  - Document the animation strategy in CSS.md: when to use GSAP actions vs CSS transitions vs Svelte transitions.
-
-**Acceptance Criteria:**
-
-- Zero hardcoded hex colors in any `.svelte` file (all through tokens or @theme)
-- CSS.md exists and covers all tokens, rules, and patterns
-- Clear separation: tokens.css (semantic/theme), app.css (brand/global), scoped (component-specific)
-- `bun run build` succeeds, site looks identical before/after
-- `bun run test` passes
-- Adding a new brand color requires exactly 2 file edits (tokens.css + app.css) and zero component changes
-- Color addition checklist documented in CSS.md
-- All responsive breakpoints in the codebase use only the five canonical values
-- Every section/component renders correctly at 360px, 520px, 768px, 1024px, and 1440px
-- Touch targets meet 44x44px minimum on mobile/foldable
-- Typography uses `clamp()` for headings with documented min/max values
-- CSS.md includes a breakpoint reference table showing container width, section padding, grid columns, and heading sizes at each tier
-- Zero GSAP usage inside `$effect()` — all migrated to Svelte actions or CSS transitions
-- Shared `animate.ts` action exists with TypeScript types and `destroy()` cleanup
-- Animation strategy documented in CSS.md (GSAP actions vs CSS transitions vs Svelte transitions)
-- No horizontal scroll at any breakpoint
-- `--container-max` is the single source of truth for page-width containment
-- No user gets left behind
-
----
-
-#### Slice 17b — Service Layer Extraction
-
-**Status:** planned **Est. Sessions:** 2 **Depends on:** 13a
-
-**What:** Split data definition from data access. Every content type gets `src/lib/services/*.service.ts` with typed query functions (`getAllProjects()`, `getProjectBySlug()`, `getProjectsByService()`, etc.). Route loaders call services, never data files directly. This is the Slice 14 seam: swap service implementation from reading `.ts` files to reading Keystatic Reader API, everything downstream stays.
-
-**Acceptance Criteria:**
-
-- No route loader imports from `$lib/data/*.ts` directly (all through services)
-- Service functions are typed with explicit return types
-- Every service function has JSDoc
-- `bun run test` passes
-
----
-
-#### Slice 17c — Zod Schema Validation
-
-**Status:** planned **Est. Sessions:** 0.5 **Depends on:** 13b
-
-**What:** Every content type gets a Zod schema in `src/lib/schemas/`. Services parse raw data through schemas before returning to loaders. TypeScript interfaces catch build-time errors; Zod catches runtime errors from external data. When Slice 14 feeds content from Keystatic JSON, the schema layer guarantees components never receive malformed data. Shared schemas: `LocalizedStringSchema`, `LocaleSchema`.
-
-**Acceptance Criteria:**
-
-- Zod schemas exist for Project, Service, BlogPost, SiteMeta, Content, LocalizedString
-- Services validate data through schemas before returning
-- Schema validation errors produce clear messages (not generic Zod dumps)
-- `bun run check` + `bun run test` pass
-
----
-
-#### Slice 17d — Component API Standardization + Shared UI Shells
-
-**Status:** planned **Est. Sessions:** 3 **Depends on:** 13c
-
-**What:** Audit all components. Props use exported TypeScript interfaces. Shared prop patterns extracted: `WithAnimation`, `WithLocale`, `WithTestId`. Blog, work, and services pages repeat layout patterns. Extract into composable shells with slots: `ListingShell` (sidebar + grid + empty state), `DetailShell` (hero + sections + nav + related), `FilterChips` (reusable tag/filter bar), `CardBase` (shared hover/reveal/boop pattern), `CollapsibleSection` (shared with ARIA), `EmptyState`.
-
-**Acceptance Criteria:**
-
-- Every component exports its props interface
-- No inline prop types anywhere
-- Shared ListingShell used by blog, work, and services listing pages
-- Shared CardBase used by all card variants
-- All content access through `resolveLocale()`
-- `bun run test` passes
-
----
-
-#### Slice 17e — Motion Consolidation
-
-**Status:** planned **Est. Sessions:** 2 **Depends on:** 13d
-
-**What:** Extract ad-hoc inline GSAP calls into reusable timeline factories: `createRevealTimeline()`, `createStaggerTimeline()`, `createMorphAnimation()`. All enforce `prefers-reduced-motion` at the utility level so individual components don't need to check. Target: 80%+ of components use factories instead of raw GSAP.
-
-**Acceptance Criteria:**
-
-- Motion factories exist in `src/lib/motion/factories/`
-- 80%+ of components use factories instead of raw GSAP
-- Reduced-motion enforcement at factory level, not duplicated per component
-- All existing animations behave identically
-- `bun run test` passes
-
----
-
-#### Slice 17f — Test Architecture + Documentation
-
-**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 13e
-
-**What:** Test factories for all content types (`createMockProject()`, `createMockBlogPost()`, `createMockService()`) so tests don't repeat data setup. Service tests mock the data source so they work unchanged when Slice 14 swaps it. Updated ARCHITECTURE.md with layer diagram and import rules. `src/lib/README.md` explaining the import hierarchy. Optimize test architecture to avoid slow testing but also that testing covers at least 90% of our code.
-
-**Acceptance Criteria:**
-
-- Test factories exist for all content types
-- Service tests mock data source (not real data files)
-- Consistent test naming: `*.test.ts`
-- ARCHITECTURE.md reflects layered system with import rules table
-- `src/lib/README.md` explains the import hierarchy
-- `bun run test` passes with new test structure
-- `bun run check` passes
-
----
-
-**Scope (all subslices combined):** CSS consolidation, CSS.md, service layer, Zod schemas, shared UI shells, motion factories, test utilities, documentation. Does NOT include CMS integration, new features, or visual changes.
-
-**You'll learn:** CSS architecture documentation, service layer pattern (ports & adapters), Zod runtime validation ("parse, don't validate"), DRY component composition with Svelte 5 snippets/slots, test factory pattern, hexagonal architecture lite.
-
-#### Slice 17g — Learning Docs Refactor
-
-**Status:** planned **Est. Sessions:** 2 **Depends on:** 13f
-
-**What:** Full sweep of `docs/learn/` to align with the restructured codebase. Slice 13 moves files, extracts shared shells, introduces service layer + factories, and consolidates motion. Every learn doc that references moved/renamed/refactored code needs its "How We Use It" table and "Worked Example" updated to point to the new locations and patterns. New learn docs created for concepts introduced by 13 (service layer pattern, Zod validation, motion factories, shared UI shells, test factories). `meta.json` updated with new dependency links.
-
-New docs follow the existing `docs/learn/_template.md`.
-
-**Scope:**
-
-1. Scan every `.md` in `docs/learn/` for file paths that no longer exist. Update to new locations.
-2. Update "Worked Example" code snippets where the pattern changed (e.g., inline GSAP replaced by factory call, direct data import replaced by service call).
-3. Create new learn docs:
-  - `data-layer/service-layer-pattern.md`
-  - `data-layer/zod-validation.md`
-  - `frontend/shared-ui-shells.md`
-  - `motion/motion-factories.md`
-  - `testing/test-factories.md`
-  - `styling/css-architecture-docs.md`
-  - Other pertinent doc
-4. Update `meta.json` with new concepts and revised prerequisites.
-5. Update `docs/learn/README.md` learning paths if domains shifted.
-
-**Acceptance Criteria:**
-
-- Zero broken file references in any learn doc (every path in "How We Use It" resolves to an existing file)
-- New learn docs exist for all 13-introduced concepts
-- `meta.json` reflects the post-13 architecture
-- `bun run check` passes (no code touched)
+**Tailwind decision:** Keep Tailwind v4 — the problem is bypassing the system with arbitrary values, not the framework. Strict token discipline enforced via `@theme`.
 
 ---
 
 ### Slice 18 — Cloud Content Layer: Keystatic CMS
 
-**Status:** planned **Depends on:** 16 **Est. Sessions:** 4
+**Status:** planned **Depends on:** 16, 17 **Est. Sessions:** 4
 
 **Decision: Keystatic** — Git-based CMS, content stored as JSON/Markdown in the repo, visual editor via `keystatic-sveltekit` npm package (confirmed compatible with SvelteKit 2 + Svelte 5). $0 forever. No external service dependency. If Keystatic disappears, content remains as plain files.
 
@@ -804,7 +615,7 @@ New docs follow the existing `docs/learn/_template.md`.
 3. Editing: visual editor at `/keystatic` route during dev (disabled in production)
 4. Publishing: edit in Keystatic → commits JSON/MD to repo → Vercel auto-deploys
 5. Production reads: Keystatic Reader API in service layer (replaces direct `.ts` file imports)
-6. Zod schemas from Slice 16 validate all content at build time
+6. Zod schemas from Slice 17c validate all content at build time
 
 **Content types mapped to Keystatic collections:**
 
@@ -819,7 +630,7 @@ New docs follow the existing `docs/learn/_template.md`.
 
 - Service layer implementations swap from reading `.ts` data files to Keystatic Reader API
 - Schemas, types, components, route loaders, tests: ZERO changes
-- This is the payoff of the Slice 16 seam
+- This is the payoff of the Slice 17 seam
 
 **Key requirements:**
 
@@ -831,7 +642,7 @@ New docs follow the existing `docs/learn/_template.md`.
 
 **Scope:** Keystatic config, collection schemas, content migration from .ts to JSON/MD, service layer swap, Reader API integration, editorial workflow documentation.
 
-**Why after Slice 13:** The service layer IS the contract. Slice 13 builds it, Slice 14 plugs into it. Without Slice 13's seam, adding Keystatic would require touching every route loader and component.
+**Why after Slice 17:** The service layer IS the contract. Slice 17b builds it, Slice 18 plugs into it. Without 17b's seam, adding Keystatic would require touching every route loader and component. SEO metadata (from Slice 15) becomes the first Keystatic test collection — small scope, already proven to work, great smoke test.
 
 **You'll learn:** Git-based CMS patterns, Keystatic Reader API, content modeling with relationships, Markdoc rendering in Svelte, build-time data fetching.
 
@@ -992,6 +803,8 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 | 2026-04-05 | Two blog content lanes (professional + personal)   | Separates brand-facing technical content from personal interests; different accent colors (#E07800 vs #FFB627)                                                                                               |
 | 2026-04-07 | Brand = Digital Infrastructure (not just data/SQL) | Current focus is data engineering + SQL, but the brand umbrella covers databases, dashboards, pipelines, internal tools, web systems. All copy reflects broader positioning.                                 |
 | 2026-04-07 | Slice 10 = Home page rework after About/Contact    | Building all route pages gave clarity on site identity. Home (post-hero) was built before subsites. Rework with full context. Archive SkillsJourney (keep code, disable render, bring back optimized later). |
+| 2026-04-10 | Slice 14 deferred to CD/CI                         | First feature released under a proper CD/CI pipeline after deploy, like a real engineer                                                                                                                      |
+| 2026-04-10 | Standardize (17) before SEO (15) + QA (16)         | SEO built on service layer = no rework. E2E tests cover final architecture. Split execution: 17a+17b → 15 → 17c-17g → 16 → 18. Keystatic gets SEO metadata as first test collection.                        |
 | 2026-04-07 | No standalone tech stack page                      | About page widget + service detail pages + blog posts cover tools better than a resume-style page. Anti-pattern per conversion research.                                                                     |
 | 2026-04-07 | Live weather widget (OpenWeatherMap free tier)     | API key in .env, server-side fetch in +page.server.ts, graceful fallback. Unique personality touch on About page.                                                                                            |
 

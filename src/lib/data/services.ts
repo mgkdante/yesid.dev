@@ -19,6 +19,11 @@ export const services: readonly Service[] = [
 		icon: 'station-sql.json',
 		svg: 'service-sql.svg',
 		visible: true,
+		benefitHeadline: { en: 'Queries that run in seconds, not minutes' },
+		impactMetric: {
+			value: { en: '3x faster' },
+			label: { en: 'avg query improvement' },
+		},
 		relatedProjects: ['transit-data-pipeline', 'lorem-query-optimizer', 'lorem-database-migration'],
 		valueProposition: {
 			en: 'Slow queries cost money — in compute, in delayed reports, in frustrated analysts waiting for data. I audit your SQL layer, identify the expensive queries, and rewrite them for speed and clarity. You get faster dashboards, lower database costs, and code your team can actually maintain.'
@@ -51,6 +56,11 @@ export const services: readonly Service[] = [
 		icon: 'station-pipeline.json',
 		svg: 'service-pipeline.svg',
 		visible: true,
+		benefitHeadline: { en: 'Your data arrives clean, on time, every morning' },
+		impactMetric: {
+			value: { en: '99.9%' },
+			label: { en: 'pipeline uptime' },
+		},
 		relatedProjects: ['transit-data-pipeline'],
 		valueProposition: {
 			en: 'Data stuck in silos is data nobody can use. I build pipelines that move information from source systems to your warehouse reliably — with logging, retry logic, and schema validation. Your analysts get clean, fresh data every morning without chasing down broken jobs.'
@@ -83,6 +93,11 @@ export const services: readonly Service[] = [
 		icon: 'station-analytics.json',
 		svg: 'service-reporting.svg',
 		visible: true,
+		benefitHeadline: { en: 'Decisions in 15 minutes, not 2 days' },
+		impactMetric: {
+			value: { en: '2d \u2192 15m' },
+			label: { en: 'reporting turnaround' },
+		},
 		relatedProjects: ['transit-data-pipeline', 'lorem-analytics-dashboard', 'lorem-retool-admin'],
 		valueProposition: {
 			en: 'A dashboard nobody trusts is worse than no dashboard. I build reporting systems grounded in a clean semantic layer — so the numbers match across reports, filters work intuitively, and your team stops second-guessing the data. You get dashboards that drive decisions, not confusion.'
@@ -116,6 +131,11 @@ export const services: readonly Service[] = [
 		lottieReverse: true,
 		svg: 'service-database.svg',
 		visible: true,
+		benefitHeadline: { en: 'Zero-downtime migrations while you sleep' },
+		impactMetric: {
+			value: { en: '500GB+' },
+			label: { en: 'migrated safely' },
+		},
 		relatedProjects: ['lorem-database-migration', 'lorem-query-optimizer'],
 		valueProposition: {
 			en: 'Database problems compound — a bad schema today means painful migrations tomorrow. I design schemas that scale, write migrations that don\'t break production, and tune indexes so your app stays fast as data grows. You get a database that\'s an asset, not a liability.'
@@ -147,6 +167,11 @@ export const services: readonly Service[] = [
 		station: 5,
 		svg: 'service-tooling.svg',
 		visible: true,
+		benefitHeadline: { en: 'Your team stops copying between spreadsheets' },
+		impactMetric: {
+			value: { en: '80%' },
+			label: { en: 'less manual data entry' },
+		},
 		relatedProjects: ['lorem-retool-admin'],
 		valueProposition: {
 			en: 'Your ops team is copying data between spreadsheets and Slack threads. I build internal tools — admin panels, approval workflows, data entry forms — that centralize operations and eliminate manual work. You ship faster because your team spends time on decisions, not data entry.'
@@ -178,6 +203,11 @@ export const services: readonly Service[] = [
 		station: 6,
 		svg: 'service-web.svg',
 		visible: true,
+		benefitHeadline: { en: 'A frontend that matches your backend quality' },
+		impactMetric: {
+			value: { en: '100' },
+			label: { en: 'Lighthouse performance' },
+		},
 		relatedProjects: ['yesid-dev'],
 		valueProposition: {
 			en: 'Your digital infrastructure deserves a frontend that matches. I build web applications that connect directly to your data layer — client portals, internal dashboards, public-facing tools — with the same attention to performance and reliability I bring to the backend.'

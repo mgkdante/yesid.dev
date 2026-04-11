@@ -71,7 +71,12 @@ Rebuild the home page as a full-bleed, kinetic, Awwwards-quality experience with
 <HeroBanner />          <!-- Section 1: metro SVG → zoom → two-column proof -->
 <hard-cut />            <!-- Yellow/black dashed line (Von Restorff break) -->
 <Manifesto />           <!-- Section 2: SplitText reveal + transit roundels -->
-<!-- Sections 3–7: TBD (13f–13i) -->
+<hard-cut />
+<ProofReel />           <!-- Section 3: 3 project cards with impact metrics -->
+<hard-cut />
+<HomeServices />        <!-- Section 4: 6 services, benefit-led, blueprint BG -->
+<hard-cut />
+<!-- Sections 5–7: TBD (13h–13i) -->
 ```
 
 ## Section-to-Page Link Map
@@ -111,6 +116,14 @@ SvelteKit 2 + Svelte 5 (runes), TypeScript, GSAP (ScrollTrigger, SplitText, Draw
 | 2026-04-10 | Transit easter eggs on manifesto | Montreal identity, delights transit nerds, subtle brand storytelling |
 | 2026-04-10 | 13c (viewport fix) absorbed into 13d/13e | No standalone delivery needed — `svh` units applied during hero redesign |
 | 2026-04-10 | Hero text scale-up | All hero text much bigger on desktop (headline 84→120px, subhead 34→48px, subtitle 15→20px, CTAs sm→lg), slightly bigger on mobile (headline 48→56px, subhead 22→26px, subtitle 15→17px, CTAs sm→base). Metric labels 9→13px desktop, 9→11px mobile. SVG dot auto-scales via em units. |
+| 2026-04-11 | Remove `normalizeScroll(true)` from hero | GSAP team confirms it conflicts with Lenis — both fight over scroll events. Lenis handles smooth scroll exclusively. |
+| 2026-04-11 | Hero `scrub: 1` → `scrub: true` | Numeric scrub adds lag on top of Lenis smoothing (double-smooth). `scrub: true` = 1:1 tracking; Lenis provides all smoothing. |
+| 2026-04-11 | Lenis `autoRaf: false` + ticker cleanup fix | Lenis v1.3+ defaults `autoRaf: true`; manual GSAP ticker bridge caused double-RAF. Also fixed dangling ticker callback on destroy. |
+| 2026-04-11 | Conditional scroll: Lenis desktop, normalizeScroll mobile | GSAP team says don't combine both. Desktop: Lenis for buttery wheel scroll. Mobile: normalizeScroll prevents browser chrome interference + stable pin calculations. |
+| 2026-04-11 | Remove Phase 9-10, mobile SQL breakout | Phase 9 (dead hold) + Phase 10 (in-pin content scroll) caused 11 screens of pinned scroll on mobile. SQL panel now renders as separate section outside pin on mobile, with horizontal divider. Desktop unchanged. |
+| 2026-04-11 | `ignoreMobileResize` + `overscroll-behavior: none` | ScrollTrigger ignores address bar height changes. CSS prevents bounce/pull-to-refresh in pinned sections. |
+| 2026-04-11 | Viewport-responsive hero text: `min(vw, vh)` | Headline uses `clamp(72px, min(9vw, 11vh), 130px)` so it scales with both width AND height. Prevents overflow on 13" laptops (800px tall). Subheadline same pattern. Nav accounted for via `md:py-[max(5vh,2.5rem)]` on hero text container. |
+| 2026-04-11 | Desktop SQL panel text bump | SQL query 12→14px, headers 11→13px, table 12→14px, meta 10→12px on desktop only. Mobile unchanged. |
 
 ## Quality Protocol
 
