@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-09 (Slice 11)
+**Last updated:** 2026-04-11 (Slice 13)
 
 ## Stack
 
