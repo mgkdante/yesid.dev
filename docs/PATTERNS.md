@@ -90,6 +90,20 @@ When a slice handoff introduces a workaround, a non-obvious fix, or a reusable a
 **Files:** `BlogSvgIcon.svelte`, `WorkSvgIcon.svelte`
 **Reuse when:** Any staggered animation that needs a single "all done" callback
 
+### SVG ViewBox Cropping for Mobile Scale
+**Discovered in:** Slice 13 (closing session)
+**Problem:** Wide landscape SVGs (e.g., 1821×1260 metro map) render tiny on portrait mobile screens because `preserveAspectRatio="xMidYMid meet"` scales to fit the narrow width.
+**Solution:** Detect mobile at mount time and set a tighter viewBox (e.g., `972 300 600 600` vs `0 0 1821 1260`). To keep a focal point at the same percentage position, calculate: `viewBoxX = focalX - (percent × newWidth)`. Same aspect ratio → same rendered pixel size, but fewer SVG units → elements appear proportionally larger.
+**Files:** `MetroNetwork.svelte`
+**Reuse when:** Any SVG that needs to appear bigger on mobile without CSS transforms or duplicate assets
+
+### SVG DOM Order Affects Stagger Animation
+**Discovered in:** Slice 13 (closing session)
+**Problem:** GSAP `stagger` animates elements in DOM order from `querySelectorAll`. Elements added at the end of an SVG (e.g., REM line stations) animate visually last, creating a delayed appearance.
+**Solution:** Reorder SVG elements so new additions are interspersed with existing ones rather than appended at the end. This ensures stagger distributes evenly across all elements.
+**Files:** `static/images/montreal-metro.svg`
+**Reuse when:** Any SVG with staggered GSAP animations where new elements should animate simultaneously with existing ones
+
 ---
 
 ## SVG Patterns
