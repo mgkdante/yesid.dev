@@ -98,14 +98,14 @@ After research, implement the winning combination:
   If WSL is significantly faster, document the testing workflow and add a convenience script.
 
 - [ ] **Task 7: Verify no regressions**
-  All 480+ tests pass with identical results. Update docs/TESTS.md and docs/test_helper.md.
+  All 480+ tests pass with identical results. Update docs/reference/TESTS.md and docs/archive/test_helper.md.
 
 ## Acceptance Criteria
 
 - [ ] Full test suite runs under 30 seconds on the development machine
 - [ ] All existing tests pass without modification (or with documented, justified changes)
 - [ ] Vitest config is documented with comments explaining each optimization
-- [ ] `docs/TESTS.md` updated with new setup/config details
+- [ ] `docs/reference/TESTS.md` updated with new setup/config details
 - [ ] Benchmark results logged in devlog (before/after per optimization)
 
 ## Out of Scope

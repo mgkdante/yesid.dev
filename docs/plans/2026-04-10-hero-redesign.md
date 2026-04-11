@@ -8,8 +8,8 @@
 
 **Tech Stack:** SvelteKit 2 + Svelte 5 (runes), TypeScript, GSAP (ScrollTrigger, CustomEase), Tailwind v4, Vitest + @testing-library/svelte, Bun
 
-**Design spec:** `docs/superpowers/specs/2026-04-10-hero-redesign.md`
-**Reference HTML:** `docs/superpowers/specs/hero-v4-approved-reference.html`
+**Design spec:** `docs/specs/2026-04-10-hero-redesign.md`
+**Reference HTML:** `docs/specs/hero-v4-approved-reference.html`
 
 **Estimated effort:** 2–3 sessions
 
@@ -26,7 +26,7 @@ src/lib/components/HeroMetrics.svelte   — CREATE: 3 metric cards (vehicles, de
 src/lib/components/HeroMetrics.test.ts  — CREATE: component tests
 src/lib/components/HeroSqlPanel.svelte  — CREATE: SQL query + results panel
 src/lib/components/HeroSqlPanel.test.ts — CREATE: component tests
-docs/CSS.md                            — CREATE: CSS architecture reference (tokens, @theme, scoped)
+docs/reference/CSS.md                            — CREATE: CSS architecture reference (tokens, @theme, scoped)
 ```
 
 ### Modified Files
@@ -1314,11 +1314,11 @@ git commit -m "feat(slice-13d): mobile responsive — horizontal scroll metrics,
 
 ## Task 9: Test Updates + Documentation
 
-Update `home.test.ts` for the new hero structure and create `docs/CSS.md`.
+Update `home.test.ts` for the new hero structure and create `docs/reference/CSS.md`.
 
 **Files:**
 - Modify: `src/routes/home.test.ts`
-- Create: `docs/CSS.md`
+- Create: `docs/reference/CSS.md`
 
 - [ ] **Step 9a: Update home.test.ts**
 
@@ -1391,14 +1391,14 @@ Expected: ALL PASS. Print the full test result table per CLAUDE.md.
 Run: `bun run check`
 Expected: PASS
 
-- [ ] **Step 9d: Create docs/CSS.md**
+- [ ] **Step 9d: Create docs/reference/CSS.md**
 
-Create `docs/CSS.md` documenting the three-layer CSS architecture and all tokens. Include the new terminal/status tokens added in Task 2.
+Create `docs/reference/CSS.md` documenting the three-layer CSS architecture and all tokens. Include the new terminal/status tokens added in Task 2.
 
 - [ ] **Step 9e: Commit**
 
 ```bash
-git add src/routes/home.test.ts docs/CSS.md
+git add src/routes/home.test.ts docs/reference/CSS.md
 git commit -m "feat(slice-13d): test updates + CSS.md documentation"
 ```
 

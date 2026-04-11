@@ -13,7 +13,7 @@ Build a `/tech-stack` route with an interactive "Control Room" diagram showing h
 
 **"The Control Room"** — interactive dashboard with layered diagram, sidebar detail panels, composable domain filters, and a Build Your Stack configurator. Approved during brainstorming session on 2026-04-08.
 
-**Design spec:** `docs/superpowers/specs/2026-04-08-tech-stack-page-design.md`
+**Design spec:** `docs/specs/2026-04-08-tech-stack-page-design.md`
 
 **Principles:** Data-driven, Keystatic-ready (markdown + frontmatter), i18n-ready (LocalizedString), scalable (adding a tech = one markdown file, zero code changes), educational (The Odin Project standard).
 

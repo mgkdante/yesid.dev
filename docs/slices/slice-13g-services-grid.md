@@ -42,7 +42,7 @@ src/lib/data/services.ts                    — MODIFY: populate new fields for 
 src/lib/data/content.test.ts                — MODIFY: data integrity tests for new fields
 src/routes/+page.svelte                     — MODIFY: import + render HomeServices after ProofReel
 src/routes/home.test.ts                     — MODIFY: add HomeServices integration tests
-docs/TESTS.md                              — MODIFY: add test entries
+docs/reference/TESTS.md                              — MODIFY: add test entries
 ```
 
 ---
@@ -137,9 +137,9 @@ Replace `<img>` SVGs with inline SVGs. Add MorphSVGPlugin morph on hover (deskto
 
 ---
 
-## Task 10: Update docs/TESTS.md
+## Task 10: Update docs/reference/TESTS.md
 
-**Files:** `docs/TESTS.md`
+**Files:** `docs/reference/TESTS.md`
 
 Add HomeServices test entries under Components and Data Layer sections.
 

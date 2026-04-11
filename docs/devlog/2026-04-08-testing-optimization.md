@@ -42,13 +42,13 @@ The biggest win was the environment line — happy-dom boots ~3x faster than jsd
 3. WSL2 vs Windows performance (filesystem I/O, /mnt/c penalty, Bun on WSL2)
 4. Setup file splitting (vitest projects, per-file environments, conditional mocking)
 
-Full research findings in spec: `docs/superpowers/specs/2026-04-08-testing-optimization-design.md`
+Full research findings in spec: `docs/specs/2026-04-08-testing-optimization-design.md`
 
 ## Files Changed
 
 - Created: `src/tests/setup.data.ts`, `src/tests/setup.dom.ts`
 - Modified: `vite.config.ts`, `package.json`
 - Deleted: `src/tests/setup.ts`
-- Modified: `docs/TESTS.md`, `docs/test_helper.md`
-- Created: `docs/superpowers/specs/2026-04-08-testing-optimization-design.md`
-- Created: `docs/superpowers/plans/2026-04-08-testing-optimization.md`
+- Modified: `docs/reference/TESTS.md`, `docs/archive/test_helper.md`
+- Created: `docs/specs/2026-04-08-testing-optimization-design.md`
+- Created: `docs/plans/2026-04-08-testing-optimization.md`

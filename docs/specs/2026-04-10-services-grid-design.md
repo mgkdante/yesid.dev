@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-10
 **Status:** Approved
-**Mockup:** `docs/superpowers/mockups/slice-13g-services-grid.html`
+**Mockup:** `docs/archive/mockups/slice-13g-services-grid.html`
 **Research:** `docs/research/scroll_analysis.md`, `docs/research/persuasion_analysis.md`
 
 ## Goal
@@ -205,5 +205,5 @@ Blueprint background: train SVG hidden on mobile (< 768px), edge details hidden 
 | `src/lib/components/HomeServices.test.ts` | New test file |
 | `src/routes/+page.svelte` | Import and render HomeServices after ProofReel |
 | `src/routes/home.test.ts` | Update home page tests |
-| `docs/TESTS.md` | Add HomeServices tests |
-| `docs/CSS.md` | Document blueprint background tokens if new ones added |
+| `docs/reference/TESTS.md` | Add HomeServices tests |
+| `docs/reference/CSS.md` | Document blueprint background tokens if new ones added |

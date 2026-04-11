@@ -8,7 +8,7 @@
 
 **Tech Stack:** SvelteKit 2 + Svelte 5 (runes), TypeScript, GSAP (ScrollTrigger), Tailwind v4, Vitest + @testing-library/svelte, Bun
 
-**Design spec:** `docs/superpowers/specs/2026-04-10-proof-reel-design.md`
+**Design spec:** `docs/specs/2026-04-10-proof-reel-design.md`
 **Reference mockup:** `.superpowers/brainstorm/905-1775861785/content/01-proof-reel-design.html`
 
 **Runtime:** Bun only. Never npm/npx/node.

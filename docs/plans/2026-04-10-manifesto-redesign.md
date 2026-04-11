@@ -10,7 +10,7 @@
 
 **Runtime:** Bun only. Never npm/npx/node.
 
-**Design spec:** `docs/superpowers/specs/2026-04-09-manifesto-section-design.md`
+**Design spec:** `docs/specs/2026-04-09-manifesto-section-design.md`
 
 ---
 
@@ -191,7 +191,7 @@ Expected: PASS. The Manifesto.svelte component will have type errors since it st
 
 **Files:**
 - Modify: `src/lib/styles/tokens.css:29-37`
-- Modify: `docs/CSS.md`
+- Modify: `docs/reference/CSS.md`
 
 - [ ] **Step 1: Add manifesto background token**
 
@@ -201,7 +201,7 @@ In `src/lib/styles/tokens.css`, inside the `[data-theme="dark"]` block (line 29)
   --bg-manifesto: #0f0d0a;
 ```
 
-- [ ] **Step 2: Update docs/CSS.md**
+- [ ] **Step 2: Update docs/reference/CSS.md**
 
 Add entry for the new token documenting: name (`--bg-manifesto`), purpose (warm dark background for manifesto section, distinct from `--bg-primary` #141414), where consumed (`Manifesto.svelte`), why existing tokens don't cover it (needs to be warmer/darker than `--bg-primary` for Von Restorff color break effect).
 

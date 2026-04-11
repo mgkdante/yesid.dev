@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-11
 **Branch:** feature/slice-00-repo-hygiene
-**Spec:** docs/superpowers/specs/2026-04-11-slice-00-repo-hygiene-design.md
+**Spec:** docs/specs/2026-04-11-slice-00-repo-hygiene-design.md
 
 ## Session 1
 

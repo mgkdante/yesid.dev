@@ -1,7 +1,7 @@
 # yesid. Workflow — The Full Pipeline
 
 **Version:** 1.0 | April 2026
-**Companion to:** `CLAUDE.md` (rules), `PLAN.md` (roadmap), `MOTION.md` (animation), `PATTERNS.md` (solutions)
+**Companion to:** `CLAUDE.md` (rules), `roadmap/PLAN.md` (roadmap), `MOTION.md` (animation), `PATTERNS.md` (solutions)
 
 This document defines **how work flows** from idea to shipped code. CLAUDE.md says *what* to do; this says *when, why, and in what order*. Every session follows this pipeline. No shortcuts.
 
@@ -13,7 +13,7 @@ Every session is exactly one type. Declare it at the start.
 
 | Type | Purpose | Artifacts Produced | Duration |
 |------|---------|-------------------|----------|
-| **Planning** | Research, brainstorm, design spec, slice spec | `docs/superpowers/specs/`, `docs/slices/`, `docs/findings.md` | 1 session |
+| **Planning** | Research, brainstorm, design spec, slice spec | `docs/specs/`, `docs/slices/`, `docs/research/findings.md` | 1 session |
 | **Implementation** | Build one sub-slice, task by task | Code, tests, devlog | 1-3 sessions per sub-slice |
 | **Closing** | Docs, handoff, learning docs, tree.txt, commit | `docs/handoffs/`, `docs/devlog/`, `docs/learn/` | 0.5-1 session |
 
@@ -33,10 +33,10 @@ IDEA
 [Phase 2: Brainstorm]         — superpowers:brainstorming → design ideas
   |
   v
-[Phase 3: Design Spec]        — Visual companion → docs/superpowers/specs/
+[Phase 3: Design Spec]        — Visual companion → docs/specs/
   |
   v
-[Phase 4: Implementation Plan] — superpowers:writing-plans → docs/superpowers/plans/
+[Phase 4: Implementation Plan] — superpowers:writing-plans → docs/plans/
   |
   v
 [Phase 5: Slice Spec]         — Concrete tasks → docs/slices/slice-NN.md
@@ -63,7 +63,7 @@ Each phase has specific tools, artifacts, and exit criteria. Skipping a phase cr
 ### Process
 
 1. **Competitive scan** — Use Chrome DevTools MCP to analyze 5-7 Awwwards-quality reference sites at 4 breakpoints (375px, 768px, 1440px, 1920px+).
-2. **Extract patterns** — Document in `docs/findings.md`: typography DNA, color architecture, page rhythm, animation catalog, responsive strategies.
+2. **Extract patterns** — Document in `docs/research/findings.md`: typography DNA, color architecture, page rhythm, animation catalog, responsive strategies.
 3. **Check PATTERNS.md** — Before inventing, check if a solved pattern already exists.
 4. **Library docs** — Use Context7 MCP or Svelte MCP for API verification. Never guess API signatures.
 
@@ -80,8 +80,8 @@ Each phase has specific tools, artifacts, and exit criteria. Skipping a phase cr
 
 ### Artifacts
 
-- `docs/findings.md` — Comprehensive scan results (typography, colors, layout, animation, responsive)
-- Updated `docs/PATTERNS.md` — Any new patterns discovered during research
+- `docs/research/findings.md` — Comprehensive scan results (typography, colors, layout, animation, responsive)
+- Updated `docs/reference/PATTERNS.md` — Any new patterns discovered during research
 
 ### Exit Criteria
 
@@ -145,7 +145,7 @@ When presenting design options, structure each as:
 
 ### Process
 
-1. **Write design spec** — `docs/superpowers/specs/YYYY-MM-DD-[name]-design.md`
+1. **Write design spec** — `docs/specs/YYYY-MM-DD-[name]-design.md`
 2. **Section-by-section breakdown** — Each section of the page gets: layout description, responsive behavior, animation choreography, content source (data layer reference), and color/typography decisions.
 3. **Self-review** — Read the spec as if you're implementing it cold. Would you know exactly what to build? If not, add detail.
 4. **Yesid approval** — Spec must be approved before any implementation plan.
@@ -200,7 +200,7 @@ When presenting design options, structure each as:
 
 ### Exit Criteria
 
-- [ ] Design spec written in `docs/superpowers/specs/`
+- [ ] Design spec written in `docs/specs/`
 - [ ] Every section has layout, content source, animation, and responsive behavior defined
 - [ ] Self-reviewed: implementable by a cold reader
 - [ ] Yesid approved
@@ -217,7 +217,7 @@ When presenting design options, structure each as:
 1. **Invoke** `superpowers:writing-plans` — generates the plan structure.
 2. **Estimate sessions** — Each sub-slice gets a session count. Never assume one session. Default to multi-session.
 3. **Identify dependencies** — Tasks that depend on each other run sequentially. Independent tasks are candidates for parallel agents (with Yesid's approval only).
-4. **Write plan** — `docs/superpowers/plans/YYYY-MM-DD-[name].md`
+4. **Write plan** — `docs/plans/YYYY-MM-DD-[name].md`
 
 ### Plan Structure (proven template from 11 plans)
 
@@ -284,7 +284,7 @@ Each sub-slice gets its own handoff. Naming follows the pattern: `slice-09c-1`, 
 
 ### Exit Criteria
 
-- [ ] Plan written in `docs/superpowers/plans/`
+- [ ] Plan written in `docs/plans/`
 - [ ] Sub-slices identified with session estimates
 - [ ] Dependencies mapped
 - [ ] Yesid reviewed and approved
@@ -598,7 +598,7 @@ resolveLocale({ en: "Hello", fr: "Bonjour" }, 'es')
 
 ## 13. CSS Architecture Enforcement
 
-Three layers, strict separation. See `docs/CSS.md` for the full reference.
+Three layers, strict separation. See `docs/reference/CSS.md` for the full reference.
 
 ```
 tokens.css (semantic tokens)
@@ -621,8 +621,8 @@ Component <style> (scoped layout)
 
 ### Before Animating
 
-1. Read `docs/MOTION.md` — The motion language, principles, and toolkit
-2. Check `docs/PATTERNS.md` — Solved animation patterns (entrance guards, SplitText cleanup, FLIP conflicts, etc.)
+1. Read `docs/reference/MOTION.md` — The motion language, principles, and toolkit
+2. Check `docs/reference/PATTERNS.md` — Solved animation patterns (entrance guards, SplitText cleanup, FLIP conflicts, etc.)
 3. Verify API with GSAP Master MCP — Never guess GSAP method signatures
 
 ### Animation Checklist
@@ -676,19 +676,19 @@ Every session ends with:
 | Document | Purpose | Update Frequency |
 |----------|---------|-----------------|
 | `CLAUDE.md` | Rules, protocols, brand | When rules change |
-| `docs/WORKFLOW.md` | This file — how work flows | When process evolves |
-| `docs/PLAN.md` | Master roadmap, slice table, summaries | Every slice close |
-| `docs/MOTION.md` | Animation language and toolkit | When motion patterns change |
-| `docs/PATTERNS.md` | Reusable solutions catalog | After every slice (if new patterns) |
-| `docs/ARCHITECTURE.md` | File structure, component tree, data flow | When structure changes |
-| `docs/TESTS.md` | Test file index | Every test add/change/remove |
-| `docs/CSS.md` | Token catalog, style rules | Every CSS change |
-| `docs/test_helper.md` | Vitest setup reference | When test infra changes |
-| `docs/FUTURE_PHASES.md` | Post-launch roadmap (parked) | When Phase A ships |
-| `docs/findings.md` | Competitive scan results | During research phases |
+| `docs/reference/WORKFLOW.md` | This file — how work flows | When process evolves |
+| `docs/roadmap/PLAN.md` | Master roadmap, slice table, summaries | Every slice close |
+| `docs/reference/MOTION.md` | Animation language and toolkit | When motion patterns change |
+| `docs/reference/PATTERNS.md` | Reusable solutions catalog | After every slice (if new patterns) |
+| `docs/reference/ARCHITECTURE.md` | File structure, component tree, data flow | When structure changes |
+| `docs/reference/TESTS.md` | Test file index | Every test add/change/remove |
+| `docs/reference/CSS.md` | Token catalog, style rules | Every CSS change |
+| `docs/archive/test_helper.md` | Vitest setup reference | When test infra changes |
+| `docs/roadmap/FUTURE_PHASES.md` | Post-launch roadmap (parked) | When Phase A ships |
+| `docs/research/findings.md` | Competitive scan results | During research phases |
 | `docs/slices/` | Slice specs (one per feature) | Before implementation |
-| `docs/superpowers/specs/` | Design specs | During design phase |
-| `docs/superpowers/plans/` | Implementation plans | During planning phase |
+| `docs/specs/` | Design specs | During design phase |
+| `docs/plans/` | Implementation plans | During planning phase |
 | `docs/handoffs/` | Completion reports | After slice approval |
 | `docs/devlog/` | Daily work logs | Every session |
 | `docs/learn/` | Knowledge base for Yesid | Every slice close |

@@ -8,7 +8,7 @@
 
 **Tech Stack:** SvelteKit 2 + Svelte 5, TypeScript, GSAP (ScrollTrigger, DrawSVGPlugin, SplitText), Tailwind CSS, Vitest + @testing-library/svelte
 
-**Design spec:** `docs/superpowers/specs/2026-04-06-slice-09-services-design.md`
+**Design spec:** `docs/specs/2026-04-06-slice-09-services-design.md`
 **Visual mockups:** `.superpowers/brainstorm/1296-1775447657/content/services-tabs-mobile.html` (index) and `service-detail-layout.html` (detail)
 
 ---
@@ -765,7 +765,7 @@ git commit -m "test(slice-09): add integration tests for services routes"
 ## Task 10: Docs + Handoff Prep
 
 **Files:**
-- Modify: `docs/PLAN.md`
+- Modify: `docs/roadmap/PLAN.md`
 - Modify: `CLAUDE.md`
 - Update: `docs/slices/slice-09-services.md`
 - Create: `docs/devlog/YYYY-MM-DD-slice-09.md`

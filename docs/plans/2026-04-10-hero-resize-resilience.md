@@ -8,7 +8,7 @@
 
 **Tech Stack:** GSAP 3 (`gsap.matchMedia`, `ScrollTrigger`, `invalidateOnRefresh`), SvelteKit, existing animation phases unchanged.
 
-**Spec:** `docs/superpowers/specs/2026-04-10-hero-resize-resilience.md`  
+**Spec:** `docs/specs/2026-04-10-hero-resize-resilience.md`  
 **Research:** `docs/slices/13e-research/behaviour.md`
 
 ---
@@ -473,7 +473,7 @@ If any issues are found, fix them before proceeding. Log fixes in the devlog.
 
 **Files:**
 - Create: `docs/slices/slice-13e-resize-resilience.md`
-- Modify: `docs/CSS.md` (only if CSS changes were needed — likely no changes)
+- Modify: `docs/reference/CSS.md` (only if CSS changes were needed — likely no changes)
 
 - [ ] **Step 1: Write slice spec**
 

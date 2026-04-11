@@ -115,7 +115,7 @@ No test code changes needed.
 - [ ] Total wall-clock time under 30 seconds on Windows
 - [ ] No test removed or weakened
 - [ ] Each optimization's delta logged in devlog
-- [ ] docs/TESTS.md updated with new setup/config
+- [ ] docs/reference/TESTS.md updated with new setup/config
 - [ ] AboutPage.test.ts no longer times out
 
 ## Out of Scope

@@ -110,7 +110,7 @@ SQL (PostgreSQL + SQL Server), TypeScript, Python, SvelteKit, GSAP, Power BI, Do
 - `src/tests/setup.ts` — SplitText mock
 
 ## Design Spec
-`docs/superpowers/specs/2026-04-04-slice-b-wordmark-cta-design.md`
+`docs/specs/2026-04-04-slice-b-wordmark-cta-design.md`
 
 ## Next Session Instructions
 1. Read `CLAUDE.md` → sees active slice status

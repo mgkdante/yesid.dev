@@ -15,7 +15,7 @@ The fully orange screen from Slice A (Berri-UQAM zoomed in) seamlessly transitio
 
 ## Files Created
 - `docs/slices/slice-c-zoom-transition.md`: Slice spec
-- `docs/superpowers/specs/2026-04-04-slice-c-zoom-transition-design.md`: Design spec
+- `docs/specs/2026-04-04-slice-c-zoom-transition-design.md`: Design spec
 
 ## How It Works
 

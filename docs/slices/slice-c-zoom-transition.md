@@ -30,7 +30,7 @@ Slice A ends with the screen fully orange (Berri-UQAM node zoomed to fill viewpo
 - Timeline extends from 1.0 to ~1.5, scroll distance 800% → 1200%
 - Cross-fade SVG → text container, then scale down with text stagger
 - Content from heroContent in content.ts (already defined)
-- Design spec: docs/superpowers/specs/2026-04-04-slice-c-zoom-transition-design.md
+- Design spec: docs/specs/2026-04-04-slice-c-zoom-transition-design.md
 
 ## Out of Scope
 - GSAP SplitText effects (Slice B, deferred)

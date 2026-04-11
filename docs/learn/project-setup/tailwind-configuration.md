@@ -110,7 +110,7 @@ The result: an orange button with 8px rounded corners that darkens on hover. Eve
 
 1. **Using hex colors directly in components:** Writing `text-[#E07800]` or `bg-[#E07800]` instead of `text-brand-primary` or `bg-brand-primary`.
    - **What happens:** It works visually, but now the color value is scattered across files. When the brand orange changes (it happened once already -- the hover variant was adjusted), you have to find-and-replace across the entire codebase instead of changing one line in `src/app.css`.
-   - **Fix:** Always use the generated utility class (`text-brand-primary`, `bg-brand-accent`). If no token exists for the color you need, add it to the `@theme` block in `src/app.css` first, then update `docs/CSS.md`.
+   - **Fix:** Always use the generated utility class (`text-brand-primary`, `bg-brand-accent`). If no token exists for the color you need, add it to the `@theme` block in `src/app.css` first, then update `docs/reference/CSS.md`.
    - **Why:** This is the same principle as database normalization. A value should be defined in exactly one place. Every other reference should be a foreign key (class name) pointing back to the source (the `@theme` block).
 
 2. **Looking for a `tailwind.config.js` file:** Many tutorials and Stack Overflow answers reference a `tailwind.config.js` (or `.ts`) file. This project does not have one.

@@ -30,8 +30,8 @@ Contact page is a dual-terminal layout: info terminal (left, ~28% width) shows l
 | `src/lib/components/ContactPage.svelte` | Dual-terminal contact page component |
 | `src/lib/components/ContactPage.test.ts` | 12 component tests — rendering, validation, success, links |
 | `src/routes/contact/+page.svelte` | Route shell with SEO meta |
-| `docs/superpowers/specs/2026-04-07-contact-page-design.md` | Design spec (brainstormed with visual companion) |
-| `docs/superpowers/plans/2026-04-07-contact-page.md` | Implementation plan |
+| `docs/specs/2026-04-07-contact-page-design.md` | Design spec (brainstormed with visual companion) |
+| `docs/plans/2026-04-07-contact-page.md` | Implementation plan |
 
 ## 4. Files Modified
 
@@ -42,7 +42,7 @@ Contact page is a dual-terminal layout: info terminal (left, ~28% width) shows l
 | `src/routes/+layout.svelte` | Added `/contact` to `isFullWidth` | Contact page manages its own layout |
 | `src/lib/components/AboutCta.svelte` | Removed macOS dots, added scrollable terminal body with themed scrollbar | OS-agnostic, content overflow |
 | `src/tests/setup.ts` | Replaced `$app/forms` mock with `fetch` mock for Web3Forms | Client-side submission |
-| `docs/PLAN.md` | Slice 09b → complete, added slices 10-12 (tech stack, nav, footer), renumbered 13-21 |
+| `docs/roadmap/PLAN.md` | Slice 09b → complete, added slices 10-12 (tech stack, nav, footer), renumbered 13-21 |
 | `CLAUDE.md` | Active slice → 10, completed slices updated |
 
 ## 5. Data Model Changes
@@ -110,7 +110,7 @@ Web3Forms API: tested from browser — successful submission confirmed
 - About page tech stack card may need revision after Slice 10 (Tech Stack page)
 - No spam protection (reCAPTCHA etc.) — add when traffic warrants it
 - Footer and navbar will be redesigned in Slices 11-12
-- `docs/TESTS.md` and `docs/ARCHITECTURE.md` updates deferred to slice closing admin
+- `docs/reference/TESTS.md` and `docs/reference/ARCHITECTURE.md` updates deferred to slice closing admin
 
 ## 12. What Yesid Should Know
 

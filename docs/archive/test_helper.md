@@ -272,7 +272,7 @@ Key pattern: when a module reads `matchMedia` at import time, you must call `vi.
    bun run test -- --run src/lib/components/MyComponent.test.ts
    ```
 
-5. **Update `docs/TESTS.md`** with the new test entries.
+5. **Update `docs/reference/TESTS.md`** with the new test entries.
 
 No additional configuration is needed — the `include` globs in each Vitest project pick up test files automatically. Data tests go in `src/lib/data/`, component tests go in `src/lib/components/`, and motion tests go in `src/lib/motion/`.
 

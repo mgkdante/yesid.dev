@@ -3,7 +3,7 @@
 **Slice:** 13d
 **Date:** 2026-04-10
 **Status:** Approved by Yesid
-**Reference mockup:** `docs/superpowers/specs/hero-v4-approved-reference.html`
+**Reference mockup:** `docs/specs/hero-v4-approved-reference.html`
 **Brainstorm session:** `.superpowers/brainstorm/471-1775835572/`
 
 ---
@@ -22,7 +22,7 @@ The hero must lead with what visitors gain — Upwork clients want reliable outc
 
 - **Digital Flagship model:** Hero = tagline + work proof woven between text lines. Separate manifesto section with color break below.
 - **Early-career positioning research:** The site itself IS the proof. Lead with outcomes and trust signals. Never mention what you lack.
-- **7-site findings (docs/findings.md):** Text-as-architecture, variable size rhythm, never-flat-dark.
+- **7-site findings (docs/research/findings.md):** Text-as-architecture, variable size rhythm, never-flat-dark.
 - **Transit pipeline (C:\Users\otalo\Yesito\Projects\transit):** Production-grade GTFS/GTFS-RT pipeline with 5-schema Postgres architecture on Neon, running 30s refresh cycles. Real data.
 
 ---
@@ -328,7 +328,7 @@ The orange "." in "DON'T BREAK**.**" serves as:
 | `src/lib/components/HeroMetrics.svelte` | NEW — metric cards component |
 | `src/app.css` | Add circuit grid background site-wide |
 | `src/lib/styles/tokens.css` | Add any new tokens |
-| `docs/CSS.md` | Document new tokens/patterns |
+| `docs/reference/CSS.md` | Document new tokens/patterns |
 | `src/routes/home.test.ts` | Update hero tests |
 
 ---

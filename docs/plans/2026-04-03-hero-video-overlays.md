@@ -8,7 +8,7 @@
 
 **Tech Stack:** Native `<video>` element, GSAP (already installed), Svelte 5 runes (`$props`, `$effect`), existing `prefersReducedMotion` store.
 
-**Design spec:** `docs/superpowers/specs/2026-04-03-hero-video-overlays-design.md`
+**Design spec:** `docs/specs/2026-04-03-hero-video-overlays-design.md`
 
 **EXPERIMENTAL:** This is exploratory. The rollback path is reverting HeroBanner to import WagonScene. Build for easy pivot.
 
@@ -551,7 +551,7 @@ Add a new session section to `docs/devlog/2026-04-03.md`:
 ### Session Start
 - **Time:** [current time]
 - **Slice spec:** docs/slices/slice-06f-video-hero.md
-- **Design spec:** docs/superpowers/specs/2026-04-03-hero-video-overlays-design.md
+- **Design spec:** docs/specs/2026-04-03-hero-video-overlays-design.md
 - **Goal:** Replace 3D wagon with scroll-linked video + code overlays (experimental)
 
 ### Work Done

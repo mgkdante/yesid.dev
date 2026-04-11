@@ -4,8 +4,8 @@
 **Priority:** 1
 **Estimated effort:** ~14 sessions total (~7 remaining)
 **Started:** 2026-04-09
-**Design spec:** `docs/superpowers/specs/2026-04-09-home-page-redesign.md`
-**Original plan:** `docs/superpowers/plans/2026-04-09-home-page-redesign.md`
+**Design spec:** `docs/specs/2026-04-09-home-page-redesign.md`
+**Original plan:** `docs/plans/2026-04-09-home-page-redesign.md`
 
 ---
 
@@ -45,8 +45,8 @@ Rebuild the home page as a full-bleed, kinetic, Awwwards-quality experience with
 - `docs/slices/slice-13b-manifesto.md`
 - `docs/slices/slice-13c-viewport-fix.md` (absorbed — historical reference only)
 - `docs/slices/slice-13d-hero-redesign.md`
-- `docs/superpowers/specs/2026-04-10-hero-redesign.md` (13d design spec)
-- `docs/superpowers/specs/2026-04-10-hero-resize-resilience.md` (13e design spec)
+- `docs/specs/2026-04-10-hero-redesign.md` (13d design spec)
+- `docs/specs/2026-04-10-hero-resize-resilience.md` (13e design spec)
 - `docs/slices/13-handoff-notes.md` (running notes)
 
 ### Remaining
