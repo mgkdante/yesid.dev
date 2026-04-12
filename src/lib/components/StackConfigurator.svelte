@@ -99,7 +99,7 @@
 
 	.configurator-hint {
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		color: var(--text-muted);
 	}
 
@@ -159,7 +159,7 @@
 
 	.domain-desc {
 		font-family: var(--font-body);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		color: var(--text-muted);
 	}
 

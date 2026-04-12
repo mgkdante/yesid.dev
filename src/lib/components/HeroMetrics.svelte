@@ -24,7 +24,7 @@
       class="rounded-[10px] border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3.5 transition-colors duration-300 hover:border-[var(--brand-primary)] md:px-5 md:py-4"
       data-testid="metric-card"
     >
-      <div class="font-mono text-[11px] tracking-[2px] text-[var(--text-muted)] md:text-[13px]">
+      <div class="font-mono text-caption tracking-[2px] text-[var(--text-muted)] md:text-mono">
         {metric.label}
       </div>
       <div
@@ -33,7 +33,7 @@
       >
         {formatValue(metric)}{#if metric.unit}<span class="text-[60%] text-[var(--text-secondary)]">{metric.unit}</span>{/if}
       </div>
-      <div class="mt-1.5 font-mono text-[11px] text-[var(--text-dim)] md:text-[12px]">
+      <div class="mt-1.5 font-mono text-caption text-[var(--text-dim)]">
         {metric.sub}
       </div>
     </div>

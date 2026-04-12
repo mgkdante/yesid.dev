@@ -65,7 +65,7 @@
 	</div>
 
 	<!-- Dev label — bottom-left -->
-	<p class="absolute bottom-4 left-4 z-10 font-mono text-[10px] tracking-wide text-neutral-600">
+	<p class="absolute bottom-4 left-4 z-10 font-mono text-caption tracking-wide text-neutral-600">
 		PRE-SLICE-06 PREVIEW &mdash; not production
 	</p>
 </div>

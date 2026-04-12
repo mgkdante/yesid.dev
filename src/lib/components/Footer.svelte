@@ -58,7 +58,7 @@
 			{#each footerNavLinks as link}
 				<a
 					href={link.href}
-					class="text-[13px] text-[var(--text-secondary)] transition-colors hover:text-brand-primary"
+					class="text-small text-[var(--text-secondary)] transition-colors hover:text-brand-primary"
 				>
 					{link.label}
 				</a>
@@ -72,7 +72,7 @@
 					href={link.href}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="text-[13px] text-[var(--text-secondary)] transition-colors hover:text-brand-primary"
+					class="text-small text-[var(--text-secondary)] transition-colors hover:text-brand-primary"
 					aria-label={link.label}
 				>
 					{link.label}
@@ -82,7 +82,7 @@
 	</div>
 
 	<!-- Row 2: Status bar -->
-	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-[11px] text-[var(--text-muted)] sm:flex-row sm:justify-between sm:px-10">
+	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--text-muted)] sm:flex-row sm:justify-between sm:px-10">
 		<small>&copy; {year} yesid<span class="text-brand-primary">.</span></small>
 		<address class="not-italic">Montreal, QC &middot; Remote</address>
 		<span class="flex items-center gap-1.5">

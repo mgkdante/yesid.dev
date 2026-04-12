@@ -72,7 +72,7 @@
 					<a
 						href="/work?tag={tech}"
 						data-animate="tag"
-						class="sidebar-tag rounded-sm border border-[#2a2a2a] bg-[#1a1a1a] px-2 py-0.5 font-mono text-[10px] text-[var(--text-primary)] no-underline md:text-xs"
+						class="sidebar-tag rounded-sm border border-[#2a2a2a] bg-[#1a1a1a] px-2 py-0.5 font-mono text-caption text-[var(--text-primary)] no-underline"
 					>
 						{tech}
 					</a>

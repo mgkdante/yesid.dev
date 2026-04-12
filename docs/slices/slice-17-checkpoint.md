@@ -1,13 +1,13 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-11 | Planning Session
-**Branch:** (not started — first branch: `feature/slice-17a-1-token-foundation`)
+**Last updated:** 2026-04-11 | Implementation Session
+**Branch:** `feature/slice-17a-1-token-foundation`
 **PR:** pending
 
 ## Current Position
-- **Sub-slice:** 17a-1 (Token Foundation) — planned, not started
-- **Task:** 0 of 12
-- **Status:** planning complete, ready for implementation
+- **Sub-slice:** 17a-1 (Token Foundation) — all 12 tasks complete, PR ready
+- **Task:** 12 of 12
+- **Status:** implementation complete, awaiting PR merge
 
 ## Execution Sequence
 
@@ -29,7 +29,7 @@ Phase 2 — Standardization
 ## What's Merged Into Main
 | Sub-slice | Branch | PR | Merged |
 |-----------|--------|-----|--------|
-| (none yet) | — | — | — |
+| 17a-1 Token Foundation | `feature/slice-17a-1-token-foundation` | pending | no |
 
 ## Planning Artifacts
 - Design spec: `docs/specs/2026-04-11-slice-17-standardization-design.md`
@@ -42,9 +42,12 @@ Phase 2 — Standardization
 - D3: GSAP $effect() cleanup moves from 17a to 17e
 - D6: Use color-mix() for shadow alpha values
 - D9: Home page's bold typography + full-bleed = standard for ALL pages
+- D10: Keep Tailwind default breakpoints (117 responsive classes across 41 files depend on them)
+- D11: Tailwind v4 @theme uses --text-* namespace (not --font-size-*); type scale lives in @theme only
+- D12: Hero wordmark tokenized as --text-hero (clamp 64-130px), part of the design system per Yesid
 
 ## Open Decisions
-- Breakpoint system: keep Tailwind defaults or override with custom (360/520/768/1024/1440)? Research needed in Task 5 of 17a-1 plan.
+(none)
 
 ## Blockers
-- Slice 00 PR needs to merge to main before branching 17a-1
+(none)

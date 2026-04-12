@@ -74,21 +74,21 @@
 			<div data-animate="meta" class="mt-2 flex flex-wrap items-center gap-1.5">
 				{#each post.tags as tag}
 					<span
-						class="rounded-sm border px-1.5 py-0.5 font-mono text-[10px] md:text-xs"
+						class="rounded-sm border px-1.5 py-0.5 font-mono text-caption"
 						style="border-color: {accentColor}; color: {accentColor};"
 					>
 						{tag}
 					</span>
 				{/each}
-				<span class="font-mono text-[10px] text-[var(--text-muted)] md:text-xs">
+				<span class="font-mono text-caption text-[var(--text-muted)]">
 					{post.date}
 				</span>
 				{#if readingTime > 0}
-					<span class="font-mono text-[10px] text-[var(--text-muted)]">
+					<span class="font-mono text-caption text-[var(--text-muted)]">
 						&middot; {readingTime} {resolveLocale(labels.minRead, 'en')}
 					</span>
 				{/if}
-				<span class="font-mono text-[10px] text-[var(--text-muted)]">
+				<span class="font-mono text-caption text-[var(--text-muted)]">
 					&middot; {post.lang}
 				</span>
 			</div>

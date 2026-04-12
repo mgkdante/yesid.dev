@@ -56,7 +56,7 @@
 			data-testid="bento-stack"
 			use:reveal={{ delay: stagger(1, 100) }}
 		>
-			<div class="mb-3 font-mono text-[10px] tracking-widest text-[var(--text-muted)]">{stackLabel}</div>
+			<div class="mb-3 font-mono text-caption tracking-widest text-[var(--text-muted)]">{stackLabel}</div>
 			<div class="flex flex-wrap gap-2">
 				{#each aboutContent.stackItems as tech}
 					<span class="rounded bg-[#222] px-2 py-1 text-xs text-[var(--text-secondary)]">{tech}</span>
@@ -70,7 +70,7 @@
 			data-testid="bento-location"
 			use:reveal={{ delay: stagger(2, 100) }}
 		>
-			<div class="mb-2 font-mono text-[10px] tracking-widest text-[var(--text-muted)]">{locationLabel}</div>
+			<div class="mb-2 font-mono text-caption tracking-widest text-[var(--text-muted)]">{locationLabel}</div>
 			<div class="text-base font-semibold text-[var(--text-primary)]">{city}</div>
 			<div class="text-sm text-[var(--text-secondary)]">{region}</div>
 		</div>
@@ -81,7 +81,7 @@
 			data-testid="bento-interests"
 			use:reveal={{ delay: stagger(3, 100) }}
 		>
-			<div class="mb-2 font-mono text-[10px] tracking-widest text-[var(--text-muted)]">{interestsLabel}</div>
+			<div class="mb-2 font-mono text-caption tracking-widest text-[var(--text-muted)]">{interestsLabel}</div>
 			<div class="text-sm text-[var(--text-secondary)]">
 				{interests}
 			</div>

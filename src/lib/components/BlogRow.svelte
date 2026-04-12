@@ -58,7 +58,7 @@
 					style="animation-delay: {index * 0.4}s;"
 				></div>
 				<div
-					class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold text-[#0a0a0a]"
+					class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-caption font-bold text-[#0a0a0a]"
 					style="background-color: {accentColor};"
 					data-testid="station-badge"
 				>
@@ -126,14 +126,14 @@
 				<div class="mt-3 flex flex-wrap items-center gap-1.5">
 					{#each post.tags as tag}
 						<span
-							class="rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors duration-200 md:text-xs"
+							class="rounded border px-1.5 py-0.5 font-mono text-caption transition-colors duration-200"
 							style="border-color: color-mix(in srgb, {accentColor} 60%, transparent); color: {accentColor};"
 							use:magnetic={{ strength: 2, radius: 30 }}
 						>
 							{tag}
 						</span>
 					{/each}
-					<span class="ml-auto font-mono text-[10px] text-[var(--text-muted)] md:text-xs">
+					<span class="ml-auto font-mono text-caption text-[var(--text-muted)]">
 						{post.date}
 					</span>
 				</div>

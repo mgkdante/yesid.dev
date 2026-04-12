@@ -221,7 +221,7 @@
 						{filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''}
 					</span>
 					<button
-						class="font-mono text-[10px] underline transition-colors hover:text-[var(--text-primary)]"
+						class="font-mono text-caption underline transition-colors hover:text-[var(--text-primary)]"
 						style="color: {accentColor};"
 						onclick={clearFilters}
 					>

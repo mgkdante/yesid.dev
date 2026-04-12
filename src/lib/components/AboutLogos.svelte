@@ -39,7 +39,7 @@
 			<!-- Counter -->
 			<div class="text-center">
 				<div class="font-mono text-3xl font-bold text-[var(--brand-accent)]">{count}+</div>
-				<div class="font-mono text-[11px] uppercase tracking-[1px] text-[var(--text-secondary)]">clients served</div>
+				<div class="font-mono text-caption uppercase tracking-[1px] text-[var(--text-secondary)]">clients served</div>
 			</div>
 
 			<!-- Logo grid -->

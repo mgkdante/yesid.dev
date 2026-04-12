@@ -69,29 +69,29 @@
 
 	<!-- Date range — inline, not a FilterGroup, so collapse logic is inline -->
 	<button
-		class="flex w-full items-center justify-between font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+		class="flex w-full items-center justify-between font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
 		onclick={() => (dateOpen = !dateOpen)}
 	>
 		{resolveLocale(labels.dateRange, 'en')}
-		<span class="text-[8px] transition-transform" class:rotate-180={dateOpen}>▼</span>
+		<span class="text-caption transition-transform" class:rotate-180={dateOpen}>▼</span>
 	</button>
 	{#if dateOpen}
 		<div class="mt-2 flex flex-col gap-1.5">
-			<label class="text-[9px] text-[var(--text-muted)]">
+			<label class="text-caption text-[var(--text-muted)]">
 				{resolveLocale(labels.from, 'en')}
 				<input
 					type="date"
 					bind:value={dateFrom}
-					class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-[10px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+					class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
 					style="--accent: {accentColor}; color-scheme: dark;"
 				/>
 			</label>
-			<label class="text-[9px] text-[var(--text-muted)]">
+			<label class="text-caption text-[var(--text-muted)]">
 				{resolveLocale(labels.to, 'en')}
 				<input
 					type="date"
 					bind:value={dateTo}
-					class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-[10px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+					class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
 					style="--accent: {accentColor}; color-scheme: dark;"
 				/>
 			</label>
@@ -121,7 +121,7 @@
 			>
 				{cornerLink.label}
 			</a>
-			<div class="mt-1 pl-2 text-[9px] italic text-[var(--text-muted)]">
+			<div class="mt-1 pl-2 text-caption italic text-[var(--text-muted)]">
 				{cornerLink.subtitle}
 			</div>
 		</div>
