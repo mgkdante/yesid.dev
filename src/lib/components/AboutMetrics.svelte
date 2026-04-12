@@ -10,6 +10,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { metrics, stop = '01', label = 'METRICS' }: { metrics: readonly AboutMetric[]; stop?: string; label?: string } = $props();
 </script>
@@ -26,7 +27,7 @@
 	></div>
 
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<div class="flex flex-1 items-center justify-around">
 			{#each metrics as metric, i}
@@ -56,7 +57,7 @@
 						aria-hidden="true"
 					></div>
 					<!-- Label: short, uppercase -->
-					<div class="mt-2 font-mono text-caption uppercase tracking-[1px] text-[var(--text-secondary)]">
+					<div class="mt-2 label-metric tracking-[1px] text-[var(--text-secondary)]">
 						{metricLabel}
 					</div>
 				</div>

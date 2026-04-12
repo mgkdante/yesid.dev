@@ -10,6 +10,7 @@
 	import type { Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import FilterGroup from './FilterGroup.svelte';
+	import { ChevronToggle } from '$lib/components/brand';
 
 	const LANG_LABELS: Record<Locale, string> = { en: 'English', fr: 'Français', es: 'Español' };
 
@@ -69,11 +70,11 @@
 
 	<!-- Date range — inline, not a FilterGroup, so collapse logic is inline -->
 	<button
-		class="flex w-full items-center justify-between font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+		class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--text-primary)]"
 		onclick={() => (dateOpen = !dateOpen)}
 	>
 		{resolveLocale(labels.dateRange, 'en')}
-		<span class="text-caption transition-transform" class:rotate-180={dateOpen}>▼</span>
+		<ChevronToggle open={dateOpen} size="sm" direction="down" />
 	</button>
 	{#if dateOpen}
 		<div class="mt-2 flex flex-col gap-1.5">

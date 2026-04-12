@@ -46,7 +46,7 @@
 </script>
 
 <div class="stack-filters" data-testid="stack-filters" role="toolbar" aria-label="Filter by domain">
-	<span class="filter-label">Domain</span>
+	<span class="filter-label label-section font-semibold">Domain</span>
 	<div class="filter-pills">
 		<button
 			type="button"
@@ -84,12 +84,6 @@
 	}
 
 	.filter-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
 		white-space: nowrap;
 		flex-shrink: 0;
 	}

@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { StatusDot, HazardStripe } from '$lib/components/brand';
 
 	let {
 		tag = 'LIVE',
@@ -34,20 +35,20 @@
 	<!-- Title bar -->
 	<div class="frame-bar">
 		<span class="frame-tag">
-			<span class="frame-led" aria-hidden="true"></span>
+			<StatusDot color="orange" pulse />
 			{tag}
 		</span>
 		<span class="frame-title">{title}</span>
 		{#if status}
 			<span class="frame-status">
-				<span class="frame-led-ok" aria-hidden="true"></span>
+				<StatusDot color="green" />
 				{status}
 			</span>
 		{/if}
 	</div>
 
 	<!-- Hazard stripe -->
-	<div class="frame-stripe" aria-hidden="true"></div>
+	<HazardStripe size="sm" />
 
 	<!-- Content -->
 	<div class="frame-body">
@@ -147,20 +148,6 @@
 		font-weight: 600;
 	}
 
-	.frame-led {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--brand-primary);
-		box-shadow: 0 0 6px rgba(224, 120, 0, 0.6);
-		animation: frame-led-pulse 2s ease-in-out infinite;
-	}
-
-	@keyframes frame-led-pulse {
-		0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(224, 120, 0, 0.5); }
-		50% { opacity: 0.7; box-shadow: 0 0 10px rgba(224, 120, 0, 0.8); }
-	}
-
 	.frame-title {
 		font-family: var(--font-mono);
 		font-size: 11px;
@@ -177,24 +164,7 @@
 		color: var(--text-muted);
 	}
 
-	.frame-led-ok {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: #28c840;
-		box-shadow: 0 0 4px rgba(40, 200, 64, 0.5);
-	}
-
 	/* --- Hazard stripe --- */
-
-	.frame-stripe {
-		height: 3px;
-		background: repeating-linear-gradient(
-			-45deg,
-			#FFB627 0px, #FFB627 8px,
-			transparent 8px, transparent 16px
-		);
-	}
 
 	/* --- Body --- */
 
@@ -275,9 +245,4 @@
 		}
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.frame-led {
-			animation: none;
-		}
-	}
 </style>

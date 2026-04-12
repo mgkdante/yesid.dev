@@ -9,6 +9,7 @@
 	import ProofReel from '$lib/components/ProofReel.svelte';
 	import HomeServices from '$lib/components/HomeServices.svelte';
 	import HomeCloser from '$lib/components/HomeCloser.svelte';
+	import { HazardStripe } from '$lib/components/brand';
 </script>
 
 <svelte:head>
@@ -20,47 +21,13 @@
 		<!-- Section 1: Hero (metro SVG animation) -->
 		<HeroBanner />
 
-		<!-- Hard cut: yellow/black dashed line (Von Restorff break) -->
-		<div
-			data-testid="hard-cut"
-			class="h-1 w-full"
-			style="background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);"
-		></div>
-
-		<!-- Section 2: Manifesto (interactive circuit board + transit HUD) -->
+		<HazardStripe />
 		<Manifesto />
-
-		<!-- Hard cut: yellow/black dashed line (Von Restorff break) -->
-		<div
-			class="h-1 w-full"
-			style="background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);"
-		></div>
-
-		<!-- Section 3: Proof Reel (featured project cards with impact metrics) -->
+		<HazardStripe />
 		<ProofReel />
-
-		<!-- Hard cut: yellow/black dashed line -->
-		<div
-			class="h-1 w-full"
-			style="background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);"
-		></div>
-
-		<!-- Section 4: Services Grid (benefit-led, blueprint background) -->
+		<HazardStripe />
 		<HomeServices />
-
-		<!-- Hard cut: yellow/black dashed line -->
-		<div
-			class="h-1 w-full"
-			style="background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);"
-		></div>
-
-		<!-- Hard cut: yellow/black dashed line -->
-		<div
-			class="h-1 w-full"
-			style="background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);"
-		></div>
-
-		<!-- Section 5: The Closer (terminus departure board + graffiti wall) -->
+		<HazardStripe />
 		<HomeCloser />
 	</div>
 </div>

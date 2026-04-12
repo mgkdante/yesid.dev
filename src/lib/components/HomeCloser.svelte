@@ -397,7 +397,7 @@
 		<h2 data-testid="closer-heading" data-closer-heading class="closer-heading">
 			{heading}<span class="closer-dot">{headingDot}</span>
 		</h2>
-		<p data-testid="closer-subheading" data-closer-sub class="closer-subheading">
+		<p data-testid="closer-subheading" data-closer-sub class="closer-subheading label-metric">
 			{subheading}
 		</p>
 
@@ -572,11 +572,6 @@
 	}
 
 	.closer-subheading {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 13px;
-		color: var(--text-muted, #555);
-		letter-spacing: 2px;
-		text-transform: uppercase;
 		margin-block-end: 36px;
 	}
 

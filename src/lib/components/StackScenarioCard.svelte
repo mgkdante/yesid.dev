@@ -68,7 +68,7 @@
 	<!-- Project links -->
 	{#if scenario.relatedProjects.length > 0}
 		<div class="scenario-projects">
-			<span class="projects-label">Proven in</span>
+			<span class="projects-label label-section font-semibold">Proven in</span>
 			<div class="project-badges">
 				{#each scenario.relatedProjects as slug}
 					<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -168,12 +168,6 @@
 	}
 
 	.projects-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
 		white-space: nowrap;
 	}
 

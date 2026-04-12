@@ -88,7 +88,7 @@
 			<!-- Project badges -->
 			{#if item.relatedProjects.length > 0}
 				<div class="panel-projects">
-					<span class="section-label">Used in</span>
+					<span class="section-label label-section font-semibold">Used in</span>
 					<div class="project-badges">
 						{#each item.relatedProjects as slug}
 							<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -149,7 +149,7 @@
 	{:else}
 		<!-- Hint Card — nudges user to interact -->
 		<div class="panel-orientation" data-testid="panel-orientation">
-			<span class="orientation-label">SELECT A NODE</span>
+			<span class="orientation-label label-section font-semibold">SELECT A NODE</span>
 			<p class="orientation-text">
 				Click on any technology in the diagram to learn more about it — what it does,
 				why it was chosen, and which projects use it.
@@ -291,12 +291,6 @@
 	.relations-label,
 	.section-label {
 		display: block;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
 		margin-bottom: 0.5rem;
 	}
 
@@ -429,11 +423,6 @@
 	}
 
 	.orientation-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
 		color: var(--brand-primary);
 	}
 

@@ -8,6 +8,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
+	import { Tag } from '$lib/components/brand';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
 
@@ -125,12 +126,8 @@
 				</p>
 				<div class="mt-3 flex flex-wrap items-center gap-1.5">
 					{#each post.tags as tag}
-						<span
-							class="rounded border px-1.5 py-0.5 font-mono text-caption transition-colors duration-200"
-							style="border-color: color-mix(in srgb, {accentColor} 60%, transparent); color: {accentColor};"
-							use:magnetic={{ strength: 2, radius: 30 }}
-						>
-							{tag}
+						<span use:magnetic={{ strength: 2, radius: 30 }}>
+							<Tag text={tag} size="xs" active accentColor={accentColor} />
 						</span>
 					{/each}
 					<span class="ml-auto font-mono text-caption text-[var(--text-muted)]">

@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
   import type { HeroQueryRow } from '$lib/data/hero-data.js';
+  import { StatusDot } from '$lib/components/brand';
 
   interface Props {
     rows: HeroQueryRow[];
@@ -27,7 +28,7 @@
       {prompt}
     </span>
     <span class="flex items-center gap-1.5 text-caption text-[var(--text-dim)]" data-testid="sql-live">
-      <span class="live-dot"></span>
+      <StatusDot color="green" pulse />
       {liveLabel}
     </span>
   </div>
@@ -67,18 +68,3 @@
   </div>
 </div>
 
-<style>
-  .live-dot {
-    width: 7px;
-    height: 7px;
-    background: var(--status-live);
-    border-radius: 50%;
-    box-shadow: 0 0 6px var(--status-live);
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { box-shadow: 0 0 6px var(--status-live); }
-    50% { box-shadow: 0 0 12px var(--status-live), 0 0 24px rgba(34, 197, 94, 0.3); }
-  }
-</style>

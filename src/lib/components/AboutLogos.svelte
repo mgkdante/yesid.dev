@@ -7,6 +7,7 @@
 	import type { AboutClientLogo } from '$lib/data/types.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let {
 		logos,
@@ -33,13 +34,13 @@
 	></div>
 
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<div class="flex flex-1 flex-col items-center justify-center gap-2">
 			<!-- Counter -->
 			<div class="text-center">
 				<div class="font-mono text-3xl font-bold text-[var(--brand-accent)]">{count}+</div>
-				<div class="font-mono text-caption uppercase tracking-[1px] text-[var(--text-secondary)]">clients served</div>
+				<div class="label-metric tracking-[1px] text-[var(--text-secondary)]">clients served</div>
 			</div>
 
 			<!-- Logo grid -->

@@ -10,6 +10,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import TerminalCursor from './TerminalCursor.svelte';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { cta, stop = '09', label = 'NEXT' }: { cta: AboutCta; stop?: string; label?: string } = $props();
 
@@ -36,7 +37,7 @@
 	></div>
 
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<!-- Terminal window -->
 		<div class="mt-3 flex-1 overflow-hidden rounded-md border border-[var(--border)] bg-[var(--bg-primary)]">
