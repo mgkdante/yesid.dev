@@ -12,6 +12,7 @@
 	import StackScenarioCard from '$lib/components/StackScenarioCard.svelte';
 	import TerminalCursor from '$lib/components/TerminalCursor.svelte';
 	import InfraFrame from '$lib/components/InfraFrame.svelte';
+	import { StatusDot, BrandButton } from '$lib/components/brand';
 
 	let { data } = $props();
 
@@ -183,7 +184,7 @@
 
 		<div class="hero-stats" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
 			<div class="hero-stat">
-				<span class="hero-stat-value"><span class="hero-led" aria-hidden="true"></span>{itemCount}</span>
+				<span class="hero-stat-value flex items-center gap-2"><StatusDot color="orange" pulse />{itemCount}</span>
 				<span class="hero-stat-label">technologies</span>
 			</div>
 			<div class="hero-stat">
@@ -201,18 +202,12 @@
 		</div>
 
 		<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
-			<button
-				class="hero-btn-primary"
-				onclick={() => document.getElementById('diagram-zone')?.scrollIntoView({ behavior: 'smooth' })}
-			>
+			<BrandButton variant="primary" size="md" onclick={() => document.getElementById('diagram-zone')?.scrollIntoView({ behavior: 'smooth' })}>
 				Explore Diagram <span aria-hidden="true">&darr;</span>
-			</button>
-			<button
-				class="hero-btn-secondary"
-				onclick={scrollToBuild}
-			>
+			</BrandButton>
+			<BrandButton variant="ghost" size="md" onclick={scrollToBuild}>
 				Build Your Stack <span aria-hidden="true">&rarr;</span>
-			</button>
+			</BrandButton>
 		</div>
 	</section>
 
@@ -398,12 +393,12 @@
 			Whether it's a data pipeline, a web app, or a mobile product — the infrastructure is ready.
 		</p>
 		<div class="cta-buttons">
-			<a href="/contact" class="hero-btn-primary">
+			<BrandButton variant="primary" size="md" href="/contact">
 				Get In Touch <span aria-hidden="true">&rarr;</span>
-			</a>
-			<a href="/services" class="hero-btn-secondary">
+			</BrandButton>
+			<BrandButton variant="ghost" size="md" href="/services">
 				View Services
-			</a>
+			</BrandButton>
 		</div>
 		<span class="cta-avail">Available for Q2 2026</span>
 	</section>
@@ -644,15 +639,8 @@
 		.build-fab {
 			transition: none;
 		}
-		.hero-led {
-			animation: none;
-		}
 		.hero-line-animate {
 			animation: none;
-		}
-		.hero-btn-primary,
-		.hero-btn-secondary {
-			transition: none;
 		}
 		.hero-hidden {
 			opacity: 1;
@@ -834,73 +822,11 @@
 		color: var(--text-muted);
 	}
 
-	.hero-led {
-		display: inline-block;
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--brand-primary);
-		box-shadow: 0 0 6px rgba(224, 120, 0, 0.6);
-		margin-right: 8px;
-		flex-shrink: 0;
-		animation: hero-led-pulse 2s ease-in-out infinite;
-	}
-
-	@keyframes hero-led-pulse {
-		0%, 100% { opacity: 1; box-shadow: 0 0 4px 1px rgba(224, 120, 0, 0.5); }
-		50% { opacity: 0.7; box-shadow: 0 0 10px 4px rgba(224, 120, 0, 0.8); }
-	}
-
 	.hero-actions {
 		display: flex;
 		gap: 1rem;
 		flex-wrap: wrap;
 		padding-bottom: 2rem;
-	}
-
-	.hero-btn-primary {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 0.75rem 1.5rem;
-		background: var(--brand-primary);
-		color: white;
-		text-decoration: none;
-		font-family: var(--font-body);
-		font-size: 14px;
-		font-weight: 600;
-		border: none;
-		border-radius: var(--radius-md);
-		cursor: pointer;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-		box-shadow: 0 2px 12px rgba(224, 120, 0, 0.3);
-	}
-
-	.hero-btn-primary:hover {
-		transform: translateY(-1px);
-		box-shadow: 0 4px 20px rgba(224, 120, 0, 0.4);
-	}
-
-	.hero-btn-secondary {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 0.75rem 1.5rem;
-		background: transparent;
-		color: var(--text-primary);
-		text-decoration: none;
-		font-family: var(--font-body);
-		font-size: 14px;
-		font-weight: 600;
-		border: 1px solid var(--border);
-		border-radius: var(--radius-md);
-		cursor: pointer;
-		transition: border-color 0.2s ease, color 0.2s ease;
-	}
-
-	.hero-btn-secondary:hover {
-		border-color: var(--brand-primary);
-		color: var(--brand-primary);
 	}
 
 	/* ═══ CTA ZONE ═══ */

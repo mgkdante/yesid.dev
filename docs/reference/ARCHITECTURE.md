@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-11 (Slice 13)
+**Last updated:** 2026-04-12 (Slice 17a-2b)
 
 ## Stack
 
@@ -90,8 +90,26 @@ src/
 │   │   ├── StackFilters.svelte      # ← Slice 10: domain filter pill bar (multi-select)
 │   │   ├── StackConfigurator.svelte # ← Slice 10: Build Your Stack domain selector
 │   │   ├── StackScenarioCard.svelte # ← Slice 10: scenario summary card with recommended stack
-│   │   ├── TerminalCursor.svelte    # ← Slice 10: reusable blinking cursor component
-│   │   └── InfraFrame.svelte        # ← Slice 10: infrastructure monitor frame wrapper
+│   │   ├── TerminalCursor.svelte    # ← Slice 10: reusable blinking cursor component (standardized to 8x14px block in 17a-2b)
+│   │   ├── InfraFrame.svelte        # ← Slice 10: infrastructure monitor frame wrapper
+│   │   └── brand/                   # ← Slice 17a-2: brand design system primitives
+│   │       ├── index.ts             # Barrel export — import { StatusDot, BrandButton } from '$lib/components/brand'
+│   │       ├── StatusDot.svelte     # Pulsing status indicator (color, pulse, size)
+│   │       ├── SectionLabel.svelte  # Mono uppercase section labels (text, variant, align)
+│   │       ├── StopLabel.svelte     # "STOP XX" bento card labels (stop, label)
+│   │       ├── Tag.svelte           # Tag/badge pill (text, size, active, accentColor)
+│   │       ├── NumberBadge.svelte   # Numbered circle badge (value, color, sonar)
+│   │       ├── ChevronToggle.svelte # Animated expand/collapse chevron (open, size)
+│   │       ├── HazardStripe.svelte  # Orange diagonal stripe divider (size, angle, label)
+│   │       ├── GlowOverlay.svelte   # Cursor-following glow overlay (intensity)
+│   │       ├── MetricDisplay.svelte # Value + label metric (value, label, sublabel, labelBelow)
+│   │       ├── BrandButton.svelte   # Standardized CTA button (variant, size, href)
+│   │       ├── CardBase.svelte      # Card wrapper (hover, glow, interactive, padding)
+│   │       ├── CornerMarks.svelte   # Blueprint corner tick marks (size, opacity)
+│   │       ├── TerminalChrome.svelte # Terminal window frame (title, tag, status, footer, noPadding)
+│   │       ├── StickyPanel.svelte   # Sticky sidebar wrapper (top)
+│   │       ├── GradientSeparator.svelte # Animated gradient line (label, maxWidth)
+│   │       └── __tests__/           # Co-located tests for all primitives
 │   └── motion/          # ← Added in Slice 04
 │       ├── actions/
 │       │   ├── boop.ts          # use:boop — hover transform burst
@@ -99,6 +117,7 @@ src/
 │       │   ├── magnetic.ts      # use:magnetic — cursor pull on desktop
 │       │   ├── ripple.ts        # use:ripple — orange click ripple
 │       │   ├── tilt.ts          # use:tilt — 3D card tilt following cursor (slice 06b)
+│       │   ├── cursorGlow.ts    # use:cursorGlow — mouse-tracking brand glow overlay (slice 17a-2b)
 │       │   └── index.ts         # barrel export
 │       ├── stores/
 │       │   ├── reducedMotion.ts # prefersReducedMotion store + isPrefersReducedMotion()

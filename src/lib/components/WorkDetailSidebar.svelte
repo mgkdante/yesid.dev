@@ -12,6 +12,7 @@
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import WorkServiceBadge from './WorkServiceBadge.svelte';
+	import { Tag } from '$lib/components/brand';
 
 	// WHY: all section headers go through LocalizedString so the sidebar is ready
 	// for future i18n without changing component logic.
@@ -58,23 +59,19 @@
 </script>
 
 <aside
-	class="w-full shrink-0 rounded-lg border border-[#2a2a2a] bg-[#141414] p-5 lg:sticky lg:top-20 lg:w-[240px]"
+	class="w-full shrink-0 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 lg:sticky lg:top-20 lg:w-[240px]"
 	data-testid="work-detail-sidebar"
 >
 	<!-- Tech Stack -->
 	{#if project.stack.length > 0}
 		<div class="pb-5">
-			<h3 class="mb-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+			<h3 class="mb-2.5 label-section font-semibold text-xs tracking-wider">
 				{resolveLocale(labels.techStack, 'en')}
 			</h3>
 			<div bind:this={tagsContainer} class="flex flex-wrap gap-1.5">
 				{#each project.stack as tech}
-					<a
-						href="/work?tag={tech}"
-						data-animate="tag"
-						class="sidebar-tag rounded-sm border border-[#2a2a2a] bg-[#1a1a1a] px-2 py-0.5 font-mono text-caption text-[var(--text-primary)] no-underline"
-					>
-						{tech}
+					<a href="/work?tag={tech}" data-animate="tag" class="no-underline">
+						<Tag text={tech} size="xs" />
 					</a>
 				{/each}
 			</div>
@@ -89,7 +86,7 @@
 	<!-- Services -->
 	{#if hasServices}
 		<div class="pb-5">
-			<h3 class="mb-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+			<h3 class="mb-2.5 label-section font-semibold text-xs tracking-wider">
 				{resolveLocale(labels.services, 'en')}
 			</h3>
 			<div class="flex flex-wrap gap-2">
@@ -111,7 +108,7 @@
 	<!-- Links -->
 	{#if hasLinks}
 		<div>
-			<h3 class="mb-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+			<h3 class="mb-2.5 label-section font-semibold text-xs tracking-wider">
 				{resolveLocale(labels.links, 'en')}
 			</h3>
 			<div class="flex flex-col gap-2">

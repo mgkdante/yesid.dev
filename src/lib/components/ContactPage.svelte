@@ -9,6 +9,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import TerminalCursor from './TerminalCursor.svelte';
+	import { BrandButton, TerminalChrome } from '$lib/components/brand';
 
 	const c = contactContent;
 
@@ -146,17 +147,8 @@
 		<div class="grid gap-4 md:grid-cols-[2fr_5fr]" use:reveal>
 
 			<!-- ═══ INFO TERMINAL (left) ═══ -->
-			<div
-				class="flex flex-col overflow-hidden rounded-lg border border-[#2a2a2a] bg-[var(--bg-surface)]"
-				data-testid="contact-info-terminal"
-			>
-				<!-- Title bar -->
-				<div class="border-b border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2">
-					<span class="font-mono text-caption text-[var(--text-secondary)]">{c.infoTerminal.title}</span>
-				</div>
-
-				<!-- Terminal body -->
-				<div class="flex-1 bg-[#141414] p-4 font-mono text-sm leading-relaxed">
+			<TerminalChrome title={c.infoTerminal.title} data-testid="contact-info-terminal">
+				<div class="font-mono text-sm leading-relaxed">
 					<!-- Command line -->
 					<div class="mb-4 text-[var(--text-secondary)]">
 						<span class="text-[var(--text-primary)]">~</span> {c.infoTerminal.command}
@@ -193,20 +185,11 @@
 						<TerminalCursor />
 					</div>
 				</div>
-			</div>
+			</TerminalChrome>
 
 			<!-- ═══ FORM TERMINAL (right) ═══ -->
-			<div
-				class="overflow-hidden rounded-lg border border-[#2a2a2a] bg-[var(--bg-surface)]"
-				data-testid="contact-form-terminal"
-			>
-				<!-- Title bar -->
-				<div class="border-b border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2">
-					<span class="font-mono text-caption text-[var(--text-secondary)]">{c.formTerminal.title}</span>
-				</div>
-
-				<!-- Terminal body -->
-				<div class="bg-[#141414] p-4 font-mono text-sm leading-relaxed">
+			<TerminalChrome title={c.formTerminal.title} data-testid="contact-form-terminal">
+				<div class="font-mono text-sm leading-relaxed">
 					<!-- Command + output -->
 					<div class="mb-1 text-[var(--text-secondary)]">
 						<span class="text-[var(--text-primary)]">~</span> {c.formTerminal.command}
@@ -290,13 +273,10 @@
 								{/if}
 
 								<!-- Submit button -->
-								<button
-									type="submit"
-									class="flex items-center gap-2 self-start rounded bg-[var(--brand-primary)] px-5 py-2.5 text-small font-semibold text-white shadow-lg shadow-[var(--brand-primary)]/20 transition-all duration-200 hover:bg-[var(--brand-primary-hover)] hover:-translate-y-0.5"
-								>
-									<span class="text-white/60">~ $</span>
+								<BrandButton variant="primary" size="sm" type="submit">
+									<span class="opacity-60">~ $</span>
 									{resolveLocale(c.formTerminal.submitLabel, 'en')}
-								</button>
+								</BrandButton>
 
 							</div>
 						</form>
@@ -336,7 +316,7 @@
 					{/if}
 
 				</div>
-			</div>
+			</TerminalChrome>
 
 		</div>
 

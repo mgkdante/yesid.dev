@@ -2,10 +2,11 @@
   Reusable collapsible section card.
   Used in WorkDetailPage, ServiceDetailPage (collapsible=true)
   and BlogContent (collapsible=false, visual card wrapper only).
-  Pattern: blog-card style — bg-[#1a1a1a] border-[#2a2a2a], white title → orange hover.
+  Pattern: blog-card style — bg-[var(--bg-card)] border-[var(--border-subtle)], white title → orange hover.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { ChevronToggle, NumberBadge } from '$lib/components/brand';
 
 	let {
 		title,
@@ -37,18 +38,12 @@
   allowing hover rules to reference the dynamic value without inline duplication.
 -->
 <div
-	class="section-card rounded-lg border border-[#2a2a2a] bg-[#1a1a1a]"
+	class="section-card rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)]"
 	style="--accent: {accentColor};"
 >
 	{#snippet headerContent()}
 		{#if index !== null}
-			<span
-				class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-caption font-bold text-[#0a0a0a]"
-				style="background-color: {accentColor};"
-				aria-hidden="true"
-			>
-				{index + 1}
-			</span>
+			<NumberBadge value={index + 1} color={accentColor} />
 		{:else if icon}
 			{@render icon()}
 		{/if}
@@ -71,15 +66,7 @@
 		>
 			{@render headerContent()}
 
-			<svg
-				class="section-chevron h-5 w-5 shrink-0 text-[#555]"
-				class:rotated={open}
-				viewBox="0 0 20 20"
-				fill="currentColor"
-				aria-hidden="true"
-			>
-				<path d="M8 4l7 6-7 6V4z" />
-			</svg>
+			<ChevronToggle {open} direction="right" />
 		</button>
 	{:else}
 		<div class="flex items-center gap-2.5 px-6 py-4">
@@ -120,16 +107,6 @@
 
 	:global(.section-title) {
 		transition: color 0.2s ease;
-	}
-
-	.section-chevron {
-		transition: transform 0.25s ease, color 0.15s ease;
-	}
-	.section-chevron.rotated {
-		transform: rotate(90deg);
-	}
-	.section-header:hover .section-chevron {
-		color: var(--accent);
 	}
 
 	.section-body {

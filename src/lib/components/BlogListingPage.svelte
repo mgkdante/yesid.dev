@@ -172,7 +172,7 @@
 				type="text"
 				placeholder="Search posts by title, content, or tag..."
 				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none transition-colors focus:border-[var(--accent)]"
+				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none transition-colors focus:border-[var(--accent)]"
 				style="--accent: {accentColor};"
 				data-testid="blog-search"
 			/>

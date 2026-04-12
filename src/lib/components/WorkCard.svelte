@@ -13,6 +13,7 @@
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import WorkSvgIcon from './WorkSvgIcon.svelte';
+	import { Tag } from '$lib/components/brand';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 
 	let {
@@ -73,7 +74,7 @@
 	onmouseleave={() => (cardHovered = false)}
 >
 	<article
-		class="work-card-article relative overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
+		class="work-card-article relative overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] transition-all duration-300"
 		use:tilt={{ maxDeg: 1.5 }}
 		use:cursorGlow
 	>
@@ -119,7 +120,7 @@
 			<!-- Service badges row — SVGs with MorphSVG on card hover -->
 			{#if projectServices.length > 0}
 				<div class="mt-3">
-					<div class="mb-1.5 font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(servicesLabel, 'en')}
 					</div>
 					<div class="flex flex-wrap gap-1.5">
@@ -149,7 +150,7 @@
 			<!-- Tech stack SVG diagram with DrawSVG animation -->
 			{#if displayStack.length > 0}
 				<div class="mt-3">
-					<div class="mb-1.5 font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(stackLabel, 'en')}
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />
@@ -162,21 +163,13 @@
 			<!-- Tags as small pills -->
 			<div class="flex flex-wrap gap-1 pt-3">
 				{#each displayTags as tag}
-					<span
-						class="rounded border border-[#E07800]/30 px-1.5 py-0.5 font-mono text-caption text-[#E07800]"
-						use:magnetic={{ strength: 2, radius: 30 }}
-					>
-						{tag}
+					<span use:magnetic={{ strength: 2, radius: 30 }}>
+						<Tag text={tag} size="xs" active />
 					</span>
 				{/each}
 			</div>
 		</div>
 
-		<!-- Subtle glow on hover -->
-		<div
-			class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-			style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), {gradientColors[0]}0a, transparent 60%);"
-		></div>
 	</article>
 </a>
 
@@ -184,8 +177,8 @@
 	/* WHY: same hover pattern as BlogRow — subtle border glow + shadow,
 	   no rotating gradient (that was visually distracting on cards) */
 	.work-card:hover .work-card-article {
-		border-color: color-mix(in srgb, #E07800 50%, transparent);
-		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
+		border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		box-shadow: 0 0 16px rgb(var(--brand-primary-rgb) / 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
 	/* Strip WorkSvgIcon container border/bg when nested in card badges */

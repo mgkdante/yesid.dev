@@ -123,7 +123,7 @@
 </script>
 
 <div
-	class="bento-card relative flex h-full items-center justify-center overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)]"
+	class="bento-card flex h-full items-center justify-center"
 	data-testid="about-train"
 >
 	<canvas

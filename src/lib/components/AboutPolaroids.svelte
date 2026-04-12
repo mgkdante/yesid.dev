@@ -9,6 +9,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { polaroids, stop = '08', label = 'SNAPSHOTS' }: { polaroids: readonly AboutPolaroid[]; stop?: string; label?: string } = $props();
 
@@ -27,18 +28,13 @@
 </script>
 
 <div
-	class="group bento-card relative h-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] p-3"
+	class="group bento-card h-full p-3"
 	data-testid="about-polaroids"
 	use:reveal
 	use:cursorGlow
 >
-	<!-- Cursor glow -->
-	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.06), transparent 60%);"
-	></div>
-
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<!-- Polaroid display -->
 		<div class="flex flex-1 items-center justify-center">

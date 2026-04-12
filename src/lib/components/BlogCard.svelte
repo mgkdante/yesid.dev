@@ -33,10 +33,10 @@
 	data-testid="blog-card"
 	use:boop={{ scale: 1.03, timing: 300 }}
 >
-	<article class="h-full rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-6 transition-colors group-hover:border-[#E07800]">
+	<article class="h-full rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 transition-colors group-hover:border-brand-primary">
 		<div class="flex items-start justify-between gap-3">
 			<time class="shrink-0 font-mono text-xs text-[var(--text-muted)]">{date}</time>
-			<span class="shrink-0 font-mono text-xs font-bold text-[#E07800]">{badge}</span>
+			<span class="shrink-0 font-mono text-xs font-bold text-brand-primary">{badge}</span>
 		</div>
 		<h3 class="mt-3 font-heading text-base font-semibold leading-snug text-[var(--text-primary)]">
 			{title}

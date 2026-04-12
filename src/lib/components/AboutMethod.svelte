@@ -9,22 +9,19 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { steps, stop = '02', label = 'PROCESS' }: { steps: readonly AboutMethodStep[]; stop?: string; label?: string } = $props();
 </script>
 
 <div
-	class="bento-card group relative h-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] p-3"
+	class="bento-card group h-full p-3"
 	data-testid="about-method"
 	use:reveal
 	use:cursorGlow
 >
-	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.06), transparent 60%);"
-	></div>
-
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<!-- Horizontal pipeline with descriptions -->
 		<div class="mt-auto mb-auto flex items-start justify-around">

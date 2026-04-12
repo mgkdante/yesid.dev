@@ -73,9 +73,11 @@ describe('Home page', () => {
 		expect(screen.getByTestId('hero-refresh')).toBeInTheDocument();
 	});
 
-	it('renders the hard-cut transition between hero and manifesto', () => {
+	it('renders hazard stripe dividers between sections', () => {
 		render(Page);
-		expect(screen.getByTestId('hard-cut')).toBeInTheDocument();
+		const container = screen.getByTestId('app-root');
+		const stripes = container.querySelectorAll('[aria-hidden="true"][style*="repeating-linear-gradient"]');
+		expect(stripes.length).toBeGreaterThanOrEqual(1);
 	});
 
 	it('renders the manifesto section', () => {

@@ -12,6 +12,7 @@
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel, HazardStripe } from '$lib/components/brand';
 
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
@@ -51,7 +52,7 @@
 
 		<!-- Top Stripe -->
 		<div class="px-3 pt-1" aria-hidden="true">
-			<div class="h-1 rounded-sm" style="background:repeating-linear-gradient(-45deg,#FFB627 0px,#FFB627 8px,#141414 8px,#141414 16px);"></div>
+			<HazardStripe />
 		</div>
 
 		<!-- 6×4 Bento Grid -->
@@ -67,18 +68,16 @@
 				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label="PROCESS" /></div>
 				<div class="area-stack">
 					<div
-						class="bento-card group relative h-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] p-3"
+						class="bento-card group h-full p-3"
 						data-testid="about-tech-stack"
 						use:reveal use:tilt={{ maxDeg: 1.5, perspective: 800 }} use:cursorGlow
 					>
-						<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-							style="background:radial-gradient(circle at var(--glow-x,50%) var(--glow-y,50%),rgba(224,120,0,0.06),transparent 60%);"></div>
 						<div class="relative flex h-full flex-col">
-							<div class="stop-label">STOP {s[3]} — STACK</div>
+							<StopLabel stop={s[3]} label="STACK" />
 							<div class="mt-2 flex flex-1 flex-col justify-center gap-2">
 								{#each stackCategories as [category, items]}
 									<div>
-										<div class="font-mono text-caption uppercase tracking-[2px] text-[var(--text-secondary)]">{category}</div>
+										<div class="label-metric text-[var(--text-secondary)]">{category}</div>
 										<div class="mt-1 flex flex-wrap gap-1">
 											{#each items as item, i}
 												<span
@@ -109,7 +108,7 @@
 
 		<!-- Bottom Stripe -->
 		<div class="px-3 pb-1" aria-hidden="true">
-			<div class="h-1 rounded-sm" style="background:repeating-linear-gradient(-45deg,#FFB627 0px,#FFB627 8px,#141414 8px,#141414 16px);"></div>
+			<HazardStripe />
 		</div>
 
 	</div>
@@ -215,34 +214,6 @@
 	.dashboard > div > :global(*) {
 		height: 100%;
 		width: 100%;
-	}
-
-	/* ═══ METRO STOP LABEL ═══ */
-	:global(.stop-label) {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 10px;
-		letter-spacing: 2px;
-		color: rgba(255, 255, 255, 0.55);
-		position: relative;
-		padding-left: 16px;
-	}
-	:global(.stop-label::before) {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		background: var(--brand-primary);
-		box-shadow: 0 0 6px 2px rgba(224, 120, 0, 0.6);
-		animation: stop-pulse 2s ease-in-out infinite;
-	}
-
-	@keyframes stop-pulse {
-		0%, 100% { box-shadow: 0 0 4px 1px rgba(224, 120, 0, 0.5); opacity: 1; }
-		50% { box-shadow: 0 0 10px 4px rgba(224, 120, 0, 0.8); opacity: 0.85; }
 	}
 
 	/* ═══ BENTO CARD — UNIFORM BORDER + HOVER ═══ */

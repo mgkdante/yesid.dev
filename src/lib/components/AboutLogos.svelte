@@ -7,6 +7,7 @@
 	import type { AboutClientLogo } from '$lib/data/types.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel, MetricDisplay } from '$lib/components/brand';
 
 	let {
 		logos,
@@ -22,25 +23,17 @@
 </script>
 
 <div
-	class="group bento-card relative overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] p-3"
+	class="group bento-card p-3"
 	data-testid="about-logos"
 	use:reveal
 	use:cursorGlow
 >
-	<!-- Cursor glow -->
-	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.06), transparent 60%);"
-	></div>
-
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<div class="flex flex-1 flex-col items-center justify-center gap-2">
 			<!-- Counter -->
-			<div class="text-center">
-				<div class="font-mono text-3xl font-bold text-[var(--brand-accent)]">{count}+</div>
-				<div class="font-mono text-caption uppercase tracking-[1px] text-[var(--text-secondary)]">clients served</div>
-			</div>
+			<MetricDisplay value="{count}+" label="clients served" size="lg" labelBelow />
 
 			<!-- Logo grid -->
 			<div class="mt-1 grid grid-cols-2 gap-2">
