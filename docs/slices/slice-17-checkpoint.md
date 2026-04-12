@@ -1,13 +1,13 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-12 | Implementation Session (Wire Primitives — COMPLETE)
-**Branch:** `feature/slice-17a-2b-wire-primitives`
-**Next branch:** `feature/slice-17a-3-color-lockdown` (after PR merge)
+**Last updated:** 2026-04-12 | Planning Session (Color & Token Lockdown — PLANNED)
+**Branch:** `feature/slice-17a-3-color-lockdown`
 
 ## Current Position
-- **Sub-slice:** 17a-2b (Wire Primitives) — COMPLETE
-- **Task:** W17 of W17 (Phase B) — ALL DONE
-- **Status:** Ready for PR review + closing session
+- **Sub-slice:** 17a-3a (Color Lockdown) — PLANNED, ready to implement
+- **Task:** C1 of C20 — NOT STARTED
+- **Status:** Design spec approved, slice specs written, awaiting implementation session
+- **Next sub-slice:** 17a-3b (Token Wiring + Normalization) — PLANNED
 
 ## Execution Sequence
 
@@ -15,8 +15,9 @@
 Phase 1 — Foundation
   17a-1: Token Foundation .............. COMPLETE (PR #2 merged)
   17a-2a: Build Primitives ............. COMPLETE (PR #3 merged)
-  17a-2b: Wire Primitives .............. COMPLETE (W1-W17 done, ready for PR)
-  17a-3: Color & Token Lockdown ........ 2-3 sessions (expanded scope)
+  17a-2b: Wire Primitives .............. COMPLETE (PR #4 merged)
+  17a-3a: Color Lockdown ............... NEXT (~2 sessions, 20 tasks)
+  17a-3b: Token Wiring + Normalization . PLANNED (~1 session, 8 tasks)
   17a-4: Dead Code + Trivial Dedup ..... 1 session
   17b:   Service Layer ................. 2 sessions
     → 15: SEO + Metadata
@@ -33,6 +34,7 @@ Phase 2 — Standardization
 |-----------|--------|-----|--------|
 | 17a-1 Token Foundation | `feature/slice-17a-1-token-foundation` | #2 | yes |
 | 17a-2a Build Primitives | `feature/slice-17a-2a-build-primitives` | #3 | yes |
+| 17a-2b Wire Primitives | `feature/slice-17a-2b-wire-primitives` | #4 | yes |
 
 ## Wire Tasks Progress (17a-2b)
 
@@ -127,7 +129,18 @@ Phase 2 — Standardization
 - Code duplication: BlogSvgIcon/WorkSvgIcon, isTouchDevice() x3, station pulse CSS x2 (17d)
 - Large files: Manifesto (1006), tech-stack/+page (909), HomeCloser (760), HeroBanner (734) (17d)
 
+## Planning Artifacts (17a-3)
+- Design spec: `docs/specs/slice-17a-3-color-token-lockdown-design.md`
+- Slice spec (colors): `docs/slices/slice-17a-3a-color-lockdown.md`
+- Slice spec (tokens): `docs/slices/slice-17a-3b-token-wiring.md`
+
+## Key Findings (Planning Session)
+- Actual hardcoded colors: **371** (vs. ~220 estimate from closing session)
+- Tailwind v4 `@theme inline` resolves dual source-of-truth between tokens.css and app.css
+- Brand primitives (brand/) already clean — 63 var() refs, zero hardcoded hex
+- 3 new tokens needed: --text-light, --status-warning, --brand-primary-border
+
 ## Next Steps
-1. Create PR for 17a-2b (closing artifacts complete)
-2. 17a-3: Color & Token Lockdown (expanded — colors + z-index + shadows + transitions + opacity + utilities + inconsistencies)
+1. **17a-3a: Color Lockdown** — Implementation session (2 sessions, 20 tasks, branch: feature/slice-17a-3-color-lockdown)
+2. **17a-3b: Token Wiring** — Implementation session (1 session, 8 tasks, branch: feature/slice-17a-3b-token-wiring)
 3. 17a-4: Dead Code + Trivial Dedup (delete 4 dead components, extract isTouchDevice, unify station pulse CSS, extract display heading utility, quick primitive wiring wins)
