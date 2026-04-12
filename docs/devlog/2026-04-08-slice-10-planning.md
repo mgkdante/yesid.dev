@@ -29,7 +29,7 @@
   - **Removed:** Retool, dbt
 
 - [x] Design spec written and self-reviewed
-  - **Files created:** `docs/superpowers/specs/2026-04-08-tech-stack-page-design.md`
+  - **Files created:** `docs/specs/2026-04-08-tech-stack-page-design.md`
   - **Self-review fixes:** Alembic moved from Data to Backend layer. C++/Rust clarified as `layer: 'systems'`.
 
 - [x] Slice spec written
@@ -37,7 +37,7 @@
   - 8 tasks with step-by-step instructions, file lists, STOP gates, acceptance criteria
 
 - [x] Documentation updated
-  - **Files modified:** `docs/PLAN.md` (slice 10 summary expanded, est. 6-8 sessions), `CLAUDE.md` (active slice updated with spec paths)
+  - **Files modified:** `docs/roadmap/PLAN.md` (slice 10 summary expanded, est. 6-8 sessions), `CLAUDE.md` (active slice updated with spec paths)
   - **Memory updated:** tech stack vision, upcoming slices, Keystatic CMS plan
 
 ### Commands Executed
@@ -71,11 +71,11 @@
 ### Session End
 - **Time:** late evening
 - **Files created:**
-  - `docs/superpowers/specs/2026-04-08-tech-stack-page-design.md`
+  - `docs/specs/2026-04-08-tech-stack-page-design.md`
   - `docs/slices/slice-10-tech-stack.md`
   - `docs/devlog/2026-04-08-slice-10-planning.md`
 - **Files modified:**
-  - `docs/PLAN.md`
+  - `docs/roadmap/PLAN.md`
   - `CLAUDE.md`
   - Memory files (tech_stack_vision, upcoming_slices, keystatic_cms)
 - **Tests passing:** n/a

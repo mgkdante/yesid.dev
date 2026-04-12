@@ -14,7 +14,7 @@ Built the root layout shell that wraps every page: a fixed Nav bar with responsi
 ## Files Modified
 - `src/routes/+layout.svelte`: Composes Nav + ScrollRail + page content + Footer; adds CSS page transition (250ms fade-in, respects reduced motion)
 - `src/routes/+page.svelte`: Simplified — outer wrapper removed (layout provides it now); kept `data-testid="app-root"` for existing tests
-- `docs/ARCHITECTURE.md`: Added Nav, Footer, ScrollRail to structure diagram
+- `docs/reference/ARCHITECTURE.md`: Added Nav, Footer, ScrollRail to structure diagram
 - `docs/devlog/2026-04-02.md`: Appended slice 05 session log
 - `tree.txt`: Regenerated
 

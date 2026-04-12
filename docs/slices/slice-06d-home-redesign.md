@@ -13,7 +13,7 @@ Redesign the home page from a sparse 4-section layout into a full, bold, 8-stop 
 
 The current home page feels empty: just a hero, 4 service cards, and a CTA. Yesid wants a portfolio site that blends personal brand with professional credibility, inspired by planetono.space (bold/playful), gianmarcocavallo.com (bento grid), sector32.net (futuristic), and alyssafaustino.com (artwork backgrounds). The metro/station theme stays and gets evolved — bolder rail, glowing trail, more stations. A real Montreal metro wagon (Sketchfab, CC-BY 4.0) anchors the hero over AI-generated station artwork.
 
-Full design spec: `docs/superpowers/specs/2026-04-03-home-redesign-design.md`
+Full design spec: `docs/specs/2026-04-03-home-redesign-design.md`
 
 ## Acceptance Criteria
 

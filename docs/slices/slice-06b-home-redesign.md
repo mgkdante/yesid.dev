@@ -19,8 +19,8 @@ You are revising `src/routes/+page.svelte` and related components. The data laye
 
 **Read before starting:**
 - `docs/handoffs/handoff-slice-06.md` (what was built)
-- `docs/MOTION.md` (motion principles, especially sections 2, 4, 5)
-- `docs/ARCHITECTURE.md` (file structure)
+- `docs/reference/MOTION.md` (motion principles, especially sections 2, 4, 5)
+- `docs/reference/ARCHITECTURE.md` (file structure)
 - `src/lib/data/services.ts` (the services array that drives everything)
 
 ## Acceptance Criteria

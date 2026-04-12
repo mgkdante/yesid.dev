@@ -2,7 +2,7 @@
 
 ## Project
 
-Freelance Digital Infrastructure. SvelteKit + Tailwind + GSAP + Threlte.
+Freelance Digital Infrastructure.
 Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627` yellow, Inter + JetBrains Mono.
 
 ## Runtime
@@ -14,18 +14,18 @@ Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627
 
 ## Workflow
 
-**Full pipeline:** `docs/WORKFLOW.md` — end-to-end process (Research → Brainstorm → Design Spec → Plan → Slice Spec → Implementation → Closing), tool/plugin mappings per phase, quality gates, and proven rhythms from 22+ slices.
+**Full pipeline:** `docs/reference/WORKFLOW.md` — end-to-end process (Research → Brainstorm → Design Spec → Plan → Slice Spec → Implementation → Closing), tool/plugin mappings per phase, quality gates, and proven rhythms from 22+ slices.
 
 ### Session types
 
 Every session is one of three types. Declare which at the start.
 
 
-| Type               | What happens                                       | Artifacts                                                                                                                                                      |
-| ------------------ | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Planning**       | Research, brainstorm, design spec, slice spec      | `.superpowers/brainstorm/`, `docs/superpowers/specs/`, `docs/slices/, C:\Users\otalo\.claude\plugins\cache\claude-plugins-official\superpowers\5.0.7\scripts\` |
-| **Implementation** | One sub-slice, task by task per Iteration Protocol | Code, tests, devlog                                                                                                                                            |
-| **Closing**        | Docs, handoff, learning docs, tree.txt, commit     | `docs/handoffs/`, `docs/devlog/`, `docs/learn/`                                                                                                                |
+| Type               | What happens                                       | Artifacts                                       |
+| ------------------ | -------------------------------------------------- | ----------------------------------------------- |
+| **Planning**       | Research, brainstorm, design spec, slice spec      | `docs/specs/`, `docs/plans/`, `docs/slices/`    |
+| **Implementation** | One sub-slice, task by task per Iteration Protocol | Code, tests, devlog                             |
+| **Closing**        | Docs, handoff, learning docs, tree.txt, commit     | `docs/handoffs/`, `docs/devlog/`, `docs/learn/` |
 
 
 **Hard rule:** A session cannot be two types. Planning sessions produce zero code. Implementation sessions don't write specs but can modify on iteration. Closing sessions don't add features.
@@ -52,12 +52,12 @@ Slice template: `docs/slices/_TEMPLATE.md`
 5. No spec: stop and say so.
 6. **Specs describe outcomes, not implementation.** Extract the desired OUTCOME, then decide the implementation yourself. Log decisions in the devlog.
 
-**Active slice:** 13 — Home Page Redesign
+**Active slice:** 0 — Repo Hygiene + Workflow Infrastructure
 
-- Plan: `docs/superpowers/plans/2026-04-09-home-page-redesign.md`
-- Design spec: `docs/superpowers/specs/2026-04-09-home-page-redesign.md`
-- 13a (foundation) complete. 13b (manifesto) code done, design pivot pending. 13c (viewport fix) specced.
-- Slice specs: `docs/slices/slice-13b-manifesto.md`, `docs/slices/slice-13c-viewport-fix.md`
+- Spec: `docs/specs/2026-04-11-slice-00-repo-hygiene-design.md`
+- Plan: `docs/plans/2026-04-11-slice-00-repo-hygiene.md`
+- Branch: `feature/slice-00-repo-hygiene`
+- After merge: active slice becomes 17 — Standardization
 
 ## Iteration Protocol (MANDATORY)
 
@@ -88,13 +88,60 @@ Slice template: `docs/slices/_TEMPLATE.md`
 - Ambiguous feedback: ask a clarifying question before changing code.
 - **Never close a slice without updating docs/learn/.**
 
+## Git & PR Workflow
+
+### Branch Strategy
+
+- One branch per sub-slice: `feature/slice-{NN}{letter}`
+- Branch from `main`, PR back to `main`
+- Never commit directly to `main`
+
+### Branch Naming
+
+- `feature/slice-00-repo-hygiene`
+- `feature/slice-17a-design-system`
+- `feature/slice-17b-service-layer`
+- `feature/slice-17c-zod-schemas`
+- `feature/slice-17d-component-api`
+- `feature/slice-17e-motion-consolidation`
+- `feature/slice-17f-test-architecture`
+- `feature/slice-17g-learning-docs`
+
+### PR Protocol
+
+1. All tasks complete and approved by Yesid
+2. `bun run test` + `bun run check` pass
+3. Create PR with summary of all changes
+4. Yesid reviews PR on GitHub
+5. Squash-merge to main
+6. Delete feature branch
+7. Next sub-slice branches from updated main
+
+### Commit Convention (unchanged)
+
+`<type>(slice-NN): <description>`
+
+Types: feat, fix, refactor, docs, test, chore, perf, ci
+
+## Session Checkpoint
+
+Every session reads and updates the checkpoint file:
+
+- Located at `docs/slices/slice-{NN}-checkpoint.md`
+- One per major slice (e.g., Slice 17 has one checkpoint, not seven)
+
+Start of session: read checkpoint → resume where we left off.
+End of session: update checkpoint → clean handoff to next session.
+
+Contents: current sub-slice, task number, branch name, what's merged, what's pending, blockers.
+
 ## Slice Closing (only after ALL tasks approved)
 
-See `docs/WORKFLOW.md` Section 9 for the full 10-step closing checklist. Critical items:
+See `docs/reference/WORKFLOW.md` Section 11 for the full 10-step closing checklist. Critical items:
 
 1. Handoff report → `docs/handoffs/_TEMPLATE.md`
 2. Devlog → `docs/devlog/_TEMPLATE.md`
-3. Update `docs/ARCHITECTURE.md`, `README.md`, `docs/TESTS.md` as needed
+3. Update `docs/reference/ARCHITECTURE.md`, `README.md`, `docs/reference/TESTS.md` as needed
 4. **Learning docs** → `docs/learn/[domain]/[concept].md` — mandatory, Obsidian format (YAML frontmatter, `[[wikilinks]]`, tags: `learn` + domain + difficulty)
 5. **CSS.md** → update when adding tokens, @theme values, scoped styles, z-index, or animation CSS
 6. **PATTERNS.md** → add any new reusable solutions discovered
@@ -123,11 +170,11 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 
 ### Test rules:
 
-- Maintain `docs/TESTS.md` — index by category: Data Layer, Components, Motion, Routes
+- Maintain `docs/reference/TESTS.md` — index by category: Data Layer, Components, Motion, Routes
 - Co-locate test files next to the code they test. Never a top-level `tests/` folder.
 - Component tests: `@testing-library/svelte`. Visual/animation: Playwright E2E.
 - Vitest verifies invocation and structure, not rendered output.
-- Update `docs/TESTS.md` on every test add/change/delete — place under correct section, never append to bottom.
+- Update `docs/reference/TESTS.md` on every test add/change/delete — place under correct section, never append to bottom.
 
 ## Code Standards
 
@@ -162,11 +209,11 @@ Three layers, strict separation. Never mix purposes across layers.
 9. **Prefer logical properties.** `padding-inline`, `margin-block` over `padding-left`, `margin-top`.
 10. **Group utilities.** Order: layout → spacing → sizing → typography → color → effects → state.
 
-### Full reference: `docs/CSS.md`
+### Full reference: `docs/reference/CSS.md`
 
 ## Plugins & Tools
 
-See `docs/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
+See `docs/reference/WORKFLOW.md` Section 21 for the complete plugin-to-phase map.
 
 ### Core MCP Servers (every session)
 
@@ -197,9 +244,151 @@ See `docs/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
 - `superpowers:writing-plans` / `superpowers:executing-plans` — plan lifecycle
 - `superpowers:verification-before-completion` — before claiming done
 - `frontend-design:frontend-design` / `web-designer:web-designer` — design sessions
-- Reference: `/brand/yesid_brand_guide.pdf`, `docs/superpowers/specs/`
+- Reference: `/brand/yesid_brand_guide.pdf`, `docs/specs/`, `docs/plans/`
+
+### Superpowers Output Paths (Override Defaults)
+
+- Design specs → `docs/specs/` (not docs/superpowers/specs/)
+- Implementation plans → `docs/plans/` (not docs/superpowers/plans/)
+- Visual companion HTMLs → ephemeral, `.gitignore`d
 
 ### Custom slash commands: `.claude/commands/`
+
+## Tool Selection Protocol
+
+At each phase transition, check this map and invoke relevant tools.
+Do not wait for Yesid to ask. Proactive tool use = higher quality output.
+
+### Research Phase
+
+ALWAYS:
+
+- Chrome DevTools MCP → multi-breakpoint competitive scan
+- Context7 MCP → verify API signatures before assuming
+- `frontend-design-pro:analyze-site` → structured site analysis
+- `frontend-design-pro:trend-researcher` → current UI/UX trends
+
+CONSIDER:
+
+- `frontend-design-pro:inspiration-analyzer` → studying specific reference sites
+- `deep-research` → broader web research needed
+- Figma MCP → Figma designs exist for the feature
+
+### Brainstorm Phase
+
+ALWAYS:
+
+- `superpowers:brainstorming` → mandatory, never skip
+- Visual companion → offer for any question with visual content
+
+CONSIDER:
+
+- `frontend-design-pro:design-wizard` → interactive design decisions
+- `frontend-design-pro:color-curator` → color palette exploration
+- `frontend-design-pro:typography-selector` → font pairing decisions
+- `ui-design:color-system` → designing color tokens
+- `ui-design:typography-scale` → designing type scales
+- `ui-design:spacing-system` → designing spacing tokens
+- `design-systems:design-token` → organizing token architecture
+- `design-systems:naming-convention` → naming tokens/components
+- `design-systems:theming-system` → designing theme switching
+- `interaction-design:animation-principles` → designing motion
+
+### Planning Phase
+
+ALWAYS:
+
+- `superpowers:writing-plans` → structured plan creation
+- Planner agent → complex feature decomposition
+
+CONSIDER:
+
+- Architect agent → architectural decisions
+- `engineering:architecture` → system design evaluation
+- `engineering:testing-strategy` → planning test approach
+- `engineering:tech-debt` → planning refactors
+- `api-design` → designing service layer interfaces
+
+### Implementation Phase
+
+ALWAYS:
+
+- Svelte MCP (`svelte-autofixer`) → every Svelte file edit
+- Context7 MCP → before using any library API
+- `superpowers:executing-plans` → follow the plan
+- Claude Preview → visual verification after UI tasks
+
+CONSIDER:
+
+- GSAP Master MCP → any animation work
+- `tdd-workflow` → new features (RED → GREEN → REFACTOR)
+- `design-systems:component-spec` → building shared components
+- `design-systems:accessibility-audit` → adding ARIA/a11y
+- `design-systems:pattern-library` → organizing shared patterns
+- `ui-design:responsive-design` → responsive layout decisions
+- `ui-design:dark-mode-design` → theme-aware component work
+- `ui-design:visual-hierarchy` → layout and emphasis decisions
+- `interaction-design:micro-interaction-spec` → hover/click interactions
+- `interaction-design:state-machine` → complex component states
+- `interaction-design:loading-states` → loading/skeleton patterns
+
+### Code Review Phase (after every task)
+
+ALWAYS:
+
+- Code Reviewer agent → general quality
+- TypeScript Reviewer agent → TS-specific issues
+
+CONSIDER:
+
+- Security Reviewer agent → auth, input handling, API calls
+- `engineering:code-review` → structured review checklist
+- `prototyping-testing:heuristic-evaluation` → UI quality check
+
+### Verification Phase (before every STOP)
+
+ALWAYS:
+
+- `superpowers:verification-before-completion` → pre-completion check
+- Claude Preview → screenshot proof for UI tasks
+
+CONSIDER:
+
+- Chrome DevTools MCP (`lighthouse_audit`) → performance check
+- `prototyping-testing:accessibility-test-plan` → a11y verification
+
+### PR & Merge Phase
+
+ALWAYS:
+
+- `superpowers:finishing-a-development-branch` → PR readiness checklist
+- `commit-commands:commit-push-pr` → create the PR
+- GitHub MCP → PR management
+
+### Closing Phase
+
+ALWAYS:
+
+- Doc Updater agent → update ARCHITECTURE.md, README, TESTS.md
+- `engineering:documentation` → technical docs quality
+
+CONSIDER:
+
+- `continuous-learning` → extract patterns from this slice's work
+- `design-systems:documentation-template` → structured docs
+
+### Proactive Tool Triggers (Hard Rules)
+
+1. Editing a .svelte file? → Check Svelte MCP autofixer
+2. Using any library API? → Verify with Context7 first
+3. Touching animation code? → Consult GSAP Master MCP
+4. Adding/changing CSS tokens? → Use design-systems:design-token
+5. Building a shared component? → Use design-systems:component-spec
+6. Writing tests? → Use engineering:testing-strategy
+7. About to claim "done"? → Run verification-before-completion
+8. Creating a PR? → Run finishing-a-development-branch first
+9. Starting any plan? → Run superpowers:brainstorming first
+10. Refactoring code? → Use engineering:tech-debt to assess scope
 
 ## Brand (Non-Negotiable)
 
@@ -215,13 +404,13 @@ See `docs/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
 - Install packages without devlog entry
 - Skip devlog, slice, handoff, or tree.txt update
 - Use npm or npx
-- Add CSS tokens, @theme values, or scoped styles without updating docs/CSS.md
+- Add CSS tokens, @theme values, or scoped styles without updating docs/reference/CSS.md
 - Continue to next task without Yesid's approval
 - Close a slice without updating docs/learn/
 
 ## Completed Slices
 
-01, 02, 03, 04, 05, 06, 06b, 06d, A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b, 10, 10d+, 11, 12, 13a — handoffs in `docs/handoffs/`
+01, 02, 03, 04, 05, 06, 06b, 06d, A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b, 10, 10d+, 11, 12, 13 — handoffs in `docs/handoffs/`
 
 ## Repo Structure
 
@@ -236,11 +425,12 @@ See `tree.txt` for full tree. Key paths:
 - `docs/slices/` — specs (template: `_TEMPLATE.md`)
 - `docs/handoffs/` — reports (template: `_TEMPLATE.md`)
 - `docs/devlog/` — logs (template: `_TEMPLATE.md`)
-- `docs/superpowers/specs/` — design specs
-- `docs/superpowers/plans/` — implementation plans
+- `docs/specs/` — design specs
+- `docs/plans/` — implementation plans
 - `docs/learn/` — learning knowledge base (domain-organized concept docs)
-- `docs/WORKFLOW.md` — full pipeline process
-- `docs/PATTERNS.md` — catalog of reusable solutions from past slices
-- `docs/MOTION.md` — animation language and toolkit
+- `docs/reference/` — WORKFLOW, ARCHITECTURE, PATTERNS, MOTION, TESTS, CSS
+- `docs/roadmap/` — PLAN, FUTURE_PHASES, standardization
+- `docs/research/` — competitive scans, analysis, findings
+- `docs/archive/` — brainstorm HTMLs, old mockups, misc
 - `static/` — models, images, lottie
 

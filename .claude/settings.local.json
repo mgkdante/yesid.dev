@@ -11,5 +11,6 @@
       "WebFetch(domain:colorlib.com)",
       "Bash(bun run:*)"
     ]
-  }
+  },
+  "worktree": false
 }

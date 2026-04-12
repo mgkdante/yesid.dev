@@ -4,7 +4,7 @@
 
 ### Session Start
 - **Time:** 11:30
-- **Slice spec:** `docs/superpowers/plans/2026-04-09-slice-11-nav-404.md` (Tasks 5-7)
+- **Slice spec:** `docs/plans/2026-04-09-slice-11-nav-404.md` (Tasks 5-7)
 - **Goal:** Build ConstructionScene SVG, branded 404 error page, and verify integration across all routes. Completing the final sub-slice of slice 11.
 
 ### Work Done

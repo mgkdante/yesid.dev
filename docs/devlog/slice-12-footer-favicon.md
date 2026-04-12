@@ -4,8 +4,8 @@
 
 ### Session Start
 - **Time:** 12:54
-- **Slice spec:** `docs/superpowers/specs/2026-04-09-slice-12-footer-favicon-design.md`
-- **Plan:** `docs/superpowers/plans/2026-04-09-slice-12-footer-favicon.md`
+- **Slice spec:** `docs/specs/2026-04-09-slice-12-footer-favicon-design.md`
+- **Plan:** `docs/plans/2026-04-09-slice-12-footer-favicon.md`
 - **Goal:** Implement all 9 tasks from the plan: favicon, data layer, schema builder, wordmarkHover action, Nav refactor, Footer rebuild, tests, JSON-LD in layout, final verification + docs.
 
 ### Work Done

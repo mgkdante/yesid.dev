@@ -15,7 +15,7 @@ Built 6 reusable UI components that render the typed data from slice 02. Every c
 
 ## Files Modified
 
-- `docs/ARCHITECTURE.md` — added `src/lib/components/` directory to the structure diagram
+- `docs/reference/ARCHITECTURE.md` — added `src/lib/components/` directory to the structure diagram
 - `tree.txt` — added 12 new component files
 - `docs/devlog/2026-04-02.md` — slice 03 session appended
 

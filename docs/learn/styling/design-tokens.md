@@ -145,9 +145,9 @@ A component then uses both layers:
    - **Fix:** Check both `tokens.css` and the `@theme` block. If a token exists, use it.
    - **Why:** Design tokens exist to prevent scattered magic values. Every raw hex is a maintenance risk.
 
-3. **Creating a new token without documenting it:** Adding `--bg-card-hover: #252525` to tokens.css without updating `docs/CSS.md`.
+3. **Creating a new token without documenting it:** Adding `--bg-card-hover: #252525` to tokens.css without updating `docs/reference/CSS.md`.
    - **What happens:** The next developer does not know the token exists. They create another one for the same purpose.
-   - **Fix:** Always add a `docs/CSS.md` entry when creating or changing tokens. Explain: name, purpose, where consumed, why existing tokens do not cover the case.
+   - **Fix:** Always add a `docs/reference/CSS.md` entry when creating or changing tokens. Explain: name, purpose, where consumed, why existing tokens do not cover the case.
    - **Why:** Undocumented tokens are indistinguishable from dead code.
 
 ## Break It to Learn It

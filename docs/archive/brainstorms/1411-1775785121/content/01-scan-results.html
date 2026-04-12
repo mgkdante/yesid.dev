@@ -1,0 +1,112 @@
+<h2>Inspiration Site Scan Results</h2>
+<p class="subtitle">Design patterns extracted from 6 sites via DOM/CSS analysis</p>
+
+<div class="section">
+  <h3>Pattern 1: Viewport-Filling Typography</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div style="background:#111; border-radius:12px; padding:2rem; border:1px solid #333;">
+      <div style="font-size:0.7rem; color:#888; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">digitalflagship.com</div>
+      <div style="font-family:Impact,sans-serif; font-size:5rem; font-weight:900; line-height:0.8; color:#fff; text-transform:uppercase;">BUILT<br>FOR<br>GROWTH</div>
+      <div style="font-size:0.65rem; color:#666; margin-top:1rem;">H1 at <strong style="color:#E07800;">512px</strong> &mdash; fills entire viewport width</div>
+    </div>
+    <div style="background:#111; border-radius:12px; padding:2rem; border:1px solid #333;">
+      <div style="font-size:0.7rem; color:#888; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem;">byfrontyard.com</div>
+      <div style="font-family:sans-serif; font-weight:700; color:#fff;">
+        <div style="font-size:2rem; line-height:1;">Don't</div>
+        <div style="font-size:7rem; line-height:0.85; letter-spacing:-0.02em;">be</div>
+        <div style="font-size:2.2rem; line-height:1;">boring.</div>
+      </div>
+      <div style="font-size:0.65rem; color:#666; margin-top:1rem;">Variable sizes: 202px / <strong style="color:#E07800;">664px</strong> / 218px &mdash; dramatic contrast</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Pattern 2: Background Textures (Never Flat Dark)</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+    <div style="background:#060616; border-radius:12px; padding:1.5rem; border:1px solid #333; background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 31px), repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(255,255,255,0.03) 30px, rgba(255,255,255,0.03) 31px);">
+      <div style="font-size:0.65rem; color:#888; text-transform:uppercase; letter-spacing:0.1em;">digitalflagship</div>
+      <div style="color:#fff; font-size:0.8rem; margin-top:0.5rem;">SVG hypno grid overlay<br>Body: <code style="color:#E07800;">rgb(6,6,22)</code></div>
+    </div>
+    <div style="background:#0e1212; border-radius:12px; padding:1.5rem; border:1px solid #333; position:relative; overflow:hidden;">
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(43,71,255,0.1) 0px, rgba(43,71,255,0.1) 2px, transparent 2px, transparent 6px);"></div>
+      <div style="position:relative; font-size:0.65rem; color:#888; text-transform:uppercase; letter-spacing:0.1em;">daveholloway</div>
+      <div style="position:relative; color:#fff; font-size:0.8rem; margin-top:0.5rem;">Scanline patterns<br>34 canvas elements<br><span style="color:#2b47ff;">Glow text</span> effects</div>
+    </div>
+    <div style="background: linear-gradient(135deg, rgb(221,181,128), rgb(224,49,49), rgb(232,56,143)); border-radius:12px; padding:1.5rem; border:1px solid #333;">
+      <div style="font-size:0.65rem; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:0.1em;">byfrontyard</div>
+      <div style="color:#fff; font-size:0.8rem; margin-top:0.5rem;">Bold gradient washes<br>Gold &rarr; Red &rarr; Pink<br>2 canvas elements</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Pattern 3: Animation Techniques</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div style="background:#111; border-radius:12px; padding:1.5rem; border:1px solid #333;">
+      <div style="font-size:0.75rem; color:#E07800; font-weight:600; margin-bottom:0.5rem;">Character-Split Animation</div>
+      <div style="font-size:0.8rem; color:#ccc; line-height:1.6;">
+        <strong>tattooprojects</strong> &mdash; <code>load_grid</code> items, 225px headline<br>
+        <strong>jasminegunarto</strong> &mdash; <code>t-line-mask</code> per-character split, 404px numbers<br>
+        <strong>daveholloway</strong> &mdash; Individual char divs for letter-by-letter animation
+      </div>
+    </div>
+    <div style="background:#111; border-radius:12px; padding:1.5rem; border:1px solid #333;">
+      <div style="font-size:0.75rem; color:#E07800; font-weight:600; margin-bottom:0.5rem;">Image Reveals & Overlays</div>
+      <div style="font-size:0.8rem; color:#ccc; line-height:1.6;">
+        <strong>jasminegunarto</strong> &mdash; <code>hover-reveal__img</code> appears on text hover<br>
+        <strong>daveholloway</strong> &mdash; <code>portfolio-card-image-gold-overlay</code><br>
+        <strong>digitalflagship</strong> &mdash; 36 videos + bg slideshows
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Pattern 4: Typography DNA</h3>
+  <table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
+    <thead>
+      <tr style="border-bottom:1px solid #444; text-align:left;">
+        <th style="padding:0.5rem; color:#888;">Site</th>
+        <th style="padding:0.5rem; color:#888;">Max Font Size</th>
+        <th style="padding:0.5rem; color:#888;">Font</th>
+        <th style="padding:0.5rem; color:#888;">Weight</th>
+        <th style="padding:0.5rem; color:#888;">Tracking</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #222;"><td style="padding:0.5rem; color:#fff;">digitalflagship</td><td style="padding:0.5rem; color:#E07800;">512px</td><td style="padding:0.5rem; color:#ccc;">rama-gothic-m</td><td style="padding:0.5rem; color:#ccc;">900</td><td style="padding:0.5rem; color:#ccc;">normal</td></tr>
+      <tr style="border-bottom:1px solid #222;"><td style="padding:0.5rem; color:#fff;">byfrontyard</td><td style="padding:0.5rem; color:#E07800;">664px</td><td style="padding:0.5rem; color:#ccc;">Instrument Sans</td><td style="padding:0.5rem; color:#ccc;">700</td><td style="padding:0.5rem; color:#ccc;">-2%</td></tr>
+      <tr style="border-bottom:1px solid #222;"><td style="padding:0.5rem; color:#fff;">tattooprojects</td><td style="padding:0.5rem; color:#E07800;">225px</td><td style="padding:0.5rem; color:#ccc;">SF Pro Display</td><td style="padding:0.5rem; color:#ccc;">700</td><td style="padding:0.5rem; color:#ccc;">-4.5%</td></tr>
+      <tr style="border-bottom:1px solid #222;"><td style="padding:0.5rem; color:#fff;">jasminegunarto</td><td style="padding:0.5rem; color:#E07800;">404px</td><td style="padding:0.5rem; color:#ccc;">mg (custom)</td><td style="padding:0.5rem; color:#ccc;">800</td><td style="padding:0.5rem; color:#ccc;">+1%</td></tr>
+      <tr style="border-bottom:1px solid #222;"><td style="padding:0.5rem; color:#fff;">daveholloway</td><td style="padding:0.5rem; color:#E07800;">40px+</td><td style="padding:0.5rem; color:#ccc;">Alumni Sans + Neulis</td><td style="padding:0.5rem; color:#ccc;">700</td><td style="padding:0.5rem; color:#ccc;">normal</td></tr>
+      <tr><td style="padding:0.5rem; color:#fff;">shader.se</td><td style="padding:0.5rem; color:#E07800;">canvas</td><td style="padding:0.5rem; color:#ccc;">STIX Two Text</td><td style="padding:0.5rem; color:#ccc;">n/a</td><td style="padding:0.5rem; color:#ccc;">n/a</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h3 style="color:#FFB627;">Key Takeaways for yesid.dev</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+    <div style="background:rgba(224,120,0,0.1); border:1px solid rgba(224,120,0,0.3); border-radius:12px; padding:1.5rem;">
+      <div style="font-size:0.8rem; color:#E07800; font-weight:600;">What makes them feel "full"</div>
+      <ul style="font-size:0.8rem; color:#ccc; line-height:1.8; padding-left:1rem;">
+        <li>Text fills 80%+ of viewport &mdash; no breathing room</li>
+        <li>Background is never flat &mdash; grids, gradients, scanlines, grain</li>
+        <li>Variable sizing creates rhythm (big + small = dense)</li>
+        <li>Overlays add depth layers (even subtle ones)</li>
+        <li>Tight line-height (0.8&ndash;0.9) packs text vertically</li>
+      </ul>
+    </div>
+    <div style="background:rgba(224,120,0,0.1); border:1px solid rgba(224,120,0,0.3); border-radius:12px; padding:1.5rem;">
+      <div style="font-size:0.8rem; color:#E07800; font-weight:600;">Applicable to our hero+manifesto merge</div>
+      <ul style="font-size:0.8rem; color:#ccc; line-height:1.8; padding-left:1rem;">
+        <li>Scale "DIGITAL INFRA" to fill viewport width (clamp to ~15vw+)</li>
+        <li>Add SVG grid or dot-matrix pattern behind text</li>
+        <li>Manifesto text woven into/below hero as one flow</li>
+        <li>Capability pills as interactive hover-reveal elements</li>
+        <li>Orange glow or gradient wash for brand warmth</li>
+      </ul>
+    </div>
+  </div>
+</div>

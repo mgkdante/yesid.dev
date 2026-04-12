@@ -13,7 +13,7 @@ Build the root layout that wraps every page: navigation, footer, and a scroll pr
 
 Slices 01-04 built the foundation: scaffold, data, components, and motion. This slice creates the frame that holds everything together. The Nav and Footer appear on every page. The ScrollRail is the vertical progress indicator that ties into the train journey on the home page: it shows station dots that correspond to services (data-driven, not hardcoded).
 
-Read `docs/MOTION.md` for scroll rail behavior and page transition specs.
+Read `docs/reference/MOTION.md` for scroll rail behavior and page transition specs.
 
 ## Acceptance Criteria
 
