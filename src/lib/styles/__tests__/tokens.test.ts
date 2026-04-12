@@ -15,24 +15,20 @@ const appCSS = readFileSync(
 describe('Design System Tokens', () => {
   describe('Type scale', () => {
     const requiredTokens = [
-      '--text-display', '--text-title', '--text-heading',
+      '--text-hero', '--text-display', '--text-title', '--text-heading',
       '--text-subheading', '--text-body', '--text-body-lg',
       '--text-small', '--text-caption', '--text-mono'
     ];
 
-    it.each(requiredTokens)('defines %s in tokens.css', (token) => {
-      expect(tokensCSS).toContain(token);
-    });
-
-    it.each(requiredTokens)('maps %s to @theme in app.css', (token) => {
-      const themeName = token.replace('--text-', '--font-size-');
-      expect(appCSS).toContain(themeName);
+    it.each(requiredTokens)('defines %s in @theme (app.css)', (token) => {
+      expect(appCSS).toContain(token);
     });
 
     it('uses clamp() for fluid headings', () => {
-      expect(tokensCSS).toMatch(/--text-display:\s*clamp\(/);
-      expect(tokensCSS).toMatch(/--text-title:\s*clamp\(/);
-      expect(tokensCSS).toMatch(/--text-heading:\s*clamp\(/);
+      expect(appCSS).toMatch(/--text-display:\s*clamp\(/);
+      expect(appCSS).toMatch(/--text-title:\s*clamp\(/);
+      expect(appCSS).toMatch(/--text-heading:\s*clamp\(/);
+      expect(appCSS).toMatch(/--text-hero:\s*clamp\(/);
     });
   });
 

@@ -478,7 +478,7 @@
 					<div class="hero-viewport-text">
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[64px] text-[var(--text-primary)] md:text-[clamp(72px,min(9vw,11vh),130px)]"
+								class="block text-hero text-[var(--text-primary)]"
 								data-testid="hero-line1"
 								data-hero-stagger="1"
 							>
@@ -492,7 +492,7 @@
 
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-[64px] text-[var(--brand-primary)] md:text-[clamp(72px,min(9vw,11vh),130px)]"
+								class="block text-hero text-[var(--brand-primary)]"
 								data-testid="hero-line2"
 							>
 								<span data-hero-stagger="1">DON'T BREAK</span><svg

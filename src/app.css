@@ -38,16 +38,17 @@
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 
-  /* Type scale — maps tokens to text-* utilities */
-  --font-size-display: var(--text-display);
-  --font-size-title: var(--text-title);
-  --font-size-heading: var(--text-heading);
-  --font-size-subheading: var(--text-subheading);
-  --font-size-body: var(--text-body);
-  --font-size-body-lg: var(--text-body-lg);
-  --font-size-small: var(--text-small);
-  --font-size-caption: var(--text-caption);
-  --font-size-mono: var(--text-mono);
+  /* Type scale — uses --text-* namespace (Tailwind v4 generates text-* utilities from this) */
+  --text-hero: clamp(4rem, min(9vw, 11vh), 8.125rem);       /* 64-130px — hero wordmark */
+  --text-display: clamp(2.5rem, 5vw, 4rem);                  /* 40-64px — page titles */
+  --text-title: clamp(1.75rem, 4vw, 2.5rem);                 /* 28-40px — section headings */
+  --text-heading: clamp(1.25rem, 3vw, 1.5rem);               /* 20-24px — card titles */
+  --text-subheading: 1.125rem;                                 /* 18px — subtitles */
+  --text-body: 1rem;                                           /* 16px — paragraphs */
+  --text-body-lg: 1.125rem;                                    /* 18px — lead paragraphs */
+  --text-small: 0.875rem;                                      /* 14px — metadata */
+  --text-caption: 0.75rem;                                     /* 12px — timestamps */
+  --text-mono: 0.8125rem;                                      /* 13px — terminal text */
 
   /* Border radius — UNIFIED naming */
   --radius-sm: 4px;
