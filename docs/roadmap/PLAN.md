@@ -590,16 +590,18 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ### Slice 17 — Standardization: Ports & Adapters Lite
 
-**Full plan:** [`docs/plan/standardization.md`](plan/standardization.md)
-**Status:** planned **Est. Sessions:** 13-14 (across 7 sub-slices) **Depends on:** 13
+**Full plan:** [`docs/roadmap/standardization.md`](standardization.md)
+**Status:** IN PROGRESS — Phase 1 Foundation **Est. Sessions:** 13-14 (across 7 sub-slices) **Depends on:** 13
 
-Design system + structural refactor. Brand primitives (terminal chrome, hazard stripes, card base) become shared components. Semantic type scale replaces 275 ad-hoc font-size declarations. All 192 hardcoded hex colors migrate to tokens. Light theme becomes one toggle away. Service layer creates the Keystatic seam.
+Design system + structural refactor. Brand primitives (terminal chrome, hazard stripes, card base) become shared components. Semantic type scale replaces 275 ad-hoc font-size declarations. All hardcoded hex colors migrate to tokens. Light theme becomes one toggle away. Service layer creates the Keystatic seam.
+
+**Progress:** 17a-1 (Token Foundation) ✓ → 17a-2a (Build Primitives) ✓ → 17a-2b (Wire Primitives) ✓ → **17a-3 (Color & Token Lockdown)** ← NEXT
 
 **Sub-slices:** 17a (design system + CSS) → 17b (service layer) → *15 (SEO)* → 17c (Zod schemas) → 17d (component APIs + shared shells) → 17e (motion factories) → 17f (test architecture + docs) → 17g (learning docs refactor)
 
 **Scope:** Design system (brand primitives, type scale, token lockdown, light theme prep), CSS consolidation, service layer, Zod schemas, shared UI shells, motion factories, test factories, documentation.
 
-**Current state (from audit):** 192 hardcoded hex colors (30 files), 275 font-size declarations (40 files), 96 inline style attributes, 5 duplicate terminal implementations, 5 duplicate hazard stripe implementations, zero exported prop interfaces, no service layer, no Zod schemas, no test factories.
+**What's done:** 15 brand primitives built + wired into 40+ files, 12 utility classes, semantic type scale, tokens.css foundation, CSS.md created. Deep audit identified ~220 remaining hardcoded colors, 22 unused tokens, 4 dead components.
 
 **Tailwind decision:** Keep Tailwind v4 — the problem is bypassing the system with arbitrary values, not the framework. Strict token discipline enforced via `@theme`.
 

@@ -1,9 +1,25 @@
 # Slice 17 — Standardization: Design System + Ports & Adapters
 
-**Status:** planned
+**Status:** IN PROGRESS — Phase 1 Foundation
 **Est. Sessions:** 13-14 (across 7 sub-slices)
 **Depends on:** Slice 13 (Home Page) complete
 **Key constraint:** Visual IMPROVEMENTS allowed (bigger text, better consistency), but no new features. Structural refactor + design system unification.
+
+### Progress (as of 2026-04-12)
+
+| Sub-slice | Status | PR |
+|-----------|--------|-----|
+| 17a-1 Token Foundation | COMPLETE | #2 merged |
+| 17a-2a Build Primitives | COMPLETE | #3 merged |
+| 17a-2b Wire Primitives | COMPLETE | PR pending |
+| 17a-3 Color & Token Lockdown | NEXT (expanded scope) | — |
+| 17a-4 Dead Code + Trivial Dedup | planned | — |
+| 17b Service Layer | planned | — |
+| 17c Zod Schemas | planned | — |
+| 17d Component API | planned | — |
+| 17e Motion Consolidation | planned | — |
+| 17f Test Architecture | planned | — |
+| 17g Learning Docs | planned | — |
 
 ---
 
@@ -233,8 +249,12 @@ Tests create mock data inline. Example: `HomeServices.test.ts` and `ProofReel.te
 Slice 17 executes in two phases, with SEO (Slice 15) sandwiched between them. This avoids building SEO on data patterns that get refactored, and ensures E2E tests cover the final architecture.
 
 ```
-Phase 1 — Foundation (before SEO)
-  17a: CSS audit + consolidation + CSS.md
+Phase 1 ��� Foundation (before SEO)
+  17a-1: Token Foundation .............. COMPLETE (PR #2 merged)
+  17a-2a: Build Primitives ............. COMPLETE (PR #3 merged)
+  17a-2b: Wire Primitives .............. COMPLETE (PR pending)
+  17a-3: Color & Token Lockdown ........ NEXT (~2-3 sessions)
+  17a-4: Dead Code + Trivial Dedup ..... (~1 session)
   17b: Service layer extraction
     ↓
   15: SEO + metadata (built on service layer)
@@ -266,9 +286,81 @@ Phase 2 — Standardization (after SEO)
 
 **Est. Sessions:** 4-5
 **Depends on:** 13
+**Status:** 17a-1 + 17a-2a + 17a-2b COMPLETE. 17a-3 NEXT.
 **Why first:** The design system is the foundation everything else builds on. Brand primitives, type scale, color tokens, and component patterns must be locked before extracting shared shells (17d) or standardizing component APIs.
 
 This is the biggest sub-slice and the most impactful. Every other sub-slice depends on the discipline established here.
+
+#### Completed (17a-1 + 17a-2a + 17a-2b)
+- Semantic type scale: 9 tokens defined, enforced across site
+- 15 brand primitives built in `src/lib/components/brand/` with barrel export
+- 12 brand utility classes in app.css (.bento-card, .prose-dark, .label-section, etc.)
+- cursorGlow action replaces 11 manual glow overlays
+- All primitives wired into 40+ consumer files (net -258 lines)
+- tokens.css: brand-primary-rgb, brand-accent-rgb, text-micro, shadows, z-index, transitions, opacity, radius, containers
+- CSS.md created with full design system reference
+- Global keyframes: blink, pulse-glow consolidated
+
+#### Remaining — 17a-3: Color & Token Lockdown (expanded scope)
+
+**Hardcoded colors (~220 values → semantic tokens):**
+- `#E07800` raw hex: ~65 lines / 30 files → `var(--brand-primary)` or `text-brand-primary`
+- `rgba(224,120,0,...)`: ~60 lines / 15 files → `rgb(var(--brand-primary-rgb) / X)` or `color-mix()`
+- `#FFB627` raw hex: ~25 lines / 15 files → `var(--brand-accent)`
+- `#1a1a1a`/`#2a2a2a`/`#141414`: ~40 lines / 12 files → `var(--bg-card/border-subtle/bg-primary)`
+- `#999`/`#888`/`#666`/`#ccc`/`#555`: ~20 lines → `var(--text-secondary/muted/dim/code)`
+- `#ff5f57`/`#28c840`: ~9 lines → `var(--status-error/success)`
+- Worst offenders: Manifesto (20+), ServiceCard (7), MenuOverlay (7), HomeServices (7)
+
+**Unused tokens (22 defined, 0 referenced → wire into consumers):**
+- Z-index (all 7): `--z-base/content/rail/footer/sheet/menu/nav`
+- Shadows (5 of 7): `--shadow-glow-md/lg`, `--shadow-card/section/nav/status`
+- Transitions: `--duration-slow/slower`, `--ease-bounce/decel`
+- Opacity (all 4): `--opacity-muted/dim/subtle/faint`
+- Containers: `--container-wide/prose`
+- Radius: `--radius-xl`
+- Hover colors: `--brand-primary-hover/accent-hover`
+
+**Existing utilities not adopted → wire:**
+- `.divider-dashed`: 8 filter dividers use raw `border-dashed border-[#333]`
+- `.brand-fade-line`: Footer + WorkDetailSidebar rebuild gradient inline
+- `.bento-card`: AboutBento uses raw classes (dead code, but pattern applies elsewhere)
+
+**Inconsistencies to normalize:**
+- `999px` vs `9999px` pill border-radius across 5 files → `var(--radius-pill)`
+- `accentColor = '#E07800'` prop default in 8 blog components → `var(--brand-primary)`
+- Card hover glow: 4 different formulations → unify via `.brand-glow-hover`
+- Hardcoded transition durations (~50 occurrences) → `var(--duration-*)`
+- Hardcoded easing functions → `var(--ease-*)`
+- Hardcoded font stacks in ~8 files → `var(--font-mono)` / `var(--font-heading)`
+
+**New tokens to consider:**
+- `--text-light: #ccc` (6+ uses for lighter body text)
+- `--brand-primary-border: color-mix(in srgb, var(--brand-primary) 12%, transparent)`
+- `--duration-snappy: 250ms` (5 occurrences between normal and slow)
+- `--radius-circle: 50%` (12 occurrences)
+
+**Light theme prep:**
+- Complete `[data-theme="light"]` block with ALL semantic tokens
+- Not shipped, but one toggle away after color lockdown
+
+#### Remaining — 17a-4: Dead Code + Trivial Deduplication
+
+**Dead components (0 imports, delete):**
+- `AboutBento.svelte` (90 lines) — superseded by AboutPage composition
+- `BlogCard.svelte` (48 lines) — superseded by BlogRow
+- `ProjectCard.svelte` (52 lines) — superseded by WorkCard
+- `SectionHeader.svelte` (15 lines) — never used
+
+**Trivial code deduplication:**
+- `isTouchDevice()` duplicated 3x in `tilt.ts`, `magnetic.ts`, `cursorGlow.ts` → extract to `motion/utils/device.ts`
+- Station pulse CSS duplicated in `BlogRow` + `WorkListingPage` (identical `@keyframes station-ping` + `.station-badge-wrapper`) → use `NumberBadge sonar` prop
+- Section heading pattern duplicated in `HomeServices` + `ProofReel` + `HomeCloser` (identical 15-line CSS blocks) → extract `.display-heading` utility
+
+**Additional missed primitive wiring (quick wins):**
+- `AboutIdentity` availability dot → `StatusDot color="green"`
+- `ContactPage` reset button → `BrandButton variant="ghost"`
+- `BlogRow` + `WorkListingPage` station pulse → `NumberBadge sonar`
 
 #### Scope
 
@@ -525,12 +617,55 @@ TypeScript interfaces catch build-time errors. Zod catches runtime errors from e
 
 **Note:** `CardBase` is extracted in 17a as a brand primitive. This slice wires all card variants (WorkCard, BlogRow, ProjectCard, etc.) to use it. `TerminalChrome` from 17a is also wired into HeroSqlPanel, ContactPage, AboutCta, etc.
 
+**From 17a-2b deep audit (additional scope for 17d):**
+
+Wire 3 unwired primitives into consumers:
+- `SectionLabel` (0 consumer imports) — wrap `.label-section` utility, wire into HomeServices, ProofReel, ServiceCard
+- `GlowOverlay` (0 consumer imports) — evaluate if cursorGlow action makes this obsolete; if so, delete
+- `CardBase` (0 consumer imports) — wire into HomeServices cards, ProofReel cards, HeroMetrics cards, BlogCard (if not dead)
+
+Missed primitive wiring (10 actionable spots — 3 quick wins done in 17a-4):
+
+| # | Component | Should Use | What It Does Instead |
+|---|-----------|-----------|---------------------|
+| 1 | `HeroSqlPanel` | `TerminalChrome` | Builds own terminal frame from scratch |
+| 2 | `HomeServices` cards | `CardBase` + `MetricDisplay` + `SectionLabel` | Raw CSS + inline metrics |
+| 3 | `ProofReel` cards | `CardBase` + `MetricDisplay` + `SectionLabel` | Raw CSS + inline metrics |
+| 4 | `HeroMetrics` cards | `CardBase` | Raw Tailwind card wrapper |
+| 5 | `WorkDetailSidebar` | `StickyPanel` | Hand-built `lg:sticky lg:top-20` |
+| 6 | `HomeCloser` CTA | `BrandButton variant="ghost"` | Custom `.closer-cta` with 15+ CSS properties |
+| 7 | `HeroBanner` refresh button | `BrandButton` | Custom `.refresh-btn` |
+| 8 | `ServiceCard` station counter | `SectionLabel` | Hardcoded `#E07800` mono label |
+| 9 | `InfraFrame` | Compose from `TerminalChrome` + `CornerMarks` | 90% overlap rebuilt from scratch |
+| 10 | `ServiceCard` + `ServiceDetailPage` SVG morph box | Shared `SvgMorphBox` component | ~40 identical CSS lines each |
+
+Code deduplication:
+- Merge `BlogSvgIcon` (241 lines) + `WorkSvgIcon` (168 lines) → single `SvgIcon.svelte` (same SHAPES, same morph logic, same entranceDone guard)
+- Section heading pattern in `HomeServices` + `ProofReel` + `HomeCloser` → shared `.display-heading` utility or `DisplayHeading` component (if not done in 17a-4)
+- SVG morph box CSS in `ServiceCard` + `ServiceDetailPage` → shared `SvgMorphBox` component
+
+Structural deduplication:
+- `WorkFilterMobile` (158 lines) / `BlogFilterMobile` (158 lines) → generic `FilterPanel` with slots
+- `WorkFilterSidebar` (88 lines) / `BlogFilterSidebar` (130 lines) → unify sticky aside pattern
+
+Large file decomposition:
+
+| File | Lines | Decomposition Plan |
+|------|-------|-------------------|
+| `Manifesto.svelte` | 1006 | Extract HUD edge elements (left/right/bottom transit elements) into sub-components owning their own CSS |
+| `tech-stack/+page.svelte` | 909 | Extract to `TechStackPage.svelte` (state + layout) + `TechStackHero.svelte` (terminal animation + stats) |
+| `HomeCloser.svelte` | 760 | Extract SVG fetch+parse+DrawSVG animate into `motion/` helper; departure board stays |
+| `HeroBanner.svelte` | 734 | Extract 9-phase GSAP timeline builder into `buildHeroTimeline()` in `motion/` |
+
 #### Acceptance Criteria
 
 - [ ] Every component exports its props interface
 - [ ] No inline prop types anywhere
 - [ ] Shared `ListingShell` used by blog, work, and services listing pages
 - [ ] Shared `CardBase` used by all card variants
+- [ ] All 10 missed primitive wirings resolved
+- [ ] BlogSvgIcon + WorkSvgIcon merged into single SvgIcon
+- [ ] No file exceeds 800 lines
 - [ ] All content access through `resolveLocale()`
 - [ ] `bun run test` passes
 

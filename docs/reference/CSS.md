@@ -1,7 +1,7 @@
 # CSS Architecture — Design System Reference
 
 **Last updated:** 2026-04-12
-**Status:** Active — Slice 17a-2a Brand Primitives
+**Status:** Active — Slice 17a-2b Wire Primitives
 
 > Single source of truth for the yesid.dev design system tokens, layers, and rules.
 

@@ -22,6 +22,7 @@
     size = 'md',
     href,
     children,
+    class: className = '',
     ...rest
   }: BrandButtonProps & Record<string, unknown> = $props();
 
@@ -35,14 +36,14 @@
 {#if href}
   <a
     {href}
-    class="btn {sizeClass[size]}"
+    class="btn {sizeClass[size]} {className}"
     class:btn-primary={variant === 'primary'}
     class:btn-ghost={variant === 'ghost'}
     {...rest}
   >{@render children()}</a>
 {:else}
   <button
-    class="btn {sizeClass[size]}"
+    class="btn {sizeClass[size]} {className}"
     class:btn-primary={variant === 'primary'}
     class:btn-ghost={variant === 'ghost'}
     {...rest}

@@ -22,7 +22,7 @@
 </script>
 
 <div
-	class="group bento-card relative h-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)]"
+	class="group bento-card h-full"
 	data-testid="about-interests"
 	use:reveal
 	use:cursorGlow

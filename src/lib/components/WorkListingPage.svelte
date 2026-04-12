@@ -17,6 +17,7 @@
 	import { registerGsapPlugins, gsap, Flip, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import WorkCard from './WorkCard.svelte';
 	import WorkFilterSidebar from './WorkFilterSidebar.svelte';
+	import { NumberBadge } from '$lib/components/brand';
 	import WorkFilterMobile from './WorkFilterMobile.svelte';
 
 
@@ -271,12 +272,7 @@
 										class="station-pulse"
 										style="animation-delay: {i * 0.4}s;"
 									></div>
-									<div
-										class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-caption font-bold"
-										style="background: #E07800; color: #000;"
-									>
-										{String(i + 1).padStart(2, '0')}
-									</div>
+									<NumberBadge value={i + 1} />
 								</div>
 								<!-- WHY: SVG line connecting stations — direct color avoids url(#id)
 								     paint-server resolution failures in SvelteKit SPA routing -->

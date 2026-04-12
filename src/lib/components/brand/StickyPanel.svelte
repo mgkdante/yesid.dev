@@ -15,12 +15,14 @@
   let {
     top = '6rem',
     children,
-  }: StickyPanelProps = $props();
+    class: className = '',
+    ...rest
+  }: StickyPanelProps & Record<string, unknown> = $props();
 </script>
 
-<aside class="panel scrollbar-hidden" style="top: {top};">
+<div class="panel scrollbar-hidden {className}" style="top: {top};" {...rest}>
   {@render children()}
-</aside>
+</div>
 
 <style>
   .panel {

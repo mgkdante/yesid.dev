@@ -22,6 +22,8 @@
     status?: string;
     /** Optional footer metric items */
     footer?: TerminalFooterItem[];
+    /** Remove body padding (when children manage their own) */
+    noPadding?: boolean;
     /** Terminal body content */
     children: Snippet;
   }
@@ -31,11 +33,14 @@
     tag,
     status,
     footer,
+    noPadding = false,
     children,
-  }: TerminalChromeProps = $props();
+    class: className = '',
+    ...rest
+  }: TerminalChromeProps & Record<string, unknown> = $props();
 </script>
 
-<div class="terminal">
+<div class="terminal {className}" {...rest}>
   <!-- Title bar -->
   <div class="terminal-titlebar">
     <div class="flex items-center gap-2">
@@ -54,7 +59,7 @@
   <HazardStripe size="sm" />
 
   <!-- Body -->
-  <div class="terminal-body">
+  <div class="terminal-body" class:no-pad={noPadding}>
     {@render children()}
   </div>
 
@@ -73,6 +78,8 @@
 
 <style>
   .terminal {
+    display: flex;
+    flex-direction: column;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background: var(--bg-terminal);
@@ -88,7 +95,11 @@
   }
 
   .terminal-body {
+    flex: 1;
     padding: 0.75rem 1rem;
+  }
+  .terminal-body.no-pad {
+    padding: 0;
   }
 
   .terminal-footer {

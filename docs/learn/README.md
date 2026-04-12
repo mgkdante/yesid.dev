@@ -113,6 +113,7 @@ Concepts that come up in technical interviews:
 | [[dark-theme-architecture|Dark Theme Architecture]] | 2-intermediate | How the dark/light theme system works end to end |
 | [[mobile-first-responsive|Mobile-First Responsive]] | 2-intermediate | Writing CSS for small screens first, enhancing up |
 | [[css-scroll-snap|CSS Scroll Snap]] | 2-intermediate | Snapping scroll positions for section-by-section reveals |
+| [[brand-primitives|Brand Primitives]] | 2-intermediate | Reusable brand components that encode design patterns |
 
 ### Data Layer
 | Doc | Difficulty | Summary |

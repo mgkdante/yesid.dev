@@ -13,6 +13,7 @@
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 	import CollapsibleSection from './CollapsibleSection.svelte';
 	import GradientSeparator from './GradientSeparator.svelte';
+	import { StickyPanel } from '$lib/components/brand';
 
 	let {
 		project,
@@ -120,9 +121,9 @@
 					<div class="relative">
 						<!-- Desktop ToC: in left page margin, starts at README height -->
 						<aside class="absolute inset-y-0 right-full mr-3 hidden 2xl:block">
-							<div class="sticky top-20 w-[180px] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#141414] p-4">
+							<StickyPanel top="5rem" class="w-[180px]">
 								<TableOfContents bind:this={tocRef} html={readmeHtml} embedded syncOpen={readmeOpen} />
-							</div>
+							</StickyPanel>
 						</aside>
 
 						<!-- README card -->
@@ -134,10 +135,10 @@
 									</svg>
 								{/snippet}
 								<!-- Mobile ToC — inside readme card, starts collapsed -->
-								<div class="border-b border-[#2a2a2a] py-4 2xl:hidden">
+								<div class="border-b border-[var(--border-subtle)] py-4 2xl:hidden">
 									<TableOfContents html={readmeHtml} embedded startOpen={false} />
 								</div>
-								<div class="readme-content">
+								<div class="prose-dark">
 									{@html processedReadmeHtml}
 								</div>
 							</CollapsibleSection>
@@ -154,86 +155,3 @@
 	</div>
 </article>
 
-<style>
-	.readme-content {
-		max-width: 65ch;
-		font-size: 0.9375rem;
-		line-height: 1.8;
-		color: #ccc;
-	}
-	.readme-content :global(h1),
-	.readme-content :global(h2),
-	.readme-content :global(h3),
-	.readme-content :global(h4) {
-		font-family: 'Inter', sans-serif;
-		color: #f5f5f0;
-		margin-top: 2rem;
-		margin-bottom: 0.75rem;
-		line-height: 1.3;
-	}
-	.readme-content :global(h1) { font-size: 1.5rem; font-weight: 700; }
-	.readme-content :global(h2) { font-size: 1.25rem; font-weight: 700; }
-	.readme-content :global(h3) { font-size: 1.1rem; font-weight: 600; }
-	.readme-content :global(h4) { font-size: 1rem; font-weight: 600; }
-	.readme-content :global(p) { margin-bottom: 1rem; }
-	.readme-content :global(strong) { color: #f5f5f0; font-weight: 600; }
-	.readme-content :global(a) { color: #E07800; text-decoration: none; }
-	.readme-content :global(a:hover) { text-decoration: underline; }
-	.readme-content :global(pre) {
-		background: #141414;
-		border: 1px solid #2a2a2a;
-		border-radius: 0.375rem;
-		padding: 0.875rem 1rem;
-		overflow-x: auto;
-		margin: 1rem 0;
-		font-size: 0.8125rem;
-		line-height: 1.6;
-	}
-	.readme-content :global(pre code) {
-		font-family: 'JetBrains Mono', monospace;
-		color: #E07800;
-		background: none;
-		padding: 0;
-		border: none;
-		font-size: inherit;
-	}
-	.readme-content :global(code) {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.85em;
-		color: #E07800;
-		background: #1a1a1a;
-		padding: 0.125rem 0.375rem;
-		border-radius: 0.25rem;
-		border: 1px solid #2a2a2a;
-	}
-	.readme-content :global(blockquote) {
-		border-left: 3px solid #E07800;
-		background: #141414;
-		border-radius: 0 0.375rem 0.375rem 0;
-		padding: 0.75rem 1rem;
-		margin: 1rem 0;
-	}
-	.readme-content :global(blockquote p) {
-		margin-bottom: 0;
-		font-style: italic;
-		color: #ccc;
-	}
-	.readme-content :global(ul),
-	.readme-content :global(ol) {
-		padding-left: 1.5rem;
-		margin-bottom: 1rem;
-	}
-	.readme-content :global(li) { margin-bottom: 0.375rem; }
-	.readme-content :global(ul) { list-style: disc; }
-	.readme-content :global(ol) { list-style: decimal; }
-	.readme-content :global(hr) {
-		border: none;
-		border-top: 1px solid #2a2a2a;
-		margin: 2rem 0;
-	}
-	.readme-content :global(img) {
-		max-width: 100%;
-		border-radius: 0.375rem;
-		margin: 1rem 0;
-	}
-</style>

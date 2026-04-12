@@ -25,10 +25,13 @@
 	import MetroNetwork from '$lib/motion/svg/MetroNetwork.svelte';
 	import HeroMetrics from './HeroMetrics.svelte';
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
+	import { BrandButton } from '$lib/components/brand';
 
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;
 	let scrollPrompt: HTMLParagraphElement;
+	let scrollText: HTMLSpanElement;
+	let scrollCursorEl: HTMLSpanElement;
 	let networkComponent: ReturnType<typeof MetroNetwork>;
 	let reducedMotion = false;
 
@@ -73,13 +76,14 @@
 		if (blinkInterval) return;
 		if (scrollPrompt) {
 			scrollPrompt.style.opacity = '1';
-			scrollPrompt.textContent = scrollDownLabel + '_';
+			scrollText.textContent = scrollDownLabel;
+			scrollCursorEl.style.opacity = '1';
 		}
 		let cursorVisible = true;
 		blinkInterval = setInterval(() => {
 			cursorVisible = !cursorVisible;
-			if (scrollPrompt) {
-				scrollPrompt.textContent = scrollDownLabel + (cursorVisible ? '_' : '\u00A0');
+			if (scrollCursorEl) {
+				scrollCursorEl.style.opacity = cursorVisible ? '1' : '0';
 			}
 		}, 500);
 	}
@@ -365,12 +369,13 @@
 		// Uses component-scope blink functions. SKIP if scrolled past hero.
 		if (shouldLock) {
 			const fullText = scrollDownLabel;
-			scrollPrompt.textContent = '_';
+			scrollText.textContent = '';
+			scrollCursorEl.style.opacity = '1';
 			let charIndex = 0;
 			const typeInterval = setInterval(() => {
 				charIndex++;
 				if (charIndex <= fullText.length) {
-					scrollPrompt.textContent = fullText.substring(0, charIndex) + '_';
+					scrollText.textContent = fullText.substring(0, charIndex);
 				} else {
 					clearInterval(typeInterval);
 					typingComplete = true;
@@ -378,9 +383,10 @@
 					unlockScroll();
 				}
 			}, 80);
-		} else if (scrollPrompt) {
-			scrollPrompt.textContent = scrollDownLabel + '_';
+		} else if (scrollText) {
+			scrollText.textContent = scrollDownLabel;
 			typingComplete = true;
+			startBlink();
 		}
 
 		// Ensure fonts are loaded before glyph measurements — fallback font
@@ -522,20 +528,12 @@
 						</p>
 
 						<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
-							<a
-								href="/work"
-								class="inline-flex items-center rounded-lg bg-[var(--brand-primary)] px-7 py-3.5 text-base font-bold text-[#141414] transition-colors hover:bg-[var(--brand-primary-hover)] md:px-9 md:py-4 md:text-lg"
-								data-testid="hero-cta-work"
-							>
+							<BrandButton variant="primary" size="lg" href="/work" data-testid="hero-cta-work">
 								{ctaWorkLabel}
-							</a>
-							<a
-								href="/contact"
-								class="inline-flex items-center rounded-lg border border-[var(--border)] px-7 py-3.5 text-base font-semibold text-[var(--text-primary)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] md:px-9 md:py-4 md:text-lg"
-								data-testid="hero-cta-contact"
-							>
+							</BrandButton>
+							<BrandButton variant="ghost" size="lg" href="/contact" data-testid="hero-cta-contact">
 								{ctaContactLabel}
-							</a>
+							</BrandButton>
 						</div>
 					</div>
 
@@ -582,8 +580,9 @@
 		     Mobile: wraps to 2 lines at the colon. Desktop: single line. -->
 		<p
 			bind:this={scrollPrompt}
-			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-[#E07800] md:whitespace-nowrap md:leading-none"
+			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-brand-primary md:whitespace-nowrap md:leading-none"
 		>
+			<span bind:this={scrollText}></span><span bind:this={scrollCursorEl} class="scroll-block-cursor" aria-hidden="true">&#x2588;</span>
 		</p>
 	</div>
 
@@ -695,15 +694,19 @@
 	   Mobile: offset bottom by browser chrome height (lvh - dvh) so text
 	   stays visible when the address bar is showing. */
 	.scroll-prompt {
-		font-size: 13.6vw;
+		font-size: 11.5vw;
 		letter-spacing: -0.3vw;
 		bottom: calc(100lvh - 100dvh);
+	}
+	.scroll-block-cursor {
+		margin-left: 0.15em;
+		opacity: 0;
 	}
 
 	@media (min-width: 768px) {
 		.scroll-prompt {
-			font-size: 8.1vw;
-			letter-spacing: -0.6vw;
+			font-size: 6.8vw;
+			letter-spacing: -0.5vw;
 			bottom: 0;
 		}
 	}
