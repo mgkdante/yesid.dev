@@ -5,6 +5,10 @@
   --brand-primary-hover: #C96A00;
   --brand-accent-hover: #E5A220;
 
+  /* RGB channels — for rgba() usage with variable opacity */
+  --brand-primary-rgb: 224 120 0;
+  --brand-accent-rgb: 255 182 39;
+
   /* Typography */
   --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
@@ -13,6 +17,9 @@
   /* Type scale lives in @theme (app.css) — generates both utilities and CSS custom properties.
      Values don't theme-switch, so @theme is the single source of truth.
      See docs/reference/CSS.md for the full scale reference. */
+
+  /* Micro size — chrome annotations, stop labels */
+  --text-micro: 0.625rem;  /* 10px */
 
   /* Shadow scale — uses color-mix() to stay connected to brand tokens */
   --shadow-glow-sm: 0 0 6px color-mix(in srgb, var(--brand-primary) 30%, transparent);

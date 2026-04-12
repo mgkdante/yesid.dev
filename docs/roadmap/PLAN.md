@@ -210,7 +210,8 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 16  | E2E test suite + performance + brand QA                | planned — tests final standardized + SEO state                                                         | 15, 17         | 3             |
 | 18  | Cloud content layer (edit + publish without code)      | planned — plugs into 17b service layer seam                                                            | 16, 17         | 4             |
 | 19  | Mobile UI/UX optimization                              | planned                                                                                                | 17, B+         | 2             |
-| 20  | Scroll smoothness + animation polish                   | planned                                                                                                | B+, 19         | 1             |
+| 19b | Accessibility (A11Y) optimization                      | planned                                                                                                | 19             | 2             |
+| 20  | Scroll smoothness + animation polish                   | planned                                                                                                | B+, 19b        | 1             |
 | 21  | Repo cleanup for public release                        | planned                                                                                                | 16, 18         | 1             |
 | 22  | Deploy to Vercel + DNS cutover                         | planned                                                                                                | 21             | 1             |
 
@@ -231,8 +232,10 @@ Slice 17 executes in two phases, with SEO sandwiched between them. This avoids b
   → 17g (learning docs refactor)
     → 16 (E2E + QA — tests the FINAL state including SEO)
       → 18 (Keystatic — plugs into 17b service seam, SEO metadata as first test collection)
-        → 19, 20 (mobile + scroll polish)
-          → 21 (repo cleanup)
+        → 19 (mobile optimization)
+          → 19b (accessibility / A11Y)
+            → 20 (scroll polish)
+              → 21 (repo cleanup)
             → 22 (deploy)
 ```
 
@@ -652,6 +655,15 @@ Design system + structural refactor. Brand primitives (terminal chrome, hazard s
 Full mobile audit: touch targets, scroll behavior, animation performance on low-end devices, viewport issues, text readability, tap feedback. SkillsJourney scroll tuning (velocity detection, adaptive multipliers). Responsive breakpoint audit for all components. Test at 375px, 390px, 414px, 768px.
 
 **Scope:** Touch interaction polish, scroll performance, responsive fixes, mobile-specific animation tuning, viewport debugging.
+
+### Slice 19b — Accessibility (A11Y) Optimization
+
+**Status:** planned
+Full accessibility audit and remediation: WCAG 2.1 AA compliance, semantic HTML structure, ARIA landmarks and labels, keyboard navigation across all interactive components, focus management (visible focus rings, logical tab order, focus trapping in modals/overlays), screen reader testing, color contrast verification (4.5:1 text, 3:1 UI), skip-to-content link, reduced-motion enforcement audit, alt text for all images and SVGs, form accessibility (labels, error announcements, live regions). Lighthouse accessibility score target: 95+.
+
+**Scope:** Semantic HTML audit, ARIA implementation, keyboard navigation, focus management, screen reader compatibility, color contrast fixes, prefers-reduced-motion audit, form accessibility, skip links, Lighthouse a11y scoring.
+
+**Why after Slice 19:** Mobile optimization (Slice 19) changes touch targets, layout, and interaction patterns. Running the a11y audit after mobile ensures we test the final responsive state, not an intermediate one. Keyboard and screen reader testing also benefits from stable component APIs post-mobile polish.
 
 ### Slice 20 — Scroll Smoothness + Animation Polish
 

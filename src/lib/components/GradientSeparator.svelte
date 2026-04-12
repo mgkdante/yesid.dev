@@ -6,14 +6,16 @@
   On listing pages / home: between each major section.
 -->
 <script lang="ts">
+	export interface GradientSeparatorProps {
+		label?: string;
+		/** CSS max-width value. Defaults to content container token. */
+		maxWidth?: string;
+	}
+
 	let {
 		label = '',
-		maxWidth = '64rem'
-	}: {
-		label?: string;
-		/** CSS max-width value, e.g. '64rem' (5xl), '72rem' (6xl). */
-		maxWidth?: string;
-	} = $props();
+		maxWidth = 'var(--container-content)'
+	}: GradientSeparatorProps = $props();
 </script>
 
 <div
@@ -26,7 +28,7 @@
 	<div class="gradient-separator-line" data-testid="gradient-separator"></div>
 	{#if label}
 		<div
-			class="mt-2 font-mono text-xs tracking-[3px] text-[#E07800] md:text-sm"
+			class="mt-2 font-mono text-xs tracking-[3px] text-brand-primary md:text-sm"
 			data-testid="separator-label"
 		>
 			{label}
@@ -38,7 +40,7 @@
 	.gradient-separator-line {
 		height: 2px;
 		border-radius: 999px;
-		background: linear-gradient(90deg, #E07800, #FFB627, #E07800, #FFB627);
+		background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent), var(--brand-primary), var(--brand-accent));
 		background-size: 200% 100%;
 		animation: gradient-flow 3s linear infinite;
 	}
@@ -51,7 +53,7 @@
 	@media (prefers-reduced-motion: reduce) {
 		.gradient-separator-line {
 			animation: none;
-			background: linear-gradient(90deg, #E07800, #FFB627);
+			background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
 			background-size: 100% 100%;
 		}
 	}
