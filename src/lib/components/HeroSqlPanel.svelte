@@ -23,10 +23,10 @@
 >
   <!-- Header: prompt + live dot -->
   <div class="mb-4 flex items-center justify-between">
-    <span class="text-[11px] tracking-[1px] text-[var(--text-muted)] md:text-[13px]" data-testid="sql-prompt">
+    <span class="text-caption tracking-[1px] text-[var(--text-muted)] md:text-mono" data-testid="sql-prompt">
       {prompt}
     </span>
-    <span class="flex items-center gap-1.5 text-[10px] text-[var(--text-dim)]" data-testid="sql-live">
+    <span class="flex items-center gap-1.5 text-caption text-[var(--text-dim)]" data-testid="sql-live">
       <span class="live-dot"></span>
       {liveLabel}
     </span>
@@ -61,7 +61,7 @@
         <span class="text-[var(--text-secondary)]">{row.vehicles}</span>
       {/each}
     </div>
-    <div class="mt-2.5 text-[10px] text-[var(--text-dim)] md:text-[12px]" data-testid="sql-meta">
+    <div class="mt-2.5 text-caption text-[var(--text-dim)]" data-testid="sql-meta">
       5 rows &middot; {queryTime}s &middot; updated {updatedAgo}
     </div>
   </div>

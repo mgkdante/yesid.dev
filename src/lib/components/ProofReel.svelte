@@ -129,7 +129,7 @@
 								{#if metric.before}
 									<span
 										data-testid="proof-metric-before"
-										class="mr-1.5 text-[22px] font-normal line-through md:text-[28px]"
+										class="mr-1.5 text-heading font-normal line-through md:text-title"
 										style="color: #666;"
 									>{metric.before}</span>
 								{/if}
@@ -141,14 +141,14 @@
 							</div>
 							<div
 								data-testid="proof-metric-label"
-								class="mb-5 text-sm md:mb-6 md:text-[14px]"
+								class="mb-5 text-small md:mb-6"
 								style="color: #999;"
 							>{metric.label}</div>
 						{/if}
 
 						<div
 							data-testid="proof-card-title"
-							class="mb-4 font-heading text-[17px] font-bold leading-snug md:mb-5 md:text-xl"
+							class="mb-4 font-heading text-body-lg font-bold leading-snug md:mb-5 md:text-heading"
 							style="color: #F5F5F0;"
 						>{title}</div>
 
@@ -156,7 +156,7 @@
 							{#each project.stack as tech}
 								<span
 									data-testid="proof-tag"
-									class="rounded-full px-2.5 py-1 font-mono text-[10px] tracking-wide md:text-[11px]"
+									class="rounded-full px-2.5 py-1 font-mono text-caption tracking-wide"
 									style="color: rgba(224,120,0,0.7); border: 1px solid rgba(224,120,0,0.2); background: rgba(224,120,0,0.05);"
 								>{tech}</span>
 							{/each}
@@ -172,7 +172,7 @@
 		<a
 			data-testid="proof-view-all"
 			href={proofReelContent.viewAllHref}
-			class="font-mono text-xs tracking-wider md:text-[13px]"
+			class="font-mono text-caption tracking-wider md:text-mono"
 			style="color: #E07800; border-bottom: 1px solid rgba(224,120,0,0.3);"
 		>{viewAllLabel}</a>
 	</div>

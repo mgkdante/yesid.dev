@@ -506,7 +506,7 @@
 						</h1>
 
 						<div
-							class="mt-3 text-[26px] font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(26px,min(3.5vw,4vh),44px)]"
+							class="mt-3 text-title font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(26px,min(3.5vw,4vh),44px)]"
 							data-testid="hero-subheadline"
 							data-hero-stagger="2"
 						>
@@ -514,7 +514,7 @@
 						</div>
 
 						<p
-							class="mt-5 text-[17px] leading-[1.7] text-[var(--text-secondary)] md:text-[20px]"
+							class="mt-5 text-body-lg leading-[1.7] text-[var(--text-secondary)] md:text-heading"
 							data-testid="hero-subtitle"
 							data-hero-stagger="6"
 						>
@@ -568,7 +568,7 @@
 								<span bind:this={refreshIcon} class="text-xl">&#x21bb;</span>
 								{refreshLabel}
 							</button>
-							<div class="mt-2 font-mono text-[10px] text-[var(--text-dim)]">
+							<div class="mt-2 font-mono text-caption text-[var(--text-dim)]">
 								{refreshHelper}
 							</div>
 						</div>
@@ -611,7 +611,7 @@
 					<span class="text-xl">&#x21bb;</span>
 					{refreshLabel}
 				</button>
-				<div class="mt-2 font-mono text-[10px] text-[var(--text-dim)]">
+				<div class="mt-2 font-mono text-caption text-[var(--text-dim)]">
 					{refreshHelper}
 				</div>
 			</div>
