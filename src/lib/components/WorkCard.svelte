@@ -119,7 +119,7 @@
 			<!-- Service badges row — SVGs with MorphSVG on card hover -->
 			{#if projectServices.length > 0}
 				<div class="mt-3">
-					<div class="mb-1.5 font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)] md:text-[10px]">
+					<div class="mb-1.5 font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
 						{resolveLocale(servicesLabel, 'en')}
 					</div>
 					<div class="flex flex-wrap gap-1.5">
@@ -137,7 +137,7 @@
 									/>
 								</div>
 							{/if}
-							<span class="font-mono text-[10px] leading-tight text-[var(--text-primary)] md:text-xs">
+							<span class="font-mono text-caption leading-tight text-[var(--text-primary)]">
 								{resolveLocale(service.title, 'en')}
 							</span>
 						</div>
@@ -149,12 +149,12 @@
 			<!-- Tech stack SVG diagram with DrawSVG animation -->
 			{#if displayStack.length > 0}
 				<div class="mt-3">
-					<div class="mb-1.5 font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)] md:text-[10px]">
+					<div class="mb-1.5 font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
 						{resolveLocale(stackLabel, 'en')}
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />
 					{#if project.stack.length > 5}
-						<span class="mt-0.5 block font-mono text-[8px] text-[var(--text-muted)]">+{project.stack.length - 5} more</span>
+						<span class="mt-0.5 block font-mono text-caption text-[var(--text-muted)]">+{project.stack.length - 5} more</span>
 					{/if}
 				</div>
 			{/if}
@@ -163,7 +163,7 @@
 			<div class="flex flex-wrap gap-1 pt-3">
 				{#each displayTags as tag}
 					<span
-						class="rounded border border-[#E07800]/30 px-1.5 py-0.5 font-mono text-[10px] text-[#E07800]"
+						class="rounded border border-[#E07800]/30 px-1.5 py-0.5 font-mono text-caption text-[#E07800]"
 						use:magnetic={{ strength: 2, radius: 30 }}
 					>
 						{tag}
