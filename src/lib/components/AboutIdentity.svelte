@@ -58,15 +58,15 @@
 
 			<!-- Text block -->
 			<div class="text-center md:pt-1 md:text-left">
-				<h2 class="font-heading text-[28px] font-bold leading-tight tracking-tight text-[var(--text-primary)]">
+				<h2 class="font-heading text-title font-bold leading-tight tracking-tight text-[var(--text-primary)]">
 					{name}
 				</h2>
-				<div class="mt-1.5 font-mono text-[11px] tracking-[3px] uppercase text-[var(--brand-primary)]">
+				<div class="mt-1.5 font-mono text-caption tracking-[3px] uppercase text-[var(--brand-primary)]">
 					{title}
 				</div>
 				<!-- Gradient separator -->
 				<div class="mx-auto mt-4 h-px w-10 md:mx-0" style="background: linear-gradient(90deg, var(--brand-primary), transparent);"></div>
-				<p class="mt-4 max-w-md text-[14px] leading-relaxed text-[var(--text-secondary)]">
+				<p class="mt-4 max-w-md text-small leading-relaxed text-[var(--text-secondary)]">
 					{valueProp}
 				</p>
 			</div>

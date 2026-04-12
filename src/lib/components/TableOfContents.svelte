@@ -195,7 +195,7 @@
 							<span class="inline-block w-[18px] shrink-0"></span>
 						{/if}
 						<button
-							class="toc-link flex-1 text-left font-mono text-[11px] leading-relaxed transition-all"
+							class="toc-link flex-1 text-left font-mono text-caption leading-relaxed transition-all"
 							class:active={activeId === entry.id}
 							onclick={() => scrollTo(entry.id)}
 						>
@@ -225,7 +225,7 @@
 				>
 					<path d="M6 3l6 5-6 5V3z" />
 				</svg>
-				<span class="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#666]">
+				<span class="font-mono text-caption font-semibold uppercase tracking-wider text-[#666]">
 					On this page
 				</span>
 			</button>
@@ -255,7 +255,7 @@
 			>
 				<path d="M6 3l6 5-6 5V3z" />
 			</svg>
-			<span class="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#666]">
+			<span class="font-mono text-caption font-semibold uppercase tracking-wider text-[#666]">
 				On this page
 			</span>
 		</button>
@@ -270,7 +270,7 @@
 	{#if entries.length > 0}
 		<div class="toc-mobile mb-6 lg:hidden" data-testid="toc-mobile">
 			<button
-				class="toc-toggle flex items-center gap-1.5 rounded border border-[#2a2a2a] bg-[#141414] px-3 py-2 font-mono text-[11px] text-[#999] transition-colors hover:border-[#E07800] hover:text-[#E07800]"
+				class="toc-toggle flex items-center gap-1.5 rounded border border-[#2a2a2a] bg-[#141414] px-3 py-2 font-mono text-caption text-[#999] transition-colors hover:border-[#E07800] hover:text-[#E07800]"
 				onclick={() => mobileOpen = !mobileOpen}
 				aria-expanded={mobileOpen}
 			>

@@ -62,7 +62,7 @@
 
 				<!-- Label -->
 				<div class="relative z-10 flex flex-col items-center justify-center">
-					<span class="font-mono text-[10px] font-semibold tracking-[3px] text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] sm:text-xs">
+					<span class="font-mono text-caption font-semibold tracking-[3px] text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
 						{interestLabel.toUpperCase()}
 					</span>
 				</div>

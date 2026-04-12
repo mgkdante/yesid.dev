@@ -116,7 +116,7 @@
 		<!-- Centered content fills remaining space -->
 		<div class="flex flex-1 flex-col items-center justify-center text-center">
 			<!-- Hook: wordplay question -->
-			<div class="font-mono text-[11px] tracking-[2px] text-[var(--text-secondary)]">
+			<div class="font-mono text-caption tracking-[2px] text-[var(--text-secondary)]">
 				{hook}
 			</div>
 

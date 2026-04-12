@@ -56,7 +56,7 @@
 						aria-hidden="true"
 					></div>
 					<!-- Label: short, uppercase -->
-					<div class="mt-2 font-mono text-[11px] uppercase tracking-[1px] text-[var(--text-secondary)]">
+					<div class="mt-2 font-mono text-caption uppercase tracking-[1px] text-[var(--text-secondary)]">
 						{metricLabel}
 					</div>
 				</div>

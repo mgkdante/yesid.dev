@@ -39,12 +39,12 @@
 
 				<div class="flex flex-col items-center" use:reveal={{ delay: stagger(i, 100) }}>
 					<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-[var(--brand-primary)] bg-[var(--bg-primary)]">
-						<span class="font-mono text-[9px] font-bold text-[var(--brand-primary)]">{step.station}</span>
+						<span class="font-mono text-caption font-bold text-[var(--brand-primary)]">{step.station}</span>
 					</div>
-					<div class="mt-1 font-mono text-[9px] font-semibold tracking-[1px] text-[var(--brand-primary)]">
+					<div class="mt-1 font-mono text-caption font-semibold tracking-[1px] text-[var(--brand-primary)]">
 						{stepLabel}
 					</div>
-					<div class="mt-1 max-w-[100px] text-center text-[10px] leading-tight text-[var(--text-secondary)] opacity-60">
+					<div class="mt-1 max-w-[100px] text-center text-caption leading-tight text-[var(--text-secondary)] opacity-60">
 						{stepDesc}
 					</div>
 				</div>

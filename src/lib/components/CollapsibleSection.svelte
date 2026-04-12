@@ -43,7 +43,7 @@
 	{#snippet headerContent()}
 		{#if index !== null}
 			<span
-				class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-bold text-[#0a0a0a]"
+				class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-caption font-bold text-[#0a0a0a]"
 				style="background-color: {accentColor};"
 				aria-hidden="true"
 			>
