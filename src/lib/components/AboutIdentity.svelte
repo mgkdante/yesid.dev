@@ -10,6 +10,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { identity, stop = '00', label = 'IDENTITY' }: { identity: AboutIdentity; stop?: string; label?: string } = $props();
 
@@ -39,7 +40,7 @@
 
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label -->
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<div class="flex flex-1 flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
 			<!-- Headshot with gradient ring + availability dot -->
@@ -61,7 +62,7 @@
 				<h2 class="font-heading text-title font-bold leading-tight tracking-tight text-[var(--text-primary)]">
 					{name}
 				</h2>
-				<div class="mt-1.5 font-mono text-caption tracking-[3px] uppercase text-[var(--brand-primary)]">
+				<div class="mt-1.5 label-station text-caption">
 					{title}
 				</div>
 				<!-- Gradient separator -->

@@ -5,6 +5,7 @@
 <script lang="ts">
 	import type { Project } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
+	import { HazardStripe } from '$lib/components/brand';
 
 	let { projects }: { projects: readonly Project[] } = $props();
 </script>
@@ -13,7 +14,7 @@
 	class="proof-strip"
 	data-testid="proof-strip"
 >
-	<span class="proof-label">Built with this</span>
+	<span class="proof-label label-section">Built with this</span>
 
 	<div class="proof-projects">
 		{#each projects as project (project.slug)}
@@ -31,10 +32,7 @@
 </div>
 
 <!-- Hazard stripe — bottom accent -->
-<div
-	aria-hidden="true"
-	style="height: 3px; background: repeating-linear-gradient(-45deg, #FFB627 0px, #FFB627 6px, #141414 6px, #141414 12px);"
-></div>
+<HazardStripe size="sm" />
 
 <style>
 	.proof-strip {
@@ -49,11 +47,7 @@
 
 	.proof-label {
 		flex-shrink: 0;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.625rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: #555;
+		font-size: var(--text-micro);
 	}
 
 	.proof-projects {

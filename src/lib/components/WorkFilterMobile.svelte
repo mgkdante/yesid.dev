@@ -69,7 +69,7 @@
 	{#if open}
 		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
 			<!-- Service filter -->
-			<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+			<div class="label-section font-semibold">
 				{resolveLocale(labels.services, 'en')}
 			</div>
 			<div class="mt-1.5 flex flex-wrap gap-1.5">
@@ -94,7 +94,7 @@
 			<!-- Tech Stack -->
 			{#if stack.length > 0 && onStackSelect}
 				<div class="mt-3 border-t border-dashed border-[#333] pt-2">
-					<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+					<div class="label-section font-semibold">
 						{resolveLocale(labels.stack, 'en')}
 					</div>
 					<div class="mt-1.5 flex flex-wrap gap-1.5">
@@ -120,7 +120,7 @@
 
 			<!-- Tags -->
 			<div class="mt-3 border-t border-dashed border-[#333] pt-2">
-				<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+				<div class="label-section font-semibold">
 					{resolveLocale(labels.tags, 'en')}
 				</div>
 				<div class="mt-1.5 flex flex-wrap gap-1.5">

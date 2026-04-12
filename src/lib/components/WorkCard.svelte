@@ -13,6 +13,7 @@
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import WorkSvgIcon from './WorkSvgIcon.svelte';
+	import { Tag } from '$lib/components/brand';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 
 	let {
@@ -119,7 +120,7 @@
 			<!-- Service badges row — SVGs with MorphSVG on card hover -->
 			{#if projectServices.length > 0}
 				<div class="mt-3">
-					<div class="mb-1.5 font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(servicesLabel, 'en')}
 					</div>
 					<div class="flex flex-wrap gap-1.5">
@@ -149,7 +150,7 @@
 			<!-- Tech stack SVG diagram with DrawSVG animation -->
 			{#if displayStack.length > 0}
 				<div class="mt-3">
-					<div class="mb-1.5 font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+					<div class="mb-1.5 label-section font-semibold">
 						{resolveLocale(stackLabel, 'en')}
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />
@@ -162,11 +163,8 @@
 			<!-- Tags as small pills -->
 			<div class="flex flex-wrap gap-1 pt-3">
 				{#each displayTags as tag}
-					<span
-						class="rounded border border-[#E07800]/30 px-1.5 py-0.5 font-mono text-caption text-[#E07800]"
-						use:magnetic={{ strength: 2, radius: 30 }}
-					>
-						{tag}
+					<span use:magnetic={{ strength: 2, radius: 30 }}>
+						<Tag text={tag} size="xs" active />
 					</span>
 				{/each}
 			</div>

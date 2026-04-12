@@ -7,6 +7,7 @@
 	import type { BlogPost } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { Tag } from '$lib/components/brand';
 	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
@@ -73,12 +74,7 @@
 			</h1>
 			<div data-animate="meta" class="mt-2 flex flex-wrap items-center gap-1.5">
 				{#each post.tags as tag}
-					<span
-						class="rounded-sm border px-1.5 py-0.5 font-mono text-caption"
-						style="border-color: {accentColor}; color: {accentColor};"
-					>
-						{tag}
-					</span>
+					<Tag text={tag} size="xs" active accentColor={accentColor} />
 				{/each}
 				<span class="font-mono text-caption text-[var(--text-muted)]">
 					{post.date}

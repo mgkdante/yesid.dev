@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { ChevronToggle } from '$lib/components/brand';
 
 	let {
 		title,
@@ -71,15 +72,7 @@
 		>
 			{@render headerContent()}
 
-			<svg
-				class="section-chevron h-5 w-5 shrink-0 text-[#555]"
-				class:rotated={open}
-				viewBox="0 0 20 20"
-				fill="currentColor"
-				aria-hidden="true"
-			>
-				<path d="M8 4l7 6-7 6V4z" />
-			</svg>
+			<ChevronToggle {open} direction="right" />
 		</button>
 	{:else}
 		<div class="flex items-center gap-2.5 px-6 py-4">
@@ -120,16 +113,6 @@
 
 	:global(.section-title) {
 		transition: color 0.2s ease;
-	}
-
-	.section-chevron {
-		transition: transform 0.25s ease, color 0.15s ease;
-	}
-	.section-chevron.rotated {
-		transform: rotate(90deg);
-	}
-	.section-header:hover .section-chevron {
-		color: var(--accent);
 	}
 
 	.section-body {

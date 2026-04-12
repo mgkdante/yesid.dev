@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
 	import type { Service } from '$lib/data/types.js';
+	import { HazardStripe } from '$lib/components/brand';
 
 	// Short labels map — first word or simple abbreviation for compact tab display.
 	// Keyed by service ID so adding a new service only requires one new entry here.
@@ -56,12 +57,7 @@
 	}
 </script>
 
-<!-- Hazard stripe accent — metro station identity -->
-<div
-	class="hazard-stripe"
-	aria-hidden="true"
-	style="height: 3px; background: repeating-linear-gradient(-45deg, #FFB627 0px, #FFB627 6px, #141414 6px, #141414 12px);"
-></div>
+<HazardStripe size="sm" />
 
 <nav
 	aria-label="Service navigation"

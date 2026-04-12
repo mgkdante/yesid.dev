@@ -12,6 +12,7 @@
 	import StackScenarioCard from '$lib/components/StackScenarioCard.svelte';
 	import TerminalCursor from '$lib/components/TerminalCursor.svelte';
 	import InfraFrame from '$lib/components/InfraFrame.svelte';
+	import { StatusDot } from '$lib/components/brand';
 
 	let { data } = $props();
 
@@ -183,7 +184,7 @@
 
 		<div class="hero-stats" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
 			<div class="hero-stat">
-				<span class="hero-stat-value"><span class="hero-led" aria-hidden="true"></span>{itemCount}</span>
+				<span class="hero-stat-value flex items-center gap-2"><StatusDot color="orange" pulse />{itemCount}</span>
 				<span class="hero-stat-label">technologies</span>
 			</div>
 			<div class="hero-stat">
@@ -644,9 +645,6 @@
 		.build-fab {
 			transition: none;
 		}
-		.hero-led {
-			animation: none;
-		}
 		.hero-line-animate {
 			animation: none;
 		}
@@ -832,23 +830,6 @@
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		color: var(--text-muted);
-	}
-
-	.hero-led {
-		display: inline-block;
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--brand-primary);
-		box-shadow: 0 0 6px rgba(224, 120, 0, 0.6);
-		margin-right: 8px;
-		flex-shrink: 0;
-		animation: hero-led-pulse 2s ease-in-out infinite;
-	}
-
-	@keyframes hero-led-pulse {
-		0%, 100% { opacity: 1; box-shadow: 0 0 4px 1px rgba(224, 120, 0, 0.5); }
-		50% { opacity: 0.7; box-shadow: 0 0 10px 4px rgba(224, 120, 0, 0.8); }
 	}
 
 	.hero-actions {

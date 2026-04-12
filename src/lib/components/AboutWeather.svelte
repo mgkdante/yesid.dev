@@ -9,6 +9,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let {
 		config,
@@ -111,7 +112,7 @@
 
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label: ALWAYS top-left, normal flow -->
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<!-- Centered content fills remaining space -->
 		<div class="flex flex-1 flex-col items-center justify-center text-center">

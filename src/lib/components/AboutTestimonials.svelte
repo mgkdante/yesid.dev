@@ -9,6 +9,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { testimonials, stop = '04', label = 'TESTIMONIALS' }: { testimonials: readonly AboutTestimonial[]; stop?: string; label?: string } = $props();
 
@@ -64,7 +65,7 @@
 
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label: always top-left -->
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<!-- Centered content area -->
 		<div class="flex flex-1 flex-col justify-center">

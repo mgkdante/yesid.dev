@@ -92,7 +92,7 @@
 				{/if}
 
 				<div class="hero-text">
-					<span class="station-counter">
+					<span class="station-counter label-section font-semibold">
 						{resolveLocale(labels.serviceCounter, 'en')} {stationNum} / {totalStr}
 					</span>
 
@@ -288,12 +288,7 @@
 
 	.station-counter {
 		display: block;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.75rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: #E07800;
+		color: var(--brand-primary);
 		margin-bottom: 0.75rem;
 	}
 

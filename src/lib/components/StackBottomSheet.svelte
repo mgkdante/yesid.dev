@@ -158,7 +158,7 @@
 		<!-- Project badges -->
 		{#if item.relatedProjects.length > 0}
 			<div class="sheet-projects">
-				<span class="projects-label">Used in</span>
+				<span class="projects-label label-section font-semibold">Used in</span>
 				<div class="project-badges">
 					{#each item.relatedProjects as slug}
 						<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -421,12 +421,6 @@
 
 	.projects-label {
 		display: block;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
 		margin-bottom: 0.375rem;
 	}
 

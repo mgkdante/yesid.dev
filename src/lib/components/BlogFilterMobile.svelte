@@ -52,7 +52,7 @@
 		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
 			<!-- Language filter -->
 			{#if languages.length > 1}
-				<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+				<div class="label-section font-semibold">
 					Language
 				</div>
 				<div class="mt-1.5 flex gap-1.5">
@@ -79,7 +79,7 @@
 			{/if}
 
 			<!-- Date range -->
-			<div class="mt-2 font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+			<div class="mt-2 label-section font-semibold">
 				Date Range
 			</div>
 			<div class="mt-1.5 flex gap-2">

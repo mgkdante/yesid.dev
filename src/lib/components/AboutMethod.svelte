@@ -9,6 +9,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { steps, stop = '02', label = 'PROCESS' }: { steps: readonly AboutMethodStep[]; stop?: string; label?: string } = $props();
 </script>
@@ -24,7 +25,7 @@
 	></div>
 
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<!-- Horizontal pipeline with descriptions -->
 		<div class="mt-auto mb-auto flex items-start justify-around">

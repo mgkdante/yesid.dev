@@ -9,6 +9,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { interests, stop = '07', label = 'INTERESTS' }: { interests: readonly AboutInterest[]; stop?: string; label?: string } = $props();
 
@@ -28,7 +29,7 @@
 >
 	<!-- Stop label: top-left, always -->
 	<div class="absolute top-3 left-4 z-20">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 	</div>
 
 	<!-- Diagonal strips container -->

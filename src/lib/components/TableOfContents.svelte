@@ -9,6 +9,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { ChevronToggle } from '$lib/components/brand';
 
 	interface TocEntry {
 		id: string;
@@ -182,13 +183,10 @@
 						{#if hasChildrenSet.has(entry.id)}
 							<button
 								class="toc-section-chevron shrink-0"
-								class:rotated={!collapsedSections.has(entry.id)}
 								onclick={(e) => { e.stopPropagation(); toggleSection(entry.id); }}
 								aria-label="Toggle section"
 							>
-								<svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor">
-									<path d="M6 3l6 5-6 5V3z" />
-								</svg>
+								<ChevronToggle open={!collapsedSections.has(entry.id)} size="sm" direction="right" />
 							</button>
 						{:else}
 							<!-- Spacer to align entries without chevrons -->
@@ -217,15 +215,8 @@
 				class="toc-header mb-2 flex w-full items-center gap-1.5"
 				onclick={() => tocOpen = !tocOpen}
 			>
-				<svg
-					class="toc-header-chevron h-3 w-3 text-[#666]"
-					class:rotated={tocOpen}
-					viewBox="0 0 16 16"
-					fill="currentColor"
-				>
-					<path d="M6 3l6 5-6 5V3z" />
-				</svg>
-				<span class="font-mono text-caption font-semibold uppercase tracking-wider text-[#666]">
+				<ChevronToggle open={tocOpen} size="sm" direction="right" />
+				<span class="label-section font-semibold tracking-wider text-[#666]">
 					On this page
 				</span>
 			</button>
@@ -255,7 +246,7 @@
 			>
 				<path d="M6 3l6 5-6 5V3z" />
 			</svg>
-			<span class="font-mono text-caption font-semibold uppercase tracking-wider text-[#666]">
+			<span class="label-section font-semibold tracking-wider text-[#666]">
 				On this page
 			</span>
 		</button>
@@ -274,14 +265,7 @@
 				onclick={() => mobileOpen = !mobileOpen}
 				aria-expanded={mobileOpen}
 			>
-				<svg
-					class="toc-header-chevron h-3 w-3"
-					class:rotated={mobileOpen}
-					viewBox="0 0 16 16"
-					fill="currentColor"
-				>
-					<path d="M6 3l6 5-6 5V3z" />
-				</svg>
+				<ChevronToggle open={mobileOpen} size="sm" direction="right" />
 				Table of Contents
 			</button>
 
@@ -317,7 +301,6 @@
 		background: rgba(224, 120, 0, 0.06);
 	}
 
-	/* Section collapse chevron */
 	.toc-section-chevron {
 		display: inline-flex;
 		align-items: center;
@@ -331,30 +314,6 @@
 		cursor: pointer;
 		padding: 0;
 	}
-	.toc-section-chevron:hover {
-		color: #E07800;
-	}
-	.toc-section-chevron.rotated {
-		transform: rotate(90deg);
-	}
-
-	/* Header collapse chevron */
-	.toc-header {
-		cursor: pointer;
-		background: none;
-		border: none;
-		padding: 0;
-	}
-	.toc-header:hover .toc-header-chevron {
-		color: #E07800;
-	}
-	.toc-header-chevron {
-		transition: transform 0.2s ease, color 0.15s ease;
-	}
-	.toc-header-chevron.rotated {
-		transform: rotate(90deg);
-	}
-
 	/* Smooth collapse animation for the ToC entry list */
 	.toc-body {
 		display: grid;
