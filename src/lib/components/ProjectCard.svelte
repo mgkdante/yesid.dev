@@ -26,7 +26,7 @@
 		class="rounded-brand-lg border border-[var(--border)] bg-[var(--bg-surface)] p-6 group-hover:border-brand-primary"
 	>
 		<div class="flex items-start justify-between gap-2">
-			<h3 class="font-heading font-semibold text-[var(--text-primary)] text-[var(--text-h3)]">
+			<h3 class="font-heading font-semibold text-[var(--text-primary)] text-subheading">
 				{title}
 			</h3>
 			{#if status === 'wip'}
