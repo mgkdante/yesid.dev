@@ -1,21 +1,22 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-11 | Planning Session
-**Branch:** `main` (17a-2 not yet started)
-**Next branch:** `feature/slice-17a-2a-build-primitives`
+**Last updated:** 2026-04-12 | Implementation Session
+**Branch:** `feature/slice-17a-2a-build-primitives` (PR pending)
+**Next branch:** `feature/slice-17a-2b-wire-primitives`
 
 ## Current Position
-- **Sub-slice:** 17a-2 (Brand Primitives) — planning complete, ready to implement
-- **Task:** 0 of 16 (Phase A) + 0 of 17 (Phase B)
-- **Status:** plan written, awaiting implementation session
+- **Sub-slice:** 17a-2a (Build Primitives) — COMPLETE, PR pending
+- **Task:** 16 of 16 (Phase A) — all done
+- **Phase B:** 0 of 17 (Wire) — next
+- **Status:** Phase A complete, ready for PR + merge, then Phase B
 
 ## Execution Sequence
 
 ```
 Phase 1 — Foundation
   17a-1: Token Foundation .............. COMPLETE (PR #2 merged)
-  17a-2a: Build Primitives ............. ~2 sessions (NEXT)
-  17a-2b: Wire Primitives .............. ~2 sessions
+  17a-2a: Build Primitives ............. COMPLETE (PR pending)
+  17a-2b: Wire Primitives .............. ~2 sessions (NEXT)
   17a-3: Color Lockdown ................ 3 sessions
   17b:   Service Layer ................. 2 sessions
     → 15: SEO + Metadata
