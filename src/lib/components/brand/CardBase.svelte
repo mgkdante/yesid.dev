@@ -29,6 +29,7 @@
     padding = 'md',
     href,
     children,
+    class: className = '',
     ...rest
   }: CardBaseProps & Record<string, unknown> = $props();
 
@@ -49,7 +50,7 @@
 {#if href}
   <a
     {href}
-    class="card group {paddingClass[padding]}"
+    class="card group {paddingClass[padding]} {className}"
     class:brand-glow-hover={hover}
     class:cursor-pointer={interactive}
     use:glowAction
@@ -57,7 +58,7 @@
   >{@render children()}</a>
 {:else}
   <div
-    class="card group {paddingClass[padding]}"
+    class="card group {paddingClass[padding]} {className}"
     class:brand-glow-hover={hover}
     class:cursor-pointer={interactive}
     use:glowAction

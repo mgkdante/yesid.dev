@@ -9,6 +9,7 @@
 	import { Marked } from 'marked';
 	import { getOutgoingRelations, getIncomingRelations, getTechItemContent } from '$lib/data/tech-stack.js';
 	import CollapsibleSection from './CollapsibleSection.svelte';
+	import { BrandButton } from '$lib/components/brand';
 
 	let {
 		item = null,
@@ -88,7 +89,7 @@
 			<!-- Project badges -->
 			{#if item.relatedProjects.length > 0}
 				<div class="panel-projects">
-					<span class="section-label">Used in</span>
+					<span class="section-label label-section font-semibold">Used in</span>
 					<div class="project-badges">
 						{#each item.relatedProjects as slug}
 							<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -141,15 +142,16 @@
 			{/if}
 
 			<!-- CTA -->
-			<a href="/contact" class="panel-cta" data-testid="panel-cta">
-				Let's build with {item.name}
-				<span aria-hidden="true">&rarr;</span>
-			</a>
+			<div class="mt-4">
+				<BrandButton variant="primary" size="sm" href="/contact" data-testid="panel-cta">
+					Let's build with {item.name} <span aria-hidden="true">&rarr;</span>
+				</BrandButton>
+			</div>
 		</div>
 	{:else}
 		<!-- Hint Card — nudges user to interact -->
 		<div class="panel-orientation" data-testid="panel-orientation">
-			<span class="orientation-label">SELECT A NODE</span>
+			<span class="orientation-label label-section font-semibold">SELECT A NODE</span>
 			<p class="orientation-text">
 				Click on any technology in the diagram to learn more about it — what it does,
 				why it was chosen, and which projects use it.
@@ -291,12 +293,6 @@
 	.relations-label,
 	.section-label {
 		display: block;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
 		margin-bottom: 0.5rem;
 	}
 
@@ -397,28 +393,6 @@
 		background: var(--bg-elevated);
 	}
 
-	/* --- CTA --- */
-
-	.panel-cta {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1rem;
-		border: 1px solid var(--brand-primary);
-		border-radius: var(--radius-md);
-		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
-		color: var(--brand-primary);
-		font-family: var(--font-body);
-		font-size: var(--text-small);
-		font-weight: 600;
-		text-decoration: none;
-	}
-
-	.panel-cta:hover {
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-	}
-
 	/* --- Orientation Card --- */
 
 	.panel-orientation {
@@ -429,11 +403,6 @@
 	}
 
 	.orientation-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
 		color: var(--brand-primary);
 	}
 

@@ -67,9 +67,9 @@
 	</div>
 
 	{#if open}
-		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
+		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3">
 			<!-- Service filter -->
-			<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+			<div class="label-section font-semibold">
 				{resolveLocale(labels.services, 'en')}
 			</div>
 			<div class="mt-1.5 flex flex-wrap gap-1.5">
@@ -82,7 +82,7 @@
 				</button>
 				{#each serviceIds as svcId}
 					<button
-						class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+						class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 						class:m-tag-active={activeService === svcId}
 						onclick={() => onServiceSelect(activeService === svcId ? null : svcId)}
 					>
@@ -94,7 +94,7 @@
 			<!-- Tech Stack -->
 			{#if stack.length > 0 && onStackSelect}
 				<div class="mt-3 border-t border-dashed border-[#333] pt-2">
-					<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+					<div class="label-section font-semibold">
 						{resolveLocale(labels.stack, 'en')}
 					</div>
 					<div class="mt-1.5 flex flex-wrap gap-1.5">
@@ -107,7 +107,7 @@
 						</button>
 						{#each stack as item}
 							<button
-								class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+								class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 								class:m-tag-active={activeStack === item}
 								onclick={() => onStackSelect(activeStack === item ? null : item)}
 							>
@@ -120,7 +120,7 @@
 
 			<!-- Tags -->
 			<div class="mt-3 border-t border-dashed border-[#333] pt-2">
-				<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+				<div class="label-section font-semibold">
 					{resolveLocale(labels.tags, 'en')}
 				</div>
 				<div class="mt-1.5 flex flex-wrap gap-1.5">
@@ -133,7 +133,7 @@
 					</button>
 					{#each tags as tag}
 						<button
-							class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 							class:m-tag-active={activeTag === tag}
 							onclick={() => onTagSelect(activeTag === tag ? null : tag)}
 						>

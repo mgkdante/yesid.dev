@@ -229,7 +229,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	bind:this={container}
-	class="blog-svg-icon flex items-center justify-center overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#141414] transition-border-color duration-300"
+	class="blog-svg-icon flex items-center justify-center overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] transition-border-color duration-300"
 	style="width: {size}px; height: {size}px;"
 	aria-hidden="true"
 	onmouseenter={handleMouseEnter}

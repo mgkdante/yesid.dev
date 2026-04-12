@@ -5,6 +5,7 @@
 	import { errorPageContent } from '$lib/data';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/data/locale.js';
 	import { prefersReducedMotion } from '$lib/motion/stores';
+	import { HazardStripe } from '$lib/components/brand';
 
 	const locale = DEFAULT_LOCALE;
 	const label = resolveLocale(errorPageContent.label, locale);
@@ -25,7 +26,7 @@
 
 <div class="error-page flex flex-col px-4">
 	<!-- Top hazard tape -->
-	<div class="hazard-tape w-full" data-testid="hazard-tape"></div>
+	<div data-testid="hazard-tape"><HazardStripe /></div>
 
 	<!-- Centered content area — fills space between tapes -->
 	<div class="flex flex-1 flex-col items-center justify-center gap-5 py-4 sm:gap-6">
@@ -92,7 +93,7 @@
 	</div>
 
 	<!-- Bottom hazard tape -->
-	<div class="hazard-tape w-full" data-testid="hazard-tape"></div>
+	<div data-testid="hazard-tape"><HazardStripe /></div>
 </div>
 
 <style>
@@ -102,18 +103,6 @@
 		min-height: 0;
 	}
 
-	.hazard-tape {
-		height: 4px;
-		flex-shrink: 0;
-		background: repeating-linear-gradient(
-			-45deg,
-			#FFB627 0px,
-			#FFB627 8px,
-			#0a0a0a 8px,
-			#0a0a0a 16px
-		);
-		border-radius: 1px;
-	}
 
 	.suggestion-primary {
 		background: rgba(224, 120, 0, 0.08);

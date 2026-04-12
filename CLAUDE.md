@@ -52,12 +52,13 @@ Slice template: `docs/slices/_TEMPLATE.md`
 5. No spec: stop and say so.
 6. **Specs describe outcomes, not implementation.** Extract the desired OUTCOME, then decide the implementation yourself. Log decisions in the devlog.
 
-**Active slice:** 0 — Repo Hygiene + Workflow Infrastructure
+**Active slice:** 17 — Standardization (Design System + Ports & Adapters)
 
-- Spec: `docs/specs/2026-04-11-slice-00-repo-hygiene-design.md`
-- Plan: `docs/plans/2026-04-11-slice-00-repo-hygiene.md`
-- Branch: `feature/slice-00-repo-hygiene`
-- After merge: active slice becomes 17 — Standardization
+- Roadmap: `docs/roadmap/standardization.md`
+- Checkpoint: `docs/slices/slice-17-checkpoint.md`
+- Current sub-slice: 17a-2b (Wire Primitives) — COMPLETE, PR pending
+- Next sub-slice: 17a-3 (Color & Token Lockdown — expanded scope)
+- Branch: `feature/slice-17a-2b-wire-primitives`
 
 ## Iteration Protocol (MANDATORY)
 
@@ -410,7 +411,7 @@ CONSIDER:
 
 ## Completed Slices
 
-01, 02, 03, 04, 05, 06, 06b, 06d, A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b, 10, 10d+, 11, 12, 13 — handoffs in `docs/handoffs/`
+01, 02, 03, 04, 05, 06, 06b, 06d, A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b, 10, 10d+, 11, 12, 13, 17a-1, 17a-2a, 17a-2b — handoffs in `docs/handoffs/`
 
 ## Repo Structure
 

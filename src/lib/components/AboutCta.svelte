@@ -10,6 +10,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import TerminalCursor from './TerminalCursor.svelte';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel, BrandButton, TerminalChrome } from '$lib/components/brand';
 
 	let { cta, stop = '09', label = 'NEXT' }: { cta: AboutCta; stop?: string; label?: string } = $props();
 
@@ -18,16 +19,11 @@
 </script>
 
 <div
-	class="group bento-card relative overflow-hidden rounded-lg border border-[var(--brand-primary)]/20 bg-[var(--bg-surface)] p-3"
+	class="group bento-card p-3"
 	data-testid="about-cta"
 	use:reveal
 	use:cursorGlow
 >
-	<!-- Cursor glow -->
-	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.08), transparent 60%);"
-	></div>
-
 	<!-- Ambient glow -->
 	<div
 		class="pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -36,17 +32,11 @@
 	></div>
 
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<!-- Terminal window -->
-		<div class="mt-3 flex-1 overflow-hidden rounded-md border border-[var(--border)] bg-[var(--bg-primary)]">
-			<!-- Terminal title bar -->
-			<div class="border-b border-[var(--border)] px-3 py-1.5">
-				<span class="font-mono text-caption text-[var(--text-secondary)]">terminal</span>
-			</div>
-
-			<!-- Terminal body -->
-			<div class="terminal-scroll overflow-y-auto p-3 font-mono text-sm leading-relaxed" style="max-height: 120px;">
+		<TerminalChrome title="terminal" class="mt-3 flex-1">
+			<div class="terminal-scroll overflow-y-auto font-mono text-sm leading-relaxed" style="max-height: 120px;">
 				<!-- Command -->
 				<div class="text-[var(--text-secondary)]">
 					<span class="text-[var(--text-primary)]">~</span> {cta.command}
@@ -69,16 +59,13 @@
 					<TerminalCursor />
 				</div>
 			</div>
-		</div>
+		</TerminalChrome>
 
 		<!-- Action row: button + availability -->
 		<div class="mt-3 flex flex-wrap items-center gap-3">
-			<a
-				href={cta.buttonHref}
-				class="inline-block rounded-md bg-[var(--brand-primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[var(--brand-primary)]/20 transition-all duration-200 hover:bg-[var(--brand-primary-hover)] hover:shadow-[var(--brand-primary)]/40 hover:-translate-y-0.5"
-			>
+			<BrandButton variant="primary" size="sm" href={cta.buttonHref}>
 				{buttonLabel}
-			</a>
+			</BrandButton>
 			<span class="font-mono text-caption tracking-[1px] text-[var(--brand-accent)]">
 				{availability}
 			</span>

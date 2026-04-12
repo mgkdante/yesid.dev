@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TagList from './TagList.svelte';
+	import { Tag } from '$lib/components/brand';
 	// use:boop adds a brief scale pulse on hover — the card "reacts" to attention.
 	// It's a no-op when prefers-reduced-motion is on (checked inside the action).
 	import { boop } from '$lib/motion/actions/boop.js';
@@ -30,20 +31,12 @@
 				{title}
 			</h3>
 			{#if status === 'wip'}
-				<!-- Warning style: brand accent yellow at low opacity background -->
-				<span
-					class="shrink-0 rounded-full border border-[#FFB627]/30 bg-[#FFB627]/15 px-2 py-0.5 font-mono text-xs text-[#FFB627]"
-					data-testid="status-badge"
-				>
-					WIP
+				<span class="shrink-0" data-testid="status-badge">
+					<Tag text="WIP" size="xs" active accentColor="#FFB627" />
 				</span>
 			{:else if status === 'private'}
-				<!-- Muted/locked style: blends into the surface -->
-				<span
-					class="shrink-0 rounded-full border border-[var(--border)] bg-[var(--bg-elevated)] px-2 py-0.5 font-mono text-xs text-[var(--text-muted)]"
-					data-testid="status-badge"
-				>
-					Private
+				<span class="shrink-0" data-testid="status-badge">
+					<Tag text="Private" size="xs" />
 				</span>
 			{/if}
 		</div>

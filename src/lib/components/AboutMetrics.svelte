@@ -9,24 +9,21 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
+	import { MetricDisplay } from '$lib/components/brand';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { metrics, stop = '01', label = 'METRICS' }: { metrics: readonly AboutMetric[]; stop?: string; label?: string } = $props();
 </script>
 
 <div
-	class="group bento-card relative overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] p-3"
+	class="group bento-card p-3"
 	data-testid="about-metrics"
 	use:cursorGlow
 	use:reveal
 >
-	<!-- Cursor glow -->
-	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.06), transparent 60%);"
-	></div>
-
 	<div class="relative flex h-full flex-col">
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<div class="flex flex-1 items-center justify-around">
 			{#each metrics as metric, i}
@@ -42,23 +39,10 @@
 				{/if}
 
 				<div
-					class="flex-1 text-center"
+					class="flex flex-1 justify-center text-center"
 					use:reveal={{ delay: stagger(i, 100) }}
 				>
-					<!-- Number -->
-					<div class="font-mono text-2xl font-bold text-[var(--brand-accent)] md:text-3xl">
-						{metric.value}
-					</div>
-					<!-- Orange underline -->
-					<div
-						class="mx-auto mt-2 h-[2px] w-5"
-						style="background: linear-gradient(90deg, var(--brand-primary), transparent);"
-						aria-hidden="true"
-					></div>
-					<!-- Label: short, uppercase -->
-					<div class="mt-2 font-mono text-caption uppercase tracking-[1px] text-[var(--text-secondary)]">
-						{metricLabel}
-					</div>
+					<MetricDisplay value={metric.value} label={metricLabel} size="lg" labelBelow />
 				</div>
 			{/each}
 		</div>

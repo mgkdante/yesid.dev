@@ -10,6 +10,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
+	import { StopLabel } from '$lib/components/brand';
 
 	let { identity, stop = '00', label = 'IDENTITY' }: { identity: AboutIdentity; stop?: string; label?: string } = $props();
 
@@ -19,17 +20,12 @@
 </script>
 
 <div
-	class="group bento-card relative overflow-hidden rounded-lg border border-[rgba(224,120,0,0.12)] bg-[var(--bg-surface)] p-3"
+	class="group bento-card p-3"
 	data-testid="about-identity"
 	use:reveal
 	use:tilt={{ maxDeg: 1, perspective: 800 }}
 	use:cursorGlow
 >
-	<!-- Cursor glow overlay -->
-	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.06), transparent 60%);"
-	></div>
-
 	<!-- Ambient glow behind headshot -->
 	<div
 		class="pointer-events-none absolute -top-10 -left-10 h-44 w-44"
@@ -39,7 +35,7 @@
 
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label -->
-		<div class="stop-label">STOP {stop} — {label}</div>
+		<StopLabel {stop} {label} />
 
 		<div class="flex flex-1 flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
 			<!-- Headshot with gradient ring + availability dot -->
@@ -61,7 +57,7 @@
 				<h2 class="font-heading text-title font-bold leading-tight tracking-tight text-[var(--text-primary)]">
 					{name}
 				</h2>
-				<div class="mt-1.5 font-mono text-caption tracking-[3px] uppercase text-[var(--brand-primary)]">
+				<div class="mt-1.5 label-station text-caption">
 					{title}
 				</div>
 				<!-- Gradient separator -->

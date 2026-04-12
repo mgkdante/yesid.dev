@@ -175,7 +175,7 @@
 </script>
 
 <div class="stack-diagram" data-testid="stack-diagram">
-	<span class="diagram-label">Infrastructure Layers</span>
+	<span class="diagram-label label-section font-semibold">Infrastructure Layers</span>
 	<!-- Tier rows: visible on md+ (768px), hidden on mobile -->
 	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 	<div
@@ -240,12 +240,6 @@
 
 	.diagram-label {
 		display: block;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
 		margin-bottom: 0.5rem;
 	}
 

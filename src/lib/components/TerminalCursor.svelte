@@ -8,17 +8,12 @@
 <style>
 	.terminal-cursor {
 		display: inline-block;
-		width: 7px;
-		height: 1em;
+		width: 8px;
+		height: 14px;
 		background: var(--brand-primary);
 		vertical-align: text-bottom;
 		margin-left: 4px;
-		animation: terminal-blink 1.2s step-end infinite;
-	}
-
-	@keyframes terminal-blink {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0; }
+		animation: blink 1s step-end infinite;
 	}
 
 	@media (prefers-reduced-motion: reduce) {

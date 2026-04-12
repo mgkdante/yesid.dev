@@ -10,6 +10,7 @@
 -->
 <script lang="ts">
 	import { ripple } from '$lib/motion/actions/ripple.js';
+	import { ChevronToggle } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/data/locale.js';
 
 	// WHY: allLabel is LocalizedString so "All" can be translated in future i18n without
@@ -58,14 +59,14 @@
 	<!-- WHY: collapsible label toggles section open/closed; non-collapsible is static text -->
 	{#if collapsible}
 		<button
-			class="flex w-full items-center justify-between font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+			class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--text-primary)]"
 			onclick={() => (isOpen = !isOpen)}
 		>
 			{label}
-			<span class="text-caption transition-transform" class:rotate-180={isOpen}>▼</span>
+			<ChevronToggle open={isOpen} size="sm" direction="down" />
 		</button>
 	{:else}
-		<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+		<div class="label-section font-semibold">
 			{label}
 		</div>
 	{/if}

@@ -8,6 +8,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
+	import { Tag, NumberBadge } from '$lib/components/brand';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
 
@@ -57,13 +58,7 @@
 					class="station-pulse"
 					style="animation-delay: {index * 0.4}s;"
 				></div>
-				<div
-					class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-caption font-bold text-[#0a0a0a]"
-					style="background-color: {accentColor};"
-					data-testid="station-badge"
-				>
-					{stationNumber}
-				</div>
+				<NumberBadge value={index + 1} color={accentColor} />
 			</div>
 			<!-- Vertical metro line connecting stations — SVG for DrawSVGPlugin animation -->
 			<svg
@@ -85,7 +80,7 @@
 
 		<!-- Content card -->
 		<article
-			class="blog-row relative flex min-w-0 flex-1 items-start gap-4 overflow-hidden rounded-xl border border-[#2a2a2a] bg-[#1a1a1a]/80 backdrop-blur-sm transition-all duration-300 md:gap-5"
+			class="blog-row relative flex min-w-0 flex-1 items-start gap-4 overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)]/80 backdrop-blur-sm transition-all duration-300 md:gap-5"
 			class:p-5={featured}
 			class:md\:p-6={featured}
 			class:p-4={!featured}
@@ -93,12 +88,6 @@
 			style="--accent: {accentColor};"
 			use:cursorGlow
 		>
-			<!-- Subtle glow on hover -->
-			<div
-				class="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-				style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), color-mix(in srgb, {accentColor} 6%, transparent), transparent 60%);"
-			></div>
-
 			<!-- SVG icon -->
 			{#if svgContent}
 				<div class="relative z-10 shrink-0">
@@ -125,12 +114,8 @@
 				</p>
 				<div class="mt-3 flex flex-wrap items-center gap-1.5">
 					{#each post.tags as tag}
-						<span
-							class="rounded border px-1.5 py-0.5 font-mono text-caption transition-colors duration-200"
-							style="border-color: color-mix(in srgb, {accentColor} 60%, transparent); color: {accentColor};"
-							use:magnetic={{ strength: 2, radius: 30 }}
-						>
-							{tag}
+						<span use:magnetic={{ strength: 2, radius: 30 }}>
+							<Tag text={tag} size="xs" active accentColor={accentColor} />
 						</span>
 					{/each}
 					<span class="ml-auto font-mono text-caption text-[var(--text-muted)]">

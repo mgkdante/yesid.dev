@@ -11,6 +11,7 @@
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { getTechItemContent, getOutgoingRelations, getIncomingRelations, getTechItemById } from '$lib/data/tech-stack.js';
 	import CollapsibleSection from './CollapsibleSection.svelte';
+	import { BrandButton } from '$lib/components/brand';
 
 	let {
 		item,
@@ -158,7 +159,7 @@
 		<!-- Project badges -->
 		{#if item.relatedProjects.length > 0}
 			<div class="sheet-projects">
-				<span class="projects-label">Used in</span>
+				<span class="projects-label label-section font-semibold">Used in</span>
 				<div class="project-badges">
 					{#each item.relatedProjects as slug}
 						<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -223,10 +224,11 @@
 		</div>
 
 		<!-- CTA -->
-		<a href="/contact" class="sheet-cta">
-			Let's build with {item.name}
-			<span aria-hidden="true">→</span>
-		</a>
+		<div class="sheet-cta-wrapper">
+			<BrandButton variant="primary" size="sm" href="/contact">
+				Let's build with {item.name} <span aria-hidden="true">→</span>
+			</BrandButton>
+		</div>
 	</div>
 </div>
 
@@ -421,12 +423,6 @@
 
 	.projects-label {
 		display: block;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
 		margin-bottom: 0.375rem;
 	}
 
@@ -480,37 +476,17 @@
 		color: var(--brand-primary);
 	}
 
-	/* CTA — sticky at bottom so it's always visible */
-	.sheet-cta {
+	/* CTA wrapper — sticky at bottom so it's always visible */
+	.sheet-cta-wrapper {
 		display: flex;
-		align-items: center;
 		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1rem;
-		border: 1px solid var(--brand-primary);
-		border-radius: var(--radius-md);
-		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
-		color: var(--brand-primary);
-		font-family: var(--font-body);
-		font-size: var(--text-small);
-		font-weight: 600;
-		text-decoration: none;
 		position: sticky;
 		bottom: 0;
 		margin-top: auto;
-		padding-block: 0.75rem;
+		padding: 0.75rem 1.25rem;
 		margin-inline: -1.25rem;
-		padding-inline: 1.25rem;
-		border-radius: 0;
-		border-left: none;
-		border-right: none;
-		border-bottom: none;
 		background: var(--bg-surface);
 		box-shadow: 0 -1px 0 var(--border);
-	}
-
-	.sheet-cta:hover {
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

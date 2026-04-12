@@ -19,6 +19,7 @@
 		SplitText,
 	} from '$lib/motion/utils/gsap.js';
 	import ManifestoCanvas from '$lib/components/ManifestoCanvas.svelte';
+	import TerminalCursor from '$lib/components/TerminalCursor.svelte';
 
 	// ── Resolve all text from data layer ──────────────────────────────
 	const statementLine1 = resolveLocale(manifestoContent.statement.line1, 'en');
@@ -292,7 +293,7 @@
 		<div data-testid="manifesto-prompt" class="manifesto__prompt">
 			<span class="manifesto__prompt-cmd">{terminalUser}</span>
 			<span class="manifesto__prompt-text">{terminalCommand}</span>
-			<div class="manifesto__cursor"></div>
+			<TerminalCursor />
 		</div>
 
 		<!-- Statement — variable size -->
@@ -809,18 +810,6 @@
 		color: rgba(224,120,0,0.6);
 	}
 
-	.manifesto__cursor {
-		width: 8px;
-		height: 14px;
-		background: #E07800;
-		animation: blink 1s step-end infinite;
-	}
-
-	@keyframes blink {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0; }
-	}
-
 	/* ── Statement ───────────────────────────────────────────────── */
 	.manifesto__statement {
 		text-align: center;
@@ -1008,10 +997,6 @@
 			translate: none;
 		}
 
-		.manifesto__cursor {
-			animation: none;
-			opacity: 1;
-		}
 
 		.manifesto__status-dot {
 			animation: none;

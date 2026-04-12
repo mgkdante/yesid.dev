@@ -177,6 +177,28 @@ When a slice handoff introduces a workaround, a non-obvious fix, or a reusable a
 
 ---
 
+## Design System Patterns
+
+### Brand Primitive Wiring
+**Discovered in:** Slice 17a-2b (17 iterations)
+**Problem:** Same brand patterns (buttons, cards, terminal chrome, metric displays) were reimplemented differently across 40+ files, leading to visual inconsistency and maintenance burden.
+**Solution:** Build small, focused "brand primitive" components in `src/lib/components/brand/` that encode a single brand pattern each. Each primitive has typed props, `...rest` spread for customization, and uses tokens (never hardcoded values). Wire them into consumer components, replacing bespoke implementations. Import from barrel: `import { X } from '$lib/components/brand'`.
+**Files:** `src/lib/components/brand/` (15 components), 40+ consumer files
+**Reuse when:** Any project with visual patterns repeated across 3+ files — extract the pattern into a primitive component.
+**Key decisions:**
+- Svelte actions (`use:`) don't work on component tags — use utility classes (`.bento-card`) or action-based alternatives (`cursorGlow`) when wrapping isn't possible
+- Prefer utility classes for simple token bundles (`.bento-card`, `.prose-dark`), components for interactive/structural patterns (BrandButton, TerminalChrome)
+- Barrel export pattern enables renaming internals without touching consumers
+
+### cursorGlow Auto-Inject
+**Discovered in:** Slice 17a-2b (W7)
+**Problem:** 11 components manually created a `<div>` overlay with `pointer-events-none`, `position: absolute`, and a radial gradient that tracked mouse position — duplicating ~15 lines per file.
+**Solution:** Created `cursorGlow` Svelte action that auto-injects the overlay div on mount, tracks mouse position via `mousemove`, and cleans up on destroy. Applied as `use:cursorGlow` on any element. Respects `prefers-reduced-motion` and skips on touch devices.
+**Files:** `src/lib/motion/actions/cursorGlow.ts`, 11 consumer files
+**Reuse when:** Any component that needs a mouse-tracking glow effect — one `use:cursorGlow` replaces 15 lines of markup + script.
+
+---
+
 ## Layout Patterns
 
 ### Full-Viewport CSS Scroll-Snap

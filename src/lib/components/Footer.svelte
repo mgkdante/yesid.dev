@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { siteMeta, menuItems } from '$lib/data';
 	import { wordmarkHover } from '$lib/motion/actions';
+	import { StatusDot } from '$lib/components/brand';
 
 	const year = new Date().getFullYear();
 
@@ -86,7 +87,7 @@
 		<small>&copy; {year} yesid<span class="text-brand-primary">.</span></small>
 		<address class="not-italic">Montreal, QC &middot; Remote</address>
 		<span class="flex items-center gap-1.5">
-			<span class="footer-status-dot" aria-hidden="true"></span>
+			<StatusDot color="orange" pulse />
 			system online &mdash; {systemDate}
 		</span>
 	</div>
@@ -104,13 +105,5 @@
 		border-top: 1px solid rgba(255, 255, 255, 0.06);
 	}
 
-	.footer-status-dot {
-		display: inline-block;
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: #E07800;
-		box-shadow: 0 0 6px #E07800, 0 0 12px rgba(224, 120, 0, 0.3);
-	}
 
 </style>

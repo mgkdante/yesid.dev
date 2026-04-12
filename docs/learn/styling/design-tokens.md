@@ -49,7 +49,7 @@ Design tokens are the foundation of every scalable design system. Companies like
 | `src/app.css` | The `@theme` block (lines 14-42) | Layer 2: brand palette, fonts, and radii as Tailwind utilities |
 | `src/app.css` | The `html` rule (lines 46-50) | Shows tokens being consumed: `background-color: var(--bg-primary)` |
 | `src/lib/components/Hero.svelte` | The CTA button classes | Uses both layers: `bg-brand-primary` (Layer 2) and `text-[var(--text-primary)]` (Layer 1) |
-| `src/lib/components/AboutBento.svelte` | The bento card divs | Shows `border-[#2a2a2a] bg-[#1a1a1a]` -- card-surface colors used consistently |
+| `src/lib/components/brand/BrandButton.svelte` | Token usage in primitives | Shows `var(--duration-normal)`, `var(--ease-default)`, `var(--shadow-glow-sm)` — every visual value comes from a token |
 
 ## The Mental Model
 
@@ -181,6 +181,7 @@ A component then uses both layers:
 - **Depends on:** [[tailwind-utility-first]] because Layer 2 tokens generate Tailwind utility classes
 - **Enables:** [[dark-theme-architecture]] because the theme system is built on Layer 1 tokens
 - **Related:** [[scoped-styles-in-svelte]] because scoped styles consume tokens via `var()`
+- **Enables:** [[brand-primitives]] because primitives are built entirely on design tokens
 
 ## Knowledge Check
 

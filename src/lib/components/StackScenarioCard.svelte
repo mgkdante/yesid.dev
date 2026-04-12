@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
 	import { gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { BrandButton } from '$lib/components/brand';
 
 	let {
 		scenario,
@@ -68,7 +69,7 @@
 	<!-- Project links -->
 	{#if scenario.relatedProjects.length > 0}
 		<div class="scenario-projects">
-			<span class="projects-label">Proven in</span>
+			<span class="projects-label label-section font-semibold">Proven in</span>
 			<div class="project-badges">
 				{#each scenario.relatedProjects as slug}
 					<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -78,10 +79,11 @@
 	{/if}
 
 	<!-- CTA -->
-	<a href="/contact" class="scenario-cta" data-testid="scenario-cta">
-		Let's build this
-		<span aria-hidden="true">&rarr;</span>
-	</a>
+	<div class="mt-4">
+		<BrandButton variant="primary" size="sm" href="/contact" data-testid="scenario-cta">
+			Let's build this <span aria-hidden="true">&rarr;</span>
+		</BrandButton>
+	</div>
 </div>
 
 <style>
@@ -168,12 +170,6 @@
 	}
 
 	.projects-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
 		white-space: nowrap;
 	}
 
@@ -193,32 +189,5 @@
 		background: var(--bg-elevated);
 	}
 
-	/* --- CTA --- */
 
-	.scenario-cta {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1rem;
-		border: 1px solid var(--brand-primary);
-		border-radius: var(--radius-md);
-		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
-		color: var(--brand-primary);
-		font-family: var(--font-body);
-		font-size: var(--text-small);
-		font-weight: 600;
-		text-decoration: none;
-		transition: background-color 0.2s ease;
-	}
-
-	.scenario-cta:hover {
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.scenario-cta {
-			transition: none;
-		}
-	}
 </style>

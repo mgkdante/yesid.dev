@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { StatusDot, HazardStripe, CornerMarks } from '$lib/components/brand';
 
 	let {
 		tag = 'LIVE',
@@ -25,29 +26,25 @@
 </script>
 
 <div class="infra-frame" data-testid="infra-frame">
-	<!-- Corner tick marks -->
-	<span class="frame-tick frame-tick-tl" aria-hidden="true"></span>
-	<span class="frame-tick frame-tick-tr" aria-hidden="true"></span>
-	<span class="frame-tick frame-tick-bl" aria-hidden="true"></span>
-	<span class="frame-tick frame-tick-br" aria-hidden="true"></span>
+	<CornerMarks size="sm" opacity={0.4} />
 
 	<!-- Title bar -->
 	<div class="frame-bar">
 		<span class="frame-tag">
-			<span class="frame-led" aria-hidden="true"></span>
+			<StatusDot color="orange" pulse />
 			{tag}
 		</span>
 		<span class="frame-title">{title}</span>
 		{#if status}
 			<span class="frame-status">
-				<span class="frame-led-ok" aria-hidden="true"></span>
+				<StatusDot color="green" />
 				{status}
 			</span>
 		{/if}
 	</div>
 
 	<!-- Hazard stripe -->
-	<div class="frame-stripe" aria-hidden="true"></div>
+	<HazardStripe size="sm" />
 
 	<!-- Content -->
 	<div class="frame-body">
@@ -88,42 +85,6 @@
 		box-shadow: 0 0 24px rgba(224, 120, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.3);
 	}
 
-	/* Corner tick marks — infrastructure blueprint feel */
-	.frame-tick {
-		position: absolute;
-		width: 12px;
-		height: 12px;
-		z-index: 2;
-		pointer-events: none;
-	}
-
-	.frame-tick::before,
-	.frame-tick::after {
-		content: '';
-		position: absolute;
-		background: var(--brand-primary);
-		opacity: 0.4;
-	}
-
-	.frame-tick::before { /* horizontal arm */ }
-	.frame-tick::after { /* vertical arm */ }
-
-	.frame-tick-tl { top: -1px; left: -1px; }
-	.frame-tick-tl::before { top: 0; left: 0; width: 12px; height: 1px; }
-	.frame-tick-tl::after { top: 0; left: 0; width: 1px; height: 12px; }
-
-	.frame-tick-tr { top: -1px; right: -1px; }
-	.frame-tick-tr::before { top: 0; right: 0; width: 12px; height: 1px; }
-	.frame-tick-tr::after { top: 0; right: 0; width: 1px; height: 12px; }
-
-	.frame-tick-bl { bottom: -1px; left: -1px; }
-	.frame-tick-bl::before { bottom: 0; left: 0; width: 12px; height: 1px; }
-	.frame-tick-bl::after { bottom: 0; left: 0; width: 1px; height: 12px; }
-
-	.frame-tick-br { bottom: -1px; right: -1px; }
-	.frame-tick-br::before { bottom: 0; right: 0; width: 12px; height: 1px; }
-	.frame-tick-br::after { bottom: 0; right: 0; width: 1px; height: 12px; }
-
 	/* --- Title bar --- */
 
 	.frame-bar {
@@ -147,20 +108,6 @@
 		font-weight: 600;
 	}
 
-	.frame-led {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--brand-primary);
-		box-shadow: 0 0 6px rgba(224, 120, 0, 0.6);
-		animation: frame-led-pulse 2s ease-in-out infinite;
-	}
-
-	@keyframes frame-led-pulse {
-		0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(224, 120, 0, 0.5); }
-		50% { opacity: 0.7; box-shadow: 0 0 10px rgba(224, 120, 0, 0.8); }
-	}
-
 	.frame-title {
 		font-family: var(--font-mono);
 		font-size: 11px;
@@ -177,24 +124,7 @@
 		color: var(--text-muted);
 	}
 
-	.frame-led-ok {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: #28c840;
-		box-shadow: 0 0 4px rgba(40, 200, 64, 0.5);
-	}
-
 	/* --- Hazard stripe --- */
-
-	.frame-stripe {
-		height: 3px;
-		background: repeating-linear-gradient(
-			-45deg,
-			#FFB627 0px, #FFB627 8px,
-			transparent 8px, transparent 16px
-		);
-	}
 
 	/* --- Body --- */
 
@@ -275,9 +205,4 @@
 		}
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.frame-led {
-			animation: none;
-		}
-	}
 </style>
