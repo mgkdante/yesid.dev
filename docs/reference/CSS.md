@@ -1,7 +1,7 @@
 # CSS Architecture — Design System Reference
 
-**Last updated:** 2026-04-11
-**Status:** Active — Slice 17a-1 Token Foundation
+**Last updated:** 2026-04-12
+**Status:** Active — Slice 17a-2a Brand Primitives
 
 > Single source of truth for the yesid.dev design system tokens, layers, and rules.
 
@@ -42,8 +42,9 @@ Tailwind utilities     →  Composable classes (text-display, shadow-card, z-nav
 | `text-small` | `14px` | Metadata, labels |
 | `text-mono` | `13px` | Terminal text, code, SQL |
 | `text-caption` | `12px` | Timestamps, footnotes, tags |
+| `text-micro` | `10px` | Chrome annotations, stop labels |
 
-**Hard rules:** body >= 16px, mono >= 13px, labels >= 12px.
+**Hard rules:** body >= 16px, mono >= 13px, labels >= 12px, micro for chrome only.
 
 **Exception:** HeroBanner wordmark uses `text-[64px]` / `md:text-[clamp(72px,...,130px)]` — intentionally outside the type scale.
 
@@ -60,6 +61,14 @@ Defined in `@theme`:
 | `--color-brand-accent` | `#FFB627` | `text-brand-accent`, `bg-brand-accent` |
 | `--color-brand-primary-hover` | `#C96A00` | `hover:bg-brand-primary-hover` |
 | `--color-brand-accent-hover` | `#E5A220` | `hover:bg-brand-accent-hover` |
+
+### RGB Channel Tokens (for variable opacity)
+Defined in `tokens.css` `:root`:
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--brand-primary-rgb` | `224 120 0` | `rgb(var(--brand-primary-rgb) / 0.5)` |
+| `--brand-accent-rgb` | `255 182 39` | `rgb(var(--brand-accent-rgb) / 0.3)` |
 
 ### Semantic (theme-switching)
 Defined in `tokens.css` per theme:
@@ -202,6 +211,64 @@ Unified naming between `tokens.css` and `@theme`.
 8. **Mobile-first responsive.** Base = mobile. `md:` and `lg:` add complexity.
 9. **Prefer logical properties.** `padding-inline`, `margin-block` over `padding-left`, `margin-top`.
 10. **Group utilities.** Order: layout -> spacing -> sizing -> typography -> color -> effects -> state.
+
+## Global Keyframes (app.css)
+
+| Keyframe | Pattern | Usage |
+|----------|---------|-------|
+| `blink` | 0%/100%: opacity 1, 50%: opacity 0 | Terminal cursors, blinking indicators |
+| `pulse-glow` | Oscillating opacity + brand glow box-shadow | LED dots, status indicators |
+
+Used via `.led-pulse` utility class or direct `animation:` reference.
+
+---
+
+## Brand Utility Classes (app.css)
+
+12 utility classes for shared brand patterns. Wired into components in Phase B (17a-2b).
+
+| # | Class | Purpose |
+|---|-------|---------|
+| 1 | `.brand-fade-line` | Gradient line from brand-primary to transparent |
+| 2 | `.divider-dashed` | Dashed border-top with `--border-strong` |
+| 3 | `.scrollbar-hidden` | Hide scrollbar, preserve scroll |
+| 4 | `.brand-glow-hover` | Hover border + shadow glow transition |
+| 5 | `.img-desat` | Grayscale B&W, color on hover |
+| 6 | `.grid-responsive-cards` | 1→2→3 column responsive grid |
+| 7 | `.label-section` | Mono uppercase, caption size, muted color |
+| 8 | `.label-station` | Mono uppercase, small size, brand-primary color |
+| 9 | `.label-metric` | Mono uppercase, caption size, 2px tracking |
+| 10 | `.prose-dark` | Full markdown prose styling (blog + work detail) |
+| 11 | `.led-pulse` | Pulse-glow animation for LED indicators |
+| 12 | `.bento-card` | Full bento card bundle (border, bg, radius, hover) |
+
+---
+
+## Brand Primitives (`src/lib/components/brand/`)
+
+15 reusable components built in Slice 17a-2a.
+
+| Component | Props | Replaces |
+|-----------|-------|----------|
+| `StatusDot` | `color`, `pulse`, `size` | 8+ pulsing dots |
+| `SectionLabel` | `text`, `variant`, `align` | 25+ mono labels |
+| `StopLabel` | `stop`, `label` | 10 About bento stops |
+| `Tag` | `text`, `size`, `active`, `accentColor`, `interactive` | 8+ tag pills |
+| `NumberBadge` | `value`, `color`, `sonar` | 3 numbered circles |
+| `ChevronToggle` | `open`, `size`, `direction` | 8+ expand arrows |
+| `HazardStripe` | `size`, `angle`, `label` | 11+ stripe bars |
+| `GlowOverlay` | `intensity` | 12 manual overlay divs |
+| `MetricDisplay` | `value`, `label`, `sublabel`, `size` | 6 stat combos |
+| `BrandButton` | `variant`, `size`, `href`, `children` | 7+ CTA styles |
+| `CardBase` | `hover`, `glow`, `interactive`, `padding`, `href`, `children` | 12+ card patterns |
+| `CornerMarks` | `size`, `opacity` | 8 blueprint ticks |
+| `TerminalChrome` | `title`, `tag`, `status`, `footer`, `children` | 4 terminal windows |
+| `StickyPanel` | `top`, `children` | 4 sticky sidebars |
+| `GradientSeparator` | `label`, `maxWidth` | Pre-existing, tokenized |
+
+Import: `import { StatusDot, Tag } from '$lib/components/brand';`
+
+---
 
 ## Anti-Patterns
 
