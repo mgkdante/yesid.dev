@@ -45,7 +45,13 @@ IDEA
 [Phase 6: Implementation]     — Task-by-task with approval gates
   |
   v
-[Phase 7: Closing]            — Handoff, docs, learn, commit
+[Phase 7: Verification]       — Pre-completion checks + visual proof
+  |
+  v
+[Phase 8: PR & Merge]         — Branch → PR → review → squash-merge
+  |
+  v
+[Phase 9: Closing]            — Handoff, docs, learn, commit
   |
   v
 SHIPPED
@@ -431,7 +437,39 @@ Feedback follows the pattern observed across 22 handoffs:
 
 ---
 
-## 9. Phase 7 — Closing
+## 9. Phase 7 — Verification
+
+**When:** After implementing a task, before STOP.
+**Goal:** Confirm the work is correct before presenting to Yesid.
+
+### Process
+1. `bun run test` + `bun run check` — both must pass
+2. Pre-flight visual check (UI tasks) — state expected layout at desktop/mobile
+3. Screenshot proof via Claude Preview (UI tasks)
+4. Fix obvious problems before STOP
+
+**Tools:** See `CLAUDE.md` → Tool Selection Protocol → Verification Phase.
+
+---
+
+## 10. Phase 8 — PR & Merge
+
+**When:** All tasks in the sub-slice are approved by Yesid.
+**Goal:** Create a PR, get final review, merge to main.
+
+### Process
+1. Verify `bun run test` + `bun run check` pass on the branch
+2. Create PR with summary of all changes and test status
+3. Yesid reviews on GitHub
+4. Squash-merge to main
+5. Delete feature branch
+6. Next sub-slice branches from updated main
+
+**Full protocol:** See `CLAUDE.md` → Git & PR Workflow.
+
+---
+
+## 11. Phase 9 — Closing
 
 **When:** ALL tasks in the slice are approved by Yesid.
 **Goal:** Document everything, update all reference docs, commit.
@@ -500,7 +538,7 @@ Feedback follows the pattern observed across 22 handoffs:
 
 ---
 
-## 10. Quality Gates
+## 12. Quality Gates
 
 ### Before Every Task Completion
 
@@ -534,7 +572,7 @@ Feedback follows the pattern observed across 22 handoffs:
 
 ---
 
-## 11. Parallel Work Rules
+## 13. Parallel Work Rules
 
 ### When Parallel Agents Are Allowed
 
@@ -564,7 +602,7 @@ Feedback follows the pattern observed across 22 handoffs:
 
 ---
 
-## 12. Data-Driven Architecture (Non-Negotiable)
+## 14. Data-Driven Architecture (Non-Negotiable)
 
 Every string on the site comes from the data layer. This is not optional.
 
@@ -596,7 +634,7 @@ resolveLocale({ en: "Hello", fr: "Bonjour" }, 'es')
 
 ---
 
-## 13. CSS Architecture Enforcement
+## 15. CSS Architecture Enforcement
 
 Three layers, strict separation. See `docs/reference/CSS.md` for the full reference.
 
@@ -617,7 +655,7 @@ Component <style> (scoped layout)
 
 ---
 
-## 14. Animation Workflow
+## 16. Animation Workflow
 
 ### Before Animating
 
@@ -646,32 +684,36 @@ Component <style> (scoped layout)
 
 ---
 
-## 15. Session Start Protocol
+## 17. Session Start Protocol
 
 Every session begins with:
 
 1. **Declare session type** — Planning, Implementation, or Closing
-2. **Scan for drift** — Check for uncommitted changes or commits made outside Claude Code
-3. **Read active slice spec** — `docs/slices/slice-NN.md`
-4. **Check PATTERNS.md** — Any relevant solved patterns?
-5. **Check memory** — Load relevant context from previous sessions
-6. **State the goal** — What does "done" look like for this session?
+2. **Read checkpoint** — `docs/slices/slice-{NN}-checkpoint.md` → resume where we left off
+3. **Check out feature branch** — `git checkout feature/slice-{current}`
+4. **Scan for drift** — Check for uncommitted changes or commits made outside Claude Code
+5. **Read active slice spec** — `docs/slices/slice-NN.md`
+6. **Check PATTERNS.md** — Any relevant solved patterns?
+7. **Check memory** — Load relevant context from previous sessions
+8. **State the goal** — What does "done" look like for this session?
 
 ---
 
-## 16. Session End Protocol
+## 18. Session End Protocol
 
 Every session ends with:
 
-1. **Devlog entry** — What was done, decisions made, commands run
-2. **Memory update** — Save non-obvious decisions and context for future sessions
-3. **State next steps** — What should the next session start with?
-4. **Tests passing** — Confirm `bun run test` and `bun run check` both green
-5. **No loose ends** — Every open question documented in devlog
+1. **Update checkpoint** — `docs/slices/slice-{NN}-checkpoint.md` with current position
+2. **Devlog entry** — What was done, decisions made, commands run
+3. **Memory update** — Save non-obvious decisions and context for future sessions
+4. **State next steps** — What should the next session start with?
+5. **Tests passing** — Confirm `bun run test` and `bun run check` both green
+6. **No loose ends** — Every open question documented in devlog
+7. **Commit** — All changes committed to the feature branch
 
 ---
 
-## 17. Document Ecosystem
+## 19. Document Ecosystem
 
 | Document | Purpose | Update Frequency |
 |----------|---------|-----------------|
@@ -692,10 +734,12 @@ Every session ends with:
 | `docs/handoffs/` | Completion reports | After slice approval |
 | `docs/devlog/` | Daily work logs | Every session |
 | `docs/learn/` | Knowledge base for Yesid | Every slice close |
+| `docs/README.md` | Directory index | When docs structure changes |
+| `docs/slices/slice-{NN}-checkpoint.md` | Session continuity checkpoint | Every session start/end |
 
 ---
 
-## 18. Proven Rhythms (Extracted from 22 Slices)
+## 20. Proven Rhythms (Extracted from 22 Slices)
 
 ### What Works
 
@@ -715,7 +759,7 @@ Every session ends with:
 
 ---
 
-## 19. Quick Reference: Plugin-to-Phase Map
+## 21. Quick Reference: Plugin-to-Phase Map
 
 | Phase | Primary Plugins/Tools |
 |-------|----------------------|
@@ -725,4 +769,26 @@ Every session ends with:
 | **Planning** | `superpowers:writing-plans`, `planner` agent, `architect` agent |
 | **Implementation** | Svelte MCP, GSAP Master, Context7, Claude Preview, `tdd-guide`, `build-error-resolver` |
 | **Quality** | `code-reviewer`, `security-reviewer`, Chrome DevTools `lighthouse_audit`, Playwright MCP |
-| **Closing** | `superpowers:finishing-a-development-branch`, `superpowers:verification-before-completion`, `vercel-plugin:deploy` |
+| **Verification** | `superpowers:verification-before-completion`, Claude Preview, Chrome DevTools `lighthouse_audit` |
+| **PR & Merge** | `superpowers:finishing-a-development-branch`, `commit-commands:commit-push-pr`, GitHub MCP |
+| **Closing** | Doc Updater agent, `engineering:documentation`, `continuous-learning`, `vercel-plugin:deploy` |
+
+**Full tool protocol with ALWAYS/CONSIDER lists:** See `CLAUDE.md` → Tool Selection Protocol.
+
+### Enhancement Opportunities (Skills Not Yet Wired In)
+
+| Tool | What It Does | When To Use |
+|------|-------------|-------------|
+| `superpowers:finishing-a-development-branch` | PR checklist before merge | End of every sub-slice |
+| `superpowers:verification-before-completion` | Pre-completion sanity check | Before every STOP |
+| `frontend-design-pro:design-wizard` | Interactive design decisions | During brainstorm sessions |
+| `engineering:code-review` | Structured code review | After implementation tasks |
+| `engineering:testing-strategy` | Test plan design | 17f (test architecture) |
+| `design-systems:design-token` | Token organization | 17a (CSS consolidation) |
+| `design-systems:component-spec` | Component API specs | 17d (component standardization) |
+| `design-systems:theming-system` | Theme architecture | 17a (light theme prep) |
+| `design-systems:accessibility-audit` | WCAG compliance | 17d (ARIA audit) |
+| `design-systems:pattern-library` | Pattern organization | 17d (shared UI shells) |
+| `interaction-design:animation-principles` | Motion language | 17e (motion consolidation) |
+| `ui-design:responsive-design` | Responsive strategy | 17a (breakpoint system) |
+| `continuous-learning` | Pattern extraction | Every closing session |

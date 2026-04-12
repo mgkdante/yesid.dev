@@ -2,7 +2,7 @@
 
 ## Project
 
-Freelance Digital Infrastructure. SvelteKit + Tailwind + GSAP + Threlte.
+Freelance Digital Infrastructure.
 Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627` yellow, Inter + JetBrains Mono.
 
 ## Runtime
@@ -21,11 +21,11 @@ Owner: Yesid O. Domain: yesid.dev. Brand: dark theme, `#E07800` orange, `#FFB627
 Every session is one of three types. Declare which at the start.
 
 
-| Type               | What happens                                       | Artifacts                                                                                                                                                      |
-| ------------------ | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Planning**       | Research, brainstorm, design spec, slice spec      | `docs/specs/`, `docs/plans/`, `docs/slices/` |
-| **Implementation** | One sub-slice, task by task per Iteration Protocol | Code, tests, devlog                                                                                                                                            |
-| **Closing**        | Docs, handoff, learning docs, tree.txt, commit     | `docs/handoffs/`, `docs/devlog/`, `docs/learn/`                                                                                                                |
+| Type               | What happens                                       | Artifacts                                       |
+| ------------------ | -------------------------------------------------- | ----------------------------------------------- |
+| **Planning**       | Research, brainstorm, design spec, slice spec      | `docs/specs/`, `docs/plans/`, `docs/slices/`    |
+| **Implementation** | One sub-slice, task by task per Iteration Protocol | Code, tests, devlog                             |
+| **Closing**        | Docs, handoff, learning docs, tree.txt, commit     | `docs/handoffs/`, `docs/devlog/`, `docs/learn/` |
 
 
 **Hard rule:** A session cannot be two types. Planning sessions produce zero code. Implementation sessions don't write specs but can modify on iteration. Closing sessions don't add features.
@@ -91,11 +91,13 @@ Slice template: `docs/slices/_TEMPLATE.md`
 ## Git & PR Workflow
 
 ### Branch Strategy
+
 - One branch per sub-slice: `feature/slice-{NN}{letter}`
 - Branch from `main`, PR back to `main`
 - Never commit directly to `main`
 
 ### Branch Naming
+
 - `feature/slice-00-repo-hygiene`
 - `feature/slice-17a-design-system`
 - `feature/slice-17b-service-layer`
@@ -106,6 +108,7 @@ Slice template: `docs/slices/_TEMPLATE.md`
 - `feature/slice-17g-learning-docs`
 
 ### PR Protocol
+
 1. All tasks complete and approved by Yesid
 2. `bun run test` + `bun run check` pass
 3. Create PR with summary of all changes
@@ -115,6 +118,7 @@ Slice template: `docs/slices/_TEMPLATE.md`
 7. Next sub-slice branches from updated main
 
 ### Commit Convention (unchanged)
+
 `<type>(slice-NN): <description>`
 
 Types: feat, fix, refactor, docs, test, chore, perf, ci
@@ -122,6 +126,7 @@ Types: feat, fix, refactor, docs, test, chore, perf, ci
 ## Session Checkpoint
 
 Every session reads and updates the checkpoint file:
+
 - Located at `docs/slices/slice-{NN}-checkpoint.md`
 - One per major slice (e.g., Slice 17 has one checkpoint, not seven)
 
@@ -132,7 +137,7 @@ Contents: current sub-slice, task number, branch name, what's merged, what's pen
 
 ## Slice Closing (only after ALL tasks approved)
 
-See `docs/reference/WORKFLOW.md` Section 9 for the full 10-step closing checklist. Critical items:
+See `docs/reference/WORKFLOW.md` Section 11 for the full 10-step closing checklist. Critical items:
 
 1. Handoff report → `docs/handoffs/_TEMPLATE.md`
 2. Devlog → `docs/devlog/_TEMPLATE.md`
@@ -208,7 +213,7 @@ Three layers, strict separation. Never mix purposes across layers.
 
 ## Plugins & Tools
 
-See `docs/reference/WORKFLOW.md` Section 19 for the complete plugin-to-phase map.
+See `docs/reference/WORKFLOW.md` Section 21 for the complete plugin-to-phase map.
 
 ### Core MCP Servers (every session)
 
@@ -242,6 +247,7 @@ See `docs/reference/WORKFLOW.md` Section 19 for the complete plugin-to-phase map
 - Reference: `/brand/yesid_brand_guide.pdf`, `docs/specs/`, `docs/plans/`
 
 ### Superpowers Output Paths (Override Defaults)
+
 - Design specs → `docs/specs/` (not docs/superpowers/specs/)
 - Implementation plans → `docs/plans/` (not docs/superpowers/plans/)
 - Visual companion HTMLs → ephemeral, `.gitignore`d
@@ -254,23 +260,29 @@ At each phase transition, check this map and invoke relevant tools.
 Do not wait for Yesid to ask. Proactive tool use = higher quality output.
 
 ### Research Phase
+
 ALWAYS:
+
 - Chrome DevTools MCP → multi-breakpoint competitive scan
 - Context7 MCP → verify API signatures before assuming
 - `frontend-design-pro:analyze-site` → structured site analysis
 - `frontend-design-pro:trend-researcher` → current UI/UX trends
 
 CONSIDER:
+
 - `frontend-design-pro:inspiration-analyzer` → studying specific reference sites
 - `deep-research` → broader web research needed
 - Figma MCP → Figma designs exist for the feature
 
 ### Brainstorm Phase
+
 ALWAYS:
+
 - `superpowers:brainstorming` → mandatory, never skip
 - Visual companion → offer for any question with visual content
 
 CONSIDER:
+
 - `frontend-design-pro:design-wizard` → interactive design decisions
 - `frontend-design-pro:color-curator` → color palette exploration
 - `frontend-design-pro:typography-selector` → font pairing decisions
@@ -283,11 +295,14 @@ CONSIDER:
 - `interaction-design:animation-principles` → designing motion
 
 ### Planning Phase
+
 ALWAYS:
+
 - `superpowers:writing-plans` → structured plan creation
 - Planner agent → complex feature decomposition
 
 CONSIDER:
+
 - Architect agent → architectural decisions
 - `engineering:architecture` → system design evaluation
 - `engineering:testing-strategy` → planning test approach
@@ -295,13 +310,16 @@ CONSIDER:
 - `api-design` → designing service layer interfaces
 
 ### Implementation Phase
+
 ALWAYS:
+
 - Svelte MCP (`svelte-autofixer`) → every Svelte file edit
 - Context7 MCP → before using any library API
 - `superpowers:executing-plans` → follow the plan
 - Claude Preview → visual verification after UI tasks
 
 CONSIDER:
+
 - GSAP Master MCP → any animation work
 - `tdd-workflow` → new features (RED → GREEN → REFACTOR)
 - `design-systems:component-spec` → building shared components
@@ -315,36 +333,47 @@ CONSIDER:
 - `interaction-design:loading-states` → loading/skeleton patterns
 
 ### Code Review Phase (after every task)
+
 ALWAYS:
+
 - Code Reviewer agent → general quality
 - TypeScript Reviewer agent → TS-specific issues
 
 CONSIDER:
+
 - Security Reviewer agent → auth, input handling, API calls
 - `engineering:code-review` → structured review checklist
 - `prototyping-testing:heuristic-evaluation` → UI quality check
 
 ### Verification Phase (before every STOP)
+
 ALWAYS:
+
 - `superpowers:verification-before-completion` → pre-completion check
 - Claude Preview → screenshot proof for UI tasks
 
 CONSIDER:
+
 - Chrome DevTools MCP (`lighthouse_audit`) → performance check
 - `prototyping-testing:accessibility-test-plan` → a11y verification
 
 ### PR & Merge Phase
+
 ALWAYS:
+
 - `superpowers:finishing-a-development-branch` → PR readiness checklist
 - `commit-commands:commit-push-pr` → create the PR
 - GitHub MCP → PR management
 
 ### Closing Phase
+
 ALWAYS:
+
 - Doc Updater agent → update ARCHITECTURE.md, README, TESTS.md
 - `engineering:documentation` → technical docs quality
 
 CONSIDER:
+
 - `continuous-learning` → extract patterns from this slice's work
 - `design-systems:documentation-template` → structured docs
 
