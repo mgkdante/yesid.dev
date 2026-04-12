@@ -284,7 +284,7 @@
 							{#if benefit}
 								<div
 									data-testid="services-benefit"
-									class="text-[17px] font-medium leading-snug"
+									class="text-body-lg font-medium leading-snug"
 									style="color: var(--text-primary, #F5F5F0);"
 								>{benefit}</div>
 							{/if}
@@ -300,7 +300,7 @@
 										style="color: var(--brand-primary, #E07800);"
 									>{metricValue}</span>
 									<span
-										class="text-[13px]"
+										class="text-small"
 										style="color: var(--text-secondary, #999999);"
 									>{metricLabel}</span>
 								</div>
@@ -319,7 +319,7 @@
 		>
 			<a
 				href="/services"
-				class="view-all-link border-b pb-0.5 text-[15px] font-medium tracking-wide transition-colors duration-200"
+				class="view-all-link border-b pb-0.5 text-body font-medium tracking-wide transition-colors duration-200"
 				style="color: var(--text-secondary, #999999); border-color: var(--border, #3A3A3A);"
 			>View all services &rarr;</a>
 		</div>
