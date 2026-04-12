@@ -9,6 +9,7 @@
 	import { Marked } from 'marked';
 	import { getOutgoingRelations, getIncomingRelations, getTechItemContent } from '$lib/data/tech-stack.js';
 	import CollapsibleSection from './CollapsibleSection.svelte';
+	import { BrandButton } from '$lib/components/brand';
 
 	let {
 		item = null,
@@ -141,10 +142,11 @@
 			{/if}
 
 			<!-- CTA -->
-			<a href="/contact" class="panel-cta" data-testid="panel-cta">
-				Let's build with {item.name}
-				<span aria-hidden="true">&rarr;</span>
-			</a>
+			<div class="mt-4">
+				<BrandButton variant="primary" size="sm" href="/contact" data-testid="panel-cta">
+					Let's build with {item.name} <span aria-hidden="true">&rarr;</span>
+				</BrandButton>
+			</div>
 		</div>
 	{:else}
 		<!-- Hint Card — nudges user to interact -->
@@ -389,28 +391,6 @@
 		border-radius: var(--radius-sm);
 		color: var(--text-secondary);
 		background: var(--bg-elevated);
-	}
-
-	/* --- CTA --- */
-
-	.panel-cta {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1rem;
-		border: 1px solid var(--brand-primary);
-		border-radius: var(--radius-md);
-		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
-		color: var(--brand-primary);
-		font-family: var(--font-body);
-		font-size: var(--text-small);
-		font-weight: 600;
-		text-decoration: none;
-	}
-
-	.panel-cta:hover {
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
 	}
 
 	/* --- Orientation Card --- */

@@ -15,7 +15,7 @@ describe('CollapsibleSection', () => {
 			props: { title: 'Step', open: true, index: 0 }
 		});
 		const badge = container.querySelector('[aria-hidden="true"]');
-		expect(badge?.textContent?.trim()).toBe('1');
+		expect(badge?.textContent?.trim()).toBe('01');
 	});
 
 	it('toggles body visibility on button click when collapsible', async () => {

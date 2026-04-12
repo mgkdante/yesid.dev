@@ -49,7 +49,7 @@
 	</div>
 
 	{#if open}
-		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
+		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3">
 			<!-- Language filter -->
 			{#if languages.length > 1}
 				<div class="label-section font-semibold">
@@ -66,7 +66,7 @@
 					</button>
 					{#each languages as lang}
 						<button
-							class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 							class:m-tag-active={activeLang === lang}
 							style="--accent: {accentColor};"
 							onclick={() => onLangSelect(lang)}
@@ -88,7 +88,7 @@
 					<input
 						type="date"
 						bind:value={dateFrom}
-						class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
+						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
 						style="color-scheme: dark;"
 					/>
 				</label>
@@ -97,7 +97,7 @@
 					<input
 						type="date"
 						bind:value={dateTo}
-						class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
+						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
 						style="color-scheme: dark;"
 					/>
 				</label>
@@ -116,7 +116,7 @@
 					</button>
 					{#each tags as tag}
 						<button
-							class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 							class:m-tag-active={activeTag === tag}
 							style="--accent: {accentColor};"
 							onclick={() => onTagSelect(tag)}

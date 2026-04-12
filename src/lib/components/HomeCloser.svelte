@@ -11,6 +11,8 @@
 	import { siteMeta } from '$lib/data/meta.js';
 	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { StatusDot, TerminalChrome } from '$lib/components/brand';
+	import TerminalCursor from './TerminalCursor.svelte';
 
 	// Static content
 	const heading = resolveLocale(closerContent.heading, 'en');
@@ -402,55 +404,49 @@
 		</p>
 
 		<!-- Terminal -->
-		<div data-testid="closer-board" data-closer-board class="closer-terminal">
-			<div class="terminal-glow" aria-hidden="true"></div>
-			<!-- Title bar with personal prompt -->
-			<div class="terminal-titlebar">
-				<span class="terminal-status"></span>
-				<span class="terminal-title">yesid@terminus:~/destinations</span>
+		<TerminalChrome
+			title="yesid@terminus:~/destinations"
+			noPadding
+			footer={[
+				{ label: '', value: 'Montreal, QC' },
+				{ label: '', value: 'UTF-8' },
+				{ label: '', value: `${rows.length} destinations` }
+			]}
+			data-testid="closer-board"
+			data-closer-board
+			class="closer-terminal"
+		>
+			<!-- Welcome line -->
+			<div class="terminal-welcome">
+				<span class="terminal-comment">// where to next?</span>
 			</div>
-			<!-- Terminal body -->
-			<div class="terminal-body">
-				<!-- Welcome line -->
-				<div class="terminal-welcome">
-					<span class="terminal-comment">// where to next?</span>
-				</div>
-				{#each rows as row, i}
-					<a
-						href={row.href}
-						data-testid="closer-row"
-						data-closer-row
-						class="terminal-row"
-						class:terminal-row-primary={row.primary}
-						aria-label="{row.label} — {row.description}"
-						target={row.href.startsWith('http') ? '_blank' : undefined}
-						rel={row.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-					>
-						<span class="terminal-line-num">{String(i + 1).padStart(2, '0')}</span>
-						<span class="terminal-row-label">{row.label}</span>
-						<span class="terminal-row-desc" class:terminal-row-desc-primary={row.primary}>
-							{row.description}
-						</span>
-						<span class="terminal-row-action" class:terminal-row-action-primary={row.primary}>
-							{row.action} {'->'}
-						</span>
-					</a>
-				{/each}
-				<!-- Blinking cursor -->
-				<div class="terminal-cursor-line">
-					<span class="terminal-line-num">&nbsp;</span>
-					<span class="terminal-cursor">_</span>
-				</div>
+			{#each rows as row, i}
+				<a
+					href={row.href}
+					data-testid="closer-row"
+					data-closer-row
+					class="terminal-row"
+					class:terminal-row-primary={row.primary}
+					aria-label="{row.label} — {row.description}"
+					target={row.href.startsWith('http') ? '_blank' : undefined}
+					rel={row.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+				>
+					<span class="terminal-line-num">{String(i + 1).padStart(2, '0')}</span>
+					<span class="terminal-row-label">{row.label}</span>
+					<span class="terminal-row-desc" class:terminal-row-desc-primary={row.primary}>
+						{row.description}
+					</span>
+					<span class="terminal-row-action" class:terminal-row-action-primary={row.primary}>
+						{row.action} {'->'}
+					</span>
+				</a>
+			{/each}
+			<!-- Blinking cursor -->
+			<div class="terminal-cursor-line">
+				<span class="terminal-line-num">&nbsp;</span>
+				<TerminalCursor />
 			</div>
-			<!-- Status bar -->
-			<div class="terminal-statusbar">
-				<span>Montreal, QC</span>
-				<span>UTF-8</span>
-				<span>{rows.length} destinations</span>
-			</div>
-			<!-- Scanline overlay -->
-			<div class="terminal-scanlines" aria-hidden="true"></div>
-		</div>
+		</TerminalChrome>
 
 		<!-- CTA -->
 		<a href={ctaHref} data-testid="closer-cta" class="closer-cta">
@@ -563,12 +559,12 @@
 		font-family: Inter, sans-serif;
 		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
-		color: var(--text-primary, #f0f0f0);
+		color: var(--text-primary);
 		letter-spacing: -2px;
 		margin-block-end: 6px;
 	}
 	.closer-dot {
-		color: var(--brand-primary, #e07800);
+		color: var(--brand-primary);
 	}
 
 	.closer-subheading {
@@ -576,61 +572,10 @@
 	}
 
 	/* ===== Terminal window ===== */
+	/* Layout wrapper — chrome comes from TerminalChrome */
 	.closer-terminal {
-		position: relative;
-		background: rgba(6, 6, 6, 0.96);
-		border: 1px solid #222;
-		border-left: 2px solid var(--brand-primary, #e07800);
-		border-radius: 6px;
-		box-shadow:
-			0 8px 40px rgba(0, 0, 0, 0.7),
-			0 0 60px rgba(224, 120, 0, 0.04);
 		margin-block-end: 32px;
-		overflow: hidden;
 		font-family: 'JetBrains Mono', monospace;
-	}
-
-	/* Left edge glow */
-	.terminal-glow {
-		position: absolute;
-		inset-block: 0;
-		inset-inline-start: 0;
-		width: 80px;
-		background: linear-gradient(to right, rgba(224, 120, 0, 0.06), transparent);
-		pointer-events: none;
-		z-index: 1;
-	}
-
-	/* Title bar */
-	.terminal-titlebar {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		padding: 12px 20px;
-		background: rgba(20, 20, 20, 0.9);
-		border-bottom: 1px solid #1a1a1a;
-		position: relative;
-		z-index: 2;
-	}
-	.terminal-status {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: #28c840;
-		box-shadow: 0 0 6px rgba(40, 200, 64, 0.4);
-		flex-shrink: 0;
-	}
-	.terminal-title {
-		font-size: 13px;
-		color: #666;
-		letter-spacing: 0.3px;
-	}
-
-	/* Terminal body */
-	.terminal-body {
-		padding: 12px 0;
-		position: relative;
-		z-index: 2;
 	}
 
 	.terminal-welcome {
@@ -638,7 +583,7 @@
 	}
 	.terminal-comment {
 		font-size: 14px;
-		color: #444;
+		color: var(--text-dim);
 		font-style: italic;
 	}
 
@@ -653,43 +598,43 @@
 		position: relative;
 	}
 	.terminal-row:hover {
-		background-color: rgba(224, 120, 0, 0.05);
+		background-color: color-mix(in srgb, var(--brand-primary) 5%, transparent);
 	}
 	.terminal-row:hover .terminal-row-action {
-		color: var(--brand-accent, #ffb627);
+		color: var(--brand-accent);
 	}
 
 	.terminal-line-num {
 		font-size: 12px;
-		color: #333;
+		color: var(--text-dim);
 		user-select: none;
 	}
 
 	.terminal-row-label {
 		font-size: 14px;
 		font-weight: 700;
-		color: var(--brand-primary, #e07800);
+		color: var(--brand-primary);
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
 	}
 
 	.terminal-row-desc {
 		font-size: 15px;
-		color: #666;
+		color: var(--text-muted);
 	}
 	.terminal-row-desc-primary {
 		font-size: 16px;
-		color: #bbb;
+		color: var(--text-secondary);
 	}
 
 	.terminal-row-action {
 		text-align: right;
 		font-size: 13px;
-		color: #333;
+		color: var(--text-dim);
 		transition: color 0.2s;
 	}
 	.terminal-row-action-primary {
-		color: var(--brand-accent, #ffb627);
+		color: var(--brand-accent);
 		font-weight: 600;
 	}
 
@@ -700,45 +645,6 @@
 		padding: 8px 24px 12px;
 		align-items: center;
 	}
-	.terminal-cursor {
-		font-size: 16px;
-		color: var(--brand-primary, #e07800);
-		animation: blink 1s step-end infinite;
-	}
-	@keyframes blink {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0; }
-	}
-
-	/* Status bar */
-	.terminal-statusbar {
-		display: flex;
-		gap: 24px;
-		padding: 8px 24px;
-		background: rgba(15, 15, 15, 0.9);
-		border-top: 1px solid #1a1a1a;
-		font-size: 11px;
-		color: #444;
-		letter-spacing: 0.3px;
-		position: relative;
-		z-index: 2;
-	}
-
-	/* Subtle scanlines */
-	.terminal-scanlines {
-		position: absolute;
-		inset: 0;
-		background: repeating-linear-gradient(
-			0deg,
-			transparent,
-			transparent 2px,
-			rgba(0, 0, 0, 0.03) 2px,
-			rgba(0, 0, 0, 0.03) 4px
-		);
-		pointer-events: none;
-		z-index: 3;
-	}
-
 	/* ===== CTA ===== */
 	.closer-cta {
 		display: inline-flex;
@@ -747,19 +653,19 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 15px;
 		font-weight: 600;
-		color: var(--brand-accent, #ffb627);
+		color: var(--brand-accent);
 		text-decoration: none;
 		padding: 14px 28px;
-		border: 1px solid rgba(255, 182, 39, 0.3);
+		border: 1px solid color-mix(in srgb, var(--brand-accent) 30%, transparent);
 		border-radius: 4px;
 		margin-block-end: 28px;
 		transition: all 0.2s;
 		letter-spacing: 0.5px;
 	}
 	.closer-cta:hover {
-		background: rgba(255, 182, 39, 0.08);
-		border-color: rgba(255, 182, 39, 0.6);
-		color: #fff;
+		background: color-mix(in srgb, var(--brand-accent) 8%, transparent);
+		border-color: color-mix(in srgb, var(--brand-accent) 60%, transparent);
+		color: var(--text-primary);
 	}
 	.closer-cta-arrow {
 		transition: transform 0.2s;

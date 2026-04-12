@@ -55,8 +55,8 @@ describe('BlogRow', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 3 }
 		});
-		// Station badge uses padStart(2, '0') on (index + 1)
-		const badge = container.querySelector('[data-testid="station-badge"]');
+		// NumberBadge uses padStart(2, '0') on value
+		const badge = container.querySelector('[aria-hidden="true"]');
 		expect(badge?.textContent?.trim()).toBe('04');
 	});
 

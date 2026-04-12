@@ -15,15 +15,11 @@
 </script>
 
 <div
-	class="bento-card group relative h-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] p-3"
+	class="bento-card group h-full p-3"
 	data-testid="about-method"
 	use:reveal
 	use:cursorGlow
 >
-	<div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(224,120,0,0.06), transparent 60%);"
-	></div>
-
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 

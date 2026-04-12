@@ -2,11 +2,11 @@
   Reusable collapsible section card.
   Used in WorkDetailPage, ServiceDetailPage (collapsible=true)
   and BlogContent (collapsible=false, visual card wrapper only).
-  Pattern: blog-card style — bg-[#1a1a1a] border-[#2a2a2a], white title → orange hover.
+  Pattern: blog-card style — bg-[var(--bg-card)] border-[var(--border-subtle)], white title → orange hover.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { ChevronToggle } from '$lib/components/brand';
+	import { ChevronToggle, NumberBadge } from '$lib/components/brand';
 
 	let {
 		title,
@@ -38,18 +38,12 @@
   allowing hover rules to reference the dynamic value without inline duplication.
 -->
 <div
-	class="section-card rounded-lg border border-[#2a2a2a] bg-[#1a1a1a]"
+	class="section-card rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)]"
 	style="--accent: {accentColor};"
 >
 	{#snippet headerContent()}
 		{#if index !== null}
-			<span
-				class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-caption font-bold text-[#0a0a0a]"
-				style="background-color: {accentColor};"
-				aria-hidden="true"
-			>
-				{index + 1}
-			</span>
+			<NumberBadge value={index + 1} color={accentColor} />
 		{:else if icon}
 			{@render icon()}
 		{/if}

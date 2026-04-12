@@ -10,6 +10,7 @@
 	import ReadingProgressBar from '$lib/components/ReadingProgressBar.svelte';
 	import TableOfContents from '$lib/components/TableOfContents.svelte';
 	import GradientSeparator from '$lib/components/GradientSeparator.svelte';
+	import { StickyPanel } from '$lib/components/brand';
 
 	let { data } = $props();
 
@@ -42,17 +43,17 @@
 		<TableOfContents html={data.html} />
 	</div>
 
-	<!-- Content: centered at max-w-5xl, ToC in left margin via absolute positioning -->
-	<div class="relative mx-auto mt-6 max-w-5xl">
-		<!-- ToC: absolutely positioned in left page margin -->
-		<aside class="absolute inset-y-0 right-full mr-3 hidden 2xl:block">
-			<div class="sticky top-20 w-[180px] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#141414] p-4">
+	<!-- Content: centered at max-w-5xl, ToC + content side by side under divider -->
+	<div class="mx-auto mt-6 flex max-w-5xl gap-4">
+		<!-- ToC sidebar (left) — visible on 2xl, inside container -->
+		<aside class="hidden w-[180px] shrink-0 2xl:block">
+			<StickyPanel top="5rem">
 				<TableOfContents bind:this={tocRef} html={data.html} embedded />
-			</div>
+			</StickyPanel>
 		</aside>
 
-		<!-- Main content — full width, not affected by ToC -->
-		<div class="min-w-0">
+		<!-- Main content — fills remaining width -->
+		<div class="min-w-0 flex-1">
 			<BlogContent accentColor={accentColor}>
 				{@html processedHtml}
 			</BlogContent>

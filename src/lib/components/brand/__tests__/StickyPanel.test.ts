@@ -8,26 +8,28 @@ describe('StickyPanel', () => {
     expect(screen.getByText('Sidebar')).toBeTruthy();
   });
 
-  it('renders as aside element', () => {
+  it('renders as div element', () => {
     const { container } = render(StickyPanelTest);
-    expect(container.querySelector('aside')).toBeTruthy();
+    expect(container.querySelector('.panel')?.tagName).toBe('DIV');
   });
 
   it('has scrollbar-hidden class', () => {
     const { container } = render(StickyPanelTest);
-    const panel = container.querySelector('aside')!;
+    const panel = container.querySelector('.panel')!;
     expect(panel.className).toContain('scrollbar-hidden');
   });
 
   it('defaults to 6rem top offset', () => {
     const { container } = render(StickyPanelTest);
-    const style = container.querySelector('aside')!.getAttribute('style') || container.querySelector('aside')!.style.cssText;
+    const el = container.querySelector('.panel') as HTMLElement;
+    const style = el.getAttribute('style') || el.style.cssText;
     expect(style).toContain('6rem');
   });
 
   it('applies custom top offset', () => {
     const { container } = render(StickyPanelTest, { props: { top: '4rem' } });
-    const style = container.querySelector('aside')!.getAttribute('style') || container.querySelector('aside')!.style.cssText;
+    const el = container.querySelector('.panel') as HTMLElement;
+    const style = el.getAttribute('style') || el.style.cssText;
     expect(style).toContain('4rem');
   });
 });

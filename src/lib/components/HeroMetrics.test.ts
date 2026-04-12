@@ -14,18 +14,17 @@ describe('HeroMetrics', () => {
 
   it('renders vehicle count with comma formatting', () => {
     render(HeroMetrics, { props: { metrics } });
-    expect(screen.getByTestId('metric-value-vehicles').textContent).toContain('1,247');
+    expect(screen.getByText(/1,247/)).toBeInTheDocument();
   });
 
   it('renders delay with unit suffix', () => {
     render(HeroMetrics, { props: { metrics } });
-    expect(screen.getByTestId('metric-value-delay').textContent).toContain('47.3');
-    expect(screen.getByTestId('metric-value-delay').textContent).toContain('s');
+    expect(screen.getByText(/47\.3s/)).toBeInTheDocument();
   });
 
   it('renders routes count', () => {
     render(HeroMetrics, { props: { metrics } });
-    expect(screen.getByTestId('metric-value-routes').textContent).toContain('186');
+    expect(screen.getByText(/186/)).toBeInTheDocument();
   });
 
   it('renders labels for each card', () => {

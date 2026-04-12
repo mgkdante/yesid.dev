@@ -74,7 +74,7 @@
 	onmouseleave={() => (cardHovered = false)}
 >
 	<article
-		class="work-card-article relative overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] transition-all duration-300"
+		class="work-card-article relative overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] transition-all duration-300"
 		use:tilt={{ maxDeg: 1.5 }}
 		use:cursorGlow
 	>
@@ -170,11 +170,6 @@
 			</div>
 		</div>
 
-		<!-- Subtle glow on hover -->
-		<div
-			class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-			style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), {gradientColors[0]}0a, transparent 60%);"
-		></div>
 	</article>
 </a>
 
@@ -182,8 +177,8 @@
 	/* WHY: same hover pattern as BlogRow — subtle border glow + shadow,
 	   no rotating gradient (that was visually distracting on cards) */
 	.work-card:hover .work-card-article {
-		border-color: color-mix(in srgb, #E07800 50%, transparent);
-		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
+		border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		box-shadow: 0 0 16px rgb(var(--brand-primary-rgb) / 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
 	/* Strip WorkSvgIcon container border/bg when nested in card badges */

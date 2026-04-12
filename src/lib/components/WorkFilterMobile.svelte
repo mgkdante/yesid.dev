@@ -67,7 +67,7 @@
 	</div>
 
 	{#if open}
-		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
+		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3">
 			<!-- Service filter -->
 			<div class="label-section font-semibold">
 				{resolveLocale(labels.services, 'en')}
@@ -82,7 +82,7 @@
 				</button>
 				{#each serviceIds as svcId}
 					<button
-						class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+						class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 						class:m-tag-active={activeService === svcId}
 						onclick={() => onServiceSelect(activeService === svcId ? null : svcId)}
 					>
@@ -107,7 +107,7 @@
 						</button>
 						{#each stack as item}
 							<button
-								class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+								class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 								class:m-tag-active={activeStack === item}
 								onclick={() => onStackSelect(activeStack === item ? null : item)}
 							>
@@ -133,7 +133,7 @@
 					</button>
 					{#each tags as tag}
 						<button
-							class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 							class:m-tag-active={activeTag === tag}
 							onclick={() => onTagSelect(activeTag === tag ? null : tag)}
 						>

@@ -1,7 +1,7 @@
 # Test Registry
 
-Last updated: 2026-04-09
-Total tests: 525
+Last updated: 2026-04-12
+Total tests: 763
 Runner: Vitest + Bun (`bun run test`)
 
 ## Test Architecture

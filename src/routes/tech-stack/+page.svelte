@@ -12,7 +12,7 @@
 	import StackScenarioCard from '$lib/components/StackScenarioCard.svelte';
 	import TerminalCursor from '$lib/components/TerminalCursor.svelte';
 	import InfraFrame from '$lib/components/InfraFrame.svelte';
-	import { StatusDot } from '$lib/components/brand';
+	import { StatusDot, BrandButton } from '$lib/components/brand';
 
 	let { data } = $props();
 
@@ -202,18 +202,12 @@
 		</div>
 
 		<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
-			<button
-				class="hero-btn-primary"
-				onclick={() => document.getElementById('diagram-zone')?.scrollIntoView({ behavior: 'smooth' })}
-			>
+			<BrandButton variant="primary" size="md" onclick={() => document.getElementById('diagram-zone')?.scrollIntoView({ behavior: 'smooth' })}>
 				Explore Diagram <span aria-hidden="true">&darr;</span>
-			</button>
-			<button
-				class="hero-btn-secondary"
-				onclick={scrollToBuild}
-			>
+			</BrandButton>
+			<BrandButton variant="ghost" size="md" onclick={scrollToBuild}>
 				Build Your Stack <span aria-hidden="true">&rarr;</span>
-			</button>
+			</BrandButton>
 		</div>
 	</section>
 
@@ -399,12 +393,12 @@
 			Whether it's a data pipeline, a web app, or a mobile product — the infrastructure is ready.
 		</p>
 		<div class="cta-buttons">
-			<a href="/contact" class="hero-btn-primary">
+			<BrandButton variant="primary" size="md" href="/contact">
 				Get In Touch <span aria-hidden="true">&rarr;</span>
-			</a>
-			<a href="/services" class="hero-btn-secondary">
+			</BrandButton>
+			<BrandButton variant="ghost" size="md" href="/services">
 				View Services
-			</a>
+			</BrandButton>
 		</div>
 		<span class="cta-avail">Available for Q2 2026</span>
 	</section>
@@ -648,10 +642,6 @@
 		.hero-line-animate {
 			animation: none;
 		}
-		.hero-btn-primary,
-		.hero-btn-secondary {
-			transition: none;
-		}
 		.hero-hidden {
 			opacity: 1;
 		}
@@ -837,51 +827,6 @@
 		gap: 1rem;
 		flex-wrap: wrap;
 		padding-bottom: 2rem;
-	}
-
-	.hero-btn-primary {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 0.75rem 1.5rem;
-		background: var(--brand-primary);
-		color: white;
-		text-decoration: none;
-		font-family: var(--font-body);
-		font-size: 14px;
-		font-weight: 600;
-		border: none;
-		border-radius: var(--radius-md);
-		cursor: pointer;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-		box-shadow: 0 2px 12px rgba(224, 120, 0, 0.3);
-	}
-
-	.hero-btn-primary:hover {
-		transform: translateY(-1px);
-		box-shadow: 0 4px 20px rgba(224, 120, 0, 0.4);
-	}
-
-	.hero-btn-secondary {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 0.75rem 1.5rem;
-		background: transparent;
-		color: var(--text-primary);
-		text-decoration: none;
-		font-family: var(--font-body);
-		font-size: 14px;
-		font-weight: 600;
-		border: 1px solid var(--border);
-		border-radius: var(--radius-md);
-		cursor: pointer;
-		transition: border-color 0.2s ease, color 0.2s ease;
-	}
-
-	.hero-btn-secondary:hover {
-		border-color: var(--brand-primary);
-		color: var(--brand-primary);
 	}
 
 	/* ═══ CTA ZONE ═══ */

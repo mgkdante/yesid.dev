@@ -59,7 +59,7 @@
 </script>
 
 <aside
-	class="w-full shrink-0 rounded-lg border border-[#2a2a2a] bg-[#141414] p-5 lg:sticky lg:top-20 lg:w-[240px]"
+	class="w-full shrink-0 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 lg:sticky lg:top-20 lg:w-[240px]"
 	data-testid="work-detail-sidebar"
 >
 	<!-- Tech Stack -->
