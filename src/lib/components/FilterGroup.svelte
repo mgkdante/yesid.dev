@@ -58,14 +58,14 @@
 	<!-- WHY: collapsible label toggles section open/closed; non-collapsible is static text -->
 	{#if collapsible}
 		<button
-			class="flex w-full items-center justify-between font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+			class="flex w-full items-center justify-between font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
 			onclick={() => (isOpen = !isOpen)}
 		>
 			{label}
-			<span class="text-[8px] transition-transform" class:rotate-180={isOpen}>▼</span>
+			<span class="text-caption transition-transform" class:rotate-180={isOpen}>▼</span>
 		</button>
 	{:else}
-		<div class="font-mono text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+		<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
 			{label}
 		</div>
 	{/if}

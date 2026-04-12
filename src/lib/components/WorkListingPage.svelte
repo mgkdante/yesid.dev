@@ -241,7 +241,7 @@
 						{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
 					</span>
 					<button
-						class="font-mono text-[10px] text-[#E07800] underline transition-colors hover:text-[var(--text-primary)]"
+						class="font-mono text-caption text-[#E07800] underline transition-colors hover:text-[var(--text-primary)]"
 						onclick={async () => {
 							await updateFilter('service', null);
 							await updateFilter('tag', null);
@@ -272,7 +272,7 @@
 										style="animation-delay: {i * 0.4}s;"
 									></div>
 									<div
-										class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold"
+										class="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-caption font-bold"
 										style="background: #E07800; color: #000;"
 									>
 										{String(i + 1).padStart(2, '0')}

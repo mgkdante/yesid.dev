@@ -42,7 +42,7 @@
 		<div class="mt-3 flex-1 overflow-hidden rounded-md border border-[var(--border)] bg-[var(--bg-primary)]">
 			<!-- Terminal title bar -->
 			<div class="border-b border-[var(--border)] px-3 py-1.5">
-				<span class="font-mono text-[10px] text-[var(--text-secondary)]">terminal</span>
+				<span class="font-mono text-caption text-[var(--text-secondary)]">terminal</span>
 			</div>
 
 			<!-- Terminal body -->
@@ -79,7 +79,7 @@
 			>
 				{buttonLabel}
 			</a>
-			<span class="font-mono text-[10px] tracking-[1px] text-[var(--brand-accent)]">
+			<span class="font-mono text-caption tracking-[1px] text-[var(--brand-accent)]">
 				{availability}
 			</span>
 		</div>

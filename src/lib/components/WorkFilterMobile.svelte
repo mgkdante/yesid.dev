@@ -59,9 +59,9 @@
 			onclick={() => (open = !open)}
 		>
 			{resolveLocale(labels.filters, 'en')}
-			<span class="text-[8px]">{open ? '\u25B2' : '\u25BC'}</span>
+			<span class="text-caption">{open ? '\u25B2' : '\u25BC'}</span>
 		</button>
-		<span class="text-[10px] text-[var(--text-muted)]">
+		<span class="text-caption text-[var(--text-muted)]">
 			{resolveLocale(labels.showing, 'en')}: {summary}
 		</span>
 	</div>
@@ -69,12 +69,12 @@
 	{#if open}
 		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-3">
 			<!-- Service filter -->
-			<div class="font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+			<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
 				{resolveLocale(labels.services, 'en')}
 			</div>
 			<div class="mt-1.5 flex flex-wrap gap-1.5">
 				<button
-					class="rounded px-2 py-1 text-[10px] transition-colors"
+					class="rounded px-2 py-1 text-caption transition-colors"
 					class:m-active={activeService === null}
 					onclick={() => onServiceSelect(null)}
 				>
@@ -82,7 +82,7 @@
 				</button>
 				{#each serviceIds as svcId}
 					<button
-						class="rounded border border-[#2a2a2a] px-2 py-1 text-[10px] text-[var(--text-muted)] transition-colors"
+						class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 						class:m-tag-active={activeService === svcId}
 						onclick={() => onServiceSelect(activeService === svcId ? null : svcId)}
 					>
@@ -94,12 +94,12 @@
 			<!-- Tech Stack -->
 			{#if stack.length > 0 && onStackSelect}
 				<div class="mt-3 border-t border-dashed border-[#333] pt-2">
-					<div class="font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+					<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
 						{resolveLocale(labels.stack, 'en')}
 					</div>
 					<div class="mt-1.5 flex flex-wrap gap-1.5">
 						<button
-							class="rounded px-2 py-1 text-[10px] transition-colors"
+							class="rounded px-2 py-1 text-caption transition-colors"
 							class:m-active={activeStack === null}
 							onclick={() => onStackSelect(null)}
 						>
@@ -107,7 +107,7 @@
 						</button>
 						{#each stack as item}
 							<button
-								class="rounded border border-[#2a2a2a] px-2 py-1 text-[10px] text-[var(--text-muted)] transition-colors"
+								class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 								class:m-tag-active={activeStack === item}
 								onclick={() => onStackSelect(activeStack === item ? null : item)}
 							>
@@ -120,12 +120,12 @@
 
 			<!-- Tags -->
 			<div class="mt-3 border-t border-dashed border-[#333] pt-2">
-				<div class="font-mono text-[9px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+				<div class="font-mono text-caption font-semibold uppercase tracking-widest text-[var(--text-muted)]">
 					{resolveLocale(labels.tags, 'en')}
 				</div>
 				<div class="mt-1.5 flex flex-wrap gap-1.5">
 					<button
-						class="rounded px-2 py-1 text-[10px] transition-colors"
+						class="rounded px-2 py-1 text-caption transition-colors"
 						class:m-active={activeTag === null}
 						onclick={() => onTagSelect(null)}
 					>
@@ -133,7 +133,7 @@
 					</button>
 					{#each tags as tag}
 						<button
-							class="rounded border border-[#2a2a2a] px-2 py-1 text-[10px] text-[var(--text-muted)] transition-colors"
+							class="rounded border border-[#2a2a2a] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
 							class:m-tag-active={activeTag === tag}
 							onclick={() => onTagSelect(activeTag === tag ? null : tag)}
 						>

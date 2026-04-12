@@ -241,7 +241,7 @@
 	.diagram-label {
 		display: block;
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
@@ -280,7 +280,7 @@
 
 	.tier-label {
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		font-weight: 600;
 		color: var(--text-muted);
 		letter-spacing: 0.08em;

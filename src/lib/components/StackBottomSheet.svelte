@@ -309,7 +309,7 @@
 	.proficiency-badge {
 		display: inline-block;
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -382,7 +382,7 @@
 
 	.relation-context {
 		font-family: var(--font-body);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		color: var(--text-muted);
 		padding-inline-start: 0.75rem;
 	}
@@ -397,7 +397,7 @@
 
 	.sheet-body :global(h2) {
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
@@ -422,7 +422,7 @@
 	.projects-label {
 		display: block;
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
@@ -438,7 +438,7 @@
 
 	.project-badge {
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		padding: 0.25rem 0.5rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-sm);
@@ -463,7 +463,7 @@
 		background: transparent;
 		color: var(--text-secondary);
 		font-family: var(--font-body);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		cursor: pointer;
 		white-space: nowrap;
 		overflow: hidden;

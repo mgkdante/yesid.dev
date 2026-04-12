@@ -61,7 +61,7 @@
 							class="h-56 w-40 object-cover sm:h-64 sm:w-48 lg:h-[calc(100%-4rem)] lg:w-auto lg:max-h-[280px] lg:min-h-[160px]"
 							loading="lazy"
 						/>
-						<p class="absolute bottom-1 left-0 w-full text-center text-[8px] italic text-neutral-500">
+						<p class="absolute bottom-1 left-0 w-full text-center text-caption italic text-neutral-500">
 							{caption}
 						</p>
 					</div>
@@ -78,7 +78,7 @@
 			>
 				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M6 2L3.5 5L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</button>
-			<span class="font-mono text-[9px] text-[var(--text-muted)]">{currentIndex + 1}/{polaroids.length}</span>
+			<span class="font-mono text-caption text-[var(--text-muted)]">{currentIndex + 1}/{polaroids.length}</span>
 			<button
 				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-muted)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
 				onclick={next}

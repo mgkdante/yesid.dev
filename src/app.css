@@ -38,12 +38,49 @@
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 
-  /* Border radius */
-  --radius-brand: 8px;
-  --radius-brand-lg: 12px;
-  --radius-brand-xl: 16px;
+  /* Type scale — uses --text-* namespace (Tailwind v4 generates text-* utilities from this) */
+  --text-hero: clamp(4rem, min(9vw, 11vh), 8.125rem);       /* 64-130px — hero wordmark */
+  --text-display: clamp(2.5rem, 5vw, 4rem);                  /* 40-64px — page titles */
+  --text-title: clamp(1.75rem, 4vw, 2.5rem);                 /* 28-40px — section headings */
+  --text-heading: clamp(1.25rem, 3vw, 1.5rem);               /* 20-24px — card titles */
+  --text-subheading: 1.125rem;                                 /* 18px — subtitles */
+  --text-body: 1rem;                                           /* 16px — paragraphs */
+  --text-body-lg: 1.125rem;                                    /* 18px — lead paragraphs */
+  --text-small: 0.875rem;                                      /* 14px — metadata */
+  --text-caption: 0.75rem;                                     /* 12px — timestamps */
+  --text-mono: 0.8125rem;                                      /* 13px — terminal text */
 
-  /* Terminal / SQL panel (Slice 13d) */
+  /* Border radius — UNIFIED naming */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-glow-sm: var(--shadow-glow-sm);
+  --shadow-glow-md: var(--shadow-glow-md);
+  --shadow-glow-lg: var(--shadow-glow-lg);
+  --shadow-card: var(--shadow-card);
+  --shadow-section: var(--shadow-section);
+  --shadow-nav: var(--shadow-nav);
+  --shadow-status: var(--shadow-status);
+
+  /* Z-index */
+  --z-index-base: var(--z-base);
+  --z-index-content: var(--z-content);
+  --z-index-rail: var(--z-rail);
+  --z-index-footer: var(--z-footer);
+  --z-index-sheet: var(--z-sheet);
+  --z-index-menu: var(--z-menu);
+  --z-index-nav: var(--z-nav);
+
+  /* Container widths */
+  --width-content: var(--container-content);
+  --width-wide: var(--container-wide);
+  --width-prose: var(--container-prose);
+
+  /* Terminal / SQL panel */
   --color-terminal-bg: #0a0a0a;
   --color-terminal-border: #2a2a2a;
   --color-dim: #4a4a4a;

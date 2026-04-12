@@ -1,6 +1,8 @@
-# Slice 17 — Browser Adaptation & Service Cohesion
+# Slice 17 — Browser Adaptation & Service Cohesion (ARCHIVED)
 
-**Status:** draft
+> **Superseded by:** Slice 17 — Standardization (design spec: `docs/specs/2026-04-11-slice-17-standardization-design.md`). Browser viewport work absorbed into standardization scope. Service consolidation deferred.
+
+**Status:** archived
 **Priority:** 3
 **Estimated effort:** 2-3 sessions
 **Depends on:** 13 (home page redesign)

@@ -152,7 +152,7 @@
 			>
 				<!-- Title bar -->
 				<div class="border-b border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2">
-					<span class="font-mono text-[11px] text-[var(--text-secondary)]">{c.infoTerminal.title}</span>
+					<span class="font-mono text-caption text-[var(--text-secondary)]">{c.infoTerminal.title}</span>
 				</div>
 
 				<!-- Terminal body -->
@@ -164,14 +164,14 @@
 
 					<!-- LOCATION section -->
 					<div class="mb-4">
-						<div class="mb-1 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">{resolveLocale(c.infoTerminal.sectionLabels.location, 'en')}</div>
+						<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--brand-primary)]">{resolveLocale(c.infoTerminal.sectionLabels.location, 'en')}</div>
 						<div class="text-[var(--text-secondary)]">{resolveLocale(c.infoTerminal.location, 'en')}</div>
-						<div class="mt-1 text-[12px] text-[var(--text-muted)]">{resolveLocale(c.infoTerminal.responseTime, 'en')}</div>
+						<div class="mt-1 text-caption text-[var(--text-muted)]">{resolveLocale(c.infoTerminal.responseTime, 'en')}</div>
 					</div>
 
 					<!-- CONNECT section -->
 					<div class="mb-4">
-						<div class="mb-2 text-[10px] uppercase tracking-[2px] text-[var(--brand-primary)]">{resolveLocale(c.infoTerminal.sectionLabels.connect, 'en')}</div>
+						<div class="mb-2 text-caption uppercase tracking-[2px] text-[var(--brand-primary)]">{resolveLocale(c.infoTerminal.sectionLabels.connect, 'en')}</div>
 						<div class="flex flex-col gap-1">
 							{#each c.socials as social}
 								<a
@@ -181,7 +181,7 @@
 									{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 								>
 									<span class="text-[var(--brand-primary)]">→</span>
-									<span class="text-[13px]">{social.href.replace(/^mailto:|^https?:\/\//, '')}</span>
+									<span class="text-small">{social.href.replace(/^mailto:|^https?:\/\//, '')}</span>
 								</a>
 							{/each}
 						</div>
@@ -202,7 +202,7 @@
 			>
 				<!-- Title bar -->
 				<div class="border-b border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2">
-					<span class="font-mono text-[11px] text-[var(--text-secondary)]">{c.formTerminal.title}</span>
+					<span class="font-mono text-caption text-[var(--text-secondary)]">{c.formTerminal.title}</span>
 				</div>
 
 				<!-- Terminal body -->
@@ -211,7 +211,7 @@
 					<div class="mb-1 text-[var(--text-secondary)]">
 						<span class="text-[var(--text-primary)]">~</span> {c.formTerminal.command}
 					</div>
-					<div class="mb-4 text-[12px] text-[var(--text-muted)]">
+					<div class="mb-4 text-caption text-[var(--text-muted)]">
 						{resolveLocale(c.formTerminal.commandOutput, 'en')}
 					</div>
 
@@ -225,7 +225,7 @@
 
 								<!-- Name field -->
 								<div class="flex flex-col gap-1">
-									<label for="contact-name" class="text-[12px] text-[var(--brand-primary)]">
+									<label for="contact-name" class="text-caption text-[var(--brand-primary)]">
 										{c.formTerminal.fields.name.label}:
 									</label>
 									<input
@@ -237,13 +237,13 @@
 										class="rounded border bg-[#0D0D0D] px-4 py-3 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 {fieldBorderClass('name')}"
 									/>
 									{#if submitted && errors.name}
-										<div class="text-[11px] text-[#ff5f57]">✗ {errors.name}</div>
+										<div class="text-caption text-[#ff5f57]">✗ {errors.name}</div>
 									{/if}
 								</div>
 
 								<!-- Email field -->
 								<div class="flex flex-col gap-1">
-									<label for="contact-email" class="text-[12px] text-[var(--brand-primary)]">
+									<label for="contact-email" class="text-caption text-[var(--brand-primary)]">
 										{c.formTerminal.fields.email.label}:
 									</label>
 									<input
@@ -255,13 +255,13 @@
 										class="rounded border bg-[#0D0D0D] px-4 py-3 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 {fieldBorderClass('email')}"
 									/>
 									{#if submitted && errors.email}
-										<div class="text-[11px] text-[#ff5f57]">✗ {errors.email}</div>
+										<div class="text-caption text-[#ff5f57]">✗ {errors.email}</div>
 									{/if}
 								</div>
 
 								<!-- Message field -->
 								<div class="flex flex-col gap-1">
-									<label for="contact-message" class="text-[12px] text-[var(--brand-primary)]">
+									<label for="contact-message" class="text-caption text-[var(--brand-primary)]">
 										{c.formTerminal.fields.message.label}:
 									</label>
 									<textarea
@@ -273,18 +273,18 @@
 										class="rounded border bg-[#0D0D0D] px-4 py-3 font-mono text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
 									></textarea>
 									{#if submitted && errors.message}
-										<div class="text-[11px] text-[#ff5f57]">✗ {errors.message}</div>
+										<div class="text-caption text-[#ff5f57]">✗ {errors.message}</div>
 									{/if}
 								</div>
 
 								<!-- Server-level error (e.g. Web3Forms not configured) -->
 								{#if submitted && errors.form}
-									<div class="mt-0.5 text-[11px] text-[#ff5f57]">✗ {errors.form}</div>
+									<div class="mt-0.5 text-caption text-[#ff5f57]">✗ {errors.form}</div>
 								{/if}
 
 								<!-- Error summary -->
 								{#if submitted && errorCount() > 0}
-									<div class="rounded border border-[#ff5f57]/30 bg-[#ff5f57]/10 px-3 py-2 text-[12px] text-[#ff5f57]">
+									<div class="rounded border border-[#ff5f57]/30 bg-[#ff5f57]/10 px-3 py-2 text-caption text-[#ff5f57]">
 										✗ {resolveLocale(c.validation.errorSummary, 'en').replace('{count}', String(errorCount()))}
 									</div>
 								{/if}
@@ -292,7 +292,7 @@
 								<!-- Submit button -->
 								<button
 									type="submit"
-									class="flex items-center gap-2 self-start rounded bg-[var(--brand-primary)] px-5 py-2.5 text-[13px] font-semibold text-white shadow-lg shadow-[var(--brand-primary)]/20 transition-all duration-200 hover:bg-[var(--brand-primary-hover)] hover:-translate-y-0.5"
+									class="flex items-center gap-2 self-start rounded bg-[var(--brand-primary)] px-5 py-2.5 text-small font-semibold text-white shadow-lg shadow-[var(--brand-primary)]/20 transition-all duration-200 hover:bg-[var(--brand-primary-hover)] hover:-translate-y-0.5"
 								>
 									<span class="text-white/60">~ $</span>
 									{resolveLocale(c.formTerminal.submitLabel, 'en')}
@@ -312,7 +312,7 @@
 											? 'text-[#28c840]'
 											: line.color === 'accent'
 												? 'text-[var(--brand-accent)]'
-												: 'text-[var(--text-secondary)]'} text-[13px]">
+												: 'text-[var(--text-secondary)]'} text-small">
 										{#if line.color === 'muted' && line.text.includes('{work}') && line.text.includes('{blog}')}
 											<!-- meanwhile line: parse {work} and {blog} into links -->
 											{@html line.text
@@ -328,7 +328,7 @@
 							<!-- Reset button -->
 							<button
 								onclick={handleReset}
-								class="mt-4 self-start rounded border border-[var(--border)] px-4 py-2 font-mono text-[12px] text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--brand-primary)] hover:text-[var(--text-primary)]"
+								class="mt-4 self-start rounded border border-[var(--border)] px-4 py-2 font-mono text-caption text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--brand-primary)] hover:text-[var(--text-primary)]"
 							>
 								{resolveLocale(c.success.resetLabel, 'en')}
 							</button>

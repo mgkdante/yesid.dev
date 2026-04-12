@@ -4,11 +4,11 @@
 </script>
 
 <header data-testid="section-header">
-	<h2 class="font-heading font-bold text-[var(--text-primary)] text-[var(--text-h2)]">
+	<h2 class="font-heading font-bold text-[var(--text-primary)] text-heading">
 		{title}
 	</h2>
 	{#if subtitle}
-		<p class="mt-2 text-[var(--text-body)] text-[var(--text-secondary)]">
+		<p class="mt-2 text-body text-[var(--text-secondary)]">
 			{subtitle}
 		</p>
 	{/if}

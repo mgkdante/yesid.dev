@@ -34,7 +34,7 @@
 	{#if svgContent}
 		<WorkSvgIcon {svgContent} size={28} hovered={badgeHovered} />
 	{/if}
-	<span class="font-mono text-xs leading-tight text-[var(--text-primary)] md:text-[13px]">
+	<span class="font-mono text-caption leading-tight text-[var(--text-primary)] md:text-mono">
 		{resolveLocale(service.title, 'en')}
 	</span>
 </a>

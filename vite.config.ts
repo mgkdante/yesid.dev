@@ -18,7 +18,7 @@ export default defineConfig({
 				extends: true,
 				test: {
 					name: 'data',
-					include: ['src/lib/data/**/*.test.ts'],
+					include: ['src/lib/data/**/*.test.ts', 'src/lib/styles/**/*.test.ts'],
 					environment: 'node',
 					globals: true,
 					pool: 'threads',

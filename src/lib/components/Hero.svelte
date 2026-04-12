@@ -28,7 +28,7 @@
 			{#if primaryCta}
 				<a
 					href={primaryCta.href}
-					class="inline-flex items-center rounded-brand bg-brand-primary px-6 py-3 font-semibold text-white hover:bg-brand-primary-hover"
+					class="inline-flex items-center rounded-mdbg-brand-primary px-6 py-3 font-semibold text-white hover:bg-brand-primary-hover"
 					data-testid="hero-primary-cta"
 				>
 					{primaryCta.label}
@@ -37,7 +37,7 @@
 			{#if secondaryCta}
 				<a
 					href={secondaryCta.href}
-					class="inline-flex items-center rounded-brand border border-[var(--border)] px-6 py-3 font-semibold text-[var(--text-primary)] hover:border-brand-primary hover:text-brand-primary"
+					class="inline-flex items-center rounded-mdborder border-[var(--border)] px-6 py-3 font-semibold text-[var(--text-primary)] hover:border-brand-primary hover:text-brand-primary"
 					data-testid="hero-secondary-cta"
 				>
 					{secondaryCta.label}

@@ -137,7 +137,7 @@
 
 	.flow-name {
 		font-family: var(--font-body);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		font-weight: 600;
 		color: var(--text-primary);
 		white-space: nowrap;
@@ -169,7 +169,7 @@
 
 	.projects-label {
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
@@ -185,7 +185,7 @@
 
 	.project-badge {
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		padding: 0.1875rem 0.5rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-sm);
