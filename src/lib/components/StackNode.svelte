@@ -152,7 +152,7 @@
 		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
 		color: var(--brand-primary);
 		font-family: var(--font-mono);
-		font-size: var(--text-xs);
+		font-size: var(--text-caption);
 		font-weight: 700;
 		flex-shrink: 0;
 	}
