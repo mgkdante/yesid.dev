@@ -38,12 +38,48 @@
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 
-  /* Border radius */
-  --radius-brand: 8px;
-  --radius-brand-lg: 12px;
-  --radius-brand-xl: 16px;
+  /* Type scale — maps tokens to text-* utilities */
+  --font-size-display: var(--text-display);
+  --font-size-title: var(--text-title);
+  --font-size-heading: var(--text-heading);
+  --font-size-subheading: var(--text-subheading);
+  --font-size-body: var(--text-body);
+  --font-size-body-lg: var(--text-body-lg);
+  --font-size-small: var(--text-small);
+  --font-size-caption: var(--text-caption);
+  --font-size-mono: var(--text-mono);
 
-  /* Terminal / SQL panel (Slice 13d) */
+  /* Border radius — UNIFIED naming */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-glow-sm: var(--shadow-glow-sm);
+  --shadow-glow-md: var(--shadow-glow-md);
+  --shadow-glow-lg: var(--shadow-glow-lg);
+  --shadow-card: var(--shadow-card);
+  --shadow-section: var(--shadow-section);
+  --shadow-nav: var(--shadow-nav);
+  --shadow-status: var(--shadow-status);
+
+  /* Z-index */
+  --z-index-base: var(--z-base);
+  --z-index-content: var(--z-content);
+  --z-index-rail: var(--z-rail);
+  --z-index-footer: var(--z-footer);
+  --z-index-sheet: var(--z-sheet);
+  --z-index-menu: var(--z-menu);
+  --z-index-nav: var(--z-nav);
+
+  /* Container widths */
+  --width-content: var(--container-content);
+  --width-wide: var(--container-wide);
+  --width-prose: var(--container-prose);
+
+  /* Terminal / SQL panel */
   --color-terminal-bg: #0a0a0a;
   --color-terminal-border: #2a2a2a;
   --color-dim: #4a4a4a;

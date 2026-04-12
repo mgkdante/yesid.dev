@@ -23,7 +23,7 @@
 
 <a href="/work/{slug}" class="group block" data-testid="project-card" use:boop={{ scale: 1.05, timing: 300 }}>
 	<article
-		class="rounded-brand-lg border border-[var(--border)] bg-[var(--bg-surface)] p-6 group-hover:border-brand-primary"
+		class="rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] p-6 group-hover:border-brand-primary"
 	>
 		<div class="flex items-start justify-between gap-2">
 			<h3 class="font-heading font-semibold text-[var(--text-primary)] text-subheading">
