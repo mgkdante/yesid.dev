@@ -18,7 +18,7 @@ Created the typed, i18n-ready data layer that powers every page on the site. All
 
 ## Files Modified
 
-- `docs/ARCHITECTURE.md`: Added stack table, data layer section, and dependency listing
+- `docs/reference/ARCHITECTURE.md`: Added stack table, data layer section, and dependency listing
 - `tree.txt`: Regenerated to reflect all new files
 
 ## How It Works

@@ -711,8 +711,8 @@ Tasks 2, 3, 4, 5 can be built in any order after Task 1.
 - [ ] `bun run test` passes with 80%+ coverage on new files
 - [ ] `bun run check` passes with zero type errors
 - [ ] `OPENWEATHER_API_KEY` in `.env` (gitignored), never in source code
-- [ ] `docs/TESTS.md` updated with new test entries under correct categories
-- [ ] `docs/ARCHITECTURE.md` updated with new routes and components
+- [ ] `docs/reference/TESTS.md` updated with new test entries under correct categories
+- [ ] `docs/reference/ARCHITECTURE.md` updated with new routes and components
 
 ## Learn
 

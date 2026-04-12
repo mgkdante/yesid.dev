@@ -23,11 +23,11 @@ SvelteKit 2 + Svelte 5 (runes), TypeScript, GSAP (ScrollTrigger), Tailwind v4, V
 
 ## Design Spec
 
-`docs/superpowers/specs/2026-04-10-proof-reel-design.md`
+`docs/specs/2026-04-10-proof-reel-design.md`
 
 ## Implementation Plan
 
-`docs/superpowers/plans/2026-04-10-proof-reel.md`
+`docs/plans/2026-04-10-proof-reel.md`
 
 ## File Structure
 

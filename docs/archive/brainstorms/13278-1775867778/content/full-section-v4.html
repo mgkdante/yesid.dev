@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services Grid — Full Train Blueprint</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0D0D0D;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .proof-reel-ending {
+    background: #0D0D0D;
+    padding: 60px 48px;
+    text-align: center;
+  }
+  .proof-reel-ending .label {
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .hard-cut {
+    height: 4px;
+    width: 100%;
+    background: repeating-linear-gradient(90deg, #FFB627 0px, #FFB627 12px, #0f0d0a 12px, #0f0d0a 24px);
+  }
+
+  .services-section {
+    position: relative;
+    padding: 140px 32px;
+    overflow: hidden;
+  }
+
+  .blueprint-bg {
+    position: absolute;
+    inset: 0;
+    background-color: #0D0D0D;
+    z-index: 0;
+  }
+
+  .blueprint-major {
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(224,120,0,0.05) 0px, rgba(224,120,0,0.05) 1px, transparent 1px, transparent 160px),
+      repeating-linear-gradient(0deg, rgba(224,120,0,0.05) 0px, rgba(224,120,0,0.05) 1px, transparent 1px, transparent 160px);
+  }
+
+  .blueprint-minor {
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(224,120,0,0.018) 0px, rgba(224,120,0,0.018) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(0deg, rgba(224,120,0,0.018) 0px, rgba(224,120,0,0.018) 1px, transparent 1px, transparent 40px);
+  }
+
+  .blueprint-dots {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle 2px at 160px 160px, rgba(224,120,0,0.1) 0%, transparent 3px),
+      radial-gradient(circle 2px at 320px 160px, rgba(224,120,0,0.07) 0%, transparent 3px),
+      radial-gradient(circle 2px at 160px 320px, rgba(224,120,0,0.07) 0%, transparent 3px),
+      radial-gradient(circle 2px at 320px 320px, rgba(224,120,0,0.09) 0%, transparent 3px);
+    background-size: 640px 480px;
+  }
+
+  .blueprint-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(224,120,0,0.02) 0%, transparent 70%);
+  }
+
+  /* ── FULL-PAGE TRAIN BLUEPRINT ── */
+  .train-blueprint-full {
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    bottom: 40px;
+    top: 40px;
+    z-index: 0;
+    opacity: 0.04;
+  }
+  .train-blueprint-full svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .crosshair {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+  }
+  .crosshair::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 1px;
+    background: rgba(224,120,0,0.08);
+    top: 50%;
+  }
+  .crosshair::after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 24px;
+    background: rgba(224,120,0,0.08);
+    left: 50%;
+  }
+
+  .ref-label {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: rgba(224,120,0,0.12);
+    letter-spacing: 1px;
+    z-index: 0;
+  }
+
+  .services-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    color: rgba(255,255,255,0.35);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 600;
+    margin-bottom: 48px;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .service-card {
+    background: rgba(13,13,13,0.75);
+    border: 1px solid rgba(224,120,0,0.1);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
+    text-decoration: none;
+    display: block;
+    backdrop-filter: blur(6px);
+  }
+  .service-card:hover {
+    border-color: rgba(224,120,0,0.3);
+    transform: translateY(-2px);
+    background: rgba(13,13,13,0.9);
+  }
+
+  .card-inner { display: flex; gap: 20px; }
+
+  .svg-panel {
+    width: 80px;
+    min-width: 80px;
+    align-self: stretch;
+    border-radius: 12px;
+    background: rgba(224,120,0,0.05);
+    border: 1px solid rgba(224,120,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.3s ease;
+  }
+  .service-card:hover .svg-panel { background: rgba(224,120,0,0.1); }
+
+  .card-text { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+  .benefit { color: rgba(255,255,255,0.85); font-size: 17px; font-weight: 500; line-height: 1.35; }
+  .service-title { color: #FFB627; font-size: 40px; font-weight: 800; line-height: 1.0; letter-spacing: -1px; }
+  .metric-row { margin-top: 8px; display: flex; align-items: baseline; gap: 8px; }
+  .metric-value { color: #E07800; font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .metric-label { color: rgba(255,255,255,0.4); font-size: 13px; }
+
+  .view-all { margin-top: 48px; text-align: center; }
+  .view-all a {
+    color: rgba(224,120,0,0.7);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s ease;
+    border-bottom: 1px solid rgba(224,120,0,0.2);
+    padding-bottom: 2px;
+  }
+  .view-all a:hover { color: #E07800; border-bottom-color: #E07800; }
+
+  .context-section {
+    background: #0D0D0D;
+    padding: 60px 48px;
+    text-align: center;
+  }
+  .context-section .label {
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="proof-reel-ending">
+  <div class="label">End of Proof Reel (Section 3)</div>
+</div>
+
+<div class="hard-cut"></div>
+
+<section class="services-section">
+  <div class="blueprint-bg">
+    <div class="blueprint-major"></div>
+    <div class="blueprint-minor"></div>
+    <div class="blueprint-dots"></div>
+    <div class="blueprint-glow"></div>
+
+    <!-- Crosshairs -->
+    <div class="crosshair" style="top: 24px; left: 24px;"></div>
+    <div class="crosshair" style="top: 24px; right: 24px;"></div>
+    <div class="crosshair" style="bottom: 24px; left: 24px;"></div>
+    <div class="crosshair" style="bottom: 24px; right: 24px;"></div>
+
+    <!-- Reference labels -->
+    <div class="ref-label" style="top: 16px; right: 56px;">SEC-04 / SERVICES</div>
+    <div class="ref-label" style="bottom: 16px; left: 56px;">DWG: MR73-SIDE-ELEV</div>
+    <div class="ref-label" style="bottom: 16px; right: 56px;">SCALE 1:48 | REV.B</div>
+    <div class="ref-label" style="top: 16px; left: 56px;">STM / BOMBARDIER</div>
+  </div>
+
+  <!-- ════ FULL-PAGE MR-73 BLUEPRINT ════ -->
+  <div class="train-blueprint-full">
+    <svg viewBox="0 0 1800 700" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+
+      <!-- ══��� SIDE ELEVATION (main view) ═══ -->
+      <!-- Centered vertically, spans full width -->
+
+      <!-- Rail / ground line -->
+      <line x1="20" y1="540" x2="1780" y2="540" stroke="#E07800" stroke-width="2"/>
+      <line x1="20" y1="545" x2="1780" y2="545" stroke="#E07800" stroke-width="0.5"/>
+
+      <!-- Sleepers / ties -->
+      <g stroke="#E07800" stroke-width="1" opacity="0.5">
+        <line x1="60" y1="540" x2="60" y2="555"/><line x1="120" y1="540" x2="120" y2="555"/>
+        <line x1="180" y1="540" x2="180" y2="555"/><line x1="240" y1="540" x2="240" y2="555"/>
+        <line x1="300" y1="540" x2="300" y2="555"/><line x1="360" y1="540" x2="360" y2="555"/>
+        <line x1="420" y1="540" x2="420" y2="555"/><line x1="480" y1="540" x2="480" y2="555"/>
+        <line x1="540" y1="540" x2="540" y2="555"/><line x1="600" y1="540" x2="600" y2="555"/>
+        <line x1="660" y1="540" x2="660" y2="555"/><line x1="720" y1="540" x2="720" y2="555"/>
+        <line x1="780" y1="540" x2="780" y2="555"/><line x1="840" y1="540" x2="840" y2="555"/>
+        <line x1="900" y1="540" x2="900" y2="555"/><line x1="960" y1="540" x2="960" y2="555"/>
+        <line x1="1020" y1="540" x2="1020" y2="555"/><line x1="1080" y1="540" x2="1080" y2="555"/>
+        <line x1="1140" y1="540" x2="1140" y2="555"/><line x1="1200" y1="540" x2="1200" y2="555"/>
+        <line x1="1260" y1="540" x2="1260" y2="555"/><line x1="1320" y1="540" x2="1320" y2="555"/>
+        <line x1="1380" y1="540" x2="1380" y2="555"/><line x1="1440" y1="540" x2="1440" y2="555"/>
+        <line x1="1500" y1="540" x2="1500" y2="555"/><line x1="1560" y1="540" x2="1560" y2="555"/>
+        <line x1="1620" y1="540" x2="1620" y2="555"/><line x1="1680" y1="540" x2="1680" y2="555"/>
+        <line x1="1740" y1="540" x2="1740" y2="555"/>
+      </g>
+
+      <!-- Car body — main shell (17.2m = ~1520px in this scale) -->
+      <rect x="140" y="210" width="1520" height="280" rx="24" stroke="#E07800" stroke-width="2"/>
+
+      <!-- Roof profile — subtle curve -->
+      <path d="M164 210 Q900 160 1636 210" stroke="#E07800" stroke-width="1.5" stroke-dasharray="10 5"/>
+
+      <!-- Roof equipment area -->
+      <rect x="600" y="175" width="400" height="35" rx="8" stroke="#E07800" stroke-width="1" stroke-dasharray="6 3"/>
+      <!-- Pantograph arms -->
+      <line x1="720" y1="175" x2="720" y2="155" stroke="#E07800" stroke-width="1.5"/>
+      <line x1="880" y1="175" x2="880" y2="155" stroke="#E07800" stroke-width="1.5"/>
+      <line x1="700" y1="155" x2="900" y2="155" stroke="#E07800" stroke-width="1.5"/>
+      <path d="M770 155 v-20 h60 v20" stroke="#E07800" stroke-width="2"/>
+      <!-- Collector shoe -->
+      <rect x="778" y="128" width="44" height="8" rx="2" stroke="#E07800" stroke-width="1"/>
+
+      <!-- Floor / underframe line -->
+      <line x1="140" y1="490" x2="1660" y2="490" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- ── DOORS: 4 pairs per side (MR-73 spec) ── -->
+      <!-- Door 1 -->
+      <rect x="260" y="240" width="22" height="240" rx="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="5 2"/>
+      <rect x="286" y="240" width="22" height="240" rx="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="5 2"/>
+      <line x1="271" y1="240" x2="271" y2="480" stroke="#E07800" stroke-width="0.5" stroke-dasharray="2 4"/>
+      <line x1="297" y1="240" x2="297" y2="480" stroke="#E07800" stroke-width="0.5" stroke-dasharray="2 4"/>
+
+      <!-- Door 2 -->
+      <rect x="620" y="240" width="22" height="240" rx="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="5 2"/>
+      <rect x="646" y="240" width="22" height="240" rx="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="5 2"/>
+      <line x1="631" y1="240" x2="631" y2="480" stroke="#E07800" stroke-width="0.5" stroke-dasharray="2 4"/>
+      <line x1="657" y1="240" x2="657" y2="480" stroke="#E07800" stroke-width="0.5" stroke-dasharray="2 4"/>
+
+      <!-- Door 3 -->
+      <rect x="932" y="240" width="22" height="240" rx="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="5 2"/>
+      <rect x="958" y="240" width="22" height="240" rx="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="5 2"/>
+      <line x1="943" y1="240" x2="943" y2="480" stroke="#E07800" stroke-width="0.5" stroke-dasharray="2 4"/>
+      <line x1="969" y1="240" x2="969" y2="480" stroke="#E07800" stroke-width="0.5" stroke-dasharray="2 4"/>
+
+      <!-- Door 4 -->
+      <rect x="1292" y="240" width="22" height="240" rx="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="5 2"/>
+      <rect x="1318" y="240" width="22" height="240" rx="4" stroke="#E07800" stroke-width="1.5" stroke-dasharray="5 2"/>
+      <line x1="1303" y1="240" x2="1303" y2="480" stroke="#E07800" stroke-width="0.5" stroke-dasharray="2 4"/>
+      <line x1="1329" y1="240" x2="1329" y2="480" stroke="#E07800" stroke-width="0.5" stroke-dasharray="2 4"/>
+
+      <!-- ── WINDOWS: 2 between each door pair ── -->
+      <!-- Between start and door 1 -->
+      <rect x="170" y="260" width="70" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- Between door 1 and door 2 -->
+      <rect x="330" y="260" width="110" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+      <rect x="465" y="260" width="110" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- Between door 2 and door 3 -->
+      <rect x="695" y="260" width="90" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+      <rect x="810" y="260" width="90" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- Between door 3 and door 4 -->
+      <rect x="1005" y="260" width="110" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+      <rect x="1140" y="260" width="110" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- After door 4 -->
+      <rect x="1365" y="260" width="110" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+      <rect x="1510" y="260" width="70" height="80" rx="8" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- ── COUPLERS ── -->
+      <path d="M140 350 h-40 v30 h40" stroke="#E07800" stroke-width="2"/>
+      <path d="M1660 350 h40 v30 h-40" stroke="#E07800" stroke-width="2"/>
+      <circle cx="85" cy="365" r="8" stroke="#E07800" stroke-width="1.5"/>
+      <circle cx="1715" cy="365" r="8" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- ── BOGIES ── -->
+      <!-- Front bogie -->
+      <rect x="220" y="498" width="180" height="36" rx="8" stroke="#E07800" stroke-width="1.5"/>
+      <!-- Suspension springs -->
+      <path d="M245 498 v-8 M260 498 v-8 M380 498 v-8 M395 498 v-8" stroke="#E07800" stroke-width="1"/>
+      <!-- Third rail shoe -->
+      <rect x="270" y="500" width="80" height="8" rx="2" stroke="#E07800" stroke-width="1" stroke-dasharray="3 2"/>
+
+      <!-- Rear bogie -->
+      <rect x="1400" y="498" width="180" height="36" rx="8" stroke="#E07800" stroke-width="1.5"/>
+      <path d="M1425 498 v-8 M1440 498 v-8 M1560 498 v-8 M1575 498 v-8" stroke="#E07800" stroke-width="1"/>
+      <rect x="1450" y="500" width="80" height="8" rx="2" stroke="#E07800" stroke-width="1" stroke-dasharray="3 2"/>
+
+      <!-- ── WHEELS (rubber tires — MR-73 uses pneumatic tires) ── -->
+      <!-- Front bogie wheels -->
+      <circle cx="265" cy="540" r="22" stroke="#E07800" stroke-width="2"/>
+      <circle cx="265" cy="540" r="8" stroke="#E07800" stroke-width="1"/>
+      <circle cx="265" cy="540" r="3" fill="#E07800"/>
+      <circle cx="355" cy="540" r="22" stroke="#E07800" stroke-width="2"/>
+      <circle cx="355" cy="540" r="8" stroke="#E07800" stroke-width="1"/>
+      <circle cx="355" cy="540" r="3" fill="#E07800"/>
+      <!-- Axle -->
+      <line x1="265" y1="540" x2="355" y2="540" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- Rear bogie wheels -->
+      <circle cx="1445" cy="540" r="22" stroke="#E07800" stroke-width="2"/>
+      <circle cx="1445" cy="540" r="8" stroke="#E07800" stroke-width="1"/>
+      <circle cx="1445" cy="540" r="3" fill="#E07800"/>
+      <circle cx="1535" cy="540" r="22" stroke="#E07800" stroke-width="2"/>
+      <circle cx="1535" cy="540" r="8" stroke="#E07800" stroke-width="1"/>
+      <circle cx="1535" cy="540" r="3" fill="#E07800"/>
+      <line x1="1445" y1="540" x2="1535" y2="540" stroke="#E07800" stroke-width="1.5"/>
+
+      <!-- Guide wheels (smaller, MR-73 has horizontal guide wheels) -->
+      <circle cx="235" cy="520" r="10" stroke="#E07800" stroke-width="1"/>
+      <circle cx="385" cy="520" r="10" stroke="#E07800" stroke-width="1"/>
+      <circle cx="1415" cy="520" r="10" stroke="#E07800" stroke-width="1"/>
+      <circle cx="1565" cy="520" r="10" stroke="#E07800" stroke-width="1"/>
+
+      <!-- ═══ DIMENSION LINES ═══ -->
+      <!-- Overall length -->
+      <line x1="100" y1="600" x2="1700" y2="600" stroke="#E07800" stroke-width="1" stroke-dasharray="6 3"/>
+      <line x1="100" y1="593" x2="100" y2="607" stroke="#E07800" stroke-width="1"/>
+      <line x1="1700" y1="593" x2="1700" y2="607" stroke="#E07800" stroke-width="1"/>
+      <text x="900" y="618" font-family="JetBrains Mono, monospace" font-size="14" fill="#E07800" text-anchor="middle">17,200 mm</text>
+
+      <!-- Overall height -->
+      <line x1="1740" y1="135" x2="1740" y2="540" stroke="#E07800" stroke-width="1" stroke-dasharray="6 3"/>
+      <line x1="1733" y1="135" x2="1747" y2="135" stroke="#E07800" stroke-width="1"/>
+      <line x1="1733" y1="540" x2="1747" y2="540" stroke="#E07800" stroke-width="1"/>
+      <text x="1755" y="340" font-family="JetBrains Mono, monospace" font-size="12" fill="#E07800" transform="rotate(90, 1755, 340)" text-anchor="middle">3,500 mm</text>
+
+      <!-- Bogie spacing -->
+      <line x1="310" y1="575" x2="1490" y2="575" stroke="#E07800" stroke-width="0.75" stroke-dasharray="4 3"/>
+      <line x1="310" y1="570" x2="310" y2="580" stroke="#E07800" stroke-width="0.75"/>
+      <line x1="1490" y1="570" x2="1490" y2="580" stroke="#E07800" stroke-width="0.75"/>
+      <text x="900" y="586" font-family="JetBrains Mono, monospace" font-size="10" fill="#E07800" text-anchor="middle">11,800 mm (bogie centers)</text>
+
+      <!-- Floor height -->
+      <line x1="60" y1="490" x2="60" y2="540" stroke="#E07800" stroke-width="0.75" stroke-dasharray="4 3"/>
+      <line x1="55" y1="490" x2="65" y2="490" stroke="#E07800" stroke-width="0.75"/>
+      <line x1="55" y1="540" x2="65" y2="540" stroke="#E07800" stroke-width="0.75"/>
+      <text x="50" y="518" font-family="JetBrains Mono, monospace" font-size="9" fill="#E07800" text-anchor="end">1,200</text>
+
+      <!-- ═══ CROSS-SECTION (top-right corner) ═══ -->
+      <g transform="translate(1550, 20)">
+        <!-- Section outline -->
+        <rect x="0" y="0" width="160" height="130" rx="4" stroke="#E07800" stroke-width="0.75" stroke-dasharray="4 2"/>
+        <text x="80" y="12" font-family="JetBrains Mono, monospace" font-size="8" fill="#E07800" text-anchor="middle">CROSS SECTION A-A</text>
+
+        <!-- Car profile cross-section -->
+        <rect x="30" y="25" width="100" height="85" rx="14" stroke="#E07800" stroke-width="1.5"/>
+        <!-- Roof curve -->
+        <path d="M44 25 Q80 15 116 25" stroke="#E07800" stroke-width="1"/>
+        <!-- Floor -->
+        <line x1="30" y1="110" x2="130" y2="110" stroke="#E07800" stroke-width="1"/>
+        <!-- Interior seats -->
+        <line x1="38" y1="80" x2="60" y2="80" stroke="#E07800" stroke-width="0.75"/>
+        <line x1="38" y1="80" x2="38" y2="105" stroke="#E07800" stroke-width="0.75"/>
+        <line x1="100" y1="80" x2="122" y2="80" stroke="#E07800" stroke-width="0.75"/>
+        <line x1="122" y1="80" x2="122" y2="105" stroke="#E07800" stroke-width="0.75"/>
+        <!-- Width dimension -->
+        <text x="80" y="125" font-family="JetBrains Mono, monospace" font-size="8" fill="#E07800" text-anchor="middle">2,500 mm</text>
+      </g>
+
+      <!-- ═══ TITLE BLOCK (bottom-right) ═══ -->
+      <g transform="translate(1420, 630)">
+        <rect x="0" y="0" width="280" height="55" stroke="#E07800" stroke-width="1"/>
+        <line x1="0" y1="18" x2="280" y2="18" stroke="#E07800" stroke-width="0.5"/>
+        <line x1="0" y1="36" x2="280" y2="36" stroke="#E07800" stroke-width="0.5"/>
+        <line x1="140" y1="0" x2="140" y2="55" stroke="#E07800" stroke-width="0.5"/>
+        <text x="70" y="13" font-family="JetBrains Mono, monospace" font-size="10" fill="#E07800" text-anchor="middle">STM BOMBARDIER</text>
+        <text x="210" y="13" font-family="JetBrains Mono, monospace" font-size="10" fill="#E07800" text-anchor="middle">MR-73 MOTOR CAR</text>
+        <text x="70" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#E07800" text-anchor="middle">SIDE ELEVATION</text>
+        <text x="210" y="31" font-family="JetBrains Mono, monospace" font-size="9" fill="#E07800" text-anchor="middle">SCALE 1:48</text>
+        <text x="70" y="49" font-family="JetBrains Mono, monospace" font-size="9" fill="#E07800" text-anchor="middle">MONTREAL QC</text>
+        <text x="210" y="49" font-family="JetBrains Mono, monospace" font-size="9" fill="#E07800" text-anchor="middle">DWG MR73-001-B</text>
+      </g>
+
+      <!-- Section cut line A-A -->
+      <line x1="900" y1="130" x2="900" y2="200" stroke="#E07800" stroke-width="1" stroke-dasharray="12 4 2 4"/>
+      <line x1="900" y1="500" x2="900" y2="570" stroke="#E07800" stroke-width="1" stroke-dasharray="12 4 2 4"/>
+      <text x="912" y="145" font-family="JetBrains Mono, monospace" font-size="12" fill="#E07800">A</text>
+      <text x="912" y="565" font-family="JetBrains Mono, monospace" font-size="12" fill="#E07800">A</text>
+
+      <!-- Center line -->
+      <line x1="140" y1="360" x2="1660" y2="360" stroke="#E07800" stroke-width="0.5" stroke-dasharray="20 5 2 5"/>
+
+    </svg>
+  </div>
+
+  <div class="services-content">
+    <div class="section-label">Services</div>
+
+    <div class="services-grid">
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#E07800" stroke-width="1.5" stroke-dasharray="4 3"/><path d="M16 20h16M16 28h10" stroke="#E07800" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Queries that run in seconds, not minutes</div>
+            <div class="service-title">SQL Development</div>
+            <div class="metric-row"><span class="metric-value">3x faster</span><span class="metric-label">avg query improvement</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><rect x="8" y="12" width="32" height="24" rx="3" stroke="#E07800" stroke-width="1.5"/><path d="M14 22l4 4-4 4M22 30h8" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Your data arrives clean, on time, every morning</div>
+            <div class="service-title">Data Pipelines</div>
+            <div class="metric-row"><span class="metric-value">99.9%</span><span class="metric-label">pipeline uptime</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><path d="M12 16h24v4H12zM12 24h18v4H12zM12 32h22v4H12z" stroke="#E07800" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Decisions in 15 minutes, not 2 days</div>
+            <div class="service-title">Analytics & Reporting</div>
+            <div class="metric-row"><span class="metric-value">2d&rarr;15m</span><span class="metric-label">reporting turnaround</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="14" rx="14" ry="5" stroke="#E07800" stroke-width="1.5"/><path d="M10 14v20c0 2.76 6.27 5 14 5s14-2.24 14-5V14" stroke="#E07800" stroke-width="1.5"/><path d="M10 24c0 2.76 6.27 5 14 5s14-2.24 14-5" stroke="#E07800" stroke-width="1.5"/></svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Zero-downtime migrations while you sleep</div>
+            <div class="service-title">Database Engineering</div>
+            <div class="metric-row"><span class="metric-value">500GB+</span><span class="metric-label">migrated safely</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><rect x="10" y="10" width="28" height="28" rx="4" stroke="#E07800" stroke-width="1.5"/><path d="M10 20h28M20 20v18" stroke="#E07800" stroke-width="1.5"/><circle cx="15" cy="15" r="2" fill="#E07800"/></svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">Your team stops copying between spreadsheets</div>
+            <div class="service-title">Internal Tooling</div>
+            <div class="metric-row"><span class="metric-value">80%</span><span class="metric-label">less manual data entry</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="service-card">
+        <div class="card-inner">
+          <div class="svg-panel">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="24" rx="3" stroke="#E07800" stroke-width="1.5"/><path d="M6 34h36v4H6z" stroke="#E07800" stroke-width="1.5"/><path d="M18 18l-4 4 4 4M30 18l4 4-4 4M22 26l4-12" stroke="#E07800" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="card-text">
+            <div class="benefit">A frontend that matches your backend quality</div>
+            <div class="service-title">Web Development</div>
+            <div class="metric-row"><span class="metric-value">100</span><span class="metric-label">Lighthouse performance</span></div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="view-all">
+      <a href="#">View all services &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<div class="hard-cut"></div>
+
+<div class="context-section">
+  <div class="label">Start of Blog Teaser (Section 5)</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Option A Refined — Station Sign Nav</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #f5f5f0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    padding: 32px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+  h1 span { color: #E07800; }
+  .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 40px; max-width: 600px; }
+
+  .mockup-frame {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .mockup-chrome {
+    background: #161616;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #222;
+  }
+  .mockup-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; }
+  .mockup-url { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #555; margin-left: 8px; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: #E07800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 40px 0 12px;
+  }
+  .section-desc {
+    color: #999;
+    font-size: 0.85rem;
+    max-width: 680px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .section-desc strong { color: #f5f5f0; font-weight: 600; }
+  .section-desc code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: #FFB627;
+    background: #1a1200;
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  .option-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .option-card {
+    flex: 1;
+    background: #111;
+    border: 1px solid #1a1a1a;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+  .option-card:hover { border-color: #333; }
+  .option-card.selected { border-color: #E07800; }
+  .option-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+  .option-card p { font-size: 0.8rem; color: #888; line-height: 1.6; }
+
+  .gsap-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: #1a1200;
+    color: #FFB627;
+    border: 1px solid #332800;
+    display: inline-block;
+    margin: 2px 3px;
+  }
+</style>
+<script>
+  function pickOption(group, el) {
+    el.closest('.option-row').querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
+</head>
+<body>
+
+<h1>Option A <span>Refined</span> — Station Sign Nav</h1>
+<p class="subtitle">Full-viewport service reveals + station navigation strip. Two variations for the top strip — pick the one that feels more "metro signage."</p>
+
+<!-- ═══════════════════════════ FULL MOCKUP ═══════════════════════════ -->
+<div class="mockup-frame">
+  <div class="mockup-chrome">
+    <div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div>
+    <span class="mockup-url">yesid.dev/services</span>
+  </div>
+
+  <div style="position:relative;min-height:680px;background:#0a0a0a;overflow:hidden;">
+
+    <!-- ════════ TOP STRIP: Station Sign Navigation ════════ -->
+    <div style="position:absolute;top:0;left:0;right:0;z-index:10;background:#0d0d0d;border-bottom:2px solid #E07800;">
+      <!-- Metro line running through the strip -->
+      <div style="display:flex;align-items:center;padding:0 32px;height:52px;gap:0;">
+        <!-- Station 01 — active -->
+        <div style="display:flex;align-items:center;flex:1;cursor:pointer;">
+          <div style="position:relative;z-index:2;">
+            <div style="width:22px;height:22px;border-radius:50%;background:#E07800;display:flex;align-items:center;justify-content:center;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:700;color:#0a0a0a;">01</span>
+            </div>
+          </div>
+          <div style="margin-left:8px;">
+            <div style="font-size:0.7rem;font-weight:700;color:#f5f5f0;line-height:1.1;">SQL Dev</div>
+            <div style="font-size:0.5rem;color:#E07800;font-family:'JetBrains Mono',monospace;">active</div>
+          </div>
+          <div style="flex:1;height:2px;background:#E07800;margin:0 12px;"></div>
+        </div>
+
+        <!-- Station 02 — next -->
+        <div style="display:flex;align-items:center;flex:1;cursor:pointer;opacity:0.7;">
+          <div style="position:relative;z-index:2;">
+            <div style="width:18px;height:18px;border-radius:50%;border:2px solid #555;display:flex;align-items:center;justify-content:center;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:0.45rem;color:#555;">02</span>
+            </div>
+          </div>
+          <div style="margin-left:8px;">
+            <div style="font-size:0.65rem;font-weight:600;color:#888;">Pipeline</div>
+          </div>
+          <div style="flex:1;height:2px;background:#333;margin:0 12px;"></div>
+        </div>
+
+        <!-- Station 03 -->
+        <div style="display:flex;align-items:center;flex:1;cursor:pointer;opacity:0.5;">
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #444;display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.45rem;color:#444;">03</span>
+          </div>
+          <div style="margin-left:8px;font-size:0.65rem;color:#666;">Analytics</div>
+          <div style="flex:1;height:2px;background:#282828;margin:0 12px;"></div>
+        </div>
+
+        <!-- Station 04 -->
+        <div style="display:flex;align-items:center;flex:1;cursor:pointer;opacity:0.4;">
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.45rem;color:#333;">04</span>
+          </div>
+          <div style="margin-left:8px;font-size:0.65rem;color:#555;">DB Eng.</div>
+          <div style="flex:1;height:2px;background:#222;margin:0 12px;"></div>
+        </div>
+
+        <!-- Station 05 -->
+        <div style="display:flex;align-items:center;flex:1;cursor:pointer;opacity:0.35;">
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.45rem;color:#333;">05</span>
+          </div>
+          <div style="margin-left:8px;font-size:0.65rem;color:#444;">Tooling</div>
+          <div style="flex:1;height:2px;background:#1a1a1a;margin:0 12px;"></div>
+        </div>
+
+        <!-- Station 06 — terminus -->
+        <div style="display:flex;align-items:center;cursor:pointer;opacity:0.3;">
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #282828;display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.45rem;color:#282828;">06</span>
+          </div>
+          <div style="margin-left:8px;font-size:0.65rem;color:#444;">Web Dev</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ LEFT METRO LINE ════════ -->
+    <div style="position:absolute;left:36px;top:54px;bottom:70px;width:2px;background:linear-gradient(to bottom,#E07800 0%,#E07800 25%,#333 25%,#222 100%);"></div>
+    <!-- Active station dot -->
+    <div style="position:absolute;left:29px;top:100px;width:16px;height:16px;border-radius:50%;background:#E07800;box-shadow:0 0 12px rgba(224,120,0,0.4);z-index:2;"></div>
+    <!-- Future dots -->
+    <div style="position:absolute;left:31px;top:260px;width:12px;height:12px;border-radius:50%;border:2px solid #333;"></div>
+    <div style="position:absolute;left:31px;top:420px;width:12px;height:12px;border-radius:50%;border:2px solid #222;"></div>
+
+    <!-- ════════ MAIN CONTENT: Current Service ════════ -->
+    <div style="position:absolute;left:72px;top:72px;right:36px;bottom:70px;padding-top:16px;">
+      <!-- Station counter -->
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#E07800;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:20px;">
+        Service 01 / 06
+      </div>
+
+      <div style="display:flex;gap:40px;align-items:flex-start;">
+        <!-- Left: Text content -->
+        <div style="flex:1;">
+          <!-- Big kinetic title -->
+          <div style="font-size:clamp(2.4rem,5vw,3.8rem);font-weight:900;letter-spacing:-0.04em;line-height:1.0;margin-bottom:20px;">
+            <span style="display:block;color:#f5f5f0;">SQL</span>
+            <span style="display:block;color:#f5f5f0;">Development</span>
+            <span style="display:block;color:#E07800;font-size:0.35em;font-weight:600;letter-spacing:0.05em;margin-top:8px;">& Optimization</span>
+          </div>
+
+          <!-- Value prop -->
+          <p style="color:#999;font-size:0.92rem;max-width:400px;line-height:1.75;margin-bottom:24px;">
+            Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. From complex reporting queries to stored procedures, built for correctness and performance.
+          </p>
+
+          <!-- Stack pills -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:5px 12px;border:1px solid #282828;border-radius:2px;color:#888;">PostgreSQL</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:5px 12px;border:1px solid #282828;border-radius:2px;color:#888;">SQL Server</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:5px 12px;border:1px solid #282828;border-radius:2px;color:#888;">T-SQL</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:5px 12px;border:1px solid #282828;border-radius:2px;color:#888;">PL/pgSQL</span>
+          </div>
+
+          <!-- Deep dive CTA -->
+          <a style="display:inline-flex;align-items:center;gap:10px;color:#E07800;font-size:0.85rem;font-weight:600;text-decoration:none;border-bottom:1.5px solid #E07800;padding-bottom:3px;transition:gap 0.3s;">
+            Deep dive into this service <span style="font-size:1.2rem;transition:transform 0.3s;">&#8594;</span>
+          </a>
+        </div>
+
+        <!-- Right: SVG illustration -->
+        <div style="width:240px;height:280px;flex-shrink:0;position:relative;">
+          <div style="width:100%;height:100%;border:1px dashed #1a1a1a;border-radius:12px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center,rgba(224,120,0,0.03) 0%,transparent 70%);">
+            <div style="text-align:center;">
+              <div style="width:80px;height:80px;margin:0 auto 12px;border:2px solid #E07800;border-radius:8px;opacity:0.3;display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:1.5rem;color:#E07800;opacity:0.6;">&#9671;</span>
+              </div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#444;">service-sql.svg</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#E07800;margin-top:4px;">DrawSVGPlugin</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#555;margin-top:2px;">draws on scroll enter</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PROOF STRIP (Bottom) ════════ -->
+    <div style="position:absolute;bottom:0;left:0;right:0;background:#0f0f0f;border-top:1px solid #1a1a1a;padding:14px 72px;display:flex;align-items:center;gap:16px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#555;text-transform:uppercase;letter-spacing:0.12em;flex-shrink:0;">Built with this</span>
+      <div style="width:1px;height:20px;background:#222;"></div>
+      <div style="display:flex;gap:10px;flex:1;">
+        <div style="background:#141414;border:1px solid #1e1e1e;border-radius:5px;padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#333'" onmouseout="this.style.borderColor='#1e1e1e'">
+          <div style="width:6px;height:6px;border-radius:50%;background:#E07800;"></div>
+          <div>
+            <div style="font-size:0.7rem;font-weight:600;color:#ddd;">Transit Data Pipeline</div>
+            <div style="font-size:0.55rem;color:#666;">End-to-end ELT for transit ops</div>
+          </div>
+        </div>
+        <div style="background:#141414;border:1px solid #1e1e1e;border-radius:5px;padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#333'" onmouseout="this.style.borderColor='#1e1e1e'">
+          <div style="width:6px;height:6px;border-radius:50%;background:#E07800;"></div>
+          <div>
+            <div style="font-size:0.7rem;font-weight:600;color:#ddd;">Query Optimizer</div>
+            <div style="font-size:0.55rem;color:#666;">Automated SQL analysis tool</div>
+          </div>
+        </div>
+        <div style="background:#141414;border:1px solid #1e1e1e;border-radius:5px;padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#333'" onmouseout="this.style.borderColor='#1e1e1e'">
+          <div style="width:6px;height:6px;border-radius:50%;background:#E07800;"></div>
+          <div>
+            <div style="font-size:0.7rem;font-weight:600;color:#ddd;">DB Migration</div>
+            <div style="font-size:0.55rem;color:#666;">Zero-downtime MySQL→PG</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:#E07800;flex-shrink:0;">3 projects</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════ STATION SIGN VARIATIONS ═══════════════════════════ -->
+<div class="section-label">Station Sign — Variation Question</div>
+<p class="section-desc">
+  The top strip above uses a <strong>horizontal metro line</strong> with numbered station dots, short labels, and connecting tracks.
+  Clicking any station scrolls/snaps to that service. The active station glows orange, others fade out by distance.
+  <br><br>
+  Here's a second take on the station sign:
+</p>
+
+<!-- Variation B: Tabbed station sign -->
+<div class="mockup-frame" style="margin-bottom:24px;">
+  <div style="background:#0d0d0d;border-bottom:2px solid #E07800;">
+    <div style="display:flex;align-items:stretch;height:48px;">
+      <!-- Active tab -->
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#111;border-bottom:3px solid #E07800;cursor:pointer;padding:0 8px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#E07800;font-weight:700;">01</span>
+        <span style="font-size:0.72rem;font-weight:700;color:#f5f5f0;">SQL Dev</span>
+      </div>
+      <!-- Inactive tabs -->
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border-bottom:3px solid transparent;border-right:1px solid #1a1a1a;cursor:pointer;padding:0 8px;opacity:0.6;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.6'">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#555;">02</span>
+        <span style="font-size:0.72rem;color:#888;">Pipeline</span>
+      </div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border-bottom:3px solid transparent;border-right:1px solid #1a1a1a;cursor:pointer;padding:0 8px;opacity:0.5;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.5'">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#444;">03</span>
+        <span style="font-size:0.72rem;color:#777;">Analytics</span>
+      </div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border-bottom:3px solid transparent;border-right:1px solid #1a1a1a;cursor:pointer;padding:0 8px;opacity:0.45;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.45'">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#444;">04</span>
+        <span style="font-size:0.72rem;color:#666;">DB Eng.</span>
+      </div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border-bottom:3px solid transparent;border-right:1px solid #1a1a1a;cursor:pointer;padding:0 8px;opacity:0.4;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.4'">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#333;">05</span>
+        <span style="font-size:0.72rem;color:#555;">Tooling</span>
+      </div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border-bottom:3px solid transparent;cursor:pointer;padding:0 8px;opacity:0.35;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.35'">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#333;">06</span>
+        <span style="font-size:0.72rem;color:#555;">Web Dev</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="option-row">
+  <div class="option-card" onclick="pickOption('strip', this)" data-choice="strip-metro">
+    <h3>Metro Line Strip <span style="color:#E07800;">(shown in full mockup above)</span></h3>
+    <p>Horizontal metro line with numbered dots, short labels, and track segments connecting them. Active station glows. Feels like a real transit map — matches the site's metro identity. On mobile: collapses to just the dots (no labels).</p>
+    <div style="margin-top:8px;">
+      <span class="gsap-chip">ScrollTrigger onUpdate</span>
+      <span class="gsap-chip">active dot glow</span>
+    </div>
+  </div>
+  <div class="option-card" onclick="pickOption('strip', this)" data-choice="strip-tabs">
+    <h3>Station Tabs <span style="color:#888;">(shown directly above)</span></h3>
+    <p>Tab bar with station numbers and names. Active tab gets the orange bottom border. Cleaner, more conventional — like a real tab UI but with station numbering. Easier to read on smaller screens. On mobile: horizontally scrollable.</p>
+    <div style="margin-top:8px;">
+      <span class="gsap-chip">click → scrollTo</span>
+      <span class="gsap-chip">active tab underline</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ BEHAVIOR NOTES ═══════════════════════════ -->
+<div class="section-label">Interaction Behavior</div>
+<p class="section-desc">
+  <strong>Scroll behavior:</strong> Vertical scroll with <code>snap</code> — each service locks into viewport.
+  The top strip updates as you scroll (active station changes via ScrollTrigger onUpdate).
+  <br><br>
+  <strong>Click navigation:</strong> Clicking a station in the top strip uses <code>scrollTo</code> to jump to that service's viewport.
+  The SVG DrawSVGPlugin animation replays on entry regardless of direction.
+  <br><br>
+  <strong>Left metro line:</strong> Stays fixed on the left edge. Station dots fill/glow as you scroll past them.
+  Already-visited stations stay filled (orange). Future ones remain hollow.
+  <br><br>
+  <strong>Proof strip:</strong> Always visible at the bottom. Updates per-service — shows that service's related projects
+  as mini-cards linking to <code>/work/[slug]</code>. Project count on the right.
+  <br><br>
+  <strong>Mobile:</strong> Metro line hidden. Top strip collapses to dots-only (metro line) or scrollable tabs.
+  SVG scales down. Proof strip stacks vertically.
+</p>
+
+<div style="text-align:center;color:#444;font-size:0.7rem;font-family:'JetBrains Mono',monospace;margin-top:32px;">
+  pick metro line or tabs above &middot; then tell me in terminal
+</div>
+
+</body>
+</html>

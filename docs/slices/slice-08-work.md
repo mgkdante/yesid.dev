@@ -37,8 +37,8 @@ This is the project portfolio section of yesid.dev. Projects display in a card g
 
 ## Technical Spec
 
-**Design spec:** `docs/superpowers/specs/2026-04-05-work-pages-design.md`
-**Implementation plan:** `docs/superpowers/plans/2026-04-05-work-pages.md`
+**Design spec:** `docs/specs/2026-04-05-work-pages-design.md`
+**Implementation plan:** `docs/plans/2026-04-05-work-pages.md`
 
 Data model extensions, component list, SVG system, animation inventory, and route definitions are fully specified in the design spec. The implementation plan breaks these into 16 tasks with exact file paths, code, and test commands.
 

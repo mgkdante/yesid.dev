@@ -32,8 +32,8 @@ Claude Code follows `CLAUDE.md`. Every piece of work has a slice spec, a dev log
 ## For a New Dev or AI
 
 1. Read `CLAUDE.md`
-2. Read `docs/PLAN.md`
-3. Read `docs/ARCHITECTURE.md`
+2. Read `docs/roadmap/PLAN.md`
+3. Read `docs/reference/ARCHITECTURE.md`
 4. Find the active slice in `docs/slices/`
 5. Check recent logs in `docs/devlog/`
 

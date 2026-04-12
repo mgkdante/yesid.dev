@@ -1,0 +1,60 @@
+<h2>Manifesto Section — Text & Tone</h2>
+<p class="subtitle">The manifesto is a single bold statement that bridges the hero into the rest of the page. It should feel like a confident declaration — not a tagline, not a sales pitch.</p>
+
+<div class="section">
+  <h3>Context</h3>
+  <p>The hero ends with the metro SVG animation and "DIGITAL INFRA BUILT RIGHT." The manifesto appears as the user scrolls past the hero — a full-viewport moment of pause before the proof sections begin. The text reveals character by character via GSAP SplitText as the user scrolls.</p>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>"I build the infrastructure your operations run on."</h3>
+      <p>Direct, personal ("I build"), positions you as the hands-on builder. "Operations" signals enterprise/production systems. Short, punchy. <strong>From the spec.</strong></p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>"I build the systems that keep yours running."</h3>
+      <p>More conversational. "Systems" is broader than "infrastructure" — captures web apps too. "Keep yours running" implies reliability and operational continuity. Slightly warmer tone.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>"From pipeline to dashboard — I build what moves your data."</h3>
+      <p>More specific and technical. Mentions the two endpoints of your work (ingest → visualization). "Moves your data" is active and kinetic. Longer — more characters for the SplitText reveal to work with.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="d" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Something else</h3>
+      <p>You have a different idea or want to riff on one of these. Tell me in the terminal.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem;">
+  <h3>Highlight words (orange)</h3>
+  <p>The SplitText reveal will highlight 1–2 key words in <span style="color: #E07800; font-weight: 700;">brand orange (#E07800)</span> once they're fully revealed. Which words carry the most weight depends on the sentence chosen.</p>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 0.75rem;">
+    <tr style="border-bottom: 1px solid #3A3A3A;">
+      <td style="padding: 0.5rem; color: #999;">Option A</td>
+      <td style="padding: 0.5rem;"><span style="color: #E07800;">infrastructure</span> … <span style="color: #E07800;">operations</span></td>
+    </tr>
+    <tr style="border-bottom: 1px solid #3A3A3A;">
+      <td style="padding: 0.5rem; color: #999;">Option B</td>
+      <td style="padding: 0.5rem;"><span style="color: #E07800;">systems</span> … <span style="color: #E07800;">running</span></td>
+    </tr>
+    <tr>
+      <td style="padding: 0.5rem; color: #999;">Option C</td>
+      <td style="padding: 0.5rem;"><span style="color: #E07800;">pipeline</span> … <span style="color: #E07800;">dashboard</span> … <span style="color: #E07800;">moves</span></td>
+    </tr>
+  </table>
+</div>

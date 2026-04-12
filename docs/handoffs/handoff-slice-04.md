@@ -26,7 +26,7 @@ Built the complete motion system for yesid.dev: four Svelte actions (`use:boop`,
 - `src/lib/components/ProjectCard.svelte` — added `use:boop={{ scale: 1.05, timing: 300 }}`
 - `src/lib/components/TagList.svelte` — added `use:reveal` + `stagger()` on each `<li>`
 - `src/tests/setup.ts` — added global stubs: `window.matchMedia`, `IntersectionObserver`, GSAP mocks, lottie-web mock
-- `docs/ARCHITECTURE.md` — added motion system directory, new dependencies table
+- `docs/reference/ARCHITECTURE.md` — added motion system directory, new dependencies table
 - `tree.txt` — updated
 
 ## How It Works

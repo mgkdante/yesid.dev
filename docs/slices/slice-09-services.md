@@ -13,9 +13,9 @@ Build the `/services` index page and `/services/[id]` detail pages. Services are
 
 **"The Kinetic Scroll"** — full-viewport service reveals with station tab navigation, vertical metro line, DrawSVGPlugin animations, and proof strips. Approved during brainstorming session on 2026-04-06.
 
-**Design spec:** `docs/superpowers/specs/2026-04-06-slice-09-services-design.md`
-**Implementation plan:** `docs/superpowers/plans/2026-04-06-slice-09-services.md`
-**Visual mockups:** `docs/superpowers/mockups/slice-09-services-index.html` (index) and `slice-09-services-detail.html` (detail)
+**Design spec:** `docs/specs/2026-04-06-slice-09-services-design.md`
+**Implementation plan:** `docs/plans/2026-04-06-slice-09-services.md`
+**Visual mockups:** `docs/archive/mockups/slice-09-services-index.html` (index) and `slice-09-services-detail.html` (detail)
 
 **Principles:** Data-driven, i18n-ready (LocalizedString), cloud-ready, DRY, componentized, scalable.
 

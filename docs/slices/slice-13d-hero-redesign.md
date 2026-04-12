@@ -13,9 +13,9 @@ Replace the hero text section with a two-column proof layout: "PIPELINES THAT / 
 
 After the metro SVG zooms into the orange dot, the current hero text ("DIGITAL INFRA. BUILT RIGHT." + 3-line SQL decoration) lacks the energy the animation builds. The redesign turns the hero into a **proof moment** — real SQL from the Gold layer, live KPI cards from the transit pipeline, and a refresh button that regenerates data. The manifesto section below the hard cut handles the personal statement; the hero handles proof.
 
-Design spec: `docs/superpowers/specs/2026-04-10-hero-redesign.md`
-Reference HTML: `docs/superpowers/specs/hero-v4-approved-reference.html`
-Implementation plan: `docs/superpowers/plans/2026-04-10-hero-redesign.md`
+Design spec: `docs/specs/2026-04-10-hero-redesign.md`
+Reference HTML: `docs/specs/hero-v4-approved-reference.html`
+Implementation plan: `docs/plans/2026-04-10-hero-redesign.md`
 
 ## Architecture
 
@@ -36,7 +36,7 @@ src/lib/components/HeroMetrics.svelte   — CREATE: 3 metric cards (vehicles, de
 src/lib/components/HeroMetrics.test.ts  — CREATE: component tests
 src/lib/components/HeroSqlPanel.svelte  — CREATE: SQL query + results panel
 src/lib/components/HeroSqlPanel.test.ts — CREATE: component tests
-docs/CSS.md                            — CREATE: CSS architecture reference
+docs/reference/CSS.md                            — CREATE: CSS architecture reference
 ```
 
 ### Modified Files
@@ -197,11 +197,11 @@ src/lib/data/locale.ts                 — resolveLocale() for i18n
 
 **Files:**
 - Modify: `src/routes/home.test.ts`
-- Create: `docs/CSS.md`
+- Create: `docs/reference/CSS.md`
 
 - [ ] Replace hero test assertions: new testids (hero-line1/2, hero-subheadline, hero-metrics, sql-panel, hero-refresh)
 - [ ] Remove obsolete tests (hero-badge, hero-sql)
-- [ ] Create docs/CSS.md documenting 3-layer architecture + all tokens
+- [ ] Create docs/reference/CSS.md documenting 3-layer architecture + all tokens
 - [ ] Run: `bun run test` (full suite)
 - [ ] Run: `bun run check`
 
@@ -261,7 +261,7 @@ Tasks are sequential — each depends on the previous. Task 7 (circuit grid) cou
 **What it is:** Three-layer CSS architecture: semantic tokens (theme-switching), brand utilities (@theme static values), and component-scoped styles. The hero uses all three.
 **Why it matters:** Separating concerns means changing the theme affects tokens globally, brand colors stay consistent, and component layout is encapsulated.
 **Try this:** Change `--bg-terminal` in DevTools and watch the SQL panel background update instantly.
-**Go deeper:** `docs/CSS.md` (created in Task 9)
+**Go deeper:** `docs/reference/CSS.md` (created in Task 9)
 
 ## Verify
 

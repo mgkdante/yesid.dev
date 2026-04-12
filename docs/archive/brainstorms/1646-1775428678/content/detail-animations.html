@@ -1,0 +1,133 @@
+<h2>Work Detail — Animation Concepts</h2>
+<p class="subtitle">What motion should the /work/[slug] page have? (Can combine multiple)</p>
+
+<div class="options" data-multiselect>
+  <!-- Option A: Per-project SVG -->
+  <div class="option" data-choice="project-svg" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Per-Project SVG Illustration</h3>
+      <p>Each project gets a custom SVG in the hero area (like blog posts get SVG icons). GSAP draws it on page load — lines trace, shapes fill, elements stagger in. For placeholder projects, use geometric fallbacks (hexagons, circuit-board patterns).</p>
+      <div style="margin-top: 12px; padding: 16px; background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 24px;">
+        <!-- Mock SVG animation sequence -->
+        <div style="text-align: center;">
+          <div style="width: 80px; height: 80px; border: 2px dashed #E0780040; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <svg width="50" height="50" viewBox="0 0 50 50">
+              <path d="M25 5 L45 15 L45 35 L25 45 L5 35 L5 15 Z" fill="none" stroke="#E07800" stroke-width="1.5" stroke-dasharray="4 2"/>
+              <circle cx="25" cy="25" r="8" fill="none" stroke="#FFB627" stroke-width="1"/>
+              <line x1="25" y1="17" x2="25" y2="5" stroke="#E0780060" stroke-width="0.5"/>
+              <line x1="33" y1="25" x2="45" y2="25" stroke="#E0780060" stroke-width="0.5"/>
+            </svg>
+          </div>
+          <div style="font-size: 9px; color: #888; margin-top: 6px;">DrawSVG + stagger</div>
+        </div>
+        <div style="color: #E07800; font-size: 20px;">→</div>
+        <div style="text-align: center;">
+          <div style="width: 80px; height: 80px; border: 2px solid #E0780040; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #E0780008;">
+            <svg width="50" height="50" viewBox="0 0 50 50">
+              <path d="M25 5 L45 15 L45 35 L25 45 L5 35 L5 15 Z" fill="#E0780015" stroke="#E07800" stroke-width="1.5"/>
+              <circle cx="25" cy="25" r="8" fill="#FFB62730" stroke="#FFB627" stroke-width="1"/>
+              <line x1="25" y1="17" x2="25" y2="5" stroke="#E07800" stroke-width="1"/>
+              <line x1="33" y1="25" x2="45" y2="25" stroke="#E07800" stroke-width="1"/>
+            </svg>
+          </div>
+          <div style="font-size: 9px; color: #888; margin-top: 6px;">Fully revealed</div>
+        </div>
+      </div>
+      <p style="font-size: 11px; color: #888; margin-top: 8px;"><strong>Effort:</strong> Medium — reuse BlogSvgIcon pattern. Need 1 SVG per project (or geometric fallbacks).</p>
+    </div>
+  </div>
+
+  <!-- Option B: Data-flow diagram -->
+  <div class="option" data-choice="dataflow" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Animated Data-Flow Diagram</h3>
+      <p>Each project gets an auto-generated "pipeline schematic" based on its tech stack. Nodes represent technologies, animated connection lines show data flow between them. Very on-brand for a data engineer. GSAP staggers nodes in, then animates connecting paths with DrawSVG.</p>
+      <div style="margin-top: 12px; padding: 16px; background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+        <svg width="280" height="80" viewBox="0 0 280 80">
+          <!-- Nodes -->
+          <rect x="0" y="25" width="60" height="30" rx="6" fill="#1a1a1a" stroke="#E07800" stroke-width="1"/>
+          <text x="30" y="44" text-anchor="middle" fill="#E07800" font-size="8" font-family="monospace">PostgreSQL</text>
+
+          <rect x="90" y="25" width="50" height="30" rx="6" fill="#1a1a1a" stroke="#FFB627" stroke-width="1"/>
+          <text x="115" y="44" text-anchor="middle" fill="#FFB627" font-size="8" font-family="monospace">Python</text>
+
+          <rect x="170" y="25" width="40" height="30" rx="6" fill="#1a1a1a" stroke="#E07800" stroke-width="1"/>
+          <text x="190" y="44" text-anchor="middle" fill="#E07800" font-size="8" font-family="monospace">dbt</text>
+
+          <rect x="240" y="25" width="40" height="30" rx="6" fill="#1a1a1a" stroke="#FFB627" stroke-width="1"/>
+          <text x="260" y="44" text-anchor="middle" fill="#FFB627" font-size="8" font-family="monospace">BI</text>
+
+          <!-- Connecting lines with arrow -->
+          <line x1="60" y1="40" x2="90" y2="40" stroke="#E0780060" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="140" y1="40" x2="170" y2="40" stroke="#E0780060" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="210" y1="40" x2="240" y2="40" stroke="#E0780060" stroke-width="1" stroke-dasharray="3 2"/>
+
+          <!-- Animated dots (represented static here) -->
+          <circle cx="75" cy="40" r="2" fill="#E07800"/>
+          <circle cx="155" cy="40" r="2" fill="#FFB627"/>
+          <circle cx="225" cy="40" r="2" fill="#E07800"/>
+        </svg>
+      </div>
+      <p style="font-size: 11px; color: #888; margin-top: 8px;"><strong>Effort:</strong> Higher — need a component that generates SVG from stack[] array. But auto-generates for every project with zero manual SVG work.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Section reveals + stagger tags -->
+  <div class="option" data-choice="scroll-reveals" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Scroll-Reveal Sections + Stagger Tags</h3>
+      <p>No custom SVG — instead, lean into scroll motion. Each section card slides/fades in on scroll (use:reveal). Tech stack tags stagger in one-by-one on page load. Sidebar elements animate independently. Section headers get a subtle DrawSVG underline accent.</p>
+      <div style="margin-top: 12px; padding: 16px; background: #111; border-radius: 8px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="padding: 10px; background: #1a1a1a; border-radius: 6px; border-left: 2px solid #E07800; opacity: 1;">
+            <div style="font-size: 10px; color: #f0f0f0;">Section 1 — slides in from left ✓</div>
+          </div>
+          <div style="padding: 10px; background: #1a1a1a; border-radius: 6px; border-left: 2px solid #E07800; opacity: 0.5; transform: translateX(10px);">
+            <div style="font-size: 10px; color: #f0f0f0;">Section 2 — about to reveal...</div>
+          </div>
+          <div style="padding: 10px; background: #1a1a1a; border-radius: 6px; border-left: 2px solid #E07800; opacity: 0.15; transform: translateX(20px);">
+            <div style="font-size: 10px; color: #f0f0f0;">Section 3 — waiting</div>
+          </div>
+        </div>
+        <div style="margin-top: 10px; display: flex; gap: 4px;">
+          <span style="font-size: 9px; padding: 2px 8px; background: #E0780020; color: #E07800; border-radius: 10px; opacity: 1;">SvelteKit</span>
+          <span style="font-size: 9px; padding: 2px 8px; background: #E0780020; color: #E07800; border-radius: 10px; opacity: 0.6;">TypeScript</span>
+          <span style="font-size: 9px; padding: 2px 8px; background: #E0780020; color: #E07800; border-radius: 10px; opacity: 0.3;">Tailwind</span>
+          <span style="font-size: 9px; padding: 2px 8px; background: #E0780020; color: #E07800; border-radius: 10px; opacity: 0.1;">Vercel</span>
+        </div>
+        <div style="font-size: 9px; color: #888; margin-top: 4px; text-align: center;">↑ tags stagger in on load</div>
+      </div>
+      <p style="font-size: 11px; color: #888; margin-top: 8px;"><strong>Effort:</strong> Low — reuses existing use:reveal + TagList stagger. No new SVGs needed.</p>
+    </div>
+  </div>
+
+  <!-- Option D: Hero morph icon -->
+  <div class="option" data-choice="hero-morph" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Hero Morph Icon (like Blog)</h3>
+      <p>Each project gets a small geometric SVG icon (like blog posts). In the hero header, the icon plays a GSAP MorphSVG animation on load — morphing between shapes that represent the tech stack. Reuses the exact pattern from BlogSvgIcon.</p>
+      <div style="margin-top: 12px; padding: 16px; background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 16px;">
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <path d="M25 5 L45 25 L25 45 L5 25 Z" fill="none" stroke="#E07800" stroke-width="1.5"/>
+        </svg>
+        <div style="color: #E07800; font-size: 14px;">morph →</div>
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <circle cx="25" cy="25" r="20" fill="none" stroke="#FFB627" stroke-width="1.5"/>
+        </svg>
+        <div style="color: #E07800; font-size: 14px;">morph →</div>
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <path d="M25 5 L45 15 L45 35 L25 45 L5 35 L5 15 Z" fill="none" stroke="#E07800" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <p style="font-size: 11px; color: #888; margin-top: 8px;"><strong>Effort:</strong> Low-Medium — reuse BlogSvgIcon. Need SVG paths per project or use geometric fallbacks.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top: 24px; text-align: center;">
+  <strong>Multi-select!</strong> These can combine. My recommendation: <strong>B + C</strong> — the data-flow diagram is uniquely on-brand for you as a data engineer, and scroll reveals are basically free since you already have the actions.
+</p>
