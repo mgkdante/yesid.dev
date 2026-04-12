@@ -344,6 +344,29 @@ This is the biggest sub-slice and the most impactful. Every other sub-slice depe
 - Complete `[data-theme="light"]` block with ALL semantic tokens
 - Not shipped, but one toggle away after color lockdown
 
+#### Future — 17a-5: Spacing & Layout Constitution (proposed)
+
+**Vision:** Every page follows the same spacing rhythm. Sections breathe the same way across blog, home, services, contact. Unique content (bento grid, service tabs, manifesto) fills constitutional containers.
+
+**What becomes constitutional:**
+- Section vertical spacing: `--space-section` (clamp-based, responsive)
+- Block spacing within sections: `--space-block`
+- Element spacing: `--space-element`
+- Horizontal page padding: `--space-page-x` (clamp-based, responsive)
+- Container max-widths: `--container-content/wide/prose` (already defined, need wiring)
+
+**What stays unique per page:**
+- Content patterns (bento grid, blog list, service tabs, train journey)
+- Per-section decorative elements (SVGs, blueprints, construction scene)
+- Page-specific layout structures (within the constitutional container)
+
+**Scope:** Audit all pages for spacing inconsistencies. Define spacing scale in tokens.css. Bridge to Tailwind via @theme. Normalize section/block/element spacing across all pages. Full-bleed sections use --space-page-x for internal padding.
+
+**Depends on:** 17a-3 (color/token lockdown), possibly 17a-4 (dead code cleanup)
+**Status:** Proposed — needs planning session to scope and estimate
+
+---
+
 #### Remaining — 17a-4: Dead Code + Trivial Deduplication
 
 **Dead components (0 imports, delete):**
