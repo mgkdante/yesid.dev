@@ -1,14 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-13 | 17a-6 Session 1 complete (Tasks 1-8)
+**Last updated:** 2026-04-13 | 17a-6 Session 2 complete (Tasks 9-14)
 **Branch:** `feature/slice-17a-6-component-library`
 
 ## Current Position
 
-- **Sub-slice:** 17a-6 (Component Library Foundation) — Session 1 of 4 COMPLETE
-- **Task:** 8 of 26 complete. Session 1 done (dead code + token rename).
-- **Status:** Dead code deleted (17 files, ~920 lines). All tokens renamed to ecosystem convention (shadcn-compatible). Visual parity confirmed. Build + tests green.
-- **Next action:** Session 2 — shadcn-svelte init + customize 15 ui/ components (Tasks 9-14).
+- **Sub-slice:** 17a-6 (Component Library Foundation) — Session 2 of 4 COMPLETE
+- **Task:** 14 of 26 complete. Session 2 done (shadcn-svelte init + 15 ui/ components customized).
+- **Status:** shadcn-svelte fully initialized (56 components scaffolded, 16 dependencies). 15 ui/ components customized with brand styling. Build + tests green (0 errors, 741/741 tests).
+- **Next action:** Session 3 — Migrate brand primitives + wire page components (Tasks 15-21).
 - **Decision D47 revised:** Kept Tailwind default breakpoints (640/768/1024/1280/1536) instead of custom 360/520/768/1024/1440. Edge-to-edge controlled by layout model, not breakpoints.
 - **Pending brainstorm:** Edge-to-edge visual design (edge decorations, vertical typography, circuit lines) for all pages — feeds into 17d.
 
@@ -22,7 +22,7 @@ Phase 1 — Foundation (visual cohesion first)
   17a-3a: Color Lockdown ............... COMPLETE (20 tasks, PR #5 merged)
   17a-3b: Token Wiring + Normalization . COMPLETE (8 tasks, PR #6 merged)
   17a-5: Spacing & Layout Constitution . COMPLETE (PR #8 merged)
-  17a-6: Component Library Foundation ... IN PROGRESS → Session 1 done (8/26 tasks), Session 2 next
+  17a-6: Component Library Foundation ... IN PROGRESS → Session 2 done (14/26 tasks), Session 3 next
   17d:   Component API ................. PLANNED → needs implementation plan (4 sessions)
   17e:   Motion Re-Engineering ......... PLANNED → needs implementation plan (2-3 sessions)
   17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17d+17e)
@@ -260,10 +260,60 @@ Phase 2 — Data + Architecture
 - 4 files > 500 lines
 - 121 responsive Tailwind classes to migrate to new breakpoints
 
+## 17a-6 Session 2 Stats
+
+- 6 commits on branch (Tasks 9-14)
+- 56 ui/ component directories scaffolded (shadcn-svelte --all)
+- 15 ui/ components customized with brand styling
+- 16 new dependencies installed (bits-ui, vaul-svelte, paneforge, etc.)
+- CSS additions: tw-animate-css, @custom-variant dark, destructive/sidebar @theme inline tokens
+- New files: components.json, src/lib/utils.ts (cn), src/lib/hooks/is-mobile.svelte.ts
+- Zero visual regression — all changes are scaffolding + restyling unused components
+
+### Session 2 Decisions
+
+- **D53:** `--destructive: #ff5f57` — preserved original error color (not shadcn default #dc2626)
+- **D54:** `--destructive-foreground: #FAFAF8` in `:root` (non-themed, consistent red across light/dark)
+- **D55:** Sidebar @theme inline tokens mapped to existing semantics (so scaffolded sidebar doesn't break)
+- **D56:** `@custom-variant dark (&:is([data-theme="dark"] *))` — maps dark: to our attribute-based switching
+- **D57:** Accordion items use card-style (bg-card, border-subtle) instead of border-b separators
+- **D58:** Toggle uses pill shape (rounded-full) + font-mono + brand orange pressed state
+- **D59:** Tooltip uses terminal-style (bg-card, font-mono, border-subtle, compact padding)
+- **D60:** Progress uses 3px height to match ReadingProgressBar
+- **D61:** Scroll-area thumb uses primary/35 to match global scrollbar CSS
+
+### Components Customized in Session 2
+
+| Component | Brand treatment |
+|-----------|----------------|
+| dialog | dark overlay (60%), blur-sm, z-menu, card bg, border-subtle, shadow-card |
+| drawer | same overlay, card bg, border-subtle per direction, shadow-card, muted handle |
+| sheet | same overlay, background bg (full viewport), shadow-section, border-subtle |
+| accordion | card-style items (bg-card, border-subtle, rounded-lg, mb-2 spacing) |
+| tabs | orange active indicator (after:bg-primary), card tab container |
+| toggle | pill shape, font-mono, brand orange pressed state |
+| button | hover:bg-primary-hover, simplified outline with border-subtle |
+| badge | font-mono, border-subtle outline |
+| separator | bg-border-subtle default |
+| tooltip | terminal-style (bg-card, font-mono, border-subtle, compact) |
+| progress | 3px height, transparent track, brand orange fill |
+| scroll-area | brand orange thumb (primary/35) |
+| carousel | no changes needed (minimal root wrapper) |
+| collapsible | no changes needed (already minimal) |
+| toggle-group | no changes needed (inherits toggle variants) |
+
+### Session 1 Reviewer Notes (still pending — fix in Session 4 docs cleanup)
+
+- TESTS.md and ARCHITECTURE.md still reference deleted components
+- CSS.md and CONSTITUTION.md still reference deleted/renamed tokens
+- Orphaned test mocks in setup.dom.ts for @threlte/*, postprocessing
+- three, @threlte/*, postprocessing still in package.json
+- Stale comment in +page.ts referencing /preview route
+
 ## Next Steps
 
-1. **17a-5: Spacing & Layout Constitution** — 14 tasks, 3 sessions. Plan written. Ready to implement.
-2. **17a-6: Bits UI Integration** — Needs implementation plan. 1-2 sessions.
+1. **17a-6 Session 3:** Migrate brand primitives + wire page components (Tasks 15-21)
+2. **17a-6 Session 4:** a11y fixes + end-of-17a sweep + docs cleanup (Tasks 22-26)
 3. **17d: Component API** — Needs implementation plan. 4 sessions.
 4. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions.
 5. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (last).
