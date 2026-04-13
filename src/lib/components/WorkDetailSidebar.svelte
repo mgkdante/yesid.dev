@@ -80,7 +80,7 @@
 
 	<!-- Separator between Tech Stack and Services -->
 	{#if project.stack.length > 0 && (hasServices || hasLinks)}
-		<div class="mb-5 h-px" style="background: linear-gradient(90deg, #E07800, transparent);"></div>
+		<div class="mb-5 h-px" style="background: linear-gradient(90deg, var(--brand-primary), transparent);"></div>
 	{/if}
 
 	<!-- Services -->
@@ -102,7 +102,7 @@
 
 	<!-- Separator between Services and Links -->
 	{#if hasServices && hasLinks}
-		<div class="mb-5 h-px" style="background: linear-gradient(90deg, #E07800, transparent);"></div>
+		<div class="mb-5 h-px" style="background: linear-gradient(90deg, var(--brand-primary), transparent);"></div>
 	{/if}
 
 	<!-- Links -->
@@ -118,7 +118,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						class="sidebar-link inline-flex items-center gap-1.5 font-mono text-xs transition-colors hover:underline"
-						style="color: #E07800;"
+						style="color: var(--brand-primary);"
 					>
 						<!-- Arrow-up-right icon -->
 						<svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -133,7 +133,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						class="sidebar-link inline-flex items-center gap-1.5 font-mono text-xs transition-colors hover:underline"
-						style="color: #E07800;"
+						style="color: var(--brand-primary);"
 					>
 						<!-- GitHub icon -->
 						<svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -153,8 +153,8 @@
 		transition: background-color 0.15s ease, border-color 0.15s ease;
 	}
 	.sidebar-tag:hover {
-		background-color: #222;
-		border-color: rgba(224, 120, 0, 0.4);
+		background-color: var(--bg-card);
+		border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
 	}
 
 	/* Links — glow effect on hover */
@@ -162,6 +162,6 @@
 		transition: color 0.15s ease, text-shadow 0.15s ease;
 	}
 	.sidebar-link:hover {
-		text-shadow: 0 0 8px rgba(224, 120, 0, 0.3);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 30%, transparent);
 	}
 </style>
