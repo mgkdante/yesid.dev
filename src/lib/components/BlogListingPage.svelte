@@ -22,7 +22,7 @@
 		languages = [],
 		heading,
 		subtitle,
-		accentColor = '#E07800',
+		accentColor = 'var(--brand-primary)',
 		cornerLink = null,
 		svgContents = {}
 	}: {
