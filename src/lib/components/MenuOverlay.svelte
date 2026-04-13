@@ -171,7 +171,7 @@
 		inset: 0;
 		z-index: 60;
 		background: var(--bg-primary);
-		background-image: radial-gradient(ellipse at 50% 0%, rgba(224, 120, 0, 0.04) 0%, transparent 60%);
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--brand-primary) 4%, transparent) 0%, transparent 60%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -248,24 +248,24 @@
 		width: 14px;
 		height: 14px;
 		border-radius: 50%;
-		border: 2px solid rgba(255, 255, 255, 0.2);
+		border: 2px solid var(--border-subtle);
 		margin-top: 5px;
 		transition: border-color 0.15s;
 	}
 	.menu-stop-active {
-		border-color: #E07800;
-		box-shadow: 0 0 12px rgba(224, 120, 0, 0.4);
+		border-color: var(--brand-primary);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--brand-primary) 40%, transparent);
 	}
 	.menu-stop-fill {
 		position: absolute;
 		inset: 2px;
 		border-radius: 50%;
-		background: #E07800;
+		background: var(--brand-primary);
 	}
 
 	/* Hover: fill the stop */
 	.menu-item:hover .menu-stop {
-		border-color: #E07800;
+		border-color: var(--brand-primary);
 	}
 
 	/* Vertical metro line between stops */
@@ -275,10 +275,10 @@
 		top: 33px;
 		bottom: -14px;
 		width: 2px;
-		background: rgba(255, 255, 255, 0.06);
+		background: color-mix(in srgb, var(--text-primary) 6%, transparent);
 	}
 	.menu-line-active {
-		background: linear-gradient(to bottom, rgba(224, 120, 0, 0.4), rgba(255, 255, 255, 0.06));
+		background: linear-gradient(to bottom, color-mix(in srgb, var(--brand-primary) 40%, transparent), color-mix(in srgb, var(--text-primary) 6%, transparent));
 	}
 
 	/* Text block */
@@ -292,22 +292,22 @@
 		font-family: 'Inter', sans-serif;
 		font-size: 24px;
 		font-weight: 600;
-		color: #ccc;
+		color: var(--text-light);
 		transition: color 0.15s, text-shadow 0.15s;
 	}
 	.menu-item-active .menu-label {
-		color: #E07800;
-		text-shadow: 0 0 8px rgba(224, 120, 0, 0.5);
+		color: var(--brand-primary);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 50%, transparent);
 	}
 	.menu-item:hover .menu-label {
-		color: #E07800;
-		text-shadow: 0 0 8px rgba(224, 120, 0, 0.6), 0 0 20px rgba(224, 120, 0, 0.3);
+		color: var(--brand-primary);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--brand-primary) 30%, transparent);
 	}
 
 	.menu-subtitle {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 11px;
-		color: #666;
+		color: var(--text-muted);
 		letter-spacing: 0.3px;
 	}
 
@@ -322,13 +322,13 @@
 	.menu-footer-line {
 		width: 40px;
 		height: 1px;
-		background: rgba(224, 120, 0, 0.2);
+		background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
 	}
 	.menu-footer-label {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 10px;
 		letter-spacing: 3px;
-		color: rgba(224, 120, 0, 0.5);
+		color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
 		white-space: nowrap;
 	}
 </style>
