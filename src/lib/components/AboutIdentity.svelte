@@ -40,7 +40,7 @@
 		<div class="flex flex-1 flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
 			<!-- Headshot with gradient ring + availability dot -->
 			<div class="relative shrink-0">
-				<div class="rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] p-[2px]">
+				<div class="rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] p-0.5">
 					<img
 						src={identity.headshot}
 						alt={name}
