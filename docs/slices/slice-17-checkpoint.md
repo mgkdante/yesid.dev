@@ -1,13 +1,13 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-12 | Planning Session (Color & Token Lockdown — PLANNED)
+**Last updated:** 2026-04-12 | Implementation Session (Color Lockdown — COMPLETE)
 **Branch:** `feature/slice-17a-3-color-lockdown`
 
 ## Current Position
-- **Sub-slice:** 17a-3a (Color Lockdown) — PLANNED, ready to implement
-- **Task:** C1 of C20 — NOT STARTED
-- **Status:** Design spec approved, slice specs written, awaiting implementation session
-- **Next sub-slice:** 17a-3b (Token Wiring + Normalization) — PLANNED
+- **Sub-slice:** 17a-3a (Color Lockdown) — COMPLETE (22 commits, C1–C20)
+- **Task:** ALL 20 TASKS DONE
+- **Status:** PR pending. All hardcoded CSS/Tailwind/SVG colors tokenized. Light theme smoke-tested.
+- **Next sub-slice:** 17a-3b (Token Wiring + Normalization) — READY TO IMPLEMENT
 
 ## Execution Sequence
 
@@ -137,6 +137,24 @@ Phase 2 — Standardization
 - Design spec: `docs/specs/slice-17a-3-color-token-lockdown-design.md`
 - Slice spec (colors): `docs/slices/slice-17a-3a-color-lockdown.md`
 - Slice spec (tokens): `docs/slices/slice-17a-3b-token-wiring.md`
+
+## 17a-3a Session Stats
+- 22 commits on branch
+- ~40 files modified across C1–C20
+- ~200 hardcoded hex/rgba values replaced with var()/color-mix()
+- 3 new tokens added (--text-light, --status-warning, --brand-primary-border)
+- @theme split into @theme (static) + @theme inline (dynamic)
+- Light theme smoke-tested — renders correctly
+- Zero hardcoded brand colors in .svelte CSS/Tailwind (only comments + JS runtime exceptions)
+
+### Intentionally excluded from 17a-3a (documented):
+- Three.js Color constructors — dead code, delete in 17a-4
+- Canvas 2D API (ManifestoCanvas, AboutTrain) — JS runtime, can't use CSS vars
+- MetroNetwork external SVG classification — needs inline rewrite (17d)
+- Construction props (ConstructionScene) — physical objects, colors don't change with brand
+- Static SVGs in static/svg/ — loaded via `<img>`, need inlining first (17d)
+- Blueprint SVGs — same `<img>` limitation (17d)
+- AboutBento — dead component, delete in 17a-4
 
 ## Key Findings (Planning Session)
 - Actual hardcoded colors: **371** (vs. ~220 estimate from closing session)
