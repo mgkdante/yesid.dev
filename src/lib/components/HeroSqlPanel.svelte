@@ -53,9 +53,9 @@
   <!-- Results table -->
   <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
     <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-xs md:text-sm md:gap-y-1.5">
-      <span class="border-b border-[#1a1a1a] pb-1.5 text-[var(--text-muted)]">route</span>
-      <span class="border-b border-[#1a1a1a] pb-1.5 text-[var(--text-muted)]">avg_delay_s</span>
-      <span class="border-b border-[#1a1a1a] pb-1.5 text-[var(--text-muted)]">vehicles</span>
+      <span class="border-b border-bg-card pb-1.5 text-[var(--text-muted)]">route</span>
+      <span class="border-b border-bg-card pb-1.5 text-[var(--text-muted)]">avg_delay_s</span>
+      <span class="border-b border-bg-card pb-1.5 text-[var(--text-muted)]">vehicles</span>
       {#each rows as row (row.route)}
         <span class="text-[var(--text-primary)]" data-testid="sql-result-row">{row.route}</span>
         <span class="text-[var(--brand-accent)]">{row.avgDelayS}</span>
