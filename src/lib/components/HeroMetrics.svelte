@@ -22,7 +22,7 @@
 <div class="grid grid-cols-3 gap-3.5" data-testid="hero-metrics">
   {#each metrics as metric (metric.key)}
     <div
-      class="rounded-[10px] border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3.5 transition-colors duration-300 hover:border-[var(--brand-primary)] md:px-5 md:py-4"
+      class="rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3.5 transition-colors duration-300 hover:border-[var(--brand-primary)] md:px-5 md:py-4"
       data-testid="metric-card"
     >
       <MetricDisplay

@@ -44,9 +44,9 @@
 	};
 </script>
 
-<article class="pb-16 pt-8" data-testid="work-detail-page">
-	<!-- Hero: centered at max-w-6xl -->
-	<div class="mx-auto max-w-6xl px-4">
+<article class="w-full pb-16 pt-8" data-testid="work-detail-page">
+	<!-- Hero: centered with container-wide + spacing token gutters -->
+	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-wide)">
 		<a
 			href="/work"
 			class="mb-6 inline-block font-mono text-xs transition-colors hover:underline"
@@ -79,7 +79,7 @@
 	</div>
 
 	<!-- Main body -->
-	<div class="mx-auto max-w-6xl px-4">
+	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-wide)">
 		<div class="flex gap-10">
 			<!-- Content column -->
 			<div class="min-w-0 flex-1 space-y-6">
@@ -121,7 +121,7 @@
 					<div class="relative">
 						<!-- Desktop ToC: in left page margin, starts at README height -->
 						<aside class="absolute inset-y-0 right-full mr-3 hidden 2xl:block">
-							<StickyPanel top="5rem" class="w-[180px]">
+							<StickyPanel top="5rem" class="w-45">
 								<TableOfContents bind:this={tocRef} html={readmeHtml} embedded syncOpen={readmeOpen} />
 							</StickyPanel>
 						</aside>

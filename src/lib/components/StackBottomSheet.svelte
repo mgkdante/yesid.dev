@@ -246,12 +246,12 @@
 		left: 0;
 		right: 0;
 		z-index: calc(var(--z-sheet) + 1);
-		max-height: 85vh;
+		max-height: 85dvh;
 		overflow-y: auto;
 		background: var(--bg-surface);
 		border-top: 1px solid var(--border);
 		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-		padding: 0.5rem 1.25rem 0;
+		padding: 0.5rem 1.25rem env(safe-area-inset-bottom, 0px);
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;

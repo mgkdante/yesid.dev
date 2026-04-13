@@ -1,6 +1,6 @@
 <!--
   Full-viewport kinetic scroll layout for /services.
-  Each service occupies 100vh with CSS scroll snap.
+  Each service occupies 100dvh with CSS scroll snap.
   Sticky top: StationTabs. Sticky bottom: ProofStrip.
   Left: metro line with auto-computed station dots (desktop only).
   Tab click scrolls to service. Scroll position syncs tabs + proof strip.
@@ -130,7 +130,7 @@
 <style>
 	.service-listing {
 		position: relative;
-		height: calc(100vh - 5rem); /* subtract floating pill nav area (pt-20 = 80px) */
+		height: calc(100dvh - 5rem); /* subtract floating pill nav area (pt-20 = 80px) */
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;

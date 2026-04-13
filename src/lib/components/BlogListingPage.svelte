@@ -154,7 +154,9 @@
 	});
 </script>
 
-<div data-testid="blog-listing" class="pb-16">
+<div data-testid="blog-listing" class="w-full pb-16">
+	<!-- Content container — centered for readability, gutters via spacing token -->
+	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
 	<!-- Header -->
 	<div class="mb-6" data-batch="blog-item">
 		<h1 class="font-heading text-2xl font-bold text-[var(--text-primary)] md:text-3xl">
@@ -248,6 +250,7 @@
 				</div>
 			{/if}
 		</div>
+	</div>
 	</div>
 </div>
 

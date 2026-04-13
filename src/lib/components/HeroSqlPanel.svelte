@@ -19,7 +19,7 @@
 </script>
 
 <div
-  class="rounded-[12px] border border-[var(--border-subtle)] bg-[var(--bg-terminal)] p-[22px_24px] font-mono"
+  class="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-terminal)] p-5 font-mono"
   data-testid="sql-panel"
 >
   <!-- Header: prompt + live dot -->

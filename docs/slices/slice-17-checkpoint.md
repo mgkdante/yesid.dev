@@ -1,14 +1,16 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-13 | Planning Session (Constitution + 17a-5/17a-6/17d/17e)
-**Branch:** `docs/slice-17a-5-planning` (planning artifacts)
+**Last updated:** 2026-04-13 | Implementation Session 2 (Tasks 10-14 complete)
+**Branch:** `feature/slice-17a-5-spacing-layout`
 
 ## Current Position
 
-- **Sub-slice:** 17a-5 (Spacing & Layout Constitution) — PLANNED, ready to implement
-- **Task:** Planning complete. Implementation plan written.
-- **Status:** 17a-3b PR #6 merged. Constitution design spec approved. 17a-5 implementation plan written (14 tasks, 3 sessions).
-- **Next action:** Create branch `feature/slice-17a-5-spacing-layout`, start implementation session 1.
+- **Sub-slice:** 17a-5 (Spacing & Layout Constitution) — COMPLETE, pending commit + PR
+- **Task:** 14 of 14 complete. All tasks done across 2 sessions.
+- **Status:** Full-bleed layout, spacing tokens, viewport units (dvh/svh), safe-area-inset, CONSTITUTION.md written, all docs updated, tests + check pass.
+- **Next action:** Commit session 2, create PR, then 17a-6 (Bits UI Integration).
+- **Decision D47 revised:** Kept Tailwind default breakpoints (640/768/1024/1280/1536) instead of custom 360/520/768/1024/1440. Edge-to-edge controlled by layout model, not breakpoints.
+- **Pending brainstorm:** Edge-to-edge visual design (edge decorations, vertical typography, circuit lines) for all pages — feeds into 17d.
 
 ## Execution Sequence
 
@@ -19,7 +21,7 @@ Phase 1 — Foundation (visual cohesion first)
   17a-2b: Wire Primitives .............. COMPLETE (PR #4 merged)
   17a-3a: Color Lockdown ............... COMPLETE (20 tasks, PR #5 merged)
   17a-3b: Token Wiring + Normalization . COMPLETE (8 tasks, PR #6 merged)
-  17a-5: Spacing & Layout Constitution . PLANNED → 14 tasks, 3 sessions
+  17a-5: Spacing & Layout Constitution . IN PROGRESS → 9/14 tasks done, session 2 pending
   17a-6: Bits UI Integration ........... PLANNED → needs implementation plan
   17d:   Component API ................. PLANNED → needs implementation plan (4 sessions)
   17e:   Motion Re-Engineering ......... PLANNED → needs implementation plan (2-3 sessions)

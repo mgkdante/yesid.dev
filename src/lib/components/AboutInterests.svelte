@@ -33,7 +33,7 @@
 	</div>
 
 	<!-- Diagonal strips container -->
-	<div class="flex h-full min-h-[140px]">
+	<div class="flex h-full min-h-36">
 		{#each interests as interest, i}
 			{@const interestLabel = resolveLocale(interest.label, 'en')}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->

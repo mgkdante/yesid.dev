@@ -24,7 +24,7 @@
 	});
 </script>
 
-<div class="error-page flex flex-col px-4">
+<div class="error-page flex flex-col px-[var(--space-page-x)]">
 	<!-- Top hazard tape -->
 	<div data-testid="hazard-tape"><HazardStripe /></div>
 

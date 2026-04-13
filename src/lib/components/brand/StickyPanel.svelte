@@ -32,6 +32,6 @@
     background: var(--bg-surface);
     padding: 1.25rem;
     overflow-y: auto;
-    max-height: calc(100vh - 8rem);
+    max-height: calc(100dvh - 8rem);
   }
 </style>

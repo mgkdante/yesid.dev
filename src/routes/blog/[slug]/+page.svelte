@@ -26,8 +26,9 @@
 
 <ReadingProgressBar {accentColor} />
 
-<article class="pb-16">
-	<div class="mx-auto max-w-5xl">
+<article class="w-full pb-16">
+	<!-- Blog header — full-bleed with internal gutters -->
+	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
 		<BlogDetailHeader
 			post={data.post}
 			svgContent={data.svgContent}
@@ -39,14 +40,14 @@
 	<GradientSeparator />
 
 	<!-- Mobile ToC toggle — shown below 2xl -->
-	<div class="mx-auto mt-6 max-w-5xl 2xl:hidden">
+	<div class="mx-auto mt-6 px-[var(--space-page-x)] 2xl:hidden" style="max-width: var(--container-content)">
 		<TableOfContents html={data.html} />
 	</div>
 
-	<!-- Content: centered at max-w-5xl, ToC + content side by side under divider -->
-	<div class="mx-auto mt-6 flex max-w-5xl gap-4">
+	<!-- Content: centered with container-content, ToC + content side by side under divider -->
+	<div class="mx-auto mt-6 flex gap-4 px-[var(--space-page-x)]" style="max-width: var(--container-content)">
 		<!-- ToC sidebar (left) — visible on 2xl, inside container -->
-		<aside class="hidden w-[180px] shrink-0 2xl:block">
+		<aside class="hidden w-45 shrink-0 2xl:block">
 			<StickyPanel top="5rem">
 				<TableOfContents bind:this={tocRef} html={data.html} embedded />
 			</StickyPanel>

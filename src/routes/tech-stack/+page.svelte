@@ -406,7 +406,7 @@
 
 <style>
 	.tech-stack-page {
-		min-height: 100vh;
+		min-height: 100dvh;
 		padding-block: 2rem;
 	}
 
@@ -533,7 +533,7 @@
 			top: 4rem;
 			right: 1rem;
 			width: 340px;
-			max-height: calc(100vh - 5rem);
+			max-height: calc(100dvh - 5rem);
 			z-index: calc(var(--z-sheet) + 1);
 		}
 	}
@@ -599,12 +599,12 @@
 		left: 0;
 		right: 0;
 		z-index: calc(var(--z-sheet) + 1);
-		max-height: 85vh;
+		max-height: 85dvh;
 		overflow-y: auto;
 		background: var(--bg-surface);
 		border-top: 1px solid var(--border);
 		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-		padding: 1.25rem;
+		padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom, 0px));
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
@@ -699,12 +699,12 @@
 	/* ═══ HERO ZONE ═══ */
 
 	.hero {
-		max-width: 1200px;
+		max-width: var(--container-wide);
 		margin: 0 auto;
-		padding: 2rem 1.5rem 0;
+		padding: 2rem var(--space-page-x) 0;
 		display: flex;
 		flex-direction: column;
-		min-height: 50vh;
+		min-height: 50dvh;
 		justify-content: center;
 	}
 
@@ -832,9 +832,9 @@
 	/* ═══ CTA ZONE ═══ */
 
 	.cta-zone {
-		max-width: 1200px;
+		max-width: var(--container-wide);
 		margin: 4rem auto 2rem;
-		padding: 0 1.5rem;
+		padding: 0 var(--space-page-x);
 		text-align: center;
 	}
 
@@ -892,8 +892,8 @@
 	/* Mobile hero adjustments */
 	@media (max-width: 767px) {
 		.hero {
-			padding: 1.5rem 0.75rem 0;
-			min-height: 40vh;
+			padding: 1.5rem var(--space-page-x) 0;
+			min-height: 40dvh;
 		}
 
 		.hero-stats {
@@ -903,7 +903,7 @@
 
 		.cta-zone {
 			margin-top: 3rem;
-			padding: 0 0.75rem;
+			padding: 0 var(--space-page-x);
 		}
 	}
 </style>

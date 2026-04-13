@@ -42,7 +42,7 @@
 	};
 </script>
 
-<aside class="w-[220px] shrink-0 max-h-[calc(100vh-6rem)] overflow-y-auto" data-testid="work-filter-sidebar">
+<aside class="w-56 shrink-0 max-h-[calc(100dvh-6rem)] overflow-y-auto" data-testid="work-filter-sidebar">
 	<!-- Services section — delegated to FilterGroup with deselect enabled -->
 	<div class="mb-5">
 		<FilterGroup

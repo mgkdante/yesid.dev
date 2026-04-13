@@ -130,8 +130,8 @@
 	const stationLabel = resolveLocale(c.stationLabel, 'en');
 </script>
 
-<div class="bg-[var(--bg-primary)] pb-16" data-testid="page-contact">
-	<div class="mx-auto max-w-5xl px-6">
+<div class="w-full bg-[var(--bg-primary)] pb-16" data-testid="page-contact">
+	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
 
 		<!-- Page header (matches Work/Blog pattern) -->
 		<div class="mb-8">
