@@ -21,7 +21,7 @@
 		label,
 		items,
 		activeKey = null,
-		accentColor = '#E07800',
+		accentColor = 'var(--brand-primary)',
 		allowDeselect = true,
 		collapsible = false,
 		startOpen = true,
@@ -83,7 +83,7 @@
 			</button>
 			{#each items as item}
 				<button
-					class="filter-btn rounded border border-[#2a2a2a] px-2 py-1 text-left text-xs text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+					class="filter-btn rounded border border-border-subtle px-2 py-1 text-left text-xs text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
 					class:tag-active={activeKey === item.key}
 					data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
 					onclick={() => handleClick(item.key)}
@@ -101,7 +101,7 @@
 	   the established filter pattern from BlogFilterSidebar and WorkFilterSidebar. */
 	.active {
 		background: var(--accent);
-		color: #f5f5f0;
+		color: var(--text-primary);
 	}
 
 	/* WHY: .tag-active on individual items uses a subtle tinted background +
