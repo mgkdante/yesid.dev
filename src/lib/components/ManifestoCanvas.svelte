@@ -240,8 +240,8 @@
 		height: 500px;
 		background: radial-gradient(
 			ellipse,
-			color-mix(in srgb, var(--brand-primary) 6%, transparent) 0%,
-			color-mix(in srgb, var(--brand-accent) 2%, transparent) 30%,
+			color-mix(in srgb, var(--primary) 6%, transparent) 0%,
+			color-mix(in srgb, var(--accent) 2%, transparent) 30%,
 			transparent 60%
 		);
 		transform: translate(-50%, -50%);

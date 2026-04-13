@@ -177,12 +177,15 @@
 <div class="stack-diagram" data-testid="stack-diagram">
 	<span class="diagram-label label-section font-semibold">Infrastructure Layers</span>
 	<!-- Tier rows: visible on md+ (768px), hidden on mobile -->
-	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 	<div
 		class="diagram-desktop hidden md:block"
 		data-testid="diagram-desktop"
 		bind:this={desktopEl}
+		role="toolbar"
+		tabindex="-1"
+		aria-label="Infrastructure layers diagram"
 		onclick={handleBackdropClick}
+		onkeydown={(e) => { if (e.key === 'Escape' && selectedId) onselect?.(null); }}
 	>
 		{#each itemsByLayer as group (group.layer)}
 			<div class="tier-row" data-testid="tier-{group.layer}">
@@ -276,7 +279,7 @@
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
 		font-weight: 600;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		letter-spacing: 0.08em;
 		text-align: right;
 		padding-right: 1rem;

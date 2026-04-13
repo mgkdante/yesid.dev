@@ -9,7 +9,7 @@
 	import { Marked } from 'marked';
 	import { getOutgoingRelations, getIncomingRelations, getTechItemContent } from '$lib/data/tech-stack.js';
 	import CollapsibleSection from './CollapsibleSection.svelte';
-	import { BrandButton } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 
 	let {
 		item = null,
@@ -143,9 +143,9 @@
 
 			<!-- CTA -->
 			<div class="mt-4">
-				<BrandButton variant="primary" size="sm" href="/contact" data-testid="panel-cta">
+				<Button variant="default" size="cta-sm" href="/contact" data-testid="panel-cta">
 					Let's build with {item.name} <span aria-hidden="true">&rarr;</span>
-				</BrandButton>
+				</Button>
 			</div>
 		</div>
 	{:else}
@@ -183,7 +183,7 @@
 
 <style>
 	.stack-panel {
-		background: var(--bg-surface);
+		background: var(--muted);
 		border: 1px solid var(--border);
 		border-radius: var(--radius-lg);
 		overflow-y: auto;
@@ -219,8 +219,8 @@
 		width: 2.5rem;
 		height: 2.5rem;
 		border-radius: var(--radius-md);
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-		color: var(--brand-primary);
+		background: color-mix(in srgb, var(--primary) 15%, transparent);
+		color: var(--primary);
 		font-family: var(--font-mono);
 		font-size: var(--text-small);
 		font-weight: 700;
@@ -231,7 +231,7 @@
 		font-family: var(--font-heading);
 		font-size: var(--text-lg);
 		font-weight: 600;
-		color: var(--text-primary);
+		color: var(--foreground);
 		margin: 0;
 		line-height: 1.2;
 	}
@@ -249,18 +249,18 @@
 	}
 
 	.proficiency-badge[data-proficiency='expert'] {
-		color: var(--brand-primary);
-		background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+		color: var(--primary);
+		background: color-mix(in srgb, var(--primary) 12%, transparent);
 	}
 
 	.proficiency-badge[data-proficiency='proficient'] {
-		color: var(--brand-accent);
-		background: color-mix(in srgb, var(--brand-accent) 12%, transparent);
+		color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 12%, transparent);
 	}
 
 	.proficiency-badge[data-proficiency='familiar'] {
-		color: var(--text-muted);
-		background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+		color: var(--muted-foreground);
+		background: color-mix(in srgb, var(--muted-foreground) 12%, transparent);
 	}
 
 	.close-btn {
@@ -272,15 +272,15 @@
 		border: 1px solid var(--border);
 		border-radius: var(--radius-sm);
 		background: transparent;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		cursor: pointer;
 		flex-shrink: 0;
 		transition: color var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default);
 	}
 
 	.close-btn:hover {
-		color: var(--text-primary);
-		border-color: var(--text-muted);
+		color: var(--foreground);
+		border-color: var(--muted-foreground);
 	}
 
 	/* --- Relations --- */
@@ -319,19 +319,19 @@
 		font-family: var(--font-body);
 		font-size: var(--text-small);
 		font-weight: 600;
-		color: var(--brand-primary);
+		color: var(--primary);
 		text-align: left;
 		transition: color var(--duration-fast) var(--ease-default);
 	}
 
 	.relation-link:hover {
-		color: var(--brand-accent);
+		color: var(--accent);
 	}
 
 	.relation-context {
 		font-family: var(--font-body);
 		font-size: var(--text-caption);
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		padding-inline-start: 0.75rem;
 	}
 
@@ -341,7 +341,7 @@
 		font-family: var(--font-body);
 		font-size: var(--text-small);
 		line-height: 1.7;
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 		border-top: 1px solid var(--border);
 		padding-top: 0.75rem;
 	}
@@ -352,7 +352,7 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		margin: 1rem 0 0.5rem;
 	}
 
@@ -365,7 +365,7 @@
 	}
 
 	.panel-body :global(a) {
-		color: var(--brand-primary);
+		color: var(--primary);
 		text-decoration: underline;
 		text-underline-offset: 2px;
 	}
@@ -389,8 +389,8 @@
 		padding: 0.25rem 0.5rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-sm);
-		color: var(--text-secondary);
-		background: var(--bg-elevated);
+		color: var(--secondary-foreground);
+		background: var(--popover);
 	}
 
 	/* --- Orientation Card --- */
@@ -403,14 +403,14 @@
 	}
 
 	.orientation-label {
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 
 	.orientation-text {
 		font-family: var(--font-body);
 		font-size: var(--text-small);
 		line-height: 1.7;
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 		margin: 0;
 	}
 
@@ -435,13 +435,13 @@
 		width: 1.5rem;
 		height: 1.5rem;
 		flex-shrink: 0;
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 
 	.hint-text {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

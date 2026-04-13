@@ -31,17 +31,17 @@
 
 				<!-- Connecting line (not before first) -->
 				{#if i > 0}
-					<div class="mt-3 h-[2px] w-4 flex-shrink-0" style="background: linear-gradient(90deg, var(--brand-primary), color-mix(in srgb, var(--brand-primary) 30%, transparent));"></div>
+					<div class="mt-3 h-[2px] w-4 flex-shrink-0" style="background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--primary) 30%, transparent));"></div>
 				{/if}
 
 				<div class="flex flex-col items-center" use:reveal={{ delay: stagger(i, 100) }}>
-					<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-[var(--brand-primary)] bg-[var(--bg-primary)]">
-						<span class="font-mono text-caption font-bold text-[var(--brand-primary)]">{step.station}</span>
+					<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-[var(--primary)] bg-[var(--background)]">
+						<span class="font-mono text-caption font-bold text-[var(--primary)]">{step.station}</span>
 					</div>
-					<div class="mt-1 font-mono text-caption font-semibold tracking-[1px] text-[var(--brand-primary)]">
+					<div class="mt-1 font-mono text-caption font-semibold tracking-[1px] text-[var(--primary)]">
 						{stepLabel}
 					</div>
-					<div class="mt-1 max-w-[100px] text-center text-caption leading-tight text-[var(--text-secondary)] opacity-60">
+					<div class="mt-1 max-w-[100px] text-center text-caption leading-tight text-[var(--secondary-foreground)] opacity-60">
 						{stepDesc}
 					</div>
 				</div>

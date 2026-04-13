@@ -35,7 +35,7 @@ describe('Design System Tokens', () => {
   describe('Shadow scale', () => {
     const requiredShadows = [
       '--shadow-glow-sm', '--shadow-glow-md', '--shadow-glow-lg',
-      '--shadow-card', '--shadow-section', '--shadow-nav', '--shadow-status'
+      '--shadow-card', '--shadow-section', '--shadow-nav'
     ];
 
     it.each(requiredShadows)('defines %s', (token) => {
@@ -50,7 +50,7 @@ describe('Design System Tokens', () => {
   describe('Z-index scale', () => {
     const requiredZIndex = [
       '--z-base', '--z-content', '--z-rail',
-      '--z-footer', '--z-sheet', '--z-menu', '--z-nav'
+      '--z-sheet', '--z-menu', '--z-nav'
     ];
 
     it.each(requiredZIndex)('defines %s', (token) => {
@@ -77,16 +77,14 @@ describe('Design System Tokens', () => {
 
     it('defines easing tokens', () => {
       expect(tokensCSS).toContain('--ease-bounce');
-      expect(tokensCSS).toContain('--ease-decel');
     });
   });
 
   describe('Semantic color completeness', () => {
     const themeTokens = [
-      '--bg-terminal', '--border-subtle', '--text-dim',
-      '--status-live', '--bg-manifesto', '--bg-card',
-      '--bg-deep', '--border-strong', '--status-error',
-      '--status-success', '--text-code'
+      '--terminal', '--border-subtle', '--dim-foreground',
+      '--manifesto', '--card',
+      '--border-strong', '--success'
     ];
 
     it.each(themeTokens)('defines %s in dark theme', (token) => {

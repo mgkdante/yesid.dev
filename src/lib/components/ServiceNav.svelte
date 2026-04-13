@@ -59,7 +59,7 @@
 		justify-content: space-between;
 		align-items: flex-start;
 		width: 100%;
-		border-top: 1px solid var(--bg-card);
+		border-top: 1px solid var(--card);
 		padding: 2rem 1rem;
 	}
 
@@ -79,7 +79,7 @@
 
 	.nav-arrow {
 		font-size: 1.25rem;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		transition: color var(--duration-normal);
 	}
 
@@ -93,20 +93,20 @@
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		text-transform: uppercase;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 	}
 
 	.nav-title {
 		font-weight: 600;
-		color: var(--text-primary);
+		color: var(--foreground);
 		transition: color var(--duration-normal);
 	}
 
 	.nav-link:hover .nav-title {
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 
 	.nav-link:hover .nav-arrow {
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 </style>

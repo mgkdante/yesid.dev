@@ -45,15 +45,16 @@ describe('TableOfContents', () => {
 	it('expands mobile ToC on click', async () => {
 		render(TableOfContents, { props: { html: sampleHtml } });
 		const toggle = screen.getByText('Table of Contents');
-		// Initially items should not be in the mobile section
 		const mobile = screen.getByTestId('toc-mobile');
-		// Before click, the list within mobile should not exist
-		expect(mobile.querySelectorAll('ul').length).toBe(0);
+
+		// Before click, the collapsible content is force-mounted but collapsed (data-state="closed")
+		const collapsibleContent = mobile.querySelector('[data-slot="collapsible-content"]');
+		expect(collapsibleContent?.getAttribute('data-state')).toBe('closed');
 
 		await fireEvent.click(toggle);
 
-		// After click, the list should appear
-		expect(mobile.querySelectorAll('ul').length).toBe(1);
+		// After click, the collapsible content should be open
+		expect(collapsibleContent?.getAttribute('data-state')).toBe('open');
 		expect(mobile).toHaveTextContent('Introduction');
 	});
 

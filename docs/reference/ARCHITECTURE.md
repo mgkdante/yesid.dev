@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-12 (Slice 17a-2b)
+**Last updated:** 2026-04-13 (Slice 17a-6)
 
 ## Stack
 
@@ -11,7 +11,8 @@
 | Styling | Tailwind CSS v4 | CSS-first config via `@theme`; no JS config file; co-exists with custom CSS variables |
 | Runtime | Bun | Faster installs and script execution than Node.js |
 | Deployment | Vercel (adapter-vercel) | Zero-config deploys; Node.js 22 runtime |
-| Unit tests | Vitest 4 | Native ESM; fast; jsdom environment for Svelte component tests |
+| UI library | shadcn-svelte + Bits UI | Accessible headless primitives; cn() + data-slot conventions |
+| Unit tests | Vitest 4 | Native ESM; fast; happy-dom environment for Svelte component tests |
 | E2E tests | Playwright | Cross-browser; tests against the built preview server |
 | CI | GitHub Actions | Install → type-check → unit tests → build on every push |
 
@@ -26,7 +27,7 @@ src/
 │   ├── assets/          # Build-time assets (favicon, etc.)
 │   │   └── lottie/      # (MOVED to static/lottie/ in Slice 06 — URL-served for LottiePlayer)
 │   ├── styles/
-│   │   └── tokens.css   # CSS custom properties for theme switching (--bg-primary, etc.)
+│   │   └── tokens.css   # CSS custom properties for theme switching (--background, --foreground, etc.)
 │   ├── data/            # ← Added in Slice 02, extended in Slices 04, 06d
 │   │   ├── types.ts     # Locale, LocalizedString, Project, Service, SiteMeta, BlogPost
 │   │   ├── locale.ts    # resolveLocale(), DEFAULT_LOCALE, SUPPORTED_LOCALES
@@ -45,18 +46,13 @@ src/
 │   │   ├── ConstructionScene.svelte # ← Slice 11: inline SVG construction illustration for 404
 │   │   ├── Footer.svelte        # minimal footer: brand name, year, social links, 3D model attribution
 │   │   ├── TagList.svelte       # string[] → stagger-revealed pill badges
-│   │   ├── SectionHeader.svelte # h2 heading + optional subtitle
 │   │   ├── ServiceCard.svelte   # ← Slice 09: per-viewport service content block (SVG morph box, stack pills, CTA)
 │   │   ├── ServiceStation.svelte # station-sign card: number, indicator light, 400x400 scroll-linked Lottie, tilt
 │   │   ├── ScrollPrompt.svelte  # animated scroll-down chevron for hero
-│   │   ├── ProjectCard.svelte   # clickable project card with boop hover
 │   │   ├── ProjectGrid.svelte   # responsive grid of ProjectCards
-│   │   ├── Hero.svelte          # hero block (heading, subheading, CTA buttons)
 │   │   ├── HeroBanner.svelte    # ← Slice 06d: split hero with art bg + bold type + typewriter scroll prompt
 │   │   ├── SkillsJourney.svelte # ← Slice B/B+: horizontal scroll CTA (5 panels, per-word GSAP anims, MorphSVGPlugin icon morphs, snap)
 │   │   ├── FeaturedWork.svelte  # ← Slice 06d: featured projects grid (stop 05)
-│   │   ├── AboutBento.svelte    # ← Slice 06d: mini bento grid about teaser (stop 06)
-│   │   ├── BlogCard.svelte      # ← Slice 06d: individual blog post card
 │   │   ├── BlogFeed.svelte      # ← Slice 06d: latest blog posts section (stop 07)
 │   │   ├── BlogListingPage.svelte  # ← Slice 07: shared listing page (search, filters, tag sidebar)
 │   │   ├── BlogRow.svelte          # ← Slice 07: post row for listings (SVG, title, excerpt, tags)
@@ -92,23 +88,26 @@ src/
 │   │   ├── StackScenarioCard.svelte # ← Slice 10: scenario summary card with recommended stack
 │   │   ├── TerminalCursor.svelte    # ← Slice 10: reusable blinking cursor component (standardized to 8x14px block in 17a-2b)
 │   │   ├── InfraFrame.svelte        # ← Slice 10: infrastructure monitor frame wrapper
-│   │   └── brand/                   # ← Slice 17a-2: brand design system primitives
-│   │       ├── index.ts             # Barrel export — import { StatusDot, BrandButton } from '$lib/components/brand'
+│   │   ├── ui/                      # ← Slice 17a-6: shadcn-svelte scaffolded components (56 total, 15 customized)
+│   │   │   ├── button/              # Button (cta, ghost, outline, link variants)
+│   │   │   ├── badge/               # Badge (tag, number variants)
+│   │   │   ├── separator/           # Separator (hazard, gradient variants)
+│   │   │   ├── dialog/              # Dialog (Bits UI headless + brand styling)
+│   │   │   ├── collapsible/         # Collapsible (accordion sections)
+│   │   │   ├── tabs/                # Tabs (station tab navigation)
+│   │   │   ├── toggle-group/        # Toggle group (filter groups)
+│   │   │   └── ...                  # 49 more scaffolded components
+│   │   └── brand/                   # ← Slice 17a-2: hand-built brand primitives (15 components)
+│   │       ├── index.ts             # Barrel export — import { StatusDot } from '$lib/components/brand'
 │   │       ├── StatusDot.svelte     # Pulsing status indicator (color, pulse, size)
 │   │       ├── SectionLabel.svelte  # Mono uppercase section labels (text, variant, align)
 │   │       ├── StopLabel.svelte     # "STOP XX" bento card labels (stop, label)
-│   │       ├── Tag.svelte           # Tag/badge pill (text, size, active, accentColor)
-│   │       ├── NumberBadge.svelte   # Numbered circle badge (value, color, sonar)
 │   │       ├── ChevronToggle.svelte # Animated expand/collapse chevron (open, size)
-│   │       ├── HazardStripe.svelte  # Orange diagonal stripe divider (size, angle, label)
 │   │       ├── GlowOverlay.svelte   # Cursor-following glow overlay (intensity)
 │   │       ├── MetricDisplay.svelte # Value + label metric (value, label, sublabel, labelBelow)
-│   │       ├── BrandButton.svelte   # Standardized CTA button (variant, size, href)
-│   │       ├── CardBase.svelte      # Card wrapper (hover, glow, interactive, padding)
 │   │       ├── CornerMarks.svelte   # Blueprint corner tick marks (size, opacity)
 │   │       ├── TerminalChrome.svelte # Terminal window frame (title, tag, status, footer, noPadding)
 │   │       ├── StickyPanel.svelte   # Sticky sidebar wrapper (top)
-│   │       ├── GradientSeparator.svelte # Animated gradient line (label, maxWidth)
 │   │       └── __tests__/           # Co-located tests for all primitives
 │   └── motion/          # ← Added in Slice 04
 │       ├── actions/
@@ -126,14 +125,6 @@ src/
 │       ├── components/
 │       │   ├── ScrollRail.svelte    # scroll progress rail (station dots on home, progress bar elsewhere)
 │       │   └── LottiePlayer.svelte  # lottie-web wrapper (autoplay + scrub mode for scroll-linked frames)
-│       ├── three/               # ← Threlte 3D scene components
-│       │   ├── scene-config.ts      # getSceneConfig(stationCount) → camera, paths, positions
-│       │   ├── HeroScene.svelte     # Original Threlte Canvas (DataPaths + StationNodes + PostProcessing)
-│       │   ├── WagonScene.svelte    # ← Slice 06d: Montreal metro wagon Canvas wrapper
-│       │   ├── WagonInner.svelte    # ← Slice 06d: wagon model loader + lighting + animation
-│       │   ├── DataPaths.svelte     # TubeGeometry paths, emissive lerp with scroll
-│       │   ├── StationNodes.svelte  # IcosahedronGeometry per station, glow on activeStation
-│       │   └── PostProcessing.svelte # EffectComposer + bloom post-processing
 │       ├── utils/
 │       │   ├── gsap.ts          # registerGsapPlugins(), re-exports gsap/ScrollTrigger/SplitText/MorphSVGPlugin
 │       │   ├── stagger.ts       # stagger(index, baseDelay) timing calculator
@@ -153,7 +144,7 @@ src/
 └── routes/
     ├── +error.svelte    # ← Slice 11: branded 404 page — construction scene, hazard tapes, route suggestions
     ├── +layout.svelte   # Root layout: Nav + ScrollRail + page content + Footer + page transitions
-    ├── +page.ts         # SSR disabled (Three.js/GSAP need browser APIs)
+    ├── +page.ts         # SSR disabled (GSAP/lottie-web need browser APIs)
     ├── +page.svelte     # Home: hero + SkillsJourney horizontal scroll + services + projects + about + blog + CTA
     ├── blog/            # ← Slice 07: blog system
     │   ├── +page.svelte     # Professional blog listing
@@ -170,9 +161,6 @@ src/
     │   └── [id]/
     │       ├── +page.svelte # Service detail page
     │       └── +page.ts     # Loads service by ID, adjacent services, related projects
-    └── preview/
-        ├── +page.ts     # SSR disabled
-        └── +page.svelte # Dev-only 3D scene preview with slider controls
 ```
 
 ## Data Layer
@@ -204,7 +192,7 @@ Two systems coexist and serve different purposes:
 
 | System | Example | Purpose |
 |--------|---------|---------|
-| CSS custom properties (`tokens.css`) | `var(--bg-primary)` | Theme-switching colors; change with dark/light mode |
+| CSS custom properties (`tokens.css`) | `var(--background)`, `var(--foreground)` | Theme-switching colors; background/foreground pairs |
 | Tailwind `@theme` utilities | `text-brand-primary` | Static brand colors; always `#E07800` regardless of theme |
 
 ## Dependencies
@@ -219,14 +207,12 @@ Two systems coexist and serve different purposes:
 | `typescript` | ^5.9.3 | Static typing |
 | `gsap` | ^3.14.2 | Scroll-triggered animation engine (ScrollTrigger, MotionPathPlugin) |
 | `lottie-web` | ^5.13.0 | Lottie JSON animation player for station icons |
-| `@threlte/core` | ^8.5.5 | Svelte Three.js bindings (installed, scene built in Slice 06) |
-| `@threlte/extras` | ^9.14.2 | Threlte helpers (Float, useGltf, etc.) |
-| `three` | ^0.183.2 | 3D engine (peer dep of Threlte) |
+| `bits-ui` | ^2.16.3 | Headless accessible UI primitives (Dialog, Tabs, Collapsible, etc.) |
+| `vaul-svelte` | ^1.0.0-next.7 | Drawer/bottom sheet primitive (used by StackBottomSheet) |
 | `vitest` | ^4.1.0 | Unit test runner |
 | `@testing-library/svelte` | ^5.3.1 | Svelte component testing utilities |
 | `@playwright/test` | ^1.58.2 | E2E browser testing |
-| `jsdom` | ^29.0.1 | DOM environment for unit tests |
-| `@types/three` | ^0.183.1 | TypeScript types for Three.js |
+| `happy-dom` | ^20.8.9 | DOM environment for unit tests (2-4x faster than jsdom) |
 | `marked` | ^* | Markdown-to-HTML rendering for blog posts (used instead of mdsvex for content) |
 | `mdsvex` | ^* | Svelte markdown preprocessor (enables `.md` as SvelteKit page extension) |
 

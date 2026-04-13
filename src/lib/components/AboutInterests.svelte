@@ -36,12 +36,13 @@
 	<div class="flex h-full min-h-36">
 		{#each interests as interest, i}
 			{@const interestLabel = resolveLocale(interest.label, 'en')}
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div
+			<button
+				type="button"
 				class="interest-strip relative flex flex-1 items-center justify-center overflow-hidden transition-all duration-500 ease-out"
 				class:strip-active={activeIndex === i}
 				onclick={() => handleTap(i)}
+				aria-label={interestLabel}
+				aria-pressed={activeIndex === i}
 			>
 				<!-- Background image: skewed, B&W → color on hover/tap -->
 				<div
@@ -56,7 +57,7 @@
 				{#if i < interests.length - 1}
 					<div
 						class="absolute right-0 top-0 z-10 h-full w-px"
-						style="background: var(--brand-primary); opacity: 0.4;"
+						style="background: var(--primary); opacity: 0.4;"
 						aria-hidden="true"
 					></div>
 				{/if}
@@ -67,7 +68,7 @@
 						{interestLabel.toUpperCase()}
 					</span>
 				</div>
-			</div>
+			</button>
 		{/each}
 	</div>
 </div>
@@ -87,8 +88,15 @@
 		flex: 1.4;
 	}
 
-	/* Cursor pointer on all strips */
-	.interest-strip {
+	/* Button reset + cursor pointer on all strips */
+	button.interest-strip {
+		appearance: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		color: inherit;
+		text-align: inherit;
+		background: transparent;
 		cursor: pointer;
 	}
 </style>

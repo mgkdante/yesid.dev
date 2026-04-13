@@ -3,7 +3,7 @@
 	// Render nothing for empty arrays so callers don't get a dangling empty list.
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { stagger } from '$lib/motion/utils/stagger.js';
-	import { Tag } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 
 	let { tags = [] }: { tags: string[] } = $props();
 </script>
@@ -13,7 +13,7 @@
 		{#each tags as tag, i}
 			<!-- Tags enter left-to-right with stagger — like data flowing through a pipeline. -->
 			<li use:reveal={{ direction: 'up', delay: stagger(i, 80) }}>
-				<Tag text={tag} />
+				<Badge variant="tag" size="sm">{tag}</Badge>
 			</li>
 		{/each}
 	</ul>

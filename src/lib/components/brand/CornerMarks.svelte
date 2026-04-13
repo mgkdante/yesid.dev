@@ -4,23 +4,29 @@
   Place inside a relative-positioned parent.
 -->
 <script lang="ts">
-  export interface CornerMarksProps {
+  import { cn } from '$lib/utils.js';
+  import type { HTMLAttributes } from 'svelte/elements';
+
+  export interface CornerMarksProps extends HTMLAttributes<HTMLDivElement> {
     /** Arm length — sm: 12px, md: 32px */
     size?: 'sm' | 'md';
     /** Mark opacity (0-1) */
     opacity?: number;
+    class?: string;
   }
 
   let {
     size = 'sm',
     opacity = 0.4,
+    class: className,
+    ...restProps
   }: CornerMarksProps = $props();
 
   const armMap = { sm: 12, md: 32 } as const;
   const arm = $derived(armMap[size]);
 </script>
 
-<div class="corner-marks" style="--arm: {arm}px; --mark-opacity: {opacity};" aria-hidden="true">
+<div class={cn("corner-marks", className)} data-slot="corner-marks" style="--arm: {arm}px; --mark-opacity: {opacity};" aria-hidden="true" {...restProps}>
   <span class="mark mark-tl"></span>
   <span class="mark mark-tr"></span>
   <span class="mark mark-bl"></span>
@@ -45,7 +51,7 @@
   .mark::after {
     content: '';
     position: absolute;
-    background: var(--brand-primary);
+    background: var(--primary);
     opacity: var(--mark-opacity);
   }
 

@@ -149,43 +149,6 @@ vi.mock('gsap/SplitText', () => ({
 	}
 }));
 
-// Mock @threlte/core for component tests.
-// Threlte requires WebGL context which happy-dom does not provide.
-vi.mock('@threlte/core', () => ({
-	Canvas: vi.fn(),
-	T: vi.fn(),
-	useTask: vi.fn(() => vi.fn()),
-	useThrelte: vi.fn(() => ({
-		scene: { background: null },
-		renderer: {},
-		camera: { current: {} },
-		size: { width: 800, height: 600 },
-		renderStage: {},
-		autoRender: { current: true, set: vi.fn() }
-	}))
-}));
-
-// Mock @threlte/extras for component tests.
-// useGltf loads GLB models which requires WebGL.
-vi.mock('@threlte/extras', () => ({
-	useGltf: vi.fn(() => ({ subscribe: vi.fn(), set: vi.fn() }))
-}));
-
-// Mock postprocessing for component tests.
-// postprocessing requires WebGL and is used by PostProcessing.svelte.
-vi.mock('postprocessing', () => ({
-	EffectComposer: vi.fn(() => ({
-		addPass: vi.fn(),
-		removeAllPasses: vi.fn(),
-		setSize: vi.fn(),
-		render: vi.fn()
-	})),
-	EffectPass: vi.fn(),
-	RenderPass: vi.fn(),
-	BloomEffect: vi.fn(),
-	KernelSize: { MEDIUM: 1 }
-}));
-
 // Mock lottie-web for component tests.
 // lottie-web uses SVG rendering and canvas APIs unavailable in happy-dom.
 vi.mock('lottie-web', () => ({

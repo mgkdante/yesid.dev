@@ -17,7 +17,7 @@
 	import { registerGsapPlugins, gsap, Flip, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import WorkCard from './WorkCard.svelte';
 	import WorkFilterSidebar from './WorkFilterSidebar.svelte';
-	import { NumberBadge } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 	import WorkFilterMobile from './WorkFilterMobile.svelte';
 
 
@@ -195,10 +195,10 @@
 	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
 	<!-- Header -->
 	<div class="mb-8" data-batch="work-item">
-		<h1 class="font-heading text-2xl font-bold text-[var(--text-primary)] md:text-3xl">
+		<h1 class="font-heading text-2xl font-bold text-[var(--foreground)] md:text-3xl">
 			{resolveLocale(content.heading, 'en')}
 		</h1>
-		<p class="mt-1 font-mono text-xs text-brand-primary">
+		<p class="mt-1 font-mono text-xs text-primary">
 			{resolveLocale(content.subtitle, 'en')}
 		</p>
 	</div>
@@ -240,11 +240,11 @@
 			<!-- Active filter summary -->
 			{#if hasActiveFilters}
 				<div class="mb-4 flex items-center gap-2">
-					<span class="text-xs text-[var(--text-muted)]">
+					<span class="text-xs text-[var(--muted-foreground)]">
 						{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
 					</span>
 					<button
-						class="font-mono text-caption text-brand-primary underline transition-colors hover:text-[var(--text-primary)]"
+						class="font-mono text-caption text-primary underline transition-colors hover:text-[var(--foreground)]"
 						onclick={async () => {
 							await updateFilter('service', null);
 							await updateFilter('tag', null);
@@ -258,7 +258,7 @@
 
 			<!-- Card grid -->
 			{#if filteredProjects.length === 0}
-				<p class="py-12 text-center text-sm text-[var(--text-muted)]" data-testid="work-empty-state">
+				<p class="py-12 text-center text-sm text-[var(--muted-foreground)]" data-testid="work-empty-state">
 					{resolveLocale(content.emptyState, 'en')}
 				</p>
 			{:else}
@@ -274,7 +274,7 @@
 										class="station-pulse"
 										style="animation-delay: {i * 0.4}s;"
 									></div>
-									<NumberBadge value={i + 1} />
+									<Badge variant="number" aria-hidden="true">{String(i + 1).padStart(2, '0')}</Badge>
 								</div>
 								<!-- WHY: SVG line connecting stations — direct color avoids url(#id)
 								     paint-server resolution failures in SvelteKit SPA routing -->
@@ -288,7 +288,7 @@
 								>
 									<line
 										x1="1" y1="0" x2="1" y2="100"
-										stroke="var(--brand-primary)"
+										stroke="var(--primary)"
 										stroke-width="2"
 									/>
 								</svg>
@@ -341,7 +341,7 @@
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
-		background: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		background: color-mix(in srgb, var(--primary) 50%, transparent);
 		animation: station-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 	}
 

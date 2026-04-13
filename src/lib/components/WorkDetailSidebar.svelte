@@ -12,7 +12,7 @@
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import WorkServiceBadge from './WorkServiceBadge.svelte';
-	import { Tag } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 
 	// WHY: all section headers go through LocalizedString so the sidebar is ready
 	// for future i18n without changing component logic.
@@ -59,7 +59,7 @@
 </script>
 
 <aside
-	class="w-full shrink-0 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-5 lg:sticky lg:top-20 lg:w-60"
+	class="w-full shrink-0 rounded-lg border border-[var(--border-subtle)] bg-[var(--background)] p-5 lg:sticky lg:top-20 lg:w-60"
 	data-testid="work-detail-sidebar"
 >
 	<!-- Tech Stack -->
@@ -71,7 +71,7 @@
 			<div bind:this={tagsContainer} class="flex flex-wrap gap-1.5">
 				{#each project.stack as tech}
 					<a href="/work?tag={tech}" data-animate="tag" class="no-underline">
-						<Tag text={tech} size="xs" />
+						<Badge variant="tag" size="xs">{tech}</Badge>
 					</a>
 				{/each}
 			</div>
@@ -118,7 +118,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						class="sidebar-link inline-flex items-center gap-1.5 font-mono text-xs transition-colors hover:underline"
-						style="color: var(--brand-primary);"
+						style="color: var(--primary);"
 					>
 						<!-- Arrow-up-right icon -->
 						<svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -133,7 +133,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						class="sidebar-link inline-flex items-center gap-1.5 font-mono text-xs transition-colors hover:underline"
-						style="color: var(--brand-primary);"
+						style="color: var(--primary);"
 					>
 						<!-- GitHub icon -->
 						<svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -153,8 +153,8 @@
 		transition: background-color var(--duration-fast) var(--ease-default), border-color var(--duration-fast) var(--ease-default);
 	}
 	.sidebar-tag:hover {
-		background-color: var(--bg-card);
-		border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
+		background-color: var(--card);
+		border-color: color-mix(in srgb, var(--primary) 40%, transparent);
 	}
 
 	/* Links — glow effect on hover */
@@ -162,6 +162,6 @@
 		transition: color var(--duration-fast) var(--ease-default), text-shadow var(--duration-fast) var(--ease-default);
 	}
 	.sidebar-link:hover {
-		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 30%, transparent);
 	}
 </style>

@@ -22,7 +22,7 @@
 		languages = [],
 		heading,
 		subtitle,
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		cornerLink = null,
 		svgContents = {}
 	}: {
@@ -159,7 +159,7 @@
 	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
 	<!-- Header -->
 	<div class="mb-6" data-batch="blog-item">
-		<h1 class="font-heading text-2xl font-bold text-[var(--text-primary)] md:text-3xl">
+		<h1 class="font-heading text-2xl font-bold text-[var(--foreground)] md:text-3xl">
 			{heading}
 		</h1>
 		<p class="mt-1 font-mono text-xs" style="color: {accentColor};">
@@ -174,7 +174,7 @@
 				type="text"
 				placeholder="Search posts by title, content, or tag..."
 				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none transition-colors focus:border-[var(--accent)]"
+				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
 				style="--accent: {accentColor};"
 				data-testid="blog-search"
 			/>
@@ -219,11 +219,11 @@
 		<div class="min-w-0 flex-1">
 			{#if hasActiveFilters}
 				<div class="mb-3 flex items-center gap-2">
-					<span class="text-xs text-[var(--text-muted)]">
+					<span class="text-xs text-[var(--muted-foreground)]">
 						{filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''}
 					</span>
 					<button
-						class="font-mono text-caption underline transition-colors hover:text-[var(--text-primary)]"
+						class="font-mono text-caption underline transition-colors hover:text-[var(--foreground)]"
 						style="color: {accentColor};"
 						onclick={clearFilters}
 					>
@@ -233,7 +233,7 @@
 			{/if}
 
 			{#if filteredPosts.length === 0}
-				<p class="py-12 text-center text-sm text-[var(--text-muted)]">
+				<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
 					No posts found. Try adjusting your filters.
 				</p>
 			{:else}

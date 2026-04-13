@@ -6,7 +6,8 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { StatusDot, HazardStripe, CornerMarks } from '$lib/components/brand';
+	import { StatusDot, CornerMarks } from '$lib/components/brand';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let {
 		tag = 'LIVE',
@@ -44,7 +45,7 @@
 	</div>
 
 	<!-- Hazard stripe -->
-	<HazardStripe size="sm" />
+	<Separator variant="hazard" hazardSize="sm" />
 
 	<!-- Content -->
 	<div class="frame-body">
@@ -76,13 +77,13 @@
 		border: 1px solid var(--border);
 		border-radius: var(--radius-lg);
 		overflow: hidden;
-		background: var(--bg-surface);
+		background: var(--muted);
 		transition: border-color var(--duration-slow) var(--ease-default), box-shadow var(--duration-slow) var(--ease-default);
 	}
 
 	.infra-frame:hover {
-		border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent);
-		box-shadow: 0 0 24px color-mix(in srgb, var(--brand-primary) 6%, transparent), 0 1px 3px rgba(0, 0, 0, 0.3);
+		border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+		box-shadow: 0 0 24px color-mix(in srgb, var(--primary) 6%, transparent), 0 1px 3px rgba(0, 0, 0, 0.3);
 	}
 
 	/* --- Title bar --- */
@@ -92,7 +93,7 @@
 		align-items: center;
 		gap: 10px;
 		padding: 8px 16px;
-		background: var(--bg-card);
+		background: var(--card);
 		border-bottom: 1px solid var(--border);
 	}
 
@@ -104,14 +105,14 @@
 		font-size: 10px;
 		letter-spacing: 2px;
 		text-transform: uppercase;
-		color: var(--brand-primary);
+		color: var(--primary);
 		font-weight: 600;
 	}
 
 	.frame-title {
 		font-family: var(--font-mono);
 		font-size: 11px;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 	}
 
 	.frame-status {
@@ -121,7 +122,7 @@
 		gap: 6px;
 		font-family: var(--font-mono);
 		font-size: 10px;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 	}
 
 	/* --- Hazard stripe --- */
@@ -130,7 +131,7 @@
 
 	.frame-body {
 		position: relative;
-		background: var(--bg-primary);
+		background: var(--background);
 	}
 
 	/* Subtle grid overlay — infrastructure blueprint feel */
@@ -139,8 +140,8 @@
 		position: absolute;
 		inset: 0;
 		background-image:
-			linear-gradient(color-mix(in srgb, var(--brand-primary) 3%, transparent) 1px, transparent 1px),
-			linear-gradient(90deg, color-mix(in srgb, var(--brand-primary) 3%, transparent) 1px, transparent 1px);
+			linear-gradient(color-mix(in srgb, var(--primary) 3%, transparent) 1px, transparent 1px),
+			linear-gradient(90deg, color-mix(in srgb, var(--primary) 3%, transparent) 1px, transparent 1px);
 		background-size: 40px 40px;
 		pointer-events: none;
 		z-index: var(--z-base);
@@ -158,10 +159,10 @@
 		align-items: center;
 		padding: 8px 16px;
 		border-top: 1px solid var(--border);
-		background: var(--bg-card);
+		background: var(--card);
 		font-family: var(--font-mono);
 		font-size: 10px;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		gap: 2rem;
@@ -173,7 +174,7 @@
 	}
 
 	.frame-metric-val {
-		color: var(--brand-accent);
+		color: var(--accent);
 		font-weight: 600;
 	}
 

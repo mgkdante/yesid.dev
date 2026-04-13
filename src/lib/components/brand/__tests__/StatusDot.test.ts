@@ -18,7 +18,7 @@ describe('StatusDot', () => {
   it('applies green color class', () => {
     const { container } = render(StatusDot, { props: { color: 'green' } });
     const dot = container.querySelector('span')!;
-    expect(dot.classList.contains('bg-[var(--status-success)]')).toBe(true);
+    expect(dot.classList.contains('bg-[var(--success)]')).toBe(true);
   });
 
   it('applies pulse animation class', () => {

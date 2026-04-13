@@ -8,14 +8,14 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
-	import { Tag, NumberBadge } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
 
 	let {
 		post,
 		svgContent = '',
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		index = 0,
 		featured = false
 	}: {
@@ -58,7 +58,7 @@
 					class="station-pulse"
 					style="animation-delay: {index * 0.4}s;"
 				></div>
-				<NumberBadge value={index + 1} color={accentColor} />
+				<Badge variant="number" aria-hidden="true" style={accentColor ? `background-color: ${accentColor}` : ''}>{String(index + 1).padStart(2, '0')}</Badge>
 			</div>
 			<!-- Vertical metro line connecting stations — SVG for DrawSVGPlugin animation -->
 			<svg
@@ -80,7 +80,7 @@
 
 		<!-- Content card -->
 		<article
-			class="blog-row relative flex min-w-0 flex-1 items-start gap-4 overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)]/80 backdrop-blur-sm transition-all duration-300 md:gap-5"
+			class="blog-row relative flex min-w-0 flex-1 items-start gap-4 overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--card)]/80 backdrop-blur-sm transition-all duration-300 md:gap-5"
 			class:p-5={featured}
 			class:md\:p-6={featured}
 			class:p-4={!featured}
@@ -103,11 +103,11 @@
 
 			<!-- Content -->
 			<div class="relative z-10 min-w-0 flex-1">
-				<h3 class="text-sm font-semibold leading-snug text-[var(--text-primary)] transition-colors duration-300 group-hover:text-[var(--accent)] md:text-base">
+				<h3 class="text-sm font-semibold leading-snug text-[var(--foreground)] transition-colors duration-300 group-hover:text-[var(--accent)] md:text-base">
 					{resolveLocale(post.title, 'en')}
 				</h3>
 				<p
-					class="mt-1.5 text-xs leading-relaxed text-[var(--text-secondary)] md:text-sm"
+					class="mt-1.5 text-xs leading-relaxed text-[var(--secondary-foreground)] md:text-sm"
 					class:line-clamp-2={!featured}
 				>
 					{resolveLocale(post.excerpt, 'en')}
@@ -115,10 +115,10 @@
 				<div class="mt-3 flex flex-wrap items-center gap-1.5">
 					{#each post.tags as tag}
 						<span use:magnetic={{ strength: 2, radius: 30 }}>
-							<Tag text={tag} size="xs" active accentColor={accentColor} />
+							<Badge variant="tag-active" size="xs" style="border-color: {accentColor}30; background: {accentColor}15; color: {accentColor}">{tag}</Badge>
 						</span>
 					{/each}
-					<span class="ml-auto font-mono text-caption text-[var(--text-muted)]">
+					<span class="ml-auto font-mono text-caption text-[var(--muted-foreground)]">
 						{post.date}
 					</span>
 				</div>
@@ -155,7 +155,7 @@
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
-		background: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		background: color-mix(in srgb, var(--primary) 50%, transparent);
 		animation: station-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 	}
 

@@ -2,13 +2,16 @@
   StationTabs — reusable station tab navigation for /services index and detail pages.
   Two modes:
     - 'scroll': tabs are buttons that call onSelect (index page, parent controls scroll)
+      → wired to ui/tabs (bits-ui) for arrow-key nav, ARIA roles, focus management
     - 'navigate': tabs are <a> links to /services/[id] (detail page)
+      → kept as plain nav+links (links can't be Tab triggers)
   Tabs sorted by station number. Active tab gets orange bottom border, bold label.
   Inactive tabs fade by distance from active for a depth effect.
 -->
 <script lang="ts">
 	import type { Service } from '$lib/data/types.js';
-	import { HazardStripe } from '$lib/components/brand';
+	import { Separator } from '$lib/components/ui/separator';
+	import * as Tabs from '$lib/components/ui/tabs';
 
 	// Short labels map — first word or simple abbreviation for compact tab display.
 	// Keyed by service ID so adding a new service only requires one new entry here.
@@ -57,18 +60,19 @@
 	}
 </script>
 
-<HazardStripe size="sm" />
+<Separator variant="hazard" hazardSize="sm" />
 
-<nav
-	aria-label="Service navigation"
-	class="station-tabs flex w-full overflow-x-auto border-b md:justify-center"
-	style="background: var(--bg-primary); border-color: var(--border);"
->
-	{#each sorted as service, i (service.id)}
-		{@const isActive = service.id === activeId}
-		{@const opacity = isActive ? 1 : getOpacity(i)}
+{#if mode === 'navigate'}
+	<!-- Navigate mode: plain nav + links (links can't be Tabs triggers) -->
+	<nav
+		aria-label="Service navigation"
+		class="station-tabs flex w-full overflow-x-auto border-b md:justify-center"
+		style="background: var(--background); border-color: var(--border);"
+	>
+		{#each sorted as service, i (service.id)}
+			{@const isActive = service.id === activeId}
+			{@const opacity = isActive ? 1 : getOpacity(i)}
 
-		{#if mode === 'navigate'}
 			<a
 				href="/services/{service.id}"
 				class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all"
@@ -90,40 +94,68 @@
 					{getLabel(service)}
 				</span>
 			</a>
-		{:else}
-			<button
-				type="button"
-				class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm transition-all"
-				class:active={isActive}
-				style="opacity: {opacity};"
-				data-testid="station-tab-{service.id}"
-				data-active={isActive ? 'true' : undefined}
-				onclick={() => onSelect?.(service.id)}
-			>
-				<span
-					class="station-num font-mono text-xs"
-					class:text-brand={isActive}
-				>
-					{padStation(service.station)}
-				</span>
-				<span
-					class="station-label text-sm"
-					class:font-bold={isActive}
-				>
-					{getLabel(service)}
-				</span>
-			</button>
-		{/if}
-	{/each}
-</nav>
+		{/each}
+	</nav>
+{:else}
+	<!-- Scroll mode: bits-ui Tabs for a11y (arrow keys, ARIA roles, focus management) -->
+	<Tabs.Root
+		value={activeId}
+		onValueChange={(v) => onSelect?.(v)}
+		class="station-tabs-root"
+	>
+		<Tabs.List
+			variant="line"
+			class="station-tabs flex w-full overflow-x-auto border-b md:justify-center"
+			style="background: var(--background); border-color: var(--border);"
+		>
+			{#each sorted as service, i (service.id)}
+				{@const isActive = service.id === activeId}
+				{@const opacity = isActive ? 1 : getOpacity(i)}
+
+				<Tabs.Trigger value={service.id}>
+					{#snippet child({ props })}
+						<button
+							{...props}
+							class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm transition-all"
+							class:active={isActive}
+							style="opacity: {opacity};"
+							data-testid="station-tab-{service.id}"
+							data-active={isActive ? 'true' : undefined}
+						>
+							<span
+								class="station-num font-mono text-xs"
+								class:text-brand={isActive}
+							>
+								{padStation(service.station)}
+							</span>
+							<span
+								class="station-label text-sm"
+								class:font-bold={isActive}
+							>
+								{getLabel(service)}
+							</span>
+						</button>
+					{/snippet}
+				</Tabs.Trigger>
+			{/each}
+		</Tabs.List>
+	</Tabs.Root>
+{/if}
 
 <style>
+	/* Tabs.Root adds gap-2 + flex-col by default; flatten for our horizontal layout */
+	:global([data-slot="tabs"].station-tabs-root) {
+		gap: 0;
+	}
+
 	/* Hide scrollbar but keep scroll functionality on mobile */
-	.station-tabs {
+	.station-tabs,
+	:global([data-slot="tabs-list"].station-tabs) {
 		scrollbar-width: none;
 		-ms-overflow-style: none;
 	}
-	.station-tabs::-webkit-scrollbar {
+	.station-tabs::-webkit-scrollbar,
+	:global([data-slot="tabs-list"].station-tabs)::-webkit-scrollbar {
 		display: none;
 	}
 
@@ -132,7 +164,7 @@
 		min-width: max-content;
 		cursor: pointer;
 		border-bottom: 3px solid transparent;
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 		background: transparent;
 		border-top: none;
 		border-left: none;
@@ -141,19 +173,19 @@
 
 	/* Active tab: orange bottom border, full opacity, brighter text */
 	.station-tab.active {
-		border-bottom-color: var(--brand-primary);
-		color: var(--text-light);
+		border-bottom-color: var(--primary);
+		color: var(--light-foreground);
 	}
 
 	/* Hover: subtle brightness lift for inactive tabs */
 	.station-tab:not(.active):hover {
-		color: var(--text-light);
-		border-bottom-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		color: var(--light-foreground);
+		border-bottom-color: color-mix(in srgb, var(--primary) 30%, transparent);
 	}
 
 	/* Brand color for station number when active */
 	.text-brand {
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 
 	/* JetBrains Mono for station numbers — matches brand mono font */

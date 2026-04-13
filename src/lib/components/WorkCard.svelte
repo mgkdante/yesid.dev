@@ -13,7 +13,7 @@
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import WorkSvgIcon from './WorkSvgIcon.svelte';
-	import { Tag } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 
 	let {
@@ -46,16 +46,16 @@
 	// Gradient color based on the first related service's position in the palette.
 	// Creates visual variety across cards without requiring thumbnails.
 	const SERVICE_GRADIENTS: Record<string, [string, string]> = {
-		'sql-development': ['var(--brand-primary)', 'var(--brand-primary-hover)'],
-		'data-pipeline': ['var(--brand-accent)', 'var(--brand-accent-hover)'],
-		'analytics-reporting': ['var(--brand-primary)', 'var(--brand-accent)'],
-		'database-engineering': ['var(--brand-primary-hover)', 'var(--brand-primary)'],
-		'internal-tooling': ['var(--brand-accent-hover)', 'var(--brand-accent)'],
-		'web-development': ['var(--brand-accent)', 'var(--brand-primary)']
+		'sql-development': ['var(--primary)', 'var(--primary-hover)'],
+		'data-pipeline': ['var(--accent)', 'var(--accent-hover)'],
+		'analytics-reporting': ['var(--primary)', 'var(--accent)'],
+		'database-engineering': ['var(--primary-hover)', 'var(--primary)'],
+		'internal-tooling': ['var(--accent-hover)', 'var(--accent)'],
+		'web-development': ['var(--accent)', 'var(--primary)']
 	};
 
 	let gradientColors = $derived(
-		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['var(--brand-primary)', 'var(--brand-accent)']
+		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['var(--primary)', 'var(--accent)']
 	);
 
 	// i18n labels — all user-facing strings go through LocalizedString so future
@@ -74,7 +74,7 @@
 	onmouseleave={() => (cardHovered = false)}
 >
 	<article
-		class="work-card-article relative overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] transition-all duration-300"
+		class="work-card-article relative overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] transition-all duration-300"
 		use:tilt={{ maxDeg: 1.5 }}
 		use:cursorGlow
 	>
@@ -108,12 +108,12 @@
 		<!-- Content area — all content stacks naturally below the banner -->
 		<div class="p-4">
 			<!-- Title below the gradient, not overlaid -->
-			<h3 class="text-base font-bold text-[var(--text-primary)] transition-colors duration-300 group-hover:text-brand-primary md:text-lg">
+			<h3 class="text-base font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary md:text-lg">
 				{resolveLocale(project.title, 'en')}
 			</h3>
 
 			<!-- Description -->
-			<p class="mt-1.5 text-sm leading-relaxed text-[var(--text-secondary)]">
+			<p class="mt-1.5 text-sm leading-relaxed text-[var(--secondary-foreground)]">
 				{resolveLocale(project.oneLiner, 'en')}
 			</p>
 
@@ -127,7 +127,7 @@
 					{#each projectServices as service}
 						<div
 							class="inline-flex items-center gap-2 rounded-full border bg-bg-primary px-3 py-1.5"
-							style="border-color: color-mix(in srgb, var(--brand-primary) 35%, transparent);"
+							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
 								<div class="service-badge-icon" aria-hidden="true">
@@ -138,7 +138,7 @@
 									/>
 								</div>
 							{/if}
-							<span class="font-mono text-caption leading-tight text-[var(--text-primary)]">
+							<span class="font-mono text-caption leading-tight text-[var(--foreground)]">
 								{resolveLocale(service.title, 'en')}
 							</span>
 						</div>
@@ -155,7 +155,7 @@
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />
 					{#if project.stack.length > 5}
-						<span class="mt-0.5 block font-mono text-caption text-[var(--text-muted)]">+{project.stack.length - 5} more</span>
+						<span class="mt-0.5 block font-mono text-caption text-[var(--muted-foreground)]">+{project.stack.length - 5} more</span>
 					{/if}
 				</div>
 			{/if}
@@ -164,7 +164,7 @@
 			<div class="flex flex-wrap gap-1 pt-3">
 				{#each displayTags as tag}
 					<span use:magnetic={{ strength: 2, radius: 30 }}>
-						<Tag text={tag} size="xs" active />
+						<Badge variant="tag-active" size="xs">{tag}</Badge>
 					</span>
 				{/each}
 			</div>
@@ -177,7 +177,7 @@
 	/* WHY: same hover pattern as BlogRow — subtle border glow + shadow,
 	   no rotating gradient (that was visually distracting on cards) */
 	.work-card:hover .work-card-article {
-		border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		border-color: color-mix(in srgb, var(--primary) 50%, transparent);
 		box-shadow: var(--shadow-card);
 	}
 

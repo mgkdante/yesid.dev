@@ -1,14 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-13 | Implementation Session 2 (Tasks 10-14 complete)
-**Branch:** `feature/slice-17a-5-spacing-layout`
+**Last updated:** 2026-04-13 | 17a-6 COMPLETE (Sessions 1-4, Tasks 1-26)
+**Branch:** `feature/slice-17a-6-component-library`
 
 ## Current Position
 
-- **Sub-slice:** 17a-5 (Spacing & Layout Constitution) — COMPLETE, pending commit + PR
-- **Task:** 14 of 14 complete. All tasks done across 2 sessions.
-- **Status:** Full-bleed layout, spacing tokens, viewport units (dvh/svh), safe-area-inset, CONSTITUTION.md written, all docs updated, tests + check pass.
-- **Next action:** Commit session 2, create PR, then 17a-6 (Bits UI Integration).
+- **Sub-slice:** 17a-6 (Component Library Foundation) — COMPLETE (all 4 sessions, 26/26 tasks)
+- **Status:** shadcn-svelte component library initialized. 56 ui/ components scaffolded, 15 customized with brand styling, 7 brand primitives migrated to ui/, 10 page components wired to ui/ headless primitives. 9 brand primitives remain with cn/data-slot conventions. Zero svelte-ignore a11y. Zero old tokens. Zero arbitrary spacing. Dead Three.js/Threlte deps removed. Docs updated.
+- **Build:** 0 errors, 12 warnings, 707/707 tests pass.
+- **Next action:** PR to main, then 17d (Component API — 4 sessions).
 - **Decision D47 revised:** Kept Tailwind default breakpoints (640/768/1024/1280/1536) instead of custom 360/520/768/1024/1440. Edge-to-edge controlled by layout model, not breakpoints.
 - **Pending brainstorm:** Edge-to-edge visual design (edge decorations, vertical typography, circuit lines) for all pages — feeds into 17d.
 
@@ -21,8 +21,8 @@ Phase 1 — Foundation (visual cohesion first)
   17a-2b: Wire Primitives .............. COMPLETE (PR #4 merged)
   17a-3a: Color Lockdown ............... COMPLETE (20 tasks, PR #5 merged)
   17a-3b: Token Wiring + Normalization . COMPLETE (8 tasks, PR #6 merged)
-  17a-5: Spacing & Layout Constitution . IN PROGRESS → 9/14 tasks done, session 2 pending
-  17a-6: Bits UI Integration ........... PLANNED → needs implementation plan
+  17a-5: Spacing & Layout Constitution . COMPLETE (PR #8 merged)
+  17a-6: Component Library Foundation ... IN PROGRESS → Session 3 done (20/26 tasks), Session 4 next
   17d:   Component API ................. PLANNED → needs implementation plan (4 sessions)
   17e:   Motion Re-Engineering ......... PLANNED → needs implementation plan (2-3 sessions)
   17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17d+17e)
@@ -260,11 +260,110 @@ Phase 2 — Data + Architecture
 - 4 files > 500 lines
 - 121 responsive Tailwind classes to migrate to new breakpoints
 
+## 17a-6 Session 2 Stats
+
+- 6 commits on branch (Tasks 9-14)
+- 56 ui/ component directories scaffolded (shadcn-svelte --all)
+- 15 ui/ components customized with brand styling
+- 16 new dependencies installed (bits-ui, vaul-svelte, paneforge, etc.)
+- CSS additions: tw-animate-css, @custom-variant dark, destructive/sidebar @theme inline tokens
+- New files: components.json, src/lib/utils.ts (cn), src/lib/hooks/is-mobile.svelte.ts
+- Zero visual regression — all changes are scaffolding + restyling unused components
+
+### Session 2 Decisions
+
+- **D53:** `--destructive: #ff5f57` — preserved original error color (not shadcn default #dc2626)
+- **D54:** `--destructive-foreground: #FAFAF8` in `:root` (non-themed, consistent red across light/dark)
+- **D55:** Sidebar @theme inline tokens mapped to existing semantics (so scaffolded sidebar doesn't break)
+- **D56:** `@custom-variant dark (&:is([data-theme="dark"] *))` — maps dark: to our attribute-based switching
+- **D57:** Accordion items use card-style (bg-card, border-subtle) instead of border-b separators
+- **D58:** Toggle uses pill shape (rounded-full) + font-mono + brand orange pressed state
+- **D59:** Tooltip uses terminal-style (bg-card, font-mono, border-subtle, compact padding)
+- **D60:** Progress uses 3px height to match ReadingProgressBar
+- **D61:** Scroll-area thumb uses primary/35 to match global scrollbar CSS
+
+### Components Customized in Session 2
+
+| Component | Brand treatment |
+|-----------|----------------|
+| dialog | dark overlay (60%), blur-sm, z-menu, card bg, border-subtle, shadow-card |
+| drawer | same overlay, card bg, border-subtle per direction, shadow-card, muted handle |
+| sheet | same overlay, background bg (full viewport), shadow-section, border-subtle |
+| accordion | card-style items (bg-card, border-subtle, rounded-lg, mb-2 spacing) |
+| tabs | orange active indicator (after:bg-primary), card tab container |
+| toggle | pill shape, font-mono, brand orange pressed state |
+| button | hover:bg-primary-hover, simplified outline with border-subtle |
+| badge | font-mono, border-subtle outline |
+| separator | bg-border-subtle default |
+| tooltip | terminal-style (bg-card, font-mono, border-subtle, compact) |
+| progress | 3px height, transparent track, brand orange fill |
+| scroll-area | brand orange thumb (primary/35) |
+| carousel | no changes needed (minimal root wrapper) |
+| collapsible | no changes needed (already minimal) |
+| toggle-group | no changes needed (inherits toggle variants) |
+
+## 17a-6 Session 3 Stats
+
+- 10 commits on branch (Tasks 15-20 + SSR fix + cta rename)
+- 7 brand primitives migrated to ui/ (BrandButton, CardBase, Tag, NumberBadge, HazardStripe, GradientSeparator + CardBase had 0 consumers)
+- 4 page components wired to ui/ primitives (MenuOverlay→Dialog, StackBottomSheet→Drawer, CollapsibleSection→Collapsible, FilterGroup→ToggleGroup)
+- Brand barrel: 15→9 components (6 migrated to ui/)
+- ~50 consumer files updated across all pages
+- 3 svelte-ignore a11y comments removed (MenuOverlay 1, StackBottomSheet 2)
+- SSR fix: added bits-ui to vite ssr.noExternal
+- Net code reduction: significant (deleted 8 brand primitive files + 8 test files)
+- Build warnings: 18→16 (removed 2 from StackBottomSheet svelte-ignore)
+- Tests: 741→707 (deleted primitive tests, replaced with ui/ tests)
+
+### Session 3 Decisions
+
+- **D62:** Button CTA sizes named `cta-sm`/`cta`/`cta-lg` (industry standard, not `brand-*`)
+- **D63:** BrandButton `variant="ghost"` maps to ui/button `variant="outline"` (outline has border, ghost doesn't)
+- **D64:** Badge extended with `tag`/`tag-active`/`number` variants + `xs`/`sm` sizes
+- **D65:** Separator extended with `hazard` (repeating diagonal stripe) and `gradient` (animated orange→yellow) variants
+- **D66:** MenuOverlay wired to bits-ui Dialog directly (not shadcn Sheet wrapper) — child snippet pattern for custom scaleY transition. Dialog bound to `visible` (not `open`) so focus trap persists through close animation.
+- **D67:** StackBottomSheet wired to vaul-svelte Drawer — native swipe-to-dismiss replaces manual touch tracking + GSAP animation
+- **D68:** CollapsibleSection uses CSS grid `data-state` attributes from Collapsible instead of `.expanded` class
+- **D69:** FilterGroup "All" button mapped as `__all__` ToggleGroupItem for unified keyboard navigation
+
+### Session 1 Reviewer Notes — RESOLVED in Session 4
+
+- ✅ TESTS.md and ARCHITECTURE.md updated (deleted component refs removed)
+- ✅ CSS.md and CONSTITUTION.md updated (new token names, ui/brand tiers documented)
+- ✅ Orphaned test mocks removed from setup.dom.ts
+- ✅ three, @threlte/*, postprocessing removed from package.json
+- ✅ Stale comment in +page.ts fixed
+
+### Pre-existing findings (deferred to 17d)
+
+- Terminal scroll on About/Services pages — TerminalChrome body may need explicit overflow-y: auto
+- Mobile scrollbar visibility — dropped per Yesid, not a concern
+
+## 17a-6 Session 4 Stats
+
+- 7 commits on branch (Tasks 21-26)
+- 6 page components wired to ui/ primitives (StationTabs→Tabs, BlogFilterMobile→Collapsible, WorkFilterMobile→Collapsible, TableOfContents→Collapsible+ScrollArea, ReadingProgressBar→Progress)
+- AboutTestimonials: ARIA carousel semantics added (not embla — preserves fade animation)
+- 12 svelte-ignore a11y comments eliminated across 7 files (div→button, role="toolbar", role="presentation")
+- 9 brand primitives updated with cn()/data-slot/class/restProps conventions
+- End-of-17a sweep: zero violations (0 old tokens, 0 svelte-ignore, 0 arbitrary spacing)
+- Dead deps removed: @threlte/core, @threlte/extras, postprocessing, three, @types/three
+- Docs updated: CONSTITUTION.md, CSS.md, TESTS.md, ARCHITECTURE.md, roadmap
+- Build warnings: 16→12 (4 a11y warnings eliminated by div→button fixes)
+- Tests: 707/707 stable
+
+### Session 4 Decisions
+
+- **D70:** AboutTestimonials NOT wired to embla Carousel — fade→slide would break visual parity. ARIA carousel semantics added manually. Can revisit with embla-carousel-fade plugin.
+- **D71:** StationTabs navigate mode kept as `<nav>` + `<a>` links — HTML anchors cannot be tab triggers.
+- **D72:** ToC section group toggles kept manual — nested Collapsibles in shared list too complex for minimal gain.
+- **D73:** StackDiagram uses `role="toolbar"` (semantically appropriate container of selectable nodes).
+- **D74:** BlogSvgIcon/WorkSvgIcon kept as decorative `role="presentation"` — only mouse hover, no click.
+
 ## Next Steps
 
-1. **17a-5: Spacing & Layout Constitution** — 14 tasks, 3 sessions. Plan written. Ready to implement.
-2. **17a-6: Bits UI Integration** — Needs implementation plan. 1-2 sessions.
-3. **17d: Component API** — Needs implementation plan. 4 sessions.
-4. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions.
-5. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (last).
+1. **17a-6 Closing:** PR to main (squash-merge), handoff report, devlog, learning docs, tree.txt
+2. **17d: Component API** — Needs implementation plan. 4 sessions.
+3. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions.
+4. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (last).
 

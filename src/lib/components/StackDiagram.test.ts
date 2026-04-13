@@ -114,9 +114,9 @@ describe('StackDiagram', () => {
 		const { container } = render(StackDiagram, { props: { items: mockItems } });
 		const mobile = container.querySelector('[data-testid="diagram-mobile"]');
 		const bodies = mobile?.querySelectorAll('.section-body');
-		// All should start collapsed (no .expanded class)
+		// All should start collapsed (data-state="closed")
 		for (const body of Array.from(bodies ?? [])) {
-			expect(body.classList.contains('expanded')).toBe(false);
+			expect(body.getAttribute('data-state')).toBe('closed');
 		}
 	});
 
@@ -129,7 +129,7 @@ describe('StackDiagram', () => {
 			await fireEvent.click(buttons[0]);
 		}
 		const firstBody = mobile?.querySelector('.section-body');
-		expect(firstBody?.classList.contains('expanded')).toBe(true);
+		expect(firstBody?.getAttribute('data-state')).toBe('open');
 	});
 
 	it('renders with empty items array without crashing', () => {

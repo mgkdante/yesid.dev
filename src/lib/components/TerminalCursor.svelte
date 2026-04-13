@@ -10,7 +10,7 @@
 		display: inline-block;
 		width: 8px;
 		height: 14px;
-		background: var(--brand-primary);
+		background: var(--primary);
 		vertical-align: text-bottom;
 		margin-left: 4px;
 		animation: blink 1s step-end infinite;

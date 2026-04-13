@@ -25,9 +25,9 @@ describe('CollapsibleSection', () => {
 		const button = container.querySelector('button');
 		expect(button).toBeTruthy();
 		const body = container.querySelector('.section-body');
-		expect(body?.classList.contains('expanded')).toBe(true);
+		expect(body?.getAttribute('data-state')).toBe('open');
 		await fireEvent.click(button!);
-		expect(body?.classList.contains('expanded')).toBe(false);
+		expect(body?.getAttribute('data-state')).toBe('closed');
 	});
 
 	it('renders as div (not button) when collapsible is false', () => {

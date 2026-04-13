@@ -84,7 +84,7 @@
 		class:cursor-grabbing={dragging}
 		style="top: {trainTop}%;
 			transform: translateX(-50%) translateY(-50%);
-			filter: drop-shadow(0 0 {velocity * 10}px var(--brand-primary));"
+			filter: drop-shadow(0 0 {velocity * 10}px var(--primary));"
 		role="slider"
 		tabindex="0"
 		aria-label="Scroll position — drag to navigate"
