@@ -764,7 +764,7 @@
 	.hero-line-color-muted { color: var(--text-muted); }
 	.hero-line-color-orange { color: var(--brand-primary); }
 	.hero-line-color-accent { color: var(--brand-accent); }
-	.hero-line-color-green { color: #28c840; }
+	.hero-line-color-green { color: var(--status-success); }
 
 	/* Line entrance animation — opacity only, no transform to avoid shift */
 	.hero-line-animate {
@@ -844,7 +844,7 @@
 		margin: 0 auto 2rem;
 		background: repeating-linear-gradient(
 			-45deg,
-			#FFB627 0px, #FFB627 4px,
+			var(--brand-accent) 0px, var(--brand-accent) 4px,
 			transparent 4px, transparent 8px
 		);
 	}

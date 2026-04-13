@@ -26,7 +26,7 @@
 </script>
 
 <!-- Fixed overlay covers the entire viewport, including Nav/Footer from root layout -->
-<div class="fixed inset-0 z-50 overflow-hidden bg-[#141414]">
+<div class="fixed inset-0 z-50 overflow-hidden bg-bg-primary">
 	<!-- 3D scene fills viewport -->
 	{#if HeroScene}
 		<div class="absolute inset-0">
@@ -50,7 +50,7 @@
 				max="100"
 				step="1"
 				bind:value={scrollValue}
-				class="w-48 accent-[#E07800]"
+				class="w-48 accent-brand-primary"
 			/>
 		</label>
 
@@ -59,7 +59,7 @@
 		</p>
 
 		<label class="flex items-center gap-2 text-xs text-neutral-400">
-			<input type="checkbox" bind:checked={reducedMotion} class="accent-[#E07800]" />
+			<input type="checkbox" bind:checked={reducedMotion} class="accent-brand-primary" />
 			Reduced motion
 		</label>
 	</div>
