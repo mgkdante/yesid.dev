@@ -47,13 +47,11 @@
   --shadow-card: var(--shadow-card);
   --shadow-section: var(--shadow-section);
   --shadow-nav: var(--shadow-nav);
-  --shadow-status: var(--shadow-status);
 
   /* Z-index — already use var() refs from tokens.css */
   --z-index-base: var(--z-base);
   --z-index-content: var(--z-content);
   --z-index-rail: var(--z-rail);
-  --z-index-footer: var(--z-footer);
   --z-index-sheet: var(--z-sheet);
   --z-index-menu: var(--z-menu);
   --z-index-nav: var(--z-nav);
@@ -61,14 +59,11 @@
   /* Container widths — already use var() refs from tokens.css */
   --width-content: var(--container-content);
   --width-wide: var(--container-wide);
-  --width-prose: var(--container-prose);
 
   /* Spacing tokens — generates Tailwind utilities */
   --spacing-page-x: var(--space-page-x);
   --spacing-section-y: var(--space-section-y);
   --spacing-card-gap: var(--space-card-gap);
-  --spacing-stack: var(--space-stack);
-  --spacing-cluster: var(--space-cluster);
 
   /* Breakpoints — Tailwind v4 defaults (640/768/1024/1280/1536)
      No overrides needed. Edge-to-edge layout is controlled by the layout model,
@@ -100,7 +95,6 @@
   --color-terminal-bg: var(--bg-terminal);
   --color-terminal-border: var(--border-subtle);
   --color-dim: var(--text-dim);
-  --color-live: var(--status-live);
 }
 
 /* Dark theme is the default — tokens.css handles var(--bg-primary) etc.
