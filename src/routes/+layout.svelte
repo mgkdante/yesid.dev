@@ -26,10 +26,8 @@
 		};
 	});
 
-	// Home and services pages manage their own layout (full-width, no max-width).
-	// All other pages get the centered, padded container.
+	// Home page skips pt-20 (hero is full-viewport).
 	let isHome = $derived($page.url.pathname === '/');
-	let isFullWidth = $derived(isHome || $page.url.pathname.startsWith('/services') || $page.url.pathname.startsWith('/about') || $page.url.pathname.startsWith('/contact') || $page.url.pathname.startsWith('/tech-stack') || $page.error !== null);
 	// Hide footer on the services listing page — it has its own scroll container.
 	// Footer shows on detail pages and all other pages.
 	let hideFooter = $derived($page.url.pathname === '/services');
@@ -45,7 +43,7 @@
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="{isFullWidth ? 'flex-1' : 'mx-auto w-full max-w-5xl flex-1 px-6'} {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="flex-1 {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}

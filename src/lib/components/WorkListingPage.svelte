@@ -190,7 +190,9 @@
 	});
 </script>
 
-<div data-testid="work-listing" class="pb-16">
+<div data-testid="work-listing" class="w-full pb-16">
+	<!-- Content container — centered for readability, gutters via spacing token -->
+	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
 	<!-- Header -->
 	<div class="mb-8" data-batch="work-item">
 		<h1 class="font-heading text-2xl font-bold text-[var(--text-primary)] md:text-3xl">
@@ -300,6 +302,7 @@
 				</div>
 			{/if}
 		</div>
+	</div>
 	</div>
 </div>
 

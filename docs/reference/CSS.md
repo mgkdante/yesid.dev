@@ -1,7 +1,7 @@
 # CSS Architecture — Design System Reference
 
-**Last updated:** 2026-04-12
-**Status:** Active — Slice 17a-2b Wire Primitives
+**Last updated:** 2026-04-13
+**Status:** Active — Slice 17a-5 Spacing & Layout Constitution
 
 > Single source of truth for the yesid.dev design system tokens, layers, and rules.
 
@@ -148,29 +148,62 @@ Global stacking context — no magic numbers.
 
 ---
 
+## Spacing Tokens
+
+5 semantic tokens for recurring layout patterns. Defined in `tokens.css`, bridged to Tailwind via `@theme`.
+
+| Token | Value | Purpose |
+|-------|-------|---------|
+| `--space-page-x` | `clamp(1.5rem, 4vw, 5rem)` | Horizontal page gutters |
+| `--space-section-y` | `clamp(3rem, 8vw, 6rem)` | Vertical padding between sections |
+| `--space-card-gap` | `clamp(1rem, 2vw, 1.5rem)` | Gap between cards in grids |
+| `--space-stack` | `1.5rem` | Default vertical stack spacing |
+| `--space-cluster` | `0.75rem` | Tight groupings (label + value, icon + text) |
+
+Tailwind utilities: `px-page-x`, `py-section-y`, `gap-card-gap`, `gap-stack`, `gap-cluster`.
+
+**Rules:** Arbitrary Tailwind spacing (`p-[22px]`) is banned — use standard scale or token. `clamp()` for fluid values.
+
+---
+
 ## Container Widths
+
+Containers are for **text readability only**, not section wrappers. Visual elements, SVGs, panels, and decorations live OUTSIDE containers at full viewport width.
 
 | Token | Value | Usage |
 |-------|-------|-------|
 | `--container-content` | `64rem` (1024px) | Primary content width |
-| `--container-wide` | `72rem` (1152px) | Wide layouts |
+| `--container-wide` | `72rem` (1152px) | Wide layouts with sidebars |
 | `--container-prose` | `65ch` | Prose/reading columns |
 
 ---
 
 ## Breakpoints
 
-Using **Tailwind v4 defaults** (not custom overrides). 117 responsive classes across 41 files depend on these.
+5 canonical breakpoints replacing Tailwind v4 defaults. Defined in `@theme` block of `app.css`.
 
-| Prefix | Width | Usage |
-|--------|-------|-------|
-| `sm:` | `640px` | Small tablets |
-| `md:` | `768px` | Tablets / primary breakpoint |
-| `lg:` | `1024px` | Desktop |
-| `xl:` | `1280px` | Wide desktop |
-| `2xl:` | `1536px` | Ultra-wide |
+| Prefix | Width | Devices |
+|--------|-------|---------|
+| `sm:` | `360px` | iPhone SE, most phones |
+| `md:` | `520px` | Foldables open, large phone landscape |
+| `lg:` | `768px` | iPad Mini, tablets |
+| `xl:` | `1024px` | Laptops, iPad Pro landscape |
+| `2xl:` | `1440px` | Desktop monitors |
 
-Design guideline: mobile-first. Base = mobile, `md:` and `lg:` add complexity.
+Design guideline: mobile-first. Base = smallest screen. Breakpoints add complexity.
+
+### Viewport Units
+
+| Unit | When |
+|------|------|
+| `dvh` | Full-height sections — updates with browser chrome |
+| `svh` | Stable measurements — font sizing, scroll calculations |
+| `lvh` | Maximum possible height — background sizing |
+| `vh` | **Never** — inconsistent on mobile |
+
+### Safe Areas
+
+`env(safe-area-inset-*)` applied to: Nav (top), Footer (bottom), StackBottomSheet (bottom), MenuOverlay (top + bottom), tech-stack build overlay (bottom). Requires `viewport-fit=cover` in `<meta>` tag.
 
 ---
 

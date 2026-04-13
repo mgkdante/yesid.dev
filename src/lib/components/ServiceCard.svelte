@@ -86,8 +86,8 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		height: 100vh;
-		padding: 0 3rem;
+		height: 100dvh;
+		padding: 0 var(--space-page-x);
 	}
 
 	.viewport-inner {
@@ -223,7 +223,7 @@
 	/* Mobile: SVG above text, smaller */
 	@media (max-width: 767px) {
 		.service-viewport {
-			padding: 0 1.25rem;
+			padding: 0 var(--space-page-x);
 		}
 		.viewport-inner {
 			flex-direction: column-reverse;
@@ -242,11 +242,8 @@
 		}
 	}
 
-	/* Large desktop: more breathing room, bigger SVG */
+	/* Large desktop: bigger SVG */
 	@media (min-width: 1024px) {
-		.service-viewport {
-			padding: 0 5rem;
-		}
 		.service-svg-box {
 			flex: 0 0 320px;
 			width: 320px;
@@ -260,9 +257,6 @@
 	}
 
 	@media (min-width: 1440px) {
-		.service-viewport {
-			padding: 0 8rem;
-		}
 		.service-svg-box {
 			flex: 0 0 360px;
 			width: 360px;

@@ -17,7 +17,7 @@
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 		aria-hidden="true"
-		class="w-full h-auto max-w-[400px] mx-auto"
+		class="w-full h-auto max-w-sm mx-auto"
 	>
 		<!-- Platform line -->
 		<line x1="20" y1="200" x2="380" y2="200" stroke="rgba(255,255,255,0.08)" stroke-width="2" />

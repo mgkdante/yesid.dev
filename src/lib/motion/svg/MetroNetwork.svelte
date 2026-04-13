@@ -102,6 +102,6 @@
 
 <div
 	bind:this={containerEl}
-	class="flex max-h-[80vh] w-full items-center justify-center"
+	class="flex max-h-[80dvh] w-full items-center justify-center"
 	data-testid="metro-network-container"
 ></div>

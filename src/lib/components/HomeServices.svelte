@@ -349,18 +349,11 @@
 	}
 
 	.services-section {
-		padding: 80px 16px;
-	}
-
-	@media (min-width: 768px) {
-		.services-section {
-			padding: 100px 24px;
-		}
+		padding: var(--space-section-y) var(--space-page-x);
 	}
 
 	@media (min-width: 1024px) {
 		.services-section {
-			padding: 140px 32px;
 			min-height: 100dvh;
 			display: flex;
 			flex-direction: column;

@@ -49,7 +49,7 @@
 	</div>
 
 	{#if open}
-		<div class="mb-4 max-h-[60vh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3">
+		<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3">
 			<!-- Language filter -->
 			{#if languages.length > 1}
 				<div class="label-section font-semibold">

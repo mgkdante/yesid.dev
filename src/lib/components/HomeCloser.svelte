@@ -461,7 +461,7 @@
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
-		padding: 64px 16px 100px;
+		padding: var(--space-section-y) var(--space-page-x) 100px;
 		position: relative;
 	}
 
@@ -473,7 +473,7 @@
 		/* Bottom edge sits at top of floodlight wrapper = lens position */
 		bottom: 100%;
 		width: clamp(400px, 45vw, 650px);
-		height: 42vh;
+		height: 42dvh;
 		/* Narrow base matches floodlight lens (~12px), wide top covers graffiti */
 		clip-path: polygon(49% 100%, 51% 100%, 100% 0%, 0% 0%);
 		background: linear-gradient(
@@ -680,7 +680,7 @@
 			flex-direction: column;
 			align-items: stretch;
 			justify-content: center;
-			padding: 48px 16px 100px;
+			padding: var(--space-section-y) var(--space-page-x) 100px;
 		}
 
 		.closer-content {
@@ -721,7 +721,7 @@
 		.closer-beam {
 			display: block;
 			width: clamp(280px, 80vw, 400px);
-			height: 35vh;
+			height: 35dvh;
 			clip-path: polygon(48.5% 100%, 51.5% 100%, 100% 0%, 0% 0%);
 		}
 
@@ -744,17 +744,6 @@
 		}
 	}
 
-	/* ===== Tablet+ (768px+) ===== */
-	@media (min-width: 768px) {
-		.closer-section {
-			padding: 80px 24px 100px;
-		}
-	}
-
-	/* ===== Desktop (1024px+) ===== */
-	@media (min-width: 1024px) {
-		.closer-section {
-			padding: 100px 32px 100px;
-		}
-	}
+	/* Horizontal + top padding now handled by fluid tokens (--space-page-x, --space-section-y).
+	   Bottom 100px stays fixed for construction scene clearance. */
 </style>

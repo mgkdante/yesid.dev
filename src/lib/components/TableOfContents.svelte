@@ -331,7 +331,7 @@
 	.toc-desktop {
 		position: sticky;
 		top: 5rem;
-		max-height: calc(100vh - 8rem);
+		max-height: calc(100dvh - 8rem);
 		overflow-y: auto;
 		width: 200px;
 		flex-shrink: 0;

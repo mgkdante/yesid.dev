@@ -75,7 +75,7 @@
 <section
 	bind:this={sectionEl}
 	data-testid="proof-reel-section"
-	class="relative py-16 px-6 md:py-24 md:px-12 lg:px-16 lg:min-h-dvh lg:flex lg:flex-col lg:justify-center"
+	class="relative py-[var(--space-section-y)] px-[var(--space-page-x)] lg:min-h-dvh lg:flex lg:flex-col lg:justify-center"
 >
 	<!-- Section heading -->
 	<div data-proof-label>
@@ -90,7 +90,7 @@
 	</div>
 
 	<!-- 3-card grid -->
-	<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 md:mb-10">
+	<div class="mb-8 grid grid-cols-1 gap-[var(--space-card-gap)] sm:grid-cols-2 lg:grid-cols-3 md:mb-10">
 		{#each projects as project, i}
 			{#if project}
 				{@const title = resolveLocale(project.title, 'en')}

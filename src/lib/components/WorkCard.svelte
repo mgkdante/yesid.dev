@@ -80,7 +80,7 @@
 	>
 		<!-- Gradient banner: short (120px), full-width. Image or gradient+icon fallback -->
 		{#if project.image}
-			<div class="h-[200px] overflow-hidden">
+			<div class="h-52 overflow-hidden">
 				<img
 					src="/images/work/{project.image}"
 					alt={resolveLocale(project.title, 'en')}
@@ -90,7 +90,7 @@
 			</div>
 		{:else}
 			<div
-				class="flex h-[200px] items-center justify-end pr-6"
+				class="flex h-52 items-center justify-end pr-6"
 				style="background: linear-gradient(135deg, color-mix(in srgb, {gradientColors[0]} 13%, transparent), color-mix(in srgb, {gradientColors[1]} 7%, transparent));"
 			>
 				{#if project.relatedServices[0] && serviceSvgContents[project.relatedServices[0]]}

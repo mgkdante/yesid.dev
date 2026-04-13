@@ -52,7 +52,7 @@
 	} = $props();
 </script>
 
-<aside class="hidden w-40 shrink-0 md:block max-h-[calc(100vh-6rem)] overflow-y-auto" data-testid="blog-filter-sidebar">
+<aside class="hidden w-40 shrink-0 md:block max-h-[calc(100dvh-6rem)] overflow-y-auto" data-testid="blog-filter-sidebar">
 	<!-- Language filter — only shown when more than one language exists -->
 	{#if languages.length > 1}
 		<div class="mb-5">

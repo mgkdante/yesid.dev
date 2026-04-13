@@ -197,19 +197,16 @@
 <style>
 	.service-detail {
 		background: var(--bg-primary);
-		min-height: 100vh;
+		min-height: 100dvh;
 	}
 
 	.detail-article {
 		padding-bottom: 4rem;
 	}
 
-	/* Hero area — full width with padding */
+	/* Hero area — full width with fluid gutters */
 	.hero-area {
-		padding: 2rem 3rem 0;
-	}
-	@media (min-width: 1024px) {
-		.hero-area { padding: 2rem 5rem 0; }
+		padding: 2rem var(--space-page-x) 0;
 	}
 
 	.back-link {
@@ -230,7 +227,7 @@
 	}
 
 	@media (max-width: 767px) {
-		.hero-area { padding: 1.5rem 1.25rem 0; }
+		.hero-area { padding: 1.5rem var(--space-page-x) 0; }
 		.hero-layout {
 			flex-direction: column;
 			align-items: center;
@@ -318,18 +315,15 @@
 
 	.stack-area { margin-top: 1.25rem; }
 
-	/* Centered content — same max-w-6xl as WorkDetailPage */
+	/* Centered content — uses container-wide for sidebar layout */
 	.centered-content {
 		max-width: var(--container-wide);
 		margin: 0 auto;
-		padding: 0 1.25rem;
+		padding: 0 var(--space-page-x);
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 		margin-top: 2rem;
-	}
-	@media (min-width: 768px) {
-		.centered-content { padding: 0 2rem; }
 	}
 
 	/* Deliverables grid */
