@@ -144,3 +144,5 @@ Phase 2 — Standardization
 1. **17a-3a: Color Lockdown** — Implementation session (2 sessions, 20 tasks, branch: feature/slice-17a-3-color-lockdown)
 2. **17a-3b: Token Wiring** — Implementation session (1 session, 8 tasks, branch: feature/slice-17a-3b-token-wiring)
 3. 17a-4: Dead Code + Trivial Dedup (delete 4 dead components, extract isTouchDevice, unify station pulse CSS, extract display heading utility, quick primitive wiring wins)
+4. 17a-5: Spacing & Layout Constitution (proposed — needs planning session)
+5. **17a-6: Component Library Evaluation** (proposed) — Research Bits UI (https://bits-ui.com/) and Flowbite Svelte (https://flowbite-svelte.com/) as potential foundation layers. Unbiased evaluation — no pre-selected winner. Assess Svelte 5 compat, headless vs opinionated, a11y, bundle size, which custom primitives they could replace.

@@ -365,6 +365,25 @@ This is the biggest sub-slice and the most impactful. Every other sub-slice depe
 **Depends on:** 17a-3 (color/token lockdown), possibly 17a-4 (dead code cleanup)
 **Status:** Proposed — needs planning session to scope and estimate
 
+#### Future — 17a-6: Component Library Evaluation (proposed)
+
+**Vision:** Before building more custom primitives, evaluate headless/accessible Svelte component libraries as a foundation layer. The design system's brand primitives would compose on top of a battle-tested accessibility and interaction base.
+
+**Candidates to evaluate (unbiased — no pre-selected winner):**
+- **Bits UI** — https://bits-ui.com/ — headless, unstyled Svelte components (accessibility-first)
+- **Flowbite Svelte** — https://flowbite-svelte.com/ — Tailwind-based Svelte component library
+
+**Evaluation criteria:**
+- Svelte 5 runes compatibility
+- Headless/unstyled vs. opinionated styling (how well does it layer under our token system?)
+- Accessibility coverage (ARIA, keyboard nav, focus management)
+- Bundle size impact
+- Active maintenance and community
+- How many existing custom primitives it could replace
+
+**Depends on:** 17a-5 (spacing constitution), 17d (Component API)
+**Status:** Proposed — needs research + brainstorm session
+
 ---
 
 #### Remaining — 17a-4: Dead Code + Trivial Deduplication
