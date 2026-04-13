@@ -1,14 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-12 | Implementation Session (Token Wiring — COMPLETE)
-**Branch:** `feature/slice-17a-3b-token-wiring`
+**Last updated:** 2026-04-13 | Planning Session (Constitution + 17a-5/17a-6/17d/17e)
+**Branch:** `docs/slice-17a-5-planning` (planning artifacts)
 
 ## Current Position
 
-- **Sub-slice:** 17a-3b (Token Wiring + Normalization) — COMPLETE (8 tasks, T1–T8)
-- **Task:** ALL 8 TASKS DONE
-- **Status:** PR pending. All z-index, shadow, transition, opacity, radius, font, and utility values tokenized.
-- **Next sub-slice:** 17a-5 (Spacing & Layout Constitution) — NEEDS PLANNING SESSION
+- **Sub-slice:** 17a-5 (Spacing & Layout Constitution) — PLANNED, ready to implement
+- **Task:** Planning complete. Implementation plan written.
+- **Status:** 17a-3b PR #6 merged. Constitution design spec approved. 17a-5 implementation plan written (14 tasks, 3 sessions).
+- **Next action:** Create branch `feature/slice-17a-5-spacing-layout`, start implementation session 1.
 
 ## Execution Sequence
 
@@ -18,17 +18,16 @@ Phase 1 — Foundation (visual cohesion first)
   17a-2a: Build Primitives ............. COMPLETE (PR #3 merged)
   17a-2b: Wire Primitives .............. COMPLETE (PR #4 merged)
   17a-3a: Color Lockdown ............... COMPLETE (20 tasks, PR #5 merged)
-  17a-3b: Token Wiring + Normalization . IN PROGRESS (~1 session, 8 tasks)
-  17a-5: Spacing & Layout Constitution . PLANNED (needs planning session)
-  17a-6: Component Library Eval ........ PLANNED (research session)
-  17d:   Component API ................. 4 sessions (visual cohesion before cleanup)
-  17e:   Motion Consolidation
-  17a-4: Dead Code + Trivial Dedup ..... 1 session (after 17d — informed by component API)
+  17a-3b: Token Wiring + Normalization . COMPLETE (8 tasks, PR #6 merged)
+  17a-5: Spacing & Layout Constitution . PLANNED → 14 tasks, 3 sessions
+  17a-6: Bits UI Integration ........... PLANNED → needs implementation plan
+  17d:   Component API ................. PLANNED → needs implementation plan (4 sessions)
+  17e:   Motion Re-Engineering ......... PLANNED → needs implementation plan (2-3 sessions)
+  17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17d+17e)
 Phase 2 — Data + Architecture
   17b:   Service Layer ................. 2 sessions
     → 15: SEO + Metadata
   17c: Zod Schemas ..................... 0.5 sessions
-  17e: Motion Consolidation ............ 2-3 sessions
   17f: Test Architecture ............... 1-2 sessions
   17g: Learning Docs ................... 2 sessions
 ```
@@ -221,13 +220,49 @@ Phase 2 — Data + Architecture
 
 **Metro line in ServiceListingPage:** Scroll-linked metro line is scrapped functionality — marked for cleanup in a future dead code pass.
 
+## Planning Session: Constitution (2026-04-13)
+
+### Key Decisions
+
+- **D44:** Full-bleed edge-to-edge layout for ALL pages (blog, work, services, about, contact — not just home). Viewport is the canvas.
+- **D45:** Bits UI adopted for interactive a11y primitives (Dialog, Collapsible, Tabs, Toggle). Skeleton and Flowbite rejected (token conflicts, invasive globals).
+- **D46:** shadcn-svelte cherry-pick inspiration only — token naming conflicts prevent full adoption.
+- **D47:** 5 canonical breakpoints: 360/520/768/1024/1440 (replacing Tailwind defaults 640/768/1024/1280/1536). Foldable devices explicitly supported at 520px.
+- **D48:** 5 semantic spacing tokens (page-x, section-y, card-gap, stack, cluster). Not a full spacing scale — Tailwind's default scale covers the rest.
+- **D49:** 17e Motion Re-Engineering is ground-up rebuild, NOT patch existing. Architect preset system first, rewrite all 75 GSAP calls to use it.
+- **D50:** CONSTITUTION.md governance document covers all 12 areas: tokens, layout, spacing, typography, semantic HTML, components, a11y, Bits UI, motion, responsive, file org, anti-patterns.
+- **D51:** Typography as a design element — oversized type, mono annotations at edges, section labels as visual rhythm.
+- **D52:** Container tokens are for TEXT readability only. Visual elements, SVGs, panels, decorative elements USE the full viewport edges.
+
+### Artifacts
+
+- Design spec: `docs/specs/2026-04-13-constitution-design.md`
+- Implementation plan (17a-5): `docs/plans/2026-04-13-slice-17a-5-spacing-layout-plan.md`
+- Wireframes: `.superpowers/brainstorm/919-1776054861/content/constitution-edge-to-edge.html`
+
+### Library Evaluation Summary
+
+| Library | Verdict | Reason |
+|---------|---------|--------|
+| Bits UI | ADOPT | Headless, Svelte 5 native, GSAP compatible, zero token conflicts |
+| shadcn-svelte | Cherry-pick | Token naming conflicts, most components unused |
+| Skeleton | REJECT | --spacing override, 200+ competing tokens, invasive globals |
+| Flowbite Svelte | REJECT | JS theming, dark mode mismatch, Svelte transition lock-in |
+
+### Codebase Audit Key Numbers
+
+- 230 hardcoded spacing rules in scoped styles
+- 28 arbitrary Tailwind spacing values
+- 75 GSAP calls across 15 files
+- 15 svelte-ignore a11y suppressions
+- 4 files > 500 lines
+- 121 responsive Tailwind classes to migrate to new breakpoints
+
 ## Next Steps
 
-1. **17a-3a: Color Lockdown** — COMPLETE (PR #5 merged)
-2. **17a-3b: Token Wiring** — COMPLETE (PR pending)
-3. **17a-5: Spacing & Layout Constitution** — NEEDS PLANNING SESSION
-4. **17a-6: Component Library Eval** — Research session (Bits UI, Flowbite Svelte)
-5. **17d: Component API** — 4 sessions (visual cohesion before cleanup)
-6. **17a-4: Dead Code + Trivial Dedup** — After 17d (informed by component API)
-7. **17e: Motion Consolidation** — Holistic approach (after component API)
+1. **17a-5: Spacing & Layout Constitution** — 14 tasks, 3 sessions. Plan written. Ready to implement.
+2. **17a-6: Bits UI Integration** — Needs implementation plan. 1-2 sessions.
+3. **17d: Component API** — Needs implementation plan. 4 sessions.
+4. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions.
+5. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (last).
 
