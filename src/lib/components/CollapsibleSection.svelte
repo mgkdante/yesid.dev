@@ -2,10 +2,12 @@
   Reusable collapsible section card.
   Used in WorkDetailPage, ServiceDetailPage (collapsible=true)
   and BlogContent (collapsible=false, visual card wrapper only).
-  Pattern: blog-card style — bg-[var(--card)] border-[var(--border-subtle)], white title → orange hover.
+  Pattern: blog-card style — bg-card border-border-subtle, white title → orange hover.
+  Uses bits-ui Collapsible for a11y (aria-controls, aria-expanded, focus management).
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { Badge } from '$lib/components/ui/badge';
 
@@ -26,64 +28,49 @@
 		icon?: Snippet;
 		children?: Snippet;
 	} = $props();
-
-	// WHY $bindable: parents like WorkDetailPage need to read open state
-	// to sync sibling elements (e.g. desktop ToC collapses with README section).
-	function toggle() {
-		if (collapsible) open = !open;
-	}
 </script>
 
+{#snippet headerContent()}
+	{#if index !== null}
+		<Badge variant="number" aria-hidden="true" style={accentColor ? `background-color: ${accentColor}` : ''}>{String(index + 1).padStart(2, '0')}</Badge>
+	{:else if icon}
+		{@render icon()}
+	{/if}
+
+	<h2 class="section-title flex-1 font-heading text-lg font-bold text-[var(--foreground)]">
+		{title}
+	</h2>
+{/snippet}
+
 <!--
-  --accent CSS custom property propagates accentColor into the style block,
-  allowing hover rules to reference the dynamic value without inline duplication.
+  --accent CSS custom property propagates accentColor into the style block.
+  Collapsible.Root renders a div that we use as the card wrapper.
 -->
-<div
+<Collapsible
+	bind:open
 	class="section-card rounded-lg border border-[var(--border-subtle)] bg-[var(--card)]"
 	style="--accent: {accentColor};"
 >
-	{#snippet headerContent()}
-		{#if index !== null}
-			<Badge variant="number" aria-hidden="true" style={accentColor ? `background-color: ${accentColor}` : ''}>{String(index + 1).padStart(2, '0')}</Badge>
-		{:else if icon}
-			{@render icon()}
-		{/if}
-
-		<h2 class="section-title flex-1 font-heading text-lg font-bold text-[var(--foreground)]">
-			{title}
-		</h2>
-	{/snippet}
-
 	{#if collapsible}
-		<!--
-		  type="button" prevents accidental form submission if ever nested in a form.
-		  aria-expanded conveys open/closed state to screen readers.
-		-->
-		<button
-			type="button"
-			aria-expanded={open}
-			class="section-header flex w-full items-center gap-2.5 px-6 py-4 text-left"
-			onclick={toggle}
-		>
-			{@render headerContent()}
-
-			<ChevronToggle {open} direction="right" />
-		</button>
+		<CollapsibleTrigger>
+			{#snippet child({ props })}
+				<button
+					{...props}
+					type="button"
+					class="section-header flex w-full items-center gap-2.5 px-6 py-4 text-left"
+				>
+					{@render headerContent()}
+					<ChevronToggle {open} direction="right" />
+				</button>
+			{/snippet}
+		</CollapsibleTrigger>
 	{:else}
 		<div class="flex items-center gap-2.5 px-6 py-4">
 			{@render headerContent()}
 		</div>
 	{/if}
 
-	<!--
-	  role="region" marks this as a landmark region that is controlled by the button above,
-	  giving screen readers a named collapsible area to navigate.
-	-->
-	<div
-		role="region"
-		class="section-body overflow-hidden"
-		class:expanded={collapsible ? open : true}
-	>
+	<CollapsibleContent forceMount class="section-body">
 		<div class="min-h-0 overflow-hidden">
 			<div class="px-6 pb-6 pt-3">
 				{#if children}
@@ -91,18 +78,18 @@
 				{/if}
 			</div>
 		</div>
-	</div>
-</div>
+	</CollapsibleContent>
+</Collapsible>
 
 <style>
-	.section-card {
+	:global([data-slot="collapsible"].section-card) {
 		transition: box-shadow var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default);
 	}
-	.section-card:hover {
+	:global([data-slot="collapsible"].section-card:hover) {
 		border-color: var(--accent);
 	}
 
-	.section-card:hover .section-title {
+	:global([data-slot="collapsible"].section-card:hover .section-title) {
 		color: var(--accent);
 	}
 
@@ -110,15 +97,15 @@
 		transition: color var(--duration-normal) var(--ease-default);
 	}
 
-	.section-body {
+	:global([data-slot="collapsible-content"].section-body) {
 		display: grid;
 		grid-template-rows: 0fr;
 		transition: grid-template-rows var(--duration-slow) var(--ease-default);
 	}
-	.section-body.expanded {
+	:global([data-slot="collapsible-content"].section-body[data-state="open"]) {
 		grid-template-rows: 1fr;
 	}
-	.section-body > div {
+	:global([data-slot="collapsible-content"].section-body > div) {
 		overflow: hidden;
 	}
 </style>
