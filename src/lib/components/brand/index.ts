@@ -1,4 +1,4 @@
-// Brand primitives barrel export — 8 reusable components.
+// Brand primitives barrel export — 9 reusable components.
 // Tag→ui/badge, NumberBadge→ui/badge, HazardStripe→ui/separator,
 // GradientSeparator→ui/separator, BrandButton→ui/button, CardBase→ui/card.
 // Built in Slice 17a-2a. Wired into consumers in 17a-2b.

@@ -7,6 +7,7 @@
   import type { Snippet } from 'svelte';
   import StatusDot from './StatusDot.svelte';
   import { Separator } from '$lib/components/ui/separator';
+  import { cn } from '$lib/utils.js';
 
   export interface TerminalFooterItem {
     label: string;
@@ -26,6 +27,7 @@
     noPadding?: boolean;
     /** Terminal body content */
     children: Snippet;
+    class?: string;
   }
 
   let {
@@ -40,7 +42,7 @@
   }: TerminalChromeProps & Record<string, unknown> = $props();
 </script>
 
-<div class="terminal {className}" {...rest}>
+<div class={cn("terminal", className)} data-slot="terminal-chrome" {...rest}>
   <!-- Title bar -->
   <div class="terminal-titlebar">
     <div class="flex items-center gap-2">

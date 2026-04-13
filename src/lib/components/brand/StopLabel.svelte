@@ -3,17 +3,21 @@
   Brand primitive: replaces 10 scattered stop-label implementations in About bento cards.
 -->
 <script lang="ts">
-  export interface StopLabelProps {
+  import { cn } from '$lib/utils.js';
+  import type { HTMLAttributes } from 'svelte/elements';
+
+  export interface StopLabelProps extends HTMLAttributes<HTMLDivElement> {
     /** Stop number (e.g. "01", "02") */
     stop: string;
     /** Stop name */
     label: string;
+    class?: string;
   }
 
-  let { stop, label }: StopLabelProps = $props();
+  let { stop, label, class: className, ...restProps }: StopLabelProps = $props();
 </script>
 
-<div class="stop-label">STOP {stop} — {label}</div>
+<div class={cn("stop-label", className)} data-slot="stop-label" {...restProps}>STOP {stop} — {label}</div>
 
 <style>
   .stop-label {

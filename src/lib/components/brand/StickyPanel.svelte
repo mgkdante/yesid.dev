@@ -4,12 +4,14 @@
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { cn } from '$lib/utils.js';
 
   export interface StickyPanelProps {
     /** CSS top offset for sticky positioning */
     top?: string;
     /** Panel content */
     children: Snippet;
+    class?: string;
   }
 
   let {
@@ -20,7 +22,7 @@
   }: StickyPanelProps & Record<string, unknown> = $props();
 </script>
 
-<div class="panel scrollbar-hidden {className}" style="top: {top};" {...rest}>
+<div class={cn("panel scrollbar-hidden", className)} data-slot="sticky-panel" style="top: {top};" {...rest}>
   {@render children()}
 </div>
 

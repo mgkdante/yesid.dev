@@ -3,32 +3,37 @@
   Brand primitive: replaces 8+ different chevron/arrow implementations.
 -->
 <script lang="ts">
-  export interface ChevronToggleProps {
+  import { cn } from '$lib/utils.js';
+  import type { SVGAttributes } from 'svelte/elements';
+
+  export interface ChevronToggleProps extends SVGAttributes<SVGSVGElement> {
     /** Whether the toggle is in open/expanded state */
     open: boolean;
     /** Arrow size */
     size?: 'sm' | 'md';
     /** Base direction — rotates 90deg when open */
     direction?: 'right' | 'down';
+    class?: string;
   }
 
   let {
     open,
     size = 'md',
     direction = 'right',
+    class: className,
+    ...restProps
   }: ChevronToggleProps = $props();
 
   const sizeClass = { sm: 'size-4', md: 'size-5' } as const;
 </script>
 
 <svg
-  class="chevron {sizeClass[size]} shrink-0 text-[var(--muted-foreground)] transition-transform"
-  class:chevron-open={open}
-  class:chevron-right={direction === 'right'}
-  class:chevron-down={direction === 'down'}
+  class={cn("chevron", sizeClass[size], "shrink-0 text-[var(--muted-foreground)] transition-transform", open ? 'chevron-open' : '', direction === 'right' ? 'chevron-right' : 'chevron-down', className)}
+  data-slot="chevron-toggle"
   viewBox="0 0 20 20"
   fill="currentColor"
   aria-hidden="true"
+  {...restProps}
 >
   <path d="M8 4l7 6-7 6V4z" />
 </svg>

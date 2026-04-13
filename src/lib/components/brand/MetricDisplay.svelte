@@ -3,7 +3,10 @@
   Brand primitive: replaces 6+ scattered metric implementations.
 -->
 <script lang="ts">
-  export interface MetricDisplayProps {
+  import { cn } from '$lib/utils.js';
+  import type { HTMLAttributes } from 'svelte/elements';
+
+  export interface MetricDisplayProps extends HTMLAttributes<HTMLDivElement> {
     /** The metric value (e.g. "5+", "99.9%", "30+") */
     value: string;
     /** Primary label */
@@ -14,6 +17,7 @@
     size?: 'sm' | 'md' | 'lg';
     /** Place label below value instead of above */
     labelBelow?: boolean;
+    class?: string;
   }
 
   let {
@@ -22,6 +26,8 @@
     sublabel,
     size = 'md',
     labelBelow = false,
+    class: className,
+    ...restProps
   }: MetricDisplayProps = $props();
 
   const valueClass = {
@@ -31,7 +37,7 @@
   } as const;
 </script>
 
-<div class="flex flex-col">
+<div class={cn("flex flex-col", className)} data-slot="metric-display" {...restProps}>
   {#if !labelBelow}
     <span class="label-metric">{label}</span>
   {/if}
