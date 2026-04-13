@@ -47,7 +47,7 @@
 	<!-- Content: centered with container-content, ToC + content side by side under divider -->
 	<div class="mx-auto mt-6 flex gap-4 px-[var(--space-page-x)]" style="max-width: var(--container-content)">
 		<!-- ToC sidebar (left) — visible on 2xl, inside container -->
-		<aside class="hidden w-[180px] shrink-0 2xl:block">
+		<aside class="hidden w-45 shrink-0 2xl:block">
 			<StickyPanel top="5rem">
 				<TableOfContents bind:this={tocRef} html={data.html} embedded />
 			</StickyPanel>

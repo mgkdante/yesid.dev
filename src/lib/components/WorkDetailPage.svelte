@@ -121,7 +121,7 @@
 					<div class="relative">
 						<!-- Desktop ToC: in left page margin, starts at README height -->
 						<aside class="absolute inset-y-0 right-full mr-3 hidden 2xl:block">
-							<StickyPanel top="5rem" class="w-[180px]">
+							<StickyPanel top="5rem" class="w-45">
 								<TableOfContents bind:this={tocRef} html={readmeHtml} embedded syncOpen={readmeOpen} />
 							</StickyPanel>
 						</aside>
