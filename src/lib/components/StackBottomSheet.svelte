@@ -1,17 +1,16 @@
 <!--
   Mobile bottom sheet for tech stack detail view.
   Slides up from bottom when a node is tapped.
-  Same content as StackSidebar + prev/next navigation + swipe-to-dismiss.
+  Same content as StackSidebar + prev/next navigation.
+  Swipe-to-dismiss, focus trap, ESC close via vaul-svelte Drawer.
 -->
 <script lang="ts">
 	import type { TechStackItem, TechRelation, Proficiency } from '$lib/data/types.js';
 	import { Marked } from 'marked';
-	import { onMount } from 'svelte';
-	import { gsap } from '$lib/motion/utils/gsap.js';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { getTechItemContent, getOutgoingRelations, getIncomingRelations, getTechItemById } from '$lib/data/tech-stack.js';
 	import CollapsibleSection from './CollapsibleSection.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import { Drawer, DrawerContent, DrawerTitle, DrawerClose } from '$lib/components/ui/drawer';
 
 	let {
 		item,
@@ -24,9 +23,6 @@
 		onclose: () => void;
 		onnavigate: (item: TechStackItem | null) => void;
 	} = $props();
-
-	let sheetEl = $state<HTMLElement | null>(null);
-	let backdropEl = $state<HTMLElement | null>(null);
 
 	const md = new Marked();
 
@@ -47,14 +43,10 @@
 	}
 
 	// --- Prev / Next navigation ---
-	// Flatten items in layer order for sequential navigation
 	const flatItems = $derived([...items]);
 	const currentIndex = $derived(flatItems.findIndex((i) => i.id === item.id));
-
 	const prevItem = $derived(currentIndex > 0 ? flatItems[currentIndex - 1] : null);
-	const nextItem = $derived(
-		currentIndex < flatItems.length - 1 ? flatItems[currentIndex + 1] : null,
-	);
+	const nextItem = $derived(currentIndex < flatItems.length - 1 ? flatItems[currentIndex + 1] : null);
 
 	function navigateTo(target: TechStackItem) {
 		onnavigate(target);
@@ -62,74 +54,13 @@
 
 	function formatProjectSlug(slug: string): string {
 		if (slug === 'yesid-dev') return 'yesid.dev';
-		return slug
-			.split('-')
-			.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-			.join(' ');
+		return slug.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 	}
-
-	// --- Touch swipe to dismiss ---
-	let touchStartY = 0;
-	let touchDeltaY = 0;
-
-	function handleTouchStart(e: TouchEvent) {
-		touchStartY = e.touches[0].clientY;
-		touchDeltaY = 0;
-	}
-
-	function handleTouchMove(e: TouchEvent) {
-		touchDeltaY = e.touches[0].clientY - touchStartY;
-		// Only allow downward drag
-		if (touchDeltaY > 0 && sheetEl) {
-			sheetEl.style.transform = `translateY(${touchDeltaY}px)`;
-		}
-	}
-
-	function handleTouchEnd() {
-		if (touchDeltaY > 100) {
-			// Dismiss
-			onclose();
-		} else if (sheetEl) {
-			// Snap back
-			gsap.to(sheetEl, { y: 0, duration: 0.2, ease: 'power2.out' });
-		}
-		touchDeltaY = 0;
-	}
-
-	onMount(() => {
-		if (!isPrefersReducedMotion()) {
-			if (backdropEl) {
-				gsap.fromTo(backdropEl, { opacity: 0 }, { opacity: 1, duration: 0.25 });
-			}
-			if (sheetEl) {
-				gsap.fromTo(
-					sheetEl,
-					{ y: '100%' },
-					{ y: '0%', duration: 0.35, ease: 'power2.out' },
-				);
-			}
-		}
-	});
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-<div class="bottomsheet-backdrop" bind:this={backdropEl} onclick={onclose} data-testid="bottomsheet-backdrop">
-	<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions a11y_interactive_supports_focus -->
-	<div
-		class="bottomsheet"
-		bind:this={sheetEl}
-		onclick={(e) => e.stopPropagation()}
-		ontouchstart={handleTouchStart}
-		ontouchmove={handleTouchMove}
-		ontouchend={handleTouchEnd}
-		data-testid="stack-bottomsheet"
-		role="dialog"
-		aria-label="Technology details"
-	>
-		<!-- Drag handle -->
-		<div class="drag-handle">
-			<span class="handle-bar"></span>
-		</div>
+<Drawer open={true} onOpenChange={(v) => { if (!v) onclose(); }}>
+	<DrawerContent class="max-h-[85dvh] gap-4 px-5 pb-[env(safe-area-inset-bottom,0px)]" data-testid="stack-bottomsheet">
+		<DrawerTitle class="sr-only">Technology details — {item.name}</DrawerTitle>
 
 		<!-- Header -->
 		<div class="sheet-header">
@@ -144,11 +75,15 @@
 					</span>
 				</div>
 			</div>
-			<button class="close-btn" onclick={onclose} aria-label="Close" data-testid="bottomsheet-close">
-				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-					<path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-				</svg>
-			</button>
+			<DrawerClose>
+				{#snippet child({ props })}
+					<button {...props} class="close-btn" aria-label="Close" data-testid="bottomsheet-close">
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+							<path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+						</svg>
+					</button>
+				{/snippet}
+			</DrawerClose>
 		</div>
 
 		<!-- Content -->
@@ -168,7 +103,7 @@
 			</div>
 		{/if}
 
-		<!-- Relations (collapsible, between Used in and nav) -->
+		<!-- Relations (collapsible) -->
 		{#if outgoing.length > 0}
 			<div class="sheet-relations" data-testid="relations-outgoing">
 				<CollapsibleSection title="Sends data to ({outgoing.length})" open={false}>
@@ -229,48 +164,10 @@
 				Let's build with {item.name} <span aria-hidden="true">→</span>
 			</Button>
 		</div>
-	</div>
-</div>
+	</DrawerContent>
+</Drawer>
 
 <style>
-	.bottomsheet-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: var(--z-sheet);
-		background: rgba(0, 0, 0, 0.5);
-	}
-
-	.bottomsheet {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		z-index: calc(var(--z-sheet) + 1);
-		max-height: 85dvh;
-		overflow-y: auto;
-		background: var(--muted);
-		border-top: 1px solid var(--border);
-		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-		padding: 0.5rem 1.25rem env(safe-area-inset-bottom, 0px);
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.drag-handle {
-		display: flex;
-		justify-content: center;
-		padding: 0.5rem 0;
-	}
-
-	.handle-bar {
-		width: 2.5rem;
-		height: 0.25rem;
-		border-radius: var(--radius-pill);
-		background: var(--muted-foreground);
-		opacity: var(--opacity-dim);
-	}
-
 	.sheet-header {
 		display: flex;
 		align-items: flex-start;
@@ -476,23 +373,12 @@
 		color: var(--primary);
 	}
 
-	/* CTA wrapper — sticky at bottom so it's always visible */
+	/* CTA wrapper */
 	.sheet-cta-wrapper {
 		display: flex;
 		justify-content: center;
-		position: sticky;
-		bottom: 0;
 		margin-top: auto;
-		padding: 0.75rem 1.25rem;
-		margin-inline: -1.25rem;
-		background: var(--muted);
-		box-shadow: 0 -1px 0 var(--border);
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.bottomsheet,
-		.bottomsheet-backdrop {
-			transition: none;
-		}
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--border);
 	}
 </style>
