@@ -9,7 +9,7 @@
 	import ProofReel from '$lib/components/ProofReel.svelte';
 	import HomeServices from '$lib/components/HomeServices.svelte';
 	import HomeCloser from '$lib/components/HomeCloser.svelte';
-	import { HazardStripe } from '$lib/components/brand';
+	import { Separator } from '$lib/components/ui/separator';
 </script>
 
 <svelte:head>
@@ -21,13 +21,13 @@
 		<!-- Section 1: Hero (metro SVG animation) -->
 		<HeroBanner />
 
-		<HazardStripe />
+		<Separator variant="hazard" />
 		<Manifesto />
-		<HazardStripe />
+		<Separator variant="hazard" />
 		<ProofReel />
-		<HazardStripe />
+		<Separator variant="hazard" />
 		<HomeServices />
-		<HazardStripe />
+		<Separator variant="hazard" />
 		<HomeCloser />
 	</div>
 </div>

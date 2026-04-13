@@ -25,7 +25,7 @@
 
 	let container: HTMLDivElement;
 
-	const BRAND_COLORS = ['var(--brand-primary)', 'var(--brand-accent)'];
+	const BRAND_COLORS = ['var(--primary)', 'var(--accent)'];
 
 	// Size-dependent layout constants — sm fits inside cards, lg is prominent on detail pages
 	let cfg = $derived(size === 'lg'
@@ -215,11 +215,11 @@
 	}
 
 	.data-flow-diagram.scrollable::-webkit-scrollbar-track {
-		background: var(--bg-card);
+		background: var(--card);
 	}
 
 	.data-flow-diagram.scrollable::-webkit-scrollbar-thumb {
-		background: var(--bg-elevated);
+		background: var(--popover);
 		border-radius: 2px;
 	}
 </style>

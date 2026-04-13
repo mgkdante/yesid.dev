@@ -33,7 +33,7 @@
 	});
 </script>
 
-<footer data-testid="footer" class="relative z-50 bg-[var(--bg-primary)]">
+<footer data-testid="footer" class="relative z-50 bg-[var(--background)]">
 	<!-- Gradient separator -->
 	<div class="footer-gradient-sep" aria-hidden="true"></div>
 
@@ -44,14 +44,14 @@
 			<a
 				href="/"
 				data-testid="footer-wordmark"
-				class="inline-flex items-baseline font-heading text-xl font-bold text-[var(--text-primary)]"
+				class="inline-flex items-baseline font-heading text-xl font-bold text-[var(--foreground)]"
 			>
 				<span bind:this={wordmarkEl}>yesid</span><span
 					bind:this={dotEl}
-					class="text-brand-primary">.</span
+					class="text-primary">.</span
 				>
 			</a>
-			<span class="mt-1 font-mono text-xs text-[var(--text-muted)]">// digital infrastructure</span>
+			<span class="mt-1 font-mono text-xs text-[var(--muted-foreground)]">// digital infrastructure</span>
 		</div>
 
 		<!-- Center: Nav links -->
@@ -59,7 +59,7 @@
 			{#each footerNavLinks as link}
 				<a
 					href={link.href}
-					class="text-small text-[var(--text-secondary)] transition-colors hover:text-brand-primary"
+					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary"
 				>
 					{link.label}
 				</a>
@@ -73,7 +73,7 @@
 					href={link.href}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="text-small text-[var(--text-secondary)] transition-colors hover:text-brand-primary"
+					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary"
 					aria-label={link.label}
 				>
 					{link.label}
@@ -83,8 +83,8 @@
 	</div>
 
 	<!-- Row 2: Status bar -->
-	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--text-muted)] sm:flex-row sm:justify-between sm:px-10">
-		<small>&copy; {year} yesid<span class="text-brand-primary">.</span></small>
+	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--muted-foreground)] sm:flex-row sm:justify-between sm:px-10">
+		<small>&copy; {year} yesid<span class="text-primary">.</span></small>
 		<address class="not-italic">Montreal, QC &middot; Remote</address>
 		<span class="flex items-center gap-1.5">
 			<StatusDot color="orange" pulse />
@@ -97,12 +97,12 @@
 <style>
 	.footer-gradient-sep {
 		height: 1px;
-		background: linear-gradient(90deg, transparent, var(--brand-primary) 20%, var(--brand-primary) 80%, transparent);
+		background: linear-gradient(90deg, transparent, var(--primary) 20%, var(--primary) 80%, transparent);
 		opacity: var(--opacity-subtle);
 	}
 
 	.footer-status-border {
-		border-top: 1px solid color-mix(in srgb, var(--text-primary) 6%, transparent);
+		border-top: 1px solid color-mix(in srgb, var(--foreground) 6%, transparent);
 	}
 
 	footer {

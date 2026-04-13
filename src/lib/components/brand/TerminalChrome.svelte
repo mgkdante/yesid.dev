@@ -6,7 +6,8 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import StatusDot from './StatusDot.svelte';
-  import HazardStripe from './HazardStripe.svelte';
+  import { Separator } from '$lib/components/ui/separator';
+  import { cn } from '$lib/utils.js';
 
   export interface TerminalFooterItem {
     label: string;
@@ -26,6 +27,7 @@
     noPadding?: boolean;
     /** Terminal body content */
     children: Snippet;
+    class?: string;
   }
 
   let {
@@ -40,23 +42,23 @@
   }: TerminalChromeProps & Record<string, unknown> = $props();
 </script>
 
-<div class="terminal {className}" {...rest}>
+<div class={cn("terminal", className)} data-slot="terminal-chrome" {...rest}>
   <!-- Title bar -->
   <div class="terminal-titlebar">
     <div class="flex items-center gap-2">
       <StatusDot color="orange" pulse size="sm" />
-      <span class="font-mono text-caption text-[var(--text-secondary)]">{title}</span>
+      <span class="font-mono text-caption text-[var(--secondary-foreground)]">{title}</span>
       {#if tag}
-        <span class="rounded-sm bg-[var(--bg-elevated)] px-1.5 py-0.5 font-mono text-[0.625rem] text-[var(--text-muted)]">{tag}</span>
+        <span class="rounded-sm bg-[var(--popover)] px-1.5 py-0.5 font-mono text-[0.625rem] text-[var(--muted-foreground)]">{tag}</span>
       {/if}
     </div>
     {#if status}
-      <span class="font-mono text-caption text-[var(--text-dim)]">{status}</span>
+      <span class="font-mono text-caption text-[var(--dim-foreground)]">{status}</span>
     {/if}
   </div>
 
   <!-- Accent stripe -->
-  <HazardStripe size="sm" />
+  <Separator variant="hazard" hazardSize="sm" />
 
   <!-- Body -->
   <div class="terminal-body" class:no-pad={noPadding}>
@@ -68,8 +70,8 @@
     <div class="terminal-footer">
       {#each footer as item}
         <div class="flex gap-2">
-          <span class="font-mono text-caption text-[var(--text-dim)]">{item.label}</span>
-          <span class="font-mono text-caption text-[var(--text-secondary)]">{item.value}</span>
+          <span class="font-mono text-caption text-[var(--dim-foreground)]">{item.label}</span>
+          <span class="font-mono text-caption text-[var(--secondary-foreground)]">{item.value}</span>
         </div>
       {/each}
     </div>
@@ -82,7 +84,7 @@
     flex-direction: column;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
-    background: var(--bg-terminal);
+    background: var(--terminal);
     overflow: hidden;
   }
 

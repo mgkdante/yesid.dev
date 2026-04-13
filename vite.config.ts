@@ -9,6 +9,11 @@ import { svelteTesting } from '@testing-library/svelte/vite';
 // It only activates when process.env.VITEST is set, so it's safe to include always.
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), svelteTesting()],
+	ssr: {
+		// bits-ui ships .svelte files in dist/ — Vite SSR must process them
+		// through the Svelte compiler instead of treating as native ESM.
+		noExternal: ['bits-ui'],
+	},
 	test: {
 		// Two projects: "data" for pure logic tests (node, fast),
 		// "dom" for component/motion tests (happy-dom, full mocks).

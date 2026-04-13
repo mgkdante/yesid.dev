@@ -2,7 +2,6 @@
   Full-viewport kinetic scroll layout for /services.
   Each service occupies 100dvh with CSS scroll snap.
   Sticky top: StationTabs. Sticky bottom: ProofStrip.
-  Left: metro line with auto-computed station dots (desktop only).
   Tab click scrolls to service. Scroll position syncs tabs + proof strip.
 -->
 <script lang="ts">
@@ -30,8 +29,6 @@
 
 	let activeId = $state(sorted[0]?.id ?? '');
 	let scrollContainer: HTMLElement | undefined = $state();
-	let scrollProgress = $state(0);
-
 	let currentProjects = $derived(
 		serviceProjects[activeId] ?? []
 	);
@@ -53,11 +50,11 @@
 		const maxScroll = scrollHeight - clientHeight;
 		if (maxScroll <= 0) return;
 
-		scrollProgress = scrollTop / maxScroll;
+		const progress = scrollTop / maxScroll;
 
 		// Determine active service based on which viewport is most visible
 		const serviceCount = sorted.length;
-		const activeIndex = Math.round(scrollProgress * (serviceCount - 1));
+		const activeIndex = Math.round(progress * (serviceCount - 1));
 		const clamped = Math.max(0, Math.min(activeIndex, serviceCount - 1));
 		if (sorted[clamped]) {
 			activeId = sorted[clamped].id;
@@ -86,25 +83,6 @@
 
 	<!-- Main scroll area with snap -->
 	<div class="scroll-area" bind:this={scrollContainer}>
-		<!-- Metro line with auto-computed dots — desktop only -->
-		<div class="metro-line" aria-hidden="true">
-			<div class="metro-track">
-				<div class="metro-fill" style="height: {scrollProgress * 100}%"></div>
-			</div>
-			{#each sorted as service, i}
-				{@const isActive = service.id === activeId}
-				{@const activeIdx = sorted.findIndex((s) => s.id === activeId)}
-				{@const isVisited = i <= activeIdx}
-				{@const pct = sorted.length <= 1 ? 0 : (i / (sorted.length - 1)) * 100}
-				<div
-					class="metro-dot"
-					class:active={isActive}
-					class:visited={isVisited && !isActive}
-					style="top: {pct}%"
-				></div>
-			{/each}
-		</div>
-
 		<!-- Service viewports -->
 		{#each sorted as service, i}
 			<ServiceCard
@@ -167,64 +145,4 @@
 		scroll-snap-align: none;
 	}
 
-	/* Metro line — left edge, desktop only */
-	.metro-line {
-		display: none;
-		position: fixed;
-		left: 1.5rem;
-		top: calc(4rem + 46px + 1rem); /* nav + tabs + gap */
-		bottom: calc(40px + 1rem); /* proof strip + gap */
-		width: 2px;
-		z-index: var(--z-rail);
-		pointer-events: none;
-	}
-
-	@media (min-width: 1024px) {
-		.metro-line {
-			display: block;
-		}
-	}
-
-	.metro-track {
-		position: absolute;
-		inset: 0;
-		background: var(--bg-card);
-		border-radius: 1px;
-	}
-
-	.metro-fill {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		background: var(--brand-primary);
-		border-radius: 1px;
-		transition: height var(--duration-normal) var(--ease-default);
-	}
-
-	.metro-dot {
-		position: absolute;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		border: 2px solid var(--border-strong);
-		background: transparent;
-		transition: all var(--duration-slow) var(--ease-default);
-		z-index: var(--z-content);
-	}
-
-	.metro-dot.visited {
-		background: var(--brand-primary);
-		border-color: var(--brand-primary);
-	}
-
-	.metro-dot.active {
-		background: var(--brand-primary);
-		border-color: var(--brand-primary);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--brand-primary) 50%, transparent);
-		width: 12px;
-		height: 12px;
-	}
 </style>

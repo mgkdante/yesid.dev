@@ -1,9 +1,10 @@
 <!--
   Fullscreen metro dashboard menu overlay.
   Vertical metro line with stop dots for each nav item.
-  CSS transition open/close. Escape key closes.
+  CSS transition open/close. ESC/focus-trap via bits-ui Dialog.
 -->
 <script lang="ts">
+	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { menuItems } from '$lib/data';
 
@@ -21,9 +22,9 @@
 
 	let overlayEl: HTMLElement = $state(null!);
 
-	// visible keeps the DOM alive during close animation
+	// visible keeps the DOM alive during close animation.
+	// Dialog uses visible (not open) so focus trap + scroll lock persist through close animation.
 	let visible = $state(false);
-	// entering = true while overlay renders invisible (scaleY 0), removed next frame to trigger transition
 	let entering = $state(false);
 	let closing = $state(false);
 
@@ -32,38 +33,12 @@
 		return pathname.startsWith(href);
 	}
 
-	function handleClose() {
-		onclose?.();
-	}
-
-	function onKeydown(e: KeyboardEvent) {
-		if (open && e.key === 'Escape') handleClose();
-	}
-
-	// Scroll lock — no position:fixed on body (breaks nested fixed on mobile)
-	let savedScrollY = 0;
-
-	function lockScroll() {
-		if (typeof document === 'undefined') return;
-		savedScrollY = window.scrollY;
-		document.documentElement.style.overflow = 'hidden';
-		document.body.style.overflow = 'hidden';
-	}
-
-	function unlockScroll() {
-		if (typeof document === 'undefined') return;
-		document.documentElement.style.overflow = '';
-		document.body.style.overflow = '';
-		window.scrollTo(0, savedScrollY);
-	}
-
-	// React to open/close
+	// React to open/close from parent
 	$effect(() => {
 		if (open) {
-			entering = true; // Set before visible so overlay renders hidden
+			entering = true;
 			visible = true;
 			closing = false;
-			lockScroll();
 		} else if (visible && !closing) {
 			closing = true;
 			if (isPrefersReducedMotion()) {
@@ -93,76 +68,83 @@
 	});
 
 	function handleTransitionEnd(e: TransitionEvent) {
-		// Only react to the overlay's own transitions, not children bubbling up
 		if (closing && e.target === overlayEl && e.propertyName === 'transform') {
 			finishClose();
 		}
 	}
 
 	function finishClose() {
-		if (!visible) return; // Already closed
+		if (!visible) return;
 		visible = false;
 		closing = false;
 		entering = false;
-		unlockScroll();
 		onanimationdone?.();
+	}
+
+	// Dialog ESC / overlay click → notify parent to close
+	function handleOpenChange(isOpen: boolean) {
+		if (!isOpen) onclose?.();
 	}
 </script>
 
-<svelte:window onkeydown={onKeydown} />
+<!-- Dialog.Root bound to visible so focus trap + scroll lock persist through close animation -->
+<DialogPrimitive.Root open={visible} onOpenChange={handleOpenChange}>
+	{#if visible}
+		<DialogPrimitive.Portal>
+			<DialogPrimitive.Content>
+				{#snippet child({ props })}
+					<div
+						{...props}
+						class="menu-overlay {entering ? 'entering' : ''} {closing ? 'closing' : ''}"
+						bind:this={overlayEl}
+						ontransitionend={handleTransitionEnd}
+					>
+						<DialogPrimitive.Title class="sr-only">Navigation menu</DialogPrimitive.Title>
 
-{#if visible}
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-	<div
-		role="dialog"
-		aria-modal="true"
-		aria-label="Navigation menu"
-		class="menu-overlay"
-		class:entering
-		class:closing
-		bind:this={overlayEl}
-		ontransitionend={handleTransitionEnd}
-	>
-		<!-- Metro line with stops -->
-		<nav class="menu-content">
-			{#each menuItems as item, i}
-				<a
-					data-menu-item
-					href={item.href}
-					class="menu-item {isActive(item.href) ? 'menu-item-active' : ''}"
-					aria-current={isActive(item.href) ? 'page' : undefined}
-					onclick={handleClose}
-					style="--item-index: {i}"
-				>
-					<!-- Metro stop dot -->
-					<span class="menu-stop {isActive(item.href) ? 'menu-stop-active' : ''}">
-						{#if isActive(item.href)}
-							<span class="menu-stop-fill"></span>
-						{/if}
-					</span>
+						<!-- Metro line with stops -->
+						<nav class="menu-content">
+					{#each menuItems as item, i}
+						<a
+							data-menu-item
+							href={item.href}
+							class="menu-item {isActive(item.href) ? 'menu-item-active' : ''}"
+							aria-current={isActive(item.href) ? 'page' : undefined}
+							onclick={() => onclose?.()}
+							style="--item-index: {i}"
+						>
+							<!-- Metro stop dot -->
+							<span class="menu-stop {isActive(item.href) ? 'menu-stop-active' : ''}">
+								{#if isActive(item.href)}
+									<span class="menu-stop-fill"></span>
+								{/if}
+							</span>
 
-					<!-- Vertical connector line (not after last item) -->
-					{#if i < menuItems.length - 1}
-						<span class="menu-line {isActive(item.href) ? 'menu-line-active' : ''}"></span>
-					{/if}
+							<!-- Vertical connector line (not after last item) -->
+							{#if i < menuItems.length - 1}
+								<span class="menu-line {isActive(item.href) ? 'menu-line-active' : ''}"></span>
+							{/if}
 
-					<!-- Text -->
-					<span class="menu-text">
-						<span class="menu-label">{item.label.en}</span>
-						<span class="menu-subtitle">{item.subtitle.en}</span>
-					</span>
-				</a>
-			{/each}
-		</nav>
+							<!-- Text -->
+							<span class="menu-text">
+								<span class="menu-label">{item.label.en}</span>
+								<span class="menu-subtitle">{item.subtitle.en}</span>
+							</span>
+						</a>
+					{/each}
+				</nav>
 
-		<!-- Bottom label -->
-		<div class="menu-footer">
-			<span class="menu-footer-line"></span>
-			<span class="menu-footer-label">NAVIGATION &mdash; ALL ROUTES</span>
-			<span class="menu-footer-line"></span>
-		</div>
-	</div>
-{/if}
+				<!-- Bottom label -->
+				<div class="menu-footer">
+					<span class="menu-footer-line"></span>
+					<span class="menu-footer-label">NAVIGATION &mdash; ALL ROUTES</span>
+					<span class="menu-footer-line"></span>
+				</div>
+					</div>
+				{/snippet}
+			</DialogPrimitive.Content>
+		</DialogPrimitive.Portal>
+	{/if}
+</DialogPrimitive.Root>
 
 <style>
 	/* ── Overlay base ── */
@@ -170,8 +152,8 @@
 		position: fixed;
 		inset: 0;
 		z-index: var(--z-menu);
-		background: var(--bg-primary);
-		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--brand-primary) 4%, transparent) 0%, transparent 60%);
+		background: var(--background);
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--primary) 4%, transparent) 0%, transparent 60%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -253,19 +235,19 @@
 		transition: border-color var(--duration-fast);
 	}
 	.menu-stop-active {
-		border-color: var(--brand-primary);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--brand-primary) 40%, transparent);
+		border-color: var(--primary);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 40%, transparent);
 	}
 	.menu-stop-fill {
 		position: absolute;
 		inset: 2px;
 		border-radius: 50%;
-		background: var(--brand-primary);
+		background: var(--primary);
 	}
 
 	/* Hover: fill the stop */
 	.menu-item:hover .menu-stop {
-		border-color: var(--brand-primary);
+		border-color: var(--primary);
 	}
 
 	/* Vertical metro line between stops */
@@ -275,10 +257,10 @@
 		top: 33px;
 		bottom: -14px;
 		width: 2px;
-		background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+		background: color-mix(in srgb, var(--foreground) 6%, transparent);
 	}
 	.menu-line-active {
-		background: linear-gradient(to bottom, color-mix(in srgb, var(--brand-primary) 40%, transparent), color-mix(in srgb, var(--text-primary) 6%, transparent));
+		background: linear-gradient(to bottom, color-mix(in srgb, var(--primary) 40%, transparent), color-mix(in srgb, var(--foreground) 6%, transparent));
 	}
 
 	/* Text block */
@@ -292,22 +274,22 @@
 		font-family: var(--font-heading);
 		font-size: 24px;
 		font-weight: 600;
-		color: var(--text-light);
+		color: var(--light-foreground);
 		transition: color var(--duration-fast), text-shadow var(--duration-fast);
 	}
 	.menu-item-active .menu-label {
-		color: var(--brand-primary);
-		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		color: var(--primary);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 50%, transparent);
 	}
 	.menu-item:hover .menu-label {
-		color: var(--brand-primary);
-		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		color: var(--primary);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
 	}
 
 	.menu-subtitle {
 		font-family: var(--font-mono);
 		font-size: 11px;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		letter-spacing: 0.3px;
 	}
 
@@ -322,13 +304,13 @@
 	.menu-footer-line {
 		width: 40px;
 		height: 1px;
-		background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+		background: color-mix(in srgb, var(--primary) 20%, transparent);
 	}
 	.menu-footer-label {
 		font-family: var(--font-mono);
 		font-size: 10px;
 		letter-spacing: 3px;
-		color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		color: color-mix(in srgb, var(--primary) 50%, transparent);
 		white-space: nowrap;
 	}
 </style>

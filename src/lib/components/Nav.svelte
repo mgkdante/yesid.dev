@@ -75,12 +75,12 @@
 		<a
 			href="/"
 			data-testid="nav-wordmark"
-			class="inline-flex items-baseline font-heading text-lg font-bold text-[var(--text-primary)]"
+			class="inline-flex items-baseline font-heading text-lg font-bold text-[var(--foreground)]"
 		>
 			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
 				data-testid="nav-period"
 				bind:this={dotEl}
-				class="text-brand-primary">.</span
+				class="text-primary">.</span
 			>
 		</a>
 
@@ -93,8 +93,8 @@
 					<a
 						href={link.href}
 						class="nav-pill-link transition-all {isActive(link.href)
-							? 'text-brand-primary nav-link-active'
-							: 'text-text-secondary hover:text-brand-primary hover:nav-link-glow'}"
+							? 'text-primary nav-link-active'
+							: 'text-text-secondary hover:text-primary hover:nav-link-glow'}"
 						aria-current={isActive(link.href) ? 'page' : undefined}
 					>
 						{link.label.en}
@@ -127,10 +127,10 @@
 		top: calc(1rem + env(safe-area-inset-top, 0px));
 	}
 	.nav-pill {
-		background: color-mix(in srgb, var(--bg-primary) 92%, transparent);
+		background: color-mix(in srgb, var(--background) 92%, transparent);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
 		border-radius: var(--radius-pill);
 		box-shadow: var(--shadow-nav);
 		padding: 12px 28px;
@@ -139,14 +139,14 @@
 	.nav-pill-compact {
 		padding: 12px 20px;
 		box-shadow: none;
-		border-color: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		border-color: color-mix(in srgb, var(--primary) 15%, transparent);
 	}
 
 	.nav-divider {
 		display: inline-block;
 		width: 1px;
 		height: 18px;
-		background: color-mix(in srgb, var(--text-primary) 8%, transparent);
+		background: color-mix(in srgb, var(--foreground) 8%, transparent);
 		margin-inline: 20px;
 		flex-shrink: 0;
 	}
@@ -177,10 +177,10 @@
 	}
 
 	:global(.nav-link-glow) {
-		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
 	}
 	:global(.nav-link-active) {
-		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 50%, transparent), 0 0 16px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 50%, transparent), 0 0 16px color-mix(in srgb, var(--primary) 20%, transparent);
 	}
 
 	/* Hamburger → ✕ morph */
@@ -198,7 +198,7 @@
 		display: block;
 		height: 1.5px;
 		border-radius: var(--radius-pill);
-		background: var(--text-secondary);
+		background: var(--secondary-foreground);
 		transition: transform var(--duration-normal) var(--ease-default), width var(--duration-normal) var(--ease-default), background var(--duration-fast);
 		transform-origin: center;
 	}
@@ -209,7 +209,7 @@
 		width: 11px;
 	}
 	.menu-toggle:hover .menu-toggle-line {
-		background: var(--text-primary);
+		background: var(--foreground);
 	}
 
 	/* Open state: morph to ✕ */

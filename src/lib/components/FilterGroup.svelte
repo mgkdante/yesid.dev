@@ -6,22 +6,22 @@
   of buttons with active/tag-active states). Centralizing here means style fixes and
   new behaviors (ripple, deselect) only need to happen once.
 
+  Uses bits-ui ToggleGroup for keyboard navigation (arrow keys) and ARIA semantics.
   Includes use:ripple for click feedback (QW-3 from the slice 09c spec).
 -->
 <script lang="ts">
 	import { ripple } from '$lib/motion/actions/ripple.js';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/data/locale.js';
+	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
 
-	// WHY: allLabel is LocalizedString so "All" can be translated in future i18n without
-	// changing the component. Callers that don't pass it get the English default.
 	const defaultAllLabel = { en: 'All' };
 
 	let {
 		label,
 		items,
 		activeKey = null,
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		allowDeselect = true,
 		collapsible = false,
 		startOpen = true,
@@ -43,23 +43,26 @@
 
 	let isOpen = $state(startOpen);
 
-	// WHY: clicking an already-active filter when allowDeselect=true should clear the
-	// filter (set null). When allowDeselect=false (e.g. language selector where "no
-	// language" is never a valid state), clicking active has no effect.
-	function handleClick(key: string) {
-		if (allowDeselect && activeKey === key) {
-			onSelect(null);
-		} else {
-			onSelect(key);
+	// Map activeKey to ToggleGroup value: null → '__all__', string → string
+	const groupValue = $derived(activeKey ?? '__all__');
+
+	function handleValueChange(value: string) {
+		if (!value) {
+			// Deselect: ToggleGroup cleared the selection
+			if (allowDeselect) {
+				onSelect(null);
+			}
+			// If !allowDeselect, the controlled value prop keeps the current selection
+			return;
 		}
+		onSelect(value === '__all__' ? null : value);
 	}
 </script>
 
 <div>
-	<!-- WHY: collapsible label toggles section open/closed; non-collapsible is static text -->
 	{#if collapsible}
 		<button
-			class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--text-primary)]"
+			class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--foreground)]"
 			onclick={() => (isOpen = !isOpen)}
 		>
 			{label}
@@ -72,41 +75,52 @@
 	{/if}
 
 	{#if !collapsible || isOpen}
-		<div class="mt-2 flex flex-col gap-1" style="--accent: {accentColor};">
-			<button
-				class="filter-btn rounded px-2 py-1 text-left text-xs transition-colors"
-				class:active={activeKey === null}
-				onclick={() => onSelect(null)}
-				use:ripple={{ color: accentColor }}
-			>
-				{resolveLocale(allLabel, 'en')}
-			</button>
+		<ToggleGroup
+			type="single"
+			value={groupValue}
+			onValueChange={handleValueChange}
+			class="mt-2 flex flex-col gap-1"
+			style="--accent: {accentColor};"
+			orientation="vertical"
+		>
+			<ToggleGroupItem value="__all__">
+				{#snippet child({ props })}
+					<button
+						{...props}
+						class="filter-btn rounded px-2 py-1 text-left text-xs transition-colors"
+						class:active={activeKey === null}
+						use:ripple={{ color: accentColor }}
+					>
+						{resolveLocale(allLabel, 'en')}
+					</button>
+				{/snippet}
+			</ToggleGroupItem>
+
 			{#each items as item}
-				<button
-					class="filter-btn rounded border border-border-subtle px-2 py-1 text-left text-xs text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-					class:tag-active={activeKey === item.key}
-					data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
-					onclick={() => handleClick(item.key)}
-					use:ripple={{ color: accentColor }}
-				>
-					{item.label}
-				</button>
+				<ToggleGroupItem value={item.key}>
+					{#snippet child({ props })}
+						<button
+							{...props}
+							class="filter-btn rounded border border-border-subtle px-2 py-1 text-left text-xs text-[var(--muted-foreground)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+							class:tag-active={activeKey === item.key}
+							data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
+							use:ripple={{ color: accentColor }}
+						>
+							{item.label}
+						</button>
+					{/snippet}
+				</ToggleGroupItem>
 			{/each}
-		</div>
+		</ToggleGroup>
 	{/if}
 </div>
 
 <style>
-	/* WHY: .active on "All" uses full brand fill to show it's selected, matching
-	   the established filter pattern from BlogFilterSidebar and WorkFilterSidebar. */
 	.active {
 		background: var(--accent);
-		color: var(--text-primary);
+		color: var(--foreground);
 	}
 
-	/* WHY: .tag-active on individual items uses a subtle tinted background +
-	   accent border instead of full fill, so the selected item is distinct from
-	   "All" but still clearly highlighted. */
 	.tag-active {
 		border-color: var(--accent) !important;
 		color: var(--accent) !important;

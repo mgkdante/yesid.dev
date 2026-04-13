@@ -113,8 +113,8 @@
 		padding: 0.375rem 0.875rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-pill);
-		background: var(--bg-surface);
-		color: var(--text-muted);
+		background: var(--muted);
+		color: var(--muted-foreground);
 		font-family: var(--font-body);
 		font-size: var(--text-small);
 		font-weight: 500;
@@ -128,19 +128,19 @@
 	}
 
 	.filter-pill:hover {
-		border-color: var(--brand-primary);
-		color: var(--text-primary);
+		border-color: var(--primary);
+		color: var(--foreground);
 	}
 
 	.filter-pill:focus-visible {
-		outline: 2px solid var(--brand-primary);
+		outline: 2px solid var(--primary);
 		outline-offset: 2px;
 	}
 
 	.filter-pill.active {
-		border-color: var(--brand-primary);
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-		color: var(--brand-primary);
+		border-color: var(--primary);
+		background: color-mix(in srgb, var(--primary) 15%, transparent);
+		color: var(--primary);
 		box-shadow: var(--shadow-glow-sm);
 	}
 

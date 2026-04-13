@@ -65,7 +65,7 @@
 	<!-- Condition gradient tint -->
 	<div
 		class="pointer-events-none absolute inset-0 rounded-lg"
-		style="background: linear-gradient(135deg, var(--bg-surface), {gradientTint});"
+		style="background: linear-gradient(135deg, var(--muted), {gradientTint});"
 		aria-hidden="true"
 	></div>
 
@@ -112,19 +112,19 @@
 		<!-- Centered content fills remaining space -->
 		<div class="flex flex-1 flex-col items-center justify-center text-center">
 			<!-- Hook: wordplay question -->
-			<div class="font-mono text-caption tracking-[2px] text-[var(--text-secondary)]">
+			<div class="font-mono text-caption tracking-[2px] text-[var(--secondary-foreground)]">
 				{hook}
 			</div>
 
 			<!-- City reveal -->
-			<div class="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+			<div class="mt-2 text-lg font-semibold text-[var(--foreground)]">
 				{city}
 			</div>
 
 			{#if hasWeather && weather}
 				<!-- Temperature + icon -->
 				<div class="mt-1 flex items-center justify-center gap-2">
-					<span class="font-mono text-2xl font-bold text-[var(--brand-accent)]">
+					<span class="font-mono text-2xl font-bold text-[var(--accent)]">
 						{weather.temp}°C
 					</span>
 					{#if iconUrl}
@@ -138,12 +138,12 @@
 				</div>
 
 				<!-- Condition -->
-				<div class="mt-0.5 text-sm capitalize text-[var(--text-secondary)]">
+				<div class="mt-0.5 text-sm capitalize text-[var(--secondary-foreground)]">
 					{weather.condition}
 				</div>
 			{:else}
 				<!-- Fallback -->
-				<div class="mt-1 font-mono text-sm text-[var(--text-muted)]">—</div>
+				<div class="mt-1 font-mono text-sm text-[var(--muted-foreground)]">—</div>
 			{/if}
 		</div>
 	</div>

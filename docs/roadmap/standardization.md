@@ -16,7 +16,7 @@
 | 17a-3a Color Lockdown            | COMPLETE                        | #5 merged | 2        |
 | 17a-3b Token Wiring              | COMPLETE                        | #6 merged | 1        |
 | 17a-5 Spacing & Layout + Const.  | COMPLETE (14/14 tasks, PR pending) | —       | 2        |
-| 17a-6 Bits UI Integration        | PLANNED (needs impl plan)       | —         | 1-2      |
+| 17a-6 Bits UI Integration        | COMPLETE                        | —         | 4        |
 | 17d Component API                | PLANNED (needs impl plan)       | —         | 4        |
 | 17e Motion Re-Engineering        | PLANNED (needs impl plan)       | —         | 2-3      |
 | 17a-4 Dead Code + Trivial Dedup  | PLANNED (needs impl plan)       | —         | 1        |

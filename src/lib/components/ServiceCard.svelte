@@ -109,7 +109,7 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
-		color: var(--brand-primary);
+		color: var(--primary);
 		margin-bottom: 1rem;
 	}
 
@@ -117,16 +117,16 @@
 		font-family: var(--font-heading);
 		font-size: clamp(2rem, 4vw, 3.5rem);
 		font-weight: 800;
-		color: var(--text-primary);
+		color: var(--foreground);
 		line-height: 1.1;
 		margin-bottom: 0.5rem;
 	}
 
-	.title-dot { color: var(--brand-primary); }
+	.title-dot { color: var(--primary); }
 
 	.service-subtitle {
 		font-size: 1.125rem;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		margin-bottom: 1rem;
 		font-style: italic;
 	}
@@ -134,7 +134,7 @@
 	.service-description {
 		font-size: 1rem;
 		line-height: 1.7;
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 		max-width: 55ch;
 		margin-bottom: 1.5rem;
 	}
@@ -152,15 +152,15 @@
 		padding: 0.25rem 0.625rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-pill);
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 		background: transparent;
 		cursor: default;
 		transition: color var(--duration-normal), border-color var(--duration-normal), background var(--duration-normal), transform var(--duration-normal);
 	}
 	.stack-pill:hover {
-		color: var(--brand-primary);
-		border-color: var(--brand-primary);
-		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		color: var(--primary);
+		border-color: var(--primary);
+		background: color-mix(in srgb, var(--primary) 8%, transparent);
 		transform: translateY(-1px);
 	}
 
@@ -169,13 +169,13 @@
 		font-family: var(--font-mono);
 		font-size: 0.8rem;
 		font-weight: 600;
-		color: var(--brand-primary);
+		color: var(--primary);
 		text-decoration: none;
 		border-bottom: 1px solid transparent;
 		transition: border-color var(--duration-normal);
 	}
 	.deep-dive-cta:hover {
-		border-bottom-color: var(--brand-primary);
+		border-bottom-color: var(--primary);
 	}
 
 	/* SVG container — rounded box that morphs to circle on hover/tap */
@@ -188,7 +188,7 @@
 		justify-content: center;
 		border-radius: 1.25rem;
 		border: 1px solid var(--border);
-		background: var(--bg-card);
+		background: var(--card);
 		padding: 2rem;
 		cursor: pointer;
 		transition: transform var(--duration-slower) var(--ease-bounce),
@@ -200,7 +200,7 @@
 	/* Hover morph — CSS handles desktop, JS class handles mobile tap */
 	.service-svg-box:hover,
 	.service-svg-box:global(.morphed) {
-		border-color: var(--brand-primary);
+		border-color: var(--primary);
 		border-radius: 50%;
 		transform: scale(1.06) rotate(3deg);
 		box-shadow: var(--shadow-glow-lg);

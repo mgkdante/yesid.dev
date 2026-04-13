@@ -29,7 +29,7 @@
 	<!-- Ambient glow behind headshot -->
 	<div
 		class="pointer-events-none absolute -top-10 -left-10 h-44 w-44"
-		style="background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 12%, transparent) 0%, transparent 70%);"
+		style="background: radial-gradient(circle, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 70%);"
 		aria-hidden="true"
 	></div>
 
@@ -40,7 +40,7 @@
 		<div class="flex flex-1 flex-col items-center justify-center gap-4 md:flex-row md:items-center md:gap-5">
 			<!-- Headshot with gradient ring + availability dot -->
 			<div class="relative shrink-0">
-				<div class="rounded-full bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-accent)] p-[2px]">
+				<div class="rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] p-0.5">
 					<img
 						src={identity.headshot}
 						alt={name}
@@ -49,20 +49,20 @@
 					/>
 				</div>
 				<!-- Green availability dot -->
-				<div class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-[3px] border-[var(--bg-surface)] bg-emerald-500"></div>
+				<div class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-[3px] border-[var(--muted)] bg-emerald-500"></div>
 			</div>
 
 			<!-- Text block -->
 			<div class="text-center md:pt-1 md:text-left">
-				<h2 class="font-heading text-title font-bold leading-tight tracking-tight text-[var(--text-primary)]">
+				<h2 class="font-heading text-title font-bold leading-tight tracking-tight text-[var(--foreground)]">
 					{name}
 				</h2>
 				<div class="mt-1.5 label-station text-caption">
 					{title}
 				</div>
 				<!-- Gradient separator -->
-				<div class="mx-auto mt-4 h-px w-10 md:mx-0" style="background: linear-gradient(90deg, var(--brand-primary), transparent);"></div>
-				<p class="mt-4 max-w-md text-small leading-relaxed text-[var(--text-secondary)]">
+				<div class="mx-auto mt-4 h-px w-10 md:mx-0" style="background: linear-gradient(90deg, var(--primary), transparent);"></div>
+				<p class="mt-4 max-w-md text-small leading-relaxed text-[var(--secondary-foreground)]">
 					{valueProp}
 				</p>
 			</div>

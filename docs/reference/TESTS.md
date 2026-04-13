@@ -55,7 +55,7 @@ Convention: tests live next to the code they test (co-located).
 
 ---
 
-# Components (`src/lib/components/`) — 28 files, 197 tests
+# Components (`src/lib/components/`) — 25 files, 182 tests
 
 ## src/lib/components/BlogRow.test.ts
 
@@ -107,14 +107,6 @@ Convention: tests live next to the code they test (co-located).
 | Footer > renders location in an address element | Montreal appears in semantic address element | `querySelector('footer address')` text contains `'Montreal'` | Standard |
 | Footer > renders the digital infrastructure tagline | Brand tagline appears | `getByText(/digital infrastructure/)` | Standard |
 
-## src/lib/components/GradientSeparator.test.ts
-
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| GradientSeparator > renders the gradient line div | The separator element exists in the DOM | `querySelector('[data-testid="gradient-separator"]')` is truthy | Standard |
-| GradientSeparator > renders label when provided | A label appears when the label prop is set | `getByText('Test Section')` is truthy | `label: 'Test Section'` |
-| GradientSeparator > does not render label when not provided | No label element appears when label prop is omitted | `querySelector('[data-testid="separator-label"]')` is null | Standard |
-
 ## src/lib/components/Hero.test.ts
 
 | Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
@@ -155,19 +147,6 @@ Convention: tests live next to the code they test (co-located).
 | Nav > renders a hamburger button for mobile | A mobile menu toggle exists | `getByTestId('nav-hamburger')` is in document | Standard |
 | Nav > has a wordmark-letters container for animation | The animated wordmark letters container exists | `getByTestId('nav-wordmark-letters')` text === `'yesid'` | Standard |
 
-## src/lib/components/ProjectCard.test.ts
-
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| ProjectCard > renders title and one-liner | The project name and tagline are visible | `getByText('Transit Data Pipeline')` and one-liner in document | `baseProps` with title, oneLiner, slug, tags, status |
-| ProjectCard > links to /work/[slug] | The card links to the correct project detail page | `href` === `'/work/transit-data-pipeline'` | Standard |
-| ProjectCard > renders tags via TagList | The project tags appear as pills | `getByText('python')` and `getByText('postgresql')` in document | `tags: ['python', 'postgresql']` |
-| ProjectCard > renders no status badge for public projects | Public projects have no status indicator | `queryByTestId('status-badge')` not in document | `status: 'public'` |
-| ProjectCard > renders WIP badge for wip status | Work-in-progress projects show a WIP badge | `status-badge` text === `'WIP'` | `status: 'wip'` |
-| ProjectCard > renders Private badge for private status | Private projects show a Private badge | `status-badge` text === `'Private'` | `status: 'private'` |
-| ProjectCard > renders correctly with empty tags array | A project with no tags renders without crashing | `queryByTestId('tag-list')` not in document | `tags: []` |
-| ProjectCard > handles a long title without error | Very long titles don't break the card layout | `getByRole('heading', { level: 3 })` is in document | Title repeated 5 times |
-
 ## src/lib/components/ProjectGrid.test.ts
 
 | Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
@@ -193,15 +172,6 @@ Convention: tests live next to the code they test (co-located).
 | ScrollPrompt > renders without crashing | The component mounts without errors | `render(ScrollPrompt)` does not throw | Standard |
 | ScrollPrompt > has accessible label for scroll action | The scroll prompt has an aria-label for assistive tech | `aria-label` === `'Scroll down'` | Standard |
 | ScrollPrompt > renders an SVG chevron | A chevron SVG with a path element is rendered | `querySelector('svg')` and `querySelector('path')` in document | Standard |
-
-## src/lib/components/SectionHeader.test.ts
-
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| SectionHeader > renders the title as an h2 | The section title renders as an h2 heading | `getByRole('heading', { level: 2, name: 'Projects' })` in document | `title: 'Projects'` |
-| SectionHeader > renders subtitle when provided | A subtitle paragraph appears below the heading | `getByText('What I offer')` in document | `subtitle: 'What I offer'` |
-| SectionHeader > does not render subtitle when omitted | No extra paragraph renders when subtitle is missing | `querySelectorAll('p')` has length 0 | No subtitle prop |
-| SectionHeader > handles a very long title without error | Extremely long titles don't crash the component | `getByRole('heading', { level: 2 })` in document | Title = `'A '` repeated 50 times |
 
 ## src/lib/components/ServiceCard.test.ts
 
@@ -334,6 +304,20 @@ Convention: tests live next to the code they test (co-located).
 | Describe | Summary | Count |
 |----------|---------|-------|
 | HomeServices | Section renders with label, 6 cards with benefit headlines, service titles, impact metrics, SVG panels, correct /services/[id] links, view-all link | 9 |
+
+# UI Components (`src/lib/components/ui/`) — Slice 17a-6
+
+## src/lib/components/ui/button/button.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| Button | Renders cta/ghost/outline/link variants, sm/default/lg sizes, href produces anchor, disabled state, class pass-through, data-slot attribute | 10 |
+
+## src/lib/components/brand/__tests__/barrel.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| Brand barrel exports | All 15 brand primitives are re-exported from the barrel index | 1 |
 
 # Data Layer (`src/lib/data/`) — 10 files, 126 tests
 

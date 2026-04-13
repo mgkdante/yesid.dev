@@ -49,6 +49,6 @@ describe('MetricDisplay', () => {
   it('uses brand-primary for value color', () => {
     const { container } = render(MetricDisplay, { props: { value: '5+', label: 'TEST' } });
     const valueEl = container.querySelectorAll('span')[1];
-    expect(valueEl.className).toContain('text-brand-primary');
+    expect(valueEl.className).toContain('text-primary');
   });
 });

@@ -1,7 +1,7 @@
 # CSS Architecture — Design System Reference
 
 **Last updated:** 2026-04-13
-**Status:** Active — Slice 17a-5 Spacing & Layout Constitution
+**Status:** Active — Slice 17a-6 Bits UI Integration
 
 > Single source of truth for the yesid.dev design system tokens, layers, and rules.
 
@@ -21,7 +21,7 @@ Tailwind utilities     →  Composable classes (text-display, shadow-card, z-nav
 
 | Layer | File | Purpose | Example |
 |-------|------|---------|---------|
-| Semantic tokens | `src/lib/styles/tokens.css` | Theme-switching CSS custom properties | `var(--bg-primary)`, `var(--text-muted)` |
+| Semantic tokens | `src/lib/styles/tokens.css` | Theme-switching CSS custom properties | `var(--background)`, `var(--muted-foreground)` |
 | Brand utilities | `src/app.css` `@theme` block | Static brand values mapped to Tailwind utilities | `text-brand-primary`, `bg-brand-accent` |
 | Component scope | `<style>` in `.svelte` | Layout/structure specific to one component | grid templates, position, overflow |
 
@@ -71,28 +71,41 @@ Defined in `tokens.css` `:root`:
 | `--brand-accent-rgb` | `255 182 39` | `rgb(var(--brand-accent-rgb) / 0.3)` |
 
 ### Semantic (theme-switching)
-Defined in `tokens.css` per theme:
+Defined in `tokens.css` per theme. Token names follow shadcn-svelte's **background/foreground pair** convention.
 
 | Token | Dark | Light | Role |
 |-------|------|-------|------|
-| `--bg-primary` | `#141414` | `#FAFAF8` | Page background |
-| `--bg-surface` | `#1E1E1E` | `#F0EDE5` | Card/panel background |
-| `--bg-elevated` | `#2A2A2A` | `#FFFFFF` | Hover/elevated surfaces |
-| `--bg-card` | `#1a1a1a` | `#FFFFFF` | Card backgrounds |
-| `--bg-deep` | `#0D0D0D` | `#F0EDE5` | Deep backgrounds |
-| `--bg-terminal` | `#0a0a0a` | `#F5F5F0` | Terminal/code panels |
-| `--bg-manifesto` | `#0f0d0a` | `#F0EDE5` | Manifesto section |
+| `--background` | `#141414` | `#FAFAF8` | Page background |
+| `--foreground` | `#F5F5F0` | `#111111` | Main text |
+| `--muted` | `#1E1E1E` | `#F0EDE5` | Card/panel background |
+| `--muted-foreground` | `#666666` | `#888888` | De-emphasized text |
+| `--card` | `#1a1a1a` | `#FFFFFF` | Card backgrounds |
+| `--card-foreground` | `var(--foreground)` | `var(--foreground)` | Card text |
+| `--popover` | `#2A2A2A` | `#FFFFFF` | Hover/elevated surfaces |
+| `--popover-foreground` | `var(--foreground)` | `var(--foreground)` | Popover text |
+| `--primary` | `#E07800` | `#E07800` | Brand primary (orange) |
+| `--primary-foreground` | `var(--background)` | `var(--background)` | Text on primary |
+| `--secondary-foreground` | `#999999` | `#555555` | Supporting text |
+| `--dim-foreground` | `#4a4a4a` | `#AAAAAA` | Faintest text |
+| `--code-foreground` | `#cccccc` | `#333333` | Code/terminal text |
+| `--light-foreground` | `#b3b3b3` | `#666666` | Light text variant |
+| `--deep` | `#0D0D0D` | `#F0EDE5` | Deep backgrounds |
+| `--terminal` | `#0a0a0a` | `#F5F5F0` | Terminal/code panels |
+| `--manifesto` | `#0f0d0a` | `#F0EDE5` | Manifesto section |
 | `--border` | `#3A3A3A` | `#D8D4CA` | Default borders |
 | `--border-subtle` | `#2a2a2a` | `#D8D4CA` | Subtle borders |
 | `--border-strong` | `#333333` | `#C0BDB5` | Emphasized borders |
-| `--text-primary` | `#F5F5F0` | `#111111` | Main text |
-| `--text-secondary` | `#999999` | `#555555` | Supporting text |
-| `--text-muted` | `#666666` | `#888888` | De-emphasized text |
-| `--text-dim` | `#4a4a4a` | `#AAAAAA` | Faintest text |
-| `--text-code` | `#cccccc` | `#333333` | Code/terminal text |
-| `--status-live` | `#22c55e` | `#16a34a` | Live/active indicator |
-| `--status-error` | `#ff5f57` | `#dc2626` | Error states |
-| `--status-success` | `#28c840` | `#16a34a` | Success states |
+| `--live` | `#22c55e` | `#16a34a` | Live/active indicator |
+| `--destructive` | `#ff5f57` | `#dc2626` | Error states |
+| `--success` | `#28c840` | `#16a34a` | Success states |
+| `--warning` | `#f59e0b` | `#d97706` | Warning states |
+
+### Token Naming Convention
+
+Tokens follow the **shadcn-svelte background/foreground pair** pattern:
+- Each surface color (e.g., `--card`) has a matching text color (e.g., `--card-foreground`)
+- Components use the `cn()` utility from `$lib/utils` for Tailwind class composition with merge support
+- The `data-slot` attribute identifies component parts for style targeting
 
 ### Adding new colors (checklist)
 1. Add to `:root` or both `[data-theme]` blocks in `tokens.css`

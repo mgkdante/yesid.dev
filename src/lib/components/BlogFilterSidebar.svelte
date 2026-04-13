@@ -32,7 +32,7 @@
 		languages = [],
 		activeTag = null,
 		activeLang = null,
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		cornerLink = null,
 		onTagSelect,
 		onLangSelect,
@@ -70,7 +70,7 @@
 
 	<!-- Date range — inline, not a FilterGroup, so collapse logic is inline -->
 	<button
-		class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--text-primary)]"
+		class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--foreground)]"
 		onclick={() => (dateOpen = !dateOpen)}
 	>
 		{resolveLocale(labels.dateRange, 'en')}
@@ -78,21 +78,21 @@
 	</button>
 	{#if dateOpen}
 		<div class="mt-2 flex flex-col gap-1.5">
-			<label class="text-caption text-[var(--text-muted)]">
+			<label class="text-caption text-[var(--muted-foreground)]">
 				{resolveLocale(labels.from, 'en')}
 				<input
 					type="date"
 					bind:value={dateFrom}
-					class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+					class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
 					style="--accent: {accentColor}; color-scheme: dark;"
 				/>
 			</label>
-			<label class="text-caption text-[var(--text-muted)]">
+			<label class="text-caption text-[var(--muted-foreground)]">
 				{resolveLocale(labels.to, 'en')}
 				<input
 					type="date"
 					bind:value={dateTo}
-					class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+					class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
 					style="--accent: {accentColor}; color-scheme: dark;"
 				/>
 			</label>
@@ -118,11 +118,11 @@
 			<a
 				href={cornerLink.href}
 				class="flex items-center gap-1.5 rounded border px-2 py-1.5 text-xs font-semibold no-underline transition-colors"
-				style="border-color: {cornerLink.href.includes('personal') ? 'var(--brand-accent)' : 'var(--brand-primary)'}; color: {cornerLink.href.includes('personal') ? 'var(--brand-accent)' : 'var(--brand-primary)'};"
+				style="border-color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'}; color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'};"
 			>
 				{cornerLink.label}
 			</a>
-			<div class="mt-1 pl-2 text-caption italic text-[var(--text-muted)]">
+			<div class="mt-1 pl-2 text-caption italic text-[var(--muted-foreground)]">
 				{cornerLink.subtitle}
 			</div>
 		</div>

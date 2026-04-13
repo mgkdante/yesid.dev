@@ -7,7 +7,7 @@
 	import type { BlogPost } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { Tag } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
@@ -15,7 +15,7 @@
 	let {
 		post,
 		svgContent = '',
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		readingTime = 0
 	}: {
 		post: BlogPost;
@@ -68,23 +68,23 @@
 		<div class="min-w-0 flex-1">
 			<h1
 				data-animate="title"
-				class="font-heading text-xl font-bold leading-tight text-[var(--text-primary)] md:text-2xl lg:text-3xl"
+				class="font-heading text-xl font-bold leading-tight text-[var(--foreground)] md:text-2xl lg:text-3xl"
 			>
 				{resolveLocale(post.title, 'en')}
 			</h1>
 			<div data-animate="meta" class="mt-2 flex flex-wrap items-center gap-1.5">
 				{#each post.tags as tag}
-					<Tag text={tag} size="xs" active accentColor={accentColor} />
+					<Badge variant="tag-active" size="xs" style="border-color: {accentColor}30; background: {accentColor}15; color: {accentColor}">{tag}</Badge>
 				{/each}
-				<span class="font-mono text-caption text-[var(--text-muted)]">
+				<span class="font-mono text-caption text-[var(--muted-foreground)]">
 					{post.date}
 				</span>
 				{#if readingTime > 0}
-					<span class="font-mono text-caption text-[var(--text-muted)]">
+					<span class="font-mono text-caption text-[var(--muted-foreground)]">
 						&middot; {readingTime} {resolveLocale(labels.minRead, 'en')}
 					</span>
 				{/if}
-				<span class="font-mono text-caption text-[var(--text-muted)]">
+				<span class="font-mono text-caption text-[var(--muted-foreground)]">
 					&middot; {post.lang}
 				</span>
 			</div>
