@@ -12,7 +12,7 @@
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import WorkServiceBadge from './WorkServiceBadge.svelte';
-	import { Tag } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 
 	// WHY: all section headers go through LocalizedString so the sidebar is ready
 	// for future i18n without changing component logic.
@@ -71,7 +71,7 @@
 			<div bind:this={tagsContainer} class="flex flex-wrap gap-1.5">
 				{#each project.stack as tech}
 					<a href="/work?tag={tech}" data-animate="tag" class="no-underline">
-						<Tag text={tech} size="xs" />
+						<Badge variant="tag" size="xs">{tech}</Badge>
 					</a>
 				{/each}
 			</div>

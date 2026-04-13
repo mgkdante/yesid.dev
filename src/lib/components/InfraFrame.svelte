@@ -6,7 +6,8 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { StatusDot, HazardStripe, CornerMarks } from '$lib/components/brand';
+	import { StatusDot, CornerMarks } from '$lib/components/brand';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let {
 		tag = 'LIVE',
@@ -44,7 +45,7 @@
 	</div>
 
 	<!-- Hazard stripe -->
-	<HazardStripe size="sm" />
+	<Separator variant="hazard" hazardSize="sm" />
 
 	<!-- Content -->
 	<div class="frame-body">

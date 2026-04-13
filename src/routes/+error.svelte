@@ -5,7 +5,7 @@
 	import { errorPageContent } from '$lib/data';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/data/locale.js';
 	import { prefersReducedMotion } from '$lib/motion/stores';
-	import { HazardStripe } from '$lib/components/brand';
+	import { Separator } from '$lib/components/ui/separator';
 
 	const locale = DEFAULT_LOCALE;
 	const label = resolveLocale(errorPageContent.label, locale);
@@ -26,7 +26,7 @@
 
 <div class="error-page flex flex-col px-[var(--space-page-x)]">
 	<!-- Top hazard tape -->
-	<div data-testid="hazard-tape"><HazardStripe /></div>
+	<div data-testid="hazard-tape"><Separator variant="hazard" /></div>
 
 	<!-- Centered content area — fills space between tapes -->
 	<div class="flex flex-1 flex-col items-center justify-center gap-5 py-4 sm:gap-6">
@@ -93,7 +93,7 @@
 	</div>
 
 	<!-- Bottom hazard tape -->
-	<div data-testid="hazard-tape"><HazardStripe /></div>
+	<div data-testid="hazard-tape"><Separator variant="hazard" /></div>
 </div>
 
 <style>

@@ -14,7 +14,7 @@
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 	import ProjectMiniCard from './ProjectMiniCard.svelte';
 	import CollapsibleSection from './CollapsibleSection.svelte';
-	import GradientSeparator from './GradientSeparator.svelte';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let {
 		service,
@@ -114,7 +114,7 @@
 				</div>
 			</header>
 
-			<GradientSeparator />
+			<Separator variant="gradient" />
 		</div>
 
 		<!-- Centered content area — exact WorkDetailPage section pattern -->

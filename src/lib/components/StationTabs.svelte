@@ -8,7 +8,7 @@
 -->
 <script lang="ts">
 	import type { Service } from '$lib/data/types.js';
-	import { HazardStripe } from '$lib/components/brand';
+	import { Separator } from '$lib/components/ui/separator';
 
 	// Short labels map — first word or simple abbreviation for compact tab display.
 	// Keyed by service ID so adding a new service only requires one new entry here.
@@ -57,7 +57,7 @@
 	}
 </script>
 
-<HazardStripe size="sm" />
+<Separator variant="hazard" hazardSize="sm" />
 
 <nav
 	aria-label="Service navigation"

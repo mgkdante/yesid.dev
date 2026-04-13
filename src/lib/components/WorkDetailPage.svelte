@@ -12,7 +12,7 @@
 	import TableOfContents from './TableOfContents.svelte';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 	import CollapsibleSection from './CollapsibleSection.svelte';
-	import GradientSeparator from './GradientSeparator.svelte';
+	import { Separator } from '$lib/components/ui/separator';
 	import { StickyPanel } from '$lib/components/brand';
 
 	let {
@@ -70,7 +70,7 @@
 			{/if}
 		</header>
 
-		<GradientSeparator />
+		<Separator variant="gradient" />
 
 		<!-- Mobile sidebar -->
 		<div class="mb-8 lg:hidden">

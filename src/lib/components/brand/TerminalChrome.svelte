@@ -6,7 +6,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import StatusDot from './StatusDot.svelte';
-  import HazardStripe from './HazardStripe.svelte';
+  import { Separator } from '$lib/components/ui/separator';
 
   export interface TerminalFooterItem {
     label: string;
@@ -56,7 +56,7 @@
   </div>
 
   <!-- Accent stripe -->
-  <HazardStripe size="sm" />
+  <Separator variant="hazard" hazardSize="sm" />
 
   <!-- Body -->
   <div class="terminal-body" class:no-pad={noPadding}>

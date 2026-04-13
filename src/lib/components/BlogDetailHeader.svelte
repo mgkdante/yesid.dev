@@ -7,7 +7,7 @@
 	import type { BlogPost } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { Tag } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
@@ -74,7 +74,7 @@
 			</h1>
 			<div data-animate="meta" class="mt-2 flex flex-wrap items-center gap-1.5">
 				{#each post.tags as tag}
-					<Tag text={tag} size="xs" active accentColor={accentColor} />
+					<Badge variant="tag-active" size="xs" style="border-color: {accentColor}30; background: {accentColor}15; color: {accentColor}">{tag}</Badge>
 				{/each}
 				<span class="font-mono text-caption text-[var(--muted-foreground)]">
 					{post.date}

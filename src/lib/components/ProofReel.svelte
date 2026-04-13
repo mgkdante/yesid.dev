@@ -10,7 +10,7 @@
 	import type { Project } from '$lib/data/index.js';
 	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { prefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { Tag } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 
 	const heading = resolveLocale(proofReelContent.heading, 'en');
 	const headingDot = resolveLocale(proofReelContent.headingDot, 'en');
@@ -156,7 +156,7 @@
 						<div class="flex flex-wrap gap-1.5">
 							{#each project.stack as tech}
 								<span data-testid="proof-tag">
-									<Tag text={tech} active accentColor="var(--primary)" />
+									<Badge variant="tag-active" size="sm">{tech}</Badge>
 								</span>
 							{/each}
 						</div>

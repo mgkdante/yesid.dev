@@ -13,7 +13,7 @@
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import WorkSvgIcon from './WorkSvgIcon.svelte';
-	import { Tag } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 	import DataFlowDiagram from './DataFlowDiagram.svelte';
 
 	let {
@@ -164,7 +164,7 @@
 			<div class="flex flex-wrap gap-1 pt-3">
 				{#each displayTags as tag}
 					<span use:magnetic={{ strength: 2, radius: 30 }}>
-						<Tag text={tag} size="xs" active />
+						<Badge variant="tag-active" size="xs">{tag}</Badge>
 					</span>
 				{/each}
 			</div>

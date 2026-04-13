@@ -9,7 +9,7 @@
 	import BlogContent from '$lib/components/BlogContent.svelte';
 	import ReadingProgressBar from '$lib/components/ReadingProgressBar.svelte';
 	import TableOfContents from '$lib/components/TableOfContents.svelte';
-	import GradientSeparator from '$lib/components/GradientSeparator.svelte';
+	import { Separator } from '$lib/components/ui/separator';
 	import { StickyPanel } from '$lib/components/brand';
 
 	let { data } = $props();
@@ -37,7 +37,7 @@
 		/>
 	</div>
 
-	<GradientSeparator />
+	<Separator variant="gradient" />
 
 	<!-- Mobile ToC toggle — shown below 2xl -->
 	<div class="mx-auto mt-6 px-[var(--space-page-x)] 2xl:hidden" style="max-width: var(--container-content)">

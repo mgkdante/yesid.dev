@@ -12,7 +12,8 @@
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
-	import { StopLabel, HazardStripe } from '$lib/components/brand';
+	import { StopLabel } from '$lib/components/brand';
+	import { Separator } from '$lib/components/ui/separator';
 
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
@@ -52,7 +53,7 @@
 
 		<!-- Top Stripe -->
 		<div class="px-3 pt-1" aria-hidden="true">
-			<HazardStripe />
+			<Separator variant="hazard" />
 		</div>
 
 		<!-- 6×4 Bento Grid -->
@@ -108,7 +109,7 @@
 
 		<!-- Bottom Stripe -->
 		<div class="px-3 pb-1" aria-hidden="true">
-			<HazardStripe />
+			<Separator variant="hazard" />
 		</div>
 
 	</div>

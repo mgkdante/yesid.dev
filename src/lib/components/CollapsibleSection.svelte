@@ -6,7 +6,8 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { ChevronToggle, NumberBadge } from '$lib/components/brand';
+	import { ChevronToggle } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 
 	let {
 		title,
@@ -43,7 +44,7 @@
 >
 	{#snippet headerContent()}
 		{#if index !== null}
-			<NumberBadge value={index + 1} color={accentColor} />
+			<Badge variant="number" aria-hidden="true" style={accentColor ? `background-color: ${accentColor}` : ''}>{String(index + 1).padStart(2, '0')}</Badge>
 		{:else if icon}
 			{@render icon()}
 		{/if}

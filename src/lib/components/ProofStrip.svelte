@@ -5,7 +5,7 @@
 <script lang="ts">
 	import type { Project } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { HazardStripe } from '$lib/components/brand';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let { projects }: { projects: readonly Project[] } = $props();
 </script>
@@ -32,7 +32,7 @@
 </div>
 
 <!-- Hazard stripe — bottom accent -->
-<HazardStripe size="sm" />
+<Separator variant="hazard" hazardSize="sm" />
 
 <style>
 	.proof-strip {

@@ -8,7 +8,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
-	import { Tag, NumberBadge } from '$lib/components/brand';
+	import { Badge } from '$lib/components/ui/badge';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import BlogSvgIcon from './BlogSvgIcon.svelte';
 
@@ -58,7 +58,7 @@
 					class="station-pulse"
 					style="animation-delay: {index * 0.4}s;"
 				></div>
-				<NumberBadge value={index + 1} color={accentColor} />
+				<Badge variant="number" aria-hidden="true" style={accentColor ? `background-color: ${accentColor}` : ''}>{String(index + 1).padStart(2, '0')}</Badge>
 			</div>
 			<!-- Vertical metro line connecting stations — SVG for DrawSVGPlugin animation -->
 			<svg
@@ -115,7 +115,7 @@
 				<div class="mt-3 flex flex-wrap items-center gap-1.5">
 					{#each post.tags as tag}
 						<span use:magnetic={{ strength: 2, radius: 30 }}>
-							<Tag text={tag} size="xs" active accentColor={accentColor} />
+							<Badge variant="tag-active" size="xs" style="border-color: {accentColor}30; background: {accentColor}15; color: {accentColor}">{tag}</Badge>
 						</span>
 					{/each}
 					<span class="ml-auto font-mono text-caption text-[var(--muted-foreground)]">
