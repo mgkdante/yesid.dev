@@ -5,6 +5,8 @@
 Status: draft Est. Sessions: 6 Depends on: 10, 13.
 Spec: docs/slices/slice-14-stack-builder-logic.md
 
+- [https://svelteflow.dev/](https://svelteflow.dev/) 
+
 FIRST FEATURE RELEASED UNDER A CD/CI PIPELINE
 
 Replace hardcoded scenario matching (7 authored scenarios + basic fallback) with a graph-based recommendation engine. Every possible domain combination (127 combos) produces a unique, contextual, educational stack recommendation. Recommendations include ordered tech with role labels, data flow narratives, cross-links to services and projects, proficiency-aware confidence levels, and tech toggle customization.

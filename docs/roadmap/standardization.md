@@ -1,29 +1,68 @@
 # Slice 17 — Standardization: Design System + Ports & Adapters
 
-**Status:** IN PROGRESS — Phase 1 Foundation
-**Est. Sessions:** 13-14 (across 7 sub-slices)
+**Status:** IN PROGRESS — Phase 1 Foundation (Constitution planned, ready to implement)
+**Est. Sessions:** 20-24 total (revised from 13-14 after deep planning session)
 **Depends on:** Slice 13 (Home Page) complete
 **Key constraint:** Visual IMPROVEMENTS allowed (bigger text, better consistency), but no new features. Structural refactor + design system unification.
 
-### Progress (as of 2026-04-12)
+### Progress (as of 2026-04-13)
 
 
-| Sub-slice                       | Status                | PR         |
-| ------------------------------- | --------------------- | ---------- |
-| 17a-1 Token Foundation          | COMPLETE              | #2 merged  |
-| 17a-2a Build Primitives         | COMPLETE              | #3 merged  |
-| 17a-2b Wire Primitives          | COMPLETE              | #4 merged  |
-| 17a-3a Color Lockdown           | COMPLETE              | #5 merged  |
-| 17a-3b Token Wiring             | IN PROGRESS           | —          |
-| 17a-5 Spacing & Layout          | planned               | —          |
-| 17a-6 Component Library Eval    | planned (research)    | —          |
-| 17d Component API               | planned (next after 17a) | —       |
-| 17a-4 Dead Code + Trivial Dedup | planned (after 17d)   | —          |
-| 17b Service Layer               | planned               | —          |
-| 17c Zod Schemas                 | planned               | —          |
-| 17e Motion Consolidation        | planned               | —          |
-| 17f Test Architecture           | planned               | —          |
-| 17g Learning Docs               | planned               | —          |
+| Sub-slice                        | Status                          | PR        | Sessions |
+| -------------------------------- | ------------------------------- | --------- | -------- |
+| 17a-1 Token Foundation           | COMPLETE                        | #2 merged | 1        |
+| 17a-2a Build Primitives          | COMPLETE                        | #3 merged | 1        |
+| 17a-2b Wire Primitives           | COMPLETE                        | #4 merged | 2        |
+| 17a-3a Color Lockdown            | COMPLETE                        | #5 merged | 2        |
+| 17a-3b Token Wiring              | COMPLETE                        | #6 merged | 1        |
+| 17a-5 Spacing & Layout + Const.  | PLANNED (plan written, 14 tasks) | —        | 2-3      |
+| 17a-6 Bits UI Integration        | PLANNED (needs impl plan)       | —         | 1-2      |
+| 17d Component API                | PLANNED (needs impl plan)       | —         | 4        |
+| 17e Motion Re-Engineering        | PLANNED (needs impl plan)       | —         | 2-3      |
+| 17a-4 Dead Code + Trivial Dedup  | PLANNED (needs impl plan)       | —         | 1        |
+| 17b Service Layer                | planned                         | —         | 2        |
+| 17c Zod Schemas                  | planned                         | —         | 0.5      |
+| 17f Test Architecture            | planned                         | —         | 1-2      |
+| 17g Learning Docs                | planned                         | —         | 2        |
+
+### Constitution Planning Session (2026-04-13)
+
+Deep planning session that defined the holistic design system constitution. Key outcomes:
+
+**Design Philosophy:**
+- Edge-to-edge layout for ALL pages (viewport is the canvas, not a centered box)
+- Typography as a design element (oversized type, mono annotations at edges)
+- Awwwards/Dribbble-level immersive design — young, bold, intentional
+- Bits UI for accessibility infrastructure, brand primitives for visual identity
+- Constitution governs all future development
+
+**Library Decisions:**
+- **Bits UI** → ADOPT (headless, Svelte 5 native, GSAP compatible, zero token conflicts)
+- **shadcn-svelte** → Cherry-pick inspiration (token naming conflicts)
+- **Skeleton** → REJECT (--spacing override, 200+ competing tokens, invasive globals)
+- **Flowbite Svelte** → REJECT (JS theming, dark mode mismatch, Svelte transition lock-in)
+
+**Architecture:**
+- 5 canonical breakpoints: 360/520/768/1024/1440 (foldable-first)
+- 5 semantic spacing tokens + Tailwind's default scale
+- 3 container tokens for text readability only (content, wide, prose)
+- 4 layout patterns: Asymmetric Split, Centered + Edge Decor, Full-Bleed Band, Edge-Anchored Grid
+- Motion presets built ground-up in 17e (not patching existing 75 GSAP calls)
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-13-constitution-design.md`
+- Implementation plan: `docs/plans/2026-04-13-slice-17a-5-spacing-layout-plan.md`
+- Wireframes: `.superpowers/brainstorm/919-1776054861/content/constitution-edge-to-edge.html`
+- Constitution document: `docs/reference/CONSTITUTION.md` (to be written in 17a-5)
+
+**Codebase Audit (deep research):**
+- 230 hardcoded spacing rules in scoped styles
+- 28 arbitrary Tailwind spacing values
+- 75 GSAP calls across 15 files, 18 CSS @keyframes in 10 files
+- 15 svelte-ignore a11y suppressions (all to be eliminated)
+- 121 responsive Tailwind classes + 56 CSS @media queries to migrate
+- 4 files > 500 lines (Manifesto 1006, tech-stack 909, HomeCloser 760, HeroBanner 734)
+- isTouchDevice() duplicated 3x, BlogSvgIcon/WorkSvgIcon 70% identical
 
 
 ---
