@@ -8,7 +8,7 @@
 		variants: {
 			variant: {
 				default: "bg-primary text-primary-foreground hover:bg-primary-hover [a]:hover:bg-primary/80",
-				outline: "border-border-subtle bg-transparent hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
+				outline: "border-border-subtle bg-transparent text-foreground hover:border-primary hover:text-primary aria-expanded:border-primary aria-expanded:text-primary",
 				secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
 				ghost: "hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground",
 				destructive: "bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30",
@@ -23,8 +23,18 @@
 				"icon-xs": "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
 				"icon-sm": "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
 				"icon-lg": "size-9",
+				"brand-sm": "gap-2 px-5 py-2.5 text-small font-semibold",
+				"brand": "gap-2 px-6 py-3 text-body font-semibold",
+				"brand-lg": "gap-2 px-8 py-4 text-body-lg font-semibold",
 			},
 		},
+		compoundVariants: [
+			{
+				variant: "default",
+				size: ["brand-sm", "brand", "brand-lg"],
+				class: "hover:-translate-y-px hover:shadow-glow-sm",
+			},
+		],
 		defaultVariants: {
 			variant: "default",
 			size: "default",

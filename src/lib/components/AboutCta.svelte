@@ -10,7 +10,8 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import TerminalCursor from './TerminalCursor.svelte';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
-	import { StopLabel, BrandButton, TerminalChrome } from '$lib/components/brand';
+	import { StopLabel, TerminalChrome } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 
 	let { cta, stop = '09', label = 'NEXT' }: { cta: AboutCta; stop?: string; label?: string } = $props();
 
@@ -63,9 +64,9 @@
 
 		<!-- Action row: button + availability -->
 		<div class="mt-3 flex flex-wrap items-center gap-3">
-			<BrandButton variant="primary" size="sm" href={cta.buttonHref}>
+			<Button variant="default" size="brand-sm" href={cta.buttonHref}>
 				{buttonLabel}
-			</BrandButton>
+			</Button>
 			<span class="font-mono text-caption tracking-[1px] text-[var(--accent)]">
 				{availability}
 			</span>

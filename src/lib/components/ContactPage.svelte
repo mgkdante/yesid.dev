@@ -9,7 +9,8 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import TerminalCursor from './TerminalCursor.svelte';
-	import { BrandButton, TerminalChrome } from '$lib/components/brand';
+	import { TerminalChrome } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 
 	const c = contactContent;
 
@@ -273,10 +274,10 @@
 								{/if}
 
 								<!-- Submit button -->
-								<BrandButton variant="primary" size="sm" type="submit">
+								<Button variant="default" size="brand-sm" type="submit">
 									<span class="opacity-60">~ $</span>
 									{resolveLocale(c.formTerminal.submitLabel, 'en')}
-								</BrandButton>
+								</Button>
 
 							</div>
 						</form>

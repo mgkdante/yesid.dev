@@ -9,7 +9,7 @@
 	import { onMount } from 'svelte';
 	import { gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { BrandButton } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 
 	let {
 		scenario,
@@ -80,9 +80,9 @@
 
 	<!-- CTA -->
 	<div class="mt-4">
-		<BrandButton variant="primary" size="sm" href="/contact" data-testid="scenario-cta">
+		<Button variant="default" size="brand-sm" href="/contact" data-testid="scenario-cta">
 			Let's build this <span aria-hidden="true">&rarr;</span>
-		</BrandButton>
+		</Button>
 	</div>
 </div>
 

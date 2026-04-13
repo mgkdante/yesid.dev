@@ -11,7 +11,7 @@
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { getTechItemContent, getOutgoingRelations, getIncomingRelations, getTechItemById } from '$lib/data/tech-stack.js';
 	import CollapsibleSection from './CollapsibleSection.svelte';
-	import { BrandButton } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 
 	let {
 		item,
@@ -225,9 +225,9 @@
 
 		<!-- CTA -->
 		<div class="sheet-cta-wrapper">
-			<BrandButton variant="primary" size="sm" href="/contact">
+			<Button variant="default" size="brand-sm" href="/contact">
 				Let's build with {item.name} <span aria-hidden="true">→</span>
-			</BrandButton>
+			</Button>
 		</div>
 	</div>
 </div>

@@ -25,7 +25,7 @@
 	import MetroNetwork from '$lib/motion/svg/MetroNetwork.svelte';
 	import HeroMetrics from './HeroMetrics.svelte';
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
-	import { BrandButton } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;
@@ -528,12 +528,12 @@
 						</p>
 
 						<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
-							<BrandButton variant="primary" size="lg" href="/work" data-testid="hero-cta-work">
+							<Button variant="default" size="brand-lg" href="/work" data-testid="hero-cta-work">
 								{ctaWorkLabel}
-							</BrandButton>
-							<BrandButton variant="ghost" size="lg" href="/contact" data-testid="hero-cta-contact">
+							</Button>
+							<Button variant="outline" size="brand-lg" href="/contact" data-testid="hero-cta-contact">
 								{ctaContactLabel}
-							</BrandButton>
+							</Button>
 						</div>
 					</div>
 

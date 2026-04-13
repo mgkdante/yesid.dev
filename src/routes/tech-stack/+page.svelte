@@ -12,7 +12,8 @@
 	import StackScenarioCard from '$lib/components/StackScenarioCard.svelte';
 	import TerminalCursor from '$lib/components/TerminalCursor.svelte';
 	import InfraFrame from '$lib/components/InfraFrame.svelte';
-	import { StatusDot, BrandButton } from '$lib/components/brand';
+	import { StatusDot } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 
 	let { data } = $props();
 
@@ -202,12 +203,12 @@
 		</div>
 
 		<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
-			<BrandButton variant="primary" size="md" onclick={() => document.getElementById('diagram-zone')?.scrollIntoView({ behavior: 'smooth' })}>
+			<Button variant="default" size="brand" onclick={() => document.getElementById('diagram-zone')?.scrollIntoView({ behavior: 'smooth' })}>
 				Explore Diagram <span aria-hidden="true">&darr;</span>
-			</BrandButton>
-			<BrandButton variant="ghost" size="md" onclick={scrollToBuild}>
+			</Button>
+			<Button variant="outline" size="brand" onclick={scrollToBuild}>
 				Build Your Stack <span aria-hidden="true">&rarr;</span>
-			</BrandButton>
+			</Button>
 		</div>
 	</section>
 
@@ -393,12 +394,12 @@
 			Whether it's a data pipeline, a web app, or a mobile product — the infrastructure is ready.
 		</p>
 		<div class="cta-buttons">
-			<BrandButton variant="primary" size="md" href="/contact">
+			<Button variant="default" size="brand" href="/contact">
 				Get In Touch <span aria-hidden="true">&rarr;</span>
-			</BrandButton>
-			<BrandButton variant="ghost" size="md" href="/services">
+			</Button>
+			<Button variant="outline" size="brand" href="/services">
 				View Services
-			</BrandButton>
+			</Button>
 		</div>
 		<span class="cta-avail">Available for Q2 2026</span>
 	</section>

@@ -9,7 +9,7 @@
 	import { Marked } from 'marked';
 	import { getOutgoingRelations, getIncomingRelations, getTechItemContent } from '$lib/data/tech-stack.js';
 	import CollapsibleSection from './CollapsibleSection.svelte';
-	import { BrandButton } from '$lib/components/brand';
+	import { Button } from '$lib/components/ui/button';
 
 	let {
 		item = null,
@@ -143,9 +143,9 @@
 
 			<!-- CTA -->
 			<div class="mt-4">
-				<BrandButton variant="primary" size="sm" href="/contact" data-testid="panel-cta">
+				<Button variant="default" size="brand-sm" href="/contact" data-testid="panel-cta">
 					Let's build with {item.name} <span aria-hidden="true">&rarr;</span>
-				</BrandButton>
+				</Button>
 			</div>
 		</div>
 	{:else}

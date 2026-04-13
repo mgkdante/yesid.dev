@@ -12,7 +12,6 @@ describe('Brand barrel export', () => {
     'HazardStripe',
     'GlowOverlay',
     'MetricDisplay',
-    'BrandButton',
     'CardBase',
     'CornerMarks',
     'TerminalChrome',
@@ -20,7 +19,7 @@ describe('Brand barrel export', () => {
     'GradientSeparator',
   ];
 
-  it('exports all 15 brand primitives', () => {
+  it('exports all 14 brand primitives', () => {
     for (const name of expectedComponents) {
       expect(brand).toHaveProperty(name);
       expect((brand as Record<string, unknown>)[name]).toBeTruthy();
@@ -31,7 +30,7 @@ describe('Brand barrel export', () => {
     const componentExports = Object.keys(brand).filter(
       (key) => !key.endsWith('Props') && key !== 'TerminalFooterItem' && typeof (brand as Record<string, unknown>)[key] !== 'undefined'
     );
-    // 15 components + GradientSeparator = 15 (GradientSeparator is the 15th)
-    expect(componentExports.length).toBeGreaterThanOrEqual(15);
+    // 14 components (BrandButton migrated to ui/button)
+    expect(componentExports.length).toBeGreaterThanOrEqual(14);
   });
 });
