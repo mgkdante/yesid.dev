@@ -109,7 +109,7 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
-		color: #E07800;
+		color: var(--brand-primary);
 		margin-bottom: 1rem;
 	}
 
@@ -117,16 +117,16 @@
 		font-family: 'Inter', sans-serif;
 		font-size: clamp(2rem, 4vw, 3.5rem);
 		font-weight: 800;
-		color: var(--text-primary, #f5f5f0);
+		color: var(--text-primary);
 		line-height: 1.1;
 		margin-bottom: 0.5rem;
 	}
 
-	.title-dot { color: #E07800; }
+	.title-dot { color: var(--brand-primary); }
 
 	.service-subtitle {
 		font-size: 1.125rem;
-		color: #555;
+		color: var(--text-muted);
 		margin-bottom: 1rem;
 		font-style: italic;
 	}
@@ -134,7 +134,7 @@
 	.service-description {
 		font-size: 1rem;
 		line-height: 1.7;
-		color: var(--text-secondary, #999);
+		color: var(--text-secondary);
 		max-width: 55ch;
 		margin-bottom: 1.5rem;
 	}
@@ -150,17 +150,17 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.7rem;
 		padding: 0.25rem 0.625rem;
-		border: 1px solid var(--border, #282828);
+		border: 1px solid var(--border);
 		border-radius: 999px;
-		color: #888;
+		color: var(--text-secondary);
 		background: transparent;
 		cursor: default;
 		transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
 	}
 	.stack-pill:hover {
-		color: #E07800;
-		border-color: #E07800;
-		background: rgba(224, 120, 0, 0.08);
+		color: var(--brand-primary);
+		border-color: var(--brand-primary);
+		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
 		transform: translateY(-1px);
 	}
 
@@ -169,13 +169,13 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.8rem;
 		font-weight: 600;
-		color: #E07800;
+		color: var(--brand-primary);
 		text-decoration: none;
 		border-bottom: 1px solid transparent;
 		transition: border-color 0.2s;
 	}
 	.deep-dive-cta:hover {
-		border-bottom-color: #E07800;
+		border-bottom-color: var(--brand-primary);
 	}
 
 	/* SVG container — rounded box that morphs to circle on hover/tap */
@@ -187,8 +187,8 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 1.25rem;
-		border: 1px solid var(--border, #1a1a1a);
-		background: #1a1a1a;
+		border: 1px solid var(--border);
+		background: var(--bg-card);
 		padding: 2rem;
 		cursor: pointer;
 		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -200,10 +200,10 @@
 	/* Hover morph — CSS handles desktop, JS class handles mobile tap */
 	.service-svg-box:hover,
 	.service-svg-box:global(.morphed) {
-		border-color: #E07800;
+		border-color: var(--brand-primary);
 		border-radius: 50%;
 		transform: scale(1.06) rotate(3deg);
-		box-shadow: 0 0 24px rgba(224, 120, 0, 0.2), 0 0 60px rgba(224, 120, 0, 0.08);
+		box-shadow: 0 0 24px color-mix(in srgb, var(--brand-primary) 20%, transparent), 0 0 60px color-mix(in srgb, var(--brand-primary) 8%, transparent);
 	}
 
 	.svg-inner {
