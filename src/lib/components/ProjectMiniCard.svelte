@@ -60,14 +60,14 @@
 		padding: 1.25rem 1.5rem;
 		background: var(--bg-primary);
 		border: 1px solid var(--border-subtle);
-		border-radius: 0.75rem;
+		border-radius: var(--radius-lg);
 		text-decoration: none;
-		transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+		transition: border-color var(--duration-slow) var(--ease-default), box-shadow var(--duration-slow) var(--ease-default), transform var(--duration-slow) var(--ease-default);
 	}
 
 	.project-mini-card:hover {
 		border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
-		box-shadow: 0 0 16px color-mix(in srgb, var(--brand-primary) 10%, transparent), 0 2px 8px rgba(0, 0, 0, 0.3);
+		box-shadow: var(--shadow-card);
 		transform: translateY(-2px);
 	}
 
@@ -77,11 +77,11 @@
 	}
 
 	.card-title {
-		font-family: 'Inter', sans-serif;
+		font-family: var(--font-heading);
 		font-size: 0.9375rem;
 		font-weight: 700;
 		color: var(--text-primary);
-		transition: color 0.2s;
+		transition: color var(--duration-normal);
 	}
 	.project-mini-card:hover .card-title {
 		color: var(--brand-primary);
@@ -102,13 +102,13 @@
 	}
 
 	.card-pill {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.625rem;
 		padding: 0.1875rem 0.5rem;
 		border: 1px solid var(--border-subtle);
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		color: var(--text-muted);
-		transition: border-color 0.2s;
+		transition: border-color var(--duration-normal);
 	}
 	.project-mini-card:hover .card-pill {
 		border-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
@@ -122,7 +122,7 @@
 	.card-arrow {
 		font-size: 1.125rem;
 		color: var(--border-strong);
-		transition: color 0.2s, transform 0.2s;
+		transition: color var(--duration-normal), transform var(--duration-normal);
 		flex-shrink: 0;
 	}
 	.project-mini-card:hover .card-arrow {

@@ -120,10 +120,10 @@
 		cursor: pointer;
 		text-align: left;
 		transition:
-			border-color 0.2s ease,
-			background-color 0.2s ease,
-			opacity 0.2s ease,
-			box-shadow 0.2s ease;
+			border-color var(--duration-normal) var(--ease-default),
+			background-color var(--duration-normal) var(--ease-default),
+			opacity var(--duration-normal) var(--ease-default),
+			box-shadow var(--duration-normal) var(--ease-default);
 	}
 
 	.domain-option:hover:not(.disabled) {
@@ -138,7 +138,7 @@
 	.domain-option.selected {
 		border-color: var(--brand-primary);
 		background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		box-shadow: var(--shadow-glow-sm);
 	}
 
 	.domain-option.disabled {

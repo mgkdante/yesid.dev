@@ -68,7 +68,7 @@
 		align-items: center;
 		gap: 0.75rem;
 		text-decoration: none;
-		transition: color 0.2s;
+		transition: color var(--duration-normal);
 	}
 
 	/* Push the "next" link to the right when prev is absent */
@@ -80,7 +80,7 @@
 	.nav-arrow {
 		font-size: 1.25rem;
 		color: var(--text-muted);
-		transition: color 0.2s;
+		transition: color var(--duration-normal);
 	}
 
 	.nav-meta {
@@ -90,7 +90,7 @@
 	}
 
 	.nav-label {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		color: var(--text-muted);
@@ -99,7 +99,7 @@
 	.nav-title {
 		font-weight: 600;
 		color: var(--text-primary);
-		transition: color 0.2s;
+		transition: color var(--duration-normal);
 	}
 
 	.nav-link:hover .nav-title {

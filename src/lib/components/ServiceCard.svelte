@@ -104,7 +104,7 @@
 
 	.station-counter {
 		display: block;
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		font-weight: 600;
 		text-transform: uppercase;
@@ -114,7 +114,7 @@
 	}
 
 	.service-title {
-		font-family: 'Inter', sans-serif;
+		font-family: var(--font-heading);
 		font-size: clamp(2rem, 4vw, 3.5rem);
 		font-weight: 800;
 		color: var(--text-primary);
@@ -147,15 +147,15 @@
 	}
 
 	.stack-pill {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.7rem;
 		padding: 0.25rem 0.625rem;
 		border: 1px solid var(--border);
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		color: var(--text-secondary);
 		background: transparent;
 		cursor: default;
-		transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
+		transition: color var(--duration-normal), border-color var(--duration-normal), background var(--duration-normal), transform var(--duration-normal);
 	}
 	.stack-pill:hover {
 		color: var(--brand-primary);
@@ -166,13 +166,13 @@
 
 	.deep-dive-cta {
 		display: inline-block;
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.8rem;
 		font-weight: 600;
 		color: var(--brand-primary);
 		text-decoration: none;
 		border-bottom: 1px solid transparent;
-		transition: border-color 0.2s;
+		transition: border-color var(--duration-normal);
 	}
 	.deep-dive-cta:hover {
 		border-bottom-color: var(--brand-primary);
@@ -191,10 +191,10 @@
 		background: var(--bg-card);
 		padding: 2rem;
 		cursor: pointer;
-		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-		            border-color 0.3s ease,
-		            border-radius 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-		            box-shadow 0.4s ease;
+		transition: transform var(--duration-slower) var(--ease-bounce),
+		            border-color var(--duration-slow) var(--ease-default),
+		            border-radius var(--duration-slower) var(--ease-bounce),
+		            box-shadow 0.4s var(--ease-default);
 	}
 
 	/* Hover morph — CSS handles desktop, JS class handles mobile tap */
@@ -203,7 +203,7 @@
 		border-color: var(--brand-primary);
 		border-radius: 50%;
 		transform: scale(1.06) rotate(3deg);
-		box-shadow: 0 0 24px color-mix(in srgb, var(--brand-primary) 20%, transparent), 0 0 60px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		box-shadow: var(--shadow-glow-lg);
 	}
 
 	.svg-inner {

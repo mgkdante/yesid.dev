@@ -236,7 +236,7 @@
 	.bottomsheet-backdrop {
 		position: fixed;
 		inset: 0;
-		z-index: 50;
+		z-index: var(--z-sheet);
 		background: rgba(0, 0, 0, 0.5);
 	}
 
@@ -245,7 +245,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		z-index: 51;
+		z-index: calc(var(--z-sheet) + 1);
 		max-height: 85vh;
 		overflow-y: auto;
 		background: var(--bg-surface);
@@ -266,9 +266,9 @@
 	.handle-bar {
 		width: 2.5rem;
 		height: 0.25rem;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: var(--text-muted);
-		opacity: 0.4;
+		opacity: var(--opacity-dim);
 	}
 
 	.sheet-header {

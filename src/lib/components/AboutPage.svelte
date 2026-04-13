@@ -219,7 +219,7 @@
 	/* ═══ BENTO CARD — UNIFORM BORDER + HOVER ═══ */
 	:global(.bento-card) {
 		border-color: color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
-		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+		transition: border-color var(--duration-slow) var(--ease-default), box-shadow var(--duration-slow) var(--ease-default);
 	}
 	:global(.bento-card:hover) {
 		border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent) !important;

@@ -169,7 +169,7 @@
 	.menu-overlay {
 		position: fixed;
 		inset: 0;
-		z-index: 60;
+		z-index: var(--z-menu);
 		background: var(--bg-primary);
 		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--brand-primary) 4%, transparent) 0%, transparent 60%);
 		display: flex;
@@ -184,7 +184,7 @@
 		opacity: 1;
 		transform: scaleY(1);
 		transform-origin: top center;
-		transition: opacity 0.25s ease-out, transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+		transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-slow) cubic-bezier(0.33, 1, 0.68, 1);
 	}
 
 	/* Entering: render invisible, no transition (painted first, then class removed → transitions in) */
@@ -198,7 +198,7 @@
 	.menu-overlay.closing {
 		opacity: 0;
 		transform: scaleY(0);
-		transition: opacity 0.2s ease-in, transform 0.25s cubic-bezier(0.32, 0, 0.67, 0);
+		transition: opacity var(--duration-normal) ease-in, transform var(--duration-normal) cubic-bezier(0.32, 0, 0.67, 0);
 	}
 
 	/* ── Menu items: stagger via CSS custom property ── */
@@ -213,9 +213,9 @@
 		opacity: 1;
 		transform: translateY(0);
 		transition:
-			opacity 0.2s ease-out calc(var(--item-index) * 0.04s),
-			transform 0.2s ease-out calc(var(--item-index) * 0.04s),
-			color 0.15s;
+			opacity var(--duration-normal) var(--ease-default) calc(var(--item-index) * 0.04s),
+			transform var(--duration-normal) var(--ease-default) calc(var(--item-index) * 0.04s),
+			color var(--duration-fast);
 	}
 
 	/* Items hidden during entrance */
@@ -250,7 +250,7 @@
 		border-radius: 50%;
 		border: 2px solid var(--border-subtle);
 		margin-top: 5px;
-		transition: border-color 0.15s;
+		transition: border-color var(--duration-fast);
 	}
 	.menu-stop-active {
 		border-color: var(--brand-primary);
@@ -289,11 +289,11 @@
 	}
 
 	.menu-label {
-		font-family: 'Inter', sans-serif;
+		font-family: var(--font-heading);
 		font-size: 24px;
 		font-weight: 600;
 		color: var(--text-light);
-		transition: color 0.15s, text-shadow 0.15s;
+		transition: color var(--duration-fast), text-shadow var(--duration-fast);
 	}
 	.menu-item-active .menu-label {
 		color: var(--brand-primary);
@@ -305,7 +305,7 @@
 	}
 
 	.menu-subtitle {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 11px;
 		color: var(--text-muted);
 		letter-spacing: 0.3px;
@@ -325,7 +325,7 @@
 		background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
 	}
 	.menu-footer-label {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 10px;
 		letter-spacing: 3px;
 		color: color-mix(in srgb, var(--brand-primary) 50%, transparent);

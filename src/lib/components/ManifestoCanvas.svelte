@@ -230,7 +230,7 @@
 	.manifesto__canvas {
 		position: absolute;
 		inset: 0;
-		z-index: 1;
+		z-index: var(--z-content);
 		pointer-events: none;
 	}
 
@@ -249,6 +249,6 @@
 		transition:
 			left 0.8s ease-out,
 			top 0.8s ease-out;
-		z-index: 0;
+		z-index: var(--z-base);
 	}
 </style>

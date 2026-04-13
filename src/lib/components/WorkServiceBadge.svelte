@@ -49,13 +49,13 @@
 
 	/* Hover: glow, bg shift, slight scale — makes badges feel interactive */
 	.service-badge {
-		transition: background-color 0.2s ease, border-color 0.2s ease,
-			transform 0.2s ease, box-shadow 0.2s ease;
+		transition: background-color var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default),
+			transform var(--duration-normal) var(--ease-default), box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.service-badge:hover {
 		background-color: var(--border-strong);
 		border-color: color-mix(in srgb, var(--brand-primary) 70%, transparent);
 		transform: scale(1.02);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		box-shadow: var(--shadow-glow-md);
 	}
 </style>

@@ -214,12 +214,12 @@
 
 	.back-link {
 		display: inline-block;
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		color: var(--brand-primary);
 		text-decoration: none;
 		margin-bottom: 1.5rem;
-		transition: opacity 0.15s;
+		transition: opacity var(--duration-fast);
 	}
 	.back-link:hover { text-decoration: underline; }
 
@@ -250,17 +250,17 @@
 		background: var(--bg-card);
 		padding: 2rem;
 		cursor: pointer;
-		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-		            border-color 0.3s ease,
-		            border-radius 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-		            box-shadow 0.4s ease;
+		transition: transform var(--duration-slower) var(--ease-bounce),
+		            border-color var(--duration-slow) var(--ease-default),
+		            border-radius var(--duration-slower) var(--ease-bounce),
+		            box-shadow 0.4s var(--ease-default);
 	}
 	.hero-svg-box:hover,
 	.hero-svg-box:global(.morphed) {
 		border-color: var(--brand-primary);
 		border-radius: 50%;
 		transform: scale(1.06) rotate(3deg);
-		box-shadow: 0 0 24px color-mix(in srgb, var(--brand-primary) 20%, transparent), 0 0 60px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		box-shadow: var(--shadow-glow-lg);
 	}
 
 	@media (max-width: 767px) {
@@ -293,7 +293,7 @@
 	}
 
 	.detail-title {
-		font-family: 'Inter', sans-serif;
+		font-family: var(--font-heading);
 		font-size: clamp(1.75rem, 3.5vw, 3rem);
 		font-weight: 800;
 		color: var(--text-primary);
@@ -320,7 +320,7 @@
 
 	/* Centered content — same max-w-6xl as WorkDetailPage */
 	.centered-content {
-		max-width: 72rem;
+		max-width: var(--container-wide);
 		margin: 0 auto;
 		padding: 0 1.25rem;
 		display: flex;
@@ -370,14 +370,14 @@
 	}
 
 	.related-title {
-		font-family: 'Inter', sans-serif;
+		font-family: var(--font-heading);
 		font-size: 1.25rem;
 		font-weight: 700;
 		color: var(--text-primary);
 	}
 
 	.related-link {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		color: var(--brand-primary);
 		text-decoration: none;

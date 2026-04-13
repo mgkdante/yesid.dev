@@ -135,6 +135,6 @@
 	.metro-dot-hollow {
 		background: transparent;
 		border: 1.5px solid var(--border-subtle);
-		transition: all 200ms;
+		transition: all var(--duration-normal);
 	}
 </style>

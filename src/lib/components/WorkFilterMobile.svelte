@@ -93,7 +93,7 @@
 
 			<!-- Tech Stack -->
 			{#if stack.length > 0 && onStackSelect}
-				<div class="mt-3 border-t border-dashed border-border-strong pt-2">
+				<div class="mt-3 divider-dashed pt-2">
 					<div class="label-section font-semibold">
 						{resolveLocale(labels.stack, 'en')}
 					</div>
@@ -119,7 +119,7 @@
 			{/if}
 
 			<!-- Tags -->
-			<div class="mt-3 border-t border-dashed border-border-strong pt-2">
+			<div class="mt-3 divider-dashed pt-2">
 				<div class="label-section font-semibold">
 					{resolveLocale(labels.tags, 'en')}
 				</div>

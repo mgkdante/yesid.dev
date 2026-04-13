@@ -75,7 +75,7 @@
 						</button>
 					{/each}
 				</div>
-				<div class="mt-2 border-t border-dashed border-border-strong"></div>
+				<div class="mt-2 divider-dashed"></div>
 			{/if}
 
 			<!-- Date range -->
@@ -104,7 +104,7 @@
 			</div>
 
 			<!-- Tags -->
-			<div class="mt-3 border-t border-dashed border-border-strong pt-2">
+			<div class="mt-3 divider-dashed pt-2">
 				<div class="flex flex-wrap gap-1.5">
 					<button
 						class="rounded px-2 py-1 text-caption transition-colors"
@@ -129,7 +129,7 @@
 
 			<!-- Corner link (last) -->
 			{#if cornerLink}
-				<div class="mt-3 border-t border-dashed border-border-strong pt-2">
+				<div class="mt-3 divider-dashed pt-2">
 					<a
 						href={cornerLink.href}
 						class="text-xs font-semibold no-underline"

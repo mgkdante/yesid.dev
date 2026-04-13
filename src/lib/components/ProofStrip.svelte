@@ -70,10 +70,10 @@
 		gap: 0.375rem;
 		flex-shrink: 0;
 		text-decoration: none;
-		transition: opacity 0.15s;
+		transition: opacity var(--duration-fast);
 	}
 	.proof-link:hover {
-		opacity: 0.75;
+		opacity: var(--opacity-muted);
 	}
 
 	.proof-dot {
@@ -92,7 +92,7 @@
 
 	.proof-count {
 		flex-shrink: 0;
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.8rem;
 		font-weight: 700;
 		color: var(--brand-primary);
