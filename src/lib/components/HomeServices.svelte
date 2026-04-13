@@ -329,7 +329,7 @@
 <style>
 	/* Section heading — matches Terminus style */
 	.section-heading {
-		font-family: Inter, sans-serif;
+		font-family: var(--font-heading);
 		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
 		color: var(--text-primary);
@@ -340,7 +340,7 @@
 		color: var(--brand-primary);
 	}
 	.section-subheading {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 13px;
 		color: var(--text-muted);
 		letter-spacing: 2px;
@@ -385,7 +385,7 @@
 	.services-card:hover {
 		border-color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
 		transform: translateY(-2px);
-		box-shadow: 0 8px 32px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		box-shadow: var(--shadow-section);
 	}
 
 	/* Service title — responsive via clamp */
@@ -450,7 +450,7 @@
 		font-size: 10px;
 		color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
 		letter-spacing: 1.5px;
-		z-index: 0;
+		z-index: var(--z-base);
 	}
 
 	/* Edge detail positioning */
@@ -469,11 +469,11 @@
 	/* Reduce edge detail opacity on mobile — still visible but subtler */
 	@media (max-width: 767px) {
 		.edge-details {
-			opacity: 0.05;
+			opacity: var(--opacity-faint);
 		}
 
 		.train-svg {
-			opacity: 0.05;
+			opacity: var(--opacity-faint);
 		}
 	}
 </style>

@@ -335,7 +335,7 @@
 		background-image:
 			repeating-linear-gradient(90deg, color-mix(in srgb, var(--brand-primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--brand-primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px),
 			repeating-linear-gradient(0deg, color-mix(in srgb, var(--brand-primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--brand-primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px);
-		z-index: 0;
+		z-index: var(--z-base);
 		opacity: 0;
 	}
 
@@ -365,7 +365,7 @@
 		animation-name: flowRight;
 		animation-timing-function: linear;
 		animation-iteration-count: infinite;
-		z-index: 1;
+		z-index: var(--z-content);
 		opacity: 0;
 	}
 
@@ -382,7 +382,7 @@
 		animation-name: flowDown;
 		animation-timing-function: linear;
 		animation-iteration-count: infinite;
-		z-index: 1;
+		z-index: var(--z-content);
 		opacity: 0;
 	}
 
@@ -400,7 +400,7 @@
 	.manifesto__stripe {
 		position: absolute;
 		overflow: hidden;
-		z-index: 2;
+		z-index: calc(var(--z-content) + 1);
 		opacity: 0;
 	}
 
@@ -421,7 +421,7 @@
 		top: -240px;
 		left: -240px;
 		background: repeating-linear-gradient(-45deg, var(--brand-accent) 0px, var(--brand-accent) 12px, var(--bg-manifesto) 12px, var(--bg-manifesto) 24px);
-		opacity: 0.18;
+		opacity: var(--opacity-subtle);
 	}
 
 	.manifesto__stripe--br {
@@ -436,7 +436,7 @@
 		bottom: -240px;
 		right: -240px;
 		background: repeating-linear-gradient(-45deg, var(--brand-accent) 0px, var(--brand-accent) 12px, var(--bg-manifesto) 12px, var(--bg-manifesto) 24px);
-		opacity: 0.18;
+		opacity: var(--opacity-subtle);
 	}
 
 	.manifesto__stripe--tr {
@@ -451,7 +451,7 @@
 		top: -130px;
 		right: -130px;
 		background: repeating-linear-gradient(45deg, var(--brand-accent) 0px, var(--brand-accent) 7px, var(--bg-manifesto) 7px, var(--bg-manifesto) 14px);
-		opacity: 0.09;
+		opacity: var(--opacity-faint);
 	}
 
 	.manifesto__stripe--bl {
@@ -466,14 +466,14 @@
 		bottom: -130px;
 		left: -130px;
 		background: repeating-linear-gradient(45deg, var(--brand-accent) 0px, var(--brand-accent) 7px, var(--bg-manifesto) 7px, var(--bg-manifesto) 14px);
-		opacity: 0.09;
+		opacity: var(--opacity-faint);
 	}
 
 	/* ── BG Layer 6: Beck-style Route Lines ──────────────────────── */
 	.manifesto__beck-line {
 		position: absolute;
 		background: color-mix(in srgb, var(--brand-primary) 6%, transparent);
-		z-index: 1;
+		z-index: var(--z-content);
 		opacity: 0;
 	}
 
@@ -507,7 +507,7 @@
 		font-size: 9px;
 		font-weight: 600;
 		letter-spacing: 1px;
-		z-index: 2;
+		z-index: calc(var(--z-content) + 1);
 		opacity: 0;
 		white-space: nowrap;
 		pointer-events: none;
@@ -547,7 +547,7 @@
 		display: flex;
 		align-items: center;
 		gap: 16px;
-		z-index: 3;
+		z-index: calc(var(--z-content) + 2);
 		opacity: 0;
 		translate: -8px 0;
 	}
@@ -586,7 +586,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 6px;
-		z-index: 3;
+		z-index: calc(var(--z-content) + 2);
 		opacity: 0;
 		translate: 8px 0;
 	}
@@ -619,7 +619,7 @@
 		transform: translateX(-50%);
 		display: flex;
 		gap: 80px;
-		z-index: 3;
+		z-index: calc(var(--z-content) + 2);
 		opacity: 0;
 		translate: 0 -8px;
 	}
@@ -653,7 +653,7 @@
 		display: flex;
 		align-items: center;
 		gap: 20px;
-		z-index: 3;
+		z-index: calc(var(--z-content) + 2);
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 1px;
@@ -689,7 +689,7 @@
 		position: absolute;
 		left: 60px;
 		bottom: 80px;
-		z-index: 3;
+		z-index: calc(var(--z-content) + 2);
 		font-family: var(--font-mono);
 		display: flex;
 		flex-direction: column;
@@ -717,7 +717,7 @@
 		position: absolute;
 		display: flex;
 		gap: 6px;
-		z-index: 3;
+		z-index: calc(var(--z-content) + 2);
 		opacity: 0;
 	}
 
@@ -738,7 +738,7 @@
 		height: 12px;
 		border-right: 2px solid var(--brand-primary);
 		border-bottom: 2px solid var(--brand-primary);
-		opacity: 0.12;
+		opacity: var(--opacity-subtle);
 	}
 
 	.manifesto__chevrons--right .manifesto__chevron {
@@ -757,10 +757,10 @@
 		letter-spacing: 2px;
 		color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
 		border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
-		border-radius: 4px;
+		border-radius: var(--radius-sm);
 		padding: 3px 8px;
 		text-transform: uppercase;
-		z-index: 3;
+		z-index: calc(var(--z-content) + 2);
 		opacity: 0;
 	}
 
@@ -777,7 +777,7 @@
 	/* ── Center Content ──────────────────────────────────────────── */
 	.manifesto__content {
 		position: relative;
-		z-index: 10;
+		z-index: calc(var(--z-content) + 9);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -793,7 +793,7 @@
 		margin-bottom: 36px;
 		padding: 8px 16px;
 		border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);
-		border-radius: 4px;
+		border-radius: var(--radius-sm);
 		background: color-mix(in srgb, var(--brand-primary) 4%, transparent);
 		opacity: 0;
 	}
@@ -857,11 +857,11 @@
 		letter-spacing: 0.04em;
 		color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
 		border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);
-		border-radius: 9999px;
+		border-radius: var(--radius-pill);
 		padding: 8px 20px;
 		background: color-mix(in srgb, var(--brand-primary) 4%, transparent);
 		text-decoration: none;
-		transition: all 200ms ease;
+		transition: all var(--duration-normal) var(--ease-default);
 		opacity: 0;
 		transform: translateY(15px);
 	}
@@ -879,7 +879,7 @@
 		border-radius: 50%;
 		transform: translate(-50%, -50%);
 		pointer-events: none;
-		z-index: 4;
+		z-index: calc(var(--z-content) + 3);
 		animation: ripple-expand 1.2s ease-out forwards;
 	}
 
@@ -889,7 +889,7 @@
 		border-radius: 50%;
 		transform: translate(-50%, -50%);
 		pointer-events: none;
-		z-index: 4;
+		z-index: calc(var(--z-content) + 3);
 		animation: ripple-inner 0.8s ease-out forwards;
 	}
 
@@ -963,7 +963,7 @@
 		}
 
 		.manifesto__chevrons {
-			opacity: 0.08;
+			opacity: var(--opacity-faint);
 		}
 
 		.manifesto__badge {

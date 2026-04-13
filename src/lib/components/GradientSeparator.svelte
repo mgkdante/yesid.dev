@@ -39,7 +39,7 @@
 <style>
 	.gradient-separator-line {
 		height: 2px;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent), var(--brand-primary), var(--brand-accent));
 		background-size: 200% 100%;
 		animation: gradient-flow 3s linear infinite;

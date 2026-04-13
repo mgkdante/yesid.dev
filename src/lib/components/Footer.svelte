@@ -98,7 +98,7 @@
 	.footer-gradient-sep {
 		height: 1px;
 		background: linear-gradient(90deg, transparent, var(--brand-primary) 20%, var(--brand-primary) 80%, transparent);
-		opacity: 0.15;
+		opacity: var(--opacity-subtle);
 	}
 
 	.footer-status-border {

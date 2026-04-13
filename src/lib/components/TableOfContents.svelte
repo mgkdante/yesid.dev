@@ -287,7 +287,7 @@
 		border: none;
 		border-left: 2px solid transparent;
 		padding: 0.2rem 0 0.2rem 0.5rem;
-		border-radius: 0 0.25rem 0.25rem 0;
+		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 	}
 	.toc-link:hover {
 		color: var(--text-light);
@@ -308,7 +308,7 @@
 		width: 18px;
 		height: 18px;
 		color: var(--text-muted);
-		transition: transform 0.2s ease, color 0.15s ease;
+		transition: transform var(--duration-normal) var(--ease-default), color var(--duration-fast) var(--ease-default);
 		border: none;
 		background: none;
 		cursor: pointer;
@@ -318,7 +318,7 @@
 	.toc-body {
 		display: grid;
 		grid-template-rows: 0fr;
-		transition: grid-template-rows 0.3s ease;
+		transition: grid-template-rows var(--duration-slow) var(--ease-default);
 	}
 	.toc-body.expanded {
 		grid-template-rows: 1fr;

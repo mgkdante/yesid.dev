@@ -90,18 +90,18 @@
 		color: var(--text-primary);
 		cursor: pointer;
 		transition:
-			border-color 0.2s ease,
-			background-color 0.2s ease,
-			transform 0.2s ease,
-			opacity 0.4s ease,
-			box-shadow 0.2s ease;
+			border-color var(--duration-normal) var(--ease-default),
+			background-color var(--duration-normal) var(--ease-default),
+			transform var(--duration-normal) var(--ease-default),
+			opacity 0.4s var(--ease-default),
+			box-shadow var(--duration-normal) var(--ease-default);
 	}
 
 	.stack-node:hover {
 		border-color: var(--brand-primary);
 		background: var(--bg-elevated);
 		transform: scale(1.05);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+		box-shadow: var(--shadow-glow-md);
 	}
 
 	.stack-node:focus-visible {
@@ -129,11 +129,11 @@
 	}
 
 	.stack-node.dimmed {
-		opacity: 0.3;
+		opacity: var(--opacity-dim);
 	}
 
 	.stack-node.dimmed:hover {
-		opacity: 0.6;
+		opacity: var(--opacity-muted);
 		transform: scale(1.02);
 	}
 

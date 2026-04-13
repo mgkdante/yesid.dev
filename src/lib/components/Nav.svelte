@@ -128,10 +128,10 @@
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
 		border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
-		border-radius: 9999px;
-		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px color-mix(in srgb, var(--text-primary) 3%, transparent);
+		border-radius: var(--radius-pill);
+		box-shadow: var(--shadow-nav);
 		padding: 12px 28px;
-		transition: padding 0.25s ease, box-shadow 0.25s ease;
+		transition: padding var(--duration-normal) var(--ease-default), box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.nav-pill-compact {
 		padding: 12px 20px;
@@ -157,7 +157,7 @@
 	/* Collapse links + divider when menu opens, grow back on close */
 	.nav-collapsible {
 		overflow: hidden;
-		transition: max-width 0.3s ease, opacity 0.2s ease, margin 0.3s ease;
+		transition: max-width var(--duration-slow) var(--ease-default), opacity var(--duration-normal) var(--ease-default), margin var(--duration-slow) var(--ease-default);
 		max-width: 300px;
 		opacity: 1;
 	}
@@ -194,9 +194,9 @@
 	.menu-toggle-line {
 		display: block;
 		height: 1.5px;
-		border-radius: 999px;
+		border-radius: var(--radius-pill);
 		background: var(--text-secondary);
-		transition: transform 0.25s ease, width 0.25s ease, background 0.15s;
+		transition: transform var(--duration-normal) var(--ease-default), width var(--duration-normal) var(--ease-default), background var(--duration-fast);
 		transform-origin: center;
 	}
 	.menu-toggle-top {
@@ -211,7 +211,7 @@
 
 	/* Open state: morph to ✕ */
 	.menu-toggle-open {
-		z-index: 70;
+		z-index: var(--z-nav);
 		position: relative;
 	}
 	.menu-toggle-open .menu-toggle-top {

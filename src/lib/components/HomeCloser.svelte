@@ -492,7 +492,7 @@
 		position: absolute;
 		bottom: 0;
 		pointer-events: none;
-		z-index: 3;
+		z-index: calc(var(--z-content) + 2);
 		line-height: 0;
 	}
 	:global(.prop-svg) {
@@ -516,7 +516,7 @@
 		max-width: 260px;
 		pointer-events: auto;
 		cursor: pointer;
-		z-index: 2;
+		z-index: calc(var(--z-content) + 1);
 		overflow: visible;
 	}
 
@@ -538,7 +538,7 @@
 		display: flex;
 		justify-content: center;
 		pointer-events: none;
-		z-index: 4;
+		z-index: calc(var(--z-content) + 3);
 		line-height: 0;
 		overflow: visible;
 	}
@@ -556,7 +556,7 @@
 	}
 
 	.closer-heading {
-		font-family: Inter, sans-serif;
+		font-family: var(--font-heading);
 		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
 		color: var(--text-primary);
@@ -575,7 +575,7 @@
 	/* Layout wrapper — chrome comes from TerminalChrome */
 	.closer-terminal {
 		margin-block-end: 32px;
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 	}
 
 	.terminal-welcome {
@@ -594,7 +594,7 @@
 		align-items: center;
 		text-decoration: none;
 		cursor: pointer;
-		transition: background-color 0.2s;
+		transition: background-color var(--duration-normal);
 		position: relative;
 	}
 	.terminal-row:hover {
@@ -631,7 +631,7 @@
 		text-align: right;
 		font-size: 13px;
 		color: var(--text-dim);
-		transition: color 0.2s;
+		transition: color var(--duration-normal);
 	}
 	.terminal-row-action-primary {
 		color: var(--brand-accent);
@@ -650,16 +650,16 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 15px;
 		font-weight: 600;
 		color: var(--brand-accent);
 		text-decoration: none;
 		padding: 14px 28px;
 		border: 1px solid color-mix(in srgb, var(--brand-accent) 30%, transparent);
-		border-radius: 4px;
+		border-radius: var(--radius-sm);
 		margin-block-end: 28px;
-		transition: all 0.2s;
+		transition: all var(--duration-normal);
 		letter-spacing: 0.5px;
 	}
 	.closer-cta:hover {
@@ -668,7 +668,7 @@
 		color: var(--text-primary);
 	}
 	.closer-cta-arrow {
-		transition: transform 0.2s;
+		transition: transform var(--duration-normal);
 	}
 	.closer-cta:hover .closer-cta-arrow {
 		transform: translateX(4px);
@@ -703,7 +703,7 @@
 			pointer-events: auto;
 			order: 2;
 			margin: 24px auto 0;
-			z-index: 2;
+			z-index: calc(var(--z-content) + 1);
 		}
 
 		/* Floodlight on the ground, centered across full width */
@@ -714,7 +714,7 @@
 			left: 50%;
 			transform: translateX(-50%);
 			width: auto;
-			z-index: 4;
+			z-index: calc(var(--z-content) + 3);
 		}
 
 		/* Beam from floodlight up to graffiti — wider spread on mobile */

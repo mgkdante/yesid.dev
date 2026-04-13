@@ -148,7 +148,7 @@
 	.flow-arrow {
 		color: var(--brand-primary);
 		flex-shrink: 0;
-		opacity: 0.6;
+		opacity: var(--opacity-muted);
 	}
 
 	/* --- Summary --- */

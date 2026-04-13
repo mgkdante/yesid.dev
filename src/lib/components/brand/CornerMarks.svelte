@@ -32,7 +32,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 2;
+    z-index: calc(var(--z-content) + 1);
   }
 
   .mark {

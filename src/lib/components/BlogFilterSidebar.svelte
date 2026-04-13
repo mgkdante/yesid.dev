@@ -100,7 +100,7 @@
 	{/if}
 
 	<!-- Tags filter — delegated to FilterGroup -->
-	<div class="mt-5 border-t border-dashed border-border-strong pt-3">
+	<div class="mt-5 divider-dashed pt-3">
 		<FilterGroup
 			label={resolveLocale(labels.tags, 'en')}
 			items={tags.map((tag) => ({ key: tag, label: tag }))}
@@ -114,7 +114,7 @@
 
 	<!-- Corner link — inline, not a button group -->
 	{#if cornerLink}
-		<div class="mt-5 border-t border-dashed border-border-strong pt-3">
+		<div class="mt-5 divider-dashed pt-3">
 			<a
 				href={cornerLink.href}
 				class="flex items-center gap-1.5 rounded border px-2 py-1.5 text-xs font-semibold no-underline transition-colors"

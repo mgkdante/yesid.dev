@@ -12,12 +12,15 @@
 | ------------------------------- | --------------------- | ---------- |
 | 17a-1 Token Foundation          | COMPLETE              | #2 merged  |
 | 17a-2a Build Primitives         | COMPLETE              | #3 merged  |
-| 17a-2b Wire Primitives          | COMPLETE              | PR pending |
-| 17a-3 Color & Token Lockdown    | NEXT (expanded scope) | —          |
-| 17a-4 Dead Code + Trivial Dedup | planned               | —          |
+| 17a-2b Wire Primitives          | COMPLETE              | #4 merged  |
+| 17a-3a Color Lockdown           | COMPLETE              | #5 merged  |
+| 17a-3b Token Wiring             | IN PROGRESS           | —          |
+| 17a-5 Spacing & Layout          | planned               | —          |
+| 17a-6 Component Library Eval    | planned (research)    | —          |
+| 17d Component API               | planned (next after 17a) | —       |
+| 17a-4 Dead Code + Trivial Dedup | planned (after 17d)   | —          |
 | 17b Service Layer               | planned               | —          |
 | 17c Zod Schemas                 | planned               | —          |
-| 17d Component API               | planned               | —          |
 | 17e Motion Consolidation        | planned               | —          |
 | 17f Test Architecture           | planned               | —          |
 | 17g Learning Docs               | planned               | —          |

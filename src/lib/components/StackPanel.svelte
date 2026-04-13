@@ -275,7 +275,7 @@
 		color: var(--text-muted);
 		cursor: pointer;
 		flex-shrink: 0;
-		transition: color 0.2s ease, border-color 0.2s ease;
+		transition: color var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default);
 	}
 
 	.close-btn:hover {
@@ -321,7 +321,7 @@
 		font-weight: 600;
 		color: var(--brand-primary);
 		text-align: left;
-		transition: color 0.15s ease;
+		transition: color var(--duration-fast) var(--ease-default);
 	}
 
 	.relation-link:hover {
