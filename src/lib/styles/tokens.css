@@ -62,7 +62,14 @@
   --container-wide: 72rem;      /* 1152px — wide layouts */
   --container-prose: 65ch;      /* prose columns */
 
-  /* Spacing */
+  /* Spacing — semantic tokens for recurring layout patterns */
+  --space-page-x: clamp(1.5rem, 4vw, 5rem);     /* Horizontal page gutters */
+  --space-section-y: clamp(3rem, 8vw, 6rem);     /* Vertical section padding */
+  --space-card-gap: clamp(1rem, 2vw, 1.5rem);    /* Gap between cards/grid items */
+  --space-stack: 1.5rem;                           /* Vertical stack within sections */
+  --space-cluster: 0.75rem;                        /* Tight groupings (label + value) */
+
+  /* Border radius */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;

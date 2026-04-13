@@ -47,8 +47,8 @@
 	});
 </script>
 
-<div class="about-page" data-testid="page-about">
-	<div class="mx-auto max-w-[1920px]">
+<div class="about-page w-full" data-testid="page-about">
+	<div>
 
 		<!-- Top Stripe -->
 		<div class="px-3 pt-1" aria-hidden="true">

@@ -62,6 +62,17 @@
   --width-content: var(--container-content);
   --width-wide: var(--container-wide);
   --width-prose: var(--container-prose);
+
+  /* Spacing tokens — generates Tailwind utilities */
+  --spacing-page-x: var(--space-page-x);
+  --spacing-section-y: var(--space-section-y);
+  --spacing-card-gap: var(--space-card-gap);
+  --spacing-stack: var(--space-stack);
+  --spacing-cluster: var(--space-cluster);
+
+  /* Breakpoints — Tailwind v4 defaults (640/768/1024/1280/1536)
+     No overrides needed. Edge-to-edge layout is controlled by the layout model,
+     not by breakpoint values. Breakpoints only determine when layouts restructure. */
 }
 
 /* Dynamic theme values — references tokens.css via var(), resolves at runtime.

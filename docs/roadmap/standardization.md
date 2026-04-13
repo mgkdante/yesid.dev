@@ -441,6 +441,7 @@ This is the biggest sub-slice and the most impactful. Every other sub-slice depe
 - **Flowbite Svelte** — [https://flowbite-svelte.com/](https://flowbite-svelte.com/) and [https://flowbite-svelte-v2.vercel.app/docs/mcp/overview](https://flowbite-svelte-v2.vercel.app/docs/mcp/overview) — Tailwind-based Svelte component library
 - [https://www.shadcn-svelte.com/](https://www.shadcn-svelte.com/)
 - [https://www.skeleton.dev/](https://www.skeleton.dev/)
+- https://www.shadcn-svelte.com/llms.txt
 
 **Evaluation criteria:**
 
