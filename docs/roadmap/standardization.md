@@ -1,6 +1,6 @@
 # Slice 17 — Standardization: Design System + Ports & Adapters
 
-**Status:** IN PROGRESS — Phase 1 Foundation (Constitution planned, ready to implement)
+**Status:** IN PROGRESS — Phase 1 Foundation (17a-5 Spacing & Layout in progress)
 **Est. Sessions:** 20-24 total (revised from 13-14 after deep planning session)
 **Depends on:** Slice 13 (Home Page) complete
 **Key constraint:** Visual IMPROVEMENTS allowed (bigger text, better consistency), but no new features. Structural refactor + design system unification.
@@ -15,7 +15,7 @@
 | 17a-2b Wire Primitives           | COMPLETE                        | #4 merged | 2        |
 | 17a-3a Color Lockdown            | COMPLETE                        | #5 merged | 2        |
 | 17a-3b Token Wiring              | COMPLETE                        | #6 merged | 1        |
-| 17a-5 Spacing & Layout + Const.  | PLANNED (plan written, 14 tasks) | —        | 2-3      |
+| 17a-5 Spacing & Layout + Const.  | COMPLETE (14/14 tasks, PR pending) | —       | 2        |
 | 17a-6 Bits UI Integration        | PLANNED (needs impl plan)       | —         | 1-2      |
 | 17d Component API                | PLANNED (needs impl plan)       | —         | 4        |
 | 17e Motion Re-Engineering        | PLANNED (needs impl plan)       | —         | 2-3      |
@@ -53,7 +53,7 @@ Deep planning session that defined the holistic design system constitution. Key 
 - Design spec: `docs/specs/2026-04-13-constitution-design.md`
 - Implementation plan: `docs/plans/2026-04-13-slice-17a-5-spacing-layout-plan.md`
 - Wireframes: `.superpowers/brainstorm/919-1776054861/content/constitution-edge-to-edge.html`
-- Constitution document: `docs/reference/CONSTITUTION.md` (to be written in 17a-5)
+- Constitution document: `docs/reference/CONSTITUTION.md` (written in 17a-5)
 
 **Codebase Audit (deep research):**
 - 230 hardcoded spacing rules in scoped styles

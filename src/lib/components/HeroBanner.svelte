@@ -475,7 +475,7 @@
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
 		<div
 			bind:this={heroTextContainer}
-			class="absolute inset-0 flex items-start justify-center pt-20 opacity-0 md:items-center md:py-[max(5vh,2.5rem)]"
+			class="absolute inset-0 flex items-start justify-center pt-20 opacity-0 md:items-center md:py-[max(5svh,2.5rem)]"
 			data-testid="hero-text-container"
 		>
 			<div class="w-full px-[var(--space-page-x)]">
@@ -512,7 +512,7 @@
 						</h1>
 
 						<div
-							class="mt-3 text-title font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(26px,min(3.5vw,4vh),44px)]"
+							class="mt-3 text-title font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(26px,min(3.5vw,4svh),44px)]"
 							data-testid="hero-subheadline"
 							data-hero-stagger="2"
 						>

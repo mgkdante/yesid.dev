@@ -56,9 +56,10 @@ Slice template: `docs/slices/_TEMPLATE.md`
 
 - Roadmap: `docs/roadmap/standardization.md`
 - Checkpoint: `docs/slices/slice-17-checkpoint.md`
-- Current sub-slice: 17a-2b (Wire Primitives) — COMPLETE, PR pending
-- Next sub-slice: 17a-3 (Color & Token Lockdown — expanded scope)
-- Branch: `feature/slice-17a-2b-wire-primitives`
+- **Constitution:** `docs/reference/CONSTITUTION.md` — governs all future development
+- Current sub-slice: 17a-5 (Spacing & Layout Constitution) — IN PROGRESS
+- Next sub-slice: 17a-6 (Bits UI Integration)
+- Branch: `feature/slice-17a-5-spacing-layout`
 
 ## Iteration Protocol (MANDATORY)
 
@@ -187,6 +188,8 @@ Setup: `vitest.setup.ts` stubs jsdom gaps (GSAP, Threlte, lottie-web, postproces
 
 ## CSS Architecture (Non-Negotiable)
 
+**Governance:** `docs/reference/CONSTITUTION.md` — the law of the codebase. Every component, page, and future slice follows it.
+
 Three layers, strict separation. Never mix purposes across layers.
 
 
@@ -196,6 +199,9 @@ Three layers, strict separation. Never mix purposes across layers.
 | Brand utilities | `src/app.css` `@theme` block | Static brand values that never change with theme | `text-brand-primary`, `bg-brand-accent`  |
 | Component scope | `<style>` in `.svelte`       | Layout/structure specific to one component       | grid templates, position, overflow       |
 
+### Layout Model
+
+Edge-to-edge: `<main>` has no horizontal constraints. Sections manage their own containers. Containers are for text readability only — visual elements use full viewport width. See CONSTITUTION.md Section 2.
 
 ### Rules:
 
@@ -209,6 +215,8 @@ Three layers, strict separation. Never mix purposes across layers.
 8. **Mobile-first responsive.** Base = mobile. `md:` and `lg:` add complexity.
 9. **Prefer logical properties.** `padding-inline`, `margin-block` over `padding-left`, `margin-top`.
 10. **Group utilities.** Order: layout → spacing → sizing → typography → color → effects → state.
+11. **No `vh` unit.** Use `dvh`/`svh`/`lvh`. See CONSTITUTION.md Section 9.
+12. **No arbitrary Tailwind spacing.** Use standard scale or semantic tokens. See CONSTITUTION.md Section 3.
 
 ### Full reference: `docs/reference/CSS.md`
 

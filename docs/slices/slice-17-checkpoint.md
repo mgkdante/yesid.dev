@@ -1,14 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-13 | Implementation Session 1 (Tasks 1-9)
+**Last updated:** 2026-04-13 | Implementation Session 2 (Tasks 10-14 complete)
 **Branch:** `feature/slice-17a-5-spacing-layout`
 
 ## Current Position
 
-- **Sub-slice:** 17a-5 (Spacing & Layout Constitution) — IN PROGRESS
-- **Task:** 9 of 14 complete. Session 1 done (foundation + all page migrations + arbitrary fixes).
-- **Status:** Tasks 1-9 committed. Full-bleed layout live, spacing tokens wired across all pages.
-- **Next action:** Session 2 — Tasks 10-14 (viewport units, safe areas, CONSTITUTION.md, docs, sweep).
+- **Sub-slice:** 17a-5 (Spacing & Layout Constitution) — COMPLETE, pending commit + PR
+- **Task:** 14 of 14 complete. All tasks done across 2 sessions.
+- **Status:** Full-bleed layout, spacing tokens, viewport units (dvh/svh), safe-area-inset, CONSTITUTION.md written, all docs updated, tests + check pass.
+- **Next action:** Commit session 2, create PR, then 17a-6 (Bits UI Integration).
 - **Decision D47 revised:** Kept Tailwind default breakpoints (640/768/1024/1280/1536) instead of custom 360/520/768/1024/1440. Edge-to-edge controlled by layout model, not breakpoints.
 - **Pending brainstorm:** Edge-to-edge visual design (edge decorations, vertical typography, circuit lines) for all pages — feeds into 17d.
 

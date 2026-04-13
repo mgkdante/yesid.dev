@@ -197,7 +197,7 @@
 <style>
 	.service-detail {
 		background: var(--bg-primary);
-		min-height: 100vh;
+		min-height: 100dvh;
 	}
 
 	.detail-article {

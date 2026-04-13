@@ -176,7 +176,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		padding: 80px 24px 40px;
+		padding: calc(80px + env(safe-area-inset-top, 0px)) 24px calc(40px + env(safe-area-inset-bottom, 0px));
 		overscroll-behavior: contain;
 		touch-action: none;
 

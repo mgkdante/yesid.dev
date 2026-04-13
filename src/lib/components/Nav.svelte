@@ -63,7 +63,7 @@
 
 <nav
 	data-testid="nav"
-	class="fixed top-4 left-0 right-0 flex flex-col items-center pointer-events-none"
+	class="fixed left-0 right-0 flex flex-col items-center pointer-events-none nav-root"
 	style:z-index={overlayActive ? 70 : 50}
 >
 	<!-- Pill -->
@@ -123,6 +123,9 @@
 <MenuOverlay open={menuOpen} {pathname} onclose={handleOverlayClose} onanimationdone={handleOverlayDone} />
 
 <style>
+	.nav-root {
+		top: calc(1rem + env(safe-area-inset-top, 0px));
+	}
 	.nav-pill {
 		background: color-mix(in srgb, var(--bg-primary) 92%, transparent);
 		backdrop-filter: blur(16px);

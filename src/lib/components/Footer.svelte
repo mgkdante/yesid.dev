@@ -105,5 +105,7 @@
 		border-top: 1px solid color-mix(in srgb, var(--text-primary) 6%, transparent);
 	}
 
-
+	footer {
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
 </style>

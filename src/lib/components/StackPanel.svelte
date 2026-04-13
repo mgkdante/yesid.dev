@@ -187,7 +187,7 @@
 		border: 1px solid var(--border);
 		border-radius: var(--radius-lg);
 		overflow-y: auto;
-		max-height: calc(100vh - 6rem);
+		max-height: calc(100dvh - 6rem);
 	}
 
 	/* --- Detail Card --- */

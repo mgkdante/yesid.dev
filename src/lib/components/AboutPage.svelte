@@ -117,7 +117,7 @@
 <style>
 	/* Page fills viewport minus nav */
 	.about-page {
-		min-height: calc(100vh - 5rem); /* subtract floating pill nav area */
+		min-height: calc(100dvh - 5rem); /* subtract floating pill nav area */
 		background: var(--bg-primary);
 	}
 
@@ -182,7 +182,7 @@
 				"clients   interests interests interests interests snapshots"
 				"train     weather   cta       cta       cta       snapshots";
 			/* Fill the available viewport height minus nav + header + stripes */
-			height: calc(100vh - 5rem - 48px); /* viewport minus pill nav minus stripes/padding */
+			height: calc(100dvh - 5rem - 48px); /* viewport minus pill nav minus stripes/padding */
 		}
 	}
 

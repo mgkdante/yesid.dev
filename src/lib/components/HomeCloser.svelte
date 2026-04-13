@@ -473,7 +473,7 @@
 		/* Bottom edge sits at top of floodlight wrapper = lens position */
 		bottom: 100%;
 		width: clamp(400px, 45vw, 650px);
-		height: 42vh;
+		height: 42dvh;
 		/* Narrow base matches floodlight lens (~12px), wide top covers graffiti */
 		clip-path: polygon(49% 100%, 51% 100%, 100% 0%, 0% 0%);
 		background: linear-gradient(
@@ -721,7 +721,7 @@
 		.closer-beam {
 			display: block;
 			width: clamp(280px, 80vw, 400px);
-			height: 35vh;
+			height: 35dvh;
 			clip-path: polygon(48.5% 100%, 51.5% 100%, 100% 0%, 0% 0%);
 		}
 

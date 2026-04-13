@@ -21,7 +21,7 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 
   /* Type scale — uses --text-* namespace (Tailwind v4 generates text-* utilities from this) */
-  --text-hero: clamp(4rem, min(9vw, 11vh), 8.125rem);       /* 64-130px — hero wordmark */
+  --text-hero: clamp(4rem, min(9vw, 11svh), 8.125rem);       /* 64-130px — hero wordmark */
   --text-display: clamp(2.5rem, 5vw, 4rem);                  /* 40-64px — page titles */
   --text-title: clamp(1.75rem, 4vw, 2.5rem);                 /* 28-40px — section headings */
   --text-heading: clamp(1.25rem, 3vw, 1.5rem);               /* 20-24px — card titles */
