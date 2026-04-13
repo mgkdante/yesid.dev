@@ -478,7 +478,7 @@
 			class="absolute inset-0 flex items-start justify-center pt-20 opacity-0 md:items-center md:py-[max(5vh,2.5rem)]"
 			data-testid="hero-text-container"
 		>
-			<div class="w-full px-6 md:px-12">
+			<div class="w-full px-[var(--space-page-x)]">
 				<div class="hero-grid">
 					<!-- LEFT COLUMN: text viewport on mobile (100dvh) -->
 					<div class="hero-viewport-text">
@@ -592,7 +592,7 @@
 		<!-- Horizontal divider — mirrors the vertical desktop divider -->
 		<div class="hero-divider-h mx-6"></div>
 
-		<div class="w-full px-6 py-10">
+		<div class="w-full px-[var(--space-page-x)] py-10">
 			<HeroSqlPanel
 				rows={heroData.queryRows}
 				queryTime={heroData.queryTime}

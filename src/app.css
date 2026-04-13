@@ -223,7 +223,7 @@ html {
 .grid-responsive-cards {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: var(--space-card-gap);
 }
 @media (min-width: 640px) {
   .grid-responsive-cards { grid-template-columns: repeat(2, 1fr); }

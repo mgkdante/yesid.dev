@@ -70,7 +70,7 @@
 			</div>
 
 			<!-- Quote -->
-			<div class="min-h-[80px] flex items-center">
+			<div class="min-h-20 flex items-center">
 				{#key activeIndex}
 					<blockquote class="animate-fade-in text-center text-base leading-relaxed text-[var(--text-primary)] italic md:text-lg">
 						{quote}

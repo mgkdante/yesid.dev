@@ -699,9 +699,9 @@
 	/* ═══ HERO ZONE ═══ */
 
 	.hero {
-		max-width: 1200px;
+		max-width: var(--container-wide);
 		margin: 0 auto;
-		padding: 2rem 1.5rem 0;
+		padding: 2rem var(--space-page-x) 0;
 		display: flex;
 		flex-direction: column;
 		min-height: 50vh;
@@ -832,9 +832,9 @@
 	/* ═══ CTA ZONE ═══ */
 
 	.cta-zone {
-		max-width: 1200px;
+		max-width: var(--container-wide);
 		margin: 4rem auto 2rem;
-		padding: 0 1.5rem;
+		padding: 0 var(--space-page-x);
 		text-align: center;
 	}
 
@@ -892,7 +892,7 @@
 	/* Mobile hero adjustments */
 	@media (max-width: 767px) {
 		.hero {
-			padding: 1.5rem 0.75rem 0;
+			padding: 1.5rem var(--space-page-x) 0;
 			min-height: 40vh;
 		}
 
@@ -903,7 +903,7 @@
 
 		.cta-zone {
 			margin-top: 3rem;
-			padding: 0 0.75rem;
+			padding: 0 var(--space-page-x);
 		}
 	}
 </style>

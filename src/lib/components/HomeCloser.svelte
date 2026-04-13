@@ -461,7 +461,7 @@
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
-		padding: 64px 16px 100px;
+		padding: var(--space-section-y) var(--space-page-x) 100px;
 		position: relative;
 	}
 
@@ -680,7 +680,7 @@
 			flex-direction: column;
 			align-items: stretch;
 			justify-content: center;
-			padding: 48px 16px 100px;
+			padding: var(--space-section-y) var(--space-page-x) 100px;
 		}
 
 		.closer-content {
@@ -744,17 +744,6 @@
 		}
 	}
 
-	/* ===== Tablet+ (768px+) ===== */
-	@media (min-width: 768px) {
-		.closer-section {
-			padding: 80px 24px 100px;
-		}
-	}
-
-	/* ===== Desktop (1024px+) ===== */
-	@media (min-width: 1024px) {
-		.closer-section {
-			padding: 100px 32px 100px;
-		}
-	}
+	/* Horizontal + top padding now handled by fluid tokens (--space-page-x, --space-section-y).
+	   Bottom 100px stays fixed for construction scene clearance. */
 </style>
