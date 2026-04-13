@@ -226,7 +226,6 @@
 	});
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	bind:this={container}
 	class="blog-svg-icon flex items-center justify-center overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--background)] transition-border-color duration-300"

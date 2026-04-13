@@ -307,8 +307,7 @@
 		</InfraFrame>
 
 		{#if selectedItem}
-			<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-			<div class="tablet-overlay-backdrop" onclick={handleClose} data-testid="tablet-backdrop"></div>
+			<button type="button" class="tablet-overlay-backdrop" onclick={handleClose} data-testid="tablet-backdrop" aria-label="Close panel"></button>
 			<aside class="tablet-overlay-panel" data-testid="tablet-panel">
 				{#key selectedItem.id}
 					<StackPanel
@@ -359,10 +358,8 @@
 
 		<!-- Build overlay (mobile) -->
 		{#if mobileBuildOpen}
-			<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-			<div class="build-overlay-backdrop" onclick={toggleMobileBuild} data-testid="build-overlay-backdrop"></div>
-			<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-			<div class="build-overlay" onclick={(e) => e.stopPropagation()} data-testid="build-overlay">
+			<button type="button" class="build-overlay-backdrop" onclick={toggleMobileBuild} data-testid="build-overlay-backdrop" aria-label="Close overlay"></button>
+			<div class="build-overlay" data-testid="build-overlay">
 				<div class="build-overlay-header">
 					<span class="build-label">Build Your Stack</span>
 					<button class="build-overlay-close" onclick={toggleMobileBuild} aria-label="Close">
@@ -522,7 +519,13 @@
 			display: none;
 		}
 
-		.tablet-overlay-backdrop {
+		button.tablet-overlay-backdrop {
+			appearance: none;
+			border: none;
+			padding: 0;
+			font: inherit;
+			color: inherit;
+			cursor: default;
 			position: fixed;
 			inset: 0;
 			background: rgba(0, 0, 0, 0.5);
@@ -587,7 +590,13 @@
 
 	/* --- Build overlay (mobile) --- */
 
-	.build-overlay-backdrop {
+	button.build-overlay-backdrop {
+		appearance: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		color: inherit;
+		cursor: default;
 		position: fixed;
 		inset: 0;
 		z-index: var(--z-sheet);

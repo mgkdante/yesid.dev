@@ -261,12 +261,12 @@
 				>
 					<div class="card-inner flex w-full gap-5">
 						<!-- SVG panel: inline SVG injected on mount for MorphSVGPlugin -->
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<!-- svelte-ignore a11y_no_static_element_interactions -->
-						<div
+						<button
+							type="button"
 							data-testid="services-svg-panel"
 							class="svg-panel relative flex flex-shrink-0 items-center justify-center rounded-xl transition-all duration-300"
 							onclick={(e) => handleSvgTap(e, i)}
+							aria-label="View {title} illustration"
 						>
 							<div class="svg-inline-wrapper pointer-events-none" style="width:56px;height:56px;">
 								<!-- Fallback: static img until JS injects inline SVG -->
@@ -277,7 +277,7 @@
 									height="56"
 								/>
 							</div>
-						</div>
+						</button>
 
 						<!-- Card text -->
 						<div class="flex min-w-0 flex-1 flex-col gap-1.5">
@@ -388,7 +388,13 @@
 	}
 
 	/* SVG panel — always square */
-	.svg-panel {
+	button.svg-panel {
+		appearance: none;
+		padding: 0;
+		font: inherit;
+		color: inherit;
+		text-align: inherit;
+		cursor: pointer;
 		width: 80px;
 		min-width: 80px;
 		aspect-ratio: 1;

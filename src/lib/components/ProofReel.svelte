@@ -102,13 +102,13 @@
 					style="background: color-mix(in srgb, var(--background) 80%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);"
 				>
 					<!-- Image — B&W default, color on hover (desktop) / tap (mobile) -->
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
-					<div
-						class="proof-image relative h-48 overflow-hidden md:h-56"
+					<button
+						type="button"
+						class="proof-image relative h-48 w-full overflow-hidden md:h-56"
 						class:image-active={activeImageIndex === i}
 						data-testid="proof-card-image"
 						onclick={(e) => handleImageTap(e, i)}
+						aria-label="Toggle color for {title}"
 					>
 						<img
 							src={imageUrl}
@@ -117,7 +117,7 @@
 							loading="lazy"
 						/>
 						<div class="proof-img-overlay absolute inset-0 bg-black/30 transition-opacity duration-500"></div>
-					</div>
+					</button>
 
 					<!-- Text — links to project -->
 					<a
@@ -197,6 +197,17 @@
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		margin-block-end: 36px;
+	}
+
+	/* Button reset for proof-image */
+	button.proof-image {
+		appearance: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		color: inherit;
+		text-align: start;
+		background: transparent;
 	}
 
 	/* Desktop hover: card border + image turns color */
