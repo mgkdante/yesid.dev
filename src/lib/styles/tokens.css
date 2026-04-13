@@ -69,6 +69,10 @@
   --radius-xl: 16px;
   --radius-pill: 9999px;
 
+  /* Status / destructive — shadcn components reference these */
+  --destructive: #ff5f57;
+  --destructive-foreground: #FAFAF8;
+
   /* shadcn alias — components reference --radius */
   --radius: var(--radius-md);
 }
