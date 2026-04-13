@@ -80,7 +80,7 @@
 	}
 	.interest-strip:hover .strip-overlay,
 	.interest-strip.strip-active .strip-overlay {
-		opacity: 0.15;
+		opacity: var(--opacity-subtle);
 	}
 	.interest-strip:hover,
 	.interest-strip.strip-active {

@@ -112,7 +112,7 @@
 		flex-shrink: 0;
 		padding: 0.375rem 0.875rem;
 		border: 1px solid var(--border);
-		border-radius: 9999px;
+		border-radius: var(--radius-pill);
 		background: var(--bg-surface);
 		color: var(--text-muted);
 		font-family: var(--font-body);
@@ -121,10 +121,10 @@
 		cursor: pointer;
 		white-space: nowrap;
 		transition:
-			border-color 0.2s ease,
-			background-color 0.2s ease,
-			color 0.2s ease,
-			box-shadow 0.2s ease;
+			border-color var(--duration-normal) var(--ease-default),
+			background-color var(--duration-normal) var(--ease-default),
+			color var(--duration-normal) var(--ease-default),
+			box-shadow var(--duration-normal) var(--ease-default);
 	}
 
 	.filter-pill:hover {
@@ -141,7 +141,7 @@
 		border-color: var(--brand-primary);
 		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
 		color: var(--brand-primary);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		box-shadow: var(--shadow-glow-sm);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

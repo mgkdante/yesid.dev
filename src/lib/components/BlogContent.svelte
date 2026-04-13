@@ -83,11 +83,11 @@
 		color: var(--blog-accent);
 		opacity: 0;
 		transform: translateX(-4px);
-		transition: opacity 0.2s ease, transform 0.2s ease;
+		transition: opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default);
 	}
 	.blog-content :global(h2):hover::before,
 	.blog-content :global(h3):hover::before {
-		opacity: 0.6;
+		opacity: var(--opacity-muted);
 		transform: translateX(0);
 	}
 
@@ -105,7 +105,7 @@
 		border-radius: var(--radius-sm);
 		cursor: pointer;
 		opacity: 0;
-		transition: opacity 0.15s ease;
+		transition: opacity var(--duration-fast) var(--ease-default);
 	}
 	.blog-content :global(pre:hover .copy-btn) {
 		opacity: 1;

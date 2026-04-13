@@ -80,7 +80,7 @@
 
 	<!-- Separator between Tech Stack and Services -->
 	{#if project.stack.length > 0 && (hasServices || hasLinks)}
-		<div class="mb-5 h-px" style="background: linear-gradient(90deg, var(--brand-primary), transparent);"></div>
+		<div class="mb-5 h-px brand-fade-line"></div>
 	{/if}
 
 	<!-- Services -->
@@ -102,7 +102,7 @@
 
 	<!-- Separator between Services and Links -->
 	{#if hasServices && hasLinks}
-		<div class="mb-5 h-px" style="background: linear-gradient(90deg, var(--brand-primary), transparent);"></div>
+		<div class="mb-5 h-px brand-fade-line"></div>
 	{/if}
 
 	<!-- Links -->
@@ -150,7 +150,7 @@
 <style>
 	/* Tech stack tags — subtle glow on hover for interactivity */
 	.sidebar-tag {
-		transition: background-color 0.15s ease, border-color 0.15s ease;
+		transition: background-color var(--duration-fast) var(--ease-default), border-color var(--duration-fast) var(--ease-default);
 	}
 	.sidebar-tag:hover {
 		background-color: var(--bg-card);
@@ -159,7 +159,7 @@
 
 	/* Links — glow effect on hover */
 	.sidebar-link {
-		transition: color 0.15s ease, text-shadow 0.15s ease;
+		transition: color var(--duration-fast) var(--ease-default), text-shadow var(--duration-fast) var(--ease-default);
 	}
 	.sidebar-link:hover {
 		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 30%, transparent);

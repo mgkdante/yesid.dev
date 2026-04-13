@@ -153,7 +153,7 @@
 
 		.light-b, .light-glow.light-b {
 			animation: none;
-			opacity: 0.15;
+			opacity: var(--opacity-subtle);
 		}
 	}
 </style>

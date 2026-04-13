@@ -138,7 +138,7 @@
 
 	.tabs-bar {
 		flex-shrink: 0;
-		z-index: 20;
+		z-index: var(--z-rail);
 	}
 
 	.scroll-area {
@@ -159,7 +159,7 @@
 
 	.proof-bar {
 		flex-shrink: 0;
-		z-index: 20;
+		z-index: var(--z-rail);
 	}
 
 	/* Footer inside scroll area — does NOT snap, just flows after last service */
@@ -175,7 +175,7 @@
 		top: calc(4rem + 46px + 1rem); /* nav + tabs + gap */
 		bottom: calc(40px + 1rem); /* proof strip + gap */
 		width: 2px;
-		z-index: 10;
+		z-index: var(--z-rail);
 		pointer-events: none;
 	}
 
@@ -199,7 +199,7 @@
 		right: 0;
 		background: var(--brand-primary);
 		border-radius: 1px;
-		transition: height 0.2s ease-out;
+		transition: height var(--duration-normal) var(--ease-default);
 	}
 
 	.metro-dot {
@@ -211,8 +211,8 @@
 		border-radius: 50%;
 		border: 2px solid var(--border-strong);
 		background: transparent;
-		transition: all 0.3s ease;
-		z-index: 1;
+		transition: all var(--duration-slow) var(--ease-default);
+		z-index: var(--z-content);
 	}
 
 	.metro-dot.visited {

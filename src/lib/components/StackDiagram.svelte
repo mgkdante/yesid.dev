@@ -252,7 +252,7 @@
 	/* Desktop tier rows — z-index above SVG connections */
 	.tier-row {
 		position: relative;
-		z-index: 2;
+		z-index: calc(var(--z-content) + 1);
 		display: grid;
 		grid-template-columns: 5rem 1fr;
 		align-items: center;

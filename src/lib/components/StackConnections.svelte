@@ -286,14 +286,14 @@
 		width: 100%;
 		height: 100%;
 		pointer-events: none;
-		z-index: 1;
+		z-index: var(--z-content);
 		overflow: visible;
 	}
 
 	.connection-path {
 		stroke: color-mix(in srgb, var(--brand-primary) 25%, transparent);
 		stroke-width: 1.5;
-		transition: stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease;
+		transition: stroke var(--duration-slow) var(--ease-default), stroke-width var(--duration-slow) var(--ease-default), opacity var(--duration-slow) var(--ease-default);
 	}
 
 	.connection-path.path-highlighted {
@@ -312,7 +312,7 @@
 	.data-dot {
 		fill: var(--brand-accent);
 		opacity: 0;
-		transition: opacity 0.3s ease;
+		transition: opacity var(--duration-slow) var(--ease-default);
 	}
 
 	.data-dot.dot-hidden {

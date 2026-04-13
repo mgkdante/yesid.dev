@@ -158,6 +158,6 @@
 
 	/* JetBrains Mono for station numbers — matches brand mono font */
 	.station-num {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 	}
 </style>

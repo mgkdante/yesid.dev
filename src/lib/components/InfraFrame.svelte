@@ -77,7 +77,7 @@
 		border-radius: var(--radius-lg);
 		overflow: hidden;
 		background: var(--bg-surface);
-		transition: border-color 0.3s ease, box-shadow 0.3s ease;
+		transition: border-color var(--duration-slow) var(--ease-default), box-shadow var(--duration-slow) var(--ease-default);
 	}
 
 	.infra-frame:hover {
@@ -143,12 +143,12 @@
 			linear-gradient(90deg, color-mix(in srgb, var(--brand-primary) 3%, transparent) 1px, transparent 1px);
 		background-size: 40px 40px;
 		pointer-events: none;
-		z-index: 0;
+		z-index: var(--z-base);
 	}
 
 	.frame-body > :global(*) {
 		position: relative;
-		z-index: 1;
+		z-index: var(--z-content);
 	}
 
 	/* --- Footer --- */

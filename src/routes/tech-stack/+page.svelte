@@ -525,7 +525,7 @@
 			position: fixed;
 			inset: 0;
 			background: rgba(0, 0, 0, 0.5);
-			z-index: 40;
+			z-index: var(--z-sheet);
 		}
 
 		.tablet-overlay-panel {
@@ -534,7 +534,7 @@
 			right: 1rem;
 			width: 340px;
 			max-height: calc(100vh - 5rem);
-			z-index: 41;
+			z-index: calc(var(--z-sheet) + 1);
 		}
 	}
 
@@ -556,7 +556,7 @@
 		position: fixed;
 		bottom: 1.5rem;
 		right: 1.5rem;
-		z-index: 30;
+		z-index: var(--z-rail);
 		width: 3.25rem;
 		height: 3.25rem;
 		border-radius: 50%;
@@ -570,7 +570,7 @@
 		box-shadow:
 			0 2px 8px rgba(0, 0, 0, 0.3),
 			0 0 12px color-mix(in srgb, var(--brand-primary) 20%, transparent);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		transition: transform var(--duration-normal) var(--ease-default), box-shadow var(--duration-normal) var(--ease-default);
 	}
 
 	.build-fab:hover {
@@ -589,7 +589,7 @@
 	.build-overlay-backdrop {
 		position: fixed;
 		inset: 0;
-		z-index: 50;
+		z-index: var(--z-sheet);
 		background: rgba(0, 0, 0, 0.5);
 	}
 
@@ -598,7 +598,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		z-index: 51;
+		z-index: calc(var(--z-sheet) + 1);
 		max-height: 85vh;
 		overflow-y: auto;
 		background: var(--bg-surface);
@@ -787,7 +787,7 @@
 
 	.hero-reveal {
 		opacity: 1;
-		transition: opacity 0.5s ease;
+		transition: opacity var(--duration-slower) var(--ease-default);
 	}
 
 	.hero-stats {

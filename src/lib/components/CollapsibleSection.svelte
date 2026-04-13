@@ -95,7 +95,7 @@
 
 <style>
 	.section-card {
-		transition: box-shadow 0.25s ease, border-color 0.25s ease;
+		transition: box-shadow var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default);
 	}
 	.section-card:hover {
 		border-color: var(--accent);
@@ -106,13 +106,13 @@
 	}
 
 	:global(.section-title) {
-		transition: color 0.2s ease;
+		transition: color var(--duration-normal) var(--ease-default);
 	}
 
 	.section-body {
 		display: grid;
 		grid-template-rows: 0fr;
-		transition: grid-template-rows 0.3s ease;
+		transition: grid-template-rows var(--duration-slow) var(--ease-default);
 	}
 	.section-body.expanded {
 		grid-template-rows: 1fr;

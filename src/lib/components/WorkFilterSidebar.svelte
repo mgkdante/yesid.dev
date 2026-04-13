@@ -58,7 +58,7 @@
 
 	<!-- Tech Stack section -->
 	{#if stack.length > 0 && onStackSelect}
-		<div class="border-t border-dashed border-[#333] pt-3 mb-5">
+		<div class="divider-dashed pt-3 mb-5">
 			<FilterGroup
 				label={resolveLocale(labels.stack, 'en')}
 				items={stack.map((s) => ({ key: s, label: s }))}
@@ -73,7 +73,7 @@
 	{/if}
 
 	<!-- Tags section — delegated to FilterGroup with deselect enabled -->
-	<div class="border-t border-dashed border-[#333] pt-3">
+	<div class="divider-dashed pt-3">
 		<FilterGroup
 			label={resolveLocale(labels.tags, 'en')}
 			items={tags.map((tag) => ({ key: tag, label: tag }))}

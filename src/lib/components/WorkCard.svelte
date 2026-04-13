@@ -178,7 +178,7 @@
 	   no rotating gradient (that was visually distracting on cards) */
 	.work-card:hover .work-card-article {
 		border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
-		box-shadow: 0 0 16px color-mix(in srgb, var(--brand-primary) 10%, transparent), 0 2px 8px rgba(0, 0, 0, 0.3);
+		box-shadow: var(--shadow-card);
 	}
 
 	/* Strip WorkSvgIcon container border/bg when nested in card badges */

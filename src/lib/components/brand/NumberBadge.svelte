@@ -53,20 +53,20 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill);
     font-family: var(--font-mono);
     font-size: var(--text-caption);
     font-weight: 700;
     background-color: var(--brand-primary);
     color: var(--bg-primary);
     position: relative;
-    z-index: 1;
+    z-index: var(--z-content);
   }
 
   .sonar-ring {
     position: absolute;
     inset: -4px;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill);
     border: 2px solid var(--brand-primary);
     opacity: 0;
     animation: sonar-ping 2s ease-out infinite;

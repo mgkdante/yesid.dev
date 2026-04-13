@@ -180,7 +180,7 @@
 <style>
 	/* Section heading — matches Terminus style */
 	.section-heading {
-		font-family: Inter, sans-serif;
+		font-family: var(--font-heading);
 		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
 		color: var(--text-primary);
@@ -191,7 +191,7 @@
 		color: var(--brand-primary);
 	}
 	.section-subheading {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-size: 13px;
 		color: var(--text-muted);
 		letter-spacing: 2px;
@@ -202,7 +202,7 @@
 	/* Desktop hover: card border + image turns color */
 	.proof-card:hover {
 		border-color: color-mix(in srgb, var(--brand-primary) 60%, transparent) !important;
-		box-shadow: 0 8px 32px color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		box-shadow: var(--shadow-section);
 	}
 
 	.proof-card:hover .proof-img,
@@ -212,7 +212,7 @@
 
 	.proof-card:hover .proof-img-overlay,
 	.proof-image.image-active .proof-img-overlay {
-		opacity: 0.1;
+		opacity: var(--opacity-subtle);
 	}
 
 	.proof-card:hover [data-testid='proof-tag'] {
