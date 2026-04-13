@@ -28,22 +28,22 @@ describe('Button (ui/button)', () => {
 		expect(btn.getAttribute('type')).toBe('button');
 	});
 
-	it('applies brand-sm size classes', () => {
-		const { container } = render(ButtonTest, { props: { text: 'Test', size: 'brand-sm' } });
+	it('applies cta-sm size classes', () => {
+		const { container } = render(ButtonTest, { props: { text: 'Test', size: 'cta-sm' } });
 		const btn = container.querySelector('button')!;
 		expect(btn.className).toContain('px-5');
 		expect(btn.className).toContain('font-semibold');
 	});
 
-	it('applies brand size classes', () => {
-		const { container } = render(ButtonTest, { props: { text: 'Test', size: 'brand' } });
+	it('applies cta size classes', () => {
+		const { container } = render(ButtonTest, { props: { text: 'Test', size: 'cta' } });
 		const btn = container.querySelector('button')!;
 		expect(btn.className).toContain('px-6');
 		expect(btn.className).toContain('font-semibold');
 	});
 
-	it('applies brand-lg size classes', () => {
-		const { container } = render(ButtonTest, { props: { text: 'Test', size: 'brand-lg' } });
+	it('applies cta-lg size classes', () => {
+		const { container } = render(ButtonTest, { props: { text: 'Test', size: 'cta-lg' } });
 		const btn = container.querySelector('button')!;
 		expect(btn.className).toContain('px-8');
 		expect(btn.className).toContain('font-semibold');
@@ -62,7 +62,7 @@ describe('Button (ui/button)', () => {
 	});
 
 	it('applies default variant with brand size compound classes', () => {
-		const { container } = render(ButtonTest, { props: { text: 'Test', variant: 'default', size: 'brand' } });
+		const { container } = render(ButtonTest, { props: { text: 'Test', variant: 'default', size: 'cta' } });
 		const btn = container.querySelector('button')!;
 		// Compound variant adds hover effects for CTA buttons
 		expect(btn.className).toContain('bg-primary');

@@ -203,10 +203,10 @@
 		</div>
 
 		<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
-			<Button variant="default" size="brand" onclick={() => document.getElementById('diagram-zone')?.scrollIntoView({ behavior: 'smooth' })}>
+			<Button variant="default" size="cta" onclick={() => document.getElementById('diagram-zone')?.scrollIntoView({ behavior: 'smooth' })}>
 				Explore Diagram <span aria-hidden="true">&darr;</span>
 			</Button>
-			<Button variant="outline" size="brand" onclick={scrollToBuild}>
+			<Button variant="outline" size="cta" onclick={scrollToBuild}>
 				Build Your Stack <span aria-hidden="true">&rarr;</span>
 			</Button>
 		</div>
@@ -394,10 +394,10 @@
 			Whether it's a data pipeline, a web app, or a mobile product — the infrastructure is ready.
 		</p>
 		<div class="cta-buttons">
-			<Button variant="default" size="brand" href="/contact">
+			<Button variant="default" size="cta" href="/contact">
 				Get In Touch <span aria-hidden="true">&rarr;</span>
 			</Button>
-			<Button variant="outline" size="brand" href="/services">
+			<Button variant="outline" size="cta" href="/services">
 				View Services
 			</Button>
 		</div>

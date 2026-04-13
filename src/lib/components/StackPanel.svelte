@@ -143,7 +143,7 @@
 
 			<!-- CTA -->
 			<div class="mt-4">
-				<Button variant="default" size="brand-sm" href="/contact" data-testid="panel-cta">
+				<Button variant="default" size="cta-sm" href="/contact" data-testid="panel-cta">
 					Let's build with {item.name} <span aria-hidden="true">&rarr;</span>
 				</Button>
 			</div>

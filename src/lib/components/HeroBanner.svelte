@@ -528,10 +528,10 @@
 						</p>
 
 						<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
-							<Button variant="default" size="brand-lg" href="/work" data-testid="hero-cta-work">
+							<Button variant="default" size="cta-lg" href="/work" data-testid="hero-cta-work">
 								{ctaWorkLabel}
 							</Button>
-							<Button variant="outline" size="brand-lg" href="/contact" data-testid="hero-cta-contact">
+							<Button variant="outline" size="cta-lg" href="/contact" data-testid="hero-cta-contact">
 								{ctaContactLabel}
 							</Button>
 						</div>

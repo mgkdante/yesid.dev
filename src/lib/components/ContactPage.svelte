@@ -274,7 +274,7 @@
 								{/if}
 
 								<!-- Submit button -->
-								<Button variant="default" size="brand-sm" type="submit">
+								<Button variant="default" size="cta-sm" type="submit">
 									<span class="opacity-60">~ $</span>
 									{resolveLocale(c.formTerminal.submitLabel, 'en')}
 								</Button>

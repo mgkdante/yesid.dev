@@ -225,7 +225,7 @@
 
 		<!-- CTA -->
 		<div class="sheet-cta-wrapper">
-			<Button variant="default" size="brand-sm" href="/contact">
+			<Button variant="default" size="cta-sm" href="/contact">
 				Let's build with {item.name} <span aria-hidden="true">→</span>
 			</Button>
 		</div>
