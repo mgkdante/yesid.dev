@@ -110,7 +110,8 @@ Phase 2 — Standardization
 - **TerminalCursor:** standardized to 8x14px block, uses global blink keyframe
 
 ## Open Decisions
-(none)
+- **Blueprint SVGs** (static/svg/blueprint/) — all 12 have brand orange but loaded via `<img>` tags (CSS vars don't work). Need to inline them first, then tokenize. Saved for 17d (Component API) with a reusable SVG loader pattern.
+- **Static SVGs** (static/svg/ except construction props) — same `<img>` limitation. Tokenize in 17d alongside blueprint inlining.
 
 ## Blockers
 (none)
@@ -125,6 +126,7 @@ Phase 2 — Standardization
 - ~220 hardcoded hex colors across 40+ files (17a-3)
 - 22 unused tokens defined but never referenced (17a-3)
 - 4 dead components: AboutBento, BlogCard, ProjectCard, SectionHeader (cleanup)
+- 6 dead Three.js/Threlte files + 2 dev preview routes (only used in /preview, not live site) — delete in 17a-4
 - 13 missed primitive wiring opportunities (17d)
 - Code duplication: BlogSvgIcon/WorkSvgIcon, isTouchDevice() x3, station pulse CSS x2 (17d)
 - Large files: Manifesto (1006), tech-stack/+page (909), HomeCloser (760), HeroBanner (734) (17d)
