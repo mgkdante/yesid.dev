@@ -30,7 +30,7 @@
 	<!-- Radial-gradient glow overlay — matches standard card hover system -->
 	<div
 		class="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(ellipse at 50% 50%, rgba(224, 120, 0, 0.06), transparent 70%);"
+		style="background: radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--brand-primary) 6%, transparent), transparent 70%);"
 	></div>
 
 	<div class="card-body">
@@ -58,16 +58,16 @@
 		align-items: center;
 		gap: 1rem;
 		padding: 1.25rem 1.5rem;
-		background: #141414;
-		border: 1px solid #2a2a2a;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-subtle);
 		border-radius: 0.75rem;
 		text-decoration: none;
 		transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 	}
 
 	.project-mini-card:hover {
-		border-color: rgba(224, 120, 0, 0.5);
-		box-shadow: 0 0 16px rgba(224, 120, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
+		border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		box-shadow: 0 0 16px color-mix(in srgb, var(--brand-primary) 10%, transparent), 0 2px 8px rgba(0, 0, 0, 0.3);
 		transform: translateY(-2px);
 	}
 
@@ -80,18 +80,18 @@
 		font-family: 'Inter', sans-serif;
 		font-size: 0.9375rem;
 		font-weight: 700;
-		color: var(--text-primary, #f5f5f0);
+		color: var(--text-primary);
 		transition: color 0.2s;
 	}
 	.project-mini-card:hover .card-title {
-		color: #E07800;
+		color: var(--brand-primary);
 	}
 
 	.card-liner {
 		margin-top: 0.375rem;
 		font-size: 0.8125rem;
 		line-height: 1.5;
-		color: #888;
+		color: var(--text-secondary);
 	}
 
 	.card-stack {
@@ -105,28 +105,28 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.625rem;
 		padding: 0.1875rem 0.5rem;
-		border: 1px solid #282828;
+		border: 1px solid var(--border-subtle);
 		border-radius: 999px;
-		color: #666;
+		color: var(--text-muted);
 		transition: border-color 0.2s;
 	}
 	.project-mini-card:hover .card-pill {
-		border-color: rgba(224, 120, 0, 0.3);
+		border-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
 	}
 
 	.card-pill-more {
-		color: #E07800;
-		border-color: rgba(224, 120, 0, 0.3);
+		color: var(--brand-primary);
+		border-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
 	}
 
 	.card-arrow {
 		font-size: 1.125rem;
-		color: #333;
+		color: var(--border-strong);
 		transition: color 0.2s, transform 0.2s;
 		flex-shrink: 0;
 	}
 	.project-mini-card:hover .card-arrow {
-		color: #E07800;
+		color: var(--brand-primary);
 		transform: translateX(3px);
 	}
 </style>
