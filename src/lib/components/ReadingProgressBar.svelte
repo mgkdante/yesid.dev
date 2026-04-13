@@ -3,10 +3,12 @@
   Tracks scroll progress through a target element (blog content).
   Uses requestAnimationFrame + getBoundingClientRect for smooth tracking.
   Respects prefers-reduced-motion — skips rendering entirely when enabled.
+  Uses bits-ui Progress for proper ARIA progressbar semantics.
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { Progress } from '$lib/components/ui/progress';
 
 	let {
 		targetSelector = '[data-testid="blog-content"]',
@@ -18,6 +20,7 @@
 
 	let progress = $state(0);
 	let reducedMotion = $state(false);
+	let progressPercent = $derived(Math.round(progress * 100));
 
 	onMount(() => {
 		reducedMotion = isPrefersReducedMotion();
@@ -71,16 +74,22 @@
 
 {#if !reducedMotion}
 	<div
-		class="fixed left-0 right-0 top-0 z-50 h-[3px]"
-		role="progressbar"
-		aria-valuenow={Math.round(progress * 100)}
-		aria-valuemin={0}
-		aria-valuemax={100}
+		class="fixed left-0 right-0 top-0 z-50"
 		data-testid="reading-progress-bar"
+		style="--progress-gradient: linear-gradient(90deg, {accentColor}, var(--accent));"
 	>
-		<div
-			class="h-full origin-left transition-transform duration-75"
-			style="transform: scaleX({progress}); background: linear-gradient(90deg, {accentColor}, var(--accent));"
-		></div>
+		<Progress
+			value={progressPercent}
+			max={100}
+			class="reading-progress-root rounded-none bg-transparent"
+		/>
 	</div>
 {/if}
+
+<style>
+	/* Override the progress indicator to use our gradient fill instead of default bg-primary */
+	:global([data-slot="progress"].reading-progress-root [data-slot="progress-indicator"]) {
+		background: var(--progress-gradient);
+		transition: transform 75ms linear;
+	}
+</style>

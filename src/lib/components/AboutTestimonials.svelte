@@ -1,6 +1,9 @@
 <!--
   Rotating testimonial carousel. Auto-rotates 6s, pauses on hover.
   Metro stop label + cursor glow.
+  Uses proper ARIA carousel semantics (aria-roledescription="carousel",
+  role="group" + aria-roledescription="slide" on active content).
+  Kept as manual fade carousel (not embla) to preserve fade transition.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
@@ -21,6 +24,8 @@
 
 	function goTo(index: number) {
 		activeIndex = index;
+		// Reset timer on manual navigation so user gets full 6s to read
+		startTimer();
 	}
 
 	function startTimer() {
@@ -56,21 +61,27 @@
 	onmouseenter={() => (paused = true)}
 	onmouseleave={() => (paused = false)}
 	role="region"
+	aria-roledescription="carousel"
 	aria-label="Client testimonials"
 >
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label: always top-left -->
 		<StopLabel {stop} {label} />
 
-		<!-- Centered content area -->
-		<div class="flex flex-1 flex-col justify-center">
+		<!-- Centered content area — active slide -->
+		<div
+			class="flex flex-1 flex-col justify-center"
+			role="group"
+			aria-roledescription="slide"
+			aria-label="Testimonial {activeIndex + 1} of {testimonials.length}"
+		>
 			<!-- Decorative quote mark -->
 			<div class="text-center font-heading text-5xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
 				&ldquo;
 			</div>
 
 			<!-- Quote -->
-			<div class="min-h-20 flex items-center">
+			<div class="min-h-20 flex items-center" aria-live="polite" aria-atomic="true">
 				{#key activeIndex}
 					<blockquote class="animate-fade-in text-center text-base leading-relaxed text-[var(--foreground)] italic md:text-lg">
 						{quote}

@@ -4,12 +4,15 @@
   collapsible sections. Supports two modes:
   - Default: Desktop sticky sidebar + mobile collapsible toggle
   - Embedded: Just the nav content, parent controls layout/visibility
-  Features: IntersectionObserver active tracking, collapsible header, collapsible
-  section groups (h1/h2 parents toggle their h3/h4 children).
+  Features: IntersectionObserver active tracking, collapsible header (bits-ui),
+  collapsible section groups (h1/h2 parents toggle their h3/h4 children),
+  ScrollArea for desktop sidebar.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { ChevronToggle } from '$lib/components/brand';
+	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
+	import { ScrollArea } from '$lib/components/ui/scroll-area';
 
 	interface TocEntry {
 		id: string;
@@ -210,21 +213,26 @@
 	<!-- Embedded mode: parent controls layout/visibility -->
 	{#if entries.length > 0}
 		<nav class="toc-embedded {className}" aria-label="Table of contents" data-testid="toc-embedded">
-			<!-- Collapsible header -->
-			<button
-				class="toc-header mb-2 flex w-full items-center gap-1.5"
-				onclick={() => tocOpen = !tocOpen}
-			>
-				<ChevronToggle open={tocOpen} size="sm" direction="right" />
-				<span class="label-section font-semibold tracking-wider text-text-muted">
-					On this page
-				</span>
-			</button>
-			<div class="toc-body" class:expanded={tocOpen}>
-				<div>
-					{@render tocEntries()}
-				</div>
-			</div>
+			<Collapsible bind:open={tocOpen}>
+				<CollapsibleTrigger>
+					{#snippet child({ props })}
+						<button
+							{...props}
+							class="toc-header mb-2 flex w-full items-center gap-1.5"
+						>
+							<ChevronToggle open={tocOpen} size="sm" direction="right" />
+							<span class="label-section font-semibold tracking-wider text-[var(--muted-foreground)]">
+								On this page
+							</span>
+						</button>
+					{/snippet}
+				</CollapsibleTrigger>
+				<CollapsibleContent forceMount class="toc-collapsible-body">
+					<div class="min-h-0 overflow-hidden">
+						{@render tocEntries()}
+					</div>
+				</CollapsibleContent>
+			</Collapsible>
 		</nav>
 	{/if}
 {:else}
@@ -234,46 +242,61 @@
 		aria-label="Table of contents"
 		data-testid="toc-desktop"
 	>
-		<button
-			class="toc-header mb-2 flex w-full items-center gap-1.5"
-			onclick={() => tocOpen = !tocOpen}
-		>
-			<svg
-				class="toc-header-chevron h-3 w-3 text-text-muted"
-				class:rotated={tocOpen}
-				viewBox="0 0 16 16"
-				fill="currentColor"
-			>
-				<path d="M6 3l6 5-6 5V3z" />
-			</svg>
-			<span class="label-section font-semibold tracking-wider text-text-muted">
-				On this page
-			</span>
-		</button>
-		<div class="toc-body" class:expanded={tocOpen}>
-			<div>
-				{@render tocEntries()}
-			</div>
-		</div>
+		<Collapsible bind:open={tocOpen}>
+			<CollapsibleTrigger>
+				{#snippet child({ props })}
+					<button
+						{...props}
+						class="toc-header mb-2 flex w-full items-center gap-1.5"
+					>
+						<svg
+							class="toc-header-chevron h-3 w-3 text-[var(--muted-foreground)]"
+							class:rotated={tocOpen}
+							viewBox="0 0 16 16"
+							fill="currentColor"
+						>
+							<path d="M6 3l6 5-6 5V3z" />
+						</svg>
+						<span class="label-section font-semibold tracking-wider text-[var(--muted-foreground)]">
+							On this page
+						</span>
+					</button>
+				{/snippet}
+			</CollapsibleTrigger>
+			<CollapsibleContent forceMount class="toc-collapsible-body">
+				<div class="min-h-0 overflow-hidden">
+					<ScrollArea class="toc-scroll-area" orientation="vertical">
+						{@render tocEntries()}
+					</ScrollArea>
+				</div>
+			</CollapsibleContent>
+		</Collapsible>
 	</nav>
 
 	<!-- Mobile: collapsible toggle (hidden at lg+ breakpoint) -->
 	{#if entries.length > 0}
 		<div class="toc-mobile mb-6 lg:hidden" data-testid="toc-mobile">
-			<button
-				class="toc-toggle flex items-center gap-1.5 rounded border border-border-subtle bg-bg-primary px-3 py-2 font-mono text-caption text-text-secondary transition-colors hover:border-brand-primary hover:text-primary"
-				onclick={() => mobileOpen = !mobileOpen}
-				aria-expanded={mobileOpen}
-			>
-				<ChevronToggle open={mobileOpen} size="sm" direction="right" />
-				Table of Contents
-			</button>
+			<Collapsible bind:open={mobileOpen}>
+				<CollapsibleTrigger>
+					{#snippet child({ props })}
+						<button
+							{...props}
+							class="toc-toggle flex items-center gap-1.5 rounded border border-[var(--border-subtle)] bg-[var(--background)] px-3 py-2 font-mono text-caption text-[var(--secondary-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
+						>
+							<ChevronToggle open={mobileOpen} size="sm" direction="right" />
+							Table of Contents
+						</button>
+					{/snippet}
+				</CollapsibleTrigger>
 
-			{#if mobileOpen}
-				<div class="mt-2 rounded border border-border-subtle bg-bg-primary p-3">
-					{@render tocEntries()}
-				</div>
-			{/if}
+				<CollapsibleContent forceMount class="toc-mobile-body">
+					<div class="min-h-0 overflow-hidden">
+						<div class="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--background)] p-3">
+							{@render tocEntries()}
+						</div>
+					</div>
+				</CollapsibleContent>
+			</Collapsible>
 		</div>
 	{/if}
 {/if}
@@ -314,28 +337,37 @@
 		cursor: pointer;
 		padding: 0;
 	}
-	/* Smooth collapse animation for the ToC entry list */
-	.toc-body {
+	/* Smooth collapse animation via CSS grid — matches CollapsibleSection pattern */
+	:global([data-slot="collapsible-content"].toc-collapsible-body) {
 		display: grid;
 		grid-template-rows: 0fr;
 		transition: grid-template-rows var(--duration-slow) var(--ease-default);
 	}
-	.toc-body.expanded {
+	:global([data-slot="collapsible-content"].toc-collapsible-body[data-state="open"]) {
 		grid-template-rows: 1fr;
 	}
-	.toc-body > div {
-		overflow: hidden;
+
+	/* Mobile collapsible body — same pattern */
+	:global([data-slot="collapsible-content"].toc-mobile-body) {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows var(--duration-slow) var(--ease-default);
+	}
+	:global([data-slot="collapsible-content"].toc-mobile-body[data-state="open"]) {
+		grid-template-rows: 1fr;
 	}
 
-	/* Desktop sticky positioning */
+	/* Desktop sticky positioning — ScrollArea handles overflow */
 	.toc-desktop {
 		position: sticky;
 		top: 5rem;
 		max-height: calc(100dvh - 8rem);
-		overflow-y: auto;
 		width: 200px;
 		flex-shrink: 0;
 	}
 
-	/* Scrollbar handled by global brand styles in app.css */
+	/* ScrollArea within desktop ToC respects the sticky container height */
+	:global(.toc-scroll-area) {
+		max-height: calc(100dvh - 12rem);
+	}
 </style>
