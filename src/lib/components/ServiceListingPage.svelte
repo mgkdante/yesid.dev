@@ -188,7 +188,7 @@
 	.metro-track {
 		position: absolute;
 		inset: 0;
-		background: #1a1a1a;
+		background: var(--bg-card);
 		border-radius: 1px;
 	}
 
@@ -197,7 +197,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		background: #E07800;
+		background: var(--brand-primary);
 		border-radius: 1px;
 		transition: height 0.2s ease-out;
 	}
@@ -209,21 +209,21 @@
 		width: 10px;
 		height: 10px;
 		border-radius: 50%;
-		border: 2px solid #333;
+		border: 2px solid var(--border-strong);
 		background: transparent;
 		transition: all 0.3s ease;
 		z-index: 1;
 	}
 
 	.metro-dot.visited {
-		background: #E07800;
-		border-color: #E07800;
+		background: var(--brand-primary);
+		border-color: var(--brand-primary);
 	}
 
 	.metro-dot.active {
-		background: #E07800;
-		border-color: #E07800;
-		box-shadow: 0 0 12px rgba(224, 120, 0, 0.5);
+		background: var(--brand-primary);
+		border-color: var(--brand-primary);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--brand-primary) 50%, transparent);
 		width: 12px;
 		height: 12px;
 	}

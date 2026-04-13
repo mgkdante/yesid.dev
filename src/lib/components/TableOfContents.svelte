@@ -216,7 +216,7 @@
 				onclick={() => tocOpen = !tocOpen}
 			>
 				<ChevronToggle open={tocOpen} size="sm" direction="right" />
-				<span class="label-section font-semibold tracking-wider text-[#666]">
+				<span class="label-section font-semibold tracking-wider text-text-muted">
 					On this page
 				</span>
 			</button>
@@ -239,14 +239,14 @@
 			onclick={() => tocOpen = !tocOpen}
 		>
 			<svg
-				class="toc-header-chevron h-3 w-3 text-[#666]"
+				class="toc-header-chevron h-3 w-3 text-text-muted"
 				class:rotated={tocOpen}
 				viewBox="0 0 16 16"
 				fill="currentColor"
 			>
 				<path d="M6 3l6 5-6 5V3z" />
 			</svg>
-			<span class="label-section font-semibold tracking-wider text-[#666]">
+			<span class="label-section font-semibold tracking-wider text-text-muted">
 				On this page
 			</span>
 		</button>
@@ -261,7 +261,7 @@
 	{#if entries.length > 0}
 		<div class="toc-mobile mb-6 lg:hidden" data-testid="toc-mobile">
 			<button
-				class="toc-toggle flex items-center gap-1.5 rounded border border-[#2a2a2a] bg-[#141414] px-3 py-2 font-mono text-caption text-[#999] transition-colors hover:border-[#E07800] hover:text-[#E07800]"
+				class="toc-toggle flex items-center gap-1.5 rounded border border-border-subtle bg-bg-primary px-3 py-2 font-mono text-caption text-text-secondary transition-colors hover:border-brand-primary hover:text-brand-primary"
 				onclick={() => mobileOpen = !mobileOpen}
 				aria-expanded={mobileOpen}
 			>
@@ -270,7 +270,7 @@
 			</button>
 
 			{#if mobileOpen}
-				<div class="mt-2 rounded border border-[#2a2a2a] bg-[#141414] p-3">
+				<div class="mt-2 rounded border border-border-subtle bg-bg-primary p-3">
 					{@render tocEntries()}
 				</div>
 			{/if}
@@ -281,7 +281,7 @@
 <style>
 	/* ToC link: left border accent for active tracking */
 	.toc-link {
-		color: #666;
+		color: var(--text-muted);
 		cursor: pointer;
 		background: none;
 		border: none;
@@ -290,15 +290,15 @@
 		border-radius: 0 0.25rem 0.25rem 0;
 	}
 	.toc-link:hover {
-		color: #ccc;
-		background: rgba(224, 120, 0, 0.04);
-		border-left-color: rgba(224, 120, 0, 0.3);
+		color: var(--text-light);
+		background: color-mix(in srgb, var(--brand-primary) 4%, transparent);
+		border-left-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
 	}
 	.toc-link.active {
-		color: #E07800;
+		color: var(--brand-primary);
 		font-weight: 600;
-		border-left-color: #E07800;
-		background: rgba(224, 120, 0, 0.06);
+		border-left-color: var(--brand-primary);
+		background: color-mix(in srgb, var(--brand-primary) 6%, transparent);
 	}
 
 	.toc-section-chevron {
@@ -307,7 +307,7 @@
 		justify-content: center;
 		width: 18px;
 		height: 18px;
-		color: #555;
+		color: var(--text-muted);
 		transition: transform 0.2s ease, color 0.15s ease;
 		border: none;
 		background: none;
