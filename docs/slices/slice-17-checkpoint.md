@@ -1,14 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-13 | 17a-6 Session 3 complete (Tasks 15-20)
+**Last updated:** 2026-04-13 | 17a-6 COMPLETE (Sessions 1-4, Tasks 1-26)
 **Branch:** `feature/slice-17a-6-component-library`
 
 ## Current Position
 
-- **Sub-slice:** 17a-6 (Component Library Foundation) — Session 3 of 4 COMPLETE
-- **Task:** 20 of 26 complete. Session 3 done (6 brand primitives migrated to ui/, 4 page components wired to ui/ primitives).
-- **Status:** 7 brand primitives migrated → ui/ (BrandButton→button, CardBase→card, Tag→badge, NumberBadge→badge, HazardStripe→separator, GradientSeparator→separator). 4 page components wired (MenuOverlay→Dialog, StackBottomSheet→Drawer, CollapsibleSection→Collapsible, FilterGroup→ToggleGroup). Brand barrel: 15→9 components. Build + tests green (0 errors, 707/707 tests, 16 warnings).
-- **Next action:** Session 4 — Task 21 (wire remaining 6 components) + Tasks 22-26 (a11y fixes + end-of-17a sweep + docs cleanup).
+- **Sub-slice:** 17a-6 (Component Library Foundation) — COMPLETE (all 4 sessions, 26/26 tasks)
+- **Status:** shadcn-svelte component library initialized. 56 ui/ components scaffolded, 15 customized with brand styling, 7 brand primitives migrated to ui/, 10 page components wired to ui/ headless primitives. 9 brand primitives remain with cn/data-slot conventions. Zero svelte-ignore a11y. Zero old tokens. Zero arbitrary spacing. Dead Three.js/Threlte deps removed. Docs updated.
+- **Build:** 0 errors, 12 warnings, 707/707 tests pass.
+- **Next action:** PR to main, then 17d (Component API — 4 sessions).
 - **Decision D47 revised:** Kept Tailwind default breakpoints (640/768/1024/1280/1536) instead of custom 360/520/768/1024/1440. Edge-to-edge controlled by layout model, not breakpoints.
 - **Pending brainstorm:** Edge-to-edge visual design (edge decorations, vertical typography, circuit lines) for all pages — feeds into 17d.
 
@@ -326,22 +326,43 @@ Phase 2 — Data + Architecture
 - **D68:** CollapsibleSection uses CSS grid `data-state` attributes from Collapsible instead of `.expanded` class
 - **D69:** FilterGroup "All" button mapped as `__all__` ToggleGroupItem for unified keyboard navigation
 
-### Session 1 Reviewer Notes (still pending — fix in Session 4 docs cleanup)
+### Session 1 Reviewer Notes — RESOLVED in Session 4
 
-- TESTS.md and ARCHITECTURE.md still reference deleted components
-- CSS.md and CONSTITUTION.md still reference deleted/renamed tokens
-- Orphaned test mocks in setup.dom.ts for @threlte/*, postprocessing
-- three, @threlte/*, postprocessing still in package.json
-- Stale comment in +page.ts referencing /preview route
+- ✅ TESTS.md and ARCHITECTURE.md updated (deleted component refs removed)
+- ✅ CSS.md and CONSTITUTION.md updated (new token names, ui/brand tiers documented)
+- ✅ Orphaned test mocks removed from setup.dom.ts
+- ✅ three, @threlte/*, postprocessing removed from package.json
+- ✅ Stale comment in +page.ts fixed
 
-### Pre-existing findings (not caused by Session 3)
+### Pre-existing findings (deferred to 17d)
 
-- Terminal scroll on About/Services pages — TerminalChrome body may need explicit overflow-y: auto (investigate in 17d)
+- Terminal scroll on About/Services pages — TerminalChrome body may need explicit overflow-y: auto
 - Mobile scrollbar visibility — dropped per Yesid, not a concern
+
+## 17a-6 Session 4 Stats
+
+- 7 commits on branch (Tasks 21-26)
+- 6 page components wired to ui/ primitives (StationTabs→Tabs, BlogFilterMobile→Collapsible, WorkFilterMobile→Collapsible, TableOfContents→Collapsible+ScrollArea, ReadingProgressBar→Progress)
+- AboutTestimonials: ARIA carousel semantics added (not embla — preserves fade animation)
+- 12 svelte-ignore a11y comments eliminated across 7 files (div→button, role="toolbar", role="presentation")
+- 9 brand primitives updated with cn()/data-slot/class/restProps conventions
+- End-of-17a sweep: zero violations (0 old tokens, 0 svelte-ignore, 0 arbitrary spacing)
+- Dead deps removed: @threlte/core, @threlte/extras, postprocessing, three, @types/three
+- Docs updated: CONSTITUTION.md, CSS.md, TESTS.md, ARCHITECTURE.md, roadmap
+- Build warnings: 16→12 (4 a11y warnings eliminated by div→button fixes)
+- Tests: 707/707 stable
+
+### Session 4 Decisions
+
+- **D70:** AboutTestimonials NOT wired to embla Carousel — fade→slide would break visual parity. ARIA carousel semantics added manually. Can revisit with embla-carousel-fade plugin.
+- **D71:** StationTabs navigate mode kept as `<nav>` + `<a>` links — HTML anchors cannot be tab triggers.
+- **D72:** ToC section group toggles kept manual — nested Collapsibles in shared list too complex for minimal gain.
+- **D73:** StackDiagram uses `role="toolbar"` (semantically appropriate container of selectable nodes).
+- **D74:** BlogSvgIcon/WorkSvgIcon kept as decorative `role="presentation"` — only mouse hover, no click.
 
 ## Next Steps
 
-1. **17a-6 Session 4:** Task 21 (wire remaining 6 components) + Tasks 22-26 (a11y fixes + end-of-17a sweep + docs cleanup)
+1. **17a-6 Closing:** PR to main (squash-merge), handoff report, devlog, learning docs, tree.txt
 2. **17d: Component API** — Needs implementation plan. 4 sessions.
 3. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions.
 4. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (last).
