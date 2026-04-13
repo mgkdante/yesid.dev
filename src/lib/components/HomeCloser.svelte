@@ -380,10 +380,10 @@
 			<!-- Reflector interior -->
 			<path d="M24,12 L40,12 L37,4 L27,4 Z" fill="#2a2a2a"/>
 			<!-- Light lens (top face, glowing) -->
-			<rect x="26" y="1" width="12" height="3" rx="1" fill="var(--brand-accent, #FFB627)"/>
+			<rect x="26" y="1" width="12" height="3" rx="1" fill="var(--brand-accent)"/>
 			<rect x="27.5" y="1.5" width="9" height="1.5" rx="0.5" fill="#FFD060" opacity="0.8"/>
 			<!-- Glow halo around lens -->
-			<rect x="24" y="0" width="16" height="5" rx="2" fill="var(--brand-accent, #FFB627)" opacity="0.15"/>
+			<rect x="24" y="0" width="16" height="5" rx="2" fill="var(--brand-accent)" opacity="0.15"/>
 		</svg>
 	</div>
 

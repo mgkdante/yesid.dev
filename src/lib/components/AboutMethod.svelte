@@ -31,7 +31,7 @@
 
 				<!-- Connecting line (not before first) -->
 				{#if i > 0}
-					<div class="mt-3 h-[2px] w-4 flex-shrink-0" style="background: linear-gradient(90deg, var(--brand-primary), rgba(224,120,0,0.3));"></div>
+					<div class="mt-3 h-[2px] w-4 flex-shrink-0" style="background: linear-gradient(90deg, var(--brand-primary), color-mix(in srgb, var(--brand-primary) 30%, transparent));"></div>
 				{/if}
 
 				<div class="flex flex-col items-center" use:reveal={{ delay: stagger(i, 100) }}>

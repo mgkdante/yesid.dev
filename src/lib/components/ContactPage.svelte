@@ -169,7 +169,7 @@
 								<a
 									href={social.href}
 									data-testid="contact-social-{social.icon}"
-									class="flex items-center gap-2 rounded px-2 py-1.5 text-[var(--text-primary)] transition-colors duration-200 hover:bg-[rgba(224,120,0,0.15)]"
+									class="flex items-center gap-2 rounded px-2 py-1.5 text-[var(--text-primary)] transition-colors duration-200 hover:bg-brand-primary/15"
 									{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 								>
 									<span class="text-[var(--brand-primary)]">→</span>
