@@ -97,12 +97,12 @@
 <style>
 	.footer-gradient-sep {
 		height: 1px;
-		background: linear-gradient(90deg, transparent, #E07800 20%, #E07800 80%, transparent);
+		background: linear-gradient(90deg, transparent, var(--brand-primary) 20%, var(--brand-primary) 80%, transparent);
 		opacity: 0.15;
 	}
 
 	.footer-status-border {
-		border-top: 1px solid rgba(255, 255, 255, 0.06);
+		border-top: 1px solid color-mix(in srgb, var(--text-primary) 6%, transparent);
 	}
 
 

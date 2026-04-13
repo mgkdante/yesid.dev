@@ -116,7 +116,7 @@
 
 		defs.innerHTML += `
 			<filter id="floodlight" x="-50%" y="-50%" width="200%" height="200%">
-				<feDiffuseLighting in="SourceGraphic" result="light" surfaceScale="5" diffuseConstant="1.4" lighting-color="#FFB627">
+				<feDiffuseLighting in="SourceGraphic" result="light" surfaceScale="5" diffuseConstant="1.4" lighting-color="var(--brand-accent)">
 					<feSpotLight x="${cx}" y="${h + 200}" z="40" pointsAtX="${cx}" pointsAtY="0" pointsAtZ="0" specularExponent="8" limitingConeAngle="45"/>
 				</feDiffuseLighting>
 				<feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1.4" k2="0.2" k3="0" k4="0"/>
@@ -253,7 +253,7 @@
 					filter.setAttribute('width', '200%');
 					filter.setAttribute('height', '200%');
 					filter.innerHTML = `
-						<feDiffuseLighting in="SourceGraphic" result="light" surfaceScale="4" diffuseConstant="1.3" lighting-color="#FFB627">
+						<feDiffuseLighting in="SourceGraphic" result="light" surfaceScale="4" diffuseConstant="1.3" lighting-color="var(--brand-accent)">
 							<feSpotLight x="${cx}" y="${h + 100}" z="50" pointsAtX="${cx}" pointsAtY="0" pointsAtZ="0" specularExponent="8" limitingConeAngle="45"/>
 						</feDiffuseLighting>
 						<feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1.3" k2="0.2" k3="0" k4="0"/>
@@ -478,9 +478,9 @@
 		clip-path: polygon(49% 100%, 51% 100%, 100% 0%, 0% 0%);
 		background: linear-gradient(
 			to top,
-			rgba(255, 182, 39, 0.08) 0%,
-			rgba(255, 182, 39, 0.04) 35%,
-			rgba(255, 182, 39, 0.015) 65%,
+			color-mix(in srgb, var(--brand-accent) 8%, transparent) 0%,
+			color-mix(in srgb, var(--brand-accent) 4%, transparent) 35%,
+			color-mix(in srgb, var(--brand-accent) 1.5%, transparent) 65%,
 			transparent 100%
 		);
 		filter: blur(8px);
