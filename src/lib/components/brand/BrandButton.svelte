@@ -1,7 +1,7 @@
 <!--
   BrandButton — primary/ghost CTA in 3 sizes.
   Brand primitive: replaces 7+ scattered button implementations.
-  D20: 3 sizes (sm/md/lg). D21: primary text always var(--bg-primary).
+  D20: 3 sizes (sm/md/lg). D21: primary text always var(--background).
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -67,29 +67,29 @@
   }
 
   .btn-primary {
-    background-color: var(--brand-primary);
-    color: var(--bg-primary);
-    border: 1px solid var(--brand-primary);
+    background-color: var(--primary);
+    color: var(--background);
+    border: 1px solid var(--primary);
   }
   .btn-primary:hover {
-    background-color: var(--brand-primary-hover);
-    border-color: var(--brand-primary-hover);
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
     transform: translateY(-1px);
     box-shadow: var(--shadow-glow-sm);
   }
 
   .btn-ghost {
     background: transparent;
-    color: var(--text-primary);
+    color: var(--foreground);
     border: 1px solid var(--border);
   }
   .btn-ghost:hover {
-    border-color: var(--brand-primary);
-    color: var(--brand-primary);
+    border-color: var(--primary);
+    color: var(--primary);
   }
 
   .btn:focus-visible {
-    outline: 2px solid var(--brand-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
   }
 </style>

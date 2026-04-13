@@ -20,7 +20,7 @@
     font-family: var(--font-mono);
     font-size: var(--text-micro);
     letter-spacing: 2px;
-    color: var(--text-muted);
+    color: var(--muted-foreground);
     position: relative;
     padding-left: 16px;
     text-transform: uppercase;
@@ -35,8 +35,8 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--brand-primary);
-    box-shadow: 0 0 6px 2px rgb(var(--brand-primary-rgb) / 0.6);
+    background: var(--primary);
+    box-shadow: 0 0 6px 2px rgb(var(--primary-rgb) / 0.6);
     animation: pulse-glow 2s ease-in-out infinite;
   }
 

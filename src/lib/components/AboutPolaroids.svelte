@@ -68,15 +68,15 @@
 		<!-- Arrow nav + counter -->
 		<div class="flex items-center justify-center gap-3 pb-1">
 			<button
-				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-muted)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
+				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 				onclick={prev}
 				aria-label="Previous photo"
 			>
 				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M6 2L3.5 5L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</button>
-			<span class="font-mono text-caption text-[var(--text-muted)]">{currentIndex + 1}/{polaroids.length}</span>
+			<span class="font-mono text-caption text-[var(--muted-foreground)]">{currentIndex + 1}/{polaroids.length}</span>
 			<button
-				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-muted)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
+				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 				onclick={next}
 				aria-label="Next photo"
 			>

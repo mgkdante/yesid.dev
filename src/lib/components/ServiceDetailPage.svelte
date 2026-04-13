@@ -124,7 +124,7 @@
 				<div use:reveal={{ direction: 'up', delay: 100 }}>
 					<CollapsibleSection title={resolveLocale(labels.valueProposition, 'en')} open={true}>
 						{#snippet icon()}
-							<svg class="h-4 w-4 shrink-0 text-brand-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+							<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 								<circle cx="8" cy="8" r="2.5" />
 								<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" />
 							</svg>
@@ -141,7 +141,7 @@
 				<div use:reveal={{ direction: 'up', delay: 150 }}>
 					<CollapsibleSection title={resolveLocale(labels.deliverables, 'en')} open={true}>
 						{#snippet icon()}
-							<svg class="h-4 w-4 shrink-0 text-brand-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+							<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 								<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
 							</svg>
 						{/snippet}
@@ -196,7 +196,7 @@
 
 <style>
 	.service-detail {
-		background: var(--bg-primary);
+		background: var(--background);
 		min-height: 100dvh;
 	}
 
@@ -213,7 +213,7 @@
 		display: inline-block;
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
-		color: var(--brand-primary);
+		color: var(--primary);
 		text-decoration: none;
 		margin-bottom: 1.5rem;
 		transition: opacity var(--duration-fast);
@@ -244,7 +244,7 @@
 		justify-content: center;
 		border-radius: 1.25rem;
 		border: 1px solid var(--border);
-		background: var(--bg-card);
+		background: var(--card);
 		padding: 2rem;
 		cursor: pointer;
 		transition: transform var(--duration-slower) var(--ease-bounce),
@@ -254,7 +254,7 @@
 	}
 	.hero-svg-box:hover,
 	.hero-svg-box:global(.morphed) {
-		border-color: var(--brand-primary);
+		border-color: var(--primary);
 		border-radius: 50%;
 		transform: scale(1.06) rotate(3deg);
 		box-shadow: var(--shadow-glow-lg);
@@ -285,7 +285,7 @@
 
 	.station-counter {
 		display: block;
-		color: var(--brand-primary);
+		color: var(--primary);
 		margin-bottom: 0.75rem;
 	}
 
@@ -293,15 +293,15 @@
 		font-family: var(--font-heading);
 		font-size: clamp(1.75rem, 3.5vw, 3rem);
 		font-weight: 800;
-		color: var(--text-primary);
+		color: var(--foreground);
 		line-height: 1.1;
 		margin-bottom: 0.5rem;
 	}
-	.title-dot { color: var(--brand-primary); }
+	.title-dot { color: var(--primary); }
 
 	.detail-subtitle {
 		font-size: 1rem;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		margin-bottom: 0.75rem;
 		font-style: italic;
 	}
@@ -309,7 +309,7 @@
 	.detail-description {
 		font-size: 1rem;
 		line-height: 1.7;
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 		max-width: 60ch;
 	}
 
@@ -341,14 +341,14 @@
 		align-items: center;
 		gap: 0.5rem;
 		font-size: 0.875rem;
-		color: var(--text-light);
+		color: var(--light-foreground);
 	}
 
 	.deliverable-dot {
 		width: 6px;
 		height: 6px;
 		border-radius: 50%;
-		background: var(--brand-primary);
+		background: var(--primary);
 		flex-shrink: 0;
 	}
 
@@ -367,13 +367,13 @@
 		font-family: var(--font-heading);
 		font-size: 1.25rem;
 		font-weight: 700;
-		color: var(--text-primary);
+		color: var(--foreground);
 	}
 
 	.related-link {
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
-		color: var(--brand-primary);
+		color: var(--primary);
 		text-decoration: none;
 	}
 	.related-link:hover { text-decoration: underline; }

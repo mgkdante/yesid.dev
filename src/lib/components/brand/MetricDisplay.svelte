@@ -36,12 +36,12 @@
     <span class="label-metric">{label}</span>
   {/if}
   <span
-    class="font-heading font-extrabold leading-none text-brand-primary {valueClass[size]}"
+    class="font-heading font-extrabold leading-none text-primary {valueClass[size]}"
   >{value}</span>
   {#if labelBelow}
     <span class="mt-2 label-metric">{label}</span>
   {/if}
   {#if sublabel}
-    <span class="mt-1 font-mono text-caption text-[var(--text-dim)]">{sublabel}</span>
+    <span class="mt-1 font-mono text-caption text-[var(--dim-foreground)]">{sublabel}</span>
   {/if}
 </div>

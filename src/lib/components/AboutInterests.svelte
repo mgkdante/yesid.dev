@@ -56,7 +56,7 @@
 				{#if i < interests.length - 1}
 					<div
 						class="absolute right-0 top-0 z-10 h-full w-px"
-						style="background: var(--brand-primary); opacity: 0.4;"
+						style="background: var(--primary); opacity: 0.4;"
 						aria-hidden="true"
 					></div>
 				{/if}

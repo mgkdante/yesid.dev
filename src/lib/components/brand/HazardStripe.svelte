@@ -22,7 +22,7 @@
   const heightClass = { sm: 'h-0.5', md: 'h-1', lg: 'h-2' } as const;
 
   const gradient = $derived(
-    `repeating-linear-gradient(${angle}deg, var(--brand-accent) 0px, var(--brand-accent) ${stripeWidth[size]}px, var(--bg-primary) ${stripeWidth[size]}px, var(--bg-primary) ${stripeWidth[size] * 2}px)`
+    `repeating-linear-gradient(${angle}deg, var(--accent) 0px, var(--accent) ${stripeWidth[size]}px, var(--background) ${stripeWidth[size]}px, var(--background) ${stripeWidth[size] * 2}px)`
   );
 </script>
 

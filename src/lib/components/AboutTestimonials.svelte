@@ -65,14 +65,14 @@
 		<!-- Centered content area -->
 		<div class="flex flex-1 flex-col justify-center">
 			<!-- Decorative quote mark -->
-			<div class="text-center font-heading text-5xl leading-none text-[var(--brand-primary)] select-none" aria-hidden="true">
+			<div class="text-center font-heading text-5xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
 				&ldquo;
 			</div>
 
 			<!-- Quote -->
 			<div class="min-h-20 flex items-center">
 				{#key activeIndex}
-					<blockquote class="animate-fade-in text-center text-base leading-relaxed text-[var(--text-primary)] italic md:text-lg">
+					<blockquote class="animate-fade-in text-center text-base leading-relaxed text-[var(--foreground)] italic md:text-lg">
 						{quote}
 					</blockquote>
 				{/key}
@@ -82,8 +82,8 @@
 			<div class="mt-3">
 				{#key activeIndex}
 					<div class="animate-fade-in text-right">
-						<span class="text-sm font-semibold text-[var(--text-primary)]">{active.author}</span>
-						<span class="text-sm text-[var(--text-secondary)]">
+						<span class="text-sm font-semibold text-[var(--foreground)]">{active.author}</span>
+						<span class="text-sm text-[var(--secondary-foreground)]">
 							— {role}, {active.company}
 						</span>
 					</div>
@@ -96,8 +96,8 @@
 			{#each testimonials as _, i}
 				<button
 					class="h-2 w-2 rounded-full transition-colors duration-300 {i === activeIndex
-						? 'bg-[var(--brand-primary)]'
-						: 'bg-[var(--bg-elevated)] hover:bg-[var(--text-muted)]'}"
+						? 'bg-[var(--primary)]'
+						: 'bg-[var(--popover)] hover:bg-[var(--muted-foreground)]'}"
 					aria-label="Show testimonial {i + 1}"
 					aria-selected={i === activeIndex}
 					role="tab"

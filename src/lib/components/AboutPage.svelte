@@ -77,11 +77,11 @@
 							<div class="mt-2 flex flex-1 flex-col justify-center gap-2">
 								{#each stackCategories as [category, items]}
 									<div>
-										<div class="label-metric text-[var(--text-secondary)]">{category}</div>
+										<div class="label-metric text-[var(--secondary-foreground)]">{category}</div>
 										<div class="mt-1 flex flex-wrap gap-1">
 											{#each items as item, i}
 												<span
-													class="rounded border border-[var(--border)] bg-[var(--bg-primary)] px-2 py-0.5 text-caption text-[var(--text-secondary)] transition-colors duration-200 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
+													class="rounded border border-[var(--border)] bg-[var(--background)] px-2 py-0.5 text-caption text-[var(--secondary-foreground)] transition-colors duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)]"
 													use:reveal={{ delay: stagger(i, 50) }}
 												>{item.name}</span>
 											{/each}
@@ -118,7 +118,7 @@
 	/* Page fills viewport minus nav */
 	.about-page {
 		min-height: calc(100dvh - 5rem); /* subtract floating pill nav area */
-		background: var(--bg-primary);
+		background: var(--background);
 	}
 
 	/* ═══ DASHBOARD: CSS Grid Named Areas ═══ */
@@ -218,11 +218,11 @@
 
 	/* ═══ BENTO CARD — UNIFORM BORDER + HOVER ═══ */
 	:global(.bento-card) {
-		border-color: color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
+		border-color: color-mix(in srgb, var(--primary) 12%, transparent) !important;
 		transition: border-color var(--duration-slow) var(--ease-default), box-shadow var(--duration-slow) var(--ease-default);
 	}
 	:global(.bento-card:hover) {
-		border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent) !important;
-		box-shadow: 0 4px 24px color-mix(in srgb, var(--brand-primary) 8%, transparent), 0 1px 3px rgba(0, 0, 0, 0.3);
+		border-color: color-mix(in srgb, var(--primary) 25%, transparent) !important;
+		box-shadow: 0 4px 24px color-mix(in srgb, var(--primary) 8%, transparent), 0 1px 3px rgba(0, 0, 0, 0.3);
 	}
 </style>

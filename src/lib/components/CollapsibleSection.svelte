@@ -2,7 +2,7 @@
   Reusable collapsible section card.
   Used in WorkDetailPage, ServiceDetailPage (collapsible=true)
   and BlogContent (collapsible=false, visual card wrapper only).
-  Pattern: blog-card style — bg-[var(--bg-card)] border-[var(--border-subtle)], white title → orange hover.
+  Pattern: blog-card style — bg-[var(--card)] border-[var(--border-subtle)], white title → orange hover.
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
@@ -12,7 +12,7 @@
 		title,
 		open = $bindable(true),
 		index = null,
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		collapsible = true,
 		icon,
 		children
@@ -38,7 +38,7 @@
   allowing hover rules to reference the dynamic value without inline duplication.
 -->
 <div
-	class="section-card rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)]"
+	class="section-card rounded-lg border border-[var(--border-subtle)] bg-[var(--card)]"
 	style="--accent: {accentColor};"
 >
 	{#snippet headerContent()}
@@ -48,7 +48,7 @@
 			{@render icon()}
 		{/if}
 
-		<h2 class="section-title flex-1 font-heading text-lg font-bold text-[var(--text-primary)]">
+		<h2 class="section-title flex-1 font-heading text-lg font-bold text-[var(--foreground)]">
 			{title}
 		</h2>
 	{/snippet}

@@ -10,7 +10,7 @@
 
 	let {
 		targetSelector = '[data-testid="blog-content"]',
-		accentColor = 'var(--brand-primary)'
+		accentColor = 'var(--primary)'
 	}: {
 		targetSelector?: string;
 		accentColor?: string;
@@ -80,7 +80,7 @@
 	>
 		<div
 			class="h-full origin-left transition-transform duration-75"
-			style="transform: scaleX({progress}); background: linear-gradient(90deg, {accentColor}, var(--brand-accent));"
+			style="transform: scaleX({progress}); background: linear-gradient(90deg, {accentColor}, var(--accent));"
 		></div>
 	</div>
 {/if}

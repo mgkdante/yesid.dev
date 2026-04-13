@@ -45,7 +45,7 @@
   .mark::after {
     content: '';
     position: absolute;
-    background: var(--brand-primary);
+    background: var(--primary);
     opacity: var(--mark-opacity);
   }
 

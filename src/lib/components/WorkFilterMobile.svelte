@@ -55,19 +55,19 @@
 	<div class="mb-3 flex items-center gap-3">
 		<button
 			class="inline-flex items-center gap-1.5 rounded border px-2.5 py-1 font-mono text-xs transition-colors"
-			style="border-color: var(--brand-primary); color: var(--brand-primary);"
+			style="border-color: var(--primary); color: var(--primary);"
 			onclick={() => (open = !open)}
 		>
 			{resolveLocale(labels.filters, 'en')}
 			<span class="text-caption">{open ? '\u25B2' : '\u25BC'}</span>
 		</button>
-		<span class="text-caption text-[var(--text-muted)]">
+		<span class="text-caption text-[var(--muted-foreground)]">
 			{resolveLocale(labels.showing, 'en')}: {summary}
 		</span>
 	</div>
 
 	{#if open}
-		<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3">
+		<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3">
 			<!-- Service filter -->
 			<div class="label-section font-semibold">
 				{resolveLocale(labels.services, 'en')}
@@ -82,7 +82,7 @@
 				</button>
 				{#each serviceIds as svcId}
 					<button
-						class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+						class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 						class:m-tag-active={activeService === svcId}
 						onclick={() => onServiceSelect(activeService === svcId ? null : svcId)}
 					>
@@ -107,7 +107,7 @@
 						</button>
 						{#each stack as item}
 							<button
-								class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+								class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 								class:m-tag-active={activeStack === item}
 								onclick={() => onStackSelect(activeStack === item ? null : item)}
 							>
@@ -133,7 +133,7 @@
 					</button>
 					{#each tags as tag}
 						<button
-							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 							class:m-tag-active={activeTag === tag}
 							onclick={() => onTagSelect(activeTag === tag ? null : tag)}
 						>
@@ -148,11 +148,11 @@
 
 <style>
 	.m-active {
-		background: var(--brand-primary);
-		color: var(--text-primary);
+		background: var(--primary);
+		color: var(--foreground);
 	}
 	.m-tag-active {
-		border-color: var(--brand-primary) !important;
-		color: var(--brand-primary) !important;
+		border-color: var(--primary) !important;
+		color: var(--primary) !important;
 	}
 </style>

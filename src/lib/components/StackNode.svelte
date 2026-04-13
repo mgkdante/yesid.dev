@@ -86,8 +86,8 @@
 		padding: 0.5rem 0.75rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
-		background: var(--bg-surface);
-		color: var(--text-primary);
+		background: var(--muted);
+		color: var(--foreground);
 		cursor: pointer;
 		transition:
 			border-color var(--duration-normal) var(--ease-default),
@@ -98,21 +98,21 @@
 	}
 
 	.stack-node:hover {
-		border-color: var(--brand-primary);
-		background: var(--bg-elevated);
+		border-color: var(--primary);
+		background: var(--popover);
 		transform: scale(1.05);
 		box-shadow: var(--shadow-glow-md);
 	}
 
 	.stack-node:focus-visible {
-		outline: 2px solid var(--brand-primary);
+		outline: 2px solid var(--primary);
 		outline-offset: 2px;
 	}
 
 	.stack-node.selected {
-		border-color: var(--brand-primary);
-		background: var(--bg-elevated);
-		box-shadow: 0 0 16px color-mix(in srgb, var(--brand-primary) 25%, transparent);
+		border-color: var(--primary);
+		background: var(--popover);
+		box-shadow: 0 0 16px color-mix(in srgb, var(--primary) 25%, transparent);
 	}
 
 	.stack-node.hidden {
@@ -121,10 +121,10 @@
 	}
 
 	.stack-node.bridge {
-		border-color: var(--brand-accent);
+		border-color: var(--accent);
 		box-shadow:
-			0 0 0 1px var(--brand-primary),
-			0 0 12px color-mix(in srgb, var(--brand-accent) 20%, transparent);
+			0 0 0 1px var(--primary),
+			0 0 12px color-mix(in srgb, var(--accent) 20%, transparent);
 		animation: bridge-pulse 2s ease-in-out infinite;
 	}
 
@@ -149,8 +149,8 @@
 		width: 1.75rem;
 		height: 1.75rem;
 		border-radius: var(--radius-sm);
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-		color: var(--brand-primary);
+		background: color-mix(in srgb, var(--primary) 15%, transparent);
+		color: var(--primary);
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
 		font-weight: 700;

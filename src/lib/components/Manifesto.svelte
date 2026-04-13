@@ -324,7 +324,7 @@
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
-		background: var(--bg-manifesto, #0f0d0a);
+		background: var(--manifesto, #0f0d0a);
 		cursor: crosshair;
 	}
 
@@ -333,8 +333,8 @@
 		position: absolute;
 		inset: 0;
 		background-image:
-			repeating-linear-gradient(90deg, color-mix(in srgb, var(--brand-primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--brand-primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px),
-			repeating-linear-gradient(0deg, color-mix(in srgb, var(--brand-primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--brand-primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px);
+			repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px),
+			repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px);
 		z-index: var(--z-base);
 		opacity: 0;
 	}
@@ -344,10 +344,10 @@
 		position: absolute;
 		inset: 0;
 		background-image:
-			radial-gradient(circle 2.5px at 80px 80px, color-mix(in srgb, var(--brand-primary) 12%, transparent) 0%, transparent 4px),
-			radial-gradient(circle 2px at 160px 160px, color-mix(in srgb, var(--brand-primary) 8%, transparent) 0%, transparent 3px),
-			radial-gradient(circle 2.5px at 240px 80px, color-mix(in srgb, var(--brand-primary) 10%, transparent) 0%, transparent 4px),
-			radial-gradient(circle 2px at 80px 240px, color-mix(in srgb, var(--brand-primary) 6%, transparent) 0%, transparent 3px);
+			radial-gradient(circle 2.5px at 80px 80px, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 4px),
+			radial-gradient(circle 2px at 160px 160px, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 3px),
+			radial-gradient(circle 2.5px at 240px 80px, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 4px),
+			radial-gradient(circle 2px at 80px 240px, color-mix(in srgb, var(--primary) 6%, transparent) 0%, transparent 3px);
 		background-size: 320px 320px;
 	}
 
@@ -357,9 +357,9 @@
 		height: 1px;
 		background: linear-gradient(90deg,
 			transparent 0%,
-			color-mix(in srgb, var(--brand-primary) 10%, transparent) 30%,
-			color-mix(in srgb, var(--brand-primary) 15%, transparent) 50%,
-			color-mix(in srgb, var(--brand-primary) 10%, transparent) 70%,
+			color-mix(in srgb, var(--primary) 10%, transparent) 30%,
+			color-mix(in srgb, var(--primary) 15%, transparent) 50%,
+			color-mix(in srgb, var(--primary) 10%, transparent) 70%,
 			transparent 100%
 		);
 		animation-name: flowRight;
@@ -374,9 +374,9 @@
 		width: 1px;
 		background: linear-gradient(180deg,
 			transparent 0%,
-			color-mix(in srgb, var(--brand-accent) 8%, transparent) 30%,
-			color-mix(in srgb, var(--brand-accent) 12%, transparent) 50%,
-			color-mix(in srgb, var(--brand-accent) 8%, transparent) 70%,
+			color-mix(in srgb, var(--accent) 8%, transparent) 30%,
+			color-mix(in srgb, var(--accent) 12%, transparent) 50%,
+			color-mix(in srgb, var(--accent) 8%, transparent) 70%,
 			transparent 100%
 		);
 		animation-name: flowDown;
@@ -420,7 +420,7 @@
 		height: 480px;
 		top: -240px;
 		left: -240px;
-		background: repeating-linear-gradient(-45deg, var(--brand-accent) 0px, var(--brand-accent) 12px, var(--bg-manifesto) 12px, var(--bg-manifesto) 24px);
+		background: repeating-linear-gradient(-45deg, var(--accent) 0px, var(--accent) 12px, var(--manifesto) 12px, var(--manifesto) 24px);
 		opacity: var(--opacity-subtle);
 	}
 
@@ -435,7 +435,7 @@
 		height: 480px;
 		bottom: -240px;
 		right: -240px;
-		background: repeating-linear-gradient(-45deg, var(--brand-accent) 0px, var(--brand-accent) 12px, var(--bg-manifesto) 12px, var(--bg-manifesto) 24px);
+		background: repeating-linear-gradient(-45deg, var(--accent) 0px, var(--accent) 12px, var(--manifesto) 12px, var(--manifesto) 24px);
 		opacity: var(--opacity-subtle);
 	}
 
@@ -450,7 +450,7 @@
 		height: 220px;
 		top: -130px;
 		right: -130px;
-		background: repeating-linear-gradient(45deg, var(--brand-accent) 0px, var(--brand-accent) 7px, var(--bg-manifesto) 7px, var(--bg-manifesto) 14px);
+		background: repeating-linear-gradient(45deg, var(--accent) 0px, var(--accent) 7px, var(--manifesto) 7px, var(--manifesto) 14px);
 		opacity: var(--opacity-faint);
 	}
 
@@ -465,14 +465,14 @@
 		height: 220px;
 		bottom: -130px;
 		left: -130px;
-		background: repeating-linear-gradient(45deg, var(--brand-accent) 0px, var(--brand-accent) 7px, var(--bg-manifesto) 7px, var(--bg-manifesto) 14px);
+		background: repeating-linear-gradient(45deg, var(--accent) 0px, var(--accent) 7px, var(--manifesto) 7px, var(--manifesto) 14px);
 		opacity: var(--opacity-faint);
 	}
 
 	/* ── BG Layer 6: Beck-style Route Lines ──────────────────────── */
 	.manifesto__beck-line {
 		position: absolute;
-		background: color-mix(in srgb, var(--brand-primary) 6%, transparent);
+		background: color-mix(in srgb, var(--primary) 6%, transparent);
 		z-index: var(--z-content);
 		opacity: 0;
 	}
@@ -556,7 +556,7 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 3px;
-		color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+		color: color-mix(in srgb, var(--primary) 20%, transparent);
 		text-transform: uppercase;
 	}
 
@@ -564,8 +564,8 @@
 		width: 6px;
 		height: 6px;
 		border-radius: 50%;
-		background: var(--brand-primary);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 40%, transparent);
+		background: var(--primary);
+		box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
 		flex-shrink: 0;
 	}
 
@@ -573,7 +573,7 @@
 		width: 5px;
 		height: 5px;
 		border-radius: 50%;
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 		flex-shrink: 0;
 	}
 
@@ -595,19 +595,19 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 1px;
-		color: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		color: color-mix(in srgb, var(--primary) 15%, transparent);
 		text-transform: uppercase;
 		white-space: nowrap;
 	}
 
 	.manifesto__coord--value {
-		color: color-mix(in srgb, var(--brand-primary) 25%, transparent);
+		color: color-mix(in srgb, var(--primary) 25%, transparent);
 	}
 
 	.manifesto__separator-line {
 		width: 24px;
 		height: 1px;
-		background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+		background: color-mix(in srgb, var(--primary) 10%, transparent);
 		margin-block: 4px;
 	}
 
@@ -634,14 +634,14 @@
 	.manifesto__tick-line {
 		width: 1px;
 		height: 12px;
-		background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+		background: color-mix(in srgb, var(--primary) 12%, transparent);
 	}
 
 	.manifesto__tick-label {
 		font-family: var(--font-mono);
 		font-size: 8px;
 		letter-spacing: 1px;
-		color: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		color: color-mix(in srgb, var(--primary) 15%, transparent);
 	}
 
 	/* ── Edge: Bottom ────────────────────────────────────────────── */
@@ -657,7 +657,7 @@
 		font-family: var(--font-mono);
 		font-size: 9px;
 		letter-spacing: 1px;
-		color: color-mix(in srgb, var(--brand-primary) 18%, transparent);
+		color: color-mix(in srgb, var(--primary) 18%, transparent);
 		white-space: nowrap;
 		opacity: 0;
 		translate: 0 8px;
@@ -667,20 +667,20 @@
 		width: 5px;
 		height: 5px;
 		border-radius: 50%;
-		background: color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		background: color-mix(in srgb, var(--primary) 30%, transparent);
 		flex-shrink: 0;
 		animation: pulse 2s ease-in-out infinite;
 	}
 
 	@keyframes pulse {
 		0%, 100% { opacity: 0.3; box-shadow: none; }
-		50% { opacity: 1; box-shadow: 0 0 6px color-mix(in srgb, var(--brand-primary) 40%, transparent); }
+		50% { opacity: 1; box-shadow: 0 0 6px color-mix(in srgb, var(--primary) 40%, transparent); }
 	}
 
 	.manifesto__separator {
 		width: 1px;
 		height: 10px;
-		background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+		background: color-mix(in srgb, var(--primary) 10%, transparent);
 		flex-shrink: 0;
 	}
 
@@ -700,14 +700,14 @@
 	.manifesto__arr-label {
 		font-size: 7px;
 		letter-spacing: 2px;
-		color: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		color: color-mix(in srgb, var(--primary) 15%, transparent);
 		text-transform: uppercase;
 	}
 
 	.manifesto__arr-time {
 		font-size: 18px;
 		font-weight: 600;
-		color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+		color: color-mix(in srgb, var(--primary) 20%, transparent);
 		letter-spacing: 2px;
 		font-variant-numeric: tabular-nums;
 	}
@@ -736,8 +736,8 @@
 	.manifesto__chevron {
 		width: 12px;
 		height: 12px;
-		border-right: 2px solid var(--brand-primary);
-		border-bottom: 2px solid var(--brand-primary);
+		border-right: 2px solid var(--primary);
+		border-bottom: 2px solid var(--primary);
 		opacity: var(--opacity-subtle);
 	}
 
@@ -755,8 +755,8 @@
 		font-family: var(--font-mono);
 		font-size: 8px;
 		letter-spacing: 2px;
-		color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
+		color: color-mix(in srgb, var(--primary) 20%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
 		border-radius: var(--radius-sm);
 		padding: 3px 8px;
 		text-transform: uppercase;
@@ -792,22 +792,22 @@
 		gap: 8px;
 		margin-bottom: 36px;
 		padding: 8px 16px;
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 		border-radius: var(--radius-sm);
-		background: color-mix(in srgb, var(--brand-primary) 4%, transparent);
+		background: color-mix(in srgb, var(--primary) 4%, transparent);
 		opacity: 0;
 	}
 
 	.manifesto__prompt-cmd {
 		font-family: var(--font-mono);
 		font-size: 13px;
-		color: color-mix(in srgb, var(--brand-primary) 85%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
 	.manifesto__prompt-text {
 		font-family: var(--font-mono);
 		font-size: 13px;
-		color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
+		color: color-mix(in srgb, var(--primary) 60%, transparent);
 	}
 
 	/* ── Statement ───────────────────────────────────────────────── */
@@ -820,7 +820,7 @@
 		font-family: var(--font-heading);
 		font-weight: 700;
 		font-size: clamp(1.5rem, 5vw, 3.5rem);
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 		letter-spacing: -0.02em;
 		line-height: 1.3;
 	}
@@ -829,17 +829,17 @@
 		font-family: var(--font-heading);
 		font-weight: 900;
 		font-size: clamp(2.2rem, 11.5vw, 11rem);
-		color: var(--brand-primary);
+		color: var(--primary);
 		letter-spacing: -0.05em;
 		line-height: 0.85;
-		text-shadow: 0 0 80px color-mix(in srgb, var(--brand-primary) 12%, transparent);
+		text-shadow: 0 0 80px color-mix(in srgb, var(--primary) 12%, transparent);
 		white-space: nowrap;
 		max-width: 100vw;
 		overflow: hidden;
 	}
 
 	.manifesto__highlight {
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 
 	/* ── Capability Pills ────────────────────────────────────────── */
@@ -855,11 +855,11 @@
 		font-family: var(--font-mono);
 		font-size: clamp(0.75rem, 1.2vw, 1rem);
 		letter-spacing: 0.04em;
-		color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		color: color-mix(in srgb, var(--primary) 60%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 		border-radius: var(--radius-pill);
 		padding: 8px 20px;
-		background: color-mix(in srgb, var(--brand-primary) 4%, transparent);
+		background: color-mix(in srgb, var(--primary) 4%, transparent);
 		text-decoration: none;
 		transition: all var(--duration-normal) var(--ease-default);
 		opacity: 0;
@@ -867,15 +867,15 @@
 	}
 
 	.manifesto__pill:hover {
-		border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
-		color: color-mix(in srgb, var(--brand-primary) 85%, transparent);
-		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		border-color: color-mix(in srgb, var(--primary) 40%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		background: color-mix(in srgb, var(--primary) 8%, transparent);
 	}
 
 	/* ── Ripple keyframes (for ManifestoCanvas) ───────────────────── */
 	:global(.manifesto__ripple) {
 		position: absolute;
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 40%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
 		border-radius: 50%;
 		transform: translate(-50%, -50%);
 		pointer-events: none;
@@ -885,7 +885,7 @@
 
 	:global(.manifesto__ripple-inner) {
 		position: absolute;
-		border: 1px solid color-mix(in srgb, var(--brand-accent) 30%, transparent);
+		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
 		border-radius: 50%;
 		transform: translate(-50%, -50%);
 		pointer-events: none;

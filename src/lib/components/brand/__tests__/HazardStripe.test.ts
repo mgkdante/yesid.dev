@@ -56,7 +56,7 @@ describe('HazardStripe', () => {
   it('uses brand tokens in gradient', () => {
     const { container } = render(HazardStripe);
     const style = container.querySelector('[aria-hidden="true"]')!.getAttribute('style')!;
-    expect(style).toContain('var(--brand-accent)');
-    expect(style).toContain('var(--bg-primary)');
+    expect(style).toContain('var(--accent)');
+    expect(style).toContain('var(--background)');
   });
 });

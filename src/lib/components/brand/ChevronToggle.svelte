@@ -22,7 +22,7 @@
 </script>
 
 <svg
-  class="chevron {sizeClass[size]} shrink-0 text-[var(--text-muted)] transition-transform"
+  class="chevron {sizeClass[size]} shrink-0 text-[var(--muted-foreground)] transition-transform"
   class:chevron-open={open}
   class:chevron-right={direction === 'right'}
   class:chevron-down={direction === 'down'}

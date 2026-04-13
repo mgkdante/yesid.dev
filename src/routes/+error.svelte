@@ -40,18 +40,18 @@
 			<!-- Monospace label -->
 			<span
 				class="font-mono text-xs tracking-[3px] sm:text-sm"
-				style="color: color-mix(in srgb, var(--brand-primary) 60%, transparent);"
+				style="color: color-mix(in srgb, var(--primary) 60%, transparent);"
 			>
 				{label}
 			</span>
 
 			<!-- Heading -->
-			<h1 class="max-w-lg text-2xl font-bold leading-tight text-[var(--text-primary)] sm:text-4xl">
+			<h1 class="max-w-lg text-2xl font-bold leading-tight text-[var(--foreground)] sm:text-4xl">
 				{heading}
 			</h1>
 
 			<!-- Description -->
-			<p class="max-w-md text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
+			<p class="max-w-md text-base leading-relaxed text-[var(--secondary-foreground)] sm:text-lg">
 				{description}
 			</p>
 		</div>
@@ -68,7 +68,7 @@
 					<!-- Metro stop dot -->
 					<span
 						class="inline-block h-2 w-2 rounded-full transition-colors duration-200"
-						class:bg-[var(--brand-primary)]={i === 0}
+						class:bg-[var(--primary)]={i === 0}
 						class:metro-dot-hollow={i > 0}
 					></span>
 					{suggestion.label}
@@ -81,11 +81,11 @@
 			class="font-mono text-xs sm:text-sm"
 			data-testid="terminal-line"
 		>
-			<span style="color: var(--brand-primary);">$</span>
-			<span style="color: var(--text-secondary);"> route </span>
-			<span style="color: var(--text-secondary);">--status</span>
-			<span style="color: var(--brand-primary);"> 404</span>
-			<span style="color: var(--text-muted);"> // requested path not in service</span>
+			<span style="color: var(--primary);">$</span>
+			<span style="color: var(--secondary-foreground);"> route </span>
+			<span style="color: var(--secondary-foreground);">--status</span>
+			<span style="color: var(--primary);"> 404</span>
+			<span style="color: var(--muted-foreground);"> // requested path not in service</span>
 			{#if mounted && !$prefersReducedMotion}
 				<TerminalCursor />
 			{/if}
@@ -105,31 +105,31 @@
 
 
 	.suggestion-primary {
-		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent);
-		color: var(--brand-primary);
+		background: color-mix(in srgb, var(--primary) 8%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+		color: var(--primary);
 	}
 
 	.suggestion-primary:hover {
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-		border-color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
+		background: color-mix(in srgb, var(--primary) 15%, transparent);
+		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
 	}
 
 	.suggestion-secondary {
-		background: color-mix(in srgb, var(--text-primary) 3%, transparent);
-		border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
-		color: var(--text-secondary);
+		background: color-mix(in srgb, var(--foreground) 3%, transparent);
+		border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+		color: var(--secondary-foreground);
 	}
 
 	/* All links turn orange on hover */
 	.suggestion-secondary:hover {
-		border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
-		color: var(--brand-primary);
+		border-color: color-mix(in srgb, var(--primary) 40%, transparent);
+		color: var(--primary);
 	}
 
 	.suggestion-secondary:hover .metro-dot-hollow {
-		background: var(--brand-primary);
-		border-color: var(--brand-primary);
+		background: var(--primary);
+		border-color: var(--primary);
 	}
 
 	.metro-dot-hollow {

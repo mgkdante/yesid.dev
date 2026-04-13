@@ -28,7 +28,7 @@
 		<div class="relative h-48 w-0.5 overflow-hidden rounded-full bg-[var(--border)]">
 			<div
 				data-testid="scroll-rail-progress"
-				class="absolute bottom-0 left-0 w-full rounded-full bg-brand-primary {$prefersReducedMotion
+				class="absolute bottom-0 left-0 w-full rounded-full bg-primary {$prefersReducedMotion
 					? ''
 					: 'transition-[height] duration-150'}"
 				style="height: {$scrollProgress * 100}%"

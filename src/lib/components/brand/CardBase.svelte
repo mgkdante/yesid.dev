@@ -72,6 +72,6 @@
     overflow: hidden;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
-    background: var(--bg-surface);
+    background: var(--muted);
   }
 </style>

@@ -57,8 +57,8 @@
     font-family: var(--font-mono);
     font-size: var(--text-caption);
     font-weight: 700;
-    background-color: var(--brand-primary);
-    color: var(--bg-primary);
+    background-color: var(--primary);
+    color: var(--background);
     position: relative;
     z-index: var(--z-content);
   }
@@ -67,7 +67,7 @@
     position: absolute;
     inset: -4px;
     border-radius: var(--radius-pill);
-    border: 2px solid var(--brand-primary);
+    border: 2px solid var(--primary);
     opacity: 0;
     animation: sonar-ping 2s ease-out infinite;
   }

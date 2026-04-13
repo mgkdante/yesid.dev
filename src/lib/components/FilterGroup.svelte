@@ -21,7 +21,7 @@
 		label,
 		items,
 		activeKey = null,
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		allowDeselect = true,
 		collapsible = false,
 		startOpen = true,
@@ -59,7 +59,7 @@
 	<!-- WHY: collapsible label toggles section open/closed; non-collapsible is static text -->
 	{#if collapsible}
 		<button
-			class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--text-primary)]"
+			class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--foreground)]"
 			onclick={() => (isOpen = !isOpen)}
 		>
 			{label}
@@ -83,7 +83,7 @@
 			</button>
 			{#each items as item}
 				<button
-					class="filter-btn rounded border border-border-subtle px-2 py-1 text-left text-xs text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+					class="filter-btn rounded border border-border-subtle px-2 py-1 text-left text-xs text-[var(--muted-foreground)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
 					class:tag-active={activeKey === item.key}
 					data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
 					onclick={() => handleClick(item.key)}
@@ -101,7 +101,7 @@
 	   the established filter pattern from BlogFilterSidebar and WorkFilterSidebar. */
 	.active {
 		background: var(--accent);
-		color: var(--text-primary);
+		color: var(--foreground);
 	}
 
 	/* WHY: .tag-active on individual items uses a subtle tinted background +

@@ -11,7 +11,7 @@
 		languages = [],
 		activeTag = null,
 		activeLang = null,
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		cornerLink = null,
 		onTagSelect,
 		onLangSelect,
@@ -43,13 +43,13 @@
 			Filters
 			<span class="text-caption">{open ? '\u25B2' : '\u25BC'}</span>
 		</button>
-		<span class="text-caption text-[var(--text-muted)]">
+		<span class="text-caption text-[var(--muted-foreground)]">
 			Showing: {activeTag ?? 'All'}{activeLang ? ` · ${activeLang.toUpperCase()}` : ''}
 		</span>
 	</div>
 
 	{#if open}
-		<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-3">
+		<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3">
 			<!-- Language filter -->
 			{#if languages.length > 1}
 				<div class="label-section font-semibold">
@@ -66,7 +66,7 @@
 					</button>
 					{#each languages as lang}
 						<button
-							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 							class:m-tag-active={activeLang === lang}
 							style="--accent: {accentColor};"
 							onclick={() => onLangSelect(lang)}
@@ -83,21 +83,21 @@
 				Date Range
 			</div>
 			<div class="mt-1.5 flex gap-2">
-				<label class="flex-1 text-caption text-[var(--text-muted)]">
+				<label class="flex-1 text-caption text-[var(--muted-foreground)]">
 					From
 					<input
 						type="date"
 						bind:value={dateFrom}
-						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
+						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
 						style="color-scheme: dark;"
 					/>
 				</label>
-				<label class="flex-1 text-caption text-[var(--text-muted)]">
+				<label class="flex-1 text-caption text-[var(--muted-foreground)]">
 					To
 					<input
 						type="date"
 						bind:value={dateTo}
-						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
+						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
 						style="color-scheme: dark;"
 					/>
 				</label>
@@ -116,7 +116,7 @@
 					</button>
 					{#each tags as tag}
 						<button
-							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--text-muted)] transition-colors"
+							class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 							class:m-tag-active={activeTag === tag}
 							style="--accent: {accentColor};"
 							onclick={() => onTagSelect(tag)}
@@ -133,11 +133,11 @@
 					<a
 						href={cornerLink.href}
 						class="text-xs font-semibold no-underline"
-						style="color: {cornerLink.href.includes('personal') ? 'var(--brand-accent)' : 'var(--brand-primary)'};"
+						style="color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'};"
 					>
 						{cornerLink.label} &rarr;
 					</a>
-					<div class="mt-0.5 text-caption italic text-[var(--text-muted)]">
+					<div class="mt-0.5 text-caption italic text-[var(--muted-foreground)]">
 						{cornerLink.subtitle}
 					</div>
 				</div>
@@ -149,7 +149,7 @@
 <style>
 	.m-active {
 		background: var(--accent);
-		color: var(--text-primary);
+		color: var(--foreground);
 	}
 	.m-tag-active {
 		border-color: var(--accent) !important;

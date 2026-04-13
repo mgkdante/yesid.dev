@@ -28,7 +28,7 @@
 	<div class="gradient-separator-line" data-testid="gradient-separator"></div>
 	{#if label}
 		<div
-			class="mt-2 font-mono text-xs tracking-[3px] text-brand-primary md:text-sm"
+			class="mt-2 font-mono text-xs tracking-[3px] text-primary md:text-sm"
 			data-testid="separator-label"
 		>
 			{label}
@@ -40,7 +40,7 @@
 	.gradient-separator-line {
 		height: 2px;
 		border-radius: var(--radius-pill);
-		background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent), var(--brand-primary), var(--brand-accent));
+		background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary), var(--accent));
 		background-size: 200% 100%;
 		animation: gradient-flow 3s linear infinite;
 	}
@@ -53,7 +53,7 @@
 	@media (prefers-reduced-motion: reduce) {
 		.gradient-separator-line {
 			animation: none;
-			background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+			background: linear-gradient(90deg, var(--primary), var(--accent));
 			background-size: 100% 100%;
 		}
 	}

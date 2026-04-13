@@ -15,7 +15,7 @@
 	let { data } = $props();
 
 	let accentColor = $derived(
-		data.post.category === 'personal' ? 'var(--brand-accent)' : 'var(--brand-primary)'
+		data.post.category === 'personal' ? 'var(--accent)' : 'var(--primary)'
 	);
 
 	let tocRef: TableOfContents | undefined = $state();

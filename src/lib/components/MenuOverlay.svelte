@@ -170,8 +170,8 @@
 		position: fixed;
 		inset: 0;
 		z-index: var(--z-menu);
-		background: var(--bg-primary);
-		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--brand-primary) 4%, transparent) 0%, transparent 60%);
+		background: var(--background);
+		background-image: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--primary) 4%, transparent) 0%, transparent 60%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -253,19 +253,19 @@
 		transition: border-color var(--duration-fast);
 	}
 	.menu-stop-active {
-		border-color: var(--brand-primary);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--brand-primary) 40%, transparent);
+		border-color: var(--primary);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 40%, transparent);
 	}
 	.menu-stop-fill {
 		position: absolute;
 		inset: 2px;
 		border-radius: 50%;
-		background: var(--brand-primary);
+		background: var(--primary);
 	}
 
 	/* Hover: fill the stop */
 	.menu-item:hover .menu-stop {
-		border-color: var(--brand-primary);
+		border-color: var(--primary);
 	}
 
 	/* Vertical metro line between stops */
@@ -275,10 +275,10 @@
 		top: 33px;
 		bottom: -14px;
 		width: 2px;
-		background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+		background: color-mix(in srgb, var(--foreground) 6%, transparent);
 	}
 	.menu-line-active {
-		background: linear-gradient(to bottom, color-mix(in srgb, var(--brand-primary) 40%, transparent), color-mix(in srgb, var(--text-primary) 6%, transparent));
+		background: linear-gradient(to bottom, color-mix(in srgb, var(--primary) 40%, transparent), color-mix(in srgb, var(--foreground) 6%, transparent));
 	}
 
 	/* Text block */
@@ -292,22 +292,22 @@
 		font-family: var(--font-heading);
 		font-size: 24px;
 		font-weight: 600;
-		color: var(--text-light);
+		color: var(--light-foreground);
 		transition: color var(--duration-fast), text-shadow var(--duration-fast);
 	}
 	.menu-item-active .menu-label {
-		color: var(--brand-primary);
-		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		color: var(--primary);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 50%, transparent);
 	}
 	.menu-item:hover .menu-label {
-		color: var(--brand-primary);
-		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		color: var(--primary);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
 	}
 
 	.menu-subtitle {
 		font-family: var(--font-mono);
 		font-size: 11px;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		letter-spacing: 0.3px;
 	}
 
@@ -322,13 +322,13 @@
 	.menu-footer-line {
 		width: 40px;
 		height: 1px;
-		background: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+		background: color-mix(in srgb, var(--primary) 20%, transparent);
 	}
 	.menu-footer-label {
 		font-family: var(--font-mono);
 		font-size: 10px;
 		letter-spacing: 3px;
-		color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		color: color-mix(in srgb, var(--primary) 50%, transparent);
 		white-space: nowrap;
 	}
 </style>

@@ -27,7 +27,7 @@
 	<!-- Ambient glow -->
 	<div
 		class="pointer-events-none absolute inset-0 opacity-[0.07]"
-		style="background: radial-gradient(ellipse at 20% 50%, var(--brand-primary), transparent 70%);"
+		style="background: radial-gradient(ellipse at 20% 50%, var(--primary), transparent 70%);"
 		aria-hidden="true"
 	></div>
 
@@ -38,24 +38,24 @@
 		<TerminalChrome title="terminal" class="mt-3 flex-1">
 			<div class="terminal-scroll overflow-y-auto font-mono text-sm leading-relaxed" style="max-height: 120px;">
 				<!-- Command -->
-				<div class="text-[var(--text-secondary)]">
-					<span class="text-[var(--text-primary)]">~</span> {cta.command}
+				<div class="text-[var(--secondary-foreground)]">
+					<span class="text-[var(--foreground)]">~</span> {cta.command}
 				</div>
 
 				<!-- Output lines -->
 				{#each cta.lines as line}
 					<div class="{line.color === 'orange'
-						? 'text-[var(--brand-primary)]'
+						? 'text-[var(--primary)]'
 						: line.color === 'accent'
-							? 'text-[var(--brand-accent)]'
-							: 'text-[var(--text-secondary)]'}">
+							? 'text-[var(--accent)]'
+							: 'text-[var(--secondary-foreground)]'}">
 						{line.text}
 					</div>
 				{/each}
 
 				<!-- Blinking cursor -->
 				<div class="mt-1 flex items-center gap-1">
-					<span class="text-[var(--text-secondary)]">~</span>
+					<span class="text-[var(--secondary-foreground)]">~</span>
 					<TerminalCursor />
 				</div>
 			</div>
@@ -66,7 +66,7 @@
 			<BrandButton variant="primary" size="sm" href={cta.buttonHref}>
 				{buttonLabel}
 			</BrandButton>
-			<span class="font-mono text-caption tracking-[1px] text-[var(--brand-accent)]">
+			<span class="font-mono text-caption tracking-[1px] text-[var(--accent)]">
 				{availability}
 			</span>
 		</div>
@@ -77,7 +77,7 @@
 	/* Terminal-themed scrollbar */
 	.terminal-scroll {
 		scrollbar-width: thin;
-		scrollbar-color: color-mix(in srgb, var(--brand-primary) 30%, transparent) transparent;
+		scrollbar-color: color-mix(in srgb, var(--primary) 30%, transparent) transparent;
 	}
 	.terminal-scroll::-webkit-scrollbar {
 		width: 6px;
@@ -86,10 +86,10 @@
 		background: transparent;
 	}
 	.terminal-scroll::-webkit-scrollbar-thumb {
-		background: color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		background: color-mix(in srgb, var(--primary) 30%, transparent);
 		border-radius: 3px;
 	}
 	.terminal-scroll::-webkit-scrollbar-thumb:hover {
-		background: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		background: color-mix(in srgb, var(--primary) 50%, transparent);
 	}
 </style>

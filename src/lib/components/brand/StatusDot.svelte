@@ -23,7 +23,7 @@
 
 <span
   class="{sizeMap[size]} inline-block shrink-0 rounded-full {pulse ? 'led-pulse' : ''}"
-  class:bg-brand-primary={color === 'orange'}
-  class:bg-[var(--status-success)]={color === 'green'}
+  class:bg-primary={color === 'orange'}
+  class:bg-[var(--success)]={color === 'green'}
   aria-hidden="true"
 ></span>

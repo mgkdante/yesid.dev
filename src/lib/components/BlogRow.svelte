@@ -15,7 +15,7 @@
 	let {
 		post,
 		svgContent = '',
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		index = 0,
 		featured = false
 	}: {
@@ -80,7 +80,7 @@
 
 		<!-- Content card -->
 		<article
-			class="blog-row relative flex min-w-0 flex-1 items-start gap-4 overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)]/80 backdrop-blur-sm transition-all duration-300 md:gap-5"
+			class="blog-row relative flex min-w-0 flex-1 items-start gap-4 overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--card)]/80 backdrop-blur-sm transition-all duration-300 md:gap-5"
 			class:p-5={featured}
 			class:md\:p-6={featured}
 			class:p-4={!featured}
@@ -103,11 +103,11 @@
 
 			<!-- Content -->
 			<div class="relative z-10 min-w-0 flex-1">
-				<h3 class="text-sm font-semibold leading-snug text-[var(--text-primary)] transition-colors duration-300 group-hover:text-[var(--accent)] md:text-base">
+				<h3 class="text-sm font-semibold leading-snug text-[var(--foreground)] transition-colors duration-300 group-hover:text-[var(--accent)] md:text-base">
 					{resolveLocale(post.title, 'en')}
 				</h3>
 				<p
-					class="mt-1.5 text-xs leading-relaxed text-[var(--text-secondary)] md:text-sm"
+					class="mt-1.5 text-xs leading-relaxed text-[var(--secondary-foreground)] md:text-sm"
 					class:line-clamp-2={!featured}
 				>
 					{resolveLocale(post.excerpt, 'en')}
@@ -118,7 +118,7 @@
 							<Tag text={tag} size="xs" active accentColor={accentColor} />
 						</span>
 					{/each}
-					<span class="ml-auto font-mono text-caption text-[var(--text-muted)]">
+					<span class="ml-auto font-mono text-caption text-[var(--muted-foreground)]">
 						{post.date}
 					</span>
 				</div>
@@ -155,7 +155,7 @@
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
-		background: color-mix(in srgb, var(--brand-primary) 50%, transparent);
+		background: color-mix(in srgb, var(--primary) 50%, transparent);
 		animation: station-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 	}
 

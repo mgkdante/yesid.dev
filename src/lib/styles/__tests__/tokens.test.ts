@@ -82,9 +82,9 @@ describe('Design System Tokens', () => {
 
   describe('Semantic color completeness', () => {
     const themeTokens = [
-      '--bg-terminal', '--border-subtle', '--text-dim',
-      '--bg-manifesto', '--bg-card',
-      '--border-strong', '--status-success'
+      '--terminal', '--border-subtle', '--dim-foreground',
+      '--manifesto', '--card',
+      '--border-strong', '--success'
     ];
 
     it.each(themeTokens)('defines %s in dark theme', (token) => {

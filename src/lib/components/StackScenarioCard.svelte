@@ -90,7 +90,7 @@
 	.scenario-card {
 		border: 1px solid var(--border);
 		border-radius: var(--radius-lg);
-		background: var(--bg-surface);
+		background: var(--muted);
 		padding: 1.25rem;
 		display: flex;
 		flex-direction: column;
@@ -118,9 +118,9 @@
 		gap: 0.375rem;
 		flex-shrink: 0;
 		padding: 0.375rem 0.625rem;
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 40%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
 		border-radius: var(--radius-sm);
-		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		background: color-mix(in srgb, var(--primary) 8%, transparent);
 	}
 
 	.flow-icon {
@@ -130,8 +130,8 @@
 		width: 1.5rem;
 		height: 1.5rem;
 		border-radius: var(--radius-sm);
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-		color: var(--brand-primary);
+		background: color-mix(in srgb, var(--primary) 15%, transparent);
+		color: var(--primary);
 		font-family: var(--font-mono);
 		font-size: 0.625rem;
 		font-weight: 700;
@@ -141,12 +141,12 @@
 		font-family: var(--font-body);
 		font-size: var(--text-caption);
 		font-weight: 600;
-		color: var(--text-primary);
+		color: var(--foreground);
 		white-space: nowrap;
 	}
 
 	.flow-arrow {
-		color: var(--brand-primary);
+		color: var(--primary);
 		flex-shrink: 0;
 		opacity: var(--opacity-muted);
 	}
@@ -157,7 +157,7 @@
 		font-family: var(--font-body);
 		font-size: var(--text-small);
 		line-height: 1.7;
-		color: var(--text-secondary);
+		color: var(--secondary-foreground);
 		margin: 0;
 	}
 
@@ -185,8 +185,8 @@
 		padding: 0.1875rem 0.5rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-sm);
-		color: var(--text-secondary);
-		background: var(--bg-elevated);
+		color: var(--secondary-foreground);
+		background: var(--popover);
 	}
 
 

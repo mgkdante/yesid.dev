@@ -40,7 +40,7 @@
 		align-items: center;
 		gap: 1rem;
 		border-top: 1px solid var(--border);
-		background: var(--bg-primary);
+		background: var(--background);
 		padding: 0.875rem 1.5rem;
 		min-height: 48px;
 	}
@@ -80,13 +80,13 @@
 		width: 5px;
 		height: 5px;
 		border-radius: 50%;
-		background: var(--brand-primary);
+		background: var(--primary);
 	}
 
 	.proof-name {
 		font-size: 0.7rem;
 		font-weight: 600;
-		color: var(--text-primary);
+		color: var(--foreground);
 		white-space: nowrap;
 	}
 
@@ -95,6 +95,6 @@
 		font-family: var(--font-mono);
 		font-size: 0.8rem;
 		font-weight: 700;
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 </style>

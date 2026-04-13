@@ -45,13 +45,13 @@
 
 <style>
   .tag-active {
-    border-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
-    background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
-    color: var(--brand-primary);
+    border-color: color-mix(in srgb, var(--primary) 30%, transparent);
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: var(--primary);
   }
   .tag-inactive {
     border-color: var(--border);
-    background: var(--bg-elevated);
-    color: var(--text-secondary);
+    background: var(--popover);
+    color: var(--secondary-foreground);
   }
 </style>

@@ -15,7 +15,7 @@
 	let {
 		post,
 		svgContent = '',
-		accentColor = 'var(--brand-primary)',
+		accentColor = 'var(--primary)',
 		readingTime = 0
 	}: {
 		post: BlogPost;
@@ -68,7 +68,7 @@
 		<div class="min-w-0 flex-1">
 			<h1
 				data-animate="title"
-				class="font-heading text-xl font-bold leading-tight text-[var(--text-primary)] md:text-2xl lg:text-3xl"
+				class="font-heading text-xl font-bold leading-tight text-[var(--foreground)] md:text-2xl lg:text-3xl"
 			>
 				{resolveLocale(post.title, 'en')}
 			</h1>
@@ -76,15 +76,15 @@
 				{#each post.tags as tag}
 					<Tag text={tag} size="xs" active accentColor={accentColor} />
 				{/each}
-				<span class="font-mono text-caption text-[var(--text-muted)]">
+				<span class="font-mono text-caption text-[var(--muted-foreground)]">
 					{post.date}
 				</span>
 				{#if readingTime > 0}
-					<span class="font-mono text-caption text-[var(--text-muted)]">
+					<span class="font-mono text-caption text-[var(--muted-foreground)]">
 						&middot; {readingTime} {resolveLocale(labels.minRead, 'en')}
 					</span>
 				{/if}
-				<span class="font-mono text-caption text-[var(--text-muted)]">
+				<span class="font-mono text-caption text-[var(--muted-foreground)]">
 					&middot; {post.lang}
 				</span>
 			</div>

@@ -261,7 +261,7 @@
 	{#if entries.length > 0}
 		<div class="toc-mobile mb-6 lg:hidden" data-testid="toc-mobile">
 			<button
-				class="toc-toggle flex items-center gap-1.5 rounded border border-border-subtle bg-bg-primary px-3 py-2 font-mono text-caption text-text-secondary transition-colors hover:border-brand-primary hover:text-brand-primary"
+				class="toc-toggle flex items-center gap-1.5 rounded border border-border-subtle bg-bg-primary px-3 py-2 font-mono text-caption text-text-secondary transition-colors hover:border-brand-primary hover:text-primary"
 				onclick={() => mobileOpen = !mobileOpen}
 				aria-expanded={mobileOpen}
 			>
@@ -281,7 +281,7 @@
 <style>
 	/* ToC link: left border accent for active tracking */
 	.toc-link {
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		cursor: pointer;
 		background: none;
 		border: none;
@@ -290,15 +290,15 @@
 		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 	}
 	.toc-link:hover {
-		color: var(--text-light);
-		background: color-mix(in srgb, var(--brand-primary) 4%, transparent);
-		border-left-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		color: var(--light-foreground);
+		background: color-mix(in srgb, var(--primary) 4%, transparent);
+		border-left-color: color-mix(in srgb, var(--primary) 30%, transparent);
 	}
 	.toc-link.active {
-		color: var(--brand-primary);
+		color: var(--primary);
 		font-weight: 600;
-		border-left-color: var(--brand-primary);
-		background: color-mix(in srgb, var(--brand-primary) 6%, transparent);
+		border-left-color: var(--primary);
+		background: color-mix(in srgb, var(--primary) 6%, transparent);
 	}
 
 	.toc-section-chevron {
@@ -307,7 +307,7 @@
 		justify-content: center;
 		width: 18px;
 		height: 18px;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		transition: transform var(--duration-normal) var(--ease-default), color var(--duration-fast) var(--ease-default);
 		border: none;
 		background: none;

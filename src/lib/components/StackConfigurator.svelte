@@ -94,13 +94,13 @@
 		font-family: var(--font-heading);
 		font-size: var(--text-base);
 		font-weight: 600;
-		color: var(--text-primary);
+		color: var(--foreground);
 	}
 
 	.configurator-hint {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 	}
 
 	.domain-grid {
@@ -116,7 +116,7 @@
 		padding: 0.5rem 0.875rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
-		background: var(--bg-surface);
+		background: var(--muted);
 		cursor: pointer;
 		text-align: left;
 		transition:
@@ -127,17 +127,17 @@
 	}
 
 	.domain-option:hover:not(.disabled) {
-		border-color: var(--brand-primary);
+		border-color: var(--primary);
 	}
 
 	.domain-option:focus-visible {
-		outline: 2px solid var(--brand-primary);
+		outline: 2px solid var(--primary);
 		outline-offset: 2px;
 	}
 
 	.domain-option.selected {
-		border-color: var(--brand-primary);
-		background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+		border-color: var(--primary);
+		background: color-mix(in srgb, var(--primary) 10%, transparent);
 		box-shadow: var(--shadow-glow-sm);
 	}
 
@@ -150,17 +150,17 @@
 		font-family: var(--font-body);
 		font-size: var(--text-small);
 		font-weight: 600;
-		color: var(--text-primary);
+		color: var(--foreground);
 	}
 
 	.domain-option.selected .domain-label {
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 
 	.domain-desc {
 		font-family: var(--font-body);
 		font-size: var(--text-caption);
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

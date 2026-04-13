@@ -285,23 +285,23 @@
 								<div
 									data-testid="services-benefit"
 									class="text-body-lg font-medium leading-snug"
-									style="color: var(--text-primary);"
+									style="color: var(--foreground);"
 								>{benefit}</div>
 							{/if}
 							<div
 								data-testid="services-title"
 								class="services-title font-extrabold leading-none tracking-tight"
-								style="color: var(--brand-accent);"
+								style="color: var(--accent);"
 							>{title}</div>
 							{#if metricValue}
 								<div class="mt-2 flex items-baseline gap-2" data-testid="services-metric">
 									<span
 										class="font-mono text-2xl font-bold"
-										style="color: var(--brand-primary);"
+										style="color: var(--primary);"
 									>{metricValue}</span>
 									<span
 										class="text-small"
-										style="color: var(--text-secondary);"
+										style="color: var(--secondary-foreground);"
 									>{metricLabel}</span>
 								</div>
 							{/if}
@@ -320,7 +320,7 @@
 			<a
 				href="/services"
 				class="view-all-link border-b pb-0.5 text-body font-medium tracking-wide transition-colors duration-200"
-				style="color: var(--text-secondary); border-color: var(--border);"
+				style="color: var(--secondary-foreground); border-color: var(--border);"
 			>View all services &rarr;</a>
 		</div>
 	</div>
@@ -332,17 +332,17 @@
 		font-family: var(--font-heading);
 		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
-		color: var(--text-primary);
+		color: var(--foreground);
 		letter-spacing: -2px;
 		margin-block-end: 6px;
 	}
 	.section-dot {
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 	.section-subheading {
 		font-family: var(--font-mono);
 		font-size: 13px;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		margin-block-end: 36px;
@@ -368,15 +368,15 @@
 
 	/* Card — matches ProofReel card styling */
 	.services-card {
-		background: color-mix(in srgb, var(--bg-primary) 80%, transparent);
-		border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		background: color-mix(in srgb, var(--background) 80%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 		padding: 24px;
 		text-decoration: none;
 		backdrop-filter: blur(6px);
 	}
 
 	.services-card:hover {
-		border-color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
+		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
 		transform: translateY(-2px);
 		box-shadow: var(--shadow-section);
 	}
@@ -393,7 +393,7 @@
 		min-width: 80px;
 		aspect-ratio: 1;
 		align-self: center;
-		background: var(--bg-surface);
+		background: var(--muted);
 		border: 1px solid var(--border);
 	}
 
@@ -405,14 +405,14 @@
 	}
 
 	.services-card:hover .svg-panel {
-		background: var(--bg-elevated);
-		border-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
+		background: var(--popover);
+		border-color: color-mix(in srgb, var(--primary) 30%, transparent);
 	}
 
 	/* View all link hover */
 	.view-all-link:hover {
-		color: var(--brand-primary);
-		border-color: var(--brand-primary);
+		color: var(--primary);
+		border-color: var(--primary);
 	}
 
 	.crosshair {
@@ -425,7 +425,7 @@
 		position: absolute;
 		width: 32px;
 		height: 1px;
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		background: color-mix(in srgb, var(--primary) 15%, transparent);
 		top: 50%;
 	}
 	.crosshair::after {
@@ -433,7 +433,7 @@
 		position: absolute;
 		width: 1px;
 		height: 32px;
-		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		background: color-mix(in srgb, var(--primary) 15%, transparent);
 		left: 50%;
 	}
 
@@ -441,7 +441,7 @@
 		position: absolute;
 		font-family: var(--font-mono);
 		font-size: 10px;
-		color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+		color: color-mix(in srgb, var(--primary) 20%, transparent);
 		letter-spacing: 1.5px;
 		z-index: var(--z-base);
 	}

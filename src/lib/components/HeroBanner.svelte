@@ -484,7 +484,7 @@
 					<div class="hero-viewport-text">
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-hero text-[var(--text-primary)]"
+								class="block text-hero text-[var(--foreground)]"
 								data-testid="hero-line1"
 								data-hero-stagger="1"
 							>
@@ -498,7 +498,7 @@
 
 						<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 							<span
-								class="block text-hero text-[var(--brand-primary)]"
+								class="block text-hero text-[var(--primary)]"
 								data-testid="hero-line2"
 							>
 								<span data-hero-stagger="1">DON'T BREAK</span><svg
@@ -512,7 +512,7 @@
 						</h1>
 
 						<div
-							class="mt-3 text-title font-bold leading-[1.1] text-[var(--text-secondary)] md:mt-2.5 md:text-[clamp(26px,min(3.5vw,4svh),44px)]"
+							class="mt-3 text-title font-bold leading-[1.1] text-[var(--secondary-foreground)] md:mt-2.5 md:text-[clamp(26px,min(3.5vw,4svh),44px)]"
 							data-testid="hero-subheadline"
 							data-hero-stagger="2"
 						>
@@ -520,7 +520,7 @@
 						</div>
 
 						<p
-							class="mt-5 text-body-lg leading-[1.7] text-[var(--text-secondary)] md:text-heading"
+							class="mt-5 text-body-lg leading-[1.7] text-[var(--secondary-foreground)] md:text-heading"
 							data-testid="hero-subtitle"
 							data-hero-stagger="6"
 						>
@@ -566,7 +566,7 @@
 								<span bind:this={refreshIcon} class="text-xl">&#x21bb;</span>
 								{refreshLabel}
 							</button>
-							<div class="mt-2 font-mono text-caption text-[var(--text-dim)]">
+							<div class="mt-2 font-mono text-caption text-[var(--dim-foreground)]">
 								{refreshHelper}
 							</div>
 						</div>
@@ -580,7 +580,7 @@
 		     Mobile: wraps to 2 lines at the colon. Desktop: single line. -->
 		<p
 			bind:this={scrollPrompt}
-			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-brand-primary md:whitespace-nowrap md:leading-none"
+			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-primary md:whitespace-nowrap md:leading-none"
 		>
 			<span bind:this={scrollText}></span><span bind:this={scrollCursorEl} class="scroll-block-cursor" aria-hidden="true">&#x2588;</span>
 		</p>
@@ -610,7 +610,7 @@
 					<span class="text-xl">&#x21bb;</span>
 					{refreshLabel}
 				</button>
-				<div class="mt-2 font-mono text-caption text-[var(--text-dim)]">
+				<div class="mt-2 font-mono text-caption text-[var(--dim-foreground)]">
 					{refreshHelper}
 				</div>
 			</div>
@@ -627,7 +627,7 @@
 		height: 0.19em;
 		vertical-align: baseline;
 		margin-bottom: 0.03em;
-		color: var(--brand-primary);
+		color: var(--primary);
 	}
 
 	/* Two-column hero grid: text | divider | SQL panel */
@@ -656,8 +656,8 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 10px;
-		background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
-		color: var(--bg-primary);
+		background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+		color: var(--background);
 		border: none;
 		padding: 16px 48px;
 		border-radius: 10px;
@@ -667,13 +667,13 @@
 		letter-spacing: 2px;
 		cursor: pointer;
 		box-shadow:
-			0 0 24px color-mix(in srgb, var(--brand-primary) 30%, transparent),
+			0 0 24px color-mix(in srgb, var(--primary) 30%, transparent),
 			0 4px 12px rgba(0, 0, 0, 0.4);
 		transition: box-shadow var(--duration-normal), transform var(--duration-normal);
 	}
 	.refresh-btn:hover {
 		box-shadow:
-			0 0 40px color-mix(in srgb, var(--brand-primary) 50%, transparent),
+			0 0 40px color-mix(in srgb, var(--primary) 50%, transparent),
 			0 6px 20px rgba(0, 0, 0, 0.5);
 		transform: translateY(-1px);
 	}

@@ -291,13 +291,13 @@
 	}
 
 	.connection-path {
-		stroke: color-mix(in srgb, var(--brand-primary) 25%, transparent);
+		stroke: color-mix(in srgb, var(--primary) 25%, transparent);
 		stroke-width: 1.5;
 		transition: stroke var(--duration-slow) var(--ease-default), stroke-width var(--duration-slow) var(--ease-default), opacity var(--duration-slow) var(--ease-default);
 	}
 
 	.connection-path.path-highlighted {
-		stroke: var(--brand-primary);
+		stroke: var(--primary);
 		stroke-width: 2;
 	}
 
@@ -306,11 +306,11 @@
 	}
 
 	.connection-path.path-dimmed {
-		stroke: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		stroke: color-mix(in srgb, var(--primary) 8%, transparent);
 	}
 
 	.data-dot {
-		fill: var(--brand-accent);
+		fill: var(--accent);
 		opacity: 0;
 		transition: opacity var(--duration-slow) var(--ease-default);
 	}
@@ -326,7 +326,7 @@
 	@media (prefers-reduced-motion: reduce) {
 		.connection-path {
 			stroke-dasharray: 4 4;
-			stroke: color-mix(in srgb, var(--text-muted) 30%, transparent);
+			stroke: color-mix(in srgb, var(--muted-foreground) 30%, transparent);
 		}
 
 		.data-dot {

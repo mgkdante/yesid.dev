@@ -26,7 +26,7 @@
 <a
 	href="/services/{service.id}"
 	class="service-badge inline-flex items-center gap-2 rounded-full border bg-bg-card px-4 py-2.5 no-underline"
-	style="border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);"
+	style="border-color: color-mix(in srgb, var(--primary) 40%, transparent);"
 	data-testid="work-service-badge"
 	onmouseenter={() => (badgeHovered = true)}
 	onmouseleave={() => (badgeHovered = false)}
@@ -34,7 +34,7 @@
 	{#if svgContent}
 		<WorkSvgIcon {svgContent} size={28} hovered={badgeHovered} />
 	{/if}
-	<span class="font-mono text-caption leading-tight text-[var(--text-primary)] md:text-mono">
+	<span class="font-mono text-caption leading-tight text-[var(--foreground)] md:text-mono">
 		{resolveLocale(service.title, 'en')}
 	</span>
 </a>
@@ -54,7 +54,7 @@
 	}
 	.service-badge:hover {
 		background-color: var(--border-strong);
-		border-color: color-mix(in srgb, var(--brand-primary) 70%, transparent);
+		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
 		transform: scale(1.02);
 		box-shadow: var(--shadow-glow-md);
 	}

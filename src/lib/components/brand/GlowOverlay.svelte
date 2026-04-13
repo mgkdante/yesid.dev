@@ -14,6 +14,6 @@
 
 <div
   class="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-  style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgb(var(--brand-primary-rgb) / {intensity}), transparent 60%);"
+  style="background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgb(var(--primary-rgb) / {intensity}), transparent 60%);"
   aria-hidden="true"
 ></div>

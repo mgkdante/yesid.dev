@@ -276,7 +276,7 @@
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
 		font-weight: 600;
-		color: var(--text-muted);
+		color: var(--muted-foreground);
 		letter-spacing: 0.08em;
 		text-align: right;
 		padding-right: 1rem;
