@@ -12,14 +12,13 @@ describe('Brand barrel export', () => {
     'HazardStripe',
     'GlowOverlay',
     'MetricDisplay',
-    'CardBase',
     'CornerMarks',
     'TerminalChrome',
     'StickyPanel',
     'GradientSeparator',
   ];
 
-  it('exports all 14 brand primitives', () => {
+  it('exports all 13 brand primitives', () => {
     for (const name of expectedComponents) {
       expect(brand).toHaveProperty(name);
       expect((brand as Record<string, unknown>)[name]).toBeTruthy();
@@ -30,7 +29,7 @@ describe('Brand barrel export', () => {
     const componentExports = Object.keys(brand).filter(
       (key) => !key.endsWith('Props') && key !== 'TerminalFooterItem' && typeof (brand as Record<string, unknown>)[key] !== 'undefined'
     );
-    // 14 components (BrandButton migrated to ui/button)
-    expect(componentExports.length).toBeGreaterThanOrEqual(14);
+    // 13 components (BrandButton→ui/button, CardBase→ui/card)
+    expect(componentExports.length).toBeGreaterThanOrEqual(13);
   });
 });

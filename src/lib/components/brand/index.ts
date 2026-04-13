@@ -1,4 +1,4 @@
-// Brand primitives barrel export — 14 reusable components (BrandButton migrated to ui/button).
+// Brand primitives barrel export — 13 reusable components (BrandButton→ui/button, CardBase→ui/card).
 // Built in Slice 17a-2a. Wired into consumers in 17a-2b.
 
 export { default as StatusDot } from './StatusDot.svelte';
@@ -11,7 +11,7 @@ export { default as HazardStripe } from './HazardStripe.svelte';
 export { default as GlowOverlay } from './GlowOverlay.svelte';
 export { default as MetricDisplay } from './MetricDisplay.svelte';
 
-export { default as CardBase } from './CardBase.svelte';
+
 export { default as CornerMarks } from './CornerMarks.svelte';
 export { default as TerminalChrome } from './TerminalChrome.svelte';
 export { default as StickyPanel } from './StickyPanel.svelte';
@@ -27,7 +27,7 @@ export type { HazardStripeProps } from './HazardStripe.svelte';
 export type { GlowOverlayProps } from './GlowOverlay.svelte';
 export type { MetricDisplayProps } from './MetricDisplay.svelte';
 
-export type { CardBaseProps } from './CardBase.svelte';
+
 export type { CornerMarksProps } from './CornerMarks.svelte';
 export type { TerminalChromeProps, TerminalFooterItem } from './TerminalChrome.svelte';
 export type { StickyPanelProps } from './StickyPanel.svelte';
