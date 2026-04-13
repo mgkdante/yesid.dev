@@ -15,7 +15,7 @@
 	let {
 		post,
 		svgContent = '',
-		accentColor = '#E07800',
+		accentColor = 'var(--brand-primary)',
 		readingTime = 0
 	}: {
 		post: BlogPost;

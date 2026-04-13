@@ -32,7 +32,7 @@
 			</h3>
 			{#if status === 'wip'}
 				<span class="shrink-0" data-testid="status-badge">
-					<Tag text="WIP" size="xs" active accentColor="#FFB627" />
+					<Tag text="WIP" size="xs" active accentColor="var(--brand-accent)" />
 				</span>
 			{:else if status === 'private'}
 				<span class="shrink-0" data-testid="status-badge">

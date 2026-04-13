@@ -15,24 +15,6 @@
   --font-* generates font-* utilities. --radius-* generates rounded-* utilities.
 */
 @theme {
-  /* Brand colors — static palette, not theme-switching */
-  --color-brand-primary: #E07800;
-  --color-brand-accent: #FFB627;
-  --color-brand-primary-hover: #C96A00;
-  --color-brand-accent-hover: #E5A220;
-
-  /* Dark palette */
-  --color-dark-bg: #141414;
-  --color-dark-surface: #1E1E1E;
-  --color-dark-elevated: #2A2A2A;
-  --color-dark-border: #3A3A3A;
-
-  /* Light palette */
-  --color-light-bg: #FAFAF8;
-  --color-light-surface: #F0EDE5;
-  --color-light-elevated: #FFFFFF;
-  --color-light-border: #D8D4CA;
-
   /* Font families */
   --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
@@ -58,7 +40,7 @@
   --radius-xl: 16px;
   --radius-pill: 9999px;
 
-  /* Shadows */
+  /* Shadows — already use var() refs from tokens.css */
   --shadow-glow-sm: var(--shadow-glow-sm);
   --shadow-glow-md: var(--shadow-glow-md);
   --shadow-glow-lg: var(--shadow-glow-lg);
@@ -67,7 +49,7 @@
   --shadow-nav: var(--shadow-nav);
   --shadow-status: var(--shadow-status);
 
-  /* Z-index */
+  /* Z-index — already use var() refs from tokens.css */
   --z-index-base: var(--z-base);
   --z-index-content: var(--z-content);
   --z-index-rail: var(--z-rail);
@@ -76,16 +58,38 @@
   --z-index-menu: var(--z-menu);
   --z-index-nav: var(--z-nav);
 
-  /* Container widths */
+  /* Container widths — already use var() refs from tokens.css */
   --width-content: var(--container-content);
   --width-wide: var(--container-wide);
   --width-prose: var(--container-prose);
+}
 
-  /* Terminal / SQL panel */
-  --color-terminal-bg: #0a0a0a;
-  --color-terminal-border: #2a2a2a;
-  --color-dim: #4a4a4a;
-  --color-live: #22c55e;
+/* Dynamic theme values — references tokens.css via var(), resolves at runtime.
+   Single source of truth: change tokens.css, Tailwind utilities follow. */
+@theme inline {
+  /* Brand colors — single source: tokens.css */
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-accent-hover: var(--brand-accent-hover);
+
+  /* Dark palette → semantic tokens */
+  --color-dark-bg: var(--bg-primary);
+  --color-dark-surface: var(--bg-surface);
+  --color-dark-elevated: var(--bg-elevated);
+  --color-dark-border: var(--border);
+
+  /* Light palette → semantic tokens */
+  --color-light-bg: var(--bg-primary);
+  --color-light-surface: var(--bg-surface);
+  --color-light-elevated: var(--bg-elevated);
+  --color-light-border: var(--border);
+
+  /* Terminal */
+  --color-terminal-bg: var(--bg-terminal);
+  --color-terminal-border: var(--border-subtle);
+  --color-dim: var(--text-dim);
+  --color-live: var(--status-live);
 }
 
 /* Dark theme is the default — tokens.css handles var(--bg-primary) etc.
@@ -100,7 +104,7 @@ html {
 /* Brand scrollbar — orange thumb on dark track, site-wide */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(224, 120, 0, 0.4) transparent;
+  scrollbar-color: color-mix(in srgb, var(--brand-primary) 40%, transparent) transparent;
 }
 *::-webkit-scrollbar {
   width: 6px;
@@ -110,11 +114,11 @@ html {
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background: rgba(224, 120, 0, 0.35);
+  background: color-mix(in srgb, var(--brand-primary) 35%, transparent);
   border-radius: 3px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(224, 120, 0, 0.6);
+  background: color-mix(in srgb, var(--brand-primary) 60%, transparent);
 }
 
 /* Circuit grid background — site-wide except nav/footer.
@@ -128,8 +132,8 @@ html {
   position: absolute;
   inset: 0;
   background:
-    repeating-linear-gradient(90deg, rgba(224,120,0,0.05) 0px, transparent 1px, transparent 80px),
-    repeating-linear-gradient(0deg, rgba(224,120,0,0.05) 0px, transparent 1px, transparent 80px);
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--brand-primary) 5%, transparent) 0px, transparent 1px, transparent 80px),
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--brand-primary) 5%, transparent) 0px, transparent 1px, transparent 80px);
   pointer-events: none;
   z-index: 0;
 }

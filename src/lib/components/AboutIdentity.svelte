@@ -29,7 +29,7 @@
 	<!-- Ambient glow behind headshot -->
 	<div
 		class="pointer-events-none absolute -top-10 -left-10 h-44 w-44"
-		style="background: radial-gradient(circle, rgba(224,120,0,0.12) 0%, transparent 70%);"
+		style="background: radial-gradient(circle, color-mix(in srgb, var(--brand-primary) 12%, transparent) 0%, transparent 70%);"
 		aria-hidden="true"
 	></div>
 

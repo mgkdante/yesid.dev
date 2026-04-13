@@ -46,16 +46,16 @@
 	// Gradient color based on the first related service's position in the palette.
 	// Creates visual variety across cards without requiring thumbnails.
 	const SERVICE_GRADIENTS: Record<string, [string, string]> = {
-		'sql-development': ['#E07800', '#c06000'],
-		'data-pipeline': ['#FFB627', '#d99a10'],
-		'analytics-reporting': ['#E07800', '#FFB627'],
-		'database-engineering': ['#c06000', '#E07800'],
-		'internal-tooling': ['#d99a10', '#FFB627'],
-		'web-development': ['#FFB627', '#E07800']
+		'sql-development': ['var(--brand-primary)', 'var(--brand-primary-hover)'],
+		'data-pipeline': ['var(--brand-accent)', 'var(--brand-accent-hover)'],
+		'analytics-reporting': ['var(--brand-primary)', 'var(--brand-accent)'],
+		'database-engineering': ['var(--brand-primary-hover)', 'var(--brand-primary)'],
+		'internal-tooling': ['var(--brand-accent-hover)', 'var(--brand-accent)'],
+		'web-development': ['var(--brand-accent)', 'var(--brand-primary)']
 	};
 
 	let gradientColors = $derived(
-		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['#E07800', '#FFB627']
+		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['var(--brand-primary)', 'var(--brand-accent)']
 	);
 
 	// i18n labels — all user-facing strings go through LocalizedString so future
@@ -91,7 +91,7 @@
 		{:else}
 			<div
 				class="flex h-[200px] items-center justify-end pr-6"
-				style="background: linear-gradient(135deg, {gradientColors[0]}22, {gradientColors[1]}11);"
+				style="background: linear-gradient(135deg, color-mix(in srgb, {gradientColors[0]} 13%, transparent), color-mix(in srgb, {gradientColors[1]} 7%, transparent));"
 			>
 				{#if project.relatedServices[0] && serviceSvgContents[project.relatedServices[0]]}
 					<div class="opacity-30 transition-opacity duration-300 group-hover:opacity-50">
@@ -108,7 +108,7 @@
 		<!-- Content area — all content stacks naturally below the banner -->
 		<div class="p-4">
 			<!-- Title below the gradient, not overlaid -->
-			<h3 class="text-base font-bold text-[var(--text-primary)] transition-colors duration-300 group-hover:text-[#E07800] md:text-lg">
+			<h3 class="text-base font-bold text-[var(--text-primary)] transition-colors duration-300 group-hover:text-brand-primary md:text-lg">
 				{resolveLocale(project.title, 'en')}
 			</h3>
 
@@ -126,8 +126,8 @@
 					<div class="flex flex-wrap gap-1.5">
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-2 rounded-full border bg-[#141414] px-3 py-1.5"
-							style="border-color: rgba(224, 120, 0, 0.35);"
+							class="inline-flex items-center gap-2 rounded-full border bg-bg-primary px-3 py-1.5"
+							style="border-color: color-mix(in srgb, var(--brand-primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
 								<div class="service-badge-icon" aria-hidden="true">
@@ -178,7 +178,7 @@
 	   no rotating gradient (that was visually distracting on cards) */
 	.work-card:hover .work-card-article {
 		border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent);
-		box-shadow: 0 0 16px rgb(var(--brand-primary-rgb) / 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 0 16px color-mix(in srgb, var(--brand-primary) 10%, transparent), 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
 	/* Strip WorkSvgIcon container border/bg when nested in card badges */

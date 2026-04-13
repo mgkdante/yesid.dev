@@ -11,7 +11,7 @@
 		languages = [],
 		activeTag = null,
 		activeLang = null,
-		accentColor = '#E07800',
+		accentColor = 'var(--brand-primary)',
 		cornerLink = null,
 		onTagSelect,
 		onLangSelect,
@@ -75,7 +75,7 @@
 						</button>
 					{/each}
 				</div>
-				<div class="mt-2 border-t border-dashed border-[#333]"></div>
+				<div class="mt-2 border-t border-dashed border-border-strong"></div>
 			{/if}
 
 			<!-- Date range -->
@@ -88,7 +88,7 @@
 					<input
 						type="date"
 						bind:value={dateFrom}
-						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
+						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
 						style="color-scheme: dark;"
 					/>
 				</label>
@@ -97,14 +97,14 @@
 					<input
 						type="date"
 						bind:value={dateTo}
-						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
+						class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none"
 						style="color-scheme: dark;"
 					/>
 				</label>
 			</div>
 
 			<!-- Tags -->
-			<div class="mt-3 border-t border-dashed border-[#333] pt-2">
+			<div class="mt-3 border-t border-dashed border-border-strong pt-2">
 				<div class="flex flex-wrap gap-1.5">
 					<button
 						class="rounded px-2 py-1 text-caption transition-colors"
@@ -129,11 +129,11 @@
 
 			<!-- Corner link (last) -->
 			{#if cornerLink}
-				<div class="mt-3 border-t border-dashed border-[#333] pt-2">
+				<div class="mt-3 border-t border-dashed border-border-strong pt-2">
 					<a
 						href={cornerLink.href}
 						class="text-xs font-semibold no-underline"
-						style="color: {cornerLink.href.includes('personal') ? '#FFB627' : '#E07800'};"
+						style="color: {cornerLink.href.includes('personal') ? 'var(--brand-accent)' : 'var(--brand-primary)'};"
 					>
 						{cornerLink.label} &rarr;
 					</a>
@@ -149,7 +149,7 @@
 <style>
 	.m-active {
 		background: var(--accent);
-		color: #f5f5f0;
+		color: var(--text-primary);
 	}
 	.m-tag-active {
 		border-color: var(--accent) !important;

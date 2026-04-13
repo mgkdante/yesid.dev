@@ -124,12 +124,12 @@
 				<div use:reveal={{ direction: 'up', delay: 100 }}>
 					<CollapsibleSection title={resolveLocale(labels.valueProposition, 'en')} open={true}>
 						{#snippet icon()}
-							<svg class="h-4 w-4 shrink-0 text-[#E07800]" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+							<svg class="h-4 w-4 shrink-0 text-brand-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 								<circle cx="8" cy="8" r="2.5" />
 								<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" />
 							</svg>
 						{/snippet}
-						<p class="text-sm leading-relaxed text-[#ccc] md:text-base">
+						<p class="text-sm leading-relaxed text-text-light md:text-base">
 							{resolveLocale(service.valueProposition, 'en')}
 						</p>
 					</CollapsibleSection>
@@ -141,7 +141,7 @@
 				<div use:reveal={{ direction: 'up', delay: 150 }}>
 					<CollapsibleSection title={resolveLocale(labels.deliverables, 'en')} open={true}>
 						{#snippet icon()}
-							<svg class="h-4 w-4 shrink-0 text-[#E07800]" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+							<svg class="h-4 w-4 shrink-0 text-brand-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 								<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
 							</svg>
 						{/snippet}
@@ -149,7 +149,7 @@
 							{#each service.deliverables as deliverable}
 								<div class="deliverable-item">
 									<span class="deliverable-dot" aria-hidden="true"></span>
-									<span class="text-sm text-[#ccc]">{resolveLocale(deliverable, 'en')}</span>
+									<span class="text-sm text-text-light">{resolveLocale(deliverable, 'en')}</span>
 								</div>
 							{/each}
 						</div>
@@ -162,7 +162,7 @@
 				{#each service.sections as section, i}
 					<div use:reveal={{ direction: 'up', delay: 200 + i * 80 }}>
 						<CollapsibleSection title={resolveLocale(section.title, 'en')} open={true} index={i}>
-							<p class="text-sm leading-relaxed text-[#ccc]">
+							<p class="text-sm leading-relaxed text-text-light">
 								{resolveLocale(section.content, 'en')}
 							</p>
 						</CollapsibleSection>
@@ -196,7 +196,7 @@
 
 <style>
 	.service-detail {
-		background: var(--bg-primary, #141414);
+		background: var(--bg-primary);
 		min-height: 100vh;
 	}
 
@@ -216,7 +216,7 @@
 		display: inline-block;
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.75rem;
-		color: #E07800;
+		color: var(--brand-primary);
 		text-decoration: none;
 		margin-bottom: 1.5rem;
 		transition: opacity 0.15s;
@@ -246,8 +246,8 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 1.25rem;
-		border: 1px solid var(--border, #1a1a1a);
-		background: #1a1a1a;
+		border: 1px solid var(--border);
+		background: var(--bg-card);
 		padding: 2rem;
 		cursor: pointer;
 		transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -257,10 +257,10 @@
 	}
 	.hero-svg-box:hover,
 	.hero-svg-box:global(.morphed) {
-		border-color: #E07800;
+		border-color: var(--brand-primary);
 		border-radius: 50%;
 		transform: scale(1.06) rotate(3deg);
-		box-shadow: 0 0 24px rgba(224, 120, 0, 0.2), 0 0 60px rgba(224, 120, 0, 0.08);
+		box-shadow: 0 0 24px color-mix(in srgb, var(--brand-primary) 20%, transparent), 0 0 60px color-mix(in srgb, var(--brand-primary) 8%, transparent);
 	}
 
 	@media (max-width: 767px) {
@@ -296,15 +296,15 @@
 		font-family: 'Inter', sans-serif;
 		font-size: clamp(1.75rem, 3.5vw, 3rem);
 		font-weight: 800;
-		color: var(--text-primary, #f5f5f0);
+		color: var(--text-primary);
 		line-height: 1.1;
 		margin-bottom: 0.5rem;
 	}
-	.title-dot { color: #E07800; }
+	.title-dot { color: var(--brand-primary); }
 
 	.detail-subtitle {
 		font-size: 1rem;
-		color: #555;
+		color: var(--text-muted);
 		margin-bottom: 0.75rem;
 		font-style: italic;
 	}
@@ -312,7 +312,7 @@
 	.detail-description {
 		font-size: 1rem;
 		line-height: 1.7;
-		color: var(--text-secondary, #999);
+		color: var(--text-secondary);
 		max-width: 60ch;
 	}
 
@@ -347,14 +347,14 @@
 		align-items: center;
 		gap: 0.5rem;
 		font-size: 0.875rem;
-		color: #ccc;
+		color: var(--text-light);
 	}
 
 	.deliverable-dot {
 		width: 6px;
 		height: 6px;
 		border-radius: 50%;
-		background: #E07800;
+		background: var(--brand-primary);
 		flex-shrink: 0;
 	}
 
@@ -373,13 +373,13 @@
 		font-family: 'Inter', sans-serif;
 		font-size: 1.25rem;
 		font-weight: 700;
-		color: var(--text-primary, #f5f5f0);
+		color: var(--text-primary);
 	}
 
 	.related-link {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.75rem;
-		color: #E07800;
+		color: var(--brand-primary);
 		text-decoration: none;
 	}
 	.related-link:hover { text-decoration: underline; }

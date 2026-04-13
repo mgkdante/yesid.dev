@@ -59,7 +59,7 @@
 		justify-content: space-between;
 		align-items: flex-start;
 		width: 100%;
-		border-top: 1px solid #1a1a1a;
+		border-top: 1px solid var(--bg-card);
 		padding: 2rem 1rem;
 	}
 
@@ -79,7 +79,7 @@
 
 	.nav-arrow {
 		font-size: 1.25rem;
-		color: #666;
+		color: var(--text-muted);
 		transition: color 0.2s;
 	}
 
@@ -93,20 +93,20 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.75rem;
 		text-transform: uppercase;
-		color: #666;
+		color: var(--text-muted);
 	}
 
 	.nav-title {
 		font-weight: 600;
-		color: #f5f5f0;
+		color: var(--text-primary);
 		transition: color 0.2s;
 	}
 
 	.nav-link:hover .nav-title {
-		color: #E07800;
+		color: var(--brand-primary);
 	}
 
 	.nav-link:hover .nav-arrow {
-		color: #E07800;
+		color: var(--brand-primary);
 	}
 </style>

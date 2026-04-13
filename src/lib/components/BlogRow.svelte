@@ -15,7 +15,7 @@
 	let {
 		post,
 		svgContent = '',
-		accentColor = '#E07800',
+		accentColor = 'var(--brand-primary)',
 		index = 0,
 		featured = false
 	}: {
@@ -155,7 +155,7 @@
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
-		background: rgba(224, 120, 0, 0.5);
+		background: color-mix(in srgb, var(--brand-primary) 50%, transparent);
 		animation: station-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 	}
 

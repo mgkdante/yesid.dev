@@ -55,7 +55,7 @@
 	<div class="mb-3 flex items-center gap-3">
 		<button
 			class="inline-flex items-center gap-1.5 rounded border px-2.5 py-1 font-mono text-xs transition-colors"
-			style="border-color: #E07800; color: #E07800;"
+			style="border-color: var(--brand-primary); color: var(--brand-primary);"
 			onclick={() => (open = !open)}
 		>
 			{resolveLocale(labels.filters, 'en')}
@@ -93,7 +93,7 @@
 
 			<!-- Tech Stack -->
 			{#if stack.length > 0 && onStackSelect}
-				<div class="mt-3 border-t border-dashed border-[#333] pt-2">
+				<div class="mt-3 border-t border-dashed border-border-strong pt-2">
 					<div class="label-section font-semibold">
 						{resolveLocale(labels.stack, 'en')}
 					</div>
@@ -119,7 +119,7 @@
 			{/if}
 
 			<!-- Tags -->
-			<div class="mt-3 border-t border-dashed border-[#333] pt-2">
+			<div class="mt-3 border-t border-dashed border-border-strong pt-2">
 				<div class="label-section font-semibold">
 					{resolveLocale(labels.tags, 'en')}
 				</div>
@@ -148,11 +148,11 @@
 
 <style>
 	.m-active {
-		background: #E07800;
-		color: #f5f5f0;
+		background: var(--brand-primary);
+		color: var(--text-primary);
 	}
 	.m-tag-active {
-		border-color: #E07800 !important;
-		color: #E07800 !important;
+		border-color: var(--brand-primary) !important;
+		color: var(--brand-primary) !important;
 	}
 </style>
