@@ -137,6 +137,27 @@ HeroBanner wordmark uses custom sizing outside the type scale — intentional, d
 
 ## 6. Component Standards
 
+### Component Tiers
+
+Three tiers of components, each with distinct conventions:
+
+| Tier | Location | Source | Conventions | Count |
+|------|----------|--------|-------------|-------|
+| **ui/** | `src/lib/components/ui/` | shadcn-svelte scaffolded | `cn()`, `data-slot`, background/foreground tokens | 56 components, 15 customized |
+| **brand/** | `src/lib/components/brand/` | Hand-built | `cn()`, `data-slot`, brand-specific styling + GSAP | 15 primitives |
+| **page** | `src/lib/components/` | One-off page components | Consume from ui/ and brand/ tiers | ~40 components |
+
+**ui/ tier (shadcn-svelte):** Pre-scaffolded accessible components (Button, Badge, Dialog, Tabs, etc.). Customized with brand tokens. Import: `import { Button } from '$lib/components/ui/button'`.
+
+**brand/ tier (hand-built):** Brand-specific primitives (StatusDot, TerminalChrome, HazardStripe, etc.) that have no shadcn equivalent. Import: `import { StatusDot, Tag } from '$lib/components/brand'`.
+
+### Shared Conventions
+
+Both ui/ and brand/ tiers use:
+- **`cn()` utility** from `$lib/utils` for Tailwind class composition with merge support
+- **`data-slot` attribute** to identify component parts for style targeting
+- **background/foreground token pairs** (e.g., `--card` / `--card-foreground`)
+
 ### Universal Prop Pattern
 
 Every component follows:
@@ -165,16 +186,19 @@ let { propName, variant = 'primary', class: className = '', ...rest }: Component
 
 ### Bits UI Integration (17a-6)
 
+Bits UI is the **headless accessibility layer** providing keyboard nav, focus traps, ARIA attributes, and screen reader support. It powers the interactive primitives in both the ui/ and brand/ tiers.
+
 **Use for:** Interactive a11y primitives (Dialog, Collapsible, Tabs, Toggle, Tooltip).
 **Don't use for:** Presentational components (cards, labels, badges, separators).
 
 **Wrapping pattern:**
 
 ```
-bits-ui (headless)  →  brand wrapper (our styling + GSAP)  →  page component
-   Dialog.Root           BrandDialog                          StackBottomSheet
-   Collapsible.Root      BrandCollapsible                     CollapsibleSection
-   Tabs.Root             BrandTabs                            StationTabs
+bits-ui (headless)  →  ui/ or brand/ wrapper (our styling + GSAP)  →  page component
+   Dialog.Root           ui/dialog                                     MenuOverlay
+   Collapsible.Root      (direct in brand)                             CollapsibleSection
+   Tabs.Root             ui/tabs                                       StationTabs
+   Drawer.Root           (vaul-svelte)                                 StackBottomSheet
 ```
 
 `forceMount` + `child` snippet gives full GSAP control. Bits UI handles a11y (focus trap, ESC, ARIA), we handle brand styling and animation.
