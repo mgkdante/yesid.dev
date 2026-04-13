@@ -16,9 +16,11 @@ Phase 1 — Foundation
   17a-1: Token Foundation .............. COMPLETE (PR #2 merged)
   17a-2a: Build Primitives ............. COMPLETE (PR #3 merged)
   17a-2b: Wire Primitives .............. COMPLETE (PR #4 merged)
-  17a-3a: Color Lockdown ............... NEXT (~2 sessions, 20 tasks)
-  17a-3b: Token Wiring + Normalization . PLANNED (~1 session, 8 tasks)
-  17a-4: Dead Code + Trivial Dedup ..... 1 session
+  17a-3a: Color Lockdown ............... COMPLETE (20 tasks, PR pending)
+  17a-3b: Token Wiring + Normalization . NEXT (~1 session, 8 tasks)
+  17a-5: Spacing & Layout Constitution . PLANNED (needs planning session)
+  17a-6: Component Library Eval ........ PLANNED (research session)
+  17a-4: Dead Code + Trivial Dedup ..... 1 session (after 17a-5/17a-6)
   17b:   Service Layer ................. 2 sessions
     → 15: SEO + Metadata
 Phase 2 — Standardization
@@ -143,8 +145,8 @@ Phase 2 — Standardization
 - 3 new tokens needed: --text-light, --status-warning, --brand-primary-border
 
 ## Next Steps
-1. **17a-3a: Color Lockdown** — Implementation session (2 sessions, 20 tasks, branch: feature/slice-17a-3-color-lockdown)
+1. **17a-3a: Color Lockdown** — COMPLETE (20 tasks, 20 commits, branch: feature/slice-17a-3-color-lockdown)
 2. **17a-3b: Token Wiring** — Implementation session (1 session, 8 tasks, branch: feature/slice-17a-3b-token-wiring)
-3. 17a-4: Dead Code + Trivial Dedup (delete 4 dead components, extract isTouchDevice, unify station pulse CSS, extract display heading utility, quick primitive wiring wins)
-4. 17a-5: Spacing & Layout Constitution (proposed — needs planning session)
-5. **17a-6: Component Library Evaluation** (proposed) — Research Bits UI (https://bits-ui.com/) and Flowbite Svelte (https://flowbite-svelte.com/) as potential foundation layers. Unbiased evaluation — no pre-selected winner. Assess Svelte 5 compat, headless vs opinionated, a11y, bundle size, which custom primitives they could replace.
+3. 17a-5: Spacing & Layout Constitution (proposed — needs planning session)
+4. **17a-6: Component Library Evaluation** (proposed) — Research Bits UI, Flowbite Svelte as potential foundation layers. Unbiased evaluation.
+5. 17a-4: Dead Code + Trivial Dedup — moved after 17a-5/17a-6 so component library eval can inform what gets deleted vs replaced. Includes 4 dead components + 6 dead Three.js/Threlte files + 2 dev preview routes.
