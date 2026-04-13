@@ -657,7 +657,7 @@
 		align-items: center;
 		gap: 10px;
 		background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
-		color: #141414;
+		color: var(--bg-primary);
 		border: none;
 		padding: 16px 48px;
 		border-radius: 10px;
@@ -667,13 +667,13 @@
 		letter-spacing: 2px;
 		cursor: pointer;
 		box-shadow:
-			0 0 24px rgba(224, 120, 0, 0.3),
+			0 0 24px color-mix(in srgb, var(--brand-primary) 30%, transparent),
 			0 4px 12px rgba(0, 0, 0, 0.4);
 		transition: box-shadow 0.2s, transform 0.2s;
 	}
 	.refresh-btn:hover {
 		box-shadow:
-			0 0 40px rgba(224, 120, 0, 0.5),
+			0 0 40px color-mix(in srgb, var(--brand-primary) 50%, transparent),
 			0 6px 20px rgba(0, 0, 0, 0.5);
 		transform: translateY(-1px);
 	}

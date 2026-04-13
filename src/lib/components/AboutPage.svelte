@@ -218,11 +218,11 @@
 
 	/* ═══ BENTO CARD — UNIFORM BORDER + HOVER ═══ */
 	:global(.bento-card) {
-		border-color: rgba(224, 120, 0, 0.12) !important;
+		border-color: color-mix(in srgb, var(--brand-primary) 12%, transparent) !important;
 		transition: border-color 0.3s ease, box-shadow 0.3s ease;
 	}
 	:global(.bento-card:hover) {
-		border-color: rgba(224, 120, 0, 0.25) !important;
-		box-shadow: 0 4px 24px rgba(224, 120, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.3);
+		border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent) !important;
+		box-shadow: 0 4px 24px color-mix(in srgb, var(--brand-primary) 8%, transparent), 0 1px 3px rgba(0, 0, 0, 0.3);
 	}
 </style>

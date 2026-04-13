@@ -89,6 +89,9 @@
   --status-error: #ff5f57;
   --status-success: #28c840;
   --text-code: #cccccc;
+  --text-light: #cccccc;
+  --status-warning: #ffbd2e;
+  --brand-primary-border: color-mix(in srgb, var(--brand-primary) 12%, transparent);
 }
 
 [data-theme="light"], .theme-light {
@@ -110,6 +113,9 @@
   --status-error: #dc2626;
   --status-success: #16a34a;
   --text-code: #333333;
+  --text-light: #555555;
+  --status-warning: #f0ad4e;
+  --brand-primary-border: color-mix(in srgb, var(--brand-primary) 15%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -131,6 +137,9 @@
     --status-error: #ff5f57;
     --status-success: #28c840;
     --text-code: #cccccc;
+    --text-light: #cccccc;
+    --status-warning: #ffbd2e;
+    --brand-primary-border: color-mix(in srgb, var(--brand-primary) 12%, transparent);
   }
 }
 
@@ -154,5 +163,8 @@
     --status-error: #dc2626;
     --status-success: #16a34a;
     --text-code: #333333;
+    --text-light: #555555;
+    --status-warning: #f0ad4e;
+    --brand-primary-border: color-mix(in srgb, var(--brand-primary) 15%, transparent);
   }
 }

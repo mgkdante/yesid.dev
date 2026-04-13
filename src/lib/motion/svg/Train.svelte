@@ -14,20 +14,20 @@
 	<defs>
 		<!-- Nose glow: orange fading to transparent -->
 		<radialGradient id="train-ng" cx="50%" cy="50%" r="50%">
-			<stop offset="0%" stop-color="#E07800" stop-opacity="0.6" />
-			<stop offset="100%" stop-color="#E07800" stop-opacity="0" />
+			<stop offset="0%" stop-color="var(--brand-primary)" stop-opacity="0.6" />
+			<stop offset="100%" stop-color="var(--brand-primary)" stop-opacity="0" />
 		</radialGradient>
 
 		<!-- Wheel hub: orange center to darker orange edge -->
 		<radialGradient id="train-wg" cx="50%" cy="50%" r="50%">
-			<stop offset="0%" stop-color="#E07800" />
-			<stop offset="100%" stop-color="#C96A00" />
+			<stop offset="0%" stop-color="var(--brand-primary)" />
+			<stop offset="100%" stop-color="var(--brand-primary-hover)" />
 		</radialGradient>
 
 		<!-- Headlight glow: amber fading to transparent -->
 		<radialGradient id="train-lg" cx="50%" cy="50%" r="50%">
-			<stop offset="0%" stop-color="#FFB627" stop-opacity="0.5" />
-			<stop offset="100%" stop-color="#FFB627" stop-opacity="0" />
+			<stop offset="0%" stop-color="var(--brand-accent)" stop-opacity="0.5" />
+			<stop offset="100%" stop-color="var(--brand-accent)" stop-opacity="0" />
 		</radialGradient>
 	</defs>
 
@@ -56,9 +56,9 @@
 	<!-- Orange accent band spanning full train width — GSAP animates scaleX 0→1 on reveal -->
 	<g id="train-stripe">
 		<!-- Thin highlight above the main stripe -->
-		<rect x="22" y="53" width="458" height="3" fill="#FFB627" opacity="0.55" />
+		<rect x="22" y="53" width="458" height="3" fill="var(--brand-accent)" opacity="0.55" />
 		<!-- Primary orange stripe -->
-		<rect x="22" y="56" width="458" height="10" fill="#E07800" />
+		<rect x="22" y="56" width="458" height="10" fill="var(--brand-primary)" />
 	</g>
 
 	<!-- Windows: 3 body + 1 cab — each has outer border, inner glass, tiny reflection -->
@@ -83,7 +83,7 @@
 		<rect x="430" y="40" width="34" height="23" rx="2" fill="#1C1C1C" />
 		<rect x="432" y="42" width="8" height="5" rx="1" fill="#2A2A2A" />
 		<!-- Faint orange interior lighting tint -->
-		<rect x="430" y="40" width="34" height="23" rx="2" fill="#E07800" opacity="0.18" />
+		<rect x="430" y="40" width="34" height="23" rx="2" fill="var(--brand-primary)" opacity="0.18" />
 	</g>
 
 	<!-- Undercarriage skirting (not animated, not a named group) -->
@@ -118,10 +118,10 @@
 	<g id="train-lights">
 		<!-- Upper headlight glow + rect -->
 		<ellipse cx="488" cy="49" rx="14" ry="10" fill="url(#train-lg)" />
-		<rect x="479" y="46" width="8" height="7" rx="2" fill="#FFB627" />
+		<rect x="479" y="46" width="8" height="7" rx="2" fill="var(--brand-accent)" />
 
 		<!-- Lower headlight glow + rect -->
 		<ellipse cx="488" cy="73" rx="14" ry="10" fill="url(#train-lg)" />
-		<rect x="479" y="70" width="8" height="7" rx="2" fill="#E07800" />
+		<rect x="479" y="70" width="8" height="7" rx="2" fill="var(--brand-primary)" />
 	</g>
 </svg>

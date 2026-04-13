@@ -62,7 +62,7 @@
 <nav
 	aria-label="Service navigation"
 	class="station-tabs flex w-full overflow-x-auto border-b md:justify-center"
-	style="background: var(--bg-primary, #141414); border-color: var(--border, #1a1a1a);"
+	style="background: var(--bg-primary); border-color: var(--border);"
 >
 	{#each sorted as service, i (service.id)}
 		{@const isActive = service.id === activeId}
@@ -132,7 +132,7 @@
 		min-width: max-content;
 		cursor: pointer;
 		border-bottom: 3px solid transparent;
-		color: #999;
+		color: var(--text-secondary);
 		background: transparent;
 		border-top: none;
 		border-left: none;
@@ -141,19 +141,19 @@
 
 	/* Active tab: orange bottom border, full opacity, brighter text */
 	.station-tab.active {
-		border-bottom-color: #E07800;
-		color: #e5e5e5;
+		border-bottom-color: var(--brand-primary);
+		color: var(--text-light);
 	}
 
 	/* Hover: subtle brightness lift for inactive tabs */
 	.station-tab:not(.active):hover {
-		color: #ccc;
-		border-bottom-color: rgba(224, 120, 0, 0.3);
+		color: var(--text-light);
+		border-bottom-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
 	}
 
 	/* Brand color for station number when active */
 	.text-brand {
-		color: #E07800;
+		color: var(--brand-primary);
 	}
 
 	/* JetBrains Mono for station numbers — matches brand mono font */

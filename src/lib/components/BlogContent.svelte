@@ -8,7 +8,7 @@
 	import { onMount } from 'svelte';
 
 	let {
-		accentColor = '#E07800',
+		accentColor = 'var(--brand-primary)',
 		children
 	}: {
 		accentColor?: string;

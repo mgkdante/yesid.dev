@@ -32,7 +32,7 @@
 		languages = [],
 		activeTag = null,
 		activeLang = null,
-		accentColor = '#E07800',
+		accentColor = 'var(--brand-primary)',
 		cornerLink = null,
 		onTagSelect,
 		onLangSelect,
@@ -83,7 +83,7 @@
 				<input
 					type="date"
 					bind:value={dateFrom}
-					class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+					class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
 					style="--accent: {accentColor}; color-scheme: dark;"
 				/>
 			</label>
@@ -92,7 +92,7 @@
 				<input
 					type="date"
 					bind:value={dateTo}
-					class="mt-0.5 w-full rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+					class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-1.5 py-1 font-mono text-caption text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
 					style="--accent: {accentColor}; color-scheme: dark;"
 				/>
 			</label>
@@ -100,7 +100,7 @@
 	{/if}
 
 	<!-- Tags filter — delegated to FilterGroup -->
-	<div class="mt-5 border-t border-dashed border-[#333] pt-3">
+	<div class="mt-5 border-t border-dashed border-border-strong pt-3">
 		<FilterGroup
 			label={resolveLocale(labels.tags, 'en')}
 			items={tags.map((tag) => ({ key: tag, label: tag }))}
@@ -114,11 +114,11 @@
 
 	<!-- Corner link — inline, not a button group -->
 	{#if cornerLink}
-		<div class="mt-5 border-t border-dashed border-[#333] pt-3">
+		<div class="mt-5 border-t border-dashed border-border-strong pt-3">
 			<a
 				href={cornerLink.href}
 				class="flex items-center gap-1.5 rounded border px-2 py-1.5 text-xs font-semibold no-underline transition-colors"
-				style="border-color: {cornerLink.href.includes('personal') ? '#FFB627' : '#E07800'}; color: {cornerLink.href.includes('personal') ? '#FFB627' : '#E07800'};"
+				style="border-color: {cornerLink.href.includes('personal') ? 'var(--brand-accent)' : 'var(--brand-primary)'}; color: {cornerLink.href.includes('personal') ? 'var(--brand-accent)' : 'var(--brand-primary)'};"
 			>
 				{cornerLink.label}
 			</a>

@@ -40,7 +40,7 @@
 			<!-- Monospace label -->
 			<span
 				class="font-mono text-xs tracking-[3px] sm:text-sm"
-				style="color: rgba(224, 120, 0, 0.6);"
+				style="color: color-mix(in srgb, var(--brand-primary) 60%, transparent);"
 			>
 				{label}
 			</span>
@@ -81,11 +81,11 @@
 			class="font-mono text-xs sm:text-sm"
 			data-testid="terminal-line"
 		>
-			<span style="color: #E07800;">$</span>
-			<span style="color: #777;"> route </span>
-			<span style="color: #777;">--status</span>
-			<span style="color: #E07800;"> 404</span>
-			<span style="color: #555;"> // requested path not in service</span>
+			<span style="color: var(--brand-primary);">$</span>
+			<span style="color: var(--text-secondary);"> route </span>
+			<span style="color: var(--text-secondary);">--status</span>
+			<span style="color: var(--brand-primary);"> 404</span>
+			<span style="color: var(--text-muted);"> // requested path not in service</span>
 			{#if mounted && !$prefersReducedMotion}
 				<TerminalCursor />
 			{/if}
@@ -105,25 +105,25 @@
 
 
 	.suggestion-primary {
-		background: rgba(224, 120, 0, 0.08);
-		border: 1px solid rgba(224, 120, 0, 0.3);
+		background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+		border: 1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent);
 		color: var(--brand-primary);
 	}
 
 	.suggestion-primary:hover {
-		background: rgba(224, 120, 0, 0.15);
-		border-color: rgba(224, 120, 0, 0.6);
+		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+		border-color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
 	}
 
 	.suggestion-secondary {
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: color-mix(in srgb, var(--text-primary) 3%, transparent);
+		border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
 		color: var(--text-secondary);
 	}
 
 	/* All links turn orange on hover */
 	.suggestion-secondary:hover {
-		border-color: rgba(224, 120, 0, 0.4);
+		border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
 		color: var(--brand-primary);
 	}
 
@@ -134,7 +134,7 @@
 
 	.metro-dot-hollow {
 		background: transparent;
-		border: 1.5px solid rgba(255, 255, 255, 0.2);
+		border: 1.5px solid var(--border-subtle);
 		transition: all 200ms;
 	}
 </style>

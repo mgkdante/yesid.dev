@@ -196,7 +196,7 @@
 		<h1 class="font-heading text-2xl font-bold text-[var(--text-primary)] md:text-3xl">
 			{resolveLocale(content.heading, 'en')}
 		</h1>
-		<p class="mt-1 font-mono text-xs text-[#E07800]">
+		<p class="mt-1 font-mono text-xs text-brand-primary">
 			{resolveLocale(content.subtitle, 'en')}
 		</p>
 	</div>
@@ -242,7 +242,7 @@
 						{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
 					</span>
 					<button
-						class="font-mono text-caption text-[#E07800] underline transition-colors hover:text-[var(--text-primary)]"
+						class="font-mono text-caption text-brand-primary underline transition-colors hover:text-[var(--text-primary)]"
 						onclick={async () => {
 							await updateFilter('service', null);
 							await updateFilter('tag', null);
@@ -286,7 +286,7 @@
 								>
 									<line
 										x1="1" y1="0" x2="1" y2="100"
-										stroke="#E07800"
+										stroke="var(--brand-primary)"
 										stroke-width="2"
 									/>
 								</svg>
@@ -338,7 +338,7 @@
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
-		background: rgba(224, 120, 0, 0.5);
+		background: color-mix(in srgb, var(--brand-primary) 50%, transparent);
 		animation: station-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 	}
 

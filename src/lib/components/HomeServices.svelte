@@ -285,23 +285,23 @@
 								<div
 									data-testid="services-benefit"
 									class="text-body-lg font-medium leading-snug"
-									style="color: var(--text-primary, #F5F5F0);"
+									style="color: var(--text-primary);"
 								>{benefit}</div>
 							{/if}
 							<div
 								data-testid="services-title"
 								class="services-title font-extrabold leading-none tracking-tight"
-								style="color: var(--brand-accent, #FFB627);"
+								style="color: var(--brand-accent);"
 							>{title}</div>
 							{#if metricValue}
 								<div class="mt-2 flex items-baseline gap-2" data-testid="services-metric">
 									<span
 										class="font-mono text-2xl font-bold"
-										style="color: var(--brand-primary, #E07800);"
+										style="color: var(--brand-primary);"
 									>{metricValue}</span>
 									<span
 										class="text-small"
-										style="color: var(--text-secondary, #999999);"
+										style="color: var(--text-secondary);"
 									>{metricLabel}</span>
 								</div>
 							{/if}
@@ -320,7 +320,7 @@
 			<a
 				href="/services"
 				class="view-all-link border-b pb-0.5 text-body font-medium tracking-wide transition-colors duration-200"
-				style="color: var(--text-secondary, #999999); border-color: var(--border, #3A3A3A);"
+				style="color: var(--text-secondary); border-color: var(--border);"
 			>View all services &rarr;</a>
 		</div>
 	</div>
@@ -332,17 +332,17 @@
 		font-family: Inter, sans-serif;
 		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
-		color: var(--text-primary, #f0f0f0);
+		color: var(--text-primary);
 		letter-spacing: -2px;
 		margin-block-end: 6px;
 	}
 	.section-dot {
-		color: var(--brand-primary, #e07800);
+		color: var(--brand-primary);
 	}
 	.section-subheading {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 13px;
-		color: var(--text-muted, #555);
+		color: var(--text-muted);
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		margin-block-end: 36px;
@@ -375,17 +375,17 @@
 
 	/* Card — matches ProofReel card styling */
 	.services-card {
-		background: rgba(10, 10, 10, 0.8);
-		border: 1px solid rgba(224, 120, 0, 0.15);
+		background: color-mix(in srgb, var(--bg-primary) 80%, transparent);
+		border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);
 		padding: 24px;
 		text-decoration: none;
 		backdrop-filter: blur(6px);
 	}
 
 	.services-card:hover {
-		border-color: rgba(224, 120, 0, 0.6);
+		border-color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
 		transform: translateY(-2px);
-		box-shadow: 0 8px 32px rgba(224, 120, 0, 0.08);
+		box-shadow: 0 8px 32px color-mix(in srgb, var(--brand-primary) 8%, transparent);
 	}
 
 	/* Service title — responsive via clamp */
@@ -400,8 +400,8 @@
 		min-width: 80px;
 		aspect-ratio: 1;
 		align-self: center;
-		background: var(--bg-surface, #1e1e1e);
-		border: 1px solid var(--border, #3a3a3a);
+		background: var(--bg-surface);
+		border: 1px solid var(--border);
 	}
 
 	@media (min-width: 1024px) {
@@ -412,14 +412,14 @@
 	}
 
 	.services-card:hover .svg-panel {
-		background: var(--bg-elevated, #2a2a2a);
-		border-color: rgba(224, 120, 0, 0.3);
+		background: var(--bg-elevated);
+		border-color: color-mix(in srgb, var(--brand-primary) 30%, transparent);
 	}
 
 	/* View all link hover */
 	.view-all-link:hover {
-		color: var(--brand-primary, #e07800);
-		border-color: var(--brand-primary, #e07800);
+		color: var(--brand-primary);
+		border-color: var(--brand-primary);
 	}
 
 	.crosshair {
@@ -432,7 +432,7 @@
 		position: absolute;
 		width: 32px;
 		height: 1px;
-		background: rgba(224, 120, 0, 0.15);
+		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
 		top: 50%;
 	}
 	.crosshair::after {
@@ -440,15 +440,15 @@
 		position: absolute;
 		width: 1px;
 		height: 32px;
-		background: rgba(224, 120, 0, 0.15);
+		background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
 		left: 50%;
 	}
 
 	.ref-label {
 		position: absolute;
-		font-family: var(--font-mono, 'JetBrains Mono', monospace);
+		font-family: var(--font-mono);
 		font-size: 10px;
-		color: rgba(224, 120, 0, 0.2);
+		color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
 		letter-spacing: 1.5px;
 		z-index: 0;
 	}

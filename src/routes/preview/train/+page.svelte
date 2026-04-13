@@ -89,11 +89,11 @@
 	}
 </script>
 
-<div class="fixed inset-0 z-50 bg-[#141414]">
+<div class="fixed inset-0 z-50 bg-bg-primary">
 	<canvas bind:this={canvasEl} class="h-full w-full"></canvas>
 
 	<div class="absolute left-4 top-4 z-10 rounded-lg bg-black/70 p-4 backdrop-blur">
-		<h2 class="text-sm font-bold text-[#E07800]">Train Preview</h2>
+		<h2 class="text-sm font-bold text-brand-primary">Train Preview</h2>
 		<p class="text-xs text-neutral-400">Stripped & repainted with brand colors</p>
 		<p class="mt-2 text-xs text-neutral-500">Orbit: drag | Zoom: scroll | Pan: right-drag</p>
 	</div>

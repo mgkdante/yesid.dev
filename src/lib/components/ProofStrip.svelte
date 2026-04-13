@@ -39,8 +39,8 @@
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		border-top: 1px solid var(--border, #1a1a1a);
-		background: var(--bg-primary, #141414);
+		border-top: 1px solid var(--border);
+		background: var(--bg-primary);
 		padding: 0.875rem 1.5rem;
 		min-height: 48px;
 	}
@@ -80,13 +80,13 @@
 		width: 5px;
 		height: 5px;
 		border-radius: 50%;
-		background: #E07800;
+		background: var(--brand-primary);
 	}
 
 	.proof-name {
 		font-size: 0.7rem;
 		font-weight: 600;
-		color: var(--text-primary, #f5f5f0);
+		color: var(--text-primary);
 		white-space: nowrap;
 	}
 
@@ -95,6 +95,6 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.8rem;
 		font-weight: 700;
-		color: #E07800;
+		color: var(--brand-primary);
 	}
 </style>

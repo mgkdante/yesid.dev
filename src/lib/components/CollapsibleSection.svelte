@@ -12,7 +12,7 @@
 		title,
 		open = $bindable(true),
 		index = null,
-		accentColor = '#E07800',
+		accentColor = 'var(--brand-primary)',
 		collapsible = true,
 		icon,
 		children

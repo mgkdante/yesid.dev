@@ -77,7 +77,7 @@
 	/* Terminal-themed scrollbar */
 	.terminal-scroll {
 		scrollbar-width: thin;
-		scrollbar-color: rgba(224, 120, 0, 0.3) transparent;
+		scrollbar-color: color-mix(in srgb, var(--brand-primary) 30%, transparent) transparent;
 	}
 	.terminal-scroll::-webkit-scrollbar {
 		width: 6px;
@@ -86,10 +86,10 @@
 		background: transparent;
 	}
 	.terminal-scroll::-webkit-scrollbar-thumb {
-		background: rgba(224, 120, 0, 0.3);
+		background: color-mix(in srgb, var(--brand-primary) 30%, transparent);
 		border-radius: 3px;
 	}
 	.terminal-scroll::-webkit-scrollbar-thumb:hover {
-		background: rgba(224, 120, 0, 0.5);
+		background: color-mix(in srgb, var(--brand-primary) 50%, transparent);
 	}
 </style>

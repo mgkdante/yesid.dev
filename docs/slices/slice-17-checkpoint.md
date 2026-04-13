@@ -1,13 +1,13 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-12 | Implementation Session (Wire Primitives — COMPLETE)
-**Branch:** `feature/slice-17a-2b-wire-primitives`
-**Next branch:** `feature/slice-17a-3-color-lockdown` (after PR merge)
+**Last updated:** 2026-04-12 | Implementation Session (Color Lockdown — COMPLETE)
+**Branch:** `feature/slice-17a-3-color-lockdown`
 
 ## Current Position
-- **Sub-slice:** 17a-2b (Wire Primitives) — COMPLETE
-- **Task:** W17 of W17 (Phase B) — ALL DONE
-- **Status:** Ready for PR review + closing session
+- **Sub-slice:** 17a-3a (Color Lockdown) — COMPLETE (22 commits, C1–C20)
+- **Task:** ALL 20 TASKS DONE
+- **Status:** PR pending. All hardcoded CSS/Tailwind/SVG colors tokenized. Light theme smoke-tested.
+- **Next sub-slice:** 17a-3b (Token Wiring + Normalization) — READY TO IMPLEMENT
 
 ## Execution Sequence
 
@@ -15,9 +15,12 @@
 Phase 1 — Foundation
   17a-1: Token Foundation .............. COMPLETE (PR #2 merged)
   17a-2a: Build Primitives ............. COMPLETE (PR #3 merged)
-  17a-2b: Wire Primitives .............. COMPLETE (W1-W17 done, ready for PR)
-  17a-3: Color & Token Lockdown ........ 2-3 sessions (expanded scope)
-  17a-4: Dead Code + Trivial Dedup ..... 1 session
+  17a-2b: Wire Primitives .............. COMPLETE (PR #4 merged)
+  17a-3a: Color Lockdown ............... COMPLETE (20 tasks, PR pending)
+  17a-3b: Token Wiring + Normalization . NEXT (~1 session, 8 tasks)
+  17a-5: Spacing & Layout Constitution . PLANNED (needs planning session)
+  17a-6: Component Library Eval ........ PLANNED (research session)
+  17a-4: Dead Code + Trivial Dedup ..... 1 session (after 17a-5/17a-6)
   17b:   Service Layer ................. 2 sessions
     → 15: SEO + Metadata
 Phase 2 — Standardization
@@ -33,6 +36,7 @@ Phase 2 — Standardization
 |-----------|--------|-----|--------|
 | 17a-1 Token Foundation | `feature/slice-17a-1-token-foundation` | #2 | yes |
 | 17a-2a Build Primitives | `feature/slice-17a-2a-build-primitives` | #3 | yes |
+| 17a-2b Wire Primitives | `feature/slice-17a-2b-wire-primitives` | #4 | yes |
 
 ## Wire Tasks Progress (17a-2b)
 
@@ -108,7 +112,8 @@ Phase 2 — Standardization
 - **TerminalCursor:** standardized to 8x14px block, uses global blink keyframe
 
 ## Open Decisions
-(none)
+- **Blueprint SVGs** (static/svg/blueprint/) — all 12 have brand orange but loaded via `<img>` tags (CSS vars don't work). Need to inline them first, then tokenize. Saved for 17d (Component API) with a reusable SVG loader pattern.
+- **Static SVGs** (static/svg/ except construction props) — same `<img>` limitation. Tokenize in 17d alongside blueprint inlining.
 
 ## Blockers
 (none)
@@ -123,11 +128,43 @@ Phase 2 — Standardization
 - ~220 hardcoded hex colors across 40+ files (17a-3)
 - 22 unused tokens defined but never referenced (17a-3)
 - 4 dead components: AboutBento, BlogCard, ProjectCard, SectionHeader (cleanup)
+- 6 dead Three.js/Threlte files + 2 dev preview routes (only used in /preview, not live site) — delete in 17a-4
 - 13 missed primitive wiring opportunities (17d)
 - Code duplication: BlogSvgIcon/WorkSvgIcon, isTouchDevice() x3, station pulse CSS x2 (17d)
 - Large files: Manifesto (1006), tech-stack/+page (909), HomeCloser (760), HeroBanner (734) (17d)
 
+## Planning Artifacts (17a-3)
+- Design spec: `docs/specs/slice-17a-3-color-token-lockdown-design.md`
+- Slice spec (colors): `docs/slices/slice-17a-3a-color-lockdown.md`
+- Slice spec (tokens): `docs/slices/slice-17a-3b-token-wiring.md`
+
+## 17a-3a Session Stats
+- 22 commits on branch
+- ~40 files modified across C1–C20
+- ~200 hardcoded hex/rgba values replaced with var()/color-mix()
+- 3 new tokens added (--text-light, --status-warning, --brand-primary-border)
+- @theme split into @theme (static) + @theme inline (dynamic)
+- Light theme smoke-tested — renders correctly
+- Zero hardcoded brand colors in .svelte CSS/Tailwind (only comments + JS runtime exceptions)
+
+### Intentionally excluded from 17a-3a (documented):
+- Three.js Color constructors — dead code, delete in 17a-4
+- Canvas 2D API (ManifestoCanvas, AboutTrain) — JS runtime, can't use CSS vars
+- MetroNetwork external SVG classification — needs inline rewrite (17d)
+- Construction props (ConstructionScene) — physical objects, colors don't change with brand
+- Static SVGs in static/svg/ — loaded via `<img>`, need inlining first (17d)
+- Blueprint SVGs — same `<img>` limitation (17d)
+- AboutBento — dead component, delete in 17a-4
+
+## Key Findings (Planning Session)
+- Actual hardcoded colors: **371** (vs. ~220 estimate from closing session)
+- Tailwind v4 `@theme inline` resolves dual source-of-truth between tokens.css and app.css
+- Brand primitives (brand/) already clean — 63 var() refs, zero hardcoded hex
+- 3 new tokens needed: --text-light, --status-warning, --brand-primary-border
+
 ## Next Steps
-1. Create PR for 17a-2b (closing artifacts complete)
-2. 17a-3: Color & Token Lockdown (expanded — colors + z-index + shadows + transitions + opacity + utilities + inconsistencies)
-3. 17a-4: Dead Code + Trivial Dedup (delete 4 dead components, extract isTouchDevice, unify station pulse CSS, extract display heading utility, quick primitive wiring wins)
+1. **17a-3a: Color Lockdown** — COMPLETE (20 tasks, 20 commits, branch: feature/slice-17a-3-color-lockdown)
+2. **17a-3b: Token Wiring** — Implementation session (1 session, 8 tasks, branch: feature/slice-17a-3b-token-wiring)
+3. 17a-5: Spacing & Layout Constitution (proposed — needs planning session)
+4. **17a-6: Component Library Evaluation** (proposed) — Research Bits UI, Flowbite Svelte as potential foundation layers. Unbiased evaluation.
+5. 17a-4: Dead Code + Trivial Dedup — moved after 17a-5/17a-6 so component library eval can inform what gets deleted vs replaced. Includes 4 dead components + 6 dead Three.js/Threlte files + 2 dev preview routes.

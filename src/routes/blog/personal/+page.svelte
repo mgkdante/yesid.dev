@@ -16,7 +16,7 @@
 	svgContents={data.svgContents}
 	heading="Personal Corner"
 	subtitle="Trains, space, and things I think about"
-	accentColor="#FFB627"
+	accentColor="var(--brand-accent)"
 	cornerLink={{
 		href: '/blog',
 		label: '\u2190 Back to Professional',

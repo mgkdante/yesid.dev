@@ -93,8 +93,8 @@
 					<a
 						href={link.href}
 						class="nav-pill-link transition-all {isActive(link.href)
-							? 'text-[#E07800] nav-link-active'
-							: 'text-[#aaa] hover:text-[#E07800] hover:nav-link-glow'}"
+							? 'text-brand-primary nav-link-active'
+							: 'text-text-secondary hover:text-brand-primary hover:nav-link-glow'}"
 						aria-current={isActive(link.href) ? 'page' : undefined}
 					>
 						{link.label.en}
@@ -124,26 +124,26 @@
 
 <style>
 	.nav-pill {
-		background: rgba(20, 20, 20, 0.92);
+		background: color-mix(in srgb, var(--bg-primary) 92%, transparent);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 1px solid rgba(224, 120, 0, 0.1);
+		border: 1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
 		border-radius: 9999px;
-		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px color-mix(in srgb, var(--text-primary) 3%, transparent);
 		padding: 12px 28px;
 		transition: padding 0.25s ease, box-shadow 0.25s ease;
 	}
 	.nav-pill-compact {
 		padding: 12px 20px;
 		box-shadow: none;
-		border-color: rgba(224, 120, 0, 0.15);
+		border-color: color-mix(in srgb, var(--brand-primary) 15%, transparent);
 	}
 
 	.nav-divider {
 		display: inline-block;
 		width: 1px;
 		height: 18px;
-		background: rgba(255, 255, 255, 0.08);
+		background: color-mix(in srgb, var(--text-primary) 8%, transparent);
 		margin-inline: 20px;
 		flex-shrink: 0;
 	}
@@ -174,10 +174,10 @@
 	}
 
 	:global(.nav-link-glow) {
-		text-shadow: 0 0 8px rgba(224, 120, 0, 0.6), 0 0 20px rgba(224, 120, 0, 0.3);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 60%, transparent), 0 0 20px color-mix(in srgb, var(--brand-primary) 30%, transparent);
 	}
 	:global(.nav-link-active) {
-		text-shadow: 0 0 8px rgba(224, 120, 0, 0.5), 0 0 16px rgba(224, 120, 0, 0.2);
+		text-shadow: 0 0 8px color-mix(in srgb, var(--brand-primary) 50%, transparent), 0 0 16px color-mix(in srgb, var(--brand-primary) 20%, transparent);
 	}
 
 	/* Hamburger → ✕ morph */
@@ -195,7 +195,7 @@
 		display: block;
 		height: 1.5px;
 		border-radius: 999px;
-		background: #aaa;
+		background: var(--text-secondary);
 		transition: transform 0.25s ease, width 0.25s ease, background 0.15s;
 		transform-origin: center;
 	}
@@ -206,7 +206,7 @@
 		width: 11px;
 	}
 	.menu-toggle:hover .menu-toggle-line {
-		background: #fff;
+		background: var(--text-primary);
 	}
 
 	/* Open state: morph to ✕ */

@@ -99,7 +99,7 @@
 				<div
 					data-proof-card
 					class="proof-card group flex flex-col overflow-hidden rounded-xl transition-all duration-300"
-					style="background: rgba(10,10,10,0.8); border: 1px solid rgba(224,120,0,0.15);"
+					style="background: color-mix(in srgb, var(--bg-primary) 80%, transparent); border: 1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent);"
 				>
 					<!-- Image — B&W default, color on hover (desktop) / tap (mobile) -->
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -131,32 +131,32 @@
 									<span
 										data-testid="proof-metric-before"
 										class="mr-1.5 text-heading font-normal line-through md:text-title"
-										style="color: #666;"
+										style="color: var(--text-muted);"
 									>{metric.before}</span>
 								{/if}
 								<span
 									data-testid="proof-metric-value"
 									class="font-heading text-4xl font-black leading-none tracking-tight md:text-5xl"
-									style="color: #E07800; letter-spacing: -0.03em;"
+									style="color: var(--brand-primary); letter-spacing: -0.03em;"
 								>{metric.value}</span>
 							</div>
 							<div
 								data-testid="proof-metric-label"
 								class="mb-5 text-small md:mb-6"
-								style="color: #999;"
+								style="color: var(--text-secondary);"
 							>{metric.label}</div>
 						{/if}
 
 						<div
 							data-testid="proof-card-title"
 							class="mb-4 font-heading text-body-lg font-bold leading-snug md:mb-5 md:text-heading"
-							style="color: #F5F5F0;"
+							style="color: var(--text-primary);"
 						>{title}</div>
 
 						<div class="flex flex-wrap gap-1.5">
 							{#each project.stack as tech}
 								<span data-testid="proof-tag">
-									<Tag text={tech} active accentColor="#E07800" />
+									<Tag text={tech} active accentColor="var(--brand-primary)" />
 								</span>
 							{/each}
 						</div>
@@ -172,7 +172,7 @@
 			data-testid="proof-view-all"
 			href={proofReelContent.viewAllHref}
 			class="font-mono text-caption tracking-wider md:text-mono"
-			style="color: #E07800; border-bottom: 1px solid rgba(224,120,0,0.3);"
+			style="color: var(--brand-primary); border-bottom: 1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent);"
 		>{viewAllLabel}</a>
 	</div>
 </section>
@@ -183,17 +183,17 @@
 		font-family: Inter, sans-serif;
 		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-weight: 900;
-		color: var(--text-primary, #f0f0f0);
+		color: var(--text-primary);
 		letter-spacing: -2px;
 		margin-block-end: 6px;
 	}
 	.section-dot {
-		color: var(--brand-primary, #e07800);
+		color: var(--brand-primary);
 	}
 	.section-subheading {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 13px;
-		color: var(--text-muted, #555);
+		color: var(--text-muted);
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		margin-block-end: 36px;
@@ -201,8 +201,8 @@
 
 	/* Desktop hover: card border + image turns color */
 	.proof-card:hover {
-		border-color: rgba(224, 120, 0, 0.6) !important;
-		box-shadow: 0 8px 32px rgba(224, 120, 0, 0.08);
+		border-color: color-mix(in srgb, var(--brand-primary) 60%, transparent) !important;
+		box-shadow: 0 8px 32px color-mix(in srgb, var(--brand-primary) 8%, transparent);
 	}
 
 	.proof-card:hover .proof-img,
@@ -216,9 +216,9 @@
 	}
 
 	.proof-card:hover [data-testid='proof-tag'] {
-		color: rgba(224, 120, 0, 0.85) !important;
-		border-color: rgba(224, 120, 0, 0.4) !important;
-		background: rgba(224, 120, 0, 0.08) !important;
+		color: color-mix(in srgb, var(--brand-primary) 85%, transparent) !important;
+		border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent) !important;
+		background: color-mix(in srgb, var(--brand-primary) 8%, transparent) !important;
 	}
 
 	/* Mobile image tap cursor */

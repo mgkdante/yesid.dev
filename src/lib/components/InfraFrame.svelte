@@ -81,8 +81,8 @@
 	}
 
 	.infra-frame:hover {
-		border-color: rgba(224, 120, 0, 0.25);
-		box-shadow: 0 0 24px rgba(224, 120, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.3);
+		border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent);
+		box-shadow: 0 0 24px color-mix(in srgb, var(--brand-primary) 6%, transparent), 0 1px 3px rgba(0, 0, 0, 0.3);
 	}
 
 	/* --- Title bar --- */
@@ -92,7 +92,7 @@
 		align-items: center;
 		gap: 10px;
 		padding: 8px 16px;
-		background: #1a1a1a;
+		background: var(--bg-card);
 		border-bottom: 1px solid var(--border);
 	}
 
@@ -139,8 +139,8 @@
 		position: absolute;
 		inset: 0;
 		background-image:
-			linear-gradient(rgba(224, 120, 0, 0.03) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(224, 120, 0, 0.03) 1px, transparent 1px);
+			linear-gradient(color-mix(in srgb, var(--brand-primary) 3%, transparent) 1px, transparent 1px),
+			linear-gradient(90deg, color-mix(in srgb, var(--brand-primary) 3%, transparent) 1px, transparent 1px);
 		background-size: 40px 40px;
 		pointer-events: none;
 		z-index: 0;
@@ -158,7 +158,7 @@
 		align-items: center;
 		padding: 8px 16px;
 		border-top: 1px solid var(--border);
-		background: #1a1a1a;
+		background: var(--bg-card);
 		font-family: var(--font-mono);
 		font-size: 10px;
 		color: var(--text-muted);

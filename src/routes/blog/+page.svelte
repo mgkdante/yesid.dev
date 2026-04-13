@@ -16,7 +16,7 @@
 	svgContents={data.svgContents}
 	heading="Dispatches"
 	subtitle="Data, SQL, and infrastructure — from the field"
-	accentColor="#E07800"
+	accentColor="var(--brand-primary)"
 	cornerLink={{
 		href: '/blog/personal',
 		label: 'Personal Corner',
