@@ -12,8 +12,8 @@
 	<defs>
 		<!-- Headlight glow at the front (bottom) of the lead wagon -->
 		<radialGradient id="train-top-hl" cx="50%" cy="100%" r="60%">
-			<stop offset="0%" stop-color="#FFB627" stop-opacity="0.5" />
-			<stop offset="100%" stop-color="#FFB627" stop-opacity="0" />
+			<stop offset="0%" stop-color="var(--brand-accent)" stop-opacity="0.5" />
+			<stop offset="100%" stop-color="var(--brand-accent)" stop-opacity="0" />
 		</radialGradient>
 	</defs>
 
@@ -24,7 +24,7 @@
 	<rect x="3" y="2" width="2" height="46" rx="1" fill="#D8D6D0" />
 	<rect x="19" y="2" width="2" height="46" rx="1" fill="#D8D6D0" />
 	<!-- Orange center stripe -->
-	<rect x="10.5" y="4" width="3" height="42" rx="1.5" fill="#E07800" />
+	<rect x="10.5" y="4" width="3" height="42" rx="1.5" fill="var(--brand-primary)" />
 	<!-- AC units -->
 	<rect x="6" y="10" width="4" height="5" rx="1" fill="#C8C6C0" />
 	<rect x="14" y="10" width="4" height="5" rx="1" fill="#C8C6C0" />
@@ -46,15 +46,15 @@
 	<rect x="3" y="54" width="2" height="48" rx="1" fill="#D8D6D0" />
 	<rect x="19" y="54" width="2" height="48" rx="1" fill="#D8D6D0" />
 	<!-- Orange center stripe -->
-	<rect x="10.5" y="56" width="3" height="44" rx="1.5" fill="#E07800" />
+	<rect x="10.5" y="56" width="3" height="44" rx="1.5" fill="var(--brand-primary)" />
 	<!-- AC units -->
 	<rect x="6" y="62" width="4" height="5" rx="1" fill="#C8C6C0" />
 	<rect x="14" y="62" width="4" height="5" rx="1" fill="#C8C6C0" />
 	<rect x="6" y="84" width="4" height="5" rx="1" fill="#C8C6C0" />
 	<rect x="14" y="84" width="4" height="5" rx="1" fill="#C8C6C0" />
 	<!-- Front windshield arc -->
-	<path d="M6,98 Q12,106 18,98" fill="none" stroke="#E07800" stroke-width="1.2" stroke-linecap="round" />
+	<path d="M6,98 Q12,106 18,98" fill="none" stroke="var(--brand-primary)" stroke-width="1.2" stroke-linecap="round" />
 	<!-- Front headlights -->
-	<circle cx="7" cy="100" r="1.2" fill="#FFB627" />
-	<circle cx="17" cy="100" r="1.2" fill="#FFB627" />
+	<circle cx="7" cy="100" r="1.2" fill="var(--brand-accent)" />
+	<circle cx="17" cy="100" r="1.2" fill="var(--brand-accent)" />
 </svg>
