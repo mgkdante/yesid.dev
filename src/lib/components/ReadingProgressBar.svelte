@@ -10,7 +10,7 @@
 
 	let {
 		targetSelector = '[data-testid="blog-content"]',
-		accentColor = '#E07800'
+		accentColor = 'var(--brand-primary)'
 	}: {
 		targetSelector?: string;
 		accentColor?: string;
