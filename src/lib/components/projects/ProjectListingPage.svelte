@@ -18,8 +18,10 @@
 	import ProjectCard from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { Badge } from '$lib/components/ui/badge';
-	import { MetroStation, SectionHeading } from '$lib/components/brand';
+	import { MetroStation } from '$lib/components/brand';
 	import ProjectFilterMobile from './ProjectFilterMobile.svelte';
+	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
+	import { Separator } from '$lib/components/ui/separator';
 
 
 	let {
@@ -192,12 +194,19 @@
 </script>
 
 <div data-testid="project-listing" class="w-full pb-16">
+	<!-- Blueprint header: full-bleed, outside container -->
+	<div class="projects-blueprint-header" data-batch="project-item">
+		<ProjectsBlueprint />
+		<div class="projects-header-text">
+			<div class="projects-mobile-heading">Projects<span class="text-[var(--primary)]">.</span></div>
+			<div class="projects-header-subtitle">{resolveLocale(content.subtitle, 'en')}</div>
+		</div>
+	</div>
+
+	<Separator variant="hazard" />
+
 	<!-- Content container — centered for readability, gutters via spacing token -->
 	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
-	<!-- Header -->
-	<div class="mb-8" data-batch="project-item">
-		<SectionHeading heading={resolveLocale(content.heading, 'en')} subheading={resolveLocale(content.subtitle, 'en')} level={1} />
-	</div>
 
 	<!-- Mobile filter (hidden on md+) -->
 	<ProjectFilterMobile
@@ -277,6 +286,60 @@
 </div>
 
 <style>
+	/* --- Projects header: blueprint visualization --- */
+	.projects-blueprint-header {
+		position: relative;
+		height: calc(100px + 5rem);
+		overflow: hidden;
+		margin-top: -5rem;
+		padding-top: 5rem;
+	}
+
+	/* Desktop: taller header */
+	@media (min-width: 1024px) {
+		.projects-blueprint-header {
+			height: calc(160px + 5rem);
+		}
+	}
+
+	.projects-header-text {
+		position: absolute;
+		z-index: 20;
+		bottom: 1rem;
+		left: var(--space-page-x);
+	}
+
+	.projects-mobile-heading {
+		font-family: var(--font-heading);
+		font-size: clamp(2rem, 5vw, 3rem);
+		font-weight: 900;
+		color: var(--foreground);
+		letter-spacing: -1px;
+		line-height: 1;
+	}
+
+	/* Hide "Projects." heading on desktop (EdgeRail carries it) */
+	@media (min-width: 1024px) {
+		.projects-mobile-heading { display: none; }
+	}
+
+	.projects-header-subtitle {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--foreground);
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		margin-top: 0.35rem;
+	}
+
+	/* Desktop: large to differentiate from blueprint labels */
+	@media (min-width: 1024px) {
+		.projects-header-subtitle {
+			font-size: 1.1rem;
+			letter-spacing: 5px;
+		}
+	}
+
 	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
 	:global([data-batch="project-item"]) {
 		opacity: 0;
@@ -288,5 +351,4 @@
 			opacity: 1;
 		}
 	}
-
 </style>
