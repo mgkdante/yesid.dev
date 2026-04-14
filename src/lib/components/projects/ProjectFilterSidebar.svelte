@@ -21,7 +21,8 @@
 		activeStack = null,
 		onServiceSelect,
 		onTagSelect,
-		onStackSelect
+		onStackSelect,
+		searchQuery = $bindable('')
 	}: {
 		serviceIds: readonly string[];
 		serviceMap: Map<string, string>;
@@ -33,6 +34,7 @@
 		onServiceSelect: (serviceId: string | null) => void;
 		onTagSelect: (tag: string | null) => void;
 		onStackSelect?: (stack: string | null) => void;
+		searchQuery?: string;
 	} = $props();
 
 	const labels = {
@@ -42,9 +44,26 @@
 	};
 </script>
 
-<aside class="w-56 shrink-0 max-h-[calc(100dvh-6rem)] overflow-y-auto" data-testid="project-filter-sidebar">
+<aside data-testid="project-filter-sidebar">
+	<!-- Search -->
+	<div class="pt-3 mb-6 pb-5 divider-dashed">
+		<div class="relative">
+			<input
+				type="text"
+				placeholder="Search projects..."
+				bind:value={searchQuery}
+				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
+				data-testid="project-search-sidebar"
+			/>
+			<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+				<circle cx="7" cy="7" r="5"/>
+				<line x1="11" y1="11" x2="14" y2="14"/>
+			</svg>
+		</div>
+	</div>
+
 	<!-- Services section — delegated to FilterGroup with deselect enabled -->
-	<div class="mb-5">
+	<div class="mt-5 divider-dashed pt-3">
 		<FilterGroup
 			label={resolveLocale(labels.services, 'en')}
 			items={serviceIds.map((id) => ({ key: id, label: serviceMap.get(id) ?? id }))}
@@ -58,7 +77,7 @@
 
 	<!-- Tech Stack section -->
 	{#if stack.length > 0 && onStackSelect}
-		<div class="divider-dashed pt-3 mb-5">
+		<div class="mt-5 divider-dashed pt-3">
 			<FilterGroup
 				label={resolveLocale(labels.stack, 'en')}
 				items={stack.map((s) => ({ key: s, label: s }))}
@@ -73,7 +92,7 @@
 	{/if}
 
 	<!-- Tags section — delegated to FilterGroup with deselect enabled -->
-	<div class="divider-dashed pt-3">
+	<div class="mt-5 divider-dashed pt-3">
 		<FilterGroup
 			label={resolveLocale(labels.tags, 'en')}
 			items={tags.map((tag) => ({ key: tag, label: tag }))}

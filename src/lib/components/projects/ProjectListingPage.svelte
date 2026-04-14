@@ -53,8 +53,9 @@
 	let activeService = $derived($page.url.searchParams.get('service'));
 	let activeTag = $derived($page.url.searchParams.get('tag'));
 	let activeStack = $derived($page.url.searchParams.get('stack'));
+	let searchQuery = $state('');
 
-	// Apply filters: service + tag + stack use AND logic
+	// Apply filters: service + tag + stack + search use AND logic
 	let filteredProjects = $derived.by(() => {
 		let result = [...projects];
 
@@ -68,6 +69,18 @@
 
 		if (activeStack) {
 			result = result.filter((p) => p.stack.includes(activeStack!));
+		}
+
+		// Search filter (title, oneLiner, tags, stack)
+		if (searchQuery.trim()) {
+			const q = searchQuery.trim().toLowerCase();
+			result = result.filter((p) => {
+				const title = resolveLocale(p.title, 'en').toLowerCase();
+				const oneLiner = resolveLocale(p.oneLiner, 'en').toLowerCase();
+				const tags = p.tags.join(' ').toLowerCase();
+				const stack = p.stack.join(' ').toLowerCase();
+				return title.includes(q) || oneLiner.includes(q) || tags.includes(q) || stack.includes(q);
+			});
 		}
 
 		return result;
@@ -143,7 +156,14 @@
 		new Map(services.map((s) => [s.id, resolveLocale(s.title, 'en')]))
 	);
 
-	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack);
+	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack || searchQuery.trim() !== '');
+
+	function clearFilters() {
+		searchQuery = '';
+		updateFilter('service', null);
+		updateFilter('tag', null);
+		updateFilter('stack', null);
+	}
 
 	// WHY: after a filter change, Svelte re-renders work items which start at
 	// opacity:0 from the batch CSS. The batch onEnter (once:true) already fired
@@ -221,12 +241,30 @@
 					onServiceSelect={handleServiceSelect}
 					onTagSelect={handleTagSelect}
 					onStackSelect={handleStackSelect}
+					bind:searchQuery
 				/>
 			</div>
 		{/snippet}
 
 		<!-- Listing content with padding -->
 		<div class="px-4 py-6 md:px-6 md:py-8">
+
+		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
+		<div class="mb-4 lg:hidden">
+			<div class="relative">
+				<input
+					type="text"
+					placeholder="Search projects..."
+					bind:value={searchQuery}
+					class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
+					data-testid="project-search-mobile"
+				/>
+				<svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+					<circle cx="7" cy="7" r="5"/>
+					<line x1="11" y1="11" x2="14" y2="14"/>
+				</svg>
+			</div>
+		</div>
 
 		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
 		<ProjectFilterMobile
@@ -250,11 +288,7 @@
 				</span>
 				<button
 					class="font-mono text-caption text-primary underline transition-colors hover:text-[var(--foreground)]"
-					onclick={async () => {
-						await updateFilter('service', null);
-						await updateFilter('tag', null);
-						await updateFilter('stack', null);
-					}}
+					onclick={clearFilters}
 				>
 					{resolveLocale(content.clearFilters, 'en')}
 				</button>
@@ -267,13 +301,10 @@
 				{resolveLocale(content.emptyState, 'en')}
 			</p>
 		{:else}
-			<div class="flex flex-col gap-4">
+			<div class="project-grid">
 				{#each filteredProjects as project, i (project.slug)}
-					<div class="flex gap-4" data-batch="project-item">
-						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
-						<div class="min-w-0 flex-1">
-							<ProjectCard {project} {services} {serviceSvgContents} index={i} />
-						</div>
+					<div data-batch="project-item">
+						<ProjectCard {project} {services} {serviceSvgContents} index={i} />
 					</div>
 				{/each}
 			</div>
@@ -335,6 +366,24 @@
 			font-size: 1.1rem;
 			letter-spacing: 5px;
 		}
+	}
+
+	/* 2-column grid on desktop, single column on mobile */
+	.project-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.project-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	input:focus {
+		border-color: var(--accent);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 15%, transparent);
 	}
 
 	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
