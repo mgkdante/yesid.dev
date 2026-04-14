@@ -1,14 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-14 | 17d-4 Session 2 — About page DONE
+**Last updated:** 2026-04-14 | 17d-4 Session 3 — Blog listing DONE
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
 - **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — IN PROGRESS
-- **Status:** Pre-pass (P1–P9) complete. Session 1 (Home) complete. Session 2 (About) complete. Next: Session 3 (Blog).
-- **Build:** 0 errors, 15 warnings, 772/772 tests pass.
-- **Next action:** Session 3 — Blog page (SectionWrapper + ListingShell wiring + enrichment).
+- **Status:** Sessions 0-3 complete. Next: Session 3b (Blog detail) or Session 4 (Projects — same archetype as Blog).
+- **Build:** 0 errors, 15 warnings, 765/765 tests pass.
+- **Next action:** Blog detail page OR Projects (same constitutional pattern as Blog).
 
 ### 17d-4 Pre-pass (P1–P9) — COMPLETE
 - P1: SectionHeading wired into BlogListingPage, ProjectListingPage, ContactPage (added `level` prop)
@@ -38,6 +38,23 @@
 - No edge content — layout="bleed" with no side slots (D125)
 - Bento cards unchanged — correct per D30/D31, card unification deferred to post-S8 pass
 
+### Session 3 (Blog listing) — COMPLETE
+- CONSTITUTION.md: added 6-layer scope model (EdgeRail=page-scoped, SectionWrapper sides=section-scoped, all content-agnostic)
+- ListingShell deleted — SectionWrapper's grid columns replace its sidebar layout role
+- EdgeRail refactored: position:fixed → position:sticky in parent grid, title variant with Pretext text measurement, "Blog." with orange dot
+- Blog layout: CSS grid (EdgeRail column + vertical hazard rail + content column), extends behind nav
+- Blog listing: 2 SectionWrappers — header (title + SVG icon) + listing (filters in sideLeft, posts in content)
+- Mobile consolidation: "Blog. Dispatches" inline prefix when EdgeRail hidden (Option B)
+- BlogRow: uniform padding (no featured distinction), bigger text (title text-lg, excerpt text-base)
+- Filter sidebar: search moved from header to sidebar, bigger text, full-width buttons, smooth CSS grid collapse, all sections have dividers, Tags collapsed by default
+- ChevronToggle: fixed reversed rotation for down direction
+- MetroStation: accent-aware via var(--accent, var(--primary))
+- SectionHeading: added dot prop (default true, opt-out)
+- Separator: hazard uses --primary (not --accent), vertical orientation support
+- Pretext installed for text metric calculation
+- Blog + Projects share identical structure (same archetype) — D133
+- Services + Stack pages get orange accent — D134
+
 ### Decisions (17d-4)
 - D101: Added `level` prop to SectionHeading (h1-h6, default h2)
 - D102: ServiceCard heading+dot not wired to SectionHeading (styling too different)
@@ -65,6 +82,18 @@
 - D124: .about-page min-height moved to SectionWrapper inline style
 - D125: No edge content on About — bento dashboard self-contained, no side slots
 - D126: Card unification (Task 31) deferred to post-S8 pass — all 18 instances to ui/card, zero unused ui/ components
+- D127: Blog routes get SectionWrapper layout="bleed" for header, "centered" for listing
+- D128: Blog listing gets rotated "Blog." title in EdgeRail (not in SectionWrapper sides)
+- D129: ListingShell deleted — SectionWrapper's scope-based grid replaces it
+- D130: SectionHeading dot prop added (default true, opt-out)
+- D131: "Blog." on left EdgeRail with orange dot, title variant
+- D132: Blog detail gets header SectionWrapper + content SectionWrapper (not just bleed)
+- D133: Blog + Projects = same archetype, identical constitutional structure
+- D134: Services + Stack pages get orange accent (--accent: var(--primary))
+- D135: Constitution 6-layer scope model — EdgeRail=page-scoped, SectionWrapper=section-scoped, all layers content-agnostic
+- D136: Hazard Separator uses --primary (not --accent) for brand consistency
+- D137: Mobile blog heading "Blog. Dispatches" inline prefix (Option B consolidation)
+- D138: Filter sidebar breakpoint aligned to 1024px (constitutional standard)
 - **Decisions (17d-3 Session 2):**
   - D93: CloserGraffiti uses onReady callback for parent timeline integration — child owns DrawSVG lifecycle, parent coordinates timing
   - D94: CloserProps uses display:contents wrapper to preserve absolute positioning
