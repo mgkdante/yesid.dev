@@ -10,11 +10,11 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { tick } from 'svelte';
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, Flip } from '$lib/motion/utils/gsap.js';
+	import { useListingEntrance, captureFlipState, animateFlipTransition } from '$lib/motion/utils/listingAnimations.js';
+	import SearchInput from '$lib/components/shared/SearchInput.svelte';
+	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
 	import ProjectCard from './ProjectCard.svelte';
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { Badge } from '$lib/components/ui/badge';
@@ -45,8 +45,7 @@
 	const content = {
 		heading: { en: 'Work' },
 		subtitle: { en: 'Projects, pipelines, and systems I have built.' },
-		emptyState: { en: 'No projects match the selected filters.' },
-		clearFilters: { en: 'clear filters' }
+		emptyState: { en: 'No projects match the selected filters.' }
 	};
 
 	// Filter state — read from URL params
@@ -88,18 +87,7 @@
 
 	// FLIP animation on filter changes
 	async function updateFilter(type: 'service' | 'tag' | 'stack', value: string | null) {
-		// Capture pre-filter layout for FLIP
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		let flipState: any = null;
-		if (!isPrefersReducedMotion()) {
-			registerGsapPlugins();
-			const cards = document.querySelectorAll('[data-flip-id]');
-			if (cards.length > 0) {
-				flipState = Flip.getState(cards);
-			}
-		}
-
-		// Update URL params — Svelte reactivity will re-render the filtered list
+		flipState = captureFlipState();
 		const url = new URL($page.url);
 		if (value) {
 			url.searchParams.set(type, value);
@@ -107,36 +95,6 @@
 			url.searchParams.delete(type);
 		}
 		await goto(url.toString(), { replaceState: true, noScroll: true });
-
-		// Wait for DOM update then animate
-		await tick();
-
-		if (flipState && !isPrefersReducedMotion()) {
-			const cards = document.querySelectorAll('[data-flip-id]');
-			// WHY: batch CSS sets parent wrappers to opacity:0. After a filter change,
-			// new DOM elements have that CSS default. We must reset BOTH the batch
-			// wrappers AND the inner cards to visible before FLIP runs.
-			const batchItems = document.querySelectorAll('[data-batch="project-item"]');
-			gsap.killTweensOf(cards);
-			gsap.killTweensOf(batchItems);
-			gsap.set(batchItems, { opacity: 1, y: 0 });
-			gsap.set(cards, { opacity: 1, y: 0, x: 0, scale: 1 });
-
-			Flip.from(flipState, {
-				targets: cards,
-				duration: 0.5,
-				ease: 'power2.inOut',
-				stagger: 0.05,
-				onEnter: (els) =>
-					gsap.fromTo(
-						els,
-						{ opacity: 0, scale: 0.8 },
-						{ opacity: 1, scale: 1, duration: 0.5 }
-					),
-				onLeave: (els) =>
-					gsap.to(els, { opacity: 0, scale: 0.8, duration: 0.3 })
-			});
-		}
 	}
 
 	function handleServiceSelect(serviceId: string | null) {
@@ -159,6 +117,7 @@
 	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack || searchQuery.trim() !== '');
 
 	async function clearFilters() {
+		flipState = captureFlipState();
 		searchQuery = '';
 		const url = new URL($page.url);
 		url.searchParams.delete('service');
@@ -167,41 +126,17 @@
 		await goto(url.toString(), { replaceState: true, noScroll: true });
 	}
 
-	// WHY: after a filter change, Svelte re-renders work items which start at
-	// opacity:0 from the batch CSS. The batch onEnter (once:true) already fired
-	// on initial load, so it won't re-fire. This effect resets new items to visible.
 	let batchFired = false;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let flipState: any = null;
+
 	$effect(() => {
-		// Subscribe to filteredProjects so this runs on every filter change
 		filteredProjects;
-		if (batchFired && typeof document !== 'undefined') {
-			requestAnimationFrame(() => {
-				document.querySelectorAll<HTMLElement>('[data-batch="project-item"]').forEach(el => {
-					el.style.opacity = '1';
-					el.style.transform = 'translateY(0)';
-				});
-			});
-		}
+		animateFlipTransition('[data-batch="project-item"]', flipState, batchFired, () => { flipState = null; });
 	});
 
 	onMount(() => {
-		// WHY: if user prefers reduced motion, skip all animation and just make elements visible
-		if (isPrefersReducedMotion()) {
-			document.querySelectorAll<HTMLElement>('[data-batch="project-item"]').forEach(el => {
-				el.style.opacity = '1';
-			});
-			return;
-		}
-
-		registerGsapPlugins();
-
-		// WHY: staggered entrance on page load (not scroll) — all items animate in immediately
-		const items = document.querySelectorAll('[data-batch="project-item"]');
-		batchFired = true;
-		gsap.fromTo(items,
-			{ opacity: 0, y: 20 },
-			{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
-		);
+		useListingEntrance('[data-batch="project-item"]', () => { batchFired = true; });
 	});
 </script>
 
@@ -242,19 +177,7 @@
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
-			<div class="relative">
-				<input
-					type="text"
-					placeholder="Search projects..."
-					bind:value={searchQuery}
-					class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
-					data-testid="project-search-mobile"
-				/>
-				<svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-					<circle cx="7" cy="7" r="5"/>
-					<line x1="11" y1="11" x2="14" y2="14"/>
-				</svg>
-			</div>
+			<SearchInput placeholder="Search projects..." bind:value={searchQuery} testId="project-search-mobile" />
 		</div>
 
 		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
@@ -273,17 +196,7 @@
 
 		<!-- Active filter summary -->
 		{#if hasActiveFilters}
-			<div class="mb-3 flex items-center gap-2">
-				<span class="text-xs text-[var(--muted-foreground)]">
-					{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
-				</span>
-				<button
-					class="font-mono text-caption text-primary underline transition-colors hover:text-[var(--foreground)]"
-					onclick={clearFilters}
-				>
-					{resolveLocale(content.clearFilters, 'en')}
-				</button>
-			</div>
+			<FilterSummary count={filteredProjects.length} noun="project" onClear={clearFilters} />
 		{/if}
 
 		<!-- Card grid -->
@@ -373,11 +286,6 @@
 		.project-grid {
 			grid-template-columns: 1fr 1fr;
 		}
-	}
-
-	input:focus {
-		border-color: var(--accent);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 15%, transparent);
 	}
 
 	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
