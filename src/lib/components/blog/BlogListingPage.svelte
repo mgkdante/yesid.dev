@@ -10,8 +10,9 @@
 	import type { BlogPost, Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { tick } from 'svelte';
-	import { registerGsapPlugins, gsap, Flip } from '$lib/motion/utils/gsap.js';
+	import { useListingEntrance, captureFlipState, animateFlipTransition } from '$lib/motion/utils/listingAnimations.js';
+	import SearchInput from '$lib/components/shared/SearchInput.svelte';
+	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
@@ -83,7 +84,7 @@
 	});
 
 	function handleTagSelect(tag: string | null) {
-		captureFlipState();
+		flipState = captureFlipState();
 		const url = new URL($page.url);
 		if (tag) {
 			url.searchParams.set('tag', tag);
@@ -94,12 +95,12 @@
 	}
 
 	function handleLangSelect(lang: Locale | null) {
-		captureFlipState();
+		flipState = captureFlipState();
 		activeLang = lang;
 	}
 
 	function clearFilters() {
-		captureFlipState();
+		flipState = captureFlipState();
 		searchQuery = '';
 		dateFrom = '';
 		dateTo = '';
@@ -111,72 +112,17 @@
 		!!activeTag || !!activeLang || searchQuery.trim() !== '' || dateFrom !== '' || dateTo !== ''
 	);
 
-	// FLIP state for filter transitions
 	let batchFired = false;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let flipState: any = null;
 
-	// Capture FLIP state before filter changes take effect
-	function captureFlipState() {
-		if (isPrefersReducedMotion() || typeof document === 'undefined') return;
-		const cards = document.querySelectorAll('[data-flip-id]');
-		if (cards.length > 0) {
-			registerGsapPlugins();
-			flipState = Flip.getState(cards);
-		}
-	}
-
-	// WHY: after a filter change, animate with FLIP or reset visibility
 	$effect(() => {
 		filteredPosts;
-		if (batchFired && typeof document !== 'undefined') {
-			tick().then(() => {
-				const batchItems = document.querySelectorAll<HTMLElement>('[data-batch="blog-item"]');
-				const cards = document.querySelectorAll<HTMLElement>('[data-flip-id]');
-
-				if (flipState && !isPrefersReducedMotion()) {
-					gsap.killTweensOf(cards);
-					gsap.killTweensOf(batchItems);
-					gsap.set(batchItems, { opacity: 1, y: 0 });
-					gsap.set(cards, { opacity: 1, y: 0, x: 0, scale: 1 });
-
-					Flip.from(flipState, {
-						targets: cards,
-						duration: 0.5,
-						ease: 'power2.inOut',
-						stagger: 0.05,
-						onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5 }),
-						onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.8, duration: 0.3 })
-					});
-					flipState = null;
-				} else {
-					batchItems.forEach(el => {
-						el.style.opacity = '1';
-						el.style.transform = 'translateY(0)';
-					});
-				}
-			});
-		}
+		animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => { flipState = null; });
 	});
 
 	onMount(() => {
-		// WHY: if user prefers reduced motion, skip all animation and just make elements visible
-		if (isPrefersReducedMotion()) {
-			document.querySelectorAll<HTMLElement>('[data-batch="blog-item"]').forEach(el => {
-				el.style.opacity = '1';
-			});
-			return;
-		}
-
-		registerGsapPlugins();
-
-		// WHY: staggered entrance on page load (not scroll) — all items animate in immediately
-		const items = document.querySelectorAll('[data-batch="blog-item"]');
-		batchFired = true;
-		gsap.fromTo(items,
-			{ opacity: 0, y: 20 },
-			{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
-		);
+		useListingEntrance('[data-batch="blog-item"]', () => { batchFired = true; });
 	});
 </script>
 
@@ -225,19 +171,7 @@
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
-			<div class="relative">
-				<input
-					type="text"
-					placeholder="Search posts..."
-					bind:value={searchQuery}
-					class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
-					data-testid="blog-search-mobile"
-				/>
-				<svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-					<circle cx="7" cy="7" r="5"/>
-					<line x1="11" y1="11" x2="14" y2="14"/>
-				</svg>
-			</div>
+			<SearchInput placeholder="Search posts..." bind:value={searchQuery} testId="blog-search-mobile" />
 		</div>
 
 		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
@@ -255,18 +189,7 @@
 		/>
 
 		{#if hasActiveFilters}
-			<div class="mb-3 flex items-center gap-2">
-				<span class="text-xs text-[var(--muted-foreground)]">
-					{filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''}
-				</span>
-				<button
-					class="font-mono text-caption underline transition-colors hover:text-[var(--foreground)]"
-					style="color: {accentColor};"
-					onclick={clearFilters}
-				>
-					clear filters
-				</button>
-			</div>
+			<FilterSummary count={filteredPosts.length} noun="result" onClear={clearFilters} />
 		{/if}
 
 		{#if filteredPosts.length === 0}
@@ -344,11 +267,6 @@
 			font-size: 1.1rem;
 			letter-spacing: 5px;
 		}
-	}
-
-	input:focus {
-		border-color: var(--accent);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 15%, transparent);
 	}
 
 	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
