@@ -77,7 +77,7 @@
 
 <a
 	href="/projects/{project.slug}"
-	class={cn("project-card group block", className)}
+	class={cn("project-card group block h-full", className)}
 	data-testid="project-card"
 	data-flip-id={project.slug}
 	data-batch="project-item"
@@ -86,7 +86,7 @@
 	{...rest}
 >
 	<article
-		class="project-card-article relative overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] transition-all duration-300"
+		class="project-card-article relative h-full overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] transition-all duration-300"
 		use:tilt={{ maxDeg: 1.5 }}
 		use:cursorGlow
 	>

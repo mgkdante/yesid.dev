@@ -10,7 +10,8 @@
 	import type { BlogPost, Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
+	import { tick } from 'svelte';
+	import { registerGsapPlugins, gsap, Flip } from '$lib/motion/utils/gsap.js';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
@@ -82,6 +83,7 @@
 	});
 
 	function handleTagSelect(tag: string | null) {
+		captureFlipState();
 		const url = new URL($page.url);
 		if (tag) {
 			url.searchParams.set('tag', tag);
@@ -92,10 +94,12 @@
 	}
 
 	function handleLangSelect(lang: Locale | null) {
+		captureFlipState();
 		activeLang = lang;
 	}
 
 	function clearFilters() {
+		captureFlipState();
 		searchQuery = '';
 		dateFrom = '';
 		dateTo = '';
@@ -107,20 +111,50 @@
 		!!activeTag || !!activeLang || searchQuery.trim() !== '' || dateFrom !== '' || dateTo !== ''
 	);
 
-	// WHY: after a filter change, Svelte re-renders BlogRow elements which start
-	// at opacity:0 from the batch CSS. The batch onEnter (once:true) already fired
-	// on initial load, so it won't re-fire. This effect resets new items to visible.
+	// FLIP state for filter transitions
 	let batchFired = false;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let flipState: any = null;
+
+	// Capture FLIP state before filter changes take effect
+	function captureFlipState() {
+		if (isPrefersReducedMotion() || typeof document === 'undefined') return;
+		const cards = document.querySelectorAll('[data-flip-id]');
+		if (cards.length > 0) {
+			registerGsapPlugins();
+			flipState = Flip.getState(cards);
+		}
+	}
+
+	// WHY: after a filter change, animate with FLIP or reset visibility
 	$effect(() => {
-		// Subscribe to filteredPosts so this runs on every filter change
 		filteredPosts;
 		if (batchFired && typeof document !== 'undefined') {
-			// Use tick-level delay so Svelte finishes rendering new DOM first
-			requestAnimationFrame(() => {
-				document.querySelectorAll<HTMLElement>('[data-batch="blog-item"]').forEach(el => {
-					el.style.opacity = '1';
-					el.style.transform = 'translateY(0)';
-				});
+			tick().then(() => {
+				const batchItems = document.querySelectorAll<HTMLElement>('[data-batch="blog-item"]');
+				const cards = document.querySelectorAll<HTMLElement>('[data-flip-id]');
+
+				if (flipState && !isPrefersReducedMotion()) {
+					gsap.killTweensOf(cards);
+					gsap.killTweensOf(batchItems);
+					gsap.set(batchItems, { opacity: 1, y: 0 });
+					gsap.set(cards, { opacity: 1, y: 0, x: 0, scale: 1 });
+
+					Flip.from(flipState, {
+						targets: cards,
+						duration: 0.5,
+						ease: 'power2.inOut',
+						stagger: 0.05,
+						onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5 }),
+						onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.8, duration: 0.3 })
+					});
+					flipState = null;
+				} else {
+					batchItems.forEach(el => {
+						el.style.opacity = '1';
+						el.style.transform = 'translateY(0)';
+					});
+				}
 			});
 		}
 	});
@@ -248,6 +282,7 @@
 						{accentColor}
 						index={i}
 						featured={i === 0}
+						data-flip-id={post.slug}
 					/>
 				{/each}
 			</div>

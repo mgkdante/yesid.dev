@@ -158,11 +158,13 @@
 
 	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack || searchQuery.trim() !== '');
 
-	function clearFilters() {
+	async function clearFilters() {
 		searchQuery = '';
-		updateFilter('service', null);
-		updateFilter('tag', null);
-		updateFilter('stack', null);
+		const url = new URL($page.url);
+		url.searchParams.delete('service');
+		url.searchParams.delete('tag');
+		url.searchParams.delete('stack');
+		await goto(url.toString(), { replaceState: true, noScroll: true });
 	}
 
 	// WHY: after a filter change, Svelte re-renders work items which start at
@@ -292,8 +294,11 @@
 		{:else}
 			<div class="project-grid">
 				{#each filteredProjects as project, i (project.slug)}
-					<div data-batch="project-item">
-						<ProjectCard {project} {services} {serviceSvgContents} index={i} />
+					<div class="flex gap-3" data-batch="project-item">
+						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
+						<div class="min-w-0 flex-1">
+							<ProjectCard {project} {services} {serviceSvgContents} index={i} />
+						</div>
 					</div>
 				{/each}
 			</div>
