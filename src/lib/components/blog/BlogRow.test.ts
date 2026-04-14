@@ -27,7 +27,7 @@ describe('BlogRow', () => {
 		expect(getByText('Test Post Title')).toBeTruthy();
 	});
 
-	it('renders larger padding when featured=true', () => {
+	it('renders uniform padding for all rows', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0, featured: true, accentColor: '#E07800' }
 		});
@@ -35,20 +35,20 @@ describe('BlogRow', () => {
 		expect(article?.classList.contains('p-5')).toBe(true);
 	});
 
-	it('renders normal padding when featured=false', () => {
+	it('renders same padding regardless of featured prop', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0, featured: false }
 		});
 		const article = container.querySelector('article');
-		expect(article?.classList.contains('p-4')).toBe(true);
+		expect(article?.classList.contains('p-5')).toBe(true);
 	});
 
-	it('renders normal padding by default when featured is not set', () => {
+	it('renders same padding when featured is not set', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0 }
 		});
 		const article = container.querySelector('article');
-		expect(article?.classList.contains('p-4')).toBe(true);
+		expect(article?.classList.contains('p-5')).toBe(true);
 	});
 
 	it('renders station badge with zero-padded index', () => {

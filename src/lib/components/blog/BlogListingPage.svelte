@@ -14,7 +14,15 @@
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
-	import { SectionHeading } from '$lib/components/brand';
+	import { SectionHeading, SvgIcon } from '$lib/components/brand';
+	import { SectionWrapper } from '$lib/components/shells';
+	import { Separator } from '$lib/components/ui/separator';
+
+	// Featured post SVG for the header hero icon
+	let heroSvg = $derived.by(() => {
+		if (posts.length === 0) return '';
+		return svgContents[posts[0].slug] ?? '';
+	});
 
 
 	let {
@@ -155,50 +163,73 @@
 	});
 </script>
 
-<div data-testid="blog-listing" class="w-full pb-16">
-	<!-- Content container — centered for readability, gutters via spacing token -->
-	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
-	<!-- Header -->
-	<div class="mb-6" data-batch="blog-item">
-		<SectionHeading {heading} subheading={subtitle} level={1} />
-	</div>
-
-	<!-- Search bar (full width, above sidebar+content) -->
-	<div class="mb-4" data-batch="blog-item">
-		<div class="relative">
-			<input
-				type="text"
-				placeholder="Search posts by title, content, or tag..."
-				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
-				style="--accent: {accentColor};"
-				data-testid="blog-search"
-			/>
-			<!-- Search icon -->
-			<svg class="absolute left-3 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke={accentColor} stroke-width="1.5">
-				<circle cx="7" cy="7" r="5"/>
-				<line x1="11" y1="11" x2="14" y2="14"/>
-			</svg>
+<div
+	data-testid="blog-listing"
+	class="w-full pb-16"
+	style={accentColor !== 'var(--accent)' ? `--accent: ${accentColor};` : ''}
+>
+	<!-- Section 1: Header — title + hero SVG -->
+	<SectionWrapper layout="bleed" container="none">
+		<div class="blog-header" data-batch="blog-item">
+			<div class="blog-header-title">
+				<h1 class="blog-heading">
+					<span class="blog-heading-prefix">Blog<span class="text-[var(--primary)]">.</span></span>
+					{heading}
+				</h1>
+				<p class="blog-subtitle">{subtitle}</p>
+			</div>
+			<div class="blog-header-icon">
+				{#if heroSvg}
+					<SvgIcon svgContent={heroSvg} size={120} animation="draw-fill" />
+				{/if}
+			</div>
 		</div>
-	</div>
+	</SectionWrapper>
 
-	<!-- Mobile filter -->
-	<BlogFilterMobile
-		tags={allTags}
-		{languages}
-		{activeTag}
-		{activeLang}
-		{accentColor}
-		{cornerLink}
-		onTagSelect={handleTagSelect}
-		onLangSelect={handleLangSelect}
-		bind:dateFrom
-		bind:dateTo
-	/>
+	<Separator variant="hazard" />
 
-	<!-- Main layout: sidebar + posts -->
-	<div class="flex gap-6">
-		<BlogFilterSidebar
+	<!-- Section 2: Listing — filters in sideLeft (section-scoped), posts in content -->
+	<SectionWrapper layout="centered" container="none" style="--edge-left: clamp(220px, 22vw, 320px)">
+		{#snippet sideLeft()}
+			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4">
+				<BlogFilterSidebar
+					tags={allTags}
+					{languages}
+					{activeTag}
+					{activeLang}
+					{accentColor}
+					{cornerLink}
+					bind:searchQuery
+					onTagSelect={handleTagSelect}
+					onLangSelect={handleLangSelect}
+					bind:dateFrom
+					bind:dateTo
+				/>
+			</div>
+		{/snippet}
+
+		<!-- Listing content with padding -->
+		<div class="px-4 py-6 md:px-6 md:py-8">
+
+		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
+		<div class="mb-4 lg:hidden">
+			<div class="relative">
+				<input
+					type="text"
+					placeholder="Search posts..."
+					bind:value={searchQuery}
+					class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-4 py-2.5 pl-10 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
+					data-testid="blog-search-mobile"
+				/>
+				<svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+					<circle cx="7" cy="7" r="5"/>
+					<line x1="11" y1="11" x2="14" y2="14"/>
+				</svg>
+			</div>
+		</div>
+
+		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
+		<BlogFilterMobile
 			tags={allTags}
 			{languages}
 			{activeTag}
@@ -211,46 +242,85 @@
 			bind:dateTo
 		/>
 
-		<!-- Post list -->
-		<div class="min-w-0 flex-1">
-			{#if hasActiveFilters}
-				<div class="mb-3 flex items-center gap-2">
-					<span class="text-xs text-[var(--muted-foreground)]">
-						{filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''}
-					</span>
-					<button
-						class="font-mono text-caption underline transition-colors hover:text-[var(--foreground)]"
-						style="color: {accentColor};"
-						onclick={clearFilters}
-					>
-						clear filters
-					</button>
-				</div>
-			{/if}
+		{#if hasActiveFilters}
+			<div class="mb-3 flex items-center gap-2">
+				<span class="text-xs text-[var(--muted-foreground)]">
+					{filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''}
+				</span>
+				<button
+					class="font-mono text-caption underline transition-colors hover:text-[var(--foreground)]"
+					style="color: {accentColor};"
+					onclick={clearFilters}
+				>
+					clear filters
+				</button>
+			</div>
+		{/if}
 
-			{#if filteredPosts.length === 0}
-				<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
-					No posts found. Try adjusting your filters.
-				</p>
-			{:else}
-				<div class="flex flex-col gap-3">
-					{#each filteredPosts as post, i (post.slug)}
-						<BlogRow
-							{post}
-							svgContent={svgContents[post.slug] ?? ''}
-							{accentColor}
-							index={i}
-							featured={i === 0}
-						/>
-					{/each}
-				</div>
-			{/if}
+		{#if filteredPosts.length === 0}
+			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
+				No posts found. Try adjusting your filters.
+			</p>
+		{:else}
+			<div class="flex flex-col gap-4">
+				{#each filteredPosts as post, i (post.slug)}
+					<BlogRow
+						{post}
+						svgContent={svgContents[post.slug] ?? ''}
+						{accentColor}
+						index={i}
+						featured={i === 0}
+					/>
+				{/each}
+			</div>
+		{/if}
 		</div>
-	</div>
-	</div>
+	</SectionWrapper>
 </div>
 
 <style>
+	/* --- Blog header: title + icon --- */
+	.blog-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		padding-block: 1.5rem;
+		padding-inline: var(--space-page-x);
+	}
+
+	.blog-header-title { flex: 1; min-width: 0; }
+	.blog-header-icon  { flex-shrink: 0; }
+
+	.blog-heading {
+		font-family: var(--font-heading);
+		font-size: clamp(2.5rem, 6vw, 4rem);
+		font-weight: 900;
+		color: var(--foreground);
+		letter-spacing: -2px;
+		margin-block-end: 6px;
+	}
+
+	/* "Blog." prefix: visible on mobile, hidden when EdgeRail shows it */
+	.blog-heading-prefix {
+		color: var(--primary);
+		margin-inline-end: 0.25em;
+	}
+
+	@media (min-width: 1024px) {
+		.blog-heading-prefix {
+			display: none;
+		}
+	}
+
+	.blog-subtitle {
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--muted-foreground);
+		letter-spacing: 2px;
+		text-transform: uppercase;
+	}
+
 	input:focus {
 		border-color: var(--accent);
 		box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 15%, transparent);

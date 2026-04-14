@@ -45,7 +45,7 @@
 		>
 			<line
 				x1="1" y1="0" x2="1" y2="100"
-				stroke="var(--primary)"
+				stroke="var(--accent, var(--primary))"
 				stroke-width="2"
 			/>
 		</svg>
@@ -64,7 +64,7 @@
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
-		background: color-mix(in srgb, var(--primary) 50%, transparent);
+		background: color-mix(in srgb, var(--accent, var(--primary)) 50%, transparent);
 		animation: station-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 	}
 	.metro-line-svg {

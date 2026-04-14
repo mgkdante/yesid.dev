@@ -7,7 +7,6 @@ export { default as AsidePanel } from './AsidePanel.svelte';
 export { default as DetailHero } from './DetailHero.svelte';
 export { default as CardGrid } from './CardGrid.svelte';
 export { default as BentoGrid } from './BentoGrid.svelte';
-export { default as ListingShell } from './ListingShell.svelte';
 
 export type { SectionWrapperProps } from './SectionWrapper.svelte';
 export type { EdgeRailProps } from './EdgeRail.svelte';
@@ -15,4 +14,3 @@ export type { AsidePanelProps } from './AsidePanel.svelte';
 export type { DetailHeroProps } from './DetailHero.svelte';
 export type { CardGridProps } from './CardGrid.svelte';
 export type { BentoGridProps } from './BentoGrid.svelte';
-export type { ListingShellProps } from './ListingShell.svelte';

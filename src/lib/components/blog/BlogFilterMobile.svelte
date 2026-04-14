@@ -35,7 +35,7 @@
 	let open = $state(false);
 </script>
 
-<div class="md:hidden" data-testid="blog-filter-mobile">
+<div class="lg:hidden" data-testid="blog-filter-mobile">
 	<Collapsible bind:open>
 		<div class="mb-3 flex items-center gap-3">
 			<CollapsibleTrigger>
@@ -67,8 +67,7 @@
 							<button
 								class="rounded px-2 py-1 text-caption transition-colors"
 								class:m-active={activeLang === null}
-								style="--accent: {accentColor};"
-								onclick={() => onLangSelect(null)}
+																onclick={() => onLangSelect(null)}
 							>
 								All
 							</button>
@@ -76,8 +75,7 @@
 								<button
 									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeLang === lang}
-									style="--accent: {accentColor};"
-									onclick={() => onLangSelect(lang)}
+																		onclick={() => onLangSelect(lang)}
 								>
 									{LANG_LABELS[lang]}
 								</button>
@@ -117,8 +115,7 @@
 							<button
 								class="rounded px-2 py-1 text-caption transition-colors"
 								class:m-active={activeTag === null}
-								style="--accent: {accentColor};"
-								onclick={() => onTagSelect(null)}
+																onclick={() => onTagSelect(null)}
 							>
 								All
 							</button>
@@ -126,8 +123,7 @@
 								<button
 									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeTag === tag}
-									style="--accent: {accentColor};"
-									onclick={() => onTagSelect(tag)}
+																		onclick={() => onTagSelect(tag)}
 								>
 									{tag}
 								</button>

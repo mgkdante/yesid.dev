@@ -38,6 +38,51 @@ Every major content block follows:
 </section>
 ```
 
+### The Scope Model — 6 Layers
+
+Content placement is determined by **SCOPE** — what the content is true for — not by content type. All layers are content-agnostic: decorative, interactive, or informational content can go in any layer.
+
+```
+┌─ PAGE LEVEL (EdgeRail) ──────────────────────────────────────────────┐
+│                                                                       │
+│  ┌─ SECTION LEVEL (SectionWrapper) ───────────────────────────────┐  │
+│  │                                                                 │  │
+│  │  ┌────────┐  ┌─────────────────────────┐  ┌────────┐          │  │
+│  │  │  side  │  │       CONTENT           │  │  side  │          │  │
+│  │  │  left  │  │  Main section content   │  │ right  │          │  │
+│  │  └────────┘  └─────────────────────────┘  └────────┘          │  │
+│  │  BACKGROUND (z:0) — decorative layer spanning all columns      │  │
+│  └────────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+│  EDGE LEFT                                              EDGE RIGHT   │
+│  (persistent)                                          (persistent)  │
+└───────────────────────────────────────────────────────────────────────┘
+```
+
+
+| Layer | Component | Scope | Examples |
+| --- | --- | --- | --- |
+| **Edge Left** | EdgeRail (left) | Whole page | Page title, persistent labels, page-level info |
+| **Edge Right** | EdgeRail (right) | Whole page | Year, page metrics, persistent decoration |
+| **Section Side Left** | SectionWrapper sideLeft | This section | Filters, sidebars, section annotations |
+| **Section Content** | SectionWrapper content | This section | Cards, text, grids — main content |
+| **Section Side Right** | SectionWrapper sideRight | This section | Complementary info, section annotations |
+| **Section Background** | SectionWrapper background | This section | Decorative SVGs, circuit grids |
+
+
+**Deciding where content goes:**
+
+1. True for the **whole page**? → EdgeRail (persistent as you scroll)
+2. True for **this section only**? → SectionWrapper sideLeft/sideRight
+3. **Main content** of the section? → SectionWrapper content
+4. **Decorative background** for the section? → SectionWrapper background
+
+**Example — Blog listing page:**
+- EdgeRail left: "Blog" label (true for the whole page)
+- SectionWrapper (listing section) sideLeft: filter sidebar (scoped to this section's cards)
+- SectionWrapper (listing section) content: search + post list
+- If a hero section is added above the listing, filters stay in the listing section — they don't apply to the hero
+
 ### 4 Layout Patterns
 
 
@@ -557,7 +602,7 @@ TIER 4: page       → Pure composition — zero custom patterns
 | --------------- | ---------------------------- | --------------------------------------------------------- | ------------------------------------------------------- |
 | **1 — ui/**     | `src/lib/components/ui/`     | shadcn-svelte scaffolded, Bits UI headless + brand tokens | Button, Badge, Dialog, Tabs, Card                       |
 | **2 — brand/**  | `src/lib/components/brand/`  | Hand-built, unique to yesid.dev                           | SectionHeading, MetroStation, TerminalChrome, StatusDot |
-| **3 — shells/** | `src/lib/components/shells/` | Composable layout scaffolds                               | SectionWrapper, EdgeRail, ListingShell, DetailHero      |
+| **3 — shells/** | `src/lib/components/shells/` | Composable layout scaffolds                               | SectionWrapper, EdgeRail, DetailHero, CardGrid, BentoGrid, AsidePanel |
 | **4 — page**    | `src/lib/components/`        | Pure composition — wires data into Tier 1-3               | ProofReel, HomeServices, BlogRow, AboutPage             |
 
 
@@ -597,9 +642,9 @@ One Card atom for all card-like surfaces across the site. The unified surface re
 
 **Excluded from Card:** TerminalChrome (brand craft, not a card), StackNode (interactive button), StackScenarioCard (one-off presentation container).
 
-### SectionWrapper — CSS Grid Layout Engine
+### SectionWrapper — Section-Level Layout Engine
 
-Every major content section uses SectionWrapper's 3-layer CSS Grid:
+Every major content section uses SectionWrapper's 3-layer CSS Grid. Content in SectionWrapper sides is **section-scoped** — it pertains to this section only (see Section 2: The Scope Model).
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -619,16 +664,22 @@ Every major content section uses SectionWrapper's 3-layer CSS Grid:
 - Sides can have different widths (`--edge-left`, `--edge-right`).
 - Below `xl:` (1024px), both sides are `0` — content fills full width.
 - Background spans all columns via `grid-column: 1 / -1`.
+- **Sides are content-agnostic.** Filter sidebars, ToC panels, annotations, decorative elements — anything section-scoped goes in `sideLeft`/`sideRight`.
 
 **Math-driven layout:** Side panels use `minmax(0, var(--edge-width))` — they collapse to `0` before overflowing. Content uses `min(var(--container-token), 100vw - var(--space-page-x) * 2)` — viewport-capped. The grid template `var(--edge-left, 0) 1fr var(--edge-right, 0)` ensures: `edge-left + content + edge-right ≤ 100vw` at every breakpoint. CSS computes the layout — no JS measurements, no resize observers, no guesswork.
 
+**Multi-section pages:** A page can have multiple SectionWrapper instances. Each is independent — a blog page might have a header section (bleed) and a listing section (centered with filter sidebar in sideLeft). The sidebar is scoped to the listing section; adding a hero section above doesn't affect it.
+
 ### EdgeRail — Page-Level Edge Decorations
 
-Persistent edge elements spanning the entire page. Content: rotated page labels, section progress dots, vertical circuit lines, blueprint tick marks, metrics, complementary information. Not only decorative.
+Persistent edge elements spanning the entire page. Content in EdgeRail is **page-scoped** — it's true for the whole page (see Section 2: The Scope Model).
 
-- Sticky positioning along viewport edges
+Content: rotated page labels, section progress dots, vertical circuit lines, blueprint tick marks, metrics, complementary information. All layers are content-agnostic — not restricted to decoration.
+
+- Fixed positioning along viewport edges
 - Only visible at `xl:` (1024px) and above
 - Positioned independently of SectionWrapper sides
+- Persists as the user scrolls through all sections
 
 ### Slot Conventions Per Tier
 

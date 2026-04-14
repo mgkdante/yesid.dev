@@ -62,57 +62,58 @@
 <div>
 	{#if collapsible}
 		<button
-			class="flex w-full items-center justify-between label-section font-semibold transition-colors hover:text-[var(--foreground)]"
+			class="flex w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
 			onclick={() => (isOpen = !isOpen)}
 		>
 			{label}
 			<ChevronToggle open={isOpen} size="sm" direction="down" />
 		</button>
 	{:else}
-		<div class="label-section font-semibold">
+		<div class="label-section text-sm font-semibold">
 			{label}
 		</div>
 	{/if}
 
-	{#if !collapsible || isOpen}
-		<ToggleGroup
-			type="single"
-			value={groupValue}
-			onValueChange={handleValueChange}
-			class="mt-2 flex flex-col gap-1"
-			style="--accent: {accentColor};"
-			orientation="vertical"
-		>
-			<ToggleGroupItem value="__all__">
-				{#snippet child({ props })}
-					<button
-						{...props}
-						class="filter-btn rounded px-2 py-1 text-left text-xs transition-colors"
-						class:active={activeKey === null}
-						use:ripple={{ color: accentColor }}
-					>
-						{resolveLocale(allLabel, 'en')}
-					</button>
-				{/snippet}
-			</ToggleGroupItem>
-
-			{#each items as item}
-				<ToggleGroupItem value={item.key}>
+	<div class="filter-collapse" class:filter-open={!collapsible || isOpen}>
+		<div class="filter-collapse-inner">
+			<ToggleGroup
+				type="single"
+				value={groupValue}
+				onValueChange={handleValueChange}
+				class="mt-2 flex w-full flex-col gap-1"
+				orientation="vertical"
+			>
+				<ToggleGroupItem value="__all__">
 					{#snippet child({ props })}
 						<button
 							{...props}
-							class="filter-btn rounded border border-border-subtle px-2 py-1 text-left text-xs text-[var(--muted-foreground)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-							class:tag-active={activeKey === item.key}
-							data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
+							class="filter-btn w-full rounded px-2 py-1.5 text-left text-sm transition-colors"
+							class:active={activeKey === null}
 							use:ripple={{ color: accentColor }}
 						>
-							{item.label}
+							{resolveLocale(allLabel, 'en')}
 						</button>
 					{/snippet}
 				</ToggleGroupItem>
-			{/each}
-		</ToggleGroup>
-	{/if}
+
+				{#each items as item}
+					<ToggleGroupItem value={item.key}>
+						{#snippet child({ props })}
+							<button
+								{...props}
+								class="filter-btn w-full rounded border border-border-subtle px-2 py-1.5 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+								class:tag-active={activeKey === item.key}
+								data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
+								use:ripple={{ color: accentColor }}
+							>
+								{item.label}
+							</button>
+						{/snippet}
+					</ToggleGroupItem>
+				{/each}
+			</ToggleGroup>
+		</div>
+	</div>
 </div>
 
 <style>
@@ -125,5 +126,19 @@
 		border-color: var(--accent) !important;
 		color: var(--accent) !important;
 		background: color-mix(in srgb, var(--accent) 10%, transparent);
+	}
+
+	/* Smooth collapse/expand via CSS grid rows */
+	.filter-collapse {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows var(--duration-slow) var(--ease-default);
+	}
+	.filter-collapse.filter-open {
+		grid-template-rows: 1fr;
+	}
+	.filter-collapse-inner {
+		overflow: hidden;
+		min-height: 0;
 	}
 </style>
