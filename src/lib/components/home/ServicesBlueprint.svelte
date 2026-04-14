@@ -4,18 +4,18 @@
   Inline Svelte SVG components enable CSS var tokenization (currentColor → var(--primary)).
 -->
 <script lang="ts">
-	import BlueprintAzurSide from '$lib/components/svg/BlueprintAzurSide.svelte';
-	import BlueprintAzurFront from '$lib/components/svg/BlueprintAzurFront.svelte';
-	import BlueprintAzurTop from '$lib/components/svg/BlueprintAzurTop.svelte';
-	import BlueprintAzurBogie from '$lib/components/svg/BlueprintAzurBogie.svelte';
-	import BlueprintAzurCross from '$lib/components/svg/BlueprintAzurCross.svelte';
-	import BlueprintMr73Side from '$lib/components/svg/BlueprintMr73Side.svelte';
-	import BlueprintDetailBogie from '$lib/components/svg/BlueprintDetailBogie.svelte';
-	import BlueprintDetailDoor from '$lib/components/svg/BlueprintDetailDoor.svelte';
-	import BlueprintDetailInterior from '$lib/components/svg/BlueprintDetailInterior.svelte';
-	import BlueprintDetailHandrails from '$lib/components/svg/BlueprintDetailHandrails.svelte';
-	import BlueprintDetailWindow from '$lib/components/svg/BlueprintDetailWindow.svelte';
-	import BlueprintDetailSeat from '$lib/components/svg/BlueprintDetailSeat.svelte';
+	import BlueprintAzurSide from '$lib/components/svg/azur/BlueprintAzurSide.svelte';
+	import BlueprintAzurFront from '$lib/components/svg/azur/BlueprintAzurFront.svelte';
+	import BlueprintAzurTop from '$lib/components/svg/azur/BlueprintAzurTop.svelte';
+	import BlueprintAzurBogie from '$lib/components/svg/azur/BlueprintAzurBogie.svelte';
+	import BlueprintAzurCross from '$lib/components/svg/azur/BlueprintAzurCross.svelte';
+	import BlueprintMr73Side from '$lib/components/svg/azur/BlueprintMr73Side.svelte';
+	import BlueprintDetailBogie from '$lib/components/svg/detail/BlueprintDetailBogie.svelte';
+	import BlueprintDetailDoor from '$lib/components/svg/detail/BlueprintDetailDoor.svelte';
+	import BlueprintDetailInterior from '$lib/components/svg/detail/BlueprintDetailInterior.svelte';
+	import BlueprintDetailHandrails from '$lib/components/svg/detail/BlueprintDetailHandrails.svelte';
+	import BlueprintDetailWindow from '$lib/components/svg/detail/BlueprintDetailWindow.svelte';
+	import BlueprintDetailSeat from '$lib/components/svg/detail/BlueprintDetailSeat.svelte';
 </script>
 
 <div class="blueprint-bg absolute inset-0 z-0 text-[var(--primary)]" aria-hidden="true">
