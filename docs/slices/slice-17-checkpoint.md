@@ -1,14 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-14 | 17d-4 Session 3 — Blog listing DONE
+**Last updated:** 2026-04-14 | 17d-4 Session 4 — Blueprint headers + Projects listing + DRY extraction DONE
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
 - **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — IN PROGRESS
-- **Status:** Sessions 0-3 complete. Next: Session 3b (Blog detail) or Session 4 (Projects — same archetype as Blog).
+- **Status:** Sessions 0-4 complete. Next: Session 5 (Blog detail + Projects detail).
 - **Build:** 0 errors, 15 warnings, 765/765 tests pass.
-- **Next action:** Blog detail page OR Projects (same constitutional pattern as Blog).
+- **Next action:** Blog detail page + Projects detail page constitutional wiring.
 
 ### 17d-4 Pre-pass (P1–P9) — COMPLETE
 - P1: SectionHeading wired into BlogListingPage, ProjectListingPage, ContactPage (added `level` prop)
@@ -54,6 +54,23 @@
 - Pretext installed for text metric calculation
 - Blog + Projects share identical structure (same archetype) — D133
 - Services + Stack pages get orange accent — D134
+
+### Session 4 (Blueprint headers + Projects listing + DRY) — COMPLETE
+- Da Vincian blueprint headers: 5 transit SVGs (blog) + 6 tunneling SVGs (projects)
+- SVG folder reorganized into azur/, detail/, transit/, tunneling/ subfolders
+- BlogBlueprint + ProjectsBlueprint composition components (using BlueprintShell)
+- Vertical hazard stripe → thin 1px accent line on both layouts
+- Blueprint header extends behind nav to viewport top (desktop + mobile)
+- "dispatches from the field" subtitle overlaid on blueprints, dynamic via prop
+- Metro station dots added to EdgeRail (above/below label)
+- Projects listing: SectionWrapper wiring, search bar, 2-column card grid, equal-height cards
+- Animations fire on load instead of scroll (both listings)
+- FLIP animation added to blog filter changes
+- DRY extraction: BlueprintShell, ListingLayout, SearchInput, FilterSummary, listingAnimations.ts
+- Blog + Projects layouts reduced to 6 lines each (from ~110)
+- Date filter kept as native (shadcn calendar deferred)
+- Max-width deferred (needs animation/manifesto consideration)
+- D139-D150 design decisions (see spec: docs/specs/2026-04-14-blueprint-headers-design.md)
 
 ### Decisions (17d-4)
 - D101: Added `level` prop to SectionHeading (h1-h6, default h2)
