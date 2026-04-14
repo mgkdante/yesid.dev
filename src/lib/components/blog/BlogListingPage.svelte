@@ -169,7 +169,7 @@
 			<div class="blog-header-text">
 				<!-- "Blog." heading: only on mobile (EdgeRail carries it on desktop) -->
 				<div class="blog-mobile-heading">Blog<span class="text-[var(--primary)]">.</span></div>
-				<div class="blog-header-subtitle">dispatches from the field</div>
+				<div class="blog-header-subtitle">{subtitle}</div>
 			</div>
 		</div>
 	</SectionWrapper>
