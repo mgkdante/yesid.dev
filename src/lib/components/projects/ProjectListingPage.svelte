@@ -19,6 +19,7 @@
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { MetroStation } from '$lib/components/brand';
+	import { SectionWrapper } from '$lib/components/shells';
 	import ProjectFilterMobile from './ProjectFilterMobile.svelte';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -205,84 +206,80 @@
 
 	<Separator variant="hazard" />
 
-	<!-- Content container — centered for readability, gutters via spacing token -->
-	<div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
+	<!-- Section 2: Listing — filters in sideLeft (section-scoped), cards in content -->
+	<SectionWrapper layout="centered" container="none" style="--edge-left: clamp(220px, 22vw, 320px)">
+		{#snippet sideLeft()}
+			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4">
+				<ProjectFilterSidebar
+					{serviceIds}
+					{serviceMap}
+					tags={allTags}
+					stack={allStack}
+					{activeService}
+					{activeTag}
+					{activeStack}
+					onServiceSelect={handleServiceSelect}
+					onTagSelect={handleTagSelect}
+					onStackSelect={handleStackSelect}
+				/>
+			</div>
+		{/snippet}
 
-	<!-- Mobile filter (hidden on md+) -->
-	<ProjectFilterMobile
-		{serviceIds}
-		{serviceMap}
-		tags={allTags}
-		stack={allStack}
-		{activeService}
-		{activeTag}
-		{activeStack}
-		onServiceSelect={handleServiceSelect}
-		onTagSelect={handleTagSelect}
-		onStackSelect={handleStackSelect}
-	/>
+		<!-- Listing content with padding -->
+		<div class="px-4 py-6 md:px-6 md:py-8">
 
-	<!-- Desktop: sidebar + grid layout -->
-	<div class="flex gap-8">
-		<!-- Sticky sidebar filter (hidden below md) -->
-		<div class="hidden shrink-0 md:block md:sticky md:top-20 md:self-start">
-			<ProjectFilterSidebar
-				{serviceIds}
-				{serviceMap}
-				tags={allTags}
-				stack={allStack}
-				{activeService}
-				{activeTag}
-				{activeStack}
-				onServiceSelect={handleServiceSelect}
-				onTagSelect={handleTagSelect}
-				onStackSelect={handleStackSelect}
-			/>
-		</div>
+		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
+		<ProjectFilterMobile
+			{serviceIds}
+			{serviceMap}
+			tags={allTags}
+			stack={allStack}
+			{activeService}
+			{activeTag}
+			{activeStack}
+			onServiceSelect={handleServiceSelect}
+			onTagSelect={handleTagSelect}
+			onStackSelect={handleStackSelect}
+		/>
 
-		<!-- Main content area -->
-		<div class="min-w-0 flex-1">
-			<!-- Active filter summary -->
-			{#if hasActiveFilters}
-				<div class="mb-4 flex items-center gap-2">
-					<span class="text-xs text-[var(--muted-foreground)]">
-						{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
-					</span>
-					<button
-						class="font-mono text-caption text-primary underline transition-colors hover:text-[var(--foreground)]"
-						onclick={async () => {
-							await updateFilter('service', null);
-							await updateFilter('tag', null);
-							await updateFilter('stack', null);
-						}}
-					>
-						{resolveLocale(content.clearFilters, 'en')}
-					</button>
-				</div>
-			{/if}
+		<!-- Active filter summary -->
+		{#if hasActiveFilters}
+			<div class="mb-3 flex items-center gap-2">
+				<span class="text-xs text-[var(--muted-foreground)]">
+					{filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
+				</span>
+				<button
+					class="font-mono text-caption text-primary underline transition-colors hover:text-[var(--foreground)]"
+					onclick={async () => {
+						await updateFilter('service', null);
+						await updateFilter('tag', null);
+						await updateFilter('stack', null);
+					}}
+				>
+					{resolveLocale(content.clearFilters, 'en')}
+				</button>
+			</div>
+		{/if}
 
-			<!-- Card grid -->
-			{#if filteredProjects.length === 0}
-				<p class="py-12 text-center text-sm text-[var(--muted-foreground)]" data-testid="work-empty-state">
-					{resolveLocale(content.emptyState, 'en')}
-				</p>
-			{:else}
-				<div class="flex flex-col gap-4">
-					{#each filteredProjects as project, i (project.slug)}
-						<div class="flex gap-4" data-batch="project-item">
-							<!-- Metro line + station badge -->
-							<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
-							<!-- Card -->
-							<div class="min-w-0 flex-1">
-								<ProjectCard {project} {services} {serviceSvgContents} index={i} />
-							</div>
+		<!-- Card grid -->
+		{#if filteredProjects.length === 0}
+			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]" data-testid="work-empty-state">
+				{resolveLocale(content.emptyState, 'en')}
+			</p>
+		{:else}
+			<div class="flex flex-col gap-4">
+				{#each filteredProjects as project, i (project.slug)}
+					<div class="flex gap-4" data-batch="project-item">
+						<MetroStation index={i + 1} showLine pulseDelay={i * 0.4} />
+						<div class="min-w-0 flex-1">
+							<ProjectCard {project} {services} {serviceSvgContents} index={i} />
 						</div>
-					{/each}
-				</div>
-			{/if}
+					</div>
+				{/each}
+			</div>
+		{/if}
 		</div>
-	</div>
-	</div>
+	</SectionWrapper>
 </div>
 
 <style>
