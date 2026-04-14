@@ -1,14 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-14 | 17d-4 Session 1 — Pre-pass COMPLETE + Home page DONE
+**Last updated:** 2026-04-14 | 17d-4 Session 2 — About page DONE
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
 - **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — IN PROGRESS
-- **Status:** Pre-pass (P1–P9) complete. Session 1 (Home) complete. Next: Session 2 (About).
+- **Status:** Pre-pass (P1–P9) complete. Session 1 (Home) complete. Session 2 (About) complete. Next: Session 3 (Blog).
 - **Build:** 0 errors, 15 warnings, 772/772 tests pass.
-- **Next action:** Session 2 — About page (SectionWrapper + rotated titles + enrichment).
+- **Next action:** Session 3 — Blog page (SectionWrapper + ListingShell wiring + enrichment).
 
 ### 17d-4 Pre-pass (P1–P9) — COMPLETE
 - P1: SectionHeading wired into BlogListingPage, ProjectListingPage, ContactPage (added `level` prop)
@@ -29,6 +29,14 @@
 - ServicesBlueprint moved to SectionWrapper `background` slot (spans full width including edge columns)
 - SectionWrapper default `container` changed from "content" to "none" (unconstrained by default)
 - SectionWrapper grid columns fixed: `minmax(0, var(...))` → `var(...)` (edge columns no longer collapse)
+
+### Session 2 (About) — COMPLETE
+- AboutPage bento grid wrapped in SectionWrapper layout="bleed"
+- Hazard stripes moved outside SectionWrapper (matches Home's between-section pattern)
+- .about-page CSS removed, min-height moved to SectionWrapper inline style
+- No rotated titles — bento dashboard is self-contained (D122 ditched)
+- No edge content — layout="bleed" with no side slots (D125)
+- Bento cards unchanged — correct per D30/D31, card unification deferred to post-S8 pass
 
 ### Decisions (17d-4)
 - D101: Added `level` prop to SectionHeading (h1-h6, default h2)
@@ -51,6 +59,12 @@
 - D118: SectionWrapper default container changed to "none" (unconstrained)
 - D119: ServicesBlueprint moved to SectionWrapper background slot (full-width coverage)
 - D120: ControlRoom scrapped (D90 from 17d-3)
+- D121: About page = one SectionWrapper wrapping entire bento grid (layout="bleed")
+- D122: DITCHED — no rotated titles on About page (bento dashboard self-contained)
+- D123: Hazard separators outside SectionWrapper (matches Home between-section pattern)
+- D124: .about-page min-height moved to SectionWrapper inline style
+- D125: No edge content on About — bento dashboard self-contained, no side slots
+- D126: Card unification (Task 31) deferred to post-S8 pass — all 18 instances to ui/card, zero unused ui/ components
 - **Decisions (17d-3 Session 2):**
   - D93: CloserGraffiti uses onReady callback for parent timeline integration — child owns DrawSVG lifecycle, parent coordinates timing
   - D94: CloserProps uses display:contents wrapper to preserve absolute positioning

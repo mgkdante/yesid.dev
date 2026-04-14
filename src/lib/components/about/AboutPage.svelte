@@ -1,7 +1,7 @@
 <!--
   Full-viewport bento dashboard for /about.
   6×4 CSS Grid with named areas. SELL-first → Personal → Action.
-  Fits 13" laptop (1280×800 CSS px). Scales to 18", then caps.
+  Wrapped in SectionWrapper (layout="bleed") for constitutional compliance.
   Cards stretch to fill — no voids, no fixed heights.
   All content from aboutPageContent via data layer.
 -->
@@ -14,6 +14,7 @@
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Separator } from '$lib/components/ui/separator';
+	import { SectionWrapper } from '$lib/components/shells';
 
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
@@ -48,17 +49,19 @@
 	});
 </script>
 
-<div class="about-page w-full" data-testid="page-about">
-	<div>
+<!-- Top Stripe -->
+<div class="px-3 pt-1" aria-hidden="true">
+	<Separator variant="hazard" />
+</div>
 
-		<!-- Top Stripe -->
-		<div class="px-3 pt-1" aria-hidden="true">
-			<Separator variant="hazard" />
-		</div>
-
-		<!-- 6×4 Bento Grid -->
-		<div class="px-3 py-2">
-			<div class="dashboard">
+<!-- Bento Dashboard — SectionWrapper for constitutional compliance -->
+<SectionWrapper
+	layout="bleed"
+	style="min-height: calc(100dvh - 5rem)"
+	data-testid="page-about"
+>
+	<div class="px-3 py-2">
+		<div class="dashboard">
 
 				<!-- SELL ROW 1 -->
 				<div class="area-identity"><AboutIdentity identity={c.identity} stop={s[0]} label="IDENTITY" /></div>
@@ -106,22 +109,14 @@
 
 			</div>
 		</div>
+</SectionWrapper>
 
-		<!-- Bottom Stripe -->
-		<div class="px-3 pb-1" aria-hidden="true">
-			<Separator variant="hazard" />
-		</div>
-
-	</div>
+<!-- Bottom Stripe -->
+<div class="px-3 pb-1" aria-hidden="true">
+	<Separator variant="hazard" />
 </div>
 
 <style>
-	/* Page fills viewport minus nav */
-	.about-page {
-		min-height: calc(100dvh - 5rem); /* subtract floating pill nav area */
-		background: var(--background);
-	}
-
 	/* ═══ DASHBOARD: CSS Grid Named Areas ═══ */
 
 	/* Mobile: single column (< 500px) */
