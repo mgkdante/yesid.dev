@@ -165,10 +165,11 @@
 	<SectionWrapper layout="bleed" container="none">
 		<div class="blog-blueprint-header" data-batch="blog-item">
 			<BlogBlueprint />
-			<!-- Mobile title: shown when EdgeRail hidden -->
-			<div class="blog-mobile-title">
+			<!-- Subtitle: always visible, overlaid on blueprints -->
+			<div class="blog-header-text">
+				<!-- "Blog." heading: only on mobile (EdgeRail carries it on desktop) -->
 				<div class="blog-mobile-heading">Blog<span class="text-[var(--primary)]">.</span></div>
-				<div class="blog-mobile-subtitle">dispatches from the field</div>
+				<div class="blog-header-subtitle">dispatches from the field</div>
 			</div>
 		</div>
 	</SectionWrapper>
@@ -269,14 +270,23 @@
 	/* --- Blog header: blueprint visualization --- */
 	.blog-blueprint-header {
 		position: relative;
-		height: 240px;
+		height: calc(100px + 5rem);
 		overflow: hidden;
+		margin-top: -5rem;
+		padding-top: 5rem;
 	}
 
-	.blog-mobile-title {
+	/* Desktop: taller header */
+	@media (min-width: 1024px) {
+		.blog-blueprint-header {
+			height: calc(160px + 5rem);
+		}
+	}
+
+	.blog-header-text {
 		position: absolute;
 		z-index: 20;
-		bottom: 1.5rem;
+		bottom: 1rem;
 		left: var(--space-page-x);
 	}
 
@@ -289,23 +299,26 @@
 		line-height: 1;
 	}
 
-	.blog-mobile-subtitle {
+	/* Hide "Blog." heading on desktop (EdgeRail carries it) */
+	@media (min-width: 1024px) {
+		.blog-mobile-heading { display: none; }
+	}
+
+	.blog-header-subtitle {
 		font-family: var(--font-mono);
-		font-size: 0.65rem;
-		color: var(--muted-foreground);
+		font-size: 0.75rem;
+		color: var(--foreground);
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		margin-top: 0.35rem;
 	}
 
-	/* Hide mobile title on desktop (EdgeRail carries identity) */
+	/* Desktop: large to differentiate from blueprint labels */
 	@media (min-width: 1024px) {
-		.blog-mobile-title { display: none; }
-	}
-
-	/* Reduce blueprint height on mobile */
-	@media (max-width: 767px) {
-		.blog-blueprint-header { height: 140px; }
+		.blog-header-subtitle {
+			font-size: 1.1rem;
+			letter-spacing: 5px;
+		}
 	}
 
 	input:focus {

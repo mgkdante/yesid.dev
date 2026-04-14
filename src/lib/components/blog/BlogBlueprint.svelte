@@ -14,32 +14,37 @@
 </script>
 
 <div class="blueprint-bg absolute inset-0 z-0 text-[var(--primary)]" aria-hidden="true">
-	<!-- Bridge elevation — primary full-page blueprint (centered, faintest) -->
-	<div class="hero-svg absolute inset-x-[2%] top-[20%] bottom-[20%] z-0 opacity-[0.05]">
+	<!-- Bridge elevation — full-width hero layer spanning the entire header -->
+	<div class="hero-svg absolute inset-x-0 top-[10%] bottom-[10%] z-0 opacity-[0.16]">
 		<BlueprintBridge class="h-full w-full" />
 	</div>
 
-	<!-- Detail drawings — layered at different scales, rotations, opacities -->
+	<!-- Detail drawings — spread across all quadrants, no overlap concentration -->
 	<div class="edge-details absolute inset-0 z-0 overflow-hidden">
+		<!-- TOP-LEFT: Track plan with turnout -->
 		<BlueprintTrackPlan
 			class="edge-detail"
-			style="top:20%;left:2%;width:50%;height:60%;opacity:0.07;transform:rotate(-2deg);"
+			style="top:2%;left:0;width:45%;height:50%;opacity:0.18;"
 		/>
+		<!-- TOP-RIGHT: Catenary overhead wires -->
 		<BlueprintCatenary
 			class="edge-detail"
-			style="top:4%;right:4%;width:42%;height:48%;opacity:0.06;transform:rotate(1deg);"
+			style="top:0;right:0;width:48%;height:42%;opacity:0.16;"
 		/>
-		<BlueprintSignal
-			class="edge-detail"
-			style="top:22%;right:18%;width:7%;height:55%;opacity:0.08;transform:rotate(3deg);"
-		/>
-		<BlueprintStationSection
-			class="edge-detail"
-			style="bottom:4%;right:6%;width:28%;height:55%;opacity:0.05;transform:rotate(-1deg);"
-		/>
+		<!-- BOTTOM-LEFT: Bogie detail -->
 		<BlueprintDetailBogie
 			class="edge-detail"
-			style="bottom:8%;left:6%;width:16%;height:32%;opacity:0.06;transform:rotate(2deg);"
+			style="bottom:2%;left:2%;width:22%;height:42%;opacity:0.16;"
+		/>
+		<!-- BOTTOM-CENTER: Station cross-section -->
+		<BlueprintStationSection
+			class="edge-detail"
+			style="bottom:0;left:28%;width:35%;height:52%;opacity:0.14;"
+		/>
+		<!-- BOTTOM-RIGHT: Signal diagram -->
+		<BlueprintSignal
+			class="edge-detail"
+			style="bottom:4%;right:8%;width:10%;height:58%;opacity:0.20;"
 		/>
 	</div>
 
@@ -54,11 +59,6 @@
 	<span class="ref-label" style="bottom:16px;left:56px;">DWG: TRANSIT-OPS-ELEV</span>
 	<span class="ref-label" style="bottom:16px;right:56px;">SCALE NTS | REV.A</span>
 
-	<!-- Vignette overlay for depth -->
-	<div
-		class="absolute inset-0 z-10"
-		style="background: radial-gradient(ellipse at 55% 50%, transparent 15%, rgba(10,10,10,0.65) 85%);"
-	></div>
 </div>
 
 <style>
@@ -106,14 +106,5 @@
 		}
 	}
 
-	/* Reduce detail layer opacity on mobile */
-	@media (max-width: 767px) {
-		.edge-details {
-			opacity: var(--opacity-faint);
-		}
-
-		.hero-svg {
-			opacity: var(--opacity-faint);
-		}
-	}
+	/* Keep blueprints bold on mobile — no opacity reduction */
 </style>
