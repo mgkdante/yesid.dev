@@ -99,6 +99,7 @@
   .terminal-body {
     flex: 1;
     padding: 0.75rem 1rem;
+    overflow-y: auto;
   }
   .terminal-body.no-pad {
     padding: 0;

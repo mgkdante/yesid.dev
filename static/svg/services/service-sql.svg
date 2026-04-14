@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
   <!-- Database cylinder: 3 stacked ellipses + vertical sides -->
   <!-- Top ellipse (lid) -->
-  <ellipse cx="24" cy="12" rx="14" ry="5" stroke="#E07800" stroke-width="1.5" fill="none"/>
+  <ellipse cx="24" cy="12" rx="14" ry="5" stroke="var(--primary)" stroke-width="1.5" fill="none"/>
   <!-- Left side -->
-  <line x1="10" y1="12" x2="10" y2="36" stroke="#E07800" stroke-width="1.5"/>
+  <line x1="10" y1="12" x2="10" y2="36" stroke="var(--primary)" stroke-width="1.5"/>
   <!-- Right side -->
-  <line x1="38" y1="12" x2="38" y2="36" stroke="#E07800" stroke-width="1.5"/>
+  <line x1="38" y1="12" x2="38" y2="36" stroke="var(--primary)" stroke-width="1.5"/>
   <!-- Middle ellipse (data band) -->
-  <ellipse cx="24" cy="24" rx="14" ry="5" stroke="#FFB627" stroke-width="1" fill="none" opacity="0.5"/>
+  <ellipse cx="24" cy="24" rx="14" ry="5" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.5"/>
   <!-- Bottom ellipse (base) -->
-  <ellipse cx="24" cy="36" rx="14" ry="5" stroke="#E07800" stroke-width="1.5" fill="none"/>
+  <ellipse cx="24" cy="36" rx="14" ry="5" stroke="var(--primary)" stroke-width="1.5" fill="none"/>
   <!-- SQL bracket hints: left angle bracket -->
-  <polyline points="20,20 17,22 20,24" stroke="#FFB627" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="20,20 17,22 20,24" stroke="var(--accent)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- SQL bracket hints: right angle bracket -->
-  <polyline points="28,20 31,22 28,24" stroke="#FFB627" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="28,20 31,22 28,24" stroke="var(--accent)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- Subtle glow fill on top ellipse -->
-  <ellipse cx="24" cy="12" rx="14" ry="5" fill="#E0780015"/>
+  <ellipse cx="24" cy="12" rx="14" ry="5" fill="var(--primary)15"/>
 </svg>

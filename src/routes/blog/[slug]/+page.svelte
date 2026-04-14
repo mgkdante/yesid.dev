@@ -5,10 +5,10 @@
   ReadingProgressBar tracks scroll progress through the blog content.
 -->
 <script lang="ts">
-	import BlogDetailHeader from '$lib/components/BlogDetailHeader.svelte';
-	import BlogContent from '$lib/components/BlogContent.svelte';
-	import ReadingProgressBar from '$lib/components/ReadingProgressBar.svelte';
-	import TableOfContents from '$lib/components/TableOfContents.svelte';
+	import BlogDetailHeader from '$lib/components/blog/BlogDetailHeader.svelte';
+	import BlogContent from '$lib/components/blog/BlogContent.svelte';
+	import ReadingProgressBar from '$lib/components/layout/ReadingProgressBar.svelte';
+	import TableOfContents from '$lib/components/shared/TableOfContents.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { StickyPanel } from '$lib/components/brand';
 

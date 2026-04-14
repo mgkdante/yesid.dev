@@ -12,6 +12,10 @@ export { default as MetricDisplay } from './MetricDisplay.svelte';
 export { default as CornerMarks } from './CornerMarks.svelte';
 export { default as TerminalChrome } from './TerminalChrome.svelte';
 export { default as StickyPanel } from './StickyPanel.svelte';
+export { default as SectionHeading } from './SectionHeading.svelte';
+export { default as MetroStation } from './MetroStation.svelte';
+export { default as SvgIcon } from './SvgIcon.svelte';
+
 
 // Props interfaces
 export type { StatusDotProps } from './StatusDot.svelte';
@@ -23,3 +27,5 @@ export type { MetricDisplayProps } from './MetricDisplay.svelte';
 export type { CornerMarksProps } from './CornerMarks.svelte';
 export type { TerminalChromeProps, TerminalFooterItem } from './TerminalChrome.svelte';
 export type { StickyPanelProps } from './StickyPanel.svelte';
+export type { SectionHeadingProps } from './SectionHeading.svelte';
+export type { MetroStationProps } from './MetroStation.svelte';

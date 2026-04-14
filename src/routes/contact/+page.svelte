@@ -1,6 +1,6 @@
 <!-- /contact route: dual-terminal contact form -->
 <script lang="ts">
-	import ContactPage from '$lib/components/ContactPage.svelte';
+	import ContactPage from '$lib/components/contact/ContactPage.svelte';
 </script>
 
 <svelte:head>

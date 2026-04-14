@@ -28,8 +28,8 @@ export const navLinks: readonly NavLink[] = [
 		priority: 1
 	},
 	{
-		label: { en: 'Work', fr: 'Projets', es: 'Proyectos' },
-		href: '/work',
+		label: { en: 'Projects', fr: 'Projets', es: 'Proyectos' },
+		href: '/projects',
 		priority: 1
 	},
 	{
@@ -46,8 +46,8 @@ export const menuItems: readonly MenuItem[] = [
 		subtitle: { en: 'what I build', fr: 'ce que je construis', es: 'lo que construyo' }
 	},
 	{
-		label: { en: 'Work', fr: 'Projets', es: 'Proyectos' },
-		href: '/work',
+		label: { en: 'Projects', fr: 'Projets', es: 'Proyectos' },
+		href: '/projects',
 		subtitle: { en: 'proof it ships', fr: 'la preuve que ça livre', es: 'prueba de que se entrega' }
 	},
 	{
@@ -87,7 +87,7 @@ export const errorPageContent: ErrorPageContent = {
 	terminalLine: '$ route --status 404 // requested path not in service',
 	suggestions: [
 		{ label: { en: 'Services', fr: 'Services', es: 'Servicios' }, href: '/services' },
-		{ label: { en: 'Work', fr: 'Projets', es: 'Proyectos' }, href: '/work' },
+		{ label: { en: 'Projects', fr: 'Projets', es: 'Proyectos' }, href: '/projects' },
 		{ label: { en: 'Contact', fr: 'Contact', es: 'Contacto' }, href: '/contact' }
 	]
 } as const;

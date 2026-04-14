@@ -183,37 +183,37 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 ## Slices
 
 
-| #   | Name                                                   | Status                                                                                                 | Depends On     | Est. Sessions |
-| --- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | -------------- | ------------- |
-| 01  | Project scaffold + brand + CI pipeline                 | complete                                                                                               | none           | 1             |
-| 02  | Data layer (types, data files, site meta)              | complete                                                                                               | 01             | 1             |
-| 03  | Component library (basic, no motion)                   | complete                                                                                               | 01             | 1-2           |
-| 04  | Motion infrastructure + component enhancement          | complete                                                                                               | 02, 03         | 2-3           |
-| 05  | Layout shell + scroll progress rail                    | complete                                                                                               | 03, 04         | 1             |
-| 06  | Home page: train journey + hero 3D scene               | complete                                                                                               | 02, 04, 05     | 2-3           |
-| 06d | Home page redesign: Metro System Evolved               | complete                                                                                               | 06             | 3-4           |
-| A   | SVG metro hero (experimental)                          | complete                                                                                               | 06d            | 1             |
-| C   | Zoom transition between hero + journey                 | complete                                                                                               | A              | 1             |
-| B   | Animated wordmark + horizontal scroll CTA              | complete                                                                                               | A, C           | 2             |
-| B+  | Icon morphs + scroll UX for SkillsJourney              | complete                                                                                               | B              | 1-2           |
-| 07  | Blog system (markdown content + /blog routes)          | complete                                                                                               | 06d            | 1-2           |
-| 08  | Work pages (index + FLIP filter + detail)              | complete                                                                                               | 02, 03, 07     | 1-2           |
-| 09  | Services pages (/services + /services/[id])            | ready                                                                                                  | 02, 08         | 2-3           |
-| 09b | About + Contact pages (bento grid /about)              | complete                                                                                               | 02, 03, 09     | 3-4           |
-| 10  | Tech Stack page: "The Control Room" (/tech-stack)      | spec approved                                                                                          | 09b            | 6-8           |
-| 11  | Navbar research + redesign + 404 page                  | planned                                                                                                | 10             | 1-2           |
-| 12  | Footer research + redesign                             | planned                                                                                                | 11             | 1             |
-| 13  | Home page rework (post-hero, archive SkillsJourney)    | planned                                                                                                | 10, 11, 12     | 2-3           |
-| 14  | Stack Builder Logic Engine (graph-based recs)          | deferred — first CD/CI feature post-deploy. See FUTURE_PHASES.md                                       | 10, 13         | 3-4           |
-| 17  | Standardization: Design System + Ports & Adapters      | planned — split execution (see Execution Sequence below)                                               | 13             | 13-14         |
-| 15  | SEO + metadata                                         | planned — built on 17b service layer                                                                   | 13, 17a, 17b   | 1-2           |
-| 16  | E2E test suite + performance + brand QA                | planned — tests final standardized + SEO state                                                         | 15, 17         | 3             |
-| 18  | Cloud content layer (edit + publish without code)      | planned — plugs into 17b service layer seam                                                            | 16, 17         | 4             |
-| 19  | Mobile UI/UX optimization                              | planned                                                                                                | 17, B+         | 2             |
-| 19b | Accessibility (A11Y) optimization                      | planned                                                                                                | 19             | 2             |
-| 20  | Scroll smoothness + animation polish                   | planned                                                                                                | B+, 19b        | 1             |
-| 21  | Repo cleanup for public release                        | planned                                                                                                | 16, 18         | 1             |
-| 22  | Deploy to Vercel + DNS cutover                         | planned                                                                                                | 21             | 1             |
+| #   | Name                                                | Status                                                           | Depends On   | Est. Sessions |
+| --- | --------------------------------------------------- | ---------------------------------------------------------------- | ------------ | ------------- |
+| 01  | Project scaffold + brand + CI pipeline              | complete                                                         | none         | 1             |
+| 02  | Data layer (types, data files, site meta)           | complete                                                         | 01           | 1             |
+| 03  | Component library (basic, no motion)                | complete                                                         | 01           | 1-2           |
+| 04  | Motion infrastructure + component enhancement       | complete                                                         | 02, 03       | 2-3           |
+| 05  | Layout shell + scroll progress rail                 | complete                                                         | 03, 04       | 1             |
+| 06  | Home page: train journey + hero 3D scene            | complete                                                         | 02, 04, 05   | 2-3           |
+| 06d | Home page redesign: Metro System Evolved            | complete                                                         | 06           | 3-4           |
+| A   | SVG metro hero (experimental)                       | complete                                                         | 06d          | 1             |
+| C   | Zoom transition between hero + journey              | complete                                                         | A            | 1             |
+| B   | Animated wordmark + horizontal scroll CTA           | complete                                                         | A, C         | 2             |
+| B+  | Icon morphs + scroll UX for SkillsJourney           | complete                                                         | B            | 1-2           |
+| 07  | Blog system (markdown content + /blog routes)       | complete                                                         | 06d          | 1-2           |
+| 08  | Work pages (index + FLIP filter + detail)           | complete                                                         | 02, 03, 07   | 1-2           |
+| 09  | Services pages (/services + /services/[id])         | ready                                                            | 02, 08       | 2-3           |
+| 09b | About + Contact pages (bento grid /about)           | complete                                                         | 02, 03, 09   | 3-4           |
+| 10  | Tech Stack page: "The Control Room" (/tech-stack)   | spec approved                                                    | 09b          | 6-8           |
+| 11  | Navbar research + redesign + 404 page               | planned                                                          | 10           | 1-2           |
+| 12  | Footer research + redesign                          | planned                                                          | 11           | 1             |
+| 13  | Home page rework (post-hero, archive SkillsJourney) | planned                                                          | 10, 11, 12   | 2-3           |
+| 14  | Stack Builder Logic Engine (graph-based recs)       | deferred — first CD/CI feature post-deploy. See FUTURE_PHASES.md | 10, 13       | 3-4           |
+| 17  | Standardization: Design System + Ports & Adapters   | planned — split execution (see Execution Sequence below)         | 13           | 13-14         |
+| 15  | SEO + metadata                                      | planned — built on 17b service layer                             | 13, 17a, 17b | 1-2           |
+| 16  | E2E test suite + performance + brand QA             | planned — tests final standardized + SEO state                   | 15, 17       | 3             |
+| 18  | Cloud content layer (edit + publish without code)   | planned — plugs into 17b service layer seam                      | 16, 17       | 4             |
+| 19  | Mobile UI/UX optimization                           | planned                                                          | 17, B+       | 2             |
+| 19b | Accessibility (A11Y) optimization                   | planned                                                          | 19           | 2             |
+| 20  | Scroll smoothness + animation polish                | planned                                                          | B+, 19b      | 1             |
+| 21  | Repo cleanup for public release                     | planned                                                          | 16, 18       | 1             |
+| 22  | Deploy to Vercel + DNS cutover                      | planned                                                          | 21           | 1             |
 
 
 ### Execution Sequence (Post-Home Page)
@@ -223,29 +223,29 @@ Slice 17 executes in two phases, with SEO sandwiched between them. This avoids b
 ```
 13 (home page)
   → 17a (CSS audit + consolidation)
+  → 17d (component API standardization)
+  → 17e (motion consolidation)
   → 17b (service layer extraction)
     → 15 (SEO + metadata — built on service layer, not raw data files)
   → 17c (Zod schemas — validates SEO structured data too)
-  → 17d (component API standardization)
-  → 17e (motion consolidation)
   → 17f (test architecture + docs)
-  → 17g (learning docs refactor)
     → 16 (E2E + QA — tests the FINAL state including SEO)
       → 18 (Keystatic — plugs into 17b service seam, SEO metadata as first test collection)
         → 19 (mobile optimization)
           → 19b (accessibility / A11Y)
             → 20 (scroll polish)
+  → 17g (learning docs refactor)
               → 21 (repo cleanup)
             → 22 (deploy)
 ```
 
 **Why this order:**
+
 1. **17a+17b first** — service layer gives SEO clean data access (`getAllProjects()`, not raw imports)
 2. **15 after 17b** — `<SeoHead>` built once on the right foundation, no refactor needed
 3. **17c-17g after 15** — Zod validates SEO structured data; remaining standardization completes
 4. **16 last before deploy** — E2E tests cover the fully standardized + SEO-equipped site
 5. **18 after 16** — Keystatic plugs into 17b's service seam; SEO metadata becomes first test collection
-
 
 ## Slice Summaries
 
@@ -590,7 +590,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ### Slice 17 — Standardization: Ports & Adapters Lite
 
-**Full plan:** [`docs/roadmap/standardization.md`](standardization.md)
+**Full plan:** `[docs/roadmap/standardization.md](standardization.md)`
 **Status:** IN PROGRESS — Phase 1 Foundation **Est. Sessions:** 13-14 (across 7 sub-slices) **Depends on:** 13
 
 Design system + structural refactor. Brand primitives (terminal chrome, hazard stripes, card base) become shared components. Semantic type scale replaces 275 ad-hoc font-size declarations. All hardcoded hex colors migrate to tokens. Light theme becomes one toggle away. Service layer creates the Keystatic seam.
@@ -818,7 +818,7 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 | 2026-04-07 | Brand = Digital Infrastructure (not just data/SQL) | Current focus is data engineering + SQL, but the brand umbrella covers databases, dashboards, pipelines, internal tools, web systems. All copy reflects broader positioning.                                 |
 | 2026-04-07 | Slice 10 = Home page rework after About/Contact    | Building all route pages gave clarity on site identity. Home (post-hero) was built before subsites. Rework with full context. Archive SkillsJourney (keep code, disable render, bring back optimized later). |
 | 2026-04-10 | Slice 14 deferred to CD/CI                         | First feature released under a proper CD/CI pipeline after deploy, like a real engineer                                                                                                                      |
-| 2026-04-10 | Standardize (17) before SEO (15) + QA (16)         | SEO built on service layer = no rework. E2E tests cover final architecture. Split execution: 17a+17b → 15 → 17c-17g → 16 → 18. Keystatic gets SEO metadata as first test collection.                        |
+| 2026-04-10 | Standardize (17) before SEO (15) + QA (16)         | SEO built on service layer = no rework. E2E tests cover final architecture. Split execution: 17a+17b → 15 → 17c-17g → 16 → 18. Keystatic gets SEO metadata as first test collection.                         |
 | 2026-04-07 | No standalone tech stack page                      | About page widget + service detail pages + blog posts cover tools better than a resume-style page. Anti-pattern per conversion research.                                                                     |
 | 2026-04-07 | Live weather widget (OpenWeatherMap free tier)     | API key in .env, server-side fetch in +page.server.ts, graceful fallback. Unique personality touch on About page.                                                                                            |
 

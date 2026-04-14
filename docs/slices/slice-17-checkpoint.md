@@ -1,16 +1,108 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-13 | 17a-6 COMPLETE (Sessions 1-4, Tasks 1-26)
-**Branch:** `feature/slice-17a-6-component-library`
+**Last updated:** 2026-04-14 | 17d-4 Session 1 — Pre-pass COMPLETE + Home page DONE
+**Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** 17a-6 (Component Library Foundation) — COMPLETE (all 4 sessions, 26/26 tasks)
-- **Status:** shadcn-svelte component library initialized. 56 ui/ components scaffolded, 15 customized with brand styling, 7 brand primitives migrated to ui/, 10 page components wired to ui/ headless primitives. 9 brand primitives remain with cn/data-slot conventions. Zero svelte-ignore a11y. Zero old tokens. Zero arbitrary spacing. Dead Three.js/Threlte deps removed. Docs updated.
-- **Build:** 0 errors, 12 warnings, 707/707 tests pass.
-- **Next action:** PR to main, then 17d (Component API — 4 sessions).
-- **Decision D47 revised:** Kept Tailwind default breakpoints (640/768/1024/1280/1536) instead of custom 360/520/768/1024/1440. Edge-to-edge controlled by layout model, not breakpoints.
-- **Pending brainstorm:** Edge-to-edge visual design (edge decorations, vertical typography, circuit lines) for all pages — feeds into 17d.
+- **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — IN PROGRESS
+- **Status:** Pre-pass (P1–P9) complete. Session 1 (Home) complete. Next: Session 2 (About).
+- **Build:** 0 errors, 15 warnings, 772/772 tests pass.
+- **Next action:** Session 2 — About page (SectionWrapper + rotated titles + enrichment).
+
+### 17d-4 Pre-pass (P1–P9) — COMPLETE
+- P1: SectionHeading wired into BlogListingPage, ProjectListingPage, ContactPage (added `level` prop)
+- P2: SectionLabel wired into ServiceCard, ServiceNav, +error, tech-stack
+- P3: BlogRow already clean, +error dots not MetroStation-compatible
+- P4: Skipped — tech-stack hero stats use mono/foreground style (intentionally different from MetricDisplay)
+- P5: All viable StatusDot consumers already wired
+- P6: TerminalChrome overflow-y: auto added, AboutCta custom scroll removed (standard behavior)
+- P7: Semantic HTML — dual h1 fixed (HeroTextContent), h2→h1 (AboutIdentity), h3→h2 (BlogRow, ProjectCard), sr-only h1 (ServiceListingPage), dates in `<time>` tags
+- P8: StationTabs already had overflow-x-auto, StackBottomSheet handled by vaul-svelte
+- P9: Props interfaces exported for BlogRow, ProjectCard, ServiceCard + 7 shells, barrel exports updated
+
+### Session 1 (Home) — COMPLETE
+- HomePage.svelte created as section orchestrator
+- All 5 sections wrapped in SectionWrapper (Hero/Manifesto: bleed, Projects/Services/Closer: centered)
+- Alternating rotated SectionHeading titles: Projects (left) → Services (right) → Terminus (left)
+- Removed redundant in-content headings from FeaturedProjects, HomeServices, HomeCloser (GSAP refs cleaned)
+- ServicesBlueprint moved to SectionWrapper `background` slot (spans full width including edge columns)
+- SectionWrapper default `container` changed from "content" to "none" (unconstrained by default)
+- SectionWrapper grid columns fixed: `minmax(0, var(...))` → `var(...)` (edge columns no longer collapse)
+
+### Decisions (17d-4)
+- D101: Added `level` prop to SectionHeading (h1-h6, default h2)
+- D102: ServiceCard heading+dot not wired to SectionHeading (styling too different)
+- D103: tech-stack hero not wired to SectionHeading (multi-line layout)
+- D104: AboutPage has no heading at component level (bento orchestrator)
+- D105: SectionLabel variant="station" for service counter, error label, tech-stack overline
+- D106: SectionLabel variant="section" for ServiceNav labels
+- D107: +error suggestion dots skipped for MetroStation (wrong component)
+- D108: MetricDisplay skipped for tech-stack hero stats (mono/foreground vs heading/primary)
+- D109: ManifestoEdgeBottom status dot skipped (intentionally dim, GSAP-orchestrated)
+- D110: +error suggestion dots skipped for StatusDot (no hollow variant)
+- D111: TerminalChrome overflow-y: auto is the standard; AboutCta custom scroll removed
+- D112: StationTabs horizontal scroll already correct (overflow-x-auto)
+- D113: SectionWrapper layout per Home section (bleed for Hero/Manifesto, centered for others)
+- D114: Rotated titles alternate sides: left → right → left
+- D115: Edge column width: clamp(4.5rem, 8vw, 8rem)
+- D116: Wiring in HomePage.svelte, not inside each component
+- D117: "Proof" → "Projects" naming consistency
+- D118: SectionWrapper default container changed to "none" (unconstrained)
+- D119: ServicesBlueprint moved to SectionWrapper background slot (full-width coverage)
+- D120: ControlRoom scrapped (D90 from 17d-3)
+- **Decisions (17d-3 Session 2):**
+  - D93: CloserGraffiti uses onReady callback for parent timeline integration — child owns DrawSVG lifecycle, parent coordinates timing
+  - D94: CloserProps uses display:contents wrapper to preserve absolute positioning
+  - D95: Removed unused StatusDot import from HomeCloser
+  - D96: HeroBanner heroDot ref resolved via querySelector('.hero-dot') — avoids $bindable complexity
+  - D97: Typewriter controls as factory return object { startBlink, stopBlink, type, showImmediate, destroy }
+  - D98: refresh-btn style duplicated in parent + HeroMobileSql (scoped CSS can't cross components)
+  - D99: Blueprint SVGs use currentColor + text-[var(--primary)] on container — zero hardcoded hex
+  - D100: Blueprint opacity reduced (train 0.15→0.08, edge details 0.18→0.10) per Yesid feedback
+- **Decisions (17d-3 Session 1):**
+  - D88: DataFlowDiagram placed in home/ (primary usage), imported cross-domain by projects/services via $lib/ paths
+  - D89: Static image paths (/images/work/) kept unchanged — asset paths, not route paths
+  - D90: Tech-stack engine (ControlRoom + StackDiagram + Build Your Stack) stripped — re-engineered Phase 2. Hero + CTA retained.
+  - D91: Nav labels "Work" → "Projects" (French/Spanish already said Projets/Proyectos)
+  - D92: Manifesto GSAP timeline uses global class selectors to target child sub-components — works because GSAP queries the full DOM
+
+## 17d-3 Task Progress
+
+| Task | Description | Status |
+|------|-------------|--------|
+| 0 | Repo restructuring — domain folders + renames + route change | COMPLETE |
+| 1 | Split Manifesto (1007→395 lines, 5 sub-components) | COMPLETE |
+| 2 | Strip tech-stack engine (919→357 lines) | COMPLETE |
+| 3 | Split HomeCloser (749→253 lines, 4 sub-components) | COMPLETE |
+| 4 | Split HeroBanner (734→353 lines, 3 TS modules + 2 sub-components) | COMPLETE |
+| 5 | Split HomeServices + StackPanel (1 sub-component each) | COMPLETE |
+| 6 | Blueprint SVGs → Svelte components (12 files, 743 colors tokenized) | COMPLETE |
+| 7 | Services SVG tokenization (6 files, 65 colors tokenized) | COMPLETE |
+| 8 | Delete orphan SVGs (9 files) | COMPLETE |
+
+## Revised Sub-slice Plan (consolidated)
+
+```
+17d-1: Constitution + Card + Brand Atoms ............ COMPLETE (1 session)
+17d-2: SvgIcon + Utilities + Shells .................. READY (2-3 sessions)
+       → old 17d-2 (Tasks 5-9) + old 17d-3 (Tasks 10-15) combined
+       → spec: docs/slices/slice-17d-2-svgicon-utility-shells.md
+17d-3: File Splits + SVG Tokenization ................ COMPLETE (2 sessions)
+       → spec: docs/slices/slice-17d-3-file-splits-svg-tokenization.md
+17d-4: Wiring + Edge-to-Edge (combined 17d-6 + 17d-7). SPEC + PLAN READY
+       → spec: docs/slices/slice-17d-4-wiring-edge-to-edge.md
+       → plan: docs/plans/2026-04-14-slice-17d-4-wiring-edge-to-edge.md
+       → structure: Pre-pass (P1-P9) → 7 page sessions (S1-S7) → Post-sweep (S8)
+       → ~8.5 sessions estimated. UnoCSS migration deferred (not Lighthouse-shaped)
+```
+- **Decisions this session:**
+  - D75: Card surface 100% opaque (not translucent), 25% primary border, 60% hover glow
+  - D76: Circuit grid 8% opacity with vignette mask (visible at top/bottom, clear in middle)
+  - D77: ::selection uses yellow (--accent) background with black text
+  - D78: Edge decorations visibility flexible — not strictly xl:+ if no side panels compete
+  - D79: Constitution math-driven layout — all dimensions computed from shared variables via min()/clamp()/minmax()
+  - D80: Badge number variant uses text-[0.75rem] instead of text-caption to avoid tailwind-merge stripping text-primary-foreground
 
 ## Execution Sequence
 

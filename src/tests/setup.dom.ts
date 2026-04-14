@@ -132,7 +132,7 @@ vi.mock('gsap/CustomEase', () => ({
 // as a no-op since there's no real SVG rendering.
 vi.mock('gsap/MorphSVGPlugin', () => ({
 	MorphSVGPlugin: {
-		convertToPath: vi.fn(() => []),
+		convertToPath: vi.fn((el: unknown) => [el]),
 	}
 }));
 

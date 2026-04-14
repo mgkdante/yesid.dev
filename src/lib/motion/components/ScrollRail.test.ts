@@ -20,9 +20,9 @@ describe('ScrollRail', () => {
 		});
 	});
 
-	describe('non-home page (pathname="/work")', () => {
+	describe('non-home page (pathname="/projects")', () => {
 		it('renders a progress bar', () => {
-			render(ScrollRail, { props: { pathname: '/work' } });
+			render(ScrollRail, { props: { pathname: '/projects' } });
 			expect(screen.getByTestId('scroll-rail-progress')).toBeInTheDocument();
 		});
 

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import ConstructionScene from '$lib/components/ConstructionScene.svelte';
-	import TerminalCursor from '$lib/components/TerminalCursor.svelte';
+	import ErrorIllustration from '$lib/components/home/ErrorIllustration.svelte';
+	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { errorPageContent } from '$lib/data';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/data/locale.js';
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { Separator } from '$lib/components/ui/separator';
+	import { SectionLabel } from '$lib/components/brand';
 
 	const locale = DEFAULT_LOCALE;
 	const label = resolveLocale(errorPageContent.label, locale);
@@ -32,18 +33,13 @@
 	<div class="flex flex-1 flex-col items-center justify-center gap-5 py-4 sm:gap-6">
 		<!-- Construction scene SVG — big and prominent -->
 		<div class="w-full max-w-sm sm:max-w-md">
-			<ConstructionScene />
+			<ErrorIllustration />
 		</div>
 
 		<!-- Error text block -->
 		<div class="flex flex-col items-center gap-2 text-center sm:gap-3">
 			<!-- Monospace label -->
-			<span
-				class="font-mono text-xs tracking-[3px] sm:text-sm"
-				style="color: color-mix(in srgb, var(--primary) 60%, transparent);"
-			>
-				{label}
-			</span>
+			<SectionLabel text={label} variant="station" />
 
 			<!-- Heading -->
 			<h1 class="max-w-lg text-2xl font-bold leading-tight text-[var(--foreground)] sm:text-4xl">

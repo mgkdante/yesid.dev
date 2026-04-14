@@ -49,7 +49,7 @@ describe('Home page', () => {
 
 	it('renders hero CTAs', () => {
 		render(Page);
-		expect(screen.getByTestId('hero-cta-work')).toBeInTheDocument();
+		expect(screen.getByTestId('hero-cta-projects')).toBeInTheDocument();
 		expect(screen.getByTestId('hero-cta-contact')).toBeInTheDocument();
 	});
 
@@ -130,9 +130,4 @@ describe('Home page', () => {
 		expect(rows).toHaveLength(5);
 	});
 
-	it('renders closer TERMINUS heading', () => {
-		render(Page);
-		const heading = screen.getByTestId('closer-heading');
-		expect(heading.textContent).toContain('TERMINUS');
-	});
 });

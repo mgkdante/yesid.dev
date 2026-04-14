@@ -52,10 +52,10 @@ Tasks:
 
 **Options discussed for C2:**
 
+- **Leading candidate:** Open-source yesid.dev itself — the codebase, design system, workflow methodology, and full documentation. Sanitize personal data, rewrite docs for human readers (current slice/handoff docs are AI-conversation format). Proves web dev + process + documentation skills. Potential blog series + case study.
 - Open data ETL pipeline (another city's GTFS feed)
 - SQL performance audit case study
 - Reporting dashboard on public data
-- Pick one when you get here. Don't plan it now.
 
 ## Phase D — Career Growth
 
@@ -65,6 +65,29 @@ Tasks:
 | D1  | Transit industry applications (Alto, CDPQ Infra)  | Portfolio depth | When roles open       |
 | D2  | Full-stack depth (The Odin Project completion)    | Ongoing         | Learning track        |
 | D3  | Site evolution (blog, case studies, new sections) | As needed       | Site is built to grow |
+| D4  | Transit ops migration: Neon → Oracle Always Free VPS (cost fix) + MS BI stack refresh | C1 | Portfolio piece targeting Alto/CDPQ analytical dev roles. Neon too expensive to run. |
 
+**Alto/CDPQ Strategy (researched 2026-04-13):**
+- CDPQ (La Caisse) is where tech jobs live — dedicated Digital Technology team
+- Stack: SQL Server, SSIS, SSRS, SSAS, Power BI, Power Pivot, DAX, AWS, Azure, Dynamics 365, Power Platform
+- Best-fit roles: Analytical Solutions Developer, BI Developer, ETL Developer
+- Alto still early stage — get in now to scale with the org
+- Portals: cdpq.wd10.myworkdayjobs.com/CDPQ, carrieres-careers.altotrain.ca
+- MS BI stack is free for dev: SQL Server Developer Edition, SSDT, Power BI Desktop, VS Community
+
+## Future Slice — Home Tech Board (Hex Grid)
+
+**Concept:** Honeycomb hex grid section on home page showing all marketable technologies/services. Logos in hexagons, grouped by service pillar, tiered by importance (center = core, outer = tools).
+
+**Service Pillars:**
+- **Data & BI** (Tier 1): SQL Server, PostgreSQL, Power BI, SSRS, SSIS, Python
+- **Web Presence** (Tier 1-2): SvelteKit, TypeScript, Webflow, WordPress, Shopify
+- **Cloud & Hosting** (Tier 2): Cloudflare, Vercel, Oracle Cloud VPS, Bun/Node
+- **CMS & Content** (Tier 2): Keystatic, Webflow CMS, WordPress
+- **Analytics & Marketing** (Tier 2): GA4/Plausible, SEO, email integration, tag management
+- **CRM & Automation** (Tier 2): Platform-agnostic CRM integration, Zapier/n8n
+- **ETL & Pipelines** (Tier 2): SSIS, Python, API integrations
+
+**Design ideas:** Monochrome logos → color on hover, GSAP entrance, cursorGlow action, visual tier hierarchy (size/position). Groups by domain with subtle separation.
 
 **This file gets revisited when Phase A ships. Not before.**

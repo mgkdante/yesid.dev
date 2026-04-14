@@ -128,8 +128,32 @@
 html {
   background-color: var(--background);
   color: var(--foreground);
-  overflow-x: hidden;
+  overflow-x: clip; /* No Overflow Guarantee — Layer 1: viewport boundary */
   overscroll-behavior: none; /* Prevent pull-to-refresh & bounce in pinned sections */
+}
+
+/* No Overflow Guarantee — Layer 2: text breaks before overflowing */
+body {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* No Overflow Guarantee — Layer 3: media scales to fit parent */
+img, svg, video, iframe, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* No Overflow Guarantee — Layer 7: preformatted content scrolls internally */
+pre, code, table {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Brand text selection — yellow highlight with black text */
+::selection {
+  background: var(--accent);
+  color: #000000;
 }
 
 /* Brand scrollbar — orange thumb on dark track, site-wide */
@@ -165,6 +189,9 @@ html {
   background:
     repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 5%, transparent) 0px, transparent 1px, transparent 80px),
     repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 5%, transparent) 0px, transparent 1px, transparent 80px);
+  /* Vignette: grid visible at top/bottom, fades to clear in the middle */
+  mask-image: linear-gradient(to bottom, black 0%, transparent 30%, transparent 70%, black 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 30%, transparent 70%, black 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -188,6 +215,11 @@ html {
     opacity: 0.7;
     box-shadow: 0 0 10px 4px rgb(var(--primary-rgb) / 0.8);
   }
+}
+
+@keyframes station-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  75%, 100% { transform: scale(2.5); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -359,18 +391,27 @@ html {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* 12. Bento card bundle — consistent card wrapper with brand border */
+/* 12. Bento card bundle — aligned with unified Card surface (Constitution Section 13) */
 .bento-card {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
-  background: var(--muted);
+  border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+  background: var(--background);
   transition: border-color var(--duration-normal) var(--ease-default),
               box-shadow var(--duration-normal) var(--ease-default);
 }
 .bento-card:hover {
-  border-color: color-mix(in srgb, var(--primary) 25%, transparent);
-  box-shadow: 0 4px 24px rgb(var(--primary-rgb) / 0.08),
-              0 1px 3px rgba(0, 0, 0, 0.3);
+  border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+  box-shadow: var(--shadow-section);
+}
+
+/* 13. Grid rows collapse — animate open/close with CSS grid rows */
+.grid-rows-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-slow) var(--ease-default);
+}
+.grid-rows-collapse[data-state="open"] {
+  grid-template-rows: 1fr;
 }
