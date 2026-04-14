@@ -14,16 +14,9 @@
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
-	import { SectionHeading, SvgIcon } from '$lib/components/brand';
+	import BlogBlueprint from './BlogBlueprint.svelte';
 	import { SectionWrapper } from '$lib/components/shells';
 	import { Separator } from '$lib/components/ui/separator';
-
-	// Featured post SVG for the header hero icon
-	let heroSvg = $derived.by(() => {
-		if (posts.length === 0) return '';
-		return svgContents[posts[0].slug] ?? '';
-	});
-
 
 	let {
 		posts,
@@ -168,20 +161,14 @@
 	class="w-full pb-16"
 	style={accentColor !== 'var(--accent)' ? `--accent: ${accentColor};` : ''}
 >
-	<!-- Section 1: Header — title + hero SVG -->
+	<!-- Section 1: Header — blueprint visualization -->
 	<SectionWrapper layout="bleed" container="none">
-		<div class="blog-header" data-batch="blog-item">
-			<div class="blog-header-title">
-				<h1 class="blog-heading">
-					<span class="blog-heading-prefix">Blog<span class="text-[var(--primary)]">.</span></span>
-					{heading}
-				</h1>
-				<p class="blog-subtitle">{subtitle}</p>
-			</div>
-			<div class="blog-header-icon">
-				{#if heroSvg}
-					<SvgIcon svgContent={heroSvg} size={120} animation="draw-fill" />
-				{/if}
+		<div class="blog-blueprint-header" data-batch="blog-item">
+			<BlogBlueprint />
+			<!-- Mobile title: shown when EdgeRail hidden -->
+			<div class="blog-mobile-title">
+				<div class="blog-mobile-heading">Blog<span class="text-[var(--primary)]">.</span></div>
+				<div class="blog-mobile-subtitle">dispatches from the field</div>
 			</div>
 		</div>
 	</SectionWrapper>
@@ -279,46 +266,46 @@
 </div>
 
 <style>
-	/* --- Blog header: title + icon --- */
-	.blog-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1.5rem;
-		padding-block: 1.5rem;
-		padding-inline: var(--space-page-x);
+	/* --- Blog header: blueprint visualization --- */
+	.blog-blueprint-header {
+		position: relative;
+		height: 240px;
+		overflow: hidden;
 	}
 
-	.blog-header-title { flex: 1; min-width: 0; }
-	.blog-header-icon  { flex-shrink: 0; }
+	.blog-mobile-title {
+		position: absolute;
+		z-index: 20;
+		bottom: 1.5rem;
+		left: var(--space-page-x);
+	}
 
-	.blog-heading {
+	.blog-mobile-heading {
 		font-family: var(--font-heading);
-		font-size: clamp(2.5rem, 6vw, 4rem);
+		font-size: clamp(2rem, 5vw, 3rem);
 		font-weight: 900;
 		color: var(--foreground);
-		letter-spacing: -2px;
-		margin-block-end: 6px;
+		letter-spacing: -1px;
+		line-height: 1;
 	}
 
-	/* "Blog." prefix: visible on mobile, hidden when EdgeRail shows it */
-	.blog-heading-prefix {
-		color: var(--primary);
-		margin-inline-end: 0.25em;
-	}
-
-	@media (min-width: 1024px) {
-		.blog-heading-prefix {
-			display: none;
-		}
-	}
-
-	.blog-subtitle {
+	.blog-mobile-subtitle {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: 0.65rem;
 		color: var(--muted-foreground);
 		letter-spacing: 2px;
 		text-transform: uppercase;
+		margin-top: 0.35rem;
+	}
+
+	/* Hide mobile title on desktop (EdgeRail carries identity) */
+	@media (min-width: 1024px) {
+		.blog-mobile-title { display: none; }
+	}
+
+	/* Reduce blueprint height on mobile */
+	@media (max-width: 767px) {
+		.blog-blueprint-header { height: 140px; }
 	}
 
 	input:focus {
