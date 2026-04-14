@@ -10,7 +10,7 @@
 	import type { BlogPost, Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import BlogRow from './BlogRow.svelte';
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
@@ -136,23 +136,13 @@
 
 		registerGsapPlugins();
 
-		// WHY: ScrollTrigger.batch() groups elements that enter the viewport together
-		// into a single wave, producing a staggered cascade rather than N independent tweens
-		ScrollTrigger.batch('[data-batch="blog-item"]', {
-			start: 'top 85%',
-			onEnter: (batch) => {
-				batchFired = true;
-				gsap.fromTo(batch,
-					{ opacity: 0, y: 20 },
-					{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
-				);
-			},
-			once: true
-		});
-
-		return () => {
-			ScrollTrigger.getAll().forEach(t => t.kill());
-		};
+		// WHY: staggered entrance on page load (not scroll) — all items animate in immediately
+		const items = document.querySelectorAll('[data-batch="blog-item"]');
+		batchFired = true;
+		gsap.fromTo(items,
+			{ opacity: 0, y: 20 },
+			{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
+		);
 	});
 </script>
 
