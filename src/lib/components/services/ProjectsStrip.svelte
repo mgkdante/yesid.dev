@@ -54,6 +54,7 @@
 	.projects-strip {
 		background: var(--primary);
 		color: var(--background);
+		overflow: hidden;
 	}
 
 	.strip-inner {
@@ -77,7 +78,14 @@
 		opacity: 0.45;
 		font-weight: 700;
 		white-space: nowrap;
-		flex-shrink: 0;
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.strip-label {
+			display: block;
+			flex-shrink: 0;
+		}
 	}
 
 	.strip-separator {
@@ -85,6 +93,13 @@
 		height: 1rem;
 		background: color-mix(in srgb, var(--background) 20%, transparent);
 		flex-shrink: 0;
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.strip-separator {
+			display: block;
+		}
 	}
 
 	.strip-links {
