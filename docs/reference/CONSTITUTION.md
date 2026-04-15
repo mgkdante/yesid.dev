@@ -445,6 +445,8 @@ Content overflow is **mathematically impossible**. 7 layers of CSS enforcement, 
 3. Drawers, modals, and overlays use `body { overflow: hidden }` to lock scroll — never touch event interception.
 4. Horizontal scroll is only permitted inside explicitly scrollable containers (`overflow-x: auto`) — never at the page level.
 5. Every scrollable container must have visible scroll affordance (scrollbar or edge fade).
+6. **No nested scroll containers.** A component must never create a scrollable container (`overflow-y: auto/scroll`) that captures page-level scroll. The page scroll (managed by Lenis) is the only vertical scroll axis. Exceptions: horizontally scrollable elements (`overflow-x: auto` for tabs, code blocks) and modal/drawer body content when the page scroll is locked via `body { overflow: hidden }`.
+7. **Scrollbar visibility.** `scrollbar-width: none` is banned on vertically scrollable containers. Horizontal overflow elements may hide scrollbars if they have other scroll affordance (edge fade, arrow indicators).
 
 ### Touch Target Enforcement
 
@@ -553,6 +555,8 @@ SectionWrapper side slots (edge panels flanking content) collapse to `0` below `
 - Inline types instead of exported interfaces
 - Files > 600 lines without splitting
 - Arbitrary Tailwind spacing values (`p-[22px]`) — use standard scale or token
+- `overflow-y: auto` + `scrollbar-width: none` on the same element — creates invisible scroll trap
+- Nested vertical scroll containers that capture page-level Lenis scroll
 
 ---
 
