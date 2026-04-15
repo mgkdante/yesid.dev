@@ -1,6 +1,6 @@
 <!--
-  ServiceSvgPanel — orange container for service SVG illustrations.
-  CornerMarks dress the panel. SVG strokes invert via container color (D192).
+  ServiceSvgPanel — container for service SVG illustrations with CornerMarks.
+  Standard dark styling (keeps existing orange-on-dark SVG appearance).
   variant="panel" (desktop/tablet side panel) or "banner" (mobile full-width).
 -->
 <script lang="ts">
@@ -34,21 +34,19 @@
 		data-testid="service-svg-panel"
 		{...rest}
 	>
-		<CornerMarks size="sm" opacity={0.25} />
-		<SvgIcon {svgContent} size={variant === 'banner' ? 100 : 200} class="border-0 bg-transparent" />
+		<CornerMarks size="sm" />
+		<SvgIcon {svgContent} size={variant === 'banner' ? 100 : 200} />
 	</div>
 {/if}
 
 <style>
 	.svg-panel {
 		position: relative;
-		background: var(--primary);
 		border-radius: var(--radius-lg);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: var(--space-stack);
-		color: var(--background);
 		overflow: hidden;
 	}
 
