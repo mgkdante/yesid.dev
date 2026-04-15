@@ -1,14 +1,50 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-15 | 17d-4 Session 11 — Blog detail page CLOSING COMPLETE
+**Last updated:** 2026-04-15 | 17d-5 Session 0 — Services pages PLANNING COMPLETE
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — Blog detail page CLOSED
-- **Status:** Sessions 0-11 complete. All plan tasks done. Closing docs written.
+- **Sub-slice:** 17d-5 (Services Pages — Listing + Detail)
+- **Status:** Planning complete. Design spec + implementation plan written and approved. Ready for Session 1 implementation.
 - **Build:** 0 errors, 18 warnings, 785/785 tests pass.
-- **Next action:** Services pages (next work area per Yesid).
+- **Next action:** Implementation Session 1 — Tasks 1-5 (Constitution, layout fix, new components, StationTabs restyle).
+
+### 17d-5 Planning Session — COMPLETE
+
+**Design decisions (D183-D195):**
+- D183: Inverted orange accents on dark canvas (not orange background — tested, felt aggressive)
+- D184: Three solid orange surfaces (tabs strip, SVG panel, projects strip)
+- D185: No EdgeRail on services (StationTabs + orange strips provide identity)
+- D186: Asymmetric split layout (Option C — engineering spec sheet vibe)
+- D187: Standard cards for detail content sections (not orange-tinted)
+- D188: Scroll-snap `y proximity` (not mandatory — allows free scrolling)
+- D189: No TOC on detail page (3-4 sections max, TOC overkill)
+- D190: Nested scroll container eliminated (violates Constitution Scroll Law)
+- D191: Footer restored to global layout (was trapped in inner scroll)
+- D192: SVG strokes invert via container `color` (no SVG file changes)
+- D193: Constitution amended with nested scroll ban
+- D194: Hazard stripes edge the orange strips
+- D195: Dynamic projects strip via IntersectionObserver
+
+**Scroll trap diagnosis:**
+- `.service-listing` had `height: calc(100dvh - 5rem)` + `overflow: hidden` — blocked page scroll
+- `.scroll-area` had `overflow-y: auto` + `scrollbar-width: none` — hidden inner scrollbar
+- Lenis managed page scroll but never reached services content
+- Footer trapped inside inner scroll container
+- Fix: eliminate nested scroll, page-level Lenis scroll, Constitution amendment
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-15-services-pages-design.md`
+- Implementation plan: `docs/plans/2026-04-15-services-pages.md` (10 tasks, 3 sessions)
+- Mockups: `.superpowers/brainstorm/1208-1776282068/content/` (4 approved mockups)
+
+**Implementation plan summary:**
+| Session | Tasks | Focus |
+|---------|-------|-------|
+| 1 | T1-T5 | Constitution amendment, layout fix, ServiceSvgPanel, ProjectsStrip, StationTabs restyle |
+| 2 | T6-T7 | ServiceCard rewrite + ServiceListingPage rewrite (scroll fix) |
+| 3 | T8-T10 | ServiceDetailPage rewrite, scroll audit, visual verification |
 
 ### Session 10 (Bug Fixes + Polish + Tests) — COMPLETE
 
