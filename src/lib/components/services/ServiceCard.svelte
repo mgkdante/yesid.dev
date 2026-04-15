@@ -248,13 +248,14 @@
 			gap: var(--space-cluster);
 		}
 		:global(.svg-panel-responsive) {
-			width: 80px !important;
+			width: 80px;
 			min-width: 80px;
+			padding: 0.5rem;
 		}
 		:global(.svg-panel-responsive [data-slot="svg-icon"]) {
-			--svg-icon-size: 64px !important;
-			width: 64px !important;
-			height: 64px !important;
+			--svg-icon-size: 56px;
+			width: 56px;
+			height: 56px;
 		}
 		.service-subtitle {
 			display: none;

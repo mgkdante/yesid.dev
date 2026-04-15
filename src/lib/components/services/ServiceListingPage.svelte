@@ -114,9 +114,9 @@
 		position: sticky;
 		top: 5rem;
 		z-index: var(--z-rail);
-		/* Extend background upward behind the nav area without affecting layout.
-		   Prevents service content from showing through the transparent nav. */
-		box-shadow: 0 -5rem 0 0 var(--background);
+		/* Cover the full area above tabs to prevent content showing behind nav.
+		   5rem (pt-20) + safe-area + extra margin for notched devices. */
+		box-shadow: 0 calc(-1 * (5rem + env(safe-area-inset-top, 0px) + 1rem)) 0 0 var(--background);
 	}
 
 	.strip-bar {

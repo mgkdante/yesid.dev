@@ -66,8 +66,8 @@
 	<!-- Navigate mode: plain nav + links (links can't be Tabs triggers) -->
 	<nav
 		aria-label="Service navigation"
-		class="station-tabs flex w-full overflow-x-auto md:justify-center"
-		style="background: var(--primary); border: none; touch-action: pan-x;"
+		class="station-tabs flex w-full overflow-x-auto xl:justify-center"
+		style="background: var(--primary); border: none;"
 		data-lenis-prevent
 	>
 		{#each sorted as service, i (service.id)}
@@ -106,8 +106,8 @@
 	>
 		<Tabs.List
 			variant="line"
-			class="station-tabs flex w-full overflow-x-auto md:justify-center"
-			style="background: var(--primary); border: none; touch-action: pan-x;"
+			class="station-tabs flex w-full overflow-x-auto xl:justify-center"
+			style="background: var(--primary); border: none;"
 			data-lenis-prevent
 		>
 			{#each sorted as service, i (service.id)}
