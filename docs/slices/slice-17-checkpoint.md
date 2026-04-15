@@ -1,14 +1,28 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-14 | 17d-4 Session 7 — Project detail page COMPLETE + constitutional audit
+**Last updated:** 2026-04-14 | 17d-4 Session 8 — Blog detail page DESIGNED + PLANNED
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — Project detail page DONE, blog detail page NEXT
-- **Status:** Sessions 0-7 complete. Next: Session 8 (blog detail page planning).
+- **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — Blog detail page designed and planned, ready for implementation
+- **Status:** Sessions 0-8 complete. Next: Session 9 (blog detail page implementation, Tasks 1-5).
 - **Build:** 0 errors, 15 warnings, 774/774 tests pass.
-- **Next action:** Plan blog detail page (blog/slug) in a planning session.
+- **Next action:** Implement blog detail page per `docs/plans/2026-04-14-blog-detail-page.md` (8 tasks, est. 2 sessions).
+
+### Session 8 (Blog Detail Page Planning) — COMPLETE
+- Brainstormed blog detail page design (infrastructure magazine editorial)
+- Header: Option C approved — full-bleed cover story (watermark, CornerMarks, edge labels, display title, circuit grid)
+- Body: Three-column SectionWrapper (TOC left, prose center, transit route map right)
+- Right panel: Transit route map using montreal-metro.svg visual language (CSS-styled SVG)
+- Clean-slate approach: old BlogDetailHeader deleted and rebuilt from scratch
+- Route bypasses ListingLayout via +page@.svelte (same as project detail)
+- Reading progress bar REMOVED per feedback
+- All SVG styled via CSS classes — zero inline fill/stroke attributes
+- Design spec: `docs/specs/2026-04-14-blog-detail-page-design.md`
+- Implementation plan: `docs/plans/2026-04-14-blog-detail-page.md` (8 tasks)
+- Mockups: `docs/reference/mockups/blog-detail-page-full.html` (approved)
+- D160-D169 design decisions recorded in spec
 
 ### Session 7 (Project Detail Polish + Constitutional Audit) — COMPLETE
 - Fixed header grid/canvas misalignment — moved ManifestoCanvas out of SectionWrapper background slot
