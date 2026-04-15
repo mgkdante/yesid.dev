@@ -35,9 +35,6 @@
 		($page.url.pathname.startsWith('/projects/') && $page.url.pathname !== '/projects') ||
 		($page.url.pathname.startsWith('/blog/') && $page.url.pathname !== '/blog' && $page.url.pathname !== '/blog/personal')
 	);
-	// Hide footer on the services listing page — it has its own scroll container.
-	// Footer shows on detail pages and all other pages.
-	let hideFooter = $derived($page.url.pathname === '/services');
 </script>
 
 <svelte:head>
@@ -56,11 +53,9 @@
 	{/key}
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
-	{#if !hideFooter}
-		<div class="relative z-[45]">
-			<Footer />
-		</div>
-	{/if}
+	<div class="relative z-[45]">
+		<Footer />
+	</div>
 </div>
 
 <style>
