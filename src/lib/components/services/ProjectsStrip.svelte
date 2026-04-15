@@ -59,8 +59,14 @@
 	.strip-inner {
 		display: flex;
 		align-items: center;
-		padding: 0.75rem var(--space-page-x);
+		padding: 0.875rem var(--space-page-x);
 		gap: var(--space-stack);
+	}
+
+	@media (min-width: 1024px) {
+		.strip-inner {
+			padding: 1rem var(--space-page-x);
+		}
 	}
 
 	.strip-label {

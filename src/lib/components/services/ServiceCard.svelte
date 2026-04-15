@@ -1,6 +1,6 @@
 <!--
   ServiceCard — per-viewport service block for the /services listing page.
-  Asymmetric split: text left, ServiceSvgPanel right (stacked on mobile).
+  Asymmetric split: text left, SVG panel right (stacked on mobile).
   Bold orange accents, benefit headline, impact metric. D186.
 -->
 <script lang="ts">
@@ -97,16 +97,11 @@
 			</div>
 		</div>
 
-		<!-- SVG panel: desktop right, mobile banner -->
+		<!-- Single SVG panel — responsive via CSS -->
 		{#if svgContent}
-			<ServiceSvgPanel {svgContent} class="svg-desktop" />
+			<ServiceSvgPanel {svgContent} class="svg-panel-responsive" />
 		{/if}
 	</div>
-
-	<!-- Mobile SVG banner (below text on mobile, hidden on desktop) -->
-	{#if svgContent}
-		<ServiceSvgPanel {svgContent} variant="banner" class="svg-mobile" />
-	{/if}
 </section>
 
 <style>
@@ -117,6 +112,7 @@
 		height: 100svh;
 		padding: 0 var(--space-page-x);
 		scroll-snap-align: start;
+		overflow: hidden;
 	}
 
 	@media (min-width: 1024px) {
@@ -130,6 +126,7 @@
 		align-items: center;
 		gap: clamp(2rem, 4vw, 4rem);
 		width: 100%;
+		min-height: 0;
 	}
 
 	.service-text {
@@ -234,27 +231,25 @@
 		opacity: 0.85;
 	}
 
-	/* Desktop: SVG panel visible, mobile banner hidden */
-	.svg-desktop { display: none; }
-	.svg-mobile { display: none; }
-
-	@media (min-width: 768px) {
-		.svg-desktop { display: flex; }
-		.svg-mobile { display: none; }
+	/* SVG panel: responsive sizing, hidden on very small screens */
+	:global(.svg-panel-responsive) {
+		flex-shrink: 0;
 	}
 
-	/* Mobile: stacked layout, banner visible */
+	/* Mobile: stacked layout */
 	@media (max-width: 767px) {
 		.viewport-inner {
 			flex-direction: column;
 			gap: var(--space-stack);
 		}
-		.svg-mobile {
-			display: flex;
-			margin-top: var(--space-stack);
+		:global(.svg-panel-responsive) {
+			align-self: flex-start;
 		}
 		.service-description {
 			max-width: none;
+		}
+		.service-title {
+			font-size: clamp(32px, 8vw, 42px);
 		}
 	}
 </style>

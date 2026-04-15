@@ -107,12 +107,14 @@
 <style>
 	.services-page {
 		position: relative;
+		background: var(--background);
 	}
 
 	.tabs-bar {
 		position: sticky;
 		top: 5rem;
 		z-index: var(--z-rail);
+		background: var(--background);
 	}
 
 	.strip-bar {
