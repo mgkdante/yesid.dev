@@ -114,9 +114,15 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		height: 100dvh;
+		height: 100svh;
 		padding: 0 var(--space-page-x);
 		scroll-snap-align: start;
+	}
+
+	@media (min-width: 1024px) {
+		.service-viewport {
+			height: 100dvh;
+		}
 	}
 
 	.viewport-inner {

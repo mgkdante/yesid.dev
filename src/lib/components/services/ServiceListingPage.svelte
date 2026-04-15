@@ -1,17 +1,17 @@
 <!--
-  Full-viewport kinetic scroll layout for /services.
-  Each service occupies 100dvh with CSS scroll snap.
-  Sticky top: StationTabs. Sticky bottom: RelatedProjects.
-  Tab click scrolls to service. Scroll position syncs tabs + proof strip.
+  Services listing page — page-level Lenis scroll, no nested scroll container.
+  Sticky StationTabs at top, sticky ProjectsStrip at bottom.
+  IntersectionObserver tracks which service viewport is in view. D190, D191.
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { Service, Project } from '$lib/data/types.js';
+	import { resolveLocale } from '$lib/data/locale.js';
+	import { getLenis } from '$lib/motion/utils/lenis.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
-	import RelatedProjects from '$lib/components/home/RelatedProjects.svelte';
-	import Footer from '$lib/components/layout/Footer.svelte';
+	import ProjectsStrip from './ProjectsStrip.svelte';
 
 	let {
 		services,
@@ -28,51 +28,54 @@
 	);
 
 	let activeId = $state(sorted[0]?.id ?? '');
-	let scrollContainer: HTMLElement | undefined = $state();
-	let currentProjects = $derived(
-		serviceProjects[activeId] ?? []
-	);
+	let currentProjects = $derived(serviceProjects[activeId] ?? []);
+	let currentServiceTitle = $derived(() => {
+		const svc = sorted.find((s) => s.id === activeId);
+		return svc ? resolveLocale(svc.title, 'en') : undefined;
+	});
 
 	function handleTabSelect(id: string) {
-		// Immediately update active state so the tab highlights
 		activeId = id;
-
-		if (!browser || !scrollContainer) return;
-		const target = scrollContainer.querySelector(`#service-${id}`);
-		if (target) {
+		if (!browser) return;
+		const lenis = getLenis();
+		const target = document.querySelector<HTMLElement>(`#service-${id}`);
+		if (lenis && target) {
+			lenis.scrollTo(target, { offset: -80 });
+		} else if (target) {
 			target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}
 	}
 
-	function handleScroll() {
-		if (!scrollContainer) return;
-		const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
-		const maxScroll = scrollHeight - clientHeight;
-		if (maxScroll <= 0) return;
-
-		const progress = scrollTop / maxScroll;
-
-		// Determine active service based on which viewport is most visible
-		const serviceCount = sorted.length;
-		const activeIndex = Math.round(progress * (serviceCount - 1));
-		const clamped = Math.max(0, Math.min(activeIndex, serviceCount - 1));
-		if (sorted[clamped]) {
-			activeId = sorted[clamped].id;
-		}
-	}
-
 	onMount(() => {
-		if (!browser || !scrollContainer) return;
-		scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+		if (!browser) return;
+
+		const viewports = document.querySelectorAll<HTMLElement>('[id^="service-"]');
+		if (viewports.length === 0) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+						const id = entry.target.id.replace('service-', '');
+						activeId = id;
+					}
+				}
+			},
+			{ threshold: 0.5 }
+		);
+
+		viewports.forEach((el) => observer.observe(el));
+
 		return () => {
-			scrollContainer?.removeEventListener('scroll', handleScroll);
+			observer.disconnect();
 		};
 	});
 </script>
 
-<div class="service-listing" data-testid="service-listing-page">
+<div class="services-page" data-testid="service-listing-page">
 	<h1 class="sr-only">Services</h1>
-	<!-- Sticky station tabs — flush to top, no margin -->
+
+	<!-- Sticky station tabs -->
 	<div class="tabs-bar">
 		<StationTabs
 			services={sorted}
@@ -82,68 +85,39 @@
 		/>
 	</div>
 
-	<!-- Main scroll area with snap -->
-	<div class="scroll-area" bind:this={scrollContainer}>
-		<!-- Service viewports -->
-		{#each sorted as service, i}
-			<ServiceCard
-				{service}
-				svgContent={serviceSvgContents[service.id] ?? ''}
-				index={i}
-				total={sorted.length}
-			/>
-		{/each}
+	<!-- Service viewports — page-level scroll, no nested container -->
+	{#each sorted as service, i (service.id)}
+		<ServiceCard
+			{service}
+			svgContent={serviceSvgContents[service.id] ?? ''}
+			index={i}
+			total={sorted.length}
+		/>
+	{/each}
 
-		<!-- Footer at end of scroll — appears when scrolling past last station -->
-		<div class="listing-footer">
-			<Footer />
-		</div>
-	</div>
-
-	<!-- Sticky proof strip at bottom -->
-	<div class="proof-bar">
-		<RelatedProjects projects={currentProjects} />
+	<!-- Sticky projects strip -->
+	<div class="strip-bar">
+		<ProjectsStrip
+			projects={currentProjects}
+			serviceTitle={currentServiceTitle()}
+		/>
 	</div>
 </div>
 
 <style>
-	.service-listing {
+	.services-page {
 		position: relative;
-		height: calc(100dvh - 5rem); /* subtract floating pill nav area (pt-20 = 80px) */
-		display: flex;
-		flex-direction: column;
-		overflow: hidden;
 	}
 
 	.tabs-bar {
-		flex-shrink: 0;
+		position: sticky;
+		top: 5rem;
 		z-index: var(--z-rail);
 	}
 
-	.scroll-area {
-		flex: 1;
-		overflow-y: auto;
-		scroll-snap-type: y mandatory;
-		position: relative;
-		scrollbar-width: none;
-	}
-	.scroll-area::-webkit-scrollbar {
-		display: none;
-	}
-
-	/* Each service viewport snaps */
-	.scroll-area :global(.service-viewport) {
-		scroll-snap-align: start;
-	}
-
-	.proof-bar {
-		flex-shrink: 0;
+	.strip-bar {
+		position: sticky;
+		bottom: 0;
 		z-index: var(--z-rail);
 	}
-
-	/* Footer inside scroll area — does NOT snap, just flows after last service */
-	.listing-footer {
-		scroll-snap-align: none;
-	}
-
 </style>
