@@ -5,8 +5,8 @@
       → wired to ui/tabs (bits-ui) for arrow-key nav, ARIA roles, focus management
     - 'navigate': tabs are <a> links to /services/[id] (detail page)
       → kept as plain nav+links (links can't be Tab triggers)
-  Tabs sorted by station number. Active tab gets orange bottom border, bold label.
-  Inactive tabs fade by distance from active for a depth effect.
+  Tabs sorted by station number. Solid orange bg, dark text.
+  Active tab gets dark bottom border, bold label. Inactive tabs fade by distance.
 -->
 <script lang="ts">
 	import type { Service } from '$lib/data/types.js';
@@ -66,8 +66,8 @@
 	<!-- Navigate mode: plain nav + links (links can't be Tabs triggers) -->
 	<nav
 		aria-label="Service navigation"
-		class="station-tabs flex w-full overflow-x-auto border-b md:justify-center"
-		style="background: var(--background); border-color: var(--border);"
+		class="station-tabs flex w-full overflow-x-auto md:justify-center"
+		style="background: var(--primary); border: none;"
 	>
 		{#each sorted as service, i (service.id)}
 			{@const isActive = service.id === activeId}
@@ -105,8 +105,8 @@
 	>
 		<Tabs.List
 			variant="line"
-			class="station-tabs flex w-full overflow-x-auto border-b md:justify-center"
-			style="background: var(--background); border-color: var(--border);"
+			class="station-tabs flex w-full overflow-x-auto md:justify-center"
+			style="background: var(--primary); border: none;"
 		>
 			{#each sorted as service, i (service.id)}
 				{@const isActive = service.id === activeId}
@@ -148,44 +148,37 @@
 		gap: 0;
 	}
 
-	/* Hide scrollbar but keep scroll functionality on mobile */
-	.station-tabs,
-	:global([data-slot="tabs-list"].station-tabs) {
-		scrollbar-width: none;
-		-ms-overflow-style: none;
-	}
-	.station-tabs::-webkit-scrollbar,
-	:global([data-slot="tabs-list"].station-tabs)::-webkit-scrollbar {
-		display: none;
-	}
-
 	/* Each tab needs min-width so tabs don't collapse on narrow viewports */
 	.station-tab {
 		min-width: max-content;
 		cursor: pointer;
 		border-bottom: 3px solid transparent;
-		color: var(--secondary-foreground);
+		color: var(--background);
 		background: transparent;
 		border-top: none;
 		border-left: none;
 		border-right: none;
+		padding: 0.875rem 1.25rem;
+		font-family: var(--font-mono);
+		font-size: var(--text-small);
+		transition: opacity var(--duration-fast) var(--ease-default);
 	}
 
-	/* Active tab: orange bottom border, full opacity, brighter text */
+	/* Active tab: dark bottom border, bold text */
 	.station-tab.active {
-		border-bottom-color: var(--primary);
-		color: var(--light-foreground);
+		border-bottom-color: var(--background);
+		color: var(--background);
+		font-weight: 800;
 	}
 
-	/* Hover: subtle brightness lift for inactive tabs */
+	/* Hover: opacity fade for inactive tabs */
 	.station-tab:not(.active):hover {
-		color: var(--light-foreground);
-		border-bottom-color: color-mix(in srgb, var(--primary) 30%, transparent);
+		opacity: 0.7;
 	}
 
-	/* Brand color for station number when active */
+	/* Station number inherits dark text on orange */
 	.text-brand {
-		color: var(--primary);
+		color: var(--background);
 	}
 
 	/* JetBrains Mono for station numbers — matches brand mono font */
