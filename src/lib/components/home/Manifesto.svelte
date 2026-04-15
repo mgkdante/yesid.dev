@@ -335,7 +335,7 @@
 		padding: 8px 20px;
 		background: color-mix(in srgb, var(--primary) 4%, transparent);
 		text-decoration: none;
-		transition: all var(--duration-normal) var(--ease-default);
+		transition: border-color var(--duration-normal) var(--ease-default), color var(--duration-normal) var(--ease-default), background var(--duration-normal) var(--ease-default);
 		opacity: 0;
 		transform: translateY(15px);
 	}

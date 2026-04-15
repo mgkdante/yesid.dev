@@ -26,8 +26,12 @@
 		};
 	});
 
-	// Home page skips pt-20 (hero is full-viewport).
-	let isHome = $derived($page.url.pathname === '/');
+	// Full-bleed pages skip pt-20 (hero is full-viewport).
+	// Home page + project detail pages have manifesto-style headers.
+	let isFullBleed = $derived(
+		$page.url.pathname === '/' ||
+		($page.url.pathname.startsWith('/projects/') && $page.url.pathname !== '/projects')
+	);
 	// Hide footer on the services listing page — it has its own scroll container.
 	// Footer shows on detail pages and all other pages.
 	let hideFooter = $derived($page.url.pathname === '/services');
@@ -43,7 +47,7 @@
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="flex-1 {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="flex-1 {isFullBleed ? '' : 'pt-20'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}

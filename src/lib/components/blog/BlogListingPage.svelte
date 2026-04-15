@@ -138,7 +138,7 @@
 			<!-- Subtitle: always visible, overlaid on blueprints -->
 			<div class="blog-header-text">
 				<!-- "Blog." heading: only on mobile (EdgeRail carries it on desktop) -->
-				<div class="blog-mobile-heading">Blog<span class="text-[var(--primary)]">.</span></div>
+				<h1 class="blog-mobile-heading">Blog<span class="text-[var(--primary)]">.</span></h1>
 				<div class="blog-header-subtitle">{subtitle}</div>
 			</div>
 		</div>

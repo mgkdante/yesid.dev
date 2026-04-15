@@ -73,6 +73,14 @@ export interface Project {
 	// Structured impact metric for proof reel / project cards.
 	// Optional — not all projects have quantifiable impact yet.
 	impactMetric?: ImpactMetric;
+	// Multiple impact metrics for the glanceable panel on project detail pages.
+	// Falls back to wrapping the single impactMetric if not set.
+	impactMetrics?: ImpactMetric[];
+	// Hero metadata fields (optional, with sensible defaults).
+	// Auto-displayed in the manifesto-style hero edge metadata.
+	location?: string;
+	environment?: string;
+	version?: string;
 }
 
 export interface Service {

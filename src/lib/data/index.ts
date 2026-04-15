@@ -53,3 +53,6 @@ export type { NavLink, MenuItem, ErrorPageContent } from './nav.js';
 // Geometric shapes for SVG morph animations
 export { SHAPES, SHAPE_KEYS, pickRandomShape } from './shapes.js';
 export type { ShapeKey } from './shapes.js';
+
+// Stack role mapping (project detail hero metadata)
+export { STACK_ROLE_MAP, getStackRole } from './stackRoles.js';

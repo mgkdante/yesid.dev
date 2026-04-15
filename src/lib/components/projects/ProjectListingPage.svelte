@@ -145,7 +145,7 @@
 	<div class="projects-blueprint-header" data-batch="project-item">
 		<ProjectsBlueprint />
 		<div class="projects-header-text">
-			<div class="projects-mobile-heading">Projects<span class="text-[var(--primary)]">.</span></div>
+			<h1 class="projects-mobile-heading">Projects<span class="text-[var(--primary)]">.</span></h1>
 			<div class="projects-header-subtitle">{resolveLocale(content.subtitle, 'en')}</div>
 		</div>
 	</div>

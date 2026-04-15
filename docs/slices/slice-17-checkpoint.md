@@ -1,14 +1,57 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-14 | 17d-4 Session 4 — Blueprint headers + Projects listing + DRY extraction DONE
+**Last updated:** 2026-04-14 | 17d-4 Session 6 — Project detail page IMPLEMENTATION (Tasks 1-7 + visual polish)
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
 - **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — IN PROGRESS
-- **Status:** Sessions 0-4 complete. Next: Session 5 (Blog detail + Projects detail).
-- **Build:** 0 errors, 15 warnings, 765/765 tests pass.
-- **Next action:** Blog detail page + Projects detail page constitutional wiring.
+- **Status:** Sessions 0-6 complete. Next: Session 7 (polish remaining items + Tasks 8-12).
+- **Build:** 0 errors, 15 warnings, 771/771 tests pass.
+- **Next action:** Fix remaining polish items, then continue with Tasks 8-12 from the plan.
+
+### Session 6 (Project Detail Page Implementation) — IN PROGRESS
+- Plan Tasks 1-7 complete: stackRoles.ts, Project type extensions, ProjectDetailHeader, ProjectGlancePanel, ProjectGlancePanelMobile, ProjectTocPill, ProjectDetailPage rewrite
+- Header uses ManifestoCanvas (interactive hover/click), circuit grid, CornerMarks, edge metadata
+- Header extends behind nav (negative margin + padding-top), full-bleed via SectionWrapper layout="bleed"
+- Body uses SectionWrapper layout="centered" with sideLeft (TOC) and sideRight (GlancePanel)
+- TOC, center sections, and right panel all use CollapsibleSection cards (same primitive)
+- Mobile: CollapsibleSection "Project Info" panel + floating TOC pill with full heading hierarchy
+- TOC tracks all heading levels (h1-h6), README sub-headings nest one level down
+- Services in glance panel use ServiceBadge with SVG icons + morph hover
+- Route uses `+page@.svelte` to bypass ListingLayout (no EdgeRail on detail pages)
+- Root layout `isFullBleed` check skips `pt-20` for project detail pages
+- Hazard stripes replace gradient separator
+- Sections animate on load (CSS keyframes) instead of scroll-triggered reveal
+- Subtitle removed from header per feedback
+- **Known issues to fix in Session 7:**
+  - Header circuit grid offset needs tuning (grid appears lower than expected)
+  - Extract ManifestoCanvas → CircuitGrid (generic brand component)
+  - Complete Tasks 8 (route verification), 9 (TOC polish), 10 (GSAP refinement), 11 (visual verification), 12 (data layer tests)
+- D155: Use "header" not "hero" for detail page components
+- D156: All panels (TOC, sections, glance) use CollapsibleSection — same primitive everywhere
+- D157: Mobile TOC pill shows full heading hierarchy matching desktop TOC
+- D158: SectionWrapper container="none" on mobile (zero inline padding), desktop gets --space-page-x
+- D159: Desktop columns spaced with gap: 2rem
+
+### Session 5 (Project Detail Page Design) — COMPLETE
+- Brainstormed content strategy for detail pages (blog + projects)
+- Scoped to project detail page ONLY (blog detail + consolidation in later passes)
+- Services/stack detail pages get separate design passes
+- Approved design: manifesto-style hero (circuit grid, edge metadata, GlowOverlay, CornerMarks) + three-column body (left TOC, center sections, right glance panel)
+- Mobile: collapsible glance panel + floating TOC pill
+- Sections are dynamic from project.sections[] with 4-5 defaults as content guide
+- Hero metadata auto-generated from Project data (slug, stack roles, location, metrics)
+- Approved mockup saved: `docs/reference/mockups/project-detail-page-approved.html`
+- Design spec: `docs/specs/2026-04-14-project-detail-page-design.md`
+- Implementation plan: `docs/plans/2026-04-14-project-detail-page.md` (12 tasks, 1782 lines)
+- Primitives reuse: CornerMarks, GlowOverlay, cursorGlow, TerminalCursor, MetricDisplay, SectionLabel, StickyPanel, Badge, Separator, ChevronToggle, TableOfContents, CollapsibleSection, boop, reveal
+- Data layer changes needed: add location?, environment?, version?, impactMetrics? to Project type
+- New files: ProjectDetailHero, ProjectGlancePanel, ProjectGlancePanelMobile, ProjectTocPill, stackRoles.ts
+- D151: No edge rail on detail pages — accent line + manifesto hero instead
+- D152: TOC on LEFT, glance panel on RIGHT (opposite of typical blog layouts)
+- D153: Sections fully dynamic, no fixed template — defaults are just a content guide
+- D154: Blog detail page designed separately, consolidated after both are done
 
 ### 17d-4 Pre-pass (P1–P9) — COMPLETE
 - P1: SectionHeading wired into BlogListingPage, ProjectListingPage, ContactPage (added `level` prop)

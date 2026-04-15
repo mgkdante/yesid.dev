@@ -50,6 +50,13 @@ const projects: readonly Project[] = [
 			value: '30s',
 			label: 'Real-time refresh cycles',
 		},
+		location: 'sherbrooke',
+		environment: 'production',
+		version: '2.4.1',
+		impactMetrics: [
+			{ value: '30s', label: 'Real-time refresh cycles' },
+			{ value: '99.9%', label: 'Pipeline uptime' },
+		],
 	},
 	{
 		slug: 'lorem-analytics-dashboard',
@@ -84,6 +91,10 @@ const projects: readonly Project[] = [
 			label: 'Reporting across 12 departments',
 			before: '2 days',
 		},
+		impactMetrics: [
+			{ value: '15 min', label: 'Reporting across 12 depts', before: '2 days' },
+			{ value: '73%', label: 'Query time reduction' },
+		],
 	},
 	{
 		slug: 'lorem-database-migration',

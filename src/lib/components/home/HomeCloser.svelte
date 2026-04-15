@@ -201,7 +201,7 @@
 		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
 		border-radius: var(--radius-sm);
 		margin-block-end: 28px;
-		transition: all var(--duration-normal);
+		transition: background-color var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default), color var(--duration-normal) var(--ease-default);
 		letter-spacing: 0.5px;
 	}
 	.closer-cta:hover {
