@@ -57,7 +57,7 @@
 </script>
 
 <!-- Blog content card — matches work detail structure -->
-<div class="mt-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-6 md:p-8" data-testid="blog-content">
+<div class="mt-8 min-w-0 overflow-x-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-6 md:p-8" data-testid="blog-content">
 	<div class="blog-content prose-dark" style="--blog-accent: {accentColor};" bind:this={contentEl}>
 		{@render children()}
 	</div>

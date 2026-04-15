@@ -1,4 +1,4 @@
-import { marked } from 'marked';
+import { marked } from './highlight.js';
 import type { BlogPost, BlogCategory, BlogAnimation, Locale } from './types.js';
 
 // --- Frontmatter parsing ---

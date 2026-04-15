@@ -1,4 +1,6 @@
 <script lang="ts">
+	import '@fontsource-variable/inter';
+	import '@fontsource-variable/jetbrains-mono';
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import Nav from '$lib/components/layout/Nav.svelte';
@@ -30,7 +32,8 @@
 	// Home page + project detail pages have manifesto-style headers.
 	let isFullBleed = $derived(
 		$page.url.pathname === '/' ||
-		($page.url.pathname.startsWith('/projects/') && $page.url.pathname !== '/projects')
+		($page.url.pathname.startsWith('/projects/') && $page.url.pathname !== '/projects') ||
+		($page.url.pathname.startsWith('/blog/') && $page.url.pathname !== '/blog' && $page.url.pathname !== '/blog/personal')
 	);
 	// Hide footer on the services listing page — it has its own scroll container.
 	// Footer shows on detail pages and all other pages.

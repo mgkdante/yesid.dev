@@ -3,7 +3,7 @@
 // 404s for unknown slugs or private projects.
 
 import { error } from '@sveltejs/kit';
-import { marked } from 'marked';
+import { marked } from '$lib/data/highlight.js';
 import { getProjectBySlug, getServiceById } from '$lib/data';
 import type { Service } from '$lib/data/types.js';
 

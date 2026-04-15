@@ -146,7 +146,7 @@
 	<Separator variant="hazard" />
 
 	<!-- Mobile: collapsible glance panel -->
-	<div class="mt-4 lg:hidden">
+	<div class="mt-4 px-[var(--space-page-x)] lg:hidden">
 		<ProjectGlancePanelMobile {project} />
 	</div>
 
@@ -351,12 +351,12 @@
 
 	/* Body wrapper padding + desktop column gap */
 	:global(.detail-body) {
+		padding-inline: var(--space-page-x);
 		padding-block: 1.5rem;
 	}
 
 	@media (min-width: 1024px) {
 		:global(.detail-body) {
-			padding-inline: var(--space-page-x);
 			padding-block: 2.5rem;
 			gap: 2rem;
 		}

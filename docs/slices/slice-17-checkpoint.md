@@ -1,14 +1,92 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-14 | 17d-4 Session 8 — Blog detail page DESIGNED + PLANNED
+**Last updated:** 2026-04-15 | 17d-4 Session 11 — Blog detail page CLOSING COMPLETE
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — Blog detail page designed and planned, ready for implementation
-- **Status:** Sessions 0-8 complete. Next: Session 9 (blog detail page implementation, Tasks 1-5).
-- **Build:** 0 errors, 15 warnings, 774/774 tests pass.
-- **Next action:** Implement blog detail page per `docs/plans/2026-04-14-blog-detail-page.md` (8 tasks, est. 2 sessions).
+- **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — Blog detail page CLOSED
+- **Status:** Sessions 0-11 complete. All plan tasks done. Closing docs written.
+- **Build:** 0 errors, 18 warnings, 785/785 tests pass.
+- **Next action:** Services pages (next work area per Yesid).
+
+### Session 10 (Bug Fixes + Polish + Tests) — COMPLETE
+
+**Bug fixes:**
+- **Left panel sticky fix** — `overflow-x: hidden` on `.body-grid` was creating a scroll container that broke `position: sticky`. Changed to `overflow-x: clip` which clips visually without creating a scroll container.
+- **Mobile code block overflow fix** — Two-part fix: (1) `overflow-x-hidden` on BlogContent card establishes width constraint, (2) moved `min-width: 0` on `.section-content` outside desktop media query so it applies at all breakpoints. Pre blocks now scroll horizontally within the card.
+- **Layout shift fix** — Replaced Google Fonts CDN with self-hosted `@fontsource-variable/inter` and `@fontsource-variable/jetbrains-mono`. Fonts now bundle with the app, eliminating the font-swap delay. Body grid starts `opacity: 0` on desktop, fades in after edge labels are sized.
+- **Pretext removal** — Replaced `@chenglou/pretext` with DOM-based `getBoundingClientRect` measurement for edge label sizing. Exact 1.000 ratio to viewport height. Simpler, no external dependency for this component.
+
+**Tests:**
+- 5 new BlogDetailPage structure tests (data-testid, header, content, accent colors)
+- Fixed GSAP mock: added `gsap.utils.selector` stub to `setup.dom.ts`
+- Total: 785 tests pass (was 780)
+
+**Visual verification:**
+- Desktop 1440px: header, TOC sticky, edge labels, code blocks, reading mode — all verified
+- Mobile 375px: no overflow, floating TOC pill, code blocks contained, blockquotes styled
+- Tested professional posts (orange accent) and personal posts (yellow accent)
+- Zero horizontal overflow, zero console errors
+
+### Session 9 (Blog Detail Page Implementation) — COMPLETE
+
+**Completed:**
+- Task 1: Route bypass via +page@.svelte, postIndex in load, isFullBleed for blog detail paths
+- Task 2: BlogDetailHeader rebuilt from scratch — magazine cover (circuit grid, ManifestoCanvas, watermark, CornerMarks, edge labels, category line, SplitText title with tag highlight, tag pills, meta row, GSAP entrance)
+- Task 3: BlogRouteMap component (transit route SVG, CSS-only styling, 6 tests) — later REMOVED per feedback, replaced with edge labels
+- Task 4: BlogDetailPage orchestrator — 4-zone body grid (Begin. edge | TOC+content | Transmission. edge), shared IntersectionObserver, BlogTocPill floating mobile TOC
+- Task 5: TOC wiring + left column metadata (already done in Session 9 revisions)
+- Task 6: N/A (route map animation — component removed)
+- Task 7: BlogDetailPage structure tests (Session 10)
+- Task 8: Visual verification + polish (Session 10)
+- Shiki syntax highlighting integrated (brand theme: orange keywords, yellow strings, warm comments) — both blog + project README
+- Reading mode toggle (switch in left panel, dims header/edges/footer)
+- Mobile side margins on blog + project detail body
+- Scroll-margin-top on all headings (anchors land below nav)
+- Prose text bumped to 17px mobile / 18px desktop
+- Metadata panel below TOC (category, word count, read time, language, tags)
+- Edge labels dynamically sized via DOM getBoundingClientRect (text spans exactly 100dvh when rotated)
+
+**Design decisions (Session 10):**
+- D179: `overflow-x: clip` instead of `hidden` on body-grid — prevents scroll container that breaks sticky
+- D180: Self-hosted fonts via @fontsource-variable — eliminates layout shift from font swap
+- D181: DOM-based edge label sizing via getBoundingClientRect — replaces Pretext, accounts for letter-spacing
+- D182: Body grid opacity fade-in on desktop — hides 120px→370px column shift during edge sizing
+
+**Design decisions (Session 9):**
+- D170: Route map removed — replaced with "Begin." / "Transmission." rotated edge labels (infrastructure radio protocol)
+- D171: Edge labels are section-level (body only), not page-level — don't interrupt header
+- D172: Edge labels dynamically sized to 100dvh via DOM getBoundingClientRect (was Pretext, changed in Session 10)
+- D173: Equal column widths for both edges (max of the two cross-axis measurements)
+- D174: Ghost dimmed text (6% foreground) with bright orange dot
+- D175: Reading mode dims via direct opacity on elements, not overlay scrim
+- D176: Shiki brand theme: yesid-brand (orange/yellow/warm dark)
+- D177: BlogTocPill for mobile (floating pill, same UX as ProjectTocPill)
+- D178: Scroll-margin-top globally in app.css for all headings with IDs
+
+**Files created (Sessions 9-10):**
+- `src/lib/components/blog/BlogDetailPage.svelte` — orchestrator
+- `src/lib/components/blog/BlogDetailPage.test.ts` — 5 structure tests (Session 10)
+- `src/lib/components/blog/BlogDetailHeader.svelte` — rebuilt from scratch
+- `src/lib/components/blog/BlogRouteMap.svelte` — transit route (kept but unused)
+- `src/lib/components/blog/BlogRouteMap.test.ts` — 6 tests
+- `src/lib/components/blog/BlogTocPill.svelte` — floating mobile TOC
+- `src/lib/data/highlight.ts` — shared Shiki + marked config
+- `src/routes/blog/[slug]/+page@.svelte` — clean route (bypasses ListingLayout)
+
+**Files modified (Sessions 9-10):**
+- `src/routes/blog/[slug]/+page.ts` — added postIndex
+- `src/routes/+layout.svelte` — isFullBleed + @fontsource-variable imports (Session 10)
+- `src/lib/data/blog.ts` — imports marked from highlight.ts
+- `src/lib/components/blog/BlogContent.svelte` — overflow-x-hidden on card (Session 10)
+- `src/app.html` — removed Google Fonts CDN, comment-only now (Session 10)
+- `src/app.css` — :root font-family overrides for variable fonts (Session 10)
+- `src/tests/setup.dom.ts` — added gsap.utils.selector mock (Session 10)
+- `src/routes/projects/[slug]/+page.ts` — imports marked from highlight.ts
+- `src/lib/components/projects/ProjectDetailPage.svelte` — mobile padding
+- `src/lib/components/blog/BlogContent.svelte` — min-w-0
+- `src/app.css` — prose-dark sizing, Shiki styles, scroll-margin-top
 
 ### Session 8 (Blog Detail Page Planning) — COMPLETE
 - Brainstormed blog detail page design (infrastructure magazine editorial)

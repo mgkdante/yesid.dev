@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-13 (Slice 17a-6)
+**Last updated:** 2026-04-15 (Slice 17d-4)
 
 ## Stack
 
@@ -58,8 +58,11 @@ src/
 │   │   ├── BlogRow.svelte          # ← Slice 07: post row for listings (SVG, title, excerpt, tags)
 │   │   ├── BlogFilterSidebar.svelte # ← Slice 07: desktop tag filter sidebar
 │   │   ├── BlogFilterMobile.svelte  # ← Slice 07: mobile filter controls
-│   │   ├── BlogDetailHeader.svelte  # ← Slice 07: post detail header (title, date, SVG)
+│   │   ├── BlogDetailPage.svelte    # ← Slice 17d-4: blog detail orchestrator (4-zone body grid, TOC, edge labels, reading mode)
+│   │   ├── BlogDetailHeader.svelte  # ← Slice 17d-4: full-bleed magazine cover header (rebuilt from scratch)
 │   │   ├── BlogContent.svelte      # ← Slice 07: rendered markdown with typography styles
+│   │   ├── BlogTocPill.svelte      # ← Slice 17d-4: floating mobile TOC pill
+│   │   ├── BlogRouteMap.svelte     # ← Slice 17d-4: transit route SVG (unused — replaced by edge labels)
 │   │   ├── BlogSvgIcon.svelte      # ← Slice 07: SVG renderer with GSAP entrance + MorphSVG hover
 │   │   ├── StationDivider.svelte # ← Slice 06d: yellow/black hazard stripe between stops
 │   │   ├── StationTabs.svelte      # ← Slice 09: reusable station tab nav (scroll mode + navigate mode)
@@ -153,8 +156,8 @@ src/
     │   │   ├── +page.svelte # Personal Corner listing (yellow accent)
     │   │   └── +page.ts     # Loads personal posts, tags, SVGs
     │   └── [slug]/
-    │       ├── +page.svelte # Post detail page (centered max-w-2xl)
-    │       └── +page.ts     # Loads post data, SVG, rendered HTML
+    │       ├── +page@.svelte # ← Slice 17d-4: full-bleed detail (bypasses ListingLayout)
+    │       └── +page.ts     # Loads post data, SVG, rendered HTML, postIndex
     ├── services/        # ← Slice 09: services system
     │   ├── +page.svelte     # Services listing (full-viewport scroll)
     │   ├── +page.ts         # Loads all visible services, SVGs, project maps
@@ -214,6 +217,9 @@ Two systems coexist and serve different purposes:
 | `@playwright/test` | ^1.58.2 | E2E browser testing |
 | `happy-dom` | ^20.8.9 | DOM environment for unit tests (2-4x faster than jsdom) |
 | `marked` | ^* | Markdown-to-HTML rendering for blog posts (used instead of mdsvex for content) |
+| `shiki` | ^* | Syntax highlighting for code blocks (brand theme: orange/yellow/warm) |
+| `@fontsource-variable/inter` | ^* | Self-hosted Inter variable font (replaces Google Fonts CDN) |
+| `@fontsource-variable/jetbrains-mono` | ^* | Self-hosted JetBrains Mono variable font |
 | `mdsvex` | ^* | Svelte markdown preprocessor (enables `.md` as SvelteKit page extension) |
 
 ## Blog System (Slice 07)
@@ -248,7 +254,8 @@ src/routes/blog/
 3. `BlogPost[]` objects are created with resolved slugs, SVG paths, and fallback values
 4. Route `+page.ts` loaders filter by category and resolve SVG contents
 5. `marked` renders markdown body to HTML on the detail page
-6. `BlogListingPage` renders listings with search/filter; `BlogDetailHeader` + `BlogContent` render detail
+6. `BlogDetailPage` orchestrates the detail view: full-bleed header + 4-zone body grid + sticky TOC
+7. `highlight.ts` provides shared Shiki + marked config for brand-colored syntax highlighting (blog + project README)
 
 ### Key types
 

@@ -97,7 +97,10 @@ vi.mock('gsap', () => {
 			killTweensOf: vi.fn(),
 			matchMedia: vi.fn(),
 			timeline: vi.fn(() => mockTimeline),
-			context: vi.fn((fn: () => void) => { fn(); return { revert: vi.fn() }; })
+			context: vi.fn((fn: () => void) => { fn(); return { revert: vi.fn() }; }),
+			utils: {
+				selector: vi.fn(() => vi.fn(() => []))
+			}
 		}
 	};
 });
