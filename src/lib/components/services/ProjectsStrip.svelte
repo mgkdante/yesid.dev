@@ -38,7 +38,7 @@
 	<div class="strip-inner">
 		<span class="strip-label">{label}</span>
 		<div class="strip-separator" aria-hidden="true"></div>
-		<div class="strip-links">
+		<div class="strip-links" data-lenis-prevent style="touch-action: pan-x;">
 			{#each projects as project (project.slug)}
 				<a href="/projects/{project.slug}" class="strip-link">
 					<span class="strip-dot" aria-hidden="true"></span>
@@ -66,7 +66,8 @@
 
 	@media (min-width: 1024px) {
 		.strip-inner {
-			padding: 1rem var(--space-page-x);
+			padding: 1rem clamp(2rem, 5vw, 5rem);
+			gap: 2rem;
 		}
 	}
 

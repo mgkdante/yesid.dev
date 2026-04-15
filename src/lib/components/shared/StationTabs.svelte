@@ -67,7 +67,8 @@
 	<nav
 		aria-label="Service navigation"
 		class="station-tabs flex w-full overflow-x-auto md:justify-center"
-		style="background: var(--primary); border: none;"
+		style="background: var(--primary); border: none; touch-action: pan-x;"
+		data-lenis-prevent
 	>
 		{#each sorted as service, i (service.id)}
 			{@const isActive = service.id === activeId}
@@ -106,7 +107,8 @@
 		<Tabs.List
 			variant="line"
 			class="station-tabs flex w-full overflow-x-auto md:justify-center"
-			style="background: var(--primary); border: none;"
+			style="background: var(--primary); border: none; touch-action: pan-x;"
+			data-lenis-prevent
 		>
 			{#each sorted as service, i (service.id)}
 				{@const isActive = service.id === activeId}

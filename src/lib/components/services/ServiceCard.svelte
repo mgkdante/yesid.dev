@@ -231,25 +231,61 @@
 		opacity: 0.85;
 	}
 
-	/* SVG panel: responsive sizing, hidden on very small screens */
+	/* SVG panel: responsive sizing */
 	:global(.svg-panel-responsive) {
 		flex-shrink: 0;
 	}
 
-	/* Mobile: stacked layout */
+	/* Mobile: compact layout to fit within 100svh */
 	@media (max-width: 767px) {
+		.service-viewport {
+			justify-content: flex-start;
+			padding-top: 1.5rem;
+		}
 		.viewport-inner {
-			flex-direction: column;
-			gap: var(--space-stack);
+			flex-direction: row;
+			align-items: flex-start;
+			gap: var(--space-cluster);
 		}
 		:global(.svg-panel-responsive) {
-			align-self: flex-start;
+			width: 80px !important;
+			min-width: 80px;
+		}
+		:global(.svg-panel-responsive [data-slot="svg-icon"]) {
+			--svg-icon-size: 64px !important;
+			width: 64px !important;
+			height: 64px !important;
+		}
+		.service-subtitle {
+			display: none;
 		}
 		.service-description {
 			max-width: none;
+			font-size: var(--text-small);
+			line-height: 1.5;
+			margin-bottom: 0.75rem;
 		}
 		.service-title {
-			font-size: clamp(32px, 8vw, 42px);
+			font-size: clamp(28px, 7vw, 36px);
+			margin-bottom: 0.25rem;
+		}
+		.benefit-headline {
+			font-size: var(--text-body);
+			margin-bottom: 0.5rem;
+		}
+		.stack-pills {
+			margin-bottom: 0.75rem;
+		}
+		.stack-pill {
+			font-size: var(--text-micro);
+			padding: 0.125rem 0.5rem;
+		}
+		.metric-value {
+			font-size: clamp(28px, 6vw, 36px);
+		}
+		.deep-dive-cta {
+			padding: 0.5rem 1rem;
+			font-size: var(--text-caption);
 		}
 	}
 </style>

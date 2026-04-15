@@ -24,7 +24,9 @@ export function initLenis(): void {
 	if (isTouchDevice) {
 		// Mobile: normalizeScroll handles scroll, prevents browser chrome
 		// from interfering with ScrollTrigger pin calculations.
-		ScrollTrigger.normalizeScroll(true);
+		ScrollTrigger.normalizeScroll({
+			allowNestedScroll: true,
+		});
 		return;
 	}
 
