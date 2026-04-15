@@ -1,16 +1,29 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-14 | 17d-4 Session 6 — Project detail page IMPLEMENTATION (Tasks 1-7 + visual polish)
+**Last updated:** 2026-04-14 | 17d-4 Session 7 — Project detail page COMPLETE + constitutional audit
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — IN PROGRESS
-- **Status:** Sessions 0-6 complete. Next: Session 7 (polish remaining items + Tasks 8-12).
-- **Build:** 0 errors, 15 warnings, 771/771 tests pass.
-- **Next action:** Fix remaining polish items, then continue with Tasks 8-12 from the plan.
+- **Sub-slice:** 17d-4 (Wiring + Edge-to-Edge Pass) — Project detail page DONE, blog detail page NEXT
+- **Status:** Sessions 0-7 complete. Next: Session 8 (blog detail page planning).
+- **Build:** 0 errors, 15 warnings, 774/774 tests pass.
+- **Next action:** Plan blog detail page (blog/slug) in a planning session.
 
-### Session 6 (Project Detail Page Implementation) — IN PROGRESS
+### Session 7 (Project Detail Polish + Constitutional Audit) — COMPLETE
+- Fixed header grid/canvas misalignment — moved ManifestoCanvas out of SectionWrapper background slot
+- Scoped GSAP selectors via gsap.utils.selector(headerEl)
+- Added depth-based TOC indent for README sub-headings (h3→26px, h4→36px)
+- Route verification: +page@.svelte bypasses ListingLayout correctly
+- 3 new data layer tests for optional Project metadata fields (774 total)
+- Constitutional audit across home, projects, projects/slug, blog:
+  - Added semantic h1 to ProjectListingPage and BlogListingPage (were div)
+  - Replaced 10 arbitrary text-[Npx] with type scale tokens
+  - Replaced hardcoded rgb(20 20 20) in TocPill with var(--background) tokens
+  - Replaced transition:all in HomeCloser + Manifesto with specific properties
+- D160: Blog detail page designed separately, starts next session
+
+### Session 6 (Project Detail Page Implementation) — COMPLETE
 - Plan Tasks 1-7 complete: stackRoles.ts, Project type extensions, ProjectDetailHeader, ProjectGlancePanel, ProjectGlancePanelMobile, ProjectTocPill, ProjectDetailPage rewrite
 - Header uses ManifestoCanvas (interactive hover/click), circuit grid, CornerMarks, edge metadata
 - Header extends behind nav (negative margin + padding-top), full-bleed via SectionWrapper layout="bleed"
