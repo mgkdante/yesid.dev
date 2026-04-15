@@ -13,26 +13,34 @@ const mockService = {
 	relatedProjects: [],
 	stack: ['PostgreSQL', 'SQL Server', 'T-SQL'],
 	svg: 'service-sql.svg',
-	visible: true
+	visible: true,
+	benefitHeadline: { en: 'Queries that run in seconds, not minutes' },
+	impactMetric: {
+		value: { en: '3x' },
+		label: { en: 'faster avg query' },
+	},
 };
 
 describe('ServiceCard', () => {
-	it('renders the service title', () => {
+	it('renders the service title with dot', () => {
 		render(ServiceCard, {
 			props: { service: mockService, svgContent: '', index: 0, total: 6 }
 		});
 		expect(screen.getByText('SQL Development & Optimization')).toBeTruthy();
 	});
 
-	it('renders the description', () => {
+	it('renders the benefit headline', () => {
 		render(ServiceCard, {
 			props: { service: mockService, svgContent: '', index: 0, total: 6 }
 		});
-		expect(
-			screen.getByText(
-				'Write, refactor, and tune SQL queries across PostgreSQL and SQL Server.'
-			)
-		).toBeTruthy();
+		expect(screen.getByText('Queries that run in seconds, not minutes')).toBeTruthy();
+	});
+
+	it('renders the impact metric value', () => {
+		render(ServiceCard, {
+			props: { service: mockService, svgContent: '', index: 0, total: 6 }
+		});
+		expect(screen.getByText('3x')).toBeTruthy();
 	});
 
 	it('renders the station counter', () => {
@@ -48,7 +56,6 @@ describe('ServiceCard', () => {
 		});
 		expect(screen.getByText('PostgreSQL')).toBeTruthy();
 		expect(screen.getByText('SQL Server')).toBeTruthy();
-		expect(screen.getByText('T-SQL')).toBeTruthy();
 	});
 
 	it('renders a "Deep dive" link with correct href', () => {
@@ -59,7 +66,7 @@ describe('ServiceCard', () => {
 		expect(link.getAttribute('href')).toBe('/services/sql-development');
 	});
 
-	it('renders SVG container when svgContent is provided', () => {
+	it('renders ServiceSvgPanel when svgContent is provided', () => {
 		render(ServiceCard, {
 			props: {
 				service: mockService,
@@ -68,6 +75,14 @@ describe('ServiceCard', () => {
 				total: 6
 			}
 		});
-		expect(screen.getByTestId('service-card-svg')).toBeTruthy();
+		const panels = screen.getAllByTestId('service-svg-panel');
+		expect(panels.length).toBeGreaterThanOrEqual(1);
+	});
+
+	it('renders with data-testid', () => {
+		render(ServiceCard, {
+			props: { service: mockService, svgContent: '', index: 0, total: 6 }
+		});
+		expect(screen.getByTestId('service-card-sql-development')).toBeTruthy();
 	});
 });

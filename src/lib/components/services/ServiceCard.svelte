@@ -1,12 +1,13 @@
 <!--
-  Per-viewport service content block for the /services index page.
-  Single SVG element repositioned: desktop right, mobile centered above.
-  Full available width — no max-width constraints.
+  ServiceCard — per-viewport service block for the /services listing page.
+  Asymmetric split: text left, ServiceSvgPanel right (stacked on mobile).
+  Bold orange accents, benefit headline, impact metric. D186.
 -->
 <script lang="ts">
 	import type { Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { SvgIcon, SectionLabel } from '$lib/components/brand';
+	import { SectionLabel } from '$lib/components/brand';
+	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import { cn } from '$lib/utils.js';
 
 	export interface ServiceCardProps {
@@ -36,10 +37,19 @@
 	let title = $derived(resolveLocale(service.title, 'en'));
 	let description = $derived(resolveLocale(service.description, 'en'));
 	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, 'en') : null);
+	let benefitHeadline = $derived(
+		service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : null
+	);
+	let metricValue = $derived(
+		service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : null
+	);
+	let metricLabel = $derived(
+		service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : null
+	);
 </script>
 
 <section
-	class={cn("service-viewport", className)}
+	class={cn('service-viewport', className)}
 	data-testid="service-card-{service.id}"
 	id="service-{service.id}"
 	{...rest}
@@ -57,6 +67,10 @@
 				<p class="service-subtitle">{subtitle}</p>
 			{/if}
 
+			{#if benefitHeadline}
+				<p class="benefit-headline">{benefitHeadline}</p>
+			{/if}
+
 			<p class="service-description">{description}</p>
 
 			{#if service.stack && service.stack.length > 0}
@@ -67,15 +81,32 @@
 				</div>
 			{/if}
 
-			<a href="/services/{service.id}" class="deep-dive-cta">
-				Deep dive &rarr;
-			</a>
+			<div class="cta-row">
+				{#if metricValue}
+					<div class="metric-inline">
+						<span class="metric-value">{metricValue}</span>
+						{#if metricLabel}
+							<span class="metric-label">{metricLabel}</span>
+						{/if}
+					</div>
+				{/if}
+
+				<a href="/services/{service.id}" class="deep-dive-cta">
+					Deep dive &rarr;
+				</a>
+			</div>
 		</div>
 
+		<!-- SVG panel: desktop right, mobile banner -->
 		{#if svgContent}
-			<SvgIcon {svgContent} size={240} data-testid="service-card-svg" />
+			<ServiceSvgPanel {svgContent} class="svg-desktop" />
 		{/if}
 	</div>
+
+	<!-- Mobile SVG banner (below text on mobile, hidden on desktop) -->
+	{#if svgContent}
+		<ServiceSvgPanel {svgContent} variant="banner" class="svg-mobile" />
+	{/if}
 </section>
 
 <style>
@@ -85,12 +116,13 @@
 		justify-content: center;
 		height: 100dvh;
 		padding: 0 var(--space-page-x);
+		scroll-snap-align: start;
 	}
 
 	.viewport-inner {
 		display: flex;
 		align-items: center;
-		gap: 4rem;
+		gap: clamp(2rem, 4vw, 4rem);
 		width: 100%;
 	}
 
@@ -99,86 +131,121 @@
 		min-width: 0;
 	}
 
-
 	.service-title {
 		font-family: var(--font-heading);
-		font-size: clamp(2rem, 4vw, 3.5rem);
-		font-weight: 800;
+		font-size: clamp(44px, 5vw, 64px);
+		font-weight: 900;
 		color: var(--foreground);
-		line-height: 1.1;
+		line-height: 1.05;
+		letter-spacing: -0.03em;
 		margin-bottom: 0.5rem;
 	}
 
 	.title-dot { color: var(--primary); }
 
 	.service-subtitle {
-		font-size: 1.125rem;
-		color: var(--muted-foreground);
+		font-size: var(--text-heading);
+		color: var(--primary);
 		margin-bottom: 1rem;
 		font-style: italic;
 	}
 
+	.benefit-headline {
+		font-size: clamp(18px, 2.5vw, 24px);
+		font-weight: 600;
+		color: var(--foreground);
+		line-height: 1.3;
+		margin-bottom: 1rem;
+	}
+
 	.service-description {
-		font-size: 1rem;
+		font-size: var(--text-body);
 		line-height: 1.7;
 		color: var(--secondary-foreground);
 		max-width: 55ch;
-		margin-bottom: 1.5rem;
+		margin-bottom: var(--space-stack);
 	}
 
 	.stack-pills {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem;
-		margin-bottom: 1.5rem;
+		margin-bottom: var(--space-stack);
 	}
 
 	.stack-pill {
 		font-family: var(--font-mono);
-		font-size: 0.7rem;
+		font-size: var(--text-caption);
 		padding: 0.25rem 0.625rem;
-		border: 1px solid var(--border);
+		border: 1.5px solid var(--primary);
 		border-radius: var(--radius-pill);
-		color: var(--secondary-foreground);
+		color: var(--primary);
 		background: transparent;
 		cursor: default;
-		transition: color var(--duration-normal), border-color var(--duration-normal), background var(--duration-normal), transform var(--duration-normal);
 	}
-	.stack-pill:hover {
+
+	.cta-row {
+		display: flex;
+		align-items: center;
+		gap: clamp(1.5rem, 3vw, 3rem);
+		flex-wrap: wrap;
+	}
+
+	.metric-inline {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-cluster);
+	}
+
+	.metric-value {
+		font-size: clamp(36px, 4vw, 48px);
+		font-weight: 900;
 		color: var(--primary);
-		border-color: var(--primary);
-		background: color-mix(in srgb, var(--primary) 8%, transparent);
-		transform: translateY(-1px);
+		line-height: 1;
+	}
+
+	.metric-label {
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		color: var(--primary);
+		text-transform: uppercase;
+		letter-spacing: 1px;
 	}
 
 	.deep-dive-cta {
 		display: inline-block;
 		font-family: var(--font-mono);
-		font-size: 0.8rem;
-		font-weight: 600;
-		color: var(--primary);
+		font-size: var(--text-small);
+		font-weight: 700;
+		color: var(--background);
+		background: var(--primary);
+		padding: 0.75rem 1.5rem;
+		border-radius: var(--radius-pill);
 		text-decoration: none;
-		border-bottom: 1px solid transparent;
-		transition: border-color var(--duration-normal);
+		transition: opacity var(--duration-fast);
 	}
 	.deep-dive-cta:hover {
-		border-bottom-color: var(--primary);
+		opacity: 0.85;
 	}
 
+	/* Desktop: SVG panel visible, mobile banner hidden */
+	.svg-desktop { display: none; }
+	.svg-mobile { display: none; }
 
-	/* Mobile: SVG above text, smaller */
+	@media (min-width: 768px) {
+		.svg-desktop { display: flex; }
+		.svg-mobile { display: none; }
+	}
+
+	/* Mobile: stacked layout, banner visible */
 	@media (max-width: 767px) {
-		.service-viewport {
-			padding: 0 var(--space-page-x);
-		}
 		.viewport-inner {
-			flex-direction: column-reverse;
-			gap: 1.5rem;
-			text-align: left;
+			flex-direction: column;
+			gap: var(--space-stack);
 		}
-		.viewport-inner :global([data-slot="svg-icon"]) {
-			--svg-icon-size: clamp(100px, 30vw, 160px);
-			align-self: flex-start;
+		.svg-mobile {
+			display: flex;
+			margin-top: var(--space-stack);
 		}
 		.service-description {
 			max-width: none;
