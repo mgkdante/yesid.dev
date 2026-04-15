@@ -61,7 +61,7 @@
   <Separator variant="hazard" hazardSize="sm" />
 
   <!-- Body -->
-  <div class="terminal-body" class:no-pad={noPadding}>
+  <div class="terminal-body" class:no-pad={noPadding} data-lenis-prevent>
     {@render children()}
   </div>
 

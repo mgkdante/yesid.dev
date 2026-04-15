@@ -159,7 +159,7 @@
 	>
 		{#snippet sideLeft()}
 			<StickyPanel top="5rem">
-				<div class="toc-panel toc-scroll">
+				<div class="toc-panel toc-scroll" data-lenis-prevent>
 					<CollapsibleSection title="On this page" open={true}>
 						<nav class="toc-nav">
 								{#each tocEntries as entry}

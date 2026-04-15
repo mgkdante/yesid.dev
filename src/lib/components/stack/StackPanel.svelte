@@ -49,7 +49,7 @@
 	}
 </script>
 
-<div class="stack-panel" data-testid="stack-panel">
+<div class="stack-panel" data-testid="stack-panel" data-lenis-prevent>
 	{#if item}
 		<!-- Detail Card -->
 		<div class="panel-detail" data-testid="panel-detail">

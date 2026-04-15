@@ -7,6 +7,30 @@
 /* Tailwind CSS v4 (CSS-first config, no tailwind.config.js needed) */
 @import 'tailwindcss';
 
+/* Cross-browser mobile resets — Brave/Chrome/Safari Android consistency */
+*,
+*::before,
+*::after {
+	-webkit-tap-highlight-color: transparent;
+}
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+button,
+[type="button"],
+[type="submit"],
+[type="reset"] {
+	-webkit-appearance: none;
+	appearance: none;
+}
+input,
+textarea,
+select {
+	-webkit-appearance: none;
+	appearance: none;
+}
+
 /* shadcn-svelte component animations */
 @import 'tw-animate-css';
 

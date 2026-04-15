@@ -47,7 +47,7 @@
 
 <div class="scenario-card" bind:this={cardEl} data-testid="scenario-card">
 	<!-- Mini flow: recommended tech in order, connected by arrows -->
-	<div class="mini-flow" data-testid="scenario-flow">
+	<div class="mini-flow" data-testid="scenario-flow" data-lenis-prevent>
 		{#each recommendedItems as item, i (item.id)}
 			{#if i > 0}
 				<span class="flow-arrow" aria-hidden="true">

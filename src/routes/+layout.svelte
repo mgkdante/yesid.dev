@@ -42,7 +42,7 @@
 	{@html `<script type="application/ld+json">${personSchema}</script>`}
 </svelte:head>
 
-<div class="circuit-grid flex min-h-screen flex-col bg-[var(--background)] font-body text-[var(--foreground)]">
+<div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
 	<Nav pathname={$page.url.pathname} />
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->

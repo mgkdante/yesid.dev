@@ -155,7 +155,7 @@
 	<!-- Section 2: Listing — filters in sideLeft (section-scoped), cards in content -->
 	<SectionWrapper layout="centered" container="none" style="--edge-left: clamp(220px, 22vw, 320px)">
 		{#snippet sideLeft()}
-			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4">
+			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" data-lenis-prevent>
 				<ProjectFilterSidebar
 					{serviceIds}
 					{serviceMap}

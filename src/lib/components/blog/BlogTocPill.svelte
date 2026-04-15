@@ -101,7 +101,7 @@
         aria-label="Close table of contents"
       ></button>
 
-      <div class="toc-drawer">
+      <div class="toc-drawer" data-lenis-prevent>
         <nav class="flex flex-col gap-0.5 p-4">
           {#each headings as heading, i}
             <button

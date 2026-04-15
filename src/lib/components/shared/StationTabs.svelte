@@ -58,6 +58,29 @@
 		const distance = Math.abs(index - activeIndex);
 		return Math.max(0.35, 1 - distance * 0.15);
 	}
+
+	// Swipe guard — disables pointer-events on tabs during swipe so no click fires.
+	// pointer-events: none is bulletproof regardless of event ordering.
+	let swipeActive = $state(false);
+	let touchStartX = 0;
+
+	function onTouchStart(e: TouchEvent) {
+		touchStartX = e.touches[0].clientX;
+		swipeActive = false;
+	}
+
+	function onTouchMove(e: TouchEvent) {
+		if (!swipeActive && Math.abs(e.touches[0].clientX - touchStartX) > 8) {
+			swipeActive = true;
+		}
+	}
+
+	function onTouchEnd() {
+		if (swipeActive) {
+			// Delay reset so the post-touch click event is still blocked
+			setTimeout(() => { swipeActive = false; }, 300);
+		}
+	}
 </script>
 
 <Separator variant="hazard" hazardSize="sm" />
@@ -66,9 +89,13 @@
 	<!-- Navigate mode: plain nav + links (links can't be Tabs triggers) -->
 	<nav
 		aria-label="Service navigation"
-		class="station-tabs flex w-full overflow-x-auto xl:justify-center"
+		class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center"
+		class:swipe-lock={swipeActive}
 		style="background: var(--primary); border: none;"
 		data-lenis-prevent
+		ontouchstart={onTouchStart}
+		ontouchmove={onTouchMove}
+		ontouchend={onTouchEnd}
 	>
 		{#each sorted as service, i (service.id)}
 			{@const isActive = service.id === activeId}
@@ -77,6 +104,7 @@
 			<a
 				href="/services/{service.id}"
 				class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all"
+
 				class:active={isActive}
 				style="opacity: {opacity};"
 				data-testid="station-tab-{service.id}"
@@ -106,9 +134,12 @@
 	>
 		<Tabs.List
 			variant="line"
-			class="station-tabs flex w-full overflow-x-auto xl:justify-center"
+			class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center {swipeActive ? 'swipe-lock' : ''}"
 			style="background: var(--primary); border: none;"
 			data-lenis-prevent
+			ontouchstart={onTouchStart}
+			ontouchmove={onTouchMove}
+			ontouchend={onTouchEnd}
 		>
 			{#each sorted as service, i (service.id)}
 				{@const isActive = service.id === activeId}
@@ -186,5 +217,11 @@
 	/* JetBrains Mono for station numbers — matches brand mono font */
 	.station-num {
 		font-family: var(--font-mono);
+	}
+
+	/* Swipe guard: disable all pointer events on tabs during horizontal swipe.
+	   Prevents click/pointerdown from firing on buttons or links mid-swipe. */
+	.swipe-lock .station-tab {
+		pointer-events: none;
 	}
 </style>

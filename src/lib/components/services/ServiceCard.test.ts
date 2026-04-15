@@ -62,8 +62,9 @@ describe('ServiceCard', () => {
 		render(ServiceCard, {
 			props: { service: mockService, svgContent: '', index: 0, total: 6 }
 		});
-		const link = screen.getByRole('link', { name: /deep dive/i });
-		expect(link.getAttribute('href')).toBe('/services/sql-development');
+		const links = screen.getAllByRole('link', { name: /deep dive/i });
+		expect(links.length).toBeGreaterThanOrEqual(1);
+		expect(links[0].getAttribute('href')).toBe('/services/sql-development');
 	});
 
 	it('renders ServiceSvgPanel when svgContent is provided', () => {

@@ -120,6 +120,7 @@
 	bind:this={container}
 	class="data-flow-diagram"
 	class:scrollable={stack.length > 4}
+	data-lenis-prevent
 	class:size-lg={size === 'lg'}
 >
 	<svg

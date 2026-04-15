@@ -22,7 +22,7 @@
   }: StickyPanelProps & Record<string, unknown> = $props();
 </script>
 
-<div class={cn("panel scrollbar-hidden", className)} data-slot="sticky-panel" style="top: {top};" {...rest}>
+<div class={cn("panel scrollbar-hidden", className)} data-slot="sticky-panel" data-lenis-prevent style="top: {top};" {...rest}>
   {@render children()}
 </div>
 

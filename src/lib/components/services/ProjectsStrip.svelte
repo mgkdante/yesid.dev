@@ -66,7 +66,7 @@
 
 	@media (min-width: 1024px) {
 		.strip-inner {
-			padding: 1rem clamp(2rem, 5vw, 5rem);
+			padding: 1rem var(--space-page-x);
 			gap: 2rem;
 		}
 	}
@@ -108,8 +108,14 @@
 		min-width: 0;
 		display: flex;
 		align-items: center;
-		gap: var(--space-stack);
+		gap: 1rem;
 		overflow-x: auto;
+	}
+
+	@media (min-width: 768px) {
+		.strip-links {
+			justify-content: space-evenly;
+		}
 	}
 
 	.strip-link {

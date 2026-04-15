@@ -40,7 +40,7 @@
 		const lenis = getLenis();
 		const target = document.querySelector<HTMLElement>(`#service-${id}`);
 		if (lenis && target) {
-			lenis.scrollTo(target, { offset: -80 });
+			lenis.scrollTo(target, { offset: 0 });
 		} else if (target) {
 			target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}
@@ -108,15 +108,25 @@
 	.services-page {
 		position: relative;
 		background: var(--background);
+		overflow-x: clip;
 	}
 
 	.tabs-bar {
 		position: sticky;
 		top: 5rem;
 		z-index: var(--z-rail);
-		/* Cover the full area above tabs to prevent content showing behind nav.
-		   5rem (pt-20) + safe-area + extra margin for notched devices. */
-		box-shadow: 0 calc(-1 * (5rem + env(safe-area-inset-top, 0px) + 1rem)) 0 0 var(--background);
+	}
+
+	/* Solid backdrop above tabs — covers the nav gap so content doesn't
+	   show through the semi-transparent nav pill on scroll. */
+	.tabs-bar::before {
+		content: '';
+		position: absolute;
+		inset-inline: 0;
+		bottom: 100%;
+		height: calc(5rem + env(safe-area-inset-top, 0px) + 1rem);
+		background: var(--background);
+		pointer-events: none;
 	}
 
 	.strip-bar {

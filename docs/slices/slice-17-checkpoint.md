@@ -1,14 +1,61 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-15 | 17d-5 Session 0 — Services pages PLANNING COMPLETE
+**Last updated:** 2026-04-15 | 17d-5 Session 2 — Services listing bug fixes COMPLETE
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
 - **Sub-slice:** 17d-5 (Services Pages — Listing + Detail)
-- **Status:** Planning complete. Design spec + implementation plan written and approved. Ready for Session 1 implementation.
-- **Build:** 0 errors, 18 warnings, 785/785 tests pass.
-- **Next action:** Implementation Session 1 — Tasks 1-5 (Constitution, layout fix, new components, StationTabs restyle).
+- **Status:** Sessions 1-2 complete. Listing page built and polished. Detail page next.
+- **Build:** 0 errors, 18 warnings, 798/798 tests pass.
+- **Next action:** Session 3 — Plan ServiceDetailPage rewrite (T8), then implement.
+
+### 17d-5 Session 2 (Bug Fixes + Mobile Polish) — COMPLETE
+
+**Bugs fixed:**
+- Nav gap: `::before` pseudo-element on `.tabs-bar` replaces broken box-shadow approach
+- Global scroll: `data-lenis-prevent` added to 16 scrollable containers site-wide (TOC panels, filter sidebars, terminal bodies, horizontal strips)
+- Horizontal overflow: `overflow-x: clip` on root `.circuit-grid` wrapper (clips hero GSAP animation elements)
+- Services page overflow: `overflow-x: clip` on `.services-page`
+- Tab left-alignment: `justify-start` overrides bits-ui Tabs.List base `justify-center` on mobile
+- ServiceCard centering: `position: sticky; top: calc(50dvh - 13rem)` on `.viewport-inner` centers content in usable area between sticky tabs and strip at every scroll position
+- Swipe guard: `pointer-events: none` during touch swipe prevents click-on-swipe on tab strip
+- Cross-browser reset: tap-highlight, text-size-adjust, appearance resets in app.css
+
+**Mobile layout:**
+- Card height = usable area: `calc(100svh - 12rem)`, flex centered, `scroll-margin-top: 8.75rem`
+- SVG stacked on top (same card as desktop, scaled to 100×120px)
+- "Deep dive →" CTA + SVG at opposite ends (`justify-content: space-between`) in bottom row
+- Separate desktop/mobile CTA elements with visibility toggles
+- Bigger CTA button: `text-body` size, `1rem 2.5rem` padding, hover lift with orange glow
+
+**Desktop layout (untouched after approval):**
+- Sticky inner: content centers at usable viewport center (0px offset verified)
+- CTA + metric in text area, SVG panel beside text
+- Projects strip: `space-evenly` distribution of project links
+
+**Design decisions (D196-D204):**
+- D196: `::before` pseudo-element for nav gap cover (box-shadow had wrong height)
+- D197: `data-lenis-prevent` attribute is the standard for nested scroll containers
+- D198: `overflow-x: clip` (not hidden) preserves sticky positioning
+- D199: `position: sticky` on `.viewport-inner` centers content at every scroll position — no scroll-to hack
+- D200: `calc(50dvh - 13rem)` sticky top = usable-center minus estimated half-content-height
+- D201: Mobile card height = `calc(100svh - 12rem)` = usable area between tabs (8.75rem) and strip (3.25rem)
+- D202: `scroll-margin-top: 8.75rem` for mobile tab-click alignment
+- D203: Dual CTA elements (desktop-only / mobile-only) with `.deep-dive-cta.desktop-only` / `.mobile-only` specificity
+- D204: Swipe guard via `pointer-events: none` class toggle — bulletproof regardless of event ordering
+
+**Files modified (22 files, +175 / -61 lines):**
+- `src/app.css` — cross-browser mobile resets
+- `src/routes/+layout.svelte` — `overflow-x-clip` on root wrapper
+- `src/lib/components/services/ServiceCard.svelte` — sticky centering, mobile layout, dual CTA, spacing
+- `src/lib/components/services/ServiceCard.test.ts` — updated for dual CTA links
+- `src/lib/components/services/ServiceListingPage.svelte` — nav gap fix, overflow clip, scroll offset
+- `src/lib/components/services/ProjectsStrip.svelte` — `space-evenly` on desktop, `var(--space-page-x)` alignment
+- `src/lib/components/shared/StationTabs.svelte` — justify-start, swipe guard, touch handlers
+- `src/lib/components/brand/StickyPanel.svelte` — `data-lenis-prevent`
+- `src/lib/components/brand/TerminalChrome.svelte` — `data-lenis-prevent`
+- 13 more components — `data-lenis-prevent` on scrollable containers
 
 ### 17d-5 Planning Session — COMPLETE
 

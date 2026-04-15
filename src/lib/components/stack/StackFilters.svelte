@@ -47,7 +47,7 @@
 
 <div class="stack-filters" data-testid="stack-filters" role="toolbar" aria-label="Filter by domain">
 	<span class="filter-label label-section font-semibold">Domain</span>
-	<div class="filter-pills">
+	<div class="filter-pills" data-lenis-prevent>
 		<button
 			type="button"
 			class="filter-pill"

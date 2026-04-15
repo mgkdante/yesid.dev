@@ -57,7 +57,7 @@
 
 		<CollapsibleContent forceMount class="blog-filter-body">
 			<div class="min-h-0 overflow-hidden">
-				<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3">
+				<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3" data-lenis-prevent>
 					<!-- Language filter -->
 					{#if languages.length > 1}
 						<div class="label-section font-semibold">

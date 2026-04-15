@@ -16,7 +16,7 @@
 >
 	<span class="proof-label label-section">Built with this</span>
 
-	<div class="proof-projects">
+	<div class="proof-projects" data-lenis-prevent>
 		{#each projects as project (project.slug)}
 			<a
 				href="/projects/{project.slug}"

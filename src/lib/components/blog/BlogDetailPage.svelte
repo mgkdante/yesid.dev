@@ -191,7 +191,7 @@
     >
       {#snippet sideLeft()}
         <StickyPanel top="5rem">
-          <div class="toc-panel toc-scroll">
+          <div class="toc-panel toc-scroll" data-lenis-prevent>
             <!-- Reading mode switch -->
             <label class="reading-toggle">
               <span class="reading-toggle__label">Reading mode</span>
