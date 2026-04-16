@@ -17,7 +17,6 @@
 	import BlogFilterSidebar from './BlogFilterSidebar.svelte';
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
-	import { SectionWrapper } from '$lib/components/shells';
 	import { Separator } from '$lib/components/ui/separator';
 
 	let {
@@ -132,7 +131,7 @@
 	style={accentColor !== 'var(--accent)' ? `--accent: ${accentColor};` : ''}
 >
 	<!-- Section 1: Header — blueprint visualization -->
-	<SectionWrapper layout="bleed" container="none">
+	<section class="w-full">
 		<div class="blog-blueprint-header" data-batch="blog-item">
 			<BlogBlueprint />
 			<!-- Subtitle: always visible, overlaid on blueprints -->
@@ -142,13 +141,13 @@
 				<div class="blog-header-subtitle">{subtitle}</div>
 			</div>
 		</div>
-	</SectionWrapper>
+	</section>
 
 	<Separator variant="hazard" />
 
-	<!-- Section 2: Listing — filters in sideLeft (section-scoped), posts in content -->
-	<SectionWrapper layout="centered" container="none" style="--edge-left: clamp(220px, 22vw, 320px)">
-		{#snippet sideLeft()}
+	<!-- Section 2: Listing — filter sidebar + posts in CSS Grid -->
+	<section class="blog-listing-grid">
+		<aside class="blog-filter-column">
 			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" data-lenis-prevent>
 				<BlogFilterSidebar
 					tags={allTags}
@@ -164,7 +163,7 @@
 					bind:dateTo
 				/>
 			</div>
-		{/snippet}
+		</aside>
 
 		<!-- Listing content with padding -->
 		<div class="px-4 py-6 md:px-6 md:py-8">
@@ -211,7 +210,7 @@
 			</div>
 		{/if}
 		</div>
-	</SectionWrapper>
+	</section>
 </div>
 
 <style>
@@ -266,6 +265,26 @@
 		.blog-header-subtitle {
 			font-size: 1.1rem;
 			letter-spacing: 5px;
+		}
+	}
+
+	/* Recipe 3: Filter sidebar + content */
+	.blog-listing-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		width: 100%;
+	}
+
+	.blog-filter-column {
+		display: none;
+	}
+
+	@media (min-width: 1024px) {
+		.blog-listing-grid {
+			grid-template-columns: clamp(220px, 22vw, 320px) 1fr;
+		}
+		.blog-filter-column {
+			display: block;
 		}
 	}
 
