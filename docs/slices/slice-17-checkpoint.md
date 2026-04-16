@@ -1,14 +1,68 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-16 | Constitution CSS Grid Rewrite — COMPLETE
+**Last updated:** 2026-04-16 | Contact Page Redesign — COMPLETE, Card Unification — SPEC APPROVED
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** Constitution CSS Grid Rewrite — COMPLETE
-- **Status:** SectionWrapper/EdgeRail/ListingLayout deleted. All pages on plain CSS Grid. Wireframes created.
-- **Build:** 0 errors, 17 warnings, 765/765 tests pass.
-- **Next action:** Contact page redesign (17d-6) — edge-to-edge full-bleed design.
+- **Sub-slice:** Card Unification (Task 31) — SPEC APPROVED, needs implementation plan + execution
+- **Status:** Contact page redesign complete. Card unification spec written and approved.
+- **Build:** 0 errors, 17 warnings, 767/767 tests pass.
+- **Next action:** Write implementation plan for card unification (`docs/specs/2026-04-16-card-unification-design.md`), then execute.
+
+### Contact Page Redesign (17d-6) — COMPLETE
+
+**What was done (15 commits):**
+- Recipe 4 Edge Title Grid: rotated "Contact." edge title + accent line
+- Paneforge resizable split between info (33%) and form (67%) terminals
+- Shared weather utility extracted from About page (`src/lib/data/weather.ts`)
+- Server-side weather fetch for contact route (`src/routes/contact/+page.server.ts`)
+- Live Montreal local time via `Intl.DateTimeFormat`, updates every minute
+- Desktop: entire page fits in one viewport (`max-height: calc(100dvh - nav - footer)`)
+- Mobile: stacked terminals (info first, form second), visible heading, no viewport constraint
+- Data layer cleanup: removed unused `status`/`availability` fields
+- 14 contact tests (12 updated + 2 new weather tests)
+- All hardcoded hex colors replaced with semantic tokens
+
+**Design decisions (D218-D240):**
+- D218: Recipe 4 Edge Title Grid layout
+- D219: Big rotated "Contact." edge title, clamp(6rem, 12vw, 13rem)
+- D220: Accent line between edge title and content
+- D221: Resizable split via Paneforge
+- D222: Default pane ratio 33%/67%
+- D223: Min pane sizes: info 20%, form 40%
+- D224: Resize handle with grip dots, orange on hover
+- D225: Mobile stacked, info first
+- D226: Mobile: no resize, no edge title
+- D227: Remove status/availability from data layer
+- D228: Full-bleed, no max-width container
+- D229: Live weather in info terminal
+- D230: Shared weather utility from About page
+- D231: Live Montreal local time
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-16-contact-page-redesign-design.md`
+- Implementation plan: `docs/plans/2026-04-16-contact-page-redesign.md`
+- Mockups: `.superpowers/brainstorm/769-1776313859/content/`
+
+### Card Unification (Task 31) — SPEC APPROVED
+
+**Scope:** 21 card instances across 4 patterns → one `ui/card` component
+
+**Key decisions (D232-D240):**
+- D232: One unified surface via `ui/card`
+- D233: Delete `.bento-card` utility from app.css
+- D234: Delete `.bento-card` overrides from AboutPage
+- D235: Motion actions stay per-consumer
+- D236: Content layout stays unique per card
+- D237: CollapsibleSection uses Card internally
+- D238: Remove backdrop-blur from BlogRow
+- D239: TerminalChrome stays separate
+- D240: StackNode stays separate
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-16-card-unification-design.md`
+- Implementation plan: needs to be written
 
 ### Constitution CSS Grid Rewrite Session — COMPLETE
 
