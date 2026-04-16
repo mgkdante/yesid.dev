@@ -173,8 +173,8 @@
 
 	<!-- ═══ CONTENT ═══ -->
 	<div class="contact-content">
-		<!-- Station label (mobile heading + desktop subtitle) -->
-		<h1 class="sr-only">Contact</h1>
+		<!-- Mobile: visible heading. Desktop: sr-only (rotated edge title is the heading) -->
+		<h1 class="mobile-heading text-display font-bold">Contact<span class="text-[var(--primary)]">.</span></h1>
 		<div class="mb-2 font-mono text-caption uppercase tracking-[2px] text-[var(--muted-foreground)]">
 			NEXT STOP: YOU
 		</div>
@@ -219,11 +219,9 @@
 					</div>
 				{/if}
 				{#if localTime}
-					<div class="mt-0.5 text-caption text-[var(--muted-foreground)]">
-						{localTime} — {resolveLocale(c.infoTerminal.responseTime, 'en')}
+					<div class="mt-0.5 font-mono text-small text-[var(--secondary-foreground)]">
+						{localTime}
 					</div>
-				{:else}
-					<div class="mt-1 text-caption text-[var(--muted-foreground)]">{resolveLocale(c.infoTerminal.responseTime, 'en')}</div>
 				{/if}
 			</div>
 
@@ -409,11 +407,17 @@
 		gap: var(--space-card-gap);
 	}
 
-	/* Cap main so entire page fits in one viewport */
-	:global(main:has(.contact-grid)) {
-		max-height: calc(100dvh - 5rem - 6rem); /* 100dvh - nav (5rem) - footer (~6rem) */
-		overflow: hidden;
-		padding-bottom: 1.5rem; /* breathing room above footer */
+	/* Mobile heading visible, hidden on desktop (rotated edge title replaces it) */
+	.mobile-heading { display: block; margin-bottom: 0.5rem; }
+
+	/* Desktop only: cap main so entire page fits in one viewport */
+	@media (min-width: 1024px) {
+		:global(main:has(.contact-grid)) {
+			max-height: calc(100dvh - 5rem - 6rem); /* 100dvh - nav (5rem) - footer (~6rem) */
+			overflow: hidden;
+			padding-bottom: 1.5rem; /* breathing room above footer */
+		}
+		.mobile-heading { display: none; }
 	}
 
 	@media (min-width: 1024px) {
