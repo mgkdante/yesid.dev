@@ -55,7 +55,31 @@ Convention: tests live next to the code they test (co-located).
 
 ---
 
-# Components (`src/lib/components/`) — 27 files, 193 tests
+# Components (`src/lib/components/`) — 28 files, 195 tests
+
+## src/lib/components/about/AboutPage.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| AboutPage > renders with data-testid page-about | The about page wrapper exists | `getByTestId('page-about')` is truthy | `weather: null` |
+| AboutPage > renders the top hazard stripe | Dashboard renders without a heading | `getByTestId('page-about')` is truthy | Heading removed — hazard stripe instead |
+| AboutPage > renders metro stop labels on cards | Stop labels STOP 00 and STOP 08 are present | `getByText('STOP 00 — IDENTITY')` and `getByText('STOP 08 — SNAPSHOTS')` are truthy | Standard |
+| AboutPage > renders the identity section | Identity sub-component exists | `getByTestId('about-identity')` is truthy | Standard |
+| AboutPage > renders the polaroids section | Polaroids sub-component exists | `getByTestId('about-polaroids')` is truthy | Standard |
+| AboutPage > renders the metrics section | Metrics sub-component exists | `getByTestId('about-metrics')` is truthy | Standard |
+| AboutPage > renders the methodology section | Method sub-component exists | `getByTestId('about-method')` is truthy | Standard |
+| AboutPage > renders the testimonials section | Testimonials sub-component exists | `getByTestId('about-testimonials')` is truthy | Standard |
+| AboutPage > renders the tech stack section | Tech stack sub-component exists | `getByTestId('about-tech-stack')` is truthy | Standard |
+| AboutPage > renders the weather section | Weather sub-component exists | `getByTestId('about-weather')` is truthy | Standard |
+| AboutPage > renders the interests section | Interests sub-component exists | `getByTestId('about-interests')` is truthy | Standard |
+| AboutPage > renders the logos section | Logos sub-component exists | `getByTestId('about-logos')` is truthy | Standard |
+| AboutPage > renders the CTA section | CTA sub-component exists | `getByTestId('about-cta')` is truthy | Standard |
+| AboutPage > CTA links to /contact | CTA link points to the contact page | `a[href="/contact"]` found inside `about-cta` | Standard |
+| AboutPage > renders weather fallback when no data | Fallback shows Montreal and dash | `textContent` contains `'Montreal'` and `'—'` | `weather: null` |
+| AboutPage > renders weather data when provided | Live weather shows temp and condition | `textContent` contains `'15°C'` and `'clear sky'` | `weather: { temp: 15, condition: 'clear sky', icon: '01d' }` |
+| AboutPage > does not render its own footer | Footer comes from layout, not page | `queryAllByTestId('footer').length` === 0 | Standard |
+| Card Unification Sweep > has zero .bento-card class usage in any .svelte file | No `.svelte` file contains `bento-card` | `violations` array is empty | Scans all `.svelte` files under `src/` |
+| Card Unification Sweep > has zero .bento-card in app.css | `app.css` has no `bento-card` references | `appCss` does not contain `'bento-card'` | Reads `src/app.css` directly |
 
 ## src/lib/components/blog/BlogDetailPage.test.ts
 

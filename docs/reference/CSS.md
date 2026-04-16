@@ -271,7 +271,9 @@ Used via `.led-pulse` utility class or direct `animation:` reference.
 
 ## Brand Utility Classes (app.css)
 
-12 utility classes for shared brand patterns. Wired into components in Phase B (17a-2b).
+11 utility classes for shared brand patterns. Wired into components in Phase B (17a-2b).
+
+> **Card surface:** `ui/card` (`src/lib/components/ui/card/`) is the single card surface for all cards site-wide. Use `<Card>` instead of any utility class for card styling.
 
 | # | Class | Purpose |
 |---|-------|---------|
@@ -286,7 +288,6 @@ Used via `.led-pulse` utility class or direct `animation:` reference.
 | 9 | `.label-metric` | Mono uppercase, caption size, 2px tracking |
 | 10 | `.prose-dark` | Full markdown prose styling (blog + work detail) |
 | 11 | `.led-pulse` | Pulse-glow animation for LED indicators |
-| 12 | `.bento-card` | Full bento card bundle (border, bg, radius, hover) |
 
 ---
 
