@@ -1,7 +1,6 @@
 <!--
   HomePage — orchestrator for the home page sections.
   5 sections: Hero, Manifesto, Featured Projects, Services, Closer.
-  All wrapped in SectionWrapper for constitutional compliance.
   Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
 -->
 <script lang="ts">
@@ -12,60 +11,59 @@
 	import HomeCloser from './HomeCloser.svelte';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
-	import { SectionWrapper } from '$lib/components/shells';
 	import { SectionHeading } from '$lib/components/brand';
 </script>
 
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
-<SectionWrapper layout="bleed">
+<section class="w-full">
 	<HeroBanner />
-</SectionWrapper>
+</section>
 
 <Separator variant="hazard" />
 
 <!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
-<SectionWrapper layout="bleed">
+<section class="w-full">
 	<Manifesto />
-</SectionWrapper>
+</section>
 
 <Separator variant="hazard" />
 
 <!-- Section 3: Featured Projects — rotated title LEFT -->
-<SectionWrapper layout="centered" style="--edge-left: clamp(4.5rem, 8vw, 8rem)">
-	{#snippet sideLeft()}
-		<div class="rotated-title rotated-title--left">
-			<SectionHeading heading="Projects" />
-		</div>
-	{/snippet}
-	<FeaturedProjects />
-</SectionWrapper>
+<section class="home-section home-section--left">
+	<div class="rotated-title rotated-title--left">
+		<SectionHeading heading="Projects" />
+	</div>
+	<div class="home-section-content">
+		<FeaturedProjects />
+	</div>
+</section>
 
 <Separator variant="hazard" />
 
 <!-- Section 4: Services — rotated title RIGHT, blueprint background spans full width -->
-<SectionWrapper layout="centered" style="--edge-right: clamp(4.5rem, 8vw, 8rem)">
-	{#snippet background()}
+<section class="home-section home-section--right relative">
+	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
-	{/snippet}
-	{#snippet sideRight()}
-		<div class="rotated-title rotated-title--right">
-			<SectionHeading heading="Services" />
-		</div>
-	{/snippet}
-	<HomeServices />
-</SectionWrapper>
+	</div>
+	<div class="home-section-content">
+		<HomeServices />
+	</div>
+	<div class="rotated-title rotated-title--right">
+		<SectionHeading heading="Services" />
+	</div>
+</section>
 
 <Separator variant="hazard" />
 
 <!-- Section 5: Closer — rotated title LEFT -->
-<SectionWrapper layout="centered" style="--edge-left: clamp(4.5rem, 8vw, 8rem)">
-	{#snippet sideLeft()}
-		<div class="rotated-title rotated-title--left">
-			<SectionHeading heading="Terminus" />
-		</div>
-	{/snippet}
-	<HomeCloser />
-</SectionWrapper>
+<section class="home-section home-section--left">
+	<div class="rotated-title rotated-title--left">
+		<SectionHeading heading="Terminus" />
+	</div>
+	<div class="home-section-content">
+		<HomeCloser />
+	</div>
+</section>
 
 <style>
 	/* Shared rotated title base */
@@ -100,5 +98,33 @@
 	/* Hide subheading in rotated context */
 	.rotated-title :global([data-slot="section-heading-sub"]) {
 		display: none;
+	}
+
+	/* Recipe 3: Content + Side Column */
+	.home-section {
+		display: grid;
+		grid-template-columns: 1fr;
+		width: 100%;
+	}
+
+	.home-section-content {
+		min-width: 0;
+	}
+
+	/* Left-side heading: heading | content */
+	@media (min-width: 1024px) {
+		.home-section--left {
+			grid-template-columns: clamp(4.5rem, 8vw, 8rem) 1fr;
+		}
+		.home-section--right {
+			grid-template-columns: 1fr clamp(4.5rem, 8vw, 8rem);
+		}
+	}
+
+	/* Hide rotated titles on mobile (SectionWrapper used to do this) */
+	@media (max-width: 1023px) {
+		.rotated-title {
+			display: none;
+		}
 	}
 </style>
