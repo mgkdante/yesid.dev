@@ -426,15 +426,15 @@
 			justify-content: center;
 			position: sticky;
 			top: 0;
-			height: 100dvh;
+			height: calc(100dvh - 5rem);
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
-			padding: 1rem 1.5rem;
+			padding: 1rem 0.5rem;
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			/* Fill the column height minus footer (~5rem) */
-			font-size: clamp(8rem, calc(100dvh - 5rem), 15rem);
+			/* "Contact." = ~8 chars, divide available height to fill the column */
+			font-size: calc((100dvh - 5rem) / 7.5);
 			font-weight: 900;
 			color: var(--foreground);
 			white-space: nowrap;
