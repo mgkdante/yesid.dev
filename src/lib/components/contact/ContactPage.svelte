@@ -409,13 +409,18 @@
 		gap: var(--space-card-gap);
 	}
 
+	/* Cap main so entire page fits in 100svh */
+	:global(main:has(.contact-grid)) {
+		max-height: calc(100svh - 6rem); /* 100svh minus footer */
+		overflow: hidden;
+	}
+
 	@media (min-width: 1024px) {
 		.contact-grid {
 			display: grid;
 			grid-template-columns: auto 1px 1fr;
 			padding-block: 0;
-			/* Fill the main flex container — main is flex-1 between nav and footer */
-			flex: 1;
+			height: 100%;
 		}
 		.contact-content {
 			padding-top: 0.5rem;
