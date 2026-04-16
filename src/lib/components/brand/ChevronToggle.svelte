@@ -49,12 +49,9 @@
     transform: rotate(90deg);
   }
 
-  /* Down-pointing: starts at 90deg, rotates to 180deg when open */
-  .chevron-down {
-    transform: rotate(90deg);
-  }
+  /* Down-pointing: starts right (▶), rotates to down (▼) when open */
   .chevron-down.chevron-open {
-    transform: rotate(180deg);
+    transform: rotate(90deg);
   }
 
   @media (prefers-reduced-motion: reduce) {

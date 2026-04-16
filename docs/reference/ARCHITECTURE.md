@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-13 (Slice 17a-6)
+**Last updated:** 2026-04-16 (Slice 17d — Component API COMPLETE)
 
 ## Stack
 
@@ -39,8 +39,30 @@ src/
 │   │   ├── meta.ts      # SiteMeta (name, tagline, description, links)
 │   │   ├── tech-stack.ts # ← Slice 10: markdown parser for stack items + scenarios, graph helpers
 │   │   ├── nav.ts       # ← Slice 11: nav links, menu items, 404 error page copy (all LocalizedString)
+│   │   ├── highlight.ts # ← Slice 17d: shared Shiki + marked config for brand-themed syntax highlighting
+│   │   ├── weather.ts   # ← Slice 17d: shared weather utility (Montreal weather via wttr.in)
+│   │   ├── stackRoles.ts # ← Slice 17d: tech stack item role classification
 │   │   └── index.ts     # Barrel re-export — import from '$lib/data'
-│   ├── components/      # ← Added in Slice 03, enhanced in Slices 04-06, extended in 06d
+│   ├── components/      # ← Added in Slice 03, enhanced through Slice 17d
+│   │   │
+│   │   │  ## Component Tiers (3 tiers — shells/ tier DELETED in 17d)
+│   │   │  1. ui/     — shadcn-svelte headless primitives (Bits UI)
+│   │   │  2. brand/  — hand-built brand atoms (design system)
+│   │   │  3. domain  — page/feature components (home/, blog/, projects/, services/, etc.)
+│   │   │
+│   │   │  ## Layout System (CSS Grid Recipes — replaced SectionWrapper/EdgeRail/ListingLayout)
+│   │   │  All pages use CSS Grid Recipes directly. No shell abstraction layer.
+│   │   │  Recipe 1: Full-Bleed        — single column, 100vw
+│   │   │  Recipe 2: Contained         — max-width centered
+│   │   │  Recipe 3: Content+Sidebars  — TOC | content | glance panel
+│   │   │  Recipe 4: Edge Title Grid   — rotated edge title | content
+│   │   │  See CONSTITUTION.md Section 2 for grid templates.
+│   │   │
+│   │   │  ## Card Surface (unified in 17d)
+│   │   │  All card-like elements use ui/card. Single source of truth for
+│   │   │  background, border, radius, padding. Wrapper <div> pattern for
+│   │   │  use: actions (actions can't go on components).
+│   │   │
 │   │   ├── Nav.svelte           # ← Slice 11: floating pill nav — wordmark, adaptive links, menu toggle, SplitText anim
 │   │   ├── MenuOverlay.svelte  # ← Slice 11: fullscreen metro dashboard menu overlay (CSS transitions, stagger)
 │   │   ├── ConstructionScene.svelte # ← Slice 11: inline SVG construction illustration for 404
@@ -54,26 +76,28 @@ src/
 │   │   ├── SkillsJourney.svelte # ← Slice B/B+: horizontal scroll CTA (5 panels, per-word GSAP anims, MorphSVGPlugin icon morphs, snap)
 │   │   ├── FeaturedWork.svelte  # ← Slice 06d: featured projects grid (stop 05)
 │   │   ├── BlogFeed.svelte      # ← Slice 06d: latest blog posts section (stop 07)
-│   │   ├── BlogListingPage.svelte  # ← Slice 07: shared listing page (search, filters, tag sidebar)
-│   │   ├── BlogRow.svelte          # ← Slice 07: post row for listings (SVG, title, excerpt, tags)
+│   │   ├── BlogListingPage.svelte  # ← Slice 07/17d: listing page with CSS Grid Recipe layout
+│   │   ├── BlogRow.svelte          # ← Slice 07/17d: post row using ui/card
 │   │   ├── BlogFilterSidebar.svelte # ← Slice 07: desktop tag filter sidebar
 │   │   ├── BlogFilterMobile.svelte  # ← Slice 07: mobile filter controls
-│   │   ├── BlogDetailHeader.svelte  # ← Slice 07: post detail header (title, date, SVG)
+│   │   ├── BlogDetailPage.svelte    # ← Slice 17d: blog detail orchestrator (4-zone body grid, TOC, edge labels, reading mode)
+│   │   ├── BlogDetailHeader.svelte  # ← Slice 17d: full-bleed magazine cover header (rebuilt from scratch)
 │   │   ├── BlogContent.svelte      # ← Slice 07: rendered markdown with typography styles
+│   │   ├── BlogTocPill.svelte      # ← Slice 17d: floating mobile TOC pill
 │   │   ├── BlogSvgIcon.svelte      # ← Slice 07: SVG renderer with GSAP entrance + MorphSVG hover
 │   │   ├── StationDivider.svelte # ← Slice 06d: yellow/black hazard stripe between stops
-│   │   ├── StationTabs.svelte      # ← Slice 09: reusable station tab nav (scroll mode + navigate mode)
-│   │   ├── ServiceListingPage.svelte # ← Slice 09: full-viewport kinetic scroll layout for /services
-│   │   ├── ServiceDetailPage.svelte  # ← Slice 09: consultative deep dive for /services/[id]
+│   │   ├── StationTabs.svelte      # ← Slice 09/17d: reusable station tab nav (scroll mode + navigate mode)
+│   │   ├── ServiceListingPage.svelte # ← Slice 09/17d: full-viewport kinetic scroll layout for /services
+│   │   ├── ServiceDetailPage.svelte  # ← Slice 17d: asymmetric split detail with impact metrics
 │   │   ├── ServiceNav.svelte        # ← Slice 09: prev/next service navigation
 │   │   ├── ProofStrip.svelte        # ← Slice 09: bottom strip showing related projects
-│   │   ├── ProjectMiniCard.svelte   # ← Slice 09: reusable project card for outside /work
+│   │   ├── ProjectMiniCard.svelte   # ← Slice 09: reusable project card for outside /projects
 │   │   ├── WorkSvgIcon.svelte       # ← Slice 08: SVG icon renderer with morph on hover
-│   │   ├── WorkFilterMobile.svelte  # ← Slice 08: mobile filter controls for /work
-│   │   ├── WorkFilterSidebar.svelte # ← Slice 08: desktop filter sidebar for /work
+│   │   ├── WorkFilterMobile.svelte  # ← Slice 08: mobile filter controls for /projects
+│   │   ├── WorkFilterSidebar.svelte # ← Slice 08: desktop filter sidebar for /projects
 │   │   ├── WorkDetailSidebar.svelte # ← Slice 08: project detail sidebar
-│   │   ├── WorkServiceBadge.svelte  # ← Slice 08: service badge with SVG for work cards
-│   │   ├── WorkListingPage.svelte   # ← Slice 08: FLIP grid listing for /work
+│   │   ├── WorkServiceBadge.svelte  # ← Slice 08: service badge with SVG for project cards
+│   │   ├── WorkListingPage.svelte   # ← Slice 08: FLIP grid listing for /projects
 │   │   ├── WorkCard.svelte          # ← Slice 08: project card with gradient thumb + SVG morph
 │   │   ├── WorkDetailPage.svelte    # ← Slice 08: project detail with collapsible sections + ToC
 │   │   ├── DataFlowDiagram.svelte   # ← Slice 08: tech stack flow visualization
@@ -88,16 +112,17 @@ src/
 │   │   ├── StackScenarioCard.svelte # ← Slice 10: scenario summary card with recommended stack
 │   │   ├── TerminalCursor.svelte    # ← Slice 10: reusable blinking cursor component (standardized to 8x14px block in 17a-2b)
 │   │   ├── InfraFrame.svelte        # ← Slice 10: infrastructure monitor frame wrapper
-│   │   ├── ui/                      # ← Slice 17a-6: shadcn-svelte scaffolded components (56 total, 15 customized)
+│   │   ├── ui/                      # ← Slice 17a-6/17d: shadcn-svelte scaffolded components (56 total, 15 customized)
 │   │   │   ├── button/              # Button (cta, ghost, outline, link variants)
 │   │   │   ├── badge/               # Badge (tag, number variants)
 │   │   │   ├── separator/           # Separator (hazard, gradient variants)
+│   │   │   ├── card/                # Card (single unified surface — replaces .bento-card + CardBase)
 │   │   │   ├── dialog/              # Dialog (Bits UI headless + brand styling)
 │   │   │   ├── collapsible/         # Collapsible (accordion sections)
 │   │   │   ├── tabs/                # Tabs (station tab navigation)
 │   │   │   ├── toggle-group/        # Toggle group (filter groups)
-│   │   │   └── ...                  # 49 more scaffolded components
-│   │   └── brand/                   # ← Slice 17a-2: hand-built brand primitives (15 components)
+│   │   │   └── ...                  # 48 more scaffolded components
+│   │   └── brand/                   # ← Slice 17a-2/17d: hand-built brand primitives + blueprint SVGs
 │   │       ├── index.ts             # Barrel export — import { StatusDot } from '$lib/components/brand'
 │   │       ├── StatusDot.svelte     # Pulsing status indicator (color, pulse, size)
 │   │       ├── SectionLabel.svelte  # Mono uppercase section labels (text, variant, align)
@@ -108,6 +133,8 @@ src/
 │   │       ├── CornerMarks.svelte   # Blueprint corner tick marks (size, opacity)
 │   │       ├── TerminalChrome.svelte # Terminal window frame (title, tag, status, footer, noPadding)
 │   │       ├── StickyPanel.svelte   # Sticky sidebar wrapper (top)
+│   │       ├── BlueprintShell.svelte # ← Slice 17d: moved from deleted shells/, blueprint header container
+│   │       ├── blueprints/          # ← Slice 17d: 12 inline Svelte SVGs (currentColor, zero hardcoded hex)
 │   │       └── __tests__/           # Co-located tests for all primitives
 │   └── motion/          # ← Added in Slice 04
 │       ├── actions/
@@ -117,6 +144,7 @@ src/
 │       │   ├── ripple.ts        # use:ripple — orange click ripple
 │       │   ├── tilt.ts          # use:tilt — 3D card tilt following cursor (slice 06b)
 │       │   ├── cursorGlow.ts    # use:cursorGlow — mouse-tracking brand glow overlay (slice 17a-2b)
+│       │   ├── scrollChain.ts   # use:scrollChain — universal scroll chaining, replaces data-lenis-prevent (slice 17d)
 │       │   └── index.ts         # barrel export
 │       ├── stores/
 │       │   ├── reducedMotion.ts # prefersReducedMotion store + isPrefersReducedMotion()
@@ -153,8 +181,8 @@ src/
     │   │   ├── +page.svelte # Personal Corner listing (yellow accent)
     │   │   └── +page.ts     # Loads personal posts, tags, SVGs
     │   └── [slug]/
-    │       ├── +page.svelte # Post detail page (centered max-w-2xl)
-    │       └── +page.ts     # Loads post data, SVG, rendered HTML
+    │       ├── +page@.svelte # ← Slice 17d-4: full-bleed detail (bypasses root layout)
+    │       └── +page.ts     # Loads post data, SVG, rendered HTML, postIndex
     ├── services/        # ← Slice 09: services system
     │   ├── +page.svelte     # Services listing (full-viewport scroll)
     │   ├── +page.ts         # Loads all visible services, SVGs, project maps
@@ -209,11 +237,15 @@ Two systems coexist and serve different purposes:
 | `lottie-web` | ^5.13.0 | Lottie JSON animation player for station icons |
 | `bits-ui` | ^2.16.3 | Headless accessible UI primitives (Dialog, Tabs, Collapsible, etc.) |
 | `vaul-svelte` | ^1.0.0-next.7 | Drawer/bottom sheet primitive (used by StackBottomSheet) |
+| `paneforge` | ^* | Resizable split panels (used by ContactPage) |
 | `vitest` | ^4.1.0 | Unit test runner |
 | `@testing-library/svelte` | ^5.3.1 | Svelte component testing utilities |
 | `@playwright/test` | ^1.58.2 | E2E browser testing |
 | `happy-dom` | ^20.8.9 | DOM environment for unit tests (2-4x faster than jsdom) |
 | `marked` | ^* | Markdown-to-HTML rendering for blog posts (used instead of mdsvex for content) |
+| `shiki` | ^* | Syntax highlighting for code blocks (brand theme: orange/yellow/warm) |
+| `@fontsource-variable/inter` | ^* | Self-hosted Inter variable font (replaces Google Fonts CDN) |
+| `@fontsource-variable/jetbrains-mono` | ^* | Self-hosted JetBrains Mono variable font |
 | `mdsvex` | ^* | Svelte markdown preprocessor (enables `.md` as SvelteKit page extension) |
 
 ## Blog System (Slice 07)
@@ -248,7 +280,8 @@ src/routes/blog/
 3. `BlogPost[]` objects are created with resolved slugs, SVG paths, and fallback values
 4. Route `+page.ts` loaders filter by category and resolve SVG contents
 5. `marked` renders markdown body to HTML on the detail page
-6. `BlogListingPage` renders listings with search/filter; `BlogDetailHeader` + `BlogContent` render detail
+6. `BlogDetailPage` orchestrates the detail view: full-bleed header + 4-zone body grid + sticky TOC
+7. `highlight.ts` provides shared Shiki + marked config for brand-colored syntax highlighting (blog + project README)
 
 ### Key types
 

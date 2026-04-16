@@ -4,7 +4,7 @@
   "Back to Professional" link navigates to /blog.
 -->
 <script lang="ts">
-	import BlogListingPage from '$lib/components/BlogListingPage.svelte';
+	import BlogListingPage from '$lib/components/blog/BlogListingPage.svelte';
 
 	let { data } = $props();
 </script>

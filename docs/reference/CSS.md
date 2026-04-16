@@ -1,7 +1,7 @@
 # CSS Architecture — Design System Reference
 
-**Last updated:** 2026-04-13
-**Status:** Active — Slice 17a-6 Bits UI Integration
+**Last updated:** 2026-04-15
+**Status:** Active — Slice 17d-4 Blog Detail Page
 
 > Single source of truth for the yesid.dev design system tokens, layers, and rules.
 
@@ -271,7 +271,9 @@ Used via `.led-pulse` utility class or direct `animation:` reference.
 
 ## Brand Utility Classes (app.css)
 
-12 utility classes for shared brand patterns. Wired into components in Phase B (17a-2b).
+11 utility classes for shared brand patterns. Wired into components in Phase B (17a-2b).
+
+> **Card surface:** `ui/card` (`src/lib/components/ui/card/`) is the single card surface for all cards site-wide. Use `<Card>` instead of any utility class for card styling.
 
 | # | Class | Purpose |
 |---|-------|---------|
@@ -286,7 +288,6 @@ Used via `.led-pulse` utility class or direct `animation:` reference.
 | 9 | `.label-metric` | Mono uppercase, caption size, 2px tracking |
 | 10 | `.prose-dark` | Full markdown prose styling (blog + work detail) |
 | 11 | `.led-pulse` | Pulse-glow animation for LED indicators |
-| 12 | `.bento-card` | Full bento card bundle (border, bg, radius, hover) |
 
 ---
 
@@ -316,6 +317,48 @@ Import: `import { StatusDot, Tag } from '$lib/components/brand';`
 
 ---
 
+## Font Loading (Self-Hosted)
+
+Fonts are self-hosted via `@fontsource-variable` packages (no Google Fonts CDN). This eliminates layout shift from font-swap delay.
+
+| Package | Font | Usage |
+|---------|------|-------|
+| `@fontsource-variable/inter` | Inter Variable | Headings + body text |
+| `@fontsource-variable/jetbrains-mono` | JetBrains Mono Variable | Code, terminals, mono labels |
+
+**How it works:**
+- Packages are imported in `+layout.svelte` (client-side only, guarded by `browser` check)
+- `:root` font-family overrides in `app.css` set the variable font stacks globally
+- The `@theme` block references these same font families for Tailwind utility generation
+
+---
+
+## Overflow Patterns
+
+| Pattern | When | Why |
+|---------|------|-----|
+| `overflow-x: clip` | Containers with sticky children | Clips visually without creating a scroll container (preserves `position: sticky`) |
+| `overflow-x: hidden` | Containers that need scroll containment | Creates a scroll container — breaks sticky positioning for children |
+| `overflow-x: auto` on child | Code blocks inside cards | Allows horizontal scroll within the constrained parent |
+
+**Key rule:** Never use `overflow-x: hidden` on a parent that contains `position: sticky` children. Use `overflow-x: clip` instead.
+
+---
+
+## Prose Styling
+
+Blog and project detail pages use `.prose-dark` utility (defined in `app.css`) plus additional scoped overrides:
+
+| Property | Mobile | Desktop | Where |
+|----------|--------|---------|-------|
+| Base font size | 17px | 18px | `.prose-dark` in `app.css` |
+| Scroll margin top | `5rem` | `5rem` | Global rule in `app.css` for all `[id]` headings |
+| Code block overflow | `overflow-x: auto` | `overflow-x: auto` | Shiki `pre` blocks scroll horizontally |
+
+Shiki brand theme (`yesid-brand`) colors: orange keywords, yellow strings, warm dark background, muted comments.
+
+---
+
 ## Anti-Patterns
 
 - `text-[Npx]` — use semantic type scale tokens
@@ -323,3 +366,5 @@ Import: `import { StatusDot, Tag } from '$lib/components/brand';`
 - `style="font-size: 14px"` — use `text-small` class
 - `z-index: 9999` — use z-index scale tokens
 - `transition: all 0.3s` — use duration/easing tokens
+- `overflow-x: hidden` on containers with sticky children — use `overflow-x: clip`
+- Google Fonts CDN — use `@fontsource-variable` self-hosted packages

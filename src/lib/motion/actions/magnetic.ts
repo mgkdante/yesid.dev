@@ -10,18 +10,13 @@
 // Usage: <a use:magnetic={{ strength: 3, radius: 50 }}>
 
 import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
+import { isTouchDevice } from '../utils/device.js';
 
 export interface MagneticParams {
 	/** Max displacement in px. Default: 3 */
 	strength?: number;
 	/** Distance from element centre within which the pull applies, in px. Default: 50 */
 	radius?: number;
-}
-
-function isTouchDevice(): boolean {
-	// maxTouchPoints is the modern, reliable standard (pointer spec).
-	// 'ontouchstart' is not used because jsdom reports it as present even on desktop.
-	return typeof window !== 'undefined' && navigator.maxTouchPoints > 0;
 }
 
 export function magnetic(node: HTMLElement, params: MagneticParams = {}) {

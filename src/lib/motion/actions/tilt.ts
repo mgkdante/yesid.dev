@@ -11,16 +11,13 @@
 // Usage: <div use:tilt={{ maxDeg: 1.5, perspective: 800 }}>
 
 import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
+import { isTouchDevice } from '../utils/device.js';
 
 export interface TiltParams {
 	/** Maximum tilt angle in degrees. Default: 1.5 */
 	maxDeg?: number;
 	/** CSS perspective value in px. Default: 800 */
 	perspective?: number;
-}
-
-function isTouchDevice(): boolean {
-	return typeof window !== 'undefined' && navigator.maxTouchPoints > 0;
 }
 
 export function tilt(node: HTMLElement, params: TiltParams = {}) {

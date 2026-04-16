@@ -2,17 +2,14 @@ import type { ContactContent } from './types.js';
 import { siteMeta } from './meta.js';
 
 export const contactContent: ContactContent = {
-	stationLabel: { en: 'CONTACT — NEXT STOP: YOU' },
+	stationLabel: { en: 'NEXT STOP: YOU' },
 
 	infoTerminal: {
 		title: 'yesid@mtl ~ /info',
 		command: '$ yesid --info',
-		status: { en: 'Available for projects' },
-		availability: { en: 'Booking Q3 2026' },
 		location: { en: 'Montreal, QC, Canada' },
 		responseTime: { en: '~24h response time' },
 		sectionLabels: {
-			status: { en: 'STATUS' },
 			location: { en: 'LOCATION' },
 			connect: { en: 'CONNECT' },
 		},

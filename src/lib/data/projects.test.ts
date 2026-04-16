@@ -126,3 +126,29 @@ describe('getServiceIdsForProjects', () => {
 		expect(new Set(ids).size).toBe(ids.length);
 	});
 });
+
+describe('project optional metadata fields', () => {
+	it('transit-data-pipeline has location, environment, version', () => {
+		const project = getProjectBySlug('transit-data-pipeline');
+		expect(project?.location).toBe('sherbrooke');
+		expect(project?.environment).toBe('production');
+		expect(project?.version).toBe('2.4.1');
+	});
+
+	it('transit-data-pipeline has impactMetrics array', () => {
+		const project = getProjectBySlug('transit-data-pipeline');
+		expect(project?.impactMetrics).toBeDefined();
+		expect(project!.impactMetrics!.length).toBe(2);
+		expect(project!.impactMetrics![0]).toEqual({ value: '30s', label: 'Real-time refresh cycles' });
+		expect(project!.impactMetrics![1]).toEqual({ value: '99.9%', label: 'Pipeline uptime' });
+	});
+
+	it('projects without new fields still work (optional)', () => {
+		const project = getProjectBySlug('yesid-dev');
+		expect(project).toBeDefined();
+		expect(project?.location).toBeUndefined();
+		expect(project?.environment).toBeUndefined();
+		expect(project?.version).toBeUndefined();
+		expect(project?.impactMetrics).toBeUndefined();
+	});
+});

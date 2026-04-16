@@ -7,6 +7,30 @@
 /* Tailwind CSS v4 (CSS-first config, no tailwind.config.js needed) */
 @import 'tailwindcss';
 
+/* Cross-browser mobile resets — Brave/Chrome/Safari Android consistency */
+*,
+*::before,
+*::after {
+	-webkit-tap-highlight-color: transparent;
+}
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+button,
+[type="button"],
+[type="submit"],
+[type="reset"] {
+	-webkit-appearance: none;
+	appearance: none;
+}
+input,
+textarea,
+select {
+	-webkit-appearance: none;
+	appearance: none;
+}
+
 /* shadcn-svelte component animations */
 @import 'tw-animate-css';
 
@@ -21,7 +45,7 @@
   --font-* generates font-* utilities. --radius-* generates rounded-* utilities.
 */
 @theme {
-  /* Font families */
+  /* Font families — base values for Tailwind utility generation */
   --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
@@ -123,13 +147,45 @@
   --color-accent-hover: var(--accent-hover);
 }
 
+/* Self-hosted variable fonts — override @theme values with variable font names.
+   Placed outside @theme so Tailwind v4 doesn't strip the multi-word font names. */
+:root {
+  --font-heading: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
 /* Dark theme is the default — tokens.css handles var(--background) etc.
    This ensures a clean base before any components load. */
 html {
   background-color: var(--background);
   color: var(--foreground);
-  overflow-x: hidden;
+  overflow-x: clip; /* No Overflow Guarantee — Layer 1: viewport boundary */
   overscroll-behavior: none; /* Prevent pull-to-refresh & bounce in pinned sections */
+}
+
+/* No Overflow Guarantee — Layer 2: text breaks before overflowing */
+body {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* No Overflow Guarantee — Layer 3: media scales to fit parent */
+img, svg, video, iframe, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* No Overflow Guarantee — Layer 7: preformatted content scrolls internally */
+pre, code, table {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Brand text selection — yellow highlight with black text */
+::selection {
+  background: var(--accent);
+  color: #000000;
 }
 
 /* Brand scrollbar — orange thumb on dark track, site-wide */
@@ -165,6 +221,7 @@ html {
   background:
     repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 5%, transparent) 0px, transparent 1px, transparent 80px),
     repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 5%, transparent) 0px, transparent 1px, transparent 80px);
+
   pointer-events: none;
   z-index: 0;
 }
@@ -188,6 +245,11 @@ html {
     opacity: 0.7;
     box-shadow: 0 0 10px 4px rgb(var(--primary-rgb) / 0.8);
   }
+}
+
+@keyframes station-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  75%, 100% { transform: scale(2.5); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -278,27 +340,36 @@ html {
 /* 10. Prose for dark markdown content — shared base for blog + work detail */
 .prose-dark {
   max-width: 72ch;
-  font-size: 0.9375rem;
-  line-height: 1.8;
+  font-size: 1.0625rem;
+  line-height: 1.85;
   color: var(--secondary-foreground);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+@media (min-width: 1024px) {
+  .prose-dark {
+    font-size: 1.125rem;
+    line-height: 1.9;
+  }
 }
 .prose-dark :is(h1, h2, h3, h4) {
   font-family: var(--font-heading);
   color: var(--foreground);
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   margin-bottom: 0.75rem;
   line-height: 1.3;
 }
-.prose-dark h1 { font-size: 1.5rem; font-weight: 700; }
-.prose-dark h2 { font-size: 1.25rem; font-weight: 700; }
-.prose-dark h3 { font-size: 1.1rem; font-weight: 600; }
-.prose-dark h4 { font-size: 1rem; font-weight: 600; }
+.prose-dark h1 { font-size: 1.75rem; font-weight: 700; }
+.prose-dark h2 { font-size: 1.5rem; font-weight: 700; }
+.prose-dark h3 { font-size: 1.25rem; font-weight: 600; }
+.prose-dark h4 { font-size: 1.1rem; font-weight: 600; }
 .prose-dark p { margin-bottom: 1rem; }
 .prose-dark strong { color: var(--foreground); font-weight: 600; }
 .prose-dark a { color: var(--primary); text-decoration: none; }
 .prose-dark a:hover { text-decoration: underline; }
-.prose-dark pre {
-  background: var(--terminal);
+.prose-dark pre,
+.prose-dark pre.shiki {
+  background: var(--terminal) !important;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 0.875rem 1rem;
@@ -306,14 +377,22 @@ html {
   margin: 1rem 0;
   font-size: var(--text-mono);
   line-height: 1.6;
+  max-width: 100%;
 }
 .prose-dark pre code {
   font-family: var(--font-mono);
-  color: var(--primary);
   background: none;
   padding: 0;
   border: none;
   font-size: inherit;
+}
+/* Non-Shiki code blocks (plain): keep orange fallback */
+.prose-dark pre:not(.shiki) code {
+  color: var(--primary);
+}
+/* Shiki spans carry their own color — don't override */
+.prose-dark pre.shiki code {
+  color: inherit;
 }
 .prose-dark code {
   font-family: var(--font-mono);
@@ -359,18 +438,18 @@ html {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* 12. Bento card bundle — consistent card wrapper with brand border */
-.bento-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
-  background: var(--muted);
-  transition: border-color var(--duration-normal) var(--ease-default),
-              box-shadow var(--duration-normal) var(--ease-default);
+/* 12. Grid rows collapse — animate open/close with CSS grid rows */
+.grid-rows-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-slow) var(--ease-default);
 }
-.bento-card:hover {
-  border-color: color-mix(in srgb, var(--primary) 25%, transparent);
-  box-shadow: 0 4px 24px rgb(var(--primary-rgb) / 0.08),
-              0 1px 3px rgba(0, 0, 0, 0.3);
+.grid-rows-collapse[data-state="open"] {
+  grid-template-rows: 1fr;
+}
+
+/* 13. Scroll offset for anchor links — headings land below the sticky nav */
+h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
+[data-section-index] {
+  scroll-margin-top: calc(var(--nav-height, 64px) + 1rem);
 }

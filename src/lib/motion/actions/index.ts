@@ -5,3 +5,4 @@ export { ripple, type RippleParams } from './ripple.js';
 export { tilt, type TiltParams } from './tilt.js';
 export { cursorGlow, type CursorGlowParams } from './cursorGlow.js';
 export { wordmarkHover, type WordmarkHoverParams } from './wordmarkHover.js';
+export { scrollChain } from './scrollChain.js';

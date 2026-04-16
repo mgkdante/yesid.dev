@@ -4,7 +4,7 @@
   "Personal Corner" link navigates to /blog/personal.
 -->
 <script lang="ts">
-	import BlogListingPage from '$lib/components/BlogListingPage.svelte';
+	import BlogListingPage from '$lib/components/blog/BlogListingPage.svelte';
 
 	let { data } = $props();
 </script>

@@ -96,8 +96,8 @@ export const proofReelContent = {
 	headingDot: { en: '.' } satisfies LocalizedString,
 	subheading: { en: 'SELECTED WORK' } satisfies LocalizedString,
 	sectionLabel: { en: '// PROOF' } satisfies LocalizedString,
-	viewAllLabel: { en: 'View all work \u2192' } satisfies LocalizedString,
-	viewAllHref: '/work',
+	viewAllLabel: { en: 'View all projects \u2192' } satisfies LocalizedString,
+	viewAllHref: '/projects',
 	slugs: ['transit-data-pipeline', 'lorem-analytics-dashboard', 'lorem-database-migration'] as const,
 	// Placeholder images — replace with real project screenshots later.
 	images: {

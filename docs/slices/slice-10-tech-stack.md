@@ -15,13 +15,13 @@ Build a `/tech-stack` route with an interactive "Control Room" diagram showing h
 
 **Design spec:** `docs/specs/2026-04-08-tech-stack-page-design.md`
 
-**Principles:** Data-driven, Keystatic-ready (markdown + frontmatter), i18n-ready (LocalizedString), scalable (adding a tech = one markdown file, zero code changes), educational (The Odin Project standard).
+**Principles:** Data-driven, CMS-ready via the Slice 17b service seam (Payload in Slice 18), i18n-ready (LocalizedString), scalable (adding a tech = one markdown file today, one Payload document post-Slice-18, zero code changes), educational (The Odin Project standard).
 
 ## Context
 
 The existing About page has 8 `TechStackItem` entries with `name`, `category`, `relatedServices`. This slice expands to 34 items with a richer data model: dual categorization (infrastructure layer + domain clusters), directional `connectsTo` edges, proficiency levels, and per-item educational markdown content.
 
-Keystatic is not yet installed (Slice 18). Content is structured as Keystatic-ready markdown from day one — `import.meta.glob` parsing at build time, zero migration when CMS arrives.
+No CMS installed at Slice 10. Content is structured as markdown from day one — `import.meta.glob` parsing at build time. Slice 18 migrates this to Payload (see `docs/specs/2026-04-16-cms-payload-design.md`); the service-layer seam from Slice 17b means the migration touches only the service implementation, not routes or components.
 
 ## Tech Stack
 
@@ -343,7 +343,7 @@ No parallelization. Each task ends with STOP + Yesid approval.
 ## Out of Scope
 
 - Individual `/tech-stack/[id]` sub-routes for SEO (future slice)
-- Keystatic installation and CMS UI (Slice 18)
+- Payload CMS installation and admin UI (Slice 18)
 - About page tech stack card revision (post-slice assessment)
 - Light theme support
 - 3D/Threlte elements (hand-rolled SVG is the approach)
@@ -379,7 +379,7 @@ No parallelization. Each task ends with STOP + Yesid approval.
 
 ### Data-Driven Architecture
 **What it is:** The diagram renders from data, not from hardcoded layout. Adding a tech = adding one markdown file. The grid, connections, filters, and scenarios all derive from the data.
-**Why it matters:** This is the pattern for any scalable content system. The blog uses it. The services use it. Now the tech stack uses it. When Keystatic arrives, it manages the same files.
+**Why it matters:** This is the pattern for any scalable content system. The blog uses it. The services use it. Now the tech stack uses it. When Payload arrives in Slice 18, it manages the same shape of content — the service layer swaps its implementation, everything downstream stays.
 **Try this:** Duplicate a markdown file in `src/content/stack/`, change the `id` and `name`, and watch it appear in the diagram automatically.
 
 ## Verify

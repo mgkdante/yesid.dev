@@ -1,6 +1,6 @@
 <!-- /about route: full-viewport bento dashboard -->
 <script lang="ts">
-	import AboutPage from '$lib/components/AboutPage.svelte';
+	import AboutPage from '$lib/components/about/AboutPage.svelte';
 
 	let { data } = $props();
 </script>
