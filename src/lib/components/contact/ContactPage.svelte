@@ -415,7 +415,7 @@
 			grid-template-columns: auto 1px 1fr;
 			padding-block: 0;
 			/* Grid fills viewport minus footer (~4rem) — nav overlaps via margin-top */
-			height: calc(100dvh - 4rem);
+			height: calc(100svh - 4rem);
 			margin-top: -5rem;
 		}
 		.contact-content {
@@ -432,7 +432,7 @@
 			justify-content: center;
 			position: sticky;
 			top: 0;
-			height: calc(100dvh - 4rem);
+			height: calc(100svh - 4rem);
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
 			padding: 1rem 1.5rem;
