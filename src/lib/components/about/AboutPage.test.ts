@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
+import { readFileSync, readdirSync } from 'fs';
+import { join } from 'path';
 import AboutPage from './AboutPage.svelte';
 
 describe('AboutPage', () => {
@@ -99,5 +101,41 @@ describe('AboutPage', () => {
 		// Footer comes from +layout.svelte, not AboutPage
 		const footers = screen.queryAllByTestId('footer');
 		expect(footers.length).toBe(0);
+	});
+});
+
+describe('Card Unification Sweep', () => {
+	const srcDir = join(process.cwd(), 'src');
+
+	function findSvelteFiles(dir: string): string[] {
+		const files: string[] = [];
+		for (const entry of readdirSync(dir, { withFileTypes: true })) {
+			const fullPath = join(dir, entry.name);
+			if (entry.isDirectory() && !entry.name.startsWith('.')) {
+				files.push(...findSvelteFiles(fullPath));
+			} else if (entry.name.endsWith('.svelte')) {
+				files.push(fullPath);
+			}
+		}
+		return files;
+	}
+
+	it('has zero .bento-card class usage in any .svelte file', () => {
+		const svelteFiles = findSvelteFiles(srcDir);
+		const violations: string[] = [];
+
+		for (const file of svelteFiles) {
+			const content = readFileSync(file, 'utf-8');
+			if (content.includes('bento-card')) {
+				violations.push(file.replace(process.cwd() + '/', ''));
+			}
+		}
+
+		expect(violations, `Files still using .bento-card:\n${violations.join('\n')}`).toEqual([]);
+	});
+
+	it('has zero .bento-card in app.css', () => {
+		const appCss = readFileSync(join(srcDir, 'app.css'), 'utf-8');
+		expect(appCss).not.toContain('bento-card');
 	});
 });
