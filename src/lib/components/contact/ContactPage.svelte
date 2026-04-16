@@ -409,9 +409,9 @@
 		gap: var(--space-card-gap);
 	}
 
-	/* Cap main so entire page fits in 100svh */
+	/* Cap main so entire page fits in one viewport */
 	:global(main:has(.contact-grid)) {
-		max-height: calc(100svh - 6rem); /* 100svh minus footer */
+		max-height: calc(100dvh - 5rem - 6rem); /* 100dvh - nav (5rem) - footer (~6rem) */
 		overflow: hidden;
 	}
 
@@ -423,8 +423,8 @@
 			height: 100%;
 		}
 		.contact-content {
-			padding-top: 0.5rem;
-			padding-bottom: 0.5rem;
+			padding-top: var(--space-card-gap);
+			padding-bottom: var(--space-card-gap);
 			padding-inline: var(--space-page-x);
 			display: flex;
 			flex-direction: column;
