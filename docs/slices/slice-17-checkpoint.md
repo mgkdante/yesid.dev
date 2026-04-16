@@ -1,14 +1,65 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-15 | 17d-5 Session 2 — Services listing bug fixes COMPLETE
+**Last updated:** 2026-04-15 | 17d-5 Session 3 — ServiceDetailPage + responsive grid pass COMPLETE
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** 17d-5 (Services Pages — Listing + Detail)
-- **Status:** Sessions 1-2 complete. Listing page built and polished. Detail page next.
-- **Build:** 0 errors, 18 warnings, 798/798 tests pass.
-- **Next action:** Session 3 — Plan ServiceDetailPage rewrite (T8), then implement.
+- **Sub-slice:** 17d-5 (Services Pages — Listing + Detail) — COMPLETE
+- **Status:** All 3 sessions done. Listing + detail pages built and approved.
+- **Build:** 0 errors, 17 warnings, 798/798 tests pass.
+- **Next action:** Constitution rewrite (CSS Grid + Flexbox), then contact page.
+
+### INSIGHT: Constitution Rewrite Needed
+
+SectionWrapper has become an obstacle — CSS specificity fights, unexpected 3-column grids, hardcoded pixel measurements. During this session we proved that plain CSS Grid + Flexbox is simpler, more predictable, and more responsive:
+- Blog detail: SectionWrapper ripped out → clean `1fr 2fr` grid, immediately better
+- Services detail: never used SectionWrapper, built with plain grid from scratch
+- Projects detail: SectionWrapper override needed 0-3-0 specificity hack
+
+**Proposed next steps:**
+1. **Planning session:** Rewrite CONSTITUTION.md — replace SectionWrapper/EdgeRail/panels doctrine with CSS Grid + Flexbox patterns
+2. **Sweep pass:** Replace SectionWrapper usage across all pages with direct grid layouts
+3. **Then:** Contact page (17d-6)
+
+### 17d-5 Session 3 (ServiceDetailPage + Grid Pass) — COMPLETE
+
+**ServiceDetailPage rewrite:**
+- Asymmetric split hero: text left, ServiceSvgPanel right (desktop), banner (mobile)
+- Impact metric column: `clamp(88px, 10vw, 140px)` value, sticky on desktop
+- Collapsible related projects: right panel (desktop 1fr 2fr 1fr grid), bottom (mobile)
+- Full-bleed body, proportional grid (`1fr 2fr 1fr`), zero hardcoded measurements
+- Hazard separator, orange stack pills, SectionLabel station counter
+- Mobile: inline metric, SVG banner, related projects before prev/next nav
+- ProjectsStrip replaced with inline collapsible project links
+
+**BlogDetailPage simplification:**
+- SectionWrapper removed entirely, replaced with plain 2-column CSS grid
+- Begin./Transmission. edge labels removed (decorative noise)
+- Grid: `1fr 2fr` (wide), `1fr 1.5fr` (1024-1279px), single column (mobile)
+- Zero hardcoded pixel measurements, no `:global()` specificity hacks
+
+**ProjectDetailPage grid:**
+- Proportional `1fr 2fr 1fr` override via `:global(.section-wrapper.detail-body[data-layout="centered"])`
+- Removed hardcoded `--edge-left: 340px; --edge-right: 400px` inline styles
+
+**ProjectListingPage responsiveness:**
+- Card grid 2-column breakpoint bumped from 768px → 1280px
+- At narrower desktops (1118px), cards stack single-column within EdgeRail layout
+
+**Design decisions (D205-D210):**
+- D205: ServiceDetailPage uses plain CSS grid, not SectionWrapper
+- D206: Impact metric rendered inline (not MetricDisplay) for size control (88-140px)
+- D207: Related projects in right panel (desktop) / collapsible bottom (mobile)
+- D208: Blog edge labels removed — centered layout is cleaner
+- D209: SectionWrapper is an obstacle — constitution rewrite planned
+- D210: Proportional `fr` units everywhere, zero hardcoded measurements
+
+**Files modified (4 files, +576 / -342 lines):**
+- `src/lib/components/services/ServiceDetailPage.svelte` — full rewrite
+- `src/lib/components/blog/BlogDetailPage.svelte` — SectionWrapper removed, plain grid
+- `src/lib/components/projects/ProjectDetailPage.svelte` — proportional grid override
+- `src/lib/components/projects/ProjectListingPage.svelte` — card grid breakpoint
 
 ### 17d-5 Session 2 (Bug Fixes + Mobile Polish) — COMPLETE
 
