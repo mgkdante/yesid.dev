@@ -392,6 +392,7 @@
 		display: block;
 		width: 100%;
 		padding-block: var(--space-section-y);
+		/* Desktop: entire page fits in 100dvh (nav + content + footer) */
 	}
 	.edge-title-column { display: none; }
 	.accent-rail { display: none; }
@@ -412,21 +413,22 @@
 		.contact-grid {
 			display: grid;
 			grid-template-columns: auto 1px 1fr;
-			margin-top: -5rem;
+			/* No margin-top negative — page fits entirely in 100dvh */
 			padding-block: 0;
+			/* Content height = viewport minus nav (5rem) minus footer (~5rem) */
+			height: calc(100dvh - 10rem);
 		}
 		.contact-content {
-			padding-top: 5rem;
-			padding-bottom: var(--space-section-y);
+			padding-top: var(--space-card-gap);
+			padding-bottom: var(--space-card-gap);
 			padding-inline: var(--space-page-x);
+			display: flex;
+			flex-direction: column;
 		}
 		.edge-title-column {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			position: sticky;
-			top: 0;
-			height: calc(100dvh - 5rem);
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
 			padding: 1rem 0.5rem;
@@ -434,7 +436,7 @@
 		.edge-title {
 			font-family: var(--font-heading);
 			/* "Contact." = ~8 chars, divide available height to fill the column */
-			font-size: calc((100dvh - 5rem) / 7.5);
+			font-size: calc((100dvh - 10rem) / 7.5);
 			font-weight: 900;
 			color: var(--foreground);
 			white-space: nowrap;
@@ -450,7 +452,7 @@
 		}
 
 		/* Swap visibility */
-		.desktop-terminals { display: block; }
+		.desktop-terminals { display: block; flex: 1; min-height: 0; }
 		.mobile-terminals { display: none; }
 	}
 
