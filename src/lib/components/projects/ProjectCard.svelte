@@ -14,6 +14,7 @@
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Card } from '$lib/components/ui/card';
 	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
 	import { cn } from '$lib/utils.js';
 
@@ -85,11 +86,9 @@
 	onmouseleave={() => (cardHovered = false)}
 	{...rest}
 >
-	<article
-		class="project-card-article relative h-full overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] transition-all duration-300"
-		use:tilt={{ maxDeg: 1.5 }}
-		use:cursorGlow
-	>
+	<div class="h-full" use:tilt={{ maxDeg: 1.5 }} use:cursorGlow>
+	<Card class="h-full">
+		<article class="h-full">
 		<!-- Gradient banner: short (120px), full-width. Image or gradient+icon fallback -->
 		{#if project.image}
 			<div class="h-52 overflow-hidden">
@@ -182,17 +181,12 @@
 			</div>
 		</div>
 
-	</article>
+		</article>
+	</Card>
+	</div>
 </a>
 
 <style>
-	/* WHY: same hover pattern as BlogRow — subtle border glow + shadow,
-	   no rotating gradient (that was visually distracting on cards) */
-	.project-card:hover .project-card-article {
-		border-color: color-mix(in srgb, var(--primary) 50%, transparent);
-		box-shadow: var(--shadow-card);
-	}
-
 	/* Strip SvgIcon container border/bg when nested in card badges */
 	.service-badge-icon :global([data-slot="svg-icon"]) {
 		border: none;
