@@ -23,75 +23,90 @@
 
 Every page renders at full viewport width. `<main>` provides only vertical flex — no horizontal constraints. The viewport IS the canvas.
 
-### Section Pattern
+### 4 CSS Grid Recipes
 
-Every major content block follows:
+Every section uses one of these patterns. No layout wrapper components — just scoped CSS.
+
+#### Recipe 1: Full-Bleed
+
+```css
+.section { width: 100%; }
+```
+
+For: Heroes, visual bands, headers, bento grids — any section that bleeds to viewport edges.
+
+#### Recipe 2: Contained
+
+```css
+.section {
+  max-width: var(--container-content); /* or --container-wide, --container-prose */
+  margin-inline: auto;
+  padding-inline: var(--space-page-x);
+}
+```
+
+For: Text sections, forms, simple centered content.
+
+#### Recipe 3: Content + Sidebars
+
+```css
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-card-gap);
+}
+@media (min-width: 1024px) {
+  .section-grid {
+    grid-template-columns: auto 1fr auto;
+    /* or proportional: 1fr 2fr 1fr */
+  }
+}
+```
+
+For: Content flanked by sidebars (TOC, filter panels, rotated headings, metadata panels).
+Use `auto` when the sidebar sizes itself. Use proportional `fr` units when columns share space.
+Sidebars collapse to stacked on mobile or hide with a responsive class.
+
+#### Recipe 4: Edge Title Grid
+
+```css
+.listing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 1024px) {
+  .listing-grid {
+    grid-template-columns: auto 1px 1fr;
+    margin-top: -5rem;
+  }
+  .edge-title {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: clamp(8rem, 15vw, 15rem);
+    font-weight: 900;
+    color: var(--text-muted);
+    opacity: 0.06;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+}
+```
+
+For: Listing pages with a big rotated section title rail.
+
+### Background Decorations
+
+Use `position: relative` on the section + `position: absolute` on the decoration:
 
 ```svelte
-<section class="w-full">
-  <!-- Text/content: centered at appropriate container width -->
-  <div class="mx-auto px-[var(--space-page-x)]" style="max-width: var(--container-content)">
-    <!-- prose, listings, grids -->
+<section class="relative w-full">
+  <div class="absolute inset-0 -z-10 pointer-events-none">
+    <DecorativeElement />
   </div>
-  <!-- Visual elements: bleed to viewport edges -->
-  <!-- Decorative elements: anchored at edges -->
+  <div class="content-grid">...</div>
 </section>
 ```
-
-### The Scope Model — 6 Layers
-
-Content placement is determined by **SCOPE** — what the content is true for — not by content type. All layers are content-agnostic: decorative, interactive, or informational content can go in any layer.
-
-```
-┌─ PAGE LEVEL (EdgeRail) ──────────────────────────────────────────────┐
-│                                                                       │
-│  ┌─ SECTION LEVEL (SectionWrapper) ───────────────────────────────┐  │
-│  │                                                                 │  │
-│  │  ┌────────┐  ┌─────────────────────────┐  ┌────────┐          │  │
-│  │  │  side  │  │       CONTENT           │  │  side  │          │  │
-│  │  │  left  │  │  Main section content   │  │ right  │          │  │
-│  │  └────────┘  └─────────────────────────┘  └────────┘          │  │
-│  │  BACKGROUND (z:0) — decorative layer spanning all columns      │  │
-│  └────────────────────────────────────────────────────────────────┘  │
-│                                                                       │
-│  EDGE LEFT                                              EDGE RIGHT   │
-│  (persistent)                                          (persistent)  │
-└───────────────────────────────────────────────────────────────────────┘
-```
-
-
-| Layer | Component | Scope | Examples |
-| --- | --- | --- | --- |
-| **Edge Left** | EdgeRail (left) | Whole page | Page title, persistent labels, page-level info |
-| **Edge Right** | EdgeRail (right) | Whole page | Year, page metrics, persistent decoration |
-| **Section Side Left** | SectionWrapper sideLeft | This section | Filters, sidebars, section annotations |
-| **Section Content** | SectionWrapper content | This section | Cards, text, grids — main content |
-| **Section Side Right** | SectionWrapper sideRight | This section | Complementary info, section annotations |
-| **Section Background** | SectionWrapper background | This section | Decorative SVGs, circuit grids |
-
-
-**Deciding where content goes:**
-
-1. True for the **whole page**? → EdgeRail (persistent as you scroll)
-2. True for **this section only**? → SectionWrapper sideLeft/sideRight
-3. **Main content** of the section? → SectionWrapper content
-4. **Decorative background** for the section? → SectionWrapper background
-
-**Example — Blog listing page:**
-- EdgeRail left: "Blog" label (true for the whole page)
-- SectionWrapper (listing section) sideLeft: filter sidebar (scoped to this section's cards)
-- SectionWrapper (listing section) content: search + post list
-- If a hero section is added above the listing, filters stay in the listing section — they don't apply to the hero
-
-### 4 Layout Patterns
-
-
-| Pattern                                 | Description                                                  | When to use                     |
-| --------------------------------------- | ------------------------------------------------------------ | ------------------------------- |
-| **A — Asymmetric Split**                | Text on one side, visual panel bleeding to opposite edge     | Heroes, feature sections        |
-| **B — Centered Text + Edge Decoration** | Prose centered, decorative elements at viewport edges        | Content pages, about sections   |
-| **C — Full-Bleed Visual Band**          | 100% width visual sections, no container                     | Galleries, data viz, separators |
-| **D — Edge-Anchored Grid**              | Cards extend to viewport edges on mobile, breathe on desktop | Listings, bento grids           |
 
 
 ### Container Tokens
@@ -200,8 +215,8 @@ Three tiers of components, each with distinct conventions:
 | Tier       | Location                    | Source                   | Conventions                                        | Count                        |
 | ---------- | --------------------------- | ------------------------ | -------------------------------------------------- | ---------------------------- |
 | **ui/**    | `src/lib/components/ui/`    | shadcn-svelte scaffolded | `cn()`, `data-slot`, background/foreground tokens  | 56 components, 15 customized |
-| **brand/** | `src/lib/components/brand/` | Hand-built               | `cn()`, `data-slot`, brand-specific styling + GSAP | 15 primitives                |
-| **page**   | `src/lib/components/`       | One-off page components  | Consume from ui/ and brand/ tiers                  | ~40 components               |
+| **brand/** | `src/lib/components/brand/` | Hand-built               | `cn()`, `data-slot`, brand-specific styling + GSAP | 15+ primitives               |
+| **page**   | `src/lib/components/`       | One-off page components  | Consume from ui/ and brand/ tiers, own CSS Grid    | ~40 components               |
 
 
 **ui/ tier (shadcn-svelte):** Pre-scaffolded accessible components (Button, Badge, Dialog, Tabs, etc.). Customized with brand tokens. Import: `import { Button } from '$lib/components/ui/button'`.
@@ -494,7 +509,7 @@ padding-right: env(safe-area-inset-right, 0px);
 
 ### Edge Decorations
 
-SectionWrapper side slots (edge panels flanking content) collapse to `0` below `xl:` (1024px). However, EdgeRail and standalone edge content may be visible at any breakpoint if the section has no side panels competing for space. The rule is: **edge content must not cause overflow or crowd content** — if there's room, it can appear.
+Edge columns (rotated titles, decorative rails) collapse to `display: none` below `xl:` (1024px) via media query. No wrapper component needed — edge elements are grid cells that disappear at smaller breakpoints.
 
 ### Rules
 
@@ -557,6 +572,8 @@ SectionWrapper side slots (edge panels flanking content) collapse to `0` below `
 - Arbitrary Tailwind spacing values (`p-[22px]`) — use standard scale or token
 - `overflow-y: auto` + `scrollbar-width: none` on the same element — creates invisible scroll trap
 - Nested vertical scroll containers that capture page-level Lenis scroll
+- Layout wrapper components with multiple modes/variants — use CSS Grid recipes directly
+- Shared layout components that grow complex — each page owns its grid in scoped CSS
 
 ---
 
@@ -589,36 +606,32 @@ One source of truth per value. Defined in one place, referenced everywhere.
 
 ## 13. Atomic Design
 
-### 4-Tier Component Hierarchy
+### 3-Tier Component Hierarchy
 
 ```
 TIER 1: ui/        → Universal headless primitives + brand tokens
     ↓ composes
 TIER 2: brand/     → yesid.dev-only craft, no library equivalent
     ↓ composes
-TIER 3: shells/    → Composable page scaffolds from Tier 1+2
-    ↓ composes
-TIER 4: page       → Pure composition — zero custom patterns
+TIER 3: page       → Pure composition — CSS Grid + Tier 1-2 atoms
 ```
 
 
 | Tier            | Location                     | Purpose                                                   | Examples                                                |
 | --------------- | ---------------------------- | --------------------------------------------------------- | ------------------------------------------------------- |
 | **1 — ui/**     | `src/lib/components/ui/`     | shadcn-svelte scaffolded, Bits UI headless + brand tokens | Button, Badge, Dialog, Tabs, Card                       |
-| **2 — brand/**  | `src/lib/components/brand/`  | Hand-built, unique to yesid.dev                           | SectionHeading, MetroStation, TerminalChrome, StatusDot |
-| **3 — shells/** | `src/lib/components/shells/` | Composable layout scaffolds                               | SectionWrapper, EdgeRail, DetailHero, CardGrid, BentoGrid, AsidePanel |
-| **4 — page**    | `src/lib/components/`        | Pure composition — wires data into Tier 1-3               | ProofReel, HomeServices, BlogRow, AboutPage             |
+| **2 — brand/**  | `src/lib/components/brand/`  | Hand-built, unique to yesid.dev                           | SectionHeading, MetroStation, TerminalChrome, StatusDot, BlueprintShell |
+| **3 — page**    | `src/lib/components/`        | Pure composition — wires data into CSS Grid + Tier 1-2    | HomePage, BlogDetailPage, ServiceCard                   |
 
 
 ### Composition Rules
 
-1. **Tier 4 never creates UI patterns.** Page components only wire data into Tier 1-3 atoms. No custom card styles, no hand-rolled section padding, no bespoke headings.
-2. **Tier 3 composes Tier 1+2.** SectionWrapper uses Card, SectionHeading, SectionLabel.
-3. **Tier 2 may use Tier 1.** TerminalChrome uses StatusDot. MetroStation uses Badge.
-4. **Tier 1 is self-contained.** No upward dependencies.
-5. **New page = choose shells + fill with atoms.** Zero CSS invention.
-6. **When to create a new atom:** pattern appears on 2+ pages, or will appear on future pages per roadmap.
-7. **When to compose existing atoms:** the pattern is a combination of existing atoms with page-specific data.
+1. **Tier 3 never creates UI patterns.** Page components only wire data into CSS Grid layouts + Tier 1-2 atoms. No custom card styles, no bespoke headings.
+2. **Tier 2 may use Tier 1.** TerminalChrome uses StatusDot. MetroStation uses Badge.
+3. **Tier 1 is self-contained.** No upward dependencies.
+4. **New page = choose a CSS Grid recipe + fill with atoms.** Zero layout invention.
+5. **When to create a new atom:** pattern appears on 2+ pages.
+6. **When to compose existing atoms:** the pattern is a combination of existing atoms with page-specific data.
 
 ### Card — Universal Surface
 
@@ -646,65 +659,12 @@ One Card atom for all card-like surfaces across the site. The unified surface re
 
 **Excluded from Card:** TerminalChrome (brand craft, not a card), StackNode (interactive button), StackScenarioCard (one-off presentation container).
 
-### SectionWrapper — Section-Level Layout Engine
-
-Every major content section uses SectionWrapper's 3-layer CSS Grid. Content in SectionWrapper sides is **section-scoped** — it pertains to this section only (see Section 2: The Scope Model).
-
-```
-┌─────────────────────────────────────────────────────┐
-│  BACKGROUND — decorative SVGs, circuit grids (z:0)  │
-│  ┌──────┐  ┌──────────────────────────┐  ┌──────┐  │
-│  │ SIDE │  │        CONTENT           │  │ SIDE │  │
-│  │ left │  │  Cards, text, grids      │  │right │  │
-│  │(opt) │  │  Centered in container   │  │(opt) │  │
-│  └──────┘  └──────────────────────────┘  └──────┘  │
-│  z:1                                      z:1       │
-└─────────────────────────────────────────────────────┘
-```
-
-**Key properties:**
-
-- Empty grid columns collapse to `0`. No wrapper divs, no conditional logic.
-- Sides can have different widths (`--edge-left`, `--edge-right`).
-- Below `xl:` (1024px), both sides are `0` — content fills full width.
-- Background spans all columns via `grid-column: 1 / -1`.
-- **Sides are content-agnostic.** Filter sidebars, ToC panels, annotations, decorative elements — anything section-scoped goes in `sideLeft`/`sideRight`.
-
-**Math-driven layout:** Side panels use `minmax(0, var(--edge-width))` — they collapse to `0` before overflowing. Content uses `min(var(--container-token), 100vw - var(--space-page-x) * 2)` — viewport-capped. The grid template `var(--edge-left, 0) 1fr var(--edge-right, 0)` ensures: `edge-left + content + edge-right ≤ 100vw` at every breakpoint. CSS computes the layout — no JS measurements, no resize observers, no guesswork.
-
-**Multi-section pages:** A page can have multiple SectionWrapper instances. Each is independent — a blog page might have a header section (bleed) and a listing section (centered with filter sidebar in sideLeft). The sidebar is scoped to the listing section; adding a hero section above doesn't affect it.
-
-### EdgeRail — Page-Level Edge Decorations
-
-Persistent edge elements spanning the entire page. Content in EdgeRail is **page-scoped** — it's true for the whole page (see Section 2: The Scope Model).
-
-Content: rotated page labels, section progress dots, vertical circuit lines, blueprint tick marks, metrics, complementary information. All layers are content-agnostic — not restricted to decoration.
-
-- Fixed positioning along viewport edges
-- Only visible at `xl:` (1024px) and above
-- Positioned independently of SectionWrapper sides
-- Persists as the user scrolls through all sections
-
-### Slot Conventions Per Tier
-
-
-| Tier        | Slots                                                       | Pattern                                   |
-| ----------- | ----------------------------------------------------------- | ----------------------------------------- |
-| **ui/**     | `children` (default), named slots per shadcn convention     | Standard Svelte 5 snippets                |
-| **brand/**  | `children` (default), named slots for optional regions      | `{#snippet label()}`, `{#snippet icon()}` |
-| **shells/** | `background`, `sideLeft`, `sideRight`, `children` (content) | CSS Grid areas                            |
-| **page**    | No outward slots — page is the top-level composer           | N/A                                       |
-
-
 ### Anti-Patterns
 
 **Never:**
 
 - Page components creating custom card styles (use Card)
-- Inline section padding in page components (use SectionWrapper or semantic spacing tokens)
-- Hand-rolled edge decorations in page components (use SectionWrapper side slots or EdgeRail)
 - Duplicating heading + dot + subheading CSS (use SectionHeading)
 - Copy-pasting station badge + pulse markup (use MetroStation)
-- Adding a Tier 2/3 component to a page without checking if a Tier 1 equivalent exists
 - Creating a new atom for a pattern used on only 1 page (scoped CSS instead)
 
