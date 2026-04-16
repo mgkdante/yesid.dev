@@ -403,12 +403,9 @@ export interface ContactTerminalField {
 export interface ContactInfoTerminal {
 	title: string;
 	command: string;
-	status: LocalizedString;
-	availability: LocalizedString;
 	location: LocalizedString;
 	responseTime: LocalizedString;
 	sectionLabels: {
-		status: LocalizedString;
 		location: LocalizedString;
 		connect: LocalizedString;
 	};

@@ -15,8 +15,6 @@ describe('contactContent', () => {
 		});
 
 		it('has all LocalizedString fields with en key', () => {
-			expect(contactContent.infoTerminal.status.en.length).toBeGreaterThan(0);
-			expect(contactContent.infoTerminal.availability.en.length).toBeGreaterThan(0);
 			expect(contactContent.infoTerminal.location.en.length).toBeGreaterThan(0);
 			expect(contactContent.infoTerminal.responseTime.en.length).toBeGreaterThan(0);
 		});
