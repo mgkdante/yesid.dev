@@ -15,6 +15,7 @@ export { default as StickyPanel } from './StickyPanel.svelte';
 export { default as SectionHeading } from './SectionHeading.svelte';
 export { default as MetroStation } from './MetroStation.svelte';
 export { default as SvgIcon } from './SvgIcon.svelte';
+export { default as BlueprintShell } from './BlueprintShell.svelte';
 
 
 // Props interfaces
@@ -29,3 +30,4 @@ export type { TerminalChromeProps, TerminalFooterItem } from './TerminalChrome.s
 export type { StickyPanelProps } from './StickyPanel.svelte';
 export type { SectionHeadingProps } from './SectionHeading.svelte';
 export type { MetroStationProps } from './MetroStation.svelte';
+export type { BlueprintShellProps } from './BlueprintShell.svelte';

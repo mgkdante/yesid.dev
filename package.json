@@ -54,7 +54,6 @@
 		"vitest": "^4.1.0"
 	},
 	"dependencies": {
-		"@chenglou/pretext": "^0.0.5",
 		"@fontsource-variable/inter": "^5.2.8",
 		"@fontsource-variable/jetbrains-mono": "^5.2.8",
 		"gsap": "^3.14.2",

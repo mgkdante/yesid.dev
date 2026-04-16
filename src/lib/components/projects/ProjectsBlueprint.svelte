@@ -3,7 +3,7 @@
   Uses BlueprintShell for shared crosshairs, ref-labels, and CSS.
 -->
 <script lang="ts">
-	import { BlueprintShell } from '$lib/components/shells';
+	import { BlueprintShell } from '$lib/components/brand';
 	import BlueprintTBM from '$lib/components/svg/tunneling/BlueprintTBM.svelte';
 	import BlueprintTunnelSection from '$lib/components/svg/tunneling/BlueprintTunnelSection.svelte';
 	import BlueprintErector from '$lib/components/svg/tunneling/BlueprintErector.svelte';
