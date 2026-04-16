@@ -19,7 +19,6 @@
 	import ProjectFilterSidebar from './ProjectFilterSidebar.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { MetroStation } from '$lib/components/brand';
-	import { SectionWrapper } from '$lib/components/shells';
 	import ProjectFilterMobile from './ProjectFilterMobile.svelte';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -152,9 +151,9 @@
 
 	<Separator variant="hazard" />
 
-	<!-- Section 2: Listing — filters in sideLeft (section-scoped), cards in content -->
-	<SectionWrapper layout="centered" container="none" style="--edge-left: clamp(220px, 22vw, 320px)">
-		{#snippet sideLeft()}
+	<!-- Section 2: Listing — filter sidebar (desktop) + cards -->
+	<section class="project-listing-grid">
+		<aside class="project-filter-column">
 			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" data-lenis-prevent>
 				<ProjectFilterSidebar
 					{serviceIds}
@@ -170,7 +169,7 @@
 					bind:searchQuery
 				/>
 			</div>
-		{/snippet}
+		</aside>
 
 		<!-- Listing content with padding -->
 		<div class="px-4 py-6 md:px-6 md:py-8">
@@ -217,10 +216,30 @@
 			</div>
 		{/if}
 		</div>
-	</SectionWrapper>
+	</section>
 </div>
 
 <style>
+	/* Recipe 3: Filter sidebar + content */
+	.project-listing-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		width: 100%;
+	}
+
+	.project-filter-column {
+		display: none;
+	}
+
+	@media (min-width: 1024px) {
+		.project-listing-grid {
+			grid-template-columns: clamp(220px, 22vw, 320px) 1fr;
+		}
+		.project-filter-column {
+			display: block;
+		}
+	}
+
 	/* --- Projects header: blueprint visualization --- */
 	.projects-blueprint-header {
 		position: relative;
