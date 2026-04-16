@@ -8,7 +8,6 @@
   import type { BlogPost } from '$lib/data/types.js';
   import { resolveLocale } from '$lib/data/locale.js';
   import { CornerMarks } from '$lib/components/brand';
-  import { SectionWrapper } from '$lib/components/shells';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
   import { onMount } from 'svelte';
@@ -110,8 +109,9 @@
   <div class="header__circuit-grid"></div>
   <ManifestoCanvas containerEl={headerEl} />
 
-  <SectionWrapper layout="bleed" centerContent class="header-section">
-    {#snippet background()}
+  <section class="header-section w-full">
+    <!-- Background decorations (absolute layer behind content) -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
       <CornerMarks size="md" opacity={0.12} />
 
       <!-- Chevrons (top-right, desktop only) -->
@@ -133,7 +133,7 @@
       <div class="header__edge header__edge-right hidden lg:block" aria-hidden="true">
         {edgeDate} // {readingTime} MIN
       </div>
-    {/snippet}
+    </div>
 
     <div class="header__content">
       <!-- Back link -->
@@ -177,7 +177,7 @@
         <span>{post.lang}</span>
       </div>
     </div>
-  </SectionWrapper>
+  </section>
 </div>
 
 <style>
@@ -191,12 +191,15 @@
     cursor: crosshair;
   }
 
-  .blog-detail-header :global(.header-section) {
+  .header-section {
+    position: relative;
+    display: grid;
+    align-items: center;
     min-height: 380px;
   }
 
   @media (min-width: 1024px) {
-    .blog-detail-header :global(.header-section) {
+    .header-section {
       min-height: 440px;
     }
   }
