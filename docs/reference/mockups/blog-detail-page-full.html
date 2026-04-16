@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Detail Page — Full Mockup (Desktop + Mobile)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #0f0d0a;
+    --fg: #e8e4de;
+    --primary: #E07800;
+    --accent: #FFB627;
+    --muted: #6b6560;
+    --card: #1a1814;
+    --border-subtle: rgba(224, 120, 0, 0.15);
+    --font-heading: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --blog-accent: var(--primary);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #080705;
+    color: var(--fg);
+    font-family: var(--font-heading);
+  }
+
+  .viewport-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--primary);
+    text-transform: uppercase;
+    padding: 2rem 2rem 1rem;
+  }
+
+  .viewport-desc {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 0 2rem 1.5rem;
+    max-width: 700px;
+    line-height: 1.6;
+  }
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--primary), transparent);
+    margin: 0 2rem;
+    opacity: 0.2;
+  }
+
+  /* ═══════════════════════════════════════════
+     DESKTOP FRAME (1440px)
+     ═══════════════════════════════════════════ */
+  .desktop-frame {
+    max-width: 1440px;
+    margin: 0 auto 4rem;
+    background: var(--bg);
+    border: 1px solid rgba(224,120,0,0.08);
+    overflow: hidden;
+  }
+
+  /* ── READING PROGRESS BAR ──────────────── */
+  .progress-bar {
+    height: 3px;
+    background: transparent;
+    position: relative;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    width: 35%;
+    background: linear-gradient(90deg, var(--blog-accent), var(--accent));
+  }
+
+  /* ── HEADER — Magazine Cover ─────────────── */
+  .header {
+    position: relative;
+    min-height: 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    background: #0c0a07;
+  }
+
+  .header .circuit-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(224,120,0,0.035) 0, rgba(224,120,0,0.035) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(0deg, rgba(224,120,0,0.035) 0, rgba(224,120,0,0.035) 1px, transparent 1px, transparent 80px);
+  }
+
+  .header .circuit-grid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle 2.5px at 80px 80px, rgba(224,120,0,0.1) 0%, transparent 4px),
+      radial-gradient(circle 2px at 240px 80px, rgba(224,120,0,0.08) 0%, transparent 3px);
+    background-size: 320px 320px;
+  }
+
+  .header .watermark {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 180px;
+    font-weight: 900;
+    color: rgba(224, 120, 0, 0.025);
+    text-transform: uppercase;
+    letter-spacing: -0.06em;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .header .corner { position: absolute; width: 20px; height: 20px; }
+  .header .c-tl { top: 16px; left: 16px; border-top: 1px solid rgba(224,120,0,0.15); border-left: 1px solid rgba(224,120,0,0.15); }
+  .header .c-tr { top: 16px; right: 16px; border-top: 1px solid rgba(224,120,0,0.15); border-right: 1px solid rgba(224,120,0,0.15); }
+  .header .c-bl { bottom: 16px; left: 16px; border-bottom: 1px solid rgba(224,120,0,0.15); border-left: 1px solid rgba(224,120,0,0.15); }
+  .header .c-br { bottom: 16px; right: 16px; border-bottom: 1px solid rgba(224,120,0,0.15); border-right: 1px solid rgba(224,120,0,0.15); }
+
+  .header .edge-l {
+    position: absolute; left: 24px; top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px;
+    color: rgba(224,120,0,0.2); text-transform: uppercase; white-space: nowrap;
+  }
+  .header .edge-r {
+    position: absolute; right: 24px; top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px;
+    color: rgba(224,120,0,0.2); text-transform: uppercase; white-space: nowrap;
+  }
+
+  /* Decorative chevrons + crosshair (same as project detail) */
+  .header .deco-chevrons {
+    position: absolute; right: 55px; top: 70px;
+    display: flex; gap: 6px;
+  }
+  .header .deco-chevrons div {
+    width: 14px; height: 14px;
+    rotate: -45deg;
+    border-bottom: 2px solid var(--primary);
+    border-right: 2px solid var(--primary);
+    opacity: 0.15;
+  }
+
+  .header .content {
+    position: relative; z-index: 1;
+    max-width: 700px; padding: 2rem;
+  }
+
+  .header .back-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--blog-accent);
+    text-decoration: none;
+    opacity: 0.7;
+    display: inline-block;
+    margin-bottom: 1.75rem;
+  }
+
+  .header .cat-line {
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--blog-accent); text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
+  }
+  .header .cat-line::before,
+  .header .cat-line::after {
+    content: ''; width: 40px; height: 1px;
+    background: color-mix(in srgb, var(--blog-accent) 30%, transparent);
+  }
+
+  .header .title {
+    font-size: 56px; font-weight: 900;
+    text-transform: uppercase; letter-spacing: -0.04em;
+    line-height: 0.95; color: var(--fg);
+    margin-bottom: 1.25rem;
+  }
+  .header .title .hi { color: var(--blog-accent); }
+
+  .header .tags {
+    display: flex; justify-content: center; gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .header .tag {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--blog-accent) 50%, transparent);
+    border: 1px solid color-mix(in srgb, var(--blog-accent) 12%, transparent);
+    border-radius: 999px;
+    padding: 5px 14px;
+    background: color-mix(in srgb, var(--blog-accent) 3%, transparent);
+  }
+
+  .header .meta-row {
+    display: flex; align-items: center; justify-content: center; gap: 1.25rem;
+    font-family: var(--font-mono); font-size: 11px;
+    color: color-mix(in srgb, var(--blog-accent) 35%, transparent);
+  }
+  .header .meta-row .sep {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: var(--blog-accent); opacity: 0.4;
+  }
+
+  /* ── HAZARD SEPARATOR ──────────────────── */
+  .hazard {
+    height: 4px;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--primary) 0px, var(--primary) 8px,
+      transparent 8px, transparent 16px
+    );
+    opacity: 0.6;
+  }
+
+  /* ── BODY — Three-column grid ──────────── */
+  .body-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    gap: 2rem;
+    padding: 2.5rem clamp(1.5rem, 4vw, 5rem);
+    min-height: 900px;
+  }
+
+  /* ── LEFT: TOC + decorations ───────────── */
+  .left-col { position: relative; }
+
+  .toc-sticky {
+    position: sticky; top: 5rem;
+  }
+
+  /* CollapsibleSection card wrapper (matches project detail TOC) */
+  .toc-card {
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid color-mix(in srgb, var(--blog-accent) 15%, transparent);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+
+  .toc-header {
+    font-family: var(--font-heading);
+    font-size: 14px; font-weight: 600;
+    color: color-mix(in srgb, var(--fg) 70%, transparent);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .toc-header .chevron {
+    width: 12px; height: 12px;
+    border-right: 2px solid color-mix(in srgb, var(--blog-accent) 40%, transparent);
+    border-bottom: 2px solid color-mix(in srgb, var(--blog-accent) 40%, transparent);
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+  }
+
+  .toc-nav {
+    font-family: var(--font-heading);
+    font-size: 15px; line-height: 2.4;
+    border-left: 2px solid color-mix(in srgb, var(--blog-accent) 12%, transparent);
+    padding-left: 16px;
+  }
+
+  .toc-item {
+    display: block; color: var(--muted);
+    position: relative;
+  }
+  .toc-item.active {
+    color: var(--blog-accent);
+    font-weight: 600;
+  }
+  .toc-item.active::before {
+    content: '';
+    position: absolute; left: -18px; top: 50%;
+    transform: translateY(-50%);
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--blog-accent);
+  }
+
+  .toc-sub {
+    padding-left: 12px;
+    font-size: 13px;
+    color: color-mix(in srgb, var(--fg) 20%, transparent);
+  }
+
+  .toc-counter {
+    margin-top: 1.25rem;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px;
+    color: color-mix(in srgb, var(--blog-accent) 25%, transparent);
+  }
+  .toc-counter-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--blog-accent);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--blog-accent) 40%, transparent);
+  }
+
+  /* Circuit decorations below TOC */
+  .left-deco {
+    margin-top: 2rem; padding-top: 1.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--blog-accent) 6%, transparent);
+  }
+
+  .deco-annotations {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 1px; line-height: 2.4;
+    color: color-mix(in srgb, var(--blog-accent) 15%, transparent);
+  }
+
+  .deco-circuit {
+    margin-top: 1.5rem;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .deco-circuit .line {
+    width: 1px; height: 32px;
+    background: color-mix(in srgb, var(--blog-accent) 8%, transparent);
+  }
+  .deco-circuit .node {
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1.5px solid color-mix(in srgb, var(--blog-accent) 20%, transparent);
+  }
+  .deco-circuit .node-lit {
+    background: color-mix(in srgb, var(--blog-accent) 15%, transparent);
+    border-color: color-mix(in srgb, var(--blog-accent) 35%, transparent);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--blog-accent) 20%, transparent);
+  }
+  .deco-circuit .node-sm {
+    width: 5px; height: 5px; border-width: 1px;
+  }
+
+  .reading-bar {
+    margin-top: 1.5rem;
+    width: 2px; height: 100px;
+    background: color-mix(in srgb, var(--blog-accent) 6%, transparent);
+    position: relative; margin-inline: auto;
+  }
+  .reading-bar .fill {
+    position: absolute; top: 0; width: 100%; height: 35%;
+    background: linear-gradient(to bottom, var(--blog-accent), color-mix(in srgb, var(--blog-accent) 20%, transparent));
+  }
+  .reading-bar-label {
+    font-family: var(--font-mono);
+    font-size: 9px; letter-spacing: 1px;
+    color: color-mix(in srgb, var(--blog-accent) 20%, transparent);
+    text-align: center; margin-top: 0.5rem;
+  }
+
+  /* ── CENTER: Prose ─────────────────────── */
+  .prose-col {
+    max-width: 65ch; margin-inline: auto;
+    padding-top: 0.5rem;
+  }
+
+  .prose-col p {
+    font-size: 17px; line-height: 1.85;
+    color: color-mix(in srgb, var(--fg) 55%, transparent);
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-col h2 {
+    font-size: 24px; font-weight: 800;
+    color: var(--fg); margin: 3rem 0 1rem;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .prose-col h2::before {
+    content: '#'; position: absolute; right: 100%;
+    margin-right: 0.5rem; color: var(--blog-accent);
+    opacity: 0; transform: translateX(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .prose-col h2:hover::before { opacity: 0.4; transform: translateX(0); }
+
+  .prose-col h3 {
+    font-size: 18px; font-weight: 700;
+    color: color-mix(in srgb, var(--fg) 85%, transparent);
+    margin: 2rem 0 0.75rem;
+    padding-left: 10px;
+    border-left: 2px solid color-mix(in srgb, var(--blog-accent) 20%, transparent);
+  }
+
+  .prose-col blockquote {
+    border-left: 3px solid var(--blog-accent);
+    padding-left: 1.25rem; margin: 1.5rem 0;
+    font-style: italic;
+    color: color-mix(in srgb, var(--fg) 60%, transparent);
+  }
+
+  .prose-col pre {
+    background: color-mix(in srgb, var(--blog-accent) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--blog-accent) 10%, transparent);
+    border-radius: 6px; padding: 1.25rem;
+    font-family: var(--font-mono); font-size: 13px;
+    color: color-mix(in srgb, var(--fg) 70%, transparent);
+    line-height: 1.7; margin: 1.5rem 0;
+    position: relative;
+  }
+  .prose-col pre .copy-btn {
+    position: absolute; top: 0.5rem; right: 0.5rem;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); background: var(--card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px; padding: 3px 8px;
+    opacity: 0.5;
+  }
+
+  .prose-col code {
+    font-family: var(--font-mono); font-size: 14px;
+    color: var(--blog-accent);
+    background: color-mix(in srgb, var(--blog-accent) 8%, transparent);
+    padding: 2px 6px; border-radius: 3px;
+  }
+
+  .prose-col ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+  .prose-col li {
+    font-size: 17px; line-height: 1.85;
+    color: color-mix(in srgb, var(--fg) 55%, transparent);
+    margin-bottom: 0.5rem;
+  }
+  .prose-col li strong { color: color-mix(in srgb, var(--fg) 80%, transparent); }
+
+  .prose-col a {
+    color: var(--blog-accent); text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--blog-accent) 30%, transparent);
+  }
+
+  /* ── RIGHT: Transit Route Map ──────────── */
+  .right-col { position: relative; }
+
+  .route-sticky {
+    position: sticky; top: 5rem;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .route-label {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 2px;
+    color: color-mix(in srgb, var(--blog-accent) 30%, transparent);
+    text-transform: uppercase; margin-bottom: 1.5rem;
+  }
+
+  /* Route map SVG — all styled via CSS */
+  .route-map-svg {
+    width: 120px;
+  }
+
+  .route-map-svg .route-line {
+    fill: none;
+    stroke: var(--blog-accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.2;
+  }
+
+  .route-map-svg .route-line--active {
+    opacity: 1;
+  }
+
+  .route-map-svg .route-station {
+    fill: var(--blog-accent);
+    opacity: 0.25;
+  }
+
+  .route-map-svg .route-station--active {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--blog-accent) 40%, transparent));
+  }
+
+  .route-map-svg .route-station--passed {
+    opacity: 0.6;
+  }
+
+  .route-map-svg .route-station--terminus {
+    fill: none;
+    stroke: var(--blog-accent);
+    stroke-width: 2;
+    opacity: 0.3;
+  }
+
+  .route-map-svg .route-label-text {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    fill: color-mix(in srgb, var(--blog-accent) 25%, transparent);
+  }
+
+  .route-map-svg .route-label-text--active {
+    fill: var(--blog-accent);
+    font-weight: 600;
+  }
+
+  /* Ghosted metro bg texture behind the route map */
+  .route-bg-texture {
+    position: absolute;
+    top: 0; right: 0;
+    width: 260px; height: 400px;
+    opacity: 0.015;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .route-bg-texture img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(2) contrast(0.5);
+  }
+
+  .route-terminus {
+    font-family: var(--font-mono);
+    font-size: 9px; letter-spacing: 1.5px;
+    color: color-mix(in srgb, var(--blog-accent) 20%, transparent);
+    text-transform: uppercase;
+    margin-top: 1rem;
+  }
+
+  /* Decorative ticks below route map */
+  .route-ticks {
+    margin-top: 2.5rem;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .route-tick {
+    width: 20px; height: 1px;
+    background: color-mix(in srgb, var(--blog-accent) 6%, transparent);
+  }
+  .route-tick:nth-child(5n) {
+    width: 32px;
+    background: color-mix(in srgb, var(--blog-accent) 10%, transparent);
+  }
+
+  /* ═══════════════════════════════════════════
+     MOBILE FRAME (375px)
+     ═══════════════════════════════════════════ */
+  .mobile-frame {
+    max-width: 375px;
+    margin: 0 auto 4rem;
+    background: var(--bg);
+    border: 1px solid rgba(224,120,0,0.08);
+    overflow: hidden;
+  }
+
+  .m-progress {
+    height: 3px;
+  }
+  .m-progress .fill {
+    height: 100%; width: 35%;
+    background: linear-gradient(90deg, var(--blog-accent), var(--accent));
+  }
+
+  .m-header {
+    position: relative;
+    min-height: 280px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; overflow: hidden;
+    background: #0c0a07;
+    padding: 2rem 1.5rem;
+  }
+
+  .m-header .circuit-grid {
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(224,120,0,0.03) 0, rgba(224,120,0,0.03) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(0deg, rgba(224,120,0,0.03) 0, rgba(224,120,0,0.03) 1px, transparent 1px, transparent 80px);
+  }
+
+  .m-header .watermark {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px; font-weight: 900;
+    color: rgba(224,120,0,0.025);
+    text-transform: uppercase; letter-spacing: -0.06em;
+    pointer-events: none;
+  }
+
+  .m-header .content { position: relative; z-index: 1; }
+
+  .m-header .back-link {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--blog-accent); text-decoration: none;
+    opacity: 0.7; display: inline-block; margin-bottom: 1.25rem;
+  }
+
+  .m-header .cat-line {
+    font-family: var(--font-mono);
+    font-size: 9px; letter-spacing: 2px;
+    color: var(--blog-accent); text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .m-header .title {
+    font-size: 28px; font-weight: 900;
+    text-transform: uppercase; letter-spacing: -0.03em;
+    line-height: 1.0; color: var(--fg); margin-bottom: 1rem;
+  }
+  .m-header .title .hi { color: var(--blog-accent); }
+
+  .m-header .tags {
+    display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .m-header .tag {
+    font-family: var(--font-mono); font-size: 10px;
+    color: color-mix(in srgb, var(--blog-accent) 50%, transparent);
+    border: 1px solid color-mix(in srgb, var(--blog-accent) 12%, transparent);
+    border-radius: 999px; padding: 3px 10px;
+    background: color-mix(in srgb, var(--blog-accent) 3%, transparent);
+  }
+
+  .m-header .meta-row {
+    font-family: var(--font-mono); font-size: 10px;
+    color: color-mix(in srgb, var(--blog-accent) 35%, transparent);
+  }
+
+  .m-body { padding: 1.5rem; }
+
+  .m-toc-toggle {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid color-mix(in srgb, var(--blog-accent) 12%, transparent);
+    padding: 10px 14px; margin-bottom: 1.5rem;
+    font-family: var(--font-mono); font-size: 11px;
+    color: color-mix(in srgb, var(--blog-accent) 40%, transparent);
+    letter-spacing: 0.5px; border-radius: 6px;
+    background: transparent;
+  }
+  .m-toc-toggle .arrow { font-size: 8px; }
+
+  .m-prose p {
+    font-size: 16px; line-height: 1.8;
+    color: color-mix(in srgb, var(--fg) 50%, transparent);
+    margin-bottom: 1rem;
+  }
+  .m-prose h2 {
+    font-size: 20px; font-weight: 800;
+    color: var(--fg); margin: 2rem 0 0.75rem;
+    letter-spacing: -0.02em;
+  }
+  .m-prose h3 {
+    font-size: 16px; font-weight: 700;
+    color: color-mix(in srgb, var(--fg) 80%, transparent);
+    margin: 1.5rem 0 0.5rem;
+    padding-left: 8px;
+    border-left: 2px solid color-mix(in srgb, var(--blog-accent) 20%, transparent);
+  }
+  .m-prose blockquote {
+    border-left: 3px solid var(--blog-accent);
+    padding-left: 1rem; margin: 1.25rem 0;
+    font-style: italic;
+    color: color-mix(in srgb, var(--fg) 55%, transparent);
+    font-size: 15px;
+  }
+  .m-prose code {
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--blog-accent);
+    background: color-mix(in srgb, var(--blog-accent) 8%, transparent);
+    padding: 1px 5px; border-radius: 3px;
+  }
+  .m-prose pre {
+    background: color-mix(in srgb, var(--blog-accent) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--blog-accent) 10%, transparent);
+    border-radius: 6px; padding: 1rem;
+    font-family: var(--font-mono); font-size: 12px;
+    color: color-mix(in srgb, var(--fg) 65%, transparent);
+    line-height: 1.6; margin: 1rem 0;
+    overflow-x: auto;
+  }
+  .m-prose ol { padding-left: 1.25rem; margin-bottom: 1rem; }
+  .m-prose li {
+    font-size: 16px; line-height: 1.8;
+    color: color-mix(in srgb, var(--fg) 50%, transparent);
+    margin-bottom: 0.4rem;
+  }
+  .m-prose li strong { color: color-mix(in srgb, var(--fg) 75%, transparent); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     DESKTOP (1440px)
+     ═══════════════════════════════════════════ -->
+<div class="viewport-label">Desktop — 1440px</div>
+<div class="viewport-desc">Full three-column layout. Magazine cover header, hazard separator, TOC + decorations left, prose center (65ch), transit route map right.</div>
+
+<div class="desktop-frame">
+  <!-- Reading progress bar -->
+  <div class="progress-bar"><div class="fill"></div></div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="circuit-grid"></div>
+    <div class="watermark">Dispatch</div>
+    <div class="corner c-tl"></div>
+    <div class="corner c-tr"></div>
+    <div class="corner c-bl"></div>
+    <div class="corner c-br"></div>
+    <div class="edge-l">Vol. 01 // Iss. 03</div>
+    <div class="edge-r">2026-04-01 // 4 Min</div>
+    <div class="deco-chevrons"><div></div><div></div><div></div></div>
+
+    <div class="content">
+      <a href="#" class="back-link">&larr; back to dispatches</a>
+      <div class="cat-line">Professional</div>
+      <h1 class="title">Why I Left <span class="hi">ORM</span> for Raw SQL</h1>
+      <div class="tags">
+        <span class="tag">sql</span>
+        <span class="tag">postgresql</span>
+        <span class="tag">opinion</span>
+      </div>
+      <div class="meta-row">
+        <span>Apr 2026</span>
+        <div class="sep"></div>
+        <span>4 min read</span>
+        <div class="sep"></div>
+        <span>EN</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAZARD -->
+  <div class="hazard"></div>
+
+  <!-- BODY -->
+  <div class="body-grid">
+
+    <!-- LEFT: TOC + decorations -->
+    <div class="left-col">
+      <div class="toc-sticky">
+        <div class="toc-card">
+          <div class="toc-header">
+            <div class="chevron"></div>
+            On this page
+          </div>
+          <nav class="toc-nav">
+            <span class="toc-item active">The Breaking Point</span>
+            <span class="toc-item">What I Learned</span>
+            <span class="toc-item toc-sub">&nbsp;&nbsp;Know your database</span>
+            <span class="toc-item toc-sub">&nbsp;&nbsp;SQL is already a DSL</span>
+            <span class="toc-item toc-sub">&nbsp;&nbsp;Performance tuning</span>
+            <span class="toc-item toc-sub">&nbsp;&nbsp;Where ORMs shine</span>
+            <span class="toc-item">My Stack Now</span>
+          </nav>
+          <div class="toc-counter">
+            <div class="toc-counter-dot"></div>
+            SEC 1 / 3
+          </div>
+        </div>
+
+        <div class="left-deco">
+          <div class="deco-annotations">
+            // filed-under<br>
+            // sql-patterns<br>
+            // opinion-piece<br>
+            // ────────<br>
+            // word-count: 842<br>
+            // avg-read: 4m12s
+          </div>
+          <div class="deco-circuit">
+            <div class="line"></div>
+            <div class="node node-lit"></div>
+            <div class="line"></div>
+            <div class="node node-sm"></div>
+            <div class="line"></div>
+            <div class="node node-sm"></div>
+            <div class="line"></div>
+          </div>
+          <div class="reading-bar"><div class="fill"></div></div>
+          <div class="reading-bar-label">35%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: Prose -->
+    <div class="prose-col">
+      <p>For years, I relied on ORMs — SQLAlchemy, Django ORM, Prisma. They promised productivity. They delivered abstraction. But somewhere along the way, I stopped understanding what my database was actually doing.</p>
+
+      <h2>The Breaking Point</h2>
+      <p>It happened on a Tuesday. A query that should have taken 50ms was taking 12 seconds. The ORM had generated a nested subquery with 4 JOINs when a simple CTE would have done the job. I spent 3 hours debugging the ORM's query builder before giving up and writing the SQL myself.</p>
+
+      <blockquote>The raw SQL took 47ms.</blockquote>
+
+      <h2>What I Learned</h2>
+
+      <h3>You need to know your database</h3>
+      <p>ORMs hide the database behind an abstraction. That's fine until the abstraction leaks — and it always leaks.</p>
+
+      <h3>SQL is already a DSL</h3>
+      <p>We don't need another language on top of a language designed for exactly this purpose.</p>
+
+      <h3>Performance tuning requires SQL literacy</h3>
+      <p>You can't optimize what you can't read. <code>EXPLAIN ANALYZE</code> doesn't speak ORM.</p>
+
+      <h3>Migrations are where ORMs shine</h3>
+      <p>I still use migration tools. But the queries themselves? Raw SQL, every time.</p>
+
+      <h2>My Stack Now</h2>
+      <pre><span class="copy-btn">Copy</span>SELECT u.name, COUNT(o.id) AS orders
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.id
+GROUP BY u.name
+ORDER BY orders DESC;</pre>
+
+      <ol>
+        <li><strong>PostgreSQL</strong> for everything stateful</li>
+        <li><strong>Raw SQL</strong> with parameterized queries</li>
+        <li><strong>dbt</strong> for transformations</li>
+        <li><strong>pg_stat_statements</strong> for monitoring</li>
+      </ol>
+
+      <p>The code is longer. The control is absolute. The performance is predictable.</p>
+      <p>I'm not going back.</p>
+    </div>
+
+    <!-- RIGHT: Transit Route Map -->
+    <div class="right-col">
+      <div class="route-sticky">
+        <div class="route-label">Route Map</div>
+
+        <!-- SVG route — all styled via CSS classes -->
+        <svg class="route-map-svg" viewBox="0 0 120 480" xmlns="http://www.w3.org/2000/svg">
+          <!-- Terminus start (hollow) -->
+          <circle class="route-station--terminus" cx="60" cy="20" r="7" />
+
+          <!-- Line segment: start → station 1 (active/passed) -->
+          <path class="route-line route-line--active" d="M60 27 C60 50 55 65 60 90" />
+
+          <!-- Station 1: The Breaking Point (ACTIVE) -->
+          <circle class="route-station route-station--active" cx="60" cy="98" r="10" />
+          <text class="route-label-text route-label-text--active" x="80" y="102">THE BREAKING</text>
+          <text class="route-label-text route-label-text--active" x="80" y="114">POINT</text>
+
+          <!-- Line segment: station 1 → station 2 -->
+          <path class="route-line" d="M60 108 C60 140 65 165 60 200" />
+
+          <!-- Station 2: What I Learned -->
+          <circle class="route-station" cx="60" cy="208" r="8" />
+          <text class="route-label-text" x="78" y="212">WHAT I</text>
+          <text class="route-label-text" x="78" y="224">LEARNED</text>
+
+          <!-- Minor stops (h3 substations) -->
+          <path class="route-line" d="M60 216 C60 232 57 240 60 255" />
+          <circle class="route-station" cx="60" cy="260" r="4" />
+          <text class="route-label-text" x="72" y="263" style="font-size:7px">know your db</text>
+
+          <path class="route-line" d="M60 264 C60 275 63 282 60 292" />
+          <circle class="route-station" cx="60" cy="296" r="4" />
+          <text class="route-label-text" x="72" y="299" style="font-size:7px">sql is a dsl</text>
+
+          <path class="route-line" d="M60 300 C60 312 57 320 60 330" />
+          <circle class="route-station" cx="60" cy="334" r="4" />
+          <text class="route-label-text" x="72" y="337" style="font-size:7px">perf tuning</text>
+
+          <path class="route-line" d="M60 338 C60 348 63 355 60 365" />
+          <circle class="route-station" cx="60" cy="369" r="4" />
+          <text class="route-label-text" x="72" y="372" style="font-size:7px">orm migrations</text>
+
+          <!-- Line segment: station 2 → station 3 -->
+          <path class="route-line" d="M60 373 C60 395 55 410 60 430" />
+
+          <!-- Station 3: My Stack Now -->
+          <circle class="route-station" cx="60" cy="438" r="8" />
+          <text class="route-label-text" x="78" y="442">MY STACK</text>
+          <text class="route-label-text" x="78" y="454">NOW</text>
+
+          <!-- Terminus end (hollow) -->
+          <path class="route-line" d="M60 446 C60 455 60 460 60 468" />
+          <circle class="route-station--terminus" cx="60" cy="475" r="5" />
+        </svg>
+
+        <div class="route-terminus">Terminus</div>
+
+        <!-- Decorative ticks -->
+        <div class="route-ticks">
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+          <div class="route-tick"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="padding: 2rem;"><div class="section-divider"></div></div>
+
+<!-- ═══════════════════════════════════════════
+     MOBILE (375px)
+     ═══════════════════════════════════════════ -->
+<div class="viewport-label">Mobile — 375px</div>
+<div class="viewport-desc">Single column. Cover header compresses. Collapsible TOC below hazard stripes. Route map + margin decorations hidden. Reading progress bar at top. Prose breathes.</div>
+
+<div class="mobile-frame">
+  <div class="m-progress"><div class="fill"></div></div>
+
+  <div class="m-header">
+    <div class="circuit-grid"></div>
+    <div class="watermark">Dispatch</div>
+    <div class="content">
+      <a href="#" class="back-link">&larr; back to dispatches</a>
+      <div class="cat-line">Professional</div>
+      <h1 class="title">Why I Left <span class="hi">ORM</span> for Raw SQL</h1>
+      <div class="tags">
+        <span class="tag">sql</span>
+        <span class="tag">postgresql</span>
+        <span class="tag">opinion</span>
+      </div>
+      <div class="meta-row">Apr 2026 &middot; 4 min &middot; EN</div>
+    </div>
+  </div>
+
+  <div class="hazard"></div>
+
+  <div class="m-body">
+    <button class="m-toc-toggle">
+      <span class="arrow">&#9656;</span> Table of Contents
+    </button>
+
+    <div class="m-prose">
+      <p>For years, I relied on ORMs — SQLAlchemy, Django ORM, Prisma. They promised productivity. They delivered abstraction. But somewhere along the way, I stopped understanding what my database was actually doing.</p>
+
+      <h2>The Breaking Point</h2>
+      <p>It happened on a Tuesday. A query that should have taken 50ms was taking 12 seconds. The ORM had generated a nested subquery with 4 JOINs when a simple CTE would have done the job.</p>
+
+      <blockquote>The raw SQL took 47ms.</blockquote>
+
+      <h2>What I Learned</h2>
+
+      <h3>You need to know your database</h3>
+      <p>ORMs hide the database behind an abstraction. That's fine until the abstraction leaks — and it always leaks.</p>
+
+      <h3>SQL is already a DSL</h3>
+      <p>We don't need another language on top of a language designed for exactly this purpose.</p>
+
+      <h3>Performance tuning requires SQL literacy</h3>
+      <p>You can't optimize what you can't read. <code>EXPLAIN ANALYZE</code> doesn't speak ORM.</p>
+
+      <h3>Migrations are where ORMs shine</h3>
+      <p>I still use migration tools. But the queries themselves? Raw SQL, every time.</p>
+
+      <h2>My Stack Now</h2>
+      <pre>SELECT u.name, COUNT(o.id) AS orders
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.id
+GROUP BY u.name
+ORDER BY orders DESC;</pre>
+
+      <ol>
+        <li><strong>PostgreSQL</strong> for everything stateful</li>
+        <li><strong>Raw SQL</strong> with parameterized queries</li>
+        <li><strong>dbt</strong> for transformations</li>
+        <li><strong>pg_stat_statements</strong> for monitoring</li>
+      </ol>
+
+      <p>The code is longer. The control is absolute. The performance is predictable.</p>
+      <p>I'm not going back.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

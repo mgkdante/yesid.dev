@@ -1,16 +1,540 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-13 | 17a-6 COMPLETE (Sessions 1-4, Tasks 1-26)
-**Branch:** `feature/slice-17a-6-component-library`
+**Last updated:** 2026-04-16 | 17d COMPLETE — Ready for PR
+**Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** 17a-6 (Component Library Foundation) — COMPLETE (all 4 sessions, 26/26 tasks)
-- **Status:** shadcn-svelte component library initialized. 56 ui/ components scaffolded, 15 customized with brand styling, 7 brand primitives migrated to ui/, 10 page components wired to ui/ headless primitives. 9 brand primitives remain with cn/data-slot conventions. Zero svelte-ignore a11y. Zero old tokens. Zero arbitrary spacing. Dead Three.js/Threlte deps removed. Docs updated.
-- **Build:** 0 errors, 12 warnings, 707/707 tests pass.
-- **Next action:** PR to main, then 17d (Component API — 4 sessions).
-- **Decision D47 revised:** Kept Tailwind default breakpoints (640/768/1024/1280/1536) instead of custom 360/520/768/1024/1440. Edge-to-edge controlled by layout model, not breakpoints.
-- **Pending brainstorm:** Edge-to-edge visual design (edge decorations, vertical typography, circuit lines) for all pages — feeds into 17d.
+- **Sub-slice:** 17d — Component API — COMPLETE
+- **Card unification:** COMPLETE — 21 instances unified to `ui/card`, `.bento-card` deleted, CollapsibleSection uses Card internally
+- **Code review fixes:** COMPLETE — flex-col leak, dead CSS, `rounded-[inherit]`, `group-hover/card:`
+- **Build:** 0 type errors, 21 pre-existing warnings, 769/769 tests pass
+- **Status:** All tasks approved. Closing artifacts written. Ready for PR to main.
+- **Next sub-slice:** 17e — Motion Re-Engineering
+
+### 17d Summary (99 commits, 285 files, +32,885 / -7,048)
+
+| Phase | Sessions | Key Outcome |
+|-------|----------|-------------|
+| 17d-1: Foundation | 1 | CONSTITUTION.md, ui/card, brand atoms |
+| 17d-3: File Splits + SVGs | 2 | 4 oversized files split, 12 Blueprint SVGs inlined, 6 Services SVGs tokenized, 9 orphans deleted |
+| 17d-4: Wiring + Edge-to-Edge | 8.5 | Pre-pass P1-P9, 7 page sessions, shells/ deleted, 4 CSS Grid Recipes, blog+project detail from scratch |
+| 17d-5: Services Pages | 3 | StationTabs, ServiceCard, ServiceDetailPage, scroll fixes, mobile layout |
+| 17d-6: Contact Page | 2 | Paneforge resizable split, weather, local time, Recipe 4 edge title |
+| Card Unification | 1 | 21 card instances -> 1 ui/card, .bento-card deleted, code review fixes |
+
+### Contact Page Redesign (17d-6) — COMPLETE
+
+**What was done (15 commits):**
+- Recipe 4 Edge Title Grid: rotated "Contact." edge title + accent line
+- Paneforge resizable split between info (33%) and form (67%) terminals
+- Shared weather utility extracted from About page (`src/lib/data/weather.ts`)
+- Server-side weather fetch for contact route (`src/routes/contact/+page.server.ts`)
+- Live Montreal local time via `Intl.DateTimeFormat`, updates every minute
+- Desktop: entire page fits in one viewport (`max-height: calc(100dvh - nav - footer)`)
+- Mobile: stacked terminals (info first, form second), visible heading, no viewport constraint
+- Data layer cleanup: removed unused `status`/`availability` fields
+- 14 contact tests (12 updated + 2 new weather tests)
+- All hardcoded hex colors replaced with semantic tokens
+
+**Design decisions (D218-D240):**
+- D218: Recipe 4 Edge Title Grid layout
+- D219: Big rotated "Contact." edge title, clamp(6rem, 12vw, 13rem)
+- D220: Accent line between edge title and content
+- D221: Resizable split via Paneforge
+- D222: Default pane ratio 33%/67%
+- D223: Min pane sizes: info 20%, form 40%
+- D224: Resize handle with grip dots, orange on hover
+- D225: Mobile stacked, info first
+- D226: Mobile: no resize, no edge title
+- D227: Remove status/availability from data layer
+- D228: Full-bleed, no max-width container
+- D229: Live weather in info terminal
+- D230: Shared weather utility from About page
+- D231: Live Montreal local time
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-16-contact-page-redesign-design.md`
+- Implementation plan: `docs/plans/2026-04-16-contact-page-redesign.md`
+- Mockups: `.superpowers/brainstorm/769-1776313859/content/`
+
+### Card Unification (Task 31) — SPEC APPROVED
+
+**Scope:** 21 card instances across 4 patterns → one `ui/card` component
+
+**Key decisions (D232-D240):**
+- D232: One unified surface via `ui/card`
+- D233: Delete `.bento-card` utility from app.css
+- D234: Delete `.bento-card` overrides from AboutPage
+- D235: Motion actions stay per-consumer
+- D236: Content layout stays unique per card
+- D237: CollapsibleSection uses Card internally
+- D238: Remove backdrop-blur from BlogRow
+- D239: TerminalChrome stays separate
+- D240: StackNode stays separate
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-16-card-unification-design.md`
+- Implementation plan: needs to be written
+
+### Constitution CSS Grid Rewrite Session — COMPLETE
+
+**What was done (18 commits):**
+- CONSTITUTION.md rewritten: 4 CSS Grid Recipes replace SectionWrapper/6-layer scope model
+- Atomic design: 4 tiers → 3 tiers (shells/ tier deleted)
+- shells/ directory deleted: SectionWrapper (201 lines), EdgeRail (220 lines), ListingLayout (109 lines), + 5 zero-consumer components (DetailHero, CardGrid, BentoGrid, AsidePanel + tests)
+- BlueprintShell moved to brand/
+- 7 pages migrated (12 SectionWrapper removals): HomePage, AboutPage, BlogListingPage, ProjectListingPage, BlogDetailHeader, ProjectDetailHeader, ProjectDetailPage
+- Route layouts rewritten: inline Recipe 4 (edge title with writing-mode: vertical-rl)
+- `@chenglou/pretext` dependency removed
+- Edge titles: fully opaque, rotated correctly (180deg), breathing room for descenders
+- Mobile hero: text + buttons bounded to calc(100svh - 5rem), proportional scaling via svh
+- Universal scroll chaining: `scrollChain` action replaces all 17 `data-lenis-prevent` instances
+- Wireframe diagrams: 11 templates × 3 breakpoints saved to `docs/reference/wireframes/`
+
+**Net impact:** ~1035 lines deleted, 0 visual regression, 0 :global() hacks, 1 dependency removed.
+
+**Design decisions (D211-D217):**
+- D211: Delete SectionWrapper/EdgeRail/ListingLayout — CSS Grid recipes replace all 3
+- D212: 4 recipes: Full-Bleed, Contained, Content+Sidebars, Edge Title Grid
+- D213: Rotated edge titles stay, implemented with writing-mode + clamp()
+- D214: Background decorations use position: relative/absolute
+- D215: Atomic design 4→3 tiers (shells/ deleted)
+- D216: BlueprintShell moved to brand/, rest deleted (0 consumers)
+- D217: Constitution §2, §6, §9, §11, §13 rewritten
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-15-constitution-css-grid-rewrite-design.md`
+- Implementation plan: `docs/plans/2026-04-15-constitution-css-grid-rewrite.md`
+- Wireframes: `docs/reference/wireframes/page-templates-2026-04-16.html`
+
+### Contact Page — NEXT (17d-6)
+
+Yesid's direction: edge-to-edge full-bleed design. Needs planning session (brainstorm → spec → plan).
+
+### 17d-5 Session 3 (ServiceDetailPage + Grid Pass) — COMPLETE
+
+**ServiceDetailPage rewrite:**
+- Asymmetric split hero: text left, ServiceSvgPanel right (desktop), banner (mobile)
+- Impact metric column: `clamp(88px, 10vw, 140px)` value, sticky on desktop
+- Collapsible related projects: right panel (desktop 1fr 2fr 1fr grid), bottom (mobile)
+- Full-bleed body, proportional grid (`1fr 2fr 1fr`), zero hardcoded measurements
+- Hazard separator, orange stack pills, SectionLabel station counter
+- Mobile: inline metric, SVG banner, related projects before prev/next nav
+- ProjectsStrip replaced with inline collapsible project links
+
+**BlogDetailPage simplification:**
+- SectionWrapper removed entirely, replaced with plain 2-column CSS grid
+- Begin./Transmission. edge labels removed (decorative noise)
+- Grid: `1fr 2fr` (wide), `1fr 1.5fr` (1024-1279px), single column (mobile)
+- Zero hardcoded pixel measurements, no `:global()` specificity hacks
+
+**ProjectDetailPage grid:**
+- Proportional `1fr 2fr 1fr` override via `:global(.section-wrapper.detail-body[data-layout="centered"])`
+- Removed hardcoded `--edge-left: 340px; --edge-right: 400px` inline styles
+
+**ProjectListingPage responsiveness:**
+- Card grid 2-column breakpoint bumped from 768px → 1280px
+- At narrower desktops (1118px), cards stack single-column within EdgeRail layout
+
+**Design decisions (D205-D210):**
+- D205: ServiceDetailPage uses plain CSS grid, not SectionWrapper
+- D206: Impact metric rendered inline (not MetricDisplay) for size control (88-140px)
+- D207: Related projects in right panel (desktop) / collapsible bottom (mobile)
+- D208: Blog edge labels removed — centered layout is cleaner
+- D209: SectionWrapper is an obstacle — constitution rewrite planned
+- D210: Proportional `fr` units everywhere, zero hardcoded measurements
+
+**Files modified (4 files, +576 / -342 lines):**
+- `src/lib/components/services/ServiceDetailPage.svelte` — full rewrite
+- `src/lib/components/blog/BlogDetailPage.svelte` — SectionWrapper removed, plain grid
+- `src/lib/components/projects/ProjectDetailPage.svelte` — proportional grid override
+- `src/lib/components/projects/ProjectListingPage.svelte` — card grid breakpoint
+
+### 17d-5 Session 2 (Bug Fixes + Mobile Polish) — COMPLETE
+
+**Bugs fixed:**
+- Nav gap: `::before` pseudo-element on `.tabs-bar` replaces broken box-shadow approach
+- Global scroll: `data-lenis-prevent` added to 16 scrollable containers site-wide (TOC panels, filter sidebars, terminal bodies, horizontal strips)
+- Horizontal overflow: `overflow-x: clip` on root `.circuit-grid` wrapper (clips hero GSAP animation elements)
+- Services page overflow: `overflow-x: clip` on `.services-page`
+- Tab left-alignment: `justify-start` overrides bits-ui Tabs.List base `justify-center` on mobile
+- ServiceCard centering: `position: sticky; top: calc(50dvh - 13rem)` on `.viewport-inner` centers content in usable area between sticky tabs and strip at every scroll position
+- Swipe guard: `pointer-events: none` during touch swipe prevents click-on-swipe on tab strip
+- Cross-browser reset: tap-highlight, text-size-adjust, appearance resets in app.css
+
+**Mobile layout:**
+- Card height = usable area: `calc(100svh - 12rem)`, flex centered, `scroll-margin-top: 8.75rem`
+- SVG stacked on top (same card as desktop, scaled to 100×120px)
+- "Deep dive →" CTA + SVG at opposite ends (`justify-content: space-between`) in bottom row
+- Separate desktop/mobile CTA elements with visibility toggles
+- Bigger CTA button: `text-body` size, `1rem 2.5rem` padding, hover lift with orange glow
+
+**Desktop layout (untouched after approval):**
+- Sticky inner: content centers at usable viewport center (0px offset verified)
+- CTA + metric in text area, SVG panel beside text
+- Projects strip: `space-evenly` distribution of project links
+
+**Design decisions (D196-D204):**
+- D196: `::before` pseudo-element for nav gap cover (box-shadow had wrong height)
+- D197: `data-lenis-prevent` attribute is the standard for nested scroll containers
+- D198: `overflow-x: clip` (not hidden) preserves sticky positioning
+- D199: `position: sticky` on `.viewport-inner` centers content at every scroll position — no scroll-to hack
+- D200: `calc(50dvh - 13rem)` sticky top = usable-center minus estimated half-content-height
+- D201: Mobile card height = `calc(100svh - 12rem)` = usable area between tabs (8.75rem) and strip (3.25rem)
+- D202: `scroll-margin-top: 8.75rem` for mobile tab-click alignment
+- D203: Dual CTA elements (desktop-only / mobile-only) with `.deep-dive-cta.desktop-only` / `.mobile-only` specificity
+- D204: Swipe guard via `pointer-events: none` class toggle — bulletproof regardless of event ordering
+
+**Files modified (22 files, +175 / -61 lines):**
+- `src/app.css` — cross-browser mobile resets
+- `src/routes/+layout.svelte` — `overflow-x-clip` on root wrapper
+- `src/lib/components/services/ServiceCard.svelte` — sticky centering, mobile layout, dual CTA, spacing
+- `src/lib/components/services/ServiceCard.test.ts` — updated for dual CTA links
+- `src/lib/components/services/ServiceListingPage.svelte` — nav gap fix, overflow clip, scroll offset
+- `src/lib/components/services/ProjectsStrip.svelte` — `space-evenly` on desktop, `var(--space-page-x)` alignment
+- `src/lib/components/shared/StationTabs.svelte` — justify-start, swipe guard, touch handlers
+- `src/lib/components/brand/StickyPanel.svelte` — `data-lenis-prevent`
+- `src/lib/components/brand/TerminalChrome.svelte` — `data-lenis-prevent`
+- 13 more components — `data-lenis-prevent` on scrollable containers
+
+### 17d-5 Planning Session — COMPLETE
+
+**Design decisions (D183-D195):**
+- D183: Inverted orange accents on dark canvas (not orange background — tested, felt aggressive)
+- D184: Three solid orange surfaces (tabs strip, SVG panel, projects strip)
+- D185: No EdgeRail on services (StationTabs + orange strips provide identity)
+- D186: Asymmetric split layout (Option C — engineering spec sheet vibe)
+- D187: Standard cards for detail content sections (not orange-tinted)
+- D188: Scroll-snap `y proximity` (not mandatory — allows free scrolling)
+- D189: No TOC on detail page (3-4 sections max, TOC overkill)
+- D190: Nested scroll container eliminated (violates Constitution Scroll Law)
+- D191: Footer restored to global layout (was trapped in inner scroll)
+- D192: SVG strokes invert via container `color` (no SVG file changes)
+- D193: Constitution amended with nested scroll ban
+- D194: Hazard stripes edge the orange strips
+- D195: Dynamic projects strip via IntersectionObserver
+
+**Scroll trap diagnosis:**
+- `.service-listing` had `height: calc(100dvh - 5rem)` + `overflow: hidden` — blocked page scroll
+- `.scroll-area` had `overflow-y: auto` + `scrollbar-width: none` — hidden inner scrollbar
+- Lenis managed page scroll but never reached services content
+- Footer trapped inside inner scroll container
+- Fix: eliminate nested scroll, page-level Lenis scroll, Constitution amendment
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-15-services-pages-design.md`
+- Implementation plan: `docs/plans/2026-04-15-services-pages.md` (10 tasks, 3 sessions)
+- Mockups: `.superpowers/brainstorm/1208-1776282068/content/` (4 approved mockups)
+
+**Implementation plan summary:**
+| Session | Tasks | Focus |
+|---------|-------|-------|
+| 1 | T1-T5 | Constitution amendment, layout fix, ServiceSvgPanel, ProjectsStrip, StationTabs restyle |
+| 2 | T6-T7 | ServiceCard rewrite + ServiceListingPage rewrite (scroll fix) |
+| 3 | T8-T10 | ServiceDetailPage rewrite, scroll audit, visual verification |
+
+### Session 10 (Bug Fixes + Polish + Tests) — COMPLETE
+
+**Bug fixes:**
+- **Left panel sticky fix** — `overflow-x: hidden` on `.body-grid` was creating a scroll container that broke `position: sticky`. Changed to `overflow-x: clip` which clips visually without creating a scroll container.
+- **Mobile code block overflow fix** — Two-part fix: (1) `overflow-x-hidden` on BlogContent card establishes width constraint, (2) moved `min-width: 0` on `.section-content` outside desktop media query so it applies at all breakpoints. Pre blocks now scroll horizontally within the card.
+- **Layout shift fix** — Replaced Google Fonts CDN with self-hosted `@fontsource-variable/inter` and `@fontsource-variable/jetbrains-mono`. Fonts now bundle with the app, eliminating the font-swap delay. Body grid starts `opacity: 0` on desktop, fades in after edge labels are sized.
+- **Pretext removal** — Replaced `@chenglou/pretext` with DOM-based `getBoundingClientRect` measurement for edge label sizing. Exact 1.000 ratio to viewport height. Simpler, no external dependency for this component.
+
+**Tests:**
+- 5 new BlogDetailPage structure tests (data-testid, header, content, accent colors)
+- Fixed GSAP mock: added `gsap.utils.selector` stub to `setup.dom.ts`
+- Total: 785 tests pass (was 780)
+
+**Visual verification:**
+- Desktop 1440px: header, TOC sticky, edge labels, code blocks, reading mode — all verified
+- Mobile 375px: no overflow, floating TOC pill, code blocks contained, blockquotes styled
+- Tested professional posts (orange accent) and personal posts (yellow accent)
+- Zero horizontal overflow, zero console errors
+
+### Session 9 (Blog Detail Page Implementation) — COMPLETE
+
+**Completed:**
+- Task 1: Route bypass via +page@.svelte, postIndex in load, isFullBleed for blog detail paths
+- Task 2: BlogDetailHeader rebuilt from scratch — magazine cover (circuit grid, ManifestoCanvas, watermark, CornerMarks, edge labels, category line, SplitText title with tag highlight, tag pills, meta row, GSAP entrance)
+- Task 3: BlogRouteMap component (transit route SVG, CSS-only styling, 6 tests) — later REMOVED per feedback, replaced with edge labels
+- Task 4: BlogDetailPage orchestrator — 4-zone body grid (Begin. edge | TOC+content | Transmission. edge), shared IntersectionObserver, BlogTocPill floating mobile TOC
+- Task 5: TOC wiring + left column metadata (already done in Session 9 revisions)
+- Task 6: N/A (route map animation — component removed)
+- Task 7: BlogDetailPage structure tests (Session 10)
+- Task 8: Visual verification + polish (Session 10)
+- Shiki syntax highlighting integrated (brand theme: orange keywords, yellow strings, warm comments) — both blog + project README
+- Reading mode toggle (switch in left panel, dims header/edges/footer)
+- Mobile side margins on blog + project detail body
+- Scroll-margin-top on all headings (anchors land below nav)
+- Prose text bumped to 17px mobile / 18px desktop
+- Metadata panel below TOC (category, word count, read time, language, tags)
+- Edge labels dynamically sized via DOM getBoundingClientRect (text spans exactly 100dvh when rotated)
+
+**Design decisions (Session 10):**
+- D179: `overflow-x: clip` instead of `hidden` on body-grid — prevents scroll container that breaks sticky
+- D180: Self-hosted fonts via @fontsource-variable — eliminates layout shift from font swap
+- D181: DOM-based edge label sizing via getBoundingClientRect — replaces Pretext, accounts for letter-spacing
+- D182: Body grid opacity fade-in on desktop — hides 120px→370px column shift during edge sizing
+
+**Design decisions (Session 9):**
+- D170: Route map removed — replaced with "Begin." / "Transmission." rotated edge labels (infrastructure radio protocol)
+- D171: Edge labels are section-level (body only), not page-level — don't interrupt header
+- D172: Edge labels dynamically sized to 100dvh via DOM getBoundingClientRect (was Pretext, changed in Session 10)
+- D173: Equal column widths for both edges (max of the two cross-axis measurements)
+- D174: Ghost dimmed text (6% foreground) with bright orange dot
+- D175: Reading mode dims via direct opacity on elements, not overlay scrim
+- D176: Shiki brand theme: yesid-brand (orange/yellow/warm dark)
+- D177: BlogTocPill for mobile (floating pill, same UX as ProjectTocPill)
+- D178: Scroll-margin-top globally in app.css for all headings with IDs
+
+**Files created (Sessions 9-10):**
+- `src/lib/components/blog/BlogDetailPage.svelte` — orchestrator
+- `src/lib/components/blog/BlogDetailPage.test.ts` — 5 structure tests (Session 10)
+- `src/lib/components/blog/BlogDetailHeader.svelte` — rebuilt from scratch
+- `src/lib/components/blog/BlogRouteMap.svelte` — transit route (kept but unused)
+- `src/lib/components/blog/BlogRouteMap.test.ts` — 6 tests
+- `src/lib/components/blog/BlogTocPill.svelte` — floating mobile TOC
+- `src/lib/data/highlight.ts` — shared Shiki + marked config
+- `src/routes/blog/[slug]/+page@.svelte` — clean route (bypasses ListingLayout)
+
+**Files modified (Sessions 9-10):**
+- `src/routes/blog/[slug]/+page.ts` — added postIndex
+- `src/routes/+layout.svelte` — isFullBleed + @fontsource-variable imports (Session 10)
+- `src/lib/data/blog.ts` — imports marked from highlight.ts
+- `src/lib/components/blog/BlogContent.svelte` — overflow-x-hidden on card (Session 10)
+- `src/app.html` — removed Google Fonts CDN, comment-only now (Session 10)
+- `src/app.css` — :root font-family overrides for variable fonts (Session 10)
+- `src/tests/setup.dom.ts` — added gsap.utils.selector mock (Session 10)
+- `src/routes/projects/[slug]/+page.ts` — imports marked from highlight.ts
+- `src/lib/components/projects/ProjectDetailPage.svelte` — mobile padding
+- `src/lib/components/blog/BlogContent.svelte` — min-w-0
+- `src/app.css` — prose-dark sizing, Shiki styles, scroll-margin-top
+
+### Session 8 (Blog Detail Page Planning) — COMPLETE
+- Brainstormed blog detail page design (infrastructure magazine editorial)
+- Header: Option C approved — full-bleed cover story (watermark, CornerMarks, edge labels, display title, circuit grid)
+- Body: Three-column SectionWrapper (TOC left, prose center, transit route map right)
+- Right panel: Transit route map using montreal-metro.svg visual language (CSS-styled SVG)
+- Clean-slate approach: old BlogDetailHeader deleted and rebuilt from scratch
+- Route bypasses ListingLayout via +page@.svelte (same as project detail)
+- Reading progress bar REMOVED per feedback
+- All SVG styled via CSS classes — zero inline fill/stroke attributes
+- Design spec: `docs/specs/2026-04-14-blog-detail-page-design.md`
+- Implementation plan: `docs/plans/2026-04-14-blog-detail-page.md` (8 tasks)
+- Mockups: `docs/reference/mockups/blog-detail-page-full.html` (approved)
+- D160-D169 design decisions recorded in spec
+
+### Session 7 (Project Detail Polish + Constitutional Audit) — COMPLETE
+- Fixed header grid/canvas misalignment — moved ManifestoCanvas out of SectionWrapper background slot
+- Scoped GSAP selectors via gsap.utils.selector(headerEl)
+- Added depth-based TOC indent for README sub-headings (h3→26px, h4→36px)
+- Route verification: +page@.svelte bypasses ListingLayout correctly
+- 3 new data layer tests for optional Project metadata fields (774 total)
+- Constitutional audit across home, projects, projects/slug, blog:
+  - Added semantic h1 to ProjectListingPage and BlogListingPage (were div)
+  - Replaced 10 arbitrary text-[Npx] with type scale tokens
+  - Replaced hardcoded rgb(20 20 20) in TocPill with var(--background) tokens
+  - Replaced transition:all in HomeCloser + Manifesto with specific properties
+- D160: Blog detail page designed separately, starts next session
+
+### Session 6 (Project Detail Page Implementation) — COMPLETE
+- Plan Tasks 1-7 complete: stackRoles.ts, Project type extensions, ProjectDetailHeader, ProjectGlancePanel, ProjectGlancePanelMobile, ProjectTocPill, ProjectDetailPage rewrite
+- Header uses ManifestoCanvas (interactive hover/click), circuit grid, CornerMarks, edge metadata
+- Header extends behind nav (negative margin + padding-top), full-bleed via SectionWrapper layout="bleed"
+- Body uses SectionWrapper layout="centered" with sideLeft (TOC) and sideRight (GlancePanel)
+- TOC, center sections, and right panel all use CollapsibleSection cards (same primitive)
+- Mobile: CollapsibleSection "Project Info" panel + floating TOC pill with full heading hierarchy
+- TOC tracks all heading levels (h1-h6), README sub-headings nest one level down
+- Services in glance panel use ServiceBadge with SVG icons + morph hover
+- Route uses `+page@.svelte` to bypass ListingLayout (no EdgeRail on detail pages)
+- Root layout `isFullBleed` check skips `pt-20` for project detail pages
+- Hazard stripes replace gradient separator
+- Sections animate on load (CSS keyframes) instead of scroll-triggered reveal
+- Subtitle removed from header per feedback
+- **Known issues to fix in Session 7:**
+  - Header circuit grid offset needs tuning (grid appears lower than expected)
+  - Extract ManifestoCanvas → CircuitGrid (generic brand component)
+  - Complete Tasks 8 (route verification), 9 (TOC polish), 10 (GSAP refinement), 11 (visual verification), 12 (data layer tests)
+- D155: Use "header" not "hero" for detail page components
+- D156: All panels (TOC, sections, glance) use CollapsibleSection — same primitive everywhere
+- D157: Mobile TOC pill shows full heading hierarchy matching desktop TOC
+- D158: SectionWrapper container="none" on mobile (zero inline padding), desktop gets --space-page-x
+- D159: Desktop columns spaced with gap: 2rem
+
+### Session 5 (Project Detail Page Design) — COMPLETE
+- Brainstormed content strategy for detail pages (blog + projects)
+- Scoped to project detail page ONLY (blog detail + consolidation in later passes)
+- Services/stack detail pages get separate design passes
+- Approved design: manifesto-style hero (circuit grid, edge metadata, GlowOverlay, CornerMarks) + three-column body (left TOC, center sections, right glance panel)
+- Mobile: collapsible glance panel + floating TOC pill
+- Sections are dynamic from project.sections[] with 4-5 defaults as content guide
+- Hero metadata auto-generated from Project data (slug, stack roles, location, metrics)
+- Approved mockup saved: `docs/reference/mockups/project-detail-page-approved.html`
+- Design spec: `docs/specs/2026-04-14-project-detail-page-design.md`
+- Implementation plan: `docs/plans/2026-04-14-project-detail-page.md` (12 tasks, 1782 lines)
+- Primitives reuse: CornerMarks, GlowOverlay, cursorGlow, TerminalCursor, MetricDisplay, SectionLabel, StickyPanel, Badge, Separator, ChevronToggle, TableOfContents, CollapsibleSection, boop, reveal
+- Data layer changes needed: add location?, environment?, version?, impactMetrics? to Project type
+- New files: ProjectDetailHero, ProjectGlancePanel, ProjectGlancePanelMobile, ProjectTocPill, stackRoles.ts
+- D151: No edge rail on detail pages — accent line + manifesto hero instead
+- D152: TOC on LEFT, glance panel on RIGHT (opposite of typical blog layouts)
+- D153: Sections fully dynamic, no fixed template — defaults are just a content guide
+- D154: Blog detail page designed separately, consolidated after both are done
+
+### 17d-4 Pre-pass (P1–P9) — COMPLETE
+- P1: SectionHeading wired into BlogListingPage, ProjectListingPage, ContactPage (added `level` prop)
+- P2: SectionLabel wired into ServiceCard, ServiceNav, +error, tech-stack
+- P3: BlogRow already clean, +error dots not MetroStation-compatible
+- P4: Skipped — tech-stack hero stats use mono/foreground style (intentionally different from MetricDisplay)
+- P5: All viable StatusDot consumers already wired
+- P6: TerminalChrome overflow-y: auto added, AboutCta custom scroll removed (standard behavior)
+- P7: Semantic HTML — dual h1 fixed (HeroTextContent), h2→h1 (AboutIdentity), h3→h2 (BlogRow, ProjectCard), sr-only h1 (ServiceListingPage), dates in `<time>` tags
+- P8: StationTabs already had overflow-x-auto, StackBottomSheet handled by vaul-svelte
+- P9: Props interfaces exported for BlogRow, ProjectCard, ServiceCard + 7 shells, barrel exports updated
+
+### Session 1 (Home) — COMPLETE
+- HomePage.svelte created as section orchestrator
+- All 5 sections wrapped in SectionWrapper (Hero/Manifesto: bleed, Projects/Services/Closer: centered)
+- Alternating rotated SectionHeading titles: Projects (left) → Services (right) → Terminus (left)
+- Removed redundant in-content headings from FeaturedProjects, HomeServices, HomeCloser (GSAP refs cleaned)
+- ServicesBlueprint moved to SectionWrapper `background` slot (spans full width including edge columns)
+- SectionWrapper default `container` changed from "content" to "none" (unconstrained by default)
+- SectionWrapper grid columns fixed: `minmax(0, var(...))` → `var(...)` (edge columns no longer collapse)
+
+### Session 2 (About) — COMPLETE
+- AboutPage bento grid wrapped in SectionWrapper layout="bleed"
+- Hazard stripes moved outside SectionWrapper (matches Home's between-section pattern)
+- .about-page CSS removed, min-height moved to SectionWrapper inline style
+- No rotated titles — bento dashboard is self-contained (D122 ditched)
+- No edge content — layout="bleed" with no side slots (D125)
+- Bento cards unchanged — correct per D30/D31, card unification deferred to post-S8 pass
+
+### Session 3 (Blog listing) — COMPLETE
+- CONSTITUTION.md: added 6-layer scope model (EdgeRail=page-scoped, SectionWrapper sides=section-scoped, all content-agnostic)
+- ListingShell deleted — SectionWrapper's grid columns replace its sidebar layout role
+- EdgeRail refactored: position:fixed → position:sticky in parent grid, title variant with Pretext text measurement, "Blog." with orange dot
+- Blog layout: CSS grid (EdgeRail column + vertical hazard rail + content column), extends behind nav
+- Blog listing: 2 SectionWrappers — header (title + SVG icon) + listing (filters in sideLeft, posts in content)
+- Mobile consolidation: "Blog. Dispatches" inline prefix when EdgeRail hidden (Option B)
+- BlogRow: uniform padding (no featured distinction), bigger text (title text-lg, excerpt text-base)
+- Filter sidebar: search moved from header to sidebar, bigger text, full-width buttons, smooth CSS grid collapse, all sections have dividers, Tags collapsed by default
+- ChevronToggle: fixed reversed rotation for down direction
+- MetroStation: accent-aware via var(--accent, var(--primary))
+- SectionHeading: added dot prop (default true, opt-out)
+- Separator: hazard uses --primary (not --accent), vertical orientation support
+- Pretext installed for text metric calculation
+- Blog + Projects share identical structure (same archetype) — D133
+- Services + Stack pages get orange accent — D134
+
+### Session 4 (Blueprint headers + Projects listing + DRY) — COMPLETE
+- Da Vincian blueprint headers: 5 transit SVGs (blog) + 6 tunneling SVGs (projects)
+- SVG folder reorganized into azur/, detail/, transit/, tunneling/ subfolders
+- BlogBlueprint + ProjectsBlueprint composition components (using BlueprintShell)
+- Vertical hazard stripe → thin 1px accent line on both layouts
+- Blueprint header extends behind nav to viewport top (desktop + mobile)
+- "dispatches from the field" subtitle overlaid on blueprints, dynamic via prop
+- Metro station dots added to EdgeRail (above/below label)
+- Projects listing: SectionWrapper wiring, search bar, 2-column card grid, equal-height cards
+- Animations fire on load instead of scroll (both listings)
+- FLIP animation added to blog filter changes
+- DRY extraction: BlueprintShell, ListingLayout, SearchInput, FilterSummary, listingAnimations.ts
+- Blog + Projects layouts reduced to 6 lines each (from ~110)
+- Date filter kept as native (shadcn calendar deferred)
+- Max-width deferred (needs animation/manifesto consideration)
+- D139-D150 design decisions (see spec: docs/specs/2026-04-14-blueprint-headers-design.md)
+
+### Decisions (17d-4)
+- D101: Added `level` prop to SectionHeading (h1-h6, default h2)
+- D102: ServiceCard heading+dot not wired to SectionHeading (styling too different)
+- D103: tech-stack hero not wired to SectionHeading (multi-line layout)
+- D104: AboutPage has no heading at component level (bento orchestrator)
+- D105: SectionLabel variant="station" for service counter, error label, tech-stack overline
+- D106: SectionLabel variant="section" for ServiceNav labels
+- D107: +error suggestion dots skipped for MetroStation (wrong component)
+- D108: MetricDisplay skipped for tech-stack hero stats (mono/foreground vs heading/primary)
+- D109: ManifestoEdgeBottom status dot skipped (intentionally dim, GSAP-orchestrated)
+- D110: +error suggestion dots skipped for StatusDot (no hollow variant)
+- D111: TerminalChrome overflow-y: auto is the standard; AboutCta custom scroll removed
+- D112: StationTabs horizontal scroll already correct (overflow-x-auto)
+- D113: SectionWrapper layout per Home section (bleed for Hero/Manifesto, centered for others)
+- D114: Rotated titles alternate sides: left → right → left
+- D115: Edge column width: clamp(4.5rem, 8vw, 8rem)
+- D116: Wiring in HomePage.svelte, not inside each component
+- D117: "Proof" → "Projects" naming consistency
+- D118: SectionWrapper default container changed to "none" (unconstrained)
+- D119: ServicesBlueprint moved to SectionWrapper background slot (full-width coverage)
+- D120: ControlRoom scrapped (D90 from 17d-3)
+- D121: About page = one SectionWrapper wrapping entire bento grid (layout="bleed")
+- D122: DITCHED — no rotated titles on About page (bento dashboard self-contained)
+- D123: Hazard separators outside SectionWrapper (matches Home between-section pattern)
+- D124: .about-page min-height moved to SectionWrapper inline style
+- D125: No edge content on About — bento dashboard self-contained, no side slots
+- D126: Card unification (Task 31) deferred to post-S8 pass — all 18 instances to ui/card, zero unused ui/ components
+- D127: Blog routes get SectionWrapper layout="bleed" for header, "centered" for listing
+- D128: Blog listing gets rotated "Blog." title in EdgeRail (not in SectionWrapper sides)
+- D129: ListingShell deleted — SectionWrapper's scope-based grid replaces it
+- D130: SectionHeading dot prop added (default true, opt-out)
+- D131: "Blog." on left EdgeRail with orange dot, title variant
+- D132: Blog detail gets header SectionWrapper + content SectionWrapper (not just bleed)
+- D133: Blog + Projects = same archetype, identical constitutional structure
+- D134: Services + Stack pages get orange accent (--accent: var(--primary))
+- D135: Constitution 6-layer scope model — EdgeRail=page-scoped, SectionWrapper=section-scoped, all layers content-agnostic
+- D136: Hazard Separator uses --primary (not --accent) for brand consistency
+- D137: Mobile blog heading "Blog. Dispatches" inline prefix (Option B consolidation)
+- D138: Filter sidebar breakpoint aligned to 1024px (constitutional standard)
+- **Decisions (17d-3 Session 2):**
+  - D93: CloserGraffiti uses onReady callback for parent timeline integration — child owns DrawSVG lifecycle, parent coordinates timing
+  - D94: CloserProps uses display:contents wrapper to preserve absolute positioning
+  - D95: Removed unused StatusDot import from HomeCloser
+  - D96: HeroBanner heroDot ref resolved via querySelector('.hero-dot') — avoids $bindable complexity
+  - D97: Typewriter controls as factory return object { startBlink, stopBlink, type, showImmediate, destroy }
+  - D98: refresh-btn style duplicated in parent + HeroMobileSql (scoped CSS can't cross components)
+  - D99: Blueprint SVGs use currentColor + text-[var(--primary)] on container — zero hardcoded hex
+  - D100: Blueprint opacity reduced (train 0.15→0.08, edge details 0.18→0.10) per Yesid feedback
+- **Decisions (17d-3 Session 1):**
+  - D88: DataFlowDiagram placed in home/ (primary usage), imported cross-domain by projects/services via $lib/ paths
+  - D89: Static image paths (/images/work/) kept unchanged — asset paths, not route paths
+  - D90: Tech-stack engine (ControlRoom + StackDiagram + Build Your Stack) stripped — re-engineered Phase 2. Hero + CTA retained.
+  - D91: Nav labels "Work" → "Projects" (French/Spanish already said Projets/Proyectos)
+  - D92: Manifesto GSAP timeline uses global class selectors to target child sub-components — works because GSAP queries the full DOM
+
+## 17d-3 Task Progress
+
+| Task | Description | Status |
+|------|-------------|--------|
+| 0 | Repo restructuring — domain folders + renames + route change | COMPLETE |
+| 1 | Split Manifesto (1007→395 lines, 5 sub-components) | COMPLETE |
+| 2 | Strip tech-stack engine (919→357 lines) | COMPLETE |
+| 3 | Split HomeCloser (749→253 lines, 4 sub-components) | COMPLETE |
+| 4 | Split HeroBanner (734→353 lines, 3 TS modules + 2 sub-components) | COMPLETE |
+| 5 | Split HomeServices + StackPanel (1 sub-component each) | COMPLETE |
+| 6 | Blueprint SVGs → Svelte components (12 files, 743 colors tokenized) | COMPLETE |
+| 7 | Services SVG tokenization (6 files, 65 colors tokenized) | COMPLETE |
+| 8 | Delete orphan SVGs (9 files) | COMPLETE |
+
+## Revised Sub-slice Plan (consolidated)
+
+```
+17d-1: Constitution + Card + Brand Atoms ............ COMPLETE (1 session)
+17d-2: SvgIcon + Utilities + Shells .................. READY (2-3 sessions)
+       → old 17d-2 (Tasks 5-9) + old 17d-3 (Tasks 10-15) combined
+       → spec: docs/slices/slice-17d-2-svgicon-utility-shells.md
+17d-3: File Splits + SVG Tokenization ................ COMPLETE (2 sessions)
+       → spec: docs/slices/slice-17d-3-file-splits-svg-tokenization.md
+17d-4: Wiring + Edge-to-Edge (combined 17d-6 + 17d-7). SPEC + PLAN READY
+       → spec: docs/slices/slice-17d-4-wiring-edge-to-edge.md
+       → plan: docs/plans/2026-04-14-slice-17d-4-wiring-edge-to-edge.md
+       → structure: Pre-pass (P1-P9) → 7 page sessions (S1-S7) → Post-sweep (S8)
+       → ~8.5 sessions estimated. UnoCSS migration deferred (not Lighthouse-shaped)
+```
+- **Decisions this session:**
+  - D75: Card surface 100% opaque (not translucent), 25% primary border, 60% hover glow
+  - D76: Circuit grid 8% opacity with vignette mask (visible at top/bottom, clear in middle)
+  - D77: ::selection uses yellow (--accent) background with black text
+  - D78: Edge decorations visibility flexible — not strictly xl:+ if no side panels compete
+  - D79: Constitution math-driven layout — all dimensions computed from shared variables via min()/clamp()/minmax()
+  - D80: Badge number variant uses text-[0.75rem] instead of text-caption to avoid tailwind-merge stripping text-primary-foreground
 
 ## Execution Sequence
 
@@ -22,10 +546,10 @@ Phase 1 — Foundation (visual cohesion first)
   17a-3a: Color Lockdown ............... COMPLETE (20 tasks, PR #5 merged)
   17a-3b: Token Wiring + Normalization . COMPLETE (8 tasks, PR #6 merged)
   17a-5: Spacing & Layout Constitution . COMPLETE (PR #8 merged)
-  17a-6: Component Library Foundation ... IN PROGRESS → Session 3 done (20/26 tasks), Session 4 next
-  17d:   Component API ................. PLANNED → needs implementation plan (4 sessions)
-  17e:   Motion Re-Engineering ......... PLANNED → needs implementation plan (2-3 sessions)
-  17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17d+17e)
+  17a-6: Component Library Foundation ... COMPLETE (PR #9 merged)
+  17d:   Component API ................. COMPLETE (99 commits, ~17 sessions) → ready for PR
+  17e:   Motion Re-Engineering ......... NEXT → needs implementation plan (2-3 sessions)
+  17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17e)
 Phase 2 — Data + Architecture
   17b:   Service Layer ................. 2 sessions
     → 15: SEO + Metadata
@@ -362,8 +886,7 @@ Phase 2 — Data + Architecture
 
 ## Next Steps
 
-1. **17a-6 Closing:** PR to main (squash-merge), handoff report, devlog, learning docs, tree.txt
-2. **17d: Component API** — Needs implementation plan. 4 sessions.
-3. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions.
-4. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (last).
+1. **17d Closing:** PR to main (squash-merge), then delete feature branch.
+2. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions. Ground-up rebuild of GSAP preset system.
+3. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (after 17e).
 

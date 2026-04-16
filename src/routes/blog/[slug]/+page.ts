@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { getPostBySlug, getPostHtml, getSvgContent } from '$lib/data';
+import { blogPosts, getPostBySlug, getPostHtml, getSvgContent } from '$lib/data';
 
 export function load({ params }: { params: { slug: string } }) {
 	const post = getPostBySlug(params.slug);
@@ -15,5 +15,7 @@ export function load({ params }: { params: { slug: string } }) {
 	const wordCount = plainText.split(/\s+/).filter(Boolean).length;
 	const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
-	return { post, html, svgContent, readingTime };
+	const postIndex = blogPosts.findIndex((p) => p.slug === post.slug) + 1;
+
+	return { post, html, svgContent, readingTime, postIndex };
 }

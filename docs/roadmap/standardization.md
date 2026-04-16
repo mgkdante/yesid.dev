@@ -72,7 +72,7 @@ Deep planning session that defined the holistic design system constitution. Key 
 Two goals, one slice:
 
 1. **Design system.** The site should feel like one product, not 22 slices bolted together. One change to a token, a card style, or a type scale cascades everywhere. Adding a light theme = swapping one file, zero component edits. Brand components (terminals, dividers, cursors, cards) are reusable primitives, not one-off implementations.
-2. **Architecture.** The codebase should read like a blueprint. Types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 18 (Keystatic) plugs in with zero component changes.
+2. **Architecture.** The codebase should read like a blueprint. Types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 18 (Payload CMS) plugs in with zero component changes.
 
 ### Tailwind CSS: Keep or Replace?
 
@@ -116,7 +116,7 @@ Routes import directly from `$lib/data` barrel or individual data files. There i
 | `/about`         | Server-side fetch in `+page.server.ts`                                       |
 
 
-**Problem:** Data definition and data access are coupled. Swapping to Keystatic (Slice 18) requires changing every route loader. The service layer creates the seam: route loaders call services, services call data source. Swap the data source implementation, everything downstream stays.
+**Problem:** Data definition and data access are coupled. Swapping to Payload (Slice 18) requires changing every route loader. The service layer creates the seam: route loaders call services, services call data source. Swap the data source implementation, everything downstream stays.
 
 ### CSS — 192 Hardcoded Hex Colors
 
@@ -203,7 +203,7 @@ Even the "global" separator component hardcodes `#E07800` and `#FFB627` in its `
 
 ### Validation — No Zod Schemas
 
-No `src/lib/schemas/` directory exists. TypeScript interfaces catch build-time errors only. When Keystatic feeds content as JSON, there's no runtime validation. Malformed data would reach components silently.
+No `src/lib/schemas/` directory exists. TypeScript interfaces catch build-time errors only. When Payload feeds content via REST/Local API, there's no runtime validation. Malformed data would reach components silently.
 
 ### Tests — No Factory Pattern
 
@@ -262,7 +262,7 @@ Tests create mock data inline. Example: `HomeServices.test.ts` and `ProofReel.te
 ├─────────────────────────────────────────────────────┤
 │  Service Layer (src/lib/services/*.service.ts)      │
 │  Typed query functions. JSDoc. Explicit returns.    │
-│  THE SEAM: Keystatic swaps here, nothing else moves │
+│  THE SEAM: Payload swaps here, nothing else moves   │
 ├─────────────────────────────────────────────────────┤
 │  Zod Schemas (src/lib/schemas/*.ts)                 │
 │  Runtime validation. Parse, don't validate.         │
@@ -324,7 +324,7 @@ Phase 2 — Standardization (after SEO)
     ↓
   16: E2E + QA (tests the FINAL state)
     ↓
-  18: Keystatic (plugs into 17b service seam)
+  18: Payload CMS (plugs into 17b service seam)
 ```
 
 **Why this split:**
@@ -333,7 +333,7 @@ Phase 2 — Standardization (after SEO)
 2. **15 after 17b** — `<SeoHead>` built once on the right foundation, no rework
 3. **17c after 15** — Zod validates SEO structured data too
 4. **16 last** — E2E tests cover the fully standardized + SEO-equipped site
-5. **18 after 16** — Keystatic plugs into 17b's service seam; SEO metadata becomes first test collection
+5. **18 after 16** — Payload plugs into 17b's service seam; SEO metadata becomes first test collection
 
 ---
 
@@ -670,7 +670,7 @@ Split data definition from data access. Every content type gets `src/lib/service
 | `content.service.ts`    | `getHeroContent()`, `getAboutContent()`, `getCtaContent()`, `getNavLinks()`, `getErrorPageContent()`                                                                    | `content.ts`, `nav.ts`, `about-page.ts`, `contact-page.ts` |
 
 
-**This is THE Keystatic seam.** Slice 18 swaps the service implementation from reading `.ts` data files to reading Keystatic Reader API. Route loaders, components, tests — everything downstream stays identical.
+**This is THE CMS seam.** Slice 18 swaps the service implementation from reading `.ts` data files to calling Payload's Local/REST API. Route loaders, components, tests — everything downstream stays identical. See `docs/specs/2026-04-16-cms-payload-design.md` for the full Payload plan.
 
 **Migration pattern:**
 
@@ -722,7 +722,7 @@ Every content type gets a Zod schema in `src/lib/schemas/`. Services parse raw d
 | `SeoSchema`             | JSON-LD structured data (Person, BlogPosting, Service, BreadcrumbList) |
 
 
-TypeScript interfaces catch build-time errors. Zod catches runtime errors from external data. When Keystatic feeds content as JSON, the schema layer guarantees components never receive malformed data.
+TypeScript interfaces catch build-time errors. Zod catches runtime errors from external data. When Payload feeds content through its API, the schema layer guarantees components never receive malformed data.
 
 #### Acceptance Criteria
 

@@ -186,8 +186,8 @@ When a slice handoff introduces a workaround, a non-obvious fix, or a reusable a
 **Files:** `src/lib/components/brand/` (15 components), 40+ consumer files
 **Reuse when:** Any project with visual patterns repeated across 3+ files — extract the pattern into a primitive component.
 **Key decisions:**
-- Svelte actions (`use:`) don't work on component tags — use utility classes (`.bento-card`) or action-based alternatives (`cursorGlow`) when wrapping isn't possible
-- Prefer utility classes for simple token bundles (`.bento-card`, `.prose-dark`), components for interactive/structural patterns (BrandButton, TerminalChrome)
+- Svelte actions (`use:`) don't work on component tags — use wrapper div pattern: `<div use:action><Card>...</Card></div>`
+- `ui/card` is the single card surface for all cards site-wide. `.prose-dark` remains as a utility class for prose styling.
 - Barrel export pattern enables renaming internals without touching consumers
 
 ### cursorGlow Auto-Inject

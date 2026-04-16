@@ -21,7 +21,7 @@ describe('404 Error Page', () => {
 	it('renders route suggestion links', () => {
 		render(ErrorPage);
 		expect(screen.getByRole('link', { name: /Services/ })).toHaveAttribute('href', '/services');
-		expect(screen.getByRole('link', { name: /Work/ })).toHaveAttribute('href', '/work');
+		expect(screen.getByRole('link', { name: /Projects/ })).toHaveAttribute('href', '/projects');
 		expect(screen.getByRole('link', { name: /Contact/ })).toHaveAttribute('href', '/contact');
 	});
 

@@ -1,6 +1,6 @@
 <!-- /services/[id] detail page: consultative deep dive -->
 <script lang="ts">
-	import ServiceDetailPage from '$lib/components/ServiceDetailPage.svelte';
+	import ServiceDetailPage from '$lib/components/services/ServiceDetailPage.svelte';
 	import { resolveLocale } from '$lib/data/locale.js';
 
 	let { data } = $props();

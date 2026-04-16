@@ -13,6 +13,7 @@
 //   That's it — overlay is auto-injected.
 
 import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
+import { isTouchDevice } from '../utils/device.js';
 
 export interface CursorGlowParams {
 	/** Glow radius in px (informational — used by CSS, not JS). Default: 200 */
@@ -21,10 +22,6 @@ export interface CursorGlowParams {
 	intensity?: number;
 	/** Skip auto-inject overlay (for manual overlay usage). Default: false */
 	noOverlay?: boolean;
-}
-
-function isTouchDevice(): boolean {
-	return typeof window !== 'undefined' && navigator.maxTouchPoints > 0;
 }
 
 export function cursorGlow(node: HTMLElement, params: CursorGlowParams = {}) {

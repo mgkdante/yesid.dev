@@ -39,7 +39,7 @@ In practice, this means three things in this project:
 
 **Client value:** Clients add and remove services, projects, and blog posts constantly. If every change requires a developer to edit component code, the site is expensive to maintain. Data-driven architecture means content changes are isolated to one file, reducing cost and error risk.
 
-**Future-proofing:** When this project eventually connects to a CMS (Keystatic is planned), the interfaces stay the same -- only the data source changes. The components never know whether their data came from a TypeScript file, a database, or an API. This is the same principle as coding against an interface in SQL: your reports work whether the underlying table is local or linked.
+**Future-proofing:** When this project eventually connects to a CMS (Payload is planned for Slice 18 — see `docs/specs/2026-04-16-cms-payload-design.md`), the interfaces stay the same -- only the data source changes. The components never know whether their data came from a TypeScript file, a Postgres database, or an API. This is the same principle as coding against an interface in SQL: your reports work whether the underlying table is local or linked.
 
 ## How We Use It in This Project
 

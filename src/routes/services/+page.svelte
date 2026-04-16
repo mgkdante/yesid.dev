@@ -1,6 +1,6 @@
 <!-- /services index page: full-viewport kinetic scroll layout -->
 <script lang="ts">
-	import ServiceListingPage from '$lib/components/ServiceListingPage.svelte';
+	import ServiceListingPage from '$lib/components/services/ServiceListingPage.svelte';
 
 	let { data } = $props();
 </script>

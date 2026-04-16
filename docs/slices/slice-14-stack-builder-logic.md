@@ -35,7 +35,7 @@ This is the "Build Your Stack" backend that makes the frontend (10f) actually us
 
 5. **Scalable by data, not by code.** Adding a tech = one markdown file. Adding a domain = one type union member + one phrase. The engine adapts automatically. Zero hardcoded scenario files needed.
 
-6. **Cloud-ready.** All recommendation logic runs as pure functions on structured data. When Keystatic (Slice 17) arrives, the same functions work against CMS-managed content. When/if an API endpoint is needed, the logic lifts cleanly into a server route.
+6. **Cloud-ready.** All recommendation logic runs as pure functions on structured data. When Payload (Slice 18) arrives, the same functions work against CMS-managed content — the service-layer seam means only the data-source implementation changes. When/if an API endpoint is needed, the logic lifts cleanly into a server route.
 
 7. **User control.** People can refine: pick domains, see the recommendation, then toggle individual techs on/off to customize further. The builder responds to every change with updated context.
 
@@ -266,7 +266,7 @@ Strictly sequential:
 
 ## Out of Scope
 
-- Keystatic CMS integration (Slice 17)
+- Payload CMS integration (Slice 18 — see `docs/specs/2026-04-16-cms-payload-design.md`)
 - Individual `/tech-stack/[id]` sub-routes (future SEO slice)
 - AI-powered recommendations (this is deterministic graph logic)
 - Pricing or package builder (different feature entirely)
@@ -299,7 +299,7 @@ Strictly sequential:
 
 ### Pure Functions as Backend Logic
 **What it is:** Writing business logic as pure functions (input → output, no side effects) that can run anywhere: browser, server, API endpoint, CLI tool. The recommendation engine has zero dependency on SvelteKit, the DOM, or any framework.
-**Why it matters:** When Keystatic arrives, the same engine works. When you add an API endpoint, the same engine works. When you want to test, you just call the function. This is the "cloud-ready" pattern — your logic is portable.
+**Why it matters:** When Payload arrives in Slice 18, the same engine works. When you add an API endpoint, the same engine works. When you want to test, you just call the function. This is the "cloud-ready" pattern — your logic is portable.
 **Try this:** Import `buildRecommendation` in a test file and call it directly. No rendering, no components, no setup. It just returns data.
 
 ### Sales Through Education

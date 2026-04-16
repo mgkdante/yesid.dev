@@ -27,10 +27,13 @@
 
 	const stripeWidth = { sm: 6, md: 8, lg: 12 } as const;
 	const hazardHeightClass = { sm: 'h-0.5', md: 'h-1', lg: 'h-2' } as const;
+	const hazardWidthClass = { sm: 'w-0.5', md: 'w-1', lg: 'w-2' } as const;
+
+	const isVertical = $derived(restProps.orientation === 'vertical');
 
 	const hazardGradient = $derived(
 		variant === 'hazard'
-			? `repeating-linear-gradient(${hazardAngle}deg, var(--accent) 0px, var(--accent) ${stripeWidth[hazardSize]}px, var(--background) ${stripeWidth[hazardSize]}px, var(--background) ${stripeWidth[hazardSize] * 2}px)`
+			? `repeating-linear-gradient(${hazardAngle}deg, var(--primary) 0px, var(--primary) ${stripeWidth[hazardSize]}px, var(--background) ${stripeWidth[hazardSize]}px, var(--background) ${stripeWidth[hazardSize] * 2}px)`
 			: ''
 	);
 </script>
@@ -44,7 +47,12 @@
 		</div>
 	{:else}
 		<div
-			class={cn(hazardHeightClass[hazardSize], "w-full rounded-sm", className)}
+			class={cn(
+				isVertical
+					? [hazardWidthClass[hazardSize], "h-full rounded-sm"]
+					: [hazardHeightClass[hazardSize], "w-full rounded-sm"],
+				className
+			)}
 			style="background: {hazardGradient};"
 			aria-hidden="true"
 			{...restProps}

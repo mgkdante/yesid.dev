@@ -1,8 +1,10 @@
 <script lang="ts">
+	import '@fontsource-variable/inter';
+	import '@fontsource-variable/jetbrains-mono';
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import Nav from '$lib/components/Nav.svelte';
-	import Footer from '$lib/components/Footer.svelte';
+	import Nav from '$lib/components/layout/Nav.svelte';
+	import Footer from '$lib/components/layout/Footer.svelte';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
@@ -26,11 +28,13 @@
 		};
 	});
 
-	// Home page skips pt-20 (hero is full-viewport).
-	let isHome = $derived($page.url.pathname === '/');
-	// Hide footer on the services listing page — it has its own scroll container.
-	// Footer shows on detail pages and all other pages.
-	let hideFooter = $derived($page.url.pathname === '/services');
+	// Full-bleed pages skip pt-20 (hero is full-viewport).
+	// Home page + project detail pages have manifesto-style headers.
+	let isFullBleed = $derived(
+		$page.url.pathname === '/' ||
+		($page.url.pathname.startsWith('/projects/') && $page.url.pathname !== '/projects') ||
+		($page.url.pathname.startsWith('/blog/') && $page.url.pathname !== '/blog' && $page.url.pathname !== '/blog/personal')
+	);
 </script>
 
 <svelte:head>
@@ -38,22 +42,20 @@
 	{@html `<script type="application/ld+json">${personSchema}</script>`}
 </svelte:head>
 
-<div class="circuit-grid flex min-h-screen flex-col bg-[var(--background)] font-body text-[var(--foreground)]">
+<div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
 	<Nav pathname={$page.url.pathname} />
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
-		<main class="flex-1 {isHome ? '' : 'pt-20'} {!isHome && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
+		<main class="flex-1 {isFullBleed ? '' : 'pt-20'} {!isFullBleed && !$prefersReducedMotion ? 'animate-page-fade-in' : ''}">
 			{@render children()}
 		</main>
 	{/key}
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
-	{#if !hideFooter}
-		<div class="relative z-[45]">
-			<Footer />
-		</div>
-	{/if}
+	<div class="relative z-[45]">
+		<Footer />
+	</div>
 </div>
 
 <style>

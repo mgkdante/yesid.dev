@@ -176,8 +176,8 @@ describe('skillsJourneyCta', () => {
 describe('proofReelContent', () => {
 	it('has section label and view-all link', () => {
 		expect(proofReelContent.sectionLabel.en).toBe('// PROOF');
-		expect(proofReelContent.viewAllLabel.en).toContain('View all work');
-		expect(proofReelContent.viewAllHref).toBe('/work');
+		expect(proofReelContent.viewAllLabel.en).toContain('View all projects');
+		expect(proofReelContent.viewAllHref).toBe('/projects');
 	});
 
 	it('has exactly 3 featured project slugs', () => {

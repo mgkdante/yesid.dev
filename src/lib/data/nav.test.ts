@@ -2,16 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 
 describe('navLinks', () => {
-	it('contains Services, Work, Stack as primary links', () => {
+	it('contains Services, Projects, Stack as primary links', () => {
 		expect(navLinks).toHaveLength(3);
 		expect(navLinks[0].label.en).toBe('Services');
-		expect(navLinks[1].label.en).toBe('Work');
+		expect(navLinks[1].label.en).toBe('Projects');
 		expect(navLinks[2].label.en).toBe('Stack');
 	});
 
 	it('has correct hrefs', () => {
 		expect(navLinks[0].href).toBe('/services');
-		expect(navLinks[1].href).toBe('/work');
+		expect(navLinks[1].href).toBe('/projects');
 		expect(navLinks[2].href).toBe('/tech-stack');
 	});
 

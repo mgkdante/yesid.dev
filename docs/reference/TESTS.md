@@ -1,7 +1,7 @@
 # Test Registry
 
-Last updated: 2026-04-12
-Total tests: 763
+Last updated: 2026-04-15
+Total tests: 785
 Runner: Vitest + Bun (`bun run test`)
 
 ## Test Architecture
@@ -55,7 +55,52 @@ Convention: tests live next to the code they test (co-located).
 
 ---
 
-# Components (`src/lib/components/`) — 25 files, 182 tests
+# Components (`src/lib/components/`) — 28 files, 195 tests
+
+## src/lib/components/about/AboutPage.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| AboutPage > renders with data-testid page-about | The about page wrapper exists | `getByTestId('page-about')` is truthy | `weather: null` |
+| AboutPage > renders the top hazard stripe | Dashboard renders without a heading | `getByTestId('page-about')` is truthy | Heading removed — hazard stripe instead |
+| AboutPage > renders metro stop labels on cards | Stop labels STOP 00 and STOP 08 are present | `getByText('STOP 00 — IDENTITY')` and `getByText('STOP 08 — SNAPSHOTS')` are truthy | Standard |
+| AboutPage > renders the identity section | Identity sub-component exists | `getByTestId('about-identity')` is truthy | Standard |
+| AboutPage > renders the polaroids section | Polaroids sub-component exists | `getByTestId('about-polaroids')` is truthy | Standard |
+| AboutPage > renders the metrics section | Metrics sub-component exists | `getByTestId('about-metrics')` is truthy | Standard |
+| AboutPage > renders the methodology section | Method sub-component exists | `getByTestId('about-method')` is truthy | Standard |
+| AboutPage > renders the testimonials section | Testimonials sub-component exists | `getByTestId('about-testimonials')` is truthy | Standard |
+| AboutPage > renders the tech stack section | Tech stack sub-component exists | `getByTestId('about-tech-stack')` is truthy | Standard |
+| AboutPage > renders the weather section | Weather sub-component exists | `getByTestId('about-weather')` is truthy | Standard |
+| AboutPage > renders the interests section | Interests sub-component exists | `getByTestId('about-interests')` is truthy | Standard |
+| AboutPage > renders the logos section | Logos sub-component exists | `getByTestId('about-logos')` is truthy | Standard |
+| AboutPage > renders the CTA section | CTA sub-component exists | `getByTestId('about-cta')` is truthy | Standard |
+| AboutPage > CTA links to /contact | CTA link points to the contact page | `a[href="/contact"]` found inside `about-cta` | Standard |
+| AboutPage > renders weather fallback when no data | Fallback shows Montreal and dash | `textContent` contains `'Montreal'` and `'—'` | `weather: null` |
+| AboutPage > renders weather data when provided | Live weather shows temp and condition | `textContent` contains `'15°C'` and `'clear sky'` | `weather: { temp: 15, condition: 'clear sky', icon: '01d' }` |
+| AboutPage > does not render its own footer | Footer comes from layout, not page | `queryAllByTestId('footer').length` === 0 | Standard |
+| Card Unification Sweep > has zero .bento-card class usage in any .svelte file | No `.svelte` file contains `bento-card` | `violations` array is empty | Scans all `.svelte` files under `src/` |
+| Card Unification Sweep > has zero .bento-card in app.css | `app.css` has no `bento-card` references | `appCss` does not contain `'bento-card'` | Reads `src/app.css` directly |
+
+## src/lib/components/blog/BlogDetailPage.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| BlogDetailPage > renders with data-testid | The blog detail page wrapper exists | `getByTestId('blog-detail-page')` is truthy | `makePost()` factory + mock HTML |
+| BlogDetailPage > renders the blog detail header | The header sub-component renders inside the page | `getByTestId('blog-detail-header')` is truthy | Standard |
+| BlogDetailPage > renders blog content area | The content area sub-component renders | `getByTestId('blog-content')` is truthy | Standard |
+| BlogDetailPage > sets --blog-accent to primary for professional posts | Professional posts use orange accent | `style.getPropertyValue('--blog-accent')` contains `'--primary'` | `category: 'professional'` |
+| BlogDetailPage > sets --blog-accent to accent for personal posts | Personal posts use yellow accent | `style.getPropertyValue('--blog-accent')` contains `'--accent'` | `category: 'personal'` |
+
+## src/lib/components/blog/BlogRouteMap.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| BlogRouteMap > renders with data-testid | The route map wrapper exists | `getByTestId('blog-route-map')` is truthy | 5 mock headings (3 h2, 2 h3) |
+| BlogRouteMap > renders a station for each h2 heading | Major stations match h2 count | `.route-station--major` count === 3 | Standard |
+| BlogRouteMap > renders minor stops for h3 headings | Minor stations match h3 count | `.route-station--minor` count === 2 | Standard |
+| BlogRouteMap > applies active class to the current station | The active heading gets active styling | `.route-station--active` count === 1 | `activeHeadingId: 'what-i-learned'` |
+| BlogRouteMap > applies passed class to stations before active | Stations before active are marked as passed | `.route-station--passed` count >= 1 | `activeHeadingId: 'what-i-learned'` |
+| BlogRouteMap > uses CSS classes not inline SVG attributes | SVG elements use CSS classes, no inline fill/stroke | All circle/path/text elements lack fill/stroke/stroke-width attrs | Standard |
 
 ## src/lib/components/BlogRow.test.ts
 
@@ -719,10 +764,10 @@ Convention: tests live next to the code they test (co-located).
 
 ```
 Runner:     Vitest v4.1.2
-Timestamp:  2026-04-09 11:52
-Duration:   8.40s
+Timestamp:  2026-04-15
+Duration:   ~30s
 
-Test Files:  57 passed (57)
-Tests:       525 passed (525)
+Test Files:  59 passed (59)
+Tests:       785 passed (785)
 Failures:    0
 ```

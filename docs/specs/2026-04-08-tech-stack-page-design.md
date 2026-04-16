@@ -64,8 +64,9 @@ interface TechStackItem {
   relatedProjects: string[]     // project slugs that use this tech
   icon: string                  // SVG icon path or identifier
   proficiency: Proficiency      // expertise level
-  // Educational content lives in markdown (Keystatic-managed)
-  // /content/stack/[id].md — parsed at build time
+  // Educational content lives in markdown today (parsed at build time).
+  // Post-Slice-18 migration: same content, same shape, served by Payload CMS.
+  // /content/stack/[id].md
 }
 
 interface StackScenario {
@@ -77,7 +78,7 @@ interface StackScenario {
 }
 ```
 
-### Markdown content per item (Keystatic-managed)
+### Markdown content per item (CMS-managed post-Slice-18 → Payload)
 
 Each tech gets a markdown file in `/content/stack/[id].md`:
 
@@ -119,7 +120,7 @@ When multiple domains are active in filters or Build mode, items belonging to MO
 ### Scalability guarantee
 
 Adding a new technology:
-1. Create a markdown file in Keystatic (frontmatter + prose)
+1. Create a markdown file in `src/content/stack/` (frontmatter + prose) — or a `tech-stack` document in Payload admin post-Slice-18
 2. The diagram positions the node in its `layer` row automatically
 3. `connectsTo` edges draw automatically
 4. Domain filters include it automatically
@@ -337,7 +338,7 @@ Total entrance: ~2.5s. Feels like infrastructure booting up.
 | web-plus-data | web-dev, data-eng | PostgreSQL → Python → Node.js → SvelteKit → Vercel | "Data-backed web applications with real-time pipelines." |
 | internal-tools | internal-tooling | PostgreSQL → Node.js → REST API → React/SvelteKit | "Admin panels and internal dashboards for operations teams." |
 
-More scenarios can be added via Keystatic without code changes.
+More scenarios can be added via the CMS (Payload post-Slice-18) without code changes.
 
 ---
 
@@ -350,14 +351,14 @@ More scenarios can be added via Keystatic without code changes.
 - Paths are cubic bezier curves between node centers, calculated programmatically.
 - On window resize: recalculate node positions, redraw paths (debounced).
 
-### Keystatic integration
+### CMS integration (Payload, Slice 18)
 
-- Keystatic is not yet installed (planned for Slice 17). For Slice 10:
+- No CMS installed at Slice 10. For Slice 10:
   - Content lives in markdown files at `src/content/stack/[id].md`
   - Parsed at build time via `import.meta.glob` (same pattern as blog, Slice 07)
   - Frontmatter provides structural data; body provides educational prose
-  - When Keystatic arrives in Slice 17, it manages these files — zero migration needed
-- Structural type validation happens in the data layer (TypeScript interfaces)
+- Slice 18 migrates this to Payload: the `tech-stack` collection mirrors the markdown frontmatter, the body becomes a Lexical rich text field, and the Slice 17b `techStack.service.ts` swaps its implementation from `import.meta.glob` to Payload's Local/REST API. Zero route/component changes. See `docs/specs/2026-04-16-cms-payload-design.md`.
+- Structural type validation happens in the data layer (TypeScript interfaces); Zod schemas from Slice 17c add runtime validation at the service-layer boundary.
 
 ### Component architecture
 
