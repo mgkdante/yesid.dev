@@ -175,13 +175,13 @@
 	<div class="contact-content">
 		<!-- Station label (mobile heading + desktop subtitle) -->
 		<h1 class="sr-only">Contact</h1>
-		<div class="mb-6 font-mono text-caption uppercase tracking-[2px] text-[var(--muted-foreground)]">
+		<div class="mb-2 font-mono text-caption uppercase tracking-[2px] text-[var(--muted-foreground)]">
 			NEXT STOP: YOU
 		</div>
 
 		<!-- Desktop: Resizable split -->
 		<div class="desktop-terminals" use:reveal>
-			<ResizablePaneGroup direction="horizontal" class="min-h-[28rem] rounded-lg">
+			<ResizablePaneGroup direction="horizontal" class="h-full rounded-lg">
 				<ResizablePane defaultSize={33} minSize={20}>
 					{@render infoTerminal()}
 				</ResizablePane>
@@ -415,12 +415,12 @@
 			grid-template-columns: auto 1px 1fr;
 			/* No margin-top negative — page fits entirely in 100dvh */
 			padding-block: 0;
-			/* Content height = viewport minus nav (5rem) minus footer (~5rem) */
-			height: calc(100dvh - 10rem);
+			/* Content height = viewport minus nav (5rem) minus footer (~7rem with padding) */
+			height: calc(100dvh - 12rem);
 		}
 		.contact-content {
-			padding-top: var(--space-card-gap);
-			padding-bottom: var(--space-card-gap);
+			padding-top: 0.5rem;
+			padding-bottom: 0.5rem;
 			padding-inline: var(--space-page-x);
 			display: flex;
 			flex-direction: column;
@@ -431,12 +431,12 @@
 			justify-content: center;
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
-			padding: 1rem 0.5rem;
+			padding: 0 0.5rem;
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			/* "Contact." = ~8 chars, divide available height to fill the column */
-			font-size: calc((100dvh - 10rem) / 7.5);
+			/* "Contact." = 8 chars + spacing, divide to fill column without clipping */
+			font-size: calc((100dvh - 12rem) / 9);
 			font-weight: 900;
 			color: var(--foreground);
 			white-space: nowrap;
