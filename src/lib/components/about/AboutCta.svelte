@@ -12,6 +12,7 @@
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
+	import { Card } from '$lib/components/ui/card';
 
 	let { cta, stop = '09', label = 'NEXT' }: { cta: AboutCta; stop?: string; label?: string } = $props();
 
@@ -20,11 +21,11 @@
 </script>
 
 <div
-	class="group bento-card p-3"
-	data-testid="about-cta"
+	class="group h-full"
 	use:reveal
 	use:cursorGlow
 >
+<Card class="relative h-full p-3" data-testid="about-cta">
 	<!-- Ambient glow -->
 	<div
 		class="pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -72,5 +73,6 @@
 			</span>
 		</div>
 	</div>
+</Card>
 </div>
 

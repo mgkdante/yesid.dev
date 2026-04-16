@@ -10,16 +10,17 @@
 	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
+	import { Card } from '$lib/components/ui/card';
 
 	let { steps, stop = '02', label = 'PROCESS' }: { steps: readonly AboutMethodStep[]; stop?: string; label?: string } = $props();
 </script>
 
 <div
-	class="bento-card group h-full p-3"
-	data-testid="about-method"
+	class="group h-full"
 	use:reveal
 	use:cursorGlow
 >
+<Card class="h-full p-3" data-testid="about-method">
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 
@@ -48,4 +49,5 @@
 			{/each}
 		</div>
 	</div>
+</Card>
 </div>

@@ -12,16 +12,17 @@
 	import { MetricDisplay } from '$lib/components/brand';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
+	import { Card } from '$lib/components/ui/card';
 
 	let { metrics, stop = '01', label = 'METRICS' }: { metrics: readonly AboutMetric[]; stop?: string; label?: string } = $props();
 </script>
 
 <div
-	class="group bento-card p-3"
-	data-testid="about-metrics"
+	class="group h-full"
 	use:cursorGlow
 	use:reveal
 >
+<Card class="h-full p-3" data-testid="about-metrics">
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 
@@ -47,4 +48,5 @@
 			{/each}
 		</div>
 	</div>
+</Card>
 </div>

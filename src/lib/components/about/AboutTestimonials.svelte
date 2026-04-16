@@ -13,6 +13,7 @@
 	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
+	import { Card } from '$lib/components/ui/card';
 
 	let { testimonials, stop = '04', label = 'TESTIMONIALS' }: { testimonials: readonly AboutTestimonial[]; stop?: string; label?: string } = $props();
 
@@ -53,11 +54,14 @@
 </script>
 
 <div
-	class="group bento-card p-3"
-	data-testid="about-testimonials"
+	class="group h-full"
 	use:reveal
 	use:tilt={{ maxDeg: 1, perspective: 800 }}
 	use:cursorGlow
+>
+<Card
+	class="h-full p-3"
+	data-testid="about-testimonials"
 	onmouseenter={() => (paused = true)}
 	onmouseleave={() => (paused = false)}
 	role="region"
@@ -117,6 +121,7 @@
 			{/each}
 		</div>
 	</div>
+</Card>
 </div>
 
 <style>

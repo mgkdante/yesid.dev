@@ -7,6 +7,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { Card } from '$lib/components/ui/card';
 
 	let canvas: HTMLCanvasElement | undefined = $state();
 	let animId: number | undefined;
@@ -122,10 +123,7 @@
 	});
 </script>
 
-<div
-	class="bento-card flex h-full items-center justify-center"
-	data-testid="about-train"
->
+<Card class="flex h-full items-center justify-center" data-testid="about-train">
 	<canvas
 		bind:this={canvas}
 		width={SIZE}
@@ -137,4 +135,4 @@
 		onpointerup={handlePointerUp}
 		onpointerleave={handlePointerUp}
 	></canvas>
-</div>
+</Card>

@@ -8,6 +8,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, MetricDisplay } from '$lib/components/brand';
+	import { Card } from '$lib/components/ui/card';
 
 	let {
 		logos,
@@ -23,11 +24,11 @@
 </script>
 
 <div
-	class="group bento-card p-3"
-	data-testid="about-logos"
+	class="group h-full"
 	use:reveal
 	use:cursorGlow
 >
+<Card class="h-full p-3" data-testid="about-logos">
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 
@@ -58,4 +59,5 @@
 			</div>
 		</div>
 	</div>
+</Card>
 </div>

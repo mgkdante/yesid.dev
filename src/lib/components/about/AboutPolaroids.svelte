@@ -10,6 +10,7 @@
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
+	import { Card } from '$lib/components/ui/card';
 
 	let { polaroids, stop = '08', label = 'SNAPSHOTS' }: { polaroids: readonly AboutPolaroid[]; stop?: string; label?: string } = $props();
 
@@ -28,11 +29,11 @@
 </script>
 
 <div
-	class="group bento-card h-full p-3"
-	data-testid="about-polaroids"
+	class="group h-full"
 	use:reveal
 	use:cursorGlow
 >
+<Card class="h-full p-3" data-testid="about-polaroids">
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 
@@ -84,4 +85,5 @@
 			</button>
 		</div>
 	</div>
+</Card>
 </div>
