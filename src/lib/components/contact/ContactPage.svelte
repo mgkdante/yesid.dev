@@ -414,11 +414,12 @@
 			display: grid;
 			grid-template-columns: auto 1px 1fr;
 			padding-block: 0;
-			/* Entire page in 100dvh: nav ~5rem + footer ~4rem = 9rem overhead */
-			height: calc(100dvh - 9rem);
+			/* Grid fills viewport minus footer (~4rem) — nav overlaps via margin-top */
+			height: calc(100dvh - 4rem);
+			margin-top: -5rem;
 		}
 		.contact-content {
-			padding-top: 0.5rem;
+			padding-top: 5.5rem; /* 5rem nav + 0.5rem breathing */
 			padding-bottom: 0.5rem;
 			padding-inline: var(--space-page-x);
 			display: flex;
