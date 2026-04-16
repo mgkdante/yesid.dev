@@ -414,25 +414,21 @@
 			display: grid;
 			grid-template-columns: auto 1px 1fr;
 			padding-block: 0;
-			/* Grid fills viewport minus footer (~4rem) — nav overlaps via margin-top */
-			height: calc(100svh - 4rem);
-			margin-top: -5rem;
+			/* Fill the main flex container — main is flex-1 between nav and footer */
+			flex: 1;
 		}
 		.contact-content {
-			padding-top: 5.5rem; /* 5rem nav + 0.5rem breathing */
+			padding-top: 0.5rem;
 			padding-bottom: 0.5rem;
 			padding-inline: var(--space-page-x);
 			display: flex;
 			flex-direction: column;
 		}
-		/* Same pattern as blog/projects, height = 100dvh - footer */
+		/* Same pattern as blog/projects, height bounded to available space */
 		.edge-title-column {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			position: sticky;
-			top: 0;
-			height: calc(100svh - 4rem);
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
 			padding: 1rem 1.5rem;
