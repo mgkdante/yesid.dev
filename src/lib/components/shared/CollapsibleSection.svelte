@@ -10,6 +10,7 @@
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Card } from '$lib/components/ui/card';
 
 	let {
 		title,
@@ -46,50 +47,45 @@
   --accent CSS custom property propagates accentColor into the style block.
   Collapsible.Root renders a div that we use as the card wrapper.
 -->
-<Collapsible
-	bind:open
-	class="section-card rounded-lg border border-[var(--border-subtle)] bg-[var(--card)]"
-	style="--accent: {accentColor};"
->
-	{#if collapsible}
-		<CollapsibleTrigger>
-			{#snippet child({ props })}
-				<button
-					{...props}
-					type="button"
-					class="section-header flex w-full items-center gap-2.5 px-6 py-4 text-left"
-				>
-					{@render headerContent()}
-					<ChevronToggle {open} direction="right" />
-				</button>
-			{/snippet}
-		</CollapsibleTrigger>
-	{:else}
-		<div class="flex items-center gap-2.5 px-6 py-4">
-			{@render headerContent()}
-		</div>
-	{/if}
-
-	<CollapsibleContent forceMount class="section-body">
-		<div class="min-h-0 overflow-hidden">
-			<div class="px-6 pb-6 pt-3">
-				{#if children}
-					{@render children()}
-				{/if}
+<Card class="section-card" style="--accent: {accentColor};">
+	<Collapsible bind:open>
+		{#if collapsible}
+			<CollapsibleTrigger>
+				{#snippet child({ props })}
+					<button
+						{...props}
+						type="button"
+						class="section-header flex w-full items-center gap-2.5 px-6 py-4 text-left"
+					>
+						{@render headerContent()}
+						<ChevronToggle {open} direction="right" />
+					</button>
+				{/snippet}
+			</CollapsibleTrigger>
+		{:else}
+			<div class="flex items-center gap-2.5 px-6 py-4">
+				{@render headerContent()}
 			</div>
-		</div>
-	</CollapsibleContent>
-</Collapsible>
+		{/if}
+
+		<CollapsibleContent forceMount class="section-body">
+			<div class="min-h-0 overflow-hidden">
+				<div class="px-6 pb-6 pt-3">
+					{#if children}
+						{@render children()}
+					{/if}
+				</div>
+			</div>
+		</CollapsibleContent>
+	</Collapsible>
+</Card>
 
 <style>
-	:global([data-slot="collapsible"].section-card) {
-		transition: box-shadow var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default);
-	}
-	:global([data-slot="collapsible"].section-card:hover) {
+	:global([data-slot="card"].section-card:hover) {
 		border-color: var(--accent);
 	}
 
-	:global([data-slot="collapsible"].section-card:hover .section-title) {
+	:global([data-slot="card"].section-card:hover .section-title) {
 		color: var(--accent);
 	}
 
