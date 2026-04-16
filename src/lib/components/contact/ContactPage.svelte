@@ -413,10 +413,9 @@
 		.contact-grid {
 			display: grid;
 			grid-template-columns: auto 1px 1fr;
-			/* No margin-top negative — page fits entirely in 100dvh */
 			padding-block: 0;
-			/* Content height = viewport minus nav (5rem) minus footer (~7rem with padding) */
-			height: calc(100dvh - 12rem);
+			/* Entire page in 100dvh: nav ~5rem + footer ~4rem = 9rem overhead */
+			height: calc(100dvh - 9rem);
 		}
 		.contact-content {
 			padding-top: 0.5rem;
@@ -425,18 +424,21 @@
 			display: flex;
 			flex-direction: column;
 		}
+		/* Same pattern as blog/projects, height = 100dvh - footer */
 		.edge-title-column {
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			position: sticky;
+			top: 0;
+			height: calc(100dvh - 4rem);
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
-			padding: 0 0.5rem;
+			padding: 1rem 1.5rem;
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			/* "Contact." = 8 chars + spacing, divide to fill column without clipping */
-			font-size: calc((100dvh - 12rem) / 9);
+			font-size: clamp(6rem, 12vw, 13rem);
 			font-weight: 900;
 			color: var(--foreground);
 			white-space: nowrap;
