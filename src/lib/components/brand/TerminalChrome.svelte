@@ -8,6 +8,7 @@
   import StatusDot from './StatusDot.svelte';
   import { Separator } from '$lib/components/ui/separator';
   import { cn } from '$lib/utils.js';
+  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
   export interface TerminalFooterItem {
     label: string;
@@ -61,7 +62,7 @@
   <Separator variant="hazard" hazardSize="sm" />
 
   <!-- Body -->
-  <div class="terminal-body" class:no-pad={noPadding} data-lenis-prevent>
+  <div class="terminal-body" class:no-pad={noPadding} use:scrollChain>
     {@render children()}
   </div>
 

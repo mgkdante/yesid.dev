@@ -22,6 +22,7 @@
 	import ProjectFilterMobile from './ProjectFilterMobile.svelte';
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 
 	let {
@@ -154,7 +155,7 @@
 	<!-- Section 2: Listing — filter sidebar (desktop) + cards -->
 	<section class="project-listing-grid">
 		<aside class="project-filter-column">
-			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" data-lenis-prevent>
+			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" use:scrollChain>
 				<ProjectFilterSidebar
 					{serviceIds}
 					{serviceMap}

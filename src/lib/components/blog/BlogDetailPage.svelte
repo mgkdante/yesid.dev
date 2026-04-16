@@ -17,6 +17,7 @@
   import BlogTocPill from './BlogTocPill.svelte';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
   let {
     post,
@@ -138,7 +139,7 @@
     <!-- TOC sidebar — desktop only -->
     <div class="toc-column">
       <StickyPanel top="5rem">
-        <div class="toc-panel toc-scroll" data-lenis-prevent>
+        <div class="toc-panel toc-scroll" use:scrollChain>
           <!-- Reading mode switch -->
           <label class="reading-toggle">
             <span class="reading-toggle__label">Reading mode</span>

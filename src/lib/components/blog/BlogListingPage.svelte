@@ -18,6 +18,7 @@
 	import BlogFilterMobile from './BlogFilterMobile.svelte';
 	import BlogBlueprint from './BlogBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
 		posts,
@@ -148,7 +149,7 @@
 	<!-- Section 2: Listing — filter sidebar + posts in CSS Grid -->
 	<section class="blog-listing-grid">
 		<aside class="blog-filter-column">
-			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" data-lenis-prevent>
+			<div class="sticky top-8 max-h-[calc(100dvh-6rem)] overflow-y-auto px-4 py-4" use:scrollChain>
 				<BlogFilterSidebar
 					tags={allTags}
 					{languages}

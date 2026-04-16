@@ -17,6 +17,7 @@
 	import ProjectTocPill from './ProjectTocPill.svelte';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	interface TocEntry {
 		id: string;
@@ -152,7 +153,7 @@
 	<div class="detail-body">
 		<aside class="toc-column">
 			<StickyPanel top="5rem">
-				<div class="toc-panel toc-scroll" data-lenis-prevent>
+				<div class="toc-panel toc-scroll" use:scrollChain>
 					<CollapsibleSection title="On this page" open={true}>
 						<nav class="toc-nav">
 								{#each tocEntries as entry}
