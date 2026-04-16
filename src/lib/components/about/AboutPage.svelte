@@ -1,7 +1,7 @@
 <!--
   Full-viewport bento dashboard for /about.
   6×4 CSS Grid with named areas. SELL-first → Personal → Action.
-  Wrapped in SectionWrapper (layout="bleed") for constitutional compliance.
+  Wrapped in a plain section (w-full) — no shell needed for a bleed layout.
   Cards stretch to fill — no voids, no fixed heights.
   All content from aboutPageContent via data layer.
 -->
@@ -14,8 +14,6 @@
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Separator } from '$lib/components/ui/separator';
-	import { SectionWrapper } from '$lib/components/shells';
-
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
 	import AboutMetrics from './AboutMetrics.svelte';
@@ -54,12 +52,8 @@
 	<Separator variant="hazard" />
 </div>
 
-<!-- Bento Dashboard — SectionWrapper for constitutional compliance -->
-<SectionWrapper
-	layout="bleed"
-	style="min-height: calc(100dvh - 5rem)"
-	data-testid="page-about"
->
+<!-- Bento Dashboard -->
+<section class="w-full" style="min-height: calc(100dvh - 5rem)" data-testid="page-about">
 	<div class="px-3 py-2">
 		<div class="dashboard">
 
@@ -109,7 +103,7 @@
 
 			</div>
 		</div>
-</SectionWrapper>
+</section>
 
 <!-- Bottom Stripe -->
 <div class="px-3 pb-1" aria-hidden="true">
