@@ -14,6 +14,7 @@
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Separator } from '$lib/components/ui/separator';
+	import { Card } from '$lib/components/ui/card';
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
 	import AboutMetrics from './AboutMetrics.svelte';
@@ -65,11 +66,8 @@
 				<!-- SELL ROW 2 -->
 				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label="PROCESS" /></div>
 				<div class="area-stack">
-					<div
-						class="bento-card group h-full p-3"
-						data-testid="about-tech-stack"
-						use:reveal use:tilt={{ maxDeg: 1.5, perspective: 800 }} use:cursorGlow
-					>
+					<div class="group h-full" use:reveal use:tilt={{ maxDeg: 1.5, perspective: 800 }} use:cursorGlow>
+					<Card class="relative h-full p-3" data-testid="about-tech-stack">
 						<div class="relative flex h-full flex-col">
 							<StopLabel stop={s[3]} label="STACK" />
 							<div class="mt-2 flex flex-1 flex-col justify-center gap-2">
@@ -88,6 +86,7 @@
 								{/each}
 							</div>
 						</div>
+					</Card>
 					</div>
 				</div>
 
@@ -206,13 +205,4 @@
 		width: 100%;
 	}
 
-	/* ═══ BENTO CARD — UNIFORM BORDER + HOVER ═══ */
-	:global(.bento-card) {
-		border-color: color-mix(in srgb, var(--primary) 12%, transparent) !important;
-		transition: border-color var(--duration-slow) var(--ease-default), box-shadow var(--duration-slow) var(--ease-default);
-	}
-	:global(.bento-card:hover) {
-		border-color: color-mix(in srgb, var(--primary) 25%, transparent) !important;
-		box-shadow: 0 4px 24px color-mix(in srgb, var(--primary) 8%, transparent), 0 1px 3px rgba(0, 0, 0, 0.3);
-	}
 </style>
