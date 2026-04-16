@@ -54,19 +54,16 @@
 			height: 100dvh;
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
-			padding-inline: 0.5rem;
+			padding: 1rem 1.5rem;
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			font-size: clamp(8rem, 15vw, 15rem);
+			font-size: clamp(6rem, 12vw, 13rem);
 			font-weight: 900;
 			color: var(--foreground);
 			white-space: nowrap;
 			line-height: 1;
 			letter-spacing: -0.04em;
-		}
-		.edge-title-column {
-			overflow: hidden;
 		}
 		.edge-dot {
 			color: var(--primary);

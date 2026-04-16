@@ -91,14 +91,29 @@
 		color: var(--primary);
 	}
 
-	/* Mobile: single-column viewport, bounded below nav */
+	/* Mobile: text + buttons MUST fit in 100svh - nav.
+	   Height is a hard constraint, text scales proportionally via svh. */
 	@media (max-width: 768px) {
 		.hero-viewport-text {
-			min-height: calc(100svh - 5rem);
+			height: calc(100svh - 5rem);
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-			padding-block: 2rem;
+			padding-block: 1.5rem;
+		}
+		/* Scale hero headlines proportionally to viewport height */
+		.hero-viewport-text :global(.text-hero) {
+			font-size: clamp(32px, 8svh, 64px);
+		}
+		/* Tighten spacing to fit within bounded height */
+		.hero-viewport-text :global([data-hero-stagger="3"]) {
+			margin-block: 0.75rem;
+		}
+		.hero-viewport-text :global([data-testid="hero-subheadline"]) {
+			margin-top: 0.5rem;
+		}
+		.hero-viewport-text :global([data-testid="hero-subtitle"]) {
+			margin-top: 0.75rem;
 		}
 	}
 </style>
