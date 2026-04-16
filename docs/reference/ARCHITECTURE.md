@@ -156,7 +156,7 @@ src/
     │   │   ├── +page.svelte # Personal Corner listing (yellow accent)
     │   │   └── +page.ts     # Loads personal posts, tags, SVGs
     │   └── [slug]/
-    │       ├── +page@.svelte # ← Slice 17d-4: full-bleed detail (bypasses ListingLayout)
+    │       ├── +page@.svelte # ← Slice 17d-4: full-bleed detail (bypasses root layout)
     │       └── +page.ts     # Loads post data, SVG, rendered HTML, postIndex
     ├── services/        # ← Slice 09: services system
     │   ├── +page.svelte     # Services listing (full-viewport scroll)
