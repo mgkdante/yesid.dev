@@ -60,15 +60,16 @@
 			font-family: var(--font-heading);
 			font-size: clamp(8rem, 15vw, 15rem);
 			font-weight: 900;
-			color: var(--text-muted);
-			opacity: 0.06;
+			color: var(--foreground);
 			white-space: nowrap;
 			line-height: 1;
 			letter-spacing: -0.04em;
 		}
+		.edge-title-column {
+			overflow: hidden;
+		}
 		.edge-dot {
 			color: var(--primary);
-			opacity: 1;
 		}
 		.accent-rail {
 			display: block;

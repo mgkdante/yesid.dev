@@ -91,10 +91,10 @@
 		color: var(--primary);
 	}
 
-	/* Mobile: single-column viewport */
+	/* Mobile: single-column viewport, bounded below nav */
 	@media (max-width: 768px) {
 		.hero-viewport-text {
-			min-height: 100dvh;
+			min-height: calc(100svh - 5rem);
 			display: flex;
 			flex-direction: column;
 			justify-content: center;

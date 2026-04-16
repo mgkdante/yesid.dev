@@ -270,14 +270,9 @@
 </section>
 
 <style>
-	/* Hero pin container — mobile accounts for nav, desktop uses full viewport */
+	/* Hero pin container — full viewport for the animation */
 	.hero-pin {
-		height: calc(100svh - 5rem);
-	}
-	@media (min-width: 1024px) {
-		.hero-pin {
-			height: 100lvh;
-		}
+		height: 100lvh;
 	}
 
 	/* Two-column hero grid: text | divider | SQL panel */
