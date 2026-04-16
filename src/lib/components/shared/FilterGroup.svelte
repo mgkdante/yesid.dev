@@ -101,7 +101,7 @@
 						{#snippet child({ props })}
 							<button
 								{...props}
-								class="filter-btn w-full rounded border border-border-subtle px-2 py-1.5 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+								class="filter-btn w-full rounded border border-border-subtle px-2 py-1.5 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 								class:tag-active={activeKey === item.key}
 								data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
 								use:ripple={{ color: accentColor }}
@@ -118,14 +118,14 @@
 
 <style>
 	.active {
-		background: var(--accent);
+		background: var(--primary);
 		color: var(--foreground);
 	}
 
 	.tag-active {
-		border-color: var(--accent) !important;
-		color: var(--accent) !important;
-		background: color-mix(in srgb, var(--accent) 10%, transparent);
+		border-color: var(--primary) !important;
+		color: var(--primary) !important;
+		background: color-mix(in srgb, var(--primary) 10%, transparent);
 	}
 
 	/* Smooth collapse/expand via CSS grid rows */
