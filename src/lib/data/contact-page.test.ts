@@ -3,8 +3,8 @@ import { contactContent } from './contact-page.js';
 
 describe('contactContent', () => {
 	describe('stationLabel', () => {
-		it('has en key with CONTACT text', () => {
-			expect(contactContent.stationLabel.en).toContain('CONTACT');
+		it('has en key with station label text', () => {
+			expect(contactContent.stationLabel.en).toContain('NEXT STOP');
 		});
 	});
 

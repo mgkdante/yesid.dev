@@ -444,7 +444,7 @@
 		.edge-title-column {
 			display: flex;
 			align-items: center;
-			justify-content: flex-end; /* top in rotated context (180deg flip) */
+			justify-content: center; /* centered within its own column */
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
 			padding: 0 1.5rem;
