@@ -438,22 +438,7 @@ pre, code, table {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* 12. Bento card bundle — aligned with unified Card surface (Constitution Section 13) */
-.bento-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
-  background: var(--background);
-  transition: border-color var(--duration-normal) var(--ease-default),
-              box-shadow var(--duration-normal) var(--ease-default);
-}
-.bento-card:hover {
-  border-color: color-mix(in srgb, var(--primary) 60%, transparent);
-  box-shadow: var(--shadow-section);
-}
-
-/* 13. Grid rows collapse — animate open/close with CSS grid rows */
+/* 12. Grid rows collapse — animate open/close with CSS grid rows */
 .grid-rows-collapse {
   display: grid;
   grid-template-rows: 0fr;
@@ -463,7 +448,7 @@ pre, code, table {
   grid-template-rows: 1fr;
 }
 
-/* 14. Scroll offset for anchor links — headings land below the sticky nav */
+/* 13. Scroll offset for anchor links — headings land below the sticky nav */
 h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
 [data-section-index] {
   scroll-margin-top: calc(var(--nav-height, 64px) + 1rem);
