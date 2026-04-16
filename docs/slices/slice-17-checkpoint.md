@@ -1,26 +1,49 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-15 | 17d-5 Session 3 — ServiceDetailPage + responsive grid pass COMPLETE
+**Last updated:** 2026-04-16 | Constitution CSS Grid Rewrite — COMPLETE
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** 17d-5 (Services Pages — Listing + Detail) — COMPLETE
-- **Status:** All 3 sessions done. Listing + detail pages built and approved.
-- **Build:** 0 errors, 17 warnings, 798/798 tests pass.
-- **Next action:** Constitution rewrite (CSS Grid + Flexbox), then contact page.
+- **Sub-slice:** Constitution CSS Grid Rewrite — COMPLETE
+- **Status:** SectionWrapper/EdgeRail/ListingLayout deleted. All pages on plain CSS Grid. Wireframes created.
+- **Build:** 0 errors, 17 warnings, 765/765 tests pass.
+- **Next action:** Contact page redesign (17d-6) — edge-to-edge full-bleed design.
 
-### INSIGHT: Constitution Rewrite Needed
+### Constitution CSS Grid Rewrite Session — COMPLETE
 
-SectionWrapper has become an obstacle — CSS specificity fights, unexpected 3-column grids, hardcoded pixel measurements. During this session we proved that plain CSS Grid + Flexbox is simpler, more predictable, and more responsive:
-- Blog detail: SectionWrapper ripped out → clean `1fr 2fr` grid, immediately better
-- Services detail: never used SectionWrapper, built with plain grid from scratch
-- Projects detail: SectionWrapper override needed 0-3-0 specificity hack
+**What was done (18 commits):**
+- CONSTITUTION.md rewritten: 4 CSS Grid Recipes replace SectionWrapper/6-layer scope model
+- Atomic design: 4 tiers → 3 tiers (shells/ tier deleted)
+- shells/ directory deleted: SectionWrapper (201 lines), EdgeRail (220 lines), ListingLayout (109 lines), + 5 zero-consumer components (DetailHero, CardGrid, BentoGrid, AsidePanel + tests)
+- BlueprintShell moved to brand/
+- 7 pages migrated (12 SectionWrapper removals): HomePage, AboutPage, BlogListingPage, ProjectListingPage, BlogDetailHeader, ProjectDetailHeader, ProjectDetailPage
+- Route layouts rewritten: inline Recipe 4 (edge title with writing-mode: vertical-rl)
+- `@chenglou/pretext` dependency removed
+- Edge titles: fully opaque, rotated correctly (180deg), breathing room for descenders
+- Mobile hero: text + buttons bounded to calc(100svh - 5rem), proportional scaling via svh
+- Universal scroll chaining: `scrollChain` action replaces all 17 `data-lenis-prevent` instances
+- Wireframe diagrams: 11 templates × 3 breakpoints saved to `docs/reference/wireframes/`
 
-**Proposed next steps:**
-1. **Planning session:** Rewrite CONSTITUTION.md — replace SectionWrapper/EdgeRail/panels doctrine with CSS Grid + Flexbox patterns
-2. **Sweep pass:** Replace SectionWrapper usage across all pages with direct grid layouts
-3. **Then:** Contact page (17d-6)
+**Net impact:** ~1035 lines deleted, 0 visual regression, 0 :global() hacks, 1 dependency removed.
+
+**Design decisions (D211-D217):**
+- D211: Delete SectionWrapper/EdgeRail/ListingLayout — CSS Grid recipes replace all 3
+- D212: 4 recipes: Full-Bleed, Contained, Content+Sidebars, Edge Title Grid
+- D213: Rotated edge titles stay, implemented with writing-mode + clamp()
+- D214: Background decorations use position: relative/absolute
+- D215: Atomic design 4→3 tiers (shells/ deleted)
+- D216: BlueprintShell moved to brand/, rest deleted (0 consumers)
+- D217: Constitution §2, §6, §9, §11, §13 rewritten
+
+**Artifacts:**
+- Design spec: `docs/specs/2026-04-15-constitution-css-grid-rewrite-design.md`
+- Implementation plan: `docs/plans/2026-04-15-constitution-css-grid-rewrite.md`
+- Wireframes: `docs/reference/wireframes/page-templates-2026-04-16.html`
+
+### Contact Page — NEXT (17d-6)
+
+Yesid's direction: edge-to-edge full-bleed design. Needs planning session (brainstorm → spec → plan).
 
 ### 17d-5 Session 3 (ServiceDetailPage + Grid Pass) — COMPLETE
 
