@@ -12,6 +12,7 @@
 	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { convertSvgToMorphPaths } from '$lib/motion/utils/morphHelpers.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 
@@ -183,10 +184,11 @@
 					href="/services/{service.id}"
 					data-testid="services-card"
 					data-services-card
-					class="services-card group flex rounded-xl transition-all duration-300"
+					class="group block"
 					onmouseenter={() => handleCardEnter(i)}
 					onmouseleave={() => handleCardLeave(i)}
 				>
+					<Card class="services-card flex h-full p-6">
 					<div class="card-inner flex w-full gap-5">
 						<!-- SVG panel: inline SVG injected on mount for MorphSVGPlugin -->
 						<button
@@ -235,6 +237,7 @@
 							{/if}
 						</div>
 					</div>
+					</Card>
 				</a>
 			{/each}
 		</div>
@@ -272,21 +275,6 @@
 	/* Grid — uniform row heights */
 	.services-grid {
 		grid-auto-rows: 1fr;
-	}
-
-	/* Card — matches ProofReel card styling */
-	.services-card {
-		background: color-mix(in srgb, var(--background) 80%, transparent);
-		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
-		padding: 24px;
-		text-decoration: none;
-		backdrop-filter: blur(6px);
-	}
-
-	.services-card:hover {
-		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
-		transform: translateY(-2px);
-		box-shadow: var(--shadow-section);
 	}
 
 	/* Service title — responsive via clamp */
