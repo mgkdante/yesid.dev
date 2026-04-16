@@ -413,6 +413,7 @@
 	:global(main:has(.contact-grid)) {
 		max-height: calc(100dvh - 5rem - 6rem); /* 100dvh - nav (5rem) - footer (~6rem) */
 		overflow: hidden;
+		padding-bottom: 1.5rem; /* breathing room above footer */
 	}
 
 	@media (min-width: 1024px) {
@@ -433,10 +434,10 @@
 		.edge-title-column {
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			justify-content: flex-end; /* top in rotated context (180deg flip) */
 			writing-mode: vertical-rl;
 			transform: rotate(180deg);
-			padding: 1rem 1.5rem;
+			padding: 0 1.5rem;
 		}
 		.edge-title {
 			font-family: var(--font-heading);
