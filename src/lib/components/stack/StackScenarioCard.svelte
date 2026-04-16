@@ -10,6 +10,7 @@
 	import { gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { Button } from '$lib/components/ui/button';
+	import { Card } from '$lib/components/ui/card';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
@@ -46,7 +47,7 @@
 	});
 </script>
 
-<div class="scenario-card" bind:this={cardEl} data-testid="scenario-card">
+<Card class="scenario-card flex flex-col gap-4 p-5" bind:ref={cardEl} data-testid="scenario-card">
 	<!-- Mini flow: recommended tech in order, connected by arrows -->
 	<div class="mini-flow" data-testid="scenario-flow" use:scrollChain>
 		{#each recommendedItems as item, i (item.id)}
@@ -85,19 +86,9 @@
 			Let's build this <span aria-hidden="true">&rarr;</span>
 		</Button>
 	</div>
-</div>
+</Card>
 
 <style>
-	.scenario-card {
-		border: 1px solid var(--border);
-		border-radius: var(--radius-lg);
-		background: var(--muted);
-		padding: 1.25rem;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
 	/* --- Mini flow --- */
 
 	.mini-flow {
