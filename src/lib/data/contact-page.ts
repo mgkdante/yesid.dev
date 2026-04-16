@@ -2,7 +2,7 @@ import type { ContactContent } from './types.js';
 import { siteMeta } from './meta.js';
 
 export const contactContent: ContactContent = {
-	stationLabel: { en: 'CONTACT — NEXT STOP: YOU' },
+	stationLabel: { en: 'NEXT STOP: YOU' },
 
 	infoTerminal: {
 		title: 'yesid@mtl ~ /info',

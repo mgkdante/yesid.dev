@@ -24,7 +24,7 @@ describe('ContactPage', () => {
 
 	it('renders the station label', () => {
 		render(ContactPage);
-		expect(screen.getByText(/CONTACT.*NEXT STOP/)).toBeTruthy();
+		expect(screen.getByText(/NEXT STOP: YOU/)).toBeTruthy();
 	});
 
 	it('renders info terminal', () => {

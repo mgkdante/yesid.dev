@@ -10,7 +10,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	import { TerminalChrome, SectionHeading } from '$lib/components/brand';
+	import { TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
 	import { ResizablePaneGroup, ResizablePane, ResizableHandle } from '$lib/components/ui/resizable';
 	import type { WeatherData } from '$lib/data/weather.js';
@@ -160,7 +160,6 @@
 		return 'border-[#28c840]';
 	}
 
-	const stationLabel = resolveLocale(c.stationLabel, 'en');
 </script>
 
 <div class="contact-grid" data-testid="page-contact">
@@ -174,9 +173,10 @@
 
 	<!-- ═══ CONTENT ═══ -->
 	<div class="contact-content">
-		<!-- Page heading -->
-		<div class="mb-8">
-			<SectionHeading heading="Contact" subheading={stationLabel} level={1} />
+		<!-- Station label (mobile heading + desktop subtitle) -->
+		<h1 class="sr-only">Contact</h1>
+		<div class="mb-6 font-mono text-caption uppercase tracking-[2px] text-[var(--muted-foreground)]">
+			NEXT STOP: YOU
 		</div>
 
 		<!-- Desktop: Resizable split -->
@@ -203,7 +203,7 @@
 <!-- ═══ INFO TERMINAL SNIPPET ═══ -->
 {#snippet infoTerminal()}
 	<TerminalChrome title={c.infoTerminal.title} class="h-full" data-testid="contact-info-terminal">
-		<div class="font-mono text-sm leading-relaxed">
+		<div class="font-mono text-body leading-relaxed">
 			<!-- Command line -->
 			<div class="mb-4 text-[var(--secondary-foreground)]">
 				<span class="text-[var(--foreground)]">~</span> {c.infoTerminal.command}
@@ -257,7 +257,7 @@
 <!-- ═══ FORM TERMINAL SNIPPET ═══ -->
 {#snippet formTerminal()}
 	<TerminalChrome title={c.formTerminal.title} class="h-full" data-testid="contact-form-terminal">
-		<div class="font-mono text-sm leading-relaxed">
+		<div class="font-mono text-body leading-relaxed">
 			<!-- Command + output -->
 			<div class="mb-1 text-[var(--secondary-foreground)]">
 				<span class="text-[var(--foreground)]">~</span> {c.formTerminal.command}
@@ -285,7 +285,7 @@
 								type="text"
 								bind:value={name}
 								placeholder={resolveLocale(c.formTerminal.fields.name.placeholder, 'en')}
-								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
+								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
 							/>
 							{#if submitted && errors.name}
 								<div class="text-caption text-[var(--destructive)]">✗ {errors.name}</div>
@@ -303,7 +303,7 @@
 								type="email"
 								bind:value={email}
 								placeholder={resolveLocale(c.formTerminal.fields.email.placeholder, 'en')}
-								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
+								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
 							/>
 							{#if submitted && errors.email}
 								<div class="text-caption text-[var(--destructive)]">✗ {errors.email}</div>
@@ -321,7 +321,7 @@
 								bind:value={message}
 								placeholder={resolveLocale(c.formTerminal.fields.message.placeholder, 'en')}
 								rows="6"
-								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
+								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
 							></textarea>
 							{#if submitted && errors.message}
 								<div class="text-caption text-[var(--destructive)]">✗ {errors.message}</div>
@@ -433,17 +433,16 @@
 		}
 		.edge-title {
 			font-family: var(--font-heading);
-			font-size: clamp(8rem, 15vw, 15rem);
+			/* Fill the column height minus footer (~5rem) */
+			font-size: clamp(8rem, calc(100dvh - 5rem), 15rem);
 			font-weight: 900;
 			color: var(--foreground);
-			opacity: 0.06;
 			white-space: nowrap;
 			line-height: 1;
 			letter-spacing: -0.04em;
 		}
 		.edge-dot {
 			color: var(--primary);
-			opacity: 1;
 		}
 		.accent-rail {
 			display: block;
