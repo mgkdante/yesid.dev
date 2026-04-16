@@ -5,6 +5,7 @@
 <script lang="ts">
   import type { HeroMetric } from '$lib/data/hero-data.js';
   import { MetricDisplay } from '$lib/components/brand';
+  import { Card } from '$lib/components/ui/card';
 
   interface Props {
     metrics: HeroMetric[];
@@ -21,8 +22,8 @@
 
 <div class="grid grid-cols-3 gap-3.5" data-testid="hero-metrics">
   {#each metrics as metric (metric.key)}
-    <div
-      class="rounded-lg border border-[var(--border)] bg-[var(--muted)] px-4 py-3.5 transition-colors duration-300 hover:border-[var(--primary)] md:px-5 md:py-4"
+    <Card
+      class="px-4 py-3.5 md:px-5 md:py-4"
       data-testid="metric-card"
     >
       <MetricDisplay
@@ -31,6 +32,6 @@
         sublabel={metric.sub}
         size="lg"
       />
-    </div>
+    </Card>
   {/each}
 </div>
