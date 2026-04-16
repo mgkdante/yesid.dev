@@ -1,16 +1,14 @@
 <!--
   Full detail page layout for /projects/[slug].
-  Structure: full-bleed header + gradient separator + SectionWrapper body.
-  Desktop: TOC (sideLeft) + collapsible sections (content) + glance panel (sideRight).
+  Structure: full-bleed header + gradient separator + 3-column CSS Grid body.
+  Desktop: TOC (left) + collapsible sections (center) + glance panel (right).
   Mobile: collapsible glance panel + floating TOC pill + stacked sections.
-  Wired through SectionWrapper per CONSTITUTION.md Section 13.
 -->
 <script lang="ts">
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel, StickyPanel, ChevronToggle } from '$lib/components/brand';
-	import { SectionWrapper } from '$lib/components/shells';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import ProjectDetailHeader from './ProjectDetailHeader.svelte';
@@ -150,13 +148,9 @@
 		<ProjectGlancePanelMobile {project} />
 	</div>
 
-	<!-- Body: SectionWrapper with TOC left, sections center, panel right -->
-	<SectionWrapper
-		layout="centered"
-		container="none"
-		class="detail-body"
-	>
-		{#snippet sideLeft()}
+	<!-- Body: 3-column CSS Grid with TOC left, sections center, panel right -->
+	<div class="detail-body">
+		<aside class="toc-column">
 			<StickyPanel top="5rem">
 				<div class="toc-panel toc-scroll" data-lenis-prevent>
 					<CollapsibleSection title="On this page" open={true}>
@@ -197,50 +191,51 @@
 					</CollapsibleSection>
 				</div>
 			</StickyPanel>
-		{/snippet}
+		</aside>
 
-		<!-- Center: sections (CollapsibleSection cards) -->
-		{#each project.sections as section, i}
-			<div
-				class="section-block"
-				data-section-index={i}
-				class:section-animate={true}
-			style="animation-delay: {100 + i * 60}ms;"
-			>
-				<CollapsibleSection
-					title={resolveLocale(section.title, 'en')}
-					index={i}
-					open={true}
+		<div class="sections-column">
+			{#each project.sections as section, i}
+				<div
+					class="section-block"
+					data-section-index={i}
+					class:section-animate={true}
+				style="animation-delay: {100 + i * 60}ms;"
 				>
-					<p class="section-body">{resolveLocale(section.content, 'en')}</p>
-				</CollapsibleSection>
-			</div>
-		{/each}
+					<CollapsibleSection
+						title={resolveLocale(section.title, 'en')}
+						index={i}
+						open={true}
+					>
+						<p class="section-body">{resolveLocale(section.content, 'en')}</p>
+					</CollapsibleSection>
+				</div>
+			{/each}
 
-		{#if readmeHtml}
-			<div
-				class="section-block"
-				data-section-index={project.sections.length}
-				class:section-animate={true}
-			style="animation-delay: 200ms;"
-			>
-				<CollapsibleSection title="README" open={true}>
-					{#snippet icon()}
-						<svg class="h-5 w-5 shrink-0 text-primary" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-							<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-						</svg>
-					{/snippet}
-					<div class="prose-dark section-body">
-						{@html processedReadmeHtml}
-					</div>
-				</CollapsibleSection>
-			</div>
-		{/if}
+			{#if readmeHtml}
+				<div
+					class="section-block"
+					data-section-index={project.sections.length}
+					class:section-animate={true}
+				style="animation-delay: 200ms;"
+				>
+					<CollapsibleSection title="README" open={true}>
+						{#snippet icon()}
+							<svg class="h-5 w-5 shrink-0 text-primary" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+								<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+							</svg>
+						{/snippet}
+						<div class="prose-dark section-body">
+							{@html processedReadmeHtml}
+						</div>
+					</CollapsibleSection>
+				</div>
+			{/if}
+		</div>
 
-		{#snippet sideRight()}
+		<aside class="glance-column">
 			<ProjectGlancePanel {project} {services} {serviceSvgContents} />
-		{/snippet}
-	</SectionWrapper>
+		</aside>
+	</div>
 </article>
 
 <!-- Mobile floating TOC pill -->
@@ -348,19 +343,29 @@
 		}
 	}
 
-	/* Body wrapper padding + desktop column gap */
-	:global(.detail-body) {
+	/* Body: 3-column grid layout */
+	.detail-body {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-card-gap);
 		padding-inline: var(--space-page-x);
 		padding-block: 1.5rem;
 	}
 
+	.toc-column,
+	.glance-column {
+		display: none;
+	}
+
 	@media (min-width: 1024px) {
-		:global(.detail-body) {
-			padding-block: 2.5rem;
-			gap: 2rem;
-		}
-		:global(.section-wrapper.detail-body[data-layout="centered"]) {
+		.detail-body {
 			grid-template-columns: 1fr 2fr 1fr;
+			gap: 2rem;
+			padding-block: 2.5rem;
+		}
+		.toc-column,
+		.glance-column {
+			display: block;
 		}
 	}
 
