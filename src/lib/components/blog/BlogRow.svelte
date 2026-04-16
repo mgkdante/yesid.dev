@@ -95,10 +95,10 @@
 							<Badge variant="tag-active" size="xs" style="border-color: {accentColor}30; background: {accentColor}15; color: {accentColor}">{tag}</Badge>
 						</span>
 					{/each}
-					<time datetime={post.date} class="ml-auto font-mono text-xs text-[var(--muted-foreground)]">
-						{post.date}
-					</time>
 				</div>
+				<time datetime={post.date} class="mt-2 block font-mono text-xs text-[var(--muted-foreground)]">
+					{post.date}
+				</time>
 			</div>
 		</Card>
 		</div>
