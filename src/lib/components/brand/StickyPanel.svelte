@@ -5,6 +5,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils.js';
+  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
   export interface StickyPanelProps {
     /** CSS top offset for sticky positioning */
@@ -22,7 +23,7 @@
   }: StickyPanelProps & Record<string, unknown> = $props();
 </script>
 
-<div class={cn("panel scrollbar-hidden", className)} data-slot="sticky-panel" data-lenis-prevent style="top: {top};" {...rest}>
+<div class={cn("panel scrollbar-hidden", className)} data-slot="sticky-panel" use:scrollChain style="top: {top};" {...rest}>
   {@render children()}
 </div>
 

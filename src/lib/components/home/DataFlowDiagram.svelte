@@ -14,6 +14,7 @@
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { registerGsapPlugins, gsap, DrawSVGPlugin } from '$lib/motion/utils/gsap.js';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
 		stack,
@@ -120,7 +121,7 @@
 	bind:this={container}
 	class="data-flow-diagram"
 	class:scrollable={stack.length > 4}
-	data-lenis-prevent
+	use:scrollChain
 	class:size-lg={size === 'lg'}
 >
 	<svg

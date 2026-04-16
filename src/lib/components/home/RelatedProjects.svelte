@@ -6,6 +6,7 @@
 	import type { Project } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { Separator } from '$lib/components/ui/separator';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let { projects }: { projects: readonly Project[] } = $props();
 </script>
@@ -16,7 +17,7 @@
 >
 	<span class="proof-label label-section">Built with this</span>
 
-	<div class="proof-projects" data-lenis-prevent>
+	<div class="proof-projects" use:scrollChain>
 		{#each projects as project (project.slug)}
 			<a
 				href="/projects/{project.slug}"

@@ -11,6 +11,7 @@
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import StackPanelOrientation from './StackPanelOrientation.svelte';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
 		item = null,
@@ -49,7 +50,7 @@
 	}
 </script>
 
-<div class="stack-panel" data-testid="stack-panel" data-lenis-prevent>
+<div class="stack-panel" data-testid="stack-panel" use:scrollChain>
 	{#if item}
 		<!-- Detail Card -->
 		<div class="panel-detail" data-testid="panel-detail">

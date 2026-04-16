@@ -8,6 +8,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { Separator } from '$lib/components/ui/separator';
 	import { cn } from '$lib/utils.js';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	export interface ProjectsStripProps {
 		/** Projects to display */
@@ -38,7 +39,7 @@
 	<div class="strip-inner">
 		<span class="strip-label">{label}</span>
 		<div class="strip-separator" aria-hidden="true"></div>
-		<div class="strip-links" data-lenis-prevent>
+		<div class="strip-links" use:scrollChain>
 			{#each projects as project (project.slug)}
 				<a href="/projects/{project.slug}" class="strip-link">
 					<span class="strip-dot" aria-hidden="true"></span>

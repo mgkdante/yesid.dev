@@ -10,6 +10,7 @@
 	import { gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { Button } from '$lib/components/ui/button';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
 		scenario,
@@ -47,7 +48,7 @@
 
 <div class="scenario-card" bind:this={cardEl} data-testid="scenario-card">
 	<!-- Mini flow: recommended tech in order, connected by arrows -->
-	<div class="mini-flow" data-testid="scenario-flow" data-lenis-prevent>
+	<div class="mini-flow" data-testid="scenario-flow" use:scrollChain>
 		{#each recommendedItems as item, i (item.id)}
 			{#if i > 0}
 				<span class="flow-arrow" aria-hidden="true">

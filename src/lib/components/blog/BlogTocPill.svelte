@@ -7,6 +7,7 @@
 <script lang="ts">
   import { ChevronToggle } from '$lib/components/brand';
   import { onMount, onDestroy } from 'svelte';
+  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
   interface TocHeading {
     id: string;
@@ -101,7 +102,7 @@
         aria-label="Close table of contents"
       ></button>
 
-      <div class="toc-drawer" data-lenis-prevent>
+      <div class="toc-drawer" use:scrollChain>
         <nav class="flex flex-col gap-0.5 p-4">
           {#each headings as heading, i}
             <button

@@ -8,6 +8,7 @@
 <script lang="ts">
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
 		serviceIds,
@@ -75,7 +76,7 @@
 
 		<CollapsibleContent forceMount class="project-filter-body">
 			<div class="min-h-0 overflow-hidden">
-				<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3" data-lenis-prevent>
+				<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3" use:scrollChain>
 					<!-- Service filter -->
 					<div class="label-section font-semibold">
 						{resolveLocale(labels.services, 'en')}

@@ -12,6 +12,8 @@
 	import type { Service } from '$lib/data/types.js';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { onMount, onDestroy } from 'svelte';
 
 	// Short labels map — first word or simple abbreviation for compact tab display.
 	// Keyed by service ID so adding a new service only requires one new entry here.
@@ -81,6 +83,20 @@
 			setTimeout(() => { swipeActive = false; }, 300);
 		}
 	}
+
+	// scrollChain for Tabs.List (bits-ui component — can't use use: directly on components)
+	let tabsListRef = $state<HTMLElement | null>(null);
+	let tabsListScrollChain: { destroy(): void } | undefined;
+
+	onMount(() => {
+		if (tabsListRef) {
+			tabsListScrollChain = scrollChain(tabsListRef);
+		}
+	});
+
+	onDestroy(() => {
+		tabsListScrollChain?.destroy();
+	});
 </script>
 
 <Separator variant="hazard" hazardSize="sm" />
@@ -92,7 +108,7 @@
 		class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center"
 		class:swipe-lock={swipeActive}
 		style="background: var(--primary); border: none;"
-		data-lenis-prevent
+		use:scrollChain
 		ontouchstart={onTouchStart}
 		ontouchmove={onTouchMove}
 		ontouchend={onTouchEnd}
@@ -133,10 +149,10 @@
 		class="station-tabs-root"
 	>
 		<Tabs.List
+			bind:ref={tabsListRef}
 			variant="line"
 			class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center {swipeActive ? 'swipe-lock' : ''}"
 			style="background: var(--primary); border: none;"
-			data-lenis-prevent
 			ontouchstart={onTouchStart}
 			ontouchmove={onTouchMove}
 			ontouchend={onTouchEnd}

@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
 	import type { DomainCluster } from '$lib/data/types.js';
+	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
 		activeDomains = [],
@@ -47,7 +48,7 @@
 
 <div class="stack-filters" data-testid="stack-filters" role="toolbar" aria-label="Filter by domain">
 	<span class="filter-label label-section font-semibold">Domain</span>
-	<div class="filter-pills" data-lenis-prevent>
+	<div class="filter-pills" use:scrollChain>
 		<button
 			type="button"
 			class="filter-pill"

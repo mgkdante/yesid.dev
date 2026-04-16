@@ -6,6 +6,7 @@
 <script lang="ts">
   import { ChevronToggle } from '$lib/components/brand';
   import { onMount, onDestroy } from 'svelte';
+  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
   interface TocChild {
     id: string;
@@ -121,7 +122,7 @@
         aria-label="Close table of contents"
       ></button>
 
-      <div class="toc-drawer" data-lenis-prevent>
+      <div class="toc-drawer" use:scrollChain>
         <nav class="toc-drawer-nav flex flex-col gap-0.5 p-4">
           {#each tocEntries as entry}
             <button
