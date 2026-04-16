@@ -181,8 +181,8 @@
 >
 	<div
 		bind:this={pinContainer}
-		class="relative flex w-full items-center justify-center overflow-hidden"
-		style="height: 100lvh; padding-bottom: env(safe-area-inset-bottom, 0px);"
+		class="hero-pin relative flex w-full items-center justify-center overflow-hidden"
+		style="padding-bottom: env(safe-area-inset-bottom, 0px);"
 	>
 		<!-- SVG wrapper — zooms into Berri-UQAM -->
 		<div
@@ -270,6 +270,16 @@
 </section>
 
 <style>
+	/* Hero pin container — mobile accounts for nav, desktop uses full viewport */
+	.hero-pin {
+		height: calc(100svh - 5rem);
+	}
+	@media (min-width: 1024px) {
+		.hero-pin {
+			height: 100lvh;
+		}
+	}
+
 	/* Two-column hero grid: text | divider | SQL panel */
 	.hero-grid {
 		display: grid;

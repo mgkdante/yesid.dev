@@ -53,6 +53,7 @@
 			top: 0;
 			height: 100dvh;
 			writing-mode: vertical-rl;
+			transform: rotate(180deg);
 			padding-inline: 0.5rem;
 		}
 		.edge-title {
