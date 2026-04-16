@@ -95,7 +95,7 @@
 	   Height is a hard constraint, text scales proportionally via svh. */
 	@media (max-width: 768px) {
 		.hero-viewport-text {
-			height: calc(100svh - 6rem);
+			height: calc(100svh - 5rem);
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
