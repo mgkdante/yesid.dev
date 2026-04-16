@@ -12,6 +12,7 @@
 	import { MetroStation } from '$lib/components/brand';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
+	import { Card } from '$lib/components/ui/card';
 	import { cn } from '$lib/utils.js';
 
 	export interface BlogRowProps {
@@ -65,10 +66,8 @@
 		<MetroStation index={index + 1} showLine pulseDelay={index * 0.4} />
 
 		<!-- Content card -->
-		<article
-			class="blog-row relative flex min-w-0 flex-1 items-start gap-5 overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--card)]/80 p-5 backdrop-blur-sm transition-all duration-300 md:gap-6 md:p-6"
-			use:cursorGlow
-		>
+		<div class="min-w-0 flex-1" use:cursorGlow>
+		<Card class="blog-row flex items-start gap-5 p-5 md:gap-6 md:p-6">
 			<!-- SVG icon -->
 			{#if svgContent}
 				<div class="relative z-10 shrink-0">
@@ -101,21 +100,16 @@
 					</time>
 				</div>
 			</div>
-		</article>
+		</Card>
+		</div>
 	</div>
 </a>
 
 <style>
-	.blog-row:hover {
-		border-color: color-mix(in srgb, var(--accent) 30%, transparent);
-		box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 8%, transparent);
-	}
-
 	/* WHY: SVG metro line needs display:block to avoid inline baseline gap,
 	   and a min-height so very short posts still show a line segment */
 	.metro-line-svg {
 		display: block;
 		min-height: 20px;
 	}
-
 </style>

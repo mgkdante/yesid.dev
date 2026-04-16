@@ -31,24 +31,24 @@ describe('BlogRow', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0, featured: true, accentColor: '#E07800' }
 		});
-		const article = container.querySelector('article');
-		expect(article?.classList.contains('p-5')).toBe(true);
+		const card = container.querySelector('[data-slot="card"]');
+		expect(card?.classList.contains('p-5')).toBe(true);
 	});
 
 	it('renders same padding regardless of featured prop', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0, featured: false }
 		});
-		const article = container.querySelector('article');
-		expect(article?.classList.contains('p-5')).toBe(true);
+		const card = container.querySelector('[data-slot="card"]');
+		expect(card?.classList.contains('p-5')).toBe(true);
 	});
 
 	it('renders same padding when featured is not set', () => {
 		const { container } = render(BlogRow, {
 			props: { post: makePost(), index: 0 }
 		});
-		const article = container.querySelector('article');
-		expect(article?.classList.contains('p-5')).toBe(true);
+		const card = container.querySelector('[data-slot="card"]');
+		expect(card?.classList.contains('p-5')).toBe(true);
 	});
 
 	it('renders station badge with zero-padded index', () => {
