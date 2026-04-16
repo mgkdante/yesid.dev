@@ -11,6 +11,7 @@
 	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { prefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
 
 	const heading = resolveLocale(proofReelContent.heading, 'en');
@@ -81,10 +82,9 @@
 				{@const title = resolveLocale(project.title, 'en')}
 				{@const metric = project.impactMetric}
 				{@const imageUrl = proofReelContent.images[project.slug as keyof typeof proofReelContent.images]}
-				<div
+				<Card
 					data-proof-card
-					class="proof-card group flex flex-col overflow-hidden rounded-xl transition-all duration-300"
-					style="background: color-mix(in srgb, var(--background) 80%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);"
+					class="proof-card group flex flex-col"
 				>
 					<!-- Image — B&W default, color on hover (desktop) / tap (mobile) -->
 					<button
@@ -146,7 +146,7 @@
 							{/each}
 						</div>
 					</a>
-				</div>
+				</Card>
 			{/if}
 		{/each}
 	</div>
@@ -174,12 +174,7 @@
 		background: transparent;
 	}
 
-	/* Desktop hover: card border + image turns color */
-	.proof-card:hover {
-		border-color: color-mix(in srgb, var(--primary) 60%, transparent) !important;
-		box-shadow: var(--shadow-section);
-	}
-
+	/* Desktop hover: image turns color */
 	.proof-card:hover .proof-img,
 	.proof-image.image-active .proof-img {
 		filter: grayscale(0) brightness(0.7);
