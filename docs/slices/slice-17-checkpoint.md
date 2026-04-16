@@ -1,14 +1,27 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-16 | Contact Page Redesign — COMPLETE, Card Unification — SPEC APPROVED
+**Last updated:** 2026-04-16 | 17d COMPLETE — Ready for PR
 **Branch:** `feature/slice-17d-component-api`
 
 ## Current Position
 
-- **Sub-slice:** Card Unification (Task 31) — SPEC APPROVED, needs implementation plan + execution
-- **Status:** Contact page redesign complete. Card unification spec written and approved.
-- **Build:** 0 errors, 17 warnings, 767/767 tests pass.
-- **Next action:** Write implementation plan for card unification (`docs/specs/2026-04-16-card-unification-design.md`), then execute.
+- **Sub-slice:** 17d — Component API — COMPLETE
+- **Card unification:** COMPLETE — 21 instances unified to `ui/card`, `.bento-card` deleted, CollapsibleSection uses Card internally
+- **Code review fixes:** COMPLETE — flex-col leak, dead CSS, `rounded-[inherit]`, `group-hover/card:`
+- **Build:** 0 type errors, 21 pre-existing warnings, 769/769 tests pass
+- **Status:** All tasks approved. Closing artifacts written. Ready for PR to main.
+- **Next sub-slice:** 17e — Motion Re-Engineering
+
+### 17d Summary (99 commits, 285 files, +32,885 / -7,048)
+
+| Phase | Sessions | Key Outcome |
+|-------|----------|-------------|
+| 17d-1: Foundation | 1 | CONSTITUTION.md, ui/card, brand atoms |
+| 17d-3: File Splits + SVGs | 2 | 4 oversized files split, 12 Blueprint SVGs inlined, 6 Services SVGs tokenized, 9 orphans deleted |
+| 17d-4: Wiring + Edge-to-Edge | 8.5 | Pre-pass P1-P9, 7 page sessions, shells/ deleted, 4 CSS Grid Recipes, blog+project detail from scratch |
+| 17d-5: Services Pages | 3 | StationTabs, ServiceCard, ServiceDetailPage, scroll fixes, mobile layout |
+| 17d-6: Contact Page | 2 | Paneforge resizable split, weather, local time, Recipe 4 edge title |
+| Card Unification | 1 | 21 card instances -> 1 ui/card, .bento-card deleted, code review fixes |
 
 ### Contact Page Redesign (17d-6) — COMPLETE
 
@@ -533,10 +546,10 @@ Phase 1 — Foundation (visual cohesion first)
   17a-3a: Color Lockdown ............... COMPLETE (20 tasks, PR #5 merged)
   17a-3b: Token Wiring + Normalization . COMPLETE (8 tasks, PR #6 merged)
   17a-5: Spacing & Layout Constitution . COMPLETE (PR #8 merged)
-  17a-6: Component Library Foundation ... IN PROGRESS → Session 3 done (20/26 tasks), Session 4 next
-  17d:   Component API ................. PLANNED → needs implementation plan (4 sessions)
-  17e:   Motion Re-Engineering ......... PLANNED → needs implementation plan (2-3 sessions)
-  17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17d+17e)
+  17a-6: Component Library Foundation ... COMPLETE (PR #9 merged)
+  17d:   Component API ................. COMPLETE (99 commits, ~17 sessions) → ready for PR
+  17e:   Motion Re-Engineering ......... NEXT → needs implementation plan (2-3 sessions)
+  17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17e)
 Phase 2 — Data + Architecture
   17b:   Service Layer ................. 2 sessions
     → 15: SEO + Metadata
@@ -873,8 +886,7 @@ Phase 2 — Data + Architecture
 
 ## Next Steps
 
-1. **17a-6 Closing:** PR to main (squash-merge), handoff report, devlog, learning docs, tree.txt
-2. **17d: Component API** — Needs implementation plan. 4 sessions.
-3. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions.
-4. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (last).
+1. **17d Closing:** PR to main (squash-merge), then delete feature branch.
+2. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions. Ground-up rebuild of GSAP preset system.
+3. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (after 17e).
 
