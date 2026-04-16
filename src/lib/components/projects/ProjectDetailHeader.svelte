@@ -9,7 +9,6 @@
   import { resolveLocale } from '$lib/data/locale.js';
   import { getStackRole } from '$lib/data/stackRoles.js';
   import { CornerMarks } from '$lib/components/brand';
-  import { SectionWrapper } from '$lib/components/shells';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
   import { onMount } from 'svelte';
@@ -80,84 +79,85 @@
   <div class="header__circuit-grid"></div>
   <ManifestoCanvas containerEl={headerEl} />
 
-<SectionWrapper layout="bleed" centerContent class="header-section">
-  {#snippet background()}
-    <!-- CornerMarks -->
-    <CornerMarks size="md" opacity={0.12} />
+<section class="header-section w-full">
+    <!-- Background decorations (absolute layer behind content) -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <!-- CornerMarks -->
+      <CornerMarks size="md" opacity={0.12} />
 
-    <!-- Chevrons (top-right decoration) -->
-    <div class="header__decoration absolute right-[55px] top-[70px] hidden items-center gap-1.5 lg:flex" aria-hidden="true">
-      {#each Array(3) as _}
-        <div class="h-3.5 w-3.5 rotate-[-45deg] border-b-2 border-r-2 border-primary"></div>
-      {/each}
+      <!-- Chevrons (top-right decoration) -->
+      <div class="header__decoration absolute right-[55px] top-[70px] hidden items-center gap-1.5 lg:flex" aria-hidden="true">
+        {#each Array(3) as _}
+          <div class="h-3.5 w-3.5 rotate-[-45deg] border-b-2 border-r-2 border-primary"></div>
+        {/each}
+      </div>
+
+      <!-- Crosshair (bottom-right decoration) -->
+      <div class="header__decoration absolute bottom-[55px] right-[45px] hidden lg:block" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="var(--primary)" stroke-width="0.8">
+          <circle cx="22" cy="22" r="16" />
+          <line x1="22" y1="0" x2="22" y2="44" />
+          <line x1="0" y1="22" x2="44" y2="22" />
+        </svg>
+      </div>
+
+      <!-- Ticks (top center) -->
+      <div class="header__decoration absolute left-1/2 top-[18px] hidden -translate-x-1/2 gap-7 font-mono text-micro lg:flex" aria-hidden="true"
+        style="color: color-mix(in srgb, var(--primary) 8%, transparent);"
+      >
+        {#each [0, 80, 160, 240, 320, 400, 480] as tick}
+          <span>{tick}</span>
+        {/each}
+      </div>
+
+      <!-- Edge Left: project identity + impact metrics (desktop only) -->
+      <div class="edge-left header__edge hidden lg:block" aria-hidden="true">
+        <div>PRJ <span class="edge-value">{project.slug}</span></div>
+        <div>SRC {location}</div>
+        <div>ENV {environment}</div>
+        <div>VER {version}</div>
+        <div>STATUS <span class="edge-value">{project.status}</span></div>
+        <div class="edge-separator">───────</div>
+        {#each metrics as metric}
+          <div>{metric.value} {metric.label}</div>
+        {/each}
+      </div>
+
+      <!-- Edge Right: tech stack breakdown (desktop only) -->
+      <div class="edge-right header__edge hidden lg:block" aria-hidden="true">
+        <div>LAYER {layerId}</div>
+        {#each stackRoles as item}
+          <div>{item.role} <span class="edge-value">{item.name}</span></div>
+        {/each}
+        <div class="edge-separator">───────</div>
+        <div>NODES {project.stack.length}</div>
+      </div>
     </div>
 
-    <!-- Crosshair (bottom-right decoration) -->
-    <div class="header__decoration absolute bottom-[55px] right-[45px] hidden lg:block" aria-hidden="true">
-      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="var(--primary)" stroke-width="0.8">
-        <circle cx="22" cy="22" r="16" />
-        <line x1="22" y1="0" x2="22" y2="44" />
-        <line x1="0" y1="22" x2="44" y2="22" />
-      </svg>
+    <!-- Center content -->
+    <div class="header__content">
+      <a
+        href="/projects"
+        class="mb-5 inline-block font-mono text-xs tracking-[0.5px] text-primary opacity-70 transition-opacity hover:opacity-100 lg:mb-7"
+        use:boop={{ scale: 1.05, timing: 200 }}
+      >
+        &larr; All Projects
+      </a>
+
+      <h1
+        bind:this={titleEl}
+        class="header-title mb-3 font-heading font-black uppercase leading-[0.95] tracking-[-0.03em] text-primary lg:mb-4"
+      >
+        {resolveLocale(project.title, 'en')}
+      </h1>
+
+      <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label="Tech stack">
+        {#each project.stack as tech}
+          <span class="header__pill">{tech}</span>
+        {/each}
+      </nav>
     </div>
-
-    <!-- Ticks (top center) -->
-    <div class="header__decoration absolute left-1/2 top-[18px] hidden -translate-x-1/2 gap-7 font-mono text-micro lg:flex" aria-hidden="true"
-      style="color: color-mix(in srgb, var(--primary) 8%, transparent);"
-    >
-      {#each [0, 80, 160, 240, 320, 400, 480] as tick}
-        <span>{tick}</span>
-      {/each}
-    </div>
-
-    <!-- Edge Left: project identity + impact metrics (desktop only) -->
-    <div class="edge-left header__edge hidden lg:block" aria-hidden="true">
-    <div>PRJ <span class="edge-value">{project.slug}</span></div>
-    <div>SRC {location}</div>
-    <div>ENV {environment}</div>
-    <div>VER {version}</div>
-    <div>STATUS <span class="edge-value">{project.status}</span></div>
-    <div class="edge-separator">───────</div>
-    {#each metrics as metric}
-      <div>{metric.value} {metric.label}</div>
-    {/each}
-  </div>
-
-  <!-- Edge Right: tech stack breakdown (desktop only) -->
-  <div class="edge-right header__edge hidden lg:block" aria-hidden="true">
-    <div>LAYER {layerId}</div>
-    {#each stackRoles as item}
-      <div>{item.role} <span class="edge-value">{item.name}</span></div>
-    {/each}
-    <div class="edge-separator">───────</div>
-    <div>NODES {project.stack.length}</div>
-    </div>
-  {/snippet}
-
-  <!-- Center content (SectionWrapper content slot) -->
-  <div class="header__content">
-    <a
-      href="/projects"
-      class="mb-5 inline-block font-mono text-xs tracking-[0.5px] text-primary opacity-70 transition-opacity hover:opacity-100 lg:mb-7"
-      use:boop={{ scale: 1.05, timing: 200 }}
-    >
-      &larr; All Projects
-    </a>
-
-    <h1
-      bind:this={titleEl}
-      class="header-title mb-3 font-heading font-black uppercase leading-[0.95] tracking-[-0.03em] text-primary lg:mb-4"
-    >
-      {resolveLocale(project.title, 'en')}
-    </h1>
-
-    <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label="Tech stack">
-      {#each project.stack as tech}
-        <span class="header__pill">{tech}</span>
-      {/each}
-    </nav>
-  </div>
-</SectionWrapper>
+  </section>
 </div>
 
 <style>
@@ -171,12 +171,15 @@
     cursor: crosshair;
   }
 
-  .project-detail-header :global(.header-section) {
+  .header-section {
+    position: relative;
+    display: grid;
+    align-items: center;
     min-height: 420px;
   }
 
   @media (min-width: 1024px) {
-    .project-detail-header :global(.header-section) {
+    .header-section {
       min-height: 440px;
     }
   }
