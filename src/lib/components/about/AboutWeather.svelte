@@ -65,14 +65,14 @@
 <Card class="relative h-full p-3" data-testid="about-weather">
 	<!-- Condition gradient tint -->
 	<div
-		class="pointer-events-none absolute inset-0 rounded-lg"
+		class="pointer-events-none absolute inset-0 rounded-[inherit]"
 		style="background: linear-gradient(135deg, var(--muted), {gradientTint});"
 		aria-hidden="true"
 	></div>
 
 	<!-- Weather animation layer -->
 	{#if weatherAnim !== 'none'}
-		<div class="pointer-events-none absolute inset-0 overflow-hidden rounded-lg" aria-hidden="true">
+		<div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden="true">
 			{#if weatherAnim === 'rain'}
 				{#each { length: 12 } as _, i}
 					<div

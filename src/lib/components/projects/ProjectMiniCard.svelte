@@ -28,21 +28,21 @@
 	data-testid="project-mini-card"
 	use:reveal={{ direction: 'up', delay: 50 + index * 80 }}
 >
-	<Card class="flex items-center gap-4 px-6 py-5">
+	<Card class="flex flex-row items-center gap-4 px-6 py-5">
 		<!-- Radial-gradient glow overlay — matches standard card hover system -->
 		<div
-			class="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+			class="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 			style="background: radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--primary) 6%, transparent), transparent 70%);"
 		></div>
 
 		<div class="card-body">
-			<h3 class="card-title">{title}</h3>
+			<h3 class="card-title group-hover/card:text-primary">{title}</h3>
 			<p class="card-liner">{oneLiner}</p>
 
 			{#if displayStack.length > 0}
 				<div class="card-stack">
 					{#each displayStack as tech}
-						<span class="card-pill">{tech}</span>
+						<span class="card-pill group-hover/card:border-[color-mix(in_srgb,var(--primary)_30%,transparent)]">{tech}</span>
 					{/each}
 					{#if project.stack.length > 4}
 						<span class="card-pill card-pill-more">+{project.stack.length - 4}</span>
@@ -51,7 +51,7 @@
 			{/if}
 		</div>
 
-		<span class="card-arrow" aria-hidden="true">&rarr;</span>
+		<span class="card-arrow group-hover/card:text-primary group-hover/card:translate-x-0.5" aria-hidden="true">&rarr;</span>
 	</Card>
 </a>
 
@@ -67,9 +67,6 @@
 		font-weight: 700;
 		color: var(--foreground);
 		transition: color var(--duration-normal);
-	}
-	:global([data-slot="card"]:hover) .card-title {
-		color: var(--primary);
 	}
 
 	.card-liner {
@@ -95,9 +92,6 @@
 		color: var(--muted-foreground);
 		transition: border-color var(--duration-normal);
 	}
-	:global([data-slot="card"]:hover) .card-pill {
-		border-color: color-mix(in srgb, var(--primary) 30%, transparent);
-	}
 
 	.card-pill-more {
 		color: var(--primary);
@@ -109,9 +103,5 @@
 		color: var(--border-strong);
 		transition: color var(--duration-normal), transform var(--duration-normal);
 		flex-shrink: 0;
-	}
-	:global([data-slot="card"]:hover) .card-arrow {
-		color: var(--primary);
-		transform: translateX(3px);
 	}
 </style>

@@ -67,7 +67,7 @@
 
 		<!-- Content card -->
 		<div class="min-w-0 flex-1" use:cursorGlow>
-		<Card class="blog-row flex items-start gap-5 p-5 md:gap-6 md:p-6">
+		<Card class="blog-row flex flex-row items-start gap-5 p-5 md:gap-6 md:p-6">
 			<!-- SVG icon -->
 			{#if svgContent}
 				<div class="relative z-10 shrink-0">
@@ -105,11 +105,3 @@
 	</div>
 </a>
 
-<style>
-	/* WHY: SVG metro line needs display:block to avoid inline baseline gap,
-	   and a min-height so very short posts still show a line segment */
-	.metro-line-svg {
-		display: block;
-		min-height: 20px;
-	}
-</style>
