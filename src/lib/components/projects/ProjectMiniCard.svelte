@@ -7,6 +7,7 @@
 	import type { Project } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { reveal } from '$lib/motion/actions/reveal.js';
+	import { Card } from '$lib/components/ui/card';
 
 	let {
 		project,
@@ -23,54 +24,38 @@
 
 <a
 	href="/projects/{project.slug}"
-	class="project-mini-card group relative overflow-hidden"
+	class="group block"
 	data-testid="project-mini-card"
 	use:reveal={{ direction: 'up', delay: 50 + index * 80 }}
 >
-	<!-- Radial-gradient glow overlay — matches standard card hover system -->
-	<div
-		class="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-		style="background: radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--primary) 6%, transparent), transparent 70%);"
-	></div>
+	<Card class="flex items-center gap-4 px-6 py-5">
+		<!-- Radial-gradient glow overlay — matches standard card hover system -->
+		<div
+			class="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+			style="background: radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--primary) 6%, transparent), transparent 70%);"
+		></div>
 
-	<div class="card-body">
-		<h3 class="card-title">{title}</h3>
-		<p class="card-liner">{oneLiner}</p>
+		<div class="card-body">
+			<h3 class="card-title">{title}</h3>
+			<p class="card-liner">{oneLiner}</p>
 
-		{#if displayStack.length > 0}
-			<div class="card-stack">
-				{#each displayStack as tech}
-					<span class="card-pill">{tech}</span>
-				{/each}
-				{#if project.stack.length > 4}
-					<span class="card-pill card-pill-more">+{project.stack.length - 4}</span>
-				{/if}
-			</div>
-		{/if}
-	</div>
+			{#if displayStack.length > 0}
+				<div class="card-stack">
+					{#each displayStack as tech}
+						<span class="card-pill">{tech}</span>
+					{/each}
+					{#if project.stack.length > 4}
+						<span class="card-pill card-pill-more">+{project.stack.length - 4}</span>
+					{/if}
+				</div>
+			{/if}
+		</div>
 
-	<span class="card-arrow" aria-hidden="true">&rarr;</span>
+		<span class="card-arrow" aria-hidden="true">&rarr;</span>
+	</Card>
 </a>
 
 <style>
-	.project-mini-card {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		padding: 1.25rem 1.5rem;
-		background: var(--background);
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-lg);
-		text-decoration: none;
-		transition: border-color var(--duration-slow) var(--ease-default), box-shadow var(--duration-slow) var(--ease-default), transform var(--duration-slow) var(--ease-default);
-	}
-
-	.project-mini-card:hover {
-		border-color: color-mix(in srgb, var(--primary) 50%, transparent);
-		box-shadow: var(--shadow-card);
-		transform: translateY(-2px);
-	}
-
 	.card-body {
 		flex: 1;
 		min-width: 0;
@@ -83,7 +68,7 @@
 		color: var(--foreground);
 		transition: color var(--duration-normal);
 	}
-	.project-mini-card:hover .card-title {
+	:global([data-slot="card"]:hover) .card-title {
 		color: var(--primary);
 	}
 
@@ -110,7 +95,7 @@
 		color: var(--muted-foreground);
 		transition: border-color var(--duration-normal);
 	}
-	.project-mini-card:hover .card-pill {
+	:global([data-slot="card"]:hover) .card-pill {
 		border-color: color-mix(in srgb, var(--primary) 30%, transparent);
 	}
 
@@ -125,7 +110,7 @@
 		transition: color var(--duration-normal), transform var(--duration-normal);
 		flex-shrink: 0;
 	}
-	.project-mini-card:hover .card-arrow {
+	:global([data-slot="card"]:hover) .card-arrow {
 		color: var(--primary);
 		transform: translateX(3px);
 	}
