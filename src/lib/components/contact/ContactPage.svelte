@@ -422,15 +422,21 @@
 			grid-template-columns: auto 1px 1fr;
 			padding-block: 0;
 			height: 100%;
+			/* Edge title + divider extend behind nav (same as blog/projects) */
+			margin-top: -5rem;
 		}
 		.contact-content {
-			padding-top: var(--space-card-gap);
+			padding-top: calc(5rem + var(--space-card-gap)); /* clear nav + breathing */
 			padding-bottom: var(--space-card-gap);
 			padding-inline: var(--space-page-x);
 			display: flex;
 			flex-direction: column;
 		}
-		/* Same pattern as blog/projects, height bounded to available space */
+		/* Terminals max-height = 100dvh - nav - footer - 5rem */
+		.desktop-terminals {
+			max-height: calc(100dvh - 5rem - 6rem - 5rem);
+		}
+		/* Edge title starts at top, extends behind nav */
 		.edge-title-column {
 			display: flex;
 			align-items: center;
