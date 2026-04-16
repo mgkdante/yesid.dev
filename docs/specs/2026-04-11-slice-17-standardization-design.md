@@ -14,7 +14,7 @@ Two goals, one slice:
 
 1. **Design system.** The site should feel like one product, not 22 slices bolted together. One change to a token, a card style, or a type scale cascades everywhere. Adding a light theme = swapping one file, zero component edits. Brand components (terminals, dividers, cursors, cards) are reusable primitives, not one-off implementations.
 
-2. **Architecture.** The codebase should read like a blueprint. Types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 18 (Keystatic) plugs in with zero component changes.
+2. **Architecture.** The codebase should read like a blueprint. Types define shape, schemas validate, services query, loaders orchestrate, components render. Each layer has one job. The seam between data source and service layer is where Slice 18 (Payload CMS) plugs in with zero component changes. See `docs/specs/2026-04-16-cms-payload-design.md` for the full CMS plan.
 
 **Design principles:** CLEAN, DRY, SCALABLE, MAINTAINABLE, SUSTAINABLE.
 
@@ -187,7 +187,7 @@ Route Loaders (+page.ts / +page.server.ts)
   ─────────────────────────────────────────────────────
 Service Layer (src/lib/services/*.service.ts)
   Typed query functions. JSDoc. Explicit returns.
-  THE SEAM: Keystatic swaps here, nothing else moves.
+  THE SEAM: Payload swaps here, nothing else moves.
   ─────────────────────────────────────────────────────
 Zod Schemas (src/lib/schemas/*.ts)
   Runtime validation. Parse, don't validate.
@@ -391,7 +391,7 @@ Phase 2 — Standardization
     ↓
   16: E2E + QA
     ↓
-  18: Keystatic
+  18: Payload CMS
 ```
 
 **Why this sequence:**
@@ -592,7 +592,7 @@ Test factories for all content types. Service tests mock data source. Documentat
 
 **Acceptance criteria:**
 - [ ] Test factories for all content types
-- [ ] Service tests mock data source (portable to Keystatic)
+- [ ] Service tests mock data source (portable to Payload in Slice 18)
 - [ ] ARCHITECTURE.md reflects layered system
 - [ ] `src/lib/README.md` explains import hierarchy
 - [ ] `bun run test` passes

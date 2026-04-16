@@ -893,7 +893,7 @@ export const manifestoContent = {
 ### Why
 - Maximum locale support: `en` now, `fr`/`es` later
 - Consistent with project rule: "NEVER hardcode content; always LocalizedString"
-- Keystatic CMS compatibility (future)
+- Payload CMS compatibility (Slice 18 — see `docs/specs/2026-04-16-cms-payload-design.md`)
 - Deco text like "LIGNE ORANGE" would be "ORANGE LINE" in English locale, "LÍNEA NARANJA" in Spanish
 
 ---

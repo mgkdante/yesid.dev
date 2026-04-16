@@ -13,7 +13,7 @@ Replace hardcoded scenario matching (7 authored scenarios + basic fallback) with
 
 Sales through education: The builder teaches visitors what technologies they need and why — demonstrating Yesid's expertise deeply enough to close consulting engagements. Every recommendation links to matching services, shows project evidence, and adapts language to proficiency.
 
-Architecture: Pure functions (zero DOM/framework dependency). Same engine works in browser, server route, or future API. Adding a tech = one markdown file, engine adapts automatically. Keystatic-ready (Slice 18, Cloud Content Layer).
+Architecture: Pure functions (zero DOM/framework dependency). Same engine works in browser, server route, or future API. Adding a tech = one markdown file (pre-Slice-18) or one Payload document (post-Slice-18) — the engine adapts automatically. CMS-ready via the Slice 17b service seam; Payload is the chosen CMS (Slice 18, Cloud Content Layer — see `docs/specs/2026-04-16-cms-payload-design.md`).
 
 Tasks:
 14a — Engine core: Types, role derivation, scoring, selection, ordering, service/project cross-linking. Heavy test coverage.
@@ -83,7 +83,7 @@ Tasks:
 - **Data & BI** (Tier 1): SQL Server, PostgreSQL, Power BI, SSRS, SSIS, Python
 - **Web Presence** (Tier 1-2): SvelteKit, TypeScript, Webflow, WordPress, Shopify
 - **Cloud & Hosting** (Tier 2): Cloudflare, Vercel, Oracle Cloud VPS, Bun/Node
-- **CMS & Content** (Tier 2): Keystatic, Webflow CMS, WordPress
+- **CMS & Content** (Tier 2): Payload (primary offering), Keystatic (budget "Static" tier), Webflow CMS, WordPress
 - **Analytics & Marketing** (Tier 2): GA4/Plausible, SEO, email integration, tag management
 - **CRM & Automation** (Tier 2): Platform-agnostic CRM integration, Zapier/n8n
 - **ETL & Pipelines** (Tier 2): SSIS, Python, API integrations

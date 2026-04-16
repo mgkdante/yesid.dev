@@ -208,7 +208,7 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 17  | Standardization: Design System + Ports & Adapters   | planned — split execution (see Execution Sequence below)         | 13           | 13-14         |
 | 15  | SEO + metadata                                      | planned — built on 17b service layer                             | 13, 17a, 17b | 1-2           |
 | 16  | E2E test suite + performance + brand QA             | planned — tests final standardized + SEO state                   | 15, 17       | 3             |
-| 18  | Cloud content layer (edit + publish without code)   | planned — plugs into 17b service layer seam                      | 16, 17       | 4             |
+| 18  | Cloud content layer — Payload + Neon + monorepo     | planned — plugs into 17b service layer seam                      | 16, 17       | 5-7           |
 | 19  | Mobile UI/UX optimization                           | planned                                                          | 17, B+       | 2             |
 | 19b | Accessibility (A11Y) optimization                   | planned                                                          | 19           | 2             |
 | 20  | Scroll smoothness + animation polish                | planned                                                          | B+, 19b      | 1             |
@@ -230,7 +230,7 @@ Slice 17 executes in two phases, with SEO sandwiched between them. This avoids b
   → 17c (Zod schemas — validates SEO structured data too)
   → 17f (test architecture + docs)
     → 16 (E2E + QA — tests the FINAL state including SEO)
-      → 18 (Keystatic — plugs into 17b service seam, SEO metadata as first test collection)
+      → 18 (Payload CMS — plugs into 17b service seam, SEO metadata as first test collection)
         → 19 (mobile optimization)
           → 19b (accessibility / A11Y)
             → 20 (scroll polish)
@@ -245,7 +245,7 @@ Slice 17 executes in two phases, with SEO sandwiched between them. This avoids b
 2. **15 after 17b** — `<SeoHead>` built once on the right foundation, no refactor needed
 3. **17c-17g after 15** — Zod validates SEO structured data; remaining standardization completes
 4. **16 last before deploy** — E2E tests cover the fully standardized + SEO-equipped site
-5. **18 after 16** — Keystatic plugs into 17b's service seam; SEO metadata becomes first test collection
+5. **18 after 16** — Payload plugs into 17b's service seam; SEO metadata becomes first test collection
 
 ## Slice Summaries
 
@@ -429,7 +429,7 @@ DRY consolidation:
 - Zone 3: Build Your Stack configurator (domain checkboxes → recommended stack + scenario card)
 - Zone 4: Terminal CTA
 
-**Data model:** Dual categorization — each tech has an `InfraLayer` (where it sits vertically) + `DomainCluster[]` (what problems it solves). `connectsTo` edges define directional relationships. Content in Keystatic-ready markdown (`src/content/stack/[id].md`). `StackScenario` objects define recommended combos.
+**Data model:** Dual categorization — each tech has an `InfraLayer` (where it sits vertically) + `DomainCluster[]` (what problems it solves). `connectsTo` edges define directional relationships. Content in markdown (`src/content/stack/[id].md`); CMS-migration target is Payload in Slice 18 via the Slice 17b service seam. `StackScenario` objects define recommended combos.
 
 **Key interactions:** Hover highlights connections, click opens sidebar mini-essay, domain filter pills (composable), Build Your Stack mode with scenario generation. Mobile: vertical accordion + bottom sheet.
 
@@ -520,7 +520,7 @@ DRY consolidation:
   - **ProfilePage** schema on about page (new schema type Google supports for personal sites)
 4. **Technical SEO** —
   - `sitemap.xml` auto-generated at build time from all public routes (home, blog/*, work/*, services/*, about, contact). Use `@sveltejs/kit` prerender entries or a custom build script.
-  - `robots.txt` with sitemap reference, allow all public routes, block /preview and /keystatic (future)
+  - `robots.txt` with sitemap reference, allow all public routes, block /preview and /admin (Payload, added in Slice 18)
   - Canonical URLs on every page (prevents duplicate content from trailing slashes or query params)
   - `<link rel="alternate" hreflang="en">` tags ready for i18n (structure only, fr/es pages come later)
   - Performance meta: proper `<meta name="viewport">`, `theme-color` (#141414), `color-scheme: dark`
@@ -593,7 +593,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 **Full plan:** `[docs/roadmap/standardization.md](standardization.md)`
 **Status:** IN PROGRESS — Phase 1 Foundation **Est. Sessions:** 13-14 (across 7 sub-slices) **Depends on:** 13
 
-Design system + structural refactor. Brand primitives (terminal chrome, hazard stripes, card base) become shared components. Semantic type scale replaces 275 ad-hoc font-size declarations. All hardcoded hex colors migrate to tokens. Light theme becomes one toggle away. Service layer creates the Keystatic seam.
+Design system + structural refactor. Brand primitives (terminal chrome, hazard stripes, card base) become shared components. Semantic type scale replaces 275 ad-hoc font-size declarations. All hardcoded hex colors migrate to tokens. Light theme becomes one toggle away. Service layer creates the CMS seam that Slice 18 (Payload) plugs into.
 
 **Progress:** 17a-1 (Token Foundation) ✓ → 17a-2a (Build Primitives) ✓ → 17a-2b (Wire Primitives) ✓ → **17a-3 (Color & Token Lockdown)** ← NEXT
 
@@ -607,49 +607,107 @@ Design system + structural refactor. Brand primitives (terminal chrome, hazard s
 
 ---
 
-### Slice 18 — Cloud Content Layer: Keystatic CMS
+### Slice 18 — Cloud Content Layer: Payload + Neon + Monorepo
 
-**Status:** planned **Depends on:** 16, 17 **Est. Sessions:** 4
+**Status:** planned **Depends on:** 16, 17 **Est. Sessions:** 5-7
+**Design spec:** `docs/specs/2026-04-16-cms-payload-design.md` (authoritative — read first)
+**Supersedes:** previous Keystatic plan for this slice (see Decisions Log 2026-04-16)
 
-**Decision: Keystatic** — Git-based CMS, content stored as JSON/Markdown in the repo, visual editor via `keystatic-sveltekit` npm package (confirmed compatible with SvelteKit 2 + Svelte 5). $0 forever. No external service dependency. If Keystatic disappears, content remains as plain files.
+**Decision: Payload 3** — MIT-licensed, Node-native, TypeScript-schema CMS with a real admin UI. Backed by **Neon Postgres** (free tier, scale-to-zero, DB branching). Media on **Vercel Blob**. Repo becomes a **Turborepo monorepo** with `apps/web` (SvelteKit) + `apps/cms` (Payload/Next.js) + `packages/types`. Both apps deploy to Vercel as separate projects from the same repo.
 
-**How it works:**
+This setup doubles as the **client-offering template**: the "WordPress flexibility without WordPress, but modern" pitch. yesid.dev is the reference build.
 
-1. `keystatic.config.ts` defines collections: projects, services, blog posts, site meta, about content
-2. Collections use `relationship` fields to link between each other (project → services, service → related projects, blog post → tags, etc.)
-3. Editing: visual editor at `/keystatic` route during dev (disabled in production)
-4. Publishing: edit in Keystatic → commits JSON/MD to repo → Vercel auto-deploys
-5. Production reads: Keystatic Reader API in service layer (replaces direct `.ts` file imports)
-6. Zod schemas from Slice 17c validate all content at build time
+**Why Payload over Keystatic** (short form — full rationale in design spec):
 
-**Content types mapped to Keystatic collections:**
+1. Non-tech clients can use it — email/password auth, no GitHub account required, real admin UI with roles and drafts.
+2. Dynamic queries, real relationships, proper joins — not just string refs between files.
+3. Clear path to future features: client logins, form submissions storage, open-source project docs, e-commerce.
+4. Template fit — clone one repo, get site + CMS + shared types. Keystatic could not carry that pitch.
 
-- `projects` — slug, title (LocalizedString), oneLiner, services (relationship), tags, stack, links, status
-- `services` — id, title (LocalizedString), description, stack, relatedProjects (relationship), detail sections
-- `blog-posts` — slug, title (LocalizedString), date, excerpt, category, tags, lang, body (Markdoc/MD)
-- `site-meta` — name, tagline, description, social links, contact info
-- `content` — hero text, about text, CTA text, now status (all LocalizedString)
-- `other, etc`
+Keystatic stays in the toolkit as a possible **"Static" budget tier** for pure-content clients with one editor. It is not the primary offering. **Do not build the Static tier template in Slice 18** — only if real client demand appears later.
 
-**What changes from Slice 13:**
+**Architecture (see design spec for full diagram):**
 
-- Service layer implementations swap from reading `.ts` data files to Keystatic Reader API
-- Schemas, types, components, route loaders, tests: ZERO changes
-- This is the payoff of the Slice 17 seam
+```
+Monorepo (Turborepo + Bun workspaces)
+├── apps/web/           SvelteKit — consumes Payload via services
+├── apps/cms/           Payload 3 + Next.js — admin UI, writes to Postgres
+└── packages/types/     Shared TS types + Zod schemas
+        │                        │
+        ▼                        ▼
+   Vercel (web)           Vercel (cms)
+        │                        │
+        └──────► Neon Postgres ◄─┘
+                 Vercel Blob (media)
+```
 
-**Key requirements:**
+**Content model — Payload collections / globals:**
 
-- Content relationships: project ↔ service bidirectional, service → stack items, blog → tags
-- Shared tech stack vocabulary: single source of truth list, referenced by projects and services
-- Locale support: LocalizedString fields in all collections (en required, fr/es optional)
-- Fallback: if Keystatic Reader fails, site builds from last committed content files (they're in the repo)
-- Dev-only CMS: Keystatic admin UI disabled in production builds (no attack surface)
+| Type | Maps from | Notes |
+|------|-----------|-------|
+| `projects` (collection) | `src/lib/data/projects.ts` | slug, title (loc), sections (blocks), services + stack (relationships) |
+| `services` (collection) | `src/lib/data/services.ts` | id, title (loc), relatedProjects (relationship), detailSections (blocks) |
+| `blog-posts` (collection) | `src/content/blog/*.md` | body as Lexical rich text; rendered to HTML in SvelteKit |
+| `tech-stack` (collection) | `src/content/stack/*.md` | shared vocabulary — referenced by projects + services + scenarios |
+| `stack-scenarios` (collection) | `src/lib/data/stack-scenarios.ts` | for Build Your Stack configurator |
+| `site-meta` (global) | `src/lib/data/meta.ts` | single editable doc |
+| `home-content` (global) | `src/lib/data/content.ts` (home sections) | single editable doc |
+| `about-content` (global) | `src/lib/data/about-page.ts` | single editable doc |
+| `contact-content` (global) | `src/lib/data/contact-page.ts` | single editable doc |
+| `nav-links` (global) | `src/lib/data/nav.ts` | single editable doc |
+| `error-pages` (global) | `src/lib/data/error-pages.ts` | single editable doc |
 
-**Scope:** Keystatic config, collection schemas, content migration from .ts to JSON/MD, service layer swap, Reader API integration, editorial workflow documentation.
+Localization uses Payload's built-in `localized: true` flag on text fields (maps cleanly to the existing `LocalizedString` pattern — en required, fr/es optional).
 
-**Why after Slice 17:** The service layer IS the contract. Slice 17b builds it, Slice 18 plugs into it. Without 17b's seam, adding Keystatic would require touching every route loader and component. SEO metadata (from Slice 15) becomes the first Keystatic test collection — small scope, already proven to work, great smoke test.
+**Migration order** (inside this slice, not a prerequisite):
 
-**You'll learn:** Git-based CMS patterns, Keystatic Reader API, content modeling with relationships, Markdoc rendering in Svelte, build-time data fetching.
+1. Scaffold monorepo; move existing `yesid.dev` SvelteKit into `apps/web`.
+2. Scaffold `apps/cms` (Payload 3 + Next.js) with Neon Postgres + Vercel Blob adapters, email auth.
+3. Define all collections + globals.
+4. Seed script — read existing TS/MD data, write to Payload via Local API. Idempotent, kept in repo.
+5. Service layer swap (from Slice 17b) — flip implementations one service at a time, one commit each, tests green between every swap. Order: site-meta → nav-links → home-content → about-content → contact-content → blog-posts → projects → services → tech-stack → stack-scenarios.
+6. Wire Payload publish webhook → SvelteKit ISR revalidation. Wire preview route + token.
+7. Delete old TS data files only after every route loads from Payload and tests pass.
+
+**Rollback at every step:** services hold both implementations behind a feature flag during the swap; full rollback is one revert.
+
+**Cost model (yesid.dev, day one):** $0/month. Neon free tier (191.9 compute-hrs/mo, 0.5 GB) is more than enough; Vercel Blob free tier (1 GB, 10 GB bandwidth) fits a portfolio. Do not attach a payment method to Neon until consciously upgrading — free plan is hard-capped, not soft-capped.
+
+**Guardrails against surprise bills:**
+
+- Use Neon's HTTP/serverless driver from SvelteKit (short-lived connections, compute scales to zero).
+- No per-minute cron pings; hourly+ or Vercel Cron with edge caching.
+- Clean up DB branches when PRs merge.
+
+**Rendering strategy:**
+
+- Default: **ISR** — Vercel caches pages at the edge; Payload webhook triggers revalidation on publish.
+- Exception: `/preview/[collection]/[slug]?token=...` bypasses cache for draft content (logged-in editors only).
+- Fallback: build-time static for routes that almost never change.
+
+**Acceptance criteria:**
+
+- Monorepo scaffold: `apps/web`, `apps/cms`, `packages/types`. `bun run dev` boots both apps.
+- Payload admin reachable, collections + globals defined with LocalizedString support.
+- Seed script imports all existing content without data loss.
+- Every service in `src/lib/services/*.service.ts` reads from Payload, not TS files.
+- Slice 16 E2E suite green — every existing route renders identically to pre-migration.
+- Publish webhook → SvelteKit revalidation end-to-end.
+- Preview route serves draft content for logged-in editors.
+- Both Vercel deployments green; Neon DB branch auto-created per PR.
+- Full free-tier budget — no overage.
+- `docs/reference/ARCHITECTURE.md` + `docs/reference/PATTERNS.md` updated.
+- Old TS data files deleted; no lingering references.
+
+**Out of scope:**
+
+- Admin theming / custom field components (polish sub-slice later).
+- Keystatic "Static tier" template (build only if client demand appears).
+- Multi-tenant Payload (one instance per client is the day-one rule).
+- Moving Payload to Railway/Hetzner (reversible later; Vercel is fine for v1).
+- Fulltext search upgrade — blog search stays client-side.
+
+**You'll learn:** Payload 3 collections/globals/blocks, Turborepo monorepo patterns, Neon Postgres + DB branching, Vercel Blob for media, ISR revalidation via webhooks, preview/draft flows, service-layer seam migration under test coverage.
 
 ### Slice 19 — Mobile UI/UX Optimization
 
@@ -821,6 +879,9 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 | 2026-04-10 | Standardize (17) before SEO (15) + QA (16)         | SEO built on service layer = no rework. E2E tests cover final architecture. Split execution: 17a+17b → 15 → 17c-17g → 16 → 18. Keystatic gets SEO metadata as first test collection.                         |
 | 2026-04-07 | No standalone tech stack page                      | About page widget + service detail pages + blog posts cover tools better than a resume-style page. Anti-pattern per conversion research.                                                                     |
 | 2026-04-07 | Live weather widget (OpenWeatherMap free tier)     | API key in .env, server-side fetch in +page.server.ts, graceful fallback. Unique personality touch on About page.                                                                                            |
+| 2026-04-16 | Slice 18 CMS: pivot from Keystatic to Payload      | Supersedes 2026-04-10 Keystatic decision. Non-tech clients need email/password + real admin (Keystatic requires GitHub auth). Template goal ("WordPress flexibility, modern") fits Payload; dynamic queries, roles, client-login path. Keystatic kept as possible "Static tier" for pure-content clients. Full design spec: `docs/specs/2026-04-16-cms-payload-design.md`.                                                                             |
+| 2026-04-16 | Repo becomes Turborepo monorepo in Slice 18        | `apps/web` (SvelteKit) + `apps/cms` (Payload/Next.js) + `packages/types`. One-clone template story for clients. Both apps deploy to Vercel as separate projects.                                             |
+| 2026-04-16 | Neon Postgres + Vercel Blob for CMS storage        | Neon: serverless, scale-to-zero, DB branching per PR, zero vendor lock-in (plain Postgres). Vercel Blob: zero-config media storage. Supabase rejected — its Auth/Storage/RLS duplicate Payload's built-ins. |
 
 
 ## Rules
