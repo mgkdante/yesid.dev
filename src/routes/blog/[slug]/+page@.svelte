@@ -1,7 +1,7 @@
 <!--
   Blog detail page — /blog/[slug]
   Renders the BlogDetailPage component with data from the loader.
-  Uses +page@.svelte to bypass ListingLayout (same as project detail).
+  Uses +page@.svelte to bypass the blog listing layout (same as project detail).
 -->
 <script lang="ts">
 	import BlogDetailPage from '$lib/components/blog/BlogDetailPage.svelte';

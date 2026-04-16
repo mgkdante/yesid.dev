@@ -136,7 +136,7 @@
 			<BlogBlueprint />
 			<!-- Subtitle: always visible, overlaid on blueprints -->
 			<div class="blog-header-text">
-				<!-- "Blog." heading: only on mobile (EdgeRail carries it on desktop) -->
+				<!-- "Blog." heading: only on mobile (edge title in route layout carries it on desktop) -->
 				<h1 class="blog-mobile-heading">Blog<span class="text-[var(--primary)]">.</span></h1>
 				<div class="blog-header-subtitle">{subtitle}</div>
 			</div>
@@ -246,7 +246,7 @@
 		line-height: 1;
 	}
 
-	/* Hide "Blog." heading on desktop (EdgeRail carries it) */
+	/* Hide "Blog." heading on desktop (edge title in route layout carries it) */
 	@media (min-width: 1024px) {
 		.blog-mobile-heading { display: none; }
 	}

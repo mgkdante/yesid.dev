@@ -121,7 +121,7 @@
 		}
 	}
 
-	/* Hide rotated titles on mobile (SectionWrapper used to do this) */
+	/* Hide rotated titles on mobile */
 	@media (max-width: 1023px) {
 		.rotated-title {
 			display: none;

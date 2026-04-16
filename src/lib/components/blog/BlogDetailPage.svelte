@@ -3,7 +3,7 @@
   Structure: full-bleed header + hazard separator + 4-zone body.
   Desktop: BEGIN (edge) + TOC (sideLeft) + prose (content) + TRANSMISSION (edge).
   Mobile: floating BlogTocPill + single-column prose.
-  Edge labels use same title-variant sizing as EdgeRail (Pretext + Canvas measureText).
+  Edge labels use writing-mode: vertical-rl with clamp() sizing.
   Same architectural role as ProjectDetailPage.
 -->
 <script lang="ts">

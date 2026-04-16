@@ -272,7 +272,7 @@
 		line-height: 1;
 	}
 
-	/* Hide "Projects." heading on desktop (EdgeRail carries it) */
+	/* Hide "Projects." heading on desktop (edge title in route layout carries it) */
 	@media (min-width: 1024px) {
 		.projects-mobile-heading { display: none; }
 	}
