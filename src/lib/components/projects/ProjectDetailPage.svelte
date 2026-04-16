@@ -155,7 +155,6 @@
 		layout="centered"
 		container="none"
 		class="detail-body"
-		style="--edge-left: 340px; --edge-right: 400px;"
 	>
 		{#snippet sideLeft()}
 			<StickyPanel top="5rem">
@@ -359,6 +358,9 @@
 		:global(.detail-body) {
 			padding-block: 2.5rem;
 			gap: 2rem;
+		}
+		:global(.section-wrapper.detail-body[data-layout="centered"]) {
+			grid-template-columns: 1fr 2fr 1fr;
 		}
 	}
 

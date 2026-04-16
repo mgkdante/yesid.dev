@@ -1,8 +1,8 @@
 <!--
-  Detail page layout for /services/[id].
-  Full-width hero, centered content sections (matches WorkDetailPage).
-  Station tabs → hero → gradient divider → collapsible sections →
-  related projects band → prev/next nav.
+  ServiceDetailPage — consultative deep dive for /services/[id].
+  Asymmetric split hero (text left, orange SVG panel right).
+  Impact metric column (desktop sticky) + standard CollapsibleSection cards.
+  Related projects in right panel (desktop) / bottom list (mobile). D186, D187, D189.
 -->
 <script lang="ts">
 	import type { Service, Project } from '$lib/data/types.js';
@@ -11,11 +11,10 @@
 	import { boop } from '$lib/motion/actions/boop.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
-	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
-	import ProjectMiniCard from '$lib/components/projects/ProjectMiniCard.svelte';
+	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import { Separator } from '$lib/components/ui/separator';
-	import { SvgIcon } from '$lib/components/brand';
+	import { SectionLabel } from '$lib/components/brand';
 
 	let {
 		service,
@@ -39,22 +38,26 @@
 	let stationNum = $derived(String(service.station).padStart(2, '0'));
 	let totalStr = $derived(String(services.length).padStart(2, '0'));
 	let svgContent = $derived(serviceSvgContents[service.id] ?? '');
+	let benefitHeadline = $derived(
+		service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : null
+	);
+	let metricValue = $derived(
+		service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : null
+	);
+	let metricLabel = $derived(
+		service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : null
+	);
 
-
-	// WHY: all user-facing strings go through LocalizedString so the page is ready
-	// for future i18n without changing component logic.
 	const labels = {
 		backLink: { en: '\u2190 All Services' },
-		serviceCounter: { en: 'Service' },
 		valueProposition: { en: 'How This Helps You' },
 		deliverables: { en: 'Typical Deliverables' },
-		builtWith: { en: 'Built with' },
-		seeAllWork: { en: 'See all work \u2192' }
+		relatedProjects: { en: 'Related Projects' }
 	};
 </script>
 
 <div class="service-detail" data-testid="service-detail-page">
-	<!-- Station tabs — navigate mode -->
+	<!-- Station tabs — navigate mode (orange strip) -->
 	<StationTabs
 		{services}
 		activeId={service.id}
@@ -62,7 +65,7 @@
 	/>
 
 	<article class="detail-article">
-		<!-- Hero — full width -->
+		<!-- Hero — asymmetric split: text left, SVG right -->
 		<div class="hero-area">
 			<a
 				href="/services"
@@ -72,15 +75,10 @@
 				{resolveLocale(labels.backLink, 'en')}
 			</a>
 
-			<header class="hero-layout" use:reveal={{ direction: 'up', delay: 0 }}>
-				{#if svgContent}
-					<SvgIcon {svgContent} size={200} data-testid="service-detail-svg" />
-				{/if}
-
+			<header class="hero-grid" use:reveal={{ direction: 'up', delay: 0 }}>
+				<!-- Text column -->
 				<div class="hero-text">
-					<span class="station-counter label-section font-semibold">
-						{resolveLocale(labels.serviceCounter, 'en')} {stationNum} / {totalStr}
-					</span>
+					<SectionLabel text="Service {stationNum} / {totalStr}" variant="station" class="mb-4 block" />
 
 					<h1 class="detail-title">
 						{title}<span class="title-dot">.</span>
@@ -93,88 +91,180 @@
 					<p class="detail-description">{description}</p>
 
 					{#if service.stack && service.stack.length > 0}
-						<div class="stack-area" use:reveal={{ direction: 'up', delay: 80 }}>
-							<DataFlowDiagram stack={service.stack} size="lg" />
+						<div class="stack-pills" use:reveal={{ direction: 'up', delay: 80 }}>
+							{#each service.stack as tech}
+								<span class="stack-pill">{tech}</span>
+							{/each}
 						</div>
 					{/if}
 				</div>
+
+				<!-- SVG panel — desktop/tablet only (wrapper controls visibility) -->
+				{#if svgContent}
+					<div class="svg-desktop">
+						<ServiceSvgPanel {svgContent} />
+					</div>
+				{/if}
 			</header>
 
-			<Separator variant="gradient" />
-		</div>
-
-		<!-- Centered content area — exact WorkDetailPage section pattern -->
-		<div class="centered-content">
-			<!-- Value Proposition -->
-			{#if service.valueProposition}
-				<div use:reveal={{ direction: 'up', delay: 100 }}>
-					<CollapsibleSection title={resolveLocale(labels.valueProposition, 'en')} open={true}>
-						{#snippet icon()}
-							<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-								<circle cx="8" cy="8" r="2.5" />
-								<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" />
-							</svg>
-						{/snippet}
-						<p class="text-sm leading-relaxed text-text-light md:text-base">
-							{resolveLocale(service.valueProposition, 'en')}
-						</p>
-					</CollapsibleSection>
+			<!-- SVG banner — mobile only (wrapper controls visibility) -->
+			{#if svgContent}
+				<div class="svg-mobile" use:reveal={{ direction: 'up', delay: 60 }}>
+					<ServiceSvgPanel {svgContent} variant="banner" />
 				</div>
 			{/if}
+		</div>
 
-			<!-- Deliverables -->
-			{#if service.deliverables && service.deliverables.length > 0}
-				<div use:reveal={{ direction: 'up', delay: 150 }}>
-					<CollapsibleSection title={resolveLocale(labels.deliverables, 'en')} open={true}>
-						{#snippet icon()}
-							<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-								<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
-							</svg>
-						{/snippet}
-						<div class="deliverables-grid">
-							{#each service.deliverables as deliverable}
-								<div class="deliverable-item">
-									<span class="deliverable-dot" aria-hidden="true"></span>
-									<span class="text-sm text-text-light">{resolveLocale(deliverable, 'en')}</span>
-								</div>
-							{/each}
+		<Separator variant="hazard" />
+
+		<!-- Body: impact column | content sections | projects panel -->
+		<div class="body-area">
+			<div class="body-grid">
+				<!-- Impact metric column — desktop only, sticky -->
+				{#if metricValue}
+					<aside class="impact-column" use:reveal={{ direction: 'up', delay: 120 }}>
+						<div class="impact-metric">
+							<span class="impact-value">{metricValue}</span>
+							{#if metricLabel}
+								<span class="impact-label">{metricLabel}</span>
+							{/if}
 						</div>
-					</CollapsibleSection>
-				</div>
-			{/if}
+						{#if benefitHeadline}
+							<div class="impact-separator" aria-hidden="true"></div>
+							<p class="benefit-headline">{benefitHeadline}</p>
+						{/if}
+					</aside>
+				{/if}
 
-			<!-- Custom sections — numbered, collapsed by default -->
-			{#if service.sections}
-				{#each service.sections as section, i}
-					<div use:reveal={{ direction: 'up', delay: 200 + i * 80 }}>
-						<CollapsibleSection title={resolveLocale(section.title, 'en')} open={true} index={i}>
-							<p class="text-sm leading-relaxed text-text-light">
-								{resolveLocale(section.content, 'en')}
-							</p>
+				<!-- Content sections -->
+				<div class="sections">
+					<!-- Mobile-only inline metric -->
+					{#if metricValue}
+						<div class="metric-inline" use:reveal={{ direction: 'up', delay: 100 }}>
+							<span class="metric-inline-value">{metricValue}</span>
+							{#if metricLabel}
+								<span class="metric-inline-label">{metricLabel}</span>
+							{/if}
+							{#if benefitHeadline}
+								<p class="metric-inline-headline">{benefitHeadline}</p>
+							{/if}
+						</div>
+					{/if}
+
+					<!-- Value Proposition -->
+					{#if service.valueProposition}
+						<div use:reveal={{ direction: 'up', delay: 150 }}>
+							<CollapsibleSection title={resolveLocale(labels.valueProposition, 'en')} open={true}>
+								{#snippet icon()}
+									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+										<circle cx="8" cy="8" r="2.5" />
+										<path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" />
+									</svg>
+								{/snippet}
+								<p class="section-body">
+									{resolveLocale(service.valueProposition, 'en')}
+								</p>
+							</CollapsibleSection>
+						</div>
+					{/if}
+
+					<!-- Deliverables -->
+					{#if service.deliverables && service.deliverables.length > 0}
+						<div use:reveal={{ direction: 'up', delay: 200 }}>
+							<CollapsibleSection title={resolveLocale(labels.deliverables, 'en')} open={true}>
+								{#snippet icon()}
+									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+										<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
+									</svg>
+								{/snippet}
+								<div class="deliverables-grid">
+									{#each service.deliverables as deliverable}
+										<div class="deliverable-item">
+											<span class="deliverable-dot" aria-hidden="true"></span>
+											<span>{resolveLocale(deliverable, 'en')}</span>
+										</div>
+									{/each}
+								</div>
+							</CollapsibleSection>
+						</div>
+					{/if}
+
+					<!-- Custom sections -->
+					{#if service.sections}
+						{#each service.sections as section, i}
+							<div use:reveal={{ direction: 'up', delay: 250 + i * 80 }}>
+								<CollapsibleSection title={resolveLocale(section.title, 'en')} open={true} index={i}>
+									<p class="section-body">
+										{resolveLocale(section.content, 'en')}
+									</p>
+								</CollapsibleSection>
+							</div>
+						{/each}
+					{/if}
+				</div>
+
+				<!-- Related projects — right panel (desktop), hidden on mobile -->
+				{#if relatedProjects.length > 0}
+					<aside class="projects-panel" use:reveal={{ direction: 'up', delay: 180 }}>
+						<CollapsibleSection
+							title="{resolveLocale(labels.relatedProjects, 'en')} ({relatedProjects.length})"
+							open={true}
+						>
+							{#snippet icon()}
+								<span class="projects-count">{relatedProjects.length}</span>
+							{/snippet}
+							<nav class="projects-list" aria-label="Related projects">
+								{#each relatedProjects as project}
+									<a
+										href="/projects/{project.slug}"
+										class="project-link"
+										use:boop={{ scale: 1.02, timing: 150 }}
+									>
+										<span class="project-dot" aria-hidden="true"></span>
+										<span class="project-name">{resolveLocale(project.title, 'en')}</span>
+									</a>
+								{/each}
+							</nav>
+							<a href="/projects" class="projects-all">
+								See all projects &rarr;
+							</a>
 						</CollapsibleSection>
-					</div>
-				{/each}
-			{/if}
+					</aside>
+				{/if}
+			</div>
 		</div>
 
-		<!-- Related Projects -->
+		<!-- Related projects — mobile only, before prev/next -->
 		{#if relatedProjects.length > 0}
-			<div class="centered-content" style="margin-top: 2.5rem;">
-				<div class="related-header" use:reveal={{ direction: 'up', delay: 100 }}>
-					<h2 class="related-title">{resolveLocale(labels.builtWith, 'en')} {title}</h2>
-					<a href="/projects" class="related-link">{resolveLocale(labels.seeAllWork, 'en')}</a>
-				</div>
-
-				<div class="projects-grid">
-					{#each relatedProjects as project, i}
-						<ProjectMiniCard {project} index={i} />
-					{/each}
-				</div>
+			<div class="projects-mobile" use:reveal={{ direction: 'up', delay: 100 }}>
+				<CollapsibleSection
+					title="{resolveLocale(labels.relatedProjects, 'en')} ({relatedProjects.length})"
+					open={true}
+				>
+					{#snippet icon()}
+						<span class="projects-count">{relatedProjects.length}</span>
+					{/snippet}
+					<nav class="projects-list" aria-label="Related projects">
+						{#each relatedProjects as project}
+							<a
+								href="/projects/{project.slug}"
+								class="project-link"
+								use:boop={{ scale: 1.02, timing: 150 }}
+							>
+								<span class="project-dot" aria-hidden="true"></span>
+								<span class="project-name">{resolveLocale(project.title, 'en')}</span>
+							</a>
+						{/each}
+					</nav>
+					<a href="/projects" class="projects-all">
+						See all projects &rarr;
+					</a>
+				</CollapsibleSection>
 			</div>
 		{/if}
 
-		<!-- Prev/Next Nav — centered -->
-		<div class="centered-content">
+		<!-- Prev/Next Nav -->
+		<div class="nav-area">
 			<ServiceNav {prev} {next} />
 		</div>
 	</article>
@@ -187,85 +277,241 @@
 	}
 
 	.detail-article {
-		padding-bottom: 4rem;
+		padding-bottom: 0;
 	}
 
-	/* Hero area — full width with fluid gutters */
+	/* ── Hero ── */
+
 	.hero-area {
-		padding: 2rem var(--space-page-x) 0;
+		padding: 2rem var(--space-page-x) 2rem;
 	}
 
 	.back-link {
 		display: inline-block;
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: var(--text-caption);
 		color: var(--primary);
 		text-decoration: none;
 		margin-bottom: 1.5rem;
 		transition: opacity var(--duration-fast);
 	}
-	.back-link:hover { text-decoration: underline; }
+	.back-link:hover {
+		text-decoration: underline;
+	}
 
-	.hero-layout {
+	/* Desktop: text left, SVG panel right */
+	.hero-grid {
 		display: flex;
-		align-items: flex-start;
-		gap: 3rem;
+		flex-direction: column;
+		gap: 2rem;
 	}
 
-	@media (max-width: 767px) {
-		.hero-area { padding: 1.5rem var(--space-page-x) 0; }
-		.hero-layout {
-			flex-direction: column;
-			align-items: center;
-		}
-		.hero-layout :global([data-slot="svg-icon"]) {
-			--svg-icon-size: clamp(100px, 30vw, 160px);
+	@media (min-width: 768px) {
+		.hero-grid {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			gap: clamp(2rem, 4vw, 4rem);
+			align-items: start;
 		}
 	}
 
-	.hero-text { flex: 1; min-width: 0; }
+	/* SVG visibility: wrapper divs control show/hide cleanly */
+	.svg-desktop {
+		display: none;
+	}
+	@media (min-width: 768px) {
+		.svg-desktop {
+			display: block;
+		}
+	}
 
-	.station-counter {
-		display: block;
-		color: var(--primary);
-		margin-bottom: 0.75rem;
+	.svg-mobile {
+		margin-top: 1.5rem;
+	}
+	@media (min-width: 768px) {
+		.svg-mobile {
+			display: none;
+		}
+	}
+
+	.hero-text {
+		min-width: 0;
 	}
 
 	.detail-title {
 		font-family: var(--font-heading);
-		font-size: clamp(1.75rem, 3.5vw, 3rem);
-		font-weight: 800;
+		font-size: clamp(32px, 4vw, 56px);
+		font-weight: 900;
 		color: var(--foreground);
-		line-height: 1.1;
+		line-height: 1.05;
+		letter-spacing: -0.03em;
 		margin-bottom: 0.5rem;
 	}
-	.title-dot { color: var(--primary); }
+
+	.title-dot {
+		color: var(--primary);
+	}
 
 	.detail-subtitle {
-		font-size: 1rem;
-		color: var(--muted-foreground);
-		margin-bottom: 0.75rem;
+		font-size: var(--text-heading);
+		color: var(--primary);
+		margin-bottom: 1rem;
 		font-style: italic;
 	}
 
 	.detail-description {
-		font-size: 1rem;
+		font-size: var(--text-body);
 		line-height: 1.7;
 		color: var(--secondary-foreground);
 		max-width: 60ch;
+		margin-bottom: 1.5rem;
 	}
 
-	.stack-area { margin-top: 1.25rem; }
+	/* Stack pills — orange border + text (matches ServiceCard) */
+	.stack-pills {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
 
-	/* Centered content — uses container-wide for sidebar layout */
-	.centered-content {
-		max-width: var(--container-wide);
-		margin: 0 auto;
-		padding: 0 var(--space-page-x);
+	.stack-pill {
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		padding: 0.25rem 0.625rem;
+		border: 1.5px solid var(--primary);
+		border-radius: var(--radius-pill);
+		color: var(--primary);
+		background: transparent;
+		cursor: default;
+	}
+
+	/* ── Body area ── */
+
+	.body-area {
+		padding: 2rem var(--space-page-x) 0;
+	}
+
+	.body-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	@media (min-width: 1024px) {
+		.body-grid {
+			display: grid;
+			grid-template-columns: 1fr 2fr 1fr;
+			gap: clamp(1.25rem, 2vw, 2.5rem);
+			align-items: start;
+		}
+	}
+
+	/* ── Impact column (desktop only, sticky) ── */
+
+	.impact-column {
+		display: none;
+	}
+
+	@media (min-width: 1024px) {
+		.impact-column {
+			display: flex;
+			flex-direction: column;
+			position: sticky;
+			top: calc(5rem + 4rem + 2rem);
+		}
+	}
+
+	.impact-metric {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.impact-value {
+		font-family: var(--font-heading);
+		font-size: clamp(88px, 10vw, 140px);
+		font-weight: 900;
+		color: var(--primary);
+		line-height: 0.8;
+		letter-spacing: -0.05em;
+	}
+
+	.impact-label {
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		color: var(--primary);
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		margin-top: 0.5rem;
+	}
+
+	.impact-separator {
+		width: 2.5rem;
+		height: 2px;
+		background: color-mix(in srgb, var(--primary) 40%, transparent);
+		margin-block: 1.5rem;
+	}
+
+	.benefit-headline {
+		font-size: var(--text-body);
+		font-weight: 500;
+		color: var(--secondary-foreground);
+		line-height: 1.5;
+	}
+
+	/* ── Mobile inline metric (below 1024px) ── */
+
+	.metric-inline {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid var(--card);
+		margin-bottom: 0.5rem;
+	}
+
+	@media (min-width: 1024px) {
+		.metric-inline {
+			display: none;
+		}
+	}
+
+	.metric-inline-value {
+		font-family: var(--font-heading);
+		font-size: clamp(32px, 5vw, 40px);
+		font-weight: 900;
+		color: var(--primary);
+		line-height: 1;
+	}
+
+	.metric-inline-label {
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		color: var(--primary);
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+
+	.metric-inline-headline {
+		flex-basis: 100%;
+		font-size: var(--text-small);
+		color: var(--secondary-foreground);
+		line-height: 1.5;
+		margin-top: 0.25rem;
+	}
+
+	/* ── Sections ── */
+
+	.sections {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		margin-top: 2rem;
+	}
+
+	.section-body {
+		font-size: var(--text-body);
+		line-height: 1.7;
+		color: var(--text-light);
 	}
 
 	/* Deliverables grid */
@@ -275,15 +521,17 @@
 		gap: 0.625rem;
 	}
 	@media (min-width: 768px) {
-		.deliverables-grid { grid-template-columns: 1fr 1fr; }
+		.deliverables-grid {
+			grid-template-columns: 1fr 1fr;
+		}
 	}
 
 	.deliverable-item {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		font-size: 0.875rem;
-		color: var(--light-foreground);
+		font-size: var(--text-small);
+		color: var(--text-light);
 	}
 
 	.deliverable-dot {
@@ -294,39 +542,123 @@
 		flex-shrink: 0;
 	}
 
-	/* Related projects section */
+	/* ── Related projects panel (desktop right column) ── */
 
-	.related-header {
+	.projects-panel {
+		display: none;
+	}
+
+	@media (min-width: 1024px) {
+		.projects-panel {
+			display: block;
+			position: sticky;
+			top: calc(5rem + 4rem + 2rem);
+		}
+	}
+
+	.projects-count {
+		font-family: var(--font-mono);
+		font-size: var(--text-micro);
+		color: var(--primary);
+		background: color-mix(in srgb, var(--primary) 12%, transparent);
+		padding: 0.125rem 0.5rem;
+		border-radius: var(--radius-pill);
+	}
+
+	.projects-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.project-link {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 1.5rem;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.related-title {
-		font-family: var(--font-heading);
-		font-size: 1.25rem;
-		font-weight: 700;
+		gap: 0.625rem;
+		padding: 0.625rem 0.75rem;
+		text-decoration: none;
 		color: var(--foreground);
+		font-size: var(--text-body);
+		font-weight: 500;
+		border-radius: var(--radius-md);
+		transition: background var(--duration-fast), color var(--duration-fast);
+	}
+	.project-link:hover {
+		background: color-mix(in srgb, var(--primary) 8%, transparent);
+	}
+	.project-link:hover .project-name {
+		color: var(--primary);
 	}
 
-	.related-link {
+	.project-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--primary);
+		flex-shrink: 0;
+	}
+
+	.project-name {
+		transition: color var(--duration-fast);
+	}
+
+	.projects-all {
+		display: inline-block;
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
+		font-size: var(--text-caption);
 		color: var(--primary);
 		text-decoration: none;
+		margin-top: 0.5rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--border-subtle);
+		transition: opacity var(--duration-fast);
 	}
-	.related-link:hover { text-decoration: underline; }
-
-	.projects-grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 0.75rem;
+	.projects-all:hover {
+		text-decoration: underline;
 	}
-	@media (min-width: 768px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
-	@media (min-width: 1024px) { .projects-grid { grid-template-columns: repeat(3, 1fr); } }
 
-	/* ProjectMiniCard handles its own styling */
+	/* ── Related projects mobile (bottom of page) ── */
+
+	.projects-mobile {
+		padding: 1.5rem var(--space-page-x);
+	}
+
+	@media (min-width: 1024px) {
+		.projects-mobile {
+			display: none;
+		}
+	}
+
+	/* ── Nav area ── */
+
+	.nav-area {
+		padding: 0 var(--space-page-x);
+	}
+
+	/* ── Mobile adjustments ── */
+
+	@media (max-width: 767px) {
+		.hero-area {
+			padding: 1.5rem var(--space-page-x) 1.5rem;
+		}
+
+		.detail-title {
+			font-size: clamp(28px, 7vw, 36px);
+		}
+
+		.detail-subtitle {
+			font-size: var(--text-body);
+		}
+
+		.detail-description {
+			font-size: var(--text-small);
+			line-height: 1.5;
+			margin-bottom: 1rem;
+		}
+
+		.stack-pill {
+			font-size: var(--text-micro);
+			padding: 0.125rem 0.5rem;
+		}
+	}
 </style>

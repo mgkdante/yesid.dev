@@ -10,7 +10,6 @@
   import type { BlogPost } from '$lib/data/types.js';
   import { Separator } from '$lib/components/ui/separator';
   import { StickyPanel } from '$lib/components/brand';
-  import { SectionWrapper } from '$lib/components/shells';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
   import TableOfContents from '$lib/components/shared/TableOfContents.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
@@ -120,47 +119,6 @@
   }
 
   // Edge label sizing: font-size calculated so rotated text spans exactly 100dvh.
-  // Uses Pretext for text width measurement, shared Canvas context for cross-axis.
-  // Scale: targetSize = refSize * (viewportHeight / textWidth).
-  let leftEdgeEl = $state<HTMLElement>(undefined!);
-  let rightEdgeEl = $state<HTMLElement>(undefined!);
-  let bodyGridEl = $state<HTMLElement>(undefined!);
-  let edgesSized = $state(false);
-
-  const REF_SIZE = 100; // reference font-size for measurement (px)
-
-  function sizeEdgeToViewport(el: HTMLElement | undefined): number | undefined {
-    if (!el || !browser) return;
-    const labelEl = el.querySelector('[data-edge-text]') as HTMLElement | null;
-    if (!labelEl) return;
-
-    // Measure at reference size using the actual DOM element (accounts for
-    // letter-spacing, font metrics, and all CSS properties automatically).
-    // The text uses writing-mode: vertical-rl, so rect.height = text length.
-    labelEl.style.fontSize = `${REF_SIZE}px`;
-    const refRect = labelEl.getBoundingClientRect();
-    if (refRect.height === 0) return;
-
-    // Scale font-size so text length = viewport height (100dvh)
-    const vh = window.innerHeight;
-    const targetSize = REF_SIZE * (vh / refRect.height);
-    labelEl.style.fontSize = `${targetSize}px`;
-
-    // Column width = cross-axis of the sized text
-    const finalRect = labelEl.getBoundingClientRect();
-    return Math.ceil(finalRect.width);
-  }
-
-  $effect(() => {
-    const leftWidth = sizeEdgeToViewport(leftEdgeEl);
-    const rightWidth = sizeEdgeToViewport(rightEdgeEl);
-    const maxWidth = Math.max(leftWidth ?? 0, rightWidth ?? 0);
-    if (bodyGridEl && maxWidth > 0) {
-      bodyGridEl.style.setProperty('--_edge-left', `${maxWidth}px`);
-      bodyGridEl.style.setProperty('--_edge-right', `${maxWidth}px`);
-      edgesSized = true;
-    }
-  });
 </script>
 
 <article data-testid="blog-detail-page" class:reading-active={readingMode} style="--blog-accent: {accentColor};">
@@ -175,101 +133,86 @@
     <TableOfContents bind:this={tocRef} {html} />
   </div>
 
-  <!-- Body: 4-zone magazine spread — BEGIN | TOC+content | TRANSMISSION -->
-  <div bind:this={bodyGridEl} class="body-grid" class:body-grid--ready={edgesSized}>
-    <!-- Left edge: BEGIN label -->
-    <div bind:this={leftEdgeEl} class="body-edge body-edge--left" aria-hidden="true">
-      <span data-edge-text class="body-edge__text">Begin<span class="body-edge__dot">.</span></span>
+  <!-- Body: simple centered 2-column grid (TOC | content) -->
+  <div class="body-grid">
+    <!-- TOC sidebar — desktop only -->
+    <div class="toc-column">
+      <StickyPanel top="5rem">
+        <div class="toc-panel toc-scroll" data-lenis-prevent>
+          <!-- Reading mode switch -->
+          <label class="reading-toggle">
+            <span class="reading-toggle__label">Reading mode</span>
+            <button
+              class="reading-switch"
+              class:reading-switch--on={readingMode}
+              onclick={() => (readingMode = !readingMode)}
+              role="switch"
+              aria-checked={readingMode}
+            >
+              <span class="reading-switch__thumb"></span>
+            </button>
+          </label>
+
+          <CollapsibleSection title="On this page" open={true}>
+            <nav class="toc-nav">
+              {#each headings as heading}
+                <button
+                  class="toc-item"
+                  class:toc-sub-item={heading.level > 2}
+                  class:active={activeHeadingId === heading.id}
+                  onclick={() => scrollToHeading(heading.id)}
+                  style={heading.level > 2 ? `padding-left: ${16 + (heading.level - 3) * 10}px;` : ''}
+                >
+                  {#if activeHeadingId === heading.id}
+                    <div class="toc-dot"></div>
+                  {/if}
+                  {heading.text}
+                </button>
+              {/each}
+            </nav>
+
+            <div class="mt-6 flex items-center gap-2">
+              <div class="toc-counter-dot"></div>
+              <span class="toc-counter-text font-mono text-micro tracking-[1.5px]">
+                SEC {h2Index} / {h2Count}
+              </span>
+            </div>
+          </CollapsibleSection>
+
+          <!-- Post metadata panel -->
+          <div class="left-meta" aria-hidden="true">
+            <div class="left-meta__item">
+              <span class="left-meta__label">Category</span>
+              <span class="left-meta__value">{post.category}</span>
+            </div>
+            <div class="left-meta__item">
+              <span class="left-meta__label">Words</span>
+              <span class="left-meta__value">{wordCount.toLocaleString()}</span>
+            </div>
+            <div class="left-meta__item">
+              <span class="left-meta__label">Read time</span>
+              <span class="left-meta__value">{readingTime} min</span>
+            </div>
+            <div class="left-meta__item">
+              <span class="left-meta__label">Language</span>
+              <span class="left-meta__value">{post.lang}</span>
+            </div>
+            {#if post.tags.length > 0}
+              <div class="left-meta__item">
+                <span class="left-meta__label">Tags</span>
+                <span class="left-meta__value">{post.tags.join(' · ')}</span>
+              </div>
+            {/if}
+          </div>
+        </div>
+      </StickyPanel>
     </div>
 
-    <!-- Center: SectionWrapper with TOC (sideLeft) + prose (content) -->
-    <SectionWrapper
-      layout="centered"
-      container="none"
-      class="detail-body"
-      style="--edge-left: 340px; --edge-right: 0;"
-    >
-      {#snippet sideLeft()}
-        <StickyPanel top="5rem">
-          <div class="toc-panel toc-scroll" data-lenis-prevent>
-            <!-- Reading mode switch -->
-            <label class="reading-toggle">
-              <span class="reading-toggle__label">Reading mode</span>
-              <button
-                class="reading-switch"
-                class:reading-switch--on={readingMode}
-                onclick={() => (readingMode = !readingMode)}
-                role="switch"
-                aria-checked={readingMode}
-              >
-                <span class="reading-switch__thumb"></span>
-              </button>
-            </label>
-
-            <CollapsibleSection title="On this page" open={true}>
-              <nav class="toc-nav">
-                {#each headings as heading}
-                  <button
-                    class="toc-item"
-                    class:toc-sub-item={heading.level > 2}
-                    class:active={activeHeadingId === heading.id}
-                    onclick={() => scrollToHeading(heading.id)}
-                    style={heading.level > 2 ? `padding-left: ${16 + (heading.level - 3) * 10}px;` : ''}
-                  >
-                    {#if activeHeadingId === heading.id}
-                      <div class="toc-dot"></div>
-                    {/if}
-                    {heading.text}
-                  </button>
-                {/each}
-              </nav>
-
-              <div class="mt-6 flex items-center gap-2">
-                <div class="toc-counter-dot"></div>
-                <span class="toc-counter-text font-mono text-micro tracking-[1.5px]">
-                  SEC {h2Index} / {h2Count}
-                </span>
-              </div>
-            </CollapsibleSection>
-
-            <!-- Post metadata panel -->
-            <div class="left-meta" aria-hidden="true">
-              <div class="left-meta__item">
-                <span class="left-meta__label">Category</span>
-                <span class="left-meta__value">{post.category}</span>
-              </div>
-              <div class="left-meta__item">
-                <span class="left-meta__label">Words</span>
-                <span class="left-meta__value">{wordCount.toLocaleString()}</span>
-              </div>
-              <div class="left-meta__item">
-                <span class="left-meta__label">Read time</span>
-                <span class="left-meta__value">{readingTime} min</span>
-              </div>
-              <div class="left-meta__item">
-                <span class="left-meta__label">Language</span>
-                <span class="left-meta__value">{post.lang}</span>
-              </div>
-              {#if post.tags.length > 0}
-                <div class="left-meta__item">
-                  <span class="left-meta__label">Tags</span>
-                  <span class="left-meta__value">{post.tags.join(' · ')}</span>
-                </div>
-              {/if}
-            </div>
-          </div>
-        </StickyPanel>
-      {/snippet}
-
-      <!-- Center: prose content -->
+    <!-- Center: prose content -->
+    <div class="content-column">
       <BlogContent {accentColor}>
         {@html processedHtml}
       </BlogContent>
-    </SectionWrapper>
-
-    <!-- Right edge: TRANSMISSION label -->
-    <div bind:this={rightEdgeEl} class="body-edge body-edge--right" aria-hidden="true">
-      <span data-edge-text class="body-edge__text">Transmission<span class="body-edge__dot">.</span></span>
     </div>
   </div>
 </article>
@@ -278,67 +221,43 @@
 <BlogTocPill {headings} />
 
 <style>
-  /* ── 4-zone body grid ──────────────────────────────────────── */
+  /* ── Centered 2-column body grid ───────────────────────── */
   .body-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    max-width: var(--container-wide);
+    margin: 2rem auto 0;
     padding-inline: var(--space-page-x);
-    margin-top: 2rem;
     min-width: 0;
     overflow-x: clip;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .toc-column {
+    display: none;
+  }
+
+  .content-column {
+    min-width: 0;
   }
 
   @media (min-width: 1024px) {
     .body-grid {
-      grid-template-columns: var(--_edge-left, 120px) 1fr var(--_edge-right, 120px);
-      padding-inline: 0;
-      gap: 0;
-      /* Hide until edge labels are sized to prevent layout shift */
-      opacity: 0;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: clamp(1.5rem, 2.5vw, 3rem);
+      align-items: start;
     }
-    .body-grid--ready {
-      opacity: 1;
-      transition: opacity 0.15s ease;
+    .toc-column {
+      display: block;
     }
   }
 
-  /* ── Edge labels: section-level, same sizing as EdgeRail title variant ── */
-  .body-edge {
-    display: none;
-    position: sticky;
-    top: 0;
-    height: 100dvh;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  @media (min-width: 1024px) {
-    .body-edge {
-      display: flex;
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .body-grid {
+      grid-template-columns: 1fr 1.5fr;
     }
   }
 
-  .body-edge__text {
-    font-family: var(--font-heading);
-    font-size: var(--_title-size);
-    line-height: 1;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    color: color-mix(in srgb, var(--foreground) 6%, transparent);
-    white-space: nowrap;
-    writing-mode: vertical-rl;
-  }
-
-  .body-edge--left .body-edge__text {
-    transform: rotate(180deg);
-  }
-
-  .body-edge__dot {
-    color: var(--blog-accent, var(--primary));
-  }
 
   /* ── Left column metadata panel ──────────────────────────────── */
   .left-meta {
@@ -437,28 +356,9 @@
     color: color-mix(in srgb, var(--blog-accent, var(--primary)) 30%, transparent);
   }
 
-  /* ── Body wrapper ──────────────────────────────────────────── */
-  .detail-body {
-    padding-inline: var(--space-page-x);
-    padding-block: 1.5rem 3rem;
-    min-width: 0;
-  }
-
-  /* Prevent grid content cell from overflowing (all breakpoints) */
-  :global(.detail-body .section-content) {
-    min-width: 0;
-  }
-
+  /* Align blog content card top with TOC on desktop */
   @media (min-width: 1024px) {
-    .detail-body {
-      padding-inline: 0;
-      padding-block: 2.5rem 4rem;
-    }
-    :global(.detail-body) {
-      gap: 1rem;
-    }
-    /* Align blog content card top with TOC — strip mt-8 on desktop */
-    :global(.detail-body [data-testid="blog-content"]) {
+    .content-column :global([data-testid="blog-content"]) {
       margin-top: 0;
     }
   }

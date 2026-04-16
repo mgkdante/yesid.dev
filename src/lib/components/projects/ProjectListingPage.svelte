@@ -282,7 +282,7 @@
 		gap: 1rem;
 	}
 
-	@media (min-width: 768px) {
+	@media (min-width: 1280px) {
 		.project-grid {
 			grid-template-columns: 1fr 1fr;
 		}
