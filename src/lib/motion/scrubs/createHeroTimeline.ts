@@ -188,22 +188,25 @@ export function createHeroTimeline(
 	tl.to(berri, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
 	tl.to(bg, { opacity: 1, duration: 0.03, ease: 'power2.out' }, 0);
 
-	// === Phase 1b (0.03–0.15): Light on/off pulse on Berri + scrollPrompt ===
-	tl.to(berri, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
-	tl.to(scrollPrompt, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
-	tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
-	tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
-	tl.to(berri, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
-	tl.to(scrollPrompt, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
-	tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.1);
-	tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.1);
-	tl.to(berri, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
-	tl.to(scrollPrompt, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
-	tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
-	tl.to(scrollPrompt, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
+	// === Phase 1a (0.005–0.015): Snap-fade scrollPrompt out on first scroll ===
+	// Pre-Snappy: scrollPrompt stayed visible through Phase 1b pulses (0.03–0.15)
+	// and only faded in Phase 2 (0.17). That left the typewriter billboard on
+	// screen for ~136vh of scroll. Now fades within ~8vh of scroll so the
+	// typewriter animation keeps running but is no longer visible.
+	tl.to(scrollPrompt, { opacity: 0, duration: 0.01, ease: 'power2.in' }, 0.005);
 
-	// === Phase 2 (0.17–0.45): SCROLL DOWN fades out, lines draw ===
-	tl.to(scrollPrompt, { opacity: 0, duration: 0.04, ease: 'power2.in' }, 0.17);
+	// === Phase 1b (0.03–0.15): Light on/off pulse — berri only ===
+	// scrollPrompt removed from this pulse; it's already hidden by Phase 1a on
+	// any scroll > 0. The pulse still reads on berri as an "idle pre-scroll"
+	// cue for users who haven't scrolled yet.
+	tl.to(berri, { opacity: 0.2, duration: 0.02, ease: 'power1.out' }, 0.03);
+	tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.05);
+	tl.to(berri, { opacity: 0.15, duration: 0.02, ease: 'power1.out' }, 0.08);
+	tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.1);
+	tl.to(berri, { opacity: 0.1, duration: 0.02, ease: 'power1.out' }, 0.13);
+	tl.to(berri, { opacity: 1, duration: 0.02, ease: 'power1.in' }, 0.15);
+
+	// === Phase 2 (0.17–0.45): Lines draw ===
 	lines.forEach((line, i) => {
 		const stagger = i * 0.02;
 		tl.set(line, { opacity: 1 }, 0.17 + stagger);
