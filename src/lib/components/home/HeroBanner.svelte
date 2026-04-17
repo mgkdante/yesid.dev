@@ -25,7 +25,6 @@
 		ScrollTrigger,
 	} from '$lib/motion/utils/gsap.js';
 	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
-	import { createScrollLock } from '$lib/motion/utils/heroScrollLock.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
 	import { heroAnimContent, heroContent, INITIAL_HERO_DATA, generateHeroData } from '$lib/data';
 	import type { HeroData } from '$lib/data';
@@ -81,15 +80,11 @@
 	onMount(async () => {
 		reducedMotion = isPrefersReducedMotion();
 
-		// Lock scroll IMMEDIATELY on mount — before any awaits — to close
-		// the gap where the user could scroll before the typewriter starts.
-		const scrollLock = createScrollLock(scrollPrompt, reducedMotion);
-
 		await tick();
 		await new Promise((r) => setTimeout(r, 300));
 
 		const svg = pinContainer?.querySelector('[data-testid="metro-network"]');
-		if (!svg) { if (scrollLock.shouldLock) scrollLock.unlock(); return; }
+		if (!svg) return;
 
 		// Resolve heroDot from DOM — inside HeroTextContent child component
 		const heroDot = heroTextContainer.querySelector('.hero-dot') as SVGSVGElement;
@@ -116,14 +111,11 @@
 		await Promise.all([loadDrawSVG(), loadCustomEase()]);
 		registerGsapPlugins();
 
-		// Typewriter: one character at a time with trailing cursor.
+		// Typewriter: pure ambient per D264 — plays every visit, no scroll lock.
+		// If the user scrolls past mid-animation, the type-sequence cuts off and
+		// the blink picks up; the intro is not narrative-critical.
 		const typewriter = createTypewriter(scrollPrompt, scrollText, scrollCursorEl, scrollDownLabel);
-
-		if (scrollLock.shouldLock) {
-			typewriter.type(() => scrollLock.unlock());
-		} else {
-			typewriter.showImmediate();
-		}
+		typewriter.type(() => {});
 
 		// Ensure fonts are loaded before glyph measurements
 		await document.fonts.ready;
