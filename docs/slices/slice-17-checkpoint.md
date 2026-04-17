@@ -1,21 +1,50 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-16 | 17e-1 MERGED — 17e-2 + 17e-3 plans written, 17e-4/5/6 plans pending
-**Branch:** `feature/slice-17e-planning-pt2` (docs-only — 17e-2 + 17e-3 implementation plans)
+**Last updated:** 2026-04-17 | 17e-4 MERGED (PR #17, `b6e3a57`) — 17e-5 next
+**Branch:** `feature/slice-17e-4-docs` (docs-only catch-up — 17e-4 handoff + this checkpoint update)
 
 ## Current Position
 
-- **Sub-slice:** 17e-1 — Motion Foundation — COMPLETE (PR #12 merged)
-- **Previous:** 17d Component API — COMPLETE (PR #10 merged)
-- **Build:** 0 type errors, 21 pre-existing warnings, 802/802 tests pass (up from 769 baseline: +33 new tests)
-- **Status:** 17e-1 delivered. Planning pt2 in progress: full-depth implementation plans for 17e-2 (Snappy Sweep) and 17e-3 (Scrub Factories) written, awaiting docs-only PR review. 17e-4 / 17e-5 / 17e-6 plans deferred to a follow-up planning session.
-- **Next sub-slice:** 17e-2 — Snappy Sweep. Plan: `docs/plans/2026-04-16-slice-17e-2-snappy-sweep.md`. After PR merge, branch `feature/slice-17e-2-snappy-sweep` from updated main and begin implementation.
+- **Sub-slice:** 17e-4 — Hero Timeline Rewrite + MetroNetwork Inline + Mobile Polish — COMPLETE (PR #17 squash-merged)
+- **Previous:** 17e-3 Scrub Factories + 17e-2 Snappy Sweep — COMPLETE (PR #15 merged combined)
+- **Build:** 0 type errors, 19 pre-existing warnings, 774/774 tests pass (+7 since 17e-3 end: 6 factory + 1 mobile wrapper)
+- **Status:** 17e-4 delivered. `createHeroTimeline` sync factory + MetroNetwork `?raw` inline + SVGO (21.2 → 15.1 KB) + CSS cursor blink + `heroScrollLock` deleted + 6-iteration mobile hero polish. Bundle: home `/` +2.18 KB gzipped (lazy-plugin migration deferred to 17e-5/6). Real LCP wins live in the SSR HTML path (inlined SVG, no blocking fetch).
+- **Next sub-slice:** **17e-5 — Ambient Loop Consolidation + Lazy Plugin Migration**. Plan: `docs/plans/2026-04-17-slice-17e-5.md` (written in planning-pt3, merged via PR #16). Three streams: (1) ambient loops onto shared `motion/utils/ticker.ts`, (2) remaining cursor-blink consolidations per spec §4.6, (3) consumer migration off `registerGsapPlugins()` to pure lazy loaders so the home-route shrink finally lands.
+
+### Workflow Rule Adopted 2026-04-17
+
+- **Handoff is part of the implementation PR.** Every sub-slice PR now contains: planning docs (if new) + implementation + handoff. No more separate post-merge docs PRs for handoffs. The 17e-4 docs PR (this branch) is catch-up; 17e-5 onward follows the new rule.
+
+### 17e-4 Summary (PR #17)
+
+| Area | What landed |
+|------|-------------|
+| Hero timeline | `scrubs/createHeroTimeline.ts` sync factory — 9-phase choreography ported verbatim. Composes ScrollTrigger + pin + DrawSVG + CustomEase. Callers preload `loadDrawSVG` + `loadCustomEase`. Mobile pin `300%`, desktop `800%`. Internal reduced-motion branch. |
+| MetroNetwork | Runtime `fetch()` replaced with Vite `?raw` + `{@html}`. SVG in SSR HTML. SVGO one-time pass: 21.2 → 15.1 KB. `svgo.config.mjs` disables `convertColors`/`mergePaths`/`cleanupIds` to preserve classification attributes. |
+| heroScrollLock | Deleted (−74 lines). D264 — typewriter is pure ambient now. |
+| Typewriter | `setInterval` cursor blink → CSS `@keyframes typewriter-blink { to { visibility: hidden; } }` + `.typewriter-cursor` class. Uses `visibility` not opacity so it doesn't multiply with the scrub-driven scrollPrompt fade. Type-sequence `setInterval` still present — 17e-5 consolidates. |
+| heroTimeline.ts | Deleted (−222 lines). Replaced in full by the scrub factory. |
+| Mobile hero | 6-iteration polish from Yesid review: edge-to-edge layout, `--text-hero-mobile` token (`clamp(3rem, min(13vw, 8svh), 4rem)`), tighter `padding-block`, merge-into-one-card metric layout that fits in `calc(100svh - 5rem)` on short phones. Desktop untouched ("desktop is perfecto"). |
+| AboutMetrics | Stack on mobile (`flex-col md:flex-row`) per Yesid brief. |
+| MetricDisplay | One-step-smaller size mappings globally; `.metric-value` marker class + mobile-only `lg` shrink override in app.css. |
+| Bundle | Home `/` **+2.18 KB gzipped** vs 17e-1 baseline (opposite of plan's −3 to −8 KB target). Other routes flat or slightly down. Root cause: `registerGsapPlugins()` still runs for non-migrated plugins. Fix lands in 17e-5/6. |
+| Tests | +7 (6 createHeroTimeline factory, 1 HeroMetrics mobile wrapper). 774/774 total. |
+| Bug fixes from iteration | Phase 1a snap-fade (billboard was staying visible 136vh instead of 8vh); typewriter opacity handoff to scrub (removed `scrollPrompt.style.opacity='1'` from `startBlink`). |
+
+### 17e-4 Decisions (executed)
+
+- **D264 (applied):** `heroScrollLock.ts` deleted. Typewriter runs on every visit, truncates on scroll. No visible regressions.
+- **D265 (applied):** Vite `?raw` import + one-time SVGO CLI. `svgo.config.mjs` committed with plugin overrides required to preserve classification logic + per-path granularity. SVGO 4 dropped the `--disable` CLI flag, so the config file is required — not optional.
+- **D266:** Factory pattern for hero scroll-scrubs — `createHeroTimeline` does NOT delegate to `createDrawScrub`. Composes GSAP primitives directly because the hero's pin + multi-phase + zoom sequence is too specialized to fit the generic scrub factory shape.
+- **D267:** Mobile hero metric layout = **single merged Card with 3 metrics horizontally divided**. Desktop keeps the 3-card grid. Two variants render in the DOM at all times (CSS visibility-toggled). Simpler than `gsap.matchMedia` rebuild, no SSR/browser-env concerns.
+- **D268:** Scrub owns `scrollPrompt` opacity exclusively. Typewriter owns text + cursor only. Invariant documented in the factory code header to prevent regression. This rule emerged from the iteration-2 bug fix and is the canonical ownership boundary.
+- **D269 (deferred to 17e-5/6):** `registerGsapPlugins()` consumer-wide migration to lazy loaders is required to realize the bundle-shrink target. Not a 17e-4 failure — a correctly-scoped handoff to the next sub-slice.
 
 ### Planning pt2 Decisions (D263–D265)
 
 - **D263:** Terminus rotated label is a crescendo scrub target. The Closer graffiti doctrine exception (design spec §3.4) covers ONLY the in-section DrawSVG timeline, not the edge title. All 3 home rotated labels (Projects / Services / Terminus) are primary `<h2>` headings — keep semantic, no `aria-hidden`, `transform: scale()` only. Amend design spec §3.2 during 17e-6 closing.
-- **D264:** `heroScrollLock.ts` will be cut in 17e-4. Rationale: scroll-locking the viewport during the typewriter is a "plays at you" pattern that contradicts the Snappy Doctrine. Typewriter becomes pure ambient (signature 9) — runs via shared ticker + IntersectionObserver when visible; if user scrolls past mid-animation, it truncates, which is fine (it's ambient, not narrative-critical).
-- **D265:** MetroNetwork SVG inline mechanism for 17e-4 = **Vite `?raw` import + one-time SVGO CLI** (not a build plugin). Committed SVG file is the optimized source of truth. Alternative build-plugin option rejected for deterministic-source reasons. Command documented in 17e-6 MOTION.md v2.0.
+- **D264:** `heroScrollLock.ts` will be cut in 17e-4. Rationale: scroll-locking the viewport during the typewriter is a "plays at you" pattern that contradicts the Snappy Doctrine. Typewriter becomes pure ambient (signature 9) — runs via shared ticker + IntersectionObserver when visible; if user scrolls past mid-animation, it truncates, which is fine (it's ambient, not narrative-critical). _Applied in 17e-4._
+- **D265:** MetroNetwork SVG inline mechanism for 17e-4 = **Vite `?raw` import + one-time SVGO CLI** (not a build plugin). Committed SVG file is the optimized source of truth. Alternative build-plugin option rejected for deterministic-source reasons. Command documented in 17e-6 MOTION.md v2.0. _Applied in 17e-4 with plugin-override twist (see D265 note above)._
 
 ### Planning pt2 Decisions (D1–D2 — architectural, not numbered globally)
 
@@ -581,10 +610,10 @@ Phase 1 — Foundation (visual cohesion first)
   17d:   Component API ................. COMPLETE (99 commits, ~17 sessions, PR #10 merged)
   17e:   Motion Re-Engineering ......... IN PROGRESS (6 sub-slices, ~6-6.5 sessions)
     17e-1: Foundation .................. COMPLETE (8 tasks, PR #12 merged)
-    17e-2: Snappy Sweep ................ IMPLEMENTED, awaiting merge (PR #15 — combined 17e-2 + 17e-3)
-    17e-3: Scrub Factories ............. IMPLEMENTED, awaiting merge (PR #15)
-    17e-4: Hero Timeline Rewrite ....... PLAN WRITTEN (docs/plans/2026-04-17-slice-17e-4-hero-timeline.md) — D264+D265 applied
-    17e-5: Interaction Consolidation ... PLAN WRITTEN (docs/plans/2026-04-17-slice-17e-5-interaction-consolidation.md) — D266+D267 applied
+    17e-2: Snappy Sweep ................ COMPLETE (PR #15 merged — combined 17e-2 + 17e-3)
+    17e-3: Scrub Factories ............. COMPLETE (PR #15 merged)
+    17e-4: Hero Timeline Rewrite ....... COMPLETE (PR #17 merged — D264 + D265 + D266–D268 applied; +2.18 KB home bundle deferred to 17e-5/6)
+    17e-5: Interaction Consolidation ... PLAN WRITTEN (docs/plans/2026-04-17-slice-17e-5-interaction-consolidation.md) — D269 gates the bundle-shrink win
     17e-6: Closing ..................... PLAN WRITTEN (docs/plans/2026-04-17-slice-17e-6-closing.md) — Lighthouse H1 all routes
   17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17e)
 Phase 2 — Data + Architecture
@@ -603,6 +632,11 @@ Phase 2 — Data + Architecture
 | 17a-1 Token Foundation  | `feature/slice-17a-1-token-foundation`  | #2  | yes    |
 | 17a-2a Build Primitives | `feature/slice-17a-2a-build-primitives` | #3  | yes    |
 | 17a-2b Wire Primitives  | `feature/slice-17a-2b-wire-primitives`  | #4  | yes    |
+| 17e-1 Motion Foundation | `feature/slice-17e-1-foundation`        | #12 | yes    |
+| 17e plans (17e-2 / 17e-3) | `feature/slice-17e-planning-pt2`      | #14 | yes    |
+| 17e-2 + 17e-3 Sweep + Factories | `feature/slice-17e-2-snappy-sweep` | #15 | yes    |
+| 17e plans (17e-4 / 17e-5 / 17e-6) | `feature/slice-17e-planning-pt3` | #16 | yes    |
+| 17e-4 Hero Rewrite      | `feature/slice-17e-4-hero-timeline`     | #17 | yes    |
 
 
 ## Wire Tasks Progress (17a-2b)
