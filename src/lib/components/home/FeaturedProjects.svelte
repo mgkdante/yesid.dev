@@ -4,12 +4,8 @@
   Desktop: hover turns image to color. Mobile: tap image toggles color, tap text navigates.
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import { proofReelContent, getProjectBySlug, resolveLocale } from '$lib/data/index.js';
 	import type { Project } from '$lib/data/index.js';
-	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
-	import { prefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
@@ -23,8 +19,6 @@
 		getProjectBySlug(slug)
 	);
 
-	let sectionEl: HTMLElement | undefined = $state(undefined);
-
 	// Mobile tap toggle: track which card image is active (-1 = none)
 	let activeImageIndex = $state(-1);
 
@@ -36,42 +30,9 @@
 			activeImageIndex = activeImageIndex === index ? -1 : index;
 		}
 	}
-
-	onMount(() => {
-		if (!browser || !sectionEl) return;
-
-		if ($prefersReducedMotion) return;
-
-		registerGsapPlugins();
-
-		const cards = sectionEl.querySelectorAll('[data-proof-card]');
-		const viewall = sectionEl.querySelector('[data-proof-viewall]');
-
-		gsap.set(cards, { opacity: 0, y: 30 });
-		gsap.set(viewall, { opacity: 0 });
-
-		ScrollTrigger.create({
-			trigger: sectionEl,
-			start: 'top bottom-=50',
-			once: true,
-			onEnter: () => {
-				const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
-				tl.to(cards, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15 });
-				tl.to(viewall, { opacity: 1, duration: 0.3 }, '-=0.2');
-			},
-		});
-
-		return () => {
-			ScrollTrigger.getAll().forEach(st => {
-				if (st.trigger === sectionEl) st.kill();
-			});
-			gsap.set([...cards, viewall], { clearProps: 'all' });
-		};
-	});
 </script>
 
 <section
-	bind:this={sectionEl}
 	data-testid="proof-reel-section"
 	class="relative py-[var(--space-section-y)] px-[var(--space-page-x)] lg:min-h-dvh lg:flex lg:flex-col lg:justify-center"
 >
@@ -82,10 +43,7 @@
 				{@const title = resolveLocale(project.title, 'en')}
 				{@const metric = project.impactMetric}
 				{@const imageUrl = proofReelContent.images[project.slug as keyof typeof proofReelContent.images]}
-				<Card
-					data-proof-card
-					class="proof-card group flex flex-col"
-				>
+				<Card class="proof-card group flex flex-col">
 					<!-- Image — B&W default, color on hover (desktop) / tap (mobile) -->
 					<button
 						type="button"
@@ -152,7 +110,7 @@
 	</div>
 
 	<!-- View all link -->
-	<div data-proof-viewall class="text-right">
+	<div class="text-right">
 		<a
 			data-testid="proof-view-all"
 			href={proofReelContent.viewAllHref}
