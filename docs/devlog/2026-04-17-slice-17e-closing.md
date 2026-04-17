@@ -12,51 +12,77 @@
 
 ## Lighthouse audit results
 
-Run: `bun run build && bun run preview --host` on 2026-04-17 local → preview at `http://localhost:4173/`. Scores captured from Chrome DevTools → Lighthouse panel (agent-side Lighthouse MCP + Lighthouse CLI both unavailable this session).
+Run: `bun run build && bun run preview --host` on 2026-04-17 local → preview at `http://localhost:4173/`. 20 audits captured from Yesid's Chrome DevTools → Lighthouse panel (agent-side Lighthouse MCP + Lighthouse CLI both unavailable this session; Chrome DevTools driver blocked by MCP health check). Lighthouse 13.0.2, Chrome 147. `/tech-stack` not audited per Yesid's call.
+
+Raw JSONs: `C:/Users/otalo/Downloads/localhost_4173-*.json`.
 
 ### Desktop (target: Perf ≥ 98, A11y + SEO + BP = 100)
 
-| Route | Perf | A11y | BP | SEO | Notes |
+| Route | Perf | A11y | BP | SEO | Pass? |
 |---|---|---|---|---|---|
-| `/` | — | — | — | — | — |
-| `/blog` | — | — | — | — | — |
-| `/blog/personal` | — | — | — | — | — |
-| `/blog/why-i-left-orm-for-raw-sql` | — | — | — | — | use any current detail slug |
-| `/projects` | — | — | — | — | — |
-| `/projects/[slug]` | — | — | — | — | use any current detail slug |
-| `/services` | — | — | — | — | — |
-| `/services/sql-development` | — | — | — | — | or any current service id |
-| `/about` | — | — | — | — | — |
-| `/contact` | — | — | — | — | — |
-| `/tech-stack` | — | — | — | — | — |
+| `/` | **91** | **96** | 100 | **83** | ❌ Perf, A11y, SEO |
+| `/blog` | **97** | **96** | 100 | **82** | ❌ Perf, A11y, SEO |
+| `/blog/personal` | **97** | **96** | 100 | **82** | ❌ Perf, A11y, SEO |
+| `/blog/why-i-left-orm-for-raw-sql` | 98 | **96** | 100 | **82** | ❌ A11y, SEO |
+| `/projects` | **97** | 100 | 100 | 100 | ❌ Perf only |
+| `/projects/transit-data-pipeline` | **97** | **95** | 100 | **82** | ❌ Perf, A11y, SEO |
+| `/services` | 98 | 100 | 100 | 100 | ✅ |
+| `/services/sql-development` | 98 | 100 | 100 | 100 | ✅ |
+| `/about` | **95** | 100 | 100 | 100 | ❌ Perf only |
+| `/contact` | **95** | 100 | 100 | 100 | ❌ Perf only |
 
 ### Mobile (target: Perf ≥ 90 stretch ≥ 95, A11y + SEO + BP = 100)
 
-| Route | Perf | A11y | BP | SEO | Notes |
+| Route | Perf | A11y | BP | SEO | Pass? |
 |---|---|---|---|---|---|
-| `/` | — | — | — | — | Hero scroll-scrub lag flagged by Yesid (17e-5 polish round) — audit will quantify |
-| `/blog` | — | — | — | — | — |
-| `/blog/personal` | — | — | — | — | — |
-| `/blog/[slug]` | — | — | — | — | same slug as desktop |
-| `/projects` | — | — | — | — | — |
-| `/projects/[slug]` | — | — | — | — | same slug as desktop |
-| `/services` | — | — | — | — | — |
-| `/services/[id]` | — | — | — | — | same id as desktop |
-| `/about` | — | — | — | — | — |
-| `/contact` | — | — | — | — | — |
-| `/tech-stack` | — | — | — | — | — |
+| `/` | **54** | **96** | 100 | **83** | ❌ Perf (confirms 17e-5 hero-lag report), A11y, SEO |
+| `/blog` | **72** | **95** | 100 | **82** | ❌ Perf, A11y, SEO |
+| `/blog/personal` | **67** | **95** | 100 | **82** | ❌ Perf, A11y, SEO |
+| `/blog/why-i-left-orm-for-raw-sql` | **74** | **95** | 100 | **82** | ❌ Perf, A11y, SEO |
+| `/projects` | **62** | 100 | 100 | 100 | ❌ Perf only |
+| `/projects/transit-data-pipeline` | **72** | **95** | 100 | **82** | ❌ Perf, A11y, SEO |
+| `/services` | **75** | 100 | 100 | 100 | ❌ Perf only |
+| `/services/sql-development` | **73** | 100 | 100 | 100 | ❌ Perf only |
+| `/about` | **65** | **96** | 100 | 100 | ❌ Perf, A11y |
+| `/contact` | **65** | 100 | 100 | 100 | ❌ Perf only |
 
 ### Summary
 
-- Desktop Perf range: [min–max] (target ≥ 98) — [all met / N failing]
-- Mobile Perf range: [min–max] (target ≥ 90) — [all met / N failing]
-- A11y across the board: [100 consistently / N exceptions]
-- SEO across the board: [100 consistently / N exceptions]
-- Best Practices across the board: [100 consistently / N exceptions]
+- **Best Practices: 100 across all 20 runs** ✅ (target met everywhere)
+- **Desktop Performance:** 91–98 (target ≥ 98). 3 of 10 routes pass (services + services/slug + blog detail). 7 routes in the 91–97 band. Biggest miss: home `/` at 91.
+- **Mobile Performance:** 54–75 (target ≥ 90). **0 of 10 routes pass.** Home `/` at 54 is the outlier — confirms the mobile hero-lag Yesid flagged during 17e-5 polish. Other routes cluster 62–75.
+- **Accessibility:** desktop 95–100, mobile 95–100. Listing + detail pages on blog + projects hit 95–96, triggered by the same pattern (likely the rotated edge titles or per-card landmark count). Other routes hit 100.
+- **SEO:** desktop 82–100, mobile 82–100. Home + blog tree + one projects detail hit 82–83. Other routes hit 100. Cause almost certainly a missing/short meta description on those routes (blog + home share frontmatter-driven titles; SEO audit flags if < 120 chars).
+
+### Gap analysis vs spec §6.1 targets
+
+**Design spec §6.1 targets are NOT met.** The 17e motion re-engineering delivered:
+
+- HTML-path LCP wins from MetroNetwork SSR inlining (17e-4) — real but subsumed by mobile CPU cost of scroll-scrub
+- Snappy Doctrine + deleted reveals — no visible LCP/CLS cost
+- Ambient RAF consolidation (17e-5) — CPU savings during scroll, visible in Performance trace but not enough on its own
+
+**What 17e did NOT deliver:**
+- Bundle shrink (D269 flat — see §6.2 below) → TBT remains high → Performance score unchanged
+- Mobile-specific optimizations (SSR image compression, code splitting refinement, per-route dependency diet)
+
+The mobile-Perf gap is the dominant story. On `/`, the 9-phase hero timeline + pinned 300% scroll + 87-station MetroNetwork + multiple SVG fetches all compete for the main thread during TTI → TBT blows past the 300ms Lighthouse budget. The gap is **NOT** a regression caused by 17e — 17e-4 bundle was +2.18 KB and 17e-5 added +0.43 KB, so the baseline lighthouse numbers would likely be similar pre-17e. But the audit surfaces that we've plateau'd below target.
 
 ### Known regressions / acceptance exceptions
 
-- **Mobile hero scroll lag:** Yesid reported "network animation on mobile feels a bit laggy" during the 17e-5 polish round. Deferred to this audit to quantify via TBT / INP. If mobile Perf ≥ 90 is met despite the subjective lag, we accept + flag as a subjective polish item for a future slice.
+- **Mobile hero scroll lag (confirmed, /mobile Perf = 54):** quantified here as the worst-performing route. The hero pin + 87-station scrub on mobile touch is the hot path. Fix candidates: simplify mobile choreography (fewer scrubbed phases), `will-change` hints, or accept the rating and position 17e as a foundation slice that didn't target mobile Lighthouse. Propose: flag for a dedicated "mobile hero performance" slice. Evidence: the mobile home Perf is 37 points below desktop home (54 vs 91) — a gap this large is almost always main-thread-bound work.
+- **SEO 82–83 on home + blog tree:** likely missing/short meta descriptions. Quick fix candidate; probably a 1-line frontmatter addition per post and a layout-level `<meta name="description">` tag. Propose: spin off as a follow-up ticket — not gated by 17e closing.
+- **A11y 95–96 on listings + blog detail:** listings have per-card landmark elements or rotated edge titles triggering a Lighthouse heuristic. Not a screen-reader regression (content is semantic), just Lighthouse's landmark-heuristic firing. Propose: investigate in follow-up.
+
+### Decision
+
+Per design spec acceptance criteria §9.4, Lighthouse targets are a required-for-close criterion. Options:
+
+1. **Close 17e as-is, document the gap** (recommended): the slice's architectural goals (Snappy Doctrine enforcement, 9-signature vocabulary closed, one RAF site-wide, lazy plugin migration foundation, MetroNetwork SSR) all landed. Lighthouse targets are now the focus of a dedicated perf-audit slice.
+2. Block 17e close until Perf targets met: large additional scope (mobile hero rebuild, meta description pass, A11y audit fixes) — would roll into a second PR of similar size. Not recommended given the architectural work is the value-add of 17e.
+3. Relax spec §6.1 targets formally (amendment): doc-only change; record that mobile Perf ≥ 60 / desktop ≥ 95 is the new interim target pending the dedicated perf slice.
+
+Proposing **option 1**: close 17e with the Lighthouse results documented as a known gap and spin off a dedicated perf slice (17f or similar) to target §6.1 across routes. Yesid to choose.
 
 ---
 
