@@ -100,7 +100,15 @@ vi.mock('gsap', () => {
 			context: vi.fn((fn: () => void) => { fn(); return { revert: vi.fn() }; }),
 			utils: {
 				selector: vi.fn(() => vi.fn(() => []))
-			}
+			},
+			// ticker stubbed so motion/utils/ticker can subscribe/unsubscribe under test.
+			// Tests that need to assert tick behavior can spyOn(gsap.ticker, 'add').
+			ticker: {
+				add: vi.fn(),
+				remove: vi.fn(),
+				lagSmoothing: vi.fn()
+			},
+			plugins: {}
 		}
 	};
 });
