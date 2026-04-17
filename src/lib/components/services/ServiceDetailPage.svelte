@@ -7,7 +7,6 @@
 <script lang="ts">
 	import type { Service, Project } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
@@ -75,7 +74,7 @@
 				{resolveLocale(labels.backLink, 'en')}
 			</a>
 
-			<header class="hero-grid" use:reveal={{ direction: 'up', delay: 0 }}>
+			<header class="hero-grid">
 				<!-- Text column -->
 				<div class="hero-text">
 					<SectionLabel text="Service {stationNum} / {totalStr}" variant="station" class="mb-4 block" />
@@ -91,7 +90,7 @@
 					<p class="detail-description">{description}</p>
 
 					{#if service.stack && service.stack.length > 0}
-						<div class="stack-pills" use:reveal={{ direction: 'up', delay: 80 }}>
+						<div class="stack-pills">
 							{#each service.stack as tech}
 								<span class="stack-pill">{tech}</span>
 							{/each}
@@ -109,7 +108,7 @@
 
 			<!-- SVG banner — mobile only (wrapper controls visibility) -->
 			{#if svgContent}
-				<div class="svg-mobile" use:reveal={{ direction: 'up', delay: 60 }}>
+				<div class="svg-mobile">
 					<ServiceSvgPanel {svgContent} variant="banner" />
 				</div>
 			{/if}
@@ -122,7 +121,7 @@
 			<div class="body-grid">
 				<!-- Impact metric column — desktop only, sticky -->
 				{#if metricValue}
-					<aside class="impact-column" use:reveal={{ direction: 'up', delay: 120 }}>
+					<aside class="impact-column">
 						<div class="impact-metric">
 							<span class="impact-value">{metricValue}</span>
 							{#if metricLabel}
@@ -140,7 +139,7 @@
 				<div class="sections">
 					<!-- Mobile-only inline metric -->
 					{#if metricValue}
-						<div class="metric-inline" use:reveal={{ direction: 'up', delay: 100 }}>
+						<div class="metric-inline">
 							<span class="metric-inline-value">{metricValue}</span>
 							{#if metricLabel}
 								<span class="metric-inline-label">{metricLabel}</span>
@@ -153,7 +152,7 @@
 
 					<!-- Value Proposition -->
 					{#if service.valueProposition}
-						<div use:reveal={{ direction: 'up', delay: 150 }}>
+						<div>
 							<CollapsibleSection title={resolveLocale(labels.valueProposition, 'en')} open={true}>
 								{#snippet icon()}
 									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -170,7 +169,7 @@
 
 					<!-- Deliverables -->
 					{#if service.deliverables && service.deliverables.length > 0}
-						<div use:reveal={{ direction: 'up', delay: 200 }}>
+						<div>
 							<CollapsibleSection title={resolveLocale(labels.deliverables, 'en')} open={true}>
 								{#snippet icon()}
 									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -192,7 +191,7 @@
 					<!-- Custom sections -->
 					{#if service.sections}
 						{#each service.sections as section, i}
-							<div use:reveal={{ direction: 'up', delay: 250 + i * 80 }}>
+							<div>
 								<CollapsibleSection title={resolveLocale(section.title, 'en')} open={true} index={i}>
 									<p class="section-body">
 										{resolveLocale(section.content, 'en')}
@@ -205,7 +204,7 @@
 
 				<!-- Related projects — right panel (desktop), hidden on mobile -->
 				{#if relatedProjects.length > 0}
-					<aside class="projects-panel" use:reveal={{ direction: 'up', delay: 180 }}>
+					<aside class="projects-panel">
 						<CollapsibleSection
 							title="{resolveLocale(labels.relatedProjects, 'en')} ({relatedProjects.length})"
 							open={true}
@@ -236,7 +235,7 @@
 
 		<!-- Related projects — mobile only, before prev/next -->
 		{#if relatedProjects.length > 0}
-			<div class="projects-mobile" use:reveal={{ direction: 'up', delay: 100 }}>
+			<div class="projects-mobile">
 				<CollapsibleSection
 					title="{resolveLocale(labels.relatedProjects, 'en')} ({relatedProjects.length})"
 					open={true}

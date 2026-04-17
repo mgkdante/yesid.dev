@@ -6,8 +6,6 @@
 <script lang="ts">
 	import type { AboutMethodStep } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
-	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -17,7 +15,6 @@
 
 <div
 	class="group h-full"
-	use:reveal
 	use:cursorGlow
 >
 <Card class="h-full p-3" data-testid="about-method">
@@ -35,7 +32,7 @@
 					<div class="mt-3 h-[2px] w-4 flex-shrink-0" style="background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--primary) 30%, transparent));"></div>
 				{/if}
 
-				<div class="flex flex-col items-center" use:reveal={{ delay: stagger(i, 100) }}>
+				<div class="flex flex-col items-center">
 					<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-[var(--primary)] bg-[var(--background)]">
 						<span class="font-mono text-caption font-bold text-[var(--primary)]">{step.station}</span>
 					</div>

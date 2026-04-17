@@ -6,14 +6,15 @@
 <script lang="ts">
 	import type { Project } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { Card } from '$lib/components/ui/card';
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let {
 		project,
-		index = 0
+		index: _index = 0,
 	}: {
 		project: Project;
+		/** Position index — currently unused (was reveal stagger delay; removed 17e-2). Kept for API stability. */
 		index?: number;
 	} = $props();
 
@@ -26,7 +27,6 @@
 	href="/projects/{project.slug}"
 	class="group block"
 	data-testid="project-mini-card"
-	use:reveal={{ direction: 'up', delay: 50 + index * 80 }}
 >
 	<Card class="flex flex-row items-center gap-4 px-6 py-5">
 		<!-- Radial-gradient glow overlay — matches standard card hover system -->

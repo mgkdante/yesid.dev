@@ -7,8 +7,6 @@
 <script lang="ts">
 	import type { AboutMetric } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
-	import { stagger } from '$lib/motion/utils/stagger.js';
 	import { MetricDisplay } from '$lib/components/brand';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
@@ -20,7 +18,6 @@
 <div
 	class="group h-full"
 	use:cursorGlow
-	use:reveal
 >
 <Card class="h-full p-3" data-testid="about-metrics">
 	<div class="relative flex h-full flex-col">
@@ -39,10 +36,7 @@
 					></div>
 				{/if}
 
-				<div
-					class="flex flex-1 justify-center text-center"
-					use:reveal={{ delay: stagger(i, 100) }}
-				>
+				<div class="flex flex-1 justify-center text-center">
 					<MetricDisplay value={metric.value} label={metricLabel} size="lg" labelBelow />
 				</div>
 			{/each}

@@ -7,7 +7,6 @@
 <script lang="ts">
 	import type { AboutCta } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, TerminalChrome } from '$lib/components/brand';
@@ -22,7 +21,6 @@
 
 <div
 	class="group h-full"
-	use:reveal
 	use:cursorGlow
 >
 <Card class="relative h-full p-3" data-testid="about-cta">
