@@ -1,15 +1,26 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-16 | 17e-1 MERGED — 17e-2 Snappy Sweep next
-**Branch:** `main` (both 17e-planning docs + 17e-1 foundation merged)
+**Last updated:** 2026-04-16 | 17e-1 MERGED — 17e-2 + 17e-3 plans written, 17e-4/5/6 plans pending
+**Branch:** `feature/slice-17e-planning-pt2` (docs-only — 17e-2 + 17e-3 implementation plans)
 
 ## Current Position
 
 - **Sub-slice:** 17e-1 — Motion Foundation — COMPLETE (PR #12 merged)
 - **Previous:** 17d Component API — COMPLETE (PR #10 merged)
 - **Build:** 0 type errors, 21 pre-existing warnings, 802/802 tests pass (up from 769 baseline: +33 new tests)
-- **Status:** 17e-1 delivered: motion tokens (CSS + TS mirror + parity test), shared `gsap.ticker`, lazy GSAP plugin loaders, `normalizeScroll` removed (mobile tap-vs-click fix), `rollup-plugin-visualizer` + `bun run bundle-size` baseline recorded. Full handoff: `docs/handoffs/handoff-slice-17e-1.md`.
-- **Next sub-slice:** 17e-2 — Snappy Sweep (delete `use:reveal` + 27+ call sites, entrance animations, orphaned train components, `actions/ripple.ts`, `actions/tilt.ts`, `components/ScrollRail.svelte`). Plan still to be written.
+- **Status:** 17e-1 delivered. Planning pt2 in progress: full-depth implementation plans for 17e-2 (Snappy Sweep) and 17e-3 (Scrub Factories) written, awaiting docs-only PR review. 17e-4 / 17e-5 / 17e-6 plans deferred to a follow-up planning session.
+- **Next sub-slice:** 17e-2 — Snappy Sweep. Plan: `docs/plans/2026-04-16-slice-17e-2-snappy-sweep.md`. After PR merge, branch `feature/slice-17e-2-snappy-sweep` from updated main and begin implementation.
+
+### Planning pt2 Decisions (D263–D265)
+
+- **D263:** Terminus rotated label is a crescendo scrub target. The Closer graffiti doctrine exception (design spec §3.4) covers ONLY the in-section DrawSVG timeline, not the edge title. All 3 home rotated labels (Projects / Services / Terminus) are primary `<h2>` headings — keep semantic, no `aria-hidden`, `transform: scale()` only. Amend design spec §3.2 during 17e-6 closing.
+- **D264:** `heroScrollLock.ts` will be cut in 17e-4. Rationale: scroll-locking the viewport during the typewriter is a "plays at you" pattern that contradicts the Snappy Doctrine. Typewriter becomes pure ambient (signature 9) — runs via shared ticker + IntersectionObserver when visible; if user scrolls past mid-animation, it truncates, which is fine (it's ambient, not narrative-critical).
+- **D265:** MetroNetwork SVG inline mechanism for 17e-4 = **Vite `?raw` import + one-time SVGO CLI** (not a build plugin). Committed SVG file is the optimized source of truth. Alternative build-plugin option rejected for deterministic-source reasons. Command documented in 17e-6 MOTION.md v2.0.
+
+### Planning pt2 Decisions (D1–D2 — architectural, not numbered globally)
+
+- **Task decomposition for 17e-2:** verb-first (delete orphans → kill `use:reveal` → strip entrance tweens → extract FLIP → scrub CSS → verify). One verification pattern per task. 7 tasks.
+- **Scrub factory signatures:** synchronous factories; caller preloads GSAP plugins at route setup before invoking. `createDrawScrub` variant = `(svgRoot, { section, pathSelector, reverse })` — factory queries paths internally from the SVG root.
 
 ### 17e-1 Summary (PR #12)
 
@@ -570,11 +581,11 @@ Phase 1 — Foundation (visual cohesion first)
   17d:   Component API ................. COMPLETE (99 commits, ~17 sessions, PR #10 merged)
   17e:   Motion Re-Engineering ......... IN PROGRESS (6 sub-slices, ~6-6.5 sessions)
     17e-1: Foundation .................. COMPLETE (8 tasks, PR #12 merged)
-    17e-2: Snappy Sweep ................ NEXT → needs plan
-    17e-3: Scrub Factories ............. PLANNED
-    17e-4: Hero Timeline Rewrite ....... PLANNED
-    17e-5: Interaction Consolidation ... PLANNED
-    17e-6: Closing ..................... PLANNED (MOTION.md v2.0 + learn docs + Lighthouse)
+    17e-2: Snappy Sweep ................ PLAN WRITTEN (docs/plans/2026-04-16-slice-17e-2-snappy-sweep.md) — NEXT to implement
+    17e-3: Scrub Factories ............. PLAN WRITTEN (docs/plans/2026-04-16-slice-17e-3-scrub-factories.md)
+    17e-4: Hero Timeline Rewrite ....... PLAN PENDING (D264 heroScrollLock cut + D265 MetroNetwork ?raw+SVGO decided)
+    17e-5: Interaction Consolidation ... PLAN PENDING
+    17e-6: Closing ..................... PLAN PENDING (MOTION.md v2.0 + learn docs + Lighthouse + §3.2 amendment for D263)
   17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17e)
 Phase 2 — Data + Architecture
   17b:   Service Layer ................. 2 sessions
@@ -912,7 +923,8 @@ Phase 2 — Data + Architecture
 
 ## Next Steps
 
-1. **17e-2: Snappy Sweep** — Needs planning session (brainstorm → spec → plan). Delete `use:reveal` + 27+ call sites, `actions/ripple.ts`, `actions/tilt.ts`, orphaned train components, `components/ScrollRail.svelte`, all on-load/on-scroll-into-view entrance animations. FLIP filter logic moves to `motion/utils/flip.ts`. Target: zero entrance animations on article pages (per Snappy Doctrine).
-2. **17e-3 through 17e-6** — Scrub factories, hero timeline rewrite, interaction consolidation, closing. See design spec `docs/specs/2026-04-16-slice-17e-motion-reengineering-design.md` §9.1 for scope per sub-slice.
-3. **17a-4: Dead Code Cleanup** — Still planned, 1 session, after 17e closes.
+1. **17e-2: Snappy Sweep** — Plan written (`docs/plans/2026-04-16-slice-17e-2-snappy-sweep.md`). 7 tasks, 1 session. Merge docs-only PR first, then branch `feature/slice-17e-2-snappy-sweep` from updated main and implement.
+2. **17e-3: Scrub Factories** — Plan written (`docs/plans/2026-04-16-slice-17e-3-scrub-factories.md`). 9 tasks, 1 session. After 17e-2 merges.
+3. **17e-4 / 17e-5 / 17e-6 plans** — Pending. Foundations already decided (D263 Terminus crescendo, D264 heroScrollLock cut, D265 MetroNetwork `?raw`+SVGO). Next planning session writes these three plans in sequence.
+4. **17a-4: Dead Code Cleanup** — Still planned, 1 session, after 17e closes.
 
