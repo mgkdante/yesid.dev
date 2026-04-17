@@ -59,13 +59,12 @@ Data files:
   src/lib/data/services.ts    -> Service[] array (station content)
   src/lib/data/meta.ts        -> Site-wide metadata (name, tagline, links)
 
-Motion system:
-  src/lib/motion/actions/     -> Svelte actions (boop, reveal, magnetic, ripple)
+Motion system (historical PLAN snapshot — post-17e reality differs: see docs/reference/ARCHITECTURE.md):
+  src/lib/motion/actions/     -> Svelte actions
   src/lib/motion/stores/      -> Scroll position, reduced-motion preference
-  src/lib/motion/components/  -> ScrollRail, StationReveal, LottiePlayer
-  src/lib/motion/three/       -> Threlte scene components (HeroScene, DataPaths, etc.)
+  src/lib/motion/components/  -> LottiePlayer (post-17e)
   src/lib/motion/svg/         -> SVG train component
-  src/lib/motion/utils/       -> GSAP helpers, stagger calculator
+  src/lib/motion/utils/       -> GSAP helpers (lazy plugin loaders, shared ticker, scrub factories)
 
 Components:
   ProjectCard         -> Renders a project summary (with boop hover + reveal entrance)

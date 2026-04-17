@@ -1,16 +1,31 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-17 | **17e COMPLETE — all 6 sub-slices landed. PR for 17e-5 + 17e-6 combined open.**
-**Branch:** `feature/slice-17e-56-close-motion` (combined 17e-5 Interaction Consolidation + 17e-6 Closing)
+**Last updated:** 2026-04-17 | **17a-4 COMPLETE — residue + doc refresh shipped after fresh audit.**
+**Branch:** `feature/slice-17a-4-dead-code-dedup` (PR pending)
 
 ## Current Position
 
-- **Slice 17e:** COMPLETE — all 6 sub-slices landed across 4 PRs. 17e-5 + 17e-6 ship combined in the final PR.
-- **Build:** 0 type errors, 19 pre-existing warnings, 780/780 tests pass (+6 since 17e-4 end: 5 morphHover + net +1 from gsap.test.ts rewrite).
+- **Slice 17a-4:** COMPLETE — fresh-audit session (2026-04-17). Original scope was ~90% already absorbed into 17a-2b / 17d / 17e; slice shipped as a short hygiene pass. 2 residue primitive wirings + 1 content rewrite + 5 `any` tightens + planning-doc refresh. Bonus fix: pre-existing CRLF bug on `main` (2 blog files + `parseFrontmatter` regex) unblocked the baseline.
+- **Slice 17e:** COMPLETE — all 6 sub-slices landed across 4 PRs. 17e-5 + 17e-6 shipped combined.
+- **Build:** 0 type errors, 19 pre-existing warnings, 782/782 tests pass (+2 since 17e end: StatusDot `ring` prop coverage).
 - **Status (17e full-slice):** Motion layer re-engineered from the ground up. Snappy Doctrine enforced in governance (CONSTITUTION.md § 8) and implementation (zero entrance reveals remaining). 9-signature vocabulary closed. One shared `gsap.ticker` site-wide with IO-gated subscribers. GSAP plugins lazy-loaded per consumer (ScrollTrigger + SplitText + MorphSVGPlugin stay eager by necessity). MetroNetwork SSR-inlined via Vite `?raw` + SVGO. Scroll-scrub factories (`createHeroTimeline`, `createCrescendoScrub`, `createDrawScrub`). `use:morphHover` as first-class action. Legacy symbol deletion: reveal / ripple / tilt / ScrollRail / Train tree / heroTimeline.ts / heroScrollLock.ts / ReadingProgressBar / listingAnimations / SvgIcon.animateStagger / StackScenarioCard fade-up. MOTION.md v2.0 + CONSTITUTION.md § 8 + 6 motion learning docs shipped in 17e-6.
 - **Bundle (17e-5/6 end):** home / at 35.00 KB gzipped (node 4 + layout 0); all routes well under §6.2 budgets. D269 lazy-plugin shrink target did not land — captureFlipState + CustomEase.create sync-API coupling defeats Vite chunk split. Flagged for post-17e async refactor.
 - **Lighthouse (17e-6 audit, Yesid-driven):** Best Practices 100 across all 20 runs ✅. Desktop Perf 91–98 (3 of 10 hit ≥ 98), mobile Perf 54–75 (0 of 10 hit ≥ 90). A11y 95–100. SEO 82–100. **Spec §6.1 targets deferred to Slice 19 / 19b / 20** per design-spec amendment.
-- **Next sub-slice:** 17a-4 Dead Code Cleanup per standardization roadmap (or the roadmap's downstream Mobile/A11y/Scroll slices at Yesid's discretion).
+- **Next sub-slice:** 17h Brand Bundle + Source-of-Truth Refactor. Spec + plan + 6 sub-slice stubs written 2026-04-17. First sub-slice: 17h-1 Tokens Consolidation.
+
+### 17a-4 Summary (fresh audit, 2026-04-17)
+
+| Area | What landed |
+|---|---|
+| **Audit** | Grep pass at kickoff — 5 of 7 original scope bullets already done (dead components gone, Three.js tree gone, isTouchDevice extracted, station-ping global, section-heading primitive built). Scope shrunk from "big cleanup" to "residue fix + doc refresh". |
+| **StatusDot `ring` prop** | New `ring?: boolean` — CSS `outline` (not Tailwind `ring-*`, which uses box-shadow and collides with `led-pulse`). `AboutIdentity` availability dot now `<StatusDot color="green" pulse size="md" ring />`. +2 tests. CSS.md row updated. |
+| **ContactPage reset Button** | Raw `<button>` → `<Button variant="ghost">`. `Button` was already imported. Subtler look than the original outlined box (closer match is `variant="outline"` — flagged, Yesid approved ghost). |
+| **threejs-threlte.md rewrite** | "In Practice" past-tensed ("Killed, not parked"). `relatedProjects: [yesid-dev]` dropped from frontmatter. "Why I use it" → "Why I chose it" (past-tense body). Cross-link to `brand/decisions/what-i-killed.md` (ships in 17h-3). |
+| **CRLF bug bonus fix** | Pre-existing bug on `main`: 2 blog files had CRLF line endings, breaking `parseFrontmatter` regex silently. 3 data-integrity tests were failing on `main` but checkpoint claimed 780/780. Files normalized to LF + regex hardened to `/^---\r?\n/` — durable guard. |
+| **5 `any` tightens** | `utils.ts` (any→unknown shadcn probes), `flip.ts` (new `FlipState = ReturnType<typeof Flip.getState> \| null`), `morphHelpers.ts` (`as any` → narrow SVG union + path pass-through). Eslint disables removed. |
+| **Planning docs refresh** | `standardization.md` (table + tree + "Remaining — 17a-4" block rewritten with strikethrough annotations); `ARCHITECTURE.md` (13-primitive inventory + migration note); `PLAN.md` (motion/three reference removed); `brand/index.ts` header comment (9 → 13); memory note primitive count; barrel test expected list (9 → 13). |
+| **Learn docs** | `docs/learn/patterns/audit-before-plan.md` + `docs/learn/styling/outline-vs-ring-pulsing-dots.md`. Both indexed in `meta.json`. |
+| **PATTERNS.md** | +2 entries: "CSS Outline for Halos on Pulsing Box-Shadow Elements", "CRLF-Tolerant Frontmatter Parser". |
 
 ### 17e-5 + 17e-6 Summary (combined PR, 2026-04-17)
 

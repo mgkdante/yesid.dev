@@ -57,9 +57,9 @@ Slice template: `docs/slices/_TEMPLATE.md`
 - Roadmap: `docs/roadmap/standardization.md`
 - Checkpoint: `docs/slices/slice-17-checkpoint.md`
 - **Constitution:** `docs/reference/CONSTITUTION.md` — governs all future development
-- Current sub-slice: 17a-5 (Spacing & Layout Constitution) — IN PROGRESS
-- Next sub-slice: 17a-6 (Bits UI Integration)
-- Branch: `feature/slice-17a-5-spacing-layout`
+- Current sub-slice: 17a-4 (Dead Code + Dedup Fresh Audit) — COMPLETE 2026-04-17, PR pending
+- Next sub-slice: 17h-1 (Brand Bundle — Tokens Consolidation)
+- Branch: `feature/slice-17a-4-dead-code-dedup`
 
 ## Iteration Protocol (MANDATORY)
 
@@ -419,7 +419,7 @@ CONSIDER:
 
 ## Completed Slices
 
-01, 02, 03, 04, 05, 06, 06b, 06d, A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b, 10, 10d+, 11, 12, 13, 17a-1, 17a-2a, 17a-2b — handoffs in `docs/handoffs/`
+01, 02, 03, 04, 05, 06, 06b, 06d, A, B, B+, C, 07, 08, 09, 09b, 09c-1, 09c-2a, 09c-2b, 10, 10d+, 11, 12, 13, 17a-1, 17a-2a, 17a-2b, 17a-4 — handoffs in `docs/handoffs/`
 
 ## Repo Structure
 

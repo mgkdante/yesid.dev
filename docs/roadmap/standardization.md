@@ -19,7 +19,7 @@
 | 17a-6 Bits UI Integration        | COMPLETE                        | —         | 4        |
 | 17d Component API                | PLANNED (needs impl plan)       | —         | 4        |
 | 17e Motion Re-Engineering        | **COMPLETE (6 sub-slices, 4 PRs)** | —     | 2-3      |
-| 17a-4 Dead Code + Trivial Dedup  | PLANNED (needs impl plan)       | —         | 1        |
+| 17a-4 Dead Code + Dedup (Fresh Audit) | COMPLETE — 90% absorbed into 17a-2b / 17d / 17e; residue + doc refresh shipped 2026-04-17 | — | 0.5-1 |
 | 17b Service Layer                | planned                         | —         | 2        |
 | 17c Zod Schemas                  | planned                         | —         | 0.5      |
 | 17f Test Architecture            | planned                         | —         | 1-2      |
@@ -311,7 +311,7 @@ Phase 1 ��� Foundation (before SEO)
   17a-2a: Build Primitives ............. COMPLETE (PR #3 merged)
   17a-2b: Wire Primitives .............. COMPLETE (PR pending)
   17a-3: Color & Token Lockdown ........ NEXT (~2-3 sessions)
-  17a-4: Dead Code + Trivial Dedup ..... (~1 session)
+  17a-4: Dead Code + Dedup (Fresh Audit) COMPLETE (~0.5-1 session)
   17b: Service layer extraction
     ↓
   15: SEO + metadata (built on service layer)
@@ -459,38 +459,26 @@ This is the biggest sub-slice and the most impactful. Every other sub-slice depe
 
 ---
 
-#### Remaining — 17a-4: Dead Code + Trivial Deduplication
+#### Remaining — 17a-4: Dead Code + Dedup (Fresh Audit) — COMPLETE 2026-04-17
 
-**Dead components (0 imports, delete):**
+**Outcome summary.** The audit run at 17a-4 kick-off (2026-04-17) found that ~90% of the original scope had already been absorbed into 17a-2b / 17d / 17e without a planning-doc update. 17a-4 shipped as a short hygiene pass: 2 residue primitive wirings + 1 broken content rewrite + 5 `any` type tightens + planning-doc refresh (this block). Full details in the 17a-4 handoff.
 
-- `AboutBento.svelte` (90 lines) — superseded by AboutPage composition
-- `BlogCard.svelte` (48 lines) — superseded by BlogRow
-- `ProjectCard.svelte` (52 lines) — superseded by WorkCard
-- `SectionHeader.svelte` (15 lines) — never used
+**Already done in prior sub-slices (verified 2026-04-17 — no action needed):**
 
-**Dead Three.js/Threlte stack (only used in dev `/preview` route, not on live site):**
+- ~~Dead components: `AboutBento.svelte`, `BlogCard.svelte`, `ProjectCard.svelte` (old top-level), `SectionHeader.svelte`~~ — deleted in 17a-2b / 17d.
+- ~~Dead Three.js/Threlte stack: `src/lib/motion/three/**` (HeroScene, StationNodes, DataPaths, PostProcessing, WagonScene, WagonInner) + `src/routes/preview/**`~~ — deleted. Threlte / three / postprocessing deps removed from `package.json`. Tech-stack content file rewritten to past-tense in 17a-4.
+- ~~`isTouchDevice()` triplication~~ — extracted to `src/lib/motion/utils/device.ts`; `tilt.ts` / `magnetic.ts` / `cursorGlow.ts` all import from there (actions since consolidated further in 17e).
+- ~~`@keyframes station-ping` + `.station-badge-wrapper` duplication~~ — global keyframe lives in `app.css`, class scoped once in `MetroStation.svelte`. `NumberBadge` migrated into `ui/badge` in 17d.
+- ~~Section-heading CSS dedup in `HomeServices` / `ProofReel` / `HomeCloser`~~ — handled by the `brand/SectionHeading` primitive.
+- ~~`Tag`, `NumberBadge`, `HazardStripe`, `GradientSeparator`, `BrandButton`, `CardBase`~~ — 6 brand primitives migrated into shadcn `ui/` equivalents (`ui/badge`, `ui/separator`, `ui/button`, `ui/card`). Mapping lives in `src/lib/components/brand/index.ts` header comment (ground truth for post-17d primitive inventory).
 
-- `src/lib/motion/three/HeroScene.svelte` — 3D hero scene (orphaned, never wired to homepage)
-- `src/lib/motion/three/StationNodes.svelte` — icosahedron station nodes
-- `src/lib/motion/three/DataPaths.svelte` — tube geometry data paths
-- `src/lib/motion/three/PostProcessing.svelte` — bloom + vignette
-- `src/lib/motion/three/WagonScene.svelte` — wagon 3D scene
-- `src/lib/motion/three/WagonInner.svelte` — wagon interior
-- `src/routes/preview/+page.svelte` — dev-only 3D preview page
-- `src/routes/preview/train/+page.svelte` — dev-only train preview page
-- Note: The live metro network map uses `MetroNetwork.svelte` (SVG + GSAP) — that stays. Threlte/Three.js deps may be removable from package.json after deletion.
+**Shipped in 17a-4 (residue only):**
 
-**Trivial code deduplication:**
-
-- `isTouchDevice()` duplicated 3x in `tilt.ts`, `magnetic.ts`, `cursorGlow.ts` → extract to `motion/utils/device.ts`
-- Station pulse CSS duplicated in `BlogRow` + `WorkListingPage` (identical `@keyframes station-ping` + `.station-badge-wrapper`) → use `NumberBadge sonar` prop
-- Section heading pattern duplicated in `HomeServices` + `ProofReel` + `HomeCloser` (identical 15-line CSS blocks) → extract `.display-heading` utility
-
-**Additional missed primitive wiring (quick wins):**
-
-- `AboutIdentity` availability dot → `StatusDot color="green"`
-- `ContactPage` reset button → `BrandButton variant="ghost"`
-- `BlogRow` + `WorkListingPage` station pulse → `NumberBadge sonar`
+- `AboutIdentity` availability dot → `<StatusDot color="green" pulse size="md" ring />`. StatusDot gained a `ring` prop (CSS outline — composes with the `led-pulse` box-shadow animation without collision). CSS.md primitive table updated.
+- `ContactPage` reset button → `<Button variant="ghost">` from `ui/button`.
+- `src/content/stack/threejs-threlte.md` — rewritten to past-tense ("killed, not parked"); `relatedProjects: [yesid-dev]` dropped from frontmatter; heading retitled "Why I chose it". Entry kept in the tech-stack for engineering-judgment signal; cross-link to `brand/decisions/what-i-killed.md` (ships in 17h-3).
+- `parseFrontmatter` in `src/lib/data/blog.ts` hardened to tolerate CRLF line endings. Pre-existing bug discovered during baseline verification — 2 blog posts had landed on `main` with CRLF (via an earlier Windows write), silently empty-loading and failing 3 data-integrity tests. Both files normalized to LF; regex hardened as a durable guard.
+- 5 `any` type tightens: `src/lib/utils.ts` (`{ child?: any }` → `{ child?: unknown }` in shadcn helper types), `src/lib/motion/utils/flip.ts` (introduced `FlipState = ReturnType<typeof Flip.getState> | null` for `captureFlipState` return + `animateFlipTransition` param), `src/lib/motion/utils/morphHelpers.ts` (`as any` removed — narrow `SVGCircleElement | SVGRectElement | ... ` union cast + `SVGPathElement` instanceof short-circuit).
 
 #### Scope
 
@@ -774,7 +762,7 @@ Wire 3 unwired primitives into consumers:
 - `GlowOverlay` (0 consumer imports) — evaluate if cursorGlow action makes this obsolete; if so, delete
 - `CardBase` (0 consumer imports) — wire into HomeServices cards, ProofReel cards, HeroMetrics cards, BlogCard (if not dead)
 
-Missed primitive wiring (10 actionable spots — 3 quick wins done in 17a-4):
+Missed primitive wiring — historical audit table. See 17a-4 summary above for the 2026-04-17 closeout; remaining rows below belong to future component-wiring passes (17h-5 scope):
 
 
 | #   | Component                                         | Should Use                                    | What It Does Instead                         |
@@ -794,7 +782,7 @@ Missed primitive wiring (10 actionable spots — 3 quick wins done in 17a-4):
 Code deduplication:
 
 - Merge `BlogSvgIcon` (241 lines) + `WorkSvgIcon` (168 lines) → single `SvgIcon.svelte` (same SHAPES, same morph logic, same entranceDone guard)
-- Section heading pattern in `HomeServices` + `ProofReel` + `HomeCloser` → shared `.display-heading` utility or `DisplayHeading` component (if not done in 17a-4)
+- Section heading pattern in `HomeServices` + `ProofReel` + `HomeCloser` → shared `.display-heading` utility or `DisplayHeading` component (done via `brand/SectionHeading` in 17a-2a — see 17a-4 summary)
 - SVG morph box CSS in `ServiceCard` + `ServiceDetailPage` → shared `SvgMorphBox` component
 
 Structural deduplication:

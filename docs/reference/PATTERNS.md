@@ -268,6 +268,20 @@ When a slice handoff introduces a workaround, a non-obvious fix, or a reusable a
 **Files:** `TrainJourney.svelte`
 **Reuse when:** Any component that needs orientation change without modifying its internals or breaking existing tests
 
+### CSS Outline for Halos on Pulsing Box-Shadow Elements
+**Discovered in:** Slice 17a-4
+**Problem:** Tailwind's `ring-*` utility compiles to `box-shadow`. When an element also has a keyframe animation that animates `box-shadow` (e.g. `led-pulse` on a StatusDot), the animation's computed value clobbers the ring. Ring invisible; no error.
+**Solution:** Use CSS `outline` for the static halo. `outline` is a separate decoration channel from `box-shadow`, so a pulsing glow and a static ring render together. Tailwind v4: `outline outline-[Npx] outline-[<color>]`.
+**Files:** `src/lib/components/brand/StatusDot.svelte` (`ring` prop). See `docs/learn/styling/outline-vs-ring-pulsing-dots.md` for the full explanation.
+**Reuse when:** Any element that needs a static hard-edged halo AND an animated `box-shadow` (focus halos, pulse glows, emphasis animations).
+
+### CRLF-Tolerant Frontmatter Parser
+**Discovered in:** Slice 17a-4
+**Problem:** Content markdown files edited on Windows sometimes save with CRLF (`\r\n`) line endings. A strict frontmatter regex like `/^---\n([\s\S]*?)\n---\n/` doesn't match `---\r\n`, so the whole frontmatter block silently fails to parse. Downstream code sees empty title/date/tags; data-integrity tests start failing; the site renders posts with blank metadata — and nothing logs an error.
+**Solution:** Make regexes CRLF-tolerant in any content parser. Use `\r?\n` instead of `\n`, and split lines on `/\r?\n/` instead of `'\n'`.
+**Files:** `src/lib/data/blog.ts` (`parseFrontmatter`). Apply the same fix to any future markdown-parsing util in `src/lib/data/` or `src/content/`.
+**Reuse when:** Any content parser that may be consumed on Windows or receive cross-platform commits. Pairs well with a pre-commit hook that normalizes LF, but the parser-level fix is the durable one.
+
 ---
 
 ## Testing Patterns

@@ -8,7 +8,7 @@
 	import type { AboutIdentity } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
-	import { StopLabel } from '$lib/components/brand';
+	import { StatusDot, StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
 	let { identity, stop = '00', label = 'IDENTITY' }: { identity: AboutIdentity; stop?: string; label?: string } = $props();
@@ -46,7 +46,7 @@
 					/>
 				</div>
 				<!-- Green availability dot -->
-				<div class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-[3px] border-[var(--muted)] bg-emerald-500"></div>
+				<StatusDot color="green" pulse size="md" ring class="absolute bottom-1 right-1" />
 			</div>
 
 			<!-- Text block -->
