@@ -5,16 +5,20 @@ describe('Brand barrel export', () => {
   const expectedComponents = [
     'StatusDot',
     'SectionLabel',
+    'SectionHeading',
     'StopLabel',
+    'MetroStation',
     'ChevronToggle',
     'GlowOverlay',
     'MetricDisplay',
     'CornerMarks',
     'TerminalChrome',
     'StickyPanel',
+    'SvgIcon',
+    'BlueprintShell',
   ];
 
-  it('exports all 9 brand primitives', () => {
+  it('exports all 13 brand primitives', () => {
     for (const name of expectedComponents) {
       expect(brand).toHaveProperty(name);
       expect((brand as Record<string, unknown>)[name]).toBeTruthy();
@@ -25,7 +29,8 @@ describe('Brand barrel export', () => {
     const componentExports = Object.keys(brand).filter(
       (key) => !key.endsWith('Props') && key !== 'TerminalFooterItem' && typeof (brand as Record<string, unknown>)[key] !== 'undefined'
     );
-    // 9 components (Tag/NumberBadge→ui/badge, HazardStripe/GradientSeparator→ui/separator, BrandButton→ui/button, CardBase→ui/card)
-    expect(componentExports.length).toBeGreaterThanOrEqual(9);
+    // 13 components. Migrated to ui/: Tag/NumberBadge→ui/badge,
+    // HazardStripe/GradientSeparator→ui/separator, BrandButton→ui/button, CardBase→ui/card.
+    expect(componentExports.length).toBeGreaterThanOrEqual(13);
   });
 });

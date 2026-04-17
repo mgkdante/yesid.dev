@@ -370,12 +370,13 @@
 					{/each}
 
 					<!-- Reset button -->
-					<button
+					<Button
+						variant="ghost"
 						onclick={handleReset}
-						class="mt-4 self-start rounded border border-[var(--border)] px-4 py-2 font-mono text-caption text-[var(--secondary-foreground)] transition-all duration-200 hover:border-[var(--primary)] hover:text-[var(--foreground)]"
+						class="mt-4 self-start font-mono text-caption"
 					>
 						{resolveLocale(c.success.resetLabel, 'en')}
-					</button>
+					</Button>
 				</div>
 			{/if}
 

@@ -19,8 +19,16 @@ export function convertSvgToMorphPaths(container: SVGElement): {
 
 	if (elements.length === 0) return { paths: [], originals: [] };
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const paths = elements.map((el) => (MorphSVGPlugin.convertToPath as any)(el)[0] as SVGPathElement);
+	// SVG_SHAPE_SELECTOR matches 'path' in addition to SVGPrimitive shapes;
+	// MorphSVGPlugin.convertToPath is a runtime no-op on paths, but its typedef
+	// narrows the input to SVGPrimitive. Path elements get passed through here
+	// to keep the one-pass iteration — the cast acknowledges the typedef gap.
+	const paths = elements.map(
+		(el) =>
+			el instanceof SVGPathElement
+				? el
+				: MorphSVGPlugin.convertToPath(el as SVGCircleElement | SVGRectElement | SVGEllipseElement | SVGPolygonElement | SVGPolylineElement | SVGLineElement)[0],
+	);
 	const originals = paths.map((p) => p.getAttribute('d') ?? '');
 
 	return { paths, originals };

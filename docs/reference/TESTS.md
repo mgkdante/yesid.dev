@@ -362,7 +362,13 @@ Convention: tests live next to the code they test (co-located).
 
 | Describe | Summary | Count |
 |----------|---------|-------|
-| Brand barrel exports | All 15 brand primitives are re-exported from the barrel index | 1 |
+| Brand barrel exports | All 13 brand primitives are re-exported from the barrel index (6 migrated to `ui/`: Tag/NumberBadge→ui/badge, HazardStripe/GradientSeparator→ui/separator, BrandButton→ui/button, CardBase→ui/card) | 2 |
+
+## src/lib/components/brand/__tests__/StatusDot.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StatusDot | Renders, defaults to orange/sm, applies green/pulse/md/ring variants, outline classes omitted by default, `aria-hidden="true"` (2 new ring tests added 17a-4) | 8 |
 
 # Data Layer (`src/lib/data/`) — 10 files, 126 tests
 

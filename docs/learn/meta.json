@@ -781,6 +781,28 @@
       "estimatedMinutes": 18,
       "codeFiles": ["src/lib/motion/utils/gsap.ts", "src/lib/data/types.ts"],
       "status": "evergreen"
+    },
+    {
+      "slug": "audit-before-plan",
+      "name": "Audit Before Plan",
+      "domain": "patterns",
+      "difficulty": 1,
+      "prerequisites": [],
+      "enables": [],
+      "estimatedMinutes": 4,
+      "codeFiles": ["docs/slices/slice-17a-4-dead-code-dedup.md", "docs/roadmap/standardization.md", "src/lib/components/brand/index.ts"],
+      "status": "evergreen"
+    },
+    {
+      "slug": "outline-vs-ring-pulsing-dots",
+      "name": "Outline vs Ring for Pulsing Dots",
+      "domain": "styling",
+      "difficulty": 2,
+      "prerequisites": ["tailwind-utility-first"],
+      "enables": [],
+      "estimatedMinutes": 4,
+      "codeFiles": ["src/lib/components/brand/StatusDot.svelte", "src/app.css", "src/lib/components/about/AboutIdentity.svelte"],
+      "status": "evergreen"
     }
   ]
 }
