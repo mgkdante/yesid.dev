@@ -1,8 +1,8 @@
 // Shared gsap.ticker wrapper.
 // One gsap.ticker.add callback fans out to all subscribers — avoids multiple
-// RAF loops from ManifestoCanvas, ReadingProgressBar, idle animations.
-// Subscribers identified by string ID; subscribing with an existing ID
-// replaces the previous callback (idempotent).
+// RAF loops from ManifestoCanvas, AboutTrain, typewriter, and any other
+// idle animation. Subscribers identified by string ID; subscribing with
+// an existing ID replaces the previous callback (idempotent).
 
 import { gsap } from 'gsap';
 
