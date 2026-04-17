@@ -4,13 +4,14 @@
 
   WHY extracted: Both sidebars duplicate the exact same pattern (label + All + list
   of buttons with active/tag-active states). Centralizing here means style fixes and
-  new behaviors (ripple, deselect) only need to happen once.
+  new behaviors (deselect, collapse) only need to happen once.
 
   Uses bits-ui ToggleGroup for keyboard navigation (arrow keys) and ARIA semantics.
-  Includes use:ripple for click feedback (QW-3 from the slice 09c spec).
+  Click feedback via CSS :active state (use:ripple removed in 17e-2 — Snappy Doctrine).
+  `accentColor` prop accepted but unused inside this component after ripple removal;
+  upstream callers still thread it through the sidebar chain. 17a-4 can prune.
 -->
 <script lang="ts">
-	import { ripple } from '$lib/motion/actions/ripple.js';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
@@ -89,7 +90,6 @@
 							{...props}
 							class="filter-btn w-full rounded px-2 py-1.5 text-left text-sm transition-colors"
 							class:active={activeKey === null}
-							use:ripple={{ color: accentColor }}
 						>
 							{resolveLocale(allLabel, 'en')}
 						</button>
@@ -104,7 +104,6 @@
 								class="filter-btn w-full rounded border border-border-subtle px-2 py-1.5 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 								class:tag-active={activeKey === item.key}
 								data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
-								use:ripple={{ color: accentColor }}
 							>
 								{item.label}
 							</button>

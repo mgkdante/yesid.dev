@@ -1,8 +1,12 @@
+// Motion actions — Svelte actions for interaction signatures.
+// The Snappy Doctrine limits this surface to the 9-signature vocabulary
+// (boop, cursorGlow, magnetic, wordmarkHover, morphHover in 17e-5) + supporting types.
+
 export { boop, type BoopParams } from './boop.js';
-export { reveal, type RevealParams } from './reveal.js';
+// reveal — deleted in 17e-2 (Snappy Doctrine forbids entrance actions)
 export { magnetic, type MagneticParams } from './magnetic.js';
-export { ripple, type RippleParams } from './ripple.js';
-export { tilt, type TiltParams } from './tilt.js';
+// ripple — deleted in 17e-2 (not in vocabulary)
+// tilt — deleted in 17e-2 (absorbed into magnetic or cut)
 export { cursorGlow, type CursorGlowParams } from './cursorGlow.js';
 export { wordmarkHover, type WordmarkHoverParams } from './wordmarkHover.js';
 export { scrollChain } from './scrollChain.js';
