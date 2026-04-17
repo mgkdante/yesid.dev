@@ -1,9 +1,12 @@
 export {
+	initScrollTriggerConfig,
 	registerGsapPlugins,
 	loadDrawSVG,
 	loadMorphSVG,
 	loadFlip,
 	loadCustomEase,
+	loadMotionPathPlugin,
+	loadSplitText,
 	gsap,
 	ScrollTrigger,
 	MotionPathPlugin,
