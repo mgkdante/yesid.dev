@@ -120,7 +120,10 @@ vi.mock('gsap/ScrollTrigger', () => ({
 		getAll: vi.fn(() => []),
 		killAll: vi.fn(),
 		normalizeScroll: vi.fn(),
-		config: vi.fn()
+		config: vi.fn(),
+		update: vi.fn(),
+		// 0 = no touch, 1 = touch only, 2 = touch + pointer. Tests override per scenario.
+		isTouch: 0
 	}
 }));
 
