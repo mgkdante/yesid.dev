@@ -92,7 +92,8 @@
 	}
 
 	/* Mobile: text + buttons MUST fit in 100svh - nav.
-	   Height is a hard constraint, text scales proportionally via svh. */
+	   Height is a hard constraint; text scales proportionally via svh *and* vw
+	   so "PIPELINES" doesn't overflow the viewport width on narrow phones. */
 	@media (max-width: 768px) {
 		.hero-viewport-text {
 			height: calc(100svh - 5rem);
@@ -100,10 +101,13 @@
 			flex-direction: column;
 			justify-content: center;
 			padding-block: 1.5rem;
+			padding-inline: 1rem;
 		}
-		/* Scale hero headlines proportionally to viewport height */
+		/* Cap by whichever is smaller: viewport-height-based or viewport-width-based.
+		   11vw lets "PIPELINES" (9 chars × ~0.7em effective width) fit with margin
+		   on ≥320px screens; the 8svh branch takes over on wider/shorter viewports. */
 		.hero-viewport-text :global(.text-hero) {
-			font-size: clamp(32px, 8svh, 64px);
+			font-size: clamp(32px, min(8svh, 11vw), 64px);
 		}
 		/* Tighten spacing to fit within bounded height */
 		.hero-viewport-text :global([data-hero-stagger="3"]) {

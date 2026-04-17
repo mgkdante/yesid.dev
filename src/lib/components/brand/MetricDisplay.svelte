@@ -31,9 +31,9 @@
   }: MetricDisplayProps = $props();
 
   const valueClass = {
-    sm: 'text-heading',
-    md: 'text-title',
-    lg: 'text-display',
+    sm: 'text-subheading',
+    md: 'text-heading',
+    lg: 'text-title',
   } as const;
 </script>
 
