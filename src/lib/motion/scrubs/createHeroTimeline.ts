@@ -63,7 +63,7 @@ export interface HeroTimelineOpts {
 	pinLength?: string;
 }
 
-// ---- Measurement utilities (unchanged from utils/heroTimeline.ts port) ----
+// ---- Measurement utilities ----
 
 function updateZoomOrigin(pinContainer: HTMLElement, svgWrapper: HTMLElement): void {
 	const berri = pinContainer.querySelector('.metro-berri');
