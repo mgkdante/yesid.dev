@@ -3,7 +3,7 @@
 **Goal:** Turn `brand/` into a readable, portable, case-study-grade narrative package. Hand-authored markdown + vector assets + paired examples. Zero runtime code, zero generated files.
 **Architecture:** Physical separation between `brand/` (narrative + assets) and `src/` / `docs/reference/` (implementation + governance). `brand/` governs by convention, not automation. No generator. A brand decision captured in `brand/decisions/*.md` is advisory; a dev translates it into `src/lib/styles/tokens.css` + `docs/reference/CSS.md` + relevant component edits. PR review bridges the gap.
 **Tech stack:** Markdown + SVG + Sharp (PNG exports) + Playwright/Claude Preview (paired screenshots). No new runtime site dependencies.
-**Multi-session:** ~3 sessions across 2 sub-slices (shrunk from 10-11 / 6 sub-slices on 2026-04-18). See execution order below.
+**Multi-session:** ~4 sessions across 2 sub-slices (shrunk from 10-11 / 6 sub-slices on 2026-04-18; 17h-3 Task 0 added then expanded 2026-04-18 to cover `docs/reference/*` + `docs/roadmap/*` + `CLAUDE.md` + root `README.md` — ~1 session for the freshen pass, `docs/learn/` excluded). See execution order below.
 **Parent slice spec:** `docs/slices/slice-17h-brand-bundle.md`
 **Original design spec:** `docs/specs/2026-04-17-slice-17h-brand-bundle-design.md` — carries the old generator-driven architecture as historical research; the top banner documents the 2026-04-18 shrink.
 **Depends on:** Slice 17a-4 merged to `main`.
@@ -27,7 +27,7 @@ The original plan had 6 sub-slices and 10-11 sessions, with `brand/` as a genera
 
 | Sub-slice | Name | Sessions | Depends on |
 |---|---|---|---|
-| 17h-3 | Narrative docs + case study | 2 | standalone |
+| 17h-3 | Narrative docs + case study (incl. expanded Task 0 freshen pass) | 2.5–3 | standalone |
 | 17h-4 | Logo + asset expansion | 1 | standalone |
 
 17h-3 and 17h-4 are independent; can run in either order.
@@ -90,11 +90,12 @@ CLAUDE.md, WORKFLOW.md, PLAN.md, root README     — unchanged; inline brand val
 
 ## Sub-slice 17h-3 — Narrative Docs + Case Study
 
-**Est. sessions:** 2. Target: 6 tasks.
+**Est. sessions:** 2–2.5. Target: 7 tasks (Task 0 freshen pass + Tasks 1–6 narrative writing).
 
 **Goal:** Write the human-readable face of `brand/` — BRAND.md (voice + 5 principles), six foundations write-ups, components.md inventory, 4 decisions seed entries. Rewrite README.md as the front door. Every file is hand-authored markdown; no generated content.
 
 **Key tuning from original 17h-3 spec:**
+- **Task 0 added 2026-04-18** — audit + freshen `docs/reference/{CONSTITUTION,CSS,MOTION}.md` before any foundation doc cross-links into them. Replaces the freshen pass that was in the killed 17h-1. Prevents drift from being laundered into `brand/`.
 - `motion.md` is **newly authored** in `brand/foundations/` as narrative, NOT moved from `docs/reference/MOTION.md`. The authoritative motion doc stays at `docs/reference/MOTION.md`; `brand/foundations/motion.md` cross-links there.
 - `accessibility.md` cross-links to `docs/reference/CONSTITUTION.md §7`, not to `brand/CONSTITUTION.md` (the constitution never moves).
 - 2 decisions dropped: `path-a-no-figma.md` (Yesid dropped 2026-04-17 — tooling-internal) and `extracting-brand-from-docs.md` (premise dead — docs were never extracted in the shrunk scope). That leaves 4 seed decisions.

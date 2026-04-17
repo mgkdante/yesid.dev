@@ -2,7 +2,7 @@
 
 **Status:** draft
 **Priority:** 2
-**Estimated effort:** ~3 sessions across 2 sub-slices (scope shrunk 2026-04-18 — see below)
+**Estimated effort:** ~4 sessions across 2 sub-slices (scope shrunk 2026-04-18; 17h-3 includes Task 0 freshen pass — scope expanded 2026-04-18 to cover `docs/reference/*` + `docs/roadmap/*` + `CLAUDE.md` + root `README.md`; `docs/learn/` excluded)
 **Depends on:** Slice 17a-4 merged to `main`
 **Parent slice:** 17 (Standardization). 17h is the visual-design close — the bookend to 17a (tokens + primitives), 17a-5 (spacing + constitution), 17d (component API), 17e (motion). Slice 18 remains reserved for Payload CMS in the separate `yesid.dev-cms` repo.
 
@@ -31,8 +31,16 @@ Each of those sub-slice specs was stubbed in place with an OBSOLETE note on 2026
 
 | Sub-slice | Name | Sessions | Spec |
 |---|---|---|---|
-| 17h-3 | Narrative docs + case study | 2 | [slice-17h-3-narrative-docs.md](slice-17h-3-narrative-docs.md) |
+| 17h-3 | Narrative docs + case study (incl. expanded Task 0 freshen pass) | 2.5–3 | [slice-17h-3-narrative-docs.md](slice-17h-3-narrative-docs.md) |
 | 17h-4 | Logo + asset expansion | 1 | [slice-17h-4-logo-assets.md](slice-17h-4-logo-assets.md) |
+
+**Task 0 in 17h-3 (added 2026-04-18; scope expanded 2026-04-18):** before any `brand/` narrative gets written, audit + freshen the docs the narrative transitively consumes.
+
+- **Deep audit:** `docs/reference/CONSTITUTION.md`, `CSS.md`, `MOTION.md` — foundations docs cross-link INTO these with high specificity, so drift here gets laundered into `brand/` permanently.
+- **Lighter audit (spot-check for obvious drift):** `docs/reference/{ARCHITECTURE,WORKFLOW,TESTS,PATTERNS}.md` + `docs/roadmap/{PLAN,standardization}.md` + `CLAUDE.md` + root `README.md`.
+- **Excluded:** `docs/learn/` — learning docs carry point-in-time accuracy and belong to a future 17g-scope refactor.
+
+Prevents drift from 17a-3 / 17a-5 / 17a-6 / 17d / 17e / 17a-4 from being laundered into `brand/`. Replaces the freshen pass that was part of the killed 17h-1.
 
 ## Objective
 
