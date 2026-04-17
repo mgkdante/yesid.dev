@@ -1,7 +1,9 @@
 <!--
   SvgIcon — brand atom for animated SVG illustrations.
   Merges BlogSvgIcon + WorkSvgIcon into one unified component.
-  Entrance: 4 animation types via GSAP (draw, morph, draw-fill, stagger).
+  Entrance: 3 animation types via GSAP (draw, morph, draw-fill). All are
+  drawing motion — doctrine-compatible on enter per D266. The pure
+  fade-up "stagger" variant was cut in 17e-5 (D267 F reveal violation).
   Hover: paths morph into a random geometric shape, revert on leave.
   Tap-to-toggle morph on mobile.
 -->
@@ -151,18 +153,6 @@
 		}, '-=0.3');
 	}
 
-	function animateStagger(elements: SVGElement[], scrollTriggerConfig?: ScrollTrigger.Vars, onDone?: () => void) {
-		gsap.set(elements, { y: 12, opacity: 0 });
-		const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig, onComplete: onDone });
-		tl.to(elements, {
-			y: 0,
-			opacity: 1,
-			duration: 0.5,
-			stagger: 0.08,
-			ease: 'back.out(1.4)'
-		});
-	}
-
 	onMount(() => {
 		if (isPrefersReducedMotion() || !container) return;
 		registerGsapPlugins();
@@ -193,9 +183,6 @@
 				break;
 			case 'draw-fill':
 				animateDrawFill(svgPaths, scrollTriggerConfig, onDone);
-				break;
-			case 'stagger':
-				animateStagger(svgPaths, scrollTriggerConfig, onDone);
 				break;
 		}
 	});

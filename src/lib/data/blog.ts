@@ -33,7 +33,7 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; content
 
 const PRO_FALLBACKS = ['pro-database.svg', 'pro-code.svg', 'pro-pipeline.svg', 'pro-chart.svg'];
 const PERSONAL_FALLBACKS = ['personal-rocket.svg', 'personal-train.svg', 'personal-telescope.svg', 'personal-globe.svg'];
-const ALL_ANIMATIONS: BlogAnimation[] = ['draw', 'morph', 'draw-fill', 'stagger'];
+const ALL_ANIMATIONS: BlogAnimation[] = ['draw', 'morph', 'draw-fill'];
 
 function slugHash(slug: string): number {
 	let hash = 0;
