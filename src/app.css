@@ -38,8 +38,9 @@ select {
 @custom-variant dark (&:is([data-theme="dark"] *));
 
 /*
-  Brand design tokens translated from brand/tailwind.brand.js into Tailwind v4's
-  CSS-first @theme format. The source file is kept as documentation.
+  Brand design tokens in Tailwind v4's CSS-first @theme format.
+  Source of truth for values that don't theme-switch (type scale, radii, shadows, spacing).
+  Narrative rationale lives in brand/foundations/*.md.
 
   v4 naming convention: --color-* generates bg-*, text-*, border-* utilities.
   --font-* generates font-* utilities. --radius-* generates rounded-* utilities.

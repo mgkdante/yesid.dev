@@ -1,8 +1,8 @@
 # Slice 17h-3 — Narrative Docs + Case Study
 
-**Status:** draft (updated 2026-04-18 for the 17h scope shrink — see parent slice)
+**Status:** draft (updated 2026-04-18 for the 17h scope shrink — see parent slice; Task 0 added 2026-04-18 to freshen governance + process + project docs before narrative writing)
 **Priority:** 2
-**Estimated effort:** 2 sessions
+**Estimated effort:** 2.5–3 sessions (7 tasks — Task 0 is a pre-narrative freshening pass across `docs/reference/*` + `docs/roadmap/*` + `CLAUDE.md` + root `README.md`; `docs/learn/` explicitly skipped)
 **Depends on:** standalone (previously depended on 17h-2; 17h-2 killed 2026-04-18)
 **Parent:** `docs/slices/slice-17h-brand-bundle.md`
 
@@ -62,6 +62,127 @@ brand/README.md                        — REWRITE as front-door
 ---
 
 ## Session 1 — 17h-3.1
+
+### Task 0: Freshen reference + process + project docs against current repo reality
+
+**Files covered (scope expanded 2026-04-18):**
+
+Deep audit (full checklist below — foundations docs cross-link INTO these with high specificity):
+- `docs/reference/CONSTITUTION.md`
+- `docs/reference/CSS.md`
+- `docs/reference/MOTION.md`
+
+Lighter audit (spot-check for obvious drift — dead slice refs, removed files, stale token/primitive counts, wrong version stamps):
+- `docs/reference/ARCHITECTURE.md`
+- `docs/reference/WORKFLOW.md`
+- `docs/reference/TESTS.md`
+- `docs/reference/PATTERNS.md`
+- `docs/roadmap/PLAN.md`
+- `docs/roadmap/standardization.md` (largely refreshed during the 17h planning shrink — spot-check for anything missed)
+- `CLAUDE.md` (root)
+- `README.md` (root)
+
+**Out of Task 0 scope:** `docs/learn/` — explicitly skipped per Yesid's 2026-04-18 instruction. Learning docs carry historical point-in-time accuracy; a freshen pass there belongs to a future learning-docs refactor (originally planned as Slice 17g).
+
+**Why this task exists.** Every `brand/foundations/*.md` written in Tasks 3–4 cross-links OUT to `docs/reference/*` for authoritative values + rules. If those docs (or anything they transitively cite — CLAUDE.md, README, ARCHITECTURE, PLAN) carry drift from 17a-3 / 17a-5 / 17a-6 / 17d / 17e / 17a-4 that was never cleaned up, the drift gets laundered into `brand/` as "narrative built on authoritative source" — but the source is stale. Claude Design + hiring managers + Figma designers would consume bad data permanently.
+
+This task originated in the original 17h-1 Task 4 ("Freshen CONSTITUTION / CSS / MOTION against slice-17 reality pre-move"). 17h-1 was killed in the 2026-04-18 shrink but the freshen need stayed; Yesid expanded its scope 2026-04-18 to include project-level + process docs for the same laundering reason.
+
+**Do NOT rewrite from scratch.** Audit + targeted updates only. Anything major that emerges becomes a separate follow-up slice, not a Task 0 expansion. The lighter-audit files especially: spot-check, don't rewrite.
+
+**Audit checklist per file:**
+
+For **`docs/reference/CONSTITUTION.md`**:
+- § 2 Layout Model — 4 grid recipes match patterns currently in use post-17d.
+- § 3 Spacing — 5 semantic spacing tokens match `src/lib/styles/tokens.css` exactly.
+- § 4 Typography — 11-step type scale matches `src/app.css @theme` exactly.
+- § 6 Component Standards — tier counts (56 ui/ + 13 brand/ per 17a-4 refresh) correct; Bits UI integration language post-17a-6 accurate; Card unification (17d) reflected.
+- § 8 Motion — tokens match `tokens.css`; Snappy Doctrine (17e-6) present; 9-signature vocabulary listed; HomeCloser permitted exception documented.
+- § 9 Responsive — 5 breakpoints, `dvh`/`svh`/`lvh` rules, overflow guarantee layers.
+- § 13 Atomic Design — 3 tiers, Card surface rules reflect 17d's universal Card.
+- Any inline version/date stamps brought current.
+- Any `17*` slice references that are stale.
+
+For **`docs/reference/CSS.md`**:
+- "Last updated" date refreshed to today.
+- Type scale table matches `src/app.css @theme` exactly.
+- Color tokens table matches `src/lib/styles/tokens.css` exactly — every dark/light pair, every shadcn semantic token, every extension.
+- Shadow tokens reflect the current `--shadow-*` set.
+- Z-index scale matches.
+- Brand Primitives section — 13 primitives per 17a-4 refresh (StatusDot with `ring` prop, SectionLabel, SectionHeading, StopLabel, MetroStation, ChevronToggle, GlowOverlay, MetricDisplay, CornerMarks, TerminalChrome, StickyPanel, SvgIcon, BlueprintShell).
+- Migration note: 6 primitives migrated into `ui/` (Tag + NumberBadge → `ui/badge`, HazardStripe + GradientSeparator → `ui/separator`, BrandButton → `ui/button`, CardBase → `ui/card`) per `brand/index.ts`.
+- Brand Utility Classes — 12 utilities in `app.css` (re-count via `grep -n "^\." src/app.css | head` to verify).
+- Prose styling — 17d-4 blog detail page additions reflected.
+- Global keyframes — `blink`, `pulse-glow`, `station-ping`, `typewriter-blink` (audit the canonical list).
+
+For **`docs/reference/MOTION.md`**:
+- Action catalog — matches `src/lib/motion/actions/` contents today (`boop`, `cursorGlow`, `magnetic`, `morphHover`, `wordmarkHover`, `scrollChain`). Post-17e: `reveal`, `ripple`, `tilt` cut.
+- Principles — Snappy Doctrine reflected; scrub factories documented (`createHeroTimeline`, `createCrescendoScrub`, `createDrawScrub`).
+- Lazy plugin loaders + shared ticker + IO-gated subscribers documented.
+- Any references to deleted/renamed components retargeted.
+
+**Lighter-audit checklist (spot-check only, do NOT rewrite):**
+
+For **`docs/reference/ARCHITECTURE.md`**:
+- Brand primitive tree matches 13 files on disk (was refreshed in 17a-4 — spot-check it held).
+- No `motion/three` references (deleted in 17a-4).
+- Motion tree post-17e (actions list, scrubs/, ticker, tokens).
+- Repo structure matches current `src/` + `docs/` layout.
+
+For **`docs/reference/WORKFLOW.md`**:
+- Session-type system (Planning / Implementation / Closing) accurate.
+- Tool/plugin table entries point at commands that still exist.
+- Any `17*` slice references current.
+- No references to killed 17h sub-slices (17h-1, 17h-2, 17h-5, 17h-6) as "planned work".
+
+For **`docs/reference/TESTS.md`**:
+- Test file counts match `find src/ -name "*.test.ts" | wc -l` rough.
+- StatusDot + barrel test entries reflect 17a-4 updates.
+- No entries for deleted test files (ReadingProgressBar, reveal, ripple, tilt, ScrollRail, Train tree, per 17e deletions).
+
+For **`docs/reference/PATTERNS.md`**:
+- 17a-4 entries present (CSS Outline for Halos, CRLF-Tolerant Frontmatter Parser).
+- No patterns whose "Files" reference deleted files.
+- "Discovered in: Slice NN" tags current.
+
+For **`docs/roadmap/PLAN.md`**:
+- Sub-slice table reflects completed slices through 17a-4.
+- 17h roadmap row present + matches parent slice spec.
+- `src/lib/motion/three/` reference removed (17a-4).
+- Actions list doesn't mention deleted actions (`reveal`, `ripple`, `tilt`).
+
+For **`docs/roadmap/standardization.md`**:
+- 17a-4 row marked COMPLETE (done in 17a-4 handoff).
+- 17h row matches parent slice spec (~3 sessions / 2 sub-slices).
+- Spot-check the big "Remaining" narrative blocks for stale claims.
+
+For **`CLAUDE.md`** (root):
+- Active-slice + next-sub-slice pointers current (updated 2026-04-18 in the planning shrink — verify held).
+- Completed Slices list includes 17a-4.
+- Brand section's inline values (`#E07800`, `#FFB627`, Inter, JetBrains Mono, "yesid." lowercase + orange dot) verified against `src/lib/styles/tokens.css` + `src/app.css @theme`.
+- Iteration Protocol + Git/PR Workflow evergreen — spot-check only.
+- "Never" list doesn't reference killed 17h automation (no `brand:sync` mentions).
+- Repo Structure list at the bottom matches `tree.txt`.
+
+For **`README.md`** (root):
+- Any brand values mentioned match current tokens.
+- Any tech stack mentions accurate (SvelteKit version, Bun version, Tailwind v4).
+- Any "see brand/ for…" pointers accurate or dropped.
+- No references to killed 17h automation or a `bun run brand:sync` command.
+- If the README is already minimal and evergreen, no-op is acceptable — record "spot-checked, no drift" in the scratchpad.
+
+**Process:**
+
+- [ ] **Step 1:** Handle the deep-audit trio first (`CONSTITUTION.md`, `CSS.md`, `MOTION.md`) — run the detailed checklist against the actual files on `main` (`src/lib/styles/tokens.css`, `src/app.css`, `src/lib/components/brand/`, `src/lib/motion/actions/`). Produce a short in-session scratchpad of every row that's stale.
+- [ ] **Step 2:** Apply corrections to the deep-audit trio in place. Factual updates only — no restructuring, no expanded prose, no new sections. **STOP** between each of the 3 files so Yesid can approve the diff before the next one.
+- [ ] **Step 3:** Handle the lighter-audit group (`ARCHITECTURE.md`, `WORKFLOW.md`, `TESTS.md`, `PATTERNS.md`, `PLAN.md`, `standardization.md`, `CLAUDE.md`, root `README.md`). For each: spot-check against the lighter checklist; if no drift, record "spot-checked, no drift" in scratchpad and move on; if drift found, apply the narrow fix. Batch these into a single STOP — they're spot-checks, not rewrites.
+- [ ] **Step 4:** Diff every touched file against `main`. Confirm changes are narrow and factual. If any row's "correct value" is ambiguous or requires a design call, STOP and raise it with Yesid — do not force a guess.
+- [ ] **Step 5:** Run `bun run test` + `bun run check` — catches any code example in the docs that got out of sync. Green required.
+- [ ] **Step 6:** Delete the scratchpad.
+
+**STOP.** Yesid confirms all freshened docs reflect reality. Tasks 1–6 build on these — if any are wrong, everything written after inherits the wrongness.
+
+---
 
 ### Task 1: Rewrite `brand/README.md` as the front door
 
@@ -206,11 +327,14 @@ brand/README.md                        — REWRITE as front-door
 
 ## Execution Order
 
-Sequential 1 → 6.
+Sequential 0 → 6.
 
-Tasks 1, 2 in Session 1. Tasks 3 can spill or start in Session 1. Tasks 4, 5, 6 in Session 2.
+- Session 1 (17h-3.1): Tasks 0, 1, 2. Task 3 can spill or start if time.
+- Session 2 (17h-3.2): Tasks 3 (if not done), 4, 5, 6.
 
-Parallel option (Yesid's approval only): Tasks 3 + 4 could run side-by-side after Task 2 — both are independent foundation docs.
+Task 0 is a hard prerequisite for everything after it — no foundation doc gets written until `docs/reference/*` is verified fresh.
+
+Parallel option (Yesid's approval only): Tasks 3 + 4 could run side-by-side after Tasks 0-2 — both are independent foundation docs.
 
 ## Out of Scope
 
@@ -222,6 +346,7 @@ Parallel option (Yesid's approval only): Tasks 3 + 4 could run side-by-side afte
 
 ## Acceptance Criteria
 
+- [ ] Task 0 done: `docs/reference/{CONSTITUTION,CSS,MOTION}.md` audited + freshened against current repo reality; every row verifiable against `src/`.
 - [ ] All new markdown files exist and have substantive content:
   - `BRAND.md`, `components.md`, `README.md` (rewrite)
   - `foundations/{color,typography,space,motion,voice,accessibility}.md` (6 new — motion.md is newly authored narrative, not moved)

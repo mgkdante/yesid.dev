@@ -1,7 +1,7 @@
 # Test Registry
 
-Last updated: 2026-04-15
-Total tests: 785
+Last updated: 2026-04-18
+Total tests: 782
 Runner: Vitest + Bun (`bun run test`)
 
 ## Test Architecture
@@ -39,7 +39,7 @@ Convention: tests live next to the code they test (co-located).
 |--------------|---------------|---------|
 | `src/lib/components/Thing.svelte` | `src/lib/components/Thing.test.ts` | StationTabs.test.ts |
 | `src/lib/data/services.ts` | `src/lib/data/data-integrity.test.ts` | Data layer validation |
-| `src/lib/motion/actions/reveal.ts` | `src/lib/motion/actions/reveal.test.ts` | Action behavior |
+| `src/lib/motion/actions/boop.ts` | `src/lib/motion/actions/boop.test.ts` | Action behavior |
 | `src/routes/services/+page.ts` | `src/routes/services/+page.test.ts` | Route load functions |
 
 ### Naming

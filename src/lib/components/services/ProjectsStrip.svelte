@@ -62,7 +62,7 @@
 		display: flex;
 		align-items: center;
 		padding: 0.875rem var(--space-page-x);
-		gap: var(--space-stack);
+		gap: 1.5rem;
 	}
 
 	@media (min-width: 1024px) {

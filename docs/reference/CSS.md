@@ -1,7 +1,7 @@
 # CSS Architecture — Design System Reference
 
-**Last updated:** 2026-04-15
-**Status:** Active — Slice 17d-4 Blog Detail Page
+**Last updated:** 2026-04-18
+**Status:** Active — post-17a-4, Slice 17h prep
 
 > Single source of truth for the yesid.dev design system tokens, layers, and rules.
 
@@ -29,10 +29,12 @@ Tailwind utilities     →  Composable classes (text-display, shadow-card, z-nav
 
 ## Type Scale
 
-9 semantic tokens. Fluid headings use `clamp()`.
+12 tokens. Fluid sizes use `clamp()`. Defined in `src/app.css` `@theme` block.
 
 | Token | Size | Usage |
 |-------|------|-------|
+| `text-hero` | `clamp(64px, min(9vw, 11svh), 130px)` | Hero wordmark (HeroBanner) |
+| `text-hero-mobile` | `clamp(48px, min(13vw, 8svh), 64px)` | Hero headline on narrow screens (added 17e-4) |
 | `text-display` | `clamp(40px, 5vw, 64px)` | Hero headlines, page titles |
 | `text-title` | `clamp(28px, 4vw, 40px)` | Section headings (H2) |
 | `text-heading` | `clamp(20px, 3vw, 24px)` | Card titles, H3 |
@@ -46,29 +48,26 @@ Tailwind utilities     →  Composable classes (text-display, shadow-card, z-nav
 
 **Hard rules:** body >= 16px, mono >= 13px, labels >= 12px, micro for chrome only.
 
-**Exception:** HeroBanner wordmark uses `text-[64px]` / `md:text-[clamp(72px,...,130px)]` — intentionally outside the type scale.
-
 ---
 
 ## Color Tokens
 
 ### Brand (static, never theme-switch)
-Defined in `@theme`:
+Defined in `tokens.css` `:root`; mapped to Tailwind utilities via `@theme inline` in `app.css` (e.g. `--color-primary: var(--primary)` → `bg-primary`, `text-primary`, `border-primary`).
 
 | Token | Value | Utility |
 |-------|-------|---------|
-| `--color-brand-primary` | `#E07800` | `text-brand-primary`, `bg-brand-primary` |
-| `--color-brand-accent` | `#FFB627` | `text-brand-accent`, `bg-brand-accent` |
-| `--color-brand-primary-hover` | `#C96A00` | `hover:bg-brand-primary-hover` |
-| `--color-brand-accent-hover` | `#E5A220` | `hover:bg-brand-accent-hover` |
+| `--primary` | `#E07800` | `text-primary`, `bg-primary`, `border-primary` |
+| `--accent` | `#FFB627` | `text-accent`, `bg-accent` |
+| `--primary-hover` | `#C96A00` | `hover:bg-primary-hover` |
+| `--accent-hover` | `#E5A220` | `hover:bg-accent-hover` |
 
 ### RGB Channel Tokens (for variable opacity)
 Defined in `tokens.css` `:root`:
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `--brand-primary-rgb` | `224 120 0` | `rgb(var(--brand-primary-rgb) / 0.5)` |
-| `--brand-accent-rgb` | `255 182 39` | `rgb(var(--brand-accent-rgb) / 0.3)` |
+| `--primary-rgb` | `224 120 0` | `rgb(var(--primary-rgb) / 0.5)` |
 
 ### Semantic (theme-switching)
 Defined in `tokens.css` per theme. Token names follow shadcn-svelte's **background/foreground pair** convention.
@@ -87,18 +86,14 @@ Defined in `tokens.css` per theme. Token names follow shadcn-svelte's **backgrou
 | `--primary-foreground` | `var(--background)` | `var(--background)` | Text on primary |
 | `--secondary-foreground` | `#999999` | `#555555` | Supporting text |
 | `--dim-foreground` | `#4a4a4a` | `#AAAAAA` | Faintest text |
-| `--code-foreground` | `#cccccc` | `#333333` | Code/terminal text |
-| `--light-foreground` | `#b3b3b3` | `#666666` | Light text variant |
-| `--deep` | `#0D0D0D` | `#F0EDE5` | Deep backgrounds |
+| `--light-foreground` | `#cccccc` | `#555555` | Light text variant |
 | `--terminal` | `#0a0a0a` | `#F5F5F0` | Terminal/code panels |
 | `--manifesto` | `#0f0d0a` | `#F0EDE5` | Manifesto section |
 | `--border` | `#3A3A3A` | `#D8D4CA` | Default borders |
 | `--border-subtle` | `#2a2a2a` | `#D8D4CA` | Subtle borders |
 | `--border-strong` | `#333333` | `#C0BDB5` | Emphasized borders |
-| `--live` | `#22c55e` | `#16a34a` | Live/active indicator |
-| `--destructive` | `#ff5f57` | `#dc2626` | Error states |
+| `--destructive` | `#ff5f57` | `#ff5f57` | Error states |
 | `--success` | `#28c840` | `#16a34a` | Success states |
-| `--warning` | `#f59e0b` | `#d97706` | Warning states |
 
 ### Token Naming Convention
 
@@ -127,7 +122,6 @@ Uses `color-mix()` for brand-connected alpha values.
 | `--shadow-card` | Card elevation (brand glow + depth) |
 | `--shadow-section` | Section-level elevation |
 | `--shadow-nav` | Navigation bar shadow |
-| `--shadow-status` | Status indicator glow (uses `--status-live`) |
 
 ---
 
@@ -140,7 +134,6 @@ Global stacking context — no magic numbers.
 | `--z-base` | `0` | Default content |
 | `--z-content` | `1` | Above-base content |
 | `--z-rail` | `30` | Side rails, scroll indicators |
-| `--z-footer` | `40` | Footer |
 | `--z-sheet` | `50` | Bottom sheets, drawers |
 | `--z-menu` | `60` | Menu overlays |
 | `--z-nav` | `70` | Navigation (highest) |
@@ -169,17 +162,15 @@ Defined in `src/lib/styles/tokens.css`, mirrored in `src/lib/motion/tokens.ts` (
 
 ## Spacing Tokens
 
-5 semantic tokens for recurring layout patterns. Defined in `tokens.css`, bridged to Tailwind via `@theme`.
+3 semantic tokens for recurring layout patterns. Defined in `tokens.css`, bridged to Tailwind via `@theme`.
 
 | Token | Value | Purpose |
 |-------|-------|---------|
 | `--space-page-x` | `clamp(1.5rem, 4vw, 5rem)` | Horizontal page gutters |
 | `--space-section-y` | `clamp(3rem, 8vw, 6rem)` | Vertical padding between sections |
 | `--space-card-gap` | `clamp(1rem, 2vw, 1.5rem)` | Gap between cards in grids |
-| `--space-stack` | `1.5rem` | Default vertical stack spacing |
-| `--space-cluster` | `0.75rem` | Tight groupings (label + value, icon + text) |
 
-Tailwind utilities: `px-page-x`, `py-section-y`, `gap-card-gap`, `gap-stack`, `gap-cluster`.
+Tailwind utilities: `px-page-x`, `py-section-y`, `gap-card-gap`.
 
 **Rules:** Arbitrary Tailwind spacing (`p-[22px]`) is banned — use standard scale or token. `clamp()` for fluid values.
 
@@ -193,23 +184,22 @@ Containers are for **text readability only**, not section wrappers. Visual eleme
 |-------|-------|-------|
 | `--container-content` | `64rem` (1024px) | Primary content width |
 | `--container-wide` | `72rem` (1152px) | Wide layouts with sidebars |
-| `--container-prose` | `65ch` | Prose/reading columns |
 
 ---
 
 ## Breakpoints
 
-5 canonical breakpoints replacing Tailwind v4 defaults. Defined in `@theme` block of `app.css`.
+Tailwind v4 defaults — `@theme` in `app.css` keeps no `--breakpoint-*` overrides.
 
-| Prefix | Width | Devices |
-|--------|-------|---------|
-| `sm:` | `360px` | iPhone SE, most phones |
-| `md:` | `520px` | Foldables open, large phone landscape |
-| `lg:` | `768px` | iPad Mini, tablets |
-| `xl:` | `1024px` | Laptops, iPad Pro landscape |
-| `2xl:` | `1440px` | Desktop monitors |
+| Prefix | Width | Layout transition |
+|--------|-------|-------------------|
+| `sm:` | `640px` | Large phone landscape → comfortable single column |
+| `md:` | `768px` | Tablet → 2-column grids, sidebars appear |
+| `lg:` | `1024px` | Laptop → full asymmetric layouts, edge decor |
+| `xl:` | `1280px` | Desktop → maximum widths, widest panels |
+| `2xl:` | `1536px` | Ultrawide → optional ceiling |
 
-Design guideline: mobile-first. Base = smallest screen. Breakpoints add complexity.
+Design guideline: mobile-first. Base = smallest screen. Breakpoints add complexity. CONSTITUTION § 9 has the device-coverage matrix that frames design intent orthogonally to these Tailwind breakpoints.
 
 ### Viewport Units
 
@@ -281,7 +271,7 @@ Consumers apply keyframes via explicit `animation:` declarations. The one utilit
 
 ## Brand Utility Classes (app.css)
 
-11 utility classes for shared brand patterns. Wired into components in Phase B (17a-2b).
+12 utility classes for shared brand patterns. Wired into components in Phase B (17a-2b).
 
 > **Card surface:** `ui/card` (`src/lib/components/ui/card/`) is the single card surface for all cards site-wide. Use `<Card>` instead of any utility class for card styling.
 
@@ -298,32 +288,42 @@ Consumers apply keyframes via explicit `animation:` declarations. The one utilit
 | 9 | `.label-metric` | Mono uppercase, caption size, 2px tracking |
 | 10 | `.prose-dark` | Full markdown prose styling (blog + work detail) |
 | 11 | `.led-pulse` | Pulse-glow animation for LED indicators |
+| 12 | `.grid-rows-collapse` | CSS-grid collapse/expand rows via `[data-state]` |
 
 ---
 
 ## Brand Primitives (`src/lib/components/brand/`)
 
-15 reusable components built in Slice 17a-2a.
+13 reusable components (17a-4 refresh). Built in 17a-2a, expanded in 17d (MetroStation, SectionHeading, SvgIcon, BlueprintShell).
 
 | Component | Props | Replaces |
 |-----------|-------|----------|
-| `StatusDot` | `color`, `pulse`, `size`, `ring` | 8+ pulsing dots |
+| `StatusDot` | `color`, `pulse`, `size`, `ring` | 8+ pulsing dots (17a-4: `ring` prop adds outline halo) |
 | `SectionLabel` | `text`, `variant`, `align` | 25+ mono labels |
+| `SectionHeading` | `heading`, `dotAccent`, `labelText`, `align` | Heading + dot + subheading patterns |
 | `StopLabel` | `stop`, `label` | 10 About bento stops |
-| `Tag` | `text`, `size`, `active`, `accentColor`, `interactive` | 8+ tag pills |
-| `NumberBadge` | `value`, `color`, `sonar` | 3 numbered circles |
+| `MetroStation` | `name`, `color`, `size`, `ping` | Station badge + pulse markup |
 | `ChevronToggle` | `open`, `size`, `direction` | 8+ expand arrows |
-| `HazardStripe` | `size`, `angle`, `label` | 11+ stripe bars |
 | `GlowOverlay` | `intensity` | 12 manual overlay divs |
 | `MetricDisplay` | `value`, `label`, `sublabel`, `size` | 6 stat combos |
-| `BrandButton` | `variant`, `size`, `href`, `children` | 7+ CTA styles |
-| `CardBase` | `hover`, `glow`, `interactive`, `padding`, `href`, `children` | 12+ card patterns |
 | `CornerMarks` | `size`, `opacity` | 8 blueprint ticks |
 | `TerminalChrome` | `title`, `tag`, `status`, `footer`, `children` | 4 terminal windows |
 | `StickyPanel` | `top`, `children` | 4 sticky sidebars |
-| `GradientSeparator` | `label`, `maxWidth` | Pre-existing, tokenized |
+| `SvgIcon` | `name`, `size`, `animate` | SVG loader + DrawSVG/morph animation wrapper |
+| `BlueprintShell` | `children`, `corners`, `label` | Blueprint frame with corners + label |
 
-Import: `import { StatusDot, Tag } from '$lib/components/brand';`
+Import: `import { StatusDot, SectionHeading } from '$lib/components/brand';`
+
+### Migrated into `ui/` (17d)
+
+6 primitives moved to shadcn ui/ wrappers — don't import from `brand/` for these:
+
+| Former brand/ | New home | Notes |
+|---------------|----------|-------|
+| `Tag`, `NumberBadge` | `ui/badge` | Unified pill surface |
+| `HazardStripe`, `GradientSeparator` | `ui/separator` | Separator variants |
+| `BrandButton` | `ui/button` | shadcn Button with brand tokens |
+| `CardBase` | `ui/card` | Single card surface site-wide (see §13 Atomic Design in CONSTITUTION.md) |
 
 ---
 

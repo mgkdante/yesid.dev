@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-16 (Slice 17d — Component API COMPLETE)
+**Last updated:** 2026-04-18 (post-17a-4 fresh audit; Slice 17h Brand Bundle prep)
 
 ## Stack
 

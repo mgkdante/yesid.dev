@@ -434,7 +434,7 @@ if (isPrefersReducedMotion()) {
 The site must remain crawler-friendly. Motion rules that protect SEO:
 
 1. **All text content ships in SSR HTML.** No text is created by JS; motion only styles text that already exists.
-2. **Headings are real `<h1>`/`<h2>` tags**, not div/span masquerading. Rotated edge titles (Projects, Services, Terminus) are `<h2>` with CSS `writing-mode: vertical-rl` + `rotate: 180deg` — semantic first, visual second.
+2. **Headings are real `<h1>`/`<h2>` tags**, not div/span masquerading. Rotated edge titles (home Projects + home Terminus; blog listing, projects listing, contact page) are real `<h2>` with CSS `writing-mode: vertical-rl` + `rotate: 180deg` — semantic first, visual second.
 3. **The MetroNetwork SVG is inlined at SSR time** (17e-4 D265 via Vite `?raw` import), so it is a valid LCP candidate and does not require a separate `fetch` that delays paint.
 4. **No `aria-hidden` on primary content** — rotated titles use `aria-label` if the visual form obscures read order, but never hide content from assistive tech.
 
