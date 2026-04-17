@@ -55,7 +55,6 @@
 		position: absolute;
 		background: color-mix(in srgb, var(--primary) 6%, transparent);
 		z-index: var(--z-content);
-		opacity: 0;
 	}
 
 	.manifesto__beck-h { height: 2px; }
@@ -74,7 +73,6 @@
 		font-weight: 600;
 		letter-spacing: 1px;
 		z-index: calc(var(--z-content) + 1);
-		opacity: 0;
 		white-space: nowrap;
 		pointer-events: none;
 	}
@@ -112,8 +110,6 @@
 		align-items: center;
 		gap: 16px;
 		z-index: calc(var(--z-content) + 2);
-		opacity: 0;
-		translate: -8px 0;
 	}
 
 	.manifesto__readout {

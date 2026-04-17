@@ -4,12 +4,11 @@
          -> tech stack inline diagram -> tag pills.
   Banner shows project image if available, otherwise a gradient with a subtle
   SvgIcon at the right. Full card is a link to /projects/{slug}.
-  Hover triggers border glow + SVG morph. Entrance via use:reveal with stagger delay.
+  Hover triggers border glow + SVG morph. No entrance animation — Snappy Doctrine (17e-2).
 -->
 <script lang="ts">
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
@@ -86,7 +85,7 @@
 	onmouseleave={() => (cardHovered = false)}
 	{...rest}
 >
-	<div class="h-full" use:tilt={{ maxDeg: 1.5 }} use:cursorGlow>
+	<div class="h-full" use:cursorGlow>
 	<Card class="h-full">
 		<article class="h-full">
 		<!-- Gradient banner: short (120px), full-width. Image or gradient+icon fallback -->

@@ -9,7 +9,7 @@
 	import { browser } from '$app/environment';
 	import { getVisibleServices, resolveLocale, servicesGridContent } from '$lib/data/index.js';
 	import { SHAPES, pickRandomShape } from '$lib/data/shapes.js';
-	import { registerGsapPlugins, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import { convertSvgToMorphPaths } from '$lib/motion/utils/morphHelpers.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { Card } from '$lib/components/ui/card';
@@ -138,31 +138,6 @@
 			}
 		});
 
-		// Entrance animation
-		if (!isPrefersReducedMotion()) {
-			const cards = sectionEl.querySelectorAll('[data-services-card]');
-			const viewall = sectionEl.querySelector('[data-services-viewall]');
-
-			gsap.set(cards, { opacity: 0, y: 30 });
-			gsap.set(viewall, { opacity: 0 });
-
-			ScrollTrigger.create({
-				trigger: sectionEl,
-				start: 'top bottom-=50',
-				once: true,
-				onEnter: () => {
-					const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
-					tl.to(cards, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12 });
-					tl.to(viewall, { opacity: 1, duration: 0.3 }, '-=0.2');
-				},
-			});
-		}
-
-		return () => {
-			ScrollTrigger.getAll().forEach((st) => {
-				if (st.trigger === sectionEl) st.kill();
-			});
-		};
 	});
 </script>
 
@@ -183,7 +158,6 @@
 				<a
 					href="/services/{service.id}"
 					data-testid="services-card"
-					data-services-card
 					class="group block"
 					onmouseenter={() => handleCardEnter(i)}
 					onmouseleave={() => handleCardLeave(i)}
@@ -245,7 +219,6 @@
 		<!-- View all link -->
 		<div
 			data-testid="services-viewall"
-			data-services-viewall
 			class="mt-12 text-center"
 		>
 			<a

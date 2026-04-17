@@ -24,8 +24,6 @@
 		display: flex;
 		gap: 80px;
 		z-index: calc(var(--z-content) + 2);
-		opacity: 0;
-		translate: 0 -8px;
 	}
 
 	.manifesto__tick {

@@ -9,8 +9,6 @@
 	import { onMount, onDestroy } from 'svelte';
 	import type { AboutTestimonial } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
-	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -55,8 +53,6 @@
 
 <div
 	class="group h-full"
-	use:reveal
-	use:tilt={{ maxDeg: 1, perspective: 800 }}
 	use:cursorGlow
 >
 <Card

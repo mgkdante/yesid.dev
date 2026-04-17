@@ -7,7 +7,6 @@
 <script lang="ts">
 	import type { AboutWeatherConfig } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -59,7 +58,6 @@
 
 <div
 	class="group h-full"
-	use:reveal
 	use:cursorGlow
 >
 <Card class="relative h-full p-3" data-testid="about-weather">

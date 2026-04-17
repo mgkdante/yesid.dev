@@ -36,7 +36,6 @@
 		position: absolute;
 		overflow: hidden;
 		z-index: calc(var(--z-content) + 1);
-		opacity: 0;
 	}
 
 	.manifesto__stripe::before {
@@ -82,8 +81,6 @@
 		flex-direction: column;
 		gap: 6px;
 		z-index: calc(var(--z-content) + 2);
-		opacity: 0;
-		translate: 8px 0;
 	}
 
 	.manifesto__coord {

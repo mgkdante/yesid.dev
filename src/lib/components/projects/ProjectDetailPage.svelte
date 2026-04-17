@@ -199,8 +199,6 @@
 				<div
 					class="section-block"
 					data-section-index={i}
-					class:section-animate={true}
-				style="animation-delay: {100 + i * 60}ms;"
 				>
 					<CollapsibleSection
 						title={resolveLocale(section.title, 'en')}
@@ -216,8 +214,6 @@
 				<div
 					class="section-block"
 					data-section-index={project.sections.length}
-					class:section-animate={true}
-				style="animation-delay: 200ms;"
 				>
 					<CollapsibleSection title="README" open={true}>
 						{#snippet icon()}
@@ -319,28 +315,6 @@
 	@media (min-width: 1024px) {
 		.section-block {
 			margin-bottom: 48px;
-		}
-	}
-
-	/* Animate on load (not scroll) */
-	.section-animate {
-		animation: section-fade-up 0.5s ease-out both;
-	}
-
-	@keyframes section-fade-up {
-		from {
-			opacity: 0;
-			transform: translateY(16px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.section-animate {
-			animation: none;
 		}
 	}
 

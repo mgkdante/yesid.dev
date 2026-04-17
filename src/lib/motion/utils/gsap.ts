@@ -14,7 +14,7 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin'; // DELETE in 17e-2 (train removal)
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin'; // consumed by StackConnections tech-stack dots
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { CustomEase } from 'gsap/CustomEase';
 import { SplitText } from 'gsap/SplitText'; // DELETE in 17e-3 (crescendo replaces char-stagger)

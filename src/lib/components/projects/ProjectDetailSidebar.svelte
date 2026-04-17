@@ -1,16 +1,13 @@
 <!--
   Sticky sidebar for the work detail page.
-  Shows tech stack tags (GSAP stagger entrance), linked services (ServiceBadge),
-  and external links (Live Site / GitHub).
+  Shows tech stack tags, linked services (ServiceBadge), and external links (Live Site / GitHub).
   Desktop: sticky at top: 5rem, ~240px wide. Mobile: full-width section above content.
   Visual grouping: subtle gradient separators between sidebar sections.
+  No entrance animation — Snappy Doctrine (17e-2).
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
 	import ServiceBadge from './ServiceBadge.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 
@@ -34,28 +31,9 @@
 		serviceSvgContents: Record<string, string>;
 	} = $props();
 
-	let tagsContainer: HTMLDivElement;
-
 	/* Whether we need separators between sidebar groups */
 	const hasServices = $derived(services.length > 0);
 	const hasLinks = $derived(!!project.liveUrl || !!project.repoUrl);
-
-	onMount(() => {
-		if (isPrefersReducedMotion() || !tagsContainer) return;
-		registerGsapPlugins();
-
-		// Stagger-in animation for tech stack tags on mount
-		const tags = tagsContainer.querySelectorAll('[data-animate="tag"]');
-		if (tags.length > 0) {
-			gsap.from(tags, {
-				y: 8,
-				opacity: 0,
-				duration: 0.4,
-				stagger: 0.06,
-				ease: 'back.out(1.4)'
-			});
-		}
-	});
 </script>
 
 <aside
@@ -68,9 +46,9 @@
 			<h3 class="mb-2.5 label-section font-semibold text-xs tracking-wider">
 				{resolveLocale(labels.techStack, 'en')}
 			</h3>
-			<div bind:this={tagsContainer} class="flex flex-wrap gap-1.5">
+			<div class="flex flex-wrap gap-1.5">
 				{#each project.stack as tech}
-					<a href="/work?tag={tech}" data-animate="tag" class="no-underline">
+					<a href="/work?tag={tech}" class="no-underline">
 						<Badge variant="tag" size="xs">{tech}</Badge>
 					</a>
 				{/each}

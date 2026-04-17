@@ -1,8 +1,9 @@
 <!--
   Magazine cover header for /blog/[slug].
   Full-bleed cover story: circuit grid, ManifestoCanvas, watermark, CornerMarks,
-  rotated edge labels, category line, display title (SplitText), tag pills, meta row.
+  rotated edge labels, category line, display title, tag pills, meta row.
   Extends behind nav with negative margin. Same structural pattern as ProjectDetailHeader.
+  No entrance animation — Snappy Doctrine (17e-2). ManifestoCanvas is ambient (doctrine-allowed).
 -->
 <script lang="ts">
   import type { BlogPost } from '$lib/data/types.js';
@@ -10,10 +11,6 @@
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-  import { registerGsapPlugins, gsap, SplitText } from '$lib/motion/utils/gsap.js';
 
   let {
     post,
@@ -30,7 +27,6 @@
   } = $props();
 
   let headerEl = $state<HTMLElement>(undefined!);
-  let titleEl = $state<HTMLHeadingElement>(undefined!);
 
   const backHref = $derived(
     post.category === 'personal' ? '/blog/personal' : '/blog'
@@ -72,32 +68,6 @@
     return parts;
   });
 
-  onMount(() => {
-    if (!browser || isPrefersReducedMotion() || !headerEl) return;
-    registerGsapPlugins();
-
-    const q = gsap.utils.selector(headerEl);
-    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
-
-    tl.to(q('.header__circuit-grid'), { opacity: 1, duration: 0.6 }, 0);
-    tl.to(q('.header__edge'), { opacity: 1, duration: 0.5, stagger: 0.1 }, 0.3);
-    tl.to(q('.header__decoration'), { opacity: 1, duration: 0.4, stagger: 0.05 }, 0.4);
-
-    if (titleEl && SplitText) {
-      const split = new SplitText(titleEl, { type: 'chars' });
-      tl.from(
-        split.chars,
-        { opacity: 0, y: 20, stagger: 0.02, duration: 0.4, ease: 'power2.out' },
-        0.6
-      );
-    }
-
-    tl.to(q('.header__pill'), { opacity: 1, y: 0, stagger: 0.1, duration: 0.4, ease: 'power2.out' }, 0.9);
-
-    return () => {
-      tl.kill();
-    };
-  });
 </script>
 
 <div
@@ -151,7 +121,7 @@
       </div>
 
       <!-- Display title -->
-      <h1 bind:this={titleEl} class="header__title">
+      <h1 class="header__title">
         {#each titleParts as part}
           {#if part.highlight}
             <span class="header__title-highlight">{part.text}</span>
@@ -212,7 +182,6 @@
       repeating-linear-gradient(90deg, color-mix(in srgb, var(--blog-accent) 3.5%, transparent) 0px, color-mix(in srgb, var(--blog-accent) 3.5%, transparent) 1px, transparent 1px, transparent 80px),
       repeating-linear-gradient(0deg, color-mix(in srgb, var(--blog-accent) 3.5%, transparent) 0px, color-mix(in srgb, var(--blog-accent) 3.5%, transparent) 1px, transparent 1px, transparent 80px);
     z-index: var(--z-base);
-    opacity: 0;
   }
 
   .header__circuit-grid::after {
@@ -244,10 +213,6 @@
   }
 
   /* ── Edge labels (rotated, desktop only) ───────────────────── */
-  .header__edge {
-    opacity: 0;
-  }
-
   .header__edge-left,
   .header__edge-right {
     position: absolute;
@@ -273,7 +238,6 @@
 
   /* ── Decorations ───────────────────────────────────────────── */
   .header__decoration {
-    opacity: 0;
     z-index: calc(var(--z-content) + 1);
   }
 
@@ -394,8 +358,6 @@
     border-radius: var(--radius-pill);
     padding: 4px 12px;
     background: color-mix(in srgb, var(--blog-accent) 3%, transparent);
-    opacity: 0;
-    transform: translateY(15px);
   }
 
   @media (min-width: 1024px) {
