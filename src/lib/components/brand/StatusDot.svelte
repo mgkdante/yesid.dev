@@ -13,6 +13,11 @@
     pulse?: boolean;
     /** Dot size */
     size?: 'sm' | 'md';
+    /**
+     * Halo ring in muted card color — for dots overlaid on muted surfaces (e.g. headshot corner).
+     * Uses CSS outline so it composes with box-shadow-based pulse animation.
+     */
+    ring?: boolean;
     class?: string;
   }
 
@@ -20,6 +25,7 @@
     color = 'orange',
     pulse = false,
     size = 'sm',
+    ring = false,
     class: className,
     ...restProps
   }: StatusDotProps = $props();
@@ -28,7 +34,7 @@
 </script>
 
 <span
-  class={cn(sizeMap[size], "inline-block shrink-0 rounded-full", pulse ? 'led-pulse' : '', color === 'orange' ? 'bg-primary' : 'bg-[var(--success)]', className)}
+  class={cn(sizeMap[size], "inline-block shrink-0 rounded-full", pulse ? 'led-pulse' : '', ring ? 'outline outline-[3px] outline-[var(--muted)]' : '', color === 'orange' ? 'bg-primary' : 'bg-[var(--success)]', className)}
   data-slot="status-dot"
   aria-hidden="true"
   {...restProps}

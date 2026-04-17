@@ -307,7 +307,7 @@ Consumers apply keyframes via explicit `animation:` declarations. The one utilit
 
 | Component | Props | Replaces |
 |-----------|-------|----------|
-| `StatusDot` | `color`, `pulse`, `size` | 8+ pulsing dots |
+| `StatusDot` | `color`, `pulse`, `size`, `ring` | 8+ pulsing dots |
 | `SectionLabel` | `text`, `variant`, `align` | 25+ mono labels |
 | `StopLabel` | `stop`, `label` | 10 About bento stops |
 | `Tag` | `text`, `size`, `active`, `accentColor`, `interactive` | 8+ tag pills |

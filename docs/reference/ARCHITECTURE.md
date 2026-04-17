@@ -122,20 +122,25 @@ src/
 │   │   │   ├── tabs/                # Tabs (station tab navigation)
 │   │   │   ├── toggle-group/        # Toggle group (filter groups)
 │   │   │   └── ...                  # 48 more scaffolded components
-│   │   └── brand/                   # ← Slice 17a-2/17d: hand-built brand primitives + blueprint SVGs
+│   │   └── brand/                   # ← Slice 17a-2/17d: hand-built brand primitives + blueprint SVGs (13 .svelte)
 │   │       ├── index.ts             # Barrel export — import { StatusDot } from '$lib/components/brand'
-│   │       ├── StatusDot.svelte     # Pulsing status indicator (color, pulse, size)
+│   │       ├── StatusDot.svelte     # Pulsing status indicator (color, pulse, size, ring — 17a-4)
 │   │       ├── SectionLabel.svelte  # Mono uppercase section labels (text, variant, align)
+│   │       ├── SectionHeading.svelte # Display-size section heading (title, variant) — 17a-2a
 │   │       ├── StopLabel.svelte     # "STOP XX" bento card labels (stop, label)
+│   │       ├── MetroStation.svelte  # Numbered metro station marker with sonar pulse — 17d
 │   │       ├── ChevronToggle.svelte # Animated expand/collapse chevron (open, size)
 │   │       ├── GlowOverlay.svelte   # Cursor-following glow overlay (intensity)
 │   │       ├── MetricDisplay.svelte # Value + label metric (value, label, sublabel, labelBelow)
 │   │       ├── CornerMarks.svelte   # Blueprint corner tick marks (size, opacity)
 │   │       ├── TerminalChrome.svelte # Terminal window frame (title, tag, status, footer, noPadding)
 │   │       ├── StickyPanel.svelte   # Sticky sidebar wrapper (top)
+│   │       ├── SvgIcon.svelte       # Shared SVG icon renderer (from inlined sources) — 17d
 │   │       ├── BlueprintShell.svelte # ← Slice 17d: moved from deleted shells/, blueprint header container
 │   │       ├── blueprints/          # ← Slice 17d: 12 inline Svelte SVGs (currentColor, zero hardcoded hex)
 │   │       └── __tests__/           # Co-located tests for all primitives
+│   │       # Migrated to shadcn ui/ in 17d: Tag + NumberBadge → ui/badge; HazardStripe + GradientSeparator → ui/separator;
+│   │       # BrandButton → ui/button; CardBase → ui/card. Mapping in brand/index.ts header comment.
 │   └── motion/          # ← Added in Slice 04; re-engineered in Slice 17e
 │       ├── actions/             # Interaction signatures (5 of the 9)
 │       │   ├── boop.ts          # use:boop — hover transform burst

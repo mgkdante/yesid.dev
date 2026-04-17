@@ -33,6 +33,19 @@ describe('StatusDot', () => {
     expect(dot.className).toContain('size-2.5');
   });
 
+  it('applies halo outline when ring=true', () => {
+    const { container } = render(StatusDot, { props: { ring: true } });
+    const dot = container.querySelector('span')!;
+    expect(dot.className).toContain('outline-[3px]');
+    expect(dot.className).toContain('outline-[var(--muted)]');
+  });
+
+  it('omits outline classes by default', () => {
+    const { container } = render(StatusDot);
+    const dot = container.querySelector('span')!;
+    expect(dot.className).not.toContain('outline-[3px]');
+  });
+
   it('is hidden from assistive tech', () => {
     const { container } = render(StatusDot);
     const dot = container.querySelector('span')!;

@@ -27,6 +27,9 @@ import { gsap } from '$lib/motion/utils/gsap.js';
 // @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
 import { Flip } from 'gsap/Flip';
 
+/** State snapshot captured by {@link captureFlipState} for replay via `Flip.from()`. */
+export type FlipState = ReturnType<typeof Flip.getState> | null;
+
 /**
  * Capture current FLIP state for filter transitions.
  * Call BEFORE the filter value changes.
@@ -36,8 +39,7 @@ import { Flip } from 'gsap/Flip';
  *
  * @returns FLIP state object, or null if reduced motion / no elements
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function captureFlipState(): any {
+export function captureFlipState(): FlipState {
 	if (isPrefersReducedMotion() || typeof document === 'undefined') return null;
 	const cards = document.querySelectorAll('[data-flip-id]');
 	if (cards.length === 0) return null;
@@ -55,8 +57,7 @@ export function captureFlipState(): any {
  */
 export function animateFlipTransition(
 	batchSelector: string,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	flipState: any,
+	flipState: FlipState,
 	batchFired: boolean,
 	onFlipDone: () => void,
 ): void {

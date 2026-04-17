@@ -1,7 +1,10 @@
-// Brand primitives barrel export — 9 reusable components.
-// Tag→ui/badge, NumberBadge→ui/badge, HazardStripe→ui/separator,
-// GradientSeparator→ui/separator, BrandButton→ui/button, CardBase→ui/card.
-// Built in Slice 17a-2a. Wired into consumers in 17a-2b.
+// Brand primitives barrel export — 13 reusable components.
+// Built in Slice 17a-2a; wired into consumers in 17a-2b; expanded in 17d (MetroStation, SectionHeading, SvgIcon).
+//
+// Migrated to shadcn ui/ in 17d (don't import from here — use the ui/ equivalent):
+//   Tag → ui/badge, NumberBadge → ui/badge,
+//   HazardStripe → ui/separator, GradientSeparator → ui/separator,
+//   BrandButton → ui/button, CardBase → ui/card.
 
 export { default as StatusDot } from './StatusDot.svelte';
 export { default as SectionLabel } from './SectionLabel.svelte';

@@ -4,14 +4,15 @@ import type { BlogPost, BlogCategory, BlogAnimation, Locale } from './types.js';
 // --- Frontmatter parsing ---
 
 function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
-	const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+	// CRLF-tolerant: Windows editors occasionally save .md with \r\n line endings.
+	const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
 	if (!match) return { data: {}, content: raw };
 
 	const frontmatter = match[1];
 	const content = match[2];
 	const data: Record<string, unknown> = {};
 
-	for (const line of frontmatter.split('\n')) {
+	for (const line of frontmatter.split(/\r?\n/)) {
 		const colonIdx = line.indexOf(':');
 		if (colonIdx === -1) continue;
 		const key = line.slice(0, colonIdx).trim();
