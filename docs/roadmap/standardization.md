@@ -24,7 +24,7 @@
 | 17c Zod Schemas                  | planned                         | —         | 0.5      |
 | 17f Test Architecture            | planned                         | —         | 1-2      |
 | 17g Learning Docs                | planned                         | —         | 2        |
-| 17h Brand Bundle (Path A) + Source-of-Truth Refactor | PLANNED (spec + plan + sub-slice stubs written 2026-04-17; 17h-1 expanded to include slice-17 drift-freshening pre-move) | — | 10-11 |
+| 17h Brand Bundle (narrative + assets) | PLANNED (shrunk 2026-04-18 — brand/ = non-tech info + assets only; generator / source-of-truth refactor killed. Surviving sub-slices: 17h-3 narrative + 17h-4 assets. Killed: 17h-1, 17h-2, 17h-5, 17h-6) | — | ~3 |
 
 ### Constitution Planning Session (2026-04-13)
 
@@ -322,7 +322,7 @@ Phase 2 — Standardization (after SEO)
   17e: Motion consolidation
   17f: Test architecture + documentation
   17g: Learning docs refactor
-  17h: Brand bundle (Path A) + source-of-truth refactor (visual-design close)
+  17h: Brand bundle — narrative + assets (visual-design close; scope shrunk 2026-04-18)
     ↓
   16: E2E + QA (tests the FINAL state)
     ↓
@@ -762,7 +762,7 @@ Wire 3 unwired primitives into consumers:
 - `GlowOverlay` (0 consumer imports) — evaluate if cursorGlow action makes this obsolete; if so, delete
 - `CardBase` (0 consumer imports) — wire into HomeServices cards, ProofReel cards, HeroMetrics cards, BlogCard (if not dead)
 
-Missed primitive wiring — historical audit table. See 17a-4 summary above for the 2026-04-17 closeout; remaining rows below belong to future component-wiring passes (17h-5 scope):
+Missed primitive wiring — historical audit table. See 17a-4 summary above for the 2026-04-17 closeout; remaining rows below belong to future component-wiring passes (17h-5 was killed 2026-04-18, so these become post-17 standalone cleanup):
 
 
 | #   | Component                                         | Should Use                                    | What It Does Instead                         |
