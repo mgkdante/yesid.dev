@@ -7,11 +7,17 @@
  * Character advance runs through the shared gsap.ticker (17e-5) so the
  * whole site ticks from a single RAF callback. A deltaTime accumulator
  * advances one character every ~80ms of wall-clock time.
+ *
+ * NOTE: GSAP's gsap.ticker.add callback delivers `deltaTime` in
+ * MILLISECONDS (not seconds). Preserving the original setInterval's
+ * 80ms-per-character pacing means comparing the accumulator to 80, not
+ * to 0.08. Getting this wrong makes the typewriter blow through the
+ * entire string in one frame.
  */
 
 import { subscribe, unsubscribe } from './ticker.js';
 
-const CHAR_INTERVAL_SEC = 0.08; // seconds between characters (was 80ms setInterval)
+const CHAR_INTERVAL_MS = 80; // matches the original setInterval(..., 80) pacing
 let typewriterIdCounter = 0;
 
 export interface TypewriterControls {
@@ -48,11 +54,11 @@ export function createTypewriter(
 		let accum = 0;
 
 		subscribe(subscriptionId, (_time, deltaTime) => {
-			accum += deltaTime;
+			accum += deltaTime; // ms
 			// While-loop handles frame spikes (backgrounded tabs) — catches the
 			// animation up to where wall-clock time says it should be.
-			while (accum >= CHAR_INTERVAL_SEC && charIndex < text.length) {
-				accum -= CHAR_INTERVAL_SEC;
+			while (accum >= CHAR_INTERVAL_MS && charIndex < text.length) {
+				accum -= CHAR_INTERVAL_MS;
 				charIndex++;
 				scrollText.textContent = text.substring(0, charIndex);
 			}
