@@ -124,6 +124,18 @@ export async function loadSplitText(): Promise<void> {
 	loadedPlugins.add('SplitText');
 }
 
+/**
+ * Sync SplitText registration — for wordmarkHover, whose action contract
+ * requires `new SplitText(node, ...)` to run synchronously at mount.
+ * Uses the eagerly-imported SplitText symbol (no dynamic import).
+ * Idempotent.
+ */
+export function ensureSplitTextRegistered(): void {
+	if (loadedPlugins.has('SplitText')) return;
+	gsap.registerPlugin(SplitText);
+	loadedPlugins.add('SplitText');
+}
+
 // Re-export so motion code only needs one import source.
 export {
 	gsap,

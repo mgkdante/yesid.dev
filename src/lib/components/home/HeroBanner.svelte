@@ -13,13 +13,13 @@
   Phase 8 (110-142%) — Text elements stagger in during zoom-out
   Phase 9 (155%)     — Brief hold, then unpin — SQL panel visible on natural scroll
 
-  Scroll: 800% on all breakpoints. Desktop: Lenis + scrub:true. Mobile: normalizeScroll + scrub:0.5.
+  Scroll: 800% desktop / 300% mobile. Lenis smooth-scroll site-wide (normalizeScroll removed 17e-1).
 -->
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import {
-		registerGsapPlugins,
+		initScrollTriggerConfig,
 		loadDrawSVG,
 		loadCustomEase,
 		ScrollTrigger,
@@ -105,11 +105,10 @@
 		}
 
 		// Preload lazy plugins used inside createHeroTimeline (DrawSVG stroke
-		// scrub in Phase 2, CustomEase 'networkDraw' on the line draws). Both
-		// loaders are idempotent — safe even though registerGsapPlugins still
-		// eagerly registers them for non-migrated consumers.
+		// scrub in Phase 2, CustomEase 'networkDraw' on the line draws).
+		// Register ScrollTrigger + apply its site-wide config.
 		await Promise.all([loadDrawSVG(), loadCustomEase()]);
-		registerGsapPlugins();
+		initScrollTriggerConfig();
 
 		// Typewriter: pure ambient per D264 — plays every visit, no scroll lock.
 		// If the user scrolls past mid-animation, the type-sequence cuts off and

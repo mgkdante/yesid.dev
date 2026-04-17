@@ -1,5 +1,6 @@
 export {
 	initScrollTriggerConfig,
+	ensureSplitTextRegistered,
 	registerGsapPlugins,
 	loadDrawSVG,
 	loadMorphSVG,

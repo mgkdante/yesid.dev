@@ -12,7 +12,7 @@
 	import type { BlogAnimation } from '$lib/data/types.js';
 	import { SHAPES, pickRandomShape } from '$lib/data/shapes.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, DrawSVGPlugin, ScrollTrigger } from '$lib/motion/utils/gsap.js';
+	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { convertSvgToMorphPaths } from '$lib/motion/utils/morphHelpers.js';
 	import { cn } from '$lib/utils.js';
 
@@ -153,9 +153,14 @@
 		}, '-=0.3');
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		if (isPrefersReducedMotion() || !container) return;
-		registerGsapPlugins();
+		// animateMorph uses MorphSVG; all 3 entrance variants use DrawSVG.
+		await Promise.all([loadDrawSVG(), loadMorphSVG()]);
+		// Component may have unmounted while awaiting (tests mount + unmount
+		// rapidly). Re-check before touching the DOM.
+		if (!container) return;
+		initScrollTriggerConfig();
 
 		const svg = container.querySelector('svg');
 		if (!svg) return;
