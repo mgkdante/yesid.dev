@@ -76,13 +76,25 @@ The mobile-Perf gap is the dominant story. On `/`, the 9-phase hero timeline + p
 
 ### Decision
 
-Per design spec acceptance criteria §9.4, Lighthouse targets are a required-for-close criterion. Options:
+**Option 1 selected by Yesid (2026-04-17).** Close 17e with the Lighthouse results documented as a known gap. The §6.1 targets are deferred to the already-planned downstream slices per `docs/roadmap/PLAN.md`:
 
-1. **Close 17e as-is, document the gap** (recommended): the slice's architectural goals (Snappy Doctrine enforcement, 9-signature vocabulary closed, one RAF site-wide, lazy plugin migration foundation, MetroNetwork SSR) all landed. Lighthouse targets are now the focus of a dedicated perf-audit slice.
-2. Block 17e close until Perf targets met: large additional scope (mobile hero rebuild, meta description pass, A11y audit fixes) — would roll into a second PR of similar size. Not recommended given the architectural work is the value-add of 17e.
-3. Relax spec §6.1 targets formally (amendment): doc-only change; record that mobile Perf ≥ 60 / desktop ≥ 95 is the new interim target pending the dedicated perf slice.
+- **Slice 19 — Mobile UI/UX Optimization** — owns the mobile-Perf gap (54 on home, 62–75 elsewhere). Scope per PLAN.md: touch targets, scroll behavior, animation performance on low-end devices, SkillsJourney scroll tuning, responsive breakpoint audit at 375/390/414/768px, mobile-specific animation tuning.
+- **Slice 19b — Accessibility (A11Y) Optimization** — owns the A11y 95–96 gap on listing + detail pages. Scope per PLAN.md: WCAG 2.1 AA, semantic HTML audit, ARIA landmarks, keyboard nav, focus management, color contrast, Lighthouse a11y target 95+ (matches our lowest observed scores).
+- **Slice 20 — Scroll Smoothness + Animation Polish** — owns scroll-scrub frame-rate optimization. Scope per PLAN.md: ScrollSmoother evaluation, GSAP tween audit, 60fps verification, scrub timing polish.
+- **Slice 21 / Slice 16 E2E** — owns frame-rate verification via Playwright + site-wide performance regression testing.
+- **SEO 82–83 on home + blog tree** — not explicitly scoped to a slice yet. Likely a fast follow-up (missing meta descriptions); can be folded into Slice 19 or split as a content ticket.
 
-Proposing **option 1**: close 17e with the Lighthouse results documented as a known gap and spin off a dedicated perf slice (17f or similar) to target §6.1 across routes. Yesid to choose.
+17e's architectural goals all landed cleanly:
+
+- ✅ Snappy Doctrine enforced (zero entrance reveals remaining; 9-signature vocabulary closed)
+- ✅ One RAF site-wide (shared `gsap.ticker`; IO-gated offscreen)
+- ✅ Lazy GSAP plugin loaders + consumer-wide migration (D269)
+- ✅ MetroNetwork SSR-inlined (HTML-path LCP win measurable in any audit)
+- ✅ `heroTimeline` + `crescendo` + `drawScrub` factories
+- ✅ `use:morphHover` action (signature 4)
+- ✅ Legacy symbol deletion complete (reveal/ripple/tilt/Train tree/heroScrollLock/heroTimeline utility/ReadingProgressBar/StackScenarioCard fade-up/SvgIcon.animateStagger)
+
+Spec §6.1 Lighthouse targets move from "17e closing criterion" to "19/19b/20 closing criterion". Recommend amending `docs/specs/2026-04-16-slice-17e-motion-reengineering-design.md` §9.4 acceptance criteria during the Task 8 design-spec-amendments pass to reflect this transfer (move Lighthouse bullets from 17e's §9.4 to reference the downstream slices).
 
 ---
 
