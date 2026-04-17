@@ -101,7 +101,6 @@
 			flex-direction: column;
 			justify-content: center;
 			padding-block: 1.5rem;
-			padding-inline: 1rem;
 		}
 		/* Cap by whichever is smaller: viewport-height-based or viewport-width-based.
 		   11vw lets "PIPELINES" (9 chars × ~0.7em effective width) fit with margin

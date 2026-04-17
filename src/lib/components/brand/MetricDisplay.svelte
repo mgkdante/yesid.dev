@@ -42,7 +42,7 @@
     <span class="label-metric">{label}</span>
   {/if}
   <span
-    class="font-heading font-extrabold leading-none text-primary {valueClass[size]}"
+    class="metric-value font-heading font-extrabold leading-none text-primary {valueClass[size]}"
   >{value}</span>
   {#if labelBelow}
     <span class="mt-2 label-metric">{label}</span>

@@ -272,6 +272,15 @@ pre, code, table {
   animation: typewriter-blink 1s steps(2, start) infinite;
 }
 
+/* MetricDisplay value — mobile-only shrink for the lg (text-title) size.
+   Desktop keeps text-title. sm/md are already small enough on mobile and
+   are left untouched. Yesid verified desktop sizes are correct. */
+@media (max-width: 768px) {
+  .metric-value.text-title {
+    font-size: var(--text-heading);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .led-pulse { animation: none; }
   .typewriter-cursor {
