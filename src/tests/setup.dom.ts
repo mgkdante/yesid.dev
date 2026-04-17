@@ -100,7 +100,15 @@ vi.mock('gsap', () => {
 			context: vi.fn((fn: () => void) => { fn(); return { revert: vi.fn() }; }),
 			utils: {
 				selector: vi.fn(() => vi.fn(() => []))
-			}
+			},
+			// ticker stubbed so motion/utils/ticker can subscribe/unsubscribe under test.
+			// Tests that need to assert tick behavior can spyOn(gsap.ticker, 'add').
+			ticker: {
+				add: vi.fn(),
+				remove: vi.fn(),
+				lagSmoothing: vi.fn()
+			},
+			plugins: {}
 		}
 	};
 });
@@ -112,7 +120,10 @@ vi.mock('gsap/ScrollTrigger', () => ({
 		getAll: vi.fn(() => []),
 		killAll: vi.fn(),
 		normalizeScroll: vi.fn(),
-		config: vi.fn()
+		config: vi.fn(),
+		update: vi.fn(),
+		// 0 = no touch, 1 = touch only, 2 = touch + pointer. Tests override per scenario.
+		isTouch: 0
 	}
 }));
 
