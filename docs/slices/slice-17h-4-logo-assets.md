@@ -1,9 +1,9 @@
 # Slice 17h-4 — Logo + Asset Expansion
 
-**Status:** draft
+**Status:** draft (updated 2026-04-18 for the 17h scope shrink — see parent slice)
 **Priority:** 2
 **Estimated effort:** 1 session
-**Depends on:** 17h-1 (token surface stable, `brand/` folder structure in place)
+**Depends on:** standalone — `brand/` folder already exists on main; 17h-1 dependency dropped when 17h-1 was killed 2026-04-18
 **Parent:** `docs/slices/slice-17h-brand-bundle.md`
 
 ## Objective
@@ -29,7 +29,7 @@ Two export scripts, both idempotent:
 - `brand/scripts/export-logos.ts` — reads every `.svg` under `brand/logos/`, emits `{name}-1x.png`, `{name}-2x.png`, `{name}-3x.png` into `brand/logos/exports/`.
 - `brand/scripts/export-examples.ts` — starts the dev server via Claude Preview / Playwright, navigates to configured surfaces, screenshots at 1440px + 375px, extracts the component source subset, writes paired files to `brand/examples/`.
 
-Both scripts are wired into 17h-6's `brand:sync` orchestrator; they can also run independently via `bun run brand:export-logos` / `bun run brand:export-examples`.
+Both scripts run independently via `bun run brand:export-logos` / `bun run brand:export-examples`. They are NOT wired into a `brand:sync` orchestrator — 17h-6 was killed in the 2026-04-18 scope shrink; there is no orchestrator.
 
 ## Tech Stack
 
@@ -61,7 +61,7 @@ package.json                           — ADD "brand:export-logos", "brand:expo
 **Files:** `brand/logos/{lockup-horizontal,lockup-stacked,clearspace,donts}.svg`.
 
 - [ ] **Step 1: `lockup-horizontal.svg`** — monogram + wordmark side-by-side. Gap = lowercase-y height (per existing clearspace rule in README). Use existing monogram + wordmark paths; don't invent new geometry.
-- [ ] **Step 2: `lockup-stacked.svg`** — wordmark centered over tagline "Digital infrastructure that moves." in `JetBrains Mono`. Match type scale `yesid.size.caption`.
+- [ ] **Step 2: `lockup-stacked.svg`** — wordmark centered over tagline "Digital infrastructure that moves." in `JetBrains Mono`. Match type scale `--text-caption` (currently 0.75rem / 12px — see `src/app.css @theme`).
 - [ ] **Step 3: `clearspace.svg`** — wordmark in center, dashed boundary at y-height distance on all 4 sides, labeled "y-height" with an arrow. 800×400 viewBox.
 - [ ] **Step 4: `donts.svg`** — 2×3 grid, 6 cells. Each cell: a miniature wordmark with a transformation applied (stretched, rotated, recolored dot, outlined, dropshadowed, non-lowercase) plus a red slash overlay. 1200×800 viewBox. Label each cell with the broken rule.
 - [ ] **Step 5: Authoring choice.**

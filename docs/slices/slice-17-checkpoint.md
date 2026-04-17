@@ -1,10 +1,11 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-17 | **17a-4 COMPLETE — residue + doc refresh shipped after fresh audit.**
-**Branch:** `feature/slice-17a-4-dead-code-dedup` (PR pending)
+**Last updated:** 2026-04-18 | **17h scope shrunk — 4 sub-slices killed, 2 survive. Planning-shrink PR pending.**
+**Branch:** `feature/slice-17h-planning-shrink` (PR pending)
 
 ## Current Position
 
+- **17h planning shrink (2026-04-18):** Scope cut from 10-11 sessions / 6 sub-slices → ~3 sessions / 2 sub-slices. New rule locked: `brand/` = non-tech info + assets only. Governance (`CONSTITUTION.md`, `CSS.md`, `MOTION.md`) stays at `docs/reference/`; tokens stay at `src/lib/styles/tokens.css`. Manual translation + PR review replaces the generator. Killed: 17h-1 (tokens consolidation), 17h-2 (code generator), 17h-5 (source-of-truth refactor), 17h-6 (sync orchestrator) — each stubbed OBSOLETE in place with a pointer to the parent slice. Surviving: 17h-3 (narrative docs — 2 sessions), 17h-4 (logo + assets — 1 session). Original design spec (`docs/specs/2026-04-17-slice-17h-brand-bundle-design.md`) bannered partially-obsolete; audit research kept as historical reference.
 - **Slice 17a-4:** COMPLETE — fresh-audit session (2026-04-17). Original scope was ~90% already absorbed into 17a-2b / 17d / 17e; slice shipped as a short hygiene pass. 2 residue primitive wirings + 1 content rewrite + 5 `any` tightens + planning-doc refresh. Bonus fix: pre-existing CRLF bug on `main` (2 blog files + `parseFrontmatter` regex) unblocked the baseline.
 - **Slice 17e:** COMPLETE — all 6 sub-slices landed across 4 PRs. 17e-5 + 17e-6 shipped combined.
 - **Build:** 0 type errors, 19 pre-existing warnings, 782/782 tests pass (+2 since 17e end: StatusDot `ring` prop coverage).
