@@ -22,7 +22,11 @@ export function createTypewriter(
 	function startBlink() {
 		if (blinkInterval) return;
 		if (scrollPrompt) {
-			scrollPrompt.style.opacity = '1';
+			// scrollPrompt opacity is owned by the hero timeline scrub (Phase 1a).
+			// Writing opacity here would stick past the scrub window and keep the
+			// billboard visible when the user has scrolled — the pre-Snappy
+			// scroll-lock model used this to re-assert visibility after unlock,
+			// but the new model fades on any scroll.
 			scrollText.textContent = text;
 			scrollCursorEl.style.opacity = '1';
 		}
