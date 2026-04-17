@@ -18,8 +18,13 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, ScrollTrigger, CustomEase } from '$lib/motion/utils/gsap.js';
-	import { buildHeroTimeline } from '$lib/motion/utils/heroTimeline.js';
+	import {
+		registerGsapPlugins,
+		loadDrawSVG,
+		loadCustomEase,
+		ScrollTrigger,
+	} from '$lib/motion/utils/gsap.js';
+	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
 	import { createScrollLock } from '$lib/motion/utils/heroScrollLock.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
 	import { heroAnimContent, heroContent, INITIAL_HERO_DATA, generateHeroData } from '$lib/data';
@@ -86,17 +91,30 @@
 		const svg = pinContainer?.querySelector('[data-testid="metro-network"]');
 		if (!svg) { if (scrollLock.shouldLock) scrollLock.unlock(); return; }
 
+		// Resolve heroDot from DOM — inside HeroTextContent child component
+		const heroDot = heroTextContainer.querySelector('.hero-dot') as SVGSVGElement;
+
+		// Reduced motion: factory renders the static preview (network dimmed,
+		// heroTextContainer snapped to scale=1 visible) and no-ops. Skip the
+		// typewriter animation and the ScrollTrigger.refresh listener.
 		if (reducedMotion) {
-			svg.querySelectorAll('.metro-line, .metro-station, .metro-bg, .metro-label, .metro-berri').forEach((el) => {
-				(el as HTMLElement).style.opacity = '0.2';
+			createHeroTimeline(pinContainer, {
+				svgWrapper,
+				heroTextContainer,
+				heroDot,
+				scrollPrompt,
+				startBlink: () => {},
+				stopBlink: () => {},
 			});
-			heroTextContainer.style.opacity = '1';
-			heroTextContainer.style.transform = 'scale(1)';
 			return;
 		}
 
+		// Preload lazy plugins used inside createHeroTimeline (DrawSVG stroke
+		// scrub in Phase 2, CustomEase 'networkDraw' on the line draws). Both
+		// loaders are idempotent — safe even though registerGsapPlugins still
+		// eagerly registers them for non-migrated consumers.
+		await Promise.all([loadDrawSVG(), loadCustomEase()]);
 		registerGsapPlugins();
-		CustomEase.create('networkDraw', 'M0,0 C0.2,0.6 0.4,1 1,1');
 
 		// Typewriter: one character at a time with trailing cursor.
 		const typewriter = createTypewriter(scrollPrompt, scrollText, scrollCursorEl, scrollDownLabel);
@@ -110,52 +128,19 @@
 		// Ensure fonts are loaded before glyph measurements
 		await document.fonts.ready;
 
-		// Resolve heroDot from DOM — inside HeroTextContent child component
-		const heroDot = heroTextContainer.querySelector('.hero-dot') as SVGSVGElement;
+		// Mobile pin length branch per design spec §5.1 + plan decision A1.
+		// Single mount-time matchMedia check; no gsap.matchMedia rebuild on
+		// resize across 1024px — accepted trade-off for simpler architecture.
+		const isMobile = window.matchMedia('(max-width: 1023px)').matches;
 
-		const refs = { pinContainer, svgWrapper, heroTextContainer, heroDot, scrollPrompt };
-		const callbacks = { startBlink: typewriter.startBlink, stopBlink: typewriter.stopBlink };
-
-		// ---- matchMedia: responsive timeline with automatic teardown/rebuild ----
-		let savedProgress: number | null = null;
-		const mm = gsap.matchMedia();
-
-		// Desktop / tablet (>=769px)
-		mm.add('(min-width: 769px)', () => {
-			buildHeroTimeline(refs, callbacks);
-
-			if (savedProgress !== null) {
-				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
-				if (st) {
-					const newScrollY = st.start + (savedProgress * (st.end - st.start));
-					window.scrollTo(0, newScrollY);
-				}
-				savedProgress = null;
-			}
-
-			return () => {
-				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
-				if (st) savedProgress = st.progress;
-			};
-		});
-
-		// Mobile (<769px)
-		mm.add('(max-width: 768px)', () => {
-			buildHeroTimeline(refs, callbacks);
-
-			if (savedProgress !== null) {
-				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
-				if (st) {
-					const newScrollY = st.start + (savedProgress * (st.end - st.start));
-					window.scrollTo(0, newScrollY);
-				}
-				savedProgress = null;
-			}
-
-			return () => {
-				const st = ScrollTrigger.getAll().find((s) => s.trigger === pinContainer);
-				if (st) savedProgress = st.progress;
-			};
+		const destroyHero = createHeroTimeline(pinContainer, {
+			svgWrapper,
+			heroTextContainer,
+			heroDot,
+			scrollPrompt,
+			startBlink: typewriter.startBlink,
+			stopBlink: typewriter.stopBlink,
+			pinLength: isMobile ? '300%' : '800%',
 		});
 
 		// Sleep/wake: refresh ScrollTrigger when tab becomes visible again
@@ -168,7 +153,7 @@
 
 		cleanup = () => {
 			typewriter.destroy();
-			mm.revert();
+			destroyHero();
 			document.removeEventListener('visibilitychange', onVisibilityChange);
 		};
 	});
