@@ -45,7 +45,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
-		opacity: 0;
 	}
 
 	.manifesto__arr-label {
@@ -69,7 +68,6 @@
 		display: flex;
 		gap: 6px;
 		z-index: calc(var(--z-content) + 2);
-		opacity: 0;
 	}
 
 	.manifesto__chevrons--right { right: 60px; top: 110px; flex-direction: row; }
@@ -98,7 +96,6 @@
 		padding: 3px 8px;
 		text-transform: uppercase;
 		z-index: calc(var(--z-content) + 2);
-		opacity: 0;
 	}
 
 	.manifesto__badge--platform { right: 50px; bottom: 60px; }
