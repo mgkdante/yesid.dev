@@ -508,7 +508,9 @@ Convention: tests live next to the code they test (co-located).
 | buildPersonSchema > includes knowsAbout array | Skills listed | `knowsAbout` contains `'PostgreSQL'` and `'dbt'` | Standard |
 | buildPersonSchema > includes email | Contact email present | `parsed.email` === `'contact@yesid.dev'` | Standard |
 
-# Motion — Actions (`src/lib/motion/actions/`) — 7 files, 50 tests
+# Motion — Actions (`src/lib/motion/actions/`) — 5 files
+
+Post-17e vocabulary: 5 of the 9 interaction signatures (boop, cursorGlow, magnetic, morphHover, wordmarkHover) live here. The deleted entrance-style actions (`reveal`, `ripple`, `tilt`) from pre-17e are gone — their test files were removed in 17e-2.
 
 ## src/lib/motion/actions/boop.test.ts
 
@@ -542,58 +544,31 @@ Convention: tests live next to the code they test (co-located).
 | magnetic action > does nothing when reduced motion is on | The magnetic effect is disabled for accessibility | `el.style.transform` === `''` | `mockMatchMedia(true)` |
 | magnetic action > does nothing on touch devices | The magnetic effect is disabled on touch screens | `el.style.transform` === `''` | `mockTouchDevice(true)` |
 
-## src/lib/motion/actions/reveal.test.ts
+## src/lib/motion/actions/morphHover.test.ts (17e-5)
 
 | Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
 |---------------------------|-------------------|----------------|-------------|
-| reveal action > returns update and destroy methods | The action returns the Svelte action interface | `typeof result.update` and `typeof result.destroy` === `'function'` | GSAP mocked globally |
-| reveal action > calls gsap.from when the action is applied | Applying the reveal action triggers a GSAP animation | `gsap.from` called with the element | Standard |
-| reveal action > passes y offset for direction "up" | Revealing from below uses a positive y offset | `vars.y` > 0 | `direction: 'up'` |
-| reveal action > passes y offset for direction "down" | Revealing from above uses a negative y offset | `vars.y` < 0 | `direction: 'down'` |
-| reveal action > passes x offset for direction "left" | Revealing from the left uses a negative x offset | `vars.x` < 0 | `direction: 'left'` |
-| reveal action > passes x offset for direction "right" | Revealing from the right uses a positive x offset | `vars.x` > 0 | `direction: 'right'` |
-| reveal action > converts delay from ms to seconds for GSAP | The delay prop is converted from milliseconds to seconds | `vars.delay` close to 0.4 | `delay: 400` |
-| reveal action > calls tween.kill() on destroy | Destroying the action kills the GSAP tween | `tween.kill` was called | `action.destroy()` |
-| reveal action > skips gsap.from when reduced motion is on | No animation runs for reduced-motion users | `gsap.from` not called | `mockMatchMedia(true)` |
-| reveal action > sets element visible when reduced motion is on | The element is immediately shown for reduced-motion users | `el.style.opacity` === `'1'` | `mockMatchMedia(true)` |
-
-## src/lib/motion/actions/ripple.test.ts
-
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| ripple action > returns update and destroy methods | The action returns the Svelte action interface | `typeof result.update` and `typeof result.destroy` === `'function'` | `vi.useFakeTimers()`, stub `requestAnimationFrame` |
-| ripple action > sets position and overflow on the host element | The element gets relative positioning and hidden overflow | `el.style.position` === `'relative'`, `el.style.overflow` === `'hidden'` | Standard |
-| ripple action > appends a span child on click | Clicking creates a ripple span element | `el.querySelector('span')` is not null | Mock `getBoundingClientRect`, `MouseEvent` click |
-| ripple action > removes the span after the duration | The ripple span is cleaned up after the animation | `el.querySelector('span')` is null after 400ms | `duration: 400`, `vi.advanceTimersByTime(400)` |
-| ripple action > does not append a span when reduced motion is on | No ripple appears for reduced-motion users | `el.querySelector('span')` is null after click | `mockMatchMedia(true)` |
-| ripple action > uses the brand orange color by default | The ripple uses the brand #E07800 color | `span.style.backgroundColor` contains `#E07800` or `rgb(224, 120, 0)` | Standard |
-
-## src/lib/motion/actions/tilt.test.ts
-
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| tilt action > returns update and destroy functions | The action returns the Svelte action interface | `typeof result.update` and `typeof result.destroy` === `'function'` | `mockMatchMedia(false)`, `mockTouchDevice(false)` |
-| tilt action > applies 3D transform on mousemove | Moving the cursor over the element applies a perspective tilt | `transform` contains `'perspective'`, `'rotateX'`, `'rotateY'` | Mock `getBoundingClientRect` |
-| tilt action > resets transform on mouseleave | Leaving the element removes the tilt | `node.style.transform` === `''` | Dispatch `mouseleave` |
-| tilt action > clears transform on destroy | Destroying the action resets the element | `node.style.transform` === `''` | `result.destroy()` |
-| tilt action > no-ops when prefers-reduced-motion is set | The tilt effect is disabled for accessibility | `node.style.transform` === `''` after mousemove | `mockMatchMedia(true)` |
-| tilt action > no-ops on touch devices | The tilt effect is disabled on touch screens | `node.style.transform` === `''` after mousemove | `mockTouchDevice(true)` |
-| tilt action > respects maxDeg parameter | The maximum tilt angle is capped at the specified degrees | `transform` contains `'rotateY(5deg)'` | `maxDeg: 5`, cursor at far edge |
-| tilt action > dead zone: cursor at center produces no transform | Centering the cursor on the element produces no tilt | `node.style.transform` === `''` | Cursor at exact center (100, 100) |
+| morphHover > returns an action object with destroy | The action returns a destroy function | `typeof result.destroy` === `'function'` | Mock reducedMotion + gsap.js lazy loader |
+| morphHover > reduced-motion: returns a no-op destroy, does not attach listeners | Reduced-motion short-circuits with no listener attachment | `addEventListener` not called; `destroy()` doesn't throw | `isPrefersReducedMotion.mockReturnValue(true)` |
+| morphHover > attaches mouseenter, mouseleave, and click listeners by default | All three listeners wired on non-reduced-motion | `addSpy` events include mouseenter, mouseleave, click | Standard |
+| morphHover > destroy removes the listeners it attached | destroy cleanup removes every listener added | `removeSpy` events include mouseenter, mouseleave, click | Standard |
+| morphHover > update() accepts a new shape set without throwing | Svelte action update protocol works | `result.update({ shapes: { b: 'M5 5' } })` does not throw | Standard |
 
 ## src/lib/motion/actions/wordmarkHover.test.ts
 
 | Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
 |---------------------------|-------------------|----------------|-------------|
 | wordmarkHover action > returns an object with a destroy method | Action returns Svelte action interface | `typeof result.destroy` === `'function'` | Mock GSAP/SplitText, `mockMatchMedia(false)` |
-| wordmarkHover action > registers GSAP plugins on mount | GSAP plugins initialized | `registerGsapPlugins` called | Dynamic import |
+| wordmarkHover action > registers GSAP plugins on mount | ScrollTrigger config + SplitText registered on mount | `initScrollTriggerConfig` + `ensureSplitTextRegistered` called (post-17e-5 rename) | Dynamic import |
 | wordmarkHover action > creates a SplitText instance on the text element | SplitText wraps the text node | `SplitText` called with `(el, { type: 'chars' })` | Dynamic import |
 | wordmarkHover action > does nothing when prefers-reduced-motion is on | Animation skipped for accessibility | `SplitText` not called | `mockMatchMedia(true)`, `mockClear()` |
 | wordmarkHover action > reverts SplitText on destroy | DOM cleaned up on unmount | `splitInstance.revert` called | `mock.instances[0]` |
 | wordmarkHover action > triggers animation on mouseenter | Hover fires GSAP timeline | `gsap.timeline` called after mouseenter | `dispatchEvent(MouseEvent)` |
 | wordmarkHover action > accepts autoPlay option to fire on mount | First effect plays immediately | `gsap.timeline` called on init | `autoPlay: true` |
 
-# Motion — Components (`src/lib/motion/components/`) — 2 files, 13 tests
+# Motion — Components (`src/lib/motion/components/`) — 1 file
+
+`ScrollRail.test.ts` removed in 17e-2 alongside the scroll-rail orphan. Only `LottiePlayer.test.ts` remains — pre-17e infrastructure kept for blog/project detail Lottie illustrations.
 
 ## src/lib/motion/components/LottiePlayer.test.ts
 
@@ -608,15 +583,27 @@ Convention: tests live next to the code they test (co-located).
 | LottiePlayer component > accepts speed prop without error | The speed prop is accepted without errors | `render(...)` does not throw | `speed: 0.8` |
 | LottiePlayer component > renders the lottie-player div with lottie-player class | The container has the correct CSS class | `el.classList.contains('lottie-player')` === true | Standard |
 
-## src/lib/motion/components/ScrollRail.test.ts
+# Motion — Scrubs (`src/lib/motion/scrubs/`) — 3 files (17e-3 + 17e-4)
 
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| ScrollRail > renders the scroll rail | The scroll rail container exists | `getByTestId('scroll-rail')` in document | Standard |
-| ScrollRail > home page (pathname="/") > does not render station dots | Station dots are not shown on the home page (handled elsewhere) | `queryByTestId('station-dot')` not in document | `pathname: '/'` |
-| ScrollRail > home page (pathname="/") > does not render the simple progress bar | The progress bar is not shown on the home page | `queryByTestId('scroll-rail-progress')` not in document | `pathname: '/'` |
-| ScrollRail > non-home page (pathname="/work") > renders a progress bar | A scroll progress indicator appears on subpages | `getByTestId('scroll-rail-progress')` in document | `pathname: '/work'` |
-| ScrollRail > non-home page (pathname="/work") > does not render station dots | Station dots are not shown on subpages | `queryByTestId('station-dot')` not in document | `pathname: '/work'` |
+Sync-factory scroll-scrub primitives. Each test covers: factory returns `() => void` destroy; reduced-motion branch short-circuits with final-state render + no-op destroy; unmount safety.
+
+## src/lib/motion/scrubs/createCrescendoScrub.test.ts (17e-3)
+
+Covers the scale + opacity scrub applied across a section's scroll range. Tests the factory shape, minScale/maxScale opts, destroy idempotency, and reduced-motion final-state rendering. Used by Manifesto 3-line statement + rotated edge titles on Projects/Services/Terminus.
+
+## src/lib/motion/scrubs/createDrawScrub.test.ts (17e-3)
+
+Covers the DrawSVG stroke-scrub that draws paths from 0% to 100% as the user scrolls through a section. Tests factory shape, `pathSelector` option, and reduced-motion path-final-state rendering. Used by Blueprint SVGs on blog + projects listing pages.
+
+## src/lib/motion/scrubs/createHeroTimeline.test.ts (17e-4)
+
+6 tests validating the site's only pinned scroll-scrub (the hero 9-phase timeline):
+1. Factory returns a destroy function
+2. Pin registration via ScrollTrigger
+3. Destroy is safe to call multiple times without side effects
+4. Reduced-motion branch returns a no-op destroy + renders final state (hero text visible, network dimmed)
+5. Custom `pinLength` option respected (300% on mobile, 800% on desktop)
+6. Bare-container call returns a no-op destroy (graceful degradation in test environments)
 
 # Motion — Stores (`src/lib/motion/stores/`) — 2 files, 16 tests
 
@@ -646,67 +633,65 @@ Convention: tests live next to the code they test (co-located).
 | scrollProgress store > returns a value between 0 and 1 | Progress is always clamped to [0, 1] | Value >= 0 and <= 1 | `scrollY: 100` |
 | scrollProgress store > updates when a scroll event fires | Dispatching a scroll event updates the progress | `get(store)` close to 0.5 after scrolling | `window.dispatchEvent(new Event('scroll'))` |
 
-# Motion — SVG (`src/lib/motion/svg/`) — 4 files, 22 tests
+# Motion — SVG (`src/lib/motion/svg/`) — 1 file
+
+The Train / TrainJourney / train-path tests were removed in 17e-2 along with the train-journey metaphor (replaced by scroll-scrub crescendo on the Manifesto statement). Only MetroNetwork remains.
 
 ## src/lib/motion/svg/MetroNetwork.test.ts
 
 | Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
 |---------------------------|-------------------|----------------|-------------|
-| MetroNetwork > renders the container div | The metro network container element exists | `querySelector('[data-testid="metro-network-container"]')` in document | SVG is fetched async — unit test only verifies container |
+| MetroNetwork > renders the container div | The metro network container element exists | `querySelector('[data-testid="metro-network-container"]')` in document | SVG is inlined at build via Vite `?raw` (17e-4); unit test only verifies container |
 
-## src/lib/motion/svg/Train.test.ts
+# Motion — Tokens (`src/lib/motion/`) — 1 file (17e-1)
 
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| Train SVG component > renders without crashing | The Train SVG mounts without errors | `render(Train)` does not throw | Standard |
-| Train SVG component > SVG has id="yesid-train" | The root SVG has the expected id | `querySelector('#yesid-train')` is in document, tag is `'svg'` | Standard |
-| Train SVG component > all 7 animated group ids are present | All animation target groups exist in the SVG | Each of 7 ids (`train-glow`, `train-body`, etc.) found in document | Standard |
-| Train SVG component > trainClass prop is applied to the svg element | A custom class can be added to the SVG | SVG `classList.contains('my-custom-class')` === true | `trainClass: 'my-custom-class'` |
-| Train SVG component > aria-hidden is "true" | The decorative SVG is hidden from screen readers | `getAttribute('aria-hidden')` === `'true'` | Standard |
-| Train SVG component > TRAIN_TARGETS selectors all resolve to at least 1 element | All selectors in the TRAIN_TARGETS map match DOM elements | Each selector resolves to >= 1 element | Imports `TRAIN_TARGETS` |
-| Train SVG component > has 3 radial gradient defs with train- prefix | The SVG defines 3 radial gradients for lighting | 3 `radialGradient` elements, all ids start with `'train-'` | Standard |
-| Train SVG component > has 4 wheel groups (12 circles total in #train-wheels) | The wheel geometry is correct (4 wheels x 3 concentric circles) | `#train-wheels circle` count === 12 | Standard |
+## src/lib/motion/tokens.test.ts
 
-## src/lib/motion/svg/TrainJourney.test.ts
+Parity test — asserts every `--duration-*` / `--ease-*` declared in `src/lib/styles/tokens.css` has a matching entry in `src/lib/motion/tokens.ts` (and vice versa). Adding a new motion token requires updating both files and the parity-test's expected list. Guards against JS and CSS drifting out of sync when GSAP consumers use tokens at compute time.
 
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| TrainJourney > renders without crashing | The TrainJourney component mounts without errors | `render(TrainJourney)` does not throw | Standard |
-| TrainJourney > has data-testid="train-journey" | The journey wrapper has the correct testid | `querySelector('[data-testid="train-journey"]')` in document | Standard |
-| TrainJourney > contains the top-down train SVG | An SVG element exists inside the journey container | `querySelector('[data-testid="train-journey"] svg')` in document | Standard |
-| TrainJourney > renders train wrapper element | A wrapper div contains the Train SVG | `querySelector('[data-testid="train-journey"] > div')` in document | Standard |
+# Motion — Utils (`src/lib/motion/utils/`) — 7 files
 
-## src/lib/motion/svg/train-path.test.ts
+Plugin-registration hub, shared ticker, FLIP primitives, Lenis smoothscroll bridge, device helpers, stagger helper, and MorphSVG path-conversion helper.
 
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| getTrainMotionPath > returns a string starting with M (valid SVG path) | The generated path is valid SVG | Result matches `/^M /` | `getTrainMotionPath(4)` |
-| getTrainMotionPath > works for 4 stations (default) | The path includes curve commands for 4 stations | Path contains `'C '` and `'S '` | Standard |
-| getTrainMotionPath > works for 1 station | A single station generates a valid path | Result matches `/^M /` and contains `'C '` | `getTrainMotionPath(1)` |
-| getTrainMotionPath > works for 8 stations | More stations produce more smooth curve segments | Count of `' S '` === 8 | `getTrainMotionPath(8)` |
-| getTrainMotionPath > starts off-screen top (negative y) | The path begins above the viewport | First y coordinate < 0 | Standard |
-| getTrainMotionPath > ends off-screen bottom (y > height) | The path ends below the viewport | Last y coordinate > height | `height: 1080` |
-| getTrainMotionPath > x coordinates stay near right edge | The train path runs along the right side of the screen | All x values between 80% and 100% of width | `width: 1920` |
-| getTrainMotionPath > accepts custom dimensions | Custom width and height work without errors | Result matches `/^M /` | `getTrainMotionPath(4, 1000, 500)` |
-| getTrainMotionPath > handles 0 stations (just start and end) | Zero stations produces a simple line | Path contains `'L '` | `getTrainMotionPath(0)` |
+## src/lib/motion/utils/gsap.test.ts (rewritten 17e-5)
 
-# Motion — Utils (`src/lib/motion/utils/`) — 2 files, 19 tests
+Post-D269: `registerGsapPlugins` deleted. Tests now cover the new API surface:
 
-## src/lib/motion/utils/gsap.test.ts
+- `initScrollTriggerConfig()` — registers ScrollTrigger + applies `{ ignoreMobileResize: true }`; idempotent
+- `ensureSplitTextRegistered()` — sync SplitText registration for wordmarkHover; idempotent
+- Re-exports: `gsap`, `ScrollTrigger`, `SplitText`, `MorphSVGPlugin` (MotionPathPlugin, DrawSVGPlugin, CustomEase, Flip dropped — lazy-loaded only)
+- Lazy loaders: `loadDrawSVG`, `loadMorphSVG`, `loadFlip`, `loadCustomEase`, `loadMotionPathPlugin`, `loadSplitText` — each resolves without error, registers its plugin with gsap, and is idempotent
+- `ensureSplitTextRegistered` + `loadSplitText` share the same registry (one `registerPlugin` call for two entry paths)
 
-| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
-|---------------------------|-------------------|----------------|-------------|
-| registerGsapPlugins > calls gsap.registerPlugin on first call | Plugin registration is triggered on first use | `gsap.registerPlugin` called 1 time | `vi.resetModules()` for fresh import |
-| registerGsapPlugins > passes all plugins to registerPlugin | All 7 GSAP plugins are registered together | Called with ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin, Flip | Standard |
-| registerGsapPlugins > is idempotent — calling twice only registers once | Multiple calls don't re-register | `gsap.registerPlugin` called exactly 1 time after 2 calls | Standard |
-| registerGsapPlugins > re-exports gsap | The gsap instance is re-exported from the wrapper | `gsap` is defined | Standard |
-| registerGsapPlugins > re-exports ScrollTrigger | ScrollTrigger is re-exported from the wrapper | `ScrollTrigger` is defined | Standard |
-| registerGsapPlugins > re-exports MotionPathPlugin | MotionPathPlugin is re-exported from the wrapper | `MotionPathPlugin` is defined | Standard |
-| registerGsapPlugins > re-exports DrawSVGPlugin | DrawSVGPlugin is re-exported from the wrapper | `DrawSVGPlugin` is defined | Standard |
-| registerGsapPlugins > re-exports CustomEase | CustomEase is re-exported from the wrapper | `CustomEase` is defined | Standard |
-| registerGsapPlugins > re-exports SplitText | SplitText is re-exported from the wrapper | `SplitText` is defined | Standard |
-| registerGsapPlugins > re-exports MorphSVGPlugin | MorphSVGPlugin is re-exported from the wrapper | `MorphSVGPlugin` is defined | Standard |
-| registerGsapPlugins > re-exports Flip | Flip is re-exported from the wrapper | `Flip` is defined | Standard |
+## src/lib/motion/utils/ticker.test.ts (17e-1)
+
+Covers the shared `gsap.ticker` fan-out:
+
+- `subscribe(id, fn)` invokes `gsap.ticker.add` exactly once total (regardless of number of subscribers)
+- Internal callback fans `time` + `deltaTime` out to every registered subscriber
+- `unsubscribe(id)` removes a subscriber from subsequent frames
+- Subscribing with an existing id replaces the previous callback (idempotent)
+- `subscribe` returns an unsubscribe function that works as a reference cleanup
+
+## src/lib/motion/utils/flip.test.ts (17e-2)
+
+FLIP filter-transition primitives extracted from the deleted `listingAnimations.ts`:
+
+- `captureFlipState()` returns null when reduced-motion is on or no `[data-flip-id]` elements exist
+- `animateFlipTransition(selector, state, batchFired, onDone)` no-ops when `batchFired` is false
+- Consumer precondition documented: `await loadFlip()` at `onMount` (enforced by BlogListingPage + ProjectListingPage post-17e-5)
+
+## src/lib/motion/utils/lenis.test.ts
+
+Covers the Lenis smoothscroll bridge — `initLenis`, `destroyLenis`, scroll position sync. Post-17e-1, `ScrollTrigger.normalizeScroll` is no longer used (the call was removed to fix a tap-vs-click bug on iOS); test coverage reflects the Lenis-only post-normalize state.
+
+## src/lib/motion/utils/device.test.ts
+
+Covers `isTouchDevice()` helper — `maxTouchPoints` + `hasPointer` heuristic. Used by `magnetic`, `cursorGlow`, and any action that should no-op on touch.
+
+## src/lib/motion/utils/morphHelpers.test.ts
+
+Covers `convertSvgToMorphPaths(container)` — finds SVG shape elements, coerces them to path elements via `MorphSVGPlugin.convertToPath`, returns `{ paths, originals }`. Consumed by both `morphHover` action and `SvgIcon.animateMorph`.
 
 ## src/lib/motion/utils/stagger.test.ts
 
