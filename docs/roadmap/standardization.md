@@ -1,11 +1,11 @@
 # Slice 17 — Standardization: Design System + Ports & Adapters
 
-**Status:** IN PROGRESS — Phase 1 Foundation (17a-5 Spacing & Layout in progress)
+**Status:** IN PROGRESS — Phase 1 visual stage complete; Slice 17h Brand Bundle in flight (narrative + assets)
 **Est. Sessions:** 20-24 total (revised from 13-14 after deep planning session)
 **Depends on:** Slice 13 (Home Page) complete
 **Key constraint:** Visual IMPROVEMENTS allowed (bigger text, better consistency), but no new features. Structural refactor + design system unification.
 
-### Progress (as of 2026-04-13)
+### Progress (as of 2026-04-18)
 
 
 | Sub-slice                        | Status                          | PR        | Sessions |
@@ -15,16 +15,16 @@
 | 17a-2b Wire Primitives           | COMPLETE                        | #4 merged | 2        |
 | 17a-3a Color Lockdown            | COMPLETE                        | #5 merged | 2        |
 | 17a-3b Token Wiring              | COMPLETE                        | #6 merged | 1        |
-| 17a-5 Spacing & Layout + Const.  | COMPLETE (14/14 tasks, PR pending) | —       | 2        |
+| 17a-5 Spacing & Layout + Const.  | COMPLETE                        | #8 merged | 2        |
 | 17a-6 Bits UI Integration        | COMPLETE                        | —         | 4        |
-| 17d Component API                | PLANNED (needs impl plan)       | —         | 4        |
-| 17e Motion Re-Engineering        | **COMPLETE (6 sub-slices, 4 PRs)** | —     | 2-3      |
-| 17a-4 Dead Code + Dedup (Fresh Audit) | COMPLETE — 90% absorbed into 17a-2b / 17d / 17e; residue + doc refresh shipped 2026-04-17 | — | 0.5-1 |
+| 17d Component API                | COMPLETE (incl. Card unification, Contact redesign) | #15 merged | 8-9 |
+| 17e Motion Re-Engineering        | **COMPLETE (6 sub-slices, 4 PRs)** | #12/#14/#17/#19 merged | 2-3 |
+| 17a-4 Dead Code + Dedup (Fresh Audit) | COMPLETE — 90% absorbed into 17a-2b / 17d / 17e; residue + doc refresh shipped 2026-04-17 | #20 merged | 0.5-1 |
 | 17b Service Layer                | planned                         | —         | 2        |
 | 17c Zod Schemas                  | planned                         | —         | 0.5      |
 | 17f Test Architecture            | planned                         | —         | 1-2      |
 | 17g Learning Docs                | planned                         | —         | 2        |
-| 17h Brand Bundle (narrative + assets) | PLANNED (shrunk 2026-04-18 — brand/ = non-tech info + assets only; generator / source-of-truth refactor killed. Surviving sub-slices: 17h-3 narrative + 17h-4 assets. Killed: 17h-1, 17h-2, 17h-5, 17h-6) | — | ~3 |
+| 17h Brand Bundle (narrative + assets) | IN PROGRESS (shrunk 2026-04-18 — brand/ = non-tech info + assets only; generator / source-of-truth refactor killed. Surviving sub-slices: 17h-3 narrative + 17h-4 assets. Killed: 17h-1, 17h-2, 17h-5, 17h-6) | — | ~3 |
 
 ### Constitution Planning Session (2026-04-13)
 
@@ -43,12 +43,12 @@ Deep planning session that defined the holistic design system constitution. Key 
 - **Skeleton** → REJECT (--spacing override, 200+ competing tokens, invasive globals)
 - **Flowbite Svelte** → REJECT (JS theming, dark mode mismatch, Svelte transition lock-in)
 
-**Architecture:**
-- 5 canonical breakpoints: 360/520/768/1024/1440 (foldable-first)
-- 5 semantic spacing tokens + Tailwind's default scale
-- 3 container tokens for text readability only (content, wide, prose)
-- 4 layout patterns: Asymmetric Split, Centered + Edge Decor, Full-Bleed Band, Edge-Anchored Grid
-- Motion presets built ground-up in 17e (not patching existing 75 GSAP calls)
+**Architecture (as-shipped 2026-04-18):**
+- Tailwind v4 default breakpoints (640 / 768 / 1024 / 1280 / 1536) — no overrides; the Constitution § 9 device-coverage matrix frames design intent orthogonally (Nano/Phone/Foldable/Tablet/Laptop/Desktop classes)
+- 3 semantic spacing tokens (`--space-page-x`, `--space-section-y`, `--space-card-gap`) + Tailwind's default scale
+- 2 container tokens for text readability only (`--container-content`, `--container-wide`)
+- 4 CSS Grid Recipes: Full-Bleed, Contained, Content+Sidebars, Edge Title Grid (replaced the shell-component abstraction in 17d)
+- Motion layer re-engineered in 17e: Snappy Doctrine, 9-signature vocabulary, shared `gsap.ticker` + IO-gated subscribers, lazy GSAP plugins
 
 **Artifacts:**
 - Design spec: `docs/specs/2026-04-13-constitution-design.md`

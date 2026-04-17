@@ -73,6 +73,9 @@ package.json                                     — adds brand:export-logos + b
 ```
 brand/colors.json                                — narrative supersedes; raw values live in src/lib/styles/tokens.css
 brand/yesid_brand_guide.pdf                      — markdown narrative supersedes
+brand/tokens.json                                — DELETED 2026-04-18 (Task 0 governance cleanup — brand/ is narrative + assets only)
+brand/tokens.css                                 — DELETED 2026-04-18 (same; src/lib/styles/tokens.css is canonical)
+brand/tailwind.brand.js                          — DELETED 2026-04-18 (same; src/app.css @theme is canonical)
 ```
 
 ### Not touched

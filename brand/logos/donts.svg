@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">yesid. logo don'ts</title>
+  <desc id="desc">Four incorrect uses of the yesid. wordmark: stretched, rotated, dot in a non-brand color, and the wordmark capitalized. Each example is marked with a red X and labeled with the violated rule.</desc>
+
+  <!-- Outer frame + heading -->
+  <text x="24" y="36" font-family="JetBrains Mono, Fira Code, Cascadia Code, monospace" font-size="14" font-weight="500" letter-spacing="0.1em" fill="#E07800">DON'T</text>
+  <line x1="24" y1="52" x2="696" y2="52" stroke="currentColor" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- Cell 1: Stretched -->
+  <g transform="translate(24, 76)">
+    <rect width="312" height="140" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>
+    <g transform="translate(24, 40) scale(2.2, 1)">
+      <text x="0" y="40" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="700" font-size="36" fill="currentColor" fill-opacity="0.5">yesid<tspan fill="#E07800" fill-opacity="0.5">.</tspan></text>
+    </g>
+    <line x1="0" y1="0" x2="312" y2="140" stroke="#ff5f57" stroke-width="3"/>
+    <line x1="312" y1="0" x2="0" y2="140" stroke="#ff5f57" stroke-width="3"/>
+    <text x="0" y="164" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.7">STRETCHED</text>
+  </g>
+
+  <!-- Cell 2: Rotated -->
+  <g transform="translate(384, 76)">
+    <rect width="312" height="140" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>
+    <g transform="translate(156, 70) rotate(-18)">
+      <text x="0" y="0" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="700" font-size="36" fill="currentColor" fill-opacity="0.5">yesid<tspan fill="#E07800" fill-opacity="0.5">.</tspan></text>
+    </g>
+    <line x1="0" y1="0" x2="312" y2="140" stroke="#ff5f57" stroke-width="3"/>
+    <line x1="312" y1="0" x2="0" y2="140" stroke="#ff5f57" stroke-width="3"/>
+    <text x="0" y="164" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.7">ROTATED / SKEWED</text>
+  </g>
+
+  <!-- Cell 3: Dot in wrong color -->
+  <g transform="translate(24, 244)">
+    <rect width="312" height="140" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>
+    <text x="24" y="100" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="700" font-size="64" fill="currentColor" fill-opacity="0.5">yesid<tspan fill="#3b82f6" fill-opacity="0.7">.</tspan></text>
+    <line x1="0" y1="0" x2="312" y2="140" stroke="#ff5f57" stroke-width="3"/>
+    <line x1="312" y1="0" x2="0" y2="140" stroke="#ff5f57" stroke-width="3"/>
+    <text x="0" y="164" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.7">DOT IN NON-BRAND COLOR</text>
+  </g>
+
+  <!-- Cell 4: Capitalized -->
+  <g transform="translate(384, 244)">
+    <rect width="312" height="140" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>
+    <text x="24" y="100" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="700" font-size="64" fill="currentColor" fill-opacity="0.5">YESID<tspan fill="#E07800" fill-opacity="0.5">.</tspan></text>
+    <line x1="0" y1="0" x2="312" y2="140" stroke="#ff5f57" stroke-width="3"/>
+    <line x1="312" y1="0" x2="0" y2="140" stroke="#ff5f57" stroke-width="3"/>
+    <text x="0" y="164" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.7">CAPITALIZED</text>
+  </g>
+</svg>

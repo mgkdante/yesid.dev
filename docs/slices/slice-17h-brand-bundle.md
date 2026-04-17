@@ -99,6 +99,9 @@ brand/scripts/export-examples.ts              — Playwright paired-screenshot s
 brand/README.md                               — rewritten as front-door
 brand/colors.json                             — DELETED (superseded by brand/foundations/color.md narrative; raw values live in src/lib/styles/tokens.css)
 brand/yesid_brand_guide.pdf                   — DELETED (superseded by markdown narrative)
+brand/tokens.json                             — DELETED 2026-04-18 (Task 0 governance cleanup — brand/ is narrative + assets only; tokens live in src/lib/styles/tokens.css)
+brand/tokens.css                              — DELETED 2026-04-18 (same; src/lib/styles/tokens.css is the single tokens file)
+brand/tailwind.brand.js                       — DELETED 2026-04-18 (same; Tailwind v4 @theme in src/app.css is the canonical bridge)
 package.json                                  — adds "brand:export-logos", "brand:export-examples" scripts
 ```
 
@@ -149,7 +152,7 @@ README.md (project root)                      — unchanged
 - [ ] `brand/README.md` rewritten as front-door (≤ 120 lines, non-technical-reader 90-second test).
 - [ ] `brand/logos/` has 4 new SVGs (lockup-horizontal, lockup-stacked, clearspace, donts) + `exports/` populated with PNG 1x/2x/3x.
 - [ ] `brand/examples/` has 3–5 paired `.png` + `.svelte.txt` pairs.
-- [ ] `brand/colors.json` and `brand/yesid_brand_guide.pdf` deleted.
+- [ ] `brand/colors.json`, `brand/yesid_brand_guide.pdf`, `brand/tokens.json`, `brand/tokens.css`, and `brand/tailwind.brand.js` deleted.
 - [ ] `package.json` has `brand:export-logos` + `brand:export-examples` scripts.
 - [ ] Site renders identically before/after — zero runtime code changes.
 - [ ] `bun run test` + `bun run check` green.

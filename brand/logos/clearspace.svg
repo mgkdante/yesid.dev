@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-labelledby="title desc">
+  <title id="title">yesid. logo clear space</title>
+  <desc id="desc">Diagram showing the minimum clear space around the yesid. wordmark. The safe zone equals the height of the lowercase "y" on all four sides. Dashed outer rectangle marks the boundary; annotations label the measurement as "1y".</desc>
+
+  <!-- Outer clear-space boundary -->
+  <rect x="40" y="40" width="400" height="140" fill="none" stroke="#E07800" stroke-width="1" stroke-dasharray="4 4" stroke-opacity="0.6"/>
+
+  <!-- Inner wordmark bounding box (visual reference — also dashed, at 50% opacity) -->
+  <rect x="120" y="80" width="240" height="60" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4" stroke-opacity="0.25"/>
+
+  <!-- The wordmark itself -->
+  <text x="240" y="127" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="700" font-size="48" fill="currentColor">yesid<tspan fill="#E07800">.</tspan></text>
+
+  <!-- Measurement labels — mono, small -->
+  <g font-family="JetBrains Mono, Fira Code, Cascadia Code, monospace" font-size="10" font-weight="500" fill="#E07800" letter-spacing="0.1em">
+    <text x="240" y="30" text-anchor="middle">1y</text>
+    <text x="240" y="200" text-anchor="middle">1y</text>
+    <text x="80" y="115" text-anchor="middle">1y</text>
+    <text x="400" y="115" text-anchor="middle">1y</text>
+  </g>
+
+  <!-- Corner ticks (L-shapes) at clear-space boundary -->
+  <g fill="none" stroke="#E07800" stroke-width="1.5">
+    <path d="M 40 52 L 40 40 L 52 40"/>
+    <path d="M 428 40 L 440 40 L 440 52"/>
+    <path d="M 440 168 L 440 180 L 428 180"/>
+    <path d="M 52 180 L 40 180 L 40 168"/>
+  </g>
+</svg>
