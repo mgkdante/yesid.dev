@@ -5,14 +5,14 @@
   Desktop: sticky left sidebar (~220px) + main grid on the right.
   Mobile: collapsible filter button above the grid.
   Respects prefers-reduced-motion — skips FLIP if reduced motion is on.
+  No entrance animation — cards render at final state on load (Snappy Doctrine, 17e-2).
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { useListingEntrance, captureFlipState, animateFlipTransition } from '$lib/motion/utils/listingAnimations.js';
+	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
 	import SearchInput from '$lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
 	import ProjectCard from './ProjectCard.svelte';
@@ -126,17 +126,17 @@
 		await goto(url.toString(), { replaceState: true, noScroll: true });
 	}
 
-	let batchFired = false;
+	// After 17e-2 (Snappy Doctrine) there is no entrance gate — cards render at final
+	// state on load. batchFired stays true so FLIP filter transitions work immediately.
+	const batchFired = true;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let flipState: any = null;
 
 	$effect(() => {
 		filteredProjects;
-		animateFlipTransition('[data-batch="project-item"]', flipState, batchFired, () => { flipState = null; });
-	});
-
-	onMount(() => {
-		useListingEntrance('[data-batch="project-item"]', () => { batchFired = true; });
+		animateFlipTransition('[data-batch="project-item"]', flipState, batchFired, () => {
+			flipState = null;
+		});
 	});
 </script>
 
@@ -308,15 +308,7 @@
 		}
 	}
 
-	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
-	:global([data-batch="project-item"]) {
-		opacity: 0;
-	}
-
-	/* WHY: respect prefers-reduced-motion — show items immediately without animation */
-	@media (prefers-reduced-motion: reduce) {
-		:global([data-batch="project-item"]) {
-			opacity: 1;
-		}
-	}
+	/* WHY: items render at final state on load (Snappy Doctrine, 17e-2). FLIP
+	   handles filter transitions only. `data-batch="project-item"` stays as a
+	   query target for animateFlipTransition. */
 </style>

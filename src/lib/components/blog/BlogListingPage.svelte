@@ -4,13 +4,11 @@
   Includes: search, tag filter, date range filter.
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { BlogPost, Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { useListingEntrance, captureFlipState, animateFlipTransition } from '$lib/motion/utils/listingAnimations.js';
+	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
 	import SearchInput from '$lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
 	import BlogRow from './BlogRow.svelte';
@@ -112,17 +110,17 @@
 		!!activeTag || !!activeLang || searchQuery.trim() !== '' || dateFrom !== '' || dateTo !== ''
 	);
 
-	let batchFired = false;
+	// After 17e-2 (Snappy Doctrine) there is no entrance gate — cards render at final
+	// state on load. batchFired stays true so FLIP filter transitions work immediately.
+	const batchFired = true;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let flipState: any = null;
 
 	$effect(() => {
 		filteredPosts;
-		animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => { flipState = null; });
-	});
-
-	onMount(() => {
-		useListingEntrance('[data-batch="blog-item"]', () => { batchFired = true; });
+		animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => {
+			flipState = null;
+		});
 	});
 </script>
 
@@ -289,16 +287,8 @@
 		}
 	}
 
-	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
-	:global([data-batch="blog-item"]) {
-		opacity: 0;
-	}
-
-	/* WHY: respect prefers-reduced-motion — show items immediately without animation */
-	@media (prefers-reduced-motion: reduce) {
-		:global([data-batch="blog-item"]) {
-			opacity: 1;
-		}
-	}
+	/* WHY: items render at final state on load (Snappy Doctrine, 17e-2). FLIP
+	   handles filter transitions only. The `data-batch="blog-item"` attribute
+	   stays as a query target for animateFlipTransition. */
 
 </style>
