@@ -4,13 +4,16 @@
   Includes: search, tag filter, date range filter.
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { BlogPost, Locale } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { useListingEntrance, captureFlipState, animateFlipTransition } from '$lib/motion/utils/listingAnimations.js';
+	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
+	import { loadDrawSVG } from '$lib/motion/utils/gsap.js';
+	import { createDrawScrub } from '$lib/motion/scrubs/index.js';
 	import SearchInput from '$lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
 	import BlogRow from './BlogRow.svelte';
@@ -112,28 +115,51 @@
 		!!activeTag || !!activeLang || searchQuery.trim() !== '' || dateFrom !== '' || dateTo !== ''
 	);
 
-	let batchFired = false;
+	// After 17e-2 (Snappy Doctrine) there is no entrance gate — cards render at final
+	// state on load. batchFired stays true so FLIP filter transitions work immediately.
+	const batchFired = true;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let flipState: any = null;
 
 	$effect(() => {
 		filteredPosts;
-		animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => { flipState = null; });
+		animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => {
+			flipState = null;
+		});
 	});
 
-	onMount(() => {
-		useListingEntrance('[data-batch="blog-item"]', () => { batchFired = true; });
+	// Blueprint draw-scrub: paths stroke-dash from 0% → 100% as user scrolls
+	// through the listing page section. DrawSVG plugin lazy-loaded at mount.
+	let blueprintWrapEl = $state<HTMLElement>(undefined!);
+	let listingSectionEl = $state<HTMLElement>(undefined!);
+	let destroyDrawScrub: (() => void) | undefined;
+
+	onMount(async () => {
+		if (!browser) return;
+		if (isPrefersReducedMotion()) return;
+
+		await loadDrawSVG();
+
+		if (blueprintWrapEl && listingSectionEl) {
+			destroyDrawScrub = createDrawScrub(blueprintWrapEl, {
+				section: listingSectionEl,
+				pathSelector: 'svg path',
+			});
+		}
 	});
+
+	onDestroy(() => destroyDrawScrub?.());
 </script>
 
 <div
+	bind:this={listingSectionEl}
 	data-testid="blog-listing"
 	class="w-full pb-16"
 	style={accentColor !== 'var(--accent)' ? `--accent: ${accentColor};` : ''}
 >
 	<!-- Section 1: Header — blueprint visualization -->
 	<section class="w-full">
-		<div class="blog-blueprint-header" data-batch="blog-item">
+		<div bind:this={blueprintWrapEl} class="blog-blueprint-header" data-batch="blog-item">
 			<BlogBlueprint />
 			<!-- Subtitle: always visible, overlaid on blueprints -->
 			<div class="blog-header-text">
@@ -289,16 +315,8 @@
 		}
 	}
 
-	/* WHY: batch items start invisible so GSAP can animate them in on scroll */
-	:global([data-batch="blog-item"]) {
-		opacity: 0;
-	}
-
-	/* WHY: respect prefers-reduced-motion — show items immediately without animation */
-	@media (prefers-reduced-motion: reduce) {
-		:global([data-batch="blog-item"]) {
-			opacity: 1;
-		}
-	}
+	/* WHY: items render at final state on load (Snappy Doctrine, 17e-2). FLIP
+	   handles filter transitions only. The `data-batch="blog-item"` attribute
+	   stays as a query target for animateFlipTransition. */
 
 </style>

@@ -8,9 +8,6 @@
 <script lang="ts">
 	import { aboutPageContent } from '$lib/data/about-page.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
-	import { stagger } from '$lib/motion/utils/stagger.js';
-	import { tilt } from '$lib/motion/actions/tilt.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Separator } from '$lib/components/ui/separator';
@@ -66,7 +63,7 @@
 				<!-- SELL ROW 2 -->
 				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label="PROCESS" /></div>
 				<div class="area-stack">
-					<div class="group h-full" use:reveal use:tilt={{ maxDeg: 1.5, perspective: 800 }} use:cursorGlow>
+					<div class="group h-full" use:cursorGlow>
 					<Card class="relative h-full p-3" data-testid="about-tech-stack">
 						<div class="relative flex h-full flex-col">
 							<StopLabel stop={s[3]} label="STACK" />
@@ -78,7 +75,6 @@
 											{#each items as item, i}
 												<span
 													class="rounded border border-[var(--border)] bg-[var(--background)] px-2 py-0.5 text-caption text-[var(--secondary-foreground)] transition-colors duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)]"
-													use:reveal={{ delay: stagger(i, 50) }}
 												>{item.name}</span>
 											{/each}
 										</div>

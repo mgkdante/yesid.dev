@@ -59,7 +59,6 @@
 		animation-timing-function: linear;
 		animation-iteration-count: infinite;
 		z-index: var(--z-content);
-		opacity: 0;
 	}
 
 	.manifesto__flow-line-v {
@@ -76,7 +75,6 @@
 		animation-timing-function: linear;
 		animation-iteration-count: infinite;
 		z-index: var(--z-content);
-		opacity: 0;
 	}
 
 	@keyframes flowRight {
@@ -104,8 +102,6 @@
 		letter-spacing: 1px;
 		color: color-mix(in srgb, var(--primary) 18%, transparent);
 		white-space: nowrap;
-		opacity: 0;
-		translate: 0 8px;
 	}
 
 	.manifesto__status-dot {

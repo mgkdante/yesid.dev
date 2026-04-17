@@ -8,7 +8,6 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { contactContent } from '$lib/data/contact-page.js';
 	import { resolveLocale } from '$lib/data/locale.js';
-	import { reveal } from '$lib/motion/actions/reveal.js';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
@@ -180,7 +179,7 @@
 		</div>
 
 		<!-- Desktop: Resizable split -->
-		<div class="desktop-terminals" use:reveal>
+		<div class="desktop-terminals">
 			<ResizablePaneGroup direction="horizontal" class="h-full rounded-lg">
 				<ResizablePane defaultSize={33} minSize={20}>
 					{@render infoTerminal()}
@@ -193,7 +192,7 @@
 		</div>
 
 		<!-- Mobile: Stacked -->
-		<div class="mobile-terminals" use:reveal>
+		<div class="mobile-terminals">
 			{@render infoTerminal()}
 			{@render formTerminal()}
 		</div>

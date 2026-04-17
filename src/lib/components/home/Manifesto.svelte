@@ -8,12 +8,7 @@
 	import { manifestoContent } from '$lib/data/content.js';
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import {
-		registerGsapPlugins,
-		gsap,
-		ScrollTrigger,
-		SplitText,
-	} from '$lib/motion/utils/gsap.js';
+	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
 	import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
@@ -99,9 +94,7 @@
 
 	// ── Element bindings ─────────────────────────────────────────────
 	let sectionEl = $state<HTMLElement>(undefined!);
-	let line1El = $state<HTMLElement>(undefined!);
-	let hugeEl = $state<HTMLElement>(undefined!);
-	let line3El = $state<HTMLElement>(undefined!);
+	let statementEl = $state<HTMLElement>(undefined!);
 
 	// ── Lifecycle: GSAP ScrollTrigger entrance ───────────────────────
 	onMount(() => {
@@ -112,62 +105,21 @@
 			}, 1000);
 		}
 
-		if (!browser || isPrefersReducedMotion()) {
-			return () => { if (countdownInterval) clearInterval(countdownInterval); };
+		// Apply crescendo scrub to the 3-line statement container. Scales gently
+		// as the user scrolls through the section — minScale at edges, maxScale
+		// mid-scroll. Pure transform, no heading-hierarchy or DOM changes.
+		let destroyCrescendo: (() => void) | undefined;
+		if (browser && sectionEl && statementEl) {
+			destroyCrescendo = createCrescendoScrub(statementEl, {
+				section: sectionEl,
+				minScale: 0.85,
+				maxScale: 1.0,
+			});
 		}
-
-		registerGsapPlugins();
-
-		const splitLine1 = new SplitText(line1El, { type: 'chars,words' });
-		const splitHuge = new SplitText(hugeEl, { type: 'chars,words' });
-		const splitLine3 = new SplitText(line3El, { type: 'chars,words' });
-
-		const tl = gsap.timeline({ paused: true });
-
-		// Background layers entrance
-		tl.to('.manifesto__circuit-grid', { opacity: 1, duration: 0.6 }, 0);
-		tl.to('[class*="manifesto__stripe"]', { opacity: 1, duration: 0.4, stagger: 0.05 }, 0.1);
-		tl.to('.manifesto__beck-line, .manifesto__roundel', { opacity: 1, duration: 0.5, stagger: 0.03 }, 0.2);
-
-		// Edge decorations
-		tl.to('.manifesto__edge-left', { opacity: 1, x: 0, duration: 0.4 }, 0.3);
-		tl.to('.manifesto__edge-right', { opacity: 1, x: 0, duration: 0.4 }, 0.3);
-		tl.to('.manifesto__edge-top', { opacity: 1, y: 0, duration: 0.4 }, 0.3);
-		tl.to('.manifesto__edge-bottom', { opacity: 1, y: 0, duration: 0.4 }, 0.3);
-
-		// Transit elements
-		tl.to('.manifesto__arrival, .manifesto__chevrons, .manifesto__badge', { opacity: 1, duration: 0.3 }, 0.4);
-
-		// Terminal prompt
-		tl.to('.manifesto__prompt', { opacity: 1, duration: 0.4 }, 0.5);
-
-		// Statement lines — SplitText char reveal
-		tl.from(splitLine1.chars, { opacity: 0, y: 20, stagger: 0.015, duration: 0.5, ease: 'power2.out' }, 0.8);
-		tl.from(splitHuge.chars, { opacity: 0, y: 30, stagger: 0.02, duration: 0.5, ease: 'power2.out' }, 1.2);
-		tl.from(splitLine3.chars, { opacity: 0, y: 20, stagger: 0.015, duration: 0.5, ease: 'power2.out' }, 1.8);
-
-		// Capability pills
-		tl.to('.manifesto__pill', { opacity: 1, y: 0, stagger: 0.1, duration: 0.4, ease: 'power2.out' }, 2.2);
-
-		// Data flow lines
-		tl.to('.manifesto__flow-line, .manifesto__flow-line-v', { opacity: 1, duration: 0.3 }, 2.5);
-
-		ScrollTrigger.create({
-			trigger: sectionEl,
-			start: 'top 80%',
-			onEnter: () => tl.play(),
-			onLeaveBack: () => tl.reverse(),
-		});
 
 		return () => {
 			if (countdownInterval) clearInterval(countdownInterval);
-			splitLine1.revert();
-			splitHuge.revert();
-			splitLine3.revert();
-			tl.kill();
-			ScrollTrigger.getAll().forEach((st) => {
-				if (st.trigger === sectionEl) st.kill();
-			});
+			destroyCrescendo?.();
 		};
 	});
 </script>
@@ -195,11 +147,11 @@
 			<TerminalCursor />
 		</div>
 
-		<!-- Statement — variable size -->
-		<div data-testid="manifesto-text" class="manifesto__statement">
-			<div bind:this={line1El} class="manifesto__line-small">{statementLine1}</div>
-			<div data-testid="manifesto-line-huge" bind:this={hugeEl} class="manifesto__line-huge">{statementLineHuge}</div>
-			<div bind:this={line3El} class="manifesto__line-small">
+		<!-- Statement — variable size. Crescendo-scrubbed as a group. -->
+		<div data-testid="manifesto-text" bind:this={statementEl} class="manifesto__statement">
+			<div class="manifesto__line-small">{statementLine1}</div>
+			<div data-testid="manifesto-line-huge" class="manifesto__line-huge">{statementLineHuge}</div>
+			<div class="manifesto__line-small">
 				{statementLine3Part1} <span class="manifesto__highlight">{statementLine3Highlight}</span> {statementLine3Part2}<span class="manifesto__highlight">.</span>
 			</div>
 		</div>
@@ -235,7 +187,6 @@
 			repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px),
 			repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px);
 		z-index: var(--z-base);
-		opacity: 0;
 	}
 
 	.manifesto__circuit-grid::after {
@@ -271,7 +222,6 @@
 		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 		border-radius: var(--radius-sm);
 		background: color-mix(in srgb, var(--primary) 4%, transparent);
-		opacity: 0;
 	}
 
 	.manifesto__prompt-cmd {
@@ -336,8 +286,6 @@
 		background: color-mix(in srgb, var(--primary) 4%, transparent);
 		text-decoration: none;
 		transition: border-color var(--duration-normal) var(--ease-default), color var(--duration-normal) var(--ease-default), background var(--duration-normal) var(--ease-default);
-		opacity: 0;
-		transform: translateY(15px);
 	}
 
 	.manifesto__pill:hover {

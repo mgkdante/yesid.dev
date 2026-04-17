@@ -1,39 +1,21 @@
-/**
- * Shared GSAP animation utilities for listing pages (Blog, Projects).
- * Extracted from duplicate logic in BlogListingPage and ProjectListingPage.
- */
+// FLIP (First, Last, Invert, Play) animation primitives for listing filter transitions.
+// Extracted from listingAnimations.ts in slice 17e-2 when the entrance function
+// (useListingEntrance) was deleted to satisfy the Snappy Doctrine.
+//
+// FLIP animates cards smoothly when the filter value changes — the grid reflows
+// and cards tween between their old and new positions. This is interaction-driven
+// (filter click = user input), so it's doctrine-compatible.
+//
+// Usage:
+//   import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
+//   // before filter changes:
+//   flipState = captureFlipState();
+//   // after filter-derived list has rendered:
+//   animateFlipTransition('[data-batch="blog-item"]', flipState, batchFired, () => { flipState = null; });
+
 import { tick } from 'svelte';
 import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 import { registerGsapPlugins, gsap, Flip } from '$lib/motion/utils/gsap.js';
-
-/**
- * Fire staggered entrance animation on page load for all batch items.
- * Call from onMount(). Returns a cleanup function.
- *
- * @param batchSelector - CSS selector for batch items (e.g., '[data-batch="blog-item"]')
- * @param onBatchFired - callback to set batchFired flag in consumer
- */
-export function useListingEntrance(
-	batchSelector: string,
-	onBatchFired: () => void
-): void {
-	if (isPrefersReducedMotion()) {
-		document.querySelectorAll<HTMLElement>(batchSelector).forEach(el => {
-			el.style.opacity = '1';
-		});
-		onBatchFired();
-		return;
-	}
-
-	registerGsapPlugins();
-	onBatchFired();
-
-	const items = document.querySelectorAll(batchSelector);
-	gsap.fromTo(items,
-		{ opacity: 0, y: 20 },
-		{ opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }
-	);
-}
 
 /**
  * Capture current FLIP state for filter transitions.
@@ -56,7 +38,7 @@ export function captureFlipState(): any {
  *
  * @param batchSelector - CSS selector for batch items
  * @param flipState - state from captureFlipState(), or null
- * @param batchFired - whether initial entrance has run
+ * @param batchFired - whether initial render has run (always true after 17e-2; retained for API compat)
  * @param onFlipDone - callback to clear flipState in consumer
  */
 export function animateFlipTransition(
@@ -64,7 +46,7 @@ export function animateFlipTransition(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	flipState: any,
 	batchFired: boolean,
-	onFlipDone: () => void
+	onFlipDone: () => void,
 ): void {
 	if (!batchFired || typeof document === 'undefined') return;
 
@@ -83,12 +65,17 @@ export function animateFlipTransition(
 				duration: 0.5,
 				ease: 'power2.inOut',
 				stagger: 0.05,
-				onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5 }),
-				onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.8, duration: 0.3 })
+				onEnter: (els) =>
+					gsap.fromTo(
+						els,
+						{ opacity: 0, scale: 0.8 },
+						{ opacity: 1, scale: 1, duration: 0.5 },
+					),
+				onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.8, duration: 0.3 }),
 			});
 			onFlipDone();
 		} else {
-			batchItems.forEach(el => {
+			batchItems.forEach((el) => {
 				el.style.opacity = '1';
 				el.style.transform = 'translateY(0)';
 			});

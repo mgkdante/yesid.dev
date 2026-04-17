@@ -11,10 +11,6 @@
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-  import { registerGsapPlugins, gsap, SplitText } from '$lib/motion/utils/gsap.js';
 
   let { project }: { project: Project } = $props();
 
@@ -44,33 +40,6 @@
   });
 
   let headerEl = $state<HTMLElement>(undefined!);
-  let titleEl = $state<HTMLHeadingElement>(undefined!);
-
-  onMount(() => {
-    if (!browser || isPrefersReducedMotion() || !headerEl) return;
-    registerGsapPlugins();
-
-    // Scope all selectors to headerEl to avoid animating elements outside this component
-    const q = gsap.utils.selector(headerEl);
-    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
-
-    tl.to(q('.header__circuit-grid'), { opacity: 1, duration: 0.6 }, 0);
-    tl.to(q('.header__edge'), { opacity: 1, duration: 0.5, stagger: 0.1 }, 0.3);
-    tl.to(q('.header__decoration'), { opacity: 1, duration: 0.4, stagger: 0.05 }, 0.4);
-    if (titleEl && SplitText) {
-      const split = new SplitText(titleEl, { type: 'chars' });
-      tl.from(
-        split.chars,
-        { opacity: 0, y: 20, stagger: 0.02, duration: 0.4, ease: 'power2.out' },
-        0.6
-      );
-    }
-    tl.to(q('.header__pill'), { opacity: 1, y: 0, stagger: 0.1, duration: 0.4, ease: 'power2.out' }, 0.9);
-
-    return () => {
-      tl.kill();
-    };
-  });
 </script>
 
 <div bind:this={headerEl} class="project-detail-header" data-testid="project-detail-header">
@@ -145,7 +114,6 @@
       </a>
 
       <h1
-        bind:this={titleEl}
         class="header-title mb-3 font-heading font-black uppercase leading-[0.95] tracking-[-0.03em] text-primary lg:mb-4"
       >
         {resolveLocale(project.title, 'en')}
@@ -192,7 +160,6 @@
       repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px),
       repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px);
     z-index: var(--z-base);
-    opacity: 0;
   }
 
   .header__circuit-grid::after {
@@ -227,10 +194,6 @@
   }
 
   /* ── Edge metadata ────────────────────────────────────────── */
-  .header__edge {
-    opacity: 0;
-  }
-
   .edge-left,
   .edge-right {
     position: absolute;
@@ -259,7 +222,6 @@
 
   /* ── Decorations ──────────────────────────────────────────── */
   .header__decoration {
-    opacity: 0;
     z-index: calc(var(--z-content) + 1);
   }
 
@@ -286,8 +248,6 @@
     border-radius: var(--radius-pill);
     padding: 4px 12px;
     background: color-mix(in srgb, var(--primary) 3%, transparent);
-    opacity: 0;
-    transform: translateY(15px);
   }
 
   @media (min-width: 1024px) {
