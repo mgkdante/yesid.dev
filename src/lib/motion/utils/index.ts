@@ -1,7 +1,6 @@
 export {
 	initScrollTriggerConfig,
 	ensureSplitTextRegistered,
-	registerGsapPlugins,
 	loadDrawSVG,
 	loadMorphSVG,
 	loadFlip,
@@ -10,7 +9,6 @@ export {
 	loadSplitText,
 	gsap,
 	ScrollTrigger,
-	MotionPathPlugin,
 } from './gsap.js';
 export { stagger, type StaggerOptions } from './stagger.js';
 export { isTouchDevice } from './device.js';

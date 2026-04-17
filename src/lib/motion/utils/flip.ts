@@ -20,7 +20,12 @@
 
 import { tick } from 'svelte';
 import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-import { gsap, Flip } from '$lib/motion/utils/gsap.js';
+import { gsap } from '$lib/motion/utils/gsap.js';
+// Flip imported directly — plugin is runtime-registered by loadFlip() at
+// consumer mount (BlogListingPage / ProjectListingPage); this import only
+// provides the symbol for Flip.getState() / Flip.from().
+// @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
+import { Flip } from 'gsap/Flip';
 
 /**
  * Capture current FLIP state for filter transitions.
