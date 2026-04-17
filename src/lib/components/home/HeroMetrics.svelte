@@ -20,7 +20,7 @@
   }
 </script>
 
-<div class="grid grid-cols-3 gap-3.5" data-testid="hero-metrics">
+<div class="grid grid-cols-1 gap-3.5 md:grid-cols-3" data-testid="hero-metrics">
   {#each metrics as metric (metric.key)}
     <Card
       class="px-4 py-3.5 md:px-5 md:py-4"

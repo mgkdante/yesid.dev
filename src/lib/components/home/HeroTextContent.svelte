@@ -27,7 +27,7 @@
 <div class="hero-viewport-text">
 	<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-label="{headlineLine1} Don't Break.">
 		<span
-			class="block text-hero text-[var(--foreground)]"
+			class="block text-hero-mobile text-[var(--foreground)] md:text-hero"
 			data-testid="hero-line1"
 			data-hero-stagger="1"
 		>
@@ -41,7 +41,7 @@
 
 	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-hidden="true">
 		<span
-			class="block text-hero text-[var(--primary)]"
+			class="block text-hero-mobile text-[var(--primary)] md:text-hero"
 			data-testid="hero-line2"
 		>
 			<span data-hero-stagger="1">DON'T BREAK</span><svg
@@ -102,13 +102,9 @@
 			justify-content: center;
 			padding-block: 0.75rem;
 		}
-		/* Cap by whichever is smaller: viewport-height-based or viewport-width-based.
-		   12vw keeps "PIPELINES" and "DON'T BREAK" fitting with safety margin on
-		   ≥320px screens while letting the headline render "quite big" per Yesid
-		   brief; the 8svh branch takes over on wider/shorter viewports. */
-		.hero-viewport-text :global(.text-hero) {
-			font-size: clamp(32px, min(8svh, 12vw), 64px);
-		}
+		/* Font sizing now driven by the --text-hero-mobile token (Tailwind
+		   .text-hero-mobile utility, applied in the template).  No scoped
+		   override needed — see app.css @theme. */
 		/* Tighten spacing to fit within bounded height */
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
 			margin-block: 0.75rem;
