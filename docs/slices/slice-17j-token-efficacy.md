@@ -1,18 +1,29 @@
 # Slice 17j — Token Efficacy (Consolidated Token Utilization)
 
-**Status:** draft
+**Status:** refined-draft (pending Yesid review)
 **Priority:** 2
-**Estimated effort:** 2–3 sessions (1 planning/measurement, 1–2 execution)
+**Estimated effort:** 4–5 sessions
+- Session 1: Task 0 (baseline) + Task 0a dispatch (parallel research agents) + review summaries
+- Session 2–3: Tasks 1–3 (docs prune + CLAUDE.md slim + WORKFLOW.md slim)
+- Session 4: Tasks 4–5 (.mcp.json + global cleanup)
+- Session 5: Tasks 6–9 (re-measure + codify skill + config export + handoff + PR)
+
 **Depends on:** Slice 17h merged to `main`
-**Parent slice:** 17 (Standardization). 17j is the operational-efficiency close to slice 17 — once the visual/design/brand work settles in 17h, 17j resets the per-session context baseline so future slices start light.
+**Parent slice:** 17 (Standardization). 17j is the operational-efficiency close to slice 17 — once the visual/design/brand work settles in 17h, 17j resets the per-session context baseline so future slices (and future projects) start light.
 
 ## Objective
 
-Reduce the token weight Claude auto-loads at the start of every session — across the repo, the project config, the global Claude config, installed plugins, connected MCP servers, and auto-memory — in a single consolidated pass, and record a measurable before/after delta.
+Reduce the token weight Claude auto-loads at the start of every session — across the repo, the project config, the global Claude config, installed plugins, connected MCP servers, and auto-memory — in a single consolidated pass, record a measurable before/after delta, AND codify the findings into a reusable knowledge base + skill + exported config that improves token efficacy across all future projects.
+
+Three durable outputs beyond the yesid.dev cleanup:
+
+1. **Portable research knowledge base** — six deep dives at `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` (500–1000 words each).
+2. **Portable workflow skill** — `~/.claude/skills/token-frugal-workflow/` with a tight description so it only surfaces when relevant.
+3. **Portable config snapshot** — `C:\Users\otalo\Yesito\cloud\claude-config\` with `user/`, `projects/yesid.dev/`, README, and snapshot script.
 
 ## Context
 
-Token consumption per session in this project has grown heavy. Accretion across 20+ slices has inflated six distinct sources, each loaded every cold session regardless of the task at hand:
+Token consumption per session in this project has grown heavy. Accretion across 20+ slices has inflated seven distinct sources, each loaded every cold session regardless of the task at hand:
 
 1. **`docs/`** — devlogs, handoffs, specs, plans, research, archive from every completed slice. Rarely referenced mid-session but inflate any broad read and show up in searches.
 2. **`CLAUDE.md`** — ~500 lines with sections that duplicate content now living in `WORKFLOW.md`, `tree.txt`, and (post-17h) `brand/`.
@@ -22,32 +33,62 @@ Token consumption per session in this project has grown heavy. Accretion across 
 6. **Connected MCP servers** — firefox-devtools, webflow, cloudflare, railway, neon, postman, notion, videodb, jobs, tax, calendar, etc. — each ships tool schemas into every session, for every project, regardless of relevance.
 7. **Auto-memory** — ~20 `project_slice_NN_status.md` entries for shipped slices, plus stale feedback memories tied to closed work.
 
-17j is the one-time consolidation that resets the baseline. After this slice, discipline (captured in the Ongoing section) keeps inventory from accreting again.
+17j is the one-time consolidation that resets the baseline. After this slice, the **token-frugal-workflow skill** (Task 7) surfaces at the right moments to keep inventory from accreting again — on every new project, long multi-session effort, or cold-session audit.
 
 ## Architecture
 
 - **No application code changes.** Site behavior is identical before/after. This is a docs + config + environment slice.
-- **Repo-side changes** (prongs 1–4): commit on the 17j branch, ship in one PR.
-- **Global Claude config changes** (prongs 5–7): happen on Yesid's machine in `~/.claude/` and the project-scoped auto-memory directory. Not versioned, but recorded in the handoff.
+- **Repo-side changes** (pruning prongs 1–3 + .mcp.json): commit on the 17j branch, ship in one PR.
+- **Global Claude config changes** (pruning prongs 5–7): happen on Yesid's machine in `~/.claude/` and the project-scoped auto-memory directory. Not versioned, but recorded in the handoff and captured in Task 8's config snapshot.
 - **Historical docs preserved out-of-repo.** `C:\Users\otalo\Yesito\cloud\yesid.dev\` mirrors the folder tree; git history retains the originals; a short in-repo `docs/ARCHIVE.md` stub points at both.
+- **Research output lives in the cloud** at `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` — reference material, not loaded into any session by default. Zero session-start cost; human-browseable; reusable across projects.
+- **Workflow patterns live as a skill** at `~/.claude/skills/token-frugal-workflow/` — activates only when relevant (planning new projects, auditing tokens, diagnosing bloat). Tight description prevents unwanted activation.
+- **Config exported to cloud** at `C:\Users\otalo\Yesito\cloud\claude-config\` with append-only timestamped snapshots. Enables portability to new projects/machines without mutating the live `~/.claude/`.
 - **Measurement is the spine.** Baseline before any prong, re-measure after. Delta is the acceptance metric.
+- **Parallel subagents for research only.** Six independent deep dives dispatched simultaneously in Task 0a; main session context stays clean (each agent writes direct to cloud file, returns only a 200-word summary). Approved exception to the serial-execution rule — research, not implementation.
 
 ## Tech Stack
 
-Markdown + TypeScript config. No runtime dependencies. Tools used:
+Markdown + PowerShell (snapshot script). No runtime dependencies. Tools used:
 
 - `/context-budget` slash command (or `context-budget` skill) for baseline + re-measurement of cold-session token count.
-- `cp -r` / `robocopy` for the docs mirror.
-- `grep` for cross-link scrub.
-- Editing tools for CLAUDE.md, WORKFLOW.md, `.mcp.json`.
+- `robocopy` / `cp -r` for docs mirror.
+- `grep` (ripgrep) for cross-link scrub.
+- Editing tools for `CLAUDE.md`, `WORKFLOW.md`, `.mcp.json`.
+- `superpowers:dispatching-parallel-agents` skill for Task 0a orchestration.
+- PowerShell for `snapshot.ps1` (Windows-native, no new deps).
 
 ## File Structure
 
-### New files
+### New files (in repo)
 
 ```
-.mcp.json                                            — CREATE: project-scoped MCP allowlist for yesid.dev
-docs/ARCHIVE.md                                      — CREATE: stub pointing at the cloud mirror + git history
+.mcp.json                                            — project-scoped MCP allowlist for yesid.dev
+docs/ARCHIVE.md                                      — stub pointing at cloud mirror + git history
+```
+
+### New files (outside repo — cloud)
+
+```
+C:\Users\otalo\Yesito\cloud\yesid.dev\docs\**                                 — mirror of pruned docs (Task 1)
+C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\00-index.md
+C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\01-cache-economics.md
+C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\02-mcp-scoping.md
+C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\03-plugin-hygiene.md
+C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\04-subagent-delegation.md
+C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\05-auto-memory.md
+C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\06-strategic-compact.md
+C:\Users\otalo\Yesito\cloud\claude-config\user\<timestamp>\*                   — snapshot of ~/.claude/ config
+C:\Users\otalo\Yesito\cloud\claude-config\projects\yesid.dev\<timestamp>\*     — snapshot of project config
+C:\Users\otalo\Yesito\cloud\claude-config\README.md
+C:\Users\otalo\Yesito\cloud\claude-config\snapshot.ps1
+```
+
+### New files (outside repo — global Claude)
+
+```
+~/.claude/skills/token-frugal-workflow/SKILL.md      — portable skill codifying research findings
+~/.claude/skills/token-frugal-workflow/references/*  — optional deeper reference material (links to cloud knowledge base)
 ```
 
 ### Modified files (repo)
@@ -57,6 +98,7 @@ CLAUDE.md                                            — slim: cut Completed Sli
 docs/reference/WORKFLOW.md                           — slim: compress sections that stabilized after 17-era thrash
 tree.txt                                             — regenerate at end of slice
 docs/slices/slice-17-checkpoint.md                   — update with 17j status
+docs/roadmap/standardization.md                      — mark 17j complete
 ```
 
 ### Removed from repo (mirrored to cloud first)
@@ -87,7 +129,7 @@ docs/slices/slice-17-checkpoint.md                   — active checkpoint
 docs/devlog/_TEMPLATE.md, docs/handoffs/_TEMPLATE.md — templates
 ```
 
-### Outside repo (global config — not versioned, documented in handoff)
+### Outside repo (global config changes — not versioned, documented in handoff)
 
 ```
 ~/.claude/rules/zh/                                  — DELETE entirely
@@ -97,7 +139,7 @@ docs/devlog/_TEMPLATE.md, docs/handoffs/_TEMPLATE.md — templates
 
 ## Tech Stack Rationale
 
-No new dependencies. Baseline + re-measurement use the built-in `context-budget` slash command (already in Yesid's skill inventory). Mirror operation uses OS-native tools (PowerShell `robocopy` on Windows). Grep is ripgrep (already installed for Claude Code).
+No new dependencies. Baseline + re-measurement use the built-in `context-budget` slash command (already in Yesid's skill inventory). Mirror operation uses OS-native tools (PowerShell `robocopy` on Windows). Grep is ripgrep (already installed for Claude Code). Research dispatch uses `superpowers:dispatching-parallel-agents` (already installed). Config snapshot uses PowerShell (Windows-native, no install needed).
 
 ---
 
@@ -121,6 +163,45 @@ No new dependencies. Baseline + re-measurement use the built-in `context-budget`
   Create `docs/devlog/2026-XX-XX-slice-17j-task-0.md` with all numbers and the exact `/context-budget` output. This is the before-snapshot.
 
 **STOP. Ask Yesid to confirm the baseline looks right before executing any changes.**
+
+---
+
+## Task 0a: Research sprint — parallel deep dives
+
+**Files:**
+- Create dir: `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\`
+- Create 7 files: `00-index.md` + `01-cache-economics.md` through `06-strategic-compact.md`
+
+- [ ] **Step 1: Dispatch 6 parallel subagents**
+  Single message, 6 Agent tool uses in parallel (subagent_type: `general-purpose`). Each receives identical structural prompt + unique area:
+  - **01 Cache economics** — Claude 4.7 prompt-cache TTL (5-min), session-start cache interaction, cache-hit cost savings, 1M-context + cache patterns.
+  - **02 MCP scoping** — `.mcp.json` syntax, `enabledMcpjsonServers` / `disabledMcpjsonServers`, project vs user vs local scopes, deferred-tool pattern (ToolSearch on-demand schema loading), how MCP schemas consume context.
+  - **03 Plugin hygiene** — how power-users manage Claude Code plugin/skill bloat; per-project plugin scoping (if supported); skill-description patterns that minimize always-active surface area; audit tools for skill usage.
+  - **04 Subagent delegation for context isolation** — when to dispatch, how agent contexts differ from main, cost tradeoffs, parallelization patterns, foreground vs background.
+  - **05 Auto-memory best practices** — lifecycle, pruning cadence, what Anthropic / power-users recommend saving vs not saving, MEMORY.md index hygiene.
+  - **06 Strategic compact + plan-mode economics** — when to compact, when to enter plan mode, measuring working-context vs startup-context, cache-breakage implications.
+
+  **Required output structure for each doc:**
+  ```markdown
+  # <Area>
+  ## Current state (2026)
+  ## Best practices
+  ## Actionable for yesid.dev
+  ## Cross-project reusable patterns
+  ## Sources (prioritize 2025–2026; flag and exclude older unless Anthropic primary docs)
+  ```
+  Each doc: 500–1000 words. Agent writes directly to the cloud file path, returns a 200-word executive summary to the main session.
+
+- [ ] **Step 2: Review summaries**
+  Main session receives 6 summaries. Reject any doc missing a required section; re-dispatch the offending agent with tightened prompt.
+
+- [ ] **Step 3: Write `00-index.md`**
+  One line per doc with a hook + `last-reviewed: 2026-XX-XX` date. This index is the entry point for future reference.
+
+- [ ] **Step 4: Flag decision-changing findings**
+  Record in devlog which research findings will inform Task 4 (MCP scoping), Task 5 (auto-memory consolidation), and Task 7 (skill content).
+
+**STOP. Ask Yesid to review the 6 docs + index before proceeding to Task 1.**
 
 ---
 
@@ -199,13 +280,15 @@ No new dependencies. Baseline + re-measurement use the built-in `context-budget`
 **Files:**
 - Create: `.mcp.json`
 
+> Apply findings from `02-mcp-scoping.md` — specifically the recommended scope mechanism and any 2026 best-practice patterns discovered in research.
+
 - [ ] **Step 1: Inventory current MCP servers**
   List every MCP server currently connected globally. For each, decide: needed for yesid.dev or not?
   **Keep for yesid.dev:** Svelte MCP, GSAP Master, Context7, Chrome DevTools, Claude Preview, GitHub, Vercel, Figma (occasional), Playwright (occasional).
-  **Disable for yesid.dev:** firefox-devtools, webflow, cloudflare, railway, neon, postman, notion, videodb, jobs, tax, calendar, shadcn (Svelte project, not React), mcp-registry, webflow, and any others not in the Keep list.
+  **Disable for yesid.dev:** firefox-devtools, webflow, cloudflare, railway, neon, postman, notion, videodb, jobs, tax, calendar, shadcn (Svelte project, not React), mcp-registry, and any others not in the Keep list.
 
 - [ ] **Step 2: Author `.mcp.json`**
-  Write a project-scoped `.mcp.json` that enables only the Keep list. Reference the Claude Code MCP scoping docs — use `enabledMcpjsonServers` / `disabledMcpjsonServers` as appropriate, or the equivalent project-allowlist mechanism.
+  Write a project-scoped `.mcp.json` that enables only the Keep list. Use the mechanism confirmed by research 02 (likely `enabledMcpjsonServers` / `disabledMcpjsonServers` or the equivalent allowlist pattern).
 
 - [ ] **Step 3: Verify in a fresh session**
   New session — confirm the skill-list system reminder shows only the Keep list's tools. No `firefox-devtools__*`, no `webflow__*`, etc.
@@ -220,6 +303,8 @@ No new dependencies. Baseline + re-measurement use the built-in `context-budget`
 ## Task 5: Global Claude config cleanup (non-repo)
 
 **Files:** (outside the repo; document in devlog + handoff only)
+
+> Apply findings from `05-auto-memory.md` for memory consolidation patterns and `03-plugin-hygiene.md` for plugin-audit approach.
 
 - [ ] **Step 1: Delete `~/.claude/rules/zh/`**
   `rm -rf ~/.claude/rules/zh/`. Highest-leverage global change — affects every project. Verify `~/.claude/rules/common/` is untouched.
@@ -248,39 +333,128 @@ No new dependencies. Baseline + re-measurement use the built-in `context-budget`
 
 ---
 
-## Task 6: Re-measure + handoff + commit
+## Task 6: Re-measure deltas
 
 **Files:**
-- Create: `docs/handoffs/slice-17j-token-efficacy.md`
-- Update: `docs/slices/slice-17-checkpoint.md`
-- Update: `docs/roadmap/standardization.md`
+- Update: `docs/devlog/2026-XX-XX-slice-17j-task-6.md`
 
 - [ ] **Step 1: Final cold-session measurement**
-  Fresh session on `main` after PR merged (or on the 17j branch with all tasks complete). Run `/context-budget`. Record the full post-snapshot.
+  Fresh session on the 17j branch with Tasks 0–5 complete. Run `/context-budget`. Record full post-snapshot.
 
 - [ ] **Step 2: Compute deltas**
   For every source: before, after, delta (absolute tokens + percent). Total reduction at the bottom.
 
-- [ ] **Step 3: Write handoff**
-  Per `docs/handoffs/_TEMPLATE.md`. Include the deltas table, the Ongoing Discipline section (copy from this spec), and the cloud-mirror path for historical recovery.
+- [ ] **Step 3: Record in devlog**
+  Full before/after/delta table. This feeds Task 7 (skill cites real numbers) and Task 9 (handoff).
 
-- [ ] **Step 4: Update checkpoint + roadmap**
+**STOP. Ask Yesid to confirm deltas look right before codifying the skill.**
+
+---
+
+## Task 7: Codify `token-frugal-workflow` skill
+
+**Files:**
+- Create dir: `~/.claude/skills/token-frugal-workflow/`
+- Create: `SKILL.md`, optional `references/` subdir
+
+- [ ] **Step 1: Distill research into executable patterns**
+  From the 6 deep dives + Task 6 deltas, extract cross-project patterns into actionable checklists. Include:
+  - Cache-window awareness (why 300s is worst-case sleep; pick under 270s or over 1200s).
+  - Sub-agent delegation rules (when to dispatch, what to put in prompt, how to protect main context).
+  - Plan-mode vs execution-mode discipline.
+  - MCP scoping checklist for new projects (`.mcp.json` template, Keep/Disable decision matrix).
+  - Auto-memory lifecycle rules (what to save, what to consolidate, when to prune).
+  - Strategic-compact triggers (working-context vs startup-context ratio).
+  - Post-slice hygiene ritual (mirror to cloud, prune status memory, audit plugins, re-snapshot config).
+
+- [ ] **Step 2: Write `SKILL.md` with tight description**
+  ```markdown
+  ---
+  name: token-frugal-workflow
+  description: Use when starting a new project, auditing token usage, diagnosing cold-session bloat, or planning a long multi-session effort. NOT for routine feature work.
+  ---
+  ```
+  Body is the distilled patterns from Step 1. References link to `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` for deep dives.
+
+- [ ] **Step 3: Verify portability**
+  Start a fresh Claude Code session in a different project (not yesid.dev). Trigger the skill by asking "how should I audit token usage in this repo?". Confirm it surfaces and gives actionable, project-agnostic guidance.
+
+- [ ] **Step 4: Verify dormancy**
+  Start a fresh session in yesid.dev, ask a routine question ("implement this button"). Confirm the skill does NOT surface. If it does, tighten description and re-test.
+
+**STOP. Ask Yesid to verify skill behavior in a second project before continuing.**
+
+---
+
+## Task 8: Claude config export snapshot
+
+**Files:**
+- Create dir: `C:\Users\otalo\Yesito\cloud\claude-config\`
+- Create: `user/`, `projects/yesid.dev/`, `README.md`, `snapshot.ps1`
+
+- [ ] **Step 1: Inventory configs**
+  `ls ~/.claude/` and `ls .claude/` (plus root `CLAUDE.md` + `.mcp.json`). Record what exists in each location. Identify sensitive files to exclude (`settings.local.json`, anything matching `*.local.*`).
+
+- [ ] **Step 2: Author `snapshot.ps1`**
+  PowerShell script that:
+  - Takes optional `-ProjectName` (defaults to `pwd` basename).
+  - Copies `~/.claude/settings.json`, `~/.claude/rules/common/`, `~/.claude/CLAUDE.md` (if present), `~/.claude/agents/*`, `~/.claude/commands/*`, `~/.claude/skills/*` → `cloud/claude-config/user/<timestamp>/`.
+  - If run from a project root with a `CLAUDE.md`: copies `CLAUDE.md`, `.claude/commands/*`, `.claude/settings.json`, `.mcp.json` → `cloud/claude-config/projects/<ProjectName>/<timestamp>/`.
+  - Updates `README.md` with last-snapshot timestamp + file counts per category.
+  - Skips `settings.local.json` and anything matching `*.local.*`.
+  - Append-only: never deletes prior snapshots.
+
+- [ ] **Step 3: Author `README.md`**
+  What's in `user/` and `projects/`, how snapshots are organized (timestamped subdirs), restore instructions (what to copy back where), sensitive-data caveat (what's excluded and why).
+
+- [ ] **Step 4: First run**
+  Execute `snapshot.ps1` from the yesid.dev repo root. Produces the post-17j snapshot — `user/<YYYYMMDD-HHmmss>/` + `projects/yesid.dev/<YYYYMMDD-HHmmss>/`.
+
+- [ ] **Step 5: Verify**
+  `ls cloud/claude-config/user/<timestamp>/` and `ls cloud/claude-config/projects/yesid.dev/<timestamp>/` — contents match inventory from Step 1 minus excluded sensitive files.
+
+**STOP. Ask Yesid to spot-check the snapshot before final handoff.**
+
+---
+
+## Task 9: Handoff + commit + PR
+
+**Files:**
+- Create: `docs/handoffs/slice-17j-token-efficacy.md`
+- Update: `docs/slices/slice-17-checkpoint.md`, `docs/roadmap/standardization.md`
+
+- [ ] **Step 1: Write handoff**
+  Per `docs/handoffs/_TEMPLATE.md`. Include the before/after/delta table from Task 6, the three durable outputs (knowledge base, skill, config snapshot), the Ongoing Discipline section (copy from this spec), and the cloud-mirror + knowledge-base paths.
+
+- [ ] **Step 2: Update checkpoint + roadmap**
   Mark 17j complete in `slice-17-checkpoint.md` and `docs/roadmap/standardization.md`.
 
-- [ ] **Step 5: Commit + PR + merge**
+- [ ] **Step 3: Regenerate `tree.txt`**
+
+- [ ] **Step 4: Commit + PR + merge**
   Per standard PR workflow. Branch: `feature/slice-17j-token-efficacy`.
 
-**STOP. Slice closes when Yesid approves the final token-delta number.**
+**STOP. Slice closes when Yesid approves the final token-delta number + verifies the three durable outputs.**
 
 ---
 
 ## Execution Order
 
 ```
-Task 0 (Baseline) ──► Task 1 (docs prune) ──► Task 2 (CLAUDE.md) ──► Task 3 (WORKFLOW.md) ──► Task 4 (.mcp.json) ──► Task 5 (global) ──► Task 6 (re-measure + handoff)
+Task 0 (Baseline)
+   └──► Task 0a (Research — 6 parallel subagents)
+          └──► Task 1 (docs prune)
+                 └──► Task 2 (CLAUDE.md)
+                        └──► Task 3 (WORKFLOW.md)
+                               └──► Task 4 (.mcp.json — informed by research 02)
+                                      └──► Task 5 (global cleanup — informed by research 03 + 05)
+                                             └──► Task 6 (re-measure)
+                                                    └──► Task 7 (codify skill — informed by all 6 + Task 6 deltas)
+                                                           └──► Task 8 (config export snapshot)
+                                                                  └──► Task 9 (handoff + PR)
 ```
 
-Strictly sequential. No parallelization — each task's measurement depends on the previous state being stable. Task 5 (global config) is sequenced last among prongs so the repo-side PR is reviewable without global-config coupling.
+Strictly sequential **except Task 0a's 6 research agents** (explicitly approved; independent research, no shared state, main context protected via summary-only returns).
 
 ## Out of Scope
 
@@ -290,11 +464,17 @@ Strictly sequential. No parallelization — each task's measurement depends on t
 - New learning docs (docs/learn/ untouched).
 - Git history rewriting. Removed content stays recoverable from git.
 - Public launch prep.
-- Any skill or plugin *creation* — this slice only prunes, doesn't author.
+- Any skill or plugin *creation* beyond `token-frugal-workflow` (this slice prunes, doesn't author new skills beyond the one codified output).
 - Rewriting feedback memories (only pruning the stale ones).
 - Changes to the `brand/` bundle from 17h.
+- Automating `snapshot.ps1` on a schedule (cron / Task Scheduler). Manual trigger only.
+- Multi-machine config sync. Export is one-way; re-importing to a new machine is a later slice if needed.
+- Converting `token-frugal-workflow` into a shareable plugin / repo. Lives as a personal skill only.
+- Cross-project deployment of `.mcp.json` templates. Each project configures its own allowlist.
 
 ## Acceptance Criteria
+
+### Pruning (the yesid.dev cleanup)
 
 - [ ] Cold-session total-token count dropped by a measurable, non-trivial amount (target: ≥25%; record actual).
 - [ ] `docs/` in repo contains only: `reference/`, `learn/`, `roadmap/`, active slice checkpoint + spec + templates, `ARCHIVE.md` stub, `devlog/` and `handoffs/` containing only this slice's artifacts + their templates.
@@ -309,8 +489,37 @@ Strictly sequential. No parallelization — each task's measurement depends on t
 - [ ] `bun run test` + `bun run check` green.
 - [ ] Site builds and deploys identically to pre-slice.
 - [ ] All cross-links from `docs/reference/**` and `docs/learn/**` into removed content are rewritten or excised (zero broken refs).
-- [ ] Handoff contains full before/after/delta table across all seven prongs.
 - [ ] `tree.txt` regenerated.
+
+### Durable outputs (the portable value)
+
+- [ ] `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` contains `00-index.md` + 6 deep-dive docs (500–1000 words each, consistent structure, sources cited, prioritizing 2025–2026 material). Index has `last-reviewed` date per doc.
+- [ ] `~/.claude/skills/token-frugal-workflow/SKILL.md` exists with tight description; surfaces only on relevant triggers in a second project; remains dormant on routine work in yesid.dev.
+- [ ] `C:\Users\otalo\Yesito\cloud\claude-config\` contains `user/<timestamp>/`, `projects/yesid.dev/<timestamp>/`, `README.md`, `snapshot.ps1`. First snapshot captured post-17j. `settings.local.json` excluded from export.
+- [ ] Research findings visibly inform Task 4 and Task 5; devlog notes which decisions changed based on research.
+- [ ] Handoff contains full before/after/delta table across all seven pruning prongs + summary of the three durable outputs.
+
+## Risks + Mitigations
+
+| Risk | Mitigation |
+|------|------------|
+| Parallel subagents return inconsistent structures → hard to consolidate | Identical output-structure prompt enforced; main session rejects any doc missing a required section and re-dispatches. |
+| Research agents cite stale pre-Claude-4.7 sources | Prompt: "prioritize 2025–2026; flag and exclude anything older than 2025 unless Anthropic primary docs." |
+| Skill too eager — activates on unrelated work | Tight "Use when..." description; verification step in Task 7 Step 4 tests dormancy. If it activates on routine work, tighten and re-test. |
+| Config snapshot misses a file category | Task 8 Step 1 inventory pass committed to devlog *before* writing script, so audit trail exists. |
+| Cloud knowledge drifts over time as Claude evolves | `00-index.md` has `last-reviewed: YYYY-MM-DD` per doc; ongoing discipline flags review cadence (every 2 slices or major Claude release). |
+| Research sprint runs over context in main session | Each agent writes direct to cloud file; main session only receives 200-word summaries; even long agents don't bloat main context. |
+| Skill burns tokens in projects that never need it | Description scoped to explicit triggers ("planning a new project", "auditing token usage"), not implicit. |
+| First prune breaks something subtle | Cloud mirror (Task 1) + git history = full recovery; `git revert` restores removed repo content at any stage. |
+| `.mcp.json` disables an MCP Yesid relies on | Task 4 Step 3 verification in fresh session; Yesid review STOP before continuing. |
+| Global plugin uninstall breaks a skill dependency | Task 5 Step 3 verification after uninstall; keep list leans conservative. |
+
+## Rollback
+
+- **Pure-additive tasks (0a, 7, 8):** delete created files/dirs. Zero blast radius.
+- **Prune tasks (1–5):** cloud mirror + git history = full recovery. `git revert` on the slice commit restores removed repo content. Global config changes (Task 5) documented in handoff for manual reversal (reinstall plugins, restore `rules/zh` from cloud snapshot).
+- **No DB, no user-facing site change, no third-party side effects** — this slice is ~100% reversible.
+- **Config snapshot itself (Task 8)** is append-only, so snapshotting is non-destructive; if the script misbehaves, just delete the bad snapshot subdir.
 
 ## Learn
 
@@ -321,13 +530,23 @@ Strictly sequential. No parallelization — each task's measurement depends on t
 
 ### Pruning is a one-time event, discipline is continuous
 **What it is:** A big consolidation slice like 17j is a baseline reset. Without an ongoing discipline, the inventory accretes again within a few slices — same problem, new layer.
-**Why it matters:** The seven prongs all re-inflate by default (every shipped slice leaves devlog + handoff; every new initiative tempts new plugins and MCP servers). Only the ongoing discipline section prevents re-accumulation.
+**Why it matters:** The seven prongs all re-inflate by default (every shipped slice leaves devlog + handoff; every new initiative tempts new plugins and MCP servers). The `token-frugal-workflow` skill + ongoing discipline section prevent re-accumulation.
 **Try this:** At every slice close, review: does this slice's devlog/plan/spec stay in repo or mirror to cloud? Did I install any new plugin or MCP for this slice — is it still earning its keep? Does auto-memory have a new `status` file that should just be a line in `completed_slices.md`?
 
 ### Git history vs. in-repo docs
 **What it is:** Git preserves everything already committed. Removing a file from the working tree does not delete it — `git show <hash>:path` and `git log -- path` both still work. A cloud mirror is insurance + human-browseability, not recovery.
 **Why it matters:** It means the cost of pruning is near-zero for content we don't actively browse. The only real cost is grep-ability (historical docs no longer appear in `ripgrep` results) — which is actually the point, because that grep was part of what inflated context.
 **Go deeper:** Handoffs → git log. Devlogs → git log + cloud mirror. Slice specs → git log + cloud mirror. Reference → stays in repo because it's queried daily.
+
+### Parallel subagents protect main context
+**What it is:** Dispatching six subagents in parallel, each writing directly to a cloud file and returning only a 200-word summary, is fundamentally different from doing six sequential searches in the main session.
+**Why it matters:** In the main session, every tool call's output lives in the main context. In a subagent, the tool output lives in the *agent's* context and the main session only ever sees the final summary. For research-heavy work, this is a 10–50× reduction in main-context consumption.
+**Try this:** Any time you have 2+ independent research questions, ask whether they can be dispatched as parallel subagents with summary-only returns instead of run sequentially in the main session.
+
+### Portable outputs outlive the slice
+**What it is:** The knowledge base + skill + config snapshot produced by 17j are not yesid.dev artifacts — they live in the cloud / global Claude config and seed every future project.
+**Why it matters:** One slice's work pays dividends across N future projects. The marginal cost of making a pattern portable (tight skill description, cloud path, README with restore instructions) is tiny compared to the marginal value of not relearning it every time.
+**Try this:** At the end of any infrastructure / meta slice, ask: "what here is durable beyond this project?" Name it, move it somewhere portable, document the restore path.
 
 ## Verify
 
@@ -341,15 +560,20 @@ Strictly sequential. No parallelization — each task's measurement depends on t
 8. `cat .mcp.json` — scoped server list; fresh session's system reminder confirms only those tools appear.
 9. `ls ~/.claude/rules/` — `common/` present, `zh/` absent.
 10. `ls ~/.claude/projects/.../memory/ | grep -c "project_slice_"` — single digit. `project_completed_slices.md` exists.
-11. `bun run test` + `bun run check` — green.
-12. Site renders identically on dev server — no visual or behavioral change.
+11. `ls C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` — `00-index.md` + 6 deep-dive files; spot-check one doc has all required sections.
+12. `ls ~/.claude/skills/token-frugal-workflow/` — `SKILL.md` present. In a second project, ask about token auditing — skill surfaces. In yesid.dev, ask a routine UI question — skill stays dormant.
+13. `ls C:\Users\otalo\Yesito\cloud\claude-config\` — `user/<timestamp>/`, `projects/yesid.dev/<timestamp>/`, `README.md`, `snapshot.ps1`. `settings.local.json` absent from snapshots.
+14. `bun run test` + `bun run check` — green.
+15. Site renders identically on dev server — no visual or behavioral change.
 
 ## Ongoing discipline (post-17j)
 
-Once 17j closes, these practices keep inventory from accreting again:
+Once 17j closes, these practices keep inventory from accreting again. The `token-frugal-workflow` skill surfaces them at relevant moments (new project, token audit, long planning effort):
 
 - **Plugins:** install for the slice that needs them; uninstall when the slice closes. Don't let the skill inventory grow monotonically.
-- **MCP servers:** add to `.mcp.json` per-project when needed; remove when done.
+- **MCP servers:** add to `.mcp.json` per-project when needed; remove when done. New projects start from a minimal template.
 - **Auto-memory:** save only *durable* facts (decisions, constraints, preferences). Per-slice status goes in the handoff, not memory. When a slice closes, its status memory rolls into `project_completed_slices.md`.
 - **`docs/`:** at slice close, mirror the slice's devlog + plan + spec + handoff to `C:\Users\otalo\Yesito\cloud\yesid.dev\docs\` and remove from repo. Reference + learn stay in repo.
 - **`CLAUDE.md` / `WORKFLOW.md`:** resist adding new sections unless they capture a rule or process that applies to every future slice. If it's slice-specific, it belongs in the slice spec, not the governance docs.
+- **Knowledge base:** review `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` every 2 slices or on major Claude release. Update `last-reviewed` dates; refresh sections where Claude's behavior has changed.
+- **Config snapshot:** re-run `snapshot.ps1` whenever you materially change `~/.claude/` or project `.claude/` — creates a new timestamped snapshot alongside the old one.
