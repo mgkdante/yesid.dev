@@ -1,13 +1,16 @@
 <!--
   Reading progress bar — fixed at top of viewport.
   Tracks scroll progress through a target element (blog content).
-  Uses requestAnimationFrame + getBoundingClientRect for smooth tracking.
+  Subscribes to the shared gsap.ticker (17e-5) so the whole site ticks
+  from a single RAF callback. No IO gate — the bar is relevant throughout
+  the article route while mounted.
   Respects prefers-reduced-motion — skips rendering entirely when enabled.
   Uses bits-ui Progress for proper ARIA progressbar semantics.
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { subscribe, unsubscribe } from '$lib/motion/utils/ticker.js';
 	import { Progress } from '$lib/components/ui/progress';
 
 	let {
@@ -28,15 +31,13 @@
 		// Skip scroll tracking entirely when reduced motion is preferred
 		if (reducedMotion) return;
 
-		let rafId: number;
-		let ticking = false;
+		// Unique id per mount so multiple progress bars (should never happen
+		// in practice, but cheap insurance) don't collide on the ticker.
+		const subscriptionId = `reading-progress-bar-${Math.random().toString(36).slice(2, 9)}`;
 
 		function updateProgress() {
 			const target = document.querySelector(targetSelector);
-			if (!target) {
-				ticking = false;
-				return;
-			}
+			if (!target) return;
 
 			const rect = target.getBoundingClientRect();
 			// How far the target top has scrolled past the viewport top
@@ -44,31 +45,19 @@
 			// Total scrollable distance = target height minus viewport height
 			const scrollable = rect.height - window.innerHeight;
 
-			if (scrollable <= 0) {
-				progress = 0;
-			} else {
-				progress = Math.min(1, Math.max(0, scrolledPast / scrollable));
-			}
+			const next = scrollable <= 0
+				? 0
+				: Math.min(1, Math.max(0, scrolledPast / scrollable));
 
-			ticking = false;
+			// Only write when changed to avoid needless reactivity updates.
+			if (next !== progress) progress = next;
 		}
 
-		function onScroll() {
-			if (!ticking) {
-				ticking = true;
-				rafId = requestAnimationFrame(updateProgress);
-			}
-		}
-
-		// Initial calculation
+		// Initial calculation + shared-ticker subscription
 		updateProgress();
+		subscribe(subscriptionId, updateProgress);
 
-		window.addEventListener('scroll', onScroll, { passive: true });
-
-		return () => {
-			window.removeEventListener('scroll', onScroll);
-			cancelAnimationFrame(rafId);
-		};
+		return () => unsubscribe(subscriptionId);
 	});
 </script>
 

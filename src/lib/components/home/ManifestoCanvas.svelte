@@ -8,6 +8,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { subscribe, unsubscribe } from '$lib/motion/utils/ticker.js';
 
 	interface Props {
 		containerEl?: HTMLElement;
@@ -18,6 +19,7 @@
 	const GRID = 80;
 	const PROXIMITY = 120;
 	const TRACE_PROXIMITY = 160;
+	const SUBSCRIPTION_ID = 'manifesto-canvas';
 
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null = null;
@@ -26,7 +28,8 @@
 	let height = 0;
 	let mouseX = -999;
 	let mouseY = -999;
-	let animFrame: number;
+	let isVisible = false;
+	let visibilityObserver: IntersectionObserver | null = null;
 
 	interface CircuitNode {
 		x: number;
@@ -115,6 +118,9 @@
 	}
 
 	function animate() {
+		// IO-gated: skip the frame entirely when the Manifesto section is
+		// offscreen. Subscription stays registered (cheap) to avoid churn.
+		if (!isVisible) return;
 		if (!ctx) return;
 		ctx.clearRect(0, 0, width, height);
 
@@ -171,7 +177,7 @@
 			}
 		}
 
-		animFrame = requestAnimationFrame(animate);
+
 	}
 
 	let initialized = false;
@@ -198,7 +204,21 @@
 		}
 
 		resize();
-		animate();
+
+		// IO gate — pause painting when the Manifesto section scrolls out
+		// of view. rootMargin: 50px so painting resumes just before the
+		// section re-enters the viewport to avoid a visible frame-drop.
+		visibilityObserver = new IntersectionObserver(
+			(entries) => {
+				isVisible = entries[0].isIntersecting;
+			},
+			{ rootMargin: '50px' },
+		);
+		visibilityObserver.observe(containerEl);
+
+		// Shared ticker — one RAF loop site-wide; animate() early-returns
+		// when !isVisible, so offscreen paints cost a cheap if-check only.
+		subscribe(SUBSCRIPTION_ID, animate);
 
 		containerEl.addEventListener('mousemove', onMouseMove);
 		containerEl.addEventListener('mouseleave', onMouseLeave);
@@ -207,7 +227,9 @@
 		window.addEventListener('resize', resize);
 
 		return () => {
-			if (animFrame) cancelAnimationFrame(animFrame);
+			unsubscribe(SUBSCRIPTION_ID);
+			visibilityObserver?.disconnect();
+			visibilityObserver = null;
 			if (currentContainer) {
 				currentContainer.removeEventListener('mousemove', onMouseMove);
 				currentContainer.removeEventListener('mouseleave', onMouseLeave);
