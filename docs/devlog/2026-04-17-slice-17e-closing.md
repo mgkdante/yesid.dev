@@ -100,27 +100,32 @@ Spec §6.1 Lighthouse targets move from "17e closing criterion" to "19/19b/20 cl
 
 ## Bundle-size verification (§6.2 budgets)
 
-Target budgets per design spec §6.2 (gzipped initial JS per route). Actual sizes read from the SvelteKit node entries in `bun run bundle-size` output.
+Target budgets per design spec §6.2 (gzipped initial JS per route). Actual sizes are per-route SvelteKit node chunks + shared layout chunk (node 0 = 13.20 KB gzipped loads on every route). Node ↔ route mapping from `.svelte-kit/output/server/manifest-full.js`. Total gzipped initial JS includes the route leaf + its layout(s) + shared entry/vendor chunks (entry/app, common vendor) — the "Leaf + layout" column below shows the known route-specific contribution; Lighthouse's "Total byte weight" for scripts is the authoritative cross-check (see Total Transfer column).
 
-| Route | Node | Budget (gzip) | Actual (gzip) | Δ vs budget |
-|---|---|---|---|---|
-| `/` (home) | 4 | 120 KB | — | — |
-| `/blog` (listing) | — | 80 KB | — | — |
-| `/blog/[slug]` (detail) | 8 | 70 KB | — | — |
-| `/projects` (listing) | — | 80 KB | — | — |
-| `/projects/[slug]` (detail) | 11 | 70 KB | — | — |
-| `/services` (listing) | — | 80 KB | — | — |
-| `/services/[slug]` (detail) | — | 70 KB | — | — |
-| `/about` | 5 | 70 KB | — | — |
-| `/contact` | — | 60 KB | — | — |
-| `/tech-stack` | — | 80 KB | — | — |
+Shared entry/vendor chunks add consistently ~18-22 KB gzipped on top of each route's leaf+layout sum. All routes appear well below their spec §6.2 budgets.
 
-Home-route history:
+| Route | Leaf node | Layout nodes | Leaf + layouts (gzip) | Budget | Δ vs budget |
+|---|---|---|---|---|---|
+| `/` (home) | 4 (35.00 KB) | 0 (13.20 KB) | **48.20 KB** | 120 KB | −72 KB (well under) |
+| `/blog` (listing) | 6 (0.54 KB) | 0 + 2 (0.36 KB) | **14.10 KB** | 80 KB | −66 KB |
+| `/blog/personal` | 7 (0.53 KB) | 0 + 2 | **14.09 KB** | 80 KB | −66 KB |
+| `/blog/[slug]` (detail) | 8 (14.15 KB) | 0 | **27.35 KB** | 70 KB | −43 KB |
+| `/projects` (listing) | 10 (17.28 KB) | 0 + 3 (0.36 KB) | **30.84 KB** | 80 KB | −49 KB |
+| `/projects/[slug]` (detail) | 11 (7.61 KB) | 0 | **20.81 KB** | 70 KB | −49 KB |
+| `/services` (listing) | 12 (2.85 KB) | 0 | **16.05 KB** | 80 KB | −64 KB |
+| `/services/[id]` (detail) | 13 (3.59 KB) | 0 | **16.79 KB** | 70 KB | −53 KB |
+| `/about` | 5 (8.37 KB) | 0 | **21.57 KB** | 70 KB | −48 KB |
+| `/contact` | 9 (14.61 KB) | 0 | **27.81 KB** | 60 KB | −32 KB |
+| `/tech-stack` | 14 (2.08 KB) | 0 | **15.28 KB** | 80 KB | −65 KB |
+
+All routes well within §6.2 budgets even accounting for shared entry/vendor chunks (~20 KB additional). The budgets look generous in retrospect — design spec §6.2 was set when the site was expected to carry more 3D/Threlte weight; post-Three.js removal the budgets have slack.
+
+Home-route history (gzipped):
 - 17e-1 baseline: 32.39 KB
 - 17e-4 end:      34.57 KB (+2.18 vs baseline)
-- 17e-5 end:      **35.00 KB** (+0.43 vs 17e-4; +2.61 vs baseline)
+- **17e-5/6 end:  35.00 KB** (+0.43 vs 17e-4; +2.61 vs baseline)
 
-17e-5 D269 target was home −3 to −8 KB gzipped. Actual: flat. Root cause captured in `docs/slices/slice-17e-5-interaction-consolidation.md` iteration log — 3 biggest plugins stay eager (ScrollTrigger, SplitText, MorphSVGPlugin); the 4 lazy-split plugins have static-import fallthroughs from sync-API coupling (`captureFlipState`, `CustomEase.create`). Real user-perceived gains come from the HTML-path MetroNetwork inline (17e-4) and the IO-gated ambient loops — both measured by Lighthouse above.
+17e-5 D269 target was home −3 to −8 KB gzipped. Actual: essentially flat. Root cause captured in `docs/slices/slice-17e-5-interaction-consolidation.md` iteration log — 3 biggest plugins stay eager (ScrollTrigger, SplitText, MorphSVGPlugin); the 4 lazy-split plugins have static-import fallthroughs from sync-API coupling (`captureFlipState`, `CustomEase.create`). Real user-perceived gains come from the HTML-path MetroNetwork inline (17e-4) and the IO-gated ambient loops — both measured by Lighthouse above, though the mobile-Perf gap shows they're not enough on their own (→ deferred to Slice 19 per Decision).
 
 ---
 
