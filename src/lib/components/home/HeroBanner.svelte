@@ -59,7 +59,12 @@
 
 	let heroData: HeroData = $state(INITIAL_HERO_DATA);
 	let updatedAgo: string = $state('30s ago');
-	const sectionMinHeight = '900svh';
+	// Section min-height reserves scroll space for the pin + trailing content.
+	// Desktop pin is 800% → 900svh matches exactly (100% + 800% = 900svh, no
+	// trailing content because SQL is in-grid). Mobile pin is 300% → need
+	// only 100% + 300% + ~150svh HeroMobileSql + a small buffer = 600svh.
+	// Applied via CSS media query below so SSR renders correctly; inline
+	// style remains for reduced-motion (collapses to a single viewport).
 
 	function handleRefresh() {
 		heroData = generateHeroData();
@@ -151,9 +156,9 @@
 </script>
 
 <section
-	class="relative"
+	class="hero-section-reserve relative"
 	data-testid="hero-banner"
-	style="min-height: {reducedMotion ? '100svh' : sectionMinHeight};"
+	style={reducedMotion ? 'min-height: 100svh' : ''}
 >
 	<div
 		bind:this={pinContainer}
@@ -246,6 +251,22 @@
 </section>
 
 <style>
+	/* Section scroll reservation — matches the pin-length per breakpoint.
+	   Mobile pin = 300% → 100lvh trigger + 300lvh pin extension = 400lvh +
+	   ~150lvh HeroMobileSql natural-flow content + 50lvh buffer = 600lvh.
+	   Desktop pin = 800% → 100lvh + 800lvh = 900lvh, no trailing content
+	   (SQL panel is in-grid inside the pin). Reduced-motion overrides this
+	   via the inline style above to collapse to a single viewport. */
+	.hero-section-reserve {
+		min-height: 600svh;
+	}
+
+	@media (min-width: 1024px) {
+		.hero-section-reserve {
+			min-height: 900svh;
+		}
+	}
+
 	/* Hero pin container — full viewport for the animation */
 	.hero-pin {
 		height: 100lvh;
