@@ -306,10 +306,8 @@
 		letter-spacing: -0.3vw;
 		bottom: calc(100lvh - 100dvh);
 	}
-	.scroll-block-cursor {
-		margin-left: 0.15em;
-		opacity: 0;
-	}
+	/* .scroll-block-cursor moved to app.css so the global .typewriter-cursor
+	   class can override its opacity when the typewriter is active (17e-4). */
 
 	@media (min-width: 768px) {
 		.scroll-prompt {

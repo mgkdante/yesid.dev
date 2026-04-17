@@ -252,8 +252,32 @@ pre, code, table {
   75%, 100% { transform: scale(2.5); opacity: 0; }
 }
 
+/* Hero typewriter cursor (slice 17e-4). Global so the .typewriter-cursor
+   activation class (added/removed from heroTypewriter.ts) can override it
+   without the Svelte scoped-style specificity fight. */
+.scroll-block-cursor {
+  margin-left: 0.15em;
+  opacity: 0;
+}
+
+/* Typewriter cursor blink (slice 17e-4). Uses visibility instead of opacity
+   so it doesn't multiply with the scroll-driven scrollPrompt fade — the
+   cursor is either visible or hidden, not "half-faded × half-blinking". */
+@keyframes typewriter-blink {
+  to { visibility: hidden; }
+}
+
+.typewriter-cursor {
+  opacity: 1;
+  animation: typewriter-blink 1s steps(2, start) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .led-pulse { animation: none; }
+  .typewriter-cursor {
+    animation: none;
+    visibility: visible;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
