@@ -5,7 +5,7 @@ date: 2026-03-15
 lang: en
 category: professional
 tags: [etl, postgresql, python, case-study]
-animation: stagger
+animation: morph
 external: false
 ---
 

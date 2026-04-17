@@ -1,53 +1,59 @@
-// GSAP plugin registration — hybrid eager + lazy.
+// GSAP plugin registration — ScrollTrigger + SplitText + MorphSVGPlugin eager;
+// all other plugins lazy-loaded per consumer via load*().
 //
-// 17e-1 scope: all existing plugins remain eagerly registered via
-// registerGsapPlugins() so no consumer breaks. Lazy loaders are added
-// alongside as the migration path. Subsequent sub-slices migrate
-// consumers, then 17e-6 closing removes the eager imports that are
-// no longer referenced.
+// Eager:
+//   - ScrollTrigger  — used site-wide; config applied via initScrollTriggerConfig().
+//   - SplitText      — wordmarkHover's action contract runs `new SplitText(...)`
+//                       synchronously, so it can't await a dynamic import.
+//   - MorphSVGPlugin — morphHelpers.ts calls MorphSVGPlugin.convertToPath() as a
+//                       static method; shipped eagerly because it's consumed from
+//                       SvgIcon (present on every major route) and HomeServices.
 //
-// Route expectations AFTER consumer migration (not this PR):
-//   /                     -> loadDrawSVG() + loadCustomEase() at route setup
-//   /blog, /projects,     -> loadMorphSVG() on first hover,
-//   /services, /tech-stack   loadFlip() on first filter change
-//   Other routes          -> nothing beyond ScrollTrigger
+// Lazy (per-consumer at mount):
+//   /                     -> loadDrawSVG() + loadCustomEase() in HeroBanner,
+//                            loadDrawSVG() in DataFlowDiagram/HomeCloser
+//   /blog, /projects      -> loadDrawSVG() + loadFlip()
+//   /tech-stack           -> loadMotionPathPlugin() + loadDrawSVG() in StackConnections
+//   any route with SvgIcon -> loadDrawSVG() + loadMorphSVG() (morph path is lazy
+//                            since SvgIcon does its own Promise.all at mount)
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin'; // consumed by StackConnections tech-stack dots
-import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
-import { CustomEase } from 'gsap/CustomEase';
-import { SplitText } from 'gsap/SplitText'; // DELETE in 17e-3 (crescendo replaces char-stagger)
+import { SplitText } from 'gsap/SplitText';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
-// @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
-import { Flip } from 'gsap/Flip';
 
-let registered = false;
+let configured = false;
 const loadedPlugins = new Set<string>();
 
-export function registerGsapPlugins(): void {
-	if (registered) return;
-	gsap.registerPlugin(
-		ScrollTrigger,
-		MotionPathPlugin,
-		DrawSVGPlugin,
-		CustomEase,
-		SplitText,
-		MorphSVGPlugin,
-		Flip,
-	);
-	// Ignore viewport height changes < 25% (mobile address bar show/hide).
-	// Prevents ScrollTrigger from recalculating pin positions when browser
-	// chrome appears/disappears. Compatible with Lenis (unlike normalizeScroll).
+/**
+ * Register ScrollTrigger and apply its site-wide config. The config
+ * ignores viewport height changes < 25% (mobile address bar show/hide)
+ * so ScrollTrigger doesn't recalculate pin positions when browser
+ * chrome appears/disappears. Compatible with Lenis (unlike normalizeScroll).
+ *
+ * Idempotent — safe to call from any route/consumer mount. Every consumer
+ * that creates a ScrollTrigger must call this first.
+ */
+export function initScrollTriggerConfig(): void {
+	if (configured) return;
+	gsap.registerPlugin(ScrollTrigger);
 	ScrollTrigger.config({ ignoreMobileResize: true });
-	registered = true;
-	// Mark all eagerly-registered plugins so lazy loaders no-op.
-	['DrawSVG', 'MorphSVG', 'Flip', 'CustomEase'].forEach((p) => loadedPlugins.add(p));
+	configured = true;
 }
 
-// Lazy loaders — idempotent, safe to call even if registerGsapPlugins()
-// already loaded the plugin eagerly. Subsequent sub-slices will remove
-// the eager import above and rely solely on these.
+/**
+ * Sync SplitText registration — for wordmarkHover, whose action contract
+ * requires `new SplitText(node, ...)` to run synchronously at mount.
+ * Uses the eagerly-imported SplitText symbol (no dynamic import).
+ * Idempotent.
+ */
+export function ensureSplitTextRegistered(): void {
+	if (loadedPlugins.has('SplitText')) return;
+	gsap.registerPlugin(SplitText);
+	loadedPlugins.add('SplitText');
+}
+
+// Lazy loaders — idempotent.
 
 export async function loadDrawSVG(): Promise<void> {
 	if (loadedPlugins.has('DrawSVG')) return;
@@ -58,8 +64,9 @@ export async function loadDrawSVG(): Promise<void> {
 
 export async function loadMorphSVG(): Promise<void> {
 	if (loadedPlugins.has('MorphSVG')) return;
-	const mod = await import('gsap/MorphSVGPlugin');
-	gsap.registerPlugin(mod.MorphSVGPlugin);
+	// MorphSVGPlugin is eagerly imported above for morphHelpers' static
+	// convertToPath call; register it with gsap for {morphSVG:} tween syntax.
+	gsap.registerPlugin(MorphSVGPlugin);
 	loadedPlugins.add('MorphSVG');
 }
 
@@ -78,14 +85,22 @@ export async function loadCustomEase(): Promise<void> {
 	loadedPlugins.add('CustomEase');
 }
 
-// Re-export so motion code only needs one import source.
-export {
-	gsap,
-	ScrollTrigger,
-	MotionPathPlugin,
-	DrawSVGPlugin,
-	CustomEase,
-	SplitText,
-	MorphSVGPlugin,
-	Flip,
-};
+export async function loadMotionPathPlugin(): Promise<void> {
+	if (loadedPlugins.has('MotionPath')) return;
+	const mod = await import('gsap/MotionPathPlugin');
+	gsap.registerPlugin(mod.MotionPathPlugin);
+	loadedPlugins.add('MotionPath');
+}
+
+export async function loadSplitText(): Promise<void> {
+	if (loadedPlugins.has('SplitText')) return;
+	gsap.registerPlugin(SplitText);
+	loadedPlugins.add('SplitText');
+}
+
+// Re-export for motion code that needs a direct symbol reference.
+// gsap       — every consumer
+// ScrollTrigger — scrubs + HeroBanner + SvgIcon (trigger Vars)
+// SplitText  — wordmarkHover
+// MorphSVGPlugin — morphHelpers.ts (convertToPath static call)
+export { gsap, ScrollTrigger, SplitText, MorphSVGPlugin };

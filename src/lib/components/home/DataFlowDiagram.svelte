@@ -13,7 +13,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap, DrawSVGPlugin } from '$lib/motion/utils/gsap.js';
+	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
@@ -51,9 +51,12 @@
 	// Max label length based on node width and font size
 	let maxLabelLen = $derived(size === 'lg' ? 14 : 10);
 
-	onMount(() => {
+	onMount(async () => {
 		if (isPrefersReducedMotion() || !container) return;
-		registerGsapPlugins();
+		await loadDrawSVG();
+		// Guard against unmount-during-await (tests, fast route transitions).
+		if (!container) return;
+		initScrollTriggerConfig();
 
 		const nodeEls = container.querySelectorAll('.df-node');
 		const lineEls = container.querySelectorAll('.df-line');

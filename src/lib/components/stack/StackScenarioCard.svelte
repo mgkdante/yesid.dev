@@ -6,9 +6,6 @@
 <script lang="ts">
 	import type { StackScenario } from '$lib/data/types.js';
 	import { getTechItemById } from '$lib/data/tech-stack.js';
-	import { onMount } from 'svelte';
-	import { gsap } from '$lib/motion/utils/gsap.js';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
@@ -18,8 +15,6 @@
 	}: {
 		scenario: StackScenario;
 	} = $props();
-
-	let cardEl = $state<HTMLElement | null>(null);
 
 	// Resolve recommended tech names for the mini flow
 	const recommendedItems = $derived(
@@ -35,19 +30,11 @@
 			.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
 			.join(' ');
 	}
-
-	onMount(() => {
-		if (cardEl && !isPrefersReducedMotion()) {
-			gsap.fromTo(
-				cardEl,
-				{ y: 30, opacity: 0 },
-				{ y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' },
-			);
-		}
-	});
+	// Fade-up entrance deleted 17e-5 (D267 F reveal violation per Snappy Doctrine).
+	// Card renders at final state on load.
 </script>
 
-<Card class="scenario-card flex flex-col gap-4 p-5" bind:ref={cardEl} data-testid="scenario-card">
+<Card class="scenario-card flex flex-col gap-4 p-5" data-testid="scenario-card">
 	<!-- Mini flow: recommended tech in order, connected by arrows -->
 	<div class="mini-flow" data-testid="scenario-flow" use:scrollChain>
 		{#each recommendedItems as item, i (item.id)}

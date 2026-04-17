@@ -44,7 +44,10 @@
 //   onDestroy(() => destroy?.());
 
 import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-import { gsap, ScrollTrigger, CustomEase } from '$lib/motion/utils/gsap.js';
+import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
+// CustomEase imported directly — plugin is runtime-registered by loadCustomEase()
+// at HeroBanner mount; this import only provides the symbol for CustomEase.create().
+import { CustomEase } from 'gsap/CustomEase';
 
 export interface HeroTimelineOpts {
 	/** Wrapper around the metro SVG — receives the Phase 5 zoom transform. */

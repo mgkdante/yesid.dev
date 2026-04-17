@@ -110,12 +110,8 @@
 		border-radius: 50%;
 		background: color-mix(in srgb, var(--primary) 30%, transparent);
 		flex-shrink: 0;
-		animation: pulse 2s ease-in-out infinite;
-	}
-
-	@keyframes pulse {
-		0%, 100% { opacity: 0.3; box-shadow: none; }
-		50% { opacity: 1; box-shadow: 0 0 6px color-mix(in srgb, var(--primary) 40%, transparent); }
+		/* Uses the global pulse-glow keyframe from app.css (17e-5 consolidation). */
+		animation: pulse-glow 2s ease-in-out infinite;
 	}
 
 	.manifesto__separator {

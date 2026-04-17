@@ -579,7 +579,44 @@ Decisions recorded this planning session (continue from 17d's D240):
 
 - This design spec: `docs/specs/2026-04-16-slice-17e-motion-reengineering-design.md`
 - Brainstorm visuals: `.superpowers/brainstorm/488-1776379928/content/` (signature vocabulary, trigger model)
-- Implementation plan: **to be written next** at `docs/plans/2026-04-16-slice-17e-motion-reengineering.md`
-- MOTION.md v2.0: **to be written in 17e-6 closing** at `docs/reference/MOTION.md`
-- CONSTITUTION.md Snappy Doctrine amendment: **to be added in 17e-6**
-- Per-sub-slice specs: `docs/slices/slice-17e-{1..6}-*.md` — written alongside each sub-slice as work begins
+- Implementation plans: `docs/plans/2026-04-17-slice-17e-*.md` (per sub-slice, written as work began)
+- **MOTION.md v2.0: `docs/reference/MOTION.md` (written 17e-6, supersedes v1.0)**
+- **CONSTITUTION.md Snappy Doctrine section: `docs/reference/CONSTITUTION.md` § 8 (rewritten 17e-6)**
+- Per-sub-slice specs: `docs/slices/slice-17e-{1..6}-*.md`
+- Motion learning docs: `docs/learn/motion/*.md` (6 concepts, written 17e-6)
+- Closing devlog: `docs/devlog/2026-04-17-slice-17e-closing.md`
+- Closing handoff: `docs/handoffs/handoff-slice-17e.md` (full-slice retrospective)
+
+---
+
+## Amendments (2026-04-17)
+
+These amendments capture decisions made during 17e-3 through 17e-6 implementation. They override earlier §2–§10 text where they conflict.
+
+- **D263 (17e-3 planning):** Terminus rotated label is a crescendo-scrub target. The Closer doctrine exception (§3.4) covers ONLY the in-section DrawSVG graffiti timeline, not the edge title. §3.2's Crescendo-scrub row's target list is updated: "Manifesto 3-line statement, rotated edge titles on Projects + Services + Terminus sections." All three rotated edge titles are primary `<h2>` headings — semantic first, visual second; no `aria-hidden`.
+
+- **D264 (17e-4):** `heroScrollLock.ts` cut. Typewriter becomes pure ambient (signature 9) — runs on shared ticker + CSS-keyframe cursor blink. First-visit "plays at you" scroll-lock removed. If the user scrolls past mid-animation, the type-sequence truncates; it's ambient, not narrative-critical.
+
+- **D265 (17e-4):** MetroNetwork SVG inlined via Vite `?raw` import + one-time `svgo` CLI pass. Source file is the optimized committed version. `svgo.config.mjs` disables `convertColors` / `mergePaths` / `cleanupIds` to preserve classification attributes (case-sensitive `#E07800`) and per-station path granularity. SVGO 4 removed the `--disable` CLI flag, so the config file is required. Re-run procedure documented in `docs/reference/MOTION.md` § 13.
+
+- **D266 (17e-4):** Drawing motion (DrawSVG stroke-tracing, morphSVG path tracing, motionPath tracing) is doctrine-compatible even on enter. The drawing IS the content, not a delivery mechanism. §2 Forbidden list clarified: pure fade-up / scale-in / stagger reveals remain forbidden (they read as loading states); drawing-motion entries do not. Affected re-classification: `SvgIcon.animateDraw`, `SvgIcon.animateDrawFill`, `SvgIcon.animateMorph` (cleared), `DataFlowDiagram` DrawSVG entrance (cleared), `StackConnections` DrawSVG entrance (cleared). Still violations: `SvgIcon.animateStagger` (deleted 17e-5), `StackScenarioCard` fade-up (deleted 17e-5).
+
+- **D267 (17e-5):** (E2) `morphHelpers.ts` → `actions/morphHover.ts` — promoted into a first-class Svelte action (not a file rename); `morphHelpers.ts` retained as the `convertSvgToMorphPaths` helper since SvgIcon is also a consumer. (F) `SvgIcon.animateStagger` + `StackScenarioCard` `onMount` fade-up deleted — both D266 violations. (G2) Ripple stays cut; doctrine vocabulary stays at 9 signatures.
+
+- **D268 (17e-4):** **Scrub owns `scrollPrompt` opacity exclusively.** Typewriter owns text + cursor only. Invariant documented in `createHeroTimeline.ts` header to prevent regression. Emerged from an iteration-2 bug fix where typewriter's `startBlink` was writing inline `opacity: '1'` that persisted past the Phase 1a fade window.
+
+- **D269 (17e-5):** `registerGsapPlugins()` deleted. Three plugins stay eagerly imported in `motion/utils/gsap.ts` (ScrollTrigger site-wide, SplitText for wordmarkHover sync coupling, MorphSVGPlugin for morphHelpers.convertToPath static call). The other plugins (DrawSVG, MorphSVG registration, Flip, CustomEase, MotionPath, SplitText registration) are lazy-loaded per consumer via `loadX()` functions. `initScrollTriggerConfig()` replaces `registerGsapPlugins()` as the canonical ScrollTrigger init. Consumer-wide migration complete. Bundle shrink target (home /: −3 to −8 KB) did NOT land — static imports in `flip.ts` + `createHeroTimeline.ts` for sync API access (captureFlipState, CustomEase.create) defeat Vite's lazy chunk split. Flagged as deferred opportunity (post-17e async refactors of captureFlipState + wordmarkHover).
+
+### §6.1 Lighthouse target transfer
+
+The Lighthouse Performance targets (D255 — desktop ≥ 98, mobile ≥ 90) were **not met** at 17e closing. Audit results pasted into `docs/devlog/2026-04-17-slice-17e-closing.md`. 20 runs, Best Practices 100 across the board, but Performance in 54–98 range (0 of 10 mobile routes met the 90 target; home mobile at 54 is the worst).
+
+**Decision (2026-04-17):** close 17e with the Lighthouse gap documented, transfer §6.1 targets to downstream slices per `docs/roadmap/PLAN.md`:
+
+- **Mobile Performance** (all routes) → **Slice 19 — Mobile UI/UX Optimization**
+- **Accessibility 95–96 on listings + blog detail** → **Slice 19b — Accessibility (A11Y) Optimization** (targets 95+ already)
+- **Scroll-scrub smoothness** → **Slice 20 — Scroll Smoothness + Animation Polish**
+- **Site-wide frame-rate verification** → **Slice 21 / Slice 16 E2E**
+- **SEO 82–83 on home + blog tree** — unscoped; likely a missing-meta-description fix (fold into Slice 19 or ticket separately)
+
+17e's architectural goals all landed (Snappy Doctrine, 9-signature vocabulary closed, one RAF site-wide, lazy plugin foundation, MetroNetwork SSR, factories, use:morphHover, legacy symbol deletion). The Lighthouse gap is a perf-quality-polish concern, not an architectural failure.

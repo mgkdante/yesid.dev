@@ -13,13 +13,13 @@
   Phase 8 (110-142%) — Text elements stagger in during zoom-out
   Phase 9 (155%)     — Brief hold, then unpin — SQL panel visible on natural scroll
 
-  Scroll: 800% on all breakpoints. Desktop: Lenis + scrub:true. Mobile: normalizeScroll + scrub:0.5.
+  Scroll: 800% desktop / 300% mobile. Lenis smooth-scroll site-wide (normalizeScroll removed 17e-1).
 -->
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import {
-		registerGsapPlugins,
+		initScrollTriggerConfig,
 		loadDrawSVG,
 		loadCustomEase,
 		ScrollTrigger,
@@ -59,7 +59,12 @@
 
 	let heroData: HeroData = $state(INITIAL_HERO_DATA);
 	let updatedAgo: string = $state('30s ago');
-	const sectionMinHeight = '900svh';
+	// Section min-height reserves scroll space for the pin + trailing content.
+	// Desktop pin is 800% → 900svh matches exactly (100% + 800% = 900svh, no
+	// trailing content because SQL is in-grid). Mobile pin is 300% → need
+	// only 100% + 300% + ~150svh HeroMobileSql + a small buffer = 600svh.
+	// Applied via CSS media query below so SSR renders correctly; inline
+	// style remains for reduced-motion (collapses to a single viewport).
 
 	function handleRefresh() {
 		heroData = generateHeroData();
@@ -105,11 +110,10 @@
 		}
 
 		// Preload lazy plugins used inside createHeroTimeline (DrawSVG stroke
-		// scrub in Phase 2, CustomEase 'networkDraw' on the line draws). Both
-		// loaders are idempotent — safe even though registerGsapPlugins still
-		// eagerly registers them for non-migrated consumers.
+		// scrub in Phase 2, CustomEase 'networkDraw' on the line draws).
+		// Register ScrollTrigger + apply its site-wide config.
 		await Promise.all([loadDrawSVG(), loadCustomEase()]);
-		registerGsapPlugins();
+		initScrollTriggerConfig();
 
 		// Typewriter: pure ambient per D264 — plays every visit, no scroll lock.
 		// If the user scrolls past mid-animation, the type-sequence cuts off and
@@ -152,9 +156,9 @@
 </script>
 
 <section
-	class="relative"
+	class="hero-section-reserve relative"
 	data-testid="hero-banner"
-	style="min-height: {reducedMotion ? '100svh' : sectionMinHeight};"
+	style={reducedMotion ? 'min-height: 100svh' : ''}
 >
 	<div
 		bind:this={pinContainer}
@@ -247,6 +251,22 @@
 </section>
 
 <style>
+	/* Section scroll reservation — matches the pin-length per breakpoint.
+	   Mobile pin = 300% → 100lvh trigger + 300lvh pin extension = 400lvh +
+	   ~150lvh HeroMobileSql natural-flow content + 50lvh buffer = 600lvh.
+	   Desktop pin = 800% → 100lvh + 800lvh = 900lvh, no trailing content
+	   (SQL panel is in-grid inside the pin). Reduced-motion overrides this
+	   via the inline style above to collapse to a single viewport. */
+	.hero-section-reserve {
+		min-height: 600svh;
+	}
+
+	@media (min-width: 1024px) {
+		.hero-section-reserve {
+			min-height: 900svh;
+		}
+	}
+
 	/* Hero pin container — full viewport for the animation */
 	.hero-pin {
 		height: 100lvh;

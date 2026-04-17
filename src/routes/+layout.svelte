@@ -11,7 +11,7 @@
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { siteMeta, buildPersonSchema } from '$lib/data';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
-	import { registerGsapPlugins } from '$lib/motion/utils/gsap.js';
+	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 
 	const personSchema = buildPersonSchema(siteMeta);
 
@@ -19,9 +19,12 @@
 
 	onMount(() => {
 		if (browser) {
-			// Register GSAP plugins early so ScrollTrigger.isTouch is available
-			registerGsapPlugins();
-			initLenis(); // Desktop: Lenis smooth scroll / Mobile: normalizeScroll
+			// Register ScrollTrigger + apply site-wide config early so
+			// ScrollTrigger.isTouch and pin behavior are available for all
+			// consumers. Plugin-specific loading (DrawSVG, MorphSVG, Flip,
+			// MotionPath) happens lazily per-consumer at mount.
+			initScrollTriggerConfig();
+			initLenis();
 		}
 		return () => {
 			destroyLenis();

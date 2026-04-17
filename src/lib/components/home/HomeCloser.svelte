@@ -5,11 +5,11 @@
   Orchestrates GSAP master timeline across sub-components.
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { closerContent, resolveLocale, getLatestPosts } from '$lib/data/index.js';
 	import { siteMeta } from '$lib/data/meta.js';
-	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
+	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import CloserGraffiti from './CloserGraffiti.svelte';
 	import CloserFloodlight from './CloserFloodlight.svelte';
@@ -108,11 +108,16 @@
 		buildMasterTimeline(animateFn);
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		if (!browser || !sectionEl) return;
 
 		const reduced = isPrefersReducedMotion();
-		registerGsapPlugins();
+		// CloserGraffiti uses DrawSVG (strokes the "THE END" letters). Preload
+		// before CloserGraffiti's async onReady fires so the timeline can use
+		// `drawSVG: '100%'` tweens immediately.
+		await loadDrawSVG();
+		if (!sectionEl) return; // unmount-during-await guard
+		initScrollTriggerConfig();
 
 		if (!reduced) {
 			const boardEl = sectionEl.querySelector('[data-closer-board]');
@@ -121,10 +126,10 @@
 			gsap.set(boardEl, { opacity: 0, scale: 0.98 });
 			gsap.set(rowEls, { opacity: 0, x: -10 });
 		}
+	});
 
-		return () => {
-			masterTl?.kill();
-		};
+	onDestroy(() => {
+		masterTl?.kill();
 	});
 </script>
 

@@ -8,7 +8,12 @@
 	import { onMount, tick, onDestroy } from 'svelte';
 	import type { TechStackItem } from '$lib/data/types.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
+	import {
+		initScrollTriggerConfig,
+		loadMotionPathPlugin,
+		loadDrawSVG,
+		gsap,
+	} from '$lib/motion/utils/gsap.js';
 
 	let {
 		items,
@@ -143,10 +148,11 @@
 		dotTweens = [];
 	}
 
-	/** Start continuous MotionPath dot animations along each path. */
+	/** Start continuous MotionPath dot animations along each path.
+	 *  Precondition: loadMotionPathPlugin() + initScrollTriggerConfig() already
+	 *  awaited in onMount — both plugins are registered by the time this runs. */
 	function startDots(): void {
 		if (!svgEl) return;
-		registerGsapPlugins();
 
 		const dots = svgEl.querySelectorAll<SVGCircleElement>('.data-dot');
 		const pEls = svgEl.querySelectorAll<SVGPathElement>('.connection-path');
@@ -180,10 +186,10 @@
 	}
 
 	/** Entrance timeline: DrawSVG paths → data dots.
-	 *  Tier rows are static (no entrance animation). */
+	 *  Tier rows are static (no entrance animation).
+	 *  Precondition: plugins preloaded in onMount. */
 	async function animate(): Promise<void> {
 		if (!containerEl || !svgEl) return;
-		registerGsapPlugins();
 
 		const tl = gsap.timeline({
 			scrollTrigger: {
@@ -235,6 +241,12 @@
 	}
 
 	onMount(async () => {
+		// Preload plugins: MotionPath for the dot-along-path animation,
+		// DrawSVG for the connection-path stroke reveals inside animate().
+		// ScrollTrigger config must also be set before the entrance timeline.
+		await Promise.all([loadMotionPathPlugin(), loadDrawSVG()]);
+		initScrollTriggerConfig();
+
 		await tick();
 		recalculate();
 		await tick(); // Wait for SVG paths to render

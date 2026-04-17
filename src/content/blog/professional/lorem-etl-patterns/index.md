@@ -5,7 +5,7 @@ date: 2026-02-28
 lang: fr
 category: professional
 tags: [pipeline, etl]
-animation: stagger
+animation: draw-fill
 external: false
 ---
 

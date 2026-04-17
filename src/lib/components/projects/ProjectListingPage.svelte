@@ -16,7 +16,7 @@
 	import { resolveLocale } from '$lib/data/locale.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
-	import { loadDrawSVG } from '$lib/motion/utils/gsap.js';
+	import { loadDrawSVG, loadFlip, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 	import { createDrawScrub } from '$lib/motion/scrubs/index.js';
 	import SearchInput from '$lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
@@ -152,9 +152,15 @@
 
 	onMount(async () => {
 		if (!browser) return;
+
+		// Flip: filter-transition plugin; always loaded (consumer-wide sync
+		// precondition for captureFlipState). DrawSVG: blueprint scroll-scrub.
+		await loadFlip();
+
 		if (isPrefersReducedMotion()) return;
 
 		await loadDrawSVG();
+		initScrollTriggerConfig();
 
 		if (blueprintWrapEl && listingSectionEl) {
 			destroyDrawScrub = createDrawScrub(blueprintWrapEl, {

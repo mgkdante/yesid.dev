@@ -136,34 +136,47 @@ src/
 │   │       ├── BlueprintShell.svelte # ← Slice 17d: moved from deleted shells/, blueprint header container
 │   │       ├── blueprints/          # ← Slice 17d: 12 inline Svelte SVGs (currentColor, zero hardcoded hex)
 │   │       └── __tests__/           # Co-located tests for all primitives
-│   └── motion/          # ← Added in Slice 04
-│       ├── actions/
+│   └── motion/          # ← Added in Slice 04; re-engineered in Slice 17e
+│       ├── actions/             # Interaction signatures (5 of the 9)
 │       │   ├── boop.ts          # use:boop — hover transform burst
-│       │   ├── reveal.ts        # use:reveal — scroll-triggered GSAP entrance
+│       │   ├── cursorGlow.ts    # use:cursorGlow — mouse-tracking brand glow overlay
 │       │   ├── magnetic.ts      # use:magnetic — cursor pull on desktop
-│       │   ├── ripple.ts        # use:ripple — orange click ripple
-│       │   ├── tilt.ts          # use:tilt — 3D card tilt following cursor (slice 06b)
-│       │   ├── cursorGlow.ts    # use:cursorGlow — mouse-tracking brand glow overlay (slice 17a-2b)
-│       │   ├── scrollChain.ts   # use:scrollChain — universal scroll chaining, replaces data-lenis-prevent (slice 17d)
-│       │   └── index.ts         # barrel export
+│       │   ├── morphHover.ts    # use:morphHover — SVG path morph on hover/tap (17e-5)
+│       │   ├── wordmarkHover.ts # use:wordmarkHover — SplitText pool for "yesid." wordmark
+│       │   ├── scrollChain.ts   # use:scrollChain — utility, chain scroll events across elements
+│       │   └── index.ts
+│       ├── scrubs/              # Scroll-linked factories (signatures 5–7) — added 17e-3 + 17e-4
+│       │   ├── createCrescendoScrub.ts   # scale/opacity scrub as section passes
+│       │   ├── createDrawScrub.ts        # DrawSVG stroke-scrub as section passes
+│       │   ├── createHeroTimeline.ts     # 9-phase hero pin — the site's only pin
+│       │   └── index.ts
 │       ├── stores/
 │       │   ├── reducedMotion.ts # prefersReducedMotion store + isPrefersReducedMotion()
 │       │   ├── scroll.ts        # scrollProgress store (0–1)
-│       │   └── index.ts         # barrel export
+│       │   └── index.ts
 │       ├── components/
-│       │   ├── ScrollRail.svelte    # scroll progress rail (station dots on home, progress bar elsewhere)
 │       │   └── LottiePlayer.svelte  # lottie-web wrapper (autoplay + scrub mode for scroll-linked frames)
-│       ├── utils/
-│       │   ├── gsap.ts          # registerGsapPlugins(), re-exports gsap/ScrollTrigger/SplitText/MorphSVGPlugin
+│       ├── svg/                 # Motion-owned SVG components
+│       │   └── MetroNetwork.svelte  # Hero metro SVG, inlined via Vite `?raw` (17e-4)
+│       ├── utils/               # Infrastructure
+│       │   ├── device.ts        # isTouchDevice() helper
+│       │   ├── flip.ts          # captureFlipState + animateFlipTransition (FLIP filter-sort primitives)
+│       │   ├── gsap.ts          # initScrollTriggerConfig + ensureSplitTextRegistered + 6 lazy loaders (17e-5 D269)
+│       │   ├── heroTypewriter.ts # Typewriter ambient (signature 9) — shared-ticker based
+│       │   ├── lenis.ts         # Lenis smooth-scroll bridge (normalizeScroll removed 17e-1)
+│       │   ├── morphHelpers.ts  # convertSvgToMorphPaths wrapper around MorphSVGPlugin
 │       │   ├── stagger.ts       # stagger(index, baseDelay) timing calculator
-│       │   └── index.ts         # barrel export
+│       │   ├── ticker.ts        # Shared gsap.ticker fan-out (17e-1)
+│       │   └── index.ts
+│       ├── tokens.ts            # TS mirror of motion tokens in tokens.css (17e-1)
 │       └── index.ts             # top-level barrel — import from '$lib/motion'
-│       ├── svg/
-│       │   ├── Train.svelte         # geometric side-view train SVG (kept for /preview/train)
-│       │   ├── TrainTop.svelte      # ← Slice 06d: bird's-eye 2-wagon train SVG (used on home rail)
-│       │   ├── train-targets.ts     # GSAP selector strings for Train animated groups
-│       │   ├── train-path.ts        # getTrainMotionPath() — VERTICAL SVG path string for MotionPathPlugin
-│       │   └── TrainJourney.svelte  # train + scroll-linked positioning (uses TrainTop on home)
+│
+│   # Deleted in 17e (retained here for git-history grep): motion/components/ScrollRail.svelte,
+│   # motion/svg/Train* tree (Train.svelte, TrainJourney.svelte, train-path.ts, train-targets.ts),
+│   # motion/actions/reveal.ts, ripple.ts, tilt.ts, motion/utils/heroTimeline.ts,
+│   # motion/utils/heroScrollLock.ts, motion/utils/listingAnimations.ts,
+│   # motion/components/ReadingProgressBar.svelte (17e-5).
+│   # Full motion reference: docs/reference/MOTION.md v2.0
 ├── content/             # ← Added in Slice 06d
 │   └── blog/            # Markdown blog posts with YAML frontmatter
 │       ├── why-i-left-orm-for-raw-sql.md

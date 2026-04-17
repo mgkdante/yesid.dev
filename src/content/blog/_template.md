@@ -11,11 +11,10 @@ category: professional
 tags: [sql, postgresql]
 
 # OPTIONAL — SVG illustration
-# animation: draw | morph | draw-fill | stagger (random if omitted)
+# animation: draw | morph | draw-fill (deterministic per-slug if omitted)
 #   draw       — paths draw stroke-by-stroke (DrawSVGPlugin)
 #   morph      — elements scale in from small (MorphSVGPlugin)
 #   draw-fill  — paths draw on, then fill with subtle color wash
-#   stagger    — pieces fly in one by one with staggered timing
 # animation: draw
 
 # svg: illustration.svg (filename in same folder — fallback assigned if omitted)

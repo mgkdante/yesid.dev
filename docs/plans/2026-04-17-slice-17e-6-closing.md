@@ -10,13 +10,19 @@
 
 **Spec:** `docs/specs/2026-04-16-slice-17e-motion-reengineering-design.md` (§6.1 Lighthouse targets, §6.2 bundle budgets, §6.5 verification workflow, §9.1 sub-slice scope, §9.4 success criteria). Design spec amendments queued: §3.2 to add Terminus as crescendo target (D263); §2 to add drawing-motion exception (D266). MOTION.md v2.0 supersedes v1.0 (stale — references deleted Three.js/Threlte and forbidden `use:reveal`).
 
-**Branch:** `feature/slice-17e-6-closing` (branched from `main` after 17e-5 merges)
+**Branch:** `feature/slice-17e-56-close-motion` (combined 17e-5 + 17e-6 PR — shared branch, continues from 17e-5 Task 10 in the same session).
 
-**Depends on:** 17e-1, 17e-2, 17e-3, 17e-4, 17e-5 all merged. Lighthouse audits measure the full-stack end state.
+**Depends on:** 17e-1, 17e-2, 17e-3, 17e-4 merged; 17e-5 committed on the same branch (not yet merged — rides this PR). Lighthouse audits measure the full-stack end state after both sub-slices.
 
-**Blocks:** Nothing. Slice 17e is done after this merges. Next slice is 17a-4 Dead Code Cleanup per the checkpoint roadmap.
+**Blocks:** Nothing. Slice 17e is done after this PR merges. Next slice is 17a-4 Dead Code Cleanup per the checkpoint roadmap.
 
-**Estimated sessions:** 0.5–1 (design spec §9.1)
+**Estimated sessions:** 0.5–1 (design spec §9.1). In practice: multiple working blocks as MOTION.md v2.0 + 6 learning docs + Lighthouse runs are heavy.
+
+---
+
+## 🔀 Combined-PR workflow (2026-04-17 rule)
+
+17e-5 and 17e-6 ship in ONE PR. Task 8 Step 9 pushes the combined branch `feature/slice-17e-56-close-motion` and opens the single PR covering both sub-slices. One combined `handoff-slice-17e.md` covers both sub-slices + full-slice retrospective (no separate 17e-5 handoff). Design spec amendments, checkpoint bump, tree.txt regen, motion learning docs, and the final commit all ride in this one PR.
 
 ---
 
@@ -28,7 +34,7 @@
 |---|---|
 | `docs/reference/MOTION.md` (v2.0 — overwrites v1.0) | Canonical motion-layer reference — 9-signature vocabulary, factory APIs, shared ticker, lazy plugins, reduced-motion contract, SEO contract, bundle budgets, MetroNetwork SVGO re-run procedure |
 | `docs/slices/slice-17e-6-closing.md` | Narrow slice spec |
-| `docs/handoffs/handoff-slice-17e.md` | Full-slice closing handoff summarizing all 6 sub-slices |
+| `docs/handoffs/handoff-slice-17e.md` | **Combined closing handoff** — covers 17e-5 + 17e-6 + full-slice retrospective (no separate 17e-5 handoff per plan-audit) |
 | `docs/devlog/2026-04-17-slice-17e-closing.md` | Closing devlog per `docs/devlog/_TEMPLATE.md` |
 | `docs/learn/motion/snappy-doctrine.md` | Learning doc — the doctrine, its rationale, what counts as a violation (including D266) |
 | `docs/learn/motion/signature-vocabulary.md` | Learning doc — the 9 signatures, when to use each, the permitted-exceptions pattern |
@@ -75,11 +81,11 @@ Content for `docs/slices/slice-17e-6-closing.md`:
 # Slice 17e-6 — Closing
 
 **Status:** In progress
-**Branch:** `feature/slice-17e-6-closing`
+**Branch:** `feature/slice-17e-56-close-motion` (combined 17e-5 + 17e-6 PR)
 **Design spec:** `docs/specs/2026-04-16-slice-17e-motion-reengineering-design.md`
 **Implementation plan:** `docs/plans/2026-04-17-slice-17e-6-closing.md`
-**Depends on:** 17e-1 through 17e-5 all merged
-**Blocks:** Nothing. Slice 17e is done after this merges.
+**Depends on:** 17e-1 through 17e-4 merged; 17e-5 committed on the shared branch.
+**Blocks:** Nothing. Slice 17e is done after this PR merges.
 
 ## What
 
@@ -141,7 +147,13 @@ STOP. Tell Yesid:
 **Files:**
 - Create: `docs/devlog/2026-04-17-slice-17e-closing.md` — start of devlog, populate with the 20-row Lighthouse table at this task's end
 
-**Rationale:** Decision H1 — audit every route to verify §6.1 Performance targets. 10 routes × 2 viewports = 20 runs. Design spec acceptance criteria §9.4 requires this evidence.
+**Rationale:** Decision H1 — audit every route to verify §6.1 Performance targets. 11 routes × 2 viewports = 22 runs. Design spec acceptance criteria §9.4 requires this evidence.
+
+_(Plan-audit 2026-04-17 — tooling coordination gotcha):_ Chrome DevTools MCP's `lighthouse_audit` tool needs Chrome running on Yesid's machine + the preview server reachable. Claude Preview MCP typically can't hit `:5173` if Yesid's dev server is already running. Before starting audits:
+1. Ask Yesid to stop any running `bun run dev` so preview can claim the port.
+2. Start `bun run build && bun run preview` — it comes up on `:4173` (not `:5173`), avoiding the conflict.
+3. Confirm Chrome is available and the MCP is connected.
+4. If Chrome-DevTools MCP isn't available in this session, fall back to Yesid running Lighthouse in his local Chrome DevTools and dictating scores.
 
 - [ ] **Step 1: Start the production preview server**
 
@@ -751,11 +763,13 @@ Full-slice closing across 6 sub-slices:
 Decisions D241–D267 logged. Lighthouse + bundle budgets verified."
 ```
 
-- [ ] **Step 9: Push branch**
+- [ ] **Step 9: Push combined branch + open single PR**
 
 ```bash
-git push -u origin feature/slice-17e-6-closing
+git push -u origin feature/slice-17e-56-close-motion
 ```
+
+Create PR via `gh pr create` — title: "feat(slice-17e): close motion re-engineering — 17e-5 consolidation + 17e-6 closing". Body references both sub-slices' work, bundle delta, Lighthouse summary, and the combined handoff.
 
 STOP. Tell Yesid:
 > "Slice 17e COMPLETE.

@@ -1,0 +1,150 @@
+// use:morphHover — SVG path morphing on hover/tap (signature 4 of 9).
+//
+// Desktop hover → paths morph to a random shape from `shapes`.
+// mouseleave   → paths morph back to their original `d`.
+// Mobile tap   → toggle morphed / unmorphed.
+// Reduced-motion → no-op (no listeners, paths stay at their primary shape).
+//
+// MorphSVG plugin is lazy-loaded on first hover via loadMorphSVG() so pages
+// that never hover a morph-capable element never ship the plugin.
+//
+// The node passed to the action should be a clickable parent that contains
+// <path> elements (or SVG primitives — convertSvgToMorphPaths coerces them).
+// SVG may be injected after mount (e.g. HomeServices' async fetch); the
+// action defers path conversion until `enabled` is true AND the first
+// interaction fires.
+//
+// Usage:
+//   <button use:morphHover={{ shapes: SHAPES, enabled: svgReady[i] }}>...</button>
+
+import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
+import { gsap, loadMorphSVG } from '../utils/gsap.js';
+import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';
+
+export interface MorphHoverParams {
+	/** Record of shape-name → SVG path `d` string. Used as the morph target pool. */
+	shapes: Record<string, string>;
+	/** If false, listeners still attach but morphs are no-ops (use while SVG content loads). Default: true */
+	enabled?: boolean;
+	/** Optional deterministic starting shape index. Default: -1 (random). */
+	lastShapeIdx?: number;
+}
+
+export function morphHover(node: HTMLElement, params: MorphHoverParams) {
+	if (isPrefersReducedMotion()) {
+		return { update() {}, destroy() {} };
+	}
+
+	let currentParams = params;
+	let morphed = false;
+	let paths: SVGPathElement[] = [];
+	let originals: string[] = [];
+	let lastIdx = params.lastShapeIdx ?? -1;
+	let pluginLoaded = false;
+
+	function isMobile(): boolean {
+		if (typeof window === 'undefined') return false;
+		return window.matchMedia('(max-width: 767px)').matches;
+	}
+
+	async function ensurePluginAndPaths() {
+		if (!pluginLoaded) {
+			await loadMorphSVG();
+			pluginLoaded = true;
+		}
+		if (paths.length === 0) {
+			// Find SVG root (may be the node itself or a child — SVG can be
+			// injected post-mount for async content like HomeServices).
+			const svg = node.querySelector('svg') ?? (node as unknown as SVGElement);
+			if (!(svg instanceof SVGElement)) return;
+			const { paths: p, originals: o } = convertSvgToMorphPaths(svg);
+			paths = p;
+			originals = o;
+		}
+	}
+
+	function pickRandomShape(): string | null {
+		const keys = Object.keys(currentParams.shapes);
+		if (keys.length === 0) return null;
+		let idx: number;
+		do {
+			idx = Math.floor(Math.random() * keys.length);
+		} while (idx === lastIdx && keys.length > 1);
+		lastIdx = idx;
+		return keys[idx];
+	}
+
+	function morphTo(key: string) {
+		paths.forEach((p) => gsap.killTweensOf(p));
+		gsap.to(paths, {
+			morphSVG: currentParams.shapes[key],
+			duration: 0.4,
+			stagger: 0.03,
+			ease: 'power2.inOut',
+			overwrite: true,
+		});
+		morphed = true;
+	}
+
+	function morphBack() {
+		if (paths.length === 0 || originals.length === 0) return;
+		paths.forEach((path, i) => {
+			gsap.killTweensOf(path);
+			gsap.to(path, {
+				morphSVG: originals[i],
+				duration: 0.4,
+				delay: i * 0.03,
+				ease: 'power2.inOut',
+				overwrite: true,
+			});
+		});
+		morphed = false;
+	}
+
+	async function handleEnter() {
+		if (currentParams.enabled === false) return;
+		if (isMobile()) return;
+		await ensurePluginAndPaths();
+		if (paths.length === 0) return;
+		const key = pickRandomShape();
+		if (!key) return;
+		morphTo(key);
+	}
+
+	function handleLeave() {
+		if (currentParams.enabled === false) return;
+		if (isMobile()) return;
+		morphBack();
+	}
+
+	async function handleTap(e: Event) {
+		if (!isMobile()) return;
+		if (currentParams.enabled === false) return;
+		e.preventDefault();
+		e.stopPropagation();
+		await ensurePluginAndPaths();
+		if (paths.length === 0) return;
+		if (morphed) {
+			morphBack();
+		} else {
+			const key = pickRandomShape();
+			if (!key) return;
+			morphTo(key);
+		}
+	}
+
+	node.addEventListener('mouseenter', handleEnter);
+	node.addEventListener('mouseleave', handleLeave);
+	node.addEventListener('click', handleTap);
+
+	return {
+		update(newParams: MorphHoverParams) {
+			currentParams = newParams;
+		},
+		destroy() {
+			node.removeEventListener('mouseenter', handleEnter);
+			node.removeEventListener('mouseleave', handleLeave);
+			node.removeEventListener('click', handleTap);
+		},
+	};
+}
