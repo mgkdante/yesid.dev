@@ -208,7 +208,7 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 17  | Standardization: Design System + Ports & Adapters   | planned — split execution (see Execution Sequence below)         | 13           | 13-14         |
 | 15  | SEO + metadata                                      | planned — built on 17b service layer                             | 13, 17a, 17b | 1-2           |
 | 16  | E2E test suite + performance + brand QA             | planned — tests final standardized + SEO state                   | 15, 17       | 3             |
-| 18  | Cloud content layer — Payload + Neon + monorepo     | planned — plugs into 17b service layer seam                      | 16, 17       | 5-7           |
+| 18  | Cloud content layer — Payload (own repo) + Neon     | planned — plugs into 17b service layer seam                      | 16, 17       | 5-7           |
 | 19  | Mobile UI/UX optimization                           | planned                                                          | 17, B+       | 2             |
 | 19b | Accessibility (A11Y) optimization                   | planned                                                          | 19           | 2             |
 | 20  | Scroll smoothness + animation polish                | planned                                                          | B+, 19b      | 1             |
@@ -607,15 +607,22 @@ Design system + structural refactor. Brand primitives (terminal chrome, hazard s
 
 ---
 
-### Slice 18 — Cloud Content Layer: Payload + Neon + Monorepo
+### Slice 18 — Cloud Content Layer: Payload (own repo) + Neon
 
 **Status:** planned **Depends on:** 16, 17 **Est. Sessions:** 5-7
 **Design spec:** `docs/specs/2026-04-16-cms-payload-design.md` (authoritative — read first)
 **Supersedes:** previous Keystatic plan for this slice (see Decisions Log 2026-04-16)
 
-**Decision: Payload 3** — MIT-licensed, Node-native, TypeScript-schema CMS with a real admin UI. Backed by **Neon Postgres** (free tier, scale-to-zero, DB branching). Media on **Vercel Blob**. Repo becomes a **Turborepo monorepo** with `apps/web` (SvelteKit) + `apps/cms` (Payload/Next.js) + `packages/types`. Both apps deploy to Vercel as separate projects from the same repo.
+**Decision: Payload 3** — MIT-licensed, Node-native, TypeScript-schema CMS with a real admin UI. Backed by **Neon Postgres** (free tier, scale-to-zero, DB branching). Media on **Vercel Blob**.
 
-This setup doubles as the **client-offering template**: the "WordPress flexibility without WordPress, but modern" pitch. yesid.dev is the reference build.
+**Two repos, not a monorepo:**
+
+- `yesid.dev` — the SvelteKit site. Stays structurally as-is (public showcase, open-source artifact).
+- `yesid.dev-cms` — new repo, Payload 3 + Next.js admin + API + Postgres schema. **Framework-agnostic Payload starter** — plugs into SvelteKit, Next.js, Astro, Nuxt, or any REST client. Ships as its own reusable product with per-framework integration recipes (SvelteKit first).
+
+Both repos deploy to Vercel independently. `yesid.dev-cms` lives at `cms.yesid.dev`. yesid.dev is the reference build; `yesid.dev-cms` is the reusable CMS product.
+
+**Positioning:** "WordPress flexibility without WordPress, but modern. Bring your own framework."
 
 **Why Payload over Keystatic** (short form — full rationale in design spec):
 
@@ -629,16 +636,22 @@ Keystatic stays in the toolkit as a possible **"Static" budget tier** for pure-c
 **Architecture (see design spec for full diagram):**
 
 ```
-Monorepo (Turborepo + Bun workspaces)
-├── apps/web/           SvelteKit — consumes Payload via services
-├── apps/cms/           Payload 3 + Next.js — admin UI, writes to Postgres
-└── packages/types/     Shared TS types + Zod schemas
-        │                        │
-        ▼                        ▼
-   Vercel (web)           Vercel (cms)
-        │                        │
-        └──────► Neon Postgres ◄─┘
-                 Vercel Blob (media)
+Repo: yesid.dev                    Repo: yesid.dev-cms
+(SvelteKit — public showcase)      (Payload 3 + Next.js — CMS starter)
+         │                                    │
+         │ Vercel                             │ Vercel
+         ▼                                    ▼
+    yesid.dev                         cms.yesid.dev
+         │       REST (+ GraphQL)             │
+         │ ◄───────────────────────────────►  │
+         │       webhook on publish           │
+         └─────────────┐           ┌──────────┘
+                       ▼           ▼
+                  Neon Postgres (content DB, branches per PR)
+                  Vercel Blob    (media)
+
+Type sync: payload generate:types → GitHub Action → PR in yesid.dev updating
+           src/lib/cms-types.ts (no monorepo tax, types stay in sync).
 ```
 
 **Content model — Payload collections / globals:**
@@ -661,15 +674,16 @@ Localization uses Payload's built-in `localized: true` flag on text fields (maps
 
 **Migration order** (inside this slice, not a prerequisite):
 
-1. Scaffold monorepo; move existing `yesid.dev` SvelteKit into `apps/web`.
-2. Scaffold `apps/cms` (Payload 3 + Next.js) with Neon Postgres + Vercel Blob adapters, email auth.
-3. Define all collections + globals.
-4. Seed script — read existing TS/MD data, write to Payload via Local API. Idempotent, kept in repo.
-5. Service layer swap (from Slice 17b) — flip implementations one service at a time, one commit each, tests green between every swap. Order: site-meta → nav-links → home-content → about-content → contact-content → blog-posts → projects → services → tech-stack → stack-scenarios.
-6. Wire Payload publish webhook → SvelteKit ISR revalidation. Wire preview route + token.
-7. Delete old TS data files only after every route loads from Payload and tests pass.
+1. Create `yesid.dev-cms` repo. Scaffold Payload 3 + Next.js with Neon Postgres + Vercel Blob adapters, email auth.
+2. Define all collections + globals with Payload localization enabled (maps 1:1 to existing LocalizedString).
+3. Deploy CMS to Vercel at `cms.yesid.dev` subdomain.
+4. Seed script in `yesid.dev-cms` imports existing TS/MD data from `yesid.dev` via Local API. Idempotent, kept in repo as the "import from other sources" recipe for clients.
+5. Set up type-sync GitHub Action: CMS schema change → `payload generate:types` → opens PR in `yesid.dev` updating `src/lib/cms-types.ts`.
+6. Service layer swap (from Slice 17b in `yesid.dev`) — flip implementations one service at a time, one commit each, tests green between every swap. Each service calls Payload REST API; Zod schemas (Slice 17c) validate response shape. Order: site-meta → nav-links → home-content → about-content → contact-content → blog-posts → projects → services → tech-stack → stack-scenarios.
+7. Wire Payload publish hook → POST to `yesid.dev/api/revalidate` with shared secret. Wire `/preview/[collection]/[slug]?token=...` in `yesid.dev` for draft content.
+8. Delete old TS data files in `yesid.dev` only after every route loads from the CMS and tests pass.
 
-**Rollback at every step:** services hold both implementations behind a feature flag during the swap; full rollback is one revert.
+**Rollback at every step:** services hold both implementations behind a feature flag during the swap; full rollback is one revert. Because the repos are independent, a bad CMS deploy doesn't take the frontend down — `yesid.dev` keeps serving its ISR cache.
 
 **Cost model (yesid.dev, day one):** $0/month. Neon free tier (191.9 compute-hrs/mo, 0.5 GB) is more than enough; Vercel Blob free tier (1 GB, 10 GB bandwidth) fits a portfolio. Do not attach a payment method to Neon until consciously upgrading — free plan is hard-capped, not soft-capped.
 
@@ -687,17 +701,19 @@ Localization uses Payload's built-in `localized: true` flag on text fields (maps
 
 **Acceptance criteria:**
 
-- Monorepo scaffold: `apps/web`, `apps/cms`, `packages/types`. `bun run dev` boots both apps.
-- Payload admin reachable, collections + globals defined with LocalizedString support.
+- `yesid.dev-cms` repo scaffolded with Payload 3 + Next.js, deployed to Vercel at `cms.yesid.dev`.
+- All collections + globals defined with Payload localization enabled.
 - Seed script imports all existing content without data loss.
-- Every service in `src/lib/services/*.service.ts` reads from Payload, not TS files.
+- Type-sync GitHub Action wired: CMS schema change → PR in `yesid.dev` updating `src/lib/cms-types.ts`.
+- Every service in `src/lib/services/*.service.ts` reads from Payload REST API (Zod-validated), not TS files.
 - Slice 16 E2E suite green — every existing route renders identically to pre-migration.
-- Publish webhook → SvelteKit revalidation end-to-end.
+- Payload publish hook → `yesid.dev/api/revalidate` end-to-end.
 - Preview route serves draft content for logged-in editors.
-- Both Vercel deployments green; Neon DB branch auto-created per PR.
+- Both Vercel deployments green; Neon DB branch auto-created per CMS PR.
 - Full free-tier budget — no overage.
-- `docs/reference/ARCHITECTURE.md` + `docs/reference/PATTERNS.md` updated.
-- Old TS data files deleted; no lingering references.
+- `docs/reference/ARCHITECTURE.md` updated with two-repo topology; `docs/reference/PATTERNS.md` updated with Payload REST + Zod service pattern.
+- `yesid.dev-cms` README includes a "Using with SvelteKit" integration recipe.
+- Old TS data files deleted from `yesid.dev`; no lingering references.
 
 **Out of scope:**
 
@@ -707,7 +723,7 @@ Localization uses Payload's built-in `localized: true` flag on text fields (maps
 - Moving Payload to Railway/Hetzner (reversible later; Vercel is fine for v1).
 - Fulltext search upgrade — blog search stays client-side.
 
-**You'll learn:** Payload 3 collections/globals/blocks, Turborepo monorepo patterns, Neon Postgres + DB branching, Vercel Blob for media, ISR revalidation via webhooks, preview/draft flows, service-layer seam migration under test coverage.
+**You'll learn:** Payload 3 collections/globals/blocks, framework-agnostic CMS architecture (REST API + Zod at the frontend boundary), cross-repo type-sync via GitHub Actions, Neon Postgres + DB branching, Vercel Blob for media, ISR revalidation via webhooks, preview/draft flows, service-layer seam migration under test coverage.
 
 ### Slice 19 — Mobile UI/UX Optimization
 
@@ -880,7 +896,7 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 | 2026-04-07 | No standalone tech stack page                      | About page widget + service detail pages + blog posts cover tools better than a resume-style page. Anti-pattern per conversion research.                                                                     |
 | 2026-04-07 | Live weather widget (OpenWeatherMap free tier)     | API key in .env, server-side fetch in +page.server.ts, graceful fallback. Unique personality touch on About page.                                                                                            |
 | 2026-04-16 | Slice 18 CMS: pivot from Keystatic to Payload      | Supersedes 2026-04-10 Keystatic decision. Non-tech clients need email/password + real admin (Keystatic requires GitHub auth). Template goal ("WordPress flexibility, modern") fits Payload; dynamic queries, roles, client-login path. Keystatic kept as possible "Static tier" for pure-content clients. Full design spec: `docs/specs/2026-04-16-cms-payload-design.md`.                                                                             |
-| 2026-04-16 | Repo becomes Turborepo monorepo in Slice 18        | `apps/web` (SvelteKit) + `apps/cms` (Payload/Next.js) + `packages/types`. One-clone template story for clients. Both apps deploy to Vercel as separate projects.                                             |
+| 2026-04-16 | Slice 18 ships as two repos, not a monorepo        | `yesid.dev` (SvelteKit) stays clean for showcase and open-sourcing. `yesid.dev-cms` (Payload 3 + Next.js) becomes a framework-agnostic CMS starter — per-framework integration recipes (SvelteKit first, Next.js/Astro/Nuxt on demand). Bigger addressable market than a SvelteKit-locked monorepo template. Type sync via GitHub Action, not shared package. Revises earlier same-day monorepo decision.                                                 |
 | 2026-04-16 | Neon Postgres + Vercel Blob for CMS storage        | Neon: serverless, scale-to-zero, DB branching per PR, zero vendor lock-in (plain Postgres). Vercel Blob: zero-config media storage. Supabase rejected — its Auth/Storage/RLS duplicate Payload's built-ins. |
 
 
