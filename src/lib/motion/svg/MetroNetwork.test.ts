@@ -9,6 +9,7 @@ describe('MetroNetwork', () => {
 		expect(div).toBeInTheDocument();
 	});
 
-	// The SVG is fetched async from /images/montreal-metro.svg.
-	// Full DOM testing requires E2E (Playwright) — unit tests verify the container renders.
+	// Since 17e-4 the SVG is inlined at build via Vite ?raw + {@html}.
+	// Full DOM testing (GSAP-targeted class application) requires E2E
+	// (Playwright) — unit tests verify the container renders.
 });

@@ -29,7 +29,7 @@
 	<!-- Horizontal divider — mirrors the vertical desktop divider -->
 	<div class="hero-divider-h mx-6"></div>
 
-	<div class="w-full px-[var(--space-page-x)] py-10">
+	<div class="w-full px-[var(--space-page-x)] pb-10 pt-4">
 		<HeroSqlPanel
 			rows={heroData.queryRows}
 			queryTime={heroData.queryTime}

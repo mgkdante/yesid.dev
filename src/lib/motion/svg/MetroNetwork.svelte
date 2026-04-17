@@ -1,36 +1,27 @@
 <!--
-  MetroNetwork: loads Yesid's montreal_map.svg inline and exposes
-  DOM groups for GSAP animation.
+  MetroNetwork: inlines Yesid's montreal-metro.svg at build via Vite ?raw import
+  and exposes DOM groups for GSAP animation. The SVG is part of SSR HTML — no
+  runtime fetch — so it paints at first paint and is a valid LCP candidate.
 
-  SVG structure (from Yesid's Figma export):
+  SVG structure (from Yesid's Figma export; SVGO-optimized via svgo.config.mjs):
     - Stations: orange filled paths (fill="#E07800"), including REM line stations
     - Lines: orange stroke paths (stroke="#E07800"), including smooth-curved REM line
     - Berri-UQAM: the biggest station (~44px diameter, auto-detected)
 
-  GSAP targets (set via onMount DOM queries):
+  GSAP targets (set via onMount DOM queries on the inlined SVG):
     - .metro-line: stroke paths for DrawSVGPlugin
     - .metro-station: station nodes
     - .metro-berri: the Berri-UQAM origin node (largest station)
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import metroSvgRaw from '../../../../static/images/montreal-metro.svg?raw';
 
 	let containerEl = $state<HTMLDivElement | undefined>(undefined);
 	let svgEl = $state<SVGSVGElement | undefined>(undefined);
 
-	onMount(async () => {
+	onMount(() => {
 		if (!containerEl) return;
-
-		// Fetch the SVG and inject inline for DOM access.
-		// Guard: fetch fails in jsdom test environment (no server).
-		let svgText: string;
-		try {
-			const resp = await fetch('/images/montreal-metro.svg');
-			svgText = await resp.text();
-		} catch {
-			return; // Tests run without a server — skip SVG injection
-		}
-		containerEl.innerHTML = svgText;
 
 		const svg = containerEl.querySelector('svg');
 		if (!svg) return;
@@ -104,4 +95,4 @@
 	bind:this={containerEl}
 	class="flex max-h-[80dvh] w-full items-center justify-center"
 	data-testid="metro-network-container"
-></div>
+>{@html metroSvgRaw}</div>
