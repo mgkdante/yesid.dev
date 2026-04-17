@@ -27,7 +27,7 @@
 <div class="hero-viewport-text">
 	<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-label="{headlineLine1} Don't Break.">
 		<span
-			class="block text-hero text-[var(--foreground)]"
+			class="block text-hero-mobile text-[var(--foreground)] md:text-hero"
 			data-testid="hero-line1"
 			data-hero-stagger="1"
 		>
@@ -41,7 +41,7 @@
 
 	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-hidden="true">
 		<span
-			class="block text-hero text-[var(--primary)]"
+			class="block text-hero-mobile text-[var(--primary)] md:text-hero"
 			data-testid="hero-line2"
 		>
 			<span data-hero-stagger="1">DON'T BREAK</span><svg
@@ -92,19 +92,19 @@
 	}
 
 	/* Mobile: text + buttons MUST fit in 100svh - nav.
-	   Height is a hard constraint, text scales proportionally via svh. */
+	   Height is a hard constraint; text scales proportionally via svh *and* vw
+	   so "PIPELINES" doesn't overflow the viewport width on narrow phones. */
 	@media (max-width: 768px) {
 		.hero-viewport-text {
 			height: calc(100svh - 5rem);
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-			padding-block: 1.5rem;
+			padding-block: 0.75rem;
 		}
-		/* Scale hero headlines proportionally to viewport height */
-		.hero-viewport-text :global(.text-hero) {
-			font-size: clamp(32px, 8svh, 64px);
-		}
+		/* Font sizing now driven by the --text-hero-mobile token (Tailwind
+		   .text-hero-mobile utility, applied in the template).  No scoped
+		   override needed — see app.css @theme. */
 		/* Tighten spacing to fit within bounded height */
 		.hero-viewport-text :global([data-hero-stagger="3"]) {
 			margin-block: 0.75rem;

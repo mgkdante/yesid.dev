@@ -23,7 +23,7 @@
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 
-		<div class="flex flex-1 items-center justify-around">
+		<div class="flex flex-1 flex-col gap-4 md:flex-row md:items-center md:justify-around md:gap-0">
 			{#each metrics as metric, i}
 				{@const metricLabel = resolveLocale(metric.label, 'en')}
 

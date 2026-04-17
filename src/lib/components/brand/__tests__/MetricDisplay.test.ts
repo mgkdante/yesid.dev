@@ -31,19 +31,19 @@ describe('MetricDisplay', () => {
   it('defaults to md size', () => {
     const { container } = render(MetricDisplay, { props: { value: '5+', label: 'TEST' } });
     const valueEl = container.querySelectorAll('span')[1];
-    expect(valueEl.className).toContain('text-title');
+    expect(valueEl.className).toContain('text-heading');
   });
 
   it('applies sm size', () => {
     const { container } = render(MetricDisplay, { props: { value: '5+', label: 'TEST', size: 'sm' } });
     const valueEl = container.querySelectorAll('span')[1];
-    expect(valueEl.className).toContain('text-heading');
+    expect(valueEl.className).toContain('text-subheading');
   });
 
   it('applies lg size', () => {
     const { container } = render(MetricDisplay, { props: { value: '5+', label: 'TEST', size: 'lg' } });
     const valueEl = container.querySelectorAll('span')[1];
-    expect(valueEl.className).toContain('text-display');
+    expect(valueEl.className).toContain('text-title');
   });
 
   it('uses brand-primary for value color', () => {

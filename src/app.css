@@ -52,6 +52,7 @@ select {
 
   /* Type scale — uses --text-* namespace (Tailwind v4 generates text-* utilities from this) */
   --text-hero: clamp(4rem, min(9vw, 11svh), 8.125rem);       /* 64-130px — hero wordmark */
+  --text-hero-mobile: clamp(3rem, min(13vw, 8svh), 4rem);    /* 48-64px — hero headline on narrow screens (PIPELINES / DON'T BREAK). vw-led so it scales with viewport width. */
   --text-display: clamp(2.5rem, 5vw, 4rem);                  /* 40-64px — page titles */
   --text-title: clamp(1.75rem, 4vw, 2.5rem);                 /* 28-40px — section headings */
   --text-heading: clamp(1.25rem, 3vw, 1.5rem);               /* 20-24px — card titles */
@@ -252,8 +253,41 @@ pre, code, table {
   75%, 100% { transform: scale(2.5); opacity: 0; }
 }
 
+/* Hero typewriter cursor (slice 17e-4). Global so the .typewriter-cursor
+   activation class (added/removed from heroTypewriter.ts) can override it
+   without the Svelte scoped-style specificity fight. */
+.scroll-block-cursor {
+  margin-left: 0.15em;
+  opacity: 0;
+}
+
+/* Typewriter cursor blink (slice 17e-4). Uses visibility instead of opacity
+   so it doesn't multiply with the scroll-driven scrollPrompt fade — the
+   cursor is either visible or hidden, not "half-faded × half-blinking". */
+@keyframes typewriter-blink {
+  to { visibility: hidden; }
+}
+
+.typewriter-cursor {
+  opacity: 1;
+  animation: typewriter-blink 1s steps(2, start) infinite;
+}
+
+/* MetricDisplay value — mobile-only shrink for the lg (text-title) size.
+   Desktop keeps text-title. sm/md are already small enough on mobile and
+   are left untouched. Yesid verified desktop sizes are correct. */
+@media (max-width: 768px) {
+  .metric-value.text-title {
+    font-size: var(--text-heading);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .led-pulse { animation: none; }
+  .typewriter-cursor {
+    animation: none;
+    visibility: visible;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
