@@ -39,7 +39,7 @@ For: Heroes, visual bands, headers, bento grids — any section that bleeds to v
 
 ```css
 .section {
-  max-width: var(--container-content); /* or --container-wide, --container-prose */
+  max-width: var(--container-content); /* or --container-wide */
   margin-inline: auto;
   padding-inline: var(--space-page-x);
 }
@@ -116,7 +116,6 @@ Use `position: relative` on the section + `position: absolute` on the decoration
 | --------------------- | ---------------- | -------------------------------------------- |
 | `--container-content` | `64rem` (1024px) | Default text sections, listings, grids       |
 | `--container-wide`    | `72rem` (1152px) | Detail pages with sidebars                   |
-| `--container-prose`   | `65ch`           | Blog text, long-form reading                 |
 | *(no container)*      | `100vw`          | Heroes, galleries, separators, visual panels |
 
 
@@ -134,8 +133,6 @@ Use `position: relative` on the section + `position: absolute` on the decoration
 | `--space-page-x`    | `clamp(1.5rem, 4vw, 5rem)` | Horizontal page gutters                      |
 | `--space-section-y` | `clamp(3rem, 8vw, 6rem)`   | Vertical padding between sections            |
 | `--space-card-gap`  | `clamp(1rem, 2vw, 1.5rem)` | Gap between cards in grids                   |
-| `--space-stack`     | `1.5rem`                   | Default vertical stack spacing               |
-| `--space-cluster`   | `0.75rem`                  | Tight groupings (label + value, icon + text) |
 
 
 ### Rules
@@ -156,6 +153,7 @@ Use `position: relative` on the section + `position: absolute` on the decoration
 | Token             | Size                                  | Usage                           |
 | ----------------- | ------------------------------------- | ------------------------------- |
 | `text-hero`       | `clamp(64px, min(9vw, 11svh), 130px)` | Hero wordmark only              |
+| `text-hero-mobile` | `clamp(48px, min(13vw, 8svh), 64px)` | Hero headline on narrow screens (added 17e-4) |
 | `text-display`    | `clamp(40px, 5vw, 64px)`              | Page titles, hero headlines     |
 | `text-title`      | `clamp(28px, 4vw, 40px)`              | Section headings (H2)           |
 | `text-heading`    | `clamp(20px, 3vw, 24px)`              | Card titles, H3                 |
@@ -215,7 +213,7 @@ Three tiers of components, each with distinct conventions:
 | Tier       | Location                    | Source                   | Conventions                                        | Count                        |
 | ---------- | --------------------------- | ------------------------ | -------------------------------------------------- | ---------------------------- |
 | **ui/**    | `src/lib/components/ui/`    | shadcn-svelte scaffolded | `cn()`, `data-slot`, background/foreground tokens  | 56 components, 15 customized |
-| **brand/** | `src/lib/components/brand/` | Hand-built               | `cn()`, `data-slot`, brand-specific styling + GSAP | 15+ primitives               |
+| **brand/** | `src/lib/components/brand/` | Hand-built               | `cn()`, `data-slot`, brand-specific styling + GSAP | 13 primitives (17a-4 refresh) |
 | **page**   | `src/lib/components/`       | One-off page components  | Consume from ui/ and brand/ tiers, own CSS Grid    | ~40 components               |
 
 
@@ -477,20 +475,20 @@ Full motion documentation: `docs/reference/MOTION.md` v2.0 — per-primitive API
 | **Desktop**  | 1440px+     | Desktop monitors                      | Maximum edge decor, widest panels   |
 
 
-### 5 Canonical Breakpoints
+### 5 Canonical Breakpoints (Tailwind v4 defaults)
 
 
 | Prefix   | Width   | Transition                                        |
 | -------- | ------- | ------------------------------------------------- |
-| *(base)* | < 360px | Nano devices                                      |
-| `sm:`    | 360px   | Phone → comfortable single column                 |
-| `md:`    | 520px   | Foldable → 2-column layouts unlock                |
-| `lg:`    | 768px   | Tablet → sidebars, 3-col grids                    |
-| `xl:`    | 1024px  | Laptop → full asymmetric, edge decorations appear |
-| `2xl:`   | 1440px  | Desktop → maximum widths, widest panels           |
+| *(base)* | < 640px | Phone / foldable — single column, edge-to-edge cards |
+| `sm:`    | 640px   | Large phone landscape → comfortable single column |
+| `md:`    | 768px   | Tablet → 2-column grids, sidebars appear          |
+| `lg:`    | 1024px  | Laptop → full asymmetric layouts, edge decor     |
+| `xl:`    | 1280px  | Desktop → maximum widths, widest panels          |
+| `2xl:`   | 1536px  | Ultrawide → optional ceiling                     |
 
 
-Defined in `src/lib/styles/tokens.css` + `src/app.css` `@theme`. Replaces Tailwind v4 defaults.
+Wired via Tailwind v4 defaults — `src/app.css` `@theme` keeps no `--breakpoint-*` overrides. The **Device Coverage Matrix** above describes design-intent target classes; the **breakpoints** above are where layout structure shifts. The two are orthogonal: a 360px phone sits below `sm:`, a 520px foldable still sits below `sm:`, both use the base layout.
 
 ### Two-Pronged Responsive System
 
@@ -739,7 +737,6 @@ One Card atom for all card-like surfaces across the site. The unified surface re
 
 | Action           | Where                         | Behavior                      |
 | ---------------- | ----------------------------- | ----------------------------- |
-| `use:tilt`       | Bento cards only (About page) | 3D tilt following cursor      |
 | `use:cursorGlow` | Any card that wants it        | Cursor-following glow overlay |
 | `use:boop`       | BlogRow, ProjectMiniCard      | Hover scale                   |
 

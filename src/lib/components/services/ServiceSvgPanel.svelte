@@ -46,7 +46,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: var(--space-stack);
+		padding: 1.5rem;
 		overflow: hidden;
 	}
 
@@ -59,6 +59,6 @@
 	/* Mobile: full-width banner */
 	.svg-panel--banner {
 		width: 100%;
-		padding: var(--space-stack);
+		padding: 1.5rem;
 	}
 </style>

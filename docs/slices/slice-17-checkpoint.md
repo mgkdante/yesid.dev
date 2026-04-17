@@ -1,18 +1,42 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-18 | **17h scope shrunk — 4 sub-slices killed, 2 survive. Planning-shrink PR pending.**
-**Branch:** `feature/slice-17h-planning-shrink` (PR pending)
+**Last updated:** 2026-04-18 | **17h COMPLETE — both sub-slices landed in one PR. All of Slice 17 Phase 1 visual stage now shipped.**
+**Branch:** `feature/slice-17h-3-task0-freshen` (carries 17h-3 + 17h-4; PR open)
 
 ## Current Position
 
-- **17h planning shrink (2026-04-18):** Scope cut from 10-11 sessions / 6 sub-slices → ~3 sessions / 2 sub-slices. New rule locked: `brand/` = non-tech info + assets only. Governance (`CONSTITUTION.md`, `CSS.md`, `MOTION.md`) stays at `docs/reference/`; tokens stay at `src/lib/styles/tokens.css`. Manual translation + PR review replaces the generator. Killed: 17h-1 (tokens consolidation), 17h-2 (code generator), 17h-5 (source-of-truth refactor), 17h-6 (sync orchestrator) — each stubbed OBSOLETE in place with a pointer to the parent slice. Surviving: 17h-3 (narrative docs — 2 sessions), 17h-4 (logo + assets — 1 session). Original design spec (`docs/specs/2026-04-17-slice-17h-brand-bundle-design.md`) bannered partially-obsolete; audit research kept as historical reference.
+- **17h Brand Bundle (2026-04-17/18):** COMPLETE. Narrative + assets shipped as one PR covering both 17h-3 (narrative docs + Task 0 freshen) and 17h-4 (logo assets). `brand/` is now a 22-file narrative + assets package: `README.md`, `BRAND.md`, 6 `foundations/*.md`, `components.md`, 4 `decisions/*.md`, 10 SVG logos, 30 PNG exports, 2 Bun/TS scripts, 3 source-only example pairs + README, plus `CLAUDE-DESIGN.md` brief for vision LLM grounding. Task 0 freshen touched 9 reference docs (CONSTITUTION, CSS, MOTION, TESTS, ARCHITECTURE, standardization, root README — plus spot-checks on WORKFLOW, PATTERNS, PLAN, FUTURE_PHASES, CLAUDE) to match as-shipped reality. Handoff: `docs/handoffs/slice-17h-brand-bundle.md`; devlog: `docs/devlog/2026-04-17-slice-17h.md`.
+- **17h scope shrink (2026-04-18):** Original 10-11-session plan cut to ~4 sessions / 2 sub-slices. `brand/` = non-tech info + assets only. Governance stays at `docs/reference/`; tokens stay at `src/lib/styles/tokens.css`. Killed: 17h-1 tokens consolidation, 17h-2 code generator, 17h-5 source-of-truth refactor, 17h-6 sync orchestrator.
 - **Slice 17a-4:** COMPLETE — fresh-audit session (2026-04-17). Original scope was ~90% already absorbed into 17a-2b / 17d / 17e; slice shipped as a short hygiene pass. 2 residue primitive wirings + 1 content rewrite + 5 `any` tightens + planning-doc refresh. Bonus fix: pre-existing CRLF bug on `main` (2 blog files + `parseFrontmatter` regex) unblocked the baseline.
 - **Slice 17e:** COMPLETE — all 6 sub-slices landed across 4 PRs. 17e-5 + 17e-6 shipped combined.
 - **Build:** 0 type errors, 19 pre-existing warnings, 782/782 tests pass (+2 since 17e end: StatusDot `ring` prop coverage).
 - **Status (17e full-slice):** Motion layer re-engineered from the ground up. Snappy Doctrine enforced in governance (CONSTITUTION.md § 8) and implementation (zero entrance reveals remaining). 9-signature vocabulary closed. One shared `gsap.ticker` site-wide with IO-gated subscribers. GSAP plugins lazy-loaded per consumer (ScrollTrigger + SplitText + MorphSVGPlugin stay eager by necessity). MetroNetwork SSR-inlined via Vite `?raw` + SVGO. Scroll-scrub factories (`createHeroTimeline`, `createCrescendoScrub`, `createDrawScrub`). `use:morphHover` as first-class action. Legacy symbol deletion: reveal / ripple / tilt / ScrollRail / Train tree / heroTimeline.ts / heroScrollLock.ts / ReadingProgressBar / listingAnimations / SvgIcon.animateStagger / StackScenarioCard fade-up. MOTION.md v2.0 + CONSTITUTION.md § 8 + 6 motion learning docs shipped in 17e-6.
 - **Bundle (17e-5/6 end):** home / at 35.00 KB gzipped (node 4 + layout 0); all routes well under §6.2 budgets. D269 lazy-plugin shrink target did not land — captureFlipState + CustomEase.create sync-API coupling defeats Vite chunk split. Flagged for post-17e async refactor.
 - **Lighthouse (17e-6 audit, Yesid-driven):** Best Practices 100 across all 20 runs ✅. Desktop Perf 91–98 (3 of 10 hit ≥ 98), mobile Perf 54–75 (0 of 10 hit ≥ 90). A11y 95–100. SEO 82–100. **Spec §6.1 targets deferred to Slice 19 / 19b / 20** per design-spec amendment.
-- **Next sub-slice:** 17h Brand Bundle + Source-of-Truth Refactor. Spec + plan + 6 sub-slice stubs written 2026-04-17. First sub-slice: 17h-1 Tokens Consolidation.
+- **Next slice:** Slice 17 Phase 1 (visual stage) complete. Remaining Slice 17 work (17b Service Layer, 17c Zod Schemas, 17f Test Architecture, 17g Learning Docs) still planned. Outside Slice 17: Slice 18 (Payload CMS in separate `yesid.dev-cms` repo). Launch-readiness checkpoint is the next logical gate.
+
+### 17h Summary (2026-04-17/18, autonomous session)
+
+| Area | What landed |
+|---|---|
+| **Task 0 — CONSTITUTION.md freshen** | `text-hero-mobile` added; brand count 15+ → 13; `use:tilt` row removed; `--container-prose` + `--space-stack`/`--space-cluster` dropped; breakpoints table switched to Tailwind v4 defaults (reality — `app.css` has no `--breakpoint-*` overrides). |
+| **Task 0 — CSS.md freshen** | Type scale 9 → 12 (hero tokens); brand color tokens corrected (`--primary` not `--color-brand-primary`); RGB channel drift fixed; 4 phantom semantic tokens removed; phantom `--shadow-status` + `--z-footer` removed; spacing 5 → 3; container 3 → 2; brand primitives 15 → 13 + migration note; utility classes 11 → 12 (`grid-rows-collapse`). |
+| **Task 0 — MOTION.md freshen** | §11 rotated `<h2>` claim corrected (home Projects + home Terminus + blog listing + projects listing + contact; Services has no rotated edge title). |
+| **Task 0 — Lighter audit** | TESTS (date + total 785 → 782 + reveal.ts row replaced), ARCHITECTURE (date), standardization (progress table through 17a-4 + architecture bullets), root README (docs path structure), + spot-check of WORKFLOW/PATTERNS/PLAN/FUTURE_PHASES/CLAUDE. |
+| **Task 0 — Governance cleanup** | Deleted `brand/tokens.json`, `brand/tokens.css`, `brand/tailwind.brand.js` (dev-dump duplicates). Rewrote `src/app.css:40-47` stale comment. |
+| **Task 0 — Consumer repair (option b)** | `ServiceCard.svelte` (`gap: var(--space-cluster)` → `0.75rem`), `ServiceSvgPanel.svelte` 2 sites (`padding: var(--space-stack)` → `1.5rem`), `ProjectsStrip.svelte` (`gap: var(--space-stack)` → `1.5rem`). Preview-verified at desktop + mobile. |
+| **Task 1–6 Narrative** | `brand/README.md` rewrite (front door, ~70 lines), `BRAND.md` (5 principles + tone + vocabulary + do/don't), 6 `foundations/*.md` (color, typography, space, motion, voice, accessibility — all cross-linking OUT to `docs/reference/` for authoritative rules), `components.md` (56 ui/ + 13 brand/ inventory + migration section), 4 `decisions/*.md` (why-orange, why-edge-to-edge, why-a-constitution, what-i-killed). |
+| **17h-4 SVG logos** | 4 new SVGs (lockup-horizontal, lockup-stacked, clearspace, donts) + 6 existing SVGs restructured under `brand/logos/` with simpler names. |
+| **17h-4 scripts** | `brand/scripts/export-logos.ts` (Sharp-based, tested, 30 PNGs written to `brand/logos/exports/`); `brand/scripts/export-examples.ts` (Playwright-based; script valid but launch hangs on this Windows box — documented in handoff § 8 + `brand/examples/README.md`). |
+| **17h-4 deletions** | `brand/colors.json` + `brand/yesid_brand_guide.pdf` (superseded by markdown narrative). |
+| **Claude Design brief** | `brand/CLAUDE-DESIGN.md` — single prompt-ready doc Yesid can paste into Claude Design for vision-LLM brand grounding. |
+| **Packages added** | `sharp@0.34.5` (dev dep, for batch PNG export). |
+
+### 17h Flagged follow-ups (Yesid decisions)
+
+1. **`--space-stack` / `--space-cluster` re-parametrisation** — hardcoded `1.5rem` / `0.75rem` in 3 consumers; do we want to restore these as semantic tokens?
+2. **Breakpoint alignment** — CONSTITUTION § 9 device-coverage matrix (360/520/768/1024/1440) is now documented as orthogonal to the wired Tailwind v4 defaults (640/768/1024/1280/1536). Keep the orthogonal framing, or wire custom `--breakpoint-*` overrides into `app.css`?
+3. **`brand:export-examples` on Windows** — Playwright `chromium.launch()` + `firefox.launch()` both hang on this dev box. Works on macOS/Linux/CI. Ship PNG pairs from a different env, or investigate the Windows hang later.
 
 ### 17a-4 Summary (fresh audit, 2026-04-17)
 
