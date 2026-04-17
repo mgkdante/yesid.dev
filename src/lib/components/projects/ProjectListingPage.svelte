@@ -8,11 +8,16 @@
   No entrance animation — cards render at final state on load (Snappy Doctrine, 17e-2).
 -->
 <script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { Project, Service } from '$lib/data/types.js';
 	import { resolveLocale } from '$lib/data/locale.js';
+	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
+	import { loadDrawSVG } from '$lib/motion/utils/gsap.js';
+	import { createDrawScrub } from '$lib/motion/scrubs/index.js';
 	import SearchInput from '$lib/components/shared/SearchInput.svelte';
 	import FilterSummary from '$lib/components/shared/FilterSummary.svelte';
 	import ProjectCard from './ProjectCard.svelte';
@@ -138,11 +143,33 @@
 			flipState = null;
 		});
 	});
+
+	// Blueprint draw-scrub: paths stroke-dash from 0% → 100% as user scrolls
+	// through the listing page section. DrawSVG plugin lazy-loaded at mount.
+	let blueprintWrapEl = $state<HTMLElement>(undefined!);
+	let listingSectionEl = $state<HTMLElement>(undefined!);
+	let destroyDrawScrub: (() => void) | undefined;
+
+	onMount(async () => {
+		if (!browser) return;
+		if (isPrefersReducedMotion()) return;
+
+		await loadDrawSVG();
+
+		if (blueprintWrapEl && listingSectionEl) {
+			destroyDrawScrub = createDrawScrub(blueprintWrapEl, {
+				section: listingSectionEl,
+				pathSelector: 'svg path',
+			});
+		}
+	});
+
+	onDestroy(() => destroyDrawScrub?.());
 </script>
 
-<div data-testid="project-listing" class="w-full pb-16">
+<div bind:this={listingSectionEl} data-testid="project-listing" class="w-full pb-16">
 	<!-- Blueprint header: full-bleed, outside container -->
-	<div class="projects-blueprint-header" data-batch="project-item">
+	<div bind:this={blueprintWrapEl} class="projects-blueprint-header" data-batch="project-item">
 		<ProjectsBlueprint />
 		<div class="projects-header-text">
 			<h1 class="projects-mobile-heading">Projects<span class="text-[var(--primary)]">.</span></h1>
