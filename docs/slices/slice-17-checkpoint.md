@@ -581,11 +581,11 @@ Phase 1 — Foundation (visual cohesion first)
   17d:   Component API ................. COMPLETE (99 commits, ~17 sessions, PR #10 merged)
   17e:   Motion Re-Engineering ......... IN PROGRESS (6 sub-slices, ~6-6.5 sessions)
     17e-1: Foundation .................. COMPLETE (8 tasks, PR #12 merged)
-    17e-2: Snappy Sweep ................ PLAN WRITTEN (docs/plans/2026-04-16-slice-17e-2-snappy-sweep.md) — NEXT to implement
-    17e-3: Scrub Factories ............. PLAN WRITTEN (docs/plans/2026-04-16-slice-17e-3-scrub-factories.md)
-    17e-4: Hero Timeline Rewrite ....... PLAN PENDING (D264 heroScrollLock cut + D265 MetroNetwork ?raw+SVGO decided)
-    17e-5: Interaction Consolidation ... PLAN PENDING
-    17e-6: Closing ..................... PLAN PENDING (MOTION.md v2.0 + learn docs + Lighthouse + §3.2 amendment for D263)
+    17e-2: Snappy Sweep ................ IMPLEMENTED, awaiting merge (PR #15 — combined 17e-2 + 17e-3)
+    17e-3: Scrub Factories ............. IMPLEMENTED, awaiting merge (PR #15)
+    17e-4: Hero Timeline Rewrite ....... PLAN WRITTEN (docs/plans/2026-04-17-slice-17e-4-hero-timeline.md) — D264+D265 applied
+    17e-5: Interaction Consolidation ... PLAN WRITTEN (docs/plans/2026-04-17-slice-17e-5-interaction-consolidation.md) — D266+D267 applied
+    17e-6: Closing ..................... PLAN WRITTEN (docs/plans/2026-04-17-slice-17e-6-closing.md) — Lighthouse H1 all routes
   17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17e)
 Phase 2 — Data + Architecture
   17b:   Service Layer ................. 2 sessions
