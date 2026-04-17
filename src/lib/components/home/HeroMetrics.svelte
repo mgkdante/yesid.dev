@@ -21,14 +21,42 @@
 </script>
 
 <!--
-  Mobile: 4-col grid where each card spans 2 cols. Cards 1 + 2 fill the
-  row; card 3 spans cols 2-3 (col-start-2) so it centers on its own row.
-  Desktop (md+): plain 3-col grid, one card per col.
+  Mobile: all 3 metrics inside a single Card, laid out horizontally with
+  thin dividers. Saves ~150px of vertical space vs 3 stacked cards so
+  the whole hero (headline + metrics + subhead + subtitle + CTAs) fits
+  inside calc(100svh - 5rem) on short phones (iPhone SE etc).
+
+  Desktop (md+): 3 separate cards in a row — original layout, unchanged.
 -->
-<div class="grid grid-cols-4 gap-3.5 md:grid-cols-3" data-testid="hero-metrics">
-  {#each metrics as metric, i (metric.key)}
+<!-- Mobile single-card layout -->
+<div class="md:hidden" data-testid="hero-metrics">
+  <Card class="px-4 py-3.5" data-testid="metric-card-mobile">
+    <div class="flex items-stretch justify-between gap-3">
+      {#each metrics as metric, i (metric.key)}
+        {#if i > 0}
+          <div
+            class="w-px self-stretch bg-[var(--border)]"
+            aria-hidden="true"
+          ></div>
+        {/if}
+        <div class="flex-1 text-center">
+          <MetricDisplay
+            label={metric.label}
+            value="{formatValue(metric)}{metric.unit ?? ''}"
+            sublabel={metric.sub}
+            size="sm"
+          />
+        </div>
+      {/each}
+    </div>
+  </Card>
+</div>
+
+<!-- Desktop 3-card grid -->
+<div class="hidden gap-3.5 md:grid md:grid-cols-3" data-testid="hero-metrics-desktop">
+  {#each metrics as metric (metric.key)}
     <Card
-      class="col-span-2 px-4 py-3.5 md:col-span-1 md:px-5 md:py-4 {i === 2 ? 'col-start-2 md:col-start-auto' : ''}"
+      class="md:px-5 md:py-4"
       data-testid="metric-card"
     >
       <MetricDisplay
