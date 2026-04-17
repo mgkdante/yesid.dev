@@ -1,15 +1,44 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-17 | 17e-4 MERGED (PR #17, `b6e3a57`) — 17e-5 next
-**Branch:** `feature/slice-17e-4-docs` (docs-only catch-up — 17e-4 handoff + this checkpoint update)
+**Last updated:** 2026-04-17 | **17e COMPLETE — all 6 sub-slices landed. PR for 17e-5 + 17e-6 combined open.**
+**Branch:** `feature/slice-17e-56-close-motion` (combined 17e-5 Interaction Consolidation + 17e-6 Closing)
 
 ## Current Position
 
-- **Sub-slice:** 17e-4 — Hero Timeline Rewrite + MetroNetwork Inline + Mobile Polish — COMPLETE (PR #17 squash-merged)
-- **Previous:** 17e-3 Scrub Factories + 17e-2 Snappy Sweep — COMPLETE (PR #15 merged combined)
-- **Build:** 0 type errors, 19 pre-existing warnings, 774/774 tests pass (+7 since 17e-3 end: 6 factory + 1 mobile wrapper)
-- **Status:** 17e-4 delivered. `createHeroTimeline` sync factory + MetroNetwork `?raw` inline + SVGO (21.2 → 15.1 KB) + CSS cursor blink + `heroScrollLock` deleted + 6-iteration mobile hero polish. Bundle: home `/` +2.18 KB gzipped (lazy-plugin migration deferred to 17e-5/6). Real LCP wins live in the SSR HTML path (inlined SVG, no blocking fetch).
-- **Next sub-slice:** **17e-5 — Ambient Loop Consolidation + Lazy Plugin Migration**. Plan: `docs/plans/2026-04-17-slice-17e-5.md` (written in planning-pt3, merged via PR #16). Three streams: (1) ambient loops onto shared `motion/utils/ticker.ts`, (2) remaining cursor-blink consolidations per spec §4.6, (3) consumer migration off `registerGsapPlugins()` to pure lazy loaders so the home-route shrink finally lands.
+- **Slice 17e:** COMPLETE — all 6 sub-slices landed across 4 PRs. 17e-5 + 17e-6 ship combined in the final PR.
+- **Build:** 0 type errors, 19 pre-existing warnings, 780/780 tests pass (+6 since 17e-4 end: 5 morphHover + net +1 from gsap.test.ts rewrite).
+- **Status (17e full-slice):** Motion layer re-engineered from the ground up. Snappy Doctrine enforced in governance (CONSTITUTION.md § 8) and implementation (zero entrance reveals remaining). 9-signature vocabulary closed. One shared `gsap.ticker` site-wide with IO-gated subscribers. GSAP plugins lazy-loaded per consumer (ScrollTrigger + SplitText + MorphSVGPlugin stay eager by necessity). MetroNetwork SSR-inlined via Vite `?raw` + SVGO. Scroll-scrub factories (`createHeroTimeline`, `createCrescendoScrub`, `createDrawScrub`). `use:morphHover` as first-class action. Legacy symbol deletion: reveal / ripple / tilt / ScrollRail / Train tree / heroTimeline.ts / heroScrollLock.ts / ReadingProgressBar / listingAnimations / SvgIcon.animateStagger / StackScenarioCard fade-up. MOTION.md v2.0 + CONSTITUTION.md § 8 + 6 motion learning docs shipped in 17e-6.
+- **Bundle (17e-5/6 end):** home / at 35.00 KB gzipped (node 4 + layout 0); all routes well under §6.2 budgets. D269 lazy-plugin shrink target did not land — captureFlipState + CustomEase.create sync-API coupling defeats Vite chunk split. Flagged for post-17e async refactor.
+- **Lighthouse (17e-6 audit, Yesid-driven):** Best Practices 100 across all 20 runs ✅. Desktop Perf 91–98 (3 of 10 hit ≥ 98), mobile Perf 54–75 (0 of 10 hit ≥ 90). A11y 95–100. SEO 82–100. **Spec §6.1 targets deferred to Slice 19 / 19b / 20** per design-spec amendment.
+- **Next sub-slice:** 17a-4 Dead Code Cleanup per standardization roadmap (or the roadmap's downstream Mobile/A11y/Scroll slices at Yesid's discretion).
+
+### 17e-5 + 17e-6 Summary (combined PR, 2026-04-17)
+
+| Area | What landed |
+|---|---|
+| **`use:morphHover` action (17e-5)** | Signature 4 — new first-class Svelte action. 5 tests. MorphSVG lazy-loaded on first hover. Mobile tap toggle. Reduced-motion no-op. HomeServices migrated (−103 / +13 lines). |
+| **Pulse consolidation (17e-5)** | ManifestoEdgeBottom's scoped `@keyframes pulse` deleted; `.manifesto__status-dot` uses canonical global `pulse-glow`. Audit corrected plan — "4 sites" was actually 1 duplicate. |
+| **Typewriter → shared ticker (17e-5)** | `heroTypewriter.ts` migrated from `setInterval(80)` to `subscribe(id, fn)` on the shared ticker. deltaTime-in-ms caveat captured. Cursor blink already CSS from 17e-4; CSS keyframe fixed (`steps(2, start)` → explicit keyframes + `step-end`). |
+| **Ambient RAF migration (17e-5)** | `ManifestoCanvas` + `AboutTrain` on shared ticker + IntersectionObserver offscreen pause. `ReadingProgressBar` deleted (Yesid flagged as scrapped, never re-wired). |
+| **IO-gated intervals (17e-5)** | `Manifesto` countdown + `AboutTestimonials` carousel gated on section visibility. No wasted ticks offscreen. |
+| **D267 F deletions (17e-5)** | `SvgIcon.animateStagger` + switch case deleted. `StackScenarioCard` onMount fade-up deleted. `BlogAnimation` type narrowed. Two blog posts' `animation: stagger` frontmatter updated (morph + draw-fill). |
+| **D269 lazy plugin migration (17e-5)** | `registerGsapPlugins()` deleted. `initScrollTriggerConfig` + `ensureSplitTextRegistered` + 6 lazy loaders. 9 consumers migrated. 4 eager plugin imports deleted from gsap.ts. Bundle: home flat (+0.43 KB). Sync-API coupling in flip.ts + createHeroTimeline.ts blocks full lazy split. |
+| **Mobile hero dead-space fix (17e-5)** | `.hero-section-reserve` CSS media query — mobile 600svh, desktop 900svh. Was unconditionally 900svh; caused ~350svh empty below HeroMobileSql on mobile. |
+| **Cursor-blink CSS fix (17e-5)** | 17e-4 shipped `steps(2, start)` which resolves to "always hidden" for discrete visibility. Explicit 0%/50%/100% keyframes + `step-end` timing gives proper 1 Hz blink. |
+| **Typewriter ms/sec fix (17e-5)** | GSAP's `deltaTime` is in MILLISECONDS; migration had compared accumulator to `0.08` (seconds). Fixed to `80`; captured as MOTION.md + ticker.ts documentation. |
+| **MOTION.md v2.0 (17e-6)** | 506 lines. Full implementation reference replacing v1.0 motion manifesto. 16 sections: overview → doctrine → vocabulary → actions → scrubs → idle ambient → shared ticker → tokens → lazy plugins → reduced-motion → SEO × motion → bundle budgets → SVGO procedure → anti-patterns → migration from v1.0 → changelog. |
+| **CONSTITUTION.md § 8 (17e-6)** | Motion Doctrine — Snappy section rewritten. Forbidden list, 9-signature vocabulary, HomeCloser permitted exception, D266, D269 plugin-registration contract, When-to-use-what table, tokens reference, global-keyframes inventory. |
+| **CSS.md + ARCHITECTURE.md + TESTS.md (17e-6)** | Transition Tokens table refreshed (17e-1 values). Global Keyframes table with all 4 canonical patterns. ARCHITECTURE.md motion tree updated to post-17e reality. TESTS.md Motion sections fully refreshed — deleted stale reveal/ripple/tilt/ScrollRail/Train entries, added morphHover + scrubs + tokens + ticker + flip + lenis + device + morphHelpers summaries. |
+| **Motion learning docs (17e-6)** | 6 concepts under `docs/learn/motion/`: snappy-doctrine, signature-vocabulary, scrub-factory-pattern, shared-ticker-pattern, lazy-gsap-plugins, ssr-inline-svg. Obsidian frontmatter + wikilinks + analogy → mental model → worked example → common mistakes → knowledge check. |
+| **Lighthouse audits (17e-6, Yesid-driven)** | 20 runs (11 routes × 2 viewports, `/tech-stack` skipped). Documented in closing devlog. §6.1 targets transferred to Slice 19 / 19b / 20 per amendment. |
+| **Design spec amendments (17e-6)** | D263–D269 appended + Lighthouse target transfer logged. |
+
+### 17e-5 + 17e-6 Decisions (D267–D269)
+
+Captured in the design spec Amendments (2026-04-17) section. Summary:
+- **D267 (17e-5):** morphHelpers kept as utility; morphHover new action. SvgIcon.animateStagger + StackScenarioCard fade-up deleted. Ripple stays cut.
+- **D268 (17e-4, formalized in 17e-6 MOTION.md):** scrub owns scrollPrompt opacity; typewriter owns text + cursor. Invariant in factory header.
+- **D269 (17e-5):** registerGsapPlugins deleted; initScrollTriggerConfig + per-plugin lazy loaders. Bundle shrink gap flagged for post-17e.
 
 ### Workflow Rule Adopted 2026-04-17
 
