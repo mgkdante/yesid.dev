@@ -2,11 +2,16 @@
 // Initialized once at layout level. All ScrollTrigger instances automatically
 // use Lenis scroll position instead of native scroll.
 //
-// Strategy: Lenis on desktop, normalizeScroll on mobile.
-// Both are scroll-jacking solutions — they conflict if used together.
-// Desktop: Lenis provides buttery easing for wheel scroll.
-// Mobile:  normalizeScroll prevents browser chrome interference and
-//          gives stable pin calculations without touch conflicts.
+// Strategy:
+// - Desktop: Lenis provides buttery easing for wheel scroll.
+// - Touch devices: native browser scroll. NO scroll-jacking.
+//
+// Previous versions called `ScrollTrigger.normalizeScroll({ allowNestedScroll: true })`
+// on touch devices. That call applied `touch-action: pan-x pinch-zoom` to html/body,
+// which altered iOS click synthesis — causing the tap-vs-click bug where TocPill
+// opened on vertical scroll and ProjectsStrip links fired on horizontal swipe.
+// Removing it is the right fix. Touch pin recalculations are handled by
+// `ScrollTrigger.config({ ignoreMobileResize: true })` (set in gsap.ts).
 
 import Lenis from 'lenis';
 import { gsap, ScrollTrigger } from './gsap.js';
@@ -22,11 +27,8 @@ export function initLenis(): void {
 	isTouchDevice = ScrollTrigger.isTouch > 0;
 
 	if (isTouchDevice) {
-		// Mobile: normalizeScroll handles scroll, prevents browser chrome
-		// from interfering with ScrollTrigger pin calculations.
-		ScrollTrigger.normalizeScroll({
-			allowNestedScroll: true,
-		});
+		// Touch: native browser scroll. Lenis disabled. No normalizeScroll.
+		// ScrollTrigger still works with native scroll events.
 		return;
 	}
 
@@ -50,7 +52,7 @@ export function initLenis(): void {
 
 export function destroyLenis(): void {
 	if (isTouchDevice) {
-		ScrollTrigger.normalizeScroll(false);
+		// Nothing to destroy — no normalizeScroll active, no Lenis instance.
 		return;
 	}
 	if (!instance) return;

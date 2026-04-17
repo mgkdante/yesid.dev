@@ -87,3 +87,95 @@ describe('registerGsapPlugins', () => {
 		expect(Flip).toBeDefined();
 	});
 });
+
+describe('lazy plugin loaders', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		vi.resetModules();
+	});
+
+	it('loadDrawSVG is async and safe to call before registerGsapPlugins', async () => {
+		const { loadDrawSVG } = await import('./gsap.js');
+		await expect(loadDrawSVG()).resolves.toBeUndefined();
+	});
+
+	it('loadMorphSVG is async and safe to call before registerGsapPlugins', async () => {
+		const { loadMorphSVG } = await import('./gsap.js');
+		await expect(loadMorphSVG()).resolves.toBeUndefined();
+	});
+
+	it('loadFlip is async and safe to call before registerGsapPlugins', async () => {
+		const { loadFlip } = await import('./gsap.js');
+		await expect(loadFlip()).resolves.toBeUndefined();
+	});
+
+	it('loadCustomEase is async and safe to call before registerGsapPlugins', async () => {
+		const { loadCustomEase } = await import('./gsap.js');
+		await expect(loadCustomEase()).resolves.toBeUndefined();
+	});
+
+	it('loadDrawSVG registers DrawSVGPlugin when called before eager registration', async () => {
+		const { gsap } = await import('gsap');
+		const { loadDrawSVG } = await import('./gsap.js');
+
+		await loadDrawSVG();
+
+		// Either eager or lazy path registers — both satisfy the contract.
+		expect(gsap.registerPlugin).toHaveBeenCalled();
+	});
+
+	it('loadDrawSVG is idempotent — calling twice only registers once', async () => {
+		const { gsap } = await import('gsap');
+		const { loadDrawSVG } = await import('./gsap.js');
+
+		await loadDrawSVG();
+		await loadDrawSVG();
+
+		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+
+	it('loadMorphSVG is idempotent', async () => {
+		const { gsap } = await import('gsap');
+		const { loadMorphSVG } = await import('./gsap.js');
+
+		await loadMorphSVG();
+		await loadMorphSVG();
+
+		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+
+	it('loadFlip is idempotent', async () => {
+		const { gsap } = await import('gsap');
+		const { loadFlip } = await import('./gsap.js');
+
+		await loadFlip();
+		await loadFlip();
+
+		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+
+	it('loadCustomEase is idempotent', async () => {
+		const { gsap } = await import('gsap');
+		const { loadCustomEase } = await import('./gsap.js');
+
+		await loadCustomEase();
+		await loadCustomEase();
+
+		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+
+	it('registerGsapPlugins + subsequent lazy loaders stays at one registerPlugin call', async () => {
+		const { gsap } = await import('gsap');
+		const { registerGsapPlugins, loadDrawSVG, loadMorphSVG, loadFlip, loadCustomEase } =
+			await import('./gsap.js');
+
+		registerGsapPlugins();
+		await loadDrawSVG();
+		await loadMorphSVG();
+		await loadFlip();
+		await loadCustomEase();
+
+		// Eager call registered all seven plugins in one batch; lazy calls no-op.
+		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+});
