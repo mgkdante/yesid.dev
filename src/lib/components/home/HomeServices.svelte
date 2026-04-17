@@ -8,10 +8,8 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { getVisibleServices, resolveLocale, servicesGridContent } from '$lib/data/index.js';
-	import { SHAPES, pickRandomShape } from '$lib/data/shapes.js';
-	import { registerGsapPlugins, gsap } from '$lib/motion/utils/gsap.js';
-	import { convertSvgToMorphPaths } from '$lib/motion/utils/morphHelpers.js';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { SHAPES } from '$lib/data/shapes.js';
+	import { morphHover } from '$lib/motion/actions';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
@@ -21,94 +19,18 @@
 	const subheading = resolveLocale(servicesGridContent.subheading, 'en');
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
-	let activeMorphIndex = $state(-1);
 
-	// Per-card morph state: converted paths + original path data
-	const cardPaths: SVGPathElement[][] = [];
-	const cardOriginals: string[][] = [];
-	const cardReady: boolean[] = [];
-	let lastShapeIdx = -1;
-
-	function handleCardEnter(index: number) {
-		if (isPrefersReducedMotion() || !cardReady[index]) return;
-		if (typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches) return;
-
-		const { key: shape, index: shapeIdx } = pickRandomShape(lastShapeIdx);
-		lastShapeIdx = shapeIdx;
-		const paths = cardPaths[index];
-		paths.forEach((p) => gsap.killTweensOf(p));
-		gsap.to(paths, {
-			morphSVG: SHAPES[shape],
-			duration: 0.4,
-			stagger: 0.03,
-			ease: 'power2.inOut',
-			overwrite: true,
-		});
-	}
-
-	function handleCardLeave(index: number) {
-		if (isPrefersReducedMotion() || !cardReady[index]) return;
-		if (typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches) return;
-
-		const paths = cardPaths[index];
-		const originals = cardOriginals[index];
-		paths.forEach((path, i) => {
-			gsap.killTweensOf(path);
-			gsap.to(path, {
-				morphSVG: originals[i],
-				duration: 0.4,
-				delay: i * 0.03,
-				ease: 'power2.inOut',
-				overwrite: true,
-			});
-		});
-	}
-
-	function handleSvgTap(e: Event, index: number) {
-		if (typeof window === 'undefined' || !window.matchMedia('(max-width: 767px)').matches) return;
-		if (isPrefersReducedMotion() || !cardReady[index]) return;
-		e.preventDefault();
-		e.stopPropagation();
-
-		const isMorphed = activeMorphIndex === index;
-		activeMorphIndex = isMorphed ? -1 : index;
-
-		const paths = cardPaths[index];
-		const originals = cardOriginals[index];
-
-		if (isMorphed) {
-			// Unmorph: back to original
-			paths.forEach((path, i) => {
-				gsap.killTweensOf(path);
-				gsap.to(path, {
-					morphSVG: originals[i],
-					duration: 0.4,
-					delay: i * 0.03,
-					ease: 'power2.inOut',
-					overwrite: true,
-				});
-			});
-		} else {
-			// Morph: into random shape
-			const { key: shape, index: shapeIdx } = pickRandomShape(lastShapeIdx);
-			lastShapeIdx = shapeIdx;
-			paths.forEach((p) => gsap.killTweensOf(p));
-			gsap.to(paths, {
-				morphSVG: SHAPES[shape],
-				duration: 0.4,
-				stagger: 0.03,
-				ease: 'power2.inOut',
-				overwrite: true,
-			});
-		}
-	}
+	// One flag per card — flipped true after the SVG is fetched and injected.
+	// `use:morphHover` reads this via its `enabled` param to gate morphs until
+	// the SVG paths are actually in the DOM.
+	const svgReady = $state<boolean[]>(services.map(() => false));
 
 	onMount(() => {
 		if (!browser || !sectionEl) return;
 
-		registerGsapPlugins();
-
-		// Fetch and inject inline SVGs, then convert elements to paths
+		// MorphSVG plugin is lazy-loaded inside use:morphHover on first hover.
+		// Fetch each service SVG and inject it inline so morphHover can find
+		// <path> elements to morph.
 		const panels = sectionEl.querySelectorAll('[data-testid="services-svg-panel"]');
 		panels.forEach(async (panel, i) => {
 			const service = services[i];
@@ -119,25 +41,15 @@
 				if (!res.ok) return;
 				const svgText = await res.text();
 
-				// Inject SVG content inline
 				const wrapper = panel.querySelector('.svg-inline-wrapper');
 				if (!wrapper) return;
 				wrapper.innerHTML = svgText;
 
-				const svg = wrapper.querySelector('svg');
-				if (!svg) return;
-
-				const { paths, originals } = convertSvgToMorphPaths(svg);
-				if (paths.length === 0) return;
-
-				cardPaths[i] = paths;
-				cardOriginals[i] = originals;
-				cardReady[i] = true;
+				svgReady[i] = true;
 			} catch {
-				// Graceful fallback — SVG load failure doesn't break the page
+				// Graceful fallback — SVG fetch failure keeps the static <img> placeholder.
 			}
 		});
-
 	});
 </script>
 
@@ -159,18 +71,16 @@
 					href="/services/{service.id}"
 					data-testid="services-card"
 					class="group block"
-					onmouseenter={() => handleCardEnter(i)}
-					onmouseleave={() => handleCardLeave(i)}
 				>
 					<Card class="services-card flex h-full p-6">
 					<div class="card-inner flex w-full gap-5">
-						<!-- SVG panel: inline SVG injected on mount for MorphSVGPlugin -->
+						<!-- SVG panel: inline SVG injected on mount; use:morphHover owns the hover/tap animation. -->
 						<button
 							type="button"
 							data-testid="services-svg-panel"
 							class="svg-panel relative flex flex-shrink-0 items-center justify-center rounded-xl transition-all duration-300"
-							onclick={(e) => handleSvgTap(e, i)}
 							aria-label="View {title} illustration"
+							use:morphHover={{ shapes: SHAPES, enabled: svgReady[i] }}
 						>
 							<div class="svg-inline-wrapper pointer-events-none" style="width:56px;height:56px;">
 								<!-- Fallback: static img until JS injects inline SVG -->

@@ -1,634 +1,584 @@
-# yesid. Motion Design Spec
+# yesid. Motion Reference
 
-**Version:** 1.0 | April 2026
-**Status:** Approved
-**Companion to:** `brand/yesid_brand_guide.pdf`
+**Version:** 2.0 | 2026-04-17
+**Supersedes:** v1.0 (April 2026 — motion-design manifesto with heavy Three.js/Threlte content, now stale)
+**Design spec:** `docs/specs/2026-04-16-slice-17e-motion-reengineering-design.md`
+**Governance:** `docs/reference/CONSTITUTION.md` — Motion Doctrine — Snappy
 
-This document defines the motion language, interaction patterns, 3D art direction, and animation toolkit for yesid.dev. It is the source of truth for how things move. The brand guide defines how things look. This defines how things feel.
-
----
-
-## 1. Core Metaphor: Data in Transit
-
-The tagline is "Digital infrastructure that moves." The motion system makes that literal.
-
-Everything on the site follows the metaphor of **data flowing through infrastructure**:
-- The visitor's scroll is the "query" that moves data through the system
-- Content appears as "results" arriving at their destination
-- The home page is a **train journey between stations**, each station a service
-- The track is the scroll progress indicator
-
-Three visual sources feed the metaphor:
-
-| Source | Motion quality | Where it shows up |
-|--------|--------------|-------------------|
-| Trains / rail | Smooth, directional, rhythmic along defined paths | Home page journey, scroll progress rail |
-| Data pipelines | Records flowing, transforming, materializing | Section reveals, element entrances |
-| Infrastructure | Grid, tracks, routes, connections | Background environment, subtle depth |
-
-**The metaphor is:** yesid. is the infrastructure. The visitor's attention is the data moving through it.
+v2.0 is the **implementation reference** for the motion layer after the Slice 17e re-engineering. v1.0 was an aesthetic manifesto that over time accumulated references to deleted systems (Three.js, Threlte, `use:reveal`, entrance-animation helpers). v2.0 documents what actually exists in `src/lib/motion/` and how to use it.
 
 ---
 
-## 2. Motion Principles (Non-Negotiable)
-
-These rules apply to every animation on the site. No exceptions.
-
-### Directional, not random
-Movement follows paths: left-to-right (reading direction, train direction), top-to-bottom (data flowing down a pipeline). No random floating particles. No particles.js. If something moves, it moves with purpose along a defined vector.
-
-### Earned, not free
-Elements appear when the visitor reaches them (scroll-triggered), not all at once on page load. The scroll is the "query" that returns results. This also helps performance by deferring work.
-
-### Spring physics, not linear easing
-Everything uses spring or elastic easing, never `ease-in-out`. Springs feel alive and physical. Svelte has this built in (`svelte/motion` spring stores). GSAP's `elastic` and `back` easings also work.
-
-### Layered timing, not synchronized
-When multiple elements animate, they stagger. Each element gets slightly randomized duration (±10-20% of base duration). Stagger + slight randomness = organic. Synchronized = robotic.
-
-### Purposeful, not performative
-Every animation answers: "what does this help the user understand?" If the answer is "nothing, it just looks cool," simplify it. The site should feel like a well-engineered system, not a tech demo. Animation is salt, not the main dish.
-
----
-
-## 3. Animation Toolkit
-
-### The Three Layers (Each Has a Job)
-
-The site uses three animation technologies. Each handles a specific layer. They don't compete; they stack.
-
-| Layer | Tool | Job | When it runs |
-|-------|------|-----|-------------|
-| Atmosphere | Threlte (Three.js) | 3D depth, glow, particles, background environment | Always running on hero; responds to scroll + mouse |
-| Choreography | GSAP + ScrollTrigger | Scroll-linked movement, section reveals, timeline sequencing, SVG path animation | Triggered by scroll position |
-| Illustration | Lottie (lottie-web) | Pre-designed icon animations, idle loops, decorative micro-moments | Triggered by scroll or component mount |
-| Interaction | Svelte transitions + actions | Hover boops, magnetic cursor, ripple clicks, enter/exit transitions | Triggered by user interaction |
-
-### Why this specific combination
-
-**Threlte** creates the "this isn't a template" feeling. The 3D scene gives depth and atmosphere that 2D cannot replicate. It's the emotional hook.
-
-**GSAP** is the orchestrator. It ties everything to scroll position, sequences timelines, and handles the train's movement along SVG paths. Every Awwwards-winning scroll experience uses GSAP.
-
-**Lottie** handles detail-heavy illustration animation. A database icon with 15 moving parts is impractical to code in GSAP but trivial in Lottie. For v1, source from the LottieFiles marketplace. The architecture supports custom Lotties later.
-
-**Svelte actions** make things feel alive between the big moments. The little hover bounces, the cursor magnetism, the click feedback. These are the "I want to keep touching things" layer.
-
-### Libraries and bundle cost
-
-| Package | Purpose | Size (gzipped) |
-|---------|---------|----------------|
-| `gsap` | Animation engine + ScrollTrigger | ~30 KB |
-| `@threlte/core` | Svelte Three.js bindings | ~50 KB (tree-shaken with three) |
-| `@threlte/extras` | Helpers: Float, useGltf, effects | Included above |
-| `three` | 3D engine (peer dep of Threlte) | Included above |
-| `lottie-web` | Lottie animation player | ~15 KB |
-| `svelte/motion` | Spring stores, tweened stores | 0 KB (built into Svelte) |
-
-### What we are NOT using
-
-- **Framer Motion:** React-only
-- **particles.js:** Generic, overused, no semantic purpose
-- **AOS / animate.css:** Too generic, no brand alignment
-- **Custom After Effects Lotties (v1):** Learning curve too high for v1; marketplace fills the gap
-
-### Installation
-
-```bash
-bun add gsap @threlte/core @threlte/extras three lottie-web
-bun add -d @types/three
-```
-
----
-
-## 4. Interaction Patterns
-
-### Hover: "Boop" style
-
-Instead of static hover states (scale up on hover, scale down on leave), use a **boop**: briefly apply a transformation that resets itself after a short interval (~300ms), regardless of whether the user is still hovering. This creates a short burst of motion that feels alive.
-
-- **Implementation:** A Svelte action (`use:boop`) that applies a CSS transform on mouseenter and removes it after a timeout
-- **Default transform:** `scale(1.05)` with spring easing
-- **Variants:** rotation boop for icons, translateY boop for cards
-- **Apply to:** Project cards, nav links, CTAs, the orange dot in "yesid.", contact links
-
-### Scroll: Staged reveals
-
-As the user scrolls, content enters from defined directions consistent with the data-flow metaphor:
-
-- **Services/cards:** Slide in from left (data entering the pipeline)
-- **Projects:** Materialize in place (opacity 0→1 + scale 0.95→1)
-- **Text blocks:** Fade up (translateY 20px→0 + opacity 0→1)
-- **Numbers/stats:** Count up from 0 when entering viewport
-
-Each section has staggered entrance timing. Base stagger: 80-120ms between elements.
-
-- **Implementation:** GSAP ScrollTrigger with `batch()` for groups of elements, or a Svelte action (`use:reveal`) that wraps ScrollTrigger
-- **Trigger point:** Element enters at 80% of viewport height
-- **Duration:** 600-800ms per element
-
-### Scroll: Progress rail
-
-A thin line (2px) runs along the right edge of the page, filling with orange (#E07800) as the user scrolls. This is the "track" the train travels on.
-
-- On the home page: The rail has station markers (small dots/nodes) at each service section. When the scroll passes a station, the node lights up orange.
-- On other pages: Simple progress indicator, no stations.
-- **Implementation:** A fixed-position SVG or CSS element that uses scroll percentage to set `scaleY` or `stroke-dashoffset`
-
-### Cursor: Magnetic pull (desktop only)
-
-Interactive elements have a subtle magnetic pull when the cursor is within ~50px. The element shifts 2-3px toward the cursor position.
-
-- **Apply to:** CTA buttons, project cards, nav links
-- **Implementation:** A Svelte action (`use:magnetic`) that tracks mouse position relative to element center and applies a small transform
-- **Disable on:** Touch devices, reduced-motion preference
-
-### Click/tap: Orange ripple
-
-When clicking CTAs or interactive elements, a quick ripple in brand orange emanates from the click point and fades.
-
-- **Duration:** 400ms
-- **Color:** `#E07800` at 30% opacity, fading to 0
-- **Implementation:** A Svelte action (`use:ripple`) that creates an absolutely-positioned expanding circle on click
-
----
-
-## 5. The Home Page Journey
-
-The home page is a single continuous narrative: a train journey between stations.
-
-### Technical architecture
-
-The page is one tall scrollable column. A GSAP ScrollTrigger timeline pins the 3D background environment while the HTML content scrolls over it. The SVG train moves along a defined path in sync with scroll position via GSAP's `MotionPathPlugin`.
-
-```
-Layer stack (back to front):
-─────────────────────────────
-1. Threlte Canvas (fixed position, full viewport)
-   - Minimal dark space (#141414)
-   - Glowing data paths (animated lines, orange/amber)
-   - Subtle grid/infrastructure elements
-   - Responds to scroll position + mouse parallax
-
-2. SVG train layer (fixed position, moves with scroll)
-   - Geometric/stylized train SVG designed in Figma
-   - GSAP MotionPathPlugin moves it along a curve
-   - Position tied to scroll progress (0% = Station 0, 100% = Station 5)
-   - Optional: Lottie idle animation overlaid on train at rest
-
-3. HTML content layer (scrollable, on top)
-   - Station content sections
-   - Semi-transparent backgrounds on content cards
-   - 3D environment shows through gaps between sections
-   - Lottie station icons animate when scroll reaches them
-─────────────────────────────
-```
-
-### Station sequence
-
-**Station 0: Departure (Hero)**
-- 3D environment visible: glowing data paths pulse gently
-- Train sits at platform (SVG, with optional Lottie idle glow)
-- "yesid." wordmark large, centered
-- "Digital infrastructure that moves." tagline
-- Scroll prompt at bottom (animated chevron, SVG + CSS)
-
-**Station 1: SQL Development & Optimization**
-- Train begins moving (GSAP scroll-linked)
-- First station node lights up on the progress rail
-- Content slides in: service title, description, relevant project cards
-- Lottie station icon animates (database/query icon from marketplace)
-- 3D background: a data path brightens as the train "passes over" it
-
-**Station 2: Data Pipeline Architecture**
-- Train continues to next station
-- Same pattern: station lights up, content reveals, path brightens
-- Lottie station icon: pipeline/flow icon
-
-**Station 3: Analytics & Reporting Systems**
-- Same pattern
-- Lottie station icon: chart/dashboard icon
-
-**Station 4: Database Performance Tuning**
-- Same pattern
-- Lottie station icon: speedometer/optimization icon
-
-**Station 5: Destination (CTA)**
-- Train arrives at final station
-- All data paths are now illuminated (the infrastructure is complete)
-- "View work" and "Get in touch" CTAs with magnetic cursor effect
-- The journey is complete
-
-### Responsive behavior
-
-- **Desktop (1024px+):** Full experience. 3D background, SVG train, Lottie icons, scroll-linked choreography.
-- **Tablet (768-1023px):** 3D background simplified (fewer path segments, lower resolution). SVG train still moves. Scroll choreography intact.
-- **Mobile (<768px):** No 3D background (replaced with CSS gradient + subtle animated SVG paths). Train appears as a small static illustration at each station. Lottie icons still play. Scroll reveals still work via GSAP.
-
----
-
-## 6. 3D Art Direction (Threlte)
-
-### Environment: Minimal dark space with glowing data paths
-
-The 3D scene is NOT a detailed world. It's an abstract, dark environment with luminous infrastructure:
-
-- **Background:** Solid #141414 (brand dark background)
-- **Data paths:** Glowing lines/tubes that follow curved routes across the viewport. Color: #E07800 (primary orange) with bloom/glow post-processing. Some paths pulse. Some have small particles traveling along them (like data packets).
-- **Nodes/junctions:** Where paths intersect, small geometric shapes (octahedrons or icosahedrons) glow. These correspond to station positions.
-- **Depth:** The paths exist at multiple Z-depths, creating layers. Closer paths are brighter. Farther paths are dimmer. This creates a sense of looking into infrastructure.
-- **Camera:** Fixed perspective camera. No orbit controls (this isn't a 3D viewer, it's a backdrop). Subtle parallax tied to mouse position on desktop (camera shifts ±2° based on cursor).
-- **Post-processing:** Bloom/UnrealBloomPass on the orange elements to create the "glow" effect. Subtle only.
-
-### What to model
-
-No complex models. Everything is built from Three.js primitives and procedural geometry:
-
-- Paths: `TubeGeometry` along `CatmullRomCurve3` splines
-- Nodes: `IcosahedronGeometry` or `OctahedronGeometry` with emissive material
-- Particles on paths: Small `SphereGeometry` instances animated along the path curves using `useFrame`
-- Grid: `GridHelper` or custom line geometry, very faint
-
-### Scroll-linked behavior
-
-The 3D scene responds to scroll position (passed from GSAP ScrollTrigger):
-
-- **0-20% scroll (Hero):** Paths pulse gently at idle. Particles move slowly.
-- **20-80% scroll (Stations 1-4):** As scroll advances, paths brighten sequentially. The path "ahead" of the current station glows brighter. Particle speed increases slightly.
-- **80-100% scroll (CTA):** All paths fully illuminated. Particles moving at full speed. The infrastructure is "complete."
-
-### Performance rules
-
-- Max polygon count: 50K total (this is very low, intentionally)
-- Max draw calls: 20
-- Use `InstancedMesh` for repeated elements (particles, grid lines)
-- Bloom pass resolution: half the canvas resolution
-- Canvas size: match viewport but cap at 1920x1080 on 4K displays
-- Frame rate target: 60fps on 2020 MacBook Air
-- If GPU is slow (detected via renderer.info): disable bloom, reduce particle count
-
-### Additive architecture
-
-The Threlte scene is composed of independent Svelte components. Adding new 3D elements to the scene means adding a new component file, not modifying existing ones:
-
-```svelte
-<!-- HeroScene.svelte -->
-<Canvas>
-  <Scene>
-    <DataPaths {scrollProgress} />
-    <PathParticles {scrollProgress} />
-    <StationNodes {activeStation} />
-    <SubtleGrid />
-    <!-- Future: add new components here without touching existing ones -->
-  </Scene>
-</Canvas>
-```
-
----
-
-## 7. Lottie Strategy
-
-### v1: Marketplace-sourced animations
-
-For v1, Lottie animations are sourced from the LottieFiles marketplace (lottiefiles.com). The criteria for selecting marketplace Lotties:
-
-- **Style match:** Geometric, clean lines, minimal. No cartoon or skeuomorphic styles.
-- **Color:** Must support color customization, or use white/neutral colors that work on dark backgrounds. Recolor to brand palette (orange #E07800, amber #FFB627, white #F5F5F0).
-- **Size:** Under 50KB per animation JSON.
-- **Frame rate:** 30fps preferred.
-- **License:** Free for commercial use.
-
-### What to source from marketplace
-
-| Asset | Search terms on LottieFiles | Trigger |
-|-------|----------------------------|---------|
-| Station 1 icon | "database", "sql", "code" | Scroll: plays when station 1 is reached |
-| Station 2 icon | "pipeline", "data flow", "workflow" | Scroll: plays when station 2 is reached |
-| Station 3 icon | "analytics", "chart", "dashboard" | Scroll: plays when station 3 is reached |
-| Station 4 icon | "performance", "speed", "optimization" | Scroll: plays when station 4 is reached |
-| Train idle (optional) | "data", "pulse", "glow" | Loop: plays while train is at a station |
-
-### What is NOT Lottie (built in code instead)
-
-| Asset | Built with | Why |
-|-------|-----------|-----|
-| Scroll prompt chevron | SVG + CSS animation | Too simple for Lottie overhead |
-| Train movement | SVG + GSAP MotionPathPlugin | Needs to be scroll-linked (not timeline-based) |
-| Section reveals | GSAP ScrollTrigger | Interactive, not pre-rendered |
-| Hover boops | Svelte actions | Must respond to user input |
-| Arrival celebration | SVG + GSAP | Short, triggered once, simpler in code |
-
-### Future: Custom Lotties (v2+)
-
-The `LottiePlayer.svelte` component accepts any Lottie JSON file. When ready to create custom animations (After Effects + Bodymovin, or Figma + LottieFiles plugin), swap the marketplace JSON files for custom ones. No code changes needed. The component API stays the same.
-
-### Lottie design rules (for future custom work)
-
-- **Style:** Geometric, clean lines, matches brand (Inter-weight strokes)
-- **Colors:** Only brand palette colors. Orange (#E07800), amber (#FFB627), white (#F5F5F0), dark grays
-- **Size:** Each animation JSON must be under 50KB
-- **Frame rate:** 30fps
-- **Duration:** Loops: 2-4 seconds. One-shots: under 1.5 seconds
-- **Design tool:** After Effects → Bodymovin export, or Figma → LottieFiles plugin
-
----
-
-## 8. SVG Train Design
-
-### Design direction
-
-The train is a geometric, stylized illustration. Not photorealistic. Not cute/cartoon. Think: blueprint meets brand.
-
-- **Shape language:** Rounded rectangles (matches `border-radius: 8px` brand token), clean edges
-- **Colors:** Body in dark surface (#1E1E1E or #2A2A2A), windows in orange glow (#E07800 at low opacity), accent lines in orange (#E07800), wheels/details in border gray (#3A3A3A)
-- **Size:** Designed at ~200px wide, scales responsively
-- **Orientation:** Faces right (direction of travel = direction of reading)
-- **Style reference:** Geometric transit icons, not detailed locomotive illustrations
-
-### SVG structure (for GSAP animation)
-
-The train SVG must have named groups for animatable parts:
-
-```svg
-<svg id="train">
-  <g id="train-body"><!-- main body rectangle --></g>
-  <g id="train-windows"><!-- window rectangles with glow --></g>
-  <g id="train-wheels"><!-- circles that can rotate --></g>
-  <g id="train-accent"><!-- orange accent lines/details --></g>
-  <g id="train-glow"><!-- filter/gradient for the data glow effect --></g>
-</svg>
-```
-
-GSAP animates each group independently:
-- `#train-wheels`: continuous rotation while moving
-- `#train-glow`: pulse opacity tied to scroll speed
-- `#train-windows`: subtle flicker (data flowing through)
-
-### Motion path
-
-The train follows an SVG path (`<path>`) that curves between station positions. GSAP's `MotionPathPlugin` handles this. The path is invisible but defines the train's trajectory across the viewport.
-
----
-
-## 9. Easter Eggs & Delight
-
-Small surprises that reward curiosity. These are optional, low-effort additions that make people talk about the site.
-
-| Easter egg | Implementation | Effort |
-|-----------|---------------|--------|
-| The orange dot in "yesid." boops when hovered | `use:boop` action on the `<span>` | Trivial |
-| Clicking the dot triggers a small burst of orange particles | GSAP or SVG animation on click | Low |
-| Konami code activates "light mode" briefly | Svelte store + event listener | Low |
-| Hovering over a station while train is there makes the train "honk" (visual flash) | CSS class toggle | Trivial |
-| Console.log easter egg | `console.log` with ASCII art of the wordmark | Trivial |
-| Scroll to the very bottom past the footer: "You've reached the end of the line." | Hidden text revealed on overscroll | Low |
-
-These are NOT in any slice spec. They're added opportunistically when a slice is ahead of schedule or during QA polish in slice 09.
-
----
-
-## 10. Other Pages
-
-### Work (`/work`)
-
-- **Grid entrance:** Project cards enter with stagger (80ms gap), fade-up + scale
-- **Tag filter:** Clicking a tag triggers FLIP animation. Non-matching cards shrink (scale 0.95 + opacity 0.3) and move to end. Matching cards rearrange smoothly. Uses Svelte's `animate:flip`
-- **Card hover:** Boop (scale pulse) + subtle lift (translateY -4px) + shadow expansion
-- **No 3D on this page**
-
-### Work detail (`/work/[slug]`)
-
-- **Content:** Sections enter on scroll with simple fade-up reveals
-- **Tech stack tags:** Enter with stagger, left-to-right (like data flowing through a pipeline)
-- **Minimal animation.** Content is king. Let the work speak.
-- **No 3D on this page**
-
-### About (`/about`)
-
-- **Bio:** Text enters with fade
-- **Skills/tags:** Enter with stagger
-- **Clean and readable. No tricks.**
-
-### Contact (`/contact`)
-
-- **Links:** Enter with stagger
-- **Link hover:** Icon boop (rotation or scale pulse)
-- **Simple page. Fast to load, fast to act on.**
-
----
-
-## 11. Accessibility & Reduced Motion
-
-### `prefers-reduced-motion: reduce`
-
-When the user has reduced motion enabled in their OS:
-
-- **Disable:** All scroll-triggered animations, boops, magnetic cursor, Lottie animations, 3D scene animation (show static frame), train movement
-- **Keep:** Instant state changes (hover color change), focus indicators, page transitions (use instant cut), static content layout (all stations visible without animation)
-- **Implementation:** A global Svelte store `$prefersReducedMotion` that every animation component checks. GSAP respects `gsap.matchMedia()` which can check this preference. Threlte scene renders one static frame.
-
-### Keyboard navigation
-
-- Focus indicators must be visible and use brand orange (#E07800)
-- Tab order must make sense with the station layout
-- Skip-to-content link bypasses the 3D hero
-
----
-
-## 12. Performance Budget
-
-| Metric | Target | Hard limit |
-|--------|--------|------------|
-| First Contentful Paint | < 1.5s | < 2.5s |
-| Largest Contentful Paint | < 2.5s | < 4.0s |
-| Total JS (gzipped) | < 120KB | < 180KB |
-| 3D scene init time | < 500ms | < 1000ms |
-| Frame rate (desktop) | 60fps | > 45fps |
-| Frame rate (mobile) | 60fps (no 3D) | > 30fps |
-| Lottie JSON total | < 200KB | < 400KB |
-
-### Code-splitting strategy
-
-- Three.js + Threlte: Dynamic import, only loaded on pages with 3D (home page)
-- GSAP ScrollTrigger: Dynamic import, loaded after first paint
-- Lottie: Dynamic import per animation, loaded when element approaches viewport
-- All animation code lives in `src/lib/motion/` and is tree-shakeable
-
----
-
-## 13. File Structure
+## 1. Overview
 
 ```
 src/lib/motion/
-├── actions/
-│   ├── boop.ts          # use:boop hover action
-│   ├── reveal.ts        # use:reveal scroll-triggered entrance
-│   ├── magnetic.ts      # use:magnetic cursor pull
-│   └── ripple.ts        # use:ripple click effect
-├── stores/
-│   ├── scroll.ts        # Scroll position and progress store
-│   └── reducedMotion.ts # prefers-reduced-motion store
-├── components/
-│   ├── ScrollRail.svelte      # Progress rail with station markers
-│   ├── StationReveal.svelte   # Wrapper for station content sections
-│   └── LottiePlayer.svelte    # Generic wrapper for lottie-web
-├── three/
-│   ├── HeroScene.svelte       # Threlte canvas + scene composition
-│   ├── DataPaths.svelte       # Glowing tube paths
-│   ├── PathParticles.svelte   # Particles traveling along paths
-│   ├── StationNodes.svelte    # Glowing junction points
-│   └── SubtleGrid.svelte      # Background grid
-├── svg/
-│   └── Train.svelte           # SVG train component with GSAP-animatable groups
-└── utils/
-    ├── gsap.ts          # GSAP + ScrollTrigger + MotionPathPlugin registration, cleanup helpers
-    └── stagger.ts       # Stagger timing calculator with randomization
+├── actions/          — Svelte actions (interaction lane)
+│   ├── boop.ts            — tap-shaped hover impulse
+│   ├── cursorGlow.ts      — radial glow tracks cursor
+│   ├── magnetic.ts        — element attracts toward cursor
+│   ├── morphHover.ts      — SVG path morph on hover/tap (17e-5)
+│   ├── wordmarkHover.ts   — SplitText-driven wordmark effects
+│   ├── scrollChain.ts     — utility: chain scroll events across elements
+│   └── index.ts           — barrel
+├── scrubs/           — Scroll-linked factories (scroll-scrub lane)
+│   ├── createCrescendoScrub.ts   — scale/opacity scrub as section passes
+│   ├── createDrawScrub.ts        — DrawSVG stroke-scrub as section passes
+│   ├── createHeroTimeline.ts     — 9-phase hero pin (the site's only pin)
+│   └── index.ts
+├── stores/           — Svelte stores + sync helpers
+│   ├── reducedMotion.ts   — prefers-reduced-motion store + sync getter
+│   ├── scroll.ts          — shared scroll position store
+│   └── index.ts
+├── svg/              — motion-owned SVG components
+│   └── MetroNetwork.svelte   — inlined via Vite ?raw (17e-4)
+├── utils/            — infrastructure
+│   ├── device.ts          — isTouchDevice() helper
+│   ├── flip.ts            — FLIP filter-sort primitives
+│   ├── gsap.ts            — plugin registration hub
+│   ├── heroTypewriter.ts  — ambient typewriter (signature 9)
+│   ├── lenis.ts           — Lenis smooth-scroll bridge
+│   ├── morphHelpers.ts    — MorphSVGPlugin.convertToPath wrapper
+│   ├── stagger.ts         — reduced-motion-aware stagger helper
+│   ├── ticker.ts          — shared gsap.ticker fan-out
+│   └── index.ts
+├── tokens.ts         — TS mirror of motion tokens in tokens.css
+└── index.ts          — top-level barrel
 ```
 
-### Component standardization
+Reusable motion patterns belong here. One-off presentational flourishes can live as scoped CSS inside the component that uses them, but anything with an API or shared by multiple consumers must be extracted into this tree and get its own test file.
 
-Every motion component follows this pattern:
+---
+
+## 2. The Snappy Doctrine
+
+Content renders at its final state on page load. Motion triggers only on **interaction**, **scroll-scrub**, or **idle ambient**.
+
+Full text lives in `docs/reference/CONSTITUTION.md` § Motion Doctrine — Snappy. The one-line summary:
+
+> No entrance animations, no fade-ups on load, no scale-in on scroll-into-view. If you want the user's attention, earn it through interaction or through scroll-linked motion — never by animating a stationary page.
+
+### The one permitted exception
+
+**HomeCloser graffiti** retains an on-enter DrawSVG timeline because it is the narrative "Terminus" — the flourish reinforces arrival at the destination, not a delivery mechanism.
+
+### D266 clarification
+
+**Drawing motion** (DrawSVG stroke-tracing, morphSVG path tracing, motionPath tracing) is doctrine-compatible on enter. The drawing IS the content, not a delivery mechanism. Pure fade-up / scale-in / stagger-reveal entrances remain forbidden — they read as loading states.
+
+---
+
+## 3. The 9-Signature Vocabulary
+
+Closed at 9. Future additions require a CONSTITUTION.md amendment.
+
+| # | Signature | Lane | Trigger | Primary consumer |
+|---|---|---|---|---|
+| 1 | **Boop** | Interaction | hover/click/focus | buttons, CTAs |
+| 2 | **Cursor glow + magnetic** | Interaction | hover + pointer move | cards, CTAs, StackNodes |
+| 3 | **Wordmark hover** | Interaction | hover | Nav + Footer "yesid." wordmark |
+| 4 | **SVG morph hover** | Interaction | hover (desktop) / tap (mobile) | HomeServices panels |
+| 5 | **MetroNetwork hero scrub** | Scroll-scrub | scroll (pinned) | Home page hero |
+| 6 | **DrawSVG scrub** (non-hero) | Scroll-scrub | scroll (through section) | Blueprints on listing pages |
+| 7 | **Crescendo scrub** | Scroll-scrub | scroll (through section) | Manifesto + rotated edge titles |
+| 8 | **LED pulse** | Idle ambient | always (IO-gated) | status dots, stop-label glows |
+| 9 | **Typewriter idle** | Idle ambient | on-load (one-shot) | Hero scroll prompt |
+
+---
+
+## 4. Interaction Actions
+
+All actions use the uniform Svelte action shape: `(node, params) => { update?, destroy }`. On `prefers-reduced-motion: reduce`, every action returns a no-op `{ destroy(){} }`.
+
+### `use:boop`
+
+Brief transform that resets itself after ~300ms. Creates an "alive" feeling without staying transformed.
 
 ```svelte
-<script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { prefersReducedMotion } from '$lib/motion/stores/reducedMotion';
-
-  // Props with sensible defaults
-  let { duration = 600, delay = 0 } = $props();
-
-  // Reduced motion check
-  let animation: GSAPTween | null = null;
-
-  onMount(() => {
-    if ($prefersReducedMotion) return; // Skip all animation
-    // Setup animation
-  });
-
-  onDestroy(() => {
-    animation?.kill(); // Always clean up
-  });
-</script>
+<button use:boop={{ scale: 1.05, rotation: 5, timing: 300 }}>Click me</button>
 ```
 
-Every Svelte action follows this pattern:
+Params: `scale` (default 1.05), `rotation` (degrees, default 0), `timing` (ms, default 300).
 
-```typescript
-export function actionName(node: HTMLElement, params: ActionParams) {
-  if (prefersReducedMotion()) return { destroy() {} };
+### `use:cursorGlow`
 
-  // Setup
-  function setup() { /* ... */ }
-  function cleanup() { /* ... */ }
+Radial gradient that follows the cursor across the element. Pairs with `use:magnetic` on cards and CTAs.
 
-  setup();
+```svelte
+<div class="group" use:cursorGlow>...</div>
+```
 
-  return {
-    update(newParams: ActionParams) { cleanup(); setup(); },
-    destroy() { cleanup(); }
-  };
+### `use:magnetic`
+
+Element translates ±3px toward the cursor on proximity. Adds subtle weight-shift feel.
+
+```svelte
+<button use:magnetic>...</button>
+```
+
+### `use:morphHover` (17e-5)
+
+SVG path morphing on hover (desktop) or tap-toggle (mobile). MorphSVG plugin lazy-loaded on first hover.
+
+```svelte
+<button use:morphHover={{ shapes: SHAPES, enabled: svgReady[i] }}>
+  <svg>...</svg>
+</button>
+```
+
+Params:
+- `shapes` — `Record<string, string>` of shape-name → SVG path `d` string
+- `enabled?` — defer morphs until SVG content is ready (e.g., async-fetched SVGs)
+- `lastShapeIdx?` — deterministic starting shape index (default: random)
+
+The action locates `<path>` elements inside the node's SVG subtree, converts shape primitives via `MorphSVGPlugin.convertToPath`, and tweens their `d` attribute.
+
+### `use:wordmarkHover`
+
+GSAP SplitText-driven animation pool for the "yesid." brand wordmark. Four effects rotate on each hover (bounce, wiggle, wave, spin). The orange dot always pulses alongside.
+
+```svelte
+<script>
+  let dotRef: HTMLElement;
+</script>
+<span use:wordmarkHover={{ dotEl: dotRef, autoPlay: false }}>yesid</span>
+<span bind:this={dotRef}>.</span>
+```
+
+Note: SplitText is eagerly imported in `gsap.ts` because the action's sync contract cannot await a dynamic import. `loadSplitText()` exists as a lazy counterpart — currently a no-op because the plugin is already registered eagerly.
+
+---
+
+## 5. Scroll-Scrub Factories
+
+Sync factories returning `() => void` (destroy). Caller preloads required GSAP plugins before invoking.
+
+### `createCrescendoScrub(target, opts)`
+
+Scales + fades the target across its section's scroll. `minScale` at section edges, `maxScale` mid-scroll.
+
+```ts
+import { createCrescendoScrub } from '$lib/motion/scrubs';
+import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
+
+initScrollTriggerConfig();
+const destroy = createCrescendoScrub(statementEl, {
+  section: sectionEl,
+  minScale: 0.85,
+  maxScale: 1.0,
+});
+onDestroy(() => destroy?.());
+```
+
+Used by: Manifesto 3-line statement, rotated edge titles on Projects / Services / Terminus (D263).
+
+### `createDrawScrub(svgRoot, opts)`
+
+DrawSVG stroke-scrub: paths draw from `0%` to `100%` as the user scrolls through the section.
+
+```ts
+import { createDrawScrub } from '$lib/motion/scrubs';
+import { loadDrawSVG, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
+
+await loadDrawSVG();
+initScrollTriggerConfig();
+const destroy = createDrawScrub(blueprintWrapEl, {
+  section: listingSectionEl,
+  pathSelector: 'svg path',
+});
+```
+
+Used by: Blueprint SVGs on blog + projects listing pages.
+
+### `createHeroTimeline(pinContainer, opts)` (17e-4)
+
+The site's **only** pinned scroll-scrub. 9-phase choreography: dot + text visible → pulse → stroke-draw → station nodes → labels → Berri-UQAM zoom → cross-fade → hero text zoom-out → stagger → unpin.
+
+```ts
+import { createHeroTimeline } from '$lib/motion/scrubs';
+import { loadDrawSVG, loadCustomEase, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
+
+await Promise.all([loadDrawSVG(), loadCustomEase()]);
+initScrollTriggerConfig();
+const destroy = createHeroTimeline(pinContainer, {
+  svgWrapper,
+  heroTextContainer,
+  heroDot,
+  scrollPrompt,
+  startBlink,
+  stopBlink,
+  pinLength: isMobile ? '300%' : '800%',
+});
+```
+
+Invariants (D268):
+
+- **The scrub owns `scrollPrompt` opacity exclusively.** Typewriter owns text + cursor only. Never write `scrollPrompt.style.opacity` from the typewriter or any other source.
+- **Phase boundaries are fixed** — tuned across many iteration cycles. Do not adjust without Yesid's review.
+
+---
+
+## 6. Idle Ambient
+
+### Typewriter (signature 9)
+
+`heroTypewriter.ts` — character-by-character reveal of the hero "SCROLL DOWN" prompt. Advances one character every 80ms of wall-clock time via the shared ticker. Cursor blink is pure CSS.
+
+**Lesson from the 17e-5 migration:** GSAP's `deltaTime` in ticker callbacks is in **milliseconds** (not seconds). Compare accumulators to `80`, not `0.08`. Getting this wrong makes the typewriter blow through the entire string in one frame.
+
+### LED pulse
+
+Global `@keyframes pulse-glow` in `app.css` (opacity 1 ↔ 0.7 + box-shadow pulse). Consumers: `StopLabel.svelte`, `MetricDisplay.svelte` pulse-glow elements, `ManifestoEdgeBottom.svelte`'s status dot. A future `.led-pulse` alias may emerge if more consumers need the pattern.
+
+### Typewriter cursor
+
+`.typewriter-cursor` class in `app.css`:
+
+```css
+@keyframes typewriter-blink {
+  0%, 100% { visibility: visible; }
+  50%      { visibility: hidden; }
+}
+.typewriter-cursor {
+  opacity: 1;
+  animation: typewriter-blink 1s step-end infinite;
 }
 ```
 
+Uses **visibility** (not opacity) so the blink does not multiply with the scroll-scrub's opacity tween on the parent `scrollPrompt`.
+
+**Don't use `steps(2, start)` with a single `to` keyframe for a blink.** For discrete properties like `visibility`, both steps resolve to the same "hidden" value → the element stays hidden the entire time. Use explicit `0%/50%/100%` keyframes with `step-end` timing, as above.
+
 ---
 
-## 14. Svelte Action API (Target Interfaces)
+## 7. Shared Ticker
 
-These are the developer-facing APIs that slice specs will reference:
+`motion/utils/ticker.ts` — single `gsap.ticker.add` callback that fans out to all subscribers. Avoids N independent `requestAnimationFrame` loops.
 
-```svelte
-<!-- Scroll reveal -->
-<div use:reveal={{ direction: 'up', delay: 200 }}>
-  Content fades up when scrolled into view
-</div>
+```ts
+import { subscribe, unsubscribe } from '$lib/motion/utils/ticker.js';
 
-<!-- Boop hover -->
-<button use:boop={{ scale: 1.05, rotation: 5, timing: 300 }}>
-  Boops on hover
-</button>
+const SUB_ID = 'my-component';
 
-<!-- Magnetic cursor -->
-<a use:magnetic={{ strength: 3, radius: 50 }}>
-  Pulls toward cursor on desktop
-</a>
+function tick(_time: number, deltaTime: number) {
+  // deltaTime is in MILLISECONDS (e.g., 16.67 at 60fps).
+  // Do work conditionally — early-return if offscreen.
+  if (!isVisible) return;
+  // ... paint / advance state ...
+}
 
-<!-- Click ripple -->
-<button use:ripple={{ color: '#E07800' }}>
-  Orange ripple on click
-</button>
+onMount(() => subscribe(SUB_ID, tick));
+onDestroy(() => unsubscribe(SUB_ID));
+```
 
-<!-- Staggered group -->
-{#each items as item, i}
-  <div use:reveal={{ direction: 'left', delay: stagger(i, 80) }}>
-    {item.name}
-  </div>
-{/each}
+### IntersectionObserver offscreen pause
 
-<!-- Lottie player -->
-<LottiePlayer
-  src="/lottie/station-sql.json"
-  trigger="scroll"
-  loop={false}
-/>
+Consumers whose work is only meaningful while their owner element is visible should gate via IntersectionObserver:
 
-<!-- Lottie player with loop -->
-<LottiePlayer
-  src="/lottie/train-idle.json"
-  trigger="mount"
-  loop={true}
-  speed={0.8}
-/>
+```ts
+let isVisible = false;
+let observer: IntersectionObserver | null = null;
+
+onMount(() => {
+  observer = new IntersectionObserver(
+    (entries) => { isVisible = entries[0].isIntersecting; },
+    { rootMargin: '50px' },  // resume slightly before entering viewport
+  );
+  observer.observe(sectionEl);
+  subscribe(SUB_ID, tick);
+});
+
+onDestroy(() => {
+  unsubscribe(SUB_ID);
+  observer?.disconnect();
+});
+```
+
+Current IO-gated ticker consumers: `ManifestoCanvas`, `AboutTrain`. Non-gated: `heroTypewriter` (one-shot, unsubscribes on completion).
+
+Current IO-gated `setInterval` consumers: `Manifesto.svelte` countdown, `AboutTestimonials.svelte` carousel. These use IO to start/stop the interval (not the shared ticker — discrete-second timer semantics).
+
+---
+
+## 8. Motion Tokens
+
+CSS custom properties in `src/lib/styles/tokens.css`:
+
+```css
+--duration-instant: 100ms;
+--duration-fast:    150ms;
+--duration-normal:  200ms;
+--duration-slow:    300ms;
+--duration-slower:  500ms;
+
+--ease-default: cubic-bezier(0.4, 0, 0.2, 1);   /* Material standard */
+--ease-out:     cubic-bezier(0.2, 0.8, 0.2, 1);
+--ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
+--ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
+```
+
+TS mirror at `src/lib/motion/tokens.ts`:
+
+```ts
+import { duration, ease, durationSec } from '$lib/motion/tokens.js';
+
+gsap.to(el, { opacity: 1, duration: durationSec('normal'), ease: ease.default });
+```
+
+### Parity
+
+`src/lib/motion/tokens.test.ts` asserts parity — every `--duration-*` / `--ease-*` declared in `tokens.css` must have a matching entry in `tokens.ts`. Adding a new token means updating both files and the parity test's expected list.
+
+### Adding a new token
+
+1. Declare in `src/lib/styles/tokens.css` under the motion section.
+2. Mirror in `src/lib/motion/tokens.ts`.
+3. Update `docs/reference/CSS.md`'s motion-tokens table.
+4. Run `bun run test -- src/lib/motion/tokens.test.ts` to confirm parity.
+
+---
+
+## 9. GSAP Plugin Loading
+
+`motion/utils/gsap.ts` is the single plugin-registration hub.
+
+### Eager (always bundled)
+
+- **`ScrollTrigger`** — site-wide; every pin / scroll-scrub uses it.
+- **`SplitText`** — `wordmarkHover` creates SplitText instances synchronously.
+- **`MorphSVGPlugin`** — `morphHelpers.ts` calls `MorphSVGPlugin.convertToPath()` as a static method from SvgIcon, which ships on every major route.
+
+### Lazy (per-consumer at mount)
+
+| Loader | Consumers |
+|---|---|
+| `loadDrawSVG()` | HeroBanner, DataFlowDiagram, SvgIcon, HomeCloser (via CloserGraffiti), BlogListingPage, ProjectListingPage, StackConnections |
+| `loadMorphSVG()` | `morphHover` action (first hover); SvgIcon (entrance `animateMorph`) |
+| `loadFlip()` | BlogListingPage, ProjectListingPage |
+| `loadCustomEase()` | HeroBanner (via `createHeroTimeline` for the `networkDraw` ease) |
+| `loadMotionPathPlugin()` | StackConnections |
+| `loadSplitText()` | Currently no-op — SplitText already eager. Retained for API completeness. |
+
+### Registration helpers
+
+```ts
+// Call once from anywhere that uses ScrollTrigger. Idempotent.
+import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
+initScrollTriggerConfig();
+
+// Sync SplitText registration (wordmarkHover's sync contract).
+import { ensureSplitTextRegistered } from '$lib/motion/utils/gsap.js';
+ensureSplitTextRegistered();
+```
+
+### Consumer pattern
+
+```ts
+import {
+  initScrollTriggerConfig,
+  loadDrawSVG,
+  loadMorphSVG,
+} from '$lib/motion/utils/gsap.js';
+
+onMount(async () => {
+  if (isPrefersReducedMotion()) return;
+
+  await Promise.all([loadDrawSVG(), loadMorphSVG()]);
+  // Guard against unmount-during-await (tests, fast route transitions)
+  if (!container) return;
+
+  initScrollTriggerConfig();
+  // ... start tweens that use drawSVG: / morphSVG: syntax ...
+});
+```
+
+### Adding a new consumer
+
+1. Identify plugins needed (`ScrollTrigger`, `DrawSVG`, `MorphSVG`, etc.).
+2. In the consumer's `onMount` (async), `await load*()` for each.
+3. After all loads resolve, call `initScrollTriggerConfig()` if using ScrollTrigger.
+4. Guard `container` (or the relevant binding) after the await before touching the DOM.
+
+---
+
+## 10. Reduced-Motion Contract
+
+`isPrefersReducedMotion()` is the sync getter. Every motion primitive opts out when it returns `true`.
+
+| Signature | Reduced-motion behavior |
+|---|---|
+| Boop | no-op destroy, no listeners attached |
+| Cursor glow + magnetic | no-op destroy |
+| Wordmark hover | no-op destroy, no SplitText instance |
+| SVG morph hover | no-op destroy; paths stay at primary shape |
+| MetroNetwork hero scrub | factory renders final state (hero text visible, network dimmed) and returns a no-op destroy |
+| DrawSVG scrub | paths render at 100% stroke (final state) |
+| Crescendo scrub | target rendered at `maxScale`, no scroll tween |
+| LED pulse (CSS) | `animation: none`, opacity 1 |
+| Typewriter | `showImmediate()` renders full text + cursor-on |
+
+### Pattern for new consumers
+
+```ts
+if (isPrefersReducedMotion()) {
+  // Render final state synchronously, no ticker subscription, no observers.
+  return;
+}
+// ... full animation path ...
 ```
 
 ---
 
-## 15. Reference Sites
+## 11. SEO × Motion Contract
 
-Study these for specific techniques:
+The site must remain crawler-friendly. Motion rules that protect SEO:
 
-| Site | What to study |
-|------|--------------|
-| joshwcomeau.com | Boop interactions, spring physics, whimsy philosophy, procedural animation |
-| rauno.me | Minimal scroll animations, clean transitions, understated motion |
-| brittanychiang.com | Developer portfolio structure, subtle hover states |
-| lusion.co | 3D + scroll integration, performance on creative sites |
-| Freight Rail Works (Visme reference) | Data + train visualization, the exact metaphor we're building |
+1. **All text content ships in SSR HTML.** No text is created by JS; motion only styles text that already exists.
+2. **Headings are real `<h1>`/`<h2>` tags**, not div/span masquerading. Rotated edge titles (Projects, Services, Terminus) are `<h2>` with CSS `writing-mode: vertical-rl` + `rotate: 180deg` — semantic first, visual second.
+3. **The MetroNetwork SVG is inlined at SSR time** (17e-4 D265 via Vite `?raw` import), so it is a valid LCP candidate and does not require a separate `fetch` that delays paint.
+4. **No `aria-hidden` on primary content** — rotated titles use `aria-label` if the visual form obscures read order, but never hide content from assistive tech.
 
 ---
 
-## 16. Additive Architecture
+## 12. Bundle Budgets
 
-The motion system is designed to grow without restructuring.
+Per design spec §6.2. Gzipped initial JS per route:
 
-**Adding a new Lottie animation:**
-1. Place JSON file in `src/lib/assets/lottie/`
-2. Use `<LottiePlayer src="/lottie/new-animation.json" />` in any component
-3. No other changes needed
+| Route | Budget | 17e-5 end actual |
+|---|---|---|
+| `/` (home) | 120 KB | 35.00 KB gzipped (node 4 only — shared chunks load separately) |
+| `/blog` (listing) | 80 KB | see `docs/devlog/2026-04-17-slice-17e-closing.md` |
+| `/blog/[slug]` | 70 KB | " |
+| `/projects` (listing) | 80 KB | " |
+| `/projects/[slug]` | 70 KB | " |
+| `/services` | 80 KB | " |
+| `/services/[slug]` | 70 KB | " |
+| `/about` | 70 KB | " |
+| `/contact` | 60 KB | " |
+| `/tech-stack` | 80 KB | " |
 
-**Adding a new Threlte scene element:**
-1. Create new component in `src/lib/motion/three/`
-2. Import and add to `HeroScene.svelte`
-3. Existing components are unaffected
+Measurement: `bun run bundle-size` → opens `dist/stats.html` (rollup-plugin-visualizer treemap).
 
-**Adding a new Svelte action:**
-1. Create new file in `src/lib/motion/actions/`
-2. Follow the standard action pattern (reduced motion check, cleanup)
-3. Use `use:newAction` on any element
+### Lighthouse targets (§6.1)
 
-**Adding a new page with animation:**
-1. Page imports actions and components from `$lib/motion/`
-2. Uses the same `use:reveal`, `use:boop` patterns as every other page
-3. Optionally imports Threlte scene for 3D background
+- **Desktop:** Performance ≥ 98, Accessibility + SEO + Best Practices = 100
+- **Mobile:** Performance ≥ 90 (stretch 95+), same A11y/SEO/BP
 
-**Replacing marketplace Lotties with custom ones:**
-1. Export custom Lottie from After Effects or Figma
-2. Replace the JSON file in `src/lib/assets/lottie/`
-3. Same filename = zero code changes
+Closing-audit results live in `docs/devlog/2026-04-17-slice-17e-closing.md`.
+
+### Known bundle-shrink opportunities (deferred post-17e)
+
+- **`captureFlipState()` async migration** — currently `flip.ts` statically imports `Flip` from `gsap/Flip` because `captureFlipState` must run synchronously. Making it async would let Vite split Flip into its own chunk loaded only for Blog + Projects listing routes. Estimated savings: ~3–5 KB on those routes.
+- **`wordmarkHover` async action shape** — currently SplitText is eagerly imported because `new SplitText(node, ...)` runs synchronously inside the action. An async-aware action (fire-and-forget init pattern) would let `loadSplitText()` do the actual splitting. Estimated savings: ~3 KB site-wide.
 
 ---
 
-## Version History
+## 13. MetroNetwork SVG Re-Optimization
 
-| Date | Change |
-|------|--------|
-| 2026-04-02 | v1.0 created. Core metaphor, toolkit, station journey, 3D direction, Lottie strategy, SVG train, easter eggs, additive architecture defined. |
+The hero metro SVG at `static/images/montreal-metro.svg` is inlined at SSR via Vite `?raw` import. Source = optimized output; there is no build-time SVGO plugin.
+
+### When to re-run
+
+Whenever the SVG source is edited (new stations, path tweaks, color changes). Keep a local-only `.source.svg` backup (excluded via `.gitignore`).
+
+### Procedure
+
+1. Drop the raw SVG into `static/images/montreal-metro.source.svg` (gitignored).
+2. Run SVGO with the repo config:
+
+```bash
+bunx svgo --config=svgo.config.mjs static/images/montreal-metro.source.svg -o static/images/montreal-metro.svg
+```
+
+3. Commit only the optimized `montreal-metro.svg`.
+
+### Config details (`svgo.config.mjs`)
+
+The config **disables** three default SVGO plugins:
+
+- `convertColors` — would lowercase `#E07800` to `#e07800`, breaking the mount-time classification code in `MetroNetwork.svelte` which compares `stroke === '#E07800'`.
+- `mergePaths` — would merge the 87 station `<path>` elements into one, breaking per-station opacity fades in Phase 3 of the hero timeline.
+- `cleanupIds` — would strip or renumber IDs used by animation selectors.
+
+Reduction expected: ~28–30% (full defaults would be ~42% but break animation targets).
+
+### Sanity checks
+
+After re-running SVGO, verify:
+
+```bash
+# Classification attributes survived (expect 8× stroke, 87× fill)
+grep -c 'stroke="#E07800"' static/images/montreal-metro.svg
+grep -c 'fill="#E07800"' static/images/montreal-metro.svg
+
+# Per-station paths still distinct (expect 87+)
+grep -c '<path' static/images/montreal-metro.svg
+```
+
+If counts drop significantly, the optimizer re-broke classification — re-check `svgo.config.mjs`.
+
+---
+
+## 14. Anti-Patterns
+
+Common violations and their proper replacements.
+
+| Anti-pattern | Why it violates | Replacement |
+|---|---|---|
+| `gsap.from(el, { opacity: 0 })` on mount | Pure fade-in reveal (Snappy Doctrine) | Remove. Render at final state. |
+| `gsap.fromTo(el, { y: 30, opacity: 0 }, { y: 0, opacity: 1 })` on mount | Fade-up reveal (D267 F) | Remove. |
+| `stagger` reveal on a list of cards entering viewport | Reveal pattern — content was already there | Remove. Cards render immediately. |
+| `requestAnimationFrame(loop)` self-recursion in a component | Violates one-RAF-per-site rule | Migrate to `subscribe(id, fn)` from `motion/utils/ticker.js` |
+| `setInterval(fn, ms)` always-on in a component | Burns CPU when offscreen | IO-gate via `IntersectionObserver` (start/stop the interval on visibility change) |
+| Reading `MorphSVGPlugin` from outside `motion/utils/` | Plugin symbol leak | Import from `$lib/motion/utils/gsap.js` or `$lib/motion/utils/morphHelpers.js` |
+| Calling `gsap.registerPlugin()` directly in a component | Breaks the lazy-load chain | Use `initScrollTriggerConfig()` + `await loadX()` per the Consumer Pattern (§9) |
+| Inlining clamp values for typography/spacing in scoped CSS | Token bypass | Add a token to `tokens.css` or `@theme`; reference via `var(--...)` or Tailwind utility |
+| `animation: my-blink 1s steps(2, start) infinite` for cursor blinks | `steps(2, start)` with implicit `from` resolves to "always hidden" for discrete properties like `visibility` | Use explicit `0%/50%/100%` keyframes with `step-end` timing (see `.typewriter-cursor` pattern) |
+
+---
+
+## 15. Migration from v1.0
+
+v1.0 documented systems that no longer exist. v2.0 drops them entirely. For historical grep-searchers:
+
+| v1.0 concept | Status in v2.0 |
+|---|---|
+| Three.js / Threlte | **Removed** (pre-17e). No 3D scenes. |
+| `use:reveal` action | **Removed** (17e-2). Entrance reveals forbidden per Snappy Doctrine. |
+| `use:ripple` action | **Removed** (17e-2). Not in the 9-signature vocabulary. |
+| `use:tilt` action | **Removed** (17e-2). Absorbed into `magnetic` or deleted. |
+| `ScrollRail` component | **Removed** (17e-2). Orphan code. |
+| Train SVG components (`Train.svelte`, `TrainJourney.svelte`, train-path.ts) | **Removed** (17e-2). The "train journey" metaphor was replaced by scroll-scrub crescendo over the Manifesto statement. |
+| `useListingEntrance` | **Removed** (17e-2). Entrance violation. Listing cards render at final state on load. |
+| `listingAnimations.ts` | **Removed** (17e-2). `captureFlipState` + `animateFlipTransition` extracted into `flip.ts`. |
+| `heroTimeline.ts` utility | **Removed** (17e-4). Replaced by `scrubs/createHeroTimeline.ts` factory. |
+| `heroScrollLock.ts` | **Removed** (17e-4, D264). "Plays at you" pattern contradicted the Snappy Doctrine. |
+| `ReadingProgressBar.svelte` | **Removed** (17e-5). Scrapped during 09c-2b, never re-wired; discovered during the D269 audit. |
+| `morphHelpers.ts` | **Kept** (17e-5). Used by both `use:morphHover` action and `SvgIcon.animateMorph`. |
+| `SvgIcon.animateStagger` variant | **Removed** (17e-5, D267 F). Pure fade-up reveal. |
+| `StackScenarioCard` onMount fade-up | **Removed** (17e-5, D267 F). |
+| `registerGsapPlugins()` | **Removed** (17e-5, D269). Replaced by `initScrollTriggerConfig()` + per-plugin `load*()` loaders. |
+
+v1.0's "data in transit" motion metaphor is still honored by the site's aesthetic — MetroNetwork hero, transit-themed rotated labels, terminus closer — but v2.0 documents the implementation, not the metaphor.
+
+---
+
+## 16. Changelog
+
+### v2.0 — 2026-04-17
+
+Full rewrite as post-17e implementation reference. v1.0 motion-manifesto content superseded.
+
+- Added §3 9-signature vocabulary table with consumer examples
+- Added §4–§7 per-primitive API reference
+- Added §9 lazy-plugin-loading contract + consumer pattern
+- Added §10 reduced-motion contract table
+- Added §13 MetroNetwork SVGO procedure
+- Added §14 anti-patterns table
+- Removed Three.js / Threlte / scroll-rail / train-journey / `use:reveal` / `use:ripple` / `use:tilt` content
+- Corrected: gsap.ticker `deltaTime` documented as MILLISECONDS (not seconds — cost one Yesid-caught regression)
+- Corrected: `.typewriter-cursor` keyframe shape (explicit visible/hidden + `step-end`) — previous `steps(2, start)` never actually blinked
+
+### v1.0 — April 2026
+
+Motion spec manifesto (pre-17e). Historical — see git for content if needed.

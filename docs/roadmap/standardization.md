@@ -18,12 +18,13 @@
 | 17a-5 Spacing & Layout + Const.  | COMPLETE (14/14 tasks, PR pending) | —       | 2        |
 | 17a-6 Bits UI Integration        | COMPLETE                        | —         | 4        |
 | 17d Component API                | PLANNED (needs impl plan)       | —         | 4        |
-| 17e Motion Re-Engineering        | PLANNED (needs impl plan)       | —         | 2-3      |
+| 17e Motion Re-Engineering        | **COMPLETE (6 sub-slices, 4 PRs)** | —     | 2-3      |
 | 17a-4 Dead Code + Trivial Dedup  | PLANNED (needs impl plan)       | —         | 1        |
 | 17b Service Layer                | planned                         | —         | 2        |
 | 17c Zod Schemas                  | planned                         | —         | 0.5      |
 | 17f Test Architecture            | planned                         | —         | 1-2      |
 | 17g Learning Docs                | planned                         | —         | 2        |
+| 17h Brand Bundle (Path A) + Source-of-Truth Refactor | PLANNED (spec + plan + sub-slice stubs written 2026-04-17; 17h-1 expanded to include slice-17 drift-freshening pre-move) | — | 10-11 |
 
 ### Constitution Planning Session (2026-04-13)
 
@@ -321,10 +322,11 @@ Phase 2 — Standardization (after SEO)
   17e: Motion consolidation
   17f: Test architecture + documentation
   17g: Learning docs refactor
+  17h: Brand bundle (Path A) + source-of-truth refactor (visual-design close)
     ↓
   16: E2E + QA (tests the FINAL state)
     ↓
-  18: Payload CMS (plugs into 17b service seam)
+  18: Payload CMS (plugs into 17b service seam) — separate repo `yesid.dev-cms`
 ```
 
 **Why this split:**

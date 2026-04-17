@@ -96,13 +96,37 @@
 	let sectionEl = $state<HTMLElement>(undefined!);
 	let statementEl = $state<HTMLElement>(undefined!);
 
-	// ── Lifecycle: GSAP ScrollTrigger entrance ───────────────────────
+	// ── Lifecycle: GSAP ScrollTrigger entrance + IO-gated countdown ──
 	onMount(() => {
 		let countdownInterval: ReturnType<typeof setInterval> | undefined;
-		if (!isPrefersReducedMotion()) {
+		let visibilityObserver: IntersectionObserver | null = null;
+
+		function startCountdown() {
+			if (countdownInterval || isPrefersReducedMotion()) return;
 			countdownInterval = setInterval(() => {
 				countdownSeconds = countdownSeconds <= 0 ? 300 : countdownSeconds - 1;
 			}, 1000);
+		}
+
+		function stopCountdown() {
+			if (countdownInterval) {
+				clearInterval(countdownInterval);
+				countdownInterval = undefined;
+			}
+		}
+
+		// IO-gate the countdown — tick only while the Manifesto is in view.
+		// rootMargin: 100px so the timer starts slightly before the section
+		// enters the viewport, matching the visual rhythm of scrolling in.
+		if (browser && sectionEl) {
+			visibilityObserver = new IntersectionObserver(
+				(entries) => {
+					if (entries[0].isIntersecting) startCountdown();
+					else stopCountdown();
+				},
+				{ rootMargin: '100px' },
+			);
+			visibilityObserver.observe(sectionEl);
 		}
 
 		// Apply crescendo scrub to the 3-line statement container. Scales gently
@@ -118,7 +142,8 @@
 		}
 
 		return () => {
-			if (countdownInterval) clearInterval(countdownInterval);
+			stopCountdown();
+			visibilityObserver?.disconnect();
 			destroyCrescendo?.();
 		};
 	});

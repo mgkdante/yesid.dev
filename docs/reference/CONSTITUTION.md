@@ -327,49 +327,136 @@ Both guards required if component uses both GSAP and CSS animation.
 
 ---
 
-## 8. Motion
+## 8. Motion Doctrine — Snappy
 
-### When to Use What
+> Content renders at its final state on page load. Motion triggers only on **interaction**, **scroll-scrub**, or **idle ambient**.
+> Source: Slice 17e design spec §2 (2026-04-16). Full implementation reference: `docs/reference/MOTION.md` v2.0.
+
+### Forbidden
+
+- `use:reveal` action (deleted 17e-2)
+- `use:ripple` and `use:tilt` actions (deleted 17e-2)
+- Fade-up on load (`gsap.from({ y, opacity: 0 })` on mount)
+- Scale-in on enter (`scale: 0 → 1` on scroll entry)
+- SplitText char-stagger on enter (replaced by scroll-scrub crescendo)
+- Staggered list entrances on mount
+- "Appear when scrolled to" reveals of any kind
+- New `requestAnimationFrame` or `setInterval` ambient loops outside of `motion/utils/ticker.ts`
+- Direct `gsap.registerPlugin()` calls in components (use `initScrollTriggerConfig()` + `load*()` loaders)
+- Svelte `transition:` / `animate:` directives — GSAP is the motion system
+
+### The 9-Signature Vocabulary
+
+Closed at 9. Future additions require an amendment to this section.
 
 
-| Animation type                    | Tool                                         |
-| --------------------------------- | -------------------------------------------- |
-| Scroll-linked reveals             | GSAP ScrollTrigger                           |
-| Complex choreography              | GSAP Timeline                                |
-| Hover/focus states                | CSS `transition` with duration/easing tokens |
-| Looping decorative                | CSS `@keyframes`                             |
-| Mount/unmount (dialogs, sheets)   | Bits UI `forceMount` + GSAP                  |
-| Svelte `transition:` / `animate:` | **Never** — GSAP is the motion system        |
+| # | Signature | Lane | Trigger |
+| --- | --- | --- | --- |
+| 1 | Boop | Interaction | hover/click/focus |
+| 2 | Cursor glow + magnetic | Interaction | hover + pointer move |
+| 3 | Wordmark hover | Interaction | hover |
+| 4 | SVG morph hover | Interaction | hover/tap |
+| 5 | MetroNetwork hero scrub | Scroll-scrub | scroll (pinned) |
+| 6 | DrawSVG scrub (other SVGs) | Scroll-scrub | scroll (through section) |
+| 7 | Crescendo scrub | Scroll-scrub | scroll (through section) |
+| 8 | LED pulse | Idle ambient | always (IO-gated) |
+| 9 | Typewriter idle | Idle ambient | on-load (one-shot, IO-aware) |
+
+
+### Permitted Exception (exactly one)
+
+**HomeCloser graffiti** retains an on-enter DrawSVG timeline + hover interactions. Justified by placement as the "Terminus" — the narrative destination where a flourish reinforces arrival, not a delivery mechanism for static content.
+
+### D266 — Drawing Motion Is Not a Reveal
+
+Drawing motion (`drawSVG: 0% → 100%`, morphSVG tracing, motionPath tracing) is doctrine-compatible on enter. The motion **is** the content. Pure fade-up / scale-in / stagger reveals remain forbidden — they read as loading states.
+
+**Acceptable on enter:**
+
+- `SvgIcon.animateDraw` — pure DrawSVG
+- `SvgIcon.animateDrawFill` — DrawSVG + fill-opacity
+- `SvgIcon.animateMorph` — opacity + scale combined with the shape's construction
+- `DataFlowDiagram` — DrawSVG lines
+- `StackConnections` — DrawSVG paths + MotionPath dots
+
+**Forbidden on enter:**
+
+- `opacity: 0 → 1` alone
+- `scale: 0 → 1` or `y: 30 → 0` alone
+- stagger fade-up
+- any "reveals when scrolled into view"
+
+### Plugin Registration Contract (D269, 17e-5)
+
+Three plugins stay eagerly imported in `motion/utils/gsap.ts` by necessity:
+
+- **ScrollTrigger** — site-wide; every pin/scrub uses it
+- **SplitText** — `wordmarkHover`'s sync `new SplitText(...)` contract
+- **MorphSVGPlugin** — `morphHelpers.ts` static `convertToPath()` call used by SvgIcon (every major route)
+
+All other plugins are lazy. Consumers follow the pattern:
+
+```ts
+onMount(async () => {
+  if (isPrefersReducedMotion()) return;
+  await Promise.all([loadDrawSVG(), loadMorphSVG() /* etc */]);
+  if (!container) return; // unmount-during-await guard
+  initScrollTriggerConfig();
+  // ... start tweens ...
+});
+```
+
+### When to Use What (post-17e)
+
+
+| Animation need | Tool |
+| --- | --- |
+| Hover/focus interaction | Svelte action from `motion/actions/` (one of signatures 1–4) |
+| Scroll-linked reveal of drawing motion | Factory from `motion/scrubs/` (one of signatures 5–7) |
+| Looping decorative pulse | Global CSS keyframe (e.g. `pulse-glow` in `app.css`) |
+| Ambient RAF work | `subscribe(id, fn)` from `motion/utils/ticker.js` + IntersectionObserver gate |
+| Mount/unmount transitions (dialogs) | Bits UI `forceMount` + GSAP |
+| Pure CSS state transitions | `transition: ... var(--duration-normal) var(--ease-default)` |
 
 
 ### Motion Tokens
 
-
-| Token               | Value                               | Usage                              |
-| ------------------- | ----------------------------------- | ---------------------------------- |
-| `--duration-fast`   | `150ms`                             | Hover, toggles, micro-interactions |
-| `--duration-normal` | `200ms`                             | Standard transitions               |
-| `--duration-slow`   | `300ms`                             | Panel open/close, reveals          |
-| `--duration-slower` | `500ms`                             | Page transitions, large reveals    |
-| `--ease-default`    | `ease`                              | General purpose                    |
-| `--ease-bounce`     | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Playful interactions               |
-| `--ease-decel`      | `cubic-bezier(0, 0, 0.2, 1)`        | Enter animations                   |
+Defined in `src/lib/styles/tokens.css`, mirrored in `src/lib/motion/tokens.ts`, parity-tested in `tokens.test.ts`.
 
 
-**Rule:** CSS transitions use token vars. No raw `0.3s ease`.
+| Token | Value | Usage |
+| --- | --- | --- |
+| `--duration-instant` | `100ms` | Flash feedback, near-tap responses |
+| `--duration-fast` | `150ms` | Hover, toggles, micro-interactions |
+| `--duration-normal` | `200ms` | Standard transitions |
+| `--duration-slow` | `300ms` | Panel open/close |
+| `--duration-slower` | `500ms` | Page transitions, large reveals |
+| `--ease-default` | `cubic-bezier(0.4, 0, 0.2, 1)` | General purpose (Material standard) |
+| `--ease-out` | `cubic-bezier(0.2, 0.8, 0.2, 1)` | Decel into rest |
+| `--ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` | Symmetric |
+| `--ease-bounce` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Playful interactions |
+
+
+**Rule:** CSS transitions use token vars. No raw `0.3s ease` or raw `cubic-bezier()` inline.
 
 ### Global Keyframes (app.css)
 
-If a `@keyframes` is used by 2+ components, it moves to `app.css`. Component-specific animations stay scoped.
+If a `@keyframes` is used by 2+ components, it lives in `app.css`. Component-specific one-offs stay scoped.
 
-### 17e: Ground-Up Motion Re-Engineering
+Canonical global keyframes:
 
-17e does NOT patch existing animation code. It tears down and rebuilds from scratch:
+- `@keyframes blink` — terminal cursor (TerminalCursor.svelte)
+- `@keyframes pulse-glow` — orange LED status pulse (StopLabel, MetricDisplay, ManifestoEdgeBottom)
+- `@keyframes station-ping` — outward scale-ping (MetroStation)
+- `@keyframes typewriter-blink` — hero scroll-prompt cursor
 
-1. Design the preset system first — factories, timing, reduced-motion, scroll patterns.
-2. Rewrite each animation to use presets — not find-and-replace, but re-engineer.
-3. If an animation can't use a preset, the preset system grows — never add a hack.
-4. Every preset bakes in: timing tokens, easing tokens, reduced-motion guards, cleanup on destroy.
+### Reference
+
+Full motion documentation: `docs/reference/MOTION.md` v2.0 — per-primitive API, consumer patterns, anti-patterns, MetroNetwork SVGO procedure, bundle budgets.
+
+### Changelog
+
+- **2026-04-17:** Motion Doctrine — Snappy section rewritten to reflect Slice 17e completion. D263–D269 logged in design spec amendments. Ground-up re-engineering described in the pre-slice Constitution is now closed — 17e delivered.
 
 ---
 

@@ -18,13 +18,18 @@
 	let activeIndex = $state(0);
 	let paused = $state(false);
 	let intervalId: ReturnType<typeof setInterval> | undefined;
+	let rootEl = $state<HTMLElement>(undefined!);
+	let visibilityObserver: IntersectionObserver | null = null;
+	let isVisible = false;
 
 	const ROTATE_MS = 6000;
 
 	function goTo(index: number) {
 		activeIndex = index;
-		// Reset timer on manual navigation so user gets full 6s to read
-		startTimer();
+		// Reset timer on manual navigation so user gets full 6s to read.
+		// Only restart the timer if the carousel is in view — an offscreen
+		// click shouldn't wake a paused rotation.
+		if (isVisible) startTimer();
 	}
 
 	function startTimer() {
@@ -43,8 +48,24 @@
 		}
 	}
 
-	onMount(() => { startTimer(); });
-	onDestroy(() => { stopTimer(); });
+	onMount(() => {
+		// IO-gate rotation — testimonials only rotate while the carousel
+		// is in view. Hover pause (via `paused`) still applies on top.
+		visibilityObserver = new IntersectionObserver(
+			(entries) => {
+				isVisible = entries[0].isIntersecting;
+				if (isVisible) startTimer();
+				else stopTimer();
+			},
+			{ rootMargin: '100px' },
+		);
+		if (rootEl) visibilityObserver.observe(rootEl);
+	});
+	onDestroy(() => {
+		stopTimer();
+		visibilityObserver?.disconnect();
+		visibilityObserver = null;
+	});
 
 	const active = $derived(testimonials[activeIndex]);
 	const quote = $derived(resolveLocale(active.quote, 'en'));
@@ -52,6 +73,7 @@
 </script>
 
 <div
+	bind:this={rootEl}
 	class="group h-full"
 	use:cursorGlow
 >

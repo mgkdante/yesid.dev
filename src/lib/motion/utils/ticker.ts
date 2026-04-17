@@ -1,8 +1,8 @@
 // Shared gsap.ticker wrapper.
 // One gsap.ticker.add callback fans out to all subscribers — avoids multiple
-// RAF loops from ManifestoCanvas, ReadingProgressBar, idle animations.
-// Subscribers identified by string ID; subscribing with an existing ID
-// replaces the previous callback (idempotent).
+// RAF loops from ManifestoCanvas, AboutTrain, typewriter, and any other
+// idle animation. Subscribers identified by string ID; subscribing with
+// an existing ID replaces the previous callback (idempotent).
 
 import { gsap } from 'gsap';
 
@@ -22,7 +22,9 @@ function ensureTickerSubscription(): void {
 /**
  * Subscribe a callback to every frame tick.
  * @param id Unique identifier. Subscribing with an existing id replaces the previous callback.
- * @param fn Callback invoked per frame with `(time, deltaTime)` in seconds.
+ * @param fn Callback invoked per frame with `(time, deltaTime)`. Matches
+ *   GSAP's `gsap.ticker.add` contract: `time` is total elapsed seconds,
+ *   `deltaTime` is the frame interval in MILLISECONDS (e.g., 16.67 at 60fps).
  * @returns Unsubscribe function.
  */
 export function subscribe(id: string, fn: Callback): () => void {

@@ -263,14 +263,19 @@ pre, code, table {
 
 /* Typewriter cursor blink (slice 17e-4). Uses visibility instead of opacity
    so it doesn't multiply with the scroll-driven scrollPrompt fade — the
-   cursor is either visible or hidden, not "half-faded × half-blinking". */
+   cursor is either visible or hidden, not "half-faded × half-blinking".
+   17e-5 fix: the original `steps(2, start)` + single `to { visibility: hidden }`
+   keyframe left the cursor continuously hidden (both steps resolve to
+   `hidden` for discrete properties). Explicit visible/hidden keyframes
+   with step-end timing gives a proper 1 Hz blink. */
 @keyframes typewriter-blink {
-  to { visibility: hidden; }
+  0%, 100% { visibility: visible; }
+  50% { visibility: hidden; }
 }
 
 .typewriter-cursor {
   opacity: 1;
-  animation: typewriter-blink 1s steps(2, start) infinite;
+  animation: typewriter-blink 1s step-end infinite;
 }
 
 /* MetricDisplay value — mobile-only shrink for the lg (text-title) size.

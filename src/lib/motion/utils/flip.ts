@@ -6,8 +6,13 @@
 // and cards tween between their old and new positions. This is interaction-driven
 // (filter click = user input), so it's doctrine-compatible.
 //
+// **Precondition:** consumers must `await loadFlip()` at onMount before the
+// first captureFlipState() call. captureFlipState() is synchronous because
+// Flip.getState() must measure the DOM at the exact moment before the reflow.
+//
 // Usage:
-//   import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
+//   import { loadFlip, captureFlipState, animateFlipTransition } from '$lib/motion/utils';
+//   onMount(async () => { await loadFlip(); /* ... */ });
 //   // before filter changes:
 //   flipState = captureFlipState();
 //   // after filter-derived list has rendered:
@@ -15,11 +20,19 @@
 
 import { tick } from 'svelte';
 import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-import { registerGsapPlugins, gsap, Flip } from '$lib/motion/utils/gsap.js';
+import { gsap } from '$lib/motion/utils/gsap.js';
+// Flip imported directly — plugin is runtime-registered by loadFlip() at
+// consumer mount (BlogListingPage / ProjectListingPage); this import only
+// provides the symbol for Flip.getState() / Flip.from().
+// @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
+import { Flip } from 'gsap/Flip';
 
 /**
  * Capture current FLIP state for filter transitions.
  * Call BEFORE the filter value changes.
+ *
+ * Precondition: the Flip plugin must already be registered (consumer
+ * awaits `loadFlip()` at onMount).
  *
  * @returns FLIP state object, or null if reduced motion / no elements
  */
@@ -28,7 +41,6 @@ export function captureFlipState(): any {
 	if (isPrefersReducedMotion() || typeof document === 'undefined') return null;
 	const cards = document.querySelectorAll('[data-flip-id]');
 	if (cards.length === 0) return null;
-	registerGsapPlugins();
 	return Flip.getState(cards);
 }
 

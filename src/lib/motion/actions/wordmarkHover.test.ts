@@ -21,7 +21,8 @@ vi.mock('$lib/motion/utils/gsap.js', () => {
 			registerPlugin: vi.fn()
 		},
 		SplitText: SplitTextMock,
-		registerGsapPlugins: vi.fn()
+		initScrollTriggerConfig: vi.fn(),
+		ensureSplitTextRegistered: vi.fn()
 	};
 });
 
@@ -61,7 +62,11 @@ describe('wordmarkHover action', () => {
 		const el = document.createElement('span');
 		const dot = document.createElement('span');
 		wordmarkHover(el, { dotEl: dot });
-		expect(gsapMod.registerGsapPlugins).toHaveBeenCalled();
+		// Post-17e-5 D269: registerGsapPlugins split into
+		// initScrollTriggerConfig (for ScrollTrigger) and
+		// ensureSplitTextRegistered (for the sync-coupled SplitText).
+		expect(gsapMod.initScrollTriggerConfig).toHaveBeenCalled();
+		expect(gsapMod.ensureSplitTextRegistered).toHaveBeenCalled();
 	});
 
 	it('creates a SplitText instance on the text element', async () => {

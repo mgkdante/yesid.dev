@@ -167,8 +167,9 @@ export interface SiteMeta {
 export type BlogCategory = 'professional' | 'personal';
 
 // SVG animation types available for blog post illustrations.
-// Each maps to a different GSAP plugin/technique.
-export type BlogAnimation = 'draw' | 'morph' | 'draw-fill' | 'stagger';
+// Each is drawing motion (doctrine-compatible on enter per D266).
+// The pure 'stagger' fade-up variant was cut in 17e-5 (D267 F).
+export type BlogAnimation = 'draw' | 'morph' | 'draw-fill';
 
 export interface BlogPost {
 	slug: string;

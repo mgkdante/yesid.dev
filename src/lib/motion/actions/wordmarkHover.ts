@@ -7,7 +7,7 @@
 // Usage: <span use:wordmarkHover={{ dotEl: dotRef }}>yesid</span>
 
 import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
-import { registerGsapPlugins, gsap, SplitText } from '../utils/gsap.js';
+import { initScrollTriggerConfig, ensureSplitTextRegistered, gsap, SplitText } from '../utils/gsap.js';
 
 export interface WordmarkHoverParams {
 	/** Reference to the dot element (the "." after "yesid") */
@@ -25,7 +25,12 @@ export function wordmarkHover(node: HTMLElement, params: WordmarkHoverParams) {
 
 	const { dotEl, autoPlay = false, autoPlayDelay = 500 } = params;
 
-	registerGsapPlugins();
+	// wordmarkHover's action contract runs synchronously — SplitText must be
+	// registered via a sync path rather than awaiting loadSplitText().
+	// initScrollTriggerConfig() covers ScrollTrigger even though this action
+	// doesn't use it (harmless no-op if the layout already initialized it).
+	initScrollTriggerConfig();
+	ensureSplitTextRegistered();
 	const splitInstance = new SplitText(node, { type: 'chars' });
 
 	let effectIndex = 0;

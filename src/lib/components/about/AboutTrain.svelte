@@ -7,10 +7,15 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { subscribe, unsubscribe } from '$lib/motion/utils/ticker.js';
 	import { Card } from '$lib/components/ui/card';
 
+	const SUBSCRIPTION_ID = 'about-train';
+
 	let canvas: HTMLCanvasElement | undefined = $state();
-	let animId: number | undefined;
+	let cardEl = $state<HTMLElement | null>(null);
+	let visibilityObserver: IntersectionObserver | null = null;
+	let isVisible = false;
 	let angle = 0;
 	let isDragging = false;
 	let dragAngle = 0;
@@ -74,6 +79,8 @@
 	}
 
 	function loop() {
+		// IO-gated: pause the train when the card is offscreen.
+		if (!isVisible) return;
 		if (!canvas) return;
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
@@ -82,7 +89,6 @@
 			angle += SPEED;
 		}
 		draw(ctx);
-		animId = requestAnimationFrame(loop);
 	}
 
 	function handlePointerDown(e: PointerEvent) {
@@ -113,17 +119,34 @@
 		if (!canvas) return;
 		const ctx = canvas.getContext('2d');
 		if (!ctx || typeof ctx.setLineDash !== 'function') return;
-		loop();
+		if (!cardEl) return;
+
+		// IO gate — pause the train when the card scrolls out of view.
+		// rootMargin: 50px so the train resumes slightly before re-entering
+		// the viewport, hiding the first-frame spin-up.
+		visibilityObserver = new IntersectionObserver(
+			(entries) => {
+				isVisible = entries[0].isIntersecting;
+			},
+			{ rootMargin: '50px' },
+		);
+		visibilityObserver.observe(cardEl);
+
+		// Paint an initial frame so the canvas isn't blank while waiting
+		// for the IntersectionObserver to fire its first callback.
+		draw(ctx);
+
+		subscribe(SUBSCRIPTION_ID, loop);
 	});
 
 	onDestroy(() => {
-		if (animId !== undefined) {
-			cancelAnimationFrame(animId);
-		}
+		unsubscribe(SUBSCRIPTION_ID);
+		visibilityObserver?.disconnect();
+		visibilityObserver = null;
 	});
 </script>
 
-<Card class="flex h-full items-center justify-center" data-testid="about-train">
+<Card class="flex h-full items-center justify-center" data-testid="about-train" bind:ref={cardEl}>
 	<canvas
 		bind:this={canvas}
 		width={SIZE}

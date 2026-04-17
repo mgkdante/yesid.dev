@@ -1,50 +1,68 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // gsap and its plugins are mocked globally in src/tests/setup.ts.
-// This test file validates our registration wrapper, not GSAP itself.
+// This test file validates our registration wrappers + lazy loaders,
+// not GSAP itself. Post-17e-5 (D269): registerGsapPlugins has been
+// deleted in favor of per-consumer lazy loading.
 
-describe('registerGsapPlugins', () => {
+describe('initScrollTriggerConfig', () => {
 	beforeEach(() => {
-		vi.clearAllMocks(); // Reset spy call counts so each test starts fresh.
-		vi.resetModules(); // Fresh module import resets the `registered` flag to false.
+		vi.clearAllMocks();
+		vi.resetModules();
 	});
 
-	it('calls gsap.registerPlugin on first call', async () => {
+	it('registers ScrollTrigger and applies config on first call', async () => {
 		const { gsap } = await import('gsap');
-		const { registerGsapPlugins } = await import('./gsap.js');
-
-		registerGsapPlugins();
-
-		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
-	});
-
-	it('passes all plugins to registerPlugin', async () => {
-		const { gsap } = await import('gsap');
+		const { initScrollTriggerConfig } = await import('./gsap.js');
 		const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-		const { MotionPathPlugin } = await import('gsap/MotionPathPlugin');
-		const { DrawSVGPlugin } = await import('gsap/DrawSVGPlugin');
-		const { CustomEase } = await import('gsap/CustomEase');
-		const { SplitText } = await import('gsap/SplitText');
-		const { MorphSVGPlugin } = await import('gsap/MorphSVGPlugin');
-		// @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
-		const { Flip } = await import('gsap/Flip');
-		const { registerGsapPlugins } = await import('./gsap.js');
 
-		registerGsapPlugins();
+		initScrollTriggerConfig();
 
-		expect(gsap.registerPlugin).toHaveBeenCalledWith(
-			ScrollTrigger, MotionPathPlugin, DrawSVGPlugin, CustomEase, SplitText, MorphSVGPlugin, Flip
-		);
+		expect(gsap.registerPlugin).toHaveBeenCalledWith(ScrollTrigger);
+		expect(ScrollTrigger.config).toHaveBeenCalledWith({ ignoreMobileResize: true });
 	});
 
 	it('is idempotent — calling twice only registers once', async () => {
 		const { gsap } = await import('gsap');
-		const { registerGsapPlugins } = await import('./gsap.js');
+		const { initScrollTriggerConfig } = await import('./gsap.js');
 
-		registerGsapPlugins();
-		registerGsapPlugins();
+		initScrollTriggerConfig();
+		initScrollTriggerConfig();
 
 		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+});
+
+describe('ensureSplitTextRegistered', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		vi.resetModules();
+	});
+
+	it('registers SplitText synchronously', async () => {
+		const { gsap } = await import('gsap');
+		const { ensureSplitTextRegistered } = await import('./gsap.js');
+		const { SplitText } = await import('gsap/SplitText');
+
+		ensureSplitTextRegistered();
+
+		expect(gsap.registerPlugin).toHaveBeenCalledWith(SplitText);
+	});
+
+	it('is idempotent', async () => {
+		const { gsap } = await import('gsap');
+		const { ensureSplitTextRegistered } = await import('./gsap.js');
+
+		ensureSplitTextRegistered();
+		ensureSplitTextRegistered();
+
+		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+});
+
+describe('re-exports', () => {
+	beforeEach(() => {
+		vi.resetModules();
 	});
 
 	it('re-exports gsap', async () => {
@@ -57,21 +75,6 @@ describe('registerGsapPlugins', () => {
 		expect(ScrollTrigger).toBeDefined();
 	});
 
-	it('re-exports MotionPathPlugin', async () => {
-		const { MotionPathPlugin } = await import('./gsap.js');
-		expect(MotionPathPlugin).toBeDefined();
-	});
-
-	it('re-exports DrawSVGPlugin', async () => {
-		const { DrawSVGPlugin } = await import('./gsap.js');
-		expect(DrawSVGPlugin).toBeDefined();
-	});
-
-	it('re-exports CustomEase', async () => {
-		const { CustomEase } = await import('./gsap.js');
-		expect(CustomEase).toBeDefined();
-	});
-
 	it('re-exports SplitText', async () => {
 		const { SplitText } = await import('./gsap.js');
 		expect(SplitText).toBeDefined();
@@ -81,11 +84,6 @@ describe('registerGsapPlugins', () => {
 		const { MorphSVGPlugin } = await import('./gsap.js');
 		expect(MorphSVGPlugin).toBeDefined();
 	});
-
-	it('re-exports Flip', async () => {
-		const { Flip } = await import('./gsap.js');
-		expect(Flip).toBeDefined();
-	});
 });
 
 describe('lazy plugin loaders', () => {
@@ -94,37 +92,46 @@ describe('lazy plugin loaders', () => {
 		vi.resetModules();
 	});
 
-	it('loadDrawSVG is async and safe to call before registerGsapPlugins', async () => {
+	it('loadDrawSVG resolves without error', async () => {
 		const { loadDrawSVG } = await import('./gsap.js');
 		await expect(loadDrawSVG()).resolves.toBeUndefined();
 	});
 
-	it('loadMorphSVG is async and safe to call before registerGsapPlugins', async () => {
+	it('loadMorphSVG resolves without error', async () => {
 		const { loadMorphSVG } = await import('./gsap.js');
 		await expect(loadMorphSVG()).resolves.toBeUndefined();
 	});
 
-	it('loadFlip is async and safe to call before registerGsapPlugins', async () => {
+	it('loadFlip resolves without error', async () => {
 		const { loadFlip } = await import('./gsap.js');
 		await expect(loadFlip()).resolves.toBeUndefined();
 	});
 
-	it('loadCustomEase is async and safe to call before registerGsapPlugins', async () => {
+	it('loadCustomEase resolves without error', async () => {
 		const { loadCustomEase } = await import('./gsap.js');
 		await expect(loadCustomEase()).resolves.toBeUndefined();
 	});
 
-	it('loadDrawSVG registers DrawSVGPlugin when called before eager registration', async () => {
+	it('loadMotionPathPlugin resolves without error', async () => {
+		const { loadMotionPathPlugin } = await import('./gsap.js');
+		await expect(loadMotionPathPlugin()).resolves.toBeUndefined();
+	});
+
+	it('loadSplitText resolves without error', async () => {
+		const { loadSplitText } = await import('./gsap.js');
+		await expect(loadSplitText()).resolves.toBeUndefined();
+	});
+
+	it('loadDrawSVG registers DrawSVGPlugin', async () => {
 		const { gsap } = await import('gsap');
 		const { loadDrawSVG } = await import('./gsap.js');
 
 		await loadDrawSVG();
 
-		// Either eager or lazy path registers — both satisfy the contract.
 		expect(gsap.registerPlugin).toHaveBeenCalled();
 	});
 
-	it('loadDrawSVG is idempotent — calling twice only registers once', async () => {
+	it('loadDrawSVG is idempotent', async () => {
 		const { gsap } = await import('gsap');
 		const { loadDrawSVG } = await import('./gsap.js');
 
@@ -164,18 +171,34 @@ describe('lazy plugin loaders', () => {
 		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
 	});
 
-	it('registerGsapPlugins + subsequent lazy loaders stays at one registerPlugin call', async () => {
+	it('loadMotionPathPlugin is idempotent', async () => {
 		const { gsap } = await import('gsap');
-		const { registerGsapPlugins, loadDrawSVG, loadMorphSVG, loadFlip, loadCustomEase } =
-			await import('./gsap.js');
+		const { loadMotionPathPlugin } = await import('./gsap.js');
 
-		registerGsapPlugins();
-		await loadDrawSVG();
-		await loadMorphSVG();
-		await loadFlip();
-		await loadCustomEase();
+		await loadMotionPathPlugin();
+		await loadMotionPathPlugin();
 
-		// Eager call registered all seven plugins in one batch; lazy calls no-op.
+		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+
+	it('loadSplitText is idempotent', async () => {
+		const { gsap } = await import('gsap');
+		const { loadSplitText } = await import('./gsap.js');
+
+		await loadSplitText();
+		await loadSplitText();
+
+		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
+	});
+
+	it('ensureSplitTextRegistered and loadSplitText share the same registry', async () => {
+		const { gsap } = await import('gsap');
+		const { ensureSplitTextRegistered, loadSplitText } = await import('./gsap.js');
+
+		ensureSplitTextRegistered();
+		await loadSplitText();
+
+		// Second call finds SplitText already registered — single registerPlugin call.
 		expect(gsap.registerPlugin).toHaveBeenCalledTimes(1);
 	});
 });

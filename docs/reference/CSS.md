@@ -149,15 +149,21 @@ Global stacking context — no magic numbers.
 
 ## Transition Tokens
 
+Defined in `src/lib/styles/tokens.css`, mirrored in `src/lib/motion/tokens.ts` (TS consumers need them at compute time for GSAP without paying for `getComputedStyle`). Parity is enforced by `src/lib/motion/tokens.test.ts`.
+
 | Token | Value | Usage |
 |-------|-------|-------|
-| `--duration-fast` | `150ms` | Hover states, toggles |
+| `--duration-instant` | `100ms` | Flash feedback, near-tap responses (added 17e-1) |
+| `--duration-fast` | `150ms` | Hover states, toggles, micro-interactions |
 | `--duration-normal` | `200ms` | Standard transitions |
 | `--duration-slow` | `300ms` | Panel open/close |
-| `--duration-slower` | `500ms` | Page transitions, reveals |
-| `--ease-default` | `ease` | General-purpose easing |
+| `--duration-slower` | `500ms` | Page transitions, large reveals |
+| `--ease-default` | `cubic-bezier(0.4, 0, 0.2, 1)` | General purpose (Material standard, 17e-1 D260) |
+| `--ease-out` | `cubic-bezier(0.2, 0.8, 0.2, 1)` | Decel into rest (added 17e-1) |
+| `--ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` | Symmetric acceleration (added 17e-1) |
 | `--ease-bounce` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Playful interactions |
-| `--ease-decel` | `cubic-bezier(0, 0, 0.2, 1)` | Enter animations |
+
+**Adding a new token:** declare in `tokens.css`, mirror in `motion/tokens.ts`, update this table, run `bun run test -- src/lib/motion/tokens.test.ts`.
 
 ---
 
@@ -262,10 +268,14 @@ Unified naming between `tokens.css` and `@theme`.
 
 | Keyframe | Pattern | Usage |
 |----------|---------|-------|
-| `blink` | 0%/100%: opacity 1, 50%: opacity 0 | Terminal cursors, blinking indicators |
-| `pulse-glow` | Oscillating opacity + brand glow box-shadow | LED dots, status indicators |
+| `blink` | 0%/100%: opacity 1, 50%: opacity 0 | `TerminalCursor.svelte` cursor underscore |
+| `pulse-glow` | Opacity 1 ↔ 0.7 + brand box-shadow 4px → 10px | `StopLabel`, `MetricDisplay` pulse-glow areas, `ManifestoEdgeBottom` `.manifesto__status-dot` (consolidated 17e-5 from scoped keyframe) |
+| `station-ping` | Scale 1 → 2.5 + opacity 0.6 → 0 | `MetroStation.svelte` outward ping |
+| `typewriter-blink` | 0%/100% visible, 50% hidden (`step-end`) | Hero scroll-prompt cursor (`.typewriter-cursor`, 17e-4; keyframe fixed 17e-5) |
 
-Used via `.led-pulse` utility class or direct `animation:` reference.
+**Rule:** If a `@keyframes` is used by 2+ components, it moves to `app.css`. Component-specific one-offs stay scoped.
+
+Consumers apply keyframes via explicit `animation:` declarations. The one utility-class shortcut is `.led-pulse` (see utility table below) — a named alias for `animation: pulse-glow 2s ease-in-out infinite`. Current consumers all use direct `animation:` declarations; `.led-pulse` is available for future adoption.
 
 ---
 
