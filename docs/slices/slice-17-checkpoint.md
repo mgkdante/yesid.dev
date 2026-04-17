@@ -1,16 +1,36 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-16 | 17d COMPLETE — Ready for PR
-**Branch:** `feature/slice-17d-component-api`
+**Last updated:** 2026-04-16 | 17e-1 MERGED — 17e-2 Snappy Sweep next
+**Branch:** `main` (both 17e-planning docs + 17e-1 foundation merged)
 
 ## Current Position
 
-- **Sub-slice:** 17d — Component API — COMPLETE
-- **Card unification:** COMPLETE — 21 instances unified to `ui/card`, `.bento-card` deleted, CollapsibleSection uses Card internally
-- **Code review fixes:** COMPLETE — flex-col leak, dead CSS, `rounded-[inherit]`, `group-hover/card:`
-- **Build:** 0 type errors, 21 pre-existing warnings, 769/769 tests pass
-- **Status:** All tasks approved. Closing artifacts written. Ready for PR to main.
-- **Next sub-slice:** 17e — Motion Re-Engineering
+- **Sub-slice:** 17e-1 — Motion Foundation — COMPLETE (PR #12 merged)
+- **Previous:** 17d Component API — COMPLETE (PR #10 merged)
+- **Build:** 0 type errors, 21 pre-existing warnings, 802/802 tests pass (up from 769 baseline: +33 new tests)
+- **Status:** 17e-1 delivered: motion tokens (CSS + TS mirror + parity test), shared `gsap.ticker`, lazy GSAP plugin loaders, `normalizeScroll` removed (mobile tap-vs-click fix), `rollup-plugin-visualizer` + `bun run bundle-size` baseline recorded. Full handoff: `docs/handoffs/handoff-slice-17e-1.md`.
+- **Next sub-slice:** 17e-2 — Snappy Sweep (delete `use:reveal` + 27+ call sites, entrance animations, orphaned train components, `actions/ripple.ts`, `actions/tilt.ts`, `components/ScrollRail.svelte`). Plan still to be written.
+
+### 17e-1 Summary (PR #12)
+
+| Area | What landed |
+|------|-------------|
+| Tokens | `--duration-instant`, `--ease-out`, `--ease-in-out` added; `--ease-default` upgraded to explicit `cubic-bezier(0.4, 0, 0.2, 1)`. `motion/tokens.ts` TS mirror + parity test. |
+| Ticker | `motion/utils/ticker.ts` shared `gsap.ticker` wrapper with subscribe/unsubscribe. Ready for 17e-5 RAF consolidation. |
+| GSAP | Hybrid eager + lazy in `motion/utils/gsap.ts`. `loadDrawSVG`, `loadMorphSVG`, `loadFlip`, `loadCustomEase` ready for 17e-2+ consumer migration. |
+| Lenis | `ScrollTrigger.normalizeScroll` removed — tap-vs-click bug fix validated on real iPhone + Android. |
+| Bundle tooling | `rollup-plugin-visualizer@7.0.1` + `bun run bundle-size` → `dist/stats.html`. Per-route baseline gzipped sizes recorded in slice spec. |
+| Barrel | `$lib/motion` now exposes tokens + ticker + lazy loaders. |
+| Tests | +33 (11 tokens parity, 5 ticker, 10 gsap lazy loaders, 7 lenis). 802/802 total. |
+
+### 17e-1 Decisions (D259–D262)
+
+- **D259:** Option B hybrid for GSAP plugins — eager imports kept alongside lazy loaders for 17e-1. Consumer migration + eager deletion lands in 17e-2 onward. Zero consumer breakage in this sub-slice.
+- **D260:** `--ease-default` curve upgrade from CSS keyword `ease` to explicit `cubic-bezier(0.4, 0, 0.2, 1)` (Material standard). 31 component files consume this token — subtle hover-transition feel shift was Yesid-approved at Task 2 gate.
+- **D261:** Bundle-size baseline methodology = per-route SvelteKit node gzipped sizes (not full initial JS). Consistent metric for diff-ability across 17e sub-slices. Full per-route budgets verified via `dist/stats.html` treemap when needed.
+- **D262:** Sub-slice closing artifacts (MOTION.md v2.0, CONSTITUTION.md Snappy Doctrine amendment, `docs/learn/motion/`) correctly deferred to 17e-6 per design spec §9.1. Each 17e-2..17e-5 sub-slice gets a handoff file but not full slice-closing work.
+
+### 17d Summary (99 commits, 285 files, +32,885 / -7,048)
 
 ### 17d Summary (99 commits, 285 files, +32,885 / -7,048)
 
@@ -547,8 +567,14 @@ Phase 1 — Foundation (visual cohesion first)
   17a-3b: Token Wiring + Normalization . COMPLETE (8 tasks, PR #6 merged)
   17a-5: Spacing & Layout Constitution . COMPLETE (PR #8 merged)
   17a-6: Component Library Foundation ... COMPLETE (PR #9 merged)
-  17d:   Component API ................. COMPLETE (99 commits, ~17 sessions) → ready for PR
-  17e:   Motion Re-Engineering ......... NEXT → needs implementation plan (2-3 sessions)
+  17d:   Component API ................. COMPLETE (99 commits, ~17 sessions, PR #10 merged)
+  17e:   Motion Re-Engineering ......... IN PROGRESS (6 sub-slices, ~6-6.5 sessions)
+    17e-1: Foundation .................. COMPLETE (8 tasks, PR #12 merged)
+    17e-2: Snappy Sweep ................ NEXT → needs plan
+    17e-3: Scrub Factories ............. PLANNED
+    17e-4: Hero Timeline Rewrite ....... PLANNED
+    17e-5: Interaction Consolidation ... PLANNED
+    17e-6: Closing ..................... PLANNED (MOTION.md v2.0 + learn docs + Lighthouse)
   17a-4: Dead Code + Trivial Dedup ..... PLANNED → needs implementation plan (1 session, after 17e)
 Phase 2 — Data + Architecture
   17b:   Service Layer ................. 2 sessions
@@ -886,7 +912,7 @@ Phase 2 — Data + Architecture
 
 ## Next Steps
 
-1. **17d Closing:** PR to main (squash-merge), then delete feature branch.
-2. **17e: Motion Re-Engineering** — Needs implementation plan. 2-3 sessions. Ground-up rebuild of GSAP preset system.
-3. **17a-4: Dead Code Cleanup** — Needs implementation plan. 1 session (after 17e).
+1. **17e-2: Snappy Sweep** — Needs planning session (brainstorm → spec → plan). Delete `use:reveal` + 27+ call sites, `actions/ripple.ts`, `actions/tilt.ts`, orphaned train components, `components/ScrollRail.svelte`, all on-load/on-scroll-into-view entrance animations. FLIP filter logic moves to `motion/utils/flip.ts`. Target: zero entrance animations on article pages (per Snappy Doctrine).
+2. **17e-3 through 17e-6** — Scrub factories, hero timeline rewrite, interaction consolidation, closing. See design spec `docs/specs/2026-04-16-slice-17e-motion-reengineering-design.md` §9.1 for scope per sub-slice.
+3. **17a-4: Dead Code Cleanup** — Still planned, 1 session, after 17e closes.
 
