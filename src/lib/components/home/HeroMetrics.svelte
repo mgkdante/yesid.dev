@@ -20,10 +20,15 @@
   }
 </script>
 
-<div class="grid grid-cols-1 gap-3.5 md:grid-cols-3" data-testid="hero-metrics">
-  {#each metrics as metric (metric.key)}
+<!--
+  Mobile: 4-col grid where each card spans 2 cols. Cards 1 + 2 fill the
+  row; card 3 spans cols 2-3 (col-start-2) so it centers on its own row.
+  Desktop (md+): plain 3-col grid, one card per col.
+-->
+<div class="grid grid-cols-4 gap-3.5 md:grid-cols-3" data-testid="hero-metrics">
+  {#each metrics as metric, i (metric.key)}
     <Card
-      class="px-4 py-3.5 md:px-5 md:py-4"
+      class="col-span-2 px-4 py-3.5 md:col-span-1 md:px-5 md:py-4 {i === 2 ? 'col-start-2 md:col-start-auto' : ''}"
       data-testid="metric-card"
     >
       <MetricDisplay
