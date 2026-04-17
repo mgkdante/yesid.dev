@@ -1,7 +1,36 @@
 # Slice 17h — Brand Bundle + Source-of-Truth Refactor (Design Spec)
 
-**Date:** 2026-04-17
-**Status:** Draft — pending Yesid review
+> ## ⚠️ PARTIALLY OBSOLETE — Scope shrunk 2026-04-18
+>
+> This design spec describes the **original** 17h architecture: a generator-driven source-of-truth in `brand/` that absorbs `CONSTITUTION.md`, `CSS.md`, `MOTION.md` from `docs/reference/`, with `bun run brand:sync` keeping tokens/CSS/TS in lockstep.
+>
+> **That architecture was walked back on 2026-04-18.** The new rule: `brand/` contains non-tech info and assets only. Governance (`CONSTITUTION.md`, `CSS.md`, `MOTION.md`) stays in `docs/reference/`. Token values stay in `src/lib/styles/tokens.css`. No generator, no sync orchestrator.
+>
+> **What's still valid in this spec (treat as historical research):**
+> - §3 "Reference sites + prior art" — the audit of Primer / Polaris / Carbon / Geist / Linear / Supabase / Stripe, and the voice-calibration conclusion ("declarative, short, zero adjectives. Carbon's prose filtered through Geist's craft"). Still the target tone for the narrative docs in the shrunk scope.
+> - §3 decisions-folder observation — "Decisions folder is the differentiator nobody publishes for a solo brand." Still the thesis for `brand/decisions/` in the shrunk scope.
+> - §1.d framing — "reads like the work of a senior infrastructure engineer who manages brand cohesion as a product." Still the goal.
+>
+> **What's dead (skip it):**
+> - §1.a + §1.b: single source of truth via `tokens.json` → generator. Dead.
+> - §1.c: constitution framed as part of the bundle. Dead — CONSTITUTION stays at `docs/reference/`.
+> - §2 design principle 1 ("One input, many outputs"), #5 ("Generator is boring"), #6 ("Generated files are committed"), #8 ("The constitution is a brand artifact [inside `brand/`]"). Dead.
+> - §4 directory layout showing `brand/CONSTITUTION.md`, `brand/CSS.md`, `brand/tokens.json`, `brand/tokens.css`, `brand/tailwind.brand.js`, `brand/scripts/generate.ts`, etc. Dead.
+> - Every mention of `bun run brand:generate` / `brand:sync` / `brand:verify`. Dead.
+>
+> **New scope (authoritative — read instead):**
+> - Parent slice: [docs/slices/slice-17h-brand-bundle.md](../slices/slice-17h-brand-bundle.md) — the "Scope shrink — 2026-04-18" section is the new architecture.
+> - Plan: [docs/plans/2026-04-17-slice-17h-brand-bundle.md](../plans/2026-04-17-slice-17h-brand-bundle.md).
+> - Surviving sub-slices: 17h-3 (narrative docs) + 17h-4 (logo + assets). Other 4 stubbed OBSOLETE.
+>
+> **Why the shrink:** physical separation between `brand/` (intent/narrative) and `src/` + `docs/reference/` (implementation + governance) makes it harder to break one while editing the other. A generator closes the gap fast but also makes a bad edit propagate fast. Manual translation (dev reads a `brand/decisions/*.md` entry and updates `src/lib/styles/tokens.css` by hand, with PR review as the safety net) is slower but safer. Appropriate for a solo brand at this scale.
+>
+> **The body below is preserved unchanged as historical research.** It documents what was considered and why — useful for a future revisit of the generator idea, not for this slice's execution.
+
+---
+
+**Date:** 2026-04-17 (original) · 2026-04-18 (partially obsoleted)
+**Status:** Partially obsolete — see banner above
 **Approach:** Path A — Claude Design as primary design tool, no Figma
 **Slice position:** 17h — closing chapter of Slice 17 (Standardization). The visual-design bookend to 17a (tokens + primitives), 17a-5 (spacing + constitution), 17d (component API), and 17e (motion). Slice 18 remains reserved for Payload CMS in the separate `yesid.dev-cms` repo.
 **Depends on:** Slice 17e (motion consolidation) merged to `main`

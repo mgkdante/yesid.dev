@@ -1,14 +1,16 @@
 # Slice 17h-3 — Narrative Docs + Case Study
 
-**Status:** draft
+**Status:** draft (updated 2026-04-18 for the 17h scope shrink — see parent slice)
 **Priority:** 2
 **Estimated effort:** 2 sessions
-**Depends on:** 17h-2
+**Depends on:** standalone (previously depended on 17h-2; 17h-2 killed 2026-04-18)
 **Parent:** `docs/slices/slice-17h-brand-bundle.md`
 
 ## Objective
 
 Write the human-readable face of `brand/`: `BRAND.md` (voice + 5 principles), six `foundations/*.md` files, `components.md` (primitive inventory), and four `decisions/*.md` seed entries. Rewrite `README.md` as the front-door. All markdown, case-study quality, LLM-parseable.
+
+**Post-shrink note (2026-04-18):** Under the new 17h model, `brand/` contains narrative + assets only. Governance docs (`CONSTITUTION.md`, `CSS.md`, `MOTION.md`) stay at `docs/reference/`; token values stay in `src/lib/styles/tokens.css`. Every `foundations/*.md` in this sub-slice is **narrative** — it describes how the brand thinks about color / type / space / motion / voice / a11y and cross-links OUT to `docs/reference/*` for authoritative values + rules. The foundations docs do NOT duplicate or replace the governance docs; they frame them.
 
 ## Context
 
@@ -42,14 +44,14 @@ brand/BRAND.md                         — CREATE
 brand/foundations/color.md             — CREATE
 brand/foundations/typography.md        — CREATE
 brand/foundations/space.md             — CREATE
-brand/foundations/motion.md            — CREATE
+brand/foundations/motion.md            — CREATE (newly authored narrative; cross-links to docs/reference/MOTION.md for the authoritative motion doc — NOT moved)
 brand/foundations/voice.md             — CREATE
-brand/foundations/accessibility.md     — CREATE
+brand/foundations/accessibility.md     — CREATE (cross-links to docs/reference/CONSTITUTION.md §7 — NOT moved)
 brand/components.md                    — CREATE
 brand/decisions/2026-04-why-orange.md                — CREATE
 brand/decisions/2026-04-why-edge-to-edge.md          — CREATE
+brand/decisions/2026-04-why-a-constitution.md        — CREATE (why docs/reference/CONSTITUTION.md exists and why brand/ points to it rather than owning it)
 brand/decisions/2026-04-what-i-killed.md             — CREATE
-brand/decisions/2026-04-path-a-no-figma.md           — CREATE
 ```
 
 ### Modified
@@ -67,10 +69,10 @@ brand/README.md                        — REWRITE as front-door
 
 - [ ] **Step 1:** 6 sections, under 120 lines total:
   1. **Pitch** (2 sentences). Who it's for. What changes when you use it.
-  2. **Quick start**: `bun run brand:generate` + 3 consumption snippets (CSS custom props, Tailwind v3 config, raw JSON).
-  3. **What's inside**: table of top-level items + one-line purpose.
-  4. **Editing the brand**: 4-step workflow (edit `tokens.json` → run `bun run brand:sync` → review diff → commit).
-  5. **Consuming from another project**: 5-line recipes for 3 scenarios.
+  2. **What's inside**: table of top-level items + one-line purpose (foundations/, decisions/, logos/, examples/, components.md, BRAND.md).
+  3. **How brand decisions become code**: 3-step workflow (decision captured in `brand/decisions/*.md` → dev translates to `src/lib/styles/tokens.css` / component edits → PR review verifies the translation). Call out explicitly: no generator, no `brand:sync`, no automation.
+  4. **Where authoritative rules live**: pointer table — governance at `docs/reference/CONSTITUTION.md`, token values at `src/lib/styles/tokens.css`, CSS architecture at `docs/reference/CSS.md`, motion at `docs/reference/MOTION.md`. `brand/` is the narrative layer over these.
+  5. **Consuming from another project**: clone `brand/` for narrative + assets; the code-level rules come from the other trees.
   6. **Version + contact**.
 - [ ] **Step 2:** Voice check — no marketing adjectives. "Design system for yesid.dev" not "A beautiful, thoughtful design system…".
 - [ ] **Step 3:** Open in Claude chat. Ask a fresh instance "what is this directory?". If it can't answer in 3 sentences from the README alone, rewrite.
@@ -123,28 +125,30 @@ brand/README.md                        — REWRITE as front-door
 
 ## Session 2 — 17h-3.2
 
-### Task 4: Write foundations — `voice.md`, `accessibility.md` (motion.md exists from 17h-1 move)
+### Task 4: Write foundations — `voice.md`, `accessibility.md`, `motion.md`
 
-**Files:** `brand/foundations/voice.md`, `brand/foundations/accessibility.md`.
+**Files:** `brand/foundations/voice.md`, `brand/foundations/accessibility.md`, `brand/foundations/motion.md`.
 
-**Note:** `brand/foundations/motion.md` was moved here in 17h-1 from `docs/reference/MOTION.md`. This task does NOT re-create it. If edits are needed to align with the foundations template, make them here — but the content is the authoritative motion doc from the start.
+**Post-shrink note:** 17h-1 was supposed to move `docs/reference/MOTION.md` into `brand/foundations/motion.md`. That move is dead. This task now authors `motion.md` as a **new narrative** that describes how the brand thinks about motion (principles, signature vocabulary, when to animate) and cross-links to `docs/reference/MOTION.md` for the authoritative implementation reference. Same pattern as `color.md` / `space.md` — narrative layer over the governance doc.
 
 - [ ] **Step 1: `voice.md`** —
   - Expands `BRAND.md` tone section. Longer vocabulary table. More before/after pairs. UX copy patterns (button labels, error messages, empty states).
   - Voice samples from live site (hero, services, blog, contact).
   - Cross-link to `BRAND.md` (tone intro) for readers arriving here first.
 - [ ] **Step 2: `accessibility.md`** —
-  - WCAG posture. Cross-link to `brand/CONSTITUTION.md` §7 (accessibility) rather than duplicating — CONSTITUTION is the canonical rules document.
+  - WCAG posture. Cross-link to `docs/reference/CONSTITUTION.md §7` (accessibility) rather than duplicating — CONSTITUTION is the canonical rules document.
   - Keyboard navigation expectations.
   - Focus-visible style.
   - Reduced motion.
   - Touch target minimum.
   - Zero `svelte-ignore a11y_*` tolerance.
-- [ ] **Step 3: Light-touch pass on `motion.md`** (already-moved from docs/reference/).
-  - Verify cross-links still work post-move.
-  - Optional: add a top-of-file pointer to `brand/BRAND.md` principle #4 ("Motion with intent") if missing.
-  - Do NOT rewrite content.
-- [ ] **Step 4:** `voice.md` and `accessibility.md` each ≤ 250 lines.
+- [ ] **Step 3: `motion.md`** — NEWLY AUTHORED (previously planned as a move from `docs/reference/MOTION.md`; that move is dead).
+  - What motion means for the brand — 3–4 sentences of intent.
+  - The 9-signature vocabulary at a narrative level (hover, scrub, ambient, etc.), without the full implementation detail.
+  - Cross-link to `docs/reference/MOTION.md` for the authoritative reference (tokens, factories, actions, bundle budgets).
+  - Cross-link to `BRAND.md` principle #4 ("Motion with intent").
+  - ≤ 200 lines — this is a narrative overview, not the full motion doc.
+- [ ] **Step 4:** `voice.md`, `accessibility.md`, `motion.md` each ≤ 250 lines.
 
 **STOP. Yesid reviews.**
 
@@ -161,15 +165,15 @@ brand/README.md                        — REWRITE as front-door
 
 **STOP. Yesid reviews.**
 
-### Task 6: Write 6 decisions seed entries
+### Task 6: Write 4 decisions seed entries
 
 **Files:**
 - `brand/decisions/2026-04-why-orange.md`
 - `brand/decisions/2026-04-why-edge-to-edge.md`
 - `brand/decisions/2026-04-why-a-constitution.md`
-- `brand/decisions/2026-04-extracting-brand-from-docs.md`
 - `brand/decisions/2026-04-what-i-killed.md`
-- `brand/decisions/2026-04-path-a-no-figma.md`
+
+**Post-shrink note:** Originally 6 seed decisions. Dropped: `path-a-no-figma.md` (Yesid dropped 2026-04-17 — tooling-internal, not public case-study material) and `extracting-brand-from-docs.md` (premise dead — the docs were never extracted under the 2026-04-18 shrunk scope).
 
 - [ ] **Step 1: `2026-04-why-orange.md`** —
   - Context: picking a brand color for a solo digital-infrastructure practice.
@@ -184,29 +188,17 @@ brand/README.md                        — REWRITE as front-door
   - Rationale: desktop real estate isn't wasted; text stays readable; personality through structure.
   - Consequences: every section manages its own constraints; `brand/CONSTITUTION.md` §2 codifies this.
 - [ ] **Step 3: `2026-04-why-a-constitution.md`** —
-  - Context: after 22+ slices, a governance document emerged (17a-5) codifying layout, typography, motion, and a11y rules. Why did a solo brand need a constitution?
+  - Context: after 22+ slices, a governance document emerged (17a-5) codifying layout, typography, motion, and a11y rules. Why did a solo brand need a constitution, and why does it live at `docs/reference/CONSTITUTION.md` rather than inside `brand/`?
   - Options considered: stay informal (relies on memory, drifts); enforce via code review (doesn't scale to a team of one); write it down once (the answer).
-  - Decision: CONSTITUTION.md lives in `brand/` as a first-class brand artifact, alongside tokens.json and BRAND.md.
-  - Rationale: layout, motion, and a11y rules *are* the brand. Tokens alone don't capture "edge-to-edge," "dvh not vh," "no nested scroll containers," "touch targets 44×44px below xl:". A brand without a constitution is just a color palette.
-  - Consequences: every future slice is measured against the constitution; changes to the constitution require a `decisions/` entry; future projects clone the constitution alongside the tokens.
-- [ ] **Step 4: `2026-04-extracting-brand-from-docs.md`** —
-  - Context: `docs/reference/` was created on day 1 with six files. By slice 17, three of them (CONSTITUTION, CSS, MOTION) had become brand-portable — they could ship intact to a second yesid-branded project. The other three (ARCHITECTURE, PATTERNS, WORKFLOW, TESTS) are site-specific.
-  - Options considered: keep everything in `docs/` (simple but conflates two audiences); duplicate into `brand/` (drift risk); move the portable ones into `brand/` with redirect stubs (chosen).
-  - Decision: in 17h-1, `git mv docs/reference/CONSTITUTION.md brand/CONSTITUTION.md` etc. Redirect stubs at old paths for one release; content is authoritative at new paths.
-  - Rationale: a hiring manager reading `brand/` shouldn't have to leave. An engineer working on the site follows a pointer once. Future projects clone `brand/` with the constitution, tokens, and motion language intact.
-  - Consequences: `brand/` is a standalone starter kit. `docs/` is this project's process + history. The split is explicit in `docs/reference/WORKFLOW.md` (updated in 17h-5).
-- [ ] **Step 5: `2026-04-what-i-killed.md`** —
+  - Decision (2026-04-18 revision): CONSTITUTION.md lives at `docs/reference/CONSTITUTION.md` as the site's governance law. `brand/` points to it but does not own it — physical separation between narrative (`brand/`) and rules (`docs/reference/`) makes it harder to accidentally desync governance from the implementation it governs.
+  - Rationale: layout, motion, and a11y rules *are* part of the brand intent — but the enforcement surface is the code. Keeping the constitution next to the code (`docs/reference/`) keeps a governance edit close to its implementation impact; `brand/foundations/*.md` narrates the intent in language that doesn't presuppose the code.
+  - Consequences: every future slice is measured against the constitution at `docs/reference/CONSTITUTION.md`; changes to it require a `brand/decisions/*.md` entry explaining the intent change; future projects that fork `brand/` also fork (or copy) `docs/reference/CONSTITUTION.md` explicitly.
+- [ ] **Step 4: `2026-04-what-i-killed.md`** —
   - Context: entropy fights in a fast-moving solo codebase.
-  - List of killed things with one-sentence rationale: the PDF brand guide (markdown + generator replaced it), hardcoded hex colors (17a-3), layout wrapper components (17d), `colors.json` duplication (17h-1), Three.js preview pages (17a-4), and the `/brand` directory in any non-yesid tool.
+  - List of killed things with one-sentence rationale: the PDF brand guide (markdown narrative replaces it), hardcoded hex colors (17a-3), layout wrapper components (17d), `colors.json` duplication (17h-3 deletion), Three.js preview pages (17a-4), the hero 3D scene (17a-4 — perf + a11y + reduced-motion-fallback-that-duplicated-SVG), and the 17h generator / source-of-truth automation (17h scope-shrink 2026-04-18 — chose physical separation + manual translation over generator-enforced sync).
   - Why this matters: what you kill defines the system as much as what you keep.
-- [ ] **Step 6: `2026-04-path-a-no-figma.md`** —
-  - Context: choosing between Figma, Claude Design, or hybrid.
-  - Options considered (with research findings): Starter-tier Figma (no library publish, single-mode Variables), Pro upgrade ($15/mo, still no Code Connect — that's Org/Ent), Claude Design (vision+LLM, no schema, shipped 2026-04-17), hybrid.
-  - Decision: Path A — Claude Design only. No Figma.
-  - Rationale: Code Connect needs Organization; Claude Design covers the token/narrative handoff; the 3 portable formats (DTCG JSON, CSS vars, markdown) outlive any tool.
-  - Consequences: `brand/` IS the handoff; Claude Design consumes directly; bundle is Figma-ready if that ever comes back.
-- [ ] **Step 7:** Each ≤ 200 lines. First person for decisions. Reads as senior-engineer reasoning, not marketing.
-- [ ] **Step 8:** Link from `BRAND.md` principles to relevant decisions (e.g., principle "One orange" → why-orange; principle "Edge-to-edge" → why-edge-to-edge + why-a-constitution).
+- [ ] **Step 5:** Each ≤ 200 lines. First person for decisions. Reads as senior-engineer reasoning, not marketing.
+- [ ] **Step 6:** Link from `BRAND.md` principles to relevant decisions (e.g., principle "One orange" → why-orange; principle "Edge-to-edge" → why-edge-to-edge + why-a-constitution).
 
 **STOP. Yesid reads all 6 as a hiring manager would. Adjusts tone.**
 
@@ -232,14 +224,14 @@ Parallel option (Yesid's approval only): Tasks 3 + 4 could run side-by-side afte
 
 - [ ] All new markdown files exist and have substantive content:
   - `BRAND.md`, `components.md`, `README.md` (rewrite)
-  - `foundations/{color,typography,space,voice,accessibility}.md` (5 new; motion.md exists from 17h-1)
-  - `decisions/2026-04-{why-orange, why-edge-to-edge, why-a-constitution, extracting-brand-from-docs, what-i-killed, path-a-no-figma}.md` (6)
-- [ ] Every `foundations/*.md` references `yesid.*` token paths literally.
-- [ ] Every `foundations/*.md` cross-links to `brand/CONSTITUTION.md` + `brand/CSS.md` where relevant.
-- [ ] `decisions/` has 6 dated entries.
+  - `foundations/{color,typography,space,motion,voice,accessibility}.md` (6 new — motion.md is newly authored narrative, not moved)
+  - `decisions/2026-04-{why-orange, why-edge-to-edge, why-a-constitution, what-i-killed}.md` (4)
+- [ ] Every `foundations/*.md` references token names literally (e.g. `--primary`, `--text-body`) as they appear in `src/lib/styles/tokens.css` / `src/app.css @theme`.
+- [ ] Every `foundations/*.md` cross-links to `docs/reference/CSS.md` (token lookup) and/or `docs/reference/CONSTITUTION.md` (governance rules) where relevant. No cross-links to `brand/CONSTITUTION.md` or `brand/CSS.md` — those paths don't exist under the shrunk scope.
+- [ ] `decisions/` has 4 dated entries.
 - [ ] `BRAND.md` + `README.md` pass Yesid's "case study quality" check.
 - [ ] No broken cross-links (manual scan — no automated markdown link checker in this slice).
-- [ ] Claude reader test: fresh Claude instance given only `brand/README.md` can describe the system in 3 sentences.
+- [ ] Claude reader test: fresh Claude instance given only `brand/README.md` can describe the system in 3 sentences, including that governance rules live at `docs/reference/` rather than in `brand/`.
 
 ## Learn
 
@@ -257,7 +249,8 @@ Parallel option (Yesid's approval only): Tasks 3 + 4 could run side-by-side afte
 ## Verify
 
 1. Every file under 250 lines (foundations) or 200 lines (decisions).
-2. `grep -rn "yesid.color\|yesid.font\|yesid.size" brand/foundations/` — every foundation doc references token paths by name.
-3. Claude reader test passes.
-4. `BRAND.md` has exactly 5 principles, numbered.
-5. `decisions/` has exactly 4 dated seed files.
+2. `grep -rn -- "--primary\|--text-\|--space-" brand/foundations/` — every foundation doc references CSS custom property names by value.
+3. `grep -rn "docs/reference" brand/foundations/` — every foundation doc cross-links out to the governance layer.
+4. Claude reader test passes.
+5. `BRAND.md` has exactly 5 principles, numbered.
+6. `decisions/` has exactly 4 dated seed files.

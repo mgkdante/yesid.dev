@@ -57,9 +57,9 @@ Slice template: `docs/slices/_TEMPLATE.md`
 - Roadmap: `docs/roadmap/standardization.md`
 - Checkpoint: `docs/slices/slice-17-checkpoint.md`
 - **Constitution:** `docs/reference/CONSTITUTION.md` — governs all future development
-- Current sub-slice: 17a-4 (Dead Code + Dedup Fresh Audit) — COMPLETE 2026-04-17, PR pending
-- Next sub-slice: 17h-1 (Brand Bundle — Tokens Consolidation)
-- Branch: `feature/slice-17a-4-dead-code-dedup`
+- Current sub-slice: 17h planning-shrink (2026-04-18) — PR pending. 17a-4 complete and merged.
+- Next sub-slice: 17h-3 (Narrative Docs) OR 17h-4 (Logo + Assets) — either order; choose at session start. 17h-1, 17h-2, 17h-5, 17h-6 killed by scope shrink.
+- Branch: `feature/slice-17h-planning-shrink`
 
 ## Iteration Protocol (MANDATORY)
 
