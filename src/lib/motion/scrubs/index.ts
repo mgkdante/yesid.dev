@@ -8,3 +8,4 @@
 
 export { createCrescendoScrub, type CrescendoOpts } from './createCrescendoScrub.js';
 export { createDrawScrub, type DrawScrubOpts } from './createDrawScrub.js';
+export { createHeroTimeline, type HeroTimelineOpts } from './createHeroTimeline.js';
