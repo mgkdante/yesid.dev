@@ -4,6 +4,8 @@
   Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
 -->
 <script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
+	import { browser } from '$app/environment';
 	import HeroBanner from './HeroBanner.svelte';
 	import Manifesto from './Manifesto.svelte';
 	import FeaturedProjects from './FeaturedProjects.svelte';
@@ -12,6 +14,38 @@
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
+	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
+
+	// Section + rotated-title bindings for crescendo scrubs (desktop only).
+	let projectsSectionEl = $state<HTMLElement>(undefined!);
+	let projectsTitleEl = $state<HTMLElement>(undefined!);
+	let servicesSectionEl = $state<HTMLElement>(undefined!);
+	let servicesTitleEl = $state<HTMLElement>(undefined!);
+	let closerSectionEl = $state<HTMLElement>(undefined!);
+	let closerTitleEl = $state<HTMLElement>(undefined!);
+
+	let destroyFns: Array<() => void> = [];
+
+	onMount(() => {
+		if (!browser) return;
+		// Rotated titles are display:none below 1024px — skip wiring on mobile.
+		if (window.matchMedia('(max-width: 1023px)').matches) return;
+
+		if (projectsTitleEl && projectsSectionEl) {
+			destroyFns.push(createCrescendoScrub(projectsTitleEl, { section: projectsSectionEl }));
+		}
+		if (servicesTitleEl && servicesSectionEl) {
+			destroyFns.push(createCrescendoScrub(servicesTitleEl, { section: servicesSectionEl }));
+		}
+		if (closerTitleEl && closerSectionEl) {
+			destroyFns.push(createCrescendoScrub(closerTitleEl, { section: closerSectionEl }));
+		}
+	});
+
+	onDestroy(() => {
+		destroyFns.forEach((fn) => fn());
+		destroyFns = [];
+	});
 </script>
 
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
@@ -29,8 +63,8 @@
 <Separator variant="hazard" />
 
 <!-- Section 3: Featured Projects — rotated title LEFT -->
-<section class="home-section home-section--left">
-	<div class="rotated-title rotated-title--left">
+<section bind:this={projectsSectionEl} class="home-section home-section--left">
+	<div bind:this={projectsTitleEl} class="rotated-title rotated-title--left">
 		<SectionHeading heading="Projects" />
 	</div>
 	<div class="home-section-content">
@@ -41,23 +75,23 @@
 <Separator variant="hazard" />
 
 <!-- Section 4: Services — rotated title RIGHT, blueprint background spans full width -->
-<section class="home-section home-section--right relative">
+<section bind:this={servicesSectionEl} class="home-section home-section--right relative">
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
 	</div>
 	<div class="home-section-content">
 		<HomeServices />
 	</div>
-	<div class="rotated-title rotated-title--right">
+	<div bind:this={servicesTitleEl} class="rotated-title rotated-title--right">
 		<SectionHeading heading="Services" />
 	</div>
 </section>
 
 <Separator variant="hazard" />
 
-<!-- Section 5: Closer — rotated title LEFT -->
-<section class="home-section home-section--left">
-	<div class="rotated-title rotated-title--left">
+<!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
+<section bind:this={closerSectionEl} class="home-section home-section--left">
+	<div bind:this={closerTitleEl} class="rotated-title rotated-title--left">
 		<SectionHeading heading="Terminus" />
 	</div>
 	<div class="home-section-content">
@@ -66,7 +100,9 @@
 </section>
 
 <style>
-	/* Shared rotated title base */
+	/* Shared rotated title base. `transform` is reserved for crescendo scale
+	   scrub (17e-3); rotation uses the individual `rotate` property so the
+	   two layers don't conflict. */
 	.rotated-title {
 		position: sticky;
 		top: 50%;
@@ -75,17 +111,15 @@
 		align-items: center;
 		justify-content: center;
 		white-space: nowrap;
+		transform-origin: center center;
 	}
 
 	/* Left side: rotate 180° (reads bottom → top) */
 	.rotated-title--left {
-		transform: rotate(180deg);
+		rotate: 180deg;
 	}
 
 	/* Right side: natural vertical-rl (reads top → bottom), no rotation */
-	.rotated-title--right {
-		/* writing-mode: vertical-rl already reads top → bottom */
-	}
 
 	/* Super bold display size — full brand color, maximized for edge column */
 	.rotated-title :global(.section-heading-text) {
