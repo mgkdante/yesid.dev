@@ -1,6 +1,6 @@
 # Slice 17 — Standardization: Design System + Ports & Adapters
 
-**Status:** IN PROGRESS — Phase 1 visual stage complete; Slice 17h Brand Bundle in flight (narrative + assets)
+**Status:** IN PROGRESS — Phase 1 visual stage complete + 17h Brand Bundle shipped + 17j Workflow Efficiency shipped. Remaining: 17b (service layer), 17c (Zod schemas), 17f (test architecture), 17g (learning docs — scope re-eval needed).
 **Est. Sessions:** 20-24 total (revised from 13-14 after deep planning session)
 **Depends on:** Slice 13 (Home Page) complete
 **Key constraint:** Visual IMPROVEMENTS allowed (bigger text, better consistency), but no new features. Structural refactor + design system unification.
@@ -24,7 +24,8 @@
 | 17c Zod Schemas                  | planned                         | —         | 0.5      |
 | 17f Test Architecture            | planned                         | —         | 1-2      |
 | 17g Learning Docs                | planned                         | —         | 2        |
-| 17h Brand Bundle (narrative + assets) | IN PROGRESS (shrunk 2026-04-18 — brand/ = non-tech info + assets only; generator / source-of-truth refactor killed. Surviving sub-slices: 17h-3 narrative + 17h-4 assets. Killed: 17h-1, 17h-2, 17h-5, 17h-6) | — | ~3 |
+| 17h Brand Bundle (narrative + assets) | COMPLETE (narrative + assets shipped; tokens consolidation / code generator / source-of-truth / sync orchestrator killed) | #22 merged | ~3 |
+| 17j Workflow Efficiency | **COMPLETE** — token −54% + 3-level hierarchy + portable IP across 6 services. Spawned workflow-efficiency skill, cloud knowledge bases (token-efficacy, os-quirks, mcp-templates, scripts), config snapshot tooling | **#23 merged** | ~10 |
 
 ### Constitution Planning Session (2026-04-13)
 
