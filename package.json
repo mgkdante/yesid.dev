@@ -16,7 +16,8 @@
 		"test:e2e": "playwright test",
 		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
 		"brand:export-logos": "bun brand/scripts/export-logos.ts",
-		"brand:export-examples": "bun brand/scripts/export-examples.ts"
+		"brand:export-examples": "bun brand/scripts/export-examples.ts",
+		"slice:close": "bun scripts/slice-close.ts"
 	},
 	"devDependencies": {
 		"@gltf-transform/core": "^4.3.0",
