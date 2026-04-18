@@ -6,8 +6,9 @@
   No entrance animation — Snappy Doctrine (17e-2). ManifestoCanvas is ambient (doctrine-allowed).
 -->
 <script lang="ts">
-  import type { BlogPost } from '$lib/data/types.js';
-  import { resolveLocale } from '$lib/data/locale.js';
+  import type { BlogPost } from '$lib/types';
+  import { resolveLocale } from '$lib/utils/locale';
+  import { blogDetailContent } from '$lib/content/blog';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
@@ -32,8 +33,13 @@
     post.category === 'personal' ? '/blog/personal' : '/blog'
   );
   const backLabel = $derived(
-    post.category === 'personal' ? '\u2190 back to personal corner' : '\u2190 back to dispatches'
+    post.category === 'personal'
+      ? resolveLocale(blogDetailContent.backNav.toPersonal, 'en')
+      : resolveLocale(blogDetailContent.backNav.toDispatches, 'en')
   );
+  const postTagsAria = resolveLocale(blogDetailContent.header.postTagsAria, 'en');
+  const readingTimeTemplate = resolveLocale(blogDetailContent.header.readingTimeLabel, 'en');
+  const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));
   const categoryLabel = $derived(
     post.category === 'personal' ? 'Personal' : 'Professional'
   );
@@ -132,7 +138,7 @@
       </h1>
 
       <!-- Tag pills -->
-      <nav class="header__tags" aria-label="Post tags">
+      <nav class="header__tags" aria-label={postTagsAria}>
         {#each post.tags as tag}
           <span class="header__pill">{tag}</span>
         {/each}
@@ -142,7 +148,7 @@
       <div class="header__meta">
         <time datetime={post.date}>{formattedDate}</time>
         <span class="header__meta-sep" aria-hidden="true"></span>
-        <span>{readingTime} min read</span>
+        <span>{readingTimeText}</span>
         <span class="header__meta-sep" aria-hidden="true"></span>
         <span>{post.lang}</span>
       </div>

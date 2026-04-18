@@ -3,7 +3,7 @@
   Brand primitive: replaces 25+ scattered label patterns.
 -->
 <script lang="ts">
-  import { cn } from '$lib/utils.js';
+  import { cn } from '$lib/utils';
   import type { HTMLAttributes } from 'svelte/elements';
 
   export interface SectionLabelProps extends HTMLAttributes<HTMLSpanElement> {

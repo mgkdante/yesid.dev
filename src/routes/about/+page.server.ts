@@ -1,8 +1,9 @@
-import { aboutPageContent } from '$lib/data/about-page.js';
-import { fetchMontrealWeather } from '$lib/data/weather.js';
+import { getAboutPageContent } from '$lib/repositories';
+import { fetchMontrealWeather } from '$lib/utils/weather';
 
 export async function load() {
-	if (!aboutPageContent.weather.enabled) {
+	const about = await getAboutPageContent();
+	if (!about.weather.enabled) {
 		return { weather: null };
 	}
 

@@ -4,12 +4,15 @@
 -->
 <script lang="ts">
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
-	import type { HeroData } from '$lib/data';
-
+	import type { HeroData } from '$lib/content';
 	let {
 		heroData,
 		sqlPrompt,
 		sqlLiveLabel,
+		sqlColumnRoute,
+		sqlColumnAvgDelay,
+		sqlColumnVehicles,
+		sqlMetaTemplate,
 		updatedAgo,
 		refreshLabel,
 		refreshHelper,
@@ -18,6 +21,10 @@
 		heroData: HeroData;
 		sqlPrompt: string;
 		sqlLiveLabel: string;
+		sqlColumnRoute: string;
+		sqlColumnAvgDelay: string;
+		sqlColumnVehicles: string;
+		sqlMetaTemplate: string;
 		updatedAgo: string;
 		refreshLabel: string;
 		refreshHelper: string;
@@ -35,6 +42,10 @@
 			queryTime={heroData.queryTime}
 			prompt={sqlPrompt}
 			liveLabel={sqlLiveLabel}
+			columnRoute={sqlColumnRoute}
+			columnAvgDelay={sqlColumnAvgDelay}
+			columnVehicles={sqlColumnVehicles}
+			metaTemplate={sqlMetaTemplate}
 			{updatedAgo}
 		/>
 

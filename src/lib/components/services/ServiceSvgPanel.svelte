@@ -4,7 +4,7 @@
   variant="panel" (desktop/tablet side panel) or "banner" (mobile full-width).
 -->
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/utils';
 	import { SvgIcon, CornerMarks } from '$lib/components/brand';
 
 	export interface ServiceSvgPanelProps {

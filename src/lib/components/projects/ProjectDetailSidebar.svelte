@@ -6,8 +6,8 @@
   No entrance animation — Snappy Doctrine (17e-2).
 -->
 <script lang="ts">
-	import type { Project, Service } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Project, Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import ServiceBadge from './ServiceBadge.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 

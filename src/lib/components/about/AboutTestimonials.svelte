@@ -7,13 +7,19 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import type { AboutTestimonial } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutTestimonial } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { aboutPageContent } from '$lib/content/about-page';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { testimonials, stop = '04', label = 'TESTIMONIALS' }: { testimonials: readonly AboutTestimonial[]; stop?: string; label?: string } = $props();
+	let { testimonials, stop, label }: { testimonials: readonly AboutTestimonial[]; stop: string; label: string } = $props();
+
+	const carouselAria = resolveLocale(aboutPageContent.labels.testimonialsCarouselAria, 'en');
+	const tabNavAria = resolveLocale(aboutPageContent.labels.testimonialsTabNavAria, 'en');
+	const slideAriaTemplate = resolveLocale(aboutPageContent.labels.testimonialSlideAria, 'en');
+	const showAriaTemplate = resolveLocale(aboutPageContent.labels.showTestimonialAria, 'en');
 
 	let activeIndex = $state(0);
 	let paused = $state(false);
@@ -84,7 +90,7 @@
 	onmouseleave={() => (paused = false)}
 	role="region"
 	aria-roledescription="carousel"
-	aria-label="Client testimonials"
+	aria-label={carouselAria}
 >
 	<div class="relative flex h-full flex-col">
 		<!-- Stop label: always top-left -->
@@ -95,7 +101,7 @@
 			class="flex flex-1 flex-col justify-center"
 			role="group"
 			aria-roledescription="slide"
-			aria-label="Testimonial {activeIndex + 1} of {testimonials.length}"
+			aria-label={slideAriaTemplate.replace('{index}', String(activeIndex + 1)).replace('{total}', String(testimonials.length))}
 		>
 			<!-- Decorative quote mark -->
 			<div class="text-center font-heading text-5xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
@@ -125,13 +131,13 @@
 		</div>
 
 		<!-- Dot indicators: bottom-left -->
-		<div class="mt-auto flex gap-2" role="tablist" aria-label="Testimonial navigation">
+		<div class="mt-auto flex gap-2" role="tablist" aria-label={tabNavAria}>
 			{#each testimonials as _, i}
 				<button
 					class="h-2 w-2 rounded-full transition-colors duration-300 {i === activeIndex
 						? 'bg-[var(--primary)]'
 						: 'bg-[var(--popover)] hover:bg-[var(--muted-foreground)]'}"
-					aria-label="Show testimonial {i + 1}"
+					aria-label={showAriaTemplate.replace('{index}', String(i + 1))}
 					aria-selected={i === activeIndex}
 					role="tab"
 					onclick={() => goTo(i)}

@@ -6,8 +6,11 @@
 <script lang="ts">
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { menuItems } from '$lib/data';
+	import { menuItems, sharedChromeContent } from '$lib/content';
+	import { resolveLocale } from '$lib/utils/locale';
 
+	const dialogTitle = resolveLocale(sharedChromeContent.menuOverlayAria, 'en');
+	const footerLabel = resolveLocale(sharedChromeContent.menuOverlayFooterLabel, 'en');
 	let {
 		open = false,
 		pathname = '/',
@@ -99,7 +102,7 @@
 						bind:this={overlayEl}
 						ontransitionend={handleTransitionEnd}
 					>
-						<DialogPrimitive.Title class="sr-only">Navigation menu</DialogPrimitive.Title>
+						<DialogPrimitive.Title class="sr-only">{dialogTitle}</DialogPrimitive.Title>
 
 						<!-- Metro line with stops -->
 						<nav class="menu-content">
@@ -136,7 +139,7 @@
 				<!-- Bottom label -->
 				<div class="menu-footer">
 					<span class="menu-footer-line"></span>
-					<span class="menu-footer-label">NAVIGATION &mdash; ALL ROUTES</span>
+					<span class="menu-footer-label">{footerLabel}</span>
 					<span class="menu-footer-line"></span>
 				</div>
 					</div>

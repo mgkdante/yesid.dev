@@ -5,15 +5,15 @@
   Stop label top-left.
 -->
 <script lang="ts">
-	import type { AboutCta } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutCta } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 
-	let { cta, stop = '09', label = 'NEXT' }: { cta: AboutCta; stop?: string; label?: string } = $props();
+	let { cta, stop, label }: { cta: AboutCta; stop: string; label: string } = $props();
 
 	const buttonLabel = $derived(resolveLocale(cta.buttonLabel, 'en'));
 	const availability = $derived(resolveLocale(cta.availability, 'en'));

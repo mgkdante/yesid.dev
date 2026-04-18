@@ -1,12 +1,17 @@
 <script lang="ts">
 	import ProjectListingPage from '$lib/components/projects/ProjectListingPage.svelte';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { projectsPageMeta } from '$lib/content/projects';
 
 	let { data } = $props();
+
+	const metaTitle = resolveLocale(projectsPageMeta.title, 'en');
+	const metaDescription = resolveLocale(projectsPageMeta.description, 'en');
 </script>
 
 <svelte:head>
-	<title>Projects | yesid.</title>
-	<meta name="description" content="Projects, pipelines, and systems built by yesid. — freelance SQL development and digital infrastructure." />
+	<title>{metaTitle}</title>
+	<meta name="description" content={metaDescription} />
 </svelte:head>
 
 <ProjectListingPage

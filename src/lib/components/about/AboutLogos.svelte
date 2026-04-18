@@ -4,7 +4,9 @@
   Grayscale → color on hover. Stop label top-left.
 -->
 <script lang="ts">
-	import type { AboutClientLogo } from '$lib/data/types.js';
+	import type { AboutClientLogo } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { aboutPageContent } from '$lib/content/about-page';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, MetricDisplay } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -12,14 +14,16 @@
 	let {
 		logos,
 		count = 10,
-		stop = '05',
-		label = 'CLIENTS',
+		stop,
+		label,
 	}: {
 		logos: readonly AboutClientLogo[];
 		count?: number;
-		stop?: string;
-		label?: string;
+		stop: string;
+		label: string;
 	} = $props();
+
+	const counterLabel = resolveLocale(aboutPageContent.labels.clientsServed, 'en');
 </script>
 
 <div
@@ -32,7 +36,7 @@
 
 		<div class="flex flex-1 flex-col items-center justify-center gap-2">
 			<!-- Counter -->
-			<MetricDisplay value="{count}+" label="clients served" size="lg" labelBelow />
+			<MetricDisplay value="{count}+" label={counterLabel} size="lg" labelBelow />
 
 			<!-- Logo grid -->
 			<div class="mt-1 grid grid-cols-2 gap-2">

@@ -2,11 +2,22 @@
   StackPanelOrientation — Hint card shown when no stack item is selected.
   Nudges user to interact with the tech stack diagram.
 -->
+<script lang="ts">
+	import { resolveLocale } from '$lib/utils/locale';
+	import { techStackVizContent } from '$lib/content/tech-stack';
+
+	const o = techStackVizContent.orientation;
+	const heading = resolveLocale(o.heading, 'en');
+	const description = resolveLocale(o.description, 'en');
+	const hintClick = resolveLocale(o.hints.clickNode, 'en');
+	const hintHover = resolveLocale(o.hints.hoverConnections, 'en');
+	const hintFilters = resolveLocale(o.hints.useFilters, 'en');
+</script>
+
 <div class="panel-orientation" data-testid="panel-orientation">
-	<span class="orientation-label label-section font-semibold">SELECT A NODE</span>
+	<span class="orientation-label label-section font-semibold">{heading}</span>
 	<p class="orientation-text">
-		Click on any technology in the diagram to learn more about it — what it does,
-		why it was chosen, and which projects use it.
+		{description}
 	</p>
 
 	<div class="orientation-hints">
@@ -14,19 +25,19 @@
 			<span class="hint-icon" aria-hidden="true">
 				<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="10" r="0.75" fill="currentColor"/></svg>
 			</span>
-			<span class="hint-text">Click a node for details</span>
+			<span class="hint-text">{hintClick}</span>
 		</div>
 		<div class="hint-item">
 			<span class="hint-icon" aria-hidden="true">
 				<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</span>
-			<span class="hint-text">Hover to see connections</span>
+			<span class="hint-text">{hintHover}</span>
 		</div>
 		<div class="hint-item">
 			<span class="hint-icon" aria-hidden="true">
 				<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 7h5M7 4.5v5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
 			</span>
-			<span class="hint-text">Use filters to explore domains</span>
+			<span class="hint-text">{hintFilters}</span>
 		</div>
 	</div>
 </div>

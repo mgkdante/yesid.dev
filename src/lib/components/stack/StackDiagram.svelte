@@ -5,10 +5,18 @@
   No GSAP yet — entrance animations added in 10c.
 -->
 <script lang="ts">
-	import type { TechStackItem, InfraLayer, DomainCluster } from '$lib/data/types.js';
+	import type { TechStackItem, InfraLayer, DomainCluster } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { techStackVizContent } from '$lib/content/tech-stack';
 	import StackNode from './StackNode.svelte';
 	import StackConnections from './StackConnections.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
+
+	const diagramSectionLabel = resolveLocale(techStackVizContent.diagram.sectionLabel, 'en');
+	const diagramAria = resolveLocale(techStackVizContent.diagram.diagramAria, 'en');
+	function layerLabelFor(layer: InfraLayer): string {
+		return resolveLocale(techStackVizContent.diagram.layerLabels[layer], 'en');
+	}
 
 	let desktopEl = $state<HTMLElement | null>(null);
 
@@ -137,24 +145,12 @@
 		'api', 'backend', 'analytics', 'data', 'systems',
 	];
 
-	const LAYER_LABELS: Record<InfraLayer, string> = {
-		devops: 'DEVOPS',
-		testing: 'TESTING',
-		frontend: 'FRONTEND',
-		mobile: 'MOBILE',
-		api: 'API',
-		backend: 'BACKEND',
-		analytics: 'ANALYTICS',
-		data: 'DATA',
-		systems: 'SYSTEMS',
-	};
-
 	// Group items by layer. Layers with no items are excluded.
 	const itemsByLayer = $derived(
 		LAYER_ORDER
 			.map((layer) => ({
 				layer,
-				label: LAYER_LABELS[layer],
+				label: layerLabelFor(layer),
 				items: items.filter((item) => item.layer === layer),
 			}))
 			.filter((group) => group.items.length > 0)
@@ -175,7 +171,7 @@
 </script>
 
 <div class="stack-diagram" data-testid="stack-diagram">
-	<span class="diagram-label label-section font-semibold">Infrastructure Layers</span>
+	<span class="diagram-label label-section font-semibold">{diagramSectionLabel}</span>
 	<!-- Tier rows: visible on md+ (768px), hidden on mobile -->
 	<div
 		class="diagram-desktop hidden md:block"
@@ -183,7 +179,7 @@
 		bind:this={desktopEl}
 		role="toolbar"
 		tabindex="-1"
-		aria-label="Infrastructure layers diagram"
+		aria-label={diagramAria}
 		onclick={handleBackdropClick}
 		onkeydown={(e) => { if (e.key === 'Escape' && selectedId) onselect?.(null); }}
 	>

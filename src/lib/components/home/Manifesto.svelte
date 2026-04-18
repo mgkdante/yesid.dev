@@ -5,8 +5,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { manifestoContent } from '$lib/data/content.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { manifestoContent } from '$lib/content/site-content';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
 	import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';

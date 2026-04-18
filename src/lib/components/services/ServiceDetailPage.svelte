@@ -5,8 +5,10 @@
   Related projects in right panel (desktop) / bottom list (mobile). D186, D187, D189.
 -->
 <script lang="ts">
-	import type { Service, Project } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Service, Project } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { servicesListingContent, servicesDetailContent } from '$lib/content/services';
+	import { projectsListingContent } from '$lib/content/projects';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
@@ -36,6 +38,11 @@
 	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, 'en') : null);
 	let stationNum = $derived(String(service.station).padStart(2, '0'));
 	let totalStr = $derived(String(services.length).padStart(2, '0'));
+	let stationLabelText = $derived(
+		resolveLocale(servicesListingContent.stationLabelTemplate, 'en')
+			.replace('{stationNum}', stationNum)
+			.replace('{totalStr}', totalStr)
+	);
 	let svgContent = $derived(serviceSvgContents[service.id] ?? '');
 	let benefitHeadline = $derived(
 		service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : null
@@ -46,13 +53,22 @@
 	let metricLabel = $derived(
 		service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : null
 	);
-
-	const labels = {
-		backLink: { en: '\u2190 All Services' },
-		valueProposition: { en: 'How This Helps You' },
-		deliverables: { en: 'Typical Deliverables' },
-		relatedProjects: { en: 'Related Projects' }
-	};
+	let backLinkLabel = $derived(resolveLocale(servicesDetailContent.backToServicesLabel, 'en'));
+	let valuePropositionHeading = $derived(
+		resolveLocale(servicesDetailContent.valuePropositionHeading, 'en')
+	);
+	let deliverablesHeading = $derived(
+		resolveLocale(servicesDetailContent.deliverablesHeading, 'en')
+	);
+	let relatedProjectsHeading = $derived(
+		resolveLocale(servicesDetailContent.relatedProjectsHeading, 'en')
+	);
+	let relatedProjectsAria = $derived(
+		resolveLocale(servicesDetailContent.relatedProjectsNavAria, 'en')
+	);
+	let seeAllProjectsLabel = $derived(
+		resolveLocale(projectsListingContent.seeAllLink, 'en')
+	);
 </script>
 
 <div class="service-detail" data-testid="service-detail-page">
@@ -71,13 +87,13 @@
 				class="back-link"
 				use:boop={{ scale: 1.05, timing: 200 }}
 			>
-				{resolveLocale(labels.backLink, 'en')}
+				{backLinkLabel}
 			</a>
 
 			<header class="hero-grid">
 				<!-- Text column -->
 				<div class="hero-text">
-					<SectionLabel text="Service {stationNum} / {totalStr}" variant="station" class="mb-4 block" />
+					<SectionLabel text={stationLabelText} variant="station" class="mb-4 block" />
 
 					<h1 class="detail-title">
 						{title}<span class="title-dot">.</span>
@@ -153,7 +169,7 @@
 					<!-- Value Proposition -->
 					{#if service.valueProposition}
 						<div>
-							<CollapsibleSection title={resolveLocale(labels.valueProposition, 'en')} open={true}>
+							<CollapsibleSection title={valuePropositionHeading} open={true}>
 								{#snippet icon()}
 									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 										<circle cx="8" cy="8" r="2.5" />
@@ -170,7 +186,7 @@
 					<!-- Deliverables -->
 					{#if service.deliverables && service.deliverables.length > 0}
 						<div>
-							<CollapsibleSection title={resolveLocale(labels.deliverables, 'en')} open={true}>
+							<CollapsibleSection title={deliverablesHeading} open={true}>
 								{#snippet icon()}
 									<svg class="h-4 w-4 shrink-0 text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 										<path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zm0 6a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
@@ -206,13 +222,13 @@
 				{#if relatedProjects.length > 0}
 					<aside class="projects-panel">
 						<CollapsibleSection
-							title="{resolveLocale(labels.relatedProjects, 'en')} ({relatedProjects.length})"
+							title="{relatedProjectsHeading} ({relatedProjects.length})"
 							open={true}
 						>
 							{#snippet icon()}
 								<span class="projects-count">{relatedProjects.length}</span>
 							{/snippet}
-							<nav class="projects-list" aria-label="Related projects">
+							<nav class="projects-list" aria-label={relatedProjectsAria}>
 								{#each relatedProjects as project}
 									<a
 										href="/projects/{project.slug}"
@@ -225,7 +241,7 @@
 								{/each}
 							</nav>
 							<a href="/projects" class="projects-all">
-								See all projects &rarr;
+								{seeAllProjectsLabel}
 							</a>
 						</CollapsibleSection>
 					</aside>
@@ -237,13 +253,13 @@
 		{#if relatedProjects.length > 0}
 			<div class="projects-mobile">
 				<CollapsibleSection
-					title="{resolveLocale(labels.relatedProjects, 'en')} ({relatedProjects.length})"
+					title="{relatedProjectsHeading} ({relatedProjects.length})"
 					open={true}
 				>
 					{#snippet icon()}
 						<span class="projects-count">{relatedProjects.length}</span>
 					{/snippet}
-					<nav class="projects-list" aria-label="Related projects">
+					<nav class="projects-list" aria-label={relatedProjectsAria}>
 						{#each relatedProjects as project}
 							<a
 								href="/projects/{project.slug}"
@@ -256,7 +272,7 @@
 						{/each}
 					</nav>
 					<a href="/projects" class="projects-all">
-						See all projects &rarr;
+						{seeAllProjectsLabel}
 					</a>
 				</CollapsibleSection>
 			</div>

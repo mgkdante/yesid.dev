@@ -28,21 +28,42 @@ src/
 │   │   └── lottie/      # (MOVED to static/lottie/ in Slice 06 — URL-served for LottiePlayer)
 │   ├── styles/
 │   │   └── tokens.css   # CSS custom properties for theme switching (--background, --foreground, etc.)
-│   ├── data/            # ← Added in Slice 02, extended in Slices 04, 06d
-│   │   ├── types.ts     # Locale, LocalizedString, Project, Service, SiteMeta, BlogPost
-│   │   ├── locale.ts    # resolveLocale(), DEFAULT_LOCALE, SUPPORTED_LOCALES
-│   │   ├── projects.ts  # Project seed data + getProjectBySlug, getFeaturedProjects, etc.
-│   │   ├── services.ts  # Service seed data (6 services, with station/id/relatedProjects + detail fields)
-│   │   ├── blog.ts      # Blog posts from markdown files (import.meta.glob) + getLatestPosts, getPostBySlug
-│   │   ├── metro.ts     # ← Slice 06d: data-driven metro line (auto-computes stops from services)
-│   │   ├── content.ts   # ← Slice 06d: centralized UI strings as LocalizedString (hero, about, CTA)
+│   ├── types.ts         # ← Slice 17b: shared types promoted to top-level (Project, Service, LocalizedString, etc.)
+│   ├── content/         # ← Slice 17b: typed seed data + UI chrome (split from old data/)
+│   │   ├── projects.ts  # Project seed + projectsListingContent + projectsDetailContent + projectsPageMeta (17b-7d/e/k)
+│   │   ├── services.ts  # Service seed + servicesListingContent + servicesDetailContent + servicesPageMeta (17b-7f/k)
+│   │   ├── blog.ts      # Blog posts from markdown (import.meta.glob) + blogListingContent + blogDetailContent (17b-7b/c)
+│   │   ├── site-content.ts # hero, about, CTA, services grid, closer, related-projects strip, footer chrome
+│   │   ├── nav.ts       # nav links, menu items, metro bookends, navDirections, sharedChromeContent, errorPageContent
+│   │   ├── about-page.ts # AboutContent (identity, metrics, testimonials, stopLabels, meta)
+│   │   ├── contact-page.ts # ContactContent (terminals, validation, success, meta)
 │   │   ├── meta.ts      # SiteMeta (name, tagline, description, links)
-│   │   ├── tech-stack.ts # ← Slice 10: markdown parser for stack items + scenarios, graph helpers
-│   │   ├── nav.ts       # ← Slice 11: nav links, menu items, 404 error page copy (all LocalizedString)
-│   │   ├── highlight.ts # ← Slice 17d: shared Shiki + marked config for brand-themed syntax highlighting
-│   │   ├── weather.ts   # ← Slice 17d: shared weather utility (Montreal weather via wttr.in)
-│   │   ├── stackRoles.ts # ← Slice 17d: tech stack item role classification
-│   │   └── index.ts     # Barrel re-export — import from '$lib/data'
+│   │   ├── tech-stack.ts # markdown-parsed stack + scenarios + techStackPageContent + techStackVizContent
+│   │   ├── hero-data.ts # STM_ROUTES seed + generateHeroData factory
+│   │   ├── integrity.test.ts # ← Slice 17b: seed-data + LocalizedString guard + translation-debt snapshot (17b-8)
+│   │   └── index.ts     # Barrel — re-exports every content module. Imported by adapters/static.ts.
+│   ├── utils/           # ← Slice 17b: pure engines (previously mixed into data/)
+│   │   ├── locale.ts    # resolveLocale(), DEFAULT_LOCALE, SUPPORTED_LOCALES
+│   │   ├── markdown.ts  # shared Shiki + marked config (brand-themed syntax highlighting)
+│   │   ├── weather.ts   # Montreal weather fetcher (wttr.in)
+│   │   ├── service-svg.ts # per-service SVG loader
+│   │   ├── json-ld.ts   # structured-data builder (Person schema)
+│   │   ├── stack-roles.ts # tech stack item role classification
+│   │   ├── cn.ts        # shadcn-svelte cn() helper (moved from $lib/utils.ts in 17b-1)
+│   │   └── index.ts     # Barrel
+│   ├── adapters/        # ← Slice 17b-2: hexagonal port layer
+│   │   ├── types.ts     # ContentAdapter interface + six port interfaces
+│   │   ├── static.ts    # staticAdapter — the ONLY module that imports $lib/content/*
+│   │   ├── adapter.test.ts # 37 contract-level tests
+│   │   └── index.ts     # one-line swap point for future CMS adapters
+│   ├── repositories/    # ← Slice 17b-3: async facade consumed by route loaders
+│   │   ├── project.ts   # getPublicProjects, getProjectBySlug, getFeaturedProjects, etc.
+│   │   ├── service.ts   # getVisibleServices + metro-line derivation
+│   │   ├── blog.ts      # getAllPosts, getPostBySlug, etc.
+│   │   ├── meta.ts      # getSiteMeta + getPersonSchema (the one method that composes)
+│   │   ├── tech-stack.ts
+│   │   ├── content.ts   # getHeroData, getAboutPageContent, getMetroBookends, etc.
+│   │   └── index.ts     # Barrel
 │   ├── components/      # ← Added in Slice 03, enhanced through Slice 17d
 │   │   │
 │   │   │  ## Component Tiers (3 tiers — shells/ tier DELETED in 17d)

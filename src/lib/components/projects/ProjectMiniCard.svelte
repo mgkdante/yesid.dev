@@ -4,8 +4,8 @@
   Links to /projects/[slug].
 -->
 <script lang="ts">
-	import type { Project } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Project } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { Card } from '$lib/components/ui/card';
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

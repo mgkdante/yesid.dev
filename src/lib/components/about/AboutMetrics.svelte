@@ -5,14 +5,14 @@
   Stop number computed from prop.
 -->
 <script lang="ts">
-	import type { AboutMetric } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutMetric } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { MetricDisplay } from '$lib/components/brand';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { metrics, stop = '01', label = 'METRICS' }: { metrics: readonly AboutMetric[]; stop?: string; label?: string } = $props();
+	let { metrics, stop, label }: { metrics: readonly AboutMetric[]; stop: string; label: string } = $props();
 </script>
 
 <div

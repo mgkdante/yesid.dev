@@ -5,14 +5,17 @@
   Extends behind nav with negative margin.
 -->
 <script lang="ts">
-  import type { Project } from '$lib/data/types.js';
-  import { resolveLocale } from '$lib/data/locale.js';
-  import { getStackRole } from '$lib/data/stackRoles.js';
+  import type { Project } from '$lib/types';
+  import { resolveLocale } from '$lib/utils/locale';
+  import { getStackRole } from '$lib/utils/stack-roles';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
+  import { projectsDetailContent } from '$lib/content/projects';
 
   let { project }: { project: Project } = $props();
+
+  const backToListingLabel = resolveLocale(projectsDetailContent.backToListingLabel, 'en');
 
   const location = $derived(project.location ?? 'sherbrooke');
   const environment = $derived(project.environment ?? 'production');
@@ -88,7 +91,7 @@
         <div>STATUS <span class="edge-value">{project.status}</span></div>
         <div class="edge-separator">───────</div>
         {#each metrics as metric}
-          <div>{metric.value} {metric.label}</div>
+          <div>{metric.value} {resolveLocale(metric.label, 'en')}</div>
         {/each}
       </div>
 
@@ -110,7 +113,7 @@
         class="mb-5 inline-block font-mono text-xs tracking-[0.5px] text-primary opacity-70 transition-opacity hover:opacity-100 lg:mb-7"
         use:boop={{ scale: 1.05, timing: 200 }}
       >
-        &larr; All Projects
+        {backToListingLabel}
       </a>
 
       <h1

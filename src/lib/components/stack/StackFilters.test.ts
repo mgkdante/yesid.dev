@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
 import StackFilters from './StackFilters.svelte';
-import type { DomainCluster } from '$lib/data/types.js';
+import type { DomainCluster } from '$lib/types';
 
 describe('StackFilters', () => {
 	it('renders All pill and all 7 domain pills', () => {

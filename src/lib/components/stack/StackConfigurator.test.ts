@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
 import StackConfigurator from './StackConfigurator.svelte';
-import type { DomainCluster } from '$lib/data/types.js';
+import type { DomainCluster } from '$lib/types';
 
 describe('StackConfigurator', () => {
 	it('renders all 7 domain options', () => {

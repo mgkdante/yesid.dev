@@ -9,12 +9,12 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { BlogAnimation } from '$lib/data/types.js';
-	import { SHAPES, pickRandomShape } from '$lib/data/shapes.js';
+	import type { BlogAnimation } from '$lib/types';
+	import { SHAPES, pickRandomShape } from '$lib/utils/shapes';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { convertSvgToMorphPaths } from '$lib/motion/utils/morphHelpers.js';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/utils';
 
 	let {
 		svgContent,

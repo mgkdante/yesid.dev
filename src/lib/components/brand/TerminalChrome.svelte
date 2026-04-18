@@ -7,7 +7,7 @@
   import type { Snippet } from 'svelte';
   import StatusDot from './StatusDot.svelte';
   import { Separator } from '$lib/components/ui/separator';
-  import { cn } from '$lib/utils.js';
+  import { cn } from '$lib/utils';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
   export interface TerminalFooterItem {

@@ -7,6 +7,11 @@
   import { ChevronToggle } from '$lib/components/brand';
   import { onMount, onDestroy } from 'svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+  import { resolveLocale } from '$lib/utils/locale';
+  import { projectsDetailContent } from '$lib/content/projects';
+
+  const tocOpenAria = resolveLocale(projectsDetailContent.tocPill.openAria, 'en');
+  const tocCloseAria = resolveLocale(projectsDetailContent.tocPill.closeAria, 'en');
 
   interface TocChild {
     id: string;
@@ -103,7 +108,7 @@
     <button
       class="toc-pill"
       onclick={() => (drawerOpen = !drawerOpen)}
-      aria-label="Table of contents"
+      aria-label={tocOpenAria}
     >
       <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
       <span class="toc-pill-name font-mono text-caption">
@@ -119,7 +124,7 @@
       <button
         class="toc-drawer-backdrop"
         onclick={() => (drawerOpen = false)}
-        aria-label="Close table of contents"
+        aria-label={tocCloseAria}
       ></button>
 
       <div class="toc-drawer" use:scrollChain>

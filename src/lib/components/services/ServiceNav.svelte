@@ -4,8 +4,10 @@
   Omits either side when the current service is first or last.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { servicesDetailContent } from '$lib/content/services';
+	import { navDirections } from '$lib/content/nav';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { SectionLabel } from '$lib/components/brand';
 
@@ -20,9 +22,12 @@
 	// Resolve titles reactively so locale changes propagate without remounting
 	let prevTitle = $derived(prev ? resolveLocale(prev.title, 'en') : '');
 	let nextTitle = $derived(next ? resolveLocale(next.title, 'en') : '');
+	let navAria = $derived(resolveLocale(servicesDetailContent.serviceNavAria, 'en'));
+	let prevLabel = $derived(resolveLocale(navDirections.previous, 'en'));
+	let nextLabel = $derived(resolveLocale(navDirections.next, 'en'));
 </script>
 
-<nav class="service-nav" aria-label="Service navigation">
+<nav class="service-nav" aria-label={navAria}>
 	{#if prev}
 		<a
 			href="/services/{prev.id}"
@@ -32,7 +37,7 @@
 		>
 			<span class="nav-arrow">&larr;</span>
 			<span class="nav-meta">
-				<SectionLabel text="Previous" variant="section" />
+				<SectionLabel text={prevLabel} variant="section" />
 				<span class="nav-title">{prevTitle}</span>
 			</span>
 		</a>
@@ -46,7 +51,7 @@
 			use:boop={{ scale: 1.03, timing: 200 }}
 		>
 			<span class="nav-meta">
-				<SectionLabel text="Next" variant="section" />
+				<SectionLabel text={nextLabel} variant="section" />
 				<span class="nav-title">{nextTitle}</span>
 			</span>
 			<span class="nav-arrow">&rarr;</span>

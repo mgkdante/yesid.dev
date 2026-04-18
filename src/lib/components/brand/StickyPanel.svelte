@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { cn } from '$lib/utils.js';
+  import { cn } from '$lib/utils';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
   export interface StickyPanelProps {

@@ -6,6 +6,8 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { blogDetailContent } from '$lib/content/blog';
 
 	let {
 		accentColor = 'var(--primary)',
@@ -16,6 +18,10 @@
 	} = $props();
 
 	let contentEl: HTMLDivElement;
+
+	const copyLabel = resolveLocale(blogDetailContent.code.copyLabel, 'en');
+	const copyAria = resolveLocale(blogDetailContent.code.copyAria, 'en');
+	const errorLabel = resolveLocale(blogDetailContent.code.errorLabel, 'en');
 
 	onMount(() => {
 		if (!contentEl) return;
@@ -29,8 +35,8 @@
 
 			const btn = document.createElement('button');
 			btn.className = 'copy-btn';
-			btn.textContent = 'Copy';
-			btn.setAttribute('aria-label', 'Copy code to clipboard');
+			btn.textContent = copyLabel;
+			btn.setAttribute('aria-label', copyAria);
 
 			btn.addEventListener('click', async () => {
 				const code = pre.querySelector('code');
@@ -40,13 +46,13 @@
 					await navigator.clipboard.writeText(code.textContent ?? '');
 					btn.textContent = '\u2713';
 					setTimeout(() => {
-						btn.textContent = 'Copy';
+						btn.textContent = copyLabel;
 					}, 2000);
 				} catch {
 					// Clipboard API may fail in insecure contexts — fail silently
-					btn.textContent = 'Error';
+					btn.textContent = errorLabel;
 					setTimeout(() => {
-						btn.textContent = 'Copy';
+						btn.textContent = copyLabel;
 					}, 2000);
 				}
 			});

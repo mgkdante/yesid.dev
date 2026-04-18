@@ -5,13 +5,14 @@
   Stop label always top-left.
 -->
 <script lang="ts">
-	import type { AboutPolaroid } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutPolaroid } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { aboutPageContent } from '$lib/content/about-page';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { polaroids, stop = '08', label = 'SNAPSHOTS' }: { polaroids: readonly AboutPolaroid[]; stop?: string; label?: string } = $props();
+	let { polaroids, stop, label }: { polaroids: readonly AboutPolaroid[]; stop: string; label: string } = $props();
 
 	let currentIndex = $state(0);
 
@@ -25,6 +26,8 @@
 	const current = $derived(polaroids[currentIndex]);
 	const alt = $derived(resolveLocale(current.alt, 'en'));
 	const caption = $derived(resolveLocale(current.caption, 'en'));
+	const prevPhotoAria = resolveLocale(aboutPageContent.labels.polaroidPrevAria, 'en');
+	const nextPhotoAria = resolveLocale(aboutPageContent.labels.polaroidNextAria, 'en');
 </script>
 
 <div
@@ -69,7 +72,7 @@
 			<button
 				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 				onclick={prev}
-				aria-label="Previous photo"
+				aria-label={prevPhotoAria}
 			>
 				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M6 2L3.5 5L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</button>
@@ -77,7 +80,7 @@
 			<button
 				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 				onclick={next}
-				aria-label="Next photo"
+				aria-label={nextPhotoAria}
 			>
 				<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4 2L6.5 5L4 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</button>

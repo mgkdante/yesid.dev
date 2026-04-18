@@ -1,14 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HeroSqlPanel from './HeroSqlPanel.svelte';
-import { INITIAL_HERO_DATA } from '$lib/data';
-
+import { INITIAL_HERO_DATA } from '$lib/content';
 describe('HeroSqlPanel', () => {
   const props = {
     rows: INITIAL_HERO_DATA.queryRows,
     queryTime: INITIAL_HERO_DATA.queryTime,
     prompt: 'yesid@transit:gold>',
     liveLabel: 'LIVE',
+    columnRoute: 'route',
+    columnAvgDelay: 'avg_delay_s',
+    columnVehicles: 'vehicles',
+    metaTemplate: '5 rows · {queryTime}s · updated {updatedAgo}',
   };
 
   it('renders the terminal prompt', () => {

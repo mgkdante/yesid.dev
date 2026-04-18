@@ -4,13 +4,13 @@
   Descriptions removed for space. Stop label top-left.
 -->
 <script lang="ts">
-	import type { AboutMethodStep } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutMethodStep } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { steps, stop = '02', label = 'PROCESS' }: { steps: readonly AboutMethodStep[]; stop?: string; label?: string } = $props();
+	let { steps, stop, label }: { steps: readonly AboutMethodStep[]; stop: string; label: string } = $props();
 </script>
 
 <div

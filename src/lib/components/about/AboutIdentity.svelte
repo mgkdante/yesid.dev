@@ -5,13 +5,13 @@
   All text from data layer via props.
 -->
 <script lang="ts">
-	import type { AboutIdentity } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutIdentity } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StatusDot, StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { identity, stop = '00', label = 'IDENTITY' }: { identity: AboutIdentity; stop?: string; label?: string } = $props();
+	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();
 
 	const name = $derived(resolveLocale(identity.name, 'en'));
 	const title = $derived(resolveLocale(identity.title, 'en'));

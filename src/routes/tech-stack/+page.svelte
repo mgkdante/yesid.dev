@@ -2,6 +2,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { techStackPageContent } from '$lib/content/tech-stack';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { StatusDot, SectionLabel } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
@@ -11,6 +13,30 @@
 	// Dynamic counts from data layer
 	const itemCount = data.items.length;
 	const layerCount = new Set(data.items.map((i) => i.layer)).size;
+
+	// Pre-resolved chrome — all static English for now (swap to $derived on
+	// locale when translation arrives).
+	const c = techStackPageContent;
+	const metaTitle = resolveLocale(c.meta.title, 'en');
+	const metaDescription = resolveLocale(c.meta.description, 'en')
+		.replace('{itemCount}', String(itemCount))
+		.replace('{layerCount}', String(layerCount));
+	const heroOverline = resolveLocale(c.hero.overline, 'en');
+	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, 'en');
+	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, 'en');
+	const heroTerminalAria = resolveLocale(c.hero.terminalAria, 'en');
+	const statLabels = {
+		technologies: resolveLocale(c.hero.stats.technologies, 'en'),
+		layers: resolveLocale(c.hero.stats.layers, 'en'),
+		domains: resolveLocale(c.hero.stats.domains, 'en'),
+		projects: resolveLocale(c.hero.stats.projects, 'en'),
+	};
+	const getInTouchLabel = resolveLocale(c.actions.getInTouch, 'en');
+	const viewServicesLabel = resolveLocale(c.actions.viewServices, 'en');
+	const ctaHeadingLine1 = resolveLocale(c.cta.headingLine1, 'en');
+	const ctaHeadingLine2 = resolveLocale(c.cta.headingLine2, 'en');
+	const ctaSub = resolveLocale(c.cta.sub, 'en');
+	const ctaAvailability = resolveLocale(c.cta.availability, 'en');
 
 	// Hero terminal typed sequence
 	interface TerminalLine {
@@ -57,26 +83,23 @@
 </script>
 
 <svelte:head>
-	<title>Tech Stack — yesid.</title>
-	<meta
-		name="description"
-		content="{itemCount}+ technologies across {layerCount} infrastructure layers — an interactive map of how digital infrastructure gets built."
-	/>
+	<title>{metaTitle}</title>
+	<meta name="description" content={metaDescription} />
 </svelte:head>
 
 <main class="tech-stack-page">
 	<!-- ═══ HERO ZONE ═══ -->
 	<section class="hero" data-testid="tech-stack-hero">
 		<div class="hero-overline">
-			<SectionLabel text="Infrastructure Map" variant="station" />
+			<SectionLabel text={heroOverline} variant="station" />
 		</div>
 
 		<h1 class="hero-title">
-			The Control<br>
-			<span class="hero-title-accent">Room.</span>
+			{heroTitleLine1}<br>
+			<span class="hero-title-accent">{heroTitleLine2}.</span>
 		</h1>
 
-		<div class="hero-terminal" aria-label="Infrastructure overview">
+		<div class="hero-terminal" aria-label={heroTerminalAria}>
 			{#each heroLines as line}
 				<div
 					class="hero-terminal-line hero-line-color-{line.color}"
@@ -98,28 +121,28 @@
 		<div class="hero-stats" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
 			<div class="hero-stat">
 				<span class="hero-stat-value flex items-center gap-2"><StatusDot color="orange" pulse />{itemCount}</span>
-				<span class="hero-stat-label">technologies</span>
+				<span class="hero-stat-label">{statLabels.technologies}</span>
 			</div>
 			<div class="hero-stat">
 				<span class="hero-stat-value">{layerCount}</span>
-				<span class="hero-stat-label">layers</span>
+				<span class="hero-stat-label">{statLabels.layers}</span>
 			</div>
 			<div class="hero-stat">
 				<span class="hero-stat-value">7</span>
-				<span class="hero-stat-label">domains</span>
+				<span class="hero-stat-label">{statLabels.domains}</span>
 			</div>
 			<div class="hero-stat">
 				<span class="hero-stat-value">10+</span>
-				<span class="hero-stat-label">projects</span>
+				<span class="hero-stat-label">{statLabels.projects}</span>
 			</div>
 		</div>
 
 		<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
 			<Button variant="default" size="cta" href="/contact">
-				Get In Touch <span aria-hidden="true">&rarr;</span>
+				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
 			</Button>
 			<Button variant="outline" size="cta" href="/services">
-				View Services
+				{viewServicesLabel}
 			</Button>
 		</div>
 	</section>
@@ -128,21 +151,21 @@
 	<section class="cta-zone" data-testid="tech-stack-cta">
 		<div class="cta-hazard" aria-hidden="true"></div>
 		<h2 class="cta-heading">
-			Found your stack<span class="cta-accent">?</span><br>
-			Let's build it<span class="cta-accent">.</span>
+			{ctaHeadingLine1}<span class="cta-accent">?</span><br>
+			{ctaHeadingLine2}<span class="cta-accent">.</span>
 		</h2>
 		<p class="cta-sub">
-			Whether it's a data pipeline, a web app, or a mobile product — the infrastructure is ready.
+			{ctaSub}
 		</p>
 		<div class="cta-buttons">
 			<Button variant="default" size="cta" href="/contact">
-				Get In Touch <span aria-hidden="true">&rarr;</span>
+				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
 			</Button>
 			<Button variant="outline" size="cta" href="/services">
-				View Services
+				{viewServicesLabel}
 			</Button>
 		</div>
-		<span class="cta-avail">Available for Q2 2026</span>
+		<span class="cta-avail">{ctaAvailability}</span>
 	</section>
 </main>
 

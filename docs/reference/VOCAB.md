@@ -154,6 +154,20 @@ Standard terms that appear in this codebase or in adjacent docs. Learn these and
 | **Lottie** | JSON-driven animation format + runtime. We use it sparingly. | a couple of home icons |
 | **Ticker** | A shared RAF loop. `gsap.ticker.add(fn)` subscribes a function to every frame. | `src/lib/motion/ticker.ts` |
 
+### Data layer (added in Slice 17b, 2026-04-18)
+
+| Term | Meaning | Where |
+|------|---------|-------|
+| **Hexagonal content architecture** | The three-layer data seam: `content/*.ts` (seed) → `adapters/*` (port interface) → `repositories/*` (async getters) → route loaders. Components consume via loaders (data) or directly from content (UI chrome). Adding a CMS = swap one adapter file. | `src/lib/adapters/`, `src/lib/repositories/` |
+| **ContentAdapter** | The port interface. Every backing store (static / CMS / API) exposes `projects`, `services`, `blog`, `meta`, `techStack`, `content` ports conforming to `ContentAdapter`. | `src/lib/adapters/types.ts` |
+| **Port** (data) | A domain-sliced section of the adapter interface — e.g. `ProjectsPort.getPublicProjects()`. Matches the hexagonal "ports & adapters" vocabulary from Alistair Cockburn. | `src/lib/adapters/types.ts` |
+| **Static adapter** | The current `ContentAdapter` implementation — reads from the typed TypeScript content files. Future CMS adapters swap in by changing one line in `src/lib/adapters/index.ts`. | `src/lib/adapters/static.ts` |
+| **Repository layer** | Async facade over the adapter. Route loaders call `getPublicProjects()` etc. — never `adapter.projects.*` directly. Isolates loaders from the swap point. | `src/lib/repositories/` |
+| **Chrome** (content) | UI strings that aren't data — button labels, aria-labels, section headings, error messages. Lives in `$lib/content/*.ts` alongside seed content; imported directly by components (bypasses the adapter/repository path). | every extracted sub-task in 17b-7 |
+| **LocalizedString** | The canonical shape `{ en: string; fr?: string; es?: string }`. All user-facing text in content files. | `src/lib/types.ts`, `resolveLocale` in `src/lib/utils/locale.ts` |
+| **Translation debt** | LocalizedStrings that only carry `en` (no `fr`/`es`). Tracked by the integrity test — printed as a snapshot on every test run. | `src/lib/content/integrity.test.ts` |
+| **Content port** | Bucket inside `ContentAdapter` for page-level copy that isn't a first-class entity (hero, about page, contact page, closer, metro bookends). Distinct from typed-entity ports. | `src/lib/adapters/types.ts` |
+
 ### Testing
 
 | Term | Meaning | Where |
@@ -180,7 +194,7 @@ Terms specific to Claude Code, the Anthropic API, and the AI-assisted developmen
 | **General-purpose agent** | The default subagent type. Has all tools. Used for research and open-ended work. | Task 0a research agents |
 | **Specialized agent** | A subagent with a pre-written prompt + scoped tools (e.g. `code-reviewer`, `planner`). Defined in `~/.claude/agents/`. | our 30 home agents |
 | **Context window** | The total token budget for a conversation. Opus 4.7 = 1M tokens. Sonnet 4.6 = 200K. | always finite |
-| **Cache prefix** | The ordered stable prefix Claude caches: `tools → system → CLAUDE.md → messages`. Any change at a layer invalidates everything after. | `cloud/claude-knowledge/token-efficacy/01-cache-economics.md` |
+| **Cache prefix** | The ordered stable prefix Claude caches: `tools → system → CLAUDE.md → messages`. Any change at a layer invalidates everything after. | `cloud/workflow-knowledge/token-efficacy/01-cache-economics.md` |
 | **Cache TTL** | How long a cached prefix stays warm. Currently 5m default (regressed from 1h in March 2026). | same |
 | **Cache hit / miss** | Prefix was reused (read rate = 0.1x input) vs. re-paid (write rate = 1.25x for 5m). | same |
 | **ToolSearch** | The mechanism by which tool schemas are lazy-loaded. Default for all tools as of Claude Code v2.1.69. | deferred-tool list in system reminder |
@@ -235,7 +249,7 @@ The shared language for our development process. These terms show up in `CLAUDE.
 | **Write protocol** | The closing steps that mirror a shipped slice to cloud + delete from repo + update cloud index. Self-pruning. | Codified in `WORKFLOW.md` during Task 3 |
 | **Fetch-on-command** | Reading a Tier 2 artifact deliberately — AI decides to read a cloud file when context warrants, not auto-loaded. | retrieval protocol |
 | **Retrieval protocol** | The four-step ladder for AI to get context: in-context → cloud index → specific cloud artifact → git history. | `docs/ARCHIVE.md` |
-| **OS-quirks registry** | Cross-project persistent log of platform-specific command fixes at `<cloud>/claude-knowledge/os-quirks/<os>.md`. Consulted before debugging; appended when a new quirk is solved. | `<cloud>/claude-knowledge/os-quirks/` |
+| **OS-quirks registry** | Cross-project persistent log of platform-specific command fixes at `<cloud>/workflow-knowledge/os-quirks/<os>.md`. Consulted before debugging; appended when a new quirk is solved. | `<cloud>/workflow-knowledge/os-quirks/` |
 | **Self-enhancing workflow** | The principle that every mistake becomes a closing-checklist rule. Workflow compounds quality slice-over-slice. | core principle |
 | **workflow-efficiency skill** | Portable skill at `~/.claude/skills/workflow-efficiency/` codifying the three-tier context, 3-level hierarchy, self-appending handoff, close-script, cache pacing, subagent routing. Trade-secret, personal IP across Yesid's 6 services. | `~/.claude/skills/workflow-efficiency/SKILL.md` |
 | **Superpowers skill** | A skill in the `superpowers` plugin family — `brainstorming`, `writing-plans`, `executing-plans`, etc. Structured rigid workflows. | `~/.claude/plugins/.../superpowers/` |
