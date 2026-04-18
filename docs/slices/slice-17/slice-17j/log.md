@@ -273,3 +273,95 @@ Key constraint: `docs/learn/**` is Yesid's personal Obsidian knowledge base, not
 | docs/reference/PATTERNS.md:275 | `docs/learn/styling/outline-vs-ring-pulsing-dots.md` | REWRITE | `C:\Users\otalo\Yesito\cloud\yesid.dev\docs\learn\styling\outline-vs-ring-pulsing-dots.md` |
 
 Generic `docs/learn/` references in `WORKFLOW.md` (lines 18, 320, 411, 506, 508, 510, 736) and `roadmap/standardization.md` (lines 898, 902, 917, 919) describe conventions and the 17g learn-docs update task. These will be rewritten holistically in Task 3 (WORKFLOW.md slim) and flagged for Slice 17g scope re-evaluation given the new cloud model.
+
+---
+
+### Session 2026-04-18 — Task 6: Re-measurement + delta
+
+**Goal:** Cold-session `/context-budget` measurement post-prune, compute delta vs Task 0 baseline.
+
+**Method:** Fresh Claude Code session opened in yesid.dev post-Task-5. First command before any other tool call: `/context-budget`. Output pasted into main session by Yesid.
+
+## /context-budget output (cold session, post-prune)
+
+```
+Context Budget Report
+═══════════════════════════════════════
+
+Total estimated overhead: ~41,000 tokens
+Context model: Claude Opus 4.7 [1M] (note: 1M window, not 200K default)
+Effective available context: ~959,000 tokens (96%) — on 1M
+                             ~159,000 tokens (80%) — on 200K equivalent
+
+Component Breakdown:
+┌──────────────────────────────┬─────────┬────────────┐
+│ Component                    │ Count   │ Tokens     │
+├──────────────────────────────┼─────────┼────────────┤
+│ Agents (Agent tool desc)     │ 30      │ ~4,500     │
+│ Skills available index       │ ~310    │ ~6,200     │
+│ Rules (common + README)      │ 570 ln  │ ~6,840     │
+│ MCP tools (deferred names)   │ 337/28s │ ~5,055     │
+│ CLAUDE.md (project)          │ 213 ln  │ ~2,560     │
+│ Session-start injections     │ —       │ ~5,000     │
+│ Active tool schemas          │ 12      │ ~7,000     │
+│ Base system prompt           │ —       │ ~3,500     │
+└──────────────────────────────┴─────────┴────────────┘
+On disk (not in context): 1,232 plugin skills · 115 user skills · 3,851 agent lines
+If all 337 MCP tools were ACTIVATED via ToolSearch: +168,500 tokens (84% of 200K)
+```
+
+## Delta table — pre-prune (Task 0) vs post-prune (Task 6)
+
+| Component | Task 0 baseline | Task 6 post-prune | Delta | % change |
+|-----------|----------------:|------------------:|------:|---------:|
+| Agent list / descriptions | ~30,000 | ~4,500 | **−25,500** | **−85%** |
+| Skills available index | ~13,000 | ~6,200 | −6,800 | −52% |
+| Global rules chain (common + zh) | ~30,000 | ~6,840 | **−23,160** | **−77%** |
+| MCP tool names (deferred) | ~2,500 | ~5,055 | +2,555 | +102% |
+| Project CLAUDE.md | ~6,000 | ~2,560 | −3,440 | −57% |
+| Memory index | ~1,500 | (part of session-start) | — | — |
+| System prompt + core | ~5,000 | ~3,500 | −1,500 | −30% |
+| Active tool schemas | (not separated) | ~7,000 | — | — |
+| Session-start injections | ~1,500 | ~5,000 | +3,500 | +233% |
+| **TOTAL** | **~89,500** | **~41,000** | **−48,500** | **−54%** |
+
+## Wins by source
+
+1. **Agent list collapse (~−25.5K):** 207 agents pre-prune → 30 agents loaded post-prune. The 15 disabled plugins (especially `everything-claude-code` with its ~177 plugin-provided agents) dropped the Agent tool descriptor list by 85%.
+2. **Rules `zh/` delete (~−23K):** exactly as the research predicted — `rules/zh/` was pure duplication of `rules/common/`. Delete was the single biggest lever.
+3. **Skills index shrink (~−6.8K):** fewer plugin-provided skills = less index surface.
+4. **CLAUDE.md slim (~−3.4K):** Task 2's 445→196 lines paid off at session cost too.
+
+## Net new / surprises
+
+- **MCP deferred names UP (~+2.5K):** the measurement counts 337 tool names across 28 servers — previously I estimated ~2.5K across ~60 servers. Either baseline counted differently, or post-prune actually has MORE MCP surface because ToolSearch now covers MCPs too (v2.1.69 default). Either way, deferred cost is small relative to activation cost (noted below).
+- **Session-start injections UP (~+3.5K):** more hooks + SessionStart context now fires (vercel plugin, remember, continuous-learning observer). Acceptable.
+- **Active tool schemas (~7K):** fresh-session measurement broke this out explicitly; previous baseline didn't separate core tool schemas.
+
+## Activation-cost prevention (the real win)
+
+Biggest lesson: **335 MCP tool schemas NOT yet loaded** because of ToolSearch. A single `ToolSearch` for "*" would blow context up by ~168K tokens (84% of 200K window) — a session-wreck. The per-session *deferred* cost is small (~5K), but activation protection matters: any optimization that reduces the deferred pool protects against accidental mass-activation.
+
+## Follow-up findings from Task 6 report (not in Task 5 scope, flagged for decision)
+
+The re-measurement surfaced 6 additional optimization opportunities beyond Task 5's scope:
+
+1. **[CRITICAL] 16 of 28 MCP servers out-of-scope** for a SvelteKit site (Neon, Webflow, Cloudflare, Postman, Notion, Railway, Jobs, Tax, Figma, Calendar, Slack, Microsoft-docs, Claude-in-Chrome, mcp-registry, plugin_design_*, duplicate chrome-devtools). 235 of 337 tools belong to these. Deferred savings ~3.5K tokens; **activation-cost prevention ~117K tokens**.
+2. **[HIGH] Duplicate `chrome-devtools` MCP** — registered twice (user scope + plugin). 25 duplicate tool entries, ~375 tokens.
+3. **[HIGH] Heavy agents on disk** — `performance-optimizer.md` (446 lines), `flutter-reviewer` (243), `code-reviewer` (237), `planner` (212). Not in base context but expensive on subagent spawn.
+4. **[MEDIUM] Reviewer agent sprawl** — 9 language reviewers (cpp/java/kotlin/rust/go/python/pytorch/flutter/healthcare) loaded for a pure SvelteKit/TS project. ~1.5K tokens in Agent tool descriptor.
+5. **[MEDIUM] Plugin overlap** — 4 design plugins (frontend-design, frontend-design-pro, ui-ux-pro-max, web-designer) ~2K tokens from overlapping skill indexes.
+6. **[LOW] Rules chain inlines all 10 `common/*.md`** regardless of language (~6.8K). Only TypeScript-relevant subset needed for yesid.dev.
+
+Potential additional savings: ~6K tokens now + ~117K activation-cost prevention.
+
+**Decision deferred to Yesid:** these weren't in the original 17j scope. Options:
+- (a) Fold into a Task 5b additional prune pass before closing 17j
+- (b) Defer to a follow-up slice (17k?)
+- (c) Leave as-is; 54% reduction is already a great baseline, diminishing returns
+
+## Outcome
+
+**Task 5 pruning achieved 54% token overhead reduction** (89.5K → 41K). Every major lever identified in Task 0a research + Task 0 inventory paid off. The `zh/` deletion and plugin-disable gave the bulk. Additional findings from re-measurement offer another ~7% on top plus critical activation-cost prevention.
+
+**Commit:** (this commit)

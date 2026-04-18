@@ -239,6 +239,36 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 6: Re-measurement + delta table
+
+**Session:** 2026-04-18 (fresh session, cold context) | **Commit:** (this commit)
+
+**Method:** Fresh Claude Code session opened post-Task-5. First command `/context-budget`. Output pasted into active session for delta computation.
+
+**Result — 54% reduction in session-startup token overhead:**
+
+| | Task 0 (pre-prune) | Task 6 (post-prune) | Delta |
+|---|---:|---:|---:|
+| Total cold-session overhead | ~89,500 | ~41,000 | **−48,500 (−54%)** |
+| % of 1M context window | 9% | 4.1% | — |
+
+**Biggest individual wins:**
+- Agent list collapse: ~30K → ~4.5K (−85%) — 207 agents → 30, from plugin-disables
+- Rules `zh/` delete: eliminated ~23K of duplicate translation
+- Skills index shrink: ~13K → ~6.2K (−52%) — fewer plugin-provided skills
+- CLAUDE.md slim: ~6K → ~2.6K (−57%) — Task 2's payoff at session cost
+
+**Bonus activation-cost prevention:** 335 MCP tool schemas remain deferred via ToolSearch. A single mass-activation would blow ~168K tokens (84% of 200K window). Further MCP pruning (below) would reduce this activation surface.
+
+**Follow-up findings from the re-measurement** (6 opportunities not in original 17j scope, ~6K additional savings + ~117K activation-cost prevention): see full list in log.md. Critical items:
+- 16 of 28 MCP servers still out-of-scope for a SvelteKit site (Neon, Webflow, Cloudflare, etc.)
+- Duplicate `chrome-devtools` MCP (user + plugin)
+- 9 language-specific reviewer agents loaded for a pure TS project
+
+**Decision deferred to Yesid:** add a Task 5b pass before closing 17j, defer to slice 17k, or accept current state as diminishing-returns.
+
+---
+
 ### Task 5: Global Claude prune (live machine changes)
 
 **Session:** 2026-04-18 | **Commit:** (this commit — live-machine changes not tracked in git; backup in cloud pre-prune snapshot)
