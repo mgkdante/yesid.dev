@@ -846,6 +846,165 @@ git commit -m "refactor(slice-17j): Task 3 — compress WORKFLOW.md stabilized s
 
 ---
 
+## Task 3a: Cloud archive retroactive reorg
+
+**Goal:** Historical artifacts currently live at `cloud/yesid.dev/docs/{specs,plans,devlog,handoffs,research,learn,slices}/` in flat form. Reorganize into the new bundle structure so retrieval is consistent with going-forward slices.
+
+### Target layout
+
+```
+cloud/yesid.dev/docs/archive/
+  slices/
+    slice-01/
+      spec.md                  (copy from old specs/ if exists)
+      plan.md                  (copy from old plans/)
+      log.md                   (copy from old devlog/ — merge if multiple)
+      handoff.md               (copy from old handoffs/)
+    slice-02/
+      ...
+    slice-17/
+      slice-17a-1/
+        spec.md, plan.md, log.md, handoff.md
+      slice-17a-2b/
+        ...
+      slice-17j/               (NOT yet — 17j is still active; mirrors post-close)
+  learn/**                     (preserved as-is; Yesid's Obsidian vault)
+  reference-snapshot/**        (reference docs as of 17j — read-only historical)
+  roadmap-snapshot/**          (roadmap as of 17j — read-only historical)
+COMPLETED-SLICES.md            (points to new archive/slices/slice-NN/ paths)
+INDEX.md                       (updated map)
+```
+
+### Steps
+
+- [ ] **Step 1:** Build the retro-reorg script — `scripts/cloud-archive-retro.ts` (Bun). For each shipped slice/sub-slice name, it:
+  - Finds matching files in cloud `specs/`, `plans/`, `devlog/`, `handoffs/`
+  - Creates `archive/slices/slice-<NN>[/slice-<NN><letter>]/` bundle folder
+  - Copies files into bundle with canonical names
+  - Preserves originals in a `archive/legacy-flat/` subfolder as a safety net
+- [ ] **Step 2:** Dry-run the script — print what it WOULD copy/move without making changes. Review output.
+- [ ] **Step 3:** Run for real. Verify 50+ bundle folders created.
+- [ ] **Step 4:** Rewrite `cloud/yesid.dev/docs/COMPLETED-SLICES.md` to point to new bundle paths.
+- [ ] **Step 5:** Rewrite `cloud/yesid.dev/docs/INDEX.md` to describe the new archive layout.
+- [ ] **Step 6:** Delete top-level cloud `specs/`, `plans/`, `devlog/`, `handoffs/`, `research/`, `archive/` (legacy archive) — keep only `archive/` (new layout), `learn/`, `reference-snapshot/`, `roadmap-snapshot/`, `slices/` (empty, for new slices).
+
+**STOP. Verify with Yesid that one archived slice can be retrieved end-to-end via the new paths before continuing.**
+
+---
+
+## Task 3b: Repo hierarchy migration
+
+**Goal:** Restructure the repo's `docs/slices/` into the new 3-level hierarchy. Migrate the active Slice 17 + sub-slice 17j from the current flat layout into bundle form.
+
+### Files
+- Create `docs/slices/_TEMPLATE-SLICE/` folder with `README.md`, `CHECKPOINT.md` skeletons
+- Create `docs/slices/_TEMPLATE-SUBSLICE/` folder with `spec.md`, `plan.md`, `log.md`, `handoff.md` skeletons
+- Create `docs/slices/slice-17/` folder + `README.md` (direction) — content seeded from retiring `docs/roadmap/standardization.md`
+- Create `docs/slices/slice-17/slice-17j/` bundle with 4 files migrated from current locations:
+  - `spec.md` ← `docs/slices/slice-17j-token-efficacy.md`
+  - `plan.md` ← `docs/plans/2026-04-17-slice-17j-token-efficacy.md`
+  - `log.md` ← `docs/devlog/2026-04-17-slice-17j-task-0.md` (renamed + re-headed per new session convention)
+  - `handoff.md` ← new, starts with stub (self-appending will fill during rest of 17j)
+- Create `docs/sessions/_TEMPLATE.md` for non-slice session template
+- Delete emptied dirs: `docs/specs/`, `docs/plans/`, `docs/devlog/` (leave only `_TEMPLATE.md`), `docs/handoffs/` (leave only `_TEMPLATE.md`)
+
+### Steps
+
+- [ ] **Step 1:** Write the `_TEMPLATE-SLICE/` and `_TEMPLATE-SUBSLICE/` skeletons.
+- [ ] **Step 2:** Write `docs/slices/slice-17/README.md` (migrate + trim content from `docs/roadmap/standardization.md`).
+- [ ] **Step 3:** Create `docs/slices/slice-17/slice-17j/` folder and move the 4 active files in with rename.
+- [ ] **Step 4:** Update internal references in the moved files (spec references plan, etc.).
+- [ ] **Step 5:** Delete emptied repo dirs.
+- [ ] **Step 6:** Delete `docs/roadmap/standardization.md` (content moved to slice-17 README).
+- [ ] **Step 7:** Regenerate `tree.txt`.
+- [ ] **Step 8:** `bun run check` + `bun run test` — ensure no code references broken.
+
+**STOP. Ask Yesid to verify the active 17j bundle opens cleanly and the old flat paths are gone before continuing.**
+
+---
+
+## Task 3c: Close-script (scripts/slice-close.ts)
+
+**Goal:** Write the Bun script that flattens an active sub-slice bundle into a single-file archive, mirrors to cloud, deletes the repo folder, and appends to `COMPLETED-SLICES.md`.
+
+### Files
+- Create: `scripts/slice-close.ts`
+- Modify: `package.json` — add `"slice:close": "bun run scripts/slice-close.ts"` script entry
+
+### Behavior
+
+```
+bun run slice:close 17j
+
+Actions:
+1. Read docs/slices/slice-17/slice-17j/{spec,plan,log,handoff}.md
+2. Concatenate into single flat file with section headings:
+     # Slice 17j — <name>
+     ## Spec
+     <content>
+     ## Plan
+     <content>
+     ## Log
+     <content>
+     ## Handoff
+     <content>
+3. Write to cloud/yesid.dev/docs/archive/slices/slice-17/slice-17j.md
+4. Delete repo folder docs/slices/slice-17/slice-17j/
+5. Append one-liner to cloud/yesid.dev/docs/COMPLETED-SLICES.md
+6. Print summary (bytes written, files removed, cloud path)
+```
+
+### Steps
+
+- [ ] **Step 1:** Write `scripts/slice-close.ts` with argparse (slice id), file-read + concatenation, cloud path resolution, deletion, index append.
+- [ ] **Step 2:** Unit test with a **mock** sub-slice (copy 17j bundle temporarily, run close, verify, restore).
+- [ ] **Step 3:** Add `slice:close` to `package.json` scripts.
+- [ ] **Step 4:** Document usage in `WORKFLOW.md` §closing-checklist.
+
+**STOP. The real close-script runs for the first time when 17j itself PRs — so it must work reliably. Verify with Yesid the mock close succeeded before continuing.**
+
+---
+
+## Task 3d: PLAN.md reshape + slice READMEs
+
+**Goal:** PLAN.md becomes the per-project slice index (one line per slice pointing to the slice README). Per-slice direction content lives in each slice's README.md.
+
+### Files
+- Modify: `docs/roadmap/PLAN.md` — shrink slice sections to one-line-per-slice pointer. Keep: vision, principles, tech stack, site architecture, slice index table, data interfaces, testing standards.
+- Create: `docs/slices/slice-17/README.md` (already from Task 3b; cross-check coverage)
+- Confirm: `docs/roadmap/FUTURE_PHASES.md` stays untouched (user's note — parked cross-project wishlist, not systematized).
+
+### Steps
+
+- [ ] **Step 1:** Read current PLAN.md. Identify sections with per-slice detail that should move to slice READMEs (e.g., Slice 15, 18, 19, 19b, 20, 21, 22 currently have their own sections with scope + rationale).
+- [ ] **Step 2:** For each slice with per-section content, create `docs/slices/slice-<NN>/README.md` with the content.
+- [ ] **Step 3:** Replace the section in PLAN.md with a one-line pointer: `### Slice NN — <name>` `See [docs/slices/slice-NN/README.md](...)`.
+- [ ] **Step 4:** The slice index table (at line 185-ish) stays — it's the master map.
+- [ ] **Step 5:** Regenerate `tree.txt`.
+
+**STOP. Confirm PLAN.md now reads as the project master + slice index (not detailed per-slice content).**
+
+---
+
+## Task 3e: docs/sessions/ + non-slice session convention
+
+**Goal:** Create the `docs/sessions/` home for non-slice work (bugfixes, config changes, one-off exploration).
+
+### Files
+- Create: `docs/sessions/_TEMPLATE.md`
+- Update: `CLAUDE.md` — add a "Non-slice sessions" section naming the convention.
+- Update: `WORKFLOW.md` — document the non-slice flow.
+
+### Steps
+
+- [ ] **Step 1:** Write `docs/sessions/_TEMPLATE.md` — lightweight template (What + why, Scope, Actions, Decisions, Outcome, Commit(s), Follow-ups).
+- [ ] **Step 2:** In `CLAUDE.md` Session Types section, add "Non-slice" as a fourth type next to Planning / Implementation / Closing.
+- [ ] **Step 3:** In `WORKFLOW.md`, document when to use a non-slice session vs. a slice (rule of thumb: no spec required, touches < 5 files, commits as-is, optional PR).
+
+**STOP before Task 4.**
+
+---
+
 ## Task 4: `.mcp.json` per-project MCP scoping
 
 **Goal:** Create a project-scoped MCP allowlist so only the Keep list's tool schemas load on yesid.dev sessions.
@@ -1737,6 +1896,34 @@ git commit -m "docs(slice-17j): Task 8 — config export snapshot created"
 > Cloud files themselves stay out of git — they're the export destination.
 
 **STOP. Ask Yesid to spot-check the snapshot before final handoff.**
+
+---
+
+## Task 9a: Vocabulary codex (VOCAB.md)
+
+**Goal:** Create `docs/reference/VOCAB.md` — a personal, first-person glossary of the shared language Yesid and Claude use. Two audiences, one file: Yesid learning industry terms, Claude learning brand-specific terms.
+
+**Why this matters:** Communication drift is the single biggest friction in long-lived AI-assisted projects. Without a shared lexicon, brand terms (e.g. "Snappy Doctrine", "edge rail", "station tab") get re-invented each slice and industry terms (e.g. "cache prefix", "FLIP", "scope hierarchy") get paraphrased. Codifying both sides in one always-loaded doc eliminates the drift.
+
+**Trade-secret framing:** This is a private lexicon. First-person, opinionated, yesid-specific. Not for external publishing. Lives in repo at `docs/reference/` (Tier 1, always loaded) so every session starts with aligned vocabulary.
+
+### Files
+- Create: `docs/reference/VOCAB.md`
+
+### Steps
+
+- [ ] **Step 1:** Draft `docs/reference/VOCAB.md` with initial sections:
+  1. How to use this doc (1 paragraph)
+  2. Brand-specific vocabulary (yesid.dev internal names — pulled from CONSTITUTION, MOTION, CSS, CLAUDE.md, and PATTERNS)
+  3. Industry vocabulary (Svelte/Tailwind/GSAP/testing/web terms used in this codebase)
+  4. Claude Code vocabulary (the tool's terms — pulled from `cloud/claude-knowledge/token-efficacy/`)
+  5. Workflow vocabulary (slice, sub-slice, handoff, devlog, checkpoint, three-tier context, etc.)
+- [ ] **Step 2:** Co-edit with Yesid during slice closing — he fleshes out the "brand" section with terms I haven't captured; I flesh out the "industry" section with terms he wants to learn.
+- [ ] **Step 3:** Add to `CLAUDE.md` retrieval protocol so every new slice references it.
+
+**Draft NOW (during Task 1 handoff, pre-Task 2):** I draft the skeleton from existing docs. Yesid co-edits during closing.
+
+**STOP after drafting skeleton. Ask Yesid to skim before moving to Task 2.**
 
 ---
 

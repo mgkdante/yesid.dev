@@ -1,7 +1,47 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-18 | **17h COMPLETE — both sub-slices landed in one PR. All of Slice 17 Phase 1 visual stage now shipped.**
-**Branch:** `feature/slice-17h-3-task0-freshen` (carries 17h-3 + 17h-4; PR open)
+**Last updated:** 2026-04-17 | **17j ACTIVE — scope expanded mid-slice to cover token efficiency + workflow structure as two pillars.**
+**Branch:** `feature/slice-17j-token-efficacy` (off main; 17h PR #22 merged)
+
+## Active sub-slice — 17j Workflow Efficiency
+
+**Status:** in progress — Tasks 0, 0a, 1 complete. Scope expanded from "Token Efficacy" to "Workflow Efficiency" on 2026-04-17. Tasks 3a–3e added for the structural migration.
+
+**Progress:**
+
+| Task | Status | Commit |
+|------|--------|--------|
+| 0: Baseline | ✅ | 734e887 |
+| 0a: Research sprint (6 parallel + 1 structure research) | ✅ | 98ab5d4 (token) + cloud doc 07 (structure) |
+| 1: Three-tier context model + docs prune + cloud mirror | ✅ | d79d319 |
+| 2: CLAUDE.md slim | pending | — |
+| 3: WORKFLOW.md rewrite + new close protocol | pending | — |
+| 3a: Cloud archive retro reorg (bundles) | pending | — |
+| 3b: Repo hierarchy migration (3 levels) | pending | — |
+| 3c: scripts/slice-close.ts | pending | — |
+| 3d: PLAN.md reshape + slice READMEs | pending | — |
+| 3e: docs/sessions/ + non-slice convention | pending | — |
+| 4: .mcp.json allowlist | pending | — |
+| 5: Global Claude prune | pending | — |
+| 6: Re-measurement | pending | — |
+| 7: workflow-efficiency skill (renamed from token-frugal-workflow) | pending | — |
+| 8: Config export snapshot | pending | — |
+| 9a: VOCAB.md | drafted, co-edit at close | — |
+| 9: Handoff + PR | pending | — |
+
+**Core principle codified:** the workflow self-enhances. Every mistake solved in a sub-slice becomes a closing-checklist rule so it cannot recur. Quality compounds.
+
+**Key artifacts produced so far:**
+- `docs/ARCHIVE.md` — three-tier context model, retrieval protocol, write protocol
+- `docs/reference/VOCAB.md` — shared lexicon (brand + industry + Claude Code + workflow)
+- `cloud/claude-knowledge/token-efficacy/` — 7 deep-dive docs (01–07) + index, 15+ sources
+- `cloud/yesid.dev/docs/COMPLETED-SLICES.md` + `INDEX.md` — Tier 3 indexes
+
+**Next session resume:** Task 2 (CLAUDE.md slim).
+
+---
+
+## Previous sub-slice — 17h Brand Bundle (COMPLETE)
 
 ## Current Position
 

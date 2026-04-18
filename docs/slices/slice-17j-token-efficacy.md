@@ -1,27 +1,47 @@
-# Slice 17j — Token Efficacy (Consolidated Token Utilization)
+# Slice 17j — Workflow Efficiency
 
-**Status:** refined-draft (pending Yesid review)
+**Status:** active — scope expanded mid-slice (2026-04-17). Was "Token Efficacy"; now covers token + workflow structure as two pillars of one slice.
 **Priority:** 2
-**Estimated effort:** 4–5 sessions
-- Session 1: Task 0 (baseline) + Task 0a dispatch (parallel research agents) + review summaries
-- Session 2–3: Tasks 1–3 (docs prune + CLAUDE.md slim + WORKFLOW.md slim)
-- Session 4: Tasks 4–5 (.mcp.json + global cleanup)
-- Session 5: Tasks 6–9 (re-measure + codify skill + config export + handoff + PR)
+**Estimated effort:** 7–9 sessions (revised up from 4–5 after scope expansion)
 
-**Depends on:** Slice 17h merged to `main`
-**Parent slice:** 17 (Standardization). 17j is the operational-efficiency close to slice 17 — once the visual/design/brand work settles in 17h, 17j resets the per-session context baseline so future slices (and future projects) start light.
+**Depends on:** Slice 17h merged to `main` ✅
+**Parent slice:** 17 (Standardization). 17j is the operational-efficiency close to Slice 17 — once the visual/design/brand work settled in 17h, 17j resets the per-session context baseline AND systematizes the workflow itself so future slices (and future projects across Yesid's 6 services) start light, structured, and self-pruning.
 
-## Objective
+## Objective — two pillars
 
-Reduce the token weight Claude auto-loads at the start of every session — across the repo, the project config, the global Claude config, installed plugins, connected MCP servers, and auto-memory — in a single consolidated pass, record a measurable before/after delta, AND codify the findings into a reusable knowledge base + skill + exported config that improves token efficacy across all future projects.
+This slice delivers one unified outcome across two pillars:
 
-Three durable outputs beyond the yesid.dev cleanup:
+### Pillar 1 — Token efficiency
+Reduce the token weight Claude auto-loads at the start of every session across seven accretion sources (repo docs, `CLAUDE.md`, `WORKFLOW.md`, `.mcp.json` scoping, `~/.claude/rules/zh/`, installed plugins, auto-memory). Record a measurable before/after delta.
 
-1. **Portable research knowledge base** — six deep dives at `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` (500–1000 words each).
-2. **Portable workflow skill** — `~/.claude/skills/token-frugal-workflow/` with a tight description so it only surfaces when relevant.
-3. **Portable config snapshot** — `C:\Users\otalo\Yesito\cloud\claude-config\` with `user/`, `projects/yesid.dev/`, README, and snapshot script.
+### Pillar 2 — Workflow structure
+Systematize the slice-based workflow into a 3-level hierarchy with standardized per-sub-slice file structure, self-appending handoffs, and a close-script that flattens + mirrors at PR. Applies to 17j itself and every future slice.
+
+## Core principle — the self-enhancing workflow
+
+**The workflow is part of the product.** Every mistake solved in one slice becomes a closing-checklist rule so it cannot recur in the next. Quality compounds slice-over-slice. This slice is the one that turns that principle into executable tooling.
+
+## Trade-secret framing
+
+Both pillars produce **portable personal IP**, not public publishing. Usable across any repo Yesid works on (yesid.dev now, and any project that touches his 6 services — SQL, infrastructure, pipelines, consulting, etc.). Not a client deliverable. Private competitive moat.
+
+## Durable outputs beyond yesid.dev
+
+**From Pillar 1 (Token):**
+1. **Portable research knowledge base** — seven deep dives at `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` (500–1000 words each).
+2. **Portable workflow skill** — `~/.claude/skills/workflow-efficiency/` (renamed from `token-frugal-workflow` to reflect the two-pillar scope).
+3. **Portable config snapshot** — `C:\Users\otalo\Yesito\cloud\claude-config\`.
+
+**From Pillar 2 (Structure):**
+4. **Three-tier context model** codified in `docs/ARCHIVE.md` (shipped in Task 1).
+5. **Hierarchical slice structure** — `docs/slices/slice-NN/slice-NN<letter>/{spec,plan,log,handoff}.md` bundle template.
+6. **Close-script** — `scripts/slice-close.ts` (Bun) that flattens active sub-slice → mirror to cloud → deletes repo folder → updates `COMPLETED-SLICES.md`.
+7. **Self-appending handoff pattern** — per-task append, PR-body-derivable, resets per sub-slice.
+8. **Shared vocabulary codex** — `docs/reference/VOCAB.md` (drafted Task 9a, co-edited at close) — brand + industry + Claude Code + workflow terms in one always-loaded lexicon.
 
 ## Context
+
+### Pillar 1 — Token accretion problem
 
 Token consumption per session in this project has grown heavy. Accretion across 20+ slices has inflated seven distinct sources, each loaded every cold session regardless of the task at hand:
 
@@ -33,19 +53,33 @@ Token consumption per session in this project has grown heavy. Accretion across 
 6. **Connected MCP servers** — firefox-devtools, webflow, cloudflare, railway, neon, postman, notion, videodb, jobs, tax, calendar, etc. — each ships tool schemas into every session, for every project, regardless of relevance.
 7. **Auto-memory** — ~20 `project_slice_NN_status.md` entries for shipped slices, plus stale feedback memories tied to closed work.
 
-17j is the one-time consolidation that resets the baseline. After this slice, the **token-frugal-workflow skill** (Task 7) surfaces at the right moments to keep inventory from accreting again — on every new project, long multi-session effort, or cold-session audit.
+### Pillar 2 — Workflow structure problem
+
+The current workflow produces 4 artifacts per slice (`spec`, `plan`, `devlog`, `handoff`) scattered across 4 separate directories. Over 22 slices this produced ~100 files across 4 dir trees. Cross-referencing one slice's 4 artifacts requires jumping between 4 dirs. PRs happen at Level-3 (sub-slice tasks) inconsistently. Handoffs are written in one final push rather than appended-as-you-go.
+
+Industry research (2026) converges on **per-feature bundles** (Kiro, GitHub Spec Kit) and **single-file living specs** (Addy Osmani, Tessl). Neither quite fits a solo dev at 22+ slices. This slice introduces a **hybrid model**:
+- **Active work:** folder bundle at `docs/slices/slice-NN/slice-NN<letter>/` with spec + plan + log + handoff
+- **At PR close:** flatten to single file, mirror to cloud archive, delete repo folder
+- **3-level hierarchy:** Slice (L1, e.g. 17) → Sub-slice (L2, e.g. 17j, PR boundary) → Task (L3, sections in plan/log/handoff)
+- **Sessions are implicit** — `### Session YYYY-MM-DD — Task 17j-3` subsections in log.md
+- **Non-slice work** gets its own home at `docs/sessions/` (bugfixes, configs, one-off exploration)
+
+17j is the one-time consolidation that resets both baselines. After this slice, the **`workflow-efficiency` skill** (Task 7) surfaces when relevant to keep accretion from returning — on every new project, long multi-session effort, or cold-session audit.
 
 ## Architecture
 
 - **No application code changes.** Site behavior is identical before/after. This is a docs + config + environment slice.
-- **Repo-side changes** (pruning prongs 1–3 + .mcp.json): commit on the 17j branch, ship in one PR.
+- **Repo-side changes** (pruning prongs 1–3 + .mcp.json + the full hierarchy migration): commit on the 17j branch, ship in one PR.
 - **Global Claude config changes** (pruning prongs 5–7): happen on Yesid's machine in `~/.claude/` and the project-scoped auto-memory directory. Not versioned, but recorded in the handoff and captured in Task 8's config snapshot.
-- **Historical docs preserved out-of-repo.** `C:\Users\otalo\Yesito\cloud\yesid.dev\` mirrors the folder tree; git history retains the originals; a short in-repo `docs/ARCHIVE.md` stub points at both.
+- **Three-tier context model** (shipped in Task 1): Tier 1 always-on (governance + active slice), Tier 2 fetch-on-command (cloud mirror + git), Tier 3 cloud indexes (`COMPLETED-SLICES.md`, `INDEX.md`). All documented in `docs/ARCHIVE.md`.
+- **Hierarchical slice model** (Tasks 3a–3e): historical cloud artifacts reorganized retroactively into bundle format; active slices use `docs/slices/slice-NN/slice-NN<letter>/` folders; close-script flattens + mirrors at PR.
 - **Research output lives in the cloud** at `C:\Users\otalo\Yesito\cloud\claude-knowledge\token-efficacy\` — reference material, not loaded into any session by default. Zero session-start cost; human-browseable; reusable across projects.
-- **Workflow patterns live as a skill** at `~/.claude/skills/token-frugal-workflow/` — activates only when relevant (planning new projects, auditing tokens, diagnosing bloat). Tight description prevents unwanted activation.
+- **Workflow patterns live as a skill** at `~/.claude/skills/workflow-efficiency/` — activates only when relevant (planning new projects, auditing tokens, diagnosing bloat, structuring a new slice). Tight description prevents unwanted activation.
 - **Config exported to cloud** at `C:\Users\otalo\Yesito\cloud\claude-config\` with append-only timestamped snapshots. Enables portability to new projects/machines without mutating the live `~/.claude/`.
-- **Measurement is the spine.** Baseline before any prong, re-measure after. Delta is the acceptance metric.
-- **Parallel subagents for research only.** Six independent deep dives dispatched simultaneously in Task 0a; main session context stays clean (each agent writes direct to cloud file, returns only a 200-word summary). Approved exception to the serial-execution rule — research, not implementation.
+- **Measurement is the spine.** Baseline before any prong, re-measure after. Delta is the acceptance metric for both pillars (tokens + file count + directory count).
+- **Parallel subagents for research only.** Six token-economics deep dives + one workflow-structure deep dive dispatched in Task 0a; main session context stays clean. Approved exception to the serial-execution rule — research, not implementation.
+- **Self-enhancing closing checklist.** Every mistake caught in a sub-slice becomes a permanent closing-checklist rule. Quality compounds.
+- **17j is the first sub-slice to close under the new layout.** Dogfoods its own output — the close-script runs against 17j's own bundle at PR time.
 
 ## Tech Stack
 
