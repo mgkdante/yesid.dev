@@ -8,7 +8,7 @@
 - `CLAUDE.md` (governance)
 - `docs/reference/**` (CONSTITUTION, CSS, WORKFLOW, MOTION, TESTS, ARCHITECTURE, PATTERNS)
 - `docs/roadmap/**` (PLAN, FUTURE_PHASES, standardization)
-- `docs/slices/_TEMPLATE.md`, `slice-17-checkpoint.md`, current + future slice specs
+- `docs/slices/_TEMPLATE-SLICE/`, `_TEMPLATE-SUBSLICE/`, active slice folders with per-sub-slice bundles + CHECKPOINT.md
 - `docs/plans/` current plan only
 - `docs/devlog/_TEMPLATE.md` + active devlog
 - `docs/handoffs/_TEMPLATE.md`

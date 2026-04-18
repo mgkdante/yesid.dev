@@ -211,7 +211,7 @@ The shared language for our development process. These terms show up in `CLAUDE.
 | **Sub-slice** | A partition of a slice when it's too big (17a, 17a-1, 17a-2a, 17a-2b, etc.). One handoff each. | slice-17h-3, slice-17j |
 | **Spec** | The design decisions + rationale for a slice. Lives at `docs/specs/` (cloud for shipped, repo for active). | active: current slice only |
 | **Plan** | The implementation instructions (task-by-task) for a slice. Lives at `docs/plans/`. | Task-level step-by-step |
-| **Checkpoint** | The live state doc for a major slice (`slice-NN-checkpoint.md`). Updated every session. | `docs/slices/slice-17-checkpoint.md` |
+| **Checkpoint** | The live state doc for a Level 1 slice. Updated every session. Ephemeral — deleted when slice fully closes. | `docs/slices/slice-17/CHECKPOINT.md` |
 | **Devlog** | A per-session work record. What was built, what was decided, what was tested. | `docs/devlog/*` (active only in repo) |
 | **Handoff** | The closing report for a sub-slice. "What shipped + what's flagged + what's next." | `docs/handoffs/*` (cloud after close) |
 | **Iteration Protocol** | The mandatory "one task → STOP → Yesid approves → next task" loop. Never batch. | `CLAUDE.md` |

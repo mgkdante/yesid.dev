@@ -260,7 +260,7 @@ Full per-slice specs, plans, devlogs, and handoffs live at `C:\Users\otalo\Yesit
 
 ### Active
 
-**Slice 17j — Token Efficacy** (in progress, 2026-04-17). Reduces cold-session token overhead for yesid.dev by pruning 7 accretion sources (repo docs, CLAUDE.md, WORKFLOW.md, .mcp.json scoping, rules/zh/, plugins, auto-memory). Codifies findings into a cloud knowledge base, a portable `token-frugal-workflow` skill, and a global-config snapshot. Spec: `docs/slices/slice-17j-token-efficacy.md`. Plan: `docs/plans/2026-04-17-slice-17j-token-efficacy.md`.
+**Slice 17j — Workflow Efficiency** (in progress, 2026-04-17). Two pillars: token efficiency (prune 7 accretion sources) + workflow structure (3-level hierarchy, 4-file sub-slice bundles, self-appending handoff, close-script, OS-agnostic env var, shared vocabulary). Codifies findings into a portable cloud knowledge base, a `workflow-efficiency` skill, and a global-config snapshot. Trade-secret personal IP portable across Yesid's 6 services. Spec: `docs/slices/slice-17/slice-17j/spec.md`. Plan: `docs/slices/slice-17/slice-17j/plan.md`.
 
 ### Remaining in Slice 17 (planned)
 
@@ -362,7 +362,7 @@ Playwright E2E tests: full nav flow, train journey scroll, project detail, all p
 
 ### Slice 17 — Standardization: Ports & Adapters Lite
 
-**Full plan:** `[docs/roadmap/standardization.md](standardization.md)`
+**Full plan:** `[docs/slices/slice-17/README.md](../slices/slice-17/README.md)`
 **Status:** IN PROGRESS — Phase 1 Foundation **Est. Sessions:** 13-14 (across 7 sub-slices) **Depends on:** 13
 
 Design system + structural refactor. Brand primitives (terminal chrome, hazard stripes, card base) become shared components. Semantic type scale replaces 275 ad-hoc font-size declarations. All hardcoded hex colors migrate to tokens. Light theme becomes one toggle away. Service layer creates the CMS seam that Slice 18 (Payload) plugs into.
