@@ -1,42 +1,78 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-17 | **17j ACTIVE — scope expanded mid-slice to cover token efficiency + workflow structure as two pillars.**
+**Last updated:** 2026-04-18 | **17j ACTIVE — Tasks 0-5 complete. Task 6 (re-measurement) awaiting FRESH session for cold-context measurement.**
 **Branch:** `feature/slice-17j-token-efficacy` (off main; 17h PR #22 merged)
 
 ## Active sub-slice — 17j Workflow Efficiency
 
-**Status:** in progress — Tasks 0, 0a, 1 complete. Scope expanded from "Token Efficacy" to "Workflow Efficiency" on 2026-04-17. Tasks 3a–3e added for the structural migration.
+**Status:** 16 of 21 tasks complete (76%). Phase 4 in progress. Next step requires session restart.
 
-**Progress:**
+### Resume instructions for next session
+
+1. Open fresh Claude Code session in yesid.dev.
+2. **First command:** `/context-budget` — measures post-prune cold-session token usage.
+3. Paste the output; AI will compute the delta vs baseline (Task 0 measurement: ~89.5K tokens, 9% of 1M window) and commit as Task 6.
+4. Then continue with Tasks 7 (workflow-efficiency skill), 8 (config snapshot + restore scripts), 9a (VOCAB co-edit), 9 (handoff finalize + PR).
+
+**Why fresh session:** current session's context is polluted by pre-prune state + Task 5's live-machine changes. A fresh cold session shows the true post-prune cost.
+
+### Progress
 
 | Task | Status | Commit |
 |------|--------|--------|
-| 0: Baseline | ✅ | 734e887 |
-| 0a: Research sprint (6 parallel + 1 structure research) | ✅ | 98ab5d4 (token) + cloud doc 07 (structure) |
+| 0: Baseline measurement | ✅ | 734e887 |
+| 0a: Research sprint (6 parallel + 1 structure) | ✅ | 98ab5d4 + cloud doc 07 |
+| — Scope expansion + VOCAB draft | ✅ | 4d0f1ad |
+| — Close-script simplify + 3f planning | ✅ | 839db63 |
 | 1: Three-tier context model + docs prune + cloud mirror | ✅ | d79d319 |
-| 2: CLAUDE.md slim | ✅ | f8d2a82 |
-| 3: WORKFLOW.md rewrite + new close protocol | ✅ | 71d0646 |
-| 3a: Cloud archive reorg (Path B: move-to-archive, not per-slice bundles) | ✅ | (cloud-only; no repo commit for cloud moves) |
-| 3b: Repo hierarchy migration (3 levels) | pending | — |
-| 3c: scripts/slice-close.ts | pending | — |
-| 3d: PLAN.md reshape + slice READMEs | pending | — |
-| 3e: docs/sessions/ + non-slice convention | pending | — |
-| 3f: OS-agnosticism + OS-quirks registry | pending | — |
-| 4: .mcp.json allowlist | pending | — |
-| 5: Global Claude prune | pending | — |
-| 6: Re-measurement | pending | — |
-| 7: workflow-efficiency skill (renamed from token-frugal-workflow) | pending | — |
-| 8: Config export snapshot | pending | — |
-| 9a: VOCAB.md | drafted, co-edit at close | — |
-| 9: Handoff + PR | pending | — |
+| 2: CLAUDE.md slim (445→196 lines) | ✅ | f8d2a82 |
+| 3: WORKFLOW.md v2.0 | ✅ | 71d0646 |
+| 3a: Cloud archive reorg (Path B) | ✅ | 09b93eb |
+| 3b: Repo hierarchy migration (3-level bundle) | ✅ | cb42219 |
+| 3c: scripts/slice-close.ts + mock test | ✅ | c3456af |
+| — Progress-tracking workflow rule | ✅ | 699d8cd |
+| 3d: PLAN.md reshape + 8 per-slice READMEs | ✅ | cd4de1c |
+| 3e: docs/sessions/ + _TEMPLATE.md | ✅ | 96c3d37 |
+| 3f: OS-agnosticism + OS-quirks registry | ✅ | 4e1ec09 |
+| 4: .mcp.json + cloud mcp-templates + claude-config scaffold | ✅ | c1f1a85 + 3b4af9f |
+| 5: Global Claude prune (rules/zh + 15 plugins + 3 MCPs + 32 memory files) | ✅ | 9619f63 |
+| **6: Re-measurement + delta table** | **🔄 AWAITING FRESH SESSION** | — |
+| 7: workflow-efficiency skill (portable) | ⏳ | — |
+| 8: Config export snapshot + snapshot/restore scripts | ⏳ (scope expanded) | — |
+| 9a: VOCAB.md co-edit (at close) | drafted ✅, finalize at close | — |
+| 9: Handoff finalize + PR | ⏳ | — |
 
 **Core principle codified:** the workflow self-enhances. Every mistake solved in a sub-slice becomes a closing-checklist rule so it cannot recur. Quality compounds.
 
-**Key artifacts produced so far:**
-- `docs/ARCHIVE.md` — three-tier context model, retrieval protocol, write protocol
+### Key artifacts produced so far
+
+**In repo (Tier 1):**
+- `docs/ARCHIVE.md` — three-tier context model + retrieval/write protocols
 - `docs/reference/VOCAB.md` — shared lexicon (brand + industry + Claude Code + workflow)
-- `cloud/claude-knowledge/token-efficacy/` — 7 deep-dive docs (01–07) + index, 15+ sources
-- `cloud/yesid.dev/docs/COMPLETED-SLICES.md` + `INDEX.md` — Tier 3 indexes
+- `docs/slices/_TEMPLATE-SLICE/` + `_TEMPLATE-SUBSLICE/` — 3-level hierarchy skeletons
+- `docs/slices/slice-17/slice-17j/` — active bundle (spec + plan + log + handoff, all self-appending)
+- `docs/slices/slice-15/`, `slice-16/`, `slice-18/`, `slice-19/`, `slice-19b/`, `slice-20/`, `slice-21/`, `slice-22/` — future slice directions
+- `docs/sessions/_TEMPLATE.md` — non-slice session template
+- `scripts/slice-close.ts` — portable close-script (uses `$YESITO_CLOUD_ROOT`)
+- `.mcp.json` + `.claude/settings.json` — project-scoped MCP allowlist surface
+- `CLAUDE.md` (196 lines), `WORKFLOW.md` (v2.0, 735 lines), `PLAN.md` (462 lines)
+
+**In cloud (Tier 2 + 3):**
+- `<cloud>/claude-knowledge/token-efficacy/` — 7 deep-dive docs + index, 15+ sources (2025-26)
+- `<cloud>/claude-knowledge/os-quirks/{README, windows, macos, linux, cross-platform}.md` — cross-project platform registry, 8 Windows quirks seeded
+- `<cloud>/claude-knowledge/mcp-templates/{README, web-sveltekit, sql-pipeline, data-ops, generic, settings-template}.json` — per-project MCP templates
+- `<cloud>/claude-config/README.md` — portable Claude setup (scripts ship in Task 8)
+- `<cloud>/yesid.dev/docs/archive/` — full historical mirror + `legacy-flat/` preservation
+- `<cloud>/yesid.dev/docs/COMPLETED-SLICES.md` + `INDEX.md` — Tier 3 indexes
+- `<cloud>/claude-config/user/2026-04-18-pre-prune-snapshot/` — Task 5 backup (rollback available)
+
+### Task 5 prune summary (live machine)
+
+- `~/.claude/rules/zh/` DELETED (11 files, 48 KB)
+- Plugins: 32 → 17 enabled (−15)
+- User-scope MCPs: 7 → 4 entries (−3)
+- Auto-memory: 67 → 35 files (−32, −48%)
+- Estimated savings: ~19–22K tokens per session from ~89K baseline → projected ~67–70K (~22% reduction). **Exact measurement pending Task 6.**
 
 **Next session resume:** Task 2 (CLAUDE.md slim).
 
