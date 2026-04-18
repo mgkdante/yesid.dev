@@ -28,6 +28,10 @@
 	import ProjectsBlueprint from './ProjectsBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { projectsListingContent } from '$lib/content/projects';
+
+	const listingHeading = resolveLocale(projectsListingContent.heading, 'en');
+	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, 'en');
 
 
 	let {
@@ -178,7 +182,7 @@
 	<div bind:this={blueprintWrapEl} class="projects-blueprint-header" data-batch="project-item">
 		<ProjectsBlueprint />
 		<div class="projects-header-text">
-			<h1 class="projects-mobile-heading">Projects<span class="text-[var(--primary)]">.</span></h1>
+			<h1 class="projects-mobile-heading">{listingHeading}<span class="text-[var(--primary)]">.</span></h1>
 			<div class="projects-header-subtitle">{resolveLocale(content.subtitle, 'en')}</div>
 		</div>
 	</div>
@@ -210,7 +214,7 @@
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
-			<SearchInput placeholder="Search projects..." bind:value={searchQuery} testId="project-search-mobile" />
+			<SearchInput placeholder={searchPlaceholder} bind:value={searchQuery} testId="project-search-mobile" />
 		</div>
 
 		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->

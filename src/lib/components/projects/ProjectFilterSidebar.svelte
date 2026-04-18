@@ -10,6 +10,7 @@
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
+	import { projectsListingContent } from '$lib/content/projects';
 
 	let {
 		serviceIds,
@@ -37,11 +38,13 @@
 		searchQuery?: string;
 	} = $props();
 
+	// Labels pulled from content layer (Task 17b-7d).
 	const labels = {
-		services: { en: 'Services' },
-		tags: { en: 'Tags' },
-		stack: { en: 'Tech Stack' }
+		services: projectsListingContent.filters.services,
+		tags: projectsListingContent.filters.tags,
+		stack: projectsListingContent.filters.techStack,
 	};
+	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, 'en');
 </script>
 
 <aside data-testid="project-filter-sidebar">
@@ -50,7 +53,7 @@
 		<div class="relative">
 			<input
 				type="text"
-				placeholder="Search projects..."
+				placeholder={searchPlaceholder}
 				bind:value={searchQuery}
 				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]"
 				data-testid="project-search-sidebar"

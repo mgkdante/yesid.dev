@@ -1,4 +1,24 @@
-import type { Project } from '$lib/types';
+import type { Project, LocalizedString } from '$lib/types';
+
+/** Projects-listing-page chrome copy extracted from components in Task 17b-7d.
+ *  Consumed by ProjectListingPage, ProjectFilterMobile, ProjectFilterSidebar,
+ *  ProjectCard, and (via re-use) the services detail's "see all projects" link. */
+export const projectsListingContent = {
+	heading: { en: 'Projects' } satisfies LocalizedString,
+	searchPlaceholder: { en: 'Search projects...' } satisfies LocalizedString,
+	filters: {
+		filtersLabel: { en: 'Filters' } satisfies LocalizedString,
+		services: { en: 'Services' } satisfies LocalizedString,
+		tags: { en: 'Tags' } satisfies LocalizedString,
+		techStack: { en: 'Tech Stack' } satisfies LocalizedString,
+		allLabel: { en: 'All' } satisfies LocalizedString,
+		showingPrefix: { en: 'Showing' } satisfies LocalizedString,
+	},
+	card: {
+		/** Suffix after the first N stack items; template `{count}` -> extra count. */
+		stackOverflowSuffix: { en: '+{count} more' } satisfies LocalizedString,
+	},
+} as const;
 
 // Seed data — English only. French and Spanish fields are intentionally omitted;
 // they will be filled in as content is translated (not in this slice).
