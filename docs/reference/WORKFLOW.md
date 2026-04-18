@@ -54,36 +54,43 @@ Full model: `docs/ARCHIVE.md`.
 
 ## 2. Session Types
 
-Every session is exactly one type. Declare it at the start.
+Declare the primary type at session start.
 
-| Type | Purpose | Artifacts | Duration |
-|------|---------|-----------|----------|
-| **Planning** | Research, brainstorm, design spec, implementation plan | `slice-NN<letter>/spec.md`, `plan.md` | 1 session |
-| **Implementation** | Build one or more Level 3 tasks per Iteration Protocol | Code + tests + append to `log.md` and `handoff.md` | 1–3 sessions per sub-slice |
-| **Closing** | Finalize handoff, update governance, run close-script | Final `handoff.md` sections, PR, close-script execution | 0.5–1 session |
-| **Non-slice** | Bugfix / config / exploration / hotfix | `docs/sessions/YYYY-MM-DD-<name>.md` | < 1 session usually |
+| Type | Purpose | Artifacts | Slice sizes | Typical duration |
+|------|---------|-----------|-------------|------------------|
+| **Planning** | Research, brainstorm, design spec, implementation plan | `slice-NN<letter>/spec.md`, `plan.md` | **L only** | 1 session |
+| **Implementation** | Build one or more Level 3 tasks per Iteration Protocol | Code + tests + append to `log.md` and `handoff.md` | L / M | 1–3 sessions per sub-slice |
+| **Closing** | Finalize handoff, update governance, run close-script | Final `handoff.md` sections, PR, close-script execution | L / M | 0.5–1 session |
+| **Non-slice** | Bugfix / config / exploration / hotfix | `docs/sessions/YYYY-MM-DD-<name>.md` | **S** | < 1 session usually |
 
-**Hard rule:** A session cannot be two types. Planning produces zero code. Implementation doesn't write specs but can amend them. Closing doesn't add features.
+**Hard rules — what's strict vs soft:**
+
+- **Commit discipline is strict.** Planning commits (`docs(slice-NN):`) and implementation commits (`feat/refactor/fix(slice-NN):`) stay separate regardless of whether they share a wall-clock session. Never co-mingle types in one commit.
+- **For L-slices:** Planning produces zero code; Implementation doesn't write specs (but can amend them); Closing doesn't add features.
+- **M-slices plan inline** — TodoWrite + 1-paragraph "Plan" at top of `log.md`. No separate Planning session, no `spec.md`, no `plan.md`.
+- **S-slices have no planning step.**
+
+**Session separation is soft.** Two session types may share one wall-clock conversation provided commit discipline holds AND none of these "break triggers" fire: (a) reasoning-heavy transition, (b) context ≥65% of active window, (c) material model downshift spanning >2 tasks, (d) human fatigue. Full rule in `CLAUDE.md § Session types`.
 
 At session start: scan for uncommitted changes or commits made outside Claude Code. Document anything found in `log.md` (slice) or the session file (non-slice).
 
-### When to use non-slice vs slice
+### When to use non-slice vs slice — the L/M/S decision
 
-Use a **non-slice session** when:
-- Touches < 5 files
-- No spec needed (scope fits in a paragraph)
-- Commits as-is, optional PR
-- No multi-session plan required
+Slice sizing scales planning ceremony with complexity. Full rule in `CLAUDE.md § Slice sizing`.
 
-Use a **slice (or sub-slice)** when:
-- Spec makes the work clearer
-- Multi-session work likely
-- Multiple Level 3 tasks, each with STOP gates
-- Ships via PR
+| Size | Use when | Planning artifact |
+|---|---|---|
+| **L** (large) | Multi-session OR ≥10 design decisions with real tradeoffs OR cross-cutting (≥20 files across ≥2 architectural layers) | Separate Planning session → `spec.md` + `plan.md`. Implementation in a fresh session. |
+| **M** (medium) | Single session, 2–6 tasks, isolated scope, few real design choices | Inline: TodoWrite + 1-paragraph "Plan" at top of `log.md`. No separate Planning session. |
+| **S** (small / non-slice) | One-shot bugfix / config / doc tweak / exploration, touches < 5 files, scope fits in a paragraph | None — `docs/sessions/YYYY-MM-DD-<name>.md` records the work. Commits as-is, optional PR. |
+
+**Upgrade mid-session:** if an M-slice reveals ≥5 unexpected design decisions or touches ≥2 architectural layers, STOP. Commit safe partial work. Re-declare as L, start a fresh Planning session.
 
 ---
 
 ## 3. The Pipeline (End-to-End)
+
+**This is the L-slice flow. M-slices collapse phases 2–4 into an inline paragraph at the top of `log.md`. S-slices skip phases 1–4 entirely and go straight to implementation with a session file recording the work.**
 
 ```
 IDEA
@@ -116,7 +123,7 @@ IDEA
 SHIPPED → bundle lives in cloud archive, COMPLETED-SLICES.md updated
 ```
 
-Each phase has specific tools, artifacts, and exit criteria. Skipping creates debt that compounds.
+Each phase has specific tools, artifacts, and exit criteria. Skipping creates debt that compounds — for L-slices. For M/S, not all phases apply (see `CLAUDE.md § Slice sizing`).
 
 ---
 
@@ -210,7 +217,17 @@ Approach: <brainstorm option name>
 1. Invoke `superpowers:writing-plans`.
 2. Estimate sessions — each sub-slice gets a session count. Default to multi-session.
 3. Identify dependencies — sequential tasks ordered; independent ones flagged as parallel candidates (with Yesid's approval).
-4. Write `plan.md` in the bundle folder.
+4. Write `plan.md` in the bundle folder **per plan authoring discipline** (see below).
+
+### Plan authoring discipline (L-slice `plan.md`)
+
+Plans specify **decisions and sequencing**, NOT boilerplate code. Claude at execution time has full context of the current codebase, reads the affected files, and writes code matching local patterns. Over-specified plans lock in assumptions that may not match reality AND waste tokens twice (authoring + re-processing). Full rule in `CLAUDE.md § Slice sizing → Plan authoring discipline`.
+
+**Plan SHOULD include:** task list with dependencies/estimates/acceptance, files affected, commands to run, commit message shape, **one canonical example** of each non-obvious pattern, pattern-establishing code (interface types, contracts, novel algorithms).
+
+**Plan should NOT pre-specify:** boilerplate delegation code (one canonical example suffices), mechanical find/replace work (say which imports move, not every line), full test bodies for obvious assertions, pattern-following code after the pattern is already shown once.
+
+**Rule of thumb:** if Claude could produce the code in 30 seconds by reading the target file, don't pre-write it. Describe the transformation, give one canonical example, trust execution-time judgment for the rest.
 
 ### Plan structure
 
@@ -512,14 +529,18 @@ resolveLocale({ en: "Hello", fr: "Bonjour" }, 'es')
 
 Every session begins with:
 
-1. **Declare session type** — Planning, Implementation, Closing, or Non-slice
+1. **Declare session type + slice size** — Planning / Implementation / Closing / Non-slice, and L / M / S. (`CLAUDE.md § Slice sizing`)
 2. **Read checkpoint** — `docs/slices/slice-NN/CHECKPOINT.md` → resume where we left off
-3. **Check out feature branch** — `git checkout feature/slice-NN<letter>`
+3. **Check out feature branch** — `git checkout feature/slice-NN<letter>` (L/M) or stay on `main` (S)
 4. **Scan for drift** — Check for uncommitted changes or commits made outside Claude Code
-5. **Read active bundle** — `spec.md`, `plan.md`, `log.md`, `handoff.md`
-6. **Populate `TodoWrite` from `plan.md`** — one entry per Level 3 task + any mid-slice amendments. Statuses seeded from `plan.md` checkboxes. Exactly one entry in `in_progress`. This gives Yesid live visual progress in the session UI throughout the work.
+5. **Read active bundle — scaled to slice size:**
+   - **L-slice:** full bundle (`spec.md`, `plan.md`, `log.md`, `handoff.md`)
+   - **M-slice:** just `log.md` (which contains the 1-paragraph inline plan)
+   - **S-slice:** nothing extra — the non-slice session file will be created during the session
+6. **Populate `TodoWrite`** — from `plan.md` for L-slices (one entry per Level 3 task); from the inline plan paragraph for M-slices. Exactly one entry `in_progress` at a time.
 7. **Check PATTERNS.md + VOCAB.md** — Any relevant solved patterns? Any term already codified?
-8. **State the goal** — What does "done" look like for this session?
+8. **Announce the budget row** — `Model: <name> | Context: <used> / <window> (<%>) — <state>`. Required on Implementation + Closing sessions per Iteration Protocol. (`CLAUDE.md § Session token budget`)
+9. **State the goal** — What does "done" look like for this session?
 
 ---
 
@@ -528,24 +549,28 @@ Every session begins with:
 Every session ends with:
 
 1. **Final `TodoWrite` state** — mark completed tasks completed; leave the next task in `in_progress` or `pending` as resume point
-2. **Update checkpoint** — `docs/slices/slice-NN/CHECKPOINT.md` with current position (sub-slice, task, next step, TodoWrite summary)
+2. **Update checkpoint** — `docs/slices/slice-NN/CHECKPOINT.md` with current position (sub-slice, task, next step, TodoWrite summary, closing budget row)
 3. **Append to `log.md`** — What was done, decisions, commands, errors
 4. **Append to `handoff.md`** — If tasks landed, add their sections
 5. **Ensure tests pass** — `bun run test` + `bun run check` green
-6. **Commit** — All changes on the feature branch
-7. **State next steps** — What should the next session start with?
+6. **Commit** — All changes on the feature branch (or `main` for non-slice per §2)
+7. **State next steps** — What should the next session start with? Include recommended model (`CLAUDE.md § Models`) and expected slice size for the next session.
 
 ### Per-STOP progress table (within-session)
 
 At every task STOP, the AI also prints a compact markdown progress table in the conversation (not just the `TodoWrite` UI state) — scrollback-readable. Format:
 
 ```
+Model: Opus 4.7 [1m] | Context: 142k / 1M (14%) — comfortable, continuing
+
 | # | Task | Status | Commit |
 |---|------|--------|--------|
 | 0 | Baseline | ✅ | abc1234 |
 | 1 | First feature | 🔄 in progress | — |
 | 2 | Second feature | ⏳ pending | — |
 ```
+
+The **budget row** is required on every STOP — it gives Yesid visibility into context usage so break decisions aren't surprising. Full thresholds: `CLAUDE.md § Session token budget`.
 
 `TodoWrite` is the live UI state; the markdown table is the scrollback audit trail. They say the same thing in two persistence layers.
 

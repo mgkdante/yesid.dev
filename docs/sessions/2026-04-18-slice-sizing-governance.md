@@ -151,6 +151,38 @@ Second CLAUDE.md amendment lands as a separate commit on main (same session, sam
 
 ---
 
+## Addendum v3 — same day, WORKFLOW.md consistency pass
+
+After the two CLAUDE.md amendments, Yesid noted that `docs/reference/WORKFLOW.md` also describes session types and the plan-authoring pipeline and would be out of sync with the new rules. Review confirmed: five sections needed alignment. Done as a targeted edit pass — WORKFLOW.md stays a **companion** to CLAUDE.md (points at CLAUDE.md for authoritative rules) rather than duplicating long policy text.
+
+### Additional decisions
+
+- **D009:** WORKFLOW.md is the companion-to-CLAUDE.md operational doc, not a duplicate rulebook.
+  - When CLAUDE.md rules change, WORKFLOW.md gets targeted pointers + table/checklist updates, not full policy duplication.
+  - This keeps a single source of truth (CLAUDE.md) and avoids rule drift between the two files.
+
+- **D010:** WORKFLOW.md's Pipeline (§3) is L-slice-specific and should say so.
+  - M-slices collapse phases 2–4 into inline planning (1-paragraph plan in `log.md`).
+  - S-slices skip phases 1–4 entirely.
+  - Noted at the top of §3 so readers don't mistake the 8-phase diagram as universal.
+
+### Changes made to WORKFLOW.md
+
+1. **§2 Session Types table** — added "Slice sizes" column (Planning=L only, Implementation/Closing=L/M, Non-slice=S).
+2. **§2 Hard rule** — replaced with strict/soft split: commit discipline (strict) vs session separation (soft, with four break triggers listed and pointer to CLAUDE.md).
+3. **§2 "When to use non-slice vs slice"** — reframed as an L/M/S decision table with triggers + planning artifact per size.
+4. **§3 Pipeline** — clarifying sentence that the 8-phase diagram is L-slice-specific.
+5. **§7 Phase 4 Plan** — added "Plan authoring discipline" subsection with the decisions-and-sequencing-not-boilerplate rule + 30-second heuristic.
+6. **§17 Session Start Protocol** — step 1 declares type + slice size; step 5 scales reading to slice size (L=full bundle, M=log.md only, S=nothing extra); step 8 is new (announce budget row); steps renumbered to 9.
+7. **§18 Session End Protocol** — step 7 adds "include recommended model + expected slice size"; per-STOP progress table format updated to include the budget row above the task table.
+
+### Where this commit lives
+
+- **Committed on `feature/slice-17b-repositories`** rather than `main`. Reason: main checkout was blocked by an uncommitted `src/lib/content/blog.ts` edit from a parallel 17b implementation session. Committing on the feature branch doesn't disturb that WIP, and WORKFLOW.md updates will flow to main via the 17b PR merge (closer to Yesid's original governance-via-PR preference than the earlier direct-to-main commits).
+- Inconsistent landing pattern vs v1/v2 main commits, but the end state (main has all governance amendments after 17b PR merges) is identical.
+
+---
+
 ## Rules for non-slice sessions (reference copy from template)
 
 1. **Single session, single topic.** ✓ This session did only governance.
