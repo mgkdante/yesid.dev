@@ -370,6 +370,7 @@ Tools: see §19 Tool Selection Protocol → Verification.
    ```
 7. **Commit, push, create PR** — `gh pr create --title "..." --body-file path/to/handoff.md` (or derived PR body).
 8. **Post-merge:** `bun run slice:close <N> <letter>` — bundles moves to cloud, folder deleted, index updated.
+9. **Mirror live docs to cloud:** `bun run docs:mirror` — refreshes `<cloud>/yesid.dev/docs/{reference,roadmap,slices,sessions}/` so your off-device reading (phone, another computer, Obsidian mobile) sees the current state. Includes active sub-slice bundle *while* it's active; the folder goes empty after `slice:close` runs, then mirror reflects that. Full-replace, safe on all OSes. Run on every slice close AND optionally at end of working sessions to keep cloud fresh for off-device reading.
 
 **The workflow self-enhances:** any mistake caught during this sub-slice becomes a permanent checklist rule here. If you had to re-learn something, it belongs in an OS-quirk, learn doc, VOCAB entry, or PATTERN entry before the slice closes.
 
