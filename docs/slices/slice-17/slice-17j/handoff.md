@@ -444,14 +444,19 @@ vercel, chrome-devtools-mcp, skill-creator, remember, claude-code-setup, code-re
 
 ## Follow-ups flagged (accumulates)
 
+**Persistent (outside 17j scope):**
+
 1. **17g scope re-evaluation** — `docs/learn/` moved to cloud in 17j; 17g's planned "Learning Docs Refactor" may need re-framing.
 2. **Playwright `export-examples` on Windows** — flagged in 17h, still unresolved. NOTE: not yet added to os-quirks/windows.md because root cause unknown (chromium + firefox `launch()` both hang). When diagnosed, add as 8th windows.md entry.
 3. **Bundle shrink opportunities** — D269 lazy-plugin migration partial; captureFlipState + CustomEase.create sync-API coupling blocks full Vite chunk split. Flagged for post-17j async refactor.
 4. **`.gitattributes` for LF enforcement** — cross-platform.md flagged this as worth adding in a future slice to prevent accidental CRLF commits in cross-machine workflows.
-5. **Plugin overlap consolidation** (4 design plugins — frontend-design, frontend-design-pro, ui-ux-pro-max, web-designer) — needs Yesid input on which single plugin to keep. ~2K tokens potential.
-6. **Connector-based MCP cleanup** (Webflow, Cloudflare, Notion, Calendar, Slack, Figma, Postman, Microsoft-docs, etc.) — these load from claude.ai/settings/integrations (web app connectors), NOT from `~/.claude/` config files. Yesid needs to disconnect unused ones in the web app. Biggest remaining savings: ~3.5K tokens immediate + ~117K activation-cost prevention.
-6b. **Heavy agents on disk** — `performance-optimizer.md` (446 lines), `code-reviewer.md` (237 lines), `planner.md` (212 lines). Not in base session context but expensive when spawned. Consider trimming or delegating to smaller specialized agents in a future slice.
-7. **Rules chain language conditionality** — `rules/common/*.md` all inline regardless of language. TypeScript-only inclusion could save ~2K but needs CLAUDE.md meta-logic or rules reorg.
+
+**Moved to Task 9b (will action before 17j PR close):**
+
+- **Plugin overlap consolidation** (4 design plugins — frontend-design, frontend-design-pro, ui-ux-pro-max, web-designer). Decision needed from Yesid on which to keep. ~2K tokens potential.
+- **Connector-based MCP cleanup** (Webflow, Cloudflare, Notion, Calendar, Slack, Figma, Postman, Microsoft-docs, Claude-in-Chrome, tax, jobs, mcp-registry). Loaded from claude.ai/settings/integrations (web app), NOT CLI-reachable. Yesid disconnects manually; I'll provide the exact list + before/after instructions. **Biggest remaining lever: ~3.5K tokens immediate + ~117K activation-cost prevention.**
+- **Heavy agents on disk** (`performance-optimizer.md` 446 lines, `code-reviewer.md` 237 lines, `planner.md` 212 lines). Trim in-place to reduce subagent-spawn cost.
+- **Rules chain language conditionality** — `rules/common/*.md` all inline regardless of language. Possible approaches: (a) move TypeScript-specific content into `rules/typescript/` and trim common; (b) leave as-is and accept. Decision needed.
 
 ## Iterations (if any)
 
