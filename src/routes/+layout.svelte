@@ -11,6 +11,11 @@
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { buildPersonSchema } from '$lib/utils';
 
+	// Documented exception (Slice 17b): +layout.svelte reads `siteMeta` directly
+	// from $lib/content for JSON-LD. Full migration onto $lib/repositories requires
+	// a root-level layout loader and is deferred to Slice 15 SEO, where the
+	// SeoHead component forces the shape change. See ARCHITECTURE.md
+	// § Documented Exceptions.
 	import { siteMeta } from '$lib/content';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';

@@ -137,4 +137,69 @@ The derivation kept the same stop shape (hero + services + featured + about + bl
 
 No production component/route consumes `metroStops` / `TOTAL_STOPS` / `formatStopLabel` / `formatServicesLabel` / `getStopByType` yet — only the tests did. The derivation is reserved utility code. This means the metro-fold-in is entirely test-coverage-preserving: the visible metro strip on the homepage comes from a different component that iterates `services` directly, not from `getMetroStops()`. Documented for downstream awareness when components do wire up to `getMetroStops()`.
 
-### STOP — awaiting Yesid approval for Task 17b-4
+### Task 17b-3 approved 2026-04-18
+
+---
+
+## Session 2026-04-18 — Task 17b-4 Route loader migration
+
+**Continuation of same session.** Context ~34%, all three prior commits approved without rework, no reason to break session.
+
+### What shipped
+
+Nine route loaders migrated from `$lib/content` to `$lib/repositories`:
+
+| File | Shape |
+|---|---|
+| `src/routes/projects/+page.ts` | 5 content fns + 1 util — parallelized under Promise.all |
+| `src/routes/projects/[slug]/+page.ts` | async; `project.relatedServices.map(getServiceById)` wrapped in Promise.all |
+| `src/routes/services/+page.ts` | async; services + svg + per-service projects parallelized |
+| `src/routes/services/[id]/+page.ts` | async; 404 check pre-awaits the service lookup |
+| `src/routes/blog/+page.ts` | async; 3-way Promise.all then sequential svgContents |
+| `src/routes/blog/personal/+page.ts` | mirror of /blog with `'personal'` category |
+| `src/routes/blog/[slug]/+page.ts` | async; `blogPosts` replaced with `getAllPosts()` |
+| `src/routes/tech-stack/+page.ts` | async; items + scenarios parallelized |
+| `src/routes/about/+page.server.ts` | async; `aboutPageContent` replaced with `getAboutPageContent()` |
+
+Two files did **not** change (intentionally):
+- `src/routes/+page.ts` — contains only `export const ssr = false`. No loader, nothing to migrate.
+- `src/routes/contact/+page.server.ts` — only fetches weather, no content imports.
+
+Two documented exceptions marked with inline comments:
+- `src/routes/+layout.svelte` — imports `siteMeta` + `buildPersonSchema` for JSON-LD; migration deferred to Slice 15 SEO.
+- `src/routes/+error.svelte` — imports `errorPageContent`; SvelteKit runs `+error.svelte` without a loader, so repository migration needs upstream refactor in Slice 15.
+
+### Parallelization strategy
+
+Wherever a loader pulled multiple independent values from content, the migration bundles them with `Promise.all`. Example for `/projects`:
+
+```ts
+const [projects, tags, stackItems, serviceIds, services, serviceSvgContents] =
+  await Promise.all([
+    getPublicProjects(), getAllTags(), getAllStackItems(),
+    getServiceIdsForProjects(), getVisibleServices(),
+    fetchServiceSvgContents(fetch),
+  ]);
+```
+
+This stays flat (no chained awaits), faster, and is Payload-ready without rework.
+
+### Unchanged component behaviour
+
+`ContactPage.svelte` and `AboutPage.svelte` still import `contactContent` / `aboutPageContent` directly — these are component-level rule violations that Task 17b-7 (component extraction) will fix. Task 17b-4 scope is loader-side only.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `grep '$lib/content' src/routes/**/+page*.ts` | 0 matches (all loaders on repositories) |
+| `grep '$lib/adapters' src/routes` | 0 matches |
+| `bun run check` | 0 errors, 19 warnings (baseline) |
+| `bun run test` | 83 files / 819 tests pass |
+| `bun run build` | ✅ 1m 3s — production build confirms SSR works on every async loader |
+| 11-URL preview sweep | 10 × 200 OK, 1 × 404 (fake URL). HTML bodies all populated (about: 299k bytes, /: 997 bytes because `ssr = false`). |
+| `/about` accessibility snapshot | Identity, metrics, testimonials, process, stack, clients, interests, snapshots, **location with live weather "Montreal 23°C Overcast Clouds"**, terminal — all render. |
+
+The weather render proves the async pipeline end-to-end: `+page.server.ts` → `getAboutPageContent()` → `adapter.content.aboutPage()` → `$lib/content/about-page.ts` → back up to the SvelteKit data pipeline.
+
+### STOP — awaiting Yesid approval for Task 17b-5

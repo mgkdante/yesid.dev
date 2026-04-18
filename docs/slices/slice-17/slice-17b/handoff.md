@@ -118,3 +118,40 @@ Nothing user-visible. No consumer imports from `$lib/repositories` yet — route
 - `src/lib/repositories/service.ts` — metro labels kept verbatim from the old content file; spec reference had stock labels that would have caused visible copy changes.
 - `src/lib/repositories/tech-stack.test.ts` — `validateTechItems` / `validateScenarios` imported directly from `$lib/content/tech-stack` rather than surfaced through the repository (test-only plumbing).
 - `src/lib/content/metro.ts` removed; nothing outside the old test consumed its exports.
+
+---
+
+## 17b-4 — Route loader migration (loaders → repositories)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+- 9 route loaders migrated from `$lib/content` → `$lib/repositories`:
+  `/projects/+page.ts`, `/projects/[slug]/+page.ts`, `/services/+page.ts`, `/services/[id]/+page.ts`, `/blog/+page.ts`, `/blog/personal/+page.ts`, `/blog/[slug]/+page.ts`, `/tech-stack/+page.ts`, `/about/+page.server.ts`.
+- All loaders become `async`. Independent content reads are batched with `Promise.all` for SSR-time parallelism.
+- 2 loaders unchanged by design: `/+page.ts` (no data loading, `ssr=false`), `/contact/+page.server.ts` (weather-only).
+- 2 documented exceptions annotated with inline comments:
+  `/+layout.svelte` (JSON-LD siteMeta) and `/+error.svelte` (error copy). Full migration deferred to Slice 15 SEO.
+
+### What did **not** change
+
+- Components (`ContactPage.svelte`, `AboutPage.svelte`, etc.) still read `contactContent` / `aboutPageContent` directly from `$lib/content/*`. These are component-scope rule violations picked up by Task 17b-7 (component extraction).
+- No visible copy or layout change.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run test` | 83/819 pass (unchanged) |
+| `bun run check` | 0 errors, 19 warnings (unchanged) |
+| `bun run build` | ✅ production build succeeds in ~1 min (real SSR exercise) |
+| 11-URL preview sweep | 10 × 200 OK, fake URL → 404 |
+| `/about` snapshot | All sections render including live weather |
+
+### Review focus
+
+- `src/routes/projects/[slug]/+page.ts` — `project.relatedServices.map(getServiceById)` wrapped in `Promise.all` before `.filter()` so the async-array handling is correct.
+- `src/routes/about/+page.server.ts` — `aboutPageContent.weather.enabled` short-circuit now awaits the content fetch first. Preserves original behaviour (no weather fetch if flagged off).
+- `src/routes/+layout.svelte` + `src/routes/+error.svelte` — inline comments explaining the deferral. Reviewers should confirm the exception rationale is clear enough for future readers.

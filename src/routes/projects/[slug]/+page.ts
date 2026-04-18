@@ -4,20 +4,25 @@
 
 import { error } from '@sveltejs/kit';
 import { marked } from '$lib/utils/markdown';
-import { getProjectBySlug, getServiceById } from '$lib/content';
+import { getProjectBySlug, getServiceById } from '$lib/repositories';
 import type { Service } from '$lib/types';
 
 export async function load({ params, fetch }) {
-	const project = getProjectBySlug(params.slug);
+	const project = await getProjectBySlug(params.slug);
 
 	if (!project || project.status === 'private') {
 		error(404, { message: 'Project not found' });
 	}
 
-	// Resolve linked services from the project's relatedServices IDs
-	const services: Service[] = project.relatedServices
-		.map((id) => getServiceById(id))
-		.filter((s): s is Service => s !== undefined);
+	// Resolve linked services from the project's relatedServices IDs.
+	// Adapter getServiceById is async, so fan out with Promise.all and then
+	// filter out any unresolved (missing-from-data) services.
+	const servicesResolved = await Promise.all(
+		project.relatedServices.map((id) => getServiceById(id))
+	);
+	const services: Service[] = servicesResolved.filter(
+		(s): s is Service => s !== undefined
+	);
 
 	// Load service SVG contents for badges in the sidebar
 	const serviceSvgContents: Record<string, string> = {};

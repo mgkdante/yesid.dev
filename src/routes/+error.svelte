@@ -2,6 +2,10 @@
 	import { onMount } from 'svelte';
 	import ErrorIllustration from '$lib/components/home/ErrorIllustration.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
+	// Documented exception (Slice 17b): +error.svelte reads `errorPageContent`
+	// directly from $lib/content. SvelteKit's +error.svelte runs without a loader,
+	// so migrating through a repository requires an upstream refactor deferred
+	// to Slice 15 SEO. See ARCHITECTURE.md § Documented Exceptions.
 	import { errorPageContent } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { prefersReducedMotion } from '$lib/motion/stores';
