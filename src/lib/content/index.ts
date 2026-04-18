@@ -20,4 +20,6 @@ export * from './nav'
 export * from './about-page'
 export * from './contact-page'
 export * from './hero-data'
-export * from './metro'
+// metro.ts dissolved in Task 17b-3 — the derivation moved to
+// `$lib/repositories/service` (getMetroStops / getTotalStops / formatStopLabel
+// / formatServicesLabel / getStopByType / MetroStop type).

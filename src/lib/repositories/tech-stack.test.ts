@@ -1,5 +1,7 @@
-// Tech stack data integrity + API tests.
-// Validates all 35 items have correct structure, no dangling refs, and helpers work.
+// Tech-stack repository + data-integrity tests — moved from
+// content/tech-stack.test.ts in Task 17b-3. Repository calls are async now.
+// The `validateTechItems` / `validateScenarios` helpers are content-only
+// (test plumbing, not runtime API) and imported directly from content.
 
 import { describe, it, expect } from 'vitest';
 import {
@@ -12,11 +14,10 @@ import {
 	getTechItemContent,
 	getAllScenarios,
 	getScenarioForDomains,
-	validateTechItems,
-	validateScenarios,
-} from './tech-stack.js';
-import { services } from './services.js';
-import { projects } from './projects.js';
+} from './tech-stack';
+import { validateTechItems, validateScenarios } from '$lib/content/tech-stack';
+import { services } from '$lib/content/services';
+import { projects } from '$lib/content/projects';
 import type { InfraLayer, DomainCluster } from '$lib/types';
 
 const VALID_LAYERS: InfraLayer[] = [
@@ -29,30 +30,33 @@ const VALID_DOMAINS: DomainCluster[] = [
 ];
 
 describe('tech stack data integrity', () => {
-	const items = getAllTechItems();
-
-	it('loads at least 34 tech items', () => {
+	it('loads at least 34 tech items', async () => {
+		const items = await getAllTechItems();
 		expect(items.length).toBeGreaterThanOrEqual(34);
 	});
 
-	it('all IDs are unique', () => {
+	it('all IDs are unique', async () => {
+		const items = await getAllTechItems();
 		const ids = items.map((i) => i.id);
 		expect(new Set(ids).size).toBe(ids.length);
 	});
 
-	it('all items have valid layers', () => {
+	it('all items have valid layers', async () => {
+		const items = await getAllTechItems();
 		for (const item of items) {
 			expect(VALID_LAYERS).toContain(item.layer);
 		}
 	});
 
-	it('all items have at least one domain', () => {
+	it('all items have at least one domain', async () => {
+		const items = await getAllTechItems();
 		for (const item of items) {
 			expect(item.domains.length).toBeGreaterThanOrEqual(1);
 		}
 	});
 
-	it('all domains are valid', () => {
+	it('all domains are valid', async () => {
+		const items = await getAllTechItems();
 		for (const item of items) {
 			for (const d of item.domains) {
 				expect(VALID_DOMAINS).toContain(d);
@@ -60,20 +64,23 @@ describe('tech stack data integrity', () => {
 		}
 	});
 
-	it('all proficiency values are valid', () => {
+	it('all proficiency values are valid', async () => {
+		const items = await getAllTechItems();
 		const valid = ['expert', 'proficient', 'familiar'];
 		for (const item of items) {
 			expect(valid).toContain(item.proficiency);
 		}
 	});
 
-	it('no self-references in connectsTo', () => {
+	it('no self-references in connectsTo', async () => {
+		const items = await getAllTechItems();
 		for (const item of items) {
 			expect(item.connectsTo).not.toContain(item.id);
 		}
 	});
 
-	it('all connectsTo targets exist (no dangling refs)', () => {
+	it('all connectsTo targets exist (no dangling refs)', async () => {
+		const items = await getAllTechItems();
 		const ids = new Set(items.map((i) => i.id));
 		for (const item of items) {
 			for (const target of item.connectsTo) {
@@ -82,7 +89,8 @@ describe('tech stack data integrity', () => {
 		}
 	});
 
-	it('all relatedServices match existing service IDs', () => {
+	it('all relatedServices match existing service IDs', async () => {
+		const items = await getAllTechItems();
 		const serviceIds = new Set(services.map((s) => s.id));
 		for (const item of items) {
 			for (const sid of item.relatedServices) {
@@ -91,7 +99,8 @@ describe('tech stack data integrity', () => {
 		}
 	});
 
-	it('all relatedProjects match existing project slugs', () => {
+	it('all relatedProjects match existing project slugs', async () => {
+		const items = await getAllTechItems();
 		const projectSlugs = new Set(projects.map((p) => p.slug));
 		for (const item of items) {
 			for (const ps of item.relatedProjects) {
@@ -107,68 +116,72 @@ describe('tech stack data integrity', () => {
 });
 
 describe('tech stack API', () => {
-	it('getTechItemById returns correct item', () => {
-		const pg = getTechItemById('postgresql');
+	it('getTechItemById returns correct item', async () => {
+		const pg = await getTechItemById('postgresql');
 		expect(pg).toBeDefined();
 		expect(pg!.name).toBe('PostgreSQL');
 		expect(pg!.layer).toBe('data');
 	});
 
-	it('getTechItemById returns undefined for unknown ID', () => {
-		expect(getTechItemById('nonexistent')).toBeUndefined();
+	it('getTechItemById returns undefined for unknown ID', async () => {
+		expect(await getTechItemById('nonexistent')).toBeUndefined();
 	});
 
-	it('getTechItemsByLayer returns only items in that layer', () => {
-		const dataItems = getTechItemsByLayer('data');
+	it('getTechItemsByLayer returns only items in that layer', async () => {
+		const dataItems = await getTechItemsByLayer('data');
 		expect(dataItems.length).toBeGreaterThanOrEqual(3);
 		for (const item of dataItems) {
 			expect(item.layer).toBe('data');
 		}
 	});
 
-	it('getTechItemsByDomain returns items containing that domain', () => {
-		const webItems = getTechItemsByDomain('web-development');
+	it('getTechItemsByDomain returns items containing that domain', async () => {
+		const webItems = await getTechItemsByDomain('web-development');
 		expect(webItems.length).toBeGreaterThanOrEqual(5);
 		for (const item of webItems) {
 			expect(item.domains).toContain('web-development');
 		}
 	});
 
-	it('getConnections returns outgoing edges', () => {
-		const pgConnections = getConnections('postgresql');
+	it('getConnections returns outgoing edges', async () => {
+		const pgConnections = await getConnections('postgresql');
 		expect(pgConnections).toContain('python');
 	});
 
-	it('getIncomingConnections returns incoming edges', () => {
-		const incoming = getIncomingConnections('postgresql');
+	it('getIncomingConnections returns incoming edges', async () => {
+		const incoming = await getIncomingConnections('postgresql');
 		// alembic, docker, airflow all connect to postgresql
 		expect(incoming.length).toBeGreaterThanOrEqual(1);
 	});
 
-	it('getTechItemContent returns non-empty markdown for known items', () => {
-		const content = getTechItemContent('postgresql');
+	it('getTechItemContent returns non-empty markdown for known items', async () => {
+		const content = await getTechItemContent('postgresql');
 		expect(content).toContain('## What it is');
 	});
 
-	it('getTechItemContent returns empty string for unknown items', () => {
-		expect(getTechItemContent('nonexistent')).toBe('');
+	it('getTechItemContent returns empty string for unknown items', async () => {
+		expect(await getTechItemContent('nonexistent')).toBe('');
 	});
 });
 
 describe('scenario data integrity', () => {
-	const scenarios = getAllScenarios();
-
-	it('loads at least 7 scenarios', () => {
+	it('loads at least 7 scenarios', async () => {
+		const scenarios = await getAllScenarios();
 		expect(scenarios.length).toBeGreaterThanOrEqual(7);
 	});
 
-	it('all scenario IDs are unique', () => {
+	it('all scenario IDs are unique', async () => {
+		const scenarios = await getAllScenarios();
 		const ids = scenarios.map((s) => s.id);
 		expect(new Set(ids).size).toBe(ids.length);
 	});
 
-	it('all recommended techs exist as tech items', () => {
-		const techIds = new Set(getAllTechItems().map((i) => i.id));
+	it('all recommended techs exist as tech items', async () => {
+		const [scenarios, items] = await Promise.all([
+			getAllScenarios(),
+			getAllTechItems(),
+		]);
+		const techIds = new Set(items.map((i) => i.id));
 		for (const s of scenarios) {
 			for (const r of s.recommended) {
 				expect(techIds.has(r), `Scenario ${s.id}: "${r}" not found`).toBe(true);
@@ -176,7 +189,8 @@ describe('scenario data integrity', () => {
 		}
 	});
 
-	it('all scenarios have non-empty summaries', () => {
+	it('all scenarios have non-empty summaries', async () => {
+		const scenarios = await getAllScenarios();
 		for (const s of scenarios) {
 			expect(s.summary.en.trim().length).toBeGreaterThan(0);
 		}
@@ -189,25 +203,25 @@ describe('scenario data integrity', () => {
 });
 
 describe('scenario matching', () => {
-	it('exact domain match returns correct scenario', () => {
-		const result = getScenarioForDomains(['data-engineering']);
+	it('exact domain match returns correct scenario', async () => {
+		const result = await getScenarioForDomains(['data-engineering']);
 		expect(result).toBeDefined();
 		expect(result!.id).toBe('data-pipeline');
 	});
 
-	it('multi-domain exact match works', () => {
-		const result = getScenarioForDomains(['data-engineering', 'analytics-bi']);
+	it('multi-domain exact match works', async () => {
+		const result = await getScenarioForDomains(['data-engineering', 'analytics-bi']);
 		expect(result).toBeDefined();
 		expect(result!.id).toBe('data-plus-analytics');
 	});
 
-	it('returns undefined for empty domains', () => {
-		expect(getScenarioForDomains([])).toBeUndefined();
+	it('returns undefined for empty domains', async () => {
+		expect(await getScenarioForDomains([])).toBeUndefined();
 	});
 
-	it('partial match falls back to best subset', () => {
+	it('partial match falls back to best subset', async () => {
 		// systems-programming has no dedicated scenario, but with web-development it should match
-		const result = getScenarioForDomains(['web-development', 'systems-programming']);
+		const result = await getScenarioForDomains(['web-development', 'systems-programming']);
 		expect(result).toBeDefined();
 		expect(result!.id).toBe('fullstack-web');
 	});

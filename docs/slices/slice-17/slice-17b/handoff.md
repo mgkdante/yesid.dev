@@ -76,3 +76,45 @@ No consumer uses the adapter yet — route loaders and components still import f
 - `src/lib/adapters/types.ts` — the contract every future CMS must satisfy. `typeof import('...')` pattern binds the content port to current site-content shapes (intentional; future adapters must match).
 - `src/lib/adapters/static.ts` — verify every method maps to an existing content export; no transformation or business logic.
 - `src/lib/adapters/adapter.test.ts` — 37 assertions; shallow on purpose (deep data in content/integrity.test.ts).
+
+---
+
+## 17b-3 — Repository layer (ports on top of the adapter)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+- New folder `src/lib/repositories/` with 6 modules + barrel:
+  - `project.ts`, `service.ts`, `blog.ts`, `meta.ts`, `tech-stack.ts`, `content.ts`, `index.ts`
+  - Every function is async, delegates to `adapter.<collection>.<verb>`, returns `readonly` collections / `undefined` for not-found.
+- Metro-line derivation folded into `repositories/service.ts`:
+  - `getMetroStops`, `getTotalStops`, `getStopByType`, `formatStopLabel`, `formatServicesLabel` (all async except `formatStopLabel` which is a pure sync formatter).
+  - Labels preserved verbatim: "Departure" / "Featured Work" / "Who's Driving" / "Dispatches" / "Final Destination".
+- `meta` repository exposes `getPersonSchema()` — the only repository method that *composes* (calls `buildPersonSchema` on adapter data).
+- Three query-function test files moved and rewritten async:
+  - `content/metro.test.ts` → `repositories/service.test.ts`
+  - `content/projects.test.ts` → `repositories/project.test.ts`
+  - `content/tech-stack.test.ts` → `repositories/tech-stack.test.ts`
+- `content/metro.ts` deleted (functionality lives in the repository).
+- `content/index.ts` loses the `./metro` re-export; comment left as a pointer.
+- `vite.config.ts` `data` project `include` gains `src/lib/repositories/**/*.test.ts`.
+
+### What did **not** change
+
+Nothing user-visible. No consumer imports from `$lib/repositories` yet — route loaders still go through `$lib/content` directly. That migration lands in Task 17b-4.
+
+### Verification
+
+| Check | Post-17b-2 | Post-17b-3 |
+|---|---|---|
+| `bun run test` | 83/819 pass | **83/819 pass** (3 files moved in ↔ 3 moved out, net zero) |
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| Preview 10 primary URLs | 200 OK | 200 OK |
+
+### Review focus
+
+- `src/lib/repositories/service.ts` — metro labels kept verbatim from the old content file; spec reference had stock labels that would have caused visible copy changes.
+- `src/lib/repositories/tech-stack.test.ts` — `validateTechItems` / `validateScenarios` imported directly from `$lib/content/tech-stack` rather than surfaced through the repository (test-only plumbing).
+- `src/lib/content/metro.ts` removed; nothing outside the old test consumed its exports.

@@ -87,4 +87,54 @@ Running session-by-session record of the work. Chronological. Append-only.
 
 Adapters aren't wired to loaders yet — repositories (Task 17b-3) and route loaders (Task 17b-4) consume it. Preview rendering is unaffected.
 
-### STOP — awaiting Yesid approval for Task 17b-3
+### Task 17b-2 approved 2026-04-18
+
+---
+
+## Session 2026-04-18 — Task 17b-3 Repository layer
+
+**Continuation of same session.** Context ~30%, approval cadence healthy; no reason to break.
+
+### What shipped
+
+- Six repository modules under `src/lib/repositories/`:
+  - `project.ts` — 8 async getters delegating to `adapter.projects.*`.
+  - `service.ts` — 4 service getters PLUS the metro-line derivation (`getMetroStops`, `getTotalStops`, `getStopByType`, `formatStopLabel`, `formatServicesLabel`, `MetroStop` type).
+  - `blog.ts` — 12 async getters for blog queries + SVG/animation helpers.
+  - `meta.ts` — `getSiteMeta` + `getPersonSchema` (the one repository method that *composes* — calls `buildPersonSchema` on adapter data).
+  - `tech-stack.ts` — 11 async getters for tech items, scenarios, and relations.
+  - `content.ts` — 17 async getters for hero/about/cta/closer/nav/error/aboutPage/contactPage/heroMock/etc.
+- `repositories/index.ts` barrel re-exports all six.
+
+### Metro fold-in — label preservation
+
+Plan suggested stock LocalizedString labels (`{ en: 'About', fr: 'À propos', es: 'Acerca de' }`) for the metro bookends. Kept the EXISTING labels verbatim instead: "Departure" / "Featured Work" / "Who's Driving" / "Dispatches" / "Final Destination". 17b is architecture-only — zero visual changes — and the current copy is Yesid's creative choice. Plan reference was apparently written without reading the current `metro.ts`. Follow-up in Task 17b-6 may add fr/es translations to these LocalizedString objects.
+
+The derivation kept the same stop shape (hero + services + featured + about + blog + terminal = services.length + 5). Every assertion from the old `metro.test.ts` reproduced with async rewrites.
+
+### Dissolved / moved
+
+- `src/lib/content/metro.ts` — **deleted** (functionality lives in `repositories/service.ts`).
+- `src/lib/content/metro.test.ts` → `src/lib/repositories/service.test.ts` (rewritten with `async/await`).
+- `src/lib/content/projects.test.ts` → `src/lib/repositories/project.test.ts` (rewritten async).
+- `src/lib/content/tech-stack.test.ts` → `src/lib/repositories/tech-stack.test.ts` (rewritten async; `validateTechItems` + `validateScenarios` remain synchronous test helpers imported directly from `$lib/content/tech-stack`).
+- `src/lib/content/index.ts` — removed the `export * from './metro'` line with a replacement comment pointer.
+
+### Config
+
+- `vite.config.ts` `data` test project `include` gained `src/lib/repositories/**/*.test.ts`.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 warnings (baseline) |
+| `bun run test` | 83 files / 819 tests pass — same count as post-17b-2 (3 tests files moved in ↔ 3 moved out, net zero) |
+| Preview all 10 primary routes | 200 OK across `/`, `/services`, `/services/sql-development`, `/projects`, `/projects/yesid-dev`, `/blog`, `/blog/personal`, `/tech-stack`, `/about`, `/contact` |
+| Homepage snapshot | Hero + SQL terminal + metro strip render identically to pre-17b-3 |
+
+### Non-obvious finding
+
+No production component/route consumes `metroStops` / `TOTAL_STOPS` / `formatStopLabel` / `formatServicesLabel` / `getStopByType` yet — only the tests did. The derivation is reserved utility code. This means the metro-fold-in is entirely test-coverage-preserving: the visible metro strip on the homepage comes from a different component that iterates `services` directly, not from `getMetroStops()`. Documented for downstream awareness when components do wire up to `getMetroStops()`.
+
+### STOP — awaiting Yesid approval for Task 17b-4
