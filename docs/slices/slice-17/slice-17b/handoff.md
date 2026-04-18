@@ -43,3 +43,36 @@ No visual, behavioural, or content changes. Every component renders the same dat
 
 - Plan gap: `src/lib/utils.ts` collision → Option A (move to `utils/cn.ts`) approved.
 - Barrel scope: re-export every module under its layer; transitional for components, permanent for adapters + future consumers.
+
+---
+
+## 17b-2 — Adapter scaffold (`ContentAdapter` + static + contract test)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+- New folder `src/lib/adapters/` with four files:
+  - `types.ts` — `ContentAdapter` interface + six port interfaces.
+  - `static.ts` — `staticAdapter: ContentAdapter`, async wrappers over every `$lib/content/*` export.
+  - `index.ts` — one-line swap point re-exporting the active adapter.
+  - `adapter.test.ts` — 37 contract tests verifying shape + cardinality + not-found behavior.
+- `vite.config.ts` test include gained `src/lib/adapters/**/*.test.ts`.
+
+### What did **not** change
+
+No consumer uses the adapter yet — route loaders and components still import from `$lib/content/*`. Preview rendering is identical to post-17b-1. Wiring lands in Task 17b-3 (repositories) + 17b-4 (loaders).
+
+### Verification
+
+| Check | Post-17b-1 | Post-17b-2 |
+|---|---|---|
+| `bun run test` | 82/782 pass | 83/819 pass (+1 file, +37 tests) |
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+
+### Review focus
+
+- `src/lib/adapters/types.ts` — the contract every future CMS must satisfy. `typeof import('...')` pattern binds the content port to current site-content shapes (intentional; future adapters must match).
+- `src/lib/adapters/static.ts` — verify every method maps to an existing content export; no transformation or business logic.
+- `src/lib/adapters/adapter.test.ts` — 37 assertions; shallow on purpose (deep data in content/integrity.test.ts).

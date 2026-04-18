@@ -53,4 +53,38 @@ Running session-by-session record of the work. Chronological. Append-only.
 
 - Two one-shot Bun scripts were used (`_migrate-imports-17b-1.ts`, `_expand-barrel-17b-1.ts`) and deleted before commit — rewriting 295+ imports by hand would blow the token budget and risk inconsistency. Script outputs logged in the session for audit.
 
-### STOP — awaiting Yesid approval for Task 17b-2
+### Task 17b-1 approved 2026-04-18
+
+---
+
+## Session 2026-04-18 — Task 17b-2 Adapter scaffold
+
+**Continuation of same session.** Pre-break check: Opus 4.7 [1m], context ~28% at start — comfortable to continue one more task.
+
+### What shipped
+
+- `src/lib/adapters/types.ts` — `ContentAdapter` interface with six ports: `projects`, `services`, `blog`, `meta`, `techStack`, `content`. Signatures enforce async + readonly + undefined-on-not-found.
+- `src/lib/adapters/static.ts` — `staticAdapter: ContentAdapter`. The only module in the repo that currently imports from `$lib/content/*`. Annotated with the interface so missing methods fail compilation.
+- `src/lib/adapters/index.ts` — one-line swap point (`export { staticAdapter as adapter } from './static'`), plus `ContentAdapter` type re-export for downstream consumers.
+- `src/lib/adapters/adapter.test.ts` — 37 contract-level tests. Every port method verified for basic shape / cardinality / not-found behavior. Intentionally shallow — deep data checks remain in content-layer integrity tests.
+
+### Plan deviations
+
+- Used actual function names (`getProjectBySlug`, not `findBySlug as getProjectBySlug`). The plan's rename is a style choice; the codebase already matches.
+- Test assertions against `SiteMeta` corrected mid-task: plan expected `owner/address/links`; actual shape is `name/tagline/description/links`. Same fix for `HeroData` (`queries` → `queryRows + queryTime`). Plan's reference tests were written from an earlier draft of the content files; corrected against reality.
+
+### Config
+
+- `vite.config.ts` `data` test project `include` gained `src/lib/adapters/**/*.test.ts` so contract tests run on `bun run test`.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run test src/lib/adapters/adapter.test.ts` | 37/37 pass (<1s) |
+| `bun run test` full | 83 files / 819 tests (baseline 82/782 + 1 new file / 37 new tests) |
+| `bun run check` | 0 errors, 19 warnings (baseline) |
+
+Adapters aren't wired to loaders yet — repositories (Task 17b-3) and route loaders (Task 17b-4) consume it. Preview rendering is unaffected.
+
+### STOP — awaiting Yesid approval for Task 17b-3

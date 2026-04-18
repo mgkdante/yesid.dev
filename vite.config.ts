@@ -39,6 +39,7 @@ export default defineConfig({
 				test: {
 					name: 'data',
 					include: [
+						'src/lib/adapters/**/*.test.ts',
 						'src/lib/content/**/*.test.ts',
 						'src/lib/utils/**/*.test.ts',
 						'src/lib/styles/**/*.test.ts',
