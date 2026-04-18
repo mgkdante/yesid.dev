@@ -280,4 +280,45 @@ Quick grep of `content/types.ts` revealed other candidates that could be Localiz
 | Preview sweep (home + projects listing + 2 project details that use `impactMetrics`) | all 200 OK |
 | Metro line labels | render verbatim through new adapter path: Departure / Featured Work / Who's Driving / Dispatches / Final Destination |
 
-### STOP — awaiting Yesid approval for Task 17b-7
+### Task 17b-6 approved 2026-04-18
+
+---
+
+## Session 2026-04-18 — Tasks 17b-7a through 17b-7e (extraction batch 1)
+
+**Continuation of same session.** Context traversed from ~40% to ~62% during this batch.
+
+Yesid chose Option A at the calibration gate (proceed with all 12 extraction sub-tasks in this PR). Per-sub-task STOP + approval cadence, same session.
+
+### Completed sub-tasks
+
+| Sub-task | Strings | Commit | Content file touched |
+|---|---|---|---|
+| 17b-7a Home | 14 | `fc6fb06` | site-content.ts |
+| 17b-7b Blog listing | 16 | `5704269` | blog.ts |
+| 17b-7c Blog detail | 16 | `ee67724` | blog.ts |
+| 17b-7d Projects listing | 12 | `799831a` | projects.ts |
+| 17b-7e Projects detail | 15 | `9ed81ad` | projects.ts |
+| **subtotal** | **73** | — | — |
+
+73 of ~157 audit findings shipped (~46%). All tests + check hold (83 files / 819 tests pass, 0 errors, 19 pre-existing warnings). Preview verified for every extracted route.
+
+### Pattern findings (for downstream sub-tasks)
+
+- **Deduplication worked.** `Services` / `Tags` / `Tech Stack` / `Filters` / `All` / `Showing` previously lived in 4+ inline `labels = { ... }` blocks across mobile+sidebar+card files. Now a single canonical source.
+- **Brace placeholders are reliable.** Used for `{title}` / `{queryTime}` / `{updatedAgo}` / `{count}` / `{minutes}` across home + blog + projects. `resolveLocale(t, 'en').replace('{x}', v)` is the standard shape.
+- **Inline `labels` objects were 70% of the "hardcoded" surface.** Many components already had LocalizedString shapes but defined them inline rather than importing from content. The extractions are mostly reference swaps, not new Localized structure.
+
+### Session-break decision
+
+**Stopping before 17b-7f.** Context at ~62%, entering pre-break zone at 65%. Per CLAUDE.md § Session token budget, continuing through 7f–7l + 8/9/10 would push well past the 80% danger threshold before the slice closes. Fresh session for 17b-7f onward.
+
+### Resume pointer for next session
+
+- **Model:** Opus 4.7 [1m] (L-slice Implementation continues — working set still spans multiple layers)
+- **Branch:** `feature/slice-17b-repositories`
+- **Last commit:** `9ed81ad` (17b-7e)
+- **Next task:** 17b-7f Services extraction — 18 strings across ~5 service-domain components (ProjectsStrip, ServiceCard, ServiceDetailPage, ServiceListingPage, ServiceNav). Inline `labels` object in ServiceDetailPage lines 51–55 is the main "violation fix" target. The audit entries cross-reference `content/projects.ts` (for "See all projects →" link text) and `content/nav.ts` (for Previous / Next nav labels).
+- **Remaining sub-tasks after 7f:** 7g (About, 16), 7h (Contact, 3), 7i (Tech stack viz, 26), 7j (Layout+shared, 12), 7k (Page meta tags, 8), 7l (Tech-stack page, 9), then 8 (integrity test enhancements) + 9 (governance) + 10 (final + PR).
+
+### STOP — session wind-down; resume in fresh session for 17b-7f

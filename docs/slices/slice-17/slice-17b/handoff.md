@@ -227,3 +227,47 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - `src/lib/content/nav.ts` — are the bookend keys + labels correct? These are the only strings in the app whose copy will drive every metro stop name that's NOT a service title.
 - `src/lib/repositories/service.ts` — `getMetroStops` now uses `Promise.all` to fetch services + bookends in parallel. Logic otherwise unchanged.
 - `src/lib/types.ts` line 44 — comment on `ImpactMetric.value` justifies keeping it bare string. Confirm that stance (rather than upgrading both `value` and `label`).
+
+---
+
+## 17b-7a through 17b-7e — First extraction batch (73 of ~157 strings)
+
+**Commits:**
+- `fc6fb06` 17b-7a Home (14 strings)
+- `5704269` 17b-7b Blog listing (16 strings)
+- `ee67724` 17b-7c Blog detail (16 strings)
+- `799831a` 17b-7d Projects listing (12 strings)
+- `9ed81ad` 17b-7e Projects detail (15 strings)
+
+**Status:** 5 of 12 extraction sub-tasks shipped — 46% of the audit. Pause taken at session-budget threshold (~62% of 1M window). Fresh session planned for 17b-7f onward.
+
+### New content structures
+
+- `site-content.ts` — heroContent.headline.ariaSuffix, heroContent.sqlPanel.columns + metaTemplate, proofReelContent.toggleColorAria, servicesGridContent.viewIllustrationAria + viewAllLink, relatedProjectsStripContent, closerContent.terminal.
+- `blog.ts` — blogListingContent (mobileHeading, searchPlaceholder, resultNoun, noPostsMessage, filters.*, routeMap.*), blogDetailContent (code, backNav, header, page, tocPill).
+- `projects.ts` — projectsListingContent (heading, searchPlaceholder, filters.*, card.stackOverflowSuffix), projectsDetailContent (backToListingLabel, tocSectionTitle, readmeSectionTitle, glance.*, tocPill.*).
+
+### Components wired
+
+14 component files updated across home / blog / projects directories. Inline `labels = { ... }` object pattern consistently replaced by imports from the corresponding content module.
+
+### Verification (holds across all 5 sub-tasks)
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings |
+| `bun run test` | 83 files / 819 tests pass |
+| Preview spot-checks | every touched route renders identically |
+
+### Remaining work (for resume session)
+
+- 17b-7f Services (18 strings)
+- 17b-7g About (16 strings)
+- 17b-7h Contact (3 strings)
+- 17b-7i Tech stack viz (26 strings — largest sub-task)
+- 17b-7j Layout + shared (12 strings)
+- 17b-7k Page meta tags (8 strings)
+- 17b-7l Tech-stack page (9 strings)
+- 17b-8 Integrity test enhancements (LocalizedString guard + translation-debt report)
+- 17b-9 Governance (VOCAB, CONSTITUTION, ARCHITECTURE, README, cloud learn doc)
+- 17b-10 Final verification + PR
