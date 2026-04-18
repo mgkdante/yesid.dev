@@ -58,7 +58,7 @@ bun run check
 
 ## OS-quirks encountered this sub-slice
 
-(Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/claude-knowledge/os-quirks/<os>.md` per the closing checklist.)
+(Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)
 
 | Problem | OS | Fix | Logged to registry? |
 |---------|----|----|--------------------|

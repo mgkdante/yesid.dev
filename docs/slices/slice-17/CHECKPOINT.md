@@ -53,7 +53,7 @@ After Slice 17 fully closes:
 - `bun run brand:mirror` — refresh off-device brand (optional)
 - `~/.claude/skills/workflow-efficiency/` — activates on new project / sluggish session / audit / new machine
 - `<cloud>/claude-config/snapshot.ts` + `restore.ts` — config portability across machines
-- `<cloud>/claude-knowledge/{token-efficacy,os-quirks,mcp-templates,scripts}/` — cross-project knowledge
+- `<cloud>/workflow-knowledge/{token-efficacy,os-quirks,mcp-templates,scripts}/` — cross-project knowledge
 
 ## Core principles (from 17j, now permanent)
 

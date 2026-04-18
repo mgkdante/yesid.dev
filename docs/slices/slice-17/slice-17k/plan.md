@@ -19,6 +19,25 @@ Fresh session between every row (context hygiene per `AGENTS.md § Session token
 
 ---
 
+## Pre-Session-2 bootstrap (completed during Planning, 2026-04-18)
+
+Per user ask, the following was executed in-line during Planning rather than deferred to Session 2:
+
+- **AGENTS.md** copied from `<cloud>/workflow-knowledge/templates/AGENTS.md` to repo root — Codex auto-loads it on open.
+- **CLAUDE.md** shrunk from 358-line original to the 28-line thin pointer (per decision A) — copied from cloud template.
+- **docs/reference/tools/** created with `README.md`, `claude-code.md`, `codex.md` overlays from cloud templates.
+- **`claude-knowledge` → `workflow-knowledge`** rename re-applied across 10 repo files (spec.md, plan.md, CHECKPOINT.md, scripts/slice-close.ts, WORKFLOW.md, 2 _TEMPLATE-SUBSLICE files, _TEMPLATE.md, CLAUDE.md, .claude/settings.json).
+- **Generic-term pass (17k-2)** applied: `docs/reference/WORKFLOW.md`, `docs/reference/VOCAB.md`, `brand/examples/README.md` — "Claude at execution / outside Claude Code / Claude Preview / fresh Opus / Claude Code vocabulary" all replaced with LLM-tool-neutral language.
+- **CLAUDE.md → AGENTS.md cross-reference update** in `WORKFLOW.md`: § section refs (Session types, Session token budget, Models, Slice sizing, etc.) all point to AGENTS.md now; Companion-to list + intro prose + document-ecosystem table updated to foreground AGENTS.md as the workflow contract.
+
+**Implications for Session 2 scope:**
+
+- Tasks **17k-1** and **17k-2** are effectively **complete** (commit on this branch includes them).
+- Task **17k-3** (tool-attribution convention in `AGENTS.md § Iteration Protocol` step 4 + `_TEMPLATE-SUBSLICE/log.md` + `handoff.md`) is the FIRST task Codex should execute. The canonical example is already in AGENTS.md (copied from cloud template); the templates themselves still need the attribution lines.
+- Session 2 in Codex starts at **17k-3**, then proceeds to Session 3 scope (registry + install script).
+
+---
+
 ## Branch prep (PREREQUISITE — must happen before Session 2)
 
 Not a Level 3 task; required hygiene step because three commit layers currently sit on `feature/slice-17b-repositories`. Resolve cleanly before 17k implementation.
@@ -29,7 +48,7 @@ Not a Level 3 task; required hygiene step because three commit layers currently 
    - If stable: commit on `feature/slice-17b-repositories` as `feat(slice-17b): ...` then set 17b aside.
    - If paused indefinitely: `git stash -u -m "17b WIP pause"` so the branch is clean.
 2. Extract the workflow refactor as its own commit on `feature/slice-17b-repositories`:
-   - Files: `AGENTS.md` (new), `CLAUDE.md` (rewritten + reverted → currently reverted state), repo-wide `claude-knowledge` → `workflow-knowledge` rename (10 files), new `docs/reference/tools/` tree, `docs/slices/slice-17/slice-17k/` (this planning output).
+   - Files: `AGENTS.md` (new), `CLAUDE.md` (rewritten + reverted → currently reverted state), repo-wide rename to `workflow-knowledge` (10 files), new `docs/reference/tools/` tree, `docs/slices/slice-17/slice-17k/` (this planning output).
    - Commit shape: `chore: extract tool-agnostic workflow core + per-tool overlays (pre-17k)`.
 3. Create new branch: `git checkout main && git pull && git checkout -b feature/slice-17k-cross-tool-portability`.
 4. Cherry-pick the workflow-refactor commit onto the new branch.
@@ -398,6 +417,63 @@ Command pattern: `claude plugins remove <name>`
 
 ---
 
+## Task 17k-9 — Implement `install.ts` (stack registry applier)
+
+**Session:** 3b
+**Depends on:** 17k-4 (registry schema), 17k-5 (populated registry)
+**Size:** ~200–300 LOC Bun script
+
+**File to create:** `<cloud>/workflow-knowledge/stack/install.ts`
+
+**Behavior:**
+
+- Reads `<cloud>/workflow-knowledge/stack/registry.jsonc` (JSONC = JSON with comments; Bun strips comments before parse).
+- Flags: `--tool claude-code|codex|both`, `--dry-run` (default) vs `--apply`, `--only mcps|skills|plugins|agents`, `--verbose`.
+- Per registry entry with the selected tool in `install_in`:
+  - **MCPs:** write to tool's native config format.
+    - Claude Code: edit `~/.claude.json` `mcpServers` section OR `~/.claude/settings.json` `enabledMcpjsonServers` array.
+    - Codex: edit `~/.codex/config.toml` `[mcp_servers.<name>]` section (use a minimal TOML writer since Bun has no native TOML module — single-dep like `smol-toml`).
+  - **Skills:** copy from `source.path` (or fetch from `source.type == git|npm`) to `~/.claude/skills/<name>/` or `~/.codex/skills/<name>/`.
+  - **Plugins:** Claude-only. Run `claude plugin marketplace add <repo>` (idempotent) + `claude plugin install <name>@<marketplace>` via `execSync`. Codex has no plugin concept; skip.
+  - **Agents:** Claude-only (`~/.claude/agents/<name>.md`). Codex has none.
+- Dry-run prints a diff-style preview (which files would change, which commands would run) — no writes, no shell.
+- `--apply` commits the changes. Prints a summary of what was applied.
+- Exit codes: 0 success; 1 schema validation; 2 filesystem; 3 external command failure.
+
+**Canonical registry entry shapes** (spec in `<cloud>/workflow-knowledge/stack/registry.jsonc` — see also spec.md amendment G/H/I). Judgment at execution for edge cases (e.g., MCP already present with different config — overwrite or prompt?).
+
+**Commit:** `feat(slice-17k): stack install script — registry.jsonc applier for MCPs, skills, plugins, agents`
+
+**STOP criteria:**
+- [ ] `bun install.ts --tool both --dry-run` produces a readable diff against current state of both tools' configs.
+- [ ] `bun install.ts --tool claude-code --apply` writes real changes to `~/.claude/` (validated against a single test entry, e.g., a no-op MCP rename).
+- [ ] Schema validation: malformed `registry.jsonc` exits with a clear error; valid entries install cleanly.
+
+---
+
+## Task 17k-10 — Round-trip test
+
+**Session:** 3b
+**Depends on:** 17k-9
+
+**What:** Prove the "update once, applies to both" loop works.
+
+**Procedure:**
+1. Bump a non-destructive entry's version in `registry.jsonc` (e.g., a skill version bump from `1.0.0` → `1.0.1`).
+2. Run `bun install.ts --tool both --dry-run` — verify the diff shows the version change on both sides.
+3. Run `bun install.ts --tool both --apply`.
+4. Verify both `~/.claude/skills/<name>/SKILL.md` and `~/.codex/skills/<name>/SKILL.md` reflect the new version.
+5. Document the test run in `handoff.md` as a verification log.
+
+**Commit:** `test(slice-17k): round-trip test — registry update propagates to both tools`
+
+**STOP criteria:**
+- [ ] Test entry bumped in registry, dry-run shows correct diff, apply succeeds.
+- [ ] Both tools' on-disk state reflects the new version.
+- [ ] handoff.md has a "Round-trip test" section with the verification evidence.
+
+---
+
 ## Closing (Session 4, after 17k-8)
 
 Per `AGENTS.md § Slice Closing`:
@@ -427,3 +503,7 @@ Per `AGENTS.md § Slice Closing`:
 | Date | Change | Why |
 |------|--------|-----|
 | 2026-04-18 | Initial draft | Planning session output |
+| 2026-04-18 | Decisions G (registry format = JSONC) / H (install.ts covers MCPs + skills + plugins) / I (dry-run + manual apply) locked | User answered questions post-plan-approval; registry + install script promoted into 17k scope |
+| 2026-04-18 | Added Task 17k-9 (install.ts) + Task 17k-10 (round-trip test) | User asked for the registry script so "update superpowers once applies to both"; 17k scope grew from 8 to 10 tasks; session sequencing gains Session 3b |
+| 2026-04-18 | Inventory-doc tasks (17k-4, 17k-5) scope shifts to registry schema + populate | Machine-readable registry supersedes markdown inventory docs — same data, executable |
+| 2026-04-18 | Pre-Session-2 bootstrap section added | User asked for AGENTS.md + overlays + generic-term pass + rename done in-line rather than deferred to Session 2; 17k-1 and 17k-2 effectively complete pre-Session-2 |

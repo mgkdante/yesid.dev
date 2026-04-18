@@ -17,7 +17,7 @@ Make the yesid.dev workflow fully portable across **Claude Code** and **Codex** 
 **Why now:**
 
 - Yesid opened the project in Codex; Codex auto-created a find-replaced `AGENTS.md` that was broken. Prompted the question of how to make the workflow truly tool-agnostic.
-- A prior non-slice refactor (uncommitted, this branch) introduced `AGENTS.md` (tool-agnostic core), a thin `CLAUDE.md` pointer, and per-tool overlays at `docs/reference/tools/{claude-code,codex}.md`. That refactor also renamed `<cloud>/claude-knowledge/` → `<cloud>/workflow-knowledge/` and added `<cloud>/codex-config/` symmetric to `<cloud>/claude-config/`.
+- A prior non-slice refactor (uncommitted, this branch) introduced `AGENTS.md` (tool-agnostic core), a thin `CLAUDE.md` pointer, and per-tool overlays at `docs/reference/tools/{claude-code,codex}.md`. That refactor also renamed the cross-tool cloud knowledge dir to `<cloud>/workflow-knowledge/` (was previously Claude-branded) and added `<cloud>/codex-config/` symmetric to `<cloud>/claude-config/`.
 - User reverted `CLAUDE.md` to its full original content (unclear intent at revert time; resolved below via decision A).
 - User explicitly requested: (1) generic language across docs, (2) mirror Claude setup into inventory, (3) MCP audit permission, (4) each tool leaves attributed notes so cross-tool handoff works.
 
@@ -120,7 +120,7 @@ Tool-specific details (model names, slash commands, `TodoWrite` references in pr
 
 ## Reference sites / prior art
 
-- **Workflow refactor precursor** — the uncommitted non-slice work on this branch that created `AGENTS.md`, overlays, and renamed `claude-knowledge` → `workflow-knowledge`. This slice formalizes + completes that start.
+- **Workflow refactor precursor** — the uncommitted non-slice work on this branch that created `AGENTS.md`, overlays, and renamed the cloud cross-tool knowledge dir to `workflow-knowledge`. This slice formalizes + completes that start.
 - **`<cloud>/claude-config/`** — existing snapshot/restore pattern (README + `snapshot.ts` + `restore.ts` + `required-env-vars.md` + dated snapshot dirs) that `<cloud>/codex-config/` now mirrors symmetrically.
 - **Research reports (captured in this session)** — Claude inventory (full listing of 14 enabled plugins, 117 skills, 16 agents, 71 rule files) + repo language scan (16 substantive hits across 8 "make-generic" + 6 "move-to-overlay" + 0 dead links).
 - **[obra/superpowers](https://github.com/obra/superpowers)** — canonical multi-tool agentic framework. Ships the exact layout we're adopting: `AGENTS.md` + `CLAUDE.md` + `GEMINI.md` + `.codex/` + `.cursor-plugin/` + `.opencode/` at repo root. Available on Claude Code, Codex CLI, Gemini CLI, Cursor, OpenCode. Validates the three-layer structure as an industry-proven pattern. Yesid already uses the superpowers plugin via Claude Code — this slice's custom slice methodology **coexists** with superpowers' spec/plan/TDD/subagent-driven-development discipline (no conflict; the two operate at different granularities).
@@ -143,7 +143,7 @@ Tool-specific details (model names, slash commands, `TodoWrite` references in pr
 
 - **Actual MCP/plugin pruning** — user reviews recommendations, executes manually in a separate non-slice session.
 - **Codex MCP population** — filling the 4 missing MCPs (context7, chrome-devtools, gsap-master, github) in `~/.codex/config.toml` is the user's call, separate task.
-- **Full stack registry with install scripts** — the ambitious registry (with per-tool install.sh) was deferred earlier; this slice lands only the **inventory documents + one user-authored skill copy**. Full registry is a candidate for slice 18+.
+- ~~**Full stack registry with install scripts**~~ — **PROMOTED INTO SCOPE** via 2026-04-18 amendment (decisions G/H/I). Replaces inventory-doc tasks with a machine-readable registry (JSONC format) + install.ts script that writes to both tools' config formats, copies skills, and runs plugin-install commands.
 - **`skill.fish` integration** — parked per user's security concerns.
 - **Auto-sync between `cloud/claude-config/` and `cloud/codex-config/`** — not this slice.
 - **Converting `brand/CLAUDE-DESIGN.md`** — intentionally Claude-specific design guide; leave alone.
@@ -172,8 +172,9 @@ Tool-specific details (model names, slash commands, `TodoWrite` references in pr
 - [ ] Grep for "Claude at execution time" / "fresh Opus" / "Claude Preview" in governance docs returns 0 hits.
 - [ ] `AGENTS.md § Iteration Protocol` step 4 specifies the mandatory tool-attribution header format.
 - [ ] `docs/slices/_TEMPLATE-SUBSLICE/log.md` and `handoff.md` templates include the `**Tool:**` line in their session/task sections.
-- [ ] `<cloud>/workflow-knowledge/stack/inventory/claude-code.md` exists with the full Claude inventory (MCPs, plugins, skills, agents, rules summary).
-- [ ] `<cloud>/workflow-knowledge/stack/inventory/codex.md` exists with the full Codex inventory.
+- [ ] `<cloud>/workflow-knowledge/stack/registry.jsonc` exists as machine-readable source of truth covering MCPs, skills, plugins (and at minimum placeholders for agents) with per-tool `install_in` lists.
+- [ ] `<cloud>/workflow-knowledge/stack/install.ts` is a runnable Bun script with `--tool claude-code|codex|both`, `--dry-run`, `--apply`, and `--only mcps|skills|plugins` flags. Dry-run prints a diff; `--apply` writes.
+- [ ] Round-trip test: bump a registry entry, run `install.ts --tool both --dry-run`, review diff; run `--apply`; confirm both tools reflect the change.
 - [ ] `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/SKILL.md` is a verbatim copy of `~/.claude/skills/workflow-efficiency/SKILL.md` (size + content match).
 - [ ] `<cloud>/workflow-knowledge/stack/prune-recommendations.md` lists specific prune candidates with disk/context impact.
 - [ ] A Codex session opened in the repo confirms it can read `AGENTS.md` + overlay and explain the workflow (verification captured in handoff).
@@ -224,3 +225,7 @@ This is a prerequisite step, not a 17k task. Flagged here so nobody starts 17k i
 |------|--------|-----|
 | 2026-04-18 | Initial draft | Planning session output |
 | 2026-04-18 | Added obra/superpowers to Reference sites / prior art | User shared the repo post-approval; validates the three-layer cross-tool structure we're adopting and confirms Yesid's existing superpowers usage coexists with the custom slice workflow |
+| 2026-04-18 | Decision G: Registry format = JSONC (JSON with comments) | Bun-native parsing; comments allow per-entry rationale in the registry file itself |
+| 2026-04-18 | Decision H: Install script covers MCPs + skills + plugins | User confirmed plugin install is automatable via `/plugin marketplace add <repo>` + `/plugin install <name>@<marketplace>`; Claude-side plugins install via CLI, Codex has no plugin concept (skills map directly). Full MCPs + skills + plugins in scope. |
+| 2026-04-18 | Decision I: install.ts runs in dry-run + manual-apply mode | Dry-run prints the diff; user reviews; re-run with `--apply` to commit changes. Safer than auto-apply + undo. |
+| 2026-04-18 | Promoted "Full stack registry with install scripts" from Out of scope → In scope | User ask: single source of truth where updates (e.g., superpowers version bump) propagate to both tools via one `install.ts` run. Inventory-doc tasks (17k-4, 17k-5) become registry-schema + populate tasks; new tasks 17k-9 (install.ts) and 17k-10 (round-trip test) added. Session 3 splits into 3a + 3b. |

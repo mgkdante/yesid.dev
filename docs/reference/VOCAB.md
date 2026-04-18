@@ -182,7 +182,7 @@ Standard terms that appear in this codebase or in adjacent docs. Learn these and
 
 ---
 
-## 4. Claude Code vocabulary — the tool's terms
+## 4. LLM tool vocabulary — the tool's terms
 
 Terms specific to Claude Code, the Anthropic API, and the AI-assisted development toolkit. Useful for debugging why a session feels sluggish or why a skill isn't firing.
 

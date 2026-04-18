@@ -41,7 +41,7 @@ Files touched:
 |-------|-------|-----|-----------|
 | [message] | [root cause] | [what worked] | yes / no |
 
-If the fix was OS-specific, **also append to `<cloud>/claude-knowledge/os-quirks/<os>.md`** before closing. Hard rule.
+If the fix was OS-specific, **also append to `<cloud>/workflow-knowledge/os-quirks/<os>.md`** before closing. Hard rule.
 
 ## Validation
 

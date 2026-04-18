@@ -1,9 +1,9 @@
 # yesid. Workflow — The Full Pipeline
 
 **Version:** 2.0 | 2026-04-17 (Slice 17j Workflow Efficiency)
-**Companion to:** `CLAUDE.md` (rules + governance), `roadmap/PLAN.md` (project roadmap), `reference/CONSTITUTION.md` (codebase law), `reference/VOCAB.md` (shared lexicon), `reference/MOTION.md` (animation), `reference/PATTERNS.md` (solutions)
+**Companion to:** `AGENTS.md` (tool-agnostic workflow contract + rules + governance), `CLAUDE.md` (Claude Code entry pointer with role bindings), `docs/reference/tools/` (per-tool overlays), `roadmap/PLAN.md` (project roadmap), `reference/CONSTITUTION.md` (codebase law), `reference/VOCAB.md` (shared lexicon), `reference/MOTION.md` (animation), `reference/PATTERNS.md` (solutions)
 
-This document defines **how work flows** — the operational mechanics. `CLAUDE.md` says *what rules govern*; this says *when, why, and in what order* to act on them. Every session follows this pipeline. No shortcuts.
+This document defines **how work flows** — the operational mechanics. `AGENTS.md` says *what rules govern* (tool-agnostic); this says *when, why, and in what order* to act on them. Every session follows this pipeline. No shortcuts.
 
 ---
 
@@ -70,13 +70,13 @@ Declare the primary type at session start.
 - **M-slices plan inline** — TodoWrite + 1-paragraph "Plan" at top of `log.md`. No separate Planning session, no `spec.md`, no `plan.md`.
 - **S-slices have no planning step.**
 
-**Session separation is soft.** Two session types may share one wall-clock conversation provided commit discipline holds AND none of these "break triggers" fire: (a) reasoning-heavy transition, (b) context ≥65% of active window, (c) material model downshift spanning >2 tasks, (d) human fatigue. Full rule in `CLAUDE.md § Session types`.
+**Session separation is soft.** Two session types may share one wall-clock conversation provided commit discipline holds AND none of these "break triggers" fire: (a) reasoning-heavy transition, (b) context ≥65% of active window, (c) material model downshift spanning >2 tasks, (d) human fatigue. Full rule in `AGENTS.md § Session types`.
 
-At session start: scan for uncommitted changes or commits made outside Claude Code. Document anything found in `log.md` (slice) or the session file (non-slice).
+At session start: scan for uncommitted changes or commits made outside the LLM tool. Document anything found in `log.md` (slice) or the session file (non-slice).
 
 ### When to use non-slice vs slice — the L/M/S decision
 
-Slice sizing scales planning ceremony with complexity. Full rule in `CLAUDE.md § Slice sizing`.
+Slice sizing scales planning ceremony with complexity. Full rule in `AGENTS.md § Slice sizing`.
 
 | Size | Use when | Planning artifact |
 |---|---|---|
@@ -123,7 +123,7 @@ IDEA
 SHIPPED → bundle lives in cloud archive, COMPLETED-SLICES.md updated
 ```
 
-Each phase has specific tools, artifacts, and exit criteria. Skipping creates debt that compounds — for L-slices. For M/S, not all phases apply (see `CLAUDE.md § Slice sizing`).
+Each phase has specific tools, artifacts, and exit criteria. Skipping creates debt that compounds — for L-slices. For M/S, not all phases apply (see `AGENTS.md § Slice sizing`).
 
 ---
 
@@ -221,7 +221,7 @@ Approach: <brainstorm option name>
 
 ### Plan authoring discipline (L-slice `plan.md`)
 
-Plans specify **decisions and sequencing**, NOT boilerplate code. Claude at execution time has full context of the current codebase, reads the affected files, and writes code matching local patterns. Over-specified plans lock in assumptions that may not match reality AND waste tokens twice (authoring + re-processing). Full rule in `CLAUDE.md § Slice sizing → Plan authoring discipline`.
+Plans specify **decisions and sequencing**, NOT boilerplate code. The LLM tool at execution time has full context of the current codebase, reads the affected files, and writes code matching local patterns. Over-specified plans lock in assumptions that may not match reality AND waste tokens twice (authoring + re-processing). Full rule in `AGENTS.md § Slice sizing → Plan authoring discipline`.
 
 **Plan SHOULD include:** task list with dependencies/estimates/acceptance, files affected, commands to run, commit message shape, **one canonical example** of each non-obvious pattern, pattern-establishing code (interface types, contracts, novel algorithms).
 
@@ -339,7 +339,7 @@ Average iterations per task: 2–4. Plan for this.
 
 1. `bun run test` + `bun run check` pass
 2. Pre-flight visual check for UI tasks
-3. Screenshot proof via Claude Preview for UI tasks
+3. Screenshot proof via the preview tool for UI tasks
 4. Fix obvious problems before STOP
 
 Tools: see §19 Tool Selection Protocol → Verification.
@@ -379,7 +379,7 @@ Tools: see §19 Tool Selection Protocol → Verification.
    - `docs/reference/ARCHITECTURE.md` — if file structure, component tree, or data flow changed
    - `docs/reference/PATTERNS.md` — every reusable solution discovered
 3. **VOCAB.md update** — any new brand / industry / workflow term introduced in the sub-slice added to `docs/reference/VOCAB.md`.
-4. **OS-quirk logging** — if the slice solved a platform-specific issue (robocopy quirk, Node flag, shell escaping), append to `<cloud>/claude-knowledge/os-quirks/<os>.md` with Problem / Root cause / Fix / Date / Slice. **Hard step, not a suggestion.**
+4. **OS-quirk logging** — if the slice solved a platform-specific issue (robocopy quirk, Node flag, shell escaping), append to `<cloud>/workflow-knowledge/os-quirks/<os>.md` with Problem / Root cause / Fix / Date / Slice. **Hard step, not a suggestion.**
 5. **Learn doc** — if the slice introduced a durable concept worth codifying, write `<cloud>/yesid.dev/docs/learn/<domain>/<concept>.md` (Obsidian format: YAML frontmatter, `[[wikilinks]]`, tags).
 6. **`tree.txt`** — regenerate:
    ```powershell
@@ -411,7 +411,7 @@ Set via shell profile (Unix) or System Environment Variables (Windows). Scripts 
 
 ### OS-quirks registry
 
-Lives at `<cloud>/claude-knowledge/os-quirks/`:
+Lives at `<cloud>/workflow-knowledge/os-quirks/`:
 
 - `README.md` — how the registry works
 - `windows.md` — Windows-specific command fixes
@@ -529,17 +529,17 @@ resolveLocale({ en: "Hello", fr: "Bonjour" }, 'es')
 
 Every session begins with:
 
-1. **Declare session type + slice size** — Planning / Implementation / Closing / Non-slice, and L / M / S. (`CLAUDE.md § Slice sizing`)
+1. **Declare session type + slice size** — Planning / Implementation / Closing / Non-slice, and L / M / S. (`AGENTS.md § Slice sizing`)
 2. **Read checkpoint** — `docs/slices/slice-NN/CHECKPOINT.md` → resume where we left off
 3. **Check out feature branch** — `git checkout feature/slice-NN<letter>` (L/M) or stay on `main` (S)
-4. **Scan for drift** — Check for uncommitted changes or commits made outside Claude Code
+4. **Scan for drift** — Check for uncommitted changes or commits made outside the LLM tool
 5. **Read active bundle — scaled to slice size:**
    - **L-slice:** full bundle (`spec.md`, `plan.md`, `log.md`, `handoff.md`)
    - **M-slice:** just `log.md` (which contains the 1-paragraph inline plan)
    - **S-slice:** nothing extra — the non-slice session file will be created during the session
 6. **Populate `TodoWrite`** — from `plan.md` for L-slices (one entry per Level 3 task); from the inline plan paragraph for M-slices. Exactly one entry `in_progress` at a time.
 7. **Check PATTERNS.md + VOCAB.md** — Any relevant solved patterns? Any term already codified?
-8. **Announce the budget row** — `Model: <name> | Context: <used> / <window> (<%>) — <state>`. Required on Implementation + Closing sessions per Iteration Protocol. (`CLAUDE.md § Session token budget`)
+8. **Announce the budget row** — `Model: <name> | Context: <used> / <window> (<%>) — <state>`. Required on Implementation + Closing sessions per Iteration Protocol. (`AGENTS.md § Session token budget`)
 9. **State the goal** — What does "done" look like for this session?
 
 ---
@@ -554,7 +554,7 @@ Every session ends with:
 4. **Append to `handoff.md`** — If tasks landed, add their sections
 5. **Ensure tests pass** — `bun run test` + `bun run check` green
 6. **Commit** — All changes on the feature branch (or `main` for non-slice per §2)
-7. **State next steps** — What should the next session start with? Include recommended model (`CLAUDE.md § Models`) and expected slice size for the next session.
+7. **State next steps** — What should the next session start with? Include recommended model (`AGENTS.md § Stage → role routing`) and expected slice size for the next session.
 
 ### Per-STOP progress table (within-session)
 
@@ -570,7 +570,7 @@ Model: Opus 4.7 [1m] | Context: 142k / 1M (14%) — comfortable, continuing
 | 2 | Second feature | ⏳ pending | — |
 ```
 
-The **budget row** is required on every STOP — it gives Yesid visibility into context usage so break decisions aren't surprising. Full thresholds: `CLAUDE.md § Session token budget`.
+The **budget row** is required on every STOP — it gives Yesid visibility into context usage so break decisions aren't surprising. Full thresholds: `AGENTS.md § Session token budget`.
 
 `TodoWrite` is the live UI state; the markdown table is the scrollback audit trail. They say the same thing in two persistence layers.
 
@@ -630,7 +630,7 @@ ALWAYS:
 - Svelte MCP (`svelte-autofixer`) → every Svelte file edit
 - Context7 MCP → before using any library API
 - `superpowers:executing-plans` → follow the plan
-- Claude Preview → visual verification after UI tasks
+- the preview tool → visual verification after UI tasks
 
 CONSIDER:
 - GSAP Master MCP → any animation work
@@ -660,7 +660,7 @@ CONSIDER:
 
 ALWAYS:
 - `superpowers:verification-before-completion` → pre-completion check
-- Claude Preview → screenshot proof for UI tasks
+- the preview tool → screenshot proof for UI tasks
 
 CONSIDER:
 - Chrome DevTools MCP (`lighthouse_audit`) → performance check
@@ -695,7 +695,7 @@ CONSIDER:
 8. Creating a PR? → Run `finishing-a-development-branch` first
 9. Starting any plan? → Run `superpowers:brainstorming` first
 10. Refactoring code? → Use `engineering:tech-debt` to assess scope
-11. Hitting an OS-specific command error? → Check `<cloud>/claude-knowledge/os-quirks/<os>.md` FIRST
+11. Hitting an OS-specific command error? → Check `<cloud>/workflow-knowledge/os-quirks/<os>.md` FIRST
 
 ---
 
@@ -705,7 +705,9 @@ CONSIDER:
 
 | Document | Purpose | Update Frequency |
 |----------|---------|------------------|
-| `CLAUDE.md` | Rules, core principles, hard rules, brand | When rules change |
+| `AGENTS.md` | Tool-agnostic workflow contract — rules, core principles, hard rules, abstract roles | When workflow rules change |
+| `CLAUDE.md` | Claude Code entry pointer + Claude role bindings (thin pointer to AGENTS.md) | When Claude bindings change |
+| `docs/reference/tools/<tool>.md` | Per-tool overlay (role bindings, absolute thresholds, slash commands) | When tool-specific mechanics change |
 | `docs/reference/WORKFLOW.md` | This file — operational mechanics | When process evolves |
 | `docs/reference/CONSTITUTION.md` | Codebase law | When a principle changes |
 | `docs/reference/CSS.md` | Token catalog, style rules | Every CSS change |
@@ -728,8 +730,8 @@ CONSIDER:
 |----------|---------|
 | `<cloud>/yesid.dev/docs/archive/slices/slice-NN/slice-NN<letter>/` | Shipped sub-slice bundles |
 | `<cloud>/yesid.dev/docs/learn/<domain>/<concept>.md` | Yesid's Obsidian knowledge base |
-| `<cloud>/claude-knowledge/token-efficacy/` | Portable research corpus |
-| `<cloud>/claude-knowledge/os-quirks/<os>.md` | Cross-project OS command registry |
+| `<cloud>/workflow-knowledge/token-efficacy/` | Portable research corpus |
+| `<cloud>/workflow-knowledge/os-quirks/<os>.md` | Cross-project OS command registry |
 | `<cloud>/claude-config/` | Config snapshots |
 
 **Tier 3 — cloud indexes (the bridge):**
