@@ -19,7 +19,8 @@
 		"brand:export-examples": "bun brand/scripts/export-examples.ts",
 		"slice:close": "bun scripts/slice-close.ts",
 		"docs:mirror": "bun scripts/mirror-docs.ts",
-		"brand:mirror": "bun scripts/mirror-brand.ts"
+		"brand:mirror": "bun scripts/mirror-brand.ts",
+		"conversations:archive": "bun scripts/archive-conversations.ts"
 	},
 	"devDependencies": {
 		"@gltf-transform/core": "^4.3.0",
