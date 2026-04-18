@@ -9,6 +9,11 @@
   import { MetricDisplay } from '$lib/components/brand';
   import { Badge } from '$lib/components/ui/badge';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
+  import { projectsDetailContent } from '$lib/content/projects';
+
+  const projectInfoTitle = resolveLocale(projectsDetailContent.glance.projectInfo, 'en');
+  const liveSiteMobileLabel = resolveLocale(projectsDetailContent.glance.liveSiteLabelMobile, 'en');
+  const githubLabel = resolveLocale(projectsDetailContent.glance.githubLabel, 'en');
 
   let { project }: { project: Project } = $props();
 
@@ -28,7 +33,7 @@
 </script>
 
 <div data-testid="project-glance-panel-mobile">
-  <CollapsibleSection title="Project Info" open={false}>
+  <CollapsibleSection title={projectInfoTitle} open={false}>
     <div class="space-y-5">
       <!-- Overview -->
       <p class="mobile-glance-overview text-small leading-relaxed">
@@ -78,7 +83,7 @@
               rel="noopener noreferrer"
               class="font-mono text-sm text-primary no-underline"
             >
-              &#8599; Live Site
+              {liveSiteMobileLabel}
             </a>
           {/if}
           {#if project.repoUrl}
@@ -88,7 +93,7 @@
               rel="noopener noreferrer"
               class="font-mono text-sm text-primary no-underline"
             >
-              GitHub
+              {githubLabel}
             </a>
           {/if}
         </div>

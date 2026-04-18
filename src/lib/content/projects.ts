@@ -20,6 +20,33 @@ export const projectsListingContent = {
 	},
 } as const;
 
+/** Projects-detail-page chrome copy extracted from components in Task 17b-7e.
+ *  Consumed by ProjectDetailHeader, ProjectDetailPage, ProjectGlancePanel(+Mobile),
+ *  ProjectTocPill. */
+export const projectsDetailContent = {
+	backToListingLabel: { en: '\u2190 All Projects' } satisfies LocalizedString,
+	tocSectionTitle: { en: 'On this page' } satisfies LocalizedString,
+	readmeSectionTitle: { en: 'README' } satisfies LocalizedString,
+	/** Glance panel (desktop sidebar + mobile collapsible) section headings. */
+	glance: {
+		overview: { en: 'Overview' } satisfies LocalizedString,
+		impact: { en: 'Impact' } satisfies LocalizedString,
+		stack: { en: 'Stack' } satisfies LocalizedString,
+		services: { en: 'Services' } satisfies LocalizedString,
+		links: { en: 'Links' } satisfies LocalizedString,
+		/** Mobile-only rolled-up heading. */
+		projectInfo: { en: 'Project Info' } satisfies LocalizedString,
+		/** Link labels inside the Links section. */
+		liveSiteLabel: { en: 'Live Site' } satisfies LocalizedString,
+		liveSiteLabelMobile: { en: '\u2197 Live Site' } satisfies LocalizedString,
+		githubLabel: { en: 'GitHub' } satisfies LocalizedString,
+	},
+	tocPill: {
+		openAria: { en: 'Table of contents' } satisfies LocalizedString,
+		closeAria: { en: 'Close table of contents' } satisfies LocalizedString,
+	},
+} as const;
+
 // Seed data — English only. French and Spanish fields are intentionally omitted;
 // they will be filled in as content is translated (not in this slice).
 // One project is featured (surfaces on the home page), one is private (client NDA work
