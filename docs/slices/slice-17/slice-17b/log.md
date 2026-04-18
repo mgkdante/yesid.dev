@@ -777,3 +777,83 @@ StationTabs reused an existing key (`servicesDetailContent.serviceNavAria` from 
 | 17b-10 | Final verification + PR | ⏳ pending | — |
 
 **Model:** Opus 4.7 [1m] | **Context:** ~490k / 1M (~49%) — still healthy. 17b-7l is the last extraction task (small); 17b-8/9/10 are capstone work. Reasonable to finish in this session if context stays below 65% — will flag if it creeps close.
+
+---
+
+## Session 2026-04-18 — Task 17b-7l Tech-stack page extraction
+
+**Continuation of same session.** Context ~52% at start.
+
+### What shipped — **last extraction sub-task of 17b-7**
+
+**Content addition (tech-stack.ts)**
+- New `techStackPageContent` export placed above `techStackVizContent` (viz chrome added in 17b-7i). 16 LocalizedString seeds grouped by zone:
+  - `meta` — 2 keys (title + description template with `{itemCount}` + `{layerCount}` placeholders).
+  - `hero` — 4 chrome (overline, titleLine1, titleLine2, terminalAria) + 4 stat labels (technologies / layers / domains / projects).
+  - `actions` — 2 shared button labels (getInTouch, viewServices) rendered twice each (hero bottom + CTA zone).
+  - `cta` — 4 keys (headingLine1, headingLine2, sub, availability).
+
+**Component wiring (`routes/tech-stack/+page.svelte`)**
+- Dozen `const` bindings at script top pre-resolve every LocalizedString to English. Template dynamics applied: meta description `.replace('{itemCount}', itemCount).replace('{layerCount}', layerCount)` at the call site.
+- Hero stat labels bundled into a `statLabels: { technologies, layers, domains, projects }` object so the four DOM spans stay readable.
+- Shared `getInTouchLabel` / `viewServicesLabel` — declared once, rendered four times (twice in hero bottom, twice in CTA zone).
+- Decorative punctuation (trailing `.` and `?` in heading spans) stays as markup literals — part of the typography system, not copy.
+
+### Non-obvious decisions
+
+- **Terminal animation flavour strings (lines 22–29 of +page.svelte) left as-is.** Audit edge case #13 flagged these as decorative terminal flavour. Consistent with how I treated the chrome punctuation — if ever translated, they should be treated as a package (either extract all six lines together with the `~ yesid --stack --verbose` command, or leave them as an English-only "voice" of the terminal). For 17b-7l scope: out.
+- **Two-line titles split into `titleLine1` + `titleLine2`.** Matches the Svelte template's `{line1}<br><span class="accent">{line2}.</span>` structure. Alternatives (one long string with a sentinel, or `titleText: { line1, line2 }` nested) all either complicate the template or fragment the translation — split keys is the cleanest.
+- **Stats labels kept as individual keys, not an array.** `statLabels: { technologies, layers, domains, projects }` over `[ 'technologies', 'layers', 'domains', 'projects' ]` — lets future translators refactor the visual order without reordering the labels themselves (or vice versa), and gives each label a meaningful name in the content file.
+- **`actions.{getInTouch, viewServices}` shared across hero and CTA zone.** Same string, two render sites. One key. Drift-proof.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged) |
+| `bun run test` | 83 files / 819 tests pass (unchanged) |
+| Preview `/tech-stack` | all 16 strings render identically — tab title, meta description with `{itemCount}` + `{layerCount}` replaced to `35+` and `9`, hero overline / two-line title / terminal aria / 4 stat labels / 2 CTA buttons (hero + footer zone), CTA heading with `?` + `.` accents, sub paragraph, availability notice |
+| Console errors | none |
+
+### Strings extracted (16)
+
+2 meta + 4 hero chrome + 4 stat labels + 2 shared actions + 4 CTA = 16. Audit said ~9 because it grouped the 4 stat labels as one finding and split the description template and two-line titles into single rows. Actual LocalizedString seeds = 16.
+
+### 17b-7 summary (all 12 extraction sub-tasks)
+
+| Sub-task | Strings | Commit |
+|---|---|---|
+| 17b-7a Home | 14 | fc6fb06 |
+| 17b-7b Blog listing | 16 | 5704269 |
+| 17b-7c Blog detail | 16 | ee67724 |
+| 17b-7d Projects listing | 12 | 799831a |
+| 17b-7e Projects detail | 15 | 9ed81ad |
+| 17b-7f Services | 19 | f8a6683 |
+| 17b-7g About | 17 | 843b3cc |
+| 17b-7h Contact | 3 | 68a99ef |
+| 17b-7i Tech stack viz | 58 | 8dceba7 |
+| 17b-7j Layout + shared | 13 | c6fbc79 |
+| 17b-7k Page meta tags | 8 | 3398d97 |
+| 17b-7l Tech-stack page | 16 | pending |
+| **Total** | **~207** | — |
+
+Audit said ~157; actual count is ~207 once label/domain/layer record fields flatten to individual seeds. Task 17b-7's promise (dedupe + centralize UI chrome) delivered across all 12 sub-tasks. 12 commits, every route's chrome content-driven.
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1..6 | Architecture + audit + LocalizedString | ✅ approved | earlier |
+| 17b-7a..7e | Home / Blog / Projects extractions | ✅ approved | fc6fb06..9ed81ad |
+| 17b-7f | Services | ✅ re-landed | f8a6683 |
+| 17b-7g | About | ✅ approved | 843b3cc |
+| 17b-7h | Contact | ✅ approved | 68a99ef |
+| 17b-7i | Tech stack viz | ✅ approved | 8dceba7 |
+| 17b-7j | Layout + shared | ✅ approved | c6fbc79 |
+| 17b-7k | Page meta tags | ✅ approved | 3398d97 |
+| **17b-7l** | **Tech-stack page (last extraction)** | **🟡 awaiting approval** | pending |
+| 17b-8 | Integrity test enhancements | ⏳ pending | — |
+| 17b-9 | Governance doc updates | ⏳ pending | — |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~525k / 1M (~53%) — still healthy. Approaching 65% pre-break after 2-3 more tasks. 17b-8 (integrity tests) is moderate complexity; 17b-9 (governance docs) is writing; 17b-10 (PR) is ceremonial. Plausible to finish the slice this session if 17b-8 stays within ~40k tokens.

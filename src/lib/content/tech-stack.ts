@@ -12,6 +12,55 @@ import type {
 	LocalizedString,
 } from '$lib/types';
 
+/** `/tech-stack` route chrome copy extracted in Task 17b-7l. Covers the hero
+ *  (overline, title lines, terminal aria, 4 stat labels), shared CTA actions
+ *  (Get In Touch / View Services — rendered in both hero bottom and CTA zone),
+ *  and the footer CTA zone (heading lines, sub, availability).
+ *
+ *  Decorative punctuation (`.` / `?` trailing the title/heading accent spans)
+ *  stays as markup in the template — it's typography, not copy. Terminal
+ *  animation flavour strings (lines 22–29 of +page.svelte) intentionally left
+ *  as script literals per audit edge case #13 (decorative). */
+export const techStackPageContent = {
+	meta: {
+		title: { en: 'Tech Stack — yesid.' } satisfies LocalizedString,
+		/** Template with `{itemCount}` + `{layerCount}` placeholders. */
+		description: {
+			en: '{itemCount}+ technologies across {layerCount} infrastructure layers — an interactive map of how digital infrastructure gets built.',
+		} satisfies LocalizedString,
+	},
+	hero: {
+		overline: { en: 'Infrastructure Map' } satisfies LocalizedString,
+		/** H1 line 1 — before the `<br>` break. */
+		titleLine1: { en: 'The Control' } satisfies LocalizedString,
+		/** H1 line 2 — rendered inside the `.hero-title-accent` span; trailing
+		 *  `.` stays as a literal in the template. */
+		titleLine2: { en: 'Room' } satisfies LocalizedString,
+		terminalAria: { en: 'Infrastructure overview' } satisfies LocalizedString,
+		stats: {
+			technologies: { en: 'technologies' } satisfies LocalizedString,
+			layers: { en: 'layers' } satisfies LocalizedString,
+			domains: { en: 'domains' } satisfies LocalizedString,
+			projects: { en: 'projects' } satisfies LocalizedString,
+		},
+	},
+	/** Shared CTA button labels — rendered twice (hero bottom + CTA zone). */
+	actions: {
+		getInTouch: { en: 'Get In Touch' } satisfies LocalizedString,
+		viewServices: { en: 'View Services' } satisfies LocalizedString,
+	},
+	cta: {
+		/** H2 line 1 — trailing `?` accent stays as a literal span. */
+		headingLine1: { en: 'Found your stack' } satisfies LocalizedString,
+		/** H2 line 2 — trailing `.` accent stays as a literal span. */
+		headingLine2: { en: "Let's build it" } satisfies LocalizedString,
+		sub: {
+			en: "Whether it's a data pipeline, a web app, or a mobile product — the infrastructure is ready.",
+		} satisfies LocalizedString,
+		availability: { en: 'Available for Q2 2026' } satisfies LocalizedString,
+	},
+} as const;
+
 /** Chrome copy for the Control Room tech-stack viz — extracted from
  *  StackPanelOrientation / StackBottomSheet / StackConfigurator / StackDiagram /
  *  StackFilters / StackPanel / StackScenarioCard in Task 17b-7i.

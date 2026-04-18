@@ -267,6 +267,7 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - ~~17b-7i Tech stack viz (26 strings)~~ — shipped, see §17b-7i below (actually ~58 once label maps flatten)
 - ~~17b-7j Layout + shared (12 strings)~~ — shipped, see §17b-7j below
 - ~~17b-7k Page meta tags (8 strings)~~ — shipped, see §17b-7k below
+- ~~17b-7l Tech-stack page (9 strings)~~ — shipped, see §17b-7l below (actually 16 once title splits flatten)
 - 17b-7i Tech stack viz (26 strings — largest sub-task)
 - 17b-7j Layout + shared (12 strings)
 - 17b-7k Page meta tags (8 strings)
@@ -540,3 +541,71 @@ Preview verification is limited because the stack viz components are not wired i
 - Naming inconsistency: About/Contact use nested `meta.title`/`meta.description`; Services/Projects use top-level `servicesPageMeta`/`projectsPageMeta`. Decision rationale in `log.md` — typed vs. untyped container. Confirm this split feels right vs. forcing one pattern.
 - Separator mismatch preserved: "About — yesid." (em dash) vs. "Projects | yesid." (pipe). Kept verbatim from the originals; if you want them normalized to em dash everywhere, that's a one-line content fix.
 - `contactContent.pageTitle` (visible "Contact") vs. `contactContent.meta.title` ("Contact — yesid.") — two different keys deliberately. Pre-existing pattern in 17b-7h extended cleanly here.
+
+---
+
+## 17b-7l — Tech-stack page extraction (16 strings) — last extraction
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+**Content addition**
+- `src/lib/content/tech-stack.ts` — new `techStackPageContent` export placed before the existing `techStackVizContent` (17b-7i). Four grouped zones:
+  - `meta` (2): title + description template with `{itemCount}` + `{layerCount}` placeholders.
+  - `hero` (4 chrome + 4 stat labels): overline, two-line title, terminal aria, technologies/layers/domains/projects stat labels.
+  - `actions` (2): getInTouch + viewServices CTA labels — rendered four times total (twice each, hero and CTA zone) from a single source.
+  - `cta` (4): two-line heading, sub paragraph, availability notice.
+
+**Route updated**
+- `src/routes/tech-stack/+page.svelte` — dozen pre-resolved `const` bindings at script top, `statLabels: { ... }` object for the four stat labels, template replace for the meta description's `{itemCount}` / `{layerCount}`. Decorative punctuation (trailing `.` `?` on heading accent spans) left as template literals.
+
+### What did **not** change
+
+- Terminal animation flavour strings (lines 22–29) stay as script literals — audit edge case #13 flagged as decorative terminal voice; extraction reserved for a future translation pass.
+- Stack viz components (StackDiagram, StackPanel, etc.) not affected — their chrome was extracted in 17b-7i.
+- No adapter or repository wiring.
+- No visible or behavioural change; tab title, meta description (with replaced counts), hero zone, and CTA zone all render identically.
+
+### Verification
+
+| Check | Post-17b-7k | Post-17b-7l |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| `bun run test` | 83 / 819 pass | 83 / 819 pass |
+| Preview `/tech-stack` | title + meta rendered | all 16 content-driven strings render identically; hero stat labels + CTA buttons + availability notice all preserved |
+
+### Review focus
+
+- `techStackPageContent.meta.description` uses the `{itemCount}` + `{layerCount}` template pattern established in 17b-7a..7h. `.replace()` chain is at the call site.
+- Two-line titles split into `titleLine1` / `titleLine2` + `headingLine1` / `headingLine2` keys. Alternatives considered (concatenated string with `<br>` sentinel, or nested object) — split keys chosen for translator ergonomics.
+- `actions.getInTouch` / `actions.viewServices` shared across hero + CTA zones. Drift-proof dedup.
+- Terminal animation flavour lines (22–29) left untranslated — flag if translation pressure would favour extracting these too (they're tightly bundled with the terminal aesthetic; translating line-by-line would fracture the voice).
+
+---
+
+### 17b-7 summary (all 12 extraction sub-tasks shipped)
+
+| Sub-task | Strings | Commit |
+|---|---|---|
+| 17b-7a Home | 14 | fc6fb06 |
+| 17b-7b Blog listing | 16 | 5704269 |
+| 17b-7c Blog detail | 16 | ee67724 |
+| 17b-7d Projects listing | 12 | 799831a |
+| 17b-7e Projects detail | 15 | 9ed81ad |
+| 17b-7f Services | 19 | f8a6683 |
+| 17b-7g About | 17 | 843b3cc |
+| 17b-7h Contact | 3 | 68a99ef |
+| 17b-7i Tech stack viz | 58 | 8dceba7 |
+| 17b-7j Layout + shared | 13 | c6fbc79 |
+| 17b-7k Page meta tags | 8 | 3398d97 |
+| 17b-7l Tech-stack page | 16 | pending |
+| **Total** | **~207** | — |
+
+Audit said ~157; actual is ~207 once label/domain/layer records flatten to individual seeds. Task 17b-7's intent (dedupe + centralize every hardcoded string into content) is now satisfied across all 12 sub-tasks.
+
+Remaining tasks:
+- 17b-8 Integrity test enhancements (LocalizedString guard + translation-debt report)
+- 17b-9 Governance (VOCAB, CONSTITUTION, ARCHITECTURE, README, cloud learn doc)
+- 17b-10 Final verification + PR
