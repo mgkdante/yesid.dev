@@ -21,6 +21,16 @@ export const servicesListingContent = {
 	}
 } as const;
 
+/** HTML `<title>` + `<meta description>` for the `/services` route. Extracted
+ *  in Task 17b-7k. Per-service-detail pages already resolve their own title +
+ *  description from the service data. */
+export const servicesPageMeta = {
+	title: { en: 'Services — yesid.' } satisfies LocalizedString,
+	description: {
+		en: 'Digital infrastructure, tools, and systems. SQL development, data pipelines, analytics, database engineering, internal tooling, and web development.',
+	} satisfies LocalizedString,
+} as const;
+
 /** Services-detail-page chrome copy extracted from components in Task 17b-7f.
  *  Consumed by ServiceDetailPage, ServiceNav. Station label template lives on
  *  `servicesListingContent` (shared with ServiceCard) — imported separately. */

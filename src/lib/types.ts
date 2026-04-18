@@ -412,6 +412,12 @@ export interface AboutLabels {
 	showTestimonialAria: LocalizedString;
 }
 
+/** Per-page HTML `<title>` + `<meta name="description">` copy. Added in 17b-7k. */
+export interface PageMeta {
+	title: LocalizedString;
+	description: LocalizedString;
+}
+
 // Top-level container for all About page content.
 // Components receive this via props — they never import content directly.
 export interface AboutContent {
@@ -427,6 +433,7 @@ export interface AboutContent {
 	cta: AboutCta;
 	stopLabels: AboutStopLabels;
 	labels: AboutLabels;
+	meta: PageMeta;
 }
 
 // --- Contact page types ---
@@ -483,6 +490,9 @@ export interface ContactContent {
 	stationLabel: LocalizedString;
 	/** Error message shown when the contact-form POST to web3forms fails. */
 	sendErrorMessage: LocalizedString;
+	/** HTML `<title>` + `<meta description>` for the `/contact` route — distinct
+	 *  from `pageTitle` (which is the visible page chrome). */
+	meta: PageMeta;
 	infoTerminal: ContactInfoTerminal;
 	formTerminal: ContactFormTerminal;
 	validation: ContactValidation;

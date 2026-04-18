@@ -174,4 +174,12 @@ export const aboutPageContent: AboutContent = {
 		testimonialSlideAria: { en: 'Testimonial {index} of {total}' },
 		showTestimonialAria: { en: 'Show testimonial {index}' },
 	},
+
+	// HTML <title> + <meta description> for /about. Extracted in 17b-7k.
+	meta: {
+		title: { en: 'About — yesid.' },
+		description: {
+			en: 'Freelance digital infrastructure engineer based in Montreal. PostgreSQL, SQL Server, Python, Power BI — building reliable infrastructure for teams that ship.',
+		},
+	},
 };

@@ -715,3 +715,65 @@ StationTabs reused an existing key (`servicesDetailContent.serviceNavAria` from 
 | 17b-10 | Final verification + PR | ⏳ pending | — |
 
 **Model:** Opus 4.7 [1m] | **Context:** ~455k / 1M (~46%) — healthy. Still viable to continue but approaching the pre-break zone (65% = ~650k). Worth a check at the end of 17b-7k.
+
+---
+
+## Session 2026-04-18 — Task 17b-7k Page meta tags extraction
+
+**Continuation of same session.** Context ~49% at start.
+
+### What shipped
+
+**Type addition (types.ts)**
+- New `PageMeta` interface (title + description LocalizedStrings). Added to `AboutContent.meta` and `ContactContent.meta` fields — compile-time forcing both per-page content modules to carry their own `<title>` / `<meta description>` seeds.
+
+**Content additions (4 files)**
+- `about-page.ts` — `aboutPageContent.meta = { title, description }` (en-only).
+- `contact-page.ts` — `contactContent.meta = { title, description }`. Coexists with the existing `contactContent.pageTitle` (edge title "Contact" — visible) vs `meta.title` ("Contact — yesid." — browser tab).
+- `services.ts` — new top-level `servicesPageMeta` export (untyped at the type level; the listing page doesn't have a container interface yet).
+- `projects.ts` — new top-level `projectsPageMeta` export (same pattern).
+
+**Routes updated (4)**
+- `routes/about/+page.svelte` — `<svelte:head>` `<title>` + `<meta description>` now read from `aboutPageContent.meta.*` via resolveLocale at script top.
+- `routes/contact/+page.svelte` — same pattern with `contactContent.meta.*`.
+- `routes/projects/+page.svelte` — reads from `projectsPageMeta.*`.
+- `routes/services/+page.svelte` — reads from `servicesPageMeta.*`.
+
+### Non-obvious decisions
+
+- **Nested `meta: { title, description }` on typed content (About, Contact) vs. top-level `<X>PageMeta` objects on untyped content files (services, projects).** The About/Contact pages have a single `AboutContent` / `ContactContent` interface that owns ALL page data; nesting meta keeps the type consistent. Services and Projects have multiple top-level content blocks (listing, detail, etc.); adding a peer `<X>PageMeta` object matches the existing flat-exports shape. The Services/Projects route files could have been keyed off `servicesListingContent.meta` / `projectsListingContent.meta`, but that blurs the listing content with page-wide meta — keeping them separate is cleaner.
+- **Pre-resolved at script top, not `$derived`.** Same pattern as 17b-7h — static English with no placeholders.
+- **`/services/[id]/+page.svelte` and `/tech-stack/+page.svelte` deliberately NOT in this task.** The services detail page already resolves `{resolveLocale(data.service.title, 'en')} — yesid.` dynamically from content; only the ` — yesid.` suffix is hardcoded (brand-wide, structural, out of per-page extraction scope). The tech-stack title is part of 17b-7l's scope.
+- **`projects.ts` uses " | yesid." separator** (vertical pipe), every other page uses " — yesid." (em dash). Kept the exact characters from the originals — this is Yesid's typography choice, not a typo worth normalizing in a content-extraction pass.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged) |
+| `bun run test` | 83 files / 819 tests pass (unchanged) |
+| SSR fetch `/about` `/contact` `/projects` `/services` | all 4 titles + descriptions render identically to pre-extraction |
+| Console errors | none |
+
+### Strings extracted (8)
+
+4 titles + 4 descriptions across /about /contact /projects /services. Exact match to audit count.
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1..6 | Architecture + audit + LocalizedString | ✅ approved | earlier |
+| 17b-7a..7e | Home / Blog / Projects extractions | ✅ approved | fc6fb06..9ed81ad |
+| 17b-7f | Services extraction | ✅ re-landed | f8a6683 |
+| 17b-7g | About extraction | ✅ approved | 843b3cc |
+| 17b-7h | Contact extraction | ✅ approved | 68a99ef |
+| 17b-7i | Tech stack viz extraction | ✅ approved | 8dceba7 |
+| 17b-7j | Layout + shared extraction | ✅ approved | c6fbc79 |
+| **17b-7k** | **Page meta tags extraction** | **🟡 awaiting approval** | pending |
+| 17b-7l | Tech-stack page extraction | ⏳ pending | — |
+| 17b-8 | Integrity test enhancements | ⏳ pending | — |
+| 17b-9 | Governance doc updates | ⏳ pending | — |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~490k / 1M (~49%) — still healthy. 17b-7l is the last extraction task (small); 17b-8/9/10 are capstone work. Reasonable to finish in this session if context stays below 65% — will flag if it creeps close.

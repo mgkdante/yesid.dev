@@ -266,6 +266,7 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - ~~17b-7h Contact (3 strings)~~ — shipped, see §17b-7h below
 - ~~17b-7i Tech stack viz (26 strings)~~ — shipped, see §17b-7i below (actually ~58 once label maps flatten)
 - ~~17b-7j Layout + shared (12 strings)~~ — shipped, see §17b-7j below
+- ~~17b-7k Page meta tags (8 strings)~~ — shipped, see §17b-7k below
 - 17b-7i Tech stack viz (26 strings — largest sub-task)
 - 17b-7j Layout + shared (12 strings)
 - 17b-7k Page meta tags (8 strings)
@@ -501,3 +502,41 @@ Preview verification is limited because the stack viz components are not wired i
 - `site-content.ts` `footerContent` — three top-level fields rather than a nested `footer: { tagline, location, statusPrefix }` structure. Matches the flat shape of `aboutContent` / `ctaContent`.
 - `StationTabs.svelte` reuses `servicesDetailContent.serviceNavAria` — good dedupe, but establishes a cross-page-domain import (`/shared/StationTabs` imports from `/content/services`). Confirm that's acceptable; alternative would be a generic `navChrome.serviceNavAria` on nav.ts.
 - fr/es translations in `sharedChromeContent` — ≤ 10 new multilingual strings. These are the first extractions in this slice that proactively seed non-English content (aside from `navDirections` in 17b-7f). Translation-debt report in 17b-8 will reflect the positive delta.
+
+---
+
+## 17b-7k — Page meta tags extraction (8 strings)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+**Types + content**
+- `types.ts` — new `PageMeta` interface (`title` + `description` LocalizedStrings). Added to `AboutContent.meta` + `ContactContent.meta` (typed containers).
+- `about-page.ts` + `contact-page.ts` — seeded `meta: { title, description }` (en-only; matches prior en-only seeds in these files).
+- `services.ts` + `projects.ts` — new top-level `servicesPageMeta` / `projectsPageMeta` exports (untyped pattern — matches the existing flat-exports shape of these files).
+
+**Routes updated (4)**
+- `/about` + `/contact` + `/projects` + `/services` — each `+page.svelte` now reads `metaTitle` + `metaDescription` via resolveLocale at script top and wires them into `<svelte:head>`. Preserves exact English wording.
+
+### What did **not** change
+
+- `/services/[id]/+page.svelte` — already resolves `{title} — yesid.` dynamically from service data; only the brand suffix is hardcoded (structural, out of scope).
+- `/tech-stack/+page.svelte` — meta tag left for 17b-7l's dedicated tech-stack-page extraction.
+- `/blog` + `/blog/personal` + `/blog/[slug]` — no hardcoded meta tags in those route files (titles come from post frontmatter via loader).
+- No adapter or repository wiring — chrome flows directly from content to routes.
+
+### Verification
+
+| Check | Post-17b-7j | Post-17b-7k |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| `bun run test` | 83 / 819 pass | 83 / 819 pass |
+| SSR fetch titles + descriptions for all 4 routes | baseline | identical (4 titles + 4 descriptions content-driven) |
+
+### Review focus
+
+- Naming inconsistency: About/Contact use nested `meta.title`/`meta.description`; Services/Projects use top-level `servicesPageMeta`/`projectsPageMeta`. Decision rationale in `log.md` — typed vs. untyped container. Confirm this split feels right vs. forcing one pattern.
+- Separator mismatch preserved: "About — yesid." (em dash) vs. "Projects | yesid." (pipe). Kept verbatim from the originals; if you want them normalized to em dash everywhere, that's a one-line content fix.
+- `contactContent.pageTitle` (visible "Contact") vs. `contactContent.meta.title` ("Contact — yesid.") — two different keys deliberately. Pre-existing pattern in 17b-7h extended cleanly here.

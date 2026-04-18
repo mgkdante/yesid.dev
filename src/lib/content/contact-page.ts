@@ -6,6 +6,14 @@ export const contactContent: ContactContent = {
 	stationLabel: { en: 'NEXT STOP: YOU' },
 	sendErrorMessage: { en: 'Failed to send message. Please try again.' },
 
+	// HTML <title> + <meta description> for /contact. Extracted in 17b-7k.
+	meta: {
+		title: { en: 'Contact — yesid.' },
+		description: {
+			en: 'Get in touch for freelance data engineering, database development, and digital infrastructure consulting.',
+		},
+	},
+
 	infoTerminal: {
 		title: 'yesid@mtl ~ /info',
 		command: '$ yesid --info',

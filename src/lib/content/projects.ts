@@ -1,5 +1,14 @@
 import type { Project, LocalizedString } from '$lib/types';
 
+/** HTML `<title>` + `<meta description>` for the `/projects` route. Extracted
+ *  in Task 17b-7k. */
+export const projectsPageMeta = {
+	title: { en: 'Projects | yesid.' } satisfies LocalizedString,
+	description: {
+		en: 'Projects, pipelines, and systems built by yesid. — freelance SQL development and digital infrastructure.',
+	} satisfies LocalizedString,
+} as const;
+
 /** Projects-listing-page chrome copy extracted from components in Task 17b-7d.
  *  Consumed by ProjectListingPage, ProjectFilterMobile, ProjectFilterSidebar,
  *  ProjectCard, and (via re-use) the services detail's "see all projects" link. */
