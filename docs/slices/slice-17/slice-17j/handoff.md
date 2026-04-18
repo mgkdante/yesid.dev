@@ -139,11 +139,144 @@ Moved flat dirs (specs, plans, devlog, handoffs, research, slices, archive, refe
 
 ---
 
+### Task 2: CLAUDE.md slim
+
+**Session:** 2026-04-17 | **Commit:** f8d2a82
+
+**Files:**
+- Modified: `CLAUDE.md` (445 → 196 lines, −56%)
+
+**What landed:**
+Removed duplicative sections (Tool Selection Protocol, Plugins & Tools, Completed Slices list, Repo Structure detail). Added core principles block, cross-platform setup, 3-level slice hierarchy, 4-file bundle spec, self-appending handoff mechanics, non-slice sessions as 4th session type, updated Slice Closing checklist, hard rules for PR at Level 2.
+
+**Tests:** `bun run check` 0 errors, 19 pre-existing warnings | **Follow-ups:** none
+
+---
+
+### Task 3: WORKFLOW.md v2.0
+
+**Session:** 2026-04-17 | **Commit:** 71d0646
+
+**Files:**
+- Modified: `docs/reference/WORKFLOW.md` (792 → 735 lines)
+
+**What landed:**
+WORKFLOW.md v2.0 codifies: 3-level slice hierarchy, 4-file bundle, self-appending handoff, three-tier context model, close protocol, cross-platform + OS-quirks registry, Tool Selection Protocol (absorbed from CLAUDE.md), document ecosystem restructured into Tier 1/2/3, self-enhancing workflow principle. File paths updated throughout.
+
+**Tests:** `bun run check` 0 errors | **Follow-ups:** none
+
+---
+
+### Progress-tracking workflow amendment
+
+**Session:** 2026-04-18 | **Commit:** 699d8cd
+
+**What landed:**
+Mid-slice amendment per Yesid request. `CLAUDE.md` gained "Session progress tracking" section codifying TodoWrite populate-from-plan.md at session start + compact markdown table at every STOP as two complementary persistence layers. `WORKFLOW.md` §17 + §18 updated. Added to hard rules.
+
+**Decisions:**
+- D010: TodoWrite (live UI) + per-STOP markdown table (scrollback audit trail) = two-layer progress visibility.
+
+---
+
+### Task 3b: Repo hierarchy migration
+
+**Session:** 2026-04-17/18 | **Commit:** cb42219
+
+**Files (repo):**
+- Created `_TEMPLATE-SLICE/` + `_TEMPLATE-SUBSLICE/` skeletons
+- Migrated active Slice 17 + sub-slice 17j into `docs/slices/slice-17/slice-17j/` bundle form
+- Retired `docs/roadmap/standardization.md` → `docs/slices/slice-17/README.md`
+- Migrated slice-14 spec → `docs/slices/slice-14/README.md`
+- Removed old `_TEMPLATE.md` files (absorbed into _TEMPLATE-SUBSLICE)
+- Emptied + removed `docs/devlog/`, `docs/handoffs/`, `docs/plans/` top-level dirs
+- `docs/README.md` rewritten to reflect new hierarchy
+
+**Tests:** `bun run check` 0 errors | `bun run test` 782/782 PASS
+
+---
+
+### Task 3c: scripts/slice-close.ts + mock test
+
+**Session:** 2026-04-18 | **Commit:** c3456af
+
+**Files:**
+- Created: `scripts/slice-close.ts` (Bun, OS-agnostic via `YESITO_CLOUD_ROOT` env var, 248 lines)
+- Modified: `package.json` — added `"slice:close": "bun scripts/slice-close.ts"`
+
+**What landed:**
+Script moves active sub-slice bundle from repo to cloud archive (no flatten — preserves folder structure for granular retrieval). Validates required files, appends COMPLETED-SLICES.md row, regenerates tree.txt. Cross-volume-safe (rename-or-copy fallback). Mock-verified end-to-end with a fake `slice-99-mock/` bundle.
+
+**Decisions:**
+- D011: Env var `YESITO_CLOUD_ROOT` as single portability knob, fallback to `path.join(os.homedir(), 'Yesito', 'cloud')`.
+- D012: Parse parent slice from leading digits of sub-slice-id (`17j` → `17`).
+
+---
+
+### Task 3d: PLAN.md reshape + 8 per-slice READMEs
+
+**Session:** 2026-04-18 | **Commit:** cd4de1c
+
+**Files:**
+- Modified: `docs/roadmap/PLAN.md` (689 → 462 lines, −33%)
+- Created: 8 per-slice READMEs (slice-15, 16, 18, 19, 19b, 20, 21, 22)
+
+**What landed:**
+Per-slice detail extracted from PLAN.md into `docs/slices/slice-NN/README.md` direction docs. PLAN.md keeps vision + principles + tech stack + slice index table + one-line pointers. Biggest gain: Slice 18 Payload section 118 lines → 5-line pointer.
+
+---
+
+### Task 3e: docs/sessions/ + _TEMPLATE.md
+
+**Session:** 2026-04-18 | **Commit:** 96c3d37
+
+**Files:**
+- Created: `docs/sessions/_TEMPLATE.md` (75 lines)
+- Cloud folder: `<cloud>/yesid.dev/docs/archive/sessions/` (empty landing)
+
+**What landed:**
+Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) have a first-class home and template. Template covers What+why / Scope / Actions / Decisions / Errors / Validation / Outcome / Commit / Follow-ups with 6 embedded rules including OS-quirks append and cloud mirror on close.
+
+---
+
+### Task 3f: OS-agnosticism + OS-quirks registry
+
+**Session:** 2026-04-18 | **Commit:** (this commit — cloud files not tracked in git)
+
+**Files (cloud):**
+- Created: `<cloud>/claude-knowledge/os-quirks/README.md` — usage + format + write/retrieval protocols
+- Created: `<cloud>/claude-knowledge/os-quirks/windows.md` — 7 seeded Windows quirks from Slice 17j discoveries:
+  1. MinTTY path conversion mangles `/E` → wrap in PowerShell
+  2. `cmd //c` quoting unpredictable → prefer PowerShell
+  3. ES module package.json + `require()` → rename `.js` → `.cjs`
+  4. `git add` CRLF warnings → expected, not a bug (with CRLF-parser fix history note)
+  5. Long inline `bash -c "..."` with backticks → write to temp file
+  6. `robocopy` exit codes 0–7 are success (bitmap)
+  7. `find -delete` works on Git Bash
+  8. Path separators: Bun scripts → `path.join()`; Windows CLIs → `\`
+- Created: `<cloud>/claude-knowledge/os-quirks/macos.md` — skeleton with known-watch categories (BSD vs GNU, Homebrew, Apple Silicon, case-insensitive FS, quarantine, launchctl, Terminal/iTerm)
+- Created: `<cloud>/claude-knowledge/os-quirks/linux.md` — skeleton with known-watch categories (apt/dnf/pacman, systemd, SELinux/AppArmor, permissions, iptables/nftables, X11/Wayland, glibc/musl, WSL)
+- Created: `<cloud>/claude-knowledge/os-quirks/cross-platform.md` — 5 universal patterns (path.join, env vars, Bun runtime, exit codes, line endings + .gitattributes)
+
+**Governance already in place from Tasks 2 + 3:**
+- CLAUDE.md `## Cross-platform setup` section (env var + registry pointer)
+- WORKFLOW.md §12 Cross-Platform Setup + OS-Quirks Registry section
+- CLAUDE.md closing checklist step 4: "Append OS-specific fixes discovered to os-quirks/<os>.md"
+- WORKFLOW.md §11 closing checklist: same rule
+- Proactive tool trigger #11: "Hitting an OS-specific command error? Check os-quirks/<os>.md FIRST"
+- scripts/slice-close.ts uses `YESITO_CLOUD_ROOT` env var (OS-portable)
+
+**Decisions:**
+- D013: OS-quirks registry lives at `<cloud>/claude-knowledge/os-quirks/` — cross-project, not yesid.dev-specific. Portable across all 6 services.
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 1. **17g scope re-evaluation** — `docs/learn/` moved to cloud in 17j; 17g's planned "Learning Docs Refactor" may need re-framing.
-2. **Playwright `export-examples` on Windows** — flagged in 17h, still unresolved. Document in OS-quirks in Task 3f.
+2. **Playwright `export-examples` on Windows** — flagged in 17h, still unresolved. NOTE: not yet added to os-quirks/windows.md because root cause unknown (chromium + firefox `launch()` both hang). When diagnosed, add as 8th windows.md entry.
 3. **Bundle shrink opportunities** — D269 lazy-plugin migration partial; captureFlipState + CustomEase.create sync-API coupling blocks full Vite chunk split. Flagged for post-17j async refactor.
+4. **`.gitattributes` for LF enforcement** — cross-platform.md flagged this as worth adding in a future slice to prevent accidental CRLF commits in cross-machine workflows.
 
 ## Iterations (if any)
 
