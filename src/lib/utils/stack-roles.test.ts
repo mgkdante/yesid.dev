@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getStackRole, STACK_ROLE_MAP } from './stackRoles.js';
+import { getStackRole, STACK_ROLE_MAP } from './stack-roles.js';
 
 describe('STACK_ROLE_MAP', () => {
 	it('is a non-empty record of string → string', () => {

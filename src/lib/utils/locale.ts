@@ -1,4 +1,4 @@
-import type { Locale, LocalizedString } from './types.js';
+import type { Locale, LocalizedString } from '$lib/types';
 
 // English is the guaranteed fallback. Every LocalizedString must have 'en'.
 // If a component requests French but only English exists, it gets English — never

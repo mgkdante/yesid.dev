@@ -1,4 +1,4 @@
-import type { LocalizedString } from './types.js';
+import type { LocalizedString } from '$lib/types';
 
 export interface NavLink {
 	label: LocalizedString;

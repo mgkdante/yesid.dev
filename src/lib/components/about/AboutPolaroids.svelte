@@ -5,8 +5,8 @@
   Stop label always top-left.
 -->
 <script lang="ts">
-	import type { AboutPolaroid } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutPolaroid } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';

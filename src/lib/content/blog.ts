@@ -1,5 +1,5 @@
-import { marked } from './highlight.js';
-import type { BlogPost, BlogCategory, BlogAnimation, Locale } from './types.js';
+import { marked } from '$lib/utils/markdown';
+import type { BlogPost, BlogCategory, BlogAnimation, Locale } from '$lib/types';
 
 // --- Frontmatter parsing ---
 

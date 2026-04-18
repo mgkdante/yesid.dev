@@ -3,8 +3,8 @@
 // derive from this single source. Adding a service to services.ts
 // automatically extends the metro line — zero component changes needed.
 
-import type { LocalizedString } from './types.js';
-import { resolveLocale } from './locale.js';
+import type { LocalizedString } from '$lib/types';
+import { resolveLocale } from '$lib/utils/locale';
 import { services } from './services.js';
 
 export interface MetroStop {

@@ -5,9 +5,9 @@
   Used on desktop (persistent) and tablet (overlay).
 -->
 <script lang="ts">
-	import type { TechStackItem, TechRelation, Proficiency } from '$lib/data/types.js';
+	import type { TechStackItem, TechRelation, Proficiency } from '$lib/types';
 	import { Marked } from 'marked';
-	import { getOutgoingRelations, getIncomingRelations, getTechItemContent } from '$lib/data/tech-stack.js';
+	import { getOutgoingRelations, getIncomingRelations, getTechItemContent } from '$lib/content/tech-stack';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import StackPanelOrientation from './StackPanelOrientation.svelte';

@@ -10,7 +10,7 @@ import type {
 	DomainCluster,
 	Proficiency,
 	LocalizedString,
-} from './types.js';
+} from '$lib/types';
 
 // --- Frontmatter parsing ---
 

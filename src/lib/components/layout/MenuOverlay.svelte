@@ -6,8 +6,7 @@
 <script lang="ts">
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { menuItems } from '$lib/data';
-
+	import { menuItems } from '$lib/content';
 	let {
 		open = false,
 		pathname = '/',

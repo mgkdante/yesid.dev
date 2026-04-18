@@ -1,4 +1,4 @@
-import type { Service } from './types.js';
+import type { Service } from '$lib/types';
 
 // Six core service offerings. English-only for now.
 // Station numbers are sequential (1-4) matching the train journey order defined in

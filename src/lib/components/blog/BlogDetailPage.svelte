@@ -7,7 +7,7 @@
   Same architectural role as ProjectDetailPage.
 -->
 <script lang="ts">
-  import type { BlogPost } from '$lib/data/types.js';
+  import type { BlogPost } from '$lib/types';
   import { Separator } from '$lib/components/ui/separator';
   import { StickyPanel } from '$lib/components/brand';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';

@@ -7,8 +7,8 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import type { AboutTestimonial } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutTestimonial } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';

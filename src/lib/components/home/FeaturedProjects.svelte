@@ -4,8 +4,10 @@
   Desktop: hover turns image to color. Mobile: tap image toggles color, tap text navigates.
 -->
 <script lang="ts">
-	import { proofReelContent, getProjectBySlug, resolveLocale } from '$lib/data/index.js';
-	import type { Project } from '$lib/data/index.js';
+	import { resolveLocale } from '$lib/utils';
+
+	import { proofReelContent, getProjectBySlug } from '$lib/content';
+	import type { Project } from '$lib/types';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';

@@ -7,8 +7,10 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
-	import { closerContent, resolveLocale, getLatestPosts } from '$lib/data/index.js';
-	import { siteMeta } from '$lib/data/meta.js';
+	import { resolveLocale } from '$lib/utils';
+
+	import { closerContent, getLatestPosts } from '$lib/content';
+	import { siteMeta } from '$lib/content/meta';
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import CloserGraffiti from './CloserGraffiti.svelte';

@@ -5,8 +5,8 @@
   Related projects in right panel (desktop) / bottom list (mobile). D186, D187, D189.
 -->
 <script lang="ts">
-	import type { Service, Project } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Service, Project } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';

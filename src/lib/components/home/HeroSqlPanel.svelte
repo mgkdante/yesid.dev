@@ -4,7 +4,7 @@
   The SQL query itself is static (always the same analysis query).
 -->
 <script lang="ts">
-  import type { HeroQueryRow } from '$lib/data/hero-data.js';
+  import type { HeroQueryRow } from '$lib/content/hero-data';
   import { StatusDot } from '$lib/components/brand';
 
   interface Props {

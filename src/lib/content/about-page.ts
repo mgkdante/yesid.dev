@@ -5,7 +5,7 @@
 // Placeholder values are realistic stand-ins that read well on-screen.
 // Yesid replaces them with real content when ready — zero component changes.
 
-import type { AboutContent } from './types.js';
+import type { AboutContent } from '$lib/types';
 import { siteMeta } from './meta.js';
 
 export const aboutPageContent: AboutContent = {

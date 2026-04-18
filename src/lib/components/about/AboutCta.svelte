@@ -5,8 +5,8 @@
   Stop label top-left.
 -->
 <script lang="ts">
-	import type { AboutCta } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutCta } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, TerminalChrome } from '$lib/components/brand';

@@ -4,7 +4,7 @@
   Domain checkboxes (1-3 selectable) that drive scenario matching.
 -->
 <script lang="ts">
-	import type { DomainCluster } from '$lib/data/types.js';
+	import type { DomainCluster } from '$lib/types';
 
 	let {
 		selectedDomains = [],

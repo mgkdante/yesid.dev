@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { buildPersonSchema } from './schema.js';
-import { siteMeta } from './meta.js';
+import { buildPersonSchema } from './json-ld.js';
+import { siteMeta } from '$lib/content/meta';
 
 describe('buildPersonSchema', () => {
 	const schema = buildPersonSchema(siteMeta);

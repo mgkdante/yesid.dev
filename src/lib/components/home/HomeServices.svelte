@@ -7,8 +7,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { getVisibleServices, resolveLocale, servicesGridContent } from '$lib/data/index.js';
-	import { SHAPES } from '$lib/data/shapes.js';
+	import { resolveLocale } from '$lib/utils';
+
+	import { getVisibleServices, servicesGridContent } from '$lib/content';
+	import { SHAPES } from '$lib/utils/shapes';
 	import { morphHover } from '$lib/motion/actions';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';

@@ -5,9 +5,9 @@
   Extends behind nav with negative margin.
 -->
 <script lang="ts">
-  import type { Project } from '$lib/data/types.js';
-  import { resolveLocale } from '$lib/data/locale.js';
-  import { getStackRole } from '$lib/data/stackRoles.js';
+  import type { Project } from '$lib/types';
+  import { resolveLocale } from '$lib/utils/locale';
+  import { getStackRole } from '$lib/utils/stack-roles';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';

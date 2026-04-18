@@ -4,11 +4,11 @@
   Bold orange accents, benefit headline, impact metric. D186.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { SectionLabel } from '$lib/components/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/utils';
 
 	export interface ServiceCardProps {
 		/** The service data to display */

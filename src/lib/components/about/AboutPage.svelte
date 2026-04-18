@@ -6,8 +6,8 @@
   All content from aboutPageContent via data layer.
 -->
 <script lang="ts">
-	import { aboutPageContent } from '$lib/data/about-page.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { aboutPageContent } from '$lib/content/about-page';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Separator } from '$lib/components/ui/separator';

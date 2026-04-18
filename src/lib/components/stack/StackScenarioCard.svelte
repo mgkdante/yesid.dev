@@ -4,8 +4,8 @@
   project links, and a CTA button.
 -->
 <script lang="ts">
-	import type { StackScenario } from '$lib/data/types.js';
-	import { getTechItemById } from '$lib/data/tech-stack.js';
+	import type { StackScenario } from '$lib/types';
+	import { getTechItemById } from '$lib/content/tech-stack';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';

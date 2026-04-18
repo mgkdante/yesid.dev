@@ -3,7 +3,7 @@
   Brand primitive: replaces 8+ different chevron/arrow implementations.
 -->
 <script lang="ts">
-  import { cn } from '$lib/utils.js';
+  import { cn } from '$lib/utils';
   import type { SVGAttributes } from 'svelte/elements';
 
   export interface ChevronToggleProps extends SVGAttributes<SVGSVGElement> {

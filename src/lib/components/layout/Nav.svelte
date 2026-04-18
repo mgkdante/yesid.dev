@@ -6,7 +6,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { wordmarkHover } from '$lib/motion/actions';
-	import { navLinks } from '$lib/data';
+	import { navLinks } from '$lib/content';
 	import MenuOverlay from './MenuOverlay.svelte';
 
 	let { pathname = '/' }: { pathname?: string } = $props();

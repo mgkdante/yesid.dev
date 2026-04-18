@@ -3,7 +3,7 @@
 // Components import from this module and call resolveLocale() — no
 // hardcoded English strings in templates.
 
-import type { LocalizedString, JourneyPanel } from './types.js';
+import type { LocalizedString, JourneyPanel } from '$lib/types';
 
 export const heroAnimContent = {
 	scrollDown: { en: 'NEXT STOP: SCROLL DOWN' } satisfies LocalizedString,

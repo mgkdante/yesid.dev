@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import StackScenarioCard from './StackScenarioCard.svelte';
-import type { StackScenario } from '$lib/data/types.js';
+import type { StackScenario } from '$lib/types';
 
 const mockScenario: StackScenario = {
 	id: 'test-scenario',

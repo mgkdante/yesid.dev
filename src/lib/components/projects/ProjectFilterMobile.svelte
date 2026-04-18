@@ -6,7 +6,7 @@
   Uses bits-ui Collapsible for a11y (aria-controls, aria-expanded, focus management).
 -->
 <script lang="ts">
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 

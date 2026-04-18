@@ -26,9 +26,9 @@
 	} from '$lib/motion/utils/gsap.js';
 	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
-	import { heroAnimContent, heroContent, INITIAL_HERO_DATA, generateHeroData } from '$lib/data';
-	import type { HeroData } from '$lib/data';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { heroAnimContent, heroContent, INITIAL_HERO_DATA, generateHeroData } from '$lib/content';
+	import type { HeroData } from '$lib/content';
+	import { resolveLocale } from '$lib/utils/locale';
 	import MetroNetwork from '$lib/motion/svg/MetroNetwork.svelte';
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
 	import HeroTextContent from './HeroTextContent.svelte';

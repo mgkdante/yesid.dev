@@ -8,7 +8,7 @@
   active/tag-active styles and deselect logic live in one place.
 -->
 <script lang="ts">
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { resolveLocale } from '$lib/utils/locale';
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
 
 	let {

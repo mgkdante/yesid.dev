@@ -5,7 +5,7 @@
   Mobile: horizontal scroll. Desktop: flex wrap.
 -->
 <script lang="ts">
-	import type { DomainCluster } from '$lib/data/types.js';
+	import type { DomainCluster } from '$lib/types';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {

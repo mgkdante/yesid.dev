@@ -17,7 +17,7 @@ import {
 } from './tech-stack.js';
 import { services } from './services.js';
 import { projects } from './projects.js';
-import type { InfraLayer, DomainCluster } from './types.js';
+import type { InfraLayer, DomainCluster } from '$lib/types';
 
 const VALID_LAYERS: InfraLayer[] = [
 	'data', 'backend', 'api', 'frontend', 'mobile', 'analytics', 'devops', 'testing', 'systems',

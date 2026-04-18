@@ -5,9 +5,9 @@
   Swipe-to-dismiss, focus trap, ESC close via vaul-svelte Drawer.
 -->
 <script lang="ts">
-	import type { TechStackItem, TechRelation, Proficiency } from '$lib/data/types.js';
+	import type { TechStackItem, TechRelation, Proficiency } from '$lib/types';
 	import { Marked } from 'marked';
-	import { getTechItemContent, getOutgoingRelations, getIncomingRelations, getTechItemById } from '$lib/data/tech-stack.js';
+	import { getTechItemContent, getOutgoingRelations, getIncomingRelations, getTechItemById } from '$lib/content/tech-stack';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Drawer, DrawerContent, DrawerTitle, DrawerClose } from '$lib/components/ui/drawer';

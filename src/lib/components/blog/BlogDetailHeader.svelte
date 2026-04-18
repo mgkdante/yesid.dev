@@ -6,8 +6,8 @@
   No entrance animation — Snappy Doctrine (17e-2). ManifestoCanvas is ambient (doctrine-allowed).
 -->
 <script lang="ts">
-  import type { BlogPost } from '$lib/data/types.js';
-  import { resolveLocale } from '$lib/data/locale.js';
+  import type { BlogPost } from '$lib/types';
+  import { resolveLocale } from '$lib/utils/locale';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';

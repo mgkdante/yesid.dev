@@ -4,7 +4,7 @@
   Grayscale → color on hover. Stop label top-left.
 -->
 <script lang="ts">
-	import type { AboutClientLogo } from '$lib/data/types.js';
+	import type { AboutClientLogo } from '$lib/types';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, MetricDisplay } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';

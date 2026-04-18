@@ -5,8 +5,8 @@
   Desktop only (hidden below lg). Mobile gets ProjectGlancePanelMobile.
 -->
 <script lang="ts">
-  import type { Project, Service, ImpactMetric } from '$lib/data/types.js';
-  import { resolveLocale } from '$lib/data/locale.js';
+  import type { Project, Service, ImpactMetric } from '$lib/types';
+  import { resolveLocale } from '$lib/utils/locale';
   import { MetricDisplay, StickyPanel } from '$lib/components/brand';
   import { Badge } from '$lib/components/ui/badge';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';

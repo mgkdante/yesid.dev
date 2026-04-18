@@ -4,8 +4,8 @@
   Starts collapsed. Contains: overview, metrics, stack tags, links.
 -->
 <script lang="ts">
-  import type { Project, ImpactMetric } from '$lib/data/types.js';
-  import { resolveLocale } from '$lib/data/locale.js';
+  import type { Project, ImpactMetric } from '$lib/types';
+  import { resolveLocale } from '$lib/utils/locale';
   import { MetricDisplay } from '$lib/components/brand';
   import { Badge } from '$lib/components/ui/badge';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';

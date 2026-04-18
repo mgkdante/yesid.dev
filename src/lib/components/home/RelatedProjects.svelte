@@ -3,8 +3,8 @@
   Name + count only. Horizontally scrollable when projects overflow.
 -->
 <script lang="ts">
-	import type { Project } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Project } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 

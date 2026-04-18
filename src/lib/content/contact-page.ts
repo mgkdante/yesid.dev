@@ -1,4 +1,4 @@
-import type { ContactContent } from './types.js';
+import type { ContactContent } from '$lib/types';
 import { siteMeta } from './meta.js';
 
 export const contactContent: ContactContent = {

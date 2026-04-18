@@ -1,4 +1,4 @@
-import type { SiteMeta } from './types.js';
+import type { SiteMeta } from '$lib/types';
 
 // Single source of truth for site-level metadata consumed by layouts and SEO.
 // name is never localised — "yesid." is the brand name in all languages.

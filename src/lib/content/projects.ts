@@ -1,4 +1,4 @@
-import type { Project } from './types.js';
+import type { Project } from '$lib/types';
 
 // Seed data — English only. French and Spanish fields are intentionally omitted;
 // they will be filled in as content is translated (not in this slice).

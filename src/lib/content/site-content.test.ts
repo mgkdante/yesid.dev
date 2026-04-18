@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent, closerContent } from './content.js';
+import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent, closerContent } from './site-content.js';
 import { getProjectBySlug } from './projects.js';
 import { getVisibleServices } from './services.js';
 

@@ -5,7 +5,7 @@
   No GSAP yet — entrance animations added in 10c.
 -->
 <script lang="ts">
-	import type { TechStackItem, InfraLayer, DomainCluster } from '$lib/data/types.js';
+	import type { TechStackItem, InfraLayer, DomainCluster } from '$lib/types';
 	import StackNode from './StackNode.svelte';
 	import StackConnections from './StackConnections.svelte';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';

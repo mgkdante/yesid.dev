@@ -7,8 +7,8 @@
   because they are not button group patterns.
 -->
 <script lang="ts">
-	import type { Locale } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Locale } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
 	import { ChevronToggle } from '$lib/components/brand';
 

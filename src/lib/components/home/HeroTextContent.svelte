@@ -5,8 +5,7 @@
 <script lang="ts">
 	import HeroMetrics from './HeroMetrics.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import type { HeroData } from '$lib/data';
-
+	import type { HeroData } from '$lib/content';
 	let {
 		headlineLine1,
 		subheadlineText,

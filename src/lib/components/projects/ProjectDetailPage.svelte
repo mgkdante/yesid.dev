@@ -5,8 +5,8 @@
   Mobile: collapsible glance panel + floating TOC pill + stacked sections.
 -->
 <script lang="ts">
-	import type { Project, Service } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Project, Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel, StickyPanel, ChevronToggle } from '$lib/components/brand';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';

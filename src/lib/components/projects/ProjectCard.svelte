@@ -7,15 +7,15 @@
   Hover triggers border glow + SVG morph. No entrance animation — Snappy Doctrine (17e-2).
 -->
 <script lang="ts">
-	import type { Project, Service } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Project, Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/utils';
 
 	export interface ProjectCardProps {
 		/** The project data to display */

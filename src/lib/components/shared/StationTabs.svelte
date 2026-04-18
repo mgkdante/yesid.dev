@@ -9,7 +9,7 @@
   Active tab gets dark bottom border, bold label. Inactive tabs fade by distance.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/data/types.js';
+	import type { Service } from '$lib/types';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';

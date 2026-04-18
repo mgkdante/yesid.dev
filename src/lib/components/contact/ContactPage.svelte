@@ -6,13 +6,13 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { contactContent } from '$lib/data/contact-page.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { contactContent } from '$lib/content/contact-page';
+	import { resolveLocale } from '$lib/utils/locale';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
 	import { ResizablePaneGroup, ResizablePane, ResizableHandle } from '$lib/components/ui/resizable';
-	import type { WeatherData } from '$lib/data/weather.js';
+	import type { WeatherData } from '$lib/utils/weather';
 
 	let {
 		weather = null,

@@ -1,4 +1,4 @@
-import type { SiteMeta } from './types.js';
+import type { SiteMeta } from '$lib/types';
 
 /**
  * Builds a JSON-LD Person schema string from site metadata.

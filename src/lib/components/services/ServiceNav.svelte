@@ -4,8 +4,8 @@
   Omits either side when the current service is first or last.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { SectionLabel } from '$lib/components/brand';
 

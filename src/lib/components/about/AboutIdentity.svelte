@@ -5,8 +5,8 @@
   All text from data layer via props.
 -->
 <script lang="ts">
-	import type { AboutIdentity } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutIdentity } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StatusDot, StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';

@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HeroSqlPanel from './HeroSqlPanel.svelte';
-import { INITIAL_HERO_DATA } from '$lib/data';
-
+import { INITIAL_HERO_DATA } from '$lib/content';
 describe('HeroSqlPanel', () => {
   const props = {
     rows: INITIAL_HERO_DATA.queryRows,

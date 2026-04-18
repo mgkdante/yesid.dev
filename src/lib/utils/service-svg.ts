@@ -8,8 +8,8 @@
 // SVG content via SvelteKit's `fetch` in the page load function. This works
 // on both server (during SSR) and client (during navigation).
 
-import { services } from './services.js';
-import type { Service } from './types.js';
+import { services } from '$lib/content/services';
+import type { Service } from '$lib/types';
 
 /**
  * Returns the URL path for a service's SVG illustration.

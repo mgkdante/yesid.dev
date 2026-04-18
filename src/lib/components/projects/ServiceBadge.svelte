@@ -6,8 +6,8 @@
   Hover: subtle glow, bg shift, slight scale, and SVG morph.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { SvgIcon } from '$lib/components/brand';
 
 	let {

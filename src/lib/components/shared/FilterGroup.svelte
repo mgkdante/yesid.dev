@@ -13,7 +13,7 @@
 -->
 <script lang="ts">
 	import { ChevronToggle } from '$lib/components/brand';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
 
 	const defaultAllLabel = { en: 'All' };
