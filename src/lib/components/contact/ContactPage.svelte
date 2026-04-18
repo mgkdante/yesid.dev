@@ -21,6 +21,9 @@
 	} = $props();
 
 	const c = contactContent;
+	const pageTitle = resolveLocale(c.pageTitle, 'en');
+	const stationLabel = resolveLocale(c.stationLabel, 'en');
+	const sendErrorMessage = resolveLocale(c.sendErrorMessage, 'en');
 
 	// --- Local time (Montreal) ---
 	let localTime = $state('');
@@ -103,12 +106,12 @@
 			const result = await res.json();
 
 			if (!result.success) {
-				errors = { form: 'Failed to send message. Please try again.' };
+				errors = { form: sendErrorMessage };
 				sending = false;
 				return;
 			}
 		} catch {
-			errors = { form: 'Failed to send message. Please try again.' };
+			errors = { form: sendErrorMessage };
 			sending = false;
 			return;
 		}
@@ -164,7 +167,7 @@
 <div class="contact-grid" data-testid="page-contact">
 	<!-- ═══ EDGE TITLE (desktop only) ═══ -->
 	<div class="edge-title-column">
-		<div class="edge-title">Contact<span class="edge-dot">.</span></div>
+		<div class="edge-title">{pageTitle}<span class="edge-dot">.</span></div>
 	</div>
 
 	<!-- ═══ ACCENT LINE ═══ -->
@@ -173,9 +176,9 @@
 	<!-- ═══ CONTENT ═══ -->
 	<div class="contact-content">
 		<!-- Mobile: visible heading. Desktop: sr-only (rotated edge title is the heading) -->
-		<h1 class="mobile-heading text-display font-bold">Contact<span class="text-[var(--primary)]">.</span></h1>
+		<h1 class="mobile-heading text-display font-bold">{pageTitle}<span class="text-[var(--primary)]">.</span></h1>
 		<div class="mb-2 font-mono text-caption uppercase tracking-[2px] text-[var(--muted-foreground)]">
-			NEXT STOP: YOU
+			{stationLabel}
 		</div>
 
 		<!-- Desktop: Resizable split -->

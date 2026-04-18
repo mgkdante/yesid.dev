@@ -2,7 +2,9 @@ import type { ContactContent } from '$lib/types';
 import { siteMeta } from './meta.js';
 
 export const contactContent: ContactContent = {
+	pageTitle: { en: 'Contact' },
 	stationLabel: { en: 'NEXT STOP: YOU' },
+	sendErrorMessage: { en: 'Failed to send message. Please try again.' },
 
 	infoTerminal: {
 		title: 'yesid@mtl ~ /info',

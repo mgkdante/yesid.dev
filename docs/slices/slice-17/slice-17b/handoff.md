@@ -263,7 +263,7 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 
 - ~~17b-7f Services (18 strings)~~ — shipped, see §17b-7f below
 - ~~17b-7g About (16 strings)~~ — shipped, see §17b-7g below
-- 17b-7h Contact (3 strings)
+- ~~17b-7h Contact (3 strings)~~ — shipped, see §17b-7h below
 - 17b-7i Tech stack viz (26 strings — largest sub-task)
 - 17b-7j Layout + shared (12 strings)
 - 17b-7k Page meta tags (8 strings)
@@ -359,3 +359,44 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - `src/lib/content/about-page.ts` — 17 new LocalizedString seeds in two blocks at the end of `aboutPageContent`. No fr/es backfilled (debt tracked in 17b-8). Confirm key names read well (e.g., `stopLabels.next` for the CTA card — could also be called `cta` but `next` matches the visible label "NEXT").
 - `AboutTestimonials.svelte` — two template-string arias (`testimonialSlideAria`, `showTestimonialAria`). The `{index}` / `{total}` placeholder replace happens at the call site, same shape as `servicesListingContent.stationLabelTemplate` from 17b-7f.
 - Six "defaults-only" children (`AboutIdentity`, `AboutMetrics`, `AboutMethod`, `AboutInterests`, `AboutCta`, `AboutWeather`) now have strict required props. If any future standalone test imports them, it must pass both `stop` + `label` explicitly — catch any missing call site before landing.
+
+---
+
+## 17b-7h — Contact extraction (3 strings)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+**Types + content**
+- `src/lib/types.ts` — `ContactContent` gained two new fields: `pageTitle: LocalizedString` and `sendErrorMessage: LocalizedString`. `stationLabel` was already typed + seeded; only wiring was missing.
+- `src/lib/content/contact-page.ts` — seeded `pageTitle = { en: 'Contact' }` and `sendErrorMessage = { en: 'Failed to send message. Please try again.' }`. `stationLabel` untouched.
+
+**Component (ContactPage.svelte)**
+- Three `const <name> = resolveLocale(c.<key>, 'en')` bindings added at the top of the `<script>` block next to the existing `c = contactContent` alias.
+- Edge title (desktop) + mobile h1 now render `{pageTitle}` instead of the literal `Contact`.
+- Station label span now renders `{stationLabel}` instead of the literal `NEXT STOP: YOU` — closing audit edge case #23 (content had the field, component bypassed it).
+- Two `errors = { form: 'Failed to send...' }` branches in `handleSubmit` now use the pre-resolved `sendErrorMessage` const.
+
+### What did **not** change
+
+- Decorative `.` dot is still a span with its own color class — part of brand typography, not copy. Not extracted.
+- No adapter or repository wiring; UI chrome flows directly from content to component per the 17b-7a..7g pattern.
+- No visible or behavioural change; every rendered string matches pre-extraction.
+
+### Verification
+
+| Check | Post-17b-7g | Post-17b-7h |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| `bun run test` | 83 / 819 pass | 83 / 819 pass |
+| Preview `/contact` desktop | baseline | `Contact.` edge title + mobile h1 + `NEXT STOP: YOU` subtitle render identically |
+| Console errors | none | none |
+
+### Review focus
+
+- `src/lib/types.ts` — confirm the three top-level fields on `ContactContent` (pageTitle, stationLabel, sendErrorMessage) read well. Alternative would be nesting under a `chrome` block, but consistent with `ContactContent.stationLabel` already being top-level.
+- `src/lib/content/contact-page.ts` — decision rationale: `pageTitle` doesn't include the decorative `.` dot because the dot has its own color span in the template. Content = copy; dot = typography.
+- `ContactPage.svelte` script top — three bare `const` bindings rather than `$derived` because the strings are static English. When locale-switching lands, convert to derived on a locale source.
+- `handleSubmit` error branches — `sendErrorMessage` is pre-resolved so `errors` stays typed as `Record<string, string>`. Swap to a LocalizedString-valued error object if the display layer gains locale awareness later.

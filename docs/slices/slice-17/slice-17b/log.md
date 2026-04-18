@@ -475,3 +475,92 @@ Stop labels × 10 (`identity`, `metrics`, `testimonials`, `process`, `stack`, `c
 | 17b-10 | Final verification + PR | ⏳ pending | — |
 
 **Model:** Opus 4.7 [1m] | **Context:** ~260k / 1M (~26%) — comfortable; can continue same session after approval.
+
+---
+
+## Session 2026-04-18 — Tasks 17b-7f re-land + 17b-7g commit reconciliation
+
+**Continuation of same session.** Context ~28%.
+
+Not a source-code session — a git reconciliation forced by a parallel Claude session.
+
+### What happened
+
+1. 17b-7f was originally committed as `ecbdb5a` alongside an unrelated WORKFLOW.md governance edit from a parallel Claude session. Yesid approved the 17b-7f content but noted the commit message only described WORKFLOW.md.
+2. Before 17b-7g could be committed, the parallel session reset `ecbdb5a` and re-committed ONLY the WORKFLOW.md changes as `cd53c61` (same message, clean scope). This dropped 17b-7f from HEAD. My on-disk services/nav/projects files were intact but unstaged.
+3. To recover cleanly, I:
+   - Stashed the cumulative log.md + handoff.md to /tmp (they had both 17b-7f and 17b-7g content interleaved).
+   - Reset docs/slices/slice-17/slice-17b/log.md + handoff.md to HEAD state.
+   - Built a 17b-7f-only log.md + handoff.md by truncating the full versions at the 17b-7g heading.
+   - Committed 17b-7f source files + trimmed log.md + handoff.md as `f8a6683` — the clean re-land.
+   - Restored log.md + handoff.md to their full (7f + 7g) state.
+   - Committed 17b-7g source files + full docs as `843b3cc`.
+
+### Commits landed this session
+
+- `f8a6683` feat(slice-17b): extract hardcoded strings from services (17b-7f re-land, content identical to ecbdb5a)
+- `843b3cc` feat(slice-17b): extract hardcoded strings from about (17b-7g, 17 strings + scope amendment to make stop/label props required across all 9 About* children)
+
+### Lesson for downstream sub-tasks
+
+If `git status` at session start shows ` M` (unstaged modified) files whose SHAs do NOT appear in `git log`, suspect a parallel session has reset HEAD. Preserve disk content, re-commit cleanly with standalone messages rather than trying to compose on top of the parallel session's HEAD.
+
+---
+
+## Session 2026-04-18 — Task 17b-7h Contact extraction
+
+**Continuation of same session.** Context ~29%.
+
+### What shipped
+
+**Type additions (types.ts)**
+- `ContactContent` interface gained two new fields alongside the existing `stationLabel`: `pageTitle: LocalizedString` and `sendErrorMessage: LocalizedString`. `stationLabel` was already on the type — just not wired in the component.
+
+**Content seeds (contact-page.ts)**
+- `contactContent.pageTitle = { en: 'Contact' }` — renders twice (desktop edge title + mobile h1). The typography dot (`.`) stays as a decorative template-literal span; it's not translatable and visually belongs to the typography system, not the copy.
+- `contactContent.sendErrorMessage = { en: 'Failed to send message. Please try again.' }` — single canonical source for the error set inside the two `catch`/`!success` branches of `handleSubmit`.
+- `contactContent.stationLabel` was already present with `{ en: 'NEXT STOP: YOU' }` — just wire it up in the component. No change to that seed.
+
+**Component wiring (ContactPage.svelte)**
+- Three `const <name> = resolveLocale(c.<key>, 'en')` bindings at the top of the `<script>` (plus the existing `const c = contactContent` alias).
+- Edge title + mobile h1 now render `{pageTitle}` instead of the literal `Contact`.
+- Station label span now renders `{stationLabel}` instead of the literal `NEXT STOP: YOU`.
+- Two `errors = { form: 'Failed to send...' }` assignments in `handleSubmit` swapped for `{ form: sendErrorMessage }` (pre-resolved at top of script so the errors object stays typed as `Record<string, string>`).
+
+### Decisions
+
+- **Pre-resolve at script top, not at each render site.** All three strings are static English (no data-driven placeholders), so resolving once and holding a `const` is cheaper and tidier than inline `resolveLocale` at every usage. When translation arrives, swap the `const` for a `$derived` on `locale`.
+- **Decorative `.` stays as markup, not content.** The dot is styled separately (`edge-dot` / `text-[var(--primary)]`) and is part of the brand typography system, not copy. Putting it in content would force the template to build the colored span from a string, which is worse.
+- **Audit edge case #23 resolved.** The audit flagged that `stationLabel` already existed in content but the component hardcoded the string. Wired correctly now.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged) |
+| `bun run test` | 83 files / 819 tests pass (unchanged) |
+| Preview `/contact` desktop | edge-title renders `Contact.`, mobile-h1 renders `Contact.`, station-label span renders `NEXT STOP: YOU` — identical to pre-extraction |
+| Console errors | none (stale HMR chunk errors from earlier iterations; no new errors this task) |
+
+### Strings extracted (3)
+
+`pageTitle` (2 occurrences: edge title + mobile h1, shared via `const`), `stationLabel` (1 occurrence, already in content — only wiring changed), `sendErrorMessage` (2 assignment sites in `handleSubmit`, shared via `const`). Audit said ~3; actual is 3 — exact match.
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1..6 | Restructure → audit → LocalizedString | ✅ approved | earlier |
+| 17b-7a..7e | Home / Blog / Projects extractions | ✅ approved | fc6fb06..9ed81ad |
+| 17b-7f | Services extraction | ✅ re-landed clean | f8a6683 |
+| 17b-7g | About extraction | ✅ approved | 843b3cc |
+| **17b-7h** | **Contact extraction** | **🟡 awaiting approval** | pending |
+| 17b-7i | Tech stack viz extraction | ⏳ pending | — |
+| 17b-7j | Layout + shared extraction | ⏳ pending | — |
+| 17b-7k | Page meta tags extraction | ⏳ pending | — |
+| 17b-7l | Tech-stack page extraction | ⏳ pending | — |
+| 17b-8 | Integrity test enhancements | ⏳ pending | — |
+| 17b-9 | Governance doc updates | ⏳ pending | — |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~310k / 1M (~31%) — comfortable, continuing in same session is viable after approval.

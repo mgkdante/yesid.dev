@@ -476,7 +476,13 @@ export interface ContactSuccess {
 }
 
 export interface ContactContent {
+	/** Page title — renders twice (desktop edge title + mobile h1). Typography
+	 *  dot is decorative and stays as a template literal in the component. */
+	pageTitle: LocalizedString;
+	/** User-visible subtitle under the title ("NEXT STOP: YOU"). */
 	stationLabel: LocalizedString;
+	/** Error message shown when the contact-form POST to web3forms fails. */
+	sendErrorMessage: LocalizedString;
 	infoTerminal: ContactInfoTerminal;
 	formTerminal: ContactFormTerminal;
 	validation: ContactValidation;
