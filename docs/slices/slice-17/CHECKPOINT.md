@@ -1,32 +1,31 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-18 | **17j SHIPPED (PR #23 merged). Next sub-slice: 17b Service Layer.**
-**Branch:** `main` (feature branches from 17j onwards close via `bun run slice:close`)
+**Last updated:** 2026-04-18 | **17b SHIPPED (PR #24 merged as `8982f9c`). Next sub-slice: 15 SEO + Metadata.**
+**Branch:** `main` (feature branches close via `bun run slice:close`)
 **Status:** between sub-slices — no active bundle in repo.
 
-## Just shipped — 17j Workflow Efficiency
+## Just shipped — 17b Hexagonal Data Layer + LocalizedString Enforcement
 
-**PR:** #23 merged 2026-04-18 as commit `604f1ef`.
-**Closed via:** `bun run slice:close 17j --name "Workflow Efficiency" --pr 23` (the script built in Task 3c closed 17j itself — workflow self-enhanced).
-**Bundle archived at:** `<cloud>/yesid.dev/docs/archive/slices/slice-17/slice-17j/` (spec + plan + log + handoff).
-**Outcome:** −54% cold-session token overhead (89,500 → 41,000), 3-level slice hierarchy adopted, portable IP across 6 services (workflow-efficiency skill + cloud knowledge bases + config snapshot tooling + mirror scripts).
+**PR:** #24 squash-merged 2026-04-18 as commit `8982f9c`.
+**Closed via:** `bun run slice:close 17b --pr 24`.
+**Bundle archived at:** `<cloud>/yesid.dev/docs/archive/slices/slice-17/slice-17b/` (spec + plan + log + handoff + audit).
+**Outcome:** hexagonal content architecture (adapters + repositories layers), ~207 LocalizedString extractions across 12 extraction sub-tasks, 0 hardcoded user-facing English in components, new integrity test (LocalizedString guard + translation-debt snapshot — 519 strings walked, 0 malformed), new cloud learn doc `hexagonal-content-layer.md` capturing the pattern. 83 files / 822 tests pass (+40 from baseline), CMS migration now a one-line adapter swap in `src/lib/adapters/index.ts`.
 
-## Next — 17b Service Layer
+## Next — 15 SEO + Metadata
 
 **Status:** planned
-**Depends on:** 17a / 17d / 17e ✓ (all shipped)
-**Est. sessions:** ~2
-**Purpose:** Extract service seams (`getAllProjects()`, `getService(id)`, etc.) so components call services, not raw data imports. Creates the CMS seam for Slice 18.
-**Enables:** Slice 15 (SEO on service seams), Slice 18 (Payload CMS plugs into this layer).
+**Depends on:** 17b ✓ (the adapter/repository seams 15 plugs into)
+**Est. sessions:** 1–2
+**Purpose:** JSON-LD injection on `+layout.svelte`, per-page meta fallbacks, sitemap + robots.txt, Open Graph tags. 17b deferred `/+layout.svelte` + `/+error.svelte` pipe migration to this slice.
 
-**Planning session start:** read Slice 17 README + PLAN.md slice 17b row, brainstorm, write spec + plan into new bundle `docs/slices/slice-17/slice-17b/`.
+**Planning session start:** read Slice 17 README + PLAN.md slice 15 row, brainstorm, write spec + plan into new bundle (parent-slice number per PLAN.md — likely `docs/slices/slice-15/slice-15a/` if 15 is its own parent).
 
 ## Remaining Slice 17 work (per PLAN.md execution sequence)
 
 | Sub-slice | Status | Note |
 |-----------|--------|------|
-| **17b Service Layer** | **planned — NEXT** | — |
-| 15 SEO + Metadata | planned (built on 17b) | sequenced mid-Slice-17 |
+| ~~17b Hexagonal Data Layer~~ | ✅ SHIPPED 2026-04-18 (#24) | — |
+| **15 SEO + Metadata** | **planned — NEXT** | plugs into 17b's repository layer + finishes the deferred layout + error-page pipe |
 | 17c Zod Schemas | planned (after 15) | — |
 | 17f Test Architecture | planned (after 17c) | — |
 | 16 E2E + Perf + Brand QA | planned (after 17f) | tests the final state |

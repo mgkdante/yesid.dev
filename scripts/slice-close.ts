@@ -124,7 +124,13 @@ async function moveBundle(srcDir: string, destDir: string): Promise<void> {
     );
   }
 
-  mkdirSync(dirname(destDir), { recursive: true });
+  // Idempotent parent-dir creation: Bun's mkdirSync on Windows occasionally
+  // throws EEXIST even with `recursive: true` when a sibling sub-slice already
+  // exists at the parent level. Guard with existsSync before calling.
+  const parentDir = dirname(destDir);
+  if (!existsSync(parentDir)) {
+    mkdirSync(parentDir, { recursive: true });
+  }
 
   try {
     await rename(srcDir, destDir);
