@@ -239,6 +239,45 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 7b — COMPLETE: design-plugin hybrid disable
+
+**Session:** 2026-04-18 | **Commit:** (this commit — live ~/.claude/settings.json change not tracked)
+
+**Action:** Disabled 2 of 4 design plugins in `~/.claude/settings.json` `enabledPlugins`.
+- `ui-ux-pro-max@ui-ux-pro-max-skill` → false
+- `web-designer@web-designer-marketplace` → false
+
+**Kept:**
+- `frontend-design@claude-plugins-official` (Anthropic first-party baseline — clean, minimal, trusted for production decisions)
+- `frontend-design-pro@buildwithclaude` (phase coverage: `analyze-site` + `trend-researcher` + `design-wizard` + `color-curator` + `typography-selector` + `review`)
+
+**Rationale:** Together the 2 kept plugins cover the full design pipeline (research → ideation → review) without duplication. The 2 disabled overlap heavily without unique value given yesid.dev's already-established design system (CONSTITUTION.md + CSS.md + MOTION.md + brand/).
+
+**Background research agent status:** killed mid-run after producing only ~108 tokens and never writing the comparison file to cloud. Decision was made independently from the agent's known-capability analysis. No loss — the agent would have provided redundant validation.
+
+enabledPlugins: 17 → 15 active (−2).
+
+**Decisions:**
+- D030: Hybrid (keep 2, disable 2) chosen over single-winner (keep 1). Trade-off: preserve multi-phase design tooling (research + review capabilities) at small extra cost vs aggressive minimalism.
+- D031: Anthropic first-party plugins preferred when functionality overlaps with third-party. `frontend-design` (official) over `web-designer` (community).
+
+### Task 7b — fully closed
+
+| Sub-item | Status |
+|----------|--------|
+| Rules common/ audit | ✅ no changes needed |
+| Web-app MCP disconnects (6) | ✅ Yesid actioned |
+| performance-optimizer trim (446→222) | ✅ shipped |
+| Design plugin hybrid (disable 2) | ✅ just shipped |
+| code-reviewer + planner trims | ⏭️ deferred (low savings / medium risk) |
+
+**Task 7b total savings:**
+- Immediate session cost: ~3K tokens (connector disconnects ~1.5K + plugin disables ~1K + agent trim descriptor ~0.5K)
+- Subagent spawn cost: ~1.8K per performance-optimizer invocation
+- **Activation-cost prevention: ~47K tokens** (connector MCPs no longer in deferred pool)
+
+---
+
 ### Task 7b (partial): `performance-optimizer` agent trim (446 → 222 lines)
 
 **Session:** 2026-04-18 | **Commit:** (this commit)
