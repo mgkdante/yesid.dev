@@ -2,7 +2,7 @@
 
 **Version:** 2.0 | 2026-04-17
 **Supersedes:** v1.0 (April 2026 — motion-design manifesto with heavy Three.js/Threlte content, now stale)
-**Design spec:** `C:\Users\otalo\Yesito\cloud\yesid.dev\docs\specs\2026-04-16-slice-17e-motion-reengineering-design.md` (cloud mirror)
+**Design spec:** `<cloud>/yesid.dev/docs/archive/legacy-flat/specs/2026-04-16-slice-17e-motion-reengineering-design.md`
 **Governance:** `docs/reference/CONSTITUTION.md` — Motion Doctrine — Snappy
 
 v2.0 is the **implementation reference** for the motion layer after the Slice 17e re-engineering. v1.0 was an aesthetic manifesto that over time accumulated references to deleted systems (Three.js, Threlte, `use:reveal`, entrance-animation helpers). v2.0 documents what actually exists in `src/lib/motion/` and how to use it.
@@ -447,7 +447,7 @@ Per design spec §6.2. Gzipped initial JS per route:
 | Route | Budget | 17e-5 end actual |
 |---|---|---|
 | `/` (home) | 120 KB | 35.00 KB gzipped (node 4 only — shared chunks load separately) |
-| `/blog` (listing) | 80 KB | see `C:\Users\otalo\Yesito\cloud\yesid.dev\docs\devlog\2026-04-17-slice-17e-closing.md` |
+| `/blog` (listing) | 80 KB | see `<cloud>/yesid.dev/docs/archive/legacy-flat/devlog/2026-04-17-slice-17e-closing.md` |
 | `/blog/[slug]` | 70 KB | " |
 | `/projects` (listing) | 80 KB | " |
 | `/projects/[slug]` | 70 KB | " |
@@ -464,7 +464,7 @@ Measurement: `bun run bundle-size` → opens `dist/stats.html` (rollup-plugin-vi
 - **Desktop:** Performance ≥ 98, Accessibility + SEO + Best Practices = 100
 - **Mobile:** Performance ≥ 90 (stretch 95+), same A11y/SEO/BP
 
-Closing-audit results live in `C:\Users\otalo\Yesito\cloud\yesid.dev\docs\devlog\2026-04-17-slice-17e-closing.md`.
+Closing-audit results live in `<cloud>/yesid.dev/docs/archive/legacy-flat/devlog/2026-04-17-slice-17e-closing.md`.
 
 ### Known bundle-shrink opportunities (deferred post-17e)
 

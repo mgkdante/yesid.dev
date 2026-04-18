@@ -14,9 +14,9 @@
 | 0: Baseline | ✅ | 734e887 |
 | 0a: Research sprint (6 parallel + 1 structure research) | ✅ | 98ab5d4 (token) + cloud doc 07 (structure) |
 | 1: Three-tier context model + docs prune + cloud mirror | ✅ | d79d319 |
-| 2: CLAUDE.md slim | pending | — |
-| 3: WORKFLOW.md rewrite + new close protocol | pending | — |
-| 3a: Cloud archive retro reorg (bundles) | pending | — |
+| 2: CLAUDE.md slim | ✅ | f8d2a82 |
+| 3: WORKFLOW.md rewrite + new close protocol | ✅ | 71d0646 |
+| 3a: Cloud archive reorg (Path B: move-to-archive, not per-slice bundles) | ✅ | (cloud-only; no repo commit for cloud moves) |
 | 3b: Repo hierarchy migration (3 levels) | pending | — |
 | 3c: scripts/slice-close.ts | pending | — |
 | 3d: PLAN.md reshape + slice READMEs | pending | — |
