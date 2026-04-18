@@ -725,9 +725,7 @@ Every session ends with:
 | `docs/reference/ARCHITECTURE.md` | File structure, component tree, data flow | When structure changes |
 | `docs/reference/TESTS.md` | Test file index | Every test add/change/remove |
 | `docs/reference/CSS.md` | Token catalog, style rules | Every CSS change |
-| `docs/archive/test_helper.md` | Vitest setup reference | When test infra changes |
 | `docs/roadmap/FUTURE_PHASES.md` | Post-launch roadmap (parked) | When Phase A ships |
-| `docs/research/findings.md` | Competitive scan results | During research phases |
 | `docs/slices/` | Slice specs (one per feature) | Before implementation |
 | `docs/specs/` | Design specs | During design phase |
 | `docs/plans/` | Implementation plans | During planning phase |

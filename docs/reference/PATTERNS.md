@@ -272,7 +272,7 @@ When a slice handoff introduces a workaround, a non-obvious fix, or a reusable a
 **Discovered in:** Slice 17a-4
 **Problem:** Tailwind's `ring-*` utility compiles to `box-shadow`. When an element also has a keyframe animation that animates `box-shadow` (e.g. `led-pulse` on a StatusDot), the animation's computed value clobbers the ring. Ring invisible; no error.
 **Solution:** Use CSS `outline` for the static halo. `outline` is a separate decoration channel from `box-shadow`, so a pulsing glow and a static ring render together. Tailwind v4: `outline outline-[Npx] outline-[<color>]`.
-**Files:** `src/lib/components/brand/StatusDot.svelte` (`ring` prop). See `docs/learn/styling/outline-vs-ring-pulsing-dots.md` for the full explanation.
+**Files:** `src/lib/components/brand/StatusDot.svelte` (`ring` prop). See `C:\Users\otalo\Yesito\cloud\yesid.dev\docs\learn\styling\outline-vs-ring-pulsing-dots.md` (cloud mirror) for the full explanation.
 **Reuse when:** Any element that needs a static hard-edged halo AND an animated `box-shadow` (focus halos, pulse glows, emphasis animations).
 
 ### CRLF-Tolerant Frontmatter Parser

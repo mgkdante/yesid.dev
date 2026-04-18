@@ -248,257 +248,30 @@ Slice 17 executes in two phases, with SEO sandwiched between them. This avoids b
 
 ## Slice Summaries
 
-### Slice 01 — Project Scaffold + Brand + CI Pipeline
+### Completed (shipped before 2026-04-17 — see git log + cloud mirror for full specs/plans/handoffs)
 
-**Status:** complete
-Initialize SvelteKit 2 with Bun, TypeScript, Tailwind (extending brand config), Vercel adapter. Vitest + Playwright configured. GitHub Actions CI green. See `docs/handoffs/handoff-slice-01.md`.
+Phase A / pre-13 shipped the foundation: Slice 01 scaffolded SvelteKit 2 + Svelte 5 + Tailwind v4 + Vitest + Playwright on Bun with GitHub Actions CI. 02 built the typed data layer (projects, services, skills, blog, nav). 03 delivered the basic component library (buttons, cards, tags, containers). 04 shipped the motion infrastructure (GSAP + ScrollTrigger + Lenis + Lottie + reveal/tilt actions — most of these later retired or re-engineered in 17e). 05 added the scroll progress rail + site-wide layout shell. 06 / 06d built the home page (train-journey hero, 3D scene, evolved Metro System). Experimental slices A/B/C/B+ iterated the SVG metro hero, zoom transition, animated wordmark, and icon morphs.
 
-### Slice 02 — Data Layer
+Slice 07 shipped /blog (markdown pipeline, filters, search, SVG morph hover, reading-progress bar). 08 shipped /projects (FLIP grid, detail layout). 09 / 09b shipped /services (kinetic index, station tabs, consultative detail) + /about (bento dashboard) + /contact (dual-terminal + Web3Forms). 10 / 10d+ shipped /tech-stack ("The Control Room") + testing infrastructure optimization (happy-dom, 2 Vitest projects, threads pool, ~56s → ~29s). 11 shipped pill navbar + menu overlay + branded 404. 12 shipped 3-row footer + orange-dot favicon + JSON-LD schema.
 
-**Status:** complete
-TypeScript interfaces for Project, Service, SiteMeta. Data files with initial content (4 services, 2 seed projects). Localization-ready with LocalizedString type (en/fr/es). Helper functions tested. See `docs/handoffs/handoff-slice-02.md`.
+Slice 13 shipped the home-page rework (two-column hero, manifesto, transit HUD, interactive canvas, metrics, proof reel, services grid, construction-site closer). 13b–13h polished each subsection. Slice 17 Phase 1 (design-system visual layer) completed 2026-04-18 across 17a-1 (token foundation), 17a-2a/b (brand primitives build + wire), 17a-3a/b (color lockdown + token wiring), 17a-4 (dead-code + dedup), 17a-5 (spacing tokens + CONSTITUTION.md + dvh/svh/safe-areas), 17a-6 (Bits UI integration), 17d (component API + card unification + contact redesign), 17e (motion re-engineering, 6 sub-slices), 17h (brand bundle — narrative + logo assets + governance freshen). PRs #2, #3, #4, #5, #6, #8, #12, #14, #15, #17, #19, #20, #22 merged to main.
 
-### Slice 03 — Component Library (Basic)
+Full per-slice specs, plans, devlogs, and handoffs live at `C:\Users\otalo\Yesito\cloud\yesid.dev\docs\` and in `git log`. Cloud-side `COMPLETED-SLICES.md` is the one-line index.
 
-**Status:** complete
-6 reusable UI components: ProjectCard, ProjectGrid, ServiceCard, TagList, SectionHeader, Hero. All locale-agnostic (receive resolved strings). No motion yet. 75 tests passing. See `docs/handoffs/handoff-slice-03.md`.
+### Active
 
-### Slice 04 — Motion Infrastructure + Component Enhancement
+**Slice 17j — Token Efficacy** (in progress, 2026-04-17). Reduces cold-session token overhead for yesid.dev by pruning 7 accretion sources (repo docs, CLAUDE.md, WORKFLOW.md, .mcp.json scoping, rules/zh/, plugins, auto-memory). Codifies findings into a cloud knowledge base, a portable `token-frugal-workflow` skill, and a global-config snapshot. Spec: `docs/slices/slice-17j-token-efficacy.md`. Plan: `docs/plans/2026-04-17-slice-17j-token-efficacy.md`.
 
-Two parts in one slice:
+### Remaining in Slice 17 (planned)
 
-**Part A: Motion infrastructure.** Install and configure GSAP + ScrollTrigger, Threlte + Three.js, lottie-web. Create the `src/lib/motion/` directory structure per MOTION.md section 12. Build reusable Svelte actions: `use:boop`, `use:reveal`, `use:magnetic`, `use:ripple`. Create motion stores: scroll position, `prefersReducedMotion`. Build utility: stagger timing calculator with randomization. Build `LottiePlayer.svelte` component. Ensure all motion respects `prefers-reduced-motion`.
+- **17b** Service Layer (~2 sessions) — extracts service seams. Depends on design-system phase. Enables Slice 15 (SEO) and Slice 18 (Payload CMS).
+- **17c** Zod Schemas (~0.5 session) — validates data-layer + future SEO structured data. Depends on 17b.
+- **17f** Test Architecture (~1–2 sessions) — test factories + co-location rules. Runs after 15.
+- **17g** Learning Docs Refactor (~2 sessions) — sweep the `docs/learn/` cloud mirror to align with post-17 architecture. **Scope re-evaluation needed** given learn/ moved to cloud in 17j.
 
-**Part B: Enhance existing components + update Service interface.** Add motion behaviors to slice 03 components: boop hover on ProjectCard, stagger on TagList. Update Service interface to add `id`, `station` (sequential, no hardcoded upper bound), `relatedProjects` fields. Update service data and tests. ServiceStation component is NOT built here (deferred to slice 05/06).
+### Upcoming (planned, detailed below)
 
-**Critical rule: The station system is fully data-driven.** Adding a service = adding one object to services.ts + one Lottie JSON. Zero component/layout changes. No hardcoded station counts anywhere.
-
-**All actions and components follow the standardized patterns defined in MOTION.md sections 12-13.**
-
-**Tests:** Actions apply/remove transforms. Reduced motion store reads OS preference. Stagger calculator produces correct timing arrays. LottiePlayer renders without errors. Enhanced components still pass existing tests. Station data validates sequential ordering and unique IDs without hardcoded upper bounds.
-**You'll learn:** Svelte actions (`use:` directive), GSAP basics, spring physics (svelte/motion), accessibility with prefers-reduced-motion, data-driven architecture.
-
-### Slice 05 — Layout Shell + Scroll Progress Rail
-
-Root layout: Nav (wordmark left, links right) + Footer + ScrollRail component. Responsive hamburger menu. ScrollRail shows on all pages: simple progress bar on inner pages, station markers on home page. Page transition animation between routes.
-
-**Tests:** Nav renders all links. ScrollRail tracks scroll percentage. Wordmark structure correct. Footer renders. Page transitions don't break navigation.
-**You'll learn:** SvelteKit layouts, responsive nav, scroll-linked UI, page transitions.
-
-### Slice 06 — Home Page: Train Journey + Hero 3D Scene
-
-The centerpiece. Build the scroll-driven train journey:
-
-- Threlte 3D scene: minimal dark space with glowing data paths, station nodes, subtle grid, bloom post-processing. Camera parallax on mouse. Scene responds to scroll position (MOTION.md section 6).
-- SVG train: animated with GSAP MotionPathPlugin along a scroll-linked curve. Wheel rotation, window glow, accent pulse (MOTION.md section 8).
-- Lottie station icons: marketplace-sourced, play when scroll reaches each station (MOTION.md section 7).
-- Station sections: 4 services rendered as `ServiceStation` components, revealed by scroll.
-- Hero: 3D background + wordmark + tagline overlay + scroll prompt.
-- CTA section at the bottom (destination station).
-- Mobile fallback: no 3D, CSS gradient + simplified SVG paths instead.
-- Run localhost
-
-**Pre-slice work (done in Claude Code before starting):**
-
-- Design SVG train in Figma with named groups for GSAP animation
-- Source 4 Lottie station icons from LottieFiles marketplace
-- Finalize hero copy and CTA text
-- Sketch approximate data path curves for Threlte scene
-
-**Tests:** Hero renders. 3D canvas initializes (or fallback renders on mobile). All 4 stations render with correct service data. Scroll progress updates. CTA section renders. Lottie icons load.
-**You'll learn:** Threlte scene composition, Three.js geometry + materials + lighting, GSAP ScrollTrigger timelines, GSAP MotionPathPlugin, Lottie integration, scroll-linked animation, responsive 3D fallback.
-
-### Slice 06d — Home Page Redesign: Metro System Evolved
-
-**Status:** complete (5 iterations)
-Full 8-stop metro journey: hero, 4 services, featured work, about bento, blog, terminal CTA. Data-driven metro line (`metro.ts`): stop numbers auto-compute from services. Centralized i18n content (`content.ts`). Bird's-eye 2-wagon train SVG. Fullscreen metro-themed hamburger menu with glow. Rail scoped to main body. Hidden browser scrollbar. 3D wagon renders via Threlte/Draco (to be replaced with video in 06f).
-
-Handoff: `docs/handoffs/handoff-slice-06d.md`
-
-### Slice A — SVG Metro Hero (Experimental)
-
-**Status:** complete
-SVG-based metro hero replacing 3D Threlte scene. Lighter, faster, more stylized. Berri-UQAM station art as background. See `docs/handoffs/handoff-slice-a-svg-hero.md`.
-
-### Slice C — Zoom Transition
-
-**Status:** complete
-Smooth zoom transition between hero banner and SkillsJourney section. See `docs/handoffs/handoff-slice-c-zoom-transition.md`.
-
-### Slice B — Animated Wordmark + Horizontal Scroll CTA
-
-**Status:** complete (approved 2026-04-05)
-Nav wordmark hover animations (4 cycling SplitText effects). SkillsJourney: 5-panel horizontal scroll section with 7 unique cinematic per-keyword text animations (foundation assembly, data scramble, logic convergence, pixels fragmentation, understand comprehension, unforgettable persistence, stop brake). CTA with pulsing glow button. All effects scrubbed to scroll via `containerAnimation`, per-word triggers. See `docs/handoffs/handoff-slice-b.md`.
-
-### Slice B+ — Icon Morphs + Scroll UX
-
-**Status:** complete (approved 2026-04-05)
-Skill icons morph from circles to their final forms via MorphSVGPlugin on scroll. Panel 1 animates on vertical scroll (not horizontal). ScrollTrigger snap locks to each panel. Mobile scroll 1.8× slower. "motion" rotates from word center. See `docs/handoffs/handoff-slice-b-plus.md`.
-
-### Slice 07 — Blog System (yesid.dev/blog)
-
-**Status:** complete (approved 2026-04-05)
-Full blog system with two content lanes: professional (`/blog`, orange accent) and personal (`/blog/personal`, yellow accent). Per-post folders with YAML frontmatter, parsed at build time via `import.meta.glob`. Markdown rendered to HTML via `marked` (not mdsvex — mdsvex had issues with `<` chars). SVG illustrations with 4 GSAP entrance animation types + MorphSVGPlugin hover morph to geometric shapes. Client-side search, tag filtering, date range filtering, and language filtering. Template file for easy post creation. See `docs/handoffs/handoff-slice-07.md`.
-
-### Slice 08 — Work Pages (Index + FLIP Filter + Detail)
-
-/work index: ProjectGrid with animated tag filtering (FLIP). /work/[slug]: detail page with scroll-reveal sections and stagger-animated tech tags. 404 for invalid slugs.
-
-**Tests:** Index shows all public projects. Tag filter animates correctly. Detail renders from slug. Tech tags stagger. 404 on bad slug.
-**You'll learn:** Dynamic routes ([slug]), FLIP animation, data-driven filtering, scroll-reveal composition.
-
-### Slice 09 — Services Pages (/services + /services/[id])
-
-**Status:** complete (2026-04-06)
-**Design:** "The Kinetic Scroll" — full-viewport service reveals with station tab navigation, vertical metro line, hazard stripes, SVG morph boxes, and proof strips.
-
-**Index page:** Each service occupies 100vh with CSS scroll snap. StationTabs (top, sticky, hazard stripe), metro line (left, desktop), ServiceCard per viewport (title, description, stack pills, SVG morph box, "Deep dive" CTA), ProofStrip (bottom, hazard stripe). Footer appears after scrolling past last station.
-
-**Detail page:** StationTabs (navigate mode), hero (SVG morph box + title + DataFlowDiagram), collapsible sections (value prop, deliverables, custom — all open by default), ProjectMiniCard grid for related projects, ServiceNav prev/next.
-
-**Key decisions:** StationTabs shared between index and detail (DRY). ProjectMiniCard reusable for project references outside /work. All content through LocalizedString. Service data model extended with optional fields (backward compatible). 7 new components + 1 reusable card.
-
-**Handoff:** `docs/handoffs/handoff-slice-09.md`
-
-### Slice 09b — About + Contact Pages
-
-**Status:** complete (2026-04-07)
-About page: full-viewport bento dashboard (6x4 CSS Grid, 10+ widget cards). Identity, metrics, methodology, testimonials, tech stack, interests, weather, client logos, polaroids, train, CTA terminal. Contact page: dual terminal layout — info terminal (left, ~28%) + form terminal (right, ~70%). Client-side Web3Forms email delivery. Typed success sequence animation. Inline validation. OS-agnostic terminal chrome. Title matches Work/Blog pattern.
-
-**Key decisions:** Web3Forms free tier is client-side only (server calls blocked). Key stored in data layer (`contactContent.web3formsKey`). No `+page.server.ts` needed. About CTA terminal has scrollable body with themed scrollbar.
-
-**Handoff:** `docs/handoffs/handoff-slice-09b.md`
-
-### Slice 09c — Blog + Work + Services Polish & DRY Pass
-
-**Status:** planned (spec ready: `docs/slices/slice-09c-polish.md`)
-**Goal:** Enhance existing blog, work, and services pages with award-winning micro-interactions and styling. Componentize shared patterns across all three sections. DRY audit and consolidation.
-
-**Enhancements (keep existing components, enhance only):**
-
-Quick wins:
-
-- Add `use:tilt` to WorkCard (already built, unused)
-- Add `use:magnetic` to tag pills across blog + work
-- Add `use:ripple` to filter buttons
-- Add reading time ("8 min read") to BlogDetailHeader
-- Make WorkDetailSidebar tech tags clickable → `/work?tag=X`
-
-Medium effort:
-
-- Cursor-following glow on BlogRow + WorkCard (new `use:cursorGlow` action)
-- Reading progress bar on blog detail pages
-- Animated gradient border on WorkCard hover
-- ScrollTrigger.batch() for listing card entrance waves
-- Code block copy button in BlogContent
-- Heading anchor links (#) in BlogContent
-
-Metro/transit brand:
-
-- Metro line connector between blog listing rows
-- Station number badges on BlogRow + WorkCard
-- "Next Stop / Previous Stop" nav on WorkDetailPage (reuse ServiceNav pattern)
-- Animated dashed line separators (DrawSVGPlugin)
-
-DRY consolidation:
-
-- Extract shared collapsible section pattern into reusable component
-- Audit for hardcoded content → move to data layer
-- Standardize card hover patterns across WorkCard, BlogRow, ProjectMiniCard
-- Extract shared filter sidebar pattern (blog + work use similar filters)
-
-**Tests:** Existing tests remain green. New interactions respect `prefers-reduced-motion`.
-**You'll learn:** Advanced micro-interactions, CSS `@property` animations, component consolidation, DRY architecture.
-
-### Slice 10 — Tech Stack Page: "The Control Room" (/tech-stack)
-
-**Status:** spec approved (2026-04-08)
-**Depends on:** 09b
-**Spec:** `docs/specs/2026-04-08-tech-stack-page-design.md`
-**Est. Sessions:** 6-8 (one per task below)
-
-**Vision:** Interactive "Control Room" diagram showing how 34 technologies connect across 9 infrastructure layers and 7 domain clusters. Educational-grade content (The Odin Project standard) that teaches what each tech does, why it was chosen, and how it fits. "Build Your Stack" configurator converts exploration into contact. Fully data-driven — adding a tech = one markdown file, zero code changes.
-
-**Three goals:** (1) Sell more via education-as-trust, (2) Marketing/SEO exposure via shareable interactive diagram, (3) Genuinely help people learn how tech stacks work.
-
-**Architecture:** "The Control Room" — 4-zone page:
-
-- Zone 1: Hero (terminal-style, stats strip, two CTAs)
-- Zone 2: Interactive diagram (CSS Grid tiers + SVG connections + GSAP DrawSVG/MotionPath)
-- Zone 3: Build Your Stack configurator (domain checkboxes → recommended stack + scenario card)
-- Zone 4: Terminal CTA
-
-**Data model:** Dual categorization — each tech has an `InfraLayer` (where it sits vertically) + `DomainCluster[]` (what problems it solves). `connectsTo` edges define directional relationships. Content in markdown (`src/content/stack/[id].md`); CMS-migration target is Payload in Slice 18 via the Slice 17b service seam. `StackScenario` objects define recommended combos.
-
-**Key interactions:** Hover highlights connections, click opens sidebar mini-essay, domain filter pills (composable), Build Your Stack mode with scenario generation. Mobile: vertical accordion + bottom sheet.
-
-**34 items across:** Data (3), Backend (9), API (1), Frontend (7+Lottie), Mobile (2), Analytics (6), DevOps (4), Testing (2), Systems (C++, Rust in backend table but `layer: 'systems'`).
-
-**Tasks (one session each):**
-
-1. **10a — Data layer + types + markdown content structure:** Expand `TechStackItem` interface, create `InfraLayer`, `DomainCluster`, `StackScenario` types. Set up `src/content/stack/` folder with markdown + frontmatter. Write `import.meta.glob` parser. Write all 34 markdown files (frontmatter only, prose TBD). Data validation tests.
-2. **10b — Diagram layout + static nodes:** `StackDiagram.svelte` with CSS Grid tiers. `StackNode.svelte` cards with icons. Tier labels (JetBrains Mono). Responsive: desktop grid → mobile vertical accordion. No animation yet, no connections. Component tests.
-3. **10c — SVG connections + GSAP animation:** `StackConnections.svelte` SVG overlay. Calculate node positions via `getBoundingClientRect()`. Draw cubic bezier paths. GSAP DrawSVG entrance animation (layer-by-layer stagger). MotionPath data packet dots. Resize handler. Reduced motion support.
-4. **10d — Node interaction + sidebar:** Hover states (scale, glow, connected highlight). Click → `StackSidebar.svelte` slides in with markdown content. Dimming of unrelated nodes. Keyboard navigation (Tab, Enter, Escape, arrows). Mobile: `StackBottomSheet.svelte` with tap + swipe.
-5. **10e — Domain filters:** `StackFilters.svelte` pill bar. Toggle behavior (multiple active). Bridge node treatment for multi-domain items. Filter + node interaction composability. Connection line filtering.
-6. **10f — Build Your Stack configurator:** `StackConfigurator.svelte` domain selector. `StackScenarioCard.svelte` summary. Pre-written scenarios + auto-generation fallback from `connectsTo` graph. Mini flow diagram in summary card with DrawSVG. CTA integration.
-7. **10g — Hero + CTA + page shell:** `TechStackPage.svelte` assembling all zones. Terminal-style hero. Stats strip. Action buttons. Bottom CTA (reuse AboutCta pattern). Route setup (`/tech-stack`). Full-page integration test.
-8. **10h — Content writing + polish:** Write all 34 mini-essays (What it is, Why I use it, In Practice). Write 7 scenario summaries. Polish animations, timing, mobile UX. Cross-browser testing. Final brand QA.
-
-**Note:** The existing About page tech stack card stays as-is. Will reference the same expanded data source (backward compatible).
-
-### Slice 11 — Navbar Research + Redesign + 404 Page
-
-**Status:** complete
-**Depends on:** 10
-**Goal:** Deep research into great navbar patterns for yesid.dev's use case, then redesign. Also build a branded 404 error page.
-
-**Navbar research scope:**
-
-- Evaluate: full-screen overlay, iOS floating tab bar, hamburger menu, sticky header, breadcrumb nav, hybrid approaches
-- Research award-winning portfolio navbars for inspiration
-- Animations
-- Pick the best approach for yesid.dev and implement
-
-**404 page scope:**
-
-- Infrastructure/construction theme — consistent with Digital Infrastructure brand
-- SVG illustrations: construction signs, black-and-yellow hazard stripes, "do not pass" barriers, road cones, detour arrows
-- Metro branding: station-themed error messaging ("This station is under construction" / "Route not found")
-- Animated elements: blinking construction lights, animated hazard tape
-- Links back to home, services, work — help visitors find their way
-- Data-driven copy via `LocalizedString`
-
-**Tests:** Nav renders correctly at all breakpoints. 404 page renders with all elements. Navigation from 404 works.
-
-### Slice 12 — Footer Research + Redesign
-
-**Status:** planned
-**Depends on:** 11
-**Goal:** Deep research into great footer patterns for the use case, then redesign. Evaluate: mega footer, minimal footer, CTA footer, sitemap footer, newsletter footer, etc. Pick the best approach and implement.
-
-### Slice 13 — Home Page Rework (Post-Hero)
-
-**Status:** planned
-**Depends on:** 10, 11, 12 (tech stack + nav + footer locked before redesigning home)
-**Rationale:** After building all route pages AND locking the nav/footer, Yesid has full context to design a home page that properly introduces and connects everything.
-
-**Scope:**
-
-- Rework home page sections after the hero
-- **Archive SkillsJourney:** Keep code, disable rendering. Returns in a future polish slice.
-- Redesign flow: hero → services preview → work preview → about teaser → blog teaser → CTA
-- Apply learnings from all route pages (bento patterns, metro branding, proof elements)
-- Data-driven, mobile-first
-
-**SkillsJourney plan:**
-
-1. Add a feature flag or conditional render to disable SkillsJourney on home
-2. Keep all code (SkillsJourney.svelte, journey panels in content.ts, motion utils)
-3. Mark as "archived" in ARCHITECTURE.md
-4. Future slice (TBD) brings it back with: performance optimization, refined animations, better mobile UX
-
-**Tests:** Home page renders without SkillsJourney. New sections pass. Existing hero tests unaffected.
+15, 16, 18, 19, 19b, 20, 21, 22 — see sections below for scope and sequencing.
 
 ### Slice 15 — SEO + Metadata: Maximum Discoverability
 
