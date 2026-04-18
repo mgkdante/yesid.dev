@@ -195,7 +195,22 @@ Three layers, strict separation. Full reference: `docs/reference/CSS.md`. Govern
 
 ## Repo structure
 
-See `tree.txt` for full tree. Docs live under:
+**Standard layout (sibling directories at root — applies to every project Yesid owns):**
+
+```
+repo-root/
+├── docs/           # workflow + governance (required)
+├── brand/          # visual identity (optional — brand-owning projects only)
+├── src/            # app code
+├── scripts/        # slice-close, mirror-docs, mirror-brand
+├── static/         # public assets
+├── CLAUDE.md       # governance
+├── .mcp.json       # project MCP allowlist
+├── .claude/settings.json
+└── package.json
+```
+
+`docs/` + `brand/` stay siblings at root — different audiences (workflow vs visual), scripts reference these paths directly. See `tree.txt` for the full tree. Docs live under:
 - `docs/reference/` — Tier 1 governance (CONSTITUTION, CSS, WORKFLOW, MOTION, TESTS, ARCHITECTURE, PATTERNS, VOCAB, ARCHIVE)
 - `docs/roadmap/` — PLAN.md + FUTURE_PHASES.md
 - `docs/slices/` — active slice bundles + templates + checkpoints
