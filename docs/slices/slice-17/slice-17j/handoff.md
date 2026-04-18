@@ -239,6 +239,38 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 7b (partial): `performance-optimizer` agent trim (446 → 222 lines)
+
+**Session:** 2026-04-18 | **Commit:** (this commit)
+
+**File:** `~/.claude/agents/performance-optimizer.md`
+
+- Before: 446 lines (~3.5K tokens baked into every spawn)
+- After: 222 lines (~1.7K tokens per spawn)
+- **Savings:** ~1.8K tokens per subagent spawn
+- Original backed up at `<cloud>/claude-config/user/2026-04-18-pre-prune-snapshot/agents-removed/performance-optimizer-original-446-lines.md`
+
+**What was preserved (full functionality):**
+- Frontmatter (name, description, tools, model=sonnet)
+- All 6 Core Responsibilities
+- All 7 workflow sections: target metrics, analysis commands, algorithmic pitfalls, rendering, bundle, DB+query, network+API, memory leaks
+- "When to run" + "Red flags" table
+- Success criteria
+- Report template (compressed from verbose to essential structure)
+
+**What was trimmed:**
+- Duplicated checklists merged (was 7 separate checklists with overlapping items)
+- Multiple code examples per anti-pattern → single representative example
+- Verbose explanatory paragraphs → one-liners
+- Full-page report template → compact structure
+- React-only examples → framework-agnostic (React + Svelte applicable)
+
+**Decisions:**
+- D028: Trim only `performance-optimizer`. Skip `code-reviewer` (237 lines) and `planner` (212 lines) — savings too small vs risk of stripping load-bearing logic (~700 tokens each, both used frequently).
+- D029: Rules `common/` audit complete — no restructure needed. Content is already language-agnostic; only 1 generic `typescript-reviewer` name-drop, not TS-specific methodology. Language subdirs (`rules/typescript/`, `cpp/`, etc.) preserved for drag-and-drop when projects in other languages start.
+
+---
+
 ### Task 7b (partial): connector-MCP disconnects — Yesid actioned via claude.ai web app
 
 **Session:** 2026-04-18 | **Commit:** (this commit — web-app changes not in git; system reminder confirmed disconnect)
