@@ -76,7 +76,21 @@ Declare one at the start of every session.
 | **Non-slice**      | Bugfix / config / exploration / hotfix                      | `docs/sessions/<YYYY-MM-DD>-<name>.md`, commit | **S**       |
 
 
-**Hard rule:** A session cannot be two types. For **L-slices** only: Planning produces zero code; Implementation doesn't write specs but can amend them. Closing doesn't add features. **M-slices plan inline** (TodoWrite + 1-paragraph "Plan" at top of `log.md`) — no separate planning session, no `spec.md`, no `plan.md`. **S-slices** have no planning step.
+**Hard rules — what's strict vs soft:**
+
+- **Commit discipline is strict.** Planning commits (`docs(slice-NN):` for spec/plan) and implementation commits (`feat/refactor/fix(slice-NN):`) stay separate regardless of whether they share a wall-clock session. Never co-mingle types in one commit.
+- **For L-slices:** Planning produces zero code; Implementation doesn't write specs (but can amend them); Closing doesn't add features.
+- **M-slices plan inline** (TodoWrite + 1-paragraph "Plan" at top of `log.md`) — no separate planning session, no `spec.md`, no `plan.md`.
+- **S-slices have no planning step.**
+
+**Session separation is soft.** Two session types may share one wall-clock conversation provided commit discipline holds AND none of these "break triggers" fire:
+
+1. **Reasoning-heavy transition** — next phase requires real design choices (L-Planning → L-Implementation of a complex task, novel debugging, mid-implementation spec amendment involving tradeoffs)
+2. **Context ≥65% of active window** — same threshold as the Session token budget pre-break zone
+3. **Material model downshift** — e.g., L-Planning on [1m] → L-Implementation on 200k with continuation spanning >2 tasks (one cache invalidation isn't worth the amortization over a short continuation)
+4. **Human fatigue** — reviewer sharpness matters for the commits that follow
+
+When any trigger fires: stop, commit, start a fresh session. Otherwise, continuation is fine.
 
 At session start: scan for uncommitted changes or commits made outside Claude Code. Document anything found in `log.md` (or the session file for non-slice).
 
@@ -101,6 +115,28 @@ Planning ceremony scales with complexity. Declare the size at session start; upg
 **Upgrade rule:** If mid-session an M-slice reveals ≥5 unexpected design decisions or touches ≥2 architectural layers, STOP. Commit any safe partial work. Re-declare as L, start a fresh Planning session.
 
 **Downgrade is rare but allowed:** if an L-slice's Planning session reveals the real scope is one-commit-small, skip the plan and execute inline. Document why in `log.md`.
+
+### Plan authoring discipline (L-slice `plan.md`)
+
+Plans specify **decisions and sequencing**, not boilerplate code. Claude at execution time has full context of the current codebase, reads the affected files, and writes code that matches local patterns. Over-specified plans lock in assumptions that may not match reality AND waste tokens twice (authoring + re-processing).
+
+**An L-slice `plan.md` SHOULD include:**
+
+- Task list with dependencies, estimates, acceptance criteria
+- For each task: files affected (paths), commands to run, commit message shape, STOP criteria
+- **One canonical example** of any non-obvious code pattern (adapter delegation shape, test structure, etc.)
+- Non-obvious code worth pre-writing: novel algorithms, tricky async/concurrency, specific edge-case tests, pattern-establishing contracts (interface types others will match)
+
+**An L-slice `plan.md` should NOT pre-specify:**
+
+- Boilerplate delegation code (e.g., every repository function that just calls the adapter — one example suffices, rest is pattern-following)
+- Mechanical find/replace work (say which imports move, not every individual line)
+- Full test bodies for obvious assertions (say what's being tested; Claude writes at execution with full context)
+- Complete implementations that follow a pattern already shown once in the plan
+
+**Rule of thumb:** if you're pre-writing code that Claude could produce in 30 seconds by reading the target file, don't. Describe the transformation, give one canonical example, trust execution-time judgment for the rest.
+
+**The line:** *pattern-establishing = spec in plan; pattern-following = execute with judgment.*
 
 ## Session progress tracking (mandatory for multi-task sessions)
 
