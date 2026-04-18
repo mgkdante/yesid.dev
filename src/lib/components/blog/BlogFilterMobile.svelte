@@ -6,8 +6,18 @@
 	import type { Locale } from '$lib/types';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { blogListingContent } from '$lib/content/blog';
 
 	const LANG_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', es: 'ES' };
+
+	const filtersLabel = resolveLocale(blogListingContent.filters.filtersLabel, 'en');
+	const allLabel = resolveLocale(blogListingContent.filters.allLabel, 'en');
+	const languageLabel = resolveLocale(blogListingContent.filters.language, 'en');
+	const dateRangeLabel = resolveLocale(blogListingContent.filters.dateRange, 'en');
+	const fromLabel = resolveLocale(blogListingContent.filters.from, 'en');
+	const toLabel = resolveLocale(blogListingContent.filters.to, 'en');
+	const showingPrefix = resolveLocale(blogListingContent.filters.showingPrefix, 'en');
 
 	let {
 		tags,
@@ -46,13 +56,13 @@
 						class="inline-flex items-center gap-1.5 rounded border px-2.5 py-1 font-mono text-xs transition-colors"
 						style="border-color: {accentColor}; color: {accentColor};"
 					>
-						Filters
+						{filtersLabel}
 						<span class="text-caption">{open ? '\u25B2' : '\u25BC'}</span>
 					</button>
 				{/snippet}
 			</CollapsibleTrigger>
 			<span class="text-caption text-[var(--muted-foreground)]">
-				Showing: {activeTag ?? 'All'}{activeLang ? ` · ${activeLang.toUpperCase()}` : ''}
+				{showingPrefix}: {activeTag ?? allLabel}{activeLang ? ` · ${activeLang.toUpperCase()}` : ''}
 			</span>
 		</div>
 
@@ -62,7 +72,7 @@
 					<!-- Language filter -->
 					{#if languages.length > 1}
 						<div class="label-section font-semibold">
-							Language
+							{languageLabel}
 						</div>
 						<div class="mt-1.5 flex gap-1.5">
 							<button
@@ -70,7 +80,7 @@
 								class:m-active={activeLang === null}
 																onclick={() => onLangSelect(null)}
 							>
-								All
+								{allLabel}
 							</button>
 							{#each languages as lang}
 								<button
@@ -87,11 +97,11 @@
 
 					<!-- Date range -->
 					<div class="mt-2 label-section font-semibold">
-						Date Range
+						{dateRangeLabel}
 					</div>
 					<div class="mt-1.5 flex gap-2">
 						<label class="flex-1 text-caption text-[var(--muted-foreground)]">
-							From
+							{fromLabel}
 							<input
 								type="date"
 								bind:value={dateFrom}
@@ -100,7 +110,7 @@
 							/>
 						</label>
 						<label class="flex-1 text-caption text-[var(--muted-foreground)]">
-							To
+							{toLabel}
 							<input
 								type="date"
 								bind:value={dateTo}
@@ -118,7 +128,7 @@
 								class:m-active={activeTag === null}
 																onclick={() => onTagSelect(null)}
 							>
-								All
+								{allLabel}
 							</button>
 							{#each tags as tag}
 								<button

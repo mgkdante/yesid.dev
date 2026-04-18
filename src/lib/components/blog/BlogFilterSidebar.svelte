@@ -11,18 +11,13 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
 	import { ChevronToggle } from '$lib/components/brand';
+	import { blogListingContent } from '$lib/content/blog';
 
 	const LANG_LABELS: Record<Locale, string> = { en: 'English', fr: 'Français', es: 'Español' };
 
-	// WHY: all user-facing labels go through resolveLocale so the sidebar is ready
-	// for future i18n without changing component logic.
-	const labels = {
-		language: { en: 'Language' },
-		dateRange: { en: 'Date Range' },
-		from: { en: 'From' },
-		to: { en: 'To' },
-		tags: { en: 'Tags' }
-	};
+	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.
+	const labels = blogListingContent.filters;
+	const searchPlaceholder = resolveLocale(blogListingContent.searchPlaceholder, 'en');
 
 	// WHY: date range section is not a FilterGroup, so it needs its own collapse state
 	let dateOpen = $state(true);
@@ -60,7 +55,7 @@
 		<div class="relative">
 			<input
 				type="text"
-				placeholder="Search posts..."
+				placeholder={searchPlaceholder}
 				bind:value={searchQuery}
 				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
 				data-testid="blog-search-sidebar"

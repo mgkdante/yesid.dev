@@ -1,5 +1,31 @@
 import { marked } from '$lib/utils/markdown';
-import type { BlogPost, BlogCategory, BlogAnimation, Locale } from '$lib/types';
+import type { BlogPost, BlogCategory, BlogAnimation, Locale, LocalizedString } from '$lib/types';
+
+/** Listing-page chrome copy extracted from components in Task 17b-7b.
+ *  Consumed by BlogListingPage, BlogFilterMobile, BlogFilterSidebar, BlogRouteMap. */
+export const blogListingContent = {
+	mobileHeading: { en: 'Blog' } satisfies LocalizedString,
+	searchPlaceholder: { en: 'Search posts...' } satisfies LocalizedString,
+	resultNoun: { en: 'result' } satisfies LocalizedString,
+	noPostsMessage: {
+		en: 'No posts found. Try adjusting your filters.'
+	} satisfies LocalizedString,
+	filters: {
+		filtersLabel: { en: 'Filters' } satisfies LocalizedString,
+		allLabel: { en: 'All' } satisfies LocalizedString,
+		language: { en: 'Language' } satisfies LocalizedString,
+		dateRange: { en: 'Date Range' } satisfies LocalizedString,
+		from: { en: 'From' } satisfies LocalizedString,
+		to: { en: 'To' } satisfies LocalizedString,
+		tags: { en: 'Tags' } satisfies LocalizedString,
+		/** Prefix before active filter in the "Showing: {tag}" mobile status label. */
+		showingPrefix: { en: 'Showing' } satisfies LocalizedString,
+	},
+	routeMap: {
+		title: { en: 'Route Map' } satisfies LocalizedString,
+		terminus: { en: 'Terminus' } satisfies LocalizedString,
+	},
+} as const;
 
 // --- Frontmatter parsing ---
 
