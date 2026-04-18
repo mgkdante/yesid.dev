@@ -239,6 +239,40 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 8 — COMPLETE: Config export snapshot + portable scripts
+
+**Session:** 2026-04-18 | **Commit:** (this commit — cloud scripts not tracked in git)
+
+**Files created at `<cloud>/claude-config/`:**
+- `snapshot.ts` — Bun script, OS-agnostic. Captures user-scope or per-project state to timestamped folders. Extracts `extraKnownMarketplaces` + `enabledPlugins` into separate JSON files for easy diffing; walks `~/.claude.json` for all `mcpServers` scopes. Copies `skills/`, `agents/`, `rules/` as full directory trees.
+- `restore.ts` — Bun script. Resolves latest snapshot by **mtime** (not alphabetical — that fix landed after first dry-run revealed the bug). Supports `--label`, `--project`, `--dry-run`, `--yes`. Auto-backs up current state to `<date>-pre-restore/` before overwriting.
+- `required-env-vars.md` — documents per-machine setup: `YESITO_CLOUD_ROOT` env var + `gh auth login` + Anthropic session + secrets that NEVER get snapshotted.
+
+**First snapshot landed at:** `<cloud>/claude-config/user/2026-04-18-post-17j-prune/`
+- `settings.json` (full, includes post-prune state with 15 enabled plugins)
+- `marketplaces.json` (extracted `extraKnownMarketplaces`)
+- `enabled-plugins.json` (extracted `enabledPlugins`)
+- `claude-json-mcp-servers.json` (4 MCP scopes from `~/.claude.json`)
+- `skills/` — 304 entries including new `workflow-efficiency/`
+- `agents/` — 16 entries (post-prune: 14 language agents removed, performance-optimizer trimmed to 222 lines)
+- `rules/` — 78 entries (`zh/` already deleted in Task 5)
+
+**Roundtrip validated:**
+- Snapshot ran cleanly, all layers captured.
+- Dry-run restore verified: resolves correct latest snapshot, reads settings.json, lists skills/agents/rules copy operations.
+- Latest-snapshot bug caught + fixed: initial alphabetical sort picked `pre-prune` over `post-17j-prune`. Switched to mtime-based sort. Now picks newest by creation time.
+
+**Decisions:**
+- D032: Bun scripts only (not separate PowerShell/bash wrappers). Bun is already a prerequisite for the workflow and handles `path.join`, `cpSync`, `os.homedir` cross-platform natively. One script per purpose > four parallel copies.
+- D033: mtime-based snapshot resolution in restore — alphabetical sort breaks on semantic labels like `post-17j-prune` vs `pre-prune-snapshot`.
+- D034: Auto-backup before restore is NON-optional. Every restore creates `<today>-pre-restore/` capturing current state before overwriting. Rollback is always one `cp` away.
+- D035: Secrets + API keys + OAuth tokens NEVER snapshotted. Documented in `required-env-vars.md`. Users re-authenticate per machine.
+
+**Known limitation (documented, not fixed in 17j):**
+- Per-project restore is not yet implemented. Snapshot captures per-project state (`.claude/settings.json`, `.mcp.json`, `memory/`); restore currently only handles user-scope. Flagged for a follow-up when Yesid actually needs it (first time spinning up a project on a new machine).
+
+---
+
 ### Task 7b — COMPLETE: design-plugin hybrid disable
 
 **Session:** 2026-04-18 | **Commit:** (this commit — live ~/.claude/settings.json change not tracked)
