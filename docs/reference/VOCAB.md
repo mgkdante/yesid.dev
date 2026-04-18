@@ -191,13 +191,21 @@ Terms specific to Claude Code, the Anthropic API, and the AI-assisted developmen
 | **`enabledMcpjsonServers`** | Settings key that allowlists which MCP servers to approve automatically. | `.claude/settings.json` |
 | **Scope hierarchy** | Config precedence order: local > project > user > plugin > connector. Local wins. | `~/.claude.json` vs `.mcp.json` vs `~/.claude/settings.json` |
 | **Plugin** | A bundle of skills + agents + MCPs shipped together (e.g. `superpowers`, `everything-claude-code`). | `~/.claude/plugins/cache/` |
-| **Auto-memory** | The file-based memory system at `~/.claude/projects/<hash>/memory/`. Facts persist across sessions. | ours = 67 files |
+| **Marketplace** | A GitHub repo that hosts a plugin's source. `extraKnownMarketplaces` in settings lists which repos the plugin manager can install from. | `~/.claude/settings.json` |
+| **Connector** | An MCP server configured via `claude.ai` web app → Settings → Integrations (Notion, Webflow, Slack, etc.). Loads into Claude Code sessions too. NOT reachable from `~/.claude/` config files. | claude.ai web UI |
+| **Enable / Disable / Uninstall plugin** | **Enable** = `true` in `enabledPlugins` (loads at session start). **Disable** = `false` (stays on disk, doesn't load; re-enable flips it back instantly). **Uninstall** = `claude plugin uninstall` (wipes cache, requires re-download from marketplace). | disable is the safe default |
+| **Activation-cost** | Tokens that WOULD be required if a deferred MCP tool schema were loaded via ToolSearch. Matters because a single broad `ToolSearch("*")` could blow up context. Pruning MCPs reduces this surface. | ~500 tokens per MCP tool schema |
+| **Snapshot** | A timestamped capture of `~/.claude/` state to `<cloud>/claude-config/user/<YYYY-MM-DD[-tag]>/`. Bundles settings + marketplaces + plugins + MCPs + skills + agents + rules. | `bun $YESITO_CLOUD_ROOT/claude-config/snapshot.ts` |
+| **Restore** | Apply a snapshot back to `~/.claude/` with auto-backup of current state first. Resolves latest by mtime; supports `--label`, `--dry-run`, `--yes`. | `restore.ts` |
+| **`YESITO_CLOUD_ROOT`** | Env var pointing to the local cloud directory. Single per-machine portability knob. Scripts fall back to `path.join(os.homedir(), 'Yesito', 'cloud')`. | shell profile / Windows Env Vars |
+| **Auto-memory** | The file-based memory system at `~/.claude/projects/<hash>/memory/`. Facts persist across sessions. | ours post-17j = 35 files |
 | **MEMORY.md** | The index of memory pointers. Truncated at 200 lines / 25 KB on session load. | `~/.claude/projects/C--Users.../memory/MEMORY.md` |
 | **AutoDream** | Anthropic's 2026 reflective memory-consolidation sub-agent. Self-triggers after >24h + ≥5 sessions. | cloud knowledge doc 05 |
 | **Compaction** | Rewriting the context to free tokens. Three layers: microcompaction (disk offload) / auto-compaction (~75-83%) / manual `/compact`. | `cloud/.../06-strategic-compact.md` |
 | **Plan mode** | A Claude Code mode where the model plans but doesn't execute tool calls. Cheap reasoning lane. | Shift+Tab or `ExitPlanMode` tool |
 | **Working context vs startup context** | Working = tool results + user messages accumulated this session. Startup = CLAUDE.md + memory + skill descriptions loaded at session start. | `/context-budget` distinguishes them |
 | **Prompt cache** | Anthropic's prefix cache (read rate 0.1x, write rate 1.25x for 5m, 2x for 1h). | API-level feature |
+| **Skill description triggers** | "Use when..." outperforms "Use for..." for activation matching. First 200 chars are load-bearing (truncated in the skill list). | research: `token-efficacy/03-plugin-hygiene.md` |
 
 ---
 
@@ -207,23 +215,34 @@ The shared language for our development process. These terms show up in `CLAUDE.
 
 | Term | Meaning | Where |
 |------|---------|-------|
-| **Slice** | A self-contained unit of work with a spec + acceptance criteria + defined output. 22+ shipped to date. | `docs/slices/*` |
-| **Sub-slice** | A partition of a slice when it's too big (17a, 17a-1, 17a-2a, 17a-2b, etc.). One handoff each. | slice-17h-3, slice-17j |
-| **Spec** | The design decisions + rationale for a slice. Lives at `docs/specs/` (cloud for shipped, repo for active). | active: current slice only |
-| **Plan** | The implementation instructions (task-by-task) for a slice. Lives at `docs/plans/`. | Task-level step-by-step |
-| **Checkpoint** | The live state doc for a Level 1 slice. Updated every session. Ephemeral — deleted when slice fully closes. | `docs/slices/slice-17/CHECKPOINT.md` |
-| **Devlog** | A per-session work record. What was built, what was decided, what was tested. | `docs/devlog/*` (active only in repo) |
-| **Handoff** | The closing report for a sub-slice. "What shipped + what's flagged + what's next." | `docs/handoffs/*` (cloud after close) |
+| **Slice** (Level 1) | A top-level numbered unit of work (17, 18, 19). Contains sub-slices. | `docs/slices/slice-NN/` |
+| **Sub-slice** (Level 2) | The PR boundary. Lettered variant of a slice (17a, 17j, 17h-3). One PR per sub-slice. | `docs/slices/slice-NN/slice-NN<letter>/` |
+| **Task** (Level 3) | A section inside a sub-slice's `plan.md`. Can span multiple sessions. Ends with a STOP gate. | section, not a folder |
+| **Session** (implicit Level 4) | A single working day under a Task. Identified by date heading in `log.md`: `### Session YYYY-MM-DD — Task NN<letter>-N`. | `log.md` |
+| **Bundle** (sub-slice bundle) | The 4-file folder per Level 2: `spec.md` + `plan.md` + `log.md` + `handoff.md`. Moves together at PR close. | `docs/slices/slice-NN/slice-NN<letter>/` |
+| **Spec** (`spec.md`) | Design + rationale + acceptance criteria for a sub-slice. Written once; amendments logged. | inside the bundle |
+| **Plan** (`plan.md`) | Task-by-task implementation instructions. Level 3 tasks are sections. Checkboxes track progress. | inside the bundle |
+| **Log** (`log.md`) | Running session-by-session work record. Commands, files, decisions, errors. Appended every session. | inside the bundle |
+| **Handoff** (`handoff.md`) | Self-appending closing report. Grows per-task as work lands. Final summary added at PR close. IS the PR body. | inside the bundle |
+| **Self-appending handoff** | Pattern where `handoff.md` gains a `### Task NN<letter>-N` section each time a Level 3 task completes — rather than being written in one push at slice close. Captures decisions fresh. | `_TEMPLATE-SUBSLICE/handoff.md` |
+| **Checkpoint** (`CHECKPOINT.md`) | Live state of a Level 1 slice (sub-slices done, current sub-slice, next step). Ephemeral — deleted when slice fully closes. | `docs/slices/slice-NN/CHECKPOINT.md` |
+| **Session type** | **Planning / Implementation / Closing / Non-slice.** Every session declares one. Non-slice = bugfixes, configs, exploration — stored at `docs/sessions/<YYYY-MM-DD>-<name>.md`. | `CLAUDE.md` |
+| **Non-slice session** | Work outside any slice: bugfix, config, exploration, hotfix, research spike. Single-file record, not a bundle. Commits; optional PR. | `docs/sessions/_TEMPLATE.md` |
 | **Iteration Protocol** | The mandatory "one task → STOP → Yesid approves → next task" loop. Never batch. | `CLAUDE.md` |
-| **Session type** | Planning / Implementation / Closing. Every session declares one. Can't mix. | `CLAUDE.md` |
-| **Closing checklist** | The steps at slice close — handoff, devlog, learn doc, tree.txt, commit, mirror-to-cloud, update COMPLETED-SLICES. | `WORKFLOW.md` §11 |
+| **Closing checklist** | The steps at slice close — finalize handoff, governance doc updates, VOCAB update, OS-quirks append, learn doc to cloud, tree.txt, commit/PR, `bun run slice:close`. | `WORKFLOW.md` §11 |
+| **Close-script** (`slice-close.ts`) | Bun script that moves the sub-slice bundle to cloud archive, deletes the repo folder, appends a row to `COMPLETED-SLICES.md`. Uses `$YESITO_CLOUD_ROOT`. No flatten — granular retrieval preserved. | `scripts/slice-close.ts` |
 | **Three-tier context** | Tier 1 (always-on, in repo) / Tier 2 (fetch-on-command, cloud + git) / Tier 3 (cloud indexes, the bridge). Adopted in Slice 17j. | `docs/ARCHIVE.md` |
 | **Write protocol** | The closing steps that mirror a shipped slice to cloud + delete from repo + update cloud index. Self-pruning. | Codified in `WORKFLOW.md` during Task 3 |
 | **Fetch-on-command** | Reading a Tier 2 artifact deliberately — AI decides to read a cloud file when context warrants, not auto-loaded. | retrieval protocol |
 | **Retrieval protocol** | The four-step ladder for AI to get context: in-context → cloud index → specific cloud artifact → git history. | `docs/ARCHIVE.md` |
+| **OS-quirks registry** | Cross-project persistent log of platform-specific command fixes at `<cloud>/claude-knowledge/os-quirks/<os>.md`. Consulted before debugging; appended when a new quirk is solved. | `<cloud>/claude-knowledge/os-quirks/` |
 | **Self-enhancing workflow** | The principle that every mistake becomes a closing-checklist rule. Workflow compounds quality slice-over-slice. | core principle |
+| **workflow-efficiency skill** | Portable skill at `~/.claude/skills/workflow-efficiency/` codifying the three-tier context, 3-level hierarchy, self-appending handoff, close-script, cache pacing, subagent routing. Trade-secret, personal IP across Yesid's 6 services. | `~/.claude/skills/workflow-efficiency/SKILL.md` |
 | **Superpowers skill** | A skill in the `superpowers` plugin family — `brainstorming`, `writing-plans`, `executing-plans`, etc. Structured rigid workflows. | `~/.claude/plugins/.../superpowers/` |
 | **STOP** | The mandatory halt after a task. Don't write the next line of code, don't move on. Wait for Yesid. | `CLAUDE.md` Iteration Protocol |
+| **Pre-prune / Post-prune snapshot** | Pair of config snapshots taken around a major prune pass. Pre-prune = rollback path; post-prune = the new clean baseline to replicate on other machines. | `<cloud>/claude-config/user/` |
+| **`.mcp.json`** | Project-scoped MCP server definitions. Committed to the repo. | yesid.dev has this |
+| **`enabledMcpjsonServers`** | Settings key that allowlists which MCP servers to approve automatically. **MUST live in committed `.claude/settings.json`** (not `.local.json` — issue #24657 ignores it there). | `.claude/settings.json` |
 
 ---
 
