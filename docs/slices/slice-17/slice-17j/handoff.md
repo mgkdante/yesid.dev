@@ -239,6 +239,31 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 7: `workflow-efficiency` skill (portable IP across 6 services)
+
+**Session:** 2026-04-18 | **Commit:** (this commit)
+
+**Files created at `~/.claude/skills/workflow-efficiency/`:**
+- `SKILL.md` — main skill file (~170 lines) with trigger-framed "Use when..." description packing activation keywords in the first 200 chars (per token-efficacy/03-plugin-hygiene.md best practice). Covers: core principles, new-project setup walkthrough, audit recipe for existing projects, slice workflow reminders, subagent dispatch + model routing, cache pacing (5-min TTL world), reference pointers to cloud knowledge bases.
+- `references/new-project-checklist.md` — drop-in checklist for spinning up Claude Code on a fresh repo (< 15 min, assumes `YESITO_CLOUD_ROOT` set)
+- `references/audit-existing-project.md` — audit recipe when a session feels heavy (measure → diagnose by category → execute → re-measure → rollback path)
+
+**Activation criteria (first 200 chars of description — load-bearing):**
+"Use when setting up a new project, a Claude Code session feels sluggish or bloated, planning a multi-session slice, auditing token overhead, pruning accumulated MCP/plugin cruft, or provisioning Claude Code on a new machine."
+
+**Skill registration verified:** system reminder now lists `workflow-efficiency: Use when setting up a ne…` alongside built-in skills. Available from any project.
+
+**Trade-secret framing preserved** — skill explicitly marks as Yesid's personal IP across 6 services, not public polish. References cloud knowledge bases (token-efficacy/, os-quirks/, mcp-templates/, claude-config/) which are also private.
+
+**Decisions:**
+- D024: Skill name `workflow-efficiency` (not `token-frugal-workflow`) — reflects the expanded two-pillar scope (token + structure).
+- D025: Description opens with trigger-framed "Use when..." per research; first 200 chars pack activation keywords (new project, sluggish, slice planning, audit, prune, new machine).
+- D026: Skill is at user scope (`~/.claude/skills/`), not a plugin — cleanest way to make it available globally without marketplace publishing.
+
+**Implicit dependency:** skill assumes the cloud knowledge base structure exists at `$YESITO_CLOUD_ROOT/claude-knowledge/{token-efficacy,os-quirks,mcp-templates}/` and `$YESITO_CLOUD_ROOT/claude-config/`. All scaffolded in earlier 17j tasks.
+
+---
+
 ### Task 5b: Additional prune pass (Yesid-directed after Task 6 re-measurement)
 
 **Session:** 2026-04-18 | **Commit:** (this commit — live-machine changes not tracked; backup in pre-prune snapshot)
