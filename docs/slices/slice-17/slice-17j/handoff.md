@@ -239,6 +239,58 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 5: Global Claude prune (live machine changes)
+
+**Session:** 2026-04-18 | **Commit:** (this commit — live-machine changes not tracked in git; backup in cloud pre-prune snapshot)
+
+**Pre-prune safety snapshot (cloud):**
+- `<cloud>/claude-config/user/2026-04-18-pre-prune-snapshot/settings.json` — pre-prune `~/.claude/settings.json` (27 KB)
+- `<cloud>/claude-config/user/2026-04-18-pre-prune-snapshot/claude-json.json` — pre-prune `~/.claude.json` (36 KB)
+- Both preserved for rollback if any prune turns out too aggressive.
+
+**Changes landed on live `~/.claude/`:**
+
+**A. `~/.claude/rules/zh/` DELETED** (11 files, 48 KB). Chinese translation of `rules/common/` — pure duplication per token-efficacy research. Estimated savings: ~15K tokens per session.
+
+**B. Plugins: 32 → 17 enabled** (disabled 15). Disabled list with reasons:
+- `superpowers@claude-plugins-official` — duplicate of `superpowers@superpowers-marketplace` (kept the marketplace version)
+- `everything-claude-code@everything-claude-code` — ~200 skills covering Java/Kotlin/Perl/Swift/Rust/C++/Laravel/Django/Android, none applicable
+- `csharp-lsp@claude-plugins-official`, `kotlin-lsp@claude-plugins-official` — no C# / Kotlin work
+- `microsoft-docs@claude-plugins-official` — no Microsoft stack
+- `neon@claude-plugins-official` — deferred to Slice 18 (re-enable then)
+- `railway@claude-plugins-official` — yesid.dev deploys to Vercel, not Railway
+- `zapier@claude-plugins-official`, `agent-sdk-dev@claude-plugins-official`, `mcp-server-dev@claude-plugins-official`, `autofix-bot@claude-plugins-official`, `ai-plugins@claude-plugins-official`, `codex@openai-codex` — not used in current workflow
+- `double-shot-latte@superpowers-marketplace`, `superpowers-developing-for-claude-code@superpowers-marketplace` — low-signal / meta
+
+**17 still active (the core yesid.dev workflow set):**
+vercel, chrome-devtools-mcp, skill-creator, remember, claude-code-setup, code-review, code-simplifier, frontend-design, claude-md-management, playground, typescript-lsp, commit-commands, github, superpowers@superpowers-marketplace, ui-ux-pro-max, frontend-design-pro, web-designer
+
+**C. User-scope MCPs: 7 → 4 entries** in `~/.claude.json`. Removed:
+- `firefox-devtools` at root and at `/projects/C:/Users/otalo` scope (not used anywhere)
+- `Railway` at `/projects/C:/Users/otalo` scope (move to per-project `.mcp.json` when needed)
+
+**Still active:** `chrome-devtools` (root), `context7` (user-home scope), `context7` (transit project scope). yesid.dev MCP list remains empty at user scope — plugin provides what's needed.
+
+**D. Auto-memory: 67 → 35 files** (−32 files, −48%).
+- **Consolidated:** 21 per-slice-status memories merged into single `project_completed_slices.md` (rolling index with table of shipped slices + cloud fetch paths).
+- **Pruned stale:** 12 additional outdated project-specific memories removed (project_home_rework, project_17d_vision, project_17d4_* triple, project_17e_motion_gaps, project_constitution_planning, project_contact_backend, project_keystatic_cms, project_tech_stack_slice, project_tech_stack_vision, project_testing_optimization, project_slice06d_iteration2) — topics are either shipped, absorbed into reference docs, or superseded.
+- **MEMORY.md rewritten** — cleaner index organized by type (Project / Feedback / Reference / User).
+
+**Decisions:**
+- D017: Keep `everything-claude-code` DISABLED at user scope. If any of its skills prove necessary, enable per-project via settings.json.
+- D018: `chrome-devtools` stays user-scope (root) — yesid.dev uses it constantly. Plugin version unhealthy (`spawn npx ENOENT` in mcp-health-cache), user-scope version is what actually works.
+- D019: Memory consolidation rule — per-slice status memories no longer created. Future slice closes append one row to `project_completed_slices.md`. Single rolling index beats 21 fragmented entries.
+- D020: Aggressive prune accepted on trust of backup snapshot in cloud. Session after 17j will verify nothing critical broke; rollback via `cp <cloud>/.../pre-prune-snapshot/settings.json ~/.claude/settings.json` if needed.
+
+**Savings estimate** (rough — exact re-measurement in Task 6):
+- `rules/zh/` delete: ~15K tokens/session
+- 15 plugin disables: ~3–5K tokens/session (duplicate superpowers + everything-claude-code ~200 skill descriptions)
+- MCP prune: ~1K tokens/session
+- Memory prune: ~500 tokens/session
+- **Total estimate: ~19–22K tokens/session saved**, from a ~89K baseline → projected ~67–70K → ~22% reduction.
+
+---
+
 ### Task 4: `.mcp.json` per-project MCP allowlist + cloud templates scaffold
 
 **Session:** 2026-04-18 | **Commit:** (this commit)
