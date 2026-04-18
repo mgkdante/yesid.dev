@@ -4,6 +4,103 @@ Reviewer-facing record. Grows one section per Level-3 task as tasks complete. Fi
 
 ---
 
+## Summary
+
+**Slice 17b — Hexagonal Data Layer + LocalizedString Enforcement.** L-slice. 10 tasks, ~207 LocalizedString extractions, 0 runtime regressions.
+
+### What shipped
+
+**Architecture (17b-1..6):**
+- Dissolved `src/lib/data/` → `src/lib/content/` (typed seed + UI chrome) + `src/lib/utils/` (pure engines) + `src/lib/types.ts` (top-level shared types). 375 files updated; 426 imports rewritten.
+- New `src/lib/adapters/` — `ContentAdapter` interface with six ports (projects/services/blog/meta/techStack/content). `staticAdapter` is the only module that imports from `$lib/content/*`. 37 contract tests.
+- New `src/lib/repositories/` — async facade over the adapter. Route loaders call `getPublicProjects()` etc.; never touch the adapter directly. Metro-line derivation folded in.
+- 9 route loaders migrated from `$lib/content` → `$lib/repositories` with `Promise.all` parallelization.
+- Hardcoded content audit: 7 parallel Sonnet subagents scanned every component; surfaced ~157 strings (flattened to ~519 LocalizedStrings once nested structures unfold).
+- `ImpactMetric.label` + metro bookends upgraded to LocalizedString.
+
+**Extraction (17b-7a..l — 12 sub-tasks, ~207 strings):**
+- Every hardcoded user-facing string on every route now flows through `$lib/content/*` as a LocalizedString.
+- UI chrome lives in the content file for its page domain; components import directly (bypasses the adapter — chrome isn't "data").
+- Scope amendment on 17b-7g: removed `stop`/`label` defaults from 9 About* children — compiler-enforced single source of truth for stop labels.
+- Dedupe across domains: `servicesDetailContent.serviceNavAria` drives both `ServiceNav` and `StationTabs` (one key, two consumers).
+- Audit edge case #23 closed: `contactContent.stationLabel` was already in content but the component bypassed it — wired correctly now.
+
+**Integrity + governance (17b-8, 17b-9):**
+- New `describe('LocalizedString guard + translation debt')` block in `content/integrity.test.ts` — structural walker over every content export. 3 new tests: strict malformed guard, sanity floor, printable snapshot.
+- Current snapshot (scanned at 17b-8 authoring): **519 total LocalizedStrings / 32 fully multilingual (en+fr+es, 6%) / 2 partial / 485 en-only (93%) / 0 malformed.**
+- VOCAB.md, CONSTITUTION.md, ARCHITECTURE.md updated. New cloud learn doc at `<cloud>/yesid.dev/docs/learn/data-layer/hexagonal-content-layer.md` captures the full pattern — durable artifact portable to future projects.
+
+### Key numbers
+
+| Metric | Baseline | Post-17b |
+|---|---|---|
+| Test files | 82 | 83 (+1 new `adapter.test.ts`) |
+| Tests | 782 | **822** (+40: 37 adapter contract + 3 LocalizedString integrity) |
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 pre-existing warnings (unchanged) |
+| LocalizedStrings in content | unknown | **519 walked, 0 malformed** |
+| Hardcoded English in components | ~157 (audit) | **0** (integrity test enforced) |
+| Adapter-seam implementations | 0 | 1 (staticAdapter) |
+
+### What this enables
+
+- **CMS migration is a one-line swap.** When a Payload / headless CMS arrives, one line in `src/lib/adapters/index.ts` swaps `staticAdapter` → `payloadAdapter`. Every upstream consumer (repositories, loaders, components) is unchanged. The integrity test continues to guard the LocalizedString shape against the new data source.
+- **Translation readiness.** Every user-facing string is a typed LocalizedString. Translation debt (93% en-only) is tracked via the snapshot test. Adding French for a page = filling in `fr` fields in the relevant content file; no component changes.
+- **Review discipline.** The four new CONSTITUTION §11 anti-patterns are greppable — a PR that adds hardcoded English in a `.svelte` file fails reviewer rules-check.
+
+### What's deferred
+
+- `src/routes/+layout.svelte` + `src/routes/+error.svelte` — JSON-LD siteMeta + error-page copy still import from `$lib/content` directly. Documented exceptions with inline comments; full migration deferred to Slice 15 SEO.
+- Translation debt pay-down — 485 en-only LocalizedStrings. Post-17 slice; the integrity test provides the starting number.
+- Stack viz components (StackDiagram / StackPanel / StackFilters / etc.) are extracted but not wired into any route yet (`/tech-stack` still shows "interactive diagram coming soon"). Tests pass for all 70 stack component assertions; Slice 10c will wire them into the route.
+
+---
+
+## PR body (for `gh pr create`)
+
+```markdown
+## Summary
+
+L-slice 17b introduces a hexagonal content architecture and enforces LocalizedString discipline across the entire app.
+
+**Architecture layer** (`src/lib/adapters/` + `src/lib/repositories/`): content flows through a port interface. Components and route loaders never touch `$lib/content/*` directly — they call repositories that delegate to a swappable adapter. Migrating to a CMS later is one line of code.
+
+**Extraction** (`content/*.ts`): every user-facing string on every route now lives as a `LocalizedString` (`{ en; fr?; es? }`) in the content layer. ~207 strings moved across 12 extraction sub-tasks. `0` hardcoded user-facing English remains in components (enforced by a new integrity test).
+
+**Integrity** (`content/integrity.test.ts`): structural walker verifies every LocalizedString has a non-empty `en` field. Malformed strings fail the build. Translation-debt snapshot printed on every test run.
+
+**Governance**: VOCAB.md, CONSTITUTION.md, ARCHITECTURE.md updated. New cloud learn doc (`<cloud>/yesid.dev/docs/learn/data-layer/hexagonal-content-layer.md`) captures the full pattern.
+
+## Test plan
+
+- [x] `bun run check` → 0 errors, 19 pre-existing warnings (unchanged)
+- [x] `bun run test` → 83 files / 822 tests pass (+40 from baseline: 37 adapter contract + 3 LocalizedString guard/debt)
+- [x] `bun run build` → production SSR succeeds (~48s)
+- [x] Preview sweep — every route renders identically to pre-slice baseline: `/`, `/services`, `/services/sql-development`, `/projects`, `/projects/yesid-dev`, `/blog`, `/blog/personal`, `/blog/building-a-transit-pipeline`, `/tech-stack`, `/about`, `/contact`
+- [x] Mobile 375×812 spot-checks on `/blog`, `/about`, `/services/sql-development`, `/contact`
+- [x] Integrity snapshot: 519 LocalizedStrings / 32 full / 485 en-only / **0 malformed**
+- [x] Adapter swap rehearsal: changing the `export { staticAdapter as adapter }` line is sufficient to swap implementations (manually verified; not a test)
+
+## What landed
+
+23 commits. Each sub-task's handoff + log section is in `docs/slices/slice-17/slice-17b/` (bundle moves to cloud via `slice:close` after merge).
+
+Architecture + audit: 17b-1..6 · Extractions: 17b-7a..l · Integrity: 17b-8 · Governance: 17b-9 · This PR: 17b-10.
+
+## What's deferred
+
+- `/+layout.svelte` + `/+error.svelte` content pipe — documented as Slice 15 SEO.
+- Translation debt (485 en-only) — post-17 slice; starting number tracked by the snapshot test.
+- Stack viz route wiring — Slice 10c.
+
+## Notable gotchas for the reviewer
+
+- Out-of-scope uncommitted changes exist in the branch checkout (CLAUDE.md, WORKFLOW.md, AGENTS.md, docs/reference/tools/, etc.) from a parallel Claude Code session. Those are NOT in this PR — they're local-only and need their own commit path (Yesid will handle separately).
+- `ecbdb5a` was the original 17b-7f commit, rolled back + re-landed clean as `f8a6683` after the parallel session reset the Services extraction into an unrelated WORKFLOW.md governance commit. Context in the 17b-7f/7g commit reconciliation session entry in log.md.
+- The integrity test's LocalizedString walker is structural (shape-based) — it treats any object with an `en` key as a candidate. False positives would be caught at authoring time; none exist in the current codebase.
+```
+
+---
+
 ## 17b-1 — Folder restructure (data/ → content/ + utils/ + types.ts)
 
 **Commit:** _(SHA appended after Yesid approval)_

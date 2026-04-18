@@ -986,3 +986,94 @@ All cross-referenced to the 17b tasks that authored them.
 | 17b-10 | Final verification + PR | ⏳ pending | — |
 
 **Model:** Opus 4.7 [1m] | **Context:** ~595k / 1M (~60%) — nearing the 65% pre-break. 17b-10 is ceremonial (final verification + PR body + slice-close script). If it pushes toward 65%, I'll land it anyway — it's the terminal task.
+
+---
+
+## Session 2026-04-18 — Task 17b-10 Final verification + PR
+
+**Continuation of same session. Terminal task of the slice.**
+
+### Final verification sweep
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged since 17b-1) |
+| `bun run test` | 83 files / 822 tests pass |
+| `bun run build` | ✓ built in 47.56s — production SSR confirmed for every route |
+| `tree.txt` | regenerated (118k lines — filter matches existing pattern) |
+
+### Handoff finalization
+
+Added two new sections to `handoff.md`:
+1. **Summary** — reviewer-facing overview of what shipped, key numbers, what-this-enables, what's-deferred. Front-matter of the handoff.
+2. **PR body** — extract-ready markdown block for `gh pr create` with Summary / Test plan / What landed / What's deferred / Notable gotchas sections.
+
+### Branch state at close
+
+Branch: `feature/slice-17b-repositories`. 23 commits ahead of `origin/feature/slice-17b-repositories` (first push of the slice). History:
+
+- 083f8fb — design spec
+- 84d0d23 — implementation plan
+- 63fee16 — merge main into branch (pre-execution sync)
+- d6895b5 — 17b-1 restructure
+- 88151ba — 17b-1 follow-up route loader imports
+- 70743b9 — 17b-2 adapter scaffold
+- 1da9ed4 — 17b-3 repositories
+- c161980 — 17b-4 loader migration
+- f31ac65 — 17b-5 audit
+- c74037d — 17b-6 LocalizedString upgrade
+- fc6fb06..9ed81ad — 17b-7a..7e (home / blog / projects extractions)
+- bca4975 — session wind-down after 7a..7e
+- cd53c61 — docs: align WORKFLOW.md (parallel Claude Code session; preserved per Yesid direction)
+- f8a6683 — 17b-7f services (re-landed clean after ecbdb5a parallel-session reset)
+- 843b3cc — 17b-7g about
+- 68a99ef — 17b-7h contact
+- 8dceba7 — 17b-7i tech stack viz
+- c6fbc79 — 17b-7j layout + shared
+- 3398d97 — 17b-7k page meta tags
+- cf01da9 — 17b-7l tech-stack page
+- dbc2ac5 — 17b-8 integrity tests
+- 3f5d7ee — 17b-9 governance docs
+- 17b-10 — this commit (final verification + PR)
+
+### Out-of-scope uncommitted changes
+
+Noted at close: the working tree has modified files from parallel Claude Code sessions that are NOT part of this slice:
+- `.claude/settings.json`, `CLAUDE.md`, `docs/reference/WORKFLOW.md`, `docs/sessions/_TEMPLATE.md`, `docs/slices/_TEMPLATE-SUBSLICE/log.md`, `docs/slices/_TEMPLATE-SUBSLICE/plan.md`, `docs/slices/slice-17/CHECKPOINT.md`, `docs/slices/slice-17/slice-17b/plan.md`, `docs/slices/slice-17/slice-17b/spec.md`, `scripts/slice-close.ts`
+- Untracked: `AGENTS.md`, `docs/reference/tools/`
+
+These stay out of this PR. Yesid handles them via a separate commit path (documented in the PR body).
+
+### Slice-close script reminder
+
+Per CLAUDE.md closing protocol, `bun run slice:close 17 b` runs AFTER PR squash-merge. This task only prepares the PR — the actual archive mirror + `COMPLETED-SLICES.md` update happens post-merge.
+
+### Progress table — FINAL
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1 | Folder restructure | ✅ approved | d6895b5, 88151ba |
+| 17b-2 | Adapter scaffold | ✅ approved | 70743b9 |
+| 17b-3 | Repository layer | ✅ approved | 1da9ed4 |
+| 17b-4 | Route loader migration | ✅ approved | c161980 |
+| 17b-5 | Hardcoded content audit | ✅ approved | f31ac65 |
+| 17b-6 | LocalizedString upgrade | ✅ approved | c74037d |
+| 17b-7a | Home extraction | ✅ approved | fc6fb06 |
+| 17b-7b | Blog listing | ✅ approved | 5704269 |
+| 17b-7c | Blog detail | ✅ approved | ee67724 |
+| 17b-7d | Projects listing | ✅ approved | 799831a |
+| 17b-7e | Projects detail | ✅ approved | 9ed81ad |
+| 17b-7f | Services | ✅ re-landed clean | f8a6683 |
+| 17b-7g | About | ✅ approved | 843b3cc |
+| 17b-7h | Contact | ✅ approved | 68a99ef |
+| 17b-7i | Tech stack viz | ✅ approved | 8dceba7 |
+| 17b-7j | Layout + shared | ✅ approved | c6fbc79 |
+| 17b-7k | Page meta tags | ✅ approved | 3398d97 |
+| 17b-7l | Tech-stack page | ✅ approved | cf01da9 |
+| 17b-8 | Integrity tests | ✅ approved | dbc2ac5 |
+| 17b-9 | Governance docs | ✅ approved | 3f5d7ee |
+| **17b-10** | **Final verification + PR** | **🟢 in-flight** | this commit |
+
+**Slice 17b ends here.** Post-merge: `bun run slice:close 17 b`.
+
+**Model:** Opus 4.7 [1m] | **Context:** ~635k / 1M (~64%) — right at the pre-break boundary. Terminal task; session ends cleanly after PR creation.
