@@ -1,7 +1,8 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-18 | **17j ACTIVE — Tasks 0-5 complete. Task 6 (re-measurement) awaiting FRESH session for cold-context measurement.**
-**Branch:** `feature/slice-17j-token-efficacy` (off main; 17h PR #22 merged)
+**Last updated:** 2026-04-18 | **17j CLOSING — all tasks complete, tests green, PR ready to open.**
+**Branch:** `feature/slice-17j-token-efficacy` (off main; 17h PR #22 merged) — 31 commits
+**Status:** handoff finalized at `docs/slices/slice-17/slice-17j/handoff.md`; PR body inline in handoff. Ready for `gh pr create`.
 
 ## Active sub-slice — 17j Workflow Efficiency
 

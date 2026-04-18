@@ -621,12 +621,115 @@ None yet this sub-slice — iterations documented in log.md per session.
 
 ## Summary
 
-*(Added at PR time.)*
+Slice 17j reframed mid-flight from "Token Efficacy" to **Workflow Efficiency** — a two-pillar slice addressing token overhead AND workflow structure.
+
+**Pillar 1 (Token):** achieved **−54% cold-session token reduction** (89,500 → 41,000 tokens, confirmed via Task 6 re-measurement). Biggest levers: `rules/zh/` delete (−15K), plugin prune 32→15 enabled (−5K), agent prune 30→16 (−1.5K), auto-memory consolidation 67→35 files, user-scope MCP prune, 6 web-app connectors disconnected (+47K activation-cost prevention).
+
+**Pillar 2 (Structure):** systematized workflow into a **three-tier context model** (always-on / fetch-on-command / cloud indexes), **3-level slice hierarchy** (Slice → Sub-slice = PR boundary → Task), **4-file sub-slice bundle** (spec + plan + log + handoff), **self-appending handoff** pattern, and a suite of **portable Bun scripts** (`slice-close.ts`, `mirror-docs.ts`, `mirror-brand.ts`, cloud's `snapshot.ts` + `restore.ts`). All OS-agnostic via `YESITO_CLOUD_ROOT` env var.
+
+**Portable IP outputs** (across Yesid's 6 services):
+- `workflow-efficiency` skill at `~/.claude/skills/` — codifies the entire pattern
+- `<cloud>/claude-knowledge/token-efficacy/` — 7 deep-dive research docs (15+ sources, 2025-26)
+- `<cloud>/claude-knowledge/os-quirks/` — cross-project platform-specific command registry (8 Windows quirks seeded)
+- `<cloud>/claude-knowledge/mcp-templates/` — per-project `.mcp.json` templates (web / SQL / data-ops / generic)
+- `<cloud>/claude-knowledge/scripts/` — canonical copies of slice-close + mirror-docs + mirror-brand
+- `<cloud>/claude-config/` — full snapshot/restore tooling + first post-prune snapshot
+- `docs/reference/VOCAB.md` — shared lexicon (brand + industry + Claude Code + workflow)
+
+**Self-enhancing workflow** codified: every mistake caught in this slice became a closing-checklist rule. Future slices inherit the fix automatically.
 
 ## PR Body
 
-*(Added at PR time.)*
+```markdown
+# Slice 17j — Workflow Efficiency
+
+Two-pillar slice: token efficiency + workflow structure.
+
+## Headline
+
+- Cold-session token overhead: **89,500 → 41,000 (−54%)** confirmed via Task 6 re-measurement
+- Activation-cost prevention: **~47,000 tokens** (web-app MCP connectors disconnected from deferred pool)
+- Slice of 9 repo tasks + 5 scope-amendment tasks + 6 live-machine changes
+
+## Changes in this PR
+
+### Docs (repo-side)
+- `CLAUDE.md`: 445 → 196 lines (−56%); added core principles + cross-platform setup + 3-level slice hierarchy + self-appending handoff rules + Sonnet-for-subagents routing + standard repo layout
+- `docs/reference/WORKFLOW.md`: v2.0 rewrite (792 → 735 lines). Codifies close protocol, cross-platform quirks, Tool Selection Protocol (absorbed from CLAUDE.md), document ecosystem in three tiers, self-enhancing workflow principle, per-STOP progress table rule
+- `docs/reference/VOCAB.md`: NEW — 270-line shared lexicon (brand / industry / Claude Code / workflow)
+- `docs/ARCHIVE.md`: NEW — three-tier context model + retrieval + write protocols
+- `docs/README.md`: rewritten for three-tier layout
+- `docs/roadmap/PLAN.md`: 916 → 462 lines. Per-slice detail extracted into 8 per-slice READMEs.
+- Repo hierarchy migrated to 3-level bundle model:
+  - `docs/slices/_TEMPLATE-SLICE/` + `docs/slices/_TEMPLATE-SUBSLICE/`
+  - Active slice lives in `docs/slices/slice-17/slice-17j/{spec,plan,log,handoff}.md`
+  - Per-slice READMEs for slice-14/15/16/17/18/19/19b/20/21/22
+- `docs/sessions/_TEMPLATE.md`: NEW (non-slice session template)
+- Removed: old flat `docs/{specs,plans,devlog,handoffs,research,archive,learn}/` (mirrored to cloud first)
+
+### Scripts (portable Bun)
+- `scripts/slice-close.ts` — close a sub-slice: bundle folder → cloud archive + update index
+- `scripts/mirror-docs.ts` — live docs mirror for off-device reading
+- `scripts/mirror-brand.ts` — brand subtree mirror (optional per project)
+- `package.json`: `slice:close` + `docs:mirror` + `brand:mirror` scripts
+
+### Project-scoped MCP surface
+- `.mcp.json` at repo root (scaffold for project-specific MCPs)
+- `.claude/settings.json` (committed) with `enableAllProjectMcpServers: false` + shared permissions
+
+### Cross-link fixes
+- `MOTION.md`, `PATTERNS.md`: references to historical docs rewritten to cloud archive paths
+
+## Live-machine changes (not in this diff, documented in handoff)
+
+- `~/.claude/rules/zh/` deleted (48KB, 11 files — duplicate translation)
+- `~/.claude/settings.json` `enabledPlugins`: 32 → 15 active (disabled: superpowers@claude-plugins-official dup, everything-claude-code mega-bundle, language-specific LSPs, unused tooling, ui-ux-pro-max + web-designer design plugins)
+- `~/.claude.json` user-scope MCPs pruned (firefox-devtools, Railway user-scope, duplicate chrome-devtools)
+- `~/.claude/agents/`: 30 → 16 (removed 14 non-TS language reviewer/builder agents)
+- `~/.claude/agents/performance-optimizer.md`: 446 → 222 lines (−50%, preserving all methodology)
+- `~/.claude/projects/<hash>/memory/`: 67 → 35 files (consolidated 21 per-slice-status entries into `project_completed_slices.md`; pruned 12 stale topic memories)
+- `claude.ai` Connectors (web app): disconnected Notion, Webflow, Jobs search, Column Tax, Google Calendar, Postman (6 connectors, 94 MCP tools)
+
+All reversible via `<cloud>/claude-config/user/2026-04-18-pre-prune-snapshot/` backup.
+
+## New cross-project cloud knowledge base
+
+- `<cloud>/claude-knowledge/token-efficacy/` — 7 research deep-dives (cache economics, MCP scoping, plugin hygiene, subagent delegation, auto-memory, strategic compact, workflow file structures)
+- `<cloud>/claude-knowledge/os-quirks/{README, windows, macos, linux, cross-platform}.md` — 8 Windows quirks seeded from 17j discoveries
+- `<cloud>/claude-knowledge/mcp-templates/` — per-project `.mcp.json` templates
+- `<cloud>/claude-knowledge/scripts/` — portable workflow-script templates for any new project
+
+## New portable skill
+
+- `~/.claude/skills/workflow-efficiency/SKILL.md` + 2 reference checklists. Trigger-framed description; auto-activates on new-project setup, sluggish sessions, audits, pruning, cross-machine provisioning.
+
+## Config portability
+
+- `<cloud>/claude-config/snapshot.ts` + `restore.ts` (Bun, OS-agnostic)
+- `<cloud>/claude-config/user/2026-04-18-post-17j-prune/` — first clean post-prune snapshot (304 skills, 16 agents, 78 rule entries, 4 MCP scopes, marketplaces + enabled-plugins extracted for easy diffing)
+- `<cloud>/claude-config/README.md` + `required-env-vars.md` — ~15-min new-machine setup walkthrough
+
+## Tests
+
+- `bun run check`: 0 errors, 19 pre-existing warnings (unchanged from baseline)
+- `bun run test`: 782/782 passing (unchanged from baseline)
+
+## Follow-ups flagged (for post-17j)
+
+1. 17g scope re-evaluation (`docs/learn/` moved to cloud — 17g's "Learning Docs Refactor" needs re-framing)
+2. Playwright `export-examples` on Windows — still unresolved; document in `os-quirks/windows.md` when root-caused
+3. Bundle shrink (D269 lazy-plugin async refactor) — post-17e follow-up
+4. `.gitattributes` for LF enforcement — future slice
+5. Per-project restore (cloud `claude-config/restore.ts --project`) — implement when first needed on a new machine
+6. Code-reviewer + planner agent trims — deferred; low savings / medium risk
+
+## Commits
+
+31 commits across 9 tasks + 5 scope amendments + 6 live-machine changes. See git log for full chronology.
+```
 
 ## Final Status
 
-*(Set at PR time.)*
+**COMPLETE** — all acceptance criteria met, all tests pass, all Yesid approvals received throughout execution.
+
+Savings delivered: −54% token overhead + ~47K activation-cost prevention + full config portability + portable IP across 6 services.
