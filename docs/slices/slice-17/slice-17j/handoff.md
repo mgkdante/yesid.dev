@@ -239,6 +239,63 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 5b: Additional prune pass (Yesid-directed after Task 6 re-measurement)
+
+**Session:** 2026-04-18 | **Commit:** (this commit — live-machine changes not tracked; backup in pre-prune snapshot)
+
+**Scope decision:** Yesid chose option (a) from Task 6's follow-up findings — continue pruning before closing 17j. Two specific directives:
+1. Use chrome-devtools from the plugin, not user-scope (remove duplicate)
+2. Make both Opus AND Sonnet valid for subagents (not Opus-only)
+
+**Changes landed:**
+
+**A. Removed user-scope `chrome-devtools` from `~/.claude.json`**
+- Root-level `mcpServers` now empty — plugin `chrome-devtools-mcp@claude-plugins-official` is the single source
+- Eliminates 25 duplicate tool entries + plugin-version-vs-user-version confusion
+- Plugin version confirmed healthy in fresh-session measurement (the unhealthy status in Task 5 was resolved by the session restart)
+- Savings: ~375 tokens + cleanup
+
+**B. Removed 14 language-specific reviewer/builder agents from `~/.claude/agents/`**
+Backup: `<cloud>/claude-config/user/2026-04-18-pre-prune-snapshot/agents-removed/` (14 files preserved)
+Deleted:
+- `cpp-build-resolver.md`, `cpp-reviewer.md`
+- `flutter-reviewer.md`
+- `go-build-resolver.md`, `go-reviewer.md`
+- `healthcare-reviewer.md`
+- `java-build-resolver.md`, `java-reviewer.md`
+- `kotlin-build-resolver.md`, `kotlin-reviewer.md`
+- `python-reviewer.md`
+- `pytorch-build-resolver.md`
+- `rust-build-resolver.md`, `rust-reviewer.md`
+
+Agents count: 30 → 16. Kept the TypeScript/workflow relevant set: architect, build-error-resolver, chief-of-staff, code-reviewer, database-reviewer, doc-updater, docs-lookup, e2e-runner, harness-optimizer, loop-operator, performance-optimizer, planner, refactor-cleaner, security-reviewer, tdd-guide, typescript-reviewer.
+
+Savings: ~1,500 tokens in Agent tool descriptor on every session + cleaner model context.
+
+**C. CLAUDE.md subagent routing rule rewritten**
+
+Previous: `**Models:** Opus or Sonnet only. Never Haiku.`
+
+New: explicit split by role —
+- Parent session: Opus 4.7 (deep reasoning)
+- Subagents: Sonnet 4.6 default (research/summary/review); Opus only when deep reasoning needed
+- Rationale pointer to `<cloud>/claude-knowledge/token-efficacy/04-subagent-delegation.md` (research confirms 2026 routing pattern)
+
+**Decisions:**
+- D021: chrome-devtools user-scope removal is permanent — plugin is the single provider going forward. Verified the plugin's chrome-devtools works from current fresh-session measurement.
+- D022: 14 language agents moved to backup (cloud) rather than deleted outright. Restore possible if a future project needs them.
+- D023: Sonnet-for-subagents default codified in CLAUDE.md. Research-backed (cache economics + subagent isolation). Parent stays Opus because the parent holds the whole slice's context.
+
+**Follow-ups NOT actioned in 5b (deferred to 17k or accepted):**
+- Plugin overlap consolidation (4 design plugins) — needs Yesid input on which single plugin to keep; skipped.
+- Connector-based MCPs (Webflow, Cloudflare, Notion, Calendar, Slack, Figma, etc.) — these are configured at claude.ai/settings/integrations (web app), NOT in `~/.claude/` config files. Cannot be modified from CLI. Yesid can disconnect manually in the web app if desired. Flagged in follow-ups.
+- Rules chain language conditionality (common/*.md inlines all 10) — would need CLAUDE.md meta-logic or rules/*.md reorganization; skipped for 17j.
+- Heavy agents on disk (performance-optimizer 446 lines) — not in base context; addressed when those agents are invoked, not baseline cost.
+
+**Estimated Task 5b savings:** ~2K tokens + activation-surface reduction. Next Task 6b / cold-session check could quantify.
+
+---
+
 ### Task 6: Re-measurement + delta table
 
 **Session:** 2026-04-18 (fresh session, cold context) | **Commit:** (this commit)
@@ -391,6 +448,10 @@ vercel, chrome-devtools-mcp, skill-creator, remember, claude-code-setup, code-re
 2. **Playwright `export-examples` on Windows** — flagged in 17h, still unresolved. NOTE: not yet added to os-quirks/windows.md because root cause unknown (chromium + firefox `launch()` both hang). When diagnosed, add as 8th windows.md entry.
 3. **Bundle shrink opportunities** — D269 lazy-plugin migration partial; captureFlipState + CustomEase.create sync-API coupling blocks full Vite chunk split. Flagged for post-17j async refactor.
 4. **`.gitattributes` for LF enforcement** — cross-platform.md flagged this as worth adding in a future slice to prevent accidental CRLF commits in cross-machine workflows.
+5. **Plugin overlap consolidation** (4 design plugins — frontend-design, frontend-design-pro, ui-ux-pro-max, web-designer) — needs Yesid input on which single plugin to keep. ~2K tokens potential.
+6. **Connector-based MCP cleanup** (Webflow, Cloudflare, Notion, Calendar, Slack, Figma, Postman, Microsoft-docs, etc.) — these load from claude.ai/settings/integrations (web app connectors), NOT from `~/.claude/` config files. Yesid needs to disconnect unused ones in the web app. Biggest remaining savings: ~3.5K tokens immediate + ~117K activation-cost prevention.
+6b. **Heavy agents on disk** — `performance-optimizer.md` (446 lines), `code-reviewer.md` (237 lines), `planner.md` (212 lines). Not in base session context but expensive when spawned. Consider trimming or delegating to smaller specialized agents in a future slice.
+7. **Rules chain language conditionality** — `rules/common/*.md` all inline regardless of language. TypeScript-only inclusion could save ~2K but needs CLAUDE.md meta-logic or rules reorg.
 
 ## Iterations (if any)
 

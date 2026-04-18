@@ -99,7 +99,10 @@ Why both TodoWrite and the markdown table: `TodoWrite` is live UI (ephemeral to 
 - **Sub-slices may need multiple sessions.** Always estimate upfront. Never assume one session.
 - **Parallel agents require approval.** Independent research/exploration only. Never self-decide to parallelize implementation.
 - **PR at Level 2 (sub-slice), not Level 3 (task).** All of a sub-slice's tasks accumulate to one PR.
-- **Models:** Opus or Sonnet only. Never Haiku.
+- **Models:** **Opus AND Sonnet are both valid.** Never Haiku.
+  - **Parent (main session):** Opus 4.7 for the design + decision work where deep reasoning pays.
+  - **Subagents:** Sonnet 4.6 is the default for research, exploration, file-reading, code-review sweeps, and any task that produces a bounded summary. Opus only when the subagent needs deep reasoning (architecture analysis, novel debugging, complex refactor planning).
+  - **Why split:** Sonnet returns faster and costs less while delivering 90% of Opus quality on search/summarize/review work. The research (cloud `token-efficacy/04-subagent-delegation.md`) confirms this as the 2026 routing pattern. Reserve Opus for the session that has to hold the whole problem in context.
 - **Handoff ships with PR.** A sub-slice that landed without a handoff didn't actually close.
 - **Never bypass the close-script.** Manual mirror-and-delete loses the index update.
 
