@@ -127,6 +127,30 @@ See `git log --oneline main` around 2026-04-18 for the exact SHA — intentional
 
 ---
 
+## Addendum — later the same day (second governance commit)
+
+After the initial governance commit, Yesid questioned the "A session cannot be two types" rule as potentially doctrinaire. Honest analysis: the rule protects habits, but the actual quality/token protection comes from **commit discipline**. Plus Yesid flagged a second issue — `plan.md` was over-prescribed (2,656 lines with boilerplate pre-written), contradicting "let Claude think code at execution time." Both issues merit codification.
+
+### Additional decisions
+
+- **D007:** Soften session-type separation from hard to soft. Commit discipline is the real strict constraint.
+  - **Strict:** commit discipline (never mix types in one commit); L/M/S planning artifact rules; closing-doesn't-add-features.
+  - **Soft:** session separation — two session types may share one wall-clock conversation UNLESS a break trigger fires (reasoning-heavy transition, context ≥65%, material model downshift, human fatigue).
+  - **Why:** the separation was enforcing habits more than protecting code. Quality protection is commit discipline. Token efficiency suffers when forcing a fresh session for mechanical continuation work (startup tax > saved cache). Separating strict (commit) from soft (session) lets mechanical continuations save overhead without sacrificing quality.
+
+- **D008:** New subsection "Plan authoring discipline" added under Slice sizing.
+  - Plans specify **decisions and sequencing**, not boilerplate code.
+  - One canonical example per pattern; trust execution-time judgment for pattern-following code.
+  - Pre-write only pattern-establishing code (interface types, contracts, novel algorithms) and non-obvious logic.
+  - **Why:** Claude at execution time has full context of the current codebase and writes code matching actual local patterns. Plans that pre-specify boilerplate lock in assumptions and waste tokens twice (authoring + re-processing). The 2,656-line 17b plan was a concrete over-specification example — roughly 30% was boilerplate that execution time could produce faster and more accurately.
+  - **Note:** 17b's plan stays as-is (already committed). The new rule applies to FUTURE L-slice plans.
+
+### Additional commit
+
+Second CLAUDE.md amendment lands as a separate commit on main (same session, same direct-commit approval). `git log --oneline main` around 2026-04-18 shows both governance commits.
+
+---
+
 ## Rules for non-slice sessions (reference copy from template)
 
 1. **Single session, single topic.** ✓ This session did only governance.
