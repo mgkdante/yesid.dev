@@ -451,12 +451,14 @@ vercel, chrome-devtools-mcp, skill-creator, remember, claude-code-setup, code-re
 3. **Bundle shrink opportunities** — D269 lazy-plugin migration partial; captureFlipState + CustomEase.create sync-API coupling blocks full Vite chunk split. Flagged for post-17j async refactor.
 4. **`.gitattributes` for LF enforcement** — cross-platform.md flagged this as worth adding in a future slice to prevent accidental CRLF commits in cross-machine workflows.
 
-**Moved to Task 9b (will action before 17j PR close):**
+**Moved to Task 7b (runs BEFORE Task 8 so the config snapshot exports a clean post-prune state):**
 
 - **Plugin overlap consolidation** (4 design plugins — frontend-design, frontend-design-pro, ui-ux-pro-max, web-designer). Decision needed from Yesid on which to keep. ~2K tokens potential.
 - **Connector-based MCP cleanup** (Webflow, Cloudflare, Notion, Calendar, Slack, Figma, Postman, Microsoft-docs, Claude-in-Chrome, tax, jobs, mcp-registry). Loaded from claude.ai/settings/integrations (web app), NOT CLI-reachable. Yesid disconnects manually; I'll provide the exact list + before/after instructions. **Biggest remaining lever: ~3.5K tokens immediate + ~117K activation-cost prevention.**
 - **Heavy agents on disk** (`performance-optimizer.md` 446 lines, `code-reviewer.md` 237 lines, `planner.md` 212 lines). Trim in-place to reduce subagent-spawn cost.
 - **Rules chain language conditionality** — `rules/common/*.md` all inline regardless of language. Possible approaches: (a) move TypeScript-specific content into `rules/typescript/` and trim common; (b) leave as-is and accept. Decision needed.
+
+**Sequencing rationale:** Task 8's snapshot captures the live `~/.claude/` state. If 7b's prune runs AFTER 8, the first snapshot encodes pre-prune bloat and a second snapshot would be needed. Running 7b FIRST means Task 8 exports a single, clean, portable baseline.
 
 ## Iterations (if any)
 
