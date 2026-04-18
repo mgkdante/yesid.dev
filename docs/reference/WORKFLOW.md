@@ -1,416 +1,296 @@
 # yesid. Workflow — The Full Pipeline
 
-**Version:** 1.0 | April 2026
-**Companion to:** `CLAUDE.md` (rules), `roadmap/PLAN.md` (roadmap), `MOTION.md` (animation), `PATTERNS.md` (solutions)
+**Version:** 2.0 | 2026-04-17 (Slice 17j Workflow Efficiency)
+**Companion to:** `CLAUDE.md` (rules + governance), `roadmap/PLAN.md` (project roadmap), `reference/CONSTITUTION.md` (codebase law), `reference/VOCAB.md` (shared lexicon), `reference/MOTION.md` (animation), `reference/PATTERNS.md` (solutions)
 
-This document defines **how work flows** from idea to shipped code. CLAUDE.md says *what* to do; this says *when, why, and in what order*. Every session follows this pipeline. No shortcuts.
+This document defines **how work flows** — the operational mechanics. `CLAUDE.md` says *what rules govern*; this says *when, why, and in what order* to act on them. Every session follows this pipeline. No shortcuts.
 
 ---
 
-## 1. Session Types
+## 1. Slice Hierarchy (Foundation)
+
+Three levels. Strict meaning. **PR boundary is Level 2.**
+
+| Level | Name | Example | Home |
+|-------|------|---------|------|
+| 1 | **Slice** | Slice 17 (Standardization) | `docs/slices/slice-17/` |
+| 2 | **Sub-slice** — PR boundary | 17j (Workflow Efficiency) | `docs/slices/slice-17/slice-17j/` |
+| 3 | **Task** — section in plan/log/handoff | 17j-3, 17j-3a | section in `plan.md`, not a folder |
+| (4) | **Session** | `### Session 2026-04-17 — Task 17j-3` | heading in `log.md` |
+
+### Per-sub-slice file bundle (4 files)
+
+```
+docs/slices/slice-NN/slice-NN<letter>/
+  spec.md        → design + rationale. Written at sub-slice start. Amendments logged.
+  plan.md        → task-by-task implementation. Sections = Level 3 tasks.
+  log.md         → running work record. Session-by-session. Commands + errors + decisions.
+  handoff.md     → self-appending closing report. Grows per-task, finalized at PR.
+  CHECKPOINT.md  → ephemeral resume context (optional, deleted at PR close).
+```
+
+Each bundle is self-contained. AI reads just the file it needs.
+
+### Self-appending handoff mechanics
+
+- **At sub-slice start:** create `handoff.md` with a stub (Scope, Tasks completed, Follow-ups).
+- **After each Level 3 task lands:** append `### Task NN-N: <name>` section with: Session date, Commit SHA, Files, What landed, Decisions (D-numbered), Follow-ups.
+- **At PR time:** add `## Summary` and `## PR Body` sections. `gh pr create --body-file handoff.md`-adjacent content.
+- **Reset to 0:** next sub-slice starts a fresh `handoff.md`.
+
+The handoff is the PR body. Reviewer reads one file.
+
+### Three-tier context model
+
+- **Tier 1 (always-on, in repo):** governance docs (`docs/reference/**`, `docs/roadmap/**`), active slice's bundle, templates.
+- **Tier 2 (fetch-on-command, cloud mirror + git):** shipped slice bundles at `<cloud>/yesid.dev/docs/archive/slices/slice-NN/slice-NN<letter>/`, historical specs/plans/devlogs/handoffs/research, Yesid's learn knowledge base at `<cloud>/yesid.dev/docs/learn/`.
+- **Tier 3 (cloud indexes):** `<cloud>/yesid.dev/docs/COMPLETED-SLICES.md` + `INDEX.md` — AI reads these on command to find what exists, then fetches the specific artifact.
+
+**Retrieval protocol (cheapest first):** in-context governance → cloud index → specific cloud artifact → `git show`.
+
+Full model: `docs/ARCHIVE.md`.
+
+---
+
+## 2. Session Types
 
 Every session is exactly one type. Declare it at the start.
 
-| Type | Purpose | Artifacts Produced | Duration |
-|------|---------|-------------------|----------|
-| **Planning** | Research, brainstorm, design spec, slice spec | `docs/specs/`, `docs/slices/`, `docs/research/findings.md` | 1 session |
-| **Implementation** | Build one sub-slice, task by task | Code, tests, devlog | 1-3 sessions per sub-slice |
-| **Closing** | Docs, handoff, learning docs, tree.txt, commit | `docs/handoffs/`, `docs/devlog/`, `docs/learn/` | 0.5-1 session |
+| Type | Purpose | Artifacts | Duration |
+|------|---------|-----------|----------|
+| **Planning** | Research, brainstorm, design spec, implementation plan | `slice-NN<letter>/spec.md`, `plan.md` | 1 session |
+| **Implementation** | Build one or more Level 3 tasks per Iteration Protocol | Code + tests + append to `log.md` and `handoff.md` | 1–3 sessions per sub-slice |
+| **Closing** | Finalize handoff, update governance, run close-script | Final `handoff.md` sections, PR, close-script execution | 0.5–1 session |
+| **Non-slice** | Bugfix / config / exploration / hotfix | `docs/sessions/YYYY-MM-DD-<name>.md` | < 1 session usually |
 
-**Hard rule:** A session cannot be two types. Planning sessions produce zero code. Implementation sessions don't write specs but can modify on iteration. Closing sessions don't add features.
+**Hard rule:** A session cannot be two types. Planning produces zero code. Implementation doesn't write specs but can amend them. Closing doesn't add features.
+
+At session start: scan for uncommitted changes or commits made outside Claude Code. Document anything found in `log.md` (slice) or the session file (non-slice).
+
+### When to use non-slice vs slice
+
+Use a **non-slice session** when:
+- Touches < 5 files
+- No spec needed (scope fits in a paragraph)
+- Commits as-is, optional PR
+- No multi-session plan required
+
+Use a **slice (or sub-slice)** when:
+- Spec makes the work clearer
+- Multi-session work likely
+- Multiple Level 3 tasks, each with STOP gates
+- Ships via PR
 
 ---
 
-## 2. The Pipeline (End-to-End)
+## 3. The Pipeline (End-to-End)
 
 ```
 IDEA
-  |
-  v
-[Phase 1: Research]           — Scan competitors, read docs, find patterns
-  |
-  v
-[Phase 2: Brainstorm]         — superpowers:brainstorming → design ideas
-  |
-  v
-[Phase 3: Design Spec]        — Visual companion → docs/specs/
-  |
-  v
-[Phase 4: Implementation Plan] — superpowers:writing-plans → docs/plans/
-  |
-  v
-[Phase 5: Slice Spec]         — Concrete tasks → docs/slices/slice-NN.md
-  |
-  v
-[Phase 6: Implementation]     — Task-by-task with approval gates
-  |
-  v
-[Phase 7: Verification]       — Pre-completion checks + visual proof
-  |
-  v
-[Phase 8: PR & Merge]         — Branch → PR → review → squash-merge
-  |
-  v
-[Phase 9: Closing]            — Handoff, docs, learn, commit
-  |
-  v
-SHIPPED
+  │
+  ▼
+[1 Research]        Scan competitors, read docs, find patterns
+  │
+  ▼
+[2 Brainstorm]      superpowers:brainstorming → 2–3 design options, Yesid picks
+  │
+  ▼
+[3 Design Spec]     docs/slices/slice-NN/slice-NN<letter>/spec.md
+  │
+  ▼
+[4 Plan]            docs/slices/slice-NN/slice-NN<letter>/plan.md (task list)
+  │
+  ▼
+[5 Implementation]  Task-by-task with approval gates (Iteration Protocol)
+  │
+  ▼
+[6 Verification]    Pre-completion checks + visual proof before each STOP
+  │
+  ▼
+[7 PR & Merge]      Branch → PR → review → squash-merge
+  │
+  ▼
+[8 Closing]         Finalize handoff → governance updates → bun run slice:close
+  │
+  ▼
+SHIPPED → bundle lives in cloud archive, COMPLETED-SLICES.md updated
 ```
 
-Each phase has specific tools, artifacts, and exit criteria. Skipping a phase creates debt that compounds.
+Each phase has specific tools, artifacts, and exit criteria. Skipping creates debt that compounds.
 
 ---
 
-## 3. Phase 1 — Research
+## 4. Phase 1 — Research
 
 **When:** Before any new page, section, or major feature.
 **Goal:** Understand what great looks like. Never design in a vacuum.
 
 ### Process
 
-1. **Competitive scan** — Use Chrome DevTools MCP to analyze 5-7 Awwwards-quality reference sites at 4 breakpoints (375px, 768px, 1440px, 1920px+).
-2. **Extract patterns** — Document in `docs/research/findings.md`: typography DNA, color architecture, page rhythm, animation catalog, responsive strategies.
-3. **Check PATTERNS.md** — Before inventing, check if a solved pattern already exists.
-4. **Library docs** — Use Context7 MCP or Svelte MCP for API verification. Never guess API signatures.
+1. **Competitive scan** — Chrome DevTools MCP to analyze 5–7 Awwwards-quality references at 4 breakpoints (375 / 768 / 1440 / 1920+).
+2. **Extract patterns** — Typography, color, rhythm, animation, responsive.
+3. **Check PATTERNS.md** — Before inventing, check if a solved pattern exists.
+4. **Library docs** — Context7 MCP or Svelte MCP for API verification. Never guess.
 
-### Tools
+### Exit criteria
 
-| Tool | Purpose |
-|------|---------|
-| Chrome DevTools MCP | `navigate_page`, `evaluate_script`, `take_screenshot`, `lighthouse_audit` — multi-breakpoint site analysis |
-| `frontend-design-pro:analyze-site` | Structured competitive analysis |
-| `frontend-design-pro:inspiration-analyzer` | Extract design patterns from reference sites |
-| `frontend-design-pro:trend-researcher` | Latest UI/UX trends |
-| Context7 MCP | Live docs for SvelteKit, GSAP, Tailwind, Three.js, Lenis |
-| Svelte MCP | `get-documentation`, `svelte-autofixer` — Svelte 5 API reference |
-
-### Artifacts
-
-- `docs/research/findings.md` — Comprehensive scan results (typography, colors, layout, animation, responsive)
-- Updated `docs/reference/PATTERNS.md` — Any new patterns discovered during research
-
-### Exit Criteria
-
-- [ ] 5+ reference sites scanned at 4 breakpoints
-- [ ] Typography, color, animation, and responsive patterns documented
-- [ ] PATTERNS.md consulted — no reinventing solved problems
-- [ ] Yesid has reviewed findings and confirmed direction
+- [ ] 5+ references scanned at 4 breakpoints
+- [ ] Patterns documented (in the upcoming `spec.md` under Research section, or in a shared research doc if cross-slice)
+- [ ] PATTERNS.md consulted
+- [ ] Yesid confirmed direction
 
 ---
 
-## 4. Phase 2 — Brainstorm
+## 5. Phase 2 — Brainstorm
 
-**When:** After research, before any design spec.
-**Goal:** Turn research into concrete design ideas. This is where creativity happens.
+**When:** After research, before any spec.
+**Goal:** Turn research into 2–3 concrete design options. Yesid picks.
 
 ### Process
 
-1. **Invoke** `superpowers:brainstorming` — this is **mandatory** before any plan. No exceptions.
-2. **Design ideation** — Generate 2-3 design approaches. Each approach should have a name, a one-sentence pitch, and key trade-offs.
-3. **Present options** — Yesid picks the direction. Never self-select.
-4. **Document** — Brainstorm artifacts go in `.superpowers/brainstorm/` (scratchpad, not a commitment).
+1. **Invoke `superpowers:brainstorming`** — mandatory. No exceptions.
+2. **Generate 2–3 options** — Each option: name, one-sentence pitch, visual feel, animation approach, responsive strategy, risk, session estimate.
+3. **Present to Yesid** — Never self-select.
+4. **Scratch artifacts** — `.superpowers/brainstorm/` (ephemeral).
 
-### Tools
-
-| Tool | Purpose |
-|------|---------|
-| `superpowers:brainstorming` | **Mandatory** — structured ideation before any plan |
-| `web-designer:web-designer` | Full page design sessions |
-| `frontend-design-pro:design-wizard` | Interactive design iteration |
-| `ui-design:*` | Color systems, typography scales, responsive design, dark mode |
-| `interaction-design:*` | Animation principles, micro-interactions, loading states |
-| Figma MCP | `get_design_context`, `get_screenshot` — if designing in Figma first |
-
-### Decision Framework
-
-When presenting design options, structure each as:
-
-```
-**Option [A/B/C]: [Name]**
-- Pitch: [one sentence]
-- Visual feel: [descriptive]
-- Animation approach: [GSAP techniques]
-- Responsive strategy: [how it adapts]
-- Risk: [what could go wrong]
-- Sessions needed: [estimate]
-```
-
-### Exit Criteria
+### Exit criteria
 
 - [ ] `superpowers:brainstorming` invoked
-- [ ] 2-3 design approaches presented with trade-offs
-- [ ] Yesid selected direction
-- [ ] Artifacts saved in `.superpowers/brainstorm/`
+- [ ] 2–3 options presented with trade-offs
+- [ ] Yesid selected
+- [ ] Brainstorm artifacts saved
 
 ---
 
-## 5. Phase 3 — Design Spec
+## 6. Phase 3 — Design Spec
 
 **When:** After Yesid approves a brainstorm direction.
-**Goal:** Translate the chosen direction into a visual specification that implementation can follow.
+**Goal:** Translate direction into a visual specification that implementation can follow cold.
 
 ### Process
 
-1. **Write design spec** — `docs/specs/YYYY-MM-DD-[name]-design.md`
-2. **Section-by-section breakdown** — Each section of the page gets: layout description, responsive behavior, animation choreography, content source (data layer reference), and color/typography decisions.
-3. **Self-review** — Read the spec as if you're implementing it cold. Would you know exactly what to build? If not, add detail.
-4. **Yesid approval** — Spec must be approved before any implementation plan.
+1. Write `docs/slices/slice-NN/slice-NN<letter>/spec.md` using `docs/slices/_TEMPLATE-SUBSLICE/spec.md`.
+2. Section-by-section breakdown: layout, content source, animation, responsive, colors.
+3. **Self-review cold.** If you couldn't implement this from the spec alone, add detail.
+4. Yesid approval before any plan.
 
-### Spec Structure (proven template from 19 specs)
+### Spec structure
 
 ```markdown
-# [Name] Design Spec
+# Sub-Slice <NN><letter> — <Name>
 
-**Date:** YYYY-MM-DD
-**Status:** Draft | Approved
-**Approach:** [Name of chosen brainstorm option]
+Status: Draft | Approved
+Approach: <brainstorm option name>
 
 ## Goal
-[What this delivers and for whom]
-
 ## Design Principles
-[3-5 principles specific to this feature]
-
 ## Reference Sites
-[Sites that informed this design + key patterns extracted]
-
-## Page Architecture ([N] Sections)
-
-### Section 1: [Name]
-- **Layout:** [CSS Grid / Flexbox / Full-bleed]
-- **Content source:** [data layer file + field]
-- **Typography:** [sizes, weights, fonts]
-- **Animation:** [GSAP technique, trigger, duration]
-- **Responsive:** [mobile → tablet → desktop behavior]
-- **Colors:** [token references]
-
-### Section 2: [Name]
-[same structure]
-
+## Page Architecture (N Sections)
+  Each: layout / content source / typography / animation / responsive / colors
 ## Interactions
-[Hover states, click behaviors, scroll-linked effects]
-
 ## Out of Scope
-[What this does NOT include]
 ```
 
-### Tools
+### Exit criteria
 
-| Tool | Purpose |
-|------|---------|
-| `design-systems:component-spec` | Write detailed component specifications |
-| `interaction-design:micro-interaction-spec` | Specify hover/click/scroll interactions |
-| `ui-design:responsive-design` | Responsive layout strategy |
-| `ui-design:dark-mode-design` | Dark theme refinement |
-| GSAP Master MCP | `understand_and_create_animation` — validate animation approach |
-
-### Exit Criteria
-
-- [ ] Design spec written in `docs/specs/`
-- [ ] Every section has layout, content source, animation, and responsive behavior defined
-- [ ] Self-reviewed: implementable by a cold reader
+- [ ] `spec.md` written in the bundle folder
+- [ ] Every section defined (layout, content, animation, responsive)
+- [ ] Self-reviewed cold
 - [ ] Yesid approved
 
 ---
 
-## 6. Phase 4 — Implementation Plan
+## 7. Phase 4 — Implementation Plan
 
-**When:** After design spec is approved.
-**Goal:** Break the design into concrete, ordered tasks that can be implemented one at a time.
+**When:** After spec approved.
+**Goal:** Break the spec into Level 3 tasks, each with a STOP gate.
 
 ### Process
 
-1. **Invoke** `superpowers:writing-plans` — generates the plan structure.
-2. **Estimate sessions** — Each sub-slice gets a session count. Never assume one session. Default to multi-session.
-3. **Identify dependencies** — Tasks that depend on each other run sequentially. Independent tasks are candidates for parallel agents (with Yesid's approval only).
-4. **Write plan** — `docs/plans/YYYY-MM-DD-[name].md`
+1. Invoke `superpowers:writing-plans`.
+2. Estimate sessions — each sub-slice gets a session count. Default to multi-session.
+3. Identify dependencies — sequential tasks ordered; independent ones flagged as parallel candidates (with Yesid's approval).
+4. Write `plan.md` in the bundle folder.
 
-### Plan Structure (proven template from 11 plans)
+### Plan structure
 
 ```markdown
-# [Name] Implementation Plan
+# Sub-Slice <NN><letter> — Implementation Plan
 
-**Goal:** [one sentence]
-**Architecture:** [high-level approach]
-**Tech Stack:** [relevant subset]
-**Multi-session:** [how many sessions, one sub-slice per session]
-**Design spec:** [path to spec]
+Goal | Architecture | Tech Stack | Multi-session estimate | Design spec reference
 
 ## File Structure
-### Files to modify
-### Files to create
+  Files to modify / create
 
-## Sub-slice [NN][a]: [Name]
+## Task 1: <Name>
+  Files: ...
+  - [ ] Step 1
+  - [ ] Step 2
+  - [ ] Step 3: run tests + pre-flight visual check
+  **STOP. Ask Yesid to verify.**
 
-### Task 1: [Name]
-**Files:** [create/modify paths]
-- [ ] Step 1: [exact instruction]
-- [ ] Step 2: [exact instruction]
-- [ ] Step 3: Run tests
-**STOP. Ask Yesid to verify.**
-
-### Task 2: [Name]
-[same structure]
+## Task 2: <Name>
+  ...
 
 ## Execution Order
-[dependency graph]
-
 ## Out of Scope
-[prevents drift]
 ```
 
-### Sub-slice Convention
-
-Split into sub-slices (10a, 10b, 10c...) when:
-- 6+ tasks in a slice
-- Multiple concerns (data layer + UI + animation)
-- Tasks span different files/domains
-
-Each sub-slice gets its own handoff. Naming follows the pattern: `slice-09c-1`, `slice-09c-2a`.
-
-### Session Estimation Rules
+### Session estimation
 
 | Complexity | Tasks | Sessions |
-|-----------|-------|----------|
-| Data layer only | 2-3 | 1 |
-| Single component + tests | 3-4 | 1 |
-| Full page (multiple components) | 5-8 | 2-3 |
-| Interactive system (diagram, configurator) | 8+ | 3-4 |
-| Full site feature (multi-page) | 10+ | 4-8 |
+|------------|-------|----------|
+| Data layer only | 2–3 | 1 |
+| Single component + tests | 3–4 | 1 |
+| Full page | 5–8 | 2–3 |
+| Interactive system | 8+ | 3–4 |
+| Multi-page feature | 10+ | 4–8 |
 
-**Always tell Yesid the estimate upfront.** Never surprise with "this will take another session."
+**Always tell Yesid the estimate upfront.** Never surprise.
 
-### Tools
+### Exit criteria
 
-| Tool | Purpose |
-|------|---------|
-| `superpowers:writing-plans` | Structured plan generation |
-| `planner` agent | Complex feature implementation planning |
-| `architect` agent | Architectural decisions (data model, component structure) |
-
-### Exit Criteria
-
-- [ ] Plan written in `docs/plans/`
-- [ ] Sub-slices identified with session estimates
+- [ ] `plan.md` in bundle
+- [ ] Session estimate given
 - [ ] Dependencies mapped
-- [ ] Yesid reviewed and approved
+- [ ] Yesid approved
 
 ---
 
-## 7. Phase 5 — Slice Spec
+## 8. Phase 5 — Implementation (The Iteration Protocol)
 
-**When:** After plan is approved. Before any implementation.
-**Goal:** Convert the plan into a spec that CLAUDE.md's Iteration Protocol can execute.
+**You are done when Yesid says you are done.** Tests passing is necessary but not sufficient.
 
-### Process
-
-1. **Write slice spec** — `docs/slices/slice-NN-[name].md` using `docs/slices/_TEMPLATE.md`
-2. **Every task ends with STOP** — This is the approval gate. No batching.
-3. **Include acceptance criteria** — Specific, testable, no ambiguity.
-4. **Include Learn section** — Concepts Yesid should understand after this slice.
-
-### Spec Quality Checklist
-
-Before marking a spec ready:
-- [ ] Every task has explicit file paths (create/modify)
-- [ ] Every task ends with `**STOP. Ask Yesid to verify.**`
-- [ ] Acceptance criteria are testable (not "looks good")
-- [ ] Out of scope is defined (prevents drift)
-- [ ] Dependencies between tasks are documented
-- [ ] Learn section identifies concepts for `docs/learn/`
-
-### The Spec ≠ Implementation Details Rule
-
-Specs describe **outcomes**, not implementation. If a spec says "reduce max rotation from 3 to 1.5 degrees," the real spec is: "tilt should feel weighty and subtle, not jittery." Extract the desired OUTCOME, then decide the implementation. Log decisions in the devlog.
-
-### Exit Criteria
-
-- [ ] Slice spec written in `docs/slices/` using template
-- [ ] Every task has STOP gate
-- [ ] Acceptance criteria are specific and testable
-- [ ] Yesid approved the spec
-
----
-
-## 8. Phase 6 — Implementation (The Iteration Protocol)
-
-**When:** Slice spec is approved and ready.
-**Goal:** Build exactly what the spec says. No more, no less.
-
-### Per-Task Flow (never skip, never batch)
+### Per-task flow (never skip, never batch)
 
 ```
-1. READ the slice spec task
-     |
+1. READ the Level 3 task from plan.md
 2. IMPLEMENT one task
-     |
-3. RUN `bun run test` + `bun run check` → both must pass
-     |
-4. PRE-FLIGHT visual check (UI tasks only)
-     |  - State expected layout at desktop (1440px) and mobile (375px)
-     |  - Flag anything that might cause layout issues
-     |  - Fix obvious problems before showing Yesid
-     |
-5. STOP → Tell Yesid:
-     |  - What you built (one sentence)
-     |  - What to check on localhost:5173 (specific behaviors)
-     |  - Decisions made
-     |
-6. WAIT for Yesid's response
-     |
-7a. Issues reported → Fix, retest, STOP again
-7b. Approved → Move to next task, repeat from step 1
+3. RUN bun run test + bun run check → both pass
+4. PRE-FLIGHT visual check (UI tasks only):
+   — State expected layout at 1440px + 375px
+   — Flag overflow/missing content
+   — Fix obvious issues before STOP
+5. APPEND to log.md (running record) AND handoff.md (reviewer summary)
+6. STOP → Tell Yesid:
+   — What you built (one sentence)
+   — What to check at http://localhost:5173 (specific behaviors)
+   — Decisions made
+7. WAIT for Yesid's response
+8a. Issues → Fix, retest, STOP again
+8b. Approval → Next task, repeat from 1
 ```
 
-### Tools by Implementation Phase
+### Iteration rules (non-negotiable)
 
-**Data Layer Tasks:**
-| Tool | Purpose |
-|------|---------|
-| Svelte MCP | SvelteKit API patterns, type definitions |
-| Context7 | Library docs (Vitest, testing-library) |
-| `tdd-guide` agent | Enforce RED → GREEN → REFACTOR |
+1. Never batch multiple tasks. One task, one approval.
+2. Never write the final handoff summary before approval (but DO append per-task sections as tasks land).
+3. Never say "I think this should work." Yesid confirms on his screen.
+4. Never continue coding after completing a task. The STOP is mandatory.
+5. Ambiguous feedback → ask clarifying question before changing code.
+6. Never close a sub-slice without the handoff complete and OS-quirks/VOCAB updates done.
 
-**Component Building Tasks:**
-| Tool | Purpose |
-|------|---------|
-| Svelte MCP | `svelte-autofixer` — catch Svelte 5 runes mistakes |
-| GSAP Master MCP | `understand_and_create_animation`, `optimize_for_performance` |
-| Context7 | Tailwind v4 docs, GSAP API reference |
-| Claude Preview | `preview_start`, `preview_snapshot`, `preview_screenshot` — visual verification |
-| `frontend-design:frontend-design` | Component generation with brand constraints |
-
-**Animation Tasks:**
-| Tool | Purpose |
-|------|---------|
-| GSAP Master MCP | `create_production_pattern`, `debug_animation_issue` |
-| Three.js MCP | `learn_threejs` — Threlte scene building |
-| Chrome DevTools MCP | `performance_start_trace`, `performance_stop_trace` — animation performance |
-| `interaction-design:animation-principles` | GSAP choreography guidance |
-
-**Testing Tasks:**
-| Tool | Purpose |
-|------|---------|
-| `tdd-guide` agent | Write tests first, enforce 80%+ coverage |
-| Context7 | Vitest API, testing-library/svelte |
-| `build-error-resolver` agent | When `bun run check` fails |
-
-**Visual Verification (Claude Preview):**
-```
-preview_start → preview_snapshot → preview_console_logs
-  → fix issues → preview_screenshot → share proof with Yesid
-```
-
-### Iteration Rules (Non-Negotiable)
-
-1. **Never batch multiple tasks.** One task, one approval, then next.
-2. **Never write the handoff before approval.**
-3. **Never say "I think this should work."** Yesid confirms on his screen.
-4. **Never continue coding after completing a task.** The STOP is mandatory.
-5. **Ambiguous feedback:** Ask a clarifying question before changing code.
-6. **Never close a slice without updating docs/learn/.**
-
-### The Test Table (after every test run)
+### The test table (after every test run)
 
 ```
 | Test File | Test Name | Status | Failure Reason |
@@ -419,268 +299,211 @@ preview_start → preview_snapshot → preview_console_logs
 | src/...   | it(...)   | FAIL   | Expected X, got Y (line NN) |
 ```
 
-Never say "some tests failed" without listing every failure by name.
+**Never say "some tests failed" without listing every failure by name.**
 
-### Handling Iteration Feedback
+### Handling iteration feedback
 
-Feedback follows the pattern observed across 22 handoffs:
+| Feedback Type | Action |
+|--------------|--------|
+| Layout/positioning fix | Fix in component, retest, STOP |
+| Content change | Update data layer (never hardcode), retest, STOP |
+| Remove element | Remove, update tests, STOP |
+| Design pivot | Ask clarifying questions, may need new brainstorm |
+| Architecture change | Update spec (amendments log), may need new sub-slice |
 
-| Feedback Type | Action | Example |
-|--------------|--------|---------|
-| Layout/positioning fix | Fix in component, retest, STOP | "Terminal background shorter than wrapper" |
-| Content change | Update data layer (never hardcode), retest, STOP | "Change job title to digital infrastructure" |
-| Remove element | Remove, update tests, STOP | "Remove the orange line at the bottom" |
-| Design pivot | Ask clarifying questions, may need new brainstorm | "Merge hero + manifesto into one section" |
-| Architecture change | Update spec, may need new sub-slice | "All text must come from data layer" |
-
-**Average iterations per slice:** 2-4. Plan for this. First-try approval is rare and means the spec was unusually detailed.
+Average iterations per task: 2–4. Plan for this.
 
 ---
 
-## 9. Phase 7 — Verification
+## 9. Phase 6 — Verification
 
 **When:** After implementing a task, before STOP.
-**Goal:** Confirm the work is correct before presenting to Yesid.
+**Goal:** Confirm correctness before presenting to Yesid.
 
-### Process
-1. `bun run test` + `bun run check` — both must pass
-2. Pre-flight visual check (UI tasks) — state expected layout at desktop/mobile
-3. Screenshot proof via Claude Preview (UI tasks)
+1. `bun run test` + `bun run check` pass
+2. Pre-flight visual check for UI tasks
+3. Screenshot proof via Claude Preview for UI tasks
 4. Fix obvious problems before STOP
 
-**Tools:** See `CLAUDE.md` → Tool Selection Protocol → Verification Phase.
+Tools: see §19 Tool Selection Protocol → Verification.
 
 ---
 
-## 10. Phase 8 — PR & Merge
+## 10. Phase 7 — PR & Merge
 
-**When:** All tasks in the sub-slice are approved by Yesid.
-**Goal:** Create a PR, get final review, merge to main.
+**When:** All tasks in the sub-slice are approved. Handoff finalized.
 
-### Process
-1. Verify `bun run test` + `bun run check` pass on the branch
-2. Create PR with summary of all changes and test status
-3. Yesid reviews on GitHub
-4. Squash-merge to main
-5. Delete feature branch
-6. Next sub-slice branches from updated main
+1. Verify `bun run test` + `bun run check` pass on the branch.
+2. `gh pr create` with handoff.md content as the body.
+3. Yesid reviews on GitHub.
+4. Squash-merge to `main`.
+5. Delete feature branch.
+6. Run `bun run slice:close <N> <letter>` (the close-script) — mirrors bundle to cloud archive, deletes repo folder, updates `COMPLETED-SLICES.md`.
+7. Next sub-slice branches from updated `main`.
 
-**Full protocol:** See `CLAUDE.md` → Git & PR Workflow.
+**Commit convention:** `<type>(slice-NN<letter>): <description>`. Types: feat, fix, refactor, docs, test, chore, perf, ci.
 
----
-
-## 11. Phase 9 — Closing
-
-**When:** ALL tasks in the slice are approved by Yesid.
-**Goal:** Document everything, update all reference docs, commit.
-
-### Closing Checklist (in order)
-
-```
-1. HANDOFF REPORT
-   └─ docs/handoffs/handoff-slice-NN.md (use _TEMPLATE.md)
-   └─ All 14 sections filled honestly
-   └─ Every file created/modified listed
-   └─ Every error documented (even resolved ones)
-   └─ Iteration table shows all feedback rounds
-
-2. DEVLOG
-   └─ docs/devlog/YYYY-MM-DD.md (use _TEMPLATE.md)
-   └─ Session start/end times
-   └─ Every command executed
-   └─ Every decision with rationale
-   └─ Packages added (with why)
-
-3. ARCHITECTURE.md
-   └─ Update if structure changed (new routes, components, data types)
-
-4. README.md
-   └─ Update if setup/usage changed
-
-5. TESTS.md
-   └─ Update for every test added/changed/removed
-   └─ Place entries under correct category (Data Layer, Components, Motion, Routes)
-   └─ Never append to bottom — find the right section
-
-6. LEARNING DOCS
-   └─ docs/learn/[domain]/[concept].md
-   └─ Check: did this slice introduce any concept not yet documented?
-   └─ If missing: create using docs/learn/_template.md
-   └─ If exists: add new file paths to "How We Use It" table
-   └─ Update docs/learn/meta.json
-   └─ Obsidian format: YAML frontmatter, wikilinks, tags
-
-7. CSS.md (if any CSS changes)
-   └─ New tokens, @theme values, scoped styles, z-index values, animations
-   └─ Document: name, purpose, where consumed, why
-
-8. PATTERNS.md (if new patterns discovered)
-   └─ Name, problem, solution, files, reuse-when
-
-9. TREE.TXT
-   └─ cmd /c "tree /F /A | findstr /V /C:"node_modules" /C:".git" /C:".remember" /C:"bun.lockb" /C:".svelte-kit" /C:".vercel" /C:".DS_Store" > tree.txt"
-
-10. COMMIT
-    └─ git add -A && git commit -m "feat: complete slice NN — [short desc]" && git push
-```
-
-### Closing Tools
-
-| Tool | Purpose |
-|------|---------|
-| `superpowers:finishing-a-development-branch` | Branch completion workflow |
-| `superpowers:verification-before-completion` | Final verification before claiming done |
-| Chrome DevTools MCP | `lighthouse_audit` — performance score |
-| `chrome-devtools-mcp:a11y-debugging` | Accessibility check |
-| Playwright MCP | E2E critical flow verification |
-| `code-reviewer` agent | Final code quality review |
-| `vercel-plugin:deploy` | Deploy to production |
+**Branch naming:** `feature/slice-{NN}{letter}` — one branch per sub-slice.
 
 ---
 
-## 12. Quality Gates
+## 11. Phase 8 — Closing Checklist
 
-### Before Every Task Completion
+**When:** ALL Level 3 tasks approved. PR ready to create OR just squash-merged.
+
+**Hard checklist — every item mandatory, in order:**
+
+1. **Finalize `handoff.md`** — add `## Summary` + `## PR Body` sections. All per-task appends verified complete.
+2. **Governance doc updates:**
+   - `docs/reference/CONSTITUTION.md` — if any constitutional principle changed
+   - `docs/reference/CSS.md` — if tokens, @theme values, scoped styles, z-index, or animation CSS changed
+   - `docs/reference/MOTION.md` — if motion patterns, signatures, or tooling changed
+   - `docs/reference/TESTS.md` — every test added/changed/removed, placed in correct category
+   - `docs/reference/ARCHITECTURE.md` — if file structure, component tree, or data flow changed
+   - `docs/reference/PATTERNS.md` — every reusable solution discovered
+3. **VOCAB.md update** — any new brand / industry / workflow term introduced in the sub-slice added to `docs/reference/VOCAB.md`.
+4. **OS-quirk logging** — if the slice solved a platform-specific issue (robocopy quirk, Node flag, shell escaping), append to `<cloud>/claude-knowledge/os-quirks/<os>.md` with Problem / Root cause / Fix / Date / Slice. **Hard step, not a suggestion.**
+5. **Learn doc** — if the slice introduced a durable concept worth codifying, write `<cloud>/yesid.dev/docs/learn/<domain>/<concept>.md` (Obsidian format: YAML frontmatter, `[[wikilinks]]`, tags).
+6. **`tree.txt`** — regenerate:
+   ```powershell
+   cmd /c "tree /F /A | findstr /V /C:\"node_modules\" /C:\".git\" /C:\".remember\" /C:\"bun.lockb\" /C:\".svelte-kit\" /C:\".vercel\" /C:\".DS_Store\" > tree.txt"
+   ```
+7. **Commit, push, create PR** — `gh pr create --title "..." --body-file path/to/handoff.md` (or derived PR body).
+8. **Post-merge:** `bun run slice:close <N> <letter>` — bundles moves to cloud, folder deleted, index updated.
+
+**The workflow self-enhances:** any mistake caught during this sub-slice becomes a permanent checklist rule here. If you had to re-learn something, it belongs in an OS-quirk, learn doc, VOCAB entry, or PATTERN entry before the slice closes.
+
+---
+
+## 12. Cross-Platform Setup + OS-Quirks Registry
+
+The workflow is OS-agnostic via one env var + a persistent quirks registry.
+
+### Env var
+
+**`YESITO_CLOUD_ROOT`** — points to the local cloud directory.
+
+| OS | Default |
+|----|---------|
+| Windows | `C:\Users\<user>\Yesito\cloud` |
+| macOS | `~/Yesito/cloud` |
+| Linux | `~/Yesito/cloud` |
+
+Set via shell profile (Unix) or System Environment Variables (Windows). Scripts fall back to `path.join(os.homedir(), 'Yesito', 'cloud')`.
+
+### OS-quirks registry
+
+Lives at `<cloud>/claude-knowledge/os-quirks/`:
+
+- `README.md` — how the registry works
+- `windows.md` — Windows-specific command fixes
+- `macos.md` — macOS-specific
+- `linux.md` — Linux-specific
+- `cross-platform.md` — universal patterns
+
+**Retrieval:** Before troubleshooting a platform command, check the relevant file. Grep first, ask second.
+
+**Write rule:** When solving an OS-specific issue, append to the relevant file with: Problem / Root cause / Fix / Date / Slice. This is enforced as step 4 of the closing checklist.
+
+---
+
+## 13. Quality Gates
+
+### Before every task completion
 
 - [ ] `bun run test` passes
-- [ ] `bun run check` passes (zero type errors)
-- [ ] Pre-flight visual check done (UI tasks)
-- [ ] No hardcoded strings (all through data layer + LocalizedString)
-- [ ] No hardcoded colors (all through tokens.css or Tailwind brand)
+- [ ] `bun run check` passes (zero errors)
+- [ ] Pre-flight visual check done (UI)
+- [ ] No hardcoded strings (data layer + LocalizedString)
+- [ ] No hardcoded colors (tokens.css or Tailwind brand)
 - [ ] Error handling present
-- [ ] `prefers-reduced-motion` respected (animation tasks)
+- [ ] `prefers-reduced-motion` respected (animation)
 
-### Before Every Slice Close
+### Before every sub-slice close
 
 - [ ] All tasks approved by Yesid
-- [ ] Handoff report complete (all 14 sections)
-- [ ] Devlog written
-- [ ] TESTS.md updated
-- [ ] PATTERNS.md updated (if applicable)
-- [ ] Learning docs updated (mandatory — slice isn't done without this)
-- [ ] tree.txt regenerated
-- [ ] `bun run test` — full suite green
-- [ ] `bun run check` — zero errors
+- [ ] `handoff.md` finalized (Summary + PR Body sections added)
+- [ ] All governance doc updates done
+- [ ] VOCAB entries added for new terms
+- [ ] OS-quirks appended (if any)
+- [ ] Learn docs written (if durable concepts)
+- [ ] `tree.txt` regenerated
+- [ ] Full test suite green
 
-### Before Deploy
+### Before deploy (eventual)
 
-- [ ] Lighthouse audit: Performance > 90, Accessibility > 90
+- [ ] Lighthouse: Performance > 90, Accessibility > 90
 - [ ] Mobile tested at 375px
 - [ ] No console errors
 - [ ] JSON-LD schema valid
-- [ ] Brand compliance: colors, fonts, dark theme, "yesid." formatting
+- [ ] Brand compliance verified
 
 ---
 
-## 13. Parallel Work Rules
+## 14. Parallel Work Rules
 
-### When Parallel Agents Are Allowed
+### Allowed
 
 - **Research only** — Multiple agents scanning different reference sites
-- **Independent exploration** — Searching docs, reading files with no dependency
+- **Independent exploration** — Reading, searching with no dependency
 - **Yesid must approve** — Never self-decide to parallelize implementation
 
-### When Parallel Agents Are NOT Allowed
+### Not allowed
 
 - Implementation tasks with dependencies
 - Anything that writes to the same files
-- When parallelizing would scatter thinking or degrade quality
+- When parallelizing would scatter thinking
 
-### Agent Selection Guide
+### Agent selection
 
 | Situation | Agent | Why |
 |-----------|-------|-----|
-| Complex feature request | `planner` | Break into phases before coding |
-| Code just written | `code-reviewer` | Quality check immediately |
-| Bug fix or new feature | `tdd-guide` | Write tests first |
-| Architectural decision | `architect` | System design analysis |
-| Build fails | `build-error-resolver` | Fix with minimal diffs |
-| Security-sensitive code | `security-reviewer` | OWASP Top 10 check |
+| Complex feature request | `planner` | Break into phases |
+| Code just written | `code-reviewer` | Quality check |
+| Bug fix or new feature | `tdd-guide` | Tests first |
+| Architectural decision | `architect` | System design |
+| Build fails | `build-error-resolver` | Minimal diffs |
+| Security-sensitive | `security-reviewer` | OWASP check |
 | Performance concern | `performance-optimizer` | Bottleneck analysis |
-| E2E user flow | `e2e-runner` | Playwright test generation |
-| Need codebase context | `Explore` agent | Fast multi-file search |
+| E2E flow | `e2e-runner` | Playwright generation |
+| Codebase search | `Explore` | Multi-file search |
 
 ---
 
-## 14. Data-Driven Architecture (Non-Negotiable)
+## 15. Data-Driven Architecture (Non-Negotiable)
 
-Every string on the site comes from the data layer. This is not optional.
-
-### Content Flow
+Every string on the site comes from the data layer. Not optional.
 
 ```
-src/lib/data/types.ts          → Interface definitions
-src/lib/data/[domain].ts       → Content objects (LocalizedString)
-src/lib/data/index.ts          → Barrel exports
-Component.svelte               → resolveLocale(content.field)
+src/lib/data/types.ts       → Interface definitions
+src/lib/data/<domain>.ts    → Content objects (LocalizedString)
+src/lib/data/index.ts       → Barrel exports
+Component.svelte            → resolveLocale(content.field)
 ```
 
-### Adding Content Checklist
+### Adding content
 
-1. Define the interface in `types.ts` (or extend existing)
+1. Define interface in `types.ts`
 2. Create content object in a data file
 3. Export from `index.ts`
-4. Component imports from `$lib/data` and calls `resolveLocale()`
+4. Component imports from `$lib/data`, calls `resolveLocale()`
 5. Write data integrity tests
-6. Never put a raw string in a `.svelte` file
+6. **Never put a raw string in a `.svelte` file**
 
-### The COALESCE Pattern
+### COALESCE pattern
 
 ```typescript
 resolveLocale({ en: "Hello", fr: "Bonjour" }, 'es')
-// Returns "Hello" — falls through to English
-// Empty strings treated as missing values
+// → "Hello" (falls through to English). Empty strings treated as missing.
 ```
 
 ---
 
-## 15. CSS Architecture Enforcement
+## 16. CSS + Motion (pointers)
 
-Three layers, strict separation. See `docs/reference/CSS.md` for the full reference.
+**CSS:** Full rules in `docs/reference/CSS.md`. Governance in `CONSTITUTION.md`. Three layers: semantic tokens (`src/lib/styles/tokens.css`) → brand utilities (`src/app.css` `@theme`) → component scope (`<style>`). Top rules: zero hardcoded colors, no `!important`, no inline `style=`, mobile-first, logical properties, no `vh`, no arbitrary Tailwind spacing.
 
-```
-tokens.css (semantic tokens)
-    ↓ consumed by
-app.css @theme (brand utilities)
-    ↓ consumed by
-Component <style> (scoped layout)
-```
-
-### Before Adding Any CSS
-
-1. Check: Does a token exist? → Use `var(--token)`
-2. Check: Does a Tailwind class exist? → Use the class
-3. Neither exists? → Add to `tokens.css` first, then document in CSS.md
-4. Complex layout? → Use scoped `<style>` in the component
-
----
-
-## 16. Animation Workflow
-
-### Before Animating
-
-1. Read `docs/reference/MOTION.md` — The motion language, principles, and toolkit
-2. Check `docs/reference/PATTERNS.md` — Solved animation patterns (entrance guards, SplitText cleanup, FLIP conflicts, etc.)
-3. Verify API with GSAP Master MCP — Never guess GSAP method signatures
-
-### Animation Checklist
-
-- [ ] Follows MOTION.md principles (directional, earned, spring physics, layered timing, purposeful)
-- [ ] `prefers-reduced-motion` respected
-- [ ] ScrollTrigger cleaned up on destroy
-- [ ] SplitText reverted in correct order (inner before outer)
-- [ ] Entrance animation guards hover handlers (`entranceDone` flag)
-- [ ] No competing transforms on the same element
-
-### Tools for Animation
-
-| Tool | Purpose |
-|------|---------|
-| GSAP Master MCP | `understand_and_create_animation` — design animation approach |
-| GSAP Master MCP | `optimize_for_performance` — audit animation performance |
-| GSAP Master MCP | `debug_animation_issue` — fix broken animations |
-| Chrome DevTools MCP | `performance_start_trace` / `performance_stop_trace` — frame rate analysis |
-| Context7 | GSAP ScrollTrigger, SplitText, DrawSVG, MorphSVG, MotionPath API docs |
+**Motion:** Full reference in `docs/reference/MOTION.md` v2. Snappy Doctrine in `CONSTITUTION.md §8`. 9-signature vocabulary. Shared `gsap.ticker` with IO-gated subscribers. Lazy GSAP plugins. Always verify GSAP API with GSAP Master MCP or Context7. `prefers-reduced-motion` respected everywhere.
 
 ---
 
@@ -688,14 +511,13 @@ Component <style> (scoped layout)
 
 Every session begins with:
 
-1. **Declare session type** — Planning, Implementation, or Closing
-2. **Read checkpoint** — `docs/slices/slice-{NN}-checkpoint.md` → resume where we left off
-3. **Check out feature branch** — `git checkout feature/slice-{current}`
+1. **Declare session type** — Planning, Implementation, Closing, or Non-slice
+2. **Read checkpoint** — `docs/slices/slice-NN-checkpoint.md` (or `docs/slices/slice-NN/CHECKPOINT.md` after Task 3b of Slice 17j) → resume where we left off
+3. **Check out feature branch** — `git checkout feature/slice-NN<letter>`
 4. **Scan for drift** — Check for uncommitted changes or commits made outside Claude Code
-5. **Read active slice spec** — `docs/slices/slice-NN.md`
-6. **Check PATTERNS.md** — Any relevant solved patterns?
-7. **Check memory** — Load relevant context from previous sessions
-8. **State the goal** — What does "done" look like for this session?
+5. **Read active bundle** — `spec.md`, `plan.md`, `log.md`, `handoff.md`
+6. **Check PATTERNS.md + VOCAB.md** — Any relevant solved patterns? Any term already codified?
+7. **State the goal** — What does "done" look like for this session?
 
 ---
 
@@ -703,90 +525,211 @@ Every session begins with:
 
 Every session ends with:
 
-1. **Update checkpoint** — `docs/slices/slice-{NN}-checkpoint.md` with current position
-2. **Devlog entry** — What was done, decisions made, commands run
-3. **Memory update** — Save non-obvious decisions and context for future sessions
-4. **State next steps** — What should the next session start with?
-5. **Tests passing** — Confirm `bun run test` and `bun run check` both green
-6. **No loose ends** — Every open question documented in devlog
-7. **Commit** — All changes committed to the feature branch
+1. **Update checkpoint** — Current position (sub-slice, task, next step)
+2. **Append to `log.md`** — What was done, decisions, commands, errors
+3. **Append to `handoff.md`** — If tasks landed, add their sections
+4. **Ensure tests pass** — `bun run test` + `bun run check` green
+5. **Commit** — All changes on the feature branch
+6. **State next steps** — What should the next session start with?
 
 ---
 
-## 19. Document Ecosystem
+## 19. Tool Selection Protocol
+
+At each phase transition, invoke relevant tools. Proactive tool use = higher quality output.
+
+### Research Phase
+
+ALWAYS:
+- Chrome DevTools MCP → multi-breakpoint competitive scan
+- Context7 MCP → verify API signatures before assuming
+- `frontend-design-pro:analyze-site` → structured site analysis
+- `frontend-design-pro:trend-researcher` → current UI/UX trends
+
+CONSIDER:
+- `frontend-design-pro:inspiration-analyzer` → studying specific reference sites
+- `deep-research` → broader web research needed
+- Figma MCP → Figma designs exist for the feature
+
+### Brainstorm Phase
+
+ALWAYS:
+- `superpowers:brainstorming` → mandatory, never skip
+- Visual companion → offer for any question with visual content
+
+CONSIDER:
+- `frontend-design-pro:design-wizard` → interactive design decisions
+- `frontend-design-pro:color-curator` → color palette exploration
+- `frontend-design-pro:typography-selector` → font pairing decisions
+- `ui-design:color-system` → designing color tokens
+- `ui-design:typography-scale` → designing type scales
+- `ui-design:spacing-system` → designing spacing tokens
+- `design-systems:design-token` → organizing token architecture
+- `design-systems:naming-convention` → naming tokens/components
+- `design-systems:theming-system` → designing theme switching
+- `interaction-design:animation-principles` → designing motion
+
+### Planning Phase
+
+ALWAYS:
+- `superpowers:writing-plans` → structured plan creation
+- Planner agent → complex feature decomposition
+
+CONSIDER:
+- Architect agent → architectural decisions
+- `engineering:architecture` → system design evaluation
+- `engineering:testing-strategy` → planning test approach
+- `engineering:tech-debt` → planning refactors
+- `api-design` → designing service layer interfaces
+
+### Implementation Phase
+
+ALWAYS:
+- Svelte MCP (`svelte-autofixer`) → every Svelte file edit
+- Context7 MCP → before using any library API
+- `superpowers:executing-plans` → follow the plan
+- Claude Preview → visual verification after UI tasks
+
+CONSIDER:
+- GSAP Master MCP → any animation work
+- `tdd-workflow` → new features (RED → GREEN → REFACTOR)
+- `design-systems:component-spec` → building shared components
+- `design-systems:accessibility-audit` → adding ARIA/a11y
+- `design-systems:pattern-library` → organizing shared patterns
+- `ui-design:responsive-design` → responsive layout decisions
+- `ui-design:dark-mode-design` → theme-aware component work
+- `ui-design:visual-hierarchy` → layout and emphasis decisions
+- `interaction-design:micro-interaction-spec` → hover/click interactions
+- `interaction-design:state-machine` → complex component states
+- `interaction-design:loading-states` → loading/skeleton patterns
+
+### Code Review Phase (after every task)
+
+ALWAYS:
+- Code Reviewer agent → general quality
+- TypeScript Reviewer agent → TS-specific issues
+
+CONSIDER:
+- Security Reviewer agent → auth, input handling, API calls
+- `engineering:code-review` → structured review checklist
+- `prototyping-testing:heuristic-evaluation` → UI quality check
+
+### Verification Phase (before every STOP)
+
+ALWAYS:
+- `superpowers:verification-before-completion` → pre-completion check
+- Claude Preview → screenshot proof for UI tasks
+
+CONSIDER:
+- Chrome DevTools MCP (`lighthouse_audit`) → performance check
+- `prototyping-testing:accessibility-test-plan` → a11y verification
+
+### PR & Merge Phase
+
+ALWAYS:
+- `superpowers:finishing-a-development-branch` → PR readiness checklist
+- `commit-commands:commit-push-pr` → create the PR
+- GitHub MCP → PR management
+
+### Closing Phase
+
+ALWAYS:
+- Doc Updater agent → update ARCHITECTURE.md, README, TESTS.md
+- `engineering:documentation` → technical docs quality
+
+CONSIDER:
+- `continuous-learning` → extract patterns from this slice's work
+- `design-systems:documentation-template` → structured docs
+
+### Proactive Tool Triggers (Hard Rules)
+
+1. Editing a `.svelte` file? → Check Svelte MCP autofixer
+2. Using any library API? → Verify with Context7 first
+3. Touching animation code? → Consult GSAP Master MCP
+4. Adding/changing CSS tokens? → Use `design-systems:design-token`
+5. Building a shared component? → Use `design-systems:component-spec`
+6. Writing tests? → Use `engineering:testing-strategy`
+7. About to claim "done"? → Run `verification-before-completion`
+8. Creating a PR? → Run `finishing-a-development-branch` first
+9. Starting any plan? → Run `superpowers:brainstorming` first
+10. Refactoring code? → Use `engineering:tech-debt` to assess scope
+11. Hitting an OS-specific command error? → Check `<cloud>/claude-knowledge/os-quirks/<os>.md` FIRST
+
+---
+
+## 20. Document Ecosystem
+
+**Tier 1 — always loaded, in repo:**
 
 | Document | Purpose | Update Frequency |
-|----------|---------|-----------------|
-| `CLAUDE.md` | Rules, protocols, brand | When rules change |
-| `docs/reference/WORKFLOW.md` | This file — how work flows | When process evolves |
-| `docs/roadmap/PLAN.md` | Master roadmap, slice table, summaries | Every slice close |
-| `docs/reference/MOTION.md` | Animation language and toolkit | When motion patterns change |
+|----------|---------|------------------|
+| `CLAUDE.md` | Rules, core principles, hard rules, brand | When rules change |
+| `docs/reference/WORKFLOW.md` | This file — operational mechanics | When process evolves |
+| `docs/reference/CONSTITUTION.md` | Codebase law | When a principle changes |
+| `docs/reference/CSS.md` | Token catalog, style rules | Every CSS change |
+| `docs/reference/MOTION.md` | Animation language + toolkit | When motion patterns change |
 | `docs/reference/PATTERNS.md` | Reusable solutions catalog | After every slice (if new patterns) |
 | `docs/reference/ARCHITECTURE.md` | File structure, component tree, data flow | When structure changes |
 | `docs/reference/TESTS.md` | Test file index | Every test add/change/remove |
-| `docs/reference/CSS.md` | Token catalog, style rules | Every CSS change |
-| `docs/roadmap/FUTURE_PHASES.md` | Post-launch roadmap (parked) | When Phase A ships |
-| `docs/slices/` | Slice specs (one per feature) | Before implementation |
-| `docs/specs/` | Design specs | During design phase |
-| `docs/plans/` | Implementation plans | During planning phase |
-| `docs/handoffs/` | Completion reports | After slice approval |
-| `docs/devlog/` | Daily work logs | Every session |
-| `docs/learn/` | Knowledge base for Yesid | Every slice close |
-| `docs/README.md` | Directory index | When docs structure changes |
-| `docs/slices/slice-{NN}-checkpoint.md` | Session continuity checkpoint | Every session start/end |
+| `docs/reference/VOCAB.md` | Shared lexicon | Every slice close (new terms) |
+| `docs/reference/ARCHIVE.md` | Three-tier model + retrieval/write protocols | When archival model evolves |
+| `docs/roadmap/PLAN.md` | Per-project master plan + slice index | Every slice close |
+| `docs/roadmap/FUTURE_PHASES.md` | Parked cross-project wishlist | When Phase A ships |
+| `docs/slices/slice-NN/README.md` | Per-Level-1-slice direction + sub-slice index | Per sub-slice close |
+| `docs/slices/slice-NN/CHECKPOINT.md` | Live slice state | Every session start/end |
+| `docs/slices/slice-NN/slice-NN<letter>/` | Active sub-slice bundle (4 files) | Per session |
+| `docs/sessions/` | Non-slice session records | Per non-slice session |
+
+**Tier 2 — fetch-on-command, in cloud:**
+
+| Location | Purpose |
+|----------|---------|
+| `<cloud>/yesid.dev/docs/archive/slices/slice-NN/slice-NN<letter>/` | Shipped sub-slice bundles |
+| `<cloud>/yesid.dev/docs/learn/<domain>/<concept>.md` | Yesid's Obsidian knowledge base |
+| `<cloud>/claude-knowledge/token-efficacy/` | Portable research corpus |
+| `<cloud>/claude-knowledge/os-quirks/<os>.md` | Cross-project OS command registry |
+| `<cloud>/claude-config/` | Config snapshots |
+
+**Tier 3 — cloud indexes (the bridge):**
+
+| Location | Purpose |
+|----------|---------|
+| `<cloud>/yesid.dev/docs/COMPLETED-SLICES.md` | One-liner index of every shipped slice |
+| `<cloud>/yesid.dev/docs/INDEX.md` | Cloud mirror map |
 
 ---
 
-## 20. Proven Rhythms (Extracted from 22 Slices)
+## 21. Proven Rhythms (Extracted from 22+ Slices)
 
-### What Works
+### What works
 
-- **One task, one approval.** Batching tasks always leads to rework. The overhead of stopping is cheaper than the cost of building the wrong thing for 3 tasks.
-- **Design before code.** Every slice that started with a brainstorm + design spec had fewer iterations (2-3) than slices that jumped to code (4-5+). Slice 06d took 5 iterations; slices 11-12 took 2 each after the design spec practice was established.
-- **Data layer first.** Build types and content before components. Components that import from `$lib/data` are immediately testable. Components with inline strings are not.
-- **Pre-flight catches 80% of visual bugs.** Reading your own code for layout issues before showing Yesid eliminates most "the background is shorter than the wrapper" feedback rounds.
-- **PATTERNS.md saves hours.** The entrance animation hover guard, SplitText cleanup order, and SVG paint-server patterns were each discovered through painful iteration. Consulting PATTERNS.md before implementing animation avoids repeating those lessons.
+- **One task, one approval.** Batching always leads to rework.
+- **Design before code.** Brainstorm + spec = 2–3 iterations. Skip them = 4–5+.
+- **Data layer first.** Types + content before components. Testable from day one.
+- **Pre-flight catches 80% of visual bugs.** Read your own code for layout issues before STOP.
+- **PATTERNS.md saves hours.** Entrance-animation hover guard, SplitText cleanup, SVG paint-server — each discovered painfully once. Consult before implementing.
+- **Self-appending handoff > end-of-slice handoff.** Appending per-task catches decisions while they're fresh.
 
-### What Doesn't Work
+### What doesn't work
 
-- **Jumping to code without a spec.** Results in scope creep, rework, and "I thought the spec said..." conversations.
-- **Parallel implementation without approval.** Produces lower quality and makes feedback harder to apply.
-- **Guessing GSAP/Svelte APIs.** Always verify with Context7 or GSAP Master MCP. The API you remember is often wrong or outdated.
-- **Hardcoding content "to iterate faster."** Always creates cleanup work later. The data layer is fast to write and makes testing trivial.
-- **Skipping pre-flight visual check.** The first 3 iterations of most slices were wasted on obvious layout problems that code review would have caught.
+- Jumping to code without a spec → scope creep and rework
+- Parallel implementation without approval → lower quality, feedback harder to apply
+- Guessing GSAP/Svelte APIs → verify with Context7 or GSAP Master MCP
+- Hardcoding content "to iterate faster" → always creates cleanup work
+- Skipping pre-flight visual check → obvious layout problems hit Yesid
+- Manual mirror-and-delete at close → loses the index update, accretion returns
 
 ---
 
-## 21. Quick Reference: Plugin-to-Phase Map
+## 22. The Self-Enhancing Workflow (Core Principle)
 
-| Phase | Primary Plugins/Tools |
-|-------|----------------------|
-| **Research** | Chrome DevTools MCP, `frontend-design-pro:analyze-site`, `frontend-design-pro:trend-researcher`, Context7 |
-| **Brainstorm** | `superpowers:brainstorming`, `web-designer`, `frontend-design-pro:design-wizard`, `ui-design:*`, `interaction-design:*` |
-| **Design Spec** | `design-systems:component-spec`, `interaction-design:micro-interaction-spec`, `ui-design:responsive-design`, GSAP Master |
-| **Planning** | `superpowers:writing-plans`, `planner` agent, `architect` agent |
-| **Implementation** | Svelte MCP, GSAP Master, Context7, Claude Preview, `tdd-guide`, `build-error-resolver` |
-| **Quality** | `code-reviewer`, `security-reviewer`, Chrome DevTools `lighthouse_audit`, Playwright MCP |
-| **Verification** | `superpowers:verification-before-completion`, Claude Preview, Chrome DevTools `lighthouse_audit` |
-| **PR & Merge** | `superpowers:finishing-a-development-branch`, `commit-commands:commit-push-pr`, GitHub MCP |
-| **Closing** | Doc Updater agent, `engineering:documentation`, `continuous-learning`, `vercel-plugin:deploy` |
+Every mistake solved in one sub-slice becomes a closing-checklist rule so it cannot recur. Quality compounds slice-over-slice.
 
-**Full tool protocol with ALWAYS/CONSIDER lists:** See `CLAUDE.md` → Tool Selection Protocol.
+If during a sub-slice you:
+- Re-solved an OS command issue → it belongs in `os-quirks/<os>.md`
+- Re-invented a pattern → it belongs in `PATTERNS.md`
+- Re-derived a term → it belongs in `VOCAB.md`
+- Re-learned a codebase principle → it belongs in `CONSTITUTION.md`
+- Re-discovered a durable concept → it belongs in learn/
 
-### Enhancement Opportunities (Skills Not Yet Wired In)
-
-| Tool | What It Does | When To Use |
-|------|-------------|-------------|
-| `superpowers:finishing-a-development-branch` | PR checklist before merge | End of every sub-slice |
-| `superpowers:verification-before-completion` | Pre-completion sanity check | Before every STOP |
-| `frontend-design-pro:design-wizard` | Interactive design decisions | During brainstorm sessions |
-| `engineering:code-review` | Structured code review | After implementation tasks |
-| `engineering:testing-strategy` | Test plan design | 17f (test architecture) |
-| `design-systems:design-token` | Token organization | 17a (CSS consolidation) |
-| `design-systems:component-spec` | Component API specs | 17d (component standardization) |
-| `design-systems:theming-system` | Theme architecture | 17a (light theme prep) |
-| `design-systems:accessibility-audit` | WCAG compliance | 17d (ARIA audit) |
-| `design-systems:pattern-library` | Pattern organization | 17d (shared UI shells) |
-| `interaction-design:animation-principles` | Motion language | 17e (motion consolidation) |
-| `ui-design:responsive-design` | Responsive strategy | 17a (breakpoint system) |
-| `continuous-learning` | Pattern extraction | Every closing session |
+Before closing, ask: "what did I learn that I don't want to re-learn?" Codify it. The workflow gets smarter automatically.
