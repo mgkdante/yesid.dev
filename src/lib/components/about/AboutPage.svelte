@@ -6,8 +6,8 @@
   All content from aboutPageContent via data layer.
 -->
 <script lang="ts">
-	import { aboutPageContent } from '$lib/data/about-page.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { aboutPageContent } from '$lib/content/about-page';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Separator } from '$lib/components/ui/separator';
@@ -56,17 +56,17 @@
 		<div class="dashboard">
 
 				<!-- SELL ROW 1 -->
-				<div class="area-identity"><AboutIdentity identity={c.identity} stop={s[0]} label="IDENTITY" /></div>
-				<div class="area-metrics"><AboutMetrics metrics={c.metrics} stop={s[1]} label="METRICS" /></div>
-				<div class="area-testimonials"><AboutTestimonials testimonials={c.testimonials} stop={s[4]} label="TESTIMONIALS" /></div>
+				<div class="area-identity"><AboutIdentity identity={c.identity} stop={s[0]} label={resolveLocale(c.stopLabels.identity, 'en')} /></div>
+				<div class="area-metrics"><AboutMetrics metrics={c.metrics} stop={s[1]} label={resolveLocale(c.stopLabels.metrics, 'en')} /></div>
+				<div class="area-testimonials"><AboutTestimonials testimonials={c.testimonials} stop={s[4]} label={resolveLocale(c.stopLabels.testimonials, 'en')} /></div>
 
 				<!-- SELL ROW 2 -->
-				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label="PROCESS" /></div>
+				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label={resolveLocale(c.stopLabels.process, 'en')} /></div>
 				<div class="area-stack">
 					<div class="group h-full" use:cursorGlow>
 					<Card class="relative h-full p-3" data-testid="about-tech-stack">
 						<div class="relative flex h-full flex-col">
-							<StopLabel stop={s[3]} label="STACK" />
+							<StopLabel stop={s[3]} label={resolveLocale(c.stopLabels.stack, 'en')} />
 							<div class="mt-2 flex flex-1 flex-col justify-center gap-2">
 								{#each stackCategories as [category, items]}
 									<div>
@@ -87,14 +87,14 @@
 				</div>
 
 				<!-- SELL/PERSONAL ROW 3 -->
-				<div class="area-clients"><AboutLogos logos={c.clientLogos} count={c.clientCount} stop={s[5]} label="CLIENTS" /></div>
-				<div class="area-interests"><AboutInterests interests={c.interests} stop={s[7]} label="INTERESTS" /></div>
-				<div class="area-snapshots" data-testid="about-polaroids-cell"><AboutPolaroids polaroids={c.identity.polaroids} stop={s[8]} label="SNAPSHOTS" /></div>
+				<div class="area-clients"><AboutLogos logos={c.clientLogos} count={c.clientCount} stop={s[5]} label={resolveLocale(c.stopLabels.clients, 'en')} /></div>
+				<div class="area-interests"><AboutInterests interests={c.interests} stop={s[7]} label={resolveLocale(c.stopLabels.interests, 'en')} /></div>
+				<div class="area-snapshots" data-testid="about-polaroids-cell"><AboutPolaroids polaroids={c.identity.polaroids} stop={s[8]} label={resolveLocale(c.stopLabels.snapshots, 'en')} /></div>
 
 				<!-- ACTION ROW 4 -->
-				<div class="area-weather"><AboutWeather config={c.weather} {weather} stop={s[6]} label="LOCATION" /></div>
+				<div class="area-weather"><AboutWeather config={c.weather} {weather} stop={s[6]} label={resolveLocale(c.stopLabels.location, 'en')} /></div>
 				<div class="area-train"><AboutTrain /></div>
-				<div class="area-cta"><AboutCta cta={c.cta} stop={s[9]} label="NEXT" /></div>
+				<div class="area-cta"><AboutCta cta={c.cta} stop={s[9]} label={resolveLocale(c.stopLabels.next, 'en')} /></div>
 
 			</div>
 		</div>

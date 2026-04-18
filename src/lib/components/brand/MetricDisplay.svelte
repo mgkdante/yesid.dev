@@ -3,7 +3,7 @@
   Brand primitive: replaces 6+ scattered metric implementations.
 -->
 <script lang="ts">
-  import { cn } from '$lib/utils.js';
+  import { cn } from '$lib/utils';
   import type { HTMLAttributes } from 'svelte/elements';
 
   export interface MetricDisplayProps extends HTMLAttributes<HTMLDivElement> {

@@ -6,9 +6,10 @@
   Uses bits-ui Collapsible for a11y (aria-controls, aria-expanded, focus management).
 -->
 <script lang="ts">
-	import { resolveLocale } from '$lib/data/locale.js';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { projectsListingContent } from '$lib/content/projects';
 
 	let {
 		serviceIds,
@@ -36,13 +37,15 @@
 
 	let open = $state(false);
 
+	// Labels pulled from content layer (Task 17b-7d). Same object as
+	// ProjectFilterSidebar for deduplication.
 	const labels = {
-		filters: { en: 'Filters' },
-		services: { en: 'Services' },
-		tags: { en: 'Tags' },
-		stack: { en: 'Tech Stack' },
-		all: { en: 'All' },
-		showing: { en: 'Showing' }
+		filters: projectsListingContent.filters.filtersLabel,
+		services: projectsListingContent.filters.services,
+		tags: projectsListingContent.filters.tags,
+		stack: projectsListingContent.filters.techStack,
+		all: projectsListingContent.filters.allLabel,
+		showing: projectsListingContent.filters.showingPrefix,
 	};
 
 	let summary = $derived.by(() => {

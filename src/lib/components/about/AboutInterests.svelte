@@ -5,13 +5,13 @@
   Stop label always top-left.
 -->
 <script lang="ts">
-	import type { AboutInterest } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutInterest } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { interests, stop = '07', label = 'INTERESTS' }: { interests: readonly AboutInterest[]; stop?: string; label?: string } = $props();
+	let { interests, stop, label }: { interests: readonly AboutInterest[]; stop: string; label: string } = $props();
 
 	// Mobile tap toggle: track which strip is active (-1 = none)
 	let activeIndex = $state(-1);

@@ -19,11 +19,17 @@
 </script>
 
 <script lang="ts">
+  import { resolveLocale } from '$lib/utils/locale';
+  import { blogListingContent } from '$lib/content/blog';
+
   let {
     headings,
     activeHeadingId,
     class: className = ''
   }: BlogRouteMapProps = $props();
+
+  const routeMapLabel = resolveLocale(blogListingContent.routeMap.title, 'en');
+  const terminusLabel = resolveLocale(blogListingContent.routeMap.terminus, 'en');
 
   const CX = 50;
   const START_Y = 30;
@@ -73,7 +79,7 @@
 </script>
 
 <div class="route-map {className}" data-testid="blog-route-map">
-  <div class="route-map__label">Route Map</div>
+  <div class="route-map__label">{routeMapLabel}</div>
 
   <svg
     class="route-map__svg"
@@ -128,7 +134,7 @@
     <circle class="route-station--terminus" cx={CX} cy={svgHeight - 20} r="5" />
   </svg>
 
-  <div class="route-map__terminus-label">Terminus</div>
+  <div class="route-map__terminus-label">{terminusLabel}</div>
 </div>
 
 <style>

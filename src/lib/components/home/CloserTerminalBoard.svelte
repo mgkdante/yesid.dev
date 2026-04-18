@@ -8,6 +8,11 @@
 
 	let {
 		rows,
+		terminalTitle,
+		cityLabel,
+		encodingLabel,
+		destinationsTemplate,
+		promptLine,
 	}: {
 		rows: Array<{
 			label: string;
@@ -16,16 +21,22 @@
 			href: string;
 			primary: boolean;
 		}>;
+		terminalTitle: string;
+		cityLabel: string;
+		encodingLabel: string;
+		/** `{count} destinations` template — `{count}` gets the current rows length. */
+		destinationsTemplate: string;
+		promptLine: string;
 	} = $props();
 </script>
 
 <TerminalChrome
-	title="yesid@terminus:~/destinations"
+	title={terminalTitle}
 	noPadding
 	footer={[
-		{ label: '', value: 'Montreal, QC' },
-		{ label: '', value: 'UTF-8' },
-		{ label: '', value: `${rows.length} destinations` }
+		{ label: '', value: cityLabel },
+		{ label: '', value: encodingLabel },
+		{ label: '', value: destinationsTemplate.replace('{count}', String(rows.length)) }
 	]}
 	data-testid="closer-board"
 	data-closer-board
@@ -33,7 +44,7 @@
 >
 	<!-- Welcome line -->
 	<div class="terminal-welcome">
-		<span class="terminal-comment">// where to next?</span>
+		<span class="terminal-comment">{promptLine}</span>
 	</div>
 	{#each rows as row, i}
 		<a

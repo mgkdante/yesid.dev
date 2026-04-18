@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import { onMount, tick, onDestroy } from 'svelte';
-	import type { TechStackItem } from '$lib/data/types.js';
+	import type { TechStackItem } from '$lib/types';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import {
 		initScrollTriggerConfig,

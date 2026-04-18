@@ -4,7 +4,7 @@
   For most cases, prefer `use:cursorGlow` which auto-injects this.
 -->
 <script lang="ts">
-  import { cn } from '$lib/utils.js';
+  import { cn } from '$lib/utils';
   import type { HTMLAttributes } from 'svelte/elements';
 
   export interface GlowOverlayProps extends HTMLAttributes<HTMLDivElement> {

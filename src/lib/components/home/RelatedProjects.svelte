@@ -3,19 +3,24 @@
   Name + count only. Horizontally scrollable when projects overflow.
 -->
 <script lang="ts">
-	import type { Project } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Project } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+	import { relatedProjectsStripContent } from '$lib/content/site-content';
 
 	let { projects }: { projects: readonly Project[] } = $props();
+
+	const builtWithLabel = resolveLocale(relatedProjectsStripContent.builtWithLabel, 'en');
+	const countSingular = resolveLocale(relatedProjectsStripContent.projectCount.singular, 'en');
+	const countPlural = resolveLocale(relatedProjectsStripContent.projectCount.plural, 'en');
 </script>
 
 <div
 	class="proof-strip"
 	data-testid="proof-strip"
 >
-	<span class="proof-label label-section">Built with this</span>
+	<span class="proof-label label-section">{builtWithLabel}</span>
 
 	<div class="proof-projects" use:scrollChain>
 		{#each projects as project (project.slug)}
@@ -29,7 +34,7 @@
 		{/each}
 	</div>
 
-	<span class="proof-count">{projects.length} {projects.length === 1 ? 'project' : 'projects'}</span>
+	<span class="proof-count">{projects.length} {projects.length === 1 ? countSingular : countPlural}</span>
 </div>
 
 <!-- Hazard stripe — bottom accent -->

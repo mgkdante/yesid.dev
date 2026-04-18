@@ -4,7 +4,7 @@
   Props: TechStackItem. Emits click for parent (diagram) to handle sidebar/selection.
 -->
 <script lang="ts">
-	import type { TechStackItem, Proficiency } from '$lib/data/types.js';
+	import type { TechStackItem, Proficiency } from '$lib/types';
 
 	let {
 		item,

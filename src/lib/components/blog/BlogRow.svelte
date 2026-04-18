@@ -4,8 +4,8 @@
   Featured prop controls accent border, larger SVG, and full excerpt.
 -->
 <script lang="ts">
-	import type { BlogPost } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { BlogPost } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { Badge } from '$lib/components/ui/badge';
@@ -13,7 +13,7 @@
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/utils';
 
 	export interface BlogRowProps {
 		/** The blog post data to display */

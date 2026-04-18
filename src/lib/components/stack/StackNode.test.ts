@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
 import StackNode from './StackNode.svelte';
-import type { TechStackItem } from '$lib/data/types.js';
+import type { TechStackItem } from '$lib/types';
 
 const mockItem: TechStackItem = {
 	id: 'postgresql',

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import BlogDetailPage from './BlogDetailPage.svelte';
-import type { BlogPost } from '$lib/data/types.js';
+import type { BlogPost } from '$lib/types';
 
 // Minimal BlogPost fixture — only required fields populated
 const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({

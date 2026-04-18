@@ -9,11 +9,15 @@
   Active tab gets dark bottom border, bold label. Inactive tabs fade by distance.
 -->
 <script lang="ts">
-	import type { Service } from '$lib/data/types.js';
+	import type { Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { servicesDetailContent } from '$lib/content/services';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { onMount, onDestroy } from 'svelte';
+
+	const serviceNavAria = resolveLocale(servicesDetailContent.serviceNavAria, 'en');
 
 	// Short labels map — first word or simple abbreviation for compact tab display.
 	// Keyed by service ID so adding a new service only requires one new entry here.
@@ -104,7 +108,7 @@
 {#if mode === 'navigate'}
 	<!-- Navigate mode: plain nav + links (links can't be Tabs triggers) -->
 	<nav
-		aria-label="Service navigation"
+		aria-label={serviceNavAria}
 		class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center"
 		class:swipe-lock={swipeActive}
 		style="background: var(--primary); border: none;"

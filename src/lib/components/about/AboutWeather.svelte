@@ -5,8 +5,8 @@
   Stop number computed from prop.
 -->
 <script lang="ts">
-	import type { AboutWeatherConfig } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { AboutWeatherConfig } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -14,13 +14,13 @@
 	let {
 		config,
 		weather,
-		stop = '06',
-		label = 'LOCATION',
+		stop,
+		label,
 	}: {
 		config: AboutWeatherConfig;
 		weather?: { temp: number; condition: string; icon: string } | null;
-		stop?: string;
-		label?: string;
+		stop: string;
+		label: string;
 	} = $props();
 
 	const city = $derived(resolveLocale(config.city, 'en'));

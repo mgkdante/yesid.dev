@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import StackBottomSheet from './StackBottomSheet.svelte';
-import type { TechStackItem } from '$lib/data/types.js';
+import type { TechStackItem } from '$lib/types';
 
 const mockItems: TechStackItem[] = [
 	{

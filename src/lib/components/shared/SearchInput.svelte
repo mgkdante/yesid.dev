@@ -3,14 +3,19 @@
   Used in both mobile (inline) and sidebar (sideLeft) contexts.
 -->
 <script lang="ts">
+	import { resolveLocale } from '$lib/utils/locale';
+	import { sharedChromeContent } from '$lib/content';
+
 	export interface SearchInputProps {
 		placeholder?: string;
 		value?: string;
 		testId?: string;
 	}
 
+	const defaultPlaceholder = resolveLocale(sharedChromeContent.searchPlaceholder, 'en');
+
 	let {
-		placeholder = 'Search...',
+		placeholder = defaultPlaceholder,
 		value = $bindable(''),
 		testId = 'search-input'
 	}: SearchInputProps = $props();

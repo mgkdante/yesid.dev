@@ -7,8 +7,10 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
-	import { closerContent, resolveLocale, getLatestPosts } from '$lib/data/index.js';
-	import { siteMeta } from '$lib/data/meta.js';
+	import { resolveLocale } from '$lib/utils';
+
+	import { closerContent, getLatestPosts } from '$lib/content';
+	import { siteMeta } from '$lib/content/meta';
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import CloserGraffiti from './CloserGraffiti.svelte';
@@ -33,6 +35,13 @@
 	const aboutLabel = resolveLocale(closerContent.rows.about.label, 'en');
 	const aboutDesc = resolveLocale(closerContent.rows.about.description, 'en');
 	const aboutAction = resolveLocale(closerContent.rows.about.action, 'en');
+
+	// Terminal chrome copy — added in Task 17b-7a.
+	const terminalTitleText = resolveLocale(closerContent.terminal.title, 'en');
+	const terminalCityLabel = resolveLocale(closerContent.terminal.city, 'en');
+	const terminalEncodingLabel = resolveLocale(closerContent.terminal.encoding, 'en');
+	const terminalDestinationsTemplate = resolveLocale(closerContent.terminal.destinationsLabel, 'en');
+	const terminalPromptLine = resolveLocale(closerContent.terminal.prompt, 'en');
 
 	// Dynamic blog posts
 	const latestPosts = getLatestPosts(2, 'professional');
@@ -150,7 +159,14 @@
 	<!-- Content -->
 	<div class="closer-content relative z-10">
 		<!-- Terminal departure board -->
-		<CloserTerminalBoard {rows} />
+		<CloserTerminalBoard
+			{rows}
+			terminalTitle={terminalTitleText}
+			cityLabel={terminalCityLabel}
+			encodingLabel={terminalEncodingLabel}
+			destinationsTemplate={terminalDestinationsTemplate}
+			promptLine={terminalPromptLine}
+		/>
 
 		<!-- CTA -->
 		<a href={ctaHref} data-testid="closer-cta" class="closer-cta">

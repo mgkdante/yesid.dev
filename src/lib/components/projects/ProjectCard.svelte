@@ -7,15 +7,16 @@
   Hover triggers border glow + SVG morph. No entrance animation — Snappy Doctrine (17e-2).
 -->
 <script lang="ts">
-	import type { Project, Service } from '$lib/data/types.js';
-	import { resolveLocale } from '$lib/data/locale.js';
+	import type { Project, Service } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/utils';
+	import { projectsListingContent } from '$lib/content/projects';
 
 	export interface ProjectCardProps {
 		/** The project data to display */
@@ -69,10 +70,15 @@
 		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['var(--primary)', 'var(--accent)']
 	);
 
-	// i18n labels — all user-facing strings go through LocalizedString so future
-	// translations can be added without changing component logic.
-	const stackLabel = { en: 'Tech Stack' };
-	const servicesLabel = { en: 'Services' };
+	// i18n labels pulled from content layer (Task 17b-7d).
+	const stackLabel = projectsListingContent.filters.techStack;
+	const servicesLabel = projectsListingContent.filters.services;
+	const stackOverflowTemplate = resolveLocale(projectsListingContent.card.stackOverflowSuffix, 'en');
+	const stackOverflow = $derived(
+		project.stack.length > 5
+			? stackOverflowTemplate.replace('{count}', String(project.stack.length - 5))
+			: ''
+	);
 </script>
 
 <a
@@ -164,8 +170,8 @@
 						{resolveLocale(stackLabel, 'en')}
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />
-					{#if project.stack.length > 5}
-						<span class="mt-0.5 block font-mono text-caption text-[var(--muted-foreground)]">+{project.stack.length - 5} more</span>
+					{#if stackOverflow}
+						<span class="mt-0.5 block font-mono text-caption text-[var(--muted-foreground)]">{stackOverflow}</span>
 					{/if}
 				</div>
 			{/if}

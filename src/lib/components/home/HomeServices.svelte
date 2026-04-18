@@ -7,8 +7,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { getVisibleServices, resolveLocale, servicesGridContent } from '$lib/data/index.js';
-	import { SHAPES } from '$lib/data/shapes.js';
+	import { resolveLocale } from '$lib/utils';
+
+	import { getVisibleServices, servicesGridContent } from '$lib/content';
+	import { SHAPES } from '$lib/utils/shapes';
 	import { morphHover } from '$lib/motion/actions';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
@@ -16,6 +18,8 @@
 
 	const services = getVisibleServices();
 	const heading = resolveLocale(servicesGridContent.heading, 'en');
+	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, 'en');
+	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, 'en');
 	const subheading = resolveLocale(servicesGridContent.subheading, 'en');
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
@@ -79,7 +83,7 @@
 							type="button"
 							data-testid="services-svg-panel"
 							class="svg-panel relative flex flex-shrink-0 items-center justify-center rounded-xl transition-all duration-300"
-							aria-label="View {title} illustration"
+							aria-label={viewIllustrationAriaTemplate.replace('{title}', title)}
 							use:morphHover={{ shapes: SHAPES, enabled: svgReady[i] }}
 						>
 							<div class="svg-inline-wrapper pointer-events-none" style="width:56px;height:56px;">
@@ -135,7 +139,7 @@
 				href="/services"
 				class="view-all-link border-b pb-0.5 text-body font-medium tracking-wide transition-colors duration-200"
 				style="color: var(--secondary-foreground); border-color: var(--border);"
-			>View all services &rarr;</a>
+			>{viewAllLink}</a>
 		</div>
 	</div>
 </section>

@@ -10,9 +10,15 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { sharedChromeContent } from '$lib/content';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
+
+	const toggleSectionAria = resolveLocale(sharedChromeContent.tocToggleSectionAria, 'en');
+	const tocHeading = resolveLocale(sharedChromeContent.tocHeading, 'en');
+	const tocMobileButton = resolveLocale(sharedChromeContent.tocMobileButton, 'en');
 
 	interface TocEntry {
 		id: string;
@@ -187,7 +193,7 @@
 							<button
 								class="toc-section-chevron shrink-0"
 								onclick={(e) => { e.stopPropagation(); toggleSection(entry.id); }}
-								aria-label="Toggle section"
+								aria-label={toggleSectionAria}
 							>
 								<ChevronToggle open={!collapsedSections.has(entry.id)} size="sm" direction="right" />
 							</button>
@@ -222,7 +228,7 @@
 						>
 							<ChevronToggle open={tocOpen} size="sm" direction="right" />
 							<span class="label-section font-semibold tracking-wider text-[var(--muted-foreground)]">
-								On this page
+								{tocHeading}
 							</span>
 						</button>
 					{/snippet}
@@ -258,7 +264,7 @@
 							<path d="M6 3l6 5-6 5V3z" />
 						</svg>
 						<span class="label-section font-semibold tracking-wider text-[var(--muted-foreground)]">
-							On this page
+							{tocHeading}
 						</span>
 					</button>
 				{/snippet}
@@ -284,7 +290,7 @@
 							class="toc-toggle flex items-center gap-1.5 rounded border border-[var(--border-subtle)] bg-[var(--background)] px-3 py-2 font-mono text-caption text-[var(--secondary-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 						>
 							<ChevronToggle open={mobileOpen} size="sm" direction="right" />
-							Table of Contents
+							{tocMobileButton}
 						</button>
 					{/snippet}
 				</CollapsibleTrigger>
