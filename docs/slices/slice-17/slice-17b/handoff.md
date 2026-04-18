@@ -261,7 +261,7 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 
 ### Remaining work (for resume session)
 
-- 17b-7f Services (18 strings)
+- ~~17b-7f Services (18 strings)~~ — shipped, see §17b-7f below
 - 17b-7g About (16 strings)
 - 17b-7h Contact (3 strings)
 - 17b-7i Tech stack viz (26 strings — largest sub-task)
@@ -271,3 +271,46 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - 17b-8 Integrity test enhancements (LocalizedString guard + translation-debt report)
 - 17b-9 Governance (VOCAB, CONSTITUTION, ARCHITECTURE, README, cloud learn doc)
 - 17b-10 Final verification + PR
+
+---
+
+## 17b-7f — Services extraction (19 strings)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+- `src/lib/content/services.ts` — two new exported blocks: `servicesListingContent` (7 keys: heading, stationLabelTemplate, deepDiveLabel, projectsStrip.{builtWithService, builtWithFallback, projectSingular, projectPlural}) and `servicesDetailContent` (6 keys: backToServicesLabel, valuePropositionHeading, deliverablesHeading, relatedProjectsHeading, relatedProjectsNavAria, serviceNavAria). `LocalizedString` joined the type imports.
+- `src/lib/content/nav.ts` — new `navDirections` export ({previous, next}), multilingual (en/fr/es) to match nav.ts's existing convention.
+- `src/lib/content/projects.ts` — `projectsListingContent` gained `seeAllLink` ("See all projects →"), consumed from service detail pages.
+- `ProjectsStrip.svelte` — label and count derived now resolve through content (template placeholder `{serviceTitle}` for the active-service case; singular/plural noun choice for the count suffix).
+- `ServiceCard.svelte` — `stationLabelText` + `deepDiveLabel` derived values; station SectionLabel + both Deep-dive anchors wired.
+- `ServiceDetailPage.svelte` — inline `const labels = {...}` block removed (the component-scope violation flagged in the audit). Six derived values wire back-link, station label, three headings, related-projects aria, and see-all label. Both desktop + mobile duplicates of the Related-projects section are consistent with the same keys.
+- `ServiceListingPage.svelte` — sr-only `<h1>` now reads from content.
+- `ServiceNav.svelte` — nav aria + both prev/next SectionLabel text props wired through `servicesDetailContent.serviceNavAria` + `navDirections`.
+
+### What did **not** change
+
+- Every string renders the same English copy. No layout, interaction, or behavior changes.
+- No adapter or repository wiring. These are UI chrome strings, consumed directly by components — the pattern Yesid approved in 17b-7a..7e.
+- No translation debt added: fr/es were only introduced where the destination file was already multilingual (`nav.ts`). The en-only additions to `services.ts` and `projects.ts` stay within the debt-tracking scope of 17b-8.
+
+### Verification
+
+| Check | Post-17b-7e | Post-17b-7f |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| `bun run test` | 83 files / 819 tests pass | 83 files / 819 tests pass |
+| `/services` desktop | baseline | station labels + Deep dive CTAs + projects strip (`Built with {active}`, `3 PROJECTS`) render identically |
+| `/services/sql-development` desktop | baseline | back link, 3 headings, related projects (3) section, see-all link, NEXT nav all render identically; `Service navigation` aria present |
+| `/services/sql-development` mobile 375×812 | baseline | same text renders; mobile related-projects block present; no overflow |
+| Console errors (both viewports) | none | none |
+
+### Review focus
+
+- `src/lib/content/services.ts` — the 2 content blocks should read as the canonical source of all chrome copy on `/services` + `/services/[id]`. Confirm the nesting (`projectsStrip.*` sub-group) feels semantic vs. flattening into `servicesListingContent` top-level.
+- `src/lib/content/nav.ts` line ~36 — `navDirections` is a small addition but the first "generic directional" bucket in nav.ts. Confirm the key name (`navDirections` vs. e.g. `directions` or `prevNext`) is the right signal for future readers — if another component later needs Previous/Next, this is the canonical place.
+- `ServiceDetailPage.svelte` — three content blocks are imported (`servicesListingContent` for the shared station template, `servicesDetailContent` for the detail-specific strings, `projectsListingContent` for the one `seeAllLink`). This is the most import-heavy extraction so far; confirm the rationale (see `log.md` "Non-obvious decisions") matches Yesid's preference or suggest a simpler grouping.
+- Verify the two aria-label + two see-all-link duplicates between desktop `.projects-panel` and mobile `.projects-mobile` still read from the same derived values (no divergence risk).
+

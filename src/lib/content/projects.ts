@@ -6,6 +6,8 @@ import type { Project, LocalizedString } from '$lib/types';
 export const projectsListingContent = {
 	heading: { en: 'Projects' } satisfies LocalizedString,
 	searchPlaceholder: { en: 'Search projects...' } satisfies LocalizedString,
+	/** "See all projects →" link — used from service detail pages pointing to /projects. */
+	seeAllLink: { en: 'See all projects \u2192' } satisfies LocalizedString,
 	filters: {
 		filtersLabel: { en: 'Filters' } satisfies LocalizedString,
 		services: { en: 'Services' } satisfies LocalizedString,

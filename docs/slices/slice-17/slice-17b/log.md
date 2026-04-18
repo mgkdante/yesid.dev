@@ -322,3 +322,85 @@ Yesid chose Option A at the calibration gate (proceed with all 12 extraction sub
 - **Remaining sub-tasks after 7f:** 7g (About, 16), 7h (Contact, 3), 7i (Tech stack viz, 26), 7j (Layout+shared, 12), 7k (Page meta tags, 8), 7l (Tech-stack page, 9), then 8 (integrity test enhancements) + 9 (governance) + 10 (final + PR).
 
 ### STOP — session wind-down; resume in fresh session for 17b-7f
+
+---
+
+## Session 2026-04-18 — Task 17b-7f Services extraction
+
+**Fresh session** per prior resume pointer.
+**Model:** Opus 4.7 [1m] (L-slice Implementation — working set still spans multiple layers).
+**Branch:** `feature/slice-17b-repositories`.
+**Last commit before resume:** `bca4975`.
+
+### Pre-flight
+
+- `bun run check` → 0 errors, 19 warnings (matches baseline).
+- `bun run test` → 83 files / 819 tests pass (matches baseline).
+
+### What shipped
+
+**Content additions (3 files):**
+- `src/lib/content/services.ts` gained two blocks: `servicesListingContent` (heading, stationLabelTemplate, deepDiveLabel, projectsStrip.{builtWithService, builtWithFallback, projectSingular, projectPlural}) and `servicesDetailContent` (backToServicesLabel, valuePropositionHeading, deliverablesHeading, relatedProjectsHeading, relatedProjectsNavAria, serviceNavAria). `LocalizedString` added to the type imports.
+- `src/lib/content/nav.ts` gained `navDirections` ({previous, next}) — multilingual (fr+es) to match nav.ts convention.
+- `src/lib/content/projects.ts` `projectsListingContent` gained `seeAllLink`.
+
+**Components wired (5 files):**
+- `ProjectsStrip.svelte`: `label` derived now resolves `builtWithService` with `{serviceTitle}` template replace (or `builtWithFallback`); `countLabel` derived resolves singular/plural noun based on count.
+- `ServiceCard.svelte`: `stationLabelText` derived replaces `{stationNum}` + `{totalStr}` in template; `deepDiveLabel` derived; both "Deep dive →" slots use the derived.
+- `ServiceDetailPage.svelte`: removed the inline `const labels = {...}` block (the "rule violation" flagged in the audit); imports from `servicesListingContent` + `servicesDetailContent` + `projectsListingContent`; six derived vars cover backLink, stationLabel, three headings, relatedProjectsAria, seeAllProjectsLabel. Two `aria-label="Related projects"` + two `See all projects →` slots wired (desktop + mobile copies).
+- `ServiceListingPage.svelte`: sr-only `<h1>Services</h1>` now reads from `servicesListingContent.heading`.
+- `ServiceNav.svelte`: aria-label on the nav wrapper + two SectionLabel `text` props (`Previous` / `Next`) wired through `servicesDetailContent.serviceNavAria` + `navDirections.{previous, next}`.
+
+### Non-obvious decisions
+
+- **`stationLabelTemplate` placed on `servicesListingContent`, not duplicated on detail.** ServiceDetailPage imports both listing + detail content blocks. Rationale: one canonical key, two consumers — cheaper than two synchronized copies. Nested structure (listing vs detail) still holds for everything else.
+- **`seeAllLink` added to `projectsListingContent` (not services).** The link points at `/projects`, so its copy lives with the projects listing — semantically where it belongs, matches `projectsDetailContent.backToListingLabel`'s inverse shape.
+- **`navDirections` added to `nav.ts` with fr+es translations.** `nav.ts` is already meaningfully multilingual, so new additions follow the file's convention. This is not "backfilling debt" (forbidden per 17b-5 calibration) — it's authoring new multilingual content into an already-multilingual file. Tracked in 17b-8's integrity report as a positive (no en-only debt added).
+- **Brace-placeholder pattern reused.** `{serviceTitle}` / `{stationNum}` / `{totalStr}` follow the same `resolveLocale(t, 'en').replace('{x}', v)` shape established in 17b-7a..7e.
+- **No adapter changes.** UI chrome strings are consumed directly by components (matching 17b-7a..7e); only repository-consumed content (17b-6's `metroBookends`) flows through the adapter layer.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged) |
+| `bun run test` | 83 files / 819 tests pass (unchanged) |
+| Preview `/services` | station labels `SERVICE 01 / 06`..`06 / 06`, all 6 `Deep dive →` CTAs, strip shows `Built with {activeServiceTitle}` + `3 PROJECTS` (plural path) |
+| Preview `/services/sql-development` | `← All Services`, `How This Helps You`, `Typical Deliverables`, `Related Projects (3)`, `See all projects →`, `NEXT Data Pipeline Architecture →`, `Service navigation` aria, `Related projects` aria — all render identically |
+| Mobile 375×812 spot-check on detail | same text content renders; `.projects-mobile` container present (`mobileRelatedList: 1`); no overflow |
+| Console errors (desktop + mobile) | none |
+
+### Strings extracted (19)
+
+`servicesListingContent`: heading / stationLabelTemplate / deepDiveLabel / projectsStrip.{builtWithService, builtWithFallback, projectSingular, projectPlural} = 7. `servicesDetailContent`: backToServicesLabel / valuePropositionHeading / deliverablesHeading / relatedProjectsHeading / relatedProjectsNavAria / serviceNavAria = 6. `navDirections`: previous / next = 2. `projectsListingContent.seeAllLink` = 1. Plus the 3 shared-label reuses counted once (stationLabelTemplate used in ServiceCard + ServiceDetailPage = 1 key / 2 consumers; deepDiveLabel used on 2 anchors = 1 key / 2 consumers; relatedProjectsAria on 2 navs = 1 key / 2 consumers).
+
+Audit said ~18, actual 19 once the `navDirections` pair is counted separately.
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1 | Folder restructure | ✅ approved | earlier |
+| 17b-2 | Adapter scaffold | ✅ approved | earlier |
+| 17b-3 | Repository layer | ✅ approved | earlier |
+| 17b-4 | Route loader migration | ✅ approved | earlier |
+| 17b-5 | Hardcoded content audit | ✅ approved | earlier |
+| 17b-6 | LocalizedString upgrade | ✅ approved | earlier |
+| 17b-7a | Home extraction | ✅ approved | fc6fb06 |
+| 17b-7b | Blog listing extraction | ✅ approved | 5704269 |
+| 17b-7c | Blog detail extraction | ✅ approved | ee67724 |
+| 17b-7d | Projects listing extraction | ✅ approved | 799831a |
+| 17b-7e | Projects detail extraction | ✅ approved | 9ed81ad |
+| **17b-7f** | **Services extraction** | **🟡 awaiting approval** | pending |
+| 17b-7g | About extraction | ⏳ pending | — |
+| 17b-7h | Contact extraction | ⏳ pending | — |
+| 17b-7i | Tech stack viz extraction | ⏳ pending | — |
+| 17b-7j | Layout + shared extraction | ⏳ pending | — |
+| 17b-7k | Page meta tags extraction | ⏳ pending | — |
+| 17b-7l | Tech-stack page extraction | ⏳ pending | — |
+| 17b-8 | Integrity test enhancements | ⏳ pending | — |
+| 17b-9 | Governance doc updates | ⏳ pending | — |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~195k / 1M (~20%) — comfortable, continuing in this session is viable after approval.
+

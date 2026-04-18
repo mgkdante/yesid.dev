@@ -8,6 +8,7 @@
 	import { browser } from '$app/environment';
 	import type { Service, Project } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { servicesListingContent } from '$lib/content/services';
 	import { getLenis } from '$lib/motion/utils/lenis.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceCard from './ServiceCard.svelte';
@@ -73,7 +74,7 @@
 </script>
 
 <div class="services-page" data-testid="service-listing-page">
-	<h1 class="sr-only">Services</h1>
+	<h1 class="sr-only">{resolveLocale(servicesListingContent.heading, 'en')}</h1>
 
 	<!-- Sticky station tabs -->
 	<div class="tabs-bar">

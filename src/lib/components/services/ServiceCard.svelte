@@ -6,6 +6,7 @@
 <script lang="ts">
 	import type { Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { servicesListingContent } from '$lib/content/services';
 	import { SectionLabel } from '$lib/components/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import { cn } from '$lib/utils';
@@ -34,6 +35,12 @@
 
 	let stationNum = $derived(String(service.station).padStart(2, '0'));
 	let totalStr = $derived(String(total).padStart(2, '0'));
+	let stationLabelText = $derived(
+		resolveLocale(servicesListingContent.stationLabelTemplate, 'en')
+			.replace('{stationNum}', stationNum)
+			.replace('{totalStr}', totalStr)
+	);
+	let deepDiveLabel = $derived(resolveLocale(servicesListingContent.deepDiveLabel, 'en'));
 	let title = $derived(resolveLocale(service.title, 'en'));
 	let description = $derived(resolveLocale(service.description, 'en'));
 	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, 'en') : null);
@@ -57,7 +64,7 @@
 	<div class="viewport-inner">
 		<!-- Text content -->
 		<div class="service-text">
-			<SectionLabel text="Service {stationNum} / {totalStr}" variant="station" class="mb-4 block" />
+			<SectionLabel text={stationLabelText} variant="station" class="mb-4 block" />
 
 			<h2 class="service-title">
 				{title}<span class="title-dot">.</span>
@@ -93,7 +100,7 @@
 
 				<!-- Desktop CTA — hidden on mobile -->
 				<a href="/services/{service.id}" class="deep-dive-cta desktop-only">
-					Deep dive &rarr;
+					{deepDiveLabel}
 				</a>
 			</div>
 		</div>
@@ -101,7 +108,7 @@
 		<!-- Mobile: CTA + SVG side by side. Desktop: SVG panel only. -->
 		<div class="card-bottom">
 			<a href="/services/{service.id}" class="deep-dive-cta mobile-only">
-				Deep dive &rarr;
+				{deepDiveLabel}
 			</a>
 			{#if svgContent}
 				<ServiceSvgPanel {svgContent} class="svg-panel-responsive" />

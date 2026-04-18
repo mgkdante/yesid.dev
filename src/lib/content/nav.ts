@@ -33,6 +33,13 @@ export const metroBookends: MetroBookends = {
 	terminal: { en: 'Final Destination' }
 };
 
+/** Generic directional labels for prev/next navigation surfaces. Extracted from
+ *  ServiceNav in Task 17b-7f; kept multilingual to match the rest of nav.ts. */
+export const navDirections = {
+	previous: { en: 'Previous', fr: 'Précédent', es: 'Anterior' } satisfies LocalizedString,
+	next: { en: 'Next', fr: 'Suivant', es: 'Siguiente' } satisfies LocalizedString
+} as const;
+
 export interface ErrorPageContent {
 	label: LocalizedString;
 	heading: LocalizedString;
