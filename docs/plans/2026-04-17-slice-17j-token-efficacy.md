@@ -925,7 +925,7 @@ INDEX.md                       (updated map)
 
 ## Task 3c: Close-script (scripts/slice-close.ts)
 
-**Goal:** Write the Bun script that flattens an active sub-slice bundle into a single-file archive, mirrors to cloud, deletes the repo folder, and appends to `COMPLETED-SLICES.md`.
+**Goal:** Write the Bun script that moves an active sub-slice bundle from the repo to the cloud archive, deletes the repo folder, and appends to `COMPLETED-SLICES.md`. **Bundle stays as a folder at rest** (no flatten — preserves granular retrieval).
 
 ### Files
 - Create: `scripts/slice-close.ts`
@@ -934,32 +934,34 @@ INDEX.md                       (updated map)
 ### Behavior
 
 ```
-bun run slice:close 17j
+bun run slice:close 17 17j
 
 Actions:
-1. Read docs/slices/slice-17/slice-17j/{spec,plan,log,handoff}.md
-2. Concatenate into single flat file with section headings:
-     # Slice 17j — <name>
-     ## Spec
-     <content>
-     ## Plan
-     <content>
-     ## Log
-     <content>
-     ## Handoff
-     <content>
-3. Write to cloud/yesid.dev/docs/archive/slices/slice-17/slice-17j.md
-4. Delete repo folder docs/slices/slice-17/slice-17j/
-5. Append one-liner to cloud/yesid.dev/docs/COMPLETED-SLICES.md
-6. Print summary (bytes written, files removed, cloud path)
+1. Resolve $YESITO_CLOUD_ROOT env var (fallback: path.join(os.homedir(), 'Yesito', 'cloud'))
+2. Validate docs/slices/slice-17/slice-17j/ has spec.md + plan.md + log.md + handoff.md
+3. Move the whole folder: docs/slices/slice-17/slice-17j/
+   → $YESITO_CLOUD_ROOT/yesid.dev/docs/archive/slices/slice-17/slice-17j/
+   (bundle structure preserved — AI retrieval reads just the file it needs)
+4. Append one-liner to $YESITO_CLOUD_ROOT/yesid.dev/docs/COMPLETED-SLICES.md
+   pointing at the folder, e.g.:
+   | slice-17j | Workflow Efficiency | 2026-04-?? | PR #?? | archive/slices/slice-17/slice-17j/ |
+5. Regenerate tree.txt
+6. Print summary (source path, dest path, file count, index line appended)
 ```
 
 ### Steps
 
-- [ ] **Step 1:** Write `scripts/slice-close.ts` with argparse (slice id), file-read + concatenation, cloud path resolution, deletion, index append.
-- [ ] **Step 2:** Unit test with a **mock** sub-slice (copy 17j bundle temporarily, run close, verify, restore).
+- [ ] **Step 1:** Write `scripts/slice-close.ts` with:
+  - Argparse: takes `<slice-NN>` + `<slice-NN><letter>` as two args
+  - Env-var resolution via `process.env.YESITO_CLOUD_ROOT ?? path.join(os.homedir(), 'Yesito', 'cloud')`
+  - File validation (all 4 files present, non-empty)
+  - `fs.rename()` atomic move if same drive, else `fs.cp()` + `fs.rm()` fallback
+  - `COMPLETED-SLICES.md` append via line format
+  - Exit codes: 0 success, 1 validation failure, 2 filesystem error
+- [ ] **Step 2:** Unit test with a **mock** sub-slice (copy 17j bundle temporarily to `slice-99-mock/`, run close against it, verify bundle arrived intact in cloud, verify index line appended, restore cleanup).
 - [ ] **Step 3:** Add `slice:close` to `package.json` scripts.
 - [ ] **Step 4:** Document usage in `WORKFLOW.md` §closing-checklist.
+- [ ] **Step 5:** Document the `YESITO_CLOUD_ROOT` env-var requirement in `CLAUDE.md` + `WORKFLOW.md` (new-machine setup).
 
 **STOP. The real close-script runs for the first time when 17j itself PRs — so it must work reliably. Verify with Yesid the mock close succeeded before continuing.**
 
@@ -1001,7 +1003,64 @@ Actions:
 - [ ] **Step 2:** In `CLAUDE.md` Session Types section, add "Non-slice" as a fourth type next to Planning / Implementation / Closing.
 - [ ] **Step 3:** In `WORKFLOW.md`, document when to use a non-slice session vs. a slice (rule of thumb: no spec required, touches < 5 files, commits as-is, optional PR).
 
-**STOP before Task 4.**
+**STOP before Task 3f.**
+
+---
+
+## Task 3f: OS-agnosticism + OS-quirks registry
+
+**Goal:** Make the workflow OS-portable (Windows / macOS / Linux) via one env var + a cross-project quirks registry. When AI hits a platform-specific snag, it logs the fix so next sessions skip the rediscovery tax.
+
+### Files
+
+- Create: `cloud/claude-knowledge/os-quirks/README.md`
+- Create: `cloud/claude-knowledge/os-quirks/windows.md` (seeded with Slice 17j discoveries)
+- Create: `cloud/claude-knowledge/os-quirks/macos.md` (skeleton)
+- Create: `cloud/claude-knowledge/os-quirks/linux.md` (skeleton)
+- Create: `cloud/claude-knowledge/os-quirks/cross-platform.md` (skeleton)
+- Modify: `CLAUDE.md` — add "Cross-platform setup" section (env var + os-quirks reference)
+- Modify: `docs/reference/WORKFLOW.md` — add "When hitting an OS quirk" logging rule to closing checklist
+- Modify: `scripts/slice-close.ts` (from Task 3c) — must already use env var; verify
+
+### Steps
+
+- [ ] **Step 1:** Write `cloud/claude-knowledge/os-quirks/README.md`:
+  - Purpose (cross-project OS quirks registry for AI + human reuse)
+  - Format per entry: Problem / Root cause / Fix / Date / Slice discovered
+  - When to append (any time AI solves an OS-specific snag for the first time)
+  - Retrieval protocol (check here before troubleshooting; grep the platform file)
+- [ ] **Step 2:** Write `windows.md` — seeded with these entries (already discovered during 17j Task 1):
+  1. `robocopy` in Git Bash mangles `/E` flag as path → wrap in `powershell -Command "robocopy ..."`
+  2. `cmd //c` double-quote parsing is unpredictable → prefer `powershell -Command`
+  3. Node scripts with `"type":"module"` + `require()` → rename `.js` → `.cjs`, or use `import`
+  4. `git add` CRLF warnings → expected on Windows; not a bug
+  5. `find -delete` works on Git Bash Windows (noted working)
+  6. Backtick / heredoc escaping in long inline bash `-c` commands → write to temp file instead
+  7. `robocopy` path separators → must use `\`, not `/` (Bun scripts use `path.join()`)
+- [ ] **Step 3:** Write `macos.md` + `linux.md` as skeletons with the "# Platform — <OS>" header + entry-format reminder. Empty body.
+- [ ] **Step 4:** Write `cross-platform.md` — universal patterns (env var usage, `path.join()`, `os.homedir()`, Bun cross-platform shell behavior).
+- [ ] **Step 5:** In `CLAUDE.md`, add:
+  ```markdown
+  ## Cross-platform setup
+  - Env var: `YESITO_CLOUD_ROOT` → points to local cloud directory
+    - Windows: `C:\Users\<user>\Yesito\cloud`
+    - macOS: `~/Yesito/cloud`
+    - Linux: `~/Yesito/cloud`
+  - Scripts read this env var with a `~/Yesito/cloud` fallback.
+  - OS-specific command quirks: `<cloud>/claude-knowledge/os-quirks/<os>.md` — check here first when troubleshooting.
+  ```
+- [ ] **Step 6:** In `WORKFLOW.md` closing-checklist, add:
+  > **OS-quirk logging:** If during the slice you solved a platform-specific issue (robocopy quirk, Node flag, shell escaping), append to `<cloud>/claude-knowledge/os-quirks/<os>.md` before closing. Format: Problem / Root cause / Fix / Date / Slice. This is a hard step, not a suggestion.
+
+### Acceptance
+
+- `YESITO_CLOUD_ROOT` set in Yesid's Windows user env.
+- Close-script reads env var and respects it.
+- All 5 os-quirks files exist in cloud; `windows.md` has 7 seed entries.
+- `CLAUDE.md` and `WORKFLOW.md` reference the registry.
+- 17j's own OS discoveries are preserved.
+
+**STOP. Verify with Yesid the env var works (test: echo it in a fresh shell; run close-script mock with env set).**
 
 ---
 

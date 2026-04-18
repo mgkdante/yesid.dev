@@ -35,9 +35,10 @@ Both pillars produce **portable personal IP**, not public publishing. Usable acr
 **From Pillar 2 (Structure):**
 4. **Three-tier context model** codified in `docs/ARCHIVE.md` (shipped in Task 1).
 5. **Hierarchical slice structure** — `docs/slices/slice-NN/slice-NN<letter>/{spec,plan,log,handoff}.md` bundle template.
-6. **Close-script** — `scripts/slice-close.ts` (Bun) that flattens active sub-slice → mirror to cloud → deletes repo folder → updates `COMPLETED-SLICES.md`.
+6. **Close-script** — `scripts/slice-close.ts` (Bun) that moves the active sub-slice bundle to the cloud archive (preserves folder structure — no flatten), deletes the repo folder, updates `COMPLETED-SLICES.md`. Uses `YESITO_CLOUD_ROOT` env var for OS portability.
 7. **Self-appending handoff pattern** — per-task append, PR-body-derivable, resets per sub-slice.
 8. **Shared vocabulary codex** — `docs/reference/VOCAB.md` (drafted Task 9a, co-edited at close) — brand + industry + Claude Code + workflow terms in one always-loaded lexicon.
+9. **OS-agnostic workflow + OS-quirks registry** — `YESITO_CLOUD_ROOT` env var (Windows / macOS / Linux) + `cloud/claude-knowledge/os-quirks/{windows,macos,linux,cross-platform}.md` where discovered OS quirks persist across projects. Closing-checklist enforces logging.
 
 ## Context
 

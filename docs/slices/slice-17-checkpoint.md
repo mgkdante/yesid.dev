@@ -21,6 +21,7 @@
 | 3c: scripts/slice-close.ts | pending | — |
 | 3d: PLAN.md reshape + slice READMEs | pending | — |
 | 3e: docs/sessions/ + non-slice convention | pending | — |
+| 3f: OS-agnosticism + OS-quirks registry | pending | — |
 | 4: .mcp.json allowlist | pending | — |
 | 5: Global Claude prune | pending | — |
 | 6: Re-measurement | pending | — |
