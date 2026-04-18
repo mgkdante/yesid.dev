@@ -14,13 +14,13 @@
 	let {
 		config,
 		weather,
-		stop = '06',
-		label = 'LOCATION',
+		stop,
+		label,
 	}: {
 		config: AboutWeatherConfig;
 		weather?: { temp: number; condition: string; icon: string } | null;
-		stop?: string;
-		label?: string;
+		stop: string;
+		label: string;
 	} = $props();
 
 	const city = $derived(resolveLocale(config.city, 'en'));

@@ -262,7 +262,7 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 ### Remaining work (for resume session)
 
 - ~~17b-7f Services (18 strings)~~ — shipped, see §17b-7f below
-- 17b-7g About (16 strings)
+- ~~17b-7g About (16 strings)~~ — shipped, see §17b-7g below
 - 17b-7h Contact (3 strings)
 - 17b-7i Tech stack viz (26 strings — largest sub-task)
 - 17b-7j Layout + shared (12 strings)
@@ -314,3 +314,48 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - `ServiceDetailPage.svelte` — three content blocks are imported (`servicesListingContent` for the shared station template, `servicesDetailContent` for the detail-specific strings, `projectsListingContent` for the one `seeAllLink`). This is the most import-heavy extraction so far; confirm the rationale (see `log.md` "Non-obvious decisions") matches Yesid's preference or suggest a simpler grouping.
 - Verify the two aria-label + two see-all-link duplicates between desktop `.projects-panel` and mobile `.projects-mobile` still read from the same derived values (no divergence risk).
 
+---
+
+## 17b-7g — About extraction (17 strings + scope amendment)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+**Types + content**
+- `src/lib/types.ts` — new `AboutStopLabels` interface (10 keys) + new `AboutLabels` interface (7 keys); both added as fields on `AboutContent`.
+- `src/lib/content/about-page.ts` — `aboutPageContent.stopLabels` seeded with IDENTITY / METRICS / TESTIMONIALS / PROCESS / STACK / CLIENTS / INTERESTS / SNAPSHOTS / LOCATION / NEXT; `aboutPageContent.labels` seeded with clientsServed + polaroidPrev/NextAria + testimonialsCarouselAria + testimonialsTabNavAria + two template strings (testimonialSlideAria, showTestimonialAria).
+
+**Parent (drives stop labels via props)**
+- `AboutPage.svelte` — 10 hardcoded `label="XXX"` props replaced with `resolveLocale(c.stopLabels.<key>, 'en')`.
+
+**Children with no chrome strings (6 files — prop-shape cleanup only)**
+- `AboutIdentity`, `AboutMetrics`, `AboutMethod`, `AboutInterests`, `AboutCta`, `AboutWeather` — removed `stop = '0X'` + `label = 'XXX'` defaults; prop types tightened from optional to required. Resolves audit edge case #19 (duplicate source-of-truth for stop labels).
+
+**Children that own internal chrome (3 files)**
+- `AboutLogos.svelte` — defaults removed; MetricDisplay `label="clients served"` swapped for `resolveLocale(aboutPageContent.labels.clientsServed, 'en')`.
+- `AboutPolaroids.svelte` — defaults removed; Previous/Next aria-labels now read from `aboutPageContent.labels.polaroidPrev/NextAria`.
+- `AboutTestimonials.svelte` — defaults removed; four arias wired: region-level carousel aria, tablist aria, and two template arias with `{index}` + `{total}` placeholder replace done at the call site.
+
+### What did **not** change
+
+- No visible or behavioural change. Every rendered string matches what the page showed pre-extraction (verified preview desktop + mobile 375×812).
+- AboutPage.test.ts (the one test in the about/ directory) continues to assert `STOP 00 — IDENTITY` and `STOP 08 — SNAPSHOTS`; both still pass because the content-layer seeds identical English values.
+- No adapter or repository wiring — UI chrome strings flow directly from content to components, matching the 17b-7a..7f pattern.
+
+### Verification
+
+| Check | Post-17b-7f | Post-17b-7g |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| `bun run test` | 83 / 819 pass | 83 / 819 pass (one flaky run recovered on rerun) |
+| Preview `/about` desktop | baseline | 10 stops, all arias, "clients served" render identically |
+| Preview `/about` mobile 375×812 | baseline | 10 stops, testimonial arias render identically |
+
+### Review focus
+
+- `src/lib/types.ts` — confirm the new `AboutStopLabels` + `AboutLabels` interfaces belong on `AboutContent` (top-level) rather than nested. Adding them here forces all future content sources to satisfy them; the trade-off is worth the compile-time guarantee.
+- `src/lib/content/about-page.ts` — 17 new LocalizedString seeds in two blocks at the end of `aboutPageContent`. No fr/es backfilled (debt tracked in 17b-8). Confirm key names read well (e.g., `stopLabels.next` for the CTA card — could also be called `cta` but `next` matches the visible label "NEXT").
+- `AboutTestimonials.svelte` — two template-string arias (`testimonialSlideAria`, `showTestimonialAria`). The `{index}` / `{total}` placeholder replace happens at the call site, same shape as `servicesListingContent.stationLabelTemplate` from 17b-7f.
+- Six "defaults-only" children (`AboutIdentity`, `AboutMetrics`, `AboutMethod`, `AboutInterests`, `AboutCta`, `AboutWeather`) now have strict required props. If any future standalone test imports them, it must pass both `stop` + `label` explicitly — catch any missing call site before landing.

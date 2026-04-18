@@ -10,7 +10,7 @@
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { steps, stop = '02', label = 'PROCESS' }: { steps: readonly AboutMethodStep[]; stop?: string; label?: string } = $props();
+	let { steps, stop, label }: { steps: readonly AboutMethodStep[]; stop: string; label: string } = $props();
 </script>
 
 <div

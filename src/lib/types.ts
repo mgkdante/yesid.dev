@@ -382,6 +382,36 @@ export interface AboutCta {
 	socials: readonly { label: string; href: string; icon: string }[];
 }
 
+/** Metro stop labels for the 10 bento cards on /about. Added in Task 17b-7g;
+ *  single source of truth replaces per-child `label = 'XXX'` defaults. */
+export interface AboutStopLabels {
+	identity: LocalizedString;
+	metrics: LocalizedString;
+	testimonials: LocalizedString;
+	process: LocalizedString;
+	stack: LocalizedString;
+	clients: LocalizedString;
+	interests: LocalizedString;
+	snapshots: LocalizedString;
+	location: LocalizedString;
+	next: LocalizedString;
+}
+
+/** Misc chrome labels used inside about-family components (arias + counter copy).
+ *  Added in Task 17b-7g. Template placeholders are noted per field. */
+export interface AboutLabels {
+	/** MetricDisplay label under the client counter on AboutLogos. */
+	clientsServed: LocalizedString;
+	polaroidPrevAria: LocalizedString;
+	polaroidNextAria: LocalizedString;
+	testimonialsCarouselAria: LocalizedString;
+	testimonialsTabNavAria: LocalizedString;
+	/** Template: placeholders {index} + {total}. */
+	testimonialSlideAria: LocalizedString;
+	/** Template: placeholder {index}. */
+	showTestimonialAria: LocalizedString;
+}
+
 // Top-level container for all About page content.
 // Components receive this via props — they never import content directly.
 export interface AboutContent {
@@ -395,6 +425,8 @@ export interface AboutContent {
 	clientLogos: readonly AboutClientLogo[];
 	clientCount: number; // "10+" displayed in counter
 	cta: AboutCta;
+	stopLabels: AboutStopLabels;
+	labels: AboutLabels;
 }
 
 // --- Contact page types ---

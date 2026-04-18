@@ -13,7 +13,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 
-	let { cta, stop = '09', label = 'NEXT' }: { cta: AboutCta; stop?: string; label?: string } = $props();
+	let { cta, stop, label }: { cta: AboutCta; stop: string; label: string } = $props();
 
 	const buttonLabel = $derived(resolveLocale(cta.buttonLabel, 'en'));
 	const availability = $derived(resolveLocale(cta.availability, 'en'));

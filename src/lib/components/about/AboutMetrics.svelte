@@ -12,7 +12,7 @@
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { metrics, stop = '01', label = 'METRICS' }: { metrics: readonly AboutMetric[]; stop?: string; label?: string } = $props();
+	let { metrics, stop, label }: { metrics: readonly AboutMetric[]; stop: string; label: string } = $props();
 </script>
 
 <div

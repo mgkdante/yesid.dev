@@ -11,7 +11,7 @@
 	import { StatusDot, StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
-	let { identity, stop = '00', label = 'IDENTITY' }: { identity: AboutIdentity; stop?: string; label?: string } = $props();
+	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();
 
 	const name = $derived(resolveLocale(identity.name, 'en'));
 	const title = $derived(resolveLocale(identity.title, 'en'));

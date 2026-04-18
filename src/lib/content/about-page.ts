@@ -147,4 +147,31 @@ export const aboutPageContent: AboutContent = {
 			{ label: 'LinkedIn', href: siteMeta.links.linkedin ?? '', icon: 'linkedin' },
 		],
 	},
+
+	// Stop labels — 10 bento cards in AboutPage, one per grid area. Source of
+	// truth for the ALL-CAPS station labels; child components no longer carry
+	// default `label = 'XXX'` values. Extracted in Task 17b-7g.
+	stopLabels: {
+		identity: { en: 'IDENTITY' },
+		metrics: { en: 'METRICS' },
+		testimonials: { en: 'TESTIMONIALS' },
+		process: { en: 'PROCESS' },
+		stack: { en: 'STACK' },
+		clients: { en: 'CLIENTS' },
+		interests: { en: 'INTERESTS' },
+		snapshots: { en: 'SNAPSHOTS' },
+		location: { en: 'LOCATION' },
+		next: { en: 'NEXT' },
+	},
+
+	// Chrome labels used inside about-family components. Extracted in 17b-7g.
+	labels: {
+		clientsServed: { en: 'clients served' },
+		polaroidPrevAria: { en: 'Previous photo' },
+		polaroidNextAria: { en: 'Next photo' },
+		testimonialsCarouselAria: { en: 'Client testimonials' },
+		testimonialsTabNavAria: { en: 'Testimonial navigation' },
+		testimonialSlideAria: { en: 'Testimonial {index} of {total}' },
+		showTestimonialAria: { en: 'Show testimonial {index}' },
+	},
 };

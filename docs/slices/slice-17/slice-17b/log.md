@@ -404,3 +404,74 @@ Audit said ~18, actual 19 once the `navDirections` pair is counted separately.
 
 **Model:** Opus 4.7 [1m] | **Context:** ~195k / 1M (~20%) — comfortable, continuing in this session is viable after approval.
 
+---
+
+## Session 2026-04-18 — Task 17b-7g About extraction
+
+**Continuation of same session.** Context ~22% at start.
+
+### Scope amendment flagged + actioned
+
+Plan scope was "~16 strings across 4 components" per the audit. During implementation two adjustments emerged and were applied:
+
+1. **Single-source-of-truth for stop labels** (audit edge case #19). Nine `About*.svelte` child components each carried a `label = 'XXX'` prop default that duplicated what AboutPage passes in. Kept = two copies of every label. Fixed = made `stop` + `label` required props (no defaults) on all nine children; AboutPage is now the only writer, and reads every label from `aboutPageContent.stopLabels.*`. This pulls 7 more files into the diff beyond the audit's 4 — trivial mechanical changes (`stop?: string; label?: string` → `stop: string; label: string`, dropped the inline default values). Net: zero-copy policy upheld.
+2. **Child-internal chrome vs parent-driven chrome split.** Stop labels are prop-driven (AboutPage owns them because the stop *position* is parent-contextual). Child-internal chrome — `clientsServed` counter label (AboutLogos), polaroid arias, testimonial arias — imported directly from `$lib/content/about-page` by the owning child, matching the pattern established in 17b-7a..7e.
+
+### Content additions
+
+**types.ts**
+- New interface `AboutStopLabels` — 10 LocalizedString keys (identity, metrics, testimonials, process, stack, clients, interests, snapshots, location, next).
+- New interface `AboutLabels` — 7 LocalizedString keys for chrome (clientsServed, polaroidPrevAria, polaroidNextAria, testimonialsCarouselAria, testimonialsTabNavAria, testimonialSlideAria, showTestimonialAria).
+- `AboutContent` extended with `stopLabels: AboutStopLabels` + `labels: AboutLabels` fields.
+
+**about-page.ts**
+- `aboutPageContent.stopLabels` seeded with 10 English LocalizedStrings (IDENTITY / METRICS / TESTIMONIALS / PROCESS / STACK / CLIENTS / INTERESTS / SNAPSHOTS / LOCATION / NEXT).
+- `aboutPageContent.labels` seeded with 7 English LocalizedStrings including two template strings: `testimonialSlideAria = "Testimonial {index} of {total}"` and `showTestimonialAria = "Show testimonial {index}"`.
+
+### Components updated (11 files)
+
+- `AboutPage.svelte` — 10 hardcoded `label="XXX"` props swapped for `resolveLocale(c.stopLabels.<key>, 'en')`. No import/export shape change (uses existing `aboutPageContent` alias `c`).
+- `AboutIdentity.svelte`, `AboutMetrics.svelte`, `AboutMethod.svelte`, `AboutInterests.svelte`, `AboutCta.svelte`, `AboutWeather.svelte` — removed `label`/`stop` defaults; props now required. No chrome strings in these six.
+- `AboutLogos.svelte` — defaults removed; imports `aboutPageContent` to render `resolveLocale(labels.clientsServed, 'en')` as the MetricDisplay label under the counter. (Previously literal `"clients served"`.)
+- `AboutPolaroids.svelte` — defaults removed; two aria-labels (Previous photo / Next photo) now read from `aboutPageContent.labels.polaroidPrev/NextAria`.
+- `AboutTestimonials.svelte` — defaults removed; four arias wired: `testimonialsCarouselAria` on the `role="region"`, `testimonialsTabNavAria` on the `role="tablist"`, and two template arias (`testimonialSlideAria` + `showTestimonialAria`) with `{index}`/`{total}` placeholder replace.
+
+### Decisions
+
+- **Required props, not fallbacks.** Compiler now guarantees AboutPage (or any future caller) passes an explicit label/stop — no risk of a rendered "STOP NN — undefined" if the content-layer field is removed or renamed.
+- **Split chrome ownership by positional context.** Stop labels are parent-positional (which card is at which grid area), so AboutPage owns them. Arias and internal labels are widget-internal, so the widget imports them. Same pattern is reusable in 17b-7i (tech-stack viz) where similar widget-internal chrome applies.
+- **Template placeholders use `{index}` not `{n}` or `{i+1}`.** Matches the 17b-7* convention (`{count}`, `{minutes}`, `{stationNum}`, `{totalStr}`, `{serviceTitle}`) — plain-word keys, `.replace('{index}', String(n + 1))` at the call site. 1-based indexing done at the call site, not in the template.
+- **AboutPage.test.ts still passes.** Asserts `STOP 00 — IDENTITY` and `STOP 08 — SNAPSHOTS` — both render exactly as before (content-layer seeded with identical English values).
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged) |
+| `bun run test` | 83 files / 819 tests pass (first run reported 1 flaky — re-run green; matches baseline) |
+| Preview `/about` desktop | 10 stop labels render `STOP 00..09`, polaroid arias present, testimonial carousel/slide/nav/show-button arias all correct, "clients served" visible under counter |
+| Preview `/about` mobile 375×812 | Same 10 stops render (layout reflows); testimonial slide aria `Testimonial 1 of 3` correct |
+| Console errors | none at steady state (one-shot HMR chunk errors during iteration cleared by reload) |
+
+### Strings extracted (17)
+
+Stop labels × 10 (`identity`, `metrics`, `testimonials`, `process`, `stack`, `clients`, `interests`, `snapshots`, `location`, `next`); chrome labels × 7 (`clientsServed`, `polaroidPrevAria`, `polaroidNextAria`, `testimonialsCarouselAria`, `testimonialsTabNavAria`, `testimonialSlideAria`, `showTestimonialAria`). Audit said ~16; actual 17 once the counter label + template arias are counted individually.
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1..6 | Restructure → audit → LocalizedString | ✅ approved | earlier |
+| 17b-7a..7e | Home / Blog / Projects extractions | ✅ approved | fc6fb06..9ed81ad |
+| 17b-7f | Services extraction | ✅ approved | ecbdb5a (conflated with WORKFLOW.md, per Yesid) |
+| **17b-7g** | **About extraction** | **🟡 awaiting approval** | pending |
+| 17b-7h | Contact extraction | ⏳ pending | — |
+| 17b-7i | Tech stack viz extraction | ⏳ pending | — |
+| 17b-7j | Layout + shared extraction | ⏳ pending | — |
+| 17b-7k | Page meta tags extraction | ⏳ pending | — |
+| 17b-7l | Tech-stack page extraction | ⏳ pending | — |
+| 17b-8 | Integrity test enhancements | ⏳ pending | — |
+| 17b-9 | Governance doc updates | ⏳ pending | — |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~260k / 1M (~26%) — comfortable; can continue same session after approval.
