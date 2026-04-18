@@ -12,10 +12,29 @@
     queryTime: number;
     prompt: string;
     liveLabel: string;
+    columnRoute: string;
+    columnAvgDelay: string;
+    columnVehicles: string;
+    /** Meta caption template with `{queryTime}` + `{updatedAgo}` placeholders. */
+    metaTemplate: string;
     updatedAgo?: string;
   }
 
-  let { rows, queryTime, prompt, liveLabel, updatedAgo = '30s ago' }: Props = $props();
+  let {
+    rows,
+    queryTime,
+    prompt,
+    liveLabel,
+    columnRoute,
+    columnAvgDelay,
+    columnVehicles,
+    metaTemplate,
+    updatedAgo = '30s ago',
+  }: Props = $props();
+
+  const metaCaption = $derived(
+    metaTemplate.replace('{queryTime}', String(queryTime)).replace('{updatedAgo}', updatedAgo)
+  );
 </script>
 
 <div
@@ -53,9 +72,9 @@
   <!-- Results table -->
   <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
     <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-xs md:text-sm md:gap-y-1.5">
-      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">route</span>
-      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">avg_delay_s</span>
-      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">vehicles</span>
+      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">{columnRoute}</span>
+      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">{columnAvgDelay}</span>
+      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">{columnVehicles}</span>
       {#each rows as row (row.route)}
         <span class="text-[var(--foreground)]" data-testid="sql-result-row">{row.route}</span>
         <span class="text-[var(--accent)]">{row.avgDelayS}</span>
@@ -63,7 +82,7 @@
       {/each}
     </div>
     <div class="mt-2.5 text-caption text-[var(--dim-foreground)]" data-testid="sql-meta">
-      5 rows &middot; {queryTime}s &middot; updated {updatedAgo}
+      {metaCaption}
     </div>
   </div>
 </div>

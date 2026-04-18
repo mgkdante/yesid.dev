@@ -8,6 +8,7 @@
 	import type { HeroData } from '$lib/content';
 	let {
 		headlineLine1,
+		headlineAriaSuffix,
 		subheadlineText,
 		subtitleText,
 		ctaWorkLabel,
@@ -15,6 +16,7 @@
 		heroData,
 	}: {
 		headlineLine1: string;
+		headlineAriaSuffix: string;
 		subheadlineText: string;
 		subtitleText: string;
 		ctaWorkLabel: string;
@@ -24,7 +26,7 @@
 </script>
 
 <div class="hero-viewport-text">
-	<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-label="{headlineLine1} Don't Break.">
+	<h1 class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-label="{headlineLine1} {headlineAriaSuffix}">
 		<span
 			class="block text-hero-mobile text-[var(--foreground)] md:text-hero"
 			data-testid="hero-line1"

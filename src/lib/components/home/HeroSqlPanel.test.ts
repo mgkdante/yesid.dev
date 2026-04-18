@@ -8,6 +8,10 @@ describe('HeroSqlPanel', () => {
     queryTime: INITIAL_HERO_DATA.queryTime,
     prompt: 'yesid@transit:gold>',
     liveLabel: 'LIVE',
+    columnRoute: 'route',
+    columnAvgDelay: 'avg_delay_s',
+    columnVehicles: 'vehicles',
+    metaTemplate: '5 rows · {queryTime}s · updated {updatedAgo}',
   };
 
   it('renders the terminal prompt', () => {

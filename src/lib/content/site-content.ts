@@ -13,6 +13,9 @@ export const heroContent = {
 	headline: {
 		line1: { en: 'PIPELINES THAT' } satisfies LocalizedString,
 		line2: { en: "DON'T BREAK." } satisfies LocalizedString,
+		/** Aria-label suffix appended after the animated line1 so assistive tech
+		 *  hears the full headline even though line2 renders as a visual glyph. */
+		ariaSuffix: { en: "Don't Break." } satisfies LocalizedString,
 	},
 	subheadline: { en: 'Data that tell the truth.' } satisfies LocalizedString,
 	subtitle: {
@@ -23,6 +26,16 @@ export const heroContent = {
 	sqlPanel: {
 		prompt: { en: 'yesid@transit:gold>' } satisfies LocalizedString,
 		liveLabel: { en: 'LIVE' } satisfies LocalizedString,
+		/** Column headers for the SQL results grid. Match the query's SELECT shape. */
+		columns: {
+			route: { en: 'route' } satisfies LocalizedString,
+			avgDelayS: { en: 'avg_delay_s' } satisfies LocalizedString,
+			vehicles: { en: 'vehicles' } satisfies LocalizedString,
+		},
+		/** Meta caption under the results table. Brace placeholders resolved at render time. */
+		metaTemplate: {
+			en: '5 rows \u00B7 {queryTime}s \u00B7 updated {updatedAgo}',
+		} satisfies LocalizedString,
 	},
 	refreshButton: {
 		label: { en: 'PULL FRESH DATA' } satisfies LocalizedString,
@@ -98,6 +111,9 @@ export const proofReelContent = {
 	sectionLabel: { en: '// PROOF' } satisfies LocalizedString,
 	viewAllLabel: { en: 'View all projects \u2192' } satisfies LocalizedString,
 	viewAllHref: '/projects',
+	/** Aria-label template for the image color-toggle button. Brace placeholder
+	 *  resolved at render time with the project title. */
+	toggleColorAria: { en: 'Toggle color for {title}' } satisfies LocalizedString,
 	slugs: ['transit-data-pipeline', 'lorem-analytics-dashboard', 'lorem-database-migration'] as const,
 	// Placeholder images — replace with real project screenshots later.
 	images: {
@@ -111,6 +127,22 @@ export const servicesGridContent = {
 	heading: { en: 'SERVICES' } satisfies LocalizedString,
 	headingDot: { en: '.' } satisfies LocalizedString,
 	subheading: { en: 'WHAT I BUILD' } satisfies LocalizedString,
+	/** Aria-label template for the per-card illustration button. */
+	viewIllustrationAria: {
+		en: 'View {title} illustration',
+	} satisfies LocalizedString,
+	/** Link at the bottom of the grid back to /services. */
+	viewAllLink: { en: 'View all services \u2192' } satisfies LocalizedString,
+} as const;
+
+/** Labels for the "built with this" strip that appears under FeaturedProjects
+ *  on the home page (also reused by the RelatedProjects component). */
+export const relatedProjectsStripContent = {
+	builtWithLabel: { en: 'Built with this' } satisfies LocalizedString,
+	projectCount: {
+		singular: { en: 'project' } satisfies LocalizedString,
+		plural: { en: 'projects' } satisfies LocalizedString,
+	},
 } as const;
 
 export const aboutContent = {
@@ -231,5 +263,15 @@ export const closerContent = {
 	attribution: {
 		text: { en: 'Graffiti Vectors by Vecteezy' } satisfies LocalizedString,
 		url: 'https://www.vecteezy.com/free-vector/graffiti',
+	},
+	/** Departure-board terminal chrome copy. */
+	terminal: {
+		title: { en: 'yesid@terminus:~/destinations' } satisfies LocalizedString,
+		city: { en: 'Montreal, QC' } satisfies LocalizedString,
+		encoding: { en: 'UTF-8' } satisfies LocalizedString,
+		/** Footer destinations count label. Brace placeholder `{count}`. */
+		destinationsLabel: { en: '{count} destinations' } satisfies LocalizedString,
+		/** Comment line above the first row. */
+		prompt: { en: '// where to next?' } satisfies LocalizedString,
 	},
 } as const;

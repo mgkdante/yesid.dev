@@ -16,6 +16,7 @@
 	const subheading = resolveLocale(proofReelContent.subheading, 'en');
 	const sectionLabel = resolveLocale(proofReelContent.sectionLabel, 'en');
 	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, 'en');
+	const toggleColorAriaTemplate = resolveLocale(proofReelContent.toggleColorAria, 'en');
 
 	const projects: (Project | undefined)[] = proofReelContent.slugs.map((slug) =>
 		getProjectBySlug(slug)
@@ -53,7 +54,7 @@
 						class:image-active={activeImageIndex === i}
 						data-testid="proof-card-image"
 						onclick={(e) => handleImageTap(e, i)}
-						aria-label="Toggle color for {title}"
+						aria-label={toggleColorAriaTemplate.replace('{title}', title)}
 					>
 						<img
 							src={imageUrl}

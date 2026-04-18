@@ -51,6 +51,11 @@
 	const ctaContactLabel = resolveLocale(heroContent.ctaContact, 'en');
 	const sqlPrompt = resolveLocale(heroContent.sqlPanel.prompt, 'en');
 	const sqlLiveLabel = resolveLocale(heroContent.sqlPanel.liveLabel, 'en');
+	const headlineAriaSuffix = resolveLocale(heroContent.headline.ariaSuffix, 'en');
+	const sqlColumnRoute = resolveLocale(heroContent.sqlPanel.columns.route, 'en');
+	const sqlColumnAvgDelay = resolveLocale(heroContent.sqlPanel.columns.avgDelayS, 'en');
+	const sqlColumnVehicles = resolveLocale(heroContent.sqlPanel.columns.vehicles, 'en');
+	const sqlMetaTemplate = resolveLocale(heroContent.sqlPanel.metaTemplate, 'en');
 	const refreshLabel = resolveLocale(heroContent.refreshButton.label, 'en');
 	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, 'en');
 
@@ -184,6 +189,7 @@
 					<!-- LEFT COLUMN: text content -->
 					<HeroTextContent
 						{headlineLine1}
+						{headlineAriaSuffix}
 						{subheadlineText}
 						{subtitleText}
 						{ctaWorkLabel}
@@ -207,6 +213,10 @@
 								queryTime={heroData.queryTime}
 								prompt={sqlPrompt}
 								liveLabel={sqlLiveLabel}
+								columnRoute={sqlColumnRoute}
+								columnAvgDelay={sqlColumnAvgDelay}
+								columnVehicles={sqlColumnVehicles}
+								metaTemplate={sqlMetaTemplate}
 								{updatedAgo}
 							/>
 						</div>
@@ -243,6 +253,10 @@
 		{heroData}
 		{sqlPrompt}
 		{sqlLiveLabel}
+		{sqlColumnRoute}
+		{sqlColumnAvgDelay}
+		{sqlColumnVehicles}
+		{sqlMetaTemplate}
 		{updatedAgo}
 		{refreshLabel}
 		{refreshHelper}
