@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import ErrorIllustration from '$lib/components/home/ErrorIllustration.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	import { errorPageContent } from '$lib/data';
-	import { resolveLocale, DEFAULT_LOCALE } from '$lib/data/locale.js';
+	import { errorPageContent } from '$lib/content';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel } from '$lib/components/brand';

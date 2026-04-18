@@ -3,9 +3,9 @@
 // 404s for unknown slugs or private projects.
 
 import { error } from '@sveltejs/kit';
-import { marked } from '$lib/data/highlight.js';
-import { getProjectBySlug, getServiceById } from '$lib/data';
-import type { Service } from '$lib/data/types.js';
+import { marked } from '$lib/utils/markdown';
+import { getProjectBySlug, getServiceById } from '$lib/content';
+import type { Service } from '$lib/types';
 
 export async function load({ params, fetch }) {
 	const project = getProjectBySlug(params.slug);

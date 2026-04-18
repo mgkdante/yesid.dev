@@ -9,7 +9,9 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { prefersReducedMotion } from '$lib/motion/stores';
-	import { siteMeta, buildPersonSchema } from '$lib/data';
+	import { buildPersonSchema } from '$lib/utils';
+
+	import { siteMeta } from '$lib/content';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 

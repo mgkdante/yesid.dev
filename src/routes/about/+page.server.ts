@@ -1,5 +1,5 @@
-import { aboutPageContent } from '$lib/data/about-page.js';
-import { fetchMontrealWeather } from '$lib/data/weather.js';
+import { aboutPageContent } from '$lib/content/about-page';
+import { fetchMontrealWeather } from '$lib/utils/weather';
 
 export async function load() {
 	if (!aboutPageContent.weather.enabled) {

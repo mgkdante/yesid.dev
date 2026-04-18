@@ -1,12 +1,9 @@
 // Load function for /services index page.
 // Fetches all visible services, their SVG illustrations, and related projects
 // for the RelatedProjects component on each service viewport.
-import {
-	getVisibleServices,
-	getProjectsByService,
-	fetchServiceSvgContents
-} from '$lib/data';
+import { fetchServiceSvgContents } from '$lib/utils';
 
+import { getVisibleServices, getProjectsByService } from '$lib/content';
 export async function load({ fetch }) {
 	const services = getVisibleServices();
 	const serviceSvgContents = await fetchServiceSvgContents(fetch);

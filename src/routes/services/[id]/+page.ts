@@ -2,14 +2,8 @@
 // Resolves the service by ID, loads adjacent services for prev/next nav,
 // related projects, and SVG content.
 import { error } from '@sveltejs/kit';
-import {
-	getServiceById,
-	getVisibleServices,
-	getAdjacentServices,
-	getProjectsByService,
-	fetchServiceSvgContents
-} from '$lib/data';
-
+import { fetchServiceSvgContents } from '$lib/utils';
+import { getServiceById, getVisibleServices, getAdjacentServices, getProjectsByService } from '$lib/content';
 export async function load({ params, fetch }) {
 	const service = getServiceById(params.id);
 

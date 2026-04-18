@@ -1,15 +1,9 @@
 // Universal load for /projects listing page.
 // Follows the same data-loading pattern as /blog's +page.ts.
 // Service SVGs are fetched via SvelteKit's fetch (works during SSR and CSR).
-import {
-	getPublicProjects,
-	getAllTags,
-	getAllStackItems,
-	getServiceIdsForProjects,
-	getVisibleServices,
-	fetchServiceSvgContents
-} from '$lib/data';
+import { fetchServiceSvgContents } from '$lib/utils';
 
+import { getPublicProjects, getAllTags, getAllStackItems, getServiceIdsForProjects, getVisibleServices } from '$lib/content';
 export async function load({ fetch }) {
 	const projects = getPublicProjects();
 	const tags = getAllTags();

@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { blogPosts, getPostBySlug, getPostHtml, getSvgContent } from '$lib/data';
-
+import { blogPosts, getPostBySlug, getPostHtml, getSvgContent } from '$lib/content';
 export function load({ params }: { params: { slug: string } }) {
 	const post = getPostBySlug(params.slug);
 	if (!post) error(404, 'Post not found');

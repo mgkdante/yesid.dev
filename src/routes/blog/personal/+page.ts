@@ -1,5 +1,4 @@
-import { getPostsByCategory, getTagsForCategory, getLanguagesForCategory, getSvgContentsForPosts } from '$lib/data';
-
+import { getPostsByCategory, getTagsForCategory, getLanguagesForCategory, getSvgContentsForPosts } from '$lib/content';
 export function load() {
 	const posts = getPostsByCategory('personal');
 	const tags = getTagsForCategory('personal');
