@@ -111,6 +111,7 @@ async function main(): Promise<void> {
   console.log('\n✓ Live docs mirrored to cloud.');
   console.log('  Archive subtree (<cloud>/.../docs/archive/) untouched — historical is preserved.');
   console.log('  Tier 3 indexes (COMPLETED-SLICES.md, INDEX.md) untouched.');
+  console.log('  For brand/ mirror (optional, brand-owning projects only): bun run brand:mirror');
 }
 
 main().catch((err: unknown) => {
