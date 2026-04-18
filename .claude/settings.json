@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "_project": "yesid.dev (SvelteKit 2 + Svelte 5 + Bun + Tailwind v4)",
+  "_scoping_intent": "Project-scoped MCP allowlist for yesid.dev. Committed so it travels with the repo. Per Slice 17j Task 4 + research in <cloud>/claude-knowledge/token-efficacy/02-mcp-scoping.md. Known gotcha: enabledMcpjsonServers MUST live here (.claude/settings.json), NOT in .claude/settings.local.json — see issue #24657.",
+
+  "enableAllProjectMcpServers": false,
+  "enabledMcpjsonServers": [],
+
+  "_expected_mcps_for_this_project": [
+    "svelte (plugin-provided — svelte-autofixer + docs)",
+    "context7 (plugin-provided — live library docs)",
+    "chrome-devtools (plugin-provided — Lighthouse, DOM, perf traces)",
+    "gsap-master (plugin-provided — animation patterns)",
+    "vercel (plugin-provided — deploy/logs)",
+    "github (plugin-provided — PR management)",
+    "playwright (plugin-provided — E2E testing)"
+  ],
+  "_user_scope_cleanup_note": "User-scope MCPs that are NOT in the list above should be pruned from ~/.claude.json during Slice 17j Task 5. Examples to remove from user scope (not used in yesid.dev): Railway, firefox-devtools, Neon, Notion, Webflow, Postman, Cloudflare, tax tools, calendar. If any becomes needed in a specific future project, add to that project's .mcp.json.",
+
+  "permissions": {
+    "allow": [
+      "Bash(bun run:*)",
+      "Bash(bun install:*)",
+      "Bash(bun install)",
+      "Bash(bun run slice:close:*)",
+      "Bash(bunx:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh api:*)",
+      "Bash(gh search:*)",
+      "WebFetch(domain:code.claude.com)",
+      "WebFetch(domain:docs.claude.com)",
+      "WebFetch(domain:platform.claude.com)",
+      "WebFetch(domain:github.com)",
+      "WebSearch"
+    ]
+  }
+}

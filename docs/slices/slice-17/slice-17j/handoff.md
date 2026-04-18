@@ -239,6 +239,33 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 4: `.mcp.json` per-project MCP allowlist + cloud templates scaffold
+
+**Session:** 2026-04-18 | **Commit:** (this commit)
+
+**Files (repo):**
+- Created: `.mcp.json` at repo root (empty `mcpServers` block — yesid.dev's active MCPs are all plugin-provided; `.mcp.json` is documented here as the project-scoping surface for future project-specific servers)
+- Created: `.claude/settings.json` (committed) — `enableAllProjectMcpServers: false`, `enabledMcpjsonServers: []`, documented expected MCPs for the project, user-scope cleanup note for Task 5, shared permissions (bun run, git, gh, WebFetch to Claude/GitHub docs, WebSearch)
+
+**Files (cloud — companion work per Yesid request):**
+- Created: `<cloud>/claude-knowledge/mcp-templates/README.md` — per-project MCP scoping recipe, layer model (user-scope / project-scope / plugins), per-project setup walkthrough, quarterly audit rhythm
+- Created: `<cloud>/claude-knowledge/mcp-templates/web-sveltekit.json` — yesid.dev pattern template
+- Created: `<cloud>/claude-knowledge/mcp-templates/sql-pipeline.json` — SQL / data work template (Neon seeded)
+- Created: `<cloud>/claude-knowledge/mcp-templates/data-ops.json` — infrastructure / data ops template (Railway seeded)
+- Created: `<cloud>/claude-knowledge/mcp-templates/generic.json` — minimal baseline
+- Created: `<cloud>/claude-knowledge/mcp-templates/settings-template.json` — `.claude/settings.json` pattern
+- Created: `<cloud>/claude-config/README.md` — portable Claude setup doc (what's exportable per layer, layout for snapshot/restore, usage recipe, tie-ins with os-quirks + mcp-templates). Tooling (snapshot.ps1, restore.ps1, etc.) ships in Task 8.
+
+**Decisions:**
+- D014: `.mcp.json` stays empty for yesid.dev for now — all needed MCPs (svelte, chrome-devtools, context7, gsap-master, github, vercel, playwright) come via plugins. File exists as the project-scoping surface for future project-specific stdio/HTTP MCPs.
+- D015: Committed `.claude/settings.json` + `.claude/settings.local.json` (existing) split — shared vs personal permissions. `settings.local.json` keeps personal WebFetch / interactive permissions; `settings.json` declares the scoping model + shared permissions that travel with the repo.
+- D016: Per-project plugin scoping is unsupported natively (research 03-plugin-hygiene.md). User-scope plugin pruning is Task 5's job. `.mcp.json` layer is insufficient alone — Task 5 gets the full surface.
+
+**User request expanding Task 8 scope (logged here, implemented in Task 8):**
+- Exportability as a first-class property: snapshot + restore across machines (Windows / macOS / Linux). `<cloud>/claude-config/README.md` already documents the target layout and usage; scripts come in Task 8.
+
+---
+
 ### Task 3f: OS-agnosticism + OS-quirks registry
 
 **Session:** 2026-04-18 | **Commit:** (this commit — cloud files not tracked in git)
