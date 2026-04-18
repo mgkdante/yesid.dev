@@ -18,6 +18,16 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
+  import { resolveLocale } from '$lib/utils/locale';
+  import { blogDetailContent } from '$lib/content/blog';
+
+  const readingModeLabel = resolveLocale(blogDetailContent.page.readingMode, 'en');
+  const tocSectionTitle = resolveLocale(blogDetailContent.page.tocSectionTitle, 'en');
+  const metaCategoryLabel = resolveLocale(blogDetailContent.page.metaCategory, 'en');
+  const metaWordsLabel = resolveLocale(blogDetailContent.page.metaWords, 'en');
+  const metaReadTimeLabel = resolveLocale(blogDetailContent.page.metaReadTime, 'en');
+  const metaLanguageLabel = resolveLocale(blogDetailContent.page.metaLanguage, 'en');
+  const metaTagsLabel = resolveLocale(blogDetailContent.page.metaTags, 'en');
 
   let {
     post,
@@ -142,7 +152,7 @@
         <div class="toc-panel toc-scroll" use:scrollChain>
           <!-- Reading mode switch -->
           <label class="reading-toggle">
-            <span class="reading-toggle__label">Reading mode</span>
+            <span class="reading-toggle__label">{readingModeLabel}</span>
             <button
               class="reading-switch"
               class:reading-switch--on={readingMode}
@@ -154,7 +164,7 @@
             </button>
           </label>
 
-          <CollapsibleSection title="On this page" open={true}>
+          <CollapsibleSection title={tocSectionTitle} open={true}>
             <nav class="toc-nav">
               {#each headings as heading}
                 <button
@@ -183,24 +193,24 @@
           <!-- Post metadata panel -->
           <div class="left-meta" aria-hidden="true">
             <div class="left-meta__item">
-              <span class="left-meta__label">Category</span>
+              <span class="left-meta__label">{metaCategoryLabel}</span>
               <span class="left-meta__value">{post.category}</span>
             </div>
             <div class="left-meta__item">
-              <span class="left-meta__label">Words</span>
+              <span class="left-meta__label">{metaWordsLabel}</span>
               <span class="left-meta__value">{wordCount.toLocaleString()}</span>
             </div>
             <div class="left-meta__item">
-              <span class="left-meta__label">Read time</span>
+              <span class="left-meta__label">{metaReadTimeLabel}</span>
               <span class="left-meta__value">{readingTime} min</span>
             </div>
             <div class="left-meta__item">
-              <span class="left-meta__label">Language</span>
+              <span class="left-meta__label">{metaLanguageLabel}</span>
               <span class="left-meta__value">{post.lang}</span>
             </div>
             {#if post.tags.length > 0}
               <div class="left-meta__item">
-                <span class="left-meta__label">Tags</span>
+                <span class="left-meta__label">{metaTagsLabel}</span>
                 <span class="left-meta__value">{post.tags.join(' · ')}</span>
               </div>
             {/if}

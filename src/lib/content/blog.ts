@@ -27,6 +27,43 @@ export const blogListingContent = {
 	},
 } as const;
 
+/** Blog-detail-page chrome copy extracted from components in Task 17b-7c.
+ *  Consumed by BlogContent, BlogDetailHeader, BlogDetailPage, BlogTocPill. */
+export const blogDetailContent = {
+	/** Chrome for the <pre><code> copy-button. `Copy` default / `Error` failure state.
+	 *  (`Copied!` state already lives inline as transient UI feedback.) */
+	code: {
+		copyAria: { en: 'Copy code to clipboard' } satisfies LocalizedString,
+		copyLabel: { en: 'Copy' } satisfies LocalizedString,
+		errorLabel: { en: 'Error' } satisfies LocalizedString,
+	},
+	/** Back-nav link text in BlogDetailHeader, varies by category. */
+	backNav: {
+		toPersonal: { en: '\u2190 back to personal corner' } satisfies LocalizedString,
+		toDispatches: { en: '\u2190 back to dispatches' } satisfies LocalizedString,
+	},
+	header: {
+		postTagsAria: { en: 'Post tags' } satisfies LocalizedString,
+		/** Reading-time suffix — brace placeholder `{minutes}`. */
+		readingTimeLabel: { en: '{minutes} min read' } satisfies LocalizedString,
+	},
+	/** Desktop TOC toggle labels + metadata panel column labels. */
+	page: {
+		readingMode: { en: 'Reading mode' } satisfies LocalizedString,
+		tocSectionTitle: { en: 'On this page' } satisfies LocalizedString,
+		metaCategory: { en: 'Category' } satisfies LocalizedString,
+		metaWords: { en: 'Words' } satisfies LocalizedString,
+		metaReadTime: { en: 'Read time' } satisfies LocalizedString,
+		metaLanguage: { en: 'Language' } satisfies LocalizedString,
+		metaTags: { en: 'Tags' } satisfies LocalizedString,
+	},
+	/** Mobile table-of-contents pill button labels. */
+	tocPill: {
+		openAria: { en: 'Table of contents' } satisfies LocalizedString,
+		closeAria: { en: 'Close table of contents' } satisfies LocalizedString,
+	},
+} as const;
+
 // --- Frontmatter parsing ---
 
 function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
