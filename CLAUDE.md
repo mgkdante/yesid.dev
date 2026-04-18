@@ -76,6 +76,23 @@ Declare one at the start of every session.
 
 At session start: scan for uncommitted changes or commits made outside Claude Code. Document anything found in `log.md` (or the session file for non-slice).
 
+## Session progress tracking (mandatory for multi-task sessions)
+
+Every Implementation or Closing session with 2+ tasks uses `TodoWrite` for live visual progress tracking. Rules:
+
+1. **Session start:** populate `TodoWrite` from the active sub-slice's `plan.md` — one entry per Level 3 task (plus any amendments mid-slice). Statuses seeded from `plan.md` checkboxes.
+2. **Exactly one task `in_progress`** at any moment. Never zero, never two.
+3. **Mark completed immediately** the task is committed to the branch (commit SHA exists). Don't batch.
+4. **Add tasks mid-session** as scope amendments or follow-ups emerge. Never hide additions.
+5. **At every STOP** (per-task): also print a compact markdown progress table in the conversation — same content, scrollback-readable. Format:
+   ```
+   | # | Task | Status | Commit |
+   |---|------|--------|--------|
+   ```
+6. **Session end:** the final `TodoWrite` state is the resume point for the next session. `CHECKPOINT.md` snapshots the same state in durable form.
+
+Why both TodoWrite and the markdown table: `TodoWrite` is live UI (ephemeral to the session surface). The table in STOP messages is scrollback-readable across session history. They tell the same story in two persistence layers.
+
 ## Hard rules (governance)
 
 - **Never advance without approval.** Dependent tasks run sequentially, one STOP + Yesid approval between each. Task → sub-slice → slice.

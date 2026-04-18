@@ -512,12 +512,13 @@ resolveLocale({ en: "Hello", fr: "Bonjour" }, 'es')
 Every session begins with:
 
 1. **Declare session type** — Planning, Implementation, Closing, or Non-slice
-2. **Read checkpoint** — `docs/slices/slice-NN-checkpoint.md` (or `docs/slices/slice-NN/CHECKPOINT.md` after Task 3b of Slice 17j) → resume where we left off
+2. **Read checkpoint** — `docs/slices/slice-NN/CHECKPOINT.md` → resume where we left off
 3. **Check out feature branch** — `git checkout feature/slice-NN<letter>`
 4. **Scan for drift** — Check for uncommitted changes or commits made outside Claude Code
 5. **Read active bundle** — `spec.md`, `plan.md`, `log.md`, `handoff.md`
-6. **Check PATTERNS.md + VOCAB.md** — Any relevant solved patterns? Any term already codified?
-7. **State the goal** — What does "done" look like for this session?
+6. **Populate `TodoWrite` from `plan.md`** — one entry per Level 3 task + any mid-slice amendments. Statuses seeded from `plan.md` checkboxes. Exactly one entry in `in_progress`. This gives Yesid live visual progress in the session UI throughout the work.
+7. **Check PATTERNS.md + VOCAB.md** — Any relevant solved patterns? Any term already codified?
+8. **State the goal** — What does "done" look like for this session?
 
 ---
 
@@ -525,12 +526,27 @@ Every session begins with:
 
 Every session ends with:
 
-1. **Update checkpoint** — Current position (sub-slice, task, next step)
-2. **Append to `log.md`** — What was done, decisions, commands, errors
-3. **Append to `handoff.md`** — If tasks landed, add their sections
-4. **Ensure tests pass** — `bun run test` + `bun run check` green
-5. **Commit** — All changes on the feature branch
-6. **State next steps** — What should the next session start with?
+1. **Final `TodoWrite` state** — mark completed tasks completed; leave the next task in `in_progress` or `pending` as resume point
+2. **Update checkpoint** — `docs/slices/slice-NN/CHECKPOINT.md` with current position (sub-slice, task, next step, TodoWrite summary)
+3. **Append to `log.md`** — What was done, decisions, commands, errors
+4. **Append to `handoff.md`** — If tasks landed, add their sections
+5. **Ensure tests pass** — `bun run test` + `bun run check` green
+6. **Commit** — All changes on the feature branch
+7. **State next steps** — What should the next session start with?
+
+### Per-STOP progress table (within-session)
+
+At every task STOP, the AI also prints a compact markdown progress table in the conversation (not just the `TodoWrite` UI state) — scrollback-readable. Format:
+
+```
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 0 | Baseline | ✅ | abc1234 |
+| 1 | First feature | 🔄 in progress | — |
+| 2 | Second feature | ⏳ pending | — |
+```
+
+`TodoWrite` is the live UI state; the markdown table is the scrollback audit trail. They say the same thing in two persistence layers.
 
 ---
 
