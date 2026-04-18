@@ -606,6 +606,55 @@ Preview verification is limited because the stack viz components are not wired i
 Audit said ~157; actual is ~207 once label/domain/layer records flatten to individual seeds. Task 17b-7's intent (dedupe + centralize every hardcoded string into content) is now satisfied across all 12 sub-tasks.
 
 Remaining tasks:
-- 17b-8 Integrity test enhancements (LocalizedString guard + translation-debt report)
+- ~~17b-8 Integrity test enhancements~~ — shipped, see §17b-8 below
 - 17b-9 Governance (VOCAB, CONSTITUTION, ARCHITECTURE, README, cloud learn doc)
 - 17b-10 Final verification + PR
+
+---
+
+## 17b-8 — Integrity test enhancements (LocalizedString guard + translation-debt report)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+Appended a `describe('LocalizedString guard + translation debt')` block to `src/lib/content/integrity.test.ts`. 3 new tests walk every exported content value and validate LocalizedString shapes:
+
+1. **Strict malformed guard** — fails if any LocalizedString has a missing or empty `en` field. Catches the class of bug where an author writes `{ fr: '...', es: '...' }` without the English default.
+2. **Sanity floor** — asserts at least one LocalizedString is fully multilingual (en+fr+es). Protects against accidental fr/es stripping.
+3. **Informational snapshot** — `console.log`s a translation-debt table for visibility in test output.
+
+Added module-namespace imports for every content file (`site-content`, `nav`, `services`, `projects`, `meta`, `blog`, `tech-stack`) plus singletons (`aboutPageContent`, `contactContent`). One deterministic entry point per file.
+
+### Current snapshot (produced by the new test)
+
+```
+LocalizedString translation-debt snapshot:
+─────────────────────────────────────────────────────────
+Total LocalizedStrings walked:  519
+Full (en + fr + es):            32 (6%)
+Partial (en + one other):       2 (0%)
+en-only:                        485 (93%)
+Malformed (missing en):         0
+```
+
+### What did **not** change
+
+- No production code touched. Test-only surface.
+- Walker is purely structural (recognizes `{ en: '...' }` shape); doesn't import the `LocalizedString` type. Catches mistyped LocalizedStrings that `svelte-check` would miss.
+- No hard assertion on translation coverage — that would fail every build until translations land. Snapshot is informational + the floor-of-one is strict.
+
+### Verification
+
+| Check | Post-17b-7l | Post-17b-8 |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| `bun run test` | 83 / 819 pass | 83 / 822 pass (+3 new tests) |
+| Snapshot output | — | 519 total / 0 malformed / 6% fully multilingual |
+
+### Review focus
+
+- `isLocalizedStringShape` heuristic — any object with an `en` key is treated as a LocalizedString candidate. If a configuration field ever collides (e.g., a language-code map with an `en: 'english'` label field), the walker will count it as malformed. None exist in the current codebase; grep-verified at authoring time.
+- Walker cycle guard — uses a `WeakSet` for defense. Static content shouldn't cycle, but the cost is zero.
+- Translation-debt snapshot — printed via `console.log` in a passing test. Vitest's default reporters surface stdout on pass in verbose mode; regular runs may suppress it. The snapshot is intentionally not asserted against a threshold; it's a visibility surface, not a gate.

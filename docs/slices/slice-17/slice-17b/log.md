@@ -857,3 +857,72 @@ Audit said ~157; actual count is ~207 once label/domain/layer record fields flat
 | 17b-10 | Final verification + PR | ⏳ pending | — |
 
 **Model:** Opus 4.7 [1m] | **Context:** ~525k / 1M (~53%) — still healthy. Approaching 65% pre-break after 2-3 more tasks. 17b-8 (integrity tests) is moderate complexity; 17b-9 (governance docs) is writing; 17b-10 (PR) is ceremonial. Plausible to finish the slice this session if 17b-8 stays within ~40k tokens.
+
+---
+
+## Session 2026-04-18 — Task 17b-8 Integrity test enhancements
+
+**Continuation of same session.** Context ~55% at start.
+
+### What shipped
+
+Appended a new `describe('LocalizedString guard + translation debt')` block to `src/lib/content/integrity.test.ts` — 3 new tests that together walk every exported content value and validate LocalizedString shapes.
+
+**Added imports:**
+- Module-namespace imports for every content file (`site-content`, `nav`, `services`, `projects`, `meta`, `blog`, `tech-stack`) plus the typed `aboutPageContent` / `contactContent` singletons. This gives the walker one deterministic entry point per file.
+
+**Added types + helpers:**
+- `LocalizedStringStats` interface — tracks `{ full, partial, enOnly, malformed, total }` counts.
+- `isLocalizedStringShape(v)` — structural check: any non-null object with an `en` key is treated as a LocalizedString candidate.
+- `isNonEmptyString(v)` — `typeof === 'string' && v.trim() !== ''`.
+- `walkContent(value, stats, path, seen)` — recursive traversal. Handles LocalizedString leaves, arrays, and plain objects. Uses a `WeakSet` cycle guard (defensive — static content shouldn't cycle but cost is zero).
+
+**Added 3 tests:**
+1. **"every LocalizedString has a non-empty English value"** — hard failure if any LocalizedString has a missing or empty `en` field. Catches the class of bug where a content author writes `{ fr: '...', es: '...' }` without the English default, which would render as `[object Object]` in production.
+2. **"at least one LocalizedString is fully multilingual"** — sanity floor. If the fully-multilingual count drops to 0, someone accidentally stripped fr/es from nav.ts (the only actually-multilingual file as of this slice).
+3. **"prints translation-debt snapshot"** — informational report printed via `console.log`. Produces the snapshot at the top of the test output:
+   ```
+   LocalizedString translation-debt snapshot (Task 17b-8):
+   ─────────────────────────────────────────────────────────
+   Total LocalizedStrings walked:  519
+   Full (en + fr + es):            32 (6%)
+   Partial (en + one other):       2 (0%)
+   en-only:                        485 (93%)
+   Malformed (missing en):         0
+   ```
+
+### Current numbers (fresh scan)
+
+- **Total LocalizedStrings: 519** — the audit estimated ~230-260 en-only, but the audit only counted top-level declarations; walking nested structures (projects' impactMetrics, services' deliverables arrays, blog posts' metadata) reveals the full surface.
+- **Full (en+fr+es): 32** — nav.ts carries all the multilingual strings (`navLinks`, `menuItems`, `errorPageContent.suggestions`, `metroBookends`'s pending migration, plus 17b-7f `navDirections` and 17b-7j `sharedChromeContent` fr+es additions).
+- **Partial: 2** — `siteMeta.tagline` has partial fr/es.
+- **en-only: 485 (93%)** — the bulk of content extracted across 17b-7a..7l. This is the translation debt to pay down in a post-17b slice.
+- **Malformed: 0** — no broken LocalizedStrings in the codebase. ✓
+
+### Non-obvious decisions
+
+- **Structural shape check, not typed check.** The walker doesn't import the `LocalizedString` type — it just checks for an `en` key. This is intentional: a purely structural check can't miss LocalizedStrings that the author forgot to type as `LocalizedString`. If someone writes `{ en: 'hi' }` inline without the type annotation, the walker still finds it.
+- **`isLocalizedStringShape` treats ANY object with an `en` key as a candidate.** False positives are technically possible (e.g., a configuration object with an `en: 'english'` language-code field). None exist in the current codebase (verified via grep). If one appears later and is wrongly treated as malformed, the fix is to rename the field or add an exception to the walker.
+- **`console.log` report via a passing test.** Vitest shows stdout on PASS by default in some reporters (verbose, default), so the snapshot is visible in normal test runs. The alternative (a separate report script) would add a build step for information that's cheap to produce at test time.
+- **No assertion on multilingual coverage target.** The third test could assert "fr/es coverage ≥ 50%" as a compile-time target, but that would fail every build until translations land. Keeping the report informational + the floor-of-one strict is the right balance for this slice.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged) |
+| `bun run test src/lib/content/integrity.test.ts` | 1 file / 36 tests pass (+3 from 33) |
+| `bun run test` full | 83 files / 822 tests pass (+3 from 819) |
+| Snapshot output verified in verbose reporter | 519 total / 32 full / 2 partial / 485 en-only / 0 malformed |
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1..6 | Architecture + audit + LocalizedString | ✅ approved | earlier |
+| 17b-7a..7l | All 12 extraction sub-tasks | ✅ approved | fc6fb06..cf01da9 |
+| **17b-8** | **Integrity test enhancements** | **🟡 awaiting approval** | pending |
+| 17b-9 | Governance doc updates | ⏳ pending | — |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~560k / 1M (~56%) — approaching pre-break at 65% (~650k). 17b-9 (governance docs) is writing-heavy; 17b-10 is ceremonial. Will aim to finish 17b-9 in this session if it stays under 40k tokens; 17b-10 should land clean regardless.

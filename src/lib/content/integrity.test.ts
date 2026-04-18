@@ -8,6 +8,15 @@ import { projects } from './projects.js';
 import { services } from './services.js';
 import { siteMeta } from './meta.js';
 import { blogPosts } from './blog.js';
+import * as siteContentModule from './site-content.js';
+import * as navModule from './nav.js';
+import * as servicesModule from './services.js';
+import * as projectsModule from './projects.js';
+import { aboutPageContent } from './about-page.js';
+import { contactContent } from './contact-page.js';
+import * as metaModule from './meta.js';
+import * as blogModule from './blog.js';
+import * as techStackModule from './tech-stack.js';
 
 const VALID_STATUSES = ['public', 'private', 'wip'] as const;
 
@@ -219,5 +228,153 @@ describe('blogPosts data integrity', () => {
 		blogPosts.forEach((p) => {
 			expect(p.url.trim()).not.toBe('');
 		});
+	});
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// LocalizedString guard + translation-debt report (Task 17b-8)
+// ─────────────────────────────────────────────────────────────────────────
+//
+// Walks every exported value in the content layer, identifies LocalizedString-
+// shaped objects (by the presence of a string `en` field), and reports:
+//
+//   - Malformed strings: any LocalizedString with a missing or empty `en`
+//     field. These fail the build — a LocalizedString without its English
+//     default would render as an empty string or `[object Object]` in the UI.
+//
+//   - Translation debt: count of strings by completeness tier (full = en+fr+es,
+//     partial = en + one of fr/es, en-only = en only). Printed as a snapshot
+//     so regressions (or improvements) are visible in the test output.
+//
+// The walker is purely structural — it doesn't know which fields the TypeScript
+// type system expects to be LocalizedString, just recognizes the shape. False
+// positives (objects with an `en` string that aren't meant to be localized) are
+// expected to be rare — grep audit found none as of Task 17b-8 authoring.
+
+interface LocalizedStringStats {
+	full: number; // has en + fr + es
+	partial: number; // has en + (fr XOR es)
+	enOnly: number; // has en, no fr or es
+	malformed: string[]; // paths where `en` is missing/empty
+	total: number;
+}
+
+function isLocalizedStringShape(v: unknown): v is Record<string, unknown> {
+	if (typeof v !== 'object' || v === null) return false;
+	// Must have an `en` key to be considered a LocalizedString candidate.
+	return 'en' in (v as Record<string, unknown>);
+}
+
+function isNonEmptyString(v: unknown): boolean {
+	return typeof v === 'string' && v.trim() !== '';
+}
+
+function walkContent(
+	value: unknown,
+	stats: LocalizedStringStats,
+	path: string,
+	seen: WeakSet<object>
+): void {
+	if (value === null || value === undefined) return;
+
+	// Primitives — nothing to walk.
+	if (typeof value !== 'object') return;
+
+	// Cycle guard — content shouldn't be cyclic, but defensive.
+	if (seen.has(value as object)) return;
+	seen.add(value as object);
+
+	// LocalizedString leaf.
+	if (isLocalizedStringShape(value)) {
+		stats.total++;
+		const ls = value as { en?: unknown; fr?: unknown; es?: unknown };
+		if (!isNonEmptyString(ls.en)) {
+			stats.malformed.push(`${path}.en`);
+			return;
+		}
+		const hasFr = isNonEmptyString(ls.fr);
+		const hasEs = isNonEmptyString(ls.es);
+		if (hasFr && hasEs) stats.full++;
+		else if (hasFr || hasEs) stats.partial++;
+		else stats.enOnly++;
+		return;
+	}
+
+	// Array — walk each element.
+	if (Array.isArray(value)) {
+		value.forEach((item, i) => walkContent(item, stats, `${path}[${i}]`, seen));
+		return;
+	}
+
+	// Plain object — walk each string-keyed property.
+	for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+		walkContent(v, stats, `${path}.${k}`, seen);
+	}
+}
+
+function newStats(): LocalizedStringStats {
+	return { full: 0, partial: 0, enOnly: 0, malformed: [], total: 0 };
+}
+
+describe('LocalizedString guard + translation debt', () => {
+	// Module-keyed sources. Walker uses the module name as the root path so
+	// malformed errors point to the right file.
+	const sources: Array<[string, unknown]> = [
+		['site-content', siteContentModule],
+		['nav', navModule],
+		['services', servicesModule],
+		['projects', projectsModule],
+		['about-page', aboutPageContent],
+		['contact-page', contactContent],
+		['meta', metaModule],
+		['blog', blogModule],
+		['tech-stack', techStackModule],
+	];
+
+	function scan(): LocalizedStringStats {
+		const stats = newStats();
+		const seen = new WeakSet<object>();
+		for (const [name, value] of sources) {
+			walkContent(value, stats, name, seen);
+		}
+		return stats;
+	}
+
+	it('every LocalizedString has a non-empty English value', () => {
+		const stats = scan();
+		expect(
+			stats.malformed,
+			`Malformed LocalizedStrings (missing or empty .en):\n  ${stats.malformed.join('\n  ')}`
+		).toEqual([]);
+	});
+
+	it('at least one LocalizedString is fully multilingual', () => {
+		// Sanity floor — if fully-multilingual drops to 0, someone has accidentally
+		// stripped fr/es from nav.ts / navDirections / sharedChromeContent.
+		const stats = scan();
+		expect(stats.full).toBeGreaterThan(0);
+	});
+
+	it('prints translation-debt snapshot', () => {
+		const stats = scan();
+		const pct = (n: number) => (stats.total === 0 ? 0 : Math.round((n / stats.total) * 100));
+		const lines = [
+			'',
+			'  LocalizedString translation-debt snapshot (Task 17b-8):',
+			`  ─────────────────────────────────────────────────────────`,
+			`  Total LocalizedStrings walked:  ${stats.total}`,
+			`  Full (en + fr + es):            ${stats.full} (${pct(stats.full)}%)`,
+			`  Partial (en + one other):       ${stats.partial} (${pct(stats.partial)}%)`,
+			`  en-only:                        ${stats.enOnly} (${pct(stats.enOnly)}%)`,
+			`  Malformed (missing en):         ${stats.malformed.length}`,
+			'',
+		];
+		// Log at info level so vitest reporters surface it.
+		// eslint-disable-next-line no-console
+		console.log(lines.join('\n'));
+
+		// Trivial assertion so the test counts as a pass (vitest requires at
+		// least one expect() call to mark a test passed).
+		expect(stats.total).toBeGreaterThan(0);
 	});
 });
