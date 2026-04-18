@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { siteMeta, menuItems } from '$lib/content';
+	import { siteMeta, menuItems, sharedChromeContent, footerContent } from '$lib/content';
+	import { resolveLocale } from '$lib/utils/locale';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
+
+	const tagline = resolveLocale(footerContent.tagline, 'en');
+	const location = resolveLocale(footerContent.location, 'en');
+	const statusPrefix = resolveLocale(footerContent.statusPrefix, 'en');
+	const footerNavAria = resolveLocale(sharedChromeContent.footerNavAria, 'en');
 
 	const year = new Date().getFullYear();
 
@@ -51,11 +57,11 @@
 					class="text-primary">.</span
 				>
 			</a>
-			<span class="mt-1 font-mono text-xs text-[var(--muted-foreground)]">// digital infrastructure</span>
+			<span class="mt-1 font-mono text-xs text-[var(--muted-foreground)]">{tagline}</span>
 		</div>
 
 		<!-- Center: Nav links -->
-		<nav aria-label="Footer navigation" class="flex flex-wrap justify-center gap-x-6 gap-y-2">
+		<nav aria-label={footerNavAria} class="flex flex-wrap justify-center gap-x-6 gap-y-2">
 			{#each footerNavLinks as link}
 				<a
 					href={link.href}
@@ -85,10 +91,10 @@
 	<!-- Row 2: Status bar -->
 	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--muted-foreground)] sm:flex-row sm:justify-between sm:px-10">
 		<small>&copy; {year} yesid<span class="text-primary">.</span></small>
-		<address class="not-italic">Montreal, QC &middot; Remote</address>
+		<address class="not-italic">{location}</address>
 		<span class="flex items-center gap-1.5">
 			<StatusDot color="orange" pulse />
-			system online &mdash; {systemDate}
+			{statusPrefix} {systemDate}
 		</span>
 	</div>
 

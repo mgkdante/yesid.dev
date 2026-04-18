@@ -40,6 +40,58 @@ export const navDirections = {
 	next: { en: 'Next', fr: 'Suivant', es: 'Siguiente' } satisfies LocalizedString
 } as const;
 
+/** Shared chrome extracted from layout/shared components in Task 17b-7j.
+ *  Consumed by Nav (menu toggle), MenuOverlay (dialog title + footer label),
+ *  Footer (footer nav aria), SearchInput (default placeholder), FilterSummary
+ *  (clear button), TableOfContents (heading + arias + mobile button).
+ *  Multilingual where the string is user-facing navigation copy; decorative
+ *  chrome stays en-only to match the "no backfill" rule from 17b-5. */
+export const sharedChromeContent = {
+	openMenuAria: {
+		en: 'Open menu',
+		fr: 'Ouvrir le menu',
+		es: 'Abrir menú'
+	} satisfies LocalizedString,
+	closeMenuAria: {
+		en: 'Close menu',
+		fr: 'Fermer le menu',
+		es: 'Cerrar menú'
+	} satisfies LocalizedString,
+	footerNavAria: {
+		en: 'Footer navigation',
+		fr: 'Navigation du pied de page',
+		es: 'Navegación del pie de página'
+	} satisfies LocalizedString,
+	menuOverlayAria: {
+		en: 'Navigation menu',
+		fr: 'Menu de navigation',
+		es: 'Menú de navegación'
+	} satisfies LocalizedString,
+	/** Decorative all-caps label in the menu overlay footer. */
+	menuOverlayFooterLabel: { en: 'NAVIGATION — ALL ROUTES' } satisfies LocalizedString,
+	searchPlaceholder: {
+		en: 'Search...',
+		fr: 'Rechercher...',
+		es: 'Buscar...'
+	} satisfies LocalizedString,
+	clearFiltersLabel: {
+		en: 'clear filters',
+		fr: 'effacer les filtres',
+		es: 'borrar filtros'
+	} satisfies LocalizedString,
+	tocToggleSectionAria: { en: 'Toggle section' } satisfies LocalizedString,
+	tocHeading: {
+		en: 'On this page',
+		fr: 'Sur cette page',
+		es: 'En esta página'
+	} satisfies LocalizedString,
+	tocMobileButton: {
+		en: 'Table of Contents',
+		fr: 'Table des matières',
+		es: 'Tabla de contenidos'
+	} satisfies LocalizedString
+} as const;
+
 export interface ErrorPageContent {
 	label: LocalizedString;
 	heading: LocalizedString;

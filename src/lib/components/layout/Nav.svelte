@@ -6,8 +6,12 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { wordmarkHover } from '$lib/motion/actions';
-	import { navLinks } from '$lib/content';
+	import { navLinks, sharedChromeContent } from '$lib/content';
+	import { resolveLocale } from '$lib/utils/locale';
 	import MenuOverlay from './MenuOverlay.svelte';
+
+	const openMenuAria = resolveLocale(sharedChromeContent.openMenuAria, 'en');
+	const closeMenuAria = resolveLocale(sharedChromeContent.closeMenuAria, 'en');
 
 	let { pathname = '/' }: { pathname?: string } = $props();
 
@@ -110,7 +114,7 @@
 		<button
 			data-testid="nav-menu-toggle"
 			class="menu-toggle {overlayActive ? 'menu-toggle-open' : ''}"
-			aria-label={overlayActive ? 'Close menu' : 'Open menu'}
+			aria-label={overlayActive ? closeMenuAria : openMenuAria}
 			onclick={toggleMenu}
 		>
 			<span class="menu-toggle-line menu-toggle-top"></span>

@@ -637,3 +637,81 @@ Biggest extraction sub-task in Task 17b-7. **~50 LocalizedString seeds** (audit 
 | 17b-10 | Final verification + PR | ⏳ pending | — |
 
 **Model:** Opus 4.7 [1m] | **Context:** ~385k / 1M (~38%) — comfortable, within healthy zone; one or two more tasks viable before pre-break.
+
+---
+
+## Session 2026-04-18 — Task 17b-7j Layout + shared extraction
+
+**Continuation of same session.** Context ~42% at start.
+
+### What shipped
+
+**Content additions (2 files):**
+
+- `src/lib/content/nav.ts` — new `sharedChromeContent` block with 10 LocalizedString seeds. Multilingual (en/fr/es) for user-facing navigation copy; en-only for the decorative "NAVIGATION — ALL ROUTES" overlay footer label and the rarely-heard "Toggle section" aria. Keys:
+  - `openMenuAria`, `closeMenuAria` (nav pill toggle)
+  - `footerNavAria` (Footer `<nav>` label)
+  - `menuOverlayAria` (MenuOverlay DialogPrimitive.Title, sr-only)
+  - `menuOverlayFooterLabel` (decorative "NAVIGATION — ALL ROUTES")
+  - `searchPlaceholder` (SearchInput default)
+  - `clearFiltersLabel` (FilterSummary button)
+  - `tocToggleSectionAria`, `tocHeading`, `tocMobileButton` (TableOfContents)
+- `src/lib/content/site-content.ts` — new `footerContent` block at the end:
+  - `tagline` ("// digital infrastructure") — decorative mono line, en-only.
+  - `location` ("Montreal, QC · Remote") — middot baked into the string (typographic concern).
+  - `statusPrefix` ("system online —") — template's separator sits with the date at call site.
+
+**Components updated (7):**
+
+- `Nav.svelte` — conditional `aria-label` on the menu toggle now reads `closeMenuAria` / `openMenuAria` from content.
+- `Footer.svelte` — 4 strings wired (tagline, nav aria, location, status prefix). Template in the status bar becomes `{statusPrefix} {systemDate}` — prefix static, date dynamic.
+- `MenuOverlay.svelte` — DialogPrimitive.Title + footer label both content-driven.
+- `FilterSummary.svelte` — "clear filters" button reads content.
+- `SearchInput.svelte` — default placeholder resolves from content at module init; callers can still override via prop.
+- `TableOfContents.svelte` — 4 slots wired (Toggle section aria, 2× "On this page" heading, mobile button). `aria-label="Table of contents"` on the `<nav>` element left as-is (out of audit scope; lowercase first letter was a deliberate sentence-case aria convention).
+- `StationTabs.svelte` — `aria-label="Service navigation"` reuses `servicesDetailContent.serviceNavAria` added in 17b-7f. One key, two consumers (ServiceNav prev/next + StationTabs).
+
+### Non-obvious decisions
+
+- **Reused `servicesDetailContent.serviceNavAria` rather than duplicating.** The audit's proposed key `serviceTabNavAria` would have created a second source of truth for the same string. The pattern is: one key, many consumers. Dedupe wins.
+- **fr/es added where the string is navigation copy; skipped for decorative chrome.** "NAVIGATION — ALL ROUTES" stays en-only — translating it would break the metro-line decorative motif. "Toggle section" stays en-only — rarely heard by screen readers, low translation ROI.
+- **Footer location keeps middot baked into the string.** `"Montreal, QC · Remote"` could be split into two fields joined by a separator, but the separator is a typographic decision that varies by locale (fr might use " – " instead of " · "). Keeping it as one field lets translators make that call.
+- **SearchInput default placeholder resolves at module init.** Tests pass because SearchInput is used within route components; when loaded in isolation, the `defaultPlaceholder` const resolves synchronously. If locale-switching arrives, this becomes a `$derived` on the locale signal.
+- **TableOfContents `<nav aria-label="Table of contents">` left as-is.** Audit listed only 3 TOC strings (L190/225+261/287); the nav-element aria on lines 215 and 242 is a separate string (lowercase first letter — sentence case for aria) that the audit didn't flag. Staying in scope.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged) |
+| `bun run test` | 83 files / 819 tests pass (unchanged) |
+| Preview `/projects/yesid-dev` desktop | nav menu aria "Open menu", footer tagline "// digital infrastructure", footer nav aria "Footer navigation", footer address "Montreal, QC · Remote", status line "system online — 2026.04.18" — all render identically |
+| Preview `/blog/building-a-transit-pipeline` desktop | TOC heading "On this page" (embedded + desktop), mobile button "Table of Contents", 2× chevron arias "Toggle section" all render |
+| Preview `/services/sql-development` desktop | 2 nav elements with `aria-label="Service navigation"` (StationTabs + ServiceNav), same string from one content key |
+| Preview mobile 375×812 on `/blog` | footer tagline + menu aria render identically |
+| Console errors | none at steady state |
+
+### Strings extracted (13)
+
+Shared chrome × 10 (`openMenuAria`, `closeMenuAria`, `footerNavAria`, `menuOverlayAria`, `menuOverlayFooterLabel`, `searchPlaceholder`, `clearFiltersLabel`, `tocToggleSectionAria`, `tocHeading`, `tocMobileButton`). Footer chrome × 3 (`tagline`, `location`, `statusPrefix`). Audit said ~12 — exact match to 13 once `tocHeading`'s two DOM occurrences collapse into one key.
+
+StationTabs reused an existing key (`servicesDetailContent.serviceNavAria` from 17b-7f) — no new content, just wiring, so not counted toward 13.
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1..6 | Restructure → audit → LocalizedString | ✅ approved | earlier |
+| 17b-7a..7e | Home / Blog / Projects extractions | ✅ approved | fc6fb06..9ed81ad |
+| 17b-7f | Services extraction | ✅ re-landed clean | f8a6683 |
+| 17b-7g | About extraction | ✅ approved | 843b3cc |
+| 17b-7h | Contact extraction | ✅ approved | 68a99ef |
+| 17b-7i | Tech stack viz extraction | ✅ approved | 8dceba7 |
+| **17b-7j** | **Layout + shared extraction** | **🟡 awaiting approval** | pending |
+| 17b-7k | Page meta tags extraction | ⏳ pending | — |
+| 17b-7l | Tech-stack page extraction | ⏳ pending | — |
+| 17b-8 | Integrity test enhancements | ⏳ pending | — |
+| 17b-9 | Governance doc updates | ⏳ pending | — |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~455k / 1M (~46%) — healthy. Still viable to continue but approaching the pre-break zone (65% = ~650k). Worth a check at the end of 17b-7k.

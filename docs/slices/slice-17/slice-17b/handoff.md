@@ -265,6 +265,7 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - ~~17b-7g About (16 strings)~~ — shipped, see §17b-7g below
 - ~~17b-7h Contact (3 strings)~~ — shipped, see §17b-7h below
 - ~~17b-7i Tech stack viz (26 strings)~~ — shipped, see §17b-7i below (actually ~58 once label maps flatten)
+- ~~17b-7j Layout + shared (12 strings)~~ — shipped, see §17b-7j below
 - 17b-7i Tech stack viz (26 strings — largest sub-task)
 - 17b-7j Layout + shared (12 strings)
 - 17b-7k Page meta tags (8 strings)
@@ -456,3 +457,47 @@ Preview verification is limited because the stack viz components are not wired i
 - `StackConfigurator` + `StackFilters` both declare `DOMAIN_ORDER` — duplication. Consider extracting a shared `const` to `$lib/types` or `$lib/content/tech-stack` if a third component needs the same sequence. Not worth pre-factoring for 2 consumers.
 - `StackPanel` + `StackBottomSheet` share the `panel.*` content block. Two ways to consume from content (StackPanel imports as-needed per string, StackBottomSheet destructures `bottomSheet` prefix). Stylistic difference — confirm preference.
 - Short-form ("Web Dev") vs long-form ("Web Development") domain labels are intentionally both present — different UI densities need different copy. Audit edge case #18 flagged these as duplication; keeping them separate is the correct call for UX.
+
+---
+
+## 17b-7j — Layout + shared extraction (13 strings)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+**Content additions**
+- `src/lib/content/nav.ts` — new `sharedChromeContent` export with 10 LocalizedString seeds. 6 multilingual (en/fr/es) for user-facing navigation copy; 4 en-only for decorative chrome ("NAVIGATION — ALL ROUTES", "Toggle section" aria).
+- `src/lib/content/site-content.ts` — new `footerContent` export with 3 en-only seeds (tagline, location, statusPrefix) at the end of the file.
+
+**Components updated (7)**
+- `Nav.svelte` — menu toggle aria conditional now reads `closeMenuAria` / `openMenuAria`.
+- `Footer.svelte` — tagline, nav aria, address, status prefix all content-driven. Template `{statusPrefix} {systemDate}` assembles at render.
+- `MenuOverlay.svelte` — DialogPrimitive.Title (sr-only) + footer label content-driven.
+- `FilterSummary.svelte` — "clear filters" button wired.
+- `SearchInput.svelte` — default placeholder resolves from content; callers still override.
+- `TableOfContents.svelte` — Toggle section aria + 2× "On this page" heading + mobile button label.
+- `StationTabs.svelte` — `aria-label="Service navigation"` now reuses `servicesDetailContent.serviceNavAria` added in 17b-7f (dedupe — one key, two consumers).
+
+### What did **not** change
+
+- `TableOfContents` `<nav aria-label="Table of contents">` (sentence case) was NOT in the audit's list for this task — stays as hardcoded string. If/when flagged separately, would add a `tocNavAria` key.
+- No adapter or repository wiring; UI chrome flows directly from content to components per the 17b-7a..7i pattern.
+- No visible or behavioural change. Every string renders the same English copy in desktop + mobile preview.
+
+### Verification
+
+| Check | Post-17b-7i | Post-17b-7j |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| `bun run test` | 83 / 819 pass | 83 / 819 pass |
+| Preview (multiple routes) | baseline | all 13 strings + 1 reused key render identically on desktop + mobile |
+| Console errors | none | none |
+
+### Review focus
+
+- `src/lib/content/nav.ts` — `sharedChromeContent` is the new catch-all for navigation chrome that doesn't belong to a specific page domain. Confirm the bucket name reads well vs. alternatives (`layoutChrome`, `uiChrome`, `sharedContent`).
+- `site-content.ts` `footerContent` — three top-level fields rather than a nested `footer: { tagline, location, statusPrefix }` structure. Matches the flat shape of `aboutContent` / `ctaContent`.
+- `StationTabs.svelte` reuses `servicesDetailContent.serviceNavAria` — good dedupe, but establishes a cross-page-domain import (`/shared/StationTabs` imports from `/content/services`). Confirm that's acceptable; alternative would be a generic `navChrome.serviceNavAria` on nav.ts.
+- fr/es translations in `sharedChromeContent` — ≤ 10 new multilingual strings. These are the first extractions in this slice that proactively seed non-English content (aside from `navDirections` in 17b-7f). Translation-debt report in 17b-8 will reflect the positive delta.

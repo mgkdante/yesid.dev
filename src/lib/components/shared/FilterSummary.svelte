@@ -3,6 +3,9 @@
   Used in both Blog and Projects listing pages.
 -->
 <script lang="ts">
+	import { resolveLocale } from '$lib/utils/locale';
+	import { sharedChromeContent } from '$lib/content';
+
 	export interface FilterSummaryProps {
 		count: number;
 		noun?: string;
@@ -14,6 +17,8 @@
 		noun = 'result',
 		onClear
 	}: FilterSummaryProps = $props();
+
+	const clearFiltersLabel = resolveLocale(sharedChromeContent.clearFiltersLabel, 'en');
 </script>
 
 <div class="mb-3 flex items-center gap-2">
@@ -24,6 +29,6 @@
 		class="font-mono text-caption text-primary underline transition-colors hover:text-[var(--foreground)]"
 		onclick={onClear}
 	>
-		clear filters
+		{clearFiltersLabel}
 	</button>
 </div>
