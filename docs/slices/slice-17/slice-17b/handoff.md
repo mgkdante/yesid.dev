@@ -155,3 +155,35 @@ Nothing user-visible. No consumer imports from `$lib/repositories` yet — route
 - `src/routes/projects/[slug]/+page.ts` — `project.relatedServices.map(getServiceById)` wrapped in `Promise.all` before `.filter()` so the async-array handling is correct.
 - `src/routes/about/+page.server.ts` — `aboutPageContent.weather.enabled` short-circuit now awaits the content fetch first. Preserves original behaviour (no weather fetch if flagged off).
 - `src/routes/+layout.svelte` + `src/routes/+error.svelte` — inline comments explaining the deferral. Reviewers should confirm the exception rationale is clear enough for future readers.
+
+---
+
+## 17b-5 — Hardcoded content audit (parallel subagents)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting calibration decision (proceed / split / rescope)
+
+### What changed
+
+- One new file: `docs/slices/slice-17/slice-17b/audit-hardcoded-content.md`.
+- Contains the merged output of 7 Sonnet subagents that swept every `.svelte` file in `src/lib/components/*` (except `ui/`) and `src/routes/*.svelte` for hardcoded user-facing strings.
+
+### Deliverables
+
+- 157 findings with suggested content file + key per row.
+- 26 edge cases flagged for human judgment.
+- Translation-debt snapshot (≈230 en-only `LocalizedString` fields already in content).
+- Proposed 12-sub-task breakdown for Task 17b-7 — each commit extracts 5–26 strings per page domain.
+
+### What did **not** change
+
+No code changes. This task is audit-only — it produces the plan that 17b-6 and 17b-7 execute against.
+
+### Calibration gate
+
+Yesid selects one of:
+- **Proceed as-is** — Tasks 6 + 7 + 8 + 9 + 10 all ship in this PR.
+- **Split 17b** — ship Tasks 1–5 + 8–10 now; 17b-2 picks up extraction.
+- **Rescope** — defer extraction entirely.
+
+Author recommendation: **Split**. Keeps the architecture PR small and focused; extraction is a natural follow-up sub-slice.

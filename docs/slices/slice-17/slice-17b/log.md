@@ -202,4 +202,54 @@ This stays flat (no chained awaits), faster, and is Payload-ready without rework
 
 The weather render proves the async pipeline end-to-end: `+page.server.ts` → `getAboutPageContent()` → `adapter.content.aboutPage()` → `$lib/content/about-page.ts` → back up to the SvelteKit data pipeline.
 
-### STOP — awaiting Yesid approval for Task 17b-5
+### Task 17b-4 approved 2026-04-18
+
+---
+
+## Session 2026-04-18 — Task 17b-5 Hardcoded content audit (parallel subagents)
+
+**Continuation of same session.** Context ~36% of 1M, four prior commits approved without rework. Task 5 is parallelizable research — the cheapest task yet, token-efficiency-wise.
+
+### Subagent dispatch
+
+Seven Sonnet 4.6 subagents fired in a single parallel batch, one per directory group:
+
+| # | Bucket | Agent model | Agent type |
+|---|---|---|---|
+| 1 | `components/home/` | sonnet | general-purpose |
+| 2 | `components/blog/` | sonnet | general-purpose |
+| 3 | `components/projects/` | sonnet | general-purpose |
+| 4 | `components/services/` | sonnet | general-purpose |
+| 5 | `components/about/` + `contact/` | sonnet | general-purpose |
+| 6 | `components/brand/` + `stack/` | sonnet | general-purpose |
+| 7 | `components/layout/` + `shared/` + `svg/` + `routes/*.svelte` | sonnet | general-purpose |
+
+`components/ui/` (shadcn primitives) deliberately skipped — no app-specific copy.
+
+Each agent received the same prompt template with SKIP rules (technical attributes, comments, CSS values, single characters, already-localized expressions, prop-passed content) and produced a structured markdown table.
+
+### Results
+
+- **~157 hardcoded user-facing strings** across ~30 components.
+- **~26 edge cases** flagged for human judgment (decorative chrome, interpolated templates, deduplication).
+- **Translation-debt scan:** approximately 230–260 en-only `LocalizedString` entries already in `content/*`. Only `nav.ts` is meaningfully multilingual; `site-content.ts` (92), `services.ts` (67), and `about-page.ts` (34) are the biggest debt concentrations.
+
+Merged audit document: `docs/slices/slice-17/slice-17b/audit-hardcoded-content.md`. Includes per-component tables, proposed 12-sub-task breakdown for Task 17b-7, edge-case narrative, and translation-debt summary.
+
+### Calibration gate — awaiting Yesid's decision
+
+Three outcomes per plan step 5.6:
+- **Proceed as-is** — Tasks 6 + 7 + 8 + 9 + 10 ship in this PR (~21 commits total, ~12 of them extraction).
+- **Split 17b** — current PR ships through Task 4 + audit + integrity + governance + PR prep (Tasks 1–5, 8, 9, 10). Extraction (Tasks 6 + 7) becomes a new sub-slice `17b-2` with its own plan + PR.
+- **Rescope** — drop extraction entirely from Slice 17; defer to a later slice. Current PR closes at ~8 commits.
+
+My recommendation: **Split**. Rationale:
+- Current PR already has 5 significant architectural commits (restructure → adapter → repositories → loaders → audit).
+- Adding 12 extraction commits would make the PR hard to review — extraction is prop-flow + copy work, a different reviewer focus from hexagonal architecture.
+- The architecture is shippable NOW. The seam works; Slice 18 Payload can land on it without the extraction being complete.
+- Splitting isolates extraction risk — a flaw found in the architecture doesn't hold up copy work, and vice versa.
+- Even though 157 is below the plan's 300-finding split threshold, combined with the translation-debt footprint (~230 fields), total extraction work is 400+ touchpoints.
+
+Alternatively, Proceed is viable if you want 17b to be the single "data spine" PR and don't mind a larger review. Rescope seems unlikely — the audit cost has already been paid, walking away from it would waste it.
+
+### STOP — awaiting Yesid's calibration decision for Tasks 17b-6 onward
