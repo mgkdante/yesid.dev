@@ -48,14 +48,14 @@ const projects: readonly Project[] = [
 		sections: [],
 		impactMetric: {
 			value: '30s',
-			label: 'Real-time refresh cycles',
+			label: { en: 'Real-time refresh cycles' },
 		},
 		location: 'sherbrooke',
 		environment: 'production',
 		version: '2.4.1',
 		impactMetrics: [
-			{ value: '30s', label: 'Real-time refresh cycles' },
-			{ value: '99.9%', label: 'Pipeline uptime' },
+			{ value: '30s', label: { en: 'Real-time refresh cycles' } },
+			{ value: '99.9%', label: { en: 'Pipeline uptime' } },
 		],
 	},
 	{
@@ -88,12 +88,12 @@ const projects: readonly Project[] = [
 		],
 		impactMetric: {
 			value: '15 min',
-			label: 'Reporting across 12 departments',
+			label: { en: 'Reporting across 12 departments' },
 			before: '2 days',
 		},
 		impactMetrics: [
-			{ value: '15 min', label: 'Reporting across 12 depts', before: '2 days' },
-			{ value: '73%', label: 'Query time reduction' },
+			{ value: '15 min', label: { en: 'Reporting across 12 depts' }, before: '2 days' },
+			{ value: '73%', label: { en: 'Query time reduction' } },
 		],
 	},
 	{
@@ -126,7 +126,7 @@ const projects: readonly Project[] = [
 		],
 		impactMetric: {
 			value: '500 GB',
-			label: 'Zero-downtime migration',
+			label: { en: 'Zero-downtime migration' },
 		},
 	},
 	{

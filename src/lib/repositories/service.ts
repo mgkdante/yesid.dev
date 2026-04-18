@@ -46,13 +46,16 @@ export interface MetroStop {
 }
 
 export async function getMetroStops(): Promise<readonly MetroStop[]> {
-	const services = await adapter.services.all();
+	const [services, bookends] = await Promise.all([
+		adapter.services.all(),
+		adapter.content.metroBookends()
+	]);
 	const stops: MetroStop[] = [];
 
 	// Stop 00: Hero / Departure
 	stops.push({
 		id: 'departure',
-		label: { en: 'Departure' },
+		label: bookends.departure,
 		stopNumber: '00',
 		type: 'hero',
 	});
@@ -72,28 +75,28 @@ export async function getMetroStops(): Promise<readonly MetroStop[]> {
 
 	stops.push({
 		id: 'featured-work',
-		label: { en: 'Featured Work' },
+		label: bookends.featured,
 		stopNumber: String(nextNum).padStart(2, '0'),
 		type: 'featured',
 	});
 
 	stops.push({
 		id: 'about',
-		label: { en: "Who's Driving" },
+		label: bookends.about,
 		stopNumber: String(nextNum + 1).padStart(2, '0'),
 		type: 'about',
 	});
 
 	stops.push({
 		id: 'blog',
-		label: { en: 'Dispatches' },
+		label: bookends.blog,
 		stopNumber: String(nextNum + 2).padStart(2, '0'),
 		type: 'blog',
 	});
 
 	stops.push({
 		id: 'terminal',
-		label: { en: 'Final Destination' },
+		label: bookends.terminal,
 		stopNumber: 'TERMINAL',
 		type: 'terminal',
 	});

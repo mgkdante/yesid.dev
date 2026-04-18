@@ -64,7 +64,7 @@ import {
 	skillsJourneyPanels,
 	skillsJourneyCta,
 } from '$lib/content/site-content';
-import { navLinks, menuItems, errorPageContent } from '$lib/content/nav';
+import { navLinks, menuItems, errorPageContent, metroBookends } from '$lib/content/nav';
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
@@ -131,6 +131,7 @@ export const staticAdapter: ContentAdapter = {
 		skillsJourneyCta: async () => skillsJourneyCta,
 		navLinks: async () => navLinks,
 		menuItems: async () => menuItems,
+		metroBookends: async () => metroBookends,
 		errorPage: async () => errorPageContent,
 		aboutPage: async () => aboutPageContent,
 		contactPage: async () => contactContent,

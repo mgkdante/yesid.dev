@@ -61,7 +61,7 @@
             {#each allMetrics as metric, i}
               <MetricDisplay
                 value={metric.value}
-                label={metric.label}
+                label={resolveLocale(metric.label, 'en')}
                 size="md"
                 labelBelow
                 style="--metric-color: {metricColors[i % 2]};"

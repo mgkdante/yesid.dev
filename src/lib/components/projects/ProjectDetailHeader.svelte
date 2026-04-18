@@ -88,7 +88,7 @@
         <div>STATUS <span class="edge-value">{project.status}</span></div>
         <div class="edge-separator">───────</div>
         {#each metrics as metric}
-          <div>{metric.value} {metric.label}</div>
+          <div>{metric.value} {resolveLocale(metric.label, 'en')}</div>
         {/each}
       </div>
 

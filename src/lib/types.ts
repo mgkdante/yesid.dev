@@ -41,8 +41,11 @@ export type ProjectStatus = 'public' | 'private' | 'wip';
 // value is a display string ("30s", "500 GB"), label gives context.
 // before is optional — when present, cards show a before→after contrast.
 export interface ImpactMetric {
+	/** Numeric display, e.g. "30s", "99.9%" — bare string: numbers + units are locale-universal. */
 	value: string;
-	label: string;
+	/** Human copy, e.g. "Real-time refresh cycles" — upgraded to LocalizedString in Task 17b-6. */
+	label: LocalizedString;
+	/** Before-value comparison, e.g. "2 days". Bare string — same rationale as `value`. */
 	before?: string;
 }
 

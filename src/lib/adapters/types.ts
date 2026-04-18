@@ -31,7 +31,7 @@ import type {
 	ContactContent,
 	JourneyPanel,
 } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
+import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 
 export interface ContentAdapter {
@@ -107,6 +107,7 @@ export interface ContentPort {
 	skillsJourneyCta(): Promise<typeof import('$lib/content/site-content').skillsJourneyCta>;
 	navLinks(): Promise<readonly NavLink[]>;
 	menuItems(): Promise<readonly MenuItem[]>;
+	metroBookends(): Promise<MetroBookends>;
 	errorPage(): Promise<ErrorPageContent>;
 	aboutPage(): Promise<AboutContent>;
 	contactPage(): Promise<ContactContent>;

@@ -187,3 +187,43 @@ Yesid selects one of:
 - **Rescope** — defer extraction entirely.
 
 Author recommendation: **Split**. Keeps the architecture PR small and focused; extraction is a natural follow-up sub-slice.
+
+**Yesid decided: Proceed (Option A).** Extraction happens in this PR.
+
+---
+
+## 17b-6 — Content-side LocalizedString upgrade
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+- `src/lib/content/nav.ts` gains `metroBookends: MetroBookends` (5 LocalizedString labels: departure, featured, about, blog, terminal) + its type.
+- `src/lib/adapters/types.ts` `ContentPort` gains `metroBookends(): Promise<MetroBookends>`.
+- `src/lib/adapters/static.ts` imports + exposes `metroBookends`.
+- `src/lib/repositories/content.ts` adds `getMetroBookends()`.
+- `src/lib/repositories/service.ts` `getMetroStops()` reads bookends from `adapter.content.metroBookends()` instead of hardcoding inline LocalizedString literals.
+- `src/lib/types.ts` — `ImpactMetric.label` typed `string` → `LocalizedString`. `value` and `before` stay bare (numeric/unit strings are locale-universal).
+- `src/lib/content/projects.ts` — 7 `label: '…'` occurrences wrapped in `{ en: … }`.
+- 3 components updated to call `resolveLocale(metric.label, 'en')` — ProjectDetailHeader, ProjectGlancePanel, ProjectGlancePanelMobile.
+- `src/lib/repositories/project.test.ts` `impactMetrics` assertion updated to LocalizedString shape.
+
+### What did **not** change
+
+No visible copy, layout, or behaviour change. Metro labels render the same verbatim strings through the adapter path. Impact metric labels render the same English text via `resolveLocale`.
+
+### Verification
+
+| Check | Post-17b-5 | Post-17b-6 |
+|---|---|---|
+| `bun run test` | 83 / 819 pass | 83 / 819 pass |
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| Preview home + projects | 200 OK | 200 OK |
+| Metro strip labels | — | verbatim: Departure / Featured Work / Who's Driving / Dispatches / Final Destination |
+
+### Review focus
+
+- `src/lib/content/nav.ts` — are the bookend keys + labels correct? These are the only strings in the app whose copy will drive every metro stop name that's NOT a service title.
+- `src/lib/repositories/service.ts` — `getMetroStops` now uses `Promise.all` to fetch services + bookends in parallel. Logic otherwise unchanged.
+- `src/lib/types.ts` line 44 — comment on `ImpactMetric.value` justifies keeping it bare string. Confirm that stance (rather than upgrading both `value` and `label`).

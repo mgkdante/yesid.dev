@@ -5,7 +5,7 @@
 
 import { adapter } from '$lib/adapters';
 import type { AboutContent, ContactContent, JourneyPanel } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
+import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 
 export async function getHeroContent() {
@@ -54,6 +54,10 @@ export async function getNavLinks(): Promise<readonly NavLink[]> {
 
 export async function getMenuItems(): Promise<readonly MenuItem[]> {
 	return adapter.content.menuItems();
+}
+
+export async function getMetroBookends(): Promise<MetroBookends> {
+	return adapter.content.metroBookends();
 }
 
 export async function getErrorPageContent(): Promise<ErrorPageContent> {

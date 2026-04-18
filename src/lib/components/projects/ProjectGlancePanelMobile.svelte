@@ -51,7 +51,7 @@
                   {metric.value}
                 </div>
                 <div class="mobile-glance-metric-label mt-1 font-mono text-micro">
-                  {metric.label}
+                  {resolveLocale(metric.label, 'en')}
                 </div>
               </div>
             </div>

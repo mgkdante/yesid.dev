@@ -13,6 +13,26 @@ export interface MenuItem {
 	subtitle: LocalizedString;
 }
 
+// Metro-line bookend labels — the non-service stops around the services list
+// (Departure / Featured Work / Who's Driving / Dispatches / Final Destination).
+// Moved out of `$lib/repositories/service.ts` in Task 17b-6 so label copy lives
+// in the content layer, not in the port. Repository reads via adapter.
+export interface MetroBookends {
+	departure: LocalizedString;
+	featured: LocalizedString;
+	about: LocalizedString;
+	blog: LocalizedString;
+	terminal: LocalizedString;
+}
+
+export const metroBookends: MetroBookends = {
+	departure: { en: 'Departure' },
+	featured: { en: 'Featured Work' },
+	about: { en: "Who's Driving" },
+	blog: { en: 'Dispatches' },
+	terminal: { en: 'Final Destination' }
+};
+
 export interface ErrorPageContent {
 	label: LocalizedString;
 	heading: LocalizedString;

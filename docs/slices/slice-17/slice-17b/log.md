@@ -252,4 +252,32 @@ My recommendation: **Split**. Rationale:
 
 Alternatively, Proceed is viable if you want 17b to be the single "data spine" PR and don't mind a larger review. Rescope seems unlikely — the audit cost has already been paid, walking away from it would waste it.
 
-### STOP — awaiting Yesid's calibration decision for Tasks 17b-6 onward
+### Calibration — Yesid chose Proceed (option A) — all tasks ship in this PR
+
+---
+
+## Session 2026-04-18 — Task 17b-6 Content-side LocalizedString upgrade
+
+**Continuation of same session.** Context ~40%.
+
+### Scope decided
+
+Task 17b-6 does two upgrades plus adapter/repository wiring:
+
+1. **Metro bookend labels** move out of `repositories/service.ts` (inline LocalizedString literals) into `content/nav.ts` under a new `metroBookends` object. Adapter gains `content.metroBookends()` method. Repository reads bookends from adapter instead of hardcoding. This closes the remaining port-layer copy leak flagged in Task 17b-3 notes.
+2. **`ImpactMetric.label` upgraded from `string` → `LocalizedString`.** Flagged during content-layer scan. Seven label values in `content/projects.ts` wrapped in `{ en: ... }`. Three consumers (ProjectDetailHeader, ProjectGlancePanel, ProjectGlancePanelMobile) updated to call `resolveLocale(metric.label, 'en')`. `project.test.ts` assertion updated to the new shape.
+
+### Other bare-string fields scanned but not upgraded
+
+Quick grep of `content/types.ts` revealed other candidates that could be LocalizedString (`ContactFormTerminal.text`, `JourneyPanel.name`, etc.), but most are either (a) structural (IDs, slugs, URLs, icon names) — correct as bare strings, or (b) tangled with script-level interpolation that the plan expected Task 17b-7 to handle alongside the component extraction. Limiting 17b-6 scope to bookends + `ImpactMetric` keeps the commit focused.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 warnings (unchanged) |
+| `bun run test` | 83 files / 819 tests pass (unchanged) |
+| Preview sweep (home + projects listing + 2 project details that use `impactMetrics`) | all 200 OK |
+| Metro line labels | render verbatim through new adapter path: Departure / Featured Work / Who's Driving / Dispatches / Final Destination |
+
+### STOP — awaiting Yesid approval for Task 17b-7
