@@ -263,6 +263,11 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 **User request expanding Task 8 scope (logged here, implemented in Task 8):**
 - Exportability as a first-class property: snapshot + restore across machines (Windows / macOS / Linux). `<cloud>/claude-config/README.md` already documents the target layout and usage; scripts come in Task 8.
+- Marketplaces + plugins are first-class layers in the snapshot. Cloud README refined to show:
+  - `marketplaces.json` — extracted `extraKnownMarketplaces` (list of plugin-source GitHub repos)
+  - `enabled-plugins.json` — extracted `enabledPlugins` with marketplace origins
+  - Restore sequence: re-add marketplaces → re-enable plugins (plugins auto-fetch source) → copy settings/MCPs/skills/agents/rules → set env vars → reminder about secrets
+  - Private marketplaces flagged: require `gh auth login` on new machine before `claude marketplace add` resolves.
 
 ---
 
