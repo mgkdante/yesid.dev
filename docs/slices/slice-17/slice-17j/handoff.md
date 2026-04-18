@@ -239,6 +239,31 @@ Non-slice sessions (bugfixes, config, exploration, hotfixes, research spikes) ha
 
 ---
 
+### Task 7b (partial): connector-MCP disconnects — Yesid actioned via claude.ai web app
+
+**Session:** 2026-04-18 | **Commit:** (this commit — web-app changes not in git; system reminder confirmed disconnect)
+
+Yesid disconnected 6 connectors via `claude.ai → Settings → Connectors`. Session deferred-tool list confirmed each MCP's tools are no longer available:
+
+| # | Connector | Tools removed (via deferred-tools delta) |
+|---|-----------|------------------------------------------|
+| 1 | Notion | 14 tools (notion-create-comment, search, fetch, etc.) |
+| 2 | Webflow | 23 tools (ask_webflow_ai, element_builder, component_builder, etc.) |
+| 3 | Jobs / resume search | 4 tools (search_jobs, get_job_details, get_company_data, get_resume) |
+| 4 | Column Tax | 6 tools (tax_checklist, tax_estimate, tax_filing_options, etc.) |
+| 5 | Google Calendar | 8 tools (list_events, create_event, suggest_time, etc.) |
+| 6 | Postman | 39 tools (createCollection, getSpec, createMock, etc.) |
+
+**Total:** 94 MCP tools removed from the deferred pool. Estimated savings: ~1.5K tokens immediate + **~47K activation-cost prevention** (these tools can no longer be accidentally activated via a broad `ToolSearch` wildcard).
+
+**Still on the list (Yesid may or may not disconnect):**
+- Cloudflare, Slack, Figma, Microsoft Docs, Claude-in-Chrome, mcp-registry
+
+**Decisions:**
+- D027: Web-app connector disconnects are the ONLY way to remove these MCPs — they don't appear in `~/.claude.json` or `~/.claude/settings.json`. Future `workflow-efficiency` skill audit step should include "check claude.ai connectors" alongside CLI config files.
+
+---
+
 ### Task 7: `workflow-efficiency` skill (portable IP across 6 services)
 
 **Session:** 2026-04-18 | **Commit:** (this commit)
