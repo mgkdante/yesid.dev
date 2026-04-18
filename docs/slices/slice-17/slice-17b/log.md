@@ -926,3 +926,63 @@ Appended a new `describe('LocalizedString guard + translation debt')` block to `
 | 17b-10 | Final verification + PR | ⏳ pending | — |
 
 **Model:** Opus 4.7 [1m] | **Context:** ~560k / 1M (~56%) — approaching pre-break at 65% (~650k). 17b-9 (governance docs) is writing-heavy; 17b-10 is ceremonial. Will aim to finish 17b-9 in this session if it stays under 40k tokens; 17b-10 should land clean regardless.
+
+---
+
+## Session 2026-04-18 — Task 17b-9 Governance doc updates
+
+**Continuation of same session.** Context ~59% at start.
+
+### What shipped
+
+Four governance docs updated + one cloud learn doc created. Tight scope — each edit targeted at a single stale or missing pointer rather than a full rewrite.
+
+**`docs/reference/VOCAB.md`** — new "Data layer" subsection added under Section 3 (Industry vocabulary). 9 new terms: Hexagonal content architecture, ContentAdapter, Port (data), Static adapter, Repository layer, Chrome (content), LocalizedString, Translation debt, Content port. Each row cross-references the code home.
+
+**`docs/reference/CONSTITUTION.md`** — two focused edits:
+- §10 Naming list: replaced stale `Shared data: src/lib/data/` entry with five new entries covering content/utils/types/adapters/repositories (matches the 17b-1 folder restructure).
+- §11 Anti-Patterns: 4 new entries added covering hardcoded user-facing English, route loaders importing from `$lib/content`, components bypassing the data pipe, and LocalizedString without an `en` field.
+
+**`docs/reference/ARCHITECTURE.md`** — the `src/lib/data/` ASCII tree block (lines 31–45) replaced with a new 7-folder block covering:
+- `types.ts` (promoted to top-level)
+- `content/` with 10 files + integrity test + barrel
+- `utils/` with pure engines + `cn.ts` (moved from old `$lib/utils.ts`)
+- `adapters/` with types + static + contract test + swap-point index
+- `repositories/` with 6 domain repos + barrel
+All cross-referenced to the 17b tasks that authored them.
+
+**`<cloud>/yesid.dev/docs/learn/data-layer/hexagonal-content-layer.md`** — brand new learn doc. Captures the full pattern (analogy, what-it-is, why-it-matters, folder layout, ports list, swap example, pitfalls, when-to-use). Prerequisites chain to `data-driven-architecture` + `typed-data-files` + `barrel-exports` + `localized-string-i18n`. ~150 lines; follows the established learn-doc frontmatter + structure.
+
+### What did **not** change
+
+- `README.md` — project-level high-level structure. Nothing stale; left alone.
+- Existing cloud learn docs (`data-driven-architecture.md`, `typed-data-files.md`) — those describe the Slice 04–06 era; intentionally preserved as historical context. The new `hexagonal-content-layer.md` sits alongside them and refers back.
+- `TESTS.md` — no update needed; Task 17b-8's integrity.test.ts additions are discoverable via the existing test registry convention.
+- `PATTERNS.md` — no update. The hexagonal pattern is large enough that it deserves its own learn doc rather than a `PATTERNS.md` row.
+
+### Non-obvious decisions
+
+- **Kept `VOCAB.md` v0.1 header intact.** The doc is v0.1 / 2026-04-17 per Slice 17j. Adding a subsection doesn't warrant a version bump; the maintenance convention is "add during slice close." Confirmed by the Maintenance section at the bottom.
+- **Four anti-patterns instead of a full "Content layer" section in CONSTITUTION.md.** The Constitution's §11 is "Never do X" format; the content-layer rules translate cleanly into "Never" statements. A separate section would duplicate Architecture.md content.
+- **ARCHITECTURE.md tree replacement preserved the original comment style** (`← Slice N: reason`) so the file reads consistently. Every new row carries the authoring slice tag.
+- **Cloud learn doc is the primary artifact of 17b-9.** It's the durable knowledge worth taking to future projects (per CLAUDE.md closing step 5: "Write any durable patterns / concepts worth codifying to `<cloud>/yesid.dev/docs/learn/<domain>/<concept>.md`"). The repo docs are pointers; the cloud doc is the teaching.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged — no source code touched) |
+| Doc edits load + render | VOCAB/CONSTITUTION/ARCHITECTURE re-read post-edit; no broken references |
+| Cloud learn doc written | 175 lines at `<cloud>/yesid.dev/docs/learn/data-layer/hexagonal-content-layer.md` — follows the project's frontmatter convention |
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1..6 | Architecture + audit + LocalizedString | ✅ approved | earlier |
+| 17b-7a..l | All 12 extraction sub-tasks | ✅ approved | fc6fb06..cf01da9 |
+| 17b-8 | Integrity test enhancements | ✅ approved | dbc2ac5 |
+| **17b-9** | **Governance doc updates** | **🟡 awaiting approval** | pending |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~595k / 1M (~60%) — nearing the 65% pre-break. 17b-10 is ceremonial (final verification + PR body + slice-close script). If it pushes toward 65%, I'll land it anyway — it's the terminal task.

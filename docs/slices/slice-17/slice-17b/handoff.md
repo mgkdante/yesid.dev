@@ -607,7 +607,7 @@ Audit said ~157; actual is ~207 once label/domain/layer records flatten to indiv
 
 Remaining tasks:
 - ~~17b-8 Integrity test enhancements~~ — shipped, see §17b-8 below
-- 17b-9 Governance (VOCAB, CONSTITUTION, ARCHITECTURE, README, cloud learn doc)
+- ~~17b-9 Governance doc updates~~ — shipped, see §17b-9 below
 - 17b-10 Final verification + PR
 
 ---
@@ -658,3 +658,45 @@ Malformed (missing en):         0
 - `isLocalizedStringShape` heuristic — any object with an `en` key is treated as a LocalizedString candidate. If a configuration field ever collides (e.g., a language-code map with an `en: 'english'` label field), the walker will count it as malformed. None exist in the current codebase; grep-verified at authoring time.
 - Walker cycle guard — uses a `WeakSet` for defense. Static content shouldn't cycle, but the cost is zero.
 - Translation-debt snapshot — printed via `console.log` in a passing test. Vitest's default reporters surface stdout on pass in verbose mode; regular runs may suppress it. The snapshot is intentionally not asserted against a threshold; it's a visibility surface, not a gate.
+
+---
+
+## 17b-9 — Governance doc updates
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+Four governance docs updated + one cloud learn doc created.
+
+**`docs/reference/VOCAB.md`** — added "Data layer" subsection (Section 3) with 9 new terms: Hexagonal content architecture, ContentAdapter, Port, Static adapter, Repository layer, Chrome, LocalizedString, Translation debt, Content port.
+
+**`docs/reference/CONSTITUTION.md`** — two targeted edits:
+- §10 Naming: replaced stale `Shared data: src/lib/data/` with 5 new entries (content/utils/types/adapters/repositories) matching the 17b-1 restructure.
+- §11 Anti-Patterns: added 4 new rules covering hardcoded English in components, loaders bypassing the repository seam, components bypassing the data pipe, LocalizedString without `en`.
+
+**`docs/reference/ARCHITECTURE.md`** — the `src/lib/data/` ASCII tree block replaced with the new 7-folder layout documenting every content/utils/types/adapters/repositories file introduced or reshaped in 17b, cross-referenced to authoring tasks.
+
+**`<cloud>/yesid.dev/docs/learn/data-layer/hexagonal-content-layer.md`** — brand-new learn doc capturing the full pattern (analogy, what-it-is, folder layout, ports list, why-chrome-bypasses-the-adapter, one-line-swap demo, pitfalls, when-to-use-it). Prerequisites chain to existing data-layer learn docs. This is the durable artifact — a pattern Yesid can lift into future projects.
+
+### What did **not** change
+
+- `README.md` — high-level structure; nothing stale.
+- Existing cloud learn docs — kept as historical Slice 04–06 context; new hexagonal doc sits alongside.
+- `TESTS.md` + `PATTERNS.md` — no update; integrity test surface is discoverable via existing convention, and the hexagonal pattern is large enough to warrant its own learn doc rather than a PATTERNS.md row.
+
+### Verification
+
+| Check | Post-17b-8 | Post-17b-9 |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings (no source changes) |
+| Doc coherence | — | VOCAB/CONSTITUTION/ARCHITECTURE re-read post-edit; no broken references or stale paths |
+| Cloud learn doc | — | 175 lines at `<cloud>/yesid.dev/docs/learn/data-layer/hexagonal-content-layer.md` |
+
+### Review focus
+
+- `VOCAB.md` "Data layer" subsection placement under Section 3 (Industry vocab) — alternative would be a new top-level Section 7 just for data-layer terms. Kept under Industry because "hexagonal architecture" and "LocalizedString" are widely recognizable industry terms.
+- `CONSTITUTION.md` §11 anti-pattern wording — each rule is a "Never" statement linking back to the pipe architecture. Confirm they're enforceable (reviewer can grep and fail a PR on each).
+- `ARCHITECTURE.md` tree depth — the new block is verbose. Alternative: link out to a separate `content-architecture.md` sub-doc. Kept inline because ARCHITECTURE.md is the canonical "where does X live" reference.
+- Cloud learn doc — ~18-minute read, advanced-difficulty. If Yesid wants it shorter / less example-heavy, trim the "Implementation Notes" or "Common Pitfalls" sections.

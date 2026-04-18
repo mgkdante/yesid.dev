@@ -626,7 +626,11 @@ Edge columns (rotated titles, decorative rails) collapse to `display: none` belo
 - Utilities: camelCase (`device.ts`)
 - Brand primitives: `src/lib/components/brand/`
 - Motion presets: `src/lib/motion/presets/`
-- Shared data: `src/lib/data/`
+- Content (typed data + UI chrome): `src/lib/content/`
+- Pure engines / helpers: `src/lib/utils/`
+- Shared types: `src/lib/types.ts`
+- Adapter layer (swap point for future CMS): `src/lib/adapters/`
+- Repository layer (async facade for loaders): `src/lib/repositories/`
 
 ### Co-location
 
@@ -659,6 +663,10 @@ Edge columns (rotated titles, decorative rails) collapse to `display: none` belo
 - Nested vertical scroll containers that capture page-level Lenis scroll
 - Layout wrapper components with multiple modes/variants — use CSS Grid recipes directly
 - Shared layout components that grow complex — each page owns its grid in scoped CSS
+- **Hardcoded user-facing English in `.svelte` files** — every button label, aria-label, heading, placeholder, page title must live in `$lib/content/*.ts` as a LocalizedString. Components import via `resolveLocale`.
+- **Route loaders importing from `$lib/content`** — loaders consume `$lib/repositories` (the async facade). `$lib/content` is the adapter's backing store, not a loader-level API.
+- **Components bypassing the data pipe** — components receive data via loader props, never import from `$lib/content/<entity>`. UI chrome (static strings) is the exception and imports directly from content.
+- **`LocalizedString` without an `en` field** — English is the default; `fr` / `es` are optional. Missing `en` fails the integrity test (see `integrity.test.ts`).
 
 ---
 
