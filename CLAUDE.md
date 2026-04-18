@@ -1,4 +1,4 @@
-# CLAUDE.md — yesid.dev
+# CLAUDE.md — [yesid.dev](http://yesid.dev)
 
 ## Project
 
@@ -31,12 +31,14 @@ Freelance Digital Infrastructure. Owner: Yesid O. Domain: yesid.dev. Brand: dark
 
 Three levels. Strict meaning. PR boundary at Level 2.
 
-| Level | Name | Example | Folder form |
-|-------|------|---------|-------------|
-| 1 | **Slice** | Slice 17 (Standardization) | `docs/slices/slice-17/` |
-| 2 | **Sub-slice** — PR boundary | 17j (Workflow Efficiency) | `docs/slices/slice-17/slice-17j/` |
-| 3 | **Task** — section in plan/log/handoff | 17j-3, 17j-3a | section, not a folder |
-| (4) | **Session** | `### Session 2026-04-17 — Task 17j-3` | heading in log.md |
+
+| Level | Name                                   | Example                               | Folder form                       |
+| ----- | -------------------------------------- | ------------------------------------- | --------------------------------- |
+| 1     | **Slice**                              | Slice 17 (Standardization)            | `docs/slices/slice-17/`           |
+| 2     | **Sub-slice** — PR boundary            | 17j (Workflow Efficiency)             | `docs/slices/slice-17/slice-17j/` |
+| 3     | **Task** — section in plan/log/handoff | 17j-3, 17j-3a                         | section, not a folder             |
+| (4)   | **Session**                            | `### Session 2026-04-17 — Task 17j-3` | heading in log.md                 |
+
 
 ### Per-sub-slice file bundle (4 files)
 
@@ -65,16 +67,40 @@ One-off work outside a slice (bugfixes, config, exploration) lives at `docs/sess
 
 Declare one at the start of every session.
 
-| Type | What happens | Artifacts |
-|------|--------------|-----------|
-| **Planning** | Research, brainstorm, design spec, slice spec, plan | `slice-NN/slice-NN<letter>/spec.md`, `plan.md` |
-| **Implementation** | One or more Level 3 tasks per Iteration Protocol | Code, tests, append to `log.md`, `handoff.md` |
-| **Closing** | Finalize handoff, update governance docs, run `slice:close` | `handoff.md` final sections, PR |
-| **Non-slice** | Bugfix / config / exploration / hotfix | `docs/sessions/<YYYY-MM-DD>-<name>.md`, commit |
 
-**Hard rule:** A session cannot be two types. Planning produces zero code. Implementation doesn't write specs but can amend them. Closing doesn't add features.
+| Type               | What happens                                                | Artifacts                                      | Slice sizes |
+| ------------------ | ----------------------------------------------------------- | ---------------------------------------------- | ----------- |
+| **Planning**       | Research, brainstorm, design spec, slice spec, plan         | `slice-NN/slice-NN<letter>/spec.md`, `plan.md` | **L only**  |
+| **Implementation** | One or more Level 3 tasks per Iteration Protocol            | Code, tests, append to `log.md`, `handoff.md`  | L / M       |
+| **Closing**        | Finalize handoff, update governance docs, run `slice:close` | `handoff.md` final sections, PR                | L / M       |
+| **Non-slice**      | Bugfix / config / exploration / hotfix                      | `docs/sessions/<YYYY-MM-DD>-<name>.md`, commit | **S**       |
+
+
+**Hard rule:** A session cannot be two types. For **L-slices** only: Planning produces zero code; Implementation doesn't write specs but can amend them. Closing doesn't add features. **M-slices plan inline** (TodoWrite + 1-paragraph "Plan" at top of `log.md`) — no separate planning session, no `spec.md`, no `plan.md`. **S-slices** have no planning step.
 
 At session start: scan for uncommitted changes or commits made outside Claude Code. Document anything found in `log.md` (or the session file for non-slice).
+
+## Slice sizing (L / M / S)
+
+Planning ceremony scales with complexity. Declare the size at session start; upgrade mid-session if scope turns out larger.
+
+
+| Size           | Trigger                                                                                                               | Planning artifact                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **L** (large)  | Multi-session OR ≥10 design decisions with real tradeoffs OR cross-cutting (≥20 files across ≥2 architectural layers) | Full: separate Planning session produces `spec.md` + `plan.md`. Implementation in a fresh session.   |
+| **M** (medium) | Single session, 2–6 tasks, isolated scope, few real design choices                                                    | Lightweight: inline TodoWrite + 1-paragraph "Plan" at top of `log.md`. No separate planning session. |
+| **S** (small)  | One-shot: bugfix, config tweak, doc update, exploration                                                               | None. Just do the work. Session file records what happened.                                          |
+
+
+**Examples:**
+
+- L: 17b (hexagonal refactor, 15 decisions, 10 tasks), 17a-5 (spacing constitution), 17d (component API + shells)
+- M: most sub-slices — a focused extraction pass, a single-domain CSS consolidation
+- S: fixing a broken import, adding a brand utility, tweaking a commit script
+
+**Upgrade rule:** If mid-session an M-slice reveals ≥5 unexpected design decisions or touches ≥2 architectural layers, STOP. Commit any safe partial work. Re-declare as L, start a fresh Planning session.
+
+**Downgrade is rare but allowed:** if an L-slice's Planning session reveals the real scope is one-commit-small, skip the plan and execute inline. Document why in `log.md`.
 
 ## Session progress tracking (mandatory for multi-task sessions)
 
@@ -85,10 +111,10 @@ Every Implementation or Closing session with 2+ tasks uses `TodoWrite` for live 
 3. **Mark completed immediately** the task is committed to the branch (commit SHA exists). Don't batch.
 4. **Add tasks mid-session** as scope amendments or follow-ups emerge. Never hide additions.
 5. **At every STOP** (per-task): also print a compact markdown progress table in the conversation — same content, scrollback-readable. Format:
-   ```
+  ```
    | # | Task | Status | Commit |
    |---|------|--------|--------|
-   ```
+  ```
 6. **Session end:** the final `TodoWrite` state is the resume point for the next session. `CHECKPOINT.md` snapshots the same state in durable form.
 
 Why both TodoWrite and the markdown table: `TodoWrite` is live UI (ephemeral to the session surface). The table in STOP messages is scrollback-readable across session history. They tell the same story in two persistence layers.
@@ -100,11 +126,72 @@ Why both TodoWrite and the markdown table: `TodoWrite` is live UI (ephemeral to 
 - **Parallel agents require approval.** Independent research/exploration only. Never self-decide to parallelize implementation.
 - **PR at Level 2 (sub-slice), not Level 3 (task).** All of a sub-slice's tasks accumulate to one PR.
 - **Models:** **Opus AND Sonnet are both valid.** Never Haiku.
-  - **Parent (main session):** Opus 4.7 for the design + decision work where deep reasoning pays.
+  - **Parent model by slice size:**
+    - **L-slice Planning sessions:** Opus 4.7 [1m] — deep reasoning AND room to hold whole-codebase context across the Q&A
+    - **L-slice Implementation sessions:** Opus 4.7 (standard 200k) — reasoning stays high but working set fits in 200k via the `spec.md` / `plan.md` artifacts; jump to [1m] only if the working set genuinely overflows
+    - **M-slice sessions:** Sonnet 4.6 default — most tasks are "execute a clear plan"; upgrade to Opus 4.7 only when a real design choice surfaces mid-session
+    - **S-slice sessions:** Sonnet 4.6 — fix-it-and-move-on work, no Opus tax
+    - **Closing sessions:** Sonnet 4.6 — finalizing handoff/PR body, low reasoning load
   - **Subagents:** Sonnet 4.6 is the default for research, exploration, file-reading, code-review sweeps, and any task that produces a bounded summary. Opus only when the subagent needs deep reasoning (architecture analysis, novel debugging, complex refactor planning).
-  - **Why split:** Sonnet returns faster and costs less while delivering 90% of Opus quality on search/summarize/review work. The research (cloud `token-efficacy/04-subagent-delegation.md`) confirms this as the 2026 routing pattern. Reserve Opus for the session that has to hold the whole problem in context.
+  - **Why split:** Sonnet returns faster and costs ~3× less while delivering 90% of Opus quality on search/summarize/review and clear-plan-execution work. Opus earns its tax on real design + decision work. The [1m] variant earns its additional tax only when the working set genuinely won't fit in 200k.
+  - **Decision rule when uncertain:** default Sonnet. Upgrade to Opus the moment you notice you're making a tradeoff that matters or holding >3 independent concerns in mind. Upgrade to [1m] only when 200k genuinely won't fit the working set.
+  - **Reference:** cloud `token-efficacy/04-subagent-delegation.md` for the routing research.
 - **Handoff ships with PR.** A sub-slice that landed without a handoff didn't actually close.
 - **Never bypass the close-script.** Manual mirror-and-delete loses the index update.
+
+## Session token budget
+
+Budget is percentage-based — thresholds apply regardless of which model/window you're using. Check `/cost` or `/context-budget` periodically.
+
+
+| Context usage (% of active window) | Action                                                                              |
+| ---------------------------------- | ----------------------------------------------------------------------------------- |
+| 0–40%                              | Comfortable. Continue.                                                              |
+| 40–65%                             | Healthy. Continue but avoid major new directions.                                   |
+| 65–80%                             | Pre-break zone. Finish in-progress task. Commit. STOP. Fresh session for next task. |
+| 80%+                               | Danger. Commit what's green. STOP immediately. Don't start anything new.            |
+
+
+**Absolute numbers by model:**
+
+
+| Model         | Window    | 40%  | 65%  | 80%  |
+| ------------- | --------- | ---- | ---- | ---- |
+| Opus 4.7 [1m] | 1,000,000 | 400k | 650k | 800k |
+| Opus 4.7      | 200,000   | 80k  | 130k | 160k |
+| Sonnet 4.6    | 200,000   | 80k  | 130k | 160k |
+
+
+At every STOP (per Iteration Protocol), the progress table includes a **budget row**:
+
+```
+Model: Opus 4.7 [1m] | Context: 142k / 1M (14%) — comfortable, continuing
+```
+
+or
+
+```
+Model: Sonnet 4.6 | Context: 145k / 200k (73%) — pre-break, finish the task then STOP for fresh session
+```
+
+Claude surfaces this; Yesid doesn't need to ask.
+
+**Model downgrade across sessions:** L-slice Planning → Implementation hop starts fresh — usually Opus 4.7 (200k), not [1m]. Re-read `spec.md` + `plan.md` + `CHECKPOINT.md`, skip everything else. Planning Q&A doesn't get re-hydrated.
+
+## Mid-session model switching
+
+`/model <name>` switches the current session's model. Next turn re-processes context uncached (cache invalidation tax).
+
+
+| Scenario                                                    | Preferred pattern                                                                                                  |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Need a different model for a bounded, independent task      | **Subagent dispatch** (`Agent` with `model: sonnet` or `model: opus`) — parent cache stays warm, subagent isolated |
+| Session turned out more complex than declared size          | `/model opus` for the design turns, `/model sonnet` back for execution — two switches, but each buys real value    |
+| Session nearly full OR Planning → Implementation transition | **Fresh session.** Don't switch; restart with `spec.md` / `plan.md` / `CHECKPOINT.md` re-read                      |
+| Just to "try Opus on this one question"                     | Don't. Subagent dispatch or next-session. Cache cost isn't worth it                                                |
+
+
+**Rule of thumb:** one `/model` swap is fine. Two in a row = you should have started a fresh session.
 
 ## Iteration Protocol (per Level 3 task)
 
@@ -113,7 +200,7 @@ Why both TodoWrite and the markdown table: `TodoWrite` is live UI (ephemeral to 
 1. Implement ONE task from the plan.
 2. Run `bun run test` + `bun run check`. Both must pass.
 3. **Pre-flight visual check (UI tasks only):** state expected layout at 1440px + 375px; flag overflow/missing content; fix obvious issues before STOP.
-4. **STOP.** Tell Yesid: what you built (one sentence), what to check at `http://localhost:5173/` (specific behaviors), any decisions made.
+4. **STOP.** Tell Yesid: what you built (one sentence), what to check at `http://localhost:5173/` (specific behaviors), any decisions made. Include the budget row: `Model: <name> | Context: <used> / <window> (<%>) — <state>`.
 5. Append to `log.md` (running record) AND `handoff.md` (reviewer-facing summary).
 6. Wait for Yesid's response. No more code until he replies.
 7. Issues → fix, retest, STOP again.
@@ -130,7 +217,7 @@ Why both TodoWrite and the markdown table: `TodoWrite` is live UI (ephemeral to 
 
 ## Active slice
 
-Read the checkpoint at the start of every session: `docs/slices/slice-NN-checkpoint.md` (will move to `docs/slices/slice-NN/CHECKPOINT.md` after Task 3b runs).
+Read the checkpoint at the start of every session: `docs/slices/slice-NN/CHECKPOINT.md`. If the next sub-slice is **L-sized**, also read its `spec.md` + `plan.md`. If **M-sized**, read the current `log.md`. If **S-sized**, nothing extra to read.
 
 Checkpoint holds: current sub-slice, task number, branch name, what's merged, what's pending, blockers.
 
@@ -144,9 +231,9 @@ See `docs/reference/WORKFLOW.md` for the full closing checklist. Critical items:
 4. Append any OS-specific command fixes discovered to `<cloud>/claude-knowledge/os-quirks/<os>.md`.
 5. Write any durable patterns / concepts worth codifying to `<cloud>/yesid.dev/docs/learn/<domain>/<concept>.md` (learn is in cloud; Yesid's Obsidian vault).
 6. Regenerate `tree.txt`:
-   ```powershell
+  ```powershell
    cmd /c "tree /F /A | findstr /V /C:\"node_modules\" /C:\".git\" /C:\".remember\" /C:\"bun.lockb\" /C:\".svelte-kit\" /C:\".vercel\" /C:\".DS_Store\" > tree.txt"
-   ```
+  ```
 7. Commit + push + `gh pr create`.
 8. After PR squash-merges: `bun run slice:close <N> <letter>` → mirrors bundle to cloud, deletes repo folder, updates `COMPLETED-SLICES.md`.
 
@@ -179,11 +266,13 @@ Other test rules: maintain `docs/reference/TESTS.md`; co-locate test files next 
 
 Three layers, strict separation. Full reference: `docs/reference/CSS.md`. Governance: `docs/reference/CONSTITUTION.md`.
 
-| Layer | File | Purpose |
-|-------|------|---------|
-| Semantic tokens | `src/lib/styles/tokens.css` | Theme-switching CSS custom properties |
+
+| Layer           | File                         | Purpose                                          |
+| --------------- | ---------------------------- | ------------------------------------------------ |
+| Semantic tokens | `src/lib/styles/tokens.css`  | Theme-switching CSS custom properties            |
 | Brand utilities | `src/app.css` `@theme` block | Static brand values that never change with theme |
-| Component scope | `<style>` in `.svelte` | Layout/structure specific to one component |
+| Component scope | `<style>` in `.svelte`       | Layout/structure specific to one component       |
+
 
 **Top rules:** zero hardcoded colors (use tokens); no `!important`; no inline `style=` except dynamic JS values; mobile-first responsive; prefer logical properties; no `vh` unit (use `dvh`/`svh`/`lvh`); no arbitrary Tailwind spacing.
 
@@ -211,6 +300,7 @@ repo-root/
 ```
 
 `docs/` + `brand/` stay siblings at root — different audiences (workflow vs visual), scripts reference these paths directly. See `tree.txt` for the full tree. Docs live under:
+
 - `docs/reference/` — Tier 1 governance (CONSTITUTION, CSS, WORKFLOW, MOTION, TESTS, ARCHITECTURE, PATTERNS, VOCAB, ARCHIVE)
 - `docs/roadmap/` — PLAN.md + FUTURE_PHASES.md
 - `docs/slices/` — active slice bundles + templates + checkpoints
@@ -229,3 +319,4 @@ Source lives under `src/` (components, motion, data, routes, content). Brand ass
 - Continue to next task without Yesid's approval
 - Close a slice without appending OS-quirks discoveries and durable learnings to cloud
 - Invent a brand or workflow term that already exists in `VOCAB.md`
+
