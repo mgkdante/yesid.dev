@@ -275,275 +275,48 @@ Full per-slice specs, plans, devlogs, and handoffs live at `C:\Users\otalo\Yesit
 
 ### Slice 15 — SEO + Metadata: Maximum Discoverability
 
-**Status:** planned **Est. Sessions:** 1-2 **Depends on:** 13, 17a, 17b
-
-**Why this matters more than most devs think:** 90% of portfolio sites have zero structured data, broken OG tags, and no sitemap. Recruiters and clients Google "data engineer Montreal" or "SQL developer transit pipeline" and get LinkedIn results because nobody's portfolio is optimized. This slice makes yesid.dev the result that shows up WITH a rich card, author photo, and site links. It also makes every blog post, project, and service page individually discoverable, not just the home page.
-
-**5 Layers of SEO:**
-
-1. **Page-Level Meta Tags** — Every route gets: `<title>`, `<meta name="description">`, canonical URL, `robots` directive. Titles follow the pattern `Page Name | yesid.` (brand-consistent, under 60 chars). Descriptions are unique per page, 150-160 chars, written for humans not keyword stuffing. All pulled from data layer via a shared `<SeoHead>` component that every +layout.svelte or +page.svelte uses.
-2. **Open Graph + Twitter Cards** — Every page gets: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`, `og:site_name`, `og:locale`. Twitter equivalents: `twitter:card` (summary_large_image), `twitter:title`, `twitter:description`, `twitter:image`. OG images: generate a branded default (orange wordmark on dark bg, 1200x630). Blog posts and projects can override with custom OG images. Service pages use a shared branded template.
-3. **Structured Data (JSON-LD)** — This is the differentiator. Most portfolios skip this entirely. Add:
-  - **Person** schema on home/about: name, jobTitle ("Data Infrastructure Engineer"), url, sameAs (LinkedIn, GitHub), knowsAbout (SQL, Python, PostgreSQL, etc.), worksFor, address (Montreal, QC)
-  - **WebSite** schema on home: name, url, description, author
-  - **BlogPosting** schema on each blog post: headline, datePublished, author, description, image, articleSection
-  - **Service** schema on each service page: name, description, provider (Person), areaServed
-  - **BreadcrumbList** schema on all subpages: structured navigation path (Home > Work > STM Transit Pipeline)
-  - **ProfilePage** schema on about page (new schema type Google supports for personal sites)
-4. **Technical SEO** —
-  - `sitemap.xml` auto-generated at build time from all public routes (home, blog/*, work/*, services/*, about, contact). Use `@sveltejs/kit` prerender entries or a custom build script.
-  - `robots.txt` with sitemap reference, allow all public routes, block /preview and /admin (Payload, added in Slice 18)
-  - Canonical URLs on every page (prevents duplicate content from trailing slashes or query params)
-  - `<link rel="alternate" hreflang="en">` tags ready for i18n (structure only, fr/es pages come later)
-  - Performance meta: proper `<meta name="viewport">`, `theme-color` (#141414), `color-scheme: dark`
-5. **Social Preview Testing** — Verify every page type renders correctly when shared on LinkedIn, Twitter/X, Slack, Discord, iMessage. This is how recruiters first see the site. A broken preview = invisible. Test with: opengraph.xyz, Twitter Card Validator, LinkedIn Post Inspector.
-
-**Shared Component:**
-
-```
-<SeoHead
-  title="STM Transit Pipeline | yesid."
-  description="Near-real-time GTFS analytics..."
-  ogImage="/og/stm-transit-pipeline.png"
-  type="article"
-  canonical="https://yesid.dev/work/stm-transit-pipeline"
-  jsonLd={blogPostingSchema}
-/>
-```
-
-Every page passes its specific data. The component renders all `<svelte:head>` tags. One place to maintain, every page covered.
-
-**OG Image Strategy:**
-
-- Default branded image: wordmark + tagline on dark bg (1200x630) for pages without custom images
-- Blog posts: auto-generate OG images at build time using satori or a canvas script (title + date + brand colors on dark card)
-- Projects: screenshot or custom graphic per project (manual, added as content)
-- If auto-generation is too complex for this slice, ship with the default branded image for all pages and add per-page images in a polish pass
-
-**Locale-Aware Meta:**
-
-- `og:locale` set to `en_CA` (your base)
-- `og:locale:alternate` ready for `fr_CA` and `es` when translations ship
-- `hreflang` link tags point to self for now, ready to point to locale variants later
-- Description meta uses `resolveLocale()` so it serves French descriptions when fr pages exist
-
-**Acceptance Criteria:**
-
-- Every public route has unique `<title>` and `<meta name="description">`
-- Every public route has complete OG tags (title, description, image, url, type)
-- Every public route has Twitter Card tags
-- JSON-LD Person schema on home and about pages
-- JSON-LD BlogPosting schema on every blog post
-- JSON-LD Service schema on every service page
-- JSON-LD BreadcrumbList on all subpages
-- `sitemap.xml` generated at build time, contains all public routes
-- `robots.txt` references sitemap, blocks /preview
-- Canonical URLs set on every page
-- OG image renders correctly when shared (test with opengraph.xyz)
-- `bun run build` succeeds with all meta in place
-- `bun run test` passes
-- Lighthouse SEO score: 100 on all page types
-
-**Out of Scope:**
-
-- Per-page custom OG image generation (use default branded image, upgrade later)
-- Google Search Console setup (do after deploy in Slice 22)
-- Analytics (separate concern)
-- i18n page variants (structure only, actual translations are future)
-
-**You'll learn:** Open Graph protocol, JSON-LD structured data, Schema.org vocabulary, technical SEO (sitemaps, canonical URLs, robots.txt), social preview optimization, `<svelte:head>` patterns in SvelteKit.
+**Full direction:** [docs/slices/slice-15/README.md](../slices/slice-15/README.md)
+**Status:** planned **Depends on:** 13, 17a, 17b **Est.:** 1–2 sessions
 
 ### Slice 16 — E2E Test Suite + Performance + Brand QA Pass
 
-Playwright E2E tests: full nav flow, train journey scroll, project detail, all pages at 3 breakpoints. Performance testing: verify frame rate during scroll on home page. Brand verification: colors, fonts, motion consistency. Fix visual/responsive/performance issues. Optional: add easter eggs from MOTION.md section 9.  
-**You'll learn:** E2E testing, performance profiling, responsive QA, accessibility verification.
-
-**KEEP IN MIND**: Sentry, Posthog and Vercel analytics
+**Full direction:** [docs/slices/slice-16/README.md](../slices/slice-16/README.md)
+**Status:** planned **Depends on:** 15, 17 **Est.:** 3 sessions
 
 ### Slice 17 — Standardization: Ports & Adapters Lite
 
-**Full plan:** `[docs/slices/slice-17/README.md](../slices/slice-17/README.md)`
-**Status:** IN PROGRESS — Phase 1 Foundation **Est. Sessions:** 13-14 (across 7 sub-slices) **Depends on:** 13
-
-Design system + structural refactor. Brand primitives (terminal chrome, hazard stripes, card base) become shared components. Semantic type scale replaces 275 ad-hoc font-size declarations. All hardcoded hex colors migrate to tokens. Light theme becomes one toggle away. Service layer creates the CMS seam that Slice 18 (Payload) plugs into.
-
-**Progress:** 17a-1 (Token Foundation) ✓ → 17a-2a (Build Primitives) ✓ → 17a-2b (Wire Primitives) ✓ → **17a-3 (Color & Token Lockdown)** ← NEXT
-
-**Sub-slices:** 17a (design system + CSS) → 17b (service layer) → *15 (SEO)* → 17c (Zod schemas) → 17d (component APIs + shared shells) → 17e (motion factories) → 17f (test architecture + docs) → 17g (learning docs refactor)
-
-**Scope:** Design system (brand primitives, type scale, token lockdown, light theme prep), CSS consolidation, service layer, Zod schemas, shared UI shells, motion factories, test factories, documentation.
-
-**What's done:** 15 brand primitives built + wired into 40+ files, 12 utility classes, semantic type scale, tokens.css foundation, CSS.md created. Deep audit identified ~220 remaining hardcoded colors, 22 unused tokens, 4 dead components.
-
-**Tailwind decision:** Keep Tailwind v4 — the problem is bypassing the system with arbitrary values, not the framework. Strict token discipline enforced via `@theme`.
-
----
+**Full direction:** [docs/slices/slice-17/README.md](../slices/slice-17/README.md)
+**Status:** IN PROGRESS — Phase 1 visual stage complete (17a, 17d, 17e, 17h shipped); 17j Workflow Efficiency active. **Depends on:** 13 **Est.:** 20–24 sessions across all sub-slices
 
 ### Slice 18 — Cloud Content Layer: Payload (own repo) + Neon
 
-**Status:** planned **Depends on:** 16, 17 **Est. Sessions:** 5-7
-**Design spec:** `docs/specs/2026-04-16-cms-payload-design.md` (authoritative — read first)
-**Supersedes:** previous Keystatic plan for this slice (see Decisions Log 2026-04-16)
-
-**Decision: Payload 3** — MIT-licensed, Node-native, TypeScript-schema CMS with a real admin UI. Backed by **Neon Postgres** (free tier, scale-to-zero, DB branching). Media on **Vercel Blob**.
-
-**Two repos, not a monorepo:**
-
-- `yesid.dev` — the SvelteKit site. Stays structurally as-is (public showcase, open-source artifact).
-- `yesid.dev-cms` — new repo, Payload 3 + Next.js admin + API + Postgres schema. **Framework-agnostic Payload starter** — plugs into SvelteKit, Next.js, Astro, Nuxt, or any REST client. Ships as its own reusable product with per-framework integration recipes (SvelteKit first).
-
-Both repos deploy to Vercel independently. `yesid.dev-cms` lives at `cms.yesid.dev`. yesid.dev is the reference build; `yesid.dev-cms` is the reusable CMS product.
-
-**Positioning:** "WordPress flexibility without WordPress, but modern. Bring your own framework."
-
-**Why Payload over Keystatic** (short form — full rationale in design spec):
-
-1. Non-tech clients can use it — email/password auth, no GitHub account required, real admin UI with roles and drafts.
-2. Dynamic queries, real relationships, proper joins — not just string refs between files.
-3. Clear path to future features: client logins, form submissions storage, open-source project docs, e-commerce.
-4. Template fit — clone one repo, get site + CMS + shared types. Keystatic could not carry that pitch.
-
-Keystatic stays in the toolkit as a possible **"Static" budget tier** for pure-content clients with one editor. It is not the primary offering. **Do not build the Static tier template in Slice 18** — only if real client demand appears later.
-
-**Architecture (see design spec for full diagram):**
-
-```
-Repo: yesid.dev                    Repo: yesid.dev-cms
-(SvelteKit — public showcase)      (Payload 3 + Next.js — CMS starter)
-         │                                    │
-         │ Vercel                             │ Vercel
-         ▼                                    ▼
-    yesid.dev                         cms.yesid.dev
-         │       REST (+ GraphQL)             │
-         │ ◄───────────────────────────────►  │
-         │       webhook on publish           │
-         └─────────────┐           ┌──────────┘
-                       ▼           ▼
-                  Neon Postgres (content DB, branches per PR)
-                  Vercel Blob    (media)
-
-Type sync: payload generate:types → GitHub Action → PR in yesid.dev updating
-           src/lib/cms-types.ts (no monorepo tax, types stay in sync).
-```
-
-**Content model — Payload collections / globals:**
-
-| Type | Maps from | Notes |
-|------|-----------|-------|
-| `projects` (collection) | `src/lib/data/projects.ts` | slug, title (loc), sections (blocks), services + stack (relationships) |
-| `services` (collection) | `src/lib/data/services.ts` | id, title (loc), relatedProjects (relationship), detailSections (blocks) |
-| `blog-posts` (collection) | `src/content/blog/*.md` | body as Lexical rich text; rendered to HTML in SvelteKit |
-| `tech-stack` (collection) | `src/content/stack/*.md` | shared vocabulary — referenced by projects + services + scenarios |
-| `stack-scenarios` (collection) | `src/lib/data/stack-scenarios.ts` | for Build Your Stack configurator |
-| `site-meta` (global) | `src/lib/data/meta.ts` | single editable doc |
-| `home-content` (global) | `src/lib/data/content.ts` (home sections) | single editable doc |
-| `about-content` (global) | `src/lib/data/about-page.ts` | single editable doc |
-| `contact-content` (global) | `src/lib/data/contact-page.ts` | single editable doc |
-| `nav-links` (global) | `src/lib/data/nav.ts` | single editable doc |
-| `error-pages` (global) | `src/lib/data/error-pages.ts` | single editable doc |
-
-Localization uses Payload's built-in `localized: true` flag on text fields (maps cleanly to the existing `LocalizedString` pattern — en required, fr/es optional).
-
-**Migration order** (inside this slice, not a prerequisite):
-
-1. Create `yesid.dev-cms` repo. Scaffold Payload 3 + Next.js with Neon Postgres + Vercel Blob adapters, email auth.
-2. Define all collections + globals with Payload localization enabled (maps 1:1 to existing LocalizedString).
-3. Deploy CMS to Vercel at `cms.yesid.dev` subdomain.
-4. Seed script in `yesid.dev-cms` imports existing TS/MD data from `yesid.dev` via Local API. Idempotent, kept in repo as the "import from other sources" recipe for clients.
-5. Set up type-sync GitHub Action: CMS schema change → `payload generate:types` → opens PR in `yesid.dev` updating `src/lib/cms-types.ts`.
-6. Service layer swap (from Slice 17b in `yesid.dev`) — flip implementations one service at a time, one commit each, tests green between every swap. Each service calls Payload REST API; Zod schemas (Slice 17c) validate response shape. Order: site-meta → nav-links → home-content → about-content → contact-content → blog-posts → projects → services → tech-stack → stack-scenarios.
-7. Wire Payload publish hook → POST to `yesid.dev/api/revalidate` with shared secret. Wire `/preview/[collection]/[slug]?token=...` in `yesid.dev` for draft content.
-8. Delete old TS data files in `yesid.dev` only after every route loads from the CMS and tests pass.
-
-**Rollback at every step:** services hold both implementations behind a feature flag during the swap; full rollback is one revert. Because the repos are independent, a bad CMS deploy doesn't take the frontend down — `yesid.dev` keeps serving its ISR cache.
-
-**Cost model (yesid.dev, day one):** $0/month. Neon free tier (191.9 compute-hrs/mo, 0.5 GB) is more than enough; Vercel Blob free tier (1 GB, 10 GB bandwidth) fits a portfolio. Do not attach a payment method to Neon until consciously upgrading — free plan is hard-capped, not soft-capped.
-
-**Guardrails against surprise bills:**
-
-- Use Neon's HTTP/serverless driver from SvelteKit (short-lived connections, compute scales to zero).
-- No per-minute cron pings; hourly+ or Vercel Cron with edge caching.
-- Clean up DB branches when PRs merge.
-
-**Rendering strategy:**
-
-- Default: **ISR** — Vercel caches pages at the edge; Payload webhook triggers revalidation on publish.
-- Exception: `/preview/[collection]/[slug]?token=...` bypasses cache for draft content (logged-in editors only).
-- Fallback: build-time static for routes that almost never change.
-
-**Acceptance criteria:**
-
-- `yesid.dev-cms` repo scaffolded with Payload 3 + Next.js, deployed to Vercel at `cms.yesid.dev`.
-- All collections + globals defined with Payload localization enabled.
-- Seed script imports all existing content without data loss.
-- Type-sync GitHub Action wired: CMS schema change → PR in `yesid.dev` updating `src/lib/cms-types.ts`.
-- Every service in `src/lib/services/*.service.ts` reads from Payload REST API (Zod-validated), not TS files.
-- Slice 16 E2E suite green — every existing route renders identically to pre-migration.
-- Payload publish hook → `yesid.dev/api/revalidate` end-to-end.
-- Preview route serves draft content for logged-in editors.
-- Both Vercel deployments green; Neon DB branch auto-created per CMS PR.
-- Full free-tier budget — no overage.
-- `docs/reference/ARCHITECTURE.md` updated with two-repo topology; `docs/reference/PATTERNS.md` updated with Payload REST + Zod service pattern.
-- `yesid.dev-cms` README includes a "Using with SvelteKit" integration recipe.
-- Old TS data files deleted from `yesid.dev`; no lingering references.
-
-**Out of scope:**
-
-- Admin theming / custom field components (polish sub-slice later).
-- Keystatic "Static tier" template (build only if client demand appears).
-- Multi-tenant Payload (one instance per client is the day-one rule).
-- Moving Payload to Railway/Hetzner (reversible later; Vercel is fine for v1).
-- Fulltext search upgrade — blog search stays client-side.
-
-**You'll learn:** Payload 3 collections/globals/blocks, framework-agnostic CMS architecture (REST API + Zod at the frontend boundary), cross-repo type-sync via GitHub Actions, Neon Postgres + DB branching, Vercel Blob for media, ISR revalidation via webhooks, preview/draft flows, service-layer seam migration under test coverage.
+**Full direction:** [docs/slices/slice-18/README.md](../slices/slice-18/README.md)
+**Status:** planned **Depends on:** 16, 17 **Est.:** 5–7 sessions
 
 ### Slice 19 — Mobile UI/UX Optimization
 
-**Status:** planned
-Full mobile audit: touch targets, scroll behavior, animation performance on low-end devices, viewport issues, text readability, tap feedback. SkillsJourney scroll tuning (velocity detection, adaptive multipliers). Responsive breakpoint audit for all components. Test at 375px, 390px, 414px, 768px.
-
-**Scope:** Touch interaction polish, scroll performance, responsive fixes, mobile-specific animation tuning, viewport debugging.
+**Full direction:** [docs/slices/slice-19/README.md](../slices/slice-19/README.md)
+**Status:** planned **Depends on:** 17, B+ **Est.:** 2 sessions
 
 ### Slice 19b — Accessibility (A11Y) Optimization
 
-**Status:** planned
-Full accessibility audit and remediation: WCAG 2.1 AA compliance, semantic HTML structure, ARIA landmarks and labels, keyboard navigation across all interactive components, focus management (visible focus rings, logical tab order, focus trapping in modals/overlays), screen reader testing, color contrast verification (4.5:1 text, 3:1 UI), skip-to-content link, reduced-motion enforcement audit, alt text for all images and SVGs, form accessibility (labels, error announcements, live regions). Lighthouse accessibility score target: 95+.
-
-**Scope:** Semantic HTML audit, ARIA implementation, keyboard navigation, focus management, screen reader compatibility, color contrast fixes, prefers-reduced-motion audit, form accessibility, skip links, Lighthouse a11y scoring.
-
-**Why after Slice 19:** Mobile optimization (Slice 19) changes touch targets, layout, and interaction patterns. Running the a11y audit after mobile ensures we test the final responsive state, not an intermediate one. Keyboard and screen reader testing also benefits from stable component APIs post-mobile polish.
+**Full direction:** [docs/slices/slice-19b/README.md](../slices/slice-19b/README.md)
+**Status:** planned **Depends on:** 19 **Est.:** 2 sessions
 
 ### Slice 20 — Scroll Smoothness + Animation Polish
 
-**Status:** planned
-Fine-tune all scroll-linked animations across the site. Consider ScrollSmoother plugin. Optimize GSAP tween count. Fix any jank on 60fps targets. Polish snap behavior, scrub timing, and transition curves. Performance profiling with Chrome DevTools.
-
-**Scope:** Animation timing polish, scroll performance optimization, GSAP tween audit, frame rate verification.
+**Full direction:** [docs/slices/slice-20/README.md](../slices/slice-20/README.md)
+**Status:** planned **Depends on:** B+, 19b **Est.:** 1 session
 
 ### Slice 21 — Repo Cleanup for Public Release
 
-Strip pipeline/workflow artifacts. Public repo = clean portfolio site.
-
-**MANUAL CHECKPOINT (before Claude Code deletes anything):**
-Yesid copies these to `C:\Users\otalo\Yesito\cloud\yesid-pipeline-archive\`:
-
-- `docs/` (entire directory)
-- `CLAUDE.md`
-- `yesid-pipeline-workflow/` (if present)
-
-Yesid confirms backup is done. Only then does Claude Code proceed.
-
-**Remove:** CLAUDE.md, docs/, brand/yesid_brand_guide.pdf, leftover .gitkeep files
-**Keep:** src/, tests/, static/, brand/ (minus PDF), .github/workflows/, configs, tree.txt
-**Write:** Clean public README.md
-
-**Tests:** Existing tests pass. Build succeeds. No references to removed files.
+**Full direction:** [docs/slices/slice-21/README.md](../slices/slice-21/README.md)
+**Status:** planned **Depends on:** 16, 18 **Est.:** 1 session
 
 ### Slice 22 — Deploy to Vercel + DNS Cutover
 
-Connect repo to Vercel. Configure build (Bun). Auto-deploy main, preview on PRs. Test preview. Update yesid.dev DNS. Verify live + CI/CD end to end.
-
-**Tests:** Build succeeds. Preview works. Production works. 3D scene loads. CI blocks bad merges.
+**Full direction:** [docs/slices/slice-22/README.md](../slices/slice-22/README.md)
+**Status:** planned **Depends on:** 21 **Est.:** 1 session
 
 ## Pre-Slice Work
 
