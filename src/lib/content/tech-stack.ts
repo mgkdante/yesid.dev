@@ -12,6 +12,130 @@ import type {
 	LocalizedString,
 } from '$lib/types';
 
+/** Chrome copy for the Control Room tech-stack viz — extracted from
+ *  StackPanelOrientation / StackBottomSheet / StackConfigurator / StackDiagram /
+ *  StackFilters / StackPanel / StackScenarioCard in Task 17b-7i.
+ *
+ *  Templates use the standard `{placeholder}` convention with `.replace()` at
+ *  the call site (same shape as 17b-7a..7h). */
+export const techStackVizContent = {
+	/** StackPanelOrientation — hint card shown before any node is selected. */
+	orientation: {
+		heading: { en: 'SELECT A NODE' } satisfies LocalizedString,
+		description: {
+			en: 'Click on any technology in the diagram to learn more about it — what it does, why it was chosen, and which projects use it.',
+		} satisfies LocalizedString,
+		hints: {
+			clickNode: { en: 'Click a node for details' } satisfies LocalizedString,
+			hoverConnections: { en: 'Hover to see connections' } satisfies LocalizedString,
+			useFilters: { en: 'Use filters to explore domains' } satisfies LocalizedString,
+		},
+	},
+	/** Proficiency labels — shared by StackPanel + StackBottomSheet. */
+	proficiency: {
+		expert: { en: 'Expert' } satisfies LocalizedString,
+		proficient: { en: 'Proficient' } satisfies LocalizedString,
+		familiar: { en: 'Familiar' } satisfies LocalizedString,
+	} as const satisfies Record<Proficiency, LocalizedString>,
+	/** StackPanel / StackBottomSheet shared chrome (details view). */
+	panel: {
+		closeAria: { en: 'Close panel' } satisfies LocalizedString,
+		usedInLabel: { en: 'Used in' } satisfies LocalizedString,
+		/** Template: `Sends data to ({count})` */
+		sendsDataToTemplate: { en: 'Sends data to ({count})' } satisfies LocalizedString,
+		/** Template: `Receives from ({count})` */
+		receivesFromTemplate: { en: 'Receives from ({count})' } satisfies LocalizedString,
+		/** Template: `View {name}` — relation-link hover title. */
+		viewRelationTemplate: { en: 'View {name}' } satisfies LocalizedString,
+		/** Template: `Let's build with {name}` — CTA button text. */
+		buildWithTemplate: { en: "Let's build with {name}" } satisfies LocalizedString,
+	},
+	/** StackBottomSheet-specific chrome (mobile drawer). */
+	bottomSheet: {
+		/** Template: `Technology details — {name}` — sr-only DrawerTitle. */
+		titleTemplate: { en: 'Technology details — {name}' } satisfies LocalizedString,
+		closeAria: { en: 'Close' } satisfies LocalizedString,
+		prevAria: { en: 'Previous technology' } satisfies LocalizedString,
+		nextAria: { en: 'Next technology' } satisfies LocalizedString,
+	},
+	/** StackDiagram — infrastructure layers grid. */
+	diagram: {
+		sectionLabel: { en: 'Infrastructure Layers' } satisfies LocalizedString,
+		diagramAria: { en: 'Infrastructure layers diagram' } satisfies LocalizedString,
+		/** Per-layer labels keyed by InfraLayer (ALL-CAPS display form). */
+		layerLabels: {
+			devops: { en: 'DEVOPS' } satisfies LocalizedString,
+			testing: { en: 'TESTING' } satisfies LocalizedString,
+			frontend: { en: 'FRONTEND' } satisfies LocalizedString,
+			mobile: { en: 'MOBILE' } satisfies LocalizedString,
+			api: { en: 'API' } satisfies LocalizedString,
+			backend: { en: 'BACKEND' } satisfies LocalizedString,
+			analytics: { en: 'ANALYTICS' } satisfies LocalizedString,
+			data: { en: 'DATA' } satisfies LocalizedString,
+			systems: { en: 'SYSTEMS' } satisfies LocalizedString,
+		} as const satisfies Record<InfraLayer, LocalizedString>,
+	},
+	/** StackFilters — short-form domain pills. */
+	filters: {
+		sectionLabel: { en: 'Domain' } satisfies LocalizedString,
+		filterAll: { en: 'All' } satisfies LocalizedString,
+		toolbarAria: { en: 'Filter by domain' } satisfies LocalizedString,
+		/** Short labels keyed by DomainCluster — used in filter pills. */
+		domainLabels: {
+			'data-engineering': { en: 'Data Engineering' } satisfies LocalizedString,
+			'web-development': { en: 'Web Dev' } satisfies LocalizedString,
+			'mobile-development': { en: 'Mobile' } satisfies LocalizedString,
+			'analytics-bi': { en: 'Analytics' } satisfies LocalizedString,
+			'systems-programming': { en: 'Systems' } satisfies LocalizedString,
+			'devops-infra': { en: 'DevOps' } satisfies LocalizedString,
+			'internal-tooling': { en: 'Internal Tooling' } satisfies LocalizedString,
+		} as const satisfies Record<DomainCluster, LocalizedString>,
+	},
+	/** StackConfigurator — long-form domain cards with descriptions. */
+	configurator: {
+		heading: { en: 'What do you need?' } satisfies LocalizedString,
+		groupAria: { en: 'Build Your Stack — select up to 3 domains' } satisfies LocalizedString,
+		/** Template: `{count}/{max} selected` */
+		selectionCountTemplate: { en: '{count}/{max} selected' } satisfies LocalizedString,
+		/** Full labels + descriptions keyed by DomainCluster. */
+		domains: {
+			'data-engineering': {
+				label: { en: 'Data Engineering' } satisfies LocalizedString,
+				description: { en: 'Pipelines, ETL, warehouses' } satisfies LocalizedString,
+			},
+			'web-development': {
+				label: { en: 'Web Development' } satisfies LocalizedString,
+				description: { en: 'Full-stack web apps' } satisfies LocalizedString,
+			},
+			'mobile-development': {
+				label: { en: 'Mobile' } satisfies LocalizedString,
+				description: { en: 'Native & cross-platform' } satisfies LocalizedString,
+			},
+			'analytics-bi': {
+				label: { en: 'Analytics & BI' } satisfies LocalizedString,
+				description: { en: 'Dashboards, reporting' } satisfies LocalizedString,
+			},
+			'systems-programming': {
+				label: { en: 'Systems' } satisfies LocalizedString,
+				description: { en: 'Low-level, performance' } satisfies LocalizedString,
+			},
+			'devops-infra': {
+				label: { en: 'DevOps & Infra' } satisfies LocalizedString,
+				description: { en: 'CI/CD, containers, cloud' } satisfies LocalizedString,
+			},
+			'internal-tooling': {
+				label: { en: 'Internal Tooling' } satisfies LocalizedString,
+				description: { en: 'Admin panels, ops tools' } satisfies LocalizedString,
+			},
+		} as const satisfies Record<DomainCluster, { label: LocalizedString; description: LocalizedString }>,
+	},
+	/** StackScenarioCard — scenario summary used in Build Your Stack mode. */
+	scenario: {
+		provenInLabel: { en: 'Proven in' } satisfies LocalizedString,
+		ctaBuildThis: { en: "Let's build this" } satisfies LocalizedString,
+	},
+} as const;
+
 // --- Frontmatter parsing ---
 
 function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {

@@ -6,6 +6,8 @@
 -->
 <script lang="ts">
 	import type { DomainCluster } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { techStackVizContent } from '$lib/content/tech-stack';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
 	let {
@@ -16,15 +18,23 @@
 		onchange?: (domains: DomainCluster[]) => void;
 	} = $props();
 
-	const DOMAIN_LABELS: { id: DomainCluster; label: string }[] = [
-		{ id: 'data-engineering', label: 'Data Engineering' },
-		{ id: 'web-development', label: 'Web Dev' },
-		{ id: 'mobile-development', label: 'Mobile' },
-		{ id: 'analytics-bi', label: 'Analytics' },
-		{ id: 'systems-programming', label: 'Systems' },
-		{ id: 'devops-infra', label: 'DevOps' },
-		{ id: 'internal-tooling', label: 'Internal Tooling' },
-	];
+	const DOMAIN_ORDER: readonly DomainCluster[] = [
+		'data-engineering',
+		'web-development',
+		'mobile-development',
+		'analytics-bi',
+		'systems-programming',
+		'devops-infra',
+		'internal-tooling',
+	] as const;
+
+	const f = techStackVizContent.filters;
+	const sectionLabel = resolveLocale(f.sectionLabel, 'en');
+	const allLabel = resolveLocale(f.filterAll, 'en');
+	const toolbarAria = resolveLocale(f.toolbarAria, 'en');
+	function labelFor(domain: DomainCluster): string {
+		return resolveLocale(f.domainLabels[domain], 'en');
+	}
 
 	const isAllActive = $derived(activeDomains.length === 0);
 
@@ -46,8 +56,8 @@
 	}
 </script>
 
-<div class="stack-filters" data-testid="stack-filters" role="toolbar" aria-label="Filter by domain">
-	<span class="filter-label label-section font-semibold">Domain</span>
+<div class="stack-filters" data-testid="stack-filters" role="toolbar" aria-label={toolbarAria}>
+	<span class="filter-label label-section font-semibold">{sectionLabel}</span>
 	<div class="filter-pills" use:scrollChain>
 		<button
 			type="button"
@@ -57,10 +67,10 @@
 			aria-pressed={isAllActive}
 			onclick={handleAllClick}
 		>
-			All
+			{allLabel}
 		</button>
 
-		{#each DOMAIN_LABELS as { id, label } (id)}
+		{#each DOMAIN_ORDER as id (id)}
 			<button
 				type="button"
 				class="filter-pill"
@@ -69,7 +79,7 @@
 				aria-pressed={activeDomains.includes(id)}
 				onclick={() => handleDomainClick(id)}
 			>
-				{label}
+				{labelFor(id)}
 			</button>
 		{/each}
 	</div>

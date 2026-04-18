@@ -5,9 +5,15 @@
   Used on desktop (persistent) and tablet (overlay).
 -->
 <script lang="ts">
-	import type { TechStackItem, TechRelation, Proficiency } from '$lib/types';
+	import type { TechStackItem, TechRelation } from '$lib/types';
 	import { Marked } from 'marked';
-	import { getOutgoingRelations, getIncomingRelations, getTechItemContent } from '$lib/content/tech-stack';
+	import { resolveLocale } from '$lib/utils/locale';
+	import {
+		getOutgoingRelations,
+		getIncomingRelations,
+		getTechItemContent,
+		techStackVizContent,
+	} from '$lib/content/tech-stack';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import StackPanelOrientation from './StackPanelOrientation.svelte';
@@ -25,11 +31,27 @@
 
 	const md = new Marked();
 
-	const proficiencyLabel: Record<Proficiency, string> = {
-		expert: 'Expert',
-		proficient: 'Proficient',
-		familiar: 'Familiar',
-	};
+	const closeAria = resolveLocale(techStackVizContent.panel.closeAria, 'en');
+	const usedInLabel = resolveLocale(techStackVizContent.panel.usedInLabel, 'en');
+	const sendsTemplate = resolveLocale(techStackVizContent.panel.sendsDataToTemplate, 'en');
+	const receivesTemplate = resolveLocale(techStackVizContent.panel.receivesFromTemplate, 'en');
+	const viewRelationTemplate = resolveLocale(techStackVizContent.panel.viewRelationTemplate, 'en');
+	const buildWithTemplate = resolveLocale(techStackVizContent.panel.buildWithTemplate, 'en');
+
+	const proficiencyLabel = $derived(
+		item ? resolveLocale(techStackVizContent.proficiency[item.proficiency], 'en') : ''
+	);
+	const buildWithLabel = $derived(item ? buildWithTemplate.replace('{name}', item.name) : '');
+
+	function sendsDataTitle(n: number): string {
+		return sendsTemplate.replace('{count}', String(n));
+	}
+	function receivesFromTitle(n: number): string {
+		return receivesTemplate.replace('{count}', String(n));
+	}
+	function viewRelationTitle(name: string): string {
+		return viewRelationTemplate.replace('{name}', name);
+	}
 
 	// Derived content for the selected item
 	const content = $derived(item ? getTechItemContent(item.id) : '');
@@ -63,7 +85,7 @@
 					<div>
 						<h3 class="panel-name">{item.name}</h3>
 						<span class="proficiency-badge" data-proficiency={item.proficiency}>
-							{proficiencyLabel[item.proficiency]}
+							{proficiencyLabel}
 						</span>
 					</div>
 				</div>
@@ -71,7 +93,7 @@
 					<button
 						class="close-btn"
 						onclick={onclose}
-						aria-label="Close panel"
+						aria-label={closeAria}
 						data-testid="panel-close"
 					>
 						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -91,7 +113,7 @@
 			<!-- Project badges -->
 			{#if item.relatedProjects.length > 0}
 				<div class="panel-projects">
-					<span class="section-label label-section font-semibold">Used in</span>
+					<span class="section-label label-section font-semibold">{usedInLabel}</span>
 					<div class="project-badges">
 						{#each item.relatedProjects as slug}
 							<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -103,14 +125,14 @@
 			<!-- Relations (collapsible, after content) -->
 			{#if outgoing.length > 0}
 				<div class="relations-section" data-testid="relations-outgoing">
-					<CollapsibleSection title="Sends data to ({outgoing.length})" open={false}>
+					<CollapsibleSection title={sendsDataTitle(outgoing.length)} open={false}>
 						<ul class="relations-list">
 							{#each outgoing as rel}
 								<li class="relation-item">
 									<button
 										class="relation-link"
 										onclick={() => handleRelationClick(rel.itemId)}
-										title="View {rel.itemName}"
+										title={viewRelationTitle(rel.itemName)}
 									>
 										{rel.itemName}
 									</button>
@@ -124,14 +146,14 @@
 
 			{#if incoming.length > 0}
 				<div class="relations-section" data-testid="relations-incoming">
-					<CollapsibleSection title="Receives from ({incoming.length})" open={false}>
+					<CollapsibleSection title={receivesFromTitle(incoming.length)} open={false}>
 						<ul class="relations-list">
 							{#each incoming as rel}
 								<li class="relation-item">
 									<button
 										class="relation-link"
 										onclick={() => handleRelationClick(rel.itemId)}
-										title="View {rel.itemName}"
+										title={viewRelationTitle(rel.itemName)}
 									>
 										{rel.itemName}
 									</button>
@@ -146,7 +168,7 @@
 			<!-- CTA -->
 			<div class="mt-4">
 				<Button variant="default" size="cta-sm" href="/contact" data-testid="panel-cta">
-					Let's build with {item.name} <span aria-hidden="true">&rarr;</span>
+					{buildWithLabel} <span aria-hidden="true">&rarr;</span>
 				</Button>
 			</div>
 		</div>

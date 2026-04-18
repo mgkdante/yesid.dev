@@ -5,6 +5,8 @@
 -->
 <script lang="ts">
 	import type { DomainCluster } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { techStackVizContent } from '$lib/content/tech-stack';
 
 	let {
 		selectedDomains = [],
@@ -14,18 +16,35 @@
 		onchange?: (domains: DomainCluster[]) => void;
 	} = $props();
 
-	const DOMAIN_OPTIONS: { id: DomainCluster; label: string; description: string }[] = [
-		{ id: 'data-engineering', label: 'Data Engineering', description: 'Pipelines, ETL, warehouses' },
-		{ id: 'web-development', label: 'Web Development', description: 'Full-stack web apps' },
-		{ id: 'mobile-development', label: 'Mobile', description: 'Native & cross-platform' },
-		{ id: 'analytics-bi', label: 'Analytics & BI', description: 'Dashboards, reporting' },
-		{ id: 'systems-programming', label: 'Systems', description: 'Low-level, performance' },
-		{ id: 'devops-infra', label: 'DevOps & Infra', description: 'CI/CD, containers, cloud' },
-		{ id: 'internal-tooling', label: 'Internal Tooling', description: 'Admin panels, ops tools' },
-	];
+	const DOMAIN_ORDER: readonly DomainCluster[] = [
+		'data-engineering',
+		'web-development',
+		'mobile-development',
+		'analytics-bi',
+		'systems-programming',
+		'devops-infra',
+		'internal-tooling',
+	] as const;
+
+	const c = techStackVizContent.configurator;
+	const heading = resolveLocale(c.heading, 'en');
+	const groupAria = resolveLocale(c.groupAria, 'en');
+	const selectionCountTemplate = resolveLocale(c.selectionCountTemplate, 'en');
 
 	const MAX_SELECTIONS = 3;
 	const atLimit = $derived(selectedDomains.length >= MAX_SELECTIONS);
+	const selectionCount = $derived(
+		selectionCountTemplate
+			.replace('{count}', String(selectedDomains.length))
+			.replace('{max}', String(MAX_SELECTIONS))
+	);
+
+	function labelFor(domain: DomainCluster): string {
+		return resolveLocale(c.domains[domain].label, 'en');
+	}
+	function descriptionFor(domain: DomainCluster): string {
+		return resolveLocale(c.domains[domain].description, 'en');
+	}
 
 	function handleToggle(domain: DomainCluster) {
 		const current = [...selectedDomains];
@@ -49,16 +68,16 @@
 	}
 </script>
 
-<div class="configurator" data-testid="stack-configurator" role="group" aria-label="Build Your Stack — select up to 3 domains">
+<div class="configurator" data-testid="stack-configurator" role="group" aria-label={groupAria}>
 	<div class="configurator-header">
-		<span class="configurator-heading">What do you need?</span>
+		<span class="configurator-heading">{heading}</span>
 		<span class="configurator-hint">
-			{selectedDomains.length}/{MAX_SELECTIONS} selected
+			{selectionCount}
 		</span>
 	</div>
 
 	<div class="domain-grid">
-		{#each DOMAIN_OPTIONS as { id, label, description } (id)}
+		{#each DOMAIN_ORDER as id (id)}
 			<button
 				type="button"
 				class="domain-option"
@@ -69,8 +88,8 @@
 				disabled={isDisabled(id)}
 				onclick={() => handleToggle(id)}
 			>
-				<span class="domain-label">{label}</span>
-				<span class="domain-desc">{description}</span>
+				<span class="domain-label">{labelFor(id)}</span>
+				<span class="domain-desc">{descriptionFor(id)}</span>
 			</button>
 		{/each}
 	</div>

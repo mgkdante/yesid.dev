@@ -264,6 +264,7 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - ~~17b-7f Services (18 strings)~~ — shipped, see §17b-7f below
 - ~~17b-7g About (16 strings)~~ — shipped, see §17b-7g below
 - ~~17b-7h Contact (3 strings)~~ — shipped, see §17b-7h below
+- ~~17b-7i Tech stack viz (26 strings)~~ — shipped, see §17b-7i below (actually ~58 once label maps flatten)
 - 17b-7i Tech stack viz (26 strings — largest sub-task)
 - 17b-7j Layout + shared (12 strings)
 - 17b-7k Page meta tags (8 strings)
@@ -400,3 +401,58 @@ No visible copy, layout, or behaviour change. Metro labels render the same verba
 - `src/lib/content/contact-page.ts` — decision rationale: `pageTitle` doesn't include the decorative `.` dot because the dot has its own color span in the template. Content = copy; dot = typography.
 - `ContactPage.svelte` script top — three bare `const` bindings rather than `$derived` because the strings are static English. When locale-switching lands, convert to derived on a locale source.
 - `handleSubmit` error branches — `sendErrorMessage` is pre-resolved so `errors` stays typed as `Record<string, string>`. Swap to a LocalizedString-valued error object if the display layer gains locale awareness later.
+
+---
+
+## 17b-7i — Tech stack viz extraction (~58 strings across 7 components)
+
+**Commit:** _(SHA appended after Yesid approval)_
+**Status:** proposed — awaiting approval
+
+### What changed
+
+**Content addition**
+- `src/lib/content/tech-stack.ts` — new top-of-file `techStackVizContent` export. Grouped by component consumer:
+  - `orientation` (5 keys) — StackPanelOrientation hint card.
+  - `proficiency` (3 keys) — Expert/Proficient/Familiar shared by StackPanel + StackBottomSheet; typed `as const satisfies Record<Proficiency, LocalizedString>`.
+  - `panel` (6 keys) — closeAria, usedInLabel, and 4 templates (sendsDataTo, receivesFrom, viewRelation, buildWith) shared by StackPanel + StackBottomSheet.
+  - `bottomSheet` (4 keys) — mobile-specific: titleTemplate, closeAria, prevAria, nextAria.
+  - `diagram` (2 + 9 layers = 11 keys) — section label, diagram aria, + per-tier `layerLabels` typed `Record<InfraLayer, LocalizedString>`.
+  - `filters` (3 + 7 domains = 10 keys) — section label, All label, toolbar aria, + short-form `domainLabels` typed `Record<DomainCluster, LocalizedString>`.
+  - `configurator` (3 + 14 = 17 keys) — heading, group aria, selection-count template, + long-form `domains[*].{label, description}` pairs typed `Record<DomainCluster, { label; description }>`.
+  - `scenario` (2 keys) — provenInLabel + ctaBuildThis.
+
+**Components updated (7 files)**
+
+- `StackPanelOrientation.svelte` — gained a `<script>` block; five `const` bindings for heading / description / three hints.
+- `StackBottomSheet.svelte` — removed inline `proficiencyLabel` map; 8 chrome bindings plus 3 helpers (sheetTitle template with `{name}` replace, sendsDataTitle + receivesFromTitle with `{count}`, buildWithLabel template). Proficiency badge, close aria, prev/next arias, used-in label, collapsible-section titles, CTA button text all content-driven.
+- `StackConfigurator.svelte` — removed `DOMAIN_OPTIONS` array. Added `DOMAIN_ORDER: readonly DomainCluster[]` (presentational order) plus `labelFor` / `descriptionFor` helpers that index into content. Group aria, heading, selection-count template all wired.
+- `StackDiagram.svelte` — removed `LAYER_LABELS` record. Kept `LAYER_ORDER` as the presentational sequence. Section label, desktop diagram aria, and per-tier labels driven via `layerLabelFor(layer)` helper.
+- `StackFilters.svelte` — removed `DOMAIN_LABELS` array. Uses the same `DOMAIN_ORDER` iteration shape. Section label, All pill label, toolbar aria, 7 domain pills content-driven.
+- `StackPanel.svelte` — mirror of StackBottomSheet for shared `panel.*` chrome. `viewRelationTemplate` with `{name}` replace now drives `title={viewRelationTitle(name)}` on relation links (previously a literal Svelte template).
+- `StackScenarioCard.svelte` — two consts wire Proven in section label + Let's build this CTA.
+
+### What did **not** change
+
+- No adapter or repository wiring. UI chrome flows directly from content to components per the 17b-7a..7h pattern.
+- `LAYER_ORDER` (StackDiagram) and `DOMAIN_ORDER` (StackFilters, StackConfigurator) remain in-component arrays — they encode presentational sequence, not copy.
+- No visible or behavioural change. All 70 stack component tests (assertions on "Expert", "What do you need?", "1/3" selection count, 7 domain configurator buttons by testid) pass identically.
+
+### Verification
+
+| Check | Post-17b-7h | Post-17b-7i |
+|---|---|---|
+| `bun run check` | 0 errors, 19 warnings | 0 errors, 19 warnings |
+| `bun run test` full | 83 / 819 pass | 83 / 819 pass |
+| `bun run test src/lib/components/stack/` | 7 / 70 pass | 7 / 70 pass |
+| Preview `/tech-stack` | hero + stats + CTA render | identical (stack viz components not currently routed — "interactive diagram coming soon") |
+
+Preview verification is limited because the stack viz components are not wired into any route yet (Slice 10 shipped the components + tests but the tech-stack page is still a hero/stats landing). Tests are the sole verification path for 17b-7i; all 70 stack tests pass.
+
+### Review focus
+
+- `src/lib/content/tech-stack.ts` lines 1–50 of the new `techStackVizContent` block — confirm the sub-grouping is the right shape. Alternative: split into `techStackPanelContent` / `techStackFilterContent` / etc. similar to projects.ts's listing+detail split. Current single-object approach matches blog.ts's top-of-file single content object.
+- Typed-record patterns (`as const satisfies Record<Proficiency, LocalizedString>`) — compile-time exhaustiveness. If someone later adds `'novice'` to `Proficiency`, the content definition fails to compile until they add the label.
+- `StackConfigurator` + `StackFilters` both declare `DOMAIN_ORDER` — duplication. Consider extracting a shared `const` to `$lib/types` or `$lib/content/tech-stack` if a third component needs the same sequence. Not worth pre-factoring for 2 consumers.
+- `StackPanel` + `StackBottomSheet` share the `panel.*` content block. Two ways to consume from content (StackPanel imports as-needed per string, StackBottomSheet destructures `bottomSheet` prefix). Stylistic difference — confirm preference.
+- Short-form ("Web Dev") vs long-form ("Web Development") domain labels are intentionally both present — different UI densities need different copy. Audit edge case #18 flagged these as duplication; keeping them separate is the correct call for UX.

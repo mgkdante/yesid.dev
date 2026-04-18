@@ -5,7 +5,8 @@
 -->
 <script lang="ts">
 	import type { StackScenario } from '$lib/types';
-	import { getTechItemById } from '$lib/content/tech-stack';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { getTechItemById, techStackVizContent } from '$lib/content/tech-stack';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
@@ -15,6 +16,9 @@
 	}: {
 		scenario: StackScenario;
 	} = $props();
+
+	const provenInLabel = resolveLocale(techStackVizContent.scenario.provenInLabel, 'en');
+	const ctaBuildThis = resolveLocale(techStackVizContent.scenario.ctaBuildThis, 'en');
 
 	// Resolve recommended tech names for the mini flow
 	const recommendedItems = $derived(
@@ -58,7 +62,7 @@
 	<!-- Project links -->
 	{#if scenario.relatedProjects.length > 0}
 		<div class="scenario-projects">
-			<span class="projects-label label-section font-semibold">Proven in</span>
+			<span class="projects-label label-section font-semibold">{provenInLabel}</span>
 			<div class="project-badges">
 				{#each scenario.relatedProjects as slug}
 					<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -70,7 +74,7 @@
 	<!-- CTA -->
 	<div class="mt-4">
 		<Button variant="default" size="cta-sm" href="/contact" data-testid="scenario-cta">
-			Let's build this <span aria-hidden="true">&rarr;</span>
+			{ctaBuildThis} <span aria-hidden="true">&rarr;</span>
 		</Button>
 	</div>
 </Card>

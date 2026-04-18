@@ -564,3 +564,76 @@ If `git status` at session start shows ` M` (unstaged modified) files whose SHAs
 | 17b-10 | Final verification + PR | ⏳ pending | — |
 
 **Model:** Opus 4.7 [1m] | **Context:** ~310k / 1M (~31%) — comfortable, continuing in same session is viable after approval.
+
+---
+
+## Session 2026-04-18 — Task 17b-7i Tech stack viz extraction
+
+**Continuation of same session.** Context ~35% at start.
+
+### What shipped
+
+Biggest extraction sub-task in Task 17b-7. **~50 LocalizedString seeds** (audit undercounted at ~26 because it grouped domain/layer label arrays as single findings — they're many strings each once flattened to individual fields).
+
+**Content addition (tech-stack.ts)**
+- New top-of-file export `techStackVizContent` — all chrome for the Control Room tech-stack visualization. Grouped by consumer:
+  - `orientation` — 5 keys (SELECT A NODE heading + paragraph description + 3 hint lines).
+  - `proficiency` — 3 keys (Expert/Proficient/Familiar), typed as `Record<Proficiency, LocalizedString>` via `as const satisfies`.
+  - `panel` — 6 keys (closeAria, usedInLabel, 4 templates: sendsDataTo / receivesFrom / viewRelation / buildWith).
+  - `bottomSheet` — 4 keys (mobile-specific: titleTemplate, closeAria, prevAria, nextAria).
+  - `diagram` — 2 chrome + 9 layer labels typed `Record<InfraLayer, LocalizedString>`.
+  - `filters` — 3 chrome + 7 domain short-labels typed `Record<DomainCluster, LocalizedString>`.
+  - `configurator` — 3 chrome + 7 long-form domain entries (label + description pairs) typed `Record<DomainCluster, { label; description }>`.
+  - `scenario` — 2 keys (provenInLabel, ctaBuildThis).
+
+**Components wired (7 files)**
+
+- `StackPanelOrientation.svelte` — gained a `<script>` block (was script-less); five `const` bindings render heading, description, three hints.
+- `StackBottomSheet.svelte` — removed inline `proficiencyLabel: Record<Proficiency, string>` map. Wired Close aria, Used in label, Previous/Next technology arias, Technology details title template (with `{name}` replace), Sends data to / Receives from title templates (with `{count}` replace), Let's build with CTA template. `proficiencyLabel` is now a `$derived` keyed off `item.proficiency` into the content record.
+- `StackConfigurator.svelte` — removed inline `DOMAIN_OPTIONS: { id; label; description }[]` array of 7 objects. Added a typed `DOMAIN_ORDER: readonly DomainCluster[]` iteration sequence and two small helpers `labelFor(d)` / `descriptionFor(d)` that index into `configurator.domains`. Selection-count hint wired via `{count}/{max}` template.
+- `StackDiagram.svelte` — removed inline `LAYER_LABELS: Record<InfraLayer, string>` map. `LAYER_ORDER` stays in the component (presentational ordering, not content). Section label + diagram aria-label + per-tier labels all content-driven via a `layerLabelFor(layer)` helper.
+- `StackFilters.svelte` — removed inline `DOMAIN_LABELS: { id; label }[]` array. Added the same `DOMAIN_ORDER` iteration sequence as Configurator. All four strings (section label, All filter label, toolbar aria, 7 pill labels) wired.
+- `StackPanel.svelte` — same treatment as BottomSheet (they share the `panel.*` content block). Six chrome values + proficiency label + buildWith label + three helpers (sendsDataTitle, receivesFromTitle, viewRelationTitle). `viewRelationTemplate` was previously a literal `title="View {rel.itemName}"` — now template-driven.
+- `StackScenarioCard.svelte` — two consts wire the two chrome strings (Proven in label + Let's build this CTA).
+
+### Non-obvious decisions
+
+- **Typed content maps using `as const satisfies Record<Proficiency, LocalizedString>`.** This gives the content a dual guarantee: TypeScript catches missing keys if the union type grows AND narrowing via `content.proficiency[item.proficiency]` stays exhaustive without a fallback branch. Same pattern applied to InfraLayer + DomainCluster.
+- **DOMAIN_ORDER stays in the component, DOMAIN labels move to content.** Order is presentational (controls render sequence); labels are copy. Splitting them by concern lets designers reorder without touching content, and translators touch content without touching order.
+- **Short-form vs long-form domain labels intentionally duplicated.** `filters.domainLabels` (short: "Web Dev") and `configurator.domains[*].label` (long: "Web Development") are different copy choices for different contexts. The audit flagged these as duplication; keeping them separate respects the UI design.
+- **`techStackVizContent` lives at the top of `tech-stack.ts`, not a separate file.** Matches the 17b-7d/7e pattern (projectsListingContent + projectsDetailContent in projects.ts). One file per content domain; UI chrome co-located with data helpers.
+- **`$derived` vs plain function choice.** Values that depend on reactive inputs (item.proficiency, item.name) use `$derived`. Pure-closure helpers over non-reactive templates (`sendsDataTitle(n)`) use plain function declarations — cleaner and identity-stable.
+- **No preview route verification available.** Stack components are not wired into any `+page.svelte` yet (`/tech-stack` route shows "interactive diagram coming soon"). The 7 component-level test files (70 tests) are the sole verification path. All 70 tests pass — assertions include `Expert` proficiency label, `What do you need?` heading, `1/3` selection-count substring, and the data-testid grid for all 7 domain configurator buttons.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `bun run check` | 0 errors, 19 pre-existing warnings (unchanged) |
+| `bun run test` full | 83 files / 819 tests pass (unchanged) |
+| `bun run test src/lib/components/stack/` | 7 files / 70 tests pass (all stack component tests) |
+| Preview `/tech-stack` | hero + stats + CTA render identically (stack components aren't wired into this route; verification via tests) |
+| Console errors | none from the stack components (stale HMR chunk errors from earlier sub-task iterations) |
+
+### Strings extracted (~50)
+
+5 orientation + 3 proficiency + 6 panel + 4 bottomSheet + 11 diagram (2 + 9 layers) + 10 filters (3 + 7 domains) + 17 configurator (3 + 14 label/description) + 2 scenario = **58 LocalizedString seeds**. Audit said ~26 — difference is that the audit counted each DOMAIN_LABELS/DOMAIN_OPTIONS/LAYER_LABELS structure as one finding, but each field becomes an individual LocalizedString seed once extracted.
+
+### Progress table
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 17b-1..6 | Restructure → audit → LocalizedString | ✅ approved | earlier |
+| 17b-7a..7e | Home / Blog / Projects extractions | ✅ approved | fc6fb06..9ed81ad |
+| 17b-7f | Services extraction | ✅ re-landed clean | f8a6683 |
+| 17b-7g | About extraction | ✅ approved | 843b3cc |
+| 17b-7h | Contact extraction | ✅ approved | 68a99ef |
+| **17b-7i** | **Tech stack viz extraction** | **🟡 awaiting approval** | pending |
+| 17b-7j | Layout + shared extraction | ⏳ pending | — |
+| 17b-7k | Page meta tags extraction | ⏳ pending | — |
+| 17b-7l | Tech-stack page extraction | ⏳ pending | — |
+| 17b-8 | Integrity test enhancements | ⏳ pending | — |
+| 17b-9 | Governance doc updates | ⏳ pending | — |
+| 17b-10 | Final verification + PR | ⏳ pending | — |
+
+**Model:** Opus 4.7 [1m] | **Context:** ~385k / 1M (~38%) — comfortable, within healthy zone; one or two more tasks viable before pre-break.

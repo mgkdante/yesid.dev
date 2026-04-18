@@ -5,9 +5,16 @@
   Swipe-to-dismiss, focus trap, ESC close via vaul-svelte Drawer.
 -->
 <script lang="ts">
-	import type { TechStackItem, TechRelation, Proficiency } from '$lib/types';
+	import type { TechStackItem, TechRelation } from '$lib/types';
 	import { Marked } from 'marked';
-	import { getTechItemContent, getOutgoingRelations, getIncomingRelations, getTechItemById } from '$lib/content/tech-stack';
+	import { resolveLocale } from '$lib/utils/locale';
+	import {
+		getTechItemContent,
+		getOutgoingRelations,
+		getIncomingRelations,
+		getTechItemById,
+		techStackVizContent,
+	} from '$lib/content/tech-stack';
 	import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Drawer, DrawerContent, DrawerTitle, DrawerClose } from '$lib/components/ui/drawer';
@@ -26,11 +33,27 @@
 
 	const md = new Marked();
 
-	const proficiencyLabel: Record<Proficiency, string> = {
-		expert: 'Expert',
-		proficient: 'Proficient',
-		familiar: 'Familiar',
-	};
+	const closeAria = resolveLocale(techStackVizContent.bottomSheet.closeAria, 'en');
+	const prevAria = resolveLocale(techStackVizContent.bottomSheet.prevAria, 'en');
+	const nextAria = resolveLocale(techStackVizContent.bottomSheet.nextAria, 'en');
+	const usedInLabel = resolveLocale(techStackVizContent.panel.usedInLabel, 'en');
+	const titleTemplate = resolveLocale(techStackVizContent.bottomSheet.titleTemplate, 'en');
+	const sendsTemplate = resolveLocale(techStackVizContent.panel.sendsDataToTemplate, 'en');
+	const receivesTemplate = resolveLocale(techStackVizContent.panel.receivesFromTemplate, 'en');
+	const buildWithTemplate = resolveLocale(techStackVizContent.panel.buildWithTemplate, 'en');
+
+	const proficiencyLabel = $derived(
+		resolveLocale(techStackVizContent.proficiency[item.proficiency], 'en')
+	);
+	const sheetTitle = $derived(titleTemplate.replace('{name}', item.name));
+	const buildWithLabel = $derived(buildWithTemplate.replace('{name}', item.name));
+
+	function sendsDataTitle(n: number): string {
+		return sendsTemplate.replace('{count}', String(n));
+	}
+	function receivesFromTitle(n: number): string {
+		return receivesTemplate.replace('{count}', String(n));
+	}
 
 	const content = $derived(getTechItemContent(item.id));
 	const renderedContent = $derived(md.parse(content) as string);
@@ -60,7 +83,7 @@
 
 <Drawer open={true} onOpenChange={(v) => { if (!v) onclose(); }}>
 	<DrawerContent class="max-h-[85dvh] gap-4 px-5 pb-[env(safe-area-inset-bottom,0px)]" data-testid="stack-bottomsheet">
-		<DrawerTitle class="sr-only">Technology details — {item.name}</DrawerTitle>
+		<DrawerTitle class="sr-only">{sheetTitle}</DrawerTitle>
 
 		<!-- Header -->
 		<div class="sheet-header">
@@ -71,13 +94,13 @@
 				<div>
 					<h3 class="sheet-name">{item.name}</h3>
 					<span class="proficiency-badge" data-proficiency={item.proficiency}>
-						{proficiencyLabel[item.proficiency]}
+						{proficiencyLabel}
 					</span>
 				</div>
 			</div>
 			<DrawerClose>
 				{#snippet child({ props })}
-					<button {...props} class="close-btn" aria-label="Close" data-testid="bottomsheet-close">
+					<button {...props} class="close-btn" aria-label={closeAria} data-testid="bottomsheet-close">
 						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
 							<path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
 						</svg>
@@ -94,7 +117,7 @@
 		<!-- Project badges -->
 		{#if item.relatedProjects.length > 0}
 			<div class="sheet-projects">
-				<span class="projects-label label-section font-semibold">Used in</span>
+				<span class="projects-label label-section font-semibold">{usedInLabel}</span>
 				<div class="project-badges">
 					{#each item.relatedProjects as slug}
 						<span class="project-badge">{formatProjectSlug(slug)}</span>
@@ -106,7 +129,7 @@
 		<!-- Relations (collapsible) -->
 		{#if outgoing.length > 0}
 			<div class="sheet-relations" data-testid="relations-outgoing">
-				<CollapsibleSection title="Sends data to ({outgoing.length})" open={false}>
+				<CollapsibleSection title={sendsDataTitle(outgoing.length)} open={false}>
 					<ul class="relations-list">
 						{#each outgoing as rel}
 							<li class="relation-item">
@@ -123,7 +146,7 @@
 
 		{#if incoming.length > 0}
 			<div class="sheet-relations" data-testid="relations-incoming">
-				<CollapsibleSection title="Receives from ({incoming.length})" open={false}>
+				<CollapsibleSection title={receivesFromTitle(incoming.length)} open={false}>
 					<ul class="relations-list">
 						{#each incoming as rel}
 							<li class="relation-item">
@@ -144,7 +167,7 @@
 				class="nav-btn"
 				disabled={!prevItem}
 				onclick={() => prevItem && navigateTo(prevItem)}
-				aria-label="Previous technology"
+				aria-label={prevAria}
 			>
 				← {prevItem?.name ?? ''}
 			</button>
@@ -152,7 +175,7 @@
 				class="nav-btn"
 				disabled={!nextItem}
 				onclick={() => nextItem && navigateTo(nextItem)}
-				aria-label="Next technology"
+				aria-label={nextAria}
 			>
 				{nextItem?.name ?? ''} →
 			</button>
@@ -161,7 +184,7 @@
 		<!-- CTA -->
 		<div class="sheet-cta-wrapper">
 			<Button variant="default" size="cta-sm" href="/contact">
-				Let's build with {item.name} <span aria-hidden="true">→</span>
+				{buildWithLabel} <span aria-hidden="true">→</span>
 			</Button>
 		</div>
 	</DrawerContent>
