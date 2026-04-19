@@ -184,7 +184,12 @@ Task 17k-9 turns the registry from documentation into an executable workflow art
 - Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
 
 **What landed:**
-Task 17k-10 proves the portable stack loop end-to-end for a real cross-tool artifact. The installer now injects or updates `version:` in installed `SKILL.md` frontmatter from the registry, the test seeded both tool installs at `1.0.0`, then bumped the registry to `1.0.1` and verified that both `~/.claude/skills/workflow-efficiency/SKILL.md` and `~/.codex/skills/workflow-efficiency/SKILL.md` converged to `version: 1.0.1` without mutating the cloud source skill bundle itself.
+Task 17k-10 proves that registry-owned skill-version metadata propagates to both tool install targets. The installer injects or updates `version:` in installed `SKILL.md` frontmatter from the registry; the test seeded both tool installs at `1.0.0`, bumped the registry to `1.0.1`, and verified that both `~/.claude/skills/workflow-efficiency/SKILL.md` and `~/.codex/skills/workflow-efficiency/SKILL.md` converged to `version: 1.0.1` without mutating the cloud source skill bundle.
+
+**Scope of the verification (what this test does NOT prove):**
+- Covers **skills only**. MCP, plugin, and agent round-trip behavior has **not** been bumped-and-observed end-to-end across tools. `install.ts --tool both --apply` was exercised for those categories in Task 17k-9 (a safe no-op because all plugins were already enabled and both tools' MCP/skill state matched the registry), but no registry-driven value has been changed and propagated to both tools for MCPs or plugins.
+- The `version` field used as the propagation probe was added to the schema in this same task (per D020) specifically to give the test a propagating value — the field did not exist before. The test validates that the newly added injection code path works, not a pre-existing invariant.
+- The general "change registry once, apply to both tools" contract is **unproven outside the skill category**.
 
 **Decisions:**
 - D020: Skill round-trip verification should operate on registry-owned metadata that can be projected into both tool installs without changing the cloud-authored skill content.
