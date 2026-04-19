@@ -144,6 +144,37 @@ Task 17k-7 turns the earlier research into an actionable cleanup memo without ex
 **Verified by:** _(pending — will be Codex)_
 **Status:** _(pending)_
 
+### Task 17k-9 — Install script
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Created: `<cloud>/workflow-knowledge/stack/install.ts` — Bun-based registry applier for MCPs, skills, plugins, and agents
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc` — normalized the Playwright MCP command to `bunx`
+- Modified: `<cloud>/workflow-knowledge/stack/prune-recommendations.md` — corrected the verified Claude marketplace command example
+- Modified: `docs/slices/slice-17/slice-17k/spec.md` — logged the Bun-first / shared-import handling amendment
+- Modified: `docs/slices/slice-17/slice-17k/plan.md` — logged the same amendment and corrected the verified Claude plugin CLI wording
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3b implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-9 turns the registry from documentation into an executable workflow artifact. The new `install.ts` can read the JSONC registry, filter by tool/category, show a diff-style dry-run without touching shell or disk, apply real Codex MCP/skill changes, and reconcile Claude skill/plugin state without reinstalling entries that are already enabled. It also proves the Bun-only rule in practice: the installer normalizes package-executor commands to `bun` / `bunx` instead of carrying forward `npm` / `npx`.
+
+**Decisions:**
+- D017: Normalize package executors to Bun-first during apply (`npx` → `bunx`, `npm` → `bun`).
+- D018: Manage `~/.codex/skills/` as the Codex install target, but do not auto-manage `~/.agents/skills/` because the shared import bridge can contain a deliberately divergent copy.
+- D019: Use the verified `claude plugin marketplace add` + `claude plugin install` command surface and skip already-enabled plugin entries cleanly.
+
+**Tests:** PASS — dual-tool dry-run, real Codex apply (`~/.codex/config.toml` + `~/.codex/skills/workflow-efficiency`), clean follow-up dry-run, safe Claude no-op apply, malformed-registry exit-1 check, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
+
+### Task 17k-10 — Round-trip registry test
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** _(pending)_
+**Status:** _(pending)_
+
 ---
 
 ## Summary (fill at PR)

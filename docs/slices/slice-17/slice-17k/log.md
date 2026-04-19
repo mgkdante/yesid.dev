@@ -283,6 +283,76 @@ Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current ag
 
 ---
 
+### Session 2026-04-18 20:54 — Task 17k-9
+
+**Tool:** Codex (gpt-5.4, reasoning=xhigh)
+**Session type:** Implementation
+**Picking up from:** Task 17k-7 (Codex / gpt-5.4, commit 6c9b34e)
+
+**Goal:** Implement the portable stack installer at `<cloud>/workflow-knowledge/stack/install.ts` and validate dry-run/apply behavior against the live Claude + Codex configs.
+
+**Commands run:**
+```bash
+bun <cloud>/workflow-knowledge/stack/install.ts --tool both --dry-run --verbose
+bun <cloud>/workflow-knowledge/stack/install.ts --tool codex --apply --only mcps,skills --verbose
+bun <cloud>/workflow-knowledge/stack/install.ts --tool codex --dry-run --only mcps,skills --verbose
+bun <cloud>/workflow-knowledge/stack/install.ts --tool claude-code --apply --only skills,plugins --verbose
+bun <cloud>/workflow-knowledge/stack/install.ts --registry <temp-invalid-file> --tool both --dry-run
+bun run test
+bun run check
+```
+
+**Files touched:**
+- Created: `<cloud>/workflow-knowledge/stack/install.ts`
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc`
+- Modified: `<cloud>/workflow-knowledge/stack/prune-recommendations.md`
+- Modified: `docs/slices/slice-17/slice-17k/spec.md`
+- Modified: `docs/slices/slice-17/slice-17k/plan.md`
+- Modified: `docs/slices/slice-17/slice-17k/log.md`
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md`
+
+**Decisions:**
+- D017: Normalize package executors to Bun-first when applying registry entries: `npx` becomes `bunx`, and `npm` becomes `bun`.
+- D018: Treat `~/.codex/skills/` as the installer-managed Codex target; keep `~/.agents/skills/` observational-only because the shared import layer can legitimately diverge from the canonical cloud copy.
+- D019: Use the verified local Claude CLI surface (`claude plugin marketplace add` + `claude plugin install`) and skip already-enabled plugin entries cleanly.
+
+**Errors encountered:**
+- Problem: the planning notes still assumed a flatter Claude marketplace command shape and older Codex-plugin assumptions
+  Cause: those details were captured before local CLI verification and before the Bun-only clarification
+  Fix: verified the live `claude plugin ...` help output, corrected the prune command example, and logged spec/plan amendments for Bun-first normalization and Codex shared-import handling
+  Resolved: yes
+- Problem: the first dry-run surfaced that auto-managing `~/.agents/skills/workflow-efficiency` would overwrite a divergent imported Codex-side variant
+  Cause: the shared import layer currently contains a Codex-adapted copy rather than the canonical cloud mirror
+  Fix: narrowed install.ts to manage `~/.codex/skills/` only and treat `~/.agents/skills/` as informational context
+  Resolved: yes
+- Problem: `bun run test` again emitted pre-existing happy-dom teardown noise and repeated `ECONNREFUSED :3000` output after the passing summary
+  Cause: existing test harness behavior unrelated to this installer task
+  Fix: kept the run because Vitest exited `0`; recorded the noise here
+  Resolved: yes
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool both --dry-run --verbose` | PASS — readable diff preview for Codex MCP normalization + Codex skill install target; Claude plugin entries cleanly reported as already enabled |
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool codex --apply --only mcps,skills --verbose` | PASS — wrote `~/.codex/config.toml` and created `~/.codex/skills/workflow-efficiency/` |
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool codex --dry-run --only mcps,skills --verbose` | PASS — second dry-run came back clean/no-op after apply |
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool claude-code --apply --only skills,plugins --verbose` | PASS — safe no-op; Claude skill already synced and all registry plugins were already enabled |
+| `bun <cloud>/workflow-knowledge/stack/install.ts --registry <temp-invalid-file> --tool both --dry-run` | PASS — exited `1` with a clear JSONC parse error for malformed registry input |
+| `bun run test` | PASS — 83 files / 822 tests passed; pre-existing teardown noise persisted |
+| `bun run check` | PASS — 0 errors / 19 warnings in 12 pre-existing files |
+
+**Outcome:** Built the first working registry applier at `<cloud>/workflow-knowledge/stack/install.ts` with Bun-only command normalization, custom JSONC parsing, a minimal TOML writer, per-tool/per-category filtering, diff-style dry-run output, and real apply mode for Codex MCPs/skills plus Claude skills/plugins. The task also normalized the Playwright MCP source command in `registry.jsonc` from `npx` to `bunx`, corrected the prune document's Claude marketplace command example, and recorded the important portability boundary that the shared import layer under `~/.agents/skills/` is not auto-managed by the installer.
+
+**Blockers / questions:** none
+
+**Budget row:**
+
+```
+Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current agent tool surface did not expose `/status`
+```
+
+---
+
 ### Session 2026-04-18 20:14 — Task 17k-4
 
 **Tool:** Codex (gpt-5.4, reasoning=xhigh)

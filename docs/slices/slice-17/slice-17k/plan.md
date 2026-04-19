@@ -434,7 +434,7 @@ Command pattern: `claude plugins remove <name>`
     - Claude Code: edit `~/.claude.json` `mcpServers` section OR `~/.claude/settings.json` `enabledMcpjsonServers` array.
     - Codex: edit `~/.codex/config.toml` `[mcp_servers.<name>]` section (use a minimal TOML writer since Bun has no native TOML module — single-dep like `smol-toml`).
   - **Skills:** copy from `source.path` (or fetch from `source.type == git|npm`) to `~/.claude/skills/<name>/` or `~/.codex/skills/<name>/`.
-  - **Plugins:** Claude-only. Run `claude plugin marketplace add <repo>` (idempotent) + `claude plugin install <name>@<marketplace>` via `execSync`. Codex has no plugin concept; skip.
+  - **Plugins:** Claude installs use the verified local CLI commands `claude plugin marketplace add <repo>` (idempotent) + `claude plugin install <name>@<marketplace>`. Current registry still has no concrete Codex plugin packages pinned, so Codex plugin entries should be surfaced as unsupported/skipped until a verified install path exists.
   - **Agents:** Claude-only (`~/.claude/agents/<name>.md`). Codex has none.
 - Dry-run prints a diff-style preview (which files would change, which commands would run) — no writes, no shell.
 - `--apply` commits the changes. Prints a summary of what was applied.
@@ -508,3 +508,4 @@ Per `AGENTS.md § Slice Closing`:
 | 2026-04-18 | Inventory-doc tasks (17k-4, 17k-5) scope shifts to registry schema + populate | Machine-readable registry supersedes markdown inventory docs — same data, executable |
 | 2026-04-18 | Pre-Session-2 bootstrap section added | User asked for AGENTS.md + overlays + generic-term pass + rename done in-line rather than deferred to Session 2; 17k-1 and 17k-2 effectively complete pre-Session-2 |
 | 2026-04-18 | Expanded Task 17k-3 to populate `docs/reference/tools/codex.md` with verified Codex role bindings and capability notes | User requested a Codex self-research pass mid-session so the overlay documents native counterparts and explicit gaps instead of leaving `TBD` stubs |
+| 2026-04-18 | Task 17k-9 implementation normalizes package executors to Bun-first (`npx` → `bunx`, `npm` → `bun`) and treats `~/.agents/skills/` as observational rather than installer-managed | User requested Bun-only execution, and dry-run showed the shared import layer can contain a divergent Codex-side skill variant that should not be overwritten automatically |
