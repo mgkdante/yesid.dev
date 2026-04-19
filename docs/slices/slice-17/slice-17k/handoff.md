@@ -51,13 +51,29 @@ Task 17k-3 now covers both halves of the portability contract: repo-level attrib
 
 **Tests:** PASS — `bun run test` (83 files / 822 tests) and `bun run check` (0 errors / 19 pre-existing warnings)
 
-### Task 17k-4 — Claude inventory document
+### Task 17k-4 — Registry schema
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
-**Implemented by:** _(pending)_
-**Status:** _(pending)_
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
 
-### Task 17k-5 — Codex inventory document
+**Files:**
+- Created: `<cloud>/workflow-knowledge/stack/registry.jsonc` — first machine-readable schema for cross-tool stack items
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3 implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-4 creates the actual machine-readable foundation that later tasks will populate and apply. The registry is intentionally scoped to installable, cross-tool artifacts only: MCPs, skills, plugins, and agents. Each category now has a canonical commented example, a shared `install_in` contract, a tool-neutral `source` block, and a per-tool `tools` map for the native differences that matter at install time.
+
+**Decisions:**
+- D004: The registry should stay narrow and executable, not turn into a dumping ground for every agent capability.
+- D005: Hooks, rules, and memories are explicitly deferred because they do not yet have a clean portable install story across Claude Code and Codex.
+- D006: Agents are modeled as per-tool native files because Codex and Claude do not share one file format.
+- D007: Skill sources should point at cloud-managed paths so the registry remains the source of truth.
+
+**Tests:** PASS — TypeScript JSONC parse validation, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
+
+### Task 17k-5 — Populate registry
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
 **Implemented by:** _(pending)_

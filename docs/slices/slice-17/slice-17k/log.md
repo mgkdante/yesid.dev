@@ -110,3 +110,58 @@ bun run check
 ```
 Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current agent tool surface did not expose `/status`
 ```
+
+---
+
+### Session 2026-04-18 20:14 — Task 17k-4
+
+**Tool:** Codex (gpt-5.4, reasoning=xhigh)
+**Session type:** Implementation
+**Picking up from:** Task 17k-3 (Codex / gpt-5.4, commit 777d70f)
+
+**Goal:** Design the machine-readable stack registry schema at `<cloud>/workflow-knowledge/stack/registry.jsonc`.
+
+**Commands run:**
+```bash
+bun -e "<TypeScript JSONC parse validation>"
+bun run test
+bun run check
+```
+
+**Files touched:**
+- Created: `<cloud>/workflow-knowledge/stack/registry.jsonc`
+- Modified: `docs/slices/slice-17/slice-17k/log.md`
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md`
+
+**Decisions:**
+- D004: The registry covers only installable cross-tool artifacts: MCPs, skills, plugins, and agents.
+- D005: Hooks, rules, and memories stay out of `registry.jsonc` for now and are explicitly marked as deferred categories instead of being forced into a fake portable schema.
+- D006: Agent entries are modeled as per-tool native artifacts because Claude and Codex use different on-disk formats.
+- D007: Skill entries use path-relative sources so the cloud registry can act as the portable source of truth instead of pointing back to a home-directory snapshot.
+
+**Errors encountered:**
+- Problem: the first JSONC-parse wrapper used invalid PowerShell inline `if (...)` syntax
+  Cause: I wrote Bash-style inline conditional syntax inside a PowerShell expression
+  Fix: reran the validation with a proper PowerShell variable assignment and TypeScript's JSONC parser
+  Resolved: yes
+- Problem: `bun run test` again emitted pre-existing local-server `ECONNREFUSED :3000` noise after the green summary
+  Cause: existing test teardown behavior unrelated to this registry-schema task
+  Fix: kept the run because Vitest still exited `0`; recorded the noise here
+  Resolved: yes
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun -e "<TypeScript JSONC parse validation>"` | PASS — `registry.jsonc` parsed successfully as JSONC |
+| `bun run test` | PASS — 83 files / 822 tests passed; pre-existing teardown noise persisted |
+| `bun run check` | PASS — 0 errors / 19 warnings in 12 pre-existing files |
+
+**Outcome:** Created the first version of `<cloud>/workflow-knowledge/stack/registry.jsonc` with a deliberately narrow schema: top-level metadata plus `mcps`, `skills`, `plugins`, and `agents` arrays, each documented with a canonical commented example. The schema now distinguishes bundle-layer plugins from skills and MCPs, supports per-tool overrides through a `tools` map, allows version/ref pinning where useful, and records deferred categories (`hooks`, `rules`, `memories`) instead of pretending they already have a portable install story.
+
+**Blockers / questions:** none
+
+**Budget row:**
+
+```
+Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current agent tool surface did not expose `/status`
+```
