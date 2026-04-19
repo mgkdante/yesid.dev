@@ -507,3 +507,4 @@ Per `AGENTS.md § Slice Closing`:
 | 2026-04-18 | Added Task 17k-9 (install.ts) + Task 17k-10 (round-trip test) | User asked for the registry script so "update superpowers once applies to both"; 17k scope grew from 8 to 10 tasks; session sequencing gains Session 3b |
 | 2026-04-18 | Inventory-doc tasks (17k-4, 17k-5) scope shifts to registry schema + populate | Machine-readable registry supersedes markdown inventory docs — same data, executable |
 | 2026-04-18 | Pre-Session-2 bootstrap section added | User asked for AGENTS.md + overlays + generic-term pass + rename done in-line rather than deferred to Session 2; 17k-1 and 17k-2 effectively complete pre-Session-2 |
+| 2026-04-18 | Expanded Task 17k-3 to populate `docs/reference/tools/codex.md` with verified Codex role bindings and capability notes | User requested a Codex self-research pass mid-session so the overlay documents native counterparts and explicit gaps instead of leaving `TBD` stubs |

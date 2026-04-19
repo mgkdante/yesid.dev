@@ -248,6 +248,19 @@ The AI tool should surface this; Yesid doesn't need to ask.
 
 **Model downgrade across sessions:** L-slice Planning → Implementation hop starts fresh — step down to a smaller-window or lighter-reasoning model if the working set fits. Re-read `spec.md` + `plan.md` + `CHECKPOINT.md`, skip everything else. Planning Q&A doesn't get re-hydrated.
 
+## Session header format
+
+Every `log.md` session entry uses this header shape so another LLM tool can resume the work without guessing lineage:
+
+```markdown
+### Session [YYYY-MM-DD HH:MM] — Task NN<letter>-N
+**Tool:** <Tool name> (<model>, reasoning=<effort>)
+**Session type:** <Planning | Implementation | Closing | Non-slice>
+**Picking up from:** <prior session / commit lineage>
+
+[session body]
+```
+
 ## Iteration Protocol (per Level 3 task)
 
 **You are done when Yesid says you are done.** Tests passing is necessary but not sufficient.
@@ -255,7 +268,7 @@ The AI tool should surface this; Yesid doesn't need to ask.
 1. Implement ONE task from the plan.
 2. Run `bun run test` + `bun run check`. Both must pass.
 3. **Pre-flight visual check (UI tasks only):** state expected layout at 1440px + 375px; flag overflow/missing content; fix obvious issues before STOP.
-4. **STOP.** Tell Yesid: what you built (one sentence), what to check at `http://localhost:5173/` (specific behaviors), any decisions made. Include the budget row.
+4. **STOP.** Tell Yesid: what you built (one sentence), what to check at `http://localhost:5173/` (specific behaviors), any decisions made. Include the budget row. The session header in `log.md` and the per-task section in `handoff.md` MUST include explicit tool attribution (`**Tool:**`, `**Planned by:**`, `**Implemented by:**`) per the Session header format section.
 5. Append to `log.md` (running record) AND `handoff.md` (reviewer-facing summary).
 6. Wait for Yesid's response. No more code until he replies.
 7. Issues → fix, retest, STOP again.

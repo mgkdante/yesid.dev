@@ -51,3 +51,62 @@ Model: Opus 4.7 [1m] | Context: ~400k / 1M (~40%) — comfortable, continuing
 ```
 
 **Next session:** Implementation (Session 2) — Tasks 17k-1, 17k-2, 17k-3. Faster/cheaper model role. Start with `git status` to verify branch prep landed cleanly.
+
+---
+
+### Session 2026-04-18 19:55 — Task 17k-3
+
+**Tool:** Codex (gpt-5.4, reasoning=xhigh)
+**Session type:** Implementation
+**Picking up from:** Planning 2026-04-18 (Claude Code / Opus 4.7 [1m], commit 281dfe4) + bootstrap (Claude Code / Opus 4.7 [1m], commit bc10f13)
+
+**Goal:** Land the tool-attribution convention and replace the Codex overlay stub with verified native counterparts and explicit gaps.
+
+**Commands run:**
+```bash
+git status --short --branch
+git show bc10f13 --format=%B --no-patch
+bun run test
+bun run check
+```
+
+**Files touched:**
+- Modified: `AGENTS.md`
+- Modified: `docs/reference/tools/codex.md`
+- Modified: `docs/slices/_TEMPLATE-SUBSLICE/log.md`
+- Modified: `docs/slices/_TEMPLATE-SUBSLICE/handoff.md`
+- Modified: `docs/slices/slice-17/slice-17k/spec.md`
+- Modified: `docs/slices/slice-17/slice-17k/plan.md`
+- Modified: `docs/slices/slice-17/slice-17k/log.md`
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md`
+
+**Decisions:**
+- D001: Treat Codex plugins as the installable bundle/distribution layer, not as a synonym for MCPs or skills.
+- D002: Document verified Codex gaps explicitly instead of leaving `TBD` rows in the overlay (for example: no separately verified Codex-local XL binding yet; app-local `/model` is not currently documented).
+- D003: Include the Codex app's external-config import bridge in the portability story because it can reuse Claude skills and enabled-plugin state.
+
+**Errors encountered:**
+- Problem: Bundled `rg.exe` could not start from the Windows Codex app package (`Access is denied`)
+  Cause: the packaged binary was not executable from this environment
+  Fix: switched to native PowerShell search (`Select-String`, `Get-Content`)
+  Resolved: yes
+- Problem: `bun run test` emitted happy-dom `AbortError` teardown noise and unrelated local-server connection refusals after reporting a green run
+  Cause: pre-existing test teardown behavior outside this docs-only task
+  Fix: kept the run, because Vitest exited `0` with 83/83 files and 822/822 tests passing; recorded the noise here instead of hiding it
+  Resolved: yes
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test` | PASS — 83 files / 822 tests passed; pre-existing Svelte warnings + happy-dom teardown noise did not fail the run |
+| `bun run check` | PASS — 0 errors / 19 warnings in 12 pre-existing files |
+
+**Outcome:** Added the mandatory `Session header format` section and STOP-time attribution rule to `AGENTS.md`, updated the reusable sub-slice templates with `Tool` / `Session type` / `Picking up from` and `Planned by` / `Implemented by` placeholders, and replaced the Codex overlay stub with verified role bindings, capability notes, and explicit gaps. The session also logged plan/spec amendments because Codex parity is stronger than the planning session assumed: native plugins, file-based custom agents, hooks, memories, web search, Fast mode, and an external-config import bridge are now documented.
+
+**Blockers / questions:** none
+
+**Budget row:**
+
+```
+Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current agent tool surface did not expose `/status`
+```

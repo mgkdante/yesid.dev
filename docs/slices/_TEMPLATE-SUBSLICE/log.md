@@ -15,7 +15,11 @@
 
 ---
 
-### Session YYYY-MM-DD — Task NN<letter>-N: <Name>
+### Session YYYY-MM-DD HH:MM — Task NN<letter>-N
+
+**Tool:** <Tool name> (<model>, reasoning=<effort>)
+**Session type:** <Planning | Implementation | Closing | Non-slice>
+**Picking up from:** <prior session / commit lineage>
 
 **Goal:** [what this session aims to land]
 
@@ -50,7 +54,7 @@ bun run check
 
 ---
 
-### Session YYYY-MM-DD — Task NN<letter>-N: <Name>
+### Session YYYY-MM-DD HH:MM — Task NN<letter>-N
 
 [Same structure. Append as each session runs.]
 
