@@ -225,6 +225,64 @@ Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current ag
 
 ---
 
+### Session 2026-04-18 20:40 — Task 17k-7
+
+**Tool:** Codex (gpt-5.4, reasoning=xhigh)
+**Session type:** Implementation
+**Picking up from:** Task 17k-6 (Codex / gpt-5.4, commit debe17b)
+
+**Goal:** Write the Claude-side prune recommendations document from live config, plugin, rules, and skill inventories.
+
+**Commands run:**
+```bash
+Get-Content ~/.claude/settings.json
+Get-Content ~/.claude.json
+Get-ChildItem ~/.claude/rules/
+Get-ChildItem ~/.claude/plugins/cache/
+Get-ChildItem ~/.claude/skills/
+bun run test
+bun run check
+```
+
+**Files touched:**
+- Created: `<cloud>/workflow-knowledge/stack/prune-recommendations.md`
+- Modified: `docs/slices/slice-17/slice-17k/log.md`
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md`
+
+**Decisions:**
+- D014: Update the prune document to reflect current live state, not the stale planning hypothesis; the old "duplicate Chrome DevTools MCP" quick win is now a marketplace-metadata cleanup, not a root `mcpServers` dedupe.
+- D015: Keep `everything-claude-code` out of the prune list for now because current Claude hooks still contain fallback root-resolution logic into that plugin cache.
+- D016: Keep the recommendations Bun-first and recommend-only; no `npm` / `npx` commands were introduced in this task's cleanup guidance.
+
+**Errors encountered:**
+- Problem: `$env:YESITO_CLOUD_ROOT` was not set in this shell session
+  Cause: this Codex app shell did not inherit the expected cloud-root environment variable
+  Fix: switched to the known absolute cloud path for the artifact write
+  Resolved: yes
+- Problem: `bun run test` again emitted pre-existing happy-dom teardown noise and repeated `ECONNREFUSED :3000` output after the passing summary
+  Cause: existing test harness behavior unrelated to this recommendation-only task
+  Fix: kept the run because Vitest exited `0`; recorded the noise here
+  Resolved: yes
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `Test-Path <cloud>/workflow-knowledge/stack/prune-recommendations.md` | PASS — file exists and was spot-checked after creation |
+| `bun run test` | PASS — 83 files / 822 tests passed; pre-existing teardown noise persisted |
+| `bun run check` | PASS — 0 errors / 19 warnings in 12 pre-existing files |
+
+**Outcome:** Wrote a concrete Claude-side cleanup memo at `<cloud>/workflow-knowledge/stack/prune-recommendations.md` using current on-disk state instead of only planning notes. The document now separates safe-ish quick wins from items that still need caution, including an explicit warning not to prune `everything-claude-code` cache assets yet because current hook fallback logic still points there.
+
+**Blockers / questions:** none
+
+**Budget row:**
+
+```
+Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current agent tool surface did not expose `/status`
+```
+
+---
+
 ### Session 2026-04-18 20:14 — Task 17k-4
 
 **Tool:** Codex (gpt-5.4, reasoning=xhigh)

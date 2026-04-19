@@ -120,8 +120,23 @@ Task 17k-6 gives the registry's lone skill entry a real portable source tree. Th
 ### Task 17k-7 — Prune-recommendations document
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
-**Implemented by:** _(pending)_
-**Status:** _(pending)_
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Created: `<cloud>/workflow-knowledge/stack/prune-recommendations.md` — Claude-side cleanup memo with quick wins, disabled-plugin review list, and do-not-prune guardrails
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3 implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-7 turns the earlier research into an actionable cleanup memo without executing any cleanup. The new document is grounded in current disk state and captures four concrete quick wins, a 17-entry disabled-plugin review table, the current 117-skill sprawl note, and explicit "do not prune yet" guardrails for the assets that are still referenced indirectly by Claude hooks.
+
+**Decisions:**
+- D014: The earlier duplicate-Chrome-DevTools-MCP hypothesis was downgraded to a marketplace-metadata cleanup because the root `~/.claude.json` `mcpServers` entry is no longer present.
+- D015: `everything-claude-code` cache assets stay off the prune list until the hook fallback logic is migrated away from them.
+- D016: The recommendations stay Bun-first and recommend-only; this task introduced no `npm` / `npx` commands.
+
+**Tests:** PASS — file existence spot-check, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
 
 ### Task 17k-8 — Cross-tool verification (Codex)
 
