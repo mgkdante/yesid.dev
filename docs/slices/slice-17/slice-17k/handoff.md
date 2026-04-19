@@ -76,8 +76,24 @@ Task 17k-4 creates the actual machine-readable foundation that later tasks will 
 ### Task 17k-5 — Populate registry
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
-**Implemented by:** _(pending)_
-**Status:** _(pending)_
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc` — populated with concrete MCP, skill, and plugin entries from the live Claude/Codex inventories
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3 implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-5 turns the registry schema into a usable source of truth. The file now contains the current 8-entry Codex MCP set, the workflow-owned cross-tool `workflow-efficiency` skill, and the full currently enabled Claude plugin bundle set. The registry is explicit that Codex does have plugin support, but it does not pretend we already know the correct Codex marketplace/package IDs for those plugins when this machine has not actually installed and verified them yet.
+
+**Decisions:**
+- D008: The registry should capture reproducible install targets, not become a raw machine dump.
+- D009: Concrete standalone MCP entries currently come from Codex config; Claude-side comparable capabilities are represented through plugin bundles when that is how they are actually installed today.
+- D010: Codex plugin support is documented, but no unverified Codex plugin package IDs are pinned yet.
+- D011: `workflow-efficiency` is the only skill entry in scope for this slice's managed registry.
+
+**Tests:** PASS — TypeScript JSONC parse validation, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
 
 ### Task 17k-6 — Copy user-authored skill
 

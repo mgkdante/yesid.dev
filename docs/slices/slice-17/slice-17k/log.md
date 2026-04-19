@@ -113,6 +113,61 @@ Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current ag
 
 ---
 
+### Session 2026-04-18 20:22 — Task 17k-5
+
+**Tool:** Codex (gpt-5.4, reasoning=xhigh)
+**Session type:** Implementation
+**Picking up from:** Task 17k-4 (Codex / gpt-5.4, commit cf477fd)
+
+**Goal:** Populate `registry.jsonc` with real entries from the current Claude and Codex inventories.
+
+**Commands run:**
+```bash
+bun -e "<TypeScript JSONC parse validation>"
+bun run test
+bun run check
+```
+
+**Files touched:**
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc`
+- Modified: `docs/slices/slice-17/slice-17k/log.md`
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md`
+
+**Decisions:**
+- D008: Populate only installable source-of-truth items, not every raw local inventory artifact.
+- D009: Keep standalone MCP entries focused on concrete Codex `config.toml` servers; represent Claude's comparable capability through plugin entries when that is how the current stack is actually installed.
+- D010: Pin the enabled Claude plugin set in the registry, but do not invent Codex plugin package IDs that are not yet installed or verified locally.
+- D011: Keep `workflow-efficiency` as the only skill entry for now because it is the workflow-owned portable skill this slice explicitly mirrors.
+
+**Errors encountered:**
+- Problem: none in the registry content itself
+  Cause: n/a
+  Fix: n/a
+  Resolved: yes
+- Problem: `bun run test` again emitted pre-existing `ECONNREFUSED :3000` and happy-dom teardown noise after the passing summary
+  Cause: existing test harness behavior unrelated to this registry-population task
+  Fix: kept the run because Vitest exited `0`; recorded the noise here
+  Resolved: yes
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun -e "<TypeScript JSONC parse validation>"` | PASS — populated `registry.jsonc` parsed successfully as JSONC |
+| `bun run test` | PASS — 83 files / 822 tests passed; pre-existing teardown noise persisted |
+| `bun run check` | PASS — 0 errors / 19 warnings in 12 pre-existing files |
+
+**Outcome:** Populated the registry with the current portable stack snapshot: 8 concrete Codex MCP entries from `~/.codex/config.toml`, the cross-tool `workflow-efficiency` skill with both Claude and Codex install targets, and the 15 currently enabled Claude plugin bundles from `~/.claude/settings.json`. The file now explicitly says Codex has plugin support while also being honest that no Codex plugin packages are pinned in this registry yet because none are currently installed and verified on this machine.
+
+**Blockers / questions:** none
+
+**Budget row:**
+
+```
+Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current agent tool surface did not expose `/status`
+```
+
+---
+
 ### Session 2026-04-18 20:14 — Task 17k-4
 
 **Tool:** Codex (gpt-5.4, reasoning=xhigh)
