@@ -283,6 +283,70 @@ Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current ag
 
 ---
 
+### Session 2026-04-18 21:03 — Task 17k-10
+
+**Tool:** Codex (gpt-5.4, reasoning=xhigh)
+**Session type:** Implementation
+**Picking up from:** Task 17k-9 (Codex / gpt-5.4, commit 1d746f0)
+
+**Goal:** Prove the registry round-trip by materializing a skill `version` from `registry.jsonc` into both installed skill targets, then verifying a `1.0.0 -> 1.0.1` bump applies cleanly to Claude and Codex.
+
+**Commands run:**
+```bash
+bun <cloud>/workflow-knowledge/stack/install.ts --tool both --dry-run --only skills --verbose
+bun <cloud>/workflow-knowledge/stack/install.ts --tool both --apply --only skills --verbose
+bun <cloud>/workflow-knowledge/stack/install.ts --tool both --dry-run --only skills --verbose
+bun <cloud>/workflow-knowledge/stack/install.ts --tool both --apply --only skills --verbose
+bun <cloud>/workflow-knowledge/stack/install.ts --tool both --dry-run --only skills --verbose
+bun run test
+bun run check
+```
+
+**Files touched:**
+- Modified: `<cloud>/workflow-knowledge/stack/install.ts`
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc`
+- Modified: `docs/slices/slice-17/slice-17k/spec.md`
+- Modified: `docs/slices/slice-17/slice-17k/plan.md`
+- Modified: `docs/slices/slice-17/slice-17k/log.md`
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md`
+
+**Decisions:**
+- D020: Round-trip verification uses a registry-owned `version` field on skill entries, materialized into installed `SKILL.md` frontmatter, so metadata bumps can be tested without editing the canonical cloud source skill files.
+- D021: The canonical cloud skill bundle remains content-owned and version-agnostic; only install targets receive the injected `version:` line during apply.
+
+**Errors encountered:**
+- Problem: the original round-trip procedure had no registry value that would actually propagate into installed skill files
+  Cause: skill entries in `registry.jsonc` had no version metadata and `install.ts` only copied raw file trees
+  Fix: added registry-driven frontmatter materialization to `install.ts`, logged the scope amendment in `spec.md` + `plan.md`, seeded `version: 1.0.0`, then reran the planned `1.0.0 -> 1.0.1` bump
+  Resolved: yes
+- Problem: `bun run test` again emitted pre-existing happy-dom teardown noise and repeated `ECONNREFUSED :3000` output after the passing summary
+  Cause: existing test harness behavior unrelated to this round-trip verification task
+  Fix: kept the run because Vitest exited `0`; recorded the noise here
+  Resolved: yes
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool both --dry-run --only skills --verbose` | PASS — initial smoke-test showed the seeded `version: 1.0.0` diff for both installed `workflow-efficiency` skill targets |
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool both --apply --only skills --verbose` | PASS — seeded `version: 1.0.0` into both `~/.claude/skills/workflow-efficiency/SKILL.md` and `~/.codex/skills/workflow-efficiency/SKILL.md` |
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool both --dry-run --only skills --verbose` | PASS — after bumping the registry to `1.0.1`, the diff preview showed the version change on both targets |
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool both --apply --only skills --verbose` | PASS — applied the `1.0.1` bump to both installed skill targets |
+| `bun <cloud>/workflow-knowledge/stack/install.ts --tool both --dry-run --only skills --verbose` | PASS — follow-up dry-run came back clean with both tools already in sync at `version: 1.0.1` |
+| `bun run test` | PASS — 83 files / 822 tests passed; pre-existing teardown noise persisted |
+| `bun run check` | PASS — 0 errors / 19 warnings in 12 pre-existing files |
+
+**Outcome:** The cross-tool "change it once, apply it to both" loop is now proven for portable skills. `install.ts` can materialize registry-owned skill version metadata into installed `SKILL.md` frontmatter, the cloud registry now tracks `workflow-efficiency` at `1.0.1`, and both installed copies under `~/.claude/skills/` and `~/.codex/skills/` were verified to converge on that same version while the cloud source skill bundle itself remained unchanged.
+
+**Blockers / questions:** none
+
+**Budget row:**
+
+```
+Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current agent tool surface did not expose /status
+```
+
+---
+
 ### Session 2026-04-18 20:54 — Task 17k-9
 
 **Tool:** Codex (gpt-5.4, reasoning=xhigh)

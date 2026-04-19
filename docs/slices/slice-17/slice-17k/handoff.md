@@ -172,8 +172,25 @@ Task 17k-9 turns the registry from documentation into an executable workflow art
 ### Task 17k-10 — Round-trip registry test
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
-**Implemented by:** _(pending)_
-**Status:** _(pending)_
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Modified: `<cloud>/workflow-knowledge/stack/install.ts` — materializes registry-owned skill version metadata into installed `SKILL.md` frontmatter during apply
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc` — added the `workflow-efficiency` `version` field and executed the `1.0.0 -> 1.0.1` verification bump
+- Modified: `docs/slices/slice-17/slice-17k/spec.md` — logged the scope amendment that made the round-trip test meaningful
+- Modified: `docs/slices/slice-17/slice-17k/plan.md` — recorded the same amendment before proceeding with the verification task
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3b verification details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-10 proves the portable stack loop end-to-end for a real cross-tool artifact. The installer now injects or updates `version:` in installed `SKILL.md` frontmatter from the registry, the test seeded both tool installs at `1.0.0`, then bumped the registry to `1.0.1` and verified that both `~/.claude/skills/workflow-efficiency/SKILL.md` and `~/.codex/skills/workflow-efficiency/SKILL.md` converged to `version: 1.0.1` without mutating the cloud source skill bundle itself.
+
+**Decisions:**
+- D020: Skill round-trip verification should operate on registry-owned metadata that can be projected into both tool installs without changing the cloud-authored skill content.
+- D021: The cloud skill source stays version-agnostic; version materialization happens only at install targets.
+
+**Tests:** PASS — seeded `1.0.0` dry-run/apply, bumped `1.0.1` dry-run/apply, clean follow-up dry-run with both targets in sync, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
 
 ---
 
