@@ -169,6 +169,23 @@ Task 17k-9 turns the registry from documentation into an executable workflow art
 
 **Tests:** PASS — dual-tool dry-run, real Codex apply (`~/.codex/config.toml` + `~/.codex/skills/workflow-efficiency`), clean follow-up dry-run, safe Claude no-op apply, malformed-registry exit-1 check, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
 
+**Post-ship verification — Claude plugin apply codepath (2026-04-18, Claude Code / Opus 4.7 `[1m]`):**
+
+The original 17k-9 tests only exercised the "already enabled → skip" path for Claude plugins (no-op apply). Review finding F5 flagged that the actual run path — `claude plugin list --json` → compute disjunction → run `claude plugin install <name>@<marketplace> --scope user` — had never fired end-to-end. Stress test executed against `playground@claude-plugins-official`:
+
+1. `claude plugin list --json` returns the expected `[{id, version, scope, enabled, installPath, ...}]` shape — matches `install.ts`'s `ClaudePluginListItem`.
+2. `claude plugin disable playground@claude-plugins-official` → flips both `settings.json > enabledPlugins` and the runtime state reported by `claude plugin list --json` to `false`.
+3. `bun install.ts --tool claude-code --dry-run --only plugins` → correctly planned `action: run command(s)` with `claude plugin install playground@claude-plugins-official --scope user`.
+4. `bun install.ts --tool claude-code --apply --only plugins --verbose` → executed the install command, got exit `0`, apply summary reported `- ran claude plugin install playground@claude-plugins-official --scope user`.
+5. Post-apply `claude plugin list --json` → playground back to `enabled: true`.
+6. Final baseline dry-run → all 15 registry plugins back to `action: skip, reason: Already enabled.` — no permanent state changes.
+
+Confirms: `claude plugin install X@Y --scope user` on an already-installed-but-disabled plugin **re-enables it** (doesn't error, doesn't reinstall, doesn't no-op). This is the behavior `install.ts` silently depends on. F5 resolved.
+
+Still untested (deferred to 17l / post-migration):
+- Marketplace-add path (`claude plugin marketplace add <repo> --scope user`) — all registry plugins live in marketplaces already present in `settings.json > extraKnownMarketplaces`.
+- Codex plugin install path — Codex has zero plugins locally, so there's nothing to disable-and-restore.
+
 ### Task 17k-10 — Round-trip registry test
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
