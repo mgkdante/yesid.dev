@@ -168,6 +168,63 @@ Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current ag
 
 ---
 
+### Session 2026-04-18 20:25 — Task 17k-6
+
+**Tool:** Codex (gpt-5.4, reasoning=xhigh)
+**Session type:** Implementation
+**Picking up from:** Task 17k-5 (Codex / gpt-5.4, commit 0a19d46)
+
+**Goal:** Mirror the canonical `workflow-efficiency` skill into the cloud stack and verify the copy byte-for-byte.
+
+**Commands run:**
+```bash
+Copy-Item -Path "$env:USERPROFILE\\.claude\\skills\\workflow-efficiency" -Destination "$env:YESITO_CLOUD_ROOT\\workflow-knowledge\\stack\\skills" -Recurse
+Get-FileHash <source files> -Algorithm SHA256
+Get-FileHash <copied files> -Algorithm SHA256
+bun run test
+bun run check
+```
+
+**Files touched:**
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/SKILL.md`
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/references/audit-existing-project.md`
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/references/new-project-checklist.md`
+- Modified: `docs/slices/slice-17/slice-17k/log.md`
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md`
+
+**Decisions:**
+- D012: Treat the Claude-authored `~/.claude/skills/workflow-efficiency` directory as the canonical source for this slice's mirrored cloud skill bundle.
+- D013: Verify the mirror with relative-path SHA-256 comparison across the whole tree instead of spot-checking individual files.
+
+**Errors encountered:**
+- Problem: none in the copy/verification workflow itself
+  Cause: n/a
+  Fix: n/a
+  Resolved: yes
+- Problem: `bun run test` again emitted pre-existing happy-dom teardown noise and `ECONNREFUSED :3000` output after the passing summary
+  Cause: existing test harness behavior unrelated to this cloud-skill mirror task
+  Fix: kept the run because Vitest exited `0`; recorded the noise here
+  Resolved: yes
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `Get-FileHash <source files>` + `Get-FileHash <copied files>` | PASS — relative-path SHA-256 comparison reported `TREE HASH MATCH` for all 3 mirrored files |
+| `bun run test` | PASS — 83 files / 822 tests passed; pre-existing teardown noise persisted |
+| `bun run check` | PASS — 0 errors / 19 warnings in 12 pre-existing files |
+
+**Outcome:** The cloud stack now contains a real `workflow-efficiency` skill bundle under `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/`, and that mirror was verified byte-for-byte against the current Claude source directory. This gives `registry.jsonc` a concrete portable backing directory instead of a placeholder path.
+
+**Blockers / questions:** none
+
+**Budget row:**
+
+```
+Model: gpt-5.4 (effort=xhigh) | Context: unavailable / 258k (n/a) — current agent tool surface did not expose `/status`
+```
+
+---
+
 ### Session 2026-04-18 20:14 — Task 17k-4
 
 **Tool:** Codex (gpt-5.4, reasoning=xhigh)

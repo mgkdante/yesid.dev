@@ -98,8 +98,24 @@ Task 17k-5 turns the registry schema into a usable source of truth. The file now
 ### Task 17k-6 — Copy user-authored skill
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
-**Implemented by:** _(pending)_
-**Status:** _(pending)_
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/SKILL.md` — mirrored canonical skill entrypoint into the portable cloud stack
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/references/audit-existing-project.md` — mirrored supporting reference document
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/references/new-project-checklist.md` — mirrored supporting reference document
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3 implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-6 gives the registry's lone skill entry a real portable source tree. The `workflow-efficiency` bundle now exists under `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/` with its main `SKILL.md` plus both reference documents, so future install/apply tooling can source it from cloud-managed state instead of a user-home path.
+
+**Decisions:**
+- D012: Use `~/.claude/skills/workflow-efficiency` as the canonical source for this slice's mirror.
+- D013: Require whole-tree SHA-256 verification so the mirror claim is byte-for-byte, not approximate.
+
+**Tests:** PASS — relative-path SHA-256 tree comparison (`TREE HASH MATCH`), `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
 
 ### Task 17k-7 — Prune-recommendations document
 
