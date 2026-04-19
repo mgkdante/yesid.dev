@@ -18,6 +18,8 @@
 
 ### Task NN<letter>-1: <Name>
 
+**Planned by:** <Tool name> (<model>)
+**Implemented by:** <Tool name> (<model>, commit <sha>)
 **Session:** YYYY-MM-DD | **Commit:** abc1234
 
 **Files:**

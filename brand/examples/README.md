@@ -49,4 +49,4 @@ Until the launch issue is resolved, this directory ships with the source-only si
 
 A screenshot alone teaches a vision model what something looks like. A source snippet alone teaches a text model what something is made of. Paired, they teach a multimodal model how intent (source) produces appearance (screenshot) — which is the thing that matters for brand-grounded generation.
 
-This is the Claude Design–oriented rationale. A fresh Opus instance pointed at `brand/` can read `foundations/*.md` for rules, read `BRAND.md` for principles, and consult `examples/` for concrete built instances of those rules. Three artifacts, three layers of grounding.
+This is the Claude Design–oriented rationale. A fresh LLM tool session pointed at `brand/` can read `foundations/*.md` for rules, read `BRAND.md` for principles, and consult `examples/` for concrete built instances of those rules. Three artifacts, three layers of grounding.
