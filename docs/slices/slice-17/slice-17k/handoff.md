@@ -95,6 +95,26 @@ Task 17k-5 turns the registry schema into a usable source of truth. The file now
 
 **Tests:** PASS — TypeScript JSONC parse validation, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
 
+**Post-ship amendment — `claude_equivalent` MCP annotations (2026-04-18, Claude Code / Opus 4.7 `[1m]`):**
+
+The initial registry made MCP entries `install_in: ["codex"]`-only and left the reader to infer Claude-side coverage from the separate `plugins[]` section. Review finding F4 flagged this as opaque: the reader couldn't tell, per MCP, whether Claude had the same capability or not. Correction applied:
+
+1. Added a new `claude_equivalent` object to every MCP entry. Schema:
+   - `status`: one of `via_plugin_bundle` (capability is live on Claude via a plugin that ships its own MCP server), `via_standalone_mcp` (capability comes from a separate Claude-targeted standalone MCP entry), `none` (capability is Codex-only on this machine today).
+   - `registry_ref`: points at the matching `plugins[].id` in this registry when the bundling plugin is known, `null` otherwise.
+   - `note`: one-line human context.
+2. Updated the top-level `notes` array to document the new field.
+3. Current annotations: `vercel-mcp → via_plugin_bundle, registry_ref="vercel"` (confirmed — bundled by `vercel@claude-plugins-official`); `figma`, `svelte`, `neon`, `cloudflare-api`, `playwright` all → `via_plugin_bundle, registry_ref=null` (active on Claude's tool surface today but the specific bundling plugin for each needs verification in 17l by inspecting plugin manifests under `~/.claude/plugins/cache/`); `yesid-money` and `powerbi` → `none`.
+
+Important Claude-side reality captured here (and validated against live session tool surface):
+- `~/.claude.json > mcpServers` is empty; `.mcp.json` at repo root is empty (`mcpServers: {}`); `.claude/settings.json > enabledMcpjsonServers` is `[]`.
+- Despite those being empty, Claude's current session surfaces Figma, Svelte, Neon, Cloudflare, Playwright, and Vercel MCP tools — confirmed via the `mcp__<uuid>__<tool>` prefixes in the tool list.
+- The only explanation consistent with those three sources being empty is plugin-bundled MCPs. `.claude/settings.json > _expected_mcps_for_this_project` explicitly labels `svelte`, `playwright`, `vercel`, `chrome-devtools`, `github`, `context7`, `gsap-master` as "plugin-provided."
+
+No repo-side code changed; the registry itself lives in cloud. `bun install.ts --tool both --dry-run` still parses cleanly and shows no regressions after the edit.
+
+F4 is now resolved for reading intent. The `registry_ref` gaps are a 17l follow-up.
+
 ### Task 17k-6 — Copy user-authored skill
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
