@@ -1,12 +1,14 @@
 # Slice 17 — Checkpoint
 
-**Last updated:** 2026-04-18 | **17k CLOSING (PR pending). Slice 17 complete at merge. Next yesid.dev work: Slice 15, AFTER workflow repo Slice 1 lands in the separate `workflow` project.**
-**Branch:** `feature/slice-17k-cross-tool-portability` (PR pending)
-**Status:** 17k in closing ceremony — commits landing, push + `gh pr create` pending Yesid approval.
+**Last updated:** 2026-04-19 | **17k SHIPPED (PR #25 merged as `e157e30`, slice closed via `slice:close 17k`). Next yesid.dev work: Slice 15, AFTER workflow repo Slice 1 lands in the separate `workflow` project at `C:\Users\otalo\Yesito\Projects\workflow`.**
+**Branch:** `main` (feature branches close via `bun run slice:close`)
+**Status:** between sub-slices — no active bundle in repo. Slice 17 remains active (15, 17c, 17f, 16, 17g still planned).
 
-## Just closing — 17k Cross-Tool Workflow Portability
+## Just shipped — 17k Cross-Tool Workflow Portability
 
-**Branch:** `feature/slice-17k-cross-tool-portability` → PR pending.
+**PR:** [#25](https://github.com/mgkdante/yesid.dev/pull/25) squash-merged 2026-04-19 as commit `e157e30`.
+**Closed via:** `bun run slice:close 17k --name "Cross-Tool Workflow Portability" --pr 25`.
+**Bundle archived at:** `<cloud>/yesid.dev/docs/archive/slices/slice-17/slice-17k/` (spec + plan + log + handoff).
 **Tasks shipped:** 17k-1 (CLAUDE.md thin pointer), 17k-2 (generic-term pass), 17k-3 (tool-attribution convention), 17k-4 (registry schema), 17k-5 (populate registry), 17k-6 (mirror workflow-efficiency skill), 17k-7 (prune recommendations), 17k-9 (install.ts), 17k-10 (round-trip skill-version test).
 **Review-driven post-ship fixes:** `claude_equivalent` MCP annotations (F4 reading layer), `workflow-efficiency` skill body rewrite tool-agnostic + bumped to `version: 1.1.0` (F1), 17k-10 scope narrowing to skill-only (F3), plugin-apply codepath stress-tested on `playground@claude-plugins-official` (F5), `install.ts` TOML dirty-write + diff direction noted as 17l follow-ups.
 **Deferred:** 17k-8 (synthetic Codex cross-tool verification) — real verification happens when the `workflow` repo bootstraps the `transit` project (different field: Neon → Oracle VPS Postgres port).
@@ -43,7 +45,7 @@
 |-----------|--------|------|
 | ~~17b Hexagonal Data Layer~~ | ✅ SHIPPED 2026-04-18 (#24) | — |
 | ~~17j Workflow Efficiency~~ | ✅ SHIPPED 2026-04-18 (#23) | Token −54% + 3-level hierarchy + portable IP across 6 services |
-| ~~17k Cross-Tool Portability~~ | 🔄 CLOSING 2026-04-18 | Tool-agnostic AGENTS.md + overlays + stack registry + installer; PR pending |
+| ~~17k Cross-Tool Portability~~ | ✅ SHIPPED 2026-04-19 (#25) | Tool-agnostic AGENTS.md + overlays + stack registry + installer + review-driven fixes |
 | **15 SEO + Metadata** | **planned — after workflow repo Slice 1** | JSON-LD, sitemap, robots.txt, meta, OG, Twitter cards |
 | 17c Zod Schemas | planned (after 15) | Data-layer validation |
 | 17f Test Architecture | planned (after 17c) | — |
@@ -65,7 +67,7 @@ After Slice 17 fully closes:
 | 17h-3 / 17h-4 | #22 | Brand Bundle — narrative + logo assets + governance freshen |
 | 17j | #23 | Workflow Efficiency — token −54% + 3-level hierarchy + portable IP across 6 services |
 | 17b | #24 | Hexagonal Data Layer + LocalizedString Enforcement |
-| **17k** | **pending** | **Cross-Tool Portability — AGENTS.md + overlays + stack registry + installer + review-driven fixes** |
+| 17k | #25 | Cross-Tool Portability — AGENTS.md + overlays + stack registry + installer + review-driven fixes |
 
 ## Tooling now available (use these going forward)
 
