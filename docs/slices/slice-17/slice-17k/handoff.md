@@ -1,0 +1,334 @@
+# Sub-Slice 17k — Handoff
+
+Self-appending. Gains a per-task section as tasks land. Finalized at PR. PR body is derived from this.
+
+**Sub-slice:** 17k — Cross-Tool Workflow Portability
+**Spec:** [`spec.md`](./spec.md) (approved 2026-04-18)
+**Plan:** [`plan.md`](./plan.md)
+**Branch (post-prep):** `feature/slice-17k-cross-tool-portability`
+
+---
+
+## Task sections (fill as tasks land)
+
+### Task 17k-1 — Shrink CLAUDE.md → thin pointer
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** _(pending)_
+**Status:** _(pending)_
+
+_(Summary goes here when task ships.)_
+
+### Task 17k-2 — Generic-term pass
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** _(pending)_
+**Status:** _(pending)_
+
+### Task 17k-3 — Tool-attribution convention
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Modified: `AGENTS.md` — added the canonical session-header format and made STOP-time tool attribution mandatory
+- Modified: `docs/reference/tools/codex.md` — replaced the Codex overlay stub with verified role bindings, capability notes, and explicit gaps
+- Modified: `docs/slices/_TEMPLATE-SUBSLICE/log.md` — added `Tool`, `Session type`, and `Picking up from` placeholders and a timestamped session heading
+- Modified: `docs/slices/_TEMPLATE-SUBSLICE/handoff.md` — added `Planned by` / `Implemented by` placeholders to the reusable task template
+- Modified: `docs/slices/slice-17/slice-17k/spec.md` — logged the Codex self-research amendment that supersedes the earlier "no plugin concept" assumption
+- Modified: `docs/slices/slice-17/slice-17k/plan.md` — logged the expanded Session 2 overlay-population scope
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 2 implementation details and verification results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-3 now covers both halves of the portability contract: repo-level attribution discipline and Codex-side self-description. `AGENTS.md` now requires explicit tool provenance in `log.md` / `handoff.md`, the reusable slice templates include the needed placeholders, and the Codex overlay no longer hides unknowns behind `TBD`. It now documents verified native counterparts for the tracker, subagents, context checks, skills, memories, hooks, rules, web search, Fast mode, plugins, agents, and Codex's external-config import bridge from Claude.
+
+**Decisions:**
+- D001: Codex plugins are the installable bundle layer; skills remain the authoring unit and MCPs remain the tool/server layer.
+- D002: The overlay should state real gaps explicitly instead of implying parity that is not yet verified.
+- D003: `~/.agents/skills` belongs in the portability story on this machine because the Codex app imports external skills there.
+
+**Tests:** PASS — `bun run test` (83 files / 822 tests) and `bun run check` (0 errors / 19 pre-existing warnings)
+
+### Task 17k-4 — Registry schema
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Created: `<cloud>/workflow-knowledge/stack/registry.jsonc` — first machine-readable schema for cross-tool stack items
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3 implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-4 creates the actual machine-readable foundation that later tasks will populate and apply. The registry is intentionally scoped to installable, cross-tool artifacts only: MCPs, skills, plugins, and agents. Each category now has a canonical commented example, a shared `install_in` contract, a tool-neutral `source` block, and a per-tool `tools` map for the native differences that matter at install time.
+
+**Decisions:**
+- D004: The registry should stay narrow and executable, not turn into a dumping ground for every agent capability.
+- D005: Hooks, rules, and memories are explicitly deferred because they do not yet have a clean portable install story across Claude Code and Codex.
+- D006: Agents are modeled as per-tool native files because Codex and Claude do not share one file format.
+- D007: Skill sources should point at cloud-managed paths so the registry remains the source of truth.
+
+**Tests:** PASS — TypeScript JSONC parse validation, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
+
+### Task 17k-5 — Populate registry
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc` — populated with concrete MCP, skill, and plugin entries from the live Claude/Codex inventories
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3 implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-5 turns the registry schema into a usable source of truth. The file now contains the current 8-entry Codex MCP set, the workflow-owned cross-tool `workflow-efficiency` skill, and the full currently enabled Claude plugin bundle set. The registry is explicit that Codex does have plugin support, but it does not pretend we already know the correct Codex marketplace/package IDs for those plugins when this machine has not actually installed and verified them yet.
+
+**Decisions:**
+- D008: The registry should capture reproducible install targets, not become a raw machine dump.
+- D009: Concrete standalone MCP entries currently come from Codex config; Claude-side comparable capabilities are represented through plugin bundles when that is how they are actually installed today.
+- D010: Codex plugin support is documented, but no unverified Codex plugin package IDs are pinned yet.
+- D011: `workflow-efficiency` is the only skill entry in scope for this slice's managed registry.
+
+**Tests:** PASS — TypeScript JSONC parse validation, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
+
+**Post-ship amendment — `claude_equivalent` MCP annotations (2026-04-18, Claude Code / Opus 4.7 `[1m]`):**
+
+The initial registry made MCP entries `install_in: ["codex"]`-only and left the reader to infer Claude-side coverage from the separate `plugins[]` section. Review finding F4 flagged this as opaque: the reader couldn't tell, per MCP, whether Claude had the same capability or not. Correction applied:
+
+1. Added a new `claude_equivalent` object to every MCP entry. Schema:
+   - `status`: one of `via_plugin_bundle` (capability is live on Claude via a plugin that ships its own MCP server), `via_standalone_mcp` (capability comes from a separate Claude-targeted standalone MCP entry), `none` (capability is Codex-only on this machine today).
+   - `registry_ref`: points at the matching `plugins[].id` in this registry when the bundling plugin is known, `null` otherwise.
+   - `note`: one-line human context.
+2. Updated the top-level `notes` array to document the new field.
+3. Current annotations: `vercel-mcp → via_plugin_bundle, registry_ref="vercel"` (confirmed — bundled by `vercel@claude-plugins-official`); `figma`, `svelte`, `neon`, `cloudflare-api`, `playwright` all → `via_plugin_bundle, registry_ref=null` (active on Claude's tool surface today but the specific bundling plugin for each needs verification in 17l by inspecting plugin manifests under `~/.claude/plugins/cache/`); `yesid-money` and `powerbi` → `none`.
+
+Important Claude-side reality captured here (and validated against live session tool surface):
+- `~/.claude.json > mcpServers` is empty; `.mcp.json` at repo root is empty (`mcpServers: {}`); `.claude/settings.json > enabledMcpjsonServers` is `[]`.
+- Despite those being empty, Claude's current session surfaces Figma, Svelte, Neon, Cloudflare, Playwright, and Vercel MCP tools — confirmed via the `mcp__<uuid>__<tool>` prefixes in the tool list.
+- The only explanation consistent with those three sources being empty is plugin-bundled MCPs. `.claude/settings.json > _expected_mcps_for_this_project` explicitly labels `svelte`, `playwright`, `vercel`, `chrome-devtools`, `github`, `context7`, `gsap-master` as "plugin-provided."
+
+No repo-side code changed; the registry itself lives in cloud. `bun install.ts --tool both --dry-run` still parses cleanly and shows no regressions after the edit.
+
+F4 is now resolved for reading intent. The `registry_ref` gaps are a 17l follow-up.
+
+### Task 17k-6 — Copy user-authored skill
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/SKILL.md` — mirrored canonical skill entrypoint into the portable cloud stack
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/references/audit-existing-project.md` — mirrored supporting reference document
+- Created: `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/references/new-project-checklist.md` — mirrored supporting reference document
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3 implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-6 gives the registry's lone skill entry a real portable source tree. The `workflow-efficiency` bundle now exists under `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/` with its main `SKILL.md` plus both reference documents, so future install/apply tooling can source it from cloud-managed state instead of a user-home path.
+
+**Decisions:**
+- D012: Use `~/.claude/skills/workflow-efficiency` as the canonical source for this slice's mirror.
+- D013: Require whole-tree SHA-256 verification so the mirror claim is byte-for-byte, not approximate.
+
+**Tests:** PASS — relative-path SHA-256 tree comparison (`TREE HASH MATCH`), `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
+
+**Post-ship amendment — skill body rewritten for cross-tool portability (2026-04-18, Claude Code / Opus 4.7 `[1m]`):**
+
+The original 17k-6 mirror copied `~/.claude/skills/workflow-efficiency/` verbatim into cloud. Review finding F1 flagged that the mirrored body was still Claude-specific: H1 said "Portable Claude Code Pattern," the description framed it as a Claude Code skill, paths referenced the pre-17j `<cloud>/claude-knowledge/…` tree (renamed to `workflow-knowledge/` since), and runtime commands named only `TodoWrite` / `/context-budget` (Claude-only). Mirroring that body into `~/.codex/skills/workflow-efficiency/` handed Codex a document telling it to act as Claude Code and read dead paths. Correction applied:
+
+1. **Cloud source rewritten** at `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/SKILL.md`:
+   - H1: `Workflow Efficiency — Portable Claude Code Pattern` → `Portable Cross-Tool Workflow Pattern`.
+   - Description: dropped Claude-only framing; now opens with "Works across Claude Code and Codex today; tool-agnostic by design."
+   - All `<cloud>/claude-knowledge/…` path references → `$YESITO_WORKFLOW_ROOT/…` (forward-looking per Path A / 17l; pre-17l resolves to `$YESITO_CLOUD_ROOT/workflow-knowledge/` — documented in a new "Environment variables this skill assumes" section).
+   - Tool-specific commands paired: `/context-budget` or `/cost` (Claude Code) + `/status` (Codex); `TodoWrite` (Claude Code) + `update_plan` (Codex).
+   - New section: **Cross-tool handoff — Claude ↔ Codex mid-stream** — codifies the `**Tool:**` / `**Planned by:**` / `**Implemented by:**` discipline established in Task 17k-3.
+   - New section: **Token-buffer strategy — Codex as execution, Claude as design** — 12-row routing table for which tool to use for which work type.
+   - Audit section now has separate Claude-Code and Codex columns for prune levers.
+   - Post-17l forward references (`bunx workflow create --mode …`, `modes/<mode>/`, `routing/routing.jsonc`) explicitly labeled so they aren't confused with current functionality.
+
+2. **Registry version bumped** — `registry.jsonc > entries.skills[0].version`: `"1.0.1"` → `"1.1.0"` (signals content change). Tab-indent inconsistency on that entry (review finding F13) fixed while editing.
+
+3. **Propagated via `install.ts --tool both --apply --only skills`** — both installed targets synced to the new content + `version: 1.1.0`:
+   - `~/.claude/skills/workflow-efficiency/SKILL.md` ✓
+   - `~/.codex/skills/workflow-efficiency/SKILL.md` ✓
+   - Cloud source remains version-agnostic per D021.
+   - Claude's live skill registry refreshed mid-session — the new `workflow-efficiency: Use when setting up a new project, an LLM-tool session f…` description is now active.
+
+**D013 reframed (byte-for-byte claim no longer applies):** the SHA-256 tree match from 17k-6 was true at that commit time, before `install.ts` added registry-driven frontmatter injection (17k-10 D020/D021). Both installed copies now diverge from the cloud source by exactly the injected `version:` frontmatter line — by design. Re-running the original whole-tree SHA-256 comparison would no longer return `TREE HASH MATCH`; the correct post-17k-10 comparison is "source + registry version → install target" equivalence, which is what `install.ts` dry-run already surfaces.
+
+**Still untouched (intentional):**
+- `references/audit-existing-project.md` and `references/new-project-checklist.md` still need the same Claude → tool-agnostic pass. Scoped to the 17l migration when the skill bundle moves to the workflow repo.
+- Shared import `~/.agents/skills/workflow-efficiency/` (Codex-flavored variant) is not managed by `install.ts` per D018 and remains divergent. Post-17l decision: fold into canonical source or formalize the shared-import bridge.
+
+F1 is now resolved at the content layer for `SKILL.md`.
+
+### Task 17k-7 — Prune-recommendations document
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Created: `<cloud>/workflow-knowledge/stack/prune-recommendations.md` — Claude-side cleanup memo with quick wins, disabled-plugin review list, and do-not-prune guardrails
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3 implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-7 turns the earlier research into an actionable cleanup memo without executing any cleanup. The new document is grounded in current disk state and captures four concrete quick wins, a 17-entry disabled-plugin review table, the current 117-skill sprawl note, and explicit "do not prune yet" guardrails for the assets that are still referenced indirectly by Claude hooks.
+
+**Decisions:**
+- D014: The earlier duplicate-Chrome-DevTools-MCP hypothesis was downgraded to a marketplace-metadata cleanup because the root `~/.claude.json` `mcpServers` entry is no longer present.
+- D015: `everything-claude-code` cache assets stay off the prune list until the hook fallback logic is migrated away from them.
+- D016: The recommendations stay Bun-first and recommend-only; this task introduced no `npm` / `npx` commands.
+
+**Tests:** PASS — file existence spot-check, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
+
+### Task 17k-8 — Cross-tool verification (Codex)
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Verified by:** _(pending — will be Codex)_
+**Status:** _(pending)_
+
+### Task 17k-9 — Install script
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Created: `<cloud>/workflow-knowledge/stack/install.ts` — Bun-based registry applier for MCPs, skills, plugins, and agents
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc` — normalized the Playwright MCP command to `bunx`
+- Modified: `<cloud>/workflow-knowledge/stack/prune-recommendations.md` — corrected the verified Claude marketplace command example
+- Modified: `docs/slices/slice-17/slice-17k/spec.md` — logged the Bun-first / shared-import handling amendment
+- Modified: `docs/slices/slice-17/slice-17k/plan.md` — logged the same amendment and corrected the verified Claude plugin CLI wording
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3b implementation details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-9 turns the registry from documentation into an executable workflow artifact. The new `install.ts` can read the JSONC registry, filter by tool/category, show a diff-style dry-run without touching shell or disk, apply real Codex MCP/skill changes, and reconcile Claude skill/plugin state without reinstalling entries that are already enabled. It also proves the Bun-only rule in practice: the installer normalizes package-executor commands to `bun` / `bunx` instead of carrying forward `npm` / `npx`.
+
+**Decisions:**
+- D017: Normalize package executors to Bun-first during apply (`npx` → `bunx`, `npm` → `bun`).
+- D018: Manage `~/.codex/skills/` as the Codex install target, but do not auto-manage `~/.agents/skills/` because the shared import bridge can contain a deliberately divergent copy.
+- D019: Use the verified `claude plugin marketplace add` + `claude plugin install` command surface and skip already-enabled plugin entries cleanly.
+
+**Tests:** PASS — dual-tool dry-run, real Codex apply (`~/.codex/config.toml` + `~/.codex/skills/workflow-efficiency`), clean follow-up dry-run, safe Claude no-op apply, malformed-registry exit-1 check, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
+
+**Post-ship verification — Claude plugin apply codepath (2026-04-18, Claude Code / Opus 4.7 `[1m]`):**
+
+The original 17k-9 tests only exercised the "already enabled → skip" path for Claude plugins (no-op apply). Review finding F5 flagged that the actual run path — `claude plugin list --json` → compute disjunction → run `claude plugin install <name>@<marketplace> --scope user` — had never fired end-to-end. Stress test executed against `playground@claude-plugins-official`:
+
+1. `claude plugin list --json` returns the expected `[{id, version, scope, enabled, installPath, ...}]` shape — matches `install.ts`'s `ClaudePluginListItem`.
+2. `claude plugin disable playground@claude-plugins-official` → flips both `settings.json > enabledPlugins` and the runtime state reported by `claude plugin list --json` to `false`.
+3. `bun install.ts --tool claude-code --dry-run --only plugins` → correctly planned `action: run command(s)` with `claude plugin install playground@claude-plugins-official --scope user`.
+4. `bun install.ts --tool claude-code --apply --only plugins --verbose` → executed the install command, got exit `0`, apply summary reported `- ran claude plugin install playground@claude-plugins-official --scope user`.
+5. Post-apply `claude plugin list --json` → playground back to `enabled: true`.
+6. Final baseline dry-run → all 15 registry plugins back to `action: skip, reason: Already enabled.` — no permanent state changes.
+
+Confirms: `claude plugin install X@Y --scope user` on an already-installed-but-disabled plugin **re-enables it** (doesn't error, doesn't reinstall, doesn't no-op). This is the behavior `install.ts` silently depends on. F5 resolved.
+
+Still untested (deferred to 17l / post-migration):
+- Marketplace-add path (`claude plugin marketplace add <repo> --scope user`) — all registry plugins live in marketplaces already present in `settings.json > extraKnownMarketplaces`.
+- Codex plugin install path — Codex has zero plugins locally, so there's nothing to disable-and-restore.
+
+### Task 17k-10 — Round-trip registry test
+
+**Planned by:** Claude Code (Opus 4.7 `[1m]`)
+**Implemented by:** Codex (gpt-5.4, reasoning=xhigh)
+**Status:** shipped
+
+**Files:**
+- Modified: `<cloud>/workflow-knowledge/stack/install.ts` — materializes registry-owned skill version metadata into installed `SKILL.md` frontmatter during apply
+- Modified: `<cloud>/workflow-knowledge/stack/registry.jsonc` — added the `workflow-efficiency` `version` field and executed the `1.0.0 -> 1.0.1` verification bump
+- Modified: `docs/slices/slice-17/slice-17k/spec.md` — logged the scope amendment that made the round-trip test meaningful
+- Modified: `docs/slices/slice-17/slice-17k/plan.md` — recorded the same amendment before proceeding with the verification task
+- Modified: `docs/slices/slice-17/slice-17k/log.md` — recorded Session 3b verification details and validation results
+- Modified: `docs/slices/slice-17/slice-17k/handoff.md` — recorded this shipped task summary
+
+**What landed:**
+Task 17k-10 proves that registry-owned skill-version metadata propagates to both tool install targets. The installer injects or updates `version:` in installed `SKILL.md` frontmatter from the registry; the test seeded both tool installs at `1.0.0`, bumped the registry to `1.0.1`, and verified that both `~/.claude/skills/workflow-efficiency/SKILL.md` and `~/.codex/skills/workflow-efficiency/SKILL.md` converged to `version: 1.0.1` without mutating the cloud source skill bundle.
+
+**Scope of the verification (what this test does NOT prove):**
+- Covers **skills only**. MCP, plugin, and agent round-trip behavior has **not** been bumped-and-observed end-to-end across tools. `install.ts --tool both --apply` was exercised for those categories in Task 17k-9 (a safe no-op because all plugins were already enabled and both tools' MCP/skill state matched the registry), but no registry-driven value has been changed and propagated to both tools for MCPs or plugins.
+- The `version` field used as the propagation probe was added to the schema in this same task (per D020) specifically to give the test a propagating value — the field did not exist before. The test validates that the newly added injection code path works, not a pre-existing invariant.
+- The general "change registry once, apply to both tools" contract is **unproven outside the skill category**.
+
+**Decisions:**
+- D020: Skill round-trip verification should operate on registry-owned metadata that can be projected into both tool installs without changing the cloud-authored skill content.
+- D021: The cloud skill source stays version-agnostic; version materialization happens only at install targets.
+
+**Tests:** PASS — seeded `1.0.0` dry-run/apply, bumped `1.0.1` dry-run/apply, clean follow-up dry-run with both targets in sync, `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
+
+---
+
+## Summary
+
+Slice 17k made the yesid.dev workflow genuinely tool-agnostic across Claude Code and Codex. `AGENTS.md` became the canonical workflow contract at the repo root (both tools auto-load it), with thin per-tool overlays at `docs/reference/tools/{claude-code,codex}.md` binding abstract roles to concrete mechanisms. A mandatory tool-attribution convention on every session header and handoff per-task section (`**Tool:**`, `**Planned by:**`, `**Implemented by:**`) enables mid-stream cross-tool handoff. Cloud-side, a machine-readable JSONC stack registry + Bun-based installer at `<cloud>/workflow-knowledge/stack/` became the executable source of truth for MCPs, skills, plugins, and agents across both tools, with per-MCP `claude_equivalent` annotations mapping capabilities across ecosystems. The portable `workflow-efficiency` skill was mirrored to cloud and rewritten for true cross-tool portability (`version: 1.1.0`), and a Claude-side prune-recommendations document captures current cleanup opportunities. A review-driven post-ship pass exercised the untested plugin-apply codepath and corrected overstated claims in the round-trip test. Acceptance criterion for synthetic Codex verification (17k-8) was deferred: real cross-tool portability gets tested when the workflow extracts into its own GitHub repo (next work) and gets cloned onto the `transit` project — a genuinely different field (Neon → Oracle VPS Postgres port). The planned "17l" sub-slice is cancelled; that follow-up work becomes Slice 1 of the new `workflow` framework project.
+
+**Final status:** **COMPLETE WITH GAPS** — all in-scope tasks shipped and reviewed. Gaps F6, F7, F8, F10, F11, F12, F16 explicitly moved to workflow-repo Slice 1 with documented rationale (see Follow-ups below).
+
+## PR body
+
+```
+## Summary
+
+Slice 17k formalizes the tool-agnostic workflow across Claude Code and Codex. `AGENTS.md` is now the canonical contract at the repo root, with per-tool overlays under `docs/reference/tools/` resolving abstract roles (deeper-reasoning model, faster/cheaper model, live progress tracker, etc.) to each tool's concrete mechanisms. A mandatory tool-attribution header on every session (`**Tool:**`) + per-task handoff section (`**Planned by:** / **Implemented by:**`) makes mid-stream cross-tool handoff an explicit workflow discipline. Cloud-side, a new JSONC stack registry + Bun installer at `<cloud>/workflow-knowledge/stack/` is the executable source of truth for MCPs, skills, plugins, and agents; the portable `workflow-efficiency` skill is mirrored to cloud and rewritten tool-agnostic at `version: 1.1.0`; a Claude-side prune-recommendations doc captures live cleanup candidates. Post-ship review pass fixed four overstated claims (skill body content, byte-match SHA-256, round-trip scope, untested plugin path).
+
+## Changes
+
+**Repo (this branch):**
+- `AGENTS.md` — tool-agnostic workflow contract (Codex + Claude both auto-load). Iteration Protocol step 4 mandates tool attribution on every STOP.
+- `CLAUDE.md` — shrunk to ~30-line thin pointer + Claude Code role bindings table.
+- `docs/reference/tools/` — new per-tool overlays: `README.md`, `claude-code.md` (Opus/Sonnet bindings, TodoWrite, /cost, /context-budget), `codex.md` (gpt-5.4 bindings, update_plan, /status, hooks/memories/plugins reality, external config import bridge).
+- `docs/slices/_TEMPLATE-SUBSLICE/log.md` and `handoff.md` — updated with mandatory `**Tool:**`, `**Planned by:**`, `**Implemented by:**` placeholders.
+- Generic-term pass across `CLAUDE.md`, `WORKFLOW.md`, `VOCAB.md`, `brand/examples/README.md` — Claude-specific narrative replaced with LLM-tool-neutral language; tool-specific mechanics (model names, slash commands) moved to overlays.
+- Slice bundle: `docs/slices/slice-17/slice-17k/{spec.md, plan.md, log.md, handoff.md}`.
+
+**Cloud (not in repo — lands via separate mechanism):**
+- `<cloud>/workflow-knowledge/stack/registry.jsonc` — machine-readable JSONC source of truth: 8 MCP entries with `claude_equivalent` annotations, 15 Claude plugin entries, 1 skill entry (`workflow-efficiency` at `version: 1.1.0`), agents as placeholder.
+- `<cloud>/workflow-knowledge/stack/install.ts` — Bun-based applier with `--tool claude-code|codex|both`, `--dry-run|--apply`, `--only mcps,skills,plugins,agents` flags, custom JSONC parser, minimal TOML writer, Bun-first package-executor normalization.
+- `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/` — portable skill mirror, rewritten tool-agnostic at `version: 1.1.0` (post-ship correction per review F1).
+- `<cloud>/workflow-knowledge/stack/prune-recommendations.md` — Claude-side cleanup memo grounded in current machine state.
+
+**Propagated to tool installs via `install.ts --tool both --apply`:**
+- `~/.claude/skills/workflow-efficiency/SKILL.md` — new tool-agnostic body + `version: 1.1.0`
+- `~/.codex/skills/workflow-efficiency/SKILL.md` — new tool-agnostic body + `version: 1.1.0`
+- `~/.codex/config.toml` — 7 enabled + 1 disabled MCP entries normalized
+
+## Tests
+
+- `bun run test` — 83 files / 822 tests PASS (no regressions)
+- `bun run check` — 0 errors / 19 pre-existing warnings in 12 pre-existing files
+- `install.ts --tool both --dry-run` — parses JSONC cleanly, produces readable diffs, zero writes
+- `install.ts --tool codex --apply --only mcps,skills` — writes `~/.codex/config.toml` + populates `~/.codex/skills/workflow-efficiency/` with correct content
+- `install.ts --tool claude-code --apply --only skills,plugins` — safe no-op; skill already synced, all registered plugins already enabled
+- `install.ts --tool both --apply --only skills` — round-trip verified (seeded v1.0.0 → bumped v1.0.1 → both installed copies converge); post-ship repeat at v1.1.0 also clean
+- `install.ts --registry <malformed> --tool both --dry-run` — exits 1 with clear JSONC parse error
+- Plugin apply stress-test (`playground@claude-plugins-official`) — CLI `claude plugin list --json` returns expected shape; `claude plugin install X@Y --scope user` correctly re-enables a disabled plugin; full state restored post-test
+
+## Follow-ups (moved to workflow-repo Slice 1)
+
+**Carried forward to the new `workflow` project at `C:\Users\otalo\Yesito\Projects\workflow`:**
+- **F6** — Cloud not in repo. Resolves by moving `<cloud>/workflow-knowledge/stack/`, `<cloud>/workflow-knowledge/os-quirks/`, `<cloud>/workflow-knowledge/token-efficacy/`, `<cloud>/claude-config/`, `<cloud>/codex-config/` into the workflow repo; cloud stays only for per-project archives.
+- **F7** — `install.ts` TOML writer doesn't preserve comments or key ordering. Rewrite with proper TOML library (or `Bun.TOML.stringify` when available).
+- **F8** — `codex.md` overlay silent on known Codex MCP lifecycle bugs (`openai/codex#14548`, `#17574`, `#18333`). Add a "Known Codex caveats" section once in the workflow repo where it can serve all projects.
+- **F9** — `claude-code.md` two-row Opus 4.7 / Opus 4.7 `[1m]` binding: research says Anthropic shipped 1M as standard pricing; local model IDs show them as distinct. Investigate whether to collapse; decide in the workflow repo where the overlay is owned.
+- **F10** — `~/.agents/skills/` shared import precedence unclear. Document policy in workflow repo.
+- **F11** — Claude hooks in `~/.claude/settings.json` still use `npx` / `node` invocations (violating Bun-only). Out of workflow scope strictly, but worth addressing in claude-config snapshot/restore once that moves to the workflow repo.
+- **F12** — `docs/slices/slice-17/slice-17k/log.md` chronology is out of order. Cosmetic; addressed in the archive pass or re-ordered during slice-close.
+- **F16** — `install.ts` dry-run diff direction inverted (- for source/new, + for target/old, backwards from standard diff convention). Fix during installer rewrite.
+- **Modular MCP plug/unplug per project** — Yesid's real ask: enable/disable MCPs per project for token efficiency (e.g., yesid.dev doesn't need Power BI, transit doesn't need Figma). Design the system in workflow repo Slice 1 with modes (`web-dev`, `sql-work`, `pipeline`, per-project) bundling MCP + skill + rule presets.
+- **`routing.jsonc`** — Machine-readable "which tool for which work type" store proposed in the research doc (now at `C:\Users\otalo\Yesito\Projects\workflow\docs\reference\codex_claude_research_analysis.md`). Land in the workflow repo.
+
+**Remaining in yesid.dev (next slice = 15 / SEO):**
+- Nothing from 17k blocks Slice 15. A `docs/slices/slice-15/CHECKPOINT.md` stub is created in this PR so next yesid.dev session starts cold with context.
+
+## Status
+
+**COMPLETE WITH GAPS** — all 17k in-scope tasks shipped (17k-1 through 17k-7, 17k-9, 17k-10) + review-driven post-ship fixes. Task 17k-8 deferred per spec amendment: synthetic Codex summarization provides weaker signal than the real cross-tool usage about to happen when the workflow migrates to its own repo and bootstraps the `transit` project (different field: Neon → Oracle VPS Postgres port). That migration IS the acceptance test.
+```

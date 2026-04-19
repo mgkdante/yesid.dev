@@ -170,7 +170,7 @@ async function appendToCompletedSlices(
 function regenTree(repoRoot: string): void {
   if (process.platform !== 'win32') {
     console.log(
-      '[slice-close] tree.txt regen skipped (non-Windows). See <cloud>/claude-knowledge/os-quirks/<os>.md for the equivalent command.'
+      '[slice-close] tree.txt regen skipped (non-Windows). See <cloud>/workflow-knowledge/os-quirks/<os>.md for the equivalent command.'
     );
     return;
   }

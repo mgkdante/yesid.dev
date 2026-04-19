@@ -61,4 +61,4 @@ path/to/obsolete-file.ts   — [why]
 
 ## Common pitfalls
 
-[Traps to avoid in this sub-slice. Reference cloud/claude-knowledge/os-quirks/ for platform-specific gotchas.]
+[Traps to avoid in this sub-slice. Reference cloud/workflow-knowledge/os-quirks/ for platform-specific gotchas.]
