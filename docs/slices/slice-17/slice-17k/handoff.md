@@ -137,6 +137,36 @@ Task 17k-6 gives the registry's lone skill entry a real portable source tree. Th
 
 **Tests:** PASS — relative-path SHA-256 tree comparison (`TREE HASH MATCH`), `bun run test` (83 files / 822 tests), and `bun run check` (0 errors / 19 pre-existing warnings)
 
+**Post-ship amendment — skill body rewritten for cross-tool portability (2026-04-18, Claude Code / Opus 4.7 `[1m]`):**
+
+The original 17k-6 mirror copied `~/.claude/skills/workflow-efficiency/` verbatim into cloud. Review finding F1 flagged that the mirrored body was still Claude-specific: H1 said "Portable Claude Code Pattern," the description framed it as a Claude Code skill, paths referenced the pre-17j `<cloud>/claude-knowledge/…` tree (renamed to `workflow-knowledge/` since), and runtime commands named only `TodoWrite` / `/context-budget` (Claude-only). Mirroring that body into `~/.codex/skills/workflow-efficiency/` handed Codex a document telling it to act as Claude Code and read dead paths. Correction applied:
+
+1. **Cloud source rewritten** at `<cloud>/workflow-knowledge/stack/skills/workflow-efficiency/SKILL.md`:
+   - H1: `Workflow Efficiency — Portable Claude Code Pattern` → `Portable Cross-Tool Workflow Pattern`.
+   - Description: dropped Claude-only framing; now opens with "Works across Claude Code and Codex today; tool-agnostic by design."
+   - All `<cloud>/claude-knowledge/…` path references → `$YESITO_WORKFLOW_ROOT/…` (forward-looking per Path A / 17l; pre-17l resolves to `$YESITO_CLOUD_ROOT/workflow-knowledge/` — documented in a new "Environment variables this skill assumes" section).
+   - Tool-specific commands paired: `/context-budget` or `/cost` (Claude Code) + `/status` (Codex); `TodoWrite` (Claude Code) + `update_plan` (Codex).
+   - New section: **Cross-tool handoff — Claude ↔ Codex mid-stream** — codifies the `**Tool:**` / `**Planned by:**` / `**Implemented by:**` discipline established in Task 17k-3.
+   - New section: **Token-buffer strategy — Codex as execution, Claude as design** — 12-row routing table for which tool to use for which work type.
+   - Audit section now has separate Claude-Code and Codex columns for prune levers.
+   - Post-17l forward references (`bunx workflow create --mode …`, `modes/<mode>/`, `routing/routing.jsonc`) explicitly labeled so they aren't confused with current functionality.
+
+2. **Registry version bumped** — `registry.jsonc > entries.skills[0].version`: `"1.0.1"` → `"1.1.0"` (signals content change). Tab-indent inconsistency on that entry (review finding F13) fixed while editing.
+
+3. **Propagated via `install.ts --tool both --apply --only skills`** — both installed targets synced to the new content + `version: 1.1.0`:
+   - `~/.claude/skills/workflow-efficiency/SKILL.md` ✓
+   - `~/.codex/skills/workflow-efficiency/SKILL.md` ✓
+   - Cloud source remains version-agnostic per D021.
+   - Claude's live skill registry refreshed mid-session — the new `workflow-efficiency: Use when setting up a new project, an LLM-tool session f…` description is now active.
+
+**D013 reframed (byte-for-byte claim no longer applies):** the SHA-256 tree match from 17k-6 was true at that commit time, before `install.ts` added registry-driven frontmatter injection (17k-10 D020/D021). Both installed copies now diverge from the cloud source by exactly the injected `version:` frontmatter line — by design. Re-running the original whole-tree SHA-256 comparison would no longer return `TREE HASH MATCH`; the correct post-17k-10 comparison is "source + registry version → install target" equivalence, which is what `install.ts` dry-run already surfaces.
+
+**Still untouched (intentional):**
+- `references/audit-existing-project.md` and `references/new-project-checklist.md` still need the same Claude → tool-agnostic pass. Scoped to the 17l migration when the skill bundle moves to the workflow repo.
+- Shared import `~/.agents/skills/workflow-efficiency/` (Codex-flavored variant) is not managed by `install.ts` per D018 and remains divergent. Post-17l decision: fold into canonical source or formalize the shared-import bridge.
+
+F1 is now resolved at the content layer for `SKILL.md`.
+
 ### Task 17k-7 — Prune-recommendations document
 
 **Planned by:** Claude Code (Opus 4.7 `[1m]`)
