@@ -1,18 +1,9 @@
 <!-- /contact route: full-bleed contact page with resizable terminals -->
+<!-- SEO meta + title now emitted by <SeoHead> in +layout.svelte (Slice 15a). -->
 <script lang="ts">
 	import ContactPage from '$lib/components/contact/ContactPage.svelte';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { contactContent } from '$lib/content/contact-page';
 
 	let { data } = $props();
-
-	const metaTitle = resolveLocale(contactContent.meta.title, 'en');
-	const metaDescription = resolveLocale(contactContent.meta.description, 'en');
 </script>
-
-<svelte:head>
-	<title>{metaTitle}</title>
-	<meta name="description" content={metaDescription} />
-</svelte:head>
 
 <ContactPage weather={data.weather} />

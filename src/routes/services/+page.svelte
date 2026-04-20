@@ -1,19 +1,10 @@
 <!-- /services index page: full-viewport kinetic scroll layout -->
+<!-- SEO meta + title now emitted by <SeoHead> in +layout.svelte (Slice 15a). -->
 <script lang="ts">
 	import ServiceListingPage from '$lib/components/services/ServiceListingPage.svelte';
-	import { resolveLocale } from '$lib/utils/locale';
-	import { servicesPageMeta } from '$lib/content/services';
 
 	let { data } = $props();
-
-	const metaTitle = resolveLocale(servicesPageMeta.title, 'en');
-	const metaDescription = resolveLocale(servicesPageMeta.description, 'en');
 </script>
-
-<svelte:head>
-	<title>{metaTitle}</title>
-	<meta name="description" content={metaDescription} />
-</svelte:head>
 
 <ServiceListingPage
 	services={data.services}
