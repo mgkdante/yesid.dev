@@ -94,6 +94,31 @@ Type-level contract for layout-authoritative SEO. Every adapter (static today, P
 
 ---
 
+### Task 15a-4: Per-route SEO entries in content/meta.ts
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-19
+
+**Files:**
+- Modified: `src/lib/content/meta.ts` — added `routeSeoEntries` (Record<string, StaticSeo | DynamicSeoFactory>), `FALLBACK_DESCRIPTION`, `fitDescriptionForSeo` helper
+
+**What landed:**
+13 route entries (home, about, contact, services index + detail factory, projects index + detail factory, blog index + personal + detail factory, tech-stack, __error). Each static entry has a hand-written 148–162 char description within the Zod 50–200 band. Dynamic factories pull from the existing Project/Service/BlogPost adapters and use `description`/`oneLiner`/`excerpt` fields with graceful fallback when content doesn't fit the SEO band.
+
+**Decisions:**
+- D010: Factories use dynamic import to avoid a meta ↔ adapter circular.
+- D011: Project detail prefers `description`, falls back to `oneLiner`.
+- D012: Blog detail uses existing `excerpt` field (no `summary` on type).
+- D013: `fitDescriptionForSeo` graceful-fallback helper.
+- D014: Route param names: projects `[slug]`, blog `[slug]`, services `[id]`.
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (no new tests in this task — Task 5 tests exercise forRoute end-to-end) | `bun run check`: 1 ERROR (unchanged from Task 3 — resolves Task 5)
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:

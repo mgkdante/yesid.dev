@@ -159,6 +159,44 @@ bun run test    # 846 passed — no regressions
 
 ---
 
+---
+
+### Session 2026-04-19 23:32 — Task 15a-4
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-3 commit 745d637
+
+**Goal:** Populate `content/meta.ts` with per-route SEO entries for all 13 public routes (static + dynamic factories).
+
+**Commands run:**
+```bash
+bun run check  # still 1 expected error from Task 3 (static.ts missing forRoute, resolves Task 5)
+bun -e '...'   # char-count verification: all descriptions 148–162 chars (within 50–200 Zod band)
+```
+
+**Files touched:**
+- Modified: `src/lib/content/meta.ts` — added `routeSeoEntries` map + `fitDescriptionForSeo` helper + `FALLBACK_DESCRIPTION`
+
+**Decisions:**
+- D010: Dynamic-route factories use `await import('$lib/adapters')` instead of top-level import to avoid circular dependency (`content/meta.ts` → `adapters/static.ts` → `content/meta.ts` if adapter imports meta entries directly).
+- D011: Project detail prefers `description` field over `oneLiner` for SEO (fuller content). Falls back to `oneLiner`, then site fallback if outside 50–200 band.
+- D012: Blog detail uses `post.excerpt` (the existing excerpt field) since BlogPost has no `summary`.
+- D013: Added `FALLBACK_DESCRIPTION` + `fitDescriptionForSeo()` helper so content-layer data that doesn't fit SEO band degrades gracefully to a site-wide fallback rather than throwing at Zod.
+- D014: Project routes use `[slug]` (filesystem is `projects/[slug]`), blog uses `[slug]`, services use `[id]`. Route ids in entry keys match these exactly.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run check` | 1 ERROR (unchanged — Task 5 target) |
+| Char counts | 148–162 per description; all within 50–200 Zod band |
+
+**Outcome:** 13 route entries in place: home, about, contact, services (index + factory), projects (index + factory), blog (index + personal + factory), tech-stack, __error. Ready for Task 5 to implement forRoute on the adapter.
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)
