@@ -141,6 +141,25 @@ Static adapter now fulfills the full `MetaPort` contract. `forRoute` looks up th
 
 ---
 
+### Task 15a-6: getPageSeo repository wrapper
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-19
+
+**Files:**
+- Modified: `src/lib/repositories/meta.ts` — added `getPageSeo(routeId, locale, params?)` alongside existing `getSiteMeta`/`getPersonSchema`
+- Created: `src/lib/repositories/meta.test.ts` — 3 tests
+
+**What landed:**
+Thin async wrapper delegating to `adapter.meta.forRoute`. Layout code (Task 8) imports this; never touches the adapter directly.
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (3 new tests) | `bun run check`: 0 errors
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:

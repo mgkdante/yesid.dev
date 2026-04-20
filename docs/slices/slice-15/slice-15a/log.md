@@ -232,6 +232,32 @@ bun run check
 
 ---
 
+---
+
+### Session 2026-04-19 23:36 — Task 15a-6
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-5 commit 466f70d
+
+**Goal:** Add `getPageSeo` repository wrapper so layout/page code never imports the adapter directly.
+
+**Files touched:**
+- Modified: `src/lib/repositories/meta.ts` — added `getPageSeo` wrapping `adapter.meta.forRoute`
+- Created: `src/lib/repositories/meta.test.ts` — 3 tests (static, dynamic, unknown-route propagation)
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test src/lib/repositories/meta.test.ts` | PASS (3/3) |
+| `bun run check` | PASS (0 errors) |
+
+**Outcome:** Clean consumer surface for Task 8 layout load. Ready for Task 7 (SeoHead component).
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)
