@@ -128,6 +128,31 @@ Three domain-content factories appended to `src/lib/adapters/jsonld.ts`. `buildB
 - Full suite regression: 941/941 PASS across 94 test files.
 - `bun run check`: 0 errors, 19 pre-existing warnings (unchanged).
 
+### Task 15b-6: `JsonLd.svelte` component
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-sonnet-4-6, subagent-driven-development)
+**Session:** 2026-04-20
+
+**Files:**
+- `src/lib/components/seo/JsonLd.svelte` (new, 13 lines)
+- `src/lib/components/seo/JsonLd.test.ts` (new, 72 lines)
+- `src/lib/utils/json-ld-serialize.ts` (new, 16 lines — serialization helper extracted from component)
+
+**What landed:**
+`JsonLd.svelte` is the rendering layer for JSON-LD: it accepts a `readonly SchemaOrgNode[]` prop, delegates serialization to `serializeJsonLd()` via `$derived`, and emits exactly one `<script type="application/ld+json">` element into `<svelte:head>` via `{@html}` when `nodes.length > 0`. Default text interpolation in Svelte escapes `<` to `&lt;` which corrupts valid JSON, making `{@html}` the correct choice for embedding literal script tags. The `<` character is escaped to `\u003c` in `serializeJsonLd()` (in `src/lib/utils/json-ld-serialize.ts`) so that any raw `</script>` sequence in a data field cannot prematurely terminate the browser's script element — the same safe-embed pattern used by Next.js, Nuxt, and Astro. The serialization helper was extracted to a separate `.ts` file because Svelte 5's compiler rejects literal `<` characters even inside `<script>` block comments and regex literals, treating them as HTML tag openers; `\x3c` in the regex matches the same byte safely.
+
+**Decisions:** None beyond spec. The `serializeJsonLd` helper is an unplanned addition forced by Svelte 5 parser constraints — the serialization logic is identical to the inline spec.
+
+**Tests:** 5/5 PASS across the `JsonLd.svelte` describe block.
+- `emits zero <script> tags when nodes is empty`
+- `emits exactly one <script type="application/ld+json"> when nodes non-empty`
+- `wraps nodes in @graph with @context`
+- `round-trip parses every node unchanged`
+- `escapes < inside field values (XSS regression guard)` — specifically verifies `\u003c` appears and `</script>` does not
+- Full suite regression: 946/946 PASS across 95 test files.
+- `bun run check`: 0 errors, 19 pre-existing warnings (unchanged).
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
