@@ -1,19 +1,12 @@
-// Site-meta repository. `getPersonSchema()` composes adapter data with the
-// pure JSON-LD builder — the one permitted bit of "work" a repository does.
-// Zod will later slot in before `buildPersonSchema` if SiteMeta needs runtime
-// validation (Slice 17c).
+// Site-meta repository. Slice 15b deleted the Slice-12 `getPersonSchema`
+// wrapper — JSON-LD is now emitted via the adapters/jsonld factories + the
+// <JsonLd> component; the repository no longer participates in that flow.
 
 import { adapter } from '$lib/adapters';
-import { buildPersonSchema } from '$lib/utils/json-ld';
 import type { Locale, PageSeo, SiteMeta } from '$lib/types';
 
 export async function getSiteMeta(): Promise<SiteMeta> {
 	return adapter.meta.site();
-}
-
-export async function getPersonSchema(): Promise<string> {
-	const meta = await adapter.meta.site();
-	return buildPersonSchema(meta);
 }
 
 /**
