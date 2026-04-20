@@ -25,7 +25,7 @@ import type {
 } from '$lib/schemas/jsonld';
 import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
 import { resolveLocale } from '$lib/utils/locale';
-import { PUBLISHED_LOCALES, SITE_HOST } from '$lib/utils/seo-defaults';
+import { SITE_HOST } from '$lib/utils/seo-defaults';
 
 export const PERSON_ID = `${SITE_HOST}/#person`;
 export const WEBSITE_ID = `${SITE_HOST}/#website`;
@@ -139,13 +139,16 @@ export function buildBlogPostingNode(post: BlogPost, locale: Locale): BlogPostin
 
 export function buildServiceNode(service: ServiceDomain, locale: Locale): ServiceNode {
 	const canonicalUrl = `${SITE_HOST}/services/${service.id}`;
+	// Schema.org does not define `availableLanguage` on `Service` directly
+	// (it belongs on ContactPoint / ServiceChannel / Place). When fr/es
+	// content ships, locale info will re-enter via a nested ServiceChannel
+	// under Service.availableChannel. Out of scope for 15b.
 	const built = {
 		'@type': 'Service' as const,
 		'@id': canonicalUrl,
 		name: resolveLocale(service.title, locale),
 		description: resolveLocale(service.description, locale),
 		provider: { '@id': PERSON_ID },
-		availableLanguage: [...PUBLISHED_LOCALES],
 	};
 	return SchemaOrgNodeSchema.parse(built) as ServiceNode;
 }

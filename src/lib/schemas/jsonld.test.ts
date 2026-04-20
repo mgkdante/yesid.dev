@@ -104,7 +104,6 @@ describe('ServiceSchema', () => {
 		name: 'SQL Consulting',
 		description: 'PostgreSQL consulting for growing teams.',
 		provider: { '@id': PERSON_ID },
-		availableLanguage: ['en'],
 	};
 
 	it('accepts a minimal valid Service', () => {

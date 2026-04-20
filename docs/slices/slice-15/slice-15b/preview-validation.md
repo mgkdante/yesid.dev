@@ -40,9 +40,13 @@ An initial Lighthouse run reported SEO 92 on `/` with `robots-txt is not valid`.
 
 ## validator.schema.org
 
-**Status:** pending — manual paste required.
+**Status:** ✅ **COMPLETED** — all 5 routes pass with 0 errors + 0 warnings.
 
-The spec's Q4-C acceptance criterion calls for validator.schema.org passing on the 5 canonical URLs. Attempted to automate this via Chrome DevTools MCP against `https://validator.schema.org/` — the tool is a Google Material Design Lite SPA that rejects synthetic click events on its "Run test" button (textarea value is accepted via the HTML prototype's native setter, but the submit button's click handler requires real pointer input). Rather than brittle automation, the 5 JSON blobs are embedded below for one-click manual paste.
+Automated via Chrome DevTools MCP against `https://validator.schema.org/` using CDP-level `click` + CodeMirror's `setValue()` API (the site is a Google Material Design Lite SPA with a CodeMirror-backed snippet editor; synthetic DOM events don't trigger its submit handler, but the CDP `click` tool drives real pointer events). Each of the 5 JSON blobs below was pasted via `cm.setValue(json)` followed by a real-input click on `#new-test-submit-button`; the Detected-items summary was scraped from the rendered result page.
+
+**First pass flagged one warning** on `/services/sql-development`: `"The property availableLanguage is not recognized by the schema (e.g. schema.org) for an object of type Service"`. Schema.org defines `availableLanguage` on `ContactPoint`, `Place`, and `ServiceChannel` — **not directly on `Service`**. The field was dropped from `ServiceSchema` + `buildServiceNode` in this same task; `PUBLISHED_LOCALES` is en-only today so nothing material was lost, and fr/es locale info will re-enter via a nested `ServiceChannel` (`Service.availableChannel → ServiceChannel.availableLanguage`) when translations ship.
+
+**Post-fix: all 5 routes show 0 errors and 0 warnings.** The 5 JSON blobs embedded below are kept for reproducibility (anyone can re-run the validator sweep against the localhost-extracted JSON to verify independently).
 
 **Important:** Zod-at-factory-boundary validates against our own schema definitions (in `src/lib/schemas/jsonld.ts`). validator.schema.org validates against Schema.org's official vocabulary and may catch expectations our Zod schemas don't encode. The two checks are **not redundant**; the external validator is the source of truth for "does this render as a rich result."
 
@@ -93,27 +97,27 @@ The spec's Q4-C acceptance criterion calls for validator.schema.org passing on t
 
 </details>
 
-### `/services/sql-development` — Service + BreadcrumbList
+### `/services/sql-development` — Service + BreadcrumbList (post-`availableLanguage`-drop)
 
 <details><summary>Click to expand JSON blob</summary>
 
 ```json
-{"@context":"https://schema.org","@graph":[{"@type":"Service","@id":"https://yesid.dev/services/sql-development","name":"SQL Development & Optimization","description":"Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. From complex reporting queries to stored procedures, built for correctness and performance.","provider":{"@id":"https://yesid.dev/#person"},"availableLanguage":["en"]},{"@type":"BreadcrumbList","@id":"https://yesid.dev/services/sql-development#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://yesid.dev"},{"@type":"ListItem","position":2,"name":"Services","item":"https://yesid.dev/services"},{"@type":"ListItem","position":3,"name":"SQL Development & Optimization","item":"https://yesid.dev/services/sql-development"}]}]}
+{"@context":"https://schema.org","@graph":[{"@type":"Service","@id":"https://yesid.dev/services/sql-development","name":"SQL Development & Optimization","description":"Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. From complex reporting queries to stored procedures, built for correctness and performance.","provider":{"@id":"https://yesid.dev/#person"}},{"@type":"BreadcrumbList","@id":"https://yesid.dev/services/sql-development#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://yesid.dev"},{"@type":"ListItem","position":2,"name":"Services","item":"https://yesid.dev/services"},{"@type":"ListItem","position":3,"name":"SQL Development & Optimization","item":"https://yesid.dev/services/sql-development"}]}]}
 ```
 
 </details>
 
-### Checklist
+### Results
 
-| Route | Errors | Warnings | Notes |
-|---|---:|---:|---|
-| `/` | _pending_ | _pending_ | Expect 0 errors |
-| `/about` | _pending_ | _pending_ | Expect 0 errors |
-| `/blog/building-a-transit-pipeline` | _pending_ | _pending_ | Expect 0 errors; BlogPosting.publisher soft warning accepted per Q6-A |
-| `/projects/yesid-dev` | _pending_ | _pending_ | Expect 0 errors |
-| `/services/sql-development` | _pending_ | _pending_ | Expect 0 errors |
+| Route | Errors | Warnings | Items detected | Notes |
+|---|---:|---:|---:|---|
+| `/` | **0** | **0** | 2 | WebSite + ProfilePage (Person consumed as @id ref) |
+| `/about` | **0** | **0** | 2 | ProfilePage + BreadcrumbList (Person consumed as @id ref) |
+| `/blog/building-a-transit-pipeline` | **0** | **0** | 2 | BlogPosting + BreadcrumbList — Person-as-publisher accepted by validator, no soft warning emitted (contrary to pre-validation expectation from Q6-A) |
+| `/projects/yesid-dev` | **0** | **0** | 2 | CreativeWork + BreadcrumbList |
+| `/services/sql-development` | **0** | **0** | 2 | Service + BreadcrumbList — first pass raised "availableLanguage not recognized" warning; field dropped in same task (see `ServiceSchema` + `buildServiceNode`); re-validated with 0 warnings |
 
-Fill in after the manual paste sweep. If any URL shows > 0 errors, they are blockers for merge and should be addressed before ticking.
+**All 5 canonical URLs pass validator.schema.org with 0 errors and 0 warnings. Acceptance criterion met.**
 
 ## Google Rich Results Test
 
@@ -138,10 +142,9 @@ Deferred to PR preview URL (requires public URL).
 
 ## Conclusion
 
-All 5 canonical URLs pass **Lighthouse SEO 100** and emit structurally correct, Zod-validated, cross-referenced JSON-LD via a single `<script type="application/ld+json">` block. Programmatic guarantees (954/954 tests, 0 `bun run check` errors, clean `bun run build` with sitemap gate) are all green.
+All 5 canonical URLs pass **Lighthouse SEO 100** and **validator.schema.org (0 errors, 0 warnings)** and emit structurally correct, Zod-validated, cross-referenced JSON-LD via a single `<script type="application/ld+json">` block. Programmatic guarantees (954/954 tests, 0 `bun run check` errors, clean `bun run build` with sitemap gate) are all green.
 
 **Outstanding before merge:**
-- [ ] validator.schema.org sweep on 5 canonical URLs (manual paste — JSON blobs embedded above)
-- [ ] Google Rich Results Test on 5 URLs at the PR preview URL (needs public access)
+- [ ] Google Rich Results Test on 5 URLs at the PR preview URL (requires public access) — per the 15a precedent; checklist embedded in the PR body.
 
-Both items can be completed in ~10 min once the PR preview URL is live; alternatively, the validator.schema.org sweep can be done now against the localhost-extracted JSON above. Every row in the Checklist table marked `_pending_` must be filled in with the actual validator result before ticking the acceptance criterion in `spec.md`.
+Both localhost-reachable validations are complete. Ready for PR.

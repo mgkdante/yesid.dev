@@ -182,11 +182,15 @@ describe('buildServiceNode', () => {
 		expect(node.provider).toEqual({ '@id': PERSON_ID });
 	});
 
-	it('populates availableLanguage from PUBLISHED_LOCALES', async () => {
+	it('does not emit availableLanguage (dropped to resolve validator.schema.org warning)', async () => {
+		// Schema.org defines availableLanguage on ContactPoint / ServiceChannel /
+		// Place — not directly on Service. Dropped during 15b Codex-review
+		// iteration. When fr/es ship, locale info re-enters via a nested
+		// ServiceChannel (Service.availableChannel → ServiceChannel.availableLanguage).
 		const services = await adapter.services.visible();
 		if (services.length === 0) return;
 		const node = buildServiceNode(services[0], 'en');
-		expect(node.availableLanguage).toEqual(['en']);
+		expect((node as Record<string, unknown>).availableLanguage).toBeUndefined();
 	});
 });
 

@@ -60,13 +60,18 @@ export const BlogPostingSchema = z.object({
 	image: z.string().url().optional(),
 });
 
+// Note: `availableLanguage` was dropped during 15b Codex-review iteration —
+// Schema.org defines availableLanguage on ContactPoint / Place / ServiceChannel,
+// NOT directly on Service. validator.schema.org flagged the misuse as a
+// warning. When fr/es ship, locale info re-enters via a nested ServiceChannel
+// (Service.availableChannel → ServiceChannel.availableLanguage). Out of scope
+// for 15b — PUBLISHED_LOCALES is en-only today so nothing is lost.
 export const ServiceSchema = z.object({
 	'@type': z.literal('Service'),
 	'@id': z.string().url(),
 	name: z.string().min(1),
 	description: z.string().min(1),
 	provider: IdRef,
-	availableLanguage: z.array(z.string().min(2)).min(1),
 	areaServed: z.string().optional(),
 });
 

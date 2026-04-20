@@ -562,7 +562,7 @@ Convention: tests live next to the code they test (co-located).
 | buildBlogPostingNode > uses post.date as datePublished | Date propagation | `node.datePublished === post.date` | Reads adapter.blog.all |
 | buildServiceNode > produces a Zod-parseable Service from a real service | Factory output validates | `node['@type'] === 'Service'` | Reads adapter.services.visible |
 | buildServiceNode > references Person via provider @id | Cross-ref pattern | `node.provider['@id'] === PERSON_ID` | Reads adapter.services.visible |
-| buildServiceNode > populates availableLanguage from PUBLISHED_LOCALES | Locale list propagation | `availableLanguage === ['en']` | Reads adapter.services.visible |
+| buildServiceNode > does not emit availableLanguage (dropped to resolve validator.schema.org warning) | Codex-iteration guard | `availableLanguage === undefined` on emitted node | Reads adapter.services.visible |
 | buildCreativeWorkNode > produces a Zod-parseable CreativeWork from a real project | Factory output validates | `node['@type'] === 'CreativeWork'` | Reads adapter.projects.public |
 | buildCreativeWorkNode > references Person via author + creator @ids | Cross-ref pattern | Both refs equal PERSON_ID | Reads adapter.projects.public |
 | buildCreativeWorkNode > copies project.tags into keywords + project.stack into about | Domain → schema mapping | `keywords === tags`, `about === stack` | Reads adapter.projects.public |
