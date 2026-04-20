@@ -16,11 +16,8 @@
 
 	// Pre-resolved chrome — all static English for now (swap to $derived on
 	// locale when translation arrives).
+	// SEO meta + title emitted by <SeoHead> in +layout.svelte (Slice 15a).
 	const c = techStackPageContent;
-	const metaTitle = resolveLocale(c.meta.title, 'en');
-	const metaDescription = resolveLocale(c.meta.description, 'en')
-		.replace('{itemCount}', String(itemCount))
-		.replace('{layerCount}', String(layerCount));
 	const heroOverline = resolveLocale(c.hero.overline, 'en');
 	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, 'en');
 	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, 'en');
@@ -81,11 +78,6 @@
 		playSequence();
 	});
 </script>
-
-<svelte:head>
-	<title>{metaTitle}</title>
-	<meta name="description" content={metaDescription} />
-</svelte:head>
 
 <main class="tech-stack-page">
 	<!-- ═══ HERO ZONE ═══ -->

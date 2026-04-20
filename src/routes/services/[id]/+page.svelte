@@ -1,15 +1,10 @@
 <!-- /services/[id] detail page: consultative deep dive -->
+<!-- SEO meta + title now emitted by <SeoHead> in +layout.svelte (Slice 15a). -->
 <script lang="ts">
 	import ServiceDetailPage from '$lib/components/services/ServiceDetailPage.svelte';
-	import { resolveLocale } from '$lib/utils/locale';
 
 	let { data } = $props();
 </script>
-
-<svelte:head>
-	<title>{resolveLocale(data.service.title, 'en')} — yesid.</title>
-	<meta name="description" content={resolveLocale(data.service.description, 'en')} />
-</svelte:head>
 
 <ServiceDetailPage
 	service={data.service}

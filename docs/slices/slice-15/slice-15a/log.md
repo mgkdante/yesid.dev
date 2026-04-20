@@ -288,6 +288,60 @@ bun run check
 
 ---
 
+---
+
+### Session 2026-04-19 23:48 — Task 15a-8
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-7 commit 507d121
+
+**Goal:** Wire the SEO foundation into the running app via root `+layout.ts` + `<SeoHead>` mount, clean up scattered `<svelte:head>` blocks across pages, verify SSR emits all meta server-side (critical for social crawlers).
+
+**Commands run:**
+```bash
+bun run test src/routes/layout.test.ts
+bun run check
+curl http://localhost:5173/ http://localhost:5173/about http://localhost:5173/blog/[real-slug]
+preview_eval window.location + document.head inspection
+bun run test    # 877/877
+```
+
+**Files touched:**
+- Created: `src/routes/+layout.ts` — server-side load calls `getPageSeo(route.id, locale, params)`, falls back to `/__error` on unknown routes
+- Created: `src/routes/layout.test.ts` — 6 tests (had to rename from `+layout.test.ts` — SvelteKit reserves `+` prefix)
+- Modified: `src/routes/+layout.svelte` — removed `buildPersonSchema`/`siteMeta` imports + JSON-LD exception block; mounted `<SeoHead seo={data.seo} locale={DEFAULT_LOCALE} />`; added `data` to props destructure
+- Modified: `src/routes/+page.ts` — **re-enabled SSR** (Slice 17e motion re-engineering made GSAP/Lottie lazy-loaded; browser-only imports now behind onMount/actions only)
+- Modified: `src/routes/about/+page.svelte` — removed local `<svelte:head>` + unused metaTitle/metaDescription consts
+- Modified: `src/routes/contact/+page.svelte` — same
+- Modified: `src/routes/services/+page.svelte` — same
+- Modified: `src/routes/services/[id]/+page.svelte` — same
+- Modified: `src/routes/projects/+page.svelte` — same
+- Modified: `src/routes/tech-stack/+page.svelte` — removed `<svelte:head>` + metaTitle/metaDescription consts (kept the heroOverline / heroTitle / etc. content resolution)
+- Modified: `src/routes/+page.svelte` — removed empty `<svelte:head>` block
+
+**Decisions:**
+- D018: SvelteKit reserves `+` prefix for routing. Test file had to be `layout.test.ts` (no `+`). Matches existing pattern (`home.test.ts`, `error.test.ts`).
+- D019: **Re-enabled home page SSR.** The motion engine re-engineering in Slice 17e moved all GSAP/Lottie imports behind `onMount` and Svelte actions. Server-side import no longer triggers browser-only API access. Verified via `curl http://localhost:5173/` — full meta set ships server-side, no 500 errors, no runtime errors on client hydration. This was required for social crawlers (Twitter/LinkedIn/Facebook) to see the home page's meta.
+- D020: Removed scattered per-page `<svelte:head>` blocks from 6 pages + home. SEO is now exclusively layout-driven — SeoHead owns all SEO meta, app.html owns only the charset/viewport/font hints.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test src/routes/layout.test.ts` | PASS (6/6) |
+| `bun run test` (full suite) | PASS (877/877 — no regressions) |
+| `bun run check` | PASS (0 errors) |
+| `curl http://localhost:5173/` | Full meta set in HTML (home SSR now works) |
+| `curl http://localhost:5173/about` | Full meta set |
+| `curl http://localhost:5173/blog/building-a-transit-pipeline` | Per-post title + canonical + `og:type=article` |
+| `curl http://localhost:5173/blog/not-a-real-post` | 404 SEO (`noindex,nofollow`, `Not Found | yesid.`) |
+
+**Outcome:** SEO end-to-end live in dev. Every route type emits correct SSR meta. Home page meta visible to non-JS crawlers. Seven per-page head blocks removed. Ready for Task 9 (sitemap).
+
+**Blockers / questions:** none — this was the big integration task. All predictions held. No OS-quirk issues.
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)

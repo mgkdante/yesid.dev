@@ -183,6 +183,33 @@ Full `<head>` emission: title, description, canonical, complete OG set (7 tags i
 
 ---
 
+### Task 15a-8: Root +layout.ts + SeoHead wiring + home SSR re-enable
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-19
+
+**Files:**
+- Created: `src/routes/+layout.ts` — universal load; calls `getPageSeo(route.id, locale, params)` with 404 fallback
+- Created: `src/routes/layout.test.ts` — 6 tests (renamed from `+layout.test.ts` per SvelteKit's `+` prefix reservation)
+- Modified: `src/routes/+layout.svelte` — mounted `<SeoHead>`, removed Slice 12 `buildPersonSchema` JSON-LD exception, removed `siteMeta` import
+- Modified: `src/routes/+page.ts` — **re-enabled SSR** (motion refactor made GSAP/Lottie lazy-only; home now ships server-side meta to social crawlers)
+- Modified: `src/routes/{about,contact,services,services/[id],projects,tech-stack}/+page.svelte` + `src/routes/+page.svelte` — removed scattered `<svelte:head>` blocks; SeoHead is authoritative
+
+**What landed:**
+SEO now flows end-to-end: `+layout.ts` resolves `PageSeo` from `adapter.meta.forRoute(route.id, locale, params)`, `+layout.svelte` mounts `<SeoHead>`, Svelte injects all tags into `<svelte:head>`, SSR emits them on first byte. Verified across static routes (/about), dynamic routes (/blog/[slug]), home (previously non-SSR), and unknown routes (fall back to 404 SEO with `noindex,nofollow`).
+
+**Decisions:**
+- D018: Test filename `layout.test.ts` (no `+` prefix) — matches existing `home.test.ts`/`error.test.ts` pattern.
+- D019: Home SSR re-enabled. Slice 17e's motion work already made it safe.
+- D020: Page-level `<svelte:head>` blocks removed across 7 files — SEO is exclusively layout-driven.
+
+**Follow-ups flagged:** none — no regressions in 877-test suite.
+
+**Tests:** PASS (6 layout tests + 877/877 suite, no regressions) | `bun run check`: 0 errors | SSR verified via curl for home / about / blog-detail / 404
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
