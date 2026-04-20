@@ -3,11 +3,11 @@
 	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import {
-		DEFAULT_OG_IMAGE,
 		PUBLISHED_LOCALES,
 		SITE_HOST,
 		SITE_NAME,
 		canonicalFor,
+		defaultOgImageFor,
 	} from '$lib/utils/seo-defaults';
 	import { dev as runtimeDev } from '$app/environment';
 
@@ -20,7 +20,7 @@
 
 	const title = $derived(resolveLocale(seo.title, locale));
 	const description = $derived(resolveLocale(seo.description, locale));
-	const ogImageUrl = $derived(seo.ogImage ? seo.ogImage.url : DEFAULT_OG_IMAGE);
+	const ogImageUrl = $derived(seo.ogImage ? seo.ogImage.url : defaultOgImageFor(locale));
 	const ogImageAlt = $derived(
 		seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : `${SITE_NAME} — ${title}`,
 	);

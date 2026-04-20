@@ -7,6 +7,7 @@
 		"dev": "vite dev",
 		"build": "vite build && bun run check:sitemap",
 		"check:sitemap": "vitest run src/tests/sitemap-coverage.test.ts",
+		"og:default": "bun scripts/generate-og-default.ts",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

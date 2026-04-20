@@ -71,10 +71,17 @@ describe('SeoHead — tag emission', () => {
 		expect(getLink('alternate', { name: 'hreflang', value: 'x-default' })).not.toBeNull();
 	});
 
-	it('falls back to DEFAULT_OG_IMAGE when ogImage is omitted', () => {
+	it('falls back to locale-specific default OG image when ogImage is omitted', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'en' } });
 		const ogImage = getMeta('property', 'og:image');
-		expect(ogImage?.content).toMatch(/og\/default\.png$/);
+		expect(ogImage?.content).toMatch(/\/og\/default\.en\.png$/);
+	});
+
+	it('falls back to EN default OG image for unpublished locale', () => {
+		render(SeoHead, { props: { seo: validSeo, locale: 'fr' } });
+		const ogImage = getMeta('property', 'og:image');
+		// fr is not yet in PUBLISHED_LOCALES — falls back to EN
+		expect(ogImage?.content).toMatch(/\/og\/default\.en\.png$/);
 	});
 
 	it('emits noindex,nofollow robots meta when seo.noIndex is true', () => {

@@ -438,6 +438,46 @@ bun run test    # 877/877
 
 ---
 
+---
+
+### Session 2026-04-20 00:14 — Task 15a-12
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-11 commit d8fc4e1
+
+**Goal:** Ship default OG image — locale-aware, data-driven, Payload-ready.
+
+**Files touched:**
+- Added dep: `sharp@0.34.5` (dev) — SVG→PNG rasterisation
+- Created: `scripts/generate-og-default.ts` — reads `siteMeta.tagline` via LocalizedString, iterates `PUBLISHED_LOCALES`, emits `static/og/default.{locale}.png` for every locale with a translated tagline
+- Created: `static/og/default.en.png` — 29KB, 1200×630, wordmark + orange-dot brand + tagline + location
+- Modified: `src/lib/utils/seo-defaults.ts` — added `defaultOgImageFor(locale)` helper; kept `DEFAULT_OG_IMAGE` as EN alias
+- Modified: `src/lib/components/seo/SeoHead.svelte` — consumes `defaultOgImageFor(locale)` instead of the static constant
+- Modified: `src/lib/components/seo/SeoHead.test.ts` — added test for unpublished-locale fallback behavior
+- Modified: `package.json` — new `og:default` script
+- Deleted: earlier standalone `static/og/default.svg` + first-draft PNG (regenerated from script now)
+
+**Decisions:**
+- D028: Data-driven generator (not a static SVG file). Source of truth is `siteMeta.tagline.{locale}` in the data layer. When the static adapter swaps for Payload (Slice 18), `siteMeta` comes from Payload GraphQL — generator needs zero change.
+- D029: Per-locale file naming `default.{locale}.png`. Fallback to EN when requested locale isn't in `PUBLISHED_LOCALES`. No broken images.
+- D030: Dropped the "STOP 15 — SEO" eyebrow from the first draft — that's a bento-card internal convention per the brand memory, not appropriate for external social previews. Replaced with "Digital Infrastructure · Montréal" (category + location).
+- D031: Brand check — favicon is the orange dot (per user reminder). OG image wordmark uses "yesid<tspan fill='#E07800'>.</tspan>" — the dot IS the brand mark, same as favicon.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run og:default` | Wrote static/og/default.en.png (1200×630, 29KB) |
+| `bun run test src/lib/utils/seo-defaults.test.ts src/lib/components/seo/SeoHead.test.ts` | PASS (23/23 — added 1 new test for unpublished-locale fallback) |
+| `curl http://localhost:5173/about \| grep og:image` | `<meta property="og:image" content="https://yesid.dev/og/default.en.png"/>` |
+| User visual approval | ✓ approved |
+
+**Outcome:** Locale-aware OG image wired end-to-end. Adding FR/ES: fill `siteMeta.tagline.fr` / `.es`, add locale to `PUBLISHED_LOCALES`, rerun `bun run og:default`. Script generates the new PNG, SeoHead automatically picks it up. Zero code changes needed when Payload ships.
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)

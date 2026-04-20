@@ -282,6 +282,35 @@ Dynamic `/robots.txt` with `User-agent: *`, `Allow: /`, `Disallow: /preview`, ab
 
 ---
 
+### Task 15a-12: Default OG image (locale-aware, data-driven)
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-20
+
+**Files:**
+- Added: `sharp@0.34.5` dev dep
+- Created: `scripts/generate-og-default.ts` — data-driven, iterates `PUBLISHED_LOCALES`, emits `default.{locale}.png` per translated tagline
+- Created: `static/og/default.en.png` — 1200×630, 29KB, wordmark + orange dot brand
+- Modified: `src/lib/utils/seo-defaults.ts` — added `defaultOgImageFor(locale)`
+- Modified: `src/lib/components/seo/SeoHead.svelte` + `.test.ts` — locale-aware OG image fallback
+- Modified: `package.json` — `og:default` script
+
+**What landed:**
+Single-branded 1200×630 OG image per published locale. Today = EN only (EN is the only locale with a siteMeta.tagline). Adding FR/ES = fill tagline + append to PUBLISHED_LOCALES + rerun script. Zero page/component changes. Slice 18's Payload CMS adapter provides siteMeta the same way; generator is unchanged.
+
+**Decisions:**
+- D028: Data-driven (script reads siteMeta) — Payload-ready from day one.
+- D029: Per-locale file naming + EN fallback for unpublished locales.
+- D030: Dropped internal "STOP 15 — SEO" eyebrow; used "Digital Infrastructure · Montréal" for external share context.
+- D031: Favicon is orange dot (user reminder) — OG image uses same dot-as-brand pattern via wordmark period.
+
+**Follow-ups flagged:** none. Slice 15c (post-Payload) will generalise this into per-post / per-project Satori rendering.
+
+**Tests:** PASS (23/23 across seo-defaults + SeoHead) | Live `og:image` confirmed via curl: `https://yesid.dev/og/default.en.png`
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
