@@ -42,7 +42,7 @@ An initial Lighthouse run reported SEO 92 on `/` with `robots-txt is not valid`.
 
 **Status:** pending — manual paste required.
 
-The spec's Q4-C acceptance criterion calls for validator.schema.org passing on the 5 canonical URLs. Attempted to automate this via Chrome DevTools MCP against `https://validator.schema.org/` — the tool is a React SPA that rejects synthetic click events on its "Run test" button (textarea value is accepted via React's native setter pattern, but the button's click handler doesn't fire without real pointer input). Rather than brittle automation, the 5 JSON blobs are embedded below for one-click manual paste.
+The spec's Q4-C acceptance criterion calls for validator.schema.org passing on the 5 canonical URLs. Attempted to automate this via Chrome DevTools MCP against `https://validator.schema.org/` — the tool is a Google Material Design Lite SPA that rejects synthetic click events on its "Run test" button (textarea value is accepted via the HTML prototype's native setter, but the submit button's click handler requires real pointer input). Rather than brittle automation, the 5 JSON blobs are embedded below for one-click manual paste.
 
 **Important:** Zod-at-factory-boundary validates against our own schema definitions (in `src/lib/schemas/jsonld.ts`). validator.schema.org validates against Schema.org's official vocabulary and may catch expectations our Zod schemas don't encode. The two checks are **not redundant**; the external validator is the source of truth for "does this render as a rich result."
 
