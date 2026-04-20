@@ -40,14 +40,80 @@ An initial Lighthouse run reported SEO 92 on `/` with `robots-txt is not valid`.
 
 ## validator.schema.org
 
-Deferred to the PR preview URL per the same pattern Slice 15a established for external validators. The validator accepts pasted JSON from any `@graph` blob and does not require the page to be publicly accessible, so we could run it on the localhost-extracted JSON — but since the extracted JSON has been round-tripped through the Zod discriminated-union schema (every factory ends with `SchemaOrgNodeSchema.parse(built)`), the validator would be verifying what Zod already verified at build time.
+**Status:** pending — manual paste required.
 
-**Checklist for PR preview URL:**
-- [ ] validator.schema.org on `/` → 0 errors
-- [ ] validator.schema.org on `/about` → 0 errors
-- [ ] validator.schema.org on `/blog/<slug>` → 0 errors (accept "recommended: publisher" soft warning per Q6-A)
-- [ ] validator.schema.org on `/projects/<slug>` → 0 errors
-- [ ] validator.schema.org on `/services/<id>` → 0 errors
+The spec's Q4-C acceptance criterion calls for validator.schema.org passing on the 5 canonical URLs. Attempted to automate this via Chrome DevTools MCP against `https://validator.schema.org/` — the tool is a React SPA that rejects synthetic click events on its "Run test" button (textarea value is accepted via React's native setter pattern, but the button's click handler doesn't fire without real pointer input). Rather than brittle automation, the 5 JSON blobs are embedded below for one-click manual paste.
+
+**Important:** Zod-at-factory-boundary validates against our own schema definitions (in `src/lib/schemas/jsonld.ts`). validator.schema.org validates against Schema.org's official vocabulary and may catch expectations our Zod schemas don't encode. The two checks are **not redundant**; the external validator is the source of truth for "does this render as a rich result."
+
+**How to run the sweep (~5 min):**
+1. Open https://validator.schema.org/ in a browser (or the page linked from the PR preview URL once it's live)
+2. Click the "Run test" / "Code snippet" tab
+3. Paste each blob below into the code textarea
+4. Click "Run test" — capture error/warning counts
+5. Tick the corresponding checkbox and update the "Errors/Warnings" column
+
+### `/` — Person + WebSite + ProfilePage
+
+<details><summary>Click to expand JSON blob</summary>
+
+```json
+{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://yesid.dev/#person","name":"Yesid O.","jobTitle":"Digital Infrastructure Consultant","url":"https://yesid.dev","email":"contact@yesid.dev","sameAs":["https://github.com/mgkdante","https://www.linkedin.com/in/otaloray/","https://www.upwork.com/freelancers/~011ba4ec420b4cdd82"],"knowsAbout":["PostgreSQL","dbt","Power BI","Python","Digital Infrastructure","ETL","Data Warehousing","SvelteKit","TypeScript"],"address":{"@type":"PostalAddress","addressLocality":"Montreal","addressRegion":"QC","addressCountry":"CA"}},{"@type":"WebSite","@id":"https://yesid.dev/#website","name":"yesid.","url":"https://yesid.dev","description":"Freelance SQL developer and digital infrastructure consultant based in Montreal. PostgreSQL, dbt, Power BI, and Python.","publisher":{"@id":"https://yesid.dev/#person"}},{"@type":"ProfilePage","@id":"https://yesid.dev#profilepage","mainEntity":{"@id":"https://yesid.dev/#person"}}]}
+```
+
+</details>
+
+### `/about` — Person + ProfilePage + BreadcrumbList
+
+<details><summary>Click to expand JSON blob</summary>
+
+```json
+{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://yesid.dev/#person","name":"Yesid O.","jobTitle":"Digital Infrastructure Consultant","url":"https://yesid.dev","email":"contact@yesid.dev","sameAs":["https://github.com/mgkdante","https://www.linkedin.com/in/otaloray/","https://www.upwork.com/freelancers/~011ba4ec420b4cdd82"],"knowsAbout":["PostgreSQL","dbt","Power BI","Python","Digital Infrastructure","ETL","Data Warehousing","SvelteKit","TypeScript"],"address":{"@type":"PostalAddress","addressLocality":"Montreal","addressRegion":"QC","addressCountry":"CA"}},{"@type":"ProfilePage","@id":"https://yesid.dev/about#profilepage","mainEntity":{"@id":"https://yesid.dev/#person"}},{"@type":"BreadcrumbList","@id":"https://yesid.dev/about#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://yesid.dev"},{"@type":"ListItem","position":2,"name":"About","item":"https://yesid.dev/about"}]}]}
+```
+
+</details>
+
+### `/blog/building-a-transit-pipeline` — BlogPosting + BreadcrumbList
+
+<details><summary>Click to expand JSON blob</summary>
+
+```json
+{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","@id":"https://yesid.dev/blog/building-a-transit-pipeline","headline":"Building a Transit Data Pipeline","description":"How I designed an ELT pipeline to process real-time GTFS feeds for a Quebec transit operator — from ingestion to dashboard.","inLanguage":"en","datePublished":"2026-03-15","author":{"@id":"https://yesid.dev/#person"},"publisher":{"@id":"https://yesid.dev/#person"},"mainEntityOfPage":"https://yesid.dev/blog/building-a-transit-pipeline"},{"@type":"BreadcrumbList","@id":"https://yesid.dev/blog/building-a-transit-pipeline#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://yesid.dev"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://yesid.dev/blog"},{"@type":"ListItem","position":3,"name":"Building a Transit Data Pipeline","item":"https://yesid.dev/blog/building-a-transit-pipeline"}]}]}
+```
+
+</details>
+
+### `/projects/yesid-dev` — CreativeWork + BreadcrumbList
+
+<details><summary>Click to expand JSON blob</summary>
+
+```json
+{"@context":"https://schema.org","@graph":[{"@type":"CreativeWork","@id":"https://yesid.dev/projects/yesid-dev","name":"yesid.dev — Portfolio Site","description":"A personal brand and portfolio site for a freelance SQL developer and digital infrastructure consultant. Built with SvelteKit 2, Svelte 5, Tailwind CSS v4, and deployed to Vercel. Designed to be multilingual (en/fr/es) from day one.","url":"https://yesid.dev/projects/yesid-dev","author":{"@id":"https://yesid.dev/#person"},"creator":{"@id":"https://yesid.dev/#person"},"keywords":["portfolio","web","svelte"],"about":["SvelteKit","Svelte 5","Tailwind","TypeScript","Vercel"]},{"@type":"BreadcrumbList","@id":"https://yesid.dev/projects/yesid-dev#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://yesid.dev"},{"@type":"ListItem","position":2,"name":"Projects","item":"https://yesid.dev/projects"},{"@type":"ListItem","position":3,"name":"yesid.dev — Portfolio Site","item":"https://yesid.dev/projects/yesid-dev"}]}]}
+```
+
+</details>
+
+### `/services/sql-development` — Service + BreadcrumbList
+
+<details><summary>Click to expand JSON blob</summary>
+
+```json
+{"@context":"https://schema.org","@graph":[{"@type":"Service","@id":"https://yesid.dev/services/sql-development","name":"SQL Development & Optimization","description":"Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. From complex reporting queries to stored procedures, built for correctness and performance.","provider":{"@id":"https://yesid.dev/#person"},"availableLanguage":["en"]},{"@type":"BreadcrumbList","@id":"https://yesid.dev/services/sql-development#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://yesid.dev"},{"@type":"ListItem","position":2,"name":"Services","item":"https://yesid.dev/services"},{"@type":"ListItem","position":3,"name":"SQL Development & Optimization","item":"https://yesid.dev/services/sql-development"}]}]}
+```
+
+</details>
+
+### Checklist
+
+| Route | Errors | Warnings | Notes |
+|---|---:|---:|---|
+| `/` | _pending_ | _pending_ | Expect 0 errors |
+| `/about` | _pending_ | _pending_ | Expect 0 errors |
+| `/blog/building-a-transit-pipeline` | _pending_ | _pending_ | Expect 0 errors; BlogPosting.publisher soft warning accepted per Q6-A |
+| `/projects/yesid-dev` | _pending_ | _pending_ | Expect 0 errors |
+| `/services/sql-development` | _pending_ | _pending_ | Expect 0 errors |
+
+Fill in after the manual paste sweep. If any URL shows > 0 errors, they are blockers for merge and should be addressed before ticking.
 
 ## Google Rich Results Test
 
@@ -72,4 +138,10 @@ Deferred to PR preview URL (requires public URL).
 
 ## Conclusion
 
-All 5 canonical URLs pass Lighthouse SEO 100 and emit structurally correct, Zod-validated, cross-referenced JSON-LD via a single `<script type="application/ld+json">` block. Ready for PR creation. External validator sweep deferred to the Vercel preview URL per the 15a precedent.
+All 5 canonical URLs pass **Lighthouse SEO 100** and emit structurally correct, Zod-validated, cross-referenced JSON-LD via a single `<script type="application/ld+json">` block. Programmatic guarantees (954/954 tests, 0 `bun run check` errors, clean `bun run build` with sitemap gate) are all green.
+
+**Outstanding before merge:**
+- [ ] validator.schema.org sweep on 5 canonical URLs (manual paste — JSON blobs embedded above)
+- [ ] Google Rich Results Test on 5 URLs at the PR preview URL (needs public access)
+
+Both items can be completed in ~10 min once the PR preview URL is live; alternatively, the validator.schema.org sweep can be done now against the localhost-extracted JSON above. Every row in the Checklist table marked `_pending_` must be filled in with the actual validator result before ticking the acceptance criterion in `spec.md`.

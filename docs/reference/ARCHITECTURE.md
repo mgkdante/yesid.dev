@@ -60,7 +60,7 @@ src/
 │   │   ├── project.ts   # getPublicProjects, getProjectBySlug, getFeaturedProjects, etc.
 │   │   ├── service.ts   # getVisibleServices + metro-line derivation
 │   │   ├── blog.ts      # getAllPosts, getPostBySlug, etc.
-│   │   ├── meta.ts      # getSiteMeta + getPersonSchema (the one method that composes)
+│   │   ├── meta.ts      # getSiteMeta + getPageSeo (forRoute wrapper; Slice 15b dropped the Slice 12 getPersonSchema composer)
 │   │   ├── tech-stack.ts
 │   │   ├── content.ts   # getHeroData, getAboutPageContent, getMetroBookends, etc.
 │   │   └── index.ts     # Barrel

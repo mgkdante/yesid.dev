@@ -499,7 +499,7 @@ Convention: tests live next to the code they test (co-located).
 | getProjectsByService > returns empty array for unknown service ID | A nonexistent service returns no results | Result equals `[]` | `'nonexistent'` |
 | getServiceIdsForProjects > returns deduplicated sorted service IDs from public projects | Service IDs from public projects are collected, deduped, and sorted | Length > 0, sorted, no duplicates | Standard |
 
-# SEO JSON-LD (`src/lib/schemas/jsonld.test.ts`, `src/lib/adapters/jsonld.test.ts`, `src/lib/components/seo/JsonLd.test.ts`, `src/lib/schemas/seo.test.ts`) — 4 files (Slice 15b)
+# SEO JSON-LD (`src/lib/schemas/jsonld.test.ts`, `src/lib/adapters/jsonld.test.ts`, `src/lib/components/seo/JsonLd.test.ts`, `src/lib/schemas/seo.test.ts`, `src/lib/components/seo/SeoHead.test.ts` [extended], `src/lib/adapters/meta.test.ts` [extended]) — 6 files (Slice 15b)
 
 ## src/lib/schemas/jsonld.test.ts
 
