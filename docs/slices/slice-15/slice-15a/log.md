@@ -88,6 +88,41 @@ bun run check
 
 ---
 
+---
+
+### Session 2026-04-19 23:22 — Task 15a-2
+
+**Tool:** Claude Code (claude-opus-4-7, subagent-driven-development)
+**Session type:** Implementation
+**Picking up from:** Task 15a-1 commit 2d3aa61
+
+**Goal:** Land site-level SEO defaults + `canonicalFor` helper for locale-aware URL resolution.
+
+**Commands run:**
+```bash
+bun run test src/lib/utils/seo-defaults.test.ts
+bun run check
+```
+
+**Files touched:**
+- Created: `src/lib/utils/seo-defaults.ts`
+- Created: `src/lib/utils/seo-defaults.test.ts`
+
+**Decisions:**
+- D008: `canonicalFor` accepts locale as a parameter but currently ignores it (EN-only). Stable API — the slice that introduces FR/ES changes the helper body without changing any call site.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test src/lib/utils/seo-defaults.test.ts` | PASS (8/8) |
+| `bun run check` | PASS (0 errors) |
+
+**Outcome:** Defaults module ready. Task 7 (`SeoHead`) will consume these; Task 11 (sitemap script) will consume `PUBLISHED_LOCALES`.
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)

@@ -45,6 +45,30 @@ Zod contract for route-level SEO metadata. `PageSeoSchema` validates title (≤ 
 
 **Tests:** PASS (9 tests) | `bun run check`: 0 errors
 
+*(Code-quality review revision 2d3aa61 expanded to 16 tests; whitespace guard on LocalizedStringSchema.en; rationale comment on ogImage.url permitting relative paths.)*
+
+---
+
+### Task 15a-2: seo-defaults + canonicalFor
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, subagent-driven-development)
+**Session:** 2026-04-19
+
+**Files:**
+- Created: `src/lib/utils/seo-defaults.ts` — `SITE_HOST`, `DEFAULT_OG_IMAGE`, `SITE_NAME`, `PUBLISHED_LOCALES`, `DEFAULT_LOCALE`, `canonicalFor(pathname, locale)`
+- Created: `src/lib/utils/seo-defaults.test.ts` — 8 tests covering constants + canonical URL resolution
+
+**What landed:**
+Single-module source of truth for SEO defaults. `canonicalFor()` strips trailing slashes, returns `SITE_HOST` bare for the root route, and accepts locale as a parameter so the slice that introduces FR/ES changes the helper body without touching call sites.
+
+**Decisions:**
+- D008: Stable locale-aware API from day one; EN-only behavior today.
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (8 tests) | `bun run check`: 0 errors
+
 ---
 
 ## Follow-ups flagged (accumulates)
