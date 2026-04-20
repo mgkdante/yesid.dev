@@ -210,6 +210,30 @@ SEO now flows end-to-end: `+layout.ts` resolves `PageSeo` from `adapter.meta.for
 
 ---
 
+### Task 15a-9: /sitemap.xml server route
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-20
+
+**Files:**
+- Created: `src/routes/sitemap.xml/+server.ts` — dynamic XML, static routes + every public project/service/blog slug, hreflang per published locale
+- Created: `src/routes/sitemap.xml/server.test.ts` — 6 tests
+
+**What landed:**
+Dynamic sitemap at `/sitemap.xml` iterating the 8 static routes + all public projects (by slug) + all visible services (by id) + all blog posts (by slug). Each URL entry includes `xhtml:link rel="alternate" hreflang="en"` (extends automatically when FR/ES join `PUBLISHED_LOCALES`). Content-type `application/xml`, 1-hour cache header.
+
+**Decisions:**
+- D021: `_` prefix on named exports (SvelteKit requirement).
+- D022: Test file named `server.test.ts` (no `+` prefix).
+- D023: Multi-field lastmod fallback for blog posts.
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (6 new tests, full suite still 877 passing) | `bun run check`: 0 errors | Live `/sitemap.xml` validated via curl
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:

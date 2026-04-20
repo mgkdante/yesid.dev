@@ -342,6 +342,38 @@ bun run test    # 877/877
 
 ---
 
+---
+
+### Session 2026-04-20 00:00 — Task 15a-9
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-8 commit 6655bcb
+
+**Goal:** Ship `/sitemap.xml` server route iterating public routes × published locales with hreflang.
+
+**Files touched:**
+- Created: `src/routes/sitemap.xml/+server.ts` — server handler; exports `_STATIC_ROUTES` + `_buildSitemapEntries` for the Task 11 coverage gate
+- Created: `src/routes/sitemap.xml/server.test.ts` — 6 tests (content-type, static routes, dynamic routes, exclusions, hreflang, well-formed XML)
+
+**Decisions:**
+- D021: Named exports in a `+server.ts` require a `_` prefix — SvelteKit rejects any non-reserved name. Used `_STATIC_ROUTES` + `_buildSitemapEntries` with explanatory comment. Task 11's coverage script imports `_buildSitemapEntries` instead of HTTP-fetching `/sitemap.xml`.
+- D022: Test file name `server.test.ts` (not `+server.test.ts`) per the SvelteKit `+` prefix reservation learned in Task 8.
+- D023: `lastmod` pulls from blog post `updatedAt` → `publishedAt` → `date` → build-time fallback (supports various data shapes through Slice 18 migration).
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test src/routes/sitemap.xml/server.test.ts` | PASS (6/6) |
+| `bun run check` | PASS (0 errors) |
+| `curl http://localhost:5173/sitemap.xml` | Valid XML, all static routes + dynamic slugs, hreflang entries |
+
+**Outcome:** Live sitemap working. Ready for Task 10 (robots.txt) + Task 11 (build gate).
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)
