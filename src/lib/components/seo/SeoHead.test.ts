@@ -149,3 +149,53 @@ describe('SeoHead — dev warnings', () => {
 		expect(warnSpy).not.toHaveBeenCalled();
 	});
 });
+
+describe('JsonLd integration (Slice 15b)', () => {
+	const baseSeo: PageSeo = {
+		title: { en: 'Test' },
+		description: { en: 'A'.repeat(120) },
+		canonical: 'https://yesid.dev/test',
+		ogType: 'website' as const,
+		noIndex: false,
+	};
+
+	afterEach(() => {
+		document.head
+			.querySelectorAll('script[type="application/ld+json"]')
+			.forEach((el) => el.remove());
+	});
+
+	it('does NOT mount <script> when seo.jsonLd is undefined', () => {
+		render(SeoHead, { props: { seo: baseSeo, locale: 'en' } });
+		const scripts = document.head.querySelectorAll('script[type="application/ld+json"]');
+		expect(scripts).toHaveLength(0);
+	});
+
+	it('does NOT mount <script> when seo.jsonLd is empty', () => {
+		render(SeoHead, { props: { seo: { ...baseSeo, jsonLd: [] }, locale: 'en' } });
+		const scripts = document.head.querySelectorAll('script[type="application/ld+json"]');
+		expect(scripts).toHaveLength(0);
+	});
+
+	it('mounts one <script> when seo.jsonLd has nodes', () => {
+		const breadcrumb = {
+			'@type': 'BreadcrumbList' as const,
+			'@id': 'https://yesid.dev/test#breadcrumb',
+			itemListElement: [
+				{ '@type': 'ListItem' as const, position: 1, name: 'Home', item: 'https://yesid.dev' },
+				{
+					'@type': 'ListItem' as const,
+					position: 2,
+					name: 'Test',
+					item: 'https://yesid.dev/test',
+				},
+			],
+		};
+		render(SeoHead, { props: { seo: { ...baseSeo, jsonLd: [breadcrumb] }, locale: 'en' } });
+		const scripts = document.head.querySelectorAll('script[type="application/ld+json"]');
+		expect(scripts).toHaveLength(1);
+		const parsed = JSON.parse(scripts[0].textContent!);
+		expect(parsed['@graph']).toHaveLength(1);
+		expect(parsed['@graph'][0]['@type']).toBe('BreadcrumbList');
+	});
+});

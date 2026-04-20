@@ -12,9 +12,10 @@
 
 	// Slice 15a: SEO is layout-authoritative. <SeoHead> renders all <head> tags
 	// server-side from $page.data.seo, which is populated by +layout.ts load.
-	// The Slice 12 buildPersonSchema JSON-LD block returns in Slice 15b via a
-	// SeoHead extension (jsonLd + breadcrumbs). The Slice 17b "documented
-	// exception" reading siteMeta directly is now resolved.
+	// Slice 15b: JSON-LD is emitted by <JsonLd> mounted inside <SeoHead> —
+	// no direct import here. The Slice 12 `buildPersonSchema` block it replaced
+	// is gone; the Slice 17b "documented exception" reading siteMeta directly
+	// is likewise resolved.
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
 	import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
