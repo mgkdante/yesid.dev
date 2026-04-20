@@ -38,7 +38,9 @@ import {
 	resolveSvgFallbackName,
 	resolveAnimation,
 } from '$lib/content/blog';
-import { siteMeta } from '$lib/content/meta';
+import { routeSeoEntries, siteMeta } from '$lib/content/meta';
+import { PageSeoSchema, type PageSeo } from '$lib/schemas/seo';
+import type { Locale } from '$lib/types';
 import {
 	getAllTechItems,
 	getTechItemById,
@@ -104,6 +106,20 @@ export const staticAdapter: ContentAdapter = {
 	},
 	meta: {
 		site: async () => siteMeta,
+		forRoute: async (
+			routeId: string,
+			locale: Locale,
+			params?: Record<string, string>,
+		): Promise<PageSeo> => {
+			const entry = routeSeoEntries[routeId];
+			if (!entry) {
+				throw new Error(
+					`[adapter.meta.forRoute] Unknown route id: ${routeId}. Add an entry in src/lib/content/meta.ts.`,
+				);
+			}
+			const raw = typeof entry === 'function' ? await entry(params ?? {}, locale) : entry;
+			return PageSeoSchema.parse(raw);
+		},
 	},
 	techStack: {
 		all: async () => getAllTechItems(),

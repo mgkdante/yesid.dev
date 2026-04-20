@@ -9,20 +9,18 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { prefersReducedMotion } from '$lib/motion/stores';
-	import { buildPersonSchema } from '$lib/utils';
 
-	// Documented exception (Slice 17b): +layout.svelte reads `siteMeta` directly
-	// from $lib/content for JSON-LD. Full migration onto $lib/repositories requires
-	// a root-level layout loader and is deferred to Slice 15 SEO, where the
-	// SeoHead component forces the shape change. See ARCHITECTURE.md
-	// § Documented Exceptions.
-	import { siteMeta } from '$lib/content';
+	// Slice 15a: SEO is layout-authoritative. <SeoHead> renders all <head> tags
+	// server-side from $page.data.seo, which is populated by +layout.ts load.
+	// The Slice 12 buildPersonSchema JSON-LD block returns in Slice 15b via a
+	// SeoHead extension (jsonLd + breadcrumbs). The Slice 17b "documented
+	// exception" reading siteMeta directly is now resolved.
+	import SeoHead from '$lib/components/seo/SeoHead.svelte';
+	import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 
-	const personSchema = buildPersonSchema(siteMeta);
-
-	let { children } = $props();
+	let { data, children } = $props();
 
 	onMount(() => {
 		if (browser) {
@@ -47,9 +45,10 @@
 	);
 </script>
 
+<SeoHead seo={data.seo} locale={DEFAULT_LOCALE} />
+
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	{@html `<script type="application/ld+json">${personSchema}</script>`}
 </svelte:head>
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">

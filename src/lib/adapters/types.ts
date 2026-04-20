@@ -33,6 +33,7 @@ import type {
 } from '$lib/types';
 import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
+import type { PageSeo } from '$lib/schemas/seo';
 
 export interface ContentAdapter {
 	projects: ProjectPort;
@@ -78,6 +79,18 @@ export interface BlogPort {
 
 export interface MetaPort {
 	site(): Promise<SiteMeta>;
+	/**
+	 * Resolve PageSeo for a route + locale + optional dynamic params.
+	 *
+	 * Route id is the SvelteKit route pattern from event.route.id
+	 * (e.g. '/', '/about', '/blog/[slug]'). Params come from event.params
+	 * for dynamic routes. Unknown routes throw — unknown routes are a bug
+	 * (a route added without a content/meta.ts entry), not an expected state.
+	 *
+	 * Returned shape is parsed through PageSeoSchema at the adapter boundary,
+	 * so any adapter (static, Payload, mock) can only emit valid SEO.
+	 */
+	forRoute(routeId: string, locale: Locale, params?: Record<string, string>): Promise<PageSeo>;
 }
 
 export interface TechStackPort {
