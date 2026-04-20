@@ -280,18 +280,56 @@ Decisions needed from Yesid, or items deferred to future slices:
 
 ## Iterations (if any)
 
-| # | Yesid reported | Fix | Files |
-|---|----------------|-----|-------|
-| _(none yet)_ | — | — | — |
+| # | Reported by | Fix | Files |
+|---|---|-----|-------|
+| 1 | Codex review (gpt-5.4 xhigh) — 2 Important + 1 Minor issue | ARCHITECTURE.md, slice-17/README.md stale `getPersonSchema`/`buildPersonSchema` refs updated; TESTS.md heading corrected ("4 files" → "6 files"); preview-validation.md's flawed "Zod is enough" argument dropped + 5 JSON blobs embedded for manual paste + validator.schema.org sweep actually run via Chrome DevTools MCP (CDP click + CodeMirror `setValue` API). | `docs/reference/ARCHITECTURE.md`, `docs/reference/TESTS.md`, `docs/slices/slice-17/README.md`, `docs/slices/slice-15/slice-15b/preview-validation.md` |
+| 2 | validator.schema.org — 1 warning on `/services/sql-development` | Dropped `availableLanguage` from `ServiceSchema` + `buildServiceNode` (Schema.org defines it on ContactPoint / Place / ServiceChannel, not directly on Service). `PUBLISHED_LOCALES` is en-only today; when fr/es ship, locale info re-enters via a nested `ServiceChannel` under `Service.availableChannel`. Post-fix validator sweep: all 5 URLs pass with 0 errors + 0 warnings. | `src/lib/schemas/jsonld.ts`, `src/lib/adapters/jsonld.ts`, `src/lib/schemas/jsonld.test.ts`, `src/lib/adapters/jsonld.test.ts`, `docs/slices/slice-15/slice-15b/spec.md`, `docs/reference/TESTS.md`, `docs/slices/slice-15/slice-15b/preview-validation.md` |
 
 ## Summary
 
-*(Added at PR time — one paragraph on what the sub-slice achieved end-to-end.)*
+Slice 15b ships Schema.org JSON-LD structured data across every public route of yesid.dev, as an additive extension of 15a's `PageSeoSchema`. One `<script type="application/ld+json">` per page wraps all nodes in `@graph` with `@id` cross-references anchored at `https://yesid.dev/#person` + `/#website`; every other node references those anchors instead of re-embedding. 8 Zod-validated factories (Person, WebSite, BlogPosting, Service, CreativeWork, BreadcrumbList, ProfilePage, CollectionPage) in `src/lib/adapters/jsonld.ts` map domain data to `SchemaOrgNode`s; each factory ends with `SchemaOrgNodeSchema.parse(built)` so malformed nodes never leave the module. The new `<JsonLd>` Svelte 5 component (with extracted `serializeJsonLd` helper to sidestep a Svelte parser constraint on literal `<` in script blocks) renders the `@graph` into `<svelte:head>` via `{@html}` with `<` → `\u003c` safe-embed escaping. Slice 12's legacy `src/lib/utils/json-ld.ts` + `getPersonSchema` wrapper were deleted; `ARCHITECTURE.md`, `TESTS.md`, `slice-17/README.md`, and `+layout.svelte` all updated. 65 new tests; 954/954 full suite passing; Lighthouse SEO 100 + validator.schema.org (0 errors + 0 warnings) × 5 canonical URLs. Two iterations of Codex review were applied before PR to resolve stale doc refs + drop an `availableLanguage` field that Schema.org doesn't recognize on `Service`.
 
 ## PR Body
 
-*(Added at PR time — extracted from above.)*
+```
+## Summary
+
+Slice 15b adds Schema.org JSON-LD structured data to every public route as an additive extension of 15a's `PageSeoSchema`. One `<script type="application/ld+json">` per page, `@graph`-wrapped, `@id`-cross-referenced. 8 Zod-validated pure factories map domain data → SchemaOrgNode; `<JsonLd>` component renders into `<svelte:head>` with XSS-safe `\u003c` escaping. Person anchored at `https://yesid.dev/#person`, WebSite at `/#website`; every other node references them by `@id`. Slice 12's legacy `buildPersonSchema` + `getPersonSchema` are gone.
+
+## Changes
+
+- **Schemas** (`src/lib/schemas/jsonld.ts` + test, `src/lib/schemas/seo.ts` + test) — 8 Zod schemas as a discriminated union on `@type`; `PageSeoSchema` extended with optional `jsonLd: SchemaOrgNode[]`; `SchemaOrgNode` re-exported through `types.ts`.
+- **Factories** (`src/lib/adapters/jsonld.ts` + test) — `buildPersonNode`, `buildWebSiteNode`, `buildBlogPostingNode`, `buildServiceNode`, `buildCreativeWorkNode`, `buildBreadcrumbListNode`, `buildProfilePageNode`, `buildCollectionPageNode` + `PERSON_ID`/`WEBSITE_ID` constants.
+- **Component** (`src/lib/components/seo/JsonLd.svelte` + test, `src/lib/utils/json-ld-serialize.ts`) — Svelte 5 runes; emits one script per page; `<` escaped to `\u003c` (XSS guard). Serializer extracted to a `.ts` helper to sidestep Svelte compiler's parsing of `<` inside script blocks.
+- **Wiring** (`src/lib/components/seo/SeoHead.svelte`, `src/lib/content/meta.ts`) — `<SeoHead>` mounts `<JsonLd>` as a child when `seo.jsonLd` is populated; all 11 `routeSeoEntries` entries populated.
+- **Legacy cleanup** — deleted `src/lib/utils/json-ld.ts` + test; dropped `getPersonSchema` from `src/lib/repositories/meta.ts`; flipped `+layout.svelte` comment; updated `docs/reference/ARCHITECTURE.md`, `docs/reference/TESTS.md`, `docs/slices/slice-17/README.md`, `src/lib/utils/index.ts` (dead barrel export).
+- **Amendment** (Codex-review iteration) — dropped `availableLanguage` from `ServiceSchema` + `buildServiceNode` (Schema.org defines it on ContactPoint / Place / ServiceChannel, not `Service`); locale info will re-enter via a nested `ServiceChannel` when fr/es content ships.
+
+## Tests
+
+- **954/954** passing across 94 test files (+65 new 15b tests net, after -11 legacy `buildPersonSchema` tests deleted + 1 extra test file merged)
+- `bun run check`: 0 errors (19 pre-existing warnings unchanged)
+- `bun run build`: end-to-end success including sitemap coverage gate (1/1 PASS)
+- **Lighthouse SEO 100** × 5 canonical URLs (home, about, one blog, one project, one service)
+- **validator.schema.org: 0 errors + 0 warnings** × 5 canonical URLs (driven via Chrome DevTools MCP — CDP click + CodeMirror `setValue` API)
+
+## Test plan (for reviewer)
+
+Before merge, please run against this PR's Vercel preview URL:
+
+- [ ] Google Rich Results Test on `/`, `/about`, one blog post, one project, one service → each URL eligible for the rich-result type of its primary node
+  - Expected soft warning "recommended: publisher" on BlogPosting is **accepted** per Q6-A (Person-as-publisher is the personal-blog pattern — no fictional Organization minted)
+- [ ] LinkedIn Post Inspector on the same 5 URLs → OG card renders (this is a 15a regression check)
+- [ ] Spot-check `view-source:` on any route → confirm one `<script type="application/ld+json">` in head, JSON parses cleanly
+
+## Follow-ups
+
+- Slice 15c (post-Payload / Slice 18): per-post + per-project auto-generated OG images via Satori
+- Slice 17c: full Zod rollout across content/projects/blog/services types (15b narrowly scoped Zod to JSON-LD + PageSeo)
+- When fr/es content ships: re-introduce locale metadata on Service via a nested ServiceChannel (`Service.availableChannel → ServiceChannel.availableLanguage`)
+- No unscoped follow-ups from this slice
+```
 
 ## Final Status
 
-One of: COMPLETE / COMPLETE WITH GAPS / PARTIAL / BLOCKED.
+**COMPLETE** — all 10 planned tasks shipped, Codex review iterations (2) applied, every acceptance criterion in `spec.md` met, ready for merge. Google Rich Results Test deferred to the PR preview URL per the 15a precedent (requires public URL).
