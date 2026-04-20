@@ -1,4 +1,5 @@
 import type { SiteMeta, PageSeo, Locale } from '$lib/types';
+import { SITE_HOST } from '$lib/utils/seo-defaults';
 
 // Single source of truth for site-level metadata consumed by layouts and SEO.
 // name is never localised — "yesid." is the brand name in all languages.
@@ -71,7 +72,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'Freelance SQL developer and digital infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, and Python. Real-time pipelines, analytics, dashboards.',
 		},
-		canonical: 'https://yesid.dev',
+		canonical: SITE_HOST,
 		ogType: 'website',
 		noIndex: false,
 	},
@@ -80,7 +81,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work.',
 		},
-		canonical: 'https://yesid.dev/about',
+		canonical: `${SITE_HOST}/about`,
 		ogType: 'profile',
 		noIndex: false,
 	},
@@ -89,7 +90,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'Get in touch for freelance SQL, PostgreSQL, dbt, Power BI, or data infrastructure work. Based in Montreal; available across Canada and for remote engagements.',
 		},
-		canonical: 'https://yesid.dev/contact',
+		canonical: `${SITE_HOST}/contact`,
 		ogType: 'website',
 		noIndex: false,
 	},
@@ -98,7 +99,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams.',
 		},
-		canonical: 'https://yesid.dev/services',
+		canonical: `${SITE_HOST}/services`,
 		ogType: 'website',
 		noIndex: false,
 	},
@@ -109,7 +110,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		return {
 			title: { en: `${service.title.en} | yesid.` },
 			description: fitDescriptionForSeo(service.description),
-			canonical: `https://yesid.dev/services/${service.id}`,
+			canonical: `${SITE_HOST}/services/${service.id}`,
 			ogType: 'article',
 			noIndex: false,
 		};
@@ -119,7 +120,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'Recent freelance and client work: real-time transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects for teams in Montreal and Canada.',
 		},
-		canonical: 'https://yesid.dev/projects',
+		canonical: `${SITE_HOST}/projects`,
 		ogType: 'website',
 		noIndex: false,
 	},
@@ -135,7 +136,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		return {
 			title: { en: `${project.title.en} | yesid.` },
 			description: desc,
-			canonical: `https://yesid.dev/projects/${project.slug}`,
+			canonical: `${SITE_HOST}/projects/${project.slug}`,
 			ogType: 'article',
 			noIndex: false,
 		};
@@ -145,7 +146,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'Notes on data infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant.',
 		},
-		canonical: 'https://yesid.dev/blog',
+		canonical: `${SITE_HOST}/blog`,
 		ogType: 'website',
 		noIndex: false,
 	},
@@ -154,7 +155,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog, still fundamentally about building things well.',
 		},
-		canonical: 'https://yesid.dev/blog/personal',
+		canonical: `${SITE_HOST}/blog/personal`,
 		ogType: 'website',
 		noIndex: false,
 	},
@@ -165,7 +166,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		return {
 			title: { en: `${post.title.en} | yesid.` },
 			description: fitDescriptionForSeo(post.excerpt),
-			canonical: `https://yesid.dev/blog/${post.slug}`,
+			canonical: `${SITE_HOST}/blog/${post.slug}`,
 			ogType: 'article',
 			noIndex: false,
 		};
@@ -175,7 +176,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'The tools, languages, and platforms yesid. works with daily: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript, and the glue that holds them together.',
 		},
-		canonical: 'https://yesid.dev/tech-stack',
+		canonical: `${SITE_HOST}/tech-stack`,
 		ogType: 'website',
 		noIndex: false,
 	},
@@ -184,7 +185,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		description: {
 			en: 'This page does not exist. Head back to yesid.dev to find data infrastructure projects, blog posts, and freelance services from a Montreal-based consultant.',
 		},
-		canonical: 'https://yesid.dev/',
+		canonical: SITE_HOST,
 		ogType: 'website',
 		noIndex: true,
 	},

@@ -3,6 +3,7 @@
 // locale launches, or when the default OG image is updated.
 
 import type { Locale } from '$lib/types';
+import { DEFAULT_LOCALE } from '$lib/utils/locale';
 
 // Production canonical host. No trailing slash. Upgrade to an env var when
 // a staging domain is introduced (currently yesid.dev is the only target).
@@ -27,8 +28,9 @@ export const SITE_NAME = 'yesid.';
 //     siteMeta.tagline.{locale} is filled in
 export const PUBLISHED_LOCALES: readonly Locale[] = ['en'];
 
-// Default locale for the site. Kept in sync with $lib/utils/locale.ts#DEFAULT_LOCALE.
-export const DEFAULT_LOCALE: Locale = 'en';
+// Re-exported from $lib/utils/locale so there's exactly one DEFAULT_LOCALE
+// in the codebase. Consumers of seo-defaults get it without a second import.
+export { DEFAULT_LOCALE };
 
 /**
  * Returns the default OG image path for a given locale.
