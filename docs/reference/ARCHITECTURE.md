@@ -249,7 +249,7 @@ Components never read locale fields directly. They call `resolveLocale(field, lo
 import { getFeaturedProjects, resolveLocale, siteMeta } from '$lib/data';
 ```
 
-**SEO schema (Slice 12):** `buildPersonSchema(siteMeta)` in `src/lib/data/schema.ts` produces a JSON-LD Person schema injected into `<svelte:head>` via `+layout.svelte`. All schema fields (name, jobTitle, address, sameAs, knowsAbout) pull from `siteMeta.owner`.
+**SEO JSON-LD (Slice 15b):** `src/lib/adapters/jsonld.ts` exports typed factories (`buildPersonNode`, `buildWebSiteNode`, `buildBlogPostingNode`, `buildServiceNode`, `buildCreativeWorkNode`, `buildBreadcrumbListNode`, `buildProfilePageNode`, `buildCollectionPageNode`) that map domain objects (from `$lib/content/*` + `siteMeta`) to `SchemaOrgNode`s validated by `src/lib/schemas/jsonld.ts`. Per-route `jsonLd` fields live in `routeSeoEntries` (`src/lib/content/meta.ts`); the layout-authoritative `<SeoHead>` component mounts `<JsonLd>` as a child, and `<JsonLd>` emits one `<script type="application/ld+json">` per page wrapping all nodes in `@graph` with `@id` cross-references anchored at `https://yesid.dev/#person` and `https://yesid.dev/#website`.
 
 **Shared motion actions:** `wordmarkHover` in `src/lib/motion/actions/wordmarkHover.ts` encapsulates the GSAP SplitText animation pool (bounce, wiggle, wave, spin + dot pulse) used by both `Nav.svelte` and `Footer.svelte`.
 

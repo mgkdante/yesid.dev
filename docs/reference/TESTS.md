@@ -499,20 +499,112 @@ Convention: tests live next to the code they test (co-located).
 | getProjectsByService > returns empty array for unknown service ID | A nonexistent service returns no results | Result equals `[]` | `'nonexistent'` |
 | getServiceIdsForProjects > returns deduplicated sorted service IDs from public projects | Service IDs from public projects are collected, deduped, and sorted | Length > 0, sorted, no duplicates | Standard |
 
-## src/lib/data/schema.test.ts
+# SEO JSON-LD (`src/lib/schemas/jsonld.test.ts`, `src/lib/adapters/jsonld.test.ts`, `src/lib/components/seo/JsonLd.test.ts`, `src/lib/schemas/seo.test.ts`) — 4 files (Slice 15b)
+
+## src/lib/schemas/jsonld.test.ts
 
 | Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
 |---------------------------|-------------------|----------------|-------------|
-| buildPersonSchema > produces valid JSON | Output is parseable JSON | `JSON.parse(schema)` does not throw | Standard |
-| buildPersonSchema > sets @context to schema.org | Schema context is correct | `parsed['@context']` === `'https://schema.org'` | Standard |
-| buildPersonSchema > sets @type to Person | Schema type is Person | `parsed['@type']` === `'Person'` | Standard |
-| buildPersonSchema > includes owner name | Owner name present | `parsed.name` === `'Yesid O.'` | Standard |
-| buildPersonSchema > includes jobTitle from English locale | Job title resolved from en | `parsed.jobTitle` === `'Digital Infrastructure Consultant'` | Standard |
-| buildPersonSchema > includes url | Site URL present | `parsed.url` === `'https://yesid.dev'` | Standard |
-| buildPersonSchema > includes address with locality, region, country | PostalAddress schema correct | `parsed.address` deep equals expected | Standard |
-| buildPersonSchema > includes sameAs array with social links | Social profiles present | `sameAs` contains GitHub and LinkedIn URLs | Standard |
-| buildPersonSchema > includes knowsAbout array | Skills listed | `knowsAbout` contains `'PostgreSQL'` and `'dbt'` | Standard |
-| buildPersonSchema > includes email | Contact email present | `parsed.email` === `'contact@yesid.dev'` | Standard |
+| PersonSchema > accepts a minimal valid Person | Zod schema accepts the Person shape | `safeParse(valid).success === true` | Standard |
+| PersonSchema > rejects a Person missing name | Required field enforced | `safeParse({...valid, name: undefined}).success === false` | Standard |
+| PersonSchema > rejects a Person with a non-URL @id | `@id` must be a URL | `safeParse({...valid, '@id': 'not-a-url'}).success === false` | Standard |
+| WebSiteSchema > accepts a minimal valid WebSite | Zod schema accepts WebSite shape | `safeParse(valid).success === true` | Standard |
+| WebSiteSchema > rejects WebSite missing publisher @id ref | Required cross-ref enforced | `safeParse({...valid, publisher: undefined}).success === false` | Standard |
+| BlogPostingSchema > accepts a minimal valid BlogPosting | Zod schema accepts BlogPosting shape | `safeParse(valid).success === true` | Standard |
+| BlogPostingSchema > rejects BlogPosting missing headline | Required field enforced | `safeParse({...valid, headline: undefined}).success === false` | Standard |
+| BlogPostingSchema > accepts optional image field | Image is optional | `safeParse({...valid, image: '...'}).success === true` | Standard |
+| ServiceSchema > accepts a minimal valid Service | Zod schema accepts Service shape | `safeParse(valid).success === true` | Standard |
+| ServiceSchema > accepts optional areaServed field | areaServed is optional | `safeParse({...valid, areaServed: 'CA'}).success === true` | Standard |
+| CreativeWorkSchema > accepts a minimal valid CreativeWork (no dates, per Q5-A) | Zod schema accepts CreativeWork without dates | `safeParse(valid).success === true` | Standard |
+| CreativeWorkSchema > rejects CreativeWork missing author @id ref | Required cross-ref enforced | `safeParse({...valid, author: undefined}).success === false` | Standard |
+| BreadcrumbListSchema > accepts a valid BreadcrumbList with 2 items | Minimum 2 items required | `safeParse(valid).success === true` | Standard |
+| BreadcrumbListSchema > rejects BreadcrumbList with 1 item | Minimum 2 items enforced | `safeParse({...valid, itemListElement: [one]}).success === false` | Standard |
+| BreadcrumbListSchema > rejects BreadcrumbList with 0 items | Minimum 2 items enforced | `safeParse({...valid, itemListElement: []}).success === false` | Standard |
+| ProfilePageSchema > accepts a minimal valid ProfilePage | Zod schema accepts ProfilePage shape | `safeParse(valid).success === true` | Standard |
+| ProfilePageSchema > accepts optional dateCreated + dateModified | Dates are optional | `safeParse({...valid, dateCreated, dateModified}).success === true` | Standard |
+| CollectionPageSchema > accepts a minimal valid CollectionPage | Zod schema accepts CollectionPage shape | `safeParse(valid).success === true` | Standard |
+| SchemaOrgNodeSchema (discriminated union) > narrows by @type — Person | Discriminated union narrows on parse | `parse(person)['@type'] === 'Person'` | Standard |
+| SchemaOrgNodeSchema (discriminated union) > rejects an object with unknown @type | Unknown type rejected | `safeParse({'@type': 'Unicorn', ...}).success === false` | Standard |
+| SchemaOrgNodeSchema (discriminated union) > accepts a valid BreadcrumbList through the union | Union delegation works | `safeParse(bc).success === true` | Standard |
+
+## src/lib/schemas/seo.test.ts — PageSeoSchema.jsonLd extension (Slice 15b)
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| PageSeoSchema.jsonLd extension (Slice 15b) > accepts a base entry with no jsonLd (backward compat with 15a) | Optional jsonLd is backward-compatible | `safeParse(validBase).success === true` | Standard |
+| PageSeoSchema.jsonLd extension (Slice 15b) > accepts an entry with a jsonLd array | Extended PageSeo shape | `safeParse({...valid, jsonLd: [...]}).success === true` | Standard |
+| PageSeoSchema.jsonLd extension (Slice 15b) > rejects an entry with malformed jsonLd (unknown @type) | Zod parses nested SchemaOrgNode | `safeParse({...valid, jsonLd: [bad]}).success === false` | Standard |
+| PageSeoSchema.jsonLd extension (Slice 15b) > accepts an empty jsonLd array | Empty array is valid | `safeParse({...valid, jsonLd: []}).success === true` | Standard |
+
+## src/lib/adapters/jsonld.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| PERSON_ID / WEBSITE_ID constants > PERSON_ID resolves against SITE_HOST with #person fragment | Constant correctness | `PERSON_ID === 'https://yesid.dev/#person'` | Standard |
+| PERSON_ID / WEBSITE_ID constants > WEBSITE_ID resolves against SITE_HOST with #website fragment | Constant correctness | `WEBSITE_ID === 'https://yesid.dev/#website'` | Standard |
+| buildPersonNode > produces a Zod-parseable Person | Factory output validates | `node['@type'] === 'Person'` | Uses real siteMeta |
+| buildPersonNode > maps owner.name verbatim | Domain → schema mapping | `node.name === siteMeta.owner.name` | Uses real siteMeta |
+| buildPersonNode > resolves jobTitle from owner.jobTitle.en | Localized field resolved | `node.jobTitle === siteMeta.owner.jobTitle.en` | Uses real siteMeta |
+| buildPersonNode > includes GitHub + LinkedIn in sameAs when present | Social links aggregated | `sameAs` contains GitHub and LinkedIn URLs | Uses real siteMeta |
+| buildPersonNode > maps owner.address to PostalAddress | Address nesting correct | `node.address` deep-equals PostalAddress | Uses real siteMeta |
+| buildWebSiteNode > produces a Zod-parseable WebSite | Factory output validates | `node['@type'] === 'WebSite'` | Uses real siteMeta |
+| buildWebSiteNode > references Person via publisher @id | Cross-ref pattern | `node.publisher['@id'] === PERSON_ID` | Uses real siteMeta |
+| buildWebSiteNode > uses siteMeta.description.en as description | Domain → schema mapping | `node.description === siteMeta.description.en` | Uses real siteMeta |
+| buildProfilePageNode > produces a Zod-parseable ProfilePage | Factory output validates | `node['@type'] === 'ProfilePage'` | Standard |
+| buildProfilePageNode > references Person via mainEntity @id | Cross-ref pattern | `node.mainEntity['@id'] === PERSON_ID` | Standard |
+| buildBreadcrumbListNode > produces a Zod-parseable BreadcrumbList | Factory output validates | `node['@type'] === 'BreadcrumbList'` | Standard |
+| buildBreadcrumbListNode > emits items with sequential position starting at 1 | Position starts at 1 | Positions 1, 2, 3 in order | Standard |
+| buildBreadcrumbListNode > copies name + item from input | Input mapping correct | Last item matches input | Standard |
+| buildCollectionPageNode > produces a Zod-parseable CollectionPage | Factory output validates | `node['@type'] === 'CollectionPage'` | Standard |
+| buildBlogPostingNode > produces a Zod-parseable BlogPosting from a real post | Factory output validates | `node['@type'] === 'BlogPosting'` | Reads adapter.blog.all |
+| buildBlogPostingNode > copies inLanguage from post.lang | Locale propagation | `node.inLanguage === post.lang` | Reads adapter.blog.all |
+| buildBlogPostingNode > references Person via author + publisher @ids (Q6-A: same @id) | Person-as-publisher pattern | Both refs equal PERSON_ID | Reads adapter.blog.all |
+| buildBlogPostingNode > uses post.date as datePublished | Date propagation | `node.datePublished === post.date` | Reads adapter.blog.all |
+| buildServiceNode > produces a Zod-parseable Service from a real service | Factory output validates | `node['@type'] === 'Service'` | Reads adapter.services.visible |
+| buildServiceNode > references Person via provider @id | Cross-ref pattern | `node.provider['@id'] === PERSON_ID` | Reads adapter.services.visible |
+| buildServiceNode > populates availableLanguage from PUBLISHED_LOCALES | Locale list propagation | `availableLanguage === ['en']` | Reads adapter.services.visible |
+| buildCreativeWorkNode > produces a Zod-parseable CreativeWork from a real project | Factory output validates | `node['@type'] === 'CreativeWork'` | Reads adapter.projects.public |
+| buildCreativeWorkNode > references Person via author + creator @ids | Cross-ref pattern | Both refs equal PERSON_ID | Reads adapter.projects.public |
+| buildCreativeWorkNode > copies project.tags into keywords + project.stack into about | Domain → schema mapping | `keywords === tags`, `about === stack` | Reads adapter.projects.public |
+| buildCreativeWorkNode > omits dates per Q5-A decision — Project has no date field | Project has no date field | `datePublished === undefined` | Reads adapter.projects.public |
+
+## src/lib/components/seo/JsonLd.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| JsonLd.svelte > emits zero <script> tags when nodes is empty | Empty guard | `document.head.querySelectorAll(...).length === 0` | jsdom |
+| JsonLd.svelte > emits exactly one <script type="application/ld+json"> when nodes non-empty | Single-tag pattern | `document.head.querySelectorAll(...).length === 1` | jsdom |
+| JsonLd.svelte > wraps nodes in @graph with @context | @graph envelope correct | `parsed['@context'] === 'https://schema.org'` | jsdom |
+| JsonLd.svelte > round-trip parses every node unchanged | JSON round-trip clean | `parsed['@graph']` deep-equals input | jsdom |
+| JsonLd.svelte > escapes < inside field values (XSS regression guard) | XSS prevention | Content contains `\u003c`, not `<` | jsdom |
+
+## src/lib/components/seo/SeoHead.test.ts — JsonLd integration (Slice 15b)
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| JsonLd integration (Slice 15b) > does NOT mount <script> when seo.jsonLd is undefined | Optional jsonLd respected | No script tag rendered | jsdom |
+| JsonLd integration (Slice 15b) > does NOT mount <script> when seo.jsonLd is empty | Empty jsonLd respected | No script tag rendered | jsdom |
+| JsonLd integration (Slice 15b) > mounts one <script> when seo.jsonLd has nodes | JsonLd child wired | One script tag with expected @graph | jsdom |
+
+## src/lib/adapters/meta.test.ts — adapter.meta.forRoute + jsonLd (Slice 15b)
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| adapter.meta.forRoute + jsonLd (Slice 15b) > returns jsonLd as part of PageSeo for a static route | /about has jsonLd | `seo.jsonLd` defined + array | Integration |
+| adapter.meta.forRoute + jsonLd (Slice 15b) > parses jsonLd through PageSeoSchema at the adapter boundary | Zod enforced through forRoute | Every node has @type + @id | Integration |
+| adapter.meta.forRoute + jsonLd (Slice 15b) > returns jsonLd for a dynamic blog route | Dynamic factories attach jsonLd | Types include BlogPosting + BreadcrumbList | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > / emits Person + WebSite + ProfilePage | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /about emits Person + ProfilePage + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /contact emits BreadcrumbList only | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /services emits CollectionPage + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /services/[id] emits Service + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /projects emits CollectionPage + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /projects/[slug] emits CreativeWork + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /blog emits CollectionPage + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /blog/personal emits CollectionPage + BreadcrumbList (nested: Home → Blog → Personal) | Q3-B decision encoded | Breadcrumb trail Home → Blog → Personal | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /blog/[slug] emits BlogPosting + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /tech-stack emits BreadcrumbList only | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /__error emits no jsonLd (noIndex route, per spec) | noIndex → no structured data | `jsonLd` undefined or empty | Integration |
 
 # Motion — Actions (`src/lib/motion/actions/`) — 5 files
 

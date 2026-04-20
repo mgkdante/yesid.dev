@@ -199,6 +199,34 @@ All 11 public routes in `routeSeoEntries` now emit JSON-LD nodes via the factori
 - `bun run check`: 0 errors, 19 pre-existing warnings (unchanged)
 - `bun run build`: end-to-end success including sitemap gate (1/1 PASS)
 
+### Task 15b-9: Legacy cleanup — delete `utils/json-ld.ts` + drop `getPersonSchema` + update docs
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-sonnet-4-6, subagent-driven-development)
+**Session:** 2026-04-20
+
+**Files deleted:**
+- `src/lib/utils/json-ld.ts`
+- `src/lib/utils/json-ld.test.ts`
+
+**Files modified:**
+- `src/lib/repositories/meta.ts` — removed `getPersonSchema` + `buildPersonSchema` import; rewritten to clean 2-function module
+- `src/lib/utils/index.ts` — removed `export * from './json-ld'` from barrel (discovered during test run; not in spec but required for clean deletion)
+- `src/routes/+layout.svelte` — flipped comment from future-tense "returns in Slice 15b" to past-tense "is gone"
+- `docs/reference/ARCHITECTURE.md` — replaced Slice 12 `buildPersonSchema` paragraph with Slice 15b JSON-LD pipeline paragraph
+- `docs/reference/TESTS.md` — removed 11-row `buildPersonSchema` block; added Slice 15b section covering 4 test files (jsonld.test.ts, seo.test.ts jsonLd extension, adapters/jsonld.test.ts, JsonLd.test.ts + SeoHead integration + meta.test.ts integration)
+- `docs/slices/slice-15/slice-15b/handoff.md` (this file — appended Task 15b-9 section)
+
+**What landed:**
+Deleted the Slice 12 legacy `src/lib/utils/json-ld.ts` (which built a raw JSON-LD string for the Person schema) and its 11-test file. Removed the `getPersonSchema` repository wrapper in `meta.ts` and the barrel re-export in `utils/index.ts`. The `+layout.svelte` comment now reads in past tense confirming the Slice 12 block is gone. `ARCHITECTURE.md` now describes the Slice 15b pipeline (Zod factories + `<JsonLd>` component) as the authoritative JSON-LD mechanism. `TESTS.md` drops the 11 legacy rows and gains a multi-file Slice 15b section accurately reflecting the real `describe`/`it` names from all 4 test files.
+
+**Decisions:** None beyond spec. One extra file (`utils/index.ts`) was modified beyond the 4 listed in the plan — the barrel re-export was missed in the spec but was a straightforward unblock.
+
+**Tests:**
+- Full suite: 954/954 PASS across 94 test files (964 - 11 legacy json-ld tests + 1 test file merged = net 94 files)
+- `bun run check`: 0 errors, 19 pre-existing warnings (unchanged)
+- `bun run build`: end-to-end success including sitemap gate (1/1 PASS)
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
