@@ -59,3 +59,34 @@ describe('adapter.meta.forRoute', () => {
 		expect(seo.title.en).toMatch(/Not Found/);
 	});
 });
+
+describe('adapter.meta.forRoute + jsonLd (Slice 15b)', () => {
+	it('returns jsonLd as part of PageSeo for a static route', async () => {
+		const seo = await adapter.meta.forRoute('/about', 'en');
+		expect(seo.jsonLd).toBeDefined();
+		expect(Array.isArray(seo.jsonLd)).toBe(true);
+	});
+
+	it('parses jsonLd through PageSeoSchema at the adapter boundary', async () => {
+		// If an entry's jsonLd is malformed, forRoute must throw at the Zod parse.
+		// We can't directly inject a bad entry from a test, but we can rely on
+		// the Zod parse as the documented contract: cover it in the schema tests
+		// and assert here that a known-good entry round-trips cleanly.
+		const seo = await adapter.meta.forRoute('/blog', 'en');
+		expect(seo.jsonLd).toBeDefined();
+		for (const node of seo.jsonLd ?? []) {
+			expect(node).toHaveProperty('@type');
+			expect(node).toHaveProperty('@id');
+		}
+	});
+
+	it('returns jsonLd for a dynamic blog route', async () => {
+		const posts = await adapter.blog.all();
+		if (posts.length === 0) return;
+		const seo = await adapter.meta.forRoute('/blog/[slug]', 'en', { slug: posts[0].slug });
+		expect(seo.jsonLd).toBeDefined();
+		const types = (seo.jsonLd ?? []).map((n) => n['@type']);
+		expect(types).toContain('BlogPosting');
+		expect(types).toContain('BreadcrumbList');
+	});
+});

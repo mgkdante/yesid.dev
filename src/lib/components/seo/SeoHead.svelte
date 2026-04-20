@@ -10,6 +10,7 @@
 		defaultOgImageFor,
 	} from '$lib/utils/seo-defaults';
 	import { dev as runtimeDev } from '$app/environment';
+	import JsonLd from './JsonLd.svelte';
 
 	// `dev` is a prop (not just the runtime import) so tests can force the path.
 	let {
@@ -91,3 +92,7 @@
 	{/each}
 	<link rel="alternate" hreflang="x-default" href={canonicalFor(pathForCanonical, 'en')} />
 </svelte:head>
+
+{#if seo.jsonLd && seo.jsonLd.length > 0}
+	<JsonLd nodes={seo.jsonLd} />
+{/if}

@@ -153,6 +153,30 @@ Three domain-content factories appended to `src/lib/adapters/jsonld.ts`. `buildB
 - Full suite regression: 946/946 PASS across 95 test files.
 - `bun run check`: 0 errors, 19 pre-existing warnings (unchanged).
 
+### Task 15b-7: `SeoHead` wiring + meta adapter integration tests (RED)
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-sonnet-4-6, subagent-driven-development)
+**Session:** 2026-04-20
+
+**Files:**
+- `src/lib/components/seo/SeoHead.svelte` (modified — added `JsonLd` import + conditional mount after `</svelte:head>`)
+- `src/lib/components/seo/SeoHead.test.ts` (modified — appended `JsonLd integration (Slice 15b)` describe block with 3 tests)
+- `src/lib/adapters/meta.test.ts` (modified — appended `adapter.meta.forRoute + jsonLd (Slice 15b)` describe block with 3 RED tests)
+
+**What landed:**
+`SeoHead.svelte` now imports `JsonLd` from `./JsonLd.svelte` and conditionally mounts it as a sibling element after its `</svelte:head>` closing tag, guarded by `{#if seo.jsonLd && seo.jsonLd.length > 0}`. This is the correct placement — `<JsonLd>` is not inside `<svelte:head>` (which is unreliable for child components), but as a top-level sibling that contributes its own `<svelte:head>` block to `document.head` through Svelte's head composition. Three SeoHead tests confirm the wiring: `jsonLd: undefined` emits no script, `jsonLd: []` emits no script, and `jsonLd: [BreadcrumbList]` emits exactly one `<script type="application/ld+json">` with a parseable `@graph`. Three integration tests in `meta.test.ts` are committed intentionally RED — they assert that `forRoute` returns a `jsonLd` field for `/about`, `/blog`, and dynamic blog routes, but route entries don't populate `jsonLd` yet; Task 8 flips these assertions to GREEN.
+
+**Decisions:**
+- RED-in-commit is intentional (TDD across task boundaries): the 3 `meta.test.ts` tests are committed failing because Task 8's route-entry work is what provides the `jsonLd` data. These are not bugs — they are the concrete failing assertions Task 8 must satisfy. Committing them RED here means Task 8 has a precise, verifiable target rather than needing to reverse-engineer the expected contract.
+- `<JsonLd>` placed AFTER `</svelte:head>` at component top level, NOT inside the head block. Svelte composes child head contributions automatically; nesting a component inside `<svelte:head>` is not a supported pattern.
+- The `afterEach` cleanup in the new SeoHead describe block (`querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove())`) is necessary because `<svelte:head>` persistence across renders within the same jsdom environment would otherwise cause false positives in the "no script" assertions.
+
+**Tests:**
+- `SeoHead.test.ts`: 18/18 PASS (15 prior + 3 new)
+- `meta.test.ts`: 8/11 PASS (8 prior + 3 intentional RED); RED tests are: `returns jsonLd as part of PageSeo for a static route`, `parses jsonLd through PageSeoSchema at the adapter boundary`, `returns jsonLd for a dynamic blog route`
+- `bun run check`: 0 errors, 19 pre-existing warnings (unchanged)
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
