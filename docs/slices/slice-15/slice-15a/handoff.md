@@ -234,6 +234,29 @@ Dynamic sitemap at `/sitemap.xml` iterating the 8 static routes + all public pro
 
 ---
 
+### Task 15a-10: /robots.txt server route
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-20
+
+**Files:**
+- Created: `src/routes/robots.txt/+server.ts`
+- Created: `src/routes/robots.txt/server.test.ts` — 4 tests
+- Deleted: `static/robots.txt` — stale generic "allow all" file shadowed the dynamic handler
+
+**What landed:**
+Dynamic `/robots.txt` with `User-agent: *`, `Allow: /`, `Disallow: /preview`, absolute `Sitemap: https://yesid.dev/sitemap.xml`. Task 18 Payload CMS will own `/preview` — blocking it now prevents draft content leaking to crawlers.
+
+**Decisions:**
+- D024: Deleted `static/robots.txt`. SvelteKit serves static/ files before routes; legacy file was overriding.
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (4 new tests) | `bun run check`: 0 errors | Live curl verified
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:

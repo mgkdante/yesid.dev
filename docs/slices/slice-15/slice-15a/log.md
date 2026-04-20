@@ -374,6 +374,37 @@ bun run test    # 877/877
 
 ---
 
+---
+
+### Session 2026-04-20 00:03 — Task 15a-10
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-9 commit edf0089
+
+**Goal:** Ship `/robots.txt` server route referencing sitemap, blocking /preview.
+
+**Files touched:**
+- Created: `src/routes/robots.txt/+server.ts`
+- Created: `src/routes/robots.txt/server.test.ts` — 4 tests
+- Deleted: `static/robots.txt` — legacy "allow all" static file was taking precedence over the new server route
+
+**Decisions:**
+- D024: Removed `static/robots.txt` (pre-existing generic file). SvelteKit serves static/ files before routes, so the dynamic handler was being shadowed. Deletion was silent and verified via curl.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test src/routes/robots.txt/server.test.ts` | PASS (4/4) |
+| `bun run check` | PASS (0 errors) |
+| `curl http://localhost:5173/robots.txt` | Correct output: `User-agent: *`, `Allow: /`, `Disallow: /preview`, `Sitemap: https://yesid.dev/sitemap.xml` |
+
+**Outcome:** Robots + sitemap both live. Ready for Task 11 (build coverage gate).
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)
