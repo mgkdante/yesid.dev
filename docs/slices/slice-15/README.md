@@ -11,7 +11,7 @@
 | Sub-slice | Status | PR | Scope |
 |-----------|--------|----|-------|
 | 15a | ✅ shipped 2026-04-20 | #26 | Meta + OG + Twitter + canonical + sitemap + robots + build gate + locale-aware OG image |
-| 15b | planned next | — | JSON-LD structured data (Person, WebSite, BlogPosting, Service, BreadcrumbList, ProfilePage) |
+| 15b | ✅ shipped 2026-04-20 | #27 | JSON-LD structured data (Person, WebSite, BlogPosting, Service, CreativeWork, BreadcrumbList, ProfilePage, CollectionPage) — `@graph` + `@id` cross-refs; validator.schema.org + Lighthouse SEO 100 × 5 URLs |
 | 15c | deferred (post-Slice 18) | — | Per-post / per-project Satori OG image generation |
 
 ## Goal
