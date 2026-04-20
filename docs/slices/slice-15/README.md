@@ -2,9 +2,17 @@
 
 **Level 1 direction doc.**
 
-**Status:** planned
-**Depends on:** 13, 17a, 17b
-**Est. Sessions:** 1–2
+**Status:** in progress (15a shipped, 15b next, 15c deferred post-Payload)
+**Depends on:** 13, 17a, 17b (all shipped)
+**Est. Sessions:** 1–2 per sub-slice
+
+## Sub-slice status
+
+| Sub-slice | Status | PR | Scope |
+|-----------|--------|----|-------|
+| 15a | ✅ shipped 2026-04-20 | #26 | Meta + OG + Twitter + canonical + sitemap + robots + build gate + locale-aware OG image |
+| 15b | planned next | — | JSON-LD structured data (Person, WebSite, BlogPosting, Service, BreadcrumbList, ProfilePage) |
+| 15c | deferred (post-Slice 18) | — | Per-post / per-project Satori OG image generation |
 
 ## Goal
 
