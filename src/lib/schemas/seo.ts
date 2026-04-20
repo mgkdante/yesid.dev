@@ -7,8 +7,14 @@ import { z } from 'zod';
 
 // Reusable LocalizedString schema. Mirrors the interface in $lib/types.
 // English is required; French and Spanish are optional, filled over time.
+// `en` must contain at least one non-whitespace character — an empty or
+// whitespace-only string is semantically missing content, not "present".
 export const LocalizedStringSchema = z.object({
-	en: z.string().min(1, 'LocalizedString.en is required and non-empty'),
+	en: z
+		.string()
+		.refine((s) => s.trim().length > 0, {
+			message: 'LocalizedString.en is required and must contain non-whitespace content',
+		}),
 	fr: z.string().optional(),
 	es: z.string().optional(),
 });
@@ -29,10 +35,14 @@ export const PageSeoSchema = z.object({
 		},
 		{ message: 'description must be 50–200 characters in every provided locale' },
 	),
+	// Canonical ships verbatim into <link rel="canonical"> — must be absolute.
 	canonical: z.string().url(),
 	ogImage: z
 		.object({
-			url: z.string(),
+			// Relative paths ("/og/default.png") are allowed here by design.
+			// SeoHead resolves them against SITE_HOST before emitting og:image.
+			// Content authors use root-relative paths; full URLs also work.
+			url: z.string().min(1),
 			alt: LocalizedStringSchema,
 			width: z.number().default(1200),
 			height: z.number().default(630),

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PageSeoSchema } from './seo';
+import { LocalizedStringSchema, PageSeoSchema } from './seo';
 
 const validLocalized = { en: 'Yesid — Digital Infrastructure' };
 const validBase = {
@@ -56,7 +56,10 @@ describe('PageSeoSchema', () => {
 		expect(result.success).toBe(false);
 	});
 
-	it('accepts a full optional payload', () => {
+	it('accepts a full optional payload (relative ogImage.url allowed by design)', () => {
+		// ogImage.url deliberately accepts relative paths — SeoHead resolves
+		// them against SITE_HOST before emitting og:image. canonical, by
+		// contrast, must be absolute (it ships verbatim).
 		const full = {
 			...validBase,
 			ogImage: { url: '/og/x.png', alt: { en: 'Alt text' } },
@@ -64,5 +67,40 @@ describe('PageSeoSchema', () => {
 			noIndex: true,
 		};
 		expect(PageSeoSchema.safeParse(full).success).toBe(true);
+	});
+
+	it('rejects whitespace-only title.en (semantically empty)', () => {
+		const result = PageSeoSchema.safeParse({ ...validBase, title: { en: '   ' } });
+		expect(result.success).toBe(false);
+	});
+});
+
+describe('LocalizedStringSchema', () => {
+	it('accepts en-only', () => {
+		expect(LocalizedStringSchema.safeParse({ en: 'Hello' }).success).toBe(true);
+	});
+
+	it('accepts en + optional locales', () => {
+		const result = LocalizedStringSchema.safeParse({ en: 'Hello', fr: 'Bonjour', es: 'Hola' });
+		expect(result.success).toBe(true);
+	});
+
+	it('rejects empty en', () => {
+		expect(LocalizedStringSchema.safeParse({ en: '' }).success).toBe(false);
+	});
+
+	it('rejects whitespace-only en', () => {
+		expect(LocalizedStringSchema.safeParse({ en: '   ' }).success).toBe(false);
+		expect(LocalizedStringSchema.safeParse({ en: '\t\n' }).success).toBe(false);
+	});
+
+	it('rejects missing en', () => {
+		expect(LocalizedStringSchema.safeParse({ fr: 'Bonjour' }).success).toBe(false);
+	});
+
+	it('allows empty optional locales (content not yet translated)', () => {
+		// Empty-string fr/es is not a semantic error at the schema level — the
+		// resolveLocale() util handles the "missing translation" fallback.
+		expect(LocalizedStringSchema.safeParse({ en: 'Hello', fr: '' }).success).toBe(true);
 	});
 });
