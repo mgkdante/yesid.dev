@@ -478,6 +478,62 @@ bun run test    # 877/877
 
 ---
 
+---
+
+### Session 2026-04-20 00:30 — Tasks 15a-13 + 15a-14
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation + validation
+**Picking up from:** Task 15a-12 commit 8cbf3da
+
+**Goal:** Close 13 (404 SEO verification) + 14 (share-preview validation what we can do locally; external validators deferred to PR preview URL).
+
+**Files touched:**
+- Modified: `src/routes/+error.svelte` — updated the Slice 17b "documented exception" comment to reflect that 15a resolved the SEO half of it (layout fallback to `/__error`); content migration still deferred
+
+**Task 13 — 404 SEO verification (done):**
+- Layout's try/catch in `+layout.ts` catches unknown route ids and falls back to `getPageSeo('/__error', locale)`.
+- Confirmed server-side via `curl http://localhost:5173/blog/not-a-real-post` → `<title>Not Found | yesid.</title>` + `<meta name="robots" content="noindex,nofollow">` + canonical pointing to `/`.
+- `+layout.test.ts` already has two passing tests covering the fallback (null `route.id` and unknown route id).
+- No code change needed in `+error.svelte` — its role is visible UI, SEO is layout-authoritative.
+
+**Task 14 — local validation (done-for-local-URL):**
+
+Lighthouse SEO audits via chrome-devtools MCP (desktop, navigation mode):
+
+| URL | SEO | A11y | Best Practices |
+|-----|----:|-----:|---------------:|
+| `/` | **100** | 100 | 100 |
+| `/about` | **100** | 96 | 100 |
+| `/blog/building-a-transit-pipeline` | **100** | 100 | 100 |
+| `/services/sql-development` | **100** | 100 | 100 |
+
+All four route types hit Lighthouse SEO 100 — exceeds the spec's ≥ 95 target. One a11y warning on /about (unrelated to SEO).
+
+**Task 14 — external validators (deferred to PR preview URL):**
+
+opengraph.xyz, Twitter Card Validator, LinkedIn Post Inspector, Slack unfurl, Google Rich Results Test — all require a publicly reachable URL. Moved to the PR description as a validation checklist to run against the Vercel preview URL that `gh pr create` will produce. Not a blocker for the PR itself — the meta is confirmed correct via curl + Lighthouse.
+
+**Commands run:**
+```bash
+curl http://localhost:5173/blog/not-a-real-post  # 404 SEO verified
+chrome-devtools lighthouse_audit × 4             # all 4 page types SEO=100
+```
+
+**Validation:**
+| Check | Result |
+|-------|--------|
+| 404 fallback SEO (curl) | ✓ `Not Found | yesid.` + noindex meta |
+| 404 fallback tests (+layout.test.ts) | PASS (2/2 covering null + unknown route ids) |
+| Lighthouse SEO × 4 page types | 100 × 4 |
+| External validators (opengraph.xyz etc.) | Deferred to PR preview URL; checklist in PR body |
+
+**Outcome:** Slice 15a is functionally complete. Remaining work is administrative: final code review sweep, open PR, address any review feedback, merge, close slice via `bun run slice:close 15a`.
+
+**Blockers / questions:** none for local validation; external share validation blocked on public URL which the PR preview will provide.
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)

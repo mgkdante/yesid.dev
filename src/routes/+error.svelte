@@ -2,10 +2,16 @@
 	import { onMount } from 'svelte';
 	import ErrorIllustration from '$lib/components/home/ErrorIllustration.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	// Documented exception (Slice 17b): +error.svelte reads `errorPageContent`
-	// directly from $lib/content. SvelteKit's +error.svelte runs without a loader,
-	// so migrating through a repository requires an upstream refactor deferred
-	// to Slice 15 SEO. See ARCHITECTURE.md § Documented Exceptions.
+	// Documented exception (Slice 17b, still partially open post-Slice 15a):
+	// +error.svelte reads `errorPageContent` directly from $lib/content for
+	// visible page content (heading, description, terminal line). SvelteKit's
+	// +error.svelte runs without its own loader, so migrating *content* through
+	// a repository needs an upstream refactor — still deferred.
+	//
+	// Slice 15a DID resolve the SEO half of this exception: the root +layout.ts
+	// catches unknown route ids and falls back to getPageSeo('/__error', locale),
+	// so 404 pages ship noindex,nofollow + "Not Found | yesid." title server-side.
+	// The content read below is just the visible UI.
 	import { errorPageContent } from '$lib/content';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { prefersReducedMotion } from '$lib/motion/stores';

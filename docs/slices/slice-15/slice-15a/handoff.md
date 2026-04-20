@@ -311,6 +311,37 @@ Single-branded 1200×630 OG image per published locale. Today = EN only (EN is t
 
 ---
 
+### Tasks 15a-13 + 15a-14: 404 verification + local Lighthouse validation
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-20
+
+**Files:**
+- Modified: `src/routes/+error.svelte` — comment-only update (reflects that 15a resolved the SEO half of the Slice 17b documented exception)
+
+**Task 13 — 404 SEO verification:**
+Layout-level fallback already handles unknown routes. `/blog/not-a-real-post` returns `<title>Not Found | yesid.</title>` + `noindex,nofollow` server-side. No code change; 2 existing `+layout.test.ts` tests cover the fallback path.
+
+**Task 14 — local share-preview / Lighthouse validation:**
+
+| URL | Lighthouse SEO | A11y | Best Practices |
+|-----|---------------:|-----:|---------------:|
+| `/` | **100** | 100 | 100 |
+| `/about` | **100** | 96 | 100 |
+| `/blog/{post}` | **100** | 100 | 100 |
+| `/services/{id}` | **100** | 100 | 100 |
+
+All 4 page types hit the spec's target (≥ 95; 15b lifts all to 100 after JSON-LD).
+
+External validators (opengraph.xyz, Twitter Card Validator, LinkedIn Post Inspector, Slack unfurl, Google Rich Results Test) — **deferred to the PR preview URL** since they require public access. Full checklist moved into the PR body; will run against the Vercel preview URL that `gh pr create` produces.
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (2 existing tests cover 404 fallback) | Lighthouse SEO 100 × 4 routes | External validator checklist in PR description
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
