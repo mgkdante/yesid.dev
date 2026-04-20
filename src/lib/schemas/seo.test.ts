@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LocalizedStringSchema, PageSeoSchema } from './seo';
+import { SchemaOrgNodeSchema } from './jsonld';
 
 const validLocalized = { en: 'Yesid — Digital Infrastructure' };
 const validBase = {
@@ -102,5 +103,52 @@ describe('LocalizedStringSchema', () => {
 		// Empty-string fr/es is not a semantic error at the schema level — the
 		// resolveLocale() util handles the "missing translation" fallback.
 		expect(LocalizedStringSchema.safeParse({ en: 'Hello', fr: '' }).success).toBe(true);
+	});
+});
+
+describe('PageSeoSchema.jsonLd extension (Slice 15b)', () => {
+	it('accepts a base entry with no jsonLd (backward compat with 15a)', () => {
+		const result = PageSeoSchema.safeParse(validBase);
+		expect(result.success).toBe(true);
+	});
+
+	it('accepts an entry with a jsonLd array', () => {
+		const withJsonLd = {
+			...validBase,
+			jsonLd: [
+				{
+					'@type': 'BreadcrumbList' as const,
+					'@id': 'https://yesid.dev/about#breadcrumb',
+					itemListElement: [
+						{
+							'@type': 'ListItem' as const,
+							position: 1,
+							name: 'Home',
+							item: 'https://yesid.dev',
+						},
+						{
+							'@type': 'ListItem' as const,
+							position: 2,
+							name: 'About',
+							item: 'https://yesid.dev/about',
+						},
+					],
+				},
+			],
+		};
+		expect(PageSeoSchema.safeParse(withJsonLd).success).toBe(true);
+	});
+
+	it('rejects an entry with malformed jsonLd (unknown @type)', () => {
+		const withBad = {
+			...validBase,
+			jsonLd: [{ '@type': 'Unicorn', '@id': 'https://yesid.dev/#u', name: 'X' }],
+		};
+		expect(PageSeoSchema.safeParse(withBad).success).toBe(false);
+	});
+
+	it('accepts an empty jsonLd array', () => {
+		const withEmpty = { ...validBase, jsonLd: [] };
+		expect(PageSeoSchema.safeParse(withEmpty).success).toBe(true);
 	});
 });

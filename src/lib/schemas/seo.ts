@@ -4,6 +4,7 @@
 // happens in Slice 17c.
 
 import { z } from 'zod';
+import { SchemaOrgNodeSchema } from './jsonld';
 
 // Reusable LocalizedString schema. Mirrors the interface in $lib/types.
 // English is required; French and Spanish are optional, filled over time.
@@ -50,6 +51,11 @@ export const PageSeoSchema = z.object({
 		.optional(),
 	ogType: z.enum(['website', 'article', 'profile']).default('website'),
 	noIndex: z.boolean().default(false),
+	jsonLd: z.array(SchemaOrgNodeSchema).optional(),
 });
 
 export type PageSeo = z.infer<typeof PageSeoSchema>;
+
+// Re-export SchemaOrgNode so consumers (routeSeoEntries) import from the
+// single SEO surface. Keeps types.ts's existing `export { PageSeo }` pattern.
+export type { SchemaOrgNode } from './jsonld';

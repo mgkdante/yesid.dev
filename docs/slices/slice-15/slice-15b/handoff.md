@@ -52,6 +52,24 @@ Ship Schema.org JSON-LD across every public route via an additive extension of 1
 
 **Note:** Task spec said "~22 tests"; implementation yields exactly 21 `it(...)` blocks per the provided test fixture. Matches the spec's verbatim test body.
 
+### Task 15b-2: Extend `PageSeoSchema` with optional `jsonLd` + re-export `SchemaOrgNode`
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-sonnet-4-6, subagent-driven-development)
+**Session:** 2026-04-20
+
+**Files:**
+- `src/lib/schemas/seo.ts` (modified — added `SchemaOrgNodeSchema` import, `jsonLd` field, `SchemaOrgNode` re-export)
+- `src/lib/schemas/seo.test.ts` (modified — added `SchemaOrgNodeSchema` import, appended `PageSeoSchema.jsonLd extension (Slice 15b)` describe block with 4 tests)
+- `src/lib/types.ts` (modified — replaced single `PageSeo` re-export with `PageSeo, SchemaOrgNode` re-export)
+
+**What landed:**
+`PageSeoSchema` now accepts an optional `jsonLd: SchemaOrgNode[]` field as its last property. The field is validated via `z.array(SchemaOrgNodeSchema).optional()`, meaning any existing route entry without `jsonLd` continues to parse cleanly (fully additive, non-breaking). `SchemaOrgNode` is re-exported through `seo.ts` and surfaced via `types.ts`, keeping `types.ts` as the single import surface for consumer code. The `static.ts` adapter's existing `PageSeoSchema.parse(raw)` call at the factory boundary automatically validates the new field at no further code cost.
+
+**Decisions:** None beyond spec.
+
+**Tests:** 20/20 passing in `seo.test.ts` (16 original 15a tests + 4 new 15b tests); 21/21 in `jsonld.test.ts`; 8/8 in `meta.test.ts`. `bun run check`: 0 errors, 19 pre-existing warnings unchanged.
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:

@@ -501,6 +501,7 @@ export interface ContactContent {
 	web3formsKey: string; // Public access key — safe to expose client-side
 }
 
-// Slice 15a: PageSeo defined in $lib/schemas/seo via Zod; re-exported here so
-// types.ts remains the single import surface for consumer code.
-export type { PageSeo } from '$lib/schemas/seo';
+// Slice 15a: PageSeo + SchemaOrgNode defined in $lib/schemas via Zod; re-exported
+// here so types.ts remains the single import surface for consumer code.
+// SchemaOrgNode added in Slice 15b.
+export type { PageSeo, SchemaOrgNode } from '$lib/schemas/seo';
