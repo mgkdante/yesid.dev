@@ -123,6 +123,42 @@ bun run check
 
 ---
 
+---
+
+### Session 2026-04-19 23:28 — Task 15a-3
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-2 commit f00079e
+
+**Goal:** Extend `MetaPort` contract with `forRoute(routeId, locale, params?)`, re-export `PageSeo` from `$lib/types`, require `seo` on `App.PageData`.
+
+**Commands run:**
+```bash
+bun run check   # 1 error EXPECTED (static adapter missing forRoute — resolved in Task 5)
+bun run test    # 846 passed — no regressions
+```
+
+**Files touched:**
+- Modified: `src/lib/adapters/types.ts` — added `forRoute` to `MetaPort`, added `PageSeo` import
+- Modified: `src/lib/types.ts` — re-exported `PageSeo` from `$lib/schemas/seo`
+- Modified: `src/app.d.ts` — extended `App.PageData` with required `seo: PageSeo`
+
+**Decisions:**
+- D009: `App.PageData.seo` required (not optional). Layout load always provides it; no page is allowed to skip.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run check` | 1 ERROR (expected — `static.ts:105 Property 'forRoute' is missing`, resolved in Task 5) |
+| `bun run test` | PASS (846/846 — no regressions from pre-existing suite) |
+
+**Outcome:** MetaPort contract extended. The one expected error is the design gate — static adapter must implement `forRoute` (Task 5). Ready for Task 4 (populate content/meta.ts).
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)

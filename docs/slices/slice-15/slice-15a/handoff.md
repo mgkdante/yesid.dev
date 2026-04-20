@@ -71,6 +71,29 @@ Single-module source of truth for SEO defaults. `canonicalFor()` strips trailing
 
 ---
 
+### Task 15a-3: Extend MetaPort with forRoute + require seo in PageData
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-19
+
+**Files:**
+- Modified: `src/lib/adapters/types.ts` — added `forRoute(routeId, locale, params?)` to `MetaPort`; imported `PageSeo` type
+- Modified: `src/lib/types.ts` — re-exported `PageSeo` from `$lib/schemas/seo` (types.ts remains authoritative)
+- Modified: `src/app.d.ts` — extended `App.PageData` with required `seo: PageSeo`
+
+**What landed:**
+Type-level contract for layout-authoritative SEO. Every adapter (static today, Payload in Slice 18) must provide `forRoute`. `App.PageData.seo` is required — no page can silently skip SEO; the layout load (Task 8) is the single provider.
+
+**Decisions:**
+- D009: `App.PageData.seo` required (not optional). Forces layout load to always return it.
+
+**Follow-ups flagged:** none — 1 expected `bun run check` error (static adapter missing `forRoute`) resolves in Task 5.
+
+**Tests:** PASS (846/846 pre-existing suite, no regressions) | `bun run check`: 1 ERROR (expected — design gate for Task 5)
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
