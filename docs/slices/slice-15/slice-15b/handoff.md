@@ -70,6 +70,25 @@ Ship Schema.org JSON-LD across every public route via an additive extension of 1
 
 **Tests:** 20/20 passing in `seo.test.ts` (16 original 15a tests + 4 new 15b tests); 21/21 in `jsonld.test.ts`; 8/8 in `meta.test.ts`. `bun run check`: 0 errors, 19 pre-existing warnings unchanged.
 
+### Task 15b-3: Reference-anchor factories — `buildPersonNode` + `buildWebSiteNode` + constants
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-sonnet-4-6, subagent-driven-development)
+**Session:** 2026-04-20
+
+**Files:**
+- `src/lib/adapters/jsonld.ts` (new, 63 lines)
+- `src/lib/adapters/jsonld.test.ts` (new, 68 lines)
+
+**What landed:**
+`src/lib/adapters/jsonld.ts` is the factory module for Schema.org JSON-LD nodes. It exports the two global anchor constants (`PERSON_ID = https://yesid.dev/#person`, `WEBSITE_ID = https://yesid.dev/#website`) and two pure factory functions: `buildPersonNode(meta: SiteMeta): Person` and `buildWebSiteNode(meta: SiteMeta): WebSite`. Both factories construct their node from `SiteMeta`, validate at the boundary via `SchemaOrgNodeSchema.parse(built)`, and cast the result back to the narrower type (safe because the literal `@type` discriminates the union). No I/O, no adapter imports, no side effects. The `PERSON_ID`/`WEBSITE_ID` constants are exported at module top-level for cross-reference by Tasks 4-5.
+
+**Decisions:** None beyond spec.
+
+**Tests:** 10/10 PASS — 2 constant tests + 5 Person tests + 3 WebSite tests.
+- Prior suite regression: 49/49 PASS (`meta.test.ts` + `schemas/jsonld.test.ts` + `schemas/seo.test.ts`)
+- `bun run check`: 0 errors, 19 pre-existing warnings (unchanged)
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
