@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { siteMeta } from '$lib/content/meta';
+import { adapter } from './index';
 import {
 	PERSON_ID,
 	WEBSITE_ID,
@@ -8,6 +9,9 @@ import {
 	buildProfilePageNode,
 	buildBreadcrumbListNode,
 	buildCollectionPageNode,
+	buildBlogPostingNode,
+	buildServiceNode,
+	buildCreativeWorkNode,
 } from './jsonld';
 
 describe('PERSON_ID / WEBSITE_ID constants', () => {
@@ -123,5 +127,103 @@ describe('buildCollectionPageNode', () => {
 		expect(node['@type']).toBe('CollectionPage');
 		expect(node['@id']).toBe('https://yesid.dev/blog#collectionpage');
 		expect(node.name).toBe('Blog');
+	});
+});
+
+describe('buildBlogPostingNode', () => {
+	it('produces a Zod-parseable BlogPosting from a real post', async () => {
+		const posts = await adapter.blog.all();
+		if (posts.length === 0) return;
+		const post = posts[0];
+		const node = buildBlogPostingNode(post, 'en');
+		expect(node['@type']).toBe('BlogPosting');
+		expect(node['@id']).toBe(`https://yesid.dev/blog/${post.slug}`);
+	});
+
+	it('copies inLanguage from post.lang', async () => {
+		const posts = await adapter.blog.all();
+		if (posts.length === 0) return;
+		const post = posts[0];
+		const node = buildBlogPostingNode(post, 'en');
+		expect(node.inLanguage).toBe(post.lang);
+	});
+
+	it('references Person via author + publisher @ids (Q6-A: same @id)', async () => {
+		const posts = await adapter.blog.all();
+		if (posts.length === 0) return;
+		const node = buildBlogPostingNode(posts[0], 'en');
+		expect(node.author).toEqual({ '@id': PERSON_ID });
+		expect(node.publisher).toEqual({ '@id': PERSON_ID });
+	});
+
+	it('uses post.date as datePublished', async () => {
+		const posts = await adapter.blog.all();
+		if (posts.length === 0) return;
+		const post = posts[0];
+		const node = buildBlogPostingNode(post, 'en');
+		expect(node.datePublished).toBe(post.date);
+	});
+});
+
+describe('buildServiceNode', () => {
+	it('produces a Zod-parseable Service from a real service', async () => {
+		const services = await adapter.services.visible();
+		if (services.length === 0) return;
+		const service = services[0];
+		const node = buildServiceNode(service, 'en');
+		expect(node['@type']).toBe('Service');
+		expect(node['@id']).toBe(`https://yesid.dev/services/${service.id}`);
+	});
+
+	it('references Person via provider @id', async () => {
+		const services = await adapter.services.visible();
+		if (services.length === 0) return;
+		const node = buildServiceNode(services[0], 'en');
+		expect(node.provider).toEqual({ '@id': PERSON_ID });
+	});
+
+	it('populates availableLanguage from PUBLISHED_LOCALES', async () => {
+		const services = await adapter.services.visible();
+		if (services.length === 0) return;
+		const node = buildServiceNode(services[0], 'en');
+		expect(node.availableLanguage).toEqual(['en']);
+	});
+});
+
+describe('buildCreativeWorkNode', () => {
+	it('produces a Zod-parseable CreativeWork from a real project', async () => {
+		const projects = await adapter.projects.public();
+		if (projects.length === 0) return;
+		const project = projects[0];
+		const node = buildCreativeWorkNode(project, 'en');
+		expect(node['@type']).toBe('CreativeWork');
+		expect(node['@id']).toBe(`https://yesid.dev/projects/${project.slug}`);
+	});
+
+	it('references Person via author + creator @ids', async () => {
+		const projects = await adapter.projects.public();
+		if (projects.length === 0) return;
+		const node = buildCreativeWorkNode(projects[0], 'en');
+		expect(node.author).toEqual({ '@id': PERSON_ID });
+		expect(node.creator).toEqual({ '@id': PERSON_ID });
+	});
+
+	it('copies project.tags into keywords + project.stack into about', async () => {
+		const projects = await adapter.projects.public();
+		if (projects.length === 0) return;
+		const project = projects[0];
+		const node = buildCreativeWorkNode(project, 'en');
+		expect(node.keywords).toEqual(project.tags);
+		expect(node.about).toEqual(project.stack);
+	});
+
+	it('omits dates per Q5-A decision — Project has no date field', async () => {
+		const projects = await adapter.projects.public();
+		if (projects.length === 0) return;
+		const node = buildCreativeWorkNode(projects[0], 'en');
+		// CreativeWorkSchema doesn't declare datePublished; emitting one would
+		// fail the Zod parse. Assert absence to guard against regression.
+		expect((node as Record<string, unknown>).datePublished).toBeUndefined();
+		expect((node as Record<string, unknown>).dateModified).toBeUndefined();
 	});
 });

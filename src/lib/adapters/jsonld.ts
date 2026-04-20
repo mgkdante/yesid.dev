@@ -13,15 +13,19 @@
 
 import { SchemaOrgNodeSchema } from '$lib/schemas/jsonld';
 import type {
+	BlogPosting,
 	BreadcrumbList,
 	BreadcrumbListItem,
 	CollectionPage,
+	CreativeWork,
 	Person,
 	ProfilePage,
+	Service as ServiceNode,
 	WebSite,
 } from '$lib/schemas/jsonld';
-import type { SiteMeta } from '$lib/types';
-import { SITE_HOST } from '$lib/utils/seo-defaults';
+import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
+import { resolveLocale } from '$lib/utils/locale';
+import { PUBLISHED_LOCALES, SITE_HOST } from '$lib/utils/seo-defaults';
 
 export const PERSON_ID = `${SITE_HOST}/#person`;
 export const WEBSITE_ID = `${SITE_HOST}/#website`;
@@ -115,4 +119,49 @@ export function buildCollectionPageNode(args: {
 		url: args.url,
 	};
 	return SchemaOrgNodeSchema.parse(built) as CollectionPage;
+}
+
+export function buildBlogPostingNode(post: BlogPost, locale: Locale): BlogPosting {
+	const canonicalUrl = `${SITE_HOST}/blog/${post.slug}`;
+	const built = {
+		'@type': 'BlogPosting' as const,
+		'@id': canonicalUrl,
+		headline: resolveLocale(post.title, locale),
+		description: resolveLocale(post.excerpt, locale),
+		inLanguage: post.lang,
+		datePublished: post.date,
+		author: { '@id': PERSON_ID },
+		publisher: { '@id': PERSON_ID },
+		mainEntityOfPage: canonicalUrl,
+	};
+	return SchemaOrgNodeSchema.parse(built) as BlogPosting;
+}
+
+export function buildServiceNode(service: ServiceDomain, locale: Locale): ServiceNode {
+	const canonicalUrl = `${SITE_HOST}/services/${service.id}`;
+	const built = {
+		'@type': 'Service' as const,
+		'@id': canonicalUrl,
+		name: resolveLocale(service.title, locale),
+		description: resolveLocale(service.description, locale),
+		provider: { '@id': PERSON_ID },
+		availableLanguage: [...PUBLISHED_LOCALES],
+	};
+	return SchemaOrgNodeSchema.parse(built) as ServiceNode;
+}
+
+export function buildCreativeWorkNode(project: Project, locale: Locale): CreativeWork {
+	const canonicalUrl = `${SITE_HOST}/projects/${project.slug}`;
+	const built = {
+		'@type': 'CreativeWork' as const,
+		'@id': canonicalUrl,
+		name: resolveLocale(project.title, locale),
+		description: resolveLocale(project.description, locale),
+		url: canonicalUrl,
+		author: { '@id': PERSON_ID },
+		creator: { '@id': PERSON_ID },
+		keywords: project.tags,
+		about: project.stack,
+	};
+	return SchemaOrgNodeSchema.parse(built) as CreativeWork;
 }

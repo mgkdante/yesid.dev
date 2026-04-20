@@ -108,6 +108,26 @@ Three page-type factory functions appended to `src/lib/adapters/jsonld.ts`. `bui
 - Full suite regression: 930/930 PASS across 94 test files.
 - `bun run check`: 0 errors, 19 pre-existing warnings (unchanged).
 
+### Task 15b-5: Domain-content factories — `buildBlogPostingNode` + `buildServiceNode` + `buildCreativeWorkNode`
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-sonnet-4-6, subagent-driven-development)
+**Session:** 2026-04-20
+
+**Files:**
+- `src/lib/adapters/jsonld.ts` (modified — merged `import type` block to add `BlogPosting`, `CreativeWork`, `Service as ServiceNode`; added new `$lib/types` import for `BlogPost`, `Locale`, `Project`, `Service as ServiceDomain`; added `resolveLocale` + `PUBLISHED_LOCALES` imports; appended 3 factory functions)
+- `src/lib/adapters/jsonld.test.ts` (modified — added `adapter` import from `./index`; added 3 new factory names to existing `./jsonld` import; appended 4 `describe` blocks with 11 tests)
+- `docs/slices/slice-15/slice-15b/handoff.md` (this file — appended Task 15b-5 section)
+
+**What landed:**
+Three domain-content factories appended to `src/lib/adapters/jsonld.ts`. `buildBlogPostingNode(post, locale)` constructs a `BlogPosting` node with canonical `@id` at `${SITE_HOST}/blog/${post.slug}`, resolving `headline` and `description` through `resolveLocale`, and wiring `author` and `publisher` to `PERSON_ID` (Q6-A: publisher = Person, same `@id` as author). `buildServiceNode(service, locale)` constructs a `Service` node at `${SITE_HOST}/services/${service.id}`, references `PERSON_ID` as `provider`, and populates `availableLanguage` from the immutable spread of `PUBLISHED_LOCALES`. `buildCreativeWorkNode(project, locale)` constructs a `CreativeWork` node at `${SITE_HOST}/projects/${project.slug}`, references `PERSON_ID` as both `author` and `creator`, copies `project.tags` into `keywords` and `project.stack` into `about`, and deliberately omits `datePublished`/`dateModified` per Q5-A (no date fields on `CreativeWorkSchema`). The `Service` name collision between `$lib/types` and `$lib/schemas/jsonld` is resolved via `Service as ServiceDomain` (domain) and `Service as ServiceNode` (schema) aliases. All three factories end with `SchemaOrgNodeSchema.parse(built)` at the boundary.
+
+**Decisions:** None beyond spec. Q5-A (no dates on CreativeWork) and Q6-A (BlogPosting.publisher = Person) are encoded directly in the factory bodies as specified.
+
+**Tests:** 27/27 PASS in `src/lib/adapters/jsonld.test.ts` (16 prior + 11 new: 4 BlogPosting + 3 Service + 4 CreativeWork).
+- Full suite regression: 941/941 PASS across 94 test files.
+- `bun run check`: 0 errors, 19 pre-existing warnings (unchanged).
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
