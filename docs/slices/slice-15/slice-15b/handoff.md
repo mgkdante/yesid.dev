@@ -89,6 +89,25 @@ Ship Schema.org JSON-LD across every public route via an additive extension of 1
 - Prior suite regression: 49/49 PASS (`meta.test.ts` + `schemas/jsonld.test.ts` + `schemas/seo.test.ts`)
 - `bun run check`: 0 errors, 19 pre-existing warnings (unchanged)
 
+### Task 15b-4: Page-type factories — `buildProfilePageNode` + `buildBreadcrumbListNode` + `buildCollectionPageNode`
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-sonnet-4-6, subagent-driven-development)
+**Session:** 2026-04-20
+
+**Files:**
+- `src/lib/adapters/jsonld.ts` (modified — merged `import type` block + appended `BreadcrumbInput` interface and 3 factories)
+- `src/lib/adapters/jsonld.test.ts` (modified — added 3 new factory names to import, appended 3 new describe blocks with 6 tests)
+
+**What landed:**
+Three page-type factory functions appended to `src/lib/adapters/jsonld.ts`. `buildProfilePageNode(canonicalUrl)` constructs a `ProfilePage` node with `@id` at `${canonicalUrl}#profilepage` and `mainEntity` referencing `PERSON_ID`. `buildBreadcrumbListNode(items, canonicalUrl)` accepts a `readonly BreadcrumbInput[]` (the newly exported `BreadcrumbInput` interface), maps them to `ListItem` entries with sequential 1-based `position` values, and assigns `@id` at `${canonicalUrl}#breadcrumb`; item count validation is delegated to Zod's `.min(2)` rule. `buildCollectionPageNode({ name, description, url })` constructs a `CollectionPage` node with `@id` at `${url}#collectionpage`. All three factories end with `SchemaOrgNodeSchema.parse(built)` at the boundary. The existing `import type { Person, WebSite }` block was merged with the new types into a single `import type { BreadcrumbList, BreadcrumbListItem, CollectionPage, Person, ProfilePage, WebSite }` block, avoiding duplication.
+
+**Decisions:** None beyond spec. `buildProfilePageNode` signature is `(canonicalUrl: string)` with no `locale` parameter — locale would be unused since `ProfilePage` has no locale-dependent fields.
+
+**Tests:** 16/16 PASS in `src/lib/adapters/jsonld.test.ts` (10 prior + 6 new).
+- Full suite regression: 930/930 PASS across 94 test files.
+- `bun run check`: 0 errors, 19 pre-existing warnings (unchanged).
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
