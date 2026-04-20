@@ -45,6 +45,7 @@ export default defineConfig({
 						'src/lib/schemas/**/*.test.ts',
 						'src/lib/utils/**/*.test.ts',
 						'src/lib/styles/**/*.test.ts',
+						'src/tests/**/*.test.ts',
 					],
 					environment: 'node',
 					globals: true,

@@ -405,6 +405,39 @@ bun run test    # 877/877
 
 ---
 
+---
+
+### Session 2026-04-20 00:09 — Task 15a-11
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-10 commit aa29acd
+
+**Goal:** Wire a build-time gate that fails the build if declared routes and sitemap entries diverge.
+
+**Files touched:**
+- Created: `src/tests/sitemap-coverage.test.ts` — walks `src/routes`, expands dynamic slugs, diffs vs. sitemap output
+- Modified: `vite.config.ts` — added `src/tests/**/*.test.ts` to the `data` project test include patterns
+- Modified: `package.json` — new `check:sitemap` script (just runs the coverage test); `build` now chains `vite build && bun run check:sitemap`
+
+**Decisions:**
+- D025: Attempted a pure Bun script first; abandoned because `import.meta.glob` (used in `src/lib/content/blog.ts` for markdown loading) requires Vite runtime. Pivoted to a vitest test that runs in Vite context. Same semantic gate, cleaner integration.
+- D026: Walker regex matches `+page.svelte` AND `+page@*.svelte` (SvelteKit's layout-group syntax — projects and blog detail use `@.svelte` to skip intermediate layouts). Initial walker missed these, producing false positives (sitemap had routes that "weren't declared").
+- D027: Exclusions list: `/sitemap.xml`, `/robots.txt` (they're the plumbing, not content routes).
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run check:sitemap` | PASS (1 test) |
+| `bun run build` | PASS — vite build succeeds, then check:sitemap passes |
+| Full `bun run test` | Still green (existing tests unaffected) |
+
+**Outcome:** Build fails if anyone adds a page without a sitemap-covering entry. Payload swap in Slice 18 will keep working as long as the new adapter returns slugs the same way. Ready for Task 12 (OG image).
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)

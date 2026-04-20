@@ -257,6 +257,31 @@ Dynamic `/robots.txt` with `User-agent: *`, `Allow: /`, `Disallow: /preview`, ab
 
 ---
 
+### Task 15a-11: Build-time sitemap coverage gate
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-20
+
+**Files:**
+- Created: `src/tests/sitemap-coverage.test.ts` — diffs declared routes vs. sitemap output
+- Modified: `vite.config.ts` — added `src/tests/**/*.test.ts` include pattern
+- Modified: `package.json` — `check:sitemap` script; `build` now chains `&& bun run check:sitemap`
+
+**What landed:**
+`bun run build` fails if someone adds a public route without updating the sitemap path, or drops a route the sitemap still references. Walks `src/routes/**/+page(@*)?.svelte`, expands `[slug]`/`[id]` via the adapter, and compares against the entries emitted by `_buildSitemapEntries`.
+
+**Decisions:**
+- D025: Vitest-based gate (not a raw Bun script) because `import.meta.glob` requires Vite runtime.
+- D026: Regex handles SvelteKit's `+page@layout.svelte` layout-group syntax.
+- D027: Exclusions: `/sitemap.xml`, `/robots.txt`.
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (1 new test) | `bun run build` end-to-end passes with gate engaged
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
