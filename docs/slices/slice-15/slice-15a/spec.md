@@ -60,17 +60,24 @@ export type PageSeo = z.infer<typeof PageSeoSchema>;
 ### Data flow
 
 ```
-+page.ts.load()
-   └─ repositories/meta.ts → getPageSeo(routeId, locale)
-        └─ adapters/meta.ts → PageSeoSchema.parse(rawEntry)
-             └─ content/meta.ts (TS source today; Payload GraphQL in Slice 18)
++layout.ts.load({ route, params })
+   └─ repositories/meta.ts → getPageSeo(route.id, locale, params)
+        └─ adapters/meta.ts → MetaPort.forRoute(routeId, locale, params)
+             └─ PageSeoSchema.parse(rawEntry)
+                  └─ content/meta.ts per-route entries + content/projects/blog/services for dynamic routes
+                       (TS source today; Payload GraphQL in Slice 18)
 
 +layout.svelte
    └─ <SeoHead seo={$page.data.seo} />
         └─ <svelte:head>: title, meta, OG, Twitter, canonical, hreflang, og:locale:alternate
 ```
 
-Nested route SEO wins over parent (e.g., `/blog/[slug]` overrides `/blog`'s default). The `$page.data.seo` resolution is handled by SvelteKit's standard `load` chain — no custom merge logic required; the nearest `load` returning `seo` wins.
+**SEO is layout-authoritative.** The root `+layout.ts` (server-side load) is the single source of truth for which `PageSeo` ships per request. It resolves SEO from the route id + params via `adapter.meta.forRoute(...)`. Individual `+page.ts` files do not return `seo` — the adapter handles every route pattern internally, including dynamic routes by reading from the existing projects/blog/services adapters.
+
+**Why layout-authoritative rather than per-page overrides:**
+- `src/routes/+page.ts` has `export const ssr = false` (GSAP/Lottie require browser APIs). A home page's own load never ships SEO server-side. Social crawlers (Twitter, LinkedIn, Facebook, Slack) do not execute JavaScript — the HTML must already contain the meta. Only a parent layout load (always SSR) can guarantee server-side meta for such pages.
+- Single source of truth matches Payload's model (CMS is authoritative). When the Payload adapter replaces the TS adapter in Slice 18, it's one swap in `src/lib/adapters/index.ts` — no per-page changes.
+- One place to look when debugging SEO output: `adapters/meta.ts`.
 
 ### Site-level defaults (`src/lib/utils/seo-defaults.ts`)
 
@@ -84,7 +91,7 @@ Single source of truth for fallbacks:
 
 ### Enforcement — three layers
 
-1. **Type-level.** `app.d.ts` extends `PageData` / `LayoutData` to require `seo: PageSeo`. Any `+page.ts` that doesn't return `seo` is a TS error caught by `bun run check`.
+1. **Type-level.** `app.d.ts` extends `App.PageData` to include `seo: PageSeo`. Because SEO is layout-authoritative, the TS guarantee comes from the layout's load returning seo — and `adapter.meta.forRoute()` is typed to return `PageSeo`, so an unregistered route id throws at the adapter, caught by unit tests and `bun run check`.
 2. **Build-time.** `scripts/check-sitemap-coverage.ts` runs as a post-build step wired into `package.json`'s build script:
    - Enumerates **expected** routes: walks `src/routes/**/+page.svelte`, expands dynamic segments (`[id]`, `[slug]`) by calling the content adapter for every public Project / Service / BlogPost.
    - Enumerates **actual** routes: invokes the same sitemap-generation logic used by `/sitemap.xml/+server.ts` (imported as a pure function — no HTTP round-trip).
@@ -120,9 +127,9 @@ Both server routes — not prerendered — so Payload-sourced routes (Slice 18) 
 ```
 src/lib/schemas/seo.ts                       — PageSeoSchema, LocalizedStringSchema (re-export) in Zod; CrumbSchema is 15b territory
 src/lib/schemas/seo.test.ts                  — schema validation happy/sad paths
-src/lib/adapters/meta.ts                     — forRoute(routeId, locale) → PageSeo; Zod parse at boundary
+src/lib/adapters/meta.ts                     — extends MetaPort with forRoute(routeId, locale, params?) → PageSeo; Zod parse at boundary; routes to content/meta.ts for static routes and to projects/blog/services adapters for dynamic routes
 src/lib/adapters/meta.test.ts                — adapter contract + locale fallback
-src/lib/repositories/meta.ts                 — port: getPageSeo(routeId, locale)
+src/lib/repositories/meta.ts                 — port: getPageSeo(routeId, locale, params?)
 src/lib/components/seo/SeoHead.svelte        — renders <svelte:head>: title/meta/OG/Twitter/canonical/hreflang
 src/lib/components/seo/SeoHead.test.ts       — tag emission per locale, missing-field warnings
 src/lib/utils/seo-defaults.ts                — SITE_HOST, DEFAULT_OG_IMAGE, SITE_NAME, PUBLISHED_LOCALES, DEFAULT_LOCALE
@@ -138,19 +145,10 @@ static/og/default.png                        — 1200×630 branded default (word
 ```
 src/lib/types.ts                             — re-export PageSeo from schemas/seo.ts (types.ts stays authoritative)
 src/lib/content/meta.ts                      — extend with per-route PageSeo entries for every public route
-src/routes/+layout.ts                        — load returns site-level default seo
-src/routes/+layout.svelte                    — mount <SeoHead seo={$page.data.seo} />
-src/routes/+page.ts                          — returns home seo
-src/routes/about/+page.ts                    — returns about seo
-src/routes/contact/+page.ts                  — returns contact seo
-src/routes/services/+page.ts                 — returns services-index seo
-src/routes/services/[id]/+page.ts            — returns per-service seo via adapter
-src/routes/projects/+page.ts                 — returns projects-index seo
-src/routes/projects/[id]/+page.ts            — returns per-project seo via adapter
-src/routes/blog/+page.ts                     — returns blog-index seo
-src/routes/blog/[slug]/+page.ts              — returns per-post seo via adapter
-src/routes/tech-stack/+page.ts               — returns tech-stack seo
-src/routes/+error.svelte                     — renders <SeoHead seo={errorSeo}> with noIndex: true; errorSeo lives in src/lib/content/meta.ts alongside other route entries
+src/routes/+layout.ts                        — NEW: server-side load resolves seo via adapter.meta.forRoute(event.route.id, locale, event.params); returns { seo }
+src/routes/+layout.svelte                    — mount <SeoHead seo={$page.data.seo} />; remove the existing buildPersonSchema(siteMeta) exception (15b re-adds JSON-LD via SeoHead)
+src/routes/+error.svelte                     — renders <SeoHead seo={errorSeo}> with noIndex: true; errorSeo keyed under `/__error` in src/lib/content/meta.ts
+NOTE: existing `+page.ts` files are NOT modified for SEO — layout is authoritative. Pages keep their current responsibilities (ssr toggles, prerender flags, data fetches for page content).
 src/app.d.ts                                 — extend PageData/LayoutData to require seo
 package.json                                 — add "zod"; add "check:sitemap" script; wire into build
 ```
@@ -191,7 +189,8 @@ package.json                                 — add "zod"; add "check:sitemap" 
 
 - [ ] `PageSeoSchema` defined in `src/lib/schemas/seo.ts` with validation for title, description, canonical, ogImage, ogType, noIndex (no breadcrumbs / jsonLd in 15a — reserved for 15b extension)
 - [ ] Adapter parses via Zod at the boundary; `adapters/meta.test.ts` covers valid/invalid/locale-fallback
-- [ ] Every public route returns `seo: PageSeo` from its `+page.ts` or parent `+layout.ts`
+- [ ] Root `+layout.ts` resolves `seo: PageSeo` for every request via `adapter.meta.forRoute(route.id, locale, params)`; individual `+page.ts` files do not provide SEO (layout-authoritative)
+- [ ] Home page SEO (`ssr = false`) ships server-side correctly because the layout load always runs on the server — verified by a test that disables JS and inspects the rendered HTML meta tags
 - [ ] `SeoHead.svelte` emits: `<title>`, `<meta name="description">`, `<link rel="canonical">`, complete OG set (title, description, image, image:alt, url, type, site_name, locale, locale:alternate × other published locales), complete Twitter Card set (card, title, description, image, image:alt), `<link rel="alternate" hreflang>` per published locale + x-default, theme-color, color-scheme
 - [ ] `src/lib/content/meta.ts` has entries for every public route: home, about, contact, services (index + every public service detail), projects (index + every public detail), blog (index + every public post), tech-stack, 404
 - [ ] `/sitemap.xml` returns valid XML; one `<url>` per (public route × published locale); each has self-referencing `xhtml:link` hreflang entries; excludes `noIndex` routes and `/preview`
@@ -210,3 +209,4 @@ package.json                                 — add "zod"; add "check:sitemap" 
 | Date | Change | Why |
 |------|--------|-----|
 | 2026-04-19 | Initial draft | Brainstorming session — post-17k, pre-18 |
+| 2026-04-19 | Layout-authoritative SEO (replaces per-page overrides) | Discovered during plan drafting: home `+page.ts` has `ssr = false` (GSAP/Lottie browser APIs). Per-page SEO wouldn't ship server-side to social crawlers. Centralizing in `+layout.ts` via `adapter.meta.forRoute(route.id, locale, params)` fixes this AND matches Payload's single-source-of-truth model better. |
