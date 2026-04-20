@@ -197,6 +197,41 @@ bun -e '...'   # char-count verification: all descriptions 148–162 chars (with
 
 ---
 
+---
+
+### Session 2026-04-19 23:34 — Task 15a-5
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-4 commit 881ef8a
+
+**Goal:** Implement `forRoute` on the static adapter — closes the design gate from Task 3.
+
+**Commands run:**
+```bash
+bun run test src/lib/adapters/meta.test.ts
+bun run check
+```
+
+**Files touched:**
+- Modified: `src/lib/adapters/static.ts` — added `forRoute` implementation + imports (`routeSeoEntries`, `PageSeoSchema`, `PageSeo`, `Locale`)
+- Created: `src/lib/adapters/meta.test.ts` — 8 tests covering static routes, dynamic blog/project/service routes, unknown routes, 404 entry
+
+**Decisions:**
+- D015: Adapter boundary is the Zod parse point — `PageSeoSchema.parse(raw)` runs on every call. Bad data fails loudly at the seam rather than surfacing downstream.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test src/lib/adapters/meta.test.ts` | PASS (8/8) |
+| `bun run check` | PASS (0 ERRORS — design gate from Task 3 closed) |
+
+**Outcome:** Contract green end-to-end: port → adapter → Zod-parsed PageSeo. Ready for Task 6 (repository wrapper).
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)

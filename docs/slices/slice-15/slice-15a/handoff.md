@@ -119,6 +119,28 @@ Type-level contract for layout-authoritative SEO. Every adapter (static today, P
 
 ---
 
+### Task 15a-5: Implement forRoute on static adapter
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-19
+
+**Files:**
+- Modified: `src/lib/adapters/static.ts` — added `forRoute` method with Zod parse at boundary
+- Created: `src/lib/adapters/meta.test.ts` — 8 tests (static + dynamic routes + error paths + 404)
+
+**What landed:**
+Static adapter now fulfills the full `MetaPort` contract. `forRoute` looks up the route id in `routeSeoEntries`, invokes the factory (if dynamic) or returns the literal (if static), and parses through `PageSeoSchema` before returning. Unknown route ids throw with a clear "add an entry in content/meta.ts" message.
+
+**Decisions:**
+- D015: Zod parse at adapter boundary — single validation seam for all adapters (static today, Payload in Slice 18).
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (8 new tests) | `bun run check`: 0 ERRORS (Task 3 design gate resolved)
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
