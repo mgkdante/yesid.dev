@@ -258,6 +258,36 @@ bun run check
 
 ---
 
+---
+
+### Session 2026-04-19 23:39 — Task 15a-7
+
+**Tool:** Claude Code (claude-opus-4-7, inline execution)
+**Session type:** Implementation
+**Picking up from:** Task 15a-6 commit f445118
+
+**Goal:** Implement `SeoHead` Svelte component with full `<head>` tag emission + dev-mode warnings.
+
+**Files touched:**
+- Created: `src/lib/components/seo/SeoHead.svelte` — renders title/description/canonical/OG/Twitter/hreflang/theme-color into `<svelte:head>`
+- Created: `src/lib/components/seo/SeoHead.test.ts` — 14 tests covering tag emission + dev warnings + ogImage resolution (relative→absolute)
+
+**Decisions:**
+- D016: `dev` is a component prop (default `runtimeDev` from `$app/environment`). Tests force it on/off to verify warnings behave correctly in both modes — no global `vi.stubEnv` needed.
+- D017: Added 2 extra tests beyond the plan: (a) relative ogImage URL → absolute resolution; (b) absolute ogImage URL pass-through. These nail down the behavior documented in Task 1's schema comments.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test src/lib/components/seo/SeoHead.test.ts` | PASS (14/14) |
+| `bun run check` | PASS (0 errors) |
+
+**Outcome:** Component ready. Task 8 wires it into the root layout.
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)

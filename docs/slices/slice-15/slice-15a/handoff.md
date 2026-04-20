@@ -160,6 +160,29 @@ Thin async wrapper delegating to `adapter.meta.forRoute`. Layout code (Task 8) i
 
 ---
 
+### Task 15a-7: SeoHead component
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline execution)
+**Session:** 2026-04-19
+
+**Files:**
+- Created: `src/lib/components/seo/SeoHead.svelte` — Svelte 5 runes component, renders all SEO tags to `<svelte:head>`
+- Created: `src/lib/components/seo/SeoHead.test.ts` — 14 tests
+
+**What landed:**
+Full `<head>` emission: title, description, canonical, complete OG set (7 tags incl. image:alt + width + height + site_name + locale + locale:alternate per other published locale), complete Twitter Card set, hreflang per published locale + x-default, theme-color #141414, color-scheme dark, noindex/nofollow when `seo.noIndex`. Dev-mode warns when title > 60 chars or description outside 150–160.
+
+**Decisions:**
+- D016: `dev` is a prop (defaults to `$app/environment` value) so tests control warning paths directly.
+- D017: Added two extra tests for relative→absolute ogImage URL resolution (nails down schema intent documented in Task 1).
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (14 tests) | `bun run check`: 0 errors
+
+---
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
