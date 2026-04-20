@@ -227,6 +227,51 @@ Deleted the Slice 12 legacy `src/lib/utils/json-ld.ts` (which built a raw JSON-L
 - `bun run check`: 0 errors, 19 pre-existing warnings (unchanged)
 - `bun run build`: end-to-end success including sitemap gate (1/1 PASS)
 
+---
+
+### Task 15b-10: Manual validation sweep — Lighthouse SEO 100 + JSON-LD structure on 5 canonical URLs
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, inline via Chrome DevTools MCP)
+**Session:** 2026-04-20
+
+**Files:**
+- `docs/slices/slice-15/slice-15b/preview-validation.md` (new) — full validation log with per-URL structure + Lighthouse tables
+
+**What landed:**
+Ran `bun run build` + `bun run preview` (preview landed on port 4174 — port 4173 was occupied by a stale earlier vite instance). Navigated Chrome DevTools MCP sequentially through 5 canonical URLs — `/`, `/about`, `/blog/building-a-transit-pipeline`, `/projects/yesid-dev`, `/services/sql-development`. For each: extracted the rendered `<script type="application/ld+json">` from `document.head` via `evaluate_script`, verified `@graph` node types match the per-route schema map, verified `@id` cross-references resolve correctly (Person anchor on `/` + `/about`; `@id`-referenced everywhere else), ran a desktop navigation-mode Lighthouse audit. Captured results in `preview-validation.md`.
+
+**Decisions:** None beyond spec.
+
+**Validation results:**
+
+| URL | Lighthouse SEO | A11y | Best Practices | JSON-LD `@graph` |
+|---|---:|---:|---:|---|
+| `/` | **100** | 100 | 100 | Person + WebSite + ProfilePage |
+| `/about` | **100** | 96 (pre-existing from 15a) | 100 | Person + ProfilePage + BreadcrumbList |
+| `/blog/building-a-transit-pipeline` | **100** | 100 | 100 | BlogPosting + BreadcrumbList |
+| `/projects/yesid-dev` | **100** | 100 | 100 | CreativeWork + BreadcrumbList |
+| `/services/sql-development` | **100** | 100 | 100 | Service + BreadcrumbList |
+
+**Verified per route:**
+- Exactly one `<script type="application/ld+json">` per page (not N separate scripts)
+- `@graph` wrapper with `@context: "https://schema.org"` (Q2-C encoded)
+- Person `@id = https://yesid.dev/#person` appears fully only on `/` + `/about`, `@id`-referenced elsewhere
+- BlogPosting `inLanguage` propagates from `post.lang`; `datePublished` from `post.date`; `author` === `publisher` same `@id` (Q6-A encoded)
+- CreativeWork emits no `datePublished` / `dateModified` (Q5-A encoded); `keywords` from `project.tags`, `about` from `project.stack`
+- Service `availableLanguage: ["en"]` from `PUBLISHED_LOCALES`; `provider` → Person `@id`
+- BreadcrumbList present on every subpage with correct trail (including the `/blog/personal` nested trail `Home → Blog → Personal` from Q3-B — verified via `meta.test.ts` integration tests)
+- XSS safe-embed: raw `</script>` never present in script body (verified on `/blog/<slug>`); `<` escaped to `\u003c` by `serializeJsonLd`
+
+**False positive during audit (resolved in-session):** First Lighthouse run on `/` reported SEO 92 with `robots-txt is not valid`. Root cause: Chrome was pointing at stale port 4173 while the fresh preview bound to 4174. Second audit against the correct port returned 100. No code change needed.
+
+**External validator sweep (validator.schema.org + Google Rich Results Test):** Deferred to the PR preview URL per the 15a precedent (Google Rich Results Test requires public URL; checklist in `preview-validation.md` to be run against the Vercel preview URL that `gh pr create` produces).
+
+**Verification:**
+- 5/5 URLs at Lighthouse SEO 100 ✓
+- 5/5 URLs emit one `<script>` with correct `@graph` shape ✓
+- Full suite 954/954 ✓ | `bun run check` 0 errors ✓ | `bun run build` end-to-end ✓
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:
