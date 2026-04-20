@@ -42,6 +42,7 @@ export default defineConfig({
 						'src/lib/adapters/**/*.test.ts',
 						'src/lib/content/**/*.test.ts',
 						'src/lib/repositories/**/*.test.ts',
+						'src/lib/schemas/**/*.test.ts',
 						'src/lib/utils/**/*.test.ts',
 						'src/lib/styles/**/*.test.ts',
 					],

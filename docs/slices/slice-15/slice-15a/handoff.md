@@ -22,7 +22,28 @@ Key properties:
 
 ---
 
-*(Task sections will be appended below as implementation progresses. See `plan.md` for the 14 tasks to land.)*
+### Task 15a-1: Zod + PageSeoSchema
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-opus-4-7, subagent-driven-development)
+**Session:** 2026-04-19
+
+**Files:**
+- Modified: `package.json`, `bun.lock` — added zod runtime dep
+- Modified: `vite.config.ts` — added schemas/ to vitest test include allowlist
+- Created: `src/lib/schemas/seo.ts` — `PageSeoSchema` + `LocalizedStringSchema` + `PageSeo` type
+- Created: `src/lib/schemas/seo.test.ts` — 9 tests covering valid/invalid/edge inputs
+
+**What landed:**
+Zod contract for route-level SEO metadata. `PageSeoSchema` validates title (≤ 70 chars), description (50–200 chars), canonical (valid URL), optional ogImage, ogType enum, and noIndex. `LocalizedStringSchema` requires `en` and makes `fr`/`es` optional — mirrors the existing TypeScript interface in `src/lib/types.ts`. Schema IS the contract Payload must honor when it lands in Slice 18.
+
+**Decisions:**
+- D006: `.refine()` for length bounds covers all locales in one rule.
+- D007: `vite.config.ts` test-include allowlist needed schemas/ entry.
+
+**Follow-ups flagged:** none
+
+**Tests:** PASS (9 tests) | `bun run check`: 0 errors
 
 ---
 

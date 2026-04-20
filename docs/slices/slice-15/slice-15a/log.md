@@ -49,6 +49,45 @@
 
 ---
 
+---
+
+### Session 2026-04-19 23:12 — Task 15a-1
+
+**Tool:** Claude Code (claude-opus-4-7, subagent-driven-development)
+**Session type:** Implementation
+**Picking up from:** Planning session (commit 1494b98)
+
+**Goal:** Land Zod dependency + PageSeoSchema + test coverage for schema validation.
+
+**Commands run:**
+```bash
+bun add zod
+bun run test src/lib/schemas/seo.test.ts
+bun run check
+```
+
+**Files touched:**
+- Modified: `package.json`, `bun.lock` — added zod runtime dep
+- Modified: `vite.config.ts` — added `src/lib/schemas/**/*.test.ts` to vitest include patterns (required so new test directory is picked up by the existing explicit allowlist)
+- Created: `src/lib/schemas/seo.ts`
+- Created: `src/lib/schemas/seo.test.ts`
+
+**Decisions:**
+- D006: Used `.refine()` on LocalizedStringSchema for title/description length so one rule covers en/fr/es. Cleaner than branching per-locale.
+- D007: vite.config.ts uses an explicit include allowlist for test directories; added schemas/ pattern alongside existing adapters/content/repositories/utils/styles entries. Not in the original Task 1 file list but required for tests to run.
+
+**Validation:**
+| Command | Result |
+|---------|--------|
+| `bun run test src/lib/schemas/seo.test.ts` | PASS (9/9) |
+| `bun run check` | PASS (0 errors, 19 pre-existing warnings) |
+
+**Outcome:** Zod-validated PageSeoSchema in place with exhaustive test coverage. Ready for Task 2.
+
+**Blockers / questions:** none
+
+---
+
 ## OS-quirks encountered this sub-slice
 
 (Populate as you hit platform-specific issues. At slice close, migrate these to `<cloud>/workflow-knowledge/os-quirks/<os>.md` per the closing checklist.)
