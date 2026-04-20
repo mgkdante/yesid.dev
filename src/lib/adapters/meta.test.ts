@@ -90,3 +90,80 @@ describe('adapter.meta.forRoute + jsonLd (Slice 15b)', () => {
 		expect(types).toContain('BreadcrumbList');
 	});
 });
+
+describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
+	async function typesFor(routeId: string, params?: Record<string, string>): Promise<string[]> {
+		const seo = await adapter.meta.forRoute(routeId, 'en', params);
+		return (seo.jsonLd ?? []).map((n) => n['@type']);
+	}
+
+	it('/ emits Person + WebSite + ProfilePage', async () => {
+		const types = await typesFor('/');
+		expect(types).toEqual(['Person', 'WebSite', 'ProfilePage']);
+	});
+
+	it('/about emits Person + ProfilePage + BreadcrumbList', async () => {
+		const types = await typesFor('/about');
+		expect(types).toEqual(['Person', 'ProfilePage', 'BreadcrumbList']);
+	});
+
+	it('/contact emits BreadcrumbList only', async () => {
+		expect(await typesFor('/contact')).toEqual(['BreadcrumbList']);
+	});
+
+	it('/services emits CollectionPage + BreadcrumbList', async () => {
+		expect(await typesFor('/services')).toEqual(['CollectionPage', 'BreadcrumbList']);
+	});
+
+	it('/services/[id] emits Service + BreadcrumbList', async () => {
+		const services = await adapter.services.visible();
+		if (services.length === 0) return;
+		const types = await typesFor('/services/[id]', { id: services[0].id });
+		expect(types).toEqual(['Service', 'BreadcrumbList']);
+	});
+
+	it('/projects emits CollectionPage + BreadcrumbList', async () => {
+		expect(await typesFor('/projects')).toEqual(['CollectionPage', 'BreadcrumbList']);
+	});
+
+	it('/projects/[slug] emits CreativeWork + BreadcrumbList', async () => {
+		const projects = await adapter.projects.public();
+		if (projects.length === 0) return;
+		const types = await typesFor('/projects/[slug]', { slug: projects[0].slug });
+		expect(types).toEqual(['CreativeWork', 'BreadcrumbList']);
+	});
+
+	it('/blog emits CollectionPage + BreadcrumbList', async () => {
+		expect(await typesFor('/blog')).toEqual(['CollectionPage', 'BreadcrumbList']);
+	});
+
+	it('/blog/personal emits CollectionPage + BreadcrumbList (nested: Home → Blog → Personal)', async () => {
+		const seo = await adapter.meta.forRoute('/blog/personal', 'en');
+		const types = (seo.jsonLd ?? []).map((n) => n['@type']);
+		expect(types).toEqual(['CollectionPage', 'BreadcrumbList']);
+		// Check the nested breadcrumb trail (Q3-B)
+		const breadcrumb = seo.jsonLd?.find((n) => n['@type'] === 'BreadcrumbList');
+		expect(breadcrumb).toBeDefined();
+		if (breadcrumb && breadcrumb['@type'] === 'BreadcrumbList') {
+			expect(breadcrumb.itemListElement).toHaveLength(3);
+			expect(breadcrumb.itemListElement[1].name).toBe('Blog');
+			expect(breadcrumb.itemListElement[2].name).toBe('Personal');
+		}
+	});
+
+	it('/blog/[slug] emits BlogPosting + BreadcrumbList', async () => {
+		const posts = await adapter.blog.all();
+		if (posts.length === 0) return;
+		const types = await typesFor('/blog/[slug]', { slug: posts[0].slug });
+		expect(types).toEqual(['BlogPosting', 'BreadcrumbList']);
+	});
+
+	it('/tech-stack emits BreadcrumbList only', async () => {
+		expect(await typesFor('/tech-stack')).toEqual(['BreadcrumbList']);
+	});
+
+	it('/__error emits no jsonLd (noIndex route, per spec)', async () => {
+		const seo = await adapter.meta.forRoute('/__error', 'en');
+		expect(seo.jsonLd === undefined || seo.jsonLd.length === 0).toBe(true);
+	});
+});

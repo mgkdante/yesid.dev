@@ -177,6 +177,28 @@ Three domain-content factories appended to `src/lib/adapters/jsonld.ts`. `buildB
 - `meta.test.ts`: 8/11 PASS (8 prior + 3 intentional RED); RED tests are: `returns jsonLd as part of PageSeo for a static route`, `parses jsonLd through PageSeoSchema at the adapter boundary`, `returns jsonLd for a dynamic blog route`
 - `bun run check`: 0 errors, 19 pre-existing warnings (unchanged)
 
+### Task 15b-8: Populate `jsonLd` on all 11 routes in `routeSeoEntries`
+
+**Planned by:** Claude Code (claude-opus-4-7[1m])
+**Implemented by:** Claude Code (claude-sonnet-4-6, subagent-driven-development)
+**Session:** 2026-04-20
+
+**Files:**
+- `src/lib/content/meta.ts` (modified — added 8 factory imports; added `jsonLd` field to all 11 indexable routes; added no-jsonLd comment to `/__error`)
+- `src/lib/adapters/meta.test.ts` (modified — appended `adapter.meta.forRoute + jsonLd — per-route coverage` describe block with 12 new integration tests)
+- `docs/slices/slice-15/slice-15b/handoff.md` (this file — appended Task 15b-8 section)
+
+**What landed:**
+All 11 public routes in `routeSeoEntries` now emit JSON-LD nodes via the factories shipped in Tasks 3-5. `/` gets `Person + WebSite + ProfilePage` (global anchors + identity page). `/about` gets `Person + ProfilePage + BreadcrumbList` (2-level Home → About). `/contact` and `/tech-stack` get a single `BreadcrumbList` (no rich type needed). `/services` and `/projects` and `/blog` each get `CollectionPage + BreadcrumbList`. `/blog/personal` gets `CollectionPage` plus a **3-level nested breadcrumb** (Home → Blog → Personal, per Q3-B). Dynamic routes `/services/[id]`, `/projects/[slug]`, and `/blog/[slug]` each get their domain-content node (`Service`, `CreativeWork`, `BlogPosting` respectively) plus a `BreadcrumbList` with the item-specific leaf crumb; the `locale` parameter is now passed through to each domain factory. The `/__error` route intentionally carries no `jsonLd` (noIndex page, no structured data benefit) and is documented with an inline comment. The 3 intentionally-RED tests from Task 7 (`returns jsonLd as part of PageSeo for a static route`, `parses jsonLd through PageSeoSchema at the adapter boundary`, `returns jsonLd for a dynamic blog route`) are now GREEN as a direct result of the route-entry population.
+
+**Decisions:** None beyond spec.
+
+**Tests:**
+- `meta.test.ts`: 23/23 PASS (8 original 15a + 3 Task 7 RED → GREEN + 12 new per-route coverage)
+- Full suite: 964/964 PASS across 95 test files
+- `bun run check`: 0 errors, 19 pre-existing warnings (unchanged)
+- `bun run build`: end-to-end success including sitemap gate (1/1 PASS)
+
 ## Follow-ups flagged (accumulates)
 
 Decisions needed from Yesid, or items deferred to future slices:

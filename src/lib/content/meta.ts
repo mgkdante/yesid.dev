@@ -1,5 +1,15 @@
 import type { SiteMeta, PageSeo, Locale } from '$lib/types';
 import { SITE_HOST } from '$lib/utils/seo-defaults';
+import {
+	buildPersonNode,
+	buildWebSiteNode,
+	buildProfilePageNode,
+	buildBreadcrumbListNode,
+	buildCollectionPageNode,
+	buildBlogPostingNode,
+	buildServiceNode,
+	buildCreativeWorkNode,
+} from '$lib/adapters/jsonld';
 
 // Single source of truth for site-level metadata consumed by layouts and SEO.
 // name is never localised — "yesid." is the brand name in all languages.
@@ -75,6 +85,11 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: SITE_HOST,
 		ogType: 'website',
 		noIndex: false,
+		jsonLd: [
+			buildPersonNode(siteMeta),
+			buildWebSiteNode(siteMeta),
+			buildProfilePageNode(SITE_HOST),
+		],
 	},
 	'/about': {
 		title: { en: 'About Yesid | yesid.' },
@@ -84,6 +99,17 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: `${SITE_HOST}/about`,
 		ogType: 'profile',
 		noIndex: false,
+		jsonLd: [
+			buildPersonNode(siteMeta),
+			buildProfilePageNode(`${SITE_HOST}/about`),
+			buildBreadcrumbListNode(
+				[
+					{ name: 'Home', url: SITE_HOST },
+					{ name: 'About', url: `${SITE_HOST}/about` },
+				],
+				`${SITE_HOST}/about`,
+			),
+		],
 	},
 	'/contact': {
 		title: { en: 'Contact | yesid.' },
@@ -93,6 +119,15 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: `${SITE_HOST}/contact`,
 		ogType: 'website',
 		noIndex: false,
+		jsonLd: [
+			buildBreadcrumbListNode(
+				[
+					{ name: 'Home', url: SITE_HOST },
+					{ name: 'Contact', url: `${SITE_HOST}/contact` },
+				],
+				`${SITE_HOST}/contact`,
+			),
+		],
 	},
 	'/services': {
 		title: { en: 'Services | yesid.' },
@@ -102,17 +137,44 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: `${SITE_HOST}/services`,
 		ogType: 'website',
 		noIndex: false,
+		jsonLd: [
+			buildCollectionPageNode({
+				name: 'Services',
+				description:
+					'Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms.',
+				url: `${SITE_HOST}/services`,
+			}),
+			buildBreadcrumbListNode(
+				[
+					{ name: 'Home', url: SITE_HOST },
+					{ name: 'Services', url: `${SITE_HOST}/services` },
+				],
+				`${SITE_HOST}/services`,
+			),
+		],
 	},
-	'/services/[id]': async (params) => {
+	'/services/[id]': async (params, locale) => {
 		const { adapter } = await import('$lib/adapters');
 		const service = await adapter.services.byId(params.id);
 		if (!service) throw new Error(`Unknown service id: ${params.id}`);
+		const canonicalUrl = `${SITE_HOST}/services/${service.id}`;
 		return {
 			title: { en: `${service.title.en} | yesid.` },
 			description: fitDescriptionForSeo(service.description),
-			canonical: `${SITE_HOST}/services/${service.id}`,
+			canonical: canonicalUrl,
 			ogType: 'article',
 			noIndex: false,
+			jsonLd: [
+				buildServiceNode(service, locale),
+				buildBreadcrumbListNode(
+					[
+						{ name: 'Home', url: SITE_HOST },
+						{ name: 'Services', url: `${SITE_HOST}/services` },
+						{ name: service.title.en, url: canonicalUrl },
+					],
+					canonicalUrl,
+				),
+			],
 		};
 	},
 	'/projects': {
@@ -123,8 +185,23 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: `${SITE_HOST}/projects`,
 		ogType: 'website',
 		noIndex: false,
+		jsonLd: [
+			buildCollectionPageNode({
+				name: 'Projects',
+				description:
+					'Recent freelance and client work: transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects.',
+				url: `${SITE_HOST}/projects`,
+			}),
+			buildBreadcrumbListNode(
+				[
+					{ name: 'Home', url: SITE_HOST },
+					{ name: 'Projects', url: `${SITE_HOST}/projects` },
+				],
+				`${SITE_HOST}/projects`,
+			),
+		],
 	},
-	'/projects/[slug]': async (params) => {
+	'/projects/[slug]': async (params, locale) => {
 		const { adapter } = await import('$lib/adapters');
 		const project = await adapter.projects.bySlug(params.slug);
 		if (!project) throw new Error(`Unknown project slug: ${params.slug}`);
@@ -133,12 +210,24 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 			fitDescriptionForSeo(project.description) !== FALLBACK_DESCRIPTION
 				? project.description
 				: fitDescriptionForSeo(project.oneLiner);
+		const canonicalUrl = `${SITE_HOST}/projects/${project.slug}`;
 		return {
 			title: { en: `${project.title.en} | yesid.` },
 			description: desc,
-			canonical: `${SITE_HOST}/projects/${project.slug}`,
+			canonical: canonicalUrl,
 			ogType: 'article',
 			noIndex: false,
+			jsonLd: [
+				buildCreativeWorkNode(project, locale),
+				buildBreadcrumbListNode(
+					[
+						{ name: 'Home', url: SITE_HOST },
+						{ name: 'Projects', url: `${SITE_HOST}/projects` },
+						{ name: project.title.en, url: canonicalUrl },
+					],
+					canonicalUrl,
+				),
+			],
 		};
 	},
 	'/blog': {
@@ -149,6 +238,21 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: `${SITE_HOST}/blog`,
 		ogType: 'website',
 		noIndex: false,
+		jsonLd: [
+			buildCollectionPageNode({
+				name: 'Blog',
+				description:
+					'Notes on data infrastructure, SQL, PostgreSQL, dbt, Power BI, and analytics systems.',
+				url: `${SITE_HOST}/blog`,
+			}),
+			buildBreadcrumbListNode(
+				[
+					{ name: 'Home', url: SITE_HOST },
+					{ name: 'Blog', url: `${SITE_HOST}/blog` },
+				],
+				`${SITE_HOST}/blog`,
+			),
+		],
 	},
 	'/blog/personal': {
 		title: { en: 'Personal Blog | yesid.' },
@@ -158,17 +262,45 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: `${SITE_HOST}/blog/personal`,
 		ogType: 'website',
 		noIndex: false,
+		jsonLd: [
+			buildCollectionPageNode({
+				name: 'Personal Blog',
+				description:
+					'Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog.',
+				url: `${SITE_HOST}/blog/personal`,
+			}),
+			buildBreadcrumbListNode(
+				[
+					{ name: 'Home', url: SITE_HOST },
+					{ name: 'Blog', url: `${SITE_HOST}/blog` },
+					{ name: 'Personal', url: `${SITE_HOST}/blog/personal` },
+				],
+				`${SITE_HOST}/blog/personal`,
+			),
+		],
 	},
-	'/blog/[slug]': async (params) => {
+	'/blog/[slug]': async (params, locale) => {
 		const { adapter } = await import('$lib/adapters');
 		const post = await adapter.blog.bySlug(params.slug);
 		if (!post) throw new Error(`Unknown blog slug: ${params.slug}`);
+		const canonicalUrl = `${SITE_HOST}/blog/${post.slug}`;
 		return {
 			title: { en: `${post.title.en} | yesid.` },
 			description: fitDescriptionForSeo(post.excerpt),
-			canonical: `${SITE_HOST}/blog/${post.slug}`,
+			canonical: canonicalUrl,
 			ogType: 'article',
 			noIndex: false,
+			jsonLd: [
+				buildBlogPostingNode(post, locale),
+				buildBreadcrumbListNode(
+					[
+						{ name: 'Home', url: SITE_HOST },
+						{ name: 'Blog', url: `${SITE_HOST}/blog` },
+						{ name: post.title.en, url: canonicalUrl },
+					],
+					canonicalUrl,
+				),
+			],
 		};
 	},
 	'/tech-stack': {
@@ -179,6 +311,15 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: `${SITE_HOST}/tech-stack`,
 		ogType: 'website',
 		noIndex: false,
+		jsonLd: [
+			buildBreadcrumbListNode(
+				[
+					{ name: 'Home', url: SITE_HOST },
+					{ name: 'Tech Stack', url: `${SITE_HOST}/tech-stack` },
+				],
+				`${SITE_HOST}/tech-stack`,
+			),
+		],
 	},
 	'/__error': {
 		title: { en: 'Not Found | yesid.' },
@@ -188,5 +329,6 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		canonical: SITE_HOST,
 		ogType: 'website',
 		noIndex: true,
+		// No jsonLd — route is noIndex, no point in structured data.
 	},
 };
