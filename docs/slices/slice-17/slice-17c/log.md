@@ -89,3 +89,18 @@
 - Commit: `2c95669 feat(slice-17c): barrel export for schemas`
 
 **STOP.** Awaiting Yesid approval before starting Task 17c-6 (the big one — adapter wiring + both seam-leak closures).
+
+#### Task 17c-6 — Wire parsePort + close 17b seam leaks (approved → executed)
+- Imports: added `import { z } from 'zod'` + bulk-imported 17 schemas + `parsePort` from the `$lib/schemas` barrel into `adapters/static.ts`. Kept `PageSeoSchema` from `$lib/schemas/seo` (pre-existing, direct-import is valid for explicit provenance).
+- Wrapped every content-returning port per plan matrix. Site-chrome literals (hero/heroAnim/manifesto/proofReel/servicesGrid/about/cta/closer/skillsJourneyCta) left unwrapped per spec D2 non-goal. Utility ports (projects.allTags, blog.html, techStack.content, etc.) left unwrapped — they return primitives/strings.
+- Seam leak #1: `service-svg.ts` signature changed to `fetchServiceSvgContents(fetchFn, services: readonly Service[])`. Removed `import { services } from '$lib/content/services'`. Updated 3 callers: `routes/projects/+page.ts` (await services first, then Promise.all), `routes/services/+page.ts` (restructured so SVG fetch + related-projects fan-out stay parallel after services resolves), `routes/services/[id]/+page.ts` (same pattern).
+- Seam leak #2: `routes/tech-stack/+page.ts` now calls `getTechStackPageContent()` via the repository; `+page.svelte` dropped the `$lib/content/tech-stack` import and reads `const c = data.techStackPage` instead. Seam now flows through the adapter.
+- Test gotcha encountered: first `bun run test` run returned 2 test-file failures due to a vitest-pool-runner timeout (heavy concurrency on Windows). Re-ran and got clean 960/960 green. Not a parsePort issue — environmental flakiness.
+- Verification:
+  - `bun run check` → 0 errors (20 warnings incl. 1 new pre-existing-pattern warning on `data.techStackPage` reference — same `data.items` pattern that was already there).
+  - `bun run test` → 95 files / 960 tests / all green.
+  - `bun run build` → `✓ built in 1m 9s`. SSR path exercises every port; no parse errors surfaced. Sitemap coverage test also passed.
+  - `rg "from '\$lib/content/" src/lib/utils/ src/routes/tech-stack/` → empty. Both seam leaks closed.
+- Commit: `28f9364 feat(slice-17c): wire parsePort into staticAdapter + close 17b seam leaks`
+
+**STOP.** Awaiting Yesid approval before starting Task 17c-7.

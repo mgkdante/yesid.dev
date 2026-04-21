@@ -112,6 +112,27 @@
 
 ---
 
+### Task 17c-6 — Wire parsePort + close 17b seam leaks (commit `28f9364`)
+
+**Tool:** Claude Code (Opus 4.7)
+**Implemented by:** deeper-reasoning model
+**Files modified:** `src/lib/adapters/static.ts` (21 wrap sites), `src/lib/utils/service-svg.ts` (param injection), `src/routes/projects/+page.ts`, `src/routes/services/+page.ts`, `src/routes/services/[id]/+page.ts` (all 3 thread services through), `src/routes/tech-stack/+page.ts` (add `getTechStackPageContent()` call), `src/routes/tech-stack/+page.svelte` (consume `data.techStackPage`, drop direct import)
+**Decisions:**
+- Site-chrome ports (hero/heroAnim/manifesto/proofReel/servicesGrid/about/cta/closer/skillsJourneyCta) left unwrapped per spec D2 non-goal. Added a comment header in the `content` block of `static.ts` documenting this so the intent is visible at the wrap site.
+- Utility ports (allTags, allStackItems, serviceIdsForProjects, connections, incomingConnections, content, html, svgContent, svgContentsForPosts, resolveSvgFallbackName, tagsForCategory, languagesForCategory) left unwrapped — they return primitives/strings/records, no schema needed.
+- Route loader refactors preserved parallelism where possible — `routes/services/+page.ts` in particular uses a nested `Promise.all([fetchServiceSvgContents(...), Promise.all(services.map(...))])` so both dependents of `services` run in parallel after the first await.
+- Kept `PageSeoSchema` import from `$lib/schemas/seo` directly (not via barrel) since it's pre-existing and the barrel comment calls this pattern out as valid for explicit provenance.
+**Deviations from plan:** None material. Plan's Step 6 suggested the `+page.svelte` change might require `data.content ?? data` pattern-matching; actual fix was simpler (one-line `const c = data.techStackPage`).
+**Tests:**
+- `bun run check` → 0 errors (20 warnings — 1 new is the same `data` reference pattern as existing `data.items` warnings, not a regression class).
+- `bun run test` → 95 files / 960 tests / all green. First run saw 2 file-level timeouts (vitest-pool-runner under heavy concurrency); re-ran clean.
+- `bun run build` → `✓ built in 1m 9s`. SSR exercises every port. Sitemap coverage test passed.
+- `rg "from '\$lib/content/" src/lib/utils/ src/routes/tech-stack/` → empty. Both 17b seam leaks closed.
+**Budget row:** Model: Opus 4.7 `[1m]` | Context: ~68% — Pre-break zone (65-80%). I'll finish 17c-7 if approved, then strongly consider a fresh session for 17c-8.
+**Next:** Task 17c-7 — Trim `integrity.test.ts` + add seed-parses-clean smoke tests.
+
+---
+
 ## Audit snapshot (2026-04-20, pre-implementation)
 
 Parallel audits by Claude Explore and Codex agreed on:
