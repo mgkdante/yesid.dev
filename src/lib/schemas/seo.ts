@@ -4,21 +4,12 @@
 // happens in Slice 17c.
 
 import { z } from 'zod';
+import { LocalizedStringSchema } from './shared';
 import { SchemaOrgNodeSchema } from './jsonld';
 
-// Reusable LocalizedString schema. Mirrors the interface in $lib/types.
-// English is required; French and Spanish are optional, filled over time.
-// `en` must contain at least one non-whitespace character — an empty or
-// whitespace-only string is semantically missing content, not "present".
-export const LocalizedStringSchema = z.object({
-	en: z
-		.string()
-		.refine((s) => s.trim().length > 0, {
-			message: 'LocalizedString.en is required and must contain non-whitespace content',
-		}),
-	fr: z.string().optional(),
-	es: z.string().optional(),
-});
+// Re-export for back-compat — relocated to ./shared in slice-17c so every
+// domain schema can consume it without pulling in the SEO graph.
+export { LocalizedStringSchema };
 
 export const PageSeoSchema = z.object({
 	// Optimum ≤ 60 chars in any locale (SerP truncation). Zod hard-fails > 70;
