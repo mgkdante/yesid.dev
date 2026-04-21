@@ -3,7 +3,6 @@
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { resolveLocale } from '$lib/utils/locale';
-	import { techStackPageContent } from '$lib/content/tech-stack';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { StatusDot, SectionLabel } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
@@ -17,7 +16,9 @@
 	// Pre-resolved chrome — all static English for now (swap to $derived on
 	// locale when translation arrives).
 	// SEO meta + title emitted by <SeoHead> in +layout.svelte (Slice 15a).
-	const c = techStackPageContent;
+	// Chrome content flows through adapter → repository → load() post-17c
+	// (closed the 17b seam leak that had this file importing $lib/content).
+	const c = data.techStackPage;
 	const heroOverline = resolveLocale(c.hero.overline, 'en');
 	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, 'en');
 	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, 'en');
