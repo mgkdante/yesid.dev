@@ -10,7 +10,30 @@
 
 ## Summary
 
-*Finalized at slice close. Will cover: files created/modified (numbers from `git diff main --stat`), seed-data fixes discovered (if any), open questions resolved, delta vs. original 1-session estimate.*
+**What shipped:** Zod runtime validation at the `staticAdapter` boundary. Every content-returning port now parses through a schema; thrown errors carry the port label so contract violations from any adapter (static today, Payload in Slice 18) are immediately attributable. Two pre-existing 17b seam leaks closed as audit-driven scope expansion.
+
+**By the numbers (`git diff main --stat`):**
+- **32 files changed** — +2,537 lines / −110 lines
+- **15 new schema files** in `src/lib/schemas/` (parse, shared, project, service, blog, meta, tech-stack, tech-stack-page, about-page, contact-page, nav, journey, hero-data + barrel + parse.test)
+- **~35 bidirectional drift detectors** across the schemas (TS interface ↔ Zod shape compile-time equality)
+- **21 `parsePort` wrap sites** in `staticAdapter` (all content-returning ports; site-chrome literals intentionally not wrapped per D2)
+- **2 seam leaks closed**: `src/lib/utils/service-svg.ts` no longer imports from `$lib/content/*`; `src/routes/tech-stack/+page.svelte` consumes chrome via `data.techStackPage` load-function output
+- **+15 seed-parses-through-schema smoke tests** in `integrity.test.ts` + 5 per-field assertions removed (covered by schemas)
+
+**Seed-data fixes discovered:** None. The pre-implementation audit's Q4 spot-check found all enum values and LocalizedString.en non-empty, and the full schema wrap layer confirmed this at build time — `bun run build` succeeded on the first try post-wrap.
+
+**Open questions from spec — all resolved as spec predicted:**
+- **Q1** (`projects.bySlug` — wrap `.optional()` or guard externally?) → wrapped `.optional()`; one parse call covers both branches.
+- **Q2** (`parsePort` log to console on failure before throwing?) → no; SvelteKit logs thrown errors already; double-logging clutters dev console.
+- **Q3** (ContentPort site-chrome schemas?) → no, per D2 non-goal. Confirmed by keeping the `integrity.test.ts` LocalizedString walker as the enforcement path for site-chrome literals.
+
+**Delta vs. original estimate:** Spec said `Est. Sessions: 1`, and implementation did fit in one wall-clock session (17c-1 → 17c-8 shipped the same day). The audit-driven scope expansion (D8 + Task 17c-2b + expanded 17c-6) added ~1 hour of work, absorbed comfortably. Context budget held through all 9 tasks by staying mechanical (no re-design, no reasoning-heavy transitions after the audit).
+
+**Verification:**
+- `bun run check` → 0 errors (19-20 pre-existing warnings; 1 new is the same `data` reference pattern as existing `data.items`)
+- `bun run test` → 95 files / 968 tests / all green (up from 960 — +15 new parse smoke tests − 7 removed per-field assertions)
+- `bun run build` → `✓ built in 1m 9s`; SSR path exercises every parsePort wrap; no parse errors
+- `rg "from '\$lib/content/" src/lib/utils/ src/routes/tech-stack/` → empty (both 17b seam leaks closed)
 
 ## Task-by-task log
 
@@ -171,4 +194,58 @@ Audits diverged on Q1 (seam isolation). Reconciliation: the 40 component-level c
 
 ## PR body
 
-*Extracted at slice close from the Summary + Task log sections.*
+### Slice 17c — Zod Schema Validation
+
+Runtime contract for every adapter port. Every content read flows through a Zod schema at the `staticAdapter` boundary before reaching repositories. When Payload (Slice 18) swaps in as the adapter, its emitted data must satisfy the same schemas — contract violations fail loudly at the boundary with port-labelled errors (`[adapter.projects.all] ...`).
+
+**What this unlocks:** Slice 18 can swap the adapter implementation with zero repository or component changes. The schemas are the contract; the adapter enforces it.
+
+#### Summary
+
+- **15 new schema files** in `src/lib/schemas/` mirroring every TS interface in `$lib/types.ts` (projects, services, blog, site-meta, tech-stack, tech-stack-page, about-page, contact-page, nav, journey, hero-data + shared primitives).
+- **`parsePort(label, schema, value)` helper** wraps every adapter-boundary parse call so thrown errors name the port that produced bad data. Critical for Slice 18 debugging.
+- **~35 bidirectional drift detectors** (`z.infer extends T ? T extends z.infer ? true : false`) catch TS/Zod divergence at compile time.
+- **21 `parsePort` wrap sites** across `projects`, `services`, `blog`, `meta`, `techStack`, `content` ports. Site-chrome literals (`heroContent`, `manifestoContent`, etc.) intentionally NOT wrapped per spec D2 — they're `typeof import` literal types, not CMS-managed content.
+- **2 pre-existing 17b seam leaks closed** (audit-driven scope expansion):
+  - `src/lib/utils/service-svg.ts` — refactored `fetchServiceSvgContents(fetchFn)` → `fetchServiceSvgContents(fetchFn, services)`; 3 route loaders thread services through.
+  - `src/routes/tech-stack/+page.svelte` — dropped direct `$lib/content/tech-stack` import; page chrome now flows via `+page.ts` → `getTechStackPageContent()` → `adapter.content.techStackPage()` → `parsePort`.
+- **`integrity.test.ts` trimmed + augmented** — removed 5 per-field assertions now covered by Zod (status enum, LocalizedString.en non-empty checks); added 15 seed-parses-clean smoke tests (one per content file). Cross-entity invariants (relatedServices refs, URL-safe slugs, station sequencing) kept. LocalizedString walker + translation-debt snapshot kept — covers site-chrome literals D2 carves out of schema validation.
+
+#### Spec design decisions (D1–D8)
+
+- **D1 Mirror, don't replace** — TS interface stays primary; schemas mirror with `z.infer extends T` drift detector.
+- **D2 Validate at adapter boundary, never below** — every content-returning port parses; repositories and components consume already-parsed data.
+- **D3 Strictness budget** — schemas match TS as-is; no new URL/email/slug tightening. Only pre-existing enum unions and the 15a LocalizedString.en non-whitespace refine are encoded.
+- **D4 Error shape: `z.ZodError` direct via `parsePort` prefix** — `[adapter.<port>] <zod error>`.
+- **D5 One file per domain** — 15 schema modules in `src/lib/schemas/`.
+- **D6 Integrity tests: keep, but layer** — per-field assertions removed, cross-entity kept, seed-parses-clean added.
+- **D7 `image` stays `string`** — Project.image is a static asset filename, not a URL.
+- **D8 Close 17b seam leaks** — added post-audit; expands scope from 8 to 9 tasks, still M-size.
+
+#### Pre-implementation audit
+
+Parallel audits by Claude Explore and Codex ran before any code landed. Both confirmed:
+- 55/55 port matrix between `staticAdapter` surface and plan matrix — zero drift
+- Seed data clean across all enums and LocalizedStrings
+- Existing Zod usage isolated to 15a SEO and 15b JSON-LD — no ad-hoc validation to preserve
+
+Audits diverged on seam isolation (Q1). Reconciliation surfaced two real 17b leaks that were folded into 17c scope via spec D8 + new Task 17c-2b, rather than deferred.
+
+#### Test plan
+
+- [x] `bun run check` — 0 errors (19-20 pre-existing warnings, 1 new is a `data` reference pattern matching existing `data.items` warnings — not a regression class)
+- [x] `bun run test` — 95 files / 968 tests / all green (was 960; +15 new parse smoke tests − 7 removed per-field assertions)
+- [x] `bun run build` — `✓ built in 1m 9s`; SSR exercises every port, no parse errors
+- [x] `rg "from '\$lib/content/" src/lib/utils/ src/routes/tech-stack/` — empty (both 17b seam leaks closed)
+- [ ] Manual smoke test of `/tech-stack` route post-merge (chrome content flows through load function; visual must be unchanged — pre-flight expectation)
+- [ ] Post-merge: `bun run slice:close 17 17c` → mirrors bundle to cloud + appends `COMPLETED-SLICES.md`
+
+#### Files changed
+
+32 files, +2,537 / −110. Full breakdown in [handoff.md](../slice-17c/handoff.md).
+
+#### Follow-up (out of scope, noted for tracking)
+
+- Future `unknown`-boundary audit (fetch responses, form data, URL params) — deferred.
+- Schema-derived test factories — owned by Slice 17f (Test Architecture).
+- Learning doc `docs/learn/data-layer/zod-validation.md` — owned by Slice 17g (Learning Docs Refactor).
