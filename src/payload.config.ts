@@ -1,12 +1,17 @@
-import { postgresAdapter } from '@payloadcms/db-postgres'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
+
+import { buildConfig } from 'payload'
+import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { resendAdapter } from '@payloadcms/email-resend'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { SiteMeta } from './globals/SiteMeta'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -17,18 +22,76 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    meta: { titleSuffix: ' — yesid.dev CMS' },
   },
-  collections: [Users, Media],
   editor: lexicalEditor(),
+  collections: [Users, Media],
+  globals: [SiteMeta],
   secret: process.env.PAYLOAD_SECRET || '',
+  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  localization: {
+    defaultLocale: 'en',
+    locales: ['en', 'fr', 'es'],
+    fallback: true,
+  },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: process.env.DATABASE_URI ?? process.env.DATABASE_URL ?? '',
     },
+    push: false,
+    migrationDir: path.resolve(dirname, '..', 'migrations'),
+    // prodMigrations: migrations,  // uncommented in Task 18a-3 after migrations/index.ts exists
   }),
+  email: resendAdapter({
+    defaultFromAddress: 'no-reply@cms.yesid.dev',
+    defaultFromName: 'yesid.dev CMS',
+    apiKey: process.env.RESEND_API_KEY ?? '',
+  }),
+  plugins: [
+    vercelBlobStorage({
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      collections: {
+        // media: true  ← uncommented in Slice 18b when uploads flip to Vercel Blob
+      },
+      token: process.env.BLOB_READ_WRITE_TOKEN ?? '',
+    }),
+    // D12 — Payload MCP plugin. Exposes site-meta as find/update tool at /api/mcp.
+    // Each content collection added in 18b registers its own entry here.
+    mcpPlugin({
+      globals: {
+        'site-meta': {
+          enabled: { find: true, update: true },
+          description:
+            'Site-wide metadata — heartbeat in 18a (siteName), extended in 18b with tagline, description, links.',
+        },
+      },
+      // collections: {} — intentionally empty in 18a; content collections land in 18b
+    }),
+  ],
   sharp,
-  plugins: [],
+  onInit: async (payload) => {
+    const existing = await payload.find({
+      collection: 'users',
+      where: { roles: { contains: 'admin' } },
+      limit: 1,
+    })
+    if (
+      existing.totalDocs === 0 &&
+      process.env.PAYLOAD_ADMIN_EMAIL &&
+      process.env.PAYLOAD_ADMIN_PASSWORD
+    ) {
+      await payload.create({
+        collection: 'users',
+        data: {
+          email: process.env.PAYLOAD_ADMIN_EMAIL,
+          password: process.env.PAYLOAD_ADMIN_PASSWORD,
+          roles: ['admin'],
+        },
+      })
+      payload.logger.info('[slice-18a] Bootstrap admin created')
+    }
+  },
 })
