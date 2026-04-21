@@ -43,6 +43,22 @@
 
 ---
 
+### Task 17c-2b — TechStackPage schema + adapter port + repository (commit `c1097ba`)
+
+**Tool:** Claude Code (Opus 4.7)
+**Implemented by:** deeper-reasoning model
+**Files created:** `src/lib/schemas/tech-stack-page.ts` (schema + 1 one-direction drift detector)
+**Files modified:** `src/lib/adapters/types.ts` (ContentPort extended), `src/lib/adapters/static.ts` (port method + import), `src/lib/repositories/content.ts` (delegator + type import)
+**Decisions:**
+- Drift detector is one-direction only (`typeof techStackPageContent extends TechStackPageContent`). The literal is `as const` so string values narrow (e.g. `'Tech Stack — yesid.'` instead of `string`); the schema uses open `string`. Reverse direction (`TechStackPageContent extends typeof techStackPageContent`) wouldn't hold and isn't needed — we only care that the runtime literal satisfies the schema.
+- Port added unwrapped (no `parsePort`). Task 17c-6 wraps all content-returning ports in one pass.
+**Deviations from plan:** None — executed exactly as revised post-audit.
+**Tests:** No new test file (per plan). Full suite `bun run test` → 960/960 green. `bun run check` → 0 errors. Adapter contract test still passes (port added to both the interface and the implementation, so `: ContentAdapter` annotation is satisfied).
+**Budget row:** Model: Opus 4.7 `[1m]` | Context: ~52% — Comfortable.
+**Next:** Task 17c-3 — Blog + SiteMeta + TechStack schemas.
+
+---
+
 ## Audit snapshot (2026-04-20, pre-implementation)
 
 Parallel audits by Claude Explore and Codex agreed on:

@@ -39,3 +39,14 @@
 - Commit: `54da6d5 feat(slice-17c): add ProjectSchema + ServiceSchema with drift detectors`
 
 **STOP.** Awaiting Yesid approval before starting Task 17c-2b.
+
+#### Task 17c-2b — TechStackPage schema + adapter port + repository (approved → executed)
+- Wrote `tech-stack-page.ts` — schema mirrors `techStackPageContent` shape (meta.title/description, hero.overline/titleLine1/titleLine2/terminalAria/stats{technologies,layers,domains,projects}, actions.getInTouch/viewServices, cta.headingLine1/headingLine2/sub/availability). Drift detector uses one-direction `typeof literal extends schema` — reverse would fail because the `as const` literal narrows string values while the schema uses open `string`.
+- Extended `ContentPort` in `adapters/types.ts`: added `techStackPage: () => Promise<TechStackPageContent>` + type import from `$lib/schemas/tech-stack-page`.
+- Extended `staticAdapter.content` in `adapters/static.ts`: added `techStackPage: async () => techStackPageContent` port method (unwrapped — Task 17c-6 will wrap with `parsePort`). Imported `techStackPageContent` alongside existing tech-stack exports.
+- Added `getTechStackPageContent(): Promise<TechStackPageContent>` delegator in `repositories/content.ts`.
+- `bun run check` → 0 errors, 19 pre-existing warnings.
+- `bun run test` → 960/960 green (adapter contract test passes — port added, nothing broken).
+- Commit: `c1097ba feat(slice-17c): add techStackPage port + TechStackPageContentSchema`
+
+**STOP.** Awaiting Yesid approval before starting Task 17c-3.
