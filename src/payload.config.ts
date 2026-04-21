@@ -24,6 +24,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     meta: { titleSuffix: ' — yesid.dev CMS' },
+    theme: 'dark',
   },
   editor: lexicalEditor(),
   collections: [Users, Media],
