@@ -14,20 +14,19 @@
 
 ## Task-by-task log
 
-*Each Level 3 task appends a section here at STOP. Format per task:*
+### Task 17c-1 — Shared primitives + parse helper (commit `9f1b79a`)
 
-```
-### Task 17c-N — <title> (commit <sha>)
+**Tool:** Claude Code (Opus 4.7)
+**Implemented by:** deeper-reasoning model
+**Files created:** `src/lib/schemas/parse.ts`, `src/lib/schemas/parse.test.ts`, `src/lib/schemas/shared.ts`
+**Files modified:** `src/lib/schemas/seo.ts` (replaced inline `LocalizedStringSchema` with import + re-export from `./shared`)
+**Decisions:** None — followed plan canonical pattern exactly.
+**Deviations from plan:** None.
+**Tests:** 6 new tests in `parse.test.ts` covering pass-through, error tagging, Zod error context, array schemas, optional schemas with undefined, and narrow-type preservation at runtime. Full suite `bun run test` → 95 files / 960 tests / all green. `bun run check` → 0 errors, 19 pre-existing warnings (none touching schema files).
+**Budget row:** Model: Opus 4.7 `[1m]` | Context: ~45% — Comfortable.
+**Next:** Task 17c-2 — Project + Service schemas with drift detectors.
 
-**Tool:** <tool> (<model>)
-**Implemented by:** <binding>
-**Files changed:** <paths>
-**Decisions:** <any in-flight calls made>
-**Deviations from plan:** <if any>
-**Tests:** <what passed>
-**Budget row:** Model: <name> | Context: <used> / <window> (<%>) — <state>
-**Next:** <next task>
-```
+---
 
 ## Audit snapshot (2026-04-20, pre-implementation)
 
