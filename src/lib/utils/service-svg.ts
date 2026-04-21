@@ -7,8 +7,11 @@
 // import.meta.glob('/static/...') won't resolve them. Instead, we load
 // SVG content via SvelteKit's `fetch` in the page load function. This works
 // on both server (during SSR) and client (during navigation).
+//
+// Services are threaded in as a parameter rather than imported from
+// `$lib/content/services` directly — closes a 17b seam leak flagged by the
+// 17c pre-implementation audit so every data read flows through the adapter.
 
-import { services } from '$lib/content/services';
 import type { Service } from '$lib/types';
 
 /**
@@ -22,12 +25,14 @@ export function getServiceSvgUrl(service: Service): string {
 /**
  * Fetches raw SVG strings for all services that have an SVG defined.
  * Must be called with SvelteKit's `fetch` (from a load function) so it
- * works during SSR and client-side navigation.
+ * works during SSR and client-side navigation. Pass the services array
+ * from a prior `adapter.services.all()` / repository call.
  *
  * Returns a map of serviceId → raw SVG string.
  */
 export async function fetchServiceSvgContents(
-	fetchFn: typeof fetch
+	fetchFn: typeof fetch,
+	services: readonly Service[],
 ): Promise<Record<string, string>> {
 	const result: Record<string, string> = {};
 

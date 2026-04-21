@@ -18,11 +18,14 @@ export async function load({ params, fetch }) {
 		error(404, { message: 'Service not found' });
 	}
 
-	const [services, adjacent, relatedProjects, serviceSvgContents] = await Promise.all([
-		getVisibleServices(),
+	// services must resolve before fetchServiceSvgContents can run (post-17c
+	// the util no longer imports from $lib/content — services are threaded in
+	// explicitly). Adjacent + related-projects stay parallel.
+	const services = await getVisibleServices();
+	const [adjacent, relatedProjects, serviceSvgContents] = await Promise.all([
 		getAdjacentServices(params.id),
 		getProjectsByService(params.id),
-		fetchServiceSvgContents(fetch),
+		fetchServiceSvgContents(fetch, services),
 	]);
 
 	return {

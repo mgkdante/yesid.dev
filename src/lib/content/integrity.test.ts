@@ -2,8 +2,19 @@
 // defined by the TypeScript interfaces. These tests catch human errors in the data
 // (duplicate slugs, empty required fields, invalid enum values) at test time rather
 // than at runtime when a user is looking at a broken page.
+//
+// Layered since Slice 17c:
+//   - Per-field format assertions (LocalizedString.en non-empty, enum values)
+//     are covered by Zod schemas at the adapter boundary. The
+//     seed-parses-through-schema block below catches the same class of bug,
+//     and parsePort wraps in staticAdapter catch them at runtime too.
+//   - Cross-entity invariants Zod cannot express (relatedServices references,
+//     unique station numbers, URL-safe slugs, etc.) remain here.
+//   - The LocalizedString walker + translation-debt snapshot stays — it
+//     covers site-chrome literals that D2 carves out of schema validation.
 
 import { describe, it, expect } from 'vitest';
+import { z } from 'zod';
 import { projects } from './projects.js';
 import { services } from './services.js';
 import { siteMeta } from './meta.js';
@@ -17,8 +28,27 @@ import { contactContent } from './contact-page.js';
 import * as metaModule from './meta.js';
 import * as blogModule from './blog.js';
 import * as techStackModule from './tech-stack.js';
-
-const VALID_STATUSES = ['public', 'private', 'wip'] as const;
+import { skillsJourneyPanels } from './site-content.js';
+import { navLinks, menuItems, metroBookends, errorPageContent } from './nav.js';
+import { INITIAL_HERO_DATA } from './hero-data.js';
+import { techStackPageContent, getAllTechItems, getAllScenarios } from './tech-stack.js';
+import {
+	ProjectSchema,
+	ServiceSchema,
+	BlogPostSchema,
+	SiteMetaSchema,
+	TechStackItemSchema,
+	StackScenarioSchema,
+	AboutContentSchema,
+	ContactContentSchema,
+	TechStackPageContentSchema,
+	HeroDataSchema,
+	NavLinkSchema,
+	MenuItemSchema,
+	MetroBookendsSchema,
+	ErrorPageContentSchema,
+	JourneyPanelSchema,
+} from '$lib/schemas';
 
 describe('projects data integrity', () => {
 	it('all slugs are unique', () => {
@@ -41,19 +71,9 @@ describe('projects data integrity', () => {
 		});
 	});
 
-	it('all required LocalizedString fields have a non-empty English value', () => {
-		projects.forEach((p) => {
-			expect(p.title.en.trim()).not.toBe('');
-			expect(p.oneLiner.en.trim()).not.toBe('');
-			expect(p.description.en.trim()).not.toBe('');
-		});
-	});
-
-	it('all status values are valid', () => {
-		projects.forEach((p) => {
-			expect(VALID_STATUSES).toContain(p.status);
-		});
-	});
+	// Per-field LocalizedString.en non-empty + status enum checks removed in
+	// slice-17c — ProjectSchema.parse() in the seed-parses-through-schema
+	// block below (and parsePort wraps in staticAdapter) cover those rules.
 
 	it('all projects have at least one stack entry', () => {
 		projects.forEach((p) => {
@@ -99,17 +119,8 @@ describe('services data integrity', () => {
 		expect(services.length).toBeGreaterThanOrEqual(1);
 	});
 
-	it('all services have a non-empty English title', () => {
-		services.forEach((s) => {
-			expect(s.title.en.trim()).not.toBe('');
-		});
-	});
-
-	it('all services have a non-empty English description', () => {
-		services.forEach((s) => {
-			expect(s.description.en.trim()).not.toBe('');
-		});
-	});
+	// title/description LocalizedString.en non-empty checks removed in
+	// slice-17c — ServiceSchema.parse() covers them.
 
 	it('all services have a unique id', () => {
 		const ids = services.map((s) => s.id);
@@ -169,13 +180,8 @@ describe('siteMeta data integrity', () => {
 		expect(siteMeta.name).toBe('yesid.');
 	});
 
-	it('tagline has a non-empty English value', () => {
-		expect(siteMeta.tagline.en.trim()).not.toBe('');
-	});
-
-	it('description has a non-empty English value', () => {
-		expect(siteMeta.description.en.trim()).not.toBe('');
-	});
+	// tagline/description LocalizedString.en non-empty checks removed in
+	// slice-17c — SiteMetaSchema.parse() covers them.
 
 	it('email link is present', () => {
 		expect(siteMeta.links.email.trim()).not.toBe('');
@@ -203,12 +209,8 @@ describe('blogPosts data integrity', () => {
 		});
 	});
 
-	it('all required LocalizedString fields have non-empty English values', () => {
-		blogPosts.forEach((p) => {
-			expect(p.title.en.trim()).not.toBe('');
-			expect(p.excerpt.en.trim()).not.toBe('');
-		});
-	});
+	// title/excerpt LocalizedString.en non-empty checks removed in slice-17c —
+	// BlogPostSchema.parse() covers them.
 
 	it('all dates are valid ISO date strings', () => {
 		const isoDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -228,6 +230,78 @@ describe('blogPosts data integrity', () => {
 		blogPosts.forEach((p) => {
 			expect(p.url.trim()).not.toBe('');
 		});
+	});
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// Seed data parses through schemas (slice-17c)
+// ─────────────────────────────────────────────────────────────────────────
+//
+// Double-check against the schemas consumed by staticAdapter.parsePort wraps.
+// Catches schema drift even when the adapter wiring happens to accept the
+// seed for unrelated reasons (e.g. a production bundle that trims a port).
+// One assertion per content file / constant — mirrors the wrap matrix in
+// staticAdapter so a missing schema is immediately visible here.
+
+describe('seed data parses through schemas', () => {
+	it('projects → ProjectSchema[]', () => {
+		expect(() => z.array(ProjectSchema).parse(projects)).not.toThrow();
+	});
+
+	it('services → ServiceSchema[]', () => {
+		expect(() => z.array(ServiceSchema).parse(services)).not.toThrow();
+	});
+
+	it('blogPosts → BlogPostSchema[]', () => {
+		expect(() => z.array(BlogPostSchema).parse(blogPosts)).not.toThrow();
+	});
+
+	it('siteMeta → SiteMetaSchema', () => {
+		expect(() => SiteMetaSchema.parse(siteMeta)).not.toThrow();
+	});
+
+	it('tech-stack items → TechStackItemSchema[]', () => {
+		expect(() => z.array(TechStackItemSchema).parse(getAllTechItems())).not.toThrow();
+	});
+
+	it('tech-stack scenarios → StackScenarioSchema[]', () => {
+		expect(() => z.array(StackScenarioSchema).parse(getAllScenarios())).not.toThrow();
+	});
+
+	it('techStackPageContent → TechStackPageContentSchema', () => {
+		expect(() => TechStackPageContentSchema.parse(techStackPageContent)).not.toThrow();
+	});
+
+	it('aboutPageContent → AboutContentSchema', () => {
+		expect(() => AboutContentSchema.parse(aboutPageContent)).not.toThrow();
+	});
+
+	it('contactContent → ContactContentSchema', () => {
+		expect(() => ContactContentSchema.parse(contactContent)).not.toThrow();
+	});
+
+	it('INITIAL_HERO_DATA → HeroDataSchema', () => {
+		expect(() => HeroDataSchema.parse(INITIAL_HERO_DATA)).not.toThrow();
+	});
+
+	it('navLinks → NavLinkSchema[]', () => {
+		expect(() => z.array(NavLinkSchema).parse(navLinks)).not.toThrow();
+	});
+
+	it('menuItems → MenuItemSchema[]', () => {
+		expect(() => z.array(MenuItemSchema).parse(menuItems)).not.toThrow();
+	});
+
+	it('metroBookends → MetroBookendsSchema', () => {
+		expect(() => MetroBookendsSchema.parse(metroBookends)).not.toThrow();
+	});
+
+	it('errorPageContent → ErrorPageContentSchema', () => {
+		expect(() => ErrorPageContentSchema.parse(errorPageContent)).not.toThrow();
+	});
+
+	it('skillsJourneyPanels → JourneyPanelSchema[]', () => {
+		expect(() => z.array(JourneyPanelSchema).parse(skillsJourneyPanels)).not.toThrow();
 	});
 });
 

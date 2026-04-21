@@ -40,6 +40,27 @@ import {
 } from '$lib/content/blog';
 import { routeSeoEntries, siteMeta } from '$lib/content/meta';
 import { PageSeoSchema, type PageSeo } from '$lib/schemas/seo';
+import { z } from 'zod';
+import {
+	parsePort,
+	ProjectSchema,
+	ServiceSchema,
+	BlogPostSchema,
+	BlogAnimationSchema,
+	SiteMetaSchema,
+	TechStackItemSchema,
+	TechRelationSchema,
+	StackScenarioSchema,
+	JourneyPanelSchema,
+	NavLinkSchema,
+	MenuItemSchema,
+	MetroBookendsSchema,
+	ErrorPageContentSchema,
+	AboutContentSchema,
+	ContactContentSchema,
+	TechStackPageContentSchema,
+	HeroDataSchema,
+} from '$lib/schemas';
 import type { Locale } from '$lib/types';
 import {
 	getAllTechItems,
@@ -53,6 +74,7 @@ import {
 	getTechItemContent,
 	getAllScenarios,
 	getScenarioForDomains,
+	techStackPageContent,
 } from '$lib/content/tech-stack';
 import {
 	heroContent,
@@ -75,37 +97,52 @@ import type { ContentAdapter } from './types';
 
 export const staticAdapter: ContentAdapter = {
 	projects: {
-		all: async () => projects,
-		bySlug: async (slug) => getProjectBySlug(slug),
-		featured: async () => getFeaturedProjects(),
-		public: async () => getPublicProjects(),
-		byService: async (serviceId) => getProjectsByService(serviceId),
+		all: async () => parsePort('projects.all', z.array(ProjectSchema), projects),
+		bySlug: async (slug) =>
+			parsePort('projects.bySlug', ProjectSchema.optional(), getProjectBySlug(slug)),
+		featured: async () =>
+			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects()),
+		public: async () => parsePort('projects.public', z.array(ProjectSchema), getPublicProjects()),
+		byService: async (serviceId) =>
+			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId)),
+		// Utility ports — return primitives/strings, no schema needed (spec D2).
 		allTags: async () => getAllTags(),
 		allStackItems: async () => getAllStackItems(),
 		serviceIdsForProjects: async () => getServiceIdsForProjects(),
 	},
 	services: {
-		all: async () => services,
-		byId: async (id) => getServiceById(id),
-		visible: async () => getVisibleServices(),
-		adjacent: async (id) => getAdjacentServices(id),
+		all: async () => parsePort('services.all', z.array(ServiceSchema), services),
+		byId: async (id) => parsePort('services.byId', ServiceSchema.optional(), getServiceById(id)),
+		visible: async () =>
+			parsePort('services.visible', z.array(ServiceSchema), getVisibleServices()),
+		adjacent: async (id) =>
+			parsePort(
+				'services.adjacent',
+				z.object({ prev: ServiceSchema.optional(), next: ServiceSchema.optional() }),
+				getAdjacentServices(id),
+			),
 	},
 	blog: {
-		all: async () => blogPosts,
-		bySlug: async (slug) => getPostBySlug(slug),
+		all: async () => parsePort('blog.all', z.array(BlogPostSchema), blogPosts),
+		bySlug: async (slug) => parsePort('blog.bySlug', BlogPostSchema.optional(), getPostBySlug(slug)),
+		byCategory: async (category) =>
+			parsePort('blog.byCategory', z.array(BlogPostSchema), getPostsByCategory(category)),
+		byTag: async (category, tag) =>
+			parsePort('blog.byTag', z.array(BlogPostSchema), getPostsByTag(category, tag)),
+		latest: async (count, category) =>
+			parsePort('blog.latest', z.array(BlogPostSchema), getLatestPosts(count, category)),
+		resolveAnimation: async (slug, explicit) =>
+			parsePort('blog.resolveAnimation', BlogAnimationSchema, resolveAnimation(slug, explicit)),
+		// Utility ports — return strings/records, no schema needed (spec D2).
 		html: async (slug) => getPostHtml(slug),
-		byCategory: async (category) => getPostsByCategory(category),
-		byTag: async (category, tag) => getPostsByTag(category, tag),
 		tagsForCategory: async (category) => getTagsForCategory(category),
 		languagesForCategory: async (category) => getLanguagesForCategory(category),
-		latest: async (count, category) => getLatestPosts(count, category),
 		svgContent: async (post) => getSvgContent(post),
 		svgContentsForPosts: async (posts) => getSvgContentsForPosts(posts),
 		resolveSvgFallbackName: async (slug, category) => resolveSvgFallbackName(slug, category),
-		resolveAnimation: async (slug, explicit) => resolveAnimation(slug, explicit),
 	},
 	meta: {
-		site: async () => siteMeta,
+		site: async () => parsePort('meta.site', SiteMetaSchema, siteMeta),
 		forRoute: async (
 			routeId: string,
 			locale: Locale,
@@ -122,19 +159,42 @@ export const staticAdapter: ContentAdapter = {
 		},
 	},
 	techStack: {
-		all: async () => getAllTechItems(),
-		byId: async (id) => getTechItemById(id),
-		byLayer: async (layer) => getTechItemsByLayer(layer),
-		byDomain: async (domain) => getTechItemsByDomain(domain),
+		all: async () => parsePort('techStack.all', z.array(TechStackItemSchema), getAllTechItems()),
+		byId: async (id) =>
+			parsePort('techStack.byId', TechStackItemSchema.optional(), getTechItemById(id)),
+		byLayer: async (layer) =>
+			parsePort('techStack.byLayer', z.array(TechStackItemSchema), getTechItemsByLayer(layer)),
+		byDomain: async (domain) =>
+			parsePort('techStack.byDomain', z.array(TechStackItemSchema), getTechItemsByDomain(domain)),
+		outgoingRelations: async (id) =>
+			parsePort(
+				'techStack.outgoingRelations',
+				z.array(TechRelationSchema),
+				getOutgoingRelations(id),
+			),
+		incomingRelations: async (id) =>
+			parsePort(
+				'techStack.incomingRelations',
+				z.array(TechRelationSchema),
+				getIncomingRelations(id),
+			),
+		allScenarios: async () =>
+			parsePort('techStack.allScenarios', z.array(StackScenarioSchema), getAllScenarios()),
+		scenarioForDomains: async (domains) =>
+			parsePort(
+				'techStack.scenarioForDomains',
+				StackScenarioSchema.optional(),
+				getScenarioForDomains(domains),
+			),
+		// Utility ports — return string[]/string, no schema needed (spec D2).
 		connections: async (id) => getConnections(id),
 		incomingConnections: async (id) => getIncomingConnections(id),
-		outgoingRelations: async (id) => getOutgoingRelations(id),
-		incomingRelations: async (id) => getIncomingRelations(id),
 		content: async (id) => getTechItemContent(id),
-		allScenarios: async () => getAllScenarios(),
-		scenarioForDomains: async (domains) => getScenarioForDomains(domains),
 	},
 	content: {
+		// Site-chrome literals — kept as `typeof import` shape via ContentPort,
+		// not wrapped (spec D2 non-goal). These are page chrome, not CMS-managed
+		// content; re-encoding as Zod adds maintenance cost with no Payload benefit.
 		hero: async () => heroContent,
 		heroAnim: async () => heroAnimContent,
 		manifesto: async () => manifestoContent,
@@ -143,15 +203,21 @@ export const staticAdapter: ContentAdapter = {
 		about: async () => aboutContent,
 		cta: async () => ctaContent,
 		closer: async () => closerContent,
-		skillsJourneyPanels: async () => skillsJourneyPanels,
 		skillsJourneyCta: async () => skillsJourneyCta,
-		navLinks: async () => navLinks,
-		menuItems: async () => menuItems,
-		metroBookends: async () => metroBookends,
-		errorPage: async () => errorPageContent,
-		aboutPage: async () => aboutPageContent,
-		contactPage: async () => contactContent,
-		heroMock: async () => generateHeroData(),
-		initialHeroData: async () => INITIAL_HERO_DATA,
+		// Schema-validated content ports.
+		skillsJourneyPanels: async () =>
+			parsePort('content.skillsJourneyPanels', z.array(JourneyPanelSchema), skillsJourneyPanels),
+		navLinks: async () => parsePort('content.navLinks', z.array(NavLinkSchema), navLinks),
+		menuItems: async () => parsePort('content.menuItems', z.array(MenuItemSchema), menuItems),
+		metroBookends: async () =>
+			parsePort('content.metroBookends', MetroBookendsSchema, metroBookends),
+		errorPage: async () => parsePort('content.errorPage', ErrorPageContentSchema, errorPageContent),
+		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
+		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
+		techStackPage: async () =>
+			parsePort('content.techStackPage', TechStackPageContentSchema, techStackPageContent),
+		heroMock: async () => parsePort('content.heroMock', HeroDataSchema, generateHeroData()),
+		initialHeroData: async () =>
+			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
 	},
 };

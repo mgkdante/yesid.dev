@@ -1,6 +1,6 @@
 # Slice 17 — Standardization: Design System + Ports & Adapters
 
-**Status:** IN PROGRESS — Phase 1 visual stage complete + 17h Brand Bundle shipped + 17j Workflow Efficiency shipped. Remaining: 17b (service layer), 17c (Zod schemas), 17f (test architecture), 17g (learning docs — scope re-eval needed).
+**Status:** IN PROGRESS — Phase 1 visual stage complete + 17h Brand Bundle shipped + 17j Workflow Efficiency shipped + 17c Zod Schemas shipped. Remaining: 17f (test architecture), 17g (learning docs — scope re-eval needed).
 **Est. Sessions:** 20-24 total (revised from 13-14 after deep planning session)
 **Depends on:** Slice 13 (Home Page) complete
 **Key constraint:** Visual IMPROVEMENTS allowed (bigger text, better consistency), but no new features. Structural refactor + design system unification.
@@ -21,7 +21,7 @@
 | 17e Motion Re-Engineering        | **COMPLETE (6 sub-slices, 4 PRs)** | #12/#14/#17/#19 merged | 2-3 |
 | 17a-4 Dead Code + Dedup (Fresh Audit) | COMPLETE — 90% absorbed into 17a-2b / 17d / 17e; residue + doc refresh shipped 2026-04-17 | #20 merged | 0.5-1 |
 | 17b Service Layer                | planned                         | —         | 2        |
-| 17c Zod Schemas                  | planned                         | —         | 0.5      |
+| 17c Zod Schemas                  | **COMPLETE** — adapter-boundary Zod runtime contract; 15 schema modules + 21 parsePort wraps + closed 2 17b seam leaks (service-svg util + tech-stack route) | **#28** | 1 |
 | 17f Test Architecture            | planned                         | —         | 1-2      |
 | 17g Learning Docs                | planned                         | —         | 2        |
 | 17h Brand Bundle (narrative + assets) | COMPLETE (narrative + assets shipped; tokens consolidation / code generator / source-of-truth / sync orchestrator killed) | #22 merged | ~3 |

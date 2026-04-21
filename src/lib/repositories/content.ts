@@ -7,6 +7,7 @@ import { adapter } from '$lib/adapters';
 import type { AboutContent, ContactContent, JourneyPanel } from '$lib/types';
 import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
+import type { TechStackPageContent } from '$lib/schemas/tech-stack-page';
 
 export async function getHeroContent() {
 	return adapter.content.hero();
@@ -70,6 +71,10 @@ export async function getAboutPageContent(): Promise<AboutContent> {
 
 export async function getContactPageContent(): Promise<ContactContent> {
 	return adapter.content.contactPage();
+}
+
+export async function getTechStackPageContent(): Promise<TechStackPageContent> {
+	return adapter.content.techStackPage();
 }
 
 // Hero mock data — heroMock() returns a freshly shuffled HeroData on each
