@@ -8,7 +8,7 @@ export async function upsertTechStack(args: { payload: Payload; sourceRepo: stri
   const entries = await loadMdDir(stackDir)
 
   let created = 0
-  let skipped = 0
+  let updated = 0
   let skippedConnects = 0
 
   for (const entry of entries) {
@@ -43,24 +43,26 @@ export async function upsertTechStack(args: { payload: Payload; sourceRepo: stri
     })
 
     if (found.totalDocs > 0) {
-      // SKIP existing docs: the collection's `id` text field has `required: true` +
-      // a beforeChange hook that deletes `id` from siblingData on update. This means
-      // Payload's validation fires after the hook removes `id`, then fails with
-      // "This field is required." — a known conflict in this schema design.
-      // For a seed script, skip-if-exists is correct idempotency: no duplicates.
-      skipped += 1
-      continue
+      // Upsert: update existing docs (primary key preserved via silent-override hook in the collection)
+      // or create if absent. Seed is idempotent: re-runs propagate source changes without rename risk.
+      await payload.update({
+        collection: 'tech-stack',
+        id: found.docs[0].id,
+        data: { id: techId, ...baseData } as any,
+      })
+      updated += 1
+    } else {
+      // On create, include `id` so the stable slug is set.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await payload.create({
+        collection: 'tech-stack',
+        data: { id: techId, ...baseData } as any,
+      })
+      created += 1
     }
-    // On create, include `id` so the stable slug is set.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await payload.create({
-      collection: 'tech-stack',
-      data: { id: techId, ...baseData } as any,
-    })
-    created += 1
   }
 
-  console.log(`[seed]   tech-stack: ${created} created, ${skipped} already present${skippedConnects ? ` (${skippedConnects} connectsTo blocks dropped per D-rel-2)` : ''}`)
+  console.log(`[seed]   tech-stack: ${created} created, ${updated} updated${skippedConnects ? ` (${skippedConnects} connectsTo blocks dropped per D-rel-2)` : ''}`)
 }
 
 /**

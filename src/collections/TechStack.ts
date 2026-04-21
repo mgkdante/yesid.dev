@@ -20,9 +20,12 @@ export const TechStack: CollectionConfig = {
       index: true,
       hooks: {
         beforeChange: [
-          ({ operation, siblingData }) => {
-            if (operation === 'update') {
-              delete siblingData.id
+          ({ operation, siblingData, originalDoc }) => {
+            if (operation === 'update' && originalDoc?.id != null) {
+              // Silent-override: preserve the original id regardless of what the
+              // caller submits. Blocks API-level renames while keeping the field
+              // present for Payload's `required: true` validator.
+              siblingData.id = originalDoc.id
             }
           },
         ],

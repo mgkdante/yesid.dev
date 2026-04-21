@@ -20,7 +20,7 @@ export async function upsertStackScenarios(args: { payload: Payload; sourceRepo:
   )
 
   let created = 0
-  let skipped = 0
+  let updated = 0
 
   for (const entry of entries) {
     const fm = entry.frontmatter
@@ -59,16 +59,18 @@ export async function upsertStackScenarios(args: { payload: Payload; sourceRepo:
     })
 
     if (found.totalDocs > 0) {
-      // SKIP existing docs: same `id` text field + beforeChange hook conflict as tech-stack.
-      // Seed idempotency = skip-if-exists; no duplicates are created on re-runs.
-      skipped += 1
-      continue
+      // Upsert: update existing docs (primary key preserved via silent-override hook in the collection)
+      // or create if absent. Seed is idempotent: re-runs propagate source changes without rename risk.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await payload.update({ collection: 'stack-scenarios', id: found.docs[0].id, data: { id, ...baseData } as any })
+      updated += 1
+    } else {
+      // On create, include `id` so the stable slug is set.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await payload.create({ collection: 'stack-scenarios', data: { id, ...baseData } as any })
+      created += 1
     }
-    // On create, include `id` so the stable slug is set.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await payload.create({ collection: 'stack-scenarios', data: { id, ...baseData } as any })
-    created += 1
   }
 
-  console.log(`[seed]   stack-scenarios: ${created} created, ${skipped} already present`)
+  console.log(`[seed]   stack-scenarios: ${created} created, ${updated} updated`)
 }
