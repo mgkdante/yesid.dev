@@ -262,6 +262,31 @@ import { getFeaturedProjects, resolveLocale, siteMeta } from '$lib/data';
 
 **Shared motion actions:** `wordmarkHover` in `src/lib/motion/actions/wordmarkHover.ts` encapsulates the GSAP SplitText animation pool (bounce, wiggle, wave, spin + dot pulse) used by both `Nav.svelte` and `Footer.svelte`.
 
+### Two-repo topology (Slice 18 onwards)
+
+Starting Slice 18, yesid.dev's content layer splits across **two repos** that deploy independently:
+
+| Repo | Role | Runtime | Deploys to |
+|------|------|---------|------------|
+| `yesid.dev` | SvelteKit site — consumes content via Payload REST API | bun | yesid.dev |
+| [`yesid.dev-cms`](https://github.com/mgkdante/yesid.dev-cms) | Payload 3 + Next.js admin + REST/GraphQL API + **MCP endpoint** + DB schema | bun (Node 22) | cms.yesid.dev |
+
+**Infrastructure** (Slice 18a — shipped 2026-04-21):
+
+- **Database:** Neon Postgres 17 (free tier, scale-to-zero, DB branching per PR). Project `yesid-dev-cms` in org `Yesid`, `production` branch for prod, `dev` branch for local.
+- **Media storage:** Vercel Blob (plugin registered but empty `collections` — activates in 18b when Media collection flips).
+- **Email:** Resend (no-reply@cms.yesid.dev sender; DNS verification deferred to 18b).
+- **MCP surface:** `@payloadcms/plugin-mcp` at `https://cms.yesid.dev/api/mcp` — authenticated via per-user API keys from admin UI; exposes `site-meta` global in 18a, content collections get exposed as they land in 18b.
+
+**Migration pipeline** (Slice 18a done; 18b-18f planned):
+
+- 18a ships the infrastructure: repo scaffolded, Payload + Next.js + Postgres adapter wired, `push: false` migrations-only schema, `prodMigrations` for Vercel cold-start runtime migrate, `onInit` bootstrap hook (idempotent admin creation from env vars, rotated + vars removed after first login). Single `site-meta` heartbeat global proves the stack.
+- 18b adds all content collections + globals + seed script imports from `yesid.dev` TS/MD.
+- 18c adds the type-sync GitHub Action (`payload generate:types` → PR in `yesid.dev` updating `src/lib/cms-types.ts`) + the first service swap (`site-meta`) from static adapter to Payload REST behind a feature flag, using the 17c Zod schema boundary.
+- 18d swaps the remaining globals; 18e swaps the dynamic collections; 18f wires publish-webhook revalidation + preview route + deletes the old TS/MD content files.
+
+**Slice 18 bundle docs** live under `docs/slices/slice-18/slice-18<letter>/` in this repo. The CMS repo holds code only during the migration; it grows its own `docs/slices/` when it spins out as a public framework-agnostic template (Phase C2+).
+
 ## CSS Architecture
 
 Two systems coexist and serve different purposes:

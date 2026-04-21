@@ -71,6 +71,45 @@ Type sync: payload generate:types → GitHub Action → PR in yesid.dev updating
 
 Localization uses Payload's built-in `localized: true` flag on text fields (maps cleanly to the existing `LocalizedString` pattern — en required, fr/es optional).
 
+## Admin Information Architecture (lands in 18b)
+
+Payload admin sidebar is organized into three groups via `admin.group`. Within each group, order is authored order in the `collections: []` / `globals: []` arrays of `payload.config.ts`.
+
+**PAGES** (globals — one doc each, site-walk order matching yesid.dev nav):
+1. Home → 2. Services (page intro/meta) → 3. Projects (page intro/meta) → 4. Blog (page intro/meta) → 5. Tech Stack (page intro/meta) → 6. About → 7. Contact → 8. Nav Links → 9. Error Pages → 10. Site Meta
+
+**CONTENT** (collections — lists, hub-first dependency order so referenced items exist before referring items):
+1. Tech Stack (hub — referenced by services, projects, stack-scenarios) → 2. Services (referenced by projects) → 3. Projects → 4. Blog Posts → 5. Stack Scenarios
+
+**SYSTEM:** Users, Media.
+
+**Rationale:** pages follow site-walk because editors think route-by-route; collections follow dependency order because creating a project that references a non-existent tech forces a round-trip. Relationship topology: `projects.{services,stack}` → services/tech-stack; `services.stack` → tech-stack; `stack-scenarios.techs` → tech-stack. Tech-stack is the deepest-referenced leaf — edit first.
+
+## Sub-slices
+
+Slice 18 ships in 6 PR-sized sub-slices. Total ~5–7 sessions. Each sub-slice bundle (spec/plan/log/handoff) lives at `docs/slices/slice-18/slice-18<letter>/`. Only 18a is specced in detail so far (2026-04-20); 18b–18f have scope-level blurbs below and will be specced at their own planning sessions when upstream dependencies land.
+
+| # | Name | Size | Depends on | Owns migration-order steps | Status |
+|---|------|------|------------|----------------------------|--------|
+| 18a | CMS Infrastructure Foundation | L (1–2 sessions) | Slice 16, 17c ✓ | 1, 3 | **✅ shipped 2026-04-21** |
+| 18b | Content Model + Seed | L (1–2 sessions) | 18a | 2, 4 | planned |
+| 18c | Type Sync + First Service Swap (site-meta) | M (1 session) | 18b | 5, 6 (site-meta only) | planned |
+| 18d | Globals Swap | M (1 session) | 18c | 6 (nav, home, about, contact, errors) | planned |
+| 18e | Collections Swap | L (1–2 sessions) | 18d | 6 (blog, projects, services, tech-stack, stack-scenarios) | planned |
+| 18f | Preview + Webhook + Cleanup | M (1 session) | 18e | 7, 8 | planned |
+
+**18a — CMS Infrastructure Foundation** (specced 2026-04-20 — see `slice-18a/spec.md` + `slice-18a/plan.md`). Stands up `yesid.dev-cms` repo, Payload 3 + Next.js, Neon Postgres via Vercel Marketplace integration, Vercel Blob, Resend. Deploys to `cms.yesid.dev`. Only a `users` auth collection + `site-meta` heartbeat global. Zero `yesid.dev` source changes. Proves the stack end-to-end before any data moves.
+
+**18b — Content Model + Seed.** Defines every collection (`projects`, `services`, `blog-posts`, `tech-stack`, `stack-scenarios`, `media`) + every global (`home-content`, `about-content`, `contact-content`, `nav-links`, `error-pages`; extends `site-meta` beyond 18a heartbeat). Localization enabled on all `localized: true` text fields per LocalizedString pattern. Relationships wired bidirectionally where useful (`projects.services` ↔ `services.relatedProjects`). Admin IA (see above) applied via `admin.group`. Seed script imports existing TS/MD data from `yesid.dev` via Payload Local API; idempotent, kept in repo as the "import from other sources" recipe for future clients.
+
+**18c — Type Sync + First Service Swap.** GitHub Action in `yesid.dev-cms`: schema change → `payload generate:types` → opens PR in `yesid.dev` updating `src/lib/cms-types.ts`. Canonical REST fetch utility (`src/lib/cms/fetch.ts`) + Zod-validated response parsing at the service-layer boundary (17c pattern extended). First service swap: `site-meta`. Feature-flagged, both static and Payload implementations live, tests green between swap. Establishes the pattern 18d/18e follow.
+
+**18d — Globals Swap.** Flip remaining globals (`nav-links`, `home-content`, `about-content`, `contact-content`, `error-pages`) off static files onto Payload REST, one global per commit. Each extends 18c's fetch + Zod pattern. Per-service feature flag. Tests green between swaps. Rollback per swap = one revert.
+
+**18e — Collections Swap.** Flip dynamic collections (`blog-posts`, `projects`, `services`, `tech-stack`, `stack-scenarios`), one collection per commit. Same pattern as 18d. ISR caching decisions land here — each SvelteKit route wires revalidation tags that 18f's webhook will target. Heaviest sub-slice due to volume + relationship resolution + richer response shapes.
+
+**18f — Preview + Webhook + Cleanup.** Payload publish hook → POSTs to `yesid.dev/api/revalidate?tag=...&secret=...`. Preview route `/preview/[collection]/[slug]?token=...` bypasses cache for draft content. **Delete** every `src/lib/content/*.ts` and `src/content/blog/*.md` file from `yesid.dev` — content lives only in Payload after this step. Update `ARCHITECTURE.md` with final state. Write `yesid.dev-cms/README.md` "Using with SvelteKit" integration recipe (framework-agnostic positioning per design spec).
+
 ## Migration order (inside this slice, not a prerequisite)
 
 1. Create `yesid.dev-cms` repo. Scaffold Payload 3 + Next.js with Neon Postgres + Vercel Blob adapters, email auth.
