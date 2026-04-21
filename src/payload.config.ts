@@ -81,7 +81,7 @@ export default buildConfig({
     vercelBlobStorage({
       enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
       collections: {
-        // media: true  ← uncommented in Slice 18b when uploads flip to Vercel Blob
+        media: true,
       },
       token: process.env.BLOB_READ_WRITE_TOKEN ?? '',
     }),
