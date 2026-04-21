@@ -1,67 +1,106 @@
-# Payload Blank Template
+# yesid.dev CMS
 
-This template comes configured with the bare minimum to get started on anything you need.
+Framework-agnostic [Payload 3](https://payloadcms.com) starter backed by **Neon Postgres** + **Vercel Blob**, with **native MCP (Model Context Protocol) surface built in**. Powers [yesid.dev](https://yesid.dev); ships as a reusable CMS foundation for any SvelteKit / Next.js / Astro / Nuxt / REST / MCP consumer.
 
-## Quick start
+**Status:** Slice 18a complete — infrastructure foundation + MCP surface live. Content collections land in Slice 18b. Framework integration recipes (SvelteKit first) land in Slice 18c+.
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+## Stack
 
-## Quick Start - local setup
+| Layer | Choice |
+|-------|--------|
+| Runtime | **bun** (Node 22 via `.nvmrc`) |
+| CMS | Payload 3.83 |
+| Framework | Next.js 16.2.3 (Turbopack) |
+| DB | Neon Postgres 17 (free tier, scale-to-zero, DB branching per PR) |
+| Media | Vercel Blob |
+| Email | Resend |
+| MCP | `@payloadcms/plugin-mcp` (HTTP + JSON-RPC at `/api/mcp`) |
+| Hosting | Vercel |
 
-To spin up this template locally, follow these steps:
+## Local development
 
-### Clone
+```bash
+bun install
+cp .env.example .env
+# Fill .env with a Neon dev-branch DATABASE_URI + generated PAYLOAD_SECRET
+bun dev
+# Admin UI: http://localhost:3000/admin
+```
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+> **Windows + bun note:** if `bun install` fails on `unrs-resolver` postinstall (`Permission denied` / `EPERM`), retry with `bun install --ignore-scripts`. Transient file-lock race on Windows; the skipped script is a dev-time transitive dep (eslint module resolution) with no runtime impact.
 
-### Development
+## Using with MCP
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+Every enabled global and collection is exposed as an MCP tool at `/api/mcp` over HTTP (JSON-RPC). Authenticate with a per-user API key generated from the admin UI (Users → your user → API Keys).
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+**Claude Code:**
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+```bash
+claude mcp add --transport http yesid-cms-prod https://cms.yesid.dev/api/mcp \
+  --header "Authorization: Bearer <YOUR-MCP-KEY>"
+```
 
-#### Docker (Optional)
+**Cursor / VS Code / `mcp-remote`-compatible clients:**
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+```json
+{
+  "mcpServers": {
+    "yesid-cms-prod": {
+      "type": "http",
+      "url": "https://cms.yesid.dev/api/mcp",
+      "headers": { "Authorization": "Bearer <YOUR-MCP-KEY>" }
+    }
+  }
+}
+```
 
-To do so, follow these steps:
+Slice 18a exposes `site-meta` (find + update). Each content collection added in 18b registers its own MCP tools automatically.
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+**Never commit an MCP key.** Treat it like a CMS admin password. Store in a password manager; reference per-client via env var expansion where supported.
 
-## How it works
+## Architecture
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+Two-repo split (per [`yesid.dev/docs/slices/slice-18/README.md`](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/README.md)):
 
-### Collections
+- **[`yesid.dev`](https://github.com/mgkdante/yesid.dev)** — SvelteKit site (public showcase, open-source artifact).
+- **`yesid.dev-cms`** (this repo) — Payload CMS admin + REST/GraphQL API + **MCP endpoint (`/api/mcp`)** + DB schema.
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+Both deploy independently to Vercel. CMS at `cms.yesid.dev`.
 
-- #### Users (Authentication)
+## Deploy
 
-  Users are auth-enabled collections that have access to the admin panel.
+Auto-deploy on push to `main` via the linked Vercel project. Required env vars (all set via `vercel env add` or dashboard — see [`.env.example`](./.env.example) for the full list + descriptions):
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+- `DATABASE_URI` + `DATABASE_URL_UNPOOLED` (from Neon Vercel Marketplace integration)
+- `PAYLOAD_SECRET` — 32+ char random (`openssl rand -base64 32`)
+- `BLOB_READ_WRITE_TOKEN` — from Vercel Blob integration (plugin self-disables without)
+- `RESEND_API_KEY` — from resend.com/api-keys
+- `NEXT_PUBLIC_SERVER_URL` + `PAYLOAD_PUBLIC_SERVER_URL` = your prod URL
 
-- #### Media
+**First-deploy admin bootstrap** (one-time): set `PAYLOAD_ADMIN_EMAIL` + `PAYLOAD_ADMIN_PASSWORD` in env. On first cold start, the `onInit` hook provisions an admin with role `admin`. After first successful login, **rotate the password in the admin UI and delete both env vars from Vercel**. Hook is idempotent — subsequent cold starts with env vars absent (or admin already existing) are no-ops.
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+## Migrations
 
-### Docker
+Schema changes are captured as Payload-generated migration files under `migrations/` and run at runtime via `prodMigrations` on Vercel cold start (no separate CI step needed).
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+```bash
+# After editing collections / globals:
+bunx payload migrate:create --name <description>
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+# Apply locally to your Neon dev branch:
+bunx payload migrate
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+# Prod runs automatically on next Vercel cold start.
+```
 
-## Questions
+## Slice docs
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+Slice 18 specs, plans, logs, handoffs live in the [yesid.dev repo](https://github.com/mgkdante/yesid.dev) under `docs/slices/slice-18/`:
+
+- [Slice 18 overview](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/README.md)
+- [Slice 18a spec](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/slice-18a/spec.md) — infrastructure foundation (this slice)
+- [Slice 18a plan](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/slice-18a/plan.md)
+
+## License
+
+MIT (consistent with [Payload's license](https://github.com/payloadcms/payload/blob/main/LICENSE)).
