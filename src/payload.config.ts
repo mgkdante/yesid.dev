@@ -68,7 +68,7 @@ export default buildConfig({
       collections: {
         'tech-stack': {
           enabled: { find: true, update: true },
-          description: 'Tech stack labels — PostgreSQL, Python, TypeScript, etc. Flat (D-rel-2); inter-tech graph deferred.',
+          description: 'Tech stack entries — PostgreSQL, Python, TypeScript, etc. Flat list; cross-tech relationship graph is not yet modelled.',
         },
         'blog-posts': {
           enabled: { find: true, update: true },
