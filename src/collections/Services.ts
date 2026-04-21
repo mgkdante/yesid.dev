@@ -2,9 +2,6 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 
-const httpsUrlValidate = (v: string | null | undefined) =>
-  v == null || v.length === 0 || /^https:\/\//.test(v) || 'Must be an https URL'
-
 export const Services: CollectionConfig = {
   slug: 'services',
   admin: {

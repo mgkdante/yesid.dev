@@ -73,7 +73,7 @@ export default buildConfig({
         },
         services: {
           enabled: { find: true, update: true },
-          description: 'Service offerings — SQL Development, Data Pipelines, etc. Source-of-truth stack relationship; reverse-join relatedProjects.',
+          description: 'Service offerings — SQL Development, Data Pipelines, etc. Source-of-truth for stack relationships.',
         },
         'blog-posts': {
           enabled: { find: true, update: true },
