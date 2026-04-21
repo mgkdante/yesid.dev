@@ -76,3 +76,16 @@
 - Commit: `8d4f5b0 feat(slice-17c): add About, Contact, Nav, Journey, HeroData schemas`
 
 **STOP.** Awaiting Yesid approval before starting Task 17c-5.
+
+#### Task 17c-5 — Schemas barrel (approved → executed)
+- Pre-scan for name collisions via grep across all `src/lib/schemas/*.ts` exports. Found 3 collisions:
+  1. `LocalizedStringSchema` — shared.ts (source) + seo.ts (back-compat re-export).
+  2. `ServiceSchema` — service.ts (ContentAdapter domain) + jsonld.ts (schema.org @type="Service"). Same name, different concepts/shapes.
+  3. `SchemaOrgNode` type — jsonld.ts (source) + seo.ts (re-export).
+- Resolution: barrel uses `export *` for domain + primitives, selective exports for seo + jsonld to pick single sources. Callers needing the JSON-LD ServiceSchema still import from `$lib/schemas/jsonld` directly (explicit provenance) — no breaking change.
+- Top-of-file comment documents the collision decisions so future contributors don't re-introduce `export * from './jsonld'`.
+- `bun run check` → 0 errors.
+- `bun run test` → 960/960 green.
+- Commit: `2c95669 feat(slice-17c): barrel export for schemas`
+
+**STOP.** Awaiting Yesid approval before starting Task 17c-6 (the big one — adapter wiring + both seam-leak closures).

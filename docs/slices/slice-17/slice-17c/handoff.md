@@ -95,6 +95,23 @@
 
 ---
 
+### Task 17c-5 — Schemas barrel (commit `2c95669`)
+
+**Tool:** Claude Code (Opus 4.7)
+**Implemented by:** deeper-reasoning model
+**Files created:** `src/lib/schemas/index.ts` (barrel with 3 explicit collision resolutions documented)
+**Decisions:**
+- Pre-scan found 3 name collisions: `LocalizedStringSchema` (shared + seo re-export), `ServiceSchema` (service vs jsonld — two different domains same name), `SchemaOrgNode` type (jsonld + seo re-export).
+- Resolution: `export *` for primitives + domain schemas; selective `export { X, Y } from './seo'` and `export { A, B } from './jsonld'` to pick single sources.
+- ServiceSchema kept at the domain level (service.ts wins at the barrel). JSON-LD's ServiceSchema + Service type available via direct import `$lib/schemas/jsonld` — this mirrors the explicit-provenance pattern the jsonld adapter already uses.
+- Comment at top of `index.ts` documents why selective exports exist so future contributors don't blindly add `export * from './jsonld'`.
+**Deviations from plan:** Plan suggested `export * from './jsonld'` with a fallback to named exports "if any surface." I surfaced collisions proactively via grep and went straight to named exports — saved a debug cycle.
+**Tests:** No new test file (per plan). Full suite `bun run test` → 960/960 green. `bun run check` → 0 errors.
+**Budget row:** Model: Opus 4.7 `[1m]` | Context: ~62% — Healthy. Task 17c-6 is the biggest integration task of the slice (13+ wrap sites + 2 seam-leak closures); if it pushes me past 65% pre-break zone, I'll STOP for a fresh session per AGENTS.md.
+**Next:** Task 17c-6 — Wire parsePort into every staticAdapter content port + close the 2 17b seam leaks (service-svg param injection + tech-stack route via load function). Biggest task in the slice.
+
+---
+
 ## Audit snapshot (2026-04-20, pre-implementation)
 
 Parallel audits by Claude Explore and Codex agreed on:
