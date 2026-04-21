@@ -62,3 +62,17 @@
 - Commit: `4a49fe5 feat(slice-17c): add BlogPost, SiteMeta, TechStack schemas`
 
 **STOP.** Awaiting Yesid approval before starting Task 17c-4.
+
+#### Task 17c-4 — About/Contact/Nav/Journey/HeroData schemas (approved → executed)
+- Pre-work: added `PageMetaSchema` to `shared.ts` (used by about-page + contact-page, and refactored tech-stack-page.ts to use it too — removes a 4-line inline duplication).
+- Wrote `nav.ts`: 4 schemas (NavLink with `priority: 1 | 2` as z.union of z.literal per plan note, MenuItem, MetroBookends, ErrorPageContent with `.readonly()` on suggestions array).
+- Wrote `journey.ts`: 4 schemas (HighlightEffect enum, SkillIcon enum, JourneySkill, JourneyPanel).
+- Wrote `hero-data.ts`: 3 schemas (HeroMetric with `key: z.enum(['vehicles','delay','routes'])`, HeroQueryRow, HeroData).
+- Wrote `contact-page.ts`: 6 schemas (terminal field, info terminal, form terminal, validation, success, ContactContent with `.readonly()` on socials array). `meta` uses shared PageMetaSchema.
+- Wrote `about-page.ts`: **14 schemas** — AboutPolaroid, AboutIdentity (readonly polaroids), AboutMetric, AboutMethodStep, AboutTestimonial, AboutTechItem (TechCategory enum, readonly relatedServices), AboutInterest, AboutWeatherConfig, AboutClientLogo, AboutCta (lines color z.enum, readonly lines, readonly socials), AboutStopLabels, AboutLabels, AboutContent (readonly on metrics/methodology/testimonials/techStack/interests/clientLogos). Plus TechCategory enum itself.
+- Refactored `tech-stack-page.ts` to import `PageMetaSchema` from shared (cleanup).
+- `bun run check` → 0 errors, 19 pre-existing warnings. All ~30 drift detectors compile bidirectionally.
+- `bun run test` → 960/960 green.
+- Commit: `8d4f5b0 feat(slice-17c): add About, Contact, Nav, Journey, HeroData schemas`
+
+**STOP.** Awaiting Yesid approval before starting Task 17c-5.

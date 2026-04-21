@@ -77,6 +77,24 @@
 
 ---
 
+### Task 17c-4 — About/Contact/Nav/Journey/HeroData schemas (commit `8d4f5b0`)
+
+**Tool:** Claude Code (Opus 4.7)
+**Implemented by:** deeper-reasoning model
+**Files created:** `src/lib/schemas/nav.ts` (4 schemas), `src/lib/schemas/journey.ts` (4 schemas), `src/lib/schemas/hero-data.ts` (3 schemas), `src/lib/schemas/contact-page.ts` (6 schemas), `src/lib/schemas/about-page.ts` (14 schemas — largest in the slice)
+**Files modified:** `src/lib/schemas/shared.ts` (added `PageMetaSchema`), `src/lib/schemas/tech-stack-page.ts` (replaced inline `meta` shape with shared `PageMetaSchema` — 4-line inline duplication removed)
+**Decisions:**
+- Added `PageMetaSchema` to `shared.ts` mid-task (not in original plan) — about-page + contact-page both need it, and retrofitting tech-stack-page.ts to use it consolidates the pattern for 3 callers.
+- `.readonly()` applied systematically everywhere TS uses `readonly T[]` (AboutContent.metrics/methodology/testimonials/techStack/interests/clientLogos, AboutIdentity.polaroids, AboutCta.lines + socials, AboutTechItem.relatedServices, ContactContent.socials, ErrorPageContent.suggestions). Bidirectional drift detectors compile cleanly because Zod v4's `.readonly()` produces `readonly` in z.infer.
+- `NavLink.priority` used `z.union([z.literal(1), z.literal(2)])` per plan note (not z.number() — would lose the narrow 1|2 type).
+- `AboutCta.lines[].color` and `HeroMetric.key` mirrored as `z.enum([...])` — free safety, no scope creep (same pattern established in 17c-2 for ProjectStatus).
+**Deviations from plan:** Added PageMetaSchema to shared.ts (documented above). Otherwise executed per plan step order (nav → journey → hero-data → contact → about).
+**Tests:** No new test files (per plan). Full suite `bun run test` → 960/960 green. `bun run check` → 0 errors. All ~30 drift detectors across 6 files compile bidirectionally.
+**Budget row:** Model: Opus 4.7 `[1m]` | Context: ~60% — Healthy, still below pre-break zone.
+**Next:** Task 17c-5 — Schemas barrel (index.ts re-exports everything). Small mechanical task.
+
+---
+
 ## Audit snapshot (2026-04-20, pre-implementation)
 
 Parallel audits by Claude Explore and Codex agreed on:
