@@ -1,6 +1,6 @@
 # Architecture
 
-**Last updated:** 2026-04-18 (post-17a-4 fresh audit; Slice 17h Brand Bundle prep)
+**Last updated:** 2026-04-20 (Slice 17c — Zod schema validation at adapter boundary)
 
 ## Stack
 
@@ -53,9 +53,16 @@ src/
 │   │   └── index.ts     # Barrel
 │   ├── adapters/        # ← Slice 17b-2: hexagonal port layer
 │   │   ├── types.ts     # ContentAdapter interface + six port interfaces
-│   │   ├── static.ts    # staticAdapter — the ONLY module that imports $lib/content/*
+│   │   ├── static.ts    # staticAdapter — the ONLY module that imports $lib/content/*; every content-returning port now wraps through parsePort (17c)
 │   │   ├── adapter.test.ts # 37 contract-level tests
 │   │   └── index.ts     # one-line swap point for future CMS adapters
+│   ├── schemas/         # ← Slice 17c: Zod contracts validated at adapter boundary
+│   │   ├── parse.ts     # parsePort(label, schema, value) — tags thrown errors with `[adapter.<label>]`
+│   │   ├── shared.ts    # LocalizedStringSchema, LocaleSchema, PageMetaSchema (cross-cutting primitives)
+│   │   ├── project.ts / service.ts / blog.ts / meta.ts / tech-stack.ts / nav.ts / journey.ts / hero-data.ts / about-page.ts / contact-page.ts / tech-stack-page.ts  # domain schemas with bidirectional drift detectors
+│   │   ├── seo.ts       # PageSeoSchema (15a) — routes via meta.forRoute
+│   │   ├── jsonld.ts    # SchemaOrgNode discriminated union (15b) — JSON-LD graph
+│   │   └── index.ts     # Barrel — single import surface; adapter imports schemas from here
 │   ├── repositories/    # ← Slice 17b-3: async facade consumed by route loaders
 │   │   ├── project.ts   # getPublicProjects, getProjectBySlug, getFeaturedProjects, etc.
 │   │   ├── service.ts   # getVisibleServices + metro-line derivation
@@ -250,6 +257,8 @@ import { getFeaturedProjects, resolveLocale, siteMeta } from '$lib/data';
 ```
 
 **SEO JSON-LD (Slice 15b):** `src/lib/adapters/jsonld.ts` exports typed factories (`buildPersonNode`, `buildWebSiteNode`, `buildBlogPostingNode`, `buildServiceNode`, `buildCreativeWorkNode`, `buildBreadcrumbListNode`, `buildProfilePageNode`, `buildCollectionPageNode`) that map domain objects (from `$lib/content/*` + `siteMeta`) to `SchemaOrgNode`s validated by `src/lib/schemas/jsonld.ts`. Per-route `jsonLd` fields live in `routeSeoEntries` (`src/lib/content/meta.ts`); the layout-authoritative `<SeoHead>` component mounts `<JsonLd>` as a child, and `<JsonLd>` emits one `<script type="application/ld+json">` per page wrapping all nodes in `@graph` with `@id` cross-references anchored at `https://yesid.dev/#person` and `https://yesid.dev/#website`.
+
+**Schema validation at the adapter boundary (Slice 17c):** Every `staticAdapter` port that returns content data parses through a Zod schema from `src/lib/schemas/` before handing off to the repository layer. `parsePort(label, schema, value)` tags thrown errors with the port they originated in (e.g. `[adapter.projects.all] ...`), so contract violations from any adapter (static today, Payload in Slice 18) are immediately attributable via the stack trace. The schema layer is the runtime contract: TypeScript catches build-time errors, Zod catches runtime errors from external data. Each schema mirrors its TS interface field-for-field with a bidirectional drift detector (`z.infer extends T ? T extends z.infer ? true : false`) so adding or removing a field on either side fails to compile. Site-chrome literals (`heroContent`, `manifestoContent`, etc.) stay unvalidated by design (spec D2) — they're typeof-literal types consumed via the ContentPort typing strategy, not CMS-managed content.
 
 **Shared motion actions:** `wordmarkHover` in `src/lib/motion/actions/wordmarkHover.ts` encapsulates the GSAP SplitText animation pool (bounce, wiggle, wave, spin + dot pulse) used by both `Nav.svelte` and `Footer.svelte`.
 

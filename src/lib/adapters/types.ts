@@ -34,6 +34,7 @@ import type {
 import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 import type { PageSeo } from '$lib/schemas/seo';
+import type { TechStackPageContent } from '$lib/schemas/tech-stack-page';
 
 export interface ContentAdapter {
 	projects: ProjectPort;
@@ -124,6 +125,7 @@ export interface ContentPort {
 	errorPage(): Promise<ErrorPageContent>;
 	aboutPage(): Promise<AboutContent>;
 	contactPage(): Promise<ContactContent>;
+	techStackPage(): Promise<TechStackPageContent>;
 	heroMock(): Promise<HeroData>;
 	initialHeroData(): Promise<HeroData>;
 }
