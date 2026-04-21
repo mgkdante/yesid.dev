@@ -207,7 +207,7 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 17  | Standardization: Design System + Ports & Adapters   | planned — split execution (see Execution Sequence below)         | 13           | 13-14         |
 | 15  | SEO + metadata                                      | planned — built on 17b service layer                             | 13, 17a, 17b | 1-2           |
 | 16  | E2E test suite + performance + brand QA             | planned — tests final standardized + SEO state                   | 15, 17       | 3             |
-| 18  | Cloud content layer — Payload (own repo) + Neon     | planned — plugs into 17b service layer seam                      | 16, 17       | 5-7           |
+| 18  | Cloud content layer — Payload (own repo) + Neon     | in progress — 18a shipped 2026-04-21 (infra + MCP surface)       | 16, 17       | 5-7           |
 | 19  | Mobile UI/UX optimization                           | planned                                                          | 17, B+       | 2             |
 | 19b | Accessibility (A11Y) optimization                   | planned                                                          | 19           | 2             |
 | 20  | Scroll smoothness + animation polish                | planned                                                          | B+, 19b      | 1             |
