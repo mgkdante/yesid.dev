@@ -72,6 +72,7 @@ export interface Config {
     services: Service;
     projects: Project;
     'blog-posts': BlogPost;
+    'stack-scenarios': StackScenario;
     users: User;
     media: Media;
     'payload-mcp-api-keys': PayloadMcpApiKey;
@@ -94,6 +95,7 @@ export interface Config {
     services: ServicesSelect<false> | ServicesSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
+    'stack-scenarios': StackScenariosSelect<false> | StackScenariosSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
@@ -323,6 +325,8 @@ export interface Project {
 export interface Media {
   id: number;
   alt: string;
+  caption?: string | null;
+  credit?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -334,6 +338,32 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -379,6 +409,27 @@ export interface BlogPost {
     };
     [k: string]: unknown;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stack-scenarios".
+ */
+export interface StackScenario {
+  id: string;
+  domains: (
+    | 'data-engineering'
+    | 'web-development'
+    | 'mobile-development'
+    | 'analytics-bi'
+    | 'systems-programming'
+    | 'devops-infra'
+    | 'internal-tooling'
+  )[];
+  techs: (string | TechStack)[];
+  relatedProjects?: (number | Project)[] | null;
+  summary: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -468,6 +519,16 @@ export interface PayloadMcpApiKey {
      */
     update?: boolean | null;
   };
+  stackScenarios?: {
+    /**
+     * Allow clients to find stack-scenarios.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update stack-scenarios.
+     */
+    update?: boolean | null;
+  };
   siteMeta?: {
     /**
      * Allow clients to find site-meta global.
@@ -524,6 +585,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'blog-posts';
         value: number | BlogPost;
+      } | null)
+    | ({
+        relationTo: 'stack-scenarios';
+        value: string | StackScenario;
       } | null)
     | ({
         relationTo: 'users';
@@ -714,6 +779,19 @@ export interface BlogPostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stack-scenarios_select".
+ */
+export interface StackScenariosSelect<T extends boolean = true> {
+  id?: T;
+  domains?: T;
+  techs?: T;
+  relatedProjects?: T;
+  summary?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -741,6 +819,8 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  caption?: T;
+  credit?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -752,6 +832,40 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -780,6 +894,12 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
       };
   blogPosts?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  stackScenarios?:
     | T
     | {
         find?: T;

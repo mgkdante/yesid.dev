@@ -14,6 +14,7 @@ import { TechStack } from './collections/TechStack'
 import { Services } from './collections/Services'
 import { Projects } from './collections/Projects'
 import { BlogPosts } from './collections/BlogPosts'
+import { StackScenarios } from './collections/StackScenarios'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { SiteMeta } from './globals/SiteMeta'
@@ -31,7 +32,7 @@ export default buildConfig({
     theme: 'dark',
   },
   editor: lexicalEditor(),
-  collections: [TechStack, Services, Projects, BlogPosts, Users, Media],
+  collections: [TechStack, Services, Projects, BlogPosts, StackScenarios, Users, Media],
   globals: [SiteMeta],
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
@@ -83,6 +84,10 @@ export default buildConfig({
         'blog-posts': {
           enabled: { find: true, update: true },
           description: 'Blog posts with Lexical rich-text body. Professional + personal streams.',
+        },
+        'stack-scenarios': {
+          enabled: { find: true, update: true },
+          description: 'Build-Your-Stack configurator scenarios. References tech-stack + projects.',
         },
       },
       globals: {
