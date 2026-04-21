@@ -59,14 +59,13 @@ export const Services: CollectionConfig = {
       relationTo: 'tech-stack',
       hasMany: true,
     },
-    // TODO(18b-4): uncomment after projects collection exists
     // Reverse-join from projects.services (D-rel-1):
-    // {
-    //   name: 'relatedProjects',
-    //   type: 'join',
-    //   collection: 'projects',
-    //   on: 'services',
-    //   admin: { description: 'Auto-computed from project.services; edit on the Projects side.' },
-    // },
+    {
+      name: 'relatedProjects',
+      type: 'join',
+      collection: 'projects',
+      on: 'services',
+      admin: { description: 'Auto-computed from project.services; edit on the Projects side.' },
+    },
   ],
 }

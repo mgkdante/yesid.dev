@@ -70,6 +70,7 @@ export interface Config {
   collections: {
     'tech-stack': TechStack;
     services: Service;
+    projects: Project;
     'blog-posts': BlogPost;
     users: User;
     media: Media;
@@ -82,11 +83,16 @@ export interface Config {
   collectionsJoins: {
     'tech-stack': {
       relatedServices: 'services';
+      relatedProjects: 'projects';
+    };
+    services: {
+      relatedProjects: 'projects';
     };
   };
   collectionsSelect: {
     'tech-stack': TechStackSelect<false> | TechStackSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -184,6 +190,11 @@ export interface TechStack {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  relatedProjects?: {
+    docs?: (number | Project)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -231,8 +242,98 @@ export interface Service {
     label?: string | null;
   };
   stack?: (string | TechStack)[] | null;
+  /**
+   * Auto-computed from project.services; edit on the Projects side.
+   */
+  relatedProjects?: {
+    docs?: (number | Project)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  slug: string;
+  title: string;
+  oneLiner: string;
+  description: string;
+  status: 'public' | 'private' | 'wip';
+  featured?: boolean | null;
+  tags?: string[] | null;
+  /**
+   * Service offerings this project fulfills. Authors the projects↔services edge.
+   */
+  services?: (string | Service)[] | null;
+  /**
+   * Tech items this project uses. Authors the projects↔tech-stack edge.
+   */
+  stack?: (string | TechStack)[] | null;
+  repoUrl?: string | null;
+  liveUrl?: string | null;
+  readmeUrl?: string | null;
+  /**
+   * Project cover image. Uploads land in Vercel Blob.
+   */
+  image?: (number | null) | Media;
+  sections?:
+    | {
+        title: string;
+        content: string;
+        id?: string | null;
+      }[]
+    | null;
+  impactMetric?: {
+    /**
+     * e.g. "3x faster"
+     */
+    value?: string | null;
+    /**
+     * e.g. "avg query improvement"
+     */
+    label?: string | null;
+    /**
+     * Optional "before" value for comparison displays.
+     */
+    before?: string | null;
+  };
+  impactMetrics?:
+    | {
+        value: string;
+        label: string;
+        before?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  location?: string | null;
+  environment?: string | null;
+  version?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -308,25 +409,6 @@ export interface User {
   collection: 'users';
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
  * API keys control which collections, resources, tools, and prompts MCP clients can access
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -363,6 +445,16 @@ export interface PayloadMcpApiKey {
     find?: boolean | null;
     /**
      * Allow clients to update services.
+     */
+    update?: boolean | null;
+  };
+  projects?: {
+    /**
+     * Allow clients to find projects.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update projects.
      */
     update?: boolean | null;
   };
@@ -424,6 +516,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'services';
         value: string | Service;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
       } | null)
     | ({
         relationTo: 'blog-posts';
@@ -505,6 +601,7 @@ export interface TechStackSelect<T extends boolean = true> {
   icon?: T;
   proficiency?: T;
   relatedServices?: T;
+  relatedProjects?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -545,6 +642,53 @@ export interface ServicesSelect<T extends boolean = true> {
         label?: T;
       };
   stack?: T;
+  relatedProjects?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  oneLiner?: T;
+  description?: T;
+  status?: T;
+  featured?: T;
+  tags?: T;
+  services?: T;
+  stack?: T;
+  repoUrl?: T;
+  liveUrl?: T;
+  readmeUrl?: T;
+  image?: T;
+  sections?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        id?: T;
+      };
+  impactMetric?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        before?: T;
+      };
+  impactMetrics?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        before?: T;
+        id?: T;
+      };
+  location?: T;
+  environment?: T;
+  version?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -624,6 +768,12 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
       };
   services?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  projects?:
     | T
     | {
         find?: T;
