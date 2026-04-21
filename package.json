@@ -16,7 +16,9 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "typecheck": "bunx tsc --noEmit"
+    "typecheck": "bunx tsc --noEmit",
+    "seed:dev": "bun run scripts/seed/index.ts",
+    "seed:prod": "SEED_TARGET=prod bun run scripts/seed/index.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.83.0",
@@ -29,6 +31,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
     "graphql": "^16.8.1",
+    "gray-matter": "^4.0.3",
     "next": "16.2.3",
     "payload": "3.83.0",
     "react": "19.2.4",
