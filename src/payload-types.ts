@@ -1955,6 +1955,23 @@ export interface SiteMeta {
     upwork?: string | null;
   };
   /**
+   * Footer chrome — tagline line, address line, status prefix. Rendered on every page.
+   */
+  footer: {
+    /**
+     * Mono decorative line under the wordmark, e.g. "// digital infrastructure".
+     */
+    tagline: string;
+    /**
+     * Address line with middot separator, e.g. "Montreal, QC · Remote".
+     */
+    location: string;
+    /**
+     * Prefix before system date in status bar, e.g. "system online —".
+     */
+    statusPrefix: string;
+  };
+  /**
    * Auto-set by beforeChange hook on every save; ISO timestamp.
    */
   deployedAt?: string | null;
@@ -2718,6 +2735,13 @@ export interface SiteMetaSelect<T extends boolean = true> {
         github?: T;
         linkedin?: T;
         upwork?: T;
+      };
+  footer?:
+    | T
+    | {
+        tagline?: T;
+        location?: T;
+        statusPrefix?: T;
       };
   deployedAt?: T;
   updatedAt?: T;

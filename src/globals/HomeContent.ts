@@ -126,8 +126,8 @@ export const HomeContent: GlobalConfig = {
           fields: [
             { name: 'connected', type: 'text', required: true, localized: true },
             { name: 'line', type: 'text', required: true, localized: true },
-            { name: 'url', type: 'text', required: true },
-            { name: 'version', type: 'text', required: true },
+            { name: 'url', type: 'text', required: true, localized: true },
+            { name: 'version', type: 'text', required: true, localized: true },
             { name: 'scrollHint', type: 'text', required: true, localized: true },
           ],
         },

@@ -50,6 +50,16 @@ export const SiteMeta: GlobalConfig = {
       ],
     },
     {
+      name: 'footer',
+      type: 'group',
+      admin: { description: 'Footer chrome — tagline line, address line, status prefix. Rendered on every page.' },
+      fields: [
+        { name: 'tagline', type: 'text', required: true, localized: true, admin: { description: 'Mono decorative line under the wordmark, e.g. "// digital infrastructure".' } },
+        { name: 'location', type: 'text', required: true, localized: true, admin: { description: 'Address line with middot separator, e.g. "Montreal, QC · Remote".' } },
+        { name: 'statusPrefix', type: 'text', required: true, localized: true, admin: { description: 'Prefix before system date in status bar, e.g. "system online —".' } },
+      ],
+    },
+    {
       name: 'deployedAt',
       type: 'text',
       admin: { readOnly: true, description: 'Auto-set by beforeChange hook on every save; ISO timestamp.' },
