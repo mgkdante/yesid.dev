@@ -414,7 +414,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Site-wide metadata. Heartbeat in Slice 18a (siteName, deployedAt); extended in 18b with tagline, description, links.
+ * Site-wide metadata — brand name, tagline, description, and social/outreach links.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-meta".
@@ -422,6 +422,26 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface SiteMeta {
   id: number;
   siteName: string;
+  tagline?: string | null;
+  /**
+   * Used for <meta name="description">. Keep under 160 chars for SEO.
+   */
+  description?: string | null;
+  links?: {
+    email?: string | null;
+    /**
+     * Full https URL.
+     */
+    github?: string | null;
+    /**
+     * Full https URL.
+     */
+    linkedin?: string | null;
+    /**
+     * Full https URL.
+     */
+    upwork?: string | null;
+  };
   /**
    * Auto-set by beforeChange hook on every save; ISO timestamp.
    */
@@ -435,6 +455,16 @@ export interface SiteMeta {
  */
 export interface SiteMetaSelect<T extends boolean = true> {
   siteName?: T;
+  tagline?: T;
+  description?: T;
+  links?:
+    | T
+    | {
+        email?: T;
+        github?: T;
+        linkedin?: T;
+        upwork?: T;
+      };
   deployedAt?: T;
   updatedAt?: T;
   createdAt?: T;
