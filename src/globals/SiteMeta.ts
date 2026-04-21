@@ -20,9 +20,33 @@ export const SiteMeta: GlobalConfig = {
       type: 'group',
       fields: [
         { name: 'email', type: 'email' },
-        { name: 'github', type: 'text', admin: { description: 'Full https URL.' } },
-        { name: 'linkedin', type: 'text', admin: { description: 'Full https URL.' } },
-        { name: 'upwork', type: 'text', admin: { description: 'Full https URL.' } },
+        {
+          name: 'github',
+          type: 'text',
+          admin: { description: 'Full https URL.' },
+          validate: (v: string | null | undefined) => {
+            if (v == null || v === '') return true
+            return typeof v === 'string' && /^https:\/\//.test(v) ? true : 'Must be a full https URL.'
+          },
+        },
+        {
+          name: 'linkedin',
+          type: 'text',
+          admin: { description: 'Full https URL.' },
+          validate: (v: string | null | undefined) => {
+            if (v == null || v === '') return true
+            return typeof v === 'string' && /^https:\/\//.test(v) ? true : 'Must be a full https URL.'
+          },
+        },
+        {
+          name: 'upwork',
+          type: 'text',
+          admin: { description: 'Full https URL.' },
+          validate: (v: string | null | undefined) => {
+            if (v == null || v === '') return true
+            return typeof v === 'string' && /^https:\/\//.test(v) ? true : 'Must be a full https URL.'
+          },
+        },
       ],
     },
     {

@@ -67,7 +67,7 @@ export default buildConfig({
         'site-meta': {
           enabled: { find: true, update: true },
           description:
-            'Site-wide metadata — heartbeat in 18a (siteName), extended in 18b with tagline, description, links.',
+            'Site-wide metadata: siteName, tagline, description, and social/outreach links (email, github, linkedin, upwork).',
         },
       },
       // collections: {} — intentionally empty in 18a; content collections land in 18b
