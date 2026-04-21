@@ -133,6 +133,26 @@
 
 ---
 
+### Task 17c-7 — Trim integrity.test.ts + seed-parses-clean (commit `a9573da`)
+
+**Tool:** Claude Code (Opus 4.7)
+**Implemented by:** deeper-reasoning model
+**Files modified:** `src/lib/content/integrity.test.ts` (trim + add)
+**Decisions:**
+- Net line change: **+74** (380 → 454). Plan's `-150` was aspirational; the 15 new parse tests simply add more lines than the 5 removed per-field assertions. Called out explicitly in commit body so the metric isn't a surprise.
+- Kept the LocalizedString walker + translation-debt snapshot — it's the ONLY enforcement for site-chrome literals (heroContent/manifestoContent/etc.) that spec D2 carves out of schema validation. Removing it would create a silent regression path for those strings.
+- Added inline comments at each removal site pointing to the schema that now covers the rule, so a future reader understands why the assertion is gone and where to look.
+- Kept `.trim() !== ''` checks on required non-LocalizedString strings (service.id, siteMeta.links.email, etc.) per plan note — schema uses `.min(1)` which allows whitespace-only. Tightening the schemas would be D3 scope creep.
+**Deviations from plan:** Line-count delta noted above. Otherwise followed plan exactly.
+**Tests:**
+- `bun run check` → 0 errors.
+- `bun run test` → 95 files / **968 tests** / all green (was 960; +15 new parse smoke tests − 7 removed per-field assertions).
+- Integrity file alone: 44/44 pass (was 29, +15 net from +15 added − 0 real removals at the test-count level since the removed ones were delete-whole-`it`-blocks superseded by new `describe`).
+**Budget row:** Model: Opus 4.7 `[1m]` | Context: ~72% — Pre-break zone. Task 17c-8 is finalization (ARCHITECTURE.md update + slice-17 README + handoff summary + PR open). STRONGLY recommend a fresh session for 17c-8 — cache invalidation cost is amortized since the task involves writing a summary/PR body over known state, no further reading-heavy exploration.
+**Next:** Task 17c-8 — ARCHITECTURE.md update + slice-17 README row flip + handoff finalization + open PR.
+
+---
+
 ## Audit snapshot (2026-04-20, pre-implementation)
 
 Parallel audits by Claude Explore and Codex agreed on:

@@ -104,3 +104,21 @@
 - Commit: `28f9364 feat(slice-17c): wire parsePort into staticAdapter + close 17b seam leaks`
 
 **STOP.** Awaiting Yesid approval before starting Task 17c-7.
+
+#### Task 17c-7 — Trim integrity.test.ts + seed-parses-clean smoke tests (approved → executed)
+- Removed per-field assertions superseded by Zod (with inline comments pointing to the covering schema):
+  - Project status enum check (covered by ProjectStatusSchema).
+  - Project title/oneLiner/description LocalizedString.en non-empty (LocalizedStringSchema.refine).
+  - Service title/description LocalizedString.en non-empty.
+  - BlogPost title/excerpt LocalizedString.en non-empty.
+  - SiteMeta tagline/description LocalizedString.en non-empty.
+  - Dropped the `VALID_STATUSES` constant (no longer referenced).
+- Added new `describe('seed data parses through schemas')` block with 15 smoke tests — one per content constant that staticAdapter now wraps. Mirrors the Task 17c-6 wrap matrix so a missing schema surfaces here immediately.
+- Kept cross-entity invariants (relatedServices/relatedProjects refs, unique slugs, station sequencing, URL-safe slug regex, SVG filename check, brand-name exact match, blog ISO date, .trim() non-empty for non-LocalizedString required strings).
+- Kept the LocalizedString walker + translation-debt snapshot — it walks site-chrome literals (heroContent/manifestoContent/etc.) that D2 carves out of schema validation, so those strings still get `en` non-empty enforcement here.
+- Line count: 380 → 454 (**net +74**, not -150 as plan targeted). Plan's estimate was aspirational — the 15 new parse tests add more lines than the 5 removed. Value is semantic layering, not line count. Noted in commit body.
+- `bun run check` → 0 errors.
+- `bun run test` → 95 files / **968 tests** / all green (was 960; +15 new parse tests − 7 removed assertions = net +8).
+- Commit: `a9573da refactor(slice-17c): layer integrity tests with schema parse + keep cross-entity invariants`
+
+**STOP.** Awaiting Yesid approval before starting Task 17c-8 (final: ARCHITECTURE.md + slice-17 README update + handoff finalization + PR prep).
