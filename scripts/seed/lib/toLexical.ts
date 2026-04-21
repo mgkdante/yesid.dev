@@ -61,8 +61,12 @@ interface LexicalState {
 
 /**
  * Naive markdown → Lexical fallback.
- * Splits on double-newlines; each chunk = paragraph or heading.
+ * Splits on double-newlines; each chunk = paragraph.
+ * Headings are converted to paragraphs (stripping the `#` prefix) to avoid
+ * node-type validation issues with Payload's default lexicalEditor() feature set.
  * Loses inline formatting, code fences, lists, images.
+ * Each block node must carry format/indent/direction — required by Payload's
+ * Lexical schema validator.
  */
 function naiveMarkdownToLexical(md: string): LexicalState {
   const trimmed = md.trim()
@@ -72,20 +76,16 @@ function naiveMarkdownToLexical(md: string): LexicalState {
     .filter(Boolean)
 
   const children: LexicalNode[] = blocks.map((block) => {
-    const headingMatch = block.match(/^(#+)\s+(.*)$/s)
-    if (headingMatch) {
-      const level = Math.min(headingMatch[1].length, 6)
-      return {
-        type: 'heading',
-        version: 1,
-        tag: `h${level}`,
-        children: [{ type: 'text', version: 1, text: headingMatch[2] }],
-      }
-    }
+    // Strip heading prefix (`# `, `## `, …) — convert all blocks to paragraphs
+    // to avoid HeadingNode validation failures with the default lexical feature set.
+    const text = block.replace(/^#+\s+/, '')
     return {
       type: 'paragraph',
       version: 1,
-      children: [{ type: 'text', version: 1, text: block }],
+      format: '',
+      indent: 0,
+      direction: 'ltr',
+      children: [{ type: 'text', version: 1, text, format: 0 }],
     }
   })
 

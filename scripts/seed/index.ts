@@ -16,6 +16,13 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { getPayload } from 'payload'
 import config from '../../src/payload.config'
+import { upsertTechStack } from './upsert/tech-stack'
+import { upsertMedia } from './upsert/media'
+import { upsertServices } from './upsert/services'
+import { upsertProjects } from './upsert/projects'
+import { upsertBlogPosts } from './upsert/blog-posts'
+import { upsertStackScenarios } from './upsert/stack-scenarios'
+import { upsertGlobals } from './upsert/globals'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -39,34 +46,27 @@ async function main() {
   // Order matters: hub collections first, reverse-join collections after (D6).
   // Auto-stub-creation (D-rel-2) fires if a project/service references an id not yet present.
   console.log('\n[seed] 1/7 tech-stack (primary pass)')
-  // TODO(18b-8b): import + call upsertTechStack({ payload, sourceRepo: SOURCE_REPO })
-  console.log('[seed]   skipped — TODO(18b-8b)')
+  await upsertTechStack({ payload, sourceRepo: SOURCE_REPO })
 
   console.log('\n[seed] 2/7 media (project images)')
-  // TODO(18b-8b): import + call upsertMedia({ payload, sourceRepo: SOURCE_REPO })
-  console.log('[seed]   skipped — TODO(18b-8b)')
+  await upsertMedia({ payload, sourceRepo: SOURCE_REPO })
 
   console.log('\n[seed] 3/7 services (+ auto-stub tech-stack if any)')
-  // TODO(18b-8b): import + call upsertServices({ payload, sourceRepo: SOURCE_REPO })
-  console.log('[seed]   skipped — TODO(18b-8b)')
+  await upsertServices({ payload, sourceRepo: SOURCE_REPO })
 
   console.log('\n[seed] 4/7 projects (+ auto-stub tech-stack if any)')
-  // TODO(18b-8b): import + call upsertProjects({ payload, sourceRepo: SOURCE_REPO })
-  console.log('[seed]   skipped — TODO(18b-8b)')
+  await upsertProjects({ payload, sourceRepo: SOURCE_REPO })
 
   console.log('\n[seed] 5/7 blog-posts')
-  // TODO(18b-8b): import + call upsertBlogPosts({ payload, sourceRepo: SOURCE_REPO })
-  console.log('[seed]   skipped — TODO(18b-8b)')
+  await upsertBlogPosts({ payload, sourceRepo: SOURCE_REPO })
 
   console.log('\n[seed] 6/7 stack-scenarios')
-  // TODO(18b-8b): import + call upsertStackScenarios({ payload, sourceRepo: SOURCE_REPO })
-  console.log('[seed]   skipped — TODO(18b-8b)')
+  await upsertStackScenarios({ payload, sourceRepo: SOURCE_REPO })
 
   console.log('\n[seed] 7/7 globals')
-  // TODO(18b-8b): import + call upsertGlobals({ payload, sourceRepo: SOURCE_REPO })
-  console.log('[seed]   skipped — TODO(18b-8b)')
+  await upsertGlobals({ payload, sourceRepo: SOURCE_REPO })
 
-  console.log('\n[seed] DONE (scaffold mode — 18b-8b implements upserts)')
+  console.log('\n[seed] DONE')
   process.exit(0)
 }
 
