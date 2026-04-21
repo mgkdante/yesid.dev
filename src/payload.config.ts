@@ -9,6 +9,7 @@ import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
 
+import { migrations } from '../migrations'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { SiteMeta } from './globals/SiteMeta'
@@ -43,7 +44,7 @@ export default buildConfig({
     },
     push: false,
     migrationDir: path.resolve(dirname, '..', 'migrations'),
-    // prodMigrations: migrations,  // uncommented in Task 18a-3 after migrations/index.ts exists
+    prodMigrations: migrations,
   }),
   email: resendAdapter({
     defaultFromAddress: 'no-reply@cms.yesid.dev',
