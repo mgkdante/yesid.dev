@@ -69,6 +69,7 @@ export interface Config {
   blocks: {};
   collections: {
     'tech-stack': TechStack;
+    services: Service;
     'blog-posts': BlogPost;
     users: User;
     media: Media;
@@ -78,9 +79,14 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    'tech-stack': {
+      relatedServices: 'services';
+    };
+  };
   collectionsSelect: {
     'tech-stack': TechStackSelect<false> | TechStackSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -173,6 +179,58 @@ export interface TechStack {
    */
   icon?: string | null;
   proficiency?: ('expert' | 'proficient' | 'familiar') | null;
+  relatedServices?: {
+    docs?: (string | Service)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  /**
+   * Stable slug id, e.g. "sql-development".
+   */
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  description: string;
+  longDescription?: string | null;
+  valueProposition?: string | null;
+  station: number;
+  /**
+   * Lottie/icon filename (kept as string per Q3).
+   */
+  icon?: string | null;
+  /**
+   * SVG filename (kept as string per Q3).
+   */
+  svg?: string | null;
+  lottieReverse?: boolean | null;
+  visible?: boolean | null;
+  deliverables?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  sections?:
+    | {
+        title: string;
+        content: string;
+        id?: string | null;
+      }[]
+    | null;
+  benefitHeadline?: string | null;
+  impactMetric?: {
+    value?: string | null;
+    label?: string | null;
+  };
+  stack?: (string | TechStack)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -298,6 +356,16 @@ export interface PayloadMcpApiKey {
      */
     update?: boolean | null;
   };
+  services?: {
+    /**
+     * Allow clients to find services.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update services.
+     */
+    update?: boolean | null;
+  };
   blogPosts?: {
     /**
      * Allow clients to find blog-posts.
@@ -352,6 +420,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tech-stack';
         value: string | TechStack;
+      } | null)
+    | ({
+        relationTo: 'services';
+        value: string | Service;
       } | null)
     | ({
         relationTo: 'blog-posts';
@@ -432,6 +504,47 @@ export interface TechStackSelect<T extends boolean = true> {
   domains?: T;
   icon?: T;
   proficiency?: T;
+  relatedServices?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  subtitle?: T;
+  description?: T;
+  longDescription?: T;
+  valueProposition?: T;
+  station?: T;
+  icon?: T;
+  svg?: T;
+  lottieReverse?: T;
+  visible?: T;
+  deliverables?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  sections?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        id?: T;
+      };
+  benefitHeadline?: T;
+  impactMetric?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+      };
+  stack?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -505,6 +618,12 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
   label?: T;
   description?: T;
   techStack?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  services?:
     | T
     | {
         find?: T;

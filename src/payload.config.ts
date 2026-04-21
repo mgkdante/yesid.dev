@@ -11,6 +11,7 @@ import sharp from 'sharp'
 
 import { migrations } from '../migrations'
 import { TechStack } from './collections/TechStack'
+import { Services } from './collections/Services'
 import { BlogPosts } from './collections/BlogPosts'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -29,7 +30,7 @@ export default buildConfig({
     theme: 'dark',
   },
   editor: lexicalEditor(),
-  collections: [TechStack, BlogPosts, Users, Media],
+  collections: [TechStack, Services, BlogPosts, Users, Media],
   globals: [SiteMeta],
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
@@ -69,6 +70,10 @@ export default buildConfig({
         'tech-stack': {
           enabled: { find: true, update: true },
           description: 'Tech stack entries — PostgreSQL, Python, TypeScript, etc. Flat list; cross-tech relationship graph is not yet modelled.',
+        },
+        services: {
+          enabled: { find: true, update: true },
+          description: 'Service offerings — SQL Development, Data Pipelines, etc. Source-of-truth stack relationship; reverse-join relatedProjects.',
         },
         'blog-posts': {
           enabled: { find: true, update: true },

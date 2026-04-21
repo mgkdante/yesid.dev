@@ -55,8 +55,8 @@ export const TechStack: CollectionConfig = {
       ],
     },
     // Reverse-edge join fields (D-rel-1) — auto-computed, read-only:
-    // TODO(18b-4): uncomment after projects + services collections exist
-    // { name: 'relatedProjects', type: 'join', collection: 'projects', on: 'stack', admin: { readOnly: true } },
-    // { name: 'relatedServices', type: 'join', collection: 'services', on: 'stack', admin: { readOnly: true } },
+    { name: 'relatedServices', type: 'join', collection: 'services', on: 'stack' },
+    // TODO(18b-4): uncomment after projects collection exists
+    // { name: 'relatedProjects', type: 'join', collection: 'projects', on: 'stack' },
   ],
 }
