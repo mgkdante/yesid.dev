@@ -109,9 +109,19 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'fr' | 'es') | ('en' | 'fr' | 'es')[];
   globals: {
+    'services-page': ServicesPage;
+    'projects-page': ProjectsPage;
+    'blog-page': BlogPage;
+    'tech-stack-page': TechStackPage;
+    'error-pages': ErrorPage;
     'site-meta': SiteMeta;
   };
   globalsSelect: {
+    'services-page': ServicesPageSelect<false> | ServicesPageSelect<true>;
+    'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
+    'blog-page': BlogPageSelect<false> | BlogPageSelect<true>;
+    'tech-stack-page': TechStackPageSelect<false> | TechStackPageSelect<true>;
+    'error-pages': ErrorPagesSelect<false> | ErrorPagesSelect<true>;
     'site-meta': SiteMetaSelect<false> | SiteMetaSelect<true>;
   };
   locale: 'en' | 'fr' | 'es';
@@ -417,6 +427,9 @@ export interface BlogPost {
  * via the `definition` "stack-scenarios".
  */
 export interface StackScenario {
+  /**
+   * Stable scenario id, e.g. "analytics-dashboard".
+   */
   id: string;
   domains: (
     | 'data-engineering'
@@ -526,6 +539,56 @@ export interface PayloadMcpApiKey {
     find?: boolean | null;
     /**
      * Allow clients to update stack-scenarios.
+     */
+    update?: boolean | null;
+  };
+  servicesPage?: {
+    /**
+     * Allow clients to find services-page global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update services-page global.
+     */
+    update?: boolean | null;
+  };
+  projectsPage?: {
+    /**
+     * Allow clients to find projects-page global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update projects-page global.
+     */
+    update?: boolean | null;
+  };
+  blogPage?: {
+    /**
+     * Allow clients to find blog-page global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update blog-page global.
+     */
+    update?: boolean | null;
+  };
+  techStackPage?: {
+    /**
+     * Allow clients to find tech-stack-page global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update tech-stack-page global.
+     */
+    update?: boolean | null;
+  };
+  errorPages?: {
+    /**
+     * Allow clients to find error-pages global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update error-pages global.
      */
     update?: boolean | null;
   };
@@ -905,6 +968,36 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         find?: T;
         update?: T;
       };
+  servicesPage?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  projectsPage?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  blogPage?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  techStackPage?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  errorPages?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
   siteMeta?:
     | T
     | {
@@ -958,6 +1051,310 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * /services route — listing page intro + listing chrome + detail page chrome.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page".
+ */
+export interface ServicesPage {
+  id: number;
+  /**
+   * HTML <title> + <meta description> for /services.
+   */
+  meta: {
+    title: string;
+    description: string;
+  };
+  /**
+   * Services listing page chrome (ServiceListingPage, ServiceCard, ProjectsStrip).
+   */
+  listing: {
+    heading: string;
+    /**
+     * Template: "Service {stationNum} / {totalStr}".
+     */
+    stationLabelTemplate: string;
+    deepDiveLabel: string;
+    projectsStrip: {
+      /**
+       * Template with {serviceTitle} placeholder.
+       */
+      builtWithService: string;
+      builtWithFallback: string;
+      projectSingular: string;
+      projectPlural: string;
+    };
+  };
+  /**
+   * Service detail page chrome (ServiceDetailPage, ServiceNav).
+   */
+  detail: {
+    backToServicesLabel: string;
+    valuePropositionHeading: string;
+    deliverablesHeading: string;
+    relatedProjectsHeading: string;
+    relatedProjectsNavAria: string;
+    serviceNavAria: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * /projects route — listing page intro + listing chrome + detail page chrome.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects-page".
+ */
+export interface ProjectsPage {
+  id: number;
+  /**
+   * HTML <title> + <meta description> for /projects.
+   */
+  meta: {
+    title: string;
+    description: string;
+  };
+  /**
+   * Projects listing page chrome (ProjectListingPage, ProjectFilterMobile, ProjectFilterSidebar, ProjectCard).
+   */
+  listing: {
+    heading: string;
+    searchPlaceholder: string;
+    /**
+     * "See all projects →" link — used from service detail pages.
+     */
+    seeAllLink: string;
+    filters: {
+      filtersLabel: string;
+      services: string;
+      tags: string;
+      techStack: string;
+      allLabel: string;
+      /**
+       * Prefix before the active filter label in mobile status.
+       */
+      showingPrefix: string;
+    };
+    card: {
+      /**
+       * Suffix after the first N stack items. Template: "+{count} more".
+       */
+      stackOverflowSuffix: string;
+    };
+  };
+  /**
+   * Project detail page chrome (ProjectDetailHeader, ProjectDetailPage, ProjectGlancePanel, ProjectTocPill).
+   */
+  detail: {
+    backToListingLabel: string;
+    tocSectionTitle: string;
+    readmeSectionTitle: string;
+    /**
+     * Glance panel (desktop sidebar + mobile collapsible) section headings.
+     */
+    glance: {
+      overview: string;
+      impact: string;
+      stack: string;
+      services: string;
+      links: string;
+      /**
+       * Mobile-only rolled-up heading.
+       */
+      projectInfo: string;
+      liveSiteLabel: string;
+      /**
+       * Mobile variant: "↗ Live Site".
+       */
+      liveSiteLabelMobile: string;
+      githubLabel: string;
+    };
+    tocPill: {
+      openAria: string;
+      closeAria: string;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * /blog route — listing page chrome (professional + personal streams) + detail page chrome.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-page".
+ */
+export interface BlogPage {
+  id: number;
+  /**
+   * Blog listing page chrome (BlogListingPage, BlogFilterMobile, BlogFilterSidebar, BlogRouteMap).
+   */
+  listing: {
+    mobileHeading: string;
+    searchPlaceholder: string;
+    resultNoun: string;
+    noPostsMessage: string;
+    filters: {
+      filtersLabel: string;
+      allLabel: string;
+      language: string;
+      dateRange: string;
+      from: string;
+      to: string;
+      tags: string;
+      /**
+       * Prefix before the active filter label in mobile status.
+       */
+      showingPrefix: string;
+    };
+    routeMap: {
+      title: string;
+      terminus: string;
+    };
+  };
+  /**
+   * Blog detail page chrome (BlogContent, BlogDetailHeader, BlogDetailPage, BlogTocPill).
+   */
+  detail: {
+    /**
+     * Code block copy-button chrome.
+     */
+    code: {
+      copyAria: string;
+      copyLabel: string;
+      errorLabel: string;
+    };
+    /**
+     * Back-nav link text in BlogDetailHeader, varies by category.
+     */
+    backNav: {
+      toPersonal: string;
+      toDispatches: string;
+    };
+    header: {
+      postTagsAria: string;
+      /**
+       * Reading-time suffix. Template: "{minutes} min read".
+       */
+      readingTimeLabel: string;
+    };
+    /**
+     * Desktop TOC toggle labels + metadata panel column labels.
+     */
+    page: {
+      readingMode: string;
+      tocSectionTitle: string;
+      metaCategory: string;
+      metaWords: string;
+      metaReadTime: string;
+      metaLanguage: string;
+      metaTags: string;
+    };
+    /**
+     * Mobile table-of-contents pill button labels.
+     */
+    tocPill: {
+      openAria: string;
+      closeAria: string;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * /tech-stack page copy — hero, stats, CTA, meta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tech-stack-page".
+ */
+export interface TechStackPage {
+  id: number;
+  /**
+   * HTML <title> + <meta description> for /tech-stack.
+   */
+  meta: {
+    title: string;
+    /**
+     * Template with {itemCount} + {layerCount} placeholders.
+     */
+    description: string;
+  };
+  /**
+   * Hero section — overline, title lines, terminal aria, stat labels.
+   */
+  hero: {
+    overline: string;
+    /**
+     * H1 line 1 — before the <br> break.
+     */
+    titleLine1: string;
+    /**
+     * H1 line 2 — inside the .hero-title-accent span. Trailing "." stays as a literal in the template.
+     */
+    titleLine2: string;
+    terminalAria: string;
+    /**
+     * Stat labels beneath the count numbers.
+     */
+    stats: {
+      technologies: string;
+      layers: string;
+      domains: string;
+      projects: string;
+    };
+  };
+  /**
+   * Shared CTA button labels — rendered in both the hero bottom and CTA zone.
+   */
+  actions: {
+    getInTouch: string;
+    viewServices: string;
+  };
+  /**
+   * Footer CTA zone — heading lines, sub-copy, availability label.
+   */
+  cta: {
+    /**
+     * H2 line 1. Trailing "?" accent stays as a literal span.
+     */
+    headingLine1: string;
+    /**
+     * H2 line 2. Trailing "." accent stays as a literal span.
+     */
+    headingLine2: string;
+    sub: string;
+    availability: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * 404 and other error page copy.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "error-pages".
+ */
+export interface ErrorPage {
+  id: number;
+  notFound: {
+    label: string;
+    heading: string;
+    description: string;
+    /**
+     * Terminal-style status line. Not localized — identical across locales.
+     */
+    terminalLine: string;
+    suggestions?:
+      | {
+          label: string;
+          href: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Site-wide metadata — brand name, tagline, description, and social/outreach links.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -992,6 +1389,253 @@ export interface SiteMeta {
   deployedAt?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page_select".
+ */
+export interface ServicesPageSelect<T extends boolean = true> {
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  listing?:
+    | T
+    | {
+        heading?: T;
+        stationLabelTemplate?: T;
+        deepDiveLabel?: T;
+        projectsStrip?:
+          | T
+          | {
+              builtWithService?: T;
+              builtWithFallback?: T;
+              projectSingular?: T;
+              projectPlural?: T;
+            };
+      };
+  detail?:
+    | T
+    | {
+        backToServicesLabel?: T;
+        valuePropositionHeading?: T;
+        deliverablesHeading?: T;
+        relatedProjectsHeading?: T;
+        relatedProjectsNavAria?: T;
+        serviceNavAria?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects-page_select".
+ */
+export interface ProjectsPageSelect<T extends boolean = true> {
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  listing?:
+    | T
+    | {
+        heading?: T;
+        searchPlaceholder?: T;
+        seeAllLink?: T;
+        filters?:
+          | T
+          | {
+              filtersLabel?: T;
+              services?: T;
+              tags?: T;
+              techStack?: T;
+              allLabel?: T;
+              showingPrefix?: T;
+            };
+        card?:
+          | T
+          | {
+              stackOverflowSuffix?: T;
+            };
+      };
+  detail?:
+    | T
+    | {
+        backToListingLabel?: T;
+        tocSectionTitle?: T;
+        readmeSectionTitle?: T;
+        glance?:
+          | T
+          | {
+              overview?: T;
+              impact?: T;
+              stack?: T;
+              services?: T;
+              links?: T;
+              projectInfo?: T;
+              liveSiteLabel?: T;
+              liveSiteLabelMobile?: T;
+              githubLabel?: T;
+            };
+        tocPill?:
+          | T
+          | {
+              openAria?: T;
+              closeAria?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-page_select".
+ */
+export interface BlogPageSelect<T extends boolean = true> {
+  listing?:
+    | T
+    | {
+        mobileHeading?: T;
+        searchPlaceholder?: T;
+        resultNoun?: T;
+        noPostsMessage?: T;
+        filters?:
+          | T
+          | {
+              filtersLabel?: T;
+              allLabel?: T;
+              language?: T;
+              dateRange?: T;
+              from?: T;
+              to?: T;
+              tags?: T;
+              showingPrefix?: T;
+            };
+        routeMap?:
+          | T
+          | {
+              title?: T;
+              terminus?: T;
+            };
+      };
+  detail?:
+    | T
+    | {
+        code?:
+          | T
+          | {
+              copyAria?: T;
+              copyLabel?: T;
+              errorLabel?: T;
+            };
+        backNav?:
+          | T
+          | {
+              toPersonal?: T;
+              toDispatches?: T;
+            };
+        header?:
+          | T
+          | {
+              postTagsAria?: T;
+              readingTimeLabel?: T;
+            };
+        page?:
+          | T
+          | {
+              readingMode?: T;
+              tocSectionTitle?: T;
+              metaCategory?: T;
+              metaWords?: T;
+              metaReadTime?: T;
+              metaLanguage?: T;
+              metaTags?: T;
+            };
+        tocPill?:
+          | T
+          | {
+              openAria?: T;
+              closeAria?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tech-stack-page_select".
+ */
+export interface TechStackPageSelect<T extends boolean = true> {
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  hero?:
+    | T
+    | {
+        overline?: T;
+        titleLine1?: T;
+        titleLine2?: T;
+        terminalAria?: T;
+        stats?:
+          | T
+          | {
+              technologies?: T;
+              layers?: T;
+              domains?: T;
+              projects?: T;
+            };
+      };
+  actions?:
+    | T
+    | {
+        getInTouch?: T;
+        viewServices?: T;
+      };
+  cta?:
+    | T
+    | {
+        headingLine1?: T;
+        headingLine2?: T;
+        sub?: T;
+        availability?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "error-pages_select".
+ */
+export interface ErrorPagesSelect<T extends boolean = true> {
+  notFound?:
+    | T
+    | {
+        label?: T;
+        heading?: T;
+        description?: T;
+        terminalLine?: T;
+        suggestions?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -17,7 +17,12 @@ import { BlogPosts } from './collections/BlogPosts'
 import { StackScenarios } from './collections/StackScenarios'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { BlogPage } from './globals/BlogPage'
+import { ErrorPages } from './globals/ErrorPages'
+import { ProjectsPage } from './globals/ProjectsPage'
+import { ServicesPage } from './globals/ServicesPage'
 import { SiteMeta } from './globals/SiteMeta'
+import { TechStackPage } from './globals/TechStackPage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -33,7 +38,7 @@ export default buildConfig({
   },
   editor: lexicalEditor(),
   collections: [TechStack, Services, Projects, BlogPosts, StackScenarios, Users, Media],
-  globals: [SiteMeta],
+  globals: [ServicesPage, ProjectsPage, BlogPage, TechStackPage, ErrorPages, SiteMeta],
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   typescript: {
@@ -91,6 +96,26 @@ export default buildConfig({
         },
       },
       globals: {
+        'services-page': {
+          enabled: { find: true, update: true },
+          description: '/services page copy — meta, listing chrome, detail chrome.',
+        },
+        'projects-page': {
+          enabled: { find: true, update: true },
+          description: '/projects page copy — meta, listing chrome, detail chrome.',
+        },
+        'blog-page': {
+          enabled: { find: true, update: true },
+          description: '/blog page copy — meta, listing chrome, detail chrome (per-stream: professional + personal).',
+        },
+        'tech-stack-page': {
+          enabled: { find: true, update: true },
+          description: '/tech-stack page copy — hero, stats, CTA, meta.',
+        },
+        'error-pages': {
+          enabled: { find: true, update: true },
+          description: 'Error page copy — 404 heading, description, suggestions.',
+        },
         'site-meta': {
           enabled: { find: true, update: true },
           description:
