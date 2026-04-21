@@ -13,7 +13,13 @@ export const Projects: CollectionConfig = {
     defaultColumns: ['slug', 'status', 'featured'],
   },
   access: {
-    read: () => true,
+    // Admins see all statuses (public, private, wip). Non-admin/unauth reads
+    // get filtered to public-only — private + WIP projects remain hidden from
+    // REST + MCP find paths even though those tools don't require auth.
+    read: ({ req }) => {
+      if (isAdmin(req.user)) return true
+      return { status: { equals: 'public' } }
+    },
     create: ({ req }) => isAdmin(req.user),
     update: ({ req }) => isAdmin(req.user),
     delete: ({ req }) => isAdmin(req.user),
