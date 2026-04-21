@@ -16,7 +16,23 @@ export const Services: CollectionConfig = {
     delete: ({ req }) => isAdmin(req.user),
   },
   fields: [
-    { name: 'id', type: 'text', required: true, unique: true, index: true, admin: { description: 'Stable slug id, e.g. "sql-development".' } },
+    {
+      name: 'id',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,
+      hooks: {
+        beforeChange: [
+          ({ operation, siblingData }) => {
+            if (operation === 'update') {
+              delete siblingData.id
+            }
+          },
+        ],
+      },
+      admin: { description: 'Stable slug id, e.g. "sql-development".' },
+    },
     { name: 'title', type: 'text', required: true, localized: true },
     { name: 'subtitle', type: 'text', localized: true },
     { name: 'description', type: 'textarea', required: true, localized: true },

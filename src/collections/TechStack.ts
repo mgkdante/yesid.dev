@@ -12,7 +12,23 @@ export const TechStack: CollectionConfig = {
     delete: ({ req }) => isAdmin(req.user),
   },
   fields: [
-    { name: 'id', type: 'text', required: true, unique: true, index: true, admin: { description: 'Stable slug id, e.g. "postgresql". Matches yesid.dev tech IDs.' } },
+    {
+      name: 'id',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,
+      hooks: {
+        beforeChange: [
+          ({ operation, siblingData }) => {
+            if (operation === 'update') {
+              delete siblingData.id
+            }
+          },
+        ],
+      },
+      admin: { description: 'Stable slug id, e.g. "postgresql". Matches yesid.dev tech IDs.' },
+    },
     { name: 'name', type: 'text', required: true },
     {
       name: 'layer',

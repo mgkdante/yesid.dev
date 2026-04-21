@@ -15,7 +15,23 @@ export const StackScenarios: CollectionConfig = {
     delete: ({ req }) => isAdmin(req.user),
   },
   fields: [
-    { name: 'id', type: 'text', required: true, unique: true, index: true },
+    {
+      name: 'id',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,
+      hooks: {
+        beforeChange: [
+          ({ operation, siblingData }) => {
+            if (operation === 'update') {
+              delete siblingData.id
+            }
+          },
+        ],
+      },
+      admin: { description: 'Stable scenario id, e.g. "analytics-dashboard".' },
+    },
     {
       name: 'domains',
       type: 'select',
