@@ -22,3 +22,11 @@ export const LocalizedStringSchema = z.object({
 // Locale enum — mirrors $lib/types Locale union. Single source of truth for
 // schema files that need to validate locale codes (blog post lang, etc.).
 export const LocaleSchema = z.enum(['en', 'fr', 'es']);
+
+// Page meta — HTML <title> + <meta name="description"> copy. Mirrors the
+// PageMeta interface in $lib/types. Reused across about-page, contact-page,
+// and tech-stack-page schemas — placed here instead of duplicating.
+export const PageMetaSchema = z.object({
+	title: LocalizedStringSchema,
+	description: LocalizedStringSchema,
+});

@@ -6,7 +6,7 @@
 // through the same seam as `aboutPage` and `contactPage`.
 
 import { z } from 'zod';
-import { LocalizedStringSchema } from './shared';
+import { LocalizedStringSchema, PageMetaSchema } from './shared';
 import { techStackPageContent } from '$lib/content/tech-stack';
 
 const TechStackHeroStatsSchema = z.object({
@@ -17,10 +17,7 @@ const TechStackHeroStatsSchema = z.object({
 });
 
 export const TechStackPageContentSchema = z.object({
-	meta: z.object({
-		title: LocalizedStringSchema,
-		description: LocalizedStringSchema,
-	}),
+	meta: PageMetaSchema,
 	hero: z.object({
 		overline: LocalizedStringSchema,
 		titleLine1: LocalizedStringSchema,
