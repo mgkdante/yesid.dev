@@ -59,6 +59,24 @@
 
 ---
 
+### Task 17c-3 — Blog + SiteMeta + TechStack schemas (commit `4a49fe5`)
+
+**Tool:** Claude Code (Opus 4.7)
+**Implemented by:** deeper-reasoning model
+**Files created:** `src/lib/schemas/blog.ts` (3 schemas + 3 detectors), `src/lib/schemas/meta.ts` (4 schemas + 4 detectors), `src/lib/schemas/tech-stack.ts` (6 schemas + 6 detectors)
+**Files modified:** `src/lib/schemas/shared.ts` (added `LocaleSchema` as cross-cutting primitive)
+**Decisions:**
+- `LocaleSchema` placed in `shared.ts` rather than `blog.ts` (plan showed it in blog context, but cross-cutting placement is cleaner — no blog-specific coupling for a Locale enum).
+- `SiteOwner.knowsAbout` uses `z.array(z.string()).readonly()`. Verified Zod 4.3.6 supports `.readonly()` on arrays before going bidirectional — otherwise would have fallen to one-direction detector.
+- `TechStackItem.connectionNotes` uses `z.record(z.string(), z.string()).optional()` (Zod 4 record signature takes key + value schemas).
+- All 13 drift detectors bidirectional. `date` stays `z.string()` per D3 — no `z.iso.date()` tightening.
+**Deviations from plan:** `LocaleSchema` location (see decisions). No other deviations.
+**Tests:** No new test file (per plan). Full suite `bun run test` → 960/960 green. `bun run check` → 0 errors.
+**Budget row:** Model: Opus 4.7 `[1m]` | Context: ~55% — Healthy, avoiding major new directions per AGENTS.md § Session token budget.
+**Next:** Task 17c-4 — About + Contact + Nav + Journey + HeroData schemas (biggest task: `about-page.ts` alone has 14 nested schemas).
+
+---
+
 ## Audit snapshot (2026-04-20, pre-implementation)
 
 Parallel audits by Claude Explore and Codex agreed on:

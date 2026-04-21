@@ -50,3 +50,15 @@
 - Commit: `c1097ba feat(slice-17c): add techStackPage port + TechStackPageContentSchema`
 
 **STOP.** Awaiting Yesid approval before starting Task 17c-3.
+
+#### Task 17c-3 — Blog + SiteMeta + TechStack schemas (approved → executed)
+- Confirmed Zod 4.3.6 — `.readonly()` available, so `SiteOwner.knowsAbout: readonly string[]` can mirror bidirectionally.
+- Decision: `LocaleSchema` added to `shared.ts` (cross-cutting primitive used by blog and potentially future schemas) rather than blog.ts. Plan note allowed judgment here.
+- Wrote `blog.ts`: `BlogCategorySchema`, `BlogAnimationSchema`, `BlogPostSchema`. `date` stays `z.string()` per D3. 3 bidirectional drift detectors.
+- Wrote `meta.ts`: `SiteLinksSchema`, `SiteAddressSchema`, `SiteOwnerSchema` (with `.readonly()` on `knowsAbout`), `SiteMetaSchema`. 4 bidirectional drift detectors.
+- Wrote `tech-stack.ts`: `InfraLayerSchema` (9 variants), `DomainClusterSchema` (7 variants), `ProficiencySchema` (3 variants), `TechStackItemSchema` (incl. `z.record(z.string(), z.string()).optional()` for `connectionNotes`), `TechRelationSchema`, `StackScenarioSchema`. 6 bidirectional drift detectors.
+- `bun run check` → 0 errors, 19 pre-existing warnings.
+- `bun run test` → 960/960 green.
+- Commit: `4a49fe5 feat(slice-17c): add BlogPost, SiteMeta, TechStack schemas`
+
+**STOP.** Awaiting Yesid approval before starting Task 17c-4.
