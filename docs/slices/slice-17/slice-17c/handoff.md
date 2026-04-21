@@ -28,6 +28,21 @@
 
 ---
 
+### Task 17c-2 — Project + Service schemas (commit `54da6d5`)
+
+**Tool:** Claude Code (Opus 4.7)
+**Implemented by:** deeper-reasoning model
+**Files created:** `src/lib/schemas/project.ts` (4 schemas + 4 drift detectors), `src/lib/schemas/service.ts` (2 schemas + 1 inline helper + 2 drift detectors)
+**Decisions:**
+- Applied `.min(1)` on `Project.slug` and `Service.id` — matches the `PageSeoSchema` precedent for required short strings; doesn't violate D3 strictness budget (TS already encodes non-empty via required `string`, this is a lower bound not a new constraint).
+- Service's home-grid `impactMetric` field has a different shape from `ImpactMetric` (both fields are `LocalizedString` here vs `value: string` on Project). Kept the schema inline (unexported) since no other module references it.
+**Deviations from plan:** None — pattern followed exactly. Skipped the optional scratch-repl seed sanity per plan note ("Skip formal test file; Task 17c-7 covers seed-parses-clean assertions in `integrity.test.ts`").
+**Tests:** No new test file (per plan). Full suite `bun run test` → 960/960 green. `bun run check` → 0 errors (same 19 pre-existing warnings — drift detectors compile in both directions).
+**Budget row:** Model: Opus 4.7 `[1m]` | Context: ~50% — Comfortable.
+**Next:** Task 17c-2b — TechStackPage schema + adapter port + repository delegator (audit-driven scope expansion).
+
+---
+
 ## Audit snapshot (2026-04-20, pre-implementation)
 
 Parallel audits by Claude Explore and Codex agreed on:

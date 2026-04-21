@@ -27,3 +27,15 @@
 - Commit: `9f1b79a feat(slice-17c): add parsePort helper + shared LocalizedStringSchema`
 
 **STOP.** Awaiting Yesid approval before starting Task 17c-2.
+
+#### Task 17c-2 — Project + Service schemas (approved → executed)
+- Read `src/lib/types.ts` to map Project / ProjectSection / ImpactMetric / ProjectStatus + Service / ServiceSection + home-grid `ServiceImpactMetric` shapes.
+- Wrote `project.ts` with `ProjectStatusSchema` (z.enum), `ProjectSectionSchema`, `ImpactMetricSchema`, `ProjectSchema` + 4 bidirectional drift detectors.
+- Wrote `service.ts` with `ServiceSectionSchema`, inline `ServiceImpactMetricSchema` (different shape from Project's — both value+label are LocalizedString here), `ServiceSchema` + 2 drift detectors.
+- No URL/slug tightening applied (spec D3). Only `.min(1)` on `slug` and `id` to prevent empty strings — already covered by TS `string`, but `.min(1)` matches how `PageSeoSchema` handles required short strings.
+- `bun run check` → 0 errors, 19 pre-existing warnings. Drift detectors compile cleanly in both directions.
+- `bun run test` → 960/960 green.
+- Skipped formal seed-parses-clean test per plan (deferred to Task 17c-7 + integrity.test.ts).
+- Commit: `54da6d5 feat(slice-17c): add ProjectSchema + ServiceSchema with drift detectors`
+
+**STOP.** Awaiting Yesid approval before starting Task 17c-2b.
