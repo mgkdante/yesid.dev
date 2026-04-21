@@ -22,15 +22,15 @@ scripts/seed/
 # Dev branch (current .env DATABASE_URI):
 bun run seed:dev
 
-# Prod branch (explicit gate):
-SEED_TARGET=prod bun run seed:prod
+# Prod branch (explicit gate — cross-env wrapper makes this cross-shell):
+bun run seed:prod
 
-# Override source repo path:
+# Override source repo path (bash / pwsh 7+):
 SEED_SOURCE_REPO_PATH=/custom/yesid.dev bun run seed:dev
-```
 
-**Note on Windows:** `seed:prod` uses `SEED_TARGET=prod` env var prefix — this works in Unix shells
-and PowerShell 7+ (`pwsh`), but NOT in legacy Windows CMD. Always run from Git Bash or pwsh 7.
+# Or on Windows cmd.exe:
+cross-env SEED_SOURCE_REPO_PATH=/custom/yesid.dev bun run seed:dev
+```
 
 ## Semantics
 
