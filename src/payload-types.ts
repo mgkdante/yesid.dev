@@ -109,18 +109,26 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'fr' | 'es') | ('en' | 'fr' | 'es')[];
   globals: {
+    'home-content': HomeContent;
     'services-page': ServicesPage;
     'projects-page': ProjectsPage;
     'blog-page': BlogPage;
     'tech-stack-page': TechStackPage;
+    'about-content': AboutContent;
+    'contact-content': ContactContent;
+    'nav-links': NavLink;
     'error-pages': ErrorPage;
     'site-meta': SiteMeta;
   };
   globalsSelect: {
+    'home-content': HomeContentSelect<false> | HomeContentSelect<true>;
     'services-page': ServicesPageSelect<false> | ServicesPageSelect<true>;
     'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
     'blog-page': BlogPageSelect<false> | BlogPageSelect<true>;
     'tech-stack-page': TechStackPageSelect<false> | TechStackPageSelect<true>;
+    'about-content': AboutContentSelect<false> | AboutContentSelect<true>;
+    'contact-content': ContactContentSelect<false> | ContactContentSelect<true>;
+    'nav-links': NavLinksSelect<false> | NavLinksSelect<true>;
     'error-pages': ErrorPagesSelect<false> | ErrorPagesSelect<true>;
     'site-meta': SiteMetaSelect<false> | SiteMetaSelect<true>;
   };
@@ -542,6 +550,16 @@ export interface PayloadMcpApiKey {
      */
     update?: boolean | null;
   };
+  homeContent?: {
+    /**
+     * Allow clients to find home-content global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update home-content global.
+     */
+    update?: boolean | null;
+  };
   servicesPage?: {
     /**
      * Allow clients to find services-page global.
@@ -579,6 +597,36 @@ export interface PayloadMcpApiKey {
     find?: boolean | null;
     /**
      * Allow clients to update tech-stack-page global.
+     */
+    update?: boolean | null;
+  };
+  aboutContent?: {
+    /**
+     * Allow clients to find about-content global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update about-content global.
+     */
+    update?: boolean | null;
+  };
+  contactContent?: {
+    /**
+     * Allow clients to find contact-content global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update contact-content global.
+     */
+    update?: boolean | null;
+  };
+  navLinks?: {
+    /**
+     * Allow clients to find nav-links global.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update nav-links global.
      */
     update?: boolean | null;
   };
@@ -968,6 +1016,12 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         find?: T;
         update?: T;
       };
+  homeContent?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
   servicesPage?:
     | T
     | {
@@ -987,6 +1041,24 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
       };
   techStackPage?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  aboutContent?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  contactContent?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  navLinks?:
     | T
     | {
         find?: T;
@@ -1049,6 +1121,221 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Home page — hero, manifesto, journey, proof reel, services grid, closer.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-content".
+ */
+export interface HomeContent {
+  id: number;
+  heroAnim: {
+    scrollDown: string;
+  };
+  hero: {
+    headline: {
+      line1: string;
+      line2: string;
+      /**
+       * Aria-label suffix so assistive tech hears the full headline.
+       */
+      ariaSuffix: string;
+    };
+    subheadline: string;
+    subtitle: string;
+    ctaWork: string;
+    ctaContact: string;
+    sqlPanel: {
+      prompt: string;
+      liveLabel: string;
+      columns: {
+        route: string;
+        avgDelayS: string;
+        vehicles: string;
+      };
+      /**
+       * Template with {queryTime} and {updatedAgo} placeholders.
+       */
+      metaTemplate: string;
+    };
+    refreshButton: {
+      label: string;
+      helper: string;
+    };
+  };
+  manifesto: {
+    statement: {
+      line1: string;
+      lineHuge: string;
+      line3Part1: string;
+      line3Highlight: string;
+      line3Part2: string;
+    };
+    terminal: {
+      user: string;
+      command: string;
+    };
+    pills?:
+      | {
+          label: string;
+          /**
+           * Service slug — not a relationship (free string, D-rel-3).
+           */
+          serviceId: string;
+          id?: string | null;
+        }[]
+      | null;
+    edgeLeft: {
+      sectionNumber: string;
+      sectionName: string;
+      location: string;
+    };
+    edgeRight: {
+      lat: string;
+      lng: string;
+      src: string;
+      via: string;
+      dst: string;
+      node: string;
+      status: string;
+    };
+    edgeBottom: {
+      connected: string;
+      line: string;
+      url: string;
+      version: string;
+      scrollHint: string;
+    };
+    transit: {
+      arrivalLabel: string;
+      platformBadge: string;
+      directionBadge: string;
+    };
+    /**
+     * Hidden decorative transit lines rendered in the manifesto background.
+     */
+    hiddenTransitLines?:
+      | {
+          name: string;
+          /**
+           * Hex color code.
+           */
+          color: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Horizontal skills journey panels — each is a metro stop.
+   */
+  journey?:
+    | {
+        id: string;
+        label: string;
+        text: string;
+        /**
+         * Words within `text` that receive the highlight animation.
+         */
+        highlightWords?: string[] | null;
+        highlightEffect: 'scale' | 'gradient' | 'wave' | 'charReveal';
+        skills?:
+          | {
+              id: string;
+              name: string;
+              subtitle?: string | null;
+              icon: 'sql' | 'typescript' | 'python' | 'sveltekit' | 'gsap' | 'powerbi' | 'docker';
+            }[]
+          | null;
+      }[]
+    | null;
+  /**
+   * CTA shown at the end of the skills journey strip.
+   */
+  journeyCta: {
+    prompt: string;
+    button: string;
+  };
+  /**
+   * Proof / selected work reel section copy.
+   */
+  proofReel: {
+    heading: string;
+    headingDot: string;
+    subheading: string;
+    sectionLabel: string;
+    viewAllLabel: string;
+    viewAllHref: string;
+    /**
+     * Template with {title} placeholder.
+     */
+    toggleColorAria: string;
+  };
+  /**
+   * Home-page services overview section copy.
+   */
+  servicesGrid: {
+    heading: string;
+    headingDot: string;
+    subheading: string;
+    /**
+     * Template with {title} placeholder.
+     */
+    viewIllustrationAria: string;
+    viewAllLink: string;
+  };
+  /**
+   * TERMINUS / end-of-line closing section copy.
+   */
+  closer: {
+    heading: string;
+    headingDot: string;
+    subheading: string;
+    cta: {
+      label: string;
+      href: string;
+    };
+    rows: {
+      contact: {
+        label: string;
+        description: string;
+        action: string;
+      };
+      connect: {
+        label: string;
+        description: string;
+        action: string;
+      };
+      read: {
+        label: string;
+        action: string;
+      };
+      about: {
+        label: string;
+        description: string;
+        action: string;
+      };
+    };
+    attribution: {
+      text: string;
+      url: string;
+    };
+    /**
+     * Departure-board terminal chrome copy.
+     */
+    terminal: {
+      title: string;
+      city: string;
+      encoding: string;
+      /**
+       * Template with {count} placeholder.
+       */
+      destinationsLabel: string;
+      prompt: string;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * /services route — listing page intro + listing chrome + detail page chrome.
@@ -1328,6 +1615,290 @@ export interface TechStackPage {
   createdAt?: string | null;
 }
 /**
+ * /about page — identity, metrics, methodology, testimonials, stack, interests, weather, client logos, CTA, stop labels.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-content".
+ */
+export interface AboutContent {
+  id: number;
+  identity: {
+    name: string;
+    title: string;
+    valueProp: string;
+    /**
+     * Path to headshot image in /static/. Future: convert to Media relationship.
+     */
+    headshot?: string | null;
+    polaroids?:
+      | {
+          src: string;
+          alt: string;
+          caption: string;
+          rotate: number;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  metrics?:
+    | {
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  methodology?:
+    | {
+        id: string;
+        station: number;
+        label: string;
+        description: string;
+      }[]
+    | null;
+  testimonials?:
+    | {
+        quote: string;
+        author: string;
+        role: string;
+        company: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Categorized tech list used on the /about page. Parallel to the `tech-stack` collection but used for a different UI section.
+   */
+  techStack?:
+    | {
+        name: string;
+        category: 'databases' | 'languages' | 'frameworks' | 'tools';
+        /**
+         * Service IDs this tech applies to. Free-string — not a relationship. Aligns with D-rel-3 tags pattern.
+         */
+        relatedServices?: string[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  interests?:
+    | {
+        id: string;
+        label: string;
+        /**
+         * Path to interest image. Future: convert to Media relationship.
+         */
+        image: string;
+      }[]
+    | null;
+  weather: {
+    city: string;
+    hook: string;
+    enabled?: boolean | null;
+  };
+  clientLogos?:
+    | {
+        name: string;
+        /**
+         * Path to logo SVG. Future: convert to Media relationship.
+         */
+        src: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Total client count displayed in the bento.
+   */
+  clientCount: number;
+  cta: {
+    /**
+     * Terminal-style command string, non-localized for brand consistency.
+     */
+    command: string;
+    lines?:
+      | {
+          text: string;
+          color?: ('orange' | 'muted') | null;
+          id?: string | null;
+        }[]
+      | null;
+    buttonLabel: string;
+    buttonHref: string;
+    availability: string;
+    socials?:
+      | {
+          label: string;
+          href: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * 10 ALL-CAPS bento card labels.
+   */
+  stopLabels: {
+    identity: string;
+    metrics: string;
+    testimonials: string;
+    process: string;
+    stack: string;
+    clients: string;
+    interests: string;
+    snapshots: string;
+    location: string;
+    next: string;
+  };
+  labels: {
+    clientsServed: string;
+    polaroidPrevAria: string;
+    polaroidNextAria: string;
+    testimonialsCarouselAria: string;
+    testimonialsTabNavAria: string;
+    testimonialSlideAria: string;
+    showTestimonialAria: string;
+  };
+  meta: {
+    title: string;
+    description: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * /contact page — form terminals, validation, success states, socials.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-content".
+ */
+export interface ContactContent {
+  id: number;
+  pageTitle: string;
+  stationLabel: string;
+  sendErrorMessage: string;
+  meta: {
+    title: string;
+    description: string;
+  };
+  infoTerminal: {
+    /**
+     * Terminal window title, brand-canonical across locales.
+     */
+    title: string;
+    command: string;
+    location: string;
+    responseTime: string;
+    sectionLabels: {
+      location: string;
+      connect: string;
+    };
+  };
+  formTerminal: {
+    title: string;
+    command: string;
+    commandOutput: string;
+    fields: {
+      name: {
+        label: string;
+        placeholder: string;
+      };
+      email: {
+        label: string;
+        placeholder: string;
+      };
+      message: {
+        label: string;
+        placeholder: string;
+      };
+    };
+    submitLabel: string;
+  };
+  validation: {
+    /**
+     * Template with {field} placeholder.
+     */
+    required: string;
+    invalidEmail: string;
+    /**
+     * Template with {count} placeholder.
+     */
+    errorSummary: string;
+  };
+  success: {
+    validating: string;
+    sending: string;
+    sent: string;
+    responseTime: string;
+    /**
+     * Template with {work} + {blog} link placeholders.
+     */
+    meanwhile: string;
+    resetLabel: string;
+    fieldOk: string;
+  };
+  socials?:
+    | {
+        label: string;
+        href: string;
+        icon: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Public web3forms endpoint ID. Not a secret (per spec Q8) despite the name.
+   */
+  web3formsKey: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Top navigation + menu overlay + shared chrome labels.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nav-links".
+ */
+export interface NavLink {
+  id: number;
+  navLinks?:
+    | {
+        label: string;
+        href: string;
+        priority: '1' | '2';
+        id?: string | null;
+      }[]
+    | null;
+  menuItems?:
+    | {
+        label: string;
+        href: string;
+        subtitle: string;
+        id?: string | null;
+      }[]
+    | null;
+  metroBookends: {
+    departure: string;
+    featured: string;
+    about: string;
+    blog: string;
+    terminal: string;
+  };
+  navDirections: {
+    previous: string;
+    next: string;
+  };
+  sharedChrome: {
+    openMenuAria: string;
+    closeMenuAria: string;
+    footerNavAria: string;
+    menuOverlayAria: string;
+    menuOverlayFooterLabel: string;
+    searchPlaceholder: string;
+    clearFiltersLabel: string;
+    tocToggleSectionAria: string;
+    tocHeading: string;
+    tocMobileButton: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * 404 and other error page copy.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1389,6 +1960,224 @@ export interface SiteMeta {
   deployedAt?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-content_select".
+ */
+export interface HomeContentSelect<T extends boolean = true> {
+  heroAnim?:
+    | T
+    | {
+        scrollDown?: T;
+      };
+  hero?:
+    | T
+    | {
+        headline?:
+          | T
+          | {
+              line1?: T;
+              line2?: T;
+              ariaSuffix?: T;
+            };
+        subheadline?: T;
+        subtitle?: T;
+        ctaWork?: T;
+        ctaContact?: T;
+        sqlPanel?:
+          | T
+          | {
+              prompt?: T;
+              liveLabel?: T;
+              columns?:
+                | T
+                | {
+                    route?: T;
+                    avgDelayS?: T;
+                    vehicles?: T;
+                  };
+              metaTemplate?: T;
+            };
+        refreshButton?:
+          | T
+          | {
+              label?: T;
+              helper?: T;
+            };
+      };
+  manifesto?:
+    | T
+    | {
+        statement?:
+          | T
+          | {
+              line1?: T;
+              lineHuge?: T;
+              line3Part1?: T;
+              line3Highlight?: T;
+              line3Part2?: T;
+            };
+        terminal?:
+          | T
+          | {
+              user?: T;
+              command?: T;
+            };
+        pills?:
+          | T
+          | {
+              label?: T;
+              serviceId?: T;
+              id?: T;
+            };
+        edgeLeft?:
+          | T
+          | {
+              sectionNumber?: T;
+              sectionName?: T;
+              location?: T;
+            };
+        edgeRight?:
+          | T
+          | {
+              lat?: T;
+              lng?: T;
+              src?: T;
+              via?: T;
+              dst?: T;
+              node?: T;
+              status?: T;
+            };
+        edgeBottom?:
+          | T
+          | {
+              connected?: T;
+              line?: T;
+              url?: T;
+              version?: T;
+              scrollHint?: T;
+            };
+        transit?:
+          | T
+          | {
+              arrivalLabel?: T;
+              platformBadge?: T;
+              directionBadge?: T;
+            };
+        hiddenTransitLines?:
+          | T
+          | {
+              name?: T;
+              color?: T;
+              id?: T;
+            };
+      };
+  journey?:
+    | T
+    | {
+        id?: T;
+        label?: T;
+        text?: T;
+        highlightWords?: T;
+        highlightEffect?: T;
+        skills?:
+          | T
+          | {
+              id?: T;
+              name?: T;
+              subtitle?: T;
+              icon?: T;
+            };
+      };
+  journeyCta?:
+    | T
+    | {
+        prompt?: T;
+        button?: T;
+      };
+  proofReel?:
+    | T
+    | {
+        heading?: T;
+        headingDot?: T;
+        subheading?: T;
+        sectionLabel?: T;
+        viewAllLabel?: T;
+        viewAllHref?: T;
+        toggleColorAria?: T;
+      };
+  servicesGrid?:
+    | T
+    | {
+        heading?: T;
+        headingDot?: T;
+        subheading?: T;
+        viewIllustrationAria?: T;
+        viewAllLink?: T;
+      };
+  closer?:
+    | T
+    | {
+        heading?: T;
+        headingDot?: T;
+        subheading?: T;
+        cta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+        rows?:
+          | T
+          | {
+              contact?:
+                | T
+                | {
+                    label?: T;
+                    description?: T;
+                    action?: T;
+                  };
+              connect?:
+                | T
+                | {
+                    label?: T;
+                    description?: T;
+                    action?: T;
+                  };
+              read?:
+                | T
+                | {
+                    label?: T;
+                    action?: T;
+                  };
+              about?:
+                | T
+                | {
+                    label?: T;
+                    description?: T;
+                    action?: T;
+                  };
+            };
+        attribution?:
+          | T
+          | {
+              text?: T;
+              url?: T;
+            };
+        terminal?:
+          | T
+          | {
+              title?: T;
+              city?: T;
+              encoding?: T;
+              destinationsLabel?: T;
+              prompt?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1608,6 +2397,283 @@ export interface TechStackPageSelect<T extends boolean = true> {
         headingLine2?: T;
         sub?: T;
         availability?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-content_select".
+ */
+export interface AboutContentSelect<T extends boolean = true> {
+  identity?:
+    | T
+    | {
+        name?: T;
+        title?: T;
+        valueProp?: T;
+        headshot?: T;
+        polaroids?:
+          | T
+          | {
+              src?: T;
+              alt?: T;
+              caption?: T;
+              rotate?: T;
+              id?: T;
+            };
+      };
+  metrics?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  methodology?:
+    | T
+    | {
+        id?: T;
+        station?: T;
+        label?: T;
+        description?: T;
+      };
+  testimonials?:
+    | T
+    | {
+        quote?: T;
+        author?: T;
+        role?: T;
+        company?: T;
+        id?: T;
+      };
+  techStack?:
+    | T
+    | {
+        name?: T;
+        category?: T;
+        relatedServices?: T;
+        id?: T;
+      };
+  interests?:
+    | T
+    | {
+        id?: T;
+        label?: T;
+        image?: T;
+      };
+  weather?:
+    | T
+    | {
+        city?: T;
+        hook?: T;
+        enabled?: T;
+      };
+  clientLogos?:
+    | T
+    | {
+        name?: T;
+        src?: T;
+        id?: T;
+      };
+  clientCount?: T;
+  cta?:
+    | T
+    | {
+        command?: T;
+        lines?:
+          | T
+          | {
+              text?: T;
+              color?: T;
+              id?: T;
+            };
+        buttonLabel?: T;
+        buttonHref?: T;
+        availability?: T;
+        socials?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  stopLabels?:
+    | T
+    | {
+        identity?: T;
+        metrics?: T;
+        testimonials?: T;
+        process?: T;
+        stack?: T;
+        clients?: T;
+        interests?: T;
+        snapshots?: T;
+        location?: T;
+        next?: T;
+      };
+  labels?:
+    | T
+    | {
+        clientsServed?: T;
+        polaroidPrevAria?: T;
+        polaroidNextAria?: T;
+        testimonialsCarouselAria?: T;
+        testimonialsTabNavAria?: T;
+        testimonialSlideAria?: T;
+        showTestimonialAria?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-content_select".
+ */
+export interface ContactContentSelect<T extends boolean = true> {
+  pageTitle?: T;
+  stationLabel?: T;
+  sendErrorMessage?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  infoTerminal?:
+    | T
+    | {
+        title?: T;
+        command?: T;
+        location?: T;
+        responseTime?: T;
+        sectionLabels?:
+          | T
+          | {
+              location?: T;
+              connect?: T;
+            };
+      };
+  formTerminal?:
+    | T
+    | {
+        title?: T;
+        command?: T;
+        commandOutput?: T;
+        fields?:
+          | T
+          | {
+              name?:
+                | T
+                | {
+                    label?: T;
+                    placeholder?: T;
+                  };
+              email?:
+                | T
+                | {
+                    label?: T;
+                    placeholder?: T;
+                  };
+              message?:
+                | T
+                | {
+                    label?: T;
+                    placeholder?: T;
+                  };
+            };
+        submitLabel?: T;
+      };
+  validation?:
+    | T
+    | {
+        required?: T;
+        invalidEmail?: T;
+        errorSummary?: T;
+      };
+  success?:
+    | T
+    | {
+        validating?: T;
+        sending?: T;
+        sent?: T;
+        responseTime?: T;
+        meanwhile?: T;
+        resetLabel?: T;
+        fieldOk?: T;
+      };
+  socials?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        icon?: T;
+        id?: T;
+      };
+  web3formsKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nav-links_select".
+ */
+export interface NavLinksSelect<T extends boolean = true> {
+  navLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        priority?: T;
+        id?: T;
+      };
+  menuItems?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        subtitle?: T;
+        id?: T;
+      };
+  metroBookends?:
+    | T
+    | {
+        departure?: T;
+        featured?: T;
+        about?: T;
+        blog?: T;
+        terminal?: T;
+      };
+  navDirections?:
+    | T
+    | {
+        previous?: T;
+        next?: T;
+      };
+  sharedChrome?:
+    | T
+    | {
+        openMenuAria?: T;
+        closeMenuAria?: T;
+        footerNavAria?: T;
+        menuOverlayAria?: T;
+        menuOverlayFooterLabel?: T;
+        searchPlaceholder?: T;
+        clearFiltersLabel?: T;
+        tocToggleSectionAria?: T;
+        tocHeading?: T;
+        tocMobileButton?: T;
       };
   updatedAt?: T;
   createdAt?: T;

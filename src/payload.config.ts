@@ -23,6 +23,10 @@ import { ProjectsPage } from './globals/ProjectsPage'
 import { ServicesPage } from './globals/ServicesPage'
 import { SiteMeta } from './globals/SiteMeta'
 import { TechStackPage } from './globals/TechStackPage'
+import { HomeContent } from './globals/HomeContent'
+import { AboutContent } from './globals/AboutContent'
+import { ContactContent } from './globals/ContactContent'
+import { NavLinks } from './globals/NavLinks'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -38,7 +42,18 @@ export default buildConfig({
   },
   editor: lexicalEditor(),
   collections: [TechStack, Services, Projects, BlogPosts, StackScenarios, Users, Media],
-  globals: [ServicesPage, ProjectsPage, BlogPage, TechStackPage, ErrorPages, SiteMeta],
+  globals: [
+    HomeContent,
+    ServicesPage,
+    ProjectsPage,
+    BlogPage,
+    TechStackPage,
+    AboutContent,
+    ContactContent,
+    NavLinks,
+    ErrorPages,
+    SiteMeta,
+  ],
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   typescript: {
@@ -96,6 +111,10 @@ export default buildConfig({
         },
       },
       globals: {
+        'home-content': {
+          enabled: { find: true, update: true },
+          description: 'Home page copy — hero, manifesto, journey, proof reel, services grid, closer.',
+        },
         'services-page': {
           enabled: { find: true, update: true },
           description: '/services page copy — meta, listing chrome, detail chrome.',
@@ -111,6 +130,18 @@ export default buildConfig({
         'tech-stack-page': {
           enabled: { find: true, update: true },
           description: '/tech-stack page copy — hero, stats, CTA, meta.',
+        },
+        'about-content': {
+          enabled: { find: true, update: true },
+          description: '/about page copy — identity, metrics, methodology, testimonials, interests, weather, CTA.',
+        },
+        'contact-content': {
+          enabled: { find: true, update: true },
+          description: '/contact page copy — form terminals, validation messages, success states, socials.',
+        },
+        'nav-links': {
+          enabled: { find: true, update: true },
+          description: 'Top navigation + menu overlay copy + shared chrome labels (aria + placeholders).',
         },
         'error-pages': {
           enabled: { find: true, update: true },
