@@ -18,3 +18,7 @@ export const LocalizedStringSchema = z.object({
 	fr: z.string().optional(),
 	es: z.string().optional(),
 });
+
+// Locale enum — mirrors $lib/types Locale union. Single source of truth for
+// schema files that need to validate locale codes (blog post lang, etc.).
+export const LocaleSchema = z.enum(['en', 'fr', 'es']);
