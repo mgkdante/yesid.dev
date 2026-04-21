@@ -122,3 +122,16 @@
 - Commit: `a9573da refactor(slice-17c): layer integrity tests with schema parse + keep cross-entity invariants`
 
 **STOP.** Awaiting Yesid approval before starting Task 17c-8 (final: ARCHITECTURE.md + slice-17 README update + handoff finalization + PR prep).
+
+#### Task 17c-8 — ARCHITECTURE.md + handoff final + slice-17 README + PR (approved → executed)
+- ARCHITECTURE.md: added `schemas/` row to src/lib/ tree, added "Schema validation at the adapter boundary (Slice 17c)" paragraph under Data Layer, updated "Last updated" to 2026-04-20, noted parsePort wrapping in static.ts row.
+- slice-17 README: status line added 17c to shipped list; row 24 flipped to COMPLETE with deliverable summary; PR column set to #28 post-PR.
+- handoff.md: Summary section populated with numbers (32 files, +2537/-110, 15 schemas, 21 wraps, 35 drift detectors, 968 tests); PR Body section finalized; Q1-Q3 open questions marked resolved; delta vs estimate noted (audit-driven scope expansion absorbed in single session).
+- `bun run check` → 0 errors (final run; no code changes since 17c-7).
+- Commit 1: `2f51500 docs(slice-17c): mark 17c complete + document schema layer in ARCHITECTURE` (spans ARCHITECTURE + handoff + README with #TBD).
+- Pushed `feature/slice-17c-zod-schemas` to origin.
+- `gh pr create --title "Slice 17c — Zod Schema Validation"` → [#28](https://github.com/mgkdante/yesid.dev/pull/28).
+- Commit 2: `d3027a5 docs(slice-17c): record PR #28 in slice-17 index` — follow-up commit to swap #TBD for real PR number in slice-17 README.
+- Pushed the PR-number update.
+
+**Slice 17c implementation sessions complete.** PR #28 open for Yesid's review. Post-merge: run `bun run slice:close 17 17c` to mirror bundle to cloud and append one-liner to `COMPLETED-SLICES.md`.
