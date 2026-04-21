@@ -42,3 +42,16 @@ Greenfield sub-slice 18a shipped via direct pushes to `main` in this repo (no PR
 - Runtime stays **bun** for this repo. If a Payload-specific bun incompatibility surfaces, fall back to pnpm with an explicit spec amendment — never silently switch mid-slice.
 - MCP API keys are **per-user secrets**. Never commit. Generate via admin UI, store in password manager, reference via env-var expansion in per-user MCP client configs.
 - Migrations are **source of truth** — `push: false` is set deliberately. Always `bunx payload migrate:create` after collection/global edits; never rely on auto-push.
+
+## Review context for Codex + other adversarial reviewers
+
+**ALWAYS READ [`CODEX-CONTEXT.md`](./CODEX-CONTEXT.md) before flagging findings.** It captures the current slice's deferred-by-design decisions so reviewers don't re-flag intentional scope guards (e.g., "no migration present" during 18b-2 through 18b-6; custom-id PK rename hazards already mitigated via hooks; locale-type divergence addressed by 18c Zod adapter layer; etc.).
+
+When invoking `/codex:adversarial-review`, append focus text pointing at the context file:
+
+```bash
+node "$CLAUDE_PLUGIN_ROOT/scripts/codex-companion.mjs" adversarial-review --wait --base <pre-task-sha> \
+  "Read CODEX-CONTEXT.md for deferred findings. Do not re-flag items listed there."
+```
+
+Update `CODEX-CONTEXT.md` as design decisions evolve. At slice close, revisit each entry: if the deferred concern is now addressed (e.g., migration lands), delete the entry.
