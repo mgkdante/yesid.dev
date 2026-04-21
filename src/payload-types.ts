@@ -68,6 +68,8 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'tech-stack': TechStack;
+    'blog-posts': BlogPost;
     users: User;
     media: Media;
     'payload-mcp-api-keys': PayloadMcpApiKey;
@@ -78,6 +80,8 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'tech-stack': TechStackSelect<false> | TechStackSelect<true>;
+    'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
@@ -144,6 +148,83 @@ export interface PayloadMcpApiKeyAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tech-stack".
+ */
+export interface TechStack {
+  /**
+   * Stable slug id, e.g. "postgresql". Matches yesid.dev tech IDs.
+   */
+  id: string;
+  name: string;
+  layer: 'data' | 'backend' | 'api' | 'frontend' | 'mobile' | 'analytics' | 'devops' | 'testing' | 'systems';
+  domains?:
+    | (
+        | 'data-engineering'
+        | 'web-development'
+        | 'mobile-development'
+        | 'analytics-bi'
+        | 'systems-programming'
+        | 'devops-infra'
+        | 'internal-tooling'
+      )[]
+    | null;
+  /**
+   * Icon slug matching yesid.dev icon registry.
+   */
+  icon?: string | null;
+  proficiency?: ('expert' | 'proficient' | 'familiar') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts".
+ */
+export interface BlogPost {
+  id: number;
+  slug: string;
+  title: string;
+  /**
+   * Listing-card summary. 1-2 sentences.
+   */
+  excerpt: string;
+  date: string;
+  lang: 'en' | 'fr' | 'es';
+  category: 'professional' | 'personal';
+  /**
+   * Free-string tags (D-rel-3).
+   */
+  tags?: string[] | null;
+  animation?: ('draw' | 'morph' | 'draw-fill') | null;
+  /**
+   * SVG filename in yesid.dev assets (per Q5, stays as string in 18b).
+   */
+  svg?: string | null;
+  /**
+   * Custom override URL. Leave blank to use /blog/<slug>.
+   */
+  url?: string | null;
+  external?: boolean | null;
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -207,6 +288,26 @@ export interface PayloadMcpApiKey {
    * The purpose of the API key.
    */
   description?: string | null;
+  techStack?: {
+    /**
+     * Allow clients to find tech-stack.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update tech-stack.
+     */
+    update?: boolean | null;
+  };
+  blogPosts?: {
+    /**
+     * Allow clients to find blog-posts.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update blog-posts.
+     */
+    update?: boolean | null;
+  };
   siteMeta?: {
     /**
      * Allow clients to find site-meta global.
@@ -248,6 +349,14 @@ export interface PayloadKv {
 export interface PayloadLockedDocument {
   id: number;
   document?:
+    | ({
+        relationTo: 'tech-stack';
+        value: string | TechStack;
+      } | null)
+    | ({
+        relationTo: 'blog-posts';
+        value: number | BlogPost;
+      } | null)
     | ({
         relationTo: 'users';
         value: number | User;
@@ -314,6 +423,40 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tech-stack_select".
+ */
+export interface TechStackSelect<T extends boolean = true> {
+  id?: T;
+  name?: T;
+  layer?: T;
+  domains?: T;
+  icon?: T;
+  proficiency?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts_select".
+ */
+export interface BlogPostsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  excerpt?: T;
+  date?: T;
+  lang?: T;
+  category?: T;
+  tags?: T;
+  animation?: T;
+  svg?: T;
+  url?: T;
+  external?: T;
+  body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -361,6 +504,18 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
   user?: T;
   label?: T;
   description?: T;
+  techStack?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  blogPosts?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
   siteMeta?:
     | T
     | {

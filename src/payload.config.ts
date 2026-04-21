@@ -10,6 +10,8 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
 
 import { migrations } from '../migrations'
+import { TechStack } from './collections/TechStack'
+import { BlogPosts } from './collections/BlogPosts'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { SiteMeta } from './globals/SiteMeta'
@@ -27,7 +29,7 @@ export default buildConfig({
     theme: 'dark',
   },
   editor: lexicalEditor(),
-  collections: [Users, Media],
+  collections: [TechStack, BlogPosts, Users, Media],
   globals: [SiteMeta],
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
@@ -63,6 +65,16 @@ export default buildConfig({
     // D12 — Payload MCP plugin. Exposes site-meta as find/update tool at /api/mcp.
     // Each content collection added in 18b registers its own entry here.
     mcpPlugin({
+      collections: {
+        'tech-stack': {
+          enabled: { find: true, update: true },
+          description: 'Tech stack labels — PostgreSQL, Python, TypeScript, etc. Flat (D-rel-2); inter-tech graph deferred.',
+        },
+        'blog-posts': {
+          enabled: { find: true, update: true },
+          description: 'Blog posts with Lexical rich-text body. Professional + personal streams.',
+        },
+      },
       globals: {
         'site-meta': {
           enabled: { find: true, update: true },
@@ -70,7 +82,6 @@ export default buildConfig({
             'Site-wide metadata: siteName, tagline, description, and social/outreach links (email, github, linkedin, upwork).',
         },
       },
-      // collections: {} — intentionally empty in 18a; content collections land in 18b
     }),
   ],
   sharp,
