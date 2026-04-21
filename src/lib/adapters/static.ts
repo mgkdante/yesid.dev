@@ -53,6 +53,7 @@ import {
 	getTechItemContent,
 	getAllScenarios,
 	getScenarioForDomains,
+	techStackPageContent,
 } from '$lib/content/tech-stack';
 import {
 	heroContent,
@@ -151,6 +152,7 @@ export const staticAdapter: ContentAdapter = {
 		errorPage: async () => errorPageContent,
 		aboutPage: async () => aboutPageContent,
 		contactPage: async () => contactContent,
+		techStackPage: async () => techStackPageContent,
 		heroMock: async () => generateHeroData(),
 		initialHeroData: async () => INITIAL_HERO_DATA,
 	},
