@@ -1,0 +1,23 @@
+# Memory Index
+
+**Last consolidated:** <!-- FILL IN: YYYY-MM-DD -->
+
+See [SCHEMA.md](SCHEMA.md) for the partition rule + entry format.
+
+## Project
+
+<!-- FILL IN: project-level facts the AI should know about this codebase -->
+<!-- Example: -->
+<!-- - [project_name.md](project_name.md) — one-line description of what this memory contains -->
+
+## Feedback (durable rules + design decisions)
+
+<!-- FILL IN: rules the user has given about how to work on this project -->
+<!-- Example: -->
+<!-- - [feedback_no_mocks.md](feedback_no_mocks.md) — integration tests hit real DB, not mocks (reason: prior incident) -->
+
+## Reference (external knowledge pointers)
+
+<!-- FILL IN: pointers to external docs/libraries the AI should consult -->
+<!-- Example: -->
+<!-- - [reference_library_name.md](reference_library_name.md) — library docs pointer + known quirks -->
