@@ -37,10 +37,10 @@ Full task state lives in TodoWrite. This table is orientational — Tasks 2+ are
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| 0 | Scaffold slice-18 bundle | 🟢 active | This session. 4-file flat bundle. |
-| 1 | Remove Payload from yesid-dev-cms | 🟢 active | This session. Branch `chore/remove-payload` on the cms repo. Hard scorch + PR. |
-| 2 | Directus research (adapter-contract mapping, hosting, storage, schema, FORMULA) | planned | Builds on slice-headless-cms-best-practices. **Zero site code changes.** |
-| 3 | Directus install + schema provisioning (yesid-dev-cms rebuild) | planned | Hosting decision from Task 2 drives this. |
+| 0 | Scaffold slice-18 bundle | ✅ shipped | yesid.dev `e918736`; 4-file flat bundle. |
+| 1 | Remove Payload from yesid.dev-cms + clean slate | ✅ shipped | yesid.dev-cms PRs #1 (`a7a1db6`) + #2 (`0295dd6`). Final state: 4 tracked files. |
+| 2 | Directus research (adapter-contract mapping, hosting, storage, schema, locales) | ✅ shipped | This session. Resolved spec D1/D2/D3 + Q4–Q7. **Zero site code changes.** |
+| 3 | Directus install + schema provisioning (yesid.dev-cms rebuild) | ⏸ next | Railway Hobby + R2 + snapshot-apply YAML per spec D1/D2/D3. |
 | 4 | DirectusAdapter + first-service swap | planned | One-line flip at `src/lib/adapters/index.ts`. |
 | 5 | Remaining collection swaps (services, projects, blog, meta) | planned | Each swap = verification boundary. |
 | 6 | Seed data + locale parity | planned | 73-row baseline from Payload era. |
@@ -66,10 +66,12 @@ Divergence from this shape gets logged in § Amendments.
 
 ## Risks (cross-cutting)
 
-- **R1.** Directus hosting decision is open. Impact: blocks Task 3+. Mitigation: Task 2 closes it. Revisit: end of Task 2.
-- **R2.** 73-row seed migration Payload-Postgres → Directus. Impact: content loss / locale drift. Mitigation: export + diff before scorching old data; cutover only after parity check. Revisit: Task 6.
+- **R1.** ~~Directus hosting decision is open.~~ **Resolved 2026-04-22 (Task 2):** Railway Hobby + BYO Neon (spec D1).
+- **R2.** ~~73-row seed migration Payload-Postgres → Directus.~~ **Reframed 2026-04-22:** the prior slice-18 work scorched Payload data before it ever fed the site; the 73 rows are gone and recreating them from yesid.dev's TS/MD source is the plan (research.md § Seed migration path). No production data loss possible. Revisit: Task 6 (seed script from source modules).
 - **R3.** Domain + DKIM handoff during Directus install. Impact: email sending breaks. Mitigation: no DNS changes until Directus serves HTTPS on `cms.yesid.dev`. Revisit: Task 3.
-- **R4.** Custom-extension temptation. Impact: Directus maintenance burden + platform-builtins violation. Mitigation: enforce `feedback_prefer_platform_builtins.md` at every D-entry. Revisit: every design decision.
+- **R4.** Custom-extension temptation. Impact: Directus maintenance burden + platform-builtins violation. Mitigation: enforce `feedback_prefer_platform_builtins.md` at every D-entry. Task 2 audit (research.md § Built-in features vs custom extensions) confirms zero custom extensions required for Slice 18. Revisit: every design decision.
+- **R5.** Directus 12 license revision. Impact: BSL 1.1 terms may change in Directus 12 (announced today 2026-04-22 on directus.io/blog). Mitigation: pin to `directus/directus:11.17.3` at Task 3 — buys a known BSL 3-year window. Revisit: before any upgrade to v12.
+- **R6.** Vercel Blob storage had no Directus driver despite earlier assumption. Impact: avoided — decision flipped to R2 at Task 2. Closed.
 
 ## Decisions log (slice-level)
 
@@ -101,6 +103,7 @@ Divergence from this shape gets logged in § Amendments.
 
 | # | Date | Change | Rationale |
 |---|------|--------|-----------|
+| 1 | 2026-04-22 | Tasks 0–2 shipped; R1 resolved; R2 reframed (no Payload data to migrate); R5 + R6 added. | Task 2 research landed; spec D1/D2/D3 + Q4–Q7 resolved via four parallel agents (adapter mapping + Directus docs + hosting/storage + research-slice re-read). Full findings in research.md. |
 
 ## Notes
 

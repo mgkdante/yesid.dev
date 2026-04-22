@@ -15,7 +15,7 @@
 | Research | [./research.md](research.md) |
 | Branch (site) | `feature/slice-18` (yesid.dev) — commit `e918736` |
 | Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` (scorch) + `803d60c` (vercel guard) → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` (clean slate) — 15 files changed, 23 insertions, 545 deletions. |
-| Tasks completed | 2 / 8 (Task 0 + Task 1) — Task 1 landed as two PRs (scorch + clean-slate) per owner steering mid-session |
+| Tasks completed | 3 / 8 (Task 0 + Task 1 + Task 2) — Task 1 landed as two PRs (scorch + clean-slate) per owner steering; Task 2 is research-only (no site code changes beyond pre-Task-2 comment hygiene) |
 
 ## 2) Scope (from spec)
 
@@ -130,13 +130,18 @@ yesid.dev is untouched (Payload was never wired to the site via the adapter seam
 
 ## 4) Open items for downstream tasks
 
-- Task 2: resolve D1 (hosting), D2 (storage), D3 (schema provisioning) before Task 3.
-- Task 3: Directus install on `cms.yesid.dev` — TLS, DKIM, SPF preserved. No DNS changes until Directus serves HTTPS.
-- Task 4: DirectusAdapter — update the stale comment in `src/lib/adapters/index.ts:2` at swap time.
+- ~~Task 2: resolve D1/D2/D3.~~ **Done this session.**
+- Task 3: Directus install on Railway Hobby. Provision Neon `DB_*` env + R2 bucket + keys. Apply `snapshot.yaml`. TLS handoff on `cms.yesid.dev` — no DNS flip until Directus serves HTTPS successfully on the new host. Pin `directus/directus:11.17.3`. Retire the Vercel project on yesid.dev-cms.
+- Task 4: Create `src/lib/adapters/directus.ts`; flip `src/lib/adapters/index.ts` re-export. Implement `toLocalizedString(translations, field)` transform. First content type to swap: `services` (smallest surface, easiest parity check). Update the `src/lib/adapters/index.ts` comment to cite `directus.ts` directly when the file lands.
+- Task 5: swap remaining content types (projects → blog → meta → tech_stack → content pages). Each swap = owner-approved STOP point.
+- Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK.
 
 ## 5) Follow-ups flagged (accumulating)
 
-1. Replace stale Payload comment in `src/lib/adapters/index.ts` — Task 4.
+1. ~~Replace stale Payload comment in `src/lib/adapters/index.ts`.~~ Done in pre-Task-2 cleanup (`1535fa5`).
+2. Retire Vercel project on yesid.dev-cms at Task 3 cutover.
+3. Monitor Directus 12 license revision (directus.io/bsl); decide upgrade path before any v12 bump.
+4. After Task 7 production-green for 2+ weeks: delete `staticAdapter` in Slice 19+ (Q4 resolution).
 
 ## 6) Iterations (per Iteration Protocol step 7)
 
@@ -153,16 +158,24 @@ yesid.dev is untouched (Payload was never wired to the site via the adapter seam
 
 - `docs/slices/slice-18/plan.md` — Task 0
 - `docs/slices/slice-18/spec.md` — Task 0
-- `docs/slices/slice-18/research.md` — Task 0
+- `docs/slices/slice-18/research.md` — Task 0 (populated with Task 2 findings)
 - `docs/slices/slice-18/handoff.md` — Task 0 (this file)
 
 ## 9) Files modified (cumulative)
 
-*(None in yesid.dev this session; Task 1 lives in yesid-dev-cms.)*
+- `src/lib/adapters/index.ts` — Task 2 pre-cleanup (`1535fa5`): neutralized "Slice 18 (Payload CMS)" comment → Directus-cited.
+- `src/lib/adapters/types.ts` — Task 2 pre-cleanup (`1535fa5`): "Payload or Keystatic" → "Directus, Keystatic, mock"; "Payload-ready" → "CMS-ready".
+- `src/lib/adapters/static.ts` — Task 2 pre-cleanup (`1535fa5`): "no Payload benefit" → "no CMS benefit".
+- `src/lib/adapters/adapter.test.ts` — Task 2 pre-cleanup (`1535fa5`): "Payload or Keystatic adapter" → "Directus or other CMS adapter".
+- `scripts/generate-og-default.ts` — Task 2 pre-cleanup (`1535fa5`): "post-Payload" → "post-CMS-migration".
+- `docs/slices/slice-18/plan.md` — Task 2: Tasks table + Risks + Amendments updated.
+- `docs/slices/slice-18/spec.md` — Task 2: D1/D2/D3 + Q4–Q7 resolved; Status draft → approved; Amendments log.
+- `docs/slices/slice-18/research.md` — Task 2: full findings populated under all 7 pre-reserved subsections + 2 new sections.
+- `docs/slices/slice-18/handoff.md` — Task 2: this update.
 
 ## 10) Files deleted (cumulative)
 
-*(None in yesid.dev this session; Task 1 scorches yesid-dev-cms.)*
+*(None in yesid.dev this session; Task 1 scorches yesid.dev-cms.)*
 
 ## 11) Repository / file-tree changes
 
@@ -254,7 +267,24 @@ git push
 
 ## 17) Validation results
 
-*(Appended per task as verification commands run.)*
+**Task 0:**
+- `ls docs/slices/slice-18/` → 4 files (plan/spec/research/handoff.md), 0 subdirectories ✅
+
+**Task 1 (both PRs merged):**
+- `grep -rn "@payloadcms\|payloadcms" yesid.dev-cms/` (excluding node_modules/.next/.vercel/.git) → 0 matches ✅
+- yesid.dev-cms tracked file count after PR #2 merge → 4 (`.gitignore`, `.nvmrc`, `README.md`, `vercel.json`) ✅
+- yesid.dev `grep "@payloadcms" src/ package.json` → 0 matches ✅
+- yesid.dev `bun run check` → 0 errors, 4,043 files, 20 pre-existing warnings (unrelated) ✅
+- yesid.dev `bun run test` → 95 files, 968 tests, all passed ✅
+
+**Task 2 (pre-cleanup commit `1535fa5`):**
+- `bun run check` post-cleanup → 0 errors, 4,043 files, same 20 pre-existing warnings ✅
+
+**Task 2 (research):**
+- `grep "TBD" docs/slices/slice-18/spec.md` on D1/D2/D3 sections → 0 matches ✅
+- research.md has populated findings under all pre-reserved subsections + 2 new sections (MCP server, Recent Directus releases) ✅
+- spec.md Amendments log records: Task 2 resolution + Vercel Blob driver revision ✅
+- plan.md Tasks table updates: 0 + 1 + 2 marked shipped; Task 3 marked next ✅
 
 ## 18) Errors encountered
 
@@ -296,36 +326,52 @@ git push
 
 ## 25) Next recommended prompt
 
-Draft — finalized after Task 1 merges.
-
 ```text
-Session type: Planning + research (no site code changes).
-Tool: Claude Code (Opus 4.7 [1m], reasoning=high). Sonnet 4.6 acceptable for read-heavy doc drafting.
-Focus: Task 2 — Directus research. Resolve spec D1 (hosting), D2 (storage), D3 (schema provisioning) + Q4–Q7 in spec.md.
+Session type: Implementation (first cloud-side work — provisioning + config).
+Tool: Claude Code (Opus 4.7 [1m], reasoning=high). Sonnet 4.6 acceptable for routine provisioning steps; Opus for any schema decision.
+Focus: Task 3 — Stand up Directus 11.17.3 on Railway Hobby + Cloudflare R2 storage + BYO Neon Postgres + `cms.yesid.dev` domain. Apply a first `snapshot.yaml`. Smoke-test admin login + one read via the public API.
 
 Read these files first:
-1. docs/slices/slice-18/{plan,spec,research,handoff}.md
-2. docs/slices/slice-headless-cms-best-practices/{decision-brief.md,research.md}  (§ Directus deep-dive, § SvelteKit integration)
-3. src/lib/adapters/{index.ts, static.ts, types.ts}  (the contract to map)
+1. docs/slices/slice-18/{plan,spec,research,handoff}.md  (Task 2 decisions are binding)
+2. https://directus.io/docs/self-hosted/quickstart  (fresh fetch — pin to Directus docs for 11.17.x)
+3. https://railway.com/deploy/directus-cms  (official template)
+4. https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/  (R2 S3-compat config reference)
 
-Deliverables:
-- Append findings to docs/slices/slice-18/research.md under each pre-reserved heading.
-- Resolve D1, D2, D3 in spec.md § Design decisions (convert TBD → Chosen + rationale + tradeoff).
-- Resolve Q4–Q7 in spec.md § Open questions (move to D-entries or explicitly defer).
-- Append Task 2 block to handoff.md with tool attribution + commit SHA.
+Important context:
+- yesid.dev-cms is a clean-slate repo: `.gitignore` + `.nvmrc` + `README.md` + `vercel.json` (ignoreCommand guard). Nothing else. Directus install will add the Directus files + snapshot.yaml + seed script scaffolding.
+- yesid.dev adapter still on `staticAdapter`. Don't touch. Public site is unaffected during Task 3.
+- Version pin: `directus/directus:11.17.3` (do NOT float `latest` — Directus 12 license revision pending).
+- Neon Postgres: reuse the existing yesid.dev-cms project (from the Payload era). Connection string is in Yesid's 1Password.
+- Domain: `cms.yesid.dev` DNS is currently pointed at the retired Vercel project. Do NOT flip the DNS until Directus serves HTTPS successfully on a temporary Railway domain; only then cut over.
+- Resend + DKIM + SPF: preserve. Email adapter for Directus likely needs SMTP or API config — verify during Task 3 pre-flight.
+
+Implement only this scope:
+1. Provision Railway project from the official Directus template.
+2. Swap `DB_*` env to the Neon connection string (unpooled for admin, pooled for read paths).
+3. Create R2 bucket + access keys; set Directus storage env per research.md § Storage options.
+4. Boot Directus against Neon. Create the first admin user. Verify Data Studio loads.
+5. Define an initial schema (minimal — just `site_meta` singleton as smoke test; full schema lands across Tasks 4–6). Commit a first `infra/directus/snapshot.yaml` to yesid.dev-cms via a new branch + PR.
+6. Add a GitHub Actions workflow in yesid.dev-cms that applies the snapshot to an ephemeral Directus in PRs.
+7. Configure Railway custom domain → `cms.yesid.dev` with auto-TLS. Once HTTPS serves cleanly, flip the A/CNAME from the old Vercel project to Railway. Retire the Vercel project on yesid.dev-cms.
+8. Enable native MCP server. Create `ai-editor` role. Generate token. Confirm Claude Code can connect to `https://cms.yesid.dev/mcp`.
+9. Write Task 3 block in handoff.md with tool attribution + commit SHAs + verification output (curl tests).
 
 Hard constraints:
-- NO site code changes in Task 2.
-- NO Directus install yet (that's Task 3).
-- Prefer Directus built-ins. Custom-extension candidates need written justification in a D-entry.
-- Research slice remains append-only — don't modify docs/slices/slice-headless-cms-best-practices/.
+- NO changes to yesid.dev site code in Task 3. Adapter swap is Task 4.
+- NO modifications to the research slice bundle.
+- NO custom Directus extensions. Built-ins only (R5 from plan's Risks).
+- NO Directus 12. Pin 11.17.3.
+- NO DNS flip until Directus serves TLS on the new host.
+- Data-destructive actions (schema apply with field removals) need owner approval before prod.
 
-Validation:
-- spec.md has zero "TBD" in D1/D2/D3.
-- research.md has real findings under every subsection.
-- handoff.md has a Task 2 block.
+Validation to run:
+- Directus admin serves on Railway temporary domain → login works.
+- Once domain flips: `curl https://cms.yesid.dev/server/health` → 200.
+- `curl https://cms.yesid.dev/items/site_meta` with bearer token → JSON payload.
+- MCP: `claude mcp list` shows `yesid-cms-prod`; `claude mcp call yesid-cms-prod read-me` returns the ai-editor user.
+- yesid.dev still green: `bun run check` + `bun run test`.
 
-STOP after Task 2 block is appended. Ask owner to verify before Task 3 kickoff.
+STOP at Task 3 close. Ask owner to verify before Task 4 (DirectusAdapter swap).
 ```
 
 ## 26) Cross-tool handoff context
@@ -355,4 +401,4 @@ Required next step: Task 2 — Directus research (spec D1/D2/D3 resolution).
 
 ## 27) Final Status
 
-🟢 **IN PROGRESS** — Task 0 + Task 1 shipped this session. PR #1 (`a7a1db6`) + PR #2 (`0295dd6`) merged on yesid.dev-cms; yesid.dev `feature/slice-18` branch holds the scaffold + handoff (pending PR opening at slice close or after Task 2). Remaining tasks (2–8) scheduled across subsequent sessions.
+🟢 **IN PROGRESS** — Task 0 + Task 1 + Task 2 shipped this session. yesid.dev-cms is at clean-slate (PR #1 `a7a1db6` + PR #2 `0295dd6` both merged). yesid.dev `feature/slice-18` holds scaffold + comment cleanup (`1535fa5`) + Task 2 research. Spec D1/D2/D3 + Q4–Q7 resolved. Remaining tasks (3–8): Directus install (Task 3 unblocked, Railway + R2 + snapshot-apply YAML), DirectusAdapter swap (Task 4), remaining collection swaps (Task 5), seed (Task 6), integration E2E (Task 7), slice close (Task 8).
