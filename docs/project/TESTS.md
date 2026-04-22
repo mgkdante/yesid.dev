@@ -1,85 +1,856 @@
-# Tests
+# Test Registry
 
-Project-specific testing: inventory, conventions, factories, coverage targets.
+Last updated: 2026-04-18
+Total tests: 782
+Runner: Vitest + Bun (`bun run test`)
 
-> **Fill priority:** Medium. Fill when first tests land; expand as the test suite grows. The Iteration Protocol's "verification commands" gate (`BINDINGS.md`) covers test execution; this file documents test **structure + conventions**.
+## Test Architecture
 
-## Test runners
+Tests are split into two Vitest projects for performance (slice 10d+):
 
-See `BINDINGS.md § Verification commands` for the canonical commands. This file covers the test-author-facing conventions.
+| Project | Environment | Setup File | Scope | Files |
+|---------|-------------|------------|-------|-------|
+| **data** | `node` | `src/tests/setup.data.ts` | Pure data/logic tests — no DOM | 10 |
+| **dom** | `happy-dom` | `src/tests/setup.dom.ts` | Component, motion, and route tests | 47 |
 
-## Conventions
+### Running tests
 
-| Convention | Value |
-|-----------|-------|
-| Test file location | <!-- FILL IN: "co-located (`*.test.ts` next to source)" / "separate dir (`tests/`)" / "mixed" --> |
-| Test file extension | <!-- FILL IN: e.g., `.test.ts` / `_test.go` / `_test.py` --> |
-| Naming convention | <!-- FILL IN: e.g., "describe / it" / "test_<feature>_<scenario>" / "TestXxx" --> |
-| Async pattern | <!-- FILL IN: e.g., "async/await throughout" / "promises" / "blocking + tokio for async" --> |
-| Mocking strategy | <!-- FILL IN: e.g., "vi.mock" / "pytest fixtures" / "interfaces + DI" --> |
+| Command | What It Does |
+|---------|-------------|
+| `bun run test` | Run all projects |
+| `bunx vitest run --project data` | Run only data tests |
+| `bunx vitest run --project dom` | Run only DOM tests |
+| `bunx vitest run src/path/to/file.test.ts` | Run specific file |
 
-## Test categories
+### Config
 
-| Category | Where it lives | Runner | When it runs |
-|----------|----------------|--------|--------------|
-| Unit | <!-- FILL IN --> | <!-- FILL IN --> | every commit (Iteration Protocol) |
-| Integration | <!-- FILL IN --> | <!-- FILL IN --> | every commit OR pre-PR (project-specific) |
-| E2E | <!-- FILL IN: e.g., `tests/e2e/` --> | <!-- FILL IN: e.g., Playwright --> | pre-PR + pre-deploy |
-| Performance / benchmark | <!-- FILL IN, or "n/a" --> | <!-- FILL IN --> | manual / scheduled |
-| Smoke | <!-- FILL IN, or "n/a" --> | <!-- FILL IN --> | post-deploy |
+- `vite.config.ts` — `test.projects` array defines both projects
+- Pool: `threads` (faster IPC than default `forks`, safe since all native deps are mocked)
+- DOM environment: `happy-dom` (2-4x faster than jsdom, Svelte 5 compatible)
+- Data environment: `node` (no DOM overhead for pure logic tests)
 
-## Coverage
+---
 
-| Field | Value |
-|-------|-------|
-| Tool | <!-- FILL IN: e.g., c8 / istanbul / coverage.py / tarpaulin / "n/a" --> |
-| Target | <!-- FILL IN: e.g., ">85% line, >80% branch" / "no formal target" --> |
-| Enforcement | <!-- FILL IN: "CI blocks below target" / "informational only" / "manual review" --> |
+## Test Structure
 
-## Test factories / fixtures
+Convention: tests live next to the code they test (co-located).
 
-> Reusable data builders. Avoids re-deriving test data per file.
+| Code Location | Test Location | Example |
+|--------------|---------------|---------|
+| `src/lib/components/Thing.svelte` | `src/lib/components/Thing.test.ts` | StationTabs.test.ts |
+| `src/lib/data/services.ts` | `src/lib/data/data-integrity.test.ts` | Data layer validation |
+| `src/lib/motion/actions/boop.ts` | `src/lib/motion/actions/boop.test.ts` | Action behavior |
+| `src/routes/services/+page.ts` | `src/routes/services/+page.test.ts` | Route load functions |
 
-### <!-- FILL IN: factory name -->
+### Naming
+- File: `[ComponentName].test.ts`
+- Describe block: component or module name
+- It block: starts with a verb ("renders", "returns", "throws", "calls")
 
-- **Purpose:** <!-- FILL IN: e.g., "build a Project with sensible defaults" -->
-- **Where:** <!-- FILL IN: file path -->
-- **Usage:** <!-- FILL IN: code snippet showing typical use -->
+### Categories
+- **Data integrity:** validates types, required fields, referential integrity
+- **Component:** renders with props, emits events, accessibility attributes
+- **Motion/actions:** verifies GSAP calls, cleanup on destroy
+- **Route:** load function returns correct data, 404 on invalid params
 
-## Test setup
+---
 
-> Setup / teardown / global config worth documenting.
+# Components (`src/lib/components/`) — 28 files, 195 tests
 
-| File | Purpose |
-|------|---------|
-| <!-- FILL IN: e.g., `vitest.setup.ts` --> | <!-- FILL IN: e.g., "stubs jsdom gaps (matchMedia, IntersectionObserver, GSAP)" --> |
-| <!-- FILL IN --> | <!-- FILL IN --> |
+## src/lib/components/about/AboutPage.test.ts
 
-## Test inventory
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| AboutPage > renders with data-testid page-about | The about page wrapper exists | `getByTestId('page-about')` is truthy | `weather: null` |
+| AboutPage > renders the top hazard stripe | Dashboard renders without a heading | `getByTestId('page-about')` is truthy | Heading removed — hazard stripe instead |
+| AboutPage > renders metro stop labels on cards | Stop labels STOP 00 and STOP 08 are present | `getByText('STOP 00 — IDENTITY')` and `getByText('STOP 08 — SNAPSHOTS')` are truthy | Standard |
+| AboutPage > renders the identity section | Identity sub-component exists | `getByTestId('about-identity')` is truthy | Standard |
+| AboutPage > renders the polaroids section | Polaroids sub-component exists | `getByTestId('about-polaroids')` is truthy | Standard |
+| AboutPage > renders the metrics section | Metrics sub-component exists | `getByTestId('about-metrics')` is truthy | Standard |
+| AboutPage > renders the methodology section | Method sub-component exists | `getByTestId('about-method')` is truthy | Standard |
+| AboutPage > renders the testimonials section | Testimonials sub-component exists | `getByTestId('about-testimonials')` is truthy | Standard |
+| AboutPage > renders the tech stack section | Tech stack sub-component exists | `getByTestId('about-tech-stack')` is truthy | Standard |
+| AboutPage > renders the weather section | Weather sub-component exists | `getByTestId('about-weather')` is truthy | Standard |
+| AboutPage > renders the interests section | Interests sub-component exists | `getByTestId('about-interests')` is truthy | Standard |
+| AboutPage > renders the logos section | Logos sub-component exists | `getByTestId('about-logos')` is truthy | Standard |
+| AboutPage > renders the CTA section | CTA sub-component exists | `getByTestId('about-cta')` is truthy | Standard |
+| AboutPage > CTA links to /contact | CTA link points to the contact page | `a[href="/contact"]` found inside `about-cta` | Standard |
+| AboutPage > renders weather fallback when no data | Fallback shows Montreal and dash | `textContent` contains `'Montreal'` and `'—'` | `weather: null` |
+| AboutPage > renders weather data when provided | Live weather shows temp and condition | `textContent` contains `'15°C'` and `'clear sky'` | `weather: { temp: 15, condition: 'clear sky', icon: '01d' }` |
+| AboutPage > does not render its own footer | Footer comes from layout, not page | `queryAllByTestId('footer').length` === 0 | Standard |
+| Card Unification Sweep > has zero .bento-card class usage in any .svelte file | No `.svelte` file contains `bento-card` | `violations` array is empty | Scans all `.svelte` files under `src/` |
+| Card Unification Sweep > has zero .bento-card in app.css | `app.css` has no `bento-card` references | `appCss` does not contain `'bento-card'` | Reads `src/app.css` directly |
 
-> Optional: list test files + what they cover. Skip if your project has too many to enumerate; fill if a curated index helps.
+## src/lib/components/blog/BlogDetailPage.test.ts
 
-| File | Covers | Notes |
-|------|--------|-------|
-| <!-- FILL IN: e.g., `src/lib/services/project.service.test.ts` --> | <!-- FILL IN --> | <!-- FILL IN --> |
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| BlogDetailPage > renders with data-testid | The blog detail page wrapper exists | `getByTestId('blog-detail-page')` is truthy | `makePost()` factory + mock HTML |
+| BlogDetailPage > renders the blog detail header | The header sub-component renders inside the page | `getByTestId('blog-detail-header')` is truthy | Standard |
+| BlogDetailPage > renders blog content area | The content area sub-component renders | `getByTestId('blog-content')` is truthy | Standard |
+| BlogDetailPage > sets --blog-accent to primary for professional posts | Professional posts use orange accent | `style.getPropertyValue('--blog-accent')` contains `'--primary'` | `category: 'professional'` |
+| BlogDetailPage > sets --blog-accent to accent for personal posts | Personal posts use yellow accent | `style.getPropertyValue('--blog-accent')` contains `'--accent'` | `category: 'personal'` |
 
-## Output format
+## src/lib/components/blog/BlogRouteMap.test.ts
 
-The Iteration Protocol's "test result table" (per `docs/reference/WORKFLOW.md § Phase 5`) requires this format after every test run:
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| BlogRouteMap > renders with data-testid | The route map wrapper exists | `getByTestId('blog-route-map')` is truthy | 5 mock headings (3 h2, 2 h3) |
+| BlogRouteMap > renders a station for each h2 heading | Major stations match h2 count | `.route-station--major` count === 3 | Standard |
+| BlogRouteMap > renders minor stops for h3 headings | Minor stations match h3 count | `.route-station--minor` count === 2 | Standard |
+| BlogRouteMap > applies active class to the current station | The active heading gets active styling | `.route-station--active` count === 1 | `activeHeadingId: 'what-i-learned'` |
+| BlogRouteMap > applies passed class to stations before active | Stations before active are marked as passed | `.route-station--passed` count >= 1 | `activeHeadingId: 'what-i-learned'` |
+| BlogRouteMap > uses CSS classes not inline SVG attributes | SVG elements use CSS classes, no inline fill/stroke | All circle/path/text elements lack fill/stroke/stroke-width attrs | Standard |
 
-```markdown
-| Test File | Test Name | Status | Failure Reason |
-|-----------|-----------|--------|----------------|
-| <path>    | <name>    | PASS   |                |
-| <path>    | <name>    | FAIL   | Expected X, got Y (line NN) |
+## src/lib/components/BlogRow.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| BlogRow > renders the post title | The post title text appears in the DOM | `getByText('Test Post Title')` is truthy | Uses `makePost()` factory with minimal BlogPost fixture |
+| BlogRow > renders larger padding when featured=true | Featured posts get extra padding | `article.classList.contains('p-5')` === true | `featured: true, accentColor: '#E07800'` |
+| BlogRow > renders normal padding when featured=false | Non-featured posts get standard padding | `article.classList.contains('p-4')` === true | `featured: false` |
+| BlogRow > renders normal padding by default when featured is not set | Default (no featured prop) uses standard padding | `article.classList.contains('p-4')` === true | Standard |
+| BlogRow > renders station badge with zero-padded index | The station number badge shows the correct zero-padded number | `badge.textContent.trim()` === `'04'` for index 3 | `index: 3` — expects `(index + 1).padStart(2, '0')` |
+| BlogRow > renders metro line connector below badge | A metro line element appears below the station badge | `querySelector('[data-testid="metro-line"]')` is truthy | Standard |
+| BlogRow > renders tags | Tag labels from the post appear in the DOM | `getByText('sql')` and `getByText('postgres')` are truthy | `tags: ['sql', 'postgres']` |
+| BlogRow > renders the post date | The post date string appears in the DOM | `getByText('2025-01-15')` is truthy | `date: '2025-01-15'` |
+
+## src/lib/components/CollapsibleSection.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| CollapsibleSection > renders title and children when open | The section title is visible when open | `getByText('Overview')` is truthy | `title: 'Overview', open: true` |
+| CollapsibleSection > renders numbered badge when index is provided | A numbered badge appears when index prop is given | `badge.textContent.trim()` === `'1'` | `index: 0` — displays index + 1 |
+| CollapsibleSection > toggles body visibility on button click when collapsible | Clicking the header toggles the body between expanded and collapsed | `body.classList.contains('expanded')` toggles from true to false after click | `collapsible: true`, uses `fireEvent.click` |
+| CollapsibleSection > renders as div (not button) when collapsible is false | Non-collapsible sections have no toggle button or chevron | `querySelector('button')` is null, `.section-chevron` is null | `collapsible: false` |
+| CollapsibleSection > uses custom accent color | The accent color is applied as a border style | `card.style.borderColor` matches `#FFB627` or `rgb(255, 182, 39)` | `accentColor: '#FFB627'` |
+
+## src/lib/components/FilterGroup.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| FilterGroup > renders label and all items plus "All" button | The label, "All" button, and all filter items render | `getByText('Tags')`, `getByText('All')`, `getByText('SQL')`, `getByText('Python')`, `getByText('Svelte')` all truthy | 3 filter items, `onSelect: vi.fn()` |
+| FilterGroup > highlights active item | The currently active filter has the active CSS class | `getByText('Python').classList.contains('tag-active')` === true | `activeKey: 'python'` |
+| FilterGroup > calls onSelect with key on click | Clicking a filter calls the callback with that filter's key | `onSelect` called with `'sql'` | `fireEvent.click(getByText('SQL'))` |
+| FilterGroup > calls onSelect with null when "All" clicked | Clicking "All" resets the filter by passing null | `onSelect` called with `null` | `activeKey: 'sql'`, click "All" |
+| FilterGroup > deselects active item when allowDeselect is true | Clicking the already-active filter deselects it | `onSelect` called with `null` | `activeKey: 'sql', allowDeselect: true`, click "SQL" |
+
+## src/lib/components/Footer.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| Footer > renders a footer element | A footer landmark exists in the DOM | `getByTestId('footer')` is in document | Standard |
+| Footer > renders the yesid wordmark | The wordmark link contains "yesid" | `getByTestId('footer-wordmark')` text contains `'yesid'` | Standard |
+| Footer > renders the current year in copyright | The current year appears in copyright text | `getByText(/© year/)` is in document | Dynamically computes year |
+| Footer > renders footer navigation with aria-label | Footer nav has accessible label | `getByRole('navigation', { name: /footer navigation/i })` | Standard |
+| Footer > renders all 6 site navigation links | All 6 page links are present in footer nav | `nav.querySelectorAll('a').length` === 6 | Standard |
+| Footer > renders links to Services, Work, Blog, Stack, About, Contact | Nav links have correct hrefs | Scoped `querySelectorAll` on nav, check hrefs array | Standard |
+| Footer > renders GitHub social link with target=_blank | GitHub link opens externally | `href`, `target`, `rel` attributes checked | Standard |
+| Footer > renders LinkedIn social link with target=_blank | LinkedIn link opens externally | `href`, `target` attributes checked | Standard |
+| Footer > renders the status bar with system date | Programmatic date appears in YYYY.MM.DD format | `getByText(new RegExp(expectedDate))` | Dynamically computes date |
+| Footer > renders system online status text | Status bar shows online indicator | `getByText(/system online/)` | Standard |
+| Footer > renders location in an address element | Montreal appears in semantic address element | `querySelector('footer address')` text contains `'Montreal'` | Standard |
+| Footer > renders the digital infrastructure tagline | Brand tagline appears | `getByText(/digital infrastructure/)` | Standard |
+
+## src/lib/components/Hero.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| Hero > renders the heading as an h1 | The hero heading is an h1 with the correct text | `getByRole('heading', { level: 1, name })` is in document | `heading` and `subheading` props |
+| Hero > renders the subheading text | The subheading text appears in the DOM | `getByText(subheading)` is in document | Standard |
+| Hero > renders no CTA section when both CTAs are undefined | No CTA container appears when no CTAs are provided | `queryByTestId('hero-ctas')` not in document | No CTA props |
+| Hero > renders primary CTA with correct href and label | The primary CTA link has the right URL and text | `href` === `'/work'`, text === `'See my work'` | `primaryCta: { label, href }` |
+| Hero > renders secondary CTA with correct href and label | The secondary CTA link has the right URL and text | `href` === `'/contact'`, text === `'Get in touch'` | `secondaryCta: { label, href }` |
+| Hero > renders only primary CTA when secondary is omitted | Only the primary CTA appears when secondary is missing | primary in document, secondary not in document | Only `primaryCta` prop |
+| Hero > renders only secondary CTA when primary is omitted | Only the secondary CTA appears when primary is missing | secondary in document, primary not in document | Only `secondaryCta` prop |
+| Hero > renders both CTAs when both are provided | Both CTAs appear side by side | Both `hero-primary-cta` and `hero-secondary-cta` in document | Both CTA props |
+
+## src/lib/components/MenuOverlay.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| MenuOverlay > renders all 6 navigation links | All menu items appear as links | `getByRole('link', { name: /Services/ })` through `/Contact/` all in document | `open: true, pathname: '/'` |
+| MenuOverlay > marks the active link stop as current | The active route link has aria-current | Work link has `aria-current` === `'page'` | `pathname: '/work'` |
+| MenuOverlay > renders metro subtitles | Subtitle copy appears for each item | `getByText('what I build')` and `getByText('open channel')` in document | Standard |
+| MenuOverlay > has dialog role and aria-modal | The overlay is an accessible modal dialog | `getByRole('dialog')` has `aria-modal` === `'true'` | Standard |
+| MenuOverlay > renders the close button | A close button exists in the overlay | `getByLabelText('Close menu')` in document | Standard |
+| MenuOverlay > renders bottom terminal label | The NAVIGATION label appears at bottom | `getByText(/NAVIGATION/)` in document | Standard |
+| MenuOverlay > does not render when closed | Closed state produces no dialog | `queryByRole('dialog')` not in document | `open: false` |
+
+## src/lib/components/Nav.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| Nav > renders a nav element | A navigation landmark exists | `getByTestId('nav')` is in document | Standard |
+| Nav > renders wordmark linking to / | The "yesid" wordmark links to the home page | `closest('a')` has `href` === `'/'` | Standard |
+| Nav > renders the period in a separate span for orange styling | The brand dot is isolated for styling | `getByTestId('nav-period')` text === `'.'` | Standard |
+| Nav > renders Work link with correct href | The Work nav item links to /work | `getByRole('link', { name: 'Work' })` has `href` === `'/work'` | Standard |
+| Nav > renders About link with correct href | The About nav item links to /about | `href` === `'/about'` | Standard |
+| Nav > renders Contact link with correct href | The Contact nav item links to /contact | `href` === `'/contact'` | Standard |
+| Nav > marks the active link with aria-current="page" | The currently active page link is announced to screen readers | Work link has `aria-current` === `'page'` | `pathname: '/work'` |
+| Nav > does not mark inactive links with aria-current | Non-active links do not have aria-current | About and Contact links lack `aria-current` | `pathname: '/work'` |
+| Nav > renders a hamburger button for mobile | A mobile menu toggle exists | `getByTestId('nav-hamburger')` is in document | Standard |
+| Nav > has a wordmark-letters container for animation | The animated wordmark letters container exists | `getByTestId('nav-wordmark-letters')` text === `'yesid'` | Standard |
+
+## src/lib/components/ProjectGrid.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| ProjectGrid > renders the correct number of cards | Each project gets its own card element | `getAllByTestId('project-card')` has length 2 | 2 projects via `makeProject()` factory |
+| ProjectGrid > renders each project title | All project titles appear in the grid | `getByText('Project A')` and `getByText('Project B')` in document | Standard |
+| ProjectGrid > renders nothing when projects array is empty | An empty array produces no grid output | `queryByTestId('project-grid')` not in document | `projects: []` |
+| ProjectGrid > renders a single project correctly | A grid with one project still renders properly | `getAllByTestId('project-card')` has length 1 | 1 project |
+
+## src/lib/components/ProofStrip.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| ProofStrip > renders project count | The total number of related projects is shown | `getByText('2 projects')` is truthy | 2 mock projects |
+| ProofStrip > renders project titles | Each project title appears in the strip | `getByText('Transit Data Pipeline')` and `getByText('Query Optimizer')` are truthy | Standard |
+| ProofStrip > links projects to /work/[slug] | Each project title is a link to its detail page | First link `href` === `'/work/transit-data-pipeline'` | Standard |
+| ProofStrip > renders label text | The "Built with this" label is visible | `getByText('Built with this')` is truthy | Standard |
+
+## src/lib/components/ScrollPrompt.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| ScrollPrompt > renders without crashing | The component mounts without errors | `render(ScrollPrompt)` does not throw | Standard |
+| ScrollPrompt > has accessible label for scroll action | The scroll prompt has an aria-label for assistive tech | `aria-label` === `'Scroll down'` | Standard |
+| ScrollPrompt > renders an SVG chevron | A chevron SVG with a path element is rendered | `querySelector('svg')` and `querySelector('path')` in document | Standard |
+
+## src/lib/components/ServiceCard.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| ServiceCard > renders the service title | The service name appears in the card | `getByText('SQL Development & Optimization')` is truthy | Mock service with full fields |
+| ServiceCard > renders the description | The service description text is visible | `getByText(description)` is truthy | Standard |
+| ServiceCard > renders the station counter | The "Service NN / NN" counter is shown | `getByText('Service 01 / 06')` is truthy | `index: 0, total: 6` |
+| ServiceCard > renders stack pills | Each tech in the stack array gets a pill | `getByText('PostgreSQL')`, `getByText('SQL Server')`, `getByText('T-SQL')` are truthy | `stack: ['PostgreSQL', 'SQL Server', 'T-SQL']` |
+| ServiceCard > renders a "Deep dive" link with correct href | The detail link points to /services/[id] | `href` === `'/services/sql-development'` | Standard |
+| ServiceCard > renders SVG container when svgContent is provided | The SVG illustration container appears when content is given | `getByTestId('service-card-svg')` is truthy | `svgContent: '<svg>...'` |
+
+## src/lib/components/ServiceNav.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| ServiceNav > renders prev and next links | Both navigation links appear | `getByTestId('service-nav-prev')` and `getByTestId('service-nav-next')` are truthy | Mock prev and next services |
+| ServiceNav > renders correct hrefs | The prev/next links point to the right service pages | prev `href` === `'/services/sql-development'`, next `href` === `'/services/analytics-reporting'` | Standard |
+| ServiceNav > renders service titles | Both service titles are visible | `getByText('SQL Development & Optimization')` and `getByText('Analytics & Reporting Systems')` are truthy | Standard |
+| ServiceNav > omits prev when undefined | No prev link renders when there's no previous service | `queryByTestId('service-nav-prev')` is null, next is truthy | Only `next` prop |
+| ServiceNav > omits next when undefined | No next link renders when there's no next service | prev is truthy, `queryByTestId('service-nav-next')` is null | Only `prev` prop |
+
+## src/lib/components/ServiceStation.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| ServiceStation > renders service title | The service title text appears | `getByText('Test Service Title')` in document | Mock service with `relatedProjects: ['yesid-dev']` |
+| ServiceStation > renders service description | The service description text appears | `getByText(description)` in document | Standard |
+| ServiceStation > has correct data-testid | The station wrapper has a testid with the service id | `querySelector('[data-testid="station-test-service"]')` in document | Standard |
+| ServiceStation > renders Lottie player container when icon is provided | A Lottie animation container appears when icon is set | `querySelector('[data-testid="station-lottie"]')` in document | `icon: 'station-sql.json'` |
+| ServiceStation > does not render Lottie container when icon is missing | No Lottie container renders when icon is absent | `station-lottie` not in document | Service without `icon` field |
+| ServiceStation > renders related public project cards | Public related projects appear as cards | `getByText('yesid.dev — Portfolio Site')` in document | `relatedProjects: ['yesid-dev']` (public in seed) |
+| ServiceStation > handles empty relatedProjects gracefully | A station with no related projects renders without crashing | Station testid in document, no project cards | `relatedProjects: []` |
+| ServiceStation > filters out private projects from related list | Private or nonexistent projects are excluded | 0 project-card elements in DOM | `relatedProjects: ['nonexistent-project-slug']` |
+| ServiceStation > renders station number derived from index | The station number badge shows zero-padded index+1 | `station-number` text === `'01'` | `index: 0` |
+| ServiceStation > renders correct station number for second station | The second station shows "02" | `station-number` text === `'02'` | `index: 1` |
+| ServiceStation > renders indicator light | The station indicator light element exists | `getByTestId('station-indicator')` in document | Standard |
+| ServiceStation > renders Lottie in scrub mode container | The Lottie player is nested inside the station-lottie zone | `station-lottie` contains `lottie-player` | Standard |
+
+## src/lib/components/SkillsJourney.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| SkillsJourney > renders the journey container | The skills journey wrapper exists | `getByTestId('skills-journey')` in document | Standard |
+| SkillsJourney > renders a panel for each data entry | Each skills panel gets its own element | `getAllByTestId(/^journey-panel-/)` has length >= 4 | Uses seed data from `content.ts` |
+| SkillsJourney > renders the CTA prompt panel | The call-to-action prompt panel exists | `getByTestId('journey-cta-prompt')` in document | Standard |
+| SkillsJourney > renders the CTA button linking to /contact | The CTA button links to the contact page | `closest('a')` has `href` === `'/contact'` | Standard |
+| SkillsJourney > renders skill icons in each panel | Skill icon elements exist within panels | `getAllByTestId(/^journey-skill-/)` has length >= 4 | Standard |
+| SkillsJourney > renders panel labels | The panel labels with numbering are visible | `getByText('01 — FOUNDATION')` and `getByText('02 — ROUTES')` in document | Standard |
+
+## src/lib/components/StationTabs.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| StationTabs > renders a tab for each service | Each service gets a tab element with its short name | `getByText('SQL Dev')`, `getByText('Pipeline')`, `getByText('Analytics')` are truthy | 3 mock services |
+| StationTabs > renders station numbers | Each tab shows its zero-padded station number | `getByText('01')`, `getByText('02')`, `getByText('03')` are truthy | Standard |
+| StationTabs > marks the active tab | The active service tab has `data-active="true"` | `station-tab-data-pipeline` has `data-active` === `'true'` | `activeId: 'data-pipeline'` |
+| StationTabs > renders links in navigate mode | In navigate mode, tabs are links to /services/[id] | `closest('a')` has `href` === `'/services/data-pipeline'` | `mode: 'navigate'` |
+
+## src/lib/components/TableOfContents.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| TableOfContents > renders desktop ToC with correct headings | All headings from the HTML appear in the desktop ToC | Desktop contains 'Introduction', 'Getting Started', 'Prerequisites', 'Usage', 'Advanced Config' | Sample HTML with h1-h4 headings |
+| TableOfContents > renders mobile ToC toggle | A mobile-friendly collapsible toggle exists | `getByTestId('toc-mobile')` contains 'Table of Contents' | Standard |
+| TableOfContents > expands mobile ToC on click | Clicking the toggle reveals the heading list on mobile | `mobile.querySelectorAll('ul')` goes from 0 to 1 after click | `fireEvent.click` on toggle |
+| TableOfContents > exports getProcessedHtml that injects ids | The processed HTML has slug-based id attributes on headings | Processed HTML contains `id="introduction"`, `id="getting-started"`, etc. | Calls `component.getProcessedHtml()` |
+| TableOfContents > preserves existing heading ids | Pre-existing ids are kept, new ones are generated | Contains `id="existing-id"` and `id="no-id-here"` | HTML with `id="existing-id"` on h2 |
+| TableOfContents > handles empty HTML without crashing | Empty input renders an empty ToC without errors | Desktop has 0 `<li>` elements | `html: ''` |
+| TableOfContents > handles HTML with no headings | HTML with only paragraphs produces no ToC entries | Desktop has 0 `<li>`, mobile toggle not rendered | `html: '<p>No headings here.</p>'` |
+| TableOfContents > calls scrollIntoView when a ToC link is clicked | Clicking a ToC entry smoothly scrolls to that heading | `mockEl.scrollIntoView` called with `{ behavior: 'smooth' }` | Creates mock element with matching id, `fireEvent.click` |
+| TableOfContents > deduplicates identical heading texts | Duplicate heading texts get unique suffixed ids | Contains `id="setup"` and `id="setup-1"` | HTML with two `<h2>Setup</h2>` |
+| TableOfContents > applies custom class via class prop | A custom CSS class is added to the ToC wrapper | `desktop.className` contains `'my-custom-class'` | `class: 'my-custom-class'` |
+
+## src/lib/components/TagList.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| TagList > renders all tags | Every tag in the array appears as text | `getByText('postgresql')`, `getByText('python')`, `getByText('etl')` in document | `tags: ['postgresql', 'python', 'etl']` |
+| TagList > renders nothing when tags is empty | An empty tags array produces no output | `queryByTestId('tag-list')` not in document | `tags: []` |
+| TagList > renders nothing when tags prop is omitted | Missing tags prop produces no output | `queryByTestId('tag-list')` not in document | No props |
+| TagList > renders a single tag correctly | A single tag still renders as a list | `getByText('sql')` in document, `getByRole('list')` in document | `tags: ['sql']` |
+| TagList > uses list semantics for accessibility | Tags use proper `<ul>` / `<li>` elements for screen readers | `getByRole('list')` and `getAllByRole('listitem')` has length 2 | `tags: ['a', 'b']` |
+
+## src/lib/components/StackNode.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackNode | Renders item name, icon placeholder, data attributes, selected/dimmed states, onclick/keydown handlers | 9 |
+
+## src/lib/components/StackDiagram.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackDiagram | Renders tier rows, places nodes in correct layers, skips empty layers, mobile accordion, onselect callback, dimming of non-connected nodes, selected state | 12 |
+
+## src/lib/components/StackPanel.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackPanel > Orientation card | Shows orientation card with stats when no item selected, hides detail | 4 |
+| StackPanel > Detail card | Shows detail card with name, proficiency, relations, projects, CTA, close button, relation click navigation | 8 |
+
+## src/lib/components/StackBottomSheet.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackBottomSheet | Renders bottom sheet, displays item name/proficiency, markdown content, close/backdrop dismiss, prev/next navigation, project badges | 10 |
+
+## src/lib/components/StackFilters.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackFilters | Renders "All" pill and domain pills, toggles active state, calls onchange with updated domains array, multi-select, horizontal scroll | 8 |
+
+## src/lib/components/StackConfigurator.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackConfigurator | Renders domain cards with labels/descriptions, toggles selection up to 3 max, calls onchange, shows selected count, deselects on re-click | 9 |
+
+## src/lib/components/StackScenarioCard.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StackScenarioCard | Renders scenario summary, recommended tech list, related projects, CTA link, handles auto-generated scenarios | 6 |
+
+## src/lib/components/HomeServices.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| HomeServices | Section renders with label, 6 cards with benefit headlines, service titles, impact metrics, SVG panels, correct /services/[id] links, view-all link | 9 |
+
+# UI Components (`src/lib/components/ui/`) — Slice 17a-6
+
+## src/lib/components/ui/button/button.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| Button | Renders cta/ghost/outline/link variants, sm/default/lg sizes, href produces anchor, disabled state, class pass-through, data-slot attribute | 10 |
+
+## src/lib/components/brand/__tests__/barrel.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| Brand barrel exports | All 13 brand primitives are re-exported from the barrel index (6 migrated to `ui/`: Tag/NumberBadge→ui/badge, HazardStripe/GradientSeparator→ui/separator, BrandButton→ui/button, CardBase→ui/card) | 2 |
+
+## src/lib/components/brand/__tests__/StatusDot.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| StatusDot | Renders, defaults to orange/sm, applies green/pulse/md/ring variants, outline classes omitted by default, `aria-hidden="true"` (2 new ring tests added 17a-4) | 8 |
+
+# Data Layer (`src/lib/data/`) — 10 files, 126 tests
+
+## src/lib/data/tech-stack.test.ts
+
+| Describe | Summary | Count |
+|----------|---------|-------|
+| tech-stack data validation | All 35 items have unique IDs, valid layers/domains/proficiency, no self-refs, no dangling connectsTo refs | 10 |
+| tech-stack scenario validation | All scenarios have unique IDs, valid domains, existing recommended tech IDs, non-empty summaries | 5 |
+| tech-stack API | getAllTechItems, getTechItemById, getTechItemsByLayer, getTechItemsByDomain, getConnections, getIncomingConnections, getTechItemContent, getAllScenarios, getScenarioForDomains, getOutgoingRelations, getIncomingRelations | 13 |
+
+## src/lib/data/content.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| heroContent > has non-empty English strings | All hero section text fields have content | badge, headline lines, subtitle, CTAs, SQL decoration all have length > 0 | Standard |
+| aboutContent > has non-empty English strings | The about section has a name, title, bio, and interests | `name.en` === `'Yesid O.'`, title/bio/interests length > 0 | Standard |
+| aboutContent > has at least 3 stack items | The tech stack list has enough entries | `stackItems.length` >= 3 | Standard |
+| aboutContent > has location data | Location city and region are populated | `city.en` === `'Montreal'`, `region.en` length > 0 | Standard |
+| ctaContent > has non-empty English strings | The CTA section has heading, subtitle, and button texts | heading contains `'build something'`, subtitle/buttons length > 0 | Standard |
+| skillsJourneyPanels > has at least 1 panel | The skills journey has at least one panel defined | `panels.length` >= 1 | Standard |
+| skillsJourneyPanels > every panel has a unique id | No two panels share the same id | `new Set(ids).size` === `ids.length` | Standard |
+| skillsJourneyPanels > every panel has at least one skill | Each panel contains skill entries | `panel.skills.length` >= 1 for all panels | Standard |
+| skillsJourneyPanels > every panel has at least one highlight word | Each panel has words to visually emphasize | `panel.highlightWords.length` >= 1 for all panels | Standard |
+| skillsJourneyCta > has prompt and button text | The journey CTA has both prompt and button copy | `prompt.en` and `button.en` are truthy | Standard |
+| services — home grid fields > every visible service has a benefitHeadline | All visible services have non-empty benefitHeadline | `service.benefitHeadline.en.length` > 0 for all | Uses `getVisibleServices()` |
+| services — home grid fields > every visible service has an impactMetric with value and label | All visible services have impactMetric with value + label | `impactMetric.value.en` and `impactMetric.label.en` length > 0 | Uses `getVisibleServices()` |
+| services — home grid fields > every visible service has an svg filename | All visible services have svg field | `service.svg.length` > 0 for all | Uses `getVisibleServices()` |
+
+## src/lib/data/data-integrity.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| projects data integrity > all slugs are unique | No two projects share the same slug | `new Set(slugs).size` === `slugs.length` | Imports `projects` from seed data |
+| projects data integrity > no project has an empty slug | Every project has a non-blank slug | `p.slug.trim()` !== `''` for all | Standard |
+| projects data integrity > all slugs are URL-safe | Slugs only contain lowercase letters, numbers, and hyphens | Each slug matches `/^[a-z0-9-]+$/` | Standard |
+| projects data integrity > all required LocalizedString fields have a non-empty English value | Title, one-liner, and description are filled in English | `title.en.trim()`, `oneLiner.en.trim()`, `description.en.trim()` !== `''` | Standard |
+| projects data integrity > all status values are valid | Project status is one of the allowed enum values | `['public', 'private', 'wip']` contains each `p.status` | Standard |
+| projects data integrity > all projects have at least one stack entry | Every project lists at least one technology | `p.stack.length` > 0 | Standard |
+| projects data integrity > all projects have at least one tag | Every project has at least one searchable tag | `p.tags.length` > 0 | Standard |
+| projects data integrity > there is at least one featured project | The home page showcase has content | `projects.filter(p => p.featured).length` > 0 | Standard |
+| projects data integrity > all projects have a relatedServices array with at least one entry | Every project is linked to at least one service | `p.relatedServices.length` > 0 | Standard |
+| projects data integrity > all relatedServices IDs reference existing service IDs | No project references a nonexistent service | Each service ID found in the services array | Cross-references `services` data |
+| services data integrity > at least 1 service exists | The services array is not empty | `services.length` >= 1 | Standard |
+| services data integrity > all services have a non-empty English title | Every service has a title | `s.title.en.trim()` !== `''` | Standard |
+| services data integrity > all services have a non-empty English description | Every service has a description | `s.description.en.trim()` !== `''` | Standard |
+| services data integrity > all services have a unique id | No two services share the same id | `new Set(ids).size` === `ids.length` | Standard |
+| services data integrity > all service ids are non-empty strings | Every service id is non-blank | `s.id.trim()` !== `''` | Standard |
+| services data integrity > all services have unique station numbers | No two services share the same station number | `new Set(stations).size` === `stations.length` | Standard |
+| services data integrity > station numbers are sequential starting from 1 with no gaps | Station numbers form a gapless sequence 1, 2, 3... | Sorted stations === `[1, 2, ..., n]` | Standard |
+| services data integrity > station count equals services count | Every service has exactly one station | `stationCount` === `services.length` | Standard |
+| services data integrity > relatedProjects is an array on every service | The relatedProjects field is always an array | `Array.isArray(s.relatedProjects)` === true | Standard |
+| services data integrity > all relatedProjects slugs exist in the projects array | No service references a nonexistent project | Each slug found in the projects array | Cross-references `projects` data |
+| services data integrity > all services with svg field reference a valid filename | SVG filenames are non-empty and end with .svg | `s.svg` matches `/\.svg$/` when present | Standard |
+| siteMeta data integrity > name is yesid. | The brand name is exactly "yesid." | `siteMeta.name` === `'yesid.'` | Standard |
+| siteMeta data integrity > tagline has a non-empty English value | The site tagline is populated | `tagline.en.trim()` !== `''` | Standard |
+| siteMeta data integrity > description has a non-empty English value | The site description is populated | `description.en.trim()` !== `''` | Standard |
+| siteMeta data integrity > email link is present | An email contact link exists | `links.email.trim()` !== `''` | Standard |
+| siteMeta data integrity > github link is present | A GitHub profile link exists | `links.github.trim()` !== `''` | Standard |
+| blogPosts data integrity > at least 3 blog posts exist | The blog has enough content | `blogPosts.length` >= 3 | Standard |
+| blogPosts data integrity > all slugs are unique | No two blog posts share the same slug | `new Set(slugs).size` === `slugs.length` | Standard |
+| blogPosts data integrity > all slugs are URL-safe | Blog slugs only contain lowercase, numbers, hyphens | Each slug matches `/^[a-z0-9-]+$/` | Standard |
+| blogPosts data integrity > all required LocalizedString fields have non-empty English values | Blog title and excerpt are filled in English | `title.en.trim()` and `excerpt.en.trim()` !== `''` | Standard |
+| blogPosts data integrity > all dates are valid ISO date strings | Blog dates parse as real dates in YYYY-MM-DD format | Each date matches `/^\d{4}-\d{2}-\d{2}$/` and doesn't produce 'Invalid Date' | Standard |
+| blogPosts data integrity > all posts have at least one tag | Every blog post is tagged | `p.tags.length` > 0 | Standard |
+| blogPosts data integrity > all posts have a non-empty url | Every blog post has a URL | `p.url.trim()` !== `''` | Standard |
+
+## src/lib/data/locale.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| resolveLocale > returns the English string when locale is en | English locale returns the English translation | Result === `'Hello'` | Full `LocalizedString` with en/fr/es |
+| resolveLocale > returns the French string when locale is fr and fr is present | French locale returns the French translation | Result === `'Bonjour'` | Standard |
+| resolveLocale > returns the Spanish string when locale is es and es is present | Spanish locale returns the Spanish translation | Result === `'Hola'` | Standard |
+| resolveLocale > falls back to English when the requested locale is missing | A missing translation falls back to English | Result === `'Hello'` for es when only en/fr exist | `LocalizedString` without es |
+| resolveLocale > falls back to English when the requested locale field is an empty string | An empty-string translation falls back to English | Result === `'Hello'` when `fr: ''` | Standard |
+| resolveLocale > falls back to English when the requested locale field is whitespace only | A whitespace-only translation falls back to English | Result === `'Hello'` when `fr: '   '` | Standard |
+| resolveLocale > works correctly with only the required English field | English-only strings work for all locales | Result === `'English only'` for en, fr, and es | `{ en: 'English only' }` |
+| resolveLocale > does not fall through to French when Spanish is missing | The fallback chain is locale -> en, not locale -> other locales -> en | Result === `'English'` (not `'French'`) for es | `{ en: 'English', fr: 'French' }` |
+| locale constants > DEFAULT_LOCALE is en | The default locale constant is English | `DEFAULT_LOCALE` === `'en'` | Standard |
+| locale constants > SUPPORTED_LOCALES contains en, fr, and es | All three supported locales are listed | Array contains `'en'`, `'fr'`, `'es'` and has length 3 | Standard |
+
+## src/lib/data/metro.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| metro line > has the correct total stops | Total stop count matches services + 5 fixed sections | `TOTAL_STOPS` === `services.length + 5`, `metroStops.length` === `TOTAL_STOPS` | Imports `services` for dynamic count |
+| metro line > first stop is hero with number 00 | The first metro stop is the hero departure | `type` === `'hero'`, `stopNumber` === `'00'`, `id` === `'departure'` | Standard |
+| metro line > last stop is terminal | The last metro stop is the terminal | `type` === `'terminal'`, `stopNumber` === `'TERMINAL'` | Standard |
+| metro line > service stops have sequential numbering starting from 01 | Service stops are numbered 01, 02, 03... sequentially | Each stop number === `String(i + 1).padStart(2, '0')`, id matches service id | Standard |
+| metro line > fixed sections follow services with auto-incremented numbers | Featured, About, Blog stops follow services with correct numbers | Featured/About/Blog stopNumbers match expected auto-increment | Uses `getStopByType()` |
+| metro line > every stop has a non-empty English label | All stops have a label for display | `stop.label.en.length` > 0 for all stops | Standard |
+| formatStopLabel > formats a numbered stop | A numbered stop gets "STOP NN - LABEL" format | Result matches `/^STOP \d{2} — FEATURED WORK$/` | Standard |
+| formatStopLabel > formats terminal stop | The terminal stop has a special format | Result === `'TERMINAL — FINAL DESTINATION'` | Standard |
+| formatServicesLabel > includes correct range | The services label shows the correct stop range | Result === `'STOPS 01–NN — SERVICES'` | Standard |
+
+## src/lib/data/metro-network.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| metro-network data integrity > origin node exists | The network has a designated origin/hub node | `getNode(ORIGIN_NODE_ID)` is defined, `type` === `'hub'` | Standard |
+| metro-network data integrity > has no duplicate node IDs | All network node IDs are unique | `new Set(ids).size` === `ids.length` | Standard |
+| metro-network data integrity > all connection from/to IDs reference existing nodes | No connection references a nonexistent node | Each `conn.from` and `conn.to` found in nodes set | Standard |
+| metro-network data integrity > all node coordinates are in 0-100 range | Node positions stay within the normalized coordinate space | `x` and `y` both >= 0 and <= 100 for all nodes | Standard |
+| metro-network data integrity > all connection order values are positive integers | Connection ordering is valid | `Number.isInteger(order)` and `order` > 0 for all | Standard |
+| metro-network data integrity > has 40+ nodes (dense network) | The network has enough nodes for visual density | `nodes.length` >= 40 | Standard |
+| metro-network data integrity > has 6+ line segments | The network has enough connections | `connections.length` >= 6 | Standard |
+| metro-network data integrity > getNode returns undefined for missing ID | Looking up a nonexistent node returns undefined | `getNode('nonexistent')` === undefined | Standard |
+
+## src/lib/data/projects.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| getProjectBySlug > returns the project when a valid slug is provided | A known slug returns the matching project | Result is defined, `slug` === `'yesid-dev'` | Standard |
+| getProjectBySlug > returns undefined for a slug that does not exist | An unknown slug returns undefined | Result === undefined | `'this-does-not-exist'` |
+| getProjectBySlug > returns undefined for an empty string | An empty string slug returns undefined | Result === undefined | `''` |
+| getFeaturedProjects > returns only projects where featured is true | All returned projects have featured flag set | `p.featured` === true for all results, length > 0 | Standard |
+| getFeaturedProjects > does not include non-featured projects | Non-featured projects are excluded | No non-featured slug appears in featured results | Standard |
+| getPublicProjects > excludes private projects | Private projects are filtered out | `p.status` !== `'private'` for all results | Standard |
+| getPublicProjects > includes projects with status public | At least one public project exists in results | `some(p => p.status === 'public')` === true | Standard |
+| getPublicProjects > includes projects with status wip | Work-in-progress projects are included (not filtered) | Each wip project from seed data appears in results | Standard |
+| getAllTags > returns a non-empty array | Tags are collected from all projects | `tags.length` > 0 | Standard |
+| getAllTags > returns tags in alphabetical order | Tags are sorted A-Z | `tags` equals `[...tags].sort()` | Standard |
+| getAllTags > returns no duplicate tags | Tags are deduplicated | `tags.length` === `new Set(tags).size` | Standard |
+| getAllTags > returns no empty strings | No blank tags exist | `tag.trim()` !== `''` for all | Standard |
+| getProjectsByService > returns projects linked to a given service ID | Projects related to a service are returned | Length > 0, each has `'sql-development'` in `relatedServices` | `'sql-development'` |
+| getProjectsByService > excludes private projects | Private projects don't appear even if related | `p.status` !== `'private'` for all | Standard |
+| getProjectsByService > returns empty array for unknown service ID | A nonexistent service returns no results | Result equals `[]` | `'nonexistent'` |
+| getServiceIdsForProjects > returns deduplicated sorted service IDs from public projects | Service IDs from public projects are collected, deduped, and sorted | Length > 0, sorted, no duplicates | Standard |
+
+# SEO JSON-LD (`src/lib/schemas/jsonld.test.ts`, `src/lib/adapters/jsonld.test.ts`, `src/lib/components/seo/JsonLd.test.ts`, `src/lib/schemas/seo.test.ts`, `src/lib/components/seo/SeoHead.test.ts` [extended], `src/lib/adapters/meta.test.ts` [extended]) — 6 files (Slice 15b)
+
+## src/lib/schemas/jsonld.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| PersonSchema > accepts a minimal valid Person | Zod schema accepts the Person shape | `safeParse(valid).success === true` | Standard |
+| PersonSchema > rejects a Person missing name | Required field enforced | `safeParse({...valid, name: undefined}).success === false` | Standard |
+| PersonSchema > rejects a Person with a non-URL @id | `@id` must be a URL | `safeParse({...valid, '@id': 'not-a-url'}).success === false` | Standard |
+| WebSiteSchema > accepts a minimal valid WebSite | Zod schema accepts WebSite shape | `safeParse(valid).success === true` | Standard |
+| WebSiteSchema > rejects WebSite missing publisher @id ref | Required cross-ref enforced | `safeParse({...valid, publisher: undefined}).success === false` | Standard |
+| BlogPostingSchema > accepts a minimal valid BlogPosting | Zod schema accepts BlogPosting shape | `safeParse(valid).success === true` | Standard |
+| BlogPostingSchema > rejects BlogPosting missing headline | Required field enforced | `safeParse({...valid, headline: undefined}).success === false` | Standard |
+| BlogPostingSchema > accepts optional image field | Image is optional | `safeParse({...valid, image: '...'}).success === true` | Standard |
+| ServiceSchema > accepts a minimal valid Service | Zod schema accepts Service shape | `safeParse(valid).success === true` | Standard |
+| ServiceSchema > accepts optional areaServed field | areaServed is optional | `safeParse({...valid, areaServed: 'CA'}).success === true` | Standard |
+| CreativeWorkSchema > accepts a minimal valid CreativeWork (no dates, per Q5-A) | Zod schema accepts CreativeWork without dates | `safeParse(valid).success === true` | Standard |
+| CreativeWorkSchema > rejects CreativeWork missing author @id ref | Required cross-ref enforced | `safeParse({...valid, author: undefined}).success === false` | Standard |
+| BreadcrumbListSchema > accepts a valid BreadcrumbList with 2 items | Minimum 2 items required | `safeParse(valid).success === true` | Standard |
+| BreadcrumbListSchema > rejects BreadcrumbList with 1 item | Minimum 2 items enforced | `safeParse({...valid, itemListElement: [one]}).success === false` | Standard |
+| BreadcrumbListSchema > rejects BreadcrumbList with 0 items | Minimum 2 items enforced | `safeParse({...valid, itemListElement: []}).success === false` | Standard |
+| ProfilePageSchema > accepts a minimal valid ProfilePage | Zod schema accepts ProfilePage shape | `safeParse(valid).success === true` | Standard |
+| ProfilePageSchema > accepts optional dateCreated + dateModified | Dates are optional | `safeParse({...valid, dateCreated, dateModified}).success === true` | Standard |
+| CollectionPageSchema > accepts a minimal valid CollectionPage | Zod schema accepts CollectionPage shape | `safeParse(valid).success === true` | Standard |
+| SchemaOrgNodeSchema (discriminated union) > narrows by @type — Person | Discriminated union narrows on parse | `parse(person)['@type'] === 'Person'` | Standard |
+| SchemaOrgNodeSchema (discriminated union) > rejects an object with unknown @type | Unknown type rejected | `safeParse({'@type': 'Unicorn', ...}).success === false` | Standard |
+| SchemaOrgNodeSchema (discriminated union) > accepts a valid BreadcrumbList through the union | Union delegation works | `safeParse(bc).success === true` | Standard |
+
+## src/lib/schemas/seo.test.ts — PageSeoSchema.jsonLd extension (Slice 15b)
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| PageSeoSchema.jsonLd extension (Slice 15b) > accepts a base entry with no jsonLd (backward compat with 15a) | Optional jsonLd is backward-compatible | `safeParse(validBase).success === true` | Standard |
+| PageSeoSchema.jsonLd extension (Slice 15b) > accepts an entry with a jsonLd array | Extended PageSeo shape | `safeParse({...valid, jsonLd: [...]}).success === true` | Standard |
+| PageSeoSchema.jsonLd extension (Slice 15b) > rejects an entry with malformed jsonLd (unknown @type) | Zod parses nested SchemaOrgNode | `safeParse({...valid, jsonLd: [bad]}).success === false` | Standard |
+| PageSeoSchema.jsonLd extension (Slice 15b) > accepts an empty jsonLd array | Empty array is valid | `safeParse({...valid, jsonLd: []}).success === true` | Standard |
+
+## src/lib/adapters/jsonld.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| PERSON_ID / WEBSITE_ID constants > PERSON_ID resolves against SITE_HOST with #person fragment | Constant correctness | `PERSON_ID === 'https://yesid.dev/#person'` | Standard |
+| PERSON_ID / WEBSITE_ID constants > WEBSITE_ID resolves against SITE_HOST with #website fragment | Constant correctness | `WEBSITE_ID === 'https://yesid.dev/#website'` | Standard |
+| buildPersonNode > produces a Zod-parseable Person | Factory output validates | `node['@type'] === 'Person'` | Uses real siteMeta |
+| buildPersonNode > maps owner.name verbatim | Domain → schema mapping | `node.name === siteMeta.owner.name` | Uses real siteMeta |
+| buildPersonNode > resolves jobTitle from owner.jobTitle.en | Localized field resolved | `node.jobTitle === siteMeta.owner.jobTitle.en` | Uses real siteMeta |
+| buildPersonNode > includes GitHub + LinkedIn in sameAs when present | Social links aggregated | `sameAs` contains GitHub and LinkedIn URLs | Uses real siteMeta |
+| buildPersonNode > maps owner.address to PostalAddress | Address nesting correct | `node.address` deep-equals PostalAddress | Uses real siteMeta |
+| buildWebSiteNode > produces a Zod-parseable WebSite | Factory output validates | `node['@type'] === 'WebSite'` | Uses real siteMeta |
+| buildWebSiteNode > references Person via publisher @id | Cross-ref pattern | `node.publisher['@id'] === PERSON_ID` | Uses real siteMeta |
+| buildWebSiteNode > uses siteMeta.description.en as description | Domain → schema mapping | `node.description === siteMeta.description.en` | Uses real siteMeta |
+| buildProfilePageNode > produces a Zod-parseable ProfilePage | Factory output validates | `node['@type'] === 'ProfilePage'` | Standard |
+| buildProfilePageNode > references Person via mainEntity @id | Cross-ref pattern | `node.mainEntity['@id'] === PERSON_ID` | Standard |
+| buildBreadcrumbListNode > produces a Zod-parseable BreadcrumbList | Factory output validates | `node['@type'] === 'BreadcrumbList'` | Standard |
+| buildBreadcrumbListNode > emits items with sequential position starting at 1 | Position starts at 1 | Positions 1, 2, 3 in order | Standard |
+| buildBreadcrumbListNode > copies name + item from input | Input mapping correct | Last item matches input | Standard |
+| buildCollectionPageNode > produces a Zod-parseable CollectionPage | Factory output validates | `node['@type'] === 'CollectionPage'` | Standard |
+| buildBlogPostingNode > produces a Zod-parseable BlogPosting from a real post | Factory output validates | `node['@type'] === 'BlogPosting'` | Reads adapter.blog.all |
+| buildBlogPostingNode > copies inLanguage from post.lang | Locale propagation | `node.inLanguage === post.lang` | Reads adapter.blog.all |
+| buildBlogPostingNode > references Person via author + publisher @ids (Q6-A: same @id) | Person-as-publisher pattern | Both refs equal PERSON_ID | Reads adapter.blog.all |
+| buildBlogPostingNode > uses post.date as datePublished | Date propagation | `node.datePublished === post.date` | Reads adapter.blog.all |
+| buildServiceNode > produces a Zod-parseable Service from a real service | Factory output validates | `node['@type'] === 'Service'` | Reads adapter.services.visible |
+| buildServiceNode > references Person via provider @id | Cross-ref pattern | `node.provider['@id'] === PERSON_ID` | Reads adapter.services.visible |
+| buildServiceNode > does not emit availableLanguage (dropped to resolve validator.schema.org warning) | Codex-iteration guard | `availableLanguage === undefined` on emitted node | Reads adapter.services.visible |
+| buildCreativeWorkNode > produces a Zod-parseable CreativeWork from a real project | Factory output validates | `node['@type'] === 'CreativeWork'` | Reads adapter.projects.public |
+| buildCreativeWorkNode > references Person via author + creator @ids | Cross-ref pattern | Both refs equal PERSON_ID | Reads adapter.projects.public |
+| buildCreativeWorkNode > copies project.tags into keywords + project.stack into about | Domain → schema mapping | `keywords === tags`, `about === stack` | Reads adapter.projects.public |
+| buildCreativeWorkNode > omits dates per Q5-A decision — Project has no date field | Project has no date field | `datePublished === undefined` | Reads adapter.projects.public |
+
+## src/lib/components/seo/JsonLd.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| JsonLd.svelte > emits zero <script> tags when nodes is empty | Empty guard | `document.head.querySelectorAll(...).length === 0` | jsdom |
+| JsonLd.svelte > emits exactly one <script type="application/ld+json"> when nodes non-empty | Single-tag pattern | `document.head.querySelectorAll(...).length === 1` | jsdom |
+| JsonLd.svelte > wraps nodes in @graph with @context | @graph envelope correct | `parsed['@context'] === 'https://schema.org'` | jsdom |
+| JsonLd.svelte > round-trip parses every node unchanged | JSON round-trip clean | `parsed['@graph']` deep-equals input | jsdom |
+| JsonLd.svelte > escapes < inside field values (XSS regression guard) | XSS prevention | Content contains `\u003c`, not `<` | jsdom |
+
+## src/lib/components/seo/SeoHead.test.ts — JsonLd integration (Slice 15b)
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| JsonLd integration (Slice 15b) > does NOT mount <script> when seo.jsonLd is undefined | Optional jsonLd respected | No script tag rendered | jsdom |
+| JsonLd integration (Slice 15b) > does NOT mount <script> when seo.jsonLd is empty | Empty jsonLd respected | No script tag rendered | jsdom |
+| JsonLd integration (Slice 15b) > mounts one <script> when seo.jsonLd has nodes | JsonLd child wired | One script tag with expected @graph | jsdom |
+
+## src/lib/adapters/meta.test.ts — adapter.meta.forRoute + jsonLd (Slice 15b)
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| adapter.meta.forRoute + jsonLd (Slice 15b) > returns jsonLd as part of PageSeo for a static route | /about has jsonLd | `seo.jsonLd` defined + array | Integration |
+| adapter.meta.forRoute + jsonLd (Slice 15b) > parses jsonLd through PageSeoSchema at the adapter boundary | Zod enforced through forRoute | Every node has @type + @id | Integration |
+| adapter.meta.forRoute + jsonLd (Slice 15b) > returns jsonLd for a dynamic blog route | Dynamic factories attach jsonLd | Types include BlogPosting + BreadcrumbList | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > / emits Person + WebSite + ProfilePage | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /about emits Person + ProfilePage + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /contact emits BreadcrumbList only | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /services emits CollectionPage + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /services/[id] emits Service + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /projects emits CollectionPage + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /projects/[slug] emits CreativeWork + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /blog emits CollectionPage + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /blog/personal emits CollectionPage + BreadcrumbList (nested: Home → Blog → Personal) | Q3-B decision encoded | Breadcrumb trail Home → Blog → Personal | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /blog/[slug] emits BlogPosting + BreadcrumbList | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /tech-stack emits BreadcrumbList only | Route coverage | Exact types array | Integration |
+| adapter.meta.forRoute + jsonLd — per-route coverage > /__error emits no jsonLd (noIndex route, per spec) | noIndex → no structured data | `jsonLd` undefined or empty | Integration |
+
+# Motion — Actions (`src/lib/motion/actions/`) — 5 files
+
+Post-17e vocabulary: 5 of the 9 interaction signatures (boop, cursorGlow, magnetic, morphHover, wordmarkHover) live here. The deleted entrance-style actions (`reveal`, `ripple`, `tilt`) from pre-17e are gone — their test files were removed in 17e-2.
+
+## src/lib/motion/actions/boop.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| boop action > returns an object with update and destroy methods | The action returns the Svelte action interface | `typeof result.update` === `'function'`, `typeof result.destroy` === `'function'` | `vi.useFakeTimers()`, `mockMatchMedia(false)` |
+| boop action > sets transform on mouseenter | Hovering applies a scale transform | `el.style.transform` contains `'scale(1.05)'` | `scale: 1.05` |
+| boop action > resets transform after the timing duration | The transform clears after the specified duration | `el.style.transform` === `''` after 300ms | `timing: 300`, `vi.advanceTimersByTime(300)` |
+| boop action > includes rotation in the transform when specified | Rotation is included in the hover transform | `el.style.transform` contains `'rotate(10deg)'` | `rotation: 10` |
+| boop action > clears transform on destroy cleanup | Destroying the action cleans up without errors | `action.destroy()` does not throw | Destroy before timeout fires |
+| boop action > does nothing when prefers-reduced-motion is on | The boop effect is skipped for accessibility | `el.style.transform` === `''` after mouseenter | `mockMatchMedia(true)` |
+| boop action > update() changes the params applied on next hover | Updating params changes the next hover effect | `el.style.transform` contains `'scale(1.2)'` | `action.update({ scale: 1.2 })` then mouseenter |
+
+## src/lib/motion/actions/cursorGlow.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| cursorGlow > sets --glow-x and --glow-y on pointermove | Moving the cursor sets CSS custom properties for the glow position | `--glow-x` === `'150px'`, `--glow-y` === `'40px'` | Mock `getBoundingClientRect`, `PointerEvent` |
+| cursorGlow > resets CSS vars on pointerleave | Leaving the element clears the glow position | `--glow-x` === `''`, `--glow-y` === `''` | Dispatch `pointerleave` |
+| cursorGlow > returns no-op on touch devices | The glow effect is disabled on touch screens | `--glow-x` === `''` after pointermove | `navigator.maxTouchPoints` = 1 |
+| cursorGlow > returns no-op when reduced motion is preferred | The glow effect is disabled for reduced-motion users | `--glow-x` === `''` after pointermove | Mock `isPrefersReducedMotion` returns true |
+
+## src/lib/motion/actions/magnetic.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| magnetic action > returns update and destroy methods | The action returns the Svelte action interface | `typeof result.update` === `'function'`, `typeof result.destroy` === `'function'` | `mockMatchMedia(false)`, `mockTouchDevice(false)` |
+| magnetic action > applies transform on mousemove within radius | Moving the cursor near the element pulls it toward the cursor | `el.style.transform` contains `'translate'` | Mock `getBoundingClientRect`, `strength: 3, radius: 50` |
+| magnetic action > clears transform on mouseleave | Leaving the element resets its position | `el.style.transform` === `''` | Dispatch `mouseleave` after `mousemove` |
+| magnetic action > clears transform on destroy | Destroying the action resets the element | `el.style.transform` === `''` | `action.destroy()` |
+| magnetic action > does nothing when reduced motion is on | The magnetic effect is disabled for accessibility | `el.style.transform` === `''` | `mockMatchMedia(true)` |
+| magnetic action > does nothing on touch devices | The magnetic effect is disabled on touch screens | `el.style.transform` === `''` | `mockTouchDevice(true)` |
+
+## src/lib/motion/actions/morphHover.test.ts (17e-5)
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| morphHover > returns an action object with destroy | The action returns a destroy function | `typeof result.destroy` === `'function'` | Mock reducedMotion + gsap.js lazy loader |
+| morphHover > reduced-motion: returns a no-op destroy, does not attach listeners | Reduced-motion short-circuits with no listener attachment | `addEventListener` not called; `destroy()` doesn't throw | `isPrefersReducedMotion.mockReturnValue(true)` |
+| morphHover > attaches mouseenter, mouseleave, and click listeners by default | All three listeners wired on non-reduced-motion | `addSpy` events include mouseenter, mouseleave, click | Standard |
+| morphHover > destroy removes the listeners it attached | destroy cleanup removes every listener added | `removeSpy` events include mouseenter, mouseleave, click | Standard |
+| morphHover > update() accepts a new shape set without throwing | Svelte action update protocol works | `result.update({ shapes: { b: 'M5 5' } })` does not throw | Standard |
+
+## src/lib/motion/actions/wordmarkHover.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| wordmarkHover action > returns an object with a destroy method | Action returns Svelte action interface | `typeof result.destroy` === `'function'` | Mock GSAP/SplitText, `mockMatchMedia(false)` |
+| wordmarkHover action > registers GSAP plugins on mount | ScrollTrigger config + SplitText registered on mount | `initScrollTriggerConfig` + `ensureSplitTextRegistered` called (post-17e-5 rename) | Dynamic import |
+| wordmarkHover action > creates a SplitText instance on the text element | SplitText wraps the text node | `SplitText` called with `(el, { type: 'chars' })` | Dynamic import |
+| wordmarkHover action > does nothing when prefers-reduced-motion is on | Animation skipped for accessibility | `SplitText` not called | `mockMatchMedia(true)`, `mockClear()` |
+| wordmarkHover action > reverts SplitText on destroy | DOM cleaned up on unmount | `splitInstance.revert` called | `mock.instances[0]` |
+| wordmarkHover action > triggers animation on mouseenter | Hover fires GSAP timeline | `gsap.timeline` called after mouseenter | `dispatchEvent(MouseEvent)` |
+| wordmarkHover action > accepts autoPlay option to fire on mount | First effect plays immediately | `gsap.timeline` called on init | `autoPlay: true` |
+
+# Motion — Components (`src/lib/motion/components/`) — 1 file
+
+`ScrollRail.test.ts` removed in 17e-2 alongside the scroll-rail orphan. Only `LottiePlayer.test.ts` remains — pre-17e infrastructure kept for blog/project detail Lottie illustrations.
+
+## src/lib/motion/components/LottiePlayer.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| LottiePlayer component > renders a container element with data-testid="lottie-player" | The Lottie container exists in the DOM | `getByTestId('lottie-player')` in document | `src: '/lottie/station-sql.json'` |
+| LottiePlayer component > has role="img" for screen reader accessibility | The Lottie container is announced as an image | `getByRole('img')` in document | Standard |
+| LottiePlayer component > has an aria-label | The Lottie animation has a text description | `getAttribute('aria-label')` is truthy | Standard |
+| LottiePlayer component > accepts src prop without error | A different Lottie source renders without crashing | `render(...)` does not throw | `src: '/lottie/station-pipeline.json'` |
+| LottiePlayer component > accepts trigger prop without error | The trigger prop is accepted without errors | `render(...)` does not throw | `trigger: 'scroll'` |
+| LottiePlayer component > accepts loop prop without error | The loop prop is accepted without errors | `render(...)` does not throw | `loop: true` |
+| LottiePlayer component > accepts speed prop without error | The speed prop is accepted without errors | `render(...)` does not throw | `speed: 0.8` |
+| LottiePlayer component > renders the lottie-player div with lottie-player class | The container has the correct CSS class | `el.classList.contains('lottie-player')` === true | Standard |
+
+# Motion — Scrubs (`src/lib/motion/scrubs/`) — 3 files (17e-3 + 17e-4)
+
+Sync-factory scroll-scrub primitives. Each test covers: factory returns `() => void` destroy; reduced-motion branch short-circuits with final-state render + no-op destroy; unmount safety.
+
+## src/lib/motion/scrubs/createCrescendoScrub.test.ts (17e-3)
+
+Covers the scale + opacity scrub applied across a section's scroll range. Tests the factory shape, minScale/maxScale opts, destroy idempotency, and reduced-motion final-state rendering. Used by Manifesto 3-line statement + rotated edge titles on Projects/Services/Terminus.
+
+## src/lib/motion/scrubs/createDrawScrub.test.ts (17e-3)
+
+Covers the DrawSVG stroke-scrub that draws paths from 0% to 100% as the user scrolls through a section. Tests factory shape, `pathSelector` option, and reduced-motion path-final-state rendering. Used by Blueprint SVGs on blog + projects listing pages.
+
+## src/lib/motion/scrubs/createHeroTimeline.test.ts (17e-4)
+
+6 tests validating the site's only pinned scroll-scrub (the hero 9-phase timeline):
+1. Factory returns a destroy function
+2. Pin registration via ScrollTrigger
+3. Destroy is safe to call multiple times without side effects
+4. Reduced-motion branch returns a no-op destroy + renders final state (hero text visible, network dimmed)
+5. Custom `pinLength` option respected (300% on mobile, 800% on desktop)
+6. Bare-container call returns a no-op destroy (graceful degradation in test environments)
+
+# Motion — Stores (`src/lib/motion/stores/`) — 2 files, 16 tests
+
+## src/lib/motion/stores/reducedMotion.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| prefersReducedMotion store > is a readable store with a subscribe method | The store has the standard Svelte readable interface | `typeof subscribe` === `'function'` | `mockMatchMedia(false)` |
+| prefersReducedMotion store > returns false when reduced motion is not set | Default OS setting (no preference) returns false | `get(store)` === false | `mockMatchMedia(false)` |
+| prefersReducedMotion store > returns true when OS reduced-motion preference is on | Enabling OS reduced motion is detected | `get(store)` === true | `mockMatchMedia(true)`, `vi.resetModules()` |
+| prefersReducedMotion store > registers a change event listener for reactivity | The store listens for OS preference changes | `mql.addEventListener` called with `'change'` and a function | Subscribe to trigger setup |
+| prefersReducedMotion store > removes the change listener on unsubscribe | Unsubscribing cleans up the OS listener | `mql.removeEventListener` called with `'change'` | `unsub()` |
+| isPrefersReducedMotion helper > returns a boolean | The helper returns a boolean type | `typeof result` === `'boolean'` | Standard |
+| isPrefersReducedMotion helper > returns false when reduced motion is off | The helper correctly reports no preference | Result === false | `mockMatchMedia(false)` |
+| isPrefersReducedMotion helper > returns true when reduced motion is on | The helper correctly reports the preference | Result === true | `mockMatchMedia(true)` |
+
+## src/lib/motion/stores/scroll.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| scrollProgress store > is a readable store with a subscribe method | The store has the standard Svelte readable interface | `typeof subscribe` === `'function'` | Stubs `requestAnimationFrame`, `setScrollState(0, 1000, 600)` |
+| scrollProgress store > returns a number | The store value is a number type | `typeof value` === `'number'` | Standard |
+| scrollProgress store > returns 0 when at the top of the page | No scroll means 0% progress | `get(store)` === 0 | `scrollY: 0` |
+| scrollProgress store > returns 1 when scrolled to the bottom | Full scroll means 100% progress | `get(store)` === 1 | `scrollY: 400, scrollHeight: 1000, innerHeight: 600` |
+| scrollProgress store > returns 0.5 when scrolled halfway | Half scroll means 50% progress | `get(store)` === 0.5 | `scrollY: 200` |
+| scrollProgress store > returns 0 when content fits viewport | No scrollbar means 0% progress | `get(store)` === 0 | `scrollHeight === innerHeight` |
+| scrollProgress store > returns a value between 0 and 1 | Progress is always clamped to [0, 1] | Value >= 0 and <= 1 | `scrollY: 100` |
+| scrollProgress store > updates when a scroll event fires | Dispatching a scroll event updates the progress | `get(store)` close to 0.5 after scrolling | `window.dispatchEvent(new Event('scroll'))` |
+
+# Motion — SVG (`src/lib/motion/svg/`) — 1 file
+
+The Train / TrainJourney / train-path tests were removed in 17e-2 along with the train-journey metaphor (replaced by scroll-scrub crescendo on the Manifesto statement). Only MetroNetwork remains.
+
+## src/lib/motion/svg/MetroNetwork.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| MetroNetwork > renders the container div | The metro network container element exists | `querySelector('[data-testid="metro-network-container"]')` in document | SVG is inlined at build via Vite `?raw` (17e-4); unit test only verifies container |
+
+# Motion — Tokens (`src/lib/motion/`) — 1 file (17e-1)
+
+## src/lib/motion/tokens.test.ts
+
+Parity test — asserts every `--duration-*` / `--ease-*` declared in `src/lib/styles/tokens.css` has a matching entry in `src/lib/motion/tokens.ts` (and vice versa). Adding a new motion token requires updating both files and the parity-test's expected list. Guards against JS and CSS drifting out of sync when GSAP consumers use tokens at compute time.
+
+# Motion — Utils (`src/lib/motion/utils/`) — 7 files
+
+Plugin-registration hub, shared ticker, FLIP primitives, Lenis smoothscroll bridge, device helpers, stagger helper, and MorphSVG path-conversion helper.
+
+## src/lib/motion/utils/gsap.test.ts (rewritten 17e-5)
+
+Post-D269: `registerGsapPlugins` deleted. Tests now cover the new API surface:
+
+- `initScrollTriggerConfig()` — registers ScrollTrigger + applies `{ ignoreMobileResize: true }`; idempotent
+- `ensureSplitTextRegistered()` — sync SplitText registration for wordmarkHover; idempotent
+- Re-exports: `gsap`, `ScrollTrigger`, `SplitText`, `MorphSVGPlugin` (MotionPathPlugin, DrawSVGPlugin, CustomEase, Flip dropped — lazy-loaded only)
+- Lazy loaders: `loadDrawSVG`, `loadMorphSVG`, `loadFlip`, `loadCustomEase`, `loadMotionPathPlugin`, `loadSplitText` — each resolves without error, registers its plugin with gsap, and is idempotent
+- `ensureSplitTextRegistered` + `loadSplitText` share the same registry (one `registerPlugin` call for two entry paths)
+
+## src/lib/motion/utils/ticker.test.ts (17e-1)
+
+Covers the shared `gsap.ticker` fan-out:
+
+- `subscribe(id, fn)` invokes `gsap.ticker.add` exactly once total (regardless of number of subscribers)
+- Internal callback fans `time` + `deltaTime` out to every registered subscriber
+- `unsubscribe(id)` removes a subscriber from subsequent frames
+- Subscribing with an existing id replaces the previous callback (idempotent)
+- `subscribe` returns an unsubscribe function that works as a reference cleanup
+
+## src/lib/motion/utils/flip.test.ts (17e-2)
+
+FLIP filter-transition primitives extracted from the deleted `listingAnimations.ts`:
+
+- `captureFlipState()` returns null when reduced-motion is on or no `[data-flip-id]` elements exist
+- `animateFlipTransition(selector, state, batchFired, onDone)` no-ops when `batchFired` is false
+- Consumer precondition documented: `await loadFlip()` at `onMount` (enforced by BlogListingPage + ProjectListingPage post-17e-5)
+
+## src/lib/motion/utils/lenis.test.ts
+
+Covers the Lenis smoothscroll bridge — `initLenis`, `destroyLenis`, scroll position sync. Post-17e-1, `ScrollTrigger.normalizeScroll` is no longer used (the call was removed to fix a tap-vs-click bug on iOS); test coverage reflects the Lenis-only post-normalize state.
+
+## src/lib/motion/utils/device.test.ts
+
+Covers `isTouchDevice()` helper — `maxTouchPoints` + `hasPointer` heuristic. Used by `magnetic`, `cursorGlow`, and any action that should no-op on touch.
+
+## src/lib/motion/utils/morphHelpers.test.ts
+
+Covers `convertSvgToMorphPaths(container)` — finds SVG shape elements, coerces them to path elements via `MorphSVGPlugin.convertToPath`, returns `{ paths, originals }`. Consumed by both `morphHover` action and `SvgIcon.animateMorph`.
+
+## src/lib/motion/utils/stagger.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| stagger utility > returns 0 for index 0 regardless of baseDelay | The first element always animates instantly | `stagger(0, 80)` === 0 and `stagger(0, 120)` === 0 | `randomize: false` |
+| stagger utility > returns baseDelay * index when randomize is false | Deterministic delays are linearly proportional to index | `stagger(1, 80)` === 80, `stagger(2, 80)` === 160, `stagger(3, 80)` === 240 | `randomize: false` |
+| stagger utility > returns 0 for index 0 even with randomization enabled | The first element is instant even with randomization | Result >= 0 | Default (randomize: true) |
+| stagger utility > randomized result stays within +/- randomRange of deterministic value | Randomized delays stay within the configured variance | Result within `deterministic ± baseDelay * randomRange` across 100 iterations | `randomRange: 0.15` |
+| stagger utility > never returns a negative value | Stagger delays are always non-negative | Result >= 0 across 200 iterations | Standard |
+| stagger utility > returns 0 when baseDelay is 0 | Zero base delay means zero delay for all indices | `stagger(5, 0)` === 0 | Standard |
+| stagger utility > respects a custom randomRange option | A tighter randomRange reduces variance | Result within `deterministic ± 5` across 100 iterations | `randomRange: 0.05` |
+| stagger utility > defaults to randomize: true | Without options, delays vary between calls | 50 calls produce > 1 distinct value for index 3 | Default options |
+
+# Routes (`src/routes/`) — 2 files, 23 tests
+
+## src/routes/error.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| 404 Error Page > renders the construction scene | The SVG construction illustration exists | `getByTestId('construction-scene')` in document | Renders `+error.svelte` |
+| 404 Error Page > renders the ROUTE NOT FOUND label | The error label text is visible | `getByText('ROUTE NOT FOUND')` in document | Standard |
+| 404 Error Page > renders the heading | The main heading text is visible | `getByText('This station is under construction')` in document | Standard |
+| 404 Error Page > renders route suggestion links | All 3 suggestion buttons have correct hrefs | Services→`/services`, Work→`/work`, Contact→`/contact` | Standard |
+| 404 Error Page > renders the terminal status line | The terminal decoration exists | `getByTestId('terminal-line')` in document | Standard |
+| 404 Error Page > renders hazard tape accents | Both top and bottom hazard tapes exist | `getAllByTestId('hazard-tape')` length === 2 | Standard |
+
+## src/routes/home.test.ts
+
+| Test Name (describe > it) | What It Validates | Key Assertions | Setup Notes |
+|---------------------------|-------------------|----------------|-------------|
+| Home page > renders the app root | Page root container exists | `getByTestId('app-root')` | Standard |
+| Home page > renders the hero banner | Hero section exists | `getByTestId('hero-banner')` | Standard |
+| Home page > renders the metro network container in the hero | Metro SVG container exists | `getByTestId('metro-network-container')` | Standard |
+| Home page > renders the hero headline | Two-line headline rendered | `hero-line1` contains `'PIPELINES THAT'`, `hero-line2` contains `"DON'T BREAK"` | Standard |
+| Home page > renders the hero orange dot | Brand dot is an SVG element | `hero-dot` tagName is `svg` | Standard |
+| Home page > renders hero subheadline | Subheadline text rendered | `hero-subheadline` contains `'Data that tell the truth'` | Standard |
+| Home page > renders hero subtitle | Subtitle text rendered | `hero-subtitle` contains `'reliable infrastructure'` | Standard |
+| Home page > renders hero CTAs | Work and contact buttons exist | `hero-cta-work`, `hero-cta-contact` | Standard |
+| Home page > renders hero metric cards | 3 metric cards rendered | `hero-metrics` + `getAllByTestId('metric-card')` length 3 | Standard |
+| Home page > renders hero SQL panel | SQL panel(s) rendered with query | `getAllByTestId('sql-panel')` >= 1, query contains `'SELECT'` | Desktop + mobile panels |
+| Home page > renders hero refresh button | Refresh button exists | `getByTestId('hero-refresh')` | Standard |
+| Home page > renders the hard-cut transition | Von Restorff divider exists | `getByTestId('hard-cut')` | Standard |
+| Home page > renders the manifesto section | Manifesto section exists | `getByTestId('manifesto-section')` | Standard |
+| Home page > renders manifesto capability pills | 5 capability pills rendered | `getAllByTestId('manifesto-pill')` length 5 | Standard |
+| Home page > renders the proof reel section | Proof reel section exists | `getByTestId('proof-reel-section')` | Standard |
+| Home page > renders 3 proof reel cards | 3 project cards rendered | `getAllByTestId('proof-card')` length 3 | Standard |
+| Home page > renders the services section | Services section exists | `getByTestId('services-section')` | Standard |
+| Home page > renders 6 service cards | 6 service cards rendered | `getAllByTestId('services-card')` length 6 | Standard |
+| Home page > renders service benefit headlines | 6 benefit headlines rendered | `getAllByTestId('services-benefit')` length 6 | Standard |
+
+---
+
+## Test Run Summary
+
 ```
+Runner:     Vitest v4.1.2
+Timestamp:  2026-04-15
+Duration:   ~30s
 
-**Never say "some tests failed" without listing every failure by name.** If your test runner doesn't natively produce this format, document the conversion command here.
-
-| Conversion | Command |
-|------------|---------|
-| <!-- FILL IN: e.g., "Vitest JSON → markdown table" --> | <!-- FILL IN: e.g., `bun run test:report` --> |
-
-## Notes / decisions
-
-<!-- FILL IN: testing decisions worth documenting (e.g., "happy-dom over jsdom for 4x speed" / "no integration tests against live DB — use docker-compose stack"). -->
+Test Files:  59 passed (59)
+Tests:       785 passed (785)
+Failures:    0
+```
