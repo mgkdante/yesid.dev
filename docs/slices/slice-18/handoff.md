@@ -9,7 +9,7 @@
 | Status | 🟢 in progress (Task 0 + Task 1 + clean-slate follow-up shipped this session) |
 | Slice PR (site) | pending — [`feature/slice-18`](https://github.com/mgkdante/yesid.dev/tree/feature/slice-18) (keep accumulating sessions before opening; likely opens at slice close) |
 | Scorch PR (cms)      | [mgkdante/yesid.dev-cms#1](https://github.com/mgkdante/yesid.dev-cms/pull/1) — **MERGED** as `a7a1db6` |
-| Clean-slate PR (cms) | [mgkdante/yesid.dev-cms#2](https://github.com/mgkdante/yesid.dev-cms/pull/2) — **OPEN**, awaiting owner approval |
+| Clean-slate PR (cms) | [mgkdante/yesid.dev-cms#2](https://github.com/mgkdante/yesid.dev-cms/pull/2) — **MERGED** as `0295dd6` |
 | Spec | [./spec.md](spec.md) |
 | Plan | [./plan.md](plan.md) |
 | Research | [./research.md](research.md) |
@@ -67,7 +67,7 @@ Landed as **two sequential PRs** (per owner steering mid-session: after PR #1 me
 - **Session:** 2026-04-22
 - **PRs** (separate repo — `yesid.dev-cms`, NOT `yesid.dev`):
   - **[#1](https://github.com/mgkdante/yesid.dev-cms/pull/1)** — scorch Payload. Commits `0effef9` (scorch; 56 files · 152 insertions · 20,282 deletions) + `803d60c` (`vercel.json` with `ignoreCommand: exit 0` to calm Vercel after it kept trying to build the removed Next shell). Merged as `a7a1db6`.
-  - **[#2](https://github.com/mgkdante/yesid.dev-cms/pull/2)** — clean slate. Commit `f3a94df` (15 files · 23 insertions · 545 deletions). **OPEN, awaiting owner approval.** Deletes `.env.example`, `.prettierrc.json`, `.vscode/`, `AGENTS.md`, `CLAUDE.md`, `CODEX-CONTEXT.md`, `bun.lock`, `eslint.config.mjs`, `next.config.ts`, `package.json`, `tsconfig.json`. Rewrites `.gitignore` + `README.md`. Final tracked file list: `.gitignore`, `.nvmrc`, `README.md`, `vercel.json`. That's it.
+  - **[#2](https://github.com/mgkdante/yesid.dev-cms/pull/2)** — clean slate. Commit `f3a94df` (15 files · 23 insertions · 545 deletions). Merged as `0295dd6`. Deletes `.env.example`, `.prettierrc.json`, `.vscode/`, `AGENTS.md`, `CLAUDE.md`, `CODEX-CONTEXT.md`, `bun.lock`, `eslint.config.mjs`, `next.config.ts`, `package.json`, `tsconfig.json`. Rewrites `.gitignore` + `README.md`. Final tracked file list: `.gitignore`, `.nvmrc`, `README.md`, `vercel.json`. That's it.
 
 **Files deleted (yesid.dev-cms):**
 
@@ -355,4 +355,4 @@ Required next step: Task 2 — Directus research (spec D1/D2/D3 resolution).
 
 ## 27) Final Status
 
-🟢 **IN PROGRESS** — Task 0 + Task 1 landing in this session. Remaining tasks (2–8) scheduled across subsequent sessions.
+🟢 **IN PROGRESS** — Task 0 + Task 1 shipped this session. PR #1 (`a7a1db6`) + PR #2 (`0295dd6`) merged on yesid.dev-cms; yesid.dev `feature/slice-18` branch holds the scaffold + handoff (pending PR opening at slice close or after Task 2). Remaining tasks (2–8) scheduled across subsequent sessions.
