@@ -9,6 +9,94 @@
 
 ---
 
+## Session 2026-04-22 (multi-chapter) — Implementation + Planning amendment + Plugin release
+
+**Tool:** Claude Code (Opus 4.7 [1m], reasoning=high)
+**Session type:** Implementation + Planning amendment + Closing (plugin-side)
+**Focus:** Tasks 3, 4, 4.5, 5 — plugin capability evolution; mid-slice spec amendment Option B + D11; CLOUD-III scope seeded; plugin v0.2.0 shipped
+**Picking up from:** commit 86ba005 (Session 3 close — PR-CRLF fix + stale template cleanup)
+
+### What happened
+
+Large multi-chapter session. **All plugin-side work for slice-cloud-ii is now complete.** yesid.dev-side refactor (Tasks 6 → 9) deferred to fresh session with Sonnet 4.6.
+
+**Chapters / PRs landed on `mgkdante/workflow`:**
+
+1. **Task 3 — PR #9 (`feedback/8-phase-pipeline`)** — scaffold `docs/reference/WORKFLOW.md` grew 69 → 386 lines. Added 8-phase pipeline diagram + per-phase protocols (Research / Brainstorm / Spec / Plan / Implementation / Verification / PR & Merge / Closing) + Cross-tool adversarial review section + Proven rhythms + Self-enhancing workflow principle. Merged.
+
+2. **Task 4 partial — PR #10 (`feedback/workflow-mechanics-batch2`)** — scaffold WORKFLOW.md grew 386 → 669 lines. Added Three-tier context model + Document ecosystem + Cross-platform setup + OS-quirks registry + Session Start Protocol + Session End Protocol + Quality Gates + Parallel Work Rules + Agent selection matrix + Tool selection protocol. Consumed 3 audit batching groups (PR-7, PR-8, PR-10-remainder) in one cohesive PR. Merged.
+
+3. **CLOUD-III scope capture — PR #11 (`feedback/cloud-iii-scope-seed`)** — created `plugins/workflow/docs/slices/slice-cloud-iii/SCOPE.md` seed for next slice. Documented 3 sub-slices (plan amendment helper / workflow self-audit / cross-tool handoff polish) then amended mid-PR to add 4th sub-slice (`/workflow-detect-codify` passive project-doc creation triggers) per user insight that passive accumulation beats upfront interrogation. Merged (only initial commit landed due to merge timing).
+
+4. **Docs cleanup follow-up — PR #12 carry-over (`feedback/scaffold-docs-project`)** — caught that PR-11 merged before commits 2-3 landed. Redid the docs move (`plugins/workflow/docs/` → repo-root `docs/`) + README update + SCOPE.md storage-rule rewrite. Critical for architectural separation (plugin dir = installable only; repo docs = dev meta).
+
+5. **Spec amendment (Option B + D11)** — user picked Option B (full file-level partition via `docs/project/`) over original Option A (pointer-replacement in same files). Rationale: hybrid files create permanent `/workflow-pull` friction; full separation eliminates ambiguity. Amended spec D3 + added D11 (project documentation discipline) + added Task 4.5 + Task 6.5 to plan. Committed as `5267e41` on yesid.dev.
+
+6. **Task 4.5 — PR #12 (same as above) (`feedback/scaffold-docs-project`)** — plugin scaffold gains `docs/project/` directory per D11. 12 new files: `README.md` (teaches DEFAULT/OPTIONAL/EMERGENT discipline + when-to-create rubric + 10 EMERGENT examples) + 6 DEFAULT skeletons (STACK / BINDINGS / ARCHITECTURE / TESTS / VOCAB / CONSTITUTION) + 5 OPTIONAL templates (`_OPTIONAL_BRAND/CSS/MOTION/PATTERNS/SERVICES`). Plus updates to scaffold AGENTS.md (repo-structure diagram), WORKFLOW.md (Phase 8 step 6 + Self-enhancing expanded + Document ecosystem row), workflow-add SKILL.md (inventory). 1133 lines added. Merged.
+
+7. **Task 4 close — PR #13 (`feedback/agents-slot-pattern`)** — scaffold AGENTS.md slot-pattern refinement (5 sections now explicitly point at `docs/project/<X>.md`) + scaffold `docs/reference/VOCAB.md` rewrite (43 → 158 lines, 70+ canonical workflow terms in 12 categorized sections, partition-clean per D3) + scaffold `docs/roadmap/PLAN.md` adds Decisions log + Amendments log + cross-refs to project docs. 188 insertions / 41 deletions. Merged.
+
+8. **Task 5 — v0.2.0 release** — authored v0.2.0 entry in `plugins/workflow/CHANGELOG.md` (107 lines summarizing all 9 PRs + D3/D11 invariants + migration notes). Committed as `8c1de24` then `git tag v0.2.0` + `git push --tags`. Plugin milestone shipped.
+
+**Friction-driven PR bonus (PR #8 from Session 3):** the CRLF line-ending fix to `/workflow-pull` surfaced during Session 2 got added to its own PR + merged earlier. Unblocked all subsequent `/workflow-pull` usage on Windows.
+
+**`/workflow-pull` verifications across the session:** each post-merge pull correctly classified files per D3 partition — yesid's customized AGENTS.md/WORKFLOW.md/VOCAB.md/PLAN.md SKIPPED, scaffold templates UPDATED or unchanged, new `docs/project/` files ADDED. Tracker advanced through: `48e2c52` → `5f3d145` → `abe1176` → `e57808c` → `7ca4810` → `8c1de24` (v0.2.0).
+
+### Commits (this session on slice-cloud-ii branch)
+
+- `5267e41` — spec amendment for Option B + D11 + plan Tasks 4.5/6.5
+- `7666d82` — sync to workflow@abe1176 (PR-9 pull); audit PR-3 marked EXTRACTED
+- `f9478bd` — (same batch, different diff — needs reconciling)
+- `5ab42c4` — sync to workflow@7ca4810 (PR-12 pull); 12 new docs/project/ files ADDED
+- `cbb814e` — sync to workflow@8c1de24 (v0.2.0 pull); 3 files SKIPPED correctly
+- (pending in this close commit) — this devlog block + audit updates
+
+### Workflow plugin commits this session
+
+Nine PRs + the v0.2.0 release commit + tag. Plugin advanced `d0131be (v0.1.8) → 8c1de24 (v0.2.0)`.
+
+### Tasks status (TodoWrite snapshot at session close)
+
+| # | Task | Status |
+|---|------|--------|
+| 1 | Partition audit | ✅ done |
+| 2 | Extraction batch 1 (iter protocol + progress tracking + templates + CRLF fix) | ✅ done |
+| 3 | Extraction batch 2 (8-phase pipeline + per-phase protocols) | ✅ done |
+| Spec amend | Option B + D11 + plan Tasks 4.5/6.5 | ✅ done |
+| CLOUD-III seed | 4 sub-slices scoped in plugin repo | ✅ done (PR-11+12) |
+| 4.5 | Plugin scaffold gains docs/project/ skeleton | ✅ done (PR-12) |
+| 4 | Remaining extraction PRs (AGENTS slot + VOCAB + PLAN logs) | ✅ done (PR-13) |
+| **5** | **Plugin v0.2.0 tag** | ✅ **SHIPPED** |
+| 6 | yesid AGENTS.md trim to slot pattern | ⏳ next session |
+| 6.5 | yesid project-content migration | ⏳ next session |
+| 7 | /workflow-pull verification from v0.2.0 | ⏳ next session |
+| 8 | Cross-tool adversarial review | ⏳ next session |
+| 9 | Close: archive, PR, merge | ⏳ next session |
+
+### Outstanding — fresh session required
+
+**Next session: Tasks 6 + 6.5 + 7 + 8 + 9 (yesid.dev refactor + close).** Drop to Sonnet 4.6 (mechanical refactor work). Budget-heavy session — plan for 2 sessions possibly:
+
+- **Task 6 (AGENTS.md trim)**: current AGENTS.md is 393 lines with heavy workflow-universal content. Trim to ≤200 lines (target ≥50% reduction per amended acceptance). Replace extracted sections with slot pointers to `docs/reference/<X>.md` (plugin-pulled) + `docs/project/<X>.md` (project-owned). Keep: project brand triad, Bun runtime, domain framing, project-specific Never items. Slice bindings: "verification commands: `bun run test` + `bun run check`" inline OR pointer to docs/project/BINDINGS.md.
+
+- **Task 6.5 (migration)**: `git mv 6 files` from `docs/reference/` → `docs/project/` (ARCHITECTURE/CSS/MOTION/PATTERNS/CONSTITUTION/TESTS); split `docs/reference/VOCAB.md` (workflow stays; project + industry + brand + tool vocab moves to `docs/project/VOCAB.md`); create 4 new `docs/project/{STACK, BRAND, BINDINGS, SERVICES}.md` from content extracted from AGENTS.md during Task 6; update ~30-40 live references (AGENTS.md prose, CLAUDE.md, active slice bundles at `docs/slices/slice-18/`/`slice-cloud-ii/`, source-code comments, `docs/README.md` navigation). Cloud archive untouched per non-goals.
+
+- **Task 7 (pull verification)**: `/workflow-pull` in yesid.dev post-trim + post-migration — should see ZERO skipped for the pure-pull files (WORKFLOW.md, VOCAB.md, ARCHIVE.md, tools/*.md all have zero diff against plugin blobs); AGENTS.md correctly SKIPPED (slot-pattern hybrid); `docs/project/*` all zero-touched (project-owned never pulled).
+
+- **Task 8 (cross-tool review)**: invoke `/workflow-close-slice` → triggers Codex adversarial-review via codex-plugin-cc. STOP for real Codex response (D12 — no inline simulation). Capture findings in handoff.md § Peer review. Triage BLOCKER/HIGH → address before merge.
+
+- **Task 9 (close)**: final handoff pass + tree.txt regen + PR open + merge + `bun run slice:close slice-cloud-ii` + MEMORY.md update + branch + worktree delete.
+
+### Budget
+
+Model: Opus 4.7 [1m] | Context: ~82% — pre-break / danger zone, stopping cleanly per AGENTS.md § Session token budget
+
+- Wall-clock: ~13.5h cumulative across all 4 chapters this session (00:47 → 14:19)
+- Mid-session model switches: none
+- Notes for next session: **Sonnet 4.6 mandatory**. Tasks 6 + 6.5 are mechanical refactor (move files / edit text / update references). No novel design — the amendment already chose Option B + D11. Sonnet handles mechanical work at a fraction of the cost. Fresh session gets clean cache.
+
+---
+
 ## Session 2026-04-22 01:50 — Implementation (micro)
 
 **Tool:** Claude Code (Opus 4.7 [1m], reasoning=high)
@@ -198,3 +286,4 @@ Rolling index for quick scroll. Update each session.
 | 2026-04-22 | Planning | Task 1 — partition audit | partition-audit.md shipped (0b8f3ec); Task 2 extraction PRs pending user sanity-check on 10-group batching plan |
 | 2026-04-22 | Implementation | Task 2 + bonus PR-3 templates-hardening | 3 PRs merged (workflow#5/#6/#7 → fe0883a); audit updated with PR URLs; CRLF friction logged for future /workflow-update; ready for Task 3 (8-phase pipeline) in fresh session, drop to Sonnet 4.6 |
 | 2026-04-22 | Implementation (micro) | PR-CRLF fix + pull retry | workflow#8 merged → 5f3d145; templates synced into yesid.dev (docs/_TEMPLATES/); tracker bumped 48e2c52→5f3d145; CRLF Outstanding item resolved end-to-end |
+| 2026-04-22 | Implementation + Planning amendment + Closing (plugin-side) | Tasks 3, 4, 4.5, 5 + spec amend Option B/D11 + CLOUD-III seed + v0.2.0 release | 5 plugin PRs merged (#9/#10/#11/#12/#13); plugin v0.2.0 tagged + pushed; yesid spec amended + tracker at 8c1de24; Tasks 6–9 deferred to fresh session with Sonnet 4.6 |
