@@ -207,7 +207,7 @@ Get-ChildItem -Recurse -Name | Where-Object { $_ -notmatch 'node_modules|\.git|\
 | 17  | Standardization: Design System + Ports & Adapters   | planned — split execution (see Execution Sequence below)         | 13           | 13-14         |
 | 15  | SEO + metadata                                      | planned — built on 17b service layer                             | 13, 17a, 17b | 1-2           |
 | 16  | E2E test suite + performance + brand QA             | planned — tests final standardized + SEO state                   | 15, 17       | 3             |
-| 18  | Cloud content layer — Payload (own repo) + Neon     | in progress — 18a + 18b shipped 2026-04-21 (infra + content model + prod seed) | 16, 17       | 5-7           |
+| 18  | Cloud content layer — **Directus** (own repo) + Neon | in progress — 18a + 18b shipped 2026-04-21 on Payload (now historical); **pivoted to Directus 2026-04-22** after research; 18c-18g rewritten as Directus rebuild | 16, 17       | 5-8           |
 | 19  | Mobile UI/UX optimization                           | planned                                                          | 17, B+       | 2             |
 | 19b | Accessibility (A11Y) optimization                   | planned                                                          | 19           | 2             |
 | 20  | Scroll smoothness + animation polish                | planned                                                          | B+, 19b      | 1             |
@@ -229,7 +229,7 @@ Slice 17 executes in two phases, with SEO sandwiched between them. This avoids b
   → 17c (Zod schemas — validates SEO structured data too)
   → 17f (test architecture + docs)
     → 16 (E2E + QA — tests the FINAL state including SEO)
-      → 18 (Payload CMS — plugs into 17b service seam, SEO metadata as first test collection)
+      → 18 (Directus CMS — plugs into 17b service seam, SEO metadata as first test collection; pivoted from Payload 2026-04-22)
         → 19 (mobile optimization)
           → 19b (accessibility / A11Y)
             → 20 (scroll polish)
@@ -244,7 +244,7 @@ Slice 17 executes in two phases, with SEO sandwiched between them. This avoids b
 2. **15 after 17b** — `<SeoHead>` built once on the right foundation, no refactor needed
 3. **17c-17g after 15** — Zod validates SEO structured data; remaining standardization completes
 4. **16 last before deploy** — E2E tests cover the fully standardized + SEO-equipped site
-5. **18 after 16** — Payload plugs into 17b's service seam; SEO metadata becomes first test collection
+5. **18 after 16** — Directus plugs into 17b's service seam; SEO metadata becomes first test collection (pivoted from Payload 2026-04-22 — see `docs/slices/slice-headless-cms-best-practices/decision-brief.md`)
 
 ## Slice Summaries
 
@@ -264,7 +264,7 @@ Full per-slice specs, plans, devlogs, and handoffs live at `C:\Users\otalo\Yesit
 
 ### Remaining in Slice 17 (planned)
 
-- **17b** Service Layer (~2 sessions) — extracts service seams. Depends on design-system phase. Enables Slice 15 (SEO) and Slice 18 (Payload CMS).
+- **17b** Service Layer (~2 sessions) — extracts service seams. Depends on design-system phase. Enables Slice 15 (SEO) and Slice 18 (Directus CMS, pivoted from Payload 2026-04-22).
 - **17c** Zod Schemas (~0.5 session) — validates data-layer + future SEO structured data. Depends on 17b.
 - **17f** Test Architecture (~1–2 sessions) — test factories + co-location rules. Runs after 15.
 - **17g** Learning Docs Refactor (~2 sessions) — sweep the `docs/learn/` cloud mirror to align with post-17 architecture. **Scope re-evaluation needed** given learn/ moved to cloud in 17j.
@@ -288,7 +288,7 @@ Full per-slice specs, plans, devlogs, and handoffs live at `C:\Users\otalo\Yesit
 **Full direction:** [docs/slices/slice-17/README.md](../slices/slice-17/README.md)
 **Status:** IN PROGRESS — Phase 1 visual stage complete (17a, 17d, 17e, 17h shipped); 17j Workflow Efficiency active. **Depends on:** 13 **Est.:** 20–24 sessions across all sub-slices
 
-### Slice 18 — Cloud Content Layer: Payload (own repo) + Neon
+### Slice 18 — Cloud Content Layer: Directus (own repo) + Neon (pivoted from Payload 2026-04-22)
 
 **Full direction:** [docs/slices/slice-18/README.md](../slices/slice-18/README.md)
 **Status:** planned **Depends on:** 16, 17 **Est.:** 5–7 sessions
@@ -437,6 +437,7 @@ When ready to create custom animations, swap marketplace JSON files for custom o
 | 2026-04-07 | Brand = Digital Infrastructure (not just data/SQL) | Current focus is data engineering + SQL, but the brand umbrella covers databases, dashboards, pipelines, internal tools, web systems. All copy reflects broader positioning.                                 |
 | 2026-04-07 | Slice 10 = Home page rework after About/Contact    | Building all route pages gave clarity on site identity. Home (post-hero) was built before subsites. Rework with full context. Archive SkillsJourney (keep code, disable render, bring back optimized later). |
 | 2026-04-10 | Slice 14 deferred to CD/CI                         | First feature released under a proper CD/CI pipeline after deploy, like a real engineer                                                                                                                      |
+| 2026-04-22 | Slice 18 CMS: PIVOT from Payload to Directus        | Supersedes 2026-04-16 Payload decision. Research slice `slice-headless-cms-best-practices` (6 parallel agents, 3 dimensions, 2 WebFetches including directus.io/mcp) + decision-brief shipped. Decisive factors: (a) mobile/iPad admin (Payload admin breaks <768px, Directus works on iPad); (b) SvelteKit live preview (Directus has 7 official tutorials + `@directus/visual-editing` v2; Payload's only community SvelteKit starter archived Nov 2025); (c) Directus MCP GA native v11.13 Nov 2025 (first-party, all tiers) — correction to earlier claim that Directus lacked MCP; (d) commercial trajectory (Directus 7.5/10 independent + founder-led + VC-funded 28→55 employees Jul'24→Feb'26; Payload 5/10 Figma-acquired Jun'25 with Cloud paused, repositioning as Figma CMS backend); (e) editor UX Agent J verdict 23/25 vs 14/25 on 5-task test + 8/8 deep differentiators; (f) "procurement over scratch" values alignment (Directus 70% editor-ready default vs Payload's 25%, FORMULA cost 3-4 hrs vs 12-16 hrs per project); (g) design-locked near-term so Payload's blocks advantage (10:1 Agent I) weights to zero until post-launch. Migration: scorched-earth rebuild of yesid.dev-cms (SAME repo, Payload code deleted) + 18-22 realistic dev-days. Full brief at `docs/slices/slice-headless-cms-best-practices/decision-brief.md`. |
 | 2026-04-10 | Standardize (17) before SEO (15) + QA (16)         | SEO built on service layer = no rework. E2E tests cover final architecture. Split execution: 17a+17b → 15 → 17c-17g → 16 → 18. Keystatic gets SEO metadata as first test collection.                         |
 | 2026-04-07 | No standalone tech stack page                      | About page widget + service detail pages + blog posts cover tools better than a resume-style page. Anti-pattern per conversion research.                                                                     |
 | 2026-04-07 | Live weather widget (OpenWeatherMap free tier)     | API key in .env, server-side fetch in +page.server.ts, graceful fallback. Unique personality touch on About page.                                                                                            |
