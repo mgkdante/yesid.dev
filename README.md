@@ -1,106 +1,39 @@
 # yesid.dev CMS
 
-Framework-agnostic [Payload 3](https://payloadcms.com) starter backed by **Neon Postgres** + **Vercel Blob**, with **native MCP (Model Context Protocol) surface built in**. Powers [yesid.dev](https://yesid.dev); ships as a reusable CMS foundation for any SvelteKit / Next.js / Astro / Nuxt / REST / MCP consumer.
+> **Scorched — pending Directus install.**
+>
+> Payload 3.x removed in [slice-18 Task 1](https://github.com/mgkdante/yesid.dev/tree/main/docs/slices/slice-18).
+> Directus 11+ install lands in slice-18 Task 3. Until then, this repo is an empty shell.
 
-**Status:** Slice 18a complete — infrastructure foundation + MCP surface live. Content collections land in Slice 18b. Framework integration recipes (SvelteKit first) land in Slice 18c+.
+## Status
 
-## Stack
+| Field | Value |
+|-------|-------|
+| Backend | **none** (was Payload 3.83; scorched) |
+| Admin URL | `cms.yesid.dev` — **offline until Task 3** |
+| Consumer | [yesid.dev](https://yesid.dev) reads from `staticAdapter`; not affected by this scorch |
+| Database | Neon Postgres (preserved for Directus reuse) |
+| Email | Resend (preserved) |
+| Domain | `cms.yesid.dev` (preserved; TLS + DKIM + SPF intact) |
 
-| Layer | Choice |
-|-------|--------|
-| Runtime | **bun** (Node 22 via `.nvmrc`) |
-| CMS | Payload 3.83 |
-| Framework | Next.js 16.2.3 (Turbopack) |
-| DB | Neon Postgres 17 (free tier, scale-to-zero, DB branching per PR) |
-| Media | Vercel Blob |
-| Email | Resend |
-| MCP | `@payloadcms/plugin-mcp` (HTTP + JSON-RPC at `/api/mcp`) |
-| Hosting | Vercel |
+## Rebuild tracker
 
-## Local development
+The Directus install proceeds via slice-18 in the consumer repo:
 
-```bash
-bun install
-cp .env.example .env
-# Fill .env with a Neon dev-branch DATABASE_URI + generated PAYLOAD_SECRET
-bun dev
-# Admin UI: http://localhost:3000/admin
-```
+- Plan: [yesid.dev/docs/slices/slice-18/plan.md](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/plan.md)
+- Spec: [yesid.dev/docs/slices/slice-18/spec.md](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/spec.md)
+- Research: [yesid.dev/docs/slices/slice-18/research.md](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/research.md)
+- Handoff (PR body as slice closes): [yesid.dev/docs/slices/slice-18/handoff.md](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/handoff.md)
+- Pivot research (append-only reference): [yesid.dev/docs/slices/slice-headless-cms-best-practices/](https://github.com/mgkdante/yesid.dev/tree/main/docs/slices/slice-headless-cms-best-practices)
 
-> **Windows + bun note:** if `bun install` fails on `unrs-resolver` postinstall (`Permission denied` / `EPERM`), retry with `bun install --ignore-scripts`. Transient file-lock race on Windows; the skipped script is a dev-time transitive dep (eslint module resolution) with no runtime impact.
+## Why Directus instead of Payload
 
-## Using with MCP
+Short version: platform built-ins + admin UX + Postgres-native fit the solo-operator / SvelteKit-consumer profile better than Payload's Node-first coupling. Long version in the pivot research slice (link above).
 
-Every enabled global and collection is exposed as an MCP tool at `/api/mcp` over HTTP (JSON-RPC). Authenticate with a per-user API key generated from the admin UI (Users → your user → API Keys).
+## Why the hard scorch (no archive branch)
 
-**Claude Code:**
+- yesid.dev runs on `staticAdapter` and was never wired to Payload via the adapter seam — the public site has zero dependency on what happened here.
+- Audit trail = this commit history + the pivot research slice. That's sufficient record.
+- Side-by-side coexistence would double infrastructure cost for a non-consumer.
 
-```bash
-claude mcp add --transport http yesid-cms-prod https://cms.yesid.dev/api/mcp \
-  --header "Authorization: Bearer <YOUR-MCP-KEY>"
-```
-
-**Cursor / VS Code / `mcp-remote`-compatible clients:**
-
-```json
-{
-  "mcpServers": {
-    "yesid-cms-prod": {
-      "type": "http",
-      "url": "https://cms.yesid.dev/api/mcp",
-      "headers": { "Authorization": "Bearer <YOUR-MCP-KEY>" }
-    }
-  }
-}
-```
-
-Slice 18a exposes `site-meta` (find + update). Each content collection added in 18b registers its own MCP tools automatically.
-
-**Never commit an MCP key.** Treat it like a CMS admin password. Store in a password manager; reference per-client via env var expansion where supported.
-
-## Architecture
-
-Two-repo split (per [`yesid.dev/docs/slices/slice-18/README.md`](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/README.md)):
-
-- **[`yesid.dev`](https://github.com/mgkdante/yesid.dev)** — SvelteKit site (public showcase, open-source artifact).
-- **`yesid.dev-cms`** (this repo) — Payload CMS admin + REST/GraphQL API + **MCP endpoint (`/api/mcp`)** + DB schema.
-
-Both deploy independently to Vercel. CMS at `cms.yesid.dev`.
-
-## Deploy
-
-Auto-deploy on push to `main` via the linked Vercel project. Required env vars (all set via `vercel env add` or dashboard — see [`.env.example`](./.env.example) for the full list + descriptions):
-
-- `DATABASE_URI` + `DATABASE_URL_UNPOOLED` (from Neon Vercel Marketplace integration)
-- `PAYLOAD_SECRET` — 32+ char random (`openssl rand -base64 32`)
-- `BLOB_READ_WRITE_TOKEN` — from Vercel Blob integration (plugin self-disables without)
-- `RESEND_API_KEY` — from resend.com/api-keys
-- `NEXT_PUBLIC_SERVER_URL` + `PAYLOAD_PUBLIC_SERVER_URL` = your prod URL
-
-**First-deploy admin bootstrap** (one-time): set `PAYLOAD_ADMIN_EMAIL` + `PAYLOAD_ADMIN_PASSWORD` in env. On first cold start, the `onInit` hook provisions an admin with role `admin`. After first successful login, **rotate the password in the admin UI and delete both env vars from Vercel**. Hook is idempotent — subsequent cold starts with env vars absent (or admin already existing) are no-ops.
-
-## Migrations
-
-Schema changes are captured as Payload-generated migration files under `migrations/` and run at runtime via `prodMigrations` on Vercel cold start (no separate CI step needed).
-
-```bash
-# After editing collections / globals:
-bunx payload migrate:create --name <description>
-
-# Apply locally to your Neon dev branch:
-bunx payload migrate
-
-# Prod runs automatically on next Vercel cold start.
-```
-
-## Slice docs
-
-Slice 18 specs, plans, logs, handoffs live in the [yesid.dev repo](https://github.com/mgkdante/yesid.dev) under `docs/slices/slice-18/`:
-
-- [Slice 18 overview](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/README.md)
-- [Slice 18a spec](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/slice-18a/spec.md) — infrastructure foundation (this slice)
-- [Slice 18a plan](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/slice-18a/plan.md)
-
-## License
-
-MIT (consistent with [Payload's license](https://github.com/payloadcms/payload/blob/main/LICENSE)).
+See `slice-18` plan D2 for full rationale.
