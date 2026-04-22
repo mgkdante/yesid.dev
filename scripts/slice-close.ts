@@ -30,11 +30,11 @@
  *   2 filesystem error (dest exists, move failed, etc.)
  */
 
-import { existsSync, mkdirSync, rmSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { appendFile, cp, rename } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { execSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 
 type CloseArgs = {
   subsliceId: string;
@@ -167,18 +167,92 @@ async function appendToCompletedSlices(
   console.log(`[slice-close] appended index line: ${line.trim()}`);
 }
 
+/** Exclusion pattern shared by all tree generators. Matches directory/file names
+ *  at any depth. Order is alphabetical for readability. */
+const TREE_EXCLUDE_PATTERN =
+  '.DS_Store|.git|.remember|.svelte-kit|.vercel|bun.lockb|node_modules|scheduled_tasks.lock';
+
 function regenTree(repoRoot: string): void {
+  // Strategy: try WSL `tree -I '…'` first on Windows for proper hierarchical output
+  // that actually prunes excluded subtrees. Fall back to native `tree` on
+  // Unix. Final fallback on Windows = cmd `tree /F /A | findstr /V`, which
+  // only line-filters (leaks children of pruned parents). The line-filter
+  // path also blows up tree.txt line count because it can't prune deep
+  // subtrees — install `tree` inside WSL (or the OS) to get the clean output.
+  if (tryWslTree(repoRoot)) return;
+  if (tryNativeTree(repoRoot)) return;
+  tryWindowsFallback(repoRoot);
+}
+
+function tryWslTree(repoRoot: string): boolean {
+  if (process.platform !== 'win32') return false;
+  try {
+    // Probe WSL + tree availability. If `tree --version` fails, WSL doesn't
+    // have tree installed → fall back to the next strategy.
+    // execFileSync avoids shell interpolation of the pattern's pipe chars.
+    execFileSync('wsl', ['-e', 'tree', '--version'], { stdio: 'pipe' });
+  } catch {
+    return false;
+  }
+  try {
+    const out = execFileSync('wsl', ['-e', 'tree', '-I', TREE_EXCLUDE_PATTERN], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+      maxBuffer: 10 * 1024 * 1024,
+    });
+    writeFileSync(join(repoRoot, 'tree.txt'), out, 'utf8');
+    console.log('[slice-close] tree.txt regenerated (wsl tree)');
+    return true;
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`[slice-close] wsl tree failed: ${message}`);
+    return false;
+  }
+}
+
+function tryNativeTree(repoRoot: string): boolean {
+  if (process.platform === 'win32') return false;
+  try {
+    execFileSync('tree', ['--version'], { stdio: 'pipe' });
+  } catch {
+    console.log(
+      '[slice-close] `tree` not installed. Install via `brew install tree` (mac) or `apt install tree` (linux), or skip tree.txt.'
+    );
+    return false;
+  }
+  try {
+    const out = execFileSync('tree', ['-I', TREE_EXCLUDE_PATTERN], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+      maxBuffer: 10 * 1024 * 1024,
+    });
+    writeFileSync(join(repoRoot, 'tree.txt'), out, 'utf8');
+    console.log('[slice-close] tree.txt regenerated (native tree)');
+    return true;
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`[slice-close] native tree failed: ${message}`);
+    return false;
+  }
+}
+
+function tryWindowsFallback(repoRoot: string): void {
   if (process.platform !== 'win32') {
     console.log(
-      '[slice-close] tree.txt regen skipped (non-Windows). See <cloud>/workflow-knowledge/os-quirks/<os>.md for the equivalent command.'
+      '[slice-close] tree.txt regen skipped (no WSL tree + non-Windows + no native tree).'
     );
     return;
   }
+  console.warn(
+    "[slice-close] WARNING: falling back to cmd's tree + findstr. For clean output, install tree inside WSL: `wsl -e sudo apt-get install -y tree`"
+  );
   try {
+    // cmd-style pipeline — findstr filters lines, doesn't prune subtrees, so
+    // children of excluded dirs still leak through. Clean-up is the WSL path above.
     const cmd =
-      'cmd /c "tree /F /A | findstr /V /C:\\"node_modules\\" /C:\\".git\\" /C:\\".remember\\" /C:\\"bun.lockb\\" /C:\\".svelte-kit\\" /C:\\".vercel\\" /C:\\".DS_Store\\" > tree.txt"';
+      'cmd /c "tree /F /A | findstr /V /C:\\"node_modules\\" /C:\\".git\\" /C:\\".remember\\" /C:\\"bun.lockb\\" /C:\\".svelte-kit\\" /C:\\".vercel\\" /C:\\".DS_Store\\" /C:\\"scheduled_tasks.lock\\" > tree.txt"';
     execSync(cmd, { cwd: repoRoot, stdio: 'inherit' });
-    console.log('[slice-close] tree.txt regenerated');
+    console.log('[slice-close] tree.txt regenerated (cmd fallback)');
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     console.warn(`[slice-close] WARNING: tree.txt regen failed: ${message}`);
