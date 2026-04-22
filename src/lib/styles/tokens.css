@@ -15,7 +15,7 @@
 
   /* Type scale lives in @theme (app.css) — generates both utilities and CSS custom properties.
      Values don't theme-switch, so @theme is the single source of truth.
-     See docs/project/CSS.md for the full scale reference. */
+     See docs/reference/CSS.md for the full scale reference. */
 
   /* Micro size — chrome annotations, stop labels */
   --text-micro: 0.625rem;  /* 10px */
