@@ -194,7 +194,7 @@ export const staticAdapter: ContentAdapter = {
 	content: {
 		// Site-chrome literals — kept as `typeof import` shape via ContentPort,
 		// not wrapped (spec D2 non-goal). These are page chrome, not CMS-managed
-		// content; re-encoding as Zod adds maintenance cost with no Payload benefit.
+		// content; re-encoding as Zod adds maintenance cost with no CMS benefit.
 		hero: async () => heroContent,
 		heroAnim: async () => heroAnimContent,
 		manifesto: async () => manifestoContent,

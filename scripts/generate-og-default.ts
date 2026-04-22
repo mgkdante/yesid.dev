@@ -8,9 +8,9 @@
 // sharp → PNG. Single source of truth; when Yesid signs off on a FR/ES
 // tagline, add it to siteMeta, add the locale to PUBLISHED_LOCALES, rerun.
 //
-// Slice 15c (post-Payload) will generalise this into a per-post / per-project
-// Satori pipeline. Until then, this one image per locale is the default
-// fallback for every route that doesn't specify its own ogImage.
+// Slice 15c (post-CMS-migration) will generalise this into a per-post /
+// per-project Satori pipeline. Until then, this one image per locale is the
+// default fallback for every route that doesn't specify its own ogImage.
 
 import sharp from 'sharp';
 import { siteMeta } from '../src/lib/content/meta';

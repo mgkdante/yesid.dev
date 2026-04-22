@@ -1,9 +1,9 @@
 // Adapter contract. Defines every read the app makes against the content layer.
-// Any new backend (Payload, Keystatic, mock) implements this interface; the
-// single `as adapter` re-export in index.ts picks the active one.
+// Any backend (Directus, Keystatic, mock, static files) implements this
+// interface; the single `as adapter` re-export in index.ts picks the active one.
 //
 // Signature rules codified in Slice 17b (see ARCHITECTURE.md once it lands):
-//   - Every method is async (`Promise<T>`) — Payload-ready from day one.
+//   - Every method is async (`Promise<T>`) — CMS-ready from day one.
 //   - Collections return `readonly T[]` — adapters don't promise mutability.
 //   - Not-found returns `undefined`, never `null` — matches TypeScript idiom.
 //
@@ -89,7 +89,7 @@ export interface MetaPort {
 	 * (a route added without a content/meta.ts entry), not an expected state.
 	 *
 	 * Returned shape is parsed through PageSeoSchema at the adapter boundary,
-	 * so any adapter (static, Payload, mock) can only emit valid SEO.
+	 * so any adapter (static, Directus, mock) can only emit valid SEO.
 	 */
 	forRoute(routeId: string, locale: Locale, params?: Record<string, string>): Promise<PageSeo>;
 }
