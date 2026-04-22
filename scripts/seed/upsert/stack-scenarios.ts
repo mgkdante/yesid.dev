@@ -62,12 +62,13 @@ export async function upsertStackScenarios(args: { payload: Payload; sourceRepo:
       // Upsert: update existing docs (primary key preserved via silent-override hook in the collection)
       // or create if absent. Seed is idempotent: re-runs propagate source changes without rename risk.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await payload.update({ collection: 'stack-scenarios', id: found.docs[0].id, data: { id, ...baseData } as any })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await payload.update({ collection: 'stack-scenarios', id: found.docs[0].id, data: { id, ...baseData } as any, locale: 'all' as any })
       updated += 1
     } else {
       // On create, include `id` so the stable slug is set.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await payload.create({ collection: 'stack-scenarios', data: { id, ...baseData } as any })
+      await payload.create({ collection: 'stack-scenarios', data: { id, ...baseData } as any, locale: 'all' as any })
       created += 1
     }
   }

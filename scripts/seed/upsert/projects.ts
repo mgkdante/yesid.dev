@@ -80,10 +80,11 @@ export async function upsertProjects(args: { payload: Payload; sourceRepo: strin
 
     if (found.totalDocs > 0) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await payload.update({ collection: 'projects', id: found.docs[0].id, data: payloadData as any })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await payload.update({ collection: 'projects', id: found.docs[0].id, data: payloadData as any, locale: 'all' as any })
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await payload.create({ collection: 'projects', data: payloadData as any })
+      await payload.create({ collection: 'projects', data: payloadData as any, locale: 'all' as any })
     }
   }
 

@@ -41,10 +41,11 @@ export async function upsertBlogPosts(args: { payload: Payload; sourceRepo: stri
 
     if (found.totalDocs > 0) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await payload.update({ collection: 'blog-posts', id: found.docs[0].id, data: payloadData as any })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await payload.update({ collection: 'blog-posts', id: found.docs[0].id, data: payloadData as any, locale: 'all' as any })
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await payload.create({ collection: 'blog-posts', data: payloadData as any })
+      await payload.create({ collection: 'blog-posts', data: payloadData as any, locale: 'all' as any })
     }
   }
 

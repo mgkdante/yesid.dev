@@ -69,12 +69,13 @@ export async function upsertServices(args: { payload: Payload; sourceRepo: strin
       // Upsert: update existing docs (primary key preserved via silent-override hook in the collection)
       // or create if absent. Seed is idempotent: re-runs propagate source changes without rename risk.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await payload.update({ collection: 'services', id: found.docs[0].id, data: { id: serviceId, ...baseData } as any })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await payload.update({ collection: 'services', id: found.docs[0].id, data: { id: serviceId, ...baseData } as any, locale: 'all' as any })
       updated += 1
     } else {
       // On create, include `id` so the stable slug is set.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await payload.create({ collection: 'services', data: { id: serviceId, ...baseData } as any })
+      await payload.create({ collection: 'services', data: { id: serviceId, ...baseData } as any, locale: 'all' as any })
       created += 1
     }
   }

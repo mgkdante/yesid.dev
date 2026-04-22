@@ -91,6 +91,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
         statusPrefix: (footerContent.statusPrefix as Record<string, unknown>) ?? undefined,
       },
     } as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     site-meta ✓')
 
@@ -109,6 +110,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
       servicesGrid: siteContentMod.servicesGridContent,
       closer: siteContentMod.closerContent,
     } as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     home-content ✓')
 
@@ -121,6 +123,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
       listing: servicesMod.servicesListingContent,
       detail: servicesMod.servicesDetailContent,
     } as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     services-page ✓')
 
@@ -133,6 +136,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
       listing: projectsMod.projectsListingContent,
       detail: projectsMod.projectsDetailContent,
     } as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     projects-page ✓')
 
@@ -150,6 +154,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
       listing: blogExports.blogListingContent,
       detail: blogExports.blogDetailContent,
     } as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     blog-page ✓')
 
@@ -163,6 +168,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
   await payload.updateGlobal({
     slug: 'tech-stack-page',
     data: techStackExports.techStackPageContent as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     tech-stack-page ✓')
 
@@ -171,6 +177,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
   await payload.updateGlobal({
     slug: 'about-content',
     data: aboutMod.aboutPageContent as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     about-content ✓')
 
@@ -179,6 +186,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
   await payload.updateGlobal({
     slug: 'contact-content',
     data: contactMod.contactContent as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     contact-content ✓')
 
@@ -196,6 +204,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
       // Payload field is named 'sharedChrome' (NavLinks.ts); TS source exports 'sharedChromeContent'.
       sharedChrome: navMod.sharedChromeContent,
     } as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     nav-links ✓')
 
@@ -205,6 +214,7 @@ export async function upsertGlobals(args: { payload: Payload; sourceRepo: string
     data: {
       notFound: navMod.errorPageContent,
     } as Record<string, unknown>,
+    locale: 'all',
   })
   console.log('[seed]     error-pages ✓')
 }

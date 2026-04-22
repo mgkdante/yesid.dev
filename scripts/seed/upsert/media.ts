@@ -35,11 +35,13 @@ export async function upsertMedia(args: { payload: Payload; sourceRepo: string }
     try {
       await payload.create({
         collection: 'media',
-        // alt is a localized text field. Payload local API with locale: 'en' accepts a string.
+        // alt is a localized text field. locale: 'all' + object value writes per-locale maps correctly.
         // Cast to any: generated types expect `string` for localized text, not an object.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data: { alt: altText } as any,
+        data: { alt: { en: altText } } as any,
         filePath,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        locale: 'all' as any,
       })
       uploaded += 1
     } catch (err) {
