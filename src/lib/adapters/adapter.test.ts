@@ -2,7 +2,7 @@
 // Not a behaviour test — that's the content-layer integrity test's job. This
 // file asserts that every port method returns the shape promised by
 // ContentAdapter and that basic cardinality is sane (non-empty where expected,
-// undefined for not-found). When a Payload or Keystatic adapter joins, flip
+// undefined for not-found). When a Directus or other CMS adapter joins, flip
 // the import in ./index.ts and re-run: the contract must still hold.
 
 import { describe, it, expect } from 'vitest';
