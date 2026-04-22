@@ -50,16 +50,17 @@ Each session starts by appending a block to `devlog.md`. Each task follows the I
 
 ### Task 2 — R2: Authoring ergonomics research
 
-- **Goal:** Populate `research.md` §R2 with study of visual preview, conditional fields, grouped/tabbed layouts, array UI + item previews, rich-text editors, reusable content chunks. Criterion: *what makes an editor feel at home vs lost.*
+- **Goal:** Populate `research.md` §R2 with study of visual preview, conditional fields, grouped/tabbed layouts, array UI + item previews, rich-text editors, reusable content chunks. Criterion: *what makes an editor feel at home vs lost.* **Expanded scope (2026-04-22 user request):** include real user reviews, not just vendor docs.
 - **Steps:**
-  1. Study Payload Live Preview plugin docs + its SvelteKit integration notes.
-  2. Study Sanity Studio V3 Presentation (visual editing) for vocabulary: document types, references vs inline, preview targets.
-  3. Study Storyblok Visual Editor's block drag-drop + inline editing.
-  4. Study Gutenberg block inserter as authoring-UX reference (NOT adoption — just vocabulary).
-  5. Catalog field-level ergonomics across these CMSes: conditional fields, field groups, tabs, row layouts, array UI + item previews, Lexical rich text, embedded content, admin custom components.
-  6. Sandbox-verify (CMS-UX worktree): install Payload Live Preview plugin, wire against a scratch SvelteKit preview route in this slice's worktree. Resolve spec Q4 (Live Preview testability before a route is published).
-  7. Synthesize §R2: the authoring-ergonomics checklist the FORMULA's schema must enable.
-- **Verification:** `research.md` §R2 complete with ≥3 CMS studied; ergonomics checklist written; Q4 resolved; Live Preview sandbox wiring verified end-to-end. Append `devlog.md` block.
+  1. **Vendor docs:** Study Payload Live Preview plugin docs + its SvelteKit integration notes.
+  2. **Vendor docs:** Study Sanity Studio V3 Presentation (visual editing) for vocabulary: document types, references vs inline, preview targets.
+  3. **Vendor docs:** Study Storyblok Visual Editor's block drag-drop + inline editing.
+  4. **Vendor docs:** Study Gutenberg block inserter as authoring-UX reference (NOT adoption — just vocabulary).
+  5. **Real user reviews (NEW):** Pull editor + developer sentiment from: r/webdev, r/payloadcms, r/Sanity, r/headlessCMS, Payload/Sanity/Storyblok Discord communities, Twitter/X, Dev.to posts, G2 / Capterra reviews, freelancer forums. Specifically hunt for: (a) what editors actually complain about in production (not what vendors claim); (b) what devs say about admin UX DX; (c) learning-curve pain points. Parallel-dispatch 2–3 research agents to triangulate.
+  6. Catalog field-level ergonomics across these CMSes: conditional fields, field groups, tabs, row layouts, array UI + item previews, Lexical rich text, embedded content, admin custom components.
+  7. Sandbox-verify (CMS-UX worktree): install Payload Live Preview plugin, wire against a scratch SvelteKit preview route in this slice's worktree. Resolve spec Q4 (Live Preview testability before a route is published).
+  8. Synthesize §R2: the authoring-ergonomics checklist the FORMULA's schema must enable, **calibrated against real user pain points — not just docs claims**.
+- **Verification:** `research.md` §R2 complete with ≥3 CMS studied via docs AND ≥2 cited user-review sources per CMS; ergonomics checklist written; Q4 resolved; Live Preview sandbox wiring verified end-to-end. Append `devlog.md` block.
 
 **STOP. Yesid reviews R2 findings before Task 3.**
 
@@ -156,7 +157,9 @@ Each session starts by appending a block to `devlog.md`. Each task follows the I
    - Webhook-to-`revalidateTag` flow
    - Localization load flow
 
-6. **Refactor table for 18b's 10 globals**
+6. **Commercial viability snapshot** (per Task 5 step 3): Payload hosting costs (self vs Cloud), Vercel Blob + Neon free-tier ceilings, Payload+SvelteKit freelancer billing rates, community size indicators. Answers: can Yesid economically deliver this stack to custom/low-cost clients?
+
+7. **Refactor table for 18b's 10 globals**
 
    | Global | Current shape | FORMULA shape | Action | Rationale |
    |--------|---------------|---------------|--------|-----------|
@@ -171,9 +174,9 @@ Each session starts by appending a block to `devlog.md`. Each task follows the I
    | `error-pages` | flat fields | TBD | TBD | TBD |
    | `site-meta` | flat fields | TBD | TBD | TBD |
 
-7. **Reshape of Slice 18c–18f** — one paragraph each on what each sub-slice does under the FORMULA (drives the memory update in Task 6 step 1).
+8. **Reshape of Slice 18c–18f** — one paragraph each on what each sub-slice does under the FORMULA (drives the memory update in Task 6 step 1).
 
-8. **Archetype-fit notes** — placeholder for future multi-archetype validation (politician+merch, restaurant, flower shop, etc.). **Explicitly out of scope this slice** per spec non-goals; noted here as follow-up slice material.
+9. **Archetype-fit notes** — placeholder for future multi-archetype validation (politician+merch, restaurant, flower shop, etc.). **Explicitly out of scope this slice** per spec non-goals; noted here as follow-up slice material.
 
 ### FORMULA (populated in Task 5)
 

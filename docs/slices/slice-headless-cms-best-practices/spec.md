@@ -138,4 +138,9 @@ No files touched in `src/` or `cms/` on mainline. Sandbox worktree commits live 
 
 Append-only record of spec changes after slice begins.
 
-(empty at draft — first amendment lands post-approval if anything changes)
+### 2026-04-22 — Scope dimension expansion + Q3/Q5 resolutions
+
+- **What changed:** (a) Research scope explicitly extended beyond vendor docs to also cover: our repo inspection (yesid.dev-cms current shape — done in Task 1 sandbox), authoring ergonomics (R2), **real user reviews from Reddit/forums/G2/Capterra (added to R2)**, and **commercial viability / economics per stack (added to R5 distillation)**. (b) Q3 resolved in Task 1: 7 of 9 page-globals flip into a `pages` collection; `site-meta` + `nav-links` + `error-pages` stay as globals. (c) Q5 resolved in Task 1: field-level `localized: true` INSIDE blocks, not on the blocks field itself.
+- **Why:** User request 2026-04-22 — deep search across "repo vs docs vs ergonomics vs real user reviews vs money to make" to ground the FORMULA beyond documentation claims. Q3 + Q5 landed earlier than expected because R1's Payload website-template findings made the resolution clear.
+- **Affected sections:** Research axes (R2 + R5 step expansions), Acceptance criteria (now includes ≥2 cited user-review sources per CMS in R2; commercial viability snapshot in R5), Open questions table (Q3 + Q5 marked resolved).
+- **Memory updates:** `project_cms_research_bundle.md` added to capture durable findings + cross-session resume instructions.
