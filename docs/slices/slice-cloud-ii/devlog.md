@@ -294,7 +294,114 @@ Executed Task 1 end-to-end. Read all 5 workflow-governance sources in full: `AGE
 
 ### What happened
 
-(to be filled at session close)
+Executed Tasks 6 + 6.5 end-to-end. yesid.dev now matches amended D3 partition: `docs/reference/` is 100%-plugin-pulled (hash-equal to plugin v0.2.0 blobs); `docs/project/` is 100%-project-owned; `AGENTS.md` adopted slot pattern (64.4% line reduction).
+
+**Seven commits on `slice-cloud-ii` branch:**
+
+1. **`12b5127`** — **Task 6: AGENTS.md trim to slot pattern.**
+   393 → 140 lines (64.4% reduction vs baseline, well above ≥50% target). Replaced all workflow-universal sections with pointer table to `docs/reference/WORKFLOW.md §` anchors. Project slots point at `docs/project/<X>.md`. Kept inline: Project framing (dual audience, Yesid owner, Freelance Digital Infrastructure), brand triad (#E07800/#FFB627, Inter, JetBrains Mono), Bun runtime declaration, test-table format rule, CSS three-layer table, Never anti-patterns. Opened devlog with baseline metrics.
+
+2. **`be3e89c`** — **Task 6.5 Step 1: `git mv` 6 reference → project files.**
+   ARCHITECTURE.md (34k), CSS.md (17k), MOTION.md (26k), PATTERNS.md (25k), CONSTITUTION.md (37k), TESTS.md (88k). Used `git mv -f` to overwrite the PR-12-pulled placeholder skeletons. Git detected 3 as renames (CSS/MOTION/PATTERNS — content similarity high) and 3 as delete+modify (ARCHITECTURE/CONSTITUTION/TESTS — skeleton diverged too much). Both result in identical end-state; history retrievable via `git log --follow` on either path.
+
+3. **`e36d31b`** — **Task 6.5 Step 2: split VOCAB.md.**
+   `docs/reference/VOCAB.md` (296 → 158 lines) replaced with plugin v0.2.0 scaffold content — `git hash-object` = `58218c12e97ecea12fddde468e0327ccaf258135` (matches plugin blob exactly). Carries only workflow-universal vocab (Slice / Sub-slice / Task / plan.md / spec.md / handoff.md / devlog.md / Iteration Protocol / Three-tier context / STOP / etc.). `docs/project/VOCAB.md` skeleton replaced with yesid's project-owned vocab: §2 brand (Metro System, Transit HUD, Station tab, Bento, Edge rail, Snappy Doctrine, etc.); §3 industry-as-we-use-it (FLIP, IntersectionObserver, Rune, Hexagonal content architecture, LocalizedString, etc.); §4 AI/LLM tool vocab including `YESITO_CLOUD_ROOT` / `YESITO_WORKFLOW_ROOT` / workflow-efficiency skill / token-buffer strategy; §5 brand↔industry cross-reference.
+
+4. **`ca0e2d5`** — **Task 6.5 Step 3: populate 4 new project docs + delete _OPTIONAL_ skeletons.**
+   Wrote `docs/project/STACK.md` (SvelteKit 2 / Svelte 5 / TypeScript 5.9 / Bun / Tailwind v4 / Vercel / Payload+Neon in separate repo / Vitest + Playwright / GitHub Actions CI). Wrote `docs/project/BRAND.md` (brand identity, palette, typography, dark-only theme v1, wordmark rule, visual metaphors: construction/transit/terminal, voice + tone, favicon = solid orange dot). Wrote `docs/project/BINDINGS.md` (verification commands = `bun run test` + `bun run check`; dev @ localhost:5173; secrets = `op run --env-file=.env --`; cloud env = `YESITO_CLOUD_ROOT`; 1Password vault `yesid-dev`; worktree paths; branch shape; close-script override). Wrote `docs/project/SERVICES.md` (Freelance Digital Infrastructure positioning, dual audience: freelance clients + dream employers Alto/CDPQ Infra, 6-service catalog: SQL Dev / Data Pipeline / Web Dev / Design System / Integration / Workflow Authorship, 4 engagement models, workflow-as-IP differentiation). Deleted 5 `_OPTIONAL_*` files (BRAND + SERVICES replaced with real content; CSS + MOTION + PATTERNS deleted because Step 1 git mv installed the real yesid content at those names already).
+
+5. **`d8a68c3`** — **Reset `docs/reference/{WORKFLOW,tools/*}` to plugin v0.2.0 blobs.**
+   Pulled from plugin v0.2.0 tag (commit `8c1de24`):
+   - `docs/reference/WORKFLOW.md`          hash=`52555a5d517d11002f21659f373ea7016fec96e2` ✓
+   - `docs/reference/tools/README.md`      hash=`87ab3d1be72b21b00ff70297c81bf272796fa1a8` ✓
+   - `docs/reference/tools/claude-code.md` hash=`19b469580fcdd0c2ad25f10fdb08587467e78f69` ✓
+   - `docs/reference/tools/codex.md`       hash=`6ad1828957622d9bc9af1aec1384a683c4d27c54` ✓
+
+   All four now hash-equal to plugin blobs. Yesid's prior customizations — Opus 4.7 / Sonnet 4.6 role bindings, "Never Haiku" declaration, absolute-threshold tables — remain in `CLAUDE.md` (hybrid slot file per D3) and `docs/project/BINDINGS.md`.
+
+6. **`ad88adc`** — **Task 6.5 Step 4: update live references across 18 live files.**
+   Applied sed substitutions `docs/reference/<X>.md → docs/project/<X>.md` (for X = ARCHITECTURE / CSS / MOTION / PATTERNS / CONSTITUTION / TESTS) across: `README.md` (root), `docs/roadmap/PLAN.md`, `docs/project/{ARCHITECTURE,CONSTITUTION,MOTION}.md` (internal cross-refs between migrated files), `brand/{BRAND,CLAUDE-DESIGN,README,components}.md`, `brand/decisions/*.md` (3 files), `brand/foundations/*.md` (5 files). 52 line changes across 18 files.
+
+7. **`b7ad2d9`** — **Revert tokens.css comment update for zero-src-diff acceptance.**
+   The sed pass in commit 6 also touched `src/lib/styles/tokens.css` (one-line comment — `See docs/project/CSS.md`). While logically consistent, it violates the spec negative-check: `git diff main -- src/` must be empty at PR time. Reverted. The stale `docs/reference/CSS.md` reference in the comment is a deferred micro-cleanup (pure doc-reference update, no behavior change — candidate for a follow-up S-slice).
+
+**`docs/project/` inventory (final):** 11 real files + README. All DEFAULTs activated (ARCHITECTURE, BINDINGS, CONSTITUTION, STACK, TESTS, VOCAB). All OPTIONALs either promoted (BRAND, CSS, MOTION, PATTERNS, SERVICES) or removed (obsolete skeletons).
+
+**`docs/reference/` inventory (final):** WORKFLOW.md + VOCAB.md + tools/ (all plugin-pulled, hash-equal) + AUDIT-SLICE-17.md + mockups/ + wireframes/ (project-specific historical assets, left in place — not in scope for this slice; see Outstanding).
+
+### STOP criteria verification
+
+| Criterion | Status |
+|---|---|
+| AGENTS.md ≥50% reduction from 393-line baseline | ✅ **140 lines, 64.4% reduction** |
+| `docs/reference/WORKFLOW.md` hash = plugin blob `52555a5…` | ✅ zero diff |
+| `docs/reference/VOCAB.md` hash = plugin blob `58218c1…` | ✅ zero diff |
+| `docs/reference/tools/*.md` hashes = plugin blobs | ✅ all three zero diff |
+| 6 files moved `git mv` → `docs/project/` | ✅ commit `be3e89c` |
+| 4 new `docs/project/` files populated (STACK / BRAND / BINDINGS / SERVICES) | ✅ commit `ca0e2d5` |
+| `_OPTIONAL_` prefix removed or files deleted | ✅ 5 OPTIONALs handled |
+| Zero stale `docs/reference/<moved>.md` refs in **live** files | ✅ grep clean (only plugin-pulled WORKFLOW.md + closed-slice histories + active slice migration records remain — all intentional) |
+| Cloud archive at `C:\Users\otalo\Yesito\cloud\yesid.dev\docs\archive\` untouched | ✅ outside worktree; zero commits reached it |
+| `git diff main -- src/ tests/ static/` empty | ✅ CLEAN (after `b7ad2d9` revert) |
+| Per-step commits pushed to `origin/slice-cloud-ii` | ⏳ pushing next |
+| Devlog closing block appended | ✅ this block |
+
+### Commits (this session on `slice-cloud-ii` branch)
+
+- `12b5127` — docs(slice-cloud-ii): trim AGENTS.md to slot pattern per amended D3
+- `be3e89c` — refactor(slice-cloud-ii): move project-specific reference docs to docs/project/ per amended D3
+- `e36d31b` — refactor(slice-cloud-ii): split VOCAB.md per amended D3 — project portion → docs/project/VOCAB.md
+- `ca0e2d5` — docs(slice-cloud-ii): create project-specific docs from extracted AGENTS.md content
+- `d8a68c3` — refactor(slice-cloud-ii): reset docs/reference/{WORKFLOW,tools/*} to plugin v0.2.0 blobs (100% plugin-pulled per D3)
+- `ad88adc` — docs(slice-cloud-ii): update live references to new docs/project/ paths
+- `b7ad2d9` — chore(slice-cloud-ii): revert src/lib/styles/tokens.css comment update — preserve zero-src-diff acceptance
+
+### Tasks status (TodoWrite snapshot at session close)
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 6 | yesid AGENTS.md trim to slot pattern | ✅ done | `12b5127` |
+| 6.5 Step 1 | git mv 6 reference → project docs | ✅ done | `be3e89c` |
+| 6.5 Step 2 | Split VOCAB.md (reference = plugin; project ← yesid) | ✅ done | `e36d31b` |
+| 6.5 Step 3 | Create 4 new project docs + delete obsolete OPTIONALs | ✅ done | `ca0e2d5` |
+| (bonus) | Reset WORKFLOW + tools/*.md to plugin v0.2.0 blobs | ✅ done | `d8a68c3` |
+| 6.5 Step 4 | Update live references | ✅ done | `ad88adc` + `b7ad2d9` |
+| 7 | `/workflow-pull` verification from v0.2.0 | ⏳ next session |
+| 8 | Cross-tool adversarial review via `/workflow-close-slice` | ⏳ next session |
+| 9 | Close: archive, PR, merge | ⏳ next session |
+
+### Outstanding — deferred / next session
+
+**Next session: Tasks 7 + 8 + 9 (verify, review, close).** Should fit in one session on Sonnet 4.6.
+
+- **Task 7 (`/workflow-pull` verification)** — run `/workflow-pull` from yesid.dev slice-cloud-ii worktree. Expected outcome:
+  - **ZERO unexpected SKIPPED** classifications on pure-pull files: `WORKFLOW.md` + `VOCAB.md` + `tools/README.md` + `tools/claude-code.md` + `tools/codex.md` (all 5 already hash-match plugin — should report as already-in-sync / unchanged).
+  - **AGENTS.md SKIPPED correctly** — it's a hybrid slot-pattern file, genuinely customized. Plugin's scaffold AGENTS.md content is different; SKIP is the right classification.
+  - **`docs/project/*` all ZERO-DIFF** — project-owned, plugin's `docs/project/` is skeletons; should NOT be touched by pull.
+  - **Possible ADDs:** plugin v0.2.0 may have `docs/reference/ARCHITECTURE.md` (confirmed blob `c77c8e0…` in plugin) that yesid lacks. If present, `/workflow-pull` ADDs it as a new file. No problem.
+  - **Tracker:** `docs/.workflow-plugin-sha` stays at `8c1de24` (already v0.2.0).
+
+- **Task 8 (cross-tool adversarial review)** — invoke `/workflow-close-slice`. Triggers `/codex:adversarial-review` via codex-plugin-cc. **STOP for real Codex response — D12: no inline simulation.** Capture findings verbatim in `handoff.md § Peer review notes`. Triage:
+  - BLOCKER / HIGH → address before merge (may trigger one more `/workflow-update` PR + `/workflow-pull`).
+  - MEDIUM → fix or explicitly defer.
+  - LOW / INFO → note in Deferred risks; proceed.
+
+- **Task 9 (close)** — finalize handoff.md (Summary + PR body + peer review from Task 8 + deferred risks) → regenerate `tree.txt` → commit → push → `gh pr create slice-cloud-ii → main` → verify CI green → merge → `git checkout main && git pull` → `bun run slice:close slice-cloud-ii` (mirrors bundle to cloud + appends `COMPLETED-SLICES.md` + regenerates `tree.txt`) → update `MEMORY.md` (add slice-cloud-ii to completed slices index) → `git branch -d slice-cloud-ii` → `git push origin --delete slice-cloud-ii` → `ExitWorktree(action: "remove")`.
+
+### Known deferred micro-cleanups (candidates for future S-slice)
+
+- **`src/lib/styles/tokens.css` stale comment** — line 18 still references `docs/reference/CSS.md` (was updated mid-commit, then reverted per zero-src-diff rule). A future S-slice can update the comment in a standalone source-only PR.
+- **`docs/reference/AUDIT-SLICE-17.md`** still in `docs/reference/` — this is yesid's historical slice-17 audit, project-specific. Should technically move to `docs/project/` per amended D3 (or to the archive since the slice closed long ago). Out of scope for this slice; flag for a future cleanup pass.
+- **`docs/reference/mockups/`** + **`docs/reference/wireframes/`** — project-specific design artifacts, same category as AUDIT-SLICE-17. Out of scope; candidates for move during next docs-organization slice.
+- **Plugin may ship `docs/reference/ARCHITECTURE.md`** (blob `c77c8e0…`) that yesid lacks. `/workflow-pull` in Task 7 will add it naturally. If the plugin's reference/ARCHITECTURE.md turns out to conflict with having project-side ARCHITECTURE.md (i.e., confuses operators), amend the plugin in a follow-up `/workflow-update` PR.
+
+### Budget
+
+Model: Opus 4.7 [1m] (handoff recommended Sonnet 4.6 mid-slice; stayed on Opus for the full session since context still had room from Session 4 close). Context at session close: healthy mid-range (~60% band — well within Pre-break zone per `docs/reference/WORKFLOW.md § Token budget`).
+
+- Wall-clock: ~1.5h (focused mechanical execution)
+- Mid-session model switches: none
+- Notes for next session: **Sonnet 4.6** recommended for Tasks 7 + 8 + 9. Task 7 = verification (low reasoning); Task 8 = waits on Codex (zero Claude reasoning during STOP); Task 9 = mechanical closing steps. Fresh Sonnet session would pay one cache-miss but save substantial per-token cost for what's mostly execution. Re-read `spec.md § Acceptance criteria` + `plan.md § Tasks 7-9` + this Session 5 devlog block only.
 
 ---
 
@@ -310,3 +417,4 @@ Rolling index for quick scroll. Update each session.
 | 2026-04-22 | Implementation | Task 2 + bonus PR-3 templates-hardening | 3 PRs merged (workflow#5/#6/#7 → fe0883a); audit updated with PR URLs; CRLF friction logged for future /workflow-update; ready for Task 3 (8-phase pipeline) in fresh session, drop to Sonnet 4.6 |
 | 2026-04-22 | Implementation (micro) | PR-CRLF fix + pull retry | workflow#8 merged → 5f3d145; templates synced into yesid.dev (docs/_TEMPLATES/); tracker bumped 48e2c52→5f3d145; CRLF Outstanding item resolved end-to-end |
 | 2026-04-22 | Implementation + Planning amendment + Closing (plugin-side) | Tasks 3, 4, 4.5, 5 + spec amend Option B/D11 + CLOUD-III seed + v0.2.0 release | 5 plugin PRs merged (#9/#10/#11/#12/#13); plugin v0.2.0 tagged + pushed; yesid spec amended + tracker at 8c1de24; Tasks 6–9 deferred to fresh session with Sonnet 4.6 |
+| 2026-04-22 | Implementation | Tasks 6 + 6.5 — yesid.dev refactor to Option B partition | 7 commits (`12b5127` → `b7ad2d9`); AGENTS.md 393→140 (64.4% reduction); reference/ 100% plugin-pulled hash-equal for WORKFLOW + VOCAB + tools/*; 6 project docs migrated via git mv + 4 new project docs populated (STACK/BRAND/BINDINGS/SERVICES); 5 _OPTIONAL_ skeletons deleted; 18 live files updated with new docs/project/ paths; tokens.css comment reverted for zero-src-diff; Tasks 7-9 next session (Sonnet 4.6 recommended) |
