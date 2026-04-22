@@ -1068,6 +1068,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_projects_id_idx" ON "payload_locked_documents_rels" USING btree ("projects_id");
   CREATE INDEX "payload_locked_documents_rels_blog_posts_id_idx" ON "payload_locked_documents_rels" USING btree ("blog_posts_id");
   CREATE INDEX "payload_locked_documents_rels_stack_scenarios_id_idx" ON "payload_locked_documents_rels" USING btree ("stack_scenarios_id");
+  INSERT INTO "media_locales" ("alt", "_locale", "_parent_id")
+  SELECT "alt", 'en'::"_locales", "id" FROM "media"
+  WHERE "alt" IS NOT NULL
+  ON CONFLICT DO NOTHING;
   ALTER TABLE "media" DROP COLUMN "alt";`)
 }
 
