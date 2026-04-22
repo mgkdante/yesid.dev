@@ -55,6 +55,46 @@
 
 <!-- Every new session appends a fresh `## Session ...` block ABOVE this line. Past blocks never get modified. -->
 
+## Session 2026-04-22 ~18:00 — Task 2 R2 start
+
+**Tool:** Claude Code (Opus 4.7 [1m])
+**Session type:** Implementation (research — R2 authoring ergonomics)
+**Focus:** Task 2 of 6 — authoring ergonomics + real user reviews (per 2026-04-22 scope expansion)
+**Picking up from:** commit `f5afdd2` (scope expansion + Q3/Q5 resolved in Task 1)
+
+### What happened
+
+- Kicked off Task 2 per user `go` after Task 1 approval.
+- Dispatched 4 parallel research agents (one Payload UX deep dive, one comparative Sanity+Storyblok+Gutenberg UX, two real-user-review agents — one Payload-centric, one Sanity+Storyblok+general-headless-sentiment).
+- While agents run, planning the Live Preview sandbox wiring: install `@payloadcms/plugin-live-preview` in `~/Yesito/Projects/yesid-dev-cms-ux/` + scratch SvelteKit preview route in this worktree at `src/routes/(experimental)/preview-test/+page.svelte`.
+
+### Commits
+
+- *(pending — Task 2 synthesis + sandbox commits to follow)*
+
+### Outstanding
+
+- **Task 2 COMPLETE** — awaiting user review before Task 3.
+- §R2 fully synthesized: 4 agent outputs + 22-item ergonomics checklist + Q4 resolved + brutal Payload real-user calibration.
+- Sandbox commit `613579a` on `slice-cms-ux-redesign` branch — `admin.livePreview` config shape verified by typecheck.
+- **Key FORMULA-shaping findings** (survived to memory `project_cms_research_bundle.md`):
+  - Live Preview fragile on non-Next frontends (Issue #7164 "not planned") — FORMULA treats it as optional polish.
+  - Payload admin is editor-HOSTILE out of box — FORMULA codifies "shipped defaults" (22-item checklist) to fix this.
+  - Lexical has accessibility failure (Issue #8653) + internal-link bloat (Issue #6547) — FORMULA constrains Lexical to short-form bodies initially.
+  - Blocks at scale: memory leaks (Discussion #12099) — FORMULA caps block library ~12-15 + mandates `blockReferences` from day 1.
+  - Version upgrade discipline: pin minor versions; stage-test; never Friday (Payload minors break prod).
+  - UX patterns to STEAL from competitors: Sanity stega overlay, preview.prepare richness; Gutenberg block breadcrumb, synced-pattern badge; Storyblok screenshot-on-selection.
+- Tasks 3–6 pending per plan.md.
+
+### Budget
+
+- 4 agents returned in ~3-7 min each
+- Agent tokens: Payload UX 124k / Comparative UX 77k / Payload user reviews 111k / Cross-CMS user reviews 110k
+- Context: ~80% used at Task 2 close
+- Model: Opus 4.7 [1m] throughout
+
+---
+
 ## Appendix — session index
 
 | Date       | Type                  | Focus                                           | Outstanding at end |
