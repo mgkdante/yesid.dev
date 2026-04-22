@@ -275,6 +275,29 @@ Executed Task 1 end-to-end. Read all 5 workflow-governance sources in full: `AGE
 
 ---
 
+## Session 2026-04-22 (late) — Implementation
+
+**Tool:** Claude Code (Opus 4.7 [1m], reasoning=high)
+**Session type:** Implementation
+**Focus:** Tasks 6 + 6.5 — yesid.dev refactor to Option B partition (AGENTS.md slot pattern + `docs/project/` migration)
+**Picking up from:** commit `a8f3722` (Session 4 close — plugin v0.2.0 shipped; Tasks 6–9 deferred)
+
+### Baseline (pre-work)
+
+- AGENTS.md: 393 lines (target: ≤200 after slot-pattern trim)
+- `docs/reference/` retains full yesid-customized content: ARCHITECTURE (34k), CSS (17k), MOTION (26k), PATTERNS (25k), CONSTITUTION (37k), TESTS (88k), VOCAB (33k), WORKFLOW (36k), AUDIT-SLICE-17 (15k)
+- `docs/project/` has 12 skeleton files from PR-12 pull (6 DEFAULT + 5 OPTIONAL + README) — all placeholders awaiting fill
+- Plugin tracker at `8c1de24` (v0.2.0). Plugin blobs to match:
+  - `docs/reference/WORKFLOW.md` plugin blob: `52555a5d517d11002f21659f373ea7016fec96e2`
+  - `docs/reference/VOCAB.md` plugin blob: `58218c12e97ecea12fddde468e0327ccaf258135`
+- yesid WORKFLOW.md hash `d96b91c…` + VOCAB.md hash `1085147…` — both diverge from plugin (expected — needs reset to plugin blob content)
+
+### What happened
+
+(to be filled at session close)
+
+---
+
 <!-- Every new session appends a fresh `## Session ...` block ABOVE this line. Past blocks never get modified. -->
 
 ## Appendix — session index
