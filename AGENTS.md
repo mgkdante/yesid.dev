@@ -1,57 +1,37 @@
 # AGENTS.md — yesid.dev-cms
 
-This repo inherits the workflow contract from **[mgkdante/yesid.dev](https://github.com/mgkdante/yesid.dev)** — see that repo's [AGENTS.md](https://github.com/mgkdante/yesid.dev/blob/main/AGENTS.md) for the authoritative process.
+> **Scorched.** Payload 3.x removed in [slice-18 Task 1](https://github.com/mgkdante/yesid.dev/tree/main/docs/slices/slice-18). This repo is an empty shell until Directus lands in Task 3.
+
+Inherits the workflow contract from **[mgkdante/yesid.dev](https://github.com/mgkdante/yesid.dev)** — see that repo's [AGENTS.md](https://github.com/mgkdante/yesid.dev/blob/main/AGENTS.md) for the authoritative process.
 
 Core rules carried over:
 
 - 3-level hierarchy: **Slice → Sub-slice (PR boundary) → Task**.
-- 4-file bundle per sub-slice: `spec.md`, `plan.md`, `log.md`, `handoff.md`. During Slice 18 these live in the `yesid.dev` repo at `docs/slices/slice-18/slice-18<letter>/` (not here) — rationale below.
+- For slice-18 the bundle is flat (no sub-slices) at [`yesid.dev/docs/slices/slice-18/`](https://github.com/mgkdante/yesid.dev/tree/main/docs/slices/slice-18).
 - Self-appending handoff. Handoff IS the PR body.
 - Mandatory tool attribution on every session + per-task section (`**Tool:** / **Planned by:** / **Implemented by:**`).
-- Cross-tool portability: Claude Code + Codex both auto-load `AGENTS.md`; per-tool overlays at `docs/reference/tools/{claude-code,codex}.md` where needed.
+- Cross-tool portability: Claude Code + Codex both auto-load `AGENTS.md`.
 
-## Repo-specific adjustments
+## Repo-specific adjustments (post-scorch)
 
 ### Runtime
 
-**bun** (not pnpm), **Node 22**. `bun install`, `bun add <pkg>`, `bun dev`, `bun run build`, `bunx payload migrate`, `bunx payload generate:types`, `bunx tsc --noEmit`. Lockfile: `bun.lock` (committed).
+**bun** (Node 22). Lockfile: `bun.lock` (committed). Directus install in Task 3 may or may not keep this — TBD per research D1/D2/D3.
 
-> If bun hits `unrs-resolver` postinstall EPERM on Windows: `bun install --ignore-scripts`. Known Windows + bun + transitive-dep file-lock race.
+> Windows + bun note: if `bun install` hits `unrs-resolver` postinstall EPERM, retry with `bun install --ignore-scripts`.
 
 ### Commit prefixes
 
-- Slice 18 work: `feat(cms-slice-18<letter>): …`, `chore(cms-slice-18<letter>): …`, `docs(cms-slice-18<letter>): …`.
-- Greppable across both repos: `git log --oneline | grep cms-slice-18` in this repo finds all Slice 18 CMS-side commits; same pattern `slice-18` in `yesid.dev` finds the docs side.
+- Scorch: `chore: remove Payload (slice-18 restart)` (this PR).
+- Directus install work (Task 3+): `feat(slice-18): …` / `chore(slice-18): …`.
+- Greppable across both repos: `git log --oneline | grep slice-18` matches both.
 
-### Slice bundle location (Slice 18 only)
+### Slice bundle location
 
-Bundle docs (`spec.md`, `plan.md`, `log.md`, `handoff.md`) for Slice 18 sub-slices (18a onwards) live in the **`yesid.dev`** repo under `docs/slices/slice-18/slice-18<letter>/`, NOT in this repo. Rationale: `yesid.dev` is the primary consumer during the content migration; keeping all Slice 18 bundles in one place avoids cross-repo doc drift. When `yesid.dev-cms` spins out as a public framework-agnostic template (Phase C2+ — likely post-18f), it will gain its own `docs/slices/` directory.
+Bundle docs for slice-18 live in the **`yesid.dev`** repo at [`docs/slices/slice-18/{plan,spec,research,handoff}.md`](https://github.com/mgkdante/yesid.dev/tree/main/docs/slices/slice-18). Keeping everything in one place avoids cross-repo doc drift.
 
-### Two-PR close protocol (Slice 18)
+### Scope guards
 
-For sub-slices that touch both repos (all of 18a–18f):
-
-1. **PR A — `yesid.dev-cms`** (substantive code) → opens first, merges first. Body: copy of the sub-slice's `handoff.md` from `yesid.dev`.
-2. **PR B — `yesid.dev`** (docs-only, references PR A's URL) → opens second, merges second. Body: same `handoff.md`.
-3. `bun run slice:close 18<letter> --name "…" --pr <B>` runs in `yesid.dev` after PR B merges; archives the bundle to `<cloud>/yesid.dev/docs/archive/slices/slice-18/slice-18<letter>/`.
-
-Greenfield sub-slice 18a shipped via direct pushes to `main` in this repo (no PR review value yet). 18b onwards: PR-per-sub-slice.
-
-## Scope guards
-
-- Runtime stays **bun** for this repo. If a Payload-specific bun incompatibility surfaces, fall back to pnpm with an explicit spec amendment — never silently switch mid-slice.
-- MCP API keys are **per-user secrets**. Never commit. Generate via admin UI, store in password manager, reference via env-var expansion in per-user MCP client configs.
-- Migrations are **source of truth** — `push: false` is set deliberately. Always `bunx payload migrate:create` after collection/global edits; never rely on auto-push.
-
-## Review context for Codex + other adversarial reviewers
-
-**ALWAYS READ [`CODEX-CONTEXT.md`](./CODEX-CONTEXT.md) before flagging findings.** It captures the current slice's deferred-by-design decisions so reviewers don't re-flag intentional scope guards (e.g., "no migration present" during 18b-2 through 18b-6; custom-id PK rename hazards already mitigated via hooks; locale-type divergence addressed by 18c Zod adapter layer; etc.).
-
-When invoking `/codex:adversarial-review`, append focus text pointing at the context file:
-
-```bash
-node "$CLAUDE_PLUGIN_ROOT/scripts/codex-companion.mjs" adversarial-review --wait --base <pre-task-sha> \
-  "Read CODEX-CONTEXT.md for deferred findings. Do not re-flag items listed there."
-```
-
-Update `CODEX-CONTEXT.md` as design decisions evolve. At slice close, revisit each entry: if the deferred concern is now addressed (e.g., migration lands), delete the entry.
+- No Payload revival. Pivot is locked (see yesid.dev slice-18 plan D1 + the pivot research slice).
+- No archive branch, no `cms-legacy.yesid.dev` DNS record. Hard cutover (plan D2).
+- Directus install in Task 3 follows the "prefer built-ins" rule from `yesid.dev` memory `feedback_prefer_platform_builtins.md`.
