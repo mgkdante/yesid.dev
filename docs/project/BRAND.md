@@ -64,14 +64,14 @@ Color tokens live in `src/lib/styles/tokens.css` (theme-switching) and `src/app.
 
 Reusable brand-specific components that encode the visual identity. Distinct from headless UI primitives (Bits UI — dropdowns, dialogs).
 
-| Component            | Role                                                                                 |
-|----------------------|--------------------------------------------------------------------------------------|
-| `StatusDot.svelte`   | LED/indicator dot (pulse, ring, color variants) — the "live" signal of the brand.    |
-| `TerminalChrome.svelte` | CRT-style visual wrapper (scanlines, bezel, glow) used on /contact.                |
-| `SectionWrapper.svelte` | Layout primitive encoding edge/container/bleed Constitution rules.                |
-| `SvgIcon.svelte`     | Universal icon primitive with hover variant support + morph hooks.                   |
-| `EdgeLabel.svelte`   | The "awwwards-style" rotated vertical text edge-rail label.                          |
-| `MetroNetwork.svelte` | Home-hero SVG network (Metro System visual language).                               |
+| Component                                 | Role                                                                                 |
+|-------------------------------------------|--------------------------------------------------------------------------------------|
+| `src/lib/components/brand/StatusDot.svelte`       | LED/indicator dot (pulse, ring, color variants) — the "live" signal of the brand.    |
+| `src/lib/components/brand/TerminalChrome.svelte`  | CRT-style visual wrapper (scanlines, bezel, glow) used on /contact.                  |
+| `src/lib/components/brand/SvgIcon.svelte`         | Universal icon primitive with hover variant support + morph hooks.                   |
+| `src/lib/motion/svg/MetroNetwork.svelte`          | Home-hero SVG network (Metro System visual language) — SSR-inlined via Vite `?raw` + SVGO. |
+
+> **Deprecated / killed primitives** (documented in [`../../brand/decisions/2026-04-what-i-killed.md`](../../brand/decisions/2026-04-what-i-killed.md)): `SectionWrapper`, `EdgeRail`, `EdgeLabel`, `ListingLayout`, `DetailHero`, `CardGrid`, `BentoGrid`, `AsidePanel`. Replaced by the 4 scoped CSS Grid Recipes documented in [`CONSTITUTION.md § 2`](CONSTITUTION.md). DO NOT reintroduce these abstractions.
 
 ## Visual language / metaphors
 

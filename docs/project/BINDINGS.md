@@ -78,7 +78,7 @@ Future env var: `YESITO_WORKFLOW_ROOT` → `~/Yesito/Projects/workflow` (pre-wor
 | Vault / namespace    | 1Password vault: `yesid-dev`                                                                    |
 | Injection command    | `op run --env-file=.env -- <cmd>` (e.g., `op run --env-file=.env -- bun dev`)                   |
 | CI secrets           | GitHub Actions repository secrets (mirror of 1Password items manually updated on rotation)      |
-| Secrets inventory    | [`docs/reference/secrets-inventory.md`](../reference/secrets-inventory.md)                       |
+| Secret inventory     | Canonical source is 1Password vault `yesid-dev`. `.env.example` at repo root enumerates required variable names (no values).  |
 
 ## Worktree paths (D18)
 

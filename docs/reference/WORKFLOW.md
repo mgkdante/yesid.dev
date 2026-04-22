@@ -67,9 +67,9 @@ Every project that scaffolds from this workflow ends up with the same document h
 | `CLAUDE.md`                             | Claude Code entry pointer + role bindings (thin pointer to `AGENTS.md`)              | When Claude bindings change |
 | `docs/reference/tools/<tool>.md`        | Per-tool overlay (role bindings, slash commands, absolute thresholds)                | When tool mechanics change |
 | `docs/reference/WORKFLOW.md`            | This file — operational mechanics                                                    | When process evolves       |
-| `docs/reference/VOCAB.md`               | Shared lexicon (project + industry + workflow + tool vocab)                          | Every slice close (new terms) |
-| `docs/reference/ARCHIVE.md`             | Three-tier model + retrieval / write protocols                                       | When archival model evolves |
-| `docs/reference/<project-governance>.md` | Project-specific rules (e.g., `CONSTITUTION.md`, `CSS.md`, `MOTION.md`, `PATTERNS.md`, `TESTS.md`, `ARCHITECTURE.md`) | Per-domain rules change |
+| `docs/reference/VOCAB.md`               | Workflow-universal vocabulary (Slice, Sub-slice, Task, Iteration Protocol, STOP, …) | Via `/workflow-update` → plugin PR → `/workflow-pull` |
+| `docs/reference/ARCHIVE.md`             | Three-tier model + retrieval / write protocols                                       | When archival model evolves (plugin-side) |
+| `docs/project/<DOMAIN>.md`              | Project-specific governance: `CONSTITUTION.md`, `CSS.md`, `MOTION.md`, `PATTERNS.md`, `TESTS.md`, `ARCHITECTURE.md`, `BINDINGS.md`, `STACK.md`, `VOCAB.md`, `BRAND.md`, `SERVICES.md`, or operator-created EMERGENT `<DOMAIN>.md`. | Per-domain rules change (directly hand-edit — project-owned) |
 | `docs/roadmap/PLAN.md`                  | Per-project master plan + slice index                                                | Every slice close          |
 | `docs/slices/<slice>/plan.md`           | Active slice plan (Sub-slices table for multi-sub-slice slices)                      | Per session                |
 | `docs/slices/<slice>/devlog.md`         | Self-appending session record across all sub-slices                                  | Every session              |
@@ -204,7 +204,7 @@ The `devlog.md` closing block is the durable resume point. The live tracker is e
 
 1. **Competitive / prior-art scan** — analyze 5–7 reference implementations relevant to the domain. For UI work: multi-breakpoint screenshots. For data/infra work: read 2–3 production codebases solving similar problems. For library/API work: read the official docs and 1–2 well-regarded wrappers.
 2. **Extract patterns** — note recurring choices (architecture, naming, layout, rhythm, error handling, retention).
-3. **Check pattern catalog** — before inventing a new pattern, search the project's `docs/reference/PATTERNS.md` (or equivalent) for an existing solved instance.
+3. **Check pattern catalog** — before inventing a new pattern, search the project's `docs/project/PATTERNS.md` (or equivalent EMERGENT doc) for an existing solved instance.
 4. **Verify library / API behavior** — never guess function signatures or invariants. Use the project's documentation-lookup tool (Context7 MCP, official docs, Devin etc.) to confirm.
 
 ### Exit criteria
@@ -426,8 +426,8 @@ Tools per phase: see `AGENTS.md § Tool selection` (or the project's tool-overla
 **Hard checklist — every item mandatory, in order:**
 
 1. **Finalize `handoff.md`** — § 23 Summary + § 24 PR Body sections added; all per-task append blocks verified complete.
-2. **Governance doc updates** — for any rule, pattern, vocabulary, or architecture-defining change introduced in this sub-slice, update the relevant `docs/reference/<doc>.md`.
-3. **Vocabulary update** — any new project / industry / workflow term introduced gets added to `docs/reference/VOCAB.md`.
+2. **Project governance doc updates** — for any project-specific rule, pattern, architecture, or convention introduced in this sub-slice, update the relevant `docs/project/<DOMAIN>.md` (CONSTITUTION, PATTERNS, ARCHITECTURE, CSS, MOTION, TESTS, etc.). **Never hand-edit `docs/reference/*`** — that directory is 100% plugin-pulled per the partition contract; workflow-universal changes flow through `/workflow-update` instead.
+3. **Vocabulary update** — any new project / brand / industry / domain term introduced gets added to `docs/project/VOCAB.md`. Workflow-universal vocabulary goes through `/workflow-update` to evolve `docs/reference/VOCAB.md` in the plugin.
 4. **OS-quirk logging** — if this sub-slice solved a platform-specific issue (Windows / macOS / Linux command quirks, env var handling, shell escaping), append to `<cloud>/workflow-knowledge/os-quirks/<os>.md` with Problem / Root cause / Fix / Date / Slice. **Hard step, not a suggestion.**
 5. **Learn doc** — if the sub-slice introduced a durable concept worth codifying outside the project, write to the project's learn knowledge base (e.g., `<cloud>/<project>/docs/learn/<domain>/<concept>.md`).
 6. **Codify any new domain rule** in `docs/project/<DOMAIN>.md` — if this slice surfaced a re-derivable rule / pattern / convention that wasn't already in any project doc, codify it BEFORE closing. Triggers (per `docs/project/README.md`): same rule defined in 2+ sub-slice specs, same vocab term re-introduced, same OS-quirk re-encountered, same code idiom re-implemented across 3+ files. Create a new `docs/project/<DOMAIN>.md` if no existing doc fits — see `docs/project/README.md` § "When to create a new project doc — rubric".

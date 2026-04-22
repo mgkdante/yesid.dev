@@ -405,6 +405,19 @@ Model: Opus 4.7 [1m] (handoff recommended Sonnet 4.6 mid-slice; stayed on Opus f
 
 ---
 
+## Session 2026-04-22 (close) — Closing
+
+**Tool:** Claude Code (Opus 4.7 [1m], reasoning=high — continued from Session 5 per user "continue here" direction; Sonnet 4.6 was recommended but session continuation preferred over cache warmup cost)
+**Session type:** Closing
+**Focus:** Tasks 7 + 8 + 9 — `/workflow-pull` verification, cross-tool adversarial review, close slice
+**Picking up from:** commit `88e680d` (Session 5 close — Tasks 6 + 6.5 shipped)
+
+### What happened
+
+(to be filled at session close)
+
+---
+
 <!-- Every new session appends a fresh `## Session ...` block ABOVE this line. Past blocks never get modified. -->
 
 ## Appendix — session index
