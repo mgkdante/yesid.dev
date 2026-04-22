@@ -70,6 +70,64 @@ Model: Opus 4.7 [1m] | Context: low (docs-only session; single-pass writing) —
 
 ---
 
+## Session 2026-04-22 (cont.) — Planning (open 18c)
+
+**Tool:** Claude Code (Opus 4.7 [1m], reasoning=high)
+**Session type:** Planning
+**Focus:** Open sub-slice 18c `slice-18c` (Directus research + rebuild spec) on `feature/slice-18c-directus-research`.
+**Picking up from:** commit `dee7d4a` — `chore(slice-18): retrofit Level-1 bundle (plan.md + devlog.md) (#33)`
+
+### What happened
+
+Continuation of the same wall-clock session — PR #33 landed, `main` fast-forwarded to `dee7d4a`, then branched to `feature/slice-18c-directus-research` to scaffold sub-slice 18c.
+
+Scaffolded three files under `docs/slices/slice-18/slice-18c/` from `docs/_TEMPLATES/subslice/`:
+- `plan.md` — 4 tasks (18c-1 architecture + repo audit; 18c-2 hosting + storage + schema-approach decisions; 18c-3 Directus FORMULA; 18c-4 rebuild spec for 18d). Sequential execution; 2–3 sessions budget.
+- `spec.md` — metadata (priority 1, depends on PR #31 + PR #33, unblocks 18d/18e/18f), goal, durable outputs, design decisions D1–D3 scaffolded as "pending — resolved in Task 18c-2" + D4 (folder-naming convention `slice-18c/` over template's `c/`), acceptance criteria, 3 open questions, 4 risks.
+- `handoff.md` — scaffold state (§ 1 status, § 2 scope, § 11 file-tree delta, § 17 scaffold-only validation). Per-task blocks append as 18c-1 → 18c-4 close.
+
+Folder-naming choice: confirmed `docs/slices/slice-15/slice-15c/` as existing project precedent; user explicitly requested `slice-18c/`. Subslice template's `<letter>/` hint is off — flagged in spec D4 as a template-update candidate (future `/workflow-pull` friction).
+
+Mid-session direction from Yesid (captured inline before commit): **"use Directus available built-in features into our site. No hardcoding but using built in assets provided by Directus."** Baked into the scaffold before PR opens:
+- `plan.md § Hard constraints` — new bullet: prefer built-in Directus features; any custom/hardcoded path requires written justification.
+- `spec.md § Design decisions` — new **D5 — Prefer built-in Directus features over custom / hardcoded**. Affects Tasks 18c-1 (audit must note Payload-custom vs built-in-parity for each feature), 18c-3 (FORMULA must foreground built-in capabilities in § A before any § B configure items), 18c-4 (rebuild spec must cite built-in Directus mechanism for every requirement; custom extensions only where no built-in exists).
+- Feedback memory saved — durable rule beyond this slice.
+
+No tasks executed — this is the opening PR only. The scaffold + D5 direction ship as one PR; 18c-1 research begins in a fresh session.
+
+### Commits
+
+- `<TBD>` — chore(slice-18c): scaffold sub-slice bundle + capture built-in-Directus-first direction (D5)
+
+<!-- SHA back-filled when PR merges; until then, see `feature/slice-18c-directus-research` branch. -->
+
+### Tasks status (TodoWrite snapshot at session close)
+
+| # | Task                                                                | Status         | Commit       |
+|---|---------------------------------------------------------------------|----------------|--------------|
+| 1 | Create `feature/slice-18c-directus-research` branch                 | ✅ done        | —            |
+| 2 | Scaffold `docs/slices/slice-18/slice-18c/plan.md`                   | ✅ done        | `<TBD>`      |
+| 3 | Scaffold `docs/slices/slice-18/slice-18c/spec.md` (incl. D4, D5)    | ✅ done        | `<TBD>`      |
+| 4 | Scaffold `docs/slices/slice-18/slice-18c/handoff.md`                | ✅ done        | `<TBD>`      |
+| 5 | Append this devlog session block                                    | ✅ done        | `<TBD>`      |
+| 6 | Commit + push + open PR for scaffold                                | 🔄 in prog     | —            |
+| — | Task 18c-1 (architecture + repo audit) — begins next session        | ⏳ pending     | —            |
+
+### Outstanding
+
+- Land the scaffold PR.
+- Next session: begin Task 18c-1 (read 8 source files per plan.md § Read these files first; author `research.md` sections 1–4; run `gh repo view mgkdante/yesid.dev-cms` to enumerate Payload artifacts; append per-task entries to `devlog.md` + `handoff.md`).
+
+### Budget
+
+Model: Opus 4.7 [1m] | Context: low (docs-only scaffold + direction-capture amendment) — comfortable, stopping cleanly after PR.
+
+- Wall-clock: ~45m (extends the same session as the retrofit above).
+- Mid-session model switches: none (stayed on Opus 4.7 [1m]).
+- Notes: Task 18c-1 is heavy-read, light-write — next session can start on Sonnet 4.6 for the reading pass, switch to Opus only for research synthesis.
+
+---
+
 <!-- Every new session appends a fresh `## Session ...` block ABOVE this line. Past blocks NEVER get modified. -->
 
 ## Appendix — session index
@@ -80,7 +138,8 @@ Model: Opus 4.7 [1m] | Context: low (docs-only session; single-pass writing) —
 |------------|----------------|-------------|--------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
 | 2026-04-21 | Implementation | Claude Code | 18a — Payload CMS infrastructure foundation (PR [#29])             | 18b kickoff                                                                                       |
 | 2026-04-21 | Implementation | Claude Code | 18b — content model + 73-row seed on Payload (PR [#30])            | Pivot research slice `slice-headless-cms-best-practices` opened after                             |
-| 2026-04-22 | Planning       | Claude Code | Level-1 bundle retrofit (plan.md + devlog.md) — **this session**   | Merge this PR; open sub-slice 18c `feature/slice-18c-directus-research`                           |
+| 2026-04-22 | Planning       | Claude Code | Level-1 bundle retrofit (plan.md + devlog.md) [PR #33]              | Merge this PR; open sub-slice 18c `feature/slice-18c-directus-research`                           |
+| 2026-04-22 | Planning       | Claude Code | Open 18c — scaffold plan/spec/handoff + D5 built-in-first direction | Land scaffold PR; begin Task 18c-1 next session                                                    |
 
 <!-- Historical rows (18a, 18b) captured retrospectively per retrofit note above. Their canonical record is their PRs; this index exists so future sessions can see the full slice timeline in one place. -->
 
