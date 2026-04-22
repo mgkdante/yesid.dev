@@ -9,6 +9,61 @@
 
 ---
 
+## Session 2026-04-22 01:50 — Implementation (micro)
+
+**Tool:** Claude Code (Opus 4.7 [1m], reasoning=high)
+**Session type:** Implementation
+**Focus:** PR-CRLF (workflow#8) — fix workflow-pull line-ending false-positives + retry pull
+**Picking up from:** commit bbec757 (Session 2 close, CRLF friction logged in Outstanding)
+
+### What happened
+
+Continuation of Session 2 at user direction ("fix it and continue here you still have context window"). Closed the loop on the CRLF friction surfaced at Session 2 close.
+
+**PR-CRLF (`feedback/workflow-pull-crlf-fix` → workflow#8):** added "Comparison method (line-ending-aware)" subsection to `plugins/workflow/skills/workflow-pull/SKILL.md` Step 3. Mandates `git hash-object` (preferred — respects `core.autocrlf` + `.gitattributes`) or LF-normalized hashing. Explicitly forbids naive `sha256sum` on working-tree files. Adds binary-file edge case note. +13 insertions, single section. Merged + branch deleted. Workflow plugin advanced `fe0883a` → `5f3d145`.
+
+**`/workflow-pull` retry with corrected logic:** re-ran the per-file diff-merge using `git hash-object` on the project side (which hits autocrlf normalization) and `git rev-parse <sha>:<path>` on the plugin side (which returns the LF-canonical blob hash). Result:
+- 5 templates → **UPDATED** (project blob hash matched plugin-old blob hash exactly under `git hash-object` — confirming the templates were never customized in yesid.dev, only their working-tree CRLF bytes diverged from LF-canonical plugin content)
+- 5 governance files (AGENTS.md, WORKFLOW.md, VOCAB.md, ARCHITECTURE.md, PLAN.md) → **SKIPPED user-customized** (genuine divergence — these are the SOURCE files yesid heavily customized; the scaffold extracts FROM them, so naturally they diverge)
+
+Applied UPDATED actions: copied plugin-new content for the 5 templates; verified each project-side `git hash-object` now matches plugin-new blob hash. Bumped tracker `docs/.workflow-plugin-sha` from `48e2c52` to `5f3d145`. yesid.dev's templates now hold the PR-3 transit-rich content.
+
+**Decisions:**
+- D-6: keep using `git hash-object` for both text + binary files in scaffold (single-method consistency over conditional logic).
+- D-7: write tracker SHA full-length (40 chars) not short — matches existing `.workflow-plugin-sha` convention from Slice CLOUD.
+- D-8: do NOT amend the Session 2 closing block — devlog is append-only per D19; this Session 3 micro-block documents the post-close fix-and-verify cycle as a discrete activity.
+
+### Commits
+
+- `0a0775b` (workflow repo) — `fix(workflow): make workflow-pull comparison line-ending-aware (git hash-object preferred)`
+- `5f3d145` (workflow repo merge of PR-CRLF — workflow#8)
+- (yesid.dev — pending in this session-close commit) — sync scaffold to workflow@5f3d145 + this devlog block
+
+### Tasks status (TodoWrite snapshot at session close)
+
+| # | Task | Status | Commit |
+|---|------|--------|--------|
+| 1 | Partition audit | ✅ done | `0b8f3ec` |
+| 2 | Extraction batch 1 + bonus PR-3 + bonus PR-CRLF | ✅ done | workflow#5/#6/#7/#8 → `5f3d145` on workflow main; templates synced into yesid.dev at `docs/_TEMPLATES/` |
+| 3 | Extraction batch 2 — 8-phase pipeline + per-phase protocols | ⏳ pending | next session |
+| 4–9 | (subsequent tasks) | ⏳ pending | — |
+
+### Outstanding
+
+- **Next session: Task 3** — `/workflow-update "add 8-phase pipeline diagram + per-phase protocols (Research / Brainstorm / Spec / Plan / Implementation / Verification / PR / Closing) to scaffold WORKFLOW.md"`. Largest single extraction in the audit. May split into 2 PRs if diff exceeds ~400 lines.
+- **CRLF-fix verified end-to-end** — `/workflow-pull` round-trip now works correctly on Windows. Outstanding item from Session 2 close → resolved.
+- **All 4 acceptance metrics tracking healthy** so far: ≥5 PRs (4 of 5 minimum landed: workflow#5/#6/#7/#8); each PR follows D9 template (originating project / slice context / source / rationale / target); all PRs user-merged (D12 — never self-merged); ≥1 friction-driven `/workflow-update` PR (workflow#7 templates-hardening + workflow#8 CRLF-fix both qualify).
+
+### Budget
+
+Model: Opus 4.7 [1m] | Context: ~88% — danger zone confirmed, hard STOP at end of this commit.
+
+- Wall-clock: ~10 min added (01:40 → 01:50)
+- Mid-session model switches: none
+- Notes for next session: **drop to Sonnet 4.6 mandatory** — Opus 4.7 has been heavily loaded across 2 sessions today, working set won't fit fresh Sonnet but Task 3 is mostly extraction (no novel design). Re-read: `partition-audit.md` § PR-3 batching row + yesid `docs/reference/WORKFLOW.md` §§ 3, 4–11 only. Skip prior session Q&A.
+
+---
+
 ## Session 2026-04-22 01:05 — Implementation
 
 **Tool:** Claude Code (Opus 4.7 [1m], reasoning=high)
@@ -142,3 +197,4 @@ Rolling index for quick scroll. Update each session.
 |------|------|-------|---------------------|
 | 2026-04-22 | Planning | Task 1 — partition audit | partition-audit.md shipped (0b8f3ec); Task 2 extraction PRs pending user sanity-check on 10-group batching plan |
 | 2026-04-22 | Implementation | Task 2 + bonus PR-3 templates-hardening | 3 PRs merged (workflow#5/#6/#7 → fe0883a); audit updated with PR URLs; CRLF friction logged for future /workflow-update; ready for Task 3 (8-phase pipeline) in fresh session, drop to Sonnet 4.6 |
+| 2026-04-22 | Implementation (micro) | PR-CRLF fix + pull retry | workflow#8 merged → 5f3d145; templates synced into yesid.dev (docs/_TEMPLATES/); tracker bumped 48e2c52→5f3d145; CRLF Outstanding item resolved end-to-end |
