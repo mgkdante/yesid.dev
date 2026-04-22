@@ -6,7 +6,7 @@
 
 | Field             | Value                                                     |
 |-------------------|-----------------------------------------------------------|
-| Status            | draft                                                     |
+| Status            | approved (post-Task-2: D1/D2/D3 + Q4–Q7 resolved)         |
 | Priority          | 1                                                         |
 | Estimated effort  | 6–8 sessions                                              |
 | Parent slice      | none (single-level)                                       |
@@ -97,29 +97,43 @@ The prior CMS attempt (Payload) over-coupled to Node infrastructure and under-de
 
 Populated as Task 2 research produces findings. Each D-entry: chosen / alternatives / why this won / tradeoff / affects. Stubs below anchor known open questions.
 
-### D1 — Directus hosting
+### D1 — Directus hosting: **Railway Hobby** ($5/mo)
 
-- **Chosen:** TBD (Task 2)
-- **Alternatives considered:** Directus Cloud managed · self-host on Railway · self-host on Fly.io · self-host on Render · self-host on existing infra.
-- **Why this won:** TBD
-- **Tradeoff:** TBD
-- **Affects:** Task 3, Task 8.
+- **Chosen:** Self-host Directus on Railway's Hobby plan, using the official Directus CMS template as the starting point. Keep our existing Neon Postgres (BYO via `DB_*` env overrides). Auto-TLS on `cms.yesid.dev`.
+- **Alternatives considered:**
+  - Directus Cloud Starter ($15/mo): rejected — shared-DB architecture can't reuse Neon; custom-domain support is "partial"; 3× the cost.
+  - Fly.io PAYG ($3–6/mo, scale-to-zero): acceptable runner-up; cheaper and has scale-to-zero, but no Directus-authored template and the PAYG-only signup is a newer path.
+  - Hetzner CX22 (€3.99/mo): cheapest raw specs but DIY Caddy/Traefik TLS + OS patching; incompatible with "solo operator, budget on operator hours" profile.
+  - Render Starter ($7/mo): works but more expensive than Railway for equivalent specs.
+  - DO App Platform Basic ($5/mo): fine; no native Directus template, so Railway wins on DX.
+  - Vercel: non-starter — Directus needs persistent Node + filesystem + WebSockets; Vercel's FaaS model can't host it (Vercel's own KB confirms).
+- **Why this won:** official Directus template on Railway provisions the full stack in one click; BYO-Neon satisfies the plan-level infra constraint; auto-TLS on 2 custom domains preserves `cms.yesid.dev` + DKIM/SPF; $5/mo floor with $5 credit ≈ predictable near-zero overage at our traffic profile; lowest ops burden of any BYO-Neon-compatible option.
+- **Tradeoff:** no scale-to-zero (Directus is always-on at $5/mo floor). Fly.io would give scale-to-zero at slightly lower cost — revisit if traffic genuinely is near-zero and `$` matters more than DX.
+- **Affects:** Task 3 (install + config), Task 8 (retire Vercel project on yesid.dev-cms at cutover).
 
-### D2 — Storage adapter
+### D2 — Storage adapter: **Cloudflare R2** via built-in `s3` driver
 
-- **Chosen:** TBD (Task 2)
-- **Alternatives considered:** Directus local FS · Vercel Blob · S3-compatible (R2 / Backblaze / Tigris) · Cloudinary.
-- **Why this won:** TBD
-- **Tradeoff:** TBD
-- **Affects:** Task 3, Task 4 (media URLs).
+- **Chosen:** Cloudflare R2 bucket, accessed via Directus's built-in `s3` driver (with `STORAGE_S3_ENDPOINT` pointed at the R2 S3-compatible URL). `$0` egress, 10 GB + 1M Class A + 10M Class B ops free per month.
+- **Alternatives considered:**
+  - **Vercel Blob: RULED OUT — no Directus driver exists.** This is a revision from the research slice's assumption (live fetch of `https://directus.io/docs/configuration/files` on 2026-04-22 confirmed the driver catalogue: `local`, `s3`, `gcs`, `azure`, `cloudinary`, `supabase`). A custom `@directus/storage-driver-vercel-blob` is conceptually possible but fails the `feedback_prefer_platform_builtins` rule.
+  - Backblaze B2: cheaper storage ($6/TB vs R2 $15/TB) with free egress via Cloudflare CDN — but adds CDN config overhead. Runner-up if storage grows past 10 GB.
+  - Tigris: $0 egress, pairs naturally with Fly.io. Runner-up if we revisit D1 to Fly.io.
+  - AWS S3: $0.09/GB egress hurts the Vercel-frontend story.
+  - Cloudinary: overkill; Directus already does image transforms via `/assets/<id>?width=…`.
+  - Directus local filesystem: fine on Railway/Fly (with volume) for dev, but ties us to a single host and makes backups a separate problem.
+- **Why this won:** `$0` egress is the single biggest cost lever for a Vercel-hosted frontend. 10 GB free covers yesid.dev's asset mix for year 1. Built-in `s3` driver = zero custom-code maintenance. S3-compatible → portability (swap env vars to move to B2 later).
+- **Tradeoff:** R2 storage is $0.015/GB vs B2's $0.006/GB — pricier per GB at scale. At our asset size the savings don't justify CDN-config overhead.
+- **Affects:** Task 3 (storage provision + env wiring), Task 4 (media URL shape — adapter returns `{DIRECTUS_URL}/assets/{id}?width=…`).
 
-### D3 — Schema provisioning approach
+### D3 — Schema provisioning: **`directus schema snapshot` + `apply`** with YAML committed to Git
 
-- **Chosen:** TBD (Task 2)
-- **Alternatives considered:** Directus Data Studio (GUI) · Directus schema-snapshot CLI · hand-rolled SQL migrations.
-- **Why this won:** TBD
-- **Tradeoff:** TBD
-- **Affects:** Task 3, Task 6, yesid-dev-cms Git history shape.
+- **Chosen:** Use Directus's `snapshot` CLI to produce `infra/directus/snapshot.yaml` (all collections, fields, relations, roles, permissions, flows). Commit to Git. Apply in CI via `directus schema apply` on an ephemeral Directus instance as a smoke-test gate; apply to production via a manual-approval step.
+- **Alternatives considered:**
+  - Data Studio (GUI) alone: fast for prototyping but zero audit trail; unreviewable; impossible to rebuild. Use for exploration, always follow with a snapshot.
+  - Raw SQL migrations (Knex `./migrations/`): higher maintenance, hand-written up/down scripts. Reserve for cases the schema API can't express (triggers, materialized views).
+- **Why this won:** YAML PR diffs are readable; full reproducibility from the file; drift detection via `schemaDiff`; Flows + roles + permissions included in the snapshot (as of Directus 11).
+- **Tradeoff:** `schema apply` is destructive on field removals — CI needs a confirmation gate or manual-approval step before production apply. Also: seed data is NOT in the snapshot (schema only); Task 6 handles seed via a separate `scripts/seed.ts`.
+- **Affects:** yesid.dev-cms repo shape (adds `infra/directus/snapshot.yaml` + CI), Task 3 (bootstrap with apply), Task 6 (seed separately).
 
 ## File-touch summary
 
@@ -150,13 +164,13 @@ Populated as Task 2 research produces findings. Each D-entry: chosen / alternati
 
 ## Open questions
 
-- **Q1.** Directus hosting. Resolution: Task 2 → D1.
-- **Q2.** Storage adapter. Resolution: Task 2 → D2.
-- **Q3.** Schema provisioning. Resolution: Task 2 → D3.
-- **Q4.** Does `staticAdapter` stay as a dev-only fallback or get deleted entirely? Resolution: end of Task 5.
-- **Q5.** Is preview/draft content needed for blog? Does that change adapter shape? Resolution: Task 2.
-- **Q6.** Locale strategy — Directus translations collection vs per-locale collection vs JSON per field. Resolution: Task 2.
-- **Q7.** Blog rich-text — Directus M2A block editor vs keeping `.md` files referenced by Directus. Resolution: Task 2.
+- **Q1.** Directus hosting → resolved as D1 (Railway Hobby).
+- **Q2.** Storage adapter → resolved as D2 (Cloudflare R2 via `s3` driver).
+- **Q3.** Schema provisioning → resolved as D3 (`snapshot` + `apply` YAML in Git).
+- **Q4.** Does `staticAdapter` stay as a dev-only fallback or get deleted entirely? → **Keep as dev-only fallback through Slice 18 close. Delete in Slice 19+ after 2+ weeks of production-green Directus.** Rationale: safety net during cutover; removal is an independent decision that doesn't block the migration. Consumer-side: `src/lib/adapters/index.ts` re-export flips to `directusAdapter as adapter` in prod; a dev-mode fallback can be wired as a Task 4 detail if needed (likely not needed — dev traffic is the developer, who can run Directus locally).
+- **Q5.** Is preview/draft content needed for blog? Does that change adapter shape? → **Yes, using Directus native `status` field + Content Versioning + `@directus/visual-editing` package; wire in a follow-up slice, OUT of Slice 18 scope.** Adapter impact: DirectusAdapter accepts an optional `preview?: boolean` flag at construction; public token filters `status._eq="published"`; preview route uses `withToken()` for a short-lived signed token that bypasses the filter. Scope note: preview routes + visual-editing overlay are a distinct feature and land later.
+- **Q6.** Locale strategy — Directus translations collection vs per-locale collection vs JSON per field. → **Approach A: native Directus Translations field type + adapter-boundary transform.** Creates a `languages` collection + `<collection>_translations` junction per collection. DirectusAdapter ships a pure function `toLocalizedString(translations, field, fallback='en') → LocalizedString` so the consumer shape is unchanged. Per-request SvelteKit pattern: fetch `fields: ['*', { translations: ['*'] }]` (all locales at once — cost trivial at our size). Falls back to `en` when requested locale is missing.
+- **Q7.** Blog rich-text — Directus Block Editor vs keeping Markdown. → **Keep Markdown.** Use Directus's Markdown interface for blog-post body fields; SVG illustrations stored as `directus_files` and referenced by file ID. Adapter resolves file IDs to `{DIRECTUS_URL}/assets/{id}` URLs. Rationale: preserves `marked.parse` pipeline unchanged; keeps the BlogPost shape stable; avoids a component rewrite (Block Editor output is structured JSON, not HTML-compatible markdown). Same choice for tech-stack descriptions (currently one markdown file per item at `src/content/stack/{id}.md`; becomes a Markdown field on the `tech_stack` collection).
 
 ## Risks
 
@@ -173,3 +187,5 @@ To resolve during Task 2:
 
 | Date | Change | Why | Affected sections |
 |------|--------|-----|-------------------|
+| 2026-04-22 | D1, D2, D3 resolved (Railway / R2 / snapshot+apply); Q4–Q7 resolved. | Task 2 research landed; findings in research.md. Spec moves from draft to post-Task-2 state. | § Design decisions (D1/D2/D3), § Open questions (Q4–Q7). |
+| 2026-04-22 | Vercel Blob downgraded from D2 candidate to non-starter. | Live fetch of Directus docs confirmed no Vercel Blob driver ships with `@directus/api`; custom driver would fail the `prefer built-ins` rule. Revision from the research slice's earlier assumption. | D2. |
