@@ -10,7 +10,13 @@ export const Services: CollectionConfig = {
     defaultColumns: ['id', 'station', 'visible'],
   },
   access: {
-    read: () => true,
+    // Admins see all services. Non-admin/unauth reads get filtered to visible=true only —
+    // hidden services (visible=false) remain internal even though they exist in the DB.
+    // Parallels the projects.status access pattern in 18b-4.
+    read: ({ req }) => {
+      if (isAdmin(req.user)) return true
+      return { visible: { equals: true } }
+    },
     create: ({ req }) => isAdmin(req.user),
     update: ({ req }) => isAdmin(req.user),
     delete: ({ req }) => isAdmin(req.user),
