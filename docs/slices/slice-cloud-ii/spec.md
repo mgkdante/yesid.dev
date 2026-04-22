@@ -100,29 +100,57 @@ Expected PR count: 5–10 across the slice. Batching rule: one PR per logical wo
 
 This is the slice's primary dogfood validation — if `/workflow-update` is clunky at scale, friction emerges as its own `/workflow-update` PRs to improve the skill.
 
-### D3 — yesid.dev trim strategy: pointers, not deletions
+### D3 — yesid.dev partition strategy: full separation via `docs/project/` (AMENDED 2026-04-22)
 
-Per the partition rule, yesid.dev's AGENTS.md / WORKFLOW.md / etc. lose workflow-universal content. But we DO NOT delete and leave holes — we replace extracted sections with **pointers** to the plugin-sourced equivalent.
+**Original D3 (deprecated, kept for history):** pointer-replacement in same files. Workflow-universal content extracted; project-specific content stays inline; extracted sections become pointers to plugin-sourced equivalents.
 
-Example transformation in yesid.dev's AGENTS.md:
+**Amended D3 (current):** full file-level separation. Each file becomes either 100%-plugin-pulled OR 100%-project-owned — no hybrid files except `AGENTS.md` + `docs/roadmap/PLAN.md` (which are inherently both).
 
-**Before (workflow-universal content inlined):**
-```
-## Iteration Protocol (per Level 3 task)
-**You are done when Yesid says you are done.** ...
-1. Implement ONE task from the plan.
-2. Run `bun run test` + `bun run check`. ...
-[8 steps]
-```
+**Rationale for the amendment:** Hybrid files create permanent `/workflow-pull` friction. Every pull would forever SKIP the hybrid files as "user-customized" because the project-specific portions diverge from the plugin's content. Operators end up either (a) re-merging manually each pull (toil), (b) accepting that updates never land (drift), or (c) using local-only modifications (lost on machine swap). Full separation eliminates the ambiguity.
 
-**After (pointer):**
-```
-## Iteration Protocol
-See `docs/reference/WORKFLOW.md` § Iteration Protocol.
-Project-specific binding: `bun run test` + `bun run check` are the canonical verification commands.
-```
+**File classification under amended D3:**
 
-The plugin's `WORKFLOW.md` (pulled into yesid.dev) carries the universal 8-step protocol. yesid.dev's AGENTS.md only binds the tool-agnostic "canonical verification commands" slot to its concrete Bun commands.
+| File / dir | Classification | Behavior |
+|---|---|---|
+| `docs/reference/WORKFLOW.md` | 100% plugin | Pure pull; never edit |
+| `docs/reference/VOCAB.md` | 100% plugin | Pure pull; carries WORKFLOW vocab only |
+| `docs/reference/ARCHIVE.md` | 100% plugin | Pure pull |
+| `docs/reference/tools/*.md` | 100% plugin | Pure pull |
+| `docs/project/STACK.md` | 100% project (DEFAULT) | Project-owned; tech stack table |
+| `docs/project/BINDINGS.md` | 100% project (DEFAULT) | Project-owned; canonical-commands binding (workflow abstract → project concrete) + cloud env binding |
+| `docs/project/ARCHITECTURE.md` | 100% project (DEFAULT) | Project-owned; file structure, data flow, modules. Migrated from `docs/reference/ARCHITECTURE.md` |
+| `docs/project/TESTS.md` | 100% project (DEFAULT) | Project-owned; test inventory, conventions. Migrated from `docs/reference/TESTS.md` |
+| `docs/project/VOCAB.md` | 100% project (DEFAULT) | Project-owned; brand vocab + industry vocab + project-LLM vocab. Split from `docs/reference/VOCAB.md` |
+| `docs/project/CONSTITUTION.md` | 100% project (DEFAULT) | Project-owned; codebase law (project-wide rules). Migrated from `docs/reference/CONSTITUTION.md` |
+| `docs/project/BRAND.md` | 100% project (OPTIONAL) | Project-owned; brand identity. Pointer to existing `brand/BRAND.md` for brand-owning projects |
+| `docs/project/CSS.md` | 100% project (OPTIONAL) | Project-owned; styling rules. Migrated from `docs/reference/CSS.md` |
+| `docs/project/MOTION.md` | 100% project (OPTIONAL) | Project-owned; animation language. Migrated from `docs/reference/MOTION.md` |
+| `docs/project/PATTERNS.md` | 100% project (OPTIONAL) | Project-owned; reusable solutions catalog. Migrated from `docs/reference/PATTERNS.md` |
+| `docs/project/SERVICES.md` | 100% project (OPTIONAL) | Project-owned; service domain positioning. Extracted from current AGENTS.md inline content |
+| `docs/project/<EMERGENT>.md` | 100% project (EMERGENT) | Operator creates as needed: MIGRATIONS.md, SECURITY.md, PERFORMANCE.md, INTEGRATIONS.md, etc. Promoted by D11 discipline |
+| `AGENTS.md` (root) | Hybrid (slot pattern) | Stays at root; tool-agnostic contract; pulls workflow rules from plugin via pointers; fills project-specific slots inline (e.g., "Canonical commands: see `docs/project/BINDINGS.md`") |
+| `CLAUDE.md` (root) | Hybrid (slot pattern) | Stays at root; Claude Code overlay |
+| `docs/roadmap/PLAN.md` | Hybrid | Project master plan (slice table, decisions log) + pulls strategic-themes-pattern from plugin |
+
+**Live-reference updates required during Task 6.5 migration:** AGENTS.md prose, CLAUDE.md if any path refs, active slice bundles (slice-18 / slice-cloud-ii / templates), source code comments referencing `docs/reference/<X>.md`, `docs/README.md` navigation. Estimated <40 line edits across ~10 files.
+
+**NOT updated:** cloud-archived shipped slice handoffs (slice-15, 17b, 17c, 17j, 17k, 18a, 18b). Frozen historical records — they describe the path layout that was true at the time. Per non-goals: "No slice bundle rewrites. Closed slices keep their bundles as historical records."
+
+### D11 — Project documentation discipline (NEW)
+
+The workflow promotes per-domain governance documentation. As the project evolves, new domains emerge (CSS, motion, security, migrations, integrations, etc.) — each gets its own `docs/project/<DOMAIN>.md`. The plugin scaffold ships:
+
+- **DEFAULT skeletons** (every project gets these at scaffold time): `STACK.md`, `BINDINGS.md`, `ARCHITECTURE.md`, `TESTS.md`, `VOCAB.md`, `CONSTITUTION.md`. Operator fills them in as the project takes shape.
+- **OPTIONAL templates** (commented templates in scaffold; operator un-comments when relevant): `BRAND.md`, `CSS.md`, `MOTION.md`, `PATTERNS.md`, `SERVICES.md`. Each comes with a "create when..." trigger note.
+- **EMERGENT pattern** (operator creates as needed): any other `docs/project/<DOMAIN>.md`. The convention: when a domain's rules / patterns / vocabulary become re-derivable across slices, codify them in their own doc. Examples: `MIGRATIONS.md` (database schema discipline), `SECURITY.md` (threat model + auth patterns), `PERFORMANCE.md` (benchmarks + budgets), `INTEGRATIONS.md` (external service contracts).
+
+**Promoted by:**
+- `docs/project/README.md` (in scaffold) teaches the convention with the DEFAULT/OPTIONAL/EMERGENT framing + a "when to create a new project doc" rubric.
+- WORKFLOW.md § Phase 8 closing checklist gains a step: "If a new domain rule / pattern emerged, codify it in `docs/project/<DOMAIN>.md`."
+- WORKFLOW.md § Self-enhancing workflow gains a row: "Re-encountered a domain rule → `docs/project/<DOMAIN>.md`."
+- AGENTS.md § Repo structure mentions `docs/project/` alongside `docs/reference/`.
+
+**Hard rule (closing-checklist enforced):** at slice close, if you re-derived a domain rule that wasn't already in any project doc, codify it before the slice closes. Same self-enhancing principle that already governs OS-quirks + VOCAB + learn docs.
 
 ### D4 — Tracking the partition in a single audit doc
 
@@ -221,17 +249,24 @@ Approximate — final count depends on audit:
 - [ ] All PRs reviewed + merged by user (D12 — skill never self-merges).
 - [ ] Plugin reaches v0.2.0 at end of extraction, tagged.
 
-### yesid.dev trim
+### yesid.dev trim + migration (per amended D3 + D11)
 
-- [ ] `AGENTS.md` line count reduced by ≥40% vs pre-slice baseline.
-- [ ] `docs/reference/WORKFLOW.md` line count reduced by ≥40%.
-- [ ] `docs/reference/VOCAB.md` workflow-terms section replaced with pointer; brand/industry/project terms intact.
-- [ ] `docs/roadmap/PLAN.md` gains strategic themes + priority tags without losing slice table.
-- [ ] Every trimmed section has a pointer to its plugin-sourced equivalent.
+- [ ] `AGENTS.md` adopts slot pattern: workflow-rule sections become pointers to `docs/reference/<WORKFLOW|VOCAB|...>.md` (plugin-pulled); project-specific slots (canonical commands → `docs/project/BINDINGS.md`, stack → `docs/project/STACK.md`, etc.) are inline pointers to project docs. Reduced ≥50% from pre-slice baseline.
+- [ ] `docs/reference/WORKFLOW.md` is **100% plugin-pulled** (zero local edits; `git hash-object` matches plugin blob exactly).
+- [ ] `docs/reference/VOCAB.md` is **100% plugin-pulled** and contains workflow vocabulary only.
+- [ ] `docs/reference/ARCHIVE.md` is **100% plugin-pulled**.
+- [ ] `docs/reference/tools/*.md` are **100% plugin-pulled**.
+- [ ] `docs/project/` directory created with DEFAULT skeletons (STACK.md, BINDINGS.md, ARCHITECTURE.md, TESTS.md, VOCAB.md, CONSTITUTION.md) populated with content migrated from `docs/reference/` + `AGENTS.md` inline content.
+- [ ] OPTIONAL project docs (`BRAND.md`, `CSS.md`, `MOTION.md`, `PATTERNS.md`, `SERVICES.md`) created where relevant for yesid.dev (all relevant — yesid is brand+UI+motion+pattern-heavy).
+- [ ] `docs/roadmap/PLAN.md` gains strategic themes + priority tags pattern (pulled from plugin) without losing slice table or decisions log.
+- [ ] Live references updated: AGENTS.md prose, CLAUDE.md, active slice bundles (slice-18/slice-cloud-ii/templates), source code comments, `docs/README.md` navigation. Cloud-archived shipped slice bundles untouched (frozen records).
+- [ ] `docs/project/README.md` exists (pulled from plugin) teaching the DEFAULT/OPTIONAL/EMERGENT discipline.
 
-### Pull verification
+### Pull verification (per amended D3)
 
-- [ ] `/workflow-pull` in yesid.dev from v0.2.0 completes without unexpected user-customized skips for files we explicitly trimmed.
+- [ ] `/workflow-pull` in yesid.dev from v0.2.0 produces ZERO `skipped: user-customized` results for the 4 pure-pull files (`docs/reference/WORKFLOW.md`, `docs/reference/VOCAB.md`, `docs/reference/ARCHIVE.md`, `docs/reference/tools/*.md`). All four `git hash-object` blobs match the plugin's blobs exactly.
+- [ ] `/workflow-pull` produces ZERO updates to any file under `docs/project/` (project-owned, never pulled — the skill's per-file diff-merge confirms project-side hashes diverge from plugin-side, expected).
+- [ ] `AGENTS.md` is correctly classified as `skipped: user-customized` (genuine — slot pattern fills with project-specific content).
 - [ ] `docs/.workflow-plugin-sha` updated to v0.2.0 commit.
 
 ### Cross-tool review
@@ -287,3 +322,4 @@ Approximate — final count depends on audit:
 | Date | Change | Why |
 |------|--------|-----|
 | 2026-04-22 | Initial spec | Planning session at slice-cloud-ii open. Driven by plugin install + workflow-pull success surfacing the partition gap. Follow-up to slice CLOUD. |
+| 2026-04-22 | **D3 amended (pointer-replacement → full-separation via `docs/project/`) + new D11 (project documentation discipline) + acceptance criteria rewrites + plan adds Task 4.5 + Task 6.5** | User picked Option B during Task 4 mid-execution. Original D3 (pointer-replacement in same files) created permanent `/workflow-pull` friction — every pull would forever SKIP hybrid files as "user-customized" because project portions diverge from plugin content. Amended D3 introduces clean partition: each file is either 100%-plugin-pulled OR 100%-project-owned (except `AGENTS.md` + `roadmap/PLAN.md` which are inherently hybrid). New D11 codifies the per-domain documentation discipline yesid.dev developed organically (CSS.md, MOTION.md, CONSTITUTION.md, etc. emerging as the project evolved) — plugin scaffold ships DEFAULT skeletons + OPTIONAL templates + EMERGENT pattern with a README teaching the convention. Affects: § Acceptance criteria § yesid.dev trim (now requires `docs/project/` directory + 11 specific file states) + § Pull verification (now requires zero diff for pure-pull files); plan adds Task 4.5 (plugin scaffold gains `docs/project/` + WORKFLOW.md/AGENTS.md updates) and Task 6.5 (yesid project-content migration). Cloud-archived shipped slices remain untouched per non-goals. |

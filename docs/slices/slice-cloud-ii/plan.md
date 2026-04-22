@@ -321,3 +321,123 @@ Full list in [spec.md § Risks](spec.md). Per-task mitigation summary:
 | Date | Change | Why |
 |------|--------|-----|
 | 2026-04-22 | Initial plan | Authored immediately after spec approval. 9 tasks mapped to 5 sessions per spec §Session layout. |
+| 2026-04-22 | **Spec D3 amended + new D11 (project-doc-discipline) → plan tasks expand** | User picked Option B (full file-level partition via `docs/project/`) over original Option A (pointer-replacement in same files). Triggers: (a) Task 4 adds **Task 4.5 — plugin scaffold gains `docs/project/` DEFAULT + OPTIONAL skeletons + README teaching DEFAULT/OPTIONAL/EMERGENT discipline**; (b) Task 6 adds **Task 6.5 — yesid project-content migration** (move `docs/reference/{ARCHITECTURE,CSS,MOTION,PATTERNS,CONSTITUTION,TESTS}.md` → `docs/project/`; split VOCAB.md; create new `docs/project/{STACK,BRAND,BINDINGS,SERVICES}.md` from extracted AGENTS.md inline content; update live references); (c) Task 7 verification gates change from "≥40% line reduction" to "pure-pull files = zero diff hash-equal to plugin blobs"; (d) Task 6 yesid AGENTS.md trim adopts slot pattern (workflow-rule sections become pointers; project slots inline-pointer to `docs/project/<X>.md`); (e) WORKFLOW.md § Phase 8 + § Self-enhancing get amended in Task 4.5 to promote per-domain doc creation. See spec § D3 (amended) + § D11 for the partition + discipline rules. |
+
+---
+
+## Task 4.5 — Plugin scaffold: `docs/project/` skeleton + project-doc-discipline (NEW per amended D3 + D11)
+
+**Session:** runs alongside or after Task 4's remaining extraction PRs.
+**Goal:** plugin scaffold gains a `docs/project/` directory carrying DEFAULT skeletons + OPTIONAL templates + a README teaching the DEFAULT/OPTIONAL/EMERGENT discipline. Promotes the per-domain documentation discipline yesid.dev developed organically (CSS.md, MOTION.md, CONSTITUTION.md, ARCHITECTURE.md, TESTS.md, VOCAB.md emerging as the project evolved).
+
+**Files (in plugin scaffold):**
+
+DEFAULT skeletons (every project gets these at scaffold time):
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/STACK.md` — tech stack table template
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/BINDINGS.md` — canonical commands binding (workflow abstract → project concrete) + cloud env binding
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/ARCHITECTURE.md` — file structure, modules, data flow
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/TESTS.md` — test inventory, conventions, factories
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/VOCAB.md` — project + brand + industry vocab (workflow vocab stays in `docs/reference/VOCAB.md`)
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/CONSTITUTION.md` — codebase law, project-wide rules
+
+OPTIONAL templates (commented templates with "create when..." trigger):
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/_OPTIONAL_BRAND.md` — for brand-owning projects
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/_OPTIONAL_CSS.md` — for projects with significant styling
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/_OPTIONAL_MOTION.md` — for projects with animation
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/_OPTIONAL_PATTERNS.md` — for codifying reusable solutions
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/_OPTIONAL_SERVICES.md` — for service-domain framing
+
+README:
+- `plugins/workflow/skills/workflow-add/scaffold/docs/project/README.md` — teaches the convention: DEFAULT (always created) / OPTIONAL (un-comment when relevant) / EMERGENT (operator creates as needed). "When to create a new project doc" rubric: when a domain's rules / patterns / vocabulary become re-derivable across slices, codify them.
+
+WORKFLOW.md scaffold updates:
+- § Phase 8 closing checklist gains step: "If a new domain rule / pattern emerged, codify it in `docs/project/<DOMAIN>.md`."
+- § Self-enhancing workflow gains row: "Re-encountered a domain rule → `docs/project/<DOMAIN>.md`."
+- § Document ecosystem Tier 1 table gains row for `docs/project/` (DEFAULT + OPTIONAL + EMERGENT).
+
+AGENTS.md scaffold updates:
+- § Repo structure gains `docs/project/` alongside `docs/reference/`, with one-line description.
+
+**Steps:**
+
+- [ ] **Step 1:** Create new branch `feedback/docs-project-defaults` off `main` in `mgkdante/workflow`.
+- [ ] **Step 2:** Author the 6 DEFAULT skeleton files. Each ~50–100 lines, table-shaped, fully placeholder-driven (no project-specific content).
+- [ ] **Step 3:** Author the 5 OPTIONAL templates with "create when..." headers + skeleton content.
+- [ ] **Step 4:** Author `docs/project/README.md` (~150 lines) — teaches the discipline + rubric + lists DEFAULT / OPTIONAL / EMERGENT examples.
+- [ ] **Step 5:** Update scaffold `WORKFLOW.md` (§ Phase 8 + § Self-enhancing + § Document ecosystem) to reference `docs/project/`.
+- [ ] **Step 6:** Update scaffold `AGENTS.md` § Repo structure to include `docs/project/`.
+- [ ] **Step 7:** Show diff (likely 800–1200 line additions across ~14 files), STOP for owner approval.
+- [ ] **Step 8:** Commit + push + open PR.
+- [ ] **Step 9:** After merge: `/workflow-pull` in yesid.dev — should ADD all `docs/project/*` files (since they don't exist locally yet) + UPDATE WORKFLOW.md + AGENTS.md scaffold areas.
+
+**STOP criteria:**
+- [ ] PR merged to `mgkdante/workflow/main`.
+- [ ] yesid.dev gets `docs/project/` skeleton via `/workflow-pull` (pure ADD case — all new files).
+- [ ] Audit row added.
+- [ ] Devlog entry appended.
+
+---
+
+## Task 6.5 — yesid project-content migration (NEW per amended D3)
+
+**Session:** runs after Task 6 (yesid AGENTS.md trim to slot pattern) and Task 4.5 (plugin scaffold has `docs/project/` skeletons available via `/workflow-pull`).
+**Goal:** migrate yesid.dev's project-specific content from `docs/reference/` (and inline AGENTS.md sections) into the new `docs/project/` directory per amended D3. After this task, `docs/reference/` contains ONLY plugin-pulled files; `docs/project/` contains ONLY project content. Hybrid files eliminated.
+
+**Files (in yesid.dev):**
+
+MOVE (file-level migration with `git mv`):
+- `docs/reference/ARCHITECTURE.md` → `docs/project/ARCHITECTURE.md`
+- `docs/reference/CSS.md` → `docs/project/CSS.md`
+- `docs/reference/MOTION.md` → `docs/project/MOTION.md`
+- `docs/reference/PATTERNS.md` → `docs/project/PATTERNS.md`
+- `docs/reference/CONSTITUTION.md` → `docs/project/CONSTITUTION.md`
+- `docs/reference/TESTS.md` → `docs/project/TESTS.md`
+
+SPLIT:
+- `docs/reference/VOCAB.md` — split into:
+  - `docs/reference/VOCAB.md` (workflow vocab only — replaced by plugin-pulled version)
+  - `docs/project/VOCAB.md` (brand vocab + industry vocab + project-LLM-tool vocab + cross-reference)
+
+CREATE (new project docs from extracted AGENTS.md inline content):
+- `docs/project/STACK.md` — populate from current AGENTS.md § Runtime + ARCHITECTURE.md § Stack/Dependencies (paths now reference `docs/project/ARCHITECTURE.md`)
+- `docs/project/BRAND.md` — populate from current AGENTS.md § Brand (or pointer to `brand/BRAND.md`)
+- `docs/project/BINDINGS.md` — populate with: canonical commands binding (`bun run test` = test, `bun run check` = typecheck+lint, `bun run dev` = dev server, `bun run slice:close` = close-script, `op run --env-file=.env -- bun dev` = dev with secrets) + cloud env binding (`YESITO_CLOUD_ROOT` + Windows / macOS / Linux paths) + 1Password vault name + worktree paths
+- `docs/project/SERVICES.md` — populate from current AGENTS.md § Project + PLAN.md § Goal/Design Principles (Freelance Digital Infrastructure positioning, dual audience, 6 services framing)
+
+UPDATE LIVE REFERENCES (~30–40 line edits across ~10 files):
+- `AGENTS.md` prose — every `docs/reference/<X>.md` reference for the moved files becomes `docs/project/<X>.md`
+- `CLAUDE.md` — same if any path refs
+- Active slice bundles (`docs/slices/slice-18/`, `docs/slices/slice-cloud-ii/`, etc.) — update inline path references
+- Source-code comments — `grep -rn 'docs/reference/CSS\|docs/reference/MOTION\|...' src/` and update
+- `docs/README.md` navigation — full rewrite to reflect new structure
+
+UNTOUCHED (per spec non-goals):
+- Cloud-archived shipped slice bundles (slice-15, 17b, 17c, 17j, 17k, 18a, 18b) — frozen historical records
+- `brand/` — visual identity, separate concern
+- `docs/ai-memory/` — memory system
+- `docs/sessions/` — non-slice records
+
+**Steps:**
+
+- [ ] **Step 1:** Verify Task 4.5 has merged + yesid has `docs/project/` skeleton via prior `/workflow-pull`.
+- [ ] **Step 2:** Pre-migration line-count snapshot for verification.
+- [ ] **Step 3:** `git mv` the 6 moved files (`docs/reference/{ARCHITECTURE,CSS,MOTION,PATTERNS,CONSTITUTION,TESTS}.md` → `docs/project/`).
+- [ ] **Step 4:** Split `docs/reference/VOCAB.md` — extract project portions to `docs/project/VOCAB.md`; leave workflow vocab section (which gets replaced by plugin-pulled version on next `/workflow-pull`).
+- [ ] **Step 5:** Populate `docs/project/{STACK,BRAND,BINDINGS,SERVICES}.md` from extracted AGENTS.md inline content. Refer to scaffold templates pulled in Task 4.5 for shape.
+- [ ] **Step 6:** Update live references: AGENTS.md prose, CLAUDE.md if applicable, active slice bundles, `docs/README.md`. Use `grep -rn 'docs/reference/' src/ docs/slices/slice-18/ docs/slices/slice-cloud-ii/` to find all references.
+- [ ] **Step 7:** Update source-code comments referencing moved doc paths.
+- [ ] **Step 8:** Verify every reference resolves (grep for any remaining `docs/reference/{ARCHITECTURE,CSS,MOTION,PATTERNS,CONSTITUTION,TESTS}` should return zero hits in live files; cloud archive untouched).
+- [ ] **Step 9:** Commit per logical group:
+  ```
+  git mv ... && git commit -m "refactor(slice-cloud-ii): move project-specific reference docs to docs/project/ per amended D3"
+  git add docs/project/{STACK,BRAND,BINDINGS,SERVICES}.md && git commit -m "docs(slice-cloud-ii): create project-specific docs from extracted AGENTS.md content"
+  git add AGENTS.md CLAUDE.md docs/slices/ docs/README.md && git commit -m "docs(slice-cloud-ii): update live references to new docs/project/ paths"
+  ```
+- [ ] **Step 10:** Push.
+
+**STOP criteria:**
+- [ ] All file moves committed.
+- [ ] New project docs populated.
+- [ ] Live references updated (zero stale `docs/reference/<moved-file>.md` references in live files).
+- [ ] Cloud archive untouched (verify `docs/slices/_TEMPLATES/` and any other shared dirs untouched too).
+- [ ] Devlog entry appended.
