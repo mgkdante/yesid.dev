@@ -24,11 +24,16 @@ Sandbox commits stay on the `slice-cms-ux-redesign` branch of yesid.dev-cms and 
 
 ## Session layout
 
-3 sessions per spec's deep-dive budget:
+**Original plan (pre-pivot, now historical):**
+- Session 1 — R1 content modeling (Task 1) ✅ SHIPPED
+- Session 2 — R2 + R3 authoring UX + theming (Tasks 2–3) — R2 shipped; R3 superseded
+- Session 3 — R4 + R5 + close (Tasks 4–6) — R4/R5 superseded; Task 6 = close
 
-- **Session 1 — R1 content modeling.** Task 1 only. R1 is the deepest axis; it sets vocabulary and heuristics every later axis references.
-- **Session 2 — R2 + R3 authoring UX + theming.** Tasks 2–3. Closely related — what fields look like AND how tokens surface in them.
-- **Session 3 — R4 + R5 + close.** Tasks 4–6. Framework wiring, distillation → FORMULA, memory updates, Codex peer review, handoff, PR.
+**Actual execution (post-pivot 2026-04-22):**
+- Session 1 — Task 1 shipped (R1 content modeling)
+- Session 2 — Task 2 shipped (R2 authoring ergonomics + real-user sentiment)
+- Session 2.5 + 2.5b — interstitial 3-stack sanity-check + Payload-vs-Directus deep dive (not in original plan — added after Task 2's brutal Payload calibration prompted re-evaluation)
+- Session 3 — **PIVOT DECIDED** — Tasks 3–5 superseded as Payload-specific; equivalent Directus research goes to new slice `slice-directus-research`. Task 6 (close) executed with pivot decision as the slice's deliverable.
 
 Each session starts by appending a block to `devlog.md`. Each task follows the Iteration Protocol: implement, verify, **STOP**, await approval, next.
 
@@ -64,7 +69,11 @@ Each session starts by appending a block to `devlog.md`. Each task follows the I
 
 **STOP. Yesid reviews R2 findings before Task 3.**
 
-### Task 3 — R3: Design tokens + theming in-CMS research
+### Task 3 — R3: Design tokens + theming in-CMS research — **SUPERSEDED BY PIVOT 2026-04-22**
+
+> Task 3 was Payload-specific. After Task 2 + Task 2.5 + Task 2.5b research concluded Directus is the better stack, equivalent design-token-in-CMS research for Directus moves to new slice `slice-directus-research`. Task 3 closed as `n/a — pivot`.
+
+#### Original Task 3 definition (preserved for historical record)
 
 - **Goal:** Populate `research.md` §R3. How do editors pick from a brand palette / type scale / spacing tokens rather than raw hex/px? How are theming variants (dark mode, campaign themes) exposed? How cleanly can content be separated from style?
 - **Steps:**
@@ -80,7 +89,11 @@ Each session starts by appending a block to `devlog.md`. Each task follows the I
 
 **STOP. Yesid reviews R3 findings before Task 4.**
 
-### Task 4 — R4: CMS ↔ framework wiring research
+### Task 4 — R4: CMS ↔ framework wiring research — **SUPERSEDED BY PIVOT 2026-04-22**
+
+> Task 4 was Payload-centric (SvelteKit + Payload Live Preview + Zod boundary). Directus equivalent moves to new slice `slice-directus-research`. Task 4 closed as `n/a — pivot`. Enough Payload+SvelteKit wiring evidence surfaced during Task 2.5 interstitial (Issue #7164 postMessage bug, archived community starter Nov 2025) to inform the pivot; no need to complete the full R4 treatment on Payload.
+
+#### Original Task 4 definition (preserved for historical record)
 
 - **Goal:** Populate `research.md` §R4. SvelteKit-primary integration patterns; React/Next/Astro/Vue/Angular comparative. What transfers across frameworks vs what's SvelteKit-specific?
 - **Steps:**
@@ -93,7 +106,11 @@ Each session starts by appending a block to `devlog.md`. Each task follows the I
 
 **STOP. Yesid reviews R4 findings before Task 5.**
 
-### Task 5 — R5: Distillation → FORMULA
+### Task 5 — R5: Distillation → FORMULA — **SUPERSEDED BY PIVOT 2026-04-22**
+
+> Task 5 was the Payload FORMULA distillation + 18b globals refactor table. Under the pivot, the Payload FORMULA has no target — 18b's 10 globals become migration-source for the Directus rebuild (18e), not a refactor target under Payload's primitives. Equivalent Directus FORMULA distillation moves to `slice-directus-research`. Task 5 closed as `n/a — pivot`.
+
+#### Original Task 5 definition (preserved for historical record)
 
 - **Goal:** Synthesize R1–R4 into the **FORMULA** section of this `plan.md` (the section below). Must be actionable — concrete schemas, named blocks, refactor table — not abstract principles (spec D4).
 - **Steps:**
@@ -105,7 +122,11 @@ Each session starts by appending a block to `devlog.md`. Each task follows the I
 
 **STOP. Yesid reviews FORMULA before Task 6 (close).**
 
-### Task 6 — Slice close
+### Task 6 — Slice close (EXECUTED 2026-04-22 with PIVOT DECISION)
+
+> Task 6 reshaped at execution to reflect the pivot-to-Directus outcome. Memory updates, PR body, and Slice 18 roadmap reshape now codify the pivot rather than the Payload-specific FORMULA originally planned.
+
+#### Original Task 6 definition (adapted for pivot close)
 
 - **Goal:** Reshape Slice 18 roadmap in memory, capture Codex adversarial peer review, finalize `handoff.md`, open PR.
 - **Steps:**
@@ -122,9 +143,64 @@ Each session starts by appending a block to `devlog.md`. Each task follows the I
 
 ---
 
-## FORMULA
+## FORMULA — SUPERSEDED BY PIVOT TO DIRECTUS
 
-*(This section is the durable output of this slice. Populated during Task 5 — Session 3 distillation. Empty at plan-draft time.)*
+The original intent was a **Payload-specific FORMULA** distilled in Task 5. That output is moot under the pivot — the formula for this stack is pivoting, and the Payload-specific patterns (block library, Zod boundary shapes for Payload's response formats, Lexical-constrained-for-short-form, 22-item ergonomics checklist against Payload's bare-bones defaults, etc.) become **migration-relevant facts** rather than the shipped formula.
+
+### The actual FORMULA output of this slice
+
+**The FORMULA this slice produced is the pivot decision itself**, grounded in:
+
+1. **12 content-modeling heuristics** (research.md §R1) — transferable to Directus; they are CMS-agnostic principles
+2. **22-item ergonomics checklist** (research.md §R2.5) — most items are Directus defaults; the checklist simplifies from 22 to ~5-7 items for a Directus FORMULA
+3. **Q3 resolution (globals vs pages-collection)** — transferable as a content-modeling decision; Directus has both patterns (singletons + collections) so Q3 re-opens under `slice-directus-research` with the same question against Directus's primitives
+4. **Q5 resolution (localization inside blocks)** — transferable as a principle; Directus's Translations pattern expresses it differently (junction tables) but the principle (locale-per-field, shared layout) holds
+5. **Cross-CMS pattern map** — universal headless-CMS vocabulary (polymorphic section array = blocks = M2A = dynamic zones = slices = templates)
+6. **Brutal Payload calibration evidence** — Lexical a11y Issue #8653, blocks-at-scale Discussion #12099, #7164 SvelteKit postMessage, Figma acquisition trajectory
+7. **Decisive Directus evidence** — Agent J admin UX 23/25 win, Agent K 3-year risk 7.5/10, native MCP v11.13, 7 official SvelteKit tutorials, $19.5M VC-funded founder-led trajectory
+
+### The actual refactor table — 18b's 10 globals
+
+Under the pivot, the table is **not "refactor in Payload"** but **"migrate to Directus"**:
+
+| 18b global | Payload state (2026-04-21) | Directus target | Migration notes |
+|------------|----------------------------|------------------|------------------|
+| `home-content` | flat fields on global | TBD — Directus singleton OR row in `pages` collection (decided in `slice-directus-research` Q3 re-open) | Migrate fields as-is; decide pages-collection shape first |
+| `services-page` | flat fields on global | Same decision | Same |
+| `projects-page` | flat fields on global | Same decision | Same |
+| `blog-page` | flat fields on global | Same decision | Same |
+| `tech-stack-page` | flat fields on global | Same decision | Same |
+| `about-content` | flat fields on global | Same decision | Same |
+| `contact-content` | flat fields on global | Same decision | Same |
+| `nav-links` | global (true singleton) | Directus singleton | 1:1 mapping |
+| `error-pages` | global (true singleton) | Directus singleton | 1:1 mapping |
+| `site-meta` | global (true singleton) | Directus singleton | 1:1 mapping |
+
+**Full migration spec:** `slice-directus-research` produces the definitive mapping after the Q3 re-open decision.
+
+### Reshape of Slice 18c–18g
+
+See `docs/slices/slice-18/README.md` for the rewritten roadmap (18c = research, 18d = scorched-earth rebuild, 18e = content migration, 18f = frontend rewire, 18g = DNS cutover + parallel run + sunset).
+
+### Archetype-fit notes
+
+**Still out of scope** this slice per original spec non-goals. Follow-up slices post-launch when real clients surface.
+
+---
+
+*Task 5's original FORMULA structure (below, preserved for historical record) is no longer applicable — its output shape is a Payload FORMULA that the pivot makes moot.*
+
+### Expected structure (ORIGINAL plan, not executed — pivot made it moot)
+
+1. Block library baseline
+2. Content-modeling heuristics
+3. Design-token integration
+4. Authoring-UX conventions
+5. SvelteKit-wiring recipe
+6. Commercial viability snapshot
+7. Refactor table for 18b's 10 globals
+8. Reshape of Slice 18c–18f
+9. Archetype-fit notes
 
 ### Expected structure (filled in Task 5)
 

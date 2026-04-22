@@ -4,7 +4,7 @@
 
 **Spec:** [spec.md](spec.md)
 **Plan:** [plan.md](plan.md)
-**Status:** §R1 + §R2 synthesis complete (Tasks 1 + 2, Sessions 1 + 2). §R3–R5 pending.
+**Status:** **Slice decided — PIVOT TO DIRECTUS (2026-04-22 evening, post-sleep).** §R1 + §R2 synthesis shipped (Tasks 1 + 2). §R3–R5 **superseded by pivot decision** — equivalent research for Directus lands in new slice `slice-directus-research`. See §Decision Outcome + §DNS & Infrastructure Migration Inventory below.
 
 ---
 
@@ -713,7 +713,107 @@ For yesid.dev specifically: Live Preview is **nice-to-have**, not day-1. Matches
 
 ## §R5 — Recommendations for yesid.dev + custom/low-cost clients
 
-*[Task 5, Session 3 — distilled into `plan.md`'s FORMULA section]*
+**Superseded by pivot decision (2026-04-22).** The Payload-specific FORMULA originally planned here is moot. Equivalent distillation for Directus produced in new slice `slice-directus-research`.
+
+---
+
+## §Decision Outcome — PIVOT TO DIRECTUS (2026-04-22)
+
+**Decision:** Migrate yesid.dev-cms from Payload 3.83.0 to Directus 11+.
+
+**Reuse plan:** Same `yesid.dev-cms` repository — scorch Payload code from it, rebuild as Directus in the same repo.
+
+**Preserve:** This slice's bundle stays forever as permanent research reference.
+
+**Decision made after:** 6 parallel research agents across R1 + R2 + Task 2.5 (3-stack sanity-check) + Task 2.5b (Payload-vs-Directus head-to-head deep dive) + 2 WebFetches (directus.io/mcp, directus.io/docs/tutorials SvelteKit) + overnight reflection. See `decision-brief.md` for the full integrated synthesis Yesid slept on.
+
+### Decisive factors
+
+1. **Mobile/on-the-go admin:** Directus works on iPad + touch-aware; Payload admin breaks <768px — confirmed user-review evidence.
+2. **SvelteKit live preview:** Directus has 7 official SvelteKit tutorials + `@directus/visual-editing` v2+; Payload has no Svelte adapter + archived community starter (`fcastrovilli/sveltekit-payload-3-starterkit` archived Nov 2025).
+3. **Design is locked for near-term:** Blocks work deferred until post-launch. Payload's 10:1 block-feature-parity advantage (Agent I's core finding) weights to zero for the current scope window.
+4. **"Procurement over scratch" values alignment:** Directus defaults ship 70% editor-ready; Payload's 22-item FORMULA checklist = building-from-scratch defensive customization (12-16 hrs/project). Directus equivalent = 3-4 hrs/project.
+5. **MCP parity:** Directus MCP is native GA v11.13 (Nov 2025), all tiers, permissions-respecting. Removed the strongest "stay" anchor from my earlier analysis.
+6. **Commercial trajectory:** Directus risk score 7.5/10 (independent, VC-funded, founder-led, 28→55 employees Jul 2024→Feb 2026) vs Payload 5/10 (Figma-acquired June 2025, Cloud paused, repositioning as "Figma CMS" backend with Next.js coupling tightening).
+7. **Agent J admin UX verdict:** Directus 23/25 vs Payload 14/25 on 5-task editor test; 8/8 deep UX differentiators (revisions default-on, collaborative presence, global search, activity feed, keyboard shortcuts, mobile, file reverse-lookup, in-app onboarding).
+
+### Residual Payload wins (acknowledged, accepted as costs of pivot)
+
+- TypeScript DX — Payload's auto-regenerated `payload-types.ts` is best-in-class. Directus's community-tooled type-gen is looser.
+- Blocks feature parity — Payload wins 10:1 on blocks specifically; reaccepted when blocks return to scope post-launch. Directus M2A + Editor.js block editor cover functional needs for simpler content models.
+- Localization simplicity — Payload inline `localized: true` vs Directus's `_translations` junction tables (3× row count). Working en/fr/es will be re-expressed during migration.
+- Email already wired — `@payloadcms/email-resend` live; Directus re-wire via Directus email adapter + Resend SMTP/API (same Resend account, same sender domain).
+
+---
+
+## §DNS & Infrastructure Migration Inventory
+
+**For slice `slice-directus-research` (verify + confirm compat) and execution slices (execute flips).**
+
+### Current DNS state (Payload production)
+
+| Record | Type | Value | Owner |
+|--------|------|-------|-------|
+| `cms.yesid.dev` | A / CNAME | Vercel (Payload Next.js deploy) | Vercel |
+| `cms.yesid.dev` | TXT | Resend DKIM DomainKey (`resend._domainkey` subdomain) | Resend |
+| `cms.yesid.dev` | TXT | Resend SPF (`v=spf1 include:resend.com ~all`) | Resend |
+| `_resend.cms.yesid.dev` | CNAME | Resend verification pattern (if applicable) | Resend |
+
+### Target DNS state (Directus production, post-cutover)
+
+| Record | Type | Value | Change |
+|--------|------|-------|--------|
+| `cms.yesid.dev` | A / CNAME | **NEW** — Directus host (Railway custom domain / Hetzner VPS IP / Directus Cloud CNAME — TBD in `slice-directus-research`) | **UPDATE** |
+| `cms.yesid.dev` | TXT | Resend DKIM DomainKey | **KEEP UNCHANGED** |
+| `cms.yesid.dev` | TXT | Resend SPF | **KEEP UNCHANGED** |
+| `_resend.cms.yesid.dev` | CNAME | Resend verification | **KEEP UNCHANGED** |
+
+**Why DKIM/SPF stay:** Directus uses same Resend account + same sender domain (`no-reply@cms.yesid.dev`). Email infrastructure is orthogonal to CMS backend. No DNS verification re-do required.
+
+### Transition DNS state (parallel-run window, ~2 weeks)
+
+Add BEFORE cutover:
+| Record | Type | Value | Purpose |
+|--------|------|-------|---------|
+| `cms-legacy.yesid.dev` | A / CNAME | Vercel (Payload) — temporary escrow | Rollback target if Directus cutover fails |
+
+Remove AFTER successful cutover + 2-week escrow:
+- `cms-legacy.yesid.dev` A/CNAME — delete once Payload is archived
+
+### Non-DNS infrastructure migration
+
+| Component | Action | Notes |
+|-----------|--------|-------|
+| **Neon Postgres DB** | **KEEP** | Same DB; Directus can introspect Payload's schema OR we drop-and-rebuild fresh in same DB. Decision deferred to `slice-directus-research` (depends on: is 18b's schema shape salvageable under Directus, or cleaner to rebuild?). |
+| **Vercel Blob (media)** | **KEEP or migrate** | Directus has a Vercel Blob storage adapter. Alt: migrate to Cloudflare R2 (cheaper at scale) or Directus Files (own storage). Decision in `slice-directus-research`. |
+| **Resend API** | **KEEP** | Same API key, same sender domain, Directus wires via email adapter. |
+| **Vercel deployment of Payload** | **Archive** | Keep running during parallel-run window (accessed via `cms-legacy.yesid.dev`); delete after escrow closes. |
+| **Vercel env vars** | **Migrate** | New Directus host needs DATABASE_URL, RESEND_API_KEY, S3/Blob credentials, SECRET, PUBLIC_URL, etc. Directus uses env vars for config. |
+| **GitHub Actions (type-sync)** | **Retool or skip** | Currently: (none yet — was planned for Slice 18c type-sync). Under Directus: SDK types are generated via `directus-sdk-typegen` or equivalent; may or may not need a GH Action. Decision in `slice-directus-research`. |
+| **MCP (AI integration)** | **Replace plugin** | `@payloadcms/plugin-mcp` removed with Payload; Directus native MCP configured (v11.13 GA, included all tiers). Existing Claude Code `mcp__yesid-cms-prod__*` tool connection updated to point at Directus MCP endpoint. |
+| **Payload monitoring** | **Delete** | Any Vercel-level monitoring on Payload deployment closed at cutover; replaced with equivalent on Directus host. |
+
+### Pre-flight checklist for slice-directus-research
+
+- [ ] Verify Resend DKIM+SPF records DO propagate to a new host's outbound email (they should — DKIM is domain-scoped, not host-scoped).
+- [ ] Verify Neon Postgres allows connection pooling from new host (Railway / Hetzner / Directus Cloud).
+- [ ] Confirm Directus MCP configuration with Claude Code (endpoint URL format, auth method).
+- [ ] Decide: reuse Neon DB shape (introspect) vs fresh Neon DB (migrate content separately). Write ADR.
+- [ ] Decide: keep Vercel Blob vs migrate storage. Write ADR.
+- [ ] Decide: deployment host (Railway / Hetzner / Directus Cloud). Write ADR + pricing math.
+- [ ] Confirm Directus's email adapter supports Resend. (If not, options: SMTP relay via Resend, custom hook.)
+
+### Execution checklist for the execution slice (scorch + rebuild + cutover)
+
+- [ ] Phase 4 (ops): provision new host; set env vars; deploy Directus.
+- [ ] Phase 4 (DNS): add `cms-legacy.yesid.dev` CNAME pointing to current Vercel Payload.
+- [ ] Phase 5 (MCP): swap `@payloadcms/plugin-mcp` → Directus MCP; update Claude Code `.mcp.json` if needed.
+- [ ] Phase 6 (pre-cutover): run integrity tests on staging host.
+- [ ] Phase 6 (cutover): flip `cms.yesid.dev` A/CNAME → Directus host. Monitor 24 hours.
+- [ ] Phase 6 (rollback window): keep Payload on `cms-legacy.yesid.dev` for 2 weeks. Daily health checks.
+- [ ] Phase 6 (close): after 2-week escrow, archive Payload code on a `payload-archive` branch; delete `cms-legacy.yesid.dev` DNS record; delete Vercel deployment.
+
+---
 
 ---
 
