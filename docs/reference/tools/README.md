@@ -1,40 +1,30 @@
-# Tool overlays — yesid.dev workflow
+# Per-tool overlays
 
-This directory holds **per-tool bindings** that resolve the abstract roles defined in `../../../AGENTS.md`. Each overlay answers the question: *"When AGENTS.md says 'deeper-reasoning model', what does that mean for THIS tool?"*
+`AGENTS.md` (repo root) describes the workflow in tool-agnostic terms — roles, stages, session types, slice hierarchy. This directory contains **per-tool overlays** that bind those abstract roles to concrete mechanisms (model names, slash commands, tracker names, config locations).
 
-## Files
+## Why separate overlays
 
-- **`claude-code.md`** — Claude Code bindings (Opus / Sonnet / TodoWrite / Agent / slash commands)
-- **`codex.md`** — OpenAI Codex bindings (stub; populate when adopting Codex for this project)
+- **Tool-symmetry**: the workflow runs under Claude Code alone, Codex alone, or both. Each reads only its own overlay; the other's is simply unread.
+- **One-line model swaps**: when a new model outclasses the current one for a role, edit that overlay's row — no touching `AGENTS.md`, no touching slice docs.
+- **Portability**: clone this repo on any machine with either tool (or both) and the workflow runs end-to-end.
 
-## How overlays work
+## Files in this directory
 
-`AGENTS.md` describes the workflow in abstract terms:
+| File                                   | Role                                               |
+|----------------------------------------|----------------------------------------------------|
+| [`claude-code.md`](claude-code.md)     | Claude Code overlay — model + tool + command bindings |
+| [`codex.md`](codex.md)                 | Codex overlay — same shape, Codex-specific bindings |
 
-- **Stages** — L-slice Planning / L-slice Implementation / M-slice / S-slice / Closing / Subagent dispatch
-- **Roles** — deeper-reasoning model / deeper-reasoning model (XL) / faster-cheaper model / live progress tracker / parallel-dispatch mechanism / mid-session model switch / context-budget check
+## How roles resolve
 
-Each overlay provides the **concrete mapping** for one tool:
+`AGENTS.md` names roles like "deeper-reasoning model", "faster/cheaper model", "live progress tracker". Each overlay has a table mapping those roles to:
 
-```
-AGENTS.md stage  →  AGENTS.md role  →  overlay binding  →  actual tool mechanism
-```
+- A concrete model ID (subject to change as models evolve)
+- A concrete tool mechanism (e.g., `TodoWrite` for Claude's tracker, Codex's equivalent for Codex)
+- A concrete slash command / CLI flag / config knob
 
-### Worked example
-
-- **Stage:** L-slice Planning
-- **Role:** deeper-reasoning model (XL)
-- **Claude Code binding (`claude-code.md`):** `Opus 4.7 [1m]`
-- **Codex binding (`codex.md`):** *TBD — fill in when adopting Codex*
+When the workflow says "use the deeper-reasoning model for L-slice planning", the overlay for whichever tool is running resolves that to the actual model name.
 
 ## Adding a new tool
 
-1. Copy `claude-code.md` as `<tool>.md`.
-2. Replace the Role bindings table with that tool's mechanisms.
-3. Add the tool's config file location, slash commands (or equivalent), skill invocation style, MCP enablement.
-4. Add the tool's entry to `AGENTS.md § Portability guarantee`.
-5. If the tool auto-loads a specific root file (like `CLAUDE.md` for Claude Code), add that file as a thin pointer to `AGENTS.md`.
-
-## Swap strategy
-
-When a model outclasses the current binding for a role, edit **one row** in the relevant overlay. Sessions, rules, checklists, and scripts in `AGENTS.md` never change — that's the point of the abstraction.
+Copy `claude-code.md` as `<tool>.md`, fill in the bindings table, add the tool name to `AGENTS.md` § Portability guarantee. No other file changes.
