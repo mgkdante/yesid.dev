@@ -20,6 +20,7 @@ vite.config.ts.timestamp-*
 .worktrees/
 .superpowers/brainstorm/
 .claude/worktrees/
+.claude/scheduled_tasks.lock
 Weather_API_Key.txt
 
 # SVGO source backups kept local only — committed file is the optimized source of truth
