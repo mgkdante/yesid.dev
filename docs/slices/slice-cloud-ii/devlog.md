@@ -9,28 +9,28 @@
 
 ---
 
-## Session <YYYY-MM-DD HH:MM> — <session-type>
+## Session 2026-04-22 00:47 — Planning
 
-**Tool:** <!-- FILL IN: Claude Code / Codex desktop / Codex cloud -->
-**Session type:** <!-- FILL IN: Planning | Implementation | Closing -->
-**Focus:** <!-- FILL IN: sub-slice or ad-hoc topic worked on this session -->
-**Picking up from:** <!-- FILL IN: prior session's last commit SHA, or "fresh" for the first session -->
+**Tool:** Claude Code (Opus 4.7 [1m], reasoning=high)
+**Session type:** Planning
+**Focus:** Task 1 — partition audit
+**Picking up from:** commit b89242a (plan.md drafted)
 
 ### What happened
 
-<!-- FILL IN: prose record of the session. Decisions made, what got built, what broke, what got deferred. Short but substantive. Future-you should be able to resume from this alone. -->
+<!-- Session in progress — closing block will be appended at session end. -->
 
 ### Commits
 
-<!-- FILL IN: list of commit SHAs + one-line subjects produced this session. -->
+<!-- Pending — appended at session close. -->
 
 ### Outstanding
 
-<!-- FILL IN: what's unfinished, carried to the next session. Reference sub-slice / task if applicable. -->
+<!-- Pending — appended at session close. -->
 
 ### Budget
 
-<!-- FILL IN (optional): context-usage %, wall-clock duration, model switches. Useful for session-efficiency retrospection. -->
+<!-- Pending — appended at session close. -->
 
 ---
 
@@ -42,4 +42,4 @@ Rolling index for quick scroll. Update each session.
 
 | Date | Type | Focus | Outstanding at end |
 |------|------|-------|---------------------|
-| <!-- FILL IN per session --> | | | |
+| 2026-04-22 | Planning | Task 1 — partition audit | <!-- filled at session close --> |
