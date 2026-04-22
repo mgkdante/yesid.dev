@@ -287,6 +287,34 @@ Starting Slice 18, yesid.dev's content layer splits across **two repos** that de
 
 **Slice 18 bundle docs** live under `docs/slices/slice-18/slice-18<letter>/` in this repo. The CMS repo holds code only during the migration; it grows its own `docs/slices/` when it spins out as a public framework-agnostic template (Phase C2+).
 
+### Content model (Slice 18b — shipped 2026-04-21)
+
+`yesid.dev-cms` now holds the full content layer for `yesid.dev`. Schema + migration + seed landed in 18b; the frontend still reads static TS/MD in this repo until 18c+ swaps each service onto the Payload REST API.
+
+**Collections (hub-first order in admin sidebar):** `tech-stack` → `services` → `projects` → `blog-posts` → `stack-scenarios`. Users + Media under System.
+
+**Globals (site-walk order, Pages group):** `home-content`, `services-page`, `projects-page`, `blog-page`, `tech-stack-page`, `about-content`, `contact-content`, `nav-links`, `error-pages`, `site-meta`.
+
+**Relationship topology (D-rel-1):** projects + services are source-of-truth for tech references; `tech-stack.relatedProjects` + `relatedServices` are Payload `join` fields auto-computed from the forward side. `services.relatedProjects` similarly join-computed from `projects.services`. No manual sync hooks; no two-place drift.
+
+**Tech-stack is flat in 18b (D-rel-2).** No inter-tech graph — deferred to a future engine-builder slice. Tech-tech relatedness stays implicit (shared projects/services, query-time). `project.tags` + `blog.tags` stay free-string arrays per D-rel-3 — no `tags` collection.
+
+**Custom primary keys:** `tech-stack.id`, `services.id`, `stack-scenarios.id` are user-authored text fields that Payload treats as document IDs. A `beforeChange` field hook forces `siblingData.id = originalDoc.id` on every update (silent-override) to block API-level renames while keeping the field present for `required: true` validation.
+
+**Localization:** `localized: true` on every user-facing prose field per D4. Enum/URL/id/slug/filename/boolean fields stay canonical across locales. Locale config `en` (required) + `fr` + `es` (optional) with fallback.
+
+**MCP surface:** every collection + global exposed via `@payloadcms/plugin-mcp` at `/api/mcp` with `find` + `update` tools. Exceptions: `users` (admin-only) + `media` (multipart uploads don't fit MCP JSON-RPC today).
+
+**Media storage:** Vercel Blob-backed (`vercelBlobStorage.collections.media: true` flipped in 18b-9). `imageSizes` (thumbnail 200×200, card 600×400, hero 1200×800) generated server-side via `sharp`. Localized `alt` + `caption`, non-localized `credit`.
+
+**Email:** Resend sender `no-reply@cms.yesid.dev` verified via DKIM + SPF DNS in 18b-9 (Cloudflare zone `yesid.dev`). Handles admin password-reset + future editor-invitation + programmatic sends.
+
+**Seed:** `yesid.dev-cms/scripts/seed/` — idempotent one-shot import from this repo's `src/lib/content/*.ts` + `src/content/**/*.md`. Upsert by slug/id; re-run safe; preserves admin-UI edits outside seed-sourced fields. Seed uses `locale: 'all'` on every create/update so object-shaped localized-field values are treated as per-locale maps (fix landed in 18b-9 after discovery that default locale context double-encodes to JSON strings).
+
+**Migration count on prod Neon branch:** 2 (`20260421_035719` baseline + `20260421_204630` consolidated 18b). Future schema changes accumulate as new migrations; Vercel's `prodMigrations` cold-start applies them in order.
+
+**Carry-forward for 18c:** type-sync GitHub Action (mirrors `payload-types.ts` → `yesid.dev/src/lib/cms-types.ts`), Zod schemas at the adapter boundary (handle `string | { en, fr?, es? }` shape for localized fields), first service swap (`site-meta`) behind feature flag.
+
 ## CSS Architecture
 
 Two systems coexist and serve different purposes:
