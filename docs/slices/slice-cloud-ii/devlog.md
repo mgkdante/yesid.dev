@@ -414,7 +414,86 @@ Model: Opus 4.7 [1m] (handoff recommended Sonnet 4.6 mid-slice; stayed on Opus f
 
 ### What happened
 
-(to be filled at session close)
+Session 6 = close. Tasks 7 + 8 + 9 executed end-to-end. Codex adversarial review surfaced 3 findings; all 3 resolved inside this session including a plugin-side round-trip (PR #14 → merge → re-pull → hash re-verify). Slice-cloud-ii is now PR-ready.
+
+**Task 7 — `/workflow-pull` verification** (commits `1325631` + `dffedfd`):
+
+Ran the skill per protocol. Plugin v0.2.0 (`8c1de24`) shipped 6 files that weren't present in yesid (5 `_OPTIONAL_*` templates + a generic `docs/reference/ARCHITECTURE.md` FILL-IN skeleton). Per skill logic these got ADDED as new files. Immediately followed with a cleanup commit removing all 6 — the OPTIONALs were obsolete (yesid activated them or migrated content via `git mv`); the generic reference/ARCHITECTURE.md FILL-IN skeleton contradicts amended D3 (reference/ = plugin-universal, never project placeholders). Both are plugin-logic bugs logged for CLOUD-III as `/workflow-update` candidates.
+
+**Task 8 — Codex adversarial review** (commit `8164e0f` + plugin PR #14 merged):
+
+Invoked `/codex:adversarial-review --wait --base main --scope branch` via codex-plugin-cc. Codex returned verdict `needs-attention` with 3 findings:
+
+| # | Severity | Finding                                                                                  | Resolution                                      |
+|---|----------|------------------------------------------------------------------------------------------|-------------------------------------------------|
+| 1 | HIGH     | Plugin WORKFLOW.md Phase 8 + Document ecosystem + Research references still pointed at `docs/reference/*` despite amended D3 | [Plugin PR #14](https://github.com/mgkdante/workflow/pull/14) merged; yesid re-pulled; WORKFLOW.md hash now = `3dd9bbb…` (matches corrected plugin blob); tracker bumped to `4630518` |
+| 2 | MEDIUM   | `BINDINGS.md` linked to non-existent `docs/reference/secrets-inventory.md`                | Replaced with inline reference to 1Password vault + `.env.example` (canonical sources; no external file needed) |
+| 3 | MEDIUM   | `BRAND.md` listed deleted primitives (`SectionWrapper`, `EdgeLabel`) as current          | Trimmed table to primitives that actually exist in `src/`; added explicit "Deprecated / killed primitives" note cross-linking `brand/decisions/2026-04-what-i-killed.md` |
+
+All 3 resolved. Per `/workflow-close-slice` Step 3 (BLOCKER/HIGH blocks merge): slice is now mergeable. Full Codex output captured verbatim in [handoff.md § Peer review notes](handoff.md).
+
+**Task 9 — close prep** (commits `6f5b8b4` tree + follow-ups):
+
+Regenerated `tree.txt` via WSL `tree -I "node_modules|.git|..."` — exclusion list grew to include `.playwright-mcp`, `.superpowers`, `.claude`, etc. to match the old tree.txt's scope. New tree correctly shows the Option B partition: `docs/project/` with 11 real files + README (all DEFAULTs activated + OPTIONALs promoted); `docs/reference/` with only plugin-pulled files (`VOCAB`, `WORKFLOW`, `tools/*`) + historical project assets (`AUDIT-SLICE-17.md`, `mockups/`, `wireframes/`). Per-file commits pushed to `origin/slice-cloud-ii`. PR opened against `main`.
+
+### Commits (this session on slice-cloud-ii branch)
+
+- `1325631` — chore(workflow): sync scaffold to workflow@8c1de24 (6 ADDs per pull protocol)
+- `dffedfd` — refactor: remove post-pull noise — activated OPTIONALs + generic reference/ARCHITECTURE.md
+- `8164e0f` — docs(slice-cloud-ii): address Codex adversarial review findings + re-pull post-PR#14
+- (tree.txt + devlog close — this commit)
+
+### Workflow plugin commits this session
+
+- `mgkdante/workflow` PR #14 (`feedback/phase-8-partition-aware`, commit `ad5bfb5`) — merged to main → `4630518`. Fixes Phase 8 + Document ecosystem + Research partition references in scaffold WORKFLOW.md.
+
+### Tasks status (final for this slice)
+
+| # | Task | Status |
+|---|------|--------|
+| 1 | Partition audit | ✅ done (Session 1) |
+| 2 | Extraction batch 1 + PR-3 templates-hardening + PR-CRLF | ✅ done (Session 2 + 3) |
+| 3 | Extraction batch 2 — 8-phase pipeline + per-phase protocols | ✅ done (Session 4) |
+| 4 | Extraction batch 3 — smaller topics + CLOUD-III seed | ✅ done (Session 4) |
+| 4.5 | Plugin scaffold docs/project/ skeleton | ✅ done (Session 4) |
+| 5 | Plugin v0.2.0 tag | ✅ done (Session 4) |
+| 6 | yesid AGENTS.md trim to slot pattern | ✅ done (Session 5) |
+| 6.5 | yesid project-content migration | ✅ done (Session 5) |
+| 7 | `/workflow-pull` verification | ✅ done (Session 6) |
+| 8 | Cross-tool adversarial review | ✅ done (Session 6 — 3 findings resolved, plugin PR #14 cycle included) |
+| 9 | Close: tree regen + PR + merge + archive | ⏳ PR open; awaiting merge + `bun run slice:close` |
+
+### Outstanding (after PR merges)
+
+Post-merge only, not gating:
+
+1. Run `git checkout main && git pull`
+2. Run `bun run slice:close slice-cloud-ii` → mirrors bundle to cloud archive + updates `COMPLETED-SLICES.md` + regenerates tree.txt
+3. Update `~/.claude/projects/.../memory/MEMORY.md` — add slice-cloud-ii to `project_completed_slices.md` rolling index
+4. `git branch -d slice-cloud-ii && git push origin --delete slice-cloud-ii`
+5. `ExitWorktree(action: "remove")` from slice-cloud-ii worktree session
+
+### Deferred for CLOUD-III (NOT in this slice)
+
+Three `/workflow-update` candidates surfaced by Session 6 execution — add to CLOUD-III sub-slice iii-d (`/workflow-detect-codify`) triggers OR iii-c (cross-tool-handoff polish):
+
+1. **Pull logic: detect activated OPTIONALs.** When `docs/project/_OPTIONAL_X.md` was activated into `docs/project/X.md` (directly or via migration), skip re-adding the `_OPTIONAL_` skeleton. Today every pull re-adds them as noise.
+2. **Plugin scaffold: remove `docs/reference/ARCHITECTURE.md` generic FILL-IN skeleton.** Contradicts amended D3 — project-specific architecture lives in `docs/project/ARCHITECTURE.md`; the reference/ skeleton is misleading scaffold-carryover from a pre-D3 plugin version.
+3. **Retrofit-on-pull contract codification.** User direction: "always always always always always we want to retrofit yesid.dev on pull" — the partition's implicit behavior (plugin-pulled files = always retrofit; project-owned = never touch) should be made an explicit D-invariant in the pull SKILL.md so future skill edits don't drift from it.
+
+### Still deferred from prior sessions (micro-cleanups, candidates for future S-slices)
+
+- `src/lib/styles/tokens.css:18` has a stale `docs/reference/CSS.md` comment (reverted for zero-src-diff acceptance).
+- `docs/reference/AUDIT-SLICE-17.md`, `docs/reference/mockups/`, `docs/reference/wireframes/` — project-specific historical assets still in reference/. Candidates for docs-organization S-slice (move to `docs/project/<DOMAIN>.md` or cloud archive).
+
+### Budget
+
+Model: Opus 4.7 [1m] (full session on Opus per user "continue here" direction; Sonnet 4.6 was recommended but session continuity preferred).
+
+- Wall-clock: ~2h (Session 6 encompassed 3 tasks + plugin PR round-trip + Codex review wait).
+- Context at session close: mid-range (~70%) — within Pre-break zone, ample headroom.
+- Mid-session model switches: none.
+- Plugin PR round-trip (PR open → user merge → re-pull) happened in-session; saved a full session's startup overhead.
 
 ---
 
@@ -431,3 +510,4 @@ Rolling index for quick scroll. Update each session.
 | 2026-04-22 | Implementation (micro) | PR-CRLF fix + pull retry | workflow#8 merged → 5f3d145; templates synced into yesid.dev (docs/_TEMPLATES/); tracker bumped 48e2c52→5f3d145; CRLF Outstanding item resolved end-to-end |
 | 2026-04-22 | Implementation + Planning amendment + Closing (plugin-side) | Tasks 3, 4, 4.5, 5 + spec amend Option B/D11 + CLOUD-III seed + v0.2.0 release | 5 plugin PRs merged (#9/#10/#11/#12/#13); plugin v0.2.0 tagged + pushed; yesid spec amended + tracker at 8c1de24; Tasks 6–9 deferred to fresh session with Sonnet 4.6 |
 | 2026-04-22 | Implementation | Tasks 6 + 6.5 — yesid.dev refactor to Option B partition | 7 commits (`12b5127` → `b7ad2d9`); AGENTS.md 393→140 (64.4% reduction); reference/ 100% plugin-pulled hash-equal for WORKFLOW + VOCAB + tools/*; 6 project docs migrated via git mv + 4 new project docs populated (STACK/BRAND/BINDINGS/SERVICES); 5 _OPTIONAL_ skeletons deleted; 18 live files updated with new docs/project/ paths; tokens.css comment reverted for zero-src-diff; Tasks 7-9 next session (Sonnet 4.6 recommended) |
+| 2026-04-22 | Closing | Tasks 7 + 8 + 9 — `/workflow-pull` verification + Codex adversarial review + close | Pull ran (6 adds via `1325631`) + immediate cleanup (`dffedfd`); Codex review surfaced 3 findings (1 HIGH + 2 MEDIUM) all resolved including plugin PR #14 round-trip (merged → re-pull → hash-rematch at `3dd9bbb…`); tree.txt regenerated with partition visible; PR to main open; awaiting merge + `bun run slice:close` + MEMORY.md update + branch/worktree cleanup. 3 /workflow-update candidates logged for CLOUD-III. |
