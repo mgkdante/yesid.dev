@@ -233,9 +233,9 @@ New designs either pick from these nine or propose a new signature. Content rend
 
 If you have repo access, these are the files that define ground truth:
 
-- **Governance:** `docs/reference/CONSTITUTION.md` (layout, type, motion, a11y rules, CSS Grid Recipes)
-- **Token inventory:** `docs/reference/CSS.md` + `src/lib/styles/tokens.css` + `src/app.css @theme`
-- **Motion implementation:** `docs/reference/MOTION.md`
+- **Governance:** `docs/project/CONSTITUTION.md` (layout, type, motion, a11y rules, CSS Grid Recipes)
+- **Token inventory:** `docs/project/CSS.md` + `src/lib/styles/tokens.css` + `src/app.css @theme`
+- **Motion implementation:** `docs/project/MOTION.md`
 - **Brand narrative:** `brand/BRAND.md`, `brand/foundations/*.md`
 - **Decisions:** `brand/decisions/*.md`
 - **Paired examples:** `brand/examples/` (screenshot + source pairs)

@@ -209,7 +209,7 @@ src/
 │   # motion/actions/reveal.ts, ripple.ts, tilt.ts, motion/utils/heroTimeline.ts,
 │   # motion/utils/heroScrollLock.ts, motion/utils/listingAnimations.ts,
 │   # motion/components/ReadingProgressBar.svelte (17e-5).
-│   # Full motion reference: docs/reference/MOTION.md v2.0
+│   # Full motion reference: docs/project/MOTION.md v2.0
 ├── content/             # ← Added in Slice 06d
 │   └── blog/            # Markdown blog posts with YAML frontmatter
 │       ├── why-i-left-orm-for-raw-sql.md

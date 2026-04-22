@@ -2,7 +2,7 @@
 
 > Read-only inventory of the component primitives powering yesid.dev. This file does not regenerate — update by hand when a new primitive lands (typically during 17a-6, 17d, or a future component slice).
 >
-> Atomic design tiers are defined at `docs/reference/CONSTITUTION.md § 13`. The short version: Tier 1 = headless primitives + brand tokens; Tier 2 = brand-specific hand-built primitives; Tier 3 = page composition from Tier 1 + Tier 2.
+> Atomic design tiers are defined at `docs/project/CONSTITUTION.md § 13`. The short version: Tier 1 = headless primitives + brand tokens; Tier 2 = brand-specific hand-built primitives; Tier 3 = page composition from Tier 1 + Tier 2.
 
 ## Tier 1 — ui/ (`src/lib/components/ui/`)
 
@@ -110,13 +110,13 @@ The barrel at `src/lib/components/brand/index.ts` documents the migration at the
 
 Roughly 40 page-level components under `about/`, `blog/`, `contact/`, `home/`, `projects/`, `services/`, `stack/`, `nav/`, `footer/`, `shared/`. These are one-off composition — they wire data into CSS Grid + Tier 1 / Tier 2 atoms. They never invent card styles, headings, labels, or dots. If a new visual pattern is needed on 2+ pages, it gets promoted to Tier 2 (brand/) or Tier 1 (ui/) depending on whether it's yesid-specific or a headless primitive.
 
-Page components are inventoried in `docs/reference/ARCHITECTURE.md § Structure` — this file focuses on the reusable primitives the pages compose from.
+Page components are inventoried in `docs/project/ARCHITECTURE.md § Structure` — this file focuses on the reusable primitives the pages compose from.
 
 ## When to add a primitive
 
 1. The pattern appears on 2+ pages.
 2. The pattern has a repeatable prop API (not a snowflake variation).
 3. The pattern belongs at a clear tier — Tier 1 if it's a headless a11y primitive (usually via Bits UI); Tier 2 if it's yesid-specific visual craft.
-4. Adding the primitive means updating `docs/reference/CSS.md § Brand Primitives` + this file + a test + the barrel.
+4. Adding the primitive means updating `docs/project/CSS.md § Brand Primitives` + this file + a test + the barrel.
 
 If any of those four fails, the pattern stays in scoped CSS in its consumer.

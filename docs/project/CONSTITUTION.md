@@ -2,7 +2,7 @@
 
 > **Status:** Active governance document. Every component, page, and future slice follows these rules.
 > **Source of truth for:** layout model, spacing, typography, semantic HTML, components, a11y, motion, responsive, file organization.
-> **Token reference:** `docs/reference/CSS.md` has the full token inventory.
+> **Token reference:** `docs/project/CSS.md` has the full token inventory.
 
 ---
 
@@ -328,7 +328,7 @@ Both guards required if component uses both GSAP and CSS animation.
 ## 8. Motion Doctrine — Snappy
 
 > Content renders at its final state on page load. Motion triggers only on **interaction**, **scroll-scrub**, or **idle ambient**.
-> Source: Slice 17e design spec §2 (2026-04-16). Full implementation reference: `docs/reference/MOTION.md` v2.0.
+> Source: Slice 17e design spec §2 (2026-04-16). Full implementation reference: `docs/project/MOTION.md` v2.0.
 
 ### Forbidden
 
@@ -450,7 +450,7 @@ Canonical global keyframes:
 
 ### Reference
 
-Full motion documentation: `docs/reference/MOTION.md` v2.0 — per-primitive API, consumer patterns, anti-patterns, MetroNetwork SVGO procedure, bundle budgets.
+Full motion documentation: `docs/project/MOTION.md` v2.0 — per-primitive API, consumer patterns, anti-patterns, MetroNetwork SVGO procedure, bundle budgets.
 
 ### Changelog
 
@@ -672,7 +672,7 @@ Edge columns (rotated titles, decorative rails) collapse to `display: none` belo
 
 ## 12. Token Reference
 
-Full token inventory is in `docs/reference/CSS.md`. Key files:
+Full token inventory is in `docs/project/CSS.md`. Key files:
 
 
 | File                                | Purpose                                                                                                 |
