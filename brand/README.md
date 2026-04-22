@@ -7,12 +7,12 @@ The brand system for yesid.dev — a freelance digital-infrastructure practice r
 | Path | What it is |
 |---|---|
 | `BRAND.md` | Voice, five principles, vocabulary, do/don't phrasings. The spine. |
-| `foundations/color.md` | How the brand thinks about color. Cross-links to `docs/reference/CSS.md` for raw token values. |
+| `foundations/color.md` | How the brand thinks about color. Cross-links to `docs/project/CSS.md` for raw token values. |
 | `foundations/typography.md` | Inter + JetBrains Mono, the 12-step scale, rules. |
 | `foundations/space.md` | Spacing tokens, recipes, when to clamp. |
-| `foundations/motion.md` | Motion at a narrative level (what the brand means by movement). Cross-links to `docs/reference/MOTION.md` for implementation. |
+| `foundations/motion.md` | Motion at a narrative level (what the brand means by movement). Cross-links to `docs/project/MOTION.md` for implementation. |
 | `foundations/voice.md` | Tone, vocabulary, UX copy patterns, phrasings. |
-| `foundations/accessibility.md` | Accessibility posture. Cross-links to `docs/reference/CONSTITUTION.md § 7`. |
+| `foundations/accessibility.md` | Accessibility posture. Cross-links to `docs/project/CONSTITUTION.md § 7`. |
 | `components.md` | Read-only inventory of `ui/` + `brand/` primitives. |
 | `decisions/` | Dated records — why orange, why edge-to-edge, why a constitution, what I killed. |
 | `logos/` | SVG logos + PNG exports (1x / 2x / 3x per SVG). |
@@ -34,12 +34,12 @@ This tree is advisory. The code-level rules live where the code can enforce them
 
 | Concern | Authoritative source |
 |---|---|
-| Layout, typography rules, motion doctrine, a11y rules | `docs/reference/CONSTITUTION.md` |
+| Layout, typography rules, motion doctrine, a11y rules | `docs/project/CONSTITUTION.md` |
 | Token values (colors, spacing, shadows, radii, z-index) | `src/lib/styles/tokens.css` |
 | Tailwind utility bridge + static brand values | `src/app.css` `@theme` block |
-| CSS architecture + token inventory reference | `docs/reference/CSS.md` |
-| Motion implementation (actions, scrubs, ticker) | `docs/reference/MOTION.md` |
-| Test strategy | `docs/reference/TESTS.md` |
+| CSS architecture + token inventory reference | `docs/project/CSS.md` |
+| Motion implementation (actions, scrubs, ticker) | `docs/project/MOTION.md` |
+| Test strategy | `docs/project/TESTS.md` |
 
 `brand/foundations/*.md` narrates how the brand thinks about each concern. For the specific values, follow the cross-links.
 

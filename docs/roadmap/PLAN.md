@@ -12,7 +12,7 @@ Ship yesid.dev as a memorable, motion-driven portfolio site with a scroll-based 
 ## Design Principles
 
 1. **Data-driven.** Projects, services, skills, and links live in typed data files. The site renders whatever the data contains. Adding a project = adding one object to a file.
-2. **Motion-first.** Every component ships with its animation behavior from day one. Motion is not decoration; it follows the "data in transit" metaphor defined in `docs/reference/MOTION.md`.
+2. **Motion-first.** Every component ships with its animation behavior from day one. Motion is not decoration; it follows the "data in transit" metaphor defined in `docs/project/MOTION.md`.
 3. **Componentized.** Every repeating UI pattern is a reusable component. Pages compose components. Components don't know about specific projects.
 4. **Tested.** Every component and data layer ships with tests. Tests run on every push. If tests don't pass, code doesn't merge.
 5. **Brand-consistent.** All colors, fonts, spacing come from tokens. Brand guide is source of truth for visuals, MOTION.md is source of truth for movement.
@@ -59,7 +59,7 @@ Data files:
   src/lib/data/services.ts    -> Service[] array (station content)
   src/lib/data/meta.ts        -> Site-wide metadata (name, tagline, links)
 
-Motion system (historical PLAN snapshot — post-17e reality differs: see docs/reference/ARCHITECTURE.md):
+Motion system (historical PLAN snapshot — post-17e reality differs: see docs/project/ARCHITECTURE.md):
   src/lib/motion/actions/     -> Svelte actions
   src/lib/motion/stores/      -> Scroll position, reduced-motion preference
   src/lib/motion/components/  -> LottiePlayer (post-17e)

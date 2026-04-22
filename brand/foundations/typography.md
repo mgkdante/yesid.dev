@@ -1,6 +1,6 @@
 # foundations / typography
 
-> Narrative. The 12-step scale tokens live in `src/app.css @theme`. See `docs/reference/CSS.md § Type Scale` for the canonical table.
+> Narrative. The 12-step scale tokens live in `src/app.css @theme`. See `docs/project/CSS.md § Type Scale` for the canonical table.
 
 ## What it is
 
@@ -99,6 +99,6 @@ Add a new scale token only when:
 
 1. A new size appears on 2+ components and isn't expressible as a combination of existing tokens.
 2. The new size sits at a real hierarchy level (larger than `text-display`, or between `text-body-lg` and `text-heading`, etc.) — not a 1px adjustment.
-3. The addition is recorded in `docs/reference/CSS.md § Type Scale` and CONSTITUTION.md § 4.
+3. The addition is recorded in `docs/project/CSS.md § Type Scale` and CONSTITUTION.md § 4.
 
 Every new token requires consumer migration — if only one component needs the size, it's a bespoke case, not a token candidate.

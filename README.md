@@ -44,7 +44,7 @@ Claude Code follows `CLAUDE.md`. Every piece of work has a slice spec, a dev log
 
 1. Read `CLAUDE.md`
 2. Read `docs/roadmap/PLAN.md`
-3. Read `docs/reference/ARCHITECTURE.md` + `CONSTITUTION.md`
+3. Read `docs/project/ARCHITECTURE.md` + `CONSTITUTION.md`
 4. Find the active slice in `docs/slices/` (plus the checkpoint file)
 5. Check recent logs in `docs/devlog/`
 

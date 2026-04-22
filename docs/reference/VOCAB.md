@@ -1,296 +1,158 @@
-# yesid. Vocabulary — Shared Lexicon (Yesid ⇄ Claude)
+# Workflow Vocabulary
 
-**Version:** 0.1 — skeleton drafted 2026-04-17 in Slice 17j Task 9a | co-edit during 17j closing
-**Purpose:** single source of truth for every term Yesid and Claude reach for during development. Prevents drift ("what did we call that again?"), accelerates communication, and teaches industry vocab by proximity.
+**Tier 1, 100% plugin-pulled.** This file carries ONLY workflow-universal vocabulary — terms that apply to any project using this workflow plugin, regardless of domain / stack / brand.
+
+> **Project vocabulary lives in [`docs/project/VOCAB.md`](../project/VOCAB.md)** — brand terms, industry terms as-this-project-uses-them, domain-specific vocab, project-LLM-tool conventions. This file + `docs/project/VOCAB.md` together form the project's complete lexicon.
 
 ## How to use this doc
 
-- **Yesid:** skim the Industry + Claude Code sections to pick up standard vocabulary. When you see a term you don't recognize in a session, grep this file first.
-- **Claude (me):** load this file every session (it's in `docs/reference/`, Tier 1). When Yesid uses a brand term I don't know, check here before asking for clarification.
-- **Adding a term:** brand vocab lives in Section 2, industry in Section 3, tool vocab in Section 4, process vocab in Section 5. Add during slice close in the closing checklist. Absolute dates only.
-- **First-person, opinionated, yesid-specific.** This is a private lexicon (trade secret). Not a wiki, not a public glossary.
+- **Operator:** skim once at project start to absorb workflow vocab. Re-consult when a workflow-abstract term appears in a skill / prompt / session.
+- **AI tool:** loads every session (Tier 1). Cross-reference when operator uses a term — check here for workflow terms, `docs/project/VOCAB.md` for project terms.
+- **Adding workflow terms:** submit a `/workflow-update` PR — workflow vocab belongs in the plugin, not in any single project's docs.
+- **Adding project terms:** edit `docs/project/VOCAB.md` directly — that file is project-owned per D3 + D11.
 
 ---
 
-## 1. How terms are structured
+## 1. Hierarchy + bundle structure
 
-Each entry:
-- **Term** — the word we use
-- **Category** — brand / industry / tool / process
-- **Meaning** — one-sentence working definition
-- **Where to find it** — file path or reference for the full story
+| Term | Definition |
+|------|------------|
+| **Slice** | Level-1 unit of scoped work. May be single-level (one PR) or multi-sub-slice (multiple PRs). |
+| **Sub-slice** | Level-2 unit within a multi-sub-slice slice. Each sub-slice = one PR (the PR boundary). |
+| **Task** | Level-3 unit within a sub-slice (or single-level slice). Lives in TodoWrite / Codex tracker — NOT a file (D19). |
+| **Session** | Level-4 (implicit). A wall-clock working period under a task. Identified by `## Session <YYYY-MM-DD HH:MM>` heading in `devlog.md`. |
+| **Single-level slice** | A slice that IS the PR boundary — no sub-slices. Slice dir contains `plan.md + devlog.md + spec.md + handoff.md` directly. |
+| **Multi-sub-slice slice** | A slice that decomposes into sub-slices. Slice dir contains `plan.md + devlog.md`; each sub-slice dir contains `plan.md + spec.md + handoff.md`. |
+| **Bundle** | The file set for a slice or sub-slice (plan + spec + handoff + devlog — subset varies by level). Moves together at archive time. |
 
-When a brand term has an industry equivalent, both entries cross-link (e.g. "station tab" ↔ "tab interface pattern").
+## 2. Bundle files
 
----
+| Term | Definition |
+|------|------------|
+| **`plan.md`** | Implementation plan. Decisions + task sequencing. Lives at slice level AND sub-slice level (each level has its own). |
+| **`spec.md`** | Design spec. Goal + context + design decisions (D-numbered) + acceptance criteria + risks. Lives at sub-slice level (or slice level for single-level slices). |
+| **`handoff.md`** | PR body + peer review notes + deferred risks. Written per-task as tasks land; finalized at slice close. IS the PR description. |
+| **`devlog.md`** | Self-appending slice-level session record. Shared across all sub-slices of the slice. Cross-tool continuity doc (both Claude Code and Codex append). Slice-level ONLY per D19 — sub-slices do NOT have their own devlog. |
+| **Self-appending handoff** | Discipline where `handoff.md` gains a per-task `### Task <slice-tag>-N` section each time a task lands, rather than being written in one push at slice close. Captures decisions while fresh. |
+| **Amendments log** | Append-only record inside `spec.md` / `plan.md` of post-approval changes. Date + change + rationale per row. |
 
-## 2. Brand vocabulary — yesid.dev-specific
+## 3. Session types + sizing
 
-Names invented for this project. If I (Claude) see these words in a spec or a conversation, I should know exactly which code, pattern, or concept you mean.
+| Term | Definition |
+|------|------------|
+| **Planning session** | Research / brainstorm / spec / plan authoring. L-slices only — produces zero code. |
+| **Implementation session** | Task-by-task work per Iteration Protocol. L / M slices. |
+| **Closing session** | Finalize handoff, run `/workflow-close-slice`. L / M slices. |
+| **Non-slice session** | Work outside any slice (bugfix / config / exploration). Lives at `docs/sessions/<YYYY-MM-DD>-<topic>.md`. S slices only. |
+| **L-slice** | Large. Multi-session, ≥10 design decisions, cross-cutting. Full ceremony (separate Planning session → spec.md + plan.md). |
+| **M-slice** | Medium. Single session, 2–6 tasks, isolated scope. Lightweight — inline plan paragraph in `devlog.md`'s opening session block. |
+| **S-slice** | Small. One-shot bugfix / config / exploration. No planning. Session file records the work. |
+| **Upgrade rule** | Mid-session, if scope grows (≥5 unexpected design decisions OR ≥2 architectural layers), STOP + commit safe partial work + re-declare as L + start fresh Planning session. |
 
-### Layout & structure
+## 4. Discipline protocols
 
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Edge-to-edge** | Full-bleed layout model — viewport is the canvas, `<main>` has no horizontal constraints. | `CONSTITUTION.md §2`, `CSS.md §Layout` |
-| **Edge rail** | Rotated vertical text labels on page edges (the "awwwards-style" ambient labels). Used on home Projects, home Terminus, blog listing, projects listing, contact. | `CONSTITUTION.md §6`, `EdgeLabel.svelte` |
-| **Contained** | One of the 4 CSS grid recipes — content lives in a max-width container centered in the viewport. | `CONSTITUTION.md §2` |
-| **Full-Bleed** | Grid recipe where content spans the full viewport width. | `CONSTITUTION.md §2` |
-| **Content+Sidebars** | Grid recipe with a main content column and one or two sidebar columns. | `CONSTITUTION.md §2` |
-| **Edge Title Grid** | Grid recipe with a rotated section title on the left or right edge. | `CONSTITUTION.md §2` |
-| **Blueprint header** | The oversized section heading pattern (architectural-drawing aesthetic). | home sections, services pages |
-| **Hazard stripes** | Diagonal stripe pattern used as a brand primitive (construction-site visual language). | `brand/foundations/color.md` |
+| Term | Definition |
+|------|------------|
+| **Iteration Protocol** | The 8-step per-Level-3-task loop (implement / verify / pre-flight / STOP / update tracker + devlog + handoff / wait for approval / fix-retest on issues / next on approval). Canonical home: `AGENTS.md § Iteration Protocol`. |
+| **STOP** | Mandatory halt after a task. No more code until owner approves. Per Iteration Protocol step 4 + step 6. |
+| **Pre-flight check** | Self-review before STOP — state expected output, scan for overflow / missing / shape mismatch, fix obvious issues. Catches ~80% of visible bugs before the owner has to. |
+| **Closing checklist** | The 10-step hard checklist at slice close (Phase 8 of the pipeline). Canonical home: `docs/reference/WORKFLOW.md § Phase 8 — Closing checklist`. |
+| **Self-enhancing workflow** | Core principle — every mistake solved in one slice becomes a closing-checklist rule so it cannot recur. Codify what you re-derive; the workflow compounds quality slice-over-slice. |
+| **Token budget** | Percentage-based session-context thresholds (0-40 comfortable / 40-65 healthy / 65-80 pre-break / 80+ danger). Absolute number tables per model live in tool overlays. |
 
-### Home page vocabulary
+## 5. Partition + storage
 
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Metro System** | The home-hero visual language — lines, nodes, connectors evoking a transit map. | `MetroNetwork.svelte`, hero section |
-| **Transit HUD** | The data-panel overlay on the hero showing live metrics. | `HeroBanner.svelte` |
-| **Manifesto** | The second section after hero — principles stated bluntly. | `Manifesto.svelte` |
-| **Proof reel** | The scrolling impact-metric cards with B&W imagery. | `FeaturedProjects.svelte` (proof cards) |
-| **Services grid** | The 6-service block on home with SVG panels. | `HomeServices.svelte` |
-| **Construction-site closer** | The final home section — DrawSVG graffiti letters, construction props, floodlight. | `HomeCloser.svelte`, `CloserTerminalBoard.svelte` |
-| **Departure board** | The split-flap-style board in the closer showing "what's next". | `CloserTerminalBoard.svelte` |
+| Term | Definition |
+|------|------------|
+| **Three-tier context** | Tier 1 (always-on, in repo) / Tier 2 (fetch-on-command, cloud) / Tier 3 (cloud indexes — the bridge). AI reads deliberately, not automatically. |
+| **Retrieval protocol** | Cheapest-first ladder: in-context → Tier 3 index → Tier 2 artifact → `git show <sha>:<path>`. |
+| **Write protocol** | Phase 8 closing-checklist mirrors shipped slices from Tier 1 to Tier 2 + deletes from repo + appends one-liner to Tier 3 index. Self-pruning. |
+| **Partition rule (D3)** | `docs/reference/` is 100% plugin-pulled (never edited locally). `docs/project/` is 100% project-owned (never pulled). `AGENTS.md` + `docs/roadmap/PLAN.md` are hybrid (slot pattern). |
+| **Slot pattern** | `AGENTS.md` (hybrid) pulls workflow rules from plugin via pointers, then fills project-specific slots inline with pointers to `docs/project/<X>.md` (e.g., "canonical commands: see `docs/project/BINDINGS.md` § Verification commands"). |
+| **Project documentation discipline (D11)** | DEFAULT skeletons (STACK / BINDINGS / ARCHITECTURE / TESTS / VOCAB / CONSTITUTION) + OPTIONAL templates (BRAND / CSS / MOTION / PATTERNS / SERVICES) + EMERGENT pattern (operator creates `docs/project/<DOMAIN>.md` as domains develop). See `docs/project/README.md`. |
 
-### Services & contact
+## 6. Scaffold + templates
 
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Station tab** | The service-category tabs on /services (industry term: "tab interface pattern"). | `ServiceListingPage.svelte` |
-| **Kinetic scroll index** | The horizontally-scrolling service index on /services. | services listing |
-| **Consultative detail** | The long-form service-detail layout on /services/[id]. | service detail page |
-| **Dual terminal** | The side-by-side CRT-style panels on /contact (left = input, right = confirmation). | `ContactPage.svelte` |
-| **Terminal chrome** | The CRT visual wrapper around the contact terminals (scanlines, bezel, glow). | `TerminalChrome.svelte` |
-| **Bento dashboard** | The grid-of-cards layout on /about. Each "STOP XX" is a card. | `AboutPage.svelte` |
+| Term | Definition |
+|------|------------|
+| **Scaffold** | The file set under `plugins/workflow/skills/workflow-add/scaffold/` in the plugin repo. Copied into consuming projects by `/workflow-add`. |
+| **Template** | A file under `docs/_TEMPLATES/` (slice / subslice / session). Copied per slice / sub-slice / session by `/workflow-slice-open` or manually. |
+| **Overlay** | Per-tool file at `docs/reference/tools/<tool>.md` that binds the workflow's abstract roles (deeper-reasoning, orchestrator, etc.) to that tool's concrete mechanisms (model names, slash commands, tracker). |
+| **Slot** | A named placeholder in scaffold files (e.g., `<!-- FILL IN: ... -->`) that operator fills with project-specific content. Slot pattern = the convention of scaffold files being mostly plugin-pulled with a few explicit project slots. |
 
-### Brand primitives
+## 7. Abstract roles
 
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Pulse-glow** | The canonical `box-shadow` keyframe animation on StatusDot + similar "breathing" dots. | `CSS.md §Global Keyframes` |
-| **Station ping** | The "radar ping" expanding-ring animation global keyframe. | `CSS.md §Global Keyframes` |
-| **LED pulse** | The soft glow pulse for LED-style dots. | `CSS.md §Global Keyframes` |
-| **Ring** | The static outline halo on a StatusDot (via CSS `outline`, not Tailwind `ring-*` — see `PATTERNS.md`). | `StatusDot.svelte` `ring` prop |
-| **SvgIcon** | The universal icon primitive (hover variant support, morph hooks). | `SvgIcon.svelte` |
-| **SectionWrapper** | The layout primitive that encodes Constitution edge/container/bleed rules. | `SectionWrapper.svelte` |
-| **StatusDot** | The LED/indicator dot primitive (pulse, ring, color variants). | `StatusDot.svelte` |
+> Workflow names roles, not specific tools or models. Per-tool overlays resolve each role to a concrete mechanism.
 
-### Motion vocabulary (see `MOTION.md` v2 for the full 9-signature taxonomy)
+| Role | What it does |
+|------|--------------|
+| **Deeper-reasoning model** | Deep design thinking, novel debugging, real tradeoff decisions. |
+| **Deeper-reasoning model (XL)** | Same, with enlarged context window for whole-codebase Q&A. |
+| **Faster/cheaper model** | Clear-plan execution, research, file-reading, bounded summarization. |
+| **Orchestrator** | Reads repo state; recommends next workflow command (the `/workflow` skill). Never auto-invokes. |
+| **Live progress tracker** | Session-visible task list with pending / in-progress / completed states (TodoWrite for Claude Code; equivalent for Codex). |
+| **Parallel-dispatch mechanism** | Spin off bounded independent tasks to concurrent workers, isolated from parent context. |
+| **Context-budget check** | Show current % of active window used; compare against 40 / 65 / 80% thresholds. |
 
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Snappy Doctrine** | No entrance reveals. Motion serves response (tap, hover, scroll), not decoration. | `CONSTITUTION.md §8`, `MOTION.md §2` |
-| **9-signature vocabulary** | The 9 canonical motion patterns allowed on the site (hover-lift, morph-hover, scrub, draw, etc.). | `MOTION.md §3` |
-| **Scrub factory** | A factory that returns a ScrollTrigger timeline — `createHeroTimeline`, `createCrescendoScrub`, `createDrawScrub`. | `src/lib/motion/scrubs/` |
-| **Morph hover** | `use:morphHover` Svelte action — swaps SVG path on hover with MorphSVGPlugin. Lazy-loaded. | `src/lib/motion/actions/morphHover.ts` |
-| **Shared ticker** | The single site-wide `gsap.ticker` with IO-gated subscribers. Replaces ad-hoc `setInterval` / per-component RAFs. | `src/lib/motion/ticker.ts`, `MOTION.md §7` |
-| **Lazy GSAP plugin** | Plugins registered on first use, not at boot (Flip, MorphSVG, SplitText). | `MOTION.md §9`, `gsap.ts` |
-| **SSR-inline SVG** | The MetroNetwork pattern — SVG inlined at build via Vite `?raw` + SVGO, not fetched at runtime. | `MOTION.md §14` |
-| **Signature** | A named canonical motion pattern from the 9-signature vocabulary. | `MOTION.md §3` |
+## 8. Cross-tool + handoff
 
-### Design system
+| Term | Definition |
+|------|------------|
+| **Tool attribution** | Mandatory `Tool:` / `Planned by:` / `Implemented by:` metadata on every devlog session block AND every handoff per-task entry. Makes cross-tool handoff auditable per D12. |
+| **Cross-tool handoff** | Starting a task in one tool (e.g., Claude Code for planning) and resuming in another (e.g., Codex for execution) with no information loss. Enabled by tool-attribution + `AGENTS.md` auto-loaded by both tools. |
+| **Handoff branch** | Ephemeral branch `handoff/<slice>-<topic>` for tool-to-tool dialog. Deletes at slice close. Main sees only clean slice commits. |
+| **`--light` handoff** | Inline Q&A, no branch, no devlog / handoff.md / memory write. Use for factual questions. Default for quick queries. |
+| **`--action` handoff** | Full state transfer — updates handoff.md, appends to devlog, mirrors memory, pushes to handoff branch, signals receiving tool. Required for real work. |
+| **Cross-tool adversarial review** | At slice close, the OTHER tool reviews the just-closed slice. D12 enforcement — no tool reviews its own work. Invoked by `/workflow-close-slice`. |
+| **Tool-ownership invariant (D12)** | When a specific tool is assigned to a task, the assigned tool owns it exclusively. Other tools MUST NOT override, substitute, inline-simulate, or silently perform the assigned work. |
 
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Constitution** | The codebase's founding rules. `CONSTITUTION.md` is the supreme governance doc; every slice must comply. | `docs/reference/CONSTITUTION.md` |
-| **Token lockdown** | The rule: zero hardcoded colors. Every visual value references a CSS custom property. | `CSS.md §Rules` |
-| **Brand primitive** | A reusable component that encodes brand-specific visual identity (StatusDot, TerminalChrome, SectionWrapper). Different from headless UI primitives (Bits UI). | `ARCHITECTURE.md §Primitives` |
-| **Headless primitive** | A logic-only component (Bits UI — dropdown, dialog). Paired with brand-primitive styling. | `CONSTITUTION.md §Library Decisions` |
+## 9. Worktree + isolation (D18)
 
----
+| Term | Definition |
+|------|------------|
+| **Worktree-per-slice** | Default workflow — every slice runs as a git worktree with its own branch checkout. Main repo stays on base branch. Parallel AI sessions possible, one per worktree. |
+| **Worktree persistence** | Worktrees persist for the full slice lifetime (open to PR-merge), which may span many sessions across many days. Never removed until `/workflow-close-slice` runs post-merge. |
+| **`EnterWorktree`** | Claude Code tool — creates `.claude/worktrees/<slice>/` AND switches the session atomically. |
+| **`--no-worktree`** | Escape hatch for single-track projects — creates a branch in the main checkout instead of a worktree. |
 
-## 3. Industry vocabulary — standard terms worth knowing
+## 10. Skill + plugin ecosystem
 
-Standard terms that appear in this codebase or in adjacent docs. Learn these and your industry fluency compounds.
+| Term | Definition |
+|------|------------|
+| **Plugin** | A bundle of skills + agents + MCPs shipped together. `workflow` (this plugin), `superpowers`, etc. Loaded on session start. |
+| **Skill** | A reusable capability definition (`SKILL.md`). Invoked by the AI tool via slash command (`/workflow-<name>`) or skill-tool. |
+| **MCP (Model Context Protocol)** | Anthropic's standard for exposing tools to AI via servers. Project MCP definitions in `.mcp.json`. |
+| **Subagent / Agent** | A separate AI conversation dispatched with an Agent tool — runs in its own context. Only the final message returns to parent. Use for bounded research / parallel independent work. |
+| **Prompt cache** | The AI provider's prefix cache. First message is expensive (cache write); subsequent messages on the same prefix are cheap (cache read). Cache TTL varies by provider. |
+| **Context window** | Total token budget for a conversation. Model-specific. |
 
-### Web fundamentals
+## 11. OS + cross-platform
 
-| Term | Meaning | Where we use it |
-|------|---------|-----------------|
-| **FLIP** | First-Last-Invert-Play animation technique. GSAP's `Flip` plugin implements it. Used for list reorder (blog filter, projects filter). | `flip.ts`, blog/projects listings |
-| **IntersectionObserver** | Browser API that fires callbacks when an element enters/leaves the viewport. We use it to gate animations + lazy-load. | `ticker.ts` IO-gated subscribers |
-| **dvh / svh / lvh** | Dynamic / small / large viewport height units. We use `dvh` instead of `vh` because mobile browsers hide/show chrome. | `CONSTITUTION.md §9`, global rule |
-| **Safe-area inset** | CSS `env(safe-area-inset-*)` for notches/home-indicators. | layout CSS |
-| **Debounce / throttle** | Rate-limiting techniques for event handlers (resize, scroll). | motion helpers |
-| **Reduced motion** | `prefers-reduced-motion` media query. Every animation on yesid.dev checks this and no-ops when true. | motion actions |
-| **Structured data / JSON-LD** | Schema.org metadata embedded in `<script type="application/ld+json">`. Boosts SEO. | `+layout.svelte` JSON-LD injection |
-| **Progressive enhancement** | Ship working HTML first, layer in JS-dependent features. | SvelteKit SSR by default |
-| **SSR / ISR / CSR** | Server-side render / incremental static regeneration / client-side render. SvelteKit prerendering = SSR-at-build. | `svelte.config.js` |
-| **Hydration** | Client JS taking over a server-rendered DOM. | SvelteKit default behavior |
+| Term | Definition |
+|------|------------|
+| **OS-quirks registry** | Cross-project log of platform-specific command fixes at `<cloud>/workflow-knowledge/os-quirks/<os>.md`. Grep before debugging; append when solved. Enforced as Phase 8 step 4. |
+| **Cloud env var** | Project picks a vendor-named env var (e.g., `<VENDOR>_CLOUD_ROOT`) pointing to its local cloud directory. Scripts fall back to `path.join(os.homedir(), '<vendor>', 'cloud')`. Bound in `docs/project/BINDINGS.md § Cloud env binding`. |
 
-### Svelte 5 / SvelteKit 2
+## 12. Workflow plugin commands
 
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Rune** | A `$state`, `$derived`, `$effect`, or `$props` — Svelte 5's reactivity primitives. Replaces Svelte 4 `export let` + `$:`. | every `.svelte` file |
-| **$state** | Reactive state rune. Variables declared with `$state()` are tracked by the reactivity system. | everywhere |
-| **$derived** | Computed value rune. Like a memoized function of other runes. | component logic |
-| **$effect** | Side-effect rune (fires on reactive change). Replaces `onMount` + watchers. Use sparingly. | only when unavoidable |
-| **$props** | Component props rune. `let { x, y } = $props()`. | every component |
-| **Action** | A `use:` directive target — a function that runs when an element mounts and returns cleanup. Example: `use:morphHover`. | `src/lib/motion/actions/` |
-| **Store** | Svelte's pre-runes reactive container (`writable`, `readable`, `derived`). We prefer runes for new code. | a few legacy spots |
-| **Scoped style** | `<style>` block in a `.svelte` file — CSS auto-scoped to that component's elements. | every component |
-
-### Tailwind v4
-
-| Term | Meaning | Where |
-|------|---------|-------|
-| **@theme** | The Tailwind v4 directive in `app.css` that defines tokens (colors, fonts, etc.). | `src/app.css` |
-| **Arbitrary value** | `text-[18px]` — a one-off Tailwind value. Banned in this codebase (see `CONSTITUTION.md` — use tokens instead). | avoided |
-| **Utility-first** | Tailwind's design philosophy — compose styles from atomic utility classes. | default approach |
-| **JIT** | Just-in-time compiler. Tailwind v4 generates only the classes you use. | default |
-
-### GSAP / Lenis / motion libs
-
-| Term | Meaning | Where |
-|------|---------|-------|
-| **ScrollTrigger** | GSAP plugin that fires timelines based on scroll position. The foundation of our scrub-factory pattern. | `src/lib/motion/` |
-| **MorphSVG** | GSAP plugin for path-morph animations. Lazy-loaded. | `morphHover.ts` |
-| **SplitText** | GSAP plugin for breaking text into chars/words for per-element animation. | typewriter helpers |
-| **CustomEase** | GSAP plugin for authoring custom easing curves. | motion tokens |
-| **Flip (plugin)** | GSAP plugin implementing FLIP technique. Animates list reorders. | blog/projects filters |
-| **Lenis** | Smooth-scroll library (momentum + virtual scroll). Wraps native scroll. | `src/lib/motion/lenis.ts` |
-| **Lottie** | JSON-driven animation format + runtime. We use it sparingly. | a couple of home icons |
-| **Ticker** | A shared RAF loop. `gsap.ticker.add(fn)` subscribes a function to every frame. | `src/lib/motion/ticker.ts` |
-
-### Data layer (added in Slice 17b, 2026-04-18)
-
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Hexagonal content architecture** | The three-layer data seam: `content/*.ts` (seed) → `adapters/*` (port interface) → `repositories/*` (async getters) → route loaders. Components consume via loaders (data) or directly from content (UI chrome). Adding a CMS = swap one adapter file. | `src/lib/adapters/`, `src/lib/repositories/` |
-| **ContentAdapter** | The port interface. Every backing store (static / CMS / API) exposes `projects`, `services`, `blog`, `meta`, `techStack`, `content` ports conforming to `ContentAdapter`. | `src/lib/adapters/types.ts` |
-| **Port** (data) | A domain-sliced section of the adapter interface — e.g. `ProjectsPort.getPublicProjects()`. Matches the hexagonal "ports & adapters" vocabulary from Alistair Cockburn. | `src/lib/adapters/types.ts` |
-| **Static adapter** | The current `ContentAdapter` implementation — reads from the typed TypeScript content files. Future CMS adapters swap in by changing one line in `src/lib/adapters/index.ts`. | `src/lib/adapters/static.ts` |
-| **Repository layer** | Async facade over the adapter. Route loaders call `getPublicProjects()` etc. — never `adapter.projects.*` directly. Isolates loaders from the swap point. | `src/lib/repositories/` |
-| **Chrome** (content) | UI strings that aren't data — button labels, aria-labels, section headings, error messages. Lives in `$lib/content/*.ts` alongside seed content; imported directly by components (bypasses the adapter/repository path). | every extracted sub-task in 17b-7 |
-| **LocalizedString** | The canonical shape `{ en: string; fr?: string; es?: string }`. All user-facing text in content files. | `src/lib/types.ts`, `resolveLocale` in `src/lib/utils/locale.ts` |
-| **Translation debt** | LocalizedStrings that only carry `en` (no `fr`/`es`). Tracked by the integrity test — printed as a snapshot on every test run. | `src/lib/content/integrity.test.ts` |
-| **Content port** | Bucket inside `ContentAdapter` for page-level copy that isn't a first-class entity (hero, about page, contact page, closer, metro bookends). Distinct from typed-entity ports. | `src/lib/adapters/types.ts` |
-
-### Testing
-
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Vitest** | Fast test runner (Vite-native, Jest-compatible API). | `vitest.config.ts` |
-| **happy-dom** | Lightweight DOM implementation — much faster than `jsdom` for unit tests. | `vitest.setup.ts` |
-| **@testing-library/svelte** | Component-testing helpers (render, screen, fireEvent). | `.test.svelte.ts` files |
-| **Playwright** | Real-browser E2E testing framework. | `tests/e2e/` (future) |
-| **E2E** | End-to-end testing — full user flow in a real browser. | Slice 16 |
-| **Unit test** | Test of a single function/component in isolation. Most of our 782 tests. | `.test.ts` files |
-| **TDD** | Test-Driven Development — write the test first (RED), make it pass (GREEN), refactor. | our standard workflow |
+| Command | What it does |
+|---------|--------------|
+| `/workflow` | Orchestrator — reads repo state, recommends next command. Never auto-invokes. |
+| `/workflow-add` | Scaffold installer — copies `scaffold/` into consuming project. Idempotent. |
+| `/workflow-slice-open <name>` | Start a new slice — copy slice templates, create branch / worktree (D18). |
+| `/workflow-status` | Read-only state report. |
+| `/workflow-update "<description>"` | Contribute upstream — open PR on `mgkdante/workflow` from a consuming project. |
+| `/workflow-pull` | Sync from plugin — three-way diff-merge; preserves user customizations (D14). Line-ending-aware comparison (git hash-object). |
+| `/workflow-close-slice` | Close slice — finalize handoff + cross-tool adversarial review + archive bundle. |
+| `/workflow-handoff --to <tool>` | Cross-tool handoff — push handoff content to `handoff/<slice>-<topic>` branch. |
+| `/workflow-mirror` | Push artifacts to cloud archive. |
+| `/workflow-trim` | Remove local mirror copies (manual-only — D16). |
+| `/workflow-clean` | Manual cleanup (never auto — D15). |
 
 ---
 
-## 4. LLM tool vocabulary — the tool's terms
+## Adding new terms
 
-Terms specific to Claude Code, the Anthropic API, and the AI-assisted development toolkit. Useful for debugging why a session feels sluggish or why a skill isn't firing.
-
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Skill** | A reusable capability definition (`SKILL.md` with frontmatter). Loaded on demand via the Skill tool. | `~/.claude/skills/` |
-| **Slash command** | A `/foo` command defined by a skill or a `.claude/commands/*.md` file. | `.claude/commands/` |
-| **Subagent / Agent tool** | A separate Claude conversation dispatched with the `Agent` tool. Runs in its own context; only the final message returns. | parallel research, isolation |
-| **General-purpose agent** | The default subagent type. Has all tools. Used for research and open-ended work. | Task 0a research agents |
-| **Specialized agent** | A subagent with a pre-written prompt + scoped tools (e.g. `code-reviewer`, `planner`). Defined in `~/.claude/agents/`. | our 30 home agents |
-| **Context window** | The total token budget for a conversation. Opus 4.7 = 1M tokens. Sonnet 4.6 = 200K. | always finite |
-| **Cache prefix** | The ordered stable prefix Claude caches: `tools → system → CLAUDE.md → messages`. Any change at a layer invalidates everything after. | `cloud/workflow-knowledge/token-efficacy/01-cache-economics.md` |
-| **Cache TTL** | How long a cached prefix stays warm. Currently 5m default (regressed from 1h in March 2026). | same |
-| **Cache hit / miss** | Prefix was reused (read rate = 0.1x input) vs. re-paid (write rate = 1.25x for 5m). | same |
-| **ToolSearch** | The mechanism by which tool schemas are lazy-loaded. Default for all tools as of Claude Code v2.1.69. | deferred-tool list in system reminder |
-| **Deferred tool** | A tool whose name is visible but schema isn't loaded. Call requires `ToolSearch` first to fetch the schema. | every MCP tool |
-| **MCP** | Model Context Protocol — Anthropic's standard for exposing tools to Claude (servers + tools). | `.mcp.json`, `~/.claude.json` |
-| **MCP server** | A process (stdio or HTTP) that exposes one or more tools to Claude Code. | Railway, context7, chrome-devtools |
-| **`.mcp.json`** | Project-scoped MCP server definitions. Committed to the repo. | coming in Task 4 |
-| **`enabledMcpjsonServers`** | Settings key that allowlists which MCP servers to approve automatically. | `.claude/settings.json` |
-| **Scope hierarchy** | Config precedence order: local > project > user > plugin > connector. Local wins. | `~/.claude.json` vs `.mcp.json` vs `~/.claude/settings.json` |
-| **Plugin** | A bundle of skills + agents + MCPs shipped together (e.g. `superpowers`, `everything-claude-code`). | `~/.claude/plugins/cache/` |
-| **Marketplace** | A GitHub repo that hosts a plugin's source. `extraKnownMarketplaces` in settings lists which repos the plugin manager can install from. | `~/.claude/settings.json` |
-| **Connector** | An MCP server configured via `claude.ai` web app → Settings → Integrations (Notion, Webflow, Slack, etc.). Loads into Claude Code sessions too. NOT reachable from `~/.claude/` config files. | claude.ai web UI |
-| **Enable / Disable / Uninstall plugin** | **Enable** = `true` in `enabledPlugins` (loads at session start). **Disable** = `false` (stays on disk, doesn't load; re-enable flips it back instantly). **Uninstall** = `claude plugin uninstall` (wipes cache, requires re-download from marketplace). | disable is the safe default |
-| **Activation-cost** | Tokens that WOULD be required if a deferred MCP tool schema were loaded via ToolSearch. Matters because a single broad `ToolSearch("*")` could blow up context. Pruning MCPs reduces this surface. | ~500 tokens per MCP tool schema |
-| **Snapshot** | A timestamped capture of `~/.claude/` state to `<cloud>/claude-config/user/<YYYY-MM-DD[-tag]>/`. Bundles settings + marketplaces + plugins + MCPs + skills + agents + rules. | `bun $YESITO_CLOUD_ROOT/claude-config/snapshot.ts` |
-| **Restore** | Apply a snapshot back to `~/.claude/` with auto-backup of current state first. Resolves latest by mtime; supports `--label`, `--dry-run`, `--yes`. | `restore.ts` |
-| **`YESITO_CLOUD_ROOT`** | Env var pointing to the local cloud directory. Holds per-project archives + (pre-workflow-repo) workflow IP. Scripts fall back to `path.join(os.homedir(), 'Yesito', 'cloud')`. | shell profile / Windows Env Vars |
-| **`YESITO_WORKFLOW_ROOT`** | Env var pointing to the cloned `workflow` framework repo. Holds the portable cross-tool contract (AGENTS.md base + overlays + slice templates + stack registry + install.ts + mode presets). Second per-machine portability knob — pair with `YESITO_CLOUD_ROOT`. Pre-workflow-repo, resolves to `$YESITO_CLOUD_ROOT/workflow-knowledge/`. | shell profile / Windows Env Vars |
-| **Auto-memory** | The file-based memory system at `~/.claude/projects/<hash>/memory/`. Facts persist across sessions. | ours post-17j = 35 files |
-| **MEMORY.md** | The index of memory pointers. Truncated at 200 lines / 25 KB on session load. | `~/.claude/projects/C--Users.../memory/MEMORY.md` |
-| **AutoDream** | Anthropic's 2026 reflective memory-consolidation sub-agent. Self-triggers after >24h + ≥5 sessions. | cloud knowledge doc 05 |
-| **Compaction** | Rewriting the context to free tokens. Three layers: microcompaction (disk offload) / auto-compaction (~75-83%) / manual `/compact`. | `cloud/.../06-strategic-compact.md` |
-| **Plan mode** | A Claude Code mode where the model plans but doesn't execute tool calls. Cheap reasoning lane. | Shift+Tab or `ExitPlanMode` tool |
-| **Working context vs startup context** | Working = tool results + user messages accumulated this session. Startup = CLAUDE.md + memory + skill descriptions loaded at session start. | `/context-budget` distinguishes them |
-| **Prompt cache** | Anthropic's prefix cache (read rate 0.1x, write rate 1.25x for 5m, 2x for 1h). | API-level feature |
-| **Skill description triggers** | "Use when..." outperforms "Use for..." for activation matching. First 200 chars are load-bearing (truncated in the skill list). | research: `token-efficacy/03-plugin-hygiene.md` |
-
----
-
-## 5. Workflow vocabulary — how we work
-
-The shared language for our development process. These terms show up in `CLAUDE.md`, `WORKFLOW.md`, devlogs, handoffs, specs.
-
-| Term | Meaning | Where |
-|------|---------|-------|
-| **Slice** (Level 1) | A top-level numbered unit of work (17, 18, 19). Contains sub-slices. | `docs/slices/slice-NN/` |
-| **Sub-slice** (Level 2) | The PR boundary. Lettered variant of a slice (17a, 17j, 17h-3). One PR per sub-slice. | `docs/slices/slice-NN/slice-NN<letter>/` |
-| **Task** (Level 3) | A section inside a sub-slice's `plan.md`. Can span multiple sessions. Ends with a STOP gate. | section, not a folder |
-| **Session** (implicit Level 4) | A single working day under a Task. Identified by date heading in `log.md`: `### Session YYYY-MM-DD — Task NN<letter>-N`. | `log.md` |
-| **Bundle** (sub-slice bundle) | The 4-file folder per Level 2: `spec.md` + `plan.md` + `log.md` + `handoff.md`. Moves together at PR close. | `docs/slices/slice-NN/slice-NN<letter>/` |
-| **Spec** (`spec.md`) | Design + rationale + acceptance criteria for a sub-slice. Written once; amendments logged. | inside the bundle |
-| **Plan** (`plan.md`) | Task-by-task implementation instructions. Level 3 tasks are sections. Checkboxes track progress. | inside the bundle |
-| **Log** (`log.md`) | Running session-by-session work record. Commands, files, decisions, errors. Appended every session. | inside the bundle |
-| **Handoff** (`handoff.md`) | Self-appending closing report. Grows per-task as work lands. Final summary added at PR close. IS the PR body. | inside the bundle |
-| **Self-appending handoff** | Pattern where `handoff.md` gains a `### Task NN<letter>-N` section each time a Level 3 task completes — rather than being written in one push at slice close. Captures decisions fresh. | `_TEMPLATE-SUBSLICE/handoff.md` |
-| **Checkpoint** (`CHECKPOINT.md`) | Live state of a Level 1 slice (sub-slices done, current sub-slice, next step). Ephemeral — deleted when slice fully closes. | `docs/slices/slice-NN/CHECKPOINT.md` |
-| **Session type** | **Planning / Implementation / Closing / Non-slice.** Every session declares one. Non-slice = bugfixes, configs, exploration — stored at `docs/sessions/<YYYY-MM-DD>-<name>.md`. | `CLAUDE.md` |
-| **Non-slice session** | Work outside any slice: bugfix, config, exploration, hotfix, research spike. Single-file record, not a bundle. Commits; optional PR. | `docs/sessions/_TEMPLATE.md` |
-| **Iteration Protocol** | The mandatory "one task → STOP → Yesid approves → next task" loop. Never batch. | `CLAUDE.md` |
-| **Closing checklist** | The steps at slice close — finalize handoff, governance doc updates, VOCAB update, OS-quirks append, learn doc to cloud, tree.txt, commit/PR, `bun run slice:close`. | `WORKFLOW.md` §11 |
-| **Close-script** (`slice-close.ts`) | Bun script that moves the sub-slice bundle to cloud archive, deletes the repo folder, appends a row to `COMPLETED-SLICES.md`. Uses `$YESITO_CLOUD_ROOT`. No flatten — granular retrieval preserved. | `scripts/slice-close.ts` |
-| **Three-tier context** | Tier 1 (always-on, in repo) / Tier 2 (fetch-on-command, cloud + git) / Tier 3 (cloud indexes, the bridge). Adopted in Slice 17j. | `docs/ARCHIVE.md` |
-| **Write protocol** | The closing steps that mirror a shipped slice to cloud + delete from repo + update cloud index. Self-pruning. | Codified in `WORKFLOW.md` during Task 3 |
-| **Fetch-on-command** | Reading a Tier 2 artifact deliberately — AI decides to read a cloud file when context warrants, not auto-loaded. | retrieval protocol |
-| **Retrieval protocol** | The four-step ladder for AI to get context: in-context → cloud index → specific cloud artifact → git history. | `docs/ARCHIVE.md` |
-| **OS-quirks registry** | Cross-project persistent log of platform-specific command fixes at `<cloud>/workflow-knowledge/os-quirks/<os>.md`. Consulted before debugging; appended when a new quirk is solved. | `<cloud>/workflow-knowledge/os-quirks/` |
-| **Self-enhancing workflow** | The principle that every mistake becomes a closing-checklist rule. Workflow compounds quality slice-over-slice. | core principle |
-| **workflow-efficiency skill** | Portable skill at `~/.claude/skills/workflow-efficiency/` codifying the three-tier context, 3-level hierarchy, self-appending handoff, close-script, cache pacing, subagent routing. Trade-secret, personal IP across Yesid's 6 services. | `~/.claude/skills/workflow-efficiency/SKILL.md` |
-| **Superpowers skill** | A skill in the `superpowers` plugin family — `brainstorming`, `writing-plans`, `executing-plans`, etc. Structured rigid workflows. | `~/.claude/plugins/.../superpowers/` |
-| **STOP** | The mandatory halt after a task. Don't write the next line of code, don't move on. Wait for Yesid. | `CLAUDE.md` Iteration Protocol |
-| **Pre-prune / Post-prune snapshot** | Pair of config snapshots taken around a major prune pass. Pre-prune = rollback path; post-prune = the new clean baseline to replicate on other machines. | `<cloud>/claude-config/user/` |
-| **`.mcp.json`** | Project-scoped MCP server definitions. Committed to the repo. | yesid.dev has this |
-| **`enabledMcpjsonServers`** | Settings key that allowlists which MCP servers to approve automatically. **MUST live in committed `.claude/settings.json`** (not `.local.json` — issue #24657 ignores it there). | `.claude/settings.json` |
-| **LLM tool** (singular) / **LLM tools** (plural) | Generic term for an AI-assisted development tool that honors `AGENTS.md` — currently Claude Code and Codex; future tools inherit. Used in workflow prose to replace tool-specific references ("Claude Code" → "LLM tool") where the rule is tool-agnostic. | `AGENTS.md`, `WORKFLOW.md` |
-| **`AGENTS.md`** | The canonical tool-agnostic workflow contract at the repo root. Both Claude Code and Codex auto-load it. Describes the workflow in abstract terms (roles, stages, discipline); per-tool overlays resolve roles to concrete mechanisms. Introduced in Slice 17k. | `AGENTS.md` |
-| **Tool overlay** | A per-tool binding file at `docs/reference/tools/<tool>.md` that resolves `AGENTS.md`'s abstract roles (deeper-reasoning model, faster/cheaper model, live progress tracker, etc.) to that tool's concrete mechanisms. Swapping a role = edit one overlay row; nothing else changes. | `docs/reference/tools/{claude-code,codex}.md` |
-| **Tool attribution** | Mandatory header on every `log.md` session (`**Tool:** <name> (<model>, reasoning=<effort>)`) and every `handoff.md` per-task section (`**Planned by:** / **Implemented by:**`). Makes mid-stream cross-tool handoff an explicit, verifiable discipline. Introduced in Slice 17k Task 17k-3. | `AGENTS.md § Iteration Protocol` step 4 + `_TEMPLATE-SUBSLICE/*` |
-| **Cross-tool handoff** | The practice of starting a task in one LLM tool (e.g., Claude Code Opus 4.7 for planning) and resuming it in another (e.g., Codex GPT-5.4 for execution) with no information loss. Enabled by tool-attribution headers + `AGENTS.md` auto-loaded by both tools. | workflow discipline, not infrastructure |
-| **Token-buffer strategy** | Routing pattern where Codex carries execution work (3–4× fewer tokens per task than Claude at the frontier, more generous rate limits) while Claude reserves for reasoning, design, adversarial review, frontend. Net effect: preserve Claude quota for where it matters; quality backstopped by Claude adversarial review of Codex output. Codified in `workflow-efficiency` skill v1.1.0. | `workflow-efficiency` skill §"Token-buffer strategy" |
-| **Stack registry** (`registry.jsonc`) | Machine-readable JSONC source of truth for installable cross-tool artifacts: MCPs, skills, plugins, agents. Each entry carries `install_in`, `source`, `tools` (per-tool overrides), optional `version`, optional `claude_equivalent`. Deferred categories (hooks, rules, memories) are explicitly listed. Lives pre-workflow-repo at `$YESITO_CLOUD_ROOT/workflow-knowledge/stack/registry.jsonc`, migrates to `workflow` repo in its Slice 1. | cloud → workflow repo |
-| **`install.ts`** (stack installer) | Bun-native registry applier. Flags: `--tool claude-code\|codex\|both`, `--dry-run` (default) vs `--apply`, `--only mcps,skills,plugins,agents`, `--registry <path>`, `--verbose`. Reads `registry.jsonc`, plans diff-style operations, applies writes + shell commands on `--apply`. Normalizes `npx`→`bunx`, `npm`→`bun` during apply. | `$YESITO_WORKFLOW_ROOT/stack/install.ts` |
-| **`claude_equivalent`** (MCP annotation) | Per-MCP annotation in `registry.jsonc` describing whether the same capability is reachable on Claude Code and how. Status values: `via_plugin_bundle` (capability live on Claude via a plugin that ships its own MCP server), `via_standalone_mcp` (separate Claude-targeted MCP entry), `none` (Codex-only on this machine). Introduced Slice 17k post-ship. Will be consumed by the modular MCP plug/unplug system in workflow repo Slice 1. | `registry.jsonc` |
-| **Workflow repo** (planned) | `C:\Users\otalo\Yesito\Projects\workflow` — new private GitHub repo that will house the portable cross-tool framework (AGENTS.md base + overlays + slice templates + stack registry + install.ts + `claude-config/` + `codex-config/` + mode presets). Replaces `<cloud>/workflow-knowledge/` and `<cloud>/{claude,codex}-config/` as the source of truth (cloud → git). Lands in that project's Slice 1. | `workflow` repo |
-| **Mode** (planned) | Per-project-type preset bundling MCPs + skills + rules for a given work type (`web-dev`, `sql-work`, `pipeline`, per-project like `transit`). Modular plug/unplug unit — each mode knows which MCPs/skills its project type needs, so projects only pay for what they use. Lands in workflow repo Slice 1. | `$YESITO_WORKFLOW_ROOT/modes/<mode>/` |
-
----
-
-## 6. Cross-reference: brand ↔ industry
-
-When we've invented a name for something that has a standard industry equivalent, list both here so we can code-switch:
-
-| Our term | Industry equivalent | Why we rename it |
-|----------|---------------------|------------------|
-| **Station tab** | Tab interface pattern | "Station" fits transit metaphor; "tab" alone feels generic. |
-| **Kinetic scroll index** | Horizontal scroll navigation / scroll-snap nav | Adds the transit metaphor + emphasizes intentional kinetic motion. |
-| **Bento dashboard** | Card grid / masonry grid | "Bento" has industry currency (Apple); we use it because it signals playful density. |
-| **Construction-site closer** | Final page section / footer pre-footer | Evokes brand-specific visual metaphor (construction = building = infrastructure). |
-| **Snappy Doctrine** | No-animation-on-mount design principle | Short, memorable, enforceable. |
-| **Edge rail** | Rotated sidebar label / vertical section marker | "Rail" fits transit; distinguishes from a traditional sidebar. |
-| **Metro System** | SVG network diagram | Specific to the home hero's visual language. |
-
----
-
-## Maintenance
-
-- Review at every slice close. Add new terms introduced in the slice.
-- Deprecate terms no longer used (keep the entry but mark `(deprecated — replaced by X)`).
-- When an industry term shifts meaning (rare), update the entry with an absolute date.
-- This doc grows linearly with the codebase. Aim for `<300` lines by keeping each entry to one row.
+- **Workflow-universal term?** → Submit a `/workflow-update` PR against `mgkdante/workflow`. Term gets added here.
+- **Project-specific term?** → Add directly to [`docs/project/VOCAB.md`](../project/VOCAB.md).
+- **When in doubt:** put it in `docs/project/VOCAB.md` first, promote to the plugin later if it turns out to be universal.

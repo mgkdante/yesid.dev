@@ -1,4 +1,14 @@
 .
+├── .env.example
+├── .github
+│   └── workflows
+│       └── ci.yml
+├── .gitignore
+├── .mcp.json
+├── .npmrc
+├── .vscode
+│   ├── extensions.json
+│   └── settings.json
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── README.md
@@ -71,19 +81,38 @@
 │       └── export-logos.ts
 ├── bun.lock
 ├── components.json
-├── dist
-│   └── stats.html
 ├── docs
+│   ├── .workflow-plugin-sha
 │   ├── ARCHIVE.md
 │   ├── README.md
-│   ├── reference
+│   ├── _TEMPLATES
+│   │   ├── session
+│   │   │   └── session.md
+│   │   ├── slice
+│   │   │   ├── devlog.md
+│   │   │   └── plan.md
+│   │   └── subslice
+│   │       ├── handoff.md
+│   │       ├── plan.md
+│   │       └── spec.md
+│   ├── ai-memory
+│   │   ├── MEMORY.md.example
+│   │   └── SCHEMA.md
+│   ├── project
 │   │   ├── ARCHITECTURE.md
-│   │   ├── AUDIT-SLICE-17.md
+│   │   ├── BINDINGS.md
+│   │   ├── BRAND.md
 │   │   ├── CONSTITUTION.md
 │   │   ├── CSS.md
 │   │   ├── MOTION.md
 │   │   ├── PATTERNS.md
+│   │   ├── README.md
+│   │   ├── SERVICES.md
+│   │   ├── STACK.md
 │   │   ├── TESTS.md
+│   │   └── VOCAB.md
+│   ├── reference
+│   │   ├── AUDIT-SLICE-17.md
 │   │   ├── VOCAB.md
 │   │   ├── WORKFLOW.md
 │   │   ├── mockups
@@ -101,17 +130,11 @@
 │   │   ├── FUTURE_PHASES.md
 │   │   └── PLAN.md
 │   ├── sessions
+│   │   ├── .gitkeep
 │   │   ├── 2026-04-18-slice-sizing-governance.md
 │   │   └── _TEMPLATE.md
 │   └── slices
-│       ├── _TEMPLATE-SLICE
-│       │   ├── CHECKPOINT.md
-│       │   └── README.md
-│       ├── _TEMPLATE-SUBSLICE
-│       │   ├── handoff.md
-│       │   ├── log.md
-│       │   ├── plan.md
-│       │   └── spec.md
+│       ├── .gitkeep
 │       ├── slice-14
 │       │   └── README.md
 │       ├── slice-15
@@ -134,9 +157,14 @@
 │       │   └── README.md
 │       ├── slice-21
 │       │   └── README.md
-│       └── slice-22
-│           └── README.md
-├── hero-scroll-trace.json.gz
+│       ├── slice-22
+│       │   └── README.md
+│       └── slice-cloud-ii
+│           ├── devlog.md
+│           ├── handoff.md
+│           ├── partition-audit.md
+│           ├── plan.md
+│           └── spec.md
 ├── package.json
 ├── playwright.config.ts
 ├── scripts
@@ -272,6 +300,7 @@
 │   │   │   │   ├── BlogRow.test.ts
 │   │   │   │   └── BlogTocPill.svelte
 │   │   │   ├── brand
+│   │   │   │   ├── .gitkeep
 │   │   │   │   ├── BlueprintShell.svelte
 │   │   │   │   ├── ChevronToggle.svelte
 │   │   │   │   ├── CornerMarks.svelte
@@ -289,6 +318,7 @@
 │   │   │   │   ├── SvgIcon.test.ts
 │   │   │   │   ├── TerminalChrome.svelte
 │   │   │   │   ├── __tests__
+│   │   │   │   │   ├── .gitkeep
 │   │   │   │   │   ├── ChevronToggle.test.ts
 │   │   │   │   │   ├── CornerMarks.test.ts
 │   │   │   │   │   ├── GlowOverlay.test.ts
@@ -1092,7 +1122,6 @@
 │   │   ├── hero-station-art.png
 │   │   ├── hero-station-art.webp
 │   │   ├── metro-network-ref.svg
-│   │   ├── montreal-metro.source.svg
 │   │   ├── montreal-metro.svg
 │   │   ├── montreal_map.jpg
 │   │   └── work
@@ -1142,10 +1171,10 @@
 ├── svelte.config.js
 ├── svgo.config.mjs
 ├── test-results
+│   └── .last-run.json
 ├── tests
 │   └── smoke.spec.ts
 ├── tree.txt
+├── tree.txt.new
 ├── tsconfig.json
 └── vite.config.ts
-
-166 directories, 982 files
