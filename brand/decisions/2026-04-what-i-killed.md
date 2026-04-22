@@ -35,7 +35,7 @@ The list is chronological (Slice order), not ranked. The reasons vary — some w
 ### Shell layout components (`SectionWrapper`, `EdgeRail`, `ListingLayout`, `DetailHero`, `CardGrid`, `BentoGrid`, `AsidePanel`)
 
 **Removed:** Slice 17d (CSS Grid Rewrite, 2026-04-16)
-**Reason:** 7 layout wrapper components, totaling ~1035 lines, that were meant to codify "the site's layout patterns." In practice they grew modes + variants to cover every page's edge cases, and by slice 17d they were harder to read than the scoped CSS Grid they were hiding. Deleted and replaced by 4 named CSS Grid Recipes documented at `docs/reference/CONSTITUTION.md § 2`. Each page owns its grid in scoped CSS, references a Recipe by name. No abstraction layer.
+**Reason:** 7 layout wrapper components, totaling ~1035 lines, that were meant to codify "the site's layout patterns." In practice they grew modes + variants to cover every page's edge cases, and by slice 17d they were harder to read than the scoped CSS Grid they were hiding. Deleted and replaced by 4 named CSS Grid Recipes documented at `docs/project/CONSTITUTION.md § 2`. Each page owns its grid in scoped CSS, references a Recipe by name. No abstraction layer.
 
 ### `.bento-card` utility class
 

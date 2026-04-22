@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-18
 **Decision type:** Governance
-**Status:** Accepted. Governance doc lives at `docs/reference/CONSTITUTION.md`, not in `brand/`.
+**Status:** Accepted. Governance doc lives at `docs/project/CONSTITUTION.md`, not in `brand/`.
 
 ## Context
 
@@ -10,7 +10,7 @@ After 22+ slices of build, the codebase had accumulated more implicit rules than
 
 Slice 17a-5 (Spacing & Layout, 2026-04-13) was the trigger. The spacing work demanded 5 canonical breakpoints, 3 container tokens, and 4 layout recipes — and those touched everything. Without a document codifying them, Slice 17d (Component API) would have re-invented the rules from memory, and they would have drifted.
 
-So 17a-5 shipped `docs/reference/CONSTITUTION.md` — the governance law of the codebase. Every slice since then has been measured against it.
+So 17a-5 shipped `docs/project/CONSTITUTION.md` — the governance law of the codebase. Every slice since then has been measured against it.
 
 The follow-up question that 17h (Brand Bundle) forced in 2026-04-18: **where should the constitution live?** Under `docs/reference/` next to the code? Or inside `brand/` where the brand narrative lives?
 
@@ -32,7 +32,7 @@ Rejected: doesn't scale to a team of one. The reviewer is the same person as the
 
 Write the rules down once. Every slice reads the constitution before planning. Every PR review checks the diff against it. Update the constitution when a rule changes — that update is itself a governed act.
 
-Location: `docs/reference/CONSTITUTION.md`, next to `CSS.md` (token inventory) and `MOTION.md` (motion reference). Reason: governance rules are tightly coupled to code implementation — the constitution enforces layout choices that live in scoped CSS, spacing tokens that live in `tokens.css`, motion doctrine that lives in `src/lib/motion/`. Keeping the rules next to the code makes the coupling legible.
+Location: `docs/project/CONSTITUTION.md`, next to `CSS.md` (token inventory) and `MOTION.md` (motion reference). Reason: governance rules are tightly coupled to code implementation — the constitution enforces layout choices that live in scoped CSS, spacing tokens that live in `tokens.css`, motion doctrine that lives in `src/lib/motion/`. Keeping the rules next to the code makes the coupling legible.
 
 ### Option D — Move constitution into `brand/`
 
@@ -42,7 +42,7 @@ Rejected: the failure mode is catastrophic. A bad edit to `brand/tokens.json` wo
 
 ## Decision (2026-04-18 revision)
 
-**Option C.** `docs/reference/CONSTITUTION.md` is the governance doc. It stays at `docs/reference/`, not in `brand/`.
+**Option C.** `docs/project/CONSTITUTION.md` is the governance doc. It stays at `docs/reference/`, not in `brand/`.
 
 `brand/` points to the constitution through cross-links in `foundations/*.md`. It does not own the constitution. It does not duplicate the rules.
 

@@ -1,6 +1,6 @@
 # foundations / accessibility
 
-> Narrative. The rules are enforced at `docs/reference/CONSTITUTION.md § 7 Accessibility`. This file describes the posture — why the rules exist, where they bite.
+> Narrative. The rules are enforced at `docs/project/CONSTITUTION.md § 7 Accessibility`. This file describes the posture — why the rules exist, where they bite.
 
 ## Posture
 
@@ -10,7 +10,7 @@ The site is single-author and solo-reviewed. There is no separate a11y pass at t
 
 ## Requirements (every component)
 
-The full table lives at `docs/reference/CONSTITUTION.md § 7`. The floor:
+The full table lives at `docs/project/CONSTITUTION.md § 7`. The floor:
 
 - **Keyboard navigable.** Every interactive element reachable via Tab; operable via Enter / Space.
 - **Focus visible.** `:focus-visible` outline is non-optional. The site uses `outline: 2px solid var(--primary); outline-offset: 2px`.
@@ -35,7 +35,7 @@ Every motion primitive checks `isPrefersReducedMotion()` (from `src/lib/motion/s
 1. Renders the final state synchronously and returns a no-op cleanup, or
 2. Skips the animation entirely and returns a no-op cleanup.
 
-`docs/reference/MOTION.md § 10 Reduced-Motion Contract` has the per-signature behavior table. The short version: nothing moves for users with `prefers-reduced-motion: reduce`, and nothing breaks.
+`docs/project/MOTION.md § 10 Reduced-Motion Contract` has the per-signature behavior table. The short version: nothing moves for users with `prefers-reduced-motion: reduce`, and nothing breaks.
 
 CSS keyframe animations — `pulse-glow`, `station-ping`, `typewriter-blink` — are all guarded in `app.css` under `@media (prefers-reduced-motion: reduce)` and set to `animation: none`.
 

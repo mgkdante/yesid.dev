@@ -3,7 +3,7 @@
 **Version:** 2.0 | 2026-04-17
 **Supersedes:** v1.0 (April 2026 — motion-design manifesto with heavy Three.js/Threlte content, now stale)
 **Design spec:** `<cloud>/yesid.dev/docs/archive/legacy-flat/specs/2026-04-16-slice-17e-motion-reengineering-design.md`
-**Governance:** `docs/reference/CONSTITUTION.md` — Motion Doctrine — Snappy
+**Governance:** `docs/project/CONSTITUTION.md` — Motion Doctrine — Snappy
 
 v2.0 is the **implementation reference** for the motion layer after the Slice 17e re-engineering. v1.0 was an aesthetic manifesto that over time accumulated references to deleted systems (Three.js, Threlte, `use:reveal`, entrance-animation helpers). v2.0 documents what actually exists in `src/lib/motion/` and how to use it.
 
@@ -54,7 +54,7 @@ Reusable motion patterns belong here. One-off presentational flourishes can live
 
 Content renders at its final state on page load. Motion triggers only on **interaction**, **scroll-scrub**, or **idle ambient**.
 
-Full text lives in `docs/reference/CONSTITUTION.md` § Motion Doctrine — Snappy. The one-line summary:
+Full text lives in `docs/project/CONSTITUTION.md` § Motion Doctrine — Snappy. The one-line summary:
 
 > No entrance animations, no fade-ups on load, no scale-in on scroll-into-view. If you want the user's attention, earn it through interaction or through scroll-linked motion — never by animating a stationary page.
 
@@ -333,7 +333,7 @@ gsap.to(el, { opacity: 1, duration: durationSec('normal'), ease: ease.default })
 
 1. Declare in `src/lib/styles/tokens.css` under the motion section.
 2. Mirror in `src/lib/motion/tokens.ts`.
-3. Update `docs/reference/CSS.md`'s motion-tokens table.
+3. Update `docs/project/CSS.md`'s motion-tokens table.
 4. Run `bun run test -- src/lib/motion/tokens.test.ts` to confirm parity.
 
 ---

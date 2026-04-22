@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-18
 **Decision type:** Layout philosophy
-**Status:** Accepted. Codified in `docs/reference/CONSTITUTION.md § 2`.
+**Status:** Accepted. Codified in `docs/project/CONSTITUTION.md § 2`.
 
 ## Context
 

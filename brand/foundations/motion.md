@@ -1,6 +1,6 @@
 # foundations / motion
 
-> Narrative. The full implementation reference — actions, scrub factories, shared ticker, lazy plugin loaders, bundle budgets — lives at `docs/reference/MOTION.md`. The governance rules live at `docs/reference/CONSTITUTION.md § 8 Motion Doctrine — Snappy`.
+> Narrative. The full implementation reference — actions, scrub factories, shared ticker, lazy plugin loaders, bundle budgets — lives at `docs/project/MOTION.md`. The governance rules live at `docs/project/CONSTITUTION.md § 8 Motion Doctrine — Snappy`.
 
 ## What motion means for the brand
 
@@ -14,7 +14,7 @@ Anything that does not do one of those three jobs does not ship.
 
 ## Signatures — the nine
 
-Motion is closed at nine signatures. A new design wanting motion either picks one of these or proposes an amendment to `docs/reference/CONSTITUTION.md § 8`.
+Motion is closed at nine signatures. A new design wanting motion either picks one of these or proposes an amendment to `docs/project/CONSTITUTION.md § 8`.
 
 | # | Signature | Lane | Where it fires |
 |---|---|---|---|
@@ -28,7 +28,7 @@ Motion is closed at nine signatures. A new design wanting motion either picks on
 | 8 | LED pulse | Idle ambient | Status dots, stop-label glows — always-on, IO-gated |
 | 9 | Typewriter idle | Idle ambient | Hero scroll prompt — one-shot, IO-aware |
 
-Three lanes: **Interaction** (user input triggers it), **Scroll-scrub** (scroll position drives it), **Idle ambient** (the page itself owns it). The implementation detail lives at `docs/reference/MOTION.md § 3–§ 7`.
+Three lanes: **Interaction** (user input triggers it), **Scroll-scrub** (scroll position drives it), **Idle ambient** (the page itself owns it). The implementation detail lives at `docs/project/MOTION.md § 3–§ 7`.
 
 ## The Snappy Doctrine
 
@@ -38,7 +38,7 @@ No fade-ups on load. No scale-ins on scroll-into-view. No staggered list entranc
 
 The rule exists because entrance animations read as loading states to an informed reader. A well-designed static page is faster to consume than a choreographed one. The site is judged on content and craft; animated entry does neither job.
 
-Full list of what is forbidden — and the one permitted exception (HomeCloser graffiti at the narrative terminus) — in `docs/reference/CONSTITUTION.md § 8`.
+Full list of what is forbidden — and the one permitted exception (HomeCloser graffiti at the narrative terminus) — in `docs/project/CONSTITUTION.md § 8`.
 
 ## Tokens
 
@@ -68,11 +68,11 @@ The implementation is at `src/lib/motion/utils/ticker.ts`. The reason: a page wi
 
 GSAP ships as a core + many optional plugins. Most routes don't need every plugin. The motion layer lazy-loads each plugin on first use — `loadDrawSVG()`, `loadMorphSVG()`, `loadFlip()`, `loadCustomEase()`, `loadMotionPathPlugin()`. Three plugins stay eager (ScrollTrigger, SplitText, MorphSVGPlugin) because their consumers need them synchronously on page paint.
 
-`docs/reference/MOTION.md § 9` has the full consumer pattern.
+`docs/project/MOTION.md § 9` has the full consumer pattern.
 
 ## Principle: reduced motion is honored
 
-`isPrefersReducedMotion()` is checked by every motion primitive. The per-signature behavior table — what "no motion" means for each of the nine — lives at `docs/reference/MOTION.md § 10`. The short version: the user sees the final state and nothing animates. Nothing breaks, nothing half-plays.
+`isPrefersReducedMotion()` is checked by every motion primitive. The per-signature behavior table — what "no motion" means for each of the nine — lives at `docs/project/MOTION.md § 10`. The short version: the user sees the final state and nothing animates. Nothing breaks, nothing half-plays.
 
 ## When motion is the right answer
 
@@ -93,7 +93,7 @@ GSAP ships as a core + many optional plugins. Most routes don't need every plugi
 
 ## Cross-links
 
-- Implementation reference: `docs/reference/MOTION.md`.
-- Governance + forbidden list + permitted exception: `docs/reference/CONSTITUTION.md § 8`.
+- Implementation reference: `docs/project/MOTION.md`.
+- Governance + forbidden list + permitted exception: `docs/project/CONSTITUTION.md § 8`.
 - Principle 4 in the brand spine: `BRAND.md § Principles` #4.
 - Why the doctrine is Snappy: `decisions/2026-04-what-i-killed.md` (the fade-up death + entrance-reveal death sections).

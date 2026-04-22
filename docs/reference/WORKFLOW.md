@@ -1,413 +1,115 @@
-# yesid. Workflow — The Full Pipeline
+# Workflow reference
 
-**Version:** 2.0 | 2026-04-17 (Slice 17j Workflow Efficiency)
-**Companion to:** `AGENTS.md` (tool-agnostic workflow contract + rules + governance), `CLAUDE.md` (Claude Code entry pointer with role bindings), `docs/reference/tools/` (per-tool overlays), `roadmap/PLAN.md` (project roadmap), `reference/CONSTITUTION.md` (codebase law), `reference/VOCAB.md` (shared lexicon), `reference/MOTION.md` (animation), `reference/PATTERNS.md` (solutions)
+Detailed reference for the slice-based workflow practiced in this project. Pairs with the tool-agnostic contract in `AGENTS.md` (root) and the per-tool overlays in [`tools/`](tools/).
 
-This document defines **how work flows** — the operational mechanics. `AGENTS.md` says *what rules govern* (tool-agnostic); this says *when, why, and in what order* to act on them. Every session follows this pipeline. No shortcuts.
+## The 8-phase pipeline (end-to-end)
 
----
-
-## 1. Slice Hierarchy (Foundation)
-
-Three levels. Strict meaning. **PR boundary is Level 2.**
-
-| Level | Name | Example | Home |
-|-------|------|---------|------|
-| 1 | **Slice** | Slice 17 (Standardization) | `docs/slices/slice-17/` |
-| 2 | **Sub-slice** — PR boundary | 17j (Workflow Efficiency) | `docs/slices/slice-17/slice-17j/` |
-| 3 | **Task** — section in plan/log/handoff | 17j-3, 17j-3a | section in `plan.md`, not a folder |
-| (4) | **Session** | `### Session 2026-04-17 — Task 17j-3` | heading in `log.md` |
-
-### Per-sub-slice file bundle (4 files)
-
-```
-docs/slices/slice-NN/slice-NN<letter>/
-  spec.md        → design + rationale. Written at sub-slice start. Amendments logged.
-  plan.md        → task-by-task implementation. Sections = Level 3 tasks.
-  log.md         → running work record. Session-by-session. Commands + errors + decisions.
-  handoff.md     → self-appending closing report. Grows per-task, finalized at PR.
-  CHECKPOINT.md  → ephemeral resume context (optional, deleted at PR close).
-```
-
-Each bundle is self-contained. AI reads just the file it needs.
-
-### Self-appending handoff mechanics
-
-- **At sub-slice start:** create `handoff.md` with a stub (Scope, Tasks completed, Follow-ups).
-- **After each Level 3 task lands:** append `### Task NN-N: <name>` section with: Session date, Commit SHA, Files, What landed, Decisions (D-numbered), Follow-ups.
-- **At PR time:** add `## Summary` and `## PR Body` sections. `gh pr create --body-file handoff.md`-adjacent content.
-- **Reset to 0:** next sub-slice starts a fresh `handoff.md`.
-
-The handoff is the PR body. Reviewer reads one file.
-
-### Three-tier context model
-
-- **Tier 1 (always-on, in repo):** governance docs (`docs/reference/**`, `docs/roadmap/**`), active slice's bundle, templates.
-- **Tier 2 (fetch-on-command, cloud mirror + git):** shipped slice bundles at `<cloud>/yesid.dev/docs/archive/slices/slice-NN/slice-NN<letter>/`, historical specs/plans/devlogs/handoffs/research, Yesid's learn knowledge base at `<cloud>/yesid.dev/docs/learn/`.
-- **Tier 3 (cloud indexes):** `<cloud>/yesid.dev/docs/COMPLETED-SLICES.md` + `INDEX.md` — AI reads these on command to find what exists, then fetches the specific artifact.
-
-**Retrieval protocol (cheapest first):** in-context governance → cloud index → specific cloud artifact → `git show`.
-
-Full model: `docs/ARCHIVE.md`.
-
----
-
-## 2. Session Types
-
-Declare the primary type at session start.
-
-| Type | Purpose | Artifacts | Slice sizes | Typical duration |
-|------|---------|-----------|-------------|------------------|
-| **Planning** | Research, brainstorm, design spec, implementation plan | `slice-NN<letter>/spec.md`, `plan.md` | **L only** | 1 session |
-| **Implementation** | Build one or more Level 3 tasks per Iteration Protocol | Code + tests + append to `log.md` and `handoff.md` | L / M | 1–3 sessions per sub-slice |
-| **Closing** | Finalize handoff, update governance, run close-script | Final `handoff.md` sections, PR, close-script execution | L / M | 0.5–1 session |
-| **Non-slice** | Bugfix / config / exploration / hotfix | `docs/sessions/YYYY-MM-DD-<name>.md` | **S** | < 1 session usually |
-
-**Hard rules — what's strict vs soft:**
-
-- **Commit discipline is strict.** Planning commits (`docs(slice-NN):`) and implementation commits (`feat/refactor/fix(slice-NN):`) stay separate regardless of whether they share a wall-clock session. Never co-mingle types in one commit.
-- **For L-slices:** Planning produces zero code; Implementation doesn't write specs (but can amend them); Closing doesn't add features.
-- **M-slices plan inline** — TodoWrite + 1-paragraph "Plan" at top of `log.md`. No separate Planning session, no `spec.md`, no `plan.md`.
-- **S-slices have no planning step.**
-
-**Session separation is soft.** Two session types may share one wall-clock conversation provided commit discipline holds AND none of these "break triggers" fire: (a) reasoning-heavy transition, (b) context ≥65% of active window, (c) material model downshift spanning >2 tasks, (d) human fatigue. Full rule in `AGENTS.md § Session types`.
-
-At session start: scan for uncommitted changes or commits made outside the LLM tool. Document anything found in `log.md` (slice) or the session file (non-slice).
-
-### When to use non-slice vs slice — the L/M/S decision
-
-Slice sizing scales planning ceremony with complexity. Full rule in `AGENTS.md § Slice sizing`.
-
-| Size | Use when | Planning artifact |
-|---|---|---|
-| **L** (large) | Multi-session OR ≥10 design decisions with real tradeoffs OR cross-cutting (≥20 files across ≥2 architectural layers) | Separate Planning session → `spec.md` + `plan.md`. Implementation in a fresh session. |
-| **M** (medium) | Single session, 2–6 tasks, isolated scope, few real design choices | Inline: TodoWrite + 1-paragraph "Plan" at top of `log.md`. No separate Planning session. |
-| **S** (small / non-slice) | One-shot bugfix / config / doc tweak / exploration, touches < 5 files, scope fits in a paragraph | None — `docs/sessions/YYYY-MM-DD-<name>.md` records the work. Commits as-is, optional PR. |
-
-**Upgrade mid-session:** if an M-slice reveals ≥5 unexpected design decisions or touches ≥2 architectural layers, STOP. Commit safe partial work. Re-declare as L, start a fresh Planning session.
-
----
-
-## 3. The Pipeline (End-to-End)
-
-**This is the L-slice flow. M-slices collapse phases 2–4 into an inline paragraph at the top of `log.md`. S-slices skip phases 1–4 entirely and go straight to implementation with a session file recording the work.**
+Every L-slice flows through 8 phases in order. M-slices collapse phases 2–4 into an inline paragraph at the top of `devlog.md`. S-slices skip phases 1–4 entirely and go straight to implementation with a non-slice session file recording the work.
 
 ```
 IDEA
   │
   ▼
-[1 Research]        Scan competitors, read docs, find patterns
+[1 Research]        Scan competitors / prior art / library docs
   │
   ▼
-[2 Brainstorm]      superpowers:brainstorming → 2–3 design options, Yesid picks
+[2 Brainstorm]      Mandatory brainstorming skill → 2–3 design options, owner picks
   │
   ▼
-[3 Design Spec]     docs/slices/slice-NN/slice-NN<letter>/spec.md
+[3 Design Spec]     docs/slices/<slice>/<sub>/spec.md
   │
   ▼
-[4 Plan]            docs/slices/slice-NN/slice-NN<letter>/plan.md (task list)
+[4 Plan]            docs/slices/<slice>/<sub>/plan.md (task list)
   │
   ▼
 [5 Implementation]  Task-by-task with approval gates (Iteration Protocol)
   │
   ▼
-[6 Verification]    Pre-completion checks + visual proof before each STOP
+[6 Verification]    Pre-completion checks + visible proof before each STOP
   │
   ▼
 [7 PR & Merge]      Branch → PR → review → squash-merge
   │
   ▼
-[8 Closing]         Finalize handoff → governance updates → bun run slice:close
+[8 Closing]         Finalize handoff → governance updates → close-script
   │
   ▼
-SHIPPED → bundle lives in cloud archive, COMPLETED-SLICES.md updated
+SHIPPED → bundle archived per docs/ARCHIVE.md, indices updated
 ```
 
 Each phase has specific tools, artifacts, and exit criteria. Skipping creates debt that compounds — for L-slices. For M/S, not all phases apply (see `AGENTS.md § Slice sizing`).
 
----
+## Three-tier context model
 
-## 4. Phase 1 — Research
+The AI never reads everything. Context loads in three deliberate tiers — cheapest first.
 
-**When:** Before any new page, section, or major feature.
-**Goal:** Understand what great looks like. Never design in a vacuum.
+| Tier   | Where it lives                                              | Loading                                                                |
+|--------|-------------------------------------------------------------|------------------------------------------------------------------------|
+| Tier 1 | In the repo: `AGENTS.md`, `CLAUDE.md`, `docs/reference/**`, `docs/roadmap/**`, the active slice bundle, templates | **Always-on.** Auto-loaded by both Claude Code and Codex on session start. |
+| Tier 2 | Cloud / external: shipped slice bundles (`<cloud>/<project>/docs/archive/slices/...`), historical specs / plans / devlogs / handoffs / research, the project's learn knowledge base | **Fetch-on-command.** AI reads deliberately when context warrants — never auto-loaded.   |
+| Tier 3 | Cloud indexes: `<cloud>/<project>/docs/COMPLETED-SLICES.md`, `INDEX.md`, etc. | **Bridge.** AI reads to discover what exists in Tier 2, then fetches the specific artifact. |
 
-### Process
+**Retrieval protocol (cheapest first):** in-context governance → cloud index (Tier 3) → specific cloud artifact (Tier 2) → `git show <sha>:<path>` (last resort).
 
-1. **Competitive scan** — Chrome DevTools MCP to analyze 5–7 Awwwards-quality references at 4 breakpoints (375 / 768 / 1440 / 1920+).
-2. **Extract patterns** — Typography, color, rhythm, animation, responsive.
-3. **Check PATTERNS.md** — Before inventing, check if a solved pattern exists.
-4. **Library docs** — Context7 MCP or Svelte MCP for API verification. Never guess.
+**Write protocol:** the closing-checklist (Phase 8) mirrors a shipped slice from Tier 1 to Tier 2 (cloud archive) + deletes it from the repo + appends a one-liner to the Tier 3 index. Self-pruning — Tier 1 stays small.
 
-### Exit criteria
+Full retrieval / write detail: `docs/ARCHIVE.md` (project-specific home).
 
-- [ ] 5+ references scanned at 4 breakpoints
-- [ ] Patterns documented (in the upcoming `spec.md` under Research section, or in a shared research doc if cross-slice)
-- [ ] PATTERNS.md consulted
-- [ ] Yesid confirmed direction
+## Document ecosystem
 
----
+Every project that scaffolds from this workflow ends up with the same document hierarchy. Specifics (filenames, paths to project-specific governance docs) vary; the shape is universal.
 
-## 5. Phase 2 — Brainstorm
+### Tier 1 — always-loaded, in repo
 
-**When:** After research, before any spec.
-**Goal:** Turn research into 2–3 concrete design options. Yesid picks.
+| Document                                | Purpose                                                                              | Update frequency         |
+|-----------------------------------------|--------------------------------------------------------------------------------------|--------------------------|
+| `AGENTS.md`                             | Tool-agnostic workflow contract — rules, principles, abstract roles                  | When workflow rules change |
+| `CLAUDE.md`                             | Claude Code entry pointer + role bindings (thin pointer to `AGENTS.md`)              | When Claude bindings change |
+| `docs/reference/tools/<tool>.md`        | Per-tool overlay (role bindings, slash commands, absolute thresholds)                | When tool mechanics change |
+| `docs/reference/WORKFLOW.md`            | This file — operational mechanics                                                    | When process evolves       |
+| `docs/reference/VOCAB.md`               | Workflow-universal vocabulary (Slice, Sub-slice, Task, Iteration Protocol, STOP, …) | Via `/workflow-update` → plugin PR → `/workflow-pull` |
+| `docs/reference/ARCHIVE.md`             | Three-tier model + retrieval / write protocols                                       | When archival model evolves (plugin-side) |
+| `docs/project/<DOMAIN>.md`              | Project-specific governance: `CONSTITUTION.md`, `CSS.md`, `MOTION.md`, `PATTERNS.md`, `TESTS.md`, `ARCHITECTURE.md`, `BINDINGS.md`, `STACK.md`, `VOCAB.md`, `BRAND.md`, `SERVICES.md`, or operator-created EMERGENT `<DOMAIN>.md`. | Per-domain rules change (directly hand-edit — project-owned) |
+| `docs/roadmap/PLAN.md`                  | Per-project master plan + slice index                                                | Every slice close          |
+| `docs/slices/<slice>/plan.md`           | Active slice plan (Sub-slices table for multi-sub-slice slices)                      | Per session                |
+| `docs/slices/<slice>/devlog.md`         | Self-appending session record across all sub-slices                                  | Every session              |
+| `docs/slices/<slice>/<sub>/`            | Active sub-slice bundle (`plan.md` + `spec.md` + `handoff.md`)                       | Per session                |
+| `docs/sessions/<YYYY-MM-DD>-<topic>.md` | Non-slice session records                                                            | Per non-slice session      |
+| `docs/_TEMPLATES/`                      | Slice + sub-slice + session templates (slice/, subslice/, session/)                  | Updated via `/workflow-pull` |
+| `docs/project/`                         | Project-owned governance docs — DEFAULT skeletons (STACK, BINDINGS, ARCHITECTURE, TESTS, VOCAB, CONSTITUTION) + OPTIONAL templates (BRAND, CSS, MOTION, PATTERNS, SERVICES) + EMERGENT (operator-created `<DOMAIN>.md` files). See `docs/project/README.md`. | Per slice (D11) — codify re-derived rules at slice close |
 
-### Process
+### Tier 2 — fetch-on-command, in cloud
 
-1. **Invoke `superpowers:brainstorming`** — mandatory. No exceptions.
-2. **Generate 2–3 options** — Each option: name, one-sentence pitch, visual feel, animation approach, responsive strategy, risk, session estimate.
-3. **Present to Yesid** — Never self-select.
-4. **Scratch artifacts** — `.superpowers/brainstorm/` (ephemeral).
+| Location                                                          | Purpose                                            |
+|-------------------------------------------------------------------|----------------------------------------------------|
+| `<cloud>/<project>/docs/archive/slices/<slice>/<sub>/`            | Shipped sub-slice bundles                          |
+| `<cloud>/<project>/docs/learn/<domain>/<concept>.md`              | Project's durable knowledge base (Obsidian-style)  |
+| `<cloud>/workflow-knowledge/<topic>/`                             | Cross-project portable research corpus             |
+| `<cloud>/workflow-knowledge/os-quirks/<os>.md`                    | Cross-project OS command registry                  |
+| `<cloud>/<tool>-config/`                                          | Per-tool config snapshots                          |
 
-### Exit criteria
+### Tier 3 — cloud indexes (the bridge)
 
-- [ ] `superpowers:brainstorming` invoked
-- [ ] 2–3 options presented with trade-offs
-- [ ] Yesid selected
-- [ ] Brainstorm artifacts saved
+| Location                                          | Purpose                                              |
+|---------------------------------------------------|------------------------------------------------------|
+| `<cloud>/<project>/docs/COMPLETED-SLICES.md`      | One-liner index of every shipped slice               |
+| `<cloud>/<project>/docs/INDEX.md`                 | Cloud mirror map                                     |
 
----
+## Cross-platform setup + OS-quirks registry
 
-## 6. Phase 3 — Design Spec
+The workflow is OS-agnostic via one env var + a persistent quirks registry that lives in the cloud (Tier 2).
 
-**When:** After Yesid approves a brainstorm direction.
-**Goal:** Translate direction into a visual specification that implementation can follow cold.
+### Env var pattern
 
-### Process
+Each project picks a single env var that points to its local cloud directory. Convention: `<VENDOR>_CLOUD_ROOT`. Scripts fall back to `path.join(os.homedir(), '<vendor>', 'cloud')`.
 
-1. Write `docs/slices/slice-NN/slice-NN<letter>/spec.md` using `docs/slices/_TEMPLATE-SUBSLICE/spec.md`.
-2. Section-by-section breakdown: layout, content source, animation, responsive, colors.
-3. **Self-review cold.** If you couldn't implement this from the spec alone, add detail.
-4. Yesid approval before any plan.
+| OS      | Default                                            |
+|---------|----------------------------------------------------|
+| Windows | `C:\Users\<user>\<vendor>\cloud`                   |
+| macOS   | `~/<vendor>/cloud`                                 |
+| Linux   | `~/<vendor>/cloud`                                 |
 
-### Spec structure
-
-```markdown
-# Sub-Slice <NN><letter> — <Name>
-
-Status: Draft | Approved
-Approach: <brainstorm option name>
-
-## Goal
-## Design Principles
-## Reference Sites
-## Page Architecture (N Sections)
-  Each: layout / content source / typography / animation / responsive / colors
-## Interactions
-## Out of Scope
-```
-
-### Exit criteria
-
-- [ ] `spec.md` written in the bundle folder
-- [ ] Every section defined (layout, content, animation, responsive)
-- [ ] Self-reviewed cold
-- [ ] Yesid approved
-
----
-
-## 7. Phase 4 — Implementation Plan
-
-**When:** After spec approved.
-**Goal:** Break the spec into Level 3 tasks, each with a STOP gate.
-
-### Process
-
-1. Invoke `superpowers:writing-plans`.
-2. Estimate sessions — each sub-slice gets a session count. Default to multi-session.
-3. Identify dependencies — sequential tasks ordered; independent ones flagged as parallel candidates (with Yesid's approval).
-4. Write `plan.md` in the bundle folder **per plan authoring discipline** (see below).
-
-### Plan authoring discipline (L-slice `plan.md`)
-
-Plans specify **decisions and sequencing**, NOT boilerplate code. The LLM tool at execution time has full context of the current codebase, reads the affected files, and writes code matching local patterns. Over-specified plans lock in assumptions that may not match reality AND waste tokens twice (authoring + re-processing). Full rule in `AGENTS.md § Slice sizing → Plan authoring discipline`.
-
-**Plan SHOULD include:** task list with dependencies/estimates/acceptance, files affected, commands to run, commit message shape, **one canonical example** of each non-obvious pattern, pattern-establishing code (interface types, contracts, novel algorithms).
-
-**Plan should NOT pre-specify:** boilerplate delegation code (one canonical example suffices), mechanical find/replace work (say which imports move, not every line), full test bodies for obvious assertions, pattern-following code after the pattern is already shown once.
-
-**Rule of thumb:** if Claude could produce the code in 30 seconds by reading the target file, don't pre-write it. Describe the transformation, give one canonical example, trust execution-time judgment for the rest.
-
-### Plan structure
-
-```markdown
-# Sub-Slice <NN><letter> — Implementation Plan
-
-Goal | Architecture | Tech Stack | Multi-session estimate | Design spec reference
-
-## File Structure
-  Files to modify / create
-
-## Task 1: <Name>
-  Files: ...
-  - [ ] Step 1
-  - [ ] Step 2
-  - [ ] Step 3: run tests + pre-flight visual check
-  **STOP. Ask Yesid to verify.**
-
-## Task 2: <Name>
-  ...
-
-## Execution Order
-## Out of Scope
-```
-
-### Session estimation
-
-| Complexity | Tasks | Sessions |
-|------------|-------|----------|
-| Data layer only | 2–3 | 1 |
-| Single component + tests | 3–4 | 1 |
-| Full page | 5–8 | 2–3 |
-| Interactive system | 8+ | 3–4 |
-| Multi-page feature | 10+ | 4–8 |
-
-**Always tell Yesid the estimate upfront.** Never surprise.
-
-### Exit criteria
-
-- [ ] `plan.md` in bundle
-- [ ] Session estimate given
-- [ ] Dependencies mapped
-- [ ] Yesid approved
-
----
-
-## 8. Phase 5 — Implementation (The Iteration Protocol)
-
-**You are done when Yesid says you are done.** Tests passing is necessary but not sufficient.
-
-### Per-task flow (never skip, never batch)
-
-```
-1. READ the Level 3 task from plan.md
-2. IMPLEMENT one task
-3. RUN bun run test + bun run check → both pass
-4. PRE-FLIGHT visual check (UI tasks only):
-   — State expected layout at 1440px + 375px
-   — Flag overflow/missing content
-   — Fix obvious issues before STOP
-5. APPEND to log.md (running record) AND handoff.md (reviewer summary)
-6. STOP → Tell Yesid:
-   — What you built (one sentence)
-   — What to check at http://localhost:5173 (specific behaviors)
-   — Decisions made
-7. WAIT for Yesid's response
-8a. Issues → Fix, retest, STOP again
-8b. Approval → Next task, repeat from 1
-```
-
-### Iteration rules (non-negotiable)
-
-1. Never batch multiple tasks. One task, one approval.
-2. Never write the final handoff summary before approval (but DO append per-task sections as tasks land).
-3. Never say "I think this should work." Yesid confirms on his screen.
-4. Never continue coding after completing a task. The STOP is mandatory.
-5. Ambiguous feedback → ask clarifying question before changing code.
-6. Never close a sub-slice without the handoff complete and OS-quirks/VOCAB updates done.
-
-### The test table (after every test run)
-
-```
-| Test File | Test Name | Status | Failure Reason |
-|-----------|-----------|--------|----------------|
-| src/...   | it(...)   | PASS   |                |
-| src/...   | it(...)   | FAIL   | Expected X, got Y (line NN) |
-```
-
-**Never say "some tests failed" without listing every failure by name.**
-
-### Handling iteration feedback
-
-| Feedback Type | Action |
-|--------------|--------|
-| Layout/positioning fix | Fix in component, retest, STOP |
-| Content change | Update data layer (never hardcode), retest, STOP |
-| Remove element | Remove, update tests, STOP |
-| Design pivot | Ask clarifying questions, may need new brainstorm |
-| Architecture change | Update spec (amendments log), may need new sub-slice |
-
-Average iterations per task: 2–4. Plan for this.
-
----
-
-## 9. Phase 6 — Verification
-
-**When:** After implementing a task, before STOP.
-**Goal:** Confirm correctness before presenting to Yesid.
-
-1. `bun run test` + `bun run check` pass
-2. Pre-flight visual check for UI tasks
-3. Screenshot proof via the preview tool for UI tasks
-4. Fix obvious problems before STOP
-
-Tools: see §19 Tool Selection Protocol → Verification.
-
----
-
-## 10. Phase 7 — PR & Merge
-
-**When:** All tasks in the sub-slice are approved. Handoff finalized.
-
-1. Verify `bun run test` + `bun run check` pass on the branch.
-2. `gh pr create` with handoff.md content as the body.
-3. Yesid reviews on GitHub.
-4. Squash-merge to `main`.
-5. Delete feature branch.
-6. Run `bun run slice:close <N> <letter>` (the close-script) — mirrors bundle to cloud archive, deletes repo folder, updates `COMPLETED-SLICES.md`.
-7. Next sub-slice branches from updated `main`.
-
-**Commit convention:** `<type>(slice-NN<letter>): <description>`. Types: feat, fix, refactor, docs, test, chore, perf, ci.
-
-**Branch naming:** `feature/slice-{NN}{letter}` — one branch per sub-slice.
-
----
-
-## 11. Phase 8 — Closing Checklist
-
-**When:** ALL Level 3 tasks approved. PR ready to create OR just squash-merged.
-
-**Hard checklist — every item mandatory, in order:**
-
-1. **Finalize `handoff.md`** — add `## Summary` + `## PR Body` sections. All per-task appends verified complete.
-2. **Governance doc updates:**
-   - `docs/reference/CONSTITUTION.md` — if any constitutional principle changed
-   - `docs/reference/CSS.md` — if tokens, @theme values, scoped styles, z-index, or animation CSS changed
-   - `docs/reference/MOTION.md` — if motion patterns, signatures, or tooling changed
-   - `docs/reference/TESTS.md` — every test added/changed/removed, placed in correct category
-   - `docs/reference/ARCHITECTURE.md` — if file structure, component tree, or data flow changed
-   - `docs/reference/PATTERNS.md` — every reusable solution discovered
-3. **VOCAB.md update** — any new brand / industry / workflow term introduced in the sub-slice added to `docs/reference/VOCAB.md`.
-4. **OS-quirk logging** — if the slice solved a platform-specific issue (robocopy quirk, Node flag, shell escaping), append to `<cloud>/workflow-knowledge/os-quirks/<os>.md` with Problem / Root cause / Fix / Date / Slice. **Hard step, not a suggestion.**
-5. **Learn doc** — if the slice introduced a durable concept worth codifying, write `<cloud>/yesid.dev/docs/learn/<domain>/<concept>.md` (Obsidian format: YAML frontmatter, `[[wikilinks]]`, tags).
-6. **`tree.txt`** — regenerate:
-   ```powershell
-   cmd /c "tree /F /A | findstr /V /C:\"node_modules\" /C:\".git\" /C:\".remember\" /C:\"bun.lockb\" /C:\".svelte-kit\" /C:\".vercel\" /C:\".DS_Store\" > tree.txt"
-   ```
-7. **Commit, push, create PR** — `gh pr create --title "..." --body-file path/to/handoff.md` (or derived PR body).
-8. **Post-merge:** `bun run slice:close <N> <letter>` — bundles moves to cloud, folder deleted, index updated.
-9. **Mirror live docs to cloud:** `bun run docs:mirror` — refreshes `<cloud>/yesid.dev/docs/{reference,roadmap,slices,sessions}/` so your off-device reading (phone, another computer, Obsidian mobile) sees the current state. Includes active sub-slice bundle *while* it's active; the folder goes empty after `slice:close` runs, then mirror reflects that. Full-replace, safe on all OSes. Run on every slice close AND optionally at end of working sessions to keep cloud fresh for off-device reading.
-
-**The workflow self-enhances:** any mistake caught during this sub-slice becomes a permanent checklist rule here. If you had to re-learn something, it belongs in an OS-quirk, learn doc, VOCAB entry, or PATTERN entry before the slice closes.
-
----
-
-## 12. Cross-Platform Setup + OS-Quirks Registry
-
-The workflow is OS-agnostic via one env var + a persistent quirks registry.
-
-### Env var
-
-**`YESITO_CLOUD_ROOT`** — points to the local cloud directory.
-
-| OS | Default |
-|----|---------|
-| Windows | `C:\Users\<user>\Yesito\cloud` |
-| macOS | `~/Yesito/cloud` |
-| Linux | `~/Yesito/cloud` |
-
-Set via shell profile (Unix) or System Environment Variables (Windows). Scripts fall back to `path.join(os.homedir(), 'Yesito', 'cloud')`.
+Set via shell profile (Unix) or System Environment Variables (Windows).
 
 ### OS-quirks registry
 
@@ -419,361 +121,554 @@ Lives at `<cloud>/workflow-knowledge/os-quirks/`:
 - `linux.md` — Linux-specific
 - `cross-platform.md` — universal patterns
 
-**Retrieval:** Before troubleshooting a platform command, check the relevant file. Grep first, ask second.
+**Retrieval rule:** before troubleshooting a platform-specific command, grep the relevant file. Grep first, ask second.
 
-**Write rule:** When solving an OS-specific issue, append to the relevant file with: Problem / Root cause / Fix / Date / Slice. This is enforced as step 4 of the closing checklist.
+**Write rule:** when solving an OS-specific issue, append to the relevant file with: Problem / Root cause / Fix / Date / Slice. **Enforced as Phase 8 closing-checklist step 4.** No exceptions — the next person (or future you) will hit the same quirk.
 
----
+The registry is cross-project: a Windows fix solved during one project is available to every other project the operator runs.
 
-## 13. Quality Gates
+## Slice hierarchy
+
+| Level | Name          | Example                       | Folder form                            | PR boundary? |
+|-------|---------------|-------------------------------|----------------------------------------|--------------|
+| 1     | **Slice**     | Slice 17 (Standardization)    | `docs/slices/slice-17/`                | for single-level slices only |
+| 2     | **Sub-slice** | 17j (Workflow Efficiency)     | `docs/slices/slice-17/17j/`            | yes — every sub-slice = one PR |
+| 3     | **Task**      | 17j-3, 17j-3a                 | not a folder — a TodoWrite entry + commit | no |
+
+### Slice shape — single-level vs multi-sub-slice
+
+- **Single-level slice**: no sub-slices; slice IS the PR boundary. Slice dir contains `plan.md + devlog.md + spec.md + handoff.md`.
+- **Multi-sub-slice slice**: slice dir contains `plan.md + devlog.md` only. Each sub-slice dir contains `plan.md + spec.md + handoff.md`. Each sub-slice = its own PR.
+
+Choose shape at slice-open (or defer to first planning session).
+
+## Per-slice bundle files
+
+| File         | Level        | Purpose                                                                             |
+|--------------|--------------|-------------------------------------------------------------------------------------|
+| `plan.md`    | slice + sub  | Decisions + sequencing for the slice / sub-slice. Tasks live in TodoWrite.          |
+| `spec.md`    | sub-slice (or slice for single-level) | Design decisions (D1, D2, ...), acceptance criteria, risks. |
+| `handoff.md` | sub-slice (or slice for single-level) | PR body + peer-review notes + deferred risks. Populated at PR-boundary close. |
+| `devlog.md`  | slice only   | Self-appending session record across all sub-slices + tasks. Shared by all tools.  |
+
+Tasks never get their own files. They live in TodoWrite / Codex tracker only.
+
+## Session types
+
+Declare at the start of every session.
+
+| Type               | What happens                                                       | Artifacts                                              |
+|--------------------|--------------------------------------------------------------------|--------------------------------------------------------|
+| **Planning**       | Research, brainstorm, design, slice-level + sub-slice-level plans  | `spec.md` + `plan.md` at relevant level                |
+| **Implementation** | One or more Level-3 tasks per Iteration Protocol                   | Code, tests, append to `devlog.md` + `handoff.md` section |
+| **Closing**        | Finalize `handoff.md`, run `workflow-close-slice`                  | `handoff.md` final + PR                                |
+| **Non-slice**      | Bugfix / config / exploration outside any slice                    | `docs/sessions/<YYYY-MM-DD>-<topic>.md`                |
+
+## Session Start Protocol
+
+Every session begins with this 9-step checklist. Skipping a step is how slices drift.
+
+1. **Declare session type + slice size** — Planning / Implementation / Closing / Non-slice, and L / M / S (per `AGENTS.md § Slice sizing`).
+2. **Read the active slice's `devlog.md`** — last session's closing block is the resume point. Specifically the § Outstanding + § Tasks status (TodoWrite snapshot) sections.
+3. **Check out the slice / sub-slice branch** — `git checkout feature/slice-<NN>-<letter>` (L/M) or stay on `main` (S non-slice). For worktree-backed slices: `EnterWorktree(path: ".worktrees/<slice>-<letter>")` (D18).
+4. **Scan for drift** — uncommitted changes, commits made outside the AI tool, divergence from origin. Document any drift in the new session's "What happened" section.
+5. **Read the active bundle, scaled to slice size:**
+   - **L-slice:** full bundle (`spec.md` + `plan.md` + `devlog.md` + `handoff.md`).
+   - **M-slice:** just the slice's `devlog.md` (carries the inline 1-paragraph plan).
+   - **S-slice:** nothing extra — non-slice session file gets created during the session.
+6. **Populate the live tracker** (`TodoWrite` for Claude Code, equivalent for Codex) — from `plan.md` for L-slices (one entry per Level-3 task); from the inline plan paragraph for M-slices. Exactly one entry `in_progress` at a time (per `AGENTS.md § Session progress tracking`).
+7. **Check pattern + vocab catalogs** — any relevant solved patterns? Any term already codified? Avoids re-deriving.
+8. **Announce the budget row** — `Model: <name> | Context: <used> / <window> (<%>) — <state>`. Required on Implementation + Closing sessions per Iteration Protocol.
+9. **State the goal** — what does "done" look like for THIS session? Confirms shared understanding before code lands.
+
+## Session End Protocol
+
+Every session ends with this 7-step checklist. Closes the loop so the next session (this tool, the other tool, or future-you) can resume cold.
+
+1. **Final live-tracker state** — mark completed tasks completed; leave the next task in `in_progress` or `pending` as the resume point.
+2. **Append closing block to `devlog.md`** — full session-header format (`Tool:` / `Session type:` / `Focus:` / `Picking up from:` + `### What happened` / `### Commits` / `### Tasks status` (live-tracker snapshot) / `### Outstanding` / `### Budget`). Per `AGENTS.md § Session header format`.
+3. **Append per-task entries to `handoff.md`** — for any tasks that landed this session, add the per-task append block (Planned by / Implemented by / Commit / Files / What landed / Decisions / Reviews / Follow-ups / Tests).
+4. **Ensure verification commands pass** — full canonical set per `plan.md § Canonical commands`. Green before commit.
+5. **Commit + push** — all changes on the slice / sub-slice branch (or `main` for non-slice per AGENTS.md § Session types). Commit convention `<type>(<slice-tag>): <description>`.
+6. **Update slice-level `plan.md`** if scope amended mid-session — log in § Amendments table.
+7. **State next session's start condition** — what the next session should resume with. Include recommended model (per `AGENTS.md § Stage → role routing`) and expected slice size for the next session.
+
+The `devlog.md` closing block is the durable resume point. The live tracker is ephemeral session-surface UI. Both layers, neither replaces the other.
+
+## Phase 1 — Research
+
+**When:** Before any new feature, page, or major capability.
+**Goal:** Understand what great looks like. Never design in a vacuum.
+
+### Process
+
+1. **Competitive / prior-art scan** — analyze 5–7 reference implementations relevant to the domain. For UI work: multi-breakpoint screenshots. For data/infra work: read 2–3 production codebases solving similar problems. For library/API work: read the official docs and 1–2 well-regarded wrappers.
+2. **Extract patterns** — note recurring choices (architecture, naming, layout, rhythm, error handling, retention).
+3. **Check pattern catalog** — before inventing a new pattern, search the project's `docs/project/PATTERNS.md` (or equivalent EMERGENT doc) for an existing solved instance.
+4. **Verify library / API behavior** — never guess function signatures or invariants. Use the project's documentation-lookup tool (Context7 MCP, official docs, Devin etc.) to confirm.
+
+### Exit criteria
+
+- [ ] 5+ references scanned (or domain-equivalent depth)
+- [ ] Patterns documented (in the upcoming `spec.md` § Reference sites / prior art, OR in a shared research doc if cross-slice)
+- [ ] Project pattern catalog consulted
+- [ ] Owner confirmed direction
+
+## Phase 2 — Brainstorm
+
+**When:** After research, before any spec.
+**Goal:** Turn research into 2–3 concrete design options. Owner picks.
+
+### Process
+
+1. **Invoke the brainstorming skill** — mandatory. The skill produces structured option-sets with explicit tradeoffs. No exceptions, even if the answer "feels obvious" — feeling-obvious is a failure mode.
+2. **Generate 2–3 options** — each option states: name, one-sentence pitch, key visual / structural feel, animation / interaction approach (if UI), responsive / scaling strategy, risk, session estimate.
+3. **Present to owner** — never self-select. The AI's job is to surface tradeoffs, not to decide.
+4. **Save scratch artifacts** — wireframes, sketches, query plans, schema drafts go in an ephemeral location (e.g., `.brainstorm/` or `docs/scratch/`).
+
+### Exit criteria
+
+- [ ] Brainstorming skill invoked
+- [ ] 2–3 options presented with explicit tradeoffs
+- [ ] Owner selected one
+- [ ] Brainstorm artifacts saved
+
+## Phase 3 — Design Spec
+
+**When:** After owner approves a brainstorm direction.
+**Goal:** Translate direction into a specification implementation can follow cold.
+
+### Process
+
+1. Write `docs/slices/<slice>/<sub>/spec.md` from `docs/_TEMPLATES/subslice/spec.md`.
+2. Section-by-section breakdown: Goal / Why this sub-slice / Pillars (if multi-pillar) / Core principle / Durable outputs / Reference sites / Context / Architecture / Scope (In + Out) / Design decisions (D-numbered) / File-touch summary / Acceptance criteria / Open questions / Risks.
+3. **Self-review cold.** Re-read the spec from the perspective of an implementing AI / engineer who has never seen this conversation. If they could not implement from the spec alone, add detail.
+4. Owner approval before any plan.
+
+### Spec structure (skeleton)
+
+```markdown
+# <slice-name>/<subslice-name> — Spec
+
+## Metadata             (table: status / priority / depends on / unblocks / size / sessions / branch)
+## Goal                 (one paragraph outcome)
+## Why this sub-slice   (carved-out rationale)
+## Pillars              (optional — multi-pillar sub-slices only)
+## Core principle       (one anchor statement)
+## Durable outputs      (artifacts beyond the immediate code change)
+## Reference sites / prior art
+## Context              (problem + prior decisions + constraints)
+## Architecture         (high-level approach, paths-named)
+## Scope                (### In scope + ### Out of scope)
+## Design decisions     (D1, D2, ... each with Chosen / Alternatives / Why / Tradeoff / Affects)
+## File-touch summary
+## Acceptance criteria  (verifiable checklist)
+## Open questions
+## Risks
+## Amendments log
+```
+
+### Exit criteria
+
+- [ ] `spec.md` written in the bundle folder per template
+- [ ] Every required section filled (no `<!-- FILL IN -->` left)
+- [ ] Self-reviewed cold
+- [ ] Owner approved
+
+## Phase 4 — Implementation Plan
+
+**When:** After spec approved.
+**Goal:** Break the spec into Level-3 tasks, each with a STOP gate.
+
+### Process
+
+1. Invoke the plan-writing skill (e.g., `superpowers:writing-plans`).
+2. Estimate sessions — each sub-slice gets a session count. Default to multi-session for non-trivial work.
+3. Identify dependencies — sequential tasks ordered; independent ones flagged as parallel candidates (with owner approval).
+4. Write `plan.md` per the **plan-authoring discipline** (see `AGENTS.md § Plan authoring discipline`).
+
+### Plan-authoring discipline (recap — full rule in AGENTS.md)
+
+Plans specify **decisions and sequencing**, NOT boilerplate code. The executing AI at runtime has full context of the current codebase, reads affected files, and writes code matching local patterns. Over-specified plans lock in assumptions and waste tokens twice.
+
+**Plan SHOULD include:** task list with dependencies / estimates / acceptance, files affected, commands to run, commit message shape, **one canonical example** of each non-obvious pattern, pattern-establishing code (interface types, contracts, novel algorithms).
+
+**Plan should NOT pre-specify:** boilerplate delegation code, mechanical find/replace work, full test bodies for obvious assertions, pattern-following code after the pattern is shown once.
+
+**Rule of thumb:** if the executor could produce the code in 30 seconds by reading the target file, don't pre-write it. Describe the transformation; trust execution-time judgment for the rest.
+
+### Plan structure (skeleton)
+
+```markdown
+# <slice-name>/<subslice-name> — Plan
+
+## Important context
+## Read these files first
+## Hard constraints
+## Canonical commands         (table)
+## Session layout
+## File structure             (4 tables: Create / Modify / Delete / Outside-repo)
+
+## Tasks
+### Task <slice-tag>-1 — <title>
+  - Goal / Files / Dependencies / Steps (checkbox) / Verification
+  **STOP. Ask owner to verify before Task 2.**
+### Task <slice-tag>-2 — <title>
+  ...
+
+## Execution order
+## Validation to run           (after every task + at sub-slice close)
+## Common pitfalls
+## Out of scope
+```
+
+### Session estimation guide
+
+| Complexity                    | Tasks  | Sessions  |
+|-------------------------------|--------|-----------|
+| Single module + tests          | 2–3    | 1         |
+| Single component + tests       | 3–4    | 1         |
+| Full page / feature            | 5–8    | 2–3       |
+| Interactive system             | 8+     | 3–4       |
+| Multi-page / multi-system feature | 10+ | 4–8       |
+
+**Always tell owner the estimate upfront.** Surprise multi-session scope is a planning failure.
+
+### Exit criteria
+
+- [ ] `plan.md` in bundle per template
+- [ ] Session estimate given to owner
+- [ ] Dependencies mapped
+- [ ] Owner approved
+
+## Phase 5 — Implementation (Iteration Protocol)
+
+**You are done when the owner says you are done.** Verification commands passing is necessary but not sufficient.
+
+The full 8-step Iteration Protocol lives in `AGENTS.md § Iteration Protocol` (single canonical home). Per-task flow summary:
+
+```
+1. READ the Level-3 task from the live tracker (TodoWrite / Codex equivalent)
+2. IMPLEMENT one task
+3. RUN verification commands → all pass
+4. PRE-FLIGHT check (UI / output-shape work) — state expected output, fix obvious issues
+5. STOP → tell owner: what built, what to verify, decisions, budget row
+6. UPDATE tracker + append to slice-level devlog.md + per-task one-liner to handoff.md
+7. WAIT for owner reply
+8a. Issues → fix, re-run verification, STOP again (Iterations table row)
+8b. Approval → next task, repeat from 1
+```
+
+### Test result table (after every test run)
+
+```markdown
+| Test File         | Test Name              | Status | Failure Reason                          |
+|-------------------|------------------------|--------|------------------------------------------|
+| <path>            | it(<name>)             | PASS   |                                          |
+| <path>            | it(<name>)             | FAIL   | Expected X, got Y (line NN)              |
+```
+
+**Never say "some tests failed" without listing every failure by name.** If all pass, still list what ran.
+
+### Iteration feedback handling
+
+| Feedback type           | Action                                                                  |
+|-------------------------|-------------------------------------------------------------------------|
+| Layout / positioning    | Fix in component, retest, STOP                                          |
+| Content / copy          | Update data layer (never hardcode), retest, STOP                        |
+| Remove element          | Remove + update tests, STOP                                             |
+| Design pivot            | Ask clarifying questions; may need new brainstorm                       |
+| Architecture change     | Update spec amendments log; may need new sub-slice                      |
+
+**Average iterations per task: 2–4.** Plan for the loop; don't treat the first STOP as the only one.
+
+### Iteration rules (non-negotiable — recap from AGENTS.md)
+
+1. Never batch multiple tasks. One task, one approval.
+2. Never write the final handoff summary before approval (per-task one-liners append as work lands).
+3. Never claim "I think this should work" — owner confirms on their screen / runtime / output.
+4. Never continue coding after a STOP. The STOP is mandatory.
+5. Ambiguous feedback → ask a clarifying question before changing code.
+6. Never close a sub-slice without handoff complete and governance updates done.
+
+## Phase 6 — Verification
+
+**When:** After implementing a task, before STOP.
+**Goal:** Confirm correctness before presenting to owner.
+
+1. Run full canonical verification commands (test + lint + typecheck — see project's `plan.md § Canonical commands`). All must pass.
+2. Pre-flight check (UI / output-shape work): state expected layout / response shape / file count, scan for overflow / missing / mismatch, fix obvious issues.
+3. **Visible proof for UI tasks** — screenshot via the project's preview tool, OR sample output for backend/data tasks. Owner should see what changed without having to re-derive it.
+4. Fix obvious problems before STOP. The owner's time is for review, not for catching mistakes the AI should have caught.
+
+Tools per phase: see `AGENTS.md § Tool selection` (or the project's tool-overlay).
+
+## Phase 7 — PR & Merge
+
+**When:** All tasks in the sub-slice are approved. Handoff finalized.
+
+1. Verify all canonical verification commands pass on the branch.
+2. `gh pr create` (or equivalent) with `handoff.md` content as the body.
+3. Owner reviews on the platform (GitHub / GitLab / etc.).
+4. Squash-merge to default branch (usually `main`).
+5. Delete the feature / sub-slice branch.
+6. Run `workflow-close-slice` (the close-script) — archives the bundle per `docs/ARCHIVE.md`, updates indices.
+7. Next sub-slice branches from the updated default branch.
+
+**Branch naming:** `feature/slice-<NN>-<letter>` for multi-sub-slice slices, `feature/slice-<NN>` for single-level. One branch per PR boundary.
+
+**Commit convention:** `<type>(<slice-tag>): <description>` — types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`.
+
+## Phase 8 — Closing checklist
+
+**When:** ALL Level-3 tasks approved. PR ready to create OR just squash-merged.
+
+**Hard checklist — every item mandatory, in order:**
+
+1. **Finalize `handoff.md`** — § 23 Summary + § 24 PR Body sections added; all per-task append blocks verified complete.
+2. **Project governance doc updates** — for any project-specific rule, pattern, architecture, or convention introduced in this sub-slice, update the relevant `docs/project/<DOMAIN>.md` (CONSTITUTION, PATTERNS, ARCHITECTURE, CSS, MOTION, TESTS, etc.). **Never hand-edit `docs/reference/*`** — that directory is 100% plugin-pulled per the partition contract; workflow-universal changes flow through `/workflow-update` instead.
+3. **Vocabulary update** — any new project / brand / industry / domain term introduced gets added to `docs/project/VOCAB.md`. Workflow-universal vocabulary goes through `/workflow-update` to evolve `docs/reference/VOCAB.md` in the plugin.
+4. **OS-quirk logging** — if this sub-slice solved a platform-specific issue (Windows / macOS / Linux command quirks, env var handling, shell escaping), append to `<cloud>/workflow-knowledge/os-quirks/<os>.md` with Problem / Root cause / Fix / Date / Slice. **Hard step, not a suggestion.**
+5. **Learn doc** — if the sub-slice introduced a durable concept worth codifying outside the project, write to the project's learn knowledge base (e.g., `<cloud>/<project>/docs/learn/<domain>/<concept>.md`).
+6. **Codify any new domain rule** in `docs/project/<DOMAIN>.md` — if this slice surfaced a re-derivable rule / pattern / convention that wasn't already in any project doc, codify it BEFORE closing. Triggers (per `docs/project/README.md`): same rule defined in 2+ sub-slice specs, same vocab term re-introduced, same OS-quirk re-encountered, same code idiom re-implemented across 3+ files. Create a new `docs/project/<DOMAIN>.md` if no existing doc fits — see `docs/project/README.md` § "When to create a new project doc — rubric".
+7. **Regenerate project indices** — `tree.txt` and any other auto-generated structural index.
+8. **Commit, push, create PR** — `gh pr create --body-file handoff.md` (or extracted PR Body section).
+9. **Post-merge:** run `workflow-close-slice` — archives bundle, updates indices, deletes worktree per D18.
+10. **Mirror live docs** (project-specific — if the project keeps a cloud mirror of `docs/`): refresh the mirror so off-device reading sees current state.
+
+**The workflow self-enhances.** Any mistake caught during this sub-slice becomes a permanent checklist rule here. If you had to re-learn something, codify it in an OS-quirk, learn doc, vocab entry, or pattern entry **before** the slice closes. The goal: never re-learn the same lesson.
+
+## Quality Gates
+
+Three-tier gate model. Gates fire at task completion, sub-slice close, and pre-deploy.
 
 ### Before every task completion
 
-- [ ] `bun run test` passes
-- [ ] `bun run check` passes (zero errors)
-- [ ] Pre-flight visual check done (UI)
-- [ ] No hardcoded strings (data layer + LocalizedString)
-- [ ] No hardcoded colors (tokens.css or Tailwind brand)
-- [ ] Error handling present
-- [ ] `prefers-reduced-motion` respected (animation)
+- [ ] Test suite passes (per `plan.md § Canonical commands`)
+- [ ] Type check passes (zero errors)
+- [ ] Lint passes (zero errors)
+- [ ] Pre-flight check done (UI / output-shape work)
+- [ ] Error handling present at boundaries
+- [ ] No hardcoded values that should be parameterized (data layer / config / env vars)
+- [ ] Reduced-motion / accessibility hooks respected (UI work)
 
 ### Before every sub-slice close
 
-- [ ] All tasks approved by Yesid
-- [ ] `handoff.md` finalized (Summary + PR Body sections added)
-- [ ] All governance doc updates done
-- [ ] VOCAB entries added for new terms
-- [ ] OS-quirks appended (if any)
-- [ ] Learn docs written (if durable concepts)
-- [ ] `tree.txt` regenerated
-- [ ] Full test suite green
+- [ ] All Level-3 tasks approved by owner
+- [ ] `handoff.md` finalized — § Summary + § PR Body sections added
+- [ ] Per-task append blocks complete (no gaps in § Tasks completed)
+- [ ] All governance doc updates done (per Phase 8 closing checklist step 2)
+- [ ] Vocabulary entries added for new terms
+- [ ] OS-quirks logged (if any)
+- [ ] Learn docs written (if durable concepts surfaced)
+- [ ] `tree.txt` (or equivalent structural index) regenerated
+- [ ] Full test suite green on the branch
 
-### Before deploy (eventual)
+### Before deploy (project-eventual)
 
-- [ ] Lighthouse: Performance > 90, Accessibility > 90
-- [ ] Mobile tested at 375px
-- [ ] No console errors
-- [ ] JSON-LD schema valid
-- [ ] Brand compliance verified
+- [ ] Performance threshold met (project-specific — e.g., Lighthouse > 90 for web; cycle latency < N seconds for pipelines)
+- [ ] Accessibility threshold met (project-specific — e.g., a11y > 90 for UI)
+- [ ] Mobile / small-viewport tested (UI projects)
+- [ ] No console errors (UI projects)
+- [ ] Structured data / schema valid (SEO-relevant projects)
+- [ ] Brand / domain compliance verified
 
----
+Gates are owner-overridable but defaulted-on. Skipping a gate at task completion = the next task probably exposes the skipped issue.
 
-## 14. Parallel Work Rules
+## Parallel Work Rules
 
-### Allowed
+The workflow allows controlled parallelism. The default is sequential — parallel requires owner approval.
 
-- **Research only** — Multiple agents scanning different reference sites
-- **Independent exploration** — Reading, searching with no dependency
-- **Yesid must approve** — Never self-decide to parallelize implementation
+### Allowed (without per-instance approval)
+
+- **Research only** — multiple subagents scanning different reference sites / reading different files / verifying different APIs in parallel.
+- **Independent exploration** — read-only, no write to shared state.
+
+### Allowed with owner approval (per instance)
+
+- Implementation tasks with no inter-dependency that touch disjoint file sets.
 
 ### Not allowed
 
-- Implementation tasks with dependencies
-- Anything that writes to the same files
-- When parallelizing would scatter thinking
+- Implementation tasks with dependencies between them.
+- Anything that writes to the same files (race + merge-conflict risk).
+- When parallelizing would scatter the AI's working set (defeats the cost saving).
 
-### Agent selection
+### Agent / specialist selection
 
-| Situation | Agent | Why |
-|-----------|-------|-----|
-| Complex feature request | `planner` | Break into phases |
-| Code just written | `code-reviewer` | Quality check |
-| Bug fix or new feature | `tdd-guide` | Tests first |
-| Architectural decision | `architect` | System design |
-| Build fails | `build-error-resolver` | Minimal diffs |
-| Security-sensitive | `security-reviewer` | OWASP check |
-| Performance concern | `performance-optimizer` | Bottleneck analysis |
-| E2E flow | `e2e-runner` | Playwright generation |
-| Codebase search | `Explore` | Multi-file search |
+When a task fits a specialist agent's strength, delegate. Per-tool overlay binds the role to that tool's specific agent name; the role itself is universal.
 
----
+| Situation                          | Specialist role                | Why                                       |
+|------------------------------------|--------------------------------|-------------------------------------------|
+| Complex feature decomposition       | planner                        | Break into phases                          |
+| Code just written / modified         | code reviewer                  | Quality + pattern check                    |
+| New feature or bug fix              | tdd guide                      | Tests first                                |
+| Architectural decision              | architect                      | System-level design                        |
+| Build fails                         | build-error resolver           | Minimal diffs, get green                   |
+| Security-sensitive code             | security reviewer              | OWASP / threat model                       |
+| Performance concern                 | performance optimizer          | Bottleneck analysis                        |
+| End-to-end flow                     | E2E runner                     | Full-flow generation + validation          |
+| Codebase-wide search / exploration  | broad-search agent             | Multi-file pattern scan                    |
 
-## 15. Data-Driven Architecture (Non-Negotiable)
+## Tool selection protocol
 
-Every string on the site comes from the data layer. Not optional.
+At each phase transition, the AI invokes relevant tools / skills / agents. Proactive tool use = higher quality. Tool names are tool-specific; the per-tool overlay binds them.
+
+### Research phase (Phase 1)
+
+ALWAYS:
+- Documentation-lookup tool (Context7 MCP, official docs, etc.) — verify API signatures before assuming.
+- Project-specific research helpers (e.g., site-analysis MCP for web; data-profile MCP for pipelines).
+
+CONSIDER:
+- Deep-research skill / agent — broader web research needed.
+- Design / inspiration tools — for visual / UI work.
+
+### Brainstorm phase (Phase 2)
+
+ALWAYS:
+- Brainstorming skill — mandatory, never skip.
+- Visual companion — for any question with visual content.
+
+CONSIDER:
+- Domain-specific brainstorming skills (UI design, data architecture, API design, etc.).
+
+### Planning phase (Phase 4)
+
+ALWAYS:
+- Plan-writing skill (e.g., `superpowers:writing-plans`).
+- Planner agent — complex feature decomposition.
+
+CONSIDER:
+- Architect agent — architectural decisions.
+- Architecture / testing-strategy / tech-debt skills — system design evaluation.
+
+### Implementation phase (Phase 5)
+
+ALWAYS:
+- Per-framework autofixer / formatter — every file edit (project-specific).
+- Documentation tool — before using any library API (verify, don't guess).
+- Plan-execution skill (e.g., `superpowers:executing-plans`).
+- Visible-proof tool — preview / screenshot / sample-output for the work type.
+
+CONSIDER:
+- TDD skill — new features (RED → GREEN → REFACTOR).
+- Domain-specific motion / animation / styling skills (UI work).
+
+### Code review phase (after every task)
+
+ALWAYS:
+- Code reviewer agent — general quality.
+- Language-specific reviewer agent — TS / Python / Go / etc.
+
+CONSIDER:
+- Security reviewer — auth, input handling, API calls, secrets.
+
+### Verification phase (Phase 6, before every STOP)
+
+ALWAYS:
+- Verification-before-completion skill (e.g., `superpowers:verification-before-completion`).
+- Visible-proof tool — screenshot / output sample for the owner.
+
+CONSIDER:
+- Performance audit tool (perf-sensitive work).
+- Accessibility audit tool (a11y-sensitive work).
+
+### PR & Merge phase (Phase 7)
+
+ALWAYS:
+- Finishing-a-development-branch skill (e.g., `superpowers:finishing-a-development-branch`).
+- Commit / PR creation skill or tool (e.g., `commit-commands:commit-push-pr`).
+
+### Closing phase (Phase 8)
+
+ALWAYS:
+- Doc-updater agent — governance doc updates.
+- Documentation-quality skill.
+
+CONSIDER:
+- Continuous-learning skill — extract patterns from this slice.
+
+### Proactive tool triggers (hard rules)
+
+1. Editing a framework-specific file → check the per-framework autofixer first.
+2. Using any library API → verify with documentation tool.
+3. Touching motion / animation code → consult motion-tool first.
+4. Adding / changing config tokens → use the project's token / config skill.
+5. Building a shared component → use component-spec skill.
+6. Writing tests → use the project's testing-strategy skill.
+7. About to claim "done" → run verification-before-completion skill.
+8. Creating a PR → run finishing-a-development-branch skill first.
+9. Starting any plan → run brainstorming skill first.
+10. Refactoring → use tech-debt skill to assess scope.
+11. Hitting an OS-specific command error → check `<cloud>/workflow-knowledge/os-quirks/<os>.md` FIRST.
+
+## Cross-tool adversarial review (slice close)
+
+The close-script (`workflow-close-slice`) triggers a cross-tool adversarial review:
+- Claude Code → Codex via `codex-plugin-cc` adversarial-review skill
+- Codex → Claude Code via reverse handoff branch
+
+Each tool reviews the other's slice independently. Findings get triaged:
+- **BLOCKER / HIGH:** address before merge. May trigger one more `/workflow-update` PR + `/workflow-pull` cycle.
+- **MEDIUM:** fix or defer explicitly (logged in `handoff.md § Deferred risks`).
+- **LOW / INFO:** note in deferred risks, proceed.
+
+**This is the structural enforcement of the tool-ownership invariant (D12).** No tool reviews itself — adversarial reviews come from the other tool, never inline-simulated.
+
+## Commit convention
 
 ```
-src/lib/data/types.ts       → Interface definitions
-src/lib/data/<domain>.ts    → Content objects (LocalizedString)
-src/lib/data/index.ts       → Barrel exports
-Component.svelte            → resolveLocale(content.field)
+<type>(<slice-or-subslice>): <description>
 ```
 
-### Adding content
+Types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`.
 
-1. Define interface in `types.ts`
-2. Create content object in a data file
-3. Export from `index.ts`
-4. Component imports from `$lib/data`, calls `resolveLocale()`
-5. Write data integrity tests
-6. **Never put a raw string in a `.svelte` file**
+Planning commits (`docs(<slice>):`) and implementation commits (`feat / refactor / fix(<slice>):`) stay separate regardless of whether they share a wall-clock session.
 
-### COALESCE pattern
+## Token budget (session)
 
-```typescript
-resolveLocale({ en: "Hello", fr: "Bonjour" }, 'es')
-// → "Hello" (falls through to English). Empty strings treated as missing.
-```
+| Context usage | Action                                                              |
+|---------------|---------------------------------------------------------------------|
+| 0–40%         | Comfortable. Continue.                                              |
+| 40–65%        | Healthy. Avoid major new directions.                                |
+| 65–80%        | Pre-break zone. Finish in-progress task, commit, STOP.              |
+| 80%+          | Danger. Commit what's green. STOP immediately.                      |
 
----
+Absolute thresholds per model live in the tool overlay (`tools/<tool>.md`).
 
-## 16. CSS + Motion (pointers)
-
-**CSS:** Full rules in `docs/reference/CSS.md`. Governance in `CONSTITUTION.md`. Three layers: semantic tokens (`src/lib/styles/tokens.css`) → brand utilities (`src/app.css` `@theme`) → component scope (`<style>`). Top rules: zero hardcoded colors, no `!important`, no inline `style=`, mobile-first, logical properties, no `vh`, no arbitrary Tailwind spacing.
-
-**Motion:** Full reference in `docs/reference/MOTION.md` v2. Snappy Doctrine in `CONSTITUTION.md §8`. 9-signature vocabulary. Shared `gsap.ticker` with IO-gated subscribers. Lazy GSAP plugins. Always verify GSAP API with GSAP Master MCP or Context7. `prefers-reduced-motion` respected everywhere.
-
----
-
-## 17. Session Start Protocol
-
-Every session begins with:
-
-1. **Declare session type + slice size** — Planning / Implementation / Closing / Non-slice, and L / M / S. (`AGENTS.md § Slice sizing`)
-2. **Read checkpoint** — `docs/slices/slice-NN/CHECKPOINT.md` → resume where we left off
-3. **Check out feature branch** — `git checkout feature/slice-NN<letter>` (L/M) or stay on `main` (S)
-4. **Scan for drift** — Check for uncommitted changes or commits made outside the LLM tool
-5. **Read active bundle — scaled to slice size:**
-   - **L-slice:** full bundle (`spec.md`, `plan.md`, `log.md`, `handoff.md`)
-   - **M-slice:** just `log.md` (which contains the 1-paragraph inline plan)
-   - **S-slice:** nothing extra — the non-slice session file will be created during the session
-6. **Populate `TodoWrite`** — from `plan.md` for L-slices (one entry per Level 3 task); from the inline plan paragraph for M-slices. Exactly one entry `in_progress` at a time.
-7. **Check PATTERNS.md + VOCAB.md** — Any relevant solved patterns? Any term already codified?
-8. **Announce the budget row** — `Model: <name> | Context: <used> / <window> (<%>) — <state>`. Required on Implementation + Closing sessions per Iteration Protocol. (`AGENTS.md § Session token budget`)
-9. **State the goal** — What does "done" look like for this session?
-
----
-
-## 18. Session End Protocol
-
-Every session ends with:
-
-1. **Final `TodoWrite` state** — mark completed tasks completed; leave the next task in `in_progress` or `pending` as resume point
-2. **Update checkpoint** — `docs/slices/slice-NN/CHECKPOINT.md` with current position (sub-slice, task, next step, TodoWrite summary, closing budget row)
-3. **Append to `log.md`** — What was done, decisions, commands, errors
-4. **Append to `handoff.md`** — If tasks landed, add their sections
-5. **Ensure tests pass** — `bun run test` + `bun run check` green
-6. **Commit** — All changes on the feature branch (or `main` for non-slice per §2)
-7. **State next steps** — What should the next session start with? Include recommended model (`AGENTS.md § Stage → role routing`) and expected slice size for the next session.
-
-### Per-STOP progress table (within-session)
-
-At every task STOP, the AI also prints a compact markdown progress table in the conversation (not just the `TodoWrite` UI state) — scrollback-readable. Format:
-
-```
-Model: Opus 4.7 [1m] | Context: 142k / 1M (14%) — comfortable, continuing
-
-| # | Task | Status | Commit |
-|---|------|--------|--------|
-| 0 | Baseline | ✅ | abc1234 |
-| 1 | First feature | 🔄 in progress | — |
-| 2 | Second feature | ⏳ pending | — |
-```
-
-The **budget row** is required on every STOP — it gives Yesid visibility into context usage so break decisions aren't surprising. Full thresholds: `AGENTS.md § Session token budget`.
-
-`TodoWrite` is the live UI state; the markdown table is the scrollback audit trail. They say the same thing in two persistence layers.
-
----
-
-## 19. Tool Selection Protocol
-
-At each phase transition, invoke relevant tools. Proactive tool use = higher quality output.
-
-### Research Phase
-
-ALWAYS:
-- Chrome DevTools MCP → multi-breakpoint competitive scan
-- Context7 MCP → verify API signatures before assuming
-- `frontend-design-pro:analyze-site` → structured site analysis
-- `frontend-design-pro:trend-researcher` → current UI/UX trends
-
-CONSIDER:
-- `frontend-design-pro:inspiration-analyzer` → studying specific reference sites
-- `deep-research` → broader web research needed
-- Figma MCP → Figma designs exist for the feature
-
-### Brainstorm Phase
-
-ALWAYS:
-- `superpowers:brainstorming` → mandatory, never skip
-- Visual companion → offer for any question with visual content
-
-CONSIDER:
-- `frontend-design-pro:design-wizard` → interactive design decisions
-- `frontend-design-pro:color-curator` → color palette exploration
-- `frontend-design-pro:typography-selector` → font pairing decisions
-- `ui-design:color-system` → designing color tokens
-- `ui-design:typography-scale` → designing type scales
-- `ui-design:spacing-system` → designing spacing tokens
-- `design-systems:design-token` → organizing token architecture
-- `design-systems:naming-convention` → naming tokens/components
-- `design-systems:theming-system` → designing theme switching
-- `interaction-design:animation-principles` → designing motion
-
-### Planning Phase
-
-ALWAYS:
-- `superpowers:writing-plans` → structured plan creation
-- Planner agent → complex feature decomposition
-
-CONSIDER:
-- Architect agent → architectural decisions
-- `engineering:architecture` → system design evaluation
-- `engineering:testing-strategy` → planning test approach
-- `engineering:tech-debt` → planning refactors
-- `api-design` → designing service layer interfaces
-
-### Implementation Phase
-
-ALWAYS:
-- Svelte MCP (`svelte-autofixer`) → every Svelte file edit
-- Context7 MCP → before using any library API
-- `superpowers:executing-plans` → follow the plan
-- the preview tool → visual verification after UI tasks
-
-CONSIDER:
-- GSAP Master MCP → any animation work
-- `tdd-workflow` → new features (RED → GREEN → REFACTOR)
-- `design-systems:component-spec` → building shared components
-- `design-systems:accessibility-audit` → adding ARIA/a11y
-- `design-systems:pattern-library` → organizing shared patterns
-- `ui-design:responsive-design` → responsive layout decisions
-- `ui-design:dark-mode-design` → theme-aware component work
-- `ui-design:visual-hierarchy` → layout and emphasis decisions
-- `interaction-design:micro-interaction-spec` → hover/click interactions
-- `interaction-design:state-machine` → complex component states
-- `interaction-design:loading-states` → loading/skeleton patterns
-
-### Code Review Phase (after every task)
-
-ALWAYS:
-- Code Reviewer agent → general quality
-- TypeScript Reviewer agent → TS-specific issues
-
-CONSIDER:
-- Security Reviewer agent → auth, input handling, API calls
-- `engineering:code-review` → structured review checklist
-- `prototyping-testing:heuristic-evaluation` → UI quality check
-
-### Verification Phase (before every STOP)
-
-ALWAYS:
-- `superpowers:verification-before-completion` → pre-completion check
-- the preview tool → screenshot proof for UI tasks
-
-CONSIDER:
-- Chrome DevTools MCP (`lighthouse_audit`) → performance check
-- `prototyping-testing:accessibility-test-plan` → a11y verification
-
-### PR & Merge Phase
-
-ALWAYS:
-- `superpowers:finishing-a-development-branch` → PR readiness checklist
-- `commit-commands:commit-push-pr` → create the PR
-- GitHub MCP → PR management
-
-### Closing Phase
-
-ALWAYS:
-- Doc Updater agent → update ARCHITECTURE.md, README, TESTS.md
-- `engineering:documentation` → technical docs quality
-
-CONSIDER:
-- `continuous-learning` → extract patterns from this slice's work
-- `design-systems:documentation-template` → structured docs
-
-### Proactive Tool Triggers (Hard Rules)
-
-1. Editing a `.svelte` file? → Check Svelte MCP autofixer
-2. Using any library API? → Verify with Context7 first
-3. Touching animation code? → Consult GSAP Master MCP
-4. Adding/changing CSS tokens? → Use `design-systems:design-token`
-5. Building a shared component? → Use `design-systems:component-spec`
-6. Writing tests? → Use `engineering:testing-strategy`
-7. About to claim "done"? → Run `verification-before-completion`
-8. Creating a PR? → Run `finishing-a-development-branch` first
-9. Starting any plan? → Run `superpowers:brainstorming` first
-10. Refactoring code? → Use `engineering:tech-debt` to assess scope
-11. Hitting an OS-specific command error? → Check `<cloud>/workflow-knowledge/os-quirks/<os>.md` FIRST
-
----
-
-## 20. Document Ecosystem
-
-**Tier 1 — always loaded, in repo:**
-
-| Document | Purpose | Update Frequency |
-|----------|---------|------------------|
-| `AGENTS.md` | Tool-agnostic workflow contract — rules, core principles, hard rules, abstract roles | When workflow rules change |
-| `CLAUDE.md` | Claude Code entry pointer + Claude role bindings (thin pointer to AGENTS.md) | When Claude bindings change |
-| `docs/reference/tools/<tool>.md` | Per-tool overlay (role bindings, absolute thresholds, slash commands) | When tool-specific mechanics change |
-| `docs/reference/WORKFLOW.md` | This file — operational mechanics | When process evolves |
-| `docs/reference/CONSTITUTION.md` | Codebase law | When a principle changes |
-| `docs/reference/CSS.md` | Token catalog, style rules | Every CSS change |
-| `docs/reference/MOTION.md` | Animation language + toolkit | When motion patterns change |
-| `docs/reference/PATTERNS.md` | Reusable solutions catalog | After every slice (if new patterns) |
-| `docs/reference/ARCHITECTURE.md` | File structure, component tree, data flow | When structure changes |
-| `docs/reference/TESTS.md` | Test file index | Every test add/change/remove |
-| `docs/reference/VOCAB.md` | Shared lexicon | Every slice close (new terms) |
-| `docs/reference/ARCHIVE.md` | Three-tier model + retrieval/write protocols | When archival model evolves |
-| `docs/roadmap/PLAN.md` | Per-project master plan + slice index | Every slice close |
-| `docs/roadmap/FUTURE_PHASES.md` | Parked cross-project wishlist | When Phase A ships |
-| `docs/slices/slice-NN/README.md` | Per-Level-1-slice direction + sub-slice index | Per sub-slice close |
-| `docs/slices/slice-NN/CHECKPOINT.md` | Live slice state | Every session start/end |
-| `docs/slices/slice-NN/slice-NN<letter>/` | Active sub-slice bundle (4 files) | Per session |
-| `docs/sessions/` | Non-slice session records | Per non-slice session |
-
-**Tier 2 — fetch-on-command, in cloud:**
-
-| Location | Purpose |
-|----------|---------|
-| `<cloud>/yesid.dev/docs/archive/slices/slice-NN/slice-NN<letter>/` | Shipped sub-slice bundles |
-| `<cloud>/yesid.dev/docs/learn/<domain>/<concept>.md` | Yesid's Obsidian knowledge base |
-| `<cloud>/workflow-knowledge/token-efficacy/` | Portable research corpus |
-| `<cloud>/workflow-knowledge/os-quirks/<os>.md` | Cross-project OS command registry |
-| `<cloud>/claude-config/` | Config snapshots |
-
-**Tier 3 — cloud indexes (the bridge):**
-
-| Location | Purpose |
-|----------|---------|
-| `<cloud>/yesid.dev/docs/COMPLETED-SLICES.md` | One-liner index of every shipped slice |
-| `<cloud>/yesid.dev/docs/INDEX.md` | Cloud mirror map |
-
----
-
-## 21. Proven Rhythms (Extracted from 22+ Slices)
+## Proven rhythms (lessons from across slices)
 
 ### What works
 
 - **One task, one approval.** Batching always leads to rework.
 - **Design before code.** Brainstorm + spec = 2–3 iterations. Skip them = 4–5+.
-- **Data layer first.** Types + content before components. Testable from day one.
-- **Pre-flight catches 80% of visual bugs.** Read your own code for layout issues before STOP.
-- **PATTERNS.md saves hours.** Entrance-animation hover guard, SplitText cleanup, SVG paint-server — each discovered painfully once. Consult before implementing.
-- **Self-appending handoff > end-of-slice handoff.** Appending per-task catches decisions while they're fresh.
+- **Data layer / contract first.** Types + interfaces before implementation. Testable from day one.
+- **Pre-flight catches the majority of visible bugs.** Read your own output for layout / shape problems before STOP.
+- **Pattern catalog saves hours.** Each painful discovery codified once is hours saved across future slices.
+- **Self-appending handoff > end-of-slice handoff.** Per-task append catches decisions while they're fresh.
 
 ### What doesn't work
 
-- Jumping to code without a spec → scope creep and rework
-- Parallel implementation without approval → lower quality, feedback harder to apply
-- Guessing GSAP/Svelte APIs → verify with Context7 or GSAP Master MCP
-- Hardcoding content "to iterate faster" → always creates cleanup work
-- Skipping pre-flight visual check → obvious layout problems hit Yesid
-- Manual mirror-and-delete at close → loses the index update, accretion returns
+- Jumping to code without a spec → scope creep and rework.
+- Parallel implementation without owner approval → lower quality, harder feedback application.
+- Guessing library / framework APIs → verify with documentation tool first.
+- Hardcoding content "to iterate faster" → always creates cleanup work.
+- Skipping the pre-flight check → obvious bugs hit the owner.
+- Manual mirror-and-delete at slice close → loses the index update; accretion returns.
 
----
-
-## 22. The Self-Enhancing Workflow (Core Principle)
+## The self-enhancing workflow (core principle)
 
 Every mistake solved in one sub-slice becomes a closing-checklist rule so it cannot recur. Quality compounds slice-over-slice.
 
 If during a sub-slice you:
-- Re-solved an OS command issue → it belongs in `os-quirks/<os>.md`
-- Re-invented a pattern → it belongs in `PATTERNS.md`
-- Re-derived a term → it belongs in `VOCAB.md`
-- Re-learned a codebase principle → it belongs in `CONSTITUTION.md`
-- Re-discovered a durable concept → it belongs in learn/
+- Re-solved an OS command issue → it belongs in `os-quirks/<os>.md`.
+- Re-invented a pattern → it belongs in `docs/project/PATTERNS.md` (the OPTIONAL template — un-prefix if not yet active).
+- Re-derived a term → it belongs in `docs/project/VOCAB.md` (project terms) or `docs/reference/VOCAB.md` (workflow terms — plugin-pulled).
+- Re-learned a codebase principle → it belongs in `docs/project/CONSTITUTION.md` (the DEFAULT — fill it in).
+- Re-encountered a domain rule (CSS, motion, security, migrations, integrations, etc.) → it belongs in `docs/project/<DOMAIN>.md` (use a DEFAULT, OPTIONAL, or EMERGENT slot per `docs/project/README.md`).
+- Re-discovered a durable concept → it belongs in the learn knowledge base (`<cloud>/<project>/docs/learn/<domain>/<concept>.md`).
 
 Before closing, ask: "what did I learn that I don't want to re-learn?" Codify it. The workflow gets smarter automatically.
+
+**Project documentation discipline (D11).** The plugin scaffold ships `docs/project/` with DEFAULT skeletons (STACK / BINDINGS / ARCHITECTURE / TESTS / VOCAB / CONSTITUTION) + OPTIONAL templates (BRAND / CSS / MOTION / PATTERNS / SERVICES) + EMERGENT pattern (operator creates as needed). Each project starts with the DEFAULTs and grows OPTIONAL + EMERGENT docs as their domains develop. See `docs/project/README.md` for the full discipline.

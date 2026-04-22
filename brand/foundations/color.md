@@ -1,6 +1,6 @@
 # foundations / color
 
-> Narrative. For the raw token values, see `docs/reference/CSS.md`. For the source of truth, see `src/lib/styles/tokens.css`.
+> Narrative. For the raw token values, see `docs/project/CSS.md`. For the source of truth, see `src/lib/styles/tokens.css`.
 
 ## What it is
 
@@ -25,7 +25,7 @@ The brand is recognisable because the orange is reserved. The site is legible be
 
 ### Semantic (theme-switching)
 
-Short list — the full dark/light pair table lives in `docs/reference/CSS.md § Color Tokens`.
+Short list — the full dark/light pair table lives in `docs/project/CSS.md § Color Tokens`.
 
 | Role | Token | Purpose |
 |---|---|---|
@@ -96,4 +96,4 @@ Add a new token when all three conditions hold:
 2. The role cannot be expressed by an existing token in dark AND light.
 3. The role has a defensible reason to theme-switch — static values go in `--primary` / `--accent` family; dynamic ones go in the per-theme blocks.
 
-Every new token requires a row in `docs/reference/CSS.md`. If there is no row, the token does not exist.
+Every new token requires a row in `docs/project/CSS.md`. If there is no row, the token does not exist.

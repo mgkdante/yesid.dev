@@ -1,6 +1,6 @@
 # foundations / space
 
-> Narrative. The three semantic tokens live in `src/lib/styles/tokens.css`. See `docs/reference/CSS.md § Spacing Tokens` for the canonical table and CONSTITUTION.md § 3 for the rules.
+> Narrative. The three semantic tokens live in `src/lib/styles/tokens.css`. See `docs/project/CSS.md § Spacing Tokens` for the canonical table and CONSTITUTION.md § 3 for the rules.
 
 ## What it is
 
@@ -65,7 +65,7 @@ No media query. No override. One line.
 
 ## Layout recipes
 
-Spacing tokens live inside the four CSS Grid Recipes documented in `docs/reference/CONSTITUTION.md § 2`:
+Spacing tokens live inside the four CSS Grid Recipes documented in `docs/project/CONSTITUTION.md § 2`:
 
 - **Recipe 1: Full-Bleed** — no horizontal constraints at all. Section decides its own padding or bleeds to the viewport edge.
 - **Recipe 2: Contained** — `max-width: var(--container-content)` + `padding-inline: var(--space-page-x)`. Readable text widths.
@@ -80,6 +80,6 @@ Add a new spacing token only when:
 
 1. A spacing value recurs on 3+ sections (not just one feature page).
 2. The value is non-obviously derivable from the existing three + the Tailwind scale.
-3. The new token is added to `tokens.css`, bridged through `@theme`, and documented in `docs/reference/CSS.md § Spacing Tokens` in the same change.
+3. The new token is added to `tokens.css`, bridged through `@theme`, and documented in `docs/project/CSS.md § Spacing Tokens` in the same change.
 
 If the value is used once, it stays in scoped CSS. If it's used twice, it's a borderline candidate — wait for a third consumer before promoting.
