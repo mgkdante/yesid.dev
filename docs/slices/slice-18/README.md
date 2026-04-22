@@ -1,168 +1,151 @@
-# Slice 18 — Cloud Content Layer: Payload (own repo) + Neon
+# Slice 18 — Cloud Content Layer: Directus (pivoted from Payload 2026-04-22)
 
 **Level 1 direction doc.**
 
-**Status:** planned
-**Depends on:** 16, 17
-**Est. Sessions:** 5–7
-**Design spec:** pre-migration spec lived at `docs/specs/2026-04-16-cms-payload-design.md` — now in `<cloud>/yesid.dev/docs/archive/legacy-flat/specs/2026-04-16-cms-payload-design.md` (authoritative — read first when slice starts)
-**Supersedes:** previous Keystatic plan for this slice (Decisions Log 2026-04-16)
+**Status:** in progress — 18a + 18b shipped on Payload (now historical); pivoted to Directus 2026-04-22; remaining sub-slices 18c–18g rewritten below to execute the Directus migration.
+**Depends on:** 16, 17, `slice-headless-cms-best-practices` (research + decision slice)
+**Est. Sessions:** 5–8 for the Directus rebuild (scorched earth + migration + cutover)
+
+## Decision log
+
+| Date | Decision | Rationale |
+|------|----------|-----------|
+| 2026-04-16 | Payload over Keystatic (original Slice 18 plan) | Pre-migration design spec |
+| 2026-04-21 | Shipped 18a (CMS infra) + 18b (content model + seed) on Payload 3.83.0 | Live at cms.yesid.dev |
+| **2026-04-22** | **PIVOTED to Directus 11+** | Research slice `slice-headless-cms-best-practices` produced decision brief. Key factors: Directus's mobile/iPad admin, official SvelteKit tutorials (7 vs Payload's archived community starter), SvelteKit-native live preview, Directus MCP GA (native v11.13), commercial trajectory (independent VC-funded vs Figma-acquired with Cloud paused), editor UX 23/25 vs 14/25, "procurement over scratch" values alignment, design-locked so Payload's blocks advantage moot near-term. Yesid slept on the decision brief + returned committed. |
 
 ## Decision
 
-**Payload 3** — MIT-licensed, Node-native, TypeScript-schema CMS with a real admin UI. Backed by **Neon Postgres** (free tier, scale-to-zero, DB branching). Media on **Vercel Blob**.
+**Directus 11+** — same yesid.dev-cms repository, scorched-earth rebuild. MIT core + BSL (only bites above $5M ARR, irrelevant for Yesid's freelance scale). Self-host on Railway / Hetzner / Directus Cloud (choice deferred to `slice-directus-research`).
 
-## Two repos, not a monorepo
+## Two repos
 
-- `yesid.dev` — the SvelteKit site. Stays structurally as-is (public showcase, open-source artifact).
-- `yesid.dev-cms` — new repo, Payload 3 + Next.js admin + API + Postgres schema. **Framework-agnostic Payload starter** — plugs into SvelteKit, Next.js, Astro, Nuxt, or any REST client. Ships as its own reusable product with per-framework integration recipes (SvelteKit first).
+Unchanged from pre-pivot architecture:
+- `yesid.dev` — the SvelteKit site. Stays structurally as-is.
+- `yesid.dev-cms` — SAME REPO, Payload code scorched, rebuilt as Directus. Deploys at `cms.yesid.dev`.
 
-Both repos deploy to Vercel independently. `yesid.dev-cms` lives at `cms.yesid.dev`. yesid.dev is the reference build; `yesid.dev-cms` is the reusable CMS product.
-
-**Positioning:** "WordPress flexibility without WordPress, but modern. Bring your own framework."
-
-## Why Payload over Keystatic
-
-Full rationale in design spec. Short form:
-
-1. Non-tech clients can use it — email/password auth, no GitHub account required, real admin UI with roles and drafts.
-2. Dynamic queries, real relationships, proper joins — not just string refs between files.
-3. Clear path to future features: client logins, form submissions storage, open-source project docs, e-commerce.
-4. Template fit — clone one repo, get site + CMS + shared types. Keystatic could not carry that pitch.
-
-Keystatic stays in the toolkit as a possible **"Static" budget tier** for pure-content clients with one editor. It is not the primary offering. **Do not build the Static tier template in Slice 18** — only if real client demand appears later.
-
-## Architecture
+## Architecture (post-pivot)
 
 ```
 Repo: yesid.dev                    Repo: yesid.dev-cms
-(SvelteKit — public showcase)      (Payload 3 + Next.js — CMS starter)
+(SvelteKit — public showcase)      (Directus 11+ — CMS)
          │                                    │
-         │ Vercel                             │ Vercel
+         │ Vercel                             │ Railway / Hetzner / Directus Cloud (TBD)
          ▼                                    ▼
     yesid.dev                         cms.yesid.dev
-         │       REST (+ GraphQL)             │
+         │       REST (+ GraphQL + SDK)       │
          │ ◄───────────────────────────────►  │
-         │       webhook on publish           │
+         │       Directus Flow: publish webhook → revalidate
          └─────────────┐           ┌──────────┘
                        ▼           ▼
-                  Neon Postgres (content DB, branches per PR)
-                  Vercel Blob    (media)
+                  Neon Postgres (SAME DB; reuse or rebuild — TBD slice-directus-research)
+                  Vercel Blob or Cloudflare R2 or Directus Files (TBD)
+                  Resend (SAME API key, SAME sender domain)
 
-Type sync: payload generate:types → GitHub Action → PR in yesid.dev updating
-           src/lib/cms-types.ts (no monorepo tax, types stay in sync).
+AI-agent integration: Directus native MCP (v11.12+, all tiers) replaces Payload's plugin.
 ```
 
-## Content model — Payload collections / globals
+## Content model (under Directus)
 
-| Type | Maps from | Notes |
-|------|-----------|-------|
-| `projects` (collection) | `src/lib/data/projects.ts` | slug, title (loc), sections (blocks), services + stack (relationships) |
-| `services` (collection) | `src/lib/data/services.ts` | id, title (loc), relatedProjects (relationship), detailSections (blocks) |
-| `blog-posts` (collection) | `src/content/blog/*.md` | body as Lexical rich text; rendered to HTML in SvelteKit |
-| `tech-stack` (collection) | `src/content/stack/*.md` | shared vocabulary — referenced by projects + services + scenarios |
-| `stack-scenarios` (collection) | `src/lib/data/stack-scenarios.ts` | for Build Your Stack configurator |
-| `site-meta` (global) | `src/lib/data/meta.ts` | single editable doc |
-| `home-content` (global) | `src/lib/data/content.ts` (home sections) | single editable doc |
-| `about-content` (global) | `src/lib/data/about-page.ts` | single editable doc |
-| `contact-content` (global) | `src/lib/data/contact-page.ts` | single editable doc |
-| `nav-links` (global) | `src/lib/data/nav.ts` | single editable doc |
-| `error-pages` (global) | `src/lib/data/error-pages.ts` | single editable doc |
+Same conceptual model as Payload 18b; re-expressed in Directus's primitives:
 
-Localization uses Payload's built-in `localized: true` flag on text fields (maps cleanly to the existing `LocalizedString` pattern — en required, fr/es optional).
+| Concept | Payload 18b shape | Directus shape |
+|---------|-------------------|----------------|
+| projects, services, blog-posts, tech-stack, stack-scenarios | 5 Collections | 5 Collections |
+| media | Collection with `upload: true` | Files (native Directus file collection) |
+| home-content, services-page, projects-page, blog-page, tech-stack-page, about-content, contact-content (7 page-globals) | 7 Globals w/ flat fields | **7 singletons** (pattern: collection w/ single-row + role UI hiding) — OR **converted to a `pages` collection with slug-keyed entries** per Q3 resolution. Decision in `slice-directus-research`. |
+| nav-links, error-pages, site-meta (3 true singletons) | 3 Globals | 3 Directus singletons |
+| i18n field-level (en/fr/es) | `localized: true` | Directus Translations interface (`_translations` junction tables) |
 
-## Admin Information Architecture (lands in 18b)
+**Schema migration:** re-express in Directus; 73 rows migrate via export-import; `_translations` reshape multiplies row count ~3× (en/fr/es × localized-field-count).
 
-Payload admin sidebar is organized into three groups via `admin.group`. Within each group, order is authored order in the `collections: []` / `globals: []` arrays of `payload.config.ts`.
+## Admin Information Architecture
 
-**PAGES** (globals — one doc each, site-walk order matching yesid.dev nav):
-1. Home → 2. Services (page intro/meta) → 3. Projects (page intro/meta) → 4. Blog (page intro/meta) → 5. Tech Stack (page intro/meta) → 6. About → 7. Contact → 8. Nav Links → 9. Error Pages → 10. Site Meta
+Simpler than Payload's AV under Directus's better-by-default admin:
+- **Pages** (singletons or `pages` collection depending on Q3 final decision in `slice-directus-research`)
+- **Content** collections: projects, services, blog-posts, tech-stack, stack-scenarios
+- **Files** (native)
+- **Settings**: nav-links, error-pages, site-meta (singletons), users, roles
 
-**CONTENT** (collections — lists, hub-first dependency order so referenced items exist before referring items):
-1. Tech Stack (hub — referenced by services, projects, stack-scenarios) → 2. Services (referenced by projects) → 3. Projects → 4. Blog Posts → 5. Stack Scenarios
+Display templates (`{{title}} — {{slug}}`) configured per collection. Folders group collections in sidebar. Activity feed + global search + revisions are default-on.
 
-**SYSTEM:** Users, Media.
+## Sub-slices (post-pivot)
 
-**Rationale:** pages follow site-walk because editors think route-by-route; collections follow dependency order because creating a project that references a non-existent tech forces a round-trip. Relationship topology: `projects.{services,stack}` → services/tech-stack; `services.stack` → tech-stack; `stack-scenarios.techs` → tech-stack. Tech-stack is the deepest-referenced leaf — edit first.
+| # | Name | Status | Notes |
+|---|------|--------|-------|
+| 18a | CMS Infrastructure Foundation (Payload) | ✅ shipped 2026-04-21 — **HISTORICAL** | PR #29. Superseded by pivot — code scorched in slice 18d. |
+| 18b | Content Model + Seed (Payload) | ✅ shipped 2026-04-21 — **HISTORICAL** | PR #30. 73 rows become migration source in slice 18e. |
+| **18c** | **Directus Research + Rebuild Spec** (new slice: `slice-directus-research`) | planned — NEXT | Comprehensive research into Directus architecture + yesid.dev-cms repo audit + migration strategy + hosting decision (Railway / Hetzner / Cloud) + new FORMULA for Directus + storage choice (Vercel Blob vs R2 vs Directus Files) + schema approach (DB introspect vs fresh rebuild in same Neon). **Docs-only**; sandbox experiments allowed on `slice-cms-ux-redesign` branch; no main-branch code changes. |
+| **18d** | **Scorched-Earth Rebuild** | planned | Scorch Payload code from yesid.dev-cms (delete collections/*.ts + globals/*.ts + payload.config.ts + migrations/ + seed scripts); scaffold Directus (Dockerfile + env + schema config); rebuild schema in Directus Data Studio or via CLI; install required extensions; deploy to staging URL for verification. |
+| **18e** | **Content Migration** | planned | Export 73 rows from the Payload production DB (via Local API or direct DB query); transform to Directus NDJSON import format; i18n reshape (Payload `localized` → Directus Translations pattern); import via Directus CLI (`npx directus schema apply` + import tool); media re-link (URL rewrites or re-upload); verify round-trip. |
+| **18f** | **Frontend Rewire on yesid.dev** | planned | Replace `@payloadcms/*` clients with `@directus/sdk` across `src/lib/services/*.service.ts`; rewrite ~40-60% of Slice 17c Zod schemas to match Directus response shapes (esp. translations + M2A); update type-gen pipeline (`directus-sdk-typegen`); wire Directus Flow → SvelteKit `revalidateTag` for ISR; update preview route; update form actions via Directus Flows. |
+| **18g** | **DNS Cutover + Parallel-Run + Payload Sunset** | planned | Add `cms-legacy.yesid.dev` DNS CNAME pointing to Vercel Payload (escrow); flip `cms.yesid.dev` to new Directus host; monitor 24h; keep Payload on legacy subdomain 2 weeks; integrity tests; rollback plan documented; at end of escrow archive Payload code to `payload-archive` branch + delete legacy DNS record + delete Vercel Payload deployment. Codex peer review per convention. |
 
-## Sub-slices
+Original 18g (VOCAB labels) and 18h (SVG palette picker) are **deferred** — they were design-detail polish items; "design is locked for now" per Yesid's 2026-04-22 direction. Revisit post-launch.
 
-Slice 18 ships in 6 PR-sized sub-slices. Total ~5–7 sessions. Each sub-slice bundle (spec/plan/log/handoff) lives at `docs/slices/slice-18/slice-18<letter>/`. Only 18a is specced in detail so far (2026-04-20); 18b–18f have scope-level blurbs below and will be specced at their own planning sessions when upstream dependencies land.
+## Migration order (inside this slice, post-pivot)
 
-| # | Name | Size | Depends on | Owns migration-order steps | Status |
-|---|------|------|------------|----------------------------|--------|
-| 18a | CMS Infrastructure Foundation | L (1–2 sessions) | Slice 16, 17c ✓ | 1, 3 | **✅ shipped 2026-04-21** |
-| 18b | Content Model + Seed | L (1–2 sessions) | 18a | 2, 4 | **✅ shipped 2026-04-21** |
-| 18c | Type Sync + First Service Swap (site-meta) | M (1 session) | 18b | 5, 6 (site-meta only) | planned |
-| 18d | Globals Swap | M (1 session) | 18c | 6 (nav, home, about, contact, errors) | planned |
-| 18e | Collections Swap | L (1–2 sessions) | 18d | 6 (blog, projects, services, tech-stack, stack-scenarios) | planned |
-| 18f | Preview + Webhook + Cleanup | M (1 session) | 18e | 7, 8 | planned |
+1. Close `slice-headless-cms-best-practices` with the pivot decision (done).
+2. Open `slice-directus-research` (new sub-slice 18c). Produce the research + plan.
+3. Execute 18d scorched-earth rebuild.
+4. Execute 18e content migration.
+5. Execute 18f frontend rewire.
+6. Execute 18g DNS cutover + parallel-run + Payload sunset.
 
-**18a — CMS Infrastructure Foundation** (shipped 2026-04-21 — bundle archived at `<cloud>/yesid.dev/docs/archive/slices/slice-18/slice-18a/`; PR [yesid.dev#29](https://github.com/mgkdante/yesid.dev/pull/29)). Stood up `yesid.dev-cms` repo ([mgkdante/yesid.dev-cms](https://github.com/mgkdante/yesid.dev-cms)) with Payload 3 + Next.js, Neon Postgres via Vercel Marketplace, Vercel Blob, Resend, **native MCP surface (`@payloadcms/plugin-mcp` at `/api/mcp`)**. Live at `https://cms.yesid.dev/admin`. `users` auth collection + `site-meta` heartbeat global + `onInit` admin bootstrap flow. Zero `yesid.dev` source changes; three-way (admin UI / REST / MCP) consistency verified on prod.
+**Rollback at every step:** Payload stays live on `cms-legacy.yesid.dev` during 18g's 2-week escrow; DNS flip is reversible at DNS TTL. Frontend stays on the old Payload service layer until 18f lands; per-service feature flagging optional.
 
-**18b — Content Model + Seed** (shipped 2026-04-21 — bundle archived at `<cloud>/yesid.dev/docs/archive/slices/slice-18/slice-18b/` after close). Added 5 content collections (`tech-stack`, `services`, `projects`, `blog-posts`, `stack-scenarios`) + 9 globals (`home-content`, `services-page`, `projects-page`, `blog-page`, `tech-stack-page`, `about-content`, `contact-content`, `nav-links`, `error-pages`) + extended `site-meta` + `media`. Localization on every prose field (D4). D-rel-1 bidirectional relationships via Payload `join` fields — no manual sync. D-rel-2: tech-stack flat (no inter-tech graph; deferred to engine-builder slice). D-rel-3: tags as free strings (no `tags` collection). D-rel-4: Media with `imageSizes` (thumbnail/card/hero) + localized alt/caption + credit; Vercel Blob flipped on. Consolidated migration `20260421_204630` applied to prod. Seed script `scripts/seed/` imports from `yesid.dev/src/lib/content/*.ts` + `src/content/**/*.md` idempotently. MCP surface exposes all collections + globals (except `users` + `media`). Resend DNS (DKIM + SPF) verified for `no-reply@cms.yesid.dev`. Prod row counts: projects 6, services 6, tech-stack 45, blog-posts 7, stack-scenarios 7, media 1, all 10 globals populated. Shipped with a `CODEX-CONTEXT.md` adversarial-review scope guard + an `auto-migrate-create.mjs` helper to handle drizzle-kit's interactive column prompts on Windows.
+## DNS records inventory
 
-**18c — Type Sync + First Service Swap.** GitHub Action in `yesid.dev-cms`: schema change → `payload generate:types` → opens PR in `yesid.dev` updating `src/lib/cms-types.ts`. Canonical REST fetch utility (`src/lib/cms/fetch.ts`) + Zod-validated response parsing at the service-layer boundary (17c pattern extended). First service swap: `site-meta`. Feature-flagged, both static and Payload implementations live, tests green between swap. Establishes the pattern 18d/18e follow.
+Consolidated in `docs/slices/slice-headless-cms-best-practices/research.md` § DNS & Infrastructure Migration Inventory. Summary:
 
-**18d — Globals Swap.** Flip remaining globals (`nav-links`, `home-content`, `about-content`, `contact-content`, `error-pages`) off static files onto Payload REST, one global per commit. Each extends 18c's fetch + Zod pattern. Per-service feature flag. Tests green between swaps. Rollback per swap = one revert.
+- **Update:** `cms.yesid.dev` A/CNAME → new Directus host (host TBD in 18c).
+- **Keep:** Resend DKIM + SPF TXT records on `cms.yesid.dev` (domain-scoped, not host-scoped; same sender domain).
+- **Add:** `cms-legacy.yesid.dev` CNAME → Vercel Payload (escrow, temporary).
+- **Remove:** `cms-legacy.yesid.dev` after 2-week escrow closes.
 
-**18e — Collections Swap.** Flip dynamic collections (`blog-posts`, `projects`, `services`, `tech-stack`, `stack-scenarios`), one collection per commit. Same pattern as 18d. ISR caching decisions land here — each SvelteKit route wires revalidation tags that 18f's webhook will target. Heaviest sub-slice due to volume + relationship resolution + richer response shapes.
+## Cost model (post-pivot)
 
-**18f — Preview + Webhook + Cleanup.** Payload publish hook → POSTs to `yesid.dev/api/revalidate?tag=...&secret=...`. Preview route `/preview/[collection]/[slug]?token=...` bypasses cache for draft content. **Delete** every `src/lib/content/*.ts` and `src/content/blog/*.md` file from `yesid.dev` — content lives only in Payload after this step. Update `ARCHITECTURE.md` with final state. Write `yesid.dev-cms/README.md` "Using with SvelteKit" integration recipe (framework-agnostic positioning per design spec).
-
-## Migration order (inside this slice, not a prerequisite)
-
-1. Create `yesid.dev-cms` repo. Scaffold Payload 3 + Next.js with Neon Postgres + Vercel Blob adapters, email auth.
-2. Define all collections + globals with Payload localization enabled (maps 1:1 to existing LocalizedString).
-3. Deploy CMS to Vercel at `cms.yesid.dev` subdomain.
-4. Seed script in `yesid.dev-cms` imports existing TS/MD data from `yesid.dev` via Local API. Idempotent, kept in repo as the "import from other sources" recipe for clients.
-5. Set up type-sync GitHub Action: CMS schema change → `payload generate:types` → opens PR in `yesid.dev` updating `src/lib/cms-types.ts`.
-6. Service layer swap (from Slice 17b in `yesid.dev`) — flip implementations one service at a time, one commit each, tests green between every swap. Each service calls Payload REST API; Zod schemas (Slice 17c) validate response shape. Order: site-meta → nav-links → home-content → about-content → contact-content → blog-posts → projects → services → tech-stack → stack-scenarios.
-7. Wire Payload publish hook → POST to `yesid.dev/api/revalidate` with shared secret. Wire `/preview/[collection]/[slug]?token=...` in `yesid.dev` for draft content.
-8. Delete old TS data files in `yesid.dev` only after every route loads from the CMS and tests pass.
-
-**Rollback at every step:** services hold both implementations behind a feature flag during the swap; full rollback is one revert. Because the repos are independent, a bad CMS deploy doesn't take the frontend down — `yesid.dev` keeps serving its ISR cache.
-
-## Cost model
-
-**yesid.dev, day one:** $0/month. Neon free tier (191.9 compute-hrs/mo, 0.5 GB) is more than enough; Vercel Blob free tier (1 GB, 10 GB bandwidth) fits a portfolio. Do not attach a payment method to Neon until consciously upgrading — free plan is hard-capped, not soft-capped.
+**Day one Directus:** $0-20/mo on self-host (Hetzner VPS ~€5/mo + Neon free tier), or $15/mo Directus Cloud Standard. Either comparable to Payload's self-host cost. **Payload Cloud is paused — the forced-self-host is the same on both platforms now.**
 
 ## Guardrails against surprise bills
 
-- Use Neon's HTTP/serverless driver from SvelteKit (short-lived connections, compute scales to zero).
-- No per-minute cron pings; hourly+ or Vercel Cron with edge caching.
-- Clean up DB branches when PRs merge.
+- Neon Postgres free tier still fits (0.5 GB, 191.9 compute-hrs).
+- Vercel Blob free tier (1 GB) or Cloudflare R2 free tier (10 GB) for media.
+- Directus Cloud Standard $15/mo is predictable per-seat pricing (no usage surprise).
+- Monitor in 18g: egress, DB rows, seat count.
 
 ## Rendering strategy
 
-- **Default:** ISR — Vercel caches pages at the edge; Payload webhook triggers revalidation on publish.
-- **Exception:** `/preview/[collection]/[slug]?token=...` bypasses cache for draft content (logged-in editors only).
-- **Fallback:** build-time static for routes that almost never change.
+Unchanged from pre-pivot:
+- **Default:** ISR — Vercel caches pages at edge; Directus Flow webhooks `revalidateTag` on publish.
+- **Exception:** `/preview/[collection]/[slug]?token=...` bypasses cache for drafts; Directus Live Preview wires via `@directus/visual-editing`.
+- **Fallback:** build-time static for rarely-changing routes.
 
-## Acceptance criteria
+## Acceptance criteria (post-pivot)
 
-- `yesid.dev-cms` repo scaffolded with Payload 3 + Next.js, deployed to Vercel at `cms.yesid.dev`.
-- All collections + globals defined with Payload localization enabled.
-- Seed script imports all existing content without data loss.
-- Type-sync GitHub Action wired: CMS schema change → PR in `yesid.dev` updating `src/lib/cms-types.ts`.
-- Every service in `src/lib/services/*.service.ts` reads from Payload REST API (Zod-validated), not TS files.
+- `yesid.dev-cms` repo scorched of Payload code + rebuilt as Directus 11+, deployed to `cms.yesid.dev`.
+- All collections + globals (or pages collection) defined with Directus Translations.
+- 73 rows migrated from Payload DB to Directus without data loss.
+- Every service in `yesid.dev/src/lib/services/*.service.ts` reads from Directus SDK (Zod-validated), not TS files.
 - Slice 16 E2E suite green — every existing route renders identically to pre-migration.
-- Payload publish hook → `yesid.dev/api/revalidate` end-to-end.
-- Preview route serves draft content for logged-in editors.
-- Both Vercel deployments green; Neon DB branch auto-created per CMS PR.
-- Full free-tier budget — no overage.
-- `docs/reference/ARCHITECTURE.md` updated with two-repo topology; `docs/reference/PATTERNS.md` updated with Payload REST + Zod service pattern.
-- `yesid.dev-cms` README includes a "Using with SvelteKit" integration recipe.
-- Old TS data files deleted from `yesid.dev`; no lingering references.
+- Directus Flow → `yesid.dev/api/revalidate` webhook end-to-end.
+- Preview route serves draft content for logged-in editors via `@directus/visual-editing`.
+- DNS cutover complete; `cms-legacy.yesid.dev` escrow holds 2 weeks; Payload archived after.
+- Directus MCP configured + Claude Code `mcp__yesid-cms-prod__*` tools re-pointed at new endpoint.
+- Resend email still sends from `no-reply@cms.yesid.dev` via Directus email adapter.
+- Full free/low-tier budget — no overage vs pre-pivot.
+- `docs/reference/ARCHITECTURE.md` updated with Directus topology; `docs/reference/PATTERNS.md` updated with Directus SDK + Zod service pattern.
+- `yesid.dev-cms` README rewritten as Directus starter recipe (per `slice-directus-research`'s FORMULA).
+- Old Payload TS data files already deleted; no lingering references.
 
 ## Out of scope
 
-- Admin theming / custom field components (polish sub-slice later).
-- Keystatic "Static tier" template (build only if client demand appears).
-- Multi-tenant Payload (one instance per client is the day-one rule).
-- Moving Payload to Railway/Hetzner (reversible later; Vercel is fine for v1).
-- Fulltext search upgrade — blog search stays client-side.
+- Block-based page builder work (deferred — design locked per Yesid's 2026-04-22 direction).
+- Keystatic "Static tier" template.
+- Multi-tenant Directus.
+- Migrating off Neon Postgres.
+- Rebuilding the MCP plugin concept (Directus native covers it).
 
 ## You'll learn
 
-Payload 3 collections/globals/blocks, framework-agnostic CMS architecture (REST API + Zod at the frontend boundary), cross-repo type-sync via GitHub Actions, Neon Postgres + DB branching, Vercel Blob for media, ISR revalidation via webhooks, preview/draft flows, service-layer seam migration under test coverage.
+Directus 11+ architecture (Data Studio, collections, singletons, M2A relations, Translations, Flows, Insights, MCP), Directus extension ecosystem, scorched-earth repo migration pattern, Payload → Directus content migration via export-import, Zod-at-the-boundary pattern under a new CMS shape, DNS cutover with escrow window, Directus deployment on Railway / Hetzner / Directus Cloud, editor UX calibration for small-business clients.
