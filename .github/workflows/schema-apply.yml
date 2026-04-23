@@ -42,47 +42,76 @@ jobs:
 
       - name: Boot ephemeral Directus
         run: |
+          # Drop --network host: unreliable with GHA service containers on some runners.
+          # Use host-gateway so the Directus container reaches the host-mapped PG port.
+          #
+          # Explicit `bootstrap && start` chain: the 11.17.3 image's default CMD runs
+          # `directus start` which does NOT auto-bootstrap a fresh DB — it expects an
+          # already-populated schema. In Railway, the first boot bootstraps via a
+          # persistent volume and subsequent boots just start. On ephemeral CI, every
+          # boot is "first boot", so we need to chain explicitly.
           docker run -d --name directus \
-            --network host \
+            --add-host=host.docker.internal:host-gateway \
+            -p 8055:8055 \
             -e KEY=ci-test-key-16-bytes-hex-aabbccdd \
             -e SECRET=ci-test-secret-32-bytes-hex-aabbccddeeff \
             -e PUBLIC_URL=http://localhost:8055 \
             -e DB_CLIENT=pg \
-            -e DB_HOST=localhost \
+            -e DB_HOST=host.docker.internal \
             -e DB_PORT=5432 \
             -e DB_DATABASE=directus \
             -e DB_USER=directus \
             -e DB_PASSWORD=directus \
-            -e ADMIN_EMAIL=admin@ci.local \
+            -e ADMIN_EMAIL=admin@example.com \
             -e ADMIN_PASSWORD=ci-test-pass-rotate-immediately \
-            directus/directus:11.17.3
-          for i in {1..40}; do
-            curl -sf http://localhost:8055/server/health >/dev/null && break
+            -e TELEMETRY=false \
+            -e LOG_LEVEL=debug \
+            directus/directus:11.17.3 \
+            sh -c "npx directus bootstrap && exec npx directus start"
+          # Stream Directus logs live so CI operators see what's happening during the poll.
+          docker logs -f directus &
+          LOG_PID=$!
+          # Poll up to 5 min — fresh-install bootstrap + server start can take ~90s on slow runners.
+          for i in {1..100}; do
+            if curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+              echo "::notice::Directus healthy after ${i} polls"
+              break
+            fi
             sleep 3
           done
-          curl -sf http://localhost:8055/server/health || (docker logs directus && exit 1)
+          # Final check + rich diagnostics if still not healthy.
+          if ! curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+            echo "::error::Health check timed out after 5 minutes"
+            docker ps -a
+            docker inspect directus --format='State: {{.State.Status}} · ExitCode: {{.State.ExitCode}} · OOMKilled: {{.State.OOMKilled}} · Error: {{.State.Error}}'
+            docker logs --tail=200 directus
+            kill "$LOG_PID" 2>/dev/null || true
+            exit 1
+          fi
+          kill "$LOG_PID" 2>/dev/null || true
 
       - name: Apply snapshot
         run: |
           TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
             -H 'Content-Type: application/json' \
-            -d '{"email":"admin@ci.local","password":"ci-test-pass-rotate-immediately"}' \
+            -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
             | jq -r '.data.access_token')
-          # Diff first
+          # Diff: 11.17.3 expects multipart upload (schemaMultipartHandler),
+          # not `Content-Type: application/yaml`.
           DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
             -H "Authorization: Bearer $TOKEN" \
-            -H 'Content-Type: application/yaml' \
-            --data-binary @infra/directus/snapshot.yaml)
+            -F "file=@infra/directus/snapshot.yaml")
           echo "::group::Schema diff"
           echo "$DIFF" | jq .
           echo "::endgroup::"
-          # Apply
+          # Apply: body MUST be the inner {hash, diff} object, not the full
+          # {data:{hash,diff}} wrapper that /schema/diff returns.
           if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
             HASH=$(echo "$DIFF" | jq -r '.data.hash')
-            curl -sf -X POST http://localhost:8055/schema/apply \
+            echo "$DIFF" | jq '.data' | curl -sf -X POST http://localhost:8055/schema/apply \
               -H "Authorization: Bearer $TOKEN" \
               -H 'Content-Type: application/json' \
-              -d "$DIFF" >/dev/null
+              --data-binary @- >/dev/null
             echo "::notice::Applied schema diff with hash $HASH"
           else
             echo "::notice::No schema diff to apply"
@@ -95,7 +124,7 @@ jobs:
           # Confirm collections registered
           TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
             -H 'Content-Type: application/json' \
-            -d '{"email":"admin@ci.local","password":"ci-test-pass-rotate-immediately"}' \
+            -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
             | jq -r '.data.access_token')
           COUNT=$(curl -sf -H "Authorization: Bearer $TOKEN" \
             'http://localhost:8055/collections?limit=-1' \
@@ -120,10 +149,11 @@ jobs:
           DIRECTUS_URL: ${{ secrets.DIRECTUS_PROD_URL }}
           DIRECTUS_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
         run: |
+          # Multipart upload — same shape as the smoke job; Directus 11.17.3
+          # /schema/diff only accepts multipart, not application/yaml body.
           DIFF=$(curl -sf -X POST "$DIRECTUS_URL/schema/diff" \
             -H "Authorization: Bearer $DIRECTUS_TOKEN" \
-            -H 'Content-Type: application/yaml' \
-            --data-binary @infra/directus/snapshot.yaml)
+            -F "file=@infra/directus/snapshot.yaml")
           echo "::group::Production schema diff"
           echo "$DIFF" | jq .
           echo "::endgroup::"
@@ -132,8 +162,8 @@ jobs:
             exit 0
           fi
           # WARN: schema apply with destructive changes can drop data — operator must review the printed diff above
-          curl -sf -X POST "$DIRECTUS_URL/schema/apply" \
+          echo "$DIFF" | jq '.data' | curl -sf -X POST "$DIRECTUS_URL/schema/apply" \
             -H "Authorization: Bearer $DIRECTUS_TOKEN" \
             -H 'Content-Type: application/json' \
-            -d "$DIFF"
+            --data-binary @-
           echo "::notice::Applied snapshot to production"
