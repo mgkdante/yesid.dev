@@ -20,6 +20,7 @@
 		"brand:export-logos": "bun brand/scripts/export-logos.ts",
 		"brand:export-examples": "bun brand/scripts/export-examples.ts",
 		"slice:close": "bun scripts/slice-close.ts",
+		"seed:services": "op run --env-file=.env -- bun scripts/seed-directus-services.ts",
 		"docs:mirror": "bun scripts/mirror-docs.ts",
 		"brand:mirror": "bun scripts/mirror-brand.ts",
 		"conversations:archive": "bun scripts/archive-conversations.ts"
