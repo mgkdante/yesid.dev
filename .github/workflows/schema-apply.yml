@@ -104,13 +104,14 @@ jobs:
           echo "::group::Schema diff"
           echo "$DIFF" | jq .
           echo "::endgroup::"
-          # Apply: takes the diff JSON directly.
+          # Apply: body MUST be the inner {hash, diff} object, not the full
+          # {data:{hash,diff}} wrapper that /schema/diff returns.
           if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
             HASH=$(echo "$DIFF" | jq -r '.data.hash')
-            curl -sf -X POST http://localhost:8055/schema/apply \
+            echo "$DIFF" | jq '.data' | curl -sf -X POST http://localhost:8055/schema/apply \
               -H "Authorization: Bearer $TOKEN" \
               -H 'Content-Type: application/json' \
-              -d "$DIFF" >/dev/null
+              --data-binary @- >/dev/null
             echo "::notice::Applied schema diff with hash $HASH"
           else
             echo "::notice::No schema diff to apply"
@@ -161,8 +162,8 @@ jobs:
             exit 0
           fi
           # WARN: schema apply with destructive changes can drop data — operator must review the printed diff above
-          curl -sf -X POST "$DIRECTUS_URL/schema/apply" \
+          echo "$DIFF" | jq '.data' | curl -sf -X POST "$DIRECTUS_URL/schema/apply" \
             -H "Authorization: Bearer $DIRECTUS_TOKEN" \
             -H 'Content-Type: application/json' \
-            -d "$DIFF"
+            --data-binary @-
           echo "::notice::Applied snapshot to production"
