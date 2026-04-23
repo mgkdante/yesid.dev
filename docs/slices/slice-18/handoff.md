@@ -402,7 +402,7 @@ Six follow-up commits on the same branch fixed defects in the `schema-apply` CI 
 - **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high) — via @directus/sdk v20 + 1P CLI (admin creds) + Directus REST (schema hotfixes) + MCP items tool (verification)
 - **Session:** 2026-04-23 (continued from Task 5 close)
 - **PR (yesid.dev):** `feature/slice-18` commit `7222c92`
-- **PR (yesid.dev-cms):** [mgkdante/yesid.dev-cms#6](https://github.com/mgkdante/yesid.dev-cms/pull/6) — pending merge (contains the schema hotfixes discovered during seed validation)
+- **PR (yesid.dev-cms):** [mgkdante/yesid.dev-cms#6](https://github.com/mgkdante/yesid.dev-cms/pull/6) — **MERGED as `4963c94`** (2026-04-23). Contained the schema hotfixes discovered during seed validation.
 
 **Files:**
 
@@ -476,7 +476,7 @@ The physical location is a dev-ergonomics choice; the Directus state produced is
 - ~~Task 3: Directus install on Railway Hobby + Neon + R2 + native MCP.~~ **Done.** Manual ops by user remain (drop PostGIS service, add cms.yesid.dev custom domain, Cloudflare DNS flip, retire Vercel project) — see § 5 Follow-ups + Task 3 § Manual dashboard ops.
 - ~~Task 4: DirectusAdapter scaffold + `services` port + `toLocalizedString`.~~ **Done.** Scorched-earth Neon cleanup landed as a Task 3 follow-up in the same session per owner steering.
 - ~~Task 5: Services collection schema + snapshot to yesid.dev-cms.~~ **Done.** yesid.dev-cms PR #5 merged (`13aaeb9`).
-- ~~Task 6: Seed services content into Directus + schema hotfixes.~~ **Done (this session).** yesid.dev `7222c92`; yesid.dev-cms PR #6 open (schema hotfixes: alias fields + csv→json).
+- ~~Task 6: Seed services content into Directus + schema hotfixes.~~ **Done.** yesid.dev `7222c92`; yesid.dev-cms PR #6 merged (`4963c94`) with alias fields + csv→json hotfixes.
 - Task 5: design + create real yesid.dev content model in Directus (services, projects, blog_posts, tech_stack, scenarios, page singletons + M2A blocks per research.md sketch). Re-snapshot after every collection change → commit to yesid.dev-cms. Tighten `ai-editor` role permissions to those collections only.
 - Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK. Preserve natural-key IDs where possible (project slug, service id).
 - Task 7: full E2E parity — run yesid.dev test suite + a manual smoke against Directus-served routes. Flip `src/lib/adapters/index.ts:6` re-export only after parity confirmed.
