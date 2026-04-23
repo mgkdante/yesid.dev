@@ -40,7 +40,7 @@ Full task state lives in TodoWrite. This table is orientational — Tasks 2+ are
 | 0 | Scaffold slice-18 bundle | ✅ shipped | yesid.dev `e918736`; 4-file flat bundle. |
 | 1 | Remove Payload from yesid.dev-cms + clean slate | ✅ shipped | yesid.dev-cms PRs #1 (`a7a1db6`) + #2 (`0295dd6`). Final state: 4 tracked files. |
 | 2 | Directus research (adapter-contract mapping, hosting, storage, schema, locales) | ✅ shipped | This session. Resolved spec D1/D2/D3 + Q4–Q7. **Zero site code changes.** |
-| 3 | Directus install + schema provisioning (yesid.dev-cms rebuild) | ⏸ next | Railway Hobby + R2 + snapshot-apply YAML per spec D1/D2/D3. |
+| 3 | Directus install on Railway + Neon + R2 + native MCP | ✅ shipped | This session. Live at directus-cms-production-df43.up.railway.app. yesid.dev-cms PR #3 (`5945f56` + `d22669c`). Manual ops remain (PostGIS drop, custom domain, Vercel retire) — see handoff § 5. |
 | 4 | DirectusAdapter + first-service swap | planned | One-line flip at `src/lib/adapters/index.ts`. |
 | 5 | Remaining collection swaps (services, projects, blog, meta) | planned | Each swap = verification boundary. |
 | 6 | Seed data + locale parity | planned | 73-row baseline from Payload era. |
@@ -104,6 +104,7 @@ Divergence from this shape gets logged in § Amendments.
 | # | Date | Change | Rationale |
 |---|------|--------|-----------|
 | 1 | 2026-04-22 | Tasks 0–2 shipped; R1 resolved; R2 reframed (no Payload data to migrate); R5 + R6 added. | Task 2 research landed; spec D1/D2/D3 + Q4–Q7 resolved via four parallel agents (adapter mapping + Directus docs + hosting/storage + research-slice re-read). Full findings in research.md. |
+| 2 | 2026-04-23 | Task 3 shipped via MCPs (Cloudflare/Railway/Neon/Vercel/1P CLI); Resend SMTP deferred → HTTP API; Neon clean-slated mid-task. | Owner used MCPs to drive provisioning end-to-end. Railway egress blocks SMTP port 587 → Resend SMTP path is dead, switching to HTTPS API via Directus Flow as a follow-up. Neon DROP SCHEMA + CREATE SCHEMA in response to owner's "clean up neon db and rebuild" steering after the Railway template seeded its CMS demo content on the freshly-pointed Neon DB. |
 
 ## Notes
 
