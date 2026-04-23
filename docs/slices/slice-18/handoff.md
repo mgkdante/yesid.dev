@@ -323,7 +323,7 @@ The client is **lazy-initialized** — `createDirectus(...)` only fires on the f
 - **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high) — via Directus REST + 1P CLI + Neon MCP (read-only verify)
 - **Session:** 2026-04-23 (same session as Task 4)
 - **Owner decision:** chose **Path B — programmatic REST** over Path A (Data Studio click-through) for speed + repeatability. Spec D3 still satisfied: the YAML snapshot is the canonical artifact; how it got generated (REST vs GUI) is an implementation detail.
-- **PR (yesid.dev-cms):** [mgkdante/yesid.dev-cms#5](https://github.com/mgkdante/yesid.dev-cms/pull/5) — commit `468f241`
+- **PR (yesid.dev-cms):** [mgkdante/yesid.dev-cms#5](https://github.com/mgkdante/yesid.dev-cms/pull/5) — **MERGED as `13aaeb9`** (2026-04-23). Snapshot commit `468f241`; 6 follow-up commits fixed the smoke-apply CI (see § Task 5 CI fixes below).
 
 **Files:**
 
@@ -368,6 +368,23 @@ Schema shape, summarized:
 - Unauth smoke: `curl https://cms.yesid.dev/items/languages` → all three locales return ✅
 - yesid.dev type alignment: `DirectusServiceTranslation` in `src/lib/adapters/directus.ts` (Task 4) has `languages_code` + identical field names → 1:1 mapping with zero TS changes ✅
 - yesid.dev-cms PR #5 opened ✅
+
+**Task 5 CI fixes (post-snapshot-commit, landed in PR #5 before merge):**
+
+Six follow-up commits on the same branch fixed defects in the `schema-apply` CI workflow authored at Task 3c. The workflow had never actually been exercised end-to-end (Task 3c's snapshot was a 369-byte empty baseline that no-op'd through diff+apply without exercising most code paths). PR #5's 48 KB snapshot triggered every gap:
+
+| # | SHA | Defect | Fix |
+|---|-----|--------|-----|
+| 1 | `766026d` | Boot timed out — `--network host` + 2-min poll | `--add-host=host.docker.internal:host-gateway` + DB_HOST=host.docker.internal + 5-min poll + streamed `docker logs -f` + `docker inspect --format='State:...'` timeout diagnostics |
+| 2 | `4ee9283` | `Validation failed for field "email"` with `admin@ci.local` (TLD-rejected) | Tried `admin@ci.test` — still rejected by 11.17.3 validator |
+| 3 | `5b42566` | Email still failing; also noticed image's default CMD exits after bootstrap on a fresh DB (doesn't auto-chain to `start`) | Explicit `sh -c "npx directus bootstrap && exec npx directus start"` + `LOG_LEVEL=debug` for visibility |
+| 4 | `f053506` | `admin@ci.test` still rejected | Switched to `admin@example.com` (RFC 2606 reserved + real `.com` TLD — validator passes) |
+| 5 | `7980ece` | `/schema/diff` rejected `Content-Type: application/yaml` — routes through `schemaMultipartHandler` | Multipart form upload (`-F "file=@infra/directus/snapshot.yaml"`); mirrored to prod-apply job |
+| 6 | `0e037d3` | `/schema/apply` rejected body — `Invalid payload. "hash" is required` | Strip the `{data: ...}` wrapper (`jq '.data' \| curl --data-binary @-`); mirrored to prod-apply |
+
+**Green run (`24863731974`):** Directus healthy after 10 polls (30 s), schema diff applied with hash `f32d9d23cdc4…`, smoke-checks confirmed 7 user collections post-apply.
+
+**Upshot:** Task 3c's CI workflow had 4 real defects in its REST calls — all three Directus 11.17.3 API shapes (bootstrap command chain, `/schema/diff` multipart, `/schema/apply` body contract) needed correction. All three are now documented inline in the workflow so a later reader (or Task 6 seed script) doesn't re-discover them.
 
 **Follow-ups flagged:**
 
