@@ -56,7 +56,7 @@ jobs:
             -e DB_DATABASE=directus \
             -e DB_USER=directus \
             -e DB_PASSWORD=directus \
-            -e ADMIN_EMAIL=admin@ci.local \
+            -e ADMIN_EMAIL=admin@ci.test \
             -e ADMIN_PASSWORD=ci-test-pass-rotate-immediately \
             -e CACHE_ENABLED=false \
             -e WEBSOCKETS_ENABLED=false \
@@ -89,7 +89,7 @@ jobs:
         run: |
           TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
             -H 'Content-Type: application/json' \
-            -d '{"email":"admin@ci.local","password":"ci-test-pass-rotate-immediately"}' \
+            -d '{"email":"admin@ci.test","password":"ci-test-pass-rotate-immediately"}' \
             | jq -r '.data.access_token')
           # Diff first
           DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
@@ -118,7 +118,7 @@ jobs:
           # Confirm collections registered
           TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
             -H 'Content-Type: application/json' \
-            -d '{"email":"admin@ci.local","password":"ci-test-pass-rotate-immediately"}' \
+            -d '{"email":"admin@ci.test","password":"ci-test-pass-rotate-immediately"}' \
             | jq -r '.data.access_token')
           COUNT=$(curl -sf -H "Authorization: Bearer $TOKEN" \
             'http://localhost:8055/collections?limit=-1' \
