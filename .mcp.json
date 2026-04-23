@@ -1,4 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/mcp.json",
-  "mcpServers": {}
+  "mcpServers": {
+    "yesid-cms-prod": {
+      "type": "http",
+      "url": "https://cms.yesid.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${YESID_CMS_MCP_TOKEN}"
+      }
+    }
+  }
 }
