@@ -13,7 +13,7 @@
 | Spec | [./spec.md](spec.md) |
 | Plan | [./plan.md](plan.md) |
 | Research | [./research.md](research.md) |
-| Branch (site) | `feature/slice-18` (yesid.dev) — see commit pushed at Task 4 close |
+| Branch (site) | `feature/slice-18` (yesid.dev) — head `427ad19` (Task 4 close) |
 | Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` + `803d60c` → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` → merged `0295dd6`. PR #3 branch (Task 3): `5945f56` (scaffold) + `d22669c` (snapshot+CI). |
 | Neon safety branch | `br-muddy-surf-am5n6sh9` (`pre-scorch-safety-2026-04-23`, off `br-orange-waterfall-amfej6qp`) — created Task 4 session before the scorched-earth DROP; retain until Task 7 E2E green. |
 | Tasks completed | 5 / 8 (Task 0 + 1 + 2 + 3 + 4) — Task 4 lands the DirectusAdapter scaffold (services port + `toLocalizedString` + 5 stubs) and the Neon scorched-earth cleanup (84 non-`directus_*` tables dropped). |
@@ -260,7 +260,7 @@ flowchart LR
 - **Planned by:** Claude Code (Opus 4.7 [1m], reasoning=high)
 - **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high) — via Directus MCP + Neon MCP
 - **Session:** 2026-04-23
-- **Commit(s):** see PR / commit ref in § 1 Status after push
+- **Commit(s):** `427ad19` — feat(slice-18 task-4): DirectusAdapter scaffold + services port + toLocalizedString
 - **Neon safety branch:** `br-muddy-surf-am5n6sh9` (created off `br-orange-waterfall-amfej6qp` before the scorch; retain until Task 5 lands a real schema)
 
 **Files:**
