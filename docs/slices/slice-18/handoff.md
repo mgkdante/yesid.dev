@@ -6,17 +6,17 @@
 
 | Field | Value |
 |-------|-------|
-| Status | 🟢 in progress (Tasks 0–5 shipped; yesid.dev-cms PR #5 open with schema snapshot; Task 6 seed is next) |
+| Status | 🟢 in progress (Tasks 0–6 shipped; yesid.dev-cms PR #5 merged + PR #6 pending; Task 7 adapter flip is next) |
 | Slice PR (site) | pending — [`feature/slice-18`](https://github.com/mgkdante/yesid.dev/tree/feature/slice-18) (keep accumulating sessions before opening; likely opens at slice close) |
 | Scorch PR (cms)      | [mgkdante/yesid.dev-cms#1](https://github.com/mgkdante/yesid.dev-cms/pull/1) — **MERGED** as `a7a1db6` |
 | Clean-slate PR (cms) | [mgkdante/yesid.dev-cms#2](https://github.com/mgkdante/yesid.dev-cms/pull/2) — **MERGED** as `0295dd6` |
 | Spec | [./spec.md](spec.md) |
 | Plan | [./plan.md](plan.md) |
 | Research | [./research.md](research.md) |
-| Branch (site) | `feature/slice-18` (yesid.dev) — head `427ad19` (Task 4 close) |
+| Branch (site) | `feature/slice-18` (yesid.dev) — head `7222c92` (Task 6 close) |
 | Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` + `803d60c` → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` → merged `0295dd6`. PR #3 branch (Task 3): `5945f56` (scaffold) + `d22669c` (snapshot+CI). |
 | Neon safety branch | `br-muddy-surf-am5n6sh9` (`pre-scorch-safety-2026-04-23`, off `br-orange-waterfall-amfej6qp`) — created Task 4 session before the scorched-earth DROP; retain until Task 7 E2E green. |
-| Tasks completed | 6 / 8 (Task 0 + 1 + 2 + 3 + 4 + 5) — Task 5 lands the `services` schema (7 collections: services + translations junction + deliverables + sections + their translations + `languages`) via programmatic REST against live Directus; snapshot committed via yesid.dev-cms PR #5. |
+| Tasks completed | 7 / 8 (Task 0 + 1 + 2 + 3 + 4 + 5 + 6) — Task 6 seeds 6 services (+36 deliverables +6 sections +48 translation rows) into live Directus via an atomic nested-create seed script, discovers 2 schema hotfixes (5 missing alias fields + csv→json for `related_projects`/`stack`), lands them in yesid.dev-cms PR #6. |
 | Live Directus | https://cms.yesid.dev/mcp ✓ Connected (MCP registered as `yesid-cms-prod`) — schema tool returns `collections: []` after cleanup |
 | MCP endpoint | https://cms.yesid.dev/mcp — 7 tools (items/files/folders/assets/trigger-flow/schema/system-prompt) |
 
@@ -396,12 +396,87 @@ Six follow-up commits on the same branch fixed defects in the `schema-apply` CI 
 
 ---
 
+### Task 6 — Seed services content into Directus ✅
+
+- **Planned by:** Claude Code (Opus 4.7 [1m], reasoning=high)
+- **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high) — via @directus/sdk v20 + 1P CLI (admin creds) + Directus REST (schema hotfixes) + MCP items tool (verification)
+- **Session:** 2026-04-23 (continued from Task 5 close)
+- **PR (yesid.dev):** `feature/slice-18` commit `7222c92`
+- **PR (yesid.dev-cms):** [mgkdante/yesid.dev-cms#6](https://github.com/mgkdante/yesid.dev-cms/pull/6) — pending merge (contains the schema hotfixes discovered during seed validation)
+
+**Files:**
+
+- Created (yesid.dev): `scripts/seed-directus-services.ts` — 277 lines. Reads `src/lib/content/services.ts`, maps each `Service` → Directus nested-create payload, posts one atomic `POST /items/services` per service with translations + deliverables + sections nested.
+- Modified (yesid.dev): `.env.example` — `DIRECTUS_ADMIN_EMAIL` + `DIRECTUS_ADMIN_PASSWORD` (1P refs).
+- Modified (yesid.dev): `package.json` — `seed:services` npm script (`op run --env-file=.env -- bun scripts/seed-directus-services.ts`).
+- Modified (yesid.dev-cms): `infra/directus/snapshot.yaml` — +130 lines, −10 lines (5 alias field entries + 2 field-type changes).
+- Out-of-repo (Directus at `cms.yesid.dev`):
+  - 6 services created: `sql-development`, `data-pipeline`, `analytics-reporting`, `database-engineering`, `internal-tooling`, `web-development` (stations 1–6).
+  - 6 `services_translations` rows (one per service, locale `en`).
+  - 36 `services_deliverables` rows (6 per service) + 36 `services_deliverables_translations` rows.
+  - 6 `services_sections` rows (one per service with "My Approach" title) + 6 `services_sections_translations` rows.
+  - 5 alias fields added on parent collections (see Task 6 § Schema hotfixes).
+  - `related_projects` + `stack` field types: **csv → json** (see Task 6 § Schema hotfixes).
+
+**What landed:**
+
+Live Directus now carries a faithful mirror of yesid.dev's canonical `services.ts` content. Every English string, deliverable, section, impact metric, stack list, and related-project link made it across. The data is reachable via:
+
+- Directus REST/SDK with `readItems('services', { fields: ['*', { translations: ['*'] }, { deliverables: ['*', { translations: ['*'] }] }, { sections: ['*', { translations: ['*'] }] }] })` — returns the full hydrated Service shape 1:1 with what `staticAdapter` returns from TS.
+- MCP `items` tool with the same deep query (verified during the session).
+- Data Studio `/admin/content/services` — each service renders with translations + deliverables + sections in the expected inline interfaces.
+
+The seed is idempotent. Re-running `bun scripts/seed-directus-services.ts` wipes existing services (FK CASCADE removes junctions) and recreates from `services.ts`. Same Directus state every time.
+
+**Location deviation (spec-sketch said "in yesid.dev-cms", script actually lives in yesid.dev):**
+
+Plan § Next-tasks at Task 3 close sketched the seed living in `yesid.dev-cms/scripts/seed.ts`. Final location is `yesid.dev/scripts/seed-directus-services.ts` instead. Rationale: yesid.dev has all the TS infrastructure pre-wired (SvelteKit path aliases `$lib/*`, `@directus/sdk` installed at Task 4, bun configured, `tsconfig.json` strict, the canonical `services.ts` source itself). yesid.dev-cms is a minimal scaffold (`.gitignore` + `.nvmrc` + `README.md` + `vercel.json` + `infra/directus/`) without a full TS project, so running a seed from there would require either vendoring the canonical content or adding scaffolding that yesid.dev already has.
+
+The physical location is a dev-ergonomics choice; the Directus state produced is identical either way. The script is a one-shot replay tool — not production code — so living on the "consumer" side of the seam is fine. Task 6 is noted in yesid.dev's durable outputs (`scripts/seed-directus-services.ts`), not in yesid.dev-cms.
+
+**Schema hotfixes discovered during seed validation (yesid.dev-cms PR #6):**
+
+1. **5 missing alias fields.** Task 5's programmatic `POST /relations` created the junction tables + FK constraints, and declared `one_field: "translations"` / `"deliverables"` / `"sections"` in the relation metadata — but that alone does NOT create the corresponding row in `directus_fields` for the alias. Data Studio's UI does that as a separate `POST /fields/<collection>` call under the hood; our programmatic flow skipped it. Without these rows, deep-fetch queries 403 with `"You don't have permission to access fields translations/deliverables/sections"`. Fix: 5 targeted `POST /fields/<parent>` calls with `type: "alias"`, `schema: null`, and the appropriate `interface` + `special` combos (`translations` for junction-backed arrays; `list-o2m` for one-to-many). Now committed in the snapshot.
+
+2. **`related_projects` + `stack` type: csv → json.** Task 5 declared these as `csv` — the Directus type that stores a comma-joined string at the DB layer. The seed sent `string[]` arrays via `@directus/sdk createItem`; the SDK serialised them with `JSON.stringify` and wrote `"[\"a\",\"b\",\"c\"]"` into the column verbatim (bypassing the csv-type's comma-join semantics). Reading back returned the raw JSON string, not an array. Fix: swap to `type: "json"`, which stores native arrays and round-trips through the SDK correctly. Aligns 1:1 with the TS typing on `DirectusService` in `src/lib/adapters/directus.ts` (`related_projects?: string[] | null`). No adapter TS changes needed — the type was already `string[]`.
+
+**Decisions (added during execution):**
+
+- Task 6.D-1 — **Location: yesid.dev, not yesid.dev-cms.** Ergonomics of TS infrastructure re-use outweighed plan-sketch adherence. Rationale documented above.
+- Task 6.D-2 — **Nuke-and-recreate idempotency over per-row upsert.** The alternative (natural-key upsert by slug + position) requires `services_translations.{services_id, languages_code}` composite lookup + per-field patch + delete-orphans for removed deliverables. Nuke-and-recreate is ~40 lines shorter and makes the seed trivially auditable: it always converges to `services.ts` state regardless of prior Directus state. Only destructive on the services domain tree; `languages` + other collections untouched.
+- Task 6.D-3 — **Atomic nested create (one POST per service) over manual join writes.** Directus SDK's `createItem('services', { translations: [...], deliverables: [{ translations: [...] }, ...], sections: [...] })` handles the junction writes transactionally. Manual junction POSTs would need careful ordering + rollback-on-fail handling; nested create gets both for free.
+- Task 6.D-4 — **Three auth paths (token, email+password, error).** CI runs may pass a static `DIRECTUS_ADMIN_TOKEN`; interactive local dev uses 1P-injected email+password and the script round-trips `/auth/login`. Falls back with a clear error message if neither is present.
+- Task 6.D-5 — **Schema hotfixes committed as a separate yesid.dev-cms PR (not amended into PR #5).** PR #5 was already merged when the hotfixes surfaced. PR #6 keeps history clean: PR #5 = "Task 5 schema as designed"; PR #6 = "Task 6 seed validation surfaced two schema defects, fixed here." Cross-tool readers can trace the fix chronology linearly.
+
+**Reviews:**
+
+- Spec adherence: ✅ — Q6 native Translations pattern used end-to-end; Q7 markdown not relevant (sections stored as text, rendered as plain text by consumer — markdown can come later with no schema change).
+- Cross-tool adversarial review: deferred to slice close.
+
+**Tests / verification:**
+
+- Seed script end-to-end run via `DIRECTUS_ADMIN_TOKEN=$(cat /tmp/directus-token.txt) bun scripts/seed-directus-services.ts`: 6 services created, 6 verified-on-read-back, counts match ✅
+- MCP items tool deep fetch: `related_projects` + `stack` return proper `string[]` arrays (not stringified) ✅
+- MCP items tool deep fetch with `deliverables.translations.label` + `sections.translations.title` + `sections.translations.content`: all resolve correctly to the English source text from `services.ts` ✅
+- Directus Data Studio (implicit via schema tool confirmation): services collection has 11 fields including the 3 alias fields (translations, deliverables, sections) ✅
+
+**Follow-ups flagged:**
+
+- **yesid.dev-cms PR #6** — needs to land. Will re-run `schema-apply` CI on the new snapshot; all the Task 5-era CI fixes (multipart upload, apply body unwrap, etc.) carry forward. Expected to be green.
+- **Task 7 unblocked** once PR #6 merges. Flip `src/lib/adapters/index.ts:7` from `staticAdapter` → `directusAdapter`, run full test suite + manual smoke on the 7 services-consuming routes (`/`, `/services`, `/services/[id]`, relevant cross-refs).
+- **Adapter TODOs from Task 4** (`impactMetric`, `deliverables`, `sections` in `toService()`) — now unblocked by the real Directus data. The 3 TODO-marked fields can be filled in as part of Task 7's parity work (they're currently skipped in the mapping; will emit as `undefined` on the Service object).
+- **`bun run check` + `bun run test`** on yesid.dev `feature/slice-18` — **NOT re-run this session** (the seed script is pure CLI; no .svelte or .ts change that the site imports; adapter seam still on static). Should run before Task 7 lands.
+- **fr/es translation stubs** — the `services_translations` rows only carry `en` today because `services.ts` has English-only content. When French/Spanish translations are written (future slice), adding a row per `(services_id, languages_code)` tuple in Data Studio (or a follow-up seed run) is a no-op on the adapter / consumer side; the `toLocalizedString` helper picks them up automatically.
+
+---
+
 ## 4) Open items for downstream tasks
 
 - ~~Task 2: resolve D1/D2/D3.~~ **Done.**
 - ~~Task 3: Directus install on Railway Hobby + Neon + R2 + native MCP.~~ **Done.** Manual ops by user remain (drop PostGIS service, add cms.yesid.dev custom domain, Cloudflare DNS flip, retire Vercel project) — see § 5 Follow-ups + Task 3 § Manual dashboard ops.
 - ~~Task 4: DirectusAdapter scaffold + `services` port + `toLocalizedString`.~~ **Done.** Scorched-earth Neon cleanup landed as a Task 3 follow-up in the same session per owner steering.
-- ~~Task 5: Services collection schema + snapshot to yesid.dev-cms.~~ **Done (this session).** yesid.dev-cms PR #5 open.
+- ~~Task 5: Services collection schema + snapshot to yesid.dev-cms.~~ **Done.** yesid.dev-cms PR #5 merged (`13aaeb9`).
+- ~~Task 6: Seed services content into Directus + schema hotfixes.~~ **Done (this session).** yesid.dev `7222c92`; yesid.dev-cms PR #6 open (schema hotfixes: alias fields + csv→json).
 - Task 5: design + create real yesid.dev content model in Directus (services, projects, blog_posts, tech_stack, scenarios, page singletons + M2A blocks per research.md sketch). Re-snapshot after every collection change → commit to yesid.dev-cms. Tighten `ai-editor` role permissions to those collections only.
 - Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK. Preserve natural-key IDs where possible (project slug, service id).
 - Task 7: full E2E parity — run yesid.dev test suite + a manual smoke against Directus-served routes. Flip `src/lib/adapters/index.ts:6` re-export only after parity confirmed.
