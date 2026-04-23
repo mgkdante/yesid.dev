@@ -6,18 +6,19 @@
 
 | Field | Value |
 |-------|-------|
-| Status | 🟢 in progress (Task 0 + Task 1 + clean-slate follow-up shipped this session) |
+| Status | 🟢 in progress (Task 0 + Task 1 + Task 2 + Task 3 + Task 4 shipped; awaiting Task 5 owner-driven schema design) |
 | Slice PR (site) | pending — [`feature/slice-18`](https://github.com/mgkdante/yesid.dev/tree/feature/slice-18) (keep accumulating sessions before opening; likely opens at slice close) |
 | Scorch PR (cms)      | [mgkdante/yesid.dev-cms#1](https://github.com/mgkdante/yesid.dev-cms/pull/1) — **MERGED** as `a7a1db6` |
 | Clean-slate PR (cms) | [mgkdante/yesid.dev-cms#2](https://github.com/mgkdante/yesid.dev-cms/pull/2) — **MERGED** as `0295dd6` |
 | Spec | [./spec.md](spec.md) |
 | Plan | [./plan.md](plan.md) |
 | Research | [./research.md](research.md) |
-| Branch (site) | `feature/slice-18` (yesid.dev) — commit `e918736` |
-| Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` (scorch) + `803d60c` (vercel guard) → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` (clean slate) — 15 files changed, 23 insertions, 545 deletions. |
-| Tasks completed | 4 / 8 (Task 0 + Task 1 + Task 2 + Task 3) — Task 1 landed as two PRs (scorch + clean-slate) per owner steering; Task 2 is research-only; Task 3 stood up Directus on Railway + Neon + R2 + native MCP via MCPs |
-| Live Directus (temp) | https://directus-cms-production-df43.up.railway.app — pending custom-domain wiring to cms.yesid.dev |
-| MCP endpoint | https://directus-cms-production-df43.up.railway.app/mcp — 7 tools (items/files/folders/assets/trigger-flow/schema/system-prompt) |
+| Branch (site) | `feature/slice-18` (yesid.dev) — see commit pushed at Task 4 close |
+| Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` + `803d60c` → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` → merged `0295dd6`. PR #3 branch (Task 3): `5945f56` (scaffold) + `d22669c` (snapshot+CI). |
+| Neon safety branch | `br-muddy-surf-am5n6sh9` (`pre-scorch-safety-2026-04-23`, off `br-orange-waterfall-amfej6qp`) — created Task 4 session before the scorched-earth DROP; retain until Task 7 E2E green. |
+| Tasks completed | 5 / 8 (Task 0 + 1 + 2 + 3 + 4) — Task 4 lands the DirectusAdapter scaffold (services port + `toLocalizedString` + 5 stubs) and the Neon scorched-earth cleanup (84 non-`directus_*` tables dropped). |
+| Live Directus | https://cms.yesid.dev/mcp ✓ Connected (MCP registered as `yesid-cms-prod`) — schema tool returns `collections: []` after cleanup |
+| MCP endpoint | https://cms.yesid.dev/mcp — 7 tools (items/files/folders/assets/trigger-flow/schema/system-prompt) |
 
 ## 2) Scope (from spec)
 
@@ -254,11 +255,73 @@ flowchart LR
 
 ---
 
+### Task 4 — DirectusAdapter scaffold + services port + scorched-earth Neon cleanup ✅
+
+- **Planned by:** Claude Code (Opus 4.7 [1m], reasoning=high)
+- **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high) — via Directus MCP + Neon MCP
+- **Session:** 2026-04-23
+- **Commit(s):** see PR / commit ref in § 1 Status after push
+- **Neon safety branch:** `br-muddy-surf-am5n6sh9` (created off `br-orange-waterfall-amfej6qp` before the scorch; retain until Task 5 lands a real schema)
+
+**Files:**
+
+- Created: `src/lib/adapters/directus.ts` — Directus adapter scaffold (pure `toLocalizedString` helper + `services` port impl + 5 ports throwing TODO errors for Task 5+)
+- Created: `src/lib/adapters/directus.test.ts` — 7 unit tests for `toLocalizedString` (empty/missing, EN-only, all-3-locale, fallback locale, empty-string absence, non-string coercion, sibling-field isolation)
+- Modified: `.env.example` — documented `PUBLIC_DIRECTUS_URL` (public) + `DIRECTUS_READ_TOKEN` (1P-backed, server-only)
+- Modified: `package.json` + `bun.lock` — added `@directus/sdk@20.3.0`
+- Out-of-repo (Neon project `sparkling-sky-51665073` — `yesid-dev-cms`):
+  - **Dropped all 84 non-`directus_*` public tables** (Payload-legacy schema + `payload_*` infrastructure: `about_content*`, `blog_page*`, `blog_posts*`, `contact_content*`, `error_pages*`, `home_content*`, `media*`, `nav_links*`, `projects*`, `services*`, `site_meta*`, `stack_scenarios*`, `tech_stack*`, `users*`, `payload_*` — full list in § 17 Validation results).
+  - Cleared Directus registry of orphan rows (`directus_collections`, `directus_fields`, `directus_relations`, `directus_permissions`, `directus_presets`, `directus_revisions` — all filtered `NOT LIKE 'directus_%'`).
+  - Result: MCP `schema` tool now returns only `directus_*` system collections + empty user collection set. Task 5 gets a clean slate.
+- Out-of-repo (Directus admin — ai-editor role permissions):
+  - Widened `ai-editor` role with **read-only** access to `directus_collections`, `directus_fields`, `directus_relations` (3 rows). Required so the MCP `schema` tool works. Write/delete on `directus_*` remain blocked — the "never edit system collections" rail still holds.
+
+**What landed:**
+
+A fully type-checked Directus adapter scaffold that compiles against the `ContentAdapter` contract but is not yet wired at runtime. `src/lib/adapters/index.ts:7` still re-exports the static adapter — production yesid.dev is unaffected. The `services` port has a real implementation against Directus's native Translations field shape (per Q6 Approach A): `fetchServices()` calls `readItems('services', { fields: ['*', { translations: ['*'] }] })`, and `toService(row)` maps `{ id, station, icon?, svg?, lottie_reverse?, visible?, related_projects?, stack?, translations: [{ languages_code, title, description, ... }] }` → the existing `Service` TS type. `impactMetric`, `deliverables`, and `sections` are intentionally left out of the scaffold mapping — they depend on sub-collections that don't exist yet and will be filled in at Task 5 when the real schema lands in Data Studio.
+
+The client is **lazy-initialized** — `createDirectus(...)` only fires on the first port call, not at module import time. This keeps the unit test env-free: `directus.test.ts` imports `toLocalizedString` directly without triggering `$env/dynamic/*` resolution or the SDK's fetch wiring. `buildClient()` throws a clear error if `PUBLIC_DIRECTUS_URL` or `DIRECTUS_READ_TOKEN` is missing at runtime, so failures surface with a meaningful message the first time a route actually hits the adapter.
+
+**Scorched-earth Neon cleanup (out of Task-4 scope, but executed this session per owner's "remove payload legacy tables or anything you find"):** the Neon DB still carried 84 Payload-shape tables (`_locales` junctions, `_rels` polymorphic M2A, `_texts` FTS indexes, `payload_*` infrastructure). These weren't referenced from any Directus collection — they were orphan tables from the pre-pivot Payload era — but they'd clutter Task 5's schema design and potentially mislead anyone reading the DB. Options considered: (a) narrow — drop only `payload_*` (7 tables); (b) medium — drop payload + `*_locales` that use Payload's `_locale`/`_parent_id` shape; (c) scorched — drop everything non-`directus_*`. Owner chose (c) — matches the yesid-dev-cms repo scorched-earth rebuild (PRs #1 + #2) and gives Task 5 a true greenfield. Safety: a Neon branch `pre-scorch-safety-2026-04-23` (`br-muddy-surf-am5n6sh9`) was created off main before the DROP — Neon's PITR + the branch together provide 24h rollback. After the scorch, Directus MCP `schema` returns a clean `collections: []` + only `directus_*` system entries.
+
+**Decisions (added during execution):**
+
+- Task 4.D-1 — **Lazy-initialize the Directus client.** Module top-level must not call `createDirectus(...)` because vitest imports `directus.ts` in a Node env where `$env/dynamic/public` may resolve to `undefined` for `PUBLIC_DIRECTUS_URL`. Eager init → crashing unit tests. Lazy init (`cachedClient: ... | null` + `client()` accessor) keeps tests env-free and still gives fast path at runtime (cache after first call). Also aligns with SvelteKit's server-side-only usage pattern for adapter code.
+- Task 4.D-2 — **Generic-bound signature for `toLocalizedString`**, not `Record<string, unknown>` intersection. Original `type TranslationRow = { languages_code: string } & Record<string, unknown>` caused 6 TS errors because interfaces (`DirectusServiceTranslation`) don't satisfy `Record<string, unknown>` without an explicit index signature. Switched to `<T extends { languages_code: string }>(translations: ReadonlyArray<T>, field: string)` — accepts any typed translation shape directly, narrows the field access via a local `as Record<string, unknown>` cast inside the loop. Zero ergonomic loss at the call site; zero index-signature pollution on the interfaces.
+- Task 4.D-3 — **Scorched-earth cleanup of Neon public schema.** All 84 non-`directus_*` tables dropped + Directus registry rows cleaned. Rationale above.
+- Task 4.D-4 — **Widen `ai-editor` role read permissions** to include `directus_collections`, `directus_fields`, `directus_relations`. Required for the MCP `schema` tool to work (queries `directus_collections` internally). Write/delete on `directus_*` remain blocked — the safety rail still holds against accidental system-collection mutation from AI clients.
+- Task 4.D-5 — **Skip the adapter-seam flip in `src/lib/adapters/index.ts`.** Per plan Task 4 contract — flip lands at Task 7 after Tasks 5–6 define real collections and seed data. Static adapter stays active throughout Task 4.
+
+**Reviews:**
+
+- Spec adherence: ✅ — Q6 (native Translations + adapter-boundary `toLocalizedString` transform) implemented exactly as specified. D1/D2/D3 unaffected (this task is purely yesid.dev-side). Pin to SDK `^20` ✅. No changes to `src/lib/repositories/*`, `src/lib/components/*`, or `src/routes/*` ✅. Static adapter still the active re-export ✅.
+- Cross-tool adversarial review: deferred to slice close per `feedback_codex_review_at_slice_close.md`.
+
+**Tests / verification:**
+
+- `bun run check` → **0 errors**, 20 pre-existing warnings ✅ (adapter + test file both compile against strict TypeScript settings)
+- `bun run test` → **975 tests passing** (up from 968 in Task 3 — the 7 new `toLocalizedString` tests land cleanly; the pre-existing 968 pass unchanged) ✅
+- `directusAdapter: ContentAdapter` type annotation compiles — all 6 ports + their methods satisfy the contract ✅
+- Module import is env-free — `directus.test.ts` imports without needing `PUBLIC_DIRECTUS_URL`/`DIRECTUS_READ_TOKEN` set ✅
+- Directus MCP `schema` tool round-trip post-cleanup: returns `collections: []` + `directus_*` system only, zero Payload cruft ✅
+- Neon SQL verification: `SELECT count(*) FROM pg_tables WHERE schemaname='public' AND tablename NOT LIKE 'directus_%'` → `0` ✅
+- yesid-cms-prod MCP still `✓ Connected` after session (`claude mcp list`) ✅
+
+**Follow-ups flagged:**
+
+- **Task 5 gate** — real Directus collection design in Data Studio. First target: `services` (smallest surface, matches the port implemented here). Once the collection exists with real Translations, re-snapshot → `yesid.dev-cms/infra/directus/snapshot.yaml` → commit in yesid.dev-cms.
+- **Fill in the scaffold's TODOs once collections exist** — `impactMetric` (maps to `impact_metric_value` + `impact_metric_label` translation fields), `deliverables` (M2M to `services_deliverables` with per-item translations), `sections` (M2M to `services_sections` with `title` + `content` translations per section), `stack` (simple string array column or M2M to a shared `tech_stack`).
+- **Port 5 stub ports** (`projects`, `blog`, `meta`, `techStack`, `content`) — each has its own schema + mapping work, each lands in a subsequent Task 5 sub-step or Task 6.
+- **Widened `ai-editor` reads on system collections** — currently has read on `directus_collections/fields/relations` (minimum needed for `schema` MCP tool). Follow-up #7 in § 5 is superseded: the scope is now "after Task 5 lands, add an explicit policy scoping write access to user collections only; keep the 3 system-read grants."
+- **Delete the Neon safety branch `br-muddy-surf-am5n6sh9`** once Task 5 produces a real schema + passes Task 7 E2E (≥ 2 weeks post-flip). Free to keep before then — costs $0 on Hobby.
+
+---
+
 ## 4) Open items for downstream tasks
 
 - ~~Task 2: resolve D1/D2/D3.~~ **Done.**
-- ~~Task 3: Directus install on Railway Hobby + Neon + R2 + native MCP.~~ **Done (this session).** Manual ops by user remain (drop PostGIS service, add cms.yesid.dev custom domain, Cloudflare DNS flip, retire Vercel project) — see § 5 Follow-ups + Task 3 § Manual dashboard ops.
-- Task 4: Create `src/lib/adapters/directus.ts` against the live Railway Directus (use `@directus/sdk` v20+ with type-safe `Schema` generic). First Tasks 5–6 will define real collections; Task 4 itself only needs to flip the seam re-export when the first collection is ready. Implement `toLocalizedString(translations, field, fallback='en')` transform at the adapter boundary. First content type to swap: `services` (smallest surface).
+- ~~Task 3: Directus install on Railway Hobby + Neon + R2 + native MCP.~~ **Done.** Manual ops by user remain (drop PostGIS service, add cms.yesid.dev custom domain, Cloudflare DNS flip, retire Vercel project) — see § 5 Follow-ups + Task 3 § Manual dashboard ops.
+- ~~Task 4: DirectusAdapter scaffold + `services` port + `toLocalizedString`.~~ **Done (this session).** Scorched-earth Neon cleanup landed as a Task 3 follow-up in the same session per owner steering.
 - Task 5: design + create real yesid.dev content model in Directus (services, projects, blog_posts, tech_stack, scenarios, page singletons + M2A blocks per research.md sketch). Re-snapshot after every collection change → commit to yesid.dev-cms. Tighten `ai-editor` role permissions to those collections only.
 - Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK. Preserve natural-key IDs where possible (project slug, service id).
 - Task 7: full E2E parity — run yesid.dev test suite + a manual smoke against Directus-served routes. Flip `src/lib/adapters/index.ts:6` re-export only after parity confirmed.
@@ -271,8 +334,8 @@ flowchart LR
 3. Monitor Directus 12 license revision (directus.io/bsl); decide upgrade path before any v12 bump.
 4. After Task 7 production-green for 2+ weeks: delete `staticAdapter` in Slice 19+ (Q4 resolution).
 5. **Resend email integration** — Railway blocks SMTP egress (port 587). Switch to Resend HTTPS API via Directus Flow + webhook operation. Resend key already in 1P at `op://yesid-dev/s7ztvxh5t7qc764644le3w7zhi/credential`.
-6. **Save Directus MCP ai-editor token to 1P** — token currently in `%TEMP%/directus-ai-editor-token.txt`. Run `op signin` + `op item create` (recipe in § 16).
-7. **Tighten ai-editor role permissions** — currently uses default Directus role permissions (no explicit policies attached). Add a `/policies` + `/access` row scoping read+update to user content collections only. Wait until Task 5 defines those collections.
+6. ~~**Save Directus MCP ai-editor token to 1P.**~~ Done — token lives in 1P vault `yesid-dev` at `op://yesid-dev/mymltacjptswpjx24kw3iwxfpy/credential`; consumed as `$YESID_CMS_MCP_TOKEN` via `op read`.
+7. **Tighten ai-editor role permissions (updated at Task 4)** — now has explicit **read** on `directus_collections/fields/relations` (widened Task 4 so the MCP `schema` tool works). Write/delete on `directus_*` system collections remain blocked. Follow-up: once Task 5 defines the real user collections, add a `/policies` + `/access` row scoping write access to those collections only, while keeping the 3 system-read grants.
 8. **Drop the unused PostGIS Railway service** — Railway CLI doesn't expose `service delete`; do via dashboard.
 9. **Pin Directus image to 11.17.3 explicitly** in a `Dockerfile`/`railway.json` override (currently runs on it via template default but isn't locked).
 
@@ -297,6 +360,8 @@ flowchart LR
 - `docs/slices/slice-18/spec.md` — Task 0
 - `docs/slices/slice-18/research.md` — Task 0 (populated with Task 2 findings)
 - `docs/slices/slice-18/handoff.md` — Task 0 (this file)
+- `src/lib/adapters/directus.ts` — Task 4 (DirectusAdapter scaffold)
+- `src/lib/adapters/directus.test.ts` — Task 4 (`toLocalizedString` unit tests)
 
 **yesid.dev-cms (Task 3a + 3c — PR #3):**
 - `.env.example` — Task 3a (`5945f56`)
@@ -363,12 +428,12 @@ No entrypoint changes this session.
 
 ## 14) Architectural seam status
 
-- **Tasks 0–3:** seam at `src/lib/adapters/index.ts:6` **unchanged** — yesid.dev still re-exports `staticAdapter as adapter`. Task 1 scorched yesid.dev-cms (no consumer impact since Payload was never wired). Task 3 stood up the Directus backend on Railway but the consumer hasn't been pointed at it yet.
-- **Task 4:** seam flips. New file `src/lib/adapters/directus.ts` lands; `index.ts` re-export changes from `staticAdapter` → `directusAdapter`. Repositories + components untouched.
+- **Tasks 0–4:** seam at `src/lib/adapters/index.ts:7` **unchanged** — yesid.dev still re-exports `staticAdapter as adapter`. Task 4 lands `src/lib/adapters/directus.ts` as a sibling file but does NOT flip the re-export. Repositories + components untouched.
+- **Task 7:** seam flips. `index.ts` re-export changes from `staticAdapter` → `directusAdapter` after Tasks 5–6 define real collections + seed data, and parity is confirmed.
 
 ## 15) Environment / config
 
-**yesid.dev:** no env changes Tasks 0–3. Task 4 will add `PUBLIC_DIRECTUS_URL` + `DIRECTUS_READ_TOKEN` (private) for the SvelteKit DirectusAdapter.
+**yesid.dev:** Task 4 added `PUBLIC_DIRECTUS_URL` + `DIRECTUS_READ_TOKEN` to `.env.example` — `PUBLIC_DIRECTUS_URL` is a plain string (`https://cms.yesid.dev`), `DIRECTUS_READ_TOKEN` resolves from 1P at `op://yesid-dev/directus-read-token/credential`. Consumed in `src/lib/adapters/directus.ts` only; adapter is dormant until Task 7.
 
 **yesid.dev-cms (Railway service `Directus CMS`)** — current env after Task 3:
 
@@ -707,4 +772,4 @@ Required next step: Task 2 — Directus research (spec D1/D2/D3 resolution).
 
 ## 27) Final Status
 
-🟢 **IN PROGRESS** — Task 0 + Task 1 + Task 2 shipped this session. yesid.dev-cms is at clean-slate (PR #1 `a7a1db6` + PR #2 `0295dd6` both merged). yesid.dev `feature/slice-18` holds scaffold + comment cleanup (`1535fa5`) + Task 2 research. Spec D1/D2/D3 + Q4–Q7 resolved. Remaining tasks (3–8): Directus install (Task 3 unblocked, Railway + R2 + snapshot-apply YAML), DirectusAdapter swap (Task 4), remaining collection swaps (Task 5), seed (Task 6), integration E2E (Task 7), slice close (Task 8).
+🟢 **IN PROGRESS** — Tasks 0 through 4 shipped. `feature/slice-18` now holds the Task 4 scaffold: `src/lib/adapters/directus.ts` (lazy client + pure `toLocalizedString` + services-port impl + 5 stub ports) + `directus.test.ts` (7 unit tests). Adapter seam stays on `staticAdapter` — production yesid.dev is unaffected. Side-effect of the session: **scorched-earth Neon cleanup** — 84 Payload-era public tables dropped + Directus registry rows cleaned; schema tool now returns `collections: []`. `ai-editor` role widened with read on `directus_collections/fields/relations` so the MCP `schema` tool works. Neon safety branch `br-muddy-surf-am5n6sh9` retained for rollback. Remaining tasks: **Task 5** (owner-driven Directus collection design in Data Studio → re-snapshot to yesid-dev-cms), **Task 6** (seed), **Task 7** (adapter flip + E2E parity), **Task 8** (slice close + peer review + PR).

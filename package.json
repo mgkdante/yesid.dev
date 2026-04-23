@@ -65,6 +65,7 @@
 		"vitest": "^4.1.0"
 	},
 	"dependencies": {
+		"@directus/sdk": "^20",
 		"@fontsource-variable/inter": "^5.2.8",
 		"@fontsource-variable/jetbrains-mono": "^5.2.8",
 		"gsap": "^3.14.2",
