@@ -44,6 +44,12 @@ jobs:
         run: |
           # Drop --network host: unreliable with GHA service containers on some runners.
           # Use host-gateway so the Directus container reaches the host-mapped PG port.
+          #
+          # Explicit `bootstrap && start` chain: the 11.17.3 image's default CMD runs
+          # `directus start` which does NOT auto-bootstrap a fresh DB — it expects an
+          # already-populated schema. In Railway, the first boot bootstraps via a
+          # persistent volume and subsequent boots just start. On ephemeral CI, every
+          # boot is "first boot", so we need to chain explicitly.
           docker run -d --name directus \
             --add-host=host.docker.internal:host-gateway \
             -p 8055:8055 \
@@ -58,11 +64,10 @@ jobs:
             -e DB_PASSWORD=directus \
             -e ADMIN_EMAIL=admin@ci.test \
             -e ADMIN_PASSWORD=ci-test-pass-rotate-immediately \
-            -e CACHE_ENABLED=false \
-            -e WEBSOCKETS_ENABLED=false \
             -e TELEMETRY=false \
-            -e LOG_LEVEL=info \
-            directus/directus:11.17.3
+            -e LOG_LEVEL=debug \
+            directus/directus:11.17.3 \
+            sh -c "npx directus bootstrap && exec npx directus start"
           # Stream Directus logs live so CI operators see what's happening during the poll.
           docker logs -f directus &
           LOG_PID=$!
