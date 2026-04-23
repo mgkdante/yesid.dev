@@ -96,15 +96,15 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
             | jq -r '.data.access_token')
-          # Diff first
+          # Diff: 11.17.3 expects multipart upload (schemaMultipartHandler),
+          # not `Content-Type: application/yaml`.
           DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
             -H "Authorization: Bearer $TOKEN" \
-            -H 'Content-Type: application/yaml' \
-            --data-binary @infra/directus/snapshot.yaml)
+            -F "file=@infra/directus/snapshot.yaml")
           echo "::group::Schema diff"
           echo "$DIFF" | jq .
           echo "::endgroup::"
-          # Apply
+          # Apply: takes the diff JSON directly.
           if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
             HASH=$(echo "$DIFF" | jq -r '.data.hash')
             curl -sf -X POST http://localhost:8055/schema/apply \
@@ -148,10 +148,11 @@ jobs:
           DIRECTUS_URL: ${{ secrets.DIRECTUS_PROD_URL }}
           DIRECTUS_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
         run: |
+          # Multipart upload — same shape as the smoke job; Directus 11.17.3
+          # /schema/diff only accepts multipart, not application/yaml body.
           DIFF=$(curl -sf -X POST "$DIRECTUS_URL/schema/diff" \
             -H "Authorization: Bearer $DIRECTUS_TOKEN" \
-            -H 'Content-Type: application/yaml' \
-            --data-binary @infra/directus/snapshot.yaml)
+            -F "file=@infra/directus/snapshot.yaml")
           echo "::group::Production schema diff"
           echo "$DIFF" | jq .
           echo "::endgroup::"
