@@ -555,8 +555,80 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: services
+    field: translations
+    type: alias
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: translations
+      group: null
+      hidden: false
+      interface: translations
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 99
+      special:
+        - translations
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: services
+    field: deliverables
+    type: alias
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: deliverables
+      group: null
+      hidden: false
+      interface: list-o2m
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 100
+      special:
+        - o2m
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: services
+    field: sections
+    type: alias
+    meta:
+      collection: services
+      conditions: null
+      display: null
+      display_options: null
+      field: sections
+      group: null
+      hidden: false
+      interface: list-o2m
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 101
+      special:
+        - o2m
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: services
     field: related_projects
-    type: text
+    type: json
     meta:
       collection: services
       conditions: null
@@ -566,15 +638,14 @@ fields:
       group: null
       hidden: false
       interface: tags
-      note: >-
-        Comma-separated list of project slugs (M2M upgrade once projects
-        collection lands).
+      note: Array of project slugs (M2M upgrade once projects collection lands).
       options: null
       readonly: false
       required: false
       searchable: true
       sort: 7
-      special: null
+      special:
+        - cast-json
       translations: null
       validation: null
       validation_message: null
@@ -582,7 +653,7 @@ fields:
     schema:
       name: related_projects
       table: services
-      data_type: text
+      data_type: json
       default_value: null
       max_length: null
       numeric_precision: null
@@ -598,7 +669,7 @@ fields:
       foreign_key_column: null
   - collection: services
     field: stack
-    type: text
+    type: json
     meta:
       collection: services
       conditions: null
@@ -608,13 +679,14 @@ fields:
       group: null
       hidden: false
       interface: tags
-      note: Comma-separated list of tech names (e.g. PostgreSQL, Python, Retool).
+      note: Array of tech names (e.g. PostgreSQL, Python, Retool).
       options: null
       readonly: false
       required: false
       searchable: true
       sort: 8
-      special: null
+      special:
+        - cast-json
       translations: null
       validation: null
       validation_message: null
@@ -622,7 +694,7 @@ fields:
     schema:
       name: stack
       table: services
-      data_type: text
+      data_type: json
       default_value: null
       max_length: null
       numeric_precision: null
@@ -756,6 +828,30 @@ fields:
       has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
+  - collection: services_deliverables
+    field: translations
+    type: alias
+    meta:
+      collection: services_deliverables
+      conditions: null
+      display: null
+      display_options: null
+      field: translations
+      group: null
+      hidden: false
+      interface: translations
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 99
+      special:
+        - translations
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
   - collection: services_deliverables_translations
     field: id
     type: integer
@@ -1036,6 +1132,30 @@ fields:
       has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
+  - collection: services_sections
+    field: translations
+    type: alias
+    meta:
+      collection: services_sections
+      conditions: null
+      display: null
+      display_options: null
+      field: translations
+      group: null
+      hidden: false
+      interface: translations
+      note: null
+      options: null
+      readonly: false
+      required: false
+      searchable: true
+      sort: 99
+      special:
+        - translations
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
   - collection: services_sections_translations
     field: id
     type: integer
