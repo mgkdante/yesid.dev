@@ -6,7 +6,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | 🟢 in progress (Task 0 + Task 1 + Task 2 + Task 3 + Task 4 shipped; awaiting Task 5 owner-driven schema design) |
+| Status | 🟢 in progress (Tasks 0–5 shipped; yesid.dev-cms PR #5 open with schema snapshot; Task 6 seed is next) |
 | Slice PR (site) | pending — [`feature/slice-18`](https://github.com/mgkdante/yesid.dev/tree/feature/slice-18) (keep accumulating sessions before opening; likely opens at slice close) |
 | Scorch PR (cms)      | [mgkdante/yesid.dev-cms#1](https://github.com/mgkdante/yesid.dev-cms/pull/1) — **MERGED** as `a7a1db6` |
 | Clean-slate PR (cms) | [mgkdante/yesid.dev-cms#2](https://github.com/mgkdante/yesid.dev-cms/pull/2) — **MERGED** as `0295dd6` |
@@ -16,7 +16,7 @@
 | Branch (site) | `feature/slice-18` (yesid.dev) — head `427ad19` (Task 4 close) |
 | Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` + `803d60c` → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` → merged `0295dd6`. PR #3 branch (Task 3): `5945f56` (scaffold) + `d22669c` (snapshot+CI). |
 | Neon safety branch | `br-muddy-surf-am5n6sh9` (`pre-scorch-safety-2026-04-23`, off `br-orange-waterfall-amfej6qp`) — created Task 4 session before the scorched-earth DROP; retain until Task 7 E2E green. |
-| Tasks completed | 5 / 8 (Task 0 + 1 + 2 + 3 + 4) — Task 4 lands the DirectusAdapter scaffold (services port + `toLocalizedString` + 5 stubs) and the Neon scorched-earth cleanup (84 non-`directus_*` tables dropped). |
+| Tasks completed | 6 / 8 (Task 0 + 1 + 2 + 3 + 4 + 5) — Task 5 lands the `services` schema (7 collections: services + translations junction + deliverables + sections + their translations + `languages`) via programmatic REST against live Directus; snapshot committed via yesid.dev-cms PR #5. |
 | Live Directus | https://cms.yesid.dev/mcp ✓ Connected (MCP registered as `yesid-cms-prod`) — schema tool returns `collections: []` after cleanup |
 | MCP endpoint | https://cms.yesid.dev/mcp — 7 tools (items/files/folders/assets/trigger-flow/schema/system-prompt) |
 
@@ -317,11 +317,74 @@ The client is **lazy-initialized** — `createDirectus(...)` only fires on the f
 
 ---
 
+### Task 5 — Services collection schema (Directus-native Translations pattern) ✅
+
+- **Planned by:** Claude Code (Opus 4.7 [1m], reasoning=high)
+- **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high) — via Directus REST + 1P CLI + Neon MCP (read-only verify)
+- **Session:** 2026-04-23 (same session as Task 4)
+- **Owner decision:** chose **Path B — programmatic REST** over Path A (Data Studio click-through) for speed + repeatability. Spec D3 still satisfied: the YAML snapshot is the canonical artifact; how it got generated (REST vs GUI) is an implementation detail.
+- **PR (yesid.dev-cms):** [mgkdante/yesid.dev-cms#5](https://github.com/mgkdante/yesid.dev-cms/pull/5) — commit `468f241`
+
+**Files:**
+
+- Modified (yesid.dev-cms): `infra/directus/snapshot.yaml` — 369 B baseline → 48 KB with 7 user collections + fields + relations (+1,844 lines)
+- Out-of-repo (Directus admin, Neon `sparkling-sky-51665073`):
+  - Created 7 collections via `POST /collections` (REST): `languages`, `services`, `services_translations`, `services_deliverables`, `services_deliverables_translations`, `services_sections`, `services_sections_translations`
+  - Created 6 relations via `POST /relations`: (a) `services_translations.services_id → services.id` with `one_field: "translations"` + `junction_field: "languages_code"`; (b) `services_translations.languages_code → languages.code` with `junction_field: "services_id"`; (c) `services_deliverables.services_id → services.id` with `one_field: "deliverables"` + `sort_field: "sort"`; (d) `services_deliverables_translations.services_deliverables_id → services_deliverables.id` (Translations junction); (e) same lang-code FK; (f) `services_sections.services_id → services.id` with `one_field: "sections"` + `sort_field: "sort"`; (g) + `services_sections_translations` pair.
+  - Seeded `languages`: `en` / `fr` / `es`.
+  - Granted Public policy `read` on all 7 collections via batch `POST /permissions`.
+
+**What landed:**
+
+The Directus side of the services content model, hand-designed to mirror `src/lib/types.ts` `Service` TypeScript shape so the Task 4 `DirectusAdapter.toService()` mapping binds 1:1 with zero TS adjustments. Translations follow the Directus-native pattern per spec Q6 Approach A: each translatable collection has a sibling `_translations` junction with `<parent>_id` + `languages_code` FKs and per-locale field rows; the parent carries an O2M alias (e.g. `services.translations`) that exposes the junction as a nested array. Fetch pattern from the adapter (already implemented): `readItems('services', { fields: ['*', { translations: ['*'] }] })` → `toLocalizedString(row.translations, fieldName)` composes the `LocalizedString` at the adapter boundary.
+
+Schema shape, summarized:
+
+- **`services`** — `id` (PK string, kebab-case slug; interface `input` with `slug: true`), `station` (int, required, drives order + nav), `icon` (string, Lottie filename), `svg` (string, illustration filename), `lottie_reverse` (bool default false), `visible` (bool default true), `related_projects` (csv of project slugs; M2M upgrade later when projects collection lands), `stack` (csv of tech names). Sort field: `station`.
+- **`services_translations`** — auto-id PK, `services_id` + `languages_code` FKs. Translated fields: `title` (string, required), `subtitle`, `description` (text, required), `long_description` (text), `value_proposition` (text), `benefit_headline`, `impact_metric_value`, `impact_metric_label` (all strings).
+- **`services_deliverables`** — auto-id PK, `services_id` FK, `sort` int. One translated field via junction: `label` (string, required).
+- **`services_sections`** — auto-id PK, `services_id` FK, `sort` int. Two translated fields via junction: `title` (string, required), `content` (text, required).
+- **`languages`** — `code` PK (string, 2-letter ISO 639-1), `name` (string, required), `direction` (enum `ltr`/`rtl`, default `ltr`). Seeded with `en` · `fr` · `es`.
+
+**Why the Public-policy permissions bit matters.** The adapter's SvelteKit server-load calls are unauthenticated by default (they don't have a session context). The Public role (policy `abf8a154-5b1c-4a46-ac9c-7300570f4f17`) now has explicit `read` permissions on all 7 collections. After Task 7 flips the seam, SvelteKit's `+page.server.ts`/`+layout.server.ts` loaders can hit the Directus SDK with no token and get data back — same trust model as a public REST endpoint. Admin writes (Data Studio, Task 6 seed, AI editor) still require auth.
+
+**Decisions (added during execution):**
+
+- Task 5.D-1 — **Path B (programmatic REST) over Data Studio.** Spec D3 says "snapshot + apply YAML" is the durable mechanism; it doesn't specify HOW the schema gets authored pre-snapshot. GUI click-through for 7 collections + 6 relations + 7 permissions = 40+ clicks × ambiguity about interface settings. REST is faster, reviewable in a shell transcript, repeatable if we need to rebuild from scratch on a fresh instance. Snapshot YAML output is identical either way.
+- Task 5.D-2 — **`related_projects` as CSV (not M2M yet).** Projects collection doesn't exist. CSV field of project slugs is equivalent to `relatedProjects: string[]` in TS. When projects lands (Task 5-next or Slice 19), upgrade to M2M junction `services_projects` via `POST /relations` + data migration (keys already exist as slugs). No adapter change needed — the field stays a `string[]` on the Service type.
+- Task 5.D-3 — **`sort` on `_deliverables` + `_sections` collections.** TS type is a positional array (`deliverables: LocalizedString[]`, `sections: ServiceSection[]`). Without an explicit sort column, Directus orders by `id` which tracks creation order — editing order becomes painful. `sort` is an explicit int column wired via relation `sort_field: "sort"`; Data Studio exposes drag-to-reorder UI; adapter's `readItems` query can `sort: ['sort']` to preserve order on fetch. Small ergonomic win.
+- Task 5.D-4 — **Junction collections are `hidden: true`** in Data Studio. Users don't want to see `services_translations` as a first-class entity in the nav — they want to edit translations inline on the parent. `hidden: true` on the junction collections hides them from the sidebar; the parent still exposes them via the `translations` alias interface.
+- Task 5.D-5 — **Admin token rotation not required.** The token used for this session was obtained via `POST /auth/login` with 1P-stored admin credentials; session access token lives 15 min and was unused after the setup sequence completed. No long-lived admin static token was created — each admin mutation requires a fresh login from 1P. Minimal surface.
+
+**Reviews:**
+
+- Spec adherence: ✅ — Q6 Approach A (native Translations + `toLocalizedString` adapter boundary) implemented exactly as specified. Q7 markdown staying markdown ✅ (no Block Editor introduced). D3 snapshot-in-Git ✅. D1/D2 unaffected (schema is DB-level; storage + hosting unchanged).
+- Cross-tool adversarial review: deferred to slice close.
+
+**Tests / verification:**
+
+- Directus MCP `schema` round-trip on all 7 collections → every field, type, `note`, and `interface` matches spec ✅
+- Unauth smoke: `curl https://cms.yesid.dev/items/services` → `{"data":[]}` (200, empty — collection exists, no items; Task 6 seeds) ✅
+- Unauth smoke: `curl https://cms.yesid.dev/items/languages` → all three locales return ✅
+- yesid.dev type alignment: `DirectusServiceTranslation` in `src/lib/adapters/directus.ts` (Task 4) has `languages_code` + identical field names → 1:1 mapping with zero TS changes ✅
+- yesid.dev-cms PR #5 opened ✅
+
+**Follow-ups flagged:**
+
+- **Task 6** (yesid.dev-cms) — write `scripts/seed.ts` that reads `../yesid.dev/src/lib/content/services.ts` and upserts into these collections via SDK. Each `Service` becomes one row in `services` + N rows in `services_translations` (one per locale present) + M rows in `services_deliverables` + corresponding translations + K rows in `services_sections` + translations. Idempotent (upsert by natural key — slug for services, position for sub-collections).
+- **Task 4 adapter follow-ups now unblocked** — `impactMetric` (maps to `impact_metric_value` + `impact_metric_label` translation fields), `deliverables` (fetch via `{ fields: ['*', { deliverables: ['*', { translations: ['*'] }] }] }`, then compose LocalizedString per row), `sections` (same pattern with `title` + `content`), `stack` (csv field — split on comma).
+- **Projects, blog_posts, tech_stack, site_meta, site-chrome pages** — each needs its own Task-5-style schema design before their adapter ports can fill in. Same pattern: collection + Translations junction(s) + `_deliverables`/`_sections`-style sub-collections where needed.
+- **Default visibility for sub-collections** — the `_translations` + `_deliverables` + `_sections` collections are `hidden: true` for the sidebar, but Data Studio still lists them under `Content`. If that's noisy, the alternative is a stable Dev Studio folder grouping — cosmetic, not blocking.
+- **Schema-apply CI gate** — `.github/workflows/schema-apply.yml` (Task 3c) needs to run on PR #5 to validate the snapshot applies cleanly on an ephemeral container. Watch the workflow run.
+
+---
+
 ## 4) Open items for downstream tasks
 
 - ~~Task 2: resolve D1/D2/D3.~~ **Done.**
 - ~~Task 3: Directus install on Railway Hobby + Neon + R2 + native MCP.~~ **Done.** Manual ops by user remain (drop PostGIS service, add cms.yesid.dev custom domain, Cloudflare DNS flip, retire Vercel project) — see § 5 Follow-ups + Task 3 § Manual dashboard ops.
-- ~~Task 4: DirectusAdapter scaffold + `services` port + `toLocalizedString`.~~ **Done (this session).** Scorched-earth Neon cleanup landed as a Task 3 follow-up in the same session per owner steering.
+- ~~Task 4: DirectusAdapter scaffold + `services` port + `toLocalizedString`.~~ **Done.** Scorched-earth Neon cleanup landed as a Task 3 follow-up in the same session per owner steering.
+- ~~Task 5: Services collection schema + snapshot to yesid.dev-cms.~~ **Done (this session).** yesid.dev-cms PR #5 open.
 - Task 5: design + create real yesid.dev content model in Directus (services, projects, blog_posts, tech_stack, scenarios, page singletons + M2A blocks per research.md sketch). Re-snapshot after every collection change → commit to yesid.dev-cms. Tighten `ai-editor` role permissions to those collections only.
 - Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK. Preserve natural-key IDs where possible (project slug, service id).
 - Task 7: full E2E parity — run yesid.dev test suite + a manual smoke against Directus-served routes. Flip `src/lib/adapters/index.ts:6` re-export only after parity confirmed.
@@ -772,4 +835,4 @@ Required next step: Task 2 — Directus research (spec D1/D2/D3 resolution).
 
 ## 27) Final Status
 
-🟢 **IN PROGRESS** — Tasks 0 through 4 shipped. `feature/slice-18` now holds the Task 4 scaffold: `src/lib/adapters/directus.ts` (lazy client + pure `toLocalizedString` + services-port impl + 5 stub ports) + `directus.test.ts` (7 unit tests). Adapter seam stays on `staticAdapter` — production yesid.dev is unaffected. Side-effect of the session: **scorched-earth Neon cleanup** — 84 Payload-era public tables dropped + Directus registry rows cleaned; schema tool now returns `collections: []`. `ai-editor` role widened with read on `directus_collections/fields/relations` so the MCP `schema` tool works. Neon safety branch `br-muddy-surf-am5n6sh9` retained for rollback. Remaining tasks: **Task 5** (owner-driven Directus collection design in Data Studio → re-snapshot to yesid-dev-cms), **Task 6** (seed), **Task 7** (adapter flip + E2E parity), **Task 8** (slice close + peer review + PR).
+🟢 **IN PROGRESS** — Tasks 0 through 5 shipped. yesid.dev `feature/slice-18` holds the Task 4 adapter scaffold (`directus.ts` + `directus.test.ts`; seam stays on `staticAdapter`). yesid.dev-cms PR [#5](https://github.com/mgkdante/yesid.dev-cms/pull/5) holds the Task 5 schema snapshot — 7 collections (`services` + `services_translations` + `services_deliverables`(+translations) + `services_sections`(+translations) + `languages`); Public policy has read on all. Adapter's TS types already map 1:1 to the schema — no TS changes required post-flip. Neon safety branch `br-muddy-surf-am5n6sh9` retained. Remaining tasks: **Task 6** (seed data from yesid.dev source modules via idempotent SDK upsert), **Task 7** (adapter flip + E2E parity), **Task 8** (slice close + peer review + PR).
