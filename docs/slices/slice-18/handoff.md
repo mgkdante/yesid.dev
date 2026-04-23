@@ -15,7 +15,9 @@
 | Research | [./research.md](research.md) |
 | Branch (site) | `feature/slice-18` (yesid.dev) — commit `e918736` |
 | Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` (scorch) + `803d60c` (vercel guard) → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` (clean slate) — 15 files changed, 23 insertions, 545 deletions. |
-| Tasks completed | 3 / 8 (Task 0 + Task 1 + Task 2) — Task 1 landed as two PRs (scorch + clean-slate) per owner steering; Task 2 is research-only (no site code changes beyond pre-Task-2 comment hygiene) |
+| Tasks completed | 4 / 8 (Task 0 + Task 1 + Task 2 + Task 3) — Task 1 landed as two PRs (scorch + clean-slate) per owner steering; Task 2 is research-only; Task 3 stood up Directus on Railway + Neon + R2 + native MCP via MCPs |
+| Live Directus (temp) | https://directus-cms-production-df43.up.railway.app — pending custom-domain wiring to cms.yesid.dev |
+| MCP endpoint | https://directus-cms-production-df43.up.railway.app/mcp — 7 tools (items/files/folders/assets/trigger-flow/schema/system-prompt) |
 
 ## 2) Scope (from spec)
 
@@ -128,20 +130,151 @@ yesid.dev is untouched (Payload was never wired to the site via the adapter seam
 
 ---
 
+### Task 3 — Directus production deploy on Railway + Neon + R2 + native MCP ✅
+
+- **Planned by:** Claude Code (Opus 4.7 [1m], reasoning=high)
+- **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high) — via MCPs (Cloudflare, Railway, Neon, Vercel, 1Password CLI)
+- **Session:** 2026-04-22 → 04-23 (overnight)
+- **PR:** [yesid.dev-cms#3](https://github.com/mgkdante/yesid.dev-cms/pull/3) (Task 3a scaffold + Task 3c snapshot + CI in one PR)
+- **Commit(s):**
+  - `5945f56` — chore(slice-18 task-3a): scaffold Directus provisioning (.env.example + infra/directus/ + README walkthrough)
+  - `d22669c` — chore(slice-18 task-3c): initial Directus schema snapshot + CI apply workflow
+
+**Out-of-band ops the user did (Task 3b dashboard work):**
+- Created Cloudflare R2 bucket `yesid-dev-cms` at `https://eccfb9bedd87d413eaf4cac6ae2285d3.r2.cloudflarestorage.com`
+- Generated R2 API token (Object Read+Write scoped to bucket) — Access Key + Secret pasted via screenshot
+- Deployed the official Railway Directus CMS template (services: Directus CMS, Redis, PostGIS — PostGIS now unused; Neon is canonical)
+
+**Autonomous ops (driven via MCPs from this session):**
+- **Cloudflare MCP:** verified R2 bucket existence at active account `eccfb9bedd87d413eaf4cac6ae2285d3`
+- **Neon MCP:** fetched pooled connection string for project `sparkling-sky-51665073` (database `neondb`, role `neondb_owner`, branch `br-orange-waterfall-amfej6qp`); ran `DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO neondb_owner` to clean-slate (per owner steering "clean up neon db and rebuild")
+- **Railway CLI:** linked workspace `C:/Users/otalo/Yesito/Projects/yesid-dev-cms` to project `6da31832-268c-4c26-a7f6-3fc09ebf943f` env `production`; replaced template defaults with our config — DB swapped from Railway PostGIS to Neon, storage swapped from template Tigris to Cloudflare R2 (built-in `s3` driver), CORS opened for yesid.dev + Vercel previews + localhost, MCP enabled, KEY/admin email rotated; deleted `DIRECTUS_TEMPLATE` + `EXTENSIONS_LOCATION` env vars to prevent the CMS template's 24 demo collections from re-applying on the clean Neon DB
+- **Directus REST API:** PATCHed `/users/me` to rename admin (`example@email.com` → `mgkdante@gmail.com`); PATCHed `/settings` to enable MCP + set project metadata (name, color, descriptor); created `ai-editor` role + user with hex static API token; smoke-tested file upload roundtrip + MCP `initialize` + `tools/list`
+- **1Password CLI:** stored 4 items in vault `yesid-dev` — Directus admin login (`thkyjj4lpbpkvdzm3tbkcltj6u`), R2 S3 credentials (`q6o65zjli46npuv47mykjm7mce`), Cloudflare R2-scoped API token (`lzllqrehh2ql32pbw37iirry2u`), Directus KEY+SECRET (`b5xcxl3wc4y2c3vm5zsvyn7uou`); ai-editor MCP token save **deferred** (op CLI session timed out mid-batch — token saved to `%TEMP%/directus-ai-editor-token.txt` for manual save next session)
+- **Vercel MCP:** identified the old yesid-dev-cms Payload-era project at `prj_Joj5MVld6v58XOfDzGWrIF3bo6vj` (team `team_KBKhzsXDEl7lR3zC7r3nhp8h`) — pending retirement after DNS flip
+
+**What landed:**
+
+A live Directus 11.17.3 install running against Neon Postgres (read-write pooled) with Cloudflare R2 file storage, Railway Redis cache, Railway public domain (`directus-cms-production-df43.up.railway.app`), CORS open for yesid.dev, native MCP server enabled with an `ai-editor` role + static token. Initial schema snapshot captured to `infra/directus/snapshot.yaml` (369 bytes — empty user collections, only Directus core indexes). CI workflow at `.github/workflows/schema-apply.yml` validates snapshots on PR via ephemeral Directus container and gates production apply behind a `workflow_dispatch` with required reviewers.
+
+The clean-slate of Neon was a mid-task pivot: the Railway template seeded its "cms" demo content (24 collections like pages/posts/blocks/forms) on the freshly-pointed Neon DB, AND Neon still carried orphan Payload tables from the prior yesid-dev-cms install. Owner asked for a true rebuild — `DROP SCHEMA public CASCADE` + `CREATE SCHEMA public` was the cleanest path. Removing `DIRECTUS_TEMPLATE` env var prevented the template script from re-applying.
+
+The Resend SMTP integration intentionally **deferred**: Railway's egress blocks outbound port 587 to `smtp.resend.com` (CONN ETIMEDOUT in deploy logs). Plan: switch to Resend's HTTPS API via a Directus Flow `webhook` operation in a follow-up task. EMAIL_* env vars stripped from Railway service to unblock health-check (the SMTP timeout was hanging `/server/health`).
+
+**Pipeline diagram (Mermaid — addresses owner's "graph of this pipeline" request):**
+
+```mermaid
+flowchart LR
+  subgraph Vercel["Vercel (yesid.dev frontend)"]
+    SVK["SvelteKit 2 + Svelte 5<br/>Bun runtime"]
+    ADP["src/lib/adapters/index.ts<br/>(seam — re-exports adapter)"]
+    STAT["staticAdapter<br/>src/lib/content/*.ts"]
+    DIR_A["DirectusAdapter<br/>(Task 4 — pending)"]
+  end
+  subgraph Railway["Railway Hobby (us-east4-eqdc4a)"]
+    DCT["Directus 11.17.3<br/>Node 22 · Express<br/>image SHA ae6ab737..."]
+    RDS["Redis<br/>(Railway plugin)<br/>cache + sync store"]
+    PG["PostGIS<br/>(template-provisioned;<br/>UNUSED — drop)"]
+  end
+  subgraph CF["Cloudflare (account eccfb9be...)"]
+    R2["R2 bucket: yesid-dev-cms<br/>$0 egress · 10 GB free<br/>S3-compat endpoint"]
+    DNS["DNS: cms.yesid.dev<br/>(currently → old Vercel; flip pending)"]
+  end
+  subgraph Neon["Neon Postgres (sparkling-sky-51665073)"]
+    PG_NEON["postgres 17 · pooled<br/>ep-broad-lake-amtl585d-pooler<br/>db: neondb · role: neondb_owner<br/>tables: 29 directus_*"]
+  end
+  subgraph Resend["Resend (DEFERRED)"]
+    MAIL["smtp.resend.com:587<br/>blocked by Railway egress<br/>fallback: HTTPS API via Flow"]
+  end
+  subgraph AI["AI clients"]
+    CLAUDE["Claude Code · Cursor · ChatGPT"]
+  end
+
+  SVK --> ADP
+  ADP -.active.-> STAT
+  ADP -.future.-> DIR_A
+  DIR_A -. REST/SDK .-> DCT
+
+  DCT -- pg-pooled --> PG_NEON
+  DCT -- s3 driver --> R2
+  DCT -- cache + ws --> RDS
+  DCT -.deferred.-> MAIL
+  PG -.unused.-> DCT
+
+  CLAUDE -- "Bearer token<br/>JSON-RPC" --> DCT_MCP[/mcp endpoint<br/>directus-mcp v0.1.0/]
+  DCT_MCP --- DCT
+
+  DNS -.flip pending.-> DCT
+
+  classDef pending fill:#eee,stroke:#999,stroke-dasharray: 5 5,color:#666
+  classDef deferred fill:#fef0e0,stroke:#c67,color:#933
+  classDef live fill:#d4f4d4,stroke:#393,color:#063
+  classDef unused fill:#f0d0d0,stroke:#a44,color:#600,stroke-dasharray: 3 3
+
+  class DCT,RDS,R2,PG_NEON,DCT_MCP live
+  class DIR_A,DNS pending
+  class MAIL deferred
+  class PG unused
+```
+
+**Decisions (added during execution):**
+
+- Task 3.D-1 — **Drop the Resend SMTP path entirely.** Railway's egress is firewalled to `smtp.resend.com:587` (CONN ETIMEDOUT after 10s). Switch to Resend's HTTPS API (`POST https://api.resend.com/emails`) wired via a Directus Flow with a `webhook` operation in a follow-up. EMAIL_* env vars removed from Railway to unblock health checks.
+- Task 3.D-2 — **Clean-slate Neon mid-task** (after the Railway template had already seeded demo CMS data on Neon). Per owner: "clean up neon db and rebuild." `DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO neondb_owner`. Combined with deleting `DIRECTUS_TEMPLATE` env var so the template's bootstrap script doesn't re-apply.
+- Task 3.D-3 — **Defer dropping the PostGIS Railway service.** Railway CLI does not expose `service delete`; only the dashboard does. PostGIS now sits unused (~$0 of credit/month at idle). Drop in next session via dashboard click.
+
+**Reviews:**
+
+- Spec adherence: ✅ — D1 (Railway), D2 (R2), D3 (snapshot+apply YAML in Git) all hit. Q4–Q7 plan-level resolutions still hold. Q5 preview + Q6 locale wait for Task 4+. Q7 blog markdown approach kept (no Block Editor).
+- Cross-tool adversarial review: deferred to slice close per `feedback_codex_review_at_slice_close.md`.
+
+**Tests / verification:**
+
+- `curl https://directus-cms-production-df43.up.railway.app/server/health` → `{"status":"ok"}` ✅
+- Login as `mgkdante@gmail.com / 9i6ls4txdw94j0ynk76cbbb7rulr42lc` → 321-char access token ✅
+- Neon `get_database_tables` → 29 tables, ALL `directus_*` (zero user collections) ✅
+- File upload: `POST /files` with text payload → returns `{id, storage:"s3", filename_disk, filesize}` ✅
+- File roundtrip: `GET /assets/<id>` → exact uploaded bytes ✅
+- MCP `initialize`: `{"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{},"prompts":{}},"serverInfo":{"name":"directus-mcp","version":"0.1.0"}}}` ✅
+- MCP `tools/list` with `ai-editor` Bearer token → 7 tools (items, files, folders, assets, trigger-flow, schema, system-prompt) ✅
+- `infra/directus/snapshot.yaml` captured: 369 bytes, `version: 1`, `directus: 11.17.3`, `vendor: postgres`, empty `collections`/`relations` (expected for fresh install) ✅
+- yesid.dev untouched: no `feature/slice-18` source code changes since Task 2 cleanup commit `1535fa5`
+
+**Follow-ups flagged:**
+
+- **Manual dashboard ops (next user touchpoint):**
+  - Drop the `PostGIS` Railway service (https://railway.com/project/6da31832-268c-4c26-a7f6-3fc09ebf943f → PostGIS service → Settings → Delete)
+  - Add `cms.yesid.dev` as Railway custom domain (Directus CMS service → Settings → Custom Domain → add `cms.yesid.dev` → Railway returns CNAME target)
+  - Update Cloudflare DNS for `cms.yesid.dev`: CNAME → Railway target (currently CNAMEs to `b76ed8df3d024b08.vercel-dns-017.com`); set proxy ORANGE-OFF (or ON for the Cloudflare CDN cache benefit — Directus serves correct cache headers)
+  - Delete the old Vercel project `prj_Joj5MVld6v58XOfDzGWrIF3bo6vj` once DNS propagates and `https://cms.yesid.dev/server/health` returns 200
+- **Resend HTTP API integration** (defer to a follow-up task or a sub-slice of 18): wire a Directus Flow `email-on-event` → `webhook` operation hitting `POST https://api.resend.com/emails` with the API key from 1P (`op://yesid-dev/s7ztvxh5t7qc764644le3w7zhi/credential`). Update `directus_settings` to use Flow as the email transport.
+- **Save MCP ai-editor token to 1P** — currently in `%TEMP%/directus-ai-editor-token.txt` (op CLI session timed out mid-create). Run `op signin` then `op item create --category="API Credential" --vault=yesid-dev --title="Directus MCP - ai-editor token" ...` (full command in handoff § 16).
+- **Tighten ai-editor permissions** before publishing the MCP for general AI client use — currently the role has the default Directus permissions (which are restrictive but not yet content-collection-scoped). Plan: add a custom policy via `/policies` + `/access` that grants only read+update on yesid.dev content collections (after Task 5 defines them).
+- **Pin Railway image to 11.17.3 explicitly** in a `Dockerfile`/`railway.json` override so Railway can't auto-bump (already running on 11.17.3 per template default; lock for deterministic redeploys).
+
+---
+
 ## 4) Open items for downstream tasks
 
-- ~~Task 2: resolve D1/D2/D3.~~ **Done this session.**
-- Task 3: Directus install on Railway Hobby. Provision Neon `DB_*` env + R2 bucket + keys. Apply `snapshot.yaml`. TLS handoff on `cms.yesid.dev` — no DNS flip until Directus serves HTTPS successfully on the new host. Pin `directus/directus:11.17.3`. Retire the Vercel project on yesid.dev-cms.
-- Task 4: Create `src/lib/adapters/directus.ts`; flip `src/lib/adapters/index.ts` re-export. Implement `toLocalizedString(translations, field)` transform. First content type to swap: `services` (smallest surface, easiest parity check). Update the `src/lib/adapters/index.ts` comment to cite `directus.ts` directly when the file lands.
-- Task 5: swap remaining content types (projects → blog → meta → tech_stack → content pages). Each swap = owner-approved STOP point.
-- Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK.
+- ~~Task 2: resolve D1/D2/D3.~~ **Done.**
+- ~~Task 3: Directus install on Railway Hobby + Neon + R2 + native MCP.~~ **Done (this session).** Manual ops by user remain (drop PostGIS service, add cms.yesid.dev custom domain, Cloudflare DNS flip, retire Vercel project) — see § 5 Follow-ups + Task 3 § Manual dashboard ops.
+- Task 4: Create `src/lib/adapters/directus.ts` against the live Railway Directus (use `@directus/sdk` v20+ with type-safe `Schema` generic). First Tasks 5–6 will define real collections; Task 4 itself only needs to flip the seam re-export when the first collection is ready. Implement `toLocalizedString(translations, field, fallback='en')` transform at the adapter boundary. First content type to swap: `services` (smallest surface).
+- Task 5: design + create real yesid.dev content model in Directus (services, projects, blog_posts, tech_stack, scenarios, page singletons + M2A blocks per research.md sketch). Re-snapshot after every collection change → commit to yesid.dev-cms. Tighten `ai-editor` role permissions to those collections only.
+- Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK. Preserve natural-key IDs where possible (project slug, service id).
+- Task 7: full E2E parity — run yesid.dev test suite + a manual smoke against Directus-served routes. Flip `src/lib/adapters/index.ts:6` re-export only after parity confirmed.
+- Task 8: slice close — finalize handoff, retire `staticAdapter` plan, update memories, peer review (Codex), open the slice-18 PR on yesid.dev.
 
 ## 5) Follow-ups flagged (accumulating)
 
 1. ~~Replace stale Payload comment in `src/lib/adapters/index.ts`.~~ Done in pre-Task-2 cleanup (`1535fa5`).
-2. Retire Vercel project on yesid.dev-cms at Task 3 cutover.
+2. ~~Retire Vercel project on yesid.dev-cms at Task 3 cutover.~~ → moved to **Manual dashboard ops** in Task 3 block (waits for DNS flip).
 3. Monitor Directus 12 license revision (directus.io/bsl); decide upgrade path before any v12 bump.
 4. After Task 7 production-green for 2+ weeks: delete `staticAdapter` in Slice 19+ (Q4 resolution).
+5. **Resend email integration** — Railway blocks SMTP egress (port 587). Switch to Resend HTTPS API via Directus Flow + webhook operation. Resend key already in 1P at `op://yesid-dev/s7ztvxh5t7qc764644le3w7zhi/credential`.
+6. **Save Directus MCP ai-editor token to 1P** — token currently in `%TEMP%/directus-ai-editor-token.txt`. Run `op signin` + `op item create` (recipe in § 16).
+7. **Tighten ai-editor role permissions** — currently uses default Directus role permissions (no explicit policies attached). Add a `/policies` + `/access` row scoping read+update to user content collections only. Wait until Task 5 defines those collections.
+8. **Drop the unused PostGIS Railway service** — Railway CLI doesn't expose `service delete`; do via dashboard.
+9. **Pin Directus image to 11.17.3 explicitly** in a `Dockerfile`/`railway.json` override (currently runs on it via template default but isn't locked).
 
 ## 6) Iterations (per Iteration Protocol step 7)
 
@@ -153,16 +286,28 @@ yesid.dev is untouched (Payload was never wired to the site via the adapter seam
 |---|------|--------|-----------|
 | 1 | 2026-04-22 | Task 1 shipped as TWO PRs instead of one. | Owner asked for a true start-from-scratch state after PR #1 merged. PR #2 (`chore/clean-slate`) was added to strip the remaining Payload-era transition scaffolding (package.json, tsconfig, eslint, next.config, .vscode, all doc markers). Better than amending PR #1 because the merged history preserves a clean "scorch → clean slate" sequence readable in isolation. |
 | 2 | 2026-04-22 | Added `vercel.json` mid-PR-#1. | Vercel had a cached Next.js detection and kept failing to build the scorched shell, surfacing as a red check owner read as "conflicts". `ignoreCommand: exit 0` is a 4-line safeguard for the transition window; Task 3 will replace or retire it. |
+| 3 | 2026-04-23 | Mid-Task-3: clean-slated Neon (`DROP SCHEMA public CASCADE`) + removed `DIRECTUS_TEMPLATE` env var. | Railway template seeded its 24 demo CMS collections on the freshly-pointed Neon DB AND Neon still carried Payload-era orphan tables. Owner asked: "clean up neon db and rebuild." The DB drop + template-var unset together gave a true clean slate. |
+| 4 | 2026-04-23 | Mid-Task-3: stripped all `EMAIL_SMTP_*` env vars from Railway. | New deployments kept failing healthcheck because Directus's SMTP transport hung on `CONN ETIMEDOUT` to `smtp.resend.com:587` — Railway's egress firewall blocks port 587. Switching to Resend's HTTPS API via a Directus Flow + webhook operation is the follow-up plan (deferred — see § 5 Follow-ups #5). |
+| 5 | 2026-04-23 | PR #3 grew with Task 3c commits (snapshot + CI) instead of opening a separate Task 3c PR. | Task 3a's scaffold (`infra/directus/` placeholder dir) and Task 3c's payload (`snapshot.yaml` + CI workflow) are tightly coupled and target the same files. Single PR → one review, one merge. PR title intent updated in commit messages. |
 
 ## 8) Files created (cumulative)
 
+**yesid.dev:**
 - `docs/slices/slice-18/plan.md` — Task 0
 - `docs/slices/slice-18/spec.md` — Task 0
 - `docs/slices/slice-18/research.md` — Task 0 (populated with Task 2 findings)
 - `docs/slices/slice-18/handoff.md` — Task 0 (this file)
 
+**yesid.dev-cms (Task 3a + 3c — PR #3):**
+- `.env.example` — Task 3a (`5945f56`)
+- `infra/directus/README.md` — Task 3a (`5945f56`)
+- `infra/directus/.gitkeep` — Task 3a (`5945f56`)
+- `infra/directus/snapshot.yaml` — Task 3c (`d22669c`)
+- `.github/workflows/schema-apply.yml` — Task 3c (`d22669c`)
+
 ## 9) Files modified (cumulative)
 
+**yesid.dev:**
 - `src/lib/adapters/index.ts` — Task 2 pre-cleanup (`1535fa5`): neutralized "Slice 18 (Payload CMS)" comment → Directus-cited.
 - `src/lib/adapters/types.ts` — Task 2 pre-cleanup (`1535fa5`): "Payload or Keystatic" → "Directus, Keystatic, mock"; "Payload-ready" → "CMS-ready".
 - `src/lib/adapters/static.ts` — Task 2 pre-cleanup (`1535fa5`): "no Payload benefit" → "no CMS benefit".
@@ -171,11 +316,26 @@ yesid.dev is untouched (Payload was never wired to the site via the adapter seam
 - `docs/slices/slice-18/plan.md` — Task 2: Tasks table + Risks + Amendments updated.
 - `docs/slices/slice-18/spec.md` — Task 2: D1/D2/D3 + Q4–Q7 resolved; Status draft → approved; Amendments log.
 - `docs/slices/slice-18/research.md` — Task 2: full findings populated under all 7 pre-reserved subsections + 2 new sections.
-- `docs/slices/slice-18/handoff.md` — Task 2: this update.
+- `docs/slices/slice-18/handoff.md` — Task 2 + Task 3 updates: Status table, § 3 Tasks (Task 3 block + Mermaid diagram), § 4–5 Open items + Follow-ups, § 7 Amendments (rows 3–5), § 12 Schema, § 14 Architectural seam, § 15 Environment (full Railway env table), § 17 Validation, § 25 Next prompt.
+
+**yesid.dev-cms (Task 3 — PR #3):**
+- `README.md` — Task 3a (`5945f56`): expanded with full 8-step provisioning walkthrough.
+
+**yesid.dev-cms — out-of-band on the Railway service (no commit, env-vars):**
+- See § 15 Environment table for the full env vars set/unset on `Directus CMS` service.
+
+**Live Directus (no commit — runtime state managed via API):**
+- `directus_users.email` — admin renamed `example@email.com` → `mgkdante@gmail.com`
+- `directus_settings` — PATCHed: `mcp_enabled`, `mcp_allow_deletes`, `mcp_system_prompt_enabled`, `mcp_system_prompt`, `project_name`, `project_url`, `project_color`, `project_descriptor`
+- `directus_roles` — created `AI Editor` role (`1dd4acc4-234a-49c6-9e85-19634a3ab69d`)
+- `directus_users` — created `ai-editor@yesid.dev` user (`8f77b52b-a4d9-4c15-964b-140432454646`) with static API token
+- `directus_files` — one test file (`95c39b57-...`) from R2 smoke; safe to delete
 
 ## 10) Files deleted (cumulative)
 
-*(None in yesid.dev this session; Task 1 scorches yesid.dev-cms.)*
+**yesid.dev:** none Tasks 0–3.
+**yesid.dev-cms:** all the Payload + Next.js scaffolding (PR #1 + #2). Nothing more in Task 3.
+**Neon DB (Task 3):** `DROP SCHEMA public CASCADE` removed all prior tables (Payload orphans + Railway template demo content). Schema then re-created empty; Directus migrations populated 29 `directus_*` tables on first boot.
 
 ## 11) Repository / file-tree changes
 
@@ -193,7 +353,9 @@ Flat. No subdirectories. Matches plan D3.
 
 ## 12) Schema / data changes
 
-None in Task 0–1. Task 3 introduces Directus schema.
+- **Task 0–2:** None.
+- **Task 3:** Neon `public` schema dropped + recreated (`DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO neondb_owner`). Directus boot then created **29 `directus_*` system tables** via its built-in migrations (directus_access, directus_activity, directus_collections, directus_comments, directus_dashboards, directus_deployment_*, directus_extensions, directus_fields, directus_files, directus_flows, directus_folders, directus_migrations, directus_notifications, directus_operations, directus_panels, directus_permissions, directus_policies, directus_presets, directus_relations, directus_revisions, directus_roles, directus_sessions, directus_settings, directus_shares, directus_translations, directus_users, directus_versions). Zero user collections. Schema captured to `infra/directus/snapshot.yaml` (369 bytes).
+- **Tasks 4–6 (planned):** real yesid.dev content model lands; snapshot grows accordingly.
 
 ## 13) Entrypoints / commands status
 
@@ -201,12 +363,50 @@ No entrypoint changes this session.
 
 ## 14) Architectural seam status
 
-- Seam touched: none in Task 0–1.
-- Task 1 scorches yesid-dev-cms but leaves yesid.dev's `src/lib/adapters/index.ts` unchanged — `staticAdapter` remains active until Task 4.
+- **Tasks 0–3:** seam at `src/lib/adapters/index.ts:6` **unchanged** — yesid.dev still re-exports `staticAdapter as adapter`. Task 1 scorched yesid.dev-cms (no consumer impact since Payload was never wired). Task 3 stood up the Directus backend on Railway but the consumer hasn't been pointed at it yet.
+- **Task 4:** seam flips. New file `src/lib/adapters/directus.ts` lands; `index.ts` re-export changes from `staticAdapter` → `directusAdapter`. Repositories + components untouched.
 
 ## 15) Environment / config
 
-No env changes in Task 0–1. Task 3+ introduces Directus env vars.
+**yesid.dev:** no env changes Tasks 0–3. Task 4 will add `PUBLIC_DIRECTUS_URL` + `DIRECTUS_READ_TOKEN` (private) for the SvelteKit DirectusAdapter.
+
+**yesid.dev-cms (Railway service `Directus CMS`)** — current env after Task 3:
+
+| Var | Value (or shape) | Set by | Notes |
+|---|---|---|---|
+| KEY | 16-byte hex | Task 3 | JWT signing — saved in 1P |
+| SECRET | 32-char | template (kept) | Session signing — saved in 1P |
+| ADMIN_EMAIL | mgkdante@gmail.com | Task 3 | Bootstrap; admin user created on first boot |
+| ADMIN_PASSWORD | 32-char (template-generated) | template (kept) | Saved in 1P; rotate via Data Studio when convenient |
+| PUBLIC_URL | https://directus-cms-production-df43.up.railway.app | template | **Update to https://cms.yesid.dev after DNS flip** |
+| DB_CLIENT | pg | Task 3 | |
+| DB_CONNECTION_STRING | postgres://...@ep-broad-lake-amtl585d-pooler.c-5.us-east-1.aws.neon.tech/neondb?... | Task 3 | Neon pooled |
+| DB_SSL__REJECT_UNAUTHORIZED | true | Task 3 | |
+| STORAGE_LOCATIONS | s3 | template (kept) | |
+| STORAGE_S3_DRIVER | s3 | template (kept) | |
+| STORAGE_S3_KEY | (R2 Access Key, 32 char) | Task 3 | Saved in 1P |
+| STORAGE_S3_SECRET | (R2 Secret, 64 char) | Task 3 | Saved in 1P |
+| STORAGE_S3_BUCKET | yesid-dev-cms | Task 3 | |
+| STORAGE_S3_ENDPOINT | https://eccfb9bedd87d413eaf4cac6ae2285d3.r2.cloudflarestorage.com | Task 3 | |
+| STORAGE_S3_REGION | auto | Task 3 | R2 always uses `auto` |
+| STORAGE_S3_FORCE_PATH_STYLE | true | Task 3 | Required for R2 |
+| REDIS | redis://default:...@redis.railway.internal:6379 | template | Auto-injected by Railway |
+| CACHE_ENABLED | true | template | |
+| CACHE_STORE | redis | template | |
+| CACHE_AUTO_PURGE | true | template | |
+| SYNCHRONIZATION_STORE | redis | template | |
+| WEBSOCKETS_ENABLED | true | template | |
+| CORS_ENABLED | true | Task 3 | |
+| CORS_ORIGIN | https://yesid.dev,https://*.vercel.app,http://localhost:5173,http://localhost:4173 | Task 3 | Allows Vercel previews + dev |
+| CORS_METHODS | GET,POST,PATCH,DELETE,OPTIONS | Task 3 | |
+| CORS_ALLOWED_HEADERS | Content-Type,Authorization | Task 3 | |
+| CORS_CREDENTIALS | true | Task 3 | |
+| MCP_ENABLED | true | Task 3 | Setting also enabled in `directus_settings.mcp_enabled` |
+| EMAIL_FROM | no-reply@yesid.dev | Task 3 | |
+| EMAIL_TRANSPORT | *(unset)* | — | Removed; Resend SMTP blocked by Railway egress (deferred to HTTP API via Flow) |
+| EMAIL_SMTP_* | *(unset)* | — | Removed for same reason |
+| DIRECTUS_TEMPLATE | *(unset)* | Task 3 (deleted) | Removed to prevent template re-applying 24 demo CMS collections on the clean Neon DB |
+| EXTENSIONS_LOCATION | *(unset)* | Task 3 (deleted) | Removed; extensions stored locally in container (no S3 round-trip) |
 
 ## 16) Commands executed (in order)
 
@@ -263,6 +463,66 @@ cd ../yesid.dev
 git add docs/slices/slice-18/handoff.md
 git commit -m "docs(slice-18): Task 0 + Task 1 handoff — SHAs, verification, PR links"
 git push
+
+# === Task 3 — Directus production deploy (this session) ===
+# 1) Discover platform state via MCPs
+#    - Cloudflare MCP set_active_account eccfb9bedd87d413eaf4cac6ae2285d3 → r2_bucket_get yesid-dev-cms (exists, ENAM)
+#    - Neon MCP get_connection_string sparkling-sky-51665073 → pooled URL retrieved
+#    - Railway list-projects → yesid-dev-cms (6da31832-...) with services Directus CMS / Redis / PostGIS
+#    - Vercel list_projects team_KBKhzsXDEl7lR3zC7r3nhp8h → old yesid-dev-cms project prj_Joj5...
+# 2) Link Railway workspace + first-pass env update (DB → Neon, KEY, admin email, CORS, MCP, partial email)
+cd C:/Users/otalo/Yesito/Projects/yesid-dev-cms
+railway link --project 6da31832-268c-4c26-a7f6-3fc09ebf943f --service "Directus CMS" --environment production
+railway variables --service "Directus CMS" --set "KEY=..." --set "DB_CONNECTION_STRING=postgresql://..." \
+  --set "ADMIN_EMAIL=mgkdante@gmail.com" --set "CORS_ENABLED=true" --set "CORS_ORIGIN=https://yesid.dev,..." \
+  --set "MCP_ENABLED=true" --set "EMAIL_FROM=no-reply@yesid.dev" ...
+# 3) Iteration: discover that the template still seeded demo CMS collections on Neon
+#    Owner: "clean up neon db and rebuild"
+railway variable delete DIRECTUS_TEMPLATE --service "Directus CMS"
+railway variable delete EXTENSIONS_LOCATION --service "Directus CMS"
+# Neon MCP: DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO neondb_owner
+# 4) Read R2 creds from screenshot (Cloudflare MCP cannot create R2 tokens), apply via Railway
+#    Resend SMTP password fetched via op CLI (op://yesid-dev/s7ztvxh5t7qc764644le3w7zhi/credential)
+RESEND_KEY=$(op read "op://yesid-dev/s7ztvxh5t7qc764644le3w7zhi/credential")
+railway variables --service "Directus CMS" --set "STORAGE_S3_KEY=..." --set "STORAGE_S3_SECRET=..." \
+  --set "STORAGE_S3_BUCKET=yesid-dev-cms" --set "STORAGE_S3_ENDPOINT=https://eccfb9be....r2.cloudflarestorage.com" \
+  --set "STORAGE_S3_REGION=auto" --set "STORAGE_S3_FORCE_PATH_STYLE=true" --set "EMAIL_SMTP_PASSWORD=$RESEND_KEY"
+# 5) Three deploys FAILED on healthcheck (Resend SMTP CONN ETIMEDOUT — Railway blocks port 587)
+#    Mitigation: strip EMAIL_SMTP_* vars
+railway variable delete EMAIL_SMTP_HOST --service "Directus CMS"
+railway variable delete EMAIL_SMTP_PORT --service "Directus CMS"
+railway variable delete EMAIL_SMTP_USER --service "Directus CMS"
+railway variable delete EMAIL_SMTP_SECURE --service "Directus CMS"
+railway variable delete EMAIL_SMTP_PASSWORD --service "Directus CMS"
+railway variable delete EMAIL_TRANSPORT --service "Directus CMS"
+# Trigger a clean redeploy via re-set
+railway variable set EMAIL_FROM=no-reply@yesid.dev --service "Directus CMS"
+# 6) Smoke
+curl -sf https://directus-cms-production-df43.up.railway.app/server/health  # {"status":"ok"}
+TOKEN=$(curl -sf POST .../auth/login -d '{"email":"mgkdante@gmail.com","password":"..."}' | jq .data.access_token)
+# Upload test file → returns id 95c39b57-... storage:s3 ✓
+# Roundtrip GET /assets/<id> → returns uploaded bytes ✓
+# 7) Enable MCP via PATCH /settings (env MCP_ENABLED only sets default, not the directus_settings row)
+curl -X PATCH .../settings -H "Authorization: Bearer $TOKEN" -d '{"mcp_enabled":true,"mcp_allow_deletes":false,"mcp_system_prompt_enabled":true,"mcp_system_prompt":"...","project_name":"yesid.dev CMS","project_url":"https://yesid.dev","project_color":"#E07800","project_descriptor":"Directus 11 backend for yesid.dev"}'
+# 8) Create ai-editor role + user + static API token + verify MCP
+ROLE_ID=$(curl POST .../roles -d '{"name":"AI Editor","icon":"smart_toy","description":"..."}' | jq .data.id)
+USER_ID=$(curl POST .../users -d "{\"first_name\":\"AI\",...,\"role\":\"$ROLE_ID\"}" | jq .data.id)
+AI_TOKEN=$(openssl rand -hex 40)
+curl PATCH .../users/$USER_ID -d "{\"token\":\"$AI_TOKEN\"}"
+curl POST .../mcp -H "Authorization: Bearer $AI_TOKEN" -d '{"jsonrpc":"2.0","method":"tools/list","id":2}'
+# → 7 tools: system-prompt, items, files, folders, assets, trigger-flow, schema ✓
+# 9) Save secrets to 1Password (4 items succeeded; ai-editor token save deferred — op CLI session timed out)
+op item create --category="API Credential" --vault=yesid-dev --title="Cloudflare R2 - yesid.dev-cms" ...
+op item create --category="API Credential" --vault=yesid-dev --title="Cloudflare API Token - R2 bucket scope" ...
+op item create --category=LOGIN --vault=yesid-dev --title="Directus admin - cms.yesid.dev" ...
+op item create --category="API Credential" --vault=yesid-dev --title="Directus env secrets - KEY + SECRET" ...
+# 10) Capture initial schema snapshot + commit
+mkdir -p infra/directus
+curl -H "Authorization: Bearer $TOKEN" "https://...up.railway.app/schema/snapshot?export=yaml" -o infra/directus/snapshot.yaml
+# 11) PR #3 (Task 3a + 3c)
+git add .github/workflows/schema-apply.yml infra/directus/snapshot.yaml
+git commit -m "chore(slice-18 task-3c): initial Directus schema snapshot + CI apply workflow"
+git push  # → updates open PR #3 with Task 3c commits
 ```
 
 ## 17) Validation results
@@ -285,6 +545,19 @@ git push
 - research.md has populated findings under all pre-reserved subsections + 2 new sections (MCP server, Recent Directus releases) ✅
 - spec.md Amendments log records: Task 2 resolution + Vercel Blob driver revision ✅
 - plan.md Tasks table updates: 0 + 1 + 2 marked shipped; Task 3 marked next ✅
+
+**Task 3 (Directus production deploy):**
+- Railway build of `directus/directus:11.17.3@sha256:ae6ab737fd04...` → SUCCESS (deployment `cc20477c-62ff-47ce-91a7-977e3e26d675`) after the EMAIL_SMTP_* vars were removed. Earlier attempts (3) FAILED on healthcheck because the SMTP outbound to `smtp.resend.com:587` hung (`code: ETIMEDOUT, command: CONN`) — Railway egress blocks port 587.
+- `curl https://directus-cms-production-df43.up.railway.app/server/health` → `{"status":"ok"}` ✅
+- Login as `mgkdante@gmail.com` → 321-char access token ✅ (vs 4-char NULL on the previous deploy where the template's hardcoded `example@email.com` had been bootstrapped — fixed by removing `DIRECTUS_TEMPLATE` env)
+- Neon MCP `get_database_tables` → 29 tables, ALL `directus_*` ✅
+- Directus `/collections?limit=-1` → 0 user collections (truly clean, no template demo content) ✅
+- File upload (`POST /files` text payload, 46 bytes) → returns `{id: "95c39b57-...", filename_disk: "<id>.txt", storage: "s3", filesize: "46"}` ✅
+- File roundtrip (`GET /assets/<id>`) → exact uploaded bytes ✅
+- MCP endpoint `POST /mcp` `initialize` → `{"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{},"prompts":{}},"serverInfo":{"name":"directus-mcp","version":"0.1.0"}}}` ✅
+- MCP `tools/list` with `ai-editor` Bearer token → 7 tools (system-prompt, items, files, folders, assets, trigger-flow, schema) ✅
+- `GET /schema/snapshot?export=yaml` → 369-byte YAML, `version: 1`, `directus: 11.17.3`, `vendor: postgres`, empty `collections`/`relations` ✅
+- yesid.dev untouched: `git status` clean since Task 2 cleanup commit `1535fa5`
 
 ## 18) Errors encountered
 
@@ -327,9 +600,42 @@ git push
 ## 25) Next recommended prompt
 
 ```text
-Session type: Implementation (first cloud-side work — provisioning + config).
-Tool: Claude Code (Opus 4.7 [1m], reasoning=high). Sonnet 4.6 acceptable for routine provisioning steps; Opus for any schema decision.
-Focus: Task 3 — Stand up Directus 11.17.3 on Railway Hobby + Cloudflare R2 storage + BYO Neon Postgres + `cms.yesid.dev` domain. Apply a first `snapshot.yaml`. Smoke-test admin login + one read via the public API.
+Session type: Manual dashboard ops (user) → then implementation (DirectusAdapter wiring).
+Tool: Claude Code (Opus 4.7 [1m], reasoning=high). Sonnet 4.6 acceptable for the adapter scaffolding.
+Focus: Close out Task 3 manual ops + start Task 4 — write the DirectusAdapter against the live Railway Directus.
+
+Manual ops to do FIRST (Yesid, in browser tabs):
+1. Drop the PostGIS Railway service → https://railway.com/project/6da31832-268c-4c26-a7f6-3fc09ebf943f → PostGIS service → Settings → Delete Service.
+2. Add cms.yesid.dev as Railway custom domain → Directus CMS service → Settings → Custom Domain → cms.yesid.dev → Railway returns a CNAME target like xxx.up.railway.app.
+3. Cloudflare DNS → yesid.dev zone → DNS Records → cms.yesid.dev (currently CNAME → b76ed8df3d024b08.vercel-dns-017.com) → update to Railway's CNAME target → Proxy can stay ON (Railway plays nicely with Cloudflare proxying).
+4. Wait ~2 min for Railway auto-TLS to issue the cert (status visible in Railway dashboard). Verify: curl -sf https://cms.yesid.dev/server/health → {"status":"ok"}.
+5. Update Railway env: PUBLIC_URL=https://cms.yesid.dev (currently https://directus-cms-production-df43.up.railway.app).
+6. Vercel Dashboard → mgkdantes-projects → yesid-dev-cms project (prj_Joj5MVld6v58XOfDzGWrIF3bo6vj) → Settings → Delete project. Vercel.json on yesid.dev-cms can stay (harmless guard) or be removed in a follow-up.
+7. (Optional) op signin → save the ai-editor MCP token from %TEMP%/directus-ai-editor-token.txt to 1P (recipe in handoff § 16).
+8. (Optional) Register MCP with Claude Code: claude mcp add --transport http yesid-cms-prod https://cms.yesid.dev/mcp --header "Authorization: Bearer <ai-editor-token>".
+
+Then start Task 4 (Claude Code, in this session):
+- Read docs/slices/slice-18/{plan,spec,research,handoff}.md (Task 3 block + Mermaid diagram in handoff is the architecture.)
+- Read src/lib/adapters/{index.ts, static.ts, types.ts} for the contract Directus must satisfy.
+- Install @directus/sdk in yesid.dev (bun add @directus/sdk).
+- Create src/lib/adapters/directus.ts:
+  - createDirectus<Schema>(PUBLIC_DIRECTUS_URL, { globals: { fetch } }).with(staticToken(DIRECTUS_READ_TOKEN)).with(rest())
+  - Implement toLocalizedString(translations, field, fallback='en'): LocalizedString
+  - Stub all 6 ports (projects/services/blog/meta/techStack/content) — but only fully implement ONE port (services — smallest surface, easiest parity check).
+- Add env: PUBLIC_DIRECTUS_URL (in $env/static/public) + DIRECTUS_READ_TOKEN (in $env/static/private).
+- Don't flip src/lib/adapters/index.ts:6 yet — that flips when Task 5 has at least the services collection in Directus AND Task 6 seeded it.
+- Run bun run check + bun run test → must stay green.
+
+Hard constraints:
+- NO modification of repositories, components, or routes (just adapter + types).
+- NO floating directus version (pin in Dockerfile if Task 4 introduces one; SDK uses any v20.x).
+- Site stays on staticAdapter throughout Task 4 (parity check happens at Task 7).
+- Directus collections aren't designed yet — Task 4 stubs the adapter, Task 5 designs the model in Data Studio + re-snapshots, Task 6 seeds.
+
+Validation: bun run check + bun run test green; new directus.ts compiles; toLocalizedString function unit tests pass; src/lib/adapters/index.ts re-export still points at staticAdapter (no production change).
+
+STOP after Task 4 close. Owner verifies + greenlights Task 5 (real schema design in Data Studio).
+```
 
 Read these files first:
 1. docs/slices/slice-18/{plan,spec,research,handoff}.md  (Task 2 decisions are binding)
