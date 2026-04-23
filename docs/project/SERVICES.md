@@ -21,20 +21,15 @@ Dual-audience by design — the site must speak to both in parallel without comp
 
 The site never mode-switches between the two — the same content serves both, calibrated so a prospective client sees "fast competent delivery" and a prospective employer sees "senior judgment + systems thinking."
 
-## Service catalog (6 services)
+## Service catalog
 
-Each service has a dedicated page at `/services/<slug>` with case studies. Kept tight here; full stories live at the detail pages.
+**Source of truth: Directus CMS** at [cms.yesid.dev](https://cms.yesid.dev). The live catalog is authored and maintained in Directus via Data Studio — not in this doc, not hand-edited in code. Edits propagate live; no PR required.
 
-| Service                       | What it is                                                                                     | Sample deliverables                                                                                             | Primary audience        |
-|-------------------------------|------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|-------------------------|
-| **SQL Development**           | Schema design, query optimization, ETL development, reporting.                                 | Schema migrations, slow-query rewrites, analytical mart builds, ad-hoc Postgres / ClickHouse scripts.           | Freelance clients       |
-| **Data Pipeline Engineering** | Bronze / Silver / Gold pipelines, operational data flow design, realtime ingestion.            | GTFS-RT ingestion, Postgres landing tables, Power BI marts, Dagster / Prefect orchestration.                    | Both — transit + agencies |
-| **Web Development**           | Full-stack web apps, SvelteKit / Next.js sites, performance-first front-ends.                  | Production sites, internal tools, marketing pages with brand systems.                                           | Both                    |
-| **Design System Engineering** | Brand-code-design-system authorship. Token lockdown, atomic primitives, Constitution-as-law.   | Token systems, component libraries (headless + brand primitives), CSS architecture (three-layer), motion vocabularies. | Both — visible at agencies |
-| **Integration Engineering**   | Connecting systems — CMS ↔ site, auth providers, payment flows, webhook infrastructure.        | Payload CMS migrations (Slice 18), Stripe integration, Resend transactional email, OAuth flows.                 | Freelance clients       |
-| **Workflow Authorship**       | Codifying a team's development workflow as portable IP — slice templates, session types, adversarial review loops. | AGENTS.md contracts, `/workflow-*` plugin customizations, cross-tool handoff protocols, workflow retrospectives.    | Dream employers (rare skill) |
+**Transition note (Slice 18, 2026-04-23).** Directus is being stood up in Slice 18 (`docs/slices/slice-18/`). Until Task 7 flips the adapter seam at `src/lib/adapters/index.ts:7`, the site renders from `src/lib/content/services.ts` — that file is the **interim authoritative catalog** for routing, SEO generation, and seed data. After Task 7, it becomes frozen reference (read-only) and Directus becomes both operational and canonical.
 
-Full service details: see `/services/<slug>` pages (driven by `src/lib/content/services.ts` content + the `ServiceListingPage.svelte` layout).
+**Historical positioning note.** Earlier drafts of this doc carried a 6-service aspirational list (SQL Development · Data Pipeline Engineering · Web Development · Design System Engineering · Integration Engineering · Workflow Authorship). That list is strategic aspiration, not a live contract — reconciling it with whatever Directus publishes lives outside Slice 18 and is not a docs-vs-code tie-break: Directus wins by default. The aspirational names still show up below (in the § Notes references to "Integration Engineering", "Workflow Authorship", etc.) because the positioning thinking they encode is still relevant; they're just no longer asserting a specific catalog shape here.
+
+Full service details: see `/services/<slug>` pages (driven by the active `ContentAdapter` — `staticAdapter` today, `directusAdapter` after Task 7).
 
 ## Engagement models
 
