@@ -6,7 +6,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | 🟡 in progress (Tasks 0–7 + 2b shipped; Tasks 8–15 remaining per revised CMS-native plan; Slice 18 = full migration of all 6 content types + two-repo decoupling) |
+| Status | 🟡 in progress (Tasks 0–7 + 2b + 8 shipped; Tasks 9–15 remaining per revised CMS-native plan; two-repo decoupling + test-suite split now formalized) |
 | Slice PR (site) | pending — [`feature/slice-18`](https://github.com/mgkdante/yesid.dev/tree/feature/slice-18) (keep accumulating sessions before opening; likely opens at slice close) |
 | Scorch PR (cms)      | [mgkdante/yesid.dev-cms#1](https://github.com/mgkdante/yesid.dev-cms/pull/1) — **MERGED** as `a7a1db6` |
 | Clean-slate PR (cms) | [mgkdante/yesid.dev-cms#2](https://github.com/mgkdante/yesid.dev-cms/pull/2) — **MERGED** as `0295dd6` |
@@ -16,7 +16,8 @@
 | Branch (site) | `feature/slice-18` (yesid.dev) — head `a373bf5` (Task 7 close) |
 | Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` + `803d60c` → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` → merged `0295dd6`. PR #3 branch (Task 3): `5945f56` (scaffold) + `d22669c` (snapshot+CI). |
 | Neon safety branch | `br-muddy-surf-am5n6sh9` (`pre-scorch-safety-2026-04-23`, off `br-orange-waterfall-amfej6qp`) — created Task 4 session before the scorched-earth DROP; retain until Task 7 E2E green. |
-| Tasks completed | 9 / 16 (Task 0 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 2b) — Task 7 flipped the services port to Directus via the port-by-port hybrid at `src/lib/adapters/index.ts`. Task 2b (this session) locked D4–D12, revised Q5, resolved Q8–Q12, and re-planned Tasks 8–15 as CMS-native migrations for the remaining 5 content types + two-repo decoupling. Zero code changes in Task 2b — research + docs only. |
+| Tasks completed | 10 / 16 (Task 0 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 2b + 8) — Task 8 (this session) migrated the seed script to yesid.dev-cms, added a minimal bun-based CMS toolchain (@directus/sdk + zod + yaml + bun-types), established the test-suite split (CMS tests: fixture-validate + seed-dry-run + snapshot-shape; consumer tests: contract + env-gated integration), and wired mirrored cross-repo contract-test workflows. yesid.dev-cms PR #7 opened; yesid.dev commit on feature/slice-18. |
+| yesid.dev-cms PR #7 | [task-8-decoupling](https://github.com/mgkdante/yesid.dev-cms/pull/7) — pending review + merge. No schema mutations. |
 | Live Directus | https://cms.yesid.dev/mcp ✓ Connected (MCP registered as `yesid-cms-prod`) — schema tool returns `collections: []` after cleanup |
 | MCP endpoint | https://cms.yesid.dev/mcp — 7 tools (items/files/folders/assets/trigger-flow/schema/system-prompt) |
 
@@ -610,6 +611,83 @@ Ten research topics resolved via three parallel subagents (Clusters A/B/C) over 
 
 ---
 
+### Task 8 — Two-repo decoupling + minimal toolchain + test-suite split ✅
+
+- **Planned by:** Claude Code (Opus 4.7 [1m], reasoning=high)
+- **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high)
+- **Session:** 2026-04-23 (same session as Task 2b — owner approved consecutive tasks after Task 2b close)
+- **Paired PRs:**
+  - yesid.dev-cms **[PR #7](https://github.com/mgkdante/yesid.dev-cms/pull/7)** (merges first, no schema change)
+  - yesid.dev commit `3eb9358` on `feature/slice-18` (no PR yet — accumulates with Task 2b + prior tasks until slice close)
+
+**Files (yesid.dev-cms — PR #7):**
+
+- Created: `package.json` — minimal scripts-only toolchain: `@directus/sdk@^20`, `zod@^3`, `yaml@^2`, `bun-types@latest`. Scripts: `seed:services` + `test`. No build/lint runners.
+- Created: `tsconfig.json` — strict + `noUncheckedIndexedAccess` + `bun-types` only. `noEmit: true`.
+- Created: `bun.lock` — reproducible installs for CI.
+- Created: `fixtures/services.json` — 405-line JSON export of yesid.dev's `src/lib/content/services.ts` (6 services with English translations + deliverables + sections). Authoritative data joins the CMS repo; no cross-repo git coupling at seed time.
+- Created: `scripts/seed-services.ts` — migrated + refactored from yesid.dev's `scripts/seed-directus-services.ts`. Inlined minimal `Service` type + Zod schemas. Exported pure transformation helpers (`toServiceRow`, `toTranslationRows`, `toDeliverableRows`, `toSectionRows`, `collectServiceLocales`, `localesIn`, `loadServicesFixture`). Entry-point gated via `import.meta.main` so tests can import without triggering `main()`.
+- Created: `tests/services-fixture.test.ts` — 7 Zod-validation tests on `fixtures/services.json`. Catches drift between fixture JSON + Zod schema.
+- Created: `tests/seed-dry-run.test.ts` — 19 unit tests on pure transformation helpers. No network, no Directus. Fast (runs in <500ms).
+- Created: `tests/snapshot-shape.test.ts` — 7 tests that parse `infra/directus/snapshot.yaml` and assert on required collections (services + services_translations + languages) + required fields the adapter reads (id, station, lottie_reverse, visible, related_projects, stack + translations.languages_code/title/description). Repo-local drift catcher.
+- Created: `.github/workflows/contract-test.yml` — NEW cross-repo boundary check. Checks out `mgkdante/yesid.dev` sibling, boots ephemeral Directus with THIS snapshot, grants Public policy read on the services domain, seeds via `bun run seed:services`, then runs yesid.dev's `directus.integration.test.ts`. Opt-in via `contract-test` PR label + nightly cron (07:00 UTC).
+- Modified: `.github/workflows/schema-apply.yml` — added Bun setup + `bun install --frozen-lockfile` + `bun test` step before docker run (catches drift before boot). Added optional `seed: true` `workflow_dispatch` input that runs seed against the ephemeral Directus (smoke-only; prod seed stays a local manual ops step).
+- Modified: `README.md` — expanded with (a) repo layout tree, (b) `bun install` + `bun test` local-dev instructions, (c) Operations section: seed-against-prod recipe using 1P token, (d) shared-token rotation policy (90d cadence for `VERCEL_BYPASS_TOKEN` + `EDITOR_PREVIEW_TOKEN`, with openssl + Railway + Vercel + verification steps), (e) schema-change workflow, (f) paired-PR coordination rule.
+- Modified: `.gitignore` — exclude `.next/` + `media/` (Payload-era leftovers; R2 is canonical storage).
+
+**Files (yesid.dev — commit `3eb9358` on `feature/slice-18`):**
+
+- Deleted: `scripts/seed-directus-services.ts` (migrated to yesid.dev-cms/PR #7).
+- Modified: `src/lib/adapters/directus.ts` — added `export` to `toService` + the 5 `DirectusService*` row interfaces so contract tests can construct synthetic rows. Purely additive — no behavior change at runtime.
+- Created: `src/lib/adapters/directus.contract.test.ts` — 13 tests covering (a) structural conformance: `directusAdapter` exposes every `ContentAdapter` port + method; (b) compile-time gate: `adapter: ContentAdapter = directusAdapter` assignment; (c) un-implemented-port throws — `projects.all()`, `blog.all()`, `meta.site()`, `techStack.all()`, `content.hero()` all reject with `/not implemented/` (uses `vi.importActual` to bypass the setup-mocked adapter and reach the real one); (d) pure `toService` row-to-domain mapping on synthetic rows (impactMetric conditionality, sort ordering on deliverables + sections, multi-locale composition, null-coalescing on optional scalars); (e) `toLocalizedString` exposure check.
+- Created: `src/lib/adapters/directus.integration.test.ts` — 6 env-gated tests (skipped unless `RUN_DIRECTUS_INTEGRATION=1` + `PUBLIC_DIRECTUS_URL` set). Asserts end-to-end on live ephemeral Directus: `services.all()` returns `Service[]` with valid shapes; `services.visible()` is a subset; `services.byId()` handles known + unknown ids; `services.adjacent()` returns `{prev, next}`; deliverables + sections hydrate via Translations. Used exclusively by the cross-repo contract-test workflow.
+- Created: `.github/workflows/contract-test.yml` — mirror of the CMS repo's workflow. Checks out `mgkdante/yesid.dev-cms` sibling, boots ephemeral Directus with sibling's snapshot, seeds, runs `directus.integration.test.ts` with `RUN_DIRECTUS_INTEGRATION=1`. Opt-in via `contract-test` PR label + nightly cron (07:15 UTC, offset from CMS's 07:00 to spread CI load).
+
+**What landed:**
+
+The two-repo decoupling is now structural + testable. Before Task 8, the two repos were conceptually separate but practically entangled: seed script lived on the wrong side, there was no CMS-side test suite, and the only adapter-contract check was the existing `adapter.test.ts` (which tests the static adapter only). After Task 8:
+
+- **Each repo runs its own bun test suite.** Consumer: 98 files, 989 passing + 6 skipped (the integration suite). CMS: 3 files, 33 passing. Independent CI cycles.
+- **Three distinct test boundaries validate the adapter seam:**
+  1. CMS-side `snapshot-shape.test.ts` — asserts the authored schema contains the fields the adapter reads (catches "someone edited snapshot.yaml without updating adapter types").
+  2. Consumer-side `directus.contract.test.ts` — asserts the adapter's structural + pure-mapping behavior against synthetic rows (catches "someone refactored toService and broke the mapping").
+  3. Cross-repo `contract-test.yml` (both sides) — end-to-end ephemeral Directus + seed + adapter integration (catches "the two sides work in isolation but not together").
+- **Paired-PR flow established.** yesid.dev-cms PR #7 lands first (no schema change here; safe baseline). yesid.dev commit on `feature/slice-18` follows in the same session. Future content-type tasks (10–14) will follow the same shape: CMS PR → smoke green → prod apply → consumer PR → merge.
+- **Rotation policy documented** for the two shared tokens (`VERCEL_BYPASS_TOKEN` + `EDITOR_PREVIEW_TOKEN`). No CI automation — manual + checklisted per 90d cadence or on suspected leak.
+
+**Decisions (added during execution):**
+
+- Task 8.D-1 — **Inline the Service type + Zod schemas in the CMS-side seed script** rather than export from yesid.dev as a shared package. Cross-repo TS imports would re-couple the two repos. The CMS repo's `scripts/seed-services.ts` defines its own minimal Service shape (matching yesid.dev's exactly at fixture-export time) + a Zod schema for validation. Any future shape change to the Service type touches both sides — that's the intended coupling, made explicit.
+- Task 8.D-2 — **Fixture JSON in yesid.dev-cms/fixtures/, exported from yesid.dev's TS module.** Alternative rejected: `git archive` subtree fetch in CI (adds cross-repo git coupling). Alternative rejected: npm-publish yesid.dev's content as a package (overkill; the fixture is static during Slice 18). The JSON file is committed authorship; during Slice 18 close, yesid.dev's `src/lib/content/services.ts` freezes and Directus Data Studio becomes the authoring surface.
+- Task 8.D-3 — **Skip-by-default integration tests, env-gated.** `vitest`'s `describe.skipIf` pattern keeps `directus.integration.test.ts` out of local `bun run test` (no network, no env dependency). The cross-repo contract-test workflow sets `RUN_DIRECTUS_INTEGRATION=1` + `PUBLIC_DIRECTUS_URL=http://localhost:8055` before running, enabling the live assertions against ephemeral Directus. A mirrored `describe.skipIf(RUN && URL_)` "guard" test prints a silent pass documenting that the integration suite exists.
+- Task 8.D-4 — **Expose `toService` + `DirectusService*` interfaces from `src/lib/adapters/directus.ts`** so `directus.contract.test.ts` can construct synthetic rows. Additive-only change; `directusAdapter` remains the only production consumer. This is the minimal surface needed for contract testing without refactoring the adapter's internal helpers.
+- Task 8.D-5 — **Contract-test workflow opts in via PR label `contract-test`**, not every PR. Running ephemeral Directus + seed + integration takes ~3 min of CI time; opt-in + nightly cron is a better cost/drift-catch balance than always-on per PR. Labels are cheap to apply when a change touches the adapter seam.
+- Task 8.D-6 — **Node-modules exclusion in `.gitignore` + `.next/` + `media/` added** — the yesid.dev-cms repo had these as untracked but polluting `git status`. Scorch was incomplete on disk even though the tracked file list was clean; this commit makes the exclusion explicit.
+
+**Reviews:**
+
+- Spec adherence: ✅ D12 (repo-separation boundary) fully implemented. Ownership table in research.md § Topic 9 now matches reality — no misplaced files. Contract definition operationalized via three test boundaries.
+- Cross-tool adversarial peer review: deferred to slice close per `feedback_codex_review_at_slice_close.md`.
+
+**Tests / verification:**
+
+- yesid.dev-cms: `bun install --frozen-lockfile` → 5 packages (no tree explosion). `bun test` → **3 files · 33 tests · 143 expect() calls · 460ms** ✅
+- yesid.dev: `bun run check` → **0 errors**, 20 pre-existing warnings (unchanged from Task 7 baseline) ✅
+- yesid.dev: `bun run test` → **98 files · 989 passing · 6 skipped · 995 total** ✅ (up from 96/975 at Task 7; new: `directus.contract.test.ts` + `directus.integration.test.ts` [6 skipped])
+- Contract test verifies un-implemented ports still throw "not implemented" — ensures the hybrid at `src/lib/adapters/index.ts` stays honest (services only on Directus; other 5 ports throw if accidentally routed).
+- Smoke CI on yesid.dev-cms PR #7: pending (will run when PR opens — expected green; same docker setup + new `bun test` step).
+
+**Follow-ups flagged:**
+
+- **yesid.dev-cms PR #7 review + merge** — operator to review + merge. Smoke-CI expected green. No prod apply (no schema change).
+- **Task 9 unblocks** once PR #7 merges. Task 9 = asset pipeline migration (`static/images/*` → Directus + R2 via SDK uploads). Emits `assets-id-map.json` for Tasks 10–14 to reference.
+- **Manual smoke test opportunity**: trigger `workflow_dispatch` on yesid.dev-cms PR #7 with `target: smoke` + `seed: true` — verifies the entire fixture → ephemeral apply → seed → Public read → adapter integration round-trips end-to-end before any Task 10+ content-type lands.
+- **Paired-PR flow rehearsal**: Task 10 (projects content type) will be the first actual cross-repo coordination — yesid.dev-cms PR with schema + seed + snapshot + prod-apply (via `workflow_dispatch`), then yesid.dev PR with adapter impl + flip. Task 8 established the pattern; Task 10 exercises it.
+- **Bun version pin**: both contract-test workflows use `bun-version: latest`. Consider pinning to a specific version (e.g. 1.3.11) for deterministic CI once 1.3.x behavior is stable.
+- **Enable Vercel env var `PUBLIC_DIRECTUS_URL`** — currently local only. Per Task 7 follow-up, this needs to land in Vercel project settings before any production deploy flips remaining ports.
+
+---
+
 ## 4) Open items for downstream tasks
 
 - ~~Task 2: resolve D1/D2/D3.~~ **Done.**
@@ -618,8 +696,8 @@ Ten research topics resolved via three parallel subagents (Clusters A/B/C) over 
 - ~~Task 5: Services collection schema + snapshot to yesid.dev-cms.~~ **Done.** yesid.dev-cms PR #5 merged (`13aaeb9`).
 - ~~Task 6: Seed services content + schema hotfixes.~~ **Done.** yesid.dev `7222c92`; yesid.dev-cms PR #6 merged (`4963c94`).
 - ~~Task 7: Flip services port to Directus (hybrid adapter).~~ **Done.** yesid.dev `a373bf5`.
-- ~~**Task 2b (mid-slice scope correction): CMS-native research + two-repo decoupling re-plan.**~~ **Done this session.** D4–D12 locked; Q5 revised; Q8–Q12 resolved; Tasks 8–15 documented. No code changes.
-- **Task 8 (NEXT):** Two-repo decoupling + minimal toolchain on yesid.dev-cms. Re-init `package.json` with `@directus/sdk` + `zod` + `bun-types`; migrate `yesid.dev/scripts/seed-directus-services.ts` → `yesid.dev-cms/scripts/seed-services.ts`; inline minimal row shape (no cross-repo git coupling); add `.github/workflows/schema-apply.yml` optional seed step gated by `workflow_dispatch` input `seed: true`; document `VERCEL_BYPASS_TOKEN` + `EDITOR_PREVIEW_TOKEN` rotation policy in yesid.dev-cms `README.md` Operations section; add cross-repo contract-test scaffold in yesid.dev CI (skipped-by-default integration test). **No schema changes.** Deliverables: paired PRs — yesid.dev-cms (`package.json` + scripts + README) + yesid.dev (remove `scripts/seed-directus-services.ts`, CI scaffold).
+- ~~**Task 2b (mid-slice scope correction): CMS-native research + two-repo decoupling re-plan.**~~ **Done.** D4–D12 locked; Q5 revised; Q8–Q12 resolved; Tasks 8–15 documented. No code changes.
+- ~~**Task 8: Two-repo decoupling + minimal toolchain + test-suite split.**~~ **Done this session.** yesid.dev-cms PR #7 open (task-8-decoupling) + yesid.dev `3eb9358` on feature/slice-18. 33 new CMS tests + 13 new consumer contract tests + 6 new skipped-by-default consumer integration tests + mirrored `contract-test.yml` in both repos + CMS README Operations section with rotation policy.
 - **Task 9:** Asset pipeline migration. Walk `static/images/*` → emit manifest → bulk-upload via SDK to 5 folders (services/blog/projects/brand/og). Define 4 saved presets in Data Studio (`hero-1200`, `card-600`, `thumb-240`, `og-1200`). Retain `legacy_path` custom field on `directus_files` during migration window. Emit `assets-id-map.json`. No adapter work this task.
 - **Task 10:** Projects content type. Schema (`projects` + translations + M2M junction replacing `services.related_projects` CSV + `hero_image` M2O → `directus_files`) + seed + adapter port (`projects`, 8 methods) + flip `projects: directusAdapter.projects` at `src/lib/adapters/index.ts`. Content Versioning enabled. Paired PRs.
 - **Task 11:** Blog content type. Schema (`blog_posts` + translations + Markdown body field + `cover_image`/`svg_illustration`/`animation_reverse` M2Os to `directus_files`) + seed reading `yesid.dev/src/content/blog/**/*.md` + adapter port (`blog`, 12 methods; `html` preserves `marked.parse`) + flip. Paired PRs.
@@ -654,6 +732,7 @@ Ten research topics resolved via three parallel subagents (Clusters A/B/C) over 
 | 4 | 2026-04-23 | Mid-Task-3: stripped all `EMAIL_SMTP_*` env vars from Railway. | New deployments kept failing healthcheck because Directus's SMTP transport hung on `CONN ETIMEDOUT` to `smtp.resend.com:587` — Railway's egress firewall blocks port 587. Switching to Resend's HTTPS API via a Directus Flow + webhook operation is the follow-up plan (deferred — see § 5 Follow-ups #5). |
 | 5 | 2026-04-23 | PR #3 grew with Task 3c commits (snapshot + CI) instead of opening a separate Task 3c PR. | Task 3a's scaffold (`infra/directus/` placeholder dir) and Task 3c's payload (`snapshot.yaml` + CI workflow) are tightly coupled and target the same files. Single PR → one review, one merge. PR title intent updated in commit messages. |
 | 6 | 2026-04-23 | Slice 18 scope expanded mid-slice after Task 7. Task 2b research pass inserted; revised task list grew from 8 to 16 tasks (0–7 shipped + 2b shipped + 8–15 planned). | Owner identified that Tasks 5–7 shipped services as a "TS-mirror" (hardcoded-content replacer pattern) rather than a proper CMS deployment. Slice 18 now explicitly covers full migration of all 6 content types + formal two-repo decoupling (yesid.dev + yesid.dev-cms ship independently through the adapter-seam contract). Task 2b research — 3 parallel Agents, 10 topics, ~10k words in research.md — locked D4–D12 and the revised sequence. Paired yesid.dev-cms + yesid.dev PRs per task from Task 8 onward. Estimated effort expanded 6–8 → 12–15 sessions. |
+| 7 | 2026-04-23 | Task 8 added a cross-repo test-suite split + per-repo bun test suites at owner's explicit approval ("separate both concerns ... so that is tests as well!"). | Prior plan specified only one new test (yesid.dev contract test). Owner emphasized the test boundary as a first-class part of decoupling. Final shape: three test entry points — CMS-side `bun test` (fixture-validate + seed-dry-run + snapshot-shape) + consumer-side contract + mirrored cross-repo `contract-test.yml` in both repos. 33 new CMS tests + 13 new consumer contract tests + 6 skipped-by-default consumer integration tests land in this task; all green. Operating model note added to memory: post-Slice-18 = two-repo default. |
 
 ## 8) Files created (cumulative)
 
