@@ -153,15 +153,97 @@ USER node
 
 ### P6 — Turborepo + Vercel monorepo deploy
 
-*Status: not yet run.*
+*Status: local research complete 2026-04-24; Vercel preview-deploy verification owner-gated (pending).*
 
-**Question:** Does Vercel correctly build from `apps/web` root with workspace deps resolved from `packages/shared`? Do env vars stay scoped?
+**Question:** Does Vercel correctly build `apps/web` from a Turborepo + pnpm-workspaces monorepo with workspace deps (`@yesido/shared`) resolved from `packages/shared`? Do env vars stay scoped so that `apps/cms/.env` can never leak?
 
-**Method:** New Vercel project → Root Directory: `apps/web`; test preview deploy; verify `apps/cms/.env` doesn't leak.
+#### Vercel's official monorepo story (verified via vercel.com/docs/monorepos/turborepo)
 
-**Findings:** TBD
+Vercel's Turborepo preset auto-configures every relevant field when you pick a Root Directory inside the repo. No manual project settings needed beyond pointing Vercel at `apps/web`:
 
-**Decision:** TBD (informs D13 viability)
+| Vercel field | Value (auto or manual) |
+|---|---|
+| Framework Preset | **SvelteKit** (auto-detected from `apps/web/svelte.config.js`) |
+| Build Command | `turbo run build` (global `turbo` pre-installed on Vercel builders) — filter auto-inferred from Root Directory |
+| Output Directory | SvelteKit default: `.svelte-kit/**` + `.vercel/**` |
+| Install Command | Auto-detected from lockfile (pnpm-lock.yaml → pnpm install at monorepo root) |
+| Root Directory | **`apps/web`** |
+| Ignored Build Step | `npx turbo-ignore --fallback=HEAD^1` (skips builds when apps/web + its deps unchanged) |
+
+**Key mechanic:** Vercel runs the install step at the **monorepo root** (pnpm installs the entire workspace including `packages/shared`), then runs the build filtered to `apps/web`. This means `@yesido/shared` is resolved via pnpm's workspace linking (symlinks in `node_modules`), not re-published to npm.
+
+#### Environment variable scoping (no leak risk)
+
+- Vercel env vars are **project-scoped**, not repo-scoped. Since `apps/cms` is deployed to Railway (not Vercel), `apps/cms/.env` has zero presence in Vercel.
+- Inside the Vercel project for `apps/web`, env vars are set per-environment (preview / production / development) via dashboard or `vercel env`.
+- `turbo.json` `env` arrays drive **cache invalidation** (so a changed env var busts Turborepo's cache) — orthogonal to leak concerns.
+- `apps/web/turbo.json` should declare only env vars the web build actually reads (`DIRECTUS_URL`, `DIRECTUS_STATIC_TOKEN`, `VERCEL_BYPASS_TOKEN`, etc.); no CMS-side vars (admin token, DB URL, R2 creds) should ever appear on the web side.
+
+#### Current yesid.dev Vercel setup (baseline for migration)
+
+- SvelteKit 2.50 + Svelte 5.54 + Vite 7.3 + Vitest 4.1.
+- `@sveltejs/adapter-vercel@6.3.1` with explicit `runtime: 'nodejs22.x'` (svelte.config.js:24 — Bun ABI ≠ Vercel Node ABI; explicit pin avoids adapter rejection).
+- **No `vercel.json` in repo** (Vercel dashboard config only). Implication: migration is dashboard-side only; no config file churn.
+- `@directus/sdk@^20` already a dep (18a preparation).
+- Scripts use `bun` locally — unchanged post-monorepo; Vercel still uses Node 22.x at build/runtime.
+
+**Effective pattern:** Bun is **local-dev-only**; Vercel builds + runs SvelteKit on Node 22. Same rule carries into monorepo; `apps/web/package.json` declares `"type": "module"` + Node target; Bun handles scripts + tests.
+
+#### packages/shared consumption — ESM + TS source (no build step)
+
+Decision for D14 shape (subject to P9 verification):
+
+```jsonc
+// packages/shared/package.json
+{
+  "name": "@yesido/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schemas": "./src/schemas/index.ts",
+    "./types": "./src/types/index.ts"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}
+```
+
+- **TS source shipped directly** (no `dist/` build step). SvelteKit's Vite 7 transpiles workspace `.ts` files on consumption (confirmed by common Turborepo + SvelteKit usage).
+- **Bun tests in `apps/cms`** consume the same source — Bun handles TS natively.
+- Zod is the one runtime dep (keeps D14 "type-only + Zod" constraint).
+- If Vite refuses workspace TS in production build → fallback is `tsc --build` step (adds `packages/shared/tsconfig.json` + `dist/` emit + update `exports` to point at `.js` + `.d.ts`). Additive fix; not a D14 revert.
+
+#### Findings (local research, 2026-04-24)
+
+- **Vercel Turborepo integration: GREEN.** Documented auto-configuration exactly matches our target shape (SvelteKit preset + `apps/web` root + global turbo build). Vendor-owned; multi-year track record.
+- **Env var scoping: GREEN.** Project-scoped dashboard env + split hosting (Vercel for web, Railway for CMS) means `apps/cms/.env` cannot reach Vercel. Confirmed zero leak vector.
+- **pnpm workspaces: GREEN.** Vercel detects pnpm-lock.yaml automatically; `workspace:*` protocol supported natively. Docs show pnpm tabs alongside npm/yarn/bun.
+- **SvelteKit 2 + adapter-vercel@6 + Node 22: GREEN (unchanged).** Existing production setup. Migration = same package, same runtime, new Root Directory.
+- **Turbo-ignore: GREEN.** Provided out-of-box; skips preview builds when `apps/web` + its deps are untouched (e.g., docs-only PRs) — aligns with "smoke both deploys only on consolidation branch" risk-mitigation (R1).
+
+#### Owner verification gate (Task 16 — not probe-blocking for phase entry)
+
+1. Create new Vercel project `yesido-platform-web` → import from `mgkdante/yesido-platform` (post Task 10 umbrella repo creation).
+2. Configure Root Directory: `apps/web`. Accept Vercel's auto-detected Turborepo + SvelteKit defaults.
+3. Copy env vars from existing yesid.dev project (`vercel env pull` + `vercel env add` in new project, or dashboard bulk import).
+4. Trigger preview deploy from `feature/slice-18` branch.
+5. Confirm: `/`, `/services/*` render; SSR 200; network tab shows single CMS request; no env var leak in page source.
+6. Keep old yesid.dev Vercel project alive until cutover (Task 19) — zero-downtime DNS switch.
+
+#### Decision (interim, pending owner Vercel verification)
+
+**Proceed with D13 (Turborepo + pnpm workspaces monorepo).** No revert conditions identified in local research. Owner verifies via preview deploy on the consolidation branch before cutover.
+
+**If preview deploy fails** (e.g., workspace resolution breaks at build time): first remedy is tsc build step for `packages/shared` (additive). Only if that also fails → revert to two-repo (D13 rollback; big scope change, unlikely).
+
+#### Open follow-ups
+
+- `turbo.json` `env` array for `apps/web#build`: enumerate DIRECTUS_URL, DIRECTUS_STATIC_TOKEN, VERCEL_BYPASS_TOKEN (list finalized in Task 13).
+- `turbo.json` `outputs` for SvelteKit: `[".svelte-kit/**", ".vercel/**"]` (per Vercel docs example, otherwise cache-miss chains break).
+- Remote caching: defer. Opt-in post-18c if build times justify (Vercel-hosted free; 1-line turbo.json config + `turbo link`).
 
 ---
 
@@ -218,7 +300,7 @@ Populated as probes complete. Summary table + links to specific findings above.
 | P3 | ⏸ | TBD | 18f scope |
 | P4 | 🟡 local ✓ / Railway owner-gated | **Interim green — proceed with D3 + D11 amendments; Railway verify in Task 17** | **yes (D11 + D3)** |
 | P5 | ⏸ | TBD | F14 wording |
-| P6 | ⏸ | TBD | **yes (D13)** |
+| P6 | 🟡 local ✓ / Vercel owner-gated | **Interim green — proceed with D13; Vercel preview verify in Task 16** | **yes (D13)** |
 | P7 | ⏸ | TBD | **yes (D13 + D11)** |
 | P8 | ⏸ | TBD | 18d optional |
 | P9 | ⏸ | TBD | **yes (D14)** |
