@@ -1,0 +1,25 @@
+{
+  "collection": "services_deliverables",
+  "field": "services_id",
+  "related_collection": "services",
+  "meta": {
+    "junction_field": null,
+    "many_collection": "services_deliverables",
+    "many_field": "services_id",
+    "one_allowed_collections": null,
+    "one_collection": "services",
+    "one_collection_field": null,
+    "one_deselect_action": "delete",
+    "one_field": "deliverables",
+    "sort_field": "sort"
+  },
+  "schema": {
+    "table": "services_deliverables",
+    "column": "services_id",
+    "foreign_key_table": "services",
+    "foreign_key_column": "id",
+    "constraint_name": "services_deliverables_services_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

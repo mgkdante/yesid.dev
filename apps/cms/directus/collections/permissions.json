@@ -1,0 +1,86 @@
+[
+  {
+    "collection": "languages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "5c88e59a-914a-4440-aa54-67758e0311ca"
+  },
+  {
+    "collection": "services_deliverables_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "631cffa3-5bd8-42df-bece-c87a3c3631e7"
+  },
+  {
+    "collection": "services_deliverables",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "d82121a5-d1fd-4976-a98f-854ccfcddf23"
+  },
+  {
+    "collection": "services_sections_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "5009b5fc-a80f-4b0c-bdd8-4bed13eea3af"
+  },
+  {
+    "collection": "services_sections",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "73f398ed-1c6f-4872-a024-840940ae426b"
+  },
+  {
+    "collection": "services_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "0ed92025-80d9-40fb-946f-596cb6b38d38"
+  },
+  {
+    "collection": "services",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "2a68154f-996c-4e13-bab6-126ced346b48"
+  }
+]
