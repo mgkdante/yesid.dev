@@ -512,3 +512,219 @@ export interface ContactContent {
 // via Zod and stay there (apps/web specific). They are re-exported from
 // apps/web/src/lib/types.ts alongside these shared types so consumer code keeps
 // a single import surface.
+
+// ---------------------------------------------------------------------------
+// PreviewContext — adapter-level preview-mode signal (F5 + D6 — 18c Task 43)
+// ---------------------------------------------------------------------------
+//
+// Optional, last-param on every ContentAdapter port method. When populated,
+// the Directus adapter authenticates reads via `/shares/:token` instead of
+// the anonymous Public policy — surfacing draft content scoped to the share.
+//
+// Shape intentionally minimal for now; preview routes land post-Slice-18
+// (D6). Static adapter ignores ctx; the field exists so we can thread
+// ctx through SvelteKit `load()` helpers today without a breaking change
+// when the consumer wiring follows.
+
+export interface PreviewContext {
+	/**
+	 * Directus /shares token granting access to a specific draft/draft-set.
+	 * Absent → anonymous reads via the Public policy (published only).
+	 *
+	 * Resolution happens server-side only (never in the client bundle) —
+	 * the token comes from the share URL, is validated by Directus, and is
+	 * discarded after the `load()` completes.
+	 */
+	shareToken?: string;
+
+	/**
+	 * Locale override for preview renders — useful when a share link pins
+	 * the preview to a single locale (e.g., reviewer is native-French and
+	 * the editor wants French-only preview regardless of browser default).
+	 * Absent → fall back to the normal locale resolver chain.
+	 */
+	locale?: Locale;
+}
+
+// ---------------------------------------------------------------------------
+// Home-page content block interfaces (F4 — Slice 18 18c Task 42)
+// ---------------------------------------------------------------------------
+//
+// These interfaces replace the `typeof import('$lib/content/site-content').xxx`
+// bindings previously used on ContentPort. Extracting named shapes here:
+//   - Breaks the cross-app coupling to $lib/content/site-content.ts
+//     (apps/cms seed scripts + future adapter clients need the contract too).
+//   - Makes the ContentPort surface reviewable as a list of types instead of
+//     an implicit tuple hidden inside import() calls.
+//   - Lets Directus seed scripts parse inbound M2A block rows through the
+//     corresponding Zod schema (post-18i) without hand-rolling types.
+//
+// Each `as const` export in apps/web/src/lib/content/site-content.ts structurally
+// widens to one of these. The TS compiler confirms the fit at the
+// `: ContentAdapter` annotation in apps/web/src/lib/adapters/index.ts.
+
+/** Home page — Hero section (top of /). */
+export interface HeroContent {
+	headline: {
+		line1: LocalizedString;
+		line2: LocalizedString;
+		/** Aria-label suffix appended after the animated line1 so assistive tech
+		 *  hears the full headline even though line2 renders as a visual glyph. */
+		ariaSuffix: LocalizedString;
+	};
+	subheadline: LocalizedString;
+	subtitle: LocalizedString;
+	ctaWork: LocalizedString;
+	ctaContact: LocalizedString;
+	sqlPanel: {
+		prompt: LocalizedString;
+		liveLabel: LocalizedString;
+		columns: {
+			route: LocalizedString;
+			avgDelayS: LocalizedString;
+			vehicles: LocalizedString;
+		};
+		metaTemplate: LocalizedString;
+	};
+	refreshButton: {
+		label: LocalizedString;
+		helper: LocalizedString;
+	};
+}
+
+/** Hero scroll-hint chrome (separate block so the hero can render without it). */
+export interface HeroAnimContent {
+	scrollDown: LocalizedString;
+}
+
+/** Home page — Manifesto section (section 2). */
+export interface ManifestoContent {
+	statement: {
+		line1: LocalizedString;
+		lineHuge: LocalizedString;
+		line3Part1: LocalizedString;
+		line3Highlight: LocalizedString;
+		line3Part2: LocalizedString;
+	};
+	terminal: {
+		user: LocalizedString;
+		command: LocalizedString;
+	};
+	pills: readonly { label: LocalizedString; serviceId: string }[];
+	edgeLeft: {
+		sectionNumber: LocalizedString;
+		sectionName: LocalizedString;
+		location: LocalizedString;
+	};
+	edgeRight: {
+		lat: LocalizedString;
+		lng: LocalizedString;
+		src: LocalizedString;
+		via: LocalizedString;
+		dst: LocalizedString;
+		node: LocalizedString;
+		status: LocalizedString;
+	};
+	edgeBottom: {
+		connected: LocalizedString;
+		line: LocalizedString;
+		url: LocalizedString;
+		version: LocalizedString;
+		scrollHint: LocalizedString;
+	};
+	transit: {
+		arrivalLabel: LocalizedString;
+		platformBadge: LocalizedString;
+		directionBadge: LocalizedString;
+	};
+	ticks: readonly string[];
+	hiddenTransitLines: readonly { name: LocalizedString; color: string }[];
+}
+
+/** Home page — Proof Reel (featured projects section). */
+export interface ProofReelContent {
+	heading: LocalizedString;
+	headingDot: LocalizedString;
+	subheading: LocalizedString;
+	sectionLabel: LocalizedString;
+	viewAllLabel: LocalizedString;
+	viewAllHref: string;
+	/** Aria-label template — brace placeholder `{title}` resolved at render. */
+	toggleColorAria: LocalizedString;
+	slugs: readonly string[];
+	/** Placeholder / real project screenshot URLs keyed by project slug. */
+	images: Readonly<Record<string, string>>;
+}
+
+/** Home page — Services grid (section 3). */
+export interface ServicesGridContent {
+	heading: LocalizedString;
+	headingDot: LocalizedString;
+	subheading: LocalizedString;
+	/** Aria-label template — brace placeholder `{title}`. */
+	viewIllustrationAria: LocalizedString;
+	/** Link at the bottom of the grid back to /services. */
+	viewAllLink: LocalizedString;
+}
+
+/** Home-page About teaser (NOT the /about page — that's AboutContent above). */
+export interface AboutIntroContent {
+	name: LocalizedString;
+	title: LocalizedString;
+	bio: LocalizedString;
+	moreLink: LocalizedString;
+	stackLabel: LocalizedString;
+	stackItems: readonly string[];
+	locationLabel: LocalizedString;
+	location: {
+		city: LocalizedString;
+		region: LocalizedString;
+	};
+	interestsLabel: LocalizedString;
+	interests: LocalizedString;
+}
+
+/** Home page — CTA block. */
+export interface CtaContent {
+	heading: LocalizedString;
+	subtitle: LocalizedString;
+	ctaContact: LocalizedString;
+	ctaGithub: LocalizedString;
+}
+
+/** Home page — Closer (TERMINUS / end-of-line block). */
+export interface CloserContent {
+	heading: LocalizedString;
+	headingDot: LocalizedString;
+	subheading: LocalizedString;
+	cta: {
+		label: LocalizedString;
+		href: string;
+	};
+	rows: {
+		contact: { label: LocalizedString; description: LocalizedString; action: LocalizedString };
+		connect: { label: LocalizedString; description: LocalizedString; action: LocalizedString };
+		read: { label: LocalizedString; action: LocalizedString };
+		about: { label: LocalizedString; description: LocalizedString; action: LocalizedString };
+	};
+	attribution: {
+		text: LocalizedString;
+		url: string;
+	};
+	/** Departure-board terminal chrome copy. */
+	terminal: {
+		title: LocalizedString;
+		city: LocalizedString;
+		encoding: LocalizedString;
+		/** Footer destinations count label. Brace placeholder `{count}`. */
+		destinationsLabel: LocalizedString;
+		/** Comment line above the first row. */
+		prompt: LocalizedString;
+	};
+}
+
+/** Home page — Skills journey CTA block (sits under the horizontal skills strip). */
+export interface SkillsJourneyCtaContent {
+	prompt: LocalizedString;
+	button: LocalizedString;
+}

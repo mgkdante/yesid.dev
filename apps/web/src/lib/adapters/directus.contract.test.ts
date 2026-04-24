@@ -12,25 +12,27 @@
 // repo ships a mirror `snapshot-shape` test that asserts the snapshot YAML
 // has the fields this mapping reads. Together they prevent adapter-seam drift.
 //
-// Note on imports: `setup.data.ts` mocks `$lib/adapters/directus` to replace
-// `directusAdapter` with `staticAdapter` (so repository tests transit through
-// the hybrid without hitting the network). Pure helpers (`toService`,
-// `toLocalizedString`) are preserved via `...original` spread, so importing
-// them from `./directus` here picks up the real functions. For the
-// un-implemented-ports assertion we use `vi.importActual` to reach the real
-// directusAdapter export.
+// 18c Task 44 (F6): setup.data.ts mocks `$lib/adapters/directus` to route
+// repository tests through staticAdapter. This test is the subject-under-test
+// for directus.ts, so we `vi.unmock` at the top — the mocked module is only
+// relevant for composite-adapter consumers, never for directus.ts's own tests.
+// That sheds the `vi.importActual` scaffolding the prior iteration needed.
 
 import { describe, expect, it, vi } from 'vitest';
+
+// Hoisted by Vitest above all `import` statements below.
+vi.unmock('$lib/adapters/directus');
+
 import type { ContentAdapter } from './types';
 import {
+	directusAdapter,
 	type DirectusService,
 	toLocalizedString,
 	toService,
 } from './directus';
 
 describe('directusAdapter — structural contract', () => {
-	it('exposes every required ContentAdapter port (via real module)', async () => {
-		const real = await vi.importActual<typeof import('./directus')>('./directus');
+	it('exposes every required ContentAdapter port', () => {
 		const required = [
 			'projects',
 			'services',
@@ -40,33 +42,30 @@ describe('directusAdapter — structural contract', () => {
 			'content',
 		] as const;
 		for (const port of required) {
-			expect(real.directusAdapter).toHaveProperty(port);
+			expect(directusAdapter).toHaveProperty(port);
 		}
 	});
 
-	it('services port exposes every required method', async () => {
-		const real = await vi.importActual<typeof import('./directus')>('./directus');
+	it('services port exposes every required method', () => {
 		const required = ['all', 'byId', 'visible', 'adjacent'] as const;
 		for (const method of required) {
-			expect(typeof real.directusAdapter.services[method]).toBe('function');
+			expect(typeof directusAdapter.services[method]).toBe('function');
 		}
 	});
 
-	it('conforms to ContentAdapter (compile-time gate)', async () => {
-		const real = await vi.importActual<typeof import('./directus')>('./directus');
-		const adapter: ContentAdapter = real.directusAdapter;
+	it('conforms to ContentAdapter (compile-time gate)', () => {
+		const adapter: ContentAdapter = directusAdapter;
 		expect(adapter).toBeDefined();
 	});
 
 	it('un-implemented ports throw a clear TODO error (not silently return empty)', async () => {
-		const real = await vi.importActual<typeof import('./directus')>('./directus');
 		// Tasks 10–14 progressively replace these throws with real impls.
 		// Until then, fail loud when consumer code asks for an un-migrated port.
-		await expect(real.directusAdapter.projects.all()).rejects.toThrow(/not implemented/);
-		await expect(real.directusAdapter.blog.all()).rejects.toThrow(/not implemented/);
-		await expect(real.directusAdapter.meta.site()).rejects.toThrow(/not implemented/);
-		await expect(real.directusAdapter.techStack.all()).rejects.toThrow(/not implemented/);
-		await expect(real.directusAdapter.content.hero()).rejects.toThrow(/not implemented/);
+		await expect(directusAdapter.projects.all()).rejects.toThrow(/not implemented/);
+		await expect(directusAdapter.blog.all()).rejects.toThrow(/not implemented/);
+		await expect(directusAdapter.meta.site()).rejects.toThrow(/not implemented/);
+		await expect(directusAdapter.techStack.all()).rejects.toThrow(/not implemented/);
+		await expect(directusAdapter.content.hero()).rejects.toThrow(/not implemented/);
 	});
 });
 
