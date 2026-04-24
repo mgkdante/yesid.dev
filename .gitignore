@@ -10,3 +10,12 @@
 
 # Vercel
 .vercel
+
+# Next.js build artifacts (leftover from Payload era — scorched in Slice 18 Task 1)
+.next/
+
+# Payload-era local media uploads — not source of truth; R2 is canonical storage
+media/
+
+# Bun
+# bun.lock stays tracked for reproducible CI installs

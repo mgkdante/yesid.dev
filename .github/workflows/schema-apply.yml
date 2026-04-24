@@ -11,6 +11,10 @@ on:
     paths:
       - 'infra/directus/snapshot.yaml'
       - '.github/workflows/schema-apply.yml'
+      - 'fixtures/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'package.json'
   workflow_dispatch:
     inputs:
       target:
@@ -19,6 +23,11 @@ on:
         options: [smoke, prod]
         default: smoke
         required: true
+      seed:
+        description: 'Run seed scripts after apply (smoke only — never in prod from here)'
+        type: boolean
+        default: false
+        required: false
 
 jobs:
   smoke:
@@ -39,6 +48,16 @@ jobs:
           --health-retries 10
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install deps + run unit tests (snapshot-shape + fixture + seed-dry-run)
+        run: |
+          bun install --frozen-lockfile
+          bun test
 
       - name: Boot ephemeral Directus
         run: |
@@ -130,6 +149,19 @@ jobs:
             'http://localhost:8055/collections?limit=-1' \
             | jq -r '.data | map(select(.collection | startswith("directus_") | not)) | length')
           echo "::notice::User-collection count after apply: $COUNT"
+
+      - name: Seed services (opt-in via workflow_dispatch input)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.seed == 'true'
+        env:
+          PUBLIC_DIRECTUS_URL: http://localhost:8055
+          DIRECTUS_ADMIN_EMAIL: admin@example.com
+          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
+        run: |
+          # Smoke-seed against the ephemeral Directus — verifies that the
+          # fixture JSON + schema + seed script are all mutually consistent
+          # end-to-end. Prod seeding is a separate manual ops step; this
+          # input only runs in the smoke job.
+          bun run seed:services
 
       - name: Surface Directus container logs on failure
         if: failure()
