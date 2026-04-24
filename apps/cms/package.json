@@ -1,5 +1,5 @@
 {
-	"name": "yesid-dev-cms",
+	"name": "@yesido/cms",
 	"private": true,
 	"type": "module",
 	"description": "Config + snapshot + seed scripts for the Directus CMS backing yesid.dev. The Directus app itself runs from the pinned directus/directus:11.17.3 container on Railway — this repo ships schema, seed data, and ops tooling only.",
