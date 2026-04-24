@@ -1,0 +1,4 @@
+{
+	"description": "Folder-per-content-type layout for directus_files. Consumed by seed-assets/migrate-assets scripts to create the folder tree in Directus. Populated at 18d asset pipeline land. See CONVENTIONS.md § 8.9.",
+	"folders": []
+}

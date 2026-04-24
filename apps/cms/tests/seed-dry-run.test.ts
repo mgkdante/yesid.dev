@@ -243,7 +243,7 @@ describe('toServiceRow', () => {
 });
 
 describe('fixture → row pipeline (integration, pure)', () => {
-	it('every service in fixtures/services.json maps without throwing', () => {
+	it('every service in fixtures/collections/services.json maps without throwing', () => {
 		const services = loadServicesFixture();
 		for (const s of services) {
 			const row = toServiceRow(s);
