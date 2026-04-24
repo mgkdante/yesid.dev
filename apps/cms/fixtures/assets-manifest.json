@@ -1,125 +1,98 @@
 {
-	"description": "Asset migration manifest for Slice 18 Task 9. Each entry maps a yesid.dev static/images/* path to its target Directus folder + metadata. Consumed by scripts/migrate-assets.ts to bulk-upload via the Directus SDK. Excludes the stray ChromeSetup.exe (not an asset; flagged as a separate cleanup task).",
-	"sourceRoot": "static/images",
+	"description": "Asset migration manifest for Slice 18 18d. Each entry maps an apps/web/static/<path> to its target Directus folder + metadata. Consumed by scripts/migrate-assets.ts.",
+	"sourceRoot": "apps/web/static",
 	"folders": {
-		"about": "About-page assets — headshot, interests, logos, polaroids (consumed by src/routes/about).",
-		"brand": "Site-chrome assets — hero art, Montreal-metro illustrations, global brand imagery.",
-		"projects": "Project cover images — portfolio cards + detail-page heroes."
+		"services": "Service-detail page assets — populated by 18e+.",
+		"projects": "Project cover images + detail-page heroes.",
+		"blog": "Blog post assets — populated by 18f.",
+		"brand": "Site-chrome assets — hero art, metro illustrations, logo (18l).",
+		"about": "About-page assets — headshot, interests, logos, polaroids.",
+		"og": "OG-share images per route — populated by 18h."
 	},
 	"assets": [
 		{
-			"legacyPath": "about/headshot.webp",
-			"folder": "about",
-			"title": "Headshot — Yesid",
-			"description": "Portrait photograph of Yesid; used as the primary author image on the /about page and across site-chrome."
+			"legacyPath": "images/montreal-metro.svg",
+			"folder": "brand",
+			"title": "Montreal metro map",
+			"description": "Stylized Montreal metro map illustration; visual anchor for the services-as-stations metaphor."
 		},
 		{
-			"legacyPath": "about/interests/anime.webp",
+			"legacyPath": "images/about/headshot.webp",
+			"folder": "about",
+			"title": "Headshot — Yesid",
+			"description": "Portrait photograph of Yesid; used as the primary author image on the /about page."
+		},
+		{
+			"legacyPath": "images/about/polaroid-1.webp",
+			"folder": "about",
+			"title": "Polaroid — Montreal 1",
+			"description": "Decorative polaroid photograph used in the /about page polaroid strip."
+		},
+		{
+			"legacyPath": "images/about/polaroid-2.webp",
+			"folder": "about",
+			"title": "Polaroid — Montreal 2",
+			"description": "Decorative polaroid photograph used in the /about page polaroid strip."
+		},
+		{
+			"legacyPath": "images/about/polaroid-3.webp",
+			"folder": "about",
+			"title": "Polaroid — Montreal 3",
+			"description": "Decorative polaroid photograph used in the /about page polaroid strip."
+		},
+		{
+			"legacyPath": "images/about/interests/anime.webp",
 			"folder": "about",
 			"title": "Interests — anime",
 			"description": "Decorative illustration representing Yesid's interest in anime; used in the /about page interests grid."
 		},
 		{
-			"legacyPath": "about/interests/dataviz.webp",
+			"legacyPath": "images/about/interests/dataviz.webp",
 			"folder": "about",
 			"title": "Interests — data visualization",
 			"description": "Decorative illustration representing Yesid's interest in data visualization; used in the /about page interests grid."
 		},
 		{
-			"legacyPath": "about/interests/food.webp",
+			"legacyPath": "images/about/interests/food.webp",
 			"folder": "about",
 			"title": "Interests — food",
 			"description": "Decorative illustration representing Yesid's interest in food; used in the /about page interests grid."
 		},
 		{
-			"legacyPath": "about/interests/opensource.webp",
+			"legacyPath": "images/about/interests/opensource.webp",
 			"folder": "about",
 			"title": "Interests — open source",
 			"description": "Decorative illustration representing Yesid's interest in open-source contribution; used in the /about page interests grid."
 		},
 		{
-			"legacyPath": "about/logo-1.svg",
+			"legacyPath": "images/about/logo-1.svg",
 			"folder": "about",
 			"title": "Company logo 1 (anonymized)",
 			"description": "Anonymized company logo placeholder in the /about page career-history strip."
 		},
 		{
-			"legacyPath": "about/logo-2.svg",
+			"legacyPath": "images/about/logo-2.svg",
 			"folder": "about",
 			"title": "Company logo 2 (anonymized)",
 			"description": "Anonymized company logo placeholder in the /about page career-history strip."
 		},
 		{
-			"legacyPath": "about/logo-3.svg",
+			"legacyPath": "images/about/logo-3.svg",
 			"folder": "about",
 			"title": "Company logo 3 (anonymized)",
 			"description": "Anonymized company logo placeholder in the /about page career-history strip."
 		},
 		{
-			"legacyPath": "about/logo-4.svg",
+			"legacyPath": "images/about/logo-4.svg",
 			"folder": "about",
 			"title": "Company logo 4 (anonymized)",
 			"description": "Anonymized company logo placeholder in the /about page career-history strip."
 		},
 		{
-			"legacyPath": "about/polaroid-1.webp",
-			"folder": "about",
-			"title": "Polaroid — Montreal 1",
-			"description": "Decorative polaroid photograph; used in the /about page polaroid strip."
-		},
-		{
-			"legacyPath": "about/polaroid-2.webp",
-			"folder": "about",
-			"title": "Polaroid — Montreal 2",
-			"description": "Decorative polaroid photograph; used in the /about page polaroid strip."
-		},
-		{
-			"legacyPath": "about/polaroid-3.webp",
-			"folder": "about",
-			"title": "Polaroid — Montreal 3",
-			"description": "Decorative polaroid photograph; used in the /about page polaroid strip."
-		},
-		{
-			"legacyPath": "hero-station-art.png",
-			"folder": "brand",
-			"title": "Hero station art (PNG)",
-			"description": "Raster fallback of the home-page hero illustration; the WebP sibling is the primary format."
-		},
-		{
-			"legacyPath": "hero-station-art.webp",
-			"folder": "brand",
-			"title": "Hero station art (WebP)",
-			"description": "Primary home-page hero illustration depicting a stylized train station platform."
-		},
-		{
-			"legacyPath": "metro-network-ref.svg",
-			"folder": "brand",
-			"title": "Metro network reference diagram",
-			"description": "Reference SVG of the full metro-system map used as source material for the site's service-stations metaphor."
-		},
-		{
-			"legacyPath": "montreal_map.jpg",
-			"folder": "brand",
-			"title": "Montreal street map (photo)",
-			"description": "Photograph of a Montreal street map; used as decorative imagery on the /about page."
-		},
-		{
-			"legacyPath": "montreal-metro.source.svg",
-			"folder": "brand",
-			"title": "Montreal metro map (source)",
-			"description": "Raw SVG of the Montreal metro system — unprocessed source file for the rendered montreal-metro.svg asset."
-		},
-		{
-			"legacyPath": "montreal-metro.svg",
-			"folder": "brand",
-			"title": "Montreal metro map (rendered)",
-			"description": "Stylized Montreal metro map rendered for site use; the visual anchor for the services metaphor."
-		},
-		{
-			"legacyPath": "work/yesid-dev.png",
+			"legacyPath": "images/work/yesid-dev.png",
 			"folder": "projects",
 			"title": "yesid.dev — cover screenshot",
-			"description": "Cover screenshot of the yesid.dev site; used on the /projects listing + the project-detail page for the self-referential case study."
+			"description": "Cover screenshot of the yesid.dev site; used on the /projects listing + project-detail page for the self-referential case study."
 		}
 	]
 }
