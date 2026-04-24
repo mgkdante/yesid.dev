@@ -121,7 +121,7 @@ yesid.dev-cms/
 │   ├── seed-presets.ts         # idempotent saved-asset-preset seeder (Task 9)
 │   └── migrate-assets.ts       # one-off asset uploader; reads assets-manifest.json + source tree (Task 9)
 ├── tests/
-│   ├── services-fixture.test.ts    # Zod-validates fixtures/services.json
+│   ├── services-fixture.test.ts    # Zod-validates fixtures/collections/services.json
 │   ├── seed-dry-run.test.ts        # unit tests on services-seed pure helpers
 │   ├── snapshot-shape.test.ts      # asserts on snapshot.yaml structure (drift catcher)
 │   ├── assets-manifest.test.ts     # Zod-validates fixtures/assets-manifest.json (Task 9)
@@ -151,7 +151,7 @@ bun run seed:services
 
 Alternatively, set `DIRECTUS_ADMIN_EMAIL` + `DIRECTUS_ADMIN_PASSWORD` to use the `/auth/login` flow.
 
-The seed is **nuke-and-recreate** — idempotent, safe to re-run. It clears the `services` domain tree (FK CASCADE removes translations, deliverables, sections) then re-creates from `fixtures/services.json` via the Directus SDK.
+The seed is **nuke-and-recreate** — idempotent, safe to re-run. It clears the `services` domain tree (FK CASCADE removes translations, deliverables, sections) then re-creates from `fixtures/collections/services.json` via the Directus SDK.
 
 ### Asset migration (one-off, Slice 18 Task 9)
 

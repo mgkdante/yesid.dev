@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Seed the Directus `services` domain tree from `fixtures/services.json`.
+ * Seed the Directus `services` domain tree from `fixtures/collections/services.json`.
  *
  * Slice 18 Task 8 migrated this script from the consumer repo (yesid.dev) to
  * yesid.dev-cms per D12 — seed scripts live where the CMS schema lives. The
@@ -42,7 +42,7 @@ import {
 	readItems,
 } from '@directus/sdk';
 import { z } from 'zod';
-import fixtureData from '../fixtures/services.json' with { type: 'json' };
+import fixtureData from '../fixtures/collections/services.json' with { type: 'json' };
 
 // --- Types (inlined; no cross-repo imports per D12) --------------------------
 
@@ -368,7 +368,7 @@ async function main(): Promise<void> {
 	console.log(`[seed] target: ${directusUrl}`);
 
 	const services = loadServicesFixture();
-	console.log(`[seed] source: ${services.length} services from fixtures/services.json`);
+	console.log(`[seed] source: ${services.length} services from fixtures/collections/services.json`);
 
 	const token = await getAdminToken(directusUrl);
 	await seedServices(services, { directusUrl, token });

@@ -2,13 +2,13 @@ import { describe, expect, it } from 'bun:test';
 import { ServicesFixtureSchema, loadServicesFixture } from '../scripts/seed-services';
 
 /**
- * Fixture shape assertion — `fixtures/services.json` must parse against the
+ * Fixture shape assertion — `fixtures/collections/services.json` must parse against the
  * Zod schema authored alongside the seed script. If either side drifts, the
  * test catches it before the seed script is run.
  *
  * Scope: repo-local. No network. No Directus. Just the fixture + Zod.
  */
-describe('fixtures/services.json', () => {
+describe('fixtures/collections/services.json', () => {
 	it('parses against ServicesFixtureSchema (no silent drift)', () => {
 		expect(() => loadServicesFixture()).not.toThrow();
 	});
