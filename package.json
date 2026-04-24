@@ -1,0 +1,23 @@
+{
+	"name": "yesid-dev",
+	"private": true,
+	"type": "module",
+	"description": "yesid.dev monorepo — apps/web (SvelteKit consumer) + apps/cms (Directus config). See docs/slices/slice-18/plan.md.",
+	"packageManager": "bun@1.3.11",
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"build": "turbo run build",
+		"test": "turbo run test",
+		"check": "turbo run check"
+	},
+	"devDependencies": {
+		"turbo": "^2.5.0"
+	},
+	"engines": {
+		"bun": ">=1.3.0",
+		"node": ">=22.0.0"
+	}
+}
