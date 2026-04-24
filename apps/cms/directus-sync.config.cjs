@@ -25,6 +25,11 @@ module.exports = {
 	directusUrl: process.env.DIRECTUS_URL || 'https://cms.yesid.dev',
 	directusToken:
 		process.env.DIRECTUS_ADMIN_TOKEN || process.env.DIRECTUS_TOKEN,
+	// directus-sync@3 requires email/password in its Zod schema alongside
+	// token. Both are accepted: token takes precedence at runtime, email+
+	// password are the fallback the CLI actually uses for auth.
+	directusEmail: process.env.DIRECTUS_ADMIN_EMAIL,
+	directusPassword: process.env.DIRECTUS_ADMIN_PASSWORD,
 
 	// Dump layout
 	dumpPath: './directus',
