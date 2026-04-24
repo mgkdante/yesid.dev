@@ -60,7 +60,15 @@
 
 ### P7 — Railway monorepo + directus-sync Dockerfile
 
-**Decision:** TBD. Combines D13 + D11.
+**Interim decision (2026-04-24 — local research complete, Railway verify owner-gated):** **Proceed with D11 × D13 combination via Railway Option A (Root Directory=`apps/cms`, Dockerfile auto-detected at `apps/cms/Dockerfile`, Watch Paths=`/apps/cms/**`).** Build context = `apps/cms/` only — cleanest semantics; our Dockerfile doesn't COPY from outside subdir. Option B (`RAILWAY_DOCKERFILE_PATH` + repo-root context) held in reserve for future extensions that may need shared types.
+
+Directus-sync CLI runs in CI (`pnpm dlx directus-sync@3 push`) and locally (`pnpm dlx directus-sync@3 pull`), NOT inside the Railway Docker image. `apps/cms/directus-sync.config.js` sets `dumpPath: './directus'` so files land at plan-target paths. Env vars per-service; no cross-app leak (apps/web deploys to Vercel, zero Railway presence).
+
+P7's Railway verification is a **superset** of P4's verification — if P4 Railway deploy works on the sibling repo, P7's monorepo path is mechanically equivalent (just different build context root).
+
+**Owner verification gate (Task 17 — not blocking phase entry):** New Railway service pointing at `yesido-platform` repo → Root=`apps/cms` → deploy from consolidation branch → confirm `/server/health` + extension loaded + CLI handshake.
+
+**Full research notes:** [`research.md § P7`](research.md#p7--railway-monorepo-deploy--directus-sync-extension).
 
 ### P8 — AVIF support
 
