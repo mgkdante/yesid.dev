@@ -6,7 +6,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | 🟢 in progress (Tasks 0–7 shipped; services port live on Directus; Task 8 slice close is next) |
+| Status | 🟡 in progress (Tasks 0–7 shipped for services as proof-of-pattern; mid-slice scope correction landed: Slice 18 = full migration + two-repo decoupling; **Task 2b research pass is next**) |
 | Slice PR (site) | pending — [`feature/slice-18`](https://github.com/mgkdante/yesid.dev/tree/feature/slice-18) (keep accumulating sessions before opening; likely opens at slice close) |
 | Scorch PR (cms)      | [mgkdante/yesid.dev-cms#1](https://github.com/mgkdante/yesid.dev-cms/pull/1) — **MERGED** as `a7a1db6` |
 | Clean-slate PR (cms) | [mgkdante/yesid.dev-cms#2](https://github.com/mgkdante/yesid.dev-cms/pull/2) — **MERGED** as `0295dd6` |
@@ -536,7 +536,10 @@ The 5 other content ports stay on `staticAdapter` — projects, blog, meta, tech
 - ~~Task 4: DirectusAdapter scaffold + `services` port + `toLocalizedString`.~~ **Done.** Scorched-earth Neon cleanup landed as a Task 3 follow-up in the same session per owner steering.
 - ~~Task 5: Services collection schema + snapshot to yesid.dev-cms.~~ **Done.** yesid.dev-cms PR #5 merged (`13aaeb9`).
 - ~~Task 6: Seed services content into Directus + schema hotfixes.~~ **Done.** yesid.dev `7222c92`; yesid.dev-cms PR #6 merged (`4963c94`) with alias fields + csv→json hotfixes.
-- ~~Task 7: Flip services port to Directus (hybrid adapter).~~ **Done (this session).** yesid.dev `a373bf5`. Port-by-port pattern; services live from cms.yesid.dev, other 5 ports still on static.
+- ~~Task 7: Flip services port to Directus (hybrid adapter).~~ **Done.** yesid.dev `a373bf5`. Port-by-port pattern; services live from cms.yesid.dev, other 5 ports still on static.
+- **Task 2b (NEW — mid-slice scope correction):** CMS-native research + two-repo decoupling re-plan. Owner flagged that Tasks 5–7 shipped services as a TS-mirror (hardcoded-content replacer), not a proper CMS deployment. Slice 18 is a full migration of all 6 content types, and the two repos (yesid.dev + yesid.dev-cms) should evolve into independently-shipping domains — changes in one repo don't ripple into the other except through the explicit adapter-seam contract. Task 2b is a research pass (like Task 2 was for infrastructure) covering: (1) `@directus/visual-editing` integration, (2) Content Versioning + draft/publish, (3) preview routes with signed tokens, (4) M2A blocks for flexible page composition, (5) Flows for publish → Vercel revalidate, (6) asset pipeline + transforms, (7) role/policy matrix, (8) extensions vs built-ins decision, (9) formal repo-separation boundary (CMS concerns = yesid.dev-cms; adapter = yesid.dev), (10) re-plan of remaining content types (projects / blog / tech-stack / meta / site-chrome) as CMS-native collections, not TS-mirrors. **Status: ⏸ not started (pending in a fresh session).** Deliverables: append to research.md + new D4–D10 in spec.md + revised task list in plan.md. No code changes.
+- Task 5b–5f (deferred — unblocked by Task 2b): remaining content types. Each follows the Task 5/6/7 shape (Directus schema + seed + adapter port) but CMS-native per Task 2b findings.
+- Task 8 (slice close): happens AFTER all content types are migrated.
 - Task 5: design + create real yesid.dev content model in Directus (services, projects, blog_posts, tech_stack, scenarios, page singletons + M2A blocks per research.md sketch). Re-snapshot after every collection change → commit to yesid.dev-cms. Tighten `ai-editor` role permissions to those collections only.
 - Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK. Preserve natural-key IDs where possible (project slug, service id).
 - Task 7: full E2E parity — run yesid.dev test suite + a manual smoke against Directus-served routes. Flip `src/lib/adapters/index.ts:6` re-export only after parity confirmed.
