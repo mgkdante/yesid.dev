@@ -33,16 +33,13 @@
  * network.
  */
 
-import {
-	createDirectus,
-	rest,
-	staticToken,
-	createItem,
-	deleteItem,
-	readItems,
-} from '@directus/sdk';
+import { createItem, deleteItem, readItems } from '@directus/sdk';
 import { z } from 'zod';
 import fixtureData from '../fixtures/collections/services.json' with { type: 'json' };
+import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { getAdminToken } from './lib/auth';
+import { createLogger } from './lib/logger';
+import { DirectusError, parseErrors } from './lib/catch-error';
 
 // --- Types (inlined; no cross-repo imports per D12) --------------------------
 
@@ -280,60 +277,80 @@ interface SeedOptions {
 	token: string;
 }
 
-async function getAdminToken(directusUrl: string): Promise<string> {
-	if (process.env.DIRECTUS_ADMIN_TOKEN) {
-		return process.env.DIRECTUS_ADMIN_TOKEN;
-	}
-	const email = process.env.DIRECTUS_ADMIN_EMAIL;
-	const password = process.env.DIRECTUS_ADMIN_PASSWORD;
-	if (!email || !password) {
-		throw new Error(
-			'Need DIRECTUS_ADMIN_TOKEN, or DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD. ' +
-				'Typical run: DIRECTUS_ADMIN_TOKEN=$(op read ...) bun run seed:services',
-		);
-	}
-	const res = await fetch(`${directusUrl}/auth/login`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ email, password }),
-	});
-	if (!res.ok) {
-		throw new Error(
-			`[auth] ${res.status} ${res.statusText} — check admin creds + ${directusUrl} reachability`,
-		);
-	}
-	const body = (await res.json()) as { data: { access_token: string } };
-	return body.data.access_token;
+const log = createLogger('seed');
+
+export interface SeedRunOptions extends SeedOptions {
+	dryRun?: boolean;
+	reset?: boolean;
 }
 
 export async function seedServices(
 	services: readonly Service[],
-	opts: SeedOptions,
+	opts: SeedRunOptions,
 ): Promise<void> {
-	const client = createDirectus<Schema>(opts.directusUrl)
-		.with(staticToken(opts.token))
-		.with(rest());
+	if (opts.dryRun) {
+		log.info(`dry-run: would process ${services.length} services against ${opts.directusUrl}`);
+		for (const service of services) {
+			const row = toServiceRow(service);
+			log.info(
+				`  ~ ${service.id.padEnd(24)}  station=${service.station}  ` +
+					`locales=${row.translations.length}  ` +
+					`deliverables=${row.deliverables.length}  ` +
+					`sections=${row.sections.length}`,
+			);
+		}
+		log.info('dry-run complete (no writes).');
+		return;
+	}
+
+	const client = createClient<Schema>(opts.directusUrl, opts.token);
 
 	const existing = await client.request(
 		readItems('services', { fields: ['id'], limit: -1 }),
 	);
-	if (existing.length > 0) {
-		console.log(`[seed] clearing ${existing.length} existing services...`);
+
+	if (existing.length > 0 && !opts.reset) {
+		throw new Error(
+			`[seed] found ${existing.length} existing services. ` +
+				`Seed currently runs in reset-only mode. Re-run with --reset to clear + recreate, ` +
+				`or switch to Data Studio for incremental edits. ` +
+				`(Upsert support lands with projects in 18e — see docs/slices/slice-18/plan.md.)`,
+		);
+	}
+
+	if (opts.reset && existing.length > 0) {
+		log.info(`clearing ${existing.length} existing services...`);
 		for (const s of existing) {
-			await client.request(deleteItem('services', s.id));
+			try {
+				await client.request(deleteItem('services', s.id));
+			} catch (err) {
+				const msgs = parseErrors(err);
+				throw new DirectusError(
+					500,
+					`Failed to delete existing service ${s.id}: ${msgs.join(' · ')}`,
+				);
+			}
 		}
 	}
 
-	console.log(`[seed] creating ${services.length} services...`);
+	log.info(`creating ${services.length} services...`);
 	for (const service of services) {
 		const row = toServiceRow(service);
 		// SDK's createItem returns a read of the created row; shape mismatch
 		// against our readonly input is the expected asymmetry — writes are
 		// plain objects, the return is a read-shape hydration. Safe to cast.
-		await client.request(
-			createItem('services', row as unknown as DirectusServiceRow),
-		);
-		console.log(
+		try {
+			await client.request(
+				createItem('services', row as unknown as DirectusServiceRow),
+			);
+		} catch (err) {
+			const msgs = parseErrors(err);
+			throw new DirectusError(
+				500,
+				`Failed to create service ${service.id}: ${msgs.join(' · ')}`,
+			);
+		}
+		log.info(
 			`  ✓ ${service.id.padEnd(24)}  station=${service.station}  ` +
 				`locales=${row.translations.length}  ` +
 				`deliverables=${row.deliverables.length}  ` +
@@ -354,7 +371,7 @@ export async function seedServices(
 			sort: ['station'],
 		}),
 	);
-	console.log(`\n[seed] verified: ${final.length} services in Directus`);
+	log.info(`verified: ${final.length} services in Directus`);
 	if (final.length !== services.length) {
 		throw new Error(
 			`[seed] count mismatch: expected ${services.length}, got ${final.length}`,
@@ -362,17 +379,30 @@ export async function seedServices(
 	}
 }
 
+function parseFlags(argv: readonly string[]): { dryRun: boolean; reset: boolean } {
+	return {
+		dryRun: argv.includes('--dry-run'),
+		reset: argv.includes('--reset'),
+	};
+}
+
 async function main(): Promise<void> {
-	const directusUrl =
-		process.env.PUBLIC_DIRECTUS_URL ?? 'https://cms.yesid.dev';
-	console.log(`[seed] target: ${directusUrl}`);
+	const { dryRun, reset } = parseFlags(process.argv.slice(2));
+	const directusUrl = defaultDirectusUrl();
+	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
 
 	const services = loadServicesFixture();
-	console.log(`[seed] source: ${services.length} services from fixtures/collections/services.json`);
+	log.info(`source: ${services.length} services from fixtures/collections/services.json`);
+
+	if (dryRun) {
+		// No auth needed for dry-run — skip token fetch.
+		await seedServices(services, { directusUrl, token: '', dryRun: true });
+		return;
+	}
 
 	const token = await getAdminToken(directusUrl);
-	await seedServices(services, { directusUrl, token });
-	console.log('\n[seed] done.');
+	await seedServices(services, { directusUrl, token, reset });
+	log.info('done.');
 }
 
 // Entry-point guard — tests can import transformation helpers without triggering main()
