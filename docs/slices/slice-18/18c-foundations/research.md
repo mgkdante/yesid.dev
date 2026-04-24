@@ -145,7 +145,7 @@ USER node
 
 #### Open follow-ups
 
-- CLI installation location: CI workflow (`apps/cms/.github/workflows/cms.yml`) runs `npx directus-sync@3 push` with admin token from secrets. Local dev runs the same via `bun x` or `pnpm dlx`. Decided in Task 22.
+- CLI installation location: CI workflow (`apps/cms/.github/workflows/cms.yml`) runs `bun x directus-sync@3 push` with admin token from secrets. Local dev runs the same via `bun x`. Decided in Task 22.
 - Dump path: default `./directus-config` conflicts with the plan's `apps/cms/directus/` target. Override via `directus-sync.config.js` `dumpPath: './directus'` to land files at the planned location.
 - Extension version floating: pin to `3.0.6` explicitly in the Dockerfile (shown above) + in `directus-sync.config.js` for CLI parity, so image rebuilds don't silently drift.
 
@@ -277,7 +277,9 @@ Decision for D14 shape (subject to P9 verification):
 
 #### Decision (interim, pending owner Vercel verification)
 
-**Proceed with D13 (Turborepo + pnpm workspaces monorepo).** No revert conditions identified in local research. Owner verifies via preview deploy on the consolidation branch before cutover.
+**Proceed with D13 (Turborepo monorepo).** No revert conditions identified in local research. Owner verifies via preview deploy on the consolidation branch before cutover.
+
+> **Amendment 2026-04-24:** D13 workspace tool pivoted pnpm → **Bun workspaces** per owner directive (see [P9 amendment](#amendment-2026-04-24--pivot-to-bun-workspaces-per-owner-directive) + [decisions.md amendments log](decisions.md)). Vercel's auto-detection works equivalently with `bun.lock` → `bun install`; Turborepo is package-manager-agnostic. All P6 findings above remain valid under Bun; references to "pnpm" in install mechanics above read as "Bun install" mechanically.
 
 **If preview deploy fails** (e.g., workspace resolution breaks at build time): first remedy is tsc build step for `packages/shared` (additive). Only if that also fails → revert to two-repo (D13 rollback; big scope change, unlikely).
 
@@ -327,8 +329,8 @@ Because build context is `apps/cms/`, the image doesn't see `packages/shared`, `
 
 The CLI (`directus-sync`) does **not** live in the Docker image. It runs from:
 
-1. **GitHub Actions `cms.yml` workflow** (Task 22): `pnpm dlx directus-sync@3 push` with admin token from repo secrets. Targets `https://cms.yesid.dev`.
-2. **Local authoring workflow**: `pnpm dlx directus-sync@3 pull` from `apps/cms/` to generate per-resource JSON after schema edits in Data Studio. Results committed to `apps/cms/directus/**`.
+1. **GitHub Actions `cms.yml` workflow** (Task 22): `bun x directus-sync@3 push` with admin token from repo secrets. Targets `https://cms.yesid.dev`.
+2. **Local authoring workflow**: `bun x directus-sync@3 pull` from `apps/cms/` to generate per-resource JSON after schema edits in Data Studio. Results committed to `apps/cms/directus/**`.
 
 `directus-sync.config.js` (at `apps/cms/directus-sync.config.js`) defines `dumpPath: './directus'` so files land at `apps/cms/directus/collections/*.json` etc., matching plan.md Task 21 target layout.
 
@@ -351,7 +353,7 @@ The CLI (`directus-sync`) does **not** live in the Docker image. It runs from:
 #### Owner verification gate (Task 17 — extends P4 gate with monorepo path)
 
 1. **Before monorepo exists (optional sibling-repo P4 standalone verify):** put the Dockerfile at `yesid.dev-cms/Dockerfile`; Railway → Settings → Source → switch to Dockerfile build; trigger deploy; confirm `/server/health` green + `GET /extensions/registration/list` shows `directus-extension-sync` loaded. This validates P4 alone before committing to D12 pivot.
-2. **On monorepo consolidation branch (Task 17):** new Railway service points at `yesido-platform` repo → Root Directory=`apps/cms` → Watch Paths=`/apps/cms/**` → deploy from `feature/18c-foundations` branch → confirm `/server/health` green + extension loaded + CLI handshake (`pnpm dlx directus-sync@3 diff --config apps/cms/directus-sync.config.js`).
+2. **On monorepo consolidation branch (Task 17):** new Railway service points at `yesido-platform` repo → Root Directory=`apps/cms` → Watch Paths=`/apps/cms/**` → deploy from `feature/18c-foundations` branch → confirm `/server/health` green + extension loaded + CLI handshake (`bun x directus-sync@3 diff --config apps/cms/directus-sync.config.js`).
 3. **Pre-cutover (Task 18):** smoke both deploys on consolidation branch against a staging env (non-prod Neon branch + separate R2 bucket if feasible).
 4. **Cutover (Task 19):** point prod Railway service at new repo; delete old Railway service after 7-day DNS cooling.
 
@@ -502,9 +504,65 @@ D14 reverts only if the whole "cross-app shared package" model collapses (very u
 
 #### Open follow-ups
 
-- `pnpm@10` pinned in root `packageManager` field (Task 13).
-- `apps/web/package.json` dep: `"@yesido/shared": "workspace:*"` (Task 14).
+- `pnpm@10` pinned in root `packageManager` field (Task 13). **SUPERSEDED by 2026-04-24 amendment below — see Bun workspaces section.**
+- `apps/web/package.json` dep: `"@yesido/shared": "workspace:*"` (Task 14) — unchanged under Bun.
 - If svelte-check struggles at Task 14, land `packages/shared/tsconfig.json` + `"composite": true` + references proactively.
+
+---
+
+#### Amendment 2026-04-24 — Pivot to Bun workspaces (per owner directive)
+
+**Decision:** Workspace manager pivots from pnpm → **Bun workspaces**. Remaining P9 findings (TS source + `exports` field + no build step + Zod runtime + escalation ladder) carry over unchanged — workspace resolution mechanics are equivalent at the level that matters for D14.
+
+**What changes:**
+
+| Before (pnpm) | After (Bun) |
+|---|---|
+| `pnpm-workspace.yaml` at repo root defines `packages:` array | Root `package.json` has `"workspaces": ["apps/*", "packages/*"]` field; no separate yaml |
+| Root `package.json` pins `"packageManager": "pnpm@10.x"` | Pin Bun version via `.bun-version` file or CI `bun-version: 1.3.x` input |
+| `pnpm install` from repo root | `bun install` from repo root |
+| Lockfile: `pnpm-lock.yaml` | Lockfile: `bun.lock` |
+| Owner blocking pre-req: install pnpm before Task 13 | **No install pre-req** — Bun 1.3.11 already present |
+| Vercel auto-detects pnpm-lock.yaml → pnpm install | Vercel auto-detects bun.lock → bun install (Bun support GA on Vercel since 2024) |
+| Turborepo install flow: `pnpm add -w turbo` | Turborepo install flow: `bun add -w turbo` |
+
+**What does NOT change:**
+
+- `packages/shared/package.json` shape (TS source + `exports` + Zod dep).
+- `apps/web/package.json` + `apps/cms/package.json` consume `"@yesido/shared": "workspace:*"` (Bun supports `workspace:*` since 1.1).
+- SvelteKit + Vite + vitest + svelte-check + Bun test resolution — all identical under Bun workspaces.
+- Turborepo caching (`turbo run build`) is package-manager-agnostic; env/outputs config same.
+- Dockerfile internal package manager (`apps/cms/Dockerfile` uses `pnpm add --prod --no-save directus-extension-sync` via corepack inside the Directus image) — unrelated to the monorepo workspace tool; stays as-is.
+- `@directus/sdk@^20` already-installed in existing yesid.dev — no change post-monorepo.
+
+**Revised environment status:**
+
+```
+pnpm: NOT installed — NO LONGER REQUIRED
+bun:  1.3.11 ✓ (meets Bun workspace + workspace:* protocol floor of 1.1)
+node: v25.9.0 ✓ (for Vercel runtime compat at adapter-vercel output)
+```
+
+**Revised Task 13 scope (to be edited in plan.md):**
+
+> Root `package.json` with `"workspaces": ["apps/*", "packages/*"]` + `turbo.json`; `bun install`; commit `bun.lock`.
+
+Replaces prior wording "Root `package.json` + `pnpm-workspace.yaml` + `turbo.json`; `pnpm install`".
+
+**Revised fallback escalation ladder (same steps, last-step direction flipped):**
+
+1. `tsc` cross-package inference errors → `tsconfig composite: true` + references.
+2. Vite HMR flaky → `optimizeDeps.include: ['@yesido/shared']`.
+3. Bundler tree-shake issues → emit `dist/` from `packages/shared/tsconfig.json`.
+4. Last resort → pivot back to pnpm workspaces (reverse of today's pivot; ~1hr).
+
+**Why this pivot makes sense (contextual judgment):**
+
+- Existing `yesid.dev-cms` already ships `bun.lock` + bun-prefixed scripts. Existing `yesid.dev` likewise uses Bun via scripts. Monorepo continuation of the pattern removes impedance mismatch.
+- Bun 1.3.x is mature + GA + has shipped workspaces for ≥2 years.
+- Vercel + Turborepo + SvelteKit + Bun is a proven combination in 2026 — no longer frontier tooling.
+- Simpler onboarding for the template-extraction audience post-Slice-18: one install (Bun), one lockfile.
+- Performance wins (Bun install ~3-5× faster than pnpm) compound across CI matrix runs.
 
 ---
 
