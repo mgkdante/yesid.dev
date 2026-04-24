@@ -249,15 +249,85 @@ Decision for D14 shape (subject to P9 verification):
 
 ### P7 — Railway monorepo deploy + directus-sync extension
 
-*Status: not yet run.*
+*Status: local research complete 2026-04-24; Railway monorepo-deploy verification owner-gated (pending). Combines P4 (extension install) with P6's monorepo half.*
 
-**Question:** Does Railway build from `apps/cms/Dockerfile` with the extension packaged?
+**Question:** Can Railway deploy `apps/cms/Dockerfile` from a Turborepo monorepo? Does the Dockerfile context play nicely with the monorepo? Does the directus-extension-sync load correctly when the image is built from within a monorepo?
 
-**Method:** Railway service → Build Command + Dockerfile Path: `apps/cms/Dockerfile`; deploy; smoke `/schema/apply`.
+#### Railway's two monorepo options (verified via docs.railway.com)
 
-**Findings:** TBD
+**Option A — Isolated subdirectory (recommended for us):**
+- Service → Settings → **Root Directory: `apps/cms`**
+- Dockerfile auto-detected at `apps/cms/Dockerfile` (Railway's default behavior: look for `Dockerfile` at the Root Directory).
+- **Build context** = `apps/cms/` only (per Railway docs: "Railway will only pull down files from that directory when creating new deployments").
+- **Watch Paths: `/apps/cms/**`** (gitignore-style) — avoids redeploy thrash when only `apps/web/**` changes.
 
-**Decision:** TBD (combines D13 + D11)
+**Option B — Repo-root context (not needed for us):**
+- Root Directory blank; `RAILWAY_DOCKERFILE_PATH=apps/cms/Dockerfile` env var set on the service.
+- Build context = whole repo (lets Dockerfile `COPY ../../packages/shared` if needed).
+
+**Decision for our case: Option A.** Our Dockerfile is pure `FROM + pnpm add` — zero `COPY` from outside `apps/cms/`. No need for repo-root context. Option A gives cleanest Watch-Path semantics and smaller build context upload.
+
+#### Dockerfile with Option A build context (repeat from P4, unchanged by monorepo)
+
+```dockerfile
+# apps/cms/Dockerfile
+FROM directus/directus:11.17.3
+USER root
+WORKDIR /directus
+RUN corepack enable \
+ && pnpm add --prod --no-save directus-extension-sync@3.0.6
+USER node
+```
+
+Because build context is `apps/cms/`, the image doesn't see `packages/shared`, `apps/web`, or `pnpm-workspace.yaml` — and doesn't need to. The Directus container runs a vanilla image + one extension; everything else (seed scripts, CLI, workspace types) runs in **CI** (GitHub Actions) or **locally**, connecting to Railway's Directus over HTTP.
+
+#### directus-sync CLI execution path (clarified)
+
+The CLI (`directus-sync`) does **not** live in the Docker image. It runs from:
+
+1. **GitHub Actions `cms.yml` workflow** (Task 22): `pnpm dlx directus-sync@3 push` with admin token from repo secrets. Targets `https://cms.yesid.dev`.
+2. **Local authoring workflow**: `pnpm dlx directus-sync@3 pull` from `apps/cms/` to generate per-resource JSON after schema edits in Data Studio. Results committed to `apps/cms/directus/**`.
+
+`directus-sync.config.js` (at `apps/cms/directus-sync.config.js`) defines `dumpPath: './directus'` so files land at `apps/cms/directus/collections/*.json` etc., matching plan.md Task 21 target layout.
+
+#### Railway env var scoping (no leak risk)
+
+- Railway env vars are **per-service within a project**. Only `apps/cms` is a Railway service; `apps/web` is deployed to Vercel.
+- Zero presence → zero leak vector, symmetric with P6 analysis.
+- Service-level secrets for CMS (DB connection string, R2 creds, KEY, SECRET, admin seed) stay on the Railway service and can't reach Vercel or local dev without explicit export.
+- Build-time env vars required by the Dockerfile: declared via `ARG` in Dockerfile + set as Railway env. **We have none** — the Dockerfile is pure install, no build-time secrets needed.
+
+#### Findings (local research, 2026-04-24)
+
+- **Railway monorepo support: GREEN.** Root Directory + Watch Paths pattern documented and well-supported.
+- **Dockerfile auto-detection from subdir: GREEN.** Standard Railway behavior; no flag needed when Root Directory matches Dockerfile location.
+- **Extension load under monorepo context: GREEN (by construction).** Our Dockerfile doesn't reference anything outside `apps/cms/`; moving it into a monorepo doesn't change image contents or load behavior (P4 findings carry over unchanged).
+- **Env var scoping: GREEN.** Per-service secrets + split hosting eliminates cross-app leak.
+- **BuildKit cache mounts available** if we ever need them (not needed for minimal Dockerfile).
+- **Dockerfile path env var (`RAILWAY_DOCKERFILE_PATH`) documented** as fallback if Option B ever becomes necessary.
+
+#### Owner verification gate (Task 17 — extends P4 gate with monorepo path)
+
+1. **Before monorepo exists (optional sibling-repo P4 standalone verify):** put the Dockerfile at `yesid.dev-cms/Dockerfile`; Railway → Settings → Source → switch to Dockerfile build; trigger deploy; confirm `/server/health` green + `GET /extensions/registration/list` shows `directus-extension-sync` loaded. This validates P4 alone before committing to D12 pivot.
+2. **On monorepo consolidation branch (Task 17):** new Railway service points at `yesido-platform` repo → Root Directory=`apps/cms` → Watch Paths=`/apps/cms/**` → deploy from `feature/18c-foundations` branch → confirm `/server/health` green + extension loaded + CLI handshake (`pnpm dlx directus-sync@3 diff --config apps/cms/directus-sync.config.js`).
+3. **Pre-cutover (Task 18):** smoke both deploys on consolidation branch against a staging env (non-prod Neon branch + separate R2 bucket if feasible).
+4. **Cutover (Task 19):** point prod Railway service at new repo; delete old Railway service after 7-day DNS cooling.
+
+#### Decision (interim, pending owner Railway verification)
+
+**Proceed with D13 (monorepo) × D11 (directus-sync extension) combination via Option A Railway config.** No revert conditions identified beyond the upstream P4 risk (extension doesn't load).
+
+If P4 Railway verification fails → P7 also fails (shared cause). Mitigation already in P4: revert D11 + D3, keep snapshot.yaml.
+
+If Option A build context proves too narrow (e.g., future extension needs shared types) → escalate to Option B via `RAILWAY_DOCKERFILE_PATH` + repo-root context. Additive; not a D13 revert.
+
+**Full research notes:** [`research.md § P4`](research.md#p4--directus-sync-on-railway-via-custom-dockerfile) for extension mechanics; this section for Railway monorepo mechanics.
+
+#### Open follow-ups
+
+- `apps/cms/directus-sync.config.js` shape finalized in Task 22 (includes `directusUrl: process.env.DIRECTUS_URL`, `directusToken: process.env.DIRECTUS_ADMIN_TOKEN`, `dumpPath: './directus'`, excludes like `directus_permissions_system` etc.).
+- GitHub Actions `cms.yml` workflow uses Railway's environment switching to push to staging first, then prod (gated by approval).
+- Staging Neon branch naming convention: `cms-staging` vs `cms-prod` — document in `apps/cms/docs/ops/` during Task 22 or 39.
 
 ---
 
@@ -301,7 +371,7 @@ Populated as probes complete. Summary table + links to specific findings above.
 | P4 | 🟡 local ✓ / Railway owner-gated | **Interim green — proceed with D3 + D11 amendments; Railway verify in Task 17** | **yes (D11 + D3)** |
 | P5 | ⏸ | TBD | F14 wording |
 | P6 | 🟡 local ✓ / Vercel owner-gated | **Interim green — proceed with D13; Vercel preview verify in Task 16** | **yes (D13)** |
-| P7 | ⏸ | TBD | **yes (D13 + D11)** |
+| P7 | 🟡 local ✓ / Railway owner-gated | **Interim green — proceed with D11+D13 via Option A (Root=apps/cms, Watch=/apps/cms/**); Railway verify in Task 17** | **yes (D13 + D11)** |
 | P8 | ⏸ | TBD | 18d optional |
 | P9 | ⏸ | TBD | **yes (D14)** |
 
