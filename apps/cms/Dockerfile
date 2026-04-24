@@ -15,10 +15,11 @@ WORKDIR /directus
 
 # Upstream Directus image uses pnpm under corepack (not a monorepo
 # workspace concern — this is the image's internal package manager).
-# `--prod` skips devDeps; `--no-save` keeps the image's lockfile untouched.
+# Note: pnpm does NOT support `--no-save` (that's an npm flag); `pnpm add`
+# always updates package.json. Harmless inside an immutable Docker layer.
 # Directus auto-loads the extension at boot from node_modules (type=endpoint,
 # host=^11.0.0, verified 2026-04-24 against Directus 11.17.3).
 RUN corepack enable \
- && pnpm add --prod --no-save directus-extension-sync@3.0.6
+ && pnpm add directus-extension-sync@3.0.6
 
 USER node
