@@ -24,15 +24,15 @@
 
 ### P1 — Global Draft × Group interfaces (bug #26890)
 
-**Decision:** TBD after probe. If bug confirmed → document collections where Global Draft must be per-item custom versions; if not → Global Draft everywhere.
+**Decision (2026-04-24, deferred):** Runs at Task 49 (services retrofit) or 18i (first Group-using collection — block_* M2A). Interim working assumption: Global Draft works for flat collections (no Group interfaces) — services, projects, blog_posts, tech_stack, site_meta, route_seo. If Group field ever lands in these, probe immediately. Probe method: create throwaway `_probe_group` test collection via directus-sync, verify versioning behavior, delete. Not a 18c phase-entry blocker.
 
 ### P2 — /shares endpoint behavior
 
-**Decision:** TBD. Adapter boundary `PreviewContext = { shareToken, version? }` shape finalized per findings.
+**Decision (2026-04-24, deferred per D6):** Adapter shape `PreviewContext = { shareToken, version? }` locked in 18c regardless. Full `/shares` endpoint probe (TTL / password / role-inheritance semantics) runs with post-Slice-18 preview routes implementation. Directus docs confirm enough for 18c adapter contract: token via `?token=<id>` header or query, `date_start/end` for TTL, optional password, role inheritance from creating user. Sufficient.
 
 ### P3 — Block Editor JSON shape
 
-**Decision:** TBD. `BlockRenderer.svelte` block-type catalog in 18f based on findings.
+**Decision (2026-04-24, deferred to 18f):** No `blog_posts` collection exists in live CMS yet (only services migrated). Probing would duplicate 18f's opening scope. Interim assumption: Directus 11 Block Editor emits tiptap-style `{ type: "doc", content: [...] }` with heading/paragraph/list/code/quote/image/embed/hr/hardBreak nodes + bold/italic/code/link/strike inline marks. `BlockRenderer.svelte` design in 18f; `packages/shared/types/block-editor.ts` Zod schema authored at 18f Task 1. Nothing in 18c scope depends on exact shape.
 
 ### P4 — directus-sync on Railway
 
@@ -46,7 +46,11 @@
 
 ### P5 — MCP system-prompt scope
 
-**Decision:** TBD. F14 prompt written as single instance-global or per-role based on findings.
+**Decision (2026-04-24, complete):** **Instance-global scope confirmed.** Single field `directus_settings.mcp_prompt`; one prompt for all authenticated MCP callers. F14 writes ONE role-agnostic prompt, 250-400 words, covering yesid.dev scope + content-type overview + tone + Block Editor rule (no Markdown) + focal-point nudge + delete protection + translation conventions + Global Draft workflow. Land in Task 35 (`directus/settings.json`).
+
+**Collateral fix:** Current prompt contains U+FFFD replacement character (same F1 Unicode corruption pattern as `snapshot.yaml:40`). F14 rewrite eliminates it; CI pre-commit should flag U+FFFD going forward to prevent regression.
+
+**Full research notes:** [`research.md § P5`](research.md#p5--mcp-system-prompt-scope-per-role-or-instance-global).
 
 ### P6 — Turborepo + Vercel deploy
 
@@ -72,7 +76,7 @@ P7's Railway verification is a **superset** of P4's verification — if P4 Railw
 
 ### P8 — AVIF support
 
-**Decision:** TBD. Add AVIF preset variant to D9 if green; otherwise stick with WebP.
+**Decision (2026-04-24, deferred to 18d Task 2-3):** Live CMS has 1 file (46-byte R2 smoke-test `.txt`) — no images to probe AVIF against. Deferral confirmed correct per design spec § D9 ("probe P8 in 18d"). At first image upload in 18d: `curl -I` with `?format=avif`; if `Content-Type: image/avif` → add AVIF variants to `seed-presets.ts`; if 400 → WebP-only stack, revisit post-Directus-12.
 
 ### P9 — pnpm workspace + @yesido/shared in SvelteKit + Bun
 
