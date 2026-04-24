@@ -50,7 +50,13 @@
 
 ### P6 — Turborepo + Vercel deploy
 
-**Decision:** TBD. If fails → blocker; revert D13.
+**Interim decision (2026-04-24 — local research complete, Vercel preview verify owner-gated):** **Proceed with D13 (Turborepo + pnpm workspaces monorepo).** Vercel documents exact auto-config for our shape (SvelteKit preset + Root Directory=`apps/web` + global `turbo run build` with auto-inferred filter + Output=`.svelte-kit/**` + `.vercel/**`). Env vars are project-scoped and split hosting (Vercel web / Railway cms) eliminates `apps/cms/.env` leak vector. pnpm workspaces + `workspace:*` protocol natively supported. SvelteKit adapter-vercel@6.3.1 + `nodejs22.x` runtime unchanged from current setup.
+
+`packages/shared` ships TS source directly (no build step); SvelteKit's Vite 7 + Bun both handle workspace TS. Fallback if Vite refuses: add `tsc --build` emit (additive — no D13/D14 revert).
+
+**Owner verification gate (Task 16 — not blocking phase entry):** Create `yesido-platform-web` Vercel project post Task 10 umbrella creation → set Root Directory=`apps/web` → port env vars from existing yesid.dev project → preview deploy on consolidation branch → confirm SSR green + no env leak. Keep old project alive until Task 19 cutover for zero-downtime DNS switch.
+
+**Full research notes:** [`research.md § P6`](research.md#p6--turborepo--vercel-monorepo-deploy).
 
 ### P7 — Railway monorepo + directus-sync Dockerfile
 
