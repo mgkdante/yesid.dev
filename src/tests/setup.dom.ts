@@ -44,6 +44,30 @@ HTMLCanvasElement.prototype.getContext = (() => {
 
 // NOTE: matchMedia stub REMOVED — happy-dom implements it natively (v9.19.0+).
 
+// SvelteKit $env/dynamic/* virtual modules assume Node's `process.env`. In
+// happy-dom (DOM-tier tests) `process` isn't defined, so importing the real
+// modules throws TypeError at top-level evaluation of $lib/adapters/directus.
+// Stub them as empty objects — the adapter's buildClient() only reads env
+// lazily when a Directus-backed port is actually invoked, and those
+// invocations are short-circuited by the directus-adapter mock below.
+vi.mock('$env/dynamic/private', () => ({ env: {} }));
+vi.mock('$env/dynamic/public', () => ({ env: {} }));
+
+// Force the hybrid adapter's services port to resolve through staticAdapter
+// during DOM tests (layout, sitemap server, component tests). Without this,
+// any test that transitively invokes adapter.services.* attempts to fetch
+// from cms.yesid.dev — fails fast because PUBLIC_DIRECTUS_URL is unset in
+// the test env. See setup.data.ts for the same mock + detailed rationale.
+vi.mock('$lib/adapters/directus', async () => {
+	const original = await vi.importActual<typeof import('$lib/adapters/directus')>(
+		'$lib/adapters/directus',
+	);
+	const { staticAdapter } = await vi.importActual<typeof import('$lib/adapters/static')>(
+		'$lib/adapters/static',
+	);
+	return { ...original, directusAdapter: staticAdapter };
+});
+
 // happy-dom does not implement IntersectionObserver. Stub it so LottiePlayer's 'scroll'
 // trigger does not throw in tests.
 vi.stubGlobal(

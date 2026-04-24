@@ -1,12 +1,19 @@
-// Contract test for the active adapter.
-// Not a behaviour test — that's the content-layer integrity test's job. This
-// file asserts that every port method returns the shape promised by
-// ContentAdapter and that basic cardinality is sane (non-empty where expected,
-// undefined for not-found). When a Directus or other CMS adapter joins, flip
-// the import in ./index.ts and re-run: the contract must still hold.
+// Contract test for the static adapter implementation.
+//
+// Imports `staticAdapter` directly (not via ./index re-export) so this test
+// stays network-free. Contract itself is enforced compile-time by the
+// `ContentAdapter` annotation on each adapter implementation; this file
+// verifies that the static implementation returns sane cardinality + shapes
+// (non-empty where expected, undefined for not-found).
+//
+// For the Directus adapter (Slice 18 Task 4+), contract enforcement is
+// compile-time via `directusAdapter: ContentAdapter` in ./directus.ts. Live
+// integration testing against cms.yesid.dev is out of scope for `bun run
+// test` (would require env credentials + network) — covered by the seed
+// script's verify step + manual browser smoke at slice close.
 
 import { describe, it, expect } from 'vitest';
-import { adapter } from './index';
+import { staticAdapter as adapter } from './static';
 
 describe('ContentAdapter contract', () => {
 	describe('projects port', () => {

@@ -14,15 +14,16 @@
 // ports throw a clear "TODO Task 5+" error if called. The ContentAdapter
 // annotation at the bottom is the compile-time gate that Task 4 must clear.
 
-import { createDirectus, rest, staticToken, readItems } from '@directus/sdk';
-import { env as privateEnv } from '$env/dynamic/private';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 import { env as publicEnv } from '$env/dynamic/public';
 
 import type { ContentAdapter } from './types';
-import type { Locale, LocalizedString, Service } from '$lib/types';
+import type { Locale, LocalizedString, Service, ServiceSection } from '$lib/types';
 
 // ---------------------------------------------------------------------------
-// Directus schema (target shape — Task 5 redefines collections to match)
+// Directus schema — mirrors yesid.dev-cms PR #5 + #6 as applied at cms.yesid.dev.
+// Field names + types match the Translations pattern (spec Q6 Approach A):
+// each row in a *_translations collection has `languages_code` + parent FK.
 // ---------------------------------------------------------------------------
 
 interface DirectusServiceTranslation {
@@ -37,6 +38,29 @@ interface DirectusServiceTranslation {
 	impact_metric_label?: string | null;
 }
 
+interface DirectusServiceDeliverableTranslation {
+	languages_code: string;
+	label?: string | null;
+}
+
+interface DirectusServiceDeliverable {
+	id: number;
+	sort: number | null;
+	translations?: DirectusServiceDeliverableTranslation[];
+}
+
+interface DirectusServiceSectionTranslation {
+	languages_code: string;
+	title?: string | null;
+	content?: string | null;
+}
+
+interface DirectusServiceSectionRow {
+	id: number;
+	sort: number | null;
+	translations?: DirectusServiceSectionTranslation[];
+}
+
 interface DirectusService {
 	id: string;
 	station: number;
@@ -47,6 +71,8 @@ interface DirectusService {
 	related_projects?: string[] | null;
 	stack?: string[] | null;
 	translations?: DirectusServiceTranslation[];
+	deliverables?: DirectusServiceDeliverable[];
+	sections?: DirectusServiceSectionRow[];
 }
 
 interface Schema {
@@ -108,21 +134,23 @@ function toLocalizedStringOrUndef<T extends { languages_code: string }>(
 let cachedClient: ReturnType<typeof buildClient> | null = null;
 
 function buildClient() {
+	// Anonymous reads only. The Public policy at cms.yesid.dev grants read on
+	// services + services_translations + services_deliverables(+translations) +
+	// services_sections(+translations) + languages (granted during Slice 18
+	// Task 5). No token needed for the site's public content paths — keeps
+	// this module free of `$env/dynamic/private` so the universal +layout.ts
+	// chain doesn't pull server-only env into the client bundle.
+	//
+	// If authenticated reads are ever required (draft/preview mode, private
+	// collections), move that usage into a `.server.ts` route + fetch there
+	// with a server-only token. Keep this adapter anonymous.
 	const url = publicEnv.PUBLIC_DIRECTUS_URL;
-	const token = privateEnv.DIRECTUS_READ_TOKEN;
 	if (!url) {
 		throw new Error(
 			'[directusAdapter] PUBLIC_DIRECTUS_URL is required. Set it in your environment.',
 		);
 	}
-	if (!token) {
-		throw new Error(
-			'[directusAdapter] DIRECTUS_READ_TOKEN is required. Set it in your environment.',
-		);
-	}
-	return createDirectus<Schema>(url, { globals: { fetch } })
-		.with(staticToken(token))
-		.with(rest());
+	return createDirectus<Schema>(url, { globals: { fetch } }).with(rest());
 }
 
 function client() {
@@ -162,9 +190,33 @@ function toService(row: DirectusService): Service {
 	const benefitHeadline = toLocalizedStringOrUndef(translations, 'benefit_headline');
 	if (benefitHeadline) service.benefitHeadline = benefitHeadline;
 	if (row.stack && row.stack.length > 0) service.stack = row.stack;
-	// impactMetric / deliverables / sections land in Task 5 once the
-	// services_deliverables + services_sections related collections are
-	// designed in Data Studio.
+
+	// impactMetric: both value + label must be present; otherwise skip the whole block.
+	const impactValue = toLocalizedStringOrUndef(translations, 'impact_metric_value');
+	const impactLabel = toLocalizedStringOrUndef(translations, 'impact_metric_label');
+	if (impactValue && impactLabel) {
+		service.impactMetric = { value: impactValue, label: impactLabel };
+	}
+
+	// deliverables: O2M from services_deliverables; each row holds a LocalizedString
+	// via its own translations junction. Sort by `sort` column; defaults to creation order.
+	const deliverables = (row.deliverables ?? [])
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((d): LocalizedString => toLocalizedString(d.translations ?? [], 'label'));
+	if (deliverables.length > 0) service.deliverables = deliverables;
+
+	// sections: O2M from services_sections; each row holds title + content LocalizedStrings
+	// via its own translations junction. Same sort contract as deliverables.
+	const sections = (row.sections ?? [])
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((s): ServiceSection => ({
+			title: toLocalizedString(s.translations ?? [], 'title'),
+			content: toLocalizedString(s.translations ?? [], 'content'),
+		}));
+	if (sections.length > 0) service.sections = sections;
+
 	return service;
 }
 
@@ -175,7 +227,13 @@ function toService(row: DirectusService): Service {
 async function fetchServices(filter?: Record<string, unknown>): Promise<Service[]> {
 	const rows = await client().request(
 		readItems('services', {
-			fields: ['*', { translations: ['*'] }],
+			fields: [
+				'*',
+				{ translations: ['*'] },
+				{ deliverables: ['id', 'sort', { translations: ['*'] }] },
+				{ sections: ['id', 'sort', { translations: ['*'] }] },
+			],
+			limit: -1,
 			...(filter ? { filter } : {}),
 		}),
 	);
