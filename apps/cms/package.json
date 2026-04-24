@@ -7,16 +7,18 @@
 		"seed:services": "bun scripts/seed-services.ts",
 		"seed:presets": "bun scripts/seed-presets.ts",
 		"migrate:assets": "bun scripts/migrate-assets.ts",
+		"sync:pull": "directus-sync pull",
+		"sync:push": "directus-sync push",
+		"sync:diff": "directus-sync diff",
 		"test": "bun test"
 	},
 	"devDependencies": {
 		"@directus/sdk": "^20.3.0",
 		"@repo/shared": "workspace:*",
+		"bottleneck": "^2.19.5",
 		"bun-types": "latest",
+		"directus-sync": "^3.0.0",
 		"yaml": "^2.6.1",
 		"zod": "^3.24.1"
-	},
-	"dependencies": {
-		"bottleneck": "^2.19.5"
 	}
 }
