@@ -16,7 +16,7 @@
 | D10 | + 2FA enforced admin + human-editor; SSO/OIDC NICE → SHOULD; instance-wide `RATE_LIMITER_*` | Q4 + Q12 + Agent C |
 | D11 | → Zero custom extensions EXCEPT directus-sync | Q6 |
 | D12 | → Turborepo monorepo two-app boundary (replaces strict two-repo) | Major pivot (owner approved) |
-| **D13** (new) | Turborepo + pnpm workspaces monorepo | Monorepo pivot |
+| **D13** (new) | Turborepo + **Bun workspaces** monorepo (amended from pnpm on 2026-04-24 per owner directive — see Amendments below) | Monorepo pivot |
 | **D14** (new) | `packages/shared` types + Zod only; runtime helpers stay app-local | Monorepo pivot + Q9 |
 | **D15** (new) | Block Editor for all rich content (no Markdown interface anywhere) | Q1 + ripple |
 
@@ -78,27 +78,43 @@ P7's Railway verification is a **superset** of P4's verification — if P4 Railw
 
 **Decision (2026-04-24, deferred to 18d Task 2-3):** Live CMS has 1 file (46-byte R2 smoke-test `.txt`) — no images to probe AVIF against. Deferral confirmed correct per design spec § D9 ("probe P8 in 18d"). At first image upload in 18d: `curl -I` with `?format=avif`; if `Content-Type: image/avif` → add AVIF variants to `seed-presets.ts`; if 400 → WebP-only stack, revisit post-Directus-12.
 
-### P9 — pnpm workspace + @yesido/shared in SvelteKit + Bun
+### P9 — Bun workspace + @yesido/shared in SvelteKit + Bun
 
-**Interim decision (2026-04-24 — design-pattern research complete, in-situ verification at Task 14):** **Proceed with D14.** `packages/shared` ships TS source directly via modern `exports` field; no `dist/` build step. SvelteKit 2 + Vite 7 + Bun 1.3 all resolve workspace-linked TS natively through pnpm symlinks (vitest + svelte-check inherit the resolver). Zod is the sole runtime dep.
+**Decision (2026-04-24, amended to Bun workspaces on owner directive):** **Proceed with D13 (Turborepo + Bun workspaces) and D14 (packages/shared as TS source + Zod).** `packages/shared` ships TS source directly via modern `exports` field; no `dist/` build step. SvelteKit 2 + Vite 7 + Bun 1.3 all resolve workspace-linked TS natively (Bun's symlink-free module resolver handles `workspace:*` protocol; Vite inherits Bun's resolution at build time; vitest + svelte-check share the tooling chain).
 
-**Environment discovery:** pnpm is NOT installed locally (Bun 1.3.11 + Node 25.9 present). Owner installs pnpm@10 globally before Task 13; pin version in root `package.json` `packageManager` field for CI parity. One-time setup, not a D14 threat.
+**Why Bun workspaces (pivot rationale):**
+- Project is Bun-first throughout (`bun.lock` in existing `yesid.dev-cms`; all scripts use `bun` prefix).
+- Bun 1.3.11 already installed locally; pnpm is NOT → single-tool dev ergonomics + no new tool install friction.
+- Bun workspace installs are measurably faster than pnpm (relevant for CI matrix).
+- Vercel + Turborepo both support Bun workspaces (Bun install auto-detected from `bun.lock`; `turbo run build` is package-manager-agnostic).
+- `workspace:*` protocol supported in Bun 1.1+.
 
-**Considered alternative (rejected for slice-18, held as reversible fallback):** Bun workspaces. Rejected because (a) Vercel's Turborepo preset is pnpm-first, (b) template extraction lands in the pnpm-default community, (c) Turborepo remote-cache docs optimize for pnpm. Kept as ~1-hour rollback path (delete pnpm-workspace.yaml + root `workspaces` field + regenerate lockfile) if pnpm ever becomes painful at Vercel build time.
+**Considered alternative (rejected):** pnpm workspaces. Pnpm's maturity and Turborepo-docs-default weight did not outweigh the consistency cost of introducing a second package manager to an otherwise Bun-native project. Template-extraction post-Slice-18 (`yesito/directus-sveltekit-pro`) ships with whichever workspace tool we finalize here; Bun monorepos are increasingly common in 2026 and Vercel's Bun support is GA.
 
-**Fallback escalation ladder if in-situ verification at Task 14 surfaces issues (each additive; no D14 revert):**
+**Root shape locked:**
+```jsonc
+// package.json (root)
+{
+  "name": "yesido-platform",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"]
+}
+```
+No `pnpm-workspace.yaml`. No `packageManager` field (Bun version pinned via `.bun-version` file or CI `bun-version` matrix input). `bun install` creates `bun.lock` at repo root.
+
+**Fallback escalation ladder if in-situ verification at Task 14 surfaces issues (each additive; no D13/D14 revert):**
 
 1. `tsc` cross-package inference errors → add `tsconfig composite: true` + project references.
-2. Vite HMR flaky → `optimizeDeps.include: ['@yesido/shared']`.
-3. Bundler tree-shake issues → add `packages/shared/tsconfig.json` with `declaration: true` + `dist/` emit.
-4. Last resort → Bun workspaces pivot (documented in rollback.md).
+2. Vite HMR flaky on packages/shared edits → `optimizeDeps.include: ['@yesido/shared']` in `apps/web/vite.config.ts`.
+3. Bundler tree-shake issues → emit `dist/` from `packages/shared/tsconfig.json` + flip `exports` to compiled paths.
+4. Last resort → pivot to pnpm workspaces (`bun install` → `pnpm install` + add `pnpm-workspace.yaml`; ~1hr; documented as reverse of today's pivot).
 
-D14 reverts only if the whole cross-app shared-package pattern collapses — extremely unlikely given canonical industry usage.
+D13/D14 revert only if the whole cross-app shared-package pattern collapses — extremely unlikely.
 
-**Full research notes:** [`research.md § P9`](research.md#p9--pnpm-workspace--yesidoshared-in-sveltekit--bun).
+**Full research notes:** [`research.md § P9`](research.md#p9--pnpm-workspace--yesidoshared-in-sveltekit--bun) including amendment subsection documenting the pivot.
 
 ## Amendments during 18c execution
 
 | Date | Amendment | Rationale |
 |---|---|---|
-| (populated as execution proceeds) | | |
+| 2026-04-24 | **D13 workspace tool: pnpm → Bun** (after P9 design research + P4/P6/P7 probe completion). Root package.json uses `workspaces` field (no pnpm-workspace.yaml). `bun install` at repo root; `bun.lock` committed. Vercel + Railway unaffected (both auto-detect from lockfile; Turborepo is package-manager-agnostic). Fallback to pnpm documented as reversible (~1hr) in P9 escalation ladder. | Owner directive post-P9 research: project is Bun-first throughout; single-tool dev ergonomics outweigh pnpm's Turborepo-docs-default weight. Bun already installed locally (pnpm was not). Vercel/Bun GA support eliminates deployment risk. |

@@ -101,7 +101,7 @@ This re-plan: rebuilds as 9 hierarchical sub-slices (18a + 18b retroactive; 18c�
 
 ### 3.3 Repo architecture
 
-**Monorepo pivot (D13 new + D12 major amend):** Turborepo + pnpm workspaces. `apps/web` (SvelteKit → Vercel) + `apps/cms` (Directus config → Railway) + `packages/shared` (types + Zod schemas). Single clone; independent deploys; workspace-level dependency management.
+**Monorepo pivot (D13 new + D12 major amend):** Turborepo + **Bun workspaces** (amended from pnpm on 2026-04-24 post-P9 probe + owner directive — see § 9 D13 + Spec changelog). `apps/web` (SvelteKit → Vercel) + `apps/cms` (Directus config → Railway) + `packages/shared` (types + Zod schemas). Single clone; independent deploys; workspace-level dependency management via root `package.json` `"workspaces": ["apps/*", "packages/*"]` field; `bun install` + `bun.lock` at repo root. Turborepo remains package-manager-agnostic.
 
 ### 3.4 MUSTs locked
 
@@ -189,8 +189,9 @@ yesido-platform/
 │   ├── contract-test.yml                 # intra-repo integration (ephemeral Directus + web integration tests)
 │   └── secret-scan.yml                   # gitleaks both apps
 ├── turbo.json                            # task graph + caching
-├── pnpm-workspace.yaml
-├── package.json                          # root devDeps (turbo, typescript, pnpm)
+├── package.json                          # root devDeps (turbo, typescript); "workspaces": ["apps/*", "packages/*"]
+├── .bun-version                          # pin Bun 1.3.x for CI + local parity
+├── bun.lock                              # Bun lockfile (replaces pnpm-lock.yaml)
 ├── .gitignore
 └── README.md                             # umbrella README
 ```
@@ -268,7 +269,7 @@ Dependency graph:
 
 Output committed to `apps/web/docs/slices/slice-18/18c-foundations/research.md`.
 
-P1 Global Draft × Group interfaces · P2 `/shares` endpoint · P3 Block Editor JSON shape · P4 directus-sync on Railway · P5 MCP system prompt scope · P6 Turborepo + Vercel monorepo deploy · P7 Railway monorepo deploy + directus-sync Dockerfile · P9 pnpm workspace + `@yesido/shared` resolution in SvelteKit + Bun. (See Section 10 for full probe specs.)
+P1 Global Draft × Group interfaces · P2 `/shares` endpoint · P3 Block Editor JSON shape · P4 directus-sync on Railway · P5 MCP system prompt scope · P6 Turborepo + Vercel monorepo deploy · P7 Railway monorepo deploy + directus-sync Dockerfile · P9 **Bun workspace** + `@yesido/shared` resolution in SvelteKit + Bun (amended from pnpm 2026-04-24). (See Section 10 for full probe specs.)
 
 ### 6.2 Phase 1 — Monorepo consolidation
 
@@ -276,7 +277,7 @@ P1 Global Draft × Group interfaces · P2 `/shares` endpoint · P3 Block Editor 
 2. Import yesid.dev as `apps/web` (preserve history via `git subtree add --prefix apps/web https://github.com/mgkdante/yesid.dev.git feature/slice-18`).
 3. Import yesid.dev-cms as `apps/cms` (same subtree approach from main).
 4. Extract shared types → `packages/shared/`: move `apps/web/src/lib/types.ts` + inline types in cms seed scripts into `packages/shared/types/content.ts`; both apps re-import.
-5. Root `package.json` + `pnpm-workspace.yaml` + `turbo.json` + `.gitignore`.
+5. Root `package.json` with `"workspaces": ["apps/*", "packages/*"]` + `turbo.json` + `.bun-version` + `.gitignore`; `bun install` creates `bun.lock`.
 6. Rewrite CI workflows under `.github/workflows/`: `web.yml` · `cms.yml` · `contract-test.yml` (intra-repo now) · `secret-scan.yml`.
 7. Vercel project settings → Root Directory: `apps/web` + build command `turbo run build --filter=@yesido/web`.
 8. Railway service → Build Command + Dockerfile Path: `apps/cms/Dockerfile`.
@@ -594,7 +595,7 @@ Applied to `apps/web/docs/slices/slice-18/spec.md` during 18c.
 | D10 | Role/policy matrix with capability policies | **+ ai-editor delete:false explicitly** · **2FA enforced on admin + human-editor** · **SSO/OIDC upgraded NICE → SHOULD** (Q4) · conservative instance-wide `RATE_LIMITER_*` (Q12) | Q4, Q12 + Agent C |
 | D11 | Zero custom Directus extensions | **Zero custom extensions EXCEPT directus-sync authoring tool** (Q6 amendment) | Q6 |
 | D12 | Two-repo strict separation | **Turborepo monorepo with two-app strict boundary** (`apps/web` + `apps/cms` + `packages/shared`); independent deploys preserved; contract via workspace package | Monorepo pivot |
-| **D13** (new) | — | **Turborepo + pnpm workspaces** monorepo structure | Monorepo pivot |
+| **D13** (new) | — | **Turborepo + Bun workspaces** monorepo structure (amended from pnpm on 2026-04-24 post-P9 research; owner directive: project is Bun-first throughout + Bun 1.3 already installed + Vercel/Bun GA). Root `package.json` carries `"workspaces": ["apps/*", "packages/*"]`; `bun install` + `bun.lock`. Pnpm fallback held as ~1hr reversible (P9 escalation ladder). | Monorepo pivot + Bun amendment |
 | **D14** (new) | — | **Shared types via `packages/shared`** (TS compile-time enforcement replaces runtime drift check) | Monorepo pivot + Q9 |
 | **D15** (new) | — | **Block Editor for all rich content** (no Markdown interface; no `.md` in authoring path) | Q1 + ripple across content types |
 
@@ -621,7 +622,7 @@ Original spec Q5–Q7 supersession:
 | **P6** | Turborepo + Vercel monorepo deploy — `apps/web` build root + env scoping | D13 viability for web | Vercel project → Root Directory `apps/web`; test preview; verify env isolation |
 | **P7** | Railway monorepo deploy — `apps/cms/Dockerfile` + directus-sync extension load | D13 + D11 viability | Railway service → Build Command + Dockerfile Path `apps/cms/Dockerfile`; deploy; smoke `/schema/apply` |
 | **P8** | AVIF support — `?format=avif` returns AVIF or 400? | Q10 preset strategy | Curl during 18d; if AVIF works, add AVIF preset variant |
-| **P9** | pnpm workspace + `@yesido/shared` import graph in SvelteKit + Bun runtimes | D14 workability | Test import in `apps/web` from `packages/shared`; verify `svelte-check` + `vitest` + `bun run build` + deployed bundle all resolve |
+| **P9** | **Bun workspace** + `@yesido/shared` import graph in SvelteKit + Bun runtimes (amended from pnpm 2026-04-24) | D13 + D14 workability | Test import in `apps/web` from `packages/shared`; verify `svelte-check` + `vitest` + `bun run build` + deployed bundle all resolve |
 
 All probes output to `apps/web/docs/slices/slice-18/18c-foundations/research.md` with findings + decisions.
 
@@ -642,7 +643,7 @@ All probes output to `apps/web/docs/slices/slice-18/18c-foundations/research.md`
 | R9 | Monorepo loses paired-PR discipline | Low × Medium | CONVENTIONS.md rule: scoped commits per app in every 18d–18i PR; review rigor maintained via commit atomicity |
 | R10 | Codex review at 18k surfaces design flaws too late | Low × High | Invite Codex review at end of 18c as mid-slice checkpoint; course-correct before 18d starts copying patterns |
 | R11 | Template extraction post-18 hits generalization surprises | Medium × Low | K4 writes extraction plan during 18k with placeholders + CI shape; surprises land in post-slice |
-| R12 | Bun + pnpm workspaces edge case | Low × Medium | P9 probe validates; alternative is bun workspaces (Bun supports natively) |
+| R12 | Bun workspace + SvelteKit/Vercel edge case | Low × Medium | P9 research shows canonical pattern; in-situ verify at Task 14; fallback to pnpm workspaces is ~1hr reverse pivot (P9 escalation ladder) |
 
 ---
 
@@ -756,6 +757,7 @@ When Slice 18 closes at 18k, ALL must be green (no waivers):
 | Date | Change | Author |
 |---|---|---|
 | 2026-04-24 | Initial design spec; brainstorming complete across 7 sections; all MUSTs locked; monorepo pivot decided | Yesid + Claude Code |
+| 2026-04-24 | **D13 workspace tool: pnpm → Bun workspaces** (post P4/P6/P7/P9 probe completion + owner directive). Updates: § 3.3 Repo architecture + § 4.1 file tree (remove pnpm-workspace.yaml, add `.bun-version` + `bun.lock`) + § 9 D13 row. Rationale: project is Bun-first throughout; single-tool dev ergonomics; Bun 1.3 already installed + GA on Vercel; Turborepo package-manager-agnostic. Pnpm revert path documented as reversible (~1hr) via P9 escalation ladder. Full amendment log: [18c-foundations/decisions.md § Amendments](../../slices/slice-18/18c-foundations/decisions.md). | Yesid + Claude Code |
 
 Future amendments append rows here with rationale + affected sections.
 

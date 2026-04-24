@@ -8,7 +8,7 @@
 
 **Architecture:** Turborepo monorepo (`yesido-platform`) with `apps/web` (SvelteKit + Vercel) + `apps/cms` (Directus config + Railway) + `packages/shared` (TS types + Zod only). Three-boundary test split. Block Editor for all rich content. Full-site revalidation via Flows. directus-sync for per-collection-file schema authoring.
 
-**Tech stack:** Turborepo · pnpm workspaces · Bun runtime · SvelteKit 2 · Svelte 5 · Directus 11.17.3 · directus-sync extension · Neon Postgres (PITR) · Cloudflare R2 · `@directus/sdk@^20` · Zod · p-queue · Bottleneck · vitest · bun test.
+**Tech stack:** Turborepo · **Bun workspaces** · Bun runtime · SvelteKit 2 · Svelte 5 · Directus 11.17.3 · directus-sync extension · Neon Postgres (PITR) · Cloudflare R2 · `@directus/sdk@^20` · Zod · p-queue · Bottleneck · vitest · bun test.
 
 **Branch:** `feature/slice-18` on yesid.dev (pre-18c); migrates to `feature/slice-18` on yesido-platform during 18c Phase 1.
 
@@ -64,7 +64,7 @@ Full D-entry narratives and amendment rationale live in design spec [`docs/super
 | D10 | 9 capability policies; ai-editor delete:false; **2FA enforced**; SSO/OIDC NICE → SHOULD; conservative instance-wide `RATE_LIMITER_*` | shape locked | 18b + 18c amendment |
 | D11 | **Zero custom Directus extensions EXCEPT directus-sync** authoring tool | shape locked | 18b + 18c amendment |
 | D12 | **Turborepo monorepo with two-app strict boundary** (replaces two-repo) | shape locked | 18b + 18c pivot |
-| **D13** | Turborepo + pnpm workspaces monorepo | shape locked | 18c new |
+| **D13** | Turborepo + **Bun workspaces** monorepo (amended from pnpm 2026-04-24) | shape locked | 18c new (amended in 18c) |
 | **D14** | `packages/shared` types + Zod only; runtime helpers app-local | shape locked | 18c new |
 | **D15** | Block Editor for all rich content; no Markdown interface; no `marked.parse` consumer-side post-18i | shape locked | 18c new |
 
@@ -156,7 +156,7 @@ Full table at design spec [`§ 11`](../../superpowers/specs/2026-04-24-slice-18-
 | **Task 1** | P4 — directus-sync on Railway via custom Dockerfile | ✅ blocking (D3 + D11) |
 | **Task 2** | P6 — Turborepo + Vercel monorepo deploy | ✅ blocking (D13) |
 | **Task 3** | P7 — Railway monorepo + directus-sync extension | ✅ blocking (D13 + D11) |
-| **Task 4** | P9 — pnpm workspace + @yesido/shared in SvelteKit + Bun | ✅ blocking (D14) |
+| **Task 4** | P9 — **Bun workspace** + @yesido/shared in SvelteKit + Bun (amended from pnpm 2026-04-24) | ✅ blocking (D14) |
 | **Task 5** | P1 — Global Draft v11.16 × Group interfaces (bug #26890) | no |
 | **Task 6** | P2 — `/shares` endpoint behavior (TTL, password, role inheritance) | no |
 | **Task 7** | P3 — Block Editor JSON output shape + block type catalog | no |
@@ -167,12 +167,12 @@ Each probe task: run the probe · document findings in research.md · commit. Fu
 
 ### Phase 1 — Monorepo consolidation (Tasks 10–19)
 
-Create `yesido-platform` umbrella; import yesid.dev → `apps/web`; import yesid.dev-cms → `apps/cms`; extract `packages/shared`; set up Turborepo + pnpm workspaces; rewrite CI workflows; connect Vercel + Railway to new build roots; smoke both deploys; cutover (archive old repos).
+Create `yesido-platform` umbrella; import yesid.dev → `apps/web`; import yesid.dev-cms → `apps/cms`; extract `packages/shared`; set up Turborepo + **Bun workspaces**; rewrite CI workflows; connect Vercel + Railway to new build roots; smoke both deploys; cutover (archive old repos).
 
 - **Task 10:** Create `mgkdante/yesido-platform` umbrella repo with minimal scaffold (README + .gitignore)
 - **Task 11:** `git subtree add --prefix apps/web https://github.com/mgkdante/yesid.dev.git feature/slice-18`
 - **Task 12:** `git subtree add --prefix apps/cms https://github.com/mgkdante/yesid.dev-cms.git main`
-- **Task 13:** Root `package.json` + `pnpm-workspace.yaml` + `turbo.json`; `pnpm install`
+- **Task 13:** Root `package.json` with `"workspaces": ["apps/*", "packages/*"]` + `turbo.json` + `.bun-version` (pin Bun 1.3.x); `bun install`; commit `bun.lock`
 - **Task 14:** Extract `packages/shared` (types + Zod); update `apps/web/src/lib/types.ts` to re-export
 - **Task 15:** Rewrite `.github/workflows/`: `web.yml` + `cms.yml` + `contract-test.yml` (intra-repo) + `secret-scan.yml` + `.gitleaksignore`
 - **Task 16:** Connect Vercel → Root Directory `apps/web`, build via `turbo run build --filter=@yesido/web`; port env vars from old project
@@ -383,3 +383,4 @@ Ceremony + cleanup. 1 session.
 | 2026-04-24 | Task 8 shipped + PR #7 merged | Two-repo decoupling + test split | 18b |
 | 2026-04-24 | 18c re-plan + monorepo pivot (Turborepo) + D13/D14/D15 new | Brainstorming + 4-agent audit | Major amendment — see design spec changelog |
 | 2026-04-24 | Docs reorg: removed slice-level spec.md + handoff.md + research.md; whole plan now in this doc; sub-slices keep research + decisions only | Per-workflow owner directive | Structural |
+| 2026-04-24 | **D13 workspace tool amended: pnpm → Bun workspaces** (post P4/P6/P7/P9 probe completion). Owner directive: project is Bun-first throughout; single-tool dev ergonomics; Bun 1.3 already installed + GA on Vercel; Turborepo is package-manager-agnostic. Root `workspaces` field replaces `pnpm-workspace.yaml`; `bun install` + `bun.lock` replace pnpm equivalents. Fallback to pnpm documented as ~1hr reversible. Full rationale: [`18c-foundations/decisions.md § Amendments`](18c-foundations/decisions.md). | Bun-first consistency + no pnpm install pre-req + Vercel/Bun GA | D13 + Task 13 + Tech stack line |
