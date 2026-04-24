@@ -6,43 +6,57 @@
 
 ### P1 — Global Draft (v11.16) × Group interfaces (bug #26890)
 
-*Status: not yet run. Populate with findings.*
+*Status: deferred to Task 49 (services retrofit) + owner-gated test on live Directus.*
 
-**Question:** Does enabling Global Draft on a collection with Group interface fields surface bug #26890?
+**Question:** Does enabling Global Draft on a collection with Group interface fields surface bug [#26890](https://github.com/directus/directus/issues/26890)?
 
-**Method:** Create test collection with Group field in Data Studio; enable Content Versioning + Global Draft; edit + promote; document behavior.
+**Why deferred:** Live CMS has only `services` collection migrated (no Group fields) + no test-collection infrastructure yet. Creating a throwaway test collection in prod to probe a bug would leave schema litter; cleaner to probe during Task 49 when services is being retrofitted with Global Draft — if Group fields ever land there, we observe immediately. If not, P1 runs during 18i (pages + M2A blocks) where Group fields are most likely (multi-block collection editing).
 
-**Findings:** TBD
+**Method (when executed):** In `apps/cms/directus/collections/_probe_group.json` via directus-sync, define a test collection `_probe_group` with one Group interface containing 3 sub-fields. Push → Data Studio → enable Content Versioning + Global Draft → create row → create version → edit via Group fields → promote → observe whether sub-field edits persist. Delete collection post-probe.
 
-**Decision:** TBD (informs D5 rollout — which collections can use Global Draft; which need per-item custom versions)
+**Interim working assumption:** Global Draft works for flat collections (services, projects, blog_posts, tech_stack, site_meta, route_seo). Group-interface collections (likely only in 18i block_* collections) may need per-item custom versions if bug persists. Fallback path documented; not a 18c blocker.
+
+**Decision:** TBD — land in `decisions.md` amendments row when probe executes.
 
 ---
 
 ### P2 — `/shares` endpoint behavior
 
-*Status: not yet run.*
+*Status: deferred to post-18 preview routes implementation (design spec § D6: "Routes defer post-Slice-18").*
 
 **Question:** What is the TTL / password / role-inheritance / URL shape of Directus shares?
 
-**Method:** `POST /shares` with permutations (with TTL, with password, role-scoped, unscoped); test anonymous vs authed reads.
+**Why deferred:** D6 locks `PreviewContext = { shareToken, version? }` as the adapter-boundary shape for 18c (F5). Actual `/shares` creation + SvelteKit preview routes (`src/routes/shares/+server.ts` etc.) are post-Slice-18 work per the design spec. The adapter shape is fixed by contract; exact TTL/password semantics only matter when routes actually wire up.
 
-**Findings:** TBD
+**What we know already from Directus docs (no probe needed for 18c):**
 
-**Decision:** TBD (informs D6 — `PreviewContext` shape at adapter boundary)
+- `POST /shares` returns `{ id, role, collection, item, date_start, date_end, password, max_uses }`. Token = share ID used as `?token=<id>` query param or X-Directus-Share header.
+- TTL: enforced via `date_start` + `date_end` fields; null = no expiry.
+- Password: optional; if set, consumer must include `password` in requests.
+- Role: share inherits the role of the user who created it (not arbitrary role assignment). Public reads inherit Public policy if share role is Public.
+- Anonymous reads: allowed when share token valid + item matches + no password OR password provided.
+
+Enough for 18c's `PreviewContext` type definition + adapter branch (F5). Full probe when routes land post-Slice-18.
+
+**Decision:** TBD — lands in post-Slice-18 preview-routes slice. Adapter shape locked in 18c.
 
 ---
 
 ### P3 — Block Editor JSON output shape
 
-*Status: not yet run.*
+*Status: deferred to 18f pre-work (test `blog_posts` collection creation is 18f Task 1).*
 
 **Question:** What block types does Block Editor support? What's the nested JSON shape? How does i18n compose?
 
-**Method:** Create test `blog_posts` row with rich content (heading, paragraph, image, code, list, embed, quote, divider); inspect `/items/blog_posts/<id>` JSON; document block types + nesting + i18n.
+**Why deferred:** Live CMS has no `blog_posts` collection yet (only `services` migrated per 18a). Probing requires creating the collection + a test row, which is exactly 18f's opening scope. Running P3 now would duplicate schema work that 18f will redo.
 
-**Findings:** TBD
+**Interim working assumption (from Directus 11 docs):** Block Editor emits `{ type: "doc", content: [{ type, attrs, content?, text? }, ...] }` tiptap-style AST. Built-in block types include heading (levels 1-6), paragraph, bulletList, orderedList, listItem, codeBlock, blockquote, hardBreak, horizontalRule, image, embed. Rich-text inline marks: bold, italic, code, link, strike.
 
-**Decision:** TBD (informs D15 + `BlockRenderer.svelte` design in 18f)
+**Implication for 18c:** `BlockRenderer.svelte` in 18f will dispatch on `node.type`. Nothing in 18c depends on the exact shape — `packages/shared/types/block-editor.ts` (referenced in design spec § 4.3 and 7.3) is a 18f deliverable.
+
+**Method (when executed in 18f):** Create `blog_posts` + `blog_posts_translations` collections via directus-sync → Data Studio → create test row with full block diversity (all block types, nested lists, images) → read via MCP `items` tool → inspect `body` JSON → document in `packages/shared/types/block-editor.ts` with Zod schema.
+
+**Decision:** TBD — lands during 18f opening tasks.
 
 ---
 
@@ -139,15 +153,43 @@ USER node
 
 ### P5 — MCP system-prompt scope (per-role or instance-global)
 
-*Status: not yet run.*
+*Status: complete 2026-04-24 via live MCP call.*
 
-**Question:** Does the `mcp_prompt` setting apply per-role or instance-global?
+#### Current prompt retrieved from `yesid-cms-prod` MCP (ai-editor auth)
 
-**Method:** Call MCP `system-prompt` tool with admin token vs ai-editor token; compare outputs.
+```
+You are an AI editor for yesid.dev � a personal site + portfolio. Be
+concise, factual, and never edit Directus system collections. Always
+confirm destructive actions with the user before applying.
+```
 
-**Findings:** TBD
+**37 words. Unicode corruption present:** `yesid.dev � a personal site` — the `�` is U+FFFD replacement character, originally an em dash ("—"). **Same F1 pattern observed in `yesid-dev-cms/infra/directus/snapshot.yaml:40`.** Both must be fixed during F14 upgrade; gitleaks/pre-commit should flag U+FFFD bytes going forward.
 
-**Decision:** TBD (informs F14 prompt wording — single prompt vs per-role)
+#### Scope determination (per-role vs instance-global)
+
+Directus stores MCP prompt as a **single field** (`mcp_prompt`) on the `directus_settings` singleton. There is no per-role prompt field in the schema (confirmed via schema discovery: `directus_settings` is a system singleton, one row). Thus the prompt is **instance-global** by construction — same prompt returned for every authenticated MCP caller regardless of role.
+
+**F14 implication:** write ONE prompt that either (a) is role-agnostic (works for admin + human-editor + ai-editor alike), OR (b) is role-aware in its text (e.g., `"If your session acts as ai-editor: stick to draft writing..."`). Option (a) is simpler; option (b) needed only if ai-editor needs guard-rails that admin should ignore. Lean (a) per Occam.
+
+Cross-verification (admin token path) skipped because single-field-settings-singleton eliminates scope ambiguity at the schema level. If future Directus versions add per-role prompts (none in v11.17.3), revisit.
+
+#### Findings
+
+- **Scope: instance-global.** Single `directus_settings.mcp_prompt` field.
+- **Current prompt is 37 words** — target per design spec F14: 250-400 words. **5–10× expansion needed.**
+- **Unicode corruption present in current prompt.** Fix as part of F14 prompt rewrite.
+- **Prompt upgrade pathway**: `directus/settings.json` in `apps/cms/directus/` (authored via directus-sync pull → edit → push). Committed text replaces live prompt on next CI apply (Task 35 in Phase 2).
+
+#### Decision
+
+**F14 strategy: write one instance-global prompt, role-agnostic, 250-400 words.** Include: yesid.dev scope (personal site + portfolio); content-type overview (services + projects + blog + tech-stack + meta + pages); tone (concise, factual); Block Editor rule (no Markdown); focal-point nudge for hero images (Q8); delete protection (never delete system collections; delete:false enforced separately at policy level); translation conventions (localized fields live on *_translations junctions); draft/publish workflow (Global Draft per D5); confirm-destructive directive.
+
+Prompt draft lands in Task 35 (`directus/settings.json` authored).
+
+#### Open follow-ups
+
+- Block Unicode replacement char (U+FFFD) in pre-commit hook / CI (broader than F14 — touches F1 too).
+- Consider whether a MCP auth HTTP header `X-Directus-User-Role` could let future per-role prompts work; flag as post-Slice-18 only if needed.
 
 ---
 
@@ -333,15 +375,15 @@ If Option A build context proves too narrow (e.g., future extension needs shared
 
 ### P8 — AVIF support
 
-*Status: deferred to 18d if preferred. Probe can run here.*
+*Status: deferred to 18d (design spec § D9 lists P8 under "probe P8 in 18d"; confirmed correct by live-CMS state).*
 
 **Question:** Does `cms.yesid.dev/assets/<id>?format=avif` return AVIF, or 400?
 
-**Method:** `curl -I 'cms.yesid.dev/assets/<uuid>?format=avif'` — check `Content-Type` response header.
+**Why deferred (confirmed by live state):** `files.read` on live CMS returned 1 file — a 46-byte R2 smoke-test `.txt`. No images exist in Directus yet; asset migration is 18d scope. Probing AVIF on a text file would yield uninformative errors.
 
-**Findings:** TBD
+**Method (when executed in 18d, Task 2 — first image upload):** Upload a hero-candidate image (JPG or PNG) via `migrate-assets.ts`. `curl -I 'https://cms.yesid.dev/assets/<uuid>?format=avif'` → check `Content-Type`. If `image/avif` → add AVIF variant to `seed-presets.ts` (hero-1200-avif, card-600-avif, thumb-240-avif) + verify size delta vs WebP. If 400 → document as "WebP-only stack for slice-18"; revisit post-Directus-12 (AVIF support may land in upstream Directus).
 
-**Decision:** TBD (informs D9 preset list — add AVIF variant if green)
+**Decision:** TBD — 18d Task 2 or 3.
 
 ---
 
@@ -472,14 +514,14 @@ Populated as probes complete. Summary table + links to specific findings above.
 
 | Probe | Status | Decision | Blocks? |
 |---|---|---|---|
-| P1 | ⏸ | TBD | no (deferrable to 18d if needed) |
-| P2 | ⏸ | TBD | no (adapter shape only; routes post-18) |
-| P3 | ⏸ | TBD | 18f scope |
+| P1 | ⏸ deferred | Working assumption: Global Draft works for flat collections; Group-interface collections may need per-item custom (probed in Task 49 / 18i) | no (fallback path documented) |
+| P2 | ⏸ deferred | Adapter shape locked: `PreviewContext = { shareToken, version? }`; route semantics probe with post-18 implementation | no (adapter shape only; routes post-18) |
+| P3 | ⏸ deferred | Working assumption: tiptap-style `{type:"doc",content:[...]}`; exact shape probed at 18f Task 1 when blog_posts collection created | 18f scope |
 | P4 | 🟡 local ✓ / Railway owner-gated | **Interim green — proceed with D3 + D11 amendments; Railway verify in Task 17** | **yes (D11 + D3)** |
-| P5 | ⏸ | TBD | F14 wording |
+| P5 | ✅ complete | **Instance-global scope (single `directus_settings.mcp_prompt`); current prompt 37 words with U+FFFD corruption; F14 = write role-agnostic 250-400 word prompt** | F14 wording |
 | P6 | 🟡 local ✓ / Vercel owner-gated | **Interim green — proceed with D13; Vercel preview verify in Task 16** | **yes (D13)** |
 | P7 | 🟡 local ✓ / Railway owner-gated | **Interim green — proceed with D11+D13 via Option A (Root=apps/cms, Watch=/apps/cms/**); Railway verify in Task 17** | **yes (D13 + D11)** |
-| P8 | ⏸ | TBD | 18d optional |
+| P8 | ⏸ deferred | No images in live CMS yet; confirmed correct to defer per design spec § D9 (runs in 18d Task 2-3 after first image upload) | 18d optional |
 | P9 | 🟡 design ✓ / in-situ verify at Task 14 | **Interim green — proceed with D14 (TS source + exports, no build step); owner installs pnpm before Task 13** | **yes (D14)** |
 
 Probes that block phases get run first; non-blockers can run in parallel.
