@@ -334,7 +334,7 @@ Surveyed 10+ GitHub repos (directus-labs/starters 180-stars, directus-labs/direc
 
 ### Agent D — Template-repo extraction plan (post-Slice-18)
 
-**Name:** `yesito/directus-sveltekit-pro`. Two repos: `<template>-cms` + `<template>-web`. Full directory trees in the audit.
+**Name:** `<your-org>/directus-sveltekit-pro`. Two repos: `<template>-cms` + `<template>-web`. Full directory trees in the audit.
 
 **Generalization strategy:** yesid.dev-specific strings → placeholders.
 - `cms.yesid.dev` → `{{DIRECTUS_URL}}` (env-driven ✓).

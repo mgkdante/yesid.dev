@@ -3,7 +3,7 @@
 // Define once here; change here if requirements evolve.
 //
 // This file originally lived at apps/web/src/lib/types.ts; extracted to
-// @yesido/shared in slice-18 18c Task 14 so apps/web (SvelteKit consumer)
+// @repo/shared in slice-18 18c Task 14 so apps/web (SvelteKit consumer)
 // and apps/cms (Directus seed scripts) can share one source of truth.
 //
 // Per D14: packages/shared is type-only + Zod. No runtime helpers, no

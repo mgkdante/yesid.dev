@@ -1,5 +1,5 @@
 {
-	"name": "@yesido/web",
+	"name": "@repo/web",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -68,7 +68,7 @@
 	"dependencies": {
 		"@directus/sdk": "^20",
 		"@fontsource-variable/inter": "^5.2.8",
-		"@yesido/shared": "workspace:*",
+		"@repo/shared": "workspace:*",
 		"@fontsource-variable/jetbrains-mono": "^5.2.8",
 		"gsap": "^3.14.2",
 		"lenis": "^1.3.21",
