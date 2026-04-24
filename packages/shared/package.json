@@ -1,0 +1,15 @@
+{
+	"name": "@repo/shared",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Shared domain types + Zod schemas for the yesid.dev monorepo. Type-only + Zod — no runtime helpers, no app-specific imports.",
+	"exports": {
+		".": "./src/index.ts",
+		"./types": "./src/types/index.ts",
+		"./schemas": "./src/schemas/index.ts"
+	},
+	"dependencies": {
+		"zod": "^4.3.6"
+	}
+}

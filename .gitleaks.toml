@@ -1,0 +1,35 @@
+# Gitleaks config for yesid.dev monorepo.
+# Extends the default ruleset (inherited from gitleaks v8 baseline) + adds an
+# allowlist for known-safe CI test credentials hardcoded in workflow files.
+#
+# Reference: https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist for yesid.dev monorepo"
+
+# Known-safe CI test fixtures — Directus bootstrap needs *something* for
+# KEY/SECRET/ADMIN_PASSWORD even in ephemeral runs. These literals are bound
+# to throwaway localhost-only containers that never touch production.
+regexes = [
+  # Fixed CI test KEY (16 bytes hex) — hardcoded in cms.yml + contract-test.yml
+  '''ci-test-key-16-bytes-hex-aabbccdd''',
+  # Fixed CI test SECRET (32 bytes hex) — hardcoded in cms.yml + contract-test.yml
+  '''ci-test-secret-32-bytes-hex-aabbccddeeff''',
+  # Fixed CI test ADMIN_PASSWORD — hardcoded; container destroyed post-job
+  '''ci-test-pass-rotate-immediately''',
+]
+
+# Paths to skip entirely (generated/vendored code, binary assets, etc.).
+paths = [
+  '''node_modules/''',
+  '''\.svelte-kit/''',
+  '''\.vercel/''',
+  '''dist/''',
+  '''build/''',
+  '''bun\.lock''',
+  # PNG/JPEG/WEBP/etc. binaries occasionally trip base64-like entropy checks.
+  '''\.(png|jpg|jpeg|webp|avif|gif|ico|woff2?|ttf|otf|eot)$''',
+]

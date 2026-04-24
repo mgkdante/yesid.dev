@@ -1,0 +1,199 @@
+name: cms
+
+# CI for apps/cms (Directus config → Railway).
+# - smoke (PR + workflow_dispatch): boot ephemeral Directus + apply snapshot
+#   from apps/cms/infra/directus/snapshot.yaml + run apps/cms unit tests
+#   (snapshot-shape + fixture + seed-dry-run + asset-manifest + migrate-assets
+#   + seed-presets + services-fixture).
+# - prod-apply (workflow_dispatch only): apply snapshot to cms.yesid.dev.
+#
+# TODO (Task 22): Replace curl-based schema/diff + schema/apply with
+# `bun x directus-sync@3 push` once directus-extension-sync is deployed on
+# Railway (Task 17 owner gate). Until then: keep the curl flow — functional
+# superset of what directus-sync will replace.
+#
+# Reference: https://directus.io/docs/configuration/migrations
+# Slice: docs/slices/slice-18/plan.md § Phase 2 (Tasks 20-39)
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/cms/**'
+      - 'packages/shared/**'
+      - '.github/workflows/cms.yml'
+      - 'package.json'
+      - 'bun.lock'
+      - 'turbo.json'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Apply target (smoke = ephemeral, prod = cms.yesid.dev)'
+        type: choice
+        options: [smoke, prod]
+        default: smoke
+        required: true
+      seed:
+        description: 'Run seed scripts after apply (smoke only — never in prod from here)'
+        type: boolean
+        default: false
+        required: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request' || github.event.inputs.target == 'smoke'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: directus
+          POSTGRES_PASSWORD: directus
+          POSTGRES_DB: directus
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: apps/cms
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install deps (monorepo root)
+        working-directory: ${{ github.workspace }}
+        run: bun install --frozen-lockfile
+
+      - name: Run apps/cms unit tests (snapshot-shape + fixture + seed-dry-run + asset + preset)
+        run: bun test
+
+      - name: Boot ephemeral Directus
+        working-directory: ${{ github.workspace }}
+        run: |
+          # Chain `directus bootstrap && directus start` because 11.17.3's default CMD
+          # does NOT auto-bootstrap a fresh DB (see 18a task-3b postmortem).
+          docker run -d --name directus \
+            --add-host=host.docker.internal:host-gateway \
+            -p 8055:8055 \
+            -e KEY=ci-test-key-16-bytes-hex-aabbccdd \
+            -e SECRET=ci-test-secret-32-bytes-hex-aabbccddeeff \
+            -e PUBLIC_URL=http://localhost:8055 \
+            -e DB_CLIENT=pg \
+            -e DB_HOST=host.docker.internal \
+            -e DB_PORT=5432 \
+            -e DB_DATABASE=directus \
+            -e DB_USER=directus \
+            -e DB_PASSWORD=directus \
+            -e ADMIN_EMAIL=admin@example.com \
+            -e ADMIN_PASSWORD=ci-test-pass-rotate-immediately \
+            -e TELEMETRY=false \
+            -e LOG_LEVEL=info \
+            directus/directus:11.17.3 \
+            sh -c "npx directus bootstrap && exec npx directus start"
+          docker logs -f directus &
+          LOG_PID=$!
+          for i in {1..100}; do
+            if curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+              echo "::notice::Directus healthy after ${i} polls"
+              break
+            fi
+            sleep 3
+          done
+          if ! curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+            echo "::error::Health check timed out"
+            docker inspect directus --format='State: {{.State.Status}} · ExitCode: {{.State.ExitCode}}'
+            docker logs --tail=200 directus
+            kill "$LOG_PID" 2>/dev/null || true
+            exit 1
+          fi
+          kill "$LOG_PID" 2>/dev/null || true
+
+      - name: Apply snapshot
+        run: |
+          TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
+            | jq -r '.data.access_token')
+          DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
+            -H "Authorization: Bearer $TOKEN" \
+            -F "file=@infra/directus/snapshot.yaml")
+          echo "::group::Schema diff"
+          echo "$DIFF" | jq .
+          echo "::endgroup::"
+          if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
+            HASH=$(echo "$DIFF" | jq -r '.data.hash')
+            echo "$DIFF" | jq '.data' | curl -sf -X POST http://localhost:8055/schema/apply \
+              -H "Authorization: Bearer $TOKEN" \
+              -H 'Content-Type: application/json' \
+              --data-binary @- >/dev/null
+            echo "::notice::Applied schema diff with hash $HASH"
+          else
+            echo "::notice::No schema diff to apply"
+          fi
+
+      - name: Smoke checks
+        run: |
+          curl -sf http://localhost:8055/server/health
+          curl -sf http://localhost:8055/server/info >/dev/null
+          TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
+            | jq -r '.data.access_token')
+          COUNT=$(curl -sf -H "Authorization: Bearer $TOKEN" \
+            'http://localhost:8055/collections?limit=-1' \
+            | jq -r '.data | map(select(.collection | startswith("directus_") | not)) | length')
+          echo "::notice::User-collection count after apply: $COUNT"
+
+      - name: Seed services (opt-in via workflow_dispatch input)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.seed == 'true'
+        env:
+          PUBLIC_DIRECTUS_URL: http://localhost:8055
+          DIRECTUS_ADMIN_EMAIL: admin@example.com
+          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
+        run: bun run seed:services
+
+      - name: Surface Directus container logs on failure
+        if: failure()
+        working-directory: ${{ github.workspace }}
+        run: docker logs directus
+
+  prod-apply:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'prod'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://cms.yesid.dev
+    defaults:
+      run:
+        working-directory: apps/cms
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply snapshot to production
+        env:
+          DIRECTUS_URL: ${{ secrets.DIRECTUS_PROD_URL }}
+          DIRECTUS_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: |
+          DIFF=$(curl -sf -X POST "$DIRECTUS_URL/schema/diff" \
+            -H "Authorization: Bearer $DIRECTUS_TOKEN" \
+            -F "file=@infra/directus/snapshot.yaml")
+          echo "::group::Production schema diff"
+          echo "$DIFF" | jq .
+          echo "::endgroup::"
+          if [ "$(echo "$DIFF" | jq -r '.data')" = "null" ]; then
+            echo "::notice::No diff — schema is in sync"
+            exit 0
+          fi
+          # WARN: schema apply with destructive changes can drop data — operator must review the printed diff above
+          echo "$DIFF" | jq '.data' | curl -sf -X POST "$DIRECTUS_URL/schema/apply" \
+            -H "Authorization: Bearer $DIRECTUS_TOKEN" \
+            -H 'Content-Type: application/json' \
+            --data-binary @-
+          echo "::notice::Applied snapshot to production"
