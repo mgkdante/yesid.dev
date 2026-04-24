@@ -17,7 +17,7 @@
 | Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` + `803d60c` → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` → merged `0295dd6`. PR #3 branch (Task 3): `5945f56` (scaffold) + `d22669c` (snapshot+CI). |
 | Neon safety branch | `br-muddy-surf-am5n6sh9` (`pre-scorch-safety-2026-04-23`, off `br-orange-waterfall-amfej6qp`) — created Task 4 session before the scorched-earth DROP; retain until Task 7 E2E green. |
 | Tasks completed | 10 / 16 (Task 0 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 2b + 8) — Task 8 (this session) migrated the seed script to yesid.dev-cms, added a minimal bun-based CMS toolchain (@directus/sdk + zod + yaml + bun-types), established the test-suite split (CMS tests: fixture-validate + seed-dry-run + snapshot-shape; consumer tests: contract + env-gated integration), and wired mirrored cross-repo contract-test workflows. yesid.dev-cms PR #7 opened; yesid.dev commit on feature/slice-18. |
-| yesid.dev-cms PR #7 | [task-8-decoupling](https://github.com/mgkdante/yesid.dev-cms/pull/7) — pending review + merge. No schema mutations. |
+| yesid.dev-cms PR #7 | [task-8-decoupling](https://github.com/mgkdante/yesid.dev-cms/pull/7) — **MERGED** as `8293eec` (2026-04-24 01:50 UTC). Schema-apply smoke + new `bun test` step green on merge. No schema mutations. |
 | Live Directus | https://cms.yesid.dev/mcp ✓ Connected (MCP registered as `yesid-cms-prod`) — schema tool returns `collections: []` after cleanup |
 | MCP endpoint | https://cms.yesid.dev/mcp — 7 tools (items/files/folders/assets/trigger-flow/schema/system-prompt) |
 
@@ -617,8 +617,8 @@ Ten research topics resolved via three parallel subagents (Clusters A/B/C) over 
 - **Implemented by:** Claude Code (Opus 4.7 [1m], reasoning=high)
 - **Session:** 2026-04-23 (same session as Task 2b — owner approved consecutive tasks after Task 2b close)
 - **Paired PRs:**
-  - yesid.dev-cms **[PR #7](https://github.com/mgkdante/yesid.dev-cms/pull/7)** (merges first, no schema change)
-  - yesid.dev commit `3eb9358` on `feature/slice-18` (no PR yet — accumulates with Task 2b + prior tasks until slice close)
+  - yesid.dev-cms **[PR #7](https://github.com/mgkdante/yesid.dev-cms/pull/7)** — **MERGED** as `8293eec` (2026-04-24 01:50 UTC)
+  - yesid.dev commit `3eb9358` + handoff `540de0e` on `feature/slice-18` (no PR yet — accumulates until slice close)
 
 **Files (yesid.dev-cms — PR #7):**
 
