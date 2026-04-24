@@ -104,7 +104,28 @@ bun test             # runs snapshot-shape + fixture + seed-dry-run + asset-mani
 bun run seed:services   # seeds the live services domain (requires admin creds — see below)
 bun run seed:presets    # seeds the 4 saved asset presets (hero-1200 / card-600 / thumb-240 / og-1200)
 bun run migrate:assets  # uploads yesid.dev/static/images/* into Directus + R2 (one-off migration)
+
+# directus-sync (18c Task 21+) — requires directus-extension-sync@3.0.6 on the CMS side + DIRECTUS_ADMIN_TOKEN env
+bun run sync:diff       # preview schema/permissions/flows diff (local ↔ remote), no writes
+bun run sync:pull       # overwrite local apps/cms/directus/**.json with remote CMS state
+bun run sync:push       # apply local apps/cms/directus/**.json to remote CMS (prod — gated behind CI manual approval)
 ```
+
+### directus-sync workflow
+
+Local authoring:
+```bash
+cd apps/cms
+export DIRECTUS_ADMIN_TOKEN=$(op read op://yesid-dev/cms-admin/token)
+# Make schema changes in Data Studio → Settings/Data Model/Flows/...
+bun run sync:diff          # review what changed
+bun run sync:pull          # materialize the diff into apps/cms/directus/
+git add apps/cms/directus/ && git commit -m "..."
+```
+
+Prod apply lives in `cms.yml` workflow (manual `workflow_dispatch` with `target=prod`).
+
+Config: `apps/cms/directus-sync.config.js` defines dumpPath + enabled features. Extension (`directus-extension-sync@3.0.6`) is installed via `apps/cms/Dockerfile`; CLI (`directus-sync@3.x`) is a devDependency in `apps/cms/package.json`.
 
 ## Repo layout
 
