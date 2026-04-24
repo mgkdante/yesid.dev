@@ -8,6 +8,7 @@ node_modules/
 **/.wrangler/
 **/dist/
 **/test-results/
+**/.turbo/
 .env
 .env.*
 !.env.example

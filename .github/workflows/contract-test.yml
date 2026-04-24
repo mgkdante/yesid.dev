@@ -1,31 +1,35 @@
-name: Cross-repo contract test (this adapter × yesid-dev-cms snapshot)
+name: contract-test (intra-repo)
 
-# Validates that this repo's Directus adapter still works against the sibling
-# yesid-dev-cms repo's schema snapshot + seed. Catches adapter-side drift that
-# would break consumer rendering even with a green CMS smoke-apply.
+# Validates that apps/web's Directus adapter works against apps/cms's schema
+# snapshot + seed. Catches adapter/schema drift that would break consumer
+# rendering even with a green apps/cms smoke-apply.
 #
-# Half of the boundary check per slice-18 spec D12. The mirror lives at
-# yesid.dev-cms/.github/workflows/contract-test.yml.
+# Monorepo pivot 2026-04-24: both apps live in yesid.dev now, so the test is
+# intra-repo (single checkout). Previously was cross-repo with two checkouts.
 #
-# Opt-in on PRs via the `contract-test` label to limit CI cost (heavy — spins
-# Postgres + Directus + both Bun installs). Always runs on schedule (nightly)
+# Opt-in on PRs via label `contract-test` to limit CI cost (heavy — spins
+# Postgres + Directus + both app installs). Always runs on schedule (nightly)
 # and on manual dispatch.
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
     paths:
-      - 'src/lib/adapters/directus.ts'
-      - 'src/lib/adapters/directus.test.ts'
-      - 'src/lib/adapters/directus.contract.test.ts'
-      - 'src/lib/adapters/directus.integration.test.ts'
-      - 'src/lib/adapters/types.ts'
-      - 'src/lib/adapters/index.ts'
+      - 'apps/web/src/lib/adapters/**'
+      - 'apps/cms/infra/directus/snapshot.yaml'
+      - 'apps/cms/fixtures/**'
+      - 'apps/cms/scripts/seed-services.ts'
+      - 'packages/shared/**'
       - '.github/workflows/contract-test.yml'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch/SHA to test (default: PR head)'
+        type: string
+        required: false
   schedule:
-    # 07:15 UTC daily — offset from yesid-dev-cms's 07:00 cron to spread load.
-    - cron: '15 7 * * *'
+    # 07:00 UTC daily — catches drift without a PR touching either side.
+    - cron: '0 7 * * *'
 
 jobs:
   contract-test:
@@ -51,22 +55,17 @@ jobs:
           --health-retries 10
 
     steps:
-      - name: Checkout this repo (yesid.dev)
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          path: consumer
-
-      - name: Checkout yesid-dev-cms (CMS sibling)
-        uses: actions/checkout@v4
-        with:
-          repository: mgkdante/yesid.dev-cms
-          ref: main
-          path: cms
+          ref: ${{ github.event.inputs.ref || github.ref }}
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version-file: .bun-version
+
+      - name: Install deps (monorepo root — covers both apps)
+        run: bun install --frozen-lockfile
 
       - name: Boot ephemeral Directus
         run: |
@@ -101,7 +100,7 @@ jobs:
             exit 1
           fi
 
-      - name: Apply CMS snapshot
+      - name: Apply snapshot from apps/cms
         run: |
           TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
             -H 'Content-Type: application/json' \
@@ -109,12 +108,13 @@ jobs:
             | jq -r '.data.access_token')
           DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
             -H "Authorization: Bearer $TOKEN" \
-            -F "file=@cms/infra/directus/snapshot.yaml")
+            -F "file=@apps/cms/infra/directus/snapshot.yaml")
           if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
             echo "$DIFF" | jq '.data' | curl -sf -X POST http://localhost:8055/schema/apply \
               -H "Authorization: Bearer $TOKEN" \
               -H 'Content-Type: application/json' \
               --data-binary @- >/dev/null
+            echo "::notice::Applied snapshot"
           fi
 
       - name: Grant Public policy read on services domain
@@ -133,24 +133,21 @@ jobs:
               -d "{\"policy\":\"$PUBLIC_POLICY_ID\",\"collection\":\"$COLLECTION\",\"action\":\"read\",\"fields\":[\"*\"]}" >/dev/null
           done
 
-      - name: Seed services from CMS fixture
+      - name: Seed services from apps/cms fixture
         env:
           PUBLIC_DIRECTUS_URL: http://localhost:8055
           DIRECTUS_ADMIN_EMAIL: admin@example.com
           DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
-        working-directory: cms
-        run: |
-          bun install --frozen-lockfile
-          bun run seed:services
+        working-directory: apps/cms
+        run: bun run seed:services
 
-      - name: Run consumer adapter integration tests
+      - name: Run apps/web adapter integration tests against ephemeral Directus
         env:
           PUBLIC_DIRECTUS_URL: http://localhost:8055
           RUN_DIRECTUS_INTEGRATION: '1'
-        working-directory: consumer
+        working-directory: apps/web
         run: |
-          bun install --frozen-lockfile
-          bunx svelte-kit sync
+          bun x svelte-kit sync
           bun run test src/lib/adapters/directus.integration.test.ts
 
       - name: Surface Directus logs on failure

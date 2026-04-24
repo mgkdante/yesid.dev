@@ -1,20 +1,30 @@
-name: Directus schema — diff + apply
+name: cms
 
-# Validates infra/directus/snapshot.yaml on every PR.
-# Apply to production happens via a manual workflow_dispatch (operator confirms before destructive ops).
+# CI for apps/cms (Directus config → Railway).
+# - smoke (PR + workflow_dispatch): boot ephemeral Directus + apply snapshot
+#   from apps/cms/infra/directus/snapshot.yaml + run apps/cms unit tests
+#   (snapshot-shape + fixture + seed-dry-run + asset-manifest + migrate-assets
+#   + seed-presets + services-fixture).
+# - prod-apply (workflow_dispatch only): apply snapshot to cms.yesid.dev.
+#
+# TODO (Task 22): Replace curl-based schema/diff + schema/apply with
+# `bun x directus-sync@3 push` once directus-extension-sync is deployed on
+# Railway (Task 17 owner gate). Until then: keep the curl flow — functional
+# superset of what directus-sync will replace.
 #
 # Reference: https://directus.io/docs/configuration/migrations
-# Spec: https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/spec.md (D3)
+# Slice: docs/slices/slice-18/plan.md § Phase 2 (Tasks 20-39)
 
 on:
   pull_request:
+    branches: [main]
     paths:
-      - 'infra/directus/snapshot.yaml'
-      - '.github/workflows/schema-apply.yml'
-      - 'fixtures/**'
-      - 'scripts/**'
-      - 'tests/**'
+      - 'apps/cms/**'
+      - 'packages/shared/**'
+      - '.github/workflows/cms.yml'
       - 'package.json'
+      - 'bun.lock'
+      - 'turbo.json'
   workflow_dispatch:
     inputs:
       target:
@@ -46,29 +56,29 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
+    defaults:
+      run:
+        working-directory: apps/cms
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version-file: .bun-version
 
-      - name: Install deps + run unit tests (snapshot-shape + fixture + seed-dry-run)
-        run: |
-          bun install --frozen-lockfile
-          bun test
+      - name: Install deps (monorepo root)
+        working-directory: ${{ github.workspace }}
+        run: bun install --frozen-lockfile
+
+      - name: Run apps/cms unit tests (snapshot-shape + fixture + seed-dry-run + asset + preset)
+        run: bun test
 
       - name: Boot ephemeral Directus
+        working-directory: ${{ github.workspace }}
         run: |
-          # Drop --network host: unreliable with GHA service containers on some runners.
-          # Use host-gateway so the Directus container reaches the host-mapped PG port.
-          #
-          # Explicit `bootstrap && start` chain: the 11.17.3 image's default CMD runs
-          # `directus start` which does NOT auto-bootstrap a fresh DB — it expects an
-          # already-populated schema. In Railway, the first boot bootstraps via a
-          # persistent volume and subsequent boots just start. On ephemeral CI, every
-          # boot is "first boot", so we need to chain explicitly.
+          # Chain `directus bootstrap && directus start` because 11.17.3's default CMD
+          # does NOT auto-bootstrap a fresh DB (see 18a task-3b postmortem).
           docker run -d --name directus \
             --add-host=host.docker.internal:host-gateway \
             -p 8055:8055 \
@@ -84,13 +94,11 @@ jobs:
             -e ADMIN_EMAIL=admin@example.com \
             -e ADMIN_PASSWORD=ci-test-pass-rotate-immediately \
             -e TELEMETRY=false \
-            -e LOG_LEVEL=debug \
+            -e LOG_LEVEL=info \
             directus/directus:11.17.3 \
             sh -c "npx directus bootstrap && exec npx directus start"
-          # Stream Directus logs live so CI operators see what's happening during the poll.
           docker logs -f directus &
           LOG_PID=$!
-          # Poll up to 5 min — fresh-install bootstrap + server start can take ~90s on slow runners.
           for i in {1..100}; do
             if curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
               echo "::notice::Directus healthy after ${i} polls"
@@ -98,11 +106,9 @@ jobs:
             fi
             sleep 3
           done
-          # Final check + rich diagnostics if still not healthy.
           if ! curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
-            echo "::error::Health check timed out after 5 minutes"
-            docker ps -a
-            docker inspect directus --format='State: {{.State.Status}} · ExitCode: {{.State.ExitCode}} · OOMKilled: {{.State.OOMKilled}} · Error: {{.State.Error}}'
+            echo "::error::Health check timed out"
+            docker inspect directus --format='State: {{.State.Status}} · ExitCode: {{.State.ExitCode}}'
             docker logs --tail=200 directus
             kill "$LOG_PID" 2>/dev/null || true
             exit 1
@@ -115,16 +121,12 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
             | jq -r '.data.access_token')
-          # Diff: 11.17.3 expects multipart upload (schemaMultipartHandler),
-          # not `Content-Type: application/yaml`.
           DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
             -H "Authorization: Bearer $TOKEN" \
             -F "file=@infra/directus/snapshot.yaml")
           echo "::group::Schema diff"
           echo "$DIFF" | jq .
           echo "::endgroup::"
-          # Apply: body MUST be the inner {hash, diff} object, not the full
-          # {data:{hash,diff}} wrapper that /schema/diff returns.
           if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
             HASH=$(echo "$DIFF" | jq -r '.data.hash')
             echo "$DIFF" | jq '.data' | curl -sf -X POST http://localhost:8055/schema/apply \
@@ -140,7 +142,6 @@ jobs:
         run: |
           curl -sf http://localhost:8055/server/health
           curl -sf http://localhost:8055/server/info >/dev/null
-          # Confirm collections registered
           TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
             -H 'Content-Type: application/json' \
             -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
@@ -156,15 +157,11 @@ jobs:
           PUBLIC_DIRECTUS_URL: http://localhost:8055
           DIRECTUS_ADMIN_EMAIL: admin@example.com
           DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
-        run: |
-          # Smoke-seed against the ephemeral Directus — verifies that the
-          # fixture JSON + schema + seed script are all mutually consistent
-          # end-to-end. Prod seeding is a separate manual ops step; this
-          # input only runs in the smoke job.
-          bun run seed:services
+        run: bun run seed:services
 
       - name: Surface Directus container logs on failure
         if: failure()
+        working-directory: ${{ github.workspace }}
         run: docker logs directus
 
   prod-apply:
@@ -173,6 +170,9 @@ jobs:
     environment:
       name: production
       url: https://cms.yesid.dev
+    defaults:
+      run:
+        working-directory: apps/cms
     steps:
       - uses: actions/checkout@v4
 
@@ -181,8 +181,6 @@ jobs:
           DIRECTUS_URL: ${{ secrets.DIRECTUS_PROD_URL }}
           DIRECTUS_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
         run: |
-          # Multipart upload — same shape as the smoke job; Directus 11.17.3
-          # /schema/diff only accepts multipart, not application/yaml body.
           DIFF=$(curl -sf -X POST "$DIRECTUS_URL/schema/diff" \
             -H "Authorization: Bearer $DIRECTUS_TOKEN" \
             -F "file=@infra/directus/snapshot.yaml")
