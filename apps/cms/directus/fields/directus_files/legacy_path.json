@@ -1,0 +1,26 @@
+{
+	"collection": "directus_files",
+	"field": "legacy_path",
+	"type": "string",
+	"meta": {
+		"interface": "input",
+		"hidden": false,
+		"readonly": true,
+		"width": "full",
+		"note": "Idempotency key for migrate-assets (slice-18d). Set by the migration script; do NOT edit post-migration. Format: `images/<relative-path-from-static>`.",
+		"display": null,
+		"display_options": null,
+		"options": null,
+		"sort": null,
+		"required": false,
+		"_syncId": "_sync_field_directus_files_legacy_path"
+	},
+	"schema": {
+		"data_type": "varchar",
+		"max_length": 512,
+		"is_nullable": true,
+		"is_unique": true,
+		"is_indexed": true,
+		"default_value": null
+	}
+}
