@@ -15,7 +15,7 @@
         "@repo/shared": "workspace:*",
         "bottleneck": "^2.19.5",
         "bun-types": "latest",
-        "directus-sync": "^3.0.0",
+        "directus-sync": "^3.5.0",
         "yaml": "^2.6.1",
         "zod": "^3.24.1",
       },
