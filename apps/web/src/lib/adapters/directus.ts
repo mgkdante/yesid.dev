@@ -16,9 +16,13 @@
 
 import { createDirectus, rest, readItems } from '@directus/sdk';
 import { env as publicEnv } from '$env/dynamic/public';
+import { z } from 'zod';
 
 import type { ContentAdapter } from './types';
 import type { Locale, LocalizedString, Service, ServiceSection } from '$lib/types';
+import { createQueuedFetch } from './directus-queue';
+import { parsePort } from '$lib/schemas/parse';
+import { ServiceSchema } from '$lib/schemas/service';
 
 // ---------------------------------------------------------------------------
 // Directus schema — mirrors yesid.dev-cms PR #5 + #6 as applied at cms.yesid.dev.
@@ -150,7 +154,12 @@ function buildClient() {
 			'[directusAdapter] PUBLIC_DIRECTUS_URL is required. Set it in your environment.',
 		);
 	}
-	return createDirectus<Schema>(url, { globals: { fetch } }).with(rest());
+	// Wrap the native fetch with p-queue + retry so bursty SvelteKit `load()`
+	// fan-out + transient 429/5xx don't translate into page failures. Defaults
+	// stay under the Directus server RATE_LIMITER_* cap (50 pts / 1s / memory
+	// store on Railway). See directus-queue.ts for the full policy.
+	const queuedFetch = createQueuedFetch();
+	return createDirectus<Schema>(url, { globals: { fetch: queuedFetch } }).with(rest());
 }
 
 function client() {
@@ -240,29 +249,94 @@ async function fetchServices(filter?: Record<string, unknown>): Promise<Service[
 	return (rows as unknown as DirectusService[]).map(toService);
 }
 
+// F2 — minimal-fields fetch for adjacency. Only `id + station` of visible
+// services, sorted. Avoids the ~10x payload of a full-services read (all
+// translations + deliverables + sections) just to compute neighbours.
+interface AdjacencyEntry {
+	readonly id: string;
+	readonly station: number;
+}
+
+async function fetchAdjacencyList(): Promise<readonly AdjacencyEntry[]> {
+	const rows = await client().request(
+		readItems('services', {
+			fields: ['id', 'station'],
+			filter: { visible: { _neq: false } },
+			sort: ['station'],
+			limit: -1,
+		}),
+	);
+	return rows as unknown as AdjacencyEntry[];
+}
+
+// Per-ctx adjacency memo. Keyed by the caller's PreviewContext object — when
+// a SvelteKit load() threads the same ctx through multiple adjacency calls in
+// a single request, they all hit a single upstream fetch. Without ctx, every
+// call re-fetches (no global cache → no staleness risk between requests).
+const adjacencyMemo = new WeakMap<object, Promise<readonly AdjacencyEntry[]>>();
+
+async function getAdjacencyList(
+	ctx?: object,
+): Promise<readonly AdjacencyEntry[]> {
+	if (!ctx) return fetchAdjacencyList();
+	const cached = adjacencyMemo.get(ctx);
+	if (cached) return cached;
+	const p = fetchAdjacencyList();
+	adjacencyMemo.set(ctx, p);
+	return p;
+}
+
 const todo = (where: string): never => {
 	throw new Error(
 		`[directusAdapter] ${where} not implemented yet — lands in Slice 18 Task 5+ once the collection is designed.`,
 	);
 };
 
+// Shared adjacent schema — same shape as static adapter's services.adjacent
+// parsePort call. Extracted so both ports parse through identical gates.
+const AdjacentServiceSchema = z.object({
+	prev: ServiceSchema.optional(),
+	next: ServiceSchema.optional(),
+});
+
 export const directusAdapter: ContentAdapter = {
 	services: {
-		all: async () => fetchServices(),
+		all: async () =>
+			parsePort('services.all', z.array(ServiceSchema), await fetchServices()),
 		byId: async (id) => {
 			const rows = await fetchServices({ id: { _eq: id } });
-			return rows[0];
+			return parsePort('services.byId', ServiceSchema.optional(), rows[0]);
 		},
-		visible: async () => fetchServices({ visible: { _neq: false } }),
-		adjacent: async (id) => {
-			const visible = await fetchServices({ visible: { _neq: false } });
-			const sorted = [...visible].sort((a, b) => a.station - b.station);
-			const index = sorted.findIndex((s) => s.id === id);
-			if (index === -1) return {};
-			return {
-				prev: index > 0 ? sorted[index - 1] : undefined,
-				next: index < sorted.length - 1 ? sorted[index + 1] : undefined,
-			};
+		visible: async () =>
+			parsePort(
+				'services.visible',
+				z.array(ServiceSchema),
+				await fetchServices({ visible: { _neq: false } }),
+			),
+		adjacent: async (id, ctx) => {
+			// Step 1: get a lightweight id/station list (memoized per-ctx).
+			const list = await getAdjacencyList(ctx);
+			const index = list.findIndex((s) => s.id === id);
+			if (index === -1) {
+				return parsePort('services.adjacent', AdjacentServiceSchema, {});
+			}
+
+			// Step 2: fetch only the neighbour rows (2 max) in full detail.
+			const prevId = index > 0 ? list[index - 1].id : undefined;
+			const nextId = index < list.length - 1 ? list[index + 1].id : undefined;
+			const neighbourIds = [prevId, nextId].filter(
+				(v): v is string => typeof v === 'string',
+			);
+			const neighbours =
+				neighbourIds.length === 0
+					? []
+					: await fetchServices({ id: { _in: neighbourIds } });
+			const byId = new Map(neighbours.map((s) => [s.id, s]));
+
+			return parsePort('services.adjacent', AdjacentServiceSchema, {
+				prev: prevId ? byId.get(prevId) : undefined,
+				next: nextId ? byId.get(nextId) : undefined,
+			});
 		},
 	},
 

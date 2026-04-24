@@ -7,12 +7,16 @@
 //   - Collections return `readonly T[]` — adapters don't promise mutability.
 //   - Not-found returns `undefined`, never `null` — matches TypeScript idiom.
 //
-// Typing strategy for the ContentPort:
-//   The site-content fields are plain object literals whose shapes would be
-//   tedious to duplicate here. `typeof import('...').x` binds the port type
-//   directly to the content file — when a field is added to heroContent, the
-//   port signature follows automatically. Future adapters must return the
-//   same shape, enforced by TypeScript at the `: ContentAdapter` annotation.
+// Typing strategy for the ContentPort (18c Task 42 — F4):
+//   Every home-page block has a named interface in @repo/shared/types
+//   (HeroContent, ManifestoContent, ProofReelContent, etc.) so the port
+//   contract is self-describing and reviewable as a list of types instead of
+//   an implicit tuple hidden inside typeof import() calls.
+//
+//   Static adapter's `as const` objects structurally widen to these interfaces;
+//   Directus adapter parses inbound M2A block rows through the matching Zod
+//   schema (post-18i). The `: ContentAdapter` annotation on the composite
+//   export in adapters/index.ts is the compile-time gate.
 
 import type {
 	Project,
@@ -30,6 +34,16 @@ import type {
 	AboutContent,
 	ContactContent,
 	JourneyPanel,
+	HeroContent,
+	HeroAnimContent,
+	ManifestoContent,
+	ProofReelContent,
+	ServicesGridContent,
+	AboutIntroContent,
+	CtaContent,
+	CloserContent,
+	SkillsJourneyCtaContent,
+	PreviewContext,
 } from '$lib/types';
 import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
@@ -45,41 +59,65 @@ export interface ContentAdapter {
 	content: ContentPort;
 }
 
+// Every port method accepts an optional trailing `ctx?: PreviewContext` so
+// preview routes (D6, post-Slice-18) can thread share tokens through the
+// adapter boundary. TS allows implementations to omit trailing optional
+// params, so the static adapter keeps its current arrow-function signatures.
+
 export interface ProjectPort {
-	all(): Promise<readonly Project[]>;
-	bySlug(slug: string): Promise<Project | undefined>;
-	featured(): Promise<readonly Project[]>;
-	public(): Promise<readonly Project[]>;
-	byService(serviceId: string): Promise<readonly Project[]>;
-	allTags(): Promise<readonly string[]>;
-	allStackItems(): Promise<readonly string[]>;
-	serviceIdsForProjects(): Promise<readonly string[]>;
+	all(ctx?: PreviewContext): Promise<readonly Project[]>;
+	bySlug(slug: string, ctx?: PreviewContext): Promise<Project | undefined>;
+	featured(ctx?: PreviewContext): Promise<readonly Project[]>;
+	public(ctx?: PreviewContext): Promise<readonly Project[]>;
+	byService(serviceId: string, ctx?: PreviewContext): Promise<readonly Project[]>;
+	allTags(ctx?: PreviewContext): Promise<readonly string[]>;
+	allStackItems(ctx?: PreviewContext): Promise<readonly string[]>;
+	serviceIdsForProjects(ctx?: PreviewContext): Promise<readonly string[]>;
 }
 
 export interface ServicePort {
-	all(): Promise<readonly Service[]>;
-	byId(id: string): Promise<Service | undefined>;
-	visible(): Promise<readonly Service[]>;
-	adjacent(id: string): Promise<{ prev?: Service; next?: Service }>;
+	all(ctx?: PreviewContext): Promise<readonly Service[]>;
+	byId(id: string, ctx?: PreviewContext): Promise<Service | undefined>;
+	visible(ctx?: PreviewContext): Promise<readonly Service[]>;
+	adjacent(id: string, ctx?: PreviewContext): Promise<{ prev?: Service; next?: Service }>;
 }
 
 export interface BlogPort {
-	all(): Promise<readonly BlogPost[]>;
-	bySlug(slug: string): Promise<BlogPost | undefined>;
-	html(slug: string): Promise<string>;
-	byCategory(category: BlogCategory): Promise<readonly BlogPost[]>;
-	byTag(category: BlogCategory, tag: string): Promise<readonly BlogPost[]>;
-	tagsForCategory(category: BlogCategory): Promise<readonly string[]>;
-	languagesForCategory(category: BlogCategory): Promise<readonly Locale[]>;
-	latest(count: number, category?: BlogCategory): Promise<readonly BlogPost[]>;
-	svgContent(post: BlogPost): Promise<string>;
-	svgContentsForPosts(posts: readonly BlogPost[]): Promise<Record<string, string>>;
-	resolveSvgFallbackName(slug: string, category: BlogCategory): Promise<string>;
-	resolveAnimation(slug: string, explicit: string | undefined): Promise<BlogAnimation>;
+	all(ctx?: PreviewContext): Promise<readonly BlogPost[]>;
+	bySlug(slug: string, ctx?: PreviewContext): Promise<BlogPost | undefined>;
+	html(slug: string, ctx?: PreviewContext): Promise<string>;
+	byCategory(category: BlogCategory, ctx?: PreviewContext): Promise<readonly BlogPost[]>;
+	byTag(
+		category: BlogCategory,
+		tag: string,
+		ctx?: PreviewContext,
+	): Promise<readonly BlogPost[]>;
+	tagsForCategory(category: BlogCategory, ctx?: PreviewContext): Promise<readonly string[]>;
+	languagesForCategory(category: BlogCategory, ctx?: PreviewContext): Promise<readonly Locale[]>;
+	latest(
+		count: number,
+		category?: BlogCategory,
+		ctx?: PreviewContext,
+	): Promise<readonly BlogPost[]>;
+	svgContent(post: BlogPost, ctx?: PreviewContext): Promise<string>;
+	svgContentsForPosts(
+		posts: readonly BlogPost[],
+		ctx?: PreviewContext,
+	): Promise<Record<string, string>>;
+	resolveSvgFallbackName(
+		slug: string,
+		category: BlogCategory,
+		ctx?: PreviewContext,
+	): Promise<string>;
+	resolveAnimation(
+		slug: string,
+		explicit: string | undefined,
+		ctx?: PreviewContext,
+	): Promise<BlogAnimation>;
 }
 
 export interface MetaPort {
-	site(): Promise<SiteMeta>;
+	site(ctx?: PreviewContext): Promise<SiteMeta>;
 	/**
 	 * Resolve PageSeo for a route + locale + optional dynamic params.
 	 *
@@ -91,41 +129,51 @@ export interface MetaPort {
 	 * Returned shape is parsed through PageSeoSchema at the adapter boundary,
 	 * so any adapter (static, Directus, mock) can only emit valid SEO.
 	 */
-	forRoute(routeId: string, locale: Locale, params?: Record<string, string>): Promise<PageSeo>;
+	forRoute(
+		routeId: string,
+		locale: Locale,
+		params?: Record<string, string>,
+		ctx?: PreviewContext,
+	): Promise<PageSeo>;
 }
 
 export interface TechStackPort {
-	all(): Promise<readonly TechStackItem[]>;
-	byId(id: string): Promise<TechStackItem | undefined>;
-	byLayer(layer: InfraLayer): Promise<readonly TechStackItem[]>;
-	byDomain(domain: DomainCluster): Promise<readonly TechStackItem[]>;
-	connections(id: string): Promise<readonly string[]>;
-	incomingConnections(id: string): Promise<readonly string[]>;
-	outgoingRelations(id: string): Promise<readonly TechRelation[]>;
-	incomingRelations(id: string): Promise<readonly TechRelation[]>;
-	content(id: string): Promise<string>;
-	allScenarios(): Promise<readonly StackScenario[]>;
-	scenarioForDomains(domains: DomainCluster[]): Promise<StackScenario | undefined>;
+	all(ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
+	byId(id: string, ctx?: PreviewContext): Promise<TechStackItem | undefined>;
+	byLayer(layer: InfraLayer, ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
+	byDomain(domain: DomainCluster, ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
+	connections(id: string, ctx?: PreviewContext): Promise<readonly string[]>;
+	incomingConnections(id: string, ctx?: PreviewContext): Promise<readonly string[]>;
+	outgoingRelations(id: string, ctx?: PreviewContext): Promise<readonly TechRelation[]>;
+	incomingRelations(id: string, ctx?: PreviewContext): Promise<readonly TechRelation[]>;
+	content(id: string, ctx?: PreviewContext): Promise<string>;
+	allScenarios(ctx?: PreviewContext): Promise<readonly StackScenario[]>;
+	scenarioForDomains(
+		domains: DomainCluster[],
+		ctx?: PreviewContext,
+	): Promise<StackScenario | undefined>;
 }
 
 export interface ContentPort {
-	hero(): Promise<typeof import('$lib/content/site-content').heroContent>;
-	heroAnim(): Promise<typeof import('$lib/content/site-content').heroAnimContent>;
-	manifesto(): Promise<typeof import('$lib/content/site-content').manifestoContent>;
-	proofReel(): Promise<typeof import('$lib/content/site-content').proofReelContent>;
-	servicesGrid(): Promise<typeof import('$lib/content/site-content').servicesGridContent>;
-	about(): Promise<typeof import('$lib/content/site-content').aboutContent>;
-	cta(): Promise<typeof import('$lib/content/site-content').ctaContent>;
-	closer(): Promise<typeof import('$lib/content/site-content').closerContent>;
-	skillsJourneyPanels(): Promise<readonly JourneyPanel[]>;
-	skillsJourneyCta(): Promise<typeof import('$lib/content/site-content').skillsJourneyCta>;
-	navLinks(): Promise<readonly NavLink[]>;
-	menuItems(): Promise<readonly MenuItem[]>;
-	metroBookends(): Promise<MetroBookends>;
-	errorPage(): Promise<ErrorPageContent>;
-	aboutPage(): Promise<AboutContent>;
-	contactPage(): Promise<ContactContent>;
-	techStackPage(): Promise<TechStackPageContent>;
-	heroMock(): Promise<HeroData>;
-	initialHeroData(): Promise<HeroData>;
+	hero(ctx?: PreviewContext): Promise<HeroContent>;
+	heroAnim(ctx?: PreviewContext): Promise<HeroAnimContent>;
+	manifesto(ctx?: PreviewContext): Promise<ManifestoContent>;
+	proofReel(ctx?: PreviewContext): Promise<ProofReelContent>;
+	servicesGrid(ctx?: PreviewContext): Promise<ServicesGridContent>;
+	/** Home-page About teaser — distinct from the /about page (aboutPage below). */
+	about(ctx?: PreviewContext): Promise<AboutIntroContent>;
+	cta(ctx?: PreviewContext): Promise<CtaContent>;
+	closer(ctx?: PreviewContext): Promise<CloserContent>;
+	skillsJourneyPanels(ctx?: PreviewContext): Promise<readonly JourneyPanel[]>;
+	skillsJourneyCta(ctx?: PreviewContext): Promise<SkillsJourneyCtaContent>;
+	navLinks(ctx?: PreviewContext): Promise<readonly NavLink[]>;
+	menuItems(ctx?: PreviewContext): Promise<readonly MenuItem[]>;
+	metroBookends(ctx?: PreviewContext): Promise<MetroBookends>;
+	errorPage(ctx?: PreviewContext): Promise<ErrorPageContent>;
+	/** Full /about page content — distinct from the home-page about teaser. */
+	aboutPage(ctx?: PreviewContext): Promise<AboutContent>;
+	contactPage(ctx?: PreviewContext): Promise<ContactContent>;
+	techStackPage(ctx?: PreviewContext): Promise<TechStackPageContent>;
+	heroMock(ctx?: PreviewContext): Promise<HeroData>;
+	initialHeroData(ctx?: PreviewContext): Promise<HeroData>;
 }
