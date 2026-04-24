@@ -1,131 +1,385 @@
-# slice-18 — Plan (Cloud content layer: Directus)
+# Slice 18 — Plan
 
-> Single-level slice. Four flat files in this bundle: [plan.md](plan.md) (this file) · [spec.md](spec.md) · [research.md](research.md) · [handoff.md](handoff.md). Tasks tracked via TodoWrite (no task files).
+> **Whole-slice plan doc.** Sub-slices keep only research.md + decisions.md. No handoff.md or spec.md at slice level.
+>
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans for task execution. Checkbox (`- [ ]`) syntax tracks progress.
 
-> **Restart context:** prior slice-18 attempt (PRs #33, #34) was scorched in #35. Going back to the classic flow: **research → brainstorm → spec → plan → implement → iterate → close**. Start lean; front-run nothing.
+**Goal:** Migrate yesid.dev from static TS content modules to a self-hosted Directus 11.17.3 CMS at `cms.yesid.dev`, with humans authoring via Data Studio and AI via native MCP. Land the full pattern library (conventions + shared lib + scaffolder) so the post-Slice-18 template extraction is near-mechanical.
 
-## Scope
+**Architecture:** Turborepo monorepo (`yesido-platform`) with `apps/web` (SvelteKit + Vercel) + `apps/cms` (Directus config + Railway) + `packages/shared` (TS types + Zod only). Three-boundary test split. Block Editor for all rich content. Full-site revalidation via Flows. directus-sync for per-collection-file schema authoring.
 
-Migrate the site's content source from `staticAdapter` (typed TS content modules under `src/lib/content/*.ts`) to a Directus CMS served from `cms.yesid.dev`. Swap happens at the one-file adapter seam (`src/lib/adapters/index.ts`) — repositories (`src/lib/repositories/*`) and components stay untouched. The `yesid-dev-cms` repo transitions from Payload 3.x to Directus 11+.
+**Tech stack:** Turborepo · pnpm workspaces · Bun runtime · SvelteKit 2 · Svelte 5 · Directus 11.17.3 · directus-sync extension · Neon Postgres (PITR) · Cloudflare R2 · `@directus/sdk@^20` · Zod · p-queue · Bottleneck · vitest · bun test.
 
-## Hard constraints
+**Branch:** `feature/slice-18` on yesid.dev (pre-18c); migrates to `feature/slice-18` on yesido-platform during 18c Phase 1.
 
-- **No nested sub-slice folders.** Flat `docs/slices/slice-18/` only.
-- **No `@payloadcms/*` packages in yesid.dev.** Ever.
-- **Prefer Directus built-ins over custom extensions.** Every custom extension needs written justification in a spec D-entry (`feedback_prefer_platform_builtins.md`).
-- **Never hardcode content.** All content flows through the adapter seam as `LocalizedString` + typed interfaces (`feedback_data_driven.md`).
-- **Infrastructure constant across the migration:** Neon Postgres, Resend (DKIM + SPF), `cms.yesid.dev` domain.
-- **No direct commits to `main`.** Branch + PR for every change.
-- **No archive branches in yesid-dev-cms.** Scorch IS the audit trail; research slice is the historical record.
-- **Hard cutover.** No `cms-legacy.yesid.dev`. When Directus lands, Payload is gone.
-- **Research slice is append-only reference.** Don't modify `docs/slices/slice-headless-cms-best-practices/`.
+---
 
-## Canonical commands
+## Status + sub-slice map
 
-| Purpose     | Command               |
-| ----------- | --------------------- |
-| Install     | `bun install`         |
-| Build       | `bun run build`       |
-| Test (unit) | `bun run test`        |
-| Lint        | `bun run lint`        |
-| Typecheck   | `bun run check`       |
-| Run locally | `bun run dev`         |
+| ID | Scope | Status | Effort | Bundle |
+|---|---|---|---|---|
+| **18a** | Infra + services proof (Tasks 0–7) | ✅ closed 2026-04-23 | shipped | [18a-infra-services-proof/](18a-infra-services-proof/) |
+| **18b** | Two-repo decoupling + test split (Task 8 + Task 2b research) | ✅ closed 2026-04-24 | shipped | [18b-decoupling-test-split/](18b-decoupling-test-split/) |
+| **18c** | **Foundations + services retrofit + monorepo pivot** — 57 tasks below | 🟡 in flight | 3–4 sessions | [18c-foundations/](18c-foundations/) |
+| **18d** | Asset pipeline (static/images/* → Directus + R2 + presets + AVIF probe) | ⏸ planned | 1 session | (created when 18c closes) |
+| **18e** | Projects (+ M2M to services replacing CSV) | ⏸ planned | 1–1.5 sessions | — |
+| **18f** | Blog + Block Editor + BlockRenderer.svelte | ⏸ planned | 1.5–2 sessions | — |
+| **18g** | Tech-stack + tech_relations + stack_scenarios | ⏸ planned | 1 session | — |
+| **18h** | Meta + route_seo (singleton + og_image) | ⏸ planned | 0.5 session | — |
+| **18i** | Pages + M2A blocks (12 block collections + nav/menu/error) | ⏸ planned | 2–3 sessions | — |
+| **18j** | Polish (Insights · comments · AI Assistant · Flows · role-policy tighten) | ⏸ planned | 1 session | — |
+| **18k** | Close (Codex review · delete static · template extraction plan · memories + PR) | ⏸ planned | 1 session | — |
 
-## Tasks
+**Sub-slice dependency:**
 
-Full task state lives in TodoWrite + the handoff per-task sections. This table is orientational — tasks expand into full spec/plan blocks before execution. **Scope corrected at Task 2b (2026-04-23)**: Tasks 5–7 shipped services as proof-of-pattern, not the full slice. Remaining five content types (projects, blog, tech-stack, meta, site-chrome via M2A pages) land as Tasks 10–14 per the CMS-native re-plan in research.md § Topic 10.
+```
+18c ─► 18d ─► { 18e · 18f · 18g · 18h } (parallelizable) ─► 18i ─► 18j ─► 18k
+```
 
-| # | Task | Status | Notes |
-|---|------|--------|-------|
-| 0 | Scaffold slice-18 bundle | ✅ shipped | yesid.dev `e918736`; 4-file flat bundle. |
-| 1 | Remove Payload from yesid.dev-cms + clean slate | ✅ shipped | yesid.dev-cms PRs #1 (`a7a1db6`) + #2 (`0295dd6`). Final state: 4 tracked files. |
-| 2 | Directus infra research (hosting, storage, schema, locales) | ✅ shipped | Resolved spec D1/D2/D3 + Q4–Q7. Zero site code changes. |
-| 3 | Directus install on Railway + Neon + R2 + native MCP | ✅ shipped | Live at `cms.yesid.dev`. yesid.dev-cms PR #3. |
-| 4 | DirectusAdapter scaffold + `services` port impl + scorched-earth Neon cleanup | ✅ shipped | yesid.dev `427ad19`. Seam NOT flipped (per plan). |
-| 5 | `services` collection schema in Directus | ✅ shipped | yesid.dev-cms PR #5 merged (`13aaeb9`). |
-| 6 | Seed `services` content + schema hotfixes | ✅ shipped | yesid.dev `7222c92`; yesid.dev-cms PR #6 merged (`4963c94`). |
-| 7 | Flip `services` port to Directus (hybrid adapter) | ✅ shipped | yesid.dev `a373bf5`. Port-by-port pattern; services live from cms.yesid.dev; other 5 ports still static. |
-| **2b** | **CMS-native research + two-repo decoupling re-plan** | **✅ shipped** | **This task.** Research on Topics 1–10 via 3 parallel agents. Locked D4–D12; revised Q5; resolved Q8–Q12. Revised task list below (Tasks 8–15). Zero code changes. |
-| 8 | Two-repo decoupling + minimal toolchain on yesid.dev-cms | planned | Re-init `package.json` with `@directus/sdk` + `zod` + `bun-types`; migrate `seed-directus-services.ts` → yesid.dev-cms/`scripts/seed-services.ts`; document rotation policy; cross-repo contract test scaffold. |
-| 9 | Asset pipeline migration (`static/images/*` → Directus + R2) | planned | Bulk-upload via SDK; 5 folders (services/blog/projects/brand/og); 4 saved presets; `assets-id-map.json` committed. No adapter work. |
-| 10 | Projects content type (schema + seed + adapter + flip) | planned | `projects` + translations + M2M junction replacing CSV `Service.related_projects`; `hero_image` M2O to `directus_files`; Content Versioning enabled. |
-| 11 | Blog content type (schema + seed + adapter + flip) | planned | `blog_posts` + translations; Markdown body field (preserves `marked.parse` pipeline); SVG illustrations as `directus_files`. |
-| 12 | Tech-stack content types (schema + seed + adapter + flip) | planned | `tech_stack` + `tech_relations` + `stack_scenarios` + translations; `body_markdown` replaces per-item `src/content/stack/{id}.md`; graph utilities intact. |
-| 13 | Meta + route SEO (schema + seed + adapter + flip) | planned | `site_meta` singleton + `route_seo` collection + translations + `og_image` M2O; closed-registry contract preserved. |
-| 14 | Site-chrome via M2A pages (schema + seed + adapter + flip) | planned | `pages` collection with M2A `blocks` + 12+ block collections + `nav_links`/`menu_items`/`error_pages` singletons. Adapter flattens per-request to preserve `ContentPort` surface; zero consumer-side component change. Largest remaining task. |
-| 15 | Slice close (role/policy tighten + optional Flow revalidation + peer review + PR + memories) | planned | Tighten ai-editor per D10; enable collaborative-editing env vars; wire Flow-based revalidation or defer; Codex adversarial peer review; open+merge feature/slice-18 PR; update memories; retire Vercel project on cms repo. |
+**Workflow per sub-slice:**
 
-## Session layout
+1. Plan appended to this doc before start (or exists from upfront planning).
+2. Optional: dispatch deep research agents if unclear — operator decides per sub-slice (research at L1 is mandatory; L2 is operator-directed per `feedback_always_write_slice` + re-plan Q5).
+3. Execute.
+4. Research + decisions land in sub-slice folder's `research.md` + `decisions.md`.
+5. Sub-slice close = owner verification gate → merge PR → move to next.
 
-- **Session 1 — Planning + scorch (Tasks 0 + 1).** Shipped 2026-04-22.
-- **Session 2 — Task 2 (infra research).** Shipped 2026-04-22.
-- **Session 3 — Task 3 (Directus install + MCP).** Shipped 2026-04-23 overnight.
-- **Session 4 — Tasks 4–7 (services proof-of-pattern).** Shipped 2026-04-23.
-- **Session 5 — Task 2b (CMS-native re-plan).** This session. Zero code changes.
-- **Sessions 6+ — Tasks 8–15 (remaining migration).** Each task = one owner-approved STOP point. Estimated 5–7 sessions; Tasks 10–13 parallelizable after Task 9.
+---
 
-Divergence from this shape gets logged in § Amendments.
+## D-entries (consolidated)
 
-## Success criteria (slice-level)
+Full D-entry narratives and amendment rationale live in design spec [`docs/superpowers/specs/2026-04-24-slice-18-replan.md § 9`](../../superpowers/specs/2026-04-24-slice-18-replan.md). Summary table:
 
-- [ ] yesid.dev reads every content type via `DirectusAdapter` on `main` — all 6 ports flipped (`services`, `projects`, `blog`, `techStack`, `meta`, `content`). `staticAdapter` retained as dev-only fallback per Q4; deletion scheduled Slice 19+.
-- [x] yesid-dev-cms runs Directus 11.17.3, zero Payload code / deps remaining.
-- [x] `cms.yesid.dev` serves Directus admin + content API with TLS + DKIM/SPF preserved.
-- [ ] Full test / lint / typecheck green on yesid.dev `main` after every task merge.
-- [ ] All 6 content types (services + projects + blog + tech-stack + meta + site-chrome) land in Directus via their CMS-native shape per D5–D12 (versioning enabled, M2A pages, Translations, folder-scoped assets).
-- [ ] yesid.dev-cms has its own minimal `package.json` + `scripts/seed-*.ts` + schema-apply CI; the two repos ship independently per D12.
-- [ ] Cross-repo contract test green on yesid.dev PRs touching the adapter.
-- [ ] Role/policy matrix tightened per D10 before slice close (9 capability policies; ai-editor scoped; Public folder-filtered).
-- [ ] `project_slice_18.md` memory updated to shipped state; `project_completed_slices.md` row added post-merge.
-- [ ] Cross-tool peer review (Codex) clean per `feedback_codex_review_at_slice_close.md`.
+| # | Decision | Status | Landed / Amended |
+|---|---|---|---|
+| D1 | Directus hosting: Railway Hobby + BYO Neon | shipped | 18a |
+| D2 | Storage: Cloudflare R2 via s3 driver | shipped | 18a |
+| D3 | Schema provisioning: **directus-sync per-resource files** (amended from snapshot.yaml) | shape locked | 18c amendment |
+| D4 | Visual Editor SDK v2 + conditional `data-directus` + sessionStorage gate pattern | shape locked; impl post-Slice-18 | 18b + 18c refinement |
+| D5 | Content Versioning + **Global Draft (v11.16)** on all user collections; no separate status field | shape locked | 18b + 18c amendment |
+| D6 | Preview routes: **`/shares` endpoint** (not EDITOR_PREVIEW_TOKEN) + `PreviewContext` at adapter boundary; routes post-Slice-18 | shape locked | 18b + 18c amendment |
+| D7 | M2A pages + block collections; per-page block copies | shape locked | 18b |
+| D8 | **Full-site revalidation** via Flow Event Hook → Webhook → SvelteKit ISR bypass | shape locked | 18b + 18c amendment |
+| D9 | `/assets/:id?key=<preset>` + `STORAGE_ASSET_TRANSFORM=presets` locked + `legacy_path` custom field + folder-per-content-type | shape locked | 18b + 18c amendment |
+| D10 | 9 capability policies; ai-editor delete:false; **2FA enforced**; SSO/OIDC NICE → SHOULD; conservative instance-wide `RATE_LIMITER_*` | shape locked | 18b + 18c amendment |
+| D11 | **Zero custom Directus extensions EXCEPT directus-sync** authoring tool | shape locked | 18b + 18c amendment |
+| D12 | **Turborepo monorepo with two-app strict boundary** (replaces two-repo) | shape locked | 18b + 18c pivot |
+| **D13** | Turborepo + pnpm workspaces monorepo | shape locked | 18c new |
+| **D14** | `packages/shared` types + Zod only; runtime helpers app-local | shape locked | 18c new |
+| **D15** | Block Editor for all rich content; no Markdown interface; no `marked.parse` consumer-side post-18i | shape locked | 18c new |
 
-## Risks (cross-cutting)
+---
 
-- **R1.** ~~Directus hosting decision is open.~~ **Resolved 2026-04-22 (Task 2):** Railway Hobby + BYO Neon (spec D1).
-- **R2.** ~~73-row seed migration Payload-Postgres → Directus.~~ **Reframed 2026-04-22:** the prior slice-18 work scorched Payload data before it ever fed the site; the 73 rows are gone and recreating them from yesid.dev's TS/MD source is the plan (research.md § Seed migration path). No production data loss possible. Revisit: Task 6 (seed script from source modules).
-- **R3.** Domain + DKIM handoff during Directus install. Impact: email sending breaks. Mitigation: no DNS changes until Directus serves HTTPS on `cms.yesid.dev`. Revisit: Task 3.
-- **R4.** Custom-extension temptation. Impact: Directus maintenance burden + platform-builtins violation. Mitigation: enforce `feedback_prefer_platform_builtins.md` at every D-entry. Task 2 audit (research.md § Built-in features vs custom extensions) confirms zero custom extensions required for Slice 18. Revisit: every design decision.
-- **R5.** Directus 12 license revision. Impact: BSL 1.1 terms may change in Directus 12 (announced today 2026-04-22 on directus.io/blog). Mitigation: pin to `directus/directus:11.17.3` at Task 3 — buys a known BSL 3-year window. Revisit: before any upgrade to v12.
-- **R6.** Vercel Blob storage had no Directus driver despite earlier assumption. Impact: avoided — decision flipped to R2 at Task 2. Closed.
-- **R7.** Scope expanded mid-slice (Task 2b). Impact: Slice 18 now spans ~12–15 sessions instead of 6–8; risk that owner fatigue or context-window drift weakens later tasks. Mitigation: (a) Tasks 10–13 are parallelizable after Task 9, so batch-friendly; (b) each task ships its own yesid.dev-cms PR + yesid.dev PR per D12, keeping diffs reviewable; (c) Flow revalidation (Task 15) is explicitly optional within Slice 18 — defer to follow-up slice if timing slips. Revisit: end of Task 9.
-- **R8.** Cross-repo coordination overhead. Impact: every schema-touching task now requires two PRs (yesid.dev-cms + yesid.dev) with a mandated merge order. Risk of stalled PRs or mid-sync breakage. Mitigation: (a) cross-repo contract test scaffolded in Task 8; (b) yesid.dev-cms prod apply gated via `workflow_dispatch` — schema lands in prod before the consumer PR merges; (c) documented three-point contract-change rule in D12. Revisit: end of Task 10 (first post-decoupling cross-repo task).
+## Slice-level acceptance gates (at 18k close)
 
-## Decisions log (slice-level)
+See design spec [`§ 13`](../../superpowers/specs/2026-04-24-slice-18-replan.md) for full list. Headlines:
 
-### D1 — Directus over Payload
+- [ ] All 6 content ports flipped to Directus (services retrofitted + projects + blog + tech-stack + meta + content/M2A).
+- [ ] Static modules deleted; no `.md` in authoring path; no `marked.parse` in consumer bundle.
+- [ ] `packages/shared/types/directus-schema.ts` committed + matches live CMS (CI drift check green).
+- [ ] directus-sync `apps/cms/directus/**.json` covers every user collection; each passes 18-item checklist (CONVENTIONS.md).
+- [ ] Tests green: `bun run test` both apps; `bun run check` 0 errors on apps/web; cross-repo contract-test workflow green; gitleaks green.
+- [ ] Editor UX: Insights dashboard live; comments + notifications workflow; AI Assistant configured; Collaborative editing enabled; 2FA on admin.
+- [ ] Ops: CSP `FRAME_SRC` set; `STORAGE_ASSET_TRANSFORM=presets` locked; `REVISIONS_RETENTION=90d`; `RATE_LIMITER_*` set; Neon PITR documented.
+- [ ] Docs: CONVENTIONS.md + docs/ops/rollback.md + scripts/scaffold-port.ts + template extraction plan committed.
+- [ ] Codex adversarial peer review clean.
+- [ ] Memories updated; slice PR opened + merged.
+- [ ] Live smoke: `/`, `/services/*`, `/projects/*`, `/blog/*`, `/tech-stack/*`, `/about`, `/contact` render from Directus; Lighthouse perf ≥ 90 on `/`.
 
-- **Chosen:** Directus 11+ as the CMS for yesid.dev's cloud content.
-- **Alternatives considered:** Payload 3.x (prior direction), Sanity, Strapi, Ghost, keeping `staticAdapter`.
-- **Why this won:** `docs/slices/slice-headless-cms-best-practices/decision-brief.md` (PR #31). Summary: built-in localization + Postgres + admin UX vs Payload's Node-first coupling for a SvelteKit consumer.
-- **Tradeoff:** Give up Payload's TypeScript-native config; Directus config is Data Studio + Flows (more GUI-driven).
-- **Affects:** all tasks.
+---
 
-### D2 — Scorch-not-archive for Payload removal
+## Risks + mitigations
 
-- **Chosen:** Delete all Payload code from yesid-dev-cms in one PR. No `payload-archive` branch. No `cms-legacy.yesid.dev`.
-- **Alternatives considered:** Archive branch with graceful deprecation · side-by-side Payload + Directus · dual-adapter fallback.
-- **Why this won:** Audit trail = research-slice bundle + Git history. Side-by-side doubles infra cost. yesid.dev runs on `staticAdapter` throughout the migration — no public-site risk during the gap. Hard cutover is simpler.
-- **Tradeoff:** `cms.yesid.dev` 404s between scorch and Directus install. Accepted — admin downtime only.
-- **Affects:** Task 1, Task 3.
+Full table at design spec [`§ 11`](../../superpowers/specs/2026-04-24-slice-18-replan.md). Top 5:
 
-### D3 — Single-level flat bundle
+- **R1 — Monorepo consolidation breaks live services** · feature-branch isolation; ephemeral CI green before cutover.
+- **R4 — directus-sync on Railway fails** · P4 probe resolves before 18c commits; fallback to snapshot.yaml.
+- **R5 — Markdown → Block Editor migration loses formatting** · AST-based migration + visual diff spot-check.
+- **R8 — Services retrofit regresses live prod** · 3-boundary test split + feature branch + smoke verify.
+- **R10 — Codex review at 18k surfaces design flaws too late** · mid-slice Codex checkpoint at end of 18c.
 
-- **Chosen:** One `docs/slices/slice-18/` directory with 4 files (plan, spec, research, handoff). No nested sub-slice folders.
-- **Alternatives considered:** Multi-sub-slice (a/, b/, c/) · Level-1 bundle with sub-slice overlays (prior attempt — scorched).
-- **Why this won:** Prior attempt over-engineered this. Classic single-level flow = one PR boundary per task; handoff accumulates sections.
-- **Tradeoff:** If scope genuinely grows, may need to re-carve mid-flight. Accepted; amendments log captures divergence.
-- **Affects:** all tasks — structural.
+---
+
+## Timeline
+
+| Sub-slice | Sessions |
+|---|---:|
+| 18c | 3–4 |
+| 18d | 1 |
+| 18e | 1–1.5 |
+| 18f | 1.5–2 |
+| 18g | 1 |
+| 18h | 0.5 |
+| 18i | 2–3 |
+| 18j | 1 |
+| 18k | 1 |
+| **Total remaining** | **12–15 sessions** |
+
+---
+
+## 18a — Infra + services proof (✅ closed 2026-04-23)
+
+**Scope:** Scorch Payload · install Directus 11.17.3 on Railway + Neon + R2 · wire native MCP · build `DirectusAdapter` scaffold · migrate services content type (schema + seed + adapter port) · flip services port via hybrid adapter.
+
+**Shipped:** Tasks 0–7. Live state at close: `cms.yesid.dev` serves 6 services from Directus; other 5 ports still on static adapter; 3-boundary test split established; ai-editor role with MCP scoped.
+
+**Key PRs:** yesid.dev-cms #1 (`a7a1db6`) · #2 (`0295dd6`) · #3 (`d22669c`) · #5 (`13aaeb9`) · #6 (`4963c94`); yesid.dev commits `427ad19` + `a373bf5` on `feature/slice-18`.
+
+**Details:** see [18a-infra-services-proof/research.md](18a-infra-services-proof/research.md) + [decisions.md](18a-infra-services-proof/decisions.md) + git log.
+
+---
+
+## 18b — Decoupling + test split (✅ closed 2026-04-24)
+
+**Scope:** Formalize two-repo boundary (later pivoted to monorepo in 18c) · migrate seed script to CMS repo · minimal bun-toolchain on CMS side · three-boundary test split · cross-repo contract test workflow · Task 2b research pass (feeds into 18c re-plan).
+
+**Shipped:** Task 8 + Task 2b research. yesid.dev-cms PR [#7](https://github.com/mgkdante/yesid.dev-cms/pull/7) merged `8293eec`; yesid.dev commits `57264f3` + `3eb9358` + `540de0e` + `9f43891` on `feature/slice-18`.
+
+**Details:** see [18b-decoupling-test-split/research.md](18b-decoupling-test-split/research.md) + [decisions.md](18b-decoupling-test-split/decisions.md).
+
+---
+
+## 18c — Foundations + services retrofit + monorepo pivot (🟡 in flight)
+
+**Scope:** Everything that sets the pattern for 18d–18k. ~3–4 sessions. 57 tasks across 5 phases: probes → monorepo consolidation → CMS foundations → web foundations → services retrofit → docs + ceremony.
+
+**Branch:** `feature/18c-foundations` on yesido-platform (created during Phase 1).
+
+**Research/decisions:** see [18c-foundations/research.md](18c-foundations/research.md) + [decisions.md](18c-foundations/decisions.md).
+
+### Phase 0 — Probes (before any code change)
+
+9 probes; findings populate [18c-foundations/research.md](18c-foundations/research.md). Blocking probes (P4, P6, P7, P9) must complete before Phase 1. Non-blocking probes (P1, P2, P3, P5, P8) can run in parallel.
+
+| # | Probe | Blocks |
+|---|---|---|
+| **Task 1** | P4 — directus-sync on Railway via custom Dockerfile | ✅ blocking (D3 + D11) |
+| **Task 2** | P6 — Turborepo + Vercel monorepo deploy | ✅ blocking (D13) |
+| **Task 3** | P7 — Railway monorepo + directus-sync extension | ✅ blocking (D13 + D11) |
+| **Task 4** | P9 — pnpm workspace + @yesido/shared in SvelteKit + Bun | ✅ blocking (D14) |
+| **Task 5** | P1 — Global Draft v11.16 × Group interfaces (bug #26890) | no |
+| **Task 6** | P2 — `/shares` endpoint behavior (TTL, password, role inheritance) | no |
+| **Task 7** | P3 — Block Editor JSON output shape + block type catalog | no |
+| **Task 8** | P5 — MCP system-prompt scope (per-role or instance-global) | no |
+| **Task 9** | P8 — AVIF support (deferrable to 18d) | no |
+
+Each probe task: run the probe · document findings in research.md · commit. Full probe specs in design spec [`§ 10`](../../superpowers/specs/2026-04-24-slice-18-replan.md).
+
+### Phase 1 — Monorepo consolidation (Tasks 10–19)
+
+Create `yesido-platform` umbrella; import yesid.dev → `apps/web`; import yesid.dev-cms → `apps/cms`; extract `packages/shared`; set up Turborepo + pnpm workspaces; rewrite CI workflows; connect Vercel + Railway to new build roots; smoke both deploys; cutover (archive old repos).
+
+- **Task 10:** Create `mgkdante/yesido-platform` umbrella repo with minimal scaffold (README + .gitignore)
+- **Task 11:** `git subtree add --prefix apps/web https://github.com/mgkdante/yesid.dev.git feature/slice-18`
+- **Task 12:** `git subtree add --prefix apps/cms https://github.com/mgkdante/yesid.dev-cms.git main`
+- **Task 13:** Root `package.json` + `pnpm-workspace.yaml` + `turbo.json`; `pnpm install`
+- **Task 14:** Extract `packages/shared` (types + Zod); update `apps/web/src/lib/types.ts` to re-export
+- **Task 15:** Rewrite `.github/workflows/`: `web.yml` + `cms.yml` + `contract-test.yml` (intra-repo) + `secret-scan.yml` + `.gitleaksignore`
+- **Task 16:** Connect Vercel → Root Directory `apps/web`, build via `turbo run build --filter=@yesido/web`; port env vars from old project
+- **Task 17:** Railway → Build Command + Dockerfile Path `apps/cms/Dockerfile` (custom image with directus-sync); deploy; verify `/server/health`
+- **Task 18:** Smoke test both deploys; run intra-repo contract-test via workflow_dispatch
+- **Task 19:** Cutover — archive yesid.dev + yesid.dev-cms on GitHub; update memories
+
+### Phase 2 — CMS app foundations (Tasks 20–39)
+
+- **Task 20:** Fix `apps/cms/infra/directus/snapshot.yaml:40` Unicode corruption (F1; `sed` replace `�` → `·`)
+- **Task 21:** Migrate snapshot.yaml → directus-sync per-resource files via `directus-sync pull` (D3 amendment)
+- **Task 22:** Update `cms.yml` workflow to use `directus-sync push` (replaces curl/multipart)
+- **Task 23:** Restructure fixtures → `fixtures/collections/services.json` + `fixtures/singletons/` + `fixtures/folders.json` + `fixtures/permissions.json` (F10)
+- **Task 24:** Fixture drift detector `tests/fixture-drift.test.ts` (F11 — retires in 18k)
+- **Task 25:** `scripts/lib/sdk.ts` — `createClient` + `requireEnv` + `defaultDirectusUrl` + unit test (F7)
+- **Task 26:** `scripts/lib/auth.ts` — `getAdminToken` with token/email+password fallback + unit test (F7)
+- **Task 27:** `scripts/lib/chunk-array.ts` — `chunkArray<T>` + unit test (F7)
+- **Task 28:** `scripts/lib/catch-error.ts` — `DirectusError` class + `parseErrors` + unit test (F7 + F8)
+- **Task 29:** `scripts/lib/logger.ts` — `createLogger(scope)` + unit test (F7)
+- **Task 30:** `scripts/lib/read-fixture.ts` — `readFixture<T>(path, schema)` + unit test (F7)
+- **Task 31:** `scripts/lib/bottleneck.ts` — `withRateLimit` wrapper + unit test (F7 + F13 script-side; adds `bottleneck` dep)
+- **Task 32:** `scripts/lib/loaders.ts` — `loadSkeletonRecords` + `loadFullData` + `findOrphans` + `deleteOrphans` + `fetchExistingIds` + unit tests (F9)
+- **Task 33:** Refactor `seed-services.ts` onto `scripts/lib/` + upsert pattern + `--dry-run` + `--reset` flags (F9)
+- **Task 34:** `scripts/generate-types.ts` — handrolled codegen reading `/fields` + `/collections` → `packages/shared/src/types/directus-schema.ts`; add CI drift check (F12)
+- **Task 35:** MCP system prompt upgrade — 250-400 word prompt in `directus/settings.json` via directus-sync push (F14)
+- **Task 36:** MCP global delete protection ON + ai-editor `delete: false` permission rows in `directus/permissions.json` (F15)
+- **Task 37:** Env var lock: `STORAGE_ASSET_TRANSFORM=presets` + `WEBSOCKETS_ENABLED=true` + `WEBSOCKETS_COLLAB_ENABLED=true` + `REVISIONS_RETENTION=90d` + `RATE_LIMITER_*` + CSP `FRAME_SRC`; update `.env.example` (F16 + F17 + F18 + F22 cms + Q12)
+- **Task 38:** `contract-test.yml` workflow_dispatch `ref` input for feature-branch targeting (F19)
+- **Task 39:** CI polish — Docker image caching + `.gitleaks.toml` with allowlist for known CI creds
+
+### Phase 3 — Web app foundations (Tasks 40–48)
+
+- **Task 40:** p-queue + fetchRetry wrapper in `apps/web/src/lib/adapters/directus-queue.ts` + integrate into `directus.ts` client construction (F13 consumer)
+- **Task 41:** Route Directus adapter responses through `parsePort` Zod gate (F3)
+- **Task 42:** Extract named ContentPort interfaces → `packages/shared/src/types/content.ts` (HeroContent, ManifestoContent, etc.); replace `typeof import(...)` bindings in `apps/web/src/lib/adapters/types.ts` (F4)
+- **Task 43:** Add `PreviewContext` param (optional) to every port method; directus branches on `ctx?.shareToken` for `/shares`-based auth (F5 + D6)
+- **Task 44:** Refactor `apps/web/src/tests/setup.data.ts` mock scope → `$lib/adapters/index` (not `./directus`); remove `vi.importActual` from contract test (F6)
+- **Task 45:** Mocked-fetch contract test template → `apps/web/src/lib/adapters/directus.mocked.test.ts` — asserts `readItems` call shape per port (F23)
+- **Task 46:** Adjacency retrofit — per-request WeakMap memo + minimal-fields fetch in `directus.ts` for `services.adjacent` (F2)
+- **Task 47:** Asset helper → `apps/web/src/lib/directus/assets.ts` — `asset(id, preset?)` + `buildSrcSet(id, widths)` + typed preset union (+ unit test)
+- **Task 48:** Update `apps/web/.env.example` with CSP + shares + `VERCEL_BYPASS_TOKEN` docs (F22 web)
+
+### Phase 4 — Services retrofit (Tasks 49–51 · F24)
+
+Apply F1–F23 patterns to the live services port so it becomes the reference impl.
+
+- **Task 49:** Services collection — Global Draft enable (if P1 green) + display_template polish + archive_field + `status` field; push via directus-sync
+- **Task 50:** Refresh ai-editor policy for services via `directus/permissions.json` (publish-blocked + delete false); verify via curl
+- **Task 51:** Verify services adapter port already uses all new patterns (p-queue + parsePort + PreviewContext + memo); run full test suite + live smoke on `/services/*`
+
+### Phase 5 — Docs + ceremony (Tasks 52–57)
+
+- **Task 52:** Write `apps/web/docs/slices/slice-18/CONVENTIONS.md` — full contents per design spec [§ 8](../../superpowers/specs/2026-04-24-slice-18-replan.md) (repo separation, field naming, 18-item checklist, permissions, seed shape, test taxonomy, adapter template, Block Editor rule, translations, files, flows, rollback)
+- **Task 53:** Write `apps/web/docs/ops/rollback.md` — schema revert · seed revert · data loss (Neon PITR) · port flip revert recipes
+- **Task 54:** Write `apps/cms/scripts/scaffold-port.ts` — generates port boilerplate (fixture + test + adapter + contract test) from collection name argument
+- **Task 55:** Apply D-entry amendments to slice-level this doc (D3 · D4 · D5 · D6 · D8 · D9 · D10 · D11 · D12 · D13 · D14 · D15) + Amendments log row; verify matches design spec
+- **Task 56:** Update memory `project_slice_18.md` — monorepo pivot executed, directus-sync adopted, paths updated (yesid.dev → yesido-platform/apps/web)
+- **Task 57:** Open 18c PR on yesido-platform; CI green; owner review; merge; update handoff in 18c-foundations/decisions.md with merge SHA
+
+### 18c Acceptance
+
+- [ ] Probes P1–P9 documented in 18c research.md.
+- [ ] Monorepo consolidated (yesido-platform created + both subtrees imported).
+- [ ] Vercel + Railway deploys green from new build roots.
+- [ ] directus-sync operational; `apps/cms/directus/**.json` committed; prod apply via workflow_dispatch green.
+- [ ] F1 Unicode fixed; F10–F12, F2, F3, F4, F5, F6, F7 (7 lib files), F8, F9, F13, F14, F15, F16/17/18, F19, F22, F23, F24 all delivered.
+- [ ] CI polish: Docker cache + gitleaks green.
+- [ ] `packages/shared` type-only + Zod; resolves cleanly in both apps.
+- [ ] Codegen drift check green on CI.
+- [ ] Services retrofit: live `/services/*` unchanged; tests green both apps.
+- [ ] CONVENTIONS.md + rollback.md + scaffold-port.ts committed.
+- [ ] D-entry amendments in this doc.
+- [ ] `bun test` green both apps; `bun run check` 0 errors on apps/web.
+- [ ] Neon PITR verified + documented.
+- [ ] 18c PR merged.
+
+---
+
+## 18d — Asset pipeline (⏸ planned)
+
+**Scope:** CMS-app-only migration of `apps/web/static/images/*` → Directus + R2. Install 4 saved presets via `seed-presets.ts`. Create `legacy_path` custom field on `directus_files` via directus-sync. AVIF live-probe (Q10). Emit `fixtures/assets-id-map.json` for 18e–18i consumption.
+
+**Folders:** services · projects · blog · brand · about · og.
+
+**Presets:** hero-1200 (WebP 1200w q=85) · card-600 (WebP 600w q=80) · thumb-240 (WebP 240w q=75) · og-1200 (JPG 1200×630 q=85) · +AVIF variants if probe green.
+
+**Acceptance:** all assets uploaded · `curl cms.yesid.dev/assets/<id>?key=hero-1200` returns WebP 1200-wide · AVIF result documented · `assets-id-map.json` committed · Public policy grants files.read folder-scoped per D10.
+
+**When 18c closes:** plan the full 18d task breakdown inline here; follow workflow (optional deep research; brainstorm; plan; execute).
+
+---
+
+## 18e — Projects (⏸ planned)
+
+**Scope:** First canonical content-type migration (reference for 18f, 18g, 18h).
+
+**Schema:** `projects` (id · slug · date_published · status · sort · hero_image M2O) + `projects_translations` (language_code · title · one_liner · description · sections · impact_metric_label) + `projects_services` M2M junction (**replaces services.related_projects CSV**).
+
+**Artifacts:** fixture at `apps/cms/fixtures/collections/projects.json` · seed script on shared lib · `directus.projects.ts` adapter port (8 methods) · contract + mocked + integration tests · one-line hybrid flip in `apps/web/src/lib/adapters/index.ts`.
+
+**Acceptance:** `/projects` + `/projects/[slug]` from Directus; `services.related_projects` via M2M junction; all 3 test boundaries green.
+
+---
+
+## 18f — Blog + Block Editor + BlockRenderer.svelte (⏸ planned)
+
+**Scope:** Most Svelte-side work; introduces Block Editor consumer component.
+
+**Schema:** `blog_posts` (id · slug · status · date_published · lang · body **[Block Editor]** · cover_image M2O · svg_illustration M2O · animation_reverse M2O) + `blog_posts_translations` (language_code · title · excerpt).
+
+**New component:** `apps/web/src/lib/components/blog/BlockRenderer.svelte` (block-type dispatch: heading · paragraph · image · code · list · embed · quote · divider).
+
+**Migration script:** `apps/cms/scripts/migrate-markdown-to-blocks.ts` — parses `apps/web/src/content/blog/*.md` via `marked` AST; maps tokens to Block Editor JSON; writes via SDK. Reused by 18g.
+
+**Acceptance:** `/blog` + `/blog/[slug]` from Directus with Block Editor body · markdown-to-blocks migration verified spot-check 3 posts · SSR + visual parity vs pre-flip.
+
+---
+
+## 18g — Tech-stack + tech_relations + stack_scenarios (⏸ planned)
+
+**Schema:** `tech_stack` (id · slug · category · status · sort · body **[Block Editor]**) + `tech_stack_translations` (language_code · title) + `tech_relations` (self-M2M with connection_notes) + `stack_scenarios` + `stack_scenarios_translations`.
+
+**Reuses:** `BlockRenderer.svelte` (from 18f) · `migrate-markdown-to-blocks.ts` (from 18f).
+
+**Migration:** `apps/web/src/content/stack/{id}.md` → Block Editor JSON via reused script.
+
+**Acceptance:** `/tech-stack` + `/tech-stack/[id]` render with items + relations + scenarios; graph utilities return correct adjacency.
+
+---
+
+## 18h — Meta + route_seo (⏸ planned)
+
+**Smallest sub-slice** (0.5 session).
+
+**Schema:** `site_meta` singleton (+ translations) + `route_seo` collection (route_id UNIQUE · visibility · og_image M2O) + `route_seo_translations`.
+
+**Contract:** `meta.forRoute` throws on unknown route_id (closed registry preserved).
+
+**New:** layout-level `fetchSiteData` in `apps/web/src/routes/+layout.server.ts` — nav + site_meta loaded once; downstream routes consume from `$page.data`.
+
+**Acceptance:** every route's `<head>` SEO from Directus; layout-level fetch shown in Network tab (one call).
+
+---
+
+## 18i — Pages + M2A blocks (⏸ planned)
+
+**Largest content-type sub-slice** (2–3 sessions).
+
+**Schema:** `pages` (id · slug [home · about · contact · services · projects · tech-stack · blog] · title · sort) + M2A `blocks` junction + **12 block collections:** `block_hero` · `block_manifesto` · `block_proof_reel` · `block_services_grid` · `block_cta` · `block_closer` · `block_about_content` · `block_contact_content` · `block_tech_stack_page_content` · `block_blog_page_content` · `block_projects_page_content` · `block_journey_panel`. Each with translations. Rich-content blocks use Block Editor. Singletons outside M2A: nav_links · menu_items · error_pages · languages.
+
+**Versioning caveat:** P1 probe informs Group-interface handling.
+
+**Adapter strategy:** per-request memoized `loadPage(slug)` fetches full M2A tree in one query; each `content` port method picks from memoized Map.
+
+**Acceptance:** all routes render from Directus-M2A; all 12 block types hydrate; nav + menu + error_pages work.
+
+---
+
+## 18j — Polish (⏸ planned)
+
+1 session. Editor UX + automation.
+
+- Insights "Content Ops" dashboard (5 panels)
+- Item comments + @mentions workflow (ai-editor drafts → @yesid → human promotes)
+- Notifications + SMTP (via Resend HTTPS API webhook Flow — unblocks port 587 issue from 18a)
+- AI Assistant — Anthropic with tool-search from v11.17.1
+- 3 quick-action Flows (Publish + deploy · Regenerate SEO · Publish translation)
+- Bookmarks presets per-role
+- Full-site revalidation Flow (D8)
+- ai-editor policy final tightening (J8)
+- CI Docker caching polish
+- `fetchSiteData` consumption verify
+- MCP permissions audit test (`tests/mcp-policy-shape.test.ts`)
+- Visual-editing sessionStorage gate wording update
+- SSO/OIDC flag for post-Slice-18 if second editor joins
+
+---
+
+## 18k — Close (⏸ planned)
+
+Ceremony + cleanup. 1 session.
+
+- Codex adversarial peer review
+- Delete static modules: `apps/web/src/lib/content/*.ts` + `apps/web/src/content/*.md`; retire `fixture-drift.test.ts`
+- Permissions migration (shell-loop → fixture) if not already done in 18c
+- Write `docs/superpowers/specs/2026-04-24-template-extraction.md` (K4)
+- Memory + slice PR + Vercel retire
+- Gitleaks final verification
+
+---
+
+## References
+
+- Design spec (brainstorming output): [`docs/superpowers/specs/2026-04-24-slice-18-replan.md`](../../superpowers/specs/2026-04-24-slice-18-replan.md)
+- Research audit (4 agents): [`docs/superpowers/research/2026-04-24-slice-18-replan-audit.md`](../../superpowers/research/2026-04-24-slice-18-replan-audit.md)
+- CONVENTIONS.md: to be written in 18c Task 52
+
+---
 
 ## Amendments log
 
-| # | Date | Change | Rationale |
-|---|------|--------|-----------|
-| 1 | 2026-04-22 | Tasks 0–2 shipped; R1 resolved; R2 reframed (no Payload data to migrate); R5 + R6 added. | Task 2 research landed; spec D1/D2/D3 + Q4–Q7 resolved via four parallel agents (adapter mapping + Directus docs + hosting/storage + research-slice re-read). Full findings in research.md. |
-| 2 | 2026-04-23 | Task 3 shipped via MCPs (Cloudflare/Railway/Neon/Vercel/1P CLI); Resend SMTP deferred → HTTP API; Neon clean-slated mid-task. | Owner used MCPs to drive provisioning end-to-end. Railway egress blocks SMTP port 587 → Resend SMTP path is dead, switching to HTTPS API via Directus Flow as a follow-up. Neon DROP SCHEMA + CREATE SCHEMA in response to owner's "clean up neon db and rebuild" steering after the Railway template seeded its CMS demo content on the freshly-pointed Neon DB. |
-| 3 | 2026-04-23 | Tasks 4–7 shipped as services proof-of-pattern (not full slice). Mid-slice scope correction: Slice 18 = full migration + two-repo decoupling. Task 2b research pass inserted. Revised task list (Tasks 8–15). | Owner flagged mid-slice that Tasks 5–7 shipped services as a TS-mirror (hardcoded-content replacer), not a proper CMS deployment. Task 2b researched CMS-native patterns (visual editing, versioning, M2A, Flows, asset pipeline, role/policy, extensions, repo separation) via 3 parallel agents — 10 topics. Spec now has D4–D12 locked; Q5 revised; Q8–Q12 resolved. Remaining 5 content types (projects, blog, tech-stack, meta, site-chrome) re-planned as CMS-native collections leveraging M2A pages + Content Versioning + Translations. Tasks 8–15 sequence Tasks 10–13 as parallelizable after Task 9 (assets). No code changes in Task 2b; research + docs only. |
-
-## Notes
-
-- Research slice reference: `docs/slices/slice-headless-cms-best-practices/` (12-heuristic + 22-item FORMULA; PR #31 merged 2026-04-22).
-- Adapter seam: `src/lib/adapters/index.ts:6` — the single line that flips per-adapter.
-- yesid-dev-cms location: `C:/Users/otalo/Yesito/Projects/yesid-dev-cms` (sibling repo; hyphen, not dot).
+| Date | Change | Rationale | Affected sections |
+|---|---|---|---|
+| 2026-04-22 | Tasks 0–2 shipped; D1/D2/D3 + Q4–Q7 resolved | Task 2 research landed | D-entries |
+| 2026-04-23 | Task 3 via MCPs; Resend SMTP deferred; Neon clean-slated mid-task | Railway egress + template interference | 18a |
+| 2026-04-23 | Tasks 4–7 shipped as services proof-of-pattern | Port-by-port pattern proven | 18a |
+| 2026-04-23 | Mid-slice scope correction: full-migration re-plan via Task 2b | Tasks 5–7 shipped as TS-mirror, not CMS-native | D4–D12 + Open Qs |
+| 2026-04-24 | Task 8 shipped + PR #7 merged | Two-repo decoupling + test split | 18b |
+| 2026-04-24 | 18c re-plan + monorepo pivot (Turborepo) + D13/D14/D15 new | Brainstorming + 4-agent audit | Major amendment — see design spec changelog |
+| 2026-04-24 | Docs reorg: removed slice-level spec.md + handoff.md + research.md; whole plan now in this doc; sub-slices keep research + decisions only | Per-workflow owner directive | Structural |
