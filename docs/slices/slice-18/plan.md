@@ -6,11 +6,11 @@
 
 **Goal:** Migrate yesid.dev from static TS content modules to a self-hosted Directus 11.17.3 CMS at `cms.yesid.dev`, with humans authoring via Data Studio and AI via native MCP. Land the full pattern library (conventions + shared lib + scaffolder) so the post-Slice-18 template extraction is near-mechanical.
 
-**Architecture:** Turborepo monorepo (`yesido-platform`) with `apps/web` (SvelteKit + Vercel) + `apps/cms` (Directus config + Railway) + `packages/shared` (TS types + Zod only). Three-boundary test split. Block Editor for all rich content. Full-site revalidation via Flows. directus-sync for per-collection-file schema authoring.
+**Architecture:** Turborepo monorepo in the existing **`yesid.dev` repo** (umbrella — no new repo created) with `apps/web` (SvelteKit + Vercel) + `apps/cms` (Directus config + Railway) + `packages/shared` (TS types + Zod only). Apps are NOT workspace packages (app independence convention). Block Editor for all rich content. Full-site revalidation via Flows. directus-sync for per-collection-file schema authoring.
 
-**Tech stack:** Turborepo · **Bun workspaces** · Bun runtime · SvelteKit 2 · Svelte 5 · Directus 11.17.3 · directus-sync extension · Neon Postgres (PITR) · Cloudflare R2 · `@directus/sdk@^20` · Zod · p-queue · Bottleneck · vitest · bun test.
+**Tech stack:** Turborepo · **Bun workspaces** (packages/* only) · Bun runtime · SvelteKit 2 · Svelte 5 · Directus 11.17.3 · directus-sync extension · Neon Postgres (PITR) · Cloudflare R2 · `@directus/sdk@^20` · Zod · p-queue · Bottleneck · vitest · bun test.
 
-**Branch:** `feature/slice-18` on yesid.dev (pre-18c); migrates to `feature/slice-18` on yesido-platform during 18c Phase 1.
+**Branch:** `feature/slice-18` on **yesid.dev** (stays — yesid.dev IS the monorepo; no new repo).
 
 ---
 
@@ -28,13 +28,16 @@
 | **18h** | Meta + route_seo (singleton + og_image) | ⏸ planned | 0.5 session | — |
 | **18i** | Pages + M2A blocks (12 block collections + nav/menu/error) | ⏸ planned | 2–3 sessions | — |
 | **18j** | Polish (Insights · comments · AI Assistant · Flows · role-policy tighten) | ⏸ planned | 1 session | — |
+| **18l** | **CMS brand styling** — Data Studio theme to match yesid.dev (logo · favicon · colors · typography via directus-sync themes/settings) | ⏸ planned | 0.5 session | — |
 | **18k** | Close (Codex review · delete static · template extraction plan · memories + PR) | ⏸ planned | 1 session | — |
 
 **Sub-slice dependency:**
 
 ```
-18c ─► 18d ─► { 18e · 18f · 18g · 18h } (parallelizable) ─► 18i ─► 18j ─► 18k
+18c ─► 18d ─► { 18e · 18f · 18g · 18h } (parallelizable) ─► 18i ─► 18j ─► 18l ─► 18k
 ```
+
+18l depends on 18d (asset pipeline for logo upload) + 18j (polish pass done before brand finish).
 
 **Workflow per sub-slice:**
 
@@ -63,7 +66,7 @@ Full D-entry narratives and amendment rationale live in design spec [`docs/super
 | D9 | `/assets/:id?key=<preset>` + `STORAGE_ASSET_TRANSFORM=presets` locked + `legacy_path` custom field + folder-per-content-type | shape locked | 18b + 18c amendment |
 | D10 | 9 capability policies; ai-editor delete:false; **2FA enforced**; SSO/OIDC NICE → SHOULD; conservative instance-wide `RATE_LIMITER_*` | shape locked | 18b + 18c amendment |
 | D11 | **Zero custom Directus extensions EXCEPT directus-sync** authoring tool | shape locked | 18b + 18c amendment |
-| D12 | **Turborepo monorepo with two-app strict boundary** (replaces two-repo) | shape locked | 18b + 18c pivot |
+| D12 | **Turborepo monorepo in existing yesid.dev repo with two-app independence convention** (replaces two-repo; amended 2026-04-24: "strict boundary + CI check" → "convention + code review"; yesido-platform umbrella repo idea dropped — yesid.dev IS the umbrella) | shape locked | 18b + 18c pivot + 2026-04-24 amendment |
 | **D13** | Turborepo + **Bun workspaces** monorepo (amended from pnpm 2026-04-24) | shape locked | 18c new (amended in 18c) |
 | **D14** | `packages/shared` types + Zod only; runtime helpers app-local | shape locked | 18c new |
 | **D15** | Block Editor for all rich content; no Markdown interface; no `marked.parse` consumer-side post-18i | shape locked | 18c new |
@@ -112,8 +115,9 @@ Full table at design spec [`§ 11`](../../superpowers/specs/2026-04-24-slice-18-
 | 18h | 0.5 |
 | 18i | 2–3 |
 | 18j | 1 |
+| 18l | 0.5 |
 | 18k | 1 |
-| **Total remaining** | **12–15 sessions** |
+| **Total remaining** | **12.5–15.5 sessions** |
 
 ---
 
@@ -143,7 +147,7 @@ Full table at design spec [`§ 11`](../../superpowers/specs/2026-04-24-slice-18-
 
 **Scope:** Everything that sets the pattern for 18d–18k. ~3–4 sessions. 57 tasks across 5 phases: probes → monorepo consolidation → CMS foundations → web foundations → services retrofit → docs + ceremony.
 
-**Branch:** `feature/18c-foundations` on yesido-platform (created during Phase 1).
+**Branch:** `feature/slice-18` on yesid.dev (current branch; yesid.dev IS the monorepo — no new umbrella repo).
 
 **Research/decisions:** see [18c-foundations/research.md](18c-foundations/research.md) + [decisions.md](18c-foundations/decisions.md).
 
@@ -167,18 +171,18 @@ Each probe task: run the probe · document findings in research.md · commit. Fu
 
 ### Phase 1 — Monorepo consolidation (Tasks 10–19)
 
-Create `yesido-platform` umbrella; import yesid.dev → `apps/web`; import yesid.dev-cms → `apps/cms`; extract `packages/shared`; set up Turborepo + **Bun workspaces**; rewrite CI workflows; connect Vercel + Railway to new build roots; smoke both deploys; cutover (archive old repos).
+Convert existing yesid.dev repo to monorepo umbrella: `git mv` current root contents into `apps/web/`; subtree-import yesid.dev-cms into `apps/cms/`; add root-level `packages/shared/`; set up Turborepo + **Bun workspaces** at root; rewrite CI workflows for monorepo; reconfigure existing Vercel project Root Directory; reconfigure existing Railway service source; smoke both deploys; cutover (archive **yesid.dev-cms** repo only — yesid.dev stays as the monorepo).
 
-- **Task 10:** Create `mgkdante/yesido-platform` umbrella repo with minimal scaffold (README + .gitignore)
-- **Task 11:** `git subtree add --prefix apps/web https://github.com/mgkdante/yesid.dev.git feature/slice-18`
-- **Task 12:** `git subtree add --prefix apps/cms https://github.com/mgkdante/yesid.dev-cms.git main`
-- **Task 13:** Root `package.json` with `"workspaces": ["apps/*", "packages/*"]` + `turbo.json` + `.bun-version` (pin Bun 1.3.x); `bun install`; commit `bun.lock`
-- **Task 14:** Extract `packages/shared` (types + Zod); update `apps/web/src/lib/types.ts` to re-export
-- **Task 15:** Rewrite `.github/workflows/`: `web.yml` + `cms.yml` + `contract-test.yml` (intra-repo) + `secret-scan.yml` + `.gitleaksignore`
-- **Task 16:** Connect Vercel → Root Directory `apps/web`, build via `turbo run build --filter=@yesido/web`; port env vars from old project
-- **Task 17:** Railway → Build Command + Dockerfile Path `apps/cms/Dockerfile` (custom image with directus-sync); deploy; verify `/server/health`
-- **Task 18:** Smoke test both deploys; run intra-repo contract-test via workflow_dispatch
-- **Task 19:** Cutover — archive yesid.dev + yesid.dev-cms on GitHub; update memories
+- **Task 10:** Pre-flight: clean working tree · confirm `bun 1.3.11` + `node 22.x` or newer · commit any pending work on `feature/slice-18` · verify `.gitignore` won't block monorepo-level files
+- **Task 11:** `git mv` current yesid.dev root contents → `apps/web/` (`src/`, `static/`, `brand/`, `scripts/`, `tests/`, `package.json`, `tsconfig.json`, `svelte.config.js`, `vite.config.ts` if present, `playwright.config.ts`, `vitest.config.ts`, `components.json`, `eslint.config.js`, `bun.lock` → rename to `apps/web/bun.lock`, any root-level configs). Keep at repo root: `docs/`, `.github/`, `CLAUDE.md`, `AGENTS.md`, `README.md`, `.gitignore`
+- **Task 12:** `git subtree add --prefix apps/cms https://github.com/mgkdante/yesid.dev-cms.git main` (preserves yesid.dev-cms history inside apps/cms)
+- **Task 13:** Root `package.json` with `"workspaces": ["packages/*"]` (apps NOT workspace packages — app independence convention) + `turbo.json` + `.bun-version` (pin Bun 1.3.x); `bun install`; commit root `bun.lock`
+- **Task 14:** Create `packages/shared/` (types + Zod); move `apps/web/src/lib/types.ts` content → `packages/shared/src/types/content.ts`; update apps/web + apps/cms imports to consume `@yesido/shared`
+- **Task 15:** Rewrite `.github/workflows/`: `web.yml` + `cms.yml` + `contract-test.yml` (intra-repo now — both apps in same repo) + `secret-scan.yml` + `.gitleaksignore`. No cross-repo mirror workflows.
+- **Task 16:** **Existing** Vercel project (yesid.dev) → Settings → change Root Directory from root → `apps/web`; build via `turbo run build --filter=./apps/web`; env vars unchanged (already on project)
+- **Task 17:** **Existing** Railway service → Settings → Source → repo switch from `yesid.dev-cms` → `yesid.dev`; set Root Directory=`apps/cms`; switch from image-pull to Dockerfile-build (`apps/cms/Dockerfile` with directus-sync); Watch Paths=`/apps/cms/**`; deploy; verify `/server/health` + extension loaded
+- **Task 18:** Smoke test both deploys on `feature/slice-18` branch; run intra-repo contract-test via workflow_dispatch; verify web SSR + CMS health green
+- **Task 19:** Cutover — archive `mgkdante/yesid.dev-cms` on GitHub (history preserved in `apps/cms/`); update memory `project_slice_18.md` paths; yesid.dev stays live + active
 
 ### Phase 2 — CMS app foundations (Tasks 20–39)
 
@@ -235,7 +239,7 @@ Apply F1–F23 patterns to the live services port so it becomes the reference im
 ### 18c Acceptance
 
 - [ ] Probes P1–P9 documented in 18c research.md.
-- [ ] Monorepo consolidated (yesido-platform created + both subtrees imported).
+- [ ] Monorepo consolidated inside existing yesid.dev repo (root contents moved to apps/web; yesid.dev-cms subtree imported to apps/cms; yesid.dev-cms repo archived).
 - [ ] Vercel + Railway deploys green from new build roots.
 - [ ] directus-sync operational; `apps/cms/directus/**.json` committed; prod apply via workflow_dispatch green.
 - [ ] F1 Unicode fixed; F10–F12, F2, F3, F4, F5, F6, F7 (7 lib files), F8, F9, F13, F14, F15, F16/17/18, F19, F22, F23, F24 all delivered.
@@ -331,6 +335,29 @@ Apply F1–F23 patterns to the live services port so it becomes the reference im
 
 ---
 
+## 18l — CMS brand styling (⏸ planned)
+
+**Scope:** Apply yesid.dev brand to the Directus Data Studio admin UI. 0.5 session. Uses directus-sync authoring (D11) + asset pipeline (18d logo upload).
+
+**Artifacts:**
+- Logo + favicon uploaded to Directus via `apps/cms/fixtures/brand/` (consumed by 18d's migrate-assets).
+- `apps/cms/directus/settings.json` — `project_name`, `project_logo`, `public_background`, `public_note`, `default_theme_light`, `default_theme_dark`.
+- `apps/cms/directus/themes/yesid-light.json` + `apps/cms/directus/themes/yesid-dark.json` — custom themes matching yesid.dev accent + typography (Inter + JetBrains Mono where Directus Theme API allows custom-font-family).
+- Optional: `apps/cms/directus/flows/brand-welcome.json` for login-page note.
+
+**Acceptance:**
+- [ ] `cms.yesid.dev` login page shows yesid.dev logo + brand accent
+- [ ] Data Studio sidebar + primary buttons use yesid.dev accent colors
+- [ ] Typography matches where Theme API permits (font-family override)
+- [ ] Both light + dark themes shipped; default follows user's system preference
+- [ ] All styling authored via directus-sync (no custom extension) — re-deployable from JSON
+
+**Dependencies:** 18d (logo upload path) · 18j (polish base done).
+
+**Runs:** between 18j polish and 18k close.
+
+---
+
 ## 18j — Polish (⏸ planned)
 
 1 session. Editor UX + automation.
@@ -384,3 +411,6 @@ Ceremony + cleanup. 1 session.
 | 2026-04-24 | 18c re-plan + monorepo pivot (Turborepo) + D13/D14/D15 new | Brainstorming + 4-agent audit | Major amendment — see design spec changelog |
 | 2026-04-24 | Docs reorg: removed slice-level spec.md + handoff.md + research.md; whole plan now in this doc; sub-slices keep research + decisions only | Per-workflow owner directive | Structural |
 | 2026-04-24 | **D13 workspace tool amended: pnpm → Bun workspaces** (post P4/P6/P7/P9 probe completion). Owner directive: project is Bun-first throughout; single-tool dev ergonomics; Bun 1.3 already installed + GA on Vercel; Turborepo is package-manager-agnostic. Root `workspaces` field replaces `pnpm-workspace.yaml`; `bun install` + `bun.lock` replace pnpm equivalents. Fallback to pnpm documented as ~1hr reversible. Full rationale: [`18c-foundations/decisions.md § Amendments`](18c-foundations/decisions.md). | Bun-first consistency + no pnpm install pre-req + Vercel/Bun GA | D13 + Task 13 + Tech stack line |
+| 2026-04-24 | **Monorepo umbrella: yesido-platform new repo → existing yesid.dev repo**. yesid.dev IS the monorepo. Current root contents `git mv` → `apps/web/`; yesid.dev-cms subtree-imported to `apps/cms/`; yesid.dev-cms archived post-cutover (yesid.dev stays live). No new GitHub repo created. Tasks 10-19 rewritten: umbrella creation dropped (Task 10 now pre-flight checks); subtree import of yesid.dev web-side dropped (Task 11 now `git mv`); existing Vercel + Railway projects reconfigured in-place (Tasks 16 + 17) — no new project creation. | Simpler: no new repo; preserves yesid.dev domain↔name parity; preserves Vercel project ID; fewer migration artifacts | D12 + Phase 1 Tasks 10-19 + 18c branch + 18c acceptance |
+| 2026-04-24 | **D12 strict boundary → app independence convention.** Soft rule enforced by code review + natural separation (apps NOT workspace packages; cross-app imports need relative paths which catch in review). Dedicated CI check removed from Task 15 scope. `packages/shared` remains the only legitimate cross-app surface. | YAGNI on CI check; natural enforcement sufficient; Turborepo + separate package.json per app makes cross-imports ugly enough to catch in review | D12 + Task 15 + CONVENTIONS.md § 8.0 |
+| 2026-04-24 | **Added 18l sub-slice: CMS brand styling** (Data Studio theme matching yesid.dev brand). 0.5 session. Runs between 18j (polish) and 18k (close). Uses directus-sync authoring + 18d asset pipeline (logo upload). No new D-entries. | Owner directive: final polish to match brand across consumer site + CMS | Status table + dependency graph + sub-slice section + timeline |
