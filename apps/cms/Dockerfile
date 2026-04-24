@@ -13,13 +13,14 @@ FROM directus/directus:11.17.3
 USER root
 WORKDIR /directus
 
-# Upstream Directus image uses pnpm under corepack (not a monorepo
-# workspace concern — this is the image's internal package manager).
-# Note: pnpm does NOT support `--no-save` (that's an npm flag); `pnpm add`
-# always updates package.json. Harmless inside an immutable Docker layer.
-# Directus auto-loads the extension at boot from node_modules (type=endpoint,
-# host=^11.0.0, verified 2026-04-24 against Directus 11.17.3).
-RUN corepack enable \
- && pnpm add directus-extension-sync@3.0.6
+# Install the extension via npm. Using pnpm here fails with
+# ERR_PNPM_UNEXPECTED_STORE because the image's existing node_modules is
+# linked from /home/node/.local/share/pnpm/store/v10 (built as `node` user)
+# and running pnpm as `root` defaults to /root/.local/share/pnpm/store/v10.
+# npm install has no store-location semantics; drops the package into
+# /directus/node_modules where Directus 11 auto-discovers it via the
+# `directus:extension` manifest entry (type=endpoint, host=^11.0.0,
+# verified 2026-04-24 against Directus 11.17.3).
+RUN npm install --no-audit --no-fund --no-save directus-extension-sync@3.0.6
 
 USER node
