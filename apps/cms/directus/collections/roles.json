@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Administrator",
+    "icon": "verified",
+    "description": "$t:admin_description",
+    "parent": null,
+    "_syncId": "_sync_default_admin_role"
+  },
+  {
+    "name": "AI Editor",
+    "icon": "smart_toy",
+    "description": "For LLM/MCP clients (Claude Code, ChatGPT, Cursor). Read+Update on user collections only. No deletes. No system access.",
+    "parent": null,
+    "_syncId": "5fc8b311-90d4-48bb-b7e2-8ed498c583da"
+  }
+]

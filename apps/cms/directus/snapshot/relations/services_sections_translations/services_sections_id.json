@@ -1,0 +1,25 @@
+{
+  "collection": "services_sections_translations",
+  "field": "services_sections_id",
+  "related_collection": "services_sections",
+  "meta": {
+    "junction_field": "languages_code",
+    "many_collection": "services_sections_translations",
+    "many_field": "services_sections_id",
+    "one_allowed_collections": null,
+    "one_collection": "services_sections",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": "translations",
+    "sort_field": null
+  },
+  "schema": {
+    "table": "services_sections_translations",
+    "column": "services_sections_id",
+    "foreign_key_table": "services_sections",
+    "foreign_key_column": "id",
+    "constraint_name": "services_sections_translations_services_sections_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}
