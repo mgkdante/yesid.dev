@@ -197,7 +197,7 @@ Prompt draft lands in Task 35 (`directus/settings.json` authored).
 
 *Status: local research complete 2026-04-24; Vercel preview-deploy verification owner-gated (pending).*
 
-**Question:** Does Vercel correctly build `apps/web` from a Turborepo + pnpm-workspaces monorepo with workspace deps (`@yesido/shared`) resolved from `packages/shared`? Do env vars stay scoped so that `apps/cms/.env` can never leak?
+**Question:** Does Vercel correctly build `apps/web` from a Turborepo + pnpm-workspaces monorepo with workspace deps (`@repo/shared`) resolved from `packages/shared`? Do env vars stay scoped so that `apps/cms/.env` can never leak?
 
 #### Vercel's official monorepo story (verified via vercel.com/docs/monorepos/turborepo)
 
@@ -212,7 +212,7 @@ Vercel's Turborepo preset auto-configures every relevant field when you pick a R
 | Root Directory | **`apps/web`** |
 | Ignored Build Step | `npx turbo-ignore --fallback=HEAD^1` (skips builds when apps/web + its deps unchanged) |
 
-**Key mechanic:** Vercel runs the install step at the **monorepo root** (pnpm installs the entire workspace including `packages/shared`), then runs the build filtered to `apps/web`. This means `@yesido/shared` is resolved via pnpm's workspace linking (symlinks in `node_modules`), not re-published to npm.
+**Key mechanic:** Vercel runs the install step at the **monorepo root** (pnpm installs the entire workspace including `packages/shared`), then runs the build filtered to `apps/web`. This means `@repo/shared` is resolved via pnpm's workspace linking (symlinks in `node_modules`), not re-published to npm.
 
 #### Environment variable scoping (no leak risk)
 
@@ -238,7 +238,7 @@ Decision for D14 shape (subject to P9 verification):
 ```jsonc
 // packages/shared/package.json
 {
-  "name": "@yesido/shared",
+  "name": "@repo/shared",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -268,7 +268,7 @@ Decision for D14 shape (subject to P9 verification):
 
 #### Owner verification gate (Task 16 — not probe-blocking for phase entry)
 
-1. Create new Vercel project `yesido-platform-web` → import from `mgkdante/yesido-platform` (post Task 10 umbrella repo creation).
+1. Reconfigure **existing** yesid.dev Vercel project (no new project created — yesid.dev repo IS the monorepo; amended 2026-04-24).
 2. Configure Root Directory: `apps/web`. Accept Vercel's auto-detected Turborepo + SvelteKit defaults.
 3. Copy env vars from existing yesid.dev project (`vercel env pull` + `vercel env add` in new project, or dashboard bulk import).
 4. Trigger preview deploy from `feature/slice-18` branch.
@@ -353,7 +353,7 @@ The CLI (`directus-sync`) does **not** live in the Docker image. It runs from:
 #### Owner verification gate (Task 17 — extends P4 gate with monorepo path)
 
 1. **Before monorepo exists (optional sibling-repo P4 standalone verify):** put the Dockerfile at `yesid.dev-cms/Dockerfile`; Railway → Settings → Source → switch to Dockerfile build; trigger deploy; confirm `/server/health` green + `GET /extensions/registration/list` shows `directus-extension-sync` loaded. This validates P4 alone before committing to D12 pivot.
-2. **On monorepo consolidation branch (Task 17):** new Railway service points at `yesido-platform` repo → Root Directory=`apps/cms` → Watch Paths=`/apps/cms/**` → deploy from `feature/18c-foundations` branch → confirm `/server/health` green + extension loaded + CLI handshake (`bun x directus-sync@3 diff --config apps/cms/directus-sync.config.js`).
+2. **On monorepo consolidation branch (Task 17):** reconfigure **existing** Railway service → switch source repo from yesid.dev-cms to yesid.dev → Root Directory=`apps/cms` → Watch Paths=`/apps/cms/**` → switch to Dockerfile-build mode → deploy from `feature/slice-18` → confirm `/server/health` green + extension loaded + CLI handshake (`bun x directus-sync@3 diff --config apps/cms/directus-sync.config.js`).
 3. **Pre-cutover (Task 18):** smoke both deploys on consolidation branch against a staging env (non-prod Neon branch + separate R2 bucket if feasible).
 4. **Cutover (Task 19):** point prod Railway service at new repo; delete old Railway service after 7-day DNS cooling.
 
@@ -389,11 +389,11 @@ If Option A build context proves too narrow (e.g., future extension needs shared
 
 ---
 
-### P9 — pnpm workspace + `@yesido/shared` in SvelteKit + Bun
+### P9 — pnpm workspace + `@repo/shared` in SvelteKit + Bun
 
 *Status: design-pattern research complete 2026-04-24; full integration verifies in-situ at Task 14 (packages/shared extraction).*
 
-**Question:** Does `@yesido/shared` (workspace package) import cleanly into `apps/web` (SvelteKit 2 + Vite 7 + Bun 1.3) and `apps/cms` (Bun script runtime)? Does `svelte-check` + `vitest` + `bun run build` all resolve workspace TS without a compile step?
+**Question:** Does `@repo/shared` (workspace package) import cleanly into `apps/web` (SvelteKit 2 + Vite 7 + Bun 1.3) and `apps/cms` (Bun script runtime)? Does `svelte-check` + `vitest` + `bun run build` all resolve workspace TS without a compile step?
 
 #### Local environment discovery (2026-04-24)
 
@@ -410,17 +410,17 @@ This is a one-time install, documented here so it doesn't bite at Task 13 runtim
 #### Workspace shape (locked by D13 + D14)
 
 ```
-yesido-platform/
+yesid.dev/
 ├── pnpm-workspace.yaml        # packages: ['apps/*', 'packages/*']
 ├── package.json               # { "packageManager": "pnpm@10.x", "private": true }
 ├── turbo.json
 ├── apps/
 │   ├── web/ (SvelteKit + Vite)
-│   │   └── package.json       # "@yesido/shared": "workspace:*"
+│   │   └── package.json       # "@repo/shared": "workspace:*"
 │   └── cms/ (Directus config + Bun scripts)
-│       └── package.json       # "@yesido/shared": "workspace:*"
+│       └── package.json       # "@repo/shared": "workspace:*"
 └── packages/
-    └── shared/                # name: "@yesido/shared"
+    └── shared/                # name: "@repo/shared"
         ├── package.json
         ├── tsconfig.json (optional)
         └── src/
@@ -433,7 +433,7 @@ yesido-platform/
 
 ```jsonc
 {
-  "name": "@yesido/shared",
+  "name": "@repo/shared",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -457,7 +457,7 @@ yesido-platform/
 
 | Consumer | How TS workspace import resolves |
 |---|---|
-| `apps/web` (SvelteKit 2 + Vite 7 build) | pnpm symlinks `apps/web/node_modules/@yesido/shared` → `packages/shared/`. Vite reads `exports` → loads `src/index.ts`. Vite's built-in esbuild transpiles TS on-the-fly (dev) + at build (prod). No extra config needed. |
+| `apps/web` (SvelteKit 2 + Vite 7 build) | pnpm symlinks `apps/web/node_modules/@repo/shared` → `packages/shared/`. Vite reads `exports` → loads `src/index.ts`. Vite's built-in esbuild transpiles TS on-the-fly (dev) + at build (prod). No extra config needed. |
 | `apps/web` (vitest) | Inherits Vite config; same resolution path. No setup changes. |
 | `apps/web` (`svelte-check` / tsc) | TS's `moduleResolution: "bundler"` (SvelteKit default) respects `exports` field. Walks symlink → types resolve from source `.ts` files. No build artifacts needed. |
 | `apps/cms` (Bun scripts) | Bun 1.3+ handles pnpm workspace symlinks + `exports` field natively. TS transpiled on-import. No setup changes. |
@@ -469,7 +469,7 @@ All four boundaries consume TS source directly — zero build output. This align
 
 SvelteKit 2's generated `tsconfig.json` extends `.svelte-kit/tsconfig.json` which already sets `moduleResolution: "bundler"` and `allowImportingTsExtensions: true`. Workspace TS imports work with no edits.
 
-**Gotcha to watch for at Task 14:** If `svelte-check` emits `TS2742: The inferred type of 'X' cannot be named without a reference to '@yesido/shared'` — usually caused by `"composite": true` expectations in upstream types. Fix: add `packages/shared/tsconfig.json` with `"composite": true` + reference it from web's tsconfig via `"references": [{ "path": "../../packages/shared" }]`. Additive; not a D14 revert.
+**Gotcha to watch for at Task 14:** If `svelte-check` emits `TS2742: The inferred type of 'X' cannot be named without a reference to '@repo/shared'` — usually caused by `"composite": true` expectations in upstream types. Fix: add `packages/shared/tsconfig.json` with `"composite": true` + reference it from web's tsconfig via `"references": [{ "path": "../../packages/shared" }]`. Additive; not a D14 revert.
 
 #### Considered alternative: Bun workspaces (rejected)
 
@@ -477,7 +477,7 @@ Since Bun is the day-to-day runtime and pnpm is not installed, we evaluated usin
 
 **Why rejected for slice-18:**
 - Vercel's Turborepo preset is pnpm-first; bun-workspace support is newer + less battle-tested for deployment.
-- Template-extraction post-Slice-18 (Q3=A: `yesito/directus-sveltekit-pro`) lands in broader community where pnpm monorepos are the de-facto default.
+- Template-extraction post-Slice-18 (Q3=A: `<your-org>/directus-sveltekit-pro`) lands in broader community where pnpm monorepos are the de-facto default.
 - Turborepo's remote cache integration is best-documented with pnpm.
 
 **Why keep it on the table:** Bun-first project + single-tool ergonomics are real. If pnpm install ever becomes painful at Vercel build time, pivoting to Bun workspaces is an ~1-hour refactor (root `package.json` `workspaces` field + delete `pnpm-workspace.yaml` + regenerate lockfile). Document as a **reversible fallback** in rollback.md (Task 53).
@@ -487,7 +487,7 @@ Since Bun is the day-to-day runtime and pnpm is not installed, we evaluated usin
 - **pnpm workspace + TS source + modern `exports` field: GREEN PATTERN.** Canonical shape; thousands of real-world monorepos ship it; SvelteKit/Vite/Bun all resolve it without compile step.
 - **No `dist/` build output needed:** reduces tooling surface + keeps packages/shared edits instant-reflected across apps (no rebuild lag).
 - **Env gap: pnpm not installed locally.** Minor — one-line install at Task 13 start. Not a D14 threat.
-- **Full integration verification: in-situ at Task 14** when `apps/web/src/lib/types.ts` moves into `packages/shared/src/types/content.ts` and apps/web imports flip to `@yesido/shared`. That's the definitive test.
+- **Full integration verification: in-situ at Task 14** when `apps/web/src/lib/types.ts` moves into `packages/shared/src/types/content.ts` and apps/web imports flip to `@repo/shared`. That's the definitive test.
 
 #### Decision (interim)
 
@@ -496,7 +496,7 @@ Since Bun is the day-to-day runtime and pnpm is not installed, we evaluated usin
 Fallback escalation ladder (each step additive; no D14 revert):
 
 1. `svelte-check` emits cross-package type-inference errors → add `tsconfig composite: true` + references.
-2. Vite dev HMR flaky on packages/shared edits → add `optimizeDeps.include: ['@yesido/shared']` in `apps/web/vite.config.ts`.
+2. Vite dev HMR flaky on packages/shared edits → add `optimizeDeps.include: ['@repo/shared']` in `apps/web/vite.config.ts`.
 3. Production bundle fails to tree-shake Zod → add `packages/shared/tsconfig.json` with `"noEmit": false` + `"declaration": true` + emit to `dist/` + flip `exports` to compiled paths.
 4. Bun workspaces simpler end-to-end → pivot workspace manager (documented in rollback.md).
 
@@ -505,7 +505,7 @@ D14 reverts only if the whole "cross-app shared package" model collapses (very u
 #### Open follow-ups
 
 - `pnpm@10` pinned in root `packageManager` field (Task 13). **SUPERSEDED by 2026-04-24 amendment below — see Bun workspaces section.**
-- `apps/web/package.json` dep: `"@yesido/shared": "workspace:*"` (Task 14) — unchanged under Bun.
+- `apps/web/package.json` dep: `"@repo/shared": "workspace:*"` (Task 14) — unchanged under Bun.
 - If svelte-check struggles at Task 14, land `packages/shared/tsconfig.json` + `"composite": true` + references proactively.
 
 ---
@@ -529,7 +529,7 @@ D14 reverts only if the whole "cross-app shared package" model collapses (very u
 **What does NOT change:**
 
 - `packages/shared/package.json` shape (TS source + `exports` + Zod dep).
-- `apps/web/package.json` + `apps/cms/package.json` consume `"@yesido/shared": "workspace:*"` (Bun supports `workspace:*` since 1.1).
+- `apps/web/package.json` + `apps/cms/package.json` consume `"@repo/shared": "workspace:*"` (Bun supports `workspace:*` since 1.1).
 - SvelteKit + Vite + vitest + svelte-check + Bun test resolution — all identical under Bun workspaces.
 - Turborepo caching (`turbo run build`) is package-manager-agnostic; env/outputs config same.
 - Dockerfile internal package manager (`apps/cms/Dockerfile` uses `pnpm add --prod --no-save directus-extension-sync` via corepack inside the Directus image) — unrelated to the monorepo workspace tool; stays as-is.
@@ -552,7 +552,7 @@ Replaces prior wording "Root `package.json` + `pnpm-workspace.yaml` + `turbo.jso
 **Revised fallback escalation ladder (same steps, last-step direction flipped):**
 
 1. `tsc` cross-package inference errors → `tsconfig composite: true` + references.
-2. Vite HMR flaky → `optimizeDeps.include: ['@yesido/shared']`.
+2. Vite HMR flaky → `optimizeDeps.include: ['@repo/shared']`.
 3. Bundler tree-shake issues → emit `dist/` from `packages/shared/tsconfig.json`.
 4. Last resort → pivot back to pnpm workspaces (reverse of today's pivot; ~1hr).
 

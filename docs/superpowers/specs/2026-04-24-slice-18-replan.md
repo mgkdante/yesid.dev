@@ -42,7 +42,7 @@ Slice 18 migrates yesid.dev from a static TS content layer to a self-hosted Dire
 
 **Remaining work:** 9 sub-slices (18c–18k), 12–15 sessions estimated. Each follows the canonical pattern (snapshot + seed + adapter port + single PR with scoped commits) established in 18c.
 
-**Template deliverable post-Slice-18:** `yesito/directus-sveltekit-pro` monorepo template extracted from yesido-platform after 18k closes.
+**Template deliverable post-Slice-18:** `<your-org>/directus-sveltekit-pro` monorepo template extracted from yesid.dev after 18k closes (generic @repo/* package names; cloners rebrand via README).
 
 ---
 
@@ -275,14 +275,14 @@ Dependency graph:
 
 Output committed to `apps/web/docs/slices/slice-18/18c-foundations/research.md`.
 
-P1 Global Draft × Group interfaces · P2 `/shares` endpoint · P3 Block Editor JSON shape · P4 directus-sync on Railway · P5 MCP system prompt scope · P6 Turborepo + Vercel monorepo deploy · P7 Railway monorepo deploy + directus-sync Dockerfile · P9 **Bun workspace** + `@yesido/shared` resolution in SvelteKit + Bun (amended from pnpm 2026-04-24). (See Section 10 for full probe specs.)
+P1 Global Draft × Group interfaces · P2 `/shares` endpoint · P3 Block Editor JSON shape · P4 directus-sync on Railway · P5 MCP system prompt scope · P6 Turborepo + Vercel monorepo deploy · P7 Railway monorepo deploy + directus-sync Dockerfile · P9 **Bun workspace** + `@repo/shared` resolution in SvelteKit + Bun (amended from pnpm 2026-04-24). (See Section 10 for full probe specs.)
 
 ### 6.2 Phase 1 — Monorepo consolidation (amended 2026-04-24: yesid.dev IS the umbrella)
 
 1. Pre-flight checks: Bun ≥1.3, Node ≥22, clean working tree on `feature/slice-18`.
 2. `git mv` current yesid.dev root contents → `apps/web/`. Keeps at repo root: `docs/`, `.github/`, `CLAUDE.md`, `AGENTS.md`, `README.md`, `.gitignore` (plus new monorepo files added in step 5). No new GitHub repo; no subtree import of yesid.dev (it IS the repo).
 3. `git subtree add --prefix apps/cms https://github.com/mgkdante/yesid.dev-cms.git main` — preserves yesid.dev-cms history inside apps/cms.
-4. Create `packages/shared/`: move `apps/web/src/lib/types.ts` content → `packages/shared/src/types/content.ts`; both apps import `@yesido/shared`.
+4. Create `packages/shared/`: move `apps/web/src/lib/types.ts` content → `packages/shared/src/types/content.ts`; both apps import `@repo/shared`.
 5. Root `package.json` with `"workspaces": ["packages/*"]` (apps NOT workspace packages — app independence convention) + `turbo.json` + `.bun-version` + updated `.gitignore`; `bun install` creates root `bun.lock`.
 6. Rewrite CI workflows under `.github/workflows/`: `web.yml` · `cms.yml` · `contract-test.yml` (intra-repo — both apps in same repo now) · `secret-scan.yml`. No cross-repo mirror workflows needed.
 7. **Existing** Vercel project (yesid.dev) → Settings → change Root Directory to `apps/web` + build command `turbo run build --filter=./apps/web`. Env vars unchanged.
@@ -310,7 +310,7 @@ P1 Global Draft × Group interfaces · P2 `/shares` endpoint · P3 Block Editor 
 ### 6.4 Phase 3 — Web app foundations
 
 (F13 consumer) `p-queue` + fetchRetry wrapping `createDirectus(...).globals.fetch`. `{intervalCap: 10, interval: 500}` + 429-aware retry.
-(F3) `parsePort` symmetry — route Directus responses through same Zod gate static uses. Import `ServiceSchema` etc. from `@yesido/shared/schemas`.
+(F3) `parsePort` symmetry — route Directus responses through same Zod gate static uses. Import `ServiceSchema` etc. from `@repo/shared/schemas`.
 (F4) Named ContentPort interfaces — extract from `typeof import(...)` bindings into `packages/shared/types/content.ts`.
 (F5) `PreviewContext` param — add `ctx?: PreviewContext` to every ContentPort method. Static ignores; Directus branches on `ctx?.shareToken`.
 (F6) Refactor `setup.data.ts` mock scope — target `./index`, not `./directus`. Kills `vi.importActual` pattern propagation.
@@ -474,7 +474,7 @@ Ceremony + cleanup. 1 session.
 - K2 Delete static modules — `apps/web/src/lib/content/*.ts` + `apps/web/src/content/*.md` all gone. `packages/shared/types/content.ts` (named-interface extract) stays. Retires `fixture-drift.test.ts`.
 - K3 folded into 18c (directus-sync + `directus/permissions.json` already replaces contract-test shell loop).
 - K4 Template extraction plan — write `apps/web/docs/superpowers/specs/2026-04-24-template-extraction.md`. Actual extraction post-Slice-18.
-- K5 Memory + PR + Vercel retire — update `project_slice_18.md` · add `project_completed_slices.md` row · open `feature/slice-18` PR on yesido-platform against `main` · merge after Codex review · retire old yesid-dev-cms Vercel project after 7-day DNS cooling.
+- K5 Memory + PR + Vercel retire — update `project_slice_18.md` · add `project_completed_slices.md` row · open `feature/slice-18` PR on yesid.dev against `main` · merge after Codex review · retire old yesid-dev-cms Vercel project after 7-day DNS cooling.
 - K6 Gitleaks CI job with allowlist for known CI creds.
 
 ---
@@ -485,7 +485,7 @@ Committed to `apps/web/docs/slices/slice-18/CONVENTIONS.md` during 18c. Contents
 
 ### 8.0 App independence — convention (leading section, amended 2026-04-24: "strict boundary + CI check" → "convention + code review")
 
-> `apps/web` and `apps/cms` are separate concerns inside the monorepo. The ONLY cross-app coupling is: (1) `ContentAdapter` TS interface (apps/web/src/lib/adapters/types.ts), (2) directus-sync schema (apps/cms/directus/**.json), (3) shared types via `@yesido/shared` workspace package.
+> `apps/web` and `apps/cms` are separate concerns inside the monorepo. The ONLY cross-app coupling is: (1) `ContentAdapter` TS interface (apps/web/src/lib/adapters/types.ts), (2) directus-sync schema (apps/cms/directus/**.json), (3) shared types via `@repo/shared` workspace package.
 >
 > **Enforcement is by convention + natural separation, not dedicated CI:** apps are NOT workspace packages (only `packages/*` is), so cross-app imports require relative paths (`../cms/...`) that are ugly and catch in code review. No dedicated import-graph check maintained; YAGNI.
 >
@@ -530,18 +530,18 @@ For every user collection:
 #!/usr/bin/env bun
 import { createClient, getAdminToken } from './lib/sdk';           // CMS-local helper
 import { loadFixture } from './lib/read-fixture';
-import { ServiceSchema } from '@yesido/shared';                    // shared Zod schema
+import { ServiceSchema } from '@repo/shared';                    // shared Zod schema
 import { loadSkeletonRecords, loadFullData } from './lib/loaders';
 import { parseErrors, DirectusError } from './lib/catch-error';
 import { logger } from './lib/logger';
-import type { Service } from '@yesido/shared';                     // shared domain type
+import type { Service } from '@repo/shared';                     // shared domain type
 // ... pure transform helpers ...
 export function to<Collection>Row(item: Service): <CollectionRow> { ... }
 export async function seed<Collection>(items, opts) { ... }
 if (import.meta.main) { main().catch(...) }
 ```
 
-**Rule:** `@yesido/shared` imports are **types + Zod schemas only**. Runtime helpers (SDK client construction, auth, logging, pagination) live in `apps/cms/scripts/lib/` — app-local, not cross-app. Same rule applies on the web side: adapter helpers live in `apps/web/src/lib/`, not in `packages/shared`.
+**Rule:** `@repo/shared` imports are **types + Zod schemas only**. Runtime helpers (SDK client construction, auth, logging, pagination) live in `apps/cms/scripts/lib/` — app-local, not cross-app. Same rule applies on the web side: adapter helpers live in `apps/web/src/lib/`, not in `packages/shared`.
 
 Contract: upsert-by-id (not nuke) · `--dry-run` · `--reset` for full delete+recreate · skeleton-records-then-full-data for M2M circular FKs · idempotent · fixture-Zod-validated at load · pure helpers exported for unit tests.
 
@@ -653,7 +653,7 @@ Original spec Q5–Q7 supersession:
 | **P6** | Turborepo + Vercel monorepo deploy — `apps/web` build root + env scoping | D13 viability for web | Vercel project → Root Directory `apps/web`; test preview; verify env isolation |
 | **P7** | Railway monorepo deploy — `apps/cms/Dockerfile` + directus-sync extension load | D13 + D11 viability | Railway service → Build Command + Dockerfile Path `apps/cms/Dockerfile`; deploy; smoke `/schema/apply` |
 | **P8** | AVIF support — `?format=avif` returns AVIF or 400? | Q10 preset strategy | Curl during 18d; if AVIF works, add AVIF preset variant |
-| **P9** | **Bun workspace** + `@yesido/shared` import graph in SvelteKit + Bun runtimes (amended from pnpm 2026-04-24) | D13 + D14 workability | Test import in `apps/web` from `packages/shared`; verify `svelte-check` + `vitest` + `bun run build` + deployed bundle all resolve |
+| **P9** | **Bun workspace** + `@repo/shared` import graph in SvelteKit + Bun runtimes (amended from pnpm 2026-04-24) | D13 + D14 workability | Test import in `apps/web` from `packages/shared`; verify `svelte-check` + `vitest` + `bun run build` + deployed bundle all resolve |
 
 All probes output to `apps/web/docs/slices/slice-18/18c-foundations/research.md` with findings + decisions.
 

@@ -160,7 +160,7 @@ Full table at design spec [`§ 11`](../../superpowers/specs/2026-04-24-slice-18-
 | **Task 1** | P4 — directus-sync on Railway via custom Dockerfile | ✅ blocking (D3 + D11) |
 | **Task 2** | P6 — Turborepo + Vercel monorepo deploy | ✅ blocking (D13) |
 | **Task 3** | P7 — Railway monorepo + directus-sync extension | ✅ blocking (D13 + D11) |
-| **Task 4** | P9 — **Bun workspace** + @yesido/shared in SvelteKit + Bun (amended from pnpm 2026-04-24) | ✅ blocking (D14) |
+| **Task 4** | P9 — **Bun workspace** + @repo/shared in SvelteKit + Bun (amended from pnpm 2026-04-24) | ✅ blocking (D14) |
 | **Task 5** | P1 — Global Draft v11.16 × Group interfaces (bug #26890) | no |
 | **Task 6** | P2 — `/shares` endpoint behavior (TTL, password, role inheritance) | no |
 | **Task 7** | P3 — Block Editor JSON output shape + block type catalog | no |
@@ -177,7 +177,7 @@ Convert existing yesid.dev repo to monorepo umbrella: `git mv` current root cont
 - **Task 11:** `git mv` current yesid.dev root contents → `apps/web/` (`src/`, `static/`, `brand/`, `scripts/`, `tests/`, `package.json`, `tsconfig.json`, `svelte.config.js`, `vite.config.ts` if present, `playwright.config.ts`, `vitest.config.ts`, `components.json`, `eslint.config.js`, `bun.lock` → rename to `apps/web/bun.lock`, any root-level configs). Keep at repo root: `docs/`, `.github/`, `CLAUDE.md`, `AGENTS.md`, `README.md`, `.gitignore`
 - **Task 12:** `git subtree add --prefix apps/cms https://github.com/mgkdante/yesid.dev-cms.git main` (preserves yesid.dev-cms history inside apps/cms)
 - **Task 13:** Root `package.json` with `"workspaces": ["apps/*", "packages/*"]` (apps in workspaces for Turborepo discovery; independence via `"private": true` + no cross-app deps + code review) + `turbo.json` + `.bun-version` (pin Bun 1.3.x); `bun install`; commit root `bun.lock`
-- **Task 14:** Create `packages/shared/` (types + Zod); move `apps/web/src/lib/types.ts` content → `packages/shared/src/types/content.ts`; update apps/web + apps/cms imports to consume `@yesido/shared`
+- **Task 14:** Create `packages/shared/` (types + Zod); move `apps/web/src/lib/types.ts` content → `packages/shared/src/types/content.ts`; update apps/web + apps/cms imports to consume `@repo/shared`
 - **Task 15:** Rewrite `.github/workflows/`: `web.yml` + `cms.yml` + `contract-test.yml` (intra-repo now — both apps in same repo) + `secret-scan.yml` + `.gitleaksignore`. No cross-repo mirror workflows.
 - **Task 16:** **Existing** Vercel project (yesid.dev) → Settings → change Root Directory from root → `apps/web`; build via `turbo run build --filter=./apps/web`; env vars unchanged (already on project)
 - **Task 17:** **Existing** Railway service → Settings → Source → repo switch from `yesid.dev-cms` → `yesid.dev`; set Root Directory=`apps/cms`; switch from image-pull to Dockerfile-build (`apps/cms/Dockerfile` with directus-sync); Watch Paths=`/apps/cms/**`; deploy; verify `/server/health` + extension loaded
@@ -233,8 +233,8 @@ Apply F1–F23 patterns to the live services port so it becomes the reference im
 - **Task 53:** Write `apps/web/docs/ops/rollback.md` — schema revert · seed revert · data loss (Neon PITR) · port flip revert recipes
 - **Task 54:** Write `apps/cms/scripts/scaffold-port.ts` — generates port boilerplate (fixture + test + adapter + contract test) from collection name argument
 - **Task 55:** Apply D-entry amendments to slice-level this doc (D3 · D4 · D5 · D6 · D8 · D9 · D10 · D11 · D12 · D13 · D14 · D15) + Amendments log row; verify matches design spec
-- **Task 56:** Update memory `project_slice_18.md` — monorepo pivot executed, directus-sync adopted, paths updated (yesid.dev → yesido-platform/apps/web)
-- **Task 57:** Open 18c PR on yesido-platform; CI green; owner review; merge; update handoff in 18c-foundations/decisions.md with merge SHA
+- **Task 56:** Update memory `project_slice_18.md` — monorepo pivot executed, directus-sync adopted, paths updated (content moved yesid.dev/* → yesid.dev/apps/web/*; repo stays yesid.dev)
+- **Task 57:** Open 18c PR on yesid.dev; CI green; owner review; merge; update handoff in 18c-foundations/decisions.md with merge SHA
 
 ### 18c Acceptance
 

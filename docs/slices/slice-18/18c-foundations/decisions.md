@@ -58,7 +58,7 @@
 
 `packages/shared` ships TS source directly (no build step); SvelteKit's Vite 7 + Bun both handle workspace TS. Fallback if Vite refuses: add `tsc --build` emit (additive — no D13/D14 revert).
 
-**Owner verification gate (Task 16 — not blocking phase entry):** Create `yesido-platform-web` Vercel project post Task 10 umbrella creation → set Root Directory=`apps/web` → port env vars from existing yesid.dev project → preview deploy on consolidation branch → confirm SSR green + no env leak. Keep old project alive until Task 19 cutover for zero-downtime DNS switch.
+**Owner verification gate (Task 16 — not blocking phase entry):** Reconfigure **existing** Vercel project (yesid.dev) → Settings → change Root Directory from root to `apps/web`; env vars unchanged (already on project). Preview deploy on `feature/slice-18` → confirm SSR green + no env leak. No new Vercel project created; project ID + domain unchanged.
 
 **Full research notes:** [`research.md § P6`](research.md#p6--turborepo--vercel-monorepo-deploy).
 
@@ -70,7 +70,7 @@ Directus-sync CLI runs in CI (`pnpm dlx directus-sync@3 push`) and locally (`pnp
 
 P7's Railway verification is a **superset** of P4's verification — if P4 Railway deploy works on the sibling repo, P7's monorepo path is mechanically equivalent (just different build context root).
 
-**Owner verification gate (Task 17 — not blocking phase entry):** New Railway service pointing at `yesido-platform` repo → Root=`apps/cms` → deploy from consolidation branch → confirm `/server/health` + extension loaded + CLI handshake.
+**Owner verification gate (Task 17 — not blocking phase entry):** **Existing** Railway service → Settings → Source → switch repo from `yesid.dev-cms` to `yesid.dev` + Root Directory=`apps/cms` + switch from image-pull to Dockerfile build → deploy from `feature/slice-18` → confirm `/server/health` + extension loaded + CLI handshake.
 
 **Full research notes:** [`research.md § P7`](research.md#p7--railway-monorepo-deploy--directus-sync-extension).
 
@@ -78,7 +78,7 @@ P7's Railway verification is a **superset** of P4's verification — if P4 Railw
 
 **Decision (2026-04-24, deferred to 18d Task 2-3):** Live CMS has 1 file (46-byte R2 smoke-test `.txt`) — no images to probe AVIF against. Deferral confirmed correct per design spec § D9 ("probe P8 in 18d"). At first image upload in 18d: `curl -I` with `?format=avif`; if `Content-Type: image/avif` → add AVIF variants to `seed-presets.ts`; if 400 → WebP-only stack, revisit post-Directus-12.
 
-### P9 — Bun workspace + @yesido/shared in SvelteKit + Bun
+### P9 — Bun workspace + @repo/shared in SvelteKit + Bun
 
 **Decision (2026-04-24, amended to Bun workspaces on owner directive):** **Proceed with D13 (Turborepo + Bun workspaces) and D14 (packages/shared as TS source + Zod).** `packages/shared` ships TS source directly via modern `exports` field; no `dist/` build step. SvelteKit 2 + Vite 7 + Bun 1.3 all resolve workspace-linked TS natively (Bun's symlink-free module resolver handles `workspace:*` protocol; Vite inherits Bun's resolution at build time; vitest + svelte-check share the tooling chain).
 
@@ -89,13 +89,13 @@ P7's Railway verification is a **superset** of P4's verification — if P4 Railw
 - Vercel + Turborepo both support Bun workspaces (Bun install auto-detected from `bun.lock`; `turbo run build` is package-manager-agnostic).
 - `workspace:*` protocol supported in Bun 1.1+.
 
-**Considered alternative (rejected):** pnpm workspaces. Pnpm's maturity and Turborepo-docs-default weight did not outweigh the consistency cost of introducing a second package manager to an otherwise Bun-native project. Template-extraction post-Slice-18 (`yesito/directus-sveltekit-pro`) ships with whichever workspace tool we finalize here; Bun monorepos are increasingly common in 2026 and Vercel's Bun support is GA.
+**Considered alternative (rejected):** pnpm workspaces. Pnpm's maturity and Turborepo-docs-default weight did not outweigh the consistency cost of introducing a second package manager to an otherwise Bun-native project. Template-extraction post-Slice-18 (`<your-org>/directus-sveltekit-pro`) ships with whichever workspace tool we finalize here; Bun monorepos are increasingly common in 2026 and Vercel's Bun support is GA.
 
 **Root shape locked:**
 ```jsonc
 // package.json (root)
 {
-  "name": "yesido-platform",
+  "name": "yesid-dev",
   "private": true,
   "workspaces": ["apps/*", "packages/*"]
 }
@@ -105,7 +105,7 @@ No `pnpm-workspace.yaml`. No `packageManager` field (Bun version pinned via `.bu
 **Fallback escalation ladder if in-situ verification at Task 14 surfaces issues (each additive; no D13/D14 revert):**
 
 1. `tsc` cross-package inference errors → add `tsconfig composite: true` + project references.
-2. Vite HMR flaky on packages/shared edits → `optimizeDeps.include: ['@yesido/shared']` in `apps/web/vite.config.ts`.
+2. Vite HMR flaky on packages/shared edits → `optimizeDeps.include: ['@repo/shared']` in `apps/web/vite.config.ts`.
 3. Bundler tree-shake issues → emit `dist/` from `packages/shared/tsconfig.json` + flip `exports` to compiled paths.
 4. Last resort → pivot to pnpm workspaces (`bun install` → `pnpm install` + add `pnpm-workspace.yaml`; ~1hr; documented as reverse of today's pivot).
 
