@@ -1,20 +1,27 @@
 // directus-sync CLI config. See: https://github.com/tractr/directus-sync
 //
+// Why .cjs (not .js)?  apps/cms/package.json declares "type": "module", which
+// makes .js files ESM. directus-sync's loader doesn't unwrap `.default` from
+// ESM imports — an ESM config resolves with all fields as undefined. .cjs
+// forces CommonJS regardless of package.json type (verified 2026-04-24
+// against directus-sync@3.5.1).
+//
 // Usage:
 //   cd apps/cms
-//   export DIRECTUS_ADMIN_TOKEN=$(op read op://yesid-dev/cms-admin/token)
-//   bun run sync:diff       # preview changes (local ↔ remote)
-//   bun run sync:pull       # overwrite local with remote state
-//   bun run sync:push       # overwrite remote with local state (prod — gated)
+//   $env:DIRECTUS_ADMIN_TOKEN = "<token>"            # PowerShell
+//   export DIRECTUS_ADMIN_TOKEN="<token>"            # bash
+//   bun run sync:diff                                # preview changes
+//   bun run sync:pull                                # overwrite local with remote
+//   bun run sync:push                                # overwrite remote with local (prod — gated)
 //
 // dumpPath is relative to this config file (apps/cms/). Files land at
 // apps/cms/directus/**/*.json per 18c plan target layout (D3 amendment).
 
 /** @type {import('directus-sync').Config} */
-export default {
-	// Connection. CLI's own env parsing reads DIRECTUS_URL + DIRECTUS_TOKEN;
-	// we also accept DIRECTUS_ADMIN_TOKEN as an alias so seed scripts + sync
-	// CLI share one token env across ops.
+module.exports = {
+	// Connection. The CLI's native env parsing reads DIRECTUS_URL +
+	// DIRECTUS_TOKEN; we also accept DIRECTUS_ADMIN_TOKEN as an alias so
+	// seed scripts + sync CLI share one token env.
 	directusUrl: process.env.DIRECTUS_URL || 'https://cms.yesid.dev',
 	directusToken:
 		process.env.DIRECTUS_ADMIN_TOKEN || process.env.DIRECTUS_TOKEN,
@@ -27,7 +34,7 @@ export default {
 
 	// Features — all enabled; directus-sync tracks schema + roles +
 	// permissions + policies + flows + operations + settings + translations
-	// + presets + panels + dashboards by default. We leave webhooks off
+	// + presets + panels + dashboards by default. Webhooks disabled
 	// (deprecated in favor of flows per Directus 11).
 	flows: { enabled: true, path: 'flows' },
 	operations: { enabled: true, path: 'operations' },
@@ -41,6 +48,6 @@ export default {
 	translations: { enabled: true, path: 'translations' },
 	webhooks: { enabled: false },
 
-	// Less noise on CI; enable locally via DEBUG=1 bun run sync:pull.
+	// Less noise on CI; enable locally via DEBUG=1.
 	debug: Boolean(process.env.DEBUG),
 };
