@@ -1,10 +1,14 @@
+# Monorepo-wide ignores
 node_modules/
-/.svelte-kit
-/build
-.output
-.vercel
-.netlify
-.wrangler
+**/.svelte-kit/
+**/build/
+**/.output/
+**/.vercel/
+**/.netlify/
+**/.wrangler/
+**/dist/
+**/test-results/
+**/.turbo/
 .env
 .env.*
 !.env.example
@@ -12,7 +16,6 @@ node_modules/
 *.log
 .DS_Store
 Thumbs.db
-dist/
 bun.lockb
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
@@ -24,4 +27,4 @@ vite.config.ts.timestamp-*
 Weather_API_Key.txt
 
 # SVGO source backups kept local only — committed file is the optimized source of truth
-static/images/*.source.svg
+apps/web/static/images/*.source.svg
