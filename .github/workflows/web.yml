@@ -1,0 +1,49 @@
+name: web
+
+# CI for apps/web (SvelteKit consumer deployed to Vercel).
+# Runs check + test + build via turbo. Filters to apps/web + packages/shared
+# changes; skips on cms-only changes.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - 'packages/shared/**'
+      - '.github/workflows/web.yml'
+      - 'package.json'
+      - 'bun.lock'
+      - 'turbo.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - 'packages/shared/**'
+      - '.github/workflows/web.yml'
+      - 'package.json'
+      - 'bun.lock'
+      - 'turbo.json'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install dependencies (monorepo root)
+        run: bun install --frozen-lockfile
+
+      - name: Type check (svelte-kit sync + svelte-check)
+        run: bun x turbo run check --filter=@repo/web
+
+      - name: Unit tests
+        run: bun x turbo run test --filter=@repo/web
+
+      - name: Build
+        run: bun x turbo run build --filter=@repo/web
