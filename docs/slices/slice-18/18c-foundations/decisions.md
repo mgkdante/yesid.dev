@@ -76,7 +76,22 @@ P7's Railway verification is a **superset** of P4's verification — if P4 Railw
 
 ### P9 — pnpm workspace + @yesido/shared in SvelteKit + Bun
 
-**Decision:** TBD. If fails → fallback to per-app codegen; revert D14.
+**Interim decision (2026-04-24 — design-pattern research complete, in-situ verification at Task 14):** **Proceed with D14.** `packages/shared` ships TS source directly via modern `exports` field; no `dist/` build step. SvelteKit 2 + Vite 7 + Bun 1.3 all resolve workspace-linked TS natively through pnpm symlinks (vitest + svelte-check inherit the resolver). Zod is the sole runtime dep.
+
+**Environment discovery:** pnpm is NOT installed locally (Bun 1.3.11 + Node 25.9 present). Owner installs pnpm@10 globally before Task 13; pin version in root `package.json` `packageManager` field for CI parity. One-time setup, not a D14 threat.
+
+**Considered alternative (rejected for slice-18, held as reversible fallback):** Bun workspaces. Rejected because (a) Vercel's Turborepo preset is pnpm-first, (b) template extraction lands in the pnpm-default community, (c) Turborepo remote-cache docs optimize for pnpm. Kept as ~1-hour rollback path (delete pnpm-workspace.yaml + root `workspaces` field + regenerate lockfile) if pnpm ever becomes painful at Vercel build time.
+
+**Fallback escalation ladder if in-situ verification at Task 14 surfaces issues (each additive; no D14 revert):**
+
+1. `tsc` cross-package inference errors → add `tsconfig composite: true` + project references.
+2. Vite HMR flaky → `optimizeDeps.include: ['@yesido/shared']`.
+3. Bundler tree-shake issues → add `packages/shared/tsconfig.json` with `declaration: true` + `dist/` emit.
+4. Last resort → Bun workspaces pivot (documented in rollback.md).
+
+D14 reverts only if the whole cross-app shared-package pattern collapses — extremely unlikely given canonical industry usage.
+
+**Full research notes:** [`research.md § P9`](research.md#p9--pnpm-workspace--yesidoshared-in-sveltekit--bun).
 
 ## Amendments during 18c execution
 
