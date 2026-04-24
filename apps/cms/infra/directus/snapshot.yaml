@@ -37,7 +37,7 @@ collections:
       collapse: open
       collection: services
       color: null
-      display_template: Station {{station}} � {{id}}
+      display_template: Station {{station}} · {{id}}
       group: null
       hidden: false
       icon: build
@@ -1648,7 +1648,7 @@ fields:
       group: null
       hidden: false
       interface: input-multiline
-      note: How this helps you � client-facing value proposition.
+      note: How this helps you — client-facing value proposition.
       options: null
       readonly: false
       required: false
