@@ -1,0 +1,159 @@
+name: Cross-repo contract test (yesid.dev × this snapshot)
+
+# Validates that the current snapshot.yaml still satisfies yesid.dev's adapter
+# contract. Fires when the snapshot or schema-related files change — checks
+# out the consumer repo (yesid.dev), boots ephemeral Directus with THIS
+# snapshot, seeds services, then runs yesid.dev's adapter integration test
+# against the live ephemeral instance.
+#
+# Half of the boundary check per slice-18 spec D12. The mirror lives at
+# yesid.dev/.github/workflows/contract-test.yml.
+#
+# Optional: opt-in via label `contract-test` on PRs to limit noise, OR
+# scheduled nightly to catch drift in the consumer repo that this repo would
+# otherwise not see.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    paths:
+      - 'infra/directus/snapshot.yaml'
+      - 'fixtures/**'
+      - 'scripts/seed-services.ts'
+  workflow_dispatch: {}
+  schedule:
+    # 07:00 UTC daily — catches consumer drift even without a CMS PR.
+    - cron: '0 7 * * *'
+
+jobs:
+  contract-test:
+    # PRs: only run when labeled `contract-test` (opt-in — heavy job).
+    # Scheduled + manual dispatch: always run.
+    if: |
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'contract-test')
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: directus
+          POSTGRES_PASSWORD: directus
+          POSTGRES_DB: directus
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout this repo (yesid.dev-cms)
+        uses: actions/checkout@v4
+        with:
+          path: cms
+
+      - name: Checkout yesid.dev (consumer)
+        uses: actions/checkout@v4
+        with:
+          repository: mgkdante/yesid.dev
+          ref: main
+          path: consumer
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Boot ephemeral Directus
+        run: |
+          docker run -d --name directus \
+            --add-host=host.docker.internal:host-gateway \
+            -p 8055:8055 \
+            -e KEY=ci-test-key-16-bytes-hex-aabbccdd \
+            -e SECRET=ci-test-secret-32-bytes-hex-aabbccddeeff \
+            -e PUBLIC_URL=http://localhost:8055 \
+            -e DB_CLIENT=pg \
+            -e DB_HOST=host.docker.internal \
+            -e DB_PORT=5432 \
+            -e DB_DATABASE=directus \
+            -e DB_USER=directus \
+            -e DB_PASSWORD=directus \
+            -e ADMIN_EMAIL=admin@example.com \
+            -e ADMIN_PASSWORD=ci-test-pass-rotate-immediately \
+            -e TELEMETRY=false \
+            -e LOG_LEVEL=info \
+            directus/directus:11.17.3 \
+            sh -c "npx directus bootstrap && exec npx directus start"
+          for i in {1..100}; do
+            if curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+              echo "::notice::Directus healthy after ${i} polls"
+              break
+            fi
+            sleep 3
+          done
+          if ! curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+            echo "::error::Health check timed out"
+            docker logs --tail=200 directus
+            exit 1
+          fi
+
+      - name: Apply snapshot from cms repo
+        run: |
+          TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
+            | jq -r '.data.access_token')
+          DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
+            -H "Authorization: Bearer $TOKEN" \
+            -F "file=@cms/infra/directus/snapshot.yaml")
+          if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
+            echo "$DIFF" | jq '.data' | curl -sf -X POST http://localhost:8055/schema/apply \
+              -H "Authorization: Bearer $TOKEN" \
+              -H 'Content-Type: application/json' \
+              --data-binary @- >/dev/null
+            echo "::notice::Applied snapshot"
+          fi
+
+      - name: Grant Public policy read on services + translations
+        run: |
+          # Consumer adapter reads anonymously via Public policy.
+          # Mirror the live cms.yesid.dev grants so integration tests see data.
+          TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
+            | jq -r '.data.access_token')
+          PUBLIC_POLICY_ID=$(curl -sf -H "Authorization: Bearer $TOKEN" \
+            'http://localhost:8055/policies?filter[name][_eq]=Public&fields=id' \
+            | jq -r '.data[0].id')
+          for COLLECTION in services services_translations services_deliverables services_deliverables_translations services_sections services_sections_translations languages; do
+            curl -sf -X POST http://localhost:8055/permissions \
+              -H "Authorization: Bearer $TOKEN" \
+              -H 'Content-Type: application/json' \
+              -d "{\"policy\":\"$PUBLIC_POLICY_ID\",\"collection\":\"$COLLECTION\",\"action\":\"read\",\"fields\":[\"*\"]}" >/dev/null
+          done
+          echo "::notice::Public read granted on services domain tree"
+
+      - name: Seed services from cms fixture
+        env:
+          PUBLIC_DIRECTUS_URL: http://localhost:8055
+          DIRECTUS_ADMIN_EMAIL: admin@example.com
+          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
+        working-directory: cms
+        run: |
+          bun install --frozen-lockfile
+          bun run seed:services
+
+      - name: Run consumer adapter integration tests against ephemeral Directus
+        env:
+          PUBLIC_DIRECTUS_URL: http://localhost:8055
+          RUN_DIRECTUS_INTEGRATION: '1'
+        working-directory: consumer
+        run: |
+          bun install --frozen-lockfile
+          bun run test src/lib/adapters/directus.integration.test.ts
+
+      - name: Surface Directus logs on failure
+        if: failure()
+        run: docker logs --tail=200 directus
