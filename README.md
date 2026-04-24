@@ -96,7 +96,117 @@ docker run --rm -p 8055:8055 --env-file .env directus/directus:11.17.3
 # open http://localhost:8055
 ```
 
-No `package.json` — Directus is the app. This repo is config + snapshots + scripts only.
+A minimal `package.json` lives here for **scripts-only** tooling (seed, migration, snapshot tests). Directus itself runs from the pinned container image — this repo ships config + snapshots + scripts + tests only.
+
+```bash
+bun install          # installs @directus/sdk + zod + yaml + bun-types
+bun test             # runs snapshot-shape + fixture + seed-dry-run tests (no network)
+bun run seed:services  # seeds the live Directus (requires admin creds — see below)
+```
+
+## Repo layout
+
+```
+yesid.dev-cms/
+├── infra/directus/
+│   └── snapshot.yaml           # schema-as-code (authoritative)
+├── fixtures/
+│   └── services.json           # seed data (exported from yesid.dev/src/lib/content/services.ts)
+├── scripts/
+│   └── seed-services.ts        # idempotent seeder (exports pure transformation helpers for tests)
+├── tests/
+│   ├── services-fixture.test.ts    # Zod-validates fixtures/services.json
+│   ├── seed-dry-run.test.ts        # unit tests on pure transformation helpers
+│   └── snapshot-shape.test.ts      # asserts on snapshot.yaml structure (drift catcher)
+├── .github/workflows/
+│   ├── schema-apply.yml        # ephemeral smoke + prod-gated apply + bun test + optional seed
+│   └── contract-test.yml       # checks out yesid.dev sibling; runs adapter integration test against our snapshot
+├── package.json                # scripts-only; @directus/sdk + zod + yaml + bun-types
+├── tsconfig.json               # strict mode; bun-types; scripts+tests+fixtures only
+├── .env.example                # Directus env var template
+└── README.md                   # this file
+```
+
+## Operations
+
+### Running the seed against production
+
+```bash
+# 1) Pull the admin token from 1Password (no hand-copying credentials).
+export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/directus-admin/credential")
+export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
+
+# 2) Seed.
+bun run seed:services
+```
+
+Alternatively, set `DIRECTUS_ADMIN_EMAIL` + `DIRECTUS_ADMIN_PASSWORD` to use the `/auth/login` flow.
+
+The seed is **nuke-and-recreate** — idempotent, safe to re-run. It clears the `services` domain tree (FK CASCADE removes translations, deliverables, sections) then re-creates from `fixtures/services.json` via the Directus SDK.
+
+### Shared secret rotation policy
+
+Two tokens are shared between this repo (Railway env) and the consumer repo (Vercel env):
+
+| Token | Where used | Purpose |
+|---|---|---|
+| `VERCEL_BYPASS_TOKEN` | Directus Flow → Vercel ISR | `x-prerender-revalidate` header on Flow webhook ops that invalidate yesid.dev page cache after content publishes |
+| `EDITOR_PREVIEW_TOKEN` | Directus Visual Editor → yesid.dev `/preview/*` routes | Validates preview-route requests against the `?token=…` query param |
+
+**Rotate every 90 days** or immediately on suspected leak.
+
+```bash
+# 1) Generate a new token (≥ 32 chars per Vercel's requirement).
+NEW_TOKEN=$(openssl rand -hex 32)
+
+# 2) Update Railway (CMS side).
+#    Dashboard → Directus CMS service → Variables → VERCEL_BYPASS_TOKEN (or EDITOR_PREVIEW_TOKEN) → set new value → Redeploy.
+#    OR via CLI:
+railway variables --service "Directus CMS" --set "VERCEL_BYPASS_TOKEN=$NEW_TOKEN"
+railway redeploy --service "Directus CMS"
+
+# 3) Update Vercel (consumer side).
+#    Dashboard → yesid.dev project → Settings → Environment Variables → update → Redeploy latest production.
+#    OR via CLI (requires `vercel env rm` then `vercel env add`):
+vercel env rm VERCEL_BYPASS_TOKEN production
+echo "$NEW_TOKEN" | vercel env add VERCEL_BYPASS_TOKEN production
+
+# 4) Verify both sides.
+#    Directus Flow: manually trigger via Data Studio → Flows → Log shows 200 from Vercel.
+#    Preview route: curl -H 'x-prerender-revalidate: wrong-token' https://yesid.dev/preview/... → 401.
+#                   curl -H 'x-prerender-revalidate: '"$NEW_TOKEN" https://yesid.dev/preview/... → 200.
+
+# 5) Rotate the prior value out of 1Password after verification.
+```
+
+Never share either token outside the two repo env stores. Never commit them to Git. Never log them.
+
+### Schema changes (Data Studio → snapshot.yaml → PR)
+
+```bash
+# 1) Author in Data Studio against the live CMS.
+# 2) Re-snapshot:
+DIRECTUS_URL=https://cms.yesid.dev \
+DIRECTUS_TOKEN=$(op read "op://yesid-dev/directus-admin/credential") \
+  bunx @directus/sdk@^20 schema-snapshot --url "$DIRECTUS_URL" --token "$DIRECTUS_TOKEN" \
+  > infra/directus/snapshot.yaml
+#    (or export via the CLI / API that matches your 11.17.3 workflow)
+# 3) git checkout -b schema/<change-name>
+# 4) bun test  (snapshot-shape test catches drift before PR)
+# 5) git commit + open PR → schema-apply.yml runs ephemeral smoke
+# 6) After merge: workflow_dispatch → target=prod → review printed diff → confirm apply
+```
+
+**Destructive schema apply** (field removal, type change) prints the full diff in the prod-apply workflow log — operator MUST review before confirming. The snapshot-shape test in CI guards against accidental collection/field removals by asserting required-collection presence.
+
+### Consumer-side PR coordination
+
+Per slice-18 spec D12, schema changes follow a two-PR rule:
+
+1. **This repo's PR first** — snapshot + seed changes. Smoke-CI green. Prod-apply via `workflow_dispatch` after operator review.
+2. **yesid.dev's PR second** — adapter + consumer changes. Link to this repo's merged PR in the description.
+
+Pure consumer changes (new component, styling, route) do NOT need a PR here. Pure schema + seed changes do NOT need a PR on yesid.dev.
 
 ## Why these choices (TL;DR)
 
