@@ -100,8 +100,10 @@ A minimal `package.json` lives here for **scripts-only** tooling (seed, migratio
 
 ```bash
 bun install          # installs @directus/sdk + zod + yaml + bun-types
-bun test             # runs snapshot-shape + fixture + seed-dry-run tests (no network)
-bun run seed:services  # seeds the live Directus (requires admin creds — see below)
+bun test             # runs snapshot-shape + fixture + seed-dry-run + asset-manifest + preset tests (no network)
+bun run seed:services   # seeds the live services domain (requires admin creds — see below)
+bun run seed:presets    # seeds the 4 saved asset presets (hero-1200 / card-600 / thumb-240 / og-1200)
+bun run migrate:assets  # uploads yesid.dev/static/images/* into Directus + R2 (one-off migration)
 ```
 
 ## Repo layout
@@ -111,13 +113,20 @@ yesid.dev-cms/
 ├── infra/directus/
 │   └── snapshot.yaml           # schema-as-code (authoritative)
 ├── fixtures/
-│   └── services.json           # seed data (exported from yesid.dev/src/lib/content/services.ts)
+│   ├── services.json               # seed data (exported from yesid.dev/src/lib/content/services.ts)
+│   ├── assets-manifest.json        # asset migration plan (Task 9)
+│   └── assets-id-map.json          # emitted by migrate-assets.ts; maps legacyPath → Directus file UUID
 ├── scripts/
-│   └── seed-services.ts        # idempotent seeder (exports pure transformation helpers for tests)
+│   ├── seed-services.ts        # idempotent services seeder (pure helpers exported for tests)
+│   ├── seed-presets.ts         # idempotent saved-asset-preset seeder (Task 9)
+│   └── migrate-assets.ts       # one-off asset uploader; reads assets-manifest.json + source tree (Task 9)
 ├── tests/
 │   ├── services-fixture.test.ts    # Zod-validates fixtures/services.json
-│   ├── seed-dry-run.test.ts        # unit tests on pure transformation helpers
-│   └── snapshot-shape.test.ts      # asserts on snapshot.yaml structure (drift catcher)
+│   ├── seed-dry-run.test.ts        # unit tests on services-seed pure helpers
+│   ├── snapshot-shape.test.ts      # asserts on snapshot.yaml structure (drift catcher)
+│   ├── assets-manifest.test.ts     # Zod-validates fixtures/assets-manifest.json (Task 9)
+│   ├── migrate-assets.test.ts      # unit tests on migrate-assets pure helpers + idempotency (Task 9)
+│   └── seed-presets.test.ts        # unit tests on SLICE_18_PRESETS + schema guards (Task 9)
 ├── .github/workflows/
 │   ├── schema-apply.yml        # ephemeral smoke + prod-gated apply + bun test + optional seed
 │   └── contract-test.yml       # checks out yesid.dev sibling; runs adapter integration test against our snapshot
@@ -143,6 +152,48 @@ bun run seed:services
 Alternatively, set `DIRECTUS_ADMIN_EMAIL` + `DIRECTUS_ADMIN_PASSWORD` to use the `/auth/login` flow.
 
 The seed is **nuke-and-recreate** — idempotent, safe to re-run. It clears the `services` domain tree (FK CASCADE removes translations, deliverables, sections) then re-creates from `fixtures/services.json` via the Directus SDK.
+
+### Asset migration (one-off, Slice 18 Task 9)
+
+Bulk-upload `yesid.dev/static/images/*` into Directus-managed R2 storage. Reads `fixtures/assets-manifest.json` for metadata + target folders; walks the source tree for the binaries.
+
+```bash
+# 1) Pull the admin token from 1Password.
+export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/directus-admin/credential")
+export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
+
+# 2) Dry-run first — prints what would upload without touching Directus.
+bun run migrate:assets -- --dry-run
+
+# 3) Real run. Auto-detects the sibling yesid.dev repo at ../yesid.dev/static/images.
+#    Override with --source <path> if needed.
+bun run migrate:assets
+
+# 4) Verify: the run emits `fixtures/assets-id-map.json` mapping each legacyPath
+#    to the uploaded Directus file UUID. Commit it — Tasks 10–14 consume it.
+git add fixtures/assets-id-map.json
+git commit -m "chore(slice-18 task-9): emit assets-id-map.json after live migration"
+```
+
+**Idempotency.** The script tags every uploaded file's `description` with a leading `[legacy:<path>]` marker. Re-runs read existing files, skip entries whose `legacyPath` is already tagged, and only upload new ones. Safe to re-run after adding new entries to the manifest.
+
+**Folder creation.** Folders are created on first run if missing (`about`, `brand`, `projects`). Existing folders with matching names are reused.
+
+**What's in the manifest right now:** 19 assets across 3 folders (about, brand, projects). Future content types (Task 10 projects detail covers, Task 11 blog illustrations, Task 13 OG images) may add more folders + entries — append to the manifest + re-run migrate-assets.
+
+### Asset presets (saved transforms)
+
+Directus saved asset presets let consumers request named sizes via `?key=<preset>` instead of string-building query params. They bypass the 5-op-per-request transform cap in production. Slice 18 installs four: `hero-1200`, `card-600`, `thumb-240`, `og-1200`.
+
+```bash
+# Idempotent — overwrites directus_settings.storage_asset_presets with the
+# declared SLICE_18_PRESETS array.
+export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/directus-admin/credential")
+export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
+bun run seed:presets
+```
+
+Presets live in `directus_settings.storage_asset_presets` — a JSON column on the singleton settings record, NOT part of the schema snapshot. Adding / changing presets is a re-run of `seed:presets`, not a schema-apply.
 
 ### Shared secret rotation policy
 
