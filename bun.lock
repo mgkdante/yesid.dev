@@ -12,6 +12,7 @@
       "name": "@yesido/cms",
       "devDependencies": {
         "@directus/sdk": "^20.3.0",
+        "@yesido/shared": "workspace:*",
         "bun-types": "latest",
         "yaml": "^2.6.1",
         "zod": "^3.24.1",
@@ -24,6 +25,7 @@
         "@directus/sdk": "^20",
         "@fontsource-variable/inter": "^5.2.8",
         "@fontsource-variable/jetbrains-mono": "^5.2.8",
+        "@yesido/shared": "workspace:*",
         "gsap": "^3.14.2",
         "lenis": "^1.3.21",
         "lottie-web": "^5.13.0",
@@ -71,6 +73,13 @@
         "vaul-svelte": "^1.0.0-next.7",
         "vite": "^7.3.1",
         "vitest": "^4.1.0",
+      },
+    },
+    "packages/shared": {
+      "name": "@yesido/shared",
+      "version": "0.0.0",
+      "dependencies": {
+        "zod": "^4.3.6",
       },
     },
   },
@@ -478,6 +487,8 @@
     "@vitest/utils": ["@vitest/utils@4.1.5", "", { "dependencies": { "@vitest/pretty-format": "4.1.5", "convert-source-map": "^2.0.0", "tinyrainbow": "^3.1.0" } }, "sha512-76wdkrmfXfqGjueGgnb45ITPyUi1ycZ4IHgC2bhPDUfWHklY/q3MdLOAB+TF1e6xfl8NxNY0ZYaPCFNWSsw3Ug=="],
 
     "@yesido/cms": ["@yesido/cms@workspace:apps/cms"],
+
+    "@yesido/shared": ["@yesido/shared@workspace:packages/shared"],
 
     "@yesido/web": ["@yesido/web@workspace:apps/web"],
 
@@ -1122,6 +1133,8 @@
     "@testing-library/dom/dom-accessibility-api": ["dom-accessibility-api@0.5.16", "", {}, "sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg=="],
 
     "@vitest/mocker/estree-walker": ["estree-walker@3.0.3", "", { "dependencies": { "@types/estree": "^1.0.0" } }, "sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g=="],
+
+    "@yesido/shared/zod": ["zod@4.3.6", "", {}, "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg=="],
 
     "@yesido/web/zod": ["zod@4.3.6", "", {}, "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg=="],
 
