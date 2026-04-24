@@ -6,7 +6,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | 🟡 in progress (Tasks 0–7 shipped for services as proof-of-pattern; mid-slice scope correction landed: Slice 18 = full migration + two-repo decoupling; **Task 2b research pass is next**) |
+| Status | 🟡 in progress (Tasks 0–7 + 2b shipped; Tasks 8–15 remaining per revised CMS-native plan; Slice 18 = full migration of all 6 content types + two-repo decoupling) |
 | Slice PR (site) | pending — [`feature/slice-18`](https://github.com/mgkdante/yesid.dev/tree/feature/slice-18) (keep accumulating sessions before opening; likely opens at slice close) |
 | Scorch PR (cms)      | [mgkdante/yesid.dev-cms#1](https://github.com/mgkdante/yesid.dev-cms/pull/1) — **MERGED** as `a7a1db6` |
 | Clean-slate PR (cms) | [mgkdante/yesid.dev-cms#2](https://github.com/mgkdante/yesid.dev-cms/pull/2) — **MERGED** as `0295dd6` |
@@ -16,7 +16,7 @@
 | Branch (site) | `feature/slice-18` (yesid.dev) — head `a373bf5` (Task 7 close) |
 | Branch (cms)  | PR #1 branch `chore/remove-payload`: `0effef9` + `803d60c` → merged `a7a1db6`. PR #2 branch `chore/clean-slate`: `f3a94df` → merged `0295dd6`. PR #3 branch (Task 3): `5945f56` (scaffold) + `d22669c` (snapshot+CI). |
 | Neon safety branch | `br-muddy-surf-am5n6sh9` (`pre-scorch-safety-2026-04-23`, off `br-orange-waterfall-amfej6qp`) — created Task 4 session before the scorched-earth DROP; retain until Task 7 E2E green. |
-| Tasks completed | 8 / 8 (Task 0 + 1 + 2 + 3 + 4 + 5 + 6 + 7) — Task 7 flips the services port to Directus via a port-by-port hybrid at `src/lib/adapters/index.ts`; live preview confirms `/`, `/services`, `/services/[id]` all render with Directus-backed content. Production site still serving — services now from CMS, other 5 content types still static; port-by-port migration pattern established for future content types. |
+| Tasks completed | 9 / 16 (Task 0 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 2b) — Task 7 flipped the services port to Directus via the port-by-port hybrid at `src/lib/adapters/index.ts`. Task 2b (this session) locked D4–D12, revised Q5, resolved Q8–Q12, and re-planned Tasks 8–15 as CMS-native migrations for the remaining 5 content types + two-repo decoupling. Zero code changes in Task 2b — research + docs only. |
 | Live Directus | https://cms.yesid.dev/mcp ✓ Connected (MCP registered as `yesid-cms-prod`) — schema tool returns `collections: []` after cleanup |
 | MCP endpoint | https://cms.yesid.dev/mcp — 7 tools (items/files/folders/assets/trigger-flow/schema/system-prompt) |
 
@@ -529,21 +529,104 @@ The 5 other content ports stay on `staticAdapter` — projects, blog, meta, tech
 
 ---
 
+### Task 2b — CMS-native research + two-repo decoupling re-plan ✅
+
+- **Planned by:** Claude Code (Opus 4.7 [1m], reasoning=high)
+- **Executed by:** Claude Code (Opus 4.7 [1m], reasoning=high) — via 3 parallel `general-purpose` Agents each running WebFetch against directus.io/docs + vercel.com/docs + svelte.dev/docs (live fetches 2026-04-23)
+- **Session:** 2026-04-23 (this session)
+- **Commit:** TBD — this block is authored pre-commit
+- **Branch:** `feature/slice-18`
+
+**Files:**
+
+- Modified: `docs/slices/slice-18/research.md` — appended § `## Task 2b findings (session: 2026-04-23)` with 10 topic sections (~10k words) + `## Task 2b decisions ready to lock in spec.md`.
+- Modified: `docs/slices/slice-18/spec.md` — added D4–D12 (Visual Editor, Content Versioning, Preview routes, M2A pages, Flows → revalidation, Asset pipeline, Role/policy matrix, Extensions posture, Repo-separation boundary); revised Q5 (preview shape locked, implementation deferred per research); added Q8–Q12 (versioning on blocks, Flow revalidation timing, AVIF, versions policy, block reuse); expanded Acceptance criteria with Tasks 8–15; bumped Size L → XL + Estimated effort 6–8 → 12–15 sessions; Amendments log row.
+- Modified: `docs/slices/slice-18/plan.md` — rewrote Tasks table (Tasks 0–7 + 2b shipped; Tasks 8–15 planned per CMS-native re-plan); added R7 (scope expansion) + R8 (cross-repo coordination overhead); updated Success criteria; Amendments log row.
+- Modified: `docs/slices/slice-18/handoff.md` — this block + updated Status table + § 4 Open items + § 7 Amendments.
+
+**What landed:**
+
+Ten research topics resolved via three parallel subagents (Clusters A/B/C) over live Directus 11.17.3 docs, Vercel/SvelteKit docs, and local browse of both sibling repos. Topic-by-topic synthesis:
+
+- **Topic 1 (Visual Editor):** `@directus/visual-editing` v2.0.0 npm package; SvelteKit `apply({ directusUrl, onSaved: invalidateAll })` + conditional `data-directus={setAttr(...)}` attribute rendering gated by `?edit=<flag>`; CSP/CORS config on cms.yesid.dev required (`FRAME_SRC=https://yesid.dev https://*.vercel.app`, `CORS_ORIGIN=https://yesid.dev`).
+- **Topic 2 (Content Versioning):** per-collection opt-in; `/items/{collection}` list endpoint always returns main (versioning does NOT silently filter lists); `?version=draft` is item-scoped only; Promote is the publish verb; **no separate `status` field needed**.
+- **Topic 3 (Preview routes):** dedicated `/preview/[collection]/[id]?version=draft&token=…` route tree; single `EDITOR_PREVIEW_TOKEN` env var; per-call `PreviewContext` at adapter boundary; implementation deferred to Slice 19+ per Q5.
+- **Topic 4 (M2A blocks):** `pages` + M2A `blocks` + block collections (`block_hero`, `block_manifesto`, `block_proof_reel`, `block_services_grid`, `block_cta`, `block_closer`, …); per-page block copies for MVP; adapter flattens at boundary to preserve existing `ContentPort` methods; per-request memoization.
+- **Topic 5 (Flows → revalidation):** Event Hook (action) → Condition (`status _eq published`) → Webhook op → SvelteKit route with `config.isr.bypassToken`. One flow per collection. No custom `/api/revalidate` endpoint.
+- **Topic 6 (Asset pipeline):** `/assets/:id?key=<preset>` with saved presets (`hero-1200`, `card-600`, `thumb-240`, `og-1200`); one folder per content type; alt text via `directus_files.description`; WebP format (AVIF deferred — docs don't list it).
+- **Topic 7 (Role/policy matrix):** v11 split Users → Roles → Policies → Permissions. Nine capability policies composed onto `admin`/`human-editor`/`ai-editor`/`Public`. Field-allowlist for slug-admin-only; filter-rule `status _neq published` for no-delete-published; versions-own filter for `user_created _eq $CURRENT_USER`. Enable `WEBSOCKETS_ENABLED=true` + `WEBSOCKETS_COLLAB_ENABLED=true`.
+- **Topic 8 (Extensions vs built-ins):** **zero custom extensions** for Slice 18. All 14 inventoried temptations (on-publish hooks, notifications, seed, slug generation, dashboards, M2A authoring, GitHub sync, visual editing, cache invalidation, preview routes, AI alt-text, SEO fields, Turnstile, i18n) resolve to Flows + built-in interfaces or consumer-side code. Marketplace extensions deferred to Slice 19+.
+- **Topic 9 (Repo-separation boundary):** ownership table with ~20 rows; contract = `ContentAdapter` interface × `snapshot.yaml` × `@directus/sdk` shape; three-point change-propagation rule; `scripts/seed-directus-services.ts` migrates from yesid.dev to yesid.dev-cms (Task 8); cross-repo contract test in yesid.dev CI; rotation policy for `VERCEL_BYPASS_TOKEN` + `EDITOR_PREVIEW_TOKEN`.
+- **Topic 10 (Revised task list):** Tasks 8–15 — decoupling → assets → projects/blog/tech-stack/meta (parallelizable) → site-chrome M2A pages (largest) → close. Paired PRs per task (yesid.dev-cms schema + seed first, then yesid.dev adapter + flip). 5–7 sessions estimated.
+
+**Decisions (ratified):**
+
+- D4–D12 added to spec.md § Design decisions. Summary row in research.md § "Task 2b decisions ready to lock in spec.md".
+- Q5 revised: preview shape locked in D6, implementation deferred to follow-up slice.
+- Q8 (versioning on blocks), Q9 (Flow revalidation timing), Q10 (AVIF), Q11 (versions policy), Q12 (block reuse) all resolved in spec.md § Open questions.
+- Plan tasks 5–7 kept as shipped (services); prior "Task 5b–5f" placeholder replaced with discrete Tasks 10–14 scoped per content type + Task 15 close.
+
+**Reviews:**
+
+- Spec adherence: ✅ D1–D3 untouched (infra decisions). D4–D12 layered on top. All new D-entries reinforce existing rules (`feedback_prefer_platform_builtins`, `feedback_data_driven`).
+- Cross-tool adversarial peer review: deferred to slice close per `feedback_codex_review_at_slice_close.md`.
+- Scope: mid-slice scope correction explicitly documented in plan § Amendments row 3 and spec § Amendments row dated 2026-04-23.
+
+**Tests / verification:**
+
+- `bun run check` on yesid.dev → **unchanged** (no code touched). Expected: 0 errors, 20 pre-existing warnings (pre-existing before Task 2b; unrelated).
+- `bun run test` on yesid.dev → **unchanged** (no code touched). Expected: 96 test files, 975 tests passing (Task 7 baseline).
+- `docs/slices/slice-18/{plan,spec,research,handoff}.md` grew but consumer code + adapter code + tests all untouched.
+- yesid.dev-cms untouched this session.
+- cms.yesid.dev live Directus untouched this session.
+
+**Research source URLs (all fetched 2026-04-23):**
+
+- https://directus.io/docs/guides/content/visual-editor
+- https://directus.io/docs/guides/content/content-versioning
+- https://directus.io/docs/api/versions
+- https://directus.io/docs/tutorials/getting-started/implementing-live-preview-in-sveltekit
+- https://directus.io/docs/guides/data-model/relationships
+- https://directus.io/docs/guides/automate/{flows,triggers,operations}
+- https://directus.io/docs/guides/files/{transform,upload,access}
+- https://directus.io/docs/api/{assets,files,policies,permissions,roles}
+- https://directus.io/docs/configuration/{files,realtime,extensions}
+- https://directus.io/docs/guides/auth/access-control
+- https://directus.io/docs/reference/filter-rules
+- https://directus.io/docs/guides/content/collaborative-editing
+- https://directus.io/docs/tutorials/tips-and-tricks/advanced-types-with-the-directus-sdk
+- https://vercel.com/docs/incremental-static-regeneration
+- https://svelte.dev/docs/kit/adapter-vercel
+- https://github.com/directus-labs/extensions (marketplace inventory)
+
+**Follow-ups flagged:**
+
+- Task 8 (next up): re-init `yesid.dev-cms` with minimal `package.json`; migrate `scripts/seed-directus-services.ts` → `yesid.dev-cms/scripts/seed-services.ts`; document rotation policy; cross-repo contract test scaffold.
+- Task 9 (after Task 8): asset migration from `static/images/*` → Directus + R2. Emits `assets-id-map.json` consumed by Tasks 10–14.
+- Tasks 10–13 (parallelizable after Task 9): projects / blog / tech-stack / meta — each follows same pattern (schema + seed + adapter port + flip; paired yesid.dev-cms + yesid.dev PRs).
+- Task 14 (depends on 9 + benefits from 10–13): site-chrome as M2A pages. Largest remaining task; warrants its own session.
+- Task 15 (slice close): role/policy tighten, optional Flow revalidation, peer review, PR, memories.
+- **No manual ops required from owner this session.** Task 2b is research + docs only.
+
+---
+
 ## 4) Open items for downstream tasks
 
 - ~~Task 2: resolve D1/D2/D3.~~ **Done.**
-- ~~Task 3: Directus install on Railway Hobby + Neon + R2 + native MCP.~~ **Done.** Manual ops by user remain (drop PostGIS service, add cms.yesid.dev custom domain, Cloudflare DNS flip, retire Vercel project) — see § 5 Follow-ups + Task 3 § Manual dashboard ops.
-- ~~Task 4: DirectusAdapter scaffold + `services` port + `toLocalizedString`.~~ **Done.** Scorched-earth Neon cleanup landed as a Task 3 follow-up in the same session per owner steering.
+- ~~Task 3: Directus install on Railway Hobby + Neon + R2 + native MCP.~~ **Done.** Manual ops by user remain (drop PostGIS service, retire Vercel project after DNS settles) — see § 5 Follow-ups + Task 3 § Manual dashboard ops.
+- ~~Task 4: DirectusAdapter scaffold + `services` port + `toLocalizedString`.~~ **Done.** Scorched-earth Neon cleanup landed as a Task 3 follow-up.
 - ~~Task 5: Services collection schema + snapshot to yesid.dev-cms.~~ **Done.** yesid.dev-cms PR #5 merged (`13aaeb9`).
-- ~~Task 6: Seed services content into Directus + schema hotfixes.~~ **Done.** yesid.dev `7222c92`; yesid.dev-cms PR #6 merged (`4963c94`) with alias fields + csv→json hotfixes.
-- ~~Task 7: Flip services port to Directus (hybrid adapter).~~ **Done.** yesid.dev `a373bf5`. Port-by-port pattern; services live from cms.yesid.dev, other 5 ports still on static.
-- **Task 2b (NEW — mid-slice scope correction):** CMS-native research + two-repo decoupling re-plan. Owner flagged that Tasks 5–7 shipped services as a TS-mirror (hardcoded-content replacer), not a proper CMS deployment. Slice 18 is a full migration of all 6 content types, and the two repos (yesid.dev + yesid.dev-cms) should evolve into independently-shipping domains — changes in one repo don't ripple into the other except through the explicit adapter-seam contract. Task 2b is a research pass (like Task 2 was for infrastructure) covering: (1) `@directus/visual-editing` integration, (2) Content Versioning + draft/publish, (3) preview routes with signed tokens, (4) M2A blocks for flexible page composition, (5) Flows for publish → Vercel revalidate, (6) asset pipeline + transforms, (7) role/policy matrix, (8) extensions vs built-ins decision, (9) formal repo-separation boundary (CMS concerns = yesid.dev-cms; adapter = yesid.dev), (10) re-plan of remaining content types (projects / blog / tech-stack / meta / site-chrome) as CMS-native collections, not TS-mirrors. **Status: ⏸ not started (pending in a fresh session).** Deliverables: append to research.md + new D4–D10 in spec.md + revised task list in plan.md. No code changes.
-- Task 5b–5f (deferred — unblocked by Task 2b): remaining content types. Each follows the Task 5/6/7 shape (Directus schema + seed + adapter port) but CMS-native per Task 2b findings.
-- Task 8 (slice close): happens AFTER all content types are migrated.
-- Task 5: design + create real yesid.dev content model in Directus (services, projects, blog_posts, tech_stack, scenarios, page singletons + M2A blocks per research.md sketch). Re-snapshot after every collection change → commit to yesid.dev-cms. Tighten `ai-editor` role permissions to those collections only.
-- Task 6: write `scripts/seed.ts` in yesid.dev-cms that reads from sibling `yesid.dev/src/lib/content/*.ts` + `yesid.dev/src/content/blog/**/*.md` and upserts via SDK. Preserve natural-key IDs where possible (project slug, service id).
-- Task 7: full E2E parity — run yesid.dev test suite + a manual smoke against Directus-served routes. Flip `src/lib/adapters/index.ts:6` re-export only after parity confirmed.
-- Task 8: slice close — finalize handoff, retire `staticAdapter` plan, update memories, peer review (Codex), open the slice-18 PR on yesid.dev.
+- ~~Task 6: Seed services content + schema hotfixes.~~ **Done.** yesid.dev `7222c92`; yesid.dev-cms PR #6 merged (`4963c94`).
+- ~~Task 7: Flip services port to Directus (hybrid adapter).~~ **Done.** yesid.dev `a373bf5`.
+- ~~**Task 2b (mid-slice scope correction): CMS-native research + two-repo decoupling re-plan.**~~ **Done this session.** D4–D12 locked; Q5 revised; Q8–Q12 resolved; Tasks 8–15 documented. No code changes.
+- **Task 8 (NEXT):** Two-repo decoupling + minimal toolchain on yesid.dev-cms. Re-init `package.json` with `@directus/sdk` + `zod` + `bun-types`; migrate `yesid.dev/scripts/seed-directus-services.ts` → `yesid.dev-cms/scripts/seed-services.ts`; inline minimal row shape (no cross-repo git coupling); add `.github/workflows/schema-apply.yml` optional seed step gated by `workflow_dispatch` input `seed: true`; document `VERCEL_BYPASS_TOKEN` + `EDITOR_PREVIEW_TOKEN` rotation policy in yesid.dev-cms `README.md` Operations section; add cross-repo contract-test scaffold in yesid.dev CI (skipped-by-default integration test). **No schema changes.** Deliverables: paired PRs — yesid.dev-cms (`package.json` + scripts + README) + yesid.dev (remove `scripts/seed-directus-services.ts`, CI scaffold).
+- **Task 9:** Asset pipeline migration. Walk `static/images/*` → emit manifest → bulk-upload via SDK to 5 folders (services/blog/projects/brand/og). Define 4 saved presets in Data Studio (`hero-1200`, `card-600`, `thumb-240`, `og-1200`). Retain `legacy_path` custom field on `directus_files` during migration window. Emit `assets-id-map.json`. No adapter work this task.
+- **Task 10:** Projects content type. Schema (`projects` + translations + M2M junction replacing `services.related_projects` CSV + `hero_image` M2O → `directus_files`) + seed + adapter port (`projects`, 8 methods) + flip `projects: directusAdapter.projects` at `src/lib/adapters/index.ts`. Content Versioning enabled. Paired PRs.
+- **Task 11:** Blog content type. Schema (`blog_posts` + translations + Markdown body field + `cover_image`/`svg_illustration`/`animation_reverse` M2Os to `directus_files`) + seed reading `yesid.dev/src/content/blog/**/*.md` + adapter port (`blog`, 12 methods; `html` preserves `marked.parse`) + flip. Paired PRs.
+- **Task 12:** Tech-stack content types. Schema (`tech_stack` + translations + `body_markdown` + `tech_relations` + `stack_scenarios` + translations) + seed reading `yesid.dev/src/lib/content/tech-stack.ts` + `src/content/stack/{id}.md` files + adapter port (`techStack`, 12 methods incl. graph utilities) + flip. Paired PRs.
+- **Task 13:** Meta + route SEO. Schema (`site_meta` singleton + translations + `route_seo` collection + translations + `og_image` M2O) + seed reading `yesid.dev/src/lib/content/meta.ts` (incl. `routeSeoEntries`) + adapter port (`meta`, 2 methods; closed-registry contract throws on unknown route) + flip. Paired PRs.
+- **Task 14:** Site-chrome via M2A pages. Schema (`pages` collection + M2A `blocks` field + 12+ block collections + `nav_links`/`menu_items`/`error_pages` singletons) + seed reading yesid.dev's `src/lib/content/{home-page,about-page,contact-page,services-page,projects-page,tech-stack-page,blog-page}.ts` + `nav.ts` + `site-content.ts` + adapter port (`content`, 19 methods; per-request memoized `loadPage(slug)`) + flip. Largest remaining task. Paired PRs.
+- **Task 15:** Slice close. Tighten `ai-editor` role per D10 (field allowlists; filters; drop system-collection writes; keep 3 system-reads for MCP schema tool). Enable `WEBSOCKETS_ENABLED=true` + `WEBSOCKETS_COLLAB_ENABLED=true`. Scope `directus_files.read` on Public role via `folder._in: [public folder ids]`. Optional: wire Flow-based revalidation per D8 (one Flow per content collection; Webhook op → SvelteKit route with `bypassToken`). Cross-tool adversarial peer review (Codex). Open yesid.dev `feature/slice-18` PR against main. Update memories. Retire Vercel project on yesid.dev-cms after DNS flip confirmed.
 
 ## 5) Follow-ups flagged (accumulating)
 
@@ -570,6 +653,7 @@ The 5 other content ports stay on `staticAdapter` — projects, blog, meta, tech
 | 3 | 2026-04-23 | Mid-Task-3: clean-slated Neon (`DROP SCHEMA public CASCADE`) + removed `DIRECTUS_TEMPLATE` env var. | Railway template seeded its 24 demo CMS collections on the freshly-pointed Neon DB AND Neon still carried Payload-era orphan tables. Owner asked: "clean up neon db and rebuild." The DB drop + template-var unset together gave a true clean slate. |
 | 4 | 2026-04-23 | Mid-Task-3: stripped all `EMAIL_SMTP_*` env vars from Railway. | New deployments kept failing healthcheck because Directus's SMTP transport hung on `CONN ETIMEDOUT` to `smtp.resend.com:587` — Railway's egress firewall blocks port 587. Switching to Resend's HTTPS API via a Directus Flow + webhook operation is the follow-up plan (deferred — see § 5 Follow-ups #5). |
 | 5 | 2026-04-23 | PR #3 grew with Task 3c commits (snapshot + CI) instead of opening a separate Task 3c PR. | Task 3a's scaffold (`infra/directus/` placeholder dir) and Task 3c's payload (`snapshot.yaml` + CI workflow) are tightly coupled and target the same files. Single PR → one review, one merge. PR title intent updated in commit messages. |
+| 6 | 2026-04-23 | Slice 18 scope expanded mid-slice after Task 7. Task 2b research pass inserted; revised task list grew from 8 to 16 tasks (0–7 shipped + 2b shipped + 8–15 planned). | Owner identified that Tasks 5–7 shipped services as a "TS-mirror" (hardcoded-content replacer pattern) rather than a proper CMS deployment. Slice 18 now explicitly covers full migration of all 6 content types + formal two-repo decoupling (yesid.dev + yesid.dev-cms ship independently through the adapter-seam contract). Task 2b research — 3 parallel Agents, 10 topics, ~10k words in research.md — locked D4–D12 and the revised sequence. Paired yesid.dev-cms + yesid.dev PRs per task from Task 8 onward. Estimated effort expanded 6–8 → 12–15 sessions. |
 
 ## 8) Files created (cumulative)
 
@@ -600,6 +684,10 @@ The 5 other content ports stay on `staticAdapter` — projects, blog, meta, tech
 - `docs/slices/slice-18/spec.md` — Task 2: D1/D2/D3 + Q4–Q7 resolved; Status draft → approved; Amendments log.
 - `docs/slices/slice-18/research.md` — Task 2: full findings populated under all 7 pre-reserved subsections + 2 new sections.
 - `docs/slices/slice-18/handoff.md` — Task 2 + Task 3 updates: Status table, § 3 Tasks (Task 3 block + Mermaid diagram), § 4–5 Open items + Follow-ups, § 7 Amendments (rows 3–5), § 12 Schema, § 14 Architectural seam, § 15 Environment (full Railway env table), § 17 Validation, § 25 Next prompt.
+- `docs/slices/slice-18/research.md` — Task 2b (2026-04-23): appended § Task 2b findings (10 topic sections, ~10k words) + § Task 2b decisions ready to lock in spec.md. All Directus 11.17.3 + Vercel/SvelteKit URLs fetched live 2026-04-23.
+- `docs/slices/slice-18/spec.md` — Task 2b (2026-04-23): Metadata (Status + Size XL + Estimated effort 12–15), D4–D12 added (§ Design decisions), Q5 revised, Q8–Q12 added (§ Open questions), Acceptance criteria expanded with Tasks 8–15, Amendments log row.
+- `docs/slices/slice-18/plan.md` — Task 2b (2026-04-23): Tasks table rewrote with Tasks 8–15 planned + Task 2b marked shipped; Success criteria expanded; R7 + R8 added to § Risks; Amendments log row 3.
+- `docs/slices/slice-18/handoff.md` — Task 2b (2026-04-23): Status table row + Tasks completed count 8→9 of 16; § 3 Tasks (Task 2b completion block); § 4 Open items (Tasks 8–15 scoped); § 7 Amendments (row 6); § 25 Next recommended prompt (Task 8 block prepended); § 27 Final Status.
 
 **yesid.dev-cms (Task 3 — PR #3):**
 - `README.md` — Task 3a (`5945f56`): expanded with full 8-step provisioning walkthrough.
@@ -882,6 +970,49 @@ git push  # → updates open PR #3 with Task 3c commits
 
 ## 25) Next recommended prompt
 
+### Task 8 — Two-repo decoupling + minimal toolchain on yesid.dev-cms (2026-04-23)
+
+```text
+Session type: Implementation (two-repo decoupling). Paired PRs (yesid.dev-cms + yesid.dev).
+Tool: Claude Code (Opus 4.7 [1m], reasoning=high). Sonnet 4.6 acceptable for the minimal toolchain setup.
+Focus: Task 8 — move seed script from yesid.dev to yesid.dev-cms; re-init yesid.dev-cms with minimal package.json; add rotation-policy docs; scaffold cross-repo contract test.
+
+Context:
+- Task 2b (prior session) locked D4–D12 and designed Tasks 8–15. Read docs/slices/slice-18/{plan,spec,research,handoff}.md.
+- This is the FIRST post-decoupling task. Subsequent tasks (10–14) follow the paired-PR pattern: yesid.dev-cms PR (schema + seed) lands + applies to prod FIRST, then yesid.dev PR (adapter + flip).
+- No schema changes this task. No content changes. Just repo shape + tooling.
+
+In-scope (yesid.dev-cms):
+1. Re-init with minimal package.json: { "type": "module", "devDependencies": { "@directus/sdk": "^20", "zod": "^3", "bun-types": "latest" }, "scripts": { "seed:services": "bun scripts/seed-services.ts", ... } }
+2. Copy yesid.dev/scripts/seed-directus-services.ts → yesid.dev-cms/scripts/seed-services.ts. Inline minimal row shape (don't import from yesid.dev — no cross-repo git coupling). Data source: committed services.json (exported from yesid.dev's src/lib/content/services.ts) sitting in yesid.dev-cms/fixtures/.
+3. Add scripts/seed-services.ts invocation to .github/workflows/schema-apply.yml as an optional workflow_dispatch input `seed: true`.
+4. Update yesid.dev-cms/README.md Operations section: VERCEL_BYPASS_TOKEN + EDITOR_PREVIEW_TOKEN rotation policy (generate via `openssl rand -hex 32`; rotate every 90d or on leak; update Railway Vars → redeploy; update Vercel env → redeploy; verify).
+
+In-scope (yesid.dev):
+5. Delete scripts/seed-directus-services.ts (now lives in yesid.dev-cms).
+6. Add .github/workflows/contract-test.yml — skipped-by-default integration test that checks out both repos, spins ephemeral Directus with yesid.dev-cms/infra/directus/snapshot.yaml, seeds a fixture row per collection, runs bun test src/lib/adapters/directus.integration.test.ts (new file, tagged integration). Enable via PR label 'contract-test' or schedule nightly.
+
+Paired-PR merge order:
+1. yesid.dev-cms PR first. Merge after CI green. No prod-apply yet (no schema change).
+2. yesid.dev PR second. Delete scripts/seed-directus-services.ts. Merge after yesid.dev-cms PR merges.
+
+Hard constraints:
+- No schema changes in Directus (no .yaml mutation, no Data Studio click).
+- No content changes.
+- Seed script data exported ONCE to yesid.dev-cms/fixtures/services.json; yesid.dev's src/lib/content/services.ts stays authoritative through Slice 18, then becomes frozen-reference in Slice 19+.
+- No bun install in yesid.dev-cms that pulls in build tooling — stay minimal (SDK + zod + bun-types only).
+
+Validation:
+- yesid.dev-cms: `bun install` succeeds with 3 devDeps. `bun run seed:services` (dry-run or against ephemeral Directus) completes.
+- yesid.dev: bun run check + bun run test green (unchanged).
+- Both PRs: paired links in descriptions; yesid.dev-cms merges first, yesid.dev merges second.
+- Cross-repo contract test workflow present but skipped by default (won't run on every PR — opt-in via label).
+
+STOP at Task 8 close. Owner verifies + greenlights Task 9 (asset pipeline migration).
+```
+
+### Prior session's recommended prompt (Task 3/4 era — kept for historical context)
+
 ```text
 Session type: Manual dashboard ops (user) → then implementation (DirectusAdapter wiring).
 Tool: Claude Code (Opus 4.7 [1m], reasoning=high). Sonnet 4.6 acceptable for the adapter scaffolding.
@@ -990,4 +1121,15 @@ Required next step: Task 2 — Directus research (spec D1/D2/D3 resolution).
 
 ## 27) Final Status
 
-🟢 **IN PROGRESS** — Tasks 0 through 7 shipped in a single session. yesid.dev `feature/slice-18` head is `a373bf5`: DirectusAdapter filled (impactMetric/deliverables/sections), hybrid at `src/lib/adapters/index.ts` (services from Directus, other 5 ports from static), test harness stubbed for network-free testing, SvelteKit env-leak cleared by switching to anonymous Public-policy reads. `bun run check` 0 errors, `bun run test` 975 passing, live browser smoke shows every Directus field rendering correctly on `/`, `/services`, `/services/[id]` routes. yesid.dev-cms main is at `4963c94` (PR #5 + #6 merged). Remaining: **Task 8** — slice close (spec amendments, peer review, open the yesid.dev PR, Vercel env var update, memory consolidation). All 6 other content types still on static — their migration happens in follow-up slices on the same port-by-port pattern established here.
+🟡 **IN PROGRESS** — Tasks 0–7 + Task 2b shipped. yesid.dev `feature/slice-18` head: Task 7 at `a373bf5` + Task 2b docs commit (TBD — authored pre-commit in this session). services content-type live from cms.yesid.dev via hybrid adapter; 5 other ports still on static. yesid.dev-cms main is at `4963c94` (PRs #5 + #6 merged).
+
+**Task 2b outcome (2026-04-23):** mid-slice scope correction captured. Slice 18 now explicitly covers full migration of all 6 content types + two-repo decoupling (yesid.dev + yesid.dev-cms ship independently through the adapter-seam contract). Spec D4–D12 locked via 3 parallel research agents over Directus 11.17.3 docs: Visual Editor, Content Versioning, Preview routes (shape locked, implementation deferred Slice 19+), M2A pages, Flows → revalidation, Asset pipeline, Role/policy matrix, Extensions posture (zero custom), Repo-separation boundary. Q5 revised; Q8–Q12 resolved. Plan rewrote Tasks table: Tasks 8–15 replace the prior one-line "Task 8 slice close" placeholder.
+
+**Remaining (7 tasks, ~5–7 sessions):**
+- Task 8 — two-repo decoupling (seed script migration; minimal `package.json` on yesid.dev-cms; rotation policy; contract-test scaffold)
+- Task 9 — asset pipeline migration (`static/images/*` → Directus + R2)
+- Tasks 10–13 — projects / blog / tech-stack / meta (parallelizable after Task 9)
+- Task 14 — site-chrome via M2A pages (largest remaining task)
+- Task 15 — slice close (role/policy tighten; optional Flow revalidation; peer review; PR; memories)
+
+**Verification (Task 2b):** `bun run check` + `bun run test` unchanged (no code touched). Docs-only commit.
