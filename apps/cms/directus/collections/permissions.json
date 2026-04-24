@@ -82,5 +82,195 @@
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "2a68154f-996c-4e13-bab6-126ced346b48"
+  },
+  {
+    "collection": "languages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-languages-read-0001-0000-000000000001"
+  },
+  {
+    "collection": "services",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-read-0002-0000-000000000002"
+  },
+  {
+    "collection": "services",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-create-0003-0000-000000000003"
+  },
+  {
+    "collection": "services",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-update-0004-0000-000000000004"
+  },
+  {
+    "collection": "services_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-translations-read-0005-000000000005"
+  },
+  {
+    "collection": "services_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-translations-create-0006-000000000006"
+  },
+  {
+    "collection": "services_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-translations-update-0007-000000000007"
+  },
+  {
+    "collection": "services_deliverables",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deliverables-read-0008-000000000008"
+  },
+  {
+    "collection": "services_deliverables",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deliverables-create-0009-000000000009"
+  },
+  {
+    "collection": "services_deliverables",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deliverables-update-0010-00000000000a"
+  },
+  {
+    "collection": "services_deliverables_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deltr-read-0011-0000-00000000000b"
+  },
+  {
+    "collection": "services_deliverables_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deltr-create-0012-000000000000c"
+  },
+  {
+    "collection": "services_deliverables_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deltr-update-0013-000000000000d"
+  },
+  {
+    "collection": "services_sections",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sections-read-0014-000000000000e"
+  },
+  {
+    "collection": "services_sections",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sections-create-0015-00000000000f"
+  },
+  {
+    "collection": "services_sections",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sections-update-0016-000000000010"
+  },
+  {
+    "collection": "services_sections_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sectr-read-0017-0000-000000000011"
+  },
+  {
+    "collection": "services_sections_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sectr-create-0018-000000000012"
+  },
+  {
+    "collection": "services_sections_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sectr-update-0019-000000000013"
   }
 ]
