@@ -26,7 +26,7 @@ import type { Locale, LocalizedString, Service, ServiceSection } from '$lib/type
 // each row in a *_translations collection has `languages_code` + parent FK.
 // ---------------------------------------------------------------------------
 
-interface DirectusServiceTranslation {
+export interface DirectusServiceTranslation {
 	languages_code: string;
 	title?: string | null;
 	subtitle?: string | null;
@@ -38,30 +38,30 @@ interface DirectusServiceTranslation {
 	impact_metric_label?: string | null;
 }
 
-interface DirectusServiceDeliverableTranslation {
+export interface DirectusServiceDeliverableTranslation {
 	languages_code: string;
 	label?: string | null;
 }
 
-interface DirectusServiceDeliverable {
+export interface DirectusServiceDeliverable {
 	id: number;
 	sort: number | null;
 	translations?: DirectusServiceDeliverableTranslation[];
 }
 
-interface DirectusServiceSectionTranslation {
+export interface DirectusServiceSectionTranslation {
 	languages_code: string;
 	title?: string | null;
 	content?: string | null;
 }
 
-interface DirectusServiceSectionRow {
+export interface DirectusServiceSectionRow {
 	id: number;
 	sort: number | null;
 	translations?: DirectusServiceSectionTranslation[];
 }
 
-interface DirectusService {
+export interface DirectusService {
 	id: string;
 	station: number;
 	icon?: string | null;
@@ -164,7 +164,7 @@ function client() {
 // Row → domain mapping
 // ---------------------------------------------------------------------------
 
-function toService(row: DirectusService): Service {
+export function toService(row: DirectusService): Service {
 	const translations = row.translations ?? [];
 	const service: Service = {
 		id: row.id,
