@@ -266,7 +266,7 @@ export function toService(row: DirectusService): Service {
 		station: row.station,
 		title: toLocalizedString(translations, 'title'),
 		description: toLocalizedString(translations, 'description'),
-		relatedProjects: row.related_projects ?? [],
+		relatedProjects: [], // populated by fetchServices via junction
 	};
 	if (row.icon) service.icon = row.icon;
 	if (row.svg) service.svg = row.svg;
@@ -392,7 +392,10 @@ export function toProject(row: DirectusProject): Project {
 // Ports
 // ---------------------------------------------------------------------------
 
-async function fetchServices(filter?: Record<string, unknown>): Promise<Service[]> {
+async function fetchServices(
+	filter?: Record<string, unknown>,
+	ctx?: object,
+): Promise<Service[]> {
 	const rows = await client().request(
 		readItems('services', {
 			fields: [
@@ -405,7 +408,12 @@ async function fetchServices(filter?: Record<string, unknown>): Promise<Service[
 			...(filter ? { filter } : {}),
 		}),
 	);
-	return (rows as unknown as DirectusService[]).map(toService);
+	const services = (rows as unknown as DirectusService[]).map(toService);
+	for (const service of services) {
+		const ids = await fetchRelatedProjectsViaJunction(service.id, ctx);
+		(service as { relatedProjects: string[] }).relatedProjects = [...ids];
+	}
+	return services;
 }
 
 // F2 — minimal-fields fetch for adjacency. Only `id + station` of visible
@@ -555,19 +563,41 @@ async function fetchProjectIdsForService(serviceId: string): Promise<readonly st
 	return (rows as unknown as Array<{ project_id: string }>).map((r) => r.project_id);
 }
 
+// Per-request memoized junction read for services.relatedProjects.
+// Mirrors the adjacencyMemo pattern above.
+// Without ctx, every call re-fetches (no global cache → no staleness risk).
+const relatedProjectsMemo = new WeakMap<object, Map<string, Promise<readonly string[]>>>();
+
+async function fetchRelatedProjectsViaJunction(
+	serviceId: string,
+	ctx?: object,
+): Promise<readonly string[]> {
+	if (!ctx) return fetchProjectIdsForService(serviceId);
+	let serviceMap = relatedProjectsMemo.get(ctx);
+	if (!serviceMap) {
+		serviceMap = new Map();
+		relatedProjectsMemo.set(ctx, serviceMap);
+	}
+	const cached = serviceMap.get(serviceId);
+	if (cached) return cached;
+	const p = fetchProjectIdsForService(serviceId);
+	serviceMap.set(serviceId, p);
+	return p;
+}
+
 export const directusAdapter: ContentAdapter = {
 	services: {
-		all: async () =>
-			parsePort('services.all', z.array(ServiceSchema), await fetchServices()),
-		byId: async (id) => {
-			const rows = await fetchServices({ id: { _eq: id } });
+		all: async (ctx) =>
+			parsePort('services.all', z.array(ServiceSchema), await fetchServices(undefined, ctx)),
+		byId: async (id, ctx) => {
+			const rows = await fetchServices({ id: { _eq: id } }, ctx);
 			return parsePort('services.byId', ServiceSchema.optional(), rows[0]);
 		},
-		visible: async () =>
+		visible: async (ctx) =>
 			parsePort(
 				'services.visible',
 				z.array(ServiceSchema),
-				await fetchServices({ visible: { _neq: false } }),
+				await fetchServices({ visible: { _neq: false } }, ctx),
 			),
 		adjacent: async (id, ctx) => {
 			// Step 1: get a lightweight id/station list (memoized per-ctx).
@@ -586,7 +616,7 @@ export const directusAdapter: ContentAdapter = {
 			const neighbours =
 				neighbourIds.length === 0
 					? []
-					: await fetchServices({ id: { _in: neighbourIds } });
+					: await fetchServices({ id: { _in: neighbourIds } }, ctx);
 			const byId = new Map(neighbours.map((s) => [s.id, s]));
 
 			return parsePort('services.adjacent', AdjacentServiceSchema, {

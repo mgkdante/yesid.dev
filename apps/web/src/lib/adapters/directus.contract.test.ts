@@ -90,7 +90,9 @@ describe('toService — pure row-to-domain mapping', () => {
 		expect(service.station).toBe(1);
 		expect(service.title).toEqual({ en: 'SQL Development' });
 		expect(service.description).toEqual({ en: 'Write, refactor, and tune SQL queries.' });
-		expect(service.relatedProjects).toEqual(['project-a', 'project-b']);
+		// relatedProjects is always [] from toService — populated later via M2M junction
+		// by fetchServices. The row.related_projects CSV field is no longer read.
+		expect(service.relatedProjects).toEqual([]);
 	});
 
 	it('preserves optional scalar fields (icon, svg, visible, stack)', () => {
