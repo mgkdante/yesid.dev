@@ -136,5 +136,6 @@ Full tree: `tree.txt`.
 - Add CSS tokens, `@theme` values, or scoped styles without updating [docs/project/CSS.md](docs/project/CSS.md).
 - Continue to the next task without Yesid's approval.
 - Close a slice without appending OS-quirks discoveries + durable learnings to cloud.
+- Close a slice with deferred work (anything in research.md § "Open follow-ups" or decisions.md flagged for later) that isn't filed as a GitHub issue first. The PR body links the issues; the slice-close commit references them by number. Untracked deferrals lose context fast and become tribal knowledge.
 - Invent a brand or workflow term that already exists in [docs/reference/VOCAB.md](docs/reference/VOCAB.md) or [docs/project/VOCAB.md](docs/project/VOCAB.md).
 - Hardcode tool-specific mechanics (model names, slash commands, tracker names) into this file — they go in overlays under [docs/reference/tools/](docs/reference/tools/).
