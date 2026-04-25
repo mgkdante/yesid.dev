@@ -19,9 +19,18 @@ import { env as publicEnv } from '$env/dynamic/public';
 import { z } from 'zod';
 
 import type { ContentAdapter } from './types';
-import type { Locale, LocalizedString, Service, ServiceSection } from '$lib/types';
+import type {
+	ImpactMetric,
+	Locale,
+	LocalizedString,
+	Project,
+	ProjectSection,
+	Service,
+	ServiceSection,
+} from '$lib/types';
 import { createQueuedFetch } from './directus-queue';
 import { parsePort } from '$lib/schemas/parse';
+import { ProjectSchema } from '$lib/schemas/project';
 import { ServiceSchema } from '$lib/schemas/service';
 import { assetIdFor } from '@repo/shared';
 
@@ -79,8 +88,77 @@ export interface DirectusService {
 	sections?: DirectusServiceSectionRow[];
 }
 
+// ---------------------------------------------------------------------------
+// Project row shapes — match the Directus collection layout authored in 18e.
+// Translations + sections + impact_metrics + services (M2M junction) follow
+// the same pattern as services: each child collection exposes a typed row +
+// translations alias that this adapter flattens into the LocalizedString
+// shape consumer code expects.
+// ---------------------------------------------------------------------------
+
+export interface DirectusProjectTranslation {
+	languages_code: string;
+	title?: string | null;
+	one_liner?: string | null;
+	description?: string | null;
+}
+
+export interface DirectusProjectSectionTranslation {
+	languages_code: string;
+	title?: string | null;
+	content?: string | null;
+}
+
+export interface DirectusProjectSectionRow {
+	id: number;
+	sort: number | null;
+	translations?: DirectusProjectSectionTranslation[];
+}
+
+export interface DirectusProjectImpactMetricTranslation {
+	languages_code: string;
+	label?: string | null;
+}
+
+export interface DirectusProjectImpactMetricRow {
+	id: number;
+	sort: number | null;
+	value: string;
+	before: string | null;
+	translations?: DirectusProjectImpactMetricTranslation[];
+}
+
+export interface DirectusProjectsServicesRow {
+	id: number;
+	project_id: string;
+	service_id: string;
+}
+
+export interface DirectusProject {
+	id: string;
+	status: 'draft' | 'published' | 'archived';
+	date_published: string | null;
+	sort: number | null;
+	featured: boolean;
+	hero_image: string | null;
+	repo_url: string | null;
+	live_url: string | null;
+	readme_url: string | null;
+	location: string | null;
+	environment: string | null;
+	version: string | null;
+	stack: string[];
+	tags: string[];
+	translations?: DirectusProjectTranslation[];
+	sections?: DirectusProjectSectionRow[];
+	impact_metrics?: DirectusProjectImpactMetricRow[];
+	services?: DirectusProjectsServicesRow[];
+}
+
 interface Schema {
 	services: DirectusService[];
+	projects: DirectusProject[];
+	projects_services: DirectusProjectsServicesRow[];
 }
 
 // ---------------------------------------------------------------------------
@@ -224,6 +302,82 @@ export function toService(row: DirectusService): Service {
 	if (sections.length > 0) service.sections = sections;
 
 	return service;
+}
+
+// ---------------------------------------------------------------------------
+// Project row → Project domain object
+//
+// Directus uses the canonical 'draft' | 'published' | 'archived' status enum
+// (from the Global Draft pattern set up in 18c). The TS Project interface in
+// @repo/shared keeps the legacy 'public' | 'private' | 'wip' triple. The
+// adapter is the only place that translates between the two — consumer code
+// downstream stays on the legacy enum. Mapping locked in 18e spec § 6:
+//   published → public
+//   draft     → wip
+//   archived  → private
+// ---------------------------------------------------------------------------
+
+function statusFromDirectus(s: 'draft' | 'published' | 'archived'): 'public' | 'private' | 'wip' {
+	switch (s) {
+		case 'published':
+			return 'public';
+		case 'draft':
+			return 'wip';
+		case 'archived':
+			return 'private';
+	}
+}
+
+export function toProject(row: DirectusProject): Project {
+	const translations = row.translations ?? [];
+
+	const sections: ProjectSection[] = (row.sections ?? [])
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((s) => ({
+			title: toLocalizedString(s.translations ?? [], 'title'),
+			content: toLocalizedString(s.translations ?? [], 'content'),
+		}));
+
+	const impactMetrics: ImpactMetric[] = (row.impact_metrics ?? [])
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((m) => {
+			const metric: ImpactMetric = {
+				value: m.value,
+				label: toLocalizedString(m.translations ?? [], 'label'),
+			};
+			if (m.before) metric.before = m.before;
+			return metric;
+		});
+
+	const project: Project = {
+		slug: row.id,
+		title: toLocalizedString(translations, 'title'),
+		oneLiner: toLocalizedString(translations, 'one_liner'),
+		description: toLocalizedString(translations, 'description'),
+		stack: row.stack ?? [],
+		tags: row.tags ?? [],
+		status: statusFromDirectus(row.status),
+		featured: row.featured,
+		relatedServices: (row.services ?? []).map((j) => j.service_id),
+		sections,
+	};
+
+	if (row.repo_url) project.repoUrl = row.repo_url;
+	if (row.live_url) project.liveUrl = row.live_url;
+	if (row.readme_url) project.readmeUrl = row.readme_url;
+	if (row.hero_image) project.image = row.hero_image;
+	if (row.location) project.location = row.location;
+	if (row.environment) project.environment = row.environment;
+	if (row.version) project.version = row.version;
+
+	if (impactMetrics.length > 0) {
+		project.impactMetrics = impactMetrics;
+		project.impactMetric = impactMetrics[0];
+	}
+
+	return project;
 }
 
 // ---------------------------------------------------------------------------
