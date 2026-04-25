@@ -2,6 +2,9 @@
   HomePage — orchestrator for the home page sections.
   5 sections: Hero, Manifesto, Featured Projects, Services, Closer.
   Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
+
+  Slice 18d Phase 8: receives `metroSvg` (Directus-fetched) from +page.svelte
+  and forwards it to HeroBanner → MetroNetwork.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
@@ -15,6 +18,11 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
 	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
+
+	interface Props {
+		metroSvg: string;
+	}
+	let { metroSvg }: Props = $props();
 
 	// Section + rotated-title bindings for crescendo scrubs (desktop only).
 	let projectsSectionEl = $state<HTMLElement>(undefined!);
@@ -50,7 +58,7 @@
 
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
 <section class="w-full">
-	<HeroBanner />
+	<HeroBanner {metroSvg} />
 </section>
 
 <Separator variant="hazard" />

@@ -1,25 +1,35 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import Page from './+page.svelte';
+import type { PageData } from './$types';
+
+// Slice 18d Phase 8: Page now reads `data.metroSvg` (loaded by +page.server.ts
+// from Directus). In unit tests we render the page directly without a load,
+// so each render() must supply a stub `data` prop with a minimal SVG.
+const stubData: PageData = {
+	metroSvg: '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+} as PageData;
+
+const renderPage = () => render(Page, { props: { data: stubData } });
 
 describe('Home page', () => {
 	it('renders the app root', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('app-root')).toBeInTheDocument();
 	});
 
 	it('renders the hero banner', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('hero-banner')).toBeInTheDocument();
 	});
 
 	it('renders the metro network container in the hero', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('metro-network-container')).toBeInTheDocument();
 	});
 
 	it('renders the hero headline', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('hero-line1')).toBeInTheDocument();
 		expect(screen.getByTestId('hero-line1').textContent).toContain('PIPELINES THAT');
 		expect(screen.getByTestId('hero-line2')).toBeInTheDocument();
@@ -27,41 +37,41 @@ describe('Home page', () => {
 	});
 
 	it('renders the hero orange dot', () => {
-		render(Page);
+		renderPage();
 		const dot = screen.getByTestId('hero-dot');
 		expect(dot).toBeInTheDocument();
 		expect(dot.tagName.toLowerCase()).toBe('svg');
 	});
 
 	it('renders hero subheadline', () => {
-		render(Page);
+		renderPage();
 		const sub = screen.getByTestId('hero-subheadline');
 		expect(sub).toBeInTheDocument();
 		expect(sub.textContent).toContain('Data that tell the truth');
 	});
 
 	it('renders hero subtitle', () => {
-		render(Page);
+		renderPage();
 		const subtitle = screen.getByTestId('hero-subtitle');
 		expect(subtitle).toBeInTheDocument();
 		expect(subtitle.textContent).toContain('reliable infrastructure');
 	});
 
 	it('renders hero CTAs', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('hero-cta-projects')).toBeInTheDocument();
 		expect(screen.getByTestId('hero-cta-contact')).toBeInTheDocument();
 	});
 
 	it('renders hero metric cards', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('hero-metrics')).toBeInTheDocument();
 		const cards = screen.getAllByTestId('metric-card');
 		expect(cards).toHaveLength(3);
 	});
 
 	it('renders hero SQL panel', () => {
-		render(Page);
+		renderPage();
 		const panels = screen.getAllByTestId('sql-panel');
 		expect(panels.length).toBeGreaterThanOrEqual(1);
 		const queries = screen.getAllByTestId('sql-query');
@@ -69,63 +79,63 @@ describe('Home page', () => {
 	});
 
 	it('renders hero refresh button', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('hero-refresh')).toBeInTheDocument();
 	});
 
 	it('renders hazard stripe dividers between sections', () => {
-		render(Page);
+		renderPage();
 		const container = screen.getByTestId('app-root');
 		const stripes = container.querySelectorAll('[aria-hidden="true"][style*="repeating-linear-gradient"]');
 		expect(stripes.length).toBeGreaterThanOrEqual(1);
 	});
 
 	it('renders the manifesto section', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('manifesto-section')).toBeInTheDocument();
 	});
 
 	it('renders manifesto capability pills', () => {
-		render(Page);
+		renderPage();
 		const pills = screen.getAllByTestId('manifesto-pill');
 		expect(pills).toHaveLength(5);
 	});
 
 	it('renders the proof reel section', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
 	});
 
 	it('renders 3 proof reel cards', () => {
-		render(Page);
+		renderPage();
 		const cards = screen.getAllByTestId('proof-card');
 		expect(cards).toHaveLength(3);
 	});
 
 	it('renders the services section', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('services-section')).toBeInTheDocument();
 	});
 
 	it('renders 6 service cards', () => {
-		render(Page);
+		renderPage();
 		const cards = screen.getAllByTestId('services-card');
 		expect(cards).toHaveLength(6);
 	});
 
 	it('renders service benefit headlines', () => {
-		render(Page);
+		renderPage();
 		const benefits = screen.getAllByTestId('services-benefit');
 		expect(benefits).toHaveLength(6);
 	});
 
 	it('renders the closer section', () => {
-		render(Page);
+		renderPage();
 		expect(screen.getByTestId('closer-section')).toBeInTheDocument();
 	});
 
 	it('renders closer departure board with 5 rows', () => {
-		render(Page);
+		renderPage();
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows).toHaveLength(5);
 	});

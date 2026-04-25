@@ -23,6 +23,7 @@ import type { Locale, LocalizedString, Service, ServiceSection } from '$lib/type
 import { createQueuedFetch } from './directus-queue';
 import { parsePort } from '$lib/schemas/parse';
 import { ServiceSchema } from '$lib/schemas/service';
+import { assetIdFor } from '@repo/shared';
 
 // ---------------------------------------------------------------------------
 // Directus schema — mirrors yesid.dev-cms PR #5 + #6 as applied at cms.yesid.dev.
@@ -292,6 +293,56 @@ const todo = (where: string): never => {
 	);
 };
 
+// ---------------------------------------------------------------------------
+// Assets fetch — direct /assets/<uuid> reads, NOT through @directus/sdk.
+//
+// Slice 18d Phase 8 (Task 28-33): the metro-svg consumer flip stops inlining
+// the SVG via Vite `?raw` and pulls it from Directus instead. The Directus
+// `/assets/<id>` endpoint returns the raw asset bytes (no `{ data: ... }`
+// envelope), so we go around the SDK and use a queued fetch directly.
+//
+// Sharing the `createQueuedFetch` factory with the SDK client keeps the
+// rate-limit budget (50 pts / 1s server cap) honored across both READ paths
+// from a single SvelteKit `load()` fan-out.
+// ---------------------------------------------------------------------------
+
+let cachedAssetsFetch: typeof fetch | null = null;
+
+function assetsFetch(): typeof fetch {
+	if (!cachedAssetsFetch) {
+		cachedAssetsFetch = createQueuedFetch();
+	}
+	return cachedAssetsFetch;
+}
+
+function assetsBaseUrl(): string {
+	const url = publicEnv.PUBLIC_DIRECTUS_URL;
+	if (!url) {
+		throw new Error(
+			'[directusAdapter] PUBLIC_DIRECTUS_URL is required. Set it in your environment.',
+		);
+	}
+	return url.replace(/\/+$/, '');
+}
+
+const SvgPayloadSchema = z
+	.string()
+	.min(1)
+	.refine((s) => s.includes('<svg'), { message: 'response is not an SVG' });
+
+async function fetchMetroSvg(): Promise<string> {
+	const id = assetIdFor('images/montreal-metro.svg');
+	const url = `${assetsBaseUrl()}/assets/${id}`;
+	const res = await assetsFetch()(url);
+	if (!res.ok) {
+		throw new Error(
+			`[directusAdapter] content.metroSvg: ${res.status} ${res.statusText} fetching ${url}`,
+		);
+	}
+	const text = await res.text();
+	return parsePort('content.metroSvg', SvgPayloadSchema, text);
+}
+
 // Shared adjacent schema — same shape as static adapter's services.adjacent
 // parsePort call. Extracted so both ports parse through identical gates.
 const AdjacentServiceSchema = z.object({
@@ -405,5 +456,6 @@ export const directusAdapter: ContentAdapter = {
 		techStackPage: async () => todo('content.techStackPage'),
 		heroMock: async () => todo('content.heroMock'),
 		initialHeroData: async () => todo('content.initialHeroData'),
+		metroSvg: async () => fetchMetroSvg(),
 	},
 };

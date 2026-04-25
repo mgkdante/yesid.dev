@@ -33,7 +33,16 @@ export const adapter: ContentAdapter = {
 	blog: staticAdapter.blog,
 	meta: staticAdapter.meta,
 	techStack: staticAdapter.techStack,
-	content: staticAdapter.content,
+
+	// content: still on static for site-chrome literals + home-page blocks
+	// (M2A flip lands in 18i), with one method overridden:
+	//   - metroSvg: Directus (Slice 18d Phase 8 / Task 28-33). The Montreal-
+	//     metro SVG is now stored as a Directus asset and fetched at SSR via
+	//     +page.server.ts → adapter.content.metroSvg() → MetroNetwork prop.
+	content: {
+		...staticAdapter.content,
+		metroSvg: directusAdapter.content.metroSvg,
+	},
 };
 
 export type { ContentAdapter } from './types';

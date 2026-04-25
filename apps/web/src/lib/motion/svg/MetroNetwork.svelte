@@ -1,7 +1,14 @@
 <!--
-  MetroNetwork: inlines Yesid's montreal-metro.svg at build via Vite ?raw import
-  and exposes DOM groups for GSAP animation. The SVG is part of SSR HTML — no
-  runtime fetch — so it paints at first paint and is a valid LCP candidate.
+  MetroNetwork: receives Yesid's montreal-metro.svg as a prop (sourced from
+  Directus via `+page.server.ts` → `adapter.content.metroSvg()`), inlines it
+  via `{@html}`, and exposes DOM groups for GSAP animation. The markup is
+  part of the SSR HTML — no runtime fetch on the client — so it paints at
+  first paint and remains a valid LCP candidate.
+
+  Slice 18d Phase 8 (Task 28-33): source flipped from a Vite `?raw` build-
+  inlined import to a Directus-fetched asset. Same final HTML shape — only
+  the data-flow changed. The Directus path uses the @repo/shared id-map
+  (assets-id-map.json) to resolve `images/montreal-metro.svg` to its file UUID.
 
   SVG structure (from Yesid's Figma export; SVGO-optimized via svgo.config.mjs):
     - Stations: orange filled paths (fill="#E07800"), including REM line stations
@@ -15,36 +22,44 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import metroSvgRaw from '../../../../static/images/montreal-metro.svg?raw';
 
-	let containerEl = $state<HTMLDivElement | undefined>(undefined);
-	let svgEl = $state<SVGSVGElement | undefined>(undefined);
+	interface Props {
+		svg: string;
+		containerEl?: HTMLDivElement;
+		svgEl?: SVGSVGElement;
+	}
+
+	let {
+		svg,
+		containerEl = $bindable(),
+		svgEl = $bindable(),
+	}: Props = $props();
 
 	onMount(() => {
 		if (!containerEl) return;
 
-		const svg = containerEl.querySelector('svg');
-		if (!svg) return;
-		svgEl = svg;
+		const found = containerEl.querySelector('svg');
+		if (!found) return;
+		svgEl = found;
 
-		svg.setAttribute('class', 'h-full w-full');
-		svg.setAttribute('aria-hidden', 'true');
-		svg.setAttribute('data-testid', 'metro-network');
-		svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+		found.setAttribute('class', 'h-full w-full');
+		found.setAttribute('aria-hidden', 'true');
+		found.setAttribute('data-testid', 'metro-network');
+		found.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 		// Mobile: crop viewBox to a taller region so the SVG renders bigger,
 		// keeping Berri-UQAM at the same ~80% horizontal position
 		const isMobile = window.innerWidth < 768;
 		if (isMobile) {
-			svg.setAttribute('viewBox', '972 300 600 600');
+			found.setAttribute('viewBox', '972 300 600 600');
 		}
-		svg.style.overflow = 'visible';
+		found.style.overflow = 'visible';
 
 		// Classify elements by their visual role:
 		// Lines are stroke paths (no fill, have stroke attribute)
 		// Stations are small filled circles/paths with fill="#E07800"
 		// Background is the large dark shape (fill="#1E1E1E")
 		// Labels are grey text paths (fill="#808285")
-		const allPaths = svg.querySelectorAll('path');
+		const allPaths = found.querySelectorAll('path');
 		let biggestStation: Element | null = null;
 		let biggestSize = 0;
 
@@ -87,12 +102,10 @@
 			(biggestStation as Element).classList.add('metro-berri');
 		}
 	});
-
-	export { containerEl, svgEl };
 </script>
 
 <div
 	bind:this={containerEl}
 	class="flex max-h-[80dvh] w-full items-center justify-center"
 	data-testid="metro-network-container"
->{@html metroSvgRaw}</div>
+>{@html svg}</div>
