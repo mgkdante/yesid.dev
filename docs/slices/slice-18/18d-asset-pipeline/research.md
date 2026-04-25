@@ -32,6 +32,22 @@
 
 ---
 
+## Preset transform behavior
+
+**Status:** Resolved — Task 24 (2026-04-25).
+
+**Question:** Do `storage_asset_presets` actually transform images, or silently pass through?
+
+**Method:** Downloaded `yesid-dev.png` (355621 bytes, 2482×1326 PNG) via `?key=thumb-240`, `?key=card-600`, and `?key=hero-1200`. Inspected resulting dimensions + file sizes using `file` command. Also downloaded `headshot.webp` (9344 bytes, 600×400 WebP) via `?key=thumb-240`. Checked response `content-disposition` and `content-type` headers.
+
+**Result:** Transforms NOT executing. All 3 preset downloads of `yesid-dev.png` returned identical raw PNG (355621 bytes, 2482×1326) — no resizing, no WebP conversion. `headshot.webp` via `?key=thumb-240` returned the original WebP (9344 bytes, 600×400) unchanged. `content-disposition` header shows original filename in all cases (not a transformed variant name). Railway env has `STORAGE_ASSET_TRANSFORM=presets`; Directus settings DB shows `"all"` (env var takes precedence at container startup). Despite preset keys being valid (9-curl matrix: all HTTP 200), Sharp is not executing transforms on any file type.
+
+Root cause hypothesis: Sharp native bindings not functional in Railway container (libvips not installed or wrong architecture). Directus silently falls back to raw passthrough when Sharp is unavailable rather than returning an error.
+
+**Decision:** Sharp encoder broken on Railway Directus 11.17.3 deployment. For slice-18d purposes the raw files upload cleanly to R2 and are accessible — the id-map is valid and `assetIdFor()` helper is unaffected. Image optimization (resize + WebP conversion) is not available until Sharp is fixed. Track as post-slice-18 infrastructure task: investigate libvips/Sharp availability in Railway Directus container; consider `sharp` npm install or custom Dockerfile. WebP passthrough is usable for 18d-18i since source files are already WebP where needed.
+
+---
+
 ## R2 bucket layout (key naming)
 
 **Status:** Resolved — Task 20 (2026-04-24).
