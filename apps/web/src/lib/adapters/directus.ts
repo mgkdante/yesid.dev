@@ -81,7 +81,6 @@ export interface DirectusService {
 	icon?: string | null;
 	svg?: string | null;
 	visible?: boolean | null;
-	related_projects?: string[] | null;
 	stack?: string[] | null;
 	translations?: DirectusServiceTranslation[];
 	deliverables?: DirectusServiceDeliverable[];

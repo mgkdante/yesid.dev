@@ -76,7 +76,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const row: DirectusService = {
 			id: 'sql-development',
 			station: 1,
-			related_projects: ['project-a', 'project-b'],
 			translations: [
 				{
 					languages_code: 'en',
@@ -91,7 +90,7 @@ describe('toService — pure row-to-domain mapping', () => {
 		expect(service.title).toEqual({ en: 'SQL Development' });
 		expect(service.description).toEqual({ en: 'Write, refactor, and tune SQL queries.' });
 		// relatedProjects is always [] from toService — populated later via M2M junction
-		// by fetchServices. The row.related_projects CSV field is no longer read.
+		// by fetchServices. The legacy CSV field has been dropped from DirectusService.
 		expect(service.relatedProjects).toEqual([]);
 	});
 
@@ -103,7 +102,6 @@ describe('toService — pure row-to-domain mapping', () => {
 			svg: 'service-sql.svg',
 			visible: false,
 			stack: ['PostgreSQL', 'T-SQL'],
-			related_projects: [],
 			translations: [{ languages_code: 'en', title: 'X', description: 'desc' }],
 		};
 		const service = toService(row);
@@ -117,7 +115,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [
 				{ languages_code: 'en', title: 'Hello' },
 				{ languages_code: 'fr', title: 'Bonjour' },
@@ -132,7 +129,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const withBoth: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [
 				{
 					languages_code: 'en',
@@ -151,7 +147,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const onlyValue: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [
 				{
 					languages_code: 'en',
@@ -168,7 +163,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [{ languages_code: 'en', title: 'X', description: 'd' }],
 			deliverables: [
 				{
@@ -194,7 +188,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [{ languages_code: 'en', title: 'X', description: 'd' }],
 			sections: [
 				{
@@ -212,11 +205,10 @@ describe('toService — pure row-to-domain mapping', () => {
 		]);
 	});
 
-	it('returns an empty relatedProjects array when the field is null', () => {
+	it('always emits an empty relatedProjects array (junction populates later)', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: null,
 			translations: [{ languages_code: 'en', title: 'X', description: 'd' }],
 		};
 		expect(toService(row).relatedProjects).toEqual([]);
