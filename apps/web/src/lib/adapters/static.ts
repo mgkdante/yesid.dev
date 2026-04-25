@@ -92,6 +92,11 @@ import { navLinks, menuItems, errorPageContent, metroBookends } from '$lib/conte
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
+// Slice 18d Phase 8: static fallback for content.metroSvg — keeps the legacy
+// build-time `?raw` source available for unit tests (which override
+// directusAdapter with staticAdapter via setup.data.ts) and for future
+// no-network test scenarios. The Directus path lives in directus.ts.
+import metroSvgRaw from '../../../static/images/montreal-metro.svg?raw';
 
 import type { ContentAdapter } from './types';
 
@@ -219,5 +224,6 @@ export const staticAdapter: ContentAdapter = {
 		heroMock: async () => parsePort('content.heroMock', HeroDataSchema, generateHeroData()),
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
+		metroSvg: async () => metroSvgRaw,
 	},
 };

@@ -1,6 +1,6 @@
 <!--
   Hero banner: scroll-driven SVG metro network animation (Slice A + Slice C).
-  Uses Yesid's hand-built montreal_map.svg.
+  Renders the home-page hero band; layered backdrop with the metro-network motion (SVG fetched from Directus, no static map asset).
 
   Phase 1 (0-3%)    — Berri-UQAM dot + "yesid" + "SCROLL DOWN" visible at load
   Phase 1b (3-15%)   — Dot + text pulse (light on/off, opacity)
@@ -35,12 +35,17 @@
 	import HeroMobileSql from './HeroMobileSql.svelte';
 	import { Button } from '$lib/components/ui/button';
 
+	// Slice 18d Phase 8: metroSvg threaded in from +page.server.ts → HomePage.
+	interface Props {
+		metroSvg: string;
+	}
+	let { metroSvg }: Props = $props();
+
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;
 	let scrollPrompt: HTMLParagraphElement;
 	let scrollText: HTMLSpanElement;
 	let scrollCursorEl: HTMLSpanElement;
-	let networkComponent: ReturnType<typeof MetroNetwork>;
 	let reducedMotion = false;
 
 	const scrollDownLabel = resolveLocale(heroAnimContent.scrollDown, 'en');
@@ -175,7 +180,7 @@
 			bind:this={svgWrapper}
 			class="absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
 		>
-			<MetroNetwork bind:this={networkComponent} />
+			<MetroNetwork svg={metroSvg} />
 		</div>
 
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->

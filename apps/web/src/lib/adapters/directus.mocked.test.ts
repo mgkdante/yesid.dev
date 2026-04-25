@@ -129,3 +129,39 @@ describe('directusAdapter.services — fetch contract', () => {
 		expect(filter!).toContain('false');
 	});
 });
+
+// ---------------------------------------------------------------------------
+// content.metroSvg (Slice 18d Phase 8 — Task 28-33)
+//
+// Asserts the consumer-flip wiring: content.metroSvg() resolves the
+// montreal-metro UUID via @repo/shared assetIdFor, hits
+// /assets/<uuid> on the configured Directus base URL, and returns
+// the SVG markup. Non-2xx responses must throw with status context so
+// SSR load() failures surface clearly.
+// ---------------------------------------------------------------------------
+
+describe('directusAdapter.content.metroSvg — fetch contract', () => {
+	it('hits /assets/<uuid> for the montreal-metro svg id from id-map', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			new Response('<svg xmlns="http://www.w3.org/2000/svg"></svg>', {
+				status: 200,
+				headers: { 'content-type': 'image/svg+xml' },
+			}),
+		);
+
+		const out = await directusAdapter.content.metroSvg();
+
+		expect(out).toContain('<svg');
+		const { pathname } = parseCapturedUrl();
+		// Directus file UUIDs are RFC-4122 v4: 8-4-4-4-12 hex
+		expect(pathname).toMatch(/^\/assets\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+	});
+
+	it('throws on non-2xx response with status + statusText in the error', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			new Response('not found', { status: 404, statusText: 'Not Found' }),
+		);
+
+		await expect(directusAdapter.content.metroSvg()).rejects.toThrow(/404/);
+	});
+});
