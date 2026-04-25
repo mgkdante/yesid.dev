@@ -165,3 +165,104 @@ describe('directusAdapter.content.metroSvg — fetch contract', () => {
 		await expect(directusAdapter.content.metroSvg()).rejects.toThrow(/404/);
 	});
 });
+
+// ---------------------------------------------------------------------------
+// projects port (18e Phase 7 — Task 29)
+//
+// Each port method asserts the captured fetch URL: collection, expected
+// fields/filter shape, limit=-1 for "all rows" reads. Two-stage byService
+// goes through the projects_services junction first, then projects.
+// ---------------------------------------------------------------------------
+
+describe('directusAdapter.projects — fetch contract', () => {
+	it('projects.all hits /items/projects with nested fields', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+		await directusAdapter.projects.all();
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/projects');
+		const fields = search.get('fields') ?? '';
+		expect(fields).toContain('translations');
+		expect(fields).toContain('sections');
+		expect(fields).toContain('impact_metrics');
+		expect(fields).toContain('services');
+		expect(search.get('limit')).toBe('-1');
+	});
+
+	it('projects.bySlug filters by id._eq', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+		await directusAdapter.projects.bySlug('yesid-dev');
+		const filter = parseCapturedUrl().search.get('filter') ?? '';
+		expect(filter).toContain('id');
+		expect(filter).toContain('_eq');
+		expect(filter).toContain('yesid-dev');
+	});
+
+	it('projects.featured filters by featured._eq=true', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+		await directusAdapter.projects.featured();
+		const filter = parseCapturedUrl().search.get('filter') ?? '';
+		expect(filter).toContain('featured');
+		expect(filter).toContain('_eq');
+		expect(filter).toContain('true');
+	});
+
+	it('projects.public filters by status._eq=published', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+		await directusAdapter.projects.public();
+		const filter = parseCapturedUrl().search.get('filter') ?? '';
+		expect(filter).toContain('status');
+		expect(filter).toContain('_eq');
+		expect(filter).toContain('published');
+	});
+
+	it('projects.byService runs two-stage: junction + projects', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([{ project_id: 'transit-data-pipeline' }]),
+		);
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+		await directusAdapter.projects.byService('sql-development');
+		expect(sharedMockFetch).toHaveBeenCalledTimes(2);
+		const firstRaw = sharedMockFetch.mock.calls[0][0];
+		const firstUrl = typeof firstRaw === 'string' ? new URL(firstRaw) : (firstRaw as URL);
+		expect(firstUrl.pathname).toBe('/items/projects_services');
+		const firstFilter = firstUrl.searchParams.get('filter') ?? '';
+		expect(firstFilter).toContain('service_id');
+		expect(firstFilter).toContain('sql-development');
+	});
+
+	it('projects.allTags returns unique sorted tags from minimal-fields fetch', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				{ tags: ['etl', 'transit'] },
+				{ tags: ['portfolio', 'web', 'etl'] },
+			]),
+		);
+		const tags = await directusAdapter.projects.allTags();
+		expect(tags).toEqual(['etl', 'portfolio', 'transit', 'web']);
+		const fields = parseCapturedUrl().search.get('fields') ?? '';
+		expect(fields).toBe('tags');
+	});
+
+	it('projects.allStackItems returns unique sorted stack items', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([{ stack: ['SvelteKit', 'TS'] }, { stack: ['TS', 'Vercel'] }]),
+		);
+		const stack = await directusAdapter.projects.allStackItems();
+		expect(stack).toEqual(['SvelteKit', 'TS', 'Vercel']);
+	});
+
+	it('projects.serviceIdsForProjects returns unique sorted service ids from junction', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				{ service_id: 'sql-development' },
+				{ service_id: 'data-pipeline' },
+				{ service_id: 'sql-development' },
+			]),
+		);
+		const ids = await directusAdapter.projects.serviceIdsForProjects();
+		expect(ids).toEqual(['data-pipeline', 'sql-development']);
+		const raw = sharedMockFetch.mock.calls[0][0];
+		const url = typeof raw === 'string' ? new URL(raw) : (raw as URL);
+		expect(url.pathname).toBe('/items/projects_services');
+	});
+});
