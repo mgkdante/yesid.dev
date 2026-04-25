@@ -24,3 +24,11 @@
 | AM4 | The plan's "thumb-240" preset reference was incorrect — actual preset name is `thumb-300`. ProjectCard uses `card-600`; no `thumb-300` consumers identified in current codebase. | Phase 8 finding |
 | AM5 | ProjectSchema (`apps/web/src/lib/schemas/project.ts`) already existed from earlier slices; Task 26 was a content-equivalence verification, no new commit. | Phase 7a finding |
 | AM6 | Only ProjectCard.svelte uses `project.image` in current consumer code; the plan's enumeration of multiple components (ProjectMiniCard, ProjectDetailHeader, etc.) overstated the surface area. | Phase 8 finding |
+
+## Open follow-ups (filed as GitHub issues at close)
+
+- #41 — Block Editor migration for projects description + sections.content (post-18f)
+- #42 — scaffold-port.ts extension for M2M-heavy schemas (slice-18k)
+- #43 — projects integration tests (slice-18j)
+- #44 — N+1 batch optimization for services M2M (follow-on)
+- #45 — Cosmetic FK constraint name diff noise (follow-on)
