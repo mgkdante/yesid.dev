@@ -23,7 +23,7 @@
 | **18c** | **Foundations + services retrofit + monorepo pivot** — 57 tasks below | ✅ closed 2026-04-24 | shipped | [18c-foundations/](18c-foundations/) |
 | **18d** | Asset pipeline + Lottie retirement | ✅ closed 2026-04-24 | shipped | [18d-asset-pipeline/](18d-asset-pipeline/) |
 | **18e** | Projects (+ M2M to services replacing CSV) | ✅ closed 2026-04-24 | shipped | [18e-projects/](18e-projects/) |
-| **18f** | Blog + Block Editor + BlockRenderer.svelte | ⏸ planned | 1.5–2 sessions | — |
+| **18f** | Blog + Block Editor + BlockRenderer.svelte | 🟡 in flight | 2–2.5 sessions | [18f-blog-block-editor/](18f-blog-block-editor/) |
 | **18g** | Tech-stack + tech_relations + stack_scenarios | ⏸ planned | 1 session | — |
 | **18h** | Meta + route_seo (singleton + og_image) | ⏸ planned | 0.5 session | — |
 | **18i** | Pages + M2A blocks (12 block collections + nav/menu/error) | ⏸ planned | 2–3 sessions | — |
@@ -282,9 +282,9 @@ Apply F1–F23 patterns to the live services port so it becomes the reference im
 
 ---
 
-## 18f — Blog + Block Editor + BlockRenderer.svelte (⏸ planned)
+## 18f — Blog + Block Editor + BlockRenderer.svelte (🟡 in flight)
 
-**Scope:** Most Svelte-side work; introduces Block Editor consumer component.
+**Scope:** Most Svelte-side work in slice-18; introduces Block Editor consumer component. **Folds in [#41](https://github.com/mgkdante/yesid.dev/issues/41) (projects body migration) per Q3 + new `morph_shapes` collection per Q6 + new `illustrations` library per Q5.** See [18f-blog-block-editor/spec.md](18f-blog-block-editor/spec.md) + [plan.md](18f-blog-block-editor/plan.md) (13 phases, 92 tasks).
 
 **Schema:** `blog_posts` (id · slug · status · date_published · lang · body **[Block Editor]** · cover_image M2O · svg_illustration M2O · animation_reverse M2O) + `blog_posts_translations` (language_code · title · excerpt).
 
