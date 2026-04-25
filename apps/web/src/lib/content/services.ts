@@ -173,7 +173,6 @@ export const services: readonly Service[] = [
 		},
 		station: 4,
 		icon: 'station-performance.json',
-		lottieReverse: true,
 		svg: 'service-database.svg',
 		visible: true,
 		benefitHeadline: { en: 'Zero-downtime migrations while you sleep' },

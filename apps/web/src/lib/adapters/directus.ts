@@ -71,7 +71,6 @@ export interface DirectusService {
 	station: number;
 	icon?: string | null;
 	svg?: string | null;
-	lottie_reverse?: boolean | null;
 	visible?: boolean | null;
 	related_projects?: string[] | null;
 	stack?: string[] | null;
@@ -185,9 +184,6 @@ export function toService(row: DirectusService): Service {
 	};
 	if (row.icon) service.icon = row.icon;
 	if (row.svg) service.svg = row.svg;
-	if (row.lottie_reverse !== null && row.lottie_reverse !== undefined) {
-		service.lottieReverse = row.lottie_reverse;
-	}
 	if (row.visible !== null && row.visible !== undefined) {
 		service.visible = row.visible;
 	}

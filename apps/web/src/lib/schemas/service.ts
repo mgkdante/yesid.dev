@@ -27,7 +27,6 @@ export const ServiceSchema = z.object({
 	description: LocalizedStringSchema,
 	station: z.number(),
 	icon: z.string().optional(),
-	lottieReverse: z.boolean().optional(),
 	svg: z.string().optional(),
 	visible: z.boolean().optional(),
 	relatedProjects: z.array(z.string()),

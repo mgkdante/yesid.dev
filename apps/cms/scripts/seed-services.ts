@@ -76,7 +76,6 @@ export interface Service {
 	station: number;
 	icon?: string;
 	svg?: string;
-	lottieReverse?: boolean;
 	visible?: boolean;
 	relatedProjects: readonly string[];
 	stack?: readonly string[];
@@ -114,7 +113,6 @@ export const ServiceSchema: z.ZodType<Service> = z.object({
 	station: z.number().int().positive(),
 	icon: z.string().min(1).optional(),
 	svg: z.string().min(1).optional(),
-	lottieReverse: z.boolean().optional(),
 	visible: z.boolean().optional(),
 	relatedProjects: z.array(z.string().min(1)).readonly(),
 	stack: z.array(z.string().min(1)).readonly().optional(),
@@ -157,7 +155,6 @@ export interface DirectusServiceRow {
 	station: number;
 	icon?: string;
 	svg?: string;
-	lottie_reverse: boolean;
 	visible: boolean;
 	related_projects: readonly string[];
 	stack?: readonly string[];
@@ -252,7 +249,6 @@ export function toServiceRow(service: Service): DirectusServiceRow {
 	const row: DirectusServiceRow = {
 		id: service.id,
 		station: service.station,
-		lottie_reverse: service.lottieReverse ?? false,
 		visible: service.visible ?? true,
 		related_projects: service.relatedProjects,
 		translations: toTranslationRows(service),

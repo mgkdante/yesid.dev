@@ -214,7 +214,6 @@
 		},
 		"station": 4,
 		"icon": "station-performance.json",
-		"lottieReverse": true,
 		"svg": "service-database.svg",
 		"visible": true,
 		"benefitHeadline": {
