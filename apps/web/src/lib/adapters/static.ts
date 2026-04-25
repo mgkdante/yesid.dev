@@ -97,19 +97,48 @@ import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 // directusAdapter with staticAdapter via setup.data.ts) and for future
 // no-network test scenarios. The Directus path lives in directus.ts.
 import metroSvgRaw from '../../../static/images/montreal-metro.svg?raw';
+import { assetIdForOrUndefined } from '@repo/shared';
+import type { Project } from '$lib/types';
 
 import type { ContentAdapter } from './types';
 
+// ---------------------------------------------------------------------------
+// Static adapter — Project.image normalizer (18e Phase 7 Task 31)
+//
+// The static content layer stores project images as bare filenames (e.g.
+// 'yesid-dev.png'). Directus adapter returns them as UUIDs. To keep consumer
+// code uniform across both adapters (single asset(image, preset) call site),
+// we resolve the legacy filename to its Directus UUID here. If the UUID is
+// not in the map, the filename is left intact so the gradient-placeholder
+// fallback handles missing-uuid cases gracefully.
+// ---------------------------------------------------------------------------
+
+function withImageUuid(project: Project): Project {
+	if (!project.image) return project;
+	const legacyPath = `images/work/${project.image}`;
+	const uuid = assetIdForOrUndefined(legacyPath);
+	if (!uuid) {
+		// Fail-soft: leave the filename intact; consumer's gradient-placeholder
+		// fallback handles missing-uuid case.
+		return project;
+	}
+	return { ...project, image: uuid };
+}
+
 export const staticAdapter: ContentAdapter = {
 	projects: {
-		all: async () => parsePort('projects.all', z.array(ProjectSchema), projects),
-		bySlug: async (slug) =>
-			parsePort('projects.bySlug', ProjectSchema.optional(), getProjectBySlug(slug)),
+		all: async () =>
+			parsePort('projects.all', z.array(ProjectSchema), projects.map(withImageUuid)),
+		bySlug: async (slug) => {
+			const p = getProjectBySlug(slug);
+			return parsePort('projects.bySlug', ProjectSchema.optional(), p ? withImageUuid(p) : undefined);
+		},
 		featured: async () =>
-			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects()),
-		public: async () => parsePort('projects.public', z.array(ProjectSchema), getPublicProjects()),
+			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects().map(withImageUuid)),
+		public: async () =>
+			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects().map(withImageUuid)),
 		byService: async (serviceId) =>
-			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId)),
+			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId).map(withImageUuid)),
 		// Utility ports — return primitives/strings, no schema needed (spec D2).
 		allTags: async () => getAllTags(),
 		allStackItems: async () => getAllStackItems(),

@@ -1,0 +1,28 @@
+{
+  "collection": "projects",
+  "field": "services",
+  "type": "alias",
+  "meta": {
+    "collection": "projects",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "services",
+    "group": null,
+    "hidden": false,
+    "interface": "list-m2m",
+    "note": null,
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 102,
+    "special": [
+      "m2m"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

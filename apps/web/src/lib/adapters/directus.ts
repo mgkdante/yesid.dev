@@ -19,9 +19,18 @@ import { env as publicEnv } from '$env/dynamic/public';
 import { z } from 'zod';
 
 import type { ContentAdapter } from './types';
-import type { Locale, LocalizedString, Service, ServiceSection } from '$lib/types';
+import type {
+	ImpactMetric,
+	Locale,
+	LocalizedString,
+	Project,
+	ProjectSection,
+	Service,
+	ServiceSection,
+} from '$lib/types';
 import { createQueuedFetch } from './directus-queue';
 import { parsePort } from '$lib/schemas/parse';
+import { ProjectSchema } from '$lib/schemas/project';
 import { ServiceSchema } from '$lib/schemas/service';
 import { assetIdFor } from '@repo/shared';
 
@@ -72,15 +81,91 @@ export interface DirectusService {
 	icon?: string | null;
 	svg?: string | null;
 	visible?: boolean | null;
-	related_projects?: string[] | null;
 	stack?: string[] | null;
 	translations?: DirectusServiceTranslation[];
 	deliverables?: DirectusServiceDeliverable[];
 	sections?: DirectusServiceSectionRow[];
 }
 
+// ---------------------------------------------------------------------------
+// Project row shapes — match the Directus collection layout authored in 18e.
+// Translations + sections + impact_metrics + services (M2M junction) follow
+// the same pattern as services: each child collection exposes a typed row +
+// translations alias that this adapter flattens into the LocalizedString
+// shape consumer code expects.
+// ---------------------------------------------------------------------------
+
+export interface DirectusProjectTranslation {
+	languages_code: string;
+	title?: string | null;
+	one_liner?: string | null;
+	description?: string | null;
+}
+
+export interface DirectusProjectSectionTranslation {
+	languages_code: string;
+	title?: string | null;
+	content?: string | null;
+}
+
+export interface DirectusProjectSectionRow {
+	id: number;
+	sort: number | null;
+	translations?: DirectusProjectSectionTranslation[];
+}
+
+export interface DirectusProjectImpactMetricTranslation {
+	languages_code: string;
+	label?: string | null;
+}
+
+export interface DirectusProjectImpactMetricRow {
+	id: number;
+	sort: number | null;
+	value: string;
+	before: string | null;
+	translations?: DirectusProjectImpactMetricTranslation[];
+}
+
+export interface DirectusProjectsServicesRow {
+	id: number;
+	project_id: string;
+	service_id: string;
+}
+
+export interface DirectusProject {
+	id: string;
+	status: 'draft' | 'published' | 'archived';
+	date_published: string | null;
+	sort: number | null;
+	featured: boolean;
+	hero_image: string | null;
+	repo_url: string | null;
+	live_url: string | null;
+	readme_url: string | null;
+	location: string | null;
+	environment: string | null;
+	version: string | null;
+	stack: string[];
+	tags: string[];
+	translations?: DirectusProjectTranslation[];
+	sections?: DirectusProjectSectionRow[];
+	impact_metrics?: DirectusProjectImpactMetricRow[];
+	services?: DirectusProjectsServicesRow[];
+}
+
 interface Schema {
 	services: DirectusService[];
+	projects: DirectusProject[];
+	// Projects-family child collections — declared so the @directus/sdk
+	// `readItems('projects', { fields: [{ translations: [...] }] })` typed
+	// nested-fields helper recognizes each child as a relational alias. The
+	// SDK matches via structural type equality between Item field type and
+	// any Schema collection's element type.
+	projects_translations: DirectusProjectTranslation[];
+	projects_sections: DirectusProjectSectionRow[];
+	projects_impact_metrics: DirectusProjectImpactMetricRow[];
+	projects_services: DirectusProjectsServicesRow[];
 }
 
 // ---------------------------------------------------------------------------
@@ -180,7 +265,7 @@ export function toService(row: DirectusService): Service {
 		station: row.station,
 		title: toLocalizedString(translations, 'title'),
 		description: toLocalizedString(translations, 'description'),
-		relatedProjects: row.related_projects ?? [],
+		relatedProjects: [], // populated by fetchServices via junction
 	};
 	if (row.icon) service.icon = row.icon;
 	if (row.svg) service.svg = row.svg;
@@ -227,10 +312,89 @@ export function toService(row: DirectusService): Service {
 }
 
 // ---------------------------------------------------------------------------
+// Project row → Project domain object
+//
+// Directus uses the canonical 'draft' | 'published' | 'archived' status enum
+// (from the Global Draft pattern set up in 18c). The TS Project interface in
+// @repo/shared keeps the legacy 'public' | 'private' | 'wip' triple. The
+// adapter is the only place that translates between the two — consumer code
+// downstream stays on the legacy enum. Mapping locked in 18e spec § 6:
+//   published → public
+//   draft     → wip
+//   archived  → private
+// ---------------------------------------------------------------------------
+
+function statusFromDirectus(s: 'draft' | 'published' | 'archived'): 'public' | 'private' | 'wip' {
+	switch (s) {
+		case 'published':
+			return 'public';
+		case 'draft':
+			return 'wip';
+		case 'archived':
+			return 'private';
+	}
+}
+
+export function toProject(row: DirectusProject): Project {
+	const translations = row.translations ?? [];
+
+	const sections: ProjectSection[] = (row.sections ?? [])
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((s) => ({
+			title: toLocalizedString(s.translations ?? [], 'title'),
+			content: toLocalizedString(s.translations ?? [], 'content'),
+		}));
+
+	const impactMetrics: ImpactMetric[] = (row.impact_metrics ?? [])
+		.slice()
+		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+		.map((m) => {
+			const metric: ImpactMetric = {
+				value: m.value,
+				label: toLocalizedString(m.translations ?? [], 'label'),
+			};
+			if (m.before) metric.before = m.before;
+			return metric;
+		});
+
+	const project: Project = {
+		slug: row.id,
+		title: toLocalizedString(translations, 'title'),
+		oneLiner: toLocalizedString(translations, 'one_liner'),
+		description: toLocalizedString(translations, 'description'),
+		stack: row.stack ?? [],
+		tags: row.tags ?? [],
+		status: statusFromDirectus(row.status),
+		featured: row.featured,
+		relatedServices: (row.services ?? []).map((j) => j.service_id),
+		sections,
+	};
+
+	if (row.repo_url) project.repoUrl = row.repo_url;
+	if (row.live_url) project.liveUrl = row.live_url;
+	if (row.readme_url) project.readmeUrl = row.readme_url;
+	if (row.hero_image) project.image = row.hero_image;
+	if (row.location) project.location = row.location;
+	if (row.environment) project.environment = row.environment;
+	if (row.version) project.version = row.version;
+
+	if (impactMetrics.length > 0) {
+		project.impactMetrics = impactMetrics;
+		project.impactMetric = impactMetrics[0];
+	}
+
+	return project;
+}
+
+// ---------------------------------------------------------------------------
 // Ports
 // ---------------------------------------------------------------------------
 
-async function fetchServices(filter?: Record<string, unknown>): Promise<Service[]> {
+async function fetchServices(
+	filter?: Record<string, unknown>,
+	ctx?: object,
+): Promise<Service[]> {
 	const rows = await client().request(
 		readItems('services', {
 			fields: [
@@ -243,7 +407,12 @@ async function fetchServices(filter?: Record<string, unknown>): Promise<Service[
 			...(filter ? { filter } : {}),
 		}),
 	);
-	return (rows as unknown as DirectusService[]).map(toService);
+	const services = (rows as unknown as DirectusService[]).map(toService);
+	for (const service of services) {
+		const ids = await fetchRelatedProjectsViaJunction(service.id, ctx);
+		(service as { relatedProjects: string[] }).relatedProjects = [...ids];
+	}
+	return services;
 }
 
 // F2 — minimal-fields fetch for adjacency. Only `id + station` of visible
@@ -346,19 +515,88 @@ const AdjacentServiceSchema = z.object({
 	next: ServiceSchema.optional(),
 });
 
+// ---------------------------------------------------------------------------
+// Projects fetch helpers (18e Phase 7 — Task 29)
+//
+// fetchProjects expands every nested child the toProject mapper reads:
+//   - translations (title, one_liner, description)
+//   - sections (id + sort + per-row translations)
+//   - impact_metrics (id + sort + value + before + per-row translations)
+//   - services (M2M junction rows: id + project_id + service_id)
+//
+// Fields literal is inlined (rather than hoisted to a const) so the Directus
+// SDK's strict tuple-typed `fields` parameter accepts it without a cast — the
+// same pattern fetchServices follows.
+// ---------------------------------------------------------------------------
+
+async function fetchProjects(filter?: Record<string, unknown>): Promise<Project[]> {
+	const rows = await client().request(
+		readItems('projects', {
+			fields: [
+				'*',
+				{ translations: ['*'] },
+				{ sections: ['id', 'sort', { translations: ['*'] }] },
+				{ impact_metrics: ['id', 'sort', 'value', 'before', { translations: ['*'] }] },
+				{ services: ['id', 'project_id', 'service_id'] },
+			],
+			limit: -1,
+			...(filter ? { filter } : {}),
+		}),
+	);
+	return (rows as unknown as DirectusProject[]).map(toProject);
+}
+
+// Two-stage byService: first hit the M2M junction to collect project ids
+// associated with a given service, then fetch the matching projects in full.
+// Going through projects_services instead of doing a relational filter on
+// projects keeps the cascade FK contract symmetrical with the seed-script
+// path and matches the live-state read pattern verified in 18e Phase 6.
+async function fetchProjectIdsForService(serviceId: string): Promise<readonly string[]> {
+	const rows = await client().request(
+		readItems('projects_services', {
+			fields: ['project_id'],
+			filter: { service_id: { _eq: serviceId } },
+			limit: -1,
+		}),
+	);
+	return (rows as unknown as Array<{ project_id: string }>).map((r) => r.project_id);
+}
+
+// Per-request memoized junction read for services.relatedProjects.
+// Mirrors the adjacencyMemo pattern above.
+// Without ctx, every call re-fetches (no global cache → no staleness risk).
+const relatedProjectsMemo = new WeakMap<object, Map<string, Promise<readonly string[]>>>();
+
+async function fetchRelatedProjectsViaJunction(
+	serviceId: string,
+	ctx?: object,
+): Promise<readonly string[]> {
+	if (!ctx) return fetchProjectIdsForService(serviceId);
+	let serviceMap = relatedProjectsMemo.get(ctx);
+	if (!serviceMap) {
+		serviceMap = new Map();
+		relatedProjectsMemo.set(ctx, serviceMap);
+	}
+	const cached = serviceMap.get(serviceId);
+	if (cached) return cached;
+	const p = fetchProjectIdsForService(serviceId);
+	serviceMap.set(serviceId, p);
+	return p;
+}
+
 export const directusAdapter: ContentAdapter = {
 	services: {
-		all: async () =>
-			parsePort('services.all', z.array(ServiceSchema), await fetchServices()),
-		byId: async (id) => {
-			const rows = await fetchServices({ id: { _eq: id } });
+		all: async (ctx) =>
+			parsePort('services.all', z.array(ServiceSchema), await fetchServices(undefined, ctx)),
+		byId: async (id, ctx) => {
+			const rows = await fetchServices({ id: { _eq: id } }, ctx);
 			return parsePort('services.byId', ServiceSchema.optional(), rows[0]);
 		},
-		visible: async () =>
+		visible: async (ctx) =>
 			parsePort(
 				'services.visible',
 				z.array(ServiceSchema),
-				await fetchServices({ visible: { _neq: false } }),
+				await fetchServices({ visible: { _neq: false } }, ctx),
 			),
 		adjacent: async (id, ctx) => {
 			// Step 1: get a lightweight id/station list (memoized per-ctx).
@@ -377,7 +615,7 @@ export const directusAdapter: ContentAdapter = {
 			const neighbours =
 				neighbourIds.length === 0
 					? []
-					: await fetchServices({ id: { _in: neighbourIds } });
+					: await fetchServices({ id: { _in: neighbourIds } }, ctx);
 			const byId = new Map(neighbours.map((s) => [s.id, s]));
 
 			return parsePort('services.adjacent', AdjacentServiceSchema, {
@@ -388,14 +626,71 @@ export const directusAdapter: ContentAdapter = {
 	},
 
 	projects: {
-		all: async () => todo('projects.all'),
-		bySlug: async () => todo('projects.bySlug'),
-		featured: async () => todo('projects.featured'),
-		public: async () => todo('projects.public'),
-		byService: async () => todo('projects.byService'),
-		allTags: async () => todo('projects.allTags'),
-		allStackItems: async () => todo('projects.allStackItems'),
-		serviceIdsForProjects: async () => todo('projects.serviceIdsForProjects'),
+		all: async () =>
+			parsePort('projects.all', z.array(ProjectSchema), await fetchProjects()),
+		bySlug: async (slug) => {
+			const rows = await fetchProjects({ id: { _eq: slug } });
+			return parsePort('projects.bySlug', ProjectSchema.optional(), rows[0]);
+		},
+		featured: async () =>
+			parsePort(
+				'projects.featured',
+				z.array(ProjectSchema),
+				await fetchProjects({ featured: { _eq: true } }),
+			),
+		public: async () =>
+			parsePort(
+				'projects.public',
+				z.array(ProjectSchema),
+				await fetchProjects({ status: { _eq: 'published' } }),
+			),
+		byService: async (serviceId) => {
+			const ids = await fetchProjectIdsForService(serviceId);
+			if (ids.length === 0) {
+				return parsePort('projects.byService', z.array(ProjectSchema), []);
+			}
+			const rows = await fetchProjects({ id: { _in: ids } });
+			return parsePort('projects.byService', z.array(ProjectSchema), rows);
+		},
+		allTags: async () => {
+			const rows = await client().request(
+				readItems('projects', { fields: ['tags'], limit: -1 }),
+			);
+			const all = (rows as unknown as Array<{ tags: string[] }>).flatMap(
+				(r) => r.tags ?? [],
+			);
+			return parsePort(
+				'projects.allTags',
+				z.array(z.string()),
+				[...new Set(all)].sort(),
+			);
+		},
+		allStackItems: async () => {
+			const rows = await client().request(
+				readItems('projects', { fields: ['stack'], limit: -1 }),
+			);
+			const all = (rows as unknown as Array<{ stack: string[] }>).flatMap(
+				(r) => r.stack ?? [],
+			);
+			return parsePort(
+				'projects.allStackItems',
+				z.array(z.string()),
+				[...new Set(all)].sort(),
+			);
+		},
+		serviceIdsForProjects: async () => {
+			const rows = await client().request(
+				readItems('projects_services', { fields: ['service_id'], limit: -1 }),
+			);
+			const all = (rows as unknown as Array<{ service_id: string }>).map(
+				(r) => r.service_id,
+			);
+			return parsePort(
+				'projects.serviceIdsForProjects',
+				z.array(z.string()),
+				[...new Set(all)].sort(),
+			);
+		},
 	},
 
 	blog: {
