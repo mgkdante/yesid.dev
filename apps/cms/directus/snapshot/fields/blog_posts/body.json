@@ -1,0 +1,25 @@
+{
+  "collection": "blog_posts",
+  "field": "body",
+  "type": "json",
+  "meta": {
+    "collection": "blog_posts",
+    "field": "body",
+    "hidden": false,
+    "interface": "input-block-editor",
+    "note": "Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 99,
+    "special": ["cast-json"],
+    "width": "full"
+  },
+  "schema": {
+    "name": "body",
+    "table": "blog_posts",
+    "data_type": "jsonb",
+    "is_nullable": true
+  }
+}

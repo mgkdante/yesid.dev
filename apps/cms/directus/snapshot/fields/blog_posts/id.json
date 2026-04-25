@@ -1,0 +1,34 @@
+{
+  "collection": "blog_posts",
+  "field": "id",
+  "type": "string",
+  "meta": {
+    "collection": "blog_posts",
+    "field": "id",
+    "hidden": false,
+    "interface": "input",
+    "note": "Slug — kebab-case, URL-safe. Becomes the route segment at /blog/{id}.",
+    "options": { "slug": true, "trim": true },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 1,
+    "special": null,
+    "validation": {
+      "_and": [
+        { "id": { "_regex": "^[a-z0-9]+(-[a-z0-9]+)*$" } }
+      ]
+    },
+    "validation_message": "Slug must be kebab-case (lowercase letters/digits with single hyphens).",
+    "width": "full"
+  },
+  "schema": {
+    "name": "id",
+    "table": "blog_posts",
+    "data_type": "character varying",
+    "max_length": 255,
+    "is_nullable": false,
+    "is_primary_key": true,
+    "is_unique": true
+  }
+}

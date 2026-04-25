@@ -1,0 +1,27 @@
+{
+  "collection": "blog_posts",
+  "meta": {
+    "accountability": "all",
+    "archive_field": "status",
+    "archive_value": "archived",
+    "unarchive_value": "draft",
+    "archive_app_filter": true,
+    "collapse": "open",
+    "color": null,
+    "display_template": "{{translations.title}}",
+    "group": null,
+    "hidden": false,
+    "icon": "article",
+    "item_duplication_fields": [],
+    "note": "Blog posts. ai-editor cannot publish; cannot delete. Body uses Block Editor (rich content per CONVENTIONS § 7).",
+    "preview_url": "https://yesid.dev/blog/{{id}}?share={{$CURRENT_SHARE.token}}",
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "blog_posts"
+  }
+}
