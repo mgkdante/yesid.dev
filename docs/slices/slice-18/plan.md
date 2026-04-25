@@ -22,7 +22,7 @@
 | **18b** | Two-repo decoupling + test split (Task 8 + Task 2b research) | ✅ closed 2026-04-24 | shipped | [18b-decoupling-test-split/](18b-decoupling-test-split/) |
 | **18c** | **Foundations + services retrofit + monorepo pivot** — 57 tasks below | ✅ closed 2026-04-24 | shipped | [18c-foundations/](18c-foundations/) |
 | **18d** | Asset pipeline + Lottie retirement | ✅ closed 2026-04-24 | shipped | [18d-asset-pipeline/](18d-asset-pipeline/) |
-| **18e** | Projects (+ M2M to services replacing CSV) | 🟡 next-up | 1–1.5 sessions | (created when 18e opens) |
+| **18e** | Projects (+ M2M to services replacing CSV) | 🟡 in flight | 1–1.5 sessions | [18e-projects/](18e-projects/) |
 | **18f** | Blog + Block Editor + BlockRenderer.svelte | ⏸ planned | 1.5–2 sessions | — |
 | **18g** | Tech-stack + tech_relations + stack_scenarios | ⏸ planned | 1 session | — |
 | **18h** | Meta + route_seo (singleton + og_image) | ⏸ planned | 0.5 session | — |
@@ -270,15 +270,15 @@ Apply F1–F23 patterns to the live services port so it becomes the reference im
 
 ---
 
-## 18e — Projects (⏸ planned)
+## 18e — Projects (🟡 in flight)
 
 **Scope:** First canonical content-type migration (reference for 18f, 18g, 18h).
 
-**Schema:** `projects` (id · slug · date_published · status · sort · hero_image M2O) + `projects_translations` (language_code · title · one_liner · description · sections · impact_metric_label) + `projects_services` M2M junction (**replaces services.related_projects CSV**).
+**Schema:** `projects` (id · status · date_published · sort · featured · hero_image M2O · repo_url · live_url · readme_url · location · environment · version · stack · tags) + `projects_translations` (languages_code · title · one_liner · description) + `projects_sections` + translations + `projects_impact_metrics` + translations + `projects_services` M2M junction (replaces services.related_projects CSV).
 
-**Artifacts:** fixture at `apps/cms/fixtures/collections/projects.json` · seed script on shared lib · `directus.projects.ts` adapter port (8 methods) · contract + mocked + integration tests · one-line hybrid flip in `apps/web/src/lib/adapters/index.ts`.
+**Artifacts:** spec at [18e-projects/spec.md](18e-projects/spec.md) · plan at [18e-projects/plan.md](18e-projects/plan.md) · fixture at `apps/cms/fixtures/collections/projects.json` · seed at `apps/cms/scripts/seed-projects.ts` · adapter port in `apps/web/src/lib/adapters/directus.ts` · 4 test boundaries · one-line hybrid flip in `apps/web/src/lib/adapters/index.ts`.
 
-**Acceptance:** `/projects` + `/projects/[slug]` from Directus; `services.related_projects` via M2M junction; all 3 test boundaries green.
+**Acceptance:** `/projects` + `/projects/[slug]` from Directus; `/services/[slug]` related-projects strip via M2M; all 4 test boundaries green; `services.related_projects` field DROPPED.
 
 ---
 
