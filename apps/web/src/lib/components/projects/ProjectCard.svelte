@@ -17,6 +17,7 @@
 	import DataFlowDiagram from '$lib/components/home/DataFlowDiagram.svelte';
 	import { cn } from '$lib/utils';
 	import { projectsListingContent } from '$lib/content/projects';
+	import { asset } from '$lib/directus/assets';
 
 	export interface ProjectCardProps {
 		/** The project data to display */
@@ -98,7 +99,7 @@
 		{#if project.image}
 			<div class="h-52 overflow-hidden">
 				<img
-					src="/images/work/{project.image}"
+					src={asset(project.image, 'card-600')}
 					alt={resolveLocale(project.title, 'en')}
 					class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
 					loading="lazy"

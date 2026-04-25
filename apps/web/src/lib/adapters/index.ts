@@ -28,8 +28,8 @@ export const adapter: ContentAdapter = {
 	// Migrated to Directus (Slice 18 Task 7).
 	services: directusAdapter.services,
 
-	// Still on static — awaiting Directus schema design + seed + port impl.
-	projects: staticAdapter.projects,
+	// Migrated to Directus (Slice 18e Phase 8 Task 33).
+	projects: directusAdapter.projects,
 	blog: staticAdapter.blog,
 	meta: staticAdapter.meta,
 	techStack: staticAdapter.techStack,

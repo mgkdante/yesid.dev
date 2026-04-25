@@ -26,8 +26,10 @@ vi.unmock('$lib/adapters/directus');
 import type { ContentAdapter } from './types';
 import {
 	directusAdapter,
+	type DirectusProject,
 	type DirectusService,
 	toLocalizedString,
+	toProject,
 	toService,
 } from './directus';
 
@@ -60,8 +62,8 @@ describe('directusAdapter — structural contract', () => {
 
 	it('un-implemented ports throw a clear TODO error (not silently return empty)', async () => {
 		// Tasks 10–14 progressively replace these throws with real impls.
+		// 18e Phase 7: services + projects ports are live; remaining ports below.
 		// Until then, fail loud when consumer code asks for an un-migrated port.
-		await expect(directusAdapter.projects.all()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.blog.all()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.meta.site()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.techStack.all()).rejects.toThrow(/not implemented/);
@@ -74,7 +76,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const row: DirectusService = {
 			id: 'sql-development',
 			station: 1,
-			related_projects: ['project-a', 'project-b'],
 			translations: [
 				{
 					languages_code: 'en',
@@ -88,7 +89,9 @@ describe('toService — pure row-to-domain mapping', () => {
 		expect(service.station).toBe(1);
 		expect(service.title).toEqual({ en: 'SQL Development' });
 		expect(service.description).toEqual({ en: 'Write, refactor, and tune SQL queries.' });
-		expect(service.relatedProjects).toEqual(['project-a', 'project-b']);
+		// relatedProjects is always [] from toService — populated later via M2M junction
+		// by fetchServices. The legacy CSV field has been dropped from DirectusService.
+		expect(service.relatedProjects).toEqual([]);
 	});
 
 	it('preserves optional scalar fields (icon, svg, visible, stack)', () => {
@@ -99,7 +102,6 @@ describe('toService — pure row-to-domain mapping', () => {
 			svg: 'service-sql.svg',
 			visible: false,
 			stack: ['PostgreSQL', 'T-SQL'],
-			related_projects: [],
 			translations: [{ languages_code: 'en', title: 'X', description: 'desc' }],
 		};
 		const service = toService(row);
@@ -113,7 +115,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [
 				{ languages_code: 'en', title: 'Hello' },
 				{ languages_code: 'fr', title: 'Bonjour' },
@@ -128,7 +129,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const withBoth: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [
 				{
 					languages_code: 'en',
@@ -147,7 +147,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const onlyValue: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [
 				{
 					languages_code: 'en',
@@ -164,7 +163,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [{ languages_code: 'en', title: 'X', description: 'd' }],
 			deliverables: [
 				{
@@ -190,7 +188,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: [],
 			translations: [{ languages_code: 'en', title: 'X', description: 'd' }],
 			sections: [
 				{
@@ -208,11 +205,10 @@ describe('toService — pure row-to-domain mapping', () => {
 		]);
 	});
 
-	it('returns an empty relatedProjects array when the field is null', () => {
+	it('always emits an empty relatedProjects array (junction populates later)', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
-			related_projects: null,
 			translations: [{ languages_code: 'en', title: 'X', description: 'd' }],
 		};
 		expect(toService(row).relatedProjects).toEqual([]);
@@ -234,5 +230,167 @@ describe('toLocalizedString — exposed helper', () => {
 		expect(toLocalizedString([], 'title')).toEqual({ en: '' });
 		expect(toLocalizedString(null, 'title')).toEqual({ en: '' });
 		expect(toLocalizedString(undefined, 'title')).toEqual({ en: '' });
+	});
+});
+
+describe('directus adapter — toProject', () => {
+	const baseRow: DirectusProject = {
+		id: 'yesid-dev',
+		status: 'published',
+		date_published: null,
+		sort: 0,
+		featured: true,
+		hero_image: '66f6ddc8-c3f2-4bd7-97a5-978940757b77',
+		repo_url: 'https://github.com/mgkdante/yesid.dev',
+		live_url: 'https://yesid.dev',
+		readme_url: null,
+		location: null,
+		environment: null,
+		version: null,
+		stack: ['SvelteKit', 'Svelte 5'],
+		tags: ['portfolio'],
+		translations: [
+			{
+				languages_code: 'en',
+				title: 'yesid.dev — Portfolio',
+				one_liner: 'Personal site',
+				description: 'A personal brand site.',
+			},
+		],
+		sections: [],
+		impact_metrics: [],
+		services: [],
+	};
+
+	it('maps id → slug', () => {
+		const p = toProject(baseRow);
+		expect(p.slug).toBe('yesid-dev');
+	});
+
+	it('maps status published → public', () => {
+		const p = toProject(baseRow);
+		expect(p.status).toBe('public');
+	});
+
+	it('maps status draft → wip', () => {
+		const p = toProject({ ...baseRow, status: 'draft' });
+		expect(p.status).toBe('wip');
+	});
+
+	it('maps status archived → private', () => {
+		const p = toProject({ ...baseRow, status: 'archived' });
+		expect(p.status).toBe('private');
+	});
+
+	it('flattens translations to LocalizedString', () => {
+		const p = toProject(baseRow);
+		expect(p.title).toEqual({ en: 'yesid.dev — Portfolio' });
+		expect(p.oneLiner).toEqual({ en: 'Personal site' });
+		expect(p.description).toEqual({ en: 'A personal brand site.' });
+	});
+
+	it('returns hero_image UUID as image field', () => {
+		const p = toProject(baseRow);
+		expect(p.image).toBe('66f6ddc8-c3f2-4bd7-97a5-978940757b77');
+	});
+
+	it('returns image undefined when hero_image is null', () => {
+		const p = toProject({ ...baseRow, hero_image: null });
+		expect(p.image).toBeUndefined();
+	});
+
+	it('preserves stack + tags arrays', () => {
+		const p = toProject(baseRow);
+		expect(p.stack).toEqual(['SvelteKit', 'Svelte 5']);
+		expect(p.tags).toEqual(['portfolio']);
+	});
+
+	it('preserves repoUrl/liveUrl when set', () => {
+		const p = toProject(baseRow);
+		expect(p.repoUrl).toBe('https://github.com/mgkdante/yesid.dev');
+		expect(p.liveUrl).toBe('https://yesid.dev');
+	});
+
+	it('flattens sections sorted by sort + with translation flattening', () => {
+		const withSections: DirectusProject = {
+			...baseRow,
+			sections: [
+				{
+					id: 1,
+					sort: 1,
+					translations: [{ languages_code: 'en', title: 'Second', content: 'Two' }],
+				},
+				{
+					id: 2,
+					sort: 0,
+					translations: [{ languages_code: 'en', title: 'First', content: 'One' }],
+				},
+			],
+		};
+		const p = toProject(withSections);
+		expect(p.sections.length).toBe(2);
+		expect(p.sections[0].title).toEqual({ en: 'First' });
+		expect(p.sections[1].title).toEqual({ en: 'Second' });
+	});
+
+	it('flattens impact_metrics; impactMetric === impactMetrics[0]', () => {
+		const withMetrics: DirectusProject = {
+			...baseRow,
+			impact_metrics: [
+				{
+					id: 1,
+					sort: 0,
+					value: '30s',
+					before: null,
+					translations: [{ languages_code: 'en', label: 'Real-time refresh' }],
+				},
+				{
+					id: 2,
+					sort: 1,
+					value: '99.9%',
+					before: null,
+					translations: [{ languages_code: 'en', label: 'Uptime' }],
+				},
+			],
+		};
+		const p = toProject(withMetrics);
+		expect(p.impactMetrics?.length).toBe(2);
+		expect(p.impactMetric).toEqual(p.impactMetrics?.[0]);
+		expect(p.impactMetric?.value).toBe('30s');
+		expect(p.impactMetric?.label).toEqual({ en: 'Real-time refresh' });
+	});
+
+	it('preserves impact_metric.before when set', () => {
+		const withBefore: DirectusProject = {
+			...baseRow,
+			impact_metrics: [
+				{
+					id: 1,
+					sort: 0,
+					value: '15 min',
+					before: '2 days',
+					translations: [{ languages_code: 'en', label: 'Reporting' }],
+				},
+			],
+		};
+		const p = toProject(withBefore);
+		expect(p.impactMetric?.before).toBe('2 days');
+	});
+
+	it('extracts relatedServices from M2M junction rows', () => {
+		const withServices: DirectusProject = {
+			...baseRow,
+			services: [
+				{ id: 1, project_id: 'yesid-dev', service_id: 'web-development' },
+				{ id: 2, project_id: 'yesid-dev', service_id: 'sql-development' },
+			],
+		};
+		const p = toProject(withServices);
+		expect(p.relatedServices).toEqual(['web-development', 'sql-development']);
+	});
+
+	it('returns empty relatedServices when no junction rows', () => {
+		const p = toProject(baseRow);
+		expect(p.relatedServices).toEqual([]);
 	});
 });

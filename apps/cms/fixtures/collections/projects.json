@@ -1,0 +1,297 @@
+[
+	{
+		"id": "yesid-dev",
+		"status": "published",
+		"date_published": null,
+		"sort": 0,
+		"featured": true,
+		"hero_image_legacy_path": "images/work/yesid-dev.png",
+		"repo_url": "https://github.com/mgkdante/yesid.dev",
+		"live_url": "https://yesid.dev",
+		"readme_url": null,
+		"location": null,
+		"environment": null,
+		"version": null,
+		"stack": ["SvelteKit", "Svelte 5", "TypeScript", "Tailwind CSS", "Vercel"],
+		"tags": ["portfolio", "web", "svelte"],
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "yesid.dev — Portfolio Site",
+				"one_liner": "The site you are looking at: a SvelteKit portfolio built slice by slice.",
+				"description": "A personal brand and portfolio site for a freelance SQL developer and digital infrastructure consultant. Built with SvelteKit 2, Svelte 5, Tailwind CSS v4, and deployed to Vercel. Designed to be multilingual (en/fr/es) from day one."
+			}
+		],
+		"sections": [
+			{
+				"sort": 0,
+				"translations": [
+					{
+						"languages_code": "en",
+						"title": "Why SvelteKit?",
+						"content": "SvelteKit compiles away the framework at build time, producing lean HTML and minimal JavaScript. For a portfolio site where first impression and load speed matter, that trade-off is worth making."
+					}
+				]
+			}
+		],
+		"impact_metrics": [],
+		"related_services": ["web-development"]
+	},
+	{
+		"id": "transit-data-pipeline",
+		"status": "published",
+		"date_published": null,
+		"sort": 1,
+		"featured": false,
+		"hero_image_legacy_path": null,
+		"repo_url": "https://github.com/mgkdante/transit",
+		"live_url": null,
+		"readme_url": "https://raw.githubusercontent.com/mgkdante/transit/main/README.md",
+		"location": "sherbrooke",
+		"environment": "production",
+		"version": "2.4.1",
+		"stack": ["PostgreSQL", "Python", "dbt", "Power BI", "Apache Airflow"],
+		"tags": ["etl", "transit", "postgresql", "dbt"],
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Transit Operations Data Pipeline",
+				"one_liner": "An end-to-end ELT pipeline processing real-time transit data for a regional operator.",
+				"description": "A production data pipeline ingesting GTFS-RT feeds, transforming them with dbt, and surfacing KPIs in a Power BI dashboard. Built for a transit authority in Quebec."
+			}
+		],
+		"sections": [],
+		"impact_metrics": [
+			{
+				"sort": 0,
+				"value": "30s",
+				"before": null,
+				"translations": [
+					{
+						"languages_code": "en",
+						"label": "Real-time refresh cycles"
+					}
+				]
+			},
+			{
+				"sort": 1,
+				"value": "99.9%",
+				"before": null,
+				"translations": [
+					{
+						"languages_code": "en",
+						"label": "Pipeline uptime"
+					}
+				]
+			}
+		],
+		"related_services": ["data-pipeline", "sql-development"]
+	},
+	{
+		"id": "lorem-analytics-dashboard",
+		"status": "published",
+		"date_published": null,
+		"sort": 2,
+		"featured": false,
+		"hero_image_legacy_path": null,
+		"repo_url": "https://github.com/zen-browser",
+		"live_url": null,
+		"readme_url": "https://github.com/zen-browser/desktop/blob/dev/README.md",
+		"location": null,
+		"environment": null,
+		"version": null,
+		"stack": ["Power BI", "SQL Server", "Python", "DAX"],
+		"tags": ["analytics", "reporting", "sql-server"],
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Lorem Analytics Dashboard",
+				"one_liner": "Executive KPI dashboard tracking operational metrics across 12 departments.",
+				"description": "A Power BI dashboard suite built for a logistics company. Pulls data from SQL Server, applies business logic in DAX, and delivers daily refreshes to executive stakeholders. Reduced reporting time from 2 days to 15 minutes."
+			}
+		],
+		"sections": [
+			{
+				"sort": 0,
+				"translations": [
+					{
+						"languages_code": "en",
+						"title": "The Problem",
+						"content": "Operations managers were spending two days each month compiling reports from multiple spreadsheets. Data was stale by the time decisions were made."
+					}
+				]
+			},
+			{
+				"sort": 1,
+				"translations": [
+					{
+						"languages_code": "en",
+						"title": "The Approach",
+						"content": "Connected directly to SQL Server with scheduled refreshes. Built a semantic layer in DAX so business users could slice data without writing queries."
+					}
+				]
+			}
+		],
+		"impact_metrics": [
+			{
+				"sort": 0,
+				"value": "15 min",
+				"before": "2 days",
+				"translations": [
+					{
+						"languages_code": "en",
+						"label": "Reporting across 12 depts"
+					}
+				]
+			},
+			{
+				"sort": 1,
+				"value": "73%",
+				"before": null,
+				"translations": [
+					{
+						"languages_code": "en",
+						"label": "Query time reduction"
+					}
+				]
+			}
+		],
+		"related_services": ["analytics-reporting"]
+	},
+	{
+		"id": "lorem-database-migration",
+		"status": "published",
+		"date_published": null,
+		"sort": 3,
+		"featured": false,
+		"hero_image_legacy_path": null,
+		"repo_url": "https://github.com/oven-sh/bun",
+		"live_url": null,
+		"readme_url": "https://github.com/oven-sh/bun/blob/main/README.md",
+		"location": null,
+		"environment": null,
+		"version": null,
+		"stack": ["PostgreSQL", "Python", "Alembic", "MySQL"],
+		"tags": ["postgresql", "migration", "schema"],
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Lorem Database Migration",
+				"one_liner": "Zero-downtime migration from legacy MySQL to PostgreSQL for a SaaS platform.",
+				"description": "Migrated a 500GB MySQL database to PostgreSQL with zero downtime using dual-write and shadow reads. Included schema redesign, data type mapping, and stored procedure conversion."
+			}
+		],
+		"sections": [
+			{
+				"sort": 0,
+				"translations": [
+					{
+						"languages_code": "en",
+						"title": "Why Migrate?",
+						"content": "The legacy MySQL instance was hitting performance limits. PostgreSQL offered better JSON support, CTEs, and window functions needed for the analytics layer."
+					}
+				]
+			},
+			{
+				"sort": 1,
+				"translations": [
+					{
+						"languages_code": "en",
+						"title": "Migration Strategy",
+						"content": "Used a dual-write pattern: new writes go to both databases, reads gradually shift to PostgreSQL. Shadow reads validated correctness before the cutover."
+					}
+				]
+			}
+		],
+		"impact_metrics": [
+			{
+				"sort": 0,
+				"value": "500 GB",
+				"before": null,
+				"translations": [
+					{
+						"languages_code": "en",
+						"label": "Zero-downtime migration"
+					}
+				]
+			}
+		],
+		"related_services": ["database-engineering", "sql-development"]
+	},
+	{
+		"id": "lorem-query-optimizer",
+		"status": "published",
+		"date_published": null,
+		"sort": 4,
+		"featured": false,
+		"hero_image_legacy_path": null,
+		"repo_url": "https://github.com/mgkdante/lorem-query-optimizer",
+		"live_url": null,
+		"readme_url": null,
+		"location": null,
+		"environment": null,
+		"version": null,
+		"stack": ["SQL Server", "Python", "SSMS", "T-SQL"],
+		"tags": ["sql", "performance", "sql-server"],
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Lorem Query Optimizer",
+				"one_liner": "Automated SQL Server query analysis tool that identifies slow queries and suggests index improvements.",
+				"description": "A Python-based tool that connects to SQL Server, analyzes execution plans, identifies missing indexes, and generates optimization recommendations. Reduced average query time by 73% across 200+ stored procedures."
+			}
+		],
+		"sections": [
+			{
+				"sort": 0,
+				"translations": [
+					{
+						"languages_code": "en",
+						"title": "How It Works",
+						"content": "Connects to the target SQL Server instance, captures execution plans for the heaviest queries, and analyzes them for common anti-patterns: table scans, implicit conversions, and parameter sniffing issues."
+					}
+				]
+			}
+		],
+		"impact_metrics": [],
+		"related_services": ["sql-development", "database-engineering"]
+	},
+	{
+		"id": "lorem-retool-admin",
+		"status": "published",
+		"date_published": null,
+		"sort": 5,
+		"featured": false,
+		"hero_image_legacy_path": null,
+		"repo_url": null,
+		"live_url": null,
+		"readme_url": null,
+		"location": null,
+		"environment": null,
+		"version": null,
+		"stack": ["Retool", "PostgreSQL", "REST API", "Node.js"],
+		"tags": ["retool", "admin", "postgresql"],
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Lorem Retool Admin Panel",
+				"one_liner": "Internal operations dashboard for managing inventory and approval workflows.",
+				"description": "A Retool-based admin panel that replaced 6 spreadsheets with a unified interface. CRUD operations on PostgreSQL, role-based access control, and automated approval routing."
+			}
+		],
+		"sections": [
+			{
+				"sort": 0,
+				"translations": [
+					{
+						"languages_code": "en",
+						"title": "Before & After",
+						"content": "Operations ran on 6 Google Sheets with manual copy-paste between them. The Retool panel centralized everything into one interface with real-time PostgreSQL queries."
+					}
+				]
+			}
+		],
+		"impact_metrics": [],
+		"related_services": ["internal-tooling", "analytics-reporting"]
+	}
+]
