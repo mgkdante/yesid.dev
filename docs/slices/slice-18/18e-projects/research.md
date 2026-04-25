@@ -31,3 +31,17 @@
 - hero_image M2O resolved for `yesid-dev` only (legacy path `images/work/yesid-dev.png` → UUID via `assetIdForOrUndefined`); other 5 are NULL.
 - 58 permission rows + 1 new policy (`_sync_human_editor_policy`) applied via single sync:push.
 - directus-sync diff post-push: 0 collection / 0 field changes; 1 cosmetic relation diff on `projects_impact_metrics_translations.projects_impact_metrics_id` — Postgres auto-generated FK constraint name (`projects_impact_metrics_translations_proje__299c02d3_foreign`) vs the file's truncated name (`projects_impact_metrics_translations_project__id_foreign`). Pure naming, FK semantics identical; no runtime impact and won't reapply on subsequent push (lhs is DB-driven). Permissions diff fully empty (85 unchanged, 0 to create/update/delete).
+
+## Live state after Phase 9 (final)
+
+**Status:** Resolved — Phase 9 (2026-04-24).
+
+- /projects renders 6 projects from Directus (no static fallback).
+- /projects/yesid-dev: hero_image from R2 served via /assets/<uuid>?key=hero-1200.
+  Sharp transform issue (#37) means served bytes are original PNG (not 1200-wide WebP);
+  acceptable for current image dimensions.
+- /services/sql-development "Related projects" strip resolves via M2M junction;
+  junction reads per-ctx memoized.
+- services.related_projects field DROPPED; DirectusService row interface cleaned up.
+- All 4 test boundaries green; bun run check 0 errors apps/web; bun run test full suite green
+  both apps.
