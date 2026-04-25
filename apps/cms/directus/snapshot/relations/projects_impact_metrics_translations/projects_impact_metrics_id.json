@@ -1,0 +1,25 @@
+{
+  "collection": "projects_impact_metrics_translations",
+  "field": "projects_impact_metrics_id",
+  "related_collection": "projects_impact_metrics",
+  "meta": {
+    "junction_field": "languages_code",
+    "many_collection": "projects_impact_metrics_translations",
+    "many_field": "projects_impact_metrics_id",
+    "one_allowed_collections": null,
+    "one_collection": "projects_impact_metrics",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": "translations",
+    "sort_field": null
+  },
+  "schema": {
+    "table": "projects_impact_metrics_translations",
+    "column": "projects_impact_metrics_id",
+    "foreign_key_table": "projects_impact_metrics",
+    "foreign_key_column": "id",
+    "constraint_name": "projects_impact_metrics_translations_project__id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "collection": "projects_services",
+  "field": "service_id",
+  "related_collection": "services",
+  "meta": {
+    "junction_field": "project_id",
+    "many_collection": "projects_services",
+    "many_field": "service_id",
+    "one_allowed_collections": null,
+    "one_collection": "services",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": null,
+    "sort_field": null
+  },
+  "schema": {
+    "table": "projects_services",
+    "column": "service_id",
+    "foreign_key_table": "services",
+    "foreign_key_column": "id",
+    "constraint_name": "projects_services_service_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}
