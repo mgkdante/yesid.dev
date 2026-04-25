@@ -6,14 +6,19 @@
  * + pure helpers exported for tests).
  *
  * Phase 4 deposit: ProjectsFixtureSchema + ProjectFixture type + loadProjectsFixture.
- * Pure transform helpers + Directus I/O land in Phase 5.
+ * Pure transform helpers + Directus I/O landed in Phase 5.
  *
  * Pure transformation helpers exported for tests/seed-projects-dry-run.test.ts.
  */
 
+import { createItem, deleteItem, readItems } from '@directus/sdk';
 import { z } from 'zod';
 import { assetIdForOrUndefined } from '@repo/shared';
 import fixtureData from '../fixtures/collections/projects.json' with { type: 'json' };
+import { createClient, defaultDirectusUrl } from './lib/sdk';
+import { getAdminToken } from './lib/auth';
+import { createLogger } from './lib/logger';
+import { DirectusError, parseErrors } from './lib/catch-error';
 
 // --- Types -----------------------------------------------------------------
 
@@ -215,9 +220,165 @@ export function toProjectRow(project: ProjectFixture): DirectusProjectRow {
 	};
 }
 
-// --- Directus I/O + CLI entrypoint lands in Task 19 ---
+// --- Directus I/O ---------------------------------------------------------
+
+interface Schema {
+	projects: DirectusProjectRow[];
+	projects_services: DirectusProjectsServicesRow[];
+}
+
+const log = createLogger('seed-projects');
+
+export interface SeedRunOptions {
+	directusUrl: string;
+	token: string;
+	dryRun?: boolean;
+	reset?: boolean;
+}
+
+export async function seedProjects(
+	projects: readonly ProjectFixture[],
+	opts: SeedRunOptions,
+): Promise<void> {
+	if (opts.dryRun) {
+		log.info(`dry-run: would process ${projects.length} projects against ${opts.directusUrl}`);
+		for (const project of projects) {
+			const row = toProjectRow(project);
+			log.info(
+				`  ~ ${project.id.padEnd(28)}  status=${row.status}  ` +
+					`featured=${row.featured}  hero=${row.hero_image ? 'yes' : 'no'}  ` +
+					`translations=${row.translations.length}  sections=${row.sections.length}  ` +
+					`metrics=${row.impact_metrics.length}  services=${project.related_services.length}`,
+			);
+		}
+		log.info('dry-run complete (no writes).');
+		return;
+	}
+
+	const client = createClient<Schema>(opts.directusUrl, opts.token);
+
+	if (opts.reset) {
+		const existing = await client.request(
+			readItems('projects', { fields: ['id'], limit: -1 }),
+		);
+		if (existing.length > 0) {
+			log.info(`clearing ${existing.length} existing projects (FK CASCADE clears children)...`);
+			for (const p of existing) {
+				try {
+					await client.request(deleteItem('projects', p.id));
+				} catch (err) {
+					const msgs = parseErrors(err);
+					throw new DirectusError(
+						500,
+						`Failed to delete existing project ${p.id}: ${msgs.join(' · ')}`,
+					);
+				}
+			}
+		}
+	} else {
+		const existing = await client.request(
+			readItems('projects', { fields: ['id'], limit: -1 }),
+		);
+		if (existing.length > 0) {
+			throw new Error(
+				`[seed] found ${existing.length} existing projects. Re-run with --reset to clear + recreate.`,
+			);
+		}
+	}
+
+	log.info(`creating ${projects.length} projects (with nested children)...`);
+	for (const project of projects) {
+		const row = toProjectRow(project);
+		try {
+			await client.request(
+				createItem('projects', row as unknown as DirectusProjectRow),
+			);
+		} catch (err) {
+			const msgs = parseErrors(err);
+			throw new DirectusError(
+				500,
+				`Failed to create project ${project.id}: ${msgs.join(' · ')}`,
+			);
+		}
+		log.info(
+			`  ✓ ${project.id.padEnd(28)}  status=${row.status}  ` +
+				`hero=${row.hero_image ? 'yes' : 'no'}  ` +
+				`metrics=${row.impact_metrics.length}  services=${project.related_services.length}`,
+		);
+	}
+
+	log.info(`creating projects_services junction rows...`);
+	let junctionCount = 0;
+	for (const project of projects) {
+		const junctions = toJunctionRows(project);
+		for (const j of junctions) {
+			try {
+				await client.request(
+					createItem('projects_services', j as unknown as DirectusProjectsServicesRow),
+				);
+				junctionCount++;
+			} catch (err) {
+				const msgs = parseErrors(err);
+				throw new DirectusError(
+					500,
+					`Failed to create junction ${j.project_id}↔${j.service_id}: ${msgs.join(' · ')}`,
+				);
+			}
+		}
+	}
+	log.info(`  ✓ ${junctionCount} junction rows`);
+
+	// The nested `fields` syntax (`{ relation: ['field'] }`) is the Directus SDK
+	// query notation for relational selectors. The SDK's TypeScript generics do
+	// not fully resolve nested field selectors against our custom Schema type, so
+	// we cast to `unknown` here — the same pattern used by seed-services.ts.
+	const final = await client.request(
+		readItems('projects', {
+			fields: [
+				'id',
+				'status',
+				{ translations: ['languages_code'] } as unknown as keyof DirectusProjectRow,
+				{ sections: ['id'] } as unknown as keyof DirectusProjectRow,
+				{ impact_metrics: ['id'] } as unknown as keyof DirectusProjectRow,
+			],
+			limit: -1,
+			sort: ['sort'],
+		}),
+	);
+	log.info(`verified: ${final.length} projects in Directus`);
+	if (final.length !== projects.length) {
+		throw new Error(`[seed] count mismatch: expected ${projects.length}, got ${final.length}`);
+	}
+}
+
+function parseFlags(argv: readonly string[]): { dryRun: boolean; reset: boolean } {
+	return {
+		dryRun: argv.includes('--dry-run'),
+		reset: argv.includes('--reset'),
+	};
+}
+
+async function main(): Promise<void> {
+	const { dryRun, reset } = parseFlags(process.argv.slice(2));
+	const directusUrl = defaultDirectusUrl();
+	log.info(`target: ${directusUrl}${dryRun ? ' [dry-run]' : reset ? ' [reset]' : ''}`);
+
+	const projects = loadProjectsFixture();
+	log.info(`source: ${projects.length} projects from fixtures/collections/projects.json`);
+
+	if (dryRun) {
+		await seedProjects(projects, { directusUrl, token: '', dryRun: true });
+		return;
+	}
+
+	const token = await getAdminToken(directusUrl);
+	await seedProjects(projects, { directusUrl, token, reset });
+	log.info('done.');
+}
 
 if (import.meta.main) {
-	console.error('seed-projects: Directus I/O + CLI land in Task 19.');
-	process.exit(1);
+	main().catch((err) => {
+		console.error('[seed] FAILED:', err);
+		process.exit(1);
+	});
 }
