@@ -5,10 +5,12 @@ import { tmpdir } from 'node:os';
 import {
 	type AssetEntry,
 	type AssetsManifest,
-	buildFileDescription,
 	findMissingSources,
-	mergeExistingFiles,
 	resolveSourcePath,
+	deriveAltText,
+	filterToUpload,
+	buildIdMap,
+	parseManifest,
 } from '../scripts/migrate-assets';
 
 /**
@@ -17,9 +19,12 @@ import {
  * No network, no Directus. Covers:
  *   - Source-path resolution from manifest entry + root.
  *   - Missing-source detection with a real temp directory.
- *   - Idempotency: matching existing files by the `[legacy:<path>]`
- *     description tag, partitioning into alreadyUploaded vs toUpload.
- *   - Description tag construction.
+ *   - Idempotency partitioning by legacy_path (filterToUpload + buildIdMap).
+ *   - Alt-text derivation.
+ *
+ * Pre-18d the script used `mergeExistingFiles` + `buildFileDescription` for
+ * idempotency via a description-tag pattern; both were removed in 18d Task 12
+ * when idempotency moved onto the dedicated `legacy_path` field.
  */
 
 describe('resolveSourcePath', () => {
@@ -83,91 +88,78 @@ describe('findMissingSources', () => {
 	});
 });
 
-describe('buildFileDescription', () => {
-	it('prefixes description with [legacy:<path>] tag', () => {
-		const entry: AssetEntry = {
-			legacyPath: 'about/headshot.webp',
-			folder: 'about',
-			title: 'Headshot',
-			description: 'Portrait of Yesid used on /about.',
-		};
-		expect(buildFileDescription(entry)).toBe(
-			'[legacy:about/headshot.webp] Portrait of Yesid used on /about.',
-		);
+describe('deriveAltText', () => {
+	it('strips extension + sentence-cases single-word names', () => {
+		expect(deriveAltText('headshot.webp')).toBe('Headshot');
+	});
+
+	it('splits on hyphens + sentence-cases each segment', () => {
+		expect(deriveAltText('polaroid-1.webp')).toBe('Polaroid 1');
+		expect(deriveAltText('montreal-metro.svg')).toBe('Montreal Metro');
+		expect(deriveAltText('logo-3.svg')).toBe('Logo 3');
+	});
+
+	it('handles names without extensions', () => {
+		expect(deriveAltText('plain-name')).toBe('Plain Name');
+	});
+
+	it('handles names with multiple dots', () => {
+		expect(deriveAltText('archive.tar.gz')).toBe('Archive.tar');
 	});
 });
 
-describe('mergeExistingFiles — idempotency', () => {
-	const manifest: AssetsManifest = {
+describe('filterToUpload', () => {
+	const fakeManifest = parseManifest({
 		description: 'x',
-		sourceRoot: 'static/images',
-		folders: { about: 'About', brand: 'Brand' },
+		sourceRoot: 'apps/web/static',
+		folders: { about: 'x' },
 		assets: [
-			{
-				legacyPath: 'about/a.webp',
-				folder: 'about',
-				title: 'A',
-				description: 'Descriptive alt text here',
-			},
-			{
-				legacyPath: 'about/b.webp',
-				folder: 'about',
-				title: 'B',
-				description: 'Descriptive alt text here',
-			},
-			{
-				legacyPath: 'brand/c.svg',
-				folder: 'brand',
-				title: 'C',
-				description: 'Descriptive alt text here',
-			},
+			{ legacyPath: 'images/about/a.webp', folder: 'about', title: 'A', description: 'A long enough sentence here' },
+			{ legacyPath: 'images/about/b.webp', folder: 'about', title: 'B', description: 'B long enough sentence here' },
+			{ legacyPath: 'images/about/c.webp', folder: 'about', title: 'C', description: 'C long enough sentence here' },
 		],
-	};
-
-	it('classifies all as toUpload when no existing files match', () => {
-		const result = mergeExistingFiles(manifest, []);
-		expect(result.alreadyUploaded.size).toBe(0);
-		expect(result.toUpload.length).toBe(3);
 	});
 
-	it('classifies entries with matching legacy tag as alreadyUploaded', () => {
-		const result = mergeExistingFiles(manifest, [
-			{ id: 'uuid-1', description: '[legacy:about/a.webp] Anything' },
-			{ id: 'uuid-2', description: '[legacy:about/b.webp] Anything' },
+	it('separates already-uploaded from to-upload by legacyPath', () => {
+		const existing = new Map([
+			['images/about/a.webp', 'uuid-a'],
+			['images/about/c.webp', 'uuid-c'],
 		]);
-		expect(result.alreadyUploaded.get('about/a.webp')).toBe('uuid-1');
-		expect(result.alreadyUploaded.get('about/b.webp')).toBe('uuid-2');
-		expect(result.toUpload.length).toBe(1);
-		expect(result.toUpload[0]?.legacyPath).toBe('brand/c.svg');
+		const { alreadyUploaded, toUpload } = filterToUpload(fakeManifest, existing);
+		expect(alreadyUploaded.size).toBe(2);
+		expect(alreadyUploaded.get('images/about/a.webp')).toBe('uuid-a');
+		expect(toUpload).toHaveLength(1);
+		expect(toUpload[0]?.legacyPath).toBe('images/about/b.webp');
 	});
 
-	it('ignores existing files with no legacy tag in description', () => {
-		const result = mergeExistingFiles(manifest, [
-			{ id: 'uuid-x', description: 'Some random file description with no tag' },
-			{ id: 'uuid-y', description: null },
-		]);
-		expect(result.alreadyUploaded.size).toBe(0);
-		expect(result.toUpload.length).toBe(3);
+	it('returns all-to-upload when existing map is empty', () => {
+		const { alreadyUploaded, toUpload } = filterToUpload(fakeManifest, new Map());
+		expect(alreadyUploaded.size).toBe(0);
+		expect(toUpload).toHaveLength(3);
 	});
 
-	it('is fully idempotent — every manifest entry present = nothing to upload', () => {
-		const result = mergeExistingFiles(manifest, [
-			{ id: 'u1', description: '[legacy:about/a.webp] A' },
-			{ id: 'u2', description: '[legacy:about/b.webp] B' },
-			{ id: 'u3', description: '[legacy:brand/c.svg] C' },
+	it('returns all-already-uploaded when every entry matches', () => {
+		const existing = new Map(
+			fakeManifest.assets.map((a, i) => [a.legacyPath, `uuid-${i}`] as const),
+		);
+		const { alreadyUploaded, toUpload } = filterToUpload(fakeManifest, existing);
+		expect(alreadyUploaded.size).toBe(3);
+		expect(toUpload).toHaveLength(0);
+	});
+});
+
+describe('buildIdMap', () => {
+	it('emits keys in alphabetical order', () => {
+		const out = buildIdMap([
+			{ legacyPath: 'images/z.webp', id: 'uz' },
+			{ legacyPath: 'images/a.webp', id: 'ua' },
+			{ legacyPath: 'images/m.webp', id: 'um' },
 		]);
-		expect(result.alreadyUploaded.size).toBe(3);
-		expect(result.toUpload.length).toBe(0);
+		expect(Object.keys(out)).toEqual(['images/a.webp', 'images/m.webp', 'images/z.webp']);
+		expect(out['images/a.webp']).toBe('ua');
 	});
 
-	it('only matches exact legacy paths (no fuzzy matching)', () => {
-		// A file whose tag looks similar but differs — should NOT be treated
-		// as a match. Prevents accidentally skipping an upload because of a
-		// typo'd tag on a previously-uploaded asset.
-		const result = mergeExistingFiles(manifest, [
-			{ id: 'u1', description: '[legacy:about/a.WEBP] case-mismatch' },
-		]);
-		expect(result.alreadyUploaded.size).toBe(0);
-		expect(result.toUpload.length).toBe(3);
+	it('returns empty object on empty input', () => {
+		expect(buildIdMap([])).toEqual({});
 	});
 });

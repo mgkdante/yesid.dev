@@ -106,10 +106,6 @@ export interface Service {
 	// icon is the Lottie JSON filename (without path) for this station's illustration.
 	// Keeping it as a string avoids coupling the data layer to any specific renderer.
 	icon?: string;
-	// When true, the Lottie plays in reverse during scroll scrubbing.
-	// Some marketplace Lotties have their "complete" state at frame 0 instead of the last
-	// frame. Reversing makes the animation build up as the user scrolls down.
-	lottieReverse?: boolean;
 	// SVG illustration filename for work page cards and detail pages.
 	// Each service gets one SVG that cascades to all linked projects.
 	svg?: string;

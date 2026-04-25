@@ -272,5 +272,32 @@
     "fields": ["*"],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-sectr-update-0019-000000000013"
+  },
+  {
+    "collection": "directus_files",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "folder": {
+            "id": {
+              "_in": [
+                "5699c47c-c016-484d-ad42-ea35d75ed918",
+                "da9ff878-3124-43d6-9cf9-11524fc0edd9",
+                "02c30511-8c14-46aa-b6f1-cf2d8999290e",
+                "82238060-72ab-414b-8f72-a7f83b15dc59",
+                "e4764c31-b8b4-4045-b066-76653bc3c884",
+                "1868fd73-d094-45eb-9d0c-802e2b49cf23"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_public_files_read_folder_scoped"
   }
 ]

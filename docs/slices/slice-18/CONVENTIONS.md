@@ -179,10 +179,10 @@ Example:
 |---|---:|---|
 | `hero-1200` | 1200 | Hero images (service detail, project detail, blog header) |
 | `card-600` | 600 | Listing cards (service grid, project grid, blog list) |
-| `thumb-300` | 300 | Navigation thumbnails, related-items lists |
+| `thumb-240` | 240 | Navigation thumbnails, related-items lists |
 | `hero-og` | fixed 1200×630 | OG share images |
 
-AVIF variants added post-P8 probe (18d).
+**AVIF deferred** — P8 probe RED in 18d (Sharp encoder downgrades AVIF→WebP silently on Railway deployment; see [18d-asset-pipeline/research.md](18d-asset-pipeline/research.md) § "P8 — AVIF support" + § "Preset transform behavior"). WebP is the only modern format in slice-18; revisit when Sharp/AVIF infrastructure is fixed.
 
 **Never compose transform URLs manually in Svelte components** — always use `asset(id, preset?)` + `buildSrcSet(id, presets[])` from `apps/web/src/lib/directus/assets.ts` (18c Task 47).
 

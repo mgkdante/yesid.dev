@@ -6,9 +6,8 @@ import '@testing-library/jest-dom/vitest';
 import '@testing-library/svelte/vitest';
 import { vi } from 'vitest';
 
-// happy-dom does not implement HTMLCanvasElement.getContext. lottie-web's CJS module code
-// accesses canvas context at import time. Provide a minimal stub to prevent the
-// "Cannot set properties of null" error.
+// happy-dom does not implement HTMLCanvasElement.getContext. Provide a minimal stub to
+// prevent "Cannot set properties of null" errors from canvas-dependent code in tests.
 HTMLCanvasElement.prototype.getContext = (() => {
 	const noop = () => {};
 	return function () {
@@ -68,8 +67,9 @@ vi.mock('$lib/adapters/directus', async () => {
 	return { ...original, directusAdapter: staticAdapter };
 });
 
-// happy-dom does not implement IntersectionObserver. Stub it so LottiePlayer's 'scroll'
-// trigger does not throw in tests.
+// happy-dom does not implement IntersectionObserver. Stub it so any Svelte
+// component using IO-based scroll triggers (lazy load, scroll-driven motion,
+// reveal-on-scroll patterns) can render in tests without crashing.
 vi.stubGlobal(
 	'IntersectionObserver',
 	class {
@@ -184,23 +184,6 @@ vi.mock('gsap/SplitText', () => ({
 		words: Element[] = [];
 		lines: Element[] = [];
 		revert = vi.fn();
-	}
-}));
-
-// Mock lottie-web for component tests.
-// lottie-web uses SVG rendering and canvas APIs unavailable in happy-dom.
-vi.mock('lottie-web', () => ({
-	default: {
-		loadAnimation: vi.fn(() => ({
-			setSpeed: vi.fn(),
-			play: vi.fn(),
-			stop: vi.fn(),
-			goToAndStop: vi.fn(),
-			destroy: vi.fn(),
-			addEventListener: vi.fn(),
-			removeEventListener: vi.fn(),
-			totalFrames: 60
-		}))
 	}
 }));
 

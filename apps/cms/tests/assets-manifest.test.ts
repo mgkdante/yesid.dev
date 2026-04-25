@@ -76,9 +76,27 @@ describe('fixtures/assets-manifest.json', () => {
 		}
 	});
 
-	it('sourceRoot points at yesid.dev static/images tree', () => {
+	it('sourceRoot points at apps/web/static (monorepo-aware)', () => {
 		const m = loadManifest();
-		expect(m.sourceRoot).toBe('static/images');
+		expect(m.sourceRoot).toBe('apps/web/static');
+	});
+
+	it('declares exactly 14 assets after 18d triage', () => {
+		const m = loadManifest();
+		expect(m.assets.length).toBe(14);
+	});
+
+	it('declares all 6 content folders (services/projects/blog/brand/about/og)', () => {
+		const m = loadManifest();
+		const expected = ['services', 'projects', 'blog', 'brand', 'about', 'og'].sort();
+		expect(Object.keys(m.folders).sort()).toEqual(expected);
+	});
+
+	it('every legacyPath starts with "images/" (full-path-from-static convention)', () => {
+		const m = loadManifest();
+		for (const entry of m.assets) {
+			expect(entry.legacyPath.startsWith('images/')).toBe(true);
+		}
 	});
 });
 
@@ -110,14 +128,23 @@ describe('AssetsManifestSchema — shape guards', () => {
 
 describe('extractLegacyTopLevel', () => {
 	it('returns the first path segment when nested', () => {
-		expect(extractLegacyTopLevel('about/headshot.webp')).toBe('about');
-		expect(extractLegacyTopLevel('about/interests/anime.webp')).toBe('about');
-		expect(extractLegacyTopLevel('work/yesid-dev.png')).toBe('work');
+		// Pre-Task-8: paths were 'about/...', 'work/...', 'hero-station-art.png'
+		// Post-Task-8: paths are 'images/about/...', 'images/work/...', 'images/montreal-metro.svg'
+		// With the images/ prefix convention, extractLegacyTopLevel always returns 'images'.
+		expect(extractLegacyTopLevel('images/about/headshot.webp')).toBe('images');
+		expect(extractLegacyTopLevel('images/about/interests/anime.webp')).toBe('images');
+		expect(extractLegacyTopLevel('images/work/yesid-dev.png')).toBe('images');
 	});
 
-	it('returns empty string when the path is top-level', () => {
-		expect(extractLegacyTopLevel('hero-station-art.png')).toBe('');
+	it('returns empty string when the path is top-level (no slash)', () => {
+		// Paths without a slash still return '' — helper contract is unchanged.
 		expect(extractLegacyTopLevel('montreal-metro.svg')).toBe('');
+	});
+
+	it('returns "images" for all current manifest paths (images/ prefix convention)', () => {
+		expect(extractLegacyTopLevel('images/montreal-metro.svg')).toBe('images');
+		expect(extractLegacyTopLevel('images/about/interests/anime.webp')).toBe('images');
+		expect(extractLegacyTopLevel('images/work/yesid-dev.png')).toBe('images');
 	});
 });
 

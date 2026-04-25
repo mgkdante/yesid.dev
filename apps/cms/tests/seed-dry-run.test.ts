@@ -203,7 +203,7 @@ describe('toSectionRows', () => {
 });
 
 describe('toServiceRow', () => {
-	it('maps a minimal service and defaults lottie_reverse + visible', () => {
+	it('maps a minimal service and defaults visible', () => {
 		const s: Service = {
 			id: 'x',
 			title: { en: 'T' },
@@ -215,7 +215,6 @@ describe('toServiceRow', () => {
 		expect(row).toMatchObject({
 			id: 'x',
 			station: 1,
-			lottie_reverse: false,
 			visible: true,
 			related_projects: ['p1', 'p2'],
 		});

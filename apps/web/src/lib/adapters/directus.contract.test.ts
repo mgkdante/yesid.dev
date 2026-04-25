@@ -91,13 +91,12 @@ describe('toService — pure row-to-domain mapping', () => {
 		expect(service.relatedProjects).toEqual(['project-a', 'project-b']);
 	});
 
-	it('preserves optional scalar fields (icon, svg, lottieReverse, visible, stack)', () => {
+	it('preserves optional scalar fields (icon, svg, visible, stack)', () => {
 		const row: DirectusService = {
 			id: 'x',
 			station: 1,
 			icon: 'station-sql.json',
 			svg: 'service-sql.svg',
-			lottie_reverse: true,
 			visible: false,
 			stack: ['PostgreSQL', 'T-SQL'],
 			related_projects: [],
@@ -106,7 +105,6 @@ describe('toService — pure row-to-domain mapping', () => {
 		const service = toService(row);
 		expect(service.icon).toBe('station-sql.json');
 		expect(service.svg).toBe('service-sql.svg');
-		expect(service.lottieReverse).toBe(true);
 		expect(service.visible).toBe(false);
 		expect(service.stack).toEqual(['PostgreSQL', 'T-SQL']);
 	});

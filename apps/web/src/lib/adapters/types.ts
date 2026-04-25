@@ -176,4 +176,13 @@ export interface ContentPort {
 	techStackPage(ctx?: PreviewContext): Promise<TechStackPageContent>;
 	heroMock(ctx?: PreviewContext): Promise<HeroData>;
 	initialHeroData(ctx?: PreviewContext): Promise<HeroData>;
+	/**
+	 * Inlined SVG markup for the Montreal-metro hero animation.
+	 *
+	 * Slice 18d Phase 8: source flipped from a Vite `?raw` build-time import
+	 * to a Directus-fetched asset (`/assets/<uuid>`) via the assets id-map.
+	 * The result is consumed by MetroNetwork.svelte through SSR `+page.server.ts`
+	 * load and inlined via `{@html}` so it remains a valid LCP candidate.
+	 */
+	metroSvg(ctx?: PreviewContext): Promise<string>;
 }
