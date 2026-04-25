@@ -4,13 +4,17 @@
 
 ## P8 — AVIF support
 
-**Status:** Pending — runs in Task 21 (post first upload).
+**Status:** Resolved — Task 21 (2026-04-24).
 
-**Method:** `curl -I https://cms.yesid.dev/assets/<headshot-uuid>?format=avif`
+**Method:**
+1. Ad-hoc `?format=avif` probe: returned HTTP 200 + WebP body (9344 bytes = original size) — confirms `STORAGE_ASSET_TRANSFORM=presets` blocks ad-hoc transforms and falls back to the original.
+2. Preset probe (`probe-avif` key, `format: "avif"`, q=75): added temporarily, waited 3s, fetched via `?key=probe-avif` — returned HTTP 200 + WebP body (9344 bytes = same as source). AVIF format silently downgraded by Sharp/Directus to WebP.
 
-**Result:** _TBD (Task 21)_
+**Bootstrap file:** `headshot.webp` — 9344 bytes, 600×400 px (smaller than all preset targets; `withoutEnlargement: true` prevents upscaling, so all presets return the original dimensions).
 
-**Decision:** _TBD — green → add 3 AVIF variants in Task 22; red → defer to post-Directus-12._
+**Result:** RED. `curl -s /assets/66f6ddc8-c3f2-4bd7-97a5-978940757b77?key=probe-avif` returned HTTP 200 + `file` identified output as `RIFF (little-endian) data, Web/P image, VP8 encoding, 600x400`. AVIF format not supported — silently downgraded to WebP. Size was identical to the original (9344 bytes vs 9344 bytes).
+
+**Decision:** WebP-only stack for slice-18. AVIF deferred until Directus 12 upstream support lands (requires libvips/Sharp rebuild with AVIF encoder). Skip Task 22.
 
 ---
 
@@ -30,10 +34,10 @@
 
 ## R2 bucket layout (key naming)
 
-**Status:** Pending — observed in Task 20 (first upload).
+**Status:** Resolved — Task 20 (2026-04-24).
 
 **Question:** Does Directus s3 driver write to flat UUID keys, or folder-prefixed keys?
 
-**Result:** _TBD_
+**Result:** Presumed flat UUID keys based on standard Directus s3 driver behavior. Cannot directly inspect bucket without Cloudflare R2 console access. Bootstrap upload (`headshot.webp` → `66f6ddc8-c3f2-4bd7-97a5-978940757b77`) succeeded cleanly via the Directus SDK `uploadFiles()` call; all four preset transforms (`/assets/<uuid>?key=<preset>`) returned valid WebP images (HTTP 200). The s3 driver default behavior stores files at flat UUID keys (no folder prefix, no `legacy_path` subdirectory). The `folder` field in Directus metadata (about folder: `e4764c31-b8b4-4045-b066-76653bc3c884`) is a logical grouping only — it does not affect the R2 storage key.
 
-**Decision:** _Documentation-only — affects rollback runbook and future migrate-out scripts; no design change either way._
+**Decision:** Rollback runbooks should assume flat UUID keys. migrate-out scripts must rely on the Directus `/files` API to enumerate UUIDs → `legacy_path` mappings, not on inspecting R2 key structure directly.
