@@ -20,9 +20,9 @@
 |---|---|---|---|---|
 | **18a** | Infra + services proof (Tasks 0–7) | ✅ closed 2026-04-23 | shipped | [18a-infra-services-proof/](18a-infra-services-proof/) |
 | **18b** | Two-repo decoupling + test split (Task 8 + Task 2b research) | ✅ closed 2026-04-24 | shipped | [18b-decoupling-test-split/](18b-decoupling-test-split/) |
-| **18c** | **Foundations + services retrofit + monorepo pivot** — 57 tasks below | 🟡 in flight | 3–4 sessions | [18c-foundations/](18c-foundations/) |
+| **18c** | **Foundations + services retrofit + monorepo pivot** — 57 tasks below | ✅ closed 2026-04-24 | shipped | [18c-foundations/](18c-foundations/) |
 | **18d** | Asset pipeline + Lottie retirement | ✅ closed 2026-04-24 | shipped | [18d-asset-pipeline/](18d-asset-pipeline/) |
-| **18e** | Projects (+ M2M to services replacing CSV) | ⏸ planned | 1–1.5 sessions | — |
+| **18e** | Projects (+ M2M to services replacing CSV) | 🟡 next-up | 1–1.5 sessions | (created when 18e opens) |
 | **18f** | Blog + Block Editor + BlockRenderer.svelte | ⏸ planned | 1.5–2 sessions | — |
 | **18g** | Tech-stack + tech_relations + stack_scenarios | ⏸ planned | 1 session | — |
 | **18h** | Meta + route_seo (singleton + og_image) | ⏸ planned | 0.5 session | — |
@@ -45,7 +45,8 @@
 2. Optional: dispatch deep research agents if unclear — operator decides per sub-slice (research at L1 is mandatory; L2 is operator-directed per `feedback_always_write_slice` + re-plan Q5).
 3. Execute.
 4. Research + decisions land in sub-slice folder's `research.md` + `decisions.md`.
-5. Sub-slice close = owner verification gate → merge PR → move to next.
+5. **Before close: file all deferred work (research.md § "Open follow-ups" + decisions.md flagged-for-later) as GitHub issues.** Per AGENTS.md `## Never` (landed 2026-04-24 in `e17c4b3`). PR body links the issues; close commit references them by number.
+6. Sub-slice close = owner verification gate → merge PR → move to next.
 
 ---
 
@@ -395,7 +396,9 @@ Ceremony + cleanup. 1 session.
 
 - Design spec (brainstorming output): [`docs/superpowers/specs/2026-04-24-slice-18-replan.md`](../../superpowers/specs/2026-04-24-slice-18-replan.md)
 - Research audit (4 agents): [`docs/superpowers/research/2026-04-24-slice-18-replan-audit.md`](../../superpowers/research/2026-04-24-slice-18-replan-audit.md)
-- CONVENTIONS.md: to be written in 18c Task 52
+- CONVENTIONS.md: [`docs/slices/slice-18/CONVENTIONS.md`](CONVENTIONS.md) (committed 18c Task 52)
+- 18d design spec: [`docs/superpowers/specs/2026-04-24-slice-18d-asset-pipeline-design.md`](../../superpowers/specs/2026-04-24-slice-18d-asset-pipeline-design.md)
+- Open follow-up issues: **#37** (Sharp transforms passthrough on Railway · infra) · **#38** (R2 bucket versioning · 18j) · **#40** (assets-id-map sync between apps/cms ↔ packages/shared · post-18 polish)
 
 ---
 
@@ -415,4 +418,5 @@ Ceremony + cleanup. 1 session.
 | 2026-04-24 | **D12 strict boundary → app independence convention.** Soft rule enforced by code review + natural separation (apps NOT workspace packages; cross-app imports need relative paths which catch in review). Dedicated CI check removed from Task 15 scope. `packages/shared` remains the only legitimate cross-app surface. | YAGNI on CI check; natural enforcement sufficient; Turborepo + separate package.json per app makes cross-imports ugly enough to catch in review | D12 + Task 15 + CONVENTIONS.md § 8.0 |
 | 2026-04-24 | **Added 18l sub-slice: CMS brand styling** (Data Studio theme matching yesid.dev brand). 0.5 session. Runs between 18j (polish) and 18k (close). Uses directus-sync authoring + 18d asset pipeline (logo upload). No new D-entries. | Owner directive: final polish to match brand across consumer site + CMS | Status table + dependency graph + sub-slice section + timeline |
 | 2026-04-24 | **18c closed.** Phase 2 (CMS foundations) + Phase 3 (web foundations) + Phase 4 (services retrofit) + Phase 5 (docs + ceremony) all landed. `apps/web` has p-queue + parsePort + PreviewContext + WeakMap memo + asset helper. `apps/cms` has 72-file directus-sync schema + 9 env vars locked on Railway + 338-word MCP system prompt applied + ai-editor policy separated from admin (19 scoped permission rows on services family). 1011 tests pass; 0 type errors; live smoke on yesid-dev.vercel.app/services/\* renders from Directus including adjacency. Docs: `CONVENTIONS.md` + `docs/ops/rollback.md` + `scripts/scaffold-port.ts` committed. No D-entry deltas from plan. | All 57 tasks executed per plan; no plan-level surprises required amendment | Final 18c acceptance row |
-| 2026-04-24 | **18d closed.** Asset pipeline shipped — 14 files migrated to Directus + R2 with `legacy_path` idempotency · 4 base presets live via directus-sync · `assets-id-map.json` emitted + re-exported via `@repo/shared.assetIdFor` · `montreal-metro.svg` consumer flipped to Directus fetch + `{@html svg}` (Public policy folder-scoped files.read enables unauth SSR). Lottie purged: 11 files deleted (~1.1 MB) · `lottie-web` dep removed · `lottieReverse` plumbing dropped from 6 files + Directus column dropped. 5 dead static images deleted (~4.4 MB). P8 AVIF probe: **RED** — Sharp on Railway silently downgrades; AVIF deferred. Phase 7 finding: Sharp transforms silently passthrough on Railway (preset routing works, image processing doesn't); per-user-decision Option 1: ship + defer Sharp fix. directus-sync diff empty after all pushes. | Slice acceptance partial: preset routing + manifest + idempotency green; Sharp transforms deferred. | Status table + Amendments log |
+| 2026-04-24 | **18d closed.** Asset pipeline shipped — 14 files migrated to Directus + R2 with `legacy_path` idempotency · 4 base presets live via directus-sync · `assets-id-map.json` emitted + re-exported via `@repo/shared.assetIdFor` · `montreal-metro.svg` consumer flipped to Directus fetch + `{@html svg}` (Public policy folder-scoped files.read enables unauth SSR). Lottie purged: 11 files deleted (~1.1 MB) · `lottie-web` dep removed · `lottieReverse` plumbing dropped from 6 files + Directus column dropped. 5 dead static images deleted (~4.4 MB). P8 AVIF probe: **RED** — Sharp on Railway silently downgrades; AVIF deferred. Phase 7 finding: Sharp transforms silently passthrough on Railway (preset routing works, image processing doesn't); per-user-decision Option 1: ship + defer Sharp fix. directus-sync diff empty after all pushes. PR #39 squash-merged at `b51bb9e`; net **−1,681 lines** across 66 files. | Slice acceptance partial: preset routing + manifest + idempotency green; Sharp transforms deferred. | Status table + Amendments log |
+| 2026-04-24 | **Workflow rule landed (`e17c4b3`):** AGENTS.md `## Never` adds "Close a slice with deferred work that isn't filed as a GitHub issue first." Issues #37 (Sharp · infra), #38 (R2 versioning · 18j), #40 (assets-id-map sync · post-18 polish) filed retroactively from 18d's research.md § Open follow-ups. Workflow item 5 in this doc updated to reference. | Untracked deferrals lose context fast and become tribal knowledge. Codify the rule before more sub-slices accrue follow-ups. | Workflow per sub-slice + AGENTS.md + References |
