@@ -266,3 +266,49 @@ describe('directusAdapter.projects — fetch contract', () => {
 		expect(url.pathname).toBe('/items/projects_services');
 	});
 });
+
+// ---------------------------------------------------------------------------
+// services port — regression after M2M switch (18e Phase 7 Task 30)
+//
+// After the switch, services.byId MUST NOT read relatedProjects from
+// row.related_projects (CSV). Instead it issues a second fetch to
+// /items/projects_services filtered by service_id.
+// ---------------------------------------------------------------------------
+
+describe('directusAdapter.services — regression after M2M switch', () => {
+	it('services.byId resolves relatedProjects via projects_services junction', async () => {
+		// Stage 1: services fetch returns row WITHOUT related_projects field
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				{
+					id: 'sql-development',
+					station: 1,
+					translations: [{ languages_code: 'en', title: 'SQL', description: 'desc' }],
+					deliverables: [],
+					sections: [],
+					// related_projects NOT in row — has been replaced by junction
+				},
+			]),
+		);
+		// Stage 2: junction returns project ids
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				{ project_id: 'transit-data-pipeline' },
+				{ project_id: 'lorem-query-optimizer' },
+			]),
+		);
+
+		const service = await directusAdapter.services.byId('sql-development');
+		expect(service?.relatedProjects).toEqual([
+			'transit-data-pipeline',
+			'lorem-query-optimizer',
+		]);
+		// Junction was called once for this service
+		const junctionCall = sharedMockFetch.mock.calls.find((call) => {
+			const rawUrl = call[0];
+			const url = typeof rawUrl === 'string' ? new URL(rawUrl) : (rawUrl as URL);
+			return url.pathname === '/items/projects_services';
+		});
+		expect(junctionCall).toBeTruthy();
+	});
+});
