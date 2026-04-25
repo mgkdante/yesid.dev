@@ -26,8 +26,10 @@ vi.unmock('$lib/adapters/directus');
 import type { ContentAdapter } from './types';
 import {
 	directusAdapter,
+	type DirectusProject,
 	type DirectusService,
 	toLocalizedString,
+	toProject,
 	toService,
 } from './directus';
 
@@ -234,5 +236,167 @@ describe('toLocalizedString — exposed helper', () => {
 		expect(toLocalizedString([], 'title')).toEqual({ en: '' });
 		expect(toLocalizedString(null, 'title')).toEqual({ en: '' });
 		expect(toLocalizedString(undefined, 'title')).toEqual({ en: '' });
+	});
+});
+
+describe('directus adapter — toProject', () => {
+	const baseRow: DirectusProject = {
+		id: 'yesid-dev',
+		status: 'published',
+		date_published: null,
+		sort: 0,
+		featured: true,
+		hero_image: '66f6ddc8-c3f2-4bd7-97a5-978940757b77',
+		repo_url: 'https://github.com/mgkdante/yesid.dev',
+		live_url: 'https://yesid.dev',
+		readme_url: null,
+		location: null,
+		environment: null,
+		version: null,
+		stack: ['SvelteKit', 'Svelte 5'],
+		tags: ['portfolio'],
+		translations: [
+			{
+				languages_code: 'en',
+				title: 'yesid.dev — Portfolio',
+				one_liner: 'Personal site',
+				description: 'A personal brand site.',
+			},
+		],
+		sections: [],
+		impact_metrics: [],
+		services: [],
+	};
+
+	it('maps id → slug', () => {
+		const p = toProject(baseRow);
+		expect(p.slug).toBe('yesid-dev');
+	});
+
+	it('maps status published → public', () => {
+		const p = toProject(baseRow);
+		expect(p.status).toBe('public');
+	});
+
+	it('maps status draft → wip', () => {
+		const p = toProject({ ...baseRow, status: 'draft' });
+		expect(p.status).toBe('wip');
+	});
+
+	it('maps status archived → private', () => {
+		const p = toProject({ ...baseRow, status: 'archived' });
+		expect(p.status).toBe('private');
+	});
+
+	it('flattens translations to LocalizedString', () => {
+		const p = toProject(baseRow);
+		expect(p.title).toEqual({ en: 'yesid.dev — Portfolio' });
+		expect(p.oneLiner).toEqual({ en: 'Personal site' });
+		expect(p.description).toEqual({ en: 'A personal brand site.' });
+	});
+
+	it('returns hero_image UUID as image field', () => {
+		const p = toProject(baseRow);
+		expect(p.image).toBe('66f6ddc8-c3f2-4bd7-97a5-978940757b77');
+	});
+
+	it('returns image undefined when hero_image is null', () => {
+		const p = toProject({ ...baseRow, hero_image: null });
+		expect(p.image).toBeUndefined();
+	});
+
+	it('preserves stack + tags arrays', () => {
+		const p = toProject(baseRow);
+		expect(p.stack).toEqual(['SvelteKit', 'Svelte 5']);
+		expect(p.tags).toEqual(['portfolio']);
+	});
+
+	it('preserves repoUrl/liveUrl when set', () => {
+		const p = toProject(baseRow);
+		expect(p.repoUrl).toBe('https://github.com/mgkdante/yesid.dev');
+		expect(p.liveUrl).toBe('https://yesid.dev');
+	});
+
+	it('flattens sections sorted by sort + with translation flattening', () => {
+		const withSections: DirectusProject = {
+			...baseRow,
+			sections: [
+				{
+					id: 1,
+					sort: 1,
+					translations: [{ languages_code: 'en', title: 'Second', content: 'Two' }],
+				},
+				{
+					id: 2,
+					sort: 0,
+					translations: [{ languages_code: 'en', title: 'First', content: 'One' }],
+				},
+			],
+		};
+		const p = toProject(withSections);
+		expect(p.sections.length).toBe(2);
+		expect(p.sections[0].title).toEqual({ en: 'First' });
+		expect(p.sections[1].title).toEqual({ en: 'Second' });
+	});
+
+	it('flattens impact_metrics; impactMetric === impactMetrics[0]', () => {
+		const withMetrics: DirectusProject = {
+			...baseRow,
+			impact_metrics: [
+				{
+					id: 1,
+					sort: 0,
+					value: '30s',
+					before: null,
+					translations: [{ languages_code: 'en', label: 'Real-time refresh' }],
+				},
+				{
+					id: 2,
+					sort: 1,
+					value: '99.9%',
+					before: null,
+					translations: [{ languages_code: 'en', label: 'Uptime' }],
+				},
+			],
+		};
+		const p = toProject(withMetrics);
+		expect(p.impactMetrics?.length).toBe(2);
+		expect(p.impactMetric).toEqual(p.impactMetrics?.[0]);
+		expect(p.impactMetric?.value).toBe('30s');
+		expect(p.impactMetric?.label).toEqual({ en: 'Real-time refresh' });
+	});
+
+	it('preserves impact_metric.before when set', () => {
+		const withBefore: DirectusProject = {
+			...baseRow,
+			impact_metrics: [
+				{
+					id: 1,
+					sort: 0,
+					value: '15 min',
+					before: '2 days',
+					translations: [{ languages_code: 'en', label: 'Reporting' }],
+				},
+			],
+		};
+		const p = toProject(withBefore);
+		expect(p.impactMetric?.before).toBe('2 days');
+	});
+
+	it('extracts relatedServices from M2M junction rows', () => {
+		const withServices: DirectusProject = {
+			...baseRow,
+			services: [
+				{ id: 1, project_id: 'yesid-dev', service_id: 'web-development' },
+				{ id: 2, project_id: 'yesid-dev', service_id: 'sql-development' },
+			],
+		};
+		const p = toProject(withServices);
+		expect(p.relatedServices).toEqual(['web-development', 'sql-development']);
+	});
+
+	it('returns empty relatedServices when no junction rows', () => {
+		const p = toProject(baseRow);
+		expect(p.relatedServices).toEqual([]);
 	});
 });
