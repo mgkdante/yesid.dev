@@ -1,6 +1,6 @@
 <!--
   Hero banner: scroll-driven SVG metro network animation (Slice A + Slice C).
-  Uses Yesid's hand-built montreal_map.svg.
+  Renders the home-page hero band; layered backdrop with the metro-network motion (SVG fetched from Directus, no static map asset).
 
   Phase 1 (0-3%)    — Berri-UQAM dot + "yesid" + "SCROLL DOWN" visible at load
   Phase 1b (3-15%)   — Dot + text pulse (light on/off, opacity)

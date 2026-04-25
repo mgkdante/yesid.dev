@@ -48,6 +48,16 @@ Root cause hypothesis: Sharp native bindings not functional in Railway container
 
 ---
 
+## Open follow-ups (post-18d)
+
+- **Sharp/Railway image transforms** — silent passthrough confirmed; presets configured but not actually executing. File GitHub issue; tackle in 18j polish or as standalone infrastructure ticket. Acceptance gate "preset returns 1200-wide WebP" not met for sources >1200; works for ≤1200 sources by passthrough.
+- **R2 bucket versioning** — not enabled. Cloudflare console toggle (~2 min). Defer to 18j.
+- **`apps/cms/directus/snapshot/` legacy directory** — pre-directus-sync layout retained for now; cleanup at 18k close.
+- **assets-id-map sync between apps/cms and packages/shared** — manual today (cp on 18d). Consider script-emit on `migrate-assets` exit, or CI drift check.
+- **Orphan `legacy_path.json` at `apps/cms/directus/fields/directus_files/`** — duplicates the canonical at `apps/cms/directus/snapshot/fields/directus_files/`. Cleaned up in Task 46 (this close).
+
+---
+
 ## R2 bucket layout (key naming)
 
 **Status:** Resolved — Task 20 (2026-04-24).
