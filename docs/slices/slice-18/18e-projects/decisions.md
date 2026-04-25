@@ -32,3 +32,12 @@
 - #43 — projects integration tests (slice-18j)
 - #44 — N+1 batch optimization for services M2M (follow-on)
 - #45 — Cosmetic FK constraint name diff noise (follow-on)
+
+## Close
+
+| Item | Value |
+|---|---|
+| PR | #46 |
+| Branch | feature/slice-18-18e |
+| Closed date | 2026-04-24 |
+| Merge SHA | (pending owner review + merge) |
