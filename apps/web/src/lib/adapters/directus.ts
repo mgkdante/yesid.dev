@@ -158,6 +158,14 @@ export interface DirectusProject {
 interface Schema {
 	services: DirectusService[];
 	projects: DirectusProject[];
+	// Projects-family child collections — declared so the @directus/sdk
+	// `readItems('projects', { fields: [{ translations: [...] }] })` typed
+	// nested-fields helper recognizes each child as a relational alias. The
+	// SDK matches via structural type equality between Item field type and
+	// any Schema collection's element type.
+	projects_translations: DirectusProjectTranslation[];
+	projects_sections: DirectusProjectSectionRow[];
+	projects_impact_metrics: DirectusProjectImpactMetricRow[];
 	projects_services: DirectusProjectsServicesRow[];
 }
 
@@ -500,6 +508,53 @@ const AdjacentServiceSchema = z.object({
 	next: ServiceSchema.optional(),
 });
 
+// ---------------------------------------------------------------------------
+// Projects fetch helpers (18e Phase 7 — Task 29)
+//
+// fetchProjects expands every nested child the toProject mapper reads:
+//   - translations (title, one_liner, description)
+//   - sections (id + sort + per-row translations)
+//   - impact_metrics (id + sort + value + before + per-row translations)
+//   - services (M2M junction rows: id + project_id + service_id)
+//
+// Fields literal is inlined (rather than hoisted to a const) so the Directus
+// SDK's strict tuple-typed `fields` parameter accepts it without a cast — the
+// same pattern fetchServices follows.
+// ---------------------------------------------------------------------------
+
+async function fetchProjects(filter?: Record<string, unknown>): Promise<Project[]> {
+	const rows = await client().request(
+		readItems('projects', {
+			fields: [
+				'*',
+				{ translations: ['*'] },
+				{ sections: ['id', 'sort', { translations: ['*'] }] },
+				{ impact_metrics: ['id', 'sort', 'value', 'before', { translations: ['*'] }] },
+				{ services: ['id', 'project_id', 'service_id'] },
+			],
+			limit: -1,
+			...(filter ? { filter } : {}),
+		}),
+	);
+	return (rows as unknown as DirectusProject[]).map(toProject);
+}
+
+// Two-stage byService: first hit the M2M junction to collect project ids
+// associated with a given service, then fetch the matching projects in full.
+// Going through projects_services instead of doing a relational filter on
+// projects keeps the cascade FK contract symmetrical with the seed-script
+// path and matches the live-state read pattern verified in 18e Phase 6.
+async function fetchProjectIdsForService(serviceId: string): Promise<readonly string[]> {
+	const rows = await client().request(
+		readItems('projects_services', {
+			fields: ['project_id'],
+			filter: { service_id: { _eq: serviceId } },
+			limit: -1,
+		}),
+	);
+	return (rows as unknown as Array<{ project_id: string }>).map((r) => r.project_id);
+}
+
 export const directusAdapter: ContentAdapter = {
 	services: {
 		all: async () =>
@@ -542,14 +597,71 @@ export const directusAdapter: ContentAdapter = {
 	},
 
 	projects: {
-		all: async () => todo('projects.all'),
-		bySlug: async () => todo('projects.bySlug'),
-		featured: async () => todo('projects.featured'),
-		public: async () => todo('projects.public'),
-		byService: async () => todo('projects.byService'),
-		allTags: async () => todo('projects.allTags'),
-		allStackItems: async () => todo('projects.allStackItems'),
-		serviceIdsForProjects: async () => todo('projects.serviceIdsForProjects'),
+		all: async () =>
+			parsePort('projects.all', z.array(ProjectSchema), await fetchProjects()),
+		bySlug: async (slug) => {
+			const rows = await fetchProjects({ id: { _eq: slug } });
+			return parsePort('projects.bySlug', ProjectSchema.optional(), rows[0]);
+		},
+		featured: async () =>
+			parsePort(
+				'projects.featured',
+				z.array(ProjectSchema),
+				await fetchProjects({ featured: { _eq: true } }),
+			),
+		public: async () =>
+			parsePort(
+				'projects.public',
+				z.array(ProjectSchema),
+				await fetchProjects({ status: { _eq: 'published' } }),
+			),
+		byService: async (serviceId) => {
+			const ids = await fetchProjectIdsForService(serviceId);
+			if (ids.length === 0) {
+				return parsePort('projects.byService', z.array(ProjectSchema), []);
+			}
+			const rows = await fetchProjects({ id: { _in: ids } });
+			return parsePort('projects.byService', z.array(ProjectSchema), rows);
+		},
+		allTags: async () => {
+			const rows = await client().request(
+				readItems('projects', { fields: ['tags'], limit: -1 }),
+			);
+			const all = (rows as unknown as Array<{ tags: string[] }>).flatMap(
+				(r) => r.tags ?? [],
+			);
+			return parsePort(
+				'projects.allTags',
+				z.array(z.string()),
+				[...new Set(all)].sort(),
+			);
+		},
+		allStackItems: async () => {
+			const rows = await client().request(
+				readItems('projects', { fields: ['stack'], limit: -1 }),
+			);
+			const all = (rows as unknown as Array<{ stack: string[] }>).flatMap(
+				(r) => r.stack ?? [],
+			);
+			return parsePort(
+				'projects.allStackItems',
+				z.array(z.string()),
+				[...new Set(all)].sort(),
+			);
+		},
+		serviceIdsForProjects: async () => {
+			const rows = await client().request(
+				readItems('projects_services', { fields: ['service_id'], limit: -1 }),
+			);
+			const all = (rows as unknown as Array<{ service_id: string }>).map(
+				(r) => r.service_id,
+			);
+			return parsePort(
+				'projects.serviceIdsForProjects',
+				z.array(z.string()),
+				[...new Set(all)].sort(),
+			);
+		},
 	},
 
 	blog: {

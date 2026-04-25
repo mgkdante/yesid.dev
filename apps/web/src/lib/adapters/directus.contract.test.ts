@@ -62,8 +62,8 @@ describe('directusAdapter — structural contract', () => {
 
 	it('un-implemented ports throw a clear TODO error (not silently return empty)', async () => {
 		// Tasks 10–14 progressively replace these throws with real impls.
+		// 18e Phase 7: services + projects ports are live; remaining ports below.
 		// Until then, fail loud when consumer code asks for an un-migrated port.
-		await expect(directusAdapter.projects.all()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.blog.all()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.meta.site()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.techStack.all()).rejects.toThrow(/not implemented/);
