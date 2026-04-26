@@ -44,7 +44,7 @@
 
 ## Open follow-ups (filed as GitHub issues at close)
 
-(Empty — populate as work progresses; sweep before close per AGENTS.md `## Never`.)
+- **AM3 (code-block language hints) + AM4 (embeds) + AM8 (block-editor authoring UX)** — three distinct GH issues to file at close, plus one umbrella issue to evaluate [directus-extension-flexible-editor](https://github.com/formfcw/directus-extension-flexible-editor) (TipTap-based, marketplace-listed, 206⭐, GPL-3.0, v1.8.4 Oct 2025) as a unified replacement for all three. Research 2026-04-26 confirmed: the Editor.js Directus path is dead (`dimitrov-adrian/directus-extension-editorjs-interface` last touched April 2023, Directus 9 only). flexible-editor solves AM3 (TipTap CodeBlockLowlight) + AM4 (M2A embed blocks) + AM8 (Notion-style configurable toolbar) out of the box. Trade-off: migrating Phases 3/5/6 from Editor.js JSON to ProseMirror JSON (~3–5 sessions of rework) vs. building a custom yesid-block-editor extension in 18j (1–2 sessions, narrower scope). Recommended pre-decision: 1-day spike to verify install on Directus 11.17.3. **Decision (option 1):** finish 18f as planned on Editor.js path; revisit at 18j start.
 
 ## Close
 
