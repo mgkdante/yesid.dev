@@ -724,3 +724,22 @@ export interface SkillsJourneyCtaContent {
 	prompt: LocalizedString;
 	button: LocalizedString;
 }
+
+// ---------------------------------------------------------------------------
+// Morph shapes (geometric morph-target library — slice-18 18f)
+// ---------------------------------------------------------------------------
+//
+// Replaces the hardcoded SHAPES const in apps/web/src/lib/utils/shapes.ts.
+// Editors add/remove shapes via Data Studio; consumers read from the
+// adapter (cached module-level after first fetch).
+//
+// Schema lives in apps/cms/directus/snapshot/collections/morph_shapes.json
+// (Phase 4 work). Used by the Block Editor world's morph-hover animations.
+
+export interface MorphShape {
+	id: string;
+	label: string;
+	path: string;     // SVG path d= attribute, e.g. "M24 8 L40 38 L8 38 Z"
+	viewbox: string;  // default "0 0 48 48"
+	sort: number;
+}
