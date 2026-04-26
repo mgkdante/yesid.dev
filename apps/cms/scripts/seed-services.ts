@@ -74,7 +74,6 @@ export interface Service {
 	benefitHeadline?: LocalizedString;
 	impactMetric?: ImpactMetric;
 	station: number;
-	icon?: string;
 	svg?: string;
 	visible?: boolean;
 	relatedProjects: readonly string[];
@@ -111,7 +110,6 @@ export const ServiceSchema: z.ZodType<Service> = z.object({
 	benefitHeadline: LocalizedStringSchema.optional(),
 	impactMetric: ImpactMetricSchema.optional(),
 	station: z.number().int().positive(),
-	icon: z.string().min(1).optional(),
 	svg: z.string().min(1).optional(),
 	visible: z.boolean().optional(),
 	relatedProjects: z.array(z.string().min(1)).readonly(),
@@ -153,7 +151,6 @@ export interface DirectusSectionRow {
 export interface DirectusServiceRow {
 	id: string;
 	station: number;
-	icon?: string;
 	svg?: string;
 	visible: boolean;
 	related_projects: readonly string[];
@@ -255,7 +252,6 @@ export function toServiceRow(service: Service): DirectusServiceRow {
 		deliverables: toDeliverableRows(service),
 		sections: toSectionRows(service),
 	};
-	if (service.icon) row.icon = service.icon;
 	if (service.svg) row.svg = service.svg;
 	if (service.stack && service.stack.length > 0) row.stack = service.stack;
 	return row;
