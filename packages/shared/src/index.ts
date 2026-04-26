@@ -4,4 +4,5 @@
 
 export * from './assets';
 export * from './types';
+export * from './utils';
 // export * from './schemas'; // enabled when Zod schemas land (Task 14+ or 18c Phase 3).
