@@ -1,47 +1,41 @@
 {
   "collection": "blog_posts",
-  "field": "body",
-  "type": "json",
+  "field": "url",
+  "type": "string",
   "meta": {
     "collection": "blog_posts",
     "conditions": [
       {
-        "rule": { "_and": [{ "external": { "_eq": false } }] },
-        "name": "external is false",
-        "hidden": false,
-        "required": true
-      },
-      {
         "rule": { "_and": [{ "external": { "_eq": true } }] },
         "name": "external is true",
-        "hidden": true,
-        "required": false
+        "hidden": false,
+        "required": true
       }
     ],
     "display": null,
     "display_options": null,
-    "field": "body",
+    "field": "url",
     "group": null,
     "hidden": false,
-    "interface": "input-block-editor",
-    "note": "Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.",
+    "interface": "input",
+    "note": "External URL. Required + visible when external=true.",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 99,
-    "special": ["cast-json"],
+    "sort": 8,
+    "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
-    "name": "body",
+    "name": "url",
     "table": "blog_posts",
-    "data_type": "jsonb",
+    "data_type": "character varying",
     "default_value": null,
-    "max_length": null,
+    "max_length": 2048,
     "numeric_precision": null,
     "numeric_scale": null,
     "is_nullable": true,

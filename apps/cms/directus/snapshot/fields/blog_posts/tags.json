@@ -1,35 +1,24 @@
 {
   "collection": "blog_posts",
-  "field": "body",
+  "field": "tags",
   "type": "json",
   "meta": {
     "collection": "blog_posts",
-    "conditions": [
-      {
-        "rule": { "_and": [{ "external": { "_eq": false } }] },
-        "name": "external is false",
-        "hidden": false,
-        "required": true
-      },
-      {
-        "rule": { "_and": [{ "external": { "_eq": true } }] },
-        "name": "external is true",
-        "hidden": true,
-        "required": false
-      }
-    ],
+    "conditions": null,
     "display": null,
     "display_options": null,
-    "field": "body",
+    "field": "tags",
     "group": null,
     "hidden": false,
-    "interface": "input-block-editor",
-    "note": "Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.",
-    "options": null,
+    "interface": "tags",
+    "note": "Lowercase keywords, used in listing filter.",
+    "options": {
+      "alphabetize": true
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 99,
+    "sort": 6,
     "special": ["cast-json"],
     "translations": null,
     "validation": null,
@@ -37,10 +26,10 @@
     "width": "full"
   },
   "schema": {
-    "name": "body",
+    "name": "tags",
     "table": "blog_posts",
     "data_type": "jsonb",
-    "default_value": null,
+    "default_value": "[]",
     "max_length": null,
     "numeric_precision": null,
     "numeric_scale": null,
