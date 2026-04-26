@@ -6,10 +6,18 @@
     "collection": "blog_posts",
     "conditions": [
       {
-        "rule": { "_and": [{ "external": { "_eq": true } }] },
-        "name": "external is true",
         "hidden": false,
-        "required": true
+        "name": "external is true",
+        "required": true,
+        "rule": {
+          "_and": [
+            {
+              "external": {
+                "_eq": true
+              }
+            }
+          ]
+        }
       }
     ],
     "display": null,

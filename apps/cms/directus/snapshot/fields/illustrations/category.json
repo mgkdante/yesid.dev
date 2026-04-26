@@ -14,9 +14,18 @@
     "note": "Filters which posts/projects can pick this in their dropdown.",
     "options": {
       "choices": [
-        { "text": "Professional", "value": "professional" },
-        { "text": "Personal", "value": "personal" },
-        { "text": "General", "value": "general" }
+        {
+          "text": "Professional",
+          "value": "professional"
+        },
+        {
+          "text": "Personal",
+          "value": "personal"
+        },
+        {
+          "text": "General",
+          "value": "general"
+        }
       ]
     },
     "readonly": false,

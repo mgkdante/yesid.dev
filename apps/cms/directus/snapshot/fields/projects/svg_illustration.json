@@ -13,19 +13,29 @@
     "interface": "select-dropdown-m2o",
     "note": "Optional decorative illustration. Cascade fallback to related-services SVGs is unchanged.",
     "options": {
-      "template": "{{label}} ({{category}})",
       "filter": {
         "_or": [
-          { "category": { "_eq": "professional" } },
-          { "category": { "_eq": "general" } }
+          {
+            "category": {
+              "_eq": "professional"
+            }
+          },
+          {
+            "category": {
+              "_eq": "general"
+            }
+          }
         ]
-      }
+      },
+      "template": "{{label}} ({{category}})"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 18,
-    "special": ["m2o"],
+    "special": [
+      "m2o"
+    ],
     "translations": null,
     "validation": null,
     "validation_message": null,

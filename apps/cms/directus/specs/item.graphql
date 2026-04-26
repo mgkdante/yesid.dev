@@ -31,6 +31,50 @@ type Query {
   directus_sync_id_map_by_id(id: ID!, version: String): directus_sync_id_map
   directus_sync_id_map_aggregated(groupBy: [String], filter: directus_sync_id_map_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [directus_sync_id_map_aggregated!]!
   directus_sync_id_map_by_version(version: String!, id: ID!): version_directus_sync_id_map
+  morph_shapes(filter: morph_shapes_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [morph_shapes!]!
+  morph_shapes_by_id(id: ID!, version: String): morph_shapes
+  morph_shapes_aggregated(groupBy: [String], filter: morph_shapes_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [morph_shapes_aggregated!]!
+  morph_shapes_by_version(version: String!, id: ID!): version_morph_shapes
+  illustrations(filter: illustrations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [illustrations!]!
+  illustrations_by_id(id: ID!, version: String): illustrations
+  illustrations_aggregated(groupBy: [String], filter: illustrations_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [illustrations_aggregated!]!
+  illustrations_by_version(version: String!, id: ID!): version_illustrations
+  projects_impact_metrics(filter: projects_impact_metrics_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_impact_metrics!]!
+  projects_impact_metrics_by_id(id: ID!, version: String): projects_impact_metrics
+  projects_impact_metrics_aggregated(groupBy: [String], filter: projects_impact_metrics_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [projects_impact_metrics_aggregated!]!
+  projects_impact_metrics_by_version(version: String!, id: ID!): version_projects_impact_metrics
+  projects_impact_metrics_translations(filter: projects_impact_metrics_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_impact_metrics_translations!]!
+  projects_impact_metrics_translations_by_id(id: ID!, version: String): projects_impact_metrics_translations
+  projects_impact_metrics_translations_aggregated(groupBy: [String], filter: projects_impact_metrics_translations_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [projects_impact_metrics_translations_aggregated!]!
+  projects_impact_metrics_translations_by_version(version: String!, id: ID!): version_projects_impact_metrics_translations
+  projects_sections(filter: projects_sections_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_sections!]!
+  projects_sections_by_id(id: ID!, version: String): projects_sections
+  projects_sections_aggregated(groupBy: [String], filter: projects_sections_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [projects_sections_aggregated!]!
+  projects_sections_by_version(version: String!, id: ID!): version_projects_sections
+  projects_services(filter: projects_services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_services!]!
+  projects_services_by_id(id: ID!, version: String): projects_services
+  projects_services_aggregated(groupBy: [String], filter: projects_services_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [projects_services_aggregated!]!
+  projects_services_by_version(version: String!, id: ID!): version_projects_services
+  projects_translations(filter: projects_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_translations!]!
+  projects_translations_by_id(id: ID!, version: String): projects_translations
+  projects_translations_aggregated(groupBy: [String], filter: projects_translations_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [projects_translations_aggregated!]!
+  projects_translations_by_version(version: String!, id: ID!): version_projects_translations
+  projects_sections_translations(filter: projects_sections_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_sections_translations!]!
+  projects_sections_translations_by_id(id: ID!, version: String): projects_sections_translations
+  projects_sections_translations_aggregated(groupBy: [String], filter: projects_sections_translations_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [projects_sections_translations_aggregated!]!
+  projects_sections_translations_by_version(version: String!, id: ID!): version_projects_sections_translations
+  projects(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects!]!
+  projects_by_id(id: ID!, version: String): projects
+  projects_aggregated(groupBy: [String], filter: projects_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [projects_aggregated!]!
+  projects_by_version(version: String!, id: ID!): version_projects
+  blog_posts(filter: blog_posts_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [blog_posts!]!
+  blog_posts_by_id(id: ID!, version: String): blog_posts
+  blog_posts_aggregated(groupBy: [String], filter: blog_posts_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [blog_posts_aggregated!]!
+  blog_posts_by_version(version: String!, id: ID!): version_blog_posts
+  blog_posts_translations(filter: blog_posts_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [blog_posts_translations!]!
+  blog_posts_translations_by_id(id: ID!, version: String): blog_posts_translations
+  blog_posts_translations_aggregated(groupBy: [String], filter: blog_posts_translations_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [blog_posts_translations_aggregated!]!
+  blog_posts_translations_by_version(version: String!, id: ID!): version_blog_posts_translations
 }
 
 type Mutation {
@@ -50,6 +94,28 @@ type Mutation {
   create_services_sections_translations_item(data: create_services_sections_translations_input!): services_sections_translations
   create_directus_sync_id_map_items(filter: directus_sync_id_map_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_directus_sync_id_map_input!]): [directus_sync_id_map!]!
   create_directus_sync_id_map_item(data: create_directus_sync_id_map_input!): directus_sync_id_map
+  create_morph_shapes_items(filter: morph_shapes_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_morph_shapes_input!]): [morph_shapes!]!
+  create_morph_shapes_item(data: create_morph_shapes_input!): morph_shapes
+  create_illustrations_items(filter: illustrations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_illustrations_input!]): [illustrations!]!
+  create_illustrations_item(data: create_illustrations_input!): illustrations
+  create_projects_impact_metrics_items(filter: projects_impact_metrics_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_projects_impact_metrics_input!]): [projects_impact_metrics!]!
+  create_projects_impact_metrics_item(data: create_projects_impact_metrics_input!): projects_impact_metrics
+  create_projects_impact_metrics_translations_items(filter: projects_impact_metrics_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_projects_impact_metrics_translations_input!]): [projects_impact_metrics_translations!]!
+  create_projects_impact_metrics_translations_item(data: create_projects_impact_metrics_translations_input!): projects_impact_metrics_translations
+  create_projects_sections_items(filter: projects_sections_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_projects_sections_input!]): [projects_sections!]!
+  create_projects_sections_item(data: create_projects_sections_input!): projects_sections
+  create_projects_services_items(filter: projects_services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_projects_services_input!]): [projects_services!]!
+  create_projects_services_item(data: create_projects_services_input!): projects_services
+  create_projects_translations_items(filter: projects_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_projects_translations_input!]): [projects_translations!]!
+  create_projects_translations_item(data: create_projects_translations_input!): projects_translations
+  create_projects_sections_translations_items(filter: projects_sections_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_projects_sections_translations_input!]): [projects_sections_translations!]!
+  create_projects_sections_translations_item(data: create_projects_sections_translations_input!): projects_sections_translations
+  create_projects_items(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_projects_input!]): [projects!]!
+  create_projects_item(data: create_projects_input!): projects
+  create_blog_posts_items(filter: blog_posts_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_blog_posts_input!]): [blog_posts!]!
+  create_blog_posts_item(data: create_blog_posts_input!): blog_posts
+  create_blog_posts_translations_items(filter: blog_posts_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_blog_posts_translations_input!]): [blog_posts_translations!]!
+  create_blog_posts_translations_item(data: create_blog_posts_translations_input!): blog_posts_translations
   update_languages_items(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_languages_input!): [languages!]!
   update_languages_batch(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_languages_input!]): [languages!]!
   update_languages_item(id: ID!, data: update_languages_input!): languages
@@ -74,6 +140,39 @@ type Mutation {
   update_directus_sync_id_map_items(filter: directus_sync_id_map_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_directus_sync_id_map_input!): [directus_sync_id_map!]!
   update_directus_sync_id_map_batch(filter: directus_sync_id_map_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_directus_sync_id_map_input!]): [directus_sync_id_map!]!
   update_directus_sync_id_map_item(id: ID!, data: update_directus_sync_id_map_input!): directus_sync_id_map
+  update_morph_shapes_items(filter: morph_shapes_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_morph_shapes_input!): [morph_shapes!]!
+  update_morph_shapes_batch(filter: morph_shapes_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_morph_shapes_input!]): [morph_shapes!]!
+  update_morph_shapes_item(id: ID!, data: update_morph_shapes_input!): morph_shapes
+  update_illustrations_items(filter: illustrations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_illustrations_input!): [illustrations!]!
+  update_illustrations_batch(filter: illustrations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_illustrations_input!]): [illustrations!]!
+  update_illustrations_item(id: ID!, data: update_illustrations_input!): illustrations
+  update_projects_impact_metrics_items(filter: projects_impact_metrics_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_projects_impact_metrics_input!): [projects_impact_metrics!]!
+  update_projects_impact_metrics_batch(filter: projects_impact_metrics_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_projects_impact_metrics_input!]): [projects_impact_metrics!]!
+  update_projects_impact_metrics_item(id: ID!, data: update_projects_impact_metrics_input!): projects_impact_metrics
+  update_projects_impact_metrics_translations_items(filter: projects_impact_metrics_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_projects_impact_metrics_translations_input!): [projects_impact_metrics_translations!]!
+  update_projects_impact_metrics_translations_batch(filter: projects_impact_metrics_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_projects_impact_metrics_translations_input!]): [projects_impact_metrics_translations!]!
+  update_projects_impact_metrics_translations_item(id: ID!, data: update_projects_impact_metrics_translations_input!): projects_impact_metrics_translations
+  update_projects_sections_items(filter: projects_sections_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_projects_sections_input!): [projects_sections!]!
+  update_projects_sections_batch(filter: projects_sections_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_projects_sections_input!]): [projects_sections!]!
+  update_projects_sections_item(id: ID!, data: update_projects_sections_input!): projects_sections
+  update_projects_services_items(filter: projects_services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_projects_services_input!): [projects_services!]!
+  update_projects_services_batch(filter: projects_services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_projects_services_input!]): [projects_services!]!
+  update_projects_services_item(id: ID!, data: update_projects_services_input!): projects_services
+  update_projects_translations_items(filter: projects_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_projects_translations_input!): [projects_translations!]!
+  update_projects_translations_batch(filter: projects_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_projects_translations_input!]): [projects_translations!]!
+  update_projects_translations_item(id: ID!, data: update_projects_translations_input!): projects_translations
+  update_projects_sections_translations_items(filter: projects_sections_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_projects_sections_translations_input!): [projects_sections_translations!]!
+  update_projects_sections_translations_batch(filter: projects_sections_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_projects_sections_translations_input!]): [projects_sections_translations!]!
+  update_projects_sections_translations_item(id: ID!, data: update_projects_sections_translations_input!): projects_sections_translations
+  update_projects_items(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_projects_input!): [projects!]!
+  update_projects_batch(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_projects_input!]): [projects!]!
+  update_projects_item(id: ID!, data: update_projects_input!): projects
+  update_blog_posts_items(filter: blog_posts_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_blog_posts_input!): [blog_posts!]!
+  update_blog_posts_batch(filter: blog_posts_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_blog_posts_input!]): [blog_posts!]!
+  update_blog_posts_item(id: ID!, data: update_blog_posts_input!): blog_posts
+  update_blog_posts_translations_items(filter: blog_posts_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_blog_posts_translations_input!): [blog_posts_translations!]!
+  update_blog_posts_translations_batch(filter: blog_posts_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_blog_posts_translations_input!]): [blog_posts_translations!]!
+  update_blog_posts_translations_item(id: ID!, data: update_blog_posts_translations_input!): blog_posts_translations
   delete_languages_items(ids: [ID]!): delete_many
   delete_languages_item(id: ID!): delete_one
   delete_services_items(ids: [ID]!): delete_many
@@ -90,13 +189,35 @@ type Mutation {
   delete_services_sections_translations_item(id: ID!): delete_one
   delete_directus_sync_id_map_items(ids: [ID]!): delete_many
   delete_directus_sync_id_map_item(id: ID!): delete_one
+  delete_morph_shapes_items(ids: [ID]!): delete_many
+  delete_morph_shapes_item(id: ID!): delete_one
+  delete_illustrations_items(ids: [ID]!): delete_many
+  delete_illustrations_item(id: ID!): delete_one
+  delete_projects_impact_metrics_items(ids: [ID]!): delete_many
+  delete_projects_impact_metrics_item(id: ID!): delete_one
+  delete_projects_impact_metrics_translations_items(ids: [ID]!): delete_many
+  delete_projects_impact_metrics_translations_item(id: ID!): delete_one
+  delete_projects_sections_items(ids: [ID]!): delete_many
+  delete_projects_sections_item(id: ID!): delete_one
+  delete_projects_services_items(ids: [ID]!): delete_many
+  delete_projects_services_item(id: ID!): delete_one
+  delete_projects_translations_items(ids: [ID]!): delete_many
+  delete_projects_translations_item(id: ID!): delete_one
+  delete_projects_sections_translations_items(ids: [ID]!): delete_many
+  delete_projects_sections_translations_item(id: ID!): delete_one
+  delete_projects_items(ids: [ID]!): delete_many
+  delete_projects_item(id: ID!): delete_one
+  delete_blog_posts_items(ids: [ID]!): delete_many
+  delete_blog_posts_item(id: ID!): delete_one
+  delete_blog_posts_translations_items(ids: [ID]!): delete_many
+  delete_blog_posts_translations_item(id: ID!): delete_one
 }
 
 type Subscription {
   directus_activity_mutated(event: EventEnum): directus_activity_mutated
   directus_permissions_mutated(event: EventEnum): directus_permissions_mutated
-  directus_files_mutated(event: EventEnum): directus_files_mutated
   directus_folders_mutated(event: EventEnum): directus_folders_mutated
+  directus_files_mutated(event: EventEnum): directus_files_mutated
   directus_users_mutated(event: EventEnum): directus_users_mutated
   directus_roles_mutated(event: EventEnum): directus_roles_mutated
   languages_mutated(event: EventEnum): languages_mutated
@@ -124,6 +245,17 @@ type Subscription {
   services_sections_mutated(event: EventEnum): services_sections_mutated
   services_sections_translations_mutated(event: EventEnum): services_sections_translations_mutated
   directus_sync_id_map_mutated(event: EventEnum): directus_sync_id_map_mutated
+  morph_shapes_mutated(event: EventEnum): morph_shapes_mutated
+  illustrations_mutated(event: EventEnum): illustrations_mutated
+  projects_impact_metrics_mutated(event: EventEnum): projects_impact_metrics_mutated
+  projects_impact_metrics_translations_mutated(event: EventEnum): projects_impact_metrics_translations_mutated
+  projects_sections_mutated(event: EventEnum): projects_sections_mutated
+  projects_services_mutated(event: EventEnum): projects_services_mutated
+  projects_translations_mutated(event: EventEnum): projects_translations_mutated
+  projects_sections_translations_mutated(event: EventEnum): projects_sections_translations_mutated
+  projects_mutated(event: EventEnum): projects_mutated
+  blog_posts_mutated(event: EventEnum): blog_posts_mutated
+  blog_posts_translations_mutated(event: EventEnum): blog_posts_translations_mutated
 }
 
 """The `Boolean` scalar type represents `true` or `false`."""
@@ -170,6 +302,174 @@ enum EventEnum {
   create
   update
   delete
+}
+
+type blog_posts {
+  """
+  Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.
+  """
+  body: JSON
+  body_func: count_functions
+
+  """Slug — kebab-case, URL-safe. Becomes the route segment at /blog/{id}."""
+  id: ID!
+
+  """Entrance animation type for the SVG illustration."""
+  animation: String
+
+  """Editorial lane. Filters illustration dropdown."""
+  category: String!
+  cover_image(filter: directus_files_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): directus_files
+
+  """
+  ISO datetime; controls listing sort. Set when status flips to published.
+  """
+  date_published: Date
+  date_published_func: datetime_functions
+
+  """When true, body becomes optional and url is required + visible."""
+  external: Boolean!
+
+  """
+  Language of the body. Each post is mono-language; use translations junction for title/excerpt across locales.
+  """
+  lang: String
+  sort: Int!
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+  svg_illustration(filter: illustrations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): illustrations
+
+  """Lowercase keywords, used in listing filter."""
+  tags: JSON
+  tags_func: count_functions
+
+  """External URL. Required + visible when external=true."""
+  url: String
+  translations(filter: blog_posts_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [blog_posts_translations]
+  translations_func: count_functions
+}
+
+type blog_posts_aggregated {
+  group: JSON
+  countAll: Int
+  count: blog_posts_aggregated_count
+  countDistinct: blog_posts_aggregated_count
+  avg: blog_posts_aggregated_fields
+  sum: blog_posts_aggregated_fields
+  avgDistinct: blog_posts_aggregated_fields
+  sumDistinct: blog_posts_aggregated_fields
+  min: blog_posts_aggregated_fields
+  max: blog_posts_aggregated_fields
+}
+
+type blog_posts_aggregated_count {
+  """
+  Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.
+  """
+  body: Int
+
+  """Slug — kebab-case, URL-safe. Becomes the route segment at /blog/{id}."""
+  id: Int
+
+  """Entrance animation type for the SVG illustration."""
+  animation: Int
+
+  """Editorial lane. Filters illustration dropdown."""
+  category: Int
+
+  """Optional hero image (preset hero-1200 used at render)."""
+  cover_image: Int
+
+  """
+  ISO datetime; controls listing sort. Set when status flips to published.
+  """
+  date_published: Int
+
+  """When true, body becomes optional and url is required + visible."""
+  external: Int
+
+  """
+  Language of the body. Each post is mono-language; use translations junction for title/excerpt across locales.
+  """
+  lang: Int
+  sort: Int
+
+  """Publication state. ai-editor cannot set to published."""
+  status: Int
+
+  """
+  Curated SVG illustration. Optional — falls back to deterministic fallback if absent.
+  """
+  svg_illustration: Int
+
+  """Lowercase keywords, used in listing filter."""
+  tags: Int
+
+  """External URL. Required + visible when external=true."""
+  url: Int
+
+  """
+  Localized title + excerpt rows. Each post has at least one row matching post.lang.
+  """
+  translations: Int
+}
+
+type blog_posts_aggregated_fields {
+  sort: Float
+}
+
+type blog_posts_mutated {
+  key: ID!
+  event: EventEnum
+  data: blog_posts
+}
+
+type blog_posts_translations {
+  blog_posts_id(filter: blog_posts_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): blog_posts
+
+  """Localized excerpt — 1–2 sentences shown on listing cards. ≤500 chars."""
+  excerpt: String!
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """Localized post title. Required."""
+  title: String!
+}
+
+type blog_posts_translations_aggregated {
+  group: JSON
+  countAll: Int
+  count: blog_posts_translations_aggregated_count
+  countDistinct: blog_posts_translations_aggregated_count
+  avg: blog_posts_translations_aggregated_fields
+  sum: blog_posts_translations_aggregated_fields
+  avgDistinct: blog_posts_translations_aggregated_fields
+  sumDistinct: blog_posts_translations_aggregated_fields
+  min: blog_posts_translations_aggregated_fields
+  max: blog_posts_translations_aggregated_fields
+}
+
+type blog_posts_translations_aggregated_count {
+  blog_posts_id: Int
+
+  """Localized excerpt — 1–2 sentences shown on listing cards. ≤500 chars."""
+  excerpt: Int
+  id: Int
+  languages_code: Int
+
+  """Localized post title. Required."""
+  title: Int
+}
+
+type blog_posts_translations_aggregated_fields {
+  id: Float
+}
+
+type blog_posts_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: blog_posts_translations
 }
 
 type count_functions {
@@ -368,6 +668,11 @@ type directus_files {
   tus_data_func: count_functions
   uploaded_on: Date
   uploaded_on_func: datetime_functions
+
+  """
+  Idempotency key for migrate-assets (slice-18d). Set by the migration script; do NOT edit post-migration. Format: `images/<relative-path-from-static>`.
+  """
+  legacy_path: String
 }
 
 type directus_files_mutated {
@@ -843,6 +1148,70 @@ type directus_versions_mutated {
   data: directus_versions
 }
 
+type illustrations {
+  """Filters which posts/projects can pick this in their dropdown."""
+  category: String
+
+  """Alt-text feed. Required (consumer renders aria-label)."""
+  description: String!
+  file(filter: directus_files_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): directus_files
+
+  """Slug — kebab-case, e.g. pro-database, personal-rocket."""
+  id: ID!
+
+  """Human-readable name shown in dropdown, e.g. "Database engineering"."""
+  label: String!
+  sort: Int!
+
+  """Filter / search aid across content types."""
+  tags: JSON
+  tags_func: count_functions
+}
+
+type illustrations_aggregated {
+  group: JSON
+  countAll: Int
+  count: illustrations_aggregated_count
+  countDistinct: illustrations_aggregated_count
+  avg: illustrations_aggregated_fields
+  sum: illustrations_aggregated_fields
+  avgDistinct: illustrations_aggregated_fields
+  sumDistinct: illustrations_aggregated_fields
+  min: illustrations_aggregated_fields
+  max: illustrations_aggregated_fields
+}
+
+type illustrations_aggregated_count {
+  """Filters which posts/projects can pick this in their dropdown."""
+  category: Int
+
+  """Alt-text feed. Required (consumer renders aria-label)."""
+  description: Int
+
+  """SVG file (recommended viewBox: 0 0 48 48; stroke-only; brand colors)."""
+  file: Int
+
+  """Slug — kebab-case, e.g. pro-database, personal-rocket."""
+  id: Int
+
+  """Human-readable name shown in dropdown, e.g. "Database engineering"."""
+  label: Int
+  sort: Int
+
+  """Filter / search aid across content types."""
+  tags: Int
+}
+
+type illustrations_aggregated_fields {
+  sort: Float
+}
+
+type illustrations_mutated {
+  key: ID!
+  event: EventEnum
+  data: illustrations
+}
+
 type languages {
   """ISO 639-1 code (en, fr, es)"""
   code: ID!
@@ -870,6 +1239,486 @@ type languages_mutated {
   data: languages
 }
 
+type morph_shapes {
+  """Optional editor notes (when to use this shape)."""
+  description: String
+
+  """Slug — e.g. triangle, decagon."""
+  id: ID!
+
+  """Human-readable, e.g. "Triangle", "10-sided polygon"."""
+  label: String!
+
+  """
+  SVG path d= attribute, e.g. "M24 8 L40 38 L8 38 Z". Must be a closed shape compatible with MorphSVGPlugin.
+  """
+  path: String!
+  sort: Int!
+
+  """SVG viewBox, e.g. "0 0 48 48". Default matches existing shape lib."""
+  viewbox: String
+}
+
+type morph_shapes_aggregated {
+  group: JSON
+  countAll: Int
+  count: morph_shapes_aggregated_count
+  countDistinct: morph_shapes_aggregated_count
+  avg: morph_shapes_aggregated_fields
+  sum: morph_shapes_aggregated_fields
+  avgDistinct: morph_shapes_aggregated_fields
+  sumDistinct: morph_shapes_aggregated_fields
+  min: morph_shapes_aggregated_fields
+  max: morph_shapes_aggregated_fields
+}
+
+type morph_shapes_aggregated_count {
+  """Optional editor notes (when to use this shape)."""
+  description: Int
+
+  """Slug — e.g. triangle, decagon."""
+  id: Int
+
+  """Human-readable, e.g. "Triangle", "10-sided polygon"."""
+  label: Int
+
+  """
+  SVG path d= attribute, e.g. "M24 8 L40 38 L8 38 Z". Must be a closed shape compatible with MorphSVGPlugin.
+  """
+  path: Int
+  sort: Int
+
+  """SVG viewBox, e.g. "0 0 48 48". Default matches existing shape lib."""
+  viewbox: Int
+}
+
+type morph_shapes_aggregated_fields {
+  sort: Float
+}
+
+type morph_shapes_mutated {
+  key: ID!
+  event: EventEnum
+  data: morph_shapes
+}
+
+type projects {
+  """When the project was publicly published."""
+  date_published: Date
+  date_published_func: datetime_functions
+
+  """Deployment environment descriptor (e.g. Production, Staging)."""
+  environment: String
+
+  """Highlight this project on the portfolio landing page."""
+  featured: Boolean!
+  hero_image(filter: directus_files_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): directus_files
+
+  """Kebab-case identifier (e.g. real-time-dashboard). Used as URL slug."""
+  id: ID!
+
+  """Live deployed URL of the project."""
+  live_url: String
+
+  """Geographic location or context (e.g. Remote — Montreal, QC)."""
+  location: String
+
+  """Direct link to the project README."""
+  readme_url: String
+
+  """GitHub or source repository URL."""
+  repo_url: String
+
+  """Manual sort order."""
+  sort: Int
+
+  """Array of tech names (e.g. PostgreSQL, Python, Svelte)."""
+  stack: JSON
+  stack_func: count_functions
+
+  """Publication state. AI-editor cannot set to published."""
+  status: String
+
+  """Free-form classification tags (e.g. data-engineering, analytics)."""
+  tags: JSON
+  tags_func: count_functions
+
+  """Version string or milestone (e.g. v2.1, Phase 3)."""
+  version: String
+  svg_illustration(filter: illustrations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): illustrations
+  impact_metrics(filter: projects_impact_metrics_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_impact_metrics]
+  impact_metrics_func: count_functions
+  sections(filter: projects_sections_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_sections]
+  sections_func: count_functions
+  services(filter: projects_services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_services]
+  services_func: count_functions
+  translations(filter: projects_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_translations]
+  translations_func: count_functions
+}
+
+type projects_aggregated {
+  group: JSON
+  countAll: Int
+  count: projects_aggregated_count
+  countDistinct: projects_aggregated_count
+  avg: projects_aggregated_fields
+  sum: projects_aggregated_fields
+  avgDistinct: projects_aggregated_fields
+  sumDistinct: projects_aggregated_fields
+  min: projects_aggregated_fields
+  max: projects_aggregated_fields
+}
+
+type projects_aggregated_count {
+  """When the project was publicly published."""
+  date_published: Int
+
+  """Deployment environment descriptor (e.g. Production, Staging)."""
+  environment: Int
+
+  """Highlight this project on the portfolio landing page."""
+  featured: Int
+
+  """Hero image for the project detail page."""
+  hero_image: Int
+
+  """Kebab-case identifier (e.g. real-time-dashboard). Used as URL slug."""
+  id: Int
+
+  """Live deployed URL of the project."""
+  live_url: Int
+
+  """Geographic location or context (e.g. Remote — Montreal, QC)."""
+  location: Int
+
+  """Direct link to the project README."""
+  readme_url: Int
+
+  """GitHub or source repository URL."""
+  repo_url: Int
+
+  """Manual sort order."""
+  sort: Int
+
+  """Array of tech names (e.g. PostgreSQL, Python, Svelte)."""
+  stack: Int
+
+  """Publication state. AI-editor cannot set to published."""
+  status: Int
+
+  """Free-form classification tags (e.g. data-engineering, analytics)."""
+  tags: Int
+
+  """Version string or milestone (e.g. v2.1, Phase 3)."""
+  version: Int
+
+  """
+  Optional decorative illustration. Cascade fallback to related-services SVGs is unchanged.
+  """
+  svg_illustration: Int
+  impact_metrics: Int
+  sections: Int
+  services: Int
+  translations: Int
+}
+
+type projects_aggregated_fields {
+  """Manual sort order."""
+  sort: Float
+}
+
+type projects_impact_metrics {
+  """
+  Locale-universal baseline value before improvement (e.g. 2 days). Optional.
+  """
+  before: String
+  id: ID!
+  projects_id(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): projects
+
+  """
+  Order within the parent project (ascending). First row (sort=0) is the featured metric.
+  """
+  sort: Int
+
+  """Locale-universal metric value (e.g. 30s, 99.9%, 2 days)."""
+  value: String!
+  translations(filter: projects_impact_metrics_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_impact_metrics_translations]
+  translations_func: count_functions
+}
+
+type projects_impact_metrics_aggregated {
+  group: JSON
+  countAll: Int
+  count: projects_impact_metrics_aggregated_count
+  countDistinct: projects_impact_metrics_aggregated_count
+  avg: projects_impact_metrics_aggregated_fields
+  sum: projects_impact_metrics_aggregated_fields
+  avgDistinct: projects_impact_metrics_aggregated_fields
+  sumDistinct: projects_impact_metrics_aggregated_fields
+  min: projects_impact_metrics_aggregated_fields
+  max: projects_impact_metrics_aggregated_fields
+}
+
+type projects_impact_metrics_aggregated_count {
+  """
+  Locale-universal baseline value before improvement (e.g. 2 days). Optional.
+  """
+  before: Int
+  id: Int
+  projects_id: Int
+
+  """
+  Order within the parent project (ascending). First row (sort=0) is the featured metric.
+  """
+  sort: Int
+
+  """Locale-universal metric value (e.g. 30s, 99.9%, 2 days)."""
+  value: Int
+  translations: Int
+}
+
+type projects_impact_metrics_aggregated_fields {
+  id: Float
+
+  """
+  Order within the parent project (ascending). First row (sort=0) is the featured metric.
+  """
+  sort: Float
+}
+
+type projects_impact_metrics_mutated {
+  key: ID!
+  event: EventEnum
+  data: projects_impact_metrics
+}
+
+type projects_impact_metrics_translations {
+  id: ID!
+
+  """Human-readable metric label (e.g. Real-time refresh cycles)."""
+  label: String!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+  projects_impact_metrics_id(filter: projects_impact_metrics_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): projects_impact_metrics
+}
+
+type projects_impact_metrics_translations_aggregated {
+  group: JSON
+  countAll: Int
+  count: projects_impact_metrics_translations_aggregated_count
+  countDistinct: projects_impact_metrics_translations_aggregated_count
+  avg: projects_impact_metrics_translations_aggregated_fields
+  sum: projects_impact_metrics_translations_aggregated_fields
+  avgDistinct: projects_impact_metrics_translations_aggregated_fields
+  sumDistinct: projects_impact_metrics_translations_aggregated_fields
+  min: projects_impact_metrics_translations_aggregated_fields
+  max: projects_impact_metrics_translations_aggregated_fields
+}
+
+type projects_impact_metrics_translations_aggregated_count {
+  id: Int
+
+  """Human-readable metric label (e.g. Real-time refresh cycles)."""
+  label: Int
+  languages_code: Int
+  projects_impact_metrics_id: Int
+}
+
+type projects_impact_metrics_translations_aggregated_fields {
+  id: Float
+  projects_impact_metrics_id: Float
+}
+
+type projects_impact_metrics_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: projects_impact_metrics_translations
+}
+
+type projects_mutated {
+  key: ID!
+  event: EventEnum
+  data: projects
+}
+
+type projects_sections {
+  id: ID!
+  projects_id(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): projects
+
+  """Order within the parent project (ascending)."""
+  sort: Int
+  translations(filter: projects_sections_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_sections_translations]
+  translations_func: count_functions
+}
+
+type projects_sections_aggregated {
+  group: JSON
+  countAll: Int
+  count: projects_sections_aggregated_count
+  countDistinct: projects_sections_aggregated_count
+  avg: projects_sections_aggregated_fields
+  sum: projects_sections_aggregated_fields
+  avgDistinct: projects_sections_aggregated_fields
+  sumDistinct: projects_sections_aggregated_fields
+  min: projects_sections_aggregated_fields
+  max: projects_sections_aggregated_fields
+}
+
+type projects_sections_aggregated_count {
+  id: Int
+  projects_id: Int
+
+  """Order within the parent project (ascending)."""
+  sort: Int
+  translations: Int
+}
+
+type projects_sections_aggregated_fields {
+  id: Float
+
+  """Order within the parent project (ascending)."""
+  sort: Float
+}
+
+type projects_sections_mutated {
+  key: ID!
+  event: EventEnum
+  data: projects_sections
+}
+
+type projects_sections_translations {
+  """Section body rendered via BlockRenderer (Block Editor JSON)."""
+  content: JSON!
+  content_func: count_functions
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+  projects_sections_id(filter: projects_sections_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): projects_sections
+
+  """Section heading (e.g. The Challenge)."""
+  title: String!
+}
+
+type projects_sections_translations_aggregated {
+  group: JSON
+  countAll: Int
+  count: projects_sections_translations_aggregated_count
+  countDistinct: projects_sections_translations_aggregated_count
+  avg: projects_sections_translations_aggregated_fields
+  sum: projects_sections_translations_aggregated_fields
+  avgDistinct: projects_sections_translations_aggregated_fields
+  sumDistinct: projects_sections_translations_aggregated_fields
+  min: projects_sections_translations_aggregated_fields
+  max: projects_sections_translations_aggregated_fields
+}
+
+type projects_sections_translations_aggregated_count {
+  """Section body rendered via BlockRenderer (Block Editor JSON)."""
+  content: Int
+  id: Int
+  languages_code: Int
+  projects_sections_id: Int
+
+  """Section heading (e.g. The Challenge)."""
+  title: Int
+}
+
+type projects_sections_translations_aggregated_fields {
+  id: Float
+  projects_sections_id: Float
+}
+
+type projects_sections_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: projects_sections_translations
+}
+
+type projects_services {
+  id: ID!
+  project_id(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): projects
+  service_id(filter: services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): services
+}
+
+type projects_services_aggregated {
+  group: JSON
+  countAll: Int
+  count: projects_services_aggregated_count
+  countDistinct: projects_services_aggregated_count
+  avg: projects_services_aggregated_fields
+  sum: projects_services_aggregated_fields
+  avgDistinct: projects_services_aggregated_fields
+  sumDistinct: projects_services_aggregated_fields
+  min: projects_services_aggregated_fields
+  max: projects_services_aggregated_fields
+}
+
+type projects_services_aggregated_count {
+  id: Int
+  project_id: Int
+  service_id: Int
+}
+
+type projects_services_aggregated_fields {
+  id: Float
+}
+
+type projects_services_mutated {
+  key: ID!
+  event: EventEnum
+  data: projects_services
+}
+
+type projects_translations {
+  """Long-form description rendered via BlockRenderer (Block Editor JSON)."""
+  description: JSON
+  description_func: count_functions
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """One-sentence summary for cards and listings (max 500 chars)."""
+  one_liner: String
+  projects_id(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): projects
+
+  """Project title (max 100 chars)."""
+  title: String!
+}
+
+type projects_translations_aggregated {
+  group: JSON
+  countAll: Int
+  count: projects_translations_aggregated_count
+  countDistinct: projects_translations_aggregated_count
+  avg: projects_translations_aggregated_fields
+  sum: projects_translations_aggregated_fields
+  avgDistinct: projects_translations_aggregated_fields
+  sumDistinct: projects_translations_aggregated_fields
+  min: projects_translations_aggregated_fields
+  max: projects_translations_aggregated_fields
+}
+
+type projects_translations_aggregated_count {
+  """Long-form description rendered via BlockRenderer (Block Editor JSON)."""
+  description: Int
+  id: Int
+  languages_code: Int
+
+  """One-sentence summary for cards and listings (max 500 chars)."""
+  one_liner: Int
+  projects_id: Int
+
+  """Project title (max 100 chars)."""
+  title: Int
+}
+
+type projects_translations_aggregated_fields {
+  id: Float
+}
+
+type projects_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: projects_translations
+}
+
 type services {
   """Kebab-case identifier (e.g. sql-development). Used as URL slug."""
   id: ID!
@@ -889,15 +1738,8 @@ type services {
   """
   svg: String
 
-  """Play Lottie in reverse during scroll scrub. Default false."""
-  lottie_reverse: Boolean!
-
   """Show in listings. Default true; set false to hide without deleting."""
   visible: Boolean
-
-  """Array of project slugs (M2M upgrade once projects collection lands)."""
-  related_projects: JSON
-  related_projects_func: count_functions
 
   """Array of tech names (e.g. PostgreSQL, Python, Retool)."""
   stack: JSON
@@ -942,14 +1784,8 @@ type services_aggregated_count {
   """
   svg: Int
 
-  """Play Lottie in reverse during scroll scrub. Default false."""
-  lottie_reverse: Int
-
   """Show in listings. Default true; set false to hide without deleting."""
   visible: Int
-
-  """Array of project slugs (M2M upgrade once projects collection lands)."""
-  related_projects: Int
 
   """Array of tech names (e.g. PostgreSQL, Python, Retool)."""
   stack: Int
@@ -1235,6 +2071,62 @@ type services_translations_mutated {
 }
 
 """"""
+type version_blog_posts {
+  """
+  Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.
+  """
+  body: JSON
+
+  """Slug — kebab-case, URL-safe. Becomes the route segment at /blog/{id}."""
+  id: ID
+
+  """Entrance animation type for the SVG illustration."""
+  animation: String
+
+  """Editorial lane. Filters illustration dropdown."""
+  category: String
+  cover_image: JSON
+
+  """
+  ISO datetime; controls listing sort. Set when status flips to published.
+  """
+  date_published: Date
+
+  """When true, body becomes optional and url is required + visible."""
+  external: Boolean
+
+  """
+  Language of the body. Each post is mono-language; use translations junction for title/excerpt across locales.
+  """
+  lang: String
+  sort: Int
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+  svg_illustration: JSON
+
+  """Lowercase keywords, used in listing filter."""
+  tags: JSON
+
+  """External URL. Required + visible when external=true."""
+  url: String
+  translations: JSON
+}
+
+""""""
+type version_blog_posts_translations {
+  blog_posts_id: JSON
+
+  """Localized excerpt — 1–2 sentences shown on listing cards. ≤500 chars."""
+  excerpt: String
+  id: ID
+  languages_code: JSON
+
+  """Localized post title. Required."""
+  title: String
+}
+
+""""""
 type version_directus_sync_id_map {
   id: ID
   table: String
@@ -1244,11 +2136,173 @@ type version_directus_sync_id_map {
 }
 
 """"""
+type version_illustrations {
+  """Filters which posts/projects can pick this in their dropdown."""
+  category: String
+
+  """Alt-text feed. Required (consumer renders aria-label)."""
+  description: String
+  file: JSON
+
+  """Slug — kebab-case, e.g. pro-database, personal-rocket."""
+  id: ID
+
+  """Human-readable name shown in dropdown, e.g. "Database engineering"."""
+  label: String
+  sort: Int
+
+  """Filter / search aid across content types."""
+  tags: JSON
+}
+
+""""""
 type version_languages {
   """ISO 639-1 code (en, fr, es)"""
   code: ID
   name: String
   direction: String
+}
+
+""""""
+type version_morph_shapes {
+  """Optional editor notes (when to use this shape)."""
+  description: String
+
+  """Slug — e.g. triangle, decagon."""
+  id: ID
+
+  """Human-readable, e.g. "Triangle", "10-sided polygon"."""
+  label: String
+
+  """
+  SVG path d= attribute, e.g. "M24 8 L40 38 L8 38 Z". Must be a closed shape compatible with MorphSVGPlugin.
+  """
+  path: String
+  sort: Int
+
+  """SVG viewBox, e.g. "0 0 48 48". Default matches existing shape lib."""
+  viewbox: String
+}
+
+""""""
+type version_projects {
+  """When the project was publicly published."""
+  date_published: Date
+
+  """Deployment environment descriptor (e.g. Production, Staging)."""
+  environment: String
+
+  """Highlight this project on the portfolio landing page."""
+  featured: Boolean
+  hero_image: JSON
+
+  """Kebab-case identifier (e.g. real-time-dashboard). Used as URL slug."""
+  id: ID
+
+  """Live deployed URL of the project."""
+  live_url: String
+
+  """Geographic location or context (e.g. Remote — Montreal, QC)."""
+  location: String
+
+  """Direct link to the project README."""
+  readme_url: String
+
+  """GitHub or source repository URL."""
+  repo_url: String
+
+  """Manual sort order."""
+  sort: Int
+
+  """Array of tech names (e.g. PostgreSQL, Python, Svelte)."""
+  stack: JSON
+
+  """Publication state. AI-editor cannot set to published."""
+  status: String
+
+  """Free-form classification tags (e.g. data-engineering, analytics)."""
+  tags: JSON
+
+  """Version string or milestone (e.g. v2.1, Phase 3)."""
+  version: String
+  svg_illustration: JSON
+  impact_metrics: JSON
+  sections: JSON
+  services: JSON
+  translations: JSON
+}
+
+""""""
+type version_projects_impact_metrics {
+  """
+  Locale-universal baseline value before improvement (e.g. 2 days). Optional.
+  """
+  before: String
+  id: ID
+  projects_id: JSON
+
+  """
+  Order within the parent project (ascending). First row (sort=0) is the featured metric.
+  """
+  sort: Int
+
+  """Locale-universal metric value (e.g. 30s, 99.9%, 2 days)."""
+  value: String
+  translations: JSON
+}
+
+""""""
+type version_projects_impact_metrics_translations {
+  id: ID
+
+  """Human-readable metric label (e.g. Real-time refresh cycles)."""
+  label: String
+  languages_code: JSON
+  projects_impact_metrics_id: JSON
+}
+
+""""""
+type version_projects_sections {
+  id: ID
+  projects_id: JSON
+
+  """Order within the parent project (ascending)."""
+  sort: Int
+  translations: JSON
+}
+
+""""""
+type version_projects_sections_translations {
+  """Section body rendered via BlockRenderer (Block Editor JSON)."""
+  content: JSON
+  id: ID
+  languages_code: JSON
+  projects_sections_id: JSON
+
+  """Section heading (e.g. The Challenge)."""
+  title: String
+}
+
+""""""
+type version_projects_services {
+  id: ID
+  project_id: JSON
+  service_id: JSON
+}
+
+""""""
+type version_projects_translations {
+  """Long-form description rendered via BlockRenderer (Block Editor JSON)."""
+  description: JSON
+  id: ID
+  languages_code: JSON
+
+  """One-sentence summary for cards and listings (max 500 chars)."""
+  one_liner: String
+  projects_id: JSON
+
+  """Project title (max 100 chars)."""
+  title: String
 }
 
 """"""
@@ -1271,14 +2325,8 @@ type version_services {
   """
   svg: String
 
-  """Play Lottie in reverse during scroll scrub. Default false."""
-  lottie_reverse: Boolean
-
   """Show in listings. Default true; set false to hide without deleting."""
   visible: Boolean
-
-  """Array of project slugs (M2M upgrade once projects collection lands)."""
-  related_projects: JSON
 
   """Array of tech names (e.g. PostgreSQL, Python, Retool)."""
   stack: JSON
@@ -1376,6 +2424,52 @@ input big_int_filter_operators {
   _nbetween: [GraphQLBigInt]
 }
 
+input blog_posts_filter {
+  body: string_filter_operators
+  body_func: count_function_filter_operators
+  id: string_filter_operators
+  animation: string_filter_operators
+  category: string_filter_operators
+  cover_image: directus_files_filter
+  date_published: date_filter_operators
+  date_published_func: datetime_function_filter_operators
+  external: boolean_filter_operators
+  lang: string_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  svg_illustration: illustrations_filter
+  tags: string_filter_operators
+  tags_func: count_function_filter_operators
+  url: string_filter_operators
+  translations: blog_posts_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [blog_posts_filter]
+  _or: [blog_posts_filter]
+}
+
+input blog_posts_translations_filter {
+  blog_posts_id: blog_posts_filter
+  excerpt: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  title: string_filter_operators
+  _and: [blog_posts_translations_filter]
+  _or: [blog_posts_translations_filter]
+}
+
+""""""
+input blog_posts_translations_quantifier_filter {
+  blog_posts_id: blog_posts_filter
+  excerpt: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  title: string_filter_operators
+  _and: [blog_posts_translations_filter]
+  _or: [blog_posts_translations_filter]
+  _some: blog_posts_translations_filter
+  _none: blog_posts_translations_filter
+}
+
 input boolean_filter_operators {
   _eq: Boolean
   _neq: Boolean
@@ -1387,6 +2481,146 @@ input count_function_filter_operators {
   count: number_filter_operators
 }
 
+input create_blog_posts_input {
+  """
+  Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.
+  """
+  body: JSON
+
+  """Slug — kebab-case, URL-safe. Becomes the route segment at /blog/{id}."""
+  id: ID!
+
+  """Entrance animation type for the SVG illustration."""
+  animation: String
+
+  """Editorial lane. Filters illustration dropdown."""
+  category: String!
+  cover_image: create_directus_files_input
+
+  """
+  ISO datetime; controls listing sort. Set when status flips to published.
+  """
+  date_published: Date
+
+  """When true, body becomes optional and url is required + visible."""
+  external: Boolean!
+
+  """
+  Language of the body. Each post is mono-language; use translations junction for title/excerpt across locales.
+  """
+  lang: String
+  sort: Int!
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+  svg_illustration: create_illustrations_input
+
+  """Lowercase keywords, used in listing filter."""
+  tags: JSON
+
+  """External URL. Required + visible when external=true."""
+  url: String
+  translations: [create_blog_posts_translations_input]
+}
+
+input create_blog_posts_translations_input {
+  blog_posts_id: create_blog_posts_input
+
+  """Localized excerpt — 1–2 sentences shown on listing cards. ≤500 chars."""
+  excerpt: String!
+  id: ID
+  languages_code: create_languages_input
+
+  """Localized post title. Required."""
+  title: String!
+}
+
+input create_directus_access_input {
+  id: ID
+  role: create_directus_roles_input
+  user: create_directus_users_input
+  policy: create_directus_policies_input
+  sort: Int
+}
+
+input create_directus_files_input {
+  id: ID
+  storage: String!
+  filename_disk: String
+  filename_download: String!
+  title: String
+  type: String
+  folder: create_directus_folders_input
+  uploaded_by: create_directus_users_input
+  created_on: Date
+  modified_by: create_directus_users_input
+  modified_on: Date
+  charset: String
+  filesize: GraphQLBigInt
+  width: Int
+  height: Int
+  duration: Int
+  embed: String
+  description: String
+  location: String
+  tags: JSON
+  metadata: JSON
+  focal_point_x: Int
+  focal_point_y: Int
+  tus_id: String
+  tus_data: JSON
+  uploaded_on: Date
+
+  """
+  Idempotency key for migrate-assets (slice-18d). Set by the migration script; do NOT edit post-migration. Format: `images/<relative-path-from-static>`.
+  """
+  legacy_path: String
+}
+
+input create_directus_folders_input {
+  id: ID
+  name: String!
+  parent: create_directus_folders_input
+}
+
+input create_directus_permissions_input {
+  id: ID
+  collection: String!
+  action: String!
+  permissions: JSON
+  validation: JSON
+  presets: JSON
+  fields: [String]
+  policy: create_directus_policies_input
+}
+
+input create_directus_policies_input {
+  id: ID
+  name: String!
+  icon: String
+  description: String
+  ip_access: [String]
+
+  """$t:field_options.directus_policies.enforce_tfa"""
+  enforce_tfa: Boolean!
+  admin_access: Boolean!
+  app_access: Boolean!
+  permissions: [create_directus_permissions_input]
+  users: [create_directus_access_input]
+  roles: [create_directus_access_input]
+}
+
+input create_directus_roles_input {
+  id: ID
+  name: String!
+  icon: String
+  description: String
+  parent: create_directus_roles_input
+  children: [create_directus_roles_input]
+  policies: [create_directus_access_input]
+  users: [create_directus_users_input]
+}
+
 input create_directus_sync_id_map_input {
   id: ID
   table: String!
@@ -1395,11 +2629,195 @@ input create_directus_sync_id_map_input {
   created_at: Date
 }
 
+input create_directus_users_input {
+  id: ID
+  first_name: String
+  last_name: String
+  email: String
+  password: Hash
+  location: String
+  title: String
+  description: String
+  tags: JSON
+  avatar: create_directus_files_input
+  language: String
+  tfa_secret: Hash
+  status: String
+  role: create_directus_roles_input
+  token: Hash
+  last_access: Date
+  last_page: String
+  provider: String
+  external_identifier: String
+  auth_data: JSON
+  email_notifications: Boolean
+  appearance: String
+  theme_dark: String
+  theme_light: String
+  theme_light_overrides: JSON
+  theme_dark_overrides: JSON
+  text_direction: String
+  policies: [create_directus_access_input]
+}
+
+input create_illustrations_input {
+  """Filters which posts/projects can pick this in their dropdown."""
+  category: String
+
+  """Alt-text feed. Required (consumer renders aria-label)."""
+  description: String!
+  file: create_directus_files_input
+
+  """Slug — kebab-case, e.g. pro-database, personal-rocket."""
+  id: ID!
+
+  """Human-readable name shown in dropdown, e.g. "Database engineering"."""
+  label: String!
+  sort: Int!
+
+  """Filter / search aid across content types."""
+  tags: JSON
+}
+
 input create_languages_input {
   """ISO 639-1 code (en, fr, es)"""
   code: ID!
   name: String!
   direction: String
+}
+
+input create_morph_shapes_input {
+  """Optional editor notes (when to use this shape)."""
+  description: String
+
+  """Slug — e.g. triangle, decagon."""
+  id: ID!
+
+  """Human-readable, e.g. "Triangle", "10-sided polygon"."""
+  label: String!
+
+  """
+  SVG path d= attribute, e.g. "M24 8 L40 38 L8 38 Z". Must be a closed shape compatible with MorphSVGPlugin.
+  """
+  path: String!
+  sort: Int!
+
+  """SVG viewBox, e.g. "0 0 48 48". Default matches existing shape lib."""
+  viewbox: String
+}
+
+input create_projects_impact_metrics_input {
+  """
+  Locale-universal baseline value before improvement (e.g. 2 days). Optional.
+  """
+  before: String
+  id: ID
+  projects_id: create_projects_input
+
+  """
+  Order within the parent project (ascending). First row (sort=0) is the featured metric.
+  """
+  sort: Int
+
+  """Locale-universal metric value (e.g. 30s, 99.9%, 2 days)."""
+  value: String!
+  translations: [create_projects_impact_metrics_translations_input]
+}
+
+input create_projects_impact_metrics_translations_input {
+  id: ID
+
+  """Human-readable metric label (e.g. Real-time refresh cycles)."""
+  label: String!
+  languages_code: create_languages_input
+  projects_impact_metrics_id: create_projects_impact_metrics_input
+}
+
+input create_projects_input {
+  """When the project was publicly published."""
+  date_published: Date
+
+  """Deployment environment descriptor (e.g. Production, Staging)."""
+  environment: String
+
+  """Highlight this project on the portfolio landing page."""
+  featured: Boolean!
+  hero_image: create_directus_files_input
+
+  """Kebab-case identifier (e.g. real-time-dashboard). Used as URL slug."""
+  id: ID!
+
+  """Live deployed URL of the project."""
+  live_url: String
+
+  """Geographic location or context (e.g. Remote — Montreal, QC)."""
+  location: String
+
+  """Direct link to the project README."""
+  readme_url: String
+
+  """GitHub or source repository URL."""
+  repo_url: String
+
+  """Manual sort order."""
+  sort: Int
+
+  """Array of tech names (e.g. PostgreSQL, Python, Svelte)."""
+  stack: JSON
+
+  """Publication state. AI-editor cannot set to published."""
+  status: String
+
+  """Free-form classification tags (e.g. data-engineering, analytics)."""
+  tags: JSON
+
+  """Version string or milestone (e.g. v2.1, Phase 3)."""
+  version: String
+  svg_illustration: create_illustrations_input
+  impact_metrics: [create_projects_impact_metrics_input]
+  sections: [create_projects_sections_input]
+  services: [create_projects_services_input]
+  translations: [create_projects_translations_input]
+}
+
+input create_projects_sections_input {
+  id: ID
+  projects_id: create_projects_input
+
+  """Order within the parent project (ascending)."""
+  sort: Int
+  translations: [create_projects_sections_translations_input]
+}
+
+input create_projects_sections_translations_input {
+  """Section body rendered via BlockRenderer (Block Editor JSON)."""
+  content: JSON!
+  id: ID
+  languages_code: create_languages_input
+  projects_sections_id: create_projects_sections_input
+
+  """Section heading (e.g. The Challenge)."""
+  title: String!
+}
+
+input create_projects_services_input {
+  id: ID
+  project_id: create_projects_input
+  service_id: create_services_input
+}
+
+input create_projects_translations_input {
+  """Long-form description rendered via BlockRenderer (Block Editor JSON)."""
+  description: JSON
+  id: ID
+  languages_code: create_languages_input
+
+  """One-sentence summary for cards and listings (max 500 chars)."""
+  one_liner: String
+  projects_id: create_projects_input
+
+  """Project title (max 100 chars)."""
+  title: String!
 }
 
 input create_services_deliverables_input {
@@ -1439,14 +2857,8 @@ input create_services_input {
   """
   svg: String
 
-  """Play Lottie in reverse during scroll scrub. Default false."""
-  lottie_reverse: Boolean!
-
   """Show in listings. Default true; set false to hide without deleting."""
   visible: Boolean
-
-  """Array of project slugs (M2M upgrade once projects collection lands)."""
-  related_projects: JSON
 
   """Array of tech names (e.g. PostgreSQL, Python, Retool)."""
   stack: JSON
@@ -1716,6 +3128,7 @@ input directus_files_filter {
   tus_data_func: count_function_filter_operators
   uploaded_on: date_filter_operators
   uploaded_on_func: datetime_function_filter_operators
+  legacy_path: string_filter_operators
   _and: [directus_files_filter]
   _or: [directus_files_filter]
 }
@@ -2099,12 +3512,36 @@ input id_filter_operators {
   _nempty: Boolean
 }
 
+input illustrations_filter {
+  category: string_filter_operators
+  description: string_filter_operators
+  file: directus_files_filter
+  id: string_filter_operators
+  label: string_filter_operators
+  sort: number_filter_operators
+  tags: string_filter_operators
+  tags_func: count_function_filter_operators
+  _and: [illustrations_filter]
+  _or: [illustrations_filter]
+}
+
 input languages_filter {
   code: string_filter_operators
   name: string_filter_operators
   direction: string_filter_operators
   _and: [languages_filter]
   _or: [languages_filter]
+}
+
+input morph_shapes_filter {
+  description: string_filter_operators
+  id: string_filter_operators
+  label: string_filter_operators
+  path: string_filter_operators
+  sort: number_filter_operators
+  viewbox: string_filter_operators
+  _and: [morph_shapes_filter]
+  _or: [morph_shapes_filter]
 }
 
 input number_filter_operators {
@@ -2120,6 +3557,179 @@ input number_filter_operators {
   _nnull: Boolean
   _between: [GraphQLStringOrFloat]
   _nbetween: [GraphQLStringOrFloat]
+}
+
+input projects_filter {
+  date_published: date_filter_operators
+  date_published_func: datetime_function_filter_operators
+  environment: string_filter_operators
+  featured: boolean_filter_operators
+  hero_image: directus_files_filter
+  id: string_filter_operators
+  live_url: string_filter_operators
+  location: string_filter_operators
+  readme_url: string_filter_operators
+  repo_url: string_filter_operators
+  sort: number_filter_operators
+  stack: string_filter_operators
+  stack_func: count_function_filter_operators
+  status: string_filter_operators
+  tags: string_filter_operators
+  tags_func: count_function_filter_operators
+  version: string_filter_operators
+  svg_illustration: illustrations_filter
+  impact_metrics: projects_impact_metrics_quantifier_filter
+  impact_metrics_func: count_function_filter_operators
+  sections: projects_sections_quantifier_filter
+  sections_func: count_function_filter_operators
+  services: projects_services_quantifier_filter
+  services_func: count_function_filter_operators
+  translations: projects_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [projects_filter]
+  _or: [projects_filter]
+}
+
+input projects_impact_metrics_filter {
+  before: string_filter_operators
+  id: number_filter_operators
+  projects_id: projects_filter
+  sort: number_filter_operators
+  value: string_filter_operators
+  translations: projects_impact_metrics_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [projects_impact_metrics_filter]
+  _or: [projects_impact_metrics_filter]
+}
+
+""""""
+input projects_impact_metrics_quantifier_filter {
+  before: string_filter_operators
+  id: number_filter_operators
+  projects_id: projects_filter
+  sort: number_filter_operators
+  value: string_filter_operators
+  translations: projects_impact_metrics_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [projects_impact_metrics_filter]
+  _or: [projects_impact_metrics_filter]
+  _some: projects_impact_metrics_filter
+  _none: projects_impact_metrics_filter
+}
+
+input projects_impact_metrics_translations_filter {
+  id: number_filter_operators
+  label: string_filter_operators
+  languages_code: languages_filter
+  projects_impact_metrics_id: projects_impact_metrics_filter
+  _and: [projects_impact_metrics_translations_filter]
+  _or: [projects_impact_metrics_translations_filter]
+}
+
+""""""
+input projects_impact_metrics_translations_quantifier_filter {
+  id: number_filter_operators
+  label: string_filter_operators
+  languages_code: languages_filter
+  projects_impact_metrics_id: projects_impact_metrics_filter
+  _and: [projects_impact_metrics_translations_filter]
+  _or: [projects_impact_metrics_translations_filter]
+  _some: projects_impact_metrics_translations_filter
+  _none: projects_impact_metrics_translations_filter
+}
+
+input projects_sections_filter {
+  id: number_filter_operators
+  projects_id: projects_filter
+  sort: number_filter_operators
+  translations: projects_sections_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [projects_sections_filter]
+  _or: [projects_sections_filter]
+}
+
+""""""
+input projects_sections_quantifier_filter {
+  id: number_filter_operators
+  projects_id: projects_filter
+  sort: number_filter_operators
+  translations: projects_sections_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [projects_sections_filter]
+  _or: [projects_sections_filter]
+  _some: projects_sections_filter
+  _none: projects_sections_filter
+}
+
+input projects_sections_translations_filter {
+  content: string_filter_operators
+  content_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  projects_sections_id: projects_sections_filter
+  title: string_filter_operators
+  _and: [projects_sections_translations_filter]
+  _or: [projects_sections_translations_filter]
+}
+
+""""""
+input projects_sections_translations_quantifier_filter {
+  content: string_filter_operators
+  content_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  projects_sections_id: projects_sections_filter
+  title: string_filter_operators
+  _and: [projects_sections_translations_filter]
+  _or: [projects_sections_translations_filter]
+  _some: projects_sections_translations_filter
+  _none: projects_sections_translations_filter
+}
+
+input projects_services_filter {
+  id: number_filter_operators
+  project_id: projects_filter
+  service_id: services_filter
+  _and: [projects_services_filter]
+  _or: [projects_services_filter]
+}
+
+""""""
+input projects_services_quantifier_filter {
+  id: number_filter_operators
+  project_id: projects_filter
+  service_id: services_filter
+  _and: [projects_services_filter]
+  _or: [projects_services_filter]
+  _some: projects_services_filter
+  _none: projects_services_filter
+}
+
+input projects_translations_filter {
+  description: string_filter_operators
+  description_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  one_liner: string_filter_operators
+  projects_id: projects_filter
+  title: string_filter_operators
+  _and: [projects_translations_filter]
+  _or: [projects_translations_filter]
+}
+
+""""""
+input projects_translations_quantifier_filter {
+  description: string_filter_operators
+  description_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  one_liner: string_filter_operators
+  projects_id: projects_filter
+  title: string_filter_operators
+  _and: [projects_translations_filter]
+  _or: [projects_translations_filter]
+  _some: projects_translations_filter
+  _none: projects_translations_filter
 }
 
 input services_deliverables_filter {
@@ -2171,10 +3781,7 @@ input services_filter {
   station: number_filter_operators
   icon: string_filter_operators
   svg: string_filter_operators
-  lottie_reverse: boolean_filter_operators
   visible: boolean_filter_operators
-  related_projects: string_filter_operators
-  related_projects_func: count_function_filter_operators
   stack: string_filter_operators
   stack_func: count_function_filter_operators
   translations: services_translations_quantifier_filter
@@ -2290,6 +3897,146 @@ input string_filter_operators {
   _nempty: Boolean
 }
 
+input update_blog_posts_input {
+  """
+  Post body. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks (with language), blockquotes, horizontal rules, images (Directus assets), embeds.
+  """
+  body: JSON
+
+  """Slug — kebab-case, URL-safe. Becomes the route segment at /blog/{id}."""
+  id: ID
+
+  """Entrance animation type for the SVG illustration."""
+  animation: String
+
+  """Editorial lane. Filters illustration dropdown."""
+  category: String
+  cover_image: update_directus_files_input
+
+  """
+  ISO datetime; controls listing sort. Set when status flips to published.
+  """
+  date_published: Date
+
+  """When true, body becomes optional and url is required + visible."""
+  external: Boolean
+
+  """
+  Language of the body. Each post is mono-language; use translations junction for title/excerpt across locales.
+  """
+  lang: String
+  sort: Int
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+  svg_illustration: update_illustrations_input
+
+  """Lowercase keywords, used in listing filter."""
+  tags: JSON
+
+  """External URL. Required + visible when external=true."""
+  url: String
+  translations: [update_blog_posts_translations_input]
+}
+
+input update_blog_posts_translations_input {
+  blog_posts_id: update_blog_posts_input
+
+  """Localized excerpt — 1–2 sentences shown on listing cards. ≤500 chars."""
+  excerpt: String
+  id: ID
+  languages_code: update_languages_input
+
+  """Localized post title. Required."""
+  title: String
+}
+
+input update_directus_access_input {
+  id: ID
+  role: update_directus_roles_input
+  user: update_directus_users_input
+  policy: update_directus_policies_input
+  sort: Int
+}
+
+input update_directus_files_input {
+  id: ID
+  storage: String
+  filename_disk: String
+  filename_download: String
+  title: String
+  type: String
+  folder: update_directus_folders_input
+  uploaded_by: update_directus_users_input
+  created_on: Date
+  modified_by: update_directus_users_input
+  modified_on: Date
+  charset: String
+  filesize: GraphQLBigInt
+  width: Int
+  height: Int
+  duration: Int
+  embed: String
+  description: String
+  location: String
+  tags: JSON
+  metadata: JSON
+  focal_point_x: Int
+  focal_point_y: Int
+  tus_id: String
+  tus_data: JSON
+  uploaded_on: Date
+
+  """
+  Idempotency key for migrate-assets (slice-18d). Set by the migration script; do NOT edit post-migration. Format: `images/<relative-path-from-static>`.
+  """
+  legacy_path: String
+}
+
+input update_directus_folders_input {
+  id: ID
+  name: String
+  parent: update_directus_folders_input
+}
+
+input update_directus_permissions_input {
+  id: ID
+  collection: String
+  action: String
+  permissions: JSON
+  validation: JSON
+  presets: JSON
+  fields: [String]
+  policy: update_directus_policies_input
+}
+
+input update_directus_policies_input {
+  id: ID
+  name: String
+  icon: String
+  description: String
+  ip_access: [String]
+
+  """$t:field_options.directus_policies.enforce_tfa"""
+  enforce_tfa: Boolean
+  admin_access: Boolean
+  app_access: Boolean
+  permissions: [update_directus_permissions_input]
+  users: [update_directus_access_input]
+  roles: [update_directus_access_input]
+}
+
+input update_directus_roles_input {
+  id: ID
+  name: String
+  icon: String
+  description: String
+  parent: update_directus_roles_input
+  children: [update_directus_roles_input]
+  policies: [update_directus_access_input]
+  users: [update_directus_users_input]
+}
+
 input update_directus_sync_id_map_input {
   id: ID
   table: String
@@ -2298,11 +4045,195 @@ input update_directus_sync_id_map_input {
   created_at: Date
 }
 
+input update_directus_users_input {
+  id: ID
+  first_name: String
+  last_name: String
+  email: String
+  password: Hash
+  location: String
+  title: String
+  description: String
+  tags: JSON
+  avatar: update_directus_files_input
+  language: String
+  tfa_secret: Hash
+  status: String
+  role: update_directus_roles_input
+  token: Hash
+  last_access: Date
+  last_page: String
+  provider: String
+  external_identifier: String
+  auth_data: JSON
+  email_notifications: Boolean
+  appearance: String
+  theme_dark: String
+  theme_light: String
+  theme_light_overrides: JSON
+  theme_dark_overrides: JSON
+  text_direction: String
+  policies: [update_directus_access_input]
+}
+
+input update_illustrations_input {
+  """Filters which posts/projects can pick this in their dropdown."""
+  category: String
+
+  """Alt-text feed. Required (consumer renders aria-label)."""
+  description: String
+  file: update_directus_files_input
+
+  """Slug — kebab-case, e.g. pro-database, personal-rocket."""
+  id: ID
+
+  """Human-readable name shown in dropdown, e.g. "Database engineering"."""
+  label: String
+  sort: Int
+
+  """Filter / search aid across content types."""
+  tags: JSON
+}
+
 input update_languages_input {
   """ISO 639-1 code (en, fr, es)"""
   code: ID
   name: String
   direction: String
+}
+
+input update_morph_shapes_input {
+  """Optional editor notes (when to use this shape)."""
+  description: String
+
+  """Slug — e.g. triangle, decagon."""
+  id: ID
+
+  """Human-readable, e.g. "Triangle", "10-sided polygon"."""
+  label: String
+
+  """
+  SVG path d= attribute, e.g. "M24 8 L40 38 L8 38 Z". Must be a closed shape compatible with MorphSVGPlugin.
+  """
+  path: String
+  sort: Int
+
+  """SVG viewBox, e.g. "0 0 48 48". Default matches existing shape lib."""
+  viewbox: String
+}
+
+input update_projects_impact_metrics_input {
+  """
+  Locale-universal baseline value before improvement (e.g. 2 days). Optional.
+  """
+  before: String
+  id: ID
+  projects_id: update_projects_input
+
+  """
+  Order within the parent project (ascending). First row (sort=0) is the featured metric.
+  """
+  sort: Int
+
+  """Locale-universal metric value (e.g. 30s, 99.9%, 2 days)."""
+  value: String
+  translations: [update_projects_impact_metrics_translations_input]
+}
+
+input update_projects_impact_metrics_translations_input {
+  id: ID
+
+  """Human-readable metric label (e.g. Real-time refresh cycles)."""
+  label: String
+  languages_code: update_languages_input
+  projects_impact_metrics_id: update_projects_impact_metrics_input
+}
+
+input update_projects_input {
+  """When the project was publicly published."""
+  date_published: Date
+
+  """Deployment environment descriptor (e.g. Production, Staging)."""
+  environment: String
+
+  """Highlight this project on the portfolio landing page."""
+  featured: Boolean
+  hero_image: update_directus_files_input
+
+  """Kebab-case identifier (e.g. real-time-dashboard). Used as URL slug."""
+  id: ID
+
+  """Live deployed URL of the project."""
+  live_url: String
+
+  """Geographic location or context (e.g. Remote — Montreal, QC)."""
+  location: String
+
+  """Direct link to the project README."""
+  readme_url: String
+
+  """GitHub or source repository URL."""
+  repo_url: String
+
+  """Manual sort order."""
+  sort: Int
+
+  """Array of tech names (e.g. PostgreSQL, Python, Svelte)."""
+  stack: JSON
+
+  """Publication state. AI-editor cannot set to published."""
+  status: String
+
+  """Free-form classification tags (e.g. data-engineering, analytics)."""
+  tags: JSON
+
+  """Version string or milestone (e.g. v2.1, Phase 3)."""
+  version: String
+  svg_illustration: update_illustrations_input
+  impact_metrics: [update_projects_impact_metrics_input]
+  sections: [update_projects_sections_input]
+  services: [update_projects_services_input]
+  translations: [update_projects_translations_input]
+}
+
+input update_projects_sections_input {
+  id: ID
+  projects_id: update_projects_input
+
+  """Order within the parent project (ascending)."""
+  sort: Int
+  translations: [update_projects_sections_translations_input]
+}
+
+input update_projects_sections_translations_input {
+  """Section body rendered via BlockRenderer (Block Editor JSON)."""
+  content: JSON
+  id: ID
+  languages_code: update_languages_input
+  projects_sections_id: update_projects_sections_input
+
+  """Section heading (e.g. The Challenge)."""
+  title: String
+}
+
+input update_projects_services_input {
+  id: ID
+  project_id: update_projects_input
+  service_id: update_services_input
+}
+
+input update_projects_translations_input {
+  """Long-form description rendered via BlockRenderer (Block Editor JSON)."""
+  description: JSON
+  id: ID
+  languages_code: update_languages_input
+
+  """One-sentence summary for cards and listings (max 500 chars)."""
+  one_liner: String
+  projects_id: update_projects_input
+
+  """Project title (max 100 chars)."""
+  title: String
 }
 
 input update_services_deliverables_input {
@@ -2342,14 +4273,8 @@ input update_services_input {
   """
   svg: String
 
-  """Play Lottie in reverse during scroll scrub. Default false."""
-  lottie_reverse: Boolean
-
   """Show in listings. Default true; set false to hide without deleting."""
   visible: Boolean
-
-  """Array of project slugs (M2M upgrade once projects collection lands)."""
-  related_projects: JSON
 
   """Array of tech names (e.g. PostgreSQL, Python, Retool)."""
   stack: JSON

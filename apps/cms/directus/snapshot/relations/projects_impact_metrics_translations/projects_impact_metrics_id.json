@@ -18,7 +18,7 @@
     "column": "projects_impact_metrics_id",
     "foreign_key_table": "projects_impact_metrics",
     "foreign_key_column": "id",
-    "constraint_name": "projects_impact_metrics_translations_project__id_foreign",
+    "constraint_name": "projects_impact_metrics_translations_proje__299c02d3_foreign",
     "on_update": "NO ACTION",
     "on_delete": "CASCADE"
   }

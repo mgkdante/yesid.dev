@@ -14,9 +14,18 @@
     "note": "Entrance animation type for the SVG illustration.",
     "options": {
       "choices": [
-        { "text": "Draw", "value": "draw" },
-        { "text": "Morph", "value": "morph" },
-        { "text": "Draw + Fill", "value": "draw-fill" }
+        {
+          "text": "Draw",
+          "value": "draw"
+        },
+        {
+          "text": "Morph",
+          "value": "morph"
+        },
+        {
+          "text": "Draw + Fill",
+          "value": "draw-fill"
+        }
       ]
     },
     "readonly": false,

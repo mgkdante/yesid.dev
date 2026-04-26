@@ -14,9 +14,18 @@
     "note": "Language of the body. Each post is mono-language; use translations junction for title/excerpt across locales.",
     "options": {
       "choices": [
-        { "text": "English", "value": "en" },
-        { "text": "Français", "value": "fr" },
-        { "text": "Español", "value": "es" }
+        {
+          "text": "English",
+          "value": "en"
+        },
+        {
+          "text": "Français",
+          "value": "fr"
+        },
+        {
+          "text": "Español",
+          "value": "es"
+        }
       ]
     },
     "readonly": false,

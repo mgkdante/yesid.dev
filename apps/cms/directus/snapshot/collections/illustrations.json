@@ -12,7 +12,13 @@
     "group": null,
     "hidden": false,
     "icon": "image",
-    "item_duplication_fields": ["label", "category", "tags", "description", "sort"],
+    "item_duplication_fields": [
+      "label",
+      "category",
+      "tags",
+      "description",
+      "sort"
+    ],
     "note": "Curated SVG illustration library — consumed by blog_posts.svg_illustration + projects.svg_illustration. Reusable across content types. ai-editor: cannot delete.",
     "preview_url": null,
     "singleton": false,

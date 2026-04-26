@@ -14,8 +14,14 @@
     "note": "Editorial lane. Filters illustration dropdown.",
     "options": {
       "choices": [
-        { "text": "Professional", "value": "professional" },
-        { "text": "Personal", "value": "personal" }
+        {
+          "text": "Professional",
+          "value": "professional"
+        },
+        {
+          "text": "Personal",
+          "value": "personal"
+        }
       ]
     },
     "readonly": false,

@@ -12,7 +12,17 @@
     "group": null,
     "hidden": false,
     "icon": "folder_special",
-    "item_duplication_fields": ["id","featured","sort","stack","tags","translations","sections","impact_metrics","services"],
+    "item_duplication_fields": [
+      "id",
+      "featured",
+      "sort",
+      "stack",
+      "tags",
+      "translations",
+      "sections",
+      "impact_metrics",
+      "services"
+    ],
     "note": "Portfolio projects with translated content (title, one_liner, description), sections, impact metrics, and M2M relations to services. AI-editor: cannot publish; cannot delete.",
     "preview_url": "https://yesid.dev/projects/{{id}}?share={{$CURRENT_SHARE.token}}",
     "singleton": false,

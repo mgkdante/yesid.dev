@@ -12,7 +12,17 @@
     "group": null,
     "hidden": false,
     "icon": "article",
-    "item_duplication_fields": ["sort","lang","category","tags","animation","cover_image","svg_illustration","body","translations"],
+    "item_duplication_fields": [
+      "sort",
+      "lang",
+      "category",
+      "tags",
+      "animation",
+      "cover_image",
+      "svg_illustration",
+      "body",
+      "translations"
+    ],
     "note": "Blog posts. ai-editor cannot publish; cannot delete. Body uses Block Editor (rich content per CONVENTIONS § 7).",
     "preview_url": "https://yesid.dev/blog/{{id}}?share={{$CURRENT_SHARE.token}}",
     "singleton": false,

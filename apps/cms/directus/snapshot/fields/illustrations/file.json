@@ -19,7 +19,9 @@
     "required": true,
     "searchable": true,
     "sort": 2,
-    "special": ["file"],
+    "special": [
+      "file"
+    ],
     "translations": null,
     "validation": null,
     "validation_message": null,

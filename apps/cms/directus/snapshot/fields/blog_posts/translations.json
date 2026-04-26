@@ -17,11 +17,12 @@
     "required": false,
     "searchable": true,
     "sort": 12,
-    "special": ["translations"],
+    "special": [
+      "translations"
+    ],
     "translations": null,
     "validation": null,
     "validation_message": null,
     "width": "full"
-  },
-  "schema": null
+  }
 }

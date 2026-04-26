@@ -21,7 +21,11 @@
     "translations": null,
     "validation": {
       "_and": [
-        { "excerpt": { "_regex": "^.{1,500}$" } }
+        {
+          "excerpt": {
+            "_regex": "^.{1,500}$"
+          }
+        }
       ]
     },
     "validation_message": "Excerpt must be 1–500 characters.",

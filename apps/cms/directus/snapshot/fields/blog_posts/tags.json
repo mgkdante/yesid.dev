@@ -19,7 +19,9 @@
     "required": false,
     "searchable": true,
     "sort": 6,
-    "special": ["cast-json"],
+    "special": [
+      "cast-json"
+    ],
     "translations": null,
     "validation": null,
     "validation_message": null,
@@ -28,8 +30,8 @@
   "schema": {
     "name": "tags",
     "table": "blog_posts",
-    "data_type": "jsonb",
-    "default_value": "[]",
+    "data_type": "json",
+    "default_value": [],
     "max_length": null,
     "numeric_precision": null,
     "numeric_scale": null,

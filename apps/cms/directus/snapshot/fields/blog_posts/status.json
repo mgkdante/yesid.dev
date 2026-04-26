@@ -14,9 +14,18 @@
     "note": "Publication state. ai-editor cannot set to published.",
     "options": {
       "choices": [
-        { "text": "Draft", "value": "draft" },
-        { "text": "Published", "value": "published" },
-        { "text": "Archived", "value": "archived" }
+        {
+          "text": "Draft",
+          "value": "draft"
+        },
+        {
+          "text": "Published",
+          "value": "published"
+        },
+        {
+          "text": "Archived",
+          "value": "archived"
+        }
       ]
     },
     "readonly": false,

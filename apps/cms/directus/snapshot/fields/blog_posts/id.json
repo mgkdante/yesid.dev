@@ -12,7 +12,10 @@
     "hidden": false,
     "interface": "input",
     "note": "Slug — kebab-case, URL-safe. Becomes the route segment at /blog/{id}.",
-    "options": { "slug": true, "trim": true },
+    "options": {
+      "slug": true,
+      "trim": true
+    },
     "readonly": false,
     "required": true,
     "searchable": true,
@@ -21,7 +24,11 @@
     "translations": null,
     "validation": {
       "_and": [
-        { "id": { "_regex": "^[a-z0-9]+(-[a-z0-9]+)*$" } }
+        {
+          "id": {
+            "_regex": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          }
+        }
       ]
     },
     "validation_message": "Slug must be kebab-case (lowercase letters/digits with single hyphens).",

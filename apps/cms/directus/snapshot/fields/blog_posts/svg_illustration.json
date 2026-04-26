@@ -13,19 +13,29 @@
     "interface": "select-dropdown-m2o",
     "note": "Curated SVG illustration. Optional — falls back to deterministic fallback if absent.",
     "options": {
-      "template": "{{label}} ({{category}})",
       "filter": {
         "_or": [
-          { "category": { "_eq": "$FIELD.category" } },
-          { "category": { "_eq": "general" } }
+          {
+            "category": {
+              "_eq": "$FIELD.category"
+            }
+          },
+          {
+            "category": {
+              "_eq": "general"
+            }
+          }
         ]
-      }
+      },
+      "template": "{{label}} ({{category}})"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
     "sort": 10,
-    "special": ["m2o"],
+    "special": [
+      "m2o"
+    ],
     "translations": null,
     "validation": null,
     "validation_message": null,
