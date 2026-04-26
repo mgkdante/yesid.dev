@@ -71,7 +71,7 @@
 		},
 		...latestPosts.map((post) => ({
 			label: readLabel,
-			description: resolveLocale(post.title, 'en'),
+			description: post.title,
 			action: readAction,
 			href: `/blog/${post.slug}`,
 			primary: false,

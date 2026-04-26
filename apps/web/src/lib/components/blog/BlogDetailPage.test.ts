@@ -6,8 +6,8 @@ import type { BlogPost } from '$lib/types';
 // Minimal BlogPost fixture — only required fields populated
 const makePost = (overrides?: Partial<BlogPost>): BlogPost => ({
 	slug: 'test-post',
-	title: { en: 'Test Post Title' },
-	excerpt: { en: 'A short excerpt for testing purposes.' },
+	title: 'Test Post Title',
+	excerpt: 'A short excerpt for testing purposes.',
 	date: '2026-01-15',
 	lang: 'en',
 	category: 'professional',

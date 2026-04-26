@@ -126,8 +126,8 @@ export function buildBlogPostingNode(post: BlogPost, locale: Locale): BlogPostin
 	const built = {
 		'@type': 'BlogPosting' as const,
 		'@id': canonicalUrl,
-		headline: resolveLocale(post.title, locale),
-		description: resolveLocale(post.excerpt, locale),
+		headline: post.title,
+		description: post.excerpt,
 		inLanguage: post.lang,
 		datePublished: post.date,
 		author: { '@id': PERSON_ID },

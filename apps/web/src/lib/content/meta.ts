@@ -285,8 +285,8 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		if (!post) throw new Error(`Unknown blog slug: ${params.slug}`);
 		const canonicalUrl = `${SITE_HOST}/blog/${post.slug}`;
 		return {
-			title: { en: `${post.title.en} | yesid.` },
-			description: fitDescriptionForSeo(post.excerpt),
+			title: { en: `${post.title} | yesid.` },
+			description: fitDescriptionForSeo({ en: post.excerpt }),
 			canonical: canonicalUrl,
 			ogType: 'article',
 			noIndex: false,
@@ -296,7 +296,7 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 					[
 						{ name: 'Home', url: SITE_HOST },
 						{ name: 'Blog', url: `${SITE_HOST}/blog` },
-						{ name: post.title.en, url: canonicalUrl },
+						{ name: post.title, url: canonicalUrl },
 					],
 					canonicalUrl,
 				),

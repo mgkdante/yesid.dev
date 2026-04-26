@@ -167,16 +167,14 @@ for (const [filepath, raw] of Object.entries(rawPosts)) {
 	const animation = resolveAnimation(slug, data.animation as string | undefined);
 	const svg = hasCustomSvg ? '__custom__' : resolveSvgFallbackName(slug, category);
 
-	// Store title/excerpt under the post's language key. Always set 'en' as
-	// the fallback that resolveLocale() requires. If the post IS English,
-	// both keys point to the same string — no duplication issue.
+	// Title and excerpt are flat strings (mono-language per AM2.5; lang field is the i18n primitive).
 	const titleStr = (data.title as string) ?? '';
 	const excerptStr = (data.excerpt as string) ?? '';
 
 	(blogPosts as BlogPost[]).push({
 		slug,
-		title: { en: titleStr, [lang]: titleStr },
-		excerpt: { en: excerptStr, [lang]: excerptStr },
+		title: titleStr,
+		excerpt: excerptStr,
 		date: String(data.date ?? ''),
 		lang,
 		category,

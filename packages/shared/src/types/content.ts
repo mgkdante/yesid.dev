@@ -179,8 +179,11 @@ export type BlogAnimation = 'draw' | 'morph' | 'draw-fill';
 
 export interface BlogPost {
 	slug: string;
-	title: LocalizedString;
-	excerpt: LocalizedString;
+	// AM2.5: title is a flat string — blog posts are mono-language end-to-end.
+	// The `lang` field on the parent row IS the i18n primitive; no translations junction.
+	title: string;
+	// AM2.5: excerpt is a flat string — same rationale as title (mono-language per AM2.5).
+	excerpt: string;
 	// ISO date string (YYYY-MM-DD)
 	date: string;
 	// Language this post was written in — no translation, just native language
