@@ -147,18 +147,34 @@ Saved verbatim in this file for reproducibility. Key block samples:
 
 ## P-illustration-folder-public-policy — Public read of `illustrations` folder
 
-**Status:** Pending (Phase 1 of 18f, before seed).
+**Status:** RESOLVED — 2026-04-25 Phase 4 Task 22.
 
 **Question:** Does the existing folder-scoped Public policy on `directus_files` (set up in 18d for `services`/`projects`/`blog`/`brand`/`about`/`og` folders) extend cleanly to a new `illustrations` folder?
 
-**Method:**
+**Method executed:**
 
-1. Add `illustrations` to the folder list in `apps/cms/directus/permissions.json` for the Public read filter.
-2. Push via directus-sync.
-3. Upload one test SVG to the new folder via Data Studio.
-4. `curl https://cms.yesid.dev/assets/<uuid>` (no auth) — should return raw bytes.
+1. Added `illustrations` folder UUID `3b0880d2-9e19-4812-9b35-d16fba7c2e46` to `apps/cms/directus/collections/folders.json` (commit `f4df565`).
+2. Extended the Public `directus_files` read permission filter to include the new folder UUID (commit `f8d5894`).
+3. Pushed via `bun run sync:push` (Phase 4 Task 21).
+4. Uploaded test SVG to `illustrations` folder via Data Studio — file UUID `58695e3f-840c-4fd0-8707-143d32f857da`.
+5. Anonymous GET `curl https://cms.yesid.dev/assets/58695e3f-840c-4fd0-8707-143d32f857da` (no auth header).
 
-**Decision:** TBD (locks during Phase 1).
+**Result:** PASS.
+
+```
+Status: 200
+Content-Type: image/svg+xml
+Size: 1672 bytes
+```
+
+Response body returned raw SVG markup (`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"...>`).
+
+**Notes:**
+- Public `directus_files` read filter uses folder **UUID** matching (`folder.id._in: [...]`), NOT folder-name matching. This was already the convention from 18d — `apps/cms/directus/collections/permissions.json` Public files.read row `permissions._and[0].folder.id._in` contains the new UUID `3b0880d2-9e19-4812-9b35-d16fba7c2e46` post-Task 20.
+- Public files.read `fields` is `["*"]` (wildcard), preserved from 18d.
+- `folders.json` rows use only `_syncId` + `name` + `parent` keys (no separate `id` field). Was a misconception in plan.md Task 19 — now corrected by the Phase 4 implementer following live convention. Doc-followup: reconcile plan.md spec with live state before slice close.
+
+**Decision:** PASS — proceed with `illustrations` library; Phase 8 seed can upload + read SVGs without auth.
 
 ---
 
