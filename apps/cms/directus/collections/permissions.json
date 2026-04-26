@@ -287,7 +287,8 @@
                 "02c30511-8c14-46aa-b6f1-cf2d8999290e",
                 "82238060-72ab-414b-8f72-a7f83b15dc59",
                 "e4764c31-b8b4-4045-b066-76653bc3c884",
-                "1868fd73-d094-45eb-9d0c-802e2b49cf23"
+                "1868fd73-d094-45eb-9d0c-802e2b49cf23",
+                "3b0880d2-9e19-4812-9b35-d16fba7c2e46"
               ]
             }
           }
@@ -883,5 +884,167 @@
     "fields": ["*"],
     "policy": "_sync_default_public_policy",
     "_syncId": "public-projects-svc-read-0077-000000000056"
+  },
+
+  {
+    "collection": "illustrations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_illustrations_ai_read"
+  },
+  {
+    "collection": "illustrations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_illustrations_ai_create"
+  },
+  {
+    "collection": "illustrations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_illustrations_ai_update"
+  },
+  {
+    "collection": "illustrations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_illustrations_human_read"
+  },
+  {
+    "collection": "illustrations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_illustrations_human_create"
+  },
+  {
+    "collection": "illustrations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_illustrations_human_update"
+  },
+  {
+    "collection": "illustrations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_illustrations_human_delete"
+  },
+  {
+    "collection": "illustrations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["id", "file", "label", "category", "tags", "description", "sort"],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_illustrations_public_read"
+  },
+
+  {
+    "collection": "morph_shapes",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_ai_read"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_ai_create"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_ai_update"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_human_read"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_human_create"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_human_update"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["*"],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_human_delete"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": ["id", "label", "path", "viewbox", "sort"],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_morph_shapes_public_read"
   }
 ]
