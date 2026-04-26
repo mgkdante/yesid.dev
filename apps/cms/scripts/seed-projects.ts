@@ -13,7 +13,7 @@
 
 import { createItem, deleteItem, readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { assetIdForOrUndefined } from '@repo/shared';
+import { assetIdForOrUndefined, wrapPlainText, type BlockEditorDoc } from '@repo/shared';
 import fixtureData from '../fixtures/collections/projects.json' with { type: 'json' };
 import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
@@ -95,13 +95,13 @@ export interface DirectusProjectTranslationRow {
 	languages_code: Locale;
 	title: string;
 	one_liner: string;
-	description: string;
+	description: BlockEditorDoc;
 }
 
 export interface DirectusProjectSectionTranslationRow {
 	languages_code: Locale;
 	title: string;
-	content: string;
+	content: BlockEditorDoc;
 }
 
 export interface DirectusProjectSectionRow {
@@ -155,7 +155,7 @@ export function toTranslationRows(
 		languages_code: t.languages_code,
 		title: t.title,
 		one_liner: t.one_liner,
-		description: t.description,
+		description: wrapPlainText(t.description),
 	}));
 }
 
@@ -167,7 +167,7 @@ export function toSectionRows(
 		translations: s.translations.map((t) => ({
 			languages_code: t.languages_code,
 			title: t.title,
-			content: t.content,
+			content: wrapPlainText(t.content),
 		})),
 	}));
 }
