@@ -103,7 +103,7 @@ export interface Service {
 	// NOT capped — grows with services.length. No code should assume a maximum.
 	// Adding a service means adding one object to services.ts; zero component changes.
 	station: number;
-	// icon is the Lottie JSON filename (without path) for this station's illustration.
+	// icon is the JSON filename (without path) for this station's illustration.
 	// Keeping it as a string avoids coupling the data layer to any specific renderer.
 	icon?: string;
 	// SVG illustration filename for work page cards and detail pages.
@@ -206,7 +206,7 @@ export interface BlogPost {
 export type HighlightEffect = 'scale' | 'gradient' | 'wave' | 'charReveal';
 
 // Icon identifiers for skills. Kept as a string literal union so the renderer
-// can map each id to an SVG/Lottie asset without coupling this data layer to
+// can map each id to an SVG asset without coupling this data layer to
 // any specific icon library.
 export type SkillIcon = 'sql' | 'typescript' | 'python' | 'sveltekit' | 'gsap' | 'powerbi' | 'docker';
 
