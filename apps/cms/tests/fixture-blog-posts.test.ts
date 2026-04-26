@@ -61,12 +61,8 @@ describe('apps/cms/fixtures/collections/blog-posts.json', () => {
 	});
 
 	it('non-external posts have non-empty body.blocks', () => {
-		const posts = BlogPostFixtureSchema.parse(postsFixture);
-		for (let i = 0; i < posts.length; i++) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const p = posts[i]!;
-			const body = (postsFixture[i] as { body: { blocks: unknown[] } }).body;
-			if (!p.external) expect(body.blocks.length).toBeGreaterThan(0);
+		for (const p of postsFixture as Array<{ external: boolean; body: { blocks: unknown[] } }>) {
+			if (!p.external) expect(p.body.blocks.length).toBeGreaterThan(0);
 		}
 	});
 
@@ -77,6 +73,3 @@ describe('apps/cms/fixtures/collections/blog-posts.json', () => {
 		}
 	});
 });
-
-// Export schema for reuse by seed-blog-posts.ts (Phase 8)
-export { BlogPostFixtureSchema };
