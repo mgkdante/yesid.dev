@@ -89,7 +89,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-languages-read-0001-0000-000000000001"
   },
@@ -99,7 +101,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-read-0002-0000-000000000002"
   },
@@ -109,7 +113,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-create-0003-0000-000000000003"
   },
@@ -119,7 +125,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-update-0004-0000-000000000004"
   },
@@ -129,7 +137,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-translations-read-0005-000000000005"
   },
@@ -139,7 +149,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-translations-create-0006-000000000006"
   },
@@ -149,7 +161,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-translations-update-0007-000000000007"
   },
@@ -159,7 +173,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-deliverables-read-0008-000000000008"
   },
@@ -169,7 +185,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-deliverables-create-0009-000000000009"
   },
@@ -179,7 +197,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-deliverables-update-0010-00000000000a"
   },
@@ -189,7 +209,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-deltr-read-0011-0000-00000000000b"
   },
@@ -199,7 +221,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-deltr-create-0012-000000000000c"
   },
@@ -209,7 +233,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-deltr-update-0013-000000000000d"
   },
@@ -219,7 +245,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-sections-read-0014-000000000000e"
   },
@@ -229,7 +257,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-sections-create-0015-00000000000f"
   },
@@ -239,7 +269,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-sections-update-0016-000000000010"
   },
@@ -249,7 +281,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-sectr-read-0017-0000-000000000011"
   },
@@ -259,7 +293,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-sectr-create-0018-000000000012"
   },
@@ -269,7 +305,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-services-sectr-update-0019-000000000013"
   },
@@ -297,18 +335,21 @@
     },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "_sync_perm_public_files_read_folder_scoped"
   },
-
   {
     "collection": "projects",
     "action": "read",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-read-0020-0000-000000000014"
   },
@@ -318,17 +359,25 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-create-0021-000000000015"
   },
   {
     "collection": "projects",
     "action": "update",
-    "permissions": { "status": { "_neq": "published" } },
+    "permissions": {
+      "status": {
+        "_neq": "published"
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-update-0022-000000000016"
   },
@@ -338,7 +387,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-tr-read-0023-0000-000000000017"
   },
@@ -348,7 +399,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-tr-create-0024-000000000018"
   },
@@ -358,7 +411,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-tr-update-0025-000000000019"
   },
@@ -368,7 +423,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-sec-read-0026-000000000020"
   },
@@ -378,7 +435,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-sec-create-0027-00000000001a"
   },
@@ -388,7 +447,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-sec-update-0028-00000000001b"
   },
@@ -398,7 +459,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-sectr-read-0029-0000-00000000001c"
   },
@@ -408,7 +471,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-sectr-create-0030-00000000001d"
   },
@@ -418,7 +483,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-sectr-update-0031-00000000001e"
   },
@@ -428,7 +495,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-im-read-0032-0000-00000000001f"
   },
@@ -438,7 +507,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-im-create-0033-000000000020"
   },
@@ -448,7 +519,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-im-update-0034-000000000021"
   },
@@ -458,7 +531,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-imtr-read-0035-0000-000000000022"
   },
@@ -468,7 +543,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-imtr-create-0036-000000000023"
   },
@@ -478,7 +555,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-imtr-update-0037-000000000024"
   },
@@ -488,7 +567,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-svc-read-0038-0000-000000000025"
   },
@@ -498,7 +579,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-svc-create-0039-000000000026"
   },
@@ -508,39 +591,53 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-projects-svc-update-0040-000000000027"
   },
-
   {
     "collection": "directus_comments",
     "action": "read",
-    "permissions": { "collection": { "_starts_with": "projects" } },
+    "permissions": {
+      "collection": {
+        "_starts_with": "projects"
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-comments-projects-read-0041-000000000028"
   },
   {
     "collection": "directus_comments",
     "action": "create",
-    "permissions": { "collection": { "_starts_with": "projects" } },
+    "permissions": {
+      "collection": {
+        "_starts_with": "projects"
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "ae-comments-projects-create-0042-00000000029"
   },
-
   {
     "collection": "projects",
     "action": "read",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-read-0043-0000-000000000030"
   },
@@ -550,7 +647,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-create-0044-000000000031"
   },
@@ -560,7 +659,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-update-0045-000000000032"
   },
@@ -570,7 +671,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-delete-0046-000000000033"
   },
@@ -580,7 +683,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-tr-read-0047-0000-000000000034"
   },
@@ -590,7 +695,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-tr-create-0048-000000000035"
   },
@@ -600,7 +707,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-tr-update-0049-000000000036"
   },
@@ -610,7 +719,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-tr-delete-0050-000000000037"
   },
@@ -620,7 +731,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-sec-read-0051-000000000038"
   },
@@ -630,7 +743,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-sec-create-0052-00000000003a"
   },
@@ -640,7 +755,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-sec-update-0053-00000000003b"
   },
@@ -650,7 +767,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-sec-delete-0054-00000000003c"
   },
@@ -660,7 +779,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-sectr-read-0055-0000-00000000003d"
   },
@@ -670,7 +791,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-sectr-create-0056-00000000003e"
   },
@@ -680,7 +803,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-sectr-update-0057-00000000003f"
   },
@@ -690,7 +815,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-sectr-delete-0058-000000000040"
   },
@@ -700,7 +827,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-im-read-0059-0000-000000000041"
   },
@@ -710,7 +839,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-im-create-0060-000000000042"
   },
@@ -720,7 +851,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-im-update-0061-000000000043"
   },
@@ -730,7 +863,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-im-delete-0062-000000000044"
   },
@@ -740,7 +875,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-imtr-read-0063-0000-000000000045"
   },
@@ -750,7 +887,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-imtr-create-0064-000000000046"
   },
@@ -760,7 +899,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-imtr-update-0065-000000000047"
   },
@@ -770,7 +911,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-imtr-delete-0066-000000000048"
   },
@@ -780,7 +923,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-svc-read-0067-0000-000000000049"
   },
@@ -790,7 +935,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-svc-create-0068-00000000004a"
   },
@@ -800,7 +947,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-svc-update-0069-00000000004b"
   },
@@ -810,89 +959,149 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-svc-delete-0070-00000000004c"
   },
-
   {
     "collection": "projects",
     "action": "read",
-    "permissions": { "status": { "_eq": "published" } },
+    "permissions": {
+      "status": {
+        "_eq": "published"
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "public-projects-read-0071-000000000050"
   },
   {
     "collection": "projects_translations",
     "action": "read",
-    "permissions": { "projects_id": { "status": { "_eq": "published" } } },
+    "permissions": {
+      "projects_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "public-projects-tr-read-0072-000000000051"
   },
   {
     "collection": "projects_sections",
     "action": "read",
-    "permissions": { "projects_id": { "status": { "_eq": "published" } } },
+    "permissions": {
+      "projects_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "public-projects-sec-read-0073-000000000052"
   },
   {
     "collection": "projects_sections_translations",
     "action": "read",
-    "permissions": { "projects_sections_id": { "projects_id": { "status": { "_eq": "published" } } } },
+    "permissions": {
+      "projects_sections_id": {
+        "projects_id": {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "public-projects-sectr-read-0074-00000000053"
   },
   {
     "collection": "projects_impact_metrics",
     "action": "read",
-    "permissions": { "projects_id": { "status": { "_eq": "published" } } },
+    "permissions": {
+      "projects_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "public-projects-im-read-0075-0000-000000000054"
   },
   {
     "collection": "projects_impact_metrics_translations",
     "action": "read",
-    "permissions": { "projects_impact_metrics_id": { "projects_id": { "status": { "_eq": "published" } } } },
+    "permissions": {
+      "projects_impact_metrics_id": {
+        "projects_id": {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "public-projects-imtr-read-0076-000000000055"
   },
   {
     "collection": "projects_services",
     "action": "read",
-    "permissions": { "project_id": { "status": { "_eq": "published" } } },
+    "permissions": {
+      "project_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "public-projects-svc-read-0077-000000000056"
   },
-
   {
     "collection": "illustrations",
     "action": "read",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "_sync_perm_illustrations_ai_read"
   },
@@ -902,7 +1111,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "_sync_perm_illustrations_ai_create"
   },
@@ -912,7 +1123,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "_sync_perm_illustrations_ai_update"
   },
@@ -922,7 +1135,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_illustrations_human_read"
   },
@@ -932,7 +1147,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_illustrations_human_create"
   },
@@ -942,7 +1159,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_illustrations_human_update"
   },
@@ -952,7 +1171,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_illustrations_human_delete"
   },
@@ -962,18 +1183,27 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["id", "file", "label", "category", "tags", "description", "sort"],
+    "fields": [
+      "id",
+      "file",
+      "label",
+      "category",
+      "tags",
+      "description",
+      "sort"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "_sync_perm_illustrations_public_read"
   },
-
   {
     "collection": "morph_shapes",
     "action": "read",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_ai_read"
   },
@@ -983,7 +1213,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_ai_create"
   },
@@ -993,7 +1225,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_ai_update"
   },
@@ -1003,7 +1237,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_human_read"
   },
@@ -1013,7 +1249,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_human_create"
   },
@@ -1023,7 +1261,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_human_update"
   },
@@ -1033,7 +1273,9 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_human_delete"
   },
@@ -1043,8 +1285,285 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["id", "label", "path", "viewbox", "sort"],
+    "fields": [
+      "id",
+      "label",
+      "path",
+      "viewbox",
+      "sort"
+    ],
     "policy": "_sync_default_public_policy",
     "_syncId": "_sync_perm_morph_shapes_public_read"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_ai_read"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_ai_create"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_ai_update"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_ai_read"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "blog_posts_id": {
+            "status": {
+              "_neq": "published"
+            }
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_ai_create"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "blog_posts_id": {
+            "status": {
+              "_neq": "published"
+            }
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_ai_update"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_human_read"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_human_create"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_human_update"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_human_delete"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_human_read"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_human_create"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_human_update"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_human_delete"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "status",
+      "date_published",
+      "sort",
+      "lang",
+      "category",
+      "tags",
+      "external",
+      "url",
+      "cover_image",
+      "svg_illustration",
+      "animation",
+      "body",
+      "translations"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_blog_posts_public_read"
+  },
+  {
+    "collection": "blog_posts_translations",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "blog_posts_id": {
+            "status": {
+              "_eq": "published"
+            }
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "blog_posts_id",
+      "languages_code",
+      "title",
+      "excerpt"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_blog_posts_translations_public_read"
   }
 ]
