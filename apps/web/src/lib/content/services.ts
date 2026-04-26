@@ -61,7 +61,6 @@ export const services: readonly Service[] = [
 			en: 'Write, refactor, and tune SQL queries across PostgreSQL and SQL Server. From complex reporting queries to stored procedures, built for correctness and performance.'
 		},
 		station: 1,
-		icon: 'station-sql.json',
 		svg: 'service-sql.svg',
 		visible: true,
 		benefitHeadline: { en: 'Queries that run in seconds, not minutes' },
@@ -98,7 +97,6 @@ export const services: readonly Service[] = [
 			en: 'Design and build ELT/ETL pipelines that move data reliably from source to destination. Includes schema design, transformation logic, and orchestration setup.'
 		},
 		station: 2,
-		icon: 'station-pipeline.json',
 		svg: 'service-pipeline.svg',
 		visible: true,
 		benefitHeadline: { en: 'Your data arrives clean, on time, every morning' },
@@ -135,7 +133,6 @@ export const services: readonly Service[] = [
 			en: 'Turn raw data into actionable dashboards with Power BI and Retool. Semantic layer design, KPI definition, and report delivery built around how your team actually makes decisions.'
 		},
 		station: 3,
-		icon: 'station-analytics.json',
 		svg: 'service-reporting.svg',
 		visible: true,
 		benefitHeadline: { en: 'Decisions in 15 minutes, not 2 days' },
@@ -172,7 +169,6 @@ export const services: readonly Service[] = [
 			en: 'Design, migrate, and tune databases for performance. Schema modeling, index optimization, and migration strategy built for reliability.'
 		},
 		station: 4,
-		icon: 'station-performance.json',
 		svg: 'service-database.svg',
 		visible: true,
 		benefitHeadline: { en: 'Zero-downtime migrations while you sleep' },

@@ -103,9 +103,6 @@ export interface Service {
 	// NOT capped — grows with services.length. No code should assume a maximum.
 	// Adding a service means adding one object to services.ts; zero component changes.
 	station: number;
-	// icon is the JSON filename (without path) for this station's illustration.
-	// Keeping it as a string avoids coupling the data layer to any specific renderer.
-	icon?: string;
 	// SVG illustration filename for work page cards and detail pages.
 	// Each service gets one SVG that cascades to all linked projects.
 	svg?: string;
