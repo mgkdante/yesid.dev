@@ -697,6 +697,7 @@ export const directusAdapter: ContentAdapter = {
 		all: async () => todo('blog.all'),
 		bySlug: async () => todo('blog.bySlug'),
 		html: async () => todo('blog.html'),
+		bodyBySlug: async () => todo('blog.bodyBySlug'),
 		byCategory: async () => todo('blog.byCategory'),
 		byTag: async () => todo('blog.byTag'),
 		tagsForCategory: async () => todo('blog.tagsForCategory'),
@@ -748,5 +749,6 @@ export const directusAdapter: ContentAdapter = {
 		heroMock: async () => todo('content.heroMock'),
 		initialHeroData: async () => todo('content.initialHeroData'),
 		metroSvg: async () => fetchMetroSvg(),
+		morphShapes: async () => todo('content.morphShapes'),
 	},
 };
