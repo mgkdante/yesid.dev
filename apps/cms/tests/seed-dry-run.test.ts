@@ -218,24 +218,21 @@ describe('toServiceRow', () => {
 			visible: true,
 			related_projects: ['p1', 'p2'],
 		});
-		expect(row.icon).toBeUndefined();
 		expect(row.svg).toBeUndefined();
 		expect(row.stack).toBeUndefined();
 	});
 
-	it('includes icon/svg/stack when present', () => {
+	it('includes svg/stack when present', () => {
 		const s: Service = {
 			id: 'x',
 			title: { en: 'T' },
 			description: { en: 'D' },
 			station: 1,
-			icon: 'icon.json',
 			svg: 'svg.svg',
 			stack: ['PostgreSQL', 'T-SQL'],
 			relatedProjects: [],
 		};
 		const row = toServiceRow(s);
-		expect(row.icon).toBe('icon.json');
 		expect(row.svg).toBe('svg.svg');
 		expect(row.stack).toEqual(['PostgreSQL', 'T-SQL']);
 	});
