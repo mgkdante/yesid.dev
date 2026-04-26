@@ -8,7 +8,7 @@
     "collapse": "open",
     "collection": "blog_posts",
     "color": null,
-    "display_template": "{{translations.title}}",
+    "display_template": "{{title}}",
     "group": null,
     "hidden": false,
     "icon": "article",
@@ -20,10 +20,11 @@
       "animation",
       "cover_image",
       "svg_illustration",
-      "body",
-      "translations"
+      "title",
+      "excerpt",
+      "body"
     ],
-    "note": "Blog posts. ai-editor cannot publish; cannot delete. Body uses Block Editor (rich content per CONVENTIONS § 7).",
+    "note": "Blog posts. Mono-language by editorial design (lang field on parent). ai-editor cannot publish; cannot delete. Body uses Block Editor (rich content per CONVENTIONS § 7).",
     "preview_url": "https://yesid.dev/blog/{{id}}?share={{$CURRENT_SHARE.token}}",
     "singleton": false,
     "sort": null,

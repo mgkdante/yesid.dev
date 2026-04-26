@@ -1,61 +1,5 @@
 [
   {
-    "collection": "blog_posts_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": {
-      "_and": [
-        {
-          "blog_posts_id": {
-            "status": {
-              "_neq": "published"
-            }
-          }
-        }
-      ]
-    },
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_blog_posts_translations_ai_create"
-  },
-  {
-    "collection": "blog_posts_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_blog_posts_translations_ai_read"
-  },
-  {
-    "collection": "blog_posts_translations",
-    "action": "update",
-    "permissions": {
-      "_and": [
-        {
-          "blog_posts_id": {
-            "status": {
-              "_neq": "published"
-            }
-          }
-        }
-      ]
-    },
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_blog_posts_translations_ai_update"
-  },
-  {
     "collection": "blog_posts",
     "action": "create",
     "permissions": {},
@@ -704,32 +648,6 @@
     "_syncId": "ae-services-update-0004-0000-000000000004"
   },
   {
-    "collection": "blog_posts_translations",
-    "action": "read",
-    "permissions": {
-      "_and": [
-        {
-          "blog_posts_id": {
-            "status": {
-              "_eq": "published"
-            }
-          }
-        }
-      ]
-    },
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "id",
-      "blog_posts_id",
-      "languages_code",
-      "title",
-      "excerpt"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_blog_posts_translations_public_read"
-  },
-  {
     "collection": "blog_posts",
     "action": "read",
     "permissions": {
@@ -756,8 +674,9 @@
       "cover_image",
       "svg_illustration",
       "animation",
-      "body",
-      "translations"
+      "title",
+      "excerpt",
+      "body"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "_sync_perm_blog_posts_public_read"
@@ -1037,54 +956,6 @@
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "2a68154f-996c-4e13-bab6-126ced346b48"
-  },
-  {
-    "collection": "blog_posts_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_blog_posts_translations_human_create"
-  },
-  {
-    "collection": "blog_posts_translations",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_blog_posts_translations_human_delete"
-  },
-  {
-    "collection": "blog_posts_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_blog_posts_translations_human_read"
-  },
-  {
-    "collection": "blog_posts_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_blog_posts_translations_human_update"
   },
   {
     "collection": "blog_posts",

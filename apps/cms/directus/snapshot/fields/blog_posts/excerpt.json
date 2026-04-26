@@ -1,34 +1,42 @@
 {
-  "collection": "blog_posts_translations",
-  "field": "title",
-  "type": "string",
+  "collection": "blog_posts",
+  "field": "excerpt",
+  "type": "text",
   "meta": {
-    "collection": "blog_posts_translations",
+    "collection": "blog_posts",
     "conditions": null,
     "display": null,
     "display_options": null,
-    "field": "title",
+    "field": "excerpt",
     "group": null,
     "hidden": false,
-    "interface": "input",
-    "note": "Localized post title. Required.",
+    "interface": "input-multiline",
+    "note": "1–2 sentences shown on listing cards. Mono-language with the post's native language (see lang field). Max 500 chars.",
     "options": null,
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 4,
+    "sort": 14,
     "special": null,
     "translations": null,
-    "validation": null,
-    "validation_message": null,
+    "validation": {
+      "_and": [
+        {
+          "excerpt": {
+            "_regex": "^.{1,500}$"
+          }
+        }
+      ]
+    },
+    "validation_message": "Excerpt must be 1–500 characters.",
     "width": "full"
   },
   "schema": {
-    "name": "title",
-    "table": "blog_posts_translations",
-    "data_type": "character varying",
+    "name": "excerpt",
+    "table": "blog_posts",
+    "data_type": "text",
     "default_value": null,
-    "max_length": 255,
+    "max_length": null,
     "numeric_precision": null,
     "numeric_scale": null,
     "is_nullable": false,
