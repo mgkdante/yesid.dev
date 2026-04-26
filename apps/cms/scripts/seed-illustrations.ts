@@ -8,7 +8,7 @@
  * before creating rows; the resulting file UUIDs populate the M2O.
  */
 
-import { createItem, deleteItem, readItems, uploadFiles } from '@directus/sdk';
+import { createItem, deleteItem, readFolders, readItems, uploadFiles } from '@directus/sdk';
 import { z } from 'zod';
 import { readFileSync } from 'node:fs';
 import fixtureData from '../fixtures/collections/illustrations.json' with { type: 'json' };
@@ -63,8 +63,14 @@ export function toIllustrationRow(fixture: IllustrationFixture, fileUuid: string
 
 // --- I/O ----------------------------------------------------------------
 
+interface DirectusFolder {
+	id: string;
+	name: string;
+}
+
 interface Schema {
 	illustrations: DirectusIllustrationRow[];
+	directus_folders: DirectusFolder[];
 }
 
 const log = createLogger('seed-illustrations');
@@ -108,12 +114,24 @@ export async function seedIllustrations(
 		}
 	}
 
+	// Resolve illustrations folder UUID at runtime — Directus expects a UUID, not a name.
+	const folders = (await client.request(
+		readFolders({ filter: { name: { _eq: 'illustrations' } }, fields: ['id', 'name'], limit: 1 }),
+	)) as DirectusFolder[];
+	if (folders.length === 0) {
+		throw new Error(
+			'[seed-illustrations] illustrations folder not found in Directus. Create it first via the admin UI or seed prerequisite step.',
+		);
+	}
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const illustrationsFolderId = folders[0]!.id;
+
 	log.info(`uploading + creating ${rows.length} illustrations...`);
 	for (const fixture of rows) {
 		// Upload SVG to illustrations folder
 		const svgBytes = readFileSync(fixture.file_legacy_path);
 		const formData = new FormData();
-		formData.append('folder', 'illustrations');  // folder id resolved by Directus
+		formData.append('folder', illustrationsFolderId);
 		formData.append('title', fixture.label);
 		formData.append('description', fixture.description);
 		formData.append('file', new Blob([svgBytes], { type: 'image/svg+xml' }), `${fixture.id}.svg`);

@@ -70,6 +70,8 @@ export async function seedMorphShapes(rows: readonly MorphShapeFixture[], opts: 
 		catch (err) { throw new DirectusError(500, `create ${r.id}: ${parseErrors(err).join(' · ')}`); }
 		log.info(`  ✓ ${r.id}`);
 	}
+
+	log.info(`done. ${rows.length} morph_shapes seeded.`);
 }
 
 async function main(): Promise<void> {
