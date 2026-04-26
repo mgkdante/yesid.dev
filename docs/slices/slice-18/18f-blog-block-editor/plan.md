@@ -18,6 +18,25 @@
 
 ---
 
+## ⚠️ Phase 2 retro-amendments (2026-04-25 — IMPORTANT)
+
+**Block Editor is Editor.js, not tiptap.** P3 probe (Phase 2 Task 7) revealed the actual JSON shape Directus 11.17.3 emits is Editor.js v2.31.x. This invalidates the working-assumption code blocks in **Phases 3, 6, and 10** of this plan. **Read [decisions.md § Amendments AM1–AM7](decisions.md#amendments-2026-04-25--phase-2-p3-probe-findings)** and the **probe output in [research.md § P3](research.md#p3--block-editor-json-output-shape)** before implementing those phases.
+
+Quick summary of what changes:
+
+| Plan section | Original (tiptap, wrong) | Corrected (Editor.js, AM1–AM6) |
+|---|---|---|
+| **Phase 3 Task 10** (Zod schema) | `BlockEditorDoc = { type: 'doc', content: [...] }` | `BlockEditorDoc = { time, blocks, version }`; per-block `{ id, type, data }` with `data` shape varying per type |
+| **Phase 3 Tasks 11–15** (helpers) | Walks `doc.content` array of structured nodes | Walks `doc.blocks` array; extracts text from `data.text` (HTML string), `data.code`, `data.items[].content`, etc. |
+| **Phase 6** (migrate-markdown) | Outputs tiptap shape | Outputs Editor.js shape; markdown tokens map to `header`/`paragraph`/`nestedlist`/`code`/`quote`/`image`/`delimiter` blocks; inline marks emitted as raw HTML inside `data.text`; **language hints from fenced code dropped** (AM3) |
+| **Phase 10 BlockRenderer** | Dispatches on `node.type` (heading/paragraph/codeBlock/etc.) | Dispatches on `block.type` (header/paragraph/code/quote/image/nestedlist/delimiter); paragraph + header use `{@html data.text}` (AM2); CodeBlock renders plain `<pre><code>` (no language) |
+| **Phase 10 InlineContent.svelte** | Required for tiptap mark composition | **Cancelled.** Marks are HTML in data.text; no per-mark Svelte components needed |
+| **Phase 10 Embed.svelte** | Placeholder | Stays placeholder — embed plugin not configured (AM4) |
+
+When dispatching subagents for Phases 3, 6, 10: provide the corrected Editor.js types/code in the prompt (not the original plan code blocks). Reference `research.md § P3` for the live JSON examples + `decisions.md § AM1–AM7` for the locked rationale.
+
+---
+
 ## Phase 1 — Sub-slice setup (3 tasks)
 
 **Exit gate:** sub-slice bundle exists at `docs/slices/slice-18/18f-blog-block-editor/`; whole-slice plan.md flagged 18f in flight; Directus auth env vars verified working.
