@@ -544,9 +544,9 @@ async function fetchServices(
 		readItems('services', {
 			fields: [
 				'*',
-				{ translations: ['*'] },
-				{ deliverables: ['id', 'sort', { translations: ['*'] }] },
-				{ sections: ['id', 'sort', { translations: ['*'] }] },
+				{ translations: ['*'] } as unknown as keyof DirectusService,
+				{ deliverables: ['id', 'sort', { translations: ['*'] }] } as unknown as keyof DirectusService,
+				{ sections: ['id', 'sort', { translations: ['*'] }] } as unknown as keyof DirectusService,
 			],
 			limit: -1,
 			...(filter ? { filter } : {}),
