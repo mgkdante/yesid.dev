@@ -1,0 +1,54 @@
+{
+  "collection": "site_meta",
+  "field": "owner_country",
+  "type": "string",
+  "meta": {
+    "collection": "site_meta",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "owner_country",
+    "group": null,
+    "hidden": false,
+    "interface": "input",
+    "note": "ISO 3166-1 alpha-2 country code (e.g., CA, US, MX)",
+    "options": {
+      "trim": true
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 10,
+    "special": null,
+    "translations": null,
+    "validation": {
+      "_and": [
+        {
+          "owner_country": {
+            "_regex": "^[A-Z]{2}$"
+          }
+        }
+      ]
+    },
+    "validation_message": "Must be a 2-letter ISO 3166-1 alpha-2 country code (uppercase, e.g., CA, US, MX).",
+    "width": "half"
+  },
+  "schema": {
+    "name": "owner_country",
+    "table": "site_meta",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 2,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

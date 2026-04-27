@@ -13,11 +13,16 @@
 	import JsonLd from './JsonLd.svelte';
 
 	// `dev` is a prop (not just the runtime import) so tests can force the path.
+	// `themeColor` defaults to the legacy hardcoded value so static-mode + tests
+	// keep rendering identical output without needing to pass the new prop. In
+	// production it arrives via $page.data.themeColor (sourced from CMS site_meta
+	// per Slice 18 18h Q7 lock-in 2026-04-27).
 	let {
 		seo,
 		locale,
+		themeColor = '#141414',
 		dev = runtimeDev,
-	}: { seo: PageSeo; locale: Locale; dev?: boolean } = $props();
+	}: { seo: PageSeo; locale: Locale; themeColor?: string; dev?: boolean } = $props();
 
 	const title = $derived(resolveLocale(seo.title, locale));
 	const description = $derived(resolveLocale(seo.description, locale));
@@ -57,7 +62,7 @@
 	<meta name="description" content={description} />
 	<link rel="canonical" href={canonicalAbsolute} />
 
-	<meta name="theme-color" content="#141414" />
+	<meta name="theme-color" content={themeColor} />
 	<meta name="color-scheme" content="dark" />
 
 	{#if seo.noIndex}

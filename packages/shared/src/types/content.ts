@@ -181,6 +181,34 @@ export interface SiteMeta {
 	owner: SiteOwner;
 }
 
+// Site-wide SEO defaults (slice-18 18h Q9 — separate port from SiteMeta).
+// Backed by the same Directus `site_meta` singleton row at runtime, but exposed
+// as a distinct shape so SEO consumers (SeoHead, route composer) and brand
+// consumers (jsonLd factories, Footer, About) stay decoupled.
+export interface SiteSeoDefaults {
+	/** Directus file UUID for the site-wide fallback OG image, or null if none seeded. */
+	defaultOgImage: string | null;
+	/** Hex color shipped into <meta name="theme-color">. Default '#141414'. */
+	themeColor: string;
+	/** SEO fallback <meta name="description"> when route + data-layer fields are empty / out-of-band. */
+	defaultDescription: LocalizedString;
+}
+
+// Per-route SEO override authored in CMS (slice-18 18h). title/description are
+// nullable: null = no override, fall back to code-side default or
+// SiteSeoDefaults.defaultDescription. Code-side composer handles canonical,
+// ogType, noIndex, jsonLd factories.
+export interface RouteSeoOverride {
+	/** SvelteKit route path, e.g. '/', '/about', '/blog/personal'. Always starts with `/`. */
+	path: string;
+	/** Per-route OG image UUID, or null. Falls back to SiteSeoDefaults.defaultOgImage when null. */
+	ogImage: string | null;
+	/** Per-route title body (no brand suffix); composer appends ' | yesid.' per locale. null = use code-side fallbackTitle. */
+	title: LocalizedString | null;
+	/** Per-route description override; null = fall back to SiteSeoDefaults.defaultDescription. */
+	description: LocalizedString | null;
+}
+
 // Blog content categories. Professional is the default brand-facing lane.
 // Personal is a warmer "off the clock" section with different accent color.
 export type BlogCategory = 'professional' | 'personal';

@@ -25,7 +25,7 @@
 | **18e** | Projects (+ M2M to services replacing CSV) | ✅ closed 2026-04-24 | shipped | [18e-projects/](18e-projects/) |
 | **18f** | Blog + Block Editor + BlockRenderer.svelte + projects #41 | ✅ closed 2026-04-26 | shipped (PR #50, 38 commits) | [18f-blog-block-editor/](18f-blog-block-editor/) |
 | **18g** | Tech-stack (data-only — Block Editor body fields, M2M services + projects junctions; visualization area blanked pending honeycomb redesign) | ✅ closed 2026-04-27 | shipped (PR #65, 13 commits) | [18g-tech-stack/](18g-tech-stack/) |
-| **18h** | Meta + route_seo (singleton + og_image) | ⏸ planned | 0.5 session | — |
+| **18h** | Meta + route_seo (singleton + og_image) — first repo singleton; combined brand identity + SEO defaults per Q2 amendment; two-method API per Q9 (meta.site + meta.siteSeoDefaults sharing fetchSingletonRow memo); composedTitleStrategy flag preserves home em-dash format per P3 | ✅ closed 2026-04-27 | shipped (PR #82 → ab4343f) | [18h-meta-route-seo/](18h-meta-route-seo/) |
 | **18h-ii** | Icons collection (centralized icon library, Iconify-backed) + apps/web /admin/icons Svelte browse page | 🟡 in flight | 0.5–1 session | [18h-ii-icons/](18h-ii-icons/) |
 | **18i** | Pages + M2A blocks (12 block collections + nav/menu/error) | ⏸ planned | 2–3 sessions | — |
 | **18j** | Polish (Insights · comments · AI Assistant · Flows · role-policy tighten) | ⏸ planned | 1 session | — |

@@ -1,0 +1,55 @@
+{
+  "collection": "site_meta",
+  "field": "theme_color",
+  "type": "string",
+  "meta": {
+    "collection": "site_meta",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "theme_color",
+    "group": null,
+    "hidden": false,
+    "interface": "input",
+    "note": "Hex color for <meta name='theme-color'>. Default #141414 dark.",
+    "options": {
+      "placeholder": "#141414",
+      "trim": true
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 13,
+    "special": null,
+    "translations": null,
+    "validation": {
+      "_and": [
+        {
+          "theme_color": {
+            "_regex": "^#[0-9a-fA-F]{6}$"
+          }
+        }
+      ]
+    },
+    "validation_message": "Must be a 6-digit hex color (e.g., #141414).",
+    "width": "half"
+  },
+  "schema": {
+    "name": "theme_color",
+    "table": "site_meta",
+    "data_type": "character varying",
+    "default_value": "#141414",
+    "max_length": 7,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

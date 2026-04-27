@@ -78,6 +78,16 @@
           "collection": {
             "_starts_with": "icons"
           }
+        },
+        {
+          "collection": {
+            "_starts_with": "site_meta"
+          }
+        },
+        {
+          "collection": {
+            "_starts_with": "route_seo"
+          }
         }
       ]
     },
@@ -107,6 +117,16 @@
         {
           "collection": {
             "_starts_with": "icons"
+          }
+        },
+        {
+          "collection": {
+            "_starts_with": "site_meta"
+          }
+        },
+        {
+          "collection": {
+            "_starts_with": "route_seo"
           }
         }
       ]
@@ -1906,6 +1926,392 @@
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "_sync_perm_tech_stack_projects_public_read"
+  },
+  {
+    "collection": "site_meta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_ai_read"
+  },
+  {
+    "collection": "site_meta",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_ai_update"
+  },
+  {
+    "collection": "site_meta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_human_read"
+  },
+  {
+    "collection": "site_meta",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_human_update"
+  },
+  {
+    "collection": "site_meta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_site_meta_public_read"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_ai_create"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_ai_read"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_ai_update"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_human_create"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_human_read"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_human_update"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_site_meta_translations_public_read"
+  },
+  {
+    "collection": "route_seo",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_ai_create"
+  },
+  {
+    "collection": "route_seo",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_ai_read"
+  },
+  {
+    "collection": "route_seo",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_ai_update"
+  },
+  {
+    "collection": "route_seo",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_human_create"
+  },
+  {
+    "collection": "route_seo",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_human_read"
+  },
+  {
+    "collection": "route_seo",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_human_update"
+  },
+  {
+    "collection": "route_seo",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_route_seo_public_read"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_ai_create"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_ai_read"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_ai_update"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_human_create"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_human_read"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_human_update"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "read",
+    "permissions": {
+      "route_seo_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_route_seo_translations_public_read"
+  },
+  {
+    "collection": "route_seo",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_human_delete"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_human_delete"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_human_delete"
   },
   {
     "collection": "icons",

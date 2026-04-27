@@ -25,6 +25,8 @@ import type {
 	BlogCategory,
 	BlogAnimation,
 	SiteMeta,
+	SiteSeoDefaults,
+	RouteSeoOverride,
 	TechStackItem,
 	Locale,
 	AboutContent,
@@ -116,7 +118,33 @@ export interface BlogPort {
 }
 
 export interface MetaPort {
+	/**
+	 * Brand identity (slice-18 18h Q9 amendment): name, tagline, description,
+	 * links, owner. CMS-backed via `site_meta` singleton (directus adapter)
+	 * with the same TS shape as before — pre-existing consumers (jsonLd
+	 * factories, Footer, About) are unaffected.
+	 */
 	site(ctx?: PreviewContext): Promise<SiteMeta>;
+
+	/**
+	 * Site-wide SEO defaults (slice-18 18h Q9): defaultOgImage UUID, themeColor
+	 * hex, defaultDescription. Backed by the same `site_meta` singleton row
+	 * via shared internal `fetchSingletonRow()` helper + WeakMap memo on the
+	 * raw row — calling both `site()` and `siteSeoDefaults()` in the same
+	 * request triggers ONE CMS round-trip.
+	 */
+	siteSeoDefaults(ctx?: PreviewContext): Promise<SiteSeoDefaults>;
+
+	/**
+	 * Per-route SEO overrides (slice-18 18h): editor-authored title body +
+	 * description + per-route OG image. `byPath` returns undefined when no row
+	 * matches — composer falls through to code-side defaults +
+	 * `siteSeoDefaults`.
+	 */
+	routeSeo: {
+		byPath(path: string, ctx?: PreviewContext): Promise<RouteSeoOverride | undefined>;
+	};
+
 	/**
 	 * Resolve PageSeo for a route + locale + optional dynamic params.
 	 *
@@ -124,6 +152,10 @@ export interface MetaPort {
 	 * (e.g. '/', '/about', '/blog/[slug]'). Params come from event.params
 	 * for dynamic routes. Unknown routes throw — unknown routes are a bug
 	 * (a route added without a content/meta.ts entry), not an expected state.
+	 *
+	 * directus adapter: composer pattern — fetches site() + siteSeoDefaults()
+	 * + routeSeo.byPath(), merges with code-side technical defaults
+	 * (canonical, ogType, noIndex, jsonLd factory).
 	 *
 	 * Returned shape is parsed through PageSeoSchema at the adapter boundary,
 	 * so any adapter (static, Directus, mock) can only emit valid SEO.
