@@ -188,25 +188,9 @@ export const staticAdapter: ContentAdapter = {
 			return PageSeoSchema.parse(raw);
 		},
 	},
-	// Phase 5 note: getAllTechItems() returns the legacy TechStackItem shape
-	// (with layer/domains/etc). After Task 7's type reshape the legacy static data
-	// does NOT conform to the new schema — parsePort will fail at runtime.
-	// Production uses Directus; static is a compile-time fallback for tests.
-	// Use `as unknown` cast to keep the adapter compiling; Task 11 (Phase 5)
-	// replaces the static helpers with the new shape.
 	techStack: {
-		all: async () =>
-			parsePort(
-				'techStack.all',
-				z.array(TechStackItemSchema),
-				getAllTechItems() as unknown as Parameters<typeof parsePort>[2],
-			),
-		byId: async (id) =>
-			parsePort(
-				'techStack.byId',
-				TechStackItemSchema.optional(),
-				getTechItemById(id) as unknown as Parameters<typeof parsePort>[2],
-			),
+		all: async () => parsePort('techStack.all', z.array(TechStackItemSchema), getAllTechItems()),
+		byId: async (id) => parsePort('techStack.byId', TechStackItemSchema.optional(), getTechItemById(id)),
 		content: async (id) => getTechItemContent(id),
 	},
 	content: {
