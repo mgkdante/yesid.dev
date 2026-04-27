@@ -216,6 +216,8 @@ interface Schema {
 	blog_posts: DirectusBlogPostRow[];
 	illustrations: DirectusIllustrationRow[];
 	morph_shapes: MorphShape[];
+	// Tech-stack collection (slice-18 18g).
+	tech_stack: DirectusTechStackRow[];
 }
 
 // ---------------------------------------------------------------------------

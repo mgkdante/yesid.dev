@@ -33,6 +33,7 @@ import {
 	toLocalizedString,
 	toProject,
 	toService,
+	toTechStackItem,
 	resolveSvgFallbackName,
 	resolveAnimationDeterministic,
 } from './directus';
@@ -66,11 +67,18 @@ describe('directusAdapter — structural contract', () => {
 
 	it('un-implemented ports throw a clear TODO error (not silently return empty)', async () => {
 		// Tasks 10–14 progressively replace these throws with real impls.
-		// 18f Phase 9: blog + morphShapes ports are live; only meta/techStack/content
-		// (non-metroSvg/morphShapes) remain as TODO stubs below.
+		// 18f Phase 9: blog + morphShapes ports are live.
+		// 18g Phase 4: techStack port is now live (all/byId/content).
+		// Only meta + content (non-metroSvg/morphShapes) remain as TODO stubs.
 		await expect(directusAdapter.meta.site()).rejects.toThrow(/not implemented/);
-		await expect(directusAdapter.techStack.all()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.content.hero()).rejects.toThrow(/not implemented/);
+	});
+
+	it('techStack port exposes the 3 required methods', () => {
+		const required = ['all', 'byId', 'content'] as const;
+		for (const method of required) {
+			expect(typeof directusAdapter.techStack[method]).toBe('function');
+		}
 	});
 });
 
@@ -500,5 +508,109 @@ describe('resolveAnimationDeterministic', () => {
 		expect(resolveAnimationDeterministic('foo', undefined)).toBe(
 			resolveAnimationDeterministic('foo', undefined),
 		);
+	});
+});
+
+// ---------------------------------------------------------------------------
+// toTechStackItem — pure row-to-domain mapping (slice-18g Phase 4 Task 9)
+// ---------------------------------------------------------------------------
+
+describe('toTechStackItem — pure row-to-domain mapping', () => {
+	const emptyDoc = {
+		time: 0,
+		version: '2.31.2',
+		blocks: [{ id: 'p1', type: 'paragraph' as const, data: { text: '' } }],
+	};
+
+	const baseRow = {
+		id: 'postgresql',
+		name: 'PostgreSQL',
+		icon: 'postgresql.svg',
+		status: 'published' as const,
+		sort: 0,
+		translations: [
+			{
+				languages_code: 'en' as const,
+				what_it_is: {
+					time: 1700000000000,
+					version: '2.31.2',
+					blocks: [{ id: 'b1', type: 'paragraph' as const, data: { text: 'An RDBMS.' } }],
+				},
+				what_i_use_it_for: {
+					time: 1700000000001,
+					version: '2.31.2',
+					blocks: [{ id: 'b2', type: 'paragraph' as const, data: { text: 'Data storage.' } }],
+				},
+				why_i_use_it_instead: {
+					time: 1700000000002,
+					version: '2.31.2',
+					blocks: [{ id: 'b3', type: 'paragraph' as const, data: { text: 'ACID + extensions.' } }],
+				},
+			},
+		],
+		services: [{ services_id: 'sql-development' }],
+		projects: [{ projects_id: 'transit-data-pipeline' }],
+	};
+
+	it('maps id + name + icon', () => {
+		const item = toTechStackItem(baseRow);
+		expect(item.id).toBe('postgresql');
+		expect(item.name).toBe('PostgreSQL');
+		expect(item.icon).toBe('postgresql.svg');
+	});
+
+	it('maps 3 LocalizedBlockEditorDoc fields from translations', () => {
+		const item = toTechStackItem(baseRow);
+		expect(item.what_it_is.en.blocks[0].data).toEqual({ text: 'An RDBMS.' });
+		expect(item.what_i_use_it_for.en.blocks[0].data).toEqual({ text: 'Data storage.' });
+		expect(item.why_i_use_it_instead.en.blocks[0].data).toEqual({ text: 'ACID + extensions.' });
+	});
+
+	it('maps relatedServices from M2M services junction', () => {
+		const item = toTechStackItem(baseRow);
+		expect(item.relatedServices).toEqual(['sql-development']);
+	});
+
+	it('maps relatedProjects from M2M projects junction', () => {
+		const item = toTechStackItem(baseRow);
+		expect(item.relatedProjects).toEqual(['transit-data-pipeline']);
+	});
+
+	it('returns empty arrays when services and projects are absent', () => {
+		const minimal = { ...baseRow, services: undefined, projects: undefined };
+		const item = toTechStackItem(minimal);
+		expect(item.relatedServices).toEqual([]);
+		expect(item.relatedProjects).toEqual([]);
+	});
+
+	it('falls back to empty-paragraph doc when translations are absent', () => {
+		const noTrans = { ...baseRow, translations: [] };
+		const item = toTechStackItem(noTrans);
+		// toLocalizedBlockEditorDoc fallback emits { en: { time:0, blocks:[{type:'paragraph'}] } }
+		expect(item.what_it_is.en).toBeDefined();
+		expect(item.what_it_is.en.blocks.length).toBeGreaterThan(0);
+	});
+
+	it('uses empty string for icon when row.icon is null', () => {
+		const noIcon = { ...baseRow, icon: null };
+		const item = toTechStackItem(noIcon);
+		expect(item.icon).toBe('');
+	});
+
+	it('composes multi-locale LocalizedBlockEditorDoc when translations present for fr/es', () => {
+		const multiLocale = {
+			...baseRow,
+			translations: [
+				...baseRow.translations,
+				{
+					languages_code: 'fr' as const,
+					what_it_is: { ...emptyDoc, blocks: [{ id: 'f1', type: 'paragraph' as const, data: { text: 'Un SGBDR.' } }] },
+					what_i_use_it_for: null,
+					why_i_use_it_instead: null,
+				},
+			],
+		};
+		const item = toTechStackItem(multiLocale);
+		expect(item.what_it_is.fr?.blocks[0].data).toEqual({ text: 'Un SGBDR.' });
 	});
 });

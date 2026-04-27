@@ -1,21 +1,20 @@
 // Data loader for /tech-stack route.
-// Tech items and scenarios come from build-time markdown parsing
-// via import.meta.glob in tech-stack.ts — no server secrets needed.
-// Page chrome (techStackPage) flows through the adapter post-17c, closing
-// the 17b seam leak that had `+page.svelte` importing from `$lib/content`.
+// Tech items come from the adapter (Directus or static fallback) via the
+// repository boundary. Scenarios removed in slice-18g (TechStackItem no
+// longer carries domain/layer/relation data — Phase 5 wires the new Block
+// Editor body fields into the template).
+// Page chrome (techStackPage) flows through the adapter post-17c.
 
 import {
 	getAllTechItems,
-	getAllScenarios,
 	getTechStackPageContent,
 } from '$lib/repositories';
 
 export async function load() {
-	const [items, scenarios, techStackPage] = await Promise.all([
+	const [items, techStackPage] = await Promise.all([
 		getAllTechItems(),
-		getAllScenarios(),
 		getTechStackPageContent(),
 	]);
 
-	return { items, scenarios, techStackPage };
+	return { items, techStackPage };
 }

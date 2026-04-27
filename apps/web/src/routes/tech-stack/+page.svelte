@@ -9,9 +9,11 @@
 
 	let { data } = $props();
 
-	// Dynamic counts from data layer
+	// Dynamic counts from data layer.
+	// Note: layerCount is no longer derived from TechStackItem.layer (dropped in
+	// slice-18g). Phase 5 will update the hero stats to reflect the new data model.
 	const itemCount = data.items.length;
-	const layerCount = new Set(data.items.map((i) => i.layer)).size;
+	const layerCount = 9; // Infrastructure layers are fixed (data/backend/api/frontend/mobile/analytics/devops/testing/systems)
 
 	// Pre-resolved chrome — all static English for now (swap to $derived on
 	// locale when translation arrives).

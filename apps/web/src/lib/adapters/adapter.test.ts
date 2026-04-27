@@ -179,6 +179,8 @@ describe('ContentAdapter contract', () => {
 	});
 
 	describe('techStack port', () => {
+		// slice-18g: TechStackPort shrunk to all/byId/content (decisions Q1+Q2+Q5).
+		// allScenarios/connections removed; Phase 5 will update the Svelte consumers.
 		it('all() returns a non-empty readonly array', async () => {
 			const result = await adapter.techStack.all();
 			expect(result.length).toBeGreaterThan(0);
@@ -187,18 +189,6 @@ describe('ContentAdapter contract', () => {
 		it('byId() returns undefined for unknown id', async () => {
 			const result = await adapter.techStack.byId('__nonexistent__');
 			expect(result).toBeUndefined();
-		});
-
-		it('allScenarios() returns scenarios', async () => {
-			const result = await adapter.techStack.allScenarios();
-			expect(Array.isArray(result)).toBe(true);
-		});
-
-		it('connections() returns an array for any id', async () => {
-			const all = await adapter.techStack.all();
-			const first = all[0];
-			const result = await adapter.techStack.connections(first.id);
-			expect(Array.isArray(result)).toBe(true);
 		});
 
 		it('content() returns a string for any id', async () => {
