@@ -66,7 +66,8 @@ function parseFigmaVariableArray(parsed: unknown, source: string): FigmaVariable
       throw new Error(`${source}: item at index ${i} is not a valid FigmaVariable`);
     }
   }
-  return parsed;
+  // Loop above validated every item; cast is safe but TS can't infer it.
+  return parsed as FigmaVariable[];
 }
 
 // Pure diff. Sort order: MISSING, then UNEXPECTED, then TYPE_DRIFT, then
@@ -149,8 +150,12 @@ async function loadExpected(): Promise<FigmaVariable[]> {
     stdout: 'pipe',
     stderr: 'pipe',
   });
-  const stdoutText = await new Response(proc.stdout).text();
-  const stderrText = await new Response(proc.stderr).text();
+  // Drain stdout + stderr concurrently — sequential drains can deadlock if the
+  // child fills one pipe's buffer while we're waiting on the other.
+  const [stdoutText, stderrText] = await Promise.all([
+    new Response(proc.stdout).text(),
+    new Response(proc.stderr).text(),
+  ]);
   const exitCode = await proc.exited;
   if (exitCode !== 0) {
     throw new Error(
