@@ -65,7 +65,7 @@ Mirror the `tech_stack` parent shape from PR #65 + alias-fix patterns from PR #6
     "interface": "input",
     "options": {
       "placeholder": "e.g. logos:react, mdi:home, skill-icons:python",
-      "note": "Browse [icon-sets.iconify.design](https://icon-sets.iconify.design/) — click any icon, copy the ID shown under it. Or use our [icons admin page](/admin/icons) to search and copy."
+      "note": "Browse [icon-sets.iconify.design](https://icon-sets.iconify.design/) — click any icon, copy the ID shown under it (e.g. logos:react, mdi:home)."
     }
   }
 }

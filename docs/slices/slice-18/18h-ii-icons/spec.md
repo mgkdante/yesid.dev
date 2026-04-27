@@ -105,7 +105,7 @@ When we eventually re-evaluate `morph_shapes` + `illustrations`, the question be
 | Risk | Mitigation |
 |---|---|
 | Iconify CDN unreachable at runtime → broken icons | `<IconRenderer>` falls back to placeholder + console warns; consumers don't break |
-| `iconify_id` value (e.g. `logos:apache-airflow`) doesn't match Iconify reality post-render | Phase 1 P1 audit verifies all 34 mapped IDs against `icon-sets.iconify.design` before seeding. Adapter-level regex validation flags malformed IDs at parse time. Editors browse via `apps/web/admin/icons` (always shows current Iconify catalog) so new entries also start from a real icon |
+| `iconify_id` value (e.g. `logos:apache-airflow`) doesn't match Iconify reality post-render | Phase 1 P1 audit verifies all 34 mapped IDs against `icon-sets.iconify.design` before seeding. Adapter-level regex validation flags malformed IDs at parse time. Editors hand-author by browsing `icon-sets.iconify.design` directly (link in field note) — so new entries start from a real Iconify ID |
 | Migration breaks existing `tech_stack.icon` consumers mid-flight | Stage migration: add `icon_id` first, backfill, verify, THEN drop old field. Single-commit drop after verification |
 
 ## Effort
