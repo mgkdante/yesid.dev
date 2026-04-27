@@ -1,0 +1,54 @@
+{
+  "collection": "route_seo",
+  "field": "path",
+  "type": "string",
+  "meta": {
+    "collection": "route_seo",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "path",
+    "group": null,
+    "hidden": false,
+    "interface": "input",
+    "note": "SvelteKit route id, e.g., /, /about, /services. Static routes only.",
+    "options": {
+      "trim": true
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 2,
+    "special": null,
+    "translations": null,
+    "validation": {
+      "_and": [
+        {
+          "path": {
+            "_regex": "^/"
+          }
+        }
+      ]
+    },
+    "validation_message": "Path must start with a forward slash (e.g., /about).",
+    "width": "full"
+  },
+  "schema": {
+    "name": "path",
+    "table": "route_seo",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": true,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

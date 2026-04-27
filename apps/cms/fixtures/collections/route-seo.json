@@ -1,0 +1,106 @@
+[
+	{
+		"path": "/",
+		"og_image": null,
+		"status": "published",
+		"sort": 1,
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "yesid. — Digital Infrastructure that Moves.",
+				"description": "Freelance SQL developer and digital infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, and Python. Real-time pipelines, analytics, dashboards."
+			}
+		]
+	},
+	{
+		"path": "/about",
+		"og_image": null,
+		"status": "published",
+		"sort": 2,
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "About Yesid",
+				"description": "Montreal-based digital infrastructure consultant. Background in SQL, data warehousing, and real-time analytics. Available for freelance and consulting work."
+			}
+		]
+	},
+	{
+		"path": "/contact",
+		"og_image": null,
+		"status": "published",
+		"sort": 3,
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Contact",
+				"description": "Get in touch for freelance SQL, PostgreSQL, dbt, Power BI, or data infrastructure work. Based in Montreal; available across Canada and for remote engagements."
+			}
+		]
+	},
+	{
+		"path": "/services",
+		"og_image": null,
+		"status": "published",
+		"sort": 4,
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Services",
+				"description": "Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms for growing teams."
+			}
+		]
+	},
+	{
+		"path": "/projects",
+		"og_image": null,
+		"status": "published",
+		"sort": 5,
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Projects",
+				"description": "Recent freelance and client work: real-time transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects for teams in Montreal and Canada."
+			}
+		]
+	},
+	{
+		"path": "/blog",
+		"og_image": null,
+		"status": "published",
+		"sort": 6,
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Blog",
+				"description": "Notes on data infrastructure, SQL, PostgreSQL, dbt, Power BI, and building analytics systems for growing teams. Montreal-based freelance consultant."
+			}
+		]
+	},
+	{
+		"path": "/blog/personal",
+		"og_image": null,
+		"status": "published",
+		"sort": 7,
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Personal Blog",
+				"description": "Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog, still fundamentally about building things well."
+			}
+		]
+	},
+	{
+		"path": "/tech-stack",
+		"og_image": null,
+		"status": "published",
+		"sort": 8,
+		"translations": [
+			{
+				"languages_code": "en",
+				"title": "Tech Stack",
+				"description": "The tools, languages, and platforms yesid. works with daily: PostgreSQL, dbt, Power BI, Python, SvelteKit, TypeScript, and the glue that holds them together."
+			}
+		]
+	}
+]
