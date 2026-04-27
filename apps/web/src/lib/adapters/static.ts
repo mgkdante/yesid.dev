@@ -50,8 +50,6 @@ import {
 	BlogAnimationSchema,
 	SiteMetaSchema,
 	TechStackItemSchema,
-	TechRelationSchema,
-	StackScenarioSchema,
 	JourneyPanelSchema,
 	NavLinkSchema,
 	MenuItemSchema,
@@ -66,15 +64,7 @@ import type { Locale } from '$lib/types';
 import {
 	getAllTechItems,
 	getTechItemById,
-	getTechItemsByLayer,
-	getTechItemsByDomain,
-	getConnections,
-	getIncomingConnections,
-	getOutgoingRelations,
-	getIncomingRelations,
 	getTechItemContent,
-	getAllScenarios,
-	getScenarioForDomains,
 	techStackPageContent,
 } from '$lib/content/tech-stack';
 import {
@@ -200,35 +190,7 @@ export const staticAdapter: ContentAdapter = {
 	},
 	techStack: {
 		all: async () => parsePort('techStack.all', z.array(TechStackItemSchema), getAllTechItems()),
-		byId: async (id) =>
-			parsePort('techStack.byId', TechStackItemSchema.optional(), getTechItemById(id)),
-		byLayer: async (layer) =>
-			parsePort('techStack.byLayer', z.array(TechStackItemSchema), getTechItemsByLayer(layer)),
-		byDomain: async (domain) =>
-			parsePort('techStack.byDomain', z.array(TechStackItemSchema), getTechItemsByDomain(domain)),
-		outgoingRelations: async (id) =>
-			parsePort(
-				'techStack.outgoingRelations',
-				z.array(TechRelationSchema),
-				getOutgoingRelations(id),
-			),
-		incomingRelations: async (id) =>
-			parsePort(
-				'techStack.incomingRelations',
-				z.array(TechRelationSchema),
-				getIncomingRelations(id),
-			),
-		allScenarios: async () =>
-			parsePort('techStack.allScenarios', z.array(StackScenarioSchema), getAllScenarios()),
-		scenarioForDomains: async (domains) =>
-			parsePort(
-				'techStack.scenarioForDomains',
-				StackScenarioSchema.optional(),
-				getScenarioForDomains(domains),
-			),
-		// Utility ports — return string[]/string, no schema needed (spec D2).
-		connections: async (id) => getConnections(id),
-		incomingConnections: async (id) => getIncomingConnections(id),
+		byId: async (id) => parsePort('techStack.byId', TechStackItemSchema.optional(), getTechItemById(id)),
 		content: async (id) => getTechItemContent(id),
 	},
 	content: {

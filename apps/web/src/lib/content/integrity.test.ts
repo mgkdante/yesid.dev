@@ -31,14 +31,13 @@ import * as techStackModule from './tech-stack.js';
 import { skillsJourneyPanels } from './site-content.js';
 import { navLinks, menuItems, metroBookends, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from './hero-data.js';
-import { techStackPageContent, getAllTechItems, getAllScenarios } from './tech-stack.js';
+import { techStackPageContent, getAllTechItems } from './tech-stack.js';
 import {
 	ProjectSchema,
 	ServiceSchema,
 	BlogPostSchema,
 	SiteMetaSchema,
 	TechStackItemSchema,
-	StackScenarioSchema,
 	AboutContentSchema,
 	ContactContentSchema,
 	TechStackPageContentSchema,
@@ -264,9 +263,9 @@ describe('seed data parses through schemas', () => {
 		expect(() => z.array(TechStackItemSchema).parse(getAllTechItems())).not.toThrow();
 	});
 
-	it('tech-stack scenarios → StackScenarioSchema[]', () => {
-		expect(() => z.array(StackScenarioSchema).parse(getAllScenarios())).not.toThrow();
-	});
+	// tech-stack scenarios test removed in slice-18g — StackScenario type and
+	// schema were dropped (decisions Q1+Q2). Phase 5 will add a new integrity
+	// test once the static helpers are updated to the new TechStackItem shape.
 
 	it('techStackPageContent → TechStackPageContentSchema', () => {
 		expect(() => TechStackPageContentSchema.parse(techStackPageContent)).not.toThrow();

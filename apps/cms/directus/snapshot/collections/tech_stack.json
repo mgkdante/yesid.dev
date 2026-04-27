@@ -1,0 +1,35 @@
+{
+  "collection": "tech_stack",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": "status",
+    "archive_value": "archived",
+    "collapse": "open",
+    "collection": "tech_stack",
+    "color": null,
+    "display_template": "{{name}}",
+    "group": null,
+    "hidden": false,
+    "icon": "memory",
+    "item_duplication_fields": [
+      "name",
+      "icon",
+      "sort",
+      "translations",
+      "services",
+      "projects"
+    ],
+    "note": "Tech stack items (languages, frameworks, tools). Parent has international `name` + `icon`; per-locale Block Editor body lives on tech_stack_translations. M2M to services + projects via tech_stack_services + tech_stack_projects junctions. Per Slice 18 18g: NO layer/domain/proficiency/connectsTo metadata — categorization is solely by service+project relations.",
+    "preview_url": "https://yesid.dev/tech-stack/{{id}}?share={{$CURRENT_SHARE.token}}",
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": "draft",
+    "versioning": true
+  },
+  "schema": {
+    "name": "tech_stack"
+  }
+}
