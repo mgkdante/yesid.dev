@@ -1,0 +1,48 @@
+{
+  "collection": "site_meta",
+  "field": "default_og_image",
+  "type": "uuid",
+  "meta": {
+    "collection": "site_meta",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "default_og_image",
+    "group": null,
+    "hidden": false,
+    "interface": "file-image",
+    "note": "Site-wide fallback OG image (1200x630). Folder: og.",
+    "options": {
+      "folder": "og"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 12,
+    "special": [
+      "file"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "default_og_image",
+    "table": "site_meta",
+    "data_type": "uuid",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": "directus_files",
+    "foreign_key_column": "id"
+  }
+}

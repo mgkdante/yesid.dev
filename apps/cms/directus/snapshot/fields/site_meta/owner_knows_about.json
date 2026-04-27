@@ -1,0 +1,48 @@
+{
+  "collection": "site_meta",
+  "field": "owner_knows_about",
+  "type": "text",
+  "meta": {
+    "collection": "site_meta",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "owner_knows_about",
+    "group": null,
+    "hidden": false,
+    "interface": "tags",
+    "note": "Person.knowsAbout — comma-separated areas of expertise.",
+    "options": {
+      "alphabetize": false
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 11,
+    "special": [
+      "cast-csv"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "owner_knows_about",
+    "table": "site_meta",
+    "data_type": "text",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}
