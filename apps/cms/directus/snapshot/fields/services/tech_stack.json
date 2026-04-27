@@ -1,0 +1,28 @@
+{
+  "collection": "services",
+  "field": "tech_stack",
+  "type": "alias",
+  "meta": {
+    "collection": "services",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "tech_stack",
+    "group": null,
+    "hidden": false,
+    "interface": "list-m2m",
+    "note": "Tech-stack items used by this service. Bidirectional view of `tech_stack.services` (junction: tech_stack_services).",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 111,
+    "special": [
+      "m2m"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}
