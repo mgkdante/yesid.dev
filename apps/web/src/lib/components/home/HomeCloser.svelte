@@ -10,7 +10,7 @@
 	import { resolveLocale } from '$lib/utils';
 
 	import { closerContent, getLatestPosts } from '$lib/content';
-	import { siteMeta } from '$lib/content/meta';
+	import { siteMeta } from '$lib/content/site-meta';
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import CloserGraffiti from './CloserGraffiti.svelte';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { siteMeta } from '$lib/content/meta';
+import { siteMeta } from '$lib/content/site-meta';
 import { adapter } from './index';
 import {
 	PERSON_ID,

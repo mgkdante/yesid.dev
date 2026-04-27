@@ -6,7 +6,7 @@
 // Yesid replaces them with real content when ready — zero component changes.
 
 import type { AboutContent } from '$lib/types';
-import { siteMeta } from './meta.js';
+import { siteMeta } from './site-meta.js';
 
 export const aboutPageContent: AboutContent = {
 	identity: {
