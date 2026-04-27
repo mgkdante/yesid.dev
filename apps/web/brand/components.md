@@ -6,63 +6,26 @@
 
 ## Tier 1 — ui/ (`src/lib/components/ui/`)
 
-56 shadcn-svelte scaffolded primitives. Bits UI headless core + brand tokens. Pre-scaffolded accessibility. Customized with `--primary` / `--foreground` / other semantic tokens.
+19 shadcn-svelte scaffolded primitives. Bits UI headless core + brand tokens. Pre-scaffolded accessibility. Customized with `--primary` / `--foreground` / other semantic tokens.
 
 Import: `import { Button } from '$lib/components/ui/button'` (each primitive has its own directory and barrel).
 
 | Primitive | Purpose |
 |---|---|
-| `accordion` | Multi-panel collapsible groups |
-| `alert` | Inline alert block (info / warning / destructive) |
-| `alert-dialog` | Modal confirmation dialog |
-| `aspect-ratio` | Ratio-constrained media container |
-| `avatar` | User / brand avatar with fallback |
 | `badge` | Small labeled pill (absorbed brand `Tag` + `NumberBadge` in 17d) |
-| `breadcrumb` | Navigation trail |
 | `button` | Primary action button (absorbed brand `BrandButton` in 17d) |
-| `button-group` | Joined button segment |
-| `calendar` | Date picker calendar grid |
 | `card` | **Universal card surface** — replaces 18+ hand-rolled card patterns (absorbed brand `CardBase` in 17d). See CONSTITUTION § 13. |
-| `carousel` | Horizontal scroller with arrows |
-| `chart` | Recharts-style chart wrapper |
-| `checkbox` | Boolean checkbox |
 | `collapsible` | Single-panel collapse (Bits UI primitive) |
-| `command` | Command palette / fuzzy search |
-| `context-menu` | Right-click context menu |
-| `data-table` | Tabular data with sort / filter |
 | `dialog` | Modal dialog |
 | `drawer` | Bottom sheet / side drawer (Vaul-Svelte) |
-| `dropdown-menu` | Menu anchored to a trigger |
-| `empty` | Empty-state block |
-| `field` | Form field wrapper |
-| `form` | Form-level utilities |
-| `hover-card` | Content revealed on hover |
 | `input` | Text input |
 | `input-group` | Input + adornments |
-| `input-otp` | One-time-password input |
-| `item` | List item primitive |
-| `kbd` | Keyboard shortcut badge |
 | `label` | Form label |
-| `menubar` | Horizontal menubar |
-| `native-select` | Native `<select>` element styled |
-| `navigation-menu` | Radix-style horizontal nav |
-| `pagination` | Pagination controls |
-| `popover` | Anchored popover panel |
-| `progress` | Progress bar |
-| `radio-group` | Radio-button group |
-| `range-calendar` | Date-range calendar |
 | `resizable` | Paneforge-backed resizable split (used on contact page) |
 | `scroll-area` | Custom-scrollbar container |
-| `select` | Bits UI select with popover |
 | `separator` | Horizontal / vertical divider (absorbed brand `HazardStripe` + `GradientSeparator` in 17d) |
 | `sheet` | Edge-pinned panel |
-| `sidebar` | Full sidebar construction |
 | `skeleton` | Loading placeholder |
-| `slider` | Range slider |
-| `sonner` | Toast notifications |
-| `spinner` | Loading spinner |
-| `switch` | Toggle switch |
-| `table` | HTML table primitive |
 | `tabs` | Tabbed panels |
 | `textarea` | Multi-line text input |
 | `toggle` | Single toggle button |
@@ -71,7 +34,7 @@ Import: `import { Button } from '$lib/components/ui/button'` (each primitive has
 
 ## Tier 2 — brand/ (`src/lib/components/brand/`)
 
-13 hand-built brand primitives with no shadcn equivalent. 17a-4 refresh count. Each has its own `.svelte` file + test + `Props` export in the barrel `index.ts`.
+12 hand-built brand primitives with no shadcn equivalent. 17a-4 refresh count; GlowOverlay removed in slice-design Child 2 (0 consumers). Each has its own `.svelte` file + test + `Props` export in the barrel `index.ts`.
 
 Import: `import { StatusDot, SectionHeading } from '$lib/components/brand'`.
 
@@ -83,7 +46,6 @@ Import: `import { StatusDot, SectionHeading } from '$lib/components/brand'`.
 | `StopLabel` | `stop`, `label` | "STOP NN — LABEL" pattern from the About-page bento. Mono + `text-micro` prefix. |
 | `MetroStation` | `name`, `color`, `size`, `ping` | Station badge + optional `station-ping` animation. Used on the MetroNetwork hero + inline throughout home sections. |
 | `ChevronToggle` | `open`, `size`, `direction` | Animated chevron for expandable sections (filter groups, collapsibles). Replaces 8+ hand-rolled arrows. |
-| `GlowOverlay` | `intensity` | Radial brand glow overlay for cards / panels. Replaces 12 manual overlay divs. |
 | `MetricDisplay` | `value`, `label`, `sublabel`, `size` | Big-number metric + mono uppercase label. Sized lg / md / sm. Used on service cards, about page, proof reel. |
 | `CornerMarks` | `size`, `opacity` | Four L-shaped corner ticks (blueprint-style). Framing device for SVG panels and bento cards. |
 | `TerminalChrome` | `title`, `tag`, `status`, `footer`, `children` | Terminal-window chrome (dots + title + tag + status + body + footer). Used on the contact page, about SQL panel, home hero SQL panel. |

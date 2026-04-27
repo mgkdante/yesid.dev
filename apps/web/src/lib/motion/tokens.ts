@@ -1,8 +1,8 @@
-// Motion timing tokens — mirror of tokens.css.
-// tokens.css is the source of truth; this file exists because JS consumers
-// (GSAP, Svelte actions) need these values at compute time without paying
-// for `getComputedStyle` on every use. A parity test (tokens.test.ts) keeps
-// both surfaces in sync.
+// GENERATED FROM packages/tokens/tokens.json — DO NOT EDIT
+// Mirror of motion tokens for JS consumers (GSAP, Svelte actions) that need
+// these values at compute time without paying for getComputedStyle().
+// A parity test in apps/web/src/lib/motion/tokens.test.ts keeps this in sync
+// with tokens.css. Run `bun run --cwd packages/tokens build` to regenerate.
 
 export const duration = {
 	instant: 100,

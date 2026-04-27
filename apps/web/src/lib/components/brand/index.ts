@@ -1,5 +1,6 @@
-// Brand primitives barrel export — 13 reusable components.
+// Brand primitives barrel export — 12 reusable components.
 // Built in Slice 17a-2a; wired into consumers in 17a-2b; expanded in 17d (MetroStation, SectionHeading, SvgIcon).
+// GlowOverlay removed in slice-design Child 2 (0 consumers; glow effect lives in motion/actions/cursorGlow.ts).
 //
 // Migrated to shadcn ui/ in 17d (don't import from here — use the ui/ equivalent):
 //   Tag → ui/badge, NumberBadge → ui/badge,
@@ -10,7 +11,6 @@ export { default as StatusDot } from './StatusDot.svelte';
 export { default as SectionLabel } from './SectionLabel.svelte';
 export { default as StopLabel } from './StopLabel.svelte';
 export { default as ChevronToggle } from './ChevronToggle.svelte';
-export { default as GlowOverlay } from './GlowOverlay.svelte';
 export { default as MetricDisplay } from './MetricDisplay.svelte';
 export { default as CornerMarks } from './CornerMarks.svelte';
 export { default as TerminalChrome } from './TerminalChrome.svelte';
@@ -26,7 +26,6 @@ export type { StatusDotProps } from './StatusDot.svelte';
 export type { SectionLabelProps } from './SectionLabel.svelte';
 export type { StopLabelProps } from './StopLabel.svelte';
 export type { ChevronToggleProps } from './ChevronToggle.svelte';
-export type { GlowOverlayProps } from './GlowOverlay.svelte';
 export type { MetricDisplayProps } from './MetricDisplay.svelte';
 export type { CornerMarksProps } from './CornerMarks.svelte';
 export type { TerminalChromeProps, TerminalFooterItem } from './TerminalChrome.svelte';

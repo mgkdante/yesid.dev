@@ -99,6 +99,30 @@ See `decisions/2026-04-why-a-constitution.md` for the full reasoning.
 **Killed:** 2026-04-18 (same shrink)
 **Reason:** Each depended on the generator. 17h-1 consolidated tokens and moved CONSTITUTION / CSS / MOTION into `brand/`. 17h-2 built the generator. 17h-5 refactored source-of-truth pointers across `CLAUDE.md` + `WORKFLOW.md` + `PLAN.md`. 17h-6 wired everything with `bun run brand:sync`. All four rested on the assumption that `brand/` would *own* tokens and governance. Under the shrunk model, it owns neither. The four sub-slices were stubbed in place with an OBSOLETE note and a pointer to the new parent slice.
 
+### Unused shadcn-svelte ui/ scaffolds (37 directories)
+
+**Removed:** 2026-04-26 (Slice slice-design, Child 2)
+**Reason:** Audit found 37 of 56 ui/ scaffolds had zero consumers — they were installed via shadcn CLI during 17a-6 / 17d but never wired up. Each occupied disk + cognitive context for no benefit. Deleted in 4 batches of ≤10 with `bun run check && bun run test` between each. Re-add via shadcn CLI when actually needed.
+
+Killed: accordion · alert · alert-dialog · aspect-ratio · avatar · breadcrumb · button-group · calendar · carousel · chart · checkbox · command · context-menu · data-table · dropdown-menu · empty · field · form · hover-card · input-otp · item · kbd · menubar · native-select · navigation-menu · pagination · popover · progress · radio-group · range-calendar · select · sidebar · slider · sonner · spinner · switch · table.
+
+Kept: badge · button · card · collapsible · dialog · drawer · input · input-group · label · resizable · scroll-area · separator · sheet · skeleton · tabs · textarea · toggle · toggle-group · tooltip (19 with active consumers).
+
+### `GlowOverlay` brand primitive
+
+**Removed:** 2026-04-26 (Slice slice-design, Child 2)
+**Reason:** Spec said "replaces 12 manual overlay divs" but no consumer ever imported it. 0 consumers per the same audit. Cursor-glow effect lives in `motion/actions/cursorGlow.ts` (action, not component) — that's the right shape for the use case.
+
+### `apps/web/brand/CLAUDE-DESIGN.md`
+
+**Removed:** 2026-04-26 (Slice slice-design, Child 2)
+**Reason:** Was a paste-into-design-tools reformat of `BRAND.md` tokens + `CSS.md` tokens. After this slice: tokens live in repo-root `DESIGN.md` (Google-spec, agent-readable, no paste needed); principles + voice + vocabulary live in `apps/web/brand/BRAND.md` (preserved). The paste-ready format is obsolete now that AI agents read the file directly via `DESIGN.md`.
+
+### `docs/project/BRAND.md`
+
+**Removed:** 2026-04-26 (Slice slice-design, Child 2)
+**Reason:** Duplicate of `apps/web/brand/BRAND.md` — same identity / palette / typography content. Two sources, one drifting against the other. Kept the canonical `apps/web/brand/BRAND.md` (closer to the consumer code) and updated all cross-links.
+
 ## Why this list matters
 
 What a system kills defines it as much as what it keeps. A reader of this doc learns:
