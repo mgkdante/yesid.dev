@@ -1592,6 +1592,7 @@
       "id",
       "name",
       "icon",
+      "icon_id",
       "status",
       "sort",
       "translations",
