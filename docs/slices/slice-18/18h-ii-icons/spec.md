@@ -24,7 +24,7 @@ The renderer prefers `svg_override` when present, falls back to `iconify_id`.
 - **Editor UX surfaces** (per Q5 pivot — no Directus extension, in-stack solution):
   - Built-in M2O picker on `tech_stack.icon → icons` provides typeahead by `icons.name` (the surface editors use 95% of the time)
   - `icons.iconify_id` is a plain string field with placeholder + note pointing to `icon-sets.iconify.design` (the rare new-icon flow)
-  - New `apps/web/src/routes/admin/icons/+page.svelte` — Svelte 5 browse page that shows the curated icons collection grid + Iconify search → click-to-copy iconify_id (visual discovery surface; replaces Q-OPEN-3 from earlier draft)
+  - Editor adds new icons to the collection by hand (paste `iconify_id` from `icon-sets.iconify.design`) per Q5 pivot. **No `/admin/icons` Svelte page** — marketplace search at close confirmed no Directus Iconify picker meets the amended D-AMEND-1 quality bar (≥50 stars OR ≥1yr OR org-backed); the side-page approach was reconsidered and dropped.
 
 ### Out of scope (deferred or dropped)
 
@@ -96,10 +96,9 @@ When we eventually re-evaluate `morph_shapes` + `illustrations`, the question be
 5. `tech_stack.icon` is now an M2O FK to `icons.id`; old string field deleted; new field stays as `icon_id` (NOT renamed — per P4 finding: directus-sync rename = drop+create cycle, unsafe; adapter layer presents "icon" in UI regardless of field key)
 6. `directus.techStack.all()` adapter reads nested `icon` shape via `parsePort` guard
 7. `<IconRenderer icon={item.icon} />` renders correctly for both Iconify and svg_override paths (unit tests)
-8. `apps/web/src/routes/admin/icons/+page.svelte` ships; renders curated icons grid (read from `/items/icons`) + Iconify search input + click-to-copy iconify_id; manual smoke test passes
-9. `bun run check` 0 errors; apps/web vitest green; apps/cms test suite green
-10. 1 GH issue filed (namespace audit per decisions.md Q-OPEN-2; admin page + extension watch are no longer applicable)
-11. Memory + plan updated; PR open
+8. `bun run check` 0 errors; apps/web vitest green; apps/cms test suite green
+9. 1 GH issue filed (namespace audit per decisions.md Q-OPEN-2; extension watch no longer applicable; admin page deferred indefinitely per scope reduction)
+10. Memory + plan updated; PR open
 
 ## Risks + mitigations
 

@@ -184,13 +184,4 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 			),
 		],
 	},
-	// slice-18h-ii Phase 6: admin browse surface — noIndex so it never appears
-	// in search results. No breadcrumb or JSON-LD needed for an internal tool.
-	'/admin/icons': {
-		ogType: 'website',
-		noIndex: true,
-		fallbackTitle: { en: 'Icons — Admin' },
-		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: () => [],
-	},
 };

@@ -40,12 +40,12 @@
 
 - **Q-OPEN-1**: Should the `icons` collection have a `translations` junction for per-locale icon names (e.g., the `name` field localized for FR/ES)? Tech names are typically universal but business-domain icons might differ. Default = NO (flat international `name`); revisit if needed
 - **Q-OPEN-2**: For the seed audit (P1), should we standardize on a single namespace (e.g., all `logos:` prefix) or pick best-fit per icon? Default = best-fit per icon, accepting that the collection mixes namespaces. Editors can override anytime in Data Studio
-- **Q-OPEN-3** (PROMOTED to in-scope as part of Q5 pivot): The "Icon Library" admin page in apps/web is no longer deferred — it's the editor's visual discovery surface (replaces the dropped Directus extension). Built in Phase 6 of this slice as `apps/web/src/routes/admin/icons/+page.svelte`. MVP = curated icons grid (read from `/items/icons`) + Iconify search input (Iconify public API at `https://api.iconify.design/search?query=`) + click-to-copy iconify_id. Polish (POST "Add to icons collection" button, auth gate, analytics) deferred to a follow-up GH issue if needed
+- **Q-OPEN-3**: deferred — file as GH issue if/when editor friction warrants. Marketplace search at close (2026-04-27 evening) confirmed no Iconify picker extension meets D-AMEND-1 bar; building our own would violate the rule. Editor flow: hand-author iconify_id strings (paste from icon-sets.iconify.design)
 
 ## GH issues to file at close
 
 - **Audit + standardize iconify_id namespaces** (Q-OPEN-2 follow-up) — once honeycomb redesign chooses a primary set (logos / skill-icons / devicon), backfill the existing icons collection to standardize. ~0.25 session
-- (Removed) ~~Icon library admin page in apps/web~~ — promoted into Phase 6 of this slice; built in-flight, not filed for later
+- **Defer admin page indefinitely** — no marketplace extension meets D-AMEND-1; in-stack page reconsidered, would not solve the actual ask (improve M2O dropdown UX inside Directus admin, which requires a custom interface = D-AMEND-1 violation)
 - (Removed) ~~Watch Simple Iconify Picker maintenance~~ — picker dropped per Q5 pivot; nothing to watch
 
 ## Close

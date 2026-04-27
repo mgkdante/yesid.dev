@@ -13,10 +13,11 @@
 | 3 | Seed | `seed-icons.ts` (mirrors seed-projects shape) + run live |
 | 4 | tech_stack migration | Add `icon_id` M2O FK on tech_stack, backfill from existing string field, drop string field, rename to `icon` |
 | 5 | Adapter + types + IconRenderer | TechStackItem.icon shape change; `directus.techStack` nested expansion; generalize TechIcon → IconRenderer; iconify_id format regex validation; tests |
-| 6 | apps/web /admin/icons page | New Svelte 5 route showing curated icons grid + Iconify search via public API + click-to-copy iconify_id (replaces deferred Q-OPEN-3; visual discovery surface for the rare new-icon flow) |
-| 7 | Close | Acceptance run + 1 GH issue (namespace audit) + memory + PR |
+| 6 | Close | Acceptance run + 1 GH issue (namespace audit) + memory + PR |
 
-Estimated effort: **0.5–1 session** for Phases 1-5 + 7; **5-7 hours** added by Phase 6 admin page (MVP+ tier). Net total ~1-1.5 sessions — same envelope as original plan since the dropped Phase 0 + 2 GH-issue items absorbs the new Phase 6 work.
+> **Phase 6 (/admin/icons page) dropped at close (2026-04-27 evening):** Marketplace search confirmed no Directus Iconify picker meets the amended D-AMEND-1 bar (≥50 stars OR ≥1yr OR org-backed). The side-page approach was reconsidered — it would not solve the actual ask (improve M2O dropdown UX inside Directus admin, which requires a custom interface = D-AMEND-1 violation). Editor flow: hand-author iconify_id strings via `icon-sets.iconify.design`. See decisions.md Q-OPEN-3 + Q5.
+
+Estimated effort: **0.5–1 session** for Phases 1-5 + 6.
 
 ## Phase 1 — Probes + audit (3 tasks)
 
@@ -194,53 +195,9 @@ In `apps/web/src/lib/components/cms/`:
 
 Update unit tests. Add tests for the svg_override branch (mock asset() helper).
 
-## Phase 6 — apps/web /admin/icons Svelte browse page (4 tasks)
+## Phase 6 — Close (3 tasks)
 
-**Exit gate:** `apps/web/src/routes/admin/icons/+page.svelte` ships; renders curated grid + Iconify search; manual smoke test passes; not gated behind auth at MVP.
-
-This phase replaces what Q-OPEN-3 originally deferred. It IS the editor's visual discovery surface (the role we'd have given the dropped Directus extension).
-
-### Task 13: Route scaffolding + curated icons grid
-
-Create `apps/web/src/routes/admin/icons/+page.svelte` + `+page.server.ts` (or +page.ts; check apps/web load convention).
-
-Server load: fetch `/items/icons?fields=id,name,iconify_id,svg_override&filter[status][_eq]=published&limit=-1` from Directus. Returns shape `{ icons: IconRecord[] }`.
-
-Client grid: render the icons via `<IconRenderer icon={...} />` (the component shipped in Phase 5). Each cell shows the icon visually + the `name` + the `iconify_id` (or "[svg_override]" badge for those). Click a cell → copies `iconify_id` to clipboard via `navigator.clipboard.writeText`.
-
-Layout: CSS grid, ~80px square per icon, 6-8 columns desktop / 3-4 tablet / 2 mobile. No filtering UI at MVP — visual scan only.
-
-### Task 14: Iconify public-API search component
-
-New component `apps/web/src/lib/components/admin/IconifySearch.svelte`:
-- Search input (debounced, 250ms)
-- Calls `https://api.iconify.design/search?query=<q>&limit=64` (CORS-friendly public endpoint; no auth required)
-- Renders results in a grid using `<Icon icon={result.id} />` from `@iconify/svelte` (already in apps/web for `<TechIcon>`)
-- Click a result → copies `result.id` to clipboard, toast "Copied {id}"
-
-Default search: empty input shows a "type to search" hint. Below the search results, render the curated grid from Task 13.
-
-### Task 15: Page polish (no auth at MVP)
-
-- Page title: "Icons — yesid.dev admin" (set via `<svelte:head>`)
-- Subtitle: "Curated icons we use across the site, plus Iconify search for adding new ones"
-- Visible note: "Copy an iconify_id, then paste it into Data Studio: icons → new row → iconify_id field"
-- No nav, no breadcrumbs at MVP — accessed by typing the URL or bookmark
-
-Defer to follow-up (file as GH issue if needed): auth gate (admin-only access), POST "Add directly to icons collection" button (requires Directus token plumbing), search analytics, recent-picks list.
-
-### Task 16: Manual smoke test + screenshot
-
-- Start dev server (`bun run --filter web dev`)
-- Navigate to `/admin/icons`
-- Verify curated grid renders all icons
-- Search "react" → verify `logos:react` appears and click-to-copy works
-- Take screenshot for the PR description
-- Browser console: zero warnings about Iconify resolution failures
-
-## Phase 7 — Close (3 tasks)
-
-### Task 17: Acceptance run
+### Task 13: Acceptance run
 
 ```bash
 cd apps/web && bun run check 2>&1 | tail -10
@@ -248,15 +205,14 @@ cd apps/web && bun run test 2>&1 | tail -10
 cd apps/cms && bun test 2>&1 | tail -10
 ```
 
-### Task 18: File GH issues (per decisions.md § GH issues to file at close)
+### Task 14: File GH issues (per decisions.md § GH issues to file at close)
 
 - Audit + standardize iconify_id namespaces (Q-OPEN-2 follow-up)
 - **Source SVGs for 5 deferred icons** (alembic, dax, rest-api, ssis, ssrs) — research.md § P1 documents the deferral; current state is `<IconRenderer>` placeholder; once SVGs sourced, upload to `icons` folder + PATCH the icons rows to set `svg_override`. ~0.25 session
-- (Removed) ~~Icon library admin page~~ — built in Phase 6
+- **Defer admin page indefinitely** (per scope reduction 2026-04-27 evening) — no marketplace extension meets D-AMEND-1; in-stack page would not solve the actual ask
 - (Removed) ~~Watch Simple Iconify Picker maintenance~~ — picker dropped per Q5 pivot
-- (Optional, file only if needed) Polish for admin/icons page: auth gate, "Add to collection" button, etc.
 
-### Task 19: Memory + plan + close
+### Task 15: Memory + plan + close
 
 - Update `~/.claude/projects/.../memory/project_completed_slices.md`: add 18h-ii row (note pivot — picker attempted, in-stack solution shipped)
 - Update `project_slice_18.md`: mark 18h-ii closed; if it's part of a unified slice flow, advance the next-up
@@ -271,8 +227,7 @@ cd apps/cms && bun test 2>&1 | tail -10
 - [ ] `tech_stack.icon_id` is M2O FK to `icons.id`; old `tech_stack.icon` string field deleted; field stays as `icon_id` (NOT renamed per P4 — adapter maps `row.icon_id` → `item.icon` so the type still presents the field as `icon`)
 - [ ] `directus.techStack.{all,byId}` returns nested icon record via `parsePort` guard
 - [ ] `<IconRenderer>` renders both Iconify and svg_override paths; iconify_id format regex flagged at parse; unit tests pass
-- [ ] `apps/web/src/routes/admin/icons/+page.svelte` ships; curated grid + Iconify search both work; manual smoke test passes
 - [ ] `bun run check` 0 errors; apps/web vitest green; apps/cms tests green
-- [ ] 1 GH issue filed (namespace audit); admin-page + extension-watch issues NOT filed (admin page built; picker dropped)
+- [ ] 1 GH issue filed (namespace audit); admin-page deferred indefinitely (no marketplace fit); extension-watch issue NOT filed (picker dropped)
 - [ ] Memory + plan + slice 18 plan.md (18h-ii row) all updated; D-AMEND-1 amendment landed in slice 18 plan.md
-- [ ] PR merged (mentions pivot in body)
+- [ ] PR merged (mentions pivot + scope reduction in body)
