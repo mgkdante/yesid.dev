@@ -307,7 +307,8 @@ export interface AboutInterest {
 export type TechCategory = 'databases' | 'languages' | 'tools' | 'frameworks';
 
 // Legacy tech stack item — used by About page bento dashboard only.
-// Slice 10 expanded TechStackItem supersedes this for /tech-stack.
+// Slice 18g expanded TechStackItem supersedes this for /tech-stack
+// (data-only ship; Block Editor body fields land here; layer/domain graph removed).
 export interface AboutTechItem {
 	name: string;
 	category: TechCategory;
@@ -341,40 +342,25 @@ export type DomainCluster =
 // Proficiency levels for each technology.
 export type Proficiency = 'expert' | 'proficient' | 'familiar';
 
-// Expanded tech stack item for /tech-stack "Control Room" diagram.
-// Each item maps to a markdown file in src/content/stack/[id].md.
+// Expanded tech stack item for /tech-stack — 18g shape.
+// Block Editor body fields replace the legacy layer/domain/proficiency graph
+// that was removed in slice-18g (decisions Q1, Q2, Q5).
+// InfraLayer, DomainCluster, Proficiency kept below — still used by legacy
+// /tech-stack components (cleanup deferred to slice-18k).
 export interface TechStackItem {
 	id: string;
 	name: string;
-	layer: InfraLayer;
-	domains: DomainCluster[];
-	connectsTo: string[];
+	icon: string;
+	what_it_is: LocalizedBlockEditorDoc;
+	what_i_use_it_for: LocalizedBlockEditorDoc;
+	why_i_use_it_instead: LocalizedBlockEditorDoc;
 	relatedServices: string[];
 	relatedProjects: string[];
-	icon: string;
-	proficiency: Proficiency;
-	// Optional custom context phrases for connections.
-	// Keys are target tech IDs, values are short context strings.
-	// When omitted, context is auto-derived from domain/layer data.
-	connectionNotes?: Record<string, string>;
 }
 
-// A directional connection with a human-readable context phrase.
-// Used by the sidebar/panel to explain data flow between technologies.
-export interface TechRelation {
-	itemId: string;
-	itemName: string;
-	contextPhrase: string;
-}
-
-// A recommended stack scenario triggered by domain selection in Build Your Stack.
-export interface StackScenario {
-	id: string;
-	domains: DomainCluster[];
-	recommended: string[];
-	summary: LocalizedString;
-	relatedProjects: string[];
-}
+// TechRelation and StackScenario dropped in slice-18g (decisions Q1+Q2).
+// Phase 5 / slice-18k will remove consumers in lib/components/stack/*.svelte
+// and lib/content/tech-stack.ts.
 
 // A client logo for the trust strip.
 export interface AboutClientLogo {
