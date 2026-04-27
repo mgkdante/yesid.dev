@@ -2251,7 +2251,13 @@
   {
     "collection": "route_seo_translations",
     "action": "read",
-    "permissions": {},
+    "permissions": {
+      "route_seo_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
     "validation": null,
     "presets": null,
     "fields": [
@@ -2259,5 +2265,41 @@
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "_sync_perm_route_seo_translations_public_read"
+  },
+  {
+    "collection": "route_seo",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_human_delete"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_human_delete"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_human_delete"
   }
 ]
