@@ -49,13 +49,13 @@ emoji-only matches (e.g. `alembic`) and zero-result queries flagged as `svg_over
 | `python` | `python` | `logos:python` | verified | API confirms `logos:python` |
 | `react` | `react` | `logos:react` | verified | API confirms `logos:react` |
 | `rest-api` | `rest-api` | — | svg_override: NEEDED | Only `dashicons:rest-api` (WordPress archive set). No tech logo in Iconify. Generic REST concept — needs custom SVG or a generic HTTP icon. |
-| `rust` | `rust` | — | svg_override: NEEDED | Only `mdi:language-rust` (generic) and `fluent-mdl2:rust-language-logo` (low-quality archive). No `logos:rust` exists (Ferris crab logo not in `logos:` set). Use `mdi:language-rust` as fallback, OR upload Ferris crab SVG. Flagged for editorial decision. |
+| `rust` | `rust` | `mdi:language-rust` | editorial-pick (2026-04-27) | User picked `mdi:language-rust` fallback over Ferris crab SVG upload. Monochrome gear-shaped R; consistent with brand. |
 | `sql-server` | `sql-server` | `devicon:microsoftsqlserver` | verified | No `logos:microsoft-sql-server`. API confirms `devicon:microsoftsqlserver` (colored) as best available. |
 | `ssis` | `ssis` | — | svg_override: NEEDED | Zero results across all queries (`ssis microsoft`, `ssis integration services`). No Iconify logo. SQL Server Integration Services — niche; needs custom SVG. |
 | `ssrs` | `ssrs` | — | svg_override: NEEDED | Zero results. SQL Server Reporting Services — niche; needs custom SVG. |
 | `svelte-5` | `svelte` | `logos:svelte` | verified | tech_stack.id is `svelte-5`, icon string is `svelte`. API confirms `logos:svelte`. |
 | `sveltekit` | `sveltekit` | `logos:svelte-kit` | verified | No `logos:sveltekit`. API confirms `logos:svelte-kit` (note: hyphen). |
-| `t-sql` | `t-sql` | — | svg_override: NEEDED | Zero results for `tsql` and `t-sql`. Transact-SQL is a Microsoft dialect — no dedicated Iconify logo. Needs custom SVG or use `devicon:microsoftsqlserver` as stand-in (editorial decision). |
+| `t-sql` | `t-sql` | `devicon:microsoftsqlserver` | editorial-pick (2026-04-27) | User picked `devicon:microsoftsqlserver` stand-in (same icon as `sql-server` row). T-SQL is the SQL Server dialect, so visual reuse is acceptable. |
 | `tailwind` | `tailwind` | `logos:tailwindcss` | verified | No `logos:tailwind`. API confirms `logos:tailwindcss` (note: full name). |
 | `threejs-threlte` | `threejs` | `logos:threejs` | verified | tech_stack.id is `threejs-threlte`, icon is `threejs`. API confirms `logos:threejs`. Threlte has no dedicated icon; `logos:threejs` is correct. |
 | `typescript` | `typescript` | `logos:typescript` | verified | API confirms `logos:typescript` (note: `logos:typescript-icon` is the icon-only variant) |
@@ -70,11 +70,15 @@ Icons requiring slug changes from the bare `tech_stack.icon` string:
 |---|---|---|
 | Clean `logos:<slug>` (bare slug works directly) | 16 | `react`, `python`, `docker`, `flutter`, `kotlin`, `mysql`, `postgresql`, `typescript`, `vercel`, `vitest`, `playwright`, `bun`, `java`, `airflow`, `svelte` (from `svelte-5`), `logos:threejs` (from `threejs`) |
 | Slug transformation needed (still in `logos:` or `devicon:`) | 11 | `cpp→logos:c-plusplus`, `csharp→logos:c-sharp`, `node-js→logos:nodejs-icon`, `power-bi→logos:microsoft-power-bi`, `github-actions→logos:github-actions` (bare works), `nextjs→logos:nextjs` (bare works), `sveltekit→logos:svelte-kit`, `tailwind→logos:tailwindcss`, `gsap→simple-icons:gsap`, `jetpack-compose→devicon:jetpackcompose`, `sql-server→devicon:microsoftsqlserver` |
-| `svg_override: NEEDED` (no usable Iconify logo) | 7 | `alembic`, `dax`, `rest-api`, `rust` (has fallback `mdi:language-rust`), `ssis`, `ssrs`, `t-sql` |
+| Editorial pick (2026-04-27) | 2 | `rust`→`mdi:language-rust` (mdi fallback), `t-sql`→`devicon:microsoftsqlserver` (stand-in matches sql-server) |
+| `svg_override: NEEDED` — DEFERRED | 5 | `alembic`, `dax`, `rest-api`, `ssis`, `ssrs` — no usable Iconify match; Phase 3 seed inserts these rows with `iconify_id: null` AND `svg_override: null`; `<IconRenderer>` shows placeholder; SVG sourcing is post-slice editorial follow-up (file as GH issue at close) |
 
-**Note on `rust`:** flagged as svg_override but `mdi:language-rust` is a usable fallback (monochrome gear-shaped R). Editorial decision needed: use the `mdi:` fallback, OR upload the Ferris crab SVG for brand accuracy.
+**Editorial decisions made 2026-04-27:**
+- `rust` → use `mdi:language-rust` (resolved; gate-eligible)
+- `t-sql` → use `devicon:microsoftsqlserver` stand-in (resolved; gate-eligible)
+- 5 truly-missing icons (`alembic`, `dax`, `rest-api`, `ssis`, `ssrs`) → seed with `iconify_id: null`, `svg_override: null`, `notes: "SVG sourcing deferred — see slice 18h-ii close GH issue"`. Renderer placeholder is acceptable until the editorial follow-up resolves.
 
-**Note on `t-sql`:** `devicon:microsoftsqlserver` (same as `sql-server`) could serve as a visual stand-in. Editorial decision needed before Phase 3 seed.
+**Acceptance gate adjustment:** the original gate "each icon row has `iconify_id` OR `svg_override` populated" is loosened to "≥29/34 rows populated; the 5 deferred (alembic/dax/rest-api/ssis/ssrs) are documented in this research.md as known editorial follow-ups; render gracefully via placeholder in the meantime." See spec.md acceptance gate 4.
 
 ## P2 — Verify `directus_files` permissions allow Public read of svg_override files (RESOLVED)
 

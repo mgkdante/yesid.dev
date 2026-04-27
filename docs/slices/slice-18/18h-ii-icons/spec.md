@@ -92,8 +92,8 @@ When we eventually re-evaluate `morph_shapes` + `illustrations`, the question be
 1. `icons` collection live in Directus; `sync:diff` clean
 2. `icons.iconify_id` is a plain string field with `meta.options.placeholder` + `meta.options.note` (no Directus extension binding — built-in input interface)
 3. Permissions matrix: ai-editor + human-editor + Public read for published rows
-4. Icons collection seeded with ≥34 entries (one per current `tech_stack.icon` string); each has either `iconify_id` or `svg_override` populated
-5. `tech_stack.icon` is now an M2O FK; old string field deleted; renamed cleanly
+4. Icons collection seeded with ≥34 entries (one per current `tech_stack.icon` string); ≥29/34 rows have `iconify_id` OR `svg_override` populated; the 5 deferred (`alembic`, `dax`, `rest-api`, `ssis`, `ssrs`) are seeded with both null + a `notes` value documenting the deferral, and render via `<IconRenderer>` placeholder (per research.md § P1 editorial decisions). SVG sourcing for the 5 is filed as a close-of-slice GH issue
+5. `tech_stack.icon` is now an M2O FK to `icons.id`; old string field deleted; new field stays as `icon_id` (NOT renamed — per P4 finding: directus-sync rename = drop+create cycle, unsafe; adapter layer presents "icon" in UI regardless of field key)
 6. `directus.techStack.all()` adapter reads nested `icon` shape via `parsePort` guard
 7. `<IconRenderer icon={item.icon} />` renders correctly for both Iconify and svg_override paths (unit tests)
 8. `apps/web/src/routes/admin/icons/+page.svelte` ships; renders curated icons grid (read from `/items/icons`) + Iconify search input + click-to-copy iconify_id; manual smoke test passes

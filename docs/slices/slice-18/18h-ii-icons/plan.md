@@ -125,14 +125,15 @@ Backfill helper script (e.g., `apps/cms/scripts/migrate-tech-stack-icon.ts`):
 - PATCH each row with `icon_id` set
 - Verify: zero rows with `icon_id = NULL` post-backfill
 
-### Task 9: Drop legacy `tech_stack.icon` string field + rename `icon_id` → `icon`
+### Task 9: Drop legacy `tech_stack.icon` string field (no rename — keep `icon_id`)
 
-Per Q6 staged approach:
-1. Update consumer code first to read from `icon_id` (Phase 5 — TechStackItem type change). This must land before the rename so consumers don't break.
+Per Q6 staged approach + P4 finding:
+1. Update consumer code first to read from `icon_id` (Phase 5 — TechStackItem type change). This must land before the drop so consumers don't break.
 2. Drop `tech_stack.icon` string field. Push.
-3. Rename `icon_id` → `icon`. Push.
 
-Rename mechanics: P4 audit determines whether directus-sync handles rename cleanly OR we keep the field as `icon_id` to avoid risk.
+**No rename.** P4 (research.md) found directus-sync uses field key as identity → any rename = drop+create cycle, would lose FK references. Keep the field as `icon_id` permanently. Adapter layer can still display "Icon" in UI regardless of the field key (set Directus's `meta.note`/`meta.display_options.label` to "Icon" if needed for editor clarity).
+
+Type field name in TechStackItem: `icon` (the type field can be named whatever we want, decoupled from the Directus field key — adapter maps `row.icon_id` → `item.icon`).
 
 ## Phase 5 — Adapter + types + IconRenderer (3 tasks)
 
@@ -250,6 +251,7 @@ cd apps/cms && bun test 2>&1 | tail -10
 ### Task 18: File GH issues (per decisions.md § GH issues to file at close)
 
 - Audit + standardize iconify_id namespaces (Q-OPEN-2 follow-up)
+- **Source SVGs for 5 deferred icons** (alembic, dax, rest-api, ssis, ssrs) — research.md § P1 documents the deferral; current state is `<IconRenderer>` placeholder; once SVGs sourced, upload to `icons` folder + PATCH the icons rows to set `svg_override`. ~0.25 session
 - (Removed) ~~Icon library admin page~~ — built in Phase 6
 - (Removed) ~~Watch Simple Iconify Picker maintenance~~ — picker dropped per Q5 pivot
 - (Optional, file only if needed) Polish for admin/icons page: auth gate, "Add to collection" button, etc.
@@ -265,8 +267,8 @@ cd apps/cms && bun test 2>&1 | tail -10
 
 - [ ] `icons` collection live in Directus; `sync:diff` clean
 - [ ] `icons.iconify_id` is plain string field with placeholder + note (no Directus extension binding)
-- [ ] ≥34 icon rows seeded (one per `tech_stack.icon`); each has `iconify_id` OR `svg_override`
-- [ ] `tech_stack.icon` is M2O FK; old string field gone; renamed cleanly (or accepted as `icon_id`)
+- [ ] ≥34 icon rows seeded (one per `tech_stack.icon`); ≥29/34 have `iconify_id` OR `svg_override` populated; the 5 deferred (alembic/dax/rest-api/ssis/ssrs) seeded with both null + notes; placeholder render verified
+- [ ] `tech_stack.icon_id` is M2O FK to `icons.id`; old `tech_stack.icon` string field deleted; field stays as `icon_id` (NOT renamed per P4 — adapter maps `row.icon_id` → `item.icon` so the type still presents the field as `icon`)
 - [ ] `directus.techStack.{all,byId}` returns nested icon record via `parsePort` guard
 - [ ] `<IconRenderer>` renders both Iconify and svg_override paths; iconify_id format regex flagged at parse; unit tests pass
 - [ ] `apps/web/src/routes/admin/icons/+page.svelte` ships; curated grid + Iconify search both work; manual smoke test passes
