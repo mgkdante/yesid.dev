@@ -1,7 +1,7 @@
 {
   "collection": "site_meta",
   "field": "owner_knows_about",
-  "type": "text",
+  "type": "csv",
   "meta": {
     "collection": "site_meta",
     "conditions": null,

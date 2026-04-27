@@ -15,10 +15,7 @@
     "item_duplication_fields": [
       "name",
       "icon",
-      "sort",
-      "translations",
-      "services",
-      "projects"
+      "sort"
     ],
     "note": "Tech stack items (languages, frameworks, tools). Parent has international `name` + `icon`; per-locale Block Editor body lives on tech_stack_translations. M2M to services + projects via tech_stack_services + tech_stack_projects junctions. Per Slice 18 18g: NO layer/domain/proficiency/connectsTo metadata — categorization is solely by service+project relations.",
     "preview_url": "https://yesid.dev/tech-stack/{{id}}?share={{$CURRENT_SHARE.token}}",
