@@ -65,7 +65,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install deps (monorepo root — covers both apps)
-        run: bun install --frozen-lockfile --ignore-scripts
+        run: bun install --frozen-lockfile
 
       - name: Boot ephemeral Directus
         run: |

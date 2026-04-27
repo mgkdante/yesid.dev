@@ -37,7 +37,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install dependencies (monorepo root)
-        run: bun install --frozen-lockfile --ignore-scripts
+        run: bun install --frozen-lockfile
 
       - name: Type check (svelte-kit sync + svelte-check)
         run: bun x turbo run check --filter=@repo/web

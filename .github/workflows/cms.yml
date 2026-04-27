@@ -51,7 +51,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile --ignore-scripts
+        run: bun install --frozen-lockfile
 
       - name: Run apps/cms unit tests (snapshot-shape + fixtures + seed-dry-run + lib)
         working-directory: apps/cms
@@ -78,7 +78,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile --ignore-scripts
+        run: bun install --frozen-lockfile
 
       - name: sync:diff — preview diff vs prod
         working-directory: apps/cms
@@ -109,7 +109,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile --ignore-scripts
+        run: bun install --frozen-lockfile
 
       - name: sync:push — apply to production
         working-directory: apps/cms
