@@ -35,7 +35,13 @@ export const adapter: ContentAdapter = {
 	// directus.blog.bodyBySlug; flat title+excerpt per AM2.5).
 	blog: directusAdapter.blog,
 
-	meta: staticAdapter.meta,
+	// Migrated to Directus (slice-18 18h Phase 4). meta.site() returns brand
+	// SiteMeta from the `site_meta` singleton; meta.siteSeoDefaults() returns
+	// the SEO defaults shape from the same singleton row (shared via
+	// fetchSingletonRow() WeakMap memo); meta.routeSeo.byPath() reads
+	// per-route overrides from `route_seo`; meta.forRoute() is a composer.
+	meta: directusAdapter.meta,
+
 	techStack: staticAdapter.techStack,
 
 	// content: still on static for site-chrome literals + home-page blocks
