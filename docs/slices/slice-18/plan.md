@@ -23,8 +23,8 @@
 | **18c** | **Foundations + services retrofit + monorepo pivot** — 57 tasks below | ✅ closed 2026-04-24 | shipped | [18c-foundations/](18c-foundations/) |
 | **18d** | Asset pipeline + Lottie retirement | ✅ closed 2026-04-24 | shipped | [18d-asset-pipeline/](18d-asset-pipeline/) |
 | **18e** | Projects (+ M2M to services replacing CSV) | ✅ closed 2026-04-24 | shipped | [18e-projects/](18e-projects/) |
-| **18f** | Blog + Block Editor + BlockRenderer.svelte | 🟡 in flight | 2–2.5 sessions | [18f-blog-block-editor/](18f-blog-block-editor/) |
-| **18g** | Tech-stack + tech_relations + stack_scenarios | ⏸ planned | 1 session | — |
+| **18f** | Blog + Block Editor + BlockRenderer.svelte + projects #41 | ✅ closed 2026-04-26 | shipped (PR #50, 38 commits) | [18f-blog-block-editor/](18f-blog-block-editor/) |
+| **18g** | Tech-stack + tech_relations + stack_scenarios | 🟡 in flight (next) | 1 session | — |
 | **18h** | Meta + route_seo (singleton + og_image) | ⏸ planned | 0.5 session | — |
 | **18i** | Pages + M2A blocks (12 block collections + nav/menu/error) | ⏸ planned | 2–3 sessions | — |
 | **18j** | Polish (Insights · comments · AI Assistant · Flows · role-policy tighten) | ⏸ planned | 1 session | — |
