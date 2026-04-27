@@ -13,7 +13,7 @@
     "lint:design-md": "design.md lint ../../DESIGN.md"
   },
   "devDependencies": {
-    "@google/design.md": "^0.1.1",
+    "@google/design.md": "0.1.1",
     "@types/node": "^22.0.0",
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"
