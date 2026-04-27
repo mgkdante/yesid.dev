@@ -1,18 +1,26 @@
 #!/usr/bin/env bun
 /**
- * Backfill `tech_stack.icon_id` from the legacy `tech_stack.icon` string.
+ * Backfill `tech_stack.icon_id` using a hardcoded tech_stack.id → icons.id map.
  *
- * Slice 18 18h-ii Phase 4 Task 8. Mirrors seed-icons.ts shape (lib/* helpers +
- * dry-run + idempotent + validation pre-check). No --reset flag (backfill is
- * a one-directional set; re-running is safe — already-populated rows are skipped).
+ * Slice 18 18h-ii Phase 4 Task 8 (originally) + repaired after Task 9 incident.
+ * The legacy `tech_stack.icon` string field was dropped in Task 9, so this
+ * script now derives the icon mapping from tech_stack.id directly:
+ *   - 32 rows: tech_stack.id == icons.id (bare slug match)
+ *   - 2 exceptions (hardcoded):
+ *       svelte-5         → svelte
+ *       threejs-threlte  → threejs
+ *
+ * Mirrors seed-icons.ts shape (lib/* helpers + dry-run + idempotent +
+ * validation pre-check). No --reset flag (backfill is a one-directional set;
+ * re-running is safe — already-populated rows are skipped).
  *
  * Logic:
- *   1. GET tech_stack rows (id, icon, icon_id).
+ *   1. GET tech_stack rows (id, icon_id).
  *   2. GET icons rows (id) — used for validation.
- *   3. Validation pre-check: every tech_stack.icon must have a matching icons.id.
- *      Any mismatch → log bad rows + exit non-zero. Don't touch data.
+ *   3. Validation pre-check: every tech_stack.id must map (via techStackIdToIconId)
+ *      to a known icons.id. Any mismatch → log bad rows + exit non-zero.
  *   4. Skip rows where icon_id is already non-null (idempotence).
- *   5. PATCH each remaining row: set icon_id = icon.
+ *   5. PATCH each remaining row: set icon_id = techStackIdToIconId(row.id).
  *   6. Post-backfill verification: re-read tech_stack, count rows with non-null icon_id.
  *
  * Run from REPO ROOT:
@@ -34,7 +42,6 @@ import { DirectusError, parseErrors } from './lib/catch-error';
 
 interface TechStackRow {
 	id: string;
-	icon: string;
 	icon_id: string | null;
 }
 
@@ -45,6 +52,18 @@ interface IconRow {
 interface Schema {
 	tech_stack: TechStackRow[];
 	icons: IconRow[];
+}
+
+// --- Hardcoded mapping ------------------------------------------------------
+
+/**
+ * Map tech_stack.id → icons.id.
+ * 32 of 34 rows are a bare slug match; 2 are explicit exceptions.
+ */
+export function techStackIdToIconId(techId: string): string {
+	if (techId === 'svelte-5') return 'svelte';
+	if (techId === 'threejs-threlte') return 'threejs';
+	return techId;
 }
 
 // --- Flags ------------------------------------------------------------------
@@ -88,7 +107,7 @@ export async function migrateTechStackIcon(opts: MigrateRunOptions): Promise<voi
 	let techStackRows: TechStackRow[];
 	try {
 		techStackRows = await readClient.request(
-			readItems('tech_stack', { fields: ['id', 'icon', 'icon_id'], limit: -1 }),
+			readItems('tech_stack', { fields: ['id', 'icon_id'], limit: -1 }),
 		) as TechStackRow[];
 	} catch (err) {
 		const msgs = parseErrors(err);
@@ -111,15 +130,16 @@ export async function migrateTechStackIcon(opts: MigrateRunOptions): Promise<voi
 
 	// 3. Validation pre-check.
 	const iconIds = new Set(iconRows.map((r) => r.id));
-	const badRows = techStackRows.filter((r) => !iconIds.has(r.icon));
+	const badRows = techStackRows.filter((r) => !iconIds.has(techStackIdToIconId(r.id)));
 	if (badRows.length > 0) {
-		log.error('validation FAILED — the following tech_stack.icon strings have no matching icons.id:');
+		log.error('validation FAILED — the following tech_stack.id values have no matching icons.id:');
 		for (const row of badRows) {
-			log.error(`  tech_stack.id=${row.id}  icon=${row.icon}  (no icons row with id="${row.icon}")`);
+			const mapped = techStackIdToIconId(row.id);
+			log.error(`  tech_stack.id=${row.id}  → mapped=${mapped}  (no icons row with id="${mapped}")`);
 		}
 		process.exit(1);
 	}
-	log.info(`validation: all ${techStackRows.length} tech_stack.icon strings have matching icons.id rows ✓`);
+	log.info(`validation: all ${techStackRows.length} tech_stack.id values map to a known icons.id ✓`);
 
 	// 4. Filter rows that still need backfilling (skip already-populated).
 	const rowsToUpdate = techStackRows.filter((r) => r.icon_id === null || r.icon_id === undefined);
@@ -130,8 +150,9 @@ export async function migrateTechStackIcon(opts: MigrateRunOptions): Promise<voi
 			`would PATCH ${rowsToUpdate.length}/${techStackRows.length} rows (icon_id is null on ${rowsToUpdate.length}; ${alreadyDone} already populated)`,
 		);
 		for (const row of rowsToUpdate) {
+			const iconId = techStackIdToIconId(row.id);
 			log.info(
-				`  ${row.id.padEnd(20)}  icon=${row.icon.padEnd(20)}  → icon_id=${row.icon}`,
+				`  ${row.id.padEnd(20)}  → icon_id=${iconId}`,
 			);
 		}
 		if (rowsToUpdate.length === 0) {
@@ -148,9 +169,10 @@ export async function migrateTechStackIcon(opts: MigrateRunOptions): Promise<voi
 		log.info(`backfilling ${rowsToUpdate.length}/${techStackRows.length} rows...`);
 		const writeClient = createClient<Schema>(directusUrl, opts.token);
 		for (const row of rowsToUpdate) {
+			const iconId = techStackIdToIconId(row.id);
 			try {
 				await writeClient.request(
-					updateItem('tech_stack', row.id, { icon_id: row.icon } as Partial<TechStackRow>),
+					updateItem('tech_stack', row.id, { icon_id: iconId } as Partial<TechStackRow>),
 				);
 			} catch (err) {
 				const msgs = parseErrors(err);
@@ -159,7 +181,7 @@ export async function migrateTechStackIcon(opts: MigrateRunOptions): Promise<voi
 					`Failed to PATCH tech_stack row ${row.id}: ${msgs.join(' · ')}`,
 				);
 			}
-			log.info(`  ✓ ${row.id.padEnd(20)}  icon_id=${row.icon}`);
+			log.info(`  ✓ ${row.id.padEnd(20)}  icon_id=${iconId}`);
 		}
 	}
 
@@ -168,7 +190,7 @@ export async function migrateTechStackIcon(opts: MigrateRunOptions): Promise<voi
 	let finalRows: TechStackRow[];
 	try {
 		finalRows = await createClient<Schema>(directusUrl, opts.token).request(
-			readItems('tech_stack', { fields: ['id', 'icon', 'icon_id'], limit: -1 }),
+			readItems('tech_stack', { fields: ['id', 'icon_id'], limit: -1 }),
 		) as TechStackRow[];
 	} catch (err) {
 		const msgs = parseErrors(err);
