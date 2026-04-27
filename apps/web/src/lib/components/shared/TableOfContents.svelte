@@ -1,6 +1,6 @@
 <!--
   Reusable Table of Contents component.
-  Parses HTML content to extract headings (h1-h4), generates a nested ToC with
+  Accepts a headings array (TocHeading[]) and renders a nested ToC with
   collapsible sections. Supports two modes:
   - Default: Desktop sticky sidebar + mobile collapsible toggle
   - Embedded: Just the nav content, parent controls layout/visibility
@@ -9,6 +9,7 @@
   ScrollArea for desktop sidebar.
 -->
 <script lang="ts">
+	import type { TocHeading } from '@repo/shared';
 	import { onMount, onDestroy } from 'svelte';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { sharedChromeContent } from '$lib/content';
@@ -20,20 +21,14 @@
 	const tocHeading = resolveLocale(sharedChromeContent.tocHeading, 'en');
 	const tocMobileButton = resolveLocale(sharedChromeContent.tocMobileButton, 'en');
 
-	interface TocEntry {
-		id: string;
-		text: string;
-		level: number;
-	}
-
 	let {
-		html,
+		headings,
 		class: className = '',
 		embedded = false,
 		startOpen = true,
-		syncOpen = undefined
+		syncOpen = undefined,
 	}: {
-		html: string;
+		headings: readonly TocHeading[];
 		class?: string;
 		embedded?: boolean;
 		startOpen?: boolean;
@@ -53,63 +48,12 @@
 	let collapsedSections = $state<Set<string>>(new Set());
 	let observer: IntersectionObserver | null = null;
 
-	// -- Heading extraction ---------------------------------------------
-	function slugify(text: string): string {
-		return text
-			.toLowerCase()
-			.replace(/[^\w\s-]/g, '')
-			.replace(/\s+/g, '-')
-			.replace(/-+/g, '-')
-			.trim();
-	}
-
-	function parseHeadings(source: string): { entries: TocEntry[]; processed: string } {
-		const entries: TocEntry[] = [];
-		const usedIds = new Set<string>();
-
-		const processed = source.replace(
-			/<(h[1-4])(\s[^>]*)?>([^<]*(?:<[^/h][^>]*>[^<]*)*?)<\/\1>/gi,
-			(match, tag: string, attrs: string | undefined, inner: string) => {
-				const level = parseInt(tag.charAt(1), 10);
-				const text = inner.replace(/<[^>]+>/g, '').trim();
-				if (!text) return match;
-
-				const existingId = attrs?.match(/id="([^"]+)"/)?.[1];
-				let id = existingId || slugify(text);
-
-				const base = id;
-				let suffix = 1;
-				while (usedIds.has(id)) {
-					id = `${base}-${suffix++}`;
-				}
-				usedIds.add(id);
-
-				entries.push({ id, text, level });
-
-				if (existingId) return match;
-				if (attrs) {
-					return `<${tag}${attrs} id="${id}">${inner}</${tag}>`;
-				}
-				return `<${tag} id="${id}">${inner}</${tag}>`;
-			}
-		);
-
-		return { entries, processed };
-	}
-
-	let parsed = $derived(parseHeadings(html));
-	let entries = $derived(parsed.entries);
-
-	export function getProcessedHtml(): string {
-		return parsed.processed;
-	}
-
 	// -- Section grouping for collapsible sub-items ----------------------
 	// Map each child entry (h3/h4) to its parent heading (h1/h2)
 	let parentMap = $derived.by(() => {
 		const map: Record<string, string> = {};
 		let currentParent = '';
-		for (const entry of entries) {
+		for (const entry of headings) {
 			if (entry.level <= 2) {
 				currentParent = entry.id;
 			} else {
@@ -122,9 +66,9 @@
 	// Which parent entries (h1/h2) have children (h3/h4)
 	let hasChildrenSet = $derived.by(() => {
 		const set = new Set<string>();
-		for (let i = 0; i < entries.length; i++) {
-			if (entries[i].level <= 2 && i + 1 < entries.length && entries[i + 1].level > 2) {
-				set.add(entries[i].id);
+		for (let i = 0; i < headings.length; i++) {
+			if (headings[i].level <= 2 && i + 1 < headings.length && headings[i + 1].level > 2) {
+				set.add(headings[i].id);
 			}
 		}
 		return set;
@@ -168,7 +112,7 @@
 			{ rootMargin: '-80px 0px -70% 0px', threshold: 0 }
 		);
 
-		for (const tocEntry of entries) {
+		for (const tocEntry of headings) {
 			const el = document.getElementById(tocEntry.id);
 			if (el) observer.observe(el);
 		}
@@ -182,7 +126,7 @@
 <!-- Shared entry list with collapsible section groups -->
 {#snippet tocEntries()}
 	<ul class="space-y-0.5">
-		{#each entries as entry}
+		{#each headings as entry}
 			{@const isChild = entry.level > 2}
 			{@const parentCollapsed = isChild && collapsedSections.has(parentMap[entry.id])}
 
@@ -217,7 +161,7 @@
 
 {#if embedded}
 	<!-- Embedded mode: parent controls layout/visibility -->
-	{#if entries.length > 0}
+	{#if headings.length > 0}
 		<nav class="toc-embedded {className}" aria-label="Table of contents" data-testid="toc-embedded">
 			<Collapsible bind:open={tocOpen}>
 				<CollapsibleTrigger>
@@ -280,7 +224,7 @@
 	</nav>
 
 	<!-- Mobile: collapsible toggle (hidden at lg+ breakpoint) -->
-	{#if entries.length > 0}
+	{#if headings.length > 0}
 		<div class="toc-mobile mb-6 lg:hidden" data-testid="toc-mobile">
 			<Collapsible bind:open={mobileOpen}>
 				<CollapsibleTrigger>
