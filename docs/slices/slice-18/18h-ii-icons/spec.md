@@ -21,7 +21,10 @@ The renderer prefers `svg_override` when present, falls back to `iconify_id`.
 - Migrate `tech_stack.icon` from string field → M2O FK to `icons.id`
 - Generalize `TechIcon.svelte` (shipped in PR #68) → `IconRenderer.svelte` consuming an icon record
 - Seed icons collection with one row per unique icon string in current 34 `tech_stack` items (after audit + Iconify mapping per P1)
-- Install [Simple Iconify Picker](https://www.dirextensions.com/details/simple-iconify-picker/) community extension and configure on `icons.iconify_id` for typeahead UX (per Q5 + D-AMEND-1)
+- **Editor UX surfaces** (per Q5 pivot — no Directus extension, in-stack solution):
+  - Built-in M2O picker on `tech_stack.icon → icons` provides typeahead by `icons.name` (the surface editors use 95% of the time)
+  - `icons.iconify_id` is a plain string field with placeholder + note pointing to `icon-sets.iconify.design` (the rare new-icon flow)
+  - New `apps/web/src/routes/admin/icons/+page.svelte` — Svelte 5 browse page that shows the curated icons collection grid + Iconify search → click-to-copy iconify_id (visual discovery surface; replaces Q-OPEN-3 from earlier draft)
 
 ### Out of scope (deferred or dropped)
 
@@ -86,24 +89,24 @@ When we eventually re-evaluate `morph_shapes` + `illustrations`, the question be
 
 ## Acceptance gates
 
-1. Simple Iconify Picker extension installed in `apps/cms`; Directus auto-discovers it on boot; `icons.iconify_id` field's interface set to the picker (typeahead UX confirmed in Data Studio)
-2. `icons` collection live in Directus; `sync:diff` clean
+1. `icons` collection live in Directus; `sync:diff` clean
+2. `icons.iconify_id` is a plain string field with `meta.options.placeholder` + `meta.options.note` (no Directus extension binding — built-in input interface)
 3. Permissions matrix: ai-editor + human-editor + Public read for published rows
 4. Icons collection seeded with ≥34 entries (one per current `tech_stack.icon` string); each has either `iconify_id` or `svg_override` populated
 5. `tech_stack.icon` is now an M2O FK; old string field deleted; renamed cleanly
 6. `directus.techStack.all()` adapter reads nested `icon` shape via `parsePort` guard
 7. `<IconRenderer icon={item.icon} />` renders correctly for both Iconify and svg_override paths (unit tests)
-8. `bun run check` 0 errors; apps/web vitest green; apps/cms test suite green
-9. 2 GH issues filed (admin page + namespace audit per decisions.md)
-10. Memory + plan updated; PR open
+8. `apps/web/src/routes/admin/icons/+page.svelte` ships; renders curated icons grid (read from `/items/icons`) + Iconify search input + click-to-copy iconify_id; manual smoke test passes
+9. `bun run check` 0 errors; apps/web vitest green; apps/cms test suite green
+10. 1 GH issue filed (namespace audit per decisions.md Q-OPEN-2; admin page + extension watch are no longer applicable)
+11. Memory + plan updated; PR open
 
 ## Risks + mitigations
 
 | Risk | Mitigation |
 |---|---|
 | Iconify CDN unreachable at runtime → broken icons | `<IconRenderer>` falls back to placeholder + console warns; consumers don't break |
-| `iconify_id` value (e.g. `logos:apache-airflow`) doesn't match Iconify reality post-render | Phase 1 P1 audit verifies all 34 mapped IDs against `icon-sets.iconify.design` before seeding. The picker extension itself prevents bad IDs going forward — editors only pick from real Iconify icons |
-| Simple Iconify Picker extension breaks on a Directus major upgrade | Pin the extension version in `apps/cms/package.json`. Pre-upgrade smoke check on a Railway preview env. If extension goes unmaintained, fork or evaluate alternatives (decisions.md GH follow-up). Extension's CSP-compliant proxy + caching architecture is robust to ordinary Directus minor upgrades |
+| `iconify_id` value (e.g. `logos:apache-airflow`) doesn't match Iconify reality post-render | Phase 1 P1 audit verifies all 34 mapped IDs against `icon-sets.iconify.design` before seeding. Adapter-level regex validation flags malformed IDs at parse time. Editors browse via `apps/web/admin/icons` (always shows current Iconify catalog) so new entries also start from a real icon |
 | Migration breaks existing `tech_stack.icon` consumers mid-flight | Stage migration: add `icon_id` first, backfill, verify, THEN drop old field. Single-commit drop after verification |
 
 ## Effort

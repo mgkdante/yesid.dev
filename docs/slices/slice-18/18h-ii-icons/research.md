@@ -64,9 +64,11 @@ curl -s -I 'https://cms.yesid.dev/assets/<uuid>'
 
 Ref 18d's pattern: `directus_files` Public read is folder-scoped (`folder._eq=<id>`). May need a dedicated `icons` folder in directus_files + filter rule.
 
-## P3 — Community Directus extension search for Iconify picker (RESOLVED)
+## P3 — Community Directus extension search for Iconify picker (RESOLVED — REJECTED)
 
-**Resolution:** `simple-iconify-picker@1.0.1` from `Sedatb23/directus-simple-iconify-picker`
+**Resolution:** evaluated `simple-iconify-picker@1.0.1` (Sedatb23/directus-simple-iconify-picker), installed empirically (commits 03eaea2 + 55e6da5), and **rejected**. Pivoted to in-stack solution per decisions.md Q5.
+
+### What we evaluated
 
 | Attribute | Value |
 |---|---|
@@ -76,25 +78,33 @@ Ref 18d's pattern: `directus_files` Public read is folder-scoped (`folder._eq=<i
 | Extension type | bundle (interface `iconify-picker` + endpoint `iconify-proxy`) |
 | License | MIT |
 | Listed on | dirextensions.com (Directus marketplace) |
+| Stars | 0 |
+| Age | 4 months (initial commit 2025-12-28) |
+| Total commits | 4 |
+| Maintainers | 1 (sedatb23) |
+| Host constraint | `^10.10.0` (does NOT satisfy our `directus/directus:11.17.3` runtime under strict semver) |
+| README accuracy | Wrong package name (claimed `directus-extension-iconify-picker`) + wrong field names (claimed `allowedCollections`/`previewSize`; actual `collections`/`iconSize`) |
 
-**Maintenance signal — RISK:**
-Brand new extension (initial commit 2025-12-28, v1.0.1 published 2025-12-29). Zero stars, zero open
-issues, single maintainer (sedatb23). Low bus factor; no track record of patch velocity. If the
-extension stalls or breaks on a Directus upgrade, the fork-or-replace path is documented in
-`decisions.md` as Q-AMEND.
+### Why rejected
 
-**Host constraint — RISK:**
-Extension declares `"directus:extension.host": "^10.10.0"`. Our runtime is `directus/directus:11.17.3`.
-The semver range does not cleanly satisfy 11.x. The README claims "Directus 10.0.0 or higher" and the
-extension appears on dirextensions.com (the Directus marketplace), suggesting the maintainer did not
-bump the host field on v1.0.1 — likely an oversight. Directus 11 compatibility is unverified at
-install time. The empirical gate is Railway boot after the Dockerfile change: if the extension loads
-and appears in Data Studio's interface dropdown, the host constraint is not enforced strictly. If
-Directus rejects it, `decisions.md` Q-AMEND captures fork-or-replace options.
+1. **Empirical install failure.** Pushed Dockerfile install + Railway auto-rebuilt. Extension did NOT appear in Data Studio's Settings → Extensions list — Directus 11 silently rejects extensions whose `host` field doesn't satisfy the runtime version. The marketplace listing on dirextensions.com is misleading: it lists extensions without enforcing host-compat against the latest Directus.
 
-**Decision:** per D-AMEND-1, a community marketplace extension is acceptable for this slice.
-Install mechanism: Dockerfile `RUN npm install` (see `apps/cms/Dockerfile` — mirrors
-`directus-extension-sync@3.0.6` pattern). No custom build required at this time.
+2. **Maintenance bus factor.** 0 stars + 4 months old + single maintainer + zero patch history = catastrophic bus factor for a dependency we'd carry indefinitely.
+
+3. **Cost-value mismatch.** Editor saves ~30 seconds per new icon (rare flow, ~once a month). Estimated annual time saved: ~6 minutes. Cost: indefinite fork maintenance + Directus upgrade gating + boot-time risk.
+
+4. **Better alternative exists in our stack.** Built-in M2O picker on `tech_stack.icon → icons` already provides typeahead-by-name (the surface editors use 95% of the time). A Svelte 5 page in apps/web can serve the rare visual-discovery flow with zero Directus dependency.
+
+### Pivot
+
+Path D — in-stack solution (decisions.md Q5):
+- `icons.iconify_id` → plain string field with `meta.options.placeholder` + `meta.options.note` + adapter regex validation
+- `tech_stack.icon → icons` → built-in M2O picker (typeahead by `icons.name`)
+- `apps/web/src/routes/admin/icons/+page.svelte` → Svelte 5 browse page (curated grid + Iconify search via public API + click-to-copy iconify_id)
+
+### D-AMEND-1 fallout
+
+The amended D-AMEND-1 (slice 18 plan.md, locked 2026-04-27 evening) tightens the bar to ≥50 stars OR ≥1 year maintenance OR org-backed. Sedatb23 picker would have failed all three — would have been rejected upfront under amended bar. See decisions.md Q-AMEND-1 for the lesson + amended-rule rationale.
 
 ## P4 — Schema migration mechanics for tech_stack.icon (PENDING)
 

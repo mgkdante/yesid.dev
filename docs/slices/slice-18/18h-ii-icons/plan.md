@@ -2,110 +2,25 @@
 
 > Read [spec.md](spec.md) + [decisions.md](decisions.md) first. Most patterns reused from 18a-g without re-derivation.
 
+> **Pivot note (2026-04-27 evening):** Phase 0 (community extension install) was attempted (commits 03eaea2 + 55e6da5) and reverted after empirical install failure on Directus 11.17.3. The slice now uses an in-stack solution: built-in M2O typeahead via `tech_stack.icon → icons` for picking, and a new Svelte 5 page at `apps/web/src/routes/admin/icons` for visual discovery. See [decisions.md § Q5 + Q-AMEND-1](decisions.md) and [research.md § P3](research.md) for the full pivot rationale.
+
 ## Phase map
 
 | Phase | Tasks | Scope |
 |---|---|---|
-| 0 | Extension install | Install Simple Iconify Picker community extension in `apps/cms` per D-AMEND-1; verify Directus discovers it on boot; document field-config syntax for binding it to `icons.iconify_id` |
-| 1 | Probes + audit | P1: 34 tech_stack.icon → iconify_id mapping table; P2: directus_files Public read sanity; P3 was originally "extension search" but is RESOLVED (Q5); P4: rename mechanics dry-run |
-| 2 | Schema | `icons` collection + 7 fields + permissions (~10 rows) + 18-item checklist; bind picker interface on `iconify_id` field |
+| 1 | Probes + audit | P1: 34 tech_stack.icon → iconify_id mapping table; P2: directus_files Public read sanity; P4: rename mechanics dry-run (P3 RESOLVED + REJECTED — see research.md) |
+| 2 | Schema | `icons` collection + 7 fields + permissions (~10 rows) + 18-item checklist; `iconify_id` field uses built-in `input` interface with placeholder + note (no extension binding per Q5 pivot) |
 | 3 | Seed | `seed-icons.ts` (mirrors seed-projects shape) + run live |
 | 4 | tech_stack migration | Add `icon_id` M2O FK on tech_stack, backfill from existing string field, drop string field, rename to `icon` |
-| 5 | Adapter + types + IconRenderer | TechStackItem.icon shape change; `directus.techStack` nested expansion; generalize TechIcon → IconRenderer; tests |
-| 6 | Close | Acceptance run + 2 GH issues (admin page + namespace audit) + memory + PR |
+| 5 | Adapter + types + IconRenderer | TechStackItem.icon shape change; `directus.techStack` nested expansion; generalize TechIcon → IconRenderer; iconify_id format regex validation; tests |
+| 6 | apps/web /admin/icons page | New Svelte 5 route showing curated icons grid + Iconify search via public API + click-to-copy iconify_id (replaces deferred Q-OPEN-3; visual discovery surface for the rare new-icon flow) |
+| 7 | Close | Acceptance run + 1 GH issue (namespace audit) + memory + PR |
 
-Estimated effort: **0.5-1 session** (most patterns reuse 18g; the migration step is the ~30 min unknown).
+Estimated effort: **0.5–1 session** for Phases 1-5 + 7; **5-7 hours** added by Phase 6 admin page (MVP+ tier). Net total ~1-1.5 sessions — same envelope as original plan since the dropped Phase 0 + 2 GH-issue items absorbs the new Phase 6 work.
 
-## Phase 0 — Extension install (3 tasks)
+## Phase 1 — Probes + audit (3 tasks)
 
-**Exit gate:** Simple Iconify Picker extension is installed in `apps/cms`, committed to git, deployed to Railway, and visible as an interface option in Data Studio's field-edit screen. D-AMEND-1 honored.
-
-### Task 0.1: Add extension to Dockerfile
-
-> **Correction (verified pre-implementation):** The original plan said `bun add <package>`. That is
-> wrong. `apps/cms/package.json` is `@repo/cms` — a workspace package for scripts (sync, seed,
-> migrate), NOT the Directus runtime. The Directus runtime is the `directus/directus:11.17.3` Docker
-> image that Railway builds from `apps/cms/Dockerfile`. Adding the extension to the workspace package
-> via `bun add` would not install it into the Directus container and Directus would never discover it.
-> The correct mechanism is a Dockerfile `RUN npm install` line — mirroring the existing
-> `directus-extension-sync@3.0.6` pattern — so the extension lands in `/directus/node_modules` AND
-> is listed in `/directus/package.json`'s `dependencies` key (both required for Directus 11
-> auto-discovery; see Dockerfile comment block lines 20-24 for the empirical context).
-
-Verified package name (npm registry, Dec 2025): `simple-iconify-picker@1.0.1`
-- GitHub: https://github.com/Sedatb23/directus-simple-iconify-picker
-- npm: `simple-iconify-picker` (NOT `directus-extension-iconify-picker` — that name returns 404)
-- Extension type: bundle (interface `iconify-picker` + endpoint `iconify-proxy`)
-- Host constraint: `^10.10.0` — see Task 0.3 and research.md § P3 for risk note
-
-Add a second `RUN npm install` line to `apps/cms/Dockerfile` after the existing sync install:
-
-```dockerfile
-# Install Simple Iconify Picker (slice 18h-ii) — typeahead UX for icons.iconify_id field.
-# Extension declares host ^10.10.0; runtime is 11.17.3. Compatibility unverified at install
-# time — empirical Railway boot is the gate. If Directus rejects it, decisions.md Q-AMEND
-# captures fork-or-replace options.
-RUN npm install --no-audit --no-fund simple-iconify-picker@1.0.1
-```
-
-Pin to exact `1.0.1` — never use a floating version range (Directus extensions can break on minor bumps).
-
-### Task 0.2: Commit + Railway deploy
-
-Commit only `apps/cms/Dockerfile` (no workspace package.json or bun.lock change — extension lives in the Docker image, not the monorepo workspace). Push. Railway auto-rebuilds the `apps/cms` image.
-
-After deploy, verify Directus boots cleanly + the new interface appears in admin → Settings → Data Model → any field's interface dropdown:
-
-```bash
-gh run list --workflow railway-deploy --limit 1
-# Then in Data Studio: Settings → Data Model → Pick any collection → Add Field → Interface dropdown
-# expect "Simple Iconify Picker" (or similar — name from extension package) listed
-```
-
-### Task 0.3: Document binding syntax in this slice's docs
-
-The picker is bound to a field via the field's `meta.interface` value (the extension's interface ID). Find that ID by:
-- Extension's README on dirextensions.com / GitHub
-- Or by adding a test field in Data Studio, picking the picker, then `cd apps/cms && bun run sync:pull --collections-only` to see the resulting JSON
-
-The verified binding for `icons.iconify_id` (from the extension's `package.json`
-`directus:extension.entries[0].name`):
-
-```json
-{
-  "meta": {
-    "interface": "iconify-picker",
-    "options": {
-      "defaultCollection": "logos",
-      "collections": ["logos", "skill-icons", "devicon", "vscode-icons", "mdi"],
-      "iconSize": 24
-    }
-  }
-}
-```
-
-> Field names verified against `Sedatb23/directus-simple-iconify-picker/src/interface/index.ts`
-> 2026-04-27 — README's `allowedCollections`/`previewSize` are wrong; actual fields are
-> `collections` (type: json, interface: tags → JSON array) and `iconSize` (type: integer).
-
-Notes on option values:
-- `defaultCollection`: overriding the extension default (`mdi`) to `logos` — first-choice set for
-  tech-stack icons given its broad coverage of dev tooling logos
-- `collections`: JSON array of allowed icon sets; `logos + skill-icons + devicon + vscode-icons`
-  cover the tech-stack universe; `mdi` included as fallback for any generic icons
-- `iconSize`: 24px (extension default; fine for the admin UX)
-
-This will be hardcoded in `apps/cms/directus/snapshot/fields/icons/iconify_id.json` in Phase 2.
-
-```bash
-git add apps/cms/Dockerfile docs/slices/slice-18/18h-ii-icons/plan.md docs/slices/slice-18/18h-ii-icons/research.md
-git commit -m "feat(slice-18 18h-ii Phase 0): install simple-iconify-picker community extension (per D-AMEND-1)"
-git push
-```
-
-## Phase 1 — Probes + audit (4 tasks)
-
-**Exit gate:** P1 mapping table complete (34 entries, each with chosen iconify_id or flagged for svg_override); P2 + P3 + P4 documented.
+**Exit gate:** P1 mapping table complete (34 entries, each with chosen iconify_id or flagged for svg_override); P2 + P4 documented.
 
 ### Task 1: P1 audit — generate iconify_id mapping table
 
@@ -121,11 +36,7 @@ For each, populate the mapping table in `research.md § P1`. For misses, flag fo
 
 Upload a test SVG, GET via `/assets/<uuid>`, verify 200 OK. Document the folder-scope path if needed (mirror 18d's pattern).
 
-### Task 3: P3 — community Iconify picker extension search
-
-P3 RESOLVED in Phase 0 — see [research.md § P3](research.md). No action required.
-
-### Task 4: P4 — rename dry-run
+### Task 3: P4 — rename dry-run
 
 Test on a throwaway field whether `directus-sync` handles a field rename safely. Document.
 
@@ -133,7 +44,7 @@ Test on a throwaway field whether `directus-sync` handles a field rename safely.
 
 **Exit gate:** `icons` collection live; `sync:diff` clean; permissions matrix correct; 18-item checklist green.
 
-### Task 5: Author Directus schema via directus-sync
+### Task 4: Author Directus schema via directus-sync
 
 Files to create:
 - `apps/cms/directus/snapshot/collections/icons.json` (parent)
@@ -142,6 +53,22 @@ Files to create:
 - ~10 permission rows added to `apps/cms/directus/collections/permissions.json` (8 standard CRUD + 2 directus_comments-scope addition via `_or` extending the existing tech_stack/projects coverage)
 
 Mirror the `tech_stack` parent shape from PR #65 + alias-fix patterns from PR #68 (already merged main when this slice runs).
+
+**`iconify_id` field meta** (no extension binding — per Q5 pivot):
+
+```json
+{
+  "field": "iconify_id",
+  "type": "string",
+  "meta": {
+    "interface": "input",
+    "options": {
+      "placeholder": "e.g. logos:react, mdi:home, skill-icons:python",
+      "note": "Browse [icon-sets.iconify.design](https://icon-sets.iconify.design/) — click any icon, copy the ID shown under it. Or use our [icons admin page](/admin/icons) to search and copy."
+    }
+  }
+}
+```
 
 After authoring:
 ```bash
@@ -154,7 +81,7 @@ bun run sync:diff  # bash; expect 0/0/0
 
 **Exit gate:** ≥34 icon rows live; counts verified via Public read.
 
-### Task 6: `apps/cms/scripts/seed-icons.ts`
+### Task 5: `apps/cms/scripts/seed-icons.ts`
 
 Mirror `seed-projects.ts` shape. Fixture at `apps/cms/fixtures/collections/icons.json`.
 
@@ -172,7 +99,7 @@ For initial seed, generate fixture from P1 mapping table. Each row:
 }
 ```
 
-### Task 7: Run live + verify
+### Task 6: Run live + verify
 
 ```bash
 bun run apps/cms/scripts/seed-icons.ts --dry-run | head -40
@@ -184,13 +111,13 @@ curl -s 'https://cms.yesid.dev/items/icons?fields=id&limit=-1' | jq '.data | len
 
 **Exit gate:** `tech_stack.icon` is now a M2O FK to `icons.id`; old string field deleted; data integrity verified.
 
-### Task 8: Add `tech_stack.icon_id` field (M2O → icons.id)
+### Task 7: Add `tech_stack.icon_id` field (M2O → icons.id)
 
 New field JSON: `apps/cms/directus/snapshot/fields/tech_stack/icon_id.json` + relation `apps/cms/directus/snapshot/relations/tech_stack/icon_id.json`.
 
 Push. Existing rows have `icon_id = NULL`.
 
-### Task 9: Backfill `tech_stack.icon_id`
+### Task 8: Backfill `tech_stack.icon_id`
 
 Backfill helper script (e.g., `apps/cms/scripts/migrate-tech-stack-icon.ts`):
 - Read all `tech_stack` rows
@@ -198,7 +125,7 @@ Backfill helper script (e.g., `apps/cms/scripts/migrate-tech-stack-icon.ts`):
 - PATCH each row with `icon_id` set
 - Verify: zero rows with `icon_id = NULL` post-backfill
 
-### Task 10: Drop legacy `tech_stack.icon` string field + rename `icon_id` → `icon`
+### Task 9: Drop legacy `tech_stack.icon` string field + rename `icon_id` → `icon`
 
 Per Q6 staged approach:
 1. Update consumer code first to read from `icon_id` (Phase 5 — TechStackItem type change). This must land before the rename so consumers don't break.
@@ -211,7 +138,7 @@ Rename mechanics: P4 audit determines whether directus-sync handles rename clean
 
 **Exit gate:** all consumers compile; `bun run check` 0 errors; tests green.
 
-### Task 11: Update `TechStackItem` type + Zod schema
+### Task 10: Update `TechStackItem` type + Zod schema
 
 In `packages/shared/src/types/content.ts`:
 
@@ -237,7 +164,11 @@ export interface TechStackItem {
 
 Add `IconRecordSchema` Zod schema in `apps/web/src/lib/schemas/icon.ts`. Update `TechStackItemSchema` to embed it.
 
-### Task 12: Update `directus.techStack` adapter
+**Iconify ID format validation** (added per Q5 pivot — replaces what the picker would have prevented):
+
+In `IconRecordSchema`, validate `iconify_id` matches `^[a-z][a-z0-9-]*:[a-z0-9-]+$` (lowercase, kebab, single colon). Log warning + render placeholder on mismatch; do NOT throw — degraded path.
+
+### Task 11: Update `directus.techStack` adapter
 
 In `apps/web/src/lib/adapters/directus.ts`:
 
@@ -252,7 +183,7 @@ const fields = [
 
 Static adapter `getAllTechItems()` continues returning legacy string `null` for icon (degraded path until 18k cleanup).
 
-### Task 13: Generalize `TechIcon.svelte` → `IconRenderer.svelte`
+### Task 12: Generalize `TechIcon.svelte` → `IconRenderer.svelte`
 
 In `apps/web/src/lib/components/cms/`:
 - Rename `TechIcon.svelte` → `IconRenderer.svelte`
@@ -262,9 +193,53 @@ In `apps/web/src/lib/components/cms/`:
 
 Update unit tests. Add tests for the svg_override branch (mock asset() helper).
 
-## Phase 6 — Close (3 tasks)
+## Phase 6 — apps/web /admin/icons Svelte browse page (4 tasks)
 
-### Task 14: Acceptance run
+**Exit gate:** `apps/web/src/routes/admin/icons/+page.svelte` ships; renders curated grid + Iconify search; manual smoke test passes; not gated behind auth at MVP.
+
+This phase replaces what Q-OPEN-3 originally deferred. It IS the editor's visual discovery surface (the role we'd have given the dropped Directus extension).
+
+### Task 13: Route scaffolding + curated icons grid
+
+Create `apps/web/src/routes/admin/icons/+page.svelte` + `+page.server.ts` (or +page.ts; check apps/web load convention).
+
+Server load: fetch `/items/icons?fields=id,name,iconify_id,svg_override&filter[status][_eq]=published&limit=-1` from Directus. Returns shape `{ icons: IconRecord[] }`.
+
+Client grid: render the icons via `<IconRenderer icon={...} />` (the component shipped in Phase 5). Each cell shows the icon visually + the `name` + the `iconify_id` (or "[svg_override]" badge for those). Click a cell → copies `iconify_id` to clipboard via `navigator.clipboard.writeText`.
+
+Layout: CSS grid, ~80px square per icon, 6-8 columns desktop / 3-4 tablet / 2 mobile. No filtering UI at MVP — visual scan only.
+
+### Task 14: Iconify public-API search component
+
+New component `apps/web/src/lib/components/admin/IconifySearch.svelte`:
+- Search input (debounced, 250ms)
+- Calls `https://api.iconify.design/search?query=<q>&limit=64` (CORS-friendly public endpoint; no auth required)
+- Renders results in a grid using `<Icon icon={result.id} />` from `@iconify/svelte` (already in apps/web for `<TechIcon>`)
+- Click a result → copies `result.id` to clipboard, toast "Copied {id}"
+
+Default search: empty input shows a "type to search" hint. Below the search results, render the curated grid from Task 13.
+
+### Task 15: Page polish (no auth at MVP)
+
+- Page title: "Icons — yesid.dev admin" (set via `<svelte:head>`)
+- Subtitle: "Curated icons we use across the site, plus Iconify search for adding new ones"
+- Visible note: "Copy an iconify_id, then paste it into Data Studio: icons → new row → iconify_id field"
+- No nav, no breadcrumbs at MVP — accessed by typing the URL or bookmark
+
+Defer to follow-up (file as GH issue if needed): auth gate (admin-only access), POST "Add directly to icons collection" button (requires Directus token plumbing), search analytics, recent-picks list.
+
+### Task 16: Manual smoke test + screenshot
+
+- Start dev server (`bun run --filter web dev`)
+- Navigate to `/admin/icons`
+- Verify curated grid renders all icons
+- Search "react" → verify `logos:react` appears and click-to-copy works
+- Take screenshot for the PR description
+- Browser console: zero warnings about Iconify resolution failures
+
+## Phase 7 — Close (3 tasks)
+
+### Task 17: Acceptance run
 
 ```bash
 cd apps/web && bun run check 2>&1 | tail -10
@@ -272,27 +247,30 @@ cd apps/web && bun run test 2>&1 | tail -10
 cd apps/cms && bun test 2>&1 | tail -10
 ```
 
-### Task 15: File GH issues (per decisions.md § GH issues to file at close)
+### Task 18: File GH issues (per decisions.md § GH issues to file at close)
 
-- Icon library admin page in apps/web (Q-OPEN-3)
 - Audit + standardize iconify_id namespaces (Q-OPEN-2 follow-up)
-- (Optional) Quarterly maintenance check on Simple Iconify Picker extension
+- (Removed) ~~Icon library admin page~~ — built in Phase 6
+- (Removed) ~~Watch Simple Iconify Picker maintenance~~ — picker dropped per Q5 pivot
+- (Optional, file only if needed) Polish for admin/icons page: auth gate, "Add to collection" button, etc.
 
-### Task 16: Memory + plan + close
+### Task 19: Memory + plan + close
 
-- Update `~/.claude/projects/.../memory/project_completed_slices.md`: add 18h-ii row
+- Update `~/.claude/projects/.../memory/project_completed_slices.md`: add 18h-ii row (note pivot — picker attempted, in-stack solution shipped)
 - Update `project_slice_18.md`: mark 18h-ii closed; if it's part of a unified slice flow, advance the next-up
-- Update `docs/slices/slice-18/plan.md`: 18h-ii status flipped to ✅ closed (note: this branch starts un-aware of 18h-ii in plan.md; first commit in this slice will ADD the 18h-ii row to plan.md)
-- Push branch, open PR, merge
+- Update `docs/slices/slice-18/plan.md`: 18h-ii status flipped to ✅ closed (the row was added at start of this slice; flipping its status now)
+- Push branch, open PR (mention pivot in description), merge
 
 ## Acceptance gates summary
 
 - [ ] `icons` collection live in Directus; `sync:diff` clean
+- [ ] `icons.iconify_id` is plain string field with placeholder + note (no Directus extension binding)
 - [ ] ≥34 icon rows seeded (one per `tech_stack.icon`); each has `iconify_id` OR `svg_override`
 - [ ] `tech_stack.icon` is M2O FK; old string field gone; renamed cleanly (or accepted as `icon_id`)
 - [ ] `directus.techStack.{all,byId}` returns nested icon record via `parsePort` guard
-- [ ] `<IconRenderer>` renders both Iconify and svg_override paths; unit tests pass
+- [ ] `<IconRenderer>` renders both Iconify and svg_override paths; iconify_id format regex flagged at parse; unit tests pass
+- [ ] `apps/web/src/routes/admin/icons/+page.svelte` ships; curated grid + Iconify search both work; manual smoke test passes
 - [ ] `bun run check` 0 errors; apps/web vitest green; apps/cms tests green
-- [ ] 3 GH issues filed (typeahead + admin page + namespace standardization)
-- [ ] Plan.md row added (this slice doesn't exist yet in main's plan.md); memory + close ceremony
-- [ ] PR merged
+- [ ] 1 GH issue filed (namespace audit); admin-page + extension-watch issues NOT filed (admin page built; picker dropped)
+- [ ] Memory + plan + slice 18 plan.md (18h-ii row) all updated; D-AMEND-1 amendment landed in slice 18 plan.md
+- [ ] PR merged (mentions pivot in body)

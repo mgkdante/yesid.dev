@@ -28,10 +28,4 @@ WORKDIR /directus
 # --no-fund:  skip fund messages
 RUN npm install --no-audit --no-fund directus-extension-sync@3.0.6
 
-# Install Simple Iconify Picker (slice 18h-ii) — typeahead UX for icons.iconify_id field.
-# Extension declares host ^10.10.0; runtime is 11.17.3. Compatibility unverified at install
-# time — empirical Railway boot is the gate. If Directus rejects it, decisions.md Q-AMEND
-# captures fork-or-replace options.
-RUN npm install --no-audit --no-fund simple-iconify-picker@1.0.1
-
 USER node
