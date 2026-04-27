@@ -10,7 +10,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { BlogAnimation } from '$lib/types';
-	import { SHAPES, pickRandomShape } from '$lib/utils/shapes';
+	import { getMorphShapes, pickRandomShape } from '$lib/utils/shapes';
+	import type { MorphShape } from '@repo/shared';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { convertSvgToMorphPaths } from '$lib/motion/utils/morphHelpers.js';
@@ -41,16 +42,18 @@
 	let originalPaths: string[] = [];
 	let svgPaths: SVGPathElement[] = [];
 	let lastShapeIdx = -1;
+	let morphShapes = $state<readonly MorphShape[] | null>(null);
 
 	function handleMouseEnter() {
 		if (isPrefersReducedMotion() || svgPaths.length === 0 || isHovered || !entranceDone) return;
+		if (!morphShapes || morphShapes.length === 0) return;
 		isHovered = true;
 
-		const { key: shape, index: shapeIdx } = pickRandomShape(lastShapeIdx);
+		const { shape, index: shapeIdx } = pickRandomShape(morphShapes, lastShapeIdx);
 		lastShapeIdx = shapeIdx;
 
 		gsap.to(svgPaths, {
-			morphSVG: SHAPES[shape],
+			morphSVG: shape.path,
 			duration: 0.4,
 			stagger: 0.03,
 			ease: 'power2.inOut',
@@ -62,6 +65,7 @@
 
 	function handleTap() {
 		if (isPrefersReducedMotion() || svgPaths.length === 0 || !entranceDone) return;
+		if (!morphShapes || morphShapes.length === 0) return;
 
 		if (isMorphed) {
 			svgPaths.forEach((path, i) => {
@@ -75,10 +79,10 @@
 			});
 			isMorphed = false;
 		} else {
-			const { key: shape, index: shapeIdx } = pickRandomShape(lastShapeIdx);
+			const { shape, index: shapeIdx } = pickRandomShape(morphShapes, lastShapeIdx);
 			lastShapeIdx = shapeIdx;
 			gsap.to(svgPaths, {
-				morphSVG: SHAPES[shape],
+				morphSVG: shape.path,
 				duration: 0.4,
 				stagger: 0.03,
 				ease: 'power2.inOut',
@@ -156,9 +160,13 @@
 	onMount(async () => {
 		if (isPrefersReducedMotion() || !container) return;
 		// animateMorph uses MorphSVG; all 3 entrance variants use DrawSVG.
+		// Fetch morph shapes from adapter (cached after first call).
 		await Promise.all([loadDrawSVG(), loadMorphSVG()]);
 		// Component may have unmounted while awaiting (tests mount + unmount
 		// rapidly). Re-check before touching the DOM.
+		if (!container) return;
+		morphShapes = await getMorphShapes();
+		// Re-check after second async boundary (getMorphShapes).
 		if (!container) return;
 		initScrollTriggerConfig();
 
