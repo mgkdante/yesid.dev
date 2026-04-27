@@ -7,6 +7,7 @@
 		"seed:services": "bun scripts/seed-services.ts",
 		"seed:projects": "bun scripts/seed-projects.ts",
 		"seed:presets": "bun scripts/seed-presets.ts",
+		"seed:icons": "bun scripts/seed-icons.ts",
 		"migrate:assets": "bun scripts/migrate-assets.ts",
 		"sync:pull": "directus-sync pull",
 		"sync:push": "directus-sync push",
