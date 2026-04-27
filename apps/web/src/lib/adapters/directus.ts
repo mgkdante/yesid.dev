@@ -343,7 +343,6 @@ export function toService(row: DirectusService): Service {
 		description: toLocalizedString(translations, 'description'),
 		relatedProjects: [], // populated by fetchServices via junction
 	};
-	if (row.icon) service.icon = row.icon;
 	if (row.svg) service.svg = row.svg;
 	if (row.visible !== null && row.visible !== undefined) {
 		service.visible = row.visible;
