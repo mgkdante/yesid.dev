@@ -1,82 +1,63 @@
+/* GENERATED FROM packages/tokens/tokens.json — DO NOT EDIT */
+/* Run `bun run --cwd packages/tokens build` to regenerate. */
+
 :root {
-  /* Brand */
   --primary: #E07800;
-  --accent: #FFB627;
   --primary-hover: #C96A00;
+  --accent: #FFB627;
   --accent-hover: #E5A220;
-
-  /* RGB channels — for rgba() usage with variable opacity */
   --primary-rgb: 224 120 0;
-
-  /* Typography */
-  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-
-  /* Type scale lives in @theme (app.css) — generates both utilities and CSS custom properties.
-     Values don't theme-switch, so @theme is the single source of truth.
-     See docs/reference/CSS.md for the full scale reference. */
-
-  /* Micro size — chrome annotations, stop labels */
-  --text-micro: 0.625rem;  /* 10px */
-
-  /* Shadow scale — uses color-mix() to stay connected to brand tokens */
+  --destructive-foreground: #FAFAF8;
+  --font-heading: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --text-hero: clamp(4rem, min(9vw, 11svh), 8.125rem);
+  --text-hero-mobile: clamp(3rem, min(13vw, 8svh), 4rem);
+  --text-display: clamp(2.5rem, 5vw, 4rem);
+  --text-title: clamp(1.75rem, 4vw, 2.5rem);
+  --text-heading: clamp(1.25rem, 3vw, 1.5rem);
+  --text-subheading: 1.125rem;
+  --text-body: 1rem;
+  --text-body-lg: 1.125rem;
+  --text-small: 0.875rem;
+  --text-mono: 0.8125rem;
+  --text-caption: 0.75rem;
+  --text-micro: 0.625rem;
+  --space-page-x: clamp(1.5rem, 4vw, 5rem);
+  --space-section-y: clamp(3rem, 8vw, 6rem);
+  --space-card-gap: clamp(1rem, 2vw, 1.5rem);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
   --shadow-glow-sm: 0 0 6px color-mix(in srgb, var(--primary) 30%, transparent);
   --shadow-glow-md: 0 0 12px color-mix(in srgb, var(--primary) 20%, transparent);
-  --shadow-glow-lg: 0 0 24px color-mix(in srgb, var(--primary) 15%, transparent),
-                    0 0 60px color-mix(in srgb, var(--primary) 6%, transparent);
-  --shadow-card: 0 0 16px color-mix(in srgb, var(--primary) 8%, transparent),
-                0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-glow-lg: 0 0 24px color-mix(in srgb, var(--primary) 15%, transparent), 0 0 60px color-mix(in srgb, var(--primary) 6%, transparent);
+  --shadow-card: 0 0 16px color-mix(in srgb, var(--primary) 8%, transparent), 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-section: 0 8px 32px color-mix(in srgb, var(--primary) 6%, transparent);
-  --shadow-nav: 0 4px 30px rgba(0, 0, 0, 0.5),
-               0 0 0 1px rgba(255, 255, 255, 0.03);
-
-  /* Z-index scale — global stacking context */
+  --shadow-nav: 0 4px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
   --z-base: 0;
   --z-content: 1;
   --z-rail: 30;
   --z-sheet: 50;
   --z-menu: 60;
   --z-nav: 70;
-
-  /* Motion — durations (source of truth; motion/tokens.ts mirrors these) */
   --duration-instant: 100ms;
   --duration-fast: 150ms;
   --duration-normal: 200ms;
   --duration-slow: 300ms;
   --duration-slower: 500ms;
-
-  /* Motion — easings (source of truth; motion/tokens.ts mirrors these) */
   --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-
-  /* Opacity scale */
   --opacity-muted: 0.6;
   --opacity-dim: 0.3;
   --opacity-subtle: 0.15;
   --opacity-faint: 0.05;
-
-  /* Container widths */
-  --container-content: 64rem;   /* 1024px — primary content */
-  --container-wide: 72rem;      /* 1152px — wide layouts */
-
-  /* Spacing — semantic tokens for recurring layout patterns */
-  --space-page-x: clamp(1.5rem, 4vw, 5rem);     /* Horizontal page gutters */
-  --space-section-y: clamp(3rem, 8vw, 6rem);     /* Vertical section padding */
-  --space-card-gap: clamp(1rem, 2vw, 1.5rem);    /* Gap between cards/grid items */
-
-  /* Border radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-pill: 9999px;
-
-  /* Status / destructive — shadcn components reference these */
-  --destructive: #ff5f57;
-  --destructive-foreground: #FAFAF8;
+  --container-content: 64rem;
+  --container-wide: 72rem;
 
   /* shadcn alias — components reference --radius */
   --radius: var(--radius-md);
@@ -84,20 +65,21 @@
 
 [data-theme="dark"], .theme-dark {
   --background: #141414;
+  --foreground: #F5F5F0;
   --muted: #1E1E1E;
+  --muted-foreground: #666666;
+  --card: #1a1a1a;
   --popover: #2A2A2A;
+  --secondary-foreground: #999999;
+  --dim-foreground: #4a4a4a;
+  --light-foreground: #cccccc;
+  --terminal: #0a0a0a;
   --manifesto: #0f0d0a;
   --border: #3A3A3A;
-  --foreground: #F5F5F0;
-  --secondary-foreground: #999999;
-  --muted-foreground: #666666;
-  --terminal: #0a0a0a;
   --border-subtle: #2a2a2a;
-  --dim-foreground: #4a4a4a;
-  --card: #1a1a1a;
   --border-strong: #333333;
+  --destructive: #ff5f57;
   --success: #28c840;
-  --light-foreground: #cccccc;
 
   /* Paired tokens (shadcn-compatible) */
   --card-foreground: var(--foreground);
@@ -111,20 +93,21 @@
 
 [data-theme="light"], .theme-light {
   --background: #FAFAF8;
-  --muted: #F0EDE5;
-  --popover: #FFFFFF;
-  --border: #D8D4CA;
   --foreground: #111111;
-  --secondary-foreground: #555555;
+  --muted: #F0EDE5;
   --muted-foreground: #888888;
-  --terminal: #F5F5F0;
-  --border-subtle: #D8D4CA;
-  --dim-foreground: #AAAAAA;
-  --manifesto: #F0EDE5;
   --card: #FFFFFF;
-  --border-strong: #C0BDB5;
-  --success: #16a34a;
+  --popover: #FFFFFF;
+  --secondary-foreground: #555555;
+  --dim-foreground: #AAAAAA;
   --light-foreground: #555555;
+  --terminal: #F5F5F0;
+  --manifesto: #F0EDE5;
+  --border: #D8D4CA;
+  --border-subtle: #D8D4CA;
+  --border-strong: #C0BDB5;
+  --destructive: #ff5f57;
+  --success: #16a34a;
 
   /* Paired tokens (shadcn-compatible) */
   --card-foreground: var(--foreground);
@@ -139,19 +122,21 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --background: #141414;
-    --muted: #1E1E1E;
-    --popover: #2A2A2A;
-    --border: #3A3A3A;
     --foreground: #F5F5F0;
-    --secondary-foreground: #999999;
+    --muted: #1E1E1E;
     --muted-foreground: #666666;
-    --terminal: #0a0a0a;
-    --border-subtle: #2a2a2a;
-    --dim-foreground: #4a4a4a;
     --card: #1a1a1a;
-    --border-strong: #333333;
-    --success: #28c840;
+    --popover: #2A2A2A;
+    --secondary-foreground: #999999;
+    --dim-foreground: #4a4a4a;
     --light-foreground: #cccccc;
+    --terminal: #0a0a0a;
+    --manifesto: #0f0d0a;
+    --border: #3A3A3A;
+    --border-subtle: #2a2a2a;
+    --border-strong: #333333;
+    --destructive: #ff5f57;
+    --success: #28c840;
 
     /* Paired tokens (shadcn-compatible) */
     --card-foreground: var(--foreground);
@@ -167,20 +152,21 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --background: #FAFAF8;
-    --muted: #F0EDE5;
-    --popover: #FFFFFF;
-    --border: #D8D4CA;
     --foreground: #111111;
-    --secondary-foreground: #555555;
+    --muted: #F0EDE5;
     --muted-foreground: #888888;
-    --terminal: #F5F5F0;
-    --border-subtle: #D8D4CA;
-    --dim-foreground: #AAAAAA;
-    --manifesto: #F0EDE5;
     --card: #FFFFFF;
-    --border-strong: #C0BDB5;
-    --success: #16a34a;
+    --popover: #FFFFFF;
+    --secondary-foreground: #555555;
+    --dim-foreground: #AAAAAA;
     --light-foreground: #555555;
+    --terminal: #F5F5F0;
+    --manifesto: #F0EDE5;
+    --border: #D8D4CA;
+    --border-subtle: #D8D4CA;
+    --border-strong: #C0BDB5;
+    --destructive: #ff5f57;
+    --success: #16a34a;
 
     /* Paired tokens (shadcn-compatible) */
     --card-foreground: var(--foreground);

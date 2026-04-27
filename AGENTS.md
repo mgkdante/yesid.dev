@@ -49,6 +49,8 @@ Concrete values that resolve the abstract workflow to this repo:
 
 **Bun only. Never npm/npx/node.** Lockfile: `bun.lockb`.
 
+After `bun install`, run `bun run setup:hooks` once to activate the pre-commit hook (`.githooks/pre-commit`) that blocks edits to generated token files unless `packages/tokens/tokens.json` is also staged.
+
 - Current OS: Windows 11. Cross-platform via env var `YESITO_CLOUD_ROOT` (Windows: `C:\Users\<user>\Yesito\cloud`; macOS / Linux: `~/Yesito/cloud`). OS-quirks registry: `<cloud>/workflow-knowledge/os-quirks/<os>.md` — check there first when troubleshooting a platform-specific command; append new discoveries before closing any slice.
 - Full stack + dependency catalog: [docs/project/STACK.md](docs/project/STACK.md).
 - Canonical commands + cloud env binding + 1Password vault + worktree paths: [docs/project/BINDINGS.md](docs/project/BINDINGS.md).
@@ -97,7 +99,7 @@ Three layers, strict separation. Full rules: [docs/project/CSS.md](docs/project/
 
 Primary `#E07800` / Accent `#FFB627`. Fonts: Inter (headings/body), JetBrains Mono (code). Dark theme default. "yesid." always lowercase, dot always orange. Favicon is a solid orange circle.
 
-Full brand identity: [docs/project/BRAND.md](docs/project/BRAND.md) + [brand/BRAND.md](brand/BRAND.md) + [brand/foundations/](brand/foundations/).
+Full brand identity: [apps/web/brand/BRAND.md](apps/web/brand/BRAND.md) + [apps/web/brand/foundations/](apps/web/brand/foundations/). Tokens: [DESIGN.md](DESIGN.md).
 
 ## Repo structure
 

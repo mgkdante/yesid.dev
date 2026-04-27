@@ -12,7 +12,11 @@
 		"dev": "cd apps/web && bun run dev",
 		"build": "turbo run build",
 		"test": "turbo run test",
-		"check": "turbo run check"
+		"check": "turbo run check",
+		"tokens:build": "bun run --cwd packages/tokens build",
+		"tokens:lint": "bun run --cwd packages/tokens lint:design-md",
+		"ci:tokens": "bun run tokens:build && git diff --exit-code apps/web/src/lib/styles/tokens.css apps/web/src/app.css apps/web/src/lib/motion/tokens.ts DESIGN.md",
+		"setup:hooks": "git config core.hooksPath .githooks"
 	},
 	"devDependencies": {
 		"turbo": "^2.5.0"
