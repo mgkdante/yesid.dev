@@ -46,7 +46,7 @@
 	);
 </script>
 
-<SeoHead seo={data.seo} locale={DEFAULT_LOCALE} />
+<SeoHead seo={data.seo} locale={DEFAULT_LOCALE} themeColor={data.themeColor} />
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
