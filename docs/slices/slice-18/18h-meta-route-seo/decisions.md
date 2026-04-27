@@ -51,7 +51,7 @@
 | PR | TBD |
 | Branch | `feature/slice-18-18h` |
 | Worktree | `C:/Users/otalo/Yesito/Projects/yesid.dev-18h` |
-| Closed date | TBD |
-| Merge SHA | TBD |
-| Commits | TBD |
-| GH follow-ups | TBD (per Open follow-ups above) |
+| Closed date | 2026-04-27 |
+| Merge SHA | TBD (set after merge) |
+| Commits | ~17 (Phase 0 docs lock-in → Phase 6 close) |
+| GH follow-ups | [#71](https://github.com/mgkdante/yesid.dev/issues/71) og_title/og_description · [#72](https://github.com/mgkdante/yesid.dev/issues/72) twitter_handle · [#73](https://github.com/mgkdante/yesid.dev/issues/73) brand OG image upload · [#74](https://github.com/mgkdante/yesid.dev/issues/74) light-mode toggle · [#75](https://github.com/mgkdante/yesid.dev/issues/75) CONVENTIONS § 9 doc fix · [#76](https://github.com/mgkdante/yesid.dev/issues/76) site-meta.ts cleanup · [#77](https://github.com/mgkdante/yesid.dev/issues/77) singleton seed re-run · [#78](https://github.com/mgkdante/yesid.dev/issues/78) /projects 500 · [#79](https://github.com/mgkdante/yesid.dev/issues/79) directus-sync orphan-delete coordination · [#80](https://github.com/mgkdante/yesid.dev/issues/80) Phase 4 Task 13 tests · [#81](https://github.com/mgkdante/yesid.dev/issues/81) sync:push wipes data |
