@@ -54,6 +54,13 @@ import { SiteMetaSchema } from '$lib/schemas/meta';
 import { SiteSeoDefaultsSchema } from '$lib/schemas/site-seo-defaults';
 import { RouteSeoOverrideSchema } from '$lib/schemas/route-seo';
 import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml } from '@repo/shared';
+import { codeRouteSeoDefaults } from './route-seo-defaults';
+import {
+	errorSeoFallback,
+	routeSeoFactories,
+	type FactoryArgs,
+} from './route-seo-factories';
+import { composePageSeo } from './compose-page-seo';
 
 // ---------------------------------------------------------------------------
 // Directus schema — mirrors yesid.dev-cms PR #5 + #6 as applied at cms.yesid.dev.
@@ -1329,8 +1336,58 @@ export const directusAdapter: ContentAdapter = {
 			},
 		},
 
-		// Composer lands in Task 11 — replaces this stub.
-		forRoute: async () => todo('meta.forRoute'),
+		// Composer (slice-18 18h Phase 4 Task 11). Fetches site + siteSeoDefaults
+		// + routeSeo via the meta port (which dedupes through the WeakMap memo
+		// on the raw singleton row), then merges with code-side defaults.
+		forRoute: async (routeId, locale, params, ctx) => {
+			// /__error is handled before any CMS fetch — last-resort fallback path.
+			if (routeId === '/__error') {
+				const [siteMeta, siteSeoDefaults] = await Promise.all([
+					directusAdapter.meta.site(ctx),
+					directusAdapter.meta.siteSeoDefaults(ctx),
+				]);
+				return errorSeoFallback({ locale, siteMeta, siteSeoDefaults });
+			}
+
+			// Dynamic factory dispatch (services / projects / blog).
+			const dynamicFactory = routeSeoFactories[routeId];
+			if (dynamicFactory) {
+				const [siteMeta, siteSeoDefaults] = await Promise.all([
+					directusAdapter.meta.site(ctx),
+					directusAdapter.meta.siteSeoDefaults(ctx),
+				]);
+				const factoryArgs: FactoryArgs = {
+					params: params ?? {},
+					locale,
+					ctx,
+					adapter: directusAdapter,
+					siteMeta,
+					siteSeoDefaults,
+				};
+				return dynamicFactory(factoryArgs);
+			}
+
+			// Static-route compose (CMS path).
+			const codeDefaults = codeRouteSeoDefaults[routeId];
+			if (!codeDefaults) {
+				throw new Error(
+					`[meta.forRoute] Unknown route id: ${routeId}. Add an entry in route-seo-defaults.ts or seed a route_seo row.`,
+				);
+			}
+			const [siteMeta, siteSeoDefaults, routeOverride] = await Promise.all([
+				directusAdapter.meta.site(ctx),
+				directusAdapter.meta.siteSeoDefaults(ctx),
+				directusAdapter.meta.routeSeo.byPath(routeId, ctx),
+			]);
+			return composePageSeo({
+				routeId,
+				locale,
+				siteMeta,
+				siteSeoDefaults,
+				routeOverride,
+				codeDefaults,
+			});
+		},
 	},
 
 	techStack: {
