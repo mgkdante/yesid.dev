@@ -982,10 +982,58 @@ export const directusAdapter: ContentAdapter = {
 			)) as unknown as DirectusBlogPostRow[];
 			return parsePort('blog.latest', z.array(BlogPostSchema), rows.map(toBlogPost));
 		},
-		svgContent: async () => todo('blog.svgContent'),
-		svgContentsForPosts: async () => todo('blog.svgContentsForPosts'),
-		resolveSvgFallbackName: async () => todo('blog.resolveSvgFallbackName'),
-		resolveAnimation: async () => todo('blog.resolveAnimation'),
+		svgContent: async (post, ctx) => {
+			// Step 1: resolve svg_illustration id for this post.
+			const rows = (await client().request(
+				readItems('blog_posts', {
+					fields: [
+						{ svg_illustration: ['id', { file: ['id'] }] } as unknown as keyof DirectusBlogPostRow,
+					],
+					filter: { id: { _eq: post.slug } },
+					limit: 1,
+				}),
+			)) as unknown as Array<{ svg_illustration: { id: string; file?: { id: string } } | string | null }>;
+			let illustrationId: string | null = null;
+			if (rows[0]) {
+				const ill = rows[0].svg_illustration;
+				illustrationId = typeof ill === 'object' && ill !== null ? ill.id : ill;
+			}
+			if (!illustrationId) {
+				illustrationId = resolveSvgFallbackNameSync(post.slug, post.category);
+			}
+			// Step 2: look up the file UUID from the illustrations collection.
+			const illRow = (await client().request(
+				readItems('illustrations', {
+					fields: [{ file: ['id'] } as unknown as 'file'],
+					filter: { id: { _eq: illustrationId } },
+					limit: 1,
+				}),
+			)) as unknown as Array<{ file: { id: string } | string }>;
+			const fileUuid = illRow[0]
+				? typeof illRow[0].file === 'object'
+					? illRow[0].file.id
+					: illRow[0].file
+				: null;
+			if (!fileUuid) return '';
+			// Step 3: fetch raw SVG bytes using the SSR-safe queued fetch.
+			const url = `${assetsBaseUrl()}/assets/${fileUuid}`;
+			const res = await assetsFetch()(url);
+			return res.ok ? await res.text() : '';
+		},
+		svgContentsForPosts: async (posts, ctx) => {
+			const out: Record<string, string> = {};
+			const tasks = posts.map(async (p) => {
+				out[p.slug] = await directusAdapter.blog.svgContent(p, ctx);
+			});
+			await Promise.all(tasks);
+			return out;
+		},
+		resolveSvgFallbackName: async (slug, category) => {
+			return resolveSvgFallbackNameSync(slug, category);
+		},
+		resolveAnimation: async (slug, explicit) => {
+			return resolveAnimationDeterministic(slug, explicit);
+		},
 	},
 
 	meta: {
