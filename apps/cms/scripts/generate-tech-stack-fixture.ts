@@ -65,22 +65,19 @@ function splitSections(content: string): Map<string, string> {
 	const sections = new Map<string, string>();
 
 	let currentHeading: string | null = null;
-	const currentLines: string[] = [];
+	let currentLines: string[] = [];
 
 	for (const line of lines) {
 		const h2Match = line.match(/^##\s+(.+?)\s*$/);
 		if (h2Match) {
 			const headingText = h2Match[1] ?? '';
-			// Save the previous section if we had one
 			if (currentHeading !== null) {
 				sections.set(currentHeading, currentLines.join('\n').trim());
-				currentLines.length = 0;
+				currentLines = [];
 			}
 			currentHeading = headingText.toLowerCase();
-		} else {
-			if (currentHeading !== null) {
-				currentLines.push(line);
-			}
+		} else if (currentHeading !== null) {
+			currentLines.push(line);
 		}
 	}
 
@@ -169,12 +166,14 @@ function processFile(filePath: string, sortIndex: number): TechStackFixtureRow {
 	const icon: string =
 		typeof rawIcon === 'string' && rawIcon ? rawIcon : id;
 
-	// Junction arrays — verbatim, no filtering (P2: zero orphans confirmed)
+	// Junction arrays — verbatim, no filtering (P2: zero orphans confirmed).
+	// Per-element type guard avoids silent corruption if frontmatter ever
+	// produces non-string values inside the array.
 	const relatedServices = Array.isArray(data['relatedServices'])
-		? (data['relatedServices'] as string[])
+		? data['relatedServices'].filter((x): x is string => typeof x === 'string')
 		: [];
 	const relatedProjects = Array.isArray(data['relatedProjects'])
-		? (data['relatedProjects'] as string[])
+		? data['relatedProjects'].filter((x): x is string => typeof x === 'string')
 		: [];
 
 	// Extract sections and convert each to BlockEditorDoc
@@ -222,11 +221,8 @@ function main(): void {
 
 	const rows: TechStackFixtureRow[] = [];
 
-	for (let i = 0; i < files.length; i++) {
-		const filename = files[i];
-		// files[i] is guaranteed to exist because we built this array from readdirSync
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const filePath = join(stackDir, filename!);
+	for (const [i, filename] of files.entries()) {
+		const filePath = join(stackDir, filename);
 		const row = processFile(filePath, i + 1); // 1-based sort index
 		rows.push(row);
 		log.info(
@@ -247,4 +243,11 @@ function main(): void {
 	);
 }
 
-main();
+if (import.meta.main) {
+	try {
+		main();
+	} catch (err) {
+		log.error('FAILED:', err);
+		process.exit(1);
+	}
+}
