@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseTokens, isPrimitive, isClampToken } from '../src/parse.ts';
-import type { Token, TokenTree, DtcgPrimitive } from '../src/types.ts';
+import type { Token, TokenTree } from '../src/types.ts';
 
 interface FigmaVariable {
   name: string;
@@ -42,11 +42,10 @@ function flattenTree(tree: TokenTree, prefix: string[] = []): FlatLeaf[] {
 }
 
 function figmaTypeFor(token: Token): FigmaVariable['type'] {
+  // After the clamp branch returns, TS narrows token to DtcgPrimitive.
   if (isClampToken(token)) return 'STRING';
-  // Narrowed by isPrimitive in caller; type assertion only to access $type.
-  const t = (token as DtcgPrimitive).$type;
-  if (t === 'color') return 'COLOR';
-  if (t === 'number') return 'FLOAT';
+  if (token.$type === 'color') return 'COLOR';
+  if (token.$type === 'number') return 'FLOAT';
   // dimension, fontFamily, fontWeight, duration, cubicBezier, string — all serialize as strings.
   return 'STRING';
 }
@@ -60,15 +59,18 @@ function valueFor(token: Token): string | number {
   return token.$value;
 }
 
+type ColorBucket = 'brand' | 'dark' | 'light';
+
 // Brand colors and dark/light theme colors live under color/{brand,dark,light}/X.
 // For Figma variable names we strip those mode-bucket segments so the variable is
 // "color/primary" (one variable across themes) rather than "color/brand/primary".
-function colorVariableName(leaf: FlatLeaf): string | null {
+// Returns the bucket too so callers don't re-split the path.
+function colorBucketFor(leaf: FlatLeaf): { name: string; bucket: ColorBucket } | null {
   const parts = leaf.path.split('/');
   if (parts[0] !== 'color' || parts.length < 3) return null;
   const bucket = parts[1];
   if (bucket !== 'brand' && bucket !== 'dark' && bucket !== 'light') return null;
-  return ['color', ...parts.slice(2)].join('/');
+  return { name: ['color', ...parts.slice(2)].join('/'), bucket };
 }
 
 function buildVariables(tree: TokenTree): FigmaVariable[] {
@@ -76,10 +78,10 @@ function buildVariables(tree: TokenTree): FigmaVariable[] {
   const variables = new Map<string, FigmaVariable>();
 
   for (const leaf of leaves) {
-    const collapsedColorName = colorVariableName(leaf);
-    const isThemed = collapsedColorName !== null && (leaf.path.split('/')[1] === 'dark' || leaf.path.split('/')[1] === 'light');
-    const name = collapsedColorName ?? leaf.path;
-    const mode = isThemed ? (leaf.path.split('/')[1] as 'dark' | 'light') : 'default';
+    const colorInfo = colorBucketFor(leaf);
+    const name = colorInfo?.name ?? leaf.path;
+    const mode: string =
+      colorInfo?.bucket === 'dark' || colorInfo?.bucket === 'light' ? colorInfo.bucket : 'default';
     const type = figmaTypeFor(leaf.token);
     const value = valueFor(leaf.token);
 
