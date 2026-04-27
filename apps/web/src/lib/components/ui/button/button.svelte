@@ -25,7 +25,7 @@
 				"icon-lg": "size-9",
 				"cta-sm": "gap-2 px-5 py-2.5 text-small font-semibold",
 				"cta": "gap-2 px-6 py-3 text-body font-semibold",
-				"cta-lg": "gap-2 px-8 py-4 text-body-lg font-semibold",
+				"cta-lg": "gap-2 px-8 py-4 text-subheading font-semibold",
 			},
 		},
 		compoundVariants: [

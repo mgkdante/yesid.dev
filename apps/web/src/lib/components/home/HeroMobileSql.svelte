@@ -58,7 +58,7 @@
 				<span class="text-xl">&#x21bb;</span>
 				{refreshLabel}
 			</button>
-			<div class="mt-2 font-mono text-caption text-[var(--dim-foreground)]">
+			<div class="mt-2 font-mono text-caption text-[var(--muted-foreground)]">
 				{refreshHelper}
 			</div>
 		</div>

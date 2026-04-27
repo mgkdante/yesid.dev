@@ -277,7 +277,7 @@
 		font-family: var(--font-heading);
 		font-size: 24px;
 		font-weight: 600;
-		color: var(--light-foreground);
+		color: var(--secondary-foreground);
 		transition: color var(--duration-fast), text-shadow var(--duration-fast);
 	}
 	.menu-item-active .menu-label {

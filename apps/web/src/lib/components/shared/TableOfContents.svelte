@@ -263,7 +263,7 @@
 		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 	}
 	.toc-link:hover {
-		color: var(--light-foreground);
+		color: var(--secondary-foreground);
 		background: color-mix(in srgb, var(--primary) 4%, transparent);
 		border-left-color: color-mix(in srgb, var(--primary) 30%, transparent);
 	}

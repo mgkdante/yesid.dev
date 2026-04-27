@@ -48,6 +48,6 @@
     <span class="mt-2 label-metric">{label}</span>
   {/if}
   {#if sublabel}
-    <span class="mt-1 font-mono text-caption text-[var(--dim-foreground)]">{sublabel}</span>
+    <span class="mt-1 font-mono text-caption text-[var(--muted-foreground)]">{sublabel}</span>
   {/if}
 </div>
