@@ -29,8 +29,8 @@ Estimated effort: **0.5-1 session** (most patterns reuse 18g; the migration step
 > via `bun add` would not install it into the Directus container and Directus would never discover it.
 > The correct mechanism is a Dockerfile `RUN npm install` line — mirroring the existing
 > `directus-extension-sync@3.0.6` pattern — so the extension lands in `/directus/node_modules` AND
-> `/directus/package.json.dependencies` (both required for Directus 11 auto-discovery; see Dockerfile
-> comment block lines 20-24 for the empirical context).
+> is listed in `/directus/package.json`'s `dependencies` key (both required for Directus 11
+> auto-discovery; see Dockerfile comment block lines 20-24 for the empirical context).
 
 Verified package name (npm registry, Dec 2025): `simple-iconify-picker@1.0.1`
 - GitHub: https://github.com/Sedatb23/directus-simple-iconify-picker
@@ -77,19 +77,23 @@ The verified binding for `icons.iconify_id` (from the extension's `package.json`
     "interface": "iconify-picker",
     "options": {
       "defaultCollection": "logos",
-      "allowedCollections": "logos, skill-icons, devicon, vscode-icons, mdi",
-      "previewSize": 24
+      "collections": ["logos", "skill-icons", "devicon", "vscode-icons", "mdi"],
+      "iconSize": 24
     }
   }
 }
 ```
 
+> Field names verified against `Sedatb23/directus-simple-iconify-picker/src/interface/index.ts`
+> 2026-04-27 — README's `allowedCollections`/`previewSize` are wrong; actual fields are
+> `collections` (type: json, interface: tags → JSON array) and `iconSize` (type: integer).
+
 Notes on option values:
 - `defaultCollection`: overriding the extension default (`mdi`) to `logos` — first-choice set for
   tech-stack icons given its broad coverage of dev tooling logos
-- `allowedCollections`: comma-separated string per the README; `logos + skill-icons + devicon +
-  vscode-icons` cover the tech-stack universe; `mdi` included as fallback for any generic icons
-- `previewSize`: 24px (extension default; fine for the admin UX)
+- `collections`: JSON array of allowed icon sets; `logos + skill-icons + devicon + vscode-icons`
+  cover the tech-stack universe; `mdi` included as fallback for any generic icons
+- `iconSize`: 24px (extension default; fine for the admin UX)
 
 This will be hardcoded in `apps/cms/directus/snapshot/fields/icons/iconify_id.json` in Phase 2.
 
@@ -119,7 +123,7 @@ Upload a test SVG, GET via `/assets/<uuid>`, verify 200 OK. Document the folder-
 
 ### Task 3: P3 — community Iconify picker extension search
 
-Search Directus marketplace. Document findings. If any candidate looks viable, propose D11 amendment in this slice's decisions.md as Q-AMEND-1.
+P3 RESOLVED in Phase 0 — see [research.md § P3](research.md). No action required.
 
 ### Task 4: P4 — rename dry-run
 
