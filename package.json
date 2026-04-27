@@ -13,7 +13,8 @@
 		"test": "turbo run test",
 		"check": "turbo run check",
 		"tokens:build": "bun run --cwd packages/tokens build",
-		"tokens:lint": "bun run --cwd packages/tokens lint:design-md"
+		"tokens:lint": "bun run --cwd packages/tokens lint:design-md",
+		"ci:tokens": "bun run tokens:build && git diff --exit-code apps/web/src/lib/styles/tokens.css apps/web/src/app.css apps/web/src/lib/motion/tokens.ts DESIGN.md"
 	},
 	"devDependencies": {
 		"turbo": "^2.5.0"
