@@ -6,7 +6,7 @@
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils';
 
-	import { proofReelContent, getProjectBySlug } from '$lib/content';
+	import { proofReelContent, getProjectBySlug, rawProjectToProject } from '$lib/content';
 	import type { Project } from '$lib/types';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
@@ -18,9 +18,10 @@
 	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, 'en');
 	const toggleColorAriaTemplate = resolveLocale(proofReelContent.toggleColorAria, 'en');
 
-	const projects: (Project | undefined)[] = proofReelContent.slugs.map((slug) =>
-		getProjectBySlug(slug)
-	);
+	const projects: (Project | undefined)[] = proofReelContent.slugs.map((slug) => {
+		const raw = getProjectBySlug(slug);
+		return raw ? rawProjectToProject(raw) : undefined;
+	});
 
 	// Mobile tap toggle: track which card image is active (-1 = none)
 	let activeImageIndex = $state(-1);

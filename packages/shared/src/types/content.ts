@@ -9,6 +9,8 @@
 // Per D14: packages/shared is type-only + Zod. No runtime helpers, no
 // app-specific imports (no $lib aliases; those stay in apps/web).
 
+import type { BlockEditorDoc } from './blocks';
+
 // Supported locale codes. English is always required; French and Spanish are optional.
 // Adding a new locale means adding it here first, then the data files and resolver.
 export type Locale = 'en' | 'fr' | 'es';
@@ -20,6 +22,18 @@ export interface LocalizedString {
 	en: string;
 	fr?: string;
 	es?: string;
+}
+
+// A localized Block Editor document. Mirrors LocalizedString's locale shape
+// but each value is a BlockEditorDoc (Editor.js JSON) instead of a plain string.
+// English is required; French and Spanish are filled in over time.
+// Introduced in slice-18 18f Phase 11 Task 78 (#41) for Project.description
+// and ProjectSection.content — the first fields to migrate from plain text
+// to rich Block Editor content per locale.
+export interface LocalizedBlockEditorDoc {
+	en: BlockEditorDoc;
+	fr?: BlockEditorDoc;
+	es?: BlockEditorDoc;
 }
 
 // A content block inside a service's detail page.
@@ -35,7 +49,8 @@ export interface ServiceSection {
 // without bloating the Project summary fields used in listings.
 export interface ProjectSection {
 	title: LocalizedString;
-	content: LocalizedString;
+	/** Block Editor JSON per locale (#41). Migrated from LocalizedString in Task 78. */
+	content: LocalizedBlockEditorDoc;
 }
 
 // Visibility controls which projects surface on the site.
@@ -62,7 +77,8 @@ export interface Project {
 	title: LocalizedString;
 	// oneLiner is the one-sentence pitch shown in cards and listings
 	oneLiner: LocalizedString;
-	description: LocalizedString;
+	/** Block Editor JSON per locale (#41). Migrated from LocalizedString in Task 78. */
+	description: LocalizedBlockEditorDoc;
 	// stack and tags are not localised — technology names are universal
 	stack: string[];
 	tags: string[];
@@ -176,8 +192,11 @@ export type BlogAnimation = 'draw' | 'morph' | 'draw-fill';
 
 export interface BlogPost {
 	slug: string;
-	title: LocalizedString;
-	excerpt: LocalizedString;
+	// AM2.5: title is a flat string — blog posts are mono-language end-to-end.
+	// The `lang` field on the parent row IS the i18n primitive; no translations junction.
+	title: string;
+	// AM2.5: excerpt is a flat string — same rationale as title (mono-language per AM2.5).
+	excerpt: string;
 	// ISO date string (YYYY-MM-DD)
 	date: string;
 	// Language this post was written in — no translation, just native language
@@ -720,4 +739,23 @@ export interface CloserContent {
 export interface SkillsJourneyCtaContent {
 	prompt: LocalizedString;
 	button: LocalizedString;
+}
+
+// ---------------------------------------------------------------------------
+// Morph shapes (geometric morph-target library — slice-18 18f)
+// ---------------------------------------------------------------------------
+//
+// Replaces the hardcoded SHAPES const in apps/web/src/lib/utils/shapes.ts.
+// Editors add/remove shapes via Data Studio; consumers read from the
+// adapter (cached module-level after first fetch).
+//
+// Schema lives in apps/cms/directus/snapshot/collections/morph_shapes.json
+// (Phase 4 work). Used by the Block Editor world's morph-hover animations.
+
+export interface MorphShape {
+	id: string;
+	label: string;
+	path: string;     // SVG path d= attribute, e.g. "M24 8 L40 38 L8 38 Z"
+	viewbox: string;  // default "0 0 48 48"
+	sort: number;
 }

@@ -1,5 +1,735 @@
 [
   {
+    "collection": "blog_posts",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_ai_create"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_ai_read"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_ai_update"
+  },
+  {
+    "collection": "directus_comments",
+    "action": "create",
+    "permissions": {
+      "collection": {
+        "_starts_with": "projects"
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-comments-projects-create-0042-00000000029"
+  },
+  {
+    "collection": "directus_comments",
+    "action": "read",
+    "permissions": {
+      "collection": {
+        "_starts_with": "projects"
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-comments-projects-read-0041-000000000028"
+  },
+  {
+    "collection": "illustrations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_illustrations_ai_create"
+  },
+  {
+    "collection": "illustrations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_illustrations_ai_read"
+  },
+  {
+    "collection": "illustrations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_illustrations_ai_update"
+  },
+  {
+    "collection": "languages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-languages-read-0001-0000-000000000001"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_ai_create"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_ai_read"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_ai_update"
+  },
+  {
+    "collection": "projects_impact_metrics_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-imtr-create-0036-000000000023"
+  },
+  {
+    "collection": "projects_impact_metrics_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-imtr-read-0035-0000-000000000022"
+  },
+  {
+    "collection": "projects_impact_metrics_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-imtr-update-0037-000000000024"
+  },
+  {
+    "collection": "projects_impact_metrics",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-im-create-0033-000000000020"
+  },
+  {
+    "collection": "projects_impact_metrics",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-im-read-0032-0000-00000000001f"
+  },
+  {
+    "collection": "projects_impact_metrics",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-im-update-0034-000000000021"
+  },
+  {
+    "collection": "projects_sections_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-sectr-create-0030-00000000001d"
+  },
+  {
+    "collection": "projects_sections_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-sectr-read-0029-0000-00000000001c"
+  },
+  {
+    "collection": "projects_sections_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-sectr-update-0031-00000000001e"
+  },
+  {
+    "collection": "projects_sections",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-sec-create-0027-00000000001a"
+  },
+  {
+    "collection": "projects_sections",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-sec-read-0026-000000000020"
+  },
+  {
+    "collection": "projects_sections",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-sec-update-0028-00000000001b"
+  },
+  {
+    "collection": "projects_services",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-svc-create-0039-000000000026"
+  },
+  {
+    "collection": "projects_services",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-svc-read-0038-0000-000000000025"
+  },
+  {
+    "collection": "projects_services",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-svc-update-0040-000000000027"
+  },
+  {
+    "collection": "projects_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-tr-create-0024-000000000018"
+  },
+  {
+    "collection": "projects_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-tr-read-0023-0000-000000000017"
+  },
+  {
+    "collection": "projects_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-tr-update-0025-000000000019"
+  },
+  {
+    "collection": "projects",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-create-0021-000000000015"
+  },
+  {
+    "collection": "projects",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-read-0020-0000-000000000014"
+  },
+  {
+    "collection": "projects",
+    "action": "update",
+    "permissions": {
+      "status": {
+        "_neq": "published"
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-projects-update-0022-000000000016"
+  },
+  {
+    "collection": "services_deliverables_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deltr-create-0012-000000000000c"
+  },
+  {
+    "collection": "services_deliverables_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deltr-read-0011-0000-00000000000b"
+  },
+  {
+    "collection": "services_deliverables_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deltr-update-0013-000000000000d"
+  },
+  {
+    "collection": "services_deliverables",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deliverables-create-0009-000000000009"
+  },
+  {
+    "collection": "services_deliverables",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deliverables-read-0008-000000000008"
+  },
+  {
+    "collection": "services_deliverables",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-deliverables-update-0010-00000000000a"
+  },
+  {
+    "collection": "services_sections_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sectr-create-0018-000000000012"
+  },
+  {
+    "collection": "services_sections_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sectr-read-0017-0000-000000000011"
+  },
+  {
+    "collection": "services_sections_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sectr-update-0019-000000000013"
+  },
+  {
+    "collection": "services_sections",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sections-create-0015-00000000000f"
+  },
+  {
+    "collection": "services_sections",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sections-read-0014-000000000000e"
+  },
+  {
+    "collection": "services_sections",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-sections-update-0016-000000000010"
+  },
+  {
+    "collection": "services_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-translations-create-0006-000000000006"
+  },
+  {
+    "collection": "services_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-translations-read-0005-000000000005"
+  },
+  {
+    "collection": "services_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-translations-update-0007-000000000007"
+  },
+  {
+    "collection": "services",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-create-0003-0000-000000000003"
+  },
+  {
+    "collection": "services",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-read-0002-0000-000000000002"
+  },
+  {
+    "collection": "services",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-services-update-0004-0000-000000000004"
+  },
+  {
+    "collection": "blog_posts",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "status",
+      "date_published",
+      "sort",
+      "lang",
+      "category",
+      "tags",
+      "external",
+      "url",
+      "cover_image",
+      "svg_illustration",
+      "animation",
+      "title",
+      "excerpt",
+      "body"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_blog_posts_public_read"
+  },
+  {
+    "collection": "directus_files",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "folder": {
+            "id": {
+              "_in": [
+                "5699c47c-c016-484d-ad42-ea35d75ed918",
+                "da9ff878-3124-43d6-9cf9-11524fc0edd9",
+                "02c30511-8c14-46aa-b6f1-cf2d8999290e",
+                "82238060-72ab-414b-8f72-a7f83b15dc59",
+                "e4764c31-b8b4-4045-b066-76653bc3c884",
+                "1868fd73-d094-45eb-9d0c-802e2b49cf23",
+                "3b0880d2-9e19-4812-9b35-d16fba7c2e46"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_public_files_read_folder_scoped"
+  },
+  {
+    "collection": "illustrations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "file",
+      "label",
+      "category",
+      "tags",
+      "description",
+      "sort"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_illustrations_public_read"
+  },
+  {
     "collection": "languages",
     "action": "read",
     "permissions": {},
@@ -10,6 +740,150 @@
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "5c88e59a-914a-4440-aa54-67758e0311ca"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "label",
+      "path",
+      "viewbox",
+      "sort"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_morph_shapes_public_read"
+  },
+  {
+    "collection": "projects_impact_metrics_translations",
+    "action": "read",
+    "permissions": {
+      "projects_impact_metrics_id": {
+        "projects_id": {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "public-projects-imtr-read-0076-000000000055"
+  },
+  {
+    "collection": "projects_impact_metrics",
+    "action": "read",
+    "permissions": {
+      "projects_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "public-projects-im-read-0075-0000-000000000054"
+  },
+  {
+    "collection": "projects_sections_translations",
+    "action": "read",
+    "permissions": {
+      "projects_sections_id": {
+        "projects_id": {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "public-projects-sectr-read-0074-00000000053"
+  },
+  {
+    "collection": "projects_sections",
+    "action": "read",
+    "permissions": {
+      "projects_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "public-projects-sec-read-0073-000000000052"
+  },
+  {
+    "collection": "projects_services",
+    "action": "read",
+    "permissions": {
+      "project_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "public-projects-svc-read-0077-000000000056"
+  },
+  {
+    "collection": "projects_translations",
+    "action": "read",
+    "permissions": {
+      "projects_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "public-projects-tr-read-0072-000000000051"
+  },
+  {
+    "collection": "projects",
+    "action": "read",
+    "permissions": {
+      "status": {
+        "_eq": "published"
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "public-projects-read-0071-000000000050"
   },
   {
     "collection": "services_deliverables_translations",
@@ -84,382 +958,148 @@
     "_syncId": "2a68154f-996c-4e13-bab6-126ced346b48"
   },
   {
-    "collection": "languages",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-languages-read-0001-0000-000000000001"
-  },
-  {
-    "collection": "services",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-read-0002-0000-000000000002"
-  },
-  {
-    "collection": "services",
+    "collection": "blog_posts",
     "action": "create",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-create-0003-0000-000000000003"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_human_create"
   },
   {
-    "collection": "services",
-    "action": "update",
+    "collection": "blog_posts",
+    "action": "delete",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-update-0004-0000-000000000004"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_human_delete"
   },
   {
-    "collection": "services_translations",
+    "collection": "blog_posts",
     "action": "read",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-translations-read-0005-000000000005"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_human_read"
   },
   {
-    "collection": "services_translations",
+    "collection": "blog_posts",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_blog_posts_human_update"
+  },
+  {
+    "collection": "illustrations",
     "action": "create",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-translations-create-0006-000000000006"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_illustrations_human_create"
   },
   {
-    "collection": "services_translations",
-    "action": "update",
+    "collection": "illustrations",
+    "action": "delete",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-translations-update-0007-000000000007"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_illustrations_human_delete"
   },
   {
-    "collection": "services_deliverables",
+    "collection": "illustrations",
     "action": "read",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-deliverables-read-0008-000000000008"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_illustrations_human_read"
   },
   {
-    "collection": "services_deliverables",
+    "collection": "illustrations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_illustrations_human_update"
+  },
+  {
+    "collection": "morph_shapes",
     "action": "create",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-deliverables-create-0009-000000000009"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_human_create"
   },
   {
-    "collection": "services_deliverables",
+    "collection": "morph_shapes",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_human_delete"
+  },
+  {
+    "collection": "morph_shapes",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_human_read"
+  },
+  {
+    "collection": "morph_shapes",
     "action": "update",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-deliverables-update-0010-00000000000a"
-  },
-  {
-    "collection": "services_deliverables_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-deltr-read-0011-0000-00000000000b"
-  },
-  {
-    "collection": "services_deliverables_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-deltr-create-0012-000000000000c"
-  },
-  {
-    "collection": "services_deliverables_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-deltr-update-0013-000000000000d"
-  },
-  {
-    "collection": "services_sections",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-sections-read-0014-000000000000e"
-  },
-  {
-    "collection": "services_sections",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-sections-create-0015-00000000000f"
-  },
-  {
-    "collection": "services_sections",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-sections-update-0016-000000000010"
-  },
-  {
-    "collection": "services_sections_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-sectr-read-0017-0000-000000000011"
-  },
-  {
-    "collection": "services_sections_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-sectr-create-0018-000000000012"
-  },
-  {
-    "collection": "services_sections_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-services-sectr-update-0019-000000000013"
-  },
-  {
-    "collection": "directus_files",
-    "action": "read",
-    "permissions": {
-      "_and": [
-        {
-          "folder": {
-            "id": {
-              "_in": [
-                "5699c47c-c016-484d-ad42-ea35d75ed918",
-                "da9ff878-3124-43d6-9cf9-11524fc0edd9",
-                "02c30511-8c14-46aa-b6f1-cf2d8999290e",
-                "82238060-72ab-414b-8f72-a7f83b15dc59",
-                "e4764c31-b8b4-4045-b066-76653bc3c884",
-                "1868fd73-d094-45eb-9d0c-802e2b49cf23"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_public_files_read_folder_scoped"
-  },
-
-  {
-    "collection": "projects",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-read-0020-0000-000000000014"
-  },
-  {
-    "collection": "projects",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-create-0021-000000000015"
-  },
-  {
-    "collection": "projects",
-    "action": "update",
-    "permissions": { "status": { "_neq": "published" } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-update-0022-000000000016"
-  },
-  {
-    "collection": "projects_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-tr-read-0023-0000-000000000017"
-  },
-  {
-    "collection": "projects_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-tr-create-0024-000000000018"
-  },
-  {
-    "collection": "projects_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-tr-update-0025-000000000019"
-  },
-  {
-    "collection": "projects_sections",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-sec-read-0026-000000000020"
-  },
-  {
-    "collection": "projects_sections",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-sec-create-0027-00000000001a"
-  },
-  {
-    "collection": "projects_sections",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-sec-update-0028-00000000001b"
-  },
-  {
-    "collection": "projects_sections_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-sectr-read-0029-0000-00000000001c"
-  },
-  {
-    "collection": "projects_sections_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-sectr-create-0030-00000000001d"
-  },
-  {
-    "collection": "projects_sections_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-sectr-update-0031-00000000001e"
-  },
-  {
-    "collection": "projects_impact_metrics",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-im-read-0032-0000-00000000001f"
-  },
-  {
-    "collection": "projects_impact_metrics",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-im-create-0033-000000000020"
-  },
-  {
-    "collection": "projects_impact_metrics",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-im-update-0034-000000000021"
-  },
-  {
-    "collection": "projects_impact_metrics_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-imtr-read-0035-0000-000000000022"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_morph_shapes_human_update"
   },
   {
     "collection": "projects_impact_metrics_translations",
@@ -467,321 +1107,191 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-imtr-create-0036-000000000023"
-  },
-  {
-    "collection": "projects_impact_metrics_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-imtr-update-0037-000000000024"
-  },
-  {
-    "collection": "projects_services",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-svc-read-0038-0000-000000000025"
-  },
-  {
-    "collection": "projects_services",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-svc-create-0039-000000000026"
-  },
-  {
-    "collection": "projects_services",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-projects-svc-update-0040-000000000027"
-  },
-
-  {
-    "collection": "directus_comments",
-    "action": "read",
-    "permissions": { "collection": { "_starts_with": "projects" } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-comments-projects-read-0041-000000000028"
-  },
-  {
-    "collection": "directus_comments",
-    "action": "create",
-    "permissions": { "collection": { "_starts_with": "projects" } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "ae-comments-projects-create-0042-00000000029"
-  },
-
-  {
-    "collection": "projects",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-read-0043-0000-000000000030"
-  },
-  {
-    "collection": "projects",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-create-0044-000000000031"
-  },
-  {
-    "collection": "projects",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-update-0045-000000000032"
-  },
-  {
-    "collection": "projects",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-delete-0046-000000000033"
-  },
-  {
-    "collection": "projects_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-tr-read-0047-0000-000000000034"
-  },
-  {
-    "collection": "projects_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-tr-create-0048-000000000035"
-  },
-  {
-    "collection": "projects_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-tr-update-0049-000000000036"
-  },
-  {
-    "collection": "projects_translations",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-tr-delete-0050-000000000037"
-  },
-  {
-    "collection": "projects_sections",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-sec-read-0051-000000000038"
-  },
-  {
-    "collection": "projects_sections",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-sec-create-0052-00000000003a"
-  },
-  {
-    "collection": "projects_sections",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-sec-update-0053-00000000003b"
-  },
-  {
-    "collection": "projects_sections",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-sec-delete-0054-00000000003c"
-  },
-  {
-    "collection": "projects_sections_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-sectr-read-0055-0000-00000000003d"
-  },
-  {
-    "collection": "projects_sections_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-sectr-create-0056-00000000003e"
-  },
-  {
-    "collection": "projects_sections_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-sectr-update-0057-00000000003f"
-  },
-  {
-    "collection": "projects_sections_translations",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-sectr-delete-0058-000000000040"
-  },
-  {
-    "collection": "projects_impact_metrics",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-im-read-0059-0000-000000000041"
-  },
-  {
-    "collection": "projects_impact_metrics",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-im-create-0060-000000000042"
-  },
-  {
-    "collection": "projects_impact_metrics",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-im-update-0061-000000000043"
-  },
-  {
-    "collection": "projects_impact_metrics",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-im-delete-0062-000000000044"
-  },
-  {
-    "collection": "projects_impact_metrics_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-imtr-read-0063-0000-000000000045"
-  },
-  {
-    "collection": "projects_impact_metrics_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-imtr-create-0064-000000000046"
   },
   {
     "collection": "projects_impact_metrics_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-imtr-update-0065-000000000047"
-  },
-  {
-    "collection": "projects_impact_metrics_translations",
     "action": "delete",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-imtr-delete-0066-000000000048"
   },
   {
-    "collection": "projects_services",
+    "collection": "projects_impact_metrics_translations",
     "action": "read",
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-svc-read-0067-0000-000000000049"
+    "_syncId": "he-projects-imtr-read-0063-0000-000000000045"
+  },
+  {
+    "collection": "projects_impact_metrics_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-imtr-update-0065-000000000047"
+  },
+  {
+    "collection": "projects_impact_metrics",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-im-create-0060-000000000042"
+  },
+  {
+    "collection": "projects_impact_metrics",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-im-delete-0062-000000000044"
+  },
+  {
+    "collection": "projects_impact_metrics",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-im-read-0059-0000-000000000041"
+  },
+  {
+    "collection": "projects_impact_metrics",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-im-update-0061-000000000043"
+  },
+  {
+    "collection": "projects_sections_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-sectr-create-0056-00000000003e"
+  },
+  {
+    "collection": "projects_sections_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-sectr-delete-0058-000000000040"
+  },
+  {
+    "collection": "projects_sections_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-sectr-read-0055-0000-00000000003d"
+  },
+  {
+    "collection": "projects_sections_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-sectr-update-0057-00000000003f"
+  },
+  {
+    "collection": "projects_sections",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-sec-create-0052-00000000003a"
+  },
+  {
+    "collection": "projects_sections",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-sec-delete-0054-00000000003c"
+  },
+  {
+    "collection": "projects_sections",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-sec-read-0051-000000000038"
+  },
+  {
+    "collection": "projects_sections",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-sec-update-0053-00000000003b"
   },
   {
     "collection": "projects_services",
@@ -789,19 +1299,11 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-svc-create-0068-00000000004a"
-  },
-  {
-    "collection": "projects_services",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "he-projects-svc-update-0069-00000000004b"
   },
   {
     "collection": "projects_services",
@@ -809,79 +1311,130 @@
     "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
+    "fields": [
+      "*"
+    ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-svc-delete-0070-00000000004c"
-  },
-
-  {
-    "collection": "projects",
-    "action": "read",
-    "permissions": { "status": { "_eq": "published" } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "public-projects-read-0071-000000000050"
-  },
-  {
-    "collection": "projects_translations",
-    "action": "read",
-    "permissions": { "projects_id": { "status": { "_eq": "published" } } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "public-projects-tr-read-0072-000000000051"
-  },
-  {
-    "collection": "projects_sections",
-    "action": "read",
-    "permissions": { "projects_id": { "status": { "_eq": "published" } } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "public-projects-sec-read-0073-000000000052"
-  },
-  {
-    "collection": "projects_sections_translations",
-    "action": "read",
-    "permissions": { "projects_sections_id": { "projects_id": { "status": { "_eq": "published" } } } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "public-projects-sectr-read-0074-00000000053"
-  },
-  {
-    "collection": "projects_impact_metrics",
-    "action": "read",
-    "permissions": { "projects_id": { "status": { "_eq": "published" } } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "public-projects-im-read-0075-0000-000000000054"
-  },
-  {
-    "collection": "projects_impact_metrics_translations",
-    "action": "read",
-    "permissions": { "projects_impact_metrics_id": { "projects_id": { "status": { "_eq": "published" } } } },
-    "validation": null,
-    "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "public-projects-imtr-read-0076-000000000055"
   },
   {
     "collection": "projects_services",
     "action": "read",
-    "permissions": { "project_id": { "status": { "_eq": "published" } } },
+    "permissions": {},
     "validation": null,
     "presets": null,
-    "fields": ["*"],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "public-projects-svc-read-0077-000000000056"
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-svc-read-0067-0000-000000000049"
+  },
+  {
+    "collection": "projects_services",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-svc-update-0069-00000000004b"
+  },
+  {
+    "collection": "projects_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-tr-create-0048-000000000035"
+  },
+  {
+    "collection": "projects_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-tr-delete-0050-000000000037"
+  },
+  {
+    "collection": "projects_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-tr-read-0047-0000-000000000034"
+  },
+  {
+    "collection": "projects_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-tr-update-0049-000000000036"
+  },
+  {
+    "collection": "projects",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-create-0044-000000000031"
+  },
+  {
+    "collection": "projects",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-delete-0046-000000000033"
+  },
+  {
+    "collection": "projects",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-read-0043-0000-000000000030"
+  },
+  {
+    "collection": "projects",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "he-projects-update-0045-000000000032"
   }
 ]

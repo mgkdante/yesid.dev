@@ -27,10 +27,14 @@ import type { ContentAdapter } from './types';
 import {
 	directusAdapter,
 	type DirectusProject,
+	type DirectusBlogPostRow,
 	type DirectusService,
+	toBlogPost,
 	toLocalizedString,
 	toProject,
 	toService,
+	resolveSvgFallbackName,
+	resolveAnimationDeterministic,
 } from './directus';
 
 describe('directusAdapter — structural contract', () => {
@@ -62,9 +66,8 @@ describe('directusAdapter — structural contract', () => {
 
 	it('un-implemented ports throw a clear TODO error (not silently return empty)', async () => {
 		// Tasks 10–14 progressively replace these throws with real impls.
-		// 18e Phase 7: services + projects ports are live; remaining ports below.
-		// Until then, fail loud when consumer code asks for an un-migrated port.
-		await expect(directusAdapter.blog.all()).rejects.toThrow(/not implemented/);
+		// 18f Phase 9: blog + morphShapes ports are live; only meta/techStack/content
+		// (non-metroSvg/morphShapes) remain as TODO stubs below.
 		await expect(directusAdapter.meta.site()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.techStack.all()).rejects.toThrow(/not implemented/);
 		await expect(directusAdapter.content.hero()).rejects.toThrow(/not implemented/);
@@ -252,7 +255,11 @@ describe('directus adapter — toProject', () => {
 				languages_code: 'en',
 				title: 'yesid.dev — Portfolio',
 				one_liner: 'Personal site',
-				description: 'A personal brand site.',
+				description: {
+					time: 1700000000000,
+					version: '2.31.2',
+					blocks: [{ id: 'b1', type: 'paragraph' as const, data: { text: 'A personal brand site.' } }],
+				},
 			},
 		],
 		sections: [],
@@ -280,11 +287,13 @@ describe('directus adapter — toProject', () => {
 		expect(p.status).toBe('private');
 	});
 
-	it('flattens translations to LocalizedString', () => {
+	it('flattens translations to LocalizedString / LocalizedBlockEditorDoc', () => {
 		const p = toProject(baseRow);
 		expect(p.title).toEqual({ en: 'yesid.dev — Portfolio' });
 		expect(p.oneLiner).toEqual({ en: 'Personal site' });
-		expect(p.description).toEqual({ en: 'A personal brand site.' });
+		// description is now LocalizedBlockEditorDoc — check block shape
+		expect(p.description.en.blocks[0].type).toBe('paragraph');
+		expect((p.description.en.blocks[0].data as { text: string }).text).toBe('A personal brand site.');
 	});
 
 	it('returns hero_image UUID as image field', () => {
@@ -310,18 +319,23 @@ describe('directus adapter — toProject', () => {
 	});
 
 	it('flattens sections sorted by sort + with translation flattening', () => {
+		const sectionContent = (text: string) => ({
+			time: 1700000000000,
+			version: '2.31.2',
+			blocks: [{ id: 'b1', type: 'paragraph' as const, data: { text } }],
+		});
 		const withSections: DirectusProject = {
 			...baseRow,
 			sections: [
 				{
 					id: 1,
 					sort: 1,
-					translations: [{ languages_code: 'en', title: 'Second', content: 'Two' }],
+					translations: [{ languages_code: 'en', title: 'Second', content: sectionContent('Two') }],
 				},
 				{
 					id: 2,
 					sort: 0,
-					translations: [{ languages_code: 'en', title: 'First', content: 'One' }],
+					translations: [{ languages_code: 'en', title: 'First', content: sectionContent('One') }],
 				},
 			],
 		};
@@ -329,6 +343,9 @@ describe('directus adapter — toProject', () => {
 		expect(p.sections.length).toBe(2);
 		expect(p.sections[0].title).toEqual({ en: 'First' });
 		expect(p.sections[1].title).toEqual({ en: 'Second' });
+		// content is now LocalizedBlockEditorDoc — verify block shape
+		expect(p.sections[0].content.en.blocks[0].type).toBe('paragraph');
+		expect(p.sections[1].content.en.blocks[0].type).toBe('paragraph');
 	});
 
 	it('flattens impact_metrics; impactMetric === impactMetrics[0]', () => {
@@ -390,5 +407,98 @@ describe('directus adapter — toProject', () => {
 	it('returns empty relatedServices when no junction rows', () => {
 		const p = toProject(baseRow);
 		expect(p.relatedServices).toEqual([]);
+	});
+});
+
+describe('directus.toBlogPost (pure mapping, AM2.5 flat fields)', () => {
+	// AM2.5: blog_posts is mono-language. Sample row has flat title + excerpt
+	// directly on the parent (NOT inside a translations array).
+	const sampleRow: DirectusBlogPostRow = {
+		id: 'sample-post',
+		status: 'published',
+		date_published: '2026-04-01T00:00:00Z',
+		sort: 0,
+		lang: 'en',
+		category: 'professional',
+		tags: ['sql'],
+		external: false,
+		url: null,
+		animation: 'draw',
+		cover_image: null,
+		svg_illustration: { id: 'pro-database' },
+		body: null,
+		title: 'Sample Post',
+		excerpt: 'Sample excerpt.',
+	};
+
+	it('flattens id → slug', () => {
+		expect(toBlogPost(sampleRow).slug).toBe('sample-post');
+	});
+
+	it('extracts date as YYYY-MM-DD only', () => {
+		expect(toBlogPost(sampleRow).date).toBe('2026-04-01');
+	});
+
+	it('reads flat title + excerpt directly (AM2.5)', () => {
+		const post = toBlogPost(sampleRow);
+		expect(post.title).toBe('Sample Post');
+		expect(post.excerpt).toBe('Sample excerpt.');
+	});
+
+	it('produces /blog/<slug> url for non-external post', () => {
+		expect(toBlogPost(sampleRow).url).toBe('/blog/sample-post');
+	});
+
+	it('falls through to deterministic fallback when svg_illustration is null', () => {
+		const noSvg: DirectusBlogPostRow = { ...sampleRow, svg_illustration: null };
+		const post = toBlogPost(noSvg);
+		expect(post.svg).toMatch(/^pro-/);
+	});
+
+	it('uses external url when external=true', () => {
+		const external: DirectusBlogPostRow = { ...sampleRow, external: true, url: 'https://linkedin.com/in/yesid' };
+		expect(toBlogPost(external).url).toBe('https://linkedin.com/in/yesid');
+	});
+
+	it('preserves tags array', () => {
+		const post = toBlogPost(sampleRow);
+		expect(post.tags).toEqual(['sql']);
+	});
+
+	it('handles empty date_published gracefully', () => {
+		const noDate: DirectusBlogPostRow = { ...sampleRow, date_published: null };
+		expect(toBlogPost(noDate).date).toBe('');
+	});
+});
+
+describe('resolveSvgFallbackName (deterministic)', () => {
+	it('returns same value for same slug + category', () => {
+		expect(resolveSvgFallbackName('foo', 'professional')).toBe(
+			resolveSvgFallbackName('foo', 'professional'),
+		);
+	});
+
+	it('professional → pro-* fallback', () => {
+		expect(resolveSvgFallbackName('foo', 'professional')).toMatch(/^pro-/);
+	});
+
+	it('personal → personal-* fallback', () => {
+		expect(resolveSvgFallbackName('foo', 'personal')).toMatch(/^personal-/);
+	});
+});
+
+describe('resolveAnimationDeterministic', () => {
+	it('honors explicit valid animation', () => {
+		expect(resolveAnimationDeterministic('any', 'morph')).toBe('morph');
+	});
+
+	it('falls back to deterministic when explicit invalid', () => {
+		expect(resolveAnimationDeterministic('any', 'invalid')).toMatch(/^(draw|morph|draw-fill)$/);
+	});
+
+	it('returns same value for same slug', () => {
+		expect(resolveAnimationDeterministic('foo', undefined)).toBe(
+			resolveAnimationDeterministic('foo', undefined),
+		);
 	});
 });

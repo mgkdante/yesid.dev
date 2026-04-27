@@ -1,4 +1,28 @@
 import type { Project, LocalizedString } from '$lib/types';
+import { wrapPlainText } from '@repo/shared';
+
+// ---------------------------------------------------------------------------
+// RawProject / RawProjectSection — static fixture types (#41 Task 78)
+//
+// The static fixtures store description and sections.content as plain
+// LocalizedString (readable author-facing strings). The static adapter
+// wraps them into LocalizedBlockEditorDoc via wrapPlainText before exposing
+// them as the public Project type. This separates authoring format (plain text)
+// from the public type contract (Block Editor JSON per locale).
+// ---------------------------------------------------------------------------
+
+/** Static-fixture shape for a project section. content is still LocalizedString. */
+export interface RawProjectSection {
+	title: LocalizedString;
+	content: LocalizedString;
+}
+
+/** Static-fixture shape for a project. description + sections.content are LocalizedString.
+ *  The static adapter maps RawProject → Project before returning from port methods. */
+export type RawProject = Omit<Project, 'description' | 'sections'> & {
+	description: LocalizedString;
+	sections: RawProjectSection[];
+};
 
 /** HTML `<title>` + `<meta description>` for the `/projects` route. Extracted
  *  in Task 17b-7k. */
@@ -62,7 +86,7 @@ export const projectsDetailContent = {
 // they will be filled in as content is translated (not in this slice).
 // One project is featured (surfaces on the home page), one is private (client NDA work
 // that exists in the data but is never rendered in public listings).
-const projects: readonly Project[] = [
+const projects: readonly RawProject[] = [
 	{
 		slug: 'yesid-dev',
 		title: { en: 'yesid.dev — Portfolio Site' },
@@ -240,7 +264,7 @@ const projects: readonly Project[] = [
  * Returns the project with the given slug, or undefined if none matches.
  * Slugs are unique by convention (enforced in data-integrity.test.ts).
  */
-export function getProjectBySlug(slug: string): Project | undefined {
+export function getProjectBySlug(slug: string): RawProject | undefined {
 	return projects.find((p) => p.slug === slug);
 }
 
@@ -248,7 +272,7 @@ export function getProjectBySlug(slug: string): Project | undefined {
  * Returns all projects marked as featured.
  * Featured projects appear in the home page showcase section.
  */
-export function getFeaturedProjects(): readonly Project[] {
+export function getFeaturedProjects(): readonly RawProject[] {
 	return projects.filter((p) => p.featured);
 }
 
@@ -256,7 +280,7 @@ export function getFeaturedProjects(): readonly Project[] {
  * Returns all projects that are not private.
  * Includes 'public' and 'wip' — both are safe to display to visitors.
  */
-export function getPublicProjects(): readonly Project[] {
+export function getPublicProjects(): readonly RawProject[] {
 	return projects.filter((p) => p.status !== 'private');
 }
 
@@ -274,7 +298,7 @@ export function getAllTags(): string[] {
  * Returns all non-private projects linked to a given service ID.
  * Used on service detail pages and the work listing to show related projects.
  */
-export function getProjectsByService(serviceId: string): readonly Project[] {
+export function getProjectsByService(serviceId: string): readonly RawProject[] {
 	return projects.filter(
 		(p) => p.status !== 'private' && p.relatedServices.includes(serviceId)
 	);
@@ -300,6 +324,34 @@ export function getAllStackItems(): string[] {
 		.filter((p) => p.status !== 'private')
 		.flatMap((p) => p.stack);
 	return [...new Set(stacks)].sort();
+}
+
+/**
+ * Converts a RawProject (plain LocalizedString description/sections) into a
+ * full Project (LocalizedBlockEditorDoc description/sections) by wrapping each
+ * locale's plain text through wrapPlainText.
+ *
+ * Call this at the boundary between the static fixtures and the public Project type —
+ * i.e., inside port methods (static adapter) or when passing fixture data to
+ * components that expect Project.
+ */
+export function rawProjectToProject(raw: RawProject): Project {
+	return {
+		...raw,
+		description: {
+			en: wrapPlainText(raw.description.en),
+			...(raw.description.fr !== undefined && { fr: wrapPlainText(raw.description.fr) }),
+			...(raw.description.es !== undefined && { es: wrapPlainText(raw.description.es) }),
+		},
+		sections: raw.sections.map((s) => ({
+			title: s.title,
+			content: {
+				en: wrapPlainText(s.content.en),
+				...(s.content.fr !== undefined && { fr: wrapPlainText(s.content.fr) }),
+				...(s.content.es !== undefined && { es: wrapPlainText(s.content.es) }),
+			},
+		})),
+	};
 }
 
 export { projects };

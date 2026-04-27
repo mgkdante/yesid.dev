@@ -11,8 +11,10 @@
 
 <BlogDetailPage
 	post={data.post}
-	html={data.html}
+	body={data.body}
 	svgContent={data.svgContent}
 	readingTime={data.readingTime}
+	wordCount={data.wordCount}
+	headings={data.headings}
 	postIndex={data.postIndex}
 />

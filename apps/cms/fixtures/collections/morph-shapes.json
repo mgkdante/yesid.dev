@@ -1,0 +1,34 @@
+[
+  {
+    "id": "triangle",
+    "label": "Triangle",
+    "path": "M24 8 L40 38 L8 38 Z",
+    "viewbox": "0 0 48 48",
+    "sort": 1,
+    "description": "Equilateral triangle, centered."
+  },
+  {
+    "id": "circle",
+    "label": "Circle",
+    "path": "M24 8 A16 16 0 1 1 23.99 8 Z",
+    "viewbox": "0 0 48 48",
+    "sort": 2,
+    "description": "Circle, centered."
+  },
+  {
+    "id": "square",
+    "label": "Square",
+    "path": "M10 10 L38 10 L38 38 L10 38 Z",
+    "viewbox": "0 0 48 48",
+    "sort": 3,
+    "description": "Square, centered."
+  },
+  {
+    "id": "hexagon",
+    "label": "Hexagon",
+    "path": "M24 7 L39 15.5 L39 32.5 L24 41 L9 32.5 L9 15.5 Z",
+    "viewbox": "0 0 48 48",
+    "sort": 4,
+    "description": "Hexagon, centered."
+  }
+]

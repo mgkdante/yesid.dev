@@ -19,6 +19,7 @@
 	import ProjectGlancePanel from './ProjectGlancePanel.svelte';
 	import ProjectGlancePanelMobile from './ProjectGlancePanelMobile.svelte';
 	import ProjectTocPill from './ProjectTocPill.svelte';
+	import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
@@ -209,7 +210,7 @@
 						index={i}
 						open={true}
 					>
-						<p class="section-body">{resolveLocale(section.content, 'en')}</p>
+						<div class="section-body"><BlockRenderer doc={resolveLocale(section.content, 'en')} /></div>
 					</CollapsibleSection>
 				</div>
 			{/each}

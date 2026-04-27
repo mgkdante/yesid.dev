@@ -17,6 +17,7 @@ import {
 	getAllTags,
 	getAllStackItems,
 	getServiceIdsForProjects,
+	rawProjectToProject,
 } from '$lib/content/projects';
 import {
 	services,
@@ -128,17 +129,17 @@ function withImageUuid(project: Project): Project {
 export const staticAdapter: ContentAdapter = {
 	projects: {
 		all: async () =>
-			parsePort('projects.all', z.array(ProjectSchema), projects.map(withImageUuid)),
+			parsePort('projects.all', z.array(ProjectSchema), projects.map((r) => withImageUuid(rawProjectToProject(r)))),
 		bySlug: async (slug) => {
 			const p = getProjectBySlug(slug);
-			return parsePort('projects.bySlug', ProjectSchema.optional(), p ? withImageUuid(p) : undefined);
+			return parsePort('projects.bySlug', ProjectSchema.optional(), p ? withImageUuid(rawProjectToProject(p)) : undefined);
 		},
 		featured: async () =>
-			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects().map(withImageUuid)),
+			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects().map((r) => withImageUuid(rawProjectToProject(r)))),
 		public: async () =>
-			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects().map(withImageUuid)),
+			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects().map((r) => withImageUuid(rawProjectToProject(r)))),
 		byService: async (serviceId) =>
-			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId).map(withImageUuid)),
+			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId).map((r) => withImageUuid(rawProjectToProject(r)))),
 		// Utility ports — return primitives/strings, no schema needed (spec D2).
 		allTags: async () => getAllTags(),
 		allStackItems: async () => getAllStackItems(),
@@ -159,6 +160,11 @@ export const staticAdapter: ContentAdapter = {
 	blog: {
 		all: async () => parsePort('blog.all', z.array(BlogPostSchema), blogPosts),
 		bySlug: async (slug) => parsePort('blog.bySlug', BlogPostSchema.optional(), getPostBySlug(slug)),
+		bodyBySlug: async () => {
+			// Static adapter has no Block Editor body; return null. Consumers fall back
+			// to the legacy html() path during 18f.
+			return null;
+		},
 		byCategory: async (category) =>
 			parsePort('blog.byCategory', z.array(BlogPostSchema), getPostsByCategory(category)),
 		byTag: async (category, tag) =>
@@ -254,5 +260,16 @@ export const staticAdapter: ContentAdapter = {
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
 		metroSvg: async () => metroSvgRaw,
+		morphShapes: async () => {
+			// Static fallback: derive 4 hardcoded shapes from utils/shapes.ts.
+			const { SHAPES } = await import('$lib/utils/shapes');
+			return Object.entries(SHAPES).map(([id, path], idx) => ({
+				id,
+				label: id.charAt(0).toUpperCase() + id.slice(1),
+				path,
+				viewbox: '0 0 48 48',
+				sort: idx + 1,
+			}));
+		},
 	},
 };
