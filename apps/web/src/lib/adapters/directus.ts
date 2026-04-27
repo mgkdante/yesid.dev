@@ -33,6 +33,7 @@ import type {
 	ProjectSection,
 	Service,
 	ServiceSection,
+	TechStackItem,
 } from '$lib/types';
 import { createQueuedFetch } from './directus-queue';
 import { parsePort } from '$lib/schemas/parse';
@@ -41,6 +42,7 @@ import { ServiceSchema } from '$lib/schemas/service';
 import { BlogPostSchema } from '$lib/schemas/blog';
 import { LocaleSchema } from '$lib/schemas/shared';
 import { MorphShapeSchema } from '$lib/schemas/morph-shape';
+import { TechStackItemSchema } from '$lib/schemas/tech-stack';
 import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml } from '@repo/shared';
 
 // ---------------------------------------------------------------------------
@@ -604,6 +606,45 @@ const todo = (where: string): never => {
 };
 
 // ---------------------------------------------------------------------------
+// Tech-stack row shapes — slice-18g Phase 4 Task 8.
+//
+// Mirrors the tech_stack Directus collection: each item has flat scalar fields
+// plus a `translations` alias expanding to rows keyed by languages_code.
+// Services + projects are M2M junctions (tech_stack_services, tech_stack_projects).
+// ---------------------------------------------------------------------------
+
+interface DirectusTechStackTranslation {
+	languages_code: 'en' | 'fr' | 'es';
+	what_it_is: BlockEditorDoc | null;
+	what_i_use_it_for: BlockEditorDoc | null;
+	why_i_use_it_instead: BlockEditorDoc | null;
+}
+
+interface DirectusTechStackRow {
+	id: string;
+	name: string;
+	icon: string | null;
+	status: 'draft' | 'published' | 'archived';
+	sort: number;
+	translations: readonly DirectusTechStackTranslation[];
+	services?: ReadonlyArray<{ services_id: string }>;
+	projects?: ReadonlyArray<{ projects_id: string }>;
+}
+
+export function toTechStackItem(row: DirectusTechStackRow): TechStackItem {
+	return {
+		id: row.id,
+		name: row.name,
+		icon: row.icon ?? '',
+		what_it_is: toLocalizedBlockEditorDoc(row.translations, 'what_it_is'),
+		what_i_use_it_for: toLocalizedBlockEditorDoc(row.translations, 'what_i_use_it_for'),
+		why_i_use_it_instead: toLocalizedBlockEditorDoc(row.translations, 'why_i_use_it_instead'),
+		relatedServices: row.services?.map((s) => s.services_id) ?? [],
+		relatedProjects: row.projects?.map((p) => p.projects_id) ?? [],
+	};
+}
+
+// ---------------------------------------------------------------------------
 // Assets fetch — direct /assets/<uuid> reads, NOT through @directus/sdk.
 //
 // Slice 18d Phase 8 (Task 28-33): the metro-svg consumer flip stops inlining
@@ -1072,17 +1113,71 @@ export const directusAdapter: ContentAdapter = {
 	},
 
 	techStack: {
-		all: async () => todo('techStack.all'),
-		byId: async () => todo('techStack.byId'),
-		byLayer: async () => todo('techStack.byLayer'),
-		byDomain: async () => todo('techStack.byDomain'),
-		connections: async () => todo('techStack.connections'),
-		incomingConnections: async () => todo('techStack.incomingConnections'),
-		outgoingRelations: async () => todo('techStack.outgoingRelations'),
-		incomingRelations: async () => todo('techStack.incomingRelations'),
-		content: async () => todo('techStack.content'),
-		allScenarios: async () => todo('techStack.allScenarios'),
-		scenarioForDomains: async () => todo('techStack.scenarioForDomains'),
+		all: async () => {
+			const rows = (await client().request(
+				readItems('tech_stack', {
+					fields: [
+						'id',
+						'name',
+						'icon',
+						'status',
+						'sort',
+						{ translations: ['languages_code', 'what_it_is', 'what_i_use_it_for', 'why_i_use_it_instead'] } as unknown as keyof DirectusTechStackRow,
+						{ services: ['services_id'] } as unknown as keyof DirectusTechStackRow,
+						{ projects: ['projects_id'] } as unknown as keyof DirectusTechStackRow,
+					],
+					filter: { status: { _eq: 'published' } },
+					sort: ['sort'],
+					limit: -1,
+				}),
+			)) as unknown as DirectusTechStackRow[];
+			return parsePort('techStack.all', z.array(TechStackItemSchema), rows.map(toTechStackItem));
+		},
+
+		byId: async (id) => {
+			const rows = (await client().request(
+				readItems('tech_stack', {
+					fields: [
+						'id',
+						'name',
+						'icon',
+						'status',
+						'sort',
+						{ translations: ['languages_code', 'what_it_is', 'what_i_use_it_for', 'why_i_use_it_instead'] } as unknown as keyof DirectusTechStackRow,
+						{ services: ['services_id'] } as unknown as keyof DirectusTechStackRow,
+						{ projects: ['projects_id'] } as unknown as keyof DirectusTechStackRow,
+					],
+					filter: { _and: [{ id: { _eq: id } }, { status: { _eq: 'published' } }] },
+					limit: 1,
+				}),
+			)) as unknown as DirectusTechStackRow[];
+			const item = rows[0] ? toTechStackItem(rows[0]) : undefined;
+			return parsePort('techStack.byId', TechStackItemSchema.optional(), item);
+		},
+
+		content: async (id) => {
+			// Fetch the item and concatenate the 3 Block Editor docs as HTML.
+			// Uses the English locale (the always-present fallback) for the
+			// legacy `content()` callsite that expects a string.
+			const rows = (await client().request(
+				readItems('tech_stack', {
+					fields: [
+						'id',
+						'status',
+						{ translations: ['languages_code', 'what_it_is', 'what_i_use_it_for', 'why_i_use_it_instead'] } as unknown as keyof DirectusTechStackRow,
+					],
+					filter: { _and: [{ id: { _eq: id } }, { status: { _eq: 'published' } }] },
+					limit: 1,
+				}),
+			)) as unknown as DirectusTechStackRow[];
+			if (!rows[0]) return '';
+			const item = toTechStackItem(rows[0]);
+			return [
+				serializeBlocksToHtml(item.what_it_is.en),
+				serializeBlocksToHtml(item.what_i_use_it_for.en),
+				serializeBlocksToHtml(item.why_i_use_it_instead.en),
+			].join('\n');
+		},
 	},
 
 	content: {
