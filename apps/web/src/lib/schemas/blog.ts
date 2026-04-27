@@ -7,17 +7,18 @@
 // (no automated tooling currently enforces a date format on blog frontmatter).
 
 import { z } from 'zod';
-import { LocalizedStringSchema, LocaleSchema } from './shared';
+import { LocaleSchema } from './shared';
 import type { BlogPost, BlogCategory, BlogAnimation } from '$lib/types';
 
 export const BlogCategorySchema = z.enum(['professional', 'personal']);
 
 export const BlogAnimationSchema = z.enum(['draw', 'morph', 'draw-fill']);
 
+// AM2.5: title + excerpt are flat strings (blog is mono-language; no translations junction).
 export const BlogPostSchema = z.object({
 	slug: z.string().min(1),
-	title: LocalizedStringSchema,
-	excerpt: LocalizedStringSchema,
+	title: z.string().min(1),
+	excerpt: z.string().min(1),
 	date: z.string(),
 	lang: LocaleSchema,
 	category: BlogCategorySchema,

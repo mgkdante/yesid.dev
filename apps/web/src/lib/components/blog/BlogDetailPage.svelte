@@ -7,16 +7,15 @@
   Same architectural role as ProjectDetailPage.
 -->
 <script lang="ts">
-  import type { BlogPost } from '$lib/types';
+  import type { BlogPost, BlockEditorDoc, TocHeading } from '$lib/types';
   import { Separator } from '$lib/components/ui/separator';
   import { StickyPanel } from '$lib/components/brand';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
-  import TableOfContents from '$lib/components/shared/TableOfContents.svelte';
   import BlogDetailHeader from './BlogDetailHeader.svelte';
   import BlogContent from './BlogContent.svelte';
   import BlogTocPill from './BlogTocPill.svelte';
+  import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
   import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
   import { resolveLocale } from '$lib/utils/locale';
   import { blogDetailContent } from '$lib/content/blog';
@@ -31,48 +30,25 @@
 
   let {
     post,
-    html,
+    body,
     svgContent = '',
     readingTime = 0,
-    postIndex = 1
+    wordCount = 0,
+    headings = [],
+    postIndex = 1,
   }: {
     post: BlogPost;
-    html: string;
+    body: BlockEditorDoc;
     svgContent?: string;
     readingTime?: number;
+    wordCount?: number;
+    headings?: readonly TocHeading[];
     postIndex?: number;
   } = $props();
 
   const accentColor = $derived(
     post.category === 'personal' ? 'var(--accent)' : 'var(--primary)'
   );
-
-  // Bind hidden TOC to get processed HTML (with heading IDs injected)
-  let tocRef: TableOfContents | undefined = $state();
-  let processedHtml = $derived(
-    tocRef ? tocRef.getProcessedHtml() : html
-  );
-
-  interface TocHeading {
-    id: string;
-    text: string;
-    level: number;
-  }
-
-  // Parse headings from processed HTML for TOC + pill
-  const headings = $derived.by((): TocHeading[] => {
-    if (!browser) return [];
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(processedHtml, 'text/html');
-    const result: TocHeading[] = [];
-    doc.querySelectorAll('h2, h3, h4').forEach((el) => {
-      const id = el.id;
-      const text = el.textContent?.trim() ?? '';
-      const level = parseInt(el.tagName[1]);
-      if (id && text) result.push({ id, text, level });
-    });
-    return result;
-  });
 
   // Reading mode — dims everything except left panel + blog content
   let readingMode = $state(false);
@@ -95,11 +71,6 @@
     }
     return count;
   });
-
-  // Word count for annotations
-  const wordCount = $derived(
-    html.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length
-  );
 
   // IntersectionObserver for heading tracking (desktop TOC)
   onMount(() => {
@@ -138,11 +109,6 @@
 
   <!-- Edge-to-edge hazard stripes -->
   <Separator variant="hazard" />
-
-  <!-- Hidden: TableOfContents just for getProcessedHtml() heading ID injection -->
-  <div class="hidden">
-    <TableOfContents bind:this={tocRef} {html} />
-  </div>
 
   <!-- Body: simple centered 2-column grid (TOC | content) -->
   <div class="body-grid">
@@ -222,14 +188,14 @@
     <!-- Center: prose content -->
     <div class="content-column">
       <BlogContent {accentColor}>
-        {@html processedHtml}
+        <BlockRenderer doc={body} />
       </BlogContent>
     </div>
   </div>
 </article>
 
 <!-- Mobile floating TOC pill -->
-<BlogTocPill {headings} />
+<BlogTocPill headings={headings as TocHeading[]} />
 
 <style>
   /* ── Centered 2-column body grid ───────────────────────── */

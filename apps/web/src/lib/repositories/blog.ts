@@ -7,6 +7,7 @@ import type {
 	BlogAnimation,
 	Locale,
 } from '$lib/types';
+import type { BlockEditorDoc } from '@repo/shared';
 
 export async function getAllPosts(): Promise<readonly BlogPost[]> {
 	return adapter.blog.all();
@@ -18,6 +19,10 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | undefined>
 
 export async function getPostHtml(slug: string): Promise<string> {
 	return adapter.blog.html(slug);
+}
+
+export async function getPostBody(slug: string): Promise<BlockEditorDoc | null> {
+	return adapter.blog.bodyBySlug(slug);
 }
 
 export async function getPostsByCategory(

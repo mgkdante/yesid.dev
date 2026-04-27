@@ -1,13 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import RelatedProjects from './RelatedProjects.svelte';
+import type { Project } from '$lib/types';
 
-const mockProjects = [
+const emptyDoc = { time: 0, version: '2.31.2', blocks: [] as never[] };
+
+const mockProjects: Project[] = [
 	{
 		slug: 'transit-data-pipeline',
 		title: { en: 'Transit Data Pipeline' },
 		oneLiner: { en: 'ELT for transit' },
-		description: { en: '' },
+		description: { en: emptyDoc },
 		stack: [],
 		tags: [],
 		status: 'public' as const,
@@ -19,7 +22,7 @@ const mockProjects = [
 		slug: 'lorem-query-optimizer',
 		title: { en: 'Query Optimizer' },
 		oneLiner: { en: 'SQL analysis' },
-		description: { en: '' },
+		description: { en: emptyDoc },
 		stack: [],
 		tags: [],
 		status: 'public' as const,

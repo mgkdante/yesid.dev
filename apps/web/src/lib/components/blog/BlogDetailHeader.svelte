@@ -58,7 +58,7 @@
 
   // Highlight first tag keyword in title
   const titleParts = $derived.by(() => {
-    const titleText = resolveLocale(post.title, 'en');
+    const titleText = post.title;
     const keyword = post.tags[0];
     if (!keyword) return [{ text: titleText, highlight: false }];
 

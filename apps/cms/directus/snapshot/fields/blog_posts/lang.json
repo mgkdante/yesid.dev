@@ -1,0 +1,59 @@
+{
+  "collection": "blog_posts",
+  "field": "lang",
+  "type": "string",
+  "meta": {
+    "collection": "blog_posts",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "lang",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown",
+    "note": "Language of the body. Each post is mono-language; use translations junction for title/excerpt across locales.",
+    "options": {
+      "choices": [
+        {
+          "text": "English",
+          "value": "en"
+        },
+        {
+          "text": "Français",
+          "value": "fr"
+        },
+        {
+          "text": "Español",
+          "value": "es"
+        }
+      ]
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 4,
+    "special": null,
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "lang",
+    "table": "blog_posts",
+    "data_type": "character varying",
+    "default_value": "en",
+    "max_length": 8,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

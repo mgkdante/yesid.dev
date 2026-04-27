@@ -5,7 +5,7 @@ import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 // Universal load (runs both SSR + client). SSR guarantees bots and social
 // crawlers see populated <head> tags on first byte — including for pages that
 // set `export const ssr = false` on their own +page.ts (e.g., the home page
-// disables SSR for GSAP/Lottie compatibility but the layout still SSRs).
+// disables SSR for GSAP compatibility but the layout still SSRs).
 //
 // Locale today is always DEFAULT_LOCALE (EN). When FR/ES ship, a locale
 // resolver hook (accept-language, cookie, or URL segment depending on the

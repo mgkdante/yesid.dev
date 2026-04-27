@@ -312,3 +312,171 @@ describe('directusAdapter.services — regression after M2M switch', () => {
 		expect(junctionCall).toBeTruthy();
 	});
 });
+
+// ---------------------------------------------------------------------------
+// blog port (slice-18 18f Phase 9 — Task 61)
+//
+// Each method asserts the captured fetch URL: collection path, expected
+// filter shape, sort, and limit. Methods that chain via byCategory (tagsForCategory,
+// languagesForCategory) assert at least one call to /items/blog_posts with the
+// category filter.
+// ---------------------------------------------------------------------------
+
+/** Minimal published blog post row returned by the mock. */
+function blogRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+	return {
+		id: 'test-post',
+		status: 'published',
+		date_published: '2026-04-01T00:00:00Z',
+		sort: 0,
+		lang: 'en',
+		category: 'professional',
+		tags: ['sql'],
+		external: false,
+		url: null,
+		animation: 'draw',
+		cover_image: null,
+		svg_illustration: { id: 'pro-database' },
+		body: null,
+		title: 'Test Post',
+		excerpt: 'Test excerpt.',
+		...overrides,
+	};
+}
+
+describe('directusAdapter.blog — fetch contract', () => {
+	it('blog.all hits /items/blog_posts filtered by status published, sorted -date_published', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([blogRow()]));
+
+		await directusAdapter.blog.all();
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/blog_posts');
+		const filter = decodeURIComponent(search.get('filter') ?? '');
+		expect(filter).toContain('status');
+		expect(filter).toContain('_eq');
+		expect(filter).toContain('published');
+		expect(decodeURIComponent(search.get('sort') ?? '')).toContain('-date_published');
+		expect(search.get('limit')).toBe('-1');
+	});
+
+	it('blog.bySlug filters _and[id._eq] AND _and[status._eq=published]', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([blogRow()]));
+
+		await directusAdapter.blog.bySlug('my-slug');
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/blog_posts');
+		const filter = decodeURIComponent(search.get('filter') ?? '');
+		expect(filter).toContain('_and');
+		expect(filter).toContain('id');
+		expect(filter).toContain('my-slug');
+		expect(filter).toContain('status');
+		expect(filter).toContain('published');
+	});
+
+	it('blog.bodyBySlug requests only the body field', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([{ body: null }]));
+
+		await directusAdapter.blog.bodyBySlug('my-slug');
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/blog_posts');
+		const fields = decodeURIComponent(search.get('fields') ?? '');
+		expect(fields).toBe('body');
+	});
+
+	it('blog.byCategory filters category._eq AND status._eq=published', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([blogRow()]));
+
+		await directusAdapter.blog.byCategory('professional');
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/blog_posts');
+		const filter = decodeURIComponent(search.get('filter') ?? '');
+		expect(filter).toContain('category');
+		expect(filter).toContain('professional');
+		expect(filter).toContain('status');
+		expect(filter).toContain('published');
+	});
+
+	it('blog.byTag filters category + status + tags._contains', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([blogRow()]));
+
+		await directusAdapter.blog.byTag('professional', 'sql');
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/blog_posts');
+		const filter = decodeURIComponent(search.get('filter') ?? '');
+		expect(filter).toContain('category');
+		expect(filter).toContain('professional');
+		expect(filter).toContain('status');
+		expect(filter).toContain('published');
+		expect(filter).toContain('tags');
+		expect(filter).toContain('_contains');
+		expect(filter).toContain('sql');
+	});
+
+	it('blog.tagsForCategory chains via byCategory — hits /items/blog_posts with category filter', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([blogRow({ tags: ['sql', 'data'] })]));
+
+		const tags = await directusAdapter.blog.tagsForCategory('professional');
+
+		expect(sharedMockFetch).toHaveBeenCalled();
+		const raw = sharedMockFetch.mock.calls[0][0];
+		const url = typeof raw === 'string' ? new URL(raw) : (raw as URL);
+		expect(url.pathname).toBe('/items/blog_posts');
+		const filter = decodeURIComponent(url.searchParams.get('filter') ?? '');
+		expect(filter).toContain('professional');
+		expect(tags).toContain('sql');
+		expect(tags).toContain('data');
+	});
+
+	it('blog.languagesForCategory chains via byCategory — hits /items/blog_posts with category filter', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([blogRow({ lang: 'en' })]));
+
+		const langs = await directusAdapter.blog.languagesForCategory('professional');
+
+		expect(sharedMockFetch).toHaveBeenCalled();
+		const raw = sharedMockFetch.mock.calls[0][0];
+		const url = typeof raw === 'string' ? new URL(raw) : (raw as URL);
+		expect(url.pathname).toBe('/items/blog_posts');
+		const filter = decodeURIComponent(url.searchParams.get('filter') ?? '');
+		expect(filter).toContain('professional');
+		expect(langs).toContain('en');
+	});
+
+	it('blog.latest uses limit=3 and category filter', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([blogRow(), blogRow({ id: 'post-2' }), blogRow({ id: 'post-3' })]));
+
+		await directusAdapter.blog.latest(3, 'personal');
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/blog_posts');
+		expect(search.get('limit')).toBe('3');
+		const filter = decodeURIComponent(search.get('filter') ?? '');
+		expect(filter).toContain('personal');
+		expect(filter).toContain('published');
+	});
+});
+
+// ---------------------------------------------------------------------------
+// content.morphShapes (slice-18 18f Phase 9 — Task 61)
+// ---------------------------------------------------------------------------
+
+describe('directusAdapter.content.morphShapes — fetch contract', () => {
+	it('hits /items/morph_shapes with sort=sort and limit=-1', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				{ id: 'triangle', label: 'Triangle', path: 'M24 8 L40 38 L8 38 Z', viewbox: '0 0 48 48', sort: 0 },
+			]),
+		);
+
+		await directusAdapter.content.morphShapes();
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/morph_shapes');
+		expect(decodeURIComponent(search.get('sort') ?? '')).toContain('sort');
+		expect(search.get('limit')).toBe('-1');
+	});
+});

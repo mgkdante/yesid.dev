@@ -69,8 +69,8 @@
 		if (searchQuery.trim()) {
 			const q = searchQuery.trim().toLowerCase();
 			result = result.filter((p) => {
-				const title = resolveLocale(p.title, 'en').toLowerCase();
-				const excerpt = resolveLocale(p.excerpt, 'en').toLowerCase();
+				const title = p.title.toLowerCase();
+				const excerpt = p.excerpt.toLowerCase();
 				const tags = p.tags.join(' ').toLowerCase();
 				return title.includes(q) || excerpt.includes(q) || tags.includes(q);
 			});
