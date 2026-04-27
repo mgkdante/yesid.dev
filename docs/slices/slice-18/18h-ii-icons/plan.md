@@ -20,28 +20,39 @@ Estimated effort: **0.5-1 session** (most patterns reuse 18g; the migration step
 
 **Exit gate:** Simple Iconify Picker extension is installed in `apps/cms`, committed to git, deployed to Railway, and visible as an interface option in Data Studio's field-edit screen. D-AMEND-1 honored.
 
-### Task 0.1: Locate the npm package + install
+### Task 0.1: Add extension to Dockerfile
 
-```bash
-cd /c/Users/otalo/Yesito/Projects/yesid.dev/apps/cms
-# Find the package — check dirextensions.com listing or its GitHub for the npm name.
-# Likely candidates (verify before installing):
-#   - directus-extension-simple-iconify-picker
-#   - @<scope>/directus-extension-iconify-picker
-bun add <verified-package-name>
+> **Correction (verified pre-implementation):** The original plan said `bun add <package>`. That is
+> wrong. `apps/cms/package.json` is `@repo/cms` — a workspace package for scripts (sync, seed,
+> migrate), NOT the Directus runtime. The Directus runtime is the `directus/directus:11.17.3` Docker
+> image that Railway builds from `apps/cms/Dockerfile`. Adding the extension to the workspace package
+> via `bun add` would not install it into the Directus container and Directus would never discover it.
+> The correct mechanism is a Dockerfile `RUN npm install` line — mirroring the existing
+> `directus-extension-sync@3.0.6` pattern — so the extension lands in `/directus/node_modules` AND
+> `/directus/package.json.dependencies` (both required for Directus 11 auto-discovery; see Dockerfile
+> comment block lines 20-24 for the empirical context).
+
+Verified package name (npm registry, Dec 2025): `simple-iconify-picker@1.0.1`
+- GitHub: https://github.com/Sedatb23/directus-simple-iconify-picker
+- npm: `simple-iconify-picker` (NOT `directus-extension-iconify-picker` — that name returns 404)
+- Extension type: bundle (interface `iconify-picker` + endpoint `iconify-proxy`)
+- Host constraint: `^10.10.0` — see Task 0.3 and research.md § P3 for risk note
+
+Add a second `RUN npm install` line to `apps/cms/Dockerfile` after the existing sync install:
+
+```dockerfile
+# Install Simple Iconify Picker (slice 18h-ii) — typeahead UX for icons.iconify_id field.
+# Extension declares host ^10.10.0; runtime is 11.17.3. Compatibility unverified at install
+# time — empirical Railway boot is the gate. If Directus rejects it, decisions.md Q-AMEND
+# captures fork-or-replace options.
+RUN npm install --no-audit --no-fund simple-iconify-picker@1.0.1
 ```
 
-The extension files land in `node_modules/<package>` and Directus's runtime auto-discovers extensions in `node_modules` matching the `directus-extension-*` keyword on its package.json. **No EXTENSIONS_PATH env var change needed** — Directus 11 supports npm-installed extensions natively.
-
-Confirm install:
-```bash
-ls apps/cms/node_modules/ | grep iconify
-cat apps/cms/node_modules/<package>/package.json | grep -E 'directus:extension|main'
-```
+Pin to exact `1.0.1` — never use a floating version range (Directus extensions can break on minor bumps).
 
 ### Task 0.2: Commit + Railway deploy
 
-The package install updates `apps/cms/package.json` + `apps/cms/bun.lock` (or repo-root `bun.lock` depending on workspace setup). Commit both. Push. Railway auto-deploys.
+Commit only `apps/cms/Dockerfile` (no workspace package.json or bun.lock change — extension lives in the Docker image, not the monorepo workspace). Push. Railway auto-rebuilds the `apps/cms` image.
 
 After deploy, verify Directus boots cleanly + the new interface appears in admin → Settings → Data Model → any field's interface dropdown:
 
@@ -57,17 +68,33 @@ The picker is bound to a field via the field's `meta.interface` value (the exten
 - Extension's README on dirextensions.com / GitHub
 - Or by adding a test field in Data Studio, picking the picker, then `cd apps/cms && bun run sync:pull --collections-only` to see the resulting JSON
 
-Document the exact `meta.interface` value here:
+The verified binding for `icons.iconify_id` (from the extension's `package.json`
+`directus:extension.entries[0].name`):
 
+```json
+{
+  "meta": {
+    "interface": "iconify-picker",
+    "options": {
+      "defaultCollection": "logos",
+      "allowedCollections": "logos, skill-icons, devicon, vscode-icons, mdi",
+      "previewSize": 24
+    }
+  }
+}
 ```
-meta.interface: "<extension-interface-id>"
-meta.options: { ... }  // any picker config (default collection, restrict to set, etc.)
-```
+
+Notes on option values:
+- `defaultCollection`: overriding the extension default (`mdi`) to `logos` — first-choice set for
+  tech-stack icons given its broad coverage of dev tooling logos
+- `allowedCollections`: comma-separated string per the README; `logos + skill-icons + devicon +
+  vscode-icons` cover the tech-stack universe; `mdi` included as fallback for any generic icons
+- `previewSize`: 24px (extension default; fine for the admin UX)
 
 This will be hardcoded in `apps/cms/directus/snapshot/fields/icons/iconify_id.json` in Phase 2.
 
 ```bash
-git add apps/cms/package.json bun.lock docs/slices/slice-18/18h-ii-icons/plan.md
+git add apps/cms/Dockerfile docs/slices/slice-18/18h-ii-icons/plan.md docs/slices/slice-18/18h-ii-icons/research.md
 git commit -m "feat(slice-18 18h-ii Phase 0): install simple-iconify-picker community extension (per D-AMEND-1)"
 git push
 ```

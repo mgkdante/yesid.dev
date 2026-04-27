@@ -64,19 +64,37 @@ curl -s -I 'https://cms.yesid.dev/assets/<uuid>'
 
 Ref 18d's pattern: `directus_files` Public read is folder-scoped (`folder._eq=<id>`). May need a dedicated `icons` folder in directus_files + filter rule.
 
-## P3 — Community Directus extension search for Iconify picker (PENDING)
+## P3 — Community Directus extension search for Iconify picker (RESOLVED)
 
-**Question:** does the Directus marketplace have a maintained Iconify picker interface that would close the Q5 typeahead UX gap without a custom extension?
+**Resolution:** `simple-iconify-picker@1.0.1` from `Sedatb23/directus-simple-iconify-picker`
 
-**Why it matters:** D11 amendment vs. wholesale custom extension build.
+| Attribute | Value |
+|---|---|
+| npm package | `simple-iconify-picker` |
+| Version pinned | `1.0.1` (Dec 2025) |
+| GitHub | https://github.com/Sedatb23/directus-simple-iconify-picker |
+| Extension type | bundle (interface `iconify-picker` + endpoint `iconify-proxy`) |
+| License | MIT |
+| Listed on | dirextensions.com (Directus marketplace) |
 
-**How to probe:**
+**Maintenance signal — RISK:**
+Brand new extension (initial commit 2025-12-28, v1.0.1 published 2025-12-29). Zero stars, zero open
+issues, single maintainer (sedatb23). Low bus factor; no track record of patch velocity. If the
+extension stalls or breaks on a Directus upgrade, the fork-or-replace path is documented in
+`decisions.md` as Q-AMEND.
 
-- Search https://directus.io/marketplace for "iconify"
-- Check community Discord / GitHub Discussions
-- Evaluate any candidates against: maintenance status (last commit date), star count, Directus 11.x compat
+**Host constraint — RISK:**
+Extension declares `"directus:extension.host": "^10.10.0"`. Our runtime is `directus/directus:11.17.3`.
+The semver range does not cleanly satisfy 11.x. The README claims "Directus 10.0.0 or higher" and the
+extension appears on dirextensions.com (the Directus marketplace), suggesting the maintainer did not
+bump the host field on v1.0.1 — likely an oversight. Directus 11 compatibility is unverified at
+install time. The empirical gate is Railway boot after the Dockerfile change: if the extension loads
+and appears in Data Studio's interface dropdown, the host constraint is not enforced strictly. If
+Directus rejects it, `decisions.md` Q-AMEND captures fork-or-replace options.
 
-Document findings. If a clean candidate exists with active maintenance, propose D11 amendment to allow this specific extension. If none, file the GH issue for a custom-built picker as a future micro-slice.
+**Decision:** per D-AMEND-1, a community marketplace extension is acceptable for this slice.
+Install mechanism: Dockerfile `RUN npm install` (see `apps/cms/Dockerfile` — mirrors
+`directus-extension-sync@3.0.6` pattern). No custom build required at this time.
 
 ## P4 — Schema migration mechanics for tech_stack.icon (PENDING)
 
