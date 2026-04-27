@@ -2,6 +2,17 @@
 // Prepare tokens.json for ingestion into Figma Variables.
 // Output: a flat FigmaVariable[] array on stdout. Status messages on stderr.
 // A separate orchestration step consumes the JSON and calls the Figma MCP.
+//
+// Naming convention (read before consuming this output):
+//   Variable names are FULL PATHS with collection prefix retained
+//   (e.g. `color/primary`, `shadow/card`, `radius/sm`, `text/hero`).
+//   Color brand/dark/light buckets are the only exception — they collapse
+//   to `color/<name>` per colorBucketFor() below.
+//
+//   DO NOT strip prefixes downstream. In particular: `shadow/card` and
+//   `color/card` look distinct here; stripping both to `card` collides
+//   them and breaks bound-fill operations on the Figma side. See
+//   __tests__/push-to-figma.test.ts for the regression contract.
 
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
