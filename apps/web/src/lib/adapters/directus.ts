@@ -20,9 +20,14 @@ import { z } from 'zod';
 
 import type { ContentAdapter } from './types';
 import type {
+	BlockEditorDoc,
+	BlogAnimation,
+	BlogCategory,
+	BlogPost,
 	ImpactMetric,
 	Locale,
 	LocalizedString,
+	MorphShape,
 	Project,
 	ProjectSection,
 	Service,
@@ -32,7 +37,9 @@ import { createQueuedFetch } from './directus-queue';
 import { parsePort } from '$lib/schemas/parse';
 import { ProjectSchema } from '$lib/schemas/project';
 import { ServiceSchema } from '$lib/schemas/service';
-import { assetIdFor } from '@repo/shared';
+import { BlogPostSchema } from '$lib/schemas/blog';
+import { MorphShapeSchema } from '$lib/schemas/morph-shape';
+import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml } from '@repo/shared';
 
 // ---------------------------------------------------------------------------
 // Directus schema — mirrors yesid.dev-cms PR #5 + #6 as applied at cms.yesid.dev.
@@ -154,6 +161,39 @@ export interface DirectusProject {
 	services?: DirectusProjectsServicesRow[];
 }
 
+// ---------------------------------------------------------------------------
+// Blog row shapes + mapping (slice-18 18f, AM2.5 — flat title+excerpt, no
+// blog_posts_translations junction). The parent row carries `lang` (the i18n
+// primitive — blog is mono-language end-to-end) and exposes `title` + `excerpt`
+// as plain strings.
+// ---------------------------------------------------------------------------
+
+export interface DirectusBlogPostRow {
+	id: string;
+	status: 'draft' | 'published' | 'archived';
+	date_published: string | null;
+	sort: number | null;
+	lang: 'en' | 'fr' | 'es';
+	category: 'professional' | 'personal';
+	tags: readonly string[] | null;
+	external: boolean;
+	url: string | null;
+	cover_image: { id: string } | string | null;
+	svg_illustration: { id: string; label?: string; category?: string; file?: { id: string } } | string | null;
+	animation: 'draw' | 'morph' | 'draw-fill';
+	title: string;       // AM2.5: flat field on parent
+	excerpt: string;     // AM2.5: flat field on parent
+	body: BlockEditorDoc | null;
+}
+
+export interface DirectusIllustrationRow {
+	id: string;
+	label?: string;
+	category?: string;
+	sort?: number | null;
+	file: { id: string } | string;
+}
+
 interface Schema {
 	services: DirectusService[];
 	projects: DirectusProject[];
@@ -166,6 +206,10 @@ interface Schema {
 	projects_sections: DirectusProjectSectionRow[];
 	projects_impact_metrics: DirectusProjectImpactMetricRow[];
 	projects_services: DirectusProjectsServicesRow[];
+	// Blog + morph-shapes collections (slice-18 18f).
+	blog_posts: DirectusBlogPostRow[];
+	illustrations: DirectusIllustrationRow[];
+	morph_shapes: MorphShape[];
 }
 
 // ---------------------------------------------------------------------------
@@ -386,6 +430,76 @@ export function toProject(row: DirectusProject): Project {
 
 	return project;
 }
+
+// ---------------------------------------------------------------------------
+// Blog row → BlogPost domain object (slice-18 18f Phase 9 — Task 55)
+//
+// Mirrors the deterministic-fallback policy from $lib/content/blog.ts so
+// posts authored without an explicit svg_illustration FK still resolve to
+// one of the four bundled fallback illustrations per category. Animation
+// resolution follows the same hash-based policy when the row's `animation`
+// column is null/undefined.
+// ---------------------------------------------------------------------------
+
+const PRO_FALLBACKS = ['pro-database', 'pro-code', 'pro-pipeline', 'pro-chart'] as const;
+const PERSONAL_FALLBACKS = [
+	'personal-rocket',
+	'personal-train',
+	'personal-telescope',
+	'personal-globe',
+] as const;
+
+function slugHash(slug: string): number {
+	let hash = 0;
+	for (let i = 0; i < slug.length; i++) {
+		hash = ((hash << 5) - hash + slug.charCodeAt(i)) | 0;
+	}
+	return Math.abs(hash);
+}
+
+function resolveSvgFallbackNameSync(
+	slug: string,
+	category: 'professional' | 'personal',
+): string {
+	const list = category === 'personal' ? PERSONAL_FALLBACKS : PRO_FALLBACKS;
+	return list[slugHash(slug) % list.length]!;
+}
+
+const ALL_ANIMATIONS = ['draw', 'morph', 'draw-fill'] as const;
+
+function resolveAnimationDeterministic(
+	slug: string,
+	explicit: string | undefined,
+): BlogAnimation {
+	if (explicit && (ALL_ANIMATIONS as readonly string[]).includes(explicit)) {
+		return explicit as BlogAnimation;
+	}
+	return ALL_ANIMATIONS[slugHash(slug) % ALL_ANIMATIONS.length]!;
+}
+
+export function toBlogPost(row: DirectusBlogPostRow): BlogPost {
+	const svgId =
+		typeof row.svg_illustration === 'object' && row.svg_illustration !== null
+			? row.svg_illustration.id
+			: (row.svg_illustration ?? resolveSvgFallbackNameSync(row.id, row.category));
+	return {
+		slug: row.id,
+		title: row.title,                   // AM2.5: direct read
+		excerpt: row.excerpt,               // AM2.5: direct read
+		date: row.date_published ? row.date_published.split('T')[0]! : '',
+		lang: row.lang,
+		category: row.category,
+		tags: [...(row.tags ?? [])],
+		animation: row.animation,
+		svg: svgId,
+		url: row.external ? (row.url ?? '') : `/blog/${row.id}`,
+		external: row.external,
+	};
+}
+
+// Re-export under the original names for tests (Task 60) + symmetry with
+// $lib/content/blog.ts.
+export { resolveSvgFallbackNameSync as resolveSvgFallbackName, resolveAnimationDeterministic };
 
 // ---------------------------------------------------------------------------
 // Ports
@@ -694,10 +808,80 @@ export const directusAdapter: ContentAdapter = {
 	},
 
 	blog: {
-		all: async () => todo('blog.all'),
-		bySlug: async () => todo('blog.bySlug'),
-		html: async () => todo('blog.html'),
-		bodyBySlug: async () => todo('blog.bodyBySlug'),
+		all: async () => {
+			const rows = (await client().request(
+				readItems('blog_posts', {
+					fields: [
+						'id',
+						'status',
+						'date_published',
+						'sort',
+						'lang',
+						'category',
+						'tags',
+						'external',
+						'url',
+						'animation',
+						'title',
+						'excerpt',
+						{ cover_image: ['id'] } as unknown as keyof DirectusBlogPostRow,
+						{
+							svg_illustration: ['id', 'label', 'category', { file: ['id'] }],
+						} as unknown as keyof DirectusBlogPostRow,
+					],
+					filter: { status: { _eq: 'published' } },
+					sort: ['-date_published'],
+					limit: -1,
+				}),
+			)) as unknown as DirectusBlogPostRow[];
+			return parsePort('blog.all', z.array(BlogPostSchema), rows.map(toBlogPost));
+		},
+		bySlug: async (slug) => {
+			const rows = (await client().request(
+				readItems('blog_posts', {
+					fields: [
+						'id',
+						'status',
+						'date_published',
+						'sort',
+						'lang',
+						'category',
+						'tags',
+						'external',
+						'url',
+						'animation',
+						'title',
+						'excerpt',
+						{ cover_image: ['id'] } as unknown as keyof DirectusBlogPostRow,
+						{
+							svg_illustration: ['id', 'label', 'category', { file: ['id'] }],
+						} as unknown as keyof DirectusBlogPostRow,
+					],
+					filter: { _and: [{ id: { _eq: slug } }, { status: { _eq: 'published' } }] },
+					limit: 1,
+				}),
+			)) as unknown as DirectusBlogPostRow[];
+			const post = rows[0] ? toBlogPost(rows[0]) : undefined;
+			return parsePort('blog.bySlug', BlogPostSchema.optional(), post);
+		},
+		html: async (slug, ctx) => {
+			const body = await directusAdapter.blog.bodyBySlug(slug, ctx);
+			if (!body) return '';
+			return serializeBlocksToHtml(body);
+		},
+		bodyBySlug: async (slug) => {
+			const rows = (await client().request(
+				readItems('blog_posts', {
+					fields: ['body'],
+					filter: { _and: [{ id: { _eq: slug } }, { status: { _eq: 'published' } }] },
+					limit: 1,
+				}),
+			)) as unknown as Array<{ body: BlockEditorDoc | null }>;
+			if (!rows[0]) return null;
+			const body = rows[0].body;
+			if (body === null) return null;
+			return parsePort('blog.bodyBySlug', BlockEditorDocSchema, body);
+		},
 		byCategory: async () => todo('blog.byCategory'),
 		byTag: async () => todo('blog.byTag'),
 		tagsForCategory: async () => todo('blog.tagsForCategory'),
