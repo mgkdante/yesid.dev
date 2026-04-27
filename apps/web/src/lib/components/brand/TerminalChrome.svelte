@@ -54,7 +54,7 @@
       {/if}
     </div>
     {#if status}
-      <span class="font-mono text-caption text-[var(--dim-foreground)]">{status}</span>
+      <span class="font-mono text-caption text-[var(--muted-foreground)]">{status}</span>
     {/if}
   </div>
 
@@ -71,7 +71,7 @@
     <div class="terminal-footer">
       {#each footer as item}
         <div class="flex gap-2">
-          <span class="font-mono text-caption text-[var(--dim-foreground)]">{item.label}</span>
+          <span class="font-mono text-caption text-[var(--muted-foreground)]">{item.label}</span>
           <span class="font-mono text-caption text-[var(--secondary-foreground)]">{item.value}</span>
         </div>
       {/each}

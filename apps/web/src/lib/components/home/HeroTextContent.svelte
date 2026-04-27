@@ -63,7 +63,7 @@
 	</div>
 
 	<p
-		class="mt-5 text-body-lg leading-[1.7] text-[var(--secondary-foreground)] md:text-heading"
+		class="mt-5 text-subheading leading-[1.7] text-[var(--secondary-foreground)] md:text-heading"
 		data-testid="hero-subtitle"
 		data-hero-stagger="6"
 	>

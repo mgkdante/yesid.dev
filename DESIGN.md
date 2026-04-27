@@ -19,8 +19,6 @@ colors:
   card: "#1a1a1a"
   popover: "#2A2A2A"
   secondary-foreground: "#999999"
-  dim-foreground: "#4a4a4a"
-  light-foreground: "#cccccc"
   terminal: "#0a0a0a"
   manifesto: "#0f0d0a"
   border: "#3A3A3A"
@@ -44,8 +42,6 @@ typography:
     fontSize: "1.125rem"
   body:
     fontSize: "1rem"
-  body-lg:
-    fontSize: "1.125rem"
   small:
     fontSize: "0.875rem"
   mono:

@@ -101,7 +101,7 @@
 							{#if benefit}
 								<div
 									data-testid="services-benefit"
-									class="text-body-lg font-medium leading-snug"
+									class="text-subheading font-medium leading-snug"
 									style="color: var(--foreground);"
 								>{benefit}</div>
 							{/if}
