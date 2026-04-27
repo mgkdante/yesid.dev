@@ -33,7 +33,9 @@
 
 | Item | Value |
 |---|---|
-| PR | TBD |
+| PR | [#65](https://github.com/mgkdante/yesid.dev/pull/65) |
 | Branch | `feature/slice-18-18g` |
-| Closed date | TBD |
-| Merge SHA | TBD |
+| Closed date | 2026-04-27 |
+| Merge SHA | TBD (set after merge) |
+| Commits | 13 |
+| GH follow-ups | [#62](https://github.com/mgkdante/yesid.dev/issues/62) honeycomb redesign · [#63](https://github.com/mgkdante/yesid.dev/issues/63) static markdown cleanup · [#64](https://github.com/mgkdante/yesid.dev/issues/64) static helpers cleanup |
