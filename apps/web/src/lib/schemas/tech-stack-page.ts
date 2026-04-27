@@ -9,11 +9,9 @@ import { z } from 'zod';
 import { LocalizedStringSchema, PageMetaSchema } from './shared';
 import { techStackPageContent } from '$lib/content/tech-stack';
 
+// Slice-18g: layers/domains/projects stats dropped — only technologies remains.
 const TechStackHeroStatsSchema = z.object({
 	technologies: LocalizedStringSchema,
-	layers: LocalizedStringSchema,
-	domains: LocalizedStringSchema,
-	projects: LocalizedStringSchema,
 });
 
 export const TechStackPageContentSchema = z.object({

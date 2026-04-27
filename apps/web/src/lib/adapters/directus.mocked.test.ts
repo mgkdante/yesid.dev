@@ -480,3 +480,108 @@ describe('directusAdapter.content.morphShapes — fetch contract', () => {
 		expect(search.get('limit')).toBe('-1');
 	});
 });
+
+// ---------------------------------------------------------------------------
+// techStack port (slice-18 18g Phase 4 — Task 8+9)
+//
+// Asserts the Directus REST shape: collection path, fields expansion
+// (translations + services + projects junctions), status filter, sort, limit.
+// ---------------------------------------------------------------------------
+
+/** Minimal published tech_stack row returned by the mock. */
+function techStackRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+	return {
+		id: 'postgresql',
+		name: 'PostgreSQL',
+		icon: 'postgresql.svg',
+		status: 'published',
+		sort: 0,
+		translations: [
+			{
+				languages_code: 'en',
+				what_it_is: { time: 0, version: '2.31.2', blocks: [{ id: 'b1', type: 'paragraph', data: { text: 'RDBMS.' } }] },
+				what_i_use_it_for: { time: 0, version: '2.31.2', blocks: [{ id: 'b2', type: 'paragraph', data: { text: 'Queries.' } }] },
+				why_i_use_it_instead: { time: 0, version: '2.31.2', blocks: [{ id: 'b3', type: 'paragraph', data: { text: 'ACID.' } }] },
+			},
+		],
+		services: [{ services_id: 'sql-development' }],
+		projects: [{ projects_id: 'transit-data-pipeline' }],
+		...overrides,
+	};
+}
+
+describe('directusAdapter.techStack — fetch contract', () => {
+	it('techStack.all hits /items/tech_stack with translations + services + projects, status=published, sort=sort, limit=-1', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([techStackRow()]));
+
+		const items = await directusAdapter.techStack.all();
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/tech_stack');
+		const fields = decodeURIComponent(search.get('fields') ?? '');
+		expect(fields).toContain('translations');
+		expect(fields).toContain('services');
+		expect(fields).toContain('projects');
+		const filter = decodeURIComponent(search.get('filter') ?? '');
+		expect(filter).toContain('status');
+		expect(filter).toContain('published');
+		expect(decodeURIComponent(search.get('sort') ?? '')).toContain('sort');
+		expect(search.get('limit')).toBe('-1');
+		expect(Array.isArray(items)).toBe(true);
+	});
+
+	it('techStack.all maps rows through toTechStackItem — returns TechStackItem[]', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([techStackRow()]));
+
+		const items = await directusAdapter.techStack.all();
+
+		expect(items).toHaveLength(1);
+		expect(items[0].id).toBe('postgresql');
+		expect(items[0].what_it_is.en.blocks[0].data).toEqual({ text: 'RDBMS.' });
+		expect(items[0].relatedServices).toEqual(['sql-development']);
+		expect(items[0].relatedProjects).toEqual(['transit-data-pipeline']);
+	});
+
+	it('techStack.byId filters by id._eq and status._eq=published, limit=1', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([techStackRow()]));
+
+		const item = await directusAdapter.techStack.byId('postgresql');
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/tech_stack');
+		const filter = decodeURIComponent(search.get('filter') ?? '');
+		expect(filter).toContain('id');
+		expect(filter).toContain('_eq');
+		expect(filter).toContain('postgresql');
+		expect(filter).toContain('status');
+		expect(filter).toContain('published');
+		expect(search.get('limit')).toBe('1');
+		expect(item?.id).toBe('postgresql');
+	});
+
+	it('techStack.byId returns undefined when no row matches', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+
+		const item = await directusAdapter.techStack.byId('unknown-tech');
+
+		expect(item).toBeUndefined();
+	});
+
+	it('techStack.content hits /items/tech_stack and returns concatenated HTML string', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([techStackRow()]));
+
+		const html = await directusAdapter.techStack.content('postgresql');
+
+		expect(typeof html).toBe('string');
+		const { pathname } = parseCapturedUrl();
+		expect(pathname).toBe('/items/tech_stack');
+	});
+
+	it('techStack.content returns empty string when item not found', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+
+		const html = await directusAdapter.techStack.content('ghost-tech');
+
+		expect(html).toBe('');
+	});
+});

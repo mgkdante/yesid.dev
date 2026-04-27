@@ -26,10 +26,6 @@ import type {
 	BlogAnimation,
 	SiteMeta,
 	TechStackItem,
-	InfraLayer,
-	DomainCluster,
-	StackScenario,
-	TechRelation,
 	Locale,
 	AboutContent,
 	ContactContent,
@@ -140,21 +136,14 @@ export interface MetaPort {
 	): Promise<PageSeo>;
 }
 
+// Shrunk in slice-18g Phase 4 Task 9: byLayer/byDomain/connections/
+// incomingConnections/outgoing+incomingRelations/allScenarios/scenarioForDomains
+// removed (decisions Q1+Q2+Q5). Legacy /tech-stack components that called those
+// methods will be cleaned up in Phase 5 (Task 10).
 export interface TechStackPort {
 	all(ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
 	byId(id: string, ctx?: PreviewContext): Promise<TechStackItem | undefined>;
-	byLayer(layer: InfraLayer, ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
-	byDomain(domain: DomainCluster, ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
-	connections(id: string, ctx?: PreviewContext): Promise<readonly string[]>;
-	incomingConnections(id: string, ctx?: PreviewContext): Promise<readonly string[]>;
-	outgoingRelations(id: string, ctx?: PreviewContext): Promise<readonly TechRelation[]>;
-	incomingRelations(id: string, ctx?: PreviewContext): Promise<readonly TechRelation[]>;
 	content(id: string, ctx?: PreviewContext): Promise<string>;
-	allScenarios(ctx?: PreviewContext): Promise<readonly StackScenario[]>;
-	scenarioForDomains(
-		domains: DomainCluster[],
-		ctx?: PreviewContext,
-	): Promise<StackScenario | undefined>;
 }
 
 export interface ContentPort {

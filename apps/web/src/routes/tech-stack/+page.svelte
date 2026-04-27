@@ -9,9 +9,8 @@
 
 	let { data } = $props();
 
-	// Dynamic counts from data layer
+	// Dynamic counts from data layer.
 	const itemCount = data.items.length;
-	const layerCount = new Set(data.items.map((i) => i.layer)).size;
 
 	// Pre-resolved chrome — all static English for now (swap to $derived on
 	// locale when translation arrives).
@@ -25,9 +24,6 @@
 	const heroTerminalAria = resolveLocale(c.hero.terminalAria, 'en');
 	const statLabels = {
 		technologies: resolveLocale(c.hero.stats.technologies, 'en'),
-		layers: resolveLocale(c.hero.stats.layers, 'en'),
-		domains: resolveLocale(c.hero.stats.domains, 'en'),
-		projects: resolveLocale(c.hero.stats.projects, 'en'),
 	};
 	const getInTouchLabel = resolveLocale(c.actions.getInTouch, 'en');
 	const viewServicesLabel = resolveLocale(c.actions.viewServices, 'en');
@@ -45,11 +41,10 @@
 
 	const terminalLines: TerminalLine[] = [
 		{ text: '~ yesid --stack --verbose', color: 'default', visible: true },
-		{ text: `→ mapping infrastructure...`, color: 'muted', visible: false },
-		{ text: `→ loading ${itemCount} nodes across ${layerCount} layers...`, color: 'muted', visible: false },
+		{ text: `→ loading ${itemCount} nodes...`, color: 'muted', visible: false },
 		{ text: '✓ successful', color: 'green', visible: false },
-		{ text: `→ ${itemCount} technologies | ${layerCount} layers | 7 domains | 10+ projects`, color: 'orange', visible: false },
-		{ text: 'interactive diagram coming soon.', color: 'accent', visible: false },
+		{ text: `→ ${itemCount} technologies cataloged`, color: 'orange', visible: false },
+		{ text: 'interactive map coming soon.', color: 'accent', visible: false },
 	];
 
 	let heroLines = $state<TerminalLine[]>(terminalLines);
@@ -64,7 +59,7 @@
 			return;
 		}
 
-		const delays = [400, 600, 300, 400, 500];
+		const delays = [400, 300, 400, 500];
 
 		async function playSequence() {
 			for (let i = 1; i < heroLines.length; i++) {
@@ -115,18 +110,6 @@
 			<div class="hero-stat">
 				<span class="hero-stat-value flex items-center gap-2"><StatusDot color="orange" pulse />{itemCount}</span>
 				<span class="hero-stat-label">{statLabels.technologies}</span>
-			</div>
-			<div class="hero-stat">
-				<span class="hero-stat-value">{layerCount}</span>
-				<span class="hero-stat-label">{statLabels.layers}</span>
-			</div>
-			<div class="hero-stat">
-				<span class="hero-stat-value">7</span>
-				<span class="hero-stat-label">{statLabels.domains}</span>
-			</div>
-			<div class="hero-stat">
-				<span class="hero-stat-value">10+</span>
-				<span class="hero-stat-label">{statLabels.projects}</span>
 			</div>
 		</div>
 

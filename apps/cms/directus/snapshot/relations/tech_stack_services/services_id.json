@@ -1,0 +1,25 @@
+{
+  "collection": "tech_stack_services",
+  "field": "services_id",
+  "related_collection": "services",
+  "meta": {
+    "junction_field": "tech_stack_id",
+    "many_collection": "tech_stack_services",
+    "many_field": "services_id",
+    "one_allowed_collections": null,
+    "one_collection": "services",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": null,
+    "sort_field": null
+  },
+  "schema": {
+    "table": "tech_stack_services",
+    "column": "services_id",
+    "foreign_key_table": "services",
+    "foreign_key_column": "id",
+    "constraint_name": "tech_stack_services_services_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

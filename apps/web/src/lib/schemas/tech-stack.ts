@@ -1,20 +1,15 @@
-// Tech-stack schemas — runtime mirror of TechStackItem, TechRelation, and
-// StackScenario from $lib/types. Every tech-stack adapter port parses data
-// arrays through these schemas before returning to the repository layer.
+// Tech-stack schemas — runtime mirror of TechStackItem from $lib/types.
+// Reshaped in slice-18g (Phase 4 Task 7): legacy layer/domains/connectsTo/
+// proficiency/connectionNotes fields dropped; 3 LocalizedBlockEditorDoc body
+// fields added. TechRelationSchema + StackScenarioSchema removed — those
+// types were dropped from @repo/shared.
 //
-// Strictness budget (spec D3): mirror TS as-is. InfraLayer, DomainCluster,
-// and Proficiency are z.enum (free safety — string-literal unions in TS).
+// InfraLayerSchema, DomainClusterSchema, ProficiencySchema kept — still
+// referenced by legacy /tech-stack components (slice-18k cleanup).
 
 import { z } from 'zod';
-import { LocalizedStringSchema } from './shared';
-import type {
-	TechStackItem,
-	TechRelation,
-	StackScenario,
-	InfraLayer,
-	DomainCluster,
-	Proficiency,
-} from '$lib/types';
+import type { TechStackItem, InfraLayer, DomainCluster, Proficiency } from '$lib/types';
+import { LocalizedBlockEditorDocSchema } from '$lib/schemas/project';
 
 export const InfraLayerSchema = z.enum([
 	'data',
@@ -43,27 +38,11 @@ export const ProficiencySchema = z.enum(['expert', 'proficient', 'familiar']);
 export const TechStackItemSchema = z.object({
 	id: z.string().min(1),
 	name: z.string(),
-	layer: InfraLayerSchema,
-	domains: z.array(DomainClusterSchema),
-	connectsTo: z.array(z.string()),
-	relatedServices: z.array(z.string()),
-	relatedProjects: z.array(z.string()),
 	icon: z.string(),
-	proficiency: ProficiencySchema,
-	connectionNotes: z.record(z.string(), z.string()).optional(),
-});
-
-export const TechRelationSchema = z.object({
-	itemId: z.string(),
-	itemName: z.string(),
-	contextPhrase: z.string(),
-});
-
-export const StackScenarioSchema = z.object({
-	id: z.string().min(1),
-	domains: z.array(DomainClusterSchema),
-	recommended: z.array(z.string()),
-	summary: LocalizedStringSchema,
+	what_it_is: LocalizedBlockEditorDocSchema,
+	what_i_use_it_for: LocalizedBlockEditorDocSchema,
+	why_i_use_it_instead: LocalizedBlockEditorDocSchema,
+	relatedServices: z.array(z.string()),
 	relatedProjects: z.array(z.string()),
 });
 
@@ -99,19 +78,3 @@ type _TechStackItemCheck = z.infer<typeof TechStackItemSchema> extends TechStack
 	: false;
 const _techStackItemCheck: _TechStackItemCheck = true;
 void _techStackItemCheck;
-
-type _TechRelationCheck = z.infer<typeof TechRelationSchema> extends TechRelation
-	? TechRelation extends z.infer<typeof TechRelationSchema>
-		? true
-		: false
-	: false;
-const _techRelationCheck: _TechRelationCheck = true;
-void _techRelationCheck;
-
-type _StackScenarioCheck = z.infer<typeof StackScenarioSchema> extends StackScenario
-	? StackScenario extends z.infer<typeof StackScenarioSchema>
-		? true
-		: false
-	: false;
-const _stackScenarioCheck: _StackScenarioCheck = true;
-void _stackScenarioCheck;

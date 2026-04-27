@@ -1,0 +1,28 @@
+{
+  "collection": "tech_stack_translations",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "tech_stack_translations",
+    "color": null,
+    "display_template": null,
+    "group": null,
+    "hidden": true,
+    "icon": "translate",
+    "item_duplication_fields": null,
+    "note": "Translated copy for tech_stack collection (Directus-native Translations pattern). Contains per-locale Block Editor body fields: what_it_is, what_i_use_it_for, why_i_use_it_instead.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": null,
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "tech_stack_translations"
+  }
+}
