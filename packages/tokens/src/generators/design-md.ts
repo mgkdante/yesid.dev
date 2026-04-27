@@ -1,6 +1,6 @@
 import type { TokenTree } from '../types.ts';
 import { serializeYaml } from '../serialize.ts';
-import { isLeaf } from '../parse.ts';
+import { isLeaf, isClampToken } from '../parse.ts';
 
 interface DesignMdOptions {
   /** Component names to list under ## Components. Child 3 populates this; Child 1 emits an empty array. */
@@ -23,19 +23,64 @@ function yamlMap(tree: TokenTree, indent: number, transformKey?: (k: string) => 
   return lines.join('\n');
 }
 
+/**
+ * Emit flat color map: brand colors + dark theme colors.
+ * The design.md spec requires colors to be flat hex values at `colors.<name>`.
+ * We emit brand colors first (primary, accent, etc.), then dark semantic tokens
+ * (background, foreground, etc.). Light theme overrides are prose, not tokens.
+ */
+function flatColorMap(colorTree: TokenTree): string {
+  const lines: string[] = [];
+  // brand colors
+  const brand = colorTree.brand as TokenTree | undefined;
+  if (brand) {
+    for (const [k, v] of Object.entries(brand)) {
+      if (k.startsWith('$') || !isLeaf(v)) continue;
+      // Only emit hex color values (skip rgb channels and other non-hex)
+      if (typeof v.$value === 'string' && v.$value.startsWith('#')) {
+        lines.push(`  ${k}: ${serializeYaml(v)}`);
+      }
+    }
+  }
+  // dark theme semantic colors (source of truth for dark-first design)
+  const dark = colorTree.dark as TokenTree | undefined;
+  if (dark) {
+    for (const [k, v] of Object.entries(dark)) {
+      if (k.startsWith('$') || !isLeaf(v)) continue;
+      if (typeof v.$value === 'string' && v.$value.startsWith('#')) {
+        lines.push(`  ${k}: ${serializeYaml(v)}`);
+      }
+    }
+  }
+  return lines.join('\n');
+}
+
+/**
+ * Emit typography fontSize as a valid spec dimension (px/em/rem).
+ * For clamp() tokens, we use the max value (large-viewport design intent).
+ * The spec does not accept clamp() expressions as dimension values.
+ */
+function typographyFontSize(v: TokenTree[string]): string {
+  if (isClampToken(v)) {
+    // Use max value — the largest design-intent size, comprehensible to agents
+    return `"${v.$value.max}"`;
+  }
+  return serializeYaml(v);
+}
+
 export function generateDesignMd(tree: TokenTree, opts: DesignMdOptions = {}): string {
   const colors = tree.color as TokenTree;
   const text = tree.text as TokenTree;
   const radius = tree.radius as TokenTree;
   const space = tree.space as TokenTree;
 
-  // Typography: each text-* token becomes { fontFamily: ..., fontSize: ... }.
-  // For Child 1 we emit a minimal map; richer typography composition can come later.
+  // Typography: each text-* token becomes { fontSize: <dimension> }.
+  // fontSize uses the max of any clamp() value — a valid spec dimension.
   const typographyLines: string[] = [];
   for (const [k, v] of Object.entries(text)) {
     if (isLeaf(v)) {
       typographyLines.push(`  ${k}:`);
-      typographyLines.push(`    fontSize: ${serializeYaml(v)}`);
+      typographyLines.push(`    fontSize: ${typographyFontSize(v)}`);
     }
   }
 
@@ -52,12 +97,7 @@ description: Digital infrastructure that moves. Edge-to-edge, dark-first, one or
 # Run \`bun run --cwd packages/tokens build\` to regenerate.
 
 colors:
-  brand:
-${yamlMap(colors.brand as TokenTree, 4)}
-  dark:
-${yamlMap(colors.dark as TokenTree, 4)}
-  light:
-${yamlMap(colors.light as TokenTree, 4)}
+${flatColorMap(colors)}
 
 typography:
 ${typographyLines.join('\n')}

@@ -23,8 +23,10 @@ describe('generateDesignMd', () => {
   });
 
   it('includes colors / typography / rounded / spacing maps', () => {
-    expect(md).toMatch(/colors:[\s\S]*primary:\s*"#E07800"/);
-    expect(md).toMatch(/typography:[\s\S]*display:[\s\S]*fontSize:\s*"clamp\(/);
+    // colors emitted flat (brand + dark semantic tokens; no nested brand:/dark: sub-keys)
+    expect(md).toMatch(/colors:\n  primary:\s*"#E07800"/);
+    // typography fontSize uses the clamp max value (a valid spec dimension, not a clamp expression)
+    expect(md).toMatch(/typography:[\s\S]*display:[\s\S]*fontSize:\s*"4rem"/);
     expect(md).toMatch(/rounded:[\s\S]*md:\s*"8px"/);
     expect(md).toMatch(/spacing:[\s\S]*"page-x":\s*"clamp\(/);
   });

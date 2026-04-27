@@ -6,6 +6,22 @@ const HEADER = `/* GENERATED FROM packages/tokens/tokens.json — DO NOT EDIT */
 /* Run \`bun run --cwd packages/tokens build\` to regenerate. */
 `;
 
+/**
+ * Paired tokens: CSS architectural cross-references (not raw DTCG values).
+ * These map shadcn-compatible aliases to primary semantic tokens via var().
+ * They are identical in both dark and light themes.
+ */
+const PAIRED_TOKENS = [
+  '  /* Paired tokens (shadcn-compatible) */',
+  '  --card-foreground: var(--foreground);',
+  '  --popover-foreground: var(--foreground);',
+  '  --primary-foreground: var(--background);',
+  '  --accent-foreground: var(--background);',
+  '  --secondary: var(--popover);',
+  '  --ring: var(--primary);',
+  '  --input: var(--border);',
+].join('\n');
+
 interface FlatToken {
   cssName: string;
   token: Token;
@@ -26,10 +42,11 @@ function flatten(tree: TokenTree, prefix = ''): FlatToken[] {
   return out;
 }
 
-function emitBlock(selector: string, items: FlatToken[]): string {
+function emitBlock(selector: string, items: FlatToken[], extra?: string): string {
   if (items.length === 0) return '';
   const lines = items.map(({ cssName, token }) => `  --${cssName}: ${serializeCss(token)};`);
-  return `${selector} {\n${lines.join('\n')}\n}\n`;
+  const body = extra ? `${lines.join('\n')}\n\n${extra}` : lines.join('\n');
+  return `${selector} {\n${body}\n}\n`;
 }
 
 export function generateTokensCss(tree: TokenTree): string {
@@ -54,13 +71,41 @@ export function generateTokensCss(tree: TokenTree): string {
     }
   }
 
+  // :root gets a shadcn --radius alias pointing to our --radius-md
+  const rootExtra = '  /* shadcn alias — components reference --radius */\n  --radius: var(--radius-md);';
+
+  const darkBlock = emitBlock('[data-theme="dark"], .theme-dark', darkItems, PAIRED_TOKENS);
+  const lightBlock = emitBlock('[data-theme="light"], .theme-light', lightItems, PAIRED_TOKENS);
+
+  // prefers-color-scheme fallbacks mirror the attribute-selector theme blocks.
+  // These fire when the user hasn't explicitly set a data-theme attribute.
+  const darkMedia =
+    `@media (prefers-color-scheme: dark) {\n` +
+    `  :root:not([data-theme="light"]) {\n` +
+    darkItems.map(({ cssName, token }) => `    --${cssName}: ${serializeCss(token)};`).join('\n') +
+    `\n\n` +
+    PAIRED_TOKENS.split('\n').map(l => `  ${l}`).join('\n') +
+    `\n  }\n}\n`;
+
+  const lightMedia =
+    `@media (prefers-color-scheme: light) {\n` +
+    `  :root:not([data-theme="dark"]) {\n` +
+    lightItems.map(({ cssName, token }) => `    --${cssName}: ${serializeCss(token)};`).join('\n') +
+    `\n\n` +
+    PAIRED_TOKENS.split('\n').map(l => `  ${l}`).join('\n') +
+    `\n  }\n}\n`;
+
   return (
     HEADER +
     '\n' +
-    emitBlock(':root', rootItems) +
+    emitBlock(':root', rootItems, rootExtra) +
     '\n' +
-    emitBlock('[data-theme="dark"], .theme-dark', darkItems) +
+    darkBlock +
     '\n' +
-    emitBlock('[data-theme="light"], .theme-light', lightItems)
+    lightBlock +
+    '\n' +
+    darkMedia +
+    '\n' +
+    lightMedia
   );
 }
