@@ -1,6 +1,6 @@
 # yesid. — brand
 
-> **Tokens:** colors / typography / spacing / radius / shadows / motion live in [`/DESIGN.md`](../../../DESIGN.md) (repo root, Google-spec strict, agent-readable). This file carries identity, voice, vocabulary, and decisions.
+> **Tokens:** colors / typography / spacing / radius / shadows / motion live in [`/DESIGN.md`](../DESIGN.md) (repo root, Google-spec strict, agent-readable). This file carries identity, voice, vocabulary, and decisions.
 
 ## Principles
 

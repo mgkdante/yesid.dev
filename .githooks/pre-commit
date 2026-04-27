@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-# Pre-commit hook: block staged edits to generated token files unless tokens.json
-# is also staged in the same commit.
+# Pre-commit hook: block staged edits to generated token files unless a
+# legitimate source is also staged in the same commit. Legitimate sources:
+#   - packages/tokens/tokens.json (DTCG data)
+#   - packages/tokens/build.ts (build entry)
+#   - packages/tokens/src/**/*.ts (generators + parity logic)
 # Bypass: git commit --no-verify (last resort; document in PR description).
 
 set -euo pipefail
@@ -11,7 +14,8 @@ GENERATED=(
   "apps/web/src/lib/motion/tokens.ts"
   "DESIGN.md"
 )
-SOURCE="packages/tokens/tokens.json"
+# Regex matching any file path that legitimately invalidates generated outputs.
+SOURCE_REGEX='^(packages/tokens/tokens\.json|packages/tokens/build\.ts|packages/tokens/src/.+\.ts)$'
 
 staged() { git diff --cached --name-only --diff-filter=ACM; }
 
@@ -24,9 +28,11 @@ for f in "${GENERATED[@]}"; do
 done
 
 if [ "$generated_staged" -eq 1 ]; then
-  if ! staged | grep -qx "$SOURCE"; then
-    echo "ERROR: A generated token file is staged, but $SOURCE is not."
-    echo "       Edit $SOURCE and run 'bun run tokens:build' instead."
+  if ! staged | grep -qE "$SOURCE_REGEX"; then
+    echo "ERROR: A generated token file is staged, but no source file under"
+    echo "       packages/tokens/ is staged. Either tokens.json, build.ts,"
+    echo "       or a generator under src/ must be the cause."
+    echo "       Edit the source and run 'bun run --cwd packages/tokens build'."
     echo ""
     echo "Generated files:"
     for f in "${GENERATED[@]}"; do

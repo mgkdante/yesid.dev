@@ -2,7 +2,7 @@
 
 > **Project framing.** yesid.dev's core unit of value is **service offerings**, not a single product. This file is the positioning + audience + catalog canonical reference — the one place anything user-facing (marketing copy, service pages, About, portfolio) anchors to.
 
-Cross-references: [`BRAND.md`](../../apps/web/brand/BRAND.md) (visual identity) · [`BINDINGS.md`](BINDINGS.md) (workflow bindings) · [`VOCAB.md`](VOCAB.md) (brand + industry terminology).
+Cross-references: [`BRAND.md`](../../brand/BRAND.md) (visual identity) · [`BINDINGS.md`](BINDINGS.md) (workflow bindings) · [`VOCAB.md`](VOCAB.md) (brand + industry terminology).
 
 ## Positioning
 
