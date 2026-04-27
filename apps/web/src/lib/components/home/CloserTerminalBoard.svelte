@@ -86,7 +86,7 @@
 	}
 	.terminal-comment {
 		font-size: 14px;
-		color: var(--dim-foreground);
+		color: var(--muted-foreground);
 		font-style: italic;
 	}
 
@@ -109,7 +109,7 @@
 
 	.terminal-line-num {
 		font-size: 12px;
-		color: var(--dim-foreground);
+		color: var(--muted-foreground);
 		user-select: none;
 	}
 
@@ -133,7 +133,7 @@
 	.terminal-row-action {
 		text-align: right;
 		font-size: 13px;
-		color: var(--dim-foreground);
+		color: var(--muted-foreground);
 		transition: color var(--duration-normal);
 	}
 	.terminal-row-action-primary {

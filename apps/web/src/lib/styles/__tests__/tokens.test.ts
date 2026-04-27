@@ -16,7 +16,7 @@ describe('Design System Tokens', () => {
   describe('Type scale', () => {
     const requiredTokens = [
       '--text-hero', '--text-display', '--text-title', '--text-heading',
-      '--text-subheading', '--text-body', '--text-body-lg',
+      '--text-subheading', '--text-body',
       '--text-small', '--text-caption', '--text-mono'
     ];
 
@@ -82,7 +82,7 @@ describe('Design System Tokens', () => {
 
   describe('Semantic color completeness', () => {
     const themeTokens = [
-      '--terminal', '--border-subtle', '--dim-foreground',
+      '--terminal', '--border-subtle',
       '--manifesto', '--card',
       '--border-strong', '--success'
     ];

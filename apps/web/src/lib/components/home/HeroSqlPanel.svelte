@@ -46,7 +46,7 @@
     <span class="text-caption tracking-[1px] text-[var(--muted-foreground)] md:text-mono" data-testid="sql-prompt">
       {prompt}
     </span>
-    <span class="flex items-center gap-1.5 text-caption text-[var(--dim-foreground)]" data-testid="sql-live">
+    <span class="flex items-center gap-1.5 text-caption text-[var(--muted-foreground)]" data-testid="sql-live">
       <StatusDot color="green" pulse />
       {liveLabel}
     </span>
@@ -81,7 +81,7 @@
         <span class="text-[var(--secondary-foreground)]">{row.vehicles}</span>
       {/each}
     </div>
-    <div class="mt-2.5 text-caption text-[var(--dim-foreground)]" data-testid="sql-meta">
+    <div class="mt-2.5 text-caption text-[var(--muted-foreground)]" data-testid="sql-meta">
       {metaCaption}
     </div>
   </div>

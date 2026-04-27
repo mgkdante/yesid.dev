@@ -96,7 +96,7 @@
 
 						<div
 							data-testid="proof-card-title"
-							class="mb-4 font-heading text-body-lg font-bold leading-snug md:mb-5 md:text-heading"
+							class="mb-4 font-heading text-subheading font-bold leading-snug md:mb-5 md:text-heading"
 							style="color: var(--foreground);"
 						>{title}</div>
 
