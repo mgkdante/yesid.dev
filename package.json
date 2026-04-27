@@ -11,7 +11,9 @@
 	"scripts": {
 		"build": "turbo run build",
 		"test": "turbo run test",
-		"check": "turbo run check"
+		"check": "turbo run check",
+		"tokens:build": "bun run --cwd packages/tokens build",
+		"tokens:lint": "bun run --cwd packages/tokens lint:design-md"
 	},
 	"devDependencies": {
 		"turbo": "^2.5.0"
