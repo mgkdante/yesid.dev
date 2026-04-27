@@ -72,7 +72,7 @@ components:
 yesid.dev is a freelance digital-infrastructure brand. The design language is edge-to-edge,
 dark-first, restrained-orange. Every visual decision traces back to one of five principles:
 edge-to-edge layout, dark-first surfaces, one-orange interactivity, motion-with-intent,
-no fluff. Full narrative: `apps/web/brand/BRAND.md`. Implementation rules:
+no fluff. Full narrative: `brand/BRAND.md`. Implementation rules:
 `docs/project/CONSTITUTION.md`.
 
 ## Colors
@@ -109,7 +109,7 @@ Borders use semantic tokens (`border`, `border-subtle`, `border-strong`).
 
 See `apps/web/src/lib/components/brand/` (12 brand primitives) and `apps/web/src/lib/components/ui/`
 (19 shadcn-svelte primitives, customized with brand tokens). Figma documentation:
-`apps/web/brand/foundations/figma.md`.
+`brand/foundations/figma.md`.
 
 ## Do's and Don'ts
 
