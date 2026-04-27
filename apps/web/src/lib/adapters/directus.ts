@@ -715,7 +715,7 @@ export interface DirectusSiteMetaRow {
 	owner_region: string;
 	owner_country: string;
 	/** CSV — split + trim + filter at mapper boundary. */
-	owner_knows_about: string;
+	owner_knows_about: string | readonly string[]; // cast-csv special: REST returns string[], but legacy GraphQL/raw paths may return CSV string
 	default_og_image: string | null;
 	theme_color: string;
 	translations: readonly DirectusSiteMetaTranslation[];
@@ -748,10 +748,13 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 		...(row.linkedin_url && { linkedin: row.linkedin_url }),
 		...(row.upwork_url && { upwork: row.upwork_url }),
 	};
-	const knowsAbout = row.owner_knows_about
-		.split(',')
-		.map((s) => s.trim())
-		.filter(Boolean);
+	// owner_knows_about — Directus cast-csv special returns string[] in REST.
+	// Tolerate string fallback (raw query / non-SDK paths) by splitting on comma.
+	const rawKnows: readonly string[] =
+		typeof row.owner_knows_about === 'string'
+			? row.owner_knows_about.split(',')
+			: row.owner_knows_about;
+	const knowsAbout = rawKnows.map((s) => s.trim()).filter(Boolean);
 	const owner: SiteOwner = {
 		name: row.owner_name,
 		jobTitle: toLocalizedString(row.translations, 'owner_job_title'),
