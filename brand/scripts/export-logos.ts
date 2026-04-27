@@ -22,11 +22,14 @@
  */
 
 import { readdir, mkdir } from 'node:fs/promises';
-import { join, basename, extname } from 'node:path';
+import { join, basename, extname, resolve } from 'node:path';
 import sharp from 'sharp';
 
-const SOURCE_DIR = 'brand/logos';
-const OUTPUT_DIR = 'brand/logos/exports';
+// Resolve paths from this script's location so the script works regardless
+// of cwd (called from apps/web/package.json with cwd=apps/web/, or directly).
+const SCRIPT_DIR = import.meta.dir;
+const SOURCE_DIR = resolve(SCRIPT_DIR, '../logos');
+const OUTPUT_DIR = resolve(SCRIPT_DIR, '../logos/exports');
 const SCALES = [1, 2, 3] as const;
 
 async function listSvgs(dir: string): Promise<string[]> {

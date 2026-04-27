@@ -25,7 +25,7 @@
  */
 
 import { mkdir, copyFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { chromium, firefox } from '@playwright/test';
 
 // Allow PLAYWRIGHT_BROWSER=firefox as an escape hatch for Windows envs where
@@ -34,7 +34,12 @@ const BROWSER_KIND = (process.env.PLAYWRIGHT_BROWSER ?? 'chromium').toLowerCase(
 const launcher = BROWSER_KIND === 'firefox' ? firefox : chromium;
 
 const PREVIEW_URL = process.env.PREVIEW_URL ?? 'http://localhost:5173';
-const OUT_DIR = 'brand/examples';
+
+// Resolve paths from this script's location so the script works regardless
+// of cwd (called from apps/web/package.json with cwd=apps/web/, or directly).
+const SCRIPT_DIR = import.meta.dir;
+const OUT_DIR = resolve(SCRIPT_DIR, '../examples');
+const APPS_WEB_DIR = resolve(SCRIPT_DIR, '../../apps/web');
 
 type Example = {
 	/** Stem name for both output files (hero → hero.png + hero.svelte.txt). */
@@ -130,8 +135,9 @@ async function captureOne(
 			await page.screenshot({ path: pngPath, fullPage: false });
 		}
 
-		// Copy source as .svelte.txt (plaintext so git renders it inline)
-		await copyFile(example.source, srcPath);
+		// Copy source as .svelte.txt (plaintext so git renders it inline).
+		// example.source is relative to apps/web/.
+		await copyFile(join(APPS_WEB_DIR, example.source), srcPath);
 
 		console.log(`  ✓ ${example.name}.png + ${example.name}.svelte.txt`);
 	} finally {

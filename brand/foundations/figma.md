@@ -3,7 +3,7 @@
 **File:** [yesid.dev — design system](https://www.figma.com/design/Zn8w5sVMwCXhziyv03dpft)
 **File key:** `Zn8w5sVMwCXhziyv03dpft`
 **Created:** 2026-04-26 (slice-design Child 3) · **Expanded:** 2026-04-27 (γ followup — Overview content, brand marks, text styles, effect styles, 10 real Components) · **slice-design-template Child 2** (2026-04-27): remaining 21 Components built (31 total, all Component Sets) + 31 per-component doc kits live in `docs-grid` (id `59:167`) on the `Components / UI` page
-**Source of truth:** [`packages/tokens/tokens.json`](../../../../packages/tokens/tokens.json) (Variables) + [`apps/web/brand/logos/`](../logos/) (brand SVGs) + [`apps/web/src/lib/components/`](../../src/lib/components/) (Svelte components — Code Connect deferred, see [#66](https://github.com/mgkdante/yesid.dev/issues/66) and the *Code Connect* note below). This Figma file mirrors those. Hand-edits to Variables / styles / Components in Figma will be overwritten on the next push.
+**Source of truth:** [`packages/tokens/tokens.json`](../../packages/tokens/tokens.json) (Variables) + [`brand/logos/`](../logos/) (brand SVGs) + [`apps/web/src/lib/components/`](../../apps/web/src/lib/components/) (Svelte components — Code Connect deferred, see [#66](https://github.com/mgkdante/yesid.dev/issues/66) and the *Code Connect* note below). This Figma file mirrors those. Hand-edits to Variables / styles / Components in Figma will be overwritten on the next push.
 
 ## How tokens flow
 
@@ -155,11 +155,11 @@ Acceptable serialization deltas (documented per spec § 3.5):
 
 If a future round-trip surfaces a NEW kind of delta, document it here.
 
-## Page structure (10 pages)
+## Page structure (11 pages)
 
 | Page | Built by |
 |---|---|
-| `00 — Overview` | **Populated (γ followup):** brand intro, 5 BRAND.md principles in cards, page index, footer. Plus a Brand marks subsection — 5 native vector marks (favicon, monogram-orange, wordmark, lockup-horizontal, lockup-stacked) rendered via `figma.createNodeFromSvg()` from `apps/web/brand/logos/*.svg`. |
+| `00 — Overview` | **Populated (γ followup):** brand intro, 5 BRAND.md principles in cards, page index, footer. Plus a Brand marks subsection — 5 native vector marks (favicon, monogram-orange, wordmark, lockup-horizontal, lockup-stacked) rendered via `figma.createNodeFromSvg()` from `brand/logos/*.svg`. |
 | `Foundations / Colors` | 3 frames (Brand · Dark · Light), each frame's swatches reference Variables (mode pinned via `setExplicitVariableModeForCollection`). |
 | `Foundations / Typography` | 3 font specimens (Aa Bb Cc) + 11 type-scale specimens at actual size, with px + clamp serialization. |
 | `Foundations / Spacing` | 3 visual rulers (rendered at desktop max) + 2 container rows (text-only because containers are too wide to ruler). |
@@ -168,6 +168,7 @@ If a future round-trip surfaces a NEW kind of delta, document it here.
 | `Foundations / Motion` | Duration as accent-orange bars (×0.5px per ms) + easing as cubic-bezier curve previews via SVG. |
 | `Components / Brand` | All 12 brand Component Sets/Components in `component-library` (BlueprintShell · ChevronToggle · CornerMarks · MetricDisplay · MetroStation · SectionHeading · SectionLabel · StatusDot · StickyPanel · StopLabel · SvgIcon · TerminalChrome). Original doc-card stubs replaced by real components in slice-design-template Child 1. |
 | `Components / UI` | All 19 UI Component Sets/Components in `component-library` (badge · button · card · collapsible · dialog · drawer · input · input-group · label · resizable · scroll-area · separator · sheet · skeleton · tabs · textarea · toggle · toggle-group · tooltip) **plus 31 per-component doc kits** in `docs-grid` (id `59:167`) below — see *Doc kits* section above. |
+| `Notes` | Reference for design-system contributors (added 2026-04-27). 7 sections: in-repo source files · component sources · cloud archive paths · GitHub references · deferred / future work · editing conventions · status snapshot. Plain-text directory of where everything lives outside Figma. |
 | `Roundtrip — DO NOT EDIT` | Reserved for future read-only mirror; currently empty. |
 
 ## Snapshots
@@ -205,4 +206,4 @@ Also deferred (not filed as discrete issues; these are scope boundaries, not pun
 
 - **Library publishing** — single-file pattern is the call for solo. Flip when you onboard a co-designer.
 
-Filed per [AGENTS.md § Never](../../../../AGENTS.md): *"Close a slice with deferred work that isn't filed as a GitHub issue first."*
+Filed per [AGENTS.md § Never](../../AGENTS.md): *"Close a slice with deferred work that isn't filed as a GitHub issue first."*

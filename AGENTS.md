@@ -99,7 +99,7 @@ Three layers, strict separation. Full rules: [docs/project/CSS.md](docs/project/
 
 Primary `#E07800` / Accent `#FFB627`. Fonts: Inter (headings/body), JetBrains Mono (code). Dark theme default. "yesid." always lowercase, dot always orange. Favicon is a solid orange circle.
 
-**Tokens:** [DESIGN.md](DESIGN.md) at repo root (Google-spec, generated from `packages/tokens/tokens.json`). **Voice + identity:** [apps/web/brand/BRAND.md](apps/web/brand/BRAND.md) + [apps/web/brand/foundations/](apps/web/brand/foundations/).
+**Tokens:** [DESIGN.md](DESIGN.md) at repo root (Google-spec, generated from `packages/tokens/tokens.json`). **Voice + identity:** [brand/BRAND.md](brand/BRAND.md) + [brand/foundations/](brand/foundations/).
 
 > **Note on `DESIGN.md`:** the repo-root `DESIGN.md` is yesid.dev's *visual identity* contract (Google Labs spec, alpha). Distinct from any future `docs/DESIGN.md` (would be plugin-architecture, different concept). The two are not interchangeable.
 

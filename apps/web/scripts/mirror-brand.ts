@@ -42,7 +42,8 @@ function resolveCloudRoot(): string {
 }
 
 function resolveRepoRoot(): string {
-  return resolve(import.meta.dir, '..');
+  // import.meta.dir = apps/web/scripts; repo root is two levels up.
+  return resolve(import.meta.dir, '../..');
 }
 
 async function main(): Promise<void> {
