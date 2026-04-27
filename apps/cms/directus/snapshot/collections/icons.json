@@ -1,0 +1,33 @@
+{
+  "collection": "icons",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": "status",
+    "archive_value": "archived",
+    "collapse": "open",
+    "collection": "icons",
+    "color": null,
+    "display_template": "{{name}}",
+    "group": null,
+    "hidden": false,
+    "icon": "emoji_symbols",
+    "item_duplication_fields": [
+      "name",
+      "iconify_id",
+      "category",
+      "sort"
+    ],
+    "note": "Editor-facing icon library. Each entry is a named icon that any content type can M2O reference. `iconify_id` stores the full Iconify reference (e.g. logos:react); `svg_override` takes precedence when set. Category tags for filtering.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": "draft",
+    "versioning": true
+  },
+  "schema": {
+    "name": "icons"
+  }
+}

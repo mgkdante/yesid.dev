@@ -76,6 +76,11 @@
         },
         {
           "collection": {
+            "_starts_with": "icons"
+          }
+        },
+        {
+          "collection": {
             "_starts_with": "site_meta"
           }
         },
@@ -107,6 +112,11 @@
         {
           "collection": {
             "_starts_with": "tech_stack"
+          }
+        },
+        {
+          "collection": {
+            "_starts_with": "icons"
           }
         },
         {
@@ -734,7 +744,8 @@
                 "82238060-72ab-414b-8f72-a7f83b15dc59",
                 "e4764c31-b8b4-4045-b066-76653bc3c884",
                 "1868fd73-d094-45eb-9d0c-802e2b49cf23",
-                "3b0880d2-9e19-4812-9b35-d16fba7c2e46"
+                "3b0880d2-9e19-4812-9b35-d16fba7c2e46",
+                "497956aa-f986-4a9f-8c2e-9c7ddf99c458"
               ]
             }
           }
@@ -1600,7 +1611,7 @@
     "fields": [
       "id",
       "name",
-      "icon",
+      "icon_id",
       "status",
       "sort",
       "translations",
@@ -2301,5 +2312,139 @@
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_site_meta_translations_human_delete"
+  },
+  {
+    "collection": "icons",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_icons_ai_create"
+  },
+  {
+    "collection": "icons",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_icons_ai_read"
+  },
+  {
+    "collection": "icons",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_icons_ai_update"
+  },
+  {
+    "collection": "icons",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_icons_human_create"
+  },
+  {
+    "collection": "icons",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_icons_human_read"
+  },
+  {
+    "collection": "icons",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_icons_human_update"
+  },
+  {
+    "collection": "icons",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_icons_human_delete"
+  },
+  {
+    "collection": "icons",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "name",
+      "iconify_id",
+      "svg_override",
+      "category",
+      "status",
+      "sort"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_icons_public_read"
   }
 ]

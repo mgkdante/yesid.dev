@@ -17,6 +17,7 @@ export * from './shared';
 export * from './parse';
 
 // Domain schemas (ContentAdapter layer)
+export * from './icon';
 export * from './project';
 export * from './service';
 export * from './blog';

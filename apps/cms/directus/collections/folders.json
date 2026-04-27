@@ -33,5 +33,10 @@
     "name": "about",
     "parent": null,
     "_syncId": "e4764c31-b8b4-4045-b066-76653bc3c884"
+  },
+  {
+    "name": "icons",
+    "parent": null,
+    "_syncId": "497956aa-f986-4a9f-8c2e-9c7ddf99c458"
   }
 ]

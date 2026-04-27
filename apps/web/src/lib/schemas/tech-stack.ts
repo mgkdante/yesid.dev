@@ -10,6 +10,7 @@
 import { z } from 'zod';
 import type { TechStackItem, InfraLayer, DomainCluster, Proficiency } from '$lib/types';
 import { LocalizedBlockEditorDocSchema } from '$lib/schemas/project';
+import { IconRecordSchema } from '$lib/schemas/icon';
 
 export const InfraLayerSchema = z.enum([
 	'data',
@@ -38,7 +39,7 @@ export const ProficiencySchema = z.enum(['expert', 'proficient', 'familiar']);
 export const TechStackItemSchema = z.object({
 	id: z.string().min(1),
 	name: z.string(),
-	icon: z.string(),
+	icon: IconRecordSchema.nullable(),
 	what_it_is: LocalizedBlockEditorDocSchema,
 	what_i_use_it_for: LocalizedBlockEditorDocSchema,
 	why_i_use_it_instead: LocalizedBlockEditorDocSchema,
