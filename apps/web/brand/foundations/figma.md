@@ -2,8 +2,8 @@
 
 **File:** [yesid.dev — design system](https://www.figma.com/design/Zn8w5sVMwCXhziyv03dpft)
 **File key:** `Zn8w5sVMwCXhziyv03dpft`
-**Created:** 2026-04-26 (slice-design Child 3) · **Expanded:** 2026-04-27 (γ followup — Overview content, brand marks, text styles, effect styles, 10 real Components)
-**Source of truth:** [`packages/tokens/tokens.json`](../../../../packages/tokens/tokens.json) (Variables) + [`apps/web/brand/logos/`](../logos/) (brand SVGs) + [`apps/web/src/lib/components/`](../../src/lib/components/) (Svelte components — Code Connect not yet wired, see [#66](https://github.com/mgkdante/yesid.dev/issues/66)). This Figma file mirrors those. Hand-edits to Variables / styles / Components in Figma will be overwritten on the next push.
+**Created:** 2026-04-26 (slice-design Child 3) · **Expanded:** 2026-04-27 (γ followup — Overview content, brand marks, text styles, effect styles, 10 real Components) · **slice-design-template Child 2** (2026-04-27): remaining 21 Components built (31 total, all Component Sets) + 31 per-component doc kits live in `docs-grid` (id `59:167`) on the `Components / UI` page
+**Source of truth:** [`packages/tokens/tokens.json`](../../../../packages/tokens/tokens.json) (Variables) + [`apps/web/brand/logos/`](../logos/) (brand SVGs) + [`apps/web/src/lib/components/`](../../src/lib/components/) (Svelte components — Code Connect deferred, see [#66](https://github.com/mgkdante/yesid.dev/issues/66) and the *Code Connect* note below). This Figma file mirrors those. Hand-edits to Variables / styles / Components in Figma will be overwritten on the next push.
 
 ## How tokens flow
 
@@ -112,22 +112,36 @@ CSS `color-mix()` semantics aren't 1:1 representable in Figma — these are visu
 
 ## Component library
 
-10 real Figma Components (24 instances across variant axes) live below the doc-card sections on `Components / UI` and `Components / Brand`. Drag to instantiate; swap variants from the right panel. Color-typed fills bind to Variables in the `Color` collection so a token change propagates to every instance.
+**31 of 31 Components built** (74 state instances across 23 stateful Component Sets — full state coverage matrix landed in slice-design-template Child 1, PR [#69](https://github.com/mgkdante/yesid.dev/pull/69)). Drag any to instantiate; swap variants from the right panel. Color-typed fills bind to Variables in the `Color` collection so a token change propagates to every instance.
 
-| Page | Component | Variants | Bindings |
-|---|---|---|---|
-| UI | `badge` | 4 — variant: default · secondary · destructive · outline | bg → primary / muted / destructive; outline stroke → border |
-| UI | `button` | 5 — variant: default · destructive · outline · secondary · ghost | bg → primary / destructive / muted; outline stroke → border |
-| UI | `card` | solo | bg → card; stroke → border |
-| UI | `separator` | 2 — orientation: horizontal · vertical | fill → border |
-| UI | `label` | solo | text only |
-| Brand | `StatusDot` | 3 — color: primary · success · destructive | dot + halo → matching color var |
-| Brand | `SectionLabel` | solo | mono accent text |
-| Brand | `SectionHeading` | solo | eyebrow + heading + accent dot |
-| Brand | `MetroStation` | 3 — color: primary · accent · success | dot + ping → matching color var |
-| Brand | `TerminalChrome` | 3 — status: idle · running · error | bg → terminal; status dot → muted-foreground / success / destructive |
+| Page | Components | Total |
+|---|---|---:|
+| `Components / UI` | `badge` · `button` · `card` · `collapsible` · `dialog` · `drawer` · `input` · `input-group` · `label` · `resizable` · `scroll-area` · `separator` · `sheet` · `skeleton` · `tabs` · `textarea` · `toggle` · `toggle-group` · `tooltip` | 19 |
+| `Components / Brand` | `BlueprintShell` · `ChevronToggle` · `CornerMarks` · `MetricDisplay` · `MetroStation` · `SectionHeading` · `SectionLabel` · `StatusDot` · `StickyPanel` · `StopLabel` · `SvgIcon` · `TerminalChrome` | 12 |
 
-The remaining 21 of 31 components stay as doc-card stubs and live in [#58](https://github.com/mgkdante/yesid.dev/issues/58) for the `slice-design-template` follow-up slice. Code Connect (Figma instance ↔ Svelte component import mapping) is [#66](https://github.com/mgkdante/yesid.dev/issues/66) — also `slice-design-template`.
+Each Component Set lives in a unified card on its Components page (label + component instance + states row). 12 of the 31 are plain Components (no variants); the other 19 are Component Sets with variant axes documented in the per-component doc kit.
+
+### Doc kits
+
+**31 per-component documentation cards** live in `docs-grid` (id `59:167`) on the `Components / UI` page below the Component library. Each kit is a 720px-wide vertical card with 7 sections:
+
+1. **Header** — component name in mono accent
+2. **Anatomy** — instance + bullet callouts describing structure
+3. **Do** — 3 usage guidelines (green ✓)
+4. **Don't** — 3 anti-patterns (red ✗)
+5. **Svelte** — copy-paste-ready import + JSX example
+6. **A11y** — 4-5 accessibility notes (Bits UI semantics for ui/, hand-crafted for brand/)
+7. **Props** — 4-column table (name · type · default · description)
+
+The doc kit Svelte sections double as a Code Connect substitute — see *Code Connect* note below.
+
+### Code Connect
+
+**Status:** deferred ([#66](https://github.com/mgkdante/yesid.dev/issues/66)). The `figma-remote` MCP `add_code_connect_map` and `send_code_connect_mappings` tools require a Developer seat in an Organization or Enterprise plan. This file's owning team is on **Pro tier**, which blocks the API call (verified 2026-04-27).
+
+**Workaround in place:** every doc kit's *Svelte* section shows the canonical import line (`import { Badge } from '$lib/components/ui/badge'`) and a representative usage snippet. Designers in Dev Mode see the import path directly in the doc card; developers do not need a Figma → code lookup table because the path is rendered visually.
+
+**To enable formal Code Connect:** upgrade the Figma team to Org/Enterprise tier, then re-run the bulk mapping (the 31 mappings are pre-computed in the slice-design-template Child 3 session log — node IDs + source URLs ready to send).
 
 ## Round-trip notes
 
@@ -152,8 +166,8 @@ If a future round-trip surfaces a NEW kind of delta, document it here.
 | `Foundations / Radius` | 5 corner samples on 64×64 boxes; pill capped to 32px to render visually. |
 | `Foundations / Shadows` | 6 cards with approximated DropShadow effects + raw CSS value. CSS `color-mix()` is not 1:1 representable in Figma; values are the source-of-truth. |
 | `Foundations / Motion` | Duration as accent-orange bars (×0.5px per ms) + easing as cubic-bezier curve previews via SVG. |
-| `Components / Brand` | 12 doc-card stubs (top section) + **(γ followup)** 5 real Component sets (StatusDot, SectionLabel, SectionHeading, MetroStation, TerminalChrome — 11 variants total) in a `component-library` section below. Hard cap per spec § 7 R2 holds for the doc cards. |
-| `Components / UI` | 19 doc-card stubs (top section) + **(γ followup)** 5 real Component sets (badge, button, card, separator, label — 13 variants total) in a `component-library` section below. |
+| `Components / Brand` | All 12 brand Component Sets/Components in `component-library` (BlueprintShell · ChevronToggle · CornerMarks · MetricDisplay · MetroStation · SectionHeading · SectionLabel · StatusDot · StickyPanel · StopLabel · SvgIcon · TerminalChrome). Original doc-card stubs replaced by real components in slice-design-template Child 1. |
+| `Components / UI` | All 19 UI Component Sets/Components in `component-library` (badge · button · card · collapsible · dialog · drawer · input · input-group · label · resizable · scroll-area · separator · sheet · skeleton · tabs · textarea · toggle · toggle-group · tooltip) **plus 31 per-component doc kits** in `docs-grid` (id `59:167`) below — see *Doc kits* section above. |
 | `Roundtrip — DO NOT EDIT` | Reserved for future read-only mirror; currently empty. |
 
 ## Snapshots
@@ -179,18 +193,16 @@ PNG snapshots of each foundation page live in [`../figma-exports/`](../figma-exp
 | [#57](https://github.com/mgkdante/yesid.dev/issues/57) | Brand marks rendered as native Figma vectors via `createNodeFromSvg()` (raster `upload_assets` not used — vectors stay scalable) | ✅ closed |
 | [#59](https://github.com/mgkdante/yesid.dev/issues/59) | 11 Figma text styles bundling font + size + line-height + tracking | ✅ closed |
 | [#60](https://github.com/mgkdante/yesid.dev/issues/60) | 6 Figma effect styles for shadow tokens (DropShadow approximations) | ✅ closed |
-| [#58](https://github.com/mgkdante/yesid.dev/issues/58) | Real Figma Components — **10 of 31 done** (badge, button, card, separator, label, StatusDot, SectionLabel, SectionHeading, MetroStation, TerminalChrome — 24 variants total). 21 stubs remain. | 🟡 in progress |
+| [#58](https://github.com/mgkdante/yesid.dev/issues/58) | Real Figma Components — **31 of 31 done** (slice-design-template Child 1 + Child 2 doc kits). | ✅ closed |
 
-### Still deferred to `slice-design-template`
+### Still deferred to a future slice
 
-| # | Item | Tier | Estimated |
+| # | Item | Tier | Blocker |
 |---|---|---|---|
-| [#58](https://github.com/mgkdante/yesid.dev/issues/58) (remaining) | 21 of 31 Components: collapsible · dialog · drawer · input · input-group · resizable · scroll-area · sheet · skeleton · tabs · textarea · toggle · toggle-group · tooltip · BlueprintShell · ChevronToggle · CornerMarks · MetricDisplay · StickyPanel · StopLabel · SvgIcon | 2 | 3-4h |
-| [#66](https://github.com/mgkdante/yesid.dev/issues/66) | Code Connect — wire Figma instance ↔ Svelte component import mapping | 2 | 16-18h |
+| [#66](https://github.com/mgkdante/yesid.dev/issues/66) | Code Connect — formal `add_code_connect_map` mapping for the 31 Components | 2 | Figma plan upgrade (Pro → Org/Enterprise). Workaround: doc-kit *Svelte* sections render the import path visually. |
 
 Also deferred (not filed as discrete issues; these are scope boundaries, not punch-list items):
 
-- **Code Connect** — wires Figma components ↔ Svelte. Pays off at 2+ contributors.
 - **Library publishing** — single-file pattern is the call for solo. Flip when you onboard a co-designer.
 
 Filed per [AGENTS.md § Never](../../../../AGENTS.md): *"Close a slice with deferred work that isn't filed as a GitHub issue first."*
