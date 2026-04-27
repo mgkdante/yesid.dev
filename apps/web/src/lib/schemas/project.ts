@@ -7,13 +7,20 @@
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { Project, ProjectSection, ImpactMetric, ProjectStatus } from '$lib/types';
+import { BlockEditorDocSchema } from '@repo/shared';
+import type { Project, ProjectSection, ImpactMetric, ProjectStatus, LocalizedBlockEditorDoc } from '$lib/types';
 
 export const ProjectStatusSchema = z.enum(['public', 'private', 'wip']);
 
+export const LocalizedBlockEditorDocSchema: z.ZodType<LocalizedBlockEditorDoc> = z.object({
+	en: BlockEditorDocSchema,
+	fr: BlockEditorDocSchema.optional(),
+	es: BlockEditorDocSchema.optional(),
+});
+
 export const ProjectSectionSchema = z.object({
 	title: LocalizedStringSchema,
-	content: LocalizedStringSchema,
+	content: LocalizedBlockEditorDocSchema,
 });
 
 export const ImpactMetricSchema = z.object({
@@ -26,7 +33,7 @@ export const ProjectSchema = z.object({
 	slug: z.string().min(1),
 	title: LocalizedStringSchema,
 	oneLiner: LocalizedStringSchema,
-	description: LocalizedStringSchema,
+	description: LocalizedBlockEditorDocSchema,
 	stack: z.array(z.string()),
 	tags: z.array(z.string()),
 	status: ProjectStatusSchema,

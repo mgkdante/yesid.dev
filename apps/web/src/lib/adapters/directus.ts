@@ -26,6 +26,7 @@ import type {
 	BlogPost,
 	ImpactMetric,
 	Locale,
+	LocalizedBlockEditorDoc,
 	LocalizedString,
 	MorphShape,
 	Project,
@@ -107,13 +108,15 @@ export interface DirectusProjectTranslation {
 	languages_code: string;
 	title?: string | null;
 	one_liner?: string | null;
-	description?: string | null;
+	/** Block Editor JSON per locale (#41). Live CMS stores BlockEditorDoc here. */
+	description?: BlockEditorDoc | null;
 }
 
 export interface DirectusProjectSectionTranslation {
 	languages_code: string;
 	title?: string | null;
-	content?: string | null;
+	/** Block Editor JSON per locale (#41). Live CMS stores BlockEditorDoc here. */
+	content?: BlockEditorDoc | null;
 }
 
 export interface DirectusProjectSectionRow {
@@ -261,6 +264,34 @@ function toLocalizedStringOrUndef<T extends { languages_code: string }>(
 	return hasAny ? toLocalizedString(translations, field) : undefined;
 }
 
+/**
+ * Compose a LocalizedBlockEditorDoc from a Directus Translations array.
+ * Each translation row's `field` value must be a BlockEditorDoc object
+ * ({ time, blocks, version }). Rows with missing/invalid shapes are skipped.
+ * Falls back to an empty single-paragraph doc for the required `en` locale.
+ *
+ * Used for Project.description and ProjectSection.content (#41).
+ */
+function toLocalizedBlockEditorDoc<T extends { languages_code: string }>(
+	translations: ReadonlyArray<T> | null | undefined,
+	field: string,
+): LocalizedBlockEditorDoc {
+	const rows = translations ?? [];
+	const out: { en?: BlockEditorDoc; fr?: BlockEditorDoc; es?: BlockEditorDoc } = {};
+	for (const row of rows) {
+		const value = (row as Record<string, unknown>)[field];
+		if (value !== null && typeof value === 'object' && 'blocks' in (value as object)) {
+			const code = row.languages_code as 'en' | 'fr' | 'es';
+			out[code] = value as BlockEditorDoc;
+		}
+	}
+	if (!out.en) {
+		// Fallback: empty single-paragraph doc to satisfy the required `en` field.
+		out.en = { time: 0, version: '2.31.2', blocks: [{ id: 'p1', type: 'paragraph', data: { text: '' } }] };
+	}
+	return out as LocalizedBlockEditorDoc;
+}
+
 // ---------------------------------------------------------------------------
 // Lazy client — module import must not require env (keeps unit tests env-free)
 // ---------------------------------------------------------------------------
@@ -388,7 +419,7 @@ export function toProject(row: DirectusProject): Project {
 		.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
 		.map((s) => ({
 			title: toLocalizedString(s.translations ?? [], 'title'),
-			content: toLocalizedString(s.translations ?? [], 'content'),
+			content: toLocalizedBlockEditorDoc(s.translations ?? [], 'content'),
 		}));
 
 	const impactMetrics: ImpactMetric[] = (row.impact_metrics ?? [])
@@ -407,7 +438,7 @@ export function toProject(row: DirectusProject): Project {
 		slug: row.id,
 		title: toLocalizedString(translations, 'title'),
 		oneLiner: toLocalizedString(translations, 'one_liner'),
-		description: toLocalizedString(translations, 'description'),
+		description: toLocalizedBlockEditorDoc(translations, 'description'),
 		stack: row.stack ?? [],
 		tags: row.tags ?? [],
 		status: statusFromDirectus(row.status),

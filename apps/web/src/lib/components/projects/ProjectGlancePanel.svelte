@@ -12,6 +12,7 @@
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
   import ServiceBadge from './ServiceBadge.svelte';
   import { projectsDetailContent } from '$lib/content/projects';
+  import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
 
   const glanceOverviewTitle = resolveLocale(projectsDetailContent.glance.overview, 'en');
   const glanceImpactTitle = resolveLocale(projectsDetailContent.glance.impact, 'en');
@@ -56,9 +57,9 @@
     <!-- Overview -->
     <div class="mb-4">
       <CollapsibleSection title={glanceOverviewTitle} open={true}>
-        <p class="glance-overview text-small leading-[1.7]">
-          {resolveLocale(project.description, 'en')}
-        </p>
+        <div class="glance-overview text-small leading-[1.7]">
+          <BlockRenderer doc={resolveLocale(project.description, 'en')} />
+        </div>
       </CollapsibleSection>
     </div>
 

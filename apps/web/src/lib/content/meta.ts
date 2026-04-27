@@ -1,5 +1,6 @@
 import type { SiteMeta, PageSeo, Locale } from '$lib/types';
 import { SITE_HOST } from '$lib/utils/seo-defaults';
+import { extractText } from '@repo/shared';
 import {
 	buildPersonNode,
 	buildWebSiteNode,
@@ -205,10 +206,16 @@ export const routeSeoEntries: Record<string, StaticSeo | DynamicSeoFactory> = {
 		const { adapter } = await import('$lib/adapters');
 		const project = await adapter.projects.bySlug(params.slug);
 		if (!project) throw new Error(`Unknown project slug: ${params.slug}`);
+		// Extract plain text from LocalizedBlockEditorDoc before passing to fitDescriptionForSeo.
+		const descriptionText: { en: string; fr?: string; es?: string } = {
+			en: extractText(project.description.en),
+			...(project.description.fr !== undefined && { fr: extractText(project.description.fr) }),
+			...(project.description.es !== undefined && { es: extractText(project.description.es) }),
+		};
 		// Prefer description (fuller); fall back to oneLiner, then site fallback.
 		const desc =
-			fitDescriptionForSeo(project.description) !== FALLBACK_DESCRIPTION
-				? project.description
+			fitDescriptionForSeo(descriptionText) !== FALLBACK_DESCRIPTION
+				? descriptionText
 				: fitDescriptionForSeo(project.oneLiner);
 		const canonicalUrl = `${SITE_HOST}/projects/${project.slug}`;
 		return {

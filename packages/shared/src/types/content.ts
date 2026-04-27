@@ -9,6 +9,8 @@
 // Per D14: packages/shared is type-only + Zod. No runtime helpers, no
 // app-specific imports (no $lib aliases; those stay in apps/web).
 
+import type { BlockEditorDoc } from './blocks';
+
 // Supported locale codes. English is always required; French and Spanish are optional.
 // Adding a new locale means adding it here first, then the data files and resolver.
 export type Locale = 'en' | 'fr' | 'es';
@@ -20,6 +22,18 @@ export interface LocalizedString {
 	en: string;
 	fr?: string;
 	es?: string;
+}
+
+// A localized Block Editor document. Mirrors LocalizedString's locale shape
+// but each value is a BlockEditorDoc (Editor.js JSON) instead of a plain string.
+// English is required; French and Spanish are filled in over time.
+// Introduced in slice-18 18f Phase 11 Task 78 (#41) for Project.description
+// and ProjectSection.content — the first fields to migrate from plain text
+// to rich Block Editor content per locale.
+export interface LocalizedBlockEditorDoc {
+	en: BlockEditorDoc;
+	fr?: BlockEditorDoc;
+	es?: BlockEditorDoc;
 }
 
 // A content block inside a service's detail page.
@@ -35,7 +49,8 @@ export interface ServiceSection {
 // without bloating the Project summary fields used in listings.
 export interface ProjectSection {
 	title: LocalizedString;
-	content: LocalizedString;
+	/** Block Editor JSON per locale (#41). Migrated from LocalizedString in Task 78. */
+	content: LocalizedBlockEditorDoc;
 }
 
 // Visibility controls which projects surface on the site.
@@ -62,7 +77,8 @@ export interface Project {
 	title: LocalizedString;
 	// oneLiner is the one-sentence pitch shown in cards and listings
 	oneLiner: LocalizedString;
-	description: LocalizedString;
+	/** Block Editor JSON per locale (#41). Migrated from LocalizedString in Task 78. */
+	description: LocalizedBlockEditorDoc;
 	// stack and tags are not localised — technology names are universal
 	stack: string[];
 	tags: string[];

@@ -17,6 +17,7 @@ import {
 	getAllTags,
 	getAllStackItems,
 	getServiceIdsForProjects,
+	rawProjectToProject,
 } from '$lib/content/projects';
 import {
 	services,
@@ -128,17 +129,17 @@ function withImageUuid(project: Project): Project {
 export const staticAdapter: ContentAdapter = {
 	projects: {
 		all: async () =>
-			parsePort('projects.all', z.array(ProjectSchema), projects.map(withImageUuid)),
+			parsePort('projects.all', z.array(ProjectSchema), projects.map((r) => withImageUuid(rawProjectToProject(r)))),
 		bySlug: async (slug) => {
 			const p = getProjectBySlug(slug);
-			return parsePort('projects.bySlug', ProjectSchema.optional(), p ? withImageUuid(p) : undefined);
+			return parsePort('projects.bySlug', ProjectSchema.optional(), p ? withImageUuid(rawProjectToProject(p)) : undefined);
 		},
 		featured: async () =>
-			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects().map(withImageUuid)),
+			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects().map((r) => withImageUuid(rawProjectToProject(r)))),
 		public: async () =>
-			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects().map(withImageUuid)),
+			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects().map((r) => withImageUuid(rawProjectToProject(r)))),
 		byService: async (serviceId) =>
-			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId).map(withImageUuid)),
+			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId).map((r) => withImageUuid(rawProjectToProject(r)))),
 		// Utility ports — return primitives/strings, no schema needed (spec D2).
 		allTags: async () => getAllTags(),
 		allStackItems: async () => getAllStackItems(),

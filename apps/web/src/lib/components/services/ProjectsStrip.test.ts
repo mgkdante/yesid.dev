@@ -3,12 +3,14 @@ import { render, screen } from '@testing-library/svelte';
 import ProjectsStrip from './ProjectsStrip.svelte';
 import type { Project } from '$lib/types';
 
+const emptyDoc = { time: 0, version: '2.31.2', blocks: [] as never[] };
+
 const mockProjects: Project[] = [
 	{
 		slug: 'transit-data-pipeline',
 		title: { en: 'Transit Data Pipeline' },
 		oneLiner: { en: '' },
-		description: { en: '' },
+		description: { en: emptyDoc },
 		stack: [],
 		tags: [],
 		status: 'public',
@@ -20,7 +22,7 @@ const mockProjects: Project[] = [
 		slug: 'lorem-query-optimizer',
 		title: { en: 'Query Optimizer' },
 		oneLiner: { en: '' },
-		description: { en: '' },
+		description: { en: emptyDoc },
 		stack: [],
 		tags: [],
 		status: 'public',

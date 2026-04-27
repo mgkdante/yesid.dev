@@ -257,7 +257,11 @@ describe('directus adapter — toProject', () => {
 				languages_code: 'en',
 				title: 'yesid.dev — Portfolio',
 				one_liner: 'Personal site',
-				description: 'A personal brand site.',
+				description: {
+					time: 1700000000000,
+					version: '2.31.2',
+					blocks: [{ id: 'b1', type: 'paragraph' as const, data: { text: 'A personal brand site.' } }],
+				},
 			},
 		],
 		sections: [],
@@ -285,11 +289,13 @@ describe('directus adapter — toProject', () => {
 		expect(p.status).toBe('private');
 	});
 
-	it('flattens translations to LocalizedString', () => {
+	it('flattens translations to LocalizedString / LocalizedBlockEditorDoc', () => {
 		const p = toProject(baseRow);
 		expect(p.title).toEqual({ en: 'yesid.dev — Portfolio' });
 		expect(p.oneLiner).toEqual({ en: 'Personal site' });
-		expect(p.description).toEqual({ en: 'A personal brand site.' });
+		// description is now LocalizedBlockEditorDoc — check block shape
+		expect(p.description.en.blocks[0].type).toBe('paragraph');
+		expect((p.description.en.blocks[0].data as { text: string }).text).toBe('A personal brand site.');
 	});
 
 	it('returns hero_image UUID as image field', () => {
@@ -315,18 +321,23 @@ describe('directus adapter — toProject', () => {
 	});
 
 	it('flattens sections sorted by sort + with translation flattening', () => {
+		const sectionContent = (text: string) => ({
+			time: 1700000000000,
+			version: '2.31.2',
+			blocks: [{ id: 'b1', type: 'paragraph' as const, data: { text } }],
+		});
 		const withSections: DirectusProject = {
 			...baseRow,
 			sections: [
 				{
 					id: 1,
 					sort: 1,
-					translations: [{ languages_code: 'en', title: 'Second', content: 'Two' }],
+					translations: [{ languages_code: 'en', title: 'Second', content: sectionContent('Two') }],
 				},
 				{
 					id: 2,
 					sort: 0,
-					translations: [{ languages_code: 'en', title: 'First', content: 'One' }],
+					translations: [{ languages_code: 'en', title: 'First', content: sectionContent('One') }],
 				},
 			],
 		};
@@ -334,6 +345,9 @@ describe('directus adapter — toProject', () => {
 		expect(p.sections.length).toBe(2);
 		expect(p.sections[0].title).toEqual({ en: 'First' });
 		expect(p.sections[1].title).toEqual({ en: 'Second' });
+		// content is now LocalizedBlockEditorDoc — verify block shape
+		expect(p.sections[0].content.en.blocks[0].type).toBe('paragraph');
+		expect(p.sections[1].content.en.blocks[0].type).toBe('paragraph');
 	});
 
 	it('flattens impact_metrics; impactMetric === impactMetrics[0]', () => {
