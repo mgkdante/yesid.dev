@@ -6,14 +6,71 @@
 
 | Phase | Tasks | Scope |
 |---|---|---|
-| 1 | Probes + audit | P1: 34 tech_stack.icon → iconify_id mapping table; P2: directus_files Public read sanity; P3: community Iconify-picker extension search; P4: rename mechanics dry-run |
-| 2 | Schema | `icons` collection + 7 fields + permissions (~10 rows) + 18-item checklist |
+| 0 | Extension install | Install Simple Iconify Picker community extension in `apps/cms` per D-AMEND-1; verify Directus discovers it on boot; document field-config syntax for binding it to `icons.iconify_id` |
+| 1 | Probes + audit | P1: 34 tech_stack.icon → iconify_id mapping table; P2: directus_files Public read sanity; P3 was originally "extension search" but is RESOLVED (Q5); P4: rename mechanics dry-run |
+| 2 | Schema | `icons` collection + 7 fields + permissions (~10 rows) + 18-item checklist; bind picker interface on `iconify_id` field |
 | 3 | Seed | `seed-icons.ts` (mirrors seed-projects shape) + run live |
 | 4 | tech_stack migration | Add `icon_id` M2O FK on tech_stack, backfill from existing string field, drop string field, rename to `icon` |
 | 5 | Adapter + types + IconRenderer | TechStackItem.icon shape change; `directus.techStack` nested expansion; generalize TechIcon → IconRenderer; tests |
-| 6 | Close | Acceptance run + GH issues (Q5 typeahead, Q-OPEN-3 admin page) + memory + PR |
+| 6 | Close | Acceptance run + 2 GH issues (admin page + namespace audit) + memory + PR |
 
 Estimated effort: **0.5-1 session** (most patterns reuse 18g; the migration step is the ~30 min unknown).
+
+## Phase 0 — Extension install (3 tasks)
+
+**Exit gate:** Simple Iconify Picker extension is installed in `apps/cms`, committed to git, deployed to Railway, and visible as an interface option in Data Studio's field-edit screen. D-AMEND-1 honored.
+
+### Task 0.1: Locate the npm package + install
+
+```bash
+cd /c/Users/otalo/Yesito/Projects/yesid.dev/apps/cms
+# Find the package — check dirextensions.com listing or its GitHub for the npm name.
+# Likely candidates (verify before installing):
+#   - directus-extension-simple-iconify-picker
+#   - @<scope>/directus-extension-iconify-picker
+bun add <verified-package-name>
+```
+
+The extension files land in `node_modules/<package>` and Directus's runtime auto-discovers extensions in `node_modules` matching the `directus-extension-*` keyword on its package.json. **No EXTENSIONS_PATH env var change needed** — Directus 11 supports npm-installed extensions natively.
+
+Confirm install:
+```bash
+ls apps/cms/node_modules/ | grep iconify
+cat apps/cms/node_modules/<package>/package.json | grep -E 'directus:extension|main'
+```
+
+### Task 0.2: Commit + Railway deploy
+
+The package install updates `apps/cms/package.json` + `apps/cms/bun.lock` (or repo-root `bun.lock` depending on workspace setup). Commit both. Push. Railway auto-deploys.
+
+After deploy, verify Directus boots cleanly + the new interface appears in admin → Settings → Data Model → any field's interface dropdown:
+
+```bash
+gh run list --workflow railway-deploy --limit 1
+# Then in Data Studio: Settings → Data Model → Pick any collection → Add Field → Interface dropdown
+# expect "Simple Iconify Picker" (or similar — name from extension package) listed
+```
+
+### Task 0.3: Document binding syntax in this slice's docs
+
+The picker is bound to a field via the field's `meta.interface` value (the extension's interface ID). Find that ID by:
+- Extension's README on dirextensions.com / GitHub
+- Or by adding a test field in Data Studio, picking the picker, then `cd apps/cms && bun run sync:pull --collections-only` to see the resulting JSON
+
+Document the exact `meta.interface` value here:
+
+```
+meta.interface: "<extension-interface-id>"
+meta.options: { ... }  // any picker config (default collection, restrict to set, etc.)
+```
+
+This will be hardcoded in `apps/cms/directus/snapshot/fields/icons/iconify_id.json` in Phase 2.
+
+```bash
+git add apps/cms/package.json bun.lock docs/slices/slice-18/18h-ii-icons/plan.md
+git commit -m "feat(slice-18 18h-ii Phase 0): install simple-iconify-picker community extension (per D-AMEND-1)"
+git push
+```
 
 ## Phase 1 — Probes + audit (4 tasks)
 
@@ -186,9 +243,9 @@ cd apps/cms && bun test 2>&1 | tail -10
 
 ### Task 15: File GH issues (per decisions.md § GH issues to file at close)
 
-- Live Iconify typeahead picker (Q5 deferral)
 - Icon library admin page in apps/web (Q-OPEN-3)
 - Audit + standardize iconify_id namespaces (Q-OPEN-2 follow-up)
+- (Optional) Quarterly maintenance check on Simple Iconify Picker extension
 
 ### Task 16: Memory + plan + close
 

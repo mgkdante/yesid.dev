@@ -21,12 +21,12 @@ The renderer prefers `svg_override` when present, falls back to `iconify_id`.
 - Migrate `tech_stack.icon` from string field → M2O FK to `icons.id`
 - Generalize `TechIcon.svelte` (shipped in PR #68) → `IconRenderer.svelte` consuming an icon record
 - Seed icons collection with one row per unique icon string in current 34 `tech_stack` items (after audit + Iconify mapping per P1)
+- Install [Simple Iconify Picker](https://www.dirextensions.com/details/simple-iconify-picker/) community extension and configure on `icons.iconify_id` for typeahead UX (per Q5 + D-AMEND-1)
 
 ### Out of scope (deferred or dropped)
 
 | Item | Disposition |
 |---|---|
-| Live Iconify search/typeahead in Data Studio (type "python" → see all matching icons inline) | DEFERRED — see decisions Q5. Requires custom Directus interface extension (D11 violation); v1 ships with a pre-curated dropdown. Tracked as GH issue. |
 | Consolidate `morph_shapes` + `illustrations` collections into `icons` | DEFERRED — different schemas + use cases. Re-evaluate if/when their consumers converge. |
 | `services.icon` / `blog_posts.icon` / `pages.icon` adoption | NOT THIS SLICE — pattern shipped here; new collections adopt as they're touched (18h, 18i, etc.) |
 | Per-locale icon variants | DROPPED — icons are visual identifiers; localization not meaningful |
@@ -86,23 +86,24 @@ When we eventually re-evaluate `morph_shapes` + `illustrations`, the question be
 
 ## Acceptance gates
 
-1. `icons` collection live in Directus; `sync:diff` clean
-2. Permissions matrix: ai-editor + human-editor + Public read for published rows
-3. Icons collection seeded with ≥34 entries (one per current `tech_stack.icon` string); each has either `iconify_id` or `svg_override` populated
-4. `tech_stack.icon` is now an M2O FK; old string field deleted; renamed cleanly
-5. `directus.techStack.all()` adapter reads nested `icon` shape via `parsePort` guard
-6. `<IconRenderer icon={item.icon} />` renders correctly for both Iconify and svg_override paths (unit tests)
-7. `bun run check` 0 errors; apps/web vitest green; apps/cms test suite green
-8. GH issue filed for typeahead-UX exploration (Q5 deferral)
-9. Memory + plan updated; PR open
+1. Simple Iconify Picker extension installed in `apps/cms`; Directus auto-discovers it on boot; `icons.iconify_id` field's interface set to the picker (typeahead UX confirmed in Data Studio)
+2. `icons` collection live in Directus; `sync:diff` clean
+3. Permissions matrix: ai-editor + human-editor + Public read for published rows
+4. Icons collection seeded with ≥34 entries (one per current `tech_stack.icon` string); each has either `iconify_id` or `svg_override` populated
+5. `tech_stack.icon` is now an M2O FK; old string field deleted; renamed cleanly
+6. `directus.techStack.all()` adapter reads nested `icon` shape via `parsePort` guard
+7. `<IconRenderer icon={item.icon} />` renders correctly for both Iconify and svg_override paths (unit tests)
+8. `bun run check` 0 errors; apps/web vitest green; apps/cms test suite green
+9. 2 GH issues filed (admin page + namespace audit per decisions.md)
+10. Memory + plan updated; PR open
 
 ## Risks + mitigations
 
 | Risk | Mitigation |
 |---|---|
 | Iconify CDN unreachable at runtime → broken icons | `<IconRenderer>` falls back to placeholder + console warns; consumers don't break |
-| `iconify_id` value (e.g. `logos:apache-airflow`) doesn't match Iconify reality post-render | Phase 1 P1 audit verifies all 34 mapped IDs against `icon-sets.iconify.design` before seeding |
-| Editor stuck without typeahead UX (must know icon ID by heart) | Phase 4 ships an internal admin doc page that lists all curated icons + their previews. Editors browse the page, copy the ID into Data Studio when adding new entries |
+| `iconify_id` value (e.g. `logos:apache-airflow`) doesn't match Iconify reality post-render | Phase 1 P1 audit verifies all 34 mapped IDs against `icon-sets.iconify.design` before seeding. The picker extension itself prevents bad IDs going forward — editors only pick from real Iconify icons |
+| Simple Iconify Picker extension breaks on a Directus major upgrade | Pin the extension version in `apps/cms/package.json`. Pre-upgrade smoke check on a Railway preview env. If extension goes unmaintained, fork or evaluate alternatives (decisions.md GH follow-up). Extension's CSP-compliant proxy + caching architecture is robust to ordinary Directus minor upgrades |
 | Migration breaks existing `tech_stack.icon` consumers mid-flight | Stage migration: add `icon_id` first, backfill, verify, THEN drop old field. Single-commit drop after verification |
 
 ## Effort

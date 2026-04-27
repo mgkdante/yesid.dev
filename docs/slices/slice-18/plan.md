@@ -26,6 +26,7 @@
 | **18f** | Blog + Block Editor + BlockRenderer.svelte + projects #41 | ✅ closed 2026-04-26 | shipped (PR #50, 38 commits) | [18f-blog-block-editor/](18f-blog-block-editor/) |
 | **18g** | Tech-stack (data-only — Block Editor body fields, M2M services + projects junctions; visualization area blanked pending honeycomb redesign) | ✅ closed 2026-04-27 | shipped (PR #65, 13 commits) | [18g-tech-stack/](18g-tech-stack/) |
 | **18h** | Meta + route_seo (singleton + og_image) | ⏸ planned | 0.5 session | — |
+| **18h-ii** | Icons collection (centralized icon library, Iconify-backed via community extension) | 🟡 in flight | 0.5–1 session | [18h-ii-icons/](18h-ii-icons/) |
 | **18i** | Pages + M2A blocks (12 block collections + nav/menu/error) | ⏸ planned | 2–3 sessions | — |
 | **18j** | Polish (Insights · comments · AI Assistant · Flows · role-policy tighten) | ⏸ planned | 1 session | — |
 | **18l** | **CMS brand styling** — Data Studio theme to match yesid.dev (logo · favicon · colors · typography via directus-sync themes/settings) | ⏸ planned | 0.5 session | — |
@@ -66,7 +67,8 @@ Full D-entry narratives and amendment rationale live in design spec [`docs/super
 | D8 | **Full-site revalidation** via Flow Event Hook → Webhook → SvelteKit ISR bypass | shape locked | 18b + 18c amendment |
 | D9 | `/assets/:id?key=<preset>` + `STORAGE_ASSET_TRANSFORM=presets` locked + `legacy_path` custom field + folder-per-content-type | shape locked | 18b + 18c amendment |
 | D10 | 9 capability policies; ai-editor delete:false; **2FA enforced**; SSO/OIDC NICE → SHOULD; conservative instance-wide `RATE_LIMITER_*` | shape locked | 18b + 18c amendment |
-| D11 | **Zero custom Directus extensions EXCEPT directus-sync** authoring tool | shape locked | 18b + 18c amendment |
+| D11 | **Zero custom Directus extensions EXCEPT directus-sync** authoring tool — *amended by D-AMEND-1 (18h-ii)* | shape locked + amended | 18b + 18c amendment + 2026-04-27 |
+| **D-AMEND-1** | **Amends D11.** Zero CUSTOM-BUILT extensions; community-marketplace extensions allowed when listed on Directus marketplace + actively maintained (last commit < 6 months) + clear license + Directus 11.x compat. First adoption: `simple-iconify-picker` for `icons.iconify_id` typeahead UX (see 18h-ii). User principle: "we can use extensions, we just don't reinvent the wheel" | shape locked | 2026-04-27 (18h-ii) |
 | D12 | **Turborepo monorepo in existing yesid.dev repo with two-app independence convention** (replaces two-repo; amended 2026-04-24: "strict boundary + CI check" → "convention + code review"; yesido-platform umbrella repo idea dropped — yesid.dev IS the umbrella) | shape locked | 18b + 18c pivot + 2026-04-24 amendment |
 | **D13** | Turborepo + **Bun workspaces** monorepo (amended from pnpm 2026-04-24) | shape locked | 18c new (amended in 18c) |
 | **D14** | `packages/shared` types + Zod only; runtime helpers app-local | shape locked | 18c new |
