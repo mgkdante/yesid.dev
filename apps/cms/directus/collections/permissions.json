@@ -1877,5 +1877,37 @@
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "_sync_perm_tech_stack_projects_public_read"
+  },
+  {
+    "collection": "directus_comments",
+    "action": "create",
+    "permissions": {
+      "collection": {
+        "_starts_with": "tech_stack"
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-comments-tech-stack-create-0043-00000000030"
+  },
+  {
+    "collection": "directus_comments",
+    "action": "read",
+    "permissions": {
+      "collection": {
+        "_starts_with": "tech_stack"
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ae-comments-tech-stack-read-0044-000000000031"
   }
 ]
