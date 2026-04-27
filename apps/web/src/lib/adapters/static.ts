@@ -39,7 +39,14 @@ import {
 	resolveSvgFallbackName,
 	resolveAnimation,
 } from '$lib/content/blog';
-import { routeSeoEntries, siteMeta } from '$lib/content/meta';
+import { siteMeta } from '$lib/content/site-meta';
+import { codeRouteSeoDefaults } from './route-seo-defaults';
+import {
+	routeSeoFactories,
+	errorSeoFallback,
+} from './route-seo-factories';
+import { composePageSeo } from './compose-page-seo';
+import type { SiteSeoDefaults } from '$lib/types';
 import { PageSeoSchema, type PageSeo } from '$lib/schemas/seo';
 import { z } from 'zod';
 import {
@@ -116,6 +123,24 @@ function withImageUuid(project: Project): Project {
 	return { ...project, image: uuid };
 }
 
+// ---------------------------------------------------------------------------
+// Static SEO defaults (slice-18 18h Q9 amendment 2026-04-27)
+//
+// Mirrors the CMS site_meta defaults that the directus adapter sources at
+// runtime. Used by static.meta.siteSeoDefaults() AND static.meta.forRoute()
+// composer (so both produce consistent output in static-mode tests). The
+// directus adapter pulls equivalent values from the live `site_meta` singleton
+// row + per-request WeakMap memo on the raw row.
+// ---------------------------------------------------------------------------
+
+const STATIC_SITE_SEO_DEFAULTS: SiteSeoDefaults = {
+	defaultOgImage: null,
+	themeColor: '#141414',
+	defaultDescription: {
+		en: 'yesid. — freelance data infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, Python. Real-time pipelines, analytics, dashboards for growing teams.',
+	},
+};
+
 export const staticAdapter: ContentAdapter = {
 	projects: {
 		all: async () =>
@@ -173,19 +198,57 @@ export const staticAdapter: ContentAdapter = {
 	},
 	meta: {
 		site: async () => parsePort('meta.site', SiteMetaSchema, siteMeta),
+		// slice-18 18h Q9: SEO defaults shape sourced from the static fallback.
+		// The directus adapter sources from CMS singleton; this static fallback
+		// keeps the adapter contract uniform for tests and static-mode scenarios.
+		siteSeoDefaults: async () => STATIC_SITE_SEO_DEFAULTS,
+		// Static adapter has no per-route overrides — composer falls through to
+		// code-side defaults. Returning undefined matches the directus shape
+		// when no row matches the path.
+		routeSeo: {
+			byPath: async () => undefined,
+		},
+		// slice-18 18h Phase 5 Task 15: forRoute now uses the same composer pattern
+		// as the directus adapter (compose-page-seo + route-seo-factories +
+		// route-seo-defaults). Replaces the legacy `routeSeoEntries` lookup that
+		// got deleted with `apps/web/src/lib/content/meta.ts`.
 		forRoute: async (
 			routeId: string,
 			locale: Locale,
 			params?: Record<string, string>,
 		): Promise<PageSeo> => {
-			const entry = routeSeoEntries[routeId];
-			if (!entry) {
+			const { adapter } = await import('$lib/adapters');
+			const dynamicFactory = routeSeoFactories[routeId];
+			if (dynamicFactory) {
+				return dynamicFactory({
+					params: params ?? {},
+					locale,
+					adapter,
+					siteMeta,
+					siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
+				});
+			}
+			if (routeId === '/__error') {
+				return errorSeoFallback({
+					locale,
+					siteMeta,
+					siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
+				});
+			}
+			const codeDefaults = codeRouteSeoDefaults[routeId];
+			if (!codeDefaults) {
 				throw new Error(
-					`[adapter.meta.forRoute] Unknown route id: ${routeId}. Add an entry in src/lib/content/meta.ts.`,
+					`[adapter.meta.forRoute] Unknown route id: ${routeId}. Add an entry in route-seo-defaults.ts.`,
 				);
 			}
-			const raw = typeof entry === 'function' ? await entry(params ?? {}, locale) : entry;
-			return PageSeoSchema.parse(raw);
+			return composePageSeo({
+				routeId,
+				locale,
+				siteMeta,
+				siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
+				routeOverride: undefined,
+				codeDefaults,
+			});
 		},
 	},
 	techStack: {

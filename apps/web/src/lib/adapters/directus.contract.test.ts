@@ -69,8 +69,9 @@ describe('directusAdapter — structural contract', () => {
 		// Tasks 10–14 progressively replace these throws with real impls.
 		// 18f Phase 9: blog + morphShapes ports are live.
 		// 18g Phase 4: techStack port is now live (all/byId/content).
-		// Only meta + content (non-metroSvg/morphShapes) remain as TODO stubs.
-		await expect(directusAdapter.meta.site()).rejects.toThrow(/not implemented/);
+		// 18h Phase 4 Task 10: meta.site + meta.siteSeoDefaults + meta.routeSeo
+		//   are live. Task 11: meta.forRoute composer is live.
+		// Only content (non-metroSvg/morphShapes) remain as TODO stubs.
 		await expect(directusAdapter.content.hero()).rejects.toThrow(/not implemented/);
 	});
 

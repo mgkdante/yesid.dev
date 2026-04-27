@@ -1,0 +1,38 @@
+{
+	"id": 1,
+	"name": "yesid.",
+	"email": "contact@yesid.dev",
+	"github_url": "https://github.com/mgkdante",
+	"linkedin_url": "https://www.linkedin.com/in/otaloray/",
+	"upwork_url": "https://www.upwork.com/freelancers/~011ba4ec420b4cdd82",
+	"owner_name": "Yesid O.",
+	"owner_locality": "Montreal",
+	"owner_region": "QC",
+	"owner_country": "CA",
+	"owner_knows_about": "PostgreSQL,dbt,Power BI,Python,Digital Infrastructure,ETL,Data Warehousing,SvelteKit,TypeScript",
+	"default_og_image": null,
+	"theme_color": "#141414",
+	"translations": [
+		{
+			"languages_code": "en",
+			"tagline": "Digital infrastructure that moves.",
+			"description": "Freelance SQL developer and digital infrastructure consultant based in Montreal. PostgreSQL, dbt, Power BI, and Python.",
+			"default_description": "yesid. — freelance data infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, Python. Real-time pipelines, analytics, dashboards for growing teams.",
+			"owner_job_title": "Digital Infrastructure Consultant"
+		},
+		{
+			"languages_code": "fr",
+			"tagline": "",
+			"description": "",
+			"default_description": "",
+			"owner_job_title": "Consultant en infrastructure numérique"
+		},
+		{
+			"languages_code": "es",
+			"tagline": "",
+			"description": "",
+			"default_description": "",
+			"owner_job_title": "Consultor de infraestructura digital"
+		}
+	]
+}

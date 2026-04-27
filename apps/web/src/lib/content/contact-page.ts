@@ -1,5 +1,5 @@
 import type { ContactContent } from '$lib/types';
-import { siteMeta } from './meta.js';
+import { siteMeta } from './site-meta.js';
 
 export const contactContent: ContactContent = {
 	pageTitle: { en: 'Contact' },

@@ -3,10 +3,24 @@
 // <JsonLd> component; the repository no longer participates in that flow.
 
 import { adapter } from '$lib/adapters';
-import type { Locale, PageSeo, SiteMeta } from '$lib/types';
+import type { Locale, PageSeo, SiteMeta, SiteSeoDefaults } from '$lib/types';
 
 export async function getSiteMeta(): Promise<SiteMeta> {
 	return adapter.meta.site();
+}
+
+/**
+ * Slice-18 18h Q9: site-wide SEO defaults from the `site_meta` singleton.
+ *
+ * Backed by the same row as `getSiteMeta()` — both repository wrappers share
+ * the per-request `fetchSingletonRow()` WeakMap memo in the directus adapter,
+ * so calling both in the same `+layout.ts` `Promise.all` triggers exactly ONE
+ * CMS round-trip.
+ *
+ * Consumers: root `+layout.ts` (threads `themeColor` to `<SeoHead>`).
+ */
+export async function getSiteSeoDefaults(): Promise<SiteSeoDefaults> {
+	return adapter.meta.siteSeoDefaults();
 }
 
 /**

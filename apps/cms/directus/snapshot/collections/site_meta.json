@@ -1,0 +1,28 @@
+{
+  "collection": "site_meta",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "site_meta",
+    "color": null,
+    "display_template": "{{name}}",
+    "group": null,
+    "hidden": false,
+    "icon": "tune",
+    "item_duplication_fields": null,
+    "note": "Site identity + SEO defaults (brand name, contact links, owner identity, fallback OG image, theme color). Singleton — one row only. CMS source-of-truth replacing apps/web/src/lib/content/meta.ts § siteMeta.",
+    "preview_url": null,
+    "singleton": true,
+    "sort": null,
+    "sort_field": null,
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "site_meta"
+  }
+}
