@@ -39,9 +39,6 @@ on:
         default: diff
         required: true
 
-env:
-  SKIP_SIMPLE_GIT_HOOKS: 1
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -54,7 +51,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+        run: bun install --frozen-lockfile --ignore-scripts
 
       - name: Run apps/cms unit tests (snapshot-shape + fixtures + seed-dry-run + lib)
         working-directory: apps/cms
@@ -81,7 +78,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+        run: bun install --frozen-lockfile --ignore-scripts
 
       - name: sync:diff — preview diff vs prod
         working-directory: apps/cms
@@ -112,7 +109,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+        run: bun install --frozen-lockfile --ignore-scripts
 
       - name: sync:push — apply to production
         working-directory: apps/cms
