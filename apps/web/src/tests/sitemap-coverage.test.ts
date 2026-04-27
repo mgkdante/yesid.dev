@@ -14,7 +14,12 @@ import { _buildSitemapEntries } from '../routes/sitemap.xml/+server';
 const ROUTES_DIR = 'src/routes';
 
 // Routes intentionally excluded from sitemap coverage.
-const EXCLUDES = new Set<string>(['/sitemap.xml', '/robots.txt']);
+const EXCLUDES = new Set<string>([
+	'/sitemap.xml',
+	'/robots.txt',
+	// Admin pages: internal tooling, not indexed or linked in public navigation.
+	'/admin/icons',
+]);
 
 // Walk src/routes to find every route that has a +page.svelte OR +page@*.svelte
 // (the latter is SvelteKit's layout-group syntax for skipping intermediate layouts).
