@@ -52,9 +52,9 @@
 
 | Item | Value |
 |---|---|
-| PR | TBD |
+| PR | pending (opened 2026-04-27) |
 | Branch | `feature/slice-18-18h-ii` |
 | Worktree | `yesid.dev-18h-ii` |
-| Closed date | TBD |
-| Merge SHA | TBD |
-| Commits | TBD |
+| Closed date | 2026-04-27 |
+| Merge SHA | TBD (post-review) |
+| Commits | 18 (including pivot revert 45303d9 + data-repair d4ad3cc) |
