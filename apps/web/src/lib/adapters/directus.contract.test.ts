@@ -512,7 +512,8 @@ describe('resolveAnimationDeterministic', () => {
 });
 
 // ---------------------------------------------------------------------------
-// toTechStackItem — pure row-to-domain mapping (slice-18g Phase 4 Task 9)
+// toTechStackItem — pure row-to-domain mapping (slice-18h-ii Phase 5 Task 11)
+// Updated: icon field now maps from icon_id (M2O nested record) → IconRecord | null
 // ---------------------------------------------------------------------------
 
 describe('toTechStackItem — pure row-to-domain mapping', () => {
@@ -522,10 +523,17 @@ describe('toTechStackItem — pure row-to-domain mapping', () => {
 		blocks: [{ id: 'p1', type: 'paragraph' as const, data: { text: '' } }],
 	};
 
+	const iconRecord = {
+		id: 'postgresql',
+		name: 'PostgreSQL',
+		iconify_id: 'logos:postgresql',
+		svg_override: null,
+	};
+
 	const baseRow = {
 		id: 'postgresql',
 		name: 'PostgreSQL',
-		icon: 'postgresql.svg',
+		icon_id: iconRecord,
 		status: 'published' as const,
 		sort: 0,
 		translations: [
@@ -552,11 +560,19 @@ describe('toTechStackItem — pure row-to-domain mapping', () => {
 		projects: [{ projects_id: 'transit-data-pipeline' }],
 	};
 
-	it('maps id + name + icon', () => {
+	it('maps id + name + icon as IconRecord', () => {
 		const item = toTechStackItem(baseRow);
 		expect(item.id).toBe('postgresql');
 		expect(item.name).toBe('PostgreSQL');
-		expect(item.icon).toBe('postgresql.svg');
+		expect(item.icon).toEqual(iconRecord);
+	});
+
+	it('icon has correct IconRecord shape (id, name, iconify_id, svg_override)', () => {
+		const item = toTechStackItem(baseRow);
+		expect(item.icon?.id).toBe('postgresql');
+		expect(item.icon?.name).toBe('PostgreSQL');
+		expect(item.icon?.iconify_id).toBe('logos:postgresql');
+		expect(item.icon?.svg_override).toBeNull();
 	});
 
 	it('maps 3 LocalizedBlockEditorDoc fields from translations', () => {
@@ -591,10 +607,48 @@ describe('toTechStackItem — pure row-to-domain mapping', () => {
 		expect(item.what_it_is.en.blocks.length).toBeGreaterThan(0);
 	});
 
-	it('uses empty string for icon when row.icon is null', () => {
-		const noIcon = { ...baseRow, icon: null };
-		const item = toTechStackItem(noIcon);
-		expect(item.icon).toBe('');
+	it('returns null for icon when icon_id is null', () => {
+		const noIconId = { ...baseRow, icon_id: null };
+		const item = toTechStackItem(noIconId);
+		expect(item.icon).toBeNull();
+	});
+
+	it('returns null for icon when icon_id is absent', () => {
+		const noIconId = { ...baseRow, icon_id: undefined };
+		const item = toTechStackItem(noIconId);
+		expect(item.icon).toBeNull();
+	});
+
+	it('maps icon with svg_override set (takes render precedence over iconify_id)', () => {
+		const withSvg = {
+			...baseRow,
+			icon_id: {
+				id: 'dax',
+				name: 'DAX',
+				iconify_id: null,
+				svg_override: 'uuid-dax-svg-0001',
+			},
+		};
+		const item = toTechStackItem(withSvg);
+		expect(item.icon?.id).toBe('dax');
+		expect(item.icon?.svg_override).toBe('uuid-dax-svg-0001');
+		expect(item.icon?.iconify_id).toBeNull();
+	});
+
+	it('maps icon with both iconify_id null and svg_override null (deferred placeholder)', () => {
+		const deferred = {
+			...baseRow,
+			icon_id: {
+				id: 'alembic',
+				name: 'Alembic',
+				iconify_id: null,
+				svg_override: null,
+			},
+		};
+		const item = toTechStackItem(deferred);
+		expect(item.icon?.id).toBe('alembic');
+		expect(item.icon?.iconify_id).toBeNull();
+		expect(item.icon?.svg_override).toBeNull();
 	});
 
 	it('composes multi-locale LocalizedBlockEditorDoc when translations present for fr/es', () => {

@@ -625,7 +625,10 @@ interface DirectusTechStackTranslation {
 interface DirectusTechStackRow {
 	id: string;
 	name: string;
-	icon: string | null;
+	/** @deprecated Legacy bare-slug string field. Kept until Phase 4 Task 9 drops it from the DB. */
+	icon?: string | null;
+	/** M2O FK to icons collection — expanded as a nested record when queried. */
+	icon_id?: { id: string; name: string; iconify_id: string | null; svg_override: string | null } | null;
 	status: 'draft' | 'published' | 'archived';
 	sort: number;
 	translations: readonly DirectusTechStackTranslation[];
@@ -637,7 +640,7 @@ export function toTechStackItem(row: DirectusTechStackRow): TechStackItem {
 	return {
 		id: row.id,
 		name: row.name,
-		icon: row.icon ?? '',
+		icon: row.icon_id ?? null,
 		what_it_is: toLocalizedBlockEditorDoc(row.translations, 'what_it_is'),
 		what_i_use_it_for: toLocalizedBlockEditorDoc(row.translations, 'what_i_use_it_for'),
 		why_i_use_it_instead: toLocalizedBlockEditorDoc(row.translations, 'why_i_use_it_instead'),
@@ -1121,7 +1124,8 @@ export const directusAdapter: ContentAdapter = {
 					fields: [
 						'id',
 						'name',
-						'icon',
+						// 'icon' legacy string field no longer read — consumers use icon_id now.
+						{ icon_id: ['id', 'name', 'iconify_id', 'svg_override'] } as unknown as keyof DirectusTechStackRow,
 						'status',
 						'sort',
 						{ translations: ['languages_code', 'what_it_is', 'what_i_use_it_for', 'why_i_use_it_instead'] } as unknown as keyof DirectusTechStackRow,
@@ -1142,7 +1146,8 @@ export const directusAdapter: ContentAdapter = {
 					fields: [
 						'id',
 						'name',
-						'icon',
+						// 'icon' legacy string field no longer read — consumers use icon_id now.
+						{ icon_id: ['id', 'name', 'iconify_id', 'svg_override'] } as unknown as keyof DirectusTechStackRow,
 						'status',
 						'sort',
 						{ translations: ['languages_code', 'what_it_is', 'what_i_use_it_for', 'why_i_use_it_instead'] } as unknown as keyof DirectusTechStackRow,

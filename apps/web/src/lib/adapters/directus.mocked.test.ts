@@ -488,12 +488,13 @@ describe('directusAdapter.content.morphShapes — fetch contract', () => {
 // (translations + services + projects junctions), status filter, sort, limit.
 // ---------------------------------------------------------------------------
 
-/** Minimal published tech_stack row returned by the mock. */
+/** Minimal published tech_stack row returned by the mock.
+ * Updated in slice-18h-ii Phase 5: icon_id replaces icon (legacy string field). */
 function techStackRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
 	return {
 		id: 'postgresql',
 		name: 'PostgreSQL',
-		icon: 'postgresql.svg',
+		icon_id: { id: 'postgresql', name: 'PostgreSQL', iconify_id: 'logos:postgresql', svg_override: null },
 		status: 'published',
 		sort: 0,
 		translations: [
