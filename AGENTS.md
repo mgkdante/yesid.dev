@@ -97,7 +97,7 @@ Three layers, strict separation. Full rules: [docs/project/CSS.md](docs/project/
 
 Primary `#E07800` / Accent `#FFB627`. Fonts: Inter (headings/body), JetBrains Mono (code). Dark theme default. "yesid." always lowercase, dot always orange. Favicon is a solid orange circle.
 
-Full brand identity: [docs/project/BRAND.md](docs/project/BRAND.md) + [brand/BRAND.md](brand/BRAND.md) + [brand/foundations/](brand/foundations/).
+Full brand identity: [apps/web/brand/BRAND.md](apps/web/brand/BRAND.md) + [apps/web/brand/foundations/](apps/web/brand/foundations/). Tokens: [DESIGN.md](DESIGN.md).
 
 ## Repo structure
 
