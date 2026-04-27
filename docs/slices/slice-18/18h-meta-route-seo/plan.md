@@ -681,6 +681,8 @@ export interface CodeRouteSeoDefaults {
   ogType: PageSeo['ogType'];
   noIndex: boolean;
   fallbackTitle: { en: string; fr?: string; es?: string };
+  /** P3 finding 2026-04-27: home `/` uses em-dash brand-first format (`yesid. — X`); all other routes use `X | yesid.` pipe suffix. 'verbatim' = use fallbackTitle/route_seo title as-is; 'append-brand' = append ` | ${siteMeta.name}` per locale. */
+  composedTitleStrategy: 'verbatim' | 'append-brand';
   jsonLdFactory: (siteMeta: SiteMeta, locale: Locale) => SchemaOrgNode[];
 }
 
@@ -688,16 +690,18 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
   '/': {
     ogType: 'website',
     noIndex: false,
-    fallbackTitle: { en: 'Digital Infrastructure that Moves.' },
+    fallbackTitle: { en: 'yesid. — Digital Infrastructure that Moves.' },
+    composedTitleStrategy: 'verbatim',
     jsonLdFactory: (sm) => [buildPersonNode(sm), buildWebSiteNode(sm), buildProfilePageNode(SITE_HOST)],
   },
   '/about': {
     ogType: 'profile',
     noIndex: false,
     fallbackTitle: { en: 'About Yesid' },
+    composedTitleStrategy: 'append-brand',
     jsonLdFactory: (sm) => [buildPersonNode(sm), buildProfilePageNode(`${SITE_HOST}/about`), buildBreadcrumbListNode([{ name: 'Home', url: SITE_HOST }, { name: 'About', url: `${SITE_HOST}/about` }], `${SITE_HOST}/about`)],
   },
-  // ... 6 more entries (one per static route)
+  // ... 6 more entries (one per static route): /contact, /services, /projects, /blog, /blog/personal, /tech-stack — all 'append-brand'
 };
 ```
 
@@ -748,11 +752,14 @@ export function composePageSeo(args: {
 }): PageSeo {
   const { routeId, locale, siteMeta, siteSeoDefaults, routeOverride, codeDefaults } = args;
   const titleBody = routeOverride?.title ?? codeDefaults.fallbackTitle;
-  const title: LocalizedString = {
-    en: `${titleBody.en} | ${siteMeta.name}`,
-    ...(titleBody.fr && { fr: `${titleBody.fr} | ${siteMeta.name}` }),
-    ...(titleBody.es && { es: `${titleBody.es} | ${siteMeta.name}` }),
-  };
+  // P3 finding 2026-04-27: home `/` preserves 'yesid. — X' em-dash format; all other routes append ' | yesid.'.
+  const title: LocalizedString = codeDefaults.composedTitleStrategy === 'verbatim'
+    ? titleBody
+    : {
+        en: `${titleBody.en} | ${siteMeta.name}`,
+        ...(titleBody.fr && { fr: `${titleBody.fr} | ${siteMeta.name}` }),
+        ...(titleBody.es && { es: `${titleBody.es} | ${siteMeta.name}` }),
+      };
   const description = routeOverride?.description ?? siteSeoDefaults.defaultDescription;
   const ogImageUuid = routeOverride?.ogImage ?? siteSeoDefaults.defaultOgImage;
   return {

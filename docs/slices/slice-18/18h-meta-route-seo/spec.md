@@ -228,7 +228,7 @@ meta: {
 
 | PageSeo field | Source |
 |---|---|
-| `title` | `routeOverride.title || codeDefaults.fallbackTitle` + ` \| ` + `siteMeta.name` |
+| `title` | `routeOverride.title \|\| codeDefaults.fallbackTitle`; if `codeDefaults.composedTitleStrategy === 'verbatim'` use as-is, else append ` \| ${siteMeta.name}`. (P3 finding 2026-04-27 — preserves home `/` em-dash brand-first format; all other routes get uniform pipe-brand suffix.) |
 | `description` | `routeOverride.description || siteSeoDefaults.defaultDescription` |
 | `canonical` | `SITE_HOST + routeId` (computed) |
 | `ogImage.url` | `routeOverride.ogImage ? asset(routeOverride.ogImage, 'og-1200') : siteSeoDefaults.defaultOgImage ? asset(siteSeoDefaults.defaultOgImage, 'og-1200') : SITE_HOST + '/og/default.png'` |
