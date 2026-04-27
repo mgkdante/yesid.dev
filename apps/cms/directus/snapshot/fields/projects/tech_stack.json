@@ -1,0 +1,28 @@
+{
+  "collection": "projects",
+  "field": "tech_stack",
+  "type": "alias",
+  "meta": {
+    "collection": "projects",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "tech_stack",
+    "group": null,
+    "hidden": false,
+    "interface": "list-m2m",
+    "note": "Tech-stack items used by this project. Bidirectional view of `tech_stack.projects` (junction: tech_stack_projects).",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 110,
+    "special": [
+      "m2m"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}
