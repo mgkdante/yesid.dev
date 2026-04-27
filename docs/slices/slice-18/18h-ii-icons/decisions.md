@@ -52,7 +52,7 @@
 
 | Item | Value |
 |---|---|
-| PR | pending (opened 2026-04-27) |
+| PR | [#87](https://github.com/mgkdante/yesid.dev/pull/87) |
 | Branch | `feature/slice-18-18h-ii` |
 | Worktree | `yesid.dev-18h-ii` |
 | Closed date | 2026-04-27 |
