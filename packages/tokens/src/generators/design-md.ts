@@ -1,4 +1,4 @@
-import type { TokenTree } from '../types.ts';
+import type { Token, TokenTree } from '../types.ts';
 import { serializeYaml } from '../serialize.ts';
 import { isLeaf, isClampToken } from '../parse.ts';
 
@@ -60,7 +60,7 @@ function flatColorMap(colorTree: TokenTree): string {
  * For clamp() tokens, we use the max value (large-viewport design intent).
  * The spec does not accept clamp() expressions as dimension values.
  */
-function typographyFontSize(v: TokenTree[string]): string {
+function typographyFontSize(v: Token): string {
   if (isClampToken(v)) {
     // Use max value — the largest design-intent size, comprehensible to agents
     return `"${v.$value.max}"`;
