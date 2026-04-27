@@ -1,5 +1,7 @@
 # yesid. — brand
 
+> **Tokens:** colors / typography / spacing / radius / shadows / motion live in [`/DESIGN.md`](../../DESIGN.md) (repo root, Google-spec strict, agent-readable). This file carries identity, voice, vocabulary, and decisions.
+
 ## Principles
 
 Five rules, numbered. Every design call pulls from exactly one of them. When two apply, the lower number wins.
