@@ -1,0 +1,62 @@
+{
+  "collection": "blog_posts",
+  "field": "svg_illustration",
+  "type": "string",
+  "meta": {
+    "collection": "blog_posts",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "svg_illustration",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown-m2o",
+    "note": "Curated SVG illustration. Optional — falls back to deterministic fallback if absent.",
+    "options": {
+      "filter": {
+        "_or": [
+          {
+            "category": {
+              "_eq": "$FIELD.category"
+            }
+          },
+          {
+            "category": {
+              "_eq": "general"
+            }
+          }
+        ]
+      },
+      "template": "{{label}} ({{category}})"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 10,
+    "special": [
+      "m2o"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "svg_illustration",
+    "table": "blog_posts",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": "illustrations",
+    "foreign_key_column": "id"
+  }
+}

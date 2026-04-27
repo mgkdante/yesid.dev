@@ -9,6 +9,7 @@
 		"packages/*"
 	],
 	"scripts": {
+		"dev": "cd apps/web && bun run dev",
 		"build": "turbo run build",
 		"test": "turbo run test",
 		"check": "turbo run check"

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "pro-database",
+    "file_legacy_path": "apps/web/src/lib/assets/blog-fallbacks/pro-database.svg",
+    "label": "Database engineering",
+    "category": "professional",
+    "tags": ["database", "sql"],
+    "description": "Stylized cylindrical database illustration",
+    "sort": 1
+  },
+  {
+    "id": "pro-code",
+    "file_legacy_path": "apps/web/src/lib/assets/blog-fallbacks/pro-code.svg",
+    "label": "Code / engineering",
+    "category": "professional",
+    "tags": ["code", "engineering"],
+    "description": "Code brackets + cursor illustration",
+    "sort": 2
+  },
+  {
+    "id": "pro-pipeline",
+    "file_legacy_path": "apps/web/src/lib/assets/blog-fallbacks/pro-pipeline.svg",
+    "label": "Pipeline / ETL",
+    "category": "professional",
+    "tags": ["pipeline", "etl", "dataflow"],
+    "description": "Data pipeline flow illustration",
+    "sort": 3
+  },
+  {
+    "id": "pro-chart",
+    "file_legacy_path": "apps/web/src/lib/assets/blog-fallbacks/pro-chart.svg",
+    "label": "Charts / analytics",
+    "category": "professional",
+    "tags": ["chart", "analytics", "viz"],
+    "description": "Bar chart / analytics illustration",
+    "sort": 4
+  },
+  {
+    "id": "personal-rocket",
+    "file_legacy_path": "apps/web/src/lib/assets/blog-fallbacks/personal-rocket.svg",
+    "label": "Rocket / exploration",
+    "category": "personal",
+    "tags": ["space", "exploration"],
+    "description": "Stylized rocket illustration",
+    "sort": 5
+  },
+  {
+    "id": "personal-train",
+    "file_legacy_path": "apps/web/src/lib/assets/blog-fallbacks/personal-train.svg",
+    "label": "Train / transit",
+    "category": "personal",
+    "tags": ["transit", "train"],
+    "description": "Stylized train illustration",
+    "sort": 6
+  },
+  {
+    "id": "personal-telescope",
+    "file_legacy_path": "apps/web/src/lib/assets/blog-fallbacks/personal-telescope.svg",
+    "label": "Telescope / curiosity",
+    "category": "personal",
+    "tags": ["space", "telescope", "exploration"],
+    "description": "Telescope illustration",
+    "sort": 7
+  },
+  {
+    "id": "personal-globe",
+    "file_legacy_path": "apps/web/src/lib/assets/blog-fallbacks/personal-globe.svg",
+    "label": "Globe / world",
+    "category": "personal",
+    "tags": ["world", "globe"],
+    "description": "Stylized globe illustration",
+    "sort": 8
+  }
+]

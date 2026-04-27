@@ -44,6 +44,8 @@ import type {
 	CloserContent,
 	SkillsJourneyCtaContent,
 	PreviewContext,
+	BlockEditorDoc,
+	MorphShape,
 } from '$lib/types';
 import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
@@ -86,6 +88,7 @@ export interface BlogPort {
 	all(ctx?: PreviewContext): Promise<readonly BlogPost[]>;
 	bySlug(slug: string, ctx?: PreviewContext): Promise<BlogPost | undefined>;
 	html(slug: string, ctx?: PreviewContext): Promise<string>;
+	bodyBySlug(slug: string, ctx?: PreviewContext): Promise<BlockEditorDoc | null>;
 	byCategory(category: BlogCategory, ctx?: PreviewContext): Promise<readonly BlogPost[]>;
 	byTag(
 		category: BlogCategory,
@@ -185,4 +188,10 @@ export interface ContentPort {
 	 * load and inlined via `{@html}` so it remains a valid LCP candidate.
 	 */
 	metroSvg(ctx?: PreviewContext): Promise<string>;
+	/**
+	 * The geometric morph-target library (CMS-managed via the
+	 * morph_shapes collection). Replaces the hardcoded SHAPES const
+	 * in apps/web/src/lib/utils/shapes.ts.
+	 */
+	morphShapes(ctx?: PreviewContext): Promise<readonly MorphShape[]>;
 }

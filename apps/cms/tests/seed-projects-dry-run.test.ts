@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'bun:test';
+import { extractText } from '@repo/shared';
 import {
 	toProjectRow,
 	toTranslationRows,
@@ -52,6 +53,15 @@ describe('seed-projects pure helpers', () => {
 			expect(rows[0].languages_code).toBe('en');
 			expect(rows[0].title).toBe('yesid.dev — Portfolio Site');
 		});
+
+		it('wraps description as a single-paragraph Editor.js Block Editor doc', () => {
+			const rows = toTranslationRows(yesidDev);
+			const en = rows.find((r) => r.languages_code === 'en')!;
+			expect(en.description.version).toBe('2.31.2');
+			expect(en.description.blocks).toHaveLength(1);
+			expect(en.description.blocks[0]!.type).toBe('paragraph');
+			expect((en.description.blocks[0] as { data: { text: string } }).data.text).toContain('SvelteKit');
+		});
 	});
 
 	describe('toSectionRows', () => {
@@ -67,6 +77,16 @@ describe('seed-projects pure helpers', () => {
 			const rows = toSectionRows(dbMig);
 			expect(rows[0].sort).toBe(0);
 			expect(rows[1].sort).toBe(1);
+		});
+
+		it('wraps sections.content as Editor.js Block Editor doc', () => {
+			const sections = toSectionRows(yesidDev);
+			if (sections.length > 0) {
+				const tx = sections[0]!.translations[0]!;
+				expect(tx.content.version).toBe('2.31.2');
+				expect(tx.content.blocks.length).toBeGreaterThan(0);
+				expect(tx.content.blocks[0]!.type).toBe('paragraph');
+			}
 		});
 	});
 

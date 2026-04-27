@@ -15,7 +15,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
-import { projects } from './projects.js';
+import { projects, rawProjectToProject } from './projects.js';
 import { services } from './services.js';
 import { siteMeta } from './meta.js';
 import { blogPosts } from './blog.js';
@@ -245,7 +245,7 @@ describe('blogPosts data integrity', () => {
 
 describe('seed data parses through schemas', () => {
 	it('projects → ProjectSchema[]', () => {
-		expect(() => z.array(ProjectSchema).parse(projects)).not.toThrow();
+		expect(() => z.array(ProjectSchema).parse(projects.map(rawProjectToProject))).not.toThrow();
 	});
 
 	it('services → ServiceSchema[]', () => {

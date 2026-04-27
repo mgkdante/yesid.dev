@@ -26,6 +26,7 @@ import type {
 import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
 import { resolveLocale } from '$lib/utils/locale';
 import { SITE_HOST } from '$lib/utils/seo-defaults';
+import { extractText } from '@repo/shared';
 
 export const PERSON_ID = `${SITE_HOST}/#person`;
 export const WEBSITE_ID = `${SITE_HOST}/#website`;
@@ -126,8 +127,8 @@ export function buildBlogPostingNode(post: BlogPost, locale: Locale): BlogPostin
 	const built = {
 		'@type': 'BlogPosting' as const,
 		'@id': canonicalUrl,
-		headline: resolveLocale(post.title, locale),
-		description: resolveLocale(post.excerpt, locale),
+		headline: post.title,
+		description: post.excerpt,
 		inLanguage: post.lang,
 		datePublished: post.date,
 		author: { '@id': PERSON_ID },
@@ -159,7 +160,7 @@ export function buildCreativeWorkNode(project: Project, locale: Locale): Creativ
 		'@type': 'CreativeWork' as const,
 		'@id': canonicalUrl,
 		name: resolveLocale(project.title, locale),
-		description: resolveLocale(project.description, locale),
+		description: extractText(resolveLocale(project.description, locale)),
 		url: canonicalUrl,
 		author: { '@id': PERSON_ID },
 		creator: { '@id': PERSON_ID },

@@ -1,0 +1,1346 @@
+[
+  {
+    "id": "anime-data-viz-challenge",
+    "status": "published",
+    "date_published": "2026-03-01",
+    "sort": 0,
+    "lang": "en",
+    "category": "professional",
+    "tags": [
+      "dataviz",
+      "power-bi",
+      "fun"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": "pro-chart",
+    "animation": "morph",
+    "title": "The Anime Data Viz Challenge",
+    "excerpt": "I visualized 10 years of MyAnimeList data using SQL and Power BI. The results surprised me — and taught me something about storytelling with data.",
+    "body": {
+      "time": 1777235049353,
+      "version": "2.31.2",
+      "blocks": [
+        {
+          "id": "m00000001",
+          "type": "paragraph",
+          "data": {
+            "text": "I watch a lot of anime. I also spend a lot of time in databases. So when I found a dataset of 10 years of MyAnimeList ratings, genres, and studios — I knew what I had to do."
+          }
+        },
+        {
+          "id": "m00000002",
+          "type": "header",
+          "data": {
+            "text": "The Dataset",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000003",
+          "type": "paragraph",
+          "data": {
+            "text": "The Kaggle dataset contains:"
+          }
+        },
+        {
+          "id": "m00000004",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "~17,000 anime titles",
+                "items": []
+              },
+              {
+                "content": "Ratings, member counts, and favorites",
+                "items": []
+              },
+              {
+                "content": "Genre tags and studio information",
+                "items": []
+              },
+              {
+                "content": "Airing dates and episode counts",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000005",
+          "type": "header",
+          "data": {
+            "text": "The Questions",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000006",
+          "type": "nestedlist",
+          "data": {
+            "style": "ordered",
+            "items": [
+              {
+                "content": "Which studios consistently produce the highest-rated anime?",
+                "items": []
+              },
+              {
+                "content": "Is there a \"golden length\" for anime series?",
+                "items": []
+              },
+              {
+                "content": "How have genre trends shifted over the decade?",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000007",
+          "type": "header",
+          "data": {
+            "text": "Surprising Findings",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000008",
+          "type": "header",
+          "data": {
+            "text": "Studio quality is remarkably consistent",
+            "level": 3
+          }
+        },
+        {
+          "id": "m00000009",
+          "type": "paragraph",
+          "data": {
+            "text": "Madhouse, Bones, and Wit Studio maintain average ratings above 7.5 across their entire catalogs. Studio Deen... does not. The standard deviation tells the real story: some studios are high-variance bets."
+          }
+        },
+        {
+          "id": "m0000000a",
+          "type": "header",
+          "data": {
+            "text": "12-13 episodes is the sweet spot",
+            "level": 3
+          }
+        },
+        {
+          "id": "m0000000b",
+          "type": "paragraph",
+          "data": {
+            "text": "Single-cour anime (12-13 episodes) have the highest average rating. Two-cour shows (24-26) are close behind. Anything over 100 episodes drops significantly — length fatigue is real."
+          }
+        },
+        {
+          "id": "m0000000c",
+          "type": "header",
+          "data": {
+            "text": "Isekai exploded in 2016",
+            "level": 3
+          }
+        },
+        {
+          "id": "m0000000d",
+          "type": "paragraph",
+          "data": {
+            "text": "Before 2016, isekai (transported to another world) was a niche genre. After 2016, it accounts for 15% of all new anime. The data doesn't lie — we're living in the isekai era."
+          }
+        },
+        {
+          "id": "m0000000e",
+          "type": "header",
+          "data": {
+            "text": "The Technical Stack",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000f",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>PostgreSQL</b> for data storage and analysis (CTEs, window functions, pivot queries)",
+                "items": []
+              },
+              {
+                "content": "<b>Power BI</b> for visualization",
+                "items": []
+              },
+              {
+                "content": "<b>Python</b> for data cleaning and import",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000g",
+          "type": "header",
+          "data": {
+            "text": "What I Learned About Data Storytelling",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000h",
+          "type": "paragraph",
+          "data": {
+            "text": "Numbers without narrative are just noise. The anime dataset taught me that the best visualizations answer a question the viewer didn't know they had. \"Which studio should I trust?\" is more compelling than \"Average rating by studio.\""
+          }
+        },
+        {
+          "id": "m0000000i",
+          "type": "paragraph",
+          "data": {
+            "text": "Data viz is not about showing data. It's about showing insight."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "building-a-transit-pipeline",
+    "status": "published",
+    "date_published": "2026-03-15",
+    "sort": 0,
+    "lang": "en",
+    "category": "professional",
+    "tags": [
+      "etl",
+      "postgresql",
+      "python",
+      "case-study"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": "pro-code",
+    "animation": "morph",
+    "title": "Building a Transit Data Pipeline",
+    "excerpt": "How I designed an ELT pipeline to process real-time GTFS feeds for a Quebec transit operator — from ingestion to dashboard.",
+    "body": {
+      "time": 1777235049358,
+      "version": "2.31.2",
+      "blocks": [
+        {
+          "id": "m00000001",
+          "type": "paragraph",
+          "data": {
+            "text": "When a Quebec transit operator needed real-time visibility into their operations, they had data — lots of it. GTFS-RT feeds streaming vehicle positions, trip updates, and service alerts every 15 seconds. What they didn't have was a way to turn that firehose into decisions."
+          }
+        },
+        {
+          "id": "m00000002",
+          "type": "header",
+          "data": {
+            "text": "The Architecture",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000003",
+          "type": "paragraph",
+          "data": {
+            "text": "The pipeline follows an ELT pattern:"
+          }
+        },
+        {
+          "id": "m00000004",
+          "type": "nestedlist",
+          "data": {
+            "style": "ordered",
+            "items": [
+              {
+                "content": "<b>Extract:</b> Python scripts poll GTFS-RT protobuf feeds every 15 seconds",
+                "items": []
+              },
+              {
+                "content": "<b>Load:</b> Raw data lands in a PostgreSQL staging schema",
+                "items": []
+              },
+              {
+                "content": "<b>Transform:</b> dbt models clean, deduplicate, and aggregate into analytics-ready tables",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000005",
+          "type": "header",
+          "data": {
+            "text": "Key Decisions",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000006",
+          "type": "header",
+          "data": {
+            "text": "Why PostgreSQL over a data warehouse?",
+            "level": 3
+          }
+        },
+        {
+          "id": "m00000007",
+          "type": "paragraph",
+          "data": {
+            "text": "The data volume (&lt; 50GB/month) didn't justify Snowflake or BigQuery costs. PostgreSQL with proper indexing handles the analytical queries under 2 seconds. Sometimes the boring choice is the right choice."
+          }
+        },
+        {
+          "id": "m00000008",
+          "type": "header",
+          "data": {
+            "text": "Why ELT over ETL?",
+            "level": 3
+          }
+        },
+        {
+          "id": "m00000009",
+          "type": "paragraph",
+          "data": {
+            "text": "Loading raw data first means we never lose fidelity. When the PM asked \"can we also track schedule adherence?\" three months in, the raw data was already there. We just added a dbt model."
+          }
+        },
+        {
+          "id": "m0000000a",
+          "type": "header",
+          "data": {
+            "text": "Why dbt?",
+            "level": 3
+          }
+        },
+        {
+          "id": "m0000000b",
+          "type": "paragraph",
+          "data": {
+            "text": "Version-controlled transformations. Every business rule is a SQL file with tests. When the on-time definition changed from \"within 5 minutes\" to \"within 3 minutes,\" it was a one-line diff."
+          }
+        },
+        {
+          "id": "m0000000c",
+          "type": "header",
+          "data": {
+            "text": "The Dashboard",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000d",
+          "type": "paragraph",
+          "data": {
+            "text": "Power BI connects directly to the analytics schema. KPIs include:"
+          }
+        },
+        {
+          "id": "m0000000e",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "On-time performance by route and time period",
+                "items": []
+              },
+              {
+                "content": "Fleet utilization rates",
+                "items": []
+              },
+              {
+                "content": "Service alert response times",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000f",
+          "type": "paragraph",
+          "data": {
+            "text": "The operator went from weekly Excel reports to real-time dashboards in 6 weeks."
+          }
+        },
+        {
+          "id": "m0000000g",
+          "type": "header",
+          "data": {
+            "text": "What I'd Do Differently",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000h",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "Use Apache Airflow from day one instead of cron. The monitoring alone is worth it.",
+                "items": []
+              },
+              {
+                "content": "Add data quality checks earlier in the pipeline. Bad upstream data cascaded into confusing dashboard numbers for two days before we caught it.",
+                "items": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "lorem-data-warehousing",
+    "status": "published",
+    "date_published": "2026-03-20",
+    "sort": 0,
+    "lang": "en",
+    "category": "professional",
+    "tags": [
+      "sql",
+      "warehousing"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": "pro-code",
+    "animation": "draw-fill",
+    "title": "Designing a Star Schema from Scratch",
+    "excerpt": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. A practical walkthrough of dimensional modeling for analytics warehouses.",
+    "body": {
+      "time": 1777235049361,
+      "version": "2.31.2",
+      "blocks": [
+        {
+          "id": "m00000001",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+          }
+        },
+        {
+          "id": "m00000002",
+          "type": "header",
+          "data": {
+            "text": "Why Dimensional Modeling?",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000003",
+          "type": "paragraph",
+          "data": {
+            "text": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+          }
+        },
+        {
+          "id": "m00000004",
+          "type": "quote",
+          "data": {
+            "text": "The goal of a data warehouse is not to store data — it's to answer questions. Dimensional modeling makes questions easy.",
+            "caption": "",
+            "alignment": "left"
+          }
+        },
+        {
+          "id": "m00000005",
+          "type": "header",
+          "data": {
+            "text": "Fact Tables vs Dimension Tables",
+            "level": 3
+          }
+        },
+        {
+          "id": "m00000006",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet:"
+          }
+        },
+        {
+          "id": "m00000007",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>Fact tables</b> hold the measurements (revenue, count, duration)",
+                "items": []
+              },
+              {
+                "content": "<b>Dimension tables</b> hold the context (who, what, when, where)",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000008",
+          "type": "code",
+          "data": {
+            "code": "CREATE TABLE fact_orders (\n  order_id BIGINT PRIMARY KEY,\n  customer_key INT REFERENCES dim_customer(customer_key),\n  product_key INT REFERENCES dim_product(product_key),\n  date_key INT REFERENCES dim_date(date_key),\n  quantity INT NOT NULL,\n  revenue NUMERIC(12,2) NOT NULL\n);"
+          }
+        },
+        {
+          "id": "m00000009",
+          "type": "header",
+          "data": {
+            "text": "The Grain Decision",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000a",
+          "type": "paragraph",
+          "data": {
+            "text": "Excepteur sint occaecat cupidatat non proident. The grain defines the most atomic level of detail in your fact table. Get this wrong and everything built on top crumbles."
+          }
+        },
+        {
+          "id": "m0000000b",
+          "type": "header",
+          "data": {
+            "text": "Common Mistakes",
+            "level": 3
+          }
+        },
+        {
+          "id": "m0000000c",
+          "type": "nestedlist",
+          "data": {
+            "style": "ordered",
+            "items": [
+              {
+                "content": "<b>Too coarse</b> — aggregating before loading loses detail you'll need later",
+                "items": []
+              },
+              {
+                "content": "<b>Too fine</b> — transaction-level grain on a slow-changing dimension creates massive tables",
+                "items": []
+              },
+              {
+                "content": "<b>Mixed grains</b> — combining daily and monthly facts in one table causes join confusion",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000d",
+          "type": "header",
+          "data": {
+            "text": "Building the Date Dimension",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000e",
+          "type": "paragraph",
+          "data": {
+            "text": "Every warehouse needs a date dimension. Here's a generator:"
+          }
+        },
+        {
+          "id": "m0000000f",
+          "type": "code",
+          "data": {
+            "code": "INSERT INTO dim_date (date_key, full_date, year, quarter, month, day_of_week)\nSELECT\n  TO_CHAR(d, 'YYYYMMDD')::INT,\n  d,\n  EXTRACT(YEAR FROM d),\n  EXTRACT(QUARTER FROM d),\n  EXTRACT(MONTH FROM d),\n  TO_CHAR(d, 'Day')\nFROM generate_series('2020-01-01'::DATE, '2030-12-31'::DATE, '1 day') AS d;"
+          }
+        },
+        {
+          "id": "m0000000g",
+          "type": "header",
+          "data": {
+            "text": "Lessons Learned",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000h",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          }
+        },
+        {
+          "id": "m0000000i",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>Start with the questions</b>, not the data",
+                "items": []
+              },
+              {
+                "content": "<b>Denormalize intentionally</b> — warehouse != OLTP",
+                "items": []
+              },
+              {
+                "content": "<a href=\"https://example.com\">PostgreSQL dimensional modeling guide</a> for deeper reading",
+                "items": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "lorem-etl-patterns",
+    "status": "published",
+    "date_published": "2026-02-28",
+    "sort": 0,
+    "lang": "fr",
+    "category": "professional",
+    "tags": [
+      "pipeline",
+      "etl"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": "pro-chart",
+    "animation": "draw-fill",
+    "title": "ETL Patterns That Actually Scale",
+    "excerpt": "Lorem ipsum dolor sit amet. Five battle-tested patterns for building data pipelines that don't break at 3am.",
+    "body": {
+      "time": 1777235049363,
+      "version": "2.31.2",
+      "blocks": [
+        {
+          "id": "m00000001",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Every data engineer has been woken up at 3am by a failing pipeline. These patterns help prevent that."
+          }
+        },
+        {
+          "id": "m00000002",
+          "type": "header",
+          "data": {
+            "text": "Pattern 1: Idempotent Loads",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000003",
+          "type": "paragraph",
+          "data": {
+            "text": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. The single most important property of any pipeline: running it twice produces the same result as running it once."
+          }
+        },
+        {
+          "id": "m00000004",
+          "type": "code",
+          "data": {
+            "code": "-- Idempotent upsert using ON CONFLICT\nINSERT INTO staging.events (event_id, payload, loaded_at)\nVALUES ($1, $2, NOW())\nON CONFLICT (event_id) DO UPDATE\nSET payload = EXCLUDED.payload,\n    loaded_at = NOW();"
+          }
+        },
+        {
+          "id": "m00000005",
+          "type": "quote",
+          "data": {
+            "text": "If your pipeline isn't idempotent, it's a ticking time bomb. It's not a matter of if it will run twice — it's when.",
+            "caption": "",
+            "alignment": "left"
+          }
+        },
+        {
+          "id": "m00000006",
+          "type": "header",
+          "data": {
+            "text": "Pattern 2: Schema-on-Read with JSONB",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000007",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet. Store raw data as JSONB first, parse later:"
+          }
+        },
+        {
+          "id": "m00000008",
+          "type": "code",
+          "data": {
+            "code": "-- Land raw data fast\nINSERT INTO raw.api_responses (source, payload)\nVALUES ('stripe', $1::JSONB);\n\n-- Parse when ready\nCREATE VIEW clean.payments AS\nSELECT\n  payload->>'id' AS payment_id,\n  (payload->>'amount')::NUMERIC / 100 AS amount_dollars,\n  (payload->>'created')::TIMESTAMPTZ AS created_at\nFROM raw.api_responses\nWHERE source = 'stripe';"
+          }
+        },
+        {
+          "id": "m00000009",
+          "type": "header",
+          "data": {
+            "text": "Pattern 3: Watermark Tracking",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000a",
+          "type": "paragraph",
+          "data": {
+            "text": "Track what you've already processed:"
+          }
+        },
+        {
+          "id": "m0000000b",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "Store the last processed timestamp/ID per source",
+                "items": []
+              },
+              {
+                "content": "On each run, fetch only records <b>after</b> the watermark",
+                "items": []
+              },
+              {
+                "content": "Update watermark only after successful processing",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000c",
+          "type": "header",
+          "data": {
+            "text": "Pattern 4: Dead Letter Queues",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000d",
+          "type": "paragraph",
+          "data": {
+            "text": "Not every record will parse cleanly. Instead of failing the entire batch:"
+          }
+        },
+        {
+          "id": "m0000000e",
+          "type": "nestedlist",
+          "data": {
+            "style": "ordered",
+            "items": [
+              {
+                "content": "Try to process the record",
+                "items": []
+              },
+              {
+                "content": "On failure, write it to a <code>dead_letter</code> table with the error message",
+                "items": []
+              },
+              {
+                "content": "Continue processing the rest",
+                "items": []
+              },
+              {
+                "content": "Alert on dead letter count exceeding threshold",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000f",
+          "type": "header",
+          "data": {
+            "text": "Pattern 5: Backfill by Design",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000g",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit:"
+          }
+        },
+        {
+          "id": "m0000000h",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>Partition by date</b> so you can reprocess one day without touching the rest",
+                "items": []
+              },
+              {
+                "content": "<b>Parameterize date ranges</b> in every pipeline step",
+                "items": []
+              },
+              {
+                "content": "<b>Log processed ranges</b> for auditability",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000i",
+          "type": "header",
+          "data": {
+            "text": "Summary",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000j",
+          "type": "paragraph",
+          "data": {
+            "text": "These five patterns won't make your pipeline bulletproof, but they'll make the 3am pages a lot less frequent."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "why-i-left-orm-for-raw-sql",
+    "status": "published",
+    "date_published": "2026-04-01",
+    "sort": 0,
+    "lang": "en",
+    "category": "professional",
+    "tags": [
+      "sql",
+      "postgresql",
+      "opinion"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": "pro-chart",
+    "animation": "draw",
+    "title": "Why I Left ORM for Raw SQL",
+    "excerpt": "After years of fighting with ORMs, I switched to raw SQL and never looked back. Here is what I learned about control, performance, and knowing your database.",
+    "body": {
+      "time": 1777235049365,
+      "version": "2.31.2",
+      "blocks": [
+        {
+          "id": "m00000001",
+          "type": "paragraph",
+          "data": {
+            "text": "For years, I relied on ORMs — SQLAlchemy, Django ORM, Prisma. They promised productivity. They delivered abstraction. But somewhere along the way, I stopped understanding what my database was actually doing."
+          }
+        },
+        {
+          "id": "m00000002",
+          "type": "header",
+          "data": {
+            "text": "The Breaking Point",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000003",
+          "type": "paragraph",
+          "data": {
+            "text": "It happened on a Tuesday. A query that should have taken 50ms was taking 12 seconds. The ORM had generated a nested subquery with 4 JOINs when a simple CTE would have done the job. I spent 3 hours debugging the ORM's query builder before giving up and writing the SQL myself."
+          }
+        },
+        {
+          "id": "m00000004",
+          "type": "paragraph",
+          "data": {
+            "text": "The raw SQL took 47ms."
+          }
+        },
+        {
+          "id": "m00000005",
+          "type": "header",
+          "data": {
+            "text": "What I Learned",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000006",
+          "type": "nestedlist",
+          "data": {
+            "style": "ordered",
+            "items": [
+              {
+                "content": "<b>You need to know your database.</b> ORMs hide the database behind an abstraction. That's fine until the abstraction leaks — and it always leaks.",
+                "items": []
+              },
+              {
+                "content": "<b>SQL is already a DSL.</b> We don't need another language on top of a language designed for exactly this purpose.",
+                "items": []
+              },
+              {
+                "content": "<b>Performance tuning requires SQL literacy.</b> You can't optimize what you can't read. EXPLAIN ANALYZE doesn't speak ORM.",
+                "items": []
+              },
+              {
+                "content": "<b>Migrations are where ORMs shine.</b> I still use migration tools. But the queries themselves? Raw SQL, every time.",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000007",
+          "type": "header",
+          "data": {
+            "text": "My Stack Now",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000008",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>PostgreSQL</b> for everything stateful",
+                "items": []
+              },
+              {
+                "content": "<b>Raw SQL</b> with parameterized queries",
+                "items": []
+              },
+              {
+                "content": "<b>dbt</b> for transformations",
+                "items": []
+              },
+              {
+                "content": "<b>pg_stat_statements</b> for monitoring",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000009",
+          "type": "paragraph",
+          "data": {
+            "text": "The code is longer. The control is absolute. The performance is predictable."
+          }
+        },
+        {
+          "id": "m0000000a",
+          "type": "paragraph",
+          "data": {
+            "text": "I'm not going back."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "lorem-space-exploration",
+    "status": "published",
+    "date_published": "2026-02-15",
+    "sort": 0,
+    "lang": "en",
+    "category": "personal",
+    "tags": [
+      "space",
+      "exploration"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": "personal-telescope",
+    "animation": "morph",
+    "title": "Why I Still Look Up",
+    "excerpt": "Lorem ipsum dolor sit amet. On the quiet joy of following space exploration as a software person who builds things on Earth.",
+    "body": {
+      "time": 1777235049368,
+      "version": "2.31.2",
+      "blocks": [
+        {
+          "id": "m00000001",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. I'm not an aerospace engineer. I build data pipelines and SQL queries. But every time a rocket launches, I stop what I'm doing and watch."
+          }
+        },
+        {
+          "id": "m00000002",
+          "type": "header",
+          "data": {
+            "text": "The Engineering",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000003",
+          "type": "paragraph",
+          "data": {
+            "text": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore:"
+          }
+        },
+        {
+          "id": "m00000004",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>Falcon 9</b> lands on a drone ship in the ocean after delivering payload to orbit",
+                "items": []
+              },
+              {
+                "content": "<b>James Webb Space Telescope</b> unfolds a sunshield the size of a tennis court, 1.5 million km from Earth",
+                "items": []
+              },
+              {
+                "content": "<b>Ingenuity</b> flew a helicopter on Mars — a planet with 1% of Earth's atmosphere",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000005",
+          "type": "quote",
+          "data": {
+            "text": "Every one of these achievements started as a problem someone said was impossible. That's engineering.",
+            "caption": "",
+            "alignment": "left"
+          }
+        },
+        {
+          "id": "m00000006",
+          "type": "header",
+          "data": {
+            "text": "The Data",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000007",
+          "type": "paragraph",
+          "data": {
+            "text": "Space generates incredible datasets:"
+          }
+        },
+        {
+          "id": "m00000008",
+          "type": "code",
+          "data": {
+            "code": "-- Hypothetical: querying exoplanet candidates\nSELECT\n  planet_name,\n  orbital_period_days,\n  radius_earth_radii,\n  equilibrium_temp_k\nFROM kepler_candidates\nWHERE\n  radius_earth_radii BETWEEN 0.8 AND 1.5\n  AND equilibrium_temp_k BETWEEN 200 AND 320\nORDER BY discovery_date DESC;"
+          }
+        },
+        {
+          "id": "m00000009",
+          "type": "paragraph",
+          "data": {
+            "text": "The Kepler mission alone produced over 2,600 confirmed exoplanets from <b>150,000 stars</b> worth of light curves. That's a data pipeline problem at cosmic scale."
+          }
+        },
+        {
+          "id": "m0000000a",
+          "type": "header",
+          "data": {
+            "text": "What Space Teaches About Software",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000b",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet:"
+          }
+        },
+        {
+          "id": "m0000000c",
+          "type": "nestedlist",
+          "data": {
+            "style": "ordered",
+            "items": [
+              {
+                "content": "<b>Redundancy matters</b> — spacecraft have backup systems for backup systems",
+                "items": []
+              },
+              {
+                "content": "<b>Testing is non-negotiable</b> — you can't hotfix something in orbit",
+                "items": []
+              },
+              {
+                "content": "<b>Constraints drive creativity</b> — limited bandwidth, power, and compute force elegant solutions",
+                "items": []
+              },
+              {
+                "content": "<b>Long-term thinking</b> — missions are planned decades in advance",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000d",
+          "type": "header",
+          "data": {
+            "text": "The Pale Blue Dot",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000e",
+          "type": "paragraph",
+          "data": {
+            "text": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+          }
+        },
+        {
+          "id": "m0000000f",
+          "type": "paragraph",
+          "data": {
+            "text": "Carl Sagan said it best:"
+          }
+        },
+        {
+          "id": "m0000000g",
+          "type": "quote",
+          "data": {
+            "text": "Look again at that dot. That's here. That's home. That's us. On it everyone you love, everyone you know, everyone you ever heard of, every human being who ever was, lived out their lives.",
+            "caption": "",
+            "alignment": "left"
+          }
+        },
+        {
+          "id": "m0000000h",
+          "type": "paragraph",
+          "data": {
+            "text": "I look up because it reminds me that the problems I solve with SQL and Python are small — but they're still worth solving well."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "lorem-transit-future",
+    "status": "published",
+    "date_published": "2026-03-10",
+    "sort": 0,
+    "lang": "en",
+    "category": "personal",
+    "tags": [
+      "transit",
+      "infrastructure"
+    ],
+    "external": false,
+    "url": null,
+    "cover_image_legacy_path": null,
+    "svg_illustration_id": "personal-globe",
+    "animation": "draw",
+    "title": "The Future of High-Speed Rail in North America",
+    "excerpt": "Lorem ipsum dolor sit amet. Why North America is decades behind on high-speed rail — and what it would take to catch up.",
+    "body": {
+      "time": 1777235049370,
+      "version": "2.31.2",
+      "blocks": [
+        {
+          "id": "m00000001",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. As someone who grew up taking the metro in Montreal and has ridden trains across Europe, the gap between what North America has and what it could have is staggering."
+          }
+        },
+        {
+          "id": "m00000002",
+          "type": "header",
+          "data": {
+            "text": "The Current State",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000003",
+          "type": "paragraph",
+          "data": {
+            "text": "Duis aute irure dolor in reprehenderit:"
+          }
+        },
+        {
+          "id": "m00000004",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>Japan's Shinkansen</b> has been running since 1964. Zero fatal derailments.",
+                "items": []
+              },
+              {
+                "content": "<b>France's TGV</b> connects Paris to Lyon in under 2 hours at 320 km/h.",
+                "items": []
+              },
+              {
+                "content": "<b>Amtrak's Acela</b> tops out at 240 km/h but averages far less due to shared freight track.",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000005",
+          "type": "quote",
+          "data": {
+            "text": "The problem isn't speed — it's infrastructure. You can't run high-speed trains on 100-year-old freight corridors.",
+            "caption": "",
+            "alignment": "left"
+          }
+        },
+        {
+          "id": "m00000006",
+          "type": "header",
+          "data": {
+            "text": "Why It Matters",
+            "level": 2
+          }
+        },
+        {
+          "id": "m00000007",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit:"
+          }
+        },
+        {
+          "id": "m00000008",
+          "type": "nestedlist",
+          "data": {
+            "style": "ordered",
+            "items": [
+              {
+                "content": "<b>Climate</b> — rail emits 80% less CO2 per passenger-km than flying",
+                "items": []
+              },
+              {
+                "content": "<b>Urban development</b> — stations drive density, highways drive sprawl",
+                "items": []
+              },
+              {
+                "content": "<b>Equity</b> — not everyone can drive or fly",
+                "items": []
+              },
+              {
+                "content": "<b>Reliability</b> — trains run in weather that grounds planes",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m00000009",
+          "type": "header",
+          "data": {
+            "text": "The Montreal-Toronto Corridor",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000a",
+          "type": "paragraph",
+          "data": {
+            "text": "This is the most promising route in Canada:"
+          }
+        },
+        {
+          "id": "m0000000b",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>Distance:</b> 540 km (similar to Paris–Lyon)",
+                "items": []
+              },
+              {
+                "content": "<b>Current train time:</b> 5+ hours",
+                "items": []
+              },
+              {
+                "content": "<b>Potential HSR time:</b> ~2.5 hours",
+                "items": []
+              },
+              {
+                "content": "<b>Air shuttle time:</b> ~1 hour (plus 2+ hours of airport overhead)",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000c",
+          "type": "paragraph",
+          "data": {
+            "text": "At 2.5 hours city-center to city-center, the train wins. That's the magic threshold where rail beats air for total journey time."
+          }
+        },
+        {
+          "id": "m0000000d",
+          "type": "header",
+          "data": {
+            "text": "What Needs to Happen",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000e",
+          "type": "paragraph",
+          "data": {
+            "text": "Lorem ipsum dolor sit amet:"
+          }
+        },
+        {
+          "id": "m0000000f",
+          "type": "nestedlist",
+          "data": {
+            "style": "unordered",
+            "items": [
+              {
+                "content": "<b>Dedicated right-of-way</b> — separated from freight, no sharing",
+                "items": []
+              },
+              {
+                "content": "<b>Political will</b> — infrastructure projects span election cycles",
+                "items": []
+              },
+              {
+                "content": "<b>Funding model</b> — public investment with operating cost recovery",
+                "items": []
+              },
+              {
+                "content": "<b>Phased delivery</b> — start with one corridor, prove the model, expand",
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "m0000000g",
+          "type": "header",
+          "data": {
+            "text": "My Hope",
+            "level": 2
+          }
+        },
+        {
+          "id": "m0000000h",
+          "type": "paragraph",
+          "data": {
+            "text": "Excepteur sint occaecat cupidatat non proident. I believe we'll see high-speed rail between Montreal and Toronto in my lifetime. The economics make sense. The climate demands it. The only question is whether we'll build it before or after the next generation gives up on trains entirely."
+          }
+        }
+      ]
+    }
+  }
+]

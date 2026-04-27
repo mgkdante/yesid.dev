@@ -10,6 +10,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
   import { projectsDetailContent } from '$lib/content/projects';
+  import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
 
   const projectInfoTitle = resolveLocale(projectsDetailContent.glance.projectInfo, 'en');
   const liveSiteMobileLabel = resolveLocale(projectsDetailContent.glance.liveSiteLabelMobile, 'en');
@@ -36,9 +37,9 @@
   <CollapsibleSection title={projectInfoTitle} open={false}>
     <div class="space-y-5">
       <!-- Overview -->
-      <p class="mobile-glance-overview text-small leading-relaxed">
-        {resolveLocale(project.description, 'en')}
-      </p>
+      <div class="mobile-glance-overview text-small leading-relaxed">
+        <BlockRenderer doc={resolveLocale(project.description, 'en')} />
+      </div>
 
       <!-- Metrics -->
       {#if hasMetrics}

@@ -5,7 +5,6 @@
 -->
 <script lang="ts">
 	import type { BlogPost } from '$lib/types';
-	import { resolveLocale } from '$lib/utils/locale';
 	import { boop } from '$lib/motion/actions/boop.js';
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { Badge } from '$lib/components/ui/badge';
@@ -84,10 +83,10 @@
 			<!-- Content -->
 			<div class="relative z-10 min-w-0 flex-1">
 				<h2 class="text-base font-semibold leading-snug text-[var(--foreground)] transition-colors duration-300 group-hover:text-[var(--accent)] md:text-lg">
-					{resolveLocale(post.title, 'en')}
+					{post.title}
 				</h2>
 				<p class="mt-2 text-sm leading-relaxed text-[var(--secondary-foreground)] line-clamp-2 md:text-base">
-					{resolveLocale(post.excerpt, 'en')}
+					{post.excerpt}
 				</p>
 				<div class="mt-3 flex flex-wrap items-center gap-2">
 					{#each post.tags as tag}
