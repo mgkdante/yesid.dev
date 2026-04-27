@@ -24,6 +24,9 @@ on:
       - 'bun.lock'
       - 'turbo.json'
 
+env:
+  SKIP_SIMPLE_GIT_HOOKS: 1
+
 jobs:
   ci:
     runs-on: ubuntu-latest

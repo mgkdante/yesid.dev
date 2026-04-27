@@ -31,6 +31,9 @@ on:
     # 07:00 UTC daily — catches drift without a PR touching either side.
     - cron: '0 7 * * *'
 
+env:
+  SKIP_SIMPLE_GIT_HOOKS: 1
+
 jobs:
   contract-test:
     # PRs: only run when labeled `contract-test` (opt-in — heavy job).
