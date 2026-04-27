@@ -2,8 +2,8 @@
 
 **File:** [yesid.dev — design system](https://www.figma.com/design/Zn8w5sVMwCXhziyv03dpft)
 **File key:** `Zn8w5sVMwCXhziyv03dpft`
-**Created:** 2026-04-26 (slice-design Child 3)
-**Source of truth:** [`packages/tokens/tokens.json`](../../../../packages/tokens/tokens.json). This Figma file mirrors that. Hand-edits to Variables in Figma will be overwritten on the next push.
+**Created:** 2026-04-26 (slice-design Child 3) · **Expanded:** 2026-04-27 (γ followup — Overview content, brand marks, text styles, effect styles, 10 real Components) · **slice-design-template Child 2** (2026-04-27): remaining 21 Components built (31 total, all Component Sets) + 31 per-component doc kits live in `docs-grid` (id `59:167`) on the `Components / UI` page
+**Source of truth:** [`packages/tokens/tokens.json`](../../../../packages/tokens/tokens.json) (Variables) + [`apps/web/brand/logos/`](../logos/) (brand SVGs) + [`apps/web/src/lib/components/`](../../src/lib/components/) (Svelte components — Code Connect deferred, see [#66](https://github.com/mgkdante/yesid.dev/issues/66) and the *Code Connect* note below). This Figma file mirrors those. Hand-edits to Variables / styles / Components in Figma will be overwritten on the next push.
 
 ## How tokens flow
 
@@ -73,6 +73,76 @@ Both can coexist. Desktop is useful for offline read-only verification; remote i
 
 The `Color` collection's two modes (`dark`, `light`) drive theme-switching. Brand colors don't theme-switch by design; they receive the same value in both modes (so every variable in the collection has a value for every mode, as Figma requires).
 
+**Variable name collisions to watch:** `card` exists in both Color (the surface color) and Shadow (`shadow/card`) collections after my prefix-stripping. Lookups must scope to a collection. The push-to-figma logic doesn't trigger this because each collection is created in isolation; the followup component-build code learned this the hard way.
+
+## Text styles
+
+11 Figma text styles bundling font + size + line-height + letter-spacing, named to match the type-scale Variables (e.g., `text/heading`, `text/body`, `text/mono`). Designers select text → apply style → done. Source values come from the Typography Variable collection at push time.
+
+| Style | Font | Size | Line-height | Tracking |
+|---|---|---:|---:|---:|
+| `text/hero` | Inter Bold | 130px | 140px | -2px |
+| `text/hero-mobile` | Inter Bold | 64px | 70px | -2px |
+| `text/display` | Inter Bold | 64px | 70px | -2px |
+| `text/title` | Inter Semi Bold | 40px | 48px | -2px |
+| `text/heading` | Inter Semi Bold | 24px | 32px | -0.5px |
+| `text/subheading` | Inter Medium | 18px | 26px | -0.5px |
+| `text/body` | Inter Regular | 16px | 26px | 0 |
+| `text/small` | Inter Regular | 14px | 21px | 0 |
+| `text/mono` | JetBrains Mono Regular | 13px | 20px | 0 |
+| `text/caption` | Inter Regular | 12px | 17px | 0 |
+| `text/micro` | JetBrains Mono Regular | 10px | 14px | 1px |
+
+Text styles are NOT bound to Variables (Figma's API for size-binding is unreliable as of this writing). Re-run the create-text-styles step after a `tokens.json` font/size change to regenerate.
+
+## Effect styles
+
+6 Figma DropShadow approximations of the shadow tokens, named to match the Shadow Variable collection (e.g., `shadow/card`, `shadow/glow-md`). Designers apply from the right-panel Effect dropdown.
+
+| Style | Approximation |
+|---|---|
+| `shadow/glow-sm` | 0 0 6px primary @ 30% |
+| `shadow/glow-md` | 0 0 12px primary @ 20% |
+| `shadow/glow-lg` | 0 0 24px primary @ 15% + 0 0 60px primary @ 6% |
+| `shadow/card` | 0 0 16px primary @ 8% + 0 2px 8px black @ 30% |
+| `shadow/section` | 0 8px 32px primary @ 6% |
+| `shadow/nav` | 0 4px 30px black @ 50% + 0 0 1px white @ 3% |
+
+CSS `color-mix()` semantics aren't 1:1 representable in Figma — these are visual approximations. The shadow token strings in `tokens.json` remain source-of-truth.
+
+## Component library
+
+**31 of 31 Components built** (74 state instances across 23 stateful Component Sets — full state coverage matrix landed in slice-design-template Child 1, PR [#69](https://github.com/mgkdante/yesid.dev/pull/69)). Drag any to instantiate; swap variants from the right panel. Color-typed fills bind to Variables in the `Color` collection so a token change propagates to every instance.
+
+| Page | Components | Total |
+|---|---|---:|
+| `Components / UI` | `badge` · `button` · `card` · `collapsible` · `dialog` · `drawer` · `input` · `input-group` · `label` · `resizable` · `scroll-area` · `separator` · `sheet` · `skeleton` · `tabs` · `textarea` · `toggle` · `toggle-group` · `tooltip` | 19 |
+| `Components / Brand` | `BlueprintShell` · `ChevronToggle` · `CornerMarks` · `MetricDisplay` · `MetroStation` · `SectionHeading` · `SectionLabel` · `StatusDot` · `StickyPanel` · `StopLabel` · `SvgIcon` · `TerminalChrome` | 12 |
+
+Each Component Set lives in a unified card on its Components page (label + component instance + states row). 12 of the 31 are plain Components (no variants); the other 19 are Component Sets with variant axes documented in the per-component doc kit.
+
+### Doc kits
+
+**31 per-component documentation cards** live in `docs-grid` (id `59:167`) on the `Components / UI` page below the Component library. Each kit is a 720px-wide vertical card with 7 sections:
+
+1. **Header** — component name in mono accent
+2. **Anatomy** — instance + bullet callouts describing structure
+3. **Do** — 3 usage guidelines (green ✓)
+4. **Don't** — 3 anti-patterns (red ✗)
+5. **Svelte** — copy-paste-ready import + JSX example
+6. **A11y** — 4-5 accessibility notes (Bits UI semantics for ui/, hand-crafted for brand/)
+7. **Props** — 4-column table (name · type · default · description)
+
+The doc kit Svelte sections double as a Code Connect substitute — see *Code Connect* note below.
+
+### Code Connect
+
+**Status:** deferred ([#66](https://github.com/mgkdante/yesid.dev/issues/66)). The `figma-remote` MCP `add_code_connect_map` and `send_code_connect_mappings` tools require a Developer seat in an Organization or Enterprise plan. This file's owning team is on **Pro tier**, which blocks the API call (verified 2026-04-27).
+
+**Workaround in place:** every doc kit's *Svelte* section shows the canonical import line (`import { Badge } from '$lib/components/ui/badge'`) and a representative usage snippet. Designers in Dev Mode see the import path directly in the doc card; developers do not need a Figma → code lookup table because the path is rendered visually.
+
+**To enable formal Code Connect:** upgrade the Figma team to Org/Enterprise tier, then re-run the bulk mapping (the 31 mappings are pre-computed in the slice-design-template Child 3 session log — node IDs + source URLs ready to send).
+
 ## Round-trip notes
 
 End-to-end round-trip verified on 2026-04-27 with `verify-roundtrip.ts`: **69 expected = 69 actual, exit 0**.
@@ -89,15 +159,15 @@ If a future round-trip surfaces a NEW kind of delta, document it here.
 
 | Page | Built by |
 |---|---|
-| `00 — Overview` | Empty (deferred) — see GitHub issue for population. |
-| `Foundations / Colors` | `use_figma` rebuild — 3 frames (Brand · Dark · Light), each frame's swatches reference Variables (mode pinned via `setExplicitVariableModeForCollection`). |
-| `Foundations / Typography` | `use_figma` rebuild — 3 font specimens (Aa Bb Cc) + 11 type-scale specimens at actual size, with px + clamp serialization. |
-| `Foundations / Spacing` | `use_figma` rebuild — 3 visual rulers (rendered at desktop max) + 2 container rows (text-only because containers are too wide to ruler). |
-| `Foundations / Radius` | `use_figma` rebuild — 5 corner samples on 64×64 boxes; pill capped to 32px to render visually. |
-| `Foundations / Shadows` | `use_figma` rebuild — 6 cards with approximated DropShadow effects + raw CSS value. CSS `color-mix()` is not 1:1 representable in Figma; values are the source-of-truth. |
-| `Foundations / Motion` | `use_figma` rebuild — duration as accent-orange bars (×0.5px per ms) + easing as cubic-bezier curve previews via SVG. |
-| `Components / Brand` | `use_figma` rebuild — 12 cards (one per brand primitive), each: visual stub · name · description · variants. Hard cap per spec § 7 R2. |
-| `Components / UI` | `use_figma` rebuild — 19 cards (one per shadcn-svelte primitive), same shape + cap. |
+| `00 — Overview` | **Populated (γ followup):** brand intro, 5 BRAND.md principles in cards, page index, footer. Plus a Brand marks subsection — 5 native vector marks (favicon, monogram-orange, wordmark, lockup-horizontal, lockup-stacked) rendered via `figma.createNodeFromSvg()` from `apps/web/brand/logos/*.svg`. |
+| `Foundations / Colors` | 3 frames (Brand · Dark · Light), each frame's swatches reference Variables (mode pinned via `setExplicitVariableModeForCollection`). |
+| `Foundations / Typography` | 3 font specimens (Aa Bb Cc) + 11 type-scale specimens at actual size, with px + clamp serialization. |
+| `Foundations / Spacing` | 3 visual rulers (rendered at desktop max) + 2 container rows (text-only because containers are too wide to ruler). |
+| `Foundations / Radius` | 5 corner samples on 64×64 boxes; pill capped to 32px to render visually. |
+| `Foundations / Shadows` | 6 cards with approximated DropShadow effects + raw CSS value. CSS `color-mix()` is not 1:1 representable in Figma; values are the source-of-truth. |
+| `Foundations / Motion` | Duration as accent-orange bars (×0.5px per ms) + easing as cubic-bezier curve previews via SVG. |
+| `Components / Brand` | All 12 brand Component Sets/Components in `component-library` (BlueprintShell · ChevronToggle · CornerMarks · MetricDisplay · MetroStation · SectionHeading · SectionLabel · StatusDot · StickyPanel · StopLabel · SvgIcon · TerminalChrome). Original doc-card stubs replaced by real components in slice-design-template Child 1. |
+| `Components / UI` | All 19 UI Component Sets/Components in `component-library` (badge · button · card · collapsible · dialog · drawer · input · input-group · label · resizable · scroll-area · separator · sheet · skeleton · tabs · textarea · toggle · toggle-group · tooltip) **plus 31 per-component doc kits** in `docs-grid` (id `59:167`) below — see *Doc kits* section above. |
 | `Roundtrip — DO NOT EDIT` | Reserved for future read-only mirror; currently empty. |
 
 ## Snapshots
@@ -113,21 +183,26 @@ PNG snapshots of each foundation page live in [`../figma-exports/`](../figma-exp
 | Foundations / Shadows | [`shadows.png`](../figma-exports/shadows.png) |
 | Foundations / Motion | [`motion.png`](../figma-exports/motion.png) |
 
-## Future enhancements (deferred — filed as GitHub issues)
+## Future enhancements
 
-| # | Issue | Tier | Estimated |
+### Done in γ followup
+
+| # | Item | Status |
+|---|---|---|
+| [#56](https://github.com/mgkdante/yesid.dev/issues/56) | 00 — Overview page populated (intro · 5 BRAND.md principles · page index) | ✅ closed |
+| [#57](https://github.com/mgkdante/yesid.dev/issues/57) | Brand marks rendered as native Figma vectors via `createNodeFromSvg()` (raster `upload_assets` not used — vectors stay scalable) | ✅ closed |
+| [#59](https://github.com/mgkdante/yesid.dev/issues/59) | 11 Figma text styles bundling font + size + line-height + tracking | ✅ closed |
+| [#60](https://github.com/mgkdante/yesid.dev/issues/60) | 6 Figma effect styles for shadow tokens (DropShadow approximations) | ✅ closed |
+| [#58](https://github.com/mgkdante/yesid.dev/issues/58) | Real Figma Components — **31 of 31 done** (slice-design-template Child 1 + Child 2 doc kits). | ✅ closed |
+
+### Still deferred to a future slice
+
+| # | Item | Tier | Blocker |
 |---|---|---|---|
-| [#56](https://github.com/mgkdante/yesid.dev/issues/56) | 00 — Overview page population (intro, 5 BRAND.md principles, internal links) | 1 | 1h |
-| [#57](https://github.com/mgkdante/yesid.dev/issues/57) | Brand assets upload (logo, favicon, morph-shape SVGs) | 1 | 1h |
-| [#58](https://github.com/mgkdante/yesid.dev/issues/58) | Real Figma Components with variants (replaces 31 stubs) | 2 | 4-6h |
-| [#59](https://github.com/mgkdante/yesid.dev/issues/59) | Figma text styles for type scale (11 named styles) | 2 | 1-2h |
-| [#60](https://github.com/mgkdante/yesid.dev/issues/60) | Figma effect styles for shadow tokens (6 named effects) | 2 | ~30min |
-
-Tier 2 items belong to the [`slice-design-template`](../../../../docs/superpowers/specs/2026-04-26-slice-design-design.md) follow-up slice (per spec § 3.5).
+| [#66](https://github.com/mgkdante/yesid.dev/issues/66) | Code Connect — formal `add_code_connect_map` mapping for the 31 Components | 2 | Figma plan upgrade (Pro → Org/Enterprise). Workaround: doc-kit *Svelte* sections render the import path visually. |
 
 Also deferred (not filed as discrete issues; these are scope boundaries, not punch-list items):
 
-- **Code Connect** — wires Figma components ↔ Svelte. Pays off at 2+ contributors.
 - **Library publishing** — single-file pattern is the call for solo. Flip when you onboard a co-designer.
 
 Filed per [AGENTS.md § Never](../../../../AGENTS.md): *"Close a slice with deferred work that isn't filed as a GitHub issue first."*

@@ -1,0 +1,28 @@
+{
+  "collection": "tech_stack",
+  "field": "projects",
+  "type": "alias",
+  "meta": {
+    "collection": "tech_stack",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "projects",
+    "group": null,
+    "hidden": false,
+    "interface": "list-m2m",
+    "note": null,
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 101,
+    "special": [
+      "m2m"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

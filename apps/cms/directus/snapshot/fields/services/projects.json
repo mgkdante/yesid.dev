@@ -1,0 +1,28 @@
+{
+  "collection": "services",
+  "field": "projects",
+  "type": "alias",
+  "meta": {
+    "collection": "services",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "projects",
+    "group": null,
+    "hidden": false,
+    "interface": "list-m2m",
+    "note": "Projects that use this service. Bidirectional view of `projects.services` (junction: projects_services).",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 110,
+    "special": [
+      "m2m"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}
