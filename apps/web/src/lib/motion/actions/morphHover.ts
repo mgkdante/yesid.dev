@@ -1,6 +1,10 @@
-// use:morphHover — SVG path morphing on hover/tap (signature 4 of 9).
+// use:morphHover — SVG path morphing on hover/tap.
 //
-// Desktop hover → paths morph to a random shape from `shapes`.
+// Slice 18 18f Phase 11: shapes are now CMS-managed via the morph_shapes
+// collection. Action fetches shapes internally from getMorphShapes() with
+// a shared module-level cache. Caller no longer needs to pass shapes.
+//
+// Desktop hover → paths morph to a random shape from the adapter.
 // mouseleave   → paths morph back to their original `d`.
 // Mobile tap   → toggle morphed / unmorphed.
 // Reduced-motion → no-op (no listeners, paths stay at their primary shape).
@@ -15,15 +19,15 @@
 // interaction fires.
 //
 // Usage:
-//   <button use:morphHover={{ shapes: SHAPES, enabled: svgReady[i] }}>...</button>
+//   <button use:morphHover={{ enabled: svgReady[i] }}>...</button>
 
 import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
 import { gsap, loadMorphSVG } from '../utils/gsap.js';
 import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';
+import { getMorphShapes, pickRandomShape } from '$lib/utils/shapes';
+import type { MorphShape } from '@repo/shared';
 
 export interface MorphHoverParams {
-	/** Record of shape-name → SVG path `d` string. Used as the morph target pool. */
-	shapes: Record<string, string>;
 	/** If false, listeners still attach but morphs are no-ops (use while SVG content loads). Default: true */
 	enabled?: boolean;
 	/** Optional deterministic starting shape index. Default: -1 (random). */
@@ -39,12 +43,20 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 	let morphed = false;
 	let paths: SVGPathElement[] = [];
 	let originals: string[] = [];
+	let shapes: readonly MorphShape[] = [];
 	let lastIdx = params.lastShapeIdx ?? -1;
 	let pluginLoaded = false;
+	let shapesLoaded = false;
 
 	function isMobile(): boolean {
 		if (typeof window === 'undefined') return false;
 		return window.matchMedia('(max-width: 767px)').matches;
+	}
+
+	async function ensureShapes() {
+		if (shapesLoaded) return;
+		shapes = await getMorphShapes();
+		shapesLoaded = true;
 	}
 
 	async function ensurePluginAndPaths() {
@@ -63,21 +75,10 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 		}
 	}
 
-	function pickRandomShape(): string | null {
-		const keys = Object.keys(currentParams.shapes);
-		if (keys.length === 0) return null;
-		let idx: number;
-		do {
-			idx = Math.floor(Math.random() * keys.length);
-		} while (idx === lastIdx && keys.length > 1);
-		lastIdx = idx;
-		return keys[idx];
-	}
-
-	function morphTo(key: string) {
+	function morphTo(path: string) {
 		paths.forEach((p) => gsap.killTweensOf(p));
 		gsap.to(paths, {
-			morphSVG: currentParams.shapes[key],
+			morphSVG: path,
 			duration: 0.4,
 			stagger: 0.03,
 			ease: 'power2.inOut',
@@ -104,11 +105,11 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 	async function handleEnter() {
 		if (currentParams.enabled === false) return;
 		if (isMobile()) return;
-		await ensurePluginAndPaths();
-		if (paths.length === 0) return;
-		const key = pickRandomShape();
-		if (!key) return;
-		morphTo(key);
+		await Promise.all([ensurePluginAndPaths(), ensureShapes()]);
+		if (paths.length === 0 || shapes.length === 0) return;
+		const { shape, index } = pickRandomShape(shapes, lastIdx);
+		lastIdx = index;
+		morphTo(shape.path);
 	}
 
 	function handleLeave() {
@@ -122,14 +123,14 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 		if (currentParams.enabled === false) return;
 		e.preventDefault();
 		e.stopPropagation();
-		await ensurePluginAndPaths();
-		if (paths.length === 0) return;
+		await Promise.all([ensurePluginAndPaths(), ensureShapes()]);
+		if (paths.length === 0 || shapes.length === 0) return;
 		if (morphed) {
 			morphBack();
 		} else {
-			const key = pickRandomShape();
-			if (!key) return;
-			morphTo(key);
+			const { shape, index } = pickRandomShape(shapes, lastIdx);
+			lastIdx = index;
+			morphTo(shape.path);
 		}
 	}
 

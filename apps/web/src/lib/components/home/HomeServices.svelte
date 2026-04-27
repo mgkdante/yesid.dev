@@ -10,7 +10,6 @@
 	import { resolveLocale } from '$lib/utils';
 
 	import { getVisibleServices, servicesGridContent } from '$lib/content';
-	import { SHAPES } from '$lib/utils/shapes';
 	import { morphHover } from '$lib/motion/actions';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
@@ -84,7 +83,7 @@
 							data-testid="services-svg-panel"
 							class="svg-panel relative flex flex-shrink-0 items-center justify-center rounded-xl transition-all duration-300"
 							aria-label={viewIllustrationAriaTemplate.replace('{title}', title)}
-							use:morphHover={{ shapes: SHAPES, enabled: svgReady[i] }}
+							use:morphHover={{ enabled: svgReady[i] }}
 						>
 							<div class="svg-inline-wrapper pointer-events-none" style="width:56px;height:56px;">
 								<!-- Fallback: static img until JS injects inline SVG -->
