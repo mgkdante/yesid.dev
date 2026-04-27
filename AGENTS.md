@@ -99,7 +99,9 @@ Three layers, strict separation. Full rules: [docs/project/CSS.md](docs/project/
 
 Primary `#E07800` / Accent `#FFB627`. Fonts: Inter (headings/body), JetBrains Mono (code). Dark theme default. "yesid." always lowercase, dot always orange. Favicon is a solid orange circle.
 
-Full brand identity: [apps/web/brand/BRAND.md](apps/web/brand/BRAND.md) + [apps/web/brand/foundations/](apps/web/brand/foundations/). Tokens: [DESIGN.md](DESIGN.md).
+**Tokens:** [DESIGN.md](DESIGN.md) at repo root (Google-spec, generated from `packages/tokens/tokens.json`). **Voice + identity:** [apps/web/brand/BRAND.md](apps/web/brand/BRAND.md) + [apps/web/brand/foundations/](apps/web/brand/foundations/).
+
+> **Note on `DESIGN.md`:** the repo-root `DESIGN.md` is yesid.dev's *visual identity* contract (Google Labs spec, alpha). Distinct from any future `docs/DESIGN.md` (would be plugin-architecture, different concept). The two are not interchangeable.
 
 ## Repo structure
 
@@ -107,12 +109,18 @@ Full brand identity: [apps/web/brand/BRAND.md](apps/web/brand/BRAND.md) + [apps/
 repo-root/
 ├── docs/
 │   ├── reference/      # Tier 1 plugin-pulled discipline (WORKFLOW, VOCAB, ARCHIVE, tools/)
-│   ├── project/        # Tier 1 project-owned (STACK, BINDINGS, ARCHITECTURE, CSS, MOTION, PATTERNS, CONSTITUTION, TESTS, VOCAB, BRAND, SERVICES)
+│   ├── project/        # Tier 1 project-owned (STACK, BINDINGS, ARCHITECTURE, CSS, MOTION, PATTERNS, CONSTITUTION, TESTS, VOCAB, SERVICES)
 │   ├── roadmap/        # PLAN.md + FUTURE_PHASES.md (hybrid: slice table + plugin-sourced strategic-themes pattern)
 │   ├── slices/         # Active slice bundles + _TEMPLATES/
 │   └── sessions/       # Non-slice session records
-├── brand/              # Visual identity (brand-owning project)
-├── src/                # App code
+├── apps/
+│   ├── web/            # SvelteKit consumer
+│   │   └── brand/      # Brand narrative (voice, IP, decisions, foundations, logos)
+│   └── cms/            # Directus config
+├── packages/
+│   ├── tokens/         # DTCG source of truth + generators (slice-design)
+│   └── shared/         # Cross-app shared types/utils
+├── DESIGN.md           # Visual identity contract (Google-spec, generated)
 ├── scripts/            # slice-close, mirror-docs, mirror-brand
 ├── static/             # Public assets
 ├── AGENTS.md           # This file — tool-agnostic contract
@@ -135,7 +143,7 @@ Full tree: `tree.txt`.
 - Skip the close-script (manual mirror loses the index update).
 - Use `npm`, `npx`, or `node` directly — Bun only.
 - Hand-edit `docs/reference/*` — contribute upstream via `/workflow-update`.
-- Add CSS tokens, `@theme` values, or scoped styles without updating [docs/project/CSS.md](docs/project/CSS.md).
+- Hand-edit generated token files (`tokens.css`, `app.css @theme` region, `motion/tokens.ts`, `DESIGN.md`). Pre-commit hook blocks this. Edit `packages/tokens/tokens.json` and run `bun run tokens:build`.
 - Continue to the next task without Yesid's approval.
 - Close a slice without appending OS-quirks discoveries + durable learnings to cloud.
 - Close a slice with deferred work (anything in research.md § "Open follow-ups" or decisions.md flagged for later) that isn't filed as a GitHub issue first. The PR body links the issues; the slice-close commit references them by number. Untracked deferrals lose context fast and become tribal knowledge.
