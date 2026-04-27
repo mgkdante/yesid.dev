@@ -14,7 +14,7 @@
 // ports throw a clear "TODO Task 5+" error if called. The ContentAdapter
 // annotation at the bottom is the compile-time gate that Task 4 must clear.
 
-import { createDirectus, rest, readItems } from '@directus/sdk';
+import { createDirectus, rest, readItems, readSingleton } from '@directus/sdk';
 import { env as publicEnv } from '$env/dynamic/public';
 import { z } from 'zod';
 
@@ -29,10 +29,17 @@ import type {
 	LocalizedBlockEditorDoc,
 	LocalizedString,
 	MorphShape,
+	PageSeo,
+	PreviewContext,
 	Project,
 	ProjectSection,
+	RouteSeoOverride,
 	Service,
 	ServiceSection,
+	SiteLinks,
+	SiteMeta,
+	SiteOwner,
+	SiteSeoDefaults,
 	TechStackItem,
 } from '$lib/types';
 import { createQueuedFetch } from './directus-queue';
@@ -43,6 +50,9 @@ import { BlogPostSchema } from '$lib/schemas/blog';
 import { LocaleSchema } from '$lib/schemas/shared';
 import { MorphShapeSchema } from '$lib/schemas/morph-shape';
 import { TechStackItemSchema } from '$lib/schemas/tech-stack';
+import { SiteMetaSchema } from '$lib/schemas/meta';
+import { SiteSeoDefaultsSchema } from '$lib/schemas/site-seo-defaults';
+import { RouteSeoOverrideSchema } from '$lib/schemas/route-seo';
 import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml } from '@repo/shared';
 
 // ---------------------------------------------------------------------------
@@ -218,6 +228,9 @@ interface Schema {
 	morph_shapes: MorphShape[];
 	// Tech-stack collection (slice-18 18g).
 	tech_stack: DirectusTechStackRow[];
+	// Site meta singleton + per-route SEO overrides (slice-18 18h).
+	site_meta: DirectusSiteMetaRow;
+	route_seo: DirectusRouteSeoRow[];
 }
 
 // ---------------------------------------------------------------------------
@@ -266,6 +279,26 @@ function toLocalizedStringOrUndef<T extends { languages_code: string }>(
 		return typeof v === 'string' && v.length > 0;
 	});
 	return hasAny ? toLocalizedString(translations, field) : undefined;
+}
+
+/**
+ * LocalizedString or null — for fields whose CMS schema is "nullable on the
+ * row but `null` carries 'no override' semantics" (slice-18 18h `route_seo`
+ * `title` and `description`). Returns null when EVERY translation row's value
+ * is null/empty; otherwise composes a LocalizedString. Used by
+ * `toRouteSeoOverride` so the composer can distinguish "editor cleared the
+ * field" (null → use fallback) from "editor populated EN but not FR/ES".
+ */
+function toLocalizedStringNullable<T extends { languages_code: string }>(
+	translations: ReadonlyArray<T> | null | undefined,
+	field: string,
+): LocalizedString | null {
+	const rows = translations ?? [];
+	const hasAny = rows.some((t) => {
+		const v = (t as Record<string, unknown>)[field];
+		return typeof v === 'string' && v.length > 0;
+	});
+	return hasAny ? toLocalizedString(rows, field) : null;
 }
 
 /**
@@ -644,6 +677,156 @@ export function toTechStackItem(row: DirectusTechStackRow): TechStackItem {
 		relatedServices: row.services?.map((s) => s.services_id) ?? [],
 		relatedProjects: row.projects?.map((p) => p.projects_id) ?? [],
 	};
+}
+
+// ---------------------------------------------------------------------------
+// Site-meta singleton + route_seo row shapes — slice-18 18h Phase 4 Task 10.
+//
+// Q9 amendment: TWO adapter methods (meta.site() + meta.siteSeoDefaults())
+// share ONE Directus singleton row via internal `fetchSingletonRow()` helper
+// + per-request WeakMap memo on the raw row. Brand SiteMeta and
+// SiteSeoDefaults are different output shapes from the same source.
+// ---------------------------------------------------------------------------
+
+interface DirectusSiteMetaTranslation {
+	languages_code: 'en' | 'fr' | 'es';
+	tagline: string;
+	description: string;
+	default_description: string;
+	owner_job_title: string;
+}
+
+export interface DirectusSiteMetaRow {
+	id: number;
+	name: string;
+	email: string;
+	github_url: string;
+	linkedin_url: string | null;
+	upwork_url: string | null;
+	owner_name: string;
+	owner_locality: string;
+	owner_region: string;
+	owner_country: string;
+	/** CSV — split + trim + filter at mapper boundary. */
+	owner_knows_about: string;
+	default_og_image: string | null;
+	theme_color: string;
+	translations: readonly DirectusSiteMetaTranslation[];
+}
+
+interface DirectusRouteSeoTranslation {
+	languages_code: 'en' | 'fr' | 'es';
+	title: string | null;
+	description: string | null;
+}
+
+export interface DirectusRouteSeoRow {
+	id: number;
+	path: string;
+	og_image: string | null;
+	status: 'draft' | 'published' | 'archived';
+	translations: readonly DirectusRouteSeoTranslation[];
+}
+
+/**
+ * Brand SiteMeta mapper — TS shape unchanged (Q9). Re-uses the row's
+ * translations array for the localized fields (tagline, description,
+ * jobTitle) and splits the CSV `owner_knows_about` column into a string
+ * array.
+ */
+export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
+	const links: SiteLinks = {
+		email: row.email,
+		github: row.github_url,
+		...(row.linkedin_url && { linkedin: row.linkedin_url }),
+		...(row.upwork_url && { upwork: row.upwork_url }),
+	};
+	const knowsAbout = row.owner_knows_about
+		.split(',')
+		.map((s) => s.trim())
+		.filter(Boolean);
+	const owner: SiteOwner = {
+		name: row.owner_name,
+		jobTitle: toLocalizedString(row.translations, 'owner_job_title'),
+		address: {
+			locality: row.owner_locality,
+			region: row.owner_region,
+			country: row.owner_country,
+		},
+		knowsAbout,
+	};
+	return {
+		name: row.name,
+		tagline: toLocalizedString(row.translations, 'tagline'),
+		description: toLocalizedString(row.translations, 'description'),
+		links,
+		owner,
+	};
+}
+
+/**
+ * SiteSeoDefaults mapper — new Q9 shape pulled from the SAME singleton row.
+ * `defaultOgImage` is the raw UUID (consumer wraps with `asset(uuid, 'og-1200')`).
+ */
+export function toSiteSeoDefaults(row: DirectusSiteMetaRow): SiteSeoDefaults {
+	return {
+		defaultOgImage: row.default_og_image,
+		themeColor: row.theme_color,
+		defaultDescription: toLocalizedString(row.translations, 'default_description'),
+	};
+}
+
+/**
+ * Per-route override mapper. title/description are NULLABLE — null means
+ * "no override, fall back" so the composer can distinguish editor intent.
+ */
+export function toRouteSeoOverride(row: DirectusRouteSeoRow): RouteSeoOverride {
+	return {
+		path: row.path,
+		ogImage: row.og_image,
+		title: toLocalizedStringNullable(row.translations, 'title'),
+		description: toLocalizedStringNullable(row.translations, 'description'),
+	};
+}
+
+// Per-request WeakMap memo on the RAW singleton row. Both meta.site() and
+// meta.siteSeoDefaults() delegate to `fetchSingletonRow()` so a SvelteKit
+// `load()` that calls both methods only triggers ONE upstream fetch.
+//
+// `defaultCtx` is a stable sentinel object used as the memo key when the
+// caller passes no PreviewContext — guarantees a single round-trip per
+// process/request slot for ctx-less callers (tests, repository wrappers).
+const siteRowMemo = new WeakMap<object, Promise<DirectusSiteMetaRow>>();
+const defaultCtx: object = {};
+
+async function fetchSingletonRow(ctx?: PreviewContext): Promise<DirectusSiteMetaRow> {
+	const memoKey: object = (ctx as object | undefined) ?? defaultCtx;
+	const cached = siteRowMemo.get(memoKey);
+	if (cached) return cached;
+	const promise = client()
+		.request(
+			readSingleton('site_meta', {
+				fields: [
+					'id',
+					'name',
+					'email',
+					'github_url',
+					'linkedin_url',
+					'upwork_url',
+					'owner_name',
+					'owner_locality',
+					'owner_region',
+					'owner_country',
+					'owner_knows_about',
+					'default_og_image',
+					'theme_color',
+					{ translations: ['languages_code', 'tagline', 'description', 'default_description', 'owner_job_title'] } as unknown as keyof DirectusSiteMetaRow,
+				],
+			}),
+		)
+		.then((row) => row as unknown as DirectusSiteMetaRow);
+	siteRowMemo.set(memoKey, promise);
+	return promise;
 }
 
 // ---------------------------------------------------------------------------
@@ -1110,7 +1293,43 @@ export const directusAdapter: ContentAdapter = {
 	},
 
 	meta: {
-		site: async () => todo('meta.site'),
+		site: async (ctx) => {
+			const row = await fetchSingletonRow(ctx);
+			return parsePort('meta.site', SiteMetaSchema, toSiteMeta(row));
+		},
+
+		siteSeoDefaults: async (ctx) => {
+			const row = await fetchSingletonRow(ctx);
+			return parsePort('meta.siteSeoDefaults', SiteSeoDefaultsSchema, toSiteSeoDefaults(row));
+		},
+
+		routeSeo: {
+			byPath: async (path, ctx) => {
+				const rows = (await client().request(
+					readItems('route_seo', {
+						filter: {
+							_and: [{ path: { _eq: path } }, { status: { _eq: 'published' } }],
+						},
+						fields: [
+							'id',
+							'path',
+							'og_image',
+							'status',
+							{ translations: ['languages_code', 'title', 'description'] } as unknown as keyof DirectusRouteSeoRow,
+						],
+						limit: 1,
+					}),
+				)) as unknown as DirectusRouteSeoRow[];
+				const item = rows[0] ? toRouteSeoOverride(rows[0]) : undefined;
+				return parsePort(
+					'meta.routeSeo.byPath',
+					RouteSeoOverrideSchema.optional(),
+					item,
+				);
+			},
+		},
+
+		// Composer lands in Task 11 — replaces this stub.
 		forRoute: async () => todo('meta.forRoute'),
 	},
 

@@ -173,6 +173,22 @@ export const staticAdapter: ContentAdapter = {
 	},
 	meta: {
 		site: async () => parsePort('meta.site', SiteMetaSchema, siteMeta),
+		// slice-18 18h Q9: SEO defaults shape sourced from the static fallback.
+		// The directus adapter sources from CMS singleton; this static fallback
+		// keeps the adapter contract uniform for tests and static-mode scenarios.
+		siteSeoDefaults: async () => ({
+			defaultOgImage: null,
+			themeColor: '#141414',
+			defaultDescription: {
+				en: 'yesid. — freelance data infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, Python. Real-time pipelines, analytics, dashboards for growing teams.',
+			},
+		}),
+		// Static adapter has no per-route overrides — composer falls through to
+		// code-side defaults. Returning undefined matches the directus shape
+		// when no row matches the path.
+		routeSeo: {
+			byPath: async () => undefined,
+		},
 		forRoute: async (
 			routeId: string,
 			locale: Locale,
