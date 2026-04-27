@@ -38,6 +38,7 @@ import { parsePort } from '$lib/schemas/parse';
 import { ProjectSchema } from '$lib/schemas/project';
 import { ServiceSchema } from '$lib/schemas/service';
 import { BlogPostSchema } from '$lib/schemas/blog';
+import { LocaleSchema } from '$lib/schemas/shared';
 import { MorphShapeSchema } from '$lib/schemas/morph-shape';
 import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml } from '@repo/shared';
 
@@ -882,11 +883,105 @@ export const directusAdapter: ContentAdapter = {
 			if (body === null) return null;
 			return parsePort('blog.bodyBySlug', BlockEditorDocSchema, body);
 		},
-		byCategory: async () => todo('blog.byCategory'),
-		byTag: async () => todo('blog.byTag'),
-		tagsForCategory: async () => todo('blog.tagsForCategory'),
-		languagesForCategory: async () => todo('blog.languagesForCategory'),
-		latest: async () => todo('blog.latest'),
+		byCategory: async (category, ctx) => {
+			const rows = (await client().request(
+				readItems('blog_posts', {
+					fields: [
+						'id',
+						'status',
+						'date_published',
+						'sort',
+						'lang',
+						'category',
+						'tags',
+						'external',
+						'url',
+						'animation',
+						'title',
+						'excerpt',
+						{ svg_illustration: ['id'] } as unknown as keyof DirectusBlogPostRow,
+					],
+					filter: { _and: [{ category: { _eq: category } }, { status: { _eq: 'published' } }] },
+					sort: ['-date_published'],
+					limit: -1,
+				}),
+			)) as unknown as DirectusBlogPostRow[];
+			return parsePort('blog.byCategory', z.array(BlogPostSchema), rows.map(toBlogPost));
+		},
+		byTag: async (category, tag, ctx) => {
+			const rows = (await client().request(
+				readItems('blog_posts', {
+					fields: [
+						'id',
+						'status',
+						'date_published',
+						'sort',
+						'lang',
+						'category',
+						'tags',
+						'external',
+						'url',
+						'animation',
+						'title',
+						'excerpt',
+						{ svg_illustration: ['id'] } as unknown as keyof DirectusBlogPostRow,
+					],
+					filter: {
+						_and: [
+							{ category: { _eq: category } },
+							{ status: { _eq: 'published' } },
+							{ tags: { _contains: tag } as unknown as Record<string, unknown> },
+						],
+					},
+					sort: ['-date_published'],
+					limit: -1,
+				}),
+			)) as unknown as DirectusBlogPostRow[];
+			return parsePort('blog.byTag', z.array(BlogPostSchema), rows.map(toBlogPost));
+		},
+		tagsForCategory: async (category, ctx) => {
+			const posts = await directusAdapter.blog.byCategory(category, ctx);
+			const tags = new Set<string>();
+			for (const p of posts) for (const t of p.tags) tags.add(t);
+			return parsePort('blog.tagsForCategory', z.array(z.string()), [...tags].sort());
+		},
+		languagesForCategory: async (category, ctx) => {
+			const posts = await directusAdapter.blog.byCategory(category, ctx);
+			const langs = new Set<Locale>();
+			for (const p of posts) langs.add(p.lang);
+			return parsePort('blog.languagesForCategory', z.array(LocaleSchema), [...langs].sort());
+		},
+		latest: async (count, category, ctx) => {
+			const filterCategory = category ?? 'professional';
+			const rows = (await client().request(
+				readItems('blog_posts', {
+					fields: [
+						'id',
+						'status',
+						'date_published',
+						'sort',
+						'lang',
+						'category',
+						'tags',
+						'external',
+						'url',
+						'animation',
+						'title',
+						'excerpt',
+						{ svg_illustration: ['id'] } as unknown as keyof DirectusBlogPostRow,
+					],
+					filter: {
+						_and: [
+							{ category: { _eq: filterCategory } },
+							{ status: { _eq: 'published' } },
+						],
+					},
+					sort: ['-date_published'],
+					limit: count,
+				}),
+			)) as unknown as DirectusBlogPostRow[];
+			return parsePort('blog.latest', z.array(BlogPostSchema), rows.map(toBlogPost));
+		},
 		svgContent: async () => todo('blog.svgContent'),
 		svgContentsForPosts: async () => todo('blog.svgContentsForPosts'),
 		resolveSvgFallbackName: async () => todo('blog.resolveSvgFallbackName'),
