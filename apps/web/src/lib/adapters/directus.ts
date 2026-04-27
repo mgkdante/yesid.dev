@@ -1076,6 +1076,15 @@ export const directusAdapter: ContentAdapter = {
 		heroMock: async () => todo('content.heroMock'),
 		initialHeroData: async () => todo('content.initialHeroData'),
 		metroSvg: async () => fetchMetroSvg(),
-		morphShapes: async () => todo('content.morphShapes'),
+		morphShapes: async (ctx) => {
+			const rows = (await client().request(
+				readItems('morph_shapes', {
+					fields: ['id', 'label', 'path', 'viewbox', 'sort'],
+					sort: ['sort'],
+					limit: -1,
+				}),
+			)) as unknown as MorphShape[];
+			return parsePort('content.morphShapes', z.array(MorphShapeSchema), rows);
+		},
 	},
 };
