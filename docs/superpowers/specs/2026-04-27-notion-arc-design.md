@@ -600,3 +600,35 @@ Plugin source documentation that consumed these amendments at v0.4.0 ship time:
 - `mgkdante/workflow/plugins/workflow/skills/workflow-slice-open/SKILL.md` — Templates/Plan + Templates/Handoff seeding.
 
 For Phase 2 implementation: read this section AND § 1–15. The flat-shape clarification (A4) is the most behaviorally consequential — it changes the workspace-structure assumption Phase 2 retrofitting starts from.
+
+---
+
+## 17. Migration risk register (discovered during execution)
+
+### R-9 (2026-04-28). Notion content-transform gotcha — markdown does not round-trip byte-identical
+
+**Symptom:** `notion-update-page` with `command=update_content` fails with HTTP 400 "No matches found" because `old_str` matches the markdown that was originally sent, not the markdown that Notion actually stored after silent normalization.
+
+**Root cause:** Notion silently normalizes content on store:
+- Whitespace between headings and following blocks gets stripped (blank lines collapse).
+- Bare code fences (triple backtick alone) get auto-tagged with a language guess (`javascript`, `markdown`, etc.).
+- Tables may reflow column widths.
+- Some link formats get rewritten (bare URLs become inline-anchored).
+
+**Failure mode (high frequency during this retrofit):** every `update_content` call after a `create-pages` is vulnerable, because the in-memory body sent ≠ the stored body Notion holds.
+
+**Mitigations (apply to every Notion edit in this migration):**
+
+1. **Always `fetch` current content before `update_content`** with `old_str`. Construct `old_str` from the fetched stored body, never from in-memory markdown.
+2. **Prefer structured properties over body markdown** for state that may be queried or updated later. Slice `Status`, dates, `PR link`, `Slice-N`, `Parent slice` → properties (byte-stable; safe with `update_properties`). Body markdown is only for one-shot narrative content.
+3. **Prefer `replace_content` over `update_content`** when the diff is non-trivial. Pass `allow_deleting_content=false` to refuse orphaning children; include child pages in `new_str` via `<page url="...">` tags to preserve them.
+4. **Avoid bare triple-backtick code fences.** Always specify a language explicitly (`text`, `bash`, `python`, `markdown`). Otherwise Notion injects its own language tag and future find-replace patterns break.
+5. **Never assume "it worked once, the next edit will work the same way."** Notion's transforms can chain.
+
+**Specific to this retrofit:**
+
+- For each slice retrofit (`docs/slices/slice-NN/` → Slices DB row + Spec/Plan/Handoff trio), create the entire trio in ONE `notion-create-pages` call (atomic). Never edit afterward unless absolutely necessary.
+- For appended content (e.g., `devlog.md` → Handoff body's `## Implementation devlog` section), construct the FULL final body in one `create-pages` call rather than create-then-append.
+- For Sessions DB ingest, use `create-pages` per row; never bulk-update.
+
+**Cross-references:** Documented same in `mgkdante/workflow > slice-2a Spec` (its instance of R-9). Future workflow-using projects should adopt this as canonical Notion-edit discipline.
