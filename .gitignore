@@ -28,3 +28,26 @@ Weather_API_Key.txt
 
 # SVGO source backups kept local only — committed file is the optimized source of truth
 apps/web/static/images/*.source.svg
+
+# Migrated to Notion (Phase 2 — Notion is the single source of truth)
+/docs/project/
+/docs/roadmap/
+/docs/ops/
+/docs/README.md
+/docs/superpowers/specs/
+/docs/superpowers/research/
+/docs/superpowers/plans/
+/docs/slices/
+/docs/sessions/
+/docs/ARCHIVE.md
+/docs/_TEMPLATES/
+/brand/BRAND.md
+/brand/components.md
+/brand/README.md
+/brand/foundations/*.md
+/brand/decisions/*.md
+/brand/examples/README.md
+
+# NOT ignored (stays tracked):
+#   /brand/logos/, /brand/figma-exports/, /brand/examples/*.svelte.txt,
+#   /brand/examples/*.png, /brand/scripts/, /docs/ai-memory/, /docs/reference/
