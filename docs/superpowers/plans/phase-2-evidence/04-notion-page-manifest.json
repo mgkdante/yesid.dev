@@ -31,14 +31,21 @@
       },
       "Project": {
         "page_id": "34f3e863-0690-81b9-8888-dcdd2b4d77c4",
+        "_note": "All 11 child pages created in Task 13 (2026-04-27). 7 A6 DEFAULT skeletons + 4 yesid.dev-specific pages. Source: docs/project/.",
         "children": {
-          "STACK": null,
-          "BINDINGS": null,
-          "ARCHITECTURE": null,
-          "TESTS": null,
-          "CONSTITUTION": null,
-          "VOCAB": null,
-          "README": null
+          "STACK": "3503e863-0690-8161-8873-ebd4a8cc6cf4",
+          "BINDINGS": "3503e863-0690-81cb-ba00-d286cfef0508",
+          "ARCHITECTURE": "3503e863-0690-817d-b629-ef87a9b09e18",
+          "TESTS": "3503e863-0690-818d-a08e-c7506fd26b2d",
+          "CONSTITUTION": "3503e863-0690-81e7-a59b-c04196d1fb7e",
+          "VOCAB": "3503e863-0690-819c-ab14-cee76e24b45d",
+          "README": "3503e863-0690-81b3-87f1-c069b4734112"
+        },
+        "_non_a6_children": {
+          "SERVICES": "3503e863-0690-8153-8037-fbd11cdb06f1",
+          "PATTERNS": "3503e863-0690-81fe-bd36-df05dcb72480",
+          "CSS": "3503e863-0690-81f0-b565-f5fa4bfd80f8",
+          "MOTION": "3503e863-0690-8127-8401-d9287d474c84"
         }
       },
       "Roadmap": { "page_id": "34f3e863-0690-8160-8b1c-c338d9f57569" },
@@ -62,8 +69,8 @@
   "_notes": {
     "discovered": "2026-04-27",
     "brand_extra_children": "Brand has 5 children (BRAND, Foundations, Decisions, Examples, Components). Plan expected 3 (Foundations, Decisions, Examples). BRAND and Components are extra pages created during Phase 0.",
-    "project_children": "Public-safe/Project is empty — no child pages exist. All 7 A6 DEFAULT skeletons (README, STACK, BINDINGS, ARCHITECTURE, TESTS, CONSTITUTION, VOCAB) are null. Task 13 must create them.",
-    "non_a6_project_pages": "None found — Project page has no children at all.",
+    "project_children": "Task 13 created all 11 child pages (2026-04-27): 7 A6 DEFAULT skeletons (README, STACK, BINDINGS, ARCHITECTURE, TESTS, CONSTITUTION, VOCAB) + 4 yesid.dev-specific (SERVICES, PATTERNS, CSS, MOTION). UUIDs now in manifest.",
+    "non_a6_project_pages": "Task 13 added 4 non-A6 yesid.dev-specific pages: SERVICES, PATTERNS, CSS, MOTION. UUIDs recorded in _non_a6_children block.",
     "db_uuid_source": "Pre-known (operator-supplied) — not re-discovered. Confirmed: Specs DB collection UUID e23c55c2 matches data-source-url seen in Private/Specs fetch.",
     "private_databases_note": "Private/ also contains 3 inline databases (Slices, Conversations, Sessions) visible in the page content but their container pages are the DB pages themselves, not separate child pages."
   }

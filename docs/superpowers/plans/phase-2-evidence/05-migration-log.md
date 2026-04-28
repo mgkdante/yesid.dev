@@ -25,3 +25,16 @@
   - brand/decisions/2026-04-why-edge-to-edge.md → 3503e863-0690-816f-9fb2-efb09a63554a
   - brand/decisions/2026-04-why-orange.md → 3503e863-0690-812b-9fd2-cb0a44f2c38d
   - Note: 5 manifest UUIDs (BRAND, Components, Examples, Foundations, Decisions) were in Notion trash (deleted attr); fresh pages created instead. Brand/README (34f3e863-0690-8136-b315-fc7d83227170) was the only manifest page not deleted and received a replace_content update.
+- [2026-04-27] Created 11 Public-safe/Project child pages (7 A6 + 4 yesid-specific) — see manifest for UUIDs
+  - docs/project/README.md → 3503e863-0690-81b3-87f1-c069b4734112 (A6 DEFAULT)
+  - docs/project/STACK.md → 3503e863-0690-8161-8873-ebd4a8cc6cf4 (A6 DEFAULT)
+  - docs/project/BINDINGS.md → 3503e863-0690-81cb-ba00-d286cfef0508 (A6 DEFAULT)
+  - docs/project/ARCHITECTURE.md → 3503e863-0690-817d-b629-ef87a9b09e18 (A6 DEFAULT)
+  - docs/project/TESTS.md → 3503e863-0690-818d-a08e-c7506fd26b2d (A6 DEFAULT)
+  - docs/project/CONSTITUTION.md → 3503e863-0690-81e7-a59b-c04196d1fb7e (A6 DEFAULT)
+  - docs/project/VOCAB.md → 3503e863-0690-819c-ab14-cee76e24b45d (A6 DEFAULT)
+  - docs/project/SERVICES.md → 3503e863-0690-8153-8037-fbd11cdb06f1 (yesid-specific)
+  - docs/project/PATTERNS.md → 3503e863-0690-81fe-bd36-df05dcb72480 (yesid-specific)
+  - docs/project/CSS.md → 3503e863-0690-81f0-b565-f5fa4bfd80f8 (yesid-specific)
+  - docs/project/MOTION.md → 3503e863-0690-8127-8401-d9287d474c84 (yesid-specific)
+  - Note: All 11 pages are fresh creates; Public-safe/Project had no children prior to Task 13.
