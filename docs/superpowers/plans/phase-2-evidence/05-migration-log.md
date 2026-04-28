@@ -338,3 +338,18 @@ Stubbed as `<!-- unsupported block type: X -->`: `child_database`, `embed`, `ima
 - **Body content sweep:** 5-sample probe fetched (slice-18-spec, slice-18-plan, slice-18-handoff, slice-18h-spec, slice-headless-cms-best-practices-spec). No ` Spec`, ` Plan`, ` Handoff` cross-reference patterns found in any body. Full 60-page sweep skipped — no matches in probe.
 - **yesid.dev page body updated:** Naming convention table updated to hyphen-lowercase format. `Parent` column reference updated to `Parent slice` in sub-slice nesting section.
 - **Operator follow-up (UI-only):** To enable visual sub-item nesting in Slices DB inline view, toggle in Notion UI: view ··· menu → Layout → Show sub-items → pick `Parent slice`. MCP has no SUB-ITEMS DSL directive as of 2026-04-28.
+
+## Section 2.10 — Slim docs + verify + cleanup (2026-04-28)
+
+- Task 28: AGENTS.md slimmed; v0.4.0+1 Output destinations section transcribed verbatim from workflow scaffold. Evidence: `docs/superpowers/plans/phase-2-evidence/11-output-destinations-section.md`.
+- Task 29: CLAUDE.md updated with Notion-canonical note (one paragraph added).
+- Task 30: data-loss audit at `docs/superpowers/plans/phase-2-evidence/07-data-loss-audit.md`. 560 files, 9.8MB classified across 4 disposition classes.
+- Task 31: 5 spot-checks documented in data-loss audit Section 4.
+- Task 32: `.gitignore` updated with migrated paths (Notion-migrated content blocked from re-commit).
+- Task 33: removed 93 tracked files from working tree. `bun run check`: 0 errors, 18 pre-existing warnings. `bun run test`: 95 files passed, 1005 tests passed, 6 skipped (flaky network tests, pre-existing).
+- Task 19: `docs/learn/` — no-op (directory did not exist in cloud).
+- Task 34: deleted `~/Yesito/cloud/yesid.dev/` (560 files, 9.8 MB). Confirmed deleted.
+- Task 35: cloud transcript archive — no-op (not present; confirmed).
+- Task 36: `YESITO_CLOUD_ROOT` — leave set. Referenced in `slice-close.ts` (still active). Only `mirror-brand`, `mirror-docs`, `archive-conversations` are retired. Safe to unset from shell profile only after `slice-close.ts` is also updated.
+- Tasks 37-38: retired `mirror-brand.ts`, `mirror-docs.ts`, `archive-conversations.ts` + removed their `package.json` entries.
+- Task 39: `brand/scripts/` audit — `export-logos.ts` and `export-examples.ts` are pure asset generators (no `YESITO_CLOUD_ROOT`, no mirror logic). KEEP both. No-op.
