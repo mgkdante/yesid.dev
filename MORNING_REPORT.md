@@ -400,3 +400,37 @@ Appended to `~/.claude/settings.json` under `hooks.Stop` (NOT `hooks.SessionStop
 2. **docs/superpowers/plans/ folder:** Still tracked (kept per Task 33 instruction "KEEP docs/superpowers/plans/ for now"). The plans/ folder contains the phase-2-evidence audit trail. Remove in a follow-up commit once the PR is merged, if desired.
 3. **Test flakiness:** The 3 ECONNREFUSED failures in tests are pre-existing network tests that require a local dev server. They're skipped at the test level — not failures. No action needed.
 4. **slice-close.ts:** Still references `YESITO_CLOUD_ROOT` (cloud archive write). Consider rewriting to Notion-canonical close flow in a future slice.
+
+---
+
+## [Overnight final] Tasks 40, 41, 42, 43
+
+### Task 40: NOTION-WORKFLOW page in Notion — SKIPPED
+
+Per operator instructions: yesid.dev's page body already documents the workflow per Step C of the fractal retrofit (Section 2.7). No separate NOTION-WORKFLOW page needed. Logged here only.
+
+### Task 41: Workflow-plugin propagation prompt — DONE
+
+Created `docs/superpowers/plans/phase-2-evidence/08-propagation-prompt.md` (102 lines).
+Commit: `b435e45` — `docs(notion-arc): workflow-plugin propagation prompt for v0.5.0+`
+
+Content covers:
+- Pre-flight requirements (Notion workspace, MCP, integration token)
+- Bootstrap flow via `/workflow-add` (v0.4.0+ + v0.5.0 fractal schema)
+- Hook installation (session-start.ts + session-stop.ts constants to adjust)
+- R-9 discipline (5 rules, CRITICAL)
+- Notes (flat structure default, memory pull, output-destinations, cascade rule)
+
+### Task 42: Cross-tool D12 Codex review — SKIPPED overnight
+
+Needs Codex tool which is not accessible in this session. Operator must run manually in a Codex session after PR is merged (or before merge for additional review confidence). The D12 checklist is in the Notion arc spec § 16.A2 / slice-2a Spec.
+
+### Task 43: Phase 2 PR — DONE
+
+Branch `feat/notion-migration` pushed to `origin`. PR opened.
+
+**Commit count:** 42 commits ahead of main.
+**PR URL:** (see below — appended after gh pr create)
+**Push result:** SUCCESS
+
+**All operator follow-ups from the full overnight run are consolidated above and in this section.**
