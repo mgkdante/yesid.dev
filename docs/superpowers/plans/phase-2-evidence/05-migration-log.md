@@ -225,6 +225,31 @@ Parent: Archive page `3503e863-0690-8113-a0d3-d89a28520596`.
 4. **Superpowers page content** — all 6 superpowers pages are condensed. If verbatim spec text in Notion is required, fetch then update (per R-9).
 5. **Plan B Tasks 19, 34, 35** — cloud deletes and local file deletions are operator-gated. This run created Notion content only; no deletions performed.
 
+## Section 2.8 — Memory migration + SessionStart hook (2026-04-28)
+
+- Task 20: Memory page `34f3e863-0690-8116-8014-f824769b948c` is **archived** in Notion. Migration skipped per plan instructions ("If archived: stop, log to MORNING_REPORT, skip Task 20"). Operator action required: unarchive the Memory page via Notion UI, then re-run Task 20. Alternatively, create a new Memory page under yesid.dev and update the UUID in `session-start.ts` (`MEMORY_PARENT_ID` constant).
+- Task 21: created `apps/web/scripts/notion-hooks/lib/notion-client.ts` and `apps/web/scripts/notion-hooks/session-start.ts`. Uses Notion REST API (`https://api.notion.com/v1`) with `NOTION_INTEGRATION_TOKEN` env var. Operator must generate integration at https://www.notion.so/my-integrations, share the Memory page tree with it, and set `NOTION_INTEGRATION_TOKEN` before the hook can pull.
+- Task 22: registered SessionStart hook in `~/.claude/settings.json` (`hooks.SessionStart` array) — appended, did not replace existing ECC hook entry. Hook command: `bun C:\Users\otalo\Yesito\Projects\yesid.dev\apps\web\scripts\notion-hooks\session-start.ts`. Not repo-tracked (user-global settings).
+- Per R-9: atomic creates only (no bare triple-backtick fences in hook files).
+- E2E verification deferred to morning (requires fresh Claude Code session + operator-set `NOTION_INTEGRATION_TOKEN` env var + unarchived Memory page).
+
+### Markdown renderer coverage (notion-client.ts)
+
+Rendered: `heading_1`, `heading_2`, `heading_3`, `paragraph`, `bulleted_list_item` (recursive children), `numbered_list_item` (recursive children), `code` (with language tag), `quote`, `divider`, `callout` (content only), `toggle` (collapsed details/summary).
+
+Stubbed as `<!-- unsupported block type: X -->`: `child_database`, `embed`, `image`, `video`, `audio`, `file`, `pdf`, `table`, `table_row`, `synced_block`, `column_list`, `column`, `breadcrumb`, `table_of_contents`, `link_to_page`, `template`, `unsupported`.
+
+`child_page` rendered as bold reference: `**[Title]** *(child page)*` — does not recurse into nested pages (would require unbounded depth traversal; Memory pages are shallow).
+
+### Operator actions required before E2E
+
+1. Unarchive the Memory page at `34f3e863-0690-8116-8014-f824769b948c` via Notion UI (or create a new one and update `MEMORY_PARENT_ID` in `session-start.ts`).
+2. Migrate 14 memory files to Notion as child pages (Task 20 re-run).
+3. Generate Notion integration at https://www.notion.so/my-integrations.
+4. Share the Memory page (and its children) with the integration.
+5. Set `NOTION_INTEGRATION_TOKEN=secret_...` in the environment where Claude Code launches.
+6. Start a new Claude Code session targeting `C:\Users\otalo\Yesito\Projects\yesid.dev` — the SessionStart hook will fire automatically.
+
 ## Section 2.7 — v0.5.0 hyphen-lowercase retrofit (2026-04-28)
 
 **Run:** Autonomous overnight — operator asleep. All decisions logged to `MORNING_REPORT.md`.
