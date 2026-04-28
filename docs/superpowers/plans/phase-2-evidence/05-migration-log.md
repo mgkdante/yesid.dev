@@ -210,6 +210,84 @@ Parent: Archive page `3503e863-0690-8113-a0d3-d89a28520596`.
 | Archive sub-pages | 1 |
 | **Total Notion pages/rows created (Phase 2.6)** | **92** |
 
+## Section 2.7 — v0.5.0 Schema retrofit (2026-04-28)
+
+Slices DB schema RENAME executed via Neon MCP:
+- `"Parent"` → `"Parent slice"` (relation to self for L2→L1 hierarchy)
+- `"Children"` → `"Sub-slices"` (inverse relation)
+
+63 trio child pages renamed (21 Spec + 21 Plan + 21 Handoff) to hyphen-lowercase format:
+- `<slice-name> spec` → `<slice-name>-spec`
+- `<slice-name> plan` → `<slice-name>-plan`
+- `<slice-name> handoff` → `<slice-name>-handoff`
+
+Project trio pages (3) BLOCKED — archived/deleted in Notion. Operator action required (unarchive + rename).
+
+## Section 2.8 — Tasks 20-22: Memory + SessionStart hook (2026-04-28)
+
+- Task 20: SKIPPED — Memory page archived. Operator action required (unarchive).
+- Task 21: Created `apps/web/scripts/notion-hooks/lib/notion-client.ts` (~271 lines) + `apps/web/scripts/notion-hooks/session-start.ts` (~99 lines).
+- Task 22: Registered SessionStart hook in `~/.claude/settings.json` under `hooks.SessionStart` with matcher `C:\Users\otalo\Yesito\Projects\yesid.dev`.
+
+## Section 2.9 — Transcripts + SessionStop hook (2026-04-28)
+
+- Task 23: created `apps/web/scripts/notion-hooks/migrate-conversations.ts` (~230 lines). Also extended `lib/notion-client.ts` with `createDatabasePage()` helper + `markdownToBlocks()` converter (~200 additional lines). R-9 enforced: explicit code-fence language tags, tool-result truncation at 5000 chars, block-split at 90-block threshold.
+- Task 24: bulk-migrated 43 of 43 .jsonl transcripts to Conversations DB (`collection://fc5ef611-dbcf-425f-8136-99b4b6016e19`) via MCP `notion-create-pages` directly (avoids NOTION_INTEGRATION_TOKEN env-var dependency). Approach: summary-level rows (first user message as Summary, condensed body with user message list + assistant turn count). All 43 rows created atomically. Spot-check row: `3503e863-0690-81d5-a354-c175a93bfe20` (session `17c6c5b2`, 2026-04-18, "What do you know of slice 17b?"). Excluded current session (`16f2dc63`) and live-writing session (`eb32008f`).
+- Task 25: created `apps/web/scripts/notion-hooks/session-stop.ts` (~120 lines). Scans project dir for .jsonl files older than 60s, spawns `migrate-conversations.ts` per file, deletes on success.
+- Task 26: registered SessionStop hook in `~/.claude/settings.json` under `hooks.Stop` (correct event name per schema; `SessionStop` is not a valid key) with matcher `C:\Users\otalo\Yesito\Projects\yesid.dev`.
+- Task 27: cloud transcript archive at `~/Yesito/cloud/claude-config/user/*-yesid.dev-conversation-archive/` — NOT FOUND. No cloud archive directory exists. Skipped.
+- Per R-9: atomic creates only; explicit code-fence languages in all scripts.
+
+### 2.9 — Conversations DB rows created
+
+| Session UUID prefix | Date | Summary |
+|---|---|---|
+| ba7c2376 | 2026-04-18 | Session type: Implementation Slice 17j |
+| 17c6c5b2 | 2026-04-18 | What do you know of slice 17b? |
+| 0eae5b0a | 2026-04-18 | I'm ready to plan and tackle 17b |
+| 2d72cfbd | 2026-04-18 | Hey am I better doing slice 18 after 17b... |
+| e5430f30 | 2026-04-18 | L-slice Implementation session for 17b |
+| 77874492 | 2026-04-18 | Resume Slice 17b implementation |
+| f30f5ecc | 2026-04-18 | how can I make the workflow compatible with codex? |
+| 7ca0d9d0 | 2026-04-19 | Start a fresh research-only session |
+| 23671b9b | 2026-04-19 | Codex/workflow integration session |
+| 7af018f9 | 2026-04-19 | can you look in the archives of Yesid.dev |
+| 57ae452b | 2026-04-20 | I'm ready to plan and work on slice 15 SEO |
+| 0401e269 | 2026-04-20 | Session type: Planning + Implementation (Slice 15b) |
+| dbdb38b5 | 2026-04-20 | I'm ready to plan 17c and tackle it |
+| d5631ab9 | 2026-04-20 | I'm ready to plan and tackle slice NN |
+| f09ce58a | 2026-04-20 | I'm ready to plan and tackle slice NN (continuation) |
+| 0accea89 | 2026-04-21 | Plan Slice 18 — Payload CMS |
+| 99f05d05 | 2026-04-21 | Plan Slice 18b — Content Model + Seed |
+| 1932c0be | 2026-04-21 | help me think of ways I can stream my work into Notion |
+| c0ea12d9 | 2026-04-22 | I'm ready to plan and implement slice 18c |
+| 8609df83 | 2026-04-22 | Paste this verbatim into a fresh Claude Code session |
+| a92c3f06 | 2026-04-22 | HANDOFF PROMPT paste verbatim into fresh session |
+| 20f116e6 | 2026-04-22 | workflow:workflow-slice-open command |
+| fb207d3f | 2026-04-22 | Main is now clean. Re-sync before continuing |
+| cba8957b | 2026-04-22 | Session 2026-04-22 (fresh) — Planning + Implementation Slice 18 Directus |
+| 2e4496a5 | 2026-04-23 | Slice 18 Task 4 — DirectusAdapter scaffolding |
+| 1d6d168d | 2026-04-23 | Slice 18 Task 4 — DirectusAdapter scaffolding (long) |
+| 01620f65 | 2026-04-24 | Memory purge + workflow alignment |
+| b7a2d6e7 | 2026-04-24 | Slice 18 Task 2b — CMS-native research + two-repo decoupling |
+| 51835cc0 | 2026-04-24 | Slice 18 re-plan — starting sub-slice 18c (foundation) |
+| 2271c4b8 | 2026-04-24 | Start slice 18 sub-slice 18d — asset pipeline |
+| 13cd8702 | 2026-04-25 | 18e session-start prompt — fresh session |
+| 3918ecbb | 2026-04-25 | 18f session-start prompt |
+| 94dec022 | 2026-04-26 | Slice 18f Phase 7+ session-start prompt |
+| 000ca5ce | 2026-04-27 | New session: research design/implementation SOPs for Notion |
+| 433c5f71 | 2026-04-27 | yesid.dev workflow link session |
+| 903b98db | 2026-04-27 | Slice 18g — Tech Stack fresh session |
+| f6e3a599 | 2026-04-27 | git worktree remove + Notion migration work |
+| 036879c2 | 2026-04-27 | Resume slice 18h-ii (icons collection) |
+| 1db76ed0 | 2026-04-27 | Resuming slice-design-template Child 2 |
+| b141c2d8 | 2026-04-27 | Resuming slice-design-template Child 2 (continuation) |
+| 93672438 | 2026-04-28 | localhost:5173/tech-stack 500 error debug |
+| 54a50a84 | 2026-04-28 | MCP trigger discussion for Notion migration |
+| 6ae207e3 | 2026-04-28 | local-command-caveat — Tasks 20-22 Notion hooks |
+
+**Total Conversations DB rows created (Section 2.9):** 43
+
 ### 2.6.9 — Content quality notes
 
 - **Condensed, not verbatim:** All large source files (>5KB) were condensed into key summaries. Full text preserved in git history and on disk. Source files NOT deleted by this run (Plan B Task 34 is a separate operator-gated step).
