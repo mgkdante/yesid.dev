@@ -1,3 +1,14 @@
+---
+notion:
+  root_page_id: "34f3e863-0690-81e8-a41a-d00abc1b341a"
+  workspace_url: "https://www.notion.so/"
+  databases:
+    specs: "e23c55c2-42b1-45c1-b48d-be845bb4166c"
+    slices: "a4128775-19be-4cbf-b20f-f0a9ff49ba71"
+    conversations: "fc5ef611-dbcf-425f-8136-99b4b6016e19"
+    sessions: "abe34ce1-4b2b-4f57-ad81-4e05ae9ec6f9"
+---
+
 # AGENTS.md — [yesid.dev](http://yesid.dev)
 
 > **Tool-agnostic workflow contract.** Both Claude Code and OpenAI Codex read this file. Workflow discipline lives in `docs/reference/` (plugin-pulled via `/workflow-pull`). Project specifics live in `docs/project/`. Tool-specific overlays: [docs/reference/tools/claude-code.md](docs/reference/tools/claude-code.md) + [docs/reference/tools/codex.md](docs/reference/tools/codex.md). Claude Code also reads [CLAUDE.md](CLAUDE.md) (thin pointer + model bindings).
