@@ -167,3 +167,52 @@ All planned Phase 2 tasks executed:
 - **Commit:** pending (this entry written before commit).
 - **Assumption:** Session-format names (`Session YYYY-MM-DD — TOPIC ...`) not present in DB as rows — no session-type trio pages found in Slices DB during search. Updated the yesid.dev convention table entry for completeness only.
 - **DDL decision:** RENAME preserved dual; logged in migration log Section 2.7.
+
+## [06:30] Tasks 20-22 — Memory migration + SessionStart hook
+
+### Task 20: Memory page migration — SKIPPED (page archived)
+
+The Memory page (`34f3e863-0690-8116-8014-f824769b948c`) is archived in Notion. The `notion-fetch` response included `deleted` in the page metadata. Per plan instructions: skipped Task 20, logged here, proceeded to Tasks 21-22.
+
+- **Assumption:** "deleted" attribute on the page = archived/soft-deleted. Cannot update via API without unarchiving. MCP tools do not expose an unarchive method.
+- **Count:** 0 pages created (14 planned: 1 index + 13 typed entries). All source files intact at `C:\Users\otalo\.claude\projects\C--Users-otalo-Yesito-Projects-yesid-dev\memory\`.
+- **Operator action required:** Unarchive the Memory page at https://www.notion.so/34f3e863069081168014f824769b948c via Notion UI (three-dot menu → "Restore"), then re-run Task 20 in a new session.
+- **Alternative:** Create a new Memory page under yesid.dev, then update `MEMORY_PARENT_ID` in `apps/web/scripts/notion-hooks/session-start.ts` to the new UUID before running Task 20.
+
+### Task 21: SessionStart hook files — DONE
+
+Created two files:
+- `apps/web/scripts/notion-hooks/lib/notion-client.ts` (~200 lines) — Notion REST API wrapper, `fetchPageChildren()` + `fetchPageMarkdown()`, markdown renderer.
+- `apps/web/scripts/notion-hooks/session-start.ts` (~80 lines) — pulls Memory page tree → local .md files, deletes orphans, logs to `~/.claude/logs/notion-hooks.log`.
+
+**Approach:** Notion REST API (`https://api.notion.com/v1`) with `NOTION_INTEGRATION_TOKEN` env var. Uses `node:fs/promises` `appendFile` for log writes (simpler than Bun.write for append mode).
+
+**Markdown renderer scope:**
+- Rendered: heading 1/2/3, paragraph, bulleted list (recursive), numbered list (recursive), code (with language), quote, divider, callout, toggle.
+- Stubbed: image, video, audio, file, pdf, table, embed, synced_block, column_list, column, child_database, breadcrumb, table_of_contents, link_to_page, template. All render as `<!-- unsupported block type: X -->`.
+- `child_page` renders as `**[Title]** *(child page)*` — no recursion into nested pages (Memory entries are flat).
+
+**Operator action required:** Generate Notion integration, share Memory page tree, set `NOTION_INTEGRATION_TOKEN` env var where Claude Code launches.
+
+### Task 22: SessionStart hook registered — DONE
+
+Appended to `~/.claude/settings.json` `hooks.SessionStart` array:
+```json
+{
+  "matcher": "C:\Users\otalo\Yesito\Projects\yesid.dev",
+  "hooks": [{ "type": "command", "command": "bun C:\Users\otalo\Yesito\Projects\yesid.dev\apps\web\scripts\notion-hooks\session-start.ts" }]
+}
+```
+Existing ECC SessionStart entry preserved. Settings file is not repo-tracked — change logged here only.
+
+**E2E test:** NOT run (operator-only, requires fresh session + env var + unarchived Memory page).
+
+### Operator action checklist before E2E
+
+1. Unarchive Memory page at https://www.notion.so/34f3e863069081168014f824769b948c (or create a replacement and update `MEMORY_PARENT_ID`).
+2. Re-run Task 20 (migrate 14 memory files as child pages).
+3. Generate Notion integration at https://www.notion.so/my-integrations.
+4. Share the Memory page and its children with the integration.
+5. Set `NOTION_INTEGRATION_TOKEN=secret_...` in the shell environment where Claude Code launches (WSL `~/.bashrc` if Claude Code launches from WSL; Windows-side if launched from PowerShell).
+6. Open a new Claude Code session on `C:\Users\otalo\Yesito\Projects\yesid.dev` — hook fires automatically.
+7. Verify `~/.claude/logs/notion-hooks.log` shows "pull complete — 14 pages written".
