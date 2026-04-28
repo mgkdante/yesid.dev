@@ -13,6 +13,11 @@ node_modules/
 .env.*
 !.env.example
 !.env.test
+
+# Per-machine overrides for tool-agnostic workflow contracts (workflow v0.6.0 R4-1).
+# Real Notion UUIDs and other workspace-specific config live in *.local.md files
+# so the committed AGENTS.md / CLAUDE.md stay fork-safe.
+*.local.md
 *.log
 .DS_Store
 Thumbs.db
@@ -49,5 +54,5 @@ apps/web/static/images/*.source.svg
 /brand/examples/README.md
 
 # NOT ignored (stays tracked):
-#   /brand/logos/, /brand/figma-exports/, /brand/examples/*.svelte.txt,
-#   /brand/examples/*.png, /brand/scripts/, /docs/ai-memory/, /docs/reference/
+#   /docs/ai-memory/, /docs/reference/{tools, WORKFLOW.md}
+# (brand/ and docs/superpowers/plans/ fully removed in chore/post-merge-cleanup PR.)

@@ -77,3 +77,28 @@ closed slice, whichever is first. A consolidation pass:
 - Rewrites overlapping rules into tighter, unambiguous wording.
 - Rolls per-slice status entries into one rolling index entry once the slice
   is shipped.
+
+## Local override pattern (workflow v0.6.0 R4-1)
+
+`AGENTS.md` and `CLAUDE.md` are tool-agnostic workflow contracts checked into the
+repo. They MUST be fork-safe — anyone who clones/forks this repo gets a clean
+template, not workspace-specific UUIDs.
+
+The override pattern:
+
+| File | Purpose | Tracked? |
+| --- | --- | --- |
+| `AGENTS.md` | Workflow contract with `<FILL IN>` placeholders | ✅ Committed |
+| `AGENTS.local.md` | Real Notion UUIDs + per-machine overrides | ❌ Gitignored (`*.local.md`) |
+| `CLAUDE.md` | Claude Code role bindings (model names, tool names) | ✅ Committed |
+| `CLAUDE.local.md` | Optional per-machine Claude overrides (rare) | ❌ Gitignored |
+
+**How tools resolve:** AI tools (Claude Code, Codex) at session start should
+read both files and merge `*.local.md` over the base file for any overlapping
+keys. If `*.local.md` is missing, prompt the operator to populate it OR fall
+back to a per-tool fallback (env var, `op read` from a secrets manager, etc.).
+
+**Origin:** workflow plugin slice-3 round-4 R4-1 (commit `a9a249b`,
+2026-04-28). The `yesid.dev` repo originally committed real UUIDs in
+`AGENTS.md` frontmatter; this was the same fork-safety hole the workflow
+plugin's slice-3 fixed upstream.

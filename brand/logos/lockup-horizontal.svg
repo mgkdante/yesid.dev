@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 60" role="img" aria-labelledby="title desc">
-  <title id="title">yesid. · digital infrastructure (horizontal lockup)</title>
-  <desc id="desc">yesid. wordmark with orange trailing dot, followed by a vertical divider and the tagline "digital infrastructure", arranged horizontally.</desc>
-  <text x="0" y="40" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="700" font-size="36" fill="currentColor">yesid<tspan fill="#E07800">.</tspan></text>
-  <line x1="125" y1="16" x2="125" y2="44" stroke="currentColor" stroke-opacity="0.2" stroke-width="1"/>
-  <text x="140" y="38" font-family="JetBrains Mono, Fira Code, Cascadia Code, monospace" font-weight="500" font-size="14" letter-spacing="0.1em" fill="currentColor" fill-opacity="0.7">DIGITAL INFRASTRUCTURE</text>
-</svg>
