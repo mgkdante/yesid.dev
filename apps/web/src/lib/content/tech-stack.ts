@@ -104,10 +104,25 @@ function parseStackItem(raw: string): TechStackItem | null {
 	const { data } = parseFrontmatter(raw);
 	if (!data.id || !data.name) return null;
 
+	// Legacy static parser: synthesise an IconRecord from the frontmatter slug.
+	// The static file path is deprecated (use adapter.techStack.* instead, which
+	// expands the real icons collection via icon_id). iconify_id is constructed
+	// with the logos: namespace as a best-effort — it may not match exactly.
+	// svg_override is always null here (static files have no Directus file UUIDs).
+	const iconSlug = ((data.icon as string) ?? (data.id as string));
+	const iconRecord = iconSlug
+		? {
+				id: iconSlug,
+				name: data.name as string,
+				iconify_id: iconSlug.includes(':') ? iconSlug : `logos:${iconSlug}`,
+				svg_override: null,
+		  }
+		: null;
+
 	return {
 		id: data.id as string,
 		name: data.name as string,
-		icon: ((data.icon as string) ?? data.id) as string,
+		icon: iconRecord,
 		what_it_is: EMPTY_BODY,
 		what_i_use_it_for: EMPTY_BODY,
 		why_i_use_it_instead: EMPTY_BODY,

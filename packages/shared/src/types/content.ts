@@ -370,15 +370,26 @@ export type DomainCluster =
 // Proficiency levels for each technology.
 export type Proficiency = 'expert' | 'proficient' | 'familiar';
 
+// A resolved icon record from the `icons` Directus collection (slice-18h-ii Phase 2+3).
+// The `id` is a kebab-slug PK matching the legacy tech_stack.icon strings.
+// Render priority: svg_override (Directus file UUID) > iconify_id > placeholder.
+export interface IconRecord {
+	id: string;
+	name: string;
+	iconify_id: string | null;
+	svg_override: string | null; // directus_files UUID
+}
+
 // Expanded tech stack item for /tech-stack — 18g shape.
 // Block Editor body fields replace the legacy layer/domain/proficiency graph
 // that was removed in slice-18g (decisions Q1, Q2, Q5).
 // InfraLayer, DomainCluster, Proficiency kept below — still used by legacy
 // /tech-stack components (cleanup deferred to slice-18k).
+// slice-18h-ii Phase 5: icon changed from string to IconRecord | null.
 export interface TechStackItem {
 	id: string;
 	name: string;
-	icon: string;
+	icon: IconRecord | null;
 	what_it_is: LocalizedBlockEditorDoc;
 	what_i_use_it_for: LocalizedBlockEditorDoc;
 	why_i_use_it_instead: LocalizedBlockEditorDoc;

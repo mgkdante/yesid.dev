@@ -4,9 +4,8 @@
     {
       "name": "dev",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["run", "dev", "--", "--host"],
-      "port": 5173,
-      "autoPort": true
+      "runtimeArgs": ["run", "--cwd", "apps/web", "vite", "dev", "--host", "--port", "5280"],
+      "port": 5280
     },
     {
       "name": "preview",

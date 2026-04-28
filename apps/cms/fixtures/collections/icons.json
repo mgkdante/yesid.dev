@@ -1,0 +1,342 @@
+[
+  {
+    "id": "airflow",
+    "name": "Apache Airflow",
+    "iconify_id": "logos:airflow",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 1
+  },
+  {
+    "id": "alembic",
+    "name": "Alembic",
+    "iconify_id": null,
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": "SVG sourcing deferred — see slice 18h-ii close GH issue",
+    "status": "published",
+    "sort": 2
+  },
+  {
+    "id": "bun",
+    "name": "Bun",
+    "iconify_id": "logos:bun",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 3
+  },
+  {
+    "id": "cpp",
+    "name": "C++",
+    "iconify_id": "logos:c-plusplus",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 4
+  },
+  {
+    "id": "csharp",
+    "name": "C#",
+    "iconify_id": "logos:c-sharp",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 5
+  },
+  {
+    "id": "dax",
+    "name": "DAX",
+    "iconify_id": null,
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": "SVG sourcing deferred — see slice 18h-ii close GH issue",
+    "status": "published",
+    "sort": 6
+  },
+  {
+    "id": "docker",
+    "name": "Docker",
+    "iconify_id": "logos:docker",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 7
+  },
+  {
+    "id": "flutter",
+    "name": "Flutter",
+    "iconify_id": "logos:flutter",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 8
+  },
+  {
+    "id": "github-actions",
+    "name": "GitHub Actions",
+    "iconify_id": "logos:github-actions",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 9
+  },
+  {
+    "id": "gsap",
+    "name": "GSAP",
+    "iconify_id": "simple-icons:gsap",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 10
+  },
+  {
+    "id": "java",
+    "name": "Java",
+    "iconify_id": "logos:java",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 11
+  },
+  {
+    "id": "jetpack-compose",
+    "name": "Jetpack Compose",
+    "iconify_id": "devicon:jetpackcompose",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 12
+  },
+  {
+    "id": "kotlin",
+    "name": "Kotlin",
+    "iconify_id": "logos:kotlin",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 13
+  },
+  {
+    "id": "mysql",
+    "name": "MySQL",
+    "iconify_id": "logos:mysql",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 14
+  },
+  {
+    "id": "nextjs",
+    "name": "Next.js",
+    "iconify_id": "logos:nextjs",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 15
+  },
+  {
+    "id": "node-js",
+    "name": "Node.js",
+    "iconify_id": "logos:nodejs-icon",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 16
+  },
+  {
+    "id": "playwright",
+    "name": "Playwright",
+    "iconify_id": "logos:playwright",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 17
+  },
+  {
+    "id": "postgresql",
+    "name": "PostgreSQL",
+    "iconify_id": "logos:postgresql",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 18
+  },
+  {
+    "id": "power-bi",
+    "name": "Power BI",
+    "iconify_id": "logos:microsoft-power-bi",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 19
+  },
+  {
+    "id": "python",
+    "name": "Python",
+    "iconify_id": "logos:python",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 20
+  },
+  {
+    "id": "react",
+    "name": "React",
+    "iconify_id": "logos:react",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 21
+  },
+  {
+    "id": "rest-api",
+    "name": "REST API",
+    "iconify_id": null,
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": "SVG sourcing deferred — see slice 18h-ii close GH issue",
+    "status": "published",
+    "sort": 22
+  },
+  {
+    "id": "rust",
+    "name": "Rust",
+    "iconify_id": "mdi:language-rust",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 23
+  },
+  {
+    "id": "sql-server",
+    "name": "SQL Server",
+    "iconify_id": "devicon:microsoftsqlserver",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 24
+  },
+  {
+    "id": "ssis",
+    "name": "SSIS",
+    "iconify_id": null,
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": "SVG sourcing deferred — see slice 18h-ii close GH issue",
+    "status": "published",
+    "sort": 25
+  },
+  {
+    "id": "ssrs",
+    "name": "SSRS",
+    "iconify_id": null,
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": "SVG sourcing deferred — see slice 18h-ii close GH issue",
+    "status": "published",
+    "sort": 26
+  },
+  {
+    "id": "svelte",
+    "name": "Svelte",
+    "iconify_id": "logos:svelte",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 27
+  },
+  {
+    "id": "sveltekit",
+    "name": "SvelteKit",
+    "iconify_id": "logos:svelte-kit",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 28
+  },
+  {
+    "id": "t-sql",
+    "name": "T-SQL",
+    "iconify_id": "devicon:microsoftsqlserver",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 29
+  },
+  {
+    "id": "tailwind",
+    "name": "Tailwind CSS",
+    "iconify_id": "logos:tailwindcss",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 30
+  },
+  {
+    "id": "threejs",
+    "name": "Three.js",
+    "iconify_id": "logos:threejs",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 31
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "iconify_id": "logos:typescript",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 32
+  },
+  {
+    "id": "vercel",
+    "name": "Vercel",
+    "iconify_id": "logos:vercel",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 33
+  },
+  {
+    "id": "vitest",
+    "name": "Vitest",
+    "iconify_id": "logos:vitest",
+    "svg_override": null,
+    "category": ["tech-stack"],
+    "notes": null,
+    "status": "published",
+    "sort": 34
+  }
+]
