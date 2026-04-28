@@ -1,0 +1,54 @@
+{
+  "root": "34f3e863-0690-81e8-a41a-d00abc1b341a",
+  "public_safe": {
+    "page_id": "34f3e863-0690-81e5-af27-fc15328aa41d",
+    "children": {
+      "Brand": {
+        "page_id": "34f3e863-0690-8136-b315-fc7d83227170",
+        "children": {
+          "BRAND": "34f3e863-0690-8177-9ab1-ddfa98da5c6b",
+          "Foundations": "34f3e863-0690-81ad-b5bf-d836d6b72d58",
+          "Decisions": "34f3e863-0690-81ce-b06e-eb31b39dbf00",
+          "Examples": "34f3e863-0690-81e2-94e5-c8b9c0139e19",
+          "Components": "34f3e863-0690-81ba-9356-f3b58a6ab88b"
+        }
+      },
+      "Project": {
+        "page_id": "34f3e863-0690-81b9-8888-dcdd2b4d77c4",
+        "children": {
+          "STACK": null,
+          "BINDINGS": null,
+          "ARCHITECTURE": null,
+          "TESTS": null,
+          "CONSTITUTION": null,
+          "VOCAB": null,
+          "README": null
+        }
+      },
+      "Roadmap": { "page_id": "34f3e863-0690-8160-8b1c-c338d9f57569" },
+      "Ops": { "page_id": "34f3e863-0690-8195-974e-e10abc769570" }
+    }
+  },
+  "private": {
+    "page_id": "34f3e863-0690-8150-9c00-da67e9ed9af8",
+    "children": {
+      "Specs": { "page_id": "34f3e863-0690-814f-97d3-ca746d7a39d1" },
+      "Memory": { "page_id": "34f3e863-0690-8116-8014-f824769b948c" },
+      "Archive": { "page_id": "34f3e863-0690-8119-b095-f62265ed6ecd" }
+    }
+  },
+  "databases": {
+    "specs": "e23c55c2-42b1-45c1-b48d-be845bb4166c",
+    "slices": "a4128775-19be-4cbf-b20f-f0a9ff49ba71",
+    "conversations": "fc5ef611-dbcf-425f-8136-99b4b6016e19",
+    "sessions": "abe34ce1-4b2b-4f57-ad81-4e05ae9ec6f9"
+  },
+  "_notes": {
+    "discovered": "2026-04-27",
+    "brand_extra_children": "Brand has 5 children (BRAND, Foundations, Decisions, Examples, Components). Plan expected 3 (Foundations, Decisions, Examples). BRAND and Components are extra pages created during Phase 0.",
+    "project_children": "Public-safe/Project is empty — no child pages exist. All 7 A6 DEFAULT skeletons (README, STACK, BINDINGS, ARCHITECTURE, TESTS, CONSTITUTION, VOCAB) are null. Task 13 must create them.",
+    "non_a6_project_pages": "None found — Project page has no children at all.",
+    "db_uuid_source": "Pre-known (operator-supplied) — not re-discovered. Confirmed: Specs DB collection UUID e23c55c2 matches data-source-url seen in Private/Specs fetch.",
+    "private_databases_note": "Private/ also contains 3 inline databases (Slices, Conversations, Sessions) visible in the page content but their container pages are the DB pages themselves, not separate child pages."
+  }
+}
