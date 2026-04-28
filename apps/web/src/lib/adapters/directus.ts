@@ -717,8 +717,10 @@ export interface DirectusSiteMetaRow {
 	owner_locality: string;
 	owner_region: string;
 	owner_country: string;
-	/** CSV — split + trim + filter at mapper boundary. */
-	owner_knows_about: string | readonly string[]; // cast-csv special: REST returns string[], but legacy GraphQL/raw paths may return CSV string
+	/** CSV — split + trim + filter at mapper boundary. Nullable: a freshly-
+	 *  created singleton row (or one with the field unset in Data Studio)
+	 *  reports the field as `undefined`/`null` rather than as an empty array. */
+	owner_knows_about: string | readonly string[] | null | undefined; // cast-csv special: REST returns string[], but legacy GraphQL/raw paths may return CSV string
 	default_og_image: string | null;
 	theme_color: string;
 	translations: readonly DirectusSiteMetaTranslation[];
@@ -752,11 +754,15 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 		...(row.upwork_url && { upwork: row.upwork_url }),
 	};
 	// owner_knows_about — Directus cast-csv special returns string[] in REST.
-	// Tolerate string fallback (raw query / non-SDK paths) by splitting on comma.
+	// Tolerate string fallback (raw query / non-SDK paths) by splitting on
+	// comma. Defense-in-depth: a wiped or freshly-created singleton row may
+	// report the field as null/undefined; treat that as "no entries" rather
+	// than letting `.map` blow up the whole site.
+	const rawKnowsSource = row.owner_knows_about ?? [];
 	const rawKnows: readonly string[] =
-		typeof row.owner_knows_about === 'string'
-			? row.owner_knows_about.split(',')
-			: row.owner_knows_about;
+		typeof rawKnowsSource === 'string'
+			? rawKnowsSource.split(',')
+			: rawKnowsSource;
 	const knowsAbout = rawKnows.map((s) => s.trim()).filter(Boolean);
 	const owner: SiteOwner = {
 		name: row.owner_name,
@@ -802,20 +808,35 @@ export function toRouteSeoOverride(row: DirectusRouteSeoRow): RouteSeoOverride {
 	};
 }
 
-// Per-request WeakMap memo on the RAW singleton row. Both meta.site() and
+// Per-request dedupe of the RAW singleton row. Both meta.site() and
 // meta.siteSeoDefaults() delegate to `fetchSingletonRow()` so a SvelteKit
-// `load()` that calls both methods only triggers ONE upstream fetch.
+// `load()` calling both in a single Promise.all only triggers ONE upstream
+// fetch.
 //
-// `defaultCtx` is a stable sentinel object used as the memo key when the
-// caller passes no PreviewContext — guarantees a single round-trip per
-// process/request slot for ctx-less callers (tests, repository wrappers).
+// Two-tier dedupe:
+//   1. Per-ctx WeakMap when the caller threads a PreviewContext (preview
+//      tokens etc.) — gc-safe, lifetime bounded by the ctx object.
+//   2. In-flight singleton promise for ctx-less callers — survives only
+//      until the underlying fetch settles, so concurrent ports inside one
+//      Promise.all share one round-trip but the next request re-fetches.
+//
+// The previous shape used a stable `defaultCtx` sentinel object as the
+// WeakMap key for ctx-less callers, which pinned the first fetched row for
+// the lifetime of the process. A bad row (e.g., a wiped CMS singleton at
+// app boot — incident 2026-04-27) then poisoned every subsequent request,
+// because the cache never invalidated. The in-flight pattern preserves the
+// dedupe goal while bounding the cache to a single fetch's lifetime.
 const siteRowMemo = new WeakMap<object, Promise<DirectusSiteMetaRow>>();
-const defaultCtx: object = {};
+let inFlightSingletonRow: Promise<DirectusSiteMetaRow> | undefined;
 
 async function fetchSingletonRow(ctx?: PreviewContext): Promise<DirectusSiteMetaRow> {
-	const memoKey: object = (ctx as object | undefined) ?? defaultCtx;
-	const cached = siteRowMemo.get(memoKey);
-	if (cached) return cached;
+	if (ctx) {
+		const cached = siteRowMemo.get(ctx as object);
+		if (cached) return cached;
+	} else if (inFlightSingletonRow) {
+		return inFlightSingletonRow;
+	}
+
 	const promise = client()
 		.request(
 			readSingleton('site_meta', {
@@ -838,7 +859,17 @@ async function fetchSingletonRow(ctx?: PreviewContext): Promise<DirectusSiteMeta
 			}),
 		)
 		.then((row) => row as unknown as DirectusSiteMetaRow);
-	siteRowMemo.set(memoKey, promise);
+
+	if (ctx) {
+		siteRowMemo.set(ctx as object, promise);
+	} else {
+		inFlightSingletonRow = promise;
+		// Clear the slot when the fetch settles (success OR failure) so a
+		// transient bad row at boot can't poison the rest of the process.
+		promise.finally(() => {
+			if (inFlightSingletonRow === promise) inFlightSingletonRow = undefined;
+		});
+	}
 	return promise;
 }
 
