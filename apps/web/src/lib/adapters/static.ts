@@ -40,6 +40,7 @@ import {
 	resolveAnimation,
 } from '$lib/content/blog';
 import { siteMeta } from '$lib/content/site-meta';
+import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
 import {
 	routeSeoFactories,
@@ -122,24 +123,6 @@ function withImageUuid(project: Project): Project {
 	}
 	return { ...project, image: uuid };
 }
-
-// ---------------------------------------------------------------------------
-// Static SEO defaults (slice-18 18h Q9 amendment 2026-04-27)
-//
-// Mirrors the CMS site_meta defaults that the directus adapter sources at
-// runtime. Used by static.meta.siteSeoDefaults() AND static.meta.forRoute()
-// composer (so both produce consistent output in static-mode tests). The
-// directus adapter pulls equivalent values from the live `site_meta` singleton
-// row + per-request WeakMap memo on the raw row.
-// ---------------------------------------------------------------------------
-
-const STATIC_SITE_SEO_DEFAULTS: SiteSeoDefaults = {
-	defaultOgImage: null,
-	themeColor: '#141414',
-	defaultDescription: {
-		en: 'yesid. — freelance data infrastructure consultant in Montreal. PostgreSQL, dbt, Power BI, Python. Real-time pipelines, analytics, dashboards for growing teams.',
-	},
-};
 
 export const staticAdapter: ContentAdapter = {
 	projects: {
