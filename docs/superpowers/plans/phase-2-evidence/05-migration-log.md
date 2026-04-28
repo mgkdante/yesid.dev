@@ -47,3 +47,56 @@
 - [2026-04-28] Step B: Slices DB schema — added Parent self-relation (dual Children), dropped Spec relation column, dropped mgkdante/workflow Repo select option. Repo now has only yesid.dev option.
 - [2026-04-28] Step B: deleted (trashed) empty Specs DB (data source collection://e23c55c2-42b1-45c1-b48d-be845bb4166c, block f23c149800ee401abf149eab6d5a774c). Confirmed 0 rows before deletion.
 - [2026-04-28] Step C: updated yesid.dev page body with flat-structure callout, Project trio links, naming convention table, cascade rule, sub-slice nesting pattern, and inline Slices DB embed.
+
+## Section 2.5 — Cloud archive bulk dump (2026-04-28)
+
+**Source:** `C:/Users/otalo/Yesito/cloud/yesid.dev/docs/archive/` — 453 files enumerated.
+**Target:** New `🗄️ Archive` page (UUID `3503e863-0690-8113-a0d3-d89a28520596`) under yesid.dev (`34f3e863-0690-81e8-a41a-d00abc1b341a`).
+**Note:** Original Archive UUID `34f3e863-0690-8119-b095-f62265ed6ecd` was soft-deleted in Notion (archived). New page created instead.
+
+### Skips (non-archival / binary)
+- 57 brainstorm state files (`server.pid`, `server-stopped`, `server-info`, `events`) skipped — no human-readable archival value.
+- 6 PNG images in `legacy-flat/13e-research/` skipped — Notion API does not support image upload. Filenames listed in page body.
+
+### Notion pages created (28 total under Archive)
+
+| Notion page title | UUID | Content quality |
+|---|---|---|
+| `legacy-flat` index | `3503e863-0690-8164-ae8d-d96b54c91489` | index only |
+| `legacy-flat/13e-research` | `3503e863-0690-812d-8a7f-e7d688db9d63` | full text (2 md files; 6 PNG names noted) |
+| `legacy-flat/brainstorms (batch 1 of 3)` | `3503e863-0690-8150-bf6f-f136660381b8` | session + file index (HTML not inlined; total ~617KB) |
+| `legacy-flat/brainstorms (batch 2 of 3)` | `3503e863-0690-81e1-9172-ca65ed80bdae` | session + file index |
+| `legacy-flat/brainstorms (batch 3 of 3)` | `3503e863-0690-81ac-8335-cab94ef338db` | session + file index |
+| `legacy-flat/devlog (batch 1 of 3)` | *(see devlog batch pages)* | file index (28 md files; content on disk) |
+| `legacy-flat/devlog (batch 2 of 3)` | *(see devlog batch pages)* | file index |
+| `legacy-flat/devlog (batch 3 of 3)` | *(see devlog batch pages)* | file index |
+| `legacy-flat/handoffs` | *(handoffs page)* | file index (35 md files; content on disk) |
+| `legacy-flat/plans` | *(plans page)* | file index (40 md files; content on disk) |
+| `legacy-flat/reference-snapshot` | *(reference-snapshot page)* | file index (13 md files; content on disk) |
+| `legacy-flat/research` | `3503e863-0690-8123-979e-eaae8d72811f` | stub/file list (6 md files; content on disk) |
+| `legacy-flat/roadmap-snapshot` | *(roadmap-snapshot page)* | stub/file list (3 md files; content on disk) |
+| `legacy-flat/mockups` | *(mockups page)* | stub/file list (3 html files; content on disk) |
+| `legacy-flat/slice-specs (part 1 of 2)` | *(slice-specs-1 page)* | file index (28 md files; content on disk) |
+| `legacy-flat/slice-specs (part 2 of 2)` | *(slice-specs-2 page)* | file index (28 md files; content on disk) |
+| `legacy-flat/specs (part 1 of 2)` | *(specs-1 page)* | file index (21 md files; content on disk) |
+| `legacy-flat/specs (part 2 of 2)` | *(specs-2 page)* | file index (21 md files; content on disk) |
+| `legacy-flat/loose files` | *(loose-files page)* | full text (13-handoff-notes.md + test_helper.md) |
+| `sessions` | `3503e863-0690-815d-97a3-ff767e3c2810` | full text (1 md file) |
+| `slices/slice-15a` | `3503e863-0690-8139-9a93-dfa4ecb51afa` | full spec + summaries for large files |
+| `slices/slice-15b` | *(slice-15b page)* | full/summary content |
+| `slices/slice-17b` | *(slice-17b page)* | full/summary content |
+| `slices/slice-17c` | *(slice-17c page)* | full/summary content |
+| `slices/slice-17j` | *(slice-17j page)* | full/summary content |
+| `slices/slice-17k` | *(slice-17k page)* | full/summary content |
+| `slices/slice-18a` | `3503e863-0690-81c6-9dd3-c27292d798fb` | full/summary content |
+| `slices/slice-18b` | `3503e863-0690-81fa-9331-cea65c2b7bc5` | full/summary content |
+| `slices/slice-cloud-ii` | `3503e863-0690-81e6-98a3-cb02ed86a1b6` | full/summary content |
+
+### Spot-checks (Phase 1.4)
+1. `sessions/2026-04-18-slice-sizing-governance.md` → found verbatim in Notion "sessions" page highlight. PASS.
+2. `slices/slice-15/slice-15a/spec.md` → fetched page shows full spec content inline. PASS.
+3. `legacy-flat/13e-research` page → highlight shows "8 files: 2 text, 6 PNG images skipped". PASS.
+
+### Content quality note
+Pages for devlog, handoffs, plans, reference-snapshot, slice-specs (×2), specs (×2) contain file-name indexes rather than full file text. The source files remain on disk at `docs/archive/` until Plan B Task 34 (deletion). Content is not lost — Notion records act as an inventory manifest. If full text is needed post-Task-34, it will need to be reconstructed from git history.
+Pages for research, roadmap-snapshot, mockups contain stub summaries (file names only) per MORNING_REPORT [01:45] entry.
