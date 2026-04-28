@@ -24,6 +24,248 @@ const NOTION_API = 'https://api.notion.com/v1';
 const NOTION_VERSION = '2022-06-28';
 
 // ---------------------------------------------------------------------------
+// createDatabasePage — Public API for migrate-conversations.ts + SessionStop
+// ---------------------------------------------------------------------------
+
+export interface CreateDbPageArgs {
+  /** Target Conversations DB id (without collection:// prefix). */
+  databaseId: string;
+  /** Row property values. Supported keys: Name, Date, Project, Session ID, Summary. */
+  properties: {
+    Name: string;
+    Date: string;
+    Project?: string;
+    'Session ID'?: string;
+    Summary?: string;
+  };
+  /** Full markdown body for the page content. */
+  contentMarkdown: string;
+}
+
+export interface CreateDbPageResult {
+  id: string;
+  url: string;
+}
+
+/**
+ * Creates a page in the Conversations DB (or any db with compatible schema).
+ * Converts contentMarkdown to Notion paragraph/heading/code blocks.
+ * Property shapes follow the Notion API 2022-06-28 spec.
+ */
+export async function createDatabasePage(
+  args: CreateDbPageArgs
+): Promise<CreateDbPageResult> {
+  const { databaseId, properties, contentMarkdown } = args;
+  const token = getToken();
+
+  // Build Notion property payload
+  const notionProperties: Record<string, unknown> = {
+    Name: {
+      title: [{ text: { content: properties.Name.slice(0, 2000) } }],
+    },
+    Date: {
+      date: { start: properties.Date },
+    },
+  };
+
+  if (properties.Project) {
+    notionProperties['Project'] = { select: { name: properties.Project } };
+  }
+  if (properties['Session ID']) {
+    notionProperties['Session ID'] = {
+      rich_text: [{ text: { content: properties['Session ID'].slice(0, 2000) } }],
+    };
+  }
+  if (properties.Summary) {
+    notionProperties['Summary'] = {
+      rich_text: [{ text: { content: properties.Summary.slice(0, 2000) } }],
+    };
+  }
+
+  // Convert markdown → Notion blocks (max 100 children per API call)
+  const blocks = markdownToBlocks(contentMarkdown);
+  // Notion create-page accepts max 100 children — truncate if over limit
+  const children = blocks.slice(0, 100);
+
+  const payload = {
+    parent: { database_id: databaseId },
+    properties: notionProperties,
+    children,
+  };
+
+  const response = await fetch(`${NOTION_API}/pages`, {
+    method: 'POST',
+    headers: {
+      ...makeHeaders(),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Notion create page ${response.status}: ${body}`);
+  }
+
+  const data = (await response.json()) as { id: string; url: string };
+  return { id: data.id, url: data.url };
+}
+
+// ---------------------------------------------------------------------------
+// markdownToBlocks — lightweight markdown → Notion block array converter
+// Handles: heading_3, code (with language), toggle (details/summary), paragraph
+// R-9: never emits bare code fences — always uses language from the source.
+// ---------------------------------------------------------------------------
+
+interface NotionBlock {
+  object: 'block';
+  type: string;
+  [key: string]: unknown;
+}
+
+function makeRichText(text: string): Array<{ type: 'text'; text: { content: string } }> {
+  // Notion rich_text content max 2000 chars per segment — split if needed
+  const MAX = 2000;
+  const segments: Array<{ type: 'text'; text: { content: string } }> = [];
+  let remaining = text;
+  while (remaining.length > 0) {
+    segments.push({ type: 'text', text: { content: remaining.slice(0, MAX) } });
+    remaining = remaining.slice(MAX);
+  }
+  return segments.length > 0 ? segments : [{ type: 'text', text: { content: '' } }];
+}
+
+function markdownToBlocks(markdown: string): NotionBlock[] {
+  const blocks: NotionBlock[] = [];
+  const lines = markdown.split('\n');
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i] ?? '';
+
+    // --- heading_3: ### text
+    if (line.startsWith('### ')) {
+      blocks.push({
+        object: 'block',
+        type: 'heading_3',
+        heading_3: { rich_text: makeRichText(line.slice(4).trim()) },
+      });
+      i++;
+      continue;
+    }
+
+    // --- code block: ```language ... ```
+    if (line.startsWith('```')) {
+      const lang = line.slice(3).trim() || 'text';
+      const codeLines: string[] = [];
+      i++;
+      while (i < lines.length && !(lines[i] ?? '').startsWith('```')) {
+        codeLines.push(lines[i] ?? '');
+        i++;
+      }
+      i++; // skip closing ```
+      const codeContent = codeLines.join('\n');
+      // Notion code block language: map common tags
+      const notionLang = mapLanguage(lang);
+      blocks.push({
+        object: 'block',
+        type: 'code',
+        code: {
+          rich_text: makeRichText(codeContent),
+          language: notionLang,
+        },
+      });
+      continue;
+    }
+
+    // --- toggle block: <details><summary>...</summary>..content..</details>
+    if (line.startsWith('<details>')) {
+      const summaryMatch = (lines[i + 1] ?? '').match(/^<summary>(.*?)<\/summary>$/);
+      const summaryText = summaryMatch ? summaryMatch[1]! : 'details';
+      const toggleChildren: NotionBlock[] = [];
+      i += 2; // skip <details> and <summary> lines
+
+      // Collect until </details>
+      const innerLines: string[] = [];
+      while (i < lines.length && !(lines[i] ?? '').startsWith('</details>')) {
+        innerLines.push(lines[i] ?? '');
+        i++;
+      }
+      i++; // skip </details>
+
+      // Recursively convert inner content (usually a code block)
+      const innerBlocks = markdownToBlocks(innerLines.join('\n'));
+      toggleChildren.push(...innerBlocks);
+
+      blocks.push({
+        object: 'block',
+        type: 'toggle',
+        toggle: {
+          rich_text: makeRichText(summaryText),
+          children: toggleChildren,
+        },
+      });
+      continue;
+    }
+
+    // --- blank line: skip
+    if (line.trim() === '') {
+      i++;
+      continue;
+    }
+
+    // --- paragraph: accumulate until blank line
+    const paraLines: string[] = [];
+    while (i < lines.length && (lines[i] ?? '').trim() !== '' &&
+           !(lines[i] ?? '').startsWith('### ') &&
+           !(lines[i] ?? '').startsWith('```') &&
+           !(lines[i] ?? '').startsWith('<details>')) {
+      paraLines.push(lines[i] ?? '');
+      i++;
+    }
+
+    if (paraLines.length > 0) {
+      blocks.push({
+        object: 'block',
+        type: 'paragraph',
+        paragraph: { rich_text: makeRichText(paraLines.join('\n')) },
+      });
+    }
+  }
+
+  return blocks;
+}
+
+/** Map informal language tags to Notion-supported code block languages. */
+function mapLanguage(lang: string): string {
+  const lower = lang.toLowerCase();
+  const map: Record<string, string> = {
+    'tool-call': 'json',
+    'tool_call': 'json',
+    'text': 'plain text',
+    'bash': 'bash',
+    'shell': 'bash',
+    'sh': 'bash',
+    'ts': 'typescript',
+    'typescript': 'typescript',
+    'js': 'javascript',
+    'javascript': 'javascript',
+    'json': 'json',
+    'yaml': 'yaml',
+    'yml': 'yaml',
+    'md': 'markdown',
+    'markdown': 'markdown',
+    'css': 'css',
+    'html': 'html',
+    'python': 'python',
+    'py': 'python',
+    'sql': 'sql',
+    'plain text': 'plain text',
+  };
+  return map[lower] ?? 'plain text';
+}
+
+// ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
