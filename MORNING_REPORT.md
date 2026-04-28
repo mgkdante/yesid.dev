@@ -429,8 +429,8 @@ Needs Codex tool which is not accessible in this session. Operator must run manu
 
 Branch `feat/notion-migration` pushed to `origin`. PR opened.
 
-**Commit count:** 42 commits ahead of main.
-**PR URL:** (see below — appended after gh pr create)
+**Commit count:** 43 commits ahead of main.
+**PR URL:** https://github.com/mgkdante/yesid.dev/pull/91
 **Push result:** SUCCESS
 
 **All operator follow-ups from the full overnight run are consolidated above and in this section.**
