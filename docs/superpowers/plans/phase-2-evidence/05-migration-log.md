@@ -224,3 +224,14 @@ Parent: Archive page `3503e863-0690-8113-a0d3-d89a28520596`.
 3. **stub Plan/Handoff pages** — slices 14, 16, 19, 19b, 20, 21, 22, 15c, 18a–18g, 18h-ii each have stub Plan and/or Handoff. Enrich later if needed.
 4. **Superpowers page content** — all 6 superpowers pages are condensed. If verbatim spec text in Notion is required, fetch then update (per R-9).
 5. **Plan B Tasks 19, 34, 35** — cloud deletes and local file deletions are operator-gated. This run created Notion content only; no deletions performed.
+
+## Section 2.7 — v0.5.0 hyphen-lowercase retrofit (2026-04-28)
+
+**Run:** Autonomous overnight — operator asleep. All decisions logged to `MORNING_REPORT.md`.
+
+- **Schema rename:** `Parent` → `Parent slice`, `Children` → `Sub-slices` via `RENAME COLUMN` DDL. Both propertyUrls preserved (W3BIQg / a2c_Vg) — dual pairing intact. RENAME path used; DROP+ADD not needed.
+- **Trio child pages renamed:** 63 pages total (21 Spec + 21 Plan + 21 Handoff) from `<slice-name> Spec/Plan/Handoff` → `<slice-name>-spec/-plan/-handoff` across 21 slice rows (11 L1 + 10 L2). All 63 API calls succeeded.
+- **Project trio rename:** BLOCKED — all 3 project trio pages (`Project Spec/Plan/Handoff`, UUIDs 3503e863-0690-81f1, 3503e863-0690-81ac, 3503e863-0690-8141) are archived/deleted in Notion. Cannot rename via API without unarchiving. Operator action required: unarchive via Notion UI, then rename to `project-spec`, `project-plan`, `project-handoff`.
+- **Body content sweep:** 5-sample probe fetched (slice-18-spec, slice-18-plan, slice-18-handoff, slice-18h-spec, slice-headless-cms-best-practices-spec). No ` Spec`, ` Plan`, ` Handoff` cross-reference patterns found in any body. Full 60-page sweep skipped — no matches in probe.
+- **yesid.dev page body updated:** Naming convention table updated to hyphen-lowercase format. `Parent` column reference updated to `Parent slice` in sub-slice nesting section.
+- **Operator follow-up (UI-only):** To enable visual sub-item nesting in Slices DB inline view, toggle in Notion UI: view ··· menu → Layout → Show sub-items → pick `Parent slice`. MCP has no SUB-ITEMS DSL directive as of 2026-04-28.

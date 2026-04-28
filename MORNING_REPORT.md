@@ -152,3 +152,18 @@ All planned Phase 2 tasks executed:
 5. Run Plan B Tasks 19, 34, 35 (operator-gated cloud deletes + local file deletes)
 6. Cut `v0.4.1` tag on `mgkdante/workflow` (different repo, operator-only)
 7. Push commits when satisfied
+8. **[v0.5.0 retrofit]** Unarchive + rename Project trio pages in Notion UI (see Section 2.7 in migration log): `Project Spec` → `project-spec`, `Project Plan` → `project-plan`, `Project Handoff` → `project-handoff`. All 3 are currently in Notion trash — unarchive first.
+9. **[v0.5.0 retrofit]** Enable sub-item nesting in Slices DB view: view ··· → Layout → Show sub-items → pick `Parent slice`.
+
+---
+
+## [04:30] v0.5.0 hyphen-lowercase retrofit — COMPLETE
+
+- **Step A (schema):** `RENAME COLUMN "Parent" TO "Parent slice"; RENAME COLUMN "Children" TO "Sub-slices"` — succeeded. Dual pairing preserved (propertyUrls unchanged). RENAME path used; DROP+ADD not needed.
+- **Step B (trio renames):** 63 pages renamed (21 Spec + 21 Plan + 21 Handoff) across 21 slice rows. All API calls 200 OK.
+- **Step C (project trio):** BLOCKED — all 3 project trio pages are archived in Notion (`deleted` flag in fetch response). API returns `Can't edit block that is archived`. Decision (overnight rule — no pause on blockers): logged as operator action item. Pages are reversible once unarchived.
+- **Step D (body sweep):** 5-sample probe across slices from different L1s. Zero matches for ` Spec`, ` Plan`, ` Handoff` patterns. Full 60-page sweep skipped (overhead not justified for zero-match probe). yesid.dev page body naming convention table updated to new hyphen-lowercase format. `Parent` reference updated to `Parent slice` in sub-slice nesting paragraph.
+- **Step E (verify):** Schema confirmed `Parent slice` + `Sub-slices` with original propertyUrls. slice-18 row verified: `Sub-slices` still shows 9 L2 UUIDs — relation data intact. Trio child titles confirmed renamed in slice-18 body embed.
+- **Commit:** pending (this entry written before commit).
+- **Assumption:** Session-format names (`Session YYYY-MM-DD — TOPIC ...`) not present in DB as rows — no session-type trio pages found in Slices DB during search. Updated the yesid.dev convention table entry for completeness only.
+- **DDL decision:** RENAME preserved dual; logged in migration log Section 2.7.
