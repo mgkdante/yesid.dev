@@ -5,12 +5,28 @@
     "children": {
       "Brand": {
         "page_id": "34f3e863-0690-8136-b315-fc7d83227170",
+        "_note": "Brand parent is live. Children below were re-created in Task 12 — the original Phase-0 Brand sub-pages (BRAND, Foundations, Decisions, Examples, Components) were in Notion's trash when Task 12 ran. New UUIDs replace the trashed ones (live as of 2026-04-27, post Task 12).",
         "children": {
-          "BRAND": "34f3e863-0690-8177-9ab1-ddfa98da5c6b",
-          "Foundations": "34f3e863-0690-81ad-b5bf-d836d6b72d58",
-          "Decisions": "34f3e863-0690-81ce-b06e-eb31b39dbf00",
-          "Examples": "34f3e863-0690-81e2-94e5-c8b9c0139e19",
-          "Components": "34f3e863-0690-81ba-9356-f3b58a6ab88b"
+          "BRAND": "3503e863-0690-8148-a798-d3bc231a73ac",
+          "Foundations": "3503e863-0690-8152-9abe-d0fca70aea43",
+          "Decisions": "3503e863-0690-811a-8f2e-e5a9eb1d13d7",
+          "Examples": "3503e863-0690-81e8-ace6-dc1938abd815",
+          "Components": "3503e863-0690-81e2-8bb8-c38723a1d6c6"
+        },
+        "_foundations_children": {
+          "accessibility": "3503e863-0690-81e4-9b6b-e6d76d6f6d46",
+          "color": "3503e863-0690-8141-bcae-cb549d4540af",
+          "figma": "3503e863-0690-81fe-a2dd-c875e70d5243",
+          "motion": "3503e863-0690-812d-b3f4-fd800ce6a368",
+          "space": "3503e863-0690-8155-8673-fd9763dd4317",
+          "typography": "3503e863-0690-81c5-b71a-ec8c33728e87",
+          "voice": "3503e863-0690-81ad-b2f2-fe571cbde6b5"
+        },
+        "_decisions_children": {
+          "2026-04-what-i-killed": "3503e863-0690-8110-a903-d4d783a88746",
+          "2026-04-why-a-constitution": "3503e863-0690-8129-8d65-fc54a68219a6",
+          "2026-04-why-edge-to-edge": "3503e863-0690-816f-9fb2-efb09a63554a",
+          "2026-04-why-orange": "3503e863-0690-812b-9fd2-cb0a44f2c38d"
         }
       },
       "Project": {
