@@ -1,36 +1,10 @@
+# Output destinations section — verbatim from workflow plugin scaffold
+
+**Source:** `C:/Users/otalo/Yesito/Projects/workflow/plugins/workflow/skills/workflow-add/scaffold/AGENTS.md`
+**Section:** `## Output destinations (Notion-canonical)` (v0.4.0+1 / post-2026-04-27)
+**Captured:** 2026-04-28
+
 ---
-notion:
-  root_page_id: "34f3e863-0690-81e8-a41a-d00abc1b341a"
-  workspace_url: "https://www.notion.so/"
-  databases:
-    specs: "e23c55c2-42b1-45c1-b48d-be845bb4166c"
-    slices: "a4128775-19be-4cbf-b20f-f0a9ff49ba71"
-    conversations: "fc5ef611-dbcf-425f-8136-99b4b6016e19"
-    sessions: "abe34ce1-4b2b-4f57-ad81-4e05ae9ec6f9"
----
-
-# AGENTS.md — yesid.dev
-
-> Notion-canonical project. All workflow content lives in Notion at `Projects/yesid.dev/`. Plugin canonical docs at `Projects/mgkdante/workflow/`. Flat shape — no Public-safe/Private split.
-
-## Tool role bindings
-
-See CLAUDE.md for Claude Code role bindings table.
-
-## Where things live
-
-- Workflow discipline → Notion `Projects/mgkdante/workflow/WORKFLOW`
-- Project bindings (this project's specifics) → Notion `Projects/yesid.dev/Project/BINDINGS`
-- Brand → Notion `Projects/yesid.dev/Brand`
-- Slices, Specs (in slice trio child pages), Sessions, Conversations → databases (UUIDs in frontmatter above)
-- Memory → Notion `Projects/yesid.dev/Memory`; auto-pulled to local at session start (SessionStart hook)
-- Conversations → auto-pushed at session end (Stop hook)
-
-## Runtime
-
-**Bun only. Never npm/npx/node.** Lockfile: `bun.lockb`.
-
-After `bun install`, run `bun run setup:hooks` once to activate the pre-commit hook (`.githooks/pre-commit`) that blocks edits to generated token files unless `packages/tokens/tokens.json` is also staged.
 
 ## Output destinations (Notion-canonical)
 
@@ -58,6 +32,8 @@ When a third-party plugin (`superpowers`, others) wants to write to a `docs/<plu
 3. **Surface** the resolved Notion URL to the operator instead of the file path.
 
 The repo's `docs/` should only ever contain `ai-memory/` post-Phase-1. If the AI tool detects a non-`ai-memory/` path under `docs/` after a session, that's drift — flag it to the operator and propose moving the content to Notion.
+
+**Hook enforcement (optional, recommended):** projects can install a pre-commit hook that refuses commits introducing files under `docs/superpowers/`, `docs/specs/`, `docs/plans/`, or `docs/sessions/`. Sample hook lives at `<plugin>/contrib/git-hooks/notion-canonical-check.sh` (TBD — v0.5).
 
 ### Sessions DB row authoring (free-form)
 

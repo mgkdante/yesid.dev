@@ -23,6 +23,10 @@ See `docs/reference/tools/claude-code.md` for full detail. Swapping a binding (e
 
 Tool-agnostic rules → `AGENTS.md`. Claude-specific detail → `docs/reference/tools/claude-code.md`. This file stays thin (just the bindings table + pointers).
 
+## Notion-canonical state
+
+This project is **Notion-canonical** as of 2026-04-28 (Phase 2 migration complete). All workflow content (slices, specs, sessions, conversations, brand narrative, project docs) lives in Notion at `Projects/yesid.dev/`. The local repo's `docs/` holds only `docs/ai-memory/` and `docs/reference/`.
+
 ## Portability note
 
 This file can be deleted without breaking the workflow — Codex runs off `AGENTS.md` + `docs/reference/tools/codex.md` alone. It exists only for Claude Code's native auto-load convention.
