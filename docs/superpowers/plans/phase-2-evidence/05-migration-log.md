@@ -38,3 +38,12 @@
   - docs/project/CSS.md → 3503e863-0690-81f0-b565-f5fa4bfd80f8 (yesid-specific)
   - docs/project/MOTION.md → 3503e863-0690-8127-8401-d9287d474c84 (yesid-specific)
   - Note: All 11 pages are fresh creates; Public-safe/Project had no children prior to Task 13.
+
+## Section 2.4 — Fractal retrofit + flatten (2026-04-28)
+
+- [2026-04-28] Step A: flattened yesid.dev Notion subtree. Moved 10 children (Brand, Project, Roadmap, Ops, Slices DB, Specs page, Sessions DB, Conversations DB, Memory, Archive) from Public-safe/Private to direct children of yesid.dev page.
+- [2026-04-28] Step A: Public-safe (34f3e863-0690-81e5-af27-fc15328aa41d) and Private (34f3e863-0690-8150-9c00-da67e9ed9af8) containers are now empty under yesid.dev. MCP tool does not expose page-level in_trash; operator should manually trash both via Notion UI (two empty pages, no children).
+- [2026-04-28] Step B: created Project-level trio (Project Spec/Plan/Handoff) as children of yesid.dev. UUIDs: Project Spec=3503e863-0690-81f1-aea5-e4df8d9981eb, Project Plan=3503e863-0690-81ac-b4a4-f45b40aca958, Project Handoff=3503e863-0690-8141-b9a2-e33169279ac0.
+- [2026-04-28] Step B: Slices DB schema — added Parent self-relation (dual Children), dropped Spec relation column, dropped mgkdante/workflow Repo select option. Repo now has only yesid.dev option.
+- [2026-04-28] Step B: deleted (trashed) empty Specs DB (data source collection://e23c55c2-42b1-45c1-b48d-be845bb4166c, block f23c149800ee401abf149eab6d5a774c). Confirmed 0 rows before deletion.
+- [2026-04-28] Step C: updated yesid.dev page body with flat-structure callout, Project trio links, naming convention table, cascade rule, sub-slice nesting pattern, and inline Slices DB embed.
