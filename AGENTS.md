@@ -1,13 +1,33 @@
 ---
+# Fork-safe placeholders — real UUIDs live in AGENTS.local.md (gitignored).
+# Per workflow v0.6.0 R4-1 fork-safety pattern (commit a9a249b).
 notion:
-  root_page_id: "34f3e863-0690-81e8-a41a-d00abc1b341a"
+  root_page_id: "<FILL IN>"
   workspace_url: "https://www.notion.so/"
   databases:
-    specs: "e23c55c2-42b1-45c1-b48d-be845bb4166c"
-    slices: "a4128775-19be-4cbf-b20f-f0a9ff49ba71"
-    conversations: "fc5ef611-dbcf-425f-8136-99b4b6016e19"
-    sessions: "abe34ce1-4b2b-4f57-ad81-4e05ae9ec6f9"
+    slices:
+      database_id: "<FILL IN>"
+      data_source_id: "<FILL IN>"
+    sessions:
+      database_id: "<FILL IN>"
+      data_source_id: "<FILL IN>"
+    conversations:
+      database_id: "<FILL IN>"
+      data_source_id: "<FILL IN>"
 ---
+
+<!--
+Setup for fork-safe Notion linkage:
+
+1. Create `AGENTS.local.md` (gitignored) at the repo root.
+2. Copy the `notion:` block above into AGENTS.local.md's frontmatter.
+3. Replace each `<FILL IN>` with the real UUID from your Notion workspace.
+4. AI tools (Claude Code, Codex) merge AGENTS.local.md over AGENTS.md at session start.
+
+Specs do not have a dedicated DB — they're stored as slice trio child pages
+(`-spec` siblings of `-plan` and `-handoff`).
+-->
+
 
 # AGENTS.md — yesid.dev
 
