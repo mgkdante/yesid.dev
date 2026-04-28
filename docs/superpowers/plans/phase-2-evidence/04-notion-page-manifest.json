@@ -52,6 +52,8 @@
       "Ops": { "page_id": "34f3e863-0690-8195-974e-e10abc769570" }
     }
   },
+  "_post_flatten_archive_note": "Archive UUID 34f3e863-0690-8119-b095-f62265ed6ecd was discovered to be archived/deleted in Notion. Phase 1 created a new Archive page at 3503e863-0690-8113-a0d3-d89a28520596 (direct child of yesid.dev). Use this UUID for any subsequent Archive references.",
+  "_active_archive_page": "3503e863-0690-8113-a0d3-d89a28520596",
   "private": {
     "page_id": "34f3e863-0690-8150-9c00-da67e9ed9af8",
     "children": {
