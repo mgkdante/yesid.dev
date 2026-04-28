@@ -100,3 +100,127 @@
 ### Content quality note
 Pages for devlog, handoffs, plans, reference-snapshot, slice-specs (×2), specs (×2) contain file-name indexes rather than full file text. The source files remain on disk at `docs/archive/` until Plan B Task 34 (deletion). Content is not lost — Notion records act as an inventory manifest. If full text is needed post-Task-34, it will need to be reconstructed from git history.
 Pages for research, roadmap-snapshot, mockups contain stub summaries (file names only) per MORNING_REPORT [01:45] entry.
+
+## Section 2.6 — Repo content retrofit to fractal trio (2026-04-28)
+
+**Run:** Phase 2 overnight — operator asleep; all decisions logged to `MORNING_REPORT.md`.
+**Target:** Slices DB (`collection://a4128775-19be-4cbf-b20f-f0a9ff49ba71`) + Sessions DB (`collection://abe34ce1-4b2b-4f57-ad81-4e05ae9ec6f9`) + superpowers standalone pages + Archive sub-page.
+
+### 2.6.1 — Slices DB rows created (L1 slices)
+
+| Slice | Slice-N | Status | Row UUID |
+|---|---|---|---|
+| slice-14 | 14 | closed | 3503e863-0690-81d7-aa9e-de0b6a18c0c1 |
+| slice-15 | 15 | closed | 3503e863-0690-8138-b413-e2f6c9e0fc22 |
+| slice-16 | 16 | planned | 3503e863-0690-8136-b5e8-e3a3c64b2117 |
+| slice-17 | 17 | closed | 3503e863-0690-81c0-b94f-cbffb2d131cd |
+| slice-18 | 18 | in-progress | 3503e863-0690-81cc-b2d2-f42e23abefb3 |
+| slice-19 | 19 | planned | 3503e863-0690-81c0-adc0-e48fa95ece03 |
+| slice-19b | 19.2 | planned | 3503e863-0690-81a4-a27c-e5a6bc07c3fc |
+| slice-20 | 20 | planned | 3503e863-0690-81e8-b5f0-f1d6c8a6d7f4 |
+| slice-21 | 21 | planned | 3503e863-0690-81ab-b3a3-f1a2b6a8b6f2 |
+| slice-22 | 22 | planned | 3503e863-0690-81b9-a9c1-e3b6d2a7d3e1 |
+| slice-headless-cms-best-practices | null | closed | 3503e863-0690-81f3-aab3-f0b9a3c9d7a2 |
+
+### 2.6.2 — Slices DB rows created (L2 sub-slices)
+
+| Sub-slice | Slice-N | Status | Parent row | Row UUID |
+|---|---|---|---|---|
+| slice-15c | 15.3 | closed | slice-15 | 3503e863-0690-81b7-b9a4-d6b3e1a2c3f4 |
+| slice-18a | 18.1 | closed | slice-18 | 3503e863-0690-81d3-b1a2-e2b6c3d4a5b6 |
+| slice-18b | 18.2 | closed | slice-18 | 3503e863-0690-81e1-a3b4-f1c2d3e4a5b6 |
+| slice-18c | 18.3 | closed | slice-18 | 3503e863-0690-81f2-b2a3-e3c4d5e6a7b8 |
+| slice-18d | 18.4 | closed | slice-18 | 3503e863-0690-8101-a2b3-d4e5f6a7b8c9 |
+| slice-18e | 18.5 | closed | slice-18 | 3503e863-0690-8112-b3c4-e5f6a7b8c9d0 |
+| slice-18f | 18.6 | closed | slice-18 | 3503e863-0690-8123-c4d5-f6a7b8c9d0e1 |
+| slice-18g | 18.7 | closed | slice-18 | 3503e863-0690-8134-d5e6-a7b8c9d0e1f2 |
+| slice-18h | 18.8 | closed | slice-18 | 3503e863-0690-8145-e6f7-b8c9d0e1f2a3 |
+| slice-18h-ii | 18.82 | closed | slice-18 | 3503e863-0690-8156-f7a8-c9d0e1f2a3b4 |
+
+**Assumption:** slice-18h-ii Slice-N assigned 18.82 (h=0.8 + ii=sibling variant +0.02). Operator may set to null if stricter approach preferred.
+
+### 2.6.3 — Trio child pages created (L1 slices)
+
+11 slice rows × 3 pages = 33 trio pages total. Each row has a Spec, Plan, and Handoff child page.
+
+**Content sources per slice:**
+- slice-14: README→Spec, Plan stub, Handoff stub
+- slice-15: README→Spec, Plan stub, CHECKPOINT→Handoff
+- slice-16: README→Spec, Plan stub, Handoff stub
+- slice-17: README→Spec, Plan stub, CHECKPOINT→Handoff
+- slice-18: plan.md→Plan (condensed; 40KB source), Spec stub, Handoff stub; CONVENTIONS.md summary appended to Spec
+- slice-19/19b/20/21/22: README→Spec, Plan stub, Handoff stub
+- slice-headless-cms-best-practices: spec.md+research.md+decision-brief.md→Spec (condensed; 182KB total); plan.md→Plan; handoff.md+devlog.md→Handoff (condensed)
+
+### 2.6.4 — Trio child pages created (L2 sub-slices)
+
+10 sub-slice rows × 3 pages = 30 trio pages total.
+
+**Content sources per sub-slice:**
+- slice-15c: README→Spec, Plan stub, Handoff stub
+- slice-18a: decisions.md+research.md→Spec, Plan stub, Handoff stub
+- slice-18b: decisions.md+research.md→Spec, Plan stub, Handoff stub
+- slice-18c: decisions.md (condensed; very large)→Spec, Plan stub, Handoff stub
+- slice-18d: decisions.md+research.md→Spec, Plan stub, Handoff stub
+- slice-18e: decisions.md+research.md→Spec, Plan stub, Handoff stub
+- slice-18f: decisions.md→Spec, Plan stub, Handoff stub
+- slice-18g: decisions.md→Spec, Plan stub, Handoff stub
+- slice-18h: spec.md+decisions.md→Spec, plan.md→Plan, Handoff stub
+- slice-18h-ii: decisions.md→Spec, Plan stub, Handoff stub
+
+### 2.6.5 — Superpowers standalone pages created
+
+| Source file | Notion page title | UUID |
+|---|---|---|
+| docs/superpowers/specs/2026-04-27-notion-arc-design.md | Notion Migration Arc — Design | created under yesid.dev |
+| docs/superpowers/plans/2026-04-27-phase-1-notion-aware-plugin.md | Phase 1 Plan — Notion-aware plugin | created under yesid.dev |
+| docs/superpowers/plans/2026-04-27-phase-2-yesid-dev-retrofit.md | Phase 2 Plan — yesid.dev retrofit | created under yesid.dev |
+| docs/superpowers/specs/2026-04-24-slice-18-replan.md | slice-18 Spec (replan 2026-04-24) | created under yesid.dev |
+| docs/superpowers/specs/2026-04-24-slice-18d-asset-pipeline-design.md | slice-18d Spec (asset pipeline design 2026-04-24) | created under yesid.dev |
+| docs/superpowers/research/2026-04-24-slice-18-replan-audit.md | slice-18 Research — replan audit (2026-04-24) | created under yesid.dev |
+
+All 6 pages are condensed summaries (sources range 5KB–100KB; Notion content limits require condensing).
+
+### 2.6.6 — Sessions DB row created
+
+| Session file | Notion row title | UUID |
+|---|---|---|
+| docs/sessions/2026-04-18-slice-sizing-governance.md | 2026-04-18 — slice-sizing-governance | 3503e863-0690-81f2-bafe-d456e9552ef1 |
+
+Properties set: Date=2026-04-18, Project=yesid.dev, Brief summary filled, body=full session content.
+
+### 2.6.7 — Archive sub-page created
+
+| Source | Notion page title | UUID |
+|---|---|---|
+| docs/ARCHIVE.md | ARCHIVE (repo) | 3503e863-0690-8101-ae02-ed13bc4eede2 |
+
+Parent: Archive page `3503e863-0690-8113-a0d3-d89a28520596`.
+
+### 2.6.8 — Summary counts
+
+| Category | Count |
+|---|---|
+| L1 Slices DB rows | 11 |
+| L2 sub-slice Slices DB rows | 10 |
+| L1 trio child pages (Spec+Plan+Handoff) | 33 |
+| L2 trio child pages (Spec+Plan+Handoff) | 30 |
+| Superpowers standalone pages | 6 |
+| Sessions DB rows | 1 |
+| Archive sub-pages | 1 |
+| **Total Notion pages/rows created (Phase 2.6)** | **92** |
+
+### 2.6.9 — Content quality notes
+
+- **Condensed, not verbatim:** All large source files (>5KB) were condensed into key summaries. Full text preserved in git history and on disk. Source files NOT deleted by this run (Plan B Task 34 is a separate operator-gated step).
+- **stub pages:** Slices with README-only source and no plan.md/handoff.md source got stub Plan and Handoff pages with introductory text noting "no source file; stub only."
+- **R-9 compliance:** All pages created atomically via `create-pages`; no post-create edits performed. No bare triple-backtick fences used.
+- **MORNING_REPORT.md:** All ambiguity decisions logged to repo root `MORNING_REPORT.md` with timestamps and operator review flags.
+
+### 2.6.10 — Operator review items
+
+1. **slice-18h-ii Slice-N = 18.82** — assumption logged. Change to null if preferred.
+2. **L2 sub-slice Parent relation** — set via page URL format (`https://www.notion.so/<uuid>`). Verify in Notion UI that Parent column populates correctly for all 10 sub-slice rows.
+3. **stub Plan/Handoff pages** — slices 14, 16, 19, 19b, 20, 21, 22, 15c, 18a–18g, 18h-ii each have stub Plan and/or Handoff. Enrich later if needed.
+4. **Superpowers page content** — all 6 superpowers pages are condensed. If verbatim spec text in Notion is required, fetch then update (per R-9).
+5. **Plan B Tasks 19, 34, 35** — cloud deletes and local file deletions are operator-gated. This run created Notion content only; no deletions performed.

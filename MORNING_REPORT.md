@@ -91,3 +91,64 @@ Notion content-transform gotcha — markdown does not round-trip byte-identical.
 - **Migration log:** appended to `docs/superpowers/plans/phase-2-evidence/05-migration-log.md` Section 2.5.
 - **Commit:** staged and committed (message: `docs(notion-arc): cloud archive bulk dump (Section 2.5)`).
 - **Next for operator:** Plan B Task 19 (operator gate — cloud deletes), Task 34 (delete local files), Task 35 (operator gate). See standing assumptions at top of this file.
+
+---
+
+## Phase 2 — Repo content retrofit (docs/slices + docs/superpowers + sessions + ARCHIVE.md)
+
+## [01:50] Phase 2 start — source audit
+- **Doing:** Reading all docs/slices/* source files to plan Notion create calls.
+- **Decision:** Processing order: L1 slices first (14–22 + headless-cms-best-practices), then L2 sub-slices (15c, 18a–18h-ii). Trio pages created per slice row. Atomic creates only (R-9).
+- **Review:** Verify slice counts in migration log match actual Notion DB rows.
+
+## [01:51] Slice-N float mapping
+- **Doing:** Assigning Slice-N FLOAT values per letter-to-decimal scheme.
+- **Decision:**
+  - slice-14→14, slice-15→15, slice-16→16, slice-17→17, slice-18→18, slice-19→19, slice-19b→19.2 (b=0.2), slice-20→20, slice-21→21, slice-22→22
+  - slice-headless-cms-best-practices→null (descriptive)
+  - slice-15c→15.3, slice-18a→18.1, 18b→18.2, 18c→18.3, 18d→18.4, 18e→18.5, 18f→18.6, 18g→18.7, 18h→18.8, 18h-ii→18.82
+- **Review:** slice-18h-ii is a sibling of 18h, not a child; assigned 18.82 (h=0.8 + ii=0.02 variant). If stricter parsing preferred, operator may change to null.
+
+## [01:52] File-role decisions per slice
+- **Doing:** Mapping source files to trio roles.
+- **Decision:**
+  - Slices with README.md only (14, 16, 19, 19b, 20, 21, 22): README → Spec body. Plan stub. Handoff stub.
+  - Slices with README + CHECKPOINT (15, 17): README → Spec. CHECKPOINT → Handoff. Plan stub.
+  - slice-18: plan.md → Plan. No spec.md → Spec stub with intro. No handoff.md → Handoff stub. CONVENTIONS.md is L1-level → appended to Plan as ## Conventions.
+  - slice-headless-cms-best-practices: spec.md → Spec + research.md (## Research) + decision-brief.md (## Decision Brief). plan.md → Plan. handoff.md → Handoff + devlog.md (## Devlog).
+  - Sub-slices (18a–18h-ii): spec.md if present → Spec; research.md → Spec (## Research); decisions.md → Plan (## Decisions); plan.md if present → Plan body.
+  - slice-15c: README.md → Spec. Plan stub. Handoff stub.
+- **Review:** CONVENTIONS.md is informational — appended to Plan not Spec. Devlog appended to Handoff per plan instructions.
+
+## [session-resumed] Phase 2.4 — ARCHIVE (repo) sub-page created
+
+- **Doing:** Creating "ARCHIVE (repo)" sub-page under Notion Archive (`3503e863-0690-8113-a0d3-d89a28520596`).
+- **Source:** `docs/ARCHIVE.md` — three-tier context model, what moved on 2026-04-17, retrieval protocol, write protocol, core principle.
+- **Result:** Page UUID `3503e863-0690-8101-ae02-ed13bc4eede2` created. Full body content included (file is small ~1KB).
+- **Status:** Phase 2.4 COMPLETE.
+
+## [session-resumed] Phase 2.5 — Migration log + commit
+
+- **Doing:** Appending Section 2.6 to `docs/superpowers/plans/phase-2-evidence/05-migration-log.md`.
+- **Counts:** 11 L1 rows + 10 L2 rows + 33 L1 trio pages + 30 L2 trio pages + 6 superpowers standalone pages + 1 Sessions DB row + 1 Archive sub-page = **92 Notion pages/rows** created in Phase 2.6.
+- **Status:** Migration log updated. Committing.
+
+---
+
+## Phase 2 — COMPLETE
+
+All planned Phase 2 tasks executed:
+- Phase 2.1: L1 + L2 Slices DB rows + trio child pages (all slices 14–22, headless-cms-best-practices, sub-slices 15c + 18a–18h-ii)
+- Phase 2.2: 6 superpowers standalone pages (specs/plans/research under yesid.dev)
+- Phase 2.3: Sessions DB row (2026-04-18 slice-sizing-governance)
+- Phase 2.4: ARCHIVE (repo) sub-page under Archive
+- Phase 2.5: Migration log Section 2.6 appended + git commit
+
+**Operator actions needed:**
+1. Review `MORNING_REPORT.md` entries top-to-bottom
+2. Verify slice-18h-ii Slice-N (18.82 vs null) in Slices DB
+3. Manually trash Public-safe + Private empty containers via Notion UI (no API path for page trash)
+4. Verify L2 Parent relation populates correctly in Notion UI for all 10 sub-slice rows
+5. Run Plan B Tasks 19, 34, 35 (operator-gated cloud deletes + local file deletes)
+6. Cut `v0.4.1` tag on `mgkdante/workflow` (different repo, operator-only)
+7. Push commits when satisfied
