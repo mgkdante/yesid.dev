@@ -1,0 +1,79 @@
+{
+  "root": "34f3e863-0690-81e8-a41a-d00abc1b341a",
+  "public_safe": {
+    "page_id": "34f3e863-0690-81e5-af27-fc15328aa41d",
+    "children": {
+      "Brand": {
+        "page_id": "34f3e863-0690-8136-b315-fc7d83227170",
+        "_note": "Brand parent is live. Children below were re-created in Task 12 — the original Phase-0 Brand sub-pages (BRAND, Foundations, Decisions, Examples, Components) were in Notion's trash when Task 12 ran. New UUIDs replace the trashed ones (live as of 2026-04-27, post Task 12).",
+        "children": {
+          "BRAND": "3503e863-0690-8148-a798-d3bc231a73ac",
+          "Foundations": "3503e863-0690-8152-9abe-d0fca70aea43",
+          "Decisions": "3503e863-0690-811a-8f2e-e5a9eb1d13d7",
+          "Examples": "3503e863-0690-81e8-ace6-dc1938abd815",
+          "Components": "3503e863-0690-81e2-8bb8-c38723a1d6c6"
+        },
+        "_foundations_children": {
+          "accessibility": "3503e863-0690-81e4-9b6b-e6d76d6f6d46",
+          "color": "3503e863-0690-8141-bcae-cb549d4540af",
+          "figma": "3503e863-0690-81fe-a2dd-c875e70d5243",
+          "motion": "3503e863-0690-812d-b3f4-fd800ce6a368",
+          "space": "3503e863-0690-8155-8673-fd9763dd4317",
+          "typography": "3503e863-0690-81c5-b71a-ec8c33728e87",
+          "voice": "3503e863-0690-81ad-b2f2-fe571cbde6b5"
+        },
+        "_decisions_children": {
+          "2026-04-what-i-killed": "3503e863-0690-8110-a903-d4d783a88746",
+          "2026-04-why-a-constitution": "3503e863-0690-8129-8d65-fc54a68219a6",
+          "2026-04-why-edge-to-edge": "3503e863-0690-816f-9fb2-efb09a63554a",
+          "2026-04-why-orange": "3503e863-0690-812b-9fd2-cb0a44f2c38d"
+        }
+      },
+      "Project": {
+        "page_id": "34f3e863-0690-81b9-8888-dcdd2b4d77c4",
+        "_note": "All 11 child pages created in Task 13 (2026-04-27). 7 A6 DEFAULT skeletons + 4 yesid.dev-specific pages. Source: docs/project/.",
+        "children": {
+          "STACK": "3503e863-0690-8161-8873-ebd4a8cc6cf4",
+          "BINDINGS": "3503e863-0690-81cb-ba00-d286cfef0508",
+          "ARCHITECTURE": "3503e863-0690-817d-b629-ef87a9b09e18",
+          "TESTS": "3503e863-0690-818d-a08e-c7506fd26b2d",
+          "CONSTITUTION": "3503e863-0690-81e7-a59b-c04196d1fb7e",
+          "VOCAB": "3503e863-0690-819c-ab14-cee76e24b45d",
+          "README": "3503e863-0690-81b3-87f1-c069b4734112"
+        },
+        "_non_a6_children": {
+          "SERVICES": "3503e863-0690-8153-8037-fbd11cdb06f1",
+          "PATTERNS": "3503e863-0690-81fe-bd36-df05dcb72480",
+          "CSS": "3503e863-0690-81f0-b565-f5fa4bfd80f8",
+          "MOTION": "3503e863-0690-8127-8401-d9287d474c84"
+        }
+      },
+      "Roadmap": { "page_id": "34f3e863-0690-8160-8b1c-c338d9f57569" },
+      "Ops": { "page_id": "34f3e863-0690-8195-974e-e10abc769570" }
+    }
+  },
+  "_post_flatten_archive_note": "Archive UUID 34f3e863-0690-8119-b095-f62265ed6ecd was discovered to be archived/deleted in Notion. Phase 1 created a new Archive page at 3503e863-0690-8113-a0d3-d89a28520596 (direct child of yesid.dev). Use this UUID for any subsequent Archive references.",
+  "_active_archive_page": "3503e863-0690-8113-a0d3-d89a28520596",
+  "private": {
+    "page_id": "34f3e863-0690-8150-9c00-da67e9ed9af8",
+    "children": {
+      "Specs": { "page_id": "34f3e863-0690-814f-97d3-ca746d7a39d1" },
+      "Memory": { "page_id": "34f3e863-0690-8116-8014-f824769b948c" },
+      "Archive": { "page_id": "34f3e863-0690-8119-b095-f62265ed6ecd" }
+    }
+  },
+  "databases": {
+    "specs": "e23c55c2-42b1-45c1-b48d-be845bb4166c",
+    "slices": "a4128775-19be-4cbf-b20f-f0a9ff49ba71",
+    "conversations": "fc5ef611-dbcf-425f-8136-99b4b6016e19",
+    "sessions": "abe34ce1-4b2b-4f57-ad81-4e05ae9ec6f9"
+  },
+  "_notes": {
+    "discovered": "2026-04-27",
+    "brand_extra_children": "Brand has 5 children (BRAND, Foundations, Decisions, Examples, Components). Plan expected 3 (Foundations, Decisions, Examples). BRAND and Components are extra pages created during Phase 0.",
+    "project_children": "Task 13 created all 11 child pages (2026-04-27): 7 A6 DEFAULT skeletons (README, STACK, BINDINGS, ARCHITECTURE, TESTS, CONSTITUTION, VOCAB) + 4 yesid.dev-specific (SERVICES, PATTERNS, CSS, MOTION). UUIDs now in manifest.",
+    "non_a6_project_pages": "Task 13 added 4 non-A6 yesid.dev-specific pages: SERVICES, PATTERNS, CSS, MOTION. UUIDs recorded in _non_a6_children block.",
+    "db_uuid_source": "Pre-known (operator-supplied) — not re-discovered. Confirmed: Specs DB collection UUID e23c55c2 matches data-source-url seen in Private/Specs fetch.",
+    "private_databases_note": "Private/ also contains 3 inline databases (Slices, Conversations, Sessions) visible in the page content but their container pages are the DB pages themselves, not separate child pages."
+  }
+}
