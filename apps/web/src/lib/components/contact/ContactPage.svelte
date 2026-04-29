@@ -6,21 +6,24 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { contactContent } from '$lib/content/contact-page';
 	import { resolveLocale } from '$lib/utils/locale';
+	import type { ContactContent } from '$lib/types';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { TerminalChrome } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
 	import { ResizablePaneGroup, ResizablePane, ResizableHandle } from '$lib/components/ui/resizable';
 	import type { WeatherData } from '$lib/utils/weather';
 
+	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
 	let {
+		contactPage,
 		weather = null,
 	}: {
+		contactPage: ContactContent;
 		weather?: WeatherData | null;
 	} = $props();
 
-	const c = contactContent;
+	const c = contactPage;
 	const pageTitle = resolveLocale(c.pageTitle, 'en');
 	const stationLabel = resolveLocale(c.stationLabel, 'en');
 	const sendErrorMessage = resolveLocale(c.sendErrorMessage, 'en');

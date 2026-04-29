@@ -3,85 +3,88 @@ import { render, screen } from '@testing-library/svelte';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import AboutPage from './AboutPage.svelte';
+// slice-18i Phase 7C: AboutPage now requires aboutPage prop (previously imported
+// from static module directly inside the component). Pass static fixture here.
+import { aboutPageContent } from '$lib/content/about-page';
 
 describe('AboutPage', () => {
 	it('renders with data-testid page-about', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('page-about')).toBeTruthy();
 	});
 
 	it('renders the top hazard stripe', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		// Heading was removed — dashboard has a hazard stripe instead
 		const page = screen.getByTestId('page-about');
 		expect(page).toBeTruthy();
 	});
 
 	it('renders metro stop labels on cards', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByText('STOP 00 — IDENTITY')).toBeTruthy();
 		expect(screen.getByText('STOP 08 — SNAPSHOTS')).toBeTruthy();
 	});
 
 	it('renders the identity section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-identity')).toBeTruthy();
 	});
 
 	it('renders the polaroids section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-polaroids')).toBeTruthy();
 	});
 
 	it('renders the metrics section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-metrics')).toBeTruthy();
 	});
 
 	it('renders the methodology section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-method')).toBeTruthy();
 	});
 
 	it('renders the testimonials section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-testimonials')).toBeTruthy();
 	});
 
 	it('renders the tech stack section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-tech-stack')).toBeTruthy();
 	});
 
 	it('renders the weather section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-weather')).toBeTruthy();
 	});
 
 	it('renders the interests section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-interests')).toBeTruthy();
 	});
 
 	it('renders the logos section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-logos')).toBeTruthy();
 	});
 
 	it('renders the CTA section', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-cta')).toBeTruthy();
 	});
 
 	it('CTA links to /contact', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		const cta = screen.getByTestId('about-cta');
 		const link = cta.querySelector('a[href="/contact"]');
 		expect(link).toBeTruthy();
 	});
 
 	it('renders weather fallback when no data', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		const weatherWidget = screen.getByTestId('about-weather');
 		expect(weatherWidget.textContent).toContain('Montreal');
 		expect(weatherWidget.textContent).toContain('—');
@@ -89,7 +92,7 @@ describe('AboutPage', () => {
 
 	it('renders weather data when provided', () => {
 		render(AboutPage, {
-			props: { weather: { temp: 15, condition: 'clear sky', icon: '01d' } }
+			props: { aboutPage: aboutPageContent, weather: { temp: 15, condition: 'clear sky', icon: '01d' } }
 		});
 		const weatherWidget = screen.getByTestId('about-weather');
 		expect(weatherWidget.textContent).toContain('15°C');
@@ -97,7 +100,7 @@ describe('AboutPage', () => {
 	});
 
 	it('does not render its own footer (layout provides it)', () => {
-		render(AboutPage, { props: { weather: null } });
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		// Footer comes from +layout.svelte, not AboutPage
 		const footers = screen.queryAllByTestId('footer');
 		expect(footers.length).toBe(0);

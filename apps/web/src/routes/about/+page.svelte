@@ -6,4 +6,4 @@
 	let { data } = $props();
 </script>
 
-<AboutPage weather={data.weather} />
+<AboutPage aboutPage={data.aboutPage} weather={data.weather} />
