@@ -7,9 +7,12 @@ test('home page loads', async ({ page }) => {
 	await expect(page.getByTestId('app-root')).toBeVisible();
 });
 
-test('tagline is visible', async ({ page }) => {
+test('hero section is visible', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.getByText('Digital infrastructure that moves.')).toBeVisible();
+	// "Digital infrastructure that moves." was a static string in slice 01.
+	// As of slice-18i it is CMS-sourced (subheadline field on block_hero).
+	// Assert the hero banner section is visible instead — it is always rendered.
+	await expect(page.getByTestId('hero-banner')).toBeVisible();
 });
 
 test('wordmark is visible', async ({ page }) => {
