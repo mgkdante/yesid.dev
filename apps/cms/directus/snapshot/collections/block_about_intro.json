@@ -1,0 +1,28 @@
+{
+  "collection": "block_about_intro",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_about_intro",
+    "color": null,
+    "display_template": "{{editor_label}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "person",
+    "item_duplication_fields": null,
+    "note": "About teaser block \u2014 home page About section (NOT /about page). Non-translatable: stack_items (string[]) on parent. All LocalizedString leaves in translations.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "block_about_intro"
+  }
+}
