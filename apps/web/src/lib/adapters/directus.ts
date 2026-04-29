@@ -53,7 +53,7 @@ import { TechStackItemSchema } from '$lib/schemas/tech-stack';
 import { SiteMetaSchema } from '$lib/schemas/meta';
 import { SiteSeoDefaultsSchema } from '$lib/schemas/site-seo-defaults';
 import { RouteSeoOverrideSchema } from '$lib/schemas/route-seo';
-import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml } from '@repo/shared';
+import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml, PageSchema, type PageData } from '@repo/shared';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
 import {
 	errorSeoFallback,
@@ -238,6 +238,104 @@ interface Schema {
 	// Site meta singleton + per-route SEO overrides (slice-18 18h).
 	site_meta: DirectusSiteMetaRow;
 	route_seo: DirectusRouteSeoRow[];
+	// Pages collection — M2A junction-backed page builder (slice-18i).
+	pages: PageData[];
+}
+
+// ---------------------------------------------------------------------------
+// Page query constants & loadPage (slice-18i Phase 3)
+// ---------------------------------------------------------------------------
+
+/**
+ * Maps SvelteKit route paths to their corresponding `pages.slug` values in
+ * Directus. Used by +page.server.ts load functions to resolve the slug for
+ * the current route without hardcoding it in every route file.
+ */
+export const ROUTE_TO_SLUG: Readonly<Record<string, string>> = {
+	'/': 'home',
+	'/about': 'about',
+	'/contact': 'contact',
+	'/services': 'services',
+	'/projects': 'projects',
+	'/tech-stack': 'tech-stack',
+	'/blog': 'blog',
+} as const;
+
+/**
+ * All 12 block_* M2A collection names used in `pages.blocks`.
+ * `block_journey_panel` is intentionally absent — dropped in slice-18i Task 1.0a.
+ */
+export const ALL_BLOCK_COLLECTIONS = [
+	'block_hero',
+	'block_manifesto',
+	'block_proof_reel',
+	'block_services_grid',
+	'block_cta',
+	'block_closer',
+	'block_about_intro',
+	'block_about_content',
+	'block_contact_content',
+	'block_tech_stack_page_content',
+	'block_blog_page_content',
+	'block_projects_page_content',
+] as const;
+
+/**
+ * Deep-fields array for the `pages` readItems query.
+ * Expands translations + every block_* collection item + its translations
+ * in a single request. Probe P10 measured this at 1156 bytes — well under
+ * Directus's limit; single-query approach is locked (Phase 1 decision).
+ */
+export const PAGE_FIELDS: string[] = [
+	'*',
+	'translations.*',
+	'blocks.*',
+	...ALL_BLOCK_COLLECTIONS.flatMap((c) => [
+		`blocks.item:${c}.*`,
+		`blocks.item:${c}.translations.*`,
+	]),
+];
+
+/**
+ * Per-route data loader for slice-18i.
+ *
+ * Makes ONE Directus query per (slug × request), fetching the `pages` row
+ * plus all 12 block_* collection items via deep `fields` expansion. Results
+ * are memoized on `ctx.pageCache` so multiple `content.*` calls within the
+ * same HTTP request resolve from cache after the first fetch.
+ *
+ * Cache stores the Promise (not the resolved value) so concurrent callers
+ * sharing the same ctx deduplicate into a single in-flight request.
+ *
+ * Fails fast: throws with the slug name in the message when the page is not
+ * found, and throws via parsePort with 'pages.bySlug' label when the raw
+ * shape fails PageSchema validation.
+ */
+export async function loadPage(slug: string, ctx?: { pageCache?: Map<string, Promise<PageData>> }): Promise<PageData> {
+	const cache = ctx?.pageCache;
+
+	if (cache?.has(slug)) {
+		return cache.get(slug)!;
+	}
+
+	const promise: Promise<PageData> = client()
+		.request(
+			readItems('pages', {
+				filter: { slug: { _eq: slug }, status: { _eq: 'published' } },
+				fields: PAGE_FIELDS as unknown as (keyof PageData)[],
+				limit: 1,
+			}),
+		)
+		.then((raw) => {
+			if (!raw || raw.length === 0) {
+				throw new Error(`loadPage: page not found for slug='${slug}'`);
+			}
+			return parsePort('pages.bySlug', PageSchema, raw[0]);
+		});
+
+	cache?.set(slug, promise);
+
+	return promise;
 }
 
 // ---------------------------------------------------------------------------
