@@ -303,13 +303,35 @@ See Task 6.5 section below for line coverage percentages.
 
 ### Task 6.5 — Coverage results
 
-Run: `bun run test --coverage` in `apps/web/` (vitest v8 provider).
+Run: `bun run test --coverage --coverage.provider=v8 --coverage.reporter=text` in `apps/web/`.
+Shared `page.ts` coverage measured via `bun test --coverage` in `packages/shared/`.
 
-| File | Line % | Note |
-|---|---|---|
-| `apps/web/src/lib/adapters/directus.ts` | TBD post-run | target ≥80% |
-| `packages/shared/src/schemas/page.ts` | TBD post-run | target ≥80% |
-| `apps/web/src/routes/+layout.server.ts` | TBD post-run | target ≥80% |
-| `apps/web/src/routes/+error.svelte` | best-effort | Svelte component coverage unreliable |
+| File | Stmt % | Branch % | Func % | Line % | Target met? |
+|---|---|---|---|---|---|
+| `apps/web/src/lib/adapters/directus.ts` | 77.62% | 58.56% | 81.25% | **81.35%** | ✅ ≥80% |
+| `packages/shared/src/schemas/page.ts` | — | — | 100% | **100%** | ✅ ≥80% |
+| `apps/web/src/routes/+layout.server.ts` | 0% | 0% | 0% | **0%** | ⚠ see note |
+| `apps/web/src/routes/+error.svelte` | n/a | n/a | n/a | n/a | best-effort |
 
-*Coverage numbers to be filled in after the post-E2E coverage run (Task 6.5).*
+**Notes:**
+
+- `directus.ts` line coverage at 81.35% (≥80% target met). Branch coverage at 58.56%
+  reflects defensive fallback branches (e.g., `?? []`, `?? ''`) that are only
+  exercised when CMS returns malformed data — testing these would require
+  fixtures with intentionally missing fields across all transforms.
+
+- `page.ts` achieves 100% coverage via the 5 bun:test tests in `packages/shared/src/schemas/page.test.ts`
+  (augmented in Task 6.5 to add the missing `heroAnim` field to the `minimalHeroItem` fixture).
+
+- `+layout.server.ts` shows 0% because the vitest v8 provider only tracks
+  files within `apps/web/src/` that are imported by test files. `+layout.server.ts`
+  is a SvelteKit server-only load function — it requires the SvelteKit SSR runtime
+  to run, which vitest does not provide. The equivalent coverage is exercised
+  indirectly: `adapter.nav.byPlacement` and `adapter.content.errorPage` are both
+  called in the layout server load and are each covered by mocked tests in
+  `directus.mocked.test.ts`. Integration testing the layout load directly is
+  deferred to the post-merge integration runner (Task 6.3 checklist).
+
+- `+error.svelte` Svelte component coverage is not measured by v8 — Svelte
+  compiler output is transformed and the coverage maps are unreliable.
+  The component is exercised by the E2E spec's 404 route test.

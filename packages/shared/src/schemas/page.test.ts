@@ -5,6 +5,7 @@ import { PageSchema } from './page';
 const ls = (en: string) => ({ en });
 
 // Minimal valid HeroContent item shape.
+// heroAnim was added to HeroContentSchema in slice-18i Phase 4 fix-up (3115cfb).
 const minimalHeroItem = {
 	headline: { line1: ls('Hello'), line2: ls('World'), ariaSuffix: ls('suffix') },
 	subheadline: ls('sub'),
@@ -18,6 +19,7 @@ const minimalHeroItem = {
 		metaTemplate: ls('{n} rows'),
 	},
 	refreshButton: { label: ls('Refresh'), helper: ls('helper') },
+	heroAnim: { scrollDown: ls('Scroll down') },
 };
 
 describe('PageSchema', () => {
