@@ -1,0 +1,28 @@
+{
+  "collection": "block_tech_stack_page_content",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_tech_stack_page_content",
+    "color": null,
+    "display_template": "{{editor_label}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "layers",
+    "item_duplication_fields": null,
+    "note": "Tech Stack page chrome block (/tech-stack). All fields are LocalizedStrings \u2192 4 JSON columns in translations (hero, actions, cta, meta). No M2M to tech_stack collection (not in TS shape).",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "block_tech_stack_page_content"
+  }
+}
