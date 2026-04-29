@@ -1,0 +1,28 @@
+{
+  "collection": "error_pages",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "error_pages",
+    "color": null,
+    "display_template": "{{status_code}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "error",
+    "item_duplication_fields": null,
+    "note": "Flat collection keyed by HTTP status_code. Seed rows: 404, 500, 0 (generic fallback). status_code = 0 is the catch-all when no specific row matches. Spec §2.3 L3.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "error_pages"
+  }
+}
