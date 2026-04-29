@@ -62,6 +62,31 @@ are present and paired.
 - No "archived" value in any status field added in Phase 1 (pre-existing collections blog_posts, icons, projects, route_seo, tech_stack retain their archived values — those are unchanged pre-Phase-1 files)
 - All 12 block_* parent collections have editor_label field (required for Data Studio M2A picker)
 
+## P10 query-size probe (Task 1.8)
+
+Run: `bun run apps/cms/scripts/probe-loadpage-bytes.ts` (output captured below).
+
+```
+URL bytes: 1156
+Field count: 27
+Block collections: 12
+
+Decision thresholds:
+  < 4000 bytes: proceed with single-query approach (Phase 3)
+  4000–8000:    proceed but flag as a watch item (R1 risk)
+  > 8000:       escalate — split into per-collection batched queries
+
+URL preview (first 500 chars):
+/items/pages?filter[slug][_eq]=home&filter[status][_eq]=published&fields=*%2Ctranslations.*%2Cblocks.*%2Cblocks.item%3Ablock_hero.*%2Cblocks.item%3Ablock_hero.translations.*%2Cblocks.item%3Ablock_manifesto.*%2Cblocks.item%3Ablock_manifesto.translations.*%2Cblocks.item%3Ablock_proof_reel.*%2Cblocks.item%3Ablock_proof_reel.translations.*%2Cblocks.item%3Ablock_services_grid.*%2Cblocks.item%3Ablock_services_grid.translations.*%2Cblocks.item%3Ablock_cta.*%2Cblocks.item%3Ablock_cta.translations.*%2Cbl
+```
+
+**Decision: single-query proceed**
+
+Per spec R1 mitigation: at 1156 bytes the URL is well under Directus's effective
+limit (~8 KB), so Phase 3's `loadPage` helper can use a single deep-fields query
+across all 12 block collections without risk of request-size rejection; no batching
+or chunking required.
+
 ## Push deferral
 
 Push to live Directus is deferred to post-merge per
