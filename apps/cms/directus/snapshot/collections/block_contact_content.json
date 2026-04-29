@@ -1,0 +1,28 @@
+{
+  "collection": "block_contact_content",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_contact_content",
+    "color": null,
+    "display_template": "{{editor_label}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "contact_mail",
+    "item_duplication_fields": null,
+    "note": "Contact page content block (/contact). Non-translatable: web3forms_key (string) on parent. All LocalizedString leaves in translations as JSON columns per top-level chunk.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "block_contact_content"
+  }
+}
