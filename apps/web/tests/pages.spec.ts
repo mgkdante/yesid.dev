@@ -19,7 +19,8 @@
 //   - The 404 route is always asserted.
 //
 // Route strategy:
-//   - /           → 200, data-testid="hero-banner" + known static-fallback string
+//   - /           → 200, data-testid="hero-banner" always; "PIPELINES THAT"
+//                   CMS_LIVE=true only (home now fetches from Directus M2A)
 //   - /services   → 200, nav visible (static adapter, no CMS dependency)
 //   - /projects   → 200, nav visible (static adapter)
 //   - /blog       → 200, "Dispatches" hardcoded in +page.svelte
@@ -36,12 +37,20 @@ const CMS_LIVE = process.env.CMS_LIVE === 'true';
 // Routes with stable static content (no CMS dependency or static fallback)
 // ---------------------------------------------------------------------------
 
-test('route / (home) renders hero banner and static-fallback headline', async ({ page }) => {
+test('route / (home) renders hero banner', async ({ page }) => {
 	const response = await page.goto('/');
 	expect(response?.status()).toBe(200);
+	// hero-banner testid is always present regardless of content source
 	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
-	// "PIPELINES THAT" is the static fallback headline in heroContent.headline.line1
-	// — this verifies the staticAdapter.content.hero → +page.svelte → DOM data flow.
+});
+
+test('route / (home) renders static-fallback headline when CMS is live', async ({ page }) => {
+	// slice-18i Phase 7: home route now fetches all blocks from Directus M2A.
+	// "PIPELINES THAT" is the CMS headline (also the static-adapter fallback
+	// in heroContent.headline.line1). Only assert the text when CMS is live.
+	test.skip(!CMS_LIVE, 'Requires live CMS — set CMS_LIVE=true to run');
+	const response = await page.goto('/');
+	expect(response?.status()).toBe(200);
 	await expect(page.getByText('PIPELINES THAT', { exact: false })).toBeVisible();
 });
 

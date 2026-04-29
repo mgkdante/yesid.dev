@@ -1087,6 +1087,58 @@ describe('directusAdapter.content.* M2A methods — Task 4.2 detail-page blocks'
 		const { search } = parseCapturedUrl();
 		expect(decodeURIComponent(search.get('filter') ?? '')).toContain('tech-stack');
 	});
+
+	it('content.blogPage fetches /items/pages with slug=blog and returns BlogPageContent', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([rawPageWithBlocks('blog', [{
+				collection: 'block_blog_page_content',
+				item: { id: 'blog-content-uuid', status: 'published', translations: [{ languages_code: 'en', intro: 'Field dispatches.' }] },
+			}])]),
+		);
+
+		const ctx = { pageCache: new Map() };
+		const result = await directusAdapter.content.blogPage(ctx);
+
+		expect(result.intro).toMatchObject({ en: 'Field dispatches.' });
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/pages');
+		expect(decodeURIComponent(search.get('filter') ?? '')).toContain('blog');
+	});
+
+	it('content.blogPage throws when block_blog_page_content is missing', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([rawPageWithBlocks('blog', [])]),
+		);
+
+		const ctx = { pageCache: new Map() };
+		await expect(directusAdapter.content.blogPage(ctx)).rejects.toThrow(/block_blog_page_content/);
+	});
+
+	it('content.projectsPage fetches /items/pages with slug=projects and returns ProjectsPageContent', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([rawPageWithBlocks('projects', [{
+				collection: 'block_projects_page_content',
+				item: { id: 'projects-content-uuid', status: 'published', translations: [{ languages_code: 'en', intro: 'Selected work.' }] },
+			}])]),
+		);
+
+		const ctx = { pageCache: new Map() };
+		const result = await directusAdapter.content.projectsPage(ctx);
+
+		expect(result.intro).toMatchObject({ en: 'Selected work.' });
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/pages');
+		expect(decodeURIComponent(search.get('filter') ?? '')).toContain('projects');
+	});
+
+	it('content.projectsPage throws when block_projects_page_content is missing', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([rawPageWithBlocks('projects', [])]),
+		);
+
+		const ctx = { pageCache: new Map() };
+		await expect(directusAdapter.content.projectsPage(ctx)).rejects.toThrow(/block_projects_page_content/);
+	});
 });
 
 describe('directusAdapter.content.* — Task 4.3 derived methods (no Directus query)', () => {

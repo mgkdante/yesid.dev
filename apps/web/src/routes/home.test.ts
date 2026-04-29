@@ -2,12 +2,32 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import Page from './+page.svelte';
 import type { PageData } from './$types';
+// slice-18i Phase 7C: +page.server.ts now loads all home-page block content
+// from Directus M2A. Unit tests must supply full stubData with all block props.
+import {
+	heroContent,
+	heroAnimContent,
+	manifestoContent,
+	proofReelContent,
+	servicesGridContent,
+	aboutContent,
+	ctaContent,
+	closerContent,
+} from '$lib/content/site-content';
+import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 
-// Slice 18d Phase 8: Page now reads `data.metroSvg` (loaded by +page.server.ts
-// from Directus). In unit tests we render the page directly without a load,
-// so each render() must supply a stub `data` prop with a minimal SVG.
 const stubData: PageData = {
 	metroSvg: '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+	hero: heroContent,
+	heroAnim: heroAnimContent,
+	manifesto: manifestoContent,
+	proofReel: proofReelContent,
+	servicesGrid: servicesGridContent,
+	about: aboutContent,
+	cta: ctaContent,
+	closer: closerContent,
+	heroMock: generateHeroData(),
+	initialHeroData: INITIAL_HERO_DATA,
 } as PageData;
 
 const renderPage = () => render(Page, { props: { data: stubData } });
