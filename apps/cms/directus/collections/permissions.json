@@ -1,5 +1,869 @@
 [
   {
+    "collection": "block_about_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "0277aabc-c582-4df2-963c-3e4714a522a7"
+  },
+  {
+    "collection": "block_about_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "619902c2-83f9-46bb-98cb-b589e4c27b87"
+  },
+  {
+    "collection": "block_about_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "b281601e-f54d-46e0-b2d9-44559f576e93"
+  },
+  {
+    "collection": "block_about_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "e5628b07-a90a-4c17-a359-4299d5d0ab51"
+  },
+  {
+    "collection": "block_about_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "6a6b3cb2-069c-4e81-b1a7-b31c3bf14209"
+  },
+  {
+    "collection": "block_about_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "2879c23c-e5dc-45cc-91ee-9811940d1964"
+  },
+  {
+    "collection": "block_about_intro_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "25c939f3-3af9-446f-b001-6d4e189986d3"
+  },
+  {
+    "collection": "block_about_intro_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "b11eb361-d5b0-462c-aa4f-936887328e90"
+  },
+  {
+    "collection": "block_about_intro_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "fcc4cd81-f1be-4338-b705-62838e81c9e9"
+  },
+  {
+    "collection": "block_about_intro",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "1c9cb8a4-30c1-4501-a116-e5120a43e4e1"
+  },
+  {
+    "collection": "block_about_intro",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "8616e074-881e-425f-b382-4e6b83f31a5a"
+  },
+  {
+    "collection": "block_about_intro",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "7ceed72d-bfa9-45d4-a594-714d34eafe9e"
+  },
+  {
+    "collection": "block_blog_page_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "d22a6c6d-86c7-445c-aaf8-ac1412677997"
+  },
+  {
+    "collection": "block_blog_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "5e4f9f75-a582-4c86-b126-01c659144b94"
+  },
+  {
+    "collection": "block_blog_page_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "e9c64f58-33a8-4c5c-a1d0-0ea5ba9f9f54"
+  },
+  {
+    "collection": "block_blog_page_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "aae282ba-d8e2-48da-9f11-67acd5cd167b"
+  },
+  {
+    "collection": "block_blog_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "6df59d4c-e6d0-4e14-b6c4-afe8971eec9b"
+  },
+  {
+    "collection": "block_blog_page_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "181772b4-d89c-4fa8-bad3-1a82b6249531"
+  },
+  {
+    "collection": "block_closer_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "2db9f8c3-1e83-4e6a-acb9-c266078c15be"
+  },
+  {
+    "collection": "block_closer_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "05bee801-f168-46db-a550-54f68af5724b"
+  },
+  {
+    "collection": "block_closer_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "0ecd0bfa-7f9e-43bc-83e3-928e50d904e4"
+  },
+  {
+    "collection": "block_closer",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "e3ee4e9a-3635-4fe2-a539-29a0ce31b4f6"
+  },
+  {
+    "collection": "block_closer",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "930b5595-e172-4839-bd1b-3c5bedefc402"
+  },
+  {
+    "collection": "block_closer",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "e8c8986c-b957-4a49-a097-20f58023cd1c"
+  },
+  {
+    "collection": "block_contact_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "9f4c4066-38a1-45da-9f8c-43afd9e81b69"
+  },
+  {
+    "collection": "block_contact_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "abb9efaf-9139-47f1-8b75-ce888e1d8b13"
+  },
+  {
+    "collection": "block_contact_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "61b6c47f-6161-4598-ac88-e9e6167f540d"
+  },
+  {
+    "collection": "block_contact_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "cb2ea2d9-621b-4e8c-ada4-b14a2a21d7f6"
+  },
+  {
+    "collection": "block_contact_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "5291afa3-03b0-4ef6-84a7-5fa94ee166f3"
+  },
+  {
+    "collection": "block_contact_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "2c1c7275-c41b-47e7-aee0-5c3ab51971a6"
+  },
+  {
+    "collection": "block_cta_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "1974cb74-19e1-4080-9f61-f7121bbfaa33"
+  },
+  {
+    "collection": "block_cta_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "a049c8c4-21e1-4c78-ac02-d00597b9720f"
+  },
+  {
+    "collection": "block_cta_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "417fa933-5453-4a87-89de-0c0f41449257"
+  },
+  {
+    "collection": "block_cta",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "4fe90ccc-e883-432e-b348-7e4eda36a942"
+  },
+  {
+    "collection": "block_cta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "f6fd222b-03e7-4c12-87ae-6dfc3d356c21"
+  },
+  {
+    "collection": "block_cta",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "aa4db1e2-4fb0-451d-835f-5fefe3d68ff2"
+  },
+  {
+    "collection": "block_hero_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "4aaf45e6-598d-4530-b7fc-aec13dee4671"
+  },
+  {
+    "collection": "block_hero_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "84c8dcce-ed8a-403f-a146-f1f64b0b0ef1"
+  },
+  {
+    "collection": "block_hero_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "a8d4ca76-9476-4bbc-82dd-caba10876168"
+  },
+  {
+    "collection": "block_hero",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "6e491d02-eda6-4559-9634-b9436a833bcc"
+  },
+  {
+    "collection": "block_hero",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "c829d05c-0708-4844-8253-6a7c38fe1b18"
+  },
+  {
+    "collection": "block_hero",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "58f6b073-ca81-4d63-af7a-fd7ebdb965f8"
+  },
+  {
+    "collection": "block_manifesto_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "bd516269-2469-41b6-9161-46507083cdeb"
+  },
+  {
+    "collection": "block_manifesto_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ef1fd6a7-3e01-43ee-a198-c651f08d4689"
+  },
+  {
+    "collection": "block_manifesto_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "b7fb5638-248d-46d6-a604-765aed1fe0c8"
+  },
+  {
+    "collection": "block_manifesto",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "99a3f3a3-cbe9-49b5-9ecc-aeeb01dbd9b5"
+  },
+  {
+    "collection": "block_manifesto",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "fd52c1e4-7cf7-4797-89b7-f8a4efdc81bd"
+  },
+  {
+    "collection": "block_manifesto",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "2156c40f-1c57-4213-b5a7-d4053c9c19bf"
+  },
+  {
+    "collection": "block_projects_page_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "b1937a64-1eb7-444d-823d-14607c01df48"
+  },
+  {
+    "collection": "block_projects_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "994e37bc-cf33-424b-9ab8-eb20111603f0"
+  },
+  {
+    "collection": "block_projects_page_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "c4acb383-9cf0-409e-b32c-6eb6844dbd30"
+  },
+  {
+    "collection": "block_projects_page_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "0e0d0b54-44cd-43ea-8be8-6181be17eb7f"
+  },
+  {
+    "collection": "block_projects_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "04d25456-ac91-46cb-aad9-9493b7884b10"
+  },
+  {
+    "collection": "block_projects_page_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "97f5b218-3d78-464e-9300-a923fce4bd0d"
+  },
+  {
+    "collection": "block_proof_reel_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ab6a8eac-92c5-424d-a128-89b765c89308"
+  },
+  {
+    "collection": "block_proof_reel_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "87d9d08f-66a3-402e-9e04-2999f75d9d9c"
+  },
+  {
+    "collection": "block_proof_reel_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "9d58d98b-0b26-4bf3-bf69-bffb85ca6995"
+  },
+  {
+    "collection": "block_proof_reel",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "9d1cc12f-4121-42c9-825d-8a859cf0a70a"
+  },
+  {
+    "collection": "block_proof_reel",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "8d0647be-ef56-4832-a0ff-85efef2353b2"
+  },
+  {
+    "collection": "block_proof_reel",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "807962ae-0ad3-4418-bde3-e585db8112f6"
+  },
+  {
+    "collection": "block_services_grid_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "da636bf8-6750-4fb7-ab41-1322a8af1c05"
+  },
+  {
+    "collection": "block_services_grid_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "2903af7d-d550-46b1-9c0d-235769693c11"
+  },
+  {
+    "collection": "block_services_grid_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "caeaac2d-c0b6-4b93-a839-f23819faebcb"
+  },
+  {
+    "collection": "block_services_grid",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "73d24129-6de1-4aa2-ba40-5e0a30a7b2fd"
+  },
+  {
+    "collection": "block_services_grid",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ab63a76c-e4da-4b16-bb62-94c12712d393"
+  },
+  {
+    "collection": "block_services_grid",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "a5e21ad8-583f-4ef5-a22f-b103f82d8956"
+  },
+  {
+    "collection": "block_tech_stack_page_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "553811df-2806-4a67-8023-2d3eda79714c"
+  },
+  {
+    "collection": "block_tech_stack_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "6c1746cb-8161-4483-8646-9683e6e9fb6d"
+  },
+  {
+    "collection": "block_tech_stack_page_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "d9bb98fd-13fa-4609-8177-7aa1f78edb02"
+  },
+  {
+    "collection": "block_tech_stack_page_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "f4417240-b2c2-4926-93a0-2fc0caa25f1e"
+  },
+  {
+    "collection": "block_tech_stack_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "bbfe9e7c-d546-4063-8178-f98adefc8dc7"
+  },
+  {
+    "collection": "block_tech_stack_page_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "f118bd0c-89dd-42b5-aa24-960f4d4bbf16"
+  },
+  {
     "collection": "blog_posts",
     "action": "create",
     "permissions": {},
@@ -140,6 +1004,138 @@
     "_syncId": "ae-comments-projects-read-0041-000000000028"
   },
   {
+    "collection": "error_pages_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "41f2f5a4-8dc3-4835-8290-f6d409bfb656"
+  },
+  {
+    "collection": "error_pages_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "b9ac5a5d-3796-4c5d-a9ae-0c7c4a694ec2"
+  },
+  {
+    "collection": "error_pages_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "a4337381-00f7-4b57-ac59-7be5a9e09a81"
+  },
+  {
+    "collection": "error_pages",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "a3252286-ac32-4393-94dd-1b7a644be1b5"
+  },
+  {
+    "collection": "error_pages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "6909b967-8a0f-414f-8788-6695fec0abae"
+  },
+  {
+    "collection": "error_pages",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "62c2f4ff-dbec-4b65-a706-7b77092e54a9"
+  },
+  {
+    "collection": "icons",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_icons_ai_create"
+  },
+  {
+    "collection": "icons",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_icons_ai_read"
+  },
+  {
+    "collection": "icons",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_icons_ai_update"
+  },
+  {
     "collection": "illustrations",
     "action": "create",
     "permissions": {},
@@ -222,6 +1218,186 @@
     ],
     "policy": "_sync_ai_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_ai_update"
+  },
+  {
+    "collection": "nav_links_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "b3786b27-bec6-442d-9d02-3e7b6226d2bc"
+  },
+  {
+    "collection": "nav_links_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "9f6b54d2-4351-4db8-96b3-b4c5fb173b31"
+  },
+  {
+    "collection": "nav_links_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "c04f53d0-4584-43e5-a178-da119b24a12a"
+  },
+  {
+    "collection": "nav_links",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "1a62307e-bd74-431e-9f54-1764323530a3"
+  },
+  {
+    "collection": "nav_links",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "3ce74c7a-93ac-4e1c-863c-a707a0c6d18f"
+  },
+  {
+    "collection": "nav_links",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "5965fb02-19f9-452c-a18b-f8faea934bd9"
+  },
+  {
+    "collection": "pages_blocks",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "29085ef8-d146-49b8-9f41-8681705bf954"
+  },
+  {
+    "collection": "pages_blocks",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "470b1b34-32fd-4032-876d-a8ff8a77171e"
+  },
+  {
+    "collection": "pages_blocks",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "ea196842-53d4-4ce0-b245-2f51b189b88c"
+  },
+  {
+    "collection": "pages_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "7c6d98ad-266c-48f9-8a32-24deb234bc3a"
+  },
+  {
+    "collection": "pages_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "4b1afacc-7e3d-4f8b-be9d-bf6e44d28d76"
+  },
+  {
+    "collection": "pages_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "578a6d3a-ae56-45a2-8cfa-1632eb7b2eec"
+  },
+  {
+    "collection": "pages",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "0ad4df7a-dd28-4b39-bcc5-601800c94748"
+  },
+  {
+    "collection": "pages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "8d26c223-8eae-4670-8a93-cfefe7dd6a77"
+  },
+  {
+    "collection": "pages",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "394621c0-a4ab-4a55-b6ba-3460ab850492"
   },
   {
     "collection": "projects_impact_metrics_translations",
@@ -480,6 +1656,102 @@
     "_syncId": "ae-projects-update-0022-000000000016"
   },
   {
+    "collection": "route_seo_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_ai_create"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_ai_read"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_ai_update"
+  },
+  {
+    "collection": "route_seo",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_ai_create"
+  },
+  {
+    "collection": "route_seo",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_ai_read"
+  },
+  {
+    "collection": "route_seo",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_route_seo_ai_update"
+  },
+  {
     "collection": "services_deliverables_translations",
     "action": "create",
     "permissions": {},
@@ -696,6 +1968,522 @@
     "_syncId": "ae-services-update-0004-0000-000000000004"
   },
   {
+    "collection": "site_meta_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_ai_create"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_ai_read"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_ai_update"
+  },
+  {
+    "collection": "site_meta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_ai_read"
+  },
+  {
+    "collection": "site_meta",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_site_meta_ai_update"
+  },
+  {
+    "collection": "tech_stack_projects",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_projects_ai_create"
+  },
+  {
+    "collection": "tech_stack_projects",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_projects_ai_read"
+  },
+  {
+    "collection": "tech_stack_projects",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_projects_ai_update"
+  },
+  {
+    "collection": "tech_stack_services",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_services_ai_create"
+  },
+  {
+    "collection": "tech_stack_services",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_services_ai_read"
+  },
+  {
+    "collection": "tech_stack_services",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_services_ai_update"
+  },
+  {
+    "collection": "tech_stack_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_translations_ai_create"
+  },
+  {
+    "collection": "tech_stack_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_translations_ai_read"
+  },
+  {
+    "collection": "tech_stack_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_translations_ai_update"
+  },
+  {
+    "collection": "tech_stack",
+    "action": "create",
+    "permissions": {},
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_ai_create"
+  },
+  {
+    "collection": "tech_stack",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_ai_read"
+  },
+  {
+    "collection": "tech_stack",
+    "action": "update",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "validation": {
+      "_and": [
+        {
+          "status": {
+            "_neq": "published"
+          }
+        }
+      ]
+    },
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_ai_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_ai_update"
+  },
+  {
+    "collection": "block_about_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "411da870-43d9-42f4-84b9-b262edb998ec"
+  },
+  {
+    "collection": "block_about_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "5d5f3ec3-a376-471f-8ad5-2126015da0cf"
+  },
+  {
+    "collection": "block_about_intro_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "f4853d00-e61a-415f-9a37-ae84ac0a371c"
+  },
+  {
+    "collection": "block_about_intro",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "90eaf818-6063-4c64-a935-0bb9bdfa1f77"
+  },
+  {
+    "collection": "block_blog_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "071fa52d-f648-403a-ad9b-ae4846c50ddd"
+  },
+  {
+    "collection": "block_blog_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "5166cbe5-bcae-4078-8eb1-fd0b4247413b"
+  },
+  {
+    "collection": "block_closer_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "7ee5011f-8eef-4244-8346-36cd6da730bf"
+  },
+  {
+    "collection": "block_closer",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "690082b3-04a7-49e3-a8df-281e439f15c2"
+  },
+  {
+    "collection": "block_contact_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "801021f2-560f-4b38-a0ef-6681e55bb69e"
+  },
+  {
+    "collection": "block_contact_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "191928e8-9fa5-4734-b46d-201f14ceb2ef"
+  },
+  {
+    "collection": "block_cta_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "f6eeef10-9937-47a3-ad97-4123969f2aa1"
+  },
+  {
+    "collection": "block_cta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "fefc356b-5eab-46a7-8899-e3494f475e68"
+  },
+  {
+    "collection": "block_hero_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "d9921806-82b5-407a-b7cd-e898173c6ee3"
+  },
+  {
+    "collection": "block_hero",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "b66b897f-bc85-4313-bc4a-caf54d8ff9a3"
+  },
+  {
+    "collection": "block_manifesto_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "d8498cce-bdd0-455a-a946-77dc2aef9c8b"
+  },
+  {
+    "collection": "block_manifesto",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "31cff824-6a9a-4dea-a6e4-e23eb207f18f"
+  },
+  {
+    "collection": "block_projects_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "28abded6-5957-4918-9bc0-df0d8872e6ac"
+  },
+  {
+    "collection": "block_projects_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "7aafbb76-00d7-4152-8d70-c6e471f4cc11"
+  },
+  {
+    "collection": "block_proof_reel_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "05e42ec2-6125-4639-b78f-31995ddd72b7"
+  },
+  {
+    "collection": "block_proof_reel",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "a9eb3e1f-024e-4a71-964b-9b2cb118a557"
+  },
+  {
+    "collection": "block_services_grid_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "22c34d77-9626-4e26-acad-0eb8989130ff"
+  },
+  {
+    "collection": "block_services_grid",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "dad0e5cf-4d9f-461f-b32f-c1b1e0796e03"
+  },
+  {
+    "collection": "block_tech_stack_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "01b8952e-2df3-41d8-995c-9ecba66e5726"
+  },
+  {
+    "collection": "block_tech_stack_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "e2aca289-0dcb-4bda-aaa6-dab3b6c01fd7"
+  },
+  {
     "collection": "blog_posts",
     "action": "read",
     "permissions": {
@@ -761,6 +2549,56 @@
     "_syncId": "_sync_perm_public_files_read_folder_scoped"
   },
   {
+    "collection": "error_pages_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "26208700-e017-495a-a643-8e838687da86"
+  },
+  {
+    "collection": "error_pages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "a22b9621-a2d4-4ca5-a775-fa9889dc00a9"
+  },
+  {
+    "collection": "icons",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "name",
+      "iconify_id",
+      "svg_override",
+      "category",
+      "status",
+      "sort"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_icons_public_read"
+  },
+  {
     "collection": "illustrations",
     "action": "read",
     "permissions": {},
@@ -805,6 +2643,66 @@
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "_sync_perm_morph_shapes_public_read"
+  },
+  {
+    "collection": "nav_links_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "199ea9ad-df04-4967-b8bc-5653f6cf84f8"
+  },
+  {
+    "collection": "nav_links",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "8db31601-1402-41fc-abb7-ef2f2c806cde"
+  },
+  {
+    "collection": "pages_blocks",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "ca64ae4e-fd86-4418-8a23-2d2f385bdd1b"
+  },
+  {
+    "collection": "pages_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "05a0eac1-b0a9-4984-9b68-c8240b91d96b"
+  },
+  {
+    "collection": "pages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "c1fa7107-4480-4aaa-8fe0-01901ce46078"
   },
   {
     "collection": "projects_impact_metrics_translations",
@@ -935,6 +2833,44 @@
     "_syncId": "public-projects-read-0071-000000000050"
   },
   {
+    "collection": "route_seo_translations",
+    "action": "read",
+    "permissions": {
+      "route_seo_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_route_seo_translations_public_read"
+  },
+  {
+    "collection": "route_seo",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_route_seo_public_read"
+  },
+  {
     "collection": "services_deliverables_translations",
     "action": "read",
     "permissions": {},
@@ -1007,6 +2943,1263 @@
     "_syncId": "2a68154f-996c-4e13-bab6-126ced346b48"
   },
   {
+    "collection": "site_meta_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_site_meta_translations_public_read"
+  },
+  {
+    "collection": "site_meta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_site_meta_public_read"
+  },
+  {
+    "collection": "tech_stack_projects",
+    "action": "read",
+    "permissions": {
+      "tech_stack_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_tech_stack_projects_public_read"
+  },
+  {
+    "collection": "tech_stack_services",
+    "action": "read",
+    "permissions": {
+      "tech_stack_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_tech_stack_services_public_read"
+  },
+  {
+    "collection": "tech_stack_translations",
+    "action": "read",
+    "permissions": {
+      "tech_stack_id": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_tech_stack_translations_public_read"
+  },
+  {
+    "collection": "tech_stack",
+    "action": "read",
+    "permissions": {
+      "_and": [
+        {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      ]
+    },
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "id",
+      "name",
+      "icon_id",
+      "status",
+      "sort",
+      "translations",
+      "services",
+      "projects"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "_sync_perm_tech_stack_public_read"
+  },
+  {
+    "collection": "block_about_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "84e959e3-6779-404c-a503-3100dc5b449c"
+  },
+  {
+    "collection": "block_about_content_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "9885de13-c846-4972-85f5-5a6dacd978b5"
+  },
+  {
+    "collection": "block_about_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "ff9bb342-f0fe-4653-8382-7d4162e64378"
+  },
+  {
+    "collection": "block_about_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "072e1f4a-c9f1-4d16-a257-2b5ce6ca665b"
+  },
+  {
+    "collection": "block_about_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "7cd3d6ac-83da-40ed-96b7-dab4096b6a9e"
+  },
+  {
+    "collection": "block_about_content",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a1e5e0df-dac5-4920-b542-6cdab3ea3fa0"
+  },
+  {
+    "collection": "block_about_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e6780f04-5f1e-4457-807a-66c592bde8d5"
+  },
+  {
+    "collection": "block_about_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "5cb867a3-9f4f-4c0c-856c-9731654d05b3"
+  },
+  {
+    "collection": "block_about_intro_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e278f52f-4d44-48ea-a0e4-5a8c6211af17"
+  },
+  {
+    "collection": "block_about_intro_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e87010bf-76db-485c-989c-07789178ac8f"
+  },
+  {
+    "collection": "block_about_intro_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "5487d608-d623-441e-bc4c-e48ef8675b4e"
+  },
+  {
+    "collection": "block_about_intro_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "284518b5-c82e-432e-9ba5-935d86904845"
+  },
+  {
+    "collection": "block_about_intro",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e3d4d45a-7aee-45a1-a421-bb893755b740"
+  },
+  {
+    "collection": "block_about_intro",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "3027b10b-bc40-4b49-9bc3-a7230a0009e6"
+  },
+  {
+    "collection": "block_about_intro",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "35bf643c-1ad4-48b1-9a5d-026862e0042b"
+  },
+  {
+    "collection": "block_about_intro",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "91c3a59c-4b22-4f5c-b9cc-86d556a1f0a3"
+  },
+  {
+    "collection": "block_blog_page_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "04ce491d-cb6b-44ca-b331-3ba41f41c7c8"
+  },
+  {
+    "collection": "block_blog_page_content_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "3ab8d9d3-d141-45b8-bb15-c69962cd0b8d"
+  },
+  {
+    "collection": "block_blog_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "2054cc09-dfef-429c-80ee-405839c0afcf"
+  },
+  {
+    "collection": "block_blog_page_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "f7bdafb0-4c70-4f6b-b59e-744dbdef0a58"
+  },
+  {
+    "collection": "block_blog_page_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "c070a87f-c39a-4ffa-a1b4-7e2f69fc1254"
+  },
+  {
+    "collection": "block_blog_page_content",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "4bb24695-9745-40b3-ad92-a5f6684fd8e0"
+  },
+  {
+    "collection": "block_blog_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "05dc9f74-a2fb-4ac9-80c1-3353fc8f9f43"
+  },
+  {
+    "collection": "block_blog_page_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e129fae0-d862-4eb2-9429-9c0ca3d3e67d"
+  },
+  {
+    "collection": "block_closer_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "313f9d17-52c4-453a-b65f-0289522b2d26"
+  },
+  {
+    "collection": "block_closer_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "3e7a01ae-f7cc-44a9-99d2-3a173ec44166"
+  },
+  {
+    "collection": "block_closer_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "5fac89d7-174f-4c7b-a2f2-a405697ee330"
+  },
+  {
+    "collection": "block_closer_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "78fb4a26-d400-4d17-a1a9-fd202713a5f4"
+  },
+  {
+    "collection": "block_closer",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "2a96c744-2000-43b0-8154-e1dbaa58bce0"
+  },
+  {
+    "collection": "block_closer",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "4ced8567-e991-4db7-b2be-b324c4f3a489"
+  },
+  {
+    "collection": "block_closer",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "c65cccb2-5b55-48c3-ac6a-d349a5500b1f"
+  },
+  {
+    "collection": "block_closer",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "16b07729-7250-42d3-a80b-df451c4384a8"
+  },
+  {
+    "collection": "block_contact_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "2c350241-6bd8-409c-aaad-0967293ea5fd"
+  },
+  {
+    "collection": "block_contact_content_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "9bf9198d-1a6c-4957-88a3-f42a2118514a"
+  },
+  {
+    "collection": "block_contact_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "0d3ca4d0-43a7-4d3b-9d55-189303d0355a"
+  },
+  {
+    "collection": "block_contact_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "b4e9367f-9839-4ed3-b571-1d4a151afc33"
+  },
+  {
+    "collection": "block_contact_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "84a015ca-133c-463d-bd9e-33ab4254039b"
+  },
+  {
+    "collection": "block_contact_content",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "ff6e5bac-3792-4622-8b0e-689cad108cea"
+  },
+  {
+    "collection": "block_contact_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "5793aaef-e22b-4fc7-b6f0-60b160e6c0e6"
+  },
+  {
+    "collection": "block_contact_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a2a36a98-8079-4889-b194-a49ceeb36304"
+  },
+  {
+    "collection": "block_cta_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "f2f277b5-fb14-401e-9afd-5091b7361dbe"
+  },
+  {
+    "collection": "block_cta_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a6851b5b-0223-4f25-9c80-a7bee553c23a"
+  },
+  {
+    "collection": "block_cta_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "18523e3c-f9e0-4846-aca6-38d98c951f1d"
+  },
+  {
+    "collection": "block_cta_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "866d6fa6-ffbf-473d-afe9-549b52d53ffd"
+  },
+  {
+    "collection": "block_cta",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "99b72fb0-880f-4009-8a04-ec0c29503f08"
+  },
+  {
+    "collection": "block_cta",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "ddcef7de-4262-43d4-88f5-6d69fe2fb173"
+  },
+  {
+    "collection": "block_cta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "422ab7a7-939e-4e57-864f-713484f93c6b"
+  },
+  {
+    "collection": "block_cta",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "269eed91-ec40-44cb-bc84-b7ea7c015f6f"
+  },
+  {
+    "collection": "block_hero_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "21d5843f-16d4-468b-84f4-22e9885a2052"
+  },
+  {
+    "collection": "block_hero_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "eddfc158-8e78-45f9-9d44-a8f44d54e114"
+  },
+  {
+    "collection": "block_hero_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "af2df9d0-09dc-4452-96a7-f754ccddce28"
+  },
+  {
+    "collection": "block_hero_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "25e64dcf-52e3-4c3f-b435-052abf342210"
+  },
+  {
+    "collection": "block_hero",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "932132d7-0fc9-4651-9584-bdb196dec81a"
+  },
+  {
+    "collection": "block_hero",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e1ae06f9-afb6-491f-8a5e-4041b285f532"
+  },
+  {
+    "collection": "block_hero",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "5adb395f-9724-48de-84d9-c01647e5c8d3"
+  },
+  {
+    "collection": "block_hero",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "4c0e242f-05ff-4fc9-bf50-a2e9ab94ee8a"
+  },
+  {
+    "collection": "block_manifesto_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "c37ca3c3-baea-49bf-9b1b-012b93399733"
+  },
+  {
+    "collection": "block_manifesto_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "3de3cb3d-7ec8-4e7f-8384-95366f8eb428"
+  },
+  {
+    "collection": "block_manifesto_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "bbc37111-4254-44ae-9b2b-99aee8157b27"
+  },
+  {
+    "collection": "block_manifesto_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "810844d3-b1e7-43ac-bb4a-8e7b36d0d466"
+  },
+  {
+    "collection": "block_manifesto",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e3a0186b-94fd-4634-95d5-849335dee8dc"
+  },
+  {
+    "collection": "block_manifesto",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "f18571cb-1b4e-4ef4-a51f-fcb8b6571892"
+  },
+  {
+    "collection": "block_manifesto",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "5a053870-86b3-47ab-9760-2bcc0b9c443f"
+  },
+  {
+    "collection": "block_manifesto",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "96d661ac-3b0b-4759-b23e-c9c229ecc0b1"
+  },
+  {
+    "collection": "block_projects_page_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "1a09bb27-df0f-4db8-89fd-f7964deb382b"
+  },
+  {
+    "collection": "block_projects_page_content_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "6f4ccc04-4d80-4b44-af1c-080bdaff7084"
+  },
+  {
+    "collection": "block_projects_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "9a5d6e8e-8e3e-43f5-b747-70617816cdcd"
+  },
+  {
+    "collection": "block_projects_page_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "afa3366f-b381-4cb4-a397-4069700dc5e3"
+  },
+  {
+    "collection": "block_projects_page_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "037aefd4-dec5-4926-aebe-cebe022269e1"
+  },
+  {
+    "collection": "block_projects_page_content",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "600b44e5-007a-4057-b630-74cbd7a49df5"
+  },
+  {
+    "collection": "block_projects_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "d171d134-bc39-4749-a2ca-eaccd59e8b81"
+  },
+  {
+    "collection": "block_projects_page_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "76de25d7-e383-4151-9e89-fc9637c190fa"
+  },
+  {
+    "collection": "block_proof_reel_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "f05add17-9334-4cd1-92f4-d5d7753a97c7"
+  },
+  {
+    "collection": "block_proof_reel_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "4b0c2ca6-f15b-4925-9309-fe32adcab18b"
+  },
+  {
+    "collection": "block_proof_reel_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "61a1d40e-4342-4fc8-b6af-2e4ae3ca1f43"
+  },
+  {
+    "collection": "block_proof_reel_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a065772e-ef9b-4520-ad8a-ee74fc75f7be"
+  },
+  {
+    "collection": "block_proof_reel",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "c516b9d8-91fe-4066-8064-29617f695730"
+  },
+  {
+    "collection": "block_proof_reel",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "ce0550c3-c957-47a8-a4e4-7bb36b4bdf8d"
+  },
+  {
+    "collection": "block_proof_reel",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "d5701856-49ac-4f2b-8f2d-2de30efd53c2"
+  },
+  {
+    "collection": "block_proof_reel",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e4ff769a-8763-4e24-a173-520959d015f2"
+  },
+  {
+    "collection": "block_services_grid_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "53515887-e986-4532-95d2-6197a5ed2b1d"
+  },
+  {
+    "collection": "block_services_grid_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "c7cc028f-2161-4424-91f4-7d584b8a8b21"
+  },
+  {
+    "collection": "block_services_grid_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "2a26fb38-40e0-4693-b873-c959040431f5"
+  },
+  {
+    "collection": "block_services_grid_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "045b9d2b-5d67-4088-acb2-861bc76ddf91"
+  },
+  {
+    "collection": "block_services_grid",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e1c718e6-44d2-4753-b350-ffab35bf6190"
+  },
+  {
+    "collection": "block_services_grid",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "853c8ca9-bb0b-4e63-841e-e7b36b8dccf3"
+  },
+  {
+    "collection": "block_services_grid",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "cc56cac6-98c4-4560-b488-9b1773c1b694"
+  },
+  {
+    "collection": "block_services_grid",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "8e05ceb7-279b-48ec-928b-453983dd3aa1"
+  },
+  {
+    "collection": "block_tech_stack_page_content_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "ce99d6d2-99f7-4e5e-811c-546df718c94e"
+  },
+  {
+    "collection": "block_tech_stack_page_content_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "aadb645b-11a6-4ac8-950f-0bfb587625ec"
+  },
+  {
+    "collection": "block_tech_stack_page_content_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "b3cc5a66-574f-4f22-8441-964e5869c938"
+  },
+  {
+    "collection": "block_tech_stack_page_content_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "6438bec2-b23a-4317-b5e8-7eb74f22af09"
+  },
+  {
+    "collection": "block_tech_stack_page_content",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "3d5f7112-b9d0-4148-9280-c1434bf49e75"
+  },
+  {
+    "collection": "block_tech_stack_page_content",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "2b8b8782-9b2e-42a5-952a-4886185e78e7"
+  },
+  {
+    "collection": "block_tech_stack_page_content",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "99a3fa6e-41a5-4b63-9ad2-6849fccba294"
+  },
+  {
+    "collection": "block_tech_stack_page_content",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "8ed8ed63-02ea-4a58-a193-18675342dade"
+  },
+  {
     "collection": "blog_posts",
     "action": "create",
     "permissions": {},
@@ -1053,6 +4246,150 @@
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_blog_posts_human_update"
+  },
+  {
+    "collection": "error_pages_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "46a61944-ffa1-439a-a9c1-5ab1a21b08ff"
+  },
+  {
+    "collection": "error_pages_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a75397f7-7a82-49cd-b2d6-98bea2094e9f"
+  },
+  {
+    "collection": "error_pages_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e1524c4d-46e3-46b7-8c9e-253a9c623c29"
+  },
+  {
+    "collection": "error_pages_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "74e9dac8-437f-45b9-813e-5fa61fbc56aa"
+  },
+  {
+    "collection": "error_pages",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "8a0493ae-1fd7-4725-ba6f-03894cf6a37e"
+  },
+  {
+    "collection": "error_pages",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "91a32ade-0757-4bd3-93f4-1f56ed7951a2"
+  },
+  {
+    "collection": "error_pages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "525f2966-90c3-4210-8740-ddc26e919ff2"
+  },
+  {
+    "collection": "error_pages",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "73fb0611-465e-4c7c-9269-dbb8b01c5f81"
+  },
+  {
+    "collection": "icons",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_icons_human_create"
+  },
+  {
+    "collection": "icons",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_icons_human_delete"
+  },
+  {
+    "collection": "icons",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_icons_human_read"
+  },
+  {
+    "collection": "icons",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_icons_human_update"
   },
   {
     "collection": "illustrations",
@@ -1149,6 +4486,246 @@
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_morph_shapes_human_update"
+  },
+  {
+    "collection": "nav_links_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "334c3a48-2884-40bf-be3b-db4f5eafd81f"
+  },
+  {
+    "collection": "nav_links_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "eec126ba-39b7-4fc7-9fed-9236c76ca390"
+  },
+  {
+    "collection": "nav_links_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "0f7295a0-654a-421b-9347-0c6fce36b157"
+  },
+  {
+    "collection": "nav_links_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "db509128-9692-4c5c-a40f-9dcdacd56d00"
+  },
+  {
+    "collection": "nav_links",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "42a7e202-0331-4925-a31b-a3f901e9d7f7"
+  },
+  {
+    "collection": "nav_links",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "3610d28c-ede3-48a8-b388-d35147959d82"
+  },
+  {
+    "collection": "nav_links",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "6f8fdb18-6ef6-40cc-bf69-f834a9d12002"
+  },
+  {
+    "collection": "nav_links",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "d751231e-8c6c-4bb0-831e-327b4f8afa44"
+  },
+  {
+    "collection": "pages_blocks",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "073d60a2-a508-46a8-8eef-b3ba95f6e4d0"
+  },
+  {
+    "collection": "pages_blocks",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "7648c66e-7a32-424d-9d81-e0dc863ca8a5"
+  },
+  {
+    "collection": "pages_blocks",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a91c575d-2bcf-41d7-94df-8e6f6fdedd35"
+  },
+  {
+    "collection": "pages_blocks",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "af59e192-4307-497d-873c-bb34b48a4065"
+  },
+  {
+    "collection": "pages_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "66277267-e52d-40d5-8b89-3ee13d31620b"
+  },
+  {
+    "collection": "pages_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "bcf83aae-d1f5-43aa-8d97-21ab48ee734e"
+  },
+  {
+    "collection": "pages_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a9d1805f-b0c1-42da-a4d9-c8750b5964b0"
+  },
+  {
+    "collection": "pages_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "56902f35-37d0-48b9-8365-582c779bbbc7"
+  },
+  {
+    "collection": "pages",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "4439fe1e-1522-4add-b20d-34b8fb3b492f"
+  },
+  {
+    "collection": "pages",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "94bb2eeb-3680-4087-9fbe-1db763ac4c0a"
+  },
+  {
+    "collection": "pages",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "6653cb4f-b1b0-4b07-b759-0800be9980c3"
+  },
+  {
+    "collection": "pages",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "f0e7490b-2f35-4747-9aa6-ac43d798efd6"
   },
   {
     "collection": "projects_impact_metrics_translations",
@@ -1487,743 +5064,6 @@
     "_syncId": "he-projects-update-0045-000000000032"
   },
   {
-    "collection": "tech_stack",
-    "action": "create",
-    "permissions": {},
-    "validation": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_ai_create"
-  },
-  {
-    "collection": "tech_stack",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_ai_read"
-  },
-  {
-    "collection": "tech_stack",
-    "action": "update",
-    "permissions": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "validation": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_ai_update"
-  },
-  {
-    "collection": "tech_stack",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_human_create"
-  },
-  {
-    "collection": "tech_stack",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_human_read"
-  },
-  {
-    "collection": "tech_stack",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_human_update"
-  },
-  {
-    "collection": "tech_stack",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_human_delete"
-  },
-  {
-    "collection": "tech_stack",
-    "action": "read",
-    "permissions": {
-      "_and": [
-        {
-          "status": {
-            "_eq": "published"
-          }
-        }
-      ]
-    },
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "id",
-      "name",
-      "icon_id",
-      "status",
-      "sort",
-      "translations",
-      "services",
-      "projects"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_tech_stack_public_read"
-  },
-  {
-    "collection": "tech_stack_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_translations_ai_create"
-  },
-  {
-    "collection": "tech_stack_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_translations_ai_read"
-  },
-  {
-    "collection": "tech_stack_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_translations_ai_update"
-  },
-  {
-    "collection": "tech_stack_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_translations_human_create"
-  },
-  {
-    "collection": "tech_stack_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_translations_human_read"
-  },
-  {
-    "collection": "tech_stack_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_translations_human_update"
-  },
-  {
-    "collection": "tech_stack_translations",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_translations_human_delete"
-  },
-  {
-    "collection": "tech_stack_translations",
-    "action": "read",
-    "permissions": {
-      "tech_stack_id": {
-        "status": {
-          "_eq": "published"
-        }
-      }
-    },
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_tech_stack_translations_public_read"
-  },
-  {
-    "collection": "tech_stack_services",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_services_ai_create"
-  },
-  {
-    "collection": "tech_stack_services",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_services_ai_read"
-  },
-  {
-    "collection": "tech_stack_services",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_services_ai_update"
-  },
-  {
-    "collection": "tech_stack_services",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_services_human_create"
-  },
-  {
-    "collection": "tech_stack_services",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_services_human_read"
-  },
-  {
-    "collection": "tech_stack_services",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_services_human_update"
-  },
-  {
-    "collection": "tech_stack_services",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_services_human_delete"
-  },
-  {
-    "collection": "tech_stack_services",
-    "action": "read",
-    "permissions": {
-      "tech_stack_id": {
-        "status": {
-          "_eq": "published"
-        }
-      }
-    },
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_tech_stack_services_public_read"
-  },
-  {
-    "collection": "tech_stack_projects",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_projects_ai_create"
-  },
-  {
-    "collection": "tech_stack_projects",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_projects_ai_read"
-  },
-  {
-    "collection": "tech_stack_projects",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_projects_ai_update"
-  },
-  {
-    "collection": "tech_stack_projects",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_projects_human_create"
-  },
-  {
-    "collection": "tech_stack_projects",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_projects_human_read"
-  },
-  {
-    "collection": "tech_stack_projects",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_projects_human_update"
-  },
-  {
-    "collection": "tech_stack_projects",
-    "action": "delete",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_tech_stack_projects_human_delete"
-  },
-  {
-    "collection": "tech_stack_projects",
-    "action": "read",
-    "permissions": {
-      "tech_stack_id": {
-        "status": {
-          "_eq": "published"
-        }
-      }
-    },
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_tech_stack_projects_public_read"
-  },
-  {
-    "collection": "site_meta",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_site_meta_ai_read"
-  },
-  {
-    "collection": "site_meta",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_site_meta_ai_update"
-  },
-  {
-    "collection": "site_meta",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_site_meta_human_read"
-  },
-  {
-    "collection": "site_meta",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_site_meta_human_update"
-  },
-  {
-    "collection": "site_meta",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_site_meta_public_read"
-  },
-  {
-    "collection": "site_meta_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_site_meta_translations_ai_create"
-  },
-  {
-    "collection": "site_meta_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_site_meta_translations_ai_read"
-  },
-  {
-    "collection": "site_meta_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_site_meta_translations_ai_update"
-  },
-  {
-    "collection": "site_meta_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_site_meta_translations_human_create"
-  },
-  {
-    "collection": "site_meta_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_site_meta_translations_human_read"
-  },
-  {
-    "collection": "site_meta_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_site_meta_translations_human_update"
-  },
-  {
-    "collection": "site_meta_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_site_meta_translations_public_read"
-  },
-  {
-    "collection": "route_seo",
-    "action": "create",
-    "permissions": {},
-    "validation": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_route_seo_ai_create"
-  },
-  {
-    "collection": "route_seo",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_route_seo_ai_read"
-  },
-  {
-    "collection": "route_seo",
-    "action": "update",
-    "permissions": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "validation": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_route_seo_ai_update"
-  },
-  {
-    "collection": "route_seo",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_route_seo_human_create"
-  },
-  {
-    "collection": "route_seo",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_route_seo_human_read"
-  },
-  {
-    "collection": "route_seo",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_route_seo_human_update"
-  },
-  {
-    "collection": "route_seo",
-    "action": "read",
-    "permissions": {
-      "_and": [
-        {
-          "status": {
-            "_eq": "published"
-          }
-        }
-      ]
-    },
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_route_seo_public_read"
-  },
-  {
-    "collection": "route_seo_translations",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_route_seo_translations_ai_create"
-  },
-  {
-    "collection": "route_seo_translations",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_route_seo_translations_ai_read"
-  },
-  {
-    "collection": "route_seo_translations",
-    "action": "update",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_route_seo_translations_ai_update"
-  },
-  {
     "collection": "route_seo_translations",
     "action": "create",
     "permissions": {},
@@ -2234,6 +5074,18 @@
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "_sync_perm_route_seo_translations_human_create"
+  },
+  {
+    "collection": "route_seo_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_translations_human_delete"
   },
   {
     "collection": "route_seo_translations",
@@ -2260,22 +5112,16 @@
     "_syncId": "_sync_perm_route_seo_translations_human_update"
   },
   {
-    "collection": "route_seo_translations",
-    "action": "read",
-    "permissions": {
-      "route_seo_id": {
-        "status": {
-          "_eq": "published"
-        }
-      }
-    },
+    "collection": "route_seo",
+    "action": "create",
+    "permissions": {},
     "validation": null,
     "presets": null,
     "fields": [
       "*"
     ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_route_seo_translations_public_read"
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_human_create"
   },
   {
     "collection": "route_seo",
@@ -2290,8 +5136,8 @@
     "_syncId": "_sync_perm_route_seo_human_delete"
   },
   {
-    "collection": "route_seo_translations",
-    "action": "delete",
+    "collection": "route_seo",
+    "action": "read",
     "permissions": {},
     "validation": null,
     "presets": null,
@@ -2299,7 +5145,31 @@
       "*"
     ],
     "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_route_seo_translations_human_delete"
+    "_syncId": "_sync_perm_route_seo_human_read"
+  },
+  {
+    "collection": "route_seo",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_route_seo_human_update"
+  },
+  {
+    "collection": "site_meta_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_translations_human_create"
   },
   {
     "collection": "site_meta_translations",
@@ -2314,79 +5184,7 @@
     "_syncId": "_sync_perm_site_meta_translations_human_delete"
   },
   {
-    "collection": "icons",
-    "action": "create",
-    "permissions": {},
-    "validation": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_icons_ai_create"
-  },
-  {
-    "collection": "icons",
-    "action": "read",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_icons_ai_read"
-  },
-  {
-    "collection": "icons",
-    "action": "update",
-    "permissions": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "validation": {
-      "_and": [
-        {
-          "status": {
-            "_neq": "published"
-          }
-        }
-      ]
-    },
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_ai_editor_policy",
-    "_syncId": "_sync_perm_icons_ai_update"
-  },
-  {
-    "collection": "icons",
-    "action": "create",
-    "permissions": {},
-    "validation": null,
-    "presets": null,
-    "fields": [
-      "*"
-    ],
-    "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_icons_human_create"
-  },
-  {
-    "collection": "icons",
+    "collection": "site_meta_translations",
     "action": "read",
     "permissions": {},
     "validation": null,
@@ -2395,10 +5193,10 @@
       "*"
     ],
     "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_icons_human_read"
+    "_syncId": "_sync_perm_site_meta_translations_human_read"
   },
   {
-    "collection": "icons",
+    "collection": "site_meta_translations",
     "action": "update",
     "permissions": {},
     "validation": null,
@@ -2407,10 +5205,46 @@
       "*"
     ],
     "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_icons_human_update"
+    "_syncId": "_sync_perm_site_meta_translations_human_update"
   },
   {
-    "collection": "icons",
+    "collection": "site_meta",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_human_read"
+  },
+  {
+    "collection": "site_meta",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_site_meta_human_update"
+  },
+  {
+    "collection": "tech_stack_projects",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_projects_human_create"
+  },
+  {
+    "collection": "tech_stack_projects",
     "action": "delete",
     "permissions": {},
     "validation": null,
@@ -2419,32 +5253,174 @@
       "*"
     ],
     "policy": "_sync_human_editor_policy",
-    "_syncId": "_sync_perm_icons_human_delete"
+    "_syncId": "_sync_perm_tech_stack_projects_human_delete"
   },
   {
-    "collection": "icons",
+    "collection": "tech_stack_projects",
     "action": "read",
-    "permissions": {
-      "_and": [
-        {
-          "status": {
-            "_eq": "published"
-          }
-        }
-      ]
-    },
+    "permissions": {},
     "validation": null,
     "presets": null,
     "fields": [
-      "id",
-      "name",
-      "iconify_id",
-      "svg_override",
-      "category",
-      "status",
-      "sort"
+      "*"
     ],
-    "policy": "_sync_default_public_policy",
-    "_syncId": "_sync_perm_icons_public_read"
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_projects_human_read"
+  },
+  {
+    "collection": "tech_stack_projects",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_projects_human_update"
+  },
+  {
+    "collection": "tech_stack_services",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_services_human_create"
+  },
+  {
+    "collection": "tech_stack_services",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_services_human_delete"
+  },
+  {
+    "collection": "tech_stack_services",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_services_human_read"
+  },
+  {
+    "collection": "tech_stack_services",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_services_human_update"
+  },
+  {
+    "collection": "tech_stack_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_translations_human_create"
+  },
+  {
+    "collection": "tech_stack_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_translations_human_delete"
+  },
+  {
+    "collection": "tech_stack_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_translations_human_read"
+  },
+  {
+    "collection": "tech_stack_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_translations_human_update"
+  },
+  {
+    "collection": "tech_stack",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_human_create"
+  },
+  {
+    "collection": "tech_stack",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_human_delete"
+  },
+  {
+    "collection": "tech_stack",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_human_read"
+  },
+  {
+    "collection": "tech_stack",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "_sync_perm_tech_stack_human_update"
   }
 ]

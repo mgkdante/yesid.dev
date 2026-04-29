@@ -1,7 +1,7 @@
 {
   "collection": "block_about_intro_translations",
   "field": "block_about_intro_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "block_about_intro_translations",
     "conditions": null,

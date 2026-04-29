@@ -1,7 +1,7 @@
 {
   "collection": "block_manifesto_translations",
   "field": "block_manifesto_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "block_manifesto_translations",
     "conditions": null,

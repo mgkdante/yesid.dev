@@ -1,7 +1,7 @@
 {
   "collection": "error_pages_translations",
   "field": "error_pages_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "error_pages_translations",
     "conditions": null,

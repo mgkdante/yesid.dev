@@ -1,7 +1,7 @@
 {
   "collection": "block_tech_stack_page_content_translations",
   "field": "block_tech_stack_page_content_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "block_tech_stack_page_content_translations",
     "conditions": null,

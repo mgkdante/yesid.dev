@@ -13,7 +13,7 @@
     "hidden": false,
     "icon": "person",
     "item_duplication_fields": null,
-    "note": "About teaser block \u2014 home page About section (NOT /about page). Non-translatable: stack_items (string[]) on parent. All LocalizedString leaves in translations.",
+    "note": "About teaser block — home page About section (NOT /about page). Non-translatable: stack_items (string[]) on parent. All LocalizedString leaves in translations.",
     "preview_url": null,
     "singleton": false,
     "sort": null,

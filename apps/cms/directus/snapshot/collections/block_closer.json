@@ -13,7 +13,7 @@
     "hidden": false,
     "icon": "flag",
     "item_duplication_fields": null,
-    "note": "Closer block \u2014 TERMINUS / end-of-line section of /. Non-translatable: cta_href (string), attribution_url (string) on parent. All LocalizedString leaves in translations as JSON columns.",
+    "note": "Closer block — TERMINUS / end-of-line section of /. Non-translatable: cta_href (string), attribution_url (string) on parent. All LocalizedString leaves in translations as JSON columns.",
     "preview_url": null,
     "singleton": false,
     "sort": null,

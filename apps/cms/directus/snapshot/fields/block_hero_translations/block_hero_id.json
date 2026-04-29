@@ -1,7 +1,7 @@
 {
   "collection": "block_hero_translations",
   "field": "block_hero_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "block_hero_translations",
     "conditions": null,

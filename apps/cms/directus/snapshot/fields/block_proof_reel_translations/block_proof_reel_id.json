@@ -1,7 +1,7 @@
 {
   "collection": "block_proof_reel_translations",
   "field": "block_proof_reel_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "block_proof_reel_translations",
     "conditions": null,

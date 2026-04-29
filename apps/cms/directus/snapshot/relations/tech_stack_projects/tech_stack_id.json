@@ -12,14 +12,5 @@
     "one_deselect_action": "nullify",
     "one_field": "projects",
     "sort_field": null
-  },
-  "schema": {
-    "table": "tech_stack_projects",
-    "column": "tech_stack_id",
-    "foreign_key_table": "tech_stack",
-    "foreign_key_column": "id",
-    "constraint_name": "tech_stack_projects_tech_stack_id_foreign",
-    "on_update": "NO ACTION",
-    "on_delete": "CASCADE"
   }
 }

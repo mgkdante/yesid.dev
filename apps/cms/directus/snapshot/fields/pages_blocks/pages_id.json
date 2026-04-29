@@ -1,13 +1,13 @@
 {
-  "collection": "block_cta_translations",
-  "field": "block_cta_id",
+  "collection": "pages_blocks",
+  "field": "pages_id",
   "type": "uuid",
   "meta": {
-    "collection": "block_cta_translations",
+    "collection": "pages_blocks",
     "conditions": null,
     "display": null,
     "display_options": null,
-    "field": "block_cta_id",
+    "field": "pages_id",
     "group": null,
     "hidden": true,
     "interface": "select-dropdown-m2o",
@@ -24,21 +24,21 @@
     "width": "full"
   },
   "schema": {
-    "name": "block_cta_id",
-    "table": "block_cta_translations",
+    "name": "pages_id",
+    "table": "pages_blocks",
     "data_type": "uuid",
     "default_value": null,
     "max_length": null,
     "numeric_precision": null,
     "numeric_scale": null,
-    "is_nullable": false,
+    "is_nullable": true,
     "is_unique": false,
     "is_indexed": false,
     "is_primary_key": false,
     "is_generated": false,
     "generation_expression": null,
     "has_auto_increment": false,
-    "foreign_key_table": "block_cta",
+    "foreign_key_table": "pages",
     "foreign_key_column": "id"
   }
 }

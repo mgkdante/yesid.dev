@@ -14,8 +14,14 @@
     "note": "Display order within a placement slot. 1 = always visible, 2 = hidden on narrow viewports. Matches NavLinkSchema's z.union([z.literal(1), z.literal(2)]) so parsePort accepts Directus payloads without coercion.",
     "options": {
       "choices": [
-        { "text": "1 — always visible", "value": 1 },
-        { "text": "2 — hidden on narrow viewports", "value": 2 }
+        {
+          "text": "1 — always visible",
+          "value": 1
+        },
+        {
+          "text": "2 — hidden on narrow viewports",
+          "value": 2
+        }
       ]
     },
     "readonly": false,

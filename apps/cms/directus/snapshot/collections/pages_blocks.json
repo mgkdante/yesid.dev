@@ -1,19 +1,19 @@
 {
-  "collection": "block_about_content_translations",
+  "collection": "pages_blocks",
   "meta": {
     "accountability": "all",
     "archive_app_filter": true,
     "archive_field": null,
     "archive_value": null,
     "collapse": "open",
-    "collection": "block_about_content_translations",
+    "collection": "pages_blocks",
     "color": null,
     "display_template": null,
     "group": null,
     "hidden": true,
-    "icon": "translate",
+    "icon": "import_export",
     "item_duplication_fields": null,
-    "note": "Translated copy for block_about_content. 12 JSON columns — one per top-level AboutContent chunk.",
+    "note": "M2A junction between pages and the 12 block_* collections. Sort field controls block order on a page.",
     "preview_url": null,
     "singleton": false,
     "sort": null,
@@ -23,6 +23,6 @@
     "versioning": false
   },
   "schema": {
-    "name": "block_about_content_translations"
+    "name": "pages_blocks"
   }
 }

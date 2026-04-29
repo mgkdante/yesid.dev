@@ -13,8 +13,8 @@
     "interface": "input",
     "note": "Browse [icon-sets.iconify.design](https://icon-sets.iconify.design/) — click any icon, copy the ID shown under it (e.g. logos:react, mdi:home).",
     "options": {
-      "placeholder": "e.g. logos:react, mdi:home, skill-icons:python",
-      "note": "Browse [icon-sets.iconify.design](https://icon-sets.iconify.design/) — click any icon, copy the ID shown under it (e.g. logos:react, mdi:home)."
+      "note": "Browse [icon-sets.iconify.design](https://icon-sets.iconify.design/) — click any icon, copy the ID shown under it (e.g. logos:react, mdi:home).",
+      "placeholder": "e.g. logos:react, mdi:home, skill-icons:python"
     },
     "readonly": false,
     "required": false,

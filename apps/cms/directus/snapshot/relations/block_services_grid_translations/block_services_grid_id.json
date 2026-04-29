@@ -18,7 +18,7 @@
     "column": "block_services_grid_id",
     "foreign_key_table": "block_services_grid",
     "foreign_key_column": "id",
-    "constraint_name": "block_services_grid_translations_block_services_grid_id_foreign",
+    "constraint_name": "block_services_grid_translations_block_ser__32357913_foreign",
     "on_update": "NO ACTION",
     "on_delete": "CASCADE"
   }
