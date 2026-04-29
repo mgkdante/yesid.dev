@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
+import { HeroAnimContentSchema } from './hero-anim';
 import type { HeroContent } from '../types/content';
 
 export const HeroContentSchema = z.object({
@@ -29,4 +30,8 @@ export const HeroContentSchema = z.object({
 		label: LocalizedStringSchema,
 		helper: LocalizedStringSchema,
 	}),
+	/** Hero scroll-hint chrome — merged from hero_anim JSON column in
+	 *  block_hero_translations. Carried through typed PageData so
+	 *  content.heroAnim() reads directly without an out-of-band cache. */
+	heroAnim: HeroAnimContentSchema,
 }) satisfies z.ZodType<HeroContent>;

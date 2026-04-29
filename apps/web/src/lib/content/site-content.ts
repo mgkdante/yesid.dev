@@ -43,6 +43,11 @@ export const heroContent = {
 			en: 'Refreshes metrics + query results from the live pipeline',
 		} satisfies LocalizedString,
 	},
+	/** Hero scroll-hint chrome \u2014 included here so heroContent satisfies HeroContent
+	 *  (heroAnim was added to HeroContent in slice-18i Phase 4 fix-up). The static
+	 *  adapter still exposes content.heroAnim() for direct callsites that only need
+	 *  the scroll-hint. */
+	heroAnim: heroAnimContent,
 } as const;
 
 export const manifestoContent = {

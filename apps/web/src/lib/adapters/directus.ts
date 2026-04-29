@@ -324,21 +324,6 @@ export const PAGE_FIELDS: string[] = [
  * found, and throws via parsePort with 'pages.bySlug' label when the raw
  * shape fails PageSchema validation.
  */
-/**
- * Module-level raw page cache: slug → pre-parse transformed row.
- * Stores the output of `transformPageRow` (with `_heroAnim` and other
- * discriminator keys intact) so `heroAnim()` can project from the enriched
- * shape after `parsePort` has stripped those unknown keys from the parsed
- * PageData. Keyed by slug; cleared on module reload (test isolation is fine
- * because vitest reloads the module per test file).
- *
- * Using module-level (not ctx) because ctx is optional and `heroAnim()` needs
- * access regardless. The risk of stale data across requests is negligible in
- * SSR (each request creates a new module instance in the edge worker model)
- * and acceptable for tests (each test file gets a fresh module).
- */
-const rawPageRowCache = new Map<string, unknown>();
-
 export async function loadPage(slug: string, ctx?: PreviewContext): Promise<PageData> {
 	const cache = ctx?.pageCache as Map<string, Promise<PageData>> | undefined;
 
@@ -362,35 +347,12 @@ export async function loadPage(slug: string, ctx?: PreviewContext): Promise<Page
 			// Directus and produces LocalizedString-shaped output that PageSchema
 			// expects. See transformPageRow / toLocalizedJSON / transformBlock<X>.
 			const transformed = transformPageRow(raw[0] as unknown);
-			// Store the pre-parse transformed row so heroAnim() can project
-			// the _heroAnim discriminator that parsePort strips from PageData.
-			rawPageRowCache.set(slug, transformed);
 			return parsePort('pages.bySlug', PageSchema, transformed);
 		});
 
 	cache?.set(slug, promise);
 
 	return promise;
-}
-
-/**
- * Read a pre-parse raw block item for a given slug + collection.
- * Returns the transformed (but not Zod-validated) block item, which retains
- * discriminator keys like `_heroAnim` that `parsePort` strips.
- * Used internally by `heroAnim()`.
- */
-function getRawBlockItem(slug: string, collection: string): unknown {
-	const rawPage = rawPageRowCache.get(slug) as Record<string, unknown> | undefined;
-	if (!rawPage) return undefined;
-	const blocks = Array.isArray(rawPage.blocks) ? rawPage.blocks : [];
-	const match = blocks.find(
-		(b: unknown) =>
-			b !== null &&
-			typeof b === 'object' &&
-			(b as Record<string, unknown>).collection === collection,
-	);
-	if (!match) return undefined;
-	return (match as Record<string, unknown>).item;
 }
 
 // ---------------------------------------------------------------------------
@@ -644,25 +606,35 @@ function toLSJSON(
 }
 
 /**
- * Transform raw `block_hero` Directus item into HeroContent.
+ * Transform raw `block_hero` Directus item into HeroContent (including heroAnim).
  *
  * The `headline` and `sqlPanel` fields are JSON columns (per Task 1.3 pattern):
  * each locale row stores the full nested structure as JSON. `subheadline`,
  * `subtitle`, `ctaWork`, `ctaContact` are flat scalar columns handled via
  * `toLocalizedString`. The `refreshButton` is also a JSON column.
  *
- * Task 4.0: also merges `hero_anim` JSON column (stored on block_hero_translations)
- * into the returned shape so `content.heroAnim()` can project from the same item.
+ * `heroAnim` is merged from the `hero_anim` JSON column in block_hero_translations
+ * and carried through typed PageData — no separate module-level cache needed.
  */
-export function transformBlockHero(raw: RawBlockItem): HeroContent & { _heroAnim: HeroAnimContent } {
+export function transformBlockHero(raw: RawBlockItem): HeroContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
 	const headline = toLSJSON(tr, 'headline') as HeroContent['headline'];
 	const sqlPanel = toLSJSON(tr, 'sql_panel') as HeroContent['sqlPanel'];
 	const refreshButton = toLSJSON(tr, 'refresh_button') as HeroContent['refreshButton'];
-	const heroAnimRaw = toLSJSON(tr, 'hero_anim') as { scrollDown?: LocalizedString } | null;
-	const scrollDown = (heroAnimRaw && typeof heroAnimRaw === 'object' && 'scrollDown' in heroAnimRaw)
-		? (heroAnimRaw as { scrollDown: LocalizedString }).scrollDown
-		: toLS(tr, 'scroll_down');
+	// hero_anim is a JSON column; scrollDown inside it may be a bare string (per-locale)
+	// or already a LocalizedString (if the seeder pre-merged it). Normalise to LocalizedString.
+	const heroAnimRaw = toLSJSON(tr, 'hero_anim') as { scrollDown?: LocalizedString | string } | null;
+	const scrollDownRaw = heroAnimRaw && typeof heroAnimRaw === 'object' && 'scrollDown' in heroAnimRaw
+		? heroAnimRaw.scrollDown
+		: undefined;
+	// scrollDownRaw is either a LocalizedString (object with .en) or a plain string
+	// that toLocalizedJSON already merged across locales, or undefined.
+	// toLocalizedJSON wraps string leaves as LocalizedStrings, so scrollDownRaw
+	// should already be a LocalizedString when the column is a JSON object leaf.
+	const scrollDown: HeroAnimContent['scrollDown'] =
+		scrollDownRaw && typeof scrollDownRaw === 'object' && 'en' in scrollDownRaw
+			? (scrollDownRaw as LocalizedString)
+			: toLS(tr, 'scroll_down');
 	return {
 		headline,
 		subheadline: toLS(tr, 'subheadline'),
@@ -671,37 +643,94 @@ export function transformBlockHero(raw: RawBlockItem): HeroContent & { _heroAnim
 		ctaContact: toLS(tr, 'cta_contact'),
 		sqlPanel,
 		refreshButton,
-		_heroAnim: { scrollDown },
+		heroAnim: { scrollDown },
 	};
 }
 
 /**
  * Transform raw `block_manifesto` Directus item into ManifestoContent.
+ *
  * `ticks` is a non-translatable string array on the parent row.
- * `hidden_transit_lines` is a non-translatable array of `{ name, color }` on the parent row,
- * but `name` may be in a JSON column per locale (if seeded that way) — here we read
- * it as a JSON column to support both patterns.
+ *
+ * `pills` is a per-locale JSON column. Each element has `label` (LocalizedString)
+ * and `serviceId` (plain string — a stable identifier, NOT translatable).
+ * toLocalizedJSON would wrap `serviceId` as a LocalizedString, which is wrong.
+ * Instead we merge pills manually: `label` from each locale row, `serviceId`
+ * from the en row (same value in every locale — it is a content-model ID).
+ *
+ * `hidden_transit_lines` is stored under `block_manifesto_translations` (per the
+ * Phase 1 schema). Each locale row has the same array value but `name` is the
+ * translatable leaf (LocalizedString) while `color` is a plain hex string.
+ * We merge across locales: `name` becomes a LocalizedString, `color` reads
+ * from the en row as a bare string.
  */
 export function transformBlockManifesto(raw: RawBlockItem): ManifestoContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
 	const statement = toLSJSON(tr, 'statement') as ManifestoContent['statement'];
 	const terminal = toLSJSON(tr, 'terminal') as ManifestoContent['terminal'];
-	const pills = toLSJSON(tr, 'pills') as Array<{ label: LocalizedString; serviceId: string }>;
 	const edgeLeft = toLSJSON(tr, 'edge_left') as ManifestoContent['edgeLeft'];
 	const edgeRight = toLSJSON(tr, 'edge_right') as ManifestoContent['edgeRight'];
 	const edgeBottom = toLSJSON(tr, 'edge_bottom') as ManifestoContent['edgeBottom'];
 	const transit = toLSJSON(tr, 'transit') as ManifestoContent['transit'];
 	const ticks = Array.isArray(raw.ticks) ? (raw.ticks as string[]) : [];
-	const rawHiddenLines = Array.isArray(raw.hidden_transit_lines)
-		? (raw.hidden_transit_lines as Array<Record<string, unknown>>)
-		: [];
-	const hiddenTransitLines = rawHiddenLines.map((line) => ({
-		name: typeof line.name === 'string'
-			? { en: line.name }
-			: (line.name as LocalizedString) ?? { en: '' },
-		color: typeof line.color === 'string' ? line.color : '',
-	}));
-	return { statement, terminal, pills: pills ?? [], edgeLeft, edgeRight, edgeBottom, transit, ticks, hiddenTransitLines };
+
+	// --- pills: mixed-content JSON column ---
+	// Collect per-locale pill arrays. serviceId is plain (same across locales);
+	// label is the translatable leaf.
+	const pillsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const rawPills = row.pills;
+		if (Array.isArray(rawPills)) {
+			pillsByLocale.set(code, rawPills as Array<Record<string, unknown>>);
+		}
+	}
+	const enPills = pillsByLocale.get('en') ?? [];
+	const pills: ManifestoContent['pills'] = enPills.map((enPill, idx) => {
+		const labelLS: LocalizedString = { en: typeof enPill.label === 'string' ? enPill.label : '' };
+		const frPill = pillsByLocale.get('fr')?.[idx];
+		if (frPill && typeof frPill.label === 'string' && frPill.label.length > 0) {
+			labelLS.fr = frPill.label;
+		}
+		const esPill = pillsByLocale.get('es')?.[idx];
+		if (esPill && typeof esPill.label === 'string' && esPill.label.length > 0) {
+			labelLS.es = esPill.label;
+		}
+		return {
+			label: labelLS,
+			serviceId: typeof enPill.serviceId === 'string' ? enPill.serviceId : '',
+		};
+	});
+
+	// --- hidden_transit_lines: per-locale JSON column (translations side) ---
+	// `name` is translatable; `color` is a plain hex string (same across locales).
+	const htlByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const rawLines = row.hidden_transit_lines;
+		if (Array.isArray(rawLines)) {
+			htlByLocale.set(code, rawLines as Array<Record<string, unknown>>);
+		}
+	}
+	// Fall back to parent row if no translations carry it (backwards compat).
+	const enLines = htlByLocale.get('en')
+		?? (Array.isArray(raw.hidden_transit_lines) ? (raw.hidden_transit_lines as Array<Record<string, unknown>>) : []);
+	const hiddenTransitLines: ManifestoContent['hiddenTransitLines'] = enLines.map((enLine, idx) => {
+		const nameLS: LocalizedString = { en: typeof enLine.name === 'string' ? enLine.name : '' };
+		const frLine = htlByLocale.get('fr')?.[idx];
+		if (frLine && typeof frLine.name === 'string' && frLine.name.length > 0) {
+			nameLS.fr = frLine.name;
+		}
+		const esLine = htlByLocale.get('es')?.[idx];
+		if (esLine && typeof esLine.name === 'string' && esLine.name.length > 0) {
+			nameLS.es = esLine.name;
+		}
+		// color: plain hex — read from en row
+		const color = typeof enLine.color === 'string' ? enLine.color : '';
+		return { name: nameLS, color };
+	});
+
+	return { statement, terminal, pills, edgeLeft, edgeRight, edgeBottom, transit, ticks, hiddenTransitLines };
 }
 
 /**
@@ -822,34 +851,353 @@ export function transformBlockAboutIntro(raw: RawBlockItem): AboutIntroContent {
 
 /**
  * Transform raw `block_about_content` Directus item into AboutContent.
- * The about-content block is heavily nested — all fields are stored as JSON
- * columns with LocalizedString leaves. Non-translatable scalar fields (clientCount)
- * come from the parent row.
+ *
+ * Field-aware transforms distinguish LocalizedString leaves from plain string
+ * leaves per the Zod schema (AboutContentSchema). toLocalizedJSON would wrap
+ * EVERY string leaf as a LocalizedString which breaks plain-string fields.
+ *
+ * Plain string fields (read from en row, same value across locales):
+ *   identity.headshot, polaroids[].src, polaroids[].rotate (number),
+ *   metrics[].value, metrics[].icon?,
+ *   methodology[].id, methodology[].station (number),
+ *   testimonials[].author, testimonials[].company, testimonials[].logo?,
+ *   techStack[].name, techStack[].category, techStack[].relatedServices[],
+ *   interests[].id, interests[].image,
+ *   weather.enabled (boolean),
+ *   cta.command, cta.buttonHref, cta.lines[].text, cta.lines[].color,
+ *   cta.socials[].label, cta.socials[].href, cta.socials[].icon,
+ *   clientLogos[].name, clientLogos[].src, clientLogos[].url?
+ *
+ * tech_stack and client_logos live on the parent row (moved by Phase 1 fix-up
+ * commit 377401c) — NOT in translations.
+ *
+ * All other leaves are LocalizedString and use toLS().
  */
 export function transformBlockAboutContent(raw: RawBlockItem): AboutContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
-	const identity = toLSJSON(tr, 'identity') as AboutContent['identity'];
-	const metrics = toLSJSON(tr, 'metrics') as AboutContent['metrics'];
-	const methodology = toLSJSON(tr, 'methodology') as AboutContent['methodology'];
-	const testimonials = toLSJSON(tr, 'testimonials') as AboutContent['testimonials'];
-	const techStack = toLSJSON(tr, 'tech_stack') as AboutContent['techStack'];
-	const interests = toLSJSON(tr, 'interests') as AboutContent['interests'];
-	const weather = toLSJSON(tr, 'weather') as AboutContent['weather'];
-	const clientLogos = toLSJSON(tr, 'client_logos') as AboutContent['clientLogos'];
-	const cta = toLSJSON(tr, 'cta') as AboutContent['cta'];
-	const stopLabels = toLSJSON(tr, 'stop_labels') as AboutContent['stopLabels'];
-	const labels = toLSJSON(tr, 'labels') as AboutContent['labels'];
-	const meta = toLSJSON(tr, 'meta') as AboutContent['meta'];
 	const clientCount = typeof raw.client_count === 'number' ? raw.client_count : 0;
+
+	// Helper: get a field value from the en-locale row as a plain value
+	function enVal<T>(field: string, fallback: T): T {
+		const enRow = tr.find((r) => r.languages_code === 'en') ?? tr[0];
+		if (!enRow) return fallback;
+		const v = (enRow as Record<string, unknown>)[field];
+		return (v !== undefined && v !== null ? v : fallback) as T;
+	}
+
+	// --- identity ---
+	const rawIdentity = enVal<Record<string, unknown>>('identity', {});
+	const rawPolaroids = Array.isArray(rawIdentity.polaroids)
+		? (rawIdentity.polaroids as Array<Record<string, unknown>>)
+		: [];
+
+	// Build per-locale identity maps for LocalizedString merging
+	const identityByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const id = row.identity;
+		if (id && typeof id === 'object' && !Array.isArray(id)) {
+			identityByLocale.set(code, id as Record<string, unknown>);
+		}
+	}
+	function identityLS(field: string): LocalizedString {
+		const result: LocalizedString = { en: '' };
+		for (const [locale, id] of identityByLocale) {
+			const v = (id as Record<string, unknown>)[field];
+			if (typeof v === 'string' && v.length > 0) {
+				if (locale === 'en') result.en = v;
+				else if (locale === 'fr') result.fr = v;
+				else if (locale === 'es') result.es = v;
+			}
+		}
+		return result;
+	}
+
+	// polaroids: src (plain), alt (LocalizedString), caption (LocalizedString), rotate (number)
+	const polaroidsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const [locale, id] of identityByLocale) {
+		const pols = (id as Record<string, unknown>).polaroids;
+		if (Array.isArray(pols)) {
+			polaroidsByLocale.set(locale, pols as Array<Record<string, unknown>>);
+		}
+	}
+	const polaroids = rawPolaroids.map((enPol, idx) => {
+		const altLS: LocalizedString = { en: typeof enPol.alt === 'string' ? enPol.alt : '' };
+		const captionLS: LocalizedString = { en: typeof enPol.caption === 'string' ? enPol.caption : '' };
+		for (const [locale, polList] of polaroidsByLocale) {
+			if (locale === 'en') continue;
+			const pol = polList[idx];
+			if (!pol) continue;
+			if (typeof pol.alt === 'string' && pol.alt.length > 0) {
+				if (locale === 'fr') altLS.fr = pol.alt;
+				else if (locale === 'es') altLS.es = pol.alt;
+			}
+			if (typeof pol.caption === 'string' && pol.caption.length > 0) {
+				if (locale === 'fr') captionLS.fr = pol.caption;
+				else if (locale === 'es') captionLS.es = pol.caption;
+			}
+		}
+		return {
+			src: typeof enPol.src === 'string' ? enPol.src : '',
+			alt: altLS,
+			caption: captionLS,
+			rotate: typeof enPol.rotate === 'number' ? enPol.rotate : 0,
+		};
+	});
+
+	const identity: AboutContent['identity'] = {
+		name: identityLS('name'),
+		title: identityLS('title'),
+		valueProp: identityLS('valueProp'),
+		headshot: typeof rawIdentity.headshot === 'string' ? rawIdentity.headshot : '',
+		polaroids,
+	};
+
+	// --- metrics: value (plain), label (LocalizedString), icon? (plain) ---
+	const metricsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.metrics)) {
+			metricsByLocale.set(code, row.metrics as Array<Record<string, unknown>>);
+		}
+	}
+	const enMetrics = metricsByLocale.get('en') ?? [];
+	const metrics: AboutContent['metrics'] = enMetrics.map((enM, idx) => {
+		const labelLS: LocalizedString = { en: typeof enM.label === 'string' ? enM.label : '' };
+		for (const [locale, mList] of metricsByLocale) {
+			if (locale === 'en') continue;
+			const m = mList[idx];
+			if (!m) continue;
+			if (typeof m.label === 'string' && m.label.length > 0) {
+				if (locale === 'fr') labelLS.fr = m.label;
+				else if (locale === 'es') labelLS.es = m.label;
+			}
+		}
+		const metric: AboutContent['metrics'][number] = {
+			value: typeof enM.value === 'string' ? enM.value : '',
+			label: labelLS,
+		};
+		if (typeof enM.icon === 'string' && enM.icon.length > 0) metric.icon = enM.icon;
+		return metric;
+	});
+
+	// --- methodology: id (plain), station (number plain), label (LS), description (LS) ---
+	const methodByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.methodology)) {
+			methodByLocale.set(code, row.methodology as Array<Record<string, unknown>>);
+		}
+	}
+	const enMethod = methodByLocale.get('en') ?? [];
+	const methodology: AboutContent['methodology'] = enMethod.map((enS, idx) => {
+		const labelLS: LocalizedString = { en: typeof enS.label === 'string' ? enS.label : '' };
+		const descLS: LocalizedString = { en: typeof enS.description === 'string' ? enS.description : '' };
+		for (const [locale, sList] of methodByLocale) {
+			if (locale === 'en') continue;
+			const s = sList[idx];
+			if (!s) continue;
+			if (typeof s.label === 'string' && s.label.length > 0) {
+				if (locale === 'fr') labelLS.fr = s.label;
+				else if (locale === 'es') labelLS.es = s.label;
+			}
+			if (typeof s.description === 'string' && s.description.length > 0) {
+				if (locale === 'fr') descLS.fr = s.description;
+				else if (locale === 'es') descLS.es = s.description;
+			}
+		}
+		return {
+			id: typeof enS.id === 'string' ? enS.id : '',
+			label: labelLS,
+			description: descLS,
+			station: typeof enS.station === 'number' ? enS.station : 0,
+		};
+	});
+
+	// --- testimonials: author (plain), company (plain), logo? (plain), quote (LS), role (LS) ---
+	const testimonialsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.testimonials)) {
+			testimonialsByLocale.set(code, row.testimonials as Array<Record<string, unknown>>);
+		}
+	}
+	const enTestimonials = testimonialsByLocale.get('en') ?? [];
+	const testimonials: AboutContent['testimonials'] = enTestimonials.map((enT, idx) => {
+		const quoteLS: LocalizedString = { en: typeof enT.quote === 'string' ? enT.quote : '' };
+		const roleLS: LocalizedString = { en: typeof enT.role === 'string' ? enT.role : '' };
+		for (const [locale, tList] of testimonialsByLocale) {
+			if (locale === 'en') continue;
+			const t = tList[idx];
+			if (!t) continue;
+			if (typeof t.quote === 'string' && t.quote.length > 0) {
+				if (locale === 'fr') quoteLS.fr = t.quote;
+				else if (locale === 'es') quoteLS.es = t.quote;
+			}
+			if (typeof t.role === 'string' && t.role.length > 0) {
+				if (locale === 'fr') roleLS.fr = t.role;
+				else if (locale === 'es') roleLS.es = t.role;
+			}
+		}
+		const testimonial: AboutContent['testimonials'][number] = {
+			quote: quoteLS,
+			author: typeof enT.author === 'string' ? enT.author : '',
+			role: roleLS,
+			company: typeof enT.company === 'string' ? enT.company : '',
+		};
+		if (typeof enT.logo === 'string' && enT.logo.length > 0) testimonial.logo = enT.logo;
+		return testimonial;
+	});
+
+	// --- techStack: read from parent row (moved by Phase 1 fix-up 377401c) ---
+	// All fields are plain (name: string, category: TechCategory, relatedServices: string[])
+	const rawTechStack = Array.isArray(raw.tech_stack)
+		? (raw.tech_stack as Array<Record<string, unknown>>)
+		: [];
+	const techStack: AboutContent['techStack'] = rawTechStack.map((item) => ({
+		name: typeof item.name === 'string' ? item.name : '',
+		category: (item.category as AboutContent['techStack'][number]['category']) ?? 'tools',
+		relatedServices: Array.isArray(item.relatedServices)
+			? (item.relatedServices as string[])
+			: [],
+	}));
+
+	// --- interests: id (plain), image (plain), label (LS) ---
+	const interestsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.interests)) {
+			interestsByLocale.set(code, row.interests as Array<Record<string, unknown>>);
+		}
+	}
+	const enInterests = interestsByLocale.get('en') ?? [];
+	const interests: AboutContent['interests'] = enInterests.map((enI, idx) => {
+		const labelLS: LocalizedString = { en: typeof enI.label === 'string' ? enI.label : '' };
+		for (const [locale, iList] of interestsByLocale) {
+			if (locale === 'en') continue;
+			const i = iList[idx];
+			if (!i) continue;
+			if (typeof i.label === 'string' && i.label.length > 0) {
+				if (locale === 'fr') labelLS.fr = i.label;
+				else if (locale === 'es') labelLS.es = i.label;
+			}
+		}
+		return {
+			id: typeof enI.id === 'string' ? enI.id : '',
+			label: labelLS,
+			image: typeof enI.image === 'string' ? enI.image : '',
+		};
+	});
+
+	// --- weather: city (LS), hook (LS), enabled (boolean plain) ---
+	const weatherByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const w = row.weather;
+		if (w && typeof w === 'object' && !Array.isArray(w)) {
+			weatherByLocale.set(code, w as Record<string, unknown>);
+		}
+	}
+	const enWeather = weatherByLocale.get('en') ?? {};
+	const cityLS: LocalizedString = { en: typeof enWeather.city === 'string' ? enWeather.city : '' };
+	const hookLS: LocalizedString = { en: typeof enWeather.hook === 'string' ? enWeather.hook : '' };
+	for (const [locale, w] of weatherByLocale) {
+		if (locale === 'en') continue;
+		if (typeof w.city === 'string' && w.city.length > 0) {
+			if (locale === 'fr') cityLS.fr = w.city;
+			else if (locale === 'es') cityLS.es = w.city;
+		}
+		if (typeof w.hook === 'string' && w.hook.length > 0) {
+			if (locale === 'fr') hookLS.fr = w.hook;
+			else if (locale === 'es') hookLS.es = w.hook;
+		}
+	}
+	const weather: AboutContent['weather'] = {
+		city: cityLS,
+		hook: hookLS,
+		enabled: typeof enWeather.enabled === 'boolean' ? enWeather.enabled : false,
+	};
+
+	// --- clientLogos: read from parent row (moved by Phase 1 fix-up 377401c) ---
+	// All fields plain: name (string), src (string), url? (string)
+	const rawClientLogos = Array.isArray(raw.client_logos)
+		? (raw.client_logos as Array<Record<string, unknown>>)
+		: [];
+	const clientLogos: AboutContent['clientLogos'] = rawClientLogos.map((logo) => {
+		const cl: AboutContent['clientLogos'][number] = {
+			name: typeof logo.name === 'string' ? logo.name : '',
+			src: typeof logo.src === 'string' ? logo.src : '',
+		};
+		if (typeof logo.url === 'string' && logo.url.length > 0) cl.url = logo.url;
+		return cl;
+	});
+
+	// --- cta: command (plain), buttonHref (plain), buttonLabel (LS), availability (LS),
+	//          lines[].text (plain), lines[].color (plain), socials[].label/href/icon (all plain) ---
+	const ctaByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const c = row.cta;
+		if (c && typeof c === 'object' && !Array.isArray(c)) {
+			ctaByLocale.set(code, c as Record<string, unknown>);
+		}
+	}
+	const enCta = ctaByLocale.get('en') ?? {};
+	const buttonLabelLS: LocalizedString = { en: typeof enCta.buttonLabel === 'string' ? enCta.buttonLabel : '' };
+	const availabilityLS: LocalizedString = { en: typeof enCta.availability === 'string' ? enCta.availability : '' };
+	for (const [locale, c] of ctaByLocale) {
+		if (locale === 'en') continue;
+		if (typeof c.buttonLabel === 'string' && c.buttonLabel.length > 0) {
+			if (locale === 'fr') buttonLabelLS.fr = c.buttonLabel;
+			else if (locale === 'es') buttonLabelLS.es = c.buttonLabel;
+		}
+		if (typeof c.availability === 'string' && c.availability.length > 0) {
+			if (locale === 'fr') availabilityLS.fr = c.availability;
+			else if (locale === 'es') availabilityLS.es = c.availability;
+		}
+	}
+	const rawCtaLines = Array.isArray(enCta.lines)
+		? (enCta.lines as Array<Record<string, unknown>>)
+		: [];
+	const ctaLines = rawCtaLines.map((l) => ({
+		text: typeof l.text === 'string' ? l.text : '',
+		color: (l.color as 'orange' | 'muted' | 'accent') ?? 'muted',
+	}));
+	const rawCtaSocials = Array.isArray(enCta.socials)
+		? (enCta.socials as Array<Record<string, unknown>>)
+		: [];
+	const ctaSocials = rawCtaSocials.map((s) => ({
+		label: typeof s.label === 'string' ? s.label : '',
+		href: typeof s.href === 'string' ? s.href : '',
+		icon: typeof s.icon === 'string' ? s.icon : '',
+	}));
+	const cta: AboutContent['cta'] = {
+		command: typeof enCta.command === 'string' ? enCta.command : '',
+		lines: ctaLines,
+		buttonLabel: buttonLabelLS,
+		buttonHref: typeof enCta.buttonHref === 'string' ? enCta.buttonHref : '',
+		availability: availabilityLS,
+		socials: ctaSocials,
+	};
+
+	// --- stopLabels: all LocalizedString ---
+	const stopLabels = toLSJSON(tr, 'stop_labels') as AboutContent['stopLabels'];
+
+	// --- labels: all LocalizedString ---
+	const labels = toLSJSON(tr, 'labels') as AboutContent['labels'];
+
+	// --- meta: title (LS), description (LS) ---
+	const meta = toLSJSON(tr, 'meta') as AboutContent['meta'];
+
 	return {
 		identity,
-		metrics: metrics ?? [],
-		methodology: methodology ?? [],
-		testimonials: testimonials ?? [],
-		techStack: techStack ?? [],
-		interests: interests ?? [],
+		metrics,
+		methodology,
+		testimonials,
+		techStack,
+		interests,
 		weather,
-		clientLogos: clientLogos ?? [],
+		clientLogos,
 		clientCount,
 		cta,
 		stopLabels,
@@ -860,17 +1208,156 @@ export function transformBlockAboutContent(raw: RawBlockItem): AboutContent {
 
 /**
  * Transform raw `block_contact_content` Directus item into ContactContent.
+ *
+ * Field-aware transforms distinguish LocalizedString from plain string leaves
+ * per ContactContentSchema. toLocalizedJSON would wrap EVERY string leaf.
+ *
+ * Plain string fields:
+ *   infoTerminal.title, infoTerminal.command,
+ *   formTerminal.title, formTerminal.command,
+ *   formTerminal.fields.{name,email,message}.label,
+ *   socials[].label, socials[].href, socials[].icon,
+ *   web3formsKey (parent row, not translations)
+ *
  * `web3formsKey` is a non-translatable scalar field on the parent row.
- * All other nested fields are JSON columns.
  */
 export function transformBlockContactContent(raw: RawBlockItem): ContactContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
-	const infoTerminal = toLSJSON(tr, 'info_terminal') as ContactContent['infoTerminal'];
-	const formTerminal = toLSJSON(tr, 'form_terminal') as ContactContent['formTerminal'];
+
+	// --- infoTerminal: title/command plain; location/responseTime/sectionLabels LS ---
+	const infoByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const it = row.info_terminal;
+		if (it && typeof it === 'object' && !Array.isArray(it)) {
+			infoByLocale.set(code, it as Record<string, unknown>);
+		}
+	}
+	const enInfo = infoByLocale.get('en') ?? {};
+	const locationLS: LocalizedString = { en: typeof enInfo.location === 'string' ? enInfo.location : '' };
+	const responseTimeLS: LocalizedString = { en: typeof enInfo.responseTime === 'string' ? enInfo.responseTime : '' };
+	const sectionLabelLocationLS: LocalizedString = { en: '' };
+	const sectionLabelConnectLS: LocalizedString = { en: '' };
+	const enSectionLabels = (enInfo.sectionLabels && typeof enInfo.sectionLabels === 'object' && !Array.isArray(enInfo.sectionLabels))
+		? (enInfo.sectionLabels as Record<string, unknown>)
+		: {};
+	sectionLabelLocationLS.en = typeof enSectionLabels.location === 'string' ? enSectionLabels.location : '';
+	sectionLabelConnectLS.en = typeof enSectionLabels.connect === 'string' ? enSectionLabels.connect : '';
+	for (const [locale, it] of infoByLocale) {
+		if (locale === 'en') continue;
+		if (typeof it.location === 'string' && it.location.length > 0) {
+			if (locale === 'fr') locationLS.fr = it.location;
+			else if (locale === 'es') locationLS.es = it.location;
+		}
+		if (typeof it.responseTime === 'string' && it.responseTime.length > 0) {
+			if (locale === 'fr') responseTimeLS.fr = it.responseTime;
+			else if (locale === 'es') responseTimeLS.es = it.responseTime;
+		}
+		const sl = (it.sectionLabels && typeof it.sectionLabels === 'object' && !Array.isArray(it.sectionLabels))
+			? (it.sectionLabels as Record<string, unknown>)
+			: {};
+		if (typeof sl.location === 'string' && sl.location.length > 0) {
+			if (locale === 'fr') sectionLabelLocationLS.fr = sl.location;
+			else if (locale === 'es') sectionLabelLocationLS.es = sl.location;
+		}
+		if (typeof sl.connect === 'string' && sl.connect.length > 0) {
+			if (locale === 'fr') sectionLabelConnectLS.fr = sl.connect;
+			else if (locale === 'es') sectionLabelConnectLS.es = sl.connect;
+		}
+	}
+	const infoTerminal: ContactContent['infoTerminal'] = {
+		title: typeof enInfo.title === 'string' ? enInfo.title : '',
+		command: typeof enInfo.command === 'string' ? enInfo.command : '',
+		location: locationLS,
+		responseTime: responseTimeLS,
+		sectionLabels: {
+			location: sectionLabelLocationLS,
+			connect: sectionLabelConnectLS,
+		},
+	};
+
+	// --- formTerminal: title/command plain; commandOutput/submitLabel LS; fields.*.label plain, fields.*.placeholder LS ---
+	const formByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const ft = row.form_terminal;
+		if (ft && typeof ft === 'object' && !Array.isArray(ft)) {
+			formByLocale.set(code, ft as Record<string, unknown>);
+		}
+	}
+	const enForm = formByLocale.get('en') ?? {};
+	const commandOutputLS: LocalizedString = { en: typeof enForm.commandOutput === 'string' ? enForm.commandOutput : '' };
+	const submitLabelLS: LocalizedString = { en: typeof enForm.submitLabel === 'string' ? enForm.submitLabel : '' };
+	for (const [locale, ft] of formByLocale) {
+		if (locale === 'en') continue;
+		if (typeof ft.commandOutput === 'string' && ft.commandOutput.length > 0) {
+			if (locale === 'fr') commandOutputLS.fr = ft.commandOutput;
+			else if (locale === 'es') commandOutputLS.es = ft.commandOutput;
+		}
+		if (typeof ft.submitLabel === 'string' && ft.submitLabel.length > 0) {
+			if (locale === 'fr') submitLabelLS.fr = ft.submitLabel;
+			else if (locale === 'es') submitLabelLS.es = ft.submitLabel;
+		}
+	}
+
+	// Build per-field placeholder LocalizedStrings
+	function buildTerminalField(fieldName: string): ContactContent['formTerminal']['fields']['name'] {
+		const enFields = (enForm.fields && typeof enForm.fields === 'object' && !Array.isArray(enForm.fields))
+			? (enForm.fields as Record<string, unknown>)
+			: {};
+		const enField = (enFields[fieldName] && typeof enFields[fieldName] === 'object')
+			? (enFields[fieldName] as Record<string, unknown>)
+			: {};
+		const label = typeof enField.label === 'string' ? enField.label : '';
+		const placeholderLS: LocalizedString = { en: typeof enField.placeholder === 'string' ? enField.placeholder : '' };
+		for (const [locale, ft] of formByLocale) {
+			if (locale === 'en') continue;
+			const ftFields = (ft.fields && typeof ft.fields === 'object' && !Array.isArray(ft.fields))
+				? (ft.fields as Record<string, unknown>)
+				: {};
+			const ftField = (ftFields[fieldName] && typeof ftFields[fieldName] === 'object')
+				? (ftFields[fieldName] as Record<string, unknown>)
+				: {};
+			if (typeof ftField.placeholder === 'string' && ftField.placeholder.length > 0) {
+				if (locale === 'fr') placeholderLS.fr = ftField.placeholder;
+				else if (locale === 'es') placeholderLS.es = ftField.placeholder;
+			}
+		}
+		return { label, placeholder: placeholderLS };
+	}
+
+	const formTerminal: ContactContent['formTerminal'] = {
+		title: typeof enForm.title === 'string' ? enForm.title : '',
+		command: typeof enForm.command === 'string' ? enForm.command : '',
+		commandOutput: commandOutputLS,
+		fields: {
+			name: buildTerminalField('name'),
+			email: buildTerminalField('email'),
+			message: buildTerminalField('message'),
+		},
+		submitLabel: submitLabelLS,
+	};
+
+	// --- validation: all LocalizedString ---
 	const validation = toLSJSON(tr, 'validation') as ContactContent['validation'];
+
+	// --- success: all LocalizedString ---
 	const success = toLSJSON(tr, 'success') as ContactContent['success'];
-	const socials = toLSJSON(tr, 'socials') as ContactContent['socials'];
+
+	// --- socials: all plain strings (label, href, icon) — read from en row ---
+	const enRow = tr.find((r) => r.languages_code === 'en') ?? tr[0];
+	const rawSocials = (enRow && Array.isArray(enRow.socials))
+		? (enRow.socials as Array<Record<string, unknown>>)
+		: [];
+	const socials: ContactContent['socials'] = rawSocials.map((s) => ({
+		label: typeof s.label === 'string' ? s.label : '',
+		href: typeof s.href === 'string' ? s.href : '',
+		icon: typeof s.icon === 'string' ? s.icon : '',
+	}));
+
+	// --- meta: title (LS), description (LS) ---
 	const meta = toLSJSON(tr, 'meta') as ContactContent['meta'];
+
 	return {
 		pageTitle: toLS(tr, 'page_title'),
 		stationLabel: toLS(tr, 'station_label'),
@@ -880,7 +1367,7 @@ export function transformBlockContactContent(raw: RawBlockItem): ContactContent 
 		formTerminal,
 		validation,
 		success,
-		socials: socials ?? [],
+		socials,
 		web3formsKey: typeof raw.web3forms_key === 'string' ? raw.web3forms_key : '',
 	};
 }
@@ -947,11 +1434,27 @@ const BLOCK_TRANSFORMS: Record<string, (raw: RawBlockItem) => unknown> = {
  * is consumed by the matching `transformBlock*` function; the result replaces
  * the raw item before `parsePort('pages.bySlug', PageSchema, ...)` runs.
  *
+ * Critical 1 fix: PageSchema requires `title: z.string()` at the top level,
+ * but Directus stores the title in `pages_translations/title` (not on `pages`
+ * directly). We extract the en-locale title here before parsePort runs.
+ *
  * Slice-18i Task 4.0.
  */
 export function transformPageRow(raw: unknown): unknown {
 	if (raw === null || typeof raw !== 'object') return raw;
 	const page = raw as Record<string, unknown>;
+
+	// Extract page title from translations (pages_translations.title).
+	// PageSchema.title is z.string() — just the en locale value.
+	let title = typeof page.title === 'string' && page.title.length > 0 ? page.title : '';
+	if (!title) {
+		const pageTr = Array.isArray(page.translations) ? (page.translations as ReadonlyArray<Record<string, unknown>>) : [];
+		const enTr = pageTr.find((r) => r.languages_code === 'en') ?? pageTr[0];
+		if (enTr && typeof enTr.title === 'string' && enTr.title.length > 0) {
+			title = enTr.title;
+		}
+	}
+
 	const rawBlocks = Array.isArray(page.blocks) ? page.blocks : [];
 	const blocks = rawBlocks.map((rawBlock: unknown) => {
 		if (rawBlock === null || typeof rawBlock !== 'object') return rawBlock;
@@ -966,7 +1469,7 @@ export function transformPageRow(raw: unknown): unknown {
 		const transformedItem = transform(rawItem);
 		return { ...block, item: transformedItem };
 	});
-	return { ...page, blocks };
+	return { ...page, title, blocks };
 }
 
 // ---------------------------------------------------------------------------
@@ -2151,17 +2654,12 @@ export const directusAdapter: ContentAdapter = {
 		},
 
 		async heroAnim(ctx) {
-			// loadPage fetches + caches the page (and stores the pre-parse row via
-			// rawPageRowCache). We must await loadPage first to ensure the raw cache
-			// is populated, then project from the pre-parse item to get _heroAnim,
-			// which parsePort strips from HeroContent because it is not in the schema.
-			await loadPage('home', ctx);
-			const rawItem = getRawBlockItem('home', 'block_hero') as
-				| (HeroContent & { _heroAnim: HeroAnimContent })
-				| undefined;
-			if (!rawItem) throw new Error('[content.heroAnim] home page has no block_hero');
-			if (!rawItem._heroAnim) throw new Error('[content.heroAnim] block_hero has no _heroAnim');
-			return rawItem._heroAnim;
+			// heroAnim is now part of HeroContent (carried through typed PageData).
+			// No out-of-band cache needed — just project block.item.heroAnim.
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_hero');
+			if (!block) throw new Error('[content.heroAnim] home page has no block_hero');
+			return block.item.heroAnim;
 		},
 
 		async manifesto(ctx) {

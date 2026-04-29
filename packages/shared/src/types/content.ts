@@ -608,6 +608,10 @@ export interface HeroContent {
 		label: LocalizedString;
 		helper: LocalizedString;
 	};
+	/** Hero scroll-hint chrome — merged from hero_anim JSON column in
+	 *  block_hero_translations. Carried through the typed PageData so
+	 *  content.heroAnim() needs no out-of-band cache. */
+	heroAnim: HeroAnimContent;
 }
 
 /** Hero scroll-hint chrome (separate block so the hero can render without it). */

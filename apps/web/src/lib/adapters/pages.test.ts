@@ -98,13 +98,19 @@ function rawBlockHero(
 	};
 }
 
-/** Minimal raw `block_manifesto` Directus item. */
+/** Minimal raw `block_manifesto` Directus item.
+ *
+ * hidden_transit_lines lives in translations (per Phase 1 schema).
+ * pills has mixed content: label (LocalizedString) + serviceId (plain string).
+ * color in hidden_transit_lines is plain hex (same across locales).
+ */
 function rawBlockManifesto(): Record<string, unknown> {
 	return {
 		id: 'manifesto-uuid-1',
 		status: 'published',
 		ticks: ['tick1', 'tick2'],
-		hidden_transit_lines: [{ name: 'Green', color: '#00a550' }],
+		// hidden_transit_lines on parent row is the backwards-compat fallback;
+		// the primary source is now translations (tested below).
 		translations: [
 			{
 				languages_code: 'en',
@@ -116,11 +122,32 @@ function rawBlockManifesto(): Record<string, unknown> {
 					line3Part2: 'daily',
 				},
 				terminal: { user: 'yesid', command: 'npm run build' },
+				// pills: serviceId is plain (NOT translatable); label is the translatable leaf
 				pills: [{ label: 'SQL', serviceId: 'sql-dev' }],
 				edge_left: { sectionNumber: '01', sectionName: 'Manifesto', location: 'MTL' },
 				edge_right: { lat: '45', lng: '-73', src: 'A', via: 'B', dst: 'C', node: 'N1', status: 'OK' },
 				edge_bottom: { connected: 'Yes', line: 'Green', url: '/about', version: '1.0', scrollHint: 'Scroll' },
 				transit: { arrivalLabel: 'Arriving', platformBadge: 'P1', directionBadge: 'North' },
+				// hidden_transit_lines in translations: name is translatable, color is plain hex
+				hidden_transit_lines: [{ name: 'Green Line', color: '#00a550' }],
+			},
+			{
+				languages_code: 'fr',
+				statement: {
+					line1: 'Je construis',
+					lineHuge: 'des choses',
+					line3Part1: 'qui',
+					line3Highlight: "comptent",
+					line3Part2: 'chaque jour',
+				},
+				terminal: { user: 'yesid', command: 'npm run build' },
+				pills: [{ label: 'SQL fr', serviceId: 'sql-dev' }],
+				edge_left: { sectionNumber: '01', sectionName: 'Manifeste', location: 'MTL' },
+				edge_right: { lat: '45', lng: '-73', src: 'A', via: 'B', dst: 'C', node: 'N1', status: 'OK' },
+				edge_bottom: { connected: 'Oui', line: 'Verte', url: '/about', version: '1.0', scrollHint: 'Défiler' },
+				transit: { arrivalLabel: 'Arrivée', platformBadge: 'P1', directionBadge: 'Nord' },
+				// same color in every locale; translated name
+				hidden_transit_lines: [{ name: 'Ligne verte', color: '#00a550' }],
 			},
 		],
 	};
@@ -237,33 +264,146 @@ function rawBlockAboutIntro(): Record<string, unknown> {
 	};
 }
 
-/** Minimal raw `block_about_content` Directus item. */
+/**
+ * Minimal raw `block_about_content` Directus item with realistic mixed-content shape.
+ *
+ * - tech_stack + client_logos are on the PARENT ROW (Phase 1 fix-up 377401c moved them).
+ * - Plain string fields (headshot, src, value, author, company, etc.) are bare strings.
+ * - LocalizedString fields (name, title, label, quote, role, etc.) vary per locale.
+ * - identity.headshot, clientLogos[].src are plain strings (not LocalizedString).
+ */
 function rawBlockAboutContent(): Record<string, unknown> {
 	return {
 		id: 'about-content-uuid-1',
 		status: 'published',
 		client_count: 5,
+		// tech_stack and client_logos on parent row (NOT in translations)
+		tech_stack: [
+			{ name: 'TypeScript', category: 'languages', relatedServices: ['web-development'] },
+		],
+		client_logos: [
+			{ name: 'Acme Corp', src: '/logo.png', url: 'https://acme.com' },
+		],
 		translations: [
 			{
 				languages_code: 'en',
-				identity: { headline: 'I am Yesid', sub: 'Developer' },
-				metrics: [{ label: 'Projects', value: '10+' }],
-				methodology: [{ title: 'Research first', body: 'Always' }],
-				testimonials: [{ quote: 'Great work', author: 'Client' }],
-				tech_stack: [{ name: 'TypeScript', level: 'Expert' }],
-				interests: [{ label: 'Transit', icon: 'metro' }],
-				weather: { label: 'Montreal', temp: '−5°C' },
-				client_logos: [{ name: 'Acme', url: 'https://acme.com' }],
-				cta: { heading: 'Work with me', body: 'Let us talk' },
-				stop_labels: { from: 'From', to: 'To' },
-				labels: { available: 'Available', location: 'MTL' },
+				// identity: headshot is plain string; name/title/valueProp are translatable
+				identity: {
+					name: 'Yesid',
+					title: 'Data Engineer',
+					valueProp: 'I build reliable infrastructure',
+					headshot: '/images/me.jpg',   // plain string
+					polaroids: [
+						{ src: '/photo.jpg', alt: 'Me coding', caption: 'At work', rotate: 2 }, // src: plain
+					],
+				},
+				// metrics: value is plain string; label is translatable
+				metrics: [{ value: '12+', label: 'Projects shipped', icon: 'briefcase' }],
+				// methodology: id/station are plain; label/description are translatable
+				methodology: [{ id: 'step-audit', label: 'Audit', description: 'We audit first', station: 1 }],
+				// testimonials: author/company are plain; quote/role are translatable
+				testimonials: [{ quote: 'Great work!', author: 'Jane Doe', role: 'CTO', company: 'AcmeCo', logo: '/logo.png' }],
+				// interests: id/image are plain; label is translatable
+				interests: [{ id: 'transit', label: 'Transit data', image: '/img/transit.jpg' }],
+				// weather: enabled is plain boolean; city/hook are translatable
+				weather: { city: 'Montreal', hook: 'Where am I?', enabled: true },
+				// cta: command/buttonHref/lines[].text/lines[].color/socials.* are plain strings
+				cta: {
+					command: '$ yesid --contact',
+					lines: [{ text: 'Available for work', color: 'orange' }],
+					buttonLabel: 'Get in touch',
+					buttonHref: '/contact',    // plain string
+					availability: 'Open to opportunities',
+					socials: [
+						{ label: 'GitHub', href: 'https://github.com/mgkdante', icon: 'github' }, // all plain
+					],
+				},
+				// stopLabels: all LocalizedString
+				stop_labels: {
+					identity: 'Identity',
+					metrics: 'Metrics',
+					testimonials: 'Testimonials',
+					process: 'Process',
+					stack: 'Stack',
+					clients: 'Clients',
+					interests: 'Interests',
+					snapshots: 'Snapshots',
+					location: 'Location',
+					next: 'Next',
+				},
+				// labels: all LocalizedString
+				labels: {
+					clientsServed: 'Clients served',
+					polaroidPrevAria: 'Previous photo',
+					polaroidNextAria: 'Next photo',
+					testimonialsCarouselAria: 'Testimonials carousel',
+					testimonialsTabNavAria: 'Tab nav',
+					testimonialSlideAria: 'Slide {index} of {total}',
+					showTestimonialAria: 'Show testimonial {index}',
+				},
 				meta: { title: 'About Yesid', description: 'Developer based in MTL' },
+			},
+			{
+				languages_code: 'fr',
+				identity: {
+					name: 'Yésid',
+					title: 'Ingénieur de données',
+					valueProp: 'Je construis une infrastructure fiable',
+					headshot: '/images/me.jpg',   // plain — same across locales
+					polaroids: [
+						{ src: '/photo.jpg', alt: 'Moi en train de coder', caption: 'Au travail', rotate: 2 },
+					],
+				},
+				metrics: [{ value: '12+', label: 'Projets livrés', icon: 'briefcase' }],
+				methodology: [{ id: 'step-audit', label: 'Audit', description: "Nous auditons d'abord", station: 1 }],
+				testimonials: [{ quote: 'Excellent travail!', author: 'Jane Doe', role: 'DT', company: 'AcmeCo', logo: '/logo.png' }],
+				interests: [{ id: 'transit', label: 'Données de transit', image: '/img/transit.jpg' }],
+				weather: { city: 'Montréal', hook: 'Où suis-je?', enabled: true },
+				cta: {
+					command: '$ yesid --contact',
+					lines: [{ text: 'Available for work', color: 'orange' }],
+					buttonLabel: 'Me contacter',
+					buttonHref: '/contact',
+					availability: 'Ouvert aux opportunités',
+					socials: [
+						{ label: 'GitHub', href: 'https://github.com/mgkdante', icon: 'github' },
+					],
+				},
+				stop_labels: {
+					identity: 'Identité',
+					metrics: 'Métriques',
+					testimonials: 'Témoignages',
+					process: 'Processus',
+					stack: 'Pile',
+					clients: 'Clients',
+					interests: 'Intérêts',
+					snapshots: 'Instantanés',
+					location: 'Emplacement',
+					next: 'Suivant',
+				},
+				labels: {
+					clientsServed: 'Clients servis',
+					polaroidPrevAria: 'Photo précédente',
+					polaroidNextAria: 'Photo suivante',
+					testimonialsCarouselAria: 'Carrousel de témoignages',
+					testimonialsTabNavAria: 'Navigation par onglets',
+					testimonialSlideAria: 'Diapositive {index} sur {total}',
+					showTestimonialAria: 'Afficher le témoignage {index}',
+				},
+				meta: { title: 'À propos de Yesid', description: 'Développeur basé à MTL' },
 			},
 		],
 	};
 }
 
-/** Minimal raw `block_contact_content` Directus item. */
+/**
+ * Minimal raw `block_contact_content` Directus item with realistic mixed-content shape.
+ *
+ * - infoTerminal.title + infoTerminal.command are plain strings (same across locales).
+ * - formTerminal.title + formTerminal.command are plain strings.
+ * - formTerminal.fields.*.label is plain string; fields.*.placeholder is LocalizedString.
+ * - socials[].label/href/icon are all plain strings (NOT LocalizedString).
+ */
 function rawBlockContactContent(): Record<string, unknown> {
 	return {
 		id: 'contact-uuid-1',
@@ -276,11 +416,89 @@ function rawBlockContactContent(): Record<string, unknown> {
 				station_label: 'Station',
 				send_error_message: 'Failed to send',
 				meta: { title: 'Contact Yesid', description: 'Get in touch' },
-				info_terminal: { heading: 'Info', lines: [{ label: 'Email', value: 'y@y.com' }] },
-				form_terminal: { heading: 'Form', submit: 'Send' },
-				validation: { name: 'Name is required', email: 'Email is required', message: 'Message is required' },
-				success: { heading: 'Sent!', body: 'Thank you' },
-				socials: [{ label: 'GitHub', url: 'https://github.com/mgkdante', icon: 'github' }],
+				info_terminal: {
+					title: 'Get in touch',
+					command: 'yesid --contact',
+					location: 'Montreal, QC',
+					responseTime: 'Within 48h',
+					sectionLabels: {
+						location: 'Location',
+						connect: 'Connect',
+					},
+				},
+				form_terminal: {
+					title: 'Send a message',
+					command: 'curl --contact',
+					commandOutput: 'Message sent!',
+					fields: {
+						name: { label: 'Name', placeholder: 'Your name' },
+						email: { label: 'Email', placeholder: 'your@email.com' },
+						message: { label: 'Message', placeholder: 'Your message' },
+					},
+					submitLabel: 'Send',
+				},
+				validation: {
+					required: 'This field is required',
+					invalidEmail: 'Invalid email address',
+					errorSummary: 'Please fix the errors below',
+				},
+				success: {
+					validating: 'Validating...',
+					sending: 'Sending...',
+					sent: 'Message sent!',
+					responseTime: 'I will respond within 48h',
+					meanwhile: 'Meanwhile, explore my work',
+					resetLabel: 'Send another message',
+					fieldOk: 'OK',
+				},
+				socials: [
+					{ label: 'GitHub', href: 'https://github.com/mgkdante', icon: 'github' },
+				],
+			},
+			{
+				languages_code: 'fr',
+				page_title: 'Contact',
+				station_label: 'Station',
+				send_error_message: "Échec de l'envoi",
+				meta: { title: 'Contacter Yesid', description: 'Prendre contact' },
+				info_terminal: {
+					title: 'Get in touch',
+					command: 'yesid --contact',
+					location: 'Montréal, QC',
+					responseTime: 'Dans les 48h',
+					sectionLabels: {
+						location: 'Emplacement',
+						connect: 'Connexion',
+					},
+				},
+				form_terminal: {
+					title: 'Send a message',
+					command: 'curl --contact',
+					commandOutput: 'Message envoyé!',
+					fields: {
+						name: { label: 'Name', placeholder: 'Votre nom' },
+						email: { label: 'Email', placeholder: 'votre@email.com' },
+						message: { label: 'Message', placeholder: 'Votre message' },
+					},
+					submitLabel: 'Envoyer',
+				},
+				validation: {
+					required: 'Ce champ est requis',
+					invalidEmail: 'Adresse email invalide',
+					errorSummary: 'Veuillez corriger les erreurs',
+				},
+				success: {
+					validating: 'Validation...',
+					sending: 'Envoi en cours...',
+					sent: 'Message envoyé!',
+					responseTime: 'Je répondrai sous 48h',
+					meanwhile: 'En attendant, explorez mon travail',
+					resetLabel: 'Envoyer un autre message',
+					fieldOk: 'OK',
+				},
+				socials: [
+					{ label: 'GitHub', href: 'https://github.com/mgkdante', icon: 'github' },
+				],
 			},
 		],
 	};
@@ -334,14 +552,21 @@ function rawBlockProjectsPageContent(): Record<string, unknown> {
 /**
  * Full raw Directus `pages` row for slug=home in real Directus shape.
  * Blocks use per-locale translation row arrays — exercises transformPageRow.
+ *
+ * Critical 1 fix: title must be extracted from translations (pages_translations.title).
+ * The parent row may or may not have a top-level `title` — transformPageRow falls
+ * back to translations when the top-level field is missing.
  */
 function rawHomePage(overrides: Record<string, unknown> = {}): Record<string, unknown> {
 	return {
 		id: 'page-uuid-1',
 		slug: 'home',
 		status: 'published',
-		title: 'Home',
-		translations: [{ languages_code: 'en', title: 'Home' }],
+		// title NOT set at top-level — must be extracted from translations
+		translations: [
+			{ languages_code: 'en', title: 'Home Page' },
+			{ languages_code: 'fr', title: 'Page d\'accueil' },
+		],
 		blocks: [
 			{
 				id: 'junction-uuid-1',
@@ -402,13 +627,16 @@ describe('ALL_BLOCK_COLLECTIONS', () => {
 // ---------------------------------------------------------------------------
 
 describe('loadPage', () => {
-	it('returns a PageData for slug=home (real Directus shape exercises transformPageRow)', async () => {
+	it('returns a PageData for slug=home with title extracted from translations (Critical 1)', async () => {
 		sharedMockFetch.mockResolvedValueOnce(jsonResponse([rawHomePage()]));
 
 		const ctx = { pageCache: new Map() };
 		const result = await loadPage('home', ctx);
 
 		expect(result.slug).toBe('home');
+		// Critical 1: title must be extracted from pages_translations, not from a
+		// top-level pages.title field (which rawHomePage deliberately omits).
+		expect(result.title).toBe('Home Page');
 		expect(result.blocks.length).toBeGreaterThanOrEqual(1);
 		// After transform, item should have merged LocalizedString shape
 		const heroBlock = result.blocks.find((b) => b.collection === 'block_hero');
@@ -416,6 +644,8 @@ describe('loadPage', () => {
 		if (heroBlock?.collection === 'block_hero') {
 			expect(heroBlock.item.subheadline.en).toBe('Hello there');
 			expect(heroBlock.item.subheadline.fr).toBe('Bonjour');
+			// heroAnim is now carried through typed PageData (High 1 fix)
+			expect(heroBlock.item.heroAnim.scrollDown).toMatchObject({ en: 'Scroll down' });
 		}
 	});
 
@@ -482,10 +712,10 @@ describe('transformBlockHero', () => {
 		expect(result.headline.line2).toEqual({ en: 'World', fr: 'Monde' });
 	});
 
-	it('exposes _heroAnim.scrollDown as LocalizedString', () => {
+	it('exposes heroAnim.scrollDown as LocalizedString (carried through typed PageData)', () => {
 		const raw = rawBlockHero();
 		const result = transformBlockHero(raw as never);
-		expect(result._heroAnim.scrollDown).toMatchObject({ en: 'Scroll down' });
+		expect(result.heroAnim.scrollDown).toMatchObject({ en: 'Scroll down' });
 	});
 
 	it('produces sqlPanel with nested LocalizedString columns', () => {
@@ -514,11 +744,43 @@ describe('transformBlockManifesto', () => {
 		expect(result.ticks).toEqual(['tick1', 'tick2']);
 	});
 
-	it('maps hiddenTransitLines with name as LocalizedString', () => {
+	it('maps pills with serviceId as plain string (not LocalizedString)', () => {
 		const raw = rawBlockManifesto();
 		const result = transformBlockManifesto(raw as never);
+		// serviceId must be a bare string — NOT wrapped as { en: 'sql-dev' }
+		expect(result.pills[0].serviceId).toBe('sql-dev');
+		// label IS a LocalizedString
+		expect(result.pills[0].label).toMatchObject({ en: 'SQL' });
+	});
+
+	it('merges pills label per-locale while keeping serviceId plain (fr locale)', () => {
+		const raw = rawBlockManifesto();
+		const result = transformBlockManifesto(raw as never);
+		// fr translation has 'SQL fr' as label
+		expect(result.pills[0].label.fr).toBe('SQL fr');
+		// serviceId stays the same plain value regardless of locale
+		expect(result.pills[0].serviceId).toBe('sql-dev');
+	});
+
+	it('maps hiddenTransitLines with name as LocalizedString and color as plain string (High 2 fix)', () => {
+		const raw = rawBlockManifesto();
+		const result = transformBlockManifesto(raw as never);
+		// name is LocalizedString (translatable)
+		expect(result.hiddenTransitLines[0].name).toMatchObject({ en: 'Green Line', fr: 'Ligne verte' });
+		// color is a PLAIN string (same hex across locales — NOT a LocalizedString)
+		expect(typeof result.hiddenTransitLines[0].color).toBe('string');
 		expect(result.hiddenTransitLines[0].color).toBe('#00a550');
-		expect(result.hiddenTransitLines[0].name).toMatchObject({ en: 'Green' });
+	});
+
+	it('reads hidden_transit_lines from translations (not parent row)', () => {
+		// Parent row does NOT have hidden_transit_lines — must come from translations
+		const raw = rawBlockManifesto();
+		// Confirm parent row has no hidden_transit_lines key
+		expect((raw as Record<string, unknown>).hidden_transit_lines).toBeUndefined();
+		const result = transformBlockManifesto(raw as never);
+		// But result should still have it from translations
+		expect(result.hiddenTransitLines).toHaveLength(1);
+		expect(result.hiddenTransitLines[0].name.en).toBe('Green Line');
 	});
 });
 
@@ -624,11 +886,87 @@ describe('transformBlockAboutIntro', () => {
 // ---------------------------------------------------------------------------
 
 describe('transformBlockAboutContent', () => {
-	it('merges JSON columns into LocalizedString-leaved shapes', () => {
+	it('merges identity.name as LocalizedString (en + fr)', () => {
 		const raw = rawBlockAboutContent();
 		const result = transformBlockAboutContent(raw as never);
-		// identity is a JSON column with string leaves; cast via unknown to inspect dynamic keys
-		expect((result.identity as unknown as Record<string, unknown>).headline).toMatchObject({ en: 'I am Yesid' });
+		expect(result.identity.name).toMatchObject({ en: 'Yesid', fr: 'Yésid' });
+	});
+
+	it('keeps identity.headshot as plain string (not LocalizedString)', () => {
+		const raw = rawBlockAboutContent();
+		const result = transformBlockAboutContent(raw as never);
+		// headshot is a plain string path — NOT { en: '/images/me.jpg' }
+		expect(typeof result.identity.headshot).toBe('string');
+		expect(result.identity.headshot).toBe('/images/me.jpg');
+	});
+
+	it('keeps polaroids[].src as plain string', () => {
+		const raw = rawBlockAboutContent();
+		const result = transformBlockAboutContent(raw as never);
+		expect(typeof result.identity.polaroids[0].src).toBe('string');
+		expect(result.identity.polaroids[0].src).toBe('/photo.jpg');
+		// but alt is LocalizedString
+		expect(result.identity.polaroids[0].alt).toMatchObject({ en: 'Me coding', fr: 'Moi en train de coder' });
+	});
+
+	it('keeps metrics[].value as plain string', () => {
+		const raw = rawBlockAboutContent();
+		const result = transformBlockAboutContent(raw as never);
+		expect(typeof result.metrics[0].value).toBe('string');
+		expect(result.metrics[0].value).toBe('12+');
+		// but label is LocalizedString
+		expect(result.metrics[0].label).toMatchObject({ en: 'Projects shipped', fr: 'Projets livrés' });
+	});
+
+	it('keeps testimonials[].author + company as plain strings', () => {
+		const raw = rawBlockAboutContent();
+		const result = transformBlockAboutContent(raw as never);
+		expect(typeof result.testimonials[0].author).toBe('string');
+		expect(result.testimonials[0].author).toBe('Jane Doe');
+		expect(typeof result.testimonials[0].company).toBe('string');
+		expect(result.testimonials[0].company).toBe('AcmeCo');
+		// but quote is LocalizedString
+		expect(result.testimonials[0].quote).toMatchObject({ en: 'Great work!', fr: 'Excellent travail!' });
+	});
+
+	it('reads tech_stack from parent row (not translations)', () => {
+		const raw = rawBlockAboutContent();
+		const result = transformBlockAboutContent(raw as never);
+		// techStack comes from parent raw.tech_stack — moved by Phase 1 fix-up 377401c
+		expect(result.techStack).toHaveLength(1);
+		expect(result.techStack[0].name).toBe('TypeScript');
+		expect(typeof result.techStack[0].name).toBe('string'); // plain, not LocalizedString
+		expect(result.techStack[0].category).toBe('languages');
+	});
+
+	it('reads clientLogos from parent row (not translations)', () => {
+		const raw = rawBlockAboutContent();
+		const result = transformBlockAboutContent(raw as never);
+		// clientLogos comes from parent raw.client_logos — Phase 1 fix-up
+		expect(result.clientLogos).toHaveLength(1);
+		expect(result.clientLogos[0].name).toBe('Acme Corp');
+		expect(typeof result.clientLogos[0].src).toBe('string'); // plain string
+		expect(result.clientLogos[0].src).toBe('/logo.png');
+	});
+
+	it('keeps cta.command + buttonHref as plain strings', () => {
+		const raw = rawBlockAboutContent();
+		const result = transformBlockAboutContent(raw as never);
+		expect(typeof result.cta.command).toBe('string');
+		expect(result.cta.command).toBe('$ yesid --contact');
+		expect(typeof result.cta.buttonHref).toBe('string');
+		expect(result.cta.buttonHref).toBe('/contact');
+		// but buttonLabel is LocalizedString
+		expect(result.cta.buttonLabel).toMatchObject({ en: 'Get in touch', fr: 'Me contacter' });
+	});
+
+	it('keeps cta.socials.href + icon as plain strings', () => {
+		const raw = rawBlockAboutContent();
+		const result = transformBlockAboutContent(raw as never);
+		expect(typeof result.cta.socials[0].href).toBe('string');
+		expect(result.cta.socials[0].href).toBe('https://github.com/mgkdante');
+		expect(typeof result.cta.socials[0].icon).toBe('string');
+		expect(result.cta.socials[0].icon).toBe('github');
 	});
 
 	it('passes through non-translatable clientCount from parent row', () => {
@@ -643,12 +981,55 @@ describe('transformBlockAboutContent', () => {
 // ---------------------------------------------------------------------------
 
 describe('transformBlockContactContent', () => {
-	it('merges translations into LocalizedString shape for scalar fields', () => {
+	it('merges scalar LocalizedString fields (pageTitle, stationLabel, sendErrorMessage)', () => {
 		const raw = rawBlockContactContent();
 		const result = transformBlockContactContent(raw as never);
 		expect(result.pageTitle).toMatchObject({ en: 'Contact' });
 		expect(result.stationLabel).toMatchObject({ en: 'Station' });
-		expect(result.sendErrorMessage).toMatchObject({ en: 'Failed to send' });
+		expect(result.sendErrorMessage).toMatchObject({ en: 'Failed to send', fr: "Échec de l'envoi" });
+	});
+
+	it('keeps infoTerminal.title + command as plain strings (not LocalizedString)', () => {
+		const raw = rawBlockContactContent();
+		const result = transformBlockContactContent(raw as never);
+		expect(typeof result.infoTerminal.title).toBe('string');
+		expect(result.infoTerminal.title).toBe('Get in touch');
+		expect(typeof result.infoTerminal.command).toBe('string');
+		expect(result.infoTerminal.command).toBe('yesid --contact');
+		// but location is LocalizedString
+		expect(result.infoTerminal.location).toMatchObject({ en: 'Montreal, QC', fr: 'Montréal, QC' });
+	});
+
+	it('keeps formTerminal.title + command as plain strings', () => {
+		const raw = rawBlockContactContent();
+		const result = transformBlockContactContent(raw as never);
+		expect(typeof result.formTerminal.title).toBe('string');
+		expect(result.formTerminal.title).toBe('Send a message');
+		expect(typeof result.formTerminal.command).toBe('string');
+		// but commandOutput is LocalizedString
+		expect(result.formTerminal.commandOutput).toMatchObject({ en: 'Message sent!', fr: 'Message envoyé!' });
+	});
+
+	it('keeps formTerminal.fields.*.label as plain string; placeholder as LocalizedString', () => {
+		const raw = rawBlockContactContent();
+		const result = transformBlockContactContent(raw as never);
+		// label is plain string
+		expect(typeof result.formTerminal.fields.name.label).toBe('string');
+		expect(result.formTerminal.fields.name.label).toBe('Name');
+		// placeholder is LocalizedString
+		expect(result.formTerminal.fields.name.placeholder).toMatchObject({ en: 'Your name', fr: 'Votre nom' });
+	});
+
+	it('keeps socials[].href + icon as plain strings (not LocalizedString)', () => {
+		const raw = rawBlockContactContent();
+		const result = transformBlockContactContent(raw as never);
+		expect(typeof result.socials[0].href).toBe('string');
+		expect(result.socials[0].href).toBe('https://github.com/mgkdante');
+		expect(typeof result.socials[0].icon).toBe('string');
+		expect(result.socials[0].icon).toBe('github');
+		// label is also plain string in ContactSocialLinkSchema
+		expect(typeof result.socials[0].label).toBe('string');
+		expect(result.socials[0].label).toBe('GitHub');
 	});
 
 	it('passes through non-translatable web3formsKey from parent row', () => {
