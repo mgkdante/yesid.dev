@@ -25,6 +25,9 @@
     "refreshButton": {
       "label": { "en": "PULL FRESH DATA" },
       "helper": { "en": "Refreshes metrics + query results from the live pipeline" }
+    },
+    "heroAnim": {
+      "scrollDown": { "en": "NEXT STOP: SCROLL DOWN" }
     }
   },
   "manifestoContent": {

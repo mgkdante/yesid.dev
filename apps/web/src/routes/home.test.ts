@@ -16,7 +16,13 @@ import {
 } from '$lib/content/site-content';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 
-const stubData: PageData = {
+// PageData merges +page.server.ts return + +layout.server.ts return + +layout.ts
+// return (per SvelteKit's typed load chain). The home component only consumes
+// the page-level fields; layout fields (nav slots, errorPage, seo, themeColor)
+// come from layout-server stubs that are out of this unit test's scope. Cast
+// through unknown — the home component never reads layout fields, so the unit
+// stub is safe.
+const stubData = {
 	metroSvg: '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
 	hero: heroContent,
 	heroAnim: heroAnimContent,
@@ -28,7 +34,7 @@ const stubData: PageData = {
 	closer: closerContent,
 	heroMock: generateHeroData(),
 	initialHeroData: INITIAL_HERO_DATA,
-} as PageData;
+} as unknown as PageData;
 
 const renderPage = () => render(Page, { props: { data: stubData } });
 
