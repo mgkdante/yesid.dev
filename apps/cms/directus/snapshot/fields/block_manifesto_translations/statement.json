@@ -1,0 +1,48 @@
+{
+  "collection": "block_manifesto_translations",
+  "field": "statement",
+  "type": "json",
+  "meta": {
+    "collection": "block_manifesto_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "statement",
+    "group": null,
+    "hidden": false,
+    "interface": "input-code",
+    "note": "Per-locale manifesto statement (ManifestoContent.statement). JSON shape: { line1: string, lineHuge: string, line3Part1: string, line3Highlight: string, line3Part2: string }.",
+    "options": {
+      "language": "json"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 4,
+    "special": [
+      "cast-json"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "statement",
+    "table": "block_manifesto_translations",
+    "data_type": "json",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}
