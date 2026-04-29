@@ -2,15 +2,23 @@
 
 The plan references "16 existing `content.*` methods to flip to Directus." The `ContentPort` interface
 declares **18** methods post-cleanup. The reconciliation: `metroSvg` (flipped in 18d) and `morphShapes`
-(flipped in 18f) are already Directus-backed and carry no changes in 18i. That leaves exactly 16 to flip.
-`errorPage` is among the 16 — it is declared on the interface but currently a static stub; 18i gives it a
-brand-new Directus implementation backed by the `error_pages` flat collection (spec §3.5).
+(flipped in 18f) are already Directus-backed and carry no changes in 18i. That leaves 16 to (re)implement
+on the directus adapter, of which **14 are CMS-queried** (rows 1–14 below) and **2 are derived shims** —
+`heroMock` (runtime-computed via `generateHeroData()`) and `initialHeroData` (re-exported code constant)
+— that don't query Directus but still need a `directusAdapter.content.X` implementation for parity.
+`errorPage` is among the 14 CMS-queried ones — it is declared on the interface but currently a static
+stub; 18i gives it a brand-new Directus implementation backed by the `error_pages` flat collection
+(spec §3.5).
 
 Three methods — `skillsJourneyPanels`, `skillsJourneyCta`, and `metroBookends` — were dropped from
 `ContentPort` in commit `55840c1` because zero Svelte components consumed them at the time of cleanup.
 
 Detail-page ports (`/services/[id]`, `/projects/[slug]`, `/blog/[slug]`) are **not in this table** —
 spec §1 L4 keeps them on the existing `ServicePort`, `ProjectPort`, and `BlogPort` detail ports.
+
+Note on the "12 block collections" count used throughout: that count refers only to the M2A-pickable
+`block_*` collections per spec §2.2. Page-chrome flat collections (`nav_links`, `error_pages`) are NOT
+counted as blocks — they live outside the M2A junction. See "Page-chrome collections" below.
 
 ---
 
@@ -128,10 +136,13 @@ These are flat collections that apply site-wide, not per-page:
   `apps/web/src/lib/adapters/directus.mocked.test.ts` and a contract test in
   `apps/web/src/lib/adapters/directus.contract.test.ts`, following the 18g/18h pattern.
 
-- **Image fields use `asset()` helper**: Any field that returns an image URL must map raw Directus UUIDs
-  through `asset(uuid, presetKey)` from `$lib/directus/assets`. Block fields holding images include (per
-  current spec roster): `block_hero.image`, `block_proof_reel.items[].image`,
-  `block_about_content.hero_image`. Adapters return CDN-shaped URLs, not bare UUIDs.
+- **Image fields use `asset()` helper**: Any Directus M2O FK to `directus_files` that the adapter
+  exposes as a URL must be mapped through `asset(uuid, presetKey?)` from `$lib/directus/assets` (preset
+  key is optional). The exact image-bearing fields are determined per-block when its schema is authored
+  in Phase 1 — consult `packages/shared/src/types/content.ts` for the live shape (e.g.,
+  `AboutContent.identity.headshot` and `AboutContent.identity.polaroids[].src`,
+  `AboutContent.interests[].image`, `AboutContent.clientLogos[].src`,
+  `ProofReelContent.images` keyed by project slug). Adapters return CDN-shaped URLs, not bare UUIDs.
 
 ---
 
