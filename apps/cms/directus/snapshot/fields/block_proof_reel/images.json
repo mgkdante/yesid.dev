@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input-code",
-    "note": "Non-translatable slug\u2192URL map (ProofReelContent.images). JSON: Record<string,string>.",
+    "note": "Non-translatable slug→URL map (ProofReelContent.images). JSON: Record<string,string>.",
     "options": {
       "language": "json"
     },

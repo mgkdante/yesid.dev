@@ -18,7 +18,7 @@
     "column": "block_about_content_id",
     "foreign_key_table": "block_about_content",
     "foreign_key_column": "id",
-    "constraint_name": "block_about_content_translations_block_about_content_id_foreign",
+    "constraint_name": "block_about_content_translations_block_abou__4501eed_foreign",
     "on_update": "NO ACTION",
     "on_delete": "CASCADE"
   }

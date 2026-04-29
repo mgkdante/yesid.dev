@@ -1,7 +1,7 @@
 {
   "collection": "nav_links_translations",
   "field": "nav_links_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "nav_links_translations",
     "conditions": null,

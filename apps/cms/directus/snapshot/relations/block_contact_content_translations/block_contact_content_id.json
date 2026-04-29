@@ -18,7 +18,7 @@
     "column": "block_contact_content_id",
     "foreign_key_table": "block_contact_content",
     "foreign_key_column": "id",
-    "constraint_name": "block_contact_content_translations_block_contact_content_id_foreign",
+    "constraint_name": "block_contact_content_translations_block_c__7c664cf3_foreign",
     "on_update": "NO ACTION",
     "on_delete": "CASCADE"
   }

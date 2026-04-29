@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input-code",
-    "note": "Per-locale misc chrome labels (AboutContent.labels). JSON shape: { clientsServed, polaroidPrevAria, polaroidNextAria, testimonialsCarouselAria, testimonialsTabNavAria, testimonialSlideAria, showTestimonialAria } \u2014 all strings.",
+    "note": "Per-locale misc chrome labels (AboutContent.labels). JSON shape: { clientsServed, polaroidPrevAria, polaroidNextAria, testimonialsCarouselAria, testimonialsTabNavAria, testimonialSlideAria, showTestimonialAria } — all strings.",
     "options": {
       "language": "json"
     },

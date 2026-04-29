@@ -303,7 +303,46 @@ type Subscription {
   projects_sections_translations_mutated(event: EventEnum): projects_sections_translations_mutated
   projects_mutated(event: EventEnum): projects_mutated
   blog_posts_mutated(event: EventEnum): blog_posts_mutated
-  blog_posts_translations_mutated(event: EventEnum): blog_posts_translations_mutated
+  tech_stack_mutated(event: EventEnum): tech_stack_mutated
+  tech_stack_projects_mutated(event: EventEnum): tech_stack_projects_mutated
+  tech_stack_services_mutated(event: EventEnum): tech_stack_services_mutated
+  tech_stack_translations_mutated(event: EventEnum): tech_stack_translations_mutated
+  icons_mutated(event: EventEnum): icons_mutated
+  route_seo_translations_mutated(event: EventEnum): route_seo_translations_mutated
+  route_seo_mutated(event: EventEnum): route_seo_mutated
+  site_meta_translations_mutated(event: EventEnum): site_meta_translations_mutated
+  site_meta_mutated(event: EventEnum): site_meta_mutated
+  block_about_content_mutated(event: EventEnum): block_about_content_mutated
+  block_about_content_translations_mutated(event: EventEnum): block_about_content_translations_mutated
+  block_about_intro_mutated(event: EventEnum): block_about_intro_mutated
+  block_about_intro_translations_mutated(event: EventEnum): block_about_intro_translations_mutated
+  block_blog_page_content_mutated(event: EventEnum): block_blog_page_content_mutated
+  block_blog_page_content_translations_mutated(event: EventEnum): block_blog_page_content_translations_mutated
+  block_closer_mutated(event: EventEnum): block_closer_mutated
+  block_closer_translations_mutated(event: EventEnum): block_closer_translations_mutated
+  block_contact_content_mutated(event: EventEnum): block_contact_content_mutated
+  block_contact_content_translations_mutated(event: EventEnum): block_contact_content_translations_mutated
+  block_cta_mutated(event: EventEnum): block_cta_mutated
+  block_cta_translations_mutated(event: EventEnum): block_cta_translations_mutated
+  block_hero_mutated(event: EventEnum): block_hero_mutated
+  block_hero_translations_mutated(event: EventEnum): block_hero_translations_mutated
+  block_manifesto_mutated(event: EventEnum): block_manifesto_mutated
+  block_manifesto_translations_mutated(event: EventEnum): block_manifesto_translations_mutated
+  block_projects_page_content_mutated(event: EventEnum): block_projects_page_content_mutated
+  block_projects_page_content_translations_mutated(event: EventEnum): block_projects_page_content_translations_mutated
+  block_proof_reel_mutated(event: EventEnum): block_proof_reel_mutated
+  block_proof_reel_translations_mutated(event: EventEnum): block_proof_reel_translations_mutated
+  block_services_grid_mutated(event: EventEnum): block_services_grid_mutated
+  block_services_grid_translations_mutated(event: EventEnum): block_services_grid_translations_mutated
+  block_tech_stack_page_content_mutated(event: EventEnum): block_tech_stack_page_content_mutated
+  block_tech_stack_page_content_translations_mutated(event: EventEnum): block_tech_stack_page_content_translations_mutated
+  error_pages_mutated(event: EventEnum): error_pages_mutated
+  error_pages_translations_mutated(event: EventEnum): error_pages_translations_mutated
+  nav_links_mutated(event: EventEnum): nav_links_mutated
+  nav_links_translations_mutated(event: EventEnum): nav_links_translations_mutated
+  pages_translations_mutated(event: EventEnum): pages_translations_mutated
+  pages_mutated(event: EventEnum): pages_mutated
+  pages_blocks_mutated(event: EventEnum): pages_blocks_mutated
 }
 
 """The `Boolean` scalar type represents `true` or `false`."""
@@ -380,10 +419,843 @@ enum server_info_websocket_rest_authentication {
   strict
 }
 
+union pages_blocks_item_union = block_about_content | block_about_intro | block_blog_page_content | block_closer | block_contact_content | block_cta | block_hero | block_manifesto | block_projects_page_content | block_proof_reel | block_services_grid | block_tech_stack_page_content
+
 type auth_tokens {
   access_token: String
   expires: GraphQLBigInt
   refresh_token: String
+}
+
+type block_about_content {
+  """
+  Non-translatable client count integer displayed in counter (AboutContent.clientCount). e.g. 10.
+  """
+  client_count: Int
+
+  """
+  Non-translatable client logos (AboutContent.clientLogos). JSON shape: Array<{ name, src: string, url?: string }>. AboutClientLogo has no LocalizedString leaves so it lives on the parent block, not on _translations.
+  """
+  client_logos: JSON
+  client_logos_func: count_functions
+
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'About Page Content'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+
+  """
+  Non-translatable legacy tech stack items for About bento (AboutContent.techStack). JSON shape: Array<{ name, category, relatedServices: string[] }>. AboutTechItem has no LocalizedString leaves so it lives on the parent block, not on _translations.
+  """
+  tech_stack: JSON
+  tech_stack_func: count_functions
+  translations(filter: block_about_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_about_content_translations]
+  translations_func: count_functions
+}
+
+type block_about_content_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_about_content
+}
+
+type block_about_content_translations {
+  block_about_content_id(filter: block_about_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_about_content
+
+  """
+  Per-locale terminal CTA block (AboutContent.cta). JSON shape: { command: string, lines: Array<{text,color}>, buttonLabel, buttonHref: string, availability, socials: Array<{label,href,icon}> }.
+  """
+  cta: JSON
+  cta_func: count_functions
+  id: ID!
+
+  """
+  Per-locale identity block (AboutContent.identity + AboutIdentity). JSON shape: { name, title, valueProp, headshot: string (URL), polaroids: Array<{src, alt, caption, rotate}> }.
+  """
+  identity: JSON
+  identity_func: count_functions
+
+  """
+  Per-locale interests strips (AboutContent.interests). JSON shape: Array<{ id, label, image: string }>.
+  """
+  interests: JSON
+  interests_func: count_functions
+
+  """
+  Per-locale misc chrome labels (AboutContent.labels). JSON shape: { clientsServed, polaroidPrevAria, polaroidNextAria, testimonialsCarouselAria, testimonialsTabNavAria, testimonialSlideAria, showTestimonialAria } — all strings.
+  """
+  labels: JSON
+  labels_func: count_functions
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Per-locale page meta (AboutContent.meta). JSON shape: { title: string, description: string }.
+  """
+  meta: JSON
+  meta_func: count_functions
+
+  """
+  Per-locale methodology steps (AboutContent.methodology). JSON shape: Array<{ id, label, description, station: number }>.
+  """
+  methodology: JSON
+  methodology_func: count_functions
+
+  """
+  Per-locale metrics array (AboutContent.metrics). JSON shape: Array<{ value: string, label: string, icon?: string }>.
+  """
+  metrics: JSON
+  metrics_func: count_functions
+
+  """
+  Per-locale metro stop labels (AboutContent.stopLabels). JSON shape: { identity, metrics, testimonials, process, stack, clients, interests, snapshots, location, next } — all strings.
+  """
+  stop_labels: JSON
+  stop_labels_func: count_functions
+
+  """
+  Per-locale testimonials (AboutContent.testimonials). JSON shape: Array<{ quote, author: string, role, company: string, logo?: string }>.
+  """
+  testimonials: JSON
+  testimonials_func: count_functions
+
+  """
+  Per-locale weather widget config (AboutContent.weather). JSON shape: { city, hook: string, enabled: boolean }.
+  """
+  weather: JSON
+  weather_func: count_functions
+}
+
+type block_about_content_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_about_content_translations
+}
+
+type block_about_intro {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Home About Intro'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """
+  Non-translatable list of stack item strings (AboutIntroContent.stackItems). JSON: string[].
+  """
+  stack_items: JSON
+  stack_items_func: count_functions
+
+  """Publication state."""
+  status: String
+  translations(filter: block_about_intro_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_about_intro_translations]
+  translations_func: count_functions
+}
+
+type block_about_intro_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_about_intro
+}
+
+type block_about_intro_translations {
+  """Per-locale bio text (AboutIntroContent.bio)."""
+  bio: String
+  block_about_intro_id(filter: block_about_intro_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_about_intro
+  id: ID!
+
+  """Per-locale interests string (AboutIntroContent.interests)."""
+  interests: String
+
+  """Per-locale interests section label (AboutIntroContent.interestsLabel)."""
+  interests_label: String
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Per-locale location object (AboutIntroContent.location). JSON shape: { city: string, region: string }.
+  """
+  location: JSON
+  location_func: count_functions
+
+  """Per-locale location section label (AboutIntroContent.locationLabel)."""
+  location_label: String
+
+  """Per-locale More link label (AboutIntroContent.moreLink)."""
+  more_link: String
+
+  """Per-locale name label (AboutIntroContent.name)."""
+  name: String
+
+  """Per-locale stack section label (AboutIntroContent.stackLabel)."""
+  stack_label: String
+
+  """Per-locale title/role label (AboutIntroContent.title)."""
+  title: String
+}
+
+type block_about_intro_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_about_intro_translations
+}
+
+type block_blog_page_content {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Blog Page Content'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+  translations(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_blog_page_content_translations]
+  translations_func: count_functions
+}
+
+type block_blog_page_content_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_blog_page_content
+}
+
+type block_blog_page_content_translations {
+  block_blog_page_content_id(filter: block_blog_page_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_blog_page_content
+  id: ID!
+
+  """
+  Per-locale intro copy (BlogPageContentSchema.intro). Expand schema here when content design lands.
+  """
+  intro: String
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+}
+
+type block_blog_page_content_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_blog_page_content_translations
+}
+
+type block_closer {
+  """Non-translatable attribution URL (CloserContent.attribution.url)."""
+  attribution_url: String
+
+  """Non-translatable href for the CTA button (CloserContent.cta.href)."""
+  cta_href: String
+
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Home Closer'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+  translations(filter: block_closer_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_closer_translations]
+  translations_func: count_functions
+}
+
+type block_closer_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_closer
+}
+
+type block_closer_translations {
+  """
+  Per-locale attribution text (CloserContent.attribution.text). JSON shape: { text: string }. url lives as attribution_url on parent.
+  """
+  attribution: JSON
+  attribution_func: count_functions
+  block_closer_id(filter: block_closer_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_closer
+
+  """
+  Per-locale CTA object (CloserContent.cta). JSON shape: { label: string }. href lives as cta_href on parent.
+  """
+  cta: JSON
+  cta_func: count_functions
+
+  """Per-locale heading (CloserContent.heading)."""
+  heading: String
+
+  """Per-locale heading dot glyph (CloserContent.headingDot)."""
+  heading_dot: String
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Per-locale rows object (CloserContent.rows). JSON shape: { contact: { label, description, action }, connect: { label, description, action }, read: { label, action }, about: { label, description, action } }.
+  """
+  rows: JSON
+  rows_func: count_functions
+
+  """Per-locale subheading (CloserContent.subheading)."""
+  subheading: String
+
+  """
+  Per-locale terminal chrome (CloserContent.terminal). JSON shape: { title, city, encoding, destinationsLabel, prompt } — all strings.
+  """
+  terminal: JSON
+  terminal_func: count_functions
+}
+
+type block_closer_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_closer_translations
+}
+
+type block_contact_content {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Contact Page Content'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+
+  """
+  Public web3forms access key (ContactContent.web3formsKey). Safe to expose client-side.
+  """
+  web3forms_key: String
+  translations(filter: block_contact_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_contact_content_translations]
+  translations_func: count_functions
+}
+
+type block_contact_content_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_contact_content
+}
+
+type block_contact_content_translations {
+  block_contact_content_id(filter: block_contact_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_contact_content
+
+  """
+  Per-locale form terminal block (ContactContent.formTerminal). JSON shape: { title, command: string, commandOutput, fields: { name: {label,placeholder}, email: {label,placeholder}, message: {label,placeholder} }, submitLabel }.
+  """
+  form_terminal: JSON
+  form_terminal_func: count_functions
+  id: ID!
+
+  """
+  Per-locale info terminal block (ContactContent.infoTerminal). JSON shape: { title, command: string, location, responseTime, sectionLabels: { location, connect } }.
+  """
+  info_terminal: JSON
+  info_terminal_func: count_functions
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Per-locale page meta (ContactContent.meta). JSON shape: { title: string, description: string }.
+  """
+  meta: JSON
+  meta_func: count_functions
+
+  """
+  Per-locale page title (ContactContent.pageTitle). Renders as desktop edge title + mobile h1.
+  """
+  page_title: String
+
+  """
+  Per-locale error message when web3forms POST fails (ContactContent.sendErrorMessage).
+  """
+  send_error_message: String
+
+  """
+  Per-locale socials array (ContactContent.socials). JSON shape: Array<{ label, href, icon: string }>. label is translatable; href/icon are non-locale-specific but bundled in JSON for simplicity.
+  """
+  socials: JSON
+  socials_func: count_functions
+
+  """
+  Per-locale station subtitle (ContactContent.stationLabel). e.g. 'NEXT STOP: YOU'.
+  """
+  station_label: String
+
+  """
+  Per-locale success state messages (ContactContent.success). JSON shape: { validating, sending, sent, responseTime, meanwhile, resetLabel, fieldOk }.
+  """
+  success: JSON
+  success_func: count_functions
+
+  """
+  Per-locale validation messages (ContactContent.validation). JSON shape: { required, invalidEmail, errorSummary }.
+  """
+  validation: JSON
+  validation_func: count_functions
+}
+
+type block_contact_content_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_contact_content_translations
+}
+
+type block_cta {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Home CTA'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+  translations(filter: block_cta_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_cta_translations]
+  translations_func: count_functions
+}
+
+type block_cta_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_cta
+}
+
+type block_cta_translations {
+  block_cta_id(filter: block_cta_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_cta
+
+  """Per-locale contact CTA label (CtaContent.ctaContact)."""
+  cta_contact: String
+
+  """Per-locale GitHub CTA label (CtaContent.ctaGithub)."""
+  cta_github: String
+
+  """Per-locale heading (CtaContent.heading)."""
+  heading: String
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """Per-locale subtitle (CtaContent.subtitle)."""
+  subtitle: String
+}
+
+type block_cta_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_cta_translations
+}
+
+type block_hero {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Home Hero'). Required — editors must give each block a meaningful name.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order. Populated by drag-and-drop in list view."""
+  sort: Int
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+  translations(filter: block_hero_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_hero_translations]
+  translations_func: count_functions
+}
+
+type block_hero_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_hero
+}
+
+type block_hero_translations {
+  block_hero_id(filter: block_hero_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_hero
+
+  """
+  Per-locale label for the 'contact' CTA button (HeroContent.ctaContact).
+  """
+  cta_contact: String
+
+  """Per-locale label for the 'work' CTA button (HeroContent.ctaWork)."""
+  cta_work: String
+
+  """
+  Per-locale headline object (HeroContent.headline). JSON shape: { line1: string, line2: string, ariaSuffix: string }. ariaSuffix is appended for screen readers when line2 renders as a visual glyph.
+  """
+  headline: JSON
+  headline_func: count_functions
+
+  """
+  Per-locale hero animation chrome copy (HeroAnimContent). JSON shape: { scrollDown: string }. Lives here (not a separate block) per Task 1.0 mapping decision.
+  """
+  hero_anim: JSON
+  hero_anim_func: count_functions
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Per-locale refresh button copy (HeroContent.refreshButton). JSON shape: { label: string, helper: string }.
+  """
+  refresh_button: JSON
+  refresh_button_func: count_functions
+
+  """
+  Per-locale SQL panel copy (HeroContent.sqlPanel). JSON shape: { prompt: string, liveLabel: string, columns: { route: string, avgDelayS: string, vehicles: string }, metaTemplate: string }.
+  """
+  sql_panel: JSON
+  sql_panel_func: count_functions
+
+  """Per-locale subheadline text (HeroContent.subheadline)."""
+  subheadline: String
+
+  """Per-locale subtitle text (HeroContent.subtitle)."""
+  subtitle: String
+}
+
+type block_hero_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_hero_translations
+}
+
+type block_manifesto {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Home Manifesto'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order. Populated by drag-and-drop in list view."""
+  sort: Int
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+
+  """
+  Non-translatable array of tick strings (ManifestoContent.ticks). JSON shape: string[].
+  """
+  ticks: JSON
+  ticks_func: count_functions
+  translations(filter: block_manifesto_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_manifesto_translations]
+  translations_func: count_functions
+}
+
+type block_manifesto_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_manifesto
+}
+
+type block_manifesto_translations {
+  block_manifesto_id(filter: block_manifesto_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_manifesto
+
+  """
+  Per-locale bottom edge chrome (ManifestoContent.edgeBottom). JSON shape: { connected: string, line: string, url: string, version: string, scrollHint: string }.
+  """
+  edge_bottom: JSON
+  edge_bottom_func: count_functions
+
+  """
+  Per-locale left edge chrome (ManifestoContent.edgeLeft). JSON shape: { sectionNumber: string, sectionName: string, location: string }.
+  """
+  edge_left: JSON
+  edge_left_func: count_functions
+
+  """
+  Per-locale right edge chrome (ManifestoContent.edgeRight). JSON shape: { lat: string, lng: string, src: string, via: string, dst: string, node: string, status: string }.
+  """
+  edge_right: JSON
+  edge_right_func: count_functions
+
+  """
+  Per-locale hidden transit lines (ManifestoContent.hiddenTransitLines). JSON shape: Array<{ name: string, color: string }>. color is non-translatable hex; name is the per-locale string.
+  """
+  hidden_transit_lines: JSON
+  hidden_transit_lines_func: count_functions
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Per-locale pills array (ManifestoContent.pills). JSON shape: Array<{ label: string, serviceId: string }>. serviceId is a non-translatable slug; label is the per-locale string.
+  """
+  pills: JSON
+  pills_func: count_functions
+
+  """
+  Per-locale manifesto statement (ManifestoContent.statement). JSON shape: { line1: string, lineHuge: string, line3Part1: string, line3Highlight: string, line3Part2: string }.
+  """
+  statement: JSON
+  statement_func: count_functions
+
+  """
+  Per-locale terminal chrome (ManifestoContent.terminal). JSON shape: { user: string, command: string }.
+  """
+  terminal: JSON
+  terminal_func: count_functions
+
+  """
+  Per-locale transit arrival panel chrome (ManifestoContent.transit). JSON shape: { arrivalLabel: string, platformBadge: string, directionBadge: string }.
+  """
+  transit: JSON
+  transit_func: count_functions
+}
+
+type block_manifesto_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_manifesto_translations
+}
+
+type block_projects_page_content {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Projects Page Content'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+  translations(filter: block_projects_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_projects_page_content_translations]
+  translations_func: count_functions
+}
+
+type block_projects_page_content_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_projects_page_content
+}
+
+type block_projects_page_content_translations {
+  block_projects_page_content_id(filter: block_projects_page_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_projects_page_content
+  id: ID!
+
+  """
+  Per-locale intro copy (ProjectsPageContentSchema.intro). Expand schema here when content design lands.
+  """
+  intro: String
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+}
+
+type block_projects_page_content_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_projects_page_content_translations
+}
+
+type block_proof_reel {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Home Proof Reel'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """
+  Non-translatable slug→URL map (ProofReelContent.images). JSON: Record<string,string>.
+  """
+  images: JSON
+  images_func: count_functions
+
+  """
+  Non-translatable ordered list of project slugs (ProofReelContent.slugs). JSON: string[].
+  """
+  slugs: JSON
+  slugs_func: count_functions
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+
+  """
+  Non-translatable href for the View All link (ProofReelContent.viewAllHref).
+  """
+  view_all_href: String
+  translations(filter: block_proof_reel_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_proof_reel_translations]
+  translations_func: count_functions
+}
+
+type block_proof_reel_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_proof_reel
+}
+
+type block_proof_reel_translations {
+  block_proof_reel_id(filter: block_proof_reel_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_proof_reel
+
+  """Per-locale heading (ProofReelContent.heading)."""
+  heading: String
+
+  """Per-locale heading dot glyph (ProofReelContent.headingDot)."""
+  heading_dot: String
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """Per-locale section label (ProofReelContent.sectionLabel)."""
+  section_label: String
+
+  """Per-locale subheading (ProofReelContent.subheading)."""
+  subheading: String
+
+  """
+  Per-locale aria-label template for toggle color (ProofReelContent.toggleColorAria). Placeholder {title}.
+  """
+  toggle_color_aria: String
+
+  """Per-locale View All link label (ProofReelContent.viewAllLabel)."""
+  view_all_label: String
+}
+
+type block_proof_reel_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_proof_reel_translations
+}
+
+type block_services_grid {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Home Services Grid'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+  translations(filter: block_services_grid_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_services_grid_translations]
+  translations_func: count_functions
+}
+
+type block_services_grid_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_services_grid
+}
+
+type block_services_grid_translations {
+  block_services_grid_id(filter: block_services_grid_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_services_grid
+
+  """Per-locale heading (ServicesGridContent.heading)."""
+  heading: String
+
+  """Per-locale heading dot glyph (ServicesGridContent.headingDot)."""
+  heading_dot: String
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """Per-locale subheading (ServicesGridContent.subheading)."""
+  subheading: String
+
+  """
+  Per-locale label for the View All link at the bottom of the grid (ServicesGridContent.viewAllLink).
+  """
+  view_all_link: String
+
+  """
+  Per-locale aria-label template for illustration view. Brace placeholder {title} (ServicesGridContent.viewIllustrationAria).
+  """
+  view_illustration_aria: String
+}
+
+type block_services_grid_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_services_grid_translations
+}
+
+type block_tech_stack_page_content {
+  """
+  Non-translatable admin label for Data Studio M2A picker (e.g. 'Tech Stack Page Content'). Required.
+  """
+  editor_label: String!
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order."""
+  sort: Int
+
+  """Publication state."""
+  status: String
+  translations(filter: block_tech_stack_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_tech_stack_page_content_translations]
+  translations_func: count_functions
+}
+
+type block_tech_stack_page_content_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_tech_stack_page_content
+}
+
+type block_tech_stack_page_content_translations {
+  """
+  Per-locale action button labels (TechStackPageContentSchema.actions). JSON shape: { getInTouch: string, viewServices: string }.
+  """
+  actions: JSON
+  actions_func: count_functions
+  block_tech_stack_page_content_id(filter: block_tech_stack_page_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): block_tech_stack_page_content
+
+  """
+  Per-locale CTA section (TechStackPageContentSchema.cta). JSON shape: { headingLine1, headingLine2, sub, availability: string }.
+  """
+  cta: JSON
+  cta_func: count_functions
+
+  """
+  Per-locale hero chrome (TechStackPageContentSchema.hero). JSON shape: { overline, titleLine1, titleLine2, terminalAria, stats: { technologies: string } }.
+  """
+  hero: JSON
+  hero_func: count_functions
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Per-locale page meta (TechStackPageContentSchema.meta). JSON shape: { title: string, description: string }.
+  """
+  meta: JSON
+  meta_func: count_functions
+}
+
+type block_tech_stack_page_content_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: block_tech_stack_page_content_translations
 }
 
 type blog_posts {
@@ -428,32 +1300,22 @@ type blog_posts {
 
   """External URL. Required + visible when external=true."""
   url: String
-  translations(filter: blog_posts_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [blog_posts_translations]
-  translations_func: count_functions
+
+  """
+  1–2 sentences shown on listing cards. Mono-language with the post's native language (see lang field). Max 500 chars.
+  """
+  excerpt: String!
+
+  """
+  Post title in the post's native language (see lang field). Mono-language by editorial design — no translation junction.
+  """
+  title: String!
 }
 
 type blog_posts_mutated {
   key: ID!
   event: EventEnum
   data: blog_posts
-}
-
-type blog_posts_translations {
-  blog_posts_id(filter: blog_posts_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): blog_posts
-
-  """Localized excerpt — 1–2 sentences shown on listing cards. ≤500 chars."""
-  excerpt: String!
-  id: ID!
-  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
-
-  """Localized post title. Required."""
-  title: String!
-}
-
-type blog_posts_translations_mutated {
-  key: ID!
-  event: EventEnum
-  data: blog_posts_translations
 }
 
 type count_functions {
@@ -1853,6 +2715,108 @@ type directus_versions_mutated {
   data: directus_versions
 }
 
+type error_pages {
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """Manual sort order. Populated by drag-and-drop in list view."""
+  sort: Int
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+
+  """
+  HTTP status code (404, 500, etc.). 0 = generic fallback — used when no specific status_code row is seeded. UNIQUE constraint enforced.
+  """
+  status_code: Int!
+  translations(filter: error_pages_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [error_pages_translations]
+  translations_func: count_functions
+}
+
+type error_pages_mutated {
+  key: ID!
+  event: EventEnum
+  data: error_pages
+}
+
+type error_pages_translations {
+  """
+  Per-locale longer description shown below the heading. Multiline copy explaining the error and prompting the visitor.
+  """
+  description: String
+  error_pages_id(filter: error_pages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): error_pages
+
+  """
+  Per-locale primary heading (e.g. 'This station is under construction').
+  """
+  heading: String
+  id: ID!
+
+  """
+  Per-locale short label (e.g. 'Error 404' / 'Erreur 404'). Shown above the heading.
+  """
+  label: String
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Per-locale suggestion links — JSON array of {label: string, href: string}. The label is the locale-resolved display text; href is the destination path.
+  """
+  suggestions: JSON
+  suggestions_func: count_functions
+
+  """
+  Per-locale terminal-style ASCII line shown below the description (e.g. '$ route --status 404 // requested path not in service').
+  """
+  terminal_line: String
+}
+
+type error_pages_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: error_pages_translations
+}
+
+type icons {
+  """
+  Filtering categories. Suggested values: tech-stack, service, brand, generic. Free-form — type and press Enter.
+  """
+  category: JSON
+  category_func: count_functions
+
+  """
+  Browse [icon-sets.iconify.design](https://icon-sets.iconify.design/) — click any icon, copy the ID shown under it (e.g. logos:react, mdi:home).
+  """
+  iconify_id: String
+
+  """
+  Kebab-case identifier (e.g. airflow, postgresql, python, brand-monogram). Used as the reference key when other collections M2O this icon.
+  """
+  id: ID!
+
+  """
+  International display name (tech names are universal — no translation needed). E.g. "Apache Airflow", "PostgreSQL", "Brand Monogram".
+  """
+  name: String!
+
+  """
+  Admin-only context (attribution, licensing, usage notes). Not exposed via API.
+  """
+  notes: String
+
+  """Manual sort order. Populated by drag-and-drop in list view."""
+  sort: Int
+
+  """Publication state. AI-editor cannot set to published."""
+  status: String
+  svg_override(filter: directus_files_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): directus_files
+}
+
+type icons_mutated {
+  key: ID!
+  event: EventEnum
+  data: icons
+}
+
 type illustrations {
   """Filters which posts/projects can pick this in their dropdown."""
   category: String
@@ -1918,6 +2882,113 @@ type morph_shapes_mutated {
   data: morph_shapes
 }
 
+type nav_links {
+  """
+  Link destination. Supports internal paths (/about), anchors (#contact), and external URLs (https://github.com/...).
+  """
+  href: String!
+  icon(filter: icons_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): icons
+
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """
+  Which nav surface renders this link. header/footer/mobile = NavLink shape; menu = MenuItem shape (renders subtitle).
+  """
+  placement: String!
+
+  """
+  Display order within a placement slot. 1 = always visible, 2 = hidden on narrow viewports. Matches NavLinkSchema's z.union([z.literal(1), z.literal(2)]) so parsePort accepts Directus payloads without coercion.
+  """
+  priority: Int
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+  translations(filter: nav_links_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [nav_links_translations]
+  translations_func: count_functions
+}
+
+type nav_links_mutated {
+  key: ID!
+  event: EventEnum
+  data: nav_links
+}
+
+type nav_links_translations {
+  id: ID!
+
+  """
+  Per-locale visible nav label (e.g. 'Services' / 'Services' / 'Servicios').
+  """
+  label: String!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+  nav_links_id(filter: nav_links_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): nav_links
+
+  """
+  Per-locale subtitle — only rendered when placement = 'menu' (MenuItem.subtitle). Nullable for header/footer/mobile placements.
+  """
+  subtitle: String
+}
+
+type nav_links_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: nav_links_translations
+}
+
+type pages {
+  """UUID primary key. Auto-generated."""
+  id: ID!
+
+  """
+  Route slug — UNIQUE per page. e.g. 'home', 'about', 'contact'. Used by loadPage(slug).
+  """
+  slug: String!
+
+  """Manual sort order. Populated by drag-and-drop in list view."""
+  sort: Int
+
+  """Publication state. ai-editor cannot set to published."""
+  status: String
+  blocks(filter: pages_blocks_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [pages_blocks]
+  blocks_func: count_functions
+  translations(filter: pages_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [pages_translations]
+  translations_func: count_functions
+}
+
+type pages_blocks {
+  collection: String
+  id: ID!
+  item: pages_blocks_item_union
+  pages_id(filter: pages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): pages
+  sort: Int
+}
+
+type pages_blocks_mutated {
+  key: ID!
+  event: EventEnum
+  data: pages_blocks
+}
+
+type pages_mutated {
+  key: ID!
+  event: EventEnum
+  data: pages
+}
+
+type pages_translations {
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+  pages_id(filter: pages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): pages
+  title: String!
+}
+
+type pages_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: pages_translations
+}
+
 type policy_me_globals_type {
   enforce_tfa: Boolean
   app_access: Boolean
@@ -1976,6 +3047,8 @@ type projects {
   services_func: count_functions
   translations(filter: projects_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_translations]
   translations_func: count_functions
+  tech_stack(filter: tech_stack_projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [tech_stack_projects]
+  tech_stack_func: count_functions
 }
 
 type projects_impact_metrics {
@@ -2091,6 +3164,53 @@ type projects_translations_mutated {
   data: projects_translations
 }
 
+type route_seo {
+  id: ID!
+
+  """
+  Per-route OG override (1200x630). Falls back to site_meta.default_og_image if null. Folder: og.
+  """
+  og_image: ID
+
+  """SvelteKit route id, e.g., /, /about, /services. Static routes only."""
+  path: String!
+
+  """Manual sort order. Populated by drag-and-drop in list view."""
+  sort: Int
+
+  """Publication state. AI-editor cannot set to published."""
+  status: String
+  translations(filter: route_seo_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [route_seo_translations]
+  translations_func: count_functions
+}
+
+type route_seo_mutated {
+  key: ID!
+  event: EventEnum
+  data: route_seo
+}
+
+type route_seo_translations {
+  """
+  Per-route description override. Empty -> fall back to site_meta.default_description.
+  """
+  description: String
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+  route_seo_id(filter: route_seo_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): route_seo
+
+  """
+  Per-route title body. Empty -> fall back to code-side default. Site-name suffix auto-appended in adapter (per route, gated by composedTitleStrategy).
+  """
+  title: String
+}
+
+type route_seo_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: route_seo_translations
+}
+
 type server_info {
   project: server_info_project
   rateLimit: server_info_rate_limit
@@ -2149,11 +3269,6 @@ type services {
   station: Int!
 
   """
-  Lottie JSON filename (e.g. station-sql.json). Served from static/lottie/.
-  """
-  icon: String
-
-  """
   SVG illustration filename (e.g. service-sql.svg). Served from static/svg/services/.
   """
   svg: String
@@ -2170,6 +3285,10 @@ type services {
   deliverables_func: count_functions
   sections(filter: services_sections_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [services_sections]
   sections_func: count_functions
+  projects(filter: projects_services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [projects_services]
+  projects_func: count_functions
+  tech_stack(filter: tech_stack_services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [tech_stack_services]
+  tech_stack_func: count_functions
 }
 
 type services_deliverables {
@@ -2277,6 +3396,161 @@ type services_translations_mutated {
   key: ID!
   event: EventEnum
   data: services_translations
+}
+
+type site_meta {
+  """Site-wide fallback OG image (1200x630). Folder: og."""
+  default_og_image: ID
+
+  """Contact email"""
+  email: String!
+
+  """GitHub profile URL."""
+  github_url: String!
+  id: ID!
+
+  """LinkedIn profile URL."""
+  linkedin_url: String
+
+  """Brand name + page title suffix. Currently 'yesid.'"""
+  name: String!
+
+  """ISO 3166-1 alpha-2 country code (e.g., CA, US, MX)"""
+  owner_country: String!
+
+  """Person.knowsAbout — comma-separated areas of expertise."""
+  owner_knows_about: [String]!
+
+  """City"""
+  owner_locality: String!
+
+  """Person name (jsonLd Person.name)"""
+  owner_name: String!
+
+  """ISO 3166-2 subdivision code (e.g., QC, ON)"""
+  owner_region: String!
+
+  """Hex color for <meta name='theme-color'>. Default #141414 dark."""
+  theme_color: String
+
+  """Upwork profile URL."""
+  upwork_url: String
+  translations(filter: site_meta_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [site_meta_translations]
+  translations_func: count_functions
+}
+
+type site_meta_mutated {
+  key: ID!
+  event: EventEnum
+  data: site_meta
+}
+
+type site_meta_translations {
+  """SEO fallback meta description (50–200 chars per SEO best practice)."""
+  default_description: String
+
+  """Brand description (used by jsonLd Person.description)."""
+  description: String
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """Person.jobTitle (e.g., 'Digital Infrastructure Consultant')"""
+  owner_job_title: String
+  site_meta_id(filter: site_meta_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): site_meta
+
+  """Brand tagline (per-locale)."""
+  tagline: String
+}
+
+type site_meta_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: site_meta_translations
+}
+
+type tech_stack {
+  """
+  Kebab-case identifier (e.g. postgresql, apache-airflow). Used as URL slug for future detail pages.
+  """
+  id: ID!
+
+  """
+  International display name (tech names are universal — no translation needed). E.g. "Apache Airflow", "PostgreSQL".
+  """
+  name: String!
+
+  """Manual sort order. Populated by drag-and-drop in list view."""
+  sort: Int
+
+  """Publication state. AI-editor cannot set to published."""
+  status: String
+  icon_id(filter: icons_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): icons
+  projects(filter: tech_stack_projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [tech_stack_projects]
+  projects_func: count_functions
+  services(filter: tech_stack_services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [tech_stack_services]
+  services_func: count_functions
+  translations(filter: tech_stack_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [tech_stack_translations]
+  translations_func: count_functions
+}
+
+type tech_stack_mutated {
+  key: ID!
+  event: EventEnum
+  data: tech_stack
+}
+
+type tech_stack_projects {
+  id: ID!
+  projects_id(filter: projects_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): projects
+  tech_stack_id(filter: tech_stack_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): tech_stack
+}
+
+type tech_stack_projects_mutated {
+  key: ID!
+  event: EventEnum
+  data: tech_stack_projects
+}
+
+type tech_stack_services {
+  id: ID!
+  services_id(filter: services_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): services
+  tech_stack_id(filter: tech_stack_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): tech_stack
+}
+
+type tech_stack_services_mutated {
+  key: ID!
+  event: EventEnum
+  data: tech_stack_services
+}
+
+type tech_stack_translations {
+  id: ID!
+  languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+  tech_stack_id(filter: tech_stack_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): tech_stack
+
+  """
+  Factual description of the technology. Block Editor — supports headings, paragraphs (with bold/italic/link/inline-code marks), ordered/bullet lists, code blocks, blockquotes.
+  """
+  what_it_is: JSON
+  what_it_is_func: count_functions
+
+  """
+  Concrete usage and case study for this technology. Replaces the 'In Practice' section from the static markdown source. Block Editor — supports headings, paragraphs, lists, code blocks.
+  """
+  what_i_use_it_for: JSON
+  what_i_use_it_for_func: count_functions
+
+  """
+  Comparison angle vs. alternatives — why this technology instead of another solution. Replaces the 'Why I use it' section from the static markdown source. Block Editor — supports headings, paragraphs, lists, code blocks.
+  """
+  why_i_use_it_instead: JSON
+  why_i_use_it_instead_func: count_functions
+}
+
+type tech_stack_translations_mutated {
+  key: ID!
+  event: EventEnum
+  data: tech_stack_translations
 }
 
 type users_me_tfa_generate_data {
@@ -2419,50 +3693,599 @@ input big_int_filter_operators {
   _nbetween: [GraphQLBigInt]
 }
 
-input blog_posts_filter {
-  body: string_filter_operators
-  body_func: count_function_filter_operators
-  id: string_filter_operators
-  animation: string_filter_operators
-  category: string_filter_operators
-  cover_image: directus_files_filter
-  date_published: date_filter_operators
-  date_published_func: datetime_function_filter_operators
-  external: boolean_filter_operators
-  lang: string_filter_operators
+input block_about_content_filter {
+  client_count: number_filter_operators
+  client_logos: string_filter_operators
+  client_logos_func: count_function_filter_operators
+  editor_label: string_filter_operators
+  id: id_filter_operators
   sort: number_filter_operators
   status: string_filter_operators
-  svg_illustration: illustrations_filter
-  tags: string_filter_operators
-  tags_func: count_function_filter_operators
-  url: string_filter_operators
-  translations: blog_posts_translations_quantifier_filter
+  tech_stack: string_filter_operators
+  tech_stack_func: count_function_filter_operators
+  translations: block_about_content_translations_quantifier_filter
   translations_func: count_function_filter_operators
-  _and: [blog_posts_filter]
-  _or: [blog_posts_filter]
+  _and: [block_about_content_filter]
+  _or: [block_about_content_filter]
 }
 
-input blog_posts_translations_filter {
-  blog_posts_id: blog_posts_filter
-  excerpt: string_filter_operators
+input block_about_content_translations_filter {
+  block_about_content_id: block_about_content_filter
+  cta: string_filter_operators
+  cta_func: count_function_filter_operators
   id: number_filter_operators
+  identity: string_filter_operators
+  identity_func: count_function_filter_operators
+  interests: string_filter_operators
+  interests_func: count_function_filter_operators
+  labels: string_filter_operators
+  labels_func: count_function_filter_operators
   languages_code: languages_filter
-  title: string_filter_operators
-  _and: [blog_posts_translations_filter]
-  _or: [blog_posts_translations_filter]
+  meta: string_filter_operators
+  meta_func: count_function_filter_operators
+  methodology: string_filter_operators
+  methodology_func: count_function_filter_operators
+  metrics: string_filter_operators
+  metrics_func: count_function_filter_operators
+  stop_labels: string_filter_operators
+  stop_labels_func: count_function_filter_operators
+  testimonials: string_filter_operators
+  testimonials_func: count_function_filter_operators
+  weather: string_filter_operators
+  weather_func: count_function_filter_operators
+  _and: [block_about_content_translations_filter]
+  _or: [block_about_content_translations_filter]
 }
 
 """"""
-input blog_posts_translations_quantifier_filter {
-  blog_posts_id: blog_posts_filter
-  excerpt: string_filter_operators
+input block_about_content_translations_quantifier_filter {
+  block_about_content_id: block_about_content_filter
+  cta: string_filter_operators
+  cta_func: count_function_filter_operators
+  id: number_filter_operators
+  identity: string_filter_operators
+  identity_func: count_function_filter_operators
+  interests: string_filter_operators
+  interests_func: count_function_filter_operators
+  labels: string_filter_operators
+  labels_func: count_function_filter_operators
+  languages_code: languages_filter
+  meta: string_filter_operators
+  meta_func: count_function_filter_operators
+  methodology: string_filter_operators
+  methodology_func: count_function_filter_operators
+  metrics: string_filter_operators
+  metrics_func: count_function_filter_operators
+  stop_labels: string_filter_operators
+  stop_labels_func: count_function_filter_operators
+  testimonials: string_filter_operators
+  testimonials_func: count_function_filter_operators
+  weather: string_filter_operators
+  weather_func: count_function_filter_operators
+  _and: [block_about_content_translations_filter]
+  _or: [block_about_content_translations_filter]
+  _some: block_about_content_translations_filter
+  _none: block_about_content_translations_filter
+}
+
+input block_about_intro_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  stack_items: string_filter_operators
+  stack_items_func: count_function_filter_operators
+  status: string_filter_operators
+  translations: block_about_intro_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_about_intro_filter]
+  _or: [block_about_intro_filter]
+}
+
+input block_about_intro_translations_filter {
+  bio: string_filter_operators
+  block_about_intro_id: block_about_intro_filter
+  id: number_filter_operators
+  interests: string_filter_operators
+  interests_label: string_filter_operators
+  languages_code: languages_filter
+  location: string_filter_operators
+  location_func: count_function_filter_operators
+  location_label: string_filter_operators
+  more_link: string_filter_operators
+  name: string_filter_operators
+  stack_label: string_filter_operators
+  title: string_filter_operators
+  _and: [block_about_intro_translations_filter]
+  _or: [block_about_intro_translations_filter]
+}
+
+""""""
+input block_about_intro_translations_quantifier_filter {
+  bio: string_filter_operators
+  block_about_intro_id: block_about_intro_filter
+  id: number_filter_operators
+  interests: string_filter_operators
+  interests_label: string_filter_operators
+  languages_code: languages_filter
+  location: string_filter_operators
+  location_func: count_function_filter_operators
+  location_label: string_filter_operators
+  more_link: string_filter_operators
+  name: string_filter_operators
+  stack_label: string_filter_operators
+  title: string_filter_operators
+  _and: [block_about_intro_translations_filter]
+  _or: [block_about_intro_translations_filter]
+  _some: block_about_intro_translations_filter
+  _none: block_about_intro_translations_filter
+}
+
+input block_blog_page_content_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  translations: block_blog_page_content_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_blog_page_content_filter]
+  _or: [block_blog_page_content_filter]
+}
+
+input block_blog_page_content_translations_filter {
+  block_blog_page_content_id: block_blog_page_content_filter
+  id: number_filter_operators
+  intro: string_filter_operators
+  languages_code: languages_filter
+  _and: [block_blog_page_content_translations_filter]
+  _or: [block_blog_page_content_translations_filter]
+}
+
+""""""
+input block_blog_page_content_translations_quantifier_filter {
+  block_blog_page_content_id: block_blog_page_content_filter
+  id: number_filter_operators
+  intro: string_filter_operators
+  languages_code: languages_filter
+  _and: [block_blog_page_content_translations_filter]
+  _or: [block_blog_page_content_translations_filter]
+  _some: block_blog_page_content_translations_filter
+  _none: block_blog_page_content_translations_filter
+}
+
+input block_closer_filter {
+  attribution_url: string_filter_operators
+  cta_href: string_filter_operators
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  translations: block_closer_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_closer_filter]
+  _or: [block_closer_filter]
+}
+
+input block_closer_translations_filter {
+  attribution: string_filter_operators
+  attribution_func: count_function_filter_operators
+  block_closer_id: block_closer_filter
+  cta: string_filter_operators
+  cta_func: count_function_filter_operators
+  heading: string_filter_operators
+  heading_dot: string_filter_operators
   id: number_filter_operators
   languages_code: languages_filter
-  title: string_filter_operators
-  _and: [blog_posts_translations_filter]
-  _or: [blog_posts_translations_filter]
-  _some: blog_posts_translations_filter
-  _none: blog_posts_translations_filter
+  rows: string_filter_operators
+  rows_func: count_function_filter_operators
+  subheading: string_filter_operators
+  terminal: string_filter_operators
+  terminal_func: count_function_filter_operators
+  _and: [block_closer_translations_filter]
+  _or: [block_closer_translations_filter]
+}
+
+""""""
+input block_closer_translations_quantifier_filter {
+  attribution: string_filter_operators
+  attribution_func: count_function_filter_operators
+  block_closer_id: block_closer_filter
+  cta: string_filter_operators
+  cta_func: count_function_filter_operators
+  heading: string_filter_operators
+  heading_dot: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  rows: string_filter_operators
+  rows_func: count_function_filter_operators
+  subheading: string_filter_operators
+  terminal: string_filter_operators
+  terminal_func: count_function_filter_operators
+  _and: [block_closer_translations_filter]
+  _or: [block_closer_translations_filter]
+  _some: block_closer_translations_filter
+  _none: block_closer_translations_filter
+}
+
+input block_contact_content_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  web3forms_key: string_filter_operators
+  translations: block_contact_content_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_contact_content_filter]
+  _or: [block_contact_content_filter]
+}
+
+input block_contact_content_translations_filter {
+  block_contact_content_id: block_contact_content_filter
+  form_terminal: string_filter_operators
+  form_terminal_func: count_function_filter_operators
+  id: number_filter_operators
+  info_terminal: string_filter_operators
+  info_terminal_func: count_function_filter_operators
+  languages_code: languages_filter
+  meta: string_filter_operators
+  meta_func: count_function_filter_operators
+  page_title: string_filter_operators
+  send_error_message: string_filter_operators
+  socials: string_filter_operators
+  socials_func: count_function_filter_operators
+  station_label: string_filter_operators
+  success: string_filter_operators
+  success_func: count_function_filter_operators
+  validation: string_filter_operators
+  validation_func: count_function_filter_operators
+  _and: [block_contact_content_translations_filter]
+  _or: [block_contact_content_translations_filter]
+}
+
+""""""
+input block_contact_content_translations_quantifier_filter {
+  block_contact_content_id: block_contact_content_filter
+  form_terminal: string_filter_operators
+  form_terminal_func: count_function_filter_operators
+  id: number_filter_operators
+  info_terminal: string_filter_operators
+  info_terminal_func: count_function_filter_operators
+  languages_code: languages_filter
+  meta: string_filter_operators
+  meta_func: count_function_filter_operators
+  page_title: string_filter_operators
+  send_error_message: string_filter_operators
+  socials: string_filter_operators
+  socials_func: count_function_filter_operators
+  station_label: string_filter_operators
+  success: string_filter_operators
+  success_func: count_function_filter_operators
+  validation: string_filter_operators
+  validation_func: count_function_filter_operators
+  _and: [block_contact_content_translations_filter]
+  _or: [block_contact_content_translations_filter]
+  _some: block_contact_content_translations_filter
+  _none: block_contact_content_translations_filter
+}
+
+input block_cta_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  translations: block_cta_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_cta_filter]
+  _or: [block_cta_filter]
+}
+
+input block_cta_translations_filter {
+  block_cta_id: block_cta_filter
+  cta_contact: string_filter_operators
+  cta_github: string_filter_operators
+  heading: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  subtitle: string_filter_operators
+  _and: [block_cta_translations_filter]
+  _or: [block_cta_translations_filter]
+}
+
+""""""
+input block_cta_translations_quantifier_filter {
+  block_cta_id: block_cta_filter
+  cta_contact: string_filter_operators
+  cta_github: string_filter_operators
+  heading: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  subtitle: string_filter_operators
+  _and: [block_cta_translations_filter]
+  _or: [block_cta_translations_filter]
+  _some: block_cta_translations_filter
+  _none: block_cta_translations_filter
+}
+
+input block_hero_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  translations: block_hero_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_hero_filter]
+  _or: [block_hero_filter]
+}
+
+input block_hero_translations_filter {
+  block_hero_id: block_hero_filter
+  cta_contact: string_filter_operators
+  cta_work: string_filter_operators
+  headline: string_filter_operators
+  headline_func: count_function_filter_operators
+  hero_anim: string_filter_operators
+  hero_anim_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  refresh_button: string_filter_operators
+  refresh_button_func: count_function_filter_operators
+  sql_panel: string_filter_operators
+  sql_panel_func: count_function_filter_operators
+  subheadline: string_filter_operators
+  subtitle: string_filter_operators
+  _and: [block_hero_translations_filter]
+  _or: [block_hero_translations_filter]
+}
+
+""""""
+input block_hero_translations_quantifier_filter {
+  block_hero_id: block_hero_filter
+  cta_contact: string_filter_operators
+  cta_work: string_filter_operators
+  headline: string_filter_operators
+  headline_func: count_function_filter_operators
+  hero_anim: string_filter_operators
+  hero_anim_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  refresh_button: string_filter_operators
+  refresh_button_func: count_function_filter_operators
+  sql_panel: string_filter_operators
+  sql_panel_func: count_function_filter_operators
+  subheadline: string_filter_operators
+  subtitle: string_filter_operators
+  _and: [block_hero_translations_filter]
+  _or: [block_hero_translations_filter]
+  _some: block_hero_translations_filter
+  _none: block_hero_translations_filter
+}
+
+input block_manifesto_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  ticks: string_filter_operators
+  ticks_func: count_function_filter_operators
+  translations: block_manifesto_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_manifesto_filter]
+  _or: [block_manifesto_filter]
+}
+
+input block_manifesto_translations_filter {
+  block_manifesto_id: block_manifesto_filter
+  edge_bottom: string_filter_operators
+  edge_bottom_func: count_function_filter_operators
+  edge_left: string_filter_operators
+  edge_left_func: count_function_filter_operators
+  edge_right: string_filter_operators
+  edge_right_func: count_function_filter_operators
+  hidden_transit_lines: string_filter_operators
+  hidden_transit_lines_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  pills: string_filter_operators
+  pills_func: count_function_filter_operators
+  statement: string_filter_operators
+  statement_func: count_function_filter_operators
+  terminal: string_filter_operators
+  terminal_func: count_function_filter_operators
+  transit: string_filter_operators
+  transit_func: count_function_filter_operators
+  _and: [block_manifesto_translations_filter]
+  _or: [block_manifesto_translations_filter]
+}
+
+""""""
+input block_manifesto_translations_quantifier_filter {
+  block_manifesto_id: block_manifesto_filter
+  edge_bottom: string_filter_operators
+  edge_bottom_func: count_function_filter_operators
+  edge_left: string_filter_operators
+  edge_left_func: count_function_filter_operators
+  edge_right: string_filter_operators
+  edge_right_func: count_function_filter_operators
+  hidden_transit_lines: string_filter_operators
+  hidden_transit_lines_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  pills: string_filter_operators
+  pills_func: count_function_filter_operators
+  statement: string_filter_operators
+  statement_func: count_function_filter_operators
+  terminal: string_filter_operators
+  terminal_func: count_function_filter_operators
+  transit: string_filter_operators
+  transit_func: count_function_filter_operators
+  _and: [block_manifesto_translations_filter]
+  _or: [block_manifesto_translations_filter]
+  _some: block_manifesto_translations_filter
+  _none: block_manifesto_translations_filter
+}
+
+input block_projects_page_content_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  translations: block_projects_page_content_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_projects_page_content_filter]
+  _or: [block_projects_page_content_filter]
+}
+
+input block_projects_page_content_translations_filter {
+  block_projects_page_content_id: block_projects_page_content_filter
+  id: number_filter_operators
+  intro: string_filter_operators
+  languages_code: languages_filter
+  _and: [block_projects_page_content_translations_filter]
+  _or: [block_projects_page_content_translations_filter]
+}
+
+""""""
+input block_projects_page_content_translations_quantifier_filter {
+  block_projects_page_content_id: block_projects_page_content_filter
+  id: number_filter_operators
+  intro: string_filter_operators
+  languages_code: languages_filter
+  _and: [block_projects_page_content_translations_filter]
+  _or: [block_projects_page_content_translations_filter]
+  _some: block_projects_page_content_translations_filter
+  _none: block_projects_page_content_translations_filter
+}
+
+input block_proof_reel_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  images: string_filter_operators
+  images_func: count_function_filter_operators
+  slugs: string_filter_operators
+  slugs_func: count_function_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  view_all_href: string_filter_operators
+  translations: block_proof_reel_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_proof_reel_filter]
+  _or: [block_proof_reel_filter]
+}
+
+input block_proof_reel_translations_filter {
+  block_proof_reel_id: block_proof_reel_filter
+  heading: string_filter_operators
+  heading_dot: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  section_label: string_filter_operators
+  subheading: string_filter_operators
+  toggle_color_aria: string_filter_operators
+  view_all_label: string_filter_operators
+  _and: [block_proof_reel_translations_filter]
+  _or: [block_proof_reel_translations_filter]
+}
+
+""""""
+input block_proof_reel_translations_quantifier_filter {
+  block_proof_reel_id: block_proof_reel_filter
+  heading: string_filter_operators
+  heading_dot: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  section_label: string_filter_operators
+  subheading: string_filter_operators
+  toggle_color_aria: string_filter_operators
+  view_all_label: string_filter_operators
+  _and: [block_proof_reel_translations_filter]
+  _or: [block_proof_reel_translations_filter]
+  _some: block_proof_reel_translations_filter
+  _none: block_proof_reel_translations_filter
+}
+
+input block_services_grid_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  translations: block_services_grid_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_services_grid_filter]
+  _or: [block_services_grid_filter]
+}
+
+input block_services_grid_translations_filter {
+  block_services_grid_id: block_services_grid_filter
+  heading: string_filter_operators
+  heading_dot: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  subheading: string_filter_operators
+  view_all_link: string_filter_operators
+  view_illustration_aria: string_filter_operators
+  _and: [block_services_grid_translations_filter]
+  _or: [block_services_grid_translations_filter]
+}
+
+""""""
+input block_services_grid_translations_quantifier_filter {
+  block_services_grid_id: block_services_grid_filter
+  heading: string_filter_operators
+  heading_dot: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  subheading: string_filter_operators
+  view_all_link: string_filter_operators
+  view_illustration_aria: string_filter_operators
+  _and: [block_services_grid_translations_filter]
+  _or: [block_services_grid_translations_filter]
+  _some: block_services_grid_translations_filter
+  _none: block_services_grid_translations_filter
+}
+
+input block_tech_stack_page_content_filter {
+  editor_label: string_filter_operators
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  translations: block_tech_stack_page_content_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [block_tech_stack_page_content_filter]
+  _or: [block_tech_stack_page_content_filter]
+}
+
+input block_tech_stack_page_content_translations_filter {
+  actions: string_filter_operators
+  actions_func: count_function_filter_operators
+  block_tech_stack_page_content_id: block_tech_stack_page_content_filter
+  cta: string_filter_operators
+  cta_func: count_function_filter_operators
+  hero: string_filter_operators
+  hero_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  meta: string_filter_operators
+  meta_func: count_function_filter_operators
+  _and: [block_tech_stack_page_content_translations_filter]
+  _or: [block_tech_stack_page_content_translations_filter]
+}
+
+""""""
+input block_tech_stack_page_content_translations_quantifier_filter {
+  actions: string_filter_operators
+  actions_func: count_function_filter_operators
+  block_tech_stack_page_content_id: block_tech_stack_page_content_filter
+  cta: string_filter_operators
+  cta_func: count_function_filter_operators
+  hero: string_filter_operators
+  hero_func: count_function_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  meta: string_filter_operators
+  meta_func: count_function_filter_operators
+  _and: [block_tech_stack_page_content_translations_filter]
+  _or: [block_tech_stack_page_content_translations_filter]
+  _some: block_tech_stack_page_content_translations_filter
+  _none: block_tech_stack_page_content_translations_filter
 }
 
 input boolean_filter_operators {
@@ -3409,11 +5232,67 @@ input directus_versions_filter {
   _or: [directus_versions_filter]
 }
 
+input error_pages_filter {
+  id: id_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  status_code: number_filter_operators
+  translations: error_pages_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [error_pages_filter]
+  _or: [error_pages_filter]
+}
+
+input error_pages_translations_filter {
+  description: string_filter_operators
+  error_pages_id: error_pages_filter
+  heading: string_filter_operators
+  id: number_filter_operators
+  label: string_filter_operators
+  languages_code: languages_filter
+  suggestions: string_filter_operators
+  suggestions_func: count_function_filter_operators
+  terminal_line: string_filter_operators
+  _and: [error_pages_translations_filter]
+  _or: [error_pages_translations_filter]
+}
+
+""""""
+input error_pages_translations_quantifier_filter {
+  description: string_filter_operators
+  error_pages_id: error_pages_filter
+  heading: string_filter_operators
+  id: number_filter_operators
+  label: string_filter_operators
+  languages_code: languages_filter
+  suggestions: string_filter_operators
+  suggestions_func: count_function_filter_operators
+  terminal_line: string_filter_operators
+  _and: [error_pages_translations_filter]
+  _or: [error_pages_translations_filter]
+  _some: error_pages_translations_filter
+  _none: error_pages_translations_filter
+}
+
 input hash_filter_operators {
   _null: Boolean
   _nnull: Boolean
   _empty: Boolean
   _nempty: Boolean
+}
+
+input icons_filter {
+  category: string_filter_operators
+  category_func: count_function_filter_operators
+  iconify_id: string_filter_operators
+  id: string_filter_operators
+  name: string_filter_operators
+  notes: string_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  svg_override: directus_files_filter
+  _and: [icons_filter]
+  _or: [icons_filter]
 }
 
 input id_filter_operators {
@@ -3459,6 +5338,42 @@ input languages_filter {
   _or: [languages_filter]
 }
 
+input nav_links_filter {
+  href: string_filter_operators
+  icon: icons_filter
+  id: id_filter_operators
+  placement: string_filter_operators
+  priority: number_filter_operators
+  status: string_filter_operators
+  translations: nav_links_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [nav_links_filter]
+  _or: [nav_links_filter]
+}
+
+input nav_links_translations_filter {
+  id: number_filter_operators
+  label: string_filter_operators
+  languages_code: languages_filter
+  nav_links_id: nav_links_filter
+  subtitle: string_filter_operators
+  _and: [nav_links_translations_filter]
+  _or: [nav_links_translations_filter]
+}
+
+""""""
+input nav_links_translations_quantifier_filter {
+  id: number_filter_operators
+  label: string_filter_operators
+  languages_code: languages_filter
+  nav_links_id: nav_links_filter
+  subtitle: string_filter_operators
+  _and: [nav_links_translations_filter]
+  _or: [nav_links_translations_filter]
+  _some: nav_links_translations_filter
+  _none: nav_links_translations_filter
+}
+
 input number_filter_operators {
   _eq: GraphQLStringOrFloat
   _neq: GraphQLStringOrFloat
@@ -3472,6 +5387,85 @@ input number_filter_operators {
   _nnull: Boolean
   _between: [GraphQLStringOrFloat]
   _nbetween: [GraphQLStringOrFloat]
+}
+
+input pages_blocks_filter {
+  collection: string_filter_operators
+  id: number_filter_operators
+  pages_id: pages_filter
+  sort: number_filter_operators
+  _and: [pages_blocks_filter]
+  _or: [pages_blocks_filter]
+  item__block_about_content: block_about_content_filter
+  item__block_about_intro: block_about_intro_filter
+  item__block_blog_page_content: block_blog_page_content_filter
+  item__block_closer: block_closer_filter
+  item__block_contact_content: block_contact_content_filter
+  item__block_cta: block_cta_filter
+  item__block_hero: block_hero_filter
+  item__block_manifesto: block_manifesto_filter
+  item__block_projects_page_content: block_projects_page_content_filter
+  item__block_proof_reel: block_proof_reel_filter
+  item__block_services_grid: block_services_grid_filter
+  item__block_tech_stack_page_content: block_tech_stack_page_content_filter
+}
+
+""""""
+input pages_blocks_quantifier_filter {
+  collection: string_filter_operators
+  id: number_filter_operators
+  pages_id: pages_filter
+  sort: number_filter_operators
+  _and: [pages_blocks_filter]
+  _or: [pages_blocks_filter]
+  _some: pages_blocks_filter
+  _none: pages_blocks_filter
+  item__block_about_content: block_about_content_filter
+  item__block_about_intro: block_about_intro_filter
+  item__block_blog_page_content: block_blog_page_content_filter
+  item__block_closer: block_closer_filter
+  item__block_contact_content: block_contact_content_filter
+  item__block_cta: block_cta_filter
+  item__block_hero: block_hero_filter
+  item__block_manifesto: block_manifesto_filter
+  item__block_projects_page_content: block_projects_page_content_filter
+  item__block_proof_reel: block_proof_reel_filter
+  item__block_services_grid: block_services_grid_filter
+  item__block_tech_stack_page_content: block_tech_stack_page_content_filter
+}
+
+input pages_filter {
+  id: id_filter_operators
+  slug: string_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  blocks: pages_blocks_quantifier_filter
+  blocks_func: count_function_filter_operators
+  translations: pages_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [pages_filter]
+  _or: [pages_filter]
+}
+
+input pages_translations_filter {
+  id: number_filter_operators
+  languages_code: languages_filter
+  pages_id: pages_filter
+  title: string_filter_operators
+  _and: [pages_translations_filter]
+  _or: [pages_translations_filter]
+}
+
+""""""
+input pages_translations_quantifier_filter {
+  id: number_filter_operators
+  languages_code: languages_filter
+  pages_id: pages_filter
+  title: string_filter_operators
+  _and: [pages_translations_filter]
+  _or: [pages_translations_filter]
+  _some: pages_translations_filter
+  _none: pages_translations_filter
 }
 
 input projects_filter {
@@ -3501,6 +5495,8 @@ input projects_filter {
   services_func: count_function_filter_operators
   translations: projects_translations_quantifier_filter
   translations_func: count_function_filter_operators
+  tech_stack: tech_stack_projects_quantifier_filter
+  tech_stack_func: count_function_filter_operators
   _and: [projects_filter]
   _or: [projects_filter]
 }
@@ -3647,6 +5643,41 @@ input projects_translations_quantifier_filter {
   _none: projects_translations_filter
 }
 
+input route_seo_filter {
+  id: number_filter_operators
+  og_image: id_filter_operators
+  path: string_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  translations: route_seo_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [route_seo_filter]
+  _or: [route_seo_filter]
+}
+
+input route_seo_translations_filter {
+  description: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  route_seo_id: route_seo_filter
+  title: string_filter_operators
+  _and: [route_seo_translations_filter]
+  _or: [route_seo_translations_filter]
+}
+
+""""""
+input route_seo_translations_quantifier_filter {
+  description: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  route_seo_id: route_seo_filter
+  title: string_filter_operators
+  _and: [route_seo_translations_filter]
+  _or: [route_seo_translations_filter]
+  _some: route_seo_translations_filter
+  _none: route_seo_translations_filter
+}
+
 input services_deliverables_filter {
   id: number_filter_operators
   services_id: services_filter
@@ -3694,7 +5725,6 @@ input services_deliverables_translations_quantifier_filter {
 input services_filter {
   id: string_filter_operators
   station: number_filter_operators
-  icon: string_filter_operators
   svg: string_filter_operators
   visible: boolean_filter_operators
   stack: string_filter_operators
@@ -3705,6 +5735,10 @@ input services_filter {
   deliverables_func: count_function_filter_operators
   sections: services_sections_quantifier_filter
   sections_func: count_function_filter_operators
+  projects: projects_services_quantifier_filter
+  projects_func: count_function_filter_operators
+  tech_stack: tech_stack_services_quantifier_filter
+  tech_stack_func: count_function_filter_operators
   _and: [services_filter]
   _or: [services_filter]
 }
@@ -3790,6 +5824,53 @@ input services_translations_quantifier_filter {
   _none: services_translations_filter
 }
 
+input site_meta_filter {
+  default_og_image: id_filter_operators
+  email: string_filter_operators
+  github_url: string_filter_operators
+  id: number_filter_operators
+  linkedin_url: string_filter_operators
+  name: string_filter_operators
+  owner_country: string_filter_operators
+  owner_knows_about: string_filter_operators
+  owner_locality: string_filter_operators
+  owner_name: string_filter_operators
+  owner_region: string_filter_operators
+  theme_color: string_filter_operators
+  upwork_url: string_filter_operators
+  translations: site_meta_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [site_meta_filter]
+  _or: [site_meta_filter]
+}
+
+input site_meta_translations_filter {
+  default_description: string_filter_operators
+  description: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  owner_job_title: string_filter_operators
+  site_meta_id: site_meta_filter
+  tagline: string_filter_operators
+  _and: [site_meta_translations_filter]
+  _or: [site_meta_translations_filter]
+}
+
+""""""
+input site_meta_translations_quantifier_filter {
+  default_description: string_filter_operators
+  description: string_filter_operators
+  id: number_filter_operators
+  languages_code: languages_filter
+  owner_job_title: string_filter_operators
+  site_meta_id: site_meta_filter
+  tagline: string_filter_operators
+  _and: [site_meta_translations_filter]
+  _or: [site_meta_translations_filter]
+  _some: site_meta_translations_filter
+  _none: site_meta_translations_filter
+}
+
 input string_filter_operators {
   _eq: String
   _neq: String
@@ -3810,6 +5891,91 @@ input string_filter_operators {
   _nnull: Boolean
   _empty: Boolean
   _nempty: Boolean
+}
+
+input tech_stack_filter {
+  id: string_filter_operators
+  name: string_filter_operators
+  sort: number_filter_operators
+  status: string_filter_operators
+  icon_id: icons_filter
+  projects: tech_stack_projects_quantifier_filter
+  projects_func: count_function_filter_operators
+  services: tech_stack_services_quantifier_filter
+  services_func: count_function_filter_operators
+  translations: tech_stack_translations_quantifier_filter
+  translations_func: count_function_filter_operators
+  _and: [tech_stack_filter]
+  _or: [tech_stack_filter]
+}
+
+input tech_stack_projects_filter {
+  id: number_filter_operators
+  projects_id: projects_filter
+  tech_stack_id: tech_stack_filter
+  _and: [tech_stack_projects_filter]
+  _or: [tech_stack_projects_filter]
+}
+
+""""""
+input tech_stack_projects_quantifier_filter {
+  id: number_filter_operators
+  projects_id: projects_filter
+  tech_stack_id: tech_stack_filter
+  _and: [tech_stack_projects_filter]
+  _or: [tech_stack_projects_filter]
+  _some: tech_stack_projects_filter
+  _none: tech_stack_projects_filter
+}
+
+input tech_stack_services_filter {
+  id: number_filter_operators
+  services_id: services_filter
+  tech_stack_id: tech_stack_filter
+  _and: [tech_stack_services_filter]
+  _or: [tech_stack_services_filter]
+}
+
+""""""
+input tech_stack_services_quantifier_filter {
+  id: number_filter_operators
+  services_id: services_filter
+  tech_stack_id: tech_stack_filter
+  _and: [tech_stack_services_filter]
+  _or: [tech_stack_services_filter]
+  _some: tech_stack_services_filter
+  _none: tech_stack_services_filter
+}
+
+input tech_stack_translations_filter {
+  id: number_filter_operators
+  languages_code: languages_filter
+  tech_stack_id: tech_stack_filter
+  what_it_is: string_filter_operators
+  what_it_is_func: count_function_filter_operators
+  what_i_use_it_for: string_filter_operators
+  what_i_use_it_for_func: count_function_filter_operators
+  why_i_use_it_instead: string_filter_operators
+  why_i_use_it_instead_func: count_function_filter_operators
+  _and: [tech_stack_translations_filter]
+  _or: [tech_stack_translations_filter]
+}
+
+""""""
+input tech_stack_translations_quantifier_filter {
+  id: number_filter_operators
+  languages_code: languages_filter
+  tech_stack_id: tech_stack_filter
+  what_it_is: string_filter_operators
+  what_it_is_func: count_function_filter_operators
+  what_i_use_it_for: string_filter_operators
+  what_i_use_it_for_func: count_function_filter_operators
+  why_i_use_it_instead: string_filter_operators
+  why_i_use_it_instead_func: count_function_filter_operators
+  _and: [tech_stack_translations_filter]
+  _or: [tech_stack_translations_filter]
+  _some: tech_stack_translations_filter
+  _none: tech_stack_translations_filter
 }
 
 input update_directus_access_input {

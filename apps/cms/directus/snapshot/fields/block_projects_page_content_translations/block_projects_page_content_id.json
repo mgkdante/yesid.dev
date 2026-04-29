@@ -1,7 +1,7 @@
 {
   "collection": "block_projects_page_content_translations",
   "field": "block_projects_page_content_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "block_projects_page_content_translations",
     "conditions": null,

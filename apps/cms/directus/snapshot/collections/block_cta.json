@@ -13,7 +13,7 @@
     "hidden": false,
     "icon": "campaign",
     "item_duplication_fields": null,
-    "note": "CTA block \u2014 bottom of /. All 4 fields are LocalizedStrings \u2192 4 string columns in translations.",
+    "note": "CTA block — bottom of /. All 4 fields are LocalizedStrings → 4 string columns in translations.",
     "preview_url": null,
     "singleton": false,
     "sort": null,

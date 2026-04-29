@@ -455,8 +455,17 @@ export function toBlockCtaTranslationRows(
 
 // --- block_closer + translations -------------------------------------------
 
-export function toBlockCloserRow(sort = 7): DirectusBlockParentRow {
-	return { editor_label: 'Home Closer', status: 'published', sort };
+export function toBlockCloserRow(
+	raw: typeof siteContentFixture,
+	sort = 7,
+): DirectusBlockParentRow & { cta_href: string; attribution_url: string } {
+	return {
+		editor_label: 'Home Closer',
+		status: 'published',
+		sort,
+		cta_href: raw.closerContent.cta.href,
+		attribution_url: raw.closerContent.attribution.url,
+	};
 }
 
 export function toBlockCloserTranslationRows(
@@ -1001,7 +1010,7 @@ export async function seedPagesAndBlocks(opts: SeedRunOptions): Promise<void> {
 		{ name: 'block_services_grid',          row: toBlockServicesGridRow(),            translations: toBlockServicesGridTranslationRows(siteContentFixture) },
 		{ name: 'block_about_intro',            row: toBlockAboutIntroRow(),              translations: toBlockAboutIntroTranslationRows(siteContentFixture) },
 		{ name: 'block_cta',                    row: toBlockCtaRow(),                     translations: toBlockCtaTranslationRows(siteContentFixture) },
-		{ name: 'block_closer',                 row: toBlockCloserRow(),                  translations: toBlockCloserTranslationRows(siteContentFixture) },
+		{ name: 'block_closer',                 row: toBlockCloserRow(siteContentFixture), translations: toBlockCloserTranslationRows(siteContentFixture) },
 		{ name: 'block_about_content',          row: toBlockAboutContentRow(aboutPageFixture), translations: toBlockAboutContentTranslationRows(aboutPageFixture) },
 		{ name: 'block_contact_content',        row: toBlockContactContentRow(contactPageFixture),  translations: toBlockContactContentTranslationRows(contactPageFixture) },
 		{ name: 'block_tech_stack_page_content',row: toBlockTechStackPageContentRow(),    translations: toBlockTechStackPageContentTranslationRows(techStackPageFixture) },

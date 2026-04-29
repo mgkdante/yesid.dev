@@ -1,7 +1,7 @@
 {
   "collection": "pages_translations",
   "field": "pages_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "pages_translations",
     "conditions": null,

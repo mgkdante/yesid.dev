@@ -18,7 +18,7 @@
     "column": "block_blog_page_content_id",
     "foreign_key_table": "block_blog_page_content",
     "foreign_key_column": "id",
-    "constraint_name": "block_blog_page_content_translations_block_blog_page_content_id_foreign",
+    "constraint_name": "block_blog_page_content_translations_block__68ea31f3_foreign",
     "on_update": "NO ACTION",
     "on_delete": "CASCADE"
   }

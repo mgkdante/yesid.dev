@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input-code",
-    "note": "Per-locale terminal chrome (CloserContent.terminal). JSON shape: { title, city, encoding, destinationsLabel, prompt } \u2014 all strings.",
+    "note": "Per-locale terminal chrome (CloserContent.terminal). JSON shape: { title, city, encoding, destinationsLabel, prompt } — all strings.",
     "options": {
       "language": "json"
     },

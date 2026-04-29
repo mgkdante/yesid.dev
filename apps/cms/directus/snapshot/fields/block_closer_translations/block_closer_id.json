@@ -1,7 +1,7 @@
 {
   "collection": "block_closer_translations",
   "field": "block_closer_id",
-  "type": "string",
+  "type": "uuid",
   "meta": {
     "collection": "block_closer_translations",
     "conditions": null,

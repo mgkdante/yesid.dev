@@ -13,7 +13,7 @@
     "hidden": false,
     "icon": "grid_view",
     "item_duplication_fields": null,
-    "note": "Services Grid block \u2014 section 3 of /. All fields are LocalizedStrings \u2192 string columns in translations. No M2M to services collection (not needed for 18i scope).",
+    "note": "Services Grid block — section 3 of /. All fields are LocalizedStrings → string columns in translations. No M2M to services collection (not needed for 18i scope).",
     "preview_url": null,
     "singleton": false,
     "sort": null,
