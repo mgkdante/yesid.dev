@@ -72,6 +72,9 @@ export const adapter: ContentAdapter = {
 		aboutPage: directusAdapter.content.aboutPage,
 		contactPage: directusAdapter.content.contactPage,
 		techStackPage: directusAdapter.content.techStackPage,
+		// Flipped in slice-18i Phase 7 (blog/projects page chrome):
+		blogPage: directusAdapter.content.blogPage,
+		projectsPage: directusAdapter.content.projectsPage,
 		// Flipped in slice-18i Task 4.3 (derived — no Directus query):
 		heroMock: directusAdapter.content.heroMock,
 		initialHeroData: directusAdapter.content.initialHeroData,

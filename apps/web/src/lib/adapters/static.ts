@@ -66,6 +66,12 @@ import {
 	TechStackPageContentSchema,
 	HeroDataSchema,
 } from '$lib/schemas';
+import {
+	BlogPageContentSchema,
+	ProjectsPageContentSchema,
+	type BlogPageContent,
+	type ProjectsPageContent,
+} from '@repo/shared/schemas';
 import type { Locale } from '$lib/types';
 import {
 	getAllTechItems,
@@ -259,6 +265,16 @@ export const staticAdapter: ContentAdapter = {
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
 		techStackPage: async () =>
 			parsePort('content.techStackPage', TechStackPageContentSchema, techStackPageContent),
+		// Phase 7 fallback stubs — minimal LocalizedString-only shapes matching the
+		// block_blog_page_content / block_projects_page_content Zod stubs.
+		blogPage: async (): Promise<BlogPageContent> =>
+			parsePort('content.blogPage', BlogPageContentSchema, {
+				intro: { en: 'Professional dispatches from the field.' },
+			}),
+		projectsPage: async (): Promise<ProjectsPageContent> =>
+			parsePort('content.projectsPage', ProjectsPageContentSchema, {
+				intro: { en: 'Selected work.' },
+			}),
 		heroMock: async () => parsePort('content.heroMock', HeroDataSchema, generateHeroData()),
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),

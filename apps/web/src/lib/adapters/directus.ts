@@ -2884,6 +2884,24 @@ export const directusAdapter: ContentAdapter = {
 		},
 
 		// -----------------------------------------------------------------------
+		// Phase 7 — blog + projects page chrome (slice-18i BLOCKER fix-up).
+		// -----------------------------------------------------------------------
+
+		async blogPage(ctx) {
+			const page = await loadPage('blog', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_blog_page_content');
+			if (!block) throw new Error('[content.blogPage] blog page has no block_blog_page_content');
+			return block.item;
+		},
+
+		async projectsPage(ctx) {
+			const page = await loadPage('projects', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_projects_page_content');
+			if (!block) throw new Error('[content.projectsPage] projects page has no block_projects_page_content');
+			return block.item;
+		},
+
+		// -----------------------------------------------------------------------
 		// Task 4.3 — Derived methods (no Directus query — pure local functions).
 		// -----------------------------------------------------------------------
 

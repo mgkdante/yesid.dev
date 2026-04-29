@@ -46,7 +46,7 @@ import type {
 import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 import type { PageSeo } from '$lib/schemas/seo';
-import type { TechStackPageContent } from '@repo/shared/schemas';
+import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
 
 export interface NavPort {
 	/**
@@ -209,6 +209,10 @@ export interface ContentPort {
 	techStackPage(ctx?: PreviewContext): Promise<TechStackPageContent>;
 	heroMock(ctx?: PreviewContext): Promise<HeroData>;
 	initialHeroData(ctx?: PreviewContext): Promise<HeroData>;
+	/** /blog page chrome — block_blog_page_content (added slice-18i Phase 7). */
+	blogPage(ctx?: PreviewContext): Promise<BlogPageContent>;
+	/** /projects page chrome — block_projects_page_content (added slice-18i Phase 7). */
+	projectsPage(ctx?: PreviewContext): Promise<ProjectsPageContent>;
 	/**
 	 * Inlined SVG markup for the Montreal-metro hero animation.
 	 *
