@@ -65,6 +65,8 @@ import { SiteMetaSchema } from '$lib/schemas/meta';
 import { SiteSeoDefaultsSchema } from '$lib/schemas/site-seo-defaults';
 import { RouteSeoOverrideSchema } from '$lib/schemas/route-seo';
 import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml, PageSchema, type PageData } from '@repo/shared';
+import { HeroDataSchema } from '$lib/schemas/hero-data';
+import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
 import {
 	errorSeoFallback,
@@ -322,6 +324,21 @@ export const PAGE_FIELDS: string[] = [
  * found, and throws via parsePort with 'pages.bySlug' label when the raw
  * shape fails PageSchema validation.
  */
+/**
+ * Module-level raw page cache: slug → pre-parse transformed row.
+ * Stores the output of `transformPageRow` (with `_heroAnim` and other
+ * discriminator keys intact) so `heroAnim()` can project from the enriched
+ * shape after `parsePort` has stripped those unknown keys from the parsed
+ * PageData. Keyed by slug; cleared on module reload (test isolation is fine
+ * because vitest reloads the module per test file).
+ *
+ * Using module-level (not ctx) because ctx is optional and `heroAnim()` needs
+ * access regardless. The risk of stale data across requests is negligible in
+ * SSR (each request creates a new module instance in the edge worker model)
+ * and acceptable for tests (each test file gets a fresh module).
+ */
+const rawPageRowCache = new Map<string, unknown>();
+
 export async function loadPage(slug: string, ctx?: PreviewContext): Promise<PageData> {
 	const cache = ctx?.pageCache as Map<string, Promise<PageData>> | undefined;
 
@@ -345,12 +362,35 @@ export async function loadPage(slug: string, ctx?: PreviewContext): Promise<Page
 			// Directus and produces LocalizedString-shaped output that PageSchema
 			// expects. See transformPageRow / toLocalizedJSON / transformBlock<X>.
 			const transformed = transformPageRow(raw[0] as unknown);
+			// Store the pre-parse transformed row so heroAnim() can project
+			// the _heroAnim discriminator that parsePort strips from PageData.
+			rawPageRowCache.set(slug, transformed);
 			return parsePort('pages.bySlug', PageSchema, transformed);
 		});
 
 	cache?.set(slug, promise);
 
 	return promise;
+}
+
+/**
+ * Read a pre-parse raw block item for a given slug + collection.
+ * Returns the transformed (but not Zod-validated) block item, which retains
+ * discriminator keys like `_heroAnim` that `parsePort` strips.
+ * Used internally by `heroAnim()`.
+ */
+function getRawBlockItem(slug: string, collection: string): unknown {
+	const rawPage = rawPageRowCache.get(slug) as Record<string, unknown> | undefined;
+	if (!rawPage) return undefined;
+	const blocks = Array.isArray(rawPage.blocks) ? rawPage.blocks : [];
+	const match = blocks.find(
+		(b: unknown) =>
+			b !== null &&
+			typeof b === 'object' &&
+			(b as Record<string, unknown>).collection === collection,
+	);
+	if (!match) return undefined;
+	return (match as Record<string, unknown>).item;
 }
 
 // ---------------------------------------------------------------------------
@@ -2091,23 +2131,132 @@ export const directusAdapter: ContentAdapter = {
 	},
 
 	content: {
-		hero: async () => todo('content.hero'),
-		heroAnim: async () => todo('content.heroAnim'),
-		manifesto: async () => todo('content.manifesto'),
-		proofReel: async () => todo('content.proofReel'),
-		servicesGrid: async () => todo('content.servicesGrid'),
-		about: async () => todo('content.about'),
-		cta: async () => todo('content.cta'),
-		closer: async () => todo('content.closer'),
+		// -----------------------------------------------------------------------
+		// Task 4.1 — Home-page block methods (slice-18i Phase 4).
+		//
+		// Pattern A: loadPage('home', ctx) fetches + transforms + validates the
+		// entire page via PageSchema once per request (memoized on ctx.pageCache).
+		// Each method projects a single block_* item from the already-validated
+		// PageData. No redundant parsePort calls here — the Zod gate runs inside
+		// loadPage.
+		//
+		// Fail-fast: throws with route + missing block name per spec §3.7.
+		// -----------------------------------------------------------------------
+
+		async hero(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_hero');
+			if (!block) throw new Error('[content.hero] home page has no block_hero');
+			return block.item;
+		},
+
+		async heroAnim(ctx) {
+			// loadPage fetches + caches the page (and stores the pre-parse row via
+			// rawPageRowCache). We must await loadPage first to ensure the raw cache
+			// is populated, then project from the pre-parse item to get _heroAnim,
+			// which parsePort strips from HeroContent because it is not in the schema.
+			await loadPage('home', ctx);
+			const rawItem = getRawBlockItem('home', 'block_hero') as
+				| (HeroContent & { _heroAnim: HeroAnimContent })
+				| undefined;
+			if (!rawItem) throw new Error('[content.heroAnim] home page has no block_hero');
+			if (!rawItem._heroAnim) throw new Error('[content.heroAnim] block_hero has no _heroAnim');
+			return rawItem._heroAnim;
+		},
+
+		async manifesto(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_manifesto');
+			if (!block) throw new Error('[content.manifesto] home page has no block_manifesto');
+			return block.item;
+		},
+
+		async proofReel(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_proof_reel');
+			if (!block) throw new Error('[content.proofReel] home page has no block_proof_reel');
+			return block.item;
+		},
+
+		async servicesGrid(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_services_grid');
+			if (!block) throw new Error('[content.servicesGrid] home page has no block_services_grid');
+			return block.item;
+		},
+
+		async about(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_about_intro');
+			if (!block) throw new Error('[content.about] home page has no block_about_intro');
+			return block.item;
+		},
+
+		async cta(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_cta');
+			if (!block) throw new Error('[content.cta] home page has no block_cta');
+			return block.item;
+		},
+
+		async closer(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_closer');
+			if (!block) throw new Error('[content.closer] home page has no block_closer');
+			return block.item;
+		},
+
+		// -----------------------------------------------------------------------
+		// Task 4.2 — Detail-page block methods (slice-18i Phase 4).
+		// -----------------------------------------------------------------------
+
+		async aboutPage(ctx) {
+			const page = await loadPage('about', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_about_content');
+			if (!block) throw new Error('[content.aboutPage] about page has no block_about_content');
+			return block.item;
+		},
+
+		async contactPage(ctx) {
+			const page = await loadPage('contact', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_contact_content');
+			if (!block) throw new Error('[content.contactPage] contact page has no block_contact_content');
+			return block.item;
+		},
+
+		async techStackPage(ctx) {
+			const page = await loadPage('tech-stack', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_tech_stack_page_content');
+			if (!block) throw new Error('[content.techStackPage] tech-stack page has no block_tech_stack_page_content');
+			return block.item;
+		},
+
+		// -----------------------------------------------------------------------
+		// Task 4.3 — Derived methods (no Directus query — pure local functions).
+		// -----------------------------------------------------------------------
+
+		async heroMock() {
+			return parsePort('content.heroMock', HeroDataSchema, generateHeroData());
+		},
+
+		async initialHeroData() {
+			return parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA);
+		},
+
+		// -----------------------------------------------------------------------
+		// Not-yet-flipped — Phase 5.
+		// -----------------------------------------------------------------------
+
 		navLinks: async () => todo('content.navLinks'),
 		menuItems: async () => todo('content.menuItems'),
 		errorPage: async () => todo('content.errorPage'),
-		aboutPage: async () => todo('content.aboutPage'),
-		contactPage: async () => todo('content.contactPage'),
-		techStackPage: async () => todo('content.techStackPage'),
-		heroMock: async () => todo('content.heroMock'),
-		initialHeroData: async () => todo('content.initialHeroData'),
+
+		// -----------------------------------------------------------------------
+		// Pre-existing Directus overrides (slice-18d, slice-18f).
+		// -----------------------------------------------------------------------
+
 		metroSvg: async () => fetchMetroSvg(),
+
 		morphShapes: async (ctx) => {
 			const rows = (await client().request(
 				readItems('morph_shapes', {

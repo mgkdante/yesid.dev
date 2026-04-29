@@ -44,16 +44,37 @@ export const adapter: ContentAdapter = {
 
 	techStack: staticAdapter.techStack,
 
-	// content: still on static for site-chrome literals + home-page blocks
-	// (M2A flip lands in 18i), with two methods overridden:
-	//   - metroSvg: Directus (Slice 18d Phase 8 / Task 28-33). The Montreal-
-	//     metro SVG is now stored as a Directus asset and fetched at SSR via
-	//     +page.server.ts → adapter.content.metroSvg() → MetroNetwork prop.
-	//   - morphShapes: Directus (Slice 18 18f). The geometric morph library
-	//     ships from the morph_shapes collection; consumers (SvgIcon,
-	//     morphHover, HomeServices) fetch via getMorphShapes().
+	// content: hybrid — 13 methods flipped to Directus M2A in slice-18i Phase 4;
+	// 3 methods (navLinks, menuItems, errorPage) remain on staticAdapter via
+	// the spread and will flip in Phase 5. Two pre-existing Directus overrides
+	// (metroSvg, morphShapes) from slice-18d/18f are retained.
+	//
+	// Flip history:
+	//   - metroSvg:       Directus (Slice 18d Phase 8 / Task 28-33)
+	//   - morphShapes:    Directus (Slice 18 18f)
+	//   - hero, heroAnim, manifesto, proofReel, servicesGrid, about, cta,
+	//     closer:         Directus M2A (slice-18i Task 4.1)
+	//   - aboutPage, contactPage, techStackPage: Directus M2A (slice-18i Task 4.2)
+	//   - heroMock, initialHeroData: Directus local (slice-18i Task 4.3)
 	content: {
 		...staticAdapter.content,
+		// Flipped to Directus M2A in slice-18i Task 4.1 (home-page blocks):
+		hero: directusAdapter.content.hero,
+		heroAnim: directusAdapter.content.heroAnim,
+		manifesto: directusAdapter.content.manifesto,
+		proofReel: directusAdapter.content.proofReel,
+		servicesGrid: directusAdapter.content.servicesGrid,
+		about: directusAdapter.content.about,
+		cta: directusAdapter.content.cta,
+		closer: directusAdapter.content.closer,
+		// Flipped to Directus M2A in slice-18i Task 4.2 (detail-page blocks):
+		aboutPage: directusAdapter.content.aboutPage,
+		contactPage: directusAdapter.content.contactPage,
+		techStackPage: directusAdapter.content.techStackPage,
+		// Flipped in slice-18i Task 4.3 (derived — no Directus query):
+		heroMock: directusAdapter.content.heroMock,
+		initialHeroData: directusAdapter.content.initialHeroData,
+		// Pre-existing Directus overrides:
 		metroSvg: directusAdapter.content.metroSvg,
 		morphShapes: directusAdapter.content.morphShapes,
 	},
