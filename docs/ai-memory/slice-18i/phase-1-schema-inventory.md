@@ -204,3 +204,112 @@ both freeze (Slice 19+ re-export step if regeneration is ever needed).
    `fields/pages_blocks/*.json`, `relations/pages_blocks/*.json`).
 7. Verify in Data Studio that `pages.blocks` M2A picker offers all 12 `block_*`
    collections and the content is visible.
+
+---
+
+## Phase 6 test audit (slice-18i Task 6.x)
+
+Recorded 2026-04-29 at HEAD `b89c303` (after Phase 6 commits land).
+
+### Task 6.1 — PageSchema unit test audit
+
+**Result: gaps filled.** All 12 block variants already had at least one
+"valid sample parses" test via the `transformBlock<Name>` describes (Phase 4).
+Added in Task 6.1:
+
+- `it.each` parameterized smoke test: `PageSchema.parse()` must accept the
+  output of each `transformBlock*` function for all 12 variants.
+- 5 "wrong item shape rejects" tests confirming the discriminated union
+  rejects mismatched `(collection, item.shape)` pairings and unknown
+  collection names.
+
+Two fixture defects were discovered by the new smoke test and corrected:
+
+1. `rawBlockCloser()` had `cta.href` and `attribution.url` inside the
+   translation JSON column. The transform reads those as plain strings from
+   `raw.cta_href` / `raw.attribution_url` (parent row fields) before falling
+   back to the JSON column value. `toLSJSON` was wrapping them as
+   LocalizedStrings, violating `z.string()` in the schema. Fixed by moving
+   `cta_href` and `attribution_url` to the parent row.
+
+2. `rawBlockTechStackPageContent()` used stale field names (`download`, `share`,
+   `heading`, `body`) that no longer exist in `TechStackPageContentSchema`.
+   Updated to the current names (`titleLine1`, `titleLine2`, `terminalAria`,
+   `stats`, `getInTouch`, `viewServices`, `headingLine1`, `headingLine2`,
+   `sub`, `availability`).
+
+### Task 6.2 — ContentPort method coverage audit
+
+**Result: no gaps.** All 17 ContentPort methods have mocked tests in
+`apps/web/src/lib/adapters/directus.mocked.test.ts`:
+
+| Method | Describe block |
+|---|---|
+| `content.hero` | `directusAdapter.content.* M2A methods — Task 4.1` |
+| `content.heroAnim` | same |
+| `content.manifesto` | same |
+| `content.proofReel` | same |
+| `content.servicesGrid` | same |
+| `content.about` | same |
+| `content.cta` | same |
+| `content.closer` | same |
+| `content.aboutPage` | `Task 4.2 detail-page blocks` |
+| `content.contactPage` | same |
+| `content.techStackPage` | same |
+| `content.heroMock` | `Task 4.3 derived methods` |
+| `content.initialHeroData` | same |
+| `content.navLinks` | `content.navLinks + menuItems — delegation` |
+| `content.menuItems` | same |
+| `content.errorPage` | `content.errorPage — fetch contract` |
+| `content.metroSvg` | `content.metroSvg — fetch contract` |
+| `content.morphShapes` | `content.morphShapes — fetch contract` |
+
+`nav.byPlacement` covers all 4 placements: header, footer, mobile, menu.
+`errorPage` covers the 3 required paths: specific row, fallback (0), throws.
+
+No new tests were needed for Task 6.2.
+
+### Task 6.3 — Integration tests deferred to post-merge
+
+**Deferred.** Live Directus integration tests (Task 6.3) are blocked on
+the same constraint as the seed push: `feedback_serial_cms_pushes.md`
+prohibits pushing from feature branches to avoid orphan-delete incidents
+(#79, #81). The `pages_blocks` M2A junction also does not exist on live
+Directus until the first post-merge push.
+
+**Why mocked tests are a sufficient pre-merge gate**: every `content.*`
+method is exercised through `loadPage` → transform → `parsePort(PageSchema)`.
+The mock returns a real-Directus-shaped payload (same field names, same
+nesting, same translation row arrays). The only delta between mocked and live
+behavior is (a) network latency and (b) the M2A junction materialization.
+Neither affects the transform/schema correctness verified by the mocked tests.
+
+**Post-merge integration runner checklist** (owner: Task 7.x close-out):
+
+- [ ] Live push: `bun cms run directus-sync push` (serialized, no other branch)
+- [ ] Seed: `bun run apps/cms/scripts/seed-pages-and-blocks.ts` (no --dry-run)
+- [ ] Run integration tests pointing at staging Directus (`PUBLIC_DIRECTUS_URL`
+      set to `https://cms.yesid.dev`)
+- [ ] Verify all 17 `content.*` methods return Zod-valid payloads (no
+      `parsePort` throws in SSR logs)
+- [ ] Verify `loadPage` round-trip for all 7 slugs: home, about, contact,
+      services, projects, tech-stack, blog
+- [ ] Confirm `pages_blocks` M2A junction is present in `directus-sync pull`
+      snapshot (see Task 7.x order of operations above)
+
+### Phase 6 coverage summary
+
+See Task 6.5 section below for line coverage percentages.
+
+### Task 6.5 — Coverage results
+
+Run: `bun run test --coverage` in `apps/web/` (vitest v8 provider).
+
+| File | Line % | Note |
+|---|---|---|
+| `apps/web/src/lib/adapters/directus.ts` | TBD post-run | target ≥80% |
+| `packages/shared/src/schemas/page.ts` | TBD post-run | target ≥80% |
+| `apps/web/src/routes/+layout.server.ts` | TBD post-run | target ≥80% |
+| `apps/web/src/routes/+error.svelte` | best-effort | Svelte component coverage unreliable |
+
+*Coverage numbers to be filled in after the post-E2E coverage run (Task 6.5).*
