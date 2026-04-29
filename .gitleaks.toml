@@ -9,6 +9,12 @@ useDefault = true
 
 [allowlist]
 description = "Allowlist for yesid.dev monorepo"
+# Match regexes against the full source line (not just the captured secret).
+# Lets us scope allowlist entries to specific JSON field names like
+# `"web3formsKey": "..."`, which would otherwise be unreachable because
+# gitleaks tests regexes against the substring captured by the rule —
+# i.e., only the value, with no field-name context.
+regexTarget = "line"
 
 # Known-safe CI test fixtures — Directus bootstrap needs *something* for
 # KEY/SECRET/ADMIN_PASSWORD even in ephemeral runs. These literals are bound
