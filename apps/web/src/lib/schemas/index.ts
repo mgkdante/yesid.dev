@@ -23,9 +23,35 @@ export * from './service';
 export * from './blog';
 export * from './meta';
 export * from './tech-stack';
-export * from './tech-stack-page';
-export * from './about-page';
-export * from './contact-page';
+// about-page, contact-page, tech-stack-page relocated to @repo/shared/schemas (slice-18i Task 1.1 Phase B).
+export {
+	TechCategorySchema,
+	AboutPolaroidSchema,
+	AboutIdentitySchema,
+	AboutMetricSchema,
+	AboutMethodStepSchema,
+	AboutTestimonialSchema,
+	AboutTechItemSchema,
+	AboutInterestSchema,
+	AboutWeatherConfigSchema,
+	AboutClientLogoSchema,
+	AboutCtaSchema,
+	AboutStopLabelsSchema,
+	AboutLabelsSchema,
+	AboutContentSchema,
+} from '@repo/shared/schemas';
+export {
+	ContactTerminalFieldSchema,
+	ContactInfoTerminalSchema,
+	ContactFormTerminalSchema,
+	ContactValidationSchema,
+	ContactSuccessSchema,
+	ContactContentSchema,
+} from '@repo/shared/schemas';
+export {
+	TechStackPageContentSchema,
+	type TechStackPageContent,
+} from '@repo/shared/schemas';
 export * from './nav';
 export * from './hero-data';
 

@@ -7,7 +7,7 @@ import { adapter } from '$lib/adapters';
 import type { AboutContent, ContactContent } from '$lib/types';
 import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
-import type { TechStackPageContent } from '$lib/schemas/tech-stack-page';
+import type { TechStackPageContent } from '@repo/shared/schemas';
 
 export async function getHeroContent() {
 	return adapter.content.hero();

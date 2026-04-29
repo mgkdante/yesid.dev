@@ -1,5 +1,7 @@
 // Contact-page schemas — runtime mirror of ContactContent + all nested
-// terminal / form / validation / success types from $lib/types.
+// terminal / form / validation / success types from types/content.
+// Relocated from apps/web/src/lib/schemas/ to @repo/shared/schemas
+// in slice-18i Task 1.1 Phase B.
 // `meta` uses the shared PageMetaSchema (same shape as about-page + tech-stack-page).
 
 import { z } from 'zod';
@@ -11,12 +13,12 @@ import type {
 	ContactFormTerminal,
 	ContactValidation,
 	ContactSuccess,
-} from '$lib/types';
+} from '../types/content';
 
 export const ContactTerminalFieldSchema = z.object({
 	label: z.string(),
 	placeholder: LocalizedStringSchema,
-});
+}) satisfies z.ZodType<ContactTerminalField>;
 
 export const ContactInfoTerminalSchema = z.object({
 	title: z.string(),
@@ -27,7 +29,7 @@ export const ContactInfoTerminalSchema = z.object({
 		location: LocalizedStringSchema,
 		connect: LocalizedStringSchema,
 	}),
-});
+}) satisfies z.ZodType<ContactInfoTerminal>;
 
 export const ContactFormTerminalSchema = z.object({
 	title: z.string(),
@@ -39,13 +41,13 @@ export const ContactFormTerminalSchema = z.object({
 		message: ContactTerminalFieldSchema,
 	}),
 	submitLabel: LocalizedStringSchema,
-});
+}) satisfies z.ZodType<ContactFormTerminal>;
 
 export const ContactValidationSchema = z.object({
 	required: LocalizedStringSchema,
 	invalidEmail: LocalizedStringSchema,
 	errorSummary: LocalizedStringSchema,
-});
+}) satisfies z.ZodType<ContactValidation>;
 
 export const ContactSuccessSchema = z.object({
 	validating: LocalizedStringSchema,
@@ -55,7 +57,7 @@ export const ContactSuccessSchema = z.object({
 	meanwhile: LocalizedStringSchema,
 	resetLabel: LocalizedStringSchema,
 	fieldOk: LocalizedStringSchema,
-});
+}) satisfies z.ZodType<ContactSuccess>;
 
 // `socials` is `readonly { label, href, icon }[]` in TS — use .readonly() so
 // z.infer produces the same readonly marker for bidirectional drift detection.
@@ -76,53 +78,4 @@ export const ContactContentSchema = z.object({
 	success: ContactSuccessSchema,
 	socials: z.array(ContactSocialLinkSchema).readonly(),
 	web3formsKey: z.string(),
-});
-
-// Drift detectors.
-type _ContactTerminalFieldCheck = z.infer<typeof ContactTerminalFieldSchema> extends ContactTerminalField
-	? ContactTerminalField extends z.infer<typeof ContactTerminalFieldSchema>
-		? true
-		: false
-	: false;
-const _contactTerminalFieldCheck: _ContactTerminalFieldCheck = true;
-void _contactTerminalFieldCheck;
-
-type _ContactInfoTerminalCheck = z.infer<typeof ContactInfoTerminalSchema> extends ContactInfoTerminal
-	? ContactInfoTerminal extends z.infer<typeof ContactInfoTerminalSchema>
-		? true
-		: false
-	: false;
-const _contactInfoTerminalCheck: _ContactInfoTerminalCheck = true;
-void _contactInfoTerminalCheck;
-
-type _ContactFormTerminalCheck = z.infer<typeof ContactFormTerminalSchema> extends ContactFormTerminal
-	? ContactFormTerminal extends z.infer<typeof ContactFormTerminalSchema>
-		? true
-		: false
-	: false;
-const _contactFormTerminalCheck: _ContactFormTerminalCheck = true;
-void _contactFormTerminalCheck;
-
-type _ContactValidationCheck = z.infer<typeof ContactValidationSchema> extends ContactValidation
-	? ContactValidation extends z.infer<typeof ContactValidationSchema>
-		? true
-		: false
-	: false;
-const _contactValidationCheck: _ContactValidationCheck = true;
-void _contactValidationCheck;
-
-type _ContactSuccessCheck = z.infer<typeof ContactSuccessSchema> extends ContactSuccess
-	? ContactSuccess extends z.infer<typeof ContactSuccessSchema>
-		? true
-		: false
-	: false;
-const _contactSuccessCheck: _ContactSuccessCheck = true;
-void _contactSuccessCheck;
-
-type _ContactContentCheck = z.infer<typeof ContactContentSchema> extends ContactContent
-	? ContactContent extends z.infer<typeof ContactContentSchema>
-		? true
-		: false
-	: false;
-const _contactContentCheck: _ContactContentCheck = true;
-void _contactContentCheck;
+}) satisfies z.ZodType<ContactContent>;

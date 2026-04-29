@@ -46,7 +46,7 @@ import type {
 import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 import type { PageSeo } from '$lib/schemas/seo';
-import type { TechStackPageContent } from '$lib/schemas/tech-stack-page';
+import type { TechStackPageContent } from '@repo/shared/schemas';
 
 export interface ContentAdapter {
 	projects: ProjectPort;

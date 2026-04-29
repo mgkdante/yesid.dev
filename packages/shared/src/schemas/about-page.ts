@@ -1,5 +1,6 @@
 // About-page schemas — runtime mirror of AboutContent + its 13 nested
-// interfaces from $lib/types. Largest single schema module in this slice.
+// interfaces from types/content. Relocated from apps/web/src/lib/schemas/
+// to @repo/shared/schemas in slice-18i Task 1.1 Phase B.
 // `meta` uses shared PageMetaSchema; `socials` shape matches contact-page.
 
 import { z } from 'zod';
@@ -19,7 +20,7 @@ import type {
 	AboutStopLabels,
 	AboutLabels,
 	TechCategory,
-} from '$lib/types';
+} from '../types/content';
 
 export const TechCategorySchema = z.enum(['databases', 'languages', 'tools', 'frameworks']);
 
@@ -28,7 +29,7 @@ export const AboutPolaroidSchema = z.object({
 	alt: LocalizedStringSchema,
 	caption: LocalizedStringSchema,
 	rotate: z.number(),
-});
+}) satisfies z.ZodType<AboutPolaroid>;
 
 export const AboutIdentitySchema = z.object({
 	name: LocalizedStringSchema,
@@ -36,20 +37,20 @@ export const AboutIdentitySchema = z.object({
 	valueProp: LocalizedStringSchema,
 	headshot: z.string(),
 	polaroids: z.array(AboutPolaroidSchema).readonly(),
-});
+}) satisfies z.ZodType<AboutIdentity>;
 
 export const AboutMetricSchema = z.object({
 	value: z.string(),
 	label: LocalizedStringSchema,
 	icon: z.string().optional(),
-});
+}) satisfies z.ZodType<AboutMetric>;
 
 export const AboutMethodStepSchema = z.object({
 	id: z.string(),
 	label: LocalizedStringSchema,
 	description: LocalizedStringSchema,
 	station: z.number(),
-});
+}) satisfies z.ZodType<AboutMethodStep>;
 
 export const AboutTestimonialSchema = z.object({
 	quote: LocalizedStringSchema,
@@ -57,31 +58,31 @@ export const AboutTestimonialSchema = z.object({
 	role: LocalizedStringSchema,
 	company: z.string(),
 	logo: z.string().optional(),
-});
+}) satisfies z.ZodType<AboutTestimonial>;
 
 export const AboutTechItemSchema = z.object({
 	name: z.string(),
 	category: TechCategorySchema,
 	relatedServices: z.array(z.string()).readonly(),
-});
+}) satisfies z.ZodType<AboutTechItem>;
 
 export const AboutInterestSchema = z.object({
 	id: z.string(),
 	label: LocalizedStringSchema,
 	image: z.string(),
-});
+}) satisfies z.ZodType<AboutInterest>;
 
 export const AboutWeatherConfigSchema = z.object({
 	city: LocalizedStringSchema,
 	hook: LocalizedStringSchema,
 	enabled: z.boolean(),
-});
+}) satisfies z.ZodType<AboutWeatherConfig>;
 
 export const AboutClientLogoSchema = z.object({
 	name: z.string(),
 	src: z.string(),
 	url: z.string().optional(),
-});
+}) satisfies z.ZodType<AboutClientLogo>;
 
 // AboutCta.lines uses a narrow color union, mirrored as z.enum.
 const AboutCtaLineSchema = z.object({
@@ -104,7 +105,7 @@ export const AboutCtaSchema = z.object({
 	buttonHref: z.string(),
 	availability: LocalizedStringSchema,
 	socials: z.array(AboutSocialLinkSchema).readonly(),
-});
+}) satisfies z.ZodType<AboutCta>;
 
 export const AboutStopLabelsSchema = z.object({
 	identity: LocalizedStringSchema,
@@ -117,7 +118,7 @@ export const AboutStopLabelsSchema = z.object({
 	snapshots: LocalizedStringSchema,
 	location: LocalizedStringSchema,
 	next: LocalizedStringSchema,
-});
+}) satisfies z.ZodType<AboutStopLabels>;
 
 export const AboutLabelsSchema = z.object({
 	clientsServed: LocalizedStringSchema,
@@ -127,7 +128,7 @@ export const AboutLabelsSchema = z.object({
 	testimonialsTabNavAria: LocalizedStringSchema,
 	testimonialSlideAria: LocalizedStringSchema,
 	showTestimonialAria: LocalizedStringSchema,
-});
+}) satisfies z.ZodType<AboutLabels>;
 
 export const AboutContentSchema = z.object({
 	identity: AboutIdentitySchema,
@@ -143,9 +144,9 @@ export const AboutContentSchema = z.object({
 	stopLabels: AboutStopLabelsSchema,
 	labels: AboutLabelsSchema,
 	meta: PageMetaSchema,
-});
+}) satisfies z.ZodType<AboutContent>;
 
-// Drift detectors — one per exported schema + TechCategory enum.
+// Drift detector for TechCategory enum.
 type _TechCategoryCheck = z.infer<typeof TechCategorySchema> extends TechCategory
 	? TechCategory extends z.infer<typeof TechCategorySchema>
 		? true
@@ -153,107 +154,3 @@ type _TechCategoryCheck = z.infer<typeof TechCategorySchema> extends TechCategor
 	: false;
 const _techCategoryCheck: _TechCategoryCheck = true;
 void _techCategoryCheck;
-
-type _AboutPolaroidCheck = z.infer<typeof AboutPolaroidSchema> extends AboutPolaroid
-	? AboutPolaroid extends z.infer<typeof AboutPolaroidSchema>
-		? true
-		: false
-	: false;
-const _aboutPolaroidCheck: _AboutPolaroidCheck = true;
-void _aboutPolaroidCheck;
-
-type _AboutIdentityCheck = z.infer<typeof AboutIdentitySchema> extends AboutIdentity
-	? AboutIdentity extends z.infer<typeof AboutIdentitySchema>
-		? true
-		: false
-	: false;
-const _aboutIdentityCheck: _AboutIdentityCheck = true;
-void _aboutIdentityCheck;
-
-type _AboutMetricCheck = z.infer<typeof AboutMetricSchema> extends AboutMetric
-	? AboutMetric extends z.infer<typeof AboutMetricSchema>
-		? true
-		: false
-	: false;
-const _aboutMetricCheck: _AboutMetricCheck = true;
-void _aboutMetricCheck;
-
-type _AboutMethodStepCheck = z.infer<typeof AboutMethodStepSchema> extends AboutMethodStep
-	? AboutMethodStep extends z.infer<typeof AboutMethodStepSchema>
-		? true
-		: false
-	: false;
-const _aboutMethodStepCheck: _AboutMethodStepCheck = true;
-void _aboutMethodStepCheck;
-
-type _AboutTestimonialCheck = z.infer<typeof AboutTestimonialSchema> extends AboutTestimonial
-	? AboutTestimonial extends z.infer<typeof AboutTestimonialSchema>
-		? true
-		: false
-	: false;
-const _aboutTestimonialCheck: _AboutTestimonialCheck = true;
-void _aboutTestimonialCheck;
-
-type _AboutTechItemCheck = z.infer<typeof AboutTechItemSchema> extends AboutTechItem
-	? AboutTechItem extends z.infer<typeof AboutTechItemSchema>
-		? true
-		: false
-	: false;
-const _aboutTechItemCheck: _AboutTechItemCheck = true;
-void _aboutTechItemCheck;
-
-type _AboutInterestCheck = z.infer<typeof AboutInterestSchema> extends AboutInterest
-	? AboutInterest extends z.infer<typeof AboutInterestSchema>
-		? true
-		: false
-	: false;
-const _aboutInterestCheck: _AboutInterestCheck = true;
-void _aboutInterestCheck;
-
-type _AboutWeatherConfigCheck = z.infer<typeof AboutWeatherConfigSchema> extends AboutWeatherConfig
-	? AboutWeatherConfig extends z.infer<typeof AboutWeatherConfigSchema>
-		? true
-		: false
-	: false;
-const _aboutWeatherConfigCheck: _AboutWeatherConfigCheck = true;
-void _aboutWeatherConfigCheck;
-
-type _AboutClientLogoCheck = z.infer<typeof AboutClientLogoSchema> extends AboutClientLogo
-	? AboutClientLogo extends z.infer<typeof AboutClientLogoSchema>
-		? true
-		: false
-	: false;
-const _aboutClientLogoCheck: _AboutClientLogoCheck = true;
-void _aboutClientLogoCheck;
-
-type _AboutCtaCheck = z.infer<typeof AboutCtaSchema> extends AboutCta
-	? AboutCta extends z.infer<typeof AboutCtaSchema>
-		? true
-		: false
-	: false;
-const _aboutCtaCheck: _AboutCtaCheck = true;
-void _aboutCtaCheck;
-
-type _AboutStopLabelsCheck = z.infer<typeof AboutStopLabelsSchema> extends AboutStopLabels
-	? AboutStopLabels extends z.infer<typeof AboutStopLabelsSchema>
-		? true
-		: false
-	: false;
-const _aboutStopLabelsCheck: _AboutStopLabelsCheck = true;
-void _aboutStopLabelsCheck;
-
-type _AboutLabelsCheck = z.infer<typeof AboutLabelsSchema> extends AboutLabels
-	? AboutLabels extends z.infer<typeof AboutLabelsSchema>
-		? true
-		: false
-	: false;
-const _aboutLabelsCheck: _AboutLabelsCheck = true;
-void _aboutLabelsCheck;
-
-type _AboutContentCheck = z.infer<typeof AboutContentSchema> extends AboutContent
-	? AboutContent extends z.infer<typeof AboutContentSchema>
-		? true
-		: false
-	: false;
-const _aboutContentCheck: _AboutContentCheck = true;
-void _aboutContentCheck;
