@@ -2,18 +2,30 @@
   Home page route — delegates to HomePage component.
   SEO emitted by <SeoHead> in +layout.svelte (Slice 15a).
 
-  Slice 18d Phase 8: `data.metroSvg` (loaded by +page.server.ts from Directus)
-  is threaded down through HomePage → HeroBanner → MetroNetwork as a prop.
+  slice-18i Phase 7C: all home-page block content is now loaded server-side
+  by +page.server.ts and threaded down through HomePage → section components
+  as props. No component imports static content modules directly anymore.
 -->
 <script lang="ts">
 	import HomePage from '$lib/components/home/HomePage.svelte';
-	import type { PageData } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	let { data } = $props();
 </script>
 
 <div data-testid="app-root">
 	<div class="relative z-30">
-		<HomePage metroSvg={data.metroSvg} />
+		<HomePage
+			metroSvg={data.metroSvg}
+			hero={data.hero}
+			heroAnim={data.heroAnim}
+			manifesto={data.manifesto}
+			proofReel={data.proofReel}
+			servicesGrid={data.servicesGrid}
+			about={data.about}
+			cta={data.cta}
+			closer={data.closer}
+			heroMock={data.heroMock}
+			initialHeroData={data.initialHeroData}
+		/>
 	</div>
 </div>

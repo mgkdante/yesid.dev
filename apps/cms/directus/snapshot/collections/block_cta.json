@@ -1,0 +1,28 @@
+{
+  "collection": "block_cta",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_cta",
+    "color": null,
+    "display_template": "{{editor_label}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "campaign",
+    "item_duplication_fields": null,
+    "note": "CTA block \u2014 bottom of /. All 4 fields are LocalizedStrings \u2192 4 string columns in translations.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "block_cta"
+  }
+}

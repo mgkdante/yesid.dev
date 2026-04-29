@@ -9,11 +9,15 @@
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
 
-	import { getVisibleServices, servicesGridContent } from '$lib/content';
+	import { getVisibleServices } from '$lib/content';
 	import { morphHover } from '$lib/motion/actions';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
+	import type { ServicesGridContent } from '$lib/types';
+
+	// slice-18i Phase 7C: servicesGridContent now flows as a prop from the server load.
+	let { servicesGrid: servicesGridContent }: { servicesGrid: ServicesGridContent } = $props();
 
 	const services = getVisibleServices();
 	const heading = resolveLocale(servicesGridContent.heading, 'en');

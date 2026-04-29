@@ -1,24 +1,36 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { siteMeta, menuItems, sharedChromeContent, footerContent } from '$lib/content';
+	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent } from '$lib/content';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
+	import type { NavLink } from '$lib/content/nav';
 
 	const tagline = resolveLocale(footerContent.tagline, 'en');
 	const location = resolveLocale(footerContent.location, 'en');
 	const statusPrefix = resolveLocale(footerContent.statusPrefix, 'en');
 	const footerNavAria = resolveLocale(sharedChromeContent.footerNavAria, 'en');
 
+	// footerLinks: adapter-sourced footer placement links (from +layout.server.ts).
+	// Falls back to the menu items (which serve as footer fallback in static mode).
+	let {
+		footerLinks = staticMenuItems as readonly NavLink[],
+	}: {
+		footerLinks?: readonly NavLink[];
+	} = $props();
+
 	const year = new Date().getFullYear();
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
 
-	const footerNavLinks = menuItems.map((item) => ({
-		label: item.label.en,
-		href: item.href
-	}));
+	// Use footerLinks when available; fall back to staticMenuItems for backwards compat.
+	const footerNavLinks = $derived(
+		(footerLinks.length > 0 ? footerLinks : staticMenuItems).map((item) => ({
+			label: item.label.en,
+			href: item.href,
+		})),
+	);
 
 	const socialLinks = [
 		siteMeta.links.github ? { label: 'GitHub', href: siteMeta.links.github } : null,

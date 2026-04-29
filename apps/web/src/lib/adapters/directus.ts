@@ -20,28 +20,39 @@ import { z } from 'zod';
 
 import type { ContentAdapter } from './types';
 import type {
+	AboutContent,
+	AboutIntroContent,
 	BlockEditorDoc,
 	BlogAnimation,
 	BlogCategory,
 	BlogPost,
+	CloserContent,
+	ContactContent,
+	CtaContent,
+	HeroAnimContent,
+	HeroContent,
 	ImpactMetric,
 	Locale,
 	LocalizedBlockEditorDoc,
 	LocalizedString,
+	ManifestoContent,
 	MorphShape,
 	PageSeo,
 	PreviewContext,
 	Project,
 	ProjectSection,
+	ProofReelContent,
 	RouteSeoOverride,
 	Service,
 	ServiceSection,
+	ServicesGridContent,
 	SiteLinks,
 	SiteMeta,
 	SiteOwner,
 	SiteSeoDefaults,
 	TechStackItem,
 } from '$lib/types';
+import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared';
 import { createQueuedFetch } from './directus-queue';
 import { parsePort } from '$lib/schemas/parse';
 import { ProjectSchema } from '$lib/schemas/project';
@@ -49,11 +60,14 @@ import { ServiceSchema } from '$lib/schemas/service';
 import { BlogPostSchema } from '$lib/schemas/blog';
 import { LocaleSchema } from '$lib/schemas/shared';
 import { MorphShapeSchema } from '$lib/schemas/morph-shape';
+import { NavLinkSchema, ErrorPageContentSchema } from '$lib/schemas/nav';
 import { TechStackItemSchema } from '$lib/schemas/tech-stack';
 import { SiteMetaSchema } from '$lib/schemas/meta';
 import { SiteSeoDefaultsSchema } from '$lib/schemas/site-seo-defaults';
 import { RouteSeoOverrideSchema } from '$lib/schemas/route-seo';
-import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml } from '@repo/shared';
+import { assetIdFor, BlockEditorDocSchema, serializeBlocksToHtml, PageSchema, type PageData } from '@repo/shared';
+import { HeroDataSchema } from '$lib/schemas/hero-data';
+import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
 import {
 	errorSeoFallback,
@@ -217,6 +231,58 @@ export interface DirectusIllustrationRow {
 	file: { id: string } | string;
 }
 
+// ---------------------------------------------------------------------------
+// Nav links row shapes — slice-18i Phase 5 Task 5.1.
+//
+// Flat collection with placement enum. Each row has a translations alias
+// for label + subtitle, and an icon M2O FK to the icons collection.
+// ---------------------------------------------------------------------------
+
+interface DirectusNavLinkTranslation {
+	languages_code: string;
+	label?: string | null;
+	subtitle?: string | null;
+}
+
+interface DirectusNavLinkIconRow {
+	name?: string | null;
+}
+
+interface DirectusNavLinkRow {
+	id: string;
+	status: 'draft' | 'published' | 'archived';
+	placement: 'header' | 'footer' | 'mobile' | 'menu';
+	href: string;
+	priority: number;
+	icon?: DirectusNavLinkIconRow | string | null;
+	translations?: DirectusNavLinkTranslation[];
+}
+
+// ---------------------------------------------------------------------------
+// Error pages row shapes — slice-18i Phase 5 Task 5.3.
+//
+// Flat collection keyed by status_code (UNIQUE). status_code=0 is the
+// generic fallback. Each row has a translations alias for label, heading,
+// description, terminal_line, and a per-locale suggestions JSON column.
+// ---------------------------------------------------------------------------
+
+interface DirectusErrorPageTranslation {
+	languages_code: string;
+	label?: string | null;
+	heading?: string | null;
+	description?: string | null;
+	terminal_line?: string | null;
+	suggestions?: Array<{ label: string; href: string }> | null;
+}
+
+interface DirectusErrorPageRow {
+	id: string;
+	status: 'draft' | 'published' | 'archived';
+	status_code: number;
+	sort?: number | null;
+	translations?: DirectusErrorPageTranslation[];
+}
+
 interface Schema {
 	services: DirectusService[];
 	projects: DirectusProject[];
@@ -238,6 +304,111 @@ interface Schema {
 	// Site meta singleton + per-route SEO overrides (slice-18 18h).
 	site_meta: DirectusSiteMetaRow;
 	route_seo: DirectusRouteSeoRow[];
+	// Pages collection — M2A junction-backed page builder (slice-18i).
+	pages: PageData[];
+	// Nav links + error pages — slice-18i Phase 5.
+	nav_links: DirectusNavLinkRow[];
+	error_pages: DirectusErrorPageRow[];
+}
+
+// ---------------------------------------------------------------------------
+// Page query constants & loadPage (slice-18i Phase 3)
+// ---------------------------------------------------------------------------
+
+/**
+ * Maps SvelteKit route paths to their corresponding `pages.slug` values in
+ * Directus. Used by +page.server.ts load functions to resolve the slug for
+ * the current route without hardcoding it in every route file.
+ */
+export const ROUTE_TO_SLUG: Readonly<Record<string, string>> = {
+	'/': 'home',
+	'/about': 'about',
+	'/contact': 'contact',
+	'/services': 'services',
+	'/projects': 'projects',
+	'/tech-stack': 'tech-stack',
+	'/blog': 'blog',
+} as const;
+
+/**
+ * All 12 block_* M2A collection names used in `pages.blocks`.
+ * `block_journey_panel` is intentionally absent — dropped in slice-18i Task 1.0a.
+ */
+export const ALL_BLOCK_COLLECTIONS = [
+	'block_hero',
+	'block_manifesto',
+	'block_proof_reel',
+	'block_services_grid',
+	'block_cta',
+	'block_closer',
+	'block_about_intro',
+	'block_about_content',
+	'block_contact_content',
+	'block_tech_stack_page_content',
+	'block_blog_page_content',
+	'block_projects_page_content',
+] as const;
+
+/**
+ * Deep-fields array for the `pages` readItems query.
+ * Expands translations + every block_* collection item + its translations
+ * in a single request. Probe P10 measured this at 1156 bytes — well under
+ * Directus's limit; single-query approach is locked (Phase 1 decision).
+ */
+export const PAGE_FIELDS: string[] = [
+	'*',
+	'translations.*',
+	'blocks.*',
+	...ALL_BLOCK_COLLECTIONS.flatMap((c) => [
+		`blocks.item:${c}.*`,
+		`blocks.item:${c}.translations.*`,
+	]),
+];
+
+/**
+ * Per-route data loader for slice-18i.
+ *
+ * Makes ONE Directus query per (slug × request), fetching the `pages` row
+ * plus all 12 block_* collection items via deep `fields` expansion. Results
+ * are memoized on `ctx.pageCache` so multiple `content.*` calls within the
+ * same HTTP request resolve from cache after the first fetch.
+ *
+ * Cache stores the Promise (not the resolved value) so concurrent callers
+ * sharing the same ctx deduplicate into a single in-flight request.
+ *
+ * Fails fast: throws with the slug name in the message when the page is not
+ * found, and throws via parsePort with 'pages.bySlug' label when the raw
+ * shape fails PageSchema validation.
+ */
+export async function loadPage(slug: string, ctx?: PreviewContext): Promise<PageData> {
+	const cache = ctx?.pageCache as Map<string, Promise<PageData>> | undefined;
+
+	if (cache?.has(slug)) {
+		return cache.get(slug)!;
+	}
+
+	const promise: Promise<PageData> = client()
+		.request(
+			readItems('pages', {
+				filter: { slug: { _eq: slug }, status: { _eq: 'published' } },
+				fields: PAGE_FIELDS as unknown as (keyof PageData)[],
+				limit: 1,
+			}),
+		)
+		.then((raw) => {
+			if (!raw || raw.length === 0) {
+				throw new Error(`loadPage: page not found for slug='${slug}'`);
+			}
+			// Translation-merge layer: walks per-locale translation rows from
+			// Directus and produces LocalizedString-shaped output that PageSchema
+			// expects. See transformPageRow / toLocalizedJSON / transformBlock<X>.
+			const transformed = transformPageRow(raw[0] as unknown);
+			return parsePort('pages.bySlug', PageSchema, transformed);
+		});
+
+	cache?.set(slug, promise);
+
+	return promise;
 }
 
 // ---------------------------------------------------------------------------
@@ -334,6 +505,1027 @@ function toLocalizedBlockEditorDoc<T extends { languages_code: string }>(
 		out.en = { time: 0, version: '2.31.2', blocks: [{ id: 'p1', type: 'paragraph', data: { text: '' } }] };
 	}
 	return out as LocalizedBlockEditorDoc;
+}
+
+// ---------------------------------------------------------------------------
+// toLocalizedJSON — per-locale JSON column → LocalizedString-leaved object
+//
+// Slice-18i Task 4.0: supports JSON columns authored per Task 1.3 pattern
+// (nested objects with LocalizedString leaves stored as per-locale JSON).
+//
+// Each translation row's `field` value is expected to be a JSON object with
+// string leaves (e.g. `{ line1: "Hello", line2: "World" }`). This helper
+// walks every leaf across all locale rows and merges them into a nested
+// object where each string leaf becomes a LocalizedString.
+//
+// Non-string primitives (numbers, booleans) are passed through from the `en`
+// row unchanged — LocalizedString only models strings, so e.g. a hex color
+// constant is not "translated" per locale.
+// ---------------------------------------------------------------------------
+
+/**
+ * Merge a per-locale JSON column into a LocalizedString-leaved nested object.
+ * Each translation row's `field` value is a JSON object with bare strings;
+ * this walks every leaf and produces a LocalizedString-keyed equivalent.
+ *
+ * Slice-18i Task 4.0 — supports JSON columns authored per Task 1.3 pattern
+ * (nested objects with LocalizedString leaves stored as per-locale JSON).
+ */
+export function toLocalizedJSON<T extends { languages_code: string }>(
+	translations: ReadonlyArray<T> | null | undefined,
+	field: string,
+): unknown {
+	const rows = translations ?? [];
+	// Collect per-locale JSON values for this field.
+	const byLocale = new Map<string, unknown>();
+	for (const row of rows) {
+		const value = (row as Record<string, unknown>)[field];
+		if (value !== null && value !== undefined) {
+			byLocale.set(row.languages_code, value);
+		}
+	}
+	const enVal = byLocale.get('en') ?? byLocale.values().next().value;
+	if (enVal === undefined || enVal === null) {
+		return {};
+	}
+	// Recursively walk the `en` value as the structural template.
+	// For each leaf, collect the same path from every locale.
+	return mergeJsonLocales(enVal, byLocale);
+}
+
+/**
+ * Recursively walk an object/array/primitive template (from the `en` locale)
+ * and collect matching values from every locale map entry, producing a
+ * LocalizedString at each string leaf and passing through non-string
+ * primitives from the en row.
+ */
+function mergeJsonLocales(
+	enTemplate: unknown,
+	byLocale: Map<string, unknown>,
+): unknown {
+	if (typeof enTemplate === 'string') {
+		// String leaf → build LocalizedString across all locales.
+		const result: LocalizedString = { en: enTemplate };
+		const fr = byLocale.get('fr');
+		if (fr !== undefined && fr !== null && typeof fr === 'string' && fr.length > 0) {
+			result.fr = fr;
+		}
+		const es = byLocale.get('es');
+		if (es !== undefined && es !== null && typeof es === 'string' && es.length > 0) {
+			result.es = es;
+		}
+		return result;
+	}
+
+	if (typeof enTemplate === 'number' || typeof enTemplate === 'boolean') {
+		// Non-string primitive — pass through from the en row unchanged.
+		return enTemplate;
+	}
+
+	if (Array.isArray(enTemplate)) {
+		// Array — walk each element; collect matching locale arrays by index.
+		return enTemplate.map((enItem, idx) => {
+			const localeMap = new Map<string, unknown>();
+			for (const [locale, localeVal] of byLocale) {
+				if (Array.isArray(localeVal) && localeVal[idx] !== undefined) {
+					localeMap.set(locale, localeVal[idx]);
+				} else {
+					localeMap.set(locale, undefined);
+				}
+			}
+			return mergeJsonLocales(enItem, localeMap);
+		});
+	}
+
+	if (enTemplate !== null && typeof enTemplate === 'object') {
+		// Object — recurse into each key.
+		const out: Record<string, unknown> = {};
+		for (const key of Object.keys(enTemplate as Record<string, unknown>)) {
+			const localeMap = new Map<string, unknown>();
+			for (const [locale, localeVal] of byLocale) {
+				if (localeVal !== null && typeof localeVal === 'object' && !Array.isArray(localeVal)) {
+					localeMap.set(locale, (localeVal as Record<string, unknown>)[key]);
+				} else {
+					localeMap.set(locale, undefined);
+				}
+			}
+			out[key] = mergeJsonLocales(
+				(enTemplate as Record<string, unknown>)[key],
+				localeMap,
+			);
+		}
+		return out;
+	}
+
+	// null or unrecognized — pass through.
+	return enTemplate;
+}
+
+// ---------------------------------------------------------------------------
+// Per-block transform functions — Slice-18i Task 4.0
+//
+// Each function accepts the raw Directus item for a block_* collection (with
+// a `translations` array of per-locale rows) and returns the typed content
+// interface expected by the matching Zod schema. These run BEFORE parsePort
+// so the schema only sees pre-merged LocalizedString shapes.
+//
+// Naming: transformBlock<CamelCasedCollectionName>
+// ---------------------------------------------------------------------------
+
+/** Raw Directus per-block item shape before transform. */
+interface RawBlockItem {
+	translations?: ReadonlyArray<Record<string, unknown>>;
+	[key: string]: unknown;
+}
+
+function toLS(
+	translations: ReadonlyArray<Record<string, unknown>>,
+	field: string,
+): LocalizedString {
+	// Cast needed: toLocalizedString is generic over { languages_code: string };
+	// RawBlockItem translations are typed as Record<string,unknown> for generality.
+	return toLocalizedString(
+		translations as ReadonlyArray<{ languages_code: string }>,
+		field,
+	);
+}
+
+function toLSJSON(
+	translations: ReadonlyArray<Record<string, unknown>>,
+	field: string,
+): unknown {
+	// Cast: toLocalizedJSON is generic over { languages_code: string }.
+	return toLocalizedJSON(
+		translations as ReadonlyArray<{ languages_code: string }>,
+		field,
+	);
+}
+
+/**
+ * Transform raw `block_hero` Directus item into HeroContent (including heroAnim).
+ *
+ * The `headline` and `sqlPanel` fields are JSON columns (per Task 1.3 pattern):
+ * each locale row stores the full nested structure as JSON. `subheadline`,
+ * `subtitle`, `ctaWork`, `ctaContact` are flat scalar columns handled via
+ * `toLocalizedString`. The `refreshButton` is also a JSON column.
+ *
+ * `heroAnim` is merged from the `hero_anim` JSON column in block_hero_translations
+ * and carried through typed PageData — no separate module-level cache needed.
+ */
+export function transformBlockHero(raw: RawBlockItem): HeroContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const headline = toLSJSON(tr, 'headline') as HeroContent['headline'];
+	const sqlPanel = toLSJSON(tr, 'sql_panel') as HeroContent['sqlPanel'];
+	const refreshButton = toLSJSON(tr, 'refresh_button') as HeroContent['refreshButton'];
+	// hero_anim is a JSON column; scrollDown inside it may be a bare string (per-locale)
+	// or already a LocalizedString (if the seeder pre-merged it). Normalise to LocalizedString.
+	const heroAnimRaw = toLSJSON(tr, 'hero_anim') as { scrollDown?: LocalizedString | string } | null;
+	const scrollDownRaw = heroAnimRaw && typeof heroAnimRaw === 'object' && 'scrollDown' in heroAnimRaw
+		? heroAnimRaw.scrollDown
+		: undefined;
+	// scrollDownRaw is either a LocalizedString (object with .en) or a plain string
+	// that toLocalizedJSON already merged across locales, or undefined.
+	// toLocalizedJSON wraps string leaves as LocalizedStrings, so scrollDownRaw
+	// should already be a LocalizedString when the column is a JSON object leaf.
+	const scrollDown: HeroAnimContent['scrollDown'] =
+		scrollDownRaw && typeof scrollDownRaw === 'object' && 'en' in scrollDownRaw
+			? (scrollDownRaw as LocalizedString)
+			: toLS(tr, 'scroll_down');
+	return {
+		headline,
+		subheadline: toLS(tr, 'subheadline'),
+		subtitle: toLS(tr, 'subtitle'),
+		ctaWork: toLS(tr, 'cta_work'),
+		ctaContact: toLS(tr, 'cta_contact'),
+		sqlPanel,
+		refreshButton,
+		heroAnim: { scrollDown },
+	};
+}
+
+/**
+ * Transform raw `block_manifesto` Directus item into ManifestoContent.
+ *
+ * `ticks` is a non-translatable string array on the parent row.
+ *
+ * `pills` is a per-locale JSON column. Each element has `label` (LocalizedString)
+ * and `serviceId` (plain string — a stable identifier, NOT translatable).
+ * toLocalizedJSON would wrap `serviceId` as a LocalizedString, which is wrong.
+ * Instead we merge pills manually: `label` from each locale row, `serviceId`
+ * from the en row (same value in every locale — it is a content-model ID).
+ *
+ * `hidden_transit_lines` is stored under `block_manifesto_translations` (per the
+ * Phase 1 schema). Each locale row has the same array value but `name` is the
+ * translatable leaf (LocalizedString) while `color` is a plain hex string.
+ * We merge across locales: `name` becomes a LocalizedString, `color` reads
+ * from the en row as a bare string.
+ */
+export function transformBlockManifesto(raw: RawBlockItem): ManifestoContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const statement = toLSJSON(tr, 'statement') as ManifestoContent['statement'];
+	const terminal = toLSJSON(tr, 'terminal') as ManifestoContent['terminal'];
+	const edgeLeft = toLSJSON(tr, 'edge_left') as ManifestoContent['edgeLeft'];
+	const edgeRight = toLSJSON(tr, 'edge_right') as ManifestoContent['edgeRight'];
+	const edgeBottom = toLSJSON(tr, 'edge_bottom') as ManifestoContent['edgeBottom'];
+	const transit = toLSJSON(tr, 'transit') as ManifestoContent['transit'];
+	const ticks = Array.isArray(raw.ticks) ? (raw.ticks as string[]) : [];
+
+	// --- pills: mixed-content JSON column ---
+	// Collect per-locale pill arrays. serviceId is plain (same across locales);
+	// label is the translatable leaf.
+	const pillsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const rawPills = row.pills;
+		if (Array.isArray(rawPills)) {
+			pillsByLocale.set(code, rawPills as Array<Record<string, unknown>>);
+		}
+	}
+	const enPills = pillsByLocale.get('en') ?? [];
+	const pills: ManifestoContent['pills'] = enPills.map((enPill, idx) => {
+		const labelLS: LocalizedString = { en: typeof enPill.label === 'string' ? enPill.label : '' };
+		const frPill = pillsByLocale.get('fr')?.[idx];
+		if (frPill && typeof frPill.label === 'string' && frPill.label.length > 0) {
+			labelLS.fr = frPill.label;
+		}
+		const esPill = pillsByLocale.get('es')?.[idx];
+		if (esPill && typeof esPill.label === 'string' && esPill.label.length > 0) {
+			labelLS.es = esPill.label;
+		}
+		return {
+			label: labelLS,
+			serviceId: typeof enPill.serviceId === 'string' ? enPill.serviceId : '',
+		};
+	});
+
+	// --- hidden_transit_lines: per-locale JSON column (translations side) ---
+	// `name` is translatable; `color` is a plain hex string (same across locales).
+	const htlByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const rawLines = row.hidden_transit_lines;
+		if (Array.isArray(rawLines)) {
+			htlByLocale.set(code, rawLines as Array<Record<string, unknown>>);
+		}
+	}
+	// Fall back to parent row if no translations carry it (backwards compat).
+	const enLines = htlByLocale.get('en')
+		?? (Array.isArray(raw.hidden_transit_lines) ? (raw.hidden_transit_lines as Array<Record<string, unknown>>) : []);
+	const hiddenTransitLines: ManifestoContent['hiddenTransitLines'] = enLines.map((enLine, idx) => {
+		const nameLS: LocalizedString = { en: typeof enLine.name === 'string' ? enLine.name : '' };
+		const frLine = htlByLocale.get('fr')?.[idx];
+		if (frLine && typeof frLine.name === 'string' && frLine.name.length > 0) {
+			nameLS.fr = frLine.name;
+		}
+		const esLine = htlByLocale.get('es')?.[idx];
+		if (esLine && typeof esLine.name === 'string' && esLine.name.length > 0) {
+			nameLS.es = esLine.name;
+		}
+		// color: plain hex — read from en row
+		const color = typeof enLine.color === 'string' ? enLine.color : '';
+		return { name: nameLS, color };
+	});
+
+	return { statement, terminal, pills, edgeLeft, edgeRight, edgeBottom, transit, ticks, hiddenTransitLines };
+}
+
+/**
+ * Transform raw `block_proof_reel` Directus item into ProofReelContent.
+ * `slugs` and `images` are non-translatable fields on the parent row.
+ */
+export function transformBlockProofReel(raw: RawBlockItem): ProofReelContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const slugs = Array.isArray(raw.slugs) ? (raw.slugs as string[]) : [];
+	const images = (raw.images !== null && typeof raw.images === 'object' && !Array.isArray(raw.images))
+		? (raw.images as Record<string, string>)
+		: {};
+	return {
+		heading: toLS(tr, 'heading'),
+		headingDot: toLS(tr, 'heading_dot'),
+		subheading: toLS(tr, 'subheading'),
+		sectionLabel: toLS(tr, 'section_label'),
+		viewAllLabel: toLS(tr, 'view_all_label'),
+		viewAllHref: typeof raw.view_all_href === 'string' ? raw.view_all_href : '/work',
+		toggleColorAria: toLS(tr, 'toggle_color_aria'),
+		slugs,
+		images,
+	};
+}
+
+/**
+ * Transform raw `block_services_grid` Directus item into ServicesGridContent.
+ */
+export function transformBlockServicesGrid(raw: RawBlockItem): ServicesGridContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	return {
+		heading: toLS(tr, 'heading'),
+		headingDot: toLS(tr, 'heading_dot'),
+		subheading: toLS(tr, 'subheading'),
+		viewIllustrationAria: toLS(tr, 'view_illustration_aria'),
+		viewAllLink: toLS(tr, 'view_all_link'),
+	};
+}
+
+/**
+ * Transform raw `block_cta` Directus item into CtaContent.
+ */
+export function transformBlockCta(raw: RawBlockItem): CtaContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	return {
+		heading: toLS(tr, 'heading'),
+		subtitle: toLS(tr, 'subtitle'),
+		ctaContact: toLS(tr, 'cta_contact'),
+		ctaGithub: toLS(tr, 'cta_github'),
+	};
+}
+
+/**
+ * Transform raw `block_closer` Directus item into CloserContent.
+ * `cta.href` and `attribution.url` are non-translatable string fields on the
+ * parent row. The rest are JSON columns with nested LocalizedString leaves.
+ */
+export function transformBlockCloser(raw: RawBlockItem): CloserContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const ctaJson = toLSJSON(tr, 'cta') as { label?: LocalizedString; href?: string } | null;
+	const rowsJson = toLSJSON(tr, 'rows') as CloserContent['rows'] | null;
+	const attributionJson = toLSJSON(tr, 'attribution') as { text?: LocalizedString; url?: string } | null;
+	const terminalJson = toLSJSON(tr, 'terminal') as CloserContent['terminal'] | null;
+	return {
+		heading: toLS(tr, 'heading'),
+		headingDot: toLS(tr, 'heading_dot'),
+		subheading: toLS(tr, 'subheading'),
+		cta: {
+			label: ctaJson?.label ?? { en: '' },
+			href: typeof raw.cta_href === 'string'
+				? raw.cta_href
+				: (ctaJson?.href ?? '/contact'),
+		},
+		rows: rowsJson ?? {
+			contact: { label: { en: '' }, description: { en: '' }, action: { en: '' } },
+			connect: { label: { en: '' }, description: { en: '' }, action: { en: '' } },
+			read: { label: { en: '' }, action: { en: '' } },
+			about: { label: { en: '' }, description: { en: '' }, action: { en: '' } },
+		},
+		attribution: {
+			text: attributionJson?.text ?? { en: '' },
+			url: typeof raw.attribution_url === 'string'
+				? raw.attribution_url
+				: (attributionJson?.url ?? ''),
+		},
+		terminal: terminalJson ?? {
+			title: { en: '' },
+			city: { en: '' },
+			encoding: { en: '' },
+			destinationsLabel: { en: '' },
+			prompt: { en: '' },
+		},
+	};
+}
+
+/**
+ * Transform raw `block_about_intro` Directus item into AboutIntroContent.
+ * `stackItems` is a non-translatable string array on the parent row.
+ * `location` is a JSON column with nested LocalizedString leaves.
+ */
+export function transformBlockAboutIntro(raw: RawBlockItem): AboutIntroContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const locationJson = toLSJSON(tr, 'location') as AboutIntroContent['location'] | null;
+	const stackItems = Array.isArray(raw.stack_items) ? (raw.stack_items as string[]) : [];
+	return {
+		name: toLS(tr, 'name'),
+		title: toLS(tr, 'title'),
+		bio: toLS(tr, 'bio'),
+		moreLink: toLS(tr, 'more_link'),
+		stackLabel: toLS(tr, 'stack_label'),
+		stackItems,
+		locationLabel: toLS(tr, 'location_label'),
+		location: locationJson ?? { city: { en: '' }, region: { en: '' } },
+		interestsLabel: toLS(tr, 'interests_label'),
+		interests: toLS(tr, 'interests'),
+	};
+}
+
+/**
+ * Transform raw `block_about_content` Directus item into AboutContent.
+ *
+ * Field-aware transforms distinguish LocalizedString leaves from plain string
+ * leaves per the Zod schema (AboutContentSchema). toLocalizedJSON would wrap
+ * EVERY string leaf as a LocalizedString which breaks plain-string fields.
+ *
+ * Plain string fields (read from en row, same value across locales):
+ *   identity.headshot, polaroids[].src, polaroids[].rotate (number),
+ *   metrics[].value, metrics[].icon?,
+ *   methodology[].id, methodology[].station (number),
+ *   testimonials[].author, testimonials[].company, testimonials[].logo?,
+ *   techStack[].name, techStack[].category, techStack[].relatedServices[],
+ *   interests[].id, interests[].image,
+ *   weather.enabled (boolean),
+ *   cta.command, cta.buttonHref, cta.lines[].text, cta.lines[].color,
+ *   cta.socials[].label, cta.socials[].href, cta.socials[].icon,
+ *   clientLogos[].name, clientLogos[].src, clientLogos[].url?
+ *
+ * tech_stack and client_logos live on the parent row (moved by Phase 1 fix-up
+ * commit 377401c) — NOT in translations.
+ *
+ * All other leaves are LocalizedString and use toLS().
+ */
+export function transformBlockAboutContent(raw: RawBlockItem): AboutContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const clientCount = typeof raw.client_count === 'number' ? raw.client_count : 0;
+
+	// Helper: get a field value from the en-locale row as a plain value
+	function enVal<T>(field: string, fallback: T): T {
+		const enRow = tr.find((r) => r.languages_code === 'en') ?? tr[0];
+		if (!enRow) return fallback;
+		const v = (enRow as Record<string, unknown>)[field];
+		return (v !== undefined && v !== null ? v : fallback) as T;
+	}
+
+	// --- identity ---
+	const rawIdentity = enVal<Record<string, unknown>>('identity', {});
+	const rawPolaroids = Array.isArray(rawIdentity.polaroids)
+		? (rawIdentity.polaroids as Array<Record<string, unknown>>)
+		: [];
+
+	// Build per-locale identity maps for LocalizedString merging
+	const identityByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const id = row.identity;
+		if (id && typeof id === 'object' && !Array.isArray(id)) {
+			identityByLocale.set(code, id as Record<string, unknown>);
+		}
+	}
+	function identityLS(field: string): LocalizedString {
+		const result: LocalizedString = { en: '' };
+		for (const [locale, id] of identityByLocale) {
+			const v = (id as Record<string, unknown>)[field];
+			if (typeof v === 'string' && v.length > 0) {
+				if (locale === 'en') result.en = v;
+				else if (locale === 'fr') result.fr = v;
+				else if (locale === 'es') result.es = v;
+			}
+		}
+		return result;
+	}
+
+	// polaroids: src (plain), alt (LocalizedString), caption (LocalizedString), rotate (number)
+	const polaroidsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const [locale, id] of identityByLocale) {
+		const pols = (id as Record<string, unknown>).polaroids;
+		if (Array.isArray(pols)) {
+			polaroidsByLocale.set(locale, pols as Array<Record<string, unknown>>);
+		}
+	}
+	const polaroids = rawPolaroids.map((enPol, idx) => {
+		const altLS: LocalizedString = { en: typeof enPol.alt === 'string' ? enPol.alt : '' };
+		const captionLS: LocalizedString = { en: typeof enPol.caption === 'string' ? enPol.caption : '' };
+		for (const [locale, polList] of polaroidsByLocale) {
+			if (locale === 'en') continue;
+			const pol = polList[idx];
+			if (!pol) continue;
+			if (typeof pol.alt === 'string' && pol.alt.length > 0) {
+				if (locale === 'fr') altLS.fr = pol.alt;
+				else if (locale === 'es') altLS.es = pol.alt;
+			}
+			if (typeof pol.caption === 'string' && pol.caption.length > 0) {
+				if (locale === 'fr') captionLS.fr = pol.caption;
+				else if (locale === 'es') captionLS.es = pol.caption;
+			}
+		}
+		return {
+			src: typeof enPol.src === 'string' ? enPol.src : '',
+			alt: altLS,
+			caption: captionLS,
+			rotate: typeof enPol.rotate === 'number' ? enPol.rotate : 0,
+		};
+	});
+
+	const identity: AboutContent['identity'] = {
+		name: identityLS('name'),
+		title: identityLS('title'),
+		valueProp: identityLS('valueProp'),
+		headshot: typeof rawIdentity.headshot === 'string' ? rawIdentity.headshot : '',
+		polaroids,
+	};
+
+	// --- metrics: value (plain), label (LocalizedString), icon? (plain) ---
+	const metricsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.metrics)) {
+			metricsByLocale.set(code, row.metrics as Array<Record<string, unknown>>);
+		}
+	}
+	const enMetrics = metricsByLocale.get('en') ?? [];
+	const metrics: AboutContent['metrics'] = enMetrics.map((enM, idx) => {
+		const labelLS: LocalizedString = { en: typeof enM.label === 'string' ? enM.label : '' };
+		for (const [locale, mList] of metricsByLocale) {
+			if (locale === 'en') continue;
+			const m = mList[idx];
+			if (!m) continue;
+			if (typeof m.label === 'string' && m.label.length > 0) {
+				if (locale === 'fr') labelLS.fr = m.label;
+				else if (locale === 'es') labelLS.es = m.label;
+			}
+		}
+		const metric: AboutContent['metrics'][number] = {
+			value: typeof enM.value === 'string' ? enM.value : '',
+			label: labelLS,
+		};
+		if (typeof enM.icon === 'string' && enM.icon.length > 0) metric.icon = enM.icon;
+		return metric;
+	});
+
+	// --- methodology: id (plain), station (number plain), label (LS), description (LS) ---
+	const methodByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.methodology)) {
+			methodByLocale.set(code, row.methodology as Array<Record<string, unknown>>);
+		}
+	}
+	const enMethod = methodByLocale.get('en') ?? [];
+	const methodology: AboutContent['methodology'] = enMethod.map((enS, idx) => {
+		const labelLS: LocalizedString = { en: typeof enS.label === 'string' ? enS.label : '' };
+		const descLS: LocalizedString = { en: typeof enS.description === 'string' ? enS.description : '' };
+		for (const [locale, sList] of methodByLocale) {
+			if (locale === 'en') continue;
+			const s = sList[idx];
+			if (!s) continue;
+			if (typeof s.label === 'string' && s.label.length > 0) {
+				if (locale === 'fr') labelLS.fr = s.label;
+				else if (locale === 'es') labelLS.es = s.label;
+			}
+			if (typeof s.description === 'string' && s.description.length > 0) {
+				if (locale === 'fr') descLS.fr = s.description;
+				else if (locale === 'es') descLS.es = s.description;
+			}
+		}
+		return {
+			id: typeof enS.id === 'string' ? enS.id : '',
+			label: labelLS,
+			description: descLS,
+			station: typeof enS.station === 'number' ? enS.station : 0,
+		};
+	});
+
+	// --- testimonials: author (plain), company (plain), logo? (plain), quote (LS), role (LS) ---
+	const testimonialsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.testimonials)) {
+			testimonialsByLocale.set(code, row.testimonials as Array<Record<string, unknown>>);
+		}
+	}
+	const enTestimonials = testimonialsByLocale.get('en') ?? [];
+	const testimonials: AboutContent['testimonials'] = enTestimonials.map((enT, idx) => {
+		const quoteLS: LocalizedString = { en: typeof enT.quote === 'string' ? enT.quote : '' };
+		const roleLS: LocalizedString = { en: typeof enT.role === 'string' ? enT.role : '' };
+		for (const [locale, tList] of testimonialsByLocale) {
+			if (locale === 'en') continue;
+			const t = tList[idx];
+			if (!t) continue;
+			if (typeof t.quote === 'string' && t.quote.length > 0) {
+				if (locale === 'fr') quoteLS.fr = t.quote;
+				else if (locale === 'es') quoteLS.es = t.quote;
+			}
+			if (typeof t.role === 'string' && t.role.length > 0) {
+				if (locale === 'fr') roleLS.fr = t.role;
+				else if (locale === 'es') roleLS.es = t.role;
+			}
+		}
+		const testimonial: AboutContent['testimonials'][number] = {
+			quote: quoteLS,
+			author: typeof enT.author === 'string' ? enT.author : '',
+			role: roleLS,
+			company: typeof enT.company === 'string' ? enT.company : '',
+		};
+		if (typeof enT.logo === 'string' && enT.logo.length > 0) testimonial.logo = enT.logo;
+		return testimonial;
+	});
+
+	// --- techStack: read from parent row (moved by Phase 1 fix-up 377401c) ---
+	// All fields are plain (name: string, category: TechCategory, relatedServices: string[])
+	const rawTechStack = Array.isArray(raw.tech_stack)
+		? (raw.tech_stack as Array<Record<string, unknown>>)
+		: [];
+	const techStack: AboutContent['techStack'] = rawTechStack.map((item) => ({
+		name: typeof item.name === 'string' ? item.name : '',
+		category: (item.category as AboutContent['techStack'][number]['category']) ?? 'tools',
+		relatedServices: Array.isArray(item.relatedServices)
+			? (item.relatedServices as string[])
+			: [],
+	}));
+
+	// --- interests: id (plain), image (plain), label (LS) ---
+	const interestsByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.interests)) {
+			interestsByLocale.set(code, row.interests as Array<Record<string, unknown>>);
+		}
+	}
+	const enInterests = interestsByLocale.get('en') ?? [];
+	const interests: AboutContent['interests'] = enInterests.map((enI, idx) => {
+		const labelLS: LocalizedString = { en: typeof enI.label === 'string' ? enI.label : '' };
+		for (const [locale, iList] of interestsByLocale) {
+			if (locale === 'en') continue;
+			const i = iList[idx];
+			if (!i) continue;
+			if (typeof i.label === 'string' && i.label.length > 0) {
+				if (locale === 'fr') labelLS.fr = i.label;
+				else if (locale === 'es') labelLS.es = i.label;
+			}
+		}
+		return {
+			id: typeof enI.id === 'string' ? enI.id : '',
+			label: labelLS,
+			image: typeof enI.image === 'string' ? enI.image : '',
+		};
+	});
+
+	// --- weather: city (LS), hook (LS), enabled (boolean plain) ---
+	const weatherByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const w = row.weather;
+		if (w && typeof w === 'object' && !Array.isArray(w)) {
+			weatherByLocale.set(code, w as Record<string, unknown>);
+		}
+	}
+	const enWeather = weatherByLocale.get('en') ?? {};
+	const cityLS: LocalizedString = { en: typeof enWeather.city === 'string' ? enWeather.city : '' };
+	const hookLS: LocalizedString = { en: typeof enWeather.hook === 'string' ? enWeather.hook : '' };
+	for (const [locale, w] of weatherByLocale) {
+		if (locale === 'en') continue;
+		if (typeof w.city === 'string' && w.city.length > 0) {
+			if (locale === 'fr') cityLS.fr = w.city;
+			else if (locale === 'es') cityLS.es = w.city;
+		}
+		if (typeof w.hook === 'string' && w.hook.length > 0) {
+			if (locale === 'fr') hookLS.fr = w.hook;
+			else if (locale === 'es') hookLS.es = w.hook;
+		}
+	}
+	const weather: AboutContent['weather'] = {
+		city: cityLS,
+		hook: hookLS,
+		enabled: typeof enWeather.enabled === 'boolean' ? enWeather.enabled : false,
+	};
+
+	// --- clientLogos: read from parent row (moved by Phase 1 fix-up 377401c) ---
+	// All fields plain: name (string), src (string), url? (string)
+	const rawClientLogos = Array.isArray(raw.client_logos)
+		? (raw.client_logos as Array<Record<string, unknown>>)
+		: [];
+	const clientLogos: AboutContent['clientLogos'] = rawClientLogos.map((logo) => {
+		const cl: AboutContent['clientLogos'][number] = {
+			name: typeof logo.name === 'string' ? logo.name : '',
+			src: typeof logo.src === 'string' ? logo.src : '',
+		};
+		if (typeof logo.url === 'string' && logo.url.length > 0) cl.url = logo.url;
+		return cl;
+	});
+
+	// --- cta: command (plain), buttonHref (plain), buttonLabel (LS), availability (LS),
+	//          lines[].text (plain), lines[].color (plain), socials[].label/href/icon (all plain) ---
+	const ctaByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const c = row.cta;
+		if (c && typeof c === 'object' && !Array.isArray(c)) {
+			ctaByLocale.set(code, c as Record<string, unknown>);
+		}
+	}
+	const enCta = ctaByLocale.get('en') ?? {};
+	const buttonLabelLS: LocalizedString = { en: typeof enCta.buttonLabel === 'string' ? enCta.buttonLabel : '' };
+	const availabilityLS: LocalizedString = { en: typeof enCta.availability === 'string' ? enCta.availability : '' };
+	for (const [locale, c] of ctaByLocale) {
+		if (locale === 'en') continue;
+		if (typeof c.buttonLabel === 'string' && c.buttonLabel.length > 0) {
+			if (locale === 'fr') buttonLabelLS.fr = c.buttonLabel;
+			else if (locale === 'es') buttonLabelLS.es = c.buttonLabel;
+		}
+		if (typeof c.availability === 'string' && c.availability.length > 0) {
+			if (locale === 'fr') availabilityLS.fr = c.availability;
+			else if (locale === 'es') availabilityLS.es = c.availability;
+		}
+	}
+	const rawCtaLines = Array.isArray(enCta.lines)
+		? (enCta.lines as Array<Record<string, unknown>>)
+		: [];
+	const ctaLines = rawCtaLines.map((l) => ({
+		text: typeof l.text === 'string' ? l.text : '',
+		color: (l.color as 'orange' | 'muted' | 'accent') ?? 'muted',
+	}));
+	const rawCtaSocials = Array.isArray(enCta.socials)
+		? (enCta.socials as Array<Record<string, unknown>>)
+		: [];
+	const ctaSocials = rawCtaSocials.map((s) => ({
+		label: typeof s.label === 'string' ? s.label : '',
+		href: typeof s.href === 'string' ? s.href : '',
+		icon: typeof s.icon === 'string' ? s.icon : '',
+	}));
+	const cta: AboutContent['cta'] = {
+		command: typeof enCta.command === 'string' ? enCta.command : '',
+		lines: ctaLines,
+		buttonLabel: buttonLabelLS,
+		buttonHref: typeof enCta.buttonHref === 'string' ? enCta.buttonHref : '',
+		availability: availabilityLS,
+		socials: ctaSocials,
+	};
+
+	// --- stopLabels: all LocalizedString ---
+	const stopLabels = toLSJSON(tr, 'stop_labels') as AboutContent['stopLabels'];
+
+	// --- labels: all LocalizedString ---
+	const labels = toLSJSON(tr, 'labels') as AboutContent['labels'];
+
+	// --- meta: title (LS), description (LS) ---
+	const meta = toLSJSON(tr, 'meta') as AboutContent['meta'];
+
+	return {
+		identity,
+		metrics,
+		methodology,
+		testimonials,
+		techStack,
+		interests,
+		weather,
+		clientLogos,
+		clientCount,
+		cta,
+		stopLabels,
+		labels,
+		meta,
+	};
+}
+
+/**
+ * Transform raw `block_contact_content` Directus item into ContactContent.
+ *
+ * Field-aware transforms distinguish LocalizedString from plain string leaves
+ * per ContactContentSchema. toLocalizedJSON would wrap EVERY string leaf.
+ *
+ * Plain string fields:
+ *   infoTerminal.title, infoTerminal.command,
+ *   formTerminal.title, formTerminal.command,
+ *   formTerminal.fields.{name,email,message}.label,
+ *   socials[].label, socials[].href, socials[].icon,
+ *   web3formsKey (parent row, not translations)
+ *
+ * `web3formsKey` is a non-translatable scalar field on the parent row.
+ */
+export function transformBlockContactContent(raw: RawBlockItem): ContactContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+
+	// --- infoTerminal: title/command plain; location/responseTime/sectionLabels LS ---
+	const infoByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const it = row.info_terminal;
+		if (it && typeof it === 'object' && !Array.isArray(it)) {
+			infoByLocale.set(code, it as Record<string, unknown>);
+		}
+	}
+	const enInfo = infoByLocale.get('en') ?? {};
+	const locationLS: LocalizedString = { en: typeof enInfo.location === 'string' ? enInfo.location : '' };
+	const responseTimeLS: LocalizedString = { en: typeof enInfo.responseTime === 'string' ? enInfo.responseTime : '' };
+	const sectionLabelLocationLS: LocalizedString = { en: '' };
+	const sectionLabelConnectLS: LocalizedString = { en: '' };
+	const enSectionLabels = (enInfo.sectionLabels && typeof enInfo.sectionLabels === 'object' && !Array.isArray(enInfo.sectionLabels))
+		? (enInfo.sectionLabels as Record<string, unknown>)
+		: {};
+	sectionLabelLocationLS.en = typeof enSectionLabels.location === 'string' ? enSectionLabels.location : '';
+	sectionLabelConnectLS.en = typeof enSectionLabels.connect === 'string' ? enSectionLabels.connect : '';
+	for (const [locale, it] of infoByLocale) {
+		if (locale === 'en') continue;
+		if (typeof it.location === 'string' && it.location.length > 0) {
+			if (locale === 'fr') locationLS.fr = it.location;
+			else if (locale === 'es') locationLS.es = it.location;
+		}
+		if (typeof it.responseTime === 'string' && it.responseTime.length > 0) {
+			if (locale === 'fr') responseTimeLS.fr = it.responseTime;
+			else if (locale === 'es') responseTimeLS.es = it.responseTime;
+		}
+		const sl = (it.sectionLabels && typeof it.sectionLabels === 'object' && !Array.isArray(it.sectionLabels))
+			? (it.sectionLabels as Record<string, unknown>)
+			: {};
+		if (typeof sl.location === 'string' && sl.location.length > 0) {
+			if (locale === 'fr') sectionLabelLocationLS.fr = sl.location;
+			else if (locale === 'es') sectionLabelLocationLS.es = sl.location;
+		}
+		if (typeof sl.connect === 'string' && sl.connect.length > 0) {
+			if (locale === 'fr') sectionLabelConnectLS.fr = sl.connect;
+			else if (locale === 'es') sectionLabelConnectLS.es = sl.connect;
+		}
+	}
+	const infoTerminal: ContactContent['infoTerminal'] = {
+		title: typeof enInfo.title === 'string' ? enInfo.title : '',
+		command: typeof enInfo.command === 'string' ? enInfo.command : '',
+		location: locationLS,
+		responseTime: responseTimeLS,
+		sectionLabels: {
+			location: sectionLabelLocationLS,
+			connect: sectionLabelConnectLS,
+		},
+	};
+
+	// --- formTerminal: title/command plain; commandOutput/submitLabel LS; fields.*.label plain, fields.*.placeholder LS ---
+	const formByLocale = new Map<string, Record<string, unknown>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		const ft = row.form_terminal;
+		if (ft && typeof ft === 'object' && !Array.isArray(ft)) {
+			formByLocale.set(code, ft as Record<string, unknown>);
+		}
+	}
+	const enForm = formByLocale.get('en') ?? {};
+	const commandOutputLS: LocalizedString = { en: typeof enForm.commandOutput === 'string' ? enForm.commandOutput : '' };
+	const submitLabelLS: LocalizedString = { en: typeof enForm.submitLabel === 'string' ? enForm.submitLabel : '' };
+	for (const [locale, ft] of formByLocale) {
+		if (locale === 'en') continue;
+		if (typeof ft.commandOutput === 'string' && ft.commandOutput.length > 0) {
+			if (locale === 'fr') commandOutputLS.fr = ft.commandOutput;
+			else if (locale === 'es') commandOutputLS.es = ft.commandOutput;
+		}
+		if (typeof ft.submitLabel === 'string' && ft.submitLabel.length > 0) {
+			if (locale === 'fr') submitLabelLS.fr = ft.submitLabel;
+			else if (locale === 'es') submitLabelLS.es = ft.submitLabel;
+		}
+	}
+
+	// Build per-field placeholder LocalizedStrings
+	function buildTerminalField(fieldName: string): ContactContent['formTerminal']['fields']['name'] {
+		const enFields = (enForm.fields && typeof enForm.fields === 'object' && !Array.isArray(enForm.fields))
+			? (enForm.fields as Record<string, unknown>)
+			: {};
+		const enField = (enFields[fieldName] && typeof enFields[fieldName] === 'object')
+			? (enFields[fieldName] as Record<string, unknown>)
+			: {};
+		const label = typeof enField.label === 'string' ? enField.label : '';
+		const placeholderLS: LocalizedString = { en: typeof enField.placeholder === 'string' ? enField.placeholder : '' };
+		for (const [locale, ft] of formByLocale) {
+			if (locale === 'en') continue;
+			const ftFields = (ft.fields && typeof ft.fields === 'object' && !Array.isArray(ft.fields))
+				? (ft.fields as Record<string, unknown>)
+				: {};
+			const ftField = (ftFields[fieldName] && typeof ftFields[fieldName] === 'object')
+				? (ftFields[fieldName] as Record<string, unknown>)
+				: {};
+			if (typeof ftField.placeholder === 'string' && ftField.placeholder.length > 0) {
+				if (locale === 'fr') placeholderLS.fr = ftField.placeholder;
+				else if (locale === 'es') placeholderLS.es = ftField.placeholder;
+			}
+		}
+		return { label, placeholder: placeholderLS };
+	}
+
+	const formTerminal: ContactContent['formTerminal'] = {
+		title: typeof enForm.title === 'string' ? enForm.title : '',
+		command: typeof enForm.command === 'string' ? enForm.command : '',
+		commandOutput: commandOutputLS,
+		fields: {
+			name: buildTerminalField('name'),
+			email: buildTerminalField('email'),
+			message: buildTerminalField('message'),
+		},
+		submitLabel: submitLabelLS,
+	};
+
+	// --- validation: all LocalizedString ---
+	const validation = toLSJSON(tr, 'validation') as ContactContent['validation'];
+
+	// --- success: all LocalizedString ---
+	const success = toLSJSON(tr, 'success') as ContactContent['success'];
+
+	// --- socials: all plain strings (label, href, icon) — read from en row ---
+	const enRow = tr.find((r) => r.languages_code === 'en') ?? tr[0];
+	const rawSocials = (enRow && Array.isArray(enRow.socials))
+		? (enRow.socials as Array<Record<string, unknown>>)
+		: [];
+	const socials: ContactContent['socials'] = rawSocials.map((s) => ({
+		label: typeof s.label === 'string' ? s.label : '',
+		href: typeof s.href === 'string' ? s.href : '',
+		icon: typeof s.icon === 'string' ? s.icon : '',
+	}));
+
+	// --- meta: title (LS), description (LS) ---
+	const meta = toLSJSON(tr, 'meta') as ContactContent['meta'];
+
+	return {
+		pageTitle: toLS(tr, 'page_title'),
+		stationLabel: toLS(tr, 'station_label'),
+		sendErrorMessage: toLS(tr, 'send_error_message'),
+		meta,
+		infoTerminal,
+		formTerminal,
+		validation,
+		success,
+		socials,
+		web3formsKey: typeof raw.web3forms_key === 'string' ? raw.web3forms_key : '',
+	};
+}
+
+/**
+ * Transform raw `block_tech_stack_page_content` Directus item into TechStackPageContent.
+ * All fields are JSON columns with nested LocalizedString leaves.
+ */
+export function transformBlockTechStackPageContent(raw: RawBlockItem): TechStackPageContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const meta = toLSJSON(tr, 'meta') as TechStackPageContent['meta'];
+	const hero = toLSJSON(tr, 'hero') as TechStackPageContent['hero'];
+	const actions = toLSJSON(tr, 'actions') as TechStackPageContent['actions'];
+	const cta = toLSJSON(tr, 'cta') as TechStackPageContent['cta'];
+	return { meta, hero, actions, cta };
+}
+
+/**
+ * Transform raw `block_blog_page_content` Directus item into BlogPageContent.
+ */
+export function transformBlockBlogPageContent(raw: RawBlockItem): BlogPageContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	return {
+		intro: toLS(tr, 'intro'),
+	};
+}
+
+/**
+ * Transform raw `block_projects_page_content` Directus item into ProjectsPageContent.
+ */
+export function transformBlockProjectsPageContent(raw: RawBlockItem): ProjectsPageContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	return {
+		intro: toLS(tr, 'intro'),
+	};
+}
+
+/**
+ * Dispatch table mapping block collection name → transform function.
+ * Used by `transformPageRow` to process each block item.
+ */
+const BLOCK_TRANSFORMS: Record<string, (raw: RawBlockItem) => unknown> = {
+	block_hero: transformBlockHero,
+	block_manifesto: transformBlockManifesto,
+	block_proof_reel: transformBlockProofReel,
+	block_services_grid: transformBlockServicesGrid,
+	block_cta: transformBlockCta,
+	block_closer: transformBlockCloser,
+	block_about_intro: transformBlockAboutIntro,
+	block_about_content: transformBlockAboutContent,
+	block_contact_content: transformBlockContactContent,
+	block_tech_stack_page_content: transformBlockTechStackPageContent,
+	block_blog_page_content: transformBlockBlogPageContent,
+	block_projects_page_content: transformBlockProjectsPageContent,
+};
+
+/**
+ * Transform a raw Directus `pages` row (with per-locale translation arrays
+ * on each block item) into the LocalizedString-shaped structure expected by
+ * PageSchema.
+ *
+ * Closes the gap between Directus's per-locale translation rows and the
+ * LocalizedString-shaped Zod schemas. Each block item's `translations[]` array
+ * is consumed by the matching `transformBlock*` function; the result replaces
+ * the raw item before `parsePort('pages.bySlug', PageSchema, ...)` runs.
+ *
+ * Critical 1 fix: PageSchema requires `title: z.string()` at the top level,
+ * but Directus stores the title in `pages_translations/title` (not on `pages`
+ * directly). We extract the en-locale title here before parsePort runs.
+ *
+ * Slice-18i Task 4.0.
+ */
+export function transformPageRow(raw: unknown): unknown {
+	if (raw === null || typeof raw !== 'object') return raw;
+	const page = raw as Record<string, unknown>;
+
+	// Extract page title from translations (pages_translations.title).
+	// PageSchema.title is z.string() — just the en locale value.
+	let title = typeof page.title === 'string' && page.title.length > 0 ? page.title : '';
+	if (!title) {
+		const pageTr = Array.isArray(page.translations) ? (page.translations as ReadonlyArray<Record<string, unknown>>) : [];
+		const enTr = pageTr.find((r) => r.languages_code === 'en') ?? pageTr[0];
+		if (enTr && typeof enTr.title === 'string' && enTr.title.length > 0) {
+			title = enTr.title;
+		}
+	}
+
+	const rawBlocks = Array.isArray(page.blocks) ? page.blocks : [];
+	const blocks = rawBlocks.map((rawBlock: unknown) => {
+		if (rawBlock === null || typeof rawBlock !== 'object') return rawBlock;
+		const block = rawBlock as Record<string, unknown>;
+		const collection = block.collection as string;
+		const transform = BLOCK_TRANSFORMS[collection];
+		if (!transform) {
+			// Unknown block collection — pass through (fail in parsePort's discriminated union).
+			return block;
+		}
+		const rawItem = (block.item ?? {}) as RawBlockItem;
+		const transformedItem = transform(rawItem);
+		return { ...block, item: transformedItem };
+	});
+	return { ...page, title, blocks };
 }
 
 // ---------------------------------------------------------------------------
@@ -646,6 +1838,104 @@ const todo = (where: string): never => {
 		`[directusAdapter] ${where} not implemented yet — lands in Slice 18 Task 5+ once the collection is designed.`,
 	);
 };
+
+// ---------------------------------------------------------------------------
+// transformNavLink — slice-18i Phase 5 Task 5.1
+//
+// Converts a raw DirectusNavLinkRow into the NavLink shape expected by
+// NavLinkSchema. Field-aware:
+//   - label, subtitle   → LocalizedString via toLocalizedString (translations)
+//   - href, placement, priority  → plain fields on the parent row
+//   - icon              → M2O FK to icons collection; resolved to icon name string
+// ---------------------------------------------------------------------------
+
+function transformNavLink(raw: DirectusNavLinkRow): import('$lib/content/nav').NavLink {
+	const tr = (raw.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
+	const priority = raw.priority === 1 || raw.priority === 2 ? (raw.priority as 1 | 2) : 1;
+
+	// Resolve icon M2O FK to icon name string.
+	let icon: string | undefined;
+	if (raw.icon && typeof raw.icon === 'object' && 'name' in raw.icon) {
+		const name = (raw.icon as DirectusNavLinkIconRow).name;
+		if (name) icon = name;
+	} else if (typeof raw.icon === 'string' && raw.icon.length > 0) {
+		icon = raw.icon;
+	}
+
+	// subtitle is optional — only present on menu/footer placement rows.
+	const subtitleLS = toLocalizedStringOrUndef(
+		tr as ReadonlyArray<{ languages_code: string }>,
+		'subtitle',
+	);
+
+	const result: import('$lib/content/nav').NavLink = {
+		label: toLocalizedString(tr, 'label'),
+		href: raw.href,
+		priority,
+	};
+	if (subtitleLS !== undefined) result.subtitle = subtitleLS;
+	if (icon !== undefined) result.icon = icon;
+	return result;
+}
+
+// ---------------------------------------------------------------------------
+// transformErrorPage — slice-18i Phase 5 Task 5.3
+//
+// Converts a raw DirectusErrorPageRow into the ErrorPageContent shape.
+// Field-aware:
+//   - label, heading, description → LocalizedString via toLocalizedString
+//   - terminal_line (snake→camel terminalLine) → LocalizedString, then en value
+//     — ErrorPageContent.terminalLine is a plain string (en-only, per spec)
+//   - suggestions → per-locale JSON array with mixed content:
+//       label: LocalizedString (per locale)
+//       href:  plain string (from en row, same across locales)
+// ---------------------------------------------------------------------------
+
+function transformErrorPage(raw: DirectusErrorPageRow): import('$lib/content/nav').ErrorPageContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
+
+	// terminal_line is a plain string (en-only) per ErrorPageContent interface.
+	const terminalLineLS = toLocalizedString(tr, 'terminal_line');
+	const terminalLine = terminalLineLS.en;
+
+	// suggestions: per-locale JSON array. label is LocalizedString; href is plain (read from en).
+	// Walk each locale's suggestions array and merge by index.
+	const rawTr = (raw.translations ?? []) as ReadonlyArray<DirectusErrorPageTranslation>;
+	const suggestionsByLocale = new Map<string, Array<{ label: string; href: string }>>();
+	for (const row of rawTr) {
+		if (Array.isArray(row.suggestions) && row.suggestions.length > 0) {
+			suggestionsByLocale.set(row.languages_code, row.suggestions as Array<{ label: string; href: string }>);
+		}
+	}
+	const enSuggestions = suggestionsByLocale.get('en') ?? [];
+	const suggestions: readonly { label: LocalizedString; href: string }[] = enSuggestions.map(
+		(enSug, idx) => {
+			const labelLS: LocalizedString = {
+				en: typeof enSug.label === 'string' ? enSug.label : '',
+			};
+			const frSug = suggestionsByLocale.get('fr')?.[idx];
+			if (frSug && typeof frSug.label === 'string' && frSug.label.length > 0) {
+				labelLS.fr = frSug.label;
+			}
+			const esSug = suggestionsByLocale.get('es')?.[idx];
+			if (esSug && typeof esSug.label === 'string' && esSug.label.length > 0) {
+				labelLS.es = esSug.label;
+			}
+			return {
+				label: labelLS,
+				href: typeof enSug.href === 'string' ? enSug.href : '',
+			};
+		},
+	);
+
+	return {
+		label: toLocalizedString(tr, 'label'),
+		heading: toLocalizedString(tr, 'heading'),
+		description: toLocalizedString(tr, 'description'),
+		terminalLine,
+		suggestions,
+	};
+}
 
 // ---------------------------------------------------------------------------
 // Tech-stack row shapes — slice-18g Phase 4 Task 8.
@@ -1498,26 +2788,180 @@ export const directusAdapter: ContentAdapter = {
 	},
 
 	content: {
-		hero: async () => todo('content.hero'),
-		heroAnim: async () => todo('content.heroAnim'),
-		manifesto: async () => todo('content.manifesto'),
-		proofReel: async () => todo('content.proofReel'),
-		servicesGrid: async () => todo('content.servicesGrid'),
-		about: async () => todo('content.about'),
-		cta: async () => todo('content.cta'),
-		closer: async () => todo('content.closer'),
-		skillsJourneyPanels: async () => todo('content.skillsJourneyPanels'),
-		skillsJourneyCta: async () => todo('content.skillsJourneyCta'),
-		navLinks: async () => todo('content.navLinks'),
-		menuItems: async () => todo('content.menuItems'),
-		metroBookends: async () => todo('content.metroBookends'),
-		errorPage: async () => todo('content.errorPage'),
-		aboutPage: async () => todo('content.aboutPage'),
-		contactPage: async () => todo('content.contactPage'),
-		techStackPage: async () => todo('content.techStackPage'),
-		heroMock: async () => todo('content.heroMock'),
-		initialHeroData: async () => todo('content.initialHeroData'),
+		// -----------------------------------------------------------------------
+		// Task 4.1 — Home-page block methods (slice-18i Phase 4).
+		//
+		// Pattern A: loadPage('home', ctx) fetches + transforms + validates the
+		// entire page via PageSchema once per request (memoized on ctx.pageCache).
+		// Each method projects a single block_* item from the already-validated
+		// PageData. No redundant parsePort calls here — the Zod gate runs inside
+		// loadPage.
+		//
+		// Fail-fast: throws with route + missing block name per spec §3.7.
+		// -----------------------------------------------------------------------
+
+		async hero(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_hero');
+			if (!block) throw new Error('[content.hero] home page has no block_hero');
+			return block.item;
+		},
+
+		async heroAnim(ctx) {
+			// heroAnim is now part of HeroContent (carried through typed PageData).
+			// No out-of-band cache needed — just project block.item.heroAnim.
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_hero');
+			if (!block) throw new Error('[content.heroAnim] home page has no block_hero');
+			return block.item.heroAnim;
+		},
+
+		async manifesto(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_manifesto');
+			if (!block) throw new Error('[content.manifesto] home page has no block_manifesto');
+			return block.item;
+		},
+
+		async proofReel(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_proof_reel');
+			if (!block) throw new Error('[content.proofReel] home page has no block_proof_reel');
+			return block.item;
+		},
+
+		async servicesGrid(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_services_grid');
+			if (!block) throw new Error('[content.servicesGrid] home page has no block_services_grid');
+			return block.item;
+		},
+
+		async about(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_about_intro');
+			if (!block) throw new Error('[content.about] home page has no block_about_intro');
+			return block.item;
+		},
+
+		async cta(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_cta');
+			if (!block) throw new Error('[content.cta] home page has no block_cta');
+			return block.item;
+		},
+
+		async closer(ctx) {
+			const page = await loadPage('home', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_closer');
+			if (!block) throw new Error('[content.closer] home page has no block_closer');
+			return block.item;
+		},
+
+		// -----------------------------------------------------------------------
+		// Task 4.2 — Detail-page block methods (slice-18i Phase 4).
+		// -----------------------------------------------------------------------
+
+		async aboutPage(ctx) {
+			const page = await loadPage('about', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_about_content');
+			if (!block) throw new Error('[content.aboutPage] about page has no block_about_content');
+			return block.item;
+		},
+
+		async contactPage(ctx) {
+			const page = await loadPage('contact', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_contact_content');
+			if (!block) throw new Error('[content.contactPage] contact page has no block_contact_content');
+			return block.item;
+		},
+
+		async techStackPage(ctx) {
+			const page = await loadPage('tech-stack', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_tech_stack_page_content');
+			if (!block) throw new Error('[content.techStackPage] tech-stack page has no block_tech_stack_page_content');
+			return block.item;
+		},
+
+		// -----------------------------------------------------------------------
+		// Phase 7 — blog + projects page chrome (slice-18i BLOCKER fix-up).
+		// -----------------------------------------------------------------------
+
+		async blogPage(ctx) {
+			const page = await loadPage('blog', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_blog_page_content');
+			if (!block) throw new Error('[content.blogPage] blog page has no block_blog_page_content');
+			return block.item;
+		},
+
+		async projectsPage(ctx) {
+			const page = await loadPage('projects', ctx);
+			const block = page.blocks.find((x) => x.collection === 'block_projects_page_content');
+			if (!block) throw new Error('[content.projectsPage] projects page has no block_projects_page_content');
+			return block.item;
+		},
+
+		// -----------------------------------------------------------------------
+		// Task 4.3 — Derived methods (no Directus query — pure local functions).
+		// -----------------------------------------------------------------------
+
+		async heroMock() {
+			return parsePort('content.heroMock', HeroDataSchema, generateHeroData());
+		},
+
+		async initialHeroData() {
+			return parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA);
+		},
+
+		// -----------------------------------------------------------------------
+		// Phase 5 — nav + errorPage (slice-18i Task 5.1 + 5.3).
+		// Delegates nav reads to directusAdapter.nav.byPlacement so the sub-port
+		// is the single source of truth for nav_links queries.
+		// -----------------------------------------------------------------------
+
+		async navLinks(ctx) {
+			return directusAdapter.nav.byPlacement('header', ctx);
+		},
+
+		async menuItems(ctx) {
+			return directusAdapter.nav.byPlacement('menu', ctx);
+		},
+
+		async errorPage(statusCode, ctx) {
+			// _or filter: cast filter to unknown to satisfy SDK's strict Schema-aware
+			// typing (same pattern as tech_stack _and filters with complex shapes).
+			const raw = (await client().request(
+				readItems('error_pages', {
+					filter: {
+						_or: [{ status_code: { _eq: statusCode } }, { status_code: { _eq: 0 } }],
+						status: { _eq: 'published' },
+					} as unknown as Record<string, unknown>,
+					fields: ['*', 'translations.*'] as unknown as (keyof DirectusErrorPageRow)[],
+					limit: 2,
+				}),
+			)) as unknown as DirectusErrorPageRow[];
+
+			// Prefer the specific status_code over the fallback (0).
+			const exact = raw.find((r) => r.status_code === statusCode);
+			const fallback = raw.find((r) => r.status_code === 0);
+			const chosen = exact ?? fallback;
+
+			if (!chosen) {
+				throw new Error(
+					`[content.errorPage] no row for status_code=${statusCode} and no fallback (status_code=0) row exists`,
+				);
+			}
+
+			const transformed = transformErrorPage(chosen);
+			return parsePort('content.errorPage', ErrorPageContentSchema, transformed);
+		},
+
+		// -----------------------------------------------------------------------
+		// Pre-existing Directus overrides (slice-18d, slice-18f).
+		// -----------------------------------------------------------------------
+
 		metroSvg: async () => fetchMetroSvg(),
+
 		morphShapes: async (ctx) => {
 			const rows = (await client().request(
 				readItems('morph_shapes', {
@@ -1527,6 +2971,32 @@ export const directusAdapter: ContentAdapter = {
 				}),
 			)) as unknown as MorphShape[];
 			return parsePort('content.morphShapes', z.array(MorphShapeSchema), rows);
+		},
+	},
+
+	// -------------------------------------------------------------------------
+	// nav port — slice-18i Phase 5 Task 5.1
+	//
+	// Reads the nav_links flat collection filtered by placement. Sorted by
+	// priority ascending. content.navLinks and content.menuItems delegate here.
+	// Footer and mobile overlay consumers call this directly.
+	// -------------------------------------------------------------------------
+
+	nav: {
+		async byPlacement(placement, _ctx?) {
+			const raw = (await client().request(
+				readItems('nav_links', {
+					filter: {
+						placement: { _eq: placement },
+						status: { _eq: 'published' },
+					} as unknown as Record<string, unknown>,
+					fields: ['*', 'translations.*', 'icon.*'] as unknown as (keyof DirectusNavLinkRow)[],
+					sort: ['priority'],
+				}),
+			)) as unknown as DirectusNavLinkRow[];
+
+			const transformed = raw.map(transformNavLink);
+			return parsePort('nav.byPlacement', z.array(NavLinkSchema), transformed);
 		},
 	},
 };

@@ -31,7 +31,6 @@ import type {
 	Locale,
 	AboutContent,
 	ContactContent,
-	JourneyPanel,
 	HeroContent,
 	HeroAnimContent,
 	ManifestoContent,
@@ -40,15 +39,26 @@ import type {
 	AboutIntroContent,
 	CtaContent,
 	CloserContent,
-	SkillsJourneyCtaContent,
 	PreviewContext,
 	BlockEditorDoc,
 	MorphShape,
 } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
+import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 import type { PageSeo } from '$lib/schemas/seo';
-import type { TechStackPageContent } from '$lib/schemas/tech-stack-page';
+import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
+
+export interface NavPort {
+	/**
+	 * Read nav-link rows for a placement slot.
+	 * Returns rows sorted by `priority` ascending (lower = more prominent).
+	 * placement: 'header' | 'footer' | 'mobile' | 'menu'
+	 */
+	byPlacement(
+		placement: 'header' | 'footer' | 'mobile' | 'menu',
+		ctx?: PreviewContext,
+	): Promise<readonly NavLink[]>;
+}
 
 export interface ContentAdapter {
 	projects: ProjectPort;
@@ -57,6 +67,8 @@ export interface ContentAdapter {
 	meta: MetaPort;
 	techStack: TechStackPort;
 	content: ContentPort;
+	/** Nav sub-port — reads nav_links by placement slot. Added in slice-18i Phase 5. */
+	nav: NavPort;
 }
 
 // Every port method accepts an optional trailing `ctx?: PreviewContext` so
@@ -188,18 +200,19 @@ export interface ContentPort {
 	about(ctx?: PreviewContext): Promise<AboutIntroContent>;
 	cta(ctx?: PreviewContext): Promise<CtaContent>;
 	closer(ctx?: PreviewContext): Promise<CloserContent>;
-	skillsJourneyPanels(ctx?: PreviewContext): Promise<readonly JourneyPanel[]>;
-	skillsJourneyCta(ctx?: PreviewContext): Promise<SkillsJourneyCtaContent>;
 	navLinks(ctx?: PreviewContext): Promise<readonly NavLink[]>;
 	menuItems(ctx?: PreviewContext): Promise<readonly MenuItem[]>;
-	metroBookends(ctx?: PreviewContext): Promise<MetroBookends>;
-	errorPage(ctx?: PreviewContext): Promise<ErrorPageContent>;
+	errorPage(statusCode: number, ctx?: PreviewContext): Promise<ErrorPageContent>;
 	/** Full /about page content — distinct from the home-page about teaser. */
 	aboutPage(ctx?: PreviewContext): Promise<AboutContent>;
 	contactPage(ctx?: PreviewContext): Promise<ContactContent>;
 	techStackPage(ctx?: PreviewContext): Promise<TechStackPageContent>;
 	heroMock(ctx?: PreviewContext): Promise<HeroData>;
 	initialHeroData(ctx?: PreviewContext): Promise<HeroData>;
+	/** /blog page chrome — block_blog_page_content (added slice-18i Phase 7). */
+	blogPage(ctx?: PreviewContext): Promise<BlogPageContent>;
+	/** /projects page chrome — block_projects_page_content (added slice-18i Phase 7). */
+	projectsPage(ctx?: PreviewContext): Promise<ProjectsPageContent>;
 	/**
 	 * Inlined SVG markup for the Montreal-metro hero animation.
 	 *

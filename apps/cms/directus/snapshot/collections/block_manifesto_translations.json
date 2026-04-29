@@ -1,0 +1,28 @@
+{
+  "collection": "block_manifesto_translations",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_manifesto_translations",
+    "color": null,
+    "display_template": null,
+    "group": null,
+    "hidden": true,
+    "icon": "translate",
+    "item_duplication_fields": null,
+    "note": "Translated copy for block_manifesto. 6 JSON columns: statement, terminal, pills, edge_left, edge_right, edge_bottom, transit, hidden_transit_lines. ticks is non-translatable, lives on parent.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": null,
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "block_manifesto_translations"
+  }
+}

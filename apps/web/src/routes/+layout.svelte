@@ -20,8 +20,21 @@
 	import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
+	import type { LayoutData } from './$types';
+	import type { NavLink } from '$lib/content/nav';
 
-	let { data, children } = $props();
+	let { data, children }: { data: LayoutData & {
+		headerLinks?: readonly NavLink[];
+		footerLinks?: readonly NavLink[];
+		mobileLinks?: readonly NavLink[];
+		menuItems?: readonly NavLink[];
+	}; children: import('svelte').Snippet } = $props();
+
+	// Nav slots — threaded from +layout.server.ts via the adapter.nav port.
+	// Passed as props so Nav/Footer don't import from $lib/content directly.
+	const headerLinks = $derived(data.headerLinks ?? []);
+	const footerLinks = $derived(data.footerLinks ?? []);
+	const menuItems = $derived(data.menuItems ?? []);
 
 	onMount(() => {
 		if (browser) {
@@ -53,7 +66,7 @@
 </svelte:head>
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
-	<Nav pathname={$page.url.pathname} />
+	<Nav pathname={$page.url.pathname} {headerLinks} {menuItems} />
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
@@ -64,7 +77,7 @@
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
 	<div class="relative z-[45]">
-		<Footer />
+		<Footer {footerLinks} />
 	</div>
 </div>
 

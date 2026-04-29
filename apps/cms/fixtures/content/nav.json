@@ -1,0 +1,34 @@
+{
+  "navLinks": [
+    { "label": { "en": "Services", "fr": "Services", "es": "Servicios" }, "href": "/services", "priority": 1 },
+    { "label": { "en": "Projects", "fr": "Projets", "es": "Proyectos" }, "href": "/projects", "priority": 1 },
+    { "label": { "en": "Stack", "fr": "Stack", "es": "Stack" }, "href": "/tech-stack", "priority": 2 }
+  ],
+  "menuItems": [
+    { "label": { "en": "Services", "fr": "Services", "es": "Servicios" }, "href": "/services", "subtitle": { "en": "what I build", "fr": "ce que je construis", "es": "lo que construyo" } },
+    { "label": { "en": "Projects", "fr": "Projets", "es": "Proyectos" }, "href": "/projects", "subtitle": { "en": "proof it ships", "fr": "la preuve que ça livre", "es": "prueba de que se entrega" } },
+    { "label": { "en": "Stack", "fr": "Stack", "es": "Stack" }, "href": "/tech-stack", "subtitle": { "en": "the toolbox", "fr": "la boîte à outils", "es": "la caja de herramientas" } },
+    { "label": { "en": "Blog", "fr": "Blog", "es": "Blog" }, "href": "/blog", "subtitle": { "en": "thoughts in transit", "fr": "pensées en transit", "es": "pensamientos en tránsito" } },
+    { "label": { "en": "About", "fr": "À propos", "es": "Acerca de" }, "href": "/about", "subtitle": { "en": "the operator", "fr": "l'opérateur", "es": "el operador" } },
+    { "label": { "en": "Contact", "fr": "Contact", "es": "Contacto" }, "href": "/contact", "subtitle": { "en": "open channel", "fr": "canal ouvert", "es": "canal abierto" } }
+  ],
+  "errorPageContent": {
+    "label": { "en": "ROUTE NOT FOUND", "fr": "ROUTE INTROUVABLE", "es": "RUTA NO ENCONTRADA" },
+    "heading": {
+      "en": "This station is under construction",
+      "fr": "Cette station est en construction",
+      "es": "Esta estación está en construcción"
+    },
+    "description": {
+      "en": "The route you requested doesn't exist or has been rerouted. Here are some active lines:",
+      "fr": "La route demandée n'existe pas ou a été redirigée. Voici quelques lignes actives :",
+      "es": "La ruta solicitada no existe o ha sido redirigida. Aquí hay algunas líneas activas:"
+    },
+    "terminalLine": "$ route --status 404 // requested path not in service",
+    "suggestions": [
+      { "label": { "en": "Services", "fr": "Services", "es": "Servicios" }, "href": "/services" },
+      { "label": { "en": "Projects", "fr": "Projets", "es": "Proyectos" }, "href": "/projects" },
+      { "label": { "en": "Contact", "fr": "Contact", "es": "Contacto" }, "href": "/contact" }
+    ]
+  }
+}

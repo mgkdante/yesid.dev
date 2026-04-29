@@ -1,0 +1,48 @@
+{
+  "collection": "block_about_content",
+  "field": "client_logos",
+  "type": "json",
+  "meta": {
+    "collection": "block_about_content",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "client_logos",
+    "group": null,
+    "hidden": false,
+    "interface": "input-code",
+    "note": "Non-translatable client logos (AboutContent.clientLogos). JSON shape: Array<{ name, src: string, url?: string }>. AboutClientLogo has no LocalizedString leaves so it lives on the parent block, not on _translations.",
+    "options": {
+      "language": "json"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 7,
+    "special": [
+      "cast-json"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "client_logos",
+    "table": "block_about_content",
+    "data_type": "json",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

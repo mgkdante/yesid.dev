@@ -2,13 +2,39 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import Page from './+page.svelte';
 import type { PageData } from './$types';
+// slice-18i Phase 7C: +page.server.ts now loads all home-page block content
+// from Directus M2A. Unit tests must supply full stubData with all block props.
+import {
+	heroContent,
+	heroAnimContent,
+	manifestoContent,
+	proofReelContent,
+	servicesGridContent,
+	aboutContent,
+	ctaContent,
+	closerContent,
+} from '$lib/content/site-content';
+import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 
-// Slice 18d Phase 8: Page now reads `data.metroSvg` (loaded by +page.server.ts
-// from Directus). In unit tests we render the page directly without a load,
-// so each render() must supply a stub `data` prop with a minimal SVG.
-const stubData: PageData = {
+// PageData merges +page.server.ts return + +layout.server.ts return + +layout.ts
+// return (per SvelteKit's typed load chain). The home component only consumes
+// the page-level fields; layout fields (nav slots, errorPage, seo, themeColor)
+// come from layout-server stubs that are out of this unit test's scope. Cast
+// through unknown — the home component never reads layout fields, so the unit
+// stub is safe.
+const stubData = {
 	metroSvg: '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
-} as PageData;
+	hero: heroContent,
+	heroAnim: heroAnimContent,
+	manifesto: manifestoContent,
+	proofReel: proofReelContent,
+	servicesGrid: servicesGridContent,
+	about: aboutContent,
+	cta: ctaContent,
+	closer: closerContent,
+	heroMock: generateHeroData(),
+	initialHeroData: INITIAL_HERO_DATA,
+} as unknown as PageData;
 
 const renderPage = () => render(Page, { props: { data: stubData } });
 

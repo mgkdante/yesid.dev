@@ -3,7 +3,7 @@
 // Components import from this module and call resolveLocale() — no
 // hardcoded English strings in templates.
 
-import type { LocalizedString, JourneyPanel } from '$lib/types';
+import type { LocalizedString } from '$lib/types';
 
 export const heroAnimContent = {
 	scrollDown: { en: 'NEXT STOP: SCROLL DOWN' } satisfies LocalizedString,
@@ -43,6 +43,11 @@ export const heroContent = {
 			en: 'Refreshes metrics + query results from the live pipeline',
 		} satisfies LocalizedString,
 	},
+	/** Hero scroll-hint chrome \u2014 included here so heroContent satisfies HeroContent
+	 *  (heroAnim was added to HeroContent in slice-18i Phase 4 fix-up). The static
+	 *  adapter still exposes content.heroAnim() for direct callsites that only need
+	 *  the scroll-hint. */
+	heroAnim: heroAnimContent,
 } as const;
 
 export const manifestoContent = {
@@ -174,61 +179,6 @@ export const ctaContent = {
 	} satisfies LocalizedString,
 	ctaContact: { en: 'Get in touch' } satisfies LocalizedString,
 	ctaGithub: { en: 'View on GitHub' } satisfies LocalizedString,
-} as const;
-
-// Data-driven panels for the horizontal skills journey section.
-// Adding or removing a skill means editing this array only — zero component changes.
-// Each panel maps to one "stop" in the metro metaphor: a label, body text,
-// words to animate, and the skills shown at that stop.
-export const skillsJourneyPanels: readonly JourneyPanel[] = [
-	{
-		id: 'foundation',
-		label: { en: '01 — FOUNDATION' },
-		text: { en: 'Every system starts at the foundation' },
-		highlightWords: ['foundation'],
-		highlightEffect: 'scale',
-		skills: [
-			{ id: 'sql', name: 'SQL', subtitle: 'PostgreSQL · SQL Server', icon: 'sql' },
-		],
-	},
-	{
-		id: 'routes',
-		label: { en: '02 — ROUTES' },
-		text: { en: 'Routes that move data, logic, and pixels' },
-		highlightWords: ['data', 'logic', 'pixels'],
-		highlightEffect: 'charReveal',
-		skills: [
-			{ id: 'typescript', name: 'TypeScript', icon: 'typescript' },
-			{ id: 'python', name: 'Python', icon: 'python' },
-		],
-	},
-	{
-		id: 'stations',
-		label: { en: '03 — STATIONS' },
-		text: { en: 'Stations where users stop and understand' },
-		highlightWords: ['Stations', 'understand'],
-		highlightEffect: 'wave',
-		skills: [
-			{ id: 'sveltekit', name: 'SvelteKit', icon: 'sveltekit' },
-			{ id: 'powerbi', name: 'Power BI', icon: 'powerbi' },
-		],
-	},
-	{
-		id: 'motion',
-		label: { en: '04 — MOTION' },
-		text: { en: 'The motion that makes the ride unforgettable' },
-		highlightWords: ['motion', 'unforgettable'],
-		highlightEffect: 'gradient',
-		skills: [
-			{ id: 'gsap', name: 'GSAP', icon: 'gsap' },
-			{ id: 'docker', name: 'Docker', icon: 'docker' },
-		],
-	},
-] as const;
-
-export const skillsJourneyCta = {
-	prompt: { en: 'Your next stop?' } satisfies LocalizedString,
-	button: { en: "Let's build together →" } satisfies LocalizedString,
 } as const;
 
 export const closerContent = {

@@ -1,0 +1,48 @@
+{
+  "collection": "block_about_content_translations",
+  "field": "cta",
+  "type": "json",
+  "meta": {
+    "collection": "block_about_content_translations",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "cta",
+    "group": null,
+    "hidden": false,
+    "interface": "input-code",
+    "note": "Per-locale terminal CTA block (AboutContent.cta). JSON shape: { command: string, lines: Array<{text,color}>, buttonLabel, buttonHref: string, availability, socials: Array<{label,href,icon}> }.",
+    "options": {
+      "language": "json"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 12,
+    "special": [
+      "cast-json"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  },
+  "schema": {
+    "name": "cta",
+    "table": "block_about_content_translations",
+    "data_type": "json",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

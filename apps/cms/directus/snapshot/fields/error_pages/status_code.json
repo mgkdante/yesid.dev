@@ -1,0 +1,46 @@
+{
+  "collection": "error_pages",
+  "field": "status_code",
+  "type": "integer",
+  "meta": {
+    "collection": "error_pages",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "status_code",
+    "group": null,
+    "hidden": false,
+    "interface": "input",
+    "note": "HTTP status code (404, 500, etc.). 0 = generic fallback — used when no specific status_code row is seeded. UNIQUE constraint enforced.",
+    "options": {
+      "placeholder": "e.g. 404"
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 2,
+    "special": null,
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "status_code",
+    "table": "error_pages",
+    "data_type": "integer",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": 32,
+    "numeric_scale": 0,
+    "is_nullable": false,
+    "is_unique": true,
+    "is_indexed": true,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

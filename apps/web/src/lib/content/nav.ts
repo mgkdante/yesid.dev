@@ -5,33 +5,19 @@ export interface NavLink {
 	href: string;
 	/** 1 = always visible, 2 = hidden on narrow viewports */
 	priority: 1 | 2;
+	/** Optional subtitle copy — present on menu-placement links. */
+	subtitle?: LocalizedString;
+	/** Optional icon name resolved from the icons collection M2O FK. */
+	icon?: string;
 }
 
-export interface MenuItem {
-	label: LocalizedString;
-	href: string;
-	subtitle: LocalizedString;
-}
-
-// Metro-line bookend labels — the non-service stops around the services list
-// (Departure / Featured Work / Who's Driving / Dispatches / Final Destination).
-// Moved out of `$lib/repositories/service.ts` in Task 17b-6 so label copy lives
-// in the content layer, not in the port. Repository reads via adapter.
-export interface MetroBookends {
-	departure: LocalizedString;
-	featured: LocalizedString;
-	about: LocalizedString;
-	blog: LocalizedString;
-	terminal: LocalizedString;
-}
-
-export const metroBookends: MetroBookends = {
-	departure: { en: 'Departure' },
-	featured: { en: 'Featured Work' },
-	about: { en: "Who's Driving" },
-	blog: { en: 'Dispatches' },
-	terminal: { en: 'Final Destination' }
-};
+/**
+ * MenuItem is structurally identical to NavLink — the `subtitle` field is
+ * required conceptually for menu placement but optional at the type level so
+ * the same NavLink shape works for all placements. Preserved as a type alias
+ * for backwards compatibility with existing call sites.
+ */
+export type MenuItem = NavLink;
 
 /** Generic directional labels for prev/next navigation surfaces. Extracted from
  *  ServiceNav in Task 17b-7f; kept multilingual to match the rest of nav.ts. */
@@ -122,31 +108,37 @@ export const menuItems: readonly MenuItem[] = [
 	{
 		label: { en: 'Services', fr: 'Services', es: 'Servicios' },
 		href: '/services',
+		priority: 1,
 		subtitle: { en: 'what I build', fr: 'ce que je construis', es: 'lo que construyo' }
 	},
 	{
 		label: { en: 'Projects', fr: 'Projets', es: 'Proyectos' },
 		href: '/projects',
+		priority: 1,
 		subtitle: { en: 'proof it ships', fr: 'la preuve que ça livre', es: 'prueba de que se entrega' }
 	},
 	{
 		label: { en: 'Stack', fr: 'Stack', es: 'Stack' },
 		href: '/tech-stack',
+		priority: 1,
 		subtitle: { en: 'the toolbox', fr: 'la boîte à outils', es: 'la caja de herramientas' }
 	},
 	{
 		label: { en: 'Blog', fr: 'Blog', es: 'Blog' },
 		href: '/blog',
+		priority: 1,
 		subtitle: { en: 'thoughts in transit', fr: 'pensées en transit', es: 'pensamientos en tránsito' }
 	},
 	{
 		label: { en: 'About', fr: 'À propos', es: 'Acerca de' },
 		href: '/about',
+		priority: 1,
 		subtitle: { en: 'the operator', fr: "l'opérateur", es: 'el operador' }
 	},
 	{
 		label: { en: 'Contact', fr: 'Contact', es: 'Contacto' },
 		href: '/contact',
+		priority: 1,
 		subtitle: { en: 'open channel', fr: 'canal ouvert', es: 'canal abierto' }
 	}
 ] as const;

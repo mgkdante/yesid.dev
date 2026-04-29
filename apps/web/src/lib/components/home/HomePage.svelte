@@ -3,8 +3,9 @@
   5 sections: Hero, Manifesto, Featured Projects, Services, Closer.
   Projects/Services/Closer: alternating rotated SectionHeading titles (left → right → left).
 
-  Slice 18d Phase 8: receives `metroSvg` (Directus-fetched) from +page.svelte
-  and forwards it to HeroBanner → MetroNetwork.
+  slice-18i Phase 7C: all page-block content flows as props from +page.svelte
+  (loaded server-side from Directus M2A). Components no longer import static
+  content modules directly.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
@@ -18,11 +19,44 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
 	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
+	import type {
+		HeroContent,
+		HeroAnimContent,
+		ManifestoContent,
+		ProofReelContent,
+		ServicesGridContent,
+		AboutIntroContent,
+		CtaContent,
+		CloserContent,
+	} from '$lib/types';
+	import type { HeroData } from '$lib/content/hero-data';
 
 	interface Props {
 		metroSvg: string;
+		hero: HeroContent;
+		heroAnim: HeroAnimContent;
+		manifesto: ManifestoContent;
+		proofReel: ProofReelContent;
+		servicesGrid: ServicesGridContent;
+		about: AboutIntroContent;
+		cta: CtaContent;
+		closer: CloserContent;
+		heroMock: HeroData;
+		initialHeroData: HeroData;
 	}
-	let { metroSvg }: Props = $props();
+	let {
+		metroSvg,
+		hero,
+		heroAnim,
+		manifesto,
+		proofReel,
+		servicesGrid,
+		about: _about,
+		cta: _cta,
+		closer,
+		heroMock,
+		initialHeroData,
+	}: Props = $props();
 
 	// Section + rotated-title bindings for crescendo scrubs (desktop only).
 	let projectsSectionEl = $state<HTMLElement>(undefined!);
@@ -58,14 +92,14 @@
 
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
 <section class="w-full">
-	<HeroBanner {metroSvg} />
+	<HeroBanner {metroSvg} {hero} {heroAnim} {heroMock} {initialHeroData} />
 </section>
 
 <Separator variant="hazard" />
 
 <!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
 <section class="w-full">
-	<Manifesto />
+	<Manifesto {manifesto} />
 </section>
 
 <Separator variant="hazard" />
@@ -76,7 +110,7 @@
 		<SectionHeading heading="Projects" />
 	</div>
 	<div class="home-section-content">
-		<FeaturedProjects />
+		<FeaturedProjects {proofReel} />
 	</div>
 </section>
 
@@ -88,7 +122,7 @@
 		<ServicesBlueprint />
 	</div>
 	<div class="home-section-content">
-		<HomeServices />
+		<HomeServices {servicesGrid} />
 	</div>
 	<div bind:this={servicesTitleEl} class="rotated-title rotated-title--right">
 		<SectionHeading heading="Services" />
@@ -103,7 +137,7 @@
 		<SectionHeading heading="Terminus" />
 	</div>
 	<div class="home-section-content">
-		<HomeCloser />
+		<HomeCloser {closer} />
 	</div>
 </section>
 

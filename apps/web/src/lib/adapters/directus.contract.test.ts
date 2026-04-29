@@ -47,6 +47,7 @@ describe('directusAdapter — structural contract', () => {
 			'meta',
 			'techStack',
 			'content',
+			'nav',
 		] as const;
 		for (const port of required) {
 			expect(directusAdapter).toHaveProperty(port);
@@ -65,14 +66,11 @@ describe('directusAdapter — structural contract', () => {
 		expect(adapter).toBeDefined();
 	});
 
-	it('un-implemented ports throw a clear TODO error (not silently return empty)', async () => {
-		// Tasks 10–14 progressively replace these throws with real impls.
-		// 18f Phase 9: blog + morphShapes ports are live.
-		// 18g Phase 4: techStack port is now live (all/byId/content).
-		// 18h Phase 4 Task 10: meta.site + meta.siteSeoDefaults + meta.routeSeo
-		//   are live. Task 11: meta.forRoute composer is live.
-		// Only content (non-metroSvg/morphShapes) remain as TODO stubs.
-		await expect(directusAdapter.content.hero()).rejects.toThrow(/not implemented/);
+	it('exposes the nav sub-port (slice-18i Phase 5)', () => {
+		// All ContentPort methods are now live after slice-18i Phase 5.
+		// No TODO stubs remain — this test verifies the new nav port is wired.
+		expect(directusAdapter).toHaveProperty('nav');
+		expect(typeof directusAdapter.nav.byPlacement).toBe('function');
 	});
 
 	it('techStack port exposes the 3 required methods', () => {

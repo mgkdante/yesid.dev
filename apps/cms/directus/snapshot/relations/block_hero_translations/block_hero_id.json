@@ -1,0 +1,25 @@
+{
+  "collection": "block_hero_translations",
+  "field": "block_hero_id",
+  "related_collection": "block_hero",
+  "meta": {
+    "junction_field": "languages_code",
+    "many_collection": "block_hero_translations",
+    "many_field": "block_hero_id",
+    "one_allowed_collections": null,
+    "one_collection": "block_hero",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": "translations",
+    "sort_field": null
+  },
+  "schema": {
+    "table": "block_hero_translations",
+    "column": "block_hero_id",
+    "foreign_key_table": "block_hero",
+    "foreign_key_column": "id",
+    "constraint_name": "block_hero_translations_block_hero_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

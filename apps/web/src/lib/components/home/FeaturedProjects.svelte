@@ -6,11 +6,14 @@
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils';
 
-	import { proofReelContent, getProjectBySlug, rawProjectToProject } from '$lib/content';
-	import type { Project } from '$lib/types';
+	import { getProjectBySlug, rawProjectToProject } from '$lib/content';
+	import type { Project, ProofReelContent } from '$lib/types';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
+
+	// slice-18i Phase 7C: proofReelContent now flows as a prop from the server load.
+	let { proofReel: proofReelContent }: { proofReel: ProofReelContent } = $props();
 
 	const heading = resolveLocale(proofReelContent.heading, 'en');
 	const subheading = resolveLocale(proofReelContent.subheading, 'en');

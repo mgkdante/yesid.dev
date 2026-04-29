@@ -6,8 +6,8 @@
   All content from aboutPageContent via data layer.
 -->
 <script lang="ts">
-	import { aboutPageContent } from '$lib/content/about-page';
 	import { resolveLocale } from '$lib/utils/locale';
+	import type { AboutContent } from '$lib/types';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Separator } from '$lib/components/ui/separator';
@@ -23,13 +23,16 @@
 	import AboutCta from './AboutCta.svelte';
 	import AboutTrain from './AboutTrain.svelte';
 
+	// slice-18i Phase 7C: aboutPageContent now flows as a prop from the server load.
 	let {
+		aboutPage,
 		weather,
 	}: {
+		aboutPage: AboutContent;
 		weather?: { temp: number; condition: string; icon: string } | null;
 	} = $props();
 
-	const c = aboutPageContent;
+	const c = aboutPage;
 
 	// Programmatic stop numbers from card render order. Train is stopless.
 	const s = Array.from({ length: 10 }, (_, i) => String(i).padStart(2, '0'));

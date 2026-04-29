@@ -242,37 +242,6 @@ export interface BlogPost {
 	external: boolean;
 }
 
-// Which animation effect highlights a word in the skills journey section.
-// 'scale'      — word grows slightly on reveal
-// 'gradient'   — word gets a brand color gradient sweep
-// 'wave'       — letters wave up sequentially
-// 'charReveal' — characters appear one by one
-export type HighlightEffect = 'scale' | 'gradient' | 'wave' | 'charReveal';
-
-// Icon identifiers for skills. Kept as a string literal union so the renderer
-// can map each id to an SVG asset without coupling this data layer to
-// any specific icon library.
-export type SkillIcon = 'sql' | 'typescript' | 'python' | 'sveltekit' | 'gsap' | 'powerbi' | 'docker';
-
-export interface JourneySkill {
-	id: string;
-	name: string;
-	subtitle?: string;
-	icon: SkillIcon;
-}
-
-// One "stop" in the horizontal skills journey section.
-// highlightWords drives which words inside `text` get the special animation.
-// highlightEffect controls which animation variant is used for this panel.
-export interface JourneyPanel {
-	id: string;
-	label: LocalizedString;
-	text: LocalizedString;
-	highlightWords: string[];
-	highlightEffect: HighlightEffect;
-	skills: JourneySkill[];
-}
-
 // --- About page types ---
 // Full-page bento dashboard for /about. All content is data-driven and
 // cloud-ready: swap placeholder values in about-page.ts for real content
@@ -581,6 +550,18 @@ export interface PreviewContext {
 	 * Absent → fall back to the normal locale resolver chain.
 	 */
 	locale?: Locale;
+
+	/**
+	 * Per-request loadPage memo. Threaded from event.locals.pageCache by
+	 * +page.server.ts load functions. Optional so legacy code paths and
+	 * tests can omit it; loadPage() degrades gracefully (one fetch per call)
+	 * when undefined.
+	 *
+	 * Uses Promise<unknown> rather than Promise<PageData> to avoid pulling
+	 * the @repo/shared/schemas PageData import into content.ts — content.ts
+	 * is the foundation the schemas depend on, so the direction must not reverse.
+	 */
+	pageCache?: Map<string, Promise<unknown>>;
 }
 
 // ---------------------------------------------------------------------------
@@ -627,6 +608,10 @@ export interface HeroContent {
 		label: LocalizedString;
 		helper: LocalizedString;
 	};
+	/** Hero scroll-hint chrome — merged from hero_anim JSON column in
+	 *  block_hero_translations. Carried through the typed PageData so
+	 *  content.heroAnim() needs no out-of-band cache. */
+	heroAnim: HeroAnimContent;
 }
 
 /** Hero scroll-hint chrome (separate block so the hero can render without it). */
@@ -758,12 +743,6 @@ export interface CloserContent {
 		/** Comment line above the first row. */
 		prompt: LocalizedString;
 	};
-}
-
-/** Home page — Skills journey CTA block (sits under the horizontal skills strip). */
-export interface SkillsJourneyCtaContent {
-	prompt: LocalizedString;
-	button: LocalizedString;
 }
 
 // ---------------------------------------------------------------------------
