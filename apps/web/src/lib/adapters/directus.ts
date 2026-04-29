@@ -60,6 +60,7 @@ import { ServiceSchema } from '$lib/schemas/service';
 import { BlogPostSchema } from '$lib/schemas/blog';
 import { LocaleSchema } from '$lib/schemas/shared';
 import { MorphShapeSchema } from '$lib/schemas/morph-shape';
+import { NavLinkSchema, ErrorPageContentSchema } from '$lib/schemas/nav';
 import { TechStackItemSchema } from '$lib/schemas/tech-stack';
 import { SiteMetaSchema } from '$lib/schemas/meta';
 import { SiteSeoDefaultsSchema } from '$lib/schemas/site-seo-defaults';
@@ -230,6 +231,58 @@ export interface DirectusIllustrationRow {
 	file: { id: string } | string;
 }
 
+// ---------------------------------------------------------------------------
+// Nav links row shapes — slice-18i Phase 5 Task 5.1.
+//
+// Flat collection with placement enum. Each row has a translations alias
+// for label + subtitle, and an icon M2O FK to the icons collection.
+// ---------------------------------------------------------------------------
+
+interface DirectusNavLinkTranslation {
+	languages_code: string;
+	label?: string | null;
+	subtitle?: string | null;
+}
+
+interface DirectusNavLinkIconRow {
+	name?: string | null;
+}
+
+interface DirectusNavLinkRow {
+	id: string;
+	status: 'draft' | 'published' | 'archived';
+	placement: 'header' | 'footer' | 'mobile' | 'menu';
+	href: string;
+	priority: number;
+	icon?: DirectusNavLinkIconRow | string | null;
+	translations?: DirectusNavLinkTranslation[];
+}
+
+// ---------------------------------------------------------------------------
+// Error pages row shapes — slice-18i Phase 5 Task 5.3.
+//
+// Flat collection keyed by status_code (UNIQUE). status_code=0 is the
+// generic fallback. Each row has a translations alias for label, heading,
+// description, terminal_line, and a per-locale suggestions JSON column.
+// ---------------------------------------------------------------------------
+
+interface DirectusErrorPageTranslation {
+	languages_code: string;
+	label?: string | null;
+	heading?: string | null;
+	description?: string | null;
+	terminal_line?: string | null;
+	suggestions?: Array<{ label: string; href: string }> | null;
+}
+
+interface DirectusErrorPageRow {
+	id: string;
+	status: 'draft' | 'published' | 'archived';
+	status_code: number;
+	sort?: number | null;
+	translations?: DirectusErrorPageTranslation[];
+}
+
 interface Schema {
 	services: DirectusService[];
 	projects: DirectusProject[];
@@ -253,6 +306,9 @@ interface Schema {
 	route_seo: DirectusRouteSeoRow[];
 	// Pages collection — M2A junction-backed page builder (slice-18i).
 	pages: PageData[];
+	// Nav links + error pages — slice-18i Phase 5.
+	nav_links: DirectusNavLinkRow[];
+	error_pages: DirectusErrorPageRow[];
 }
 
 // ---------------------------------------------------------------------------
@@ -1784,6 +1840,104 @@ const todo = (where: string): never => {
 };
 
 // ---------------------------------------------------------------------------
+// transformNavLink — slice-18i Phase 5 Task 5.1
+//
+// Converts a raw DirectusNavLinkRow into the NavLink shape expected by
+// NavLinkSchema. Field-aware:
+//   - label, subtitle   → LocalizedString via toLocalizedString (translations)
+//   - href, placement, priority  → plain fields on the parent row
+//   - icon              → M2O FK to icons collection; resolved to icon name string
+// ---------------------------------------------------------------------------
+
+function transformNavLink(raw: DirectusNavLinkRow): import('$lib/content/nav').NavLink {
+	const tr = (raw.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
+	const priority = raw.priority === 1 || raw.priority === 2 ? (raw.priority as 1 | 2) : 1;
+
+	// Resolve icon M2O FK to icon name string.
+	let icon: string | undefined;
+	if (raw.icon && typeof raw.icon === 'object' && 'name' in raw.icon) {
+		const name = (raw.icon as DirectusNavLinkIconRow).name;
+		if (name) icon = name;
+	} else if (typeof raw.icon === 'string' && raw.icon.length > 0) {
+		icon = raw.icon;
+	}
+
+	// subtitle is optional — only present on menu/footer placement rows.
+	const subtitleLS = toLocalizedStringOrUndef(
+		tr as ReadonlyArray<{ languages_code: string }>,
+		'subtitle',
+	);
+
+	const result: import('$lib/content/nav').NavLink = {
+		label: toLocalizedString(tr, 'label'),
+		href: raw.href,
+		priority,
+	};
+	if (subtitleLS !== undefined) result.subtitle = subtitleLS;
+	if (icon !== undefined) result.icon = icon;
+	return result;
+}
+
+// ---------------------------------------------------------------------------
+// transformErrorPage — slice-18i Phase 5 Task 5.3
+//
+// Converts a raw DirectusErrorPageRow into the ErrorPageContent shape.
+// Field-aware:
+//   - label, heading, description → LocalizedString via toLocalizedString
+//   - terminal_line (snake→camel terminalLine) → LocalizedString, then en value
+//     — ErrorPageContent.terminalLine is a plain string (en-only, per spec)
+//   - suggestions → per-locale JSON array with mixed content:
+//       label: LocalizedString (per locale)
+//       href:  plain string (from en row, same across locales)
+// ---------------------------------------------------------------------------
+
+function transformErrorPage(raw: DirectusErrorPageRow): import('$lib/content/nav').ErrorPageContent {
+	const tr = (raw.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
+
+	// terminal_line is a plain string (en-only) per ErrorPageContent interface.
+	const terminalLineLS = toLocalizedString(tr, 'terminal_line');
+	const terminalLine = terminalLineLS.en;
+
+	// suggestions: per-locale JSON array. label is LocalizedString; href is plain (read from en).
+	// Walk each locale's suggestions array and merge by index.
+	const rawTr = (raw.translations ?? []) as ReadonlyArray<DirectusErrorPageTranslation>;
+	const suggestionsByLocale = new Map<string, Array<{ label: string; href: string }>>();
+	for (const row of rawTr) {
+		if (Array.isArray(row.suggestions) && row.suggestions.length > 0) {
+			suggestionsByLocale.set(row.languages_code, row.suggestions as Array<{ label: string; href: string }>);
+		}
+	}
+	const enSuggestions = suggestionsByLocale.get('en') ?? [];
+	const suggestions: readonly { label: LocalizedString; href: string }[] = enSuggestions.map(
+		(enSug, idx) => {
+			const labelLS: LocalizedString = {
+				en: typeof enSug.label === 'string' ? enSug.label : '',
+			};
+			const frSug = suggestionsByLocale.get('fr')?.[idx];
+			if (frSug && typeof frSug.label === 'string' && frSug.label.length > 0) {
+				labelLS.fr = frSug.label;
+			}
+			const esSug = suggestionsByLocale.get('es')?.[idx];
+			if (esSug && typeof esSug.label === 'string' && esSug.label.length > 0) {
+				labelLS.es = esSug.label;
+			}
+			return {
+				label: labelLS,
+				href: typeof enSug.href === 'string' ? enSug.href : '',
+			};
+		},
+	);
+
+	return {
+		label: toLocalizedString(tr, 'label'),
+		heading: toLocalizedString(tr, 'heading'),
+		description: toLocalizedString(tr, 'description'),
+		terminalLine,
+		suggestions,
+	};
+}
+
+// ---------------------------------------------------------------------------
 // Tech-stack row shapes — slice-18g Phase 4 Task 8.
 //
 // Mirrors the tech_stack Directus collection: each item has flat scalar fields
@@ -2742,12 +2896,47 @@ export const directusAdapter: ContentAdapter = {
 		},
 
 		// -----------------------------------------------------------------------
-		// Not-yet-flipped — Phase 5.
+		// Phase 5 — nav + errorPage (slice-18i Task 5.1 + 5.3).
+		// Delegates nav reads to directusAdapter.nav.byPlacement so the sub-port
+		// is the single source of truth for nav_links queries.
 		// -----------------------------------------------------------------------
 
-		navLinks: async () => todo('content.navLinks'),
-		menuItems: async () => todo('content.menuItems'),
-		errorPage: async () => todo('content.errorPage'),
+		async navLinks(ctx) {
+			return directusAdapter.nav.byPlacement('header', ctx);
+		},
+
+		async menuItems(ctx) {
+			return directusAdapter.nav.byPlacement('menu', ctx);
+		},
+
+		async errorPage(statusCode, ctx) {
+			// _or filter: cast filter to unknown to satisfy SDK's strict Schema-aware
+			// typing (same pattern as tech_stack _and filters with complex shapes).
+			const raw = (await client().request(
+				readItems('error_pages', {
+					filter: {
+						_or: [{ status_code: { _eq: statusCode } }, { status_code: { _eq: 0 } }],
+						status: { _eq: 'published' },
+					} as unknown as Record<string, unknown>,
+					fields: ['*', 'translations.*'] as unknown as (keyof DirectusErrorPageRow)[],
+					limit: 2,
+				}),
+			)) as unknown as DirectusErrorPageRow[];
+
+			// Prefer the specific status_code over the fallback (0).
+			const exact = raw.find((r) => r.status_code === statusCode);
+			const fallback = raw.find((r) => r.status_code === 0);
+			const chosen = exact ?? fallback;
+
+			if (!chosen) {
+				throw new Error(
+					`[content.errorPage] no row for status_code=${statusCode} and no fallback (status_code=0) row exists`,
+				);
+			}
+
+			const transformed = transformErrorPage(chosen);
+			return parsePort('content.errorPage', ErrorPageContentSchema, transformed);
+		},
 
 		// -----------------------------------------------------------------------
 		// Pre-existing Directus overrides (slice-18d, slice-18f).
@@ -2764,6 +2953,32 @@ export const directusAdapter: ContentAdapter = {
 				}),
 			)) as unknown as MorphShape[];
 			return parsePort('content.morphShapes', z.array(MorphShapeSchema), rows);
+		},
+	},
+
+	// -------------------------------------------------------------------------
+	// nav port — slice-18i Phase 5 Task 5.1
+	//
+	// Reads the nav_links flat collection filtered by placement. Sorted by
+	// priority ascending. content.navLinks and content.menuItems delegate here.
+	// Footer and mobile overlay consumers call this directly.
+	// -------------------------------------------------------------------------
+
+	nav: {
+		async byPlacement(placement, _ctx?) {
+			const raw = (await client().request(
+				readItems('nav_links', {
+					filter: {
+						placement: { _eq: placement },
+						status: { _eq: 'published' },
+					} as unknown as Record<string, unknown>,
+					fields: ['*', 'translations.*', 'icon.*'] as unknown as (keyof DirectusNavLinkRow)[],
+					sort: ['priority'],
+				}),
+			)) as unknown as DirectusNavLinkRow[];
+
+			const transformed = raw.map(transformNavLink);
+			return parsePort('nav.byPlacement', z.array(NavLinkSchema), transformed);
 		},
 	},
 };

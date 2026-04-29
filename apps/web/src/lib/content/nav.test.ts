@@ -29,18 +29,19 @@ describe('menuItems', () => {
 
 	it('has subtitles for all items', () => {
 		for (const item of menuItems) {
-			expect(item.subtitle.en).toBeTruthy();
+			// subtitle is optional on NavLink; static menuItems always carry it
+			expect(item.subtitle!.en).toBeTruthy();
 		}
 	});
 
 	it('includes Services with subtitle "what I build"', () => {
 		const services = menuItems.find(i => i.href === '/services');
-		expect(services?.subtitle.en).toBe('what I build');
+		expect(services?.subtitle!.en).toBe('what I build');
 	});
 
 	it('includes Contact with subtitle "open channel"', () => {
 		const contact = menuItems.find(i => i.href === '/contact');
-		expect(contact?.subtitle.en).toBe('open channel');
+		expect(contact?.subtitle!.en).toBe('open channel');
 	});
 });
 

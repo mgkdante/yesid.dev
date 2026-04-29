@@ -130,7 +130,7 @@
 							<!-- Text -->
 							<span class="menu-text">
 								<span class="menu-label">{item.label.en}</span>
-								<span class="menu-subtitle">{item.subtitle.en}</span>
+								<span class="menu-subtitle">{item.subtitle?.en ?? ''}</span>
 							</span>
 						</a>
 					{/each}

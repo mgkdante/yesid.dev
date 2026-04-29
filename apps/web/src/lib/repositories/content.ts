@@ -49,8 +49,8 @@ export async function getMenuItems(): Promise<readonly MenuItem[]> {
 	return adapter.content.menuItems();
 }
 
-export async function getErrorPageContent(): Promise<ErrorPageContent> {
-	return adapter.content.errorPage();
+export async function getErrorPageContent(statusCode = 404): Promise<ErrorPageContent> {
+	return adapter.content.errorPage(statusCode);
 }
 
 export async function getAboutPageContent(): Promise<AboutContent> {

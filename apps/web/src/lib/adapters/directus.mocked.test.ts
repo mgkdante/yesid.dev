@@ -1108,3 +1108,323 @@ describe('directusAdapter.content.* — Task 4.3 derived methods (no Directus qu
 		expect(result).not.toBeNull();
 	});
 });
+
+// ---------------------------------------------------------------------------
+// nav.byPlacement (slice-18i Phase 5 Task 5.1)
+//
+// Asserts: hits /items/nav_links with placement filter + sort=priority.
+// Verifies that content.navLinks delegates to nav.byPlacement('header') and
+// content.menuItems delegates to nav.byPlacement('menu').
+// ---------------------------------------------------------------------------
+
+/** Minimal nav_links row fixture for the mock responses. */
+function navLinkRow(override: Partial<{
+	id: string;
+	placement: string;
+	href: string;
+	priority: number;
+	translations: Array<{ languages_code: string; label: string; subtitle?: string }>;
+}> = {}) {
+	return {
+		id: override.id ?? 'nav-1',
+		status: 'published',
+		placement: override.placement ?? 'header',
+		href: override.href ?? '/services',
+		priority: override.priority ?? 1,
+		icon: null,
+		translations: override.translations ?? [{ languages_code: 'en', label: 'Services' }],
+	};
+}
+
+describe('directusAdapter.nav.byPlacement — fetch contract', () => {
+	it('nav.byPlacement("header") hits /items/nav_links filtered by placement=header', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([navLinkRow({ placement: 'header' })]),
+		);
+
+		const result = await directusAdapter.nav.byPlacement('header');
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/nav_links');
+		const filter = search.get('filter') ?? '';
+		expect(filter).toContain('placement');
+		expect(filter).toContain('header');
+		expect(filter).toContain('published');
+		// sort=priority ascending
+		expect(search.get('sort')).toContain('priority');
+		expect(result).toHaveLength(1);
+		expect(result[0].label.en).toBe('Services');
+		expect(result[0].href).toBe('/services');
+		expect(result[0].priority).toBe(1);
+	});
+
+	it('nav.byPlacement("menu") hits /items/nav_links filtered by placement=menu', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				navLinkRow({
+					placement: 'menu',
+					href: '/projects',
+					translations: [
+						{ languages_code: 'en', label: 'Projects', subtitle: 'proof it ships' },
+						{ languages_code: 'fr', label: 'Projets', subtitle: 'la preuve que ça livre' },
+					],
+				}),
+			]),
+		);
+
+		const result = await directusAdapter.nav.byPlacement('menu');
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/nav_links');
+		const filter = search.get('filter') ?? '';
+		expect(filter).toContain('placement');
+		expect(filter).toContain('menu');
+		expect(result[0].subtitle).toMatchObject({ en: 'proof it ships', fr: 'la preuve que ça livre' });
+	});
+
+	it('nav.byPlacement("footer") hits /items/nav_links filtered by placement=footer', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+
+		await directusAdapter.nav.byPlacement('footer');
+
+		const { search } = parseCapturedUrl();
+		const filter = search.get('filter') ?? '';
+		expect(filter).toContain('footer');
+	});
+
+	it('nav.byPlacement("mobile") hits /items/nav_links filtered by placement=mobile', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+
+		await directusAdapter.nav.byPlacement('mobile');
+
+		const { search } = parseCapturedUrl();
+		const filter = search.get('filter') ?? '';
+		expect(filter).toContain('mobile');
+	});
+
+	it('resolves icon M2O FK object to icon name string', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				{
+					...navLinkRow({ placement: 'header' }),
+					icon: { name: 'code-bracket' },
+				},
+			]),
+		);
+
+		const result = await directusAdapter.nav.byPlacement('header');
+		expect(result[0].icon).toBe('code-bracket');
+	});
+
+	it('omits icon field when icon FK is null', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([navLinkRow({ placement: 'header' })]),
+		);
+
+		const result = await directusAdapter.nav.byPlacement('header');
+		expect(result[0].icon).toBeUndefined();
+	});
+});
+
+describe('directusAdapter.content.navLinks + menuItems — delegation', () => {
+	it('content.navLinks delegates to nav.byPlacement("header")', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([navLinkRow({ placement: 'header' })]),
+		);
+
+		const result = await directusAdapter.content.navLinks();
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/nav_links');
+		const filter = search.get('filter') ?? '';
+		expect(filter).toContain('header');
+		expect(result).toHaveLength(1);
+	});
+
+	it('content.menuItems delegates to nav.byPlacement("menu")', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([navLinkRow({ placement: 'menu' })]),
+		);
+
+		const result = await directusAdapter.content.menuItems();
+
+		const { search } = parseCapturedUrl();
+		const filter = search.get('filter') ?? '';
+		expect(filter).toContain('menu');
+		expect(result).toHaveLength(1);
+	});
+});
+
+// ---------------------------------------------------------------------------
+// content.errorPage (slice-18i Phase 5 Task 5.3)
+//
+// Asserts: hits /items/error_pages with _or filter for status_code + 0 fallback.
+// Prefers the specific status_code row over the fallback (0) row.
+// Throws when neither specific nor fallback row exists.
+// ---------------------------------------------------------------------------
+
+/** Minimal error_pages row fixture. */
+function errorPageRow(statusCode: number, override: Partial<{
+	translations: Array<{
+		languages_code: string;
+		label: string;
+		heading: string;
+		description: string;
+		terminal_line: string;
+		suggestions: Array<{ label: string; href: string }>;
+	}>;
+}> = {}) {
+	return {
+		id: `error-${statusCode}`,
+		status: 'published',
+		status_code: statusCode,
+		sort: null,
+		translations: override.translations ?? [
+			{
+				languages_code: 'en',
+				label: `Error ${statusCode}`,
+				heading: `${statusCode} heading`,
+				description: `${statusCode} description`,
+				terminal_line: `$ route --status ${statusCode}`,
+				suggestions: [{ label: 'Home', href: '/' }],
+			},
+		],
+	};
+}
+
+describe('directusAdapter.content.errorPage — fetch contract', () => {
+	it('errorPage(404) hits /items/error_pages with _or filter for 404 + 0', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([errorPageRow(404)]),
+		);
+
+		const result = await directusAdapter.content.errorPage(404);
+
+		const { pathname, search } = parseCapturedUrl();
+		expect(pathname).toBe('/items/error_pages');
+		const filter = search.get('filter') ?? '';
+		expect(filter).toContain('status_code');
+		expect(filter).toContain('404');
+		// Generic fallback (0) is always requested alongside
+		expect(filter).toContain('0');
+		expect(result.label.en).toBe('Error 404');
+		expect(result.heading.en).toBe('404 heading');
+		expect(result.suggestions[0].href).toBe('/');
+	});
+
+	it('errorPage(999) falls back to status_code=0 row when no 999 row exists', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([errorPageRow(0, {
+				translations: [
+					{
+						languages_code: 'en',
+						label: 'Generic Error',
+						heading: 'Generic heading',
+						description: 'Generic description',
+						terminal_line: '$ route --status unknown',
+						suggestions: [],
+					},
+				],
+			})]),
+		);
+
+		const result = await directusAdapter.content.errorPage(999);
+
+		expect(result.label.en).toBe('Generic Error');
+	});
+
+	it('errorPage(500) throws when no 500 row and no fallback exists', async () => {
+		sharedMockFetch.mockResolvedValueOnce(jsonResponse([]));
+
+		await expect(directusAdapter.content.errorPage(500)).rejects.toThrow(/status_code=500/);
+	});
+
+	it('errorPage(0) returns the fallback row itself when called with 0', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([errorPageRow(0)]),
+		);
+
+		const result = await directusAdapter.content.errorPage(0);
+
+		// status_code=0 matches the exact filter so `exact` is found first
+		expect(result.label.en).toBe('Error 0');
+	});
+
+	it('prefers specific status_code row over fallback when both are returned', async () => {
+		// Directus returns both the 404 row and the 0 fallback row
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				errorPageRow(404, {
+					translations: [
+						{
+							languages_code: 'en',
+							label: 'Specific 404',
+							heading: '404 heading',
+							description: '404 description',
+							terminal_line: '$ route --status 404',
+							suggestions: [],
+						},
+					],
+				}),
+				errorPageRow(0, {
+					translations: [
+						{
+							languages_code: 'en',
+							label: 'Generic Fallback',
+							heading: 'Generic heading',
+							description: 'Generic description',
+							terminal_line: '$ route --status 0',
+							suggestions: [],
+						},
+					],
+				}),
+			]),
+		);
+
+		const result = await directusAdapter.content.errorPage(404);
+		expect(result.label.en).toBe('Specific 404');
+	});
+
+	it('transformErrorPage merges per-locale suggestions correctly', async () => {
+		sharedMockFetch.mockResolvedValueOnce(
+			jsonResponse([
+				{
+					id: 'error-404',
+					status: 'published',
+					status_code: 404,
+					sort: null,
+					translations: [
+						{
+							languages_code: 'en',
+							label: 'Not Found',
+							heading: 'Not Found',
+							description: 'desc',
+							terminal_line: '$ route --status 404',
+							suggestions: [
+								{ label: 'Home', href: '/' },
+								{ label: 'Services', href: '/services' },
+							],
+						},
+						{
+							languages_code: 'fr',
+							label: 'Non trouvé',
+							heading: 'Non trouvé',
+							description: 'desc fr',
+							terminal_line: '$ route --status 404',
+							suggestions: [
+								{ label: 'Accueil', href: '/' },
+								{ label: 'Services', href: '/services' },
+							],
+						},
+					],
+				},
+			]),
+		);
+
+		const result = await directusAdapter.content.errorPage(404);
+
+		expect(result.suggestions[0].label).toMatchObject({ en: 'Home', fr: 'Accueil' });
+		expect(result.suggestions[0].href).toBe('/');
+		expect(result.suggestions[1].label).toMatchObject({ en: 'Services', fr: 'Services' });
+	});
+});

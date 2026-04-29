@@ -250,7 +250,11 @@ export const staticAdapter: ContentAdapter = {
 		// Schema-validated content ports.
 		navLinks: async () => parsePort('content.navLinks', z.array(NavLinkSchema), navLinks),
 		menuItems: async () => parsePort('content.menuItems', z.array(MenuItemSchema), menuItems),
-		errorPage: async () => parsePort('content.errorPage', ErrorPageContentSchema, errorPageContent),
+		// statusCode accepted for ContentPort parity with the Directus adapter
+		// (Task 5.3 signature change). Static fallback always returns the same
+		// hardcoded content regardless of status code — it is the revert recipe.
+		errorPage: async (_statusCode?: number) =>
+			parsePort('content.errorPage', ErrorPageContentSchema, errorPageContent),
 		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
 		techStackPage: async () =>
@@ -269,6 +273,22 @@ export const staticAdapter: ContentAdapter = {
 				viewbox: '0 0 48 48',
 				sort: idx + 1,
 			}));
+		},
+	},
+
+	// Static nav port — reads from the static nav.ts constants, filtered by
+	// placement. Preserves the per-method revert recipe per spec §3.6.
+	nav: {
+		async byPlacement(placement) {
+			if (placement === 'header') {
+				return parsePort('nav.byPlacement', z.array(NavLinkSchema), navLinks);
+			}
+			if (placement === 'menu') {
+				return parsePort('nav.byPlacement', z.array(NavLinkSchema), menuItems);
+			}
+			// footer and mobile placements have no static fallback data —
+			// return an empty array so consumers degrade gracefully.
+			return [];
 		},
 	},
 };

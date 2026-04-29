@@ -44,10 +44,9 @@ export const adapter: ContentAdapter = {
 
 	techStack: staticAdapter.techStack,
 
-	// content: hybrid — 13 methods flipped to Directus M2A in slice-18i Phase 4;
-	// 3 methods (navLinks, menuItems, errorPage) remain on staticAdapter via
-	// the spread and will flip in Phase 5. Two pre-existing Directus overrides
-	// (metroSvg, morphShapes) from slice-18d/18f are retained.
+	// content: hybrid — all 18 ContentPort methods now route through
+	// directusAdapter as of slice-18i Phase 5. The spread is left as a safety
+	// net for any future ContentPort additions not yet flipped.
 	//
 	// Flip history:
 	//   - metroSvg:       Directus (Slice 18d Phase 8 / Task 28-33)
@@ -56,6 +55,8 @@ export const adapter: ContentAdapter = {
 	//     closer:         Directus M2A (slice-18i Task 4.1)
 	//   - aboutPage, contactPage, techStackPage: Directus M2A (slice-18i Task 4.2)
 	//   - heroMock, initialHeroData: Directus local (slice-18i Task 4.3)
+	//   - navLinks, menuItems:    Directus nav_links (slice-18i Task 5.1)
+	//   - errorPage:              Directus error_pages (slice-18i Task 5.3)
 	content: {
 		...staticAdapter.content,
 		// Flipped to Directus M2A in slice-18i Task 4.1 (home-page blocks):
@@ -77,7 +78,15 @@ export const adapter: ContentAdapter = {
 		// Pre-existing Directus overrides:
 		metroSvg: directusAdapter.content.metroSvg,
 		morphShapes: directusAdapter.content.morphShapes,
+		// Flipped in slice-18i Task 5.1 (nav port):
+		navLinks: directusAdapter.content.navLinks,
+		menuItems: directusAdapter.content.menuItems,
+		// Flipped in slice-18i Task 5.3 (errorPage):
+		errorPage: directusAdapter.content.errorPage,
 	},
+
+	// nav sub-port — wired in slice-18i Phase 5 Task 5.1.
+	nav: directusAdapter.nav,
 };
 
 export type { ContentAdapter } from './types';

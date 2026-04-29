@@ -48,6 +48,18 @@ import type { HeroData } from '$lib/content/hero-data';
 import type { PageSeo } from '$lib/schemas/seo';
 import type { TechStackPageContent } from '@repo/shared/schemas';
 
+export interface NavPort {
+	/**
+	 * Read nav-link rows for a placement slot.
+	 * Returns rows sorted by `priority` ascending (lower = more prominent).
+	 * placement: 'header' | 'footer' | 'mobile' | 'menu'
+	 */
+	byPlacement(
+		placement: 'header' | 'footer' | 'mobile' | 'menu',
+		ctx?: PreviewContext,
+	): Promise<readonly NavLink[]>;
+}
+
 export interface ContentAdapter {
 	projects: ProjectPort;
 	services: ServicePort;
@@ -55,6 +67,8 @@ export interface ContentAdapter {
 	meta: MetaPort;
 	techStack: TechStackPort;
 	content: ContentPort;
+	/** Nav sub-port — reads nav_links by placement slot. Added in slice-18i Phase 5. */
+	nav: NavPort;
 }
 
 // Every port method accepts an optional trailing `ctx?: PreviewContext` so
@@ -188,7 +202,7 @@ export interface ContentPort {
 	closer(ctx?: PreviewContext): Promise<CloserContent>;
 	navLinks(ctx?: PreviewContext): Promise<readonly NavLink[]>;
 	menuItems(ctx?: PreviewContext): Promise<readonly MenuItem[]>;
-	errorPage(ctx?: PreviewContext): Promise<ErrorPageContent>;
+	errorPage(statusCode: number, ctx?: PreviewContext): Promise<ErrorPageContent>;
 	/** Full /about page content — distinct from the home-page about teaser. */
 	aboutPage(ctx?: PreviewContext): Promise<AboutContent>;
 	contactPage(ctx?: PreviewContext): Promise<ContactContent>;
