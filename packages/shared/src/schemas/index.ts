@@ -1,7 +1,20 @@
 // @repo/shared schema barrel.
 // Cross-block primitives first, then per-page block schemas.
 
+// Primitives
 export * from './shared';
+
+// Page schemas (relocated from apps/web in slice-18i Task 1.1 Phase B)
 export * from './about-page';
 export * from './contact-page';
 export * from './tech-stack-page';
+
+// Home-page block schemas (added in slice-18i Task 1.1 Phase C)
+export * from './hero';
+export * from './hero-anim';
+export * from './manifesto';
+export * from './proof-reel';
+export * from './services-grid';
+export * from './cta';
+export * from './closer';
+export * from './about-intro';
