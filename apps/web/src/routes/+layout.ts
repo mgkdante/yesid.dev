@@ -4,15 +4,23 @@ import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
 import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
-import { navLinks as staticNavLinks, menuItems as staticMenuItems } from '$lib/content/nav';
-import type { NavLink } from '$lib/content/nav';
+import {
+	navLinks as staticNavLinks,
+	menuItems as staticMenuItems,
+	errorPageContent as staticErrorPageContent,
+} from '$lib/content/nav';
+import type { NavLink, ErrorPageContent } from '$lib/content/nav';
 
-/** Shape of the nav-slot data merged from +layout.server.ts. */
-interface NavSlotData {
+/** Shape of the layout-data slots merged from +layout.server.ts. */
+interface LayoutSlotData {
 	headerLinks: readonly NavLink[];
 	footerLinks: readonly NavLink[];
 	mobileLinks: readonly NavLink[];
 	menuItems: readonly NavLink[];
+	/** CMS-fetched generic error page (status 0 fallback row). Forwarded to
+	 *  +error.svelte via `$page.data.errorPage`. SvelteKit error pages have no
+	 *  companion loader so this must travel through the layout data. */
+	errorPage: ErrorPageContent;
 }
 
 // Universal load (runs both SSR + client). SSR guarantees bots and social
@@ -51,22 +59,26 @@ export const load: LayoutLoad = async ({ route, params, data }) => {
 	const routeId = route.id ?? '/__error';
 	const locale = DEFAULT_LOCALE;
 
-	// Static fallback for nav slots — used when +layout.server.ts data is
+	// Static fallback for layout slots — used when +layout.server.ts data is
 	// unavailable (e.g., during the catch branch or CSR-only renders).
-	const navFallback: NavSlotData = {
+	const slotFallback: LayoutSlotData = {
 		headerLinks: staticNavLinks,
 		footerLinks: staticMenuItems,
 		mobileLinks: [],
 		menuItems: staticMenuItems,
+		errorPage: staticErrorPageContent,
 	};
 
-	// `data` holds the +layout.server.ts output (LayoutServerData).
-	// Awaited concurrently with the SEO fetch.
-	const slots: NavSlotData = {
-		headerLinks: data?.headerLinks ?? navFallback.headerLinks,
-		footerLinks: data?.footerLinks ?? navFallback.footerLinks,
-		mobileLinks: data?.mobileLinks ?? navFallback.mobileLinks,
-		menuItems: data?.menuItems ?? navFallback.menuItems,
+	// `data` holds the +layout.server.ts output (LayoutServerData) — already
+	// resolved by the SvelteKit runtime by the time this universal load
+	// executes. We just forward the slots; the SEO fetch below is the only
+	// awaited work in this universal load.
+	const slots: LayoutSlotData = {
+		headerLinks: data?.headerLinks ?? slotFallback.headerLinks,
+		footerLinks: data?.footerLinks ?? slotFallback.footerLinks,
+		mobileLinks: data?.mobileLinks ?? slotFallback.mobileLinks,
+		menuItems: data?.menuItems ?? slotFallback.menuItems,
+		errorPage: data?.errorPage ?? slotFallback.errorPage,
 	};
 
 	try {
