@@ -2,31 +2,38 @@
 	import { onMount } from 'svelte';
 	import ErrorIllustration from '$lib/components/home/ErrorIllustration.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	// Documented exception (Slice 17b, still partially open post-Slice 15a):
-	// +error.svelte reads `errorPageContent` directly from $lib/content for
-	// visible page content (heading, description, terminal line). SvelteKit's
-	// +error.svelte runs without its own loader, so migrating *content* through
-	// a repository needs an upstream refactor — still deferred.
+	// slice-18i Phase 5 Task 5.4: error page copy is now sourced from
+	// $page.data.errorPage (pre-fetched by +layout.server.ts via
+	// adapter.content.errorPage(0) — status 0 = CMS generic-fallback row).
+	// If layout data is unavailable (e.g., CMS down on initial render),
+	// staticErrorPageContent is used as a synchronous inline fallback so the
+	// page always renders something meaningful.
 	//
-	// Slice 15a DID resolve the SEO half of this exception: the root +layout.ts
-	// catches unknown route ids and falls back to getPageSeo('/__error', locale),
-	// so 404 pages ship noindex,nofollow + "Not Found | yesid." title server-side.
-	// The content read below is just the visible UI.
-	import { errorPageContent } from '$lib/content';
+	// Slice 15a resolved the SEO half: root +layout.ts falls back to
+	// getPageSeo('/__error', locale), so 404s ship noindex,nofollow server-side.
+	import { page } from '$app/stores';
+	import { errorPageContent as staticErrorPageContent } from '$lib/content';
+	import type { ErrorPageContent } from '$lib/content/nav';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel } from '$lib/components/brand';
 
 	const locale = DEFAULT_LOCALE;
-	const label = resolveLocale(errorPageContent.label, locale);
-	const heading = resolveLocale(errorPageContent.heading, locale);
-	const description = resolveLocale(errorPageContent.description, locale);
-	const terminalLine = errorPageContent.terminalLine;
-	const suggestions = errorPageContent.suggestions.map((s) => ({
-		label: resolveLocale(s.label, locale),
-		href: s.href
-	}));
+
+	// Prefer CMS-sourced content from layout data; fall back to static fixture.
+	const errorPage: ErrorPageContent = $derived($page.data?.errorPage ?? staticErrorPageContent);
+
+	const label = $derived(resolveLocale(errorPage.label, locale));
+	const heading = $derived(resolveLocale(errorPage.heading, locale));
+	const description = $derived(resolveLocale(errorPage.description, locale));
+	const terminalLine = $derived(errorPage.terminalLine);
+	const suggestions = $derived(
+		errorPage.suggestions.map((s) => ({
+			label: resolveLocale(s.label, locale),
+			href: s.href,
+		})),
+	);
 
 	let mounted = $state(false);
 
