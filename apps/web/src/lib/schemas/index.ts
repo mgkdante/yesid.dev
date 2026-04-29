@@ -27,7 +27,6 @@ export * from './tech-stack-page';
 export * from './about-page';
 export * from './contact-page';
 export * from './nav';
-export * from './journey';
 export * from './hero-data';
 
 // SEO schemas (Slice 15a). LocalizedStringSchema lives in ./shared now; seo.ts

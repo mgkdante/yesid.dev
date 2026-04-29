@@ -242,37 +242,6 @@ export interface BlogPost {
 	external: boolean;
 }
 
-// Which animation effect highlights a word in the skills journey section.
-// 'scale'      — word grows slightly on reveal
-// 'gradient'   — word gets a brand color gradient sweep
-// 'wave'       — letters wave up sequentially
-// 'charReveal' — characters appear one by one
-export type HighlightEffect = 'scale' | 'gradient' | 'wave' | 'charReveal';
-
-// Icon identifiers for skills. Kept as a string literal union so the renderer
-// can map each id to an SVG asset without coupling this data layer to
-// any specific icon library.
-export type SkillIcon = 'sql' | 'typescript' | 'python' | 'sveltekit' | 'gsap' | 'powerbi' | 'docker';
-
-export interface JourneySkill {
-	id: string;
-	name: string;
-	subtitle?: string;
-	icon: SkillIcon;
-}
-
-// One "stop" in the horizontal skills journey section.
-// highlightWords drives which words inside `text` get the special animation.
-// highlightEffect controls which animation variant is used for this panel.
-export interface JourneyPanel {
-	id: string;
-	label: LocalizedString;
-	text: LocalizedString;
-	highlightWords: string[];
-	highlightEffect: HighlightEffect;
-	skills: JourneySkill[];
-}
-
 // --- About page types ---
 // Full-page bento dashboard for /about. All content is data-driven and
 // cloud-ready: swap placeholder values in about-page.ts for real content
@@ -758,12 +727,6 @@ export interface CloserContent {
 		/** Comment line above the first row. */
 		prompt: LocalizedString;
 	};
-}
-
-/** Home page — Skills journey CTA block (sits under the horizontal skills strip). */
-export interface SkillsJourneyCtaContent {
-	prompt: LocalizedString;
-	button: LocalizedString;
 }
 
 // ---------------------------------------------------------------------------

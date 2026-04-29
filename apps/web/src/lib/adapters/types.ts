@@ -31,7 +31,6 @@ import type {
 	Locale,
 	AboutContent,
 	ContactContent,
-	JourneyPanel,
 	HeroContent,
 	HeroAnimContent,
 	ManifestoContent,
@@ -40,12 +39,11 @@ import type {
 	AboutIntroContent,
 	CtaContent,
 	CloserContent,
-	SkillsJourneyCtaContent,
 	PreviewContext,
 	BlockEditorDoc,
 	MorphShape,
 } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
+import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 import type { PageSeo } from '$lib/schemas/seo';
 import type { TechStackPageContent } from '$lib/schemas/tech-stack-page';
@@ -188,11 +186,8 @@ export interface ContentPort {
 	about(ctx?: PreviewContext): Promise<AboutIntroContent>;
 	cta(ctx?: PreviewContext): Promise<CtaContent>;
 	closer(ctx?: PreviewContext): Promise<CloserContent>;
-	skillsJourneyPanels(ctx?: PreviewContext): Promise<readonly JourneyPanel[]>;
-	skillsJourneyCta(ctx?: PreviewContext): Promise<SkillsJourneyCtaContent>;
 	navLinks(ctx?: PreviewContext): Promise<readonly NavLink[]>;
 	menuItems(ctx?: PreviewContext): Promise<readonly MenuItem[]>;
-	metroBookends(ctx?: PreviewContext): Promise<MetroBookends>;
 	errorPage(ctx?: PreviewContext): Promise<ErrorPageContent>;
 	/** Full /about page content — distinct from the home-page about teaser. */
 	aboutPage(ctx?: PreviewContext): Promise<AboutContent>;

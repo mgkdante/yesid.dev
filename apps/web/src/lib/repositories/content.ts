@@ -4,8 +4,8 @@
 // in Tasks 17b-5 through 17b-7.
 
 import { adapter } from '$lib/adapters';
-import type { AboutContent, ContactContent, JourneyPanel } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem, MetroBookends } from '$lib/content/nav';
+import type { AboutContent, ContactContent } from '$lib/types';
+import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 import type { TechStackPageContent } from '$lib/schemas/tech-stack-page';
 
@@ -41,24 +41,12 @@ export async function getCloserContent() {
 	return adapter.content.closer();
 }
 
-export async function getSkillsJourneyPanels(): Promise<readonly JourneyPanel[]> {
-	return adapter.content.skillsJourneyPanels();
-}
-
-export async function getSkillsJourneyCta() {
-	return adapter.content.skillsJourneyCta();
-}
-
 export async function getNavLinks(): Promise<readonly NavLink[]> {
 	return adapter.content.navLinks();
 }
 
 export async function getMenuItems(): Promise<readonly MenuItem[]> {
 	return adapter.content.menuItems();
-}
-
-export async function getMetroBookends(): Promise<MetroBookends> {
-	return adapter.content.metroBookends();
 }
 
 export async function getErrorPageContent(): Promise<ErrorPageContent> {

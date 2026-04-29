@@ -1,11 +1,11 @@
 // Nav schemas — runtime mirror of nav.ts content types: NavLink, MenuItem,
-// MetroBookends, ErrorPageContent. Each schema matches its TS interface in
+// ErrorPageContent. Each schema matches its TS interface in
 // $lib/content/nav shape-for-shape; per spec D3 no new constraints beyond
 // what TS already encodes.
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import type { NavLink, MenuItem, MetroBookends, ErrorPageContent } from '$lib/content/nav';
+import type { NavLink, MenuItem, ErrorPageContent } from '$lib/content/nav';
 
 // `priority: 1 | 2` — TS numeric literal union preserved via z.union.
 export const NavLinkSchema = z.object({
@@ -18,14 +18,6 @@ export const MenuItemSchema = z.object({
 	label: LocalizedStringSchema,
 	href: z.string(),
 	subtitle: LocalizedStringSchema,
-});
-
-export const MetroBookendsSchema = z.object({
-	departure: LocalizedStringSchema,
-	featured: LocalizedStringSchema,
-	about: LocalizedStringSchema,
-	blog: LocalizedStringSchema,
-	terminal: LocalizedStringSchema,
 });
 
 export const ErrorPageContentSchema = z.object({
@@ -59,14 +51,6 @@ type _MenuItemCheck = z.infer<typeof MenuItemSchema> extends MenuItem
 	: false;
 const _menuItemCheck: _MenuItemCheck = true;
 void _menuItemCheck;
-
-type _MetroBookendsCheck = z.infer<typeof MetroBookendsSchema> extends MetroBookends
-	? MetroBookends extends z.infer<typeof MetroBookendsSchema>
-		? true
-		: false
-	: false;
-const _metroBookendsCheck: _MetroBookendsCheck = true;
-void _metroBookendsCheck;
 
 type _ErrorPageContentCheck = z.infer<typeof ErrorPageContentSchema> extends ErrorPageContent
 	? ErrorPageContent extends z.infer<typeof ErrorPageContentSchema>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { heroContent, manifestoContent, aboutContent, ctaContent, skillsJourneyPanels, skillsJourneyCta, proofReelContent, closerContent } from './site-content.js';
+import { heroContent, manifestoContent, aboutContent, ctaContent, proofReelContent, closerContent } from './site-content.js';
 import { getProjectBySlug } from './projects.js';
 import { getVisibleServices } from './services.js';
 
@@ -140,36 +140,6 @@ describe('ctaContent', () => {
 		expect(ctaContent.subtitle.en.length).toBeGreaterThan(0);
 		expect(ctaContent.ctaContact.en.length).toBeGreaterThan(0);
 		expect(ctaContent.ctaGithub.en.length).toBeGreaterThan(0);
-	});
-});
-
-describe('skillsJourneyPanels', () => {
-	it('has at least 1 panel', () => {
-		expect(skillsJourneyPanels.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it('every panel has a unique id', () => {
-		const ids = skillsJourneyPanels.map((p) => p.id);
-		expect(new Set(ids).size).toBe(ids.length);
-	});
-
-	it('every panel has at least one skill', () => {
-		for (const panel of skillsJourneyPanels) {
-			expect(panel.skills.length).toBeGreaterThanOrEqual(1);
-		}
-	});
-
-	it('every panel has at least one highlight word', () => {
-		for (const panel of skillsJourneyPanels) {
-			expect(panel.highlightWords.length).toBeGreaterThanOrEqual(1);
-		}
-	});
-});
-
-describe('skillsJourneyCta', () => {
-	it('has prompt and button text', () => {
-		expect(skillsJourneyCta.prompt.en).toBeTruthy();
-		expect(skillsJourneyCta.button.en).toBeTruthy();
 	});
 });
 

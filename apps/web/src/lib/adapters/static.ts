@@ -58,10 +58,8 @@ import {
 	BlogAnimationSchema,
 	SiteMetaSchema,
 	TechStackItemSchema,
-	JourneyPanelSchema,
 	NavLinkSchema,
 	MenuItemSchema,
-	MetroBookendsSchema,
 	ErrorPageContentSchema,
 	AboutContentSchema,
 	ContactContentSchema,
@@ -84,10 +82,8 @@ import {
 	aboutContent,
 	ctaContent,
 	closerContent,
-	skillsJourneyPanels,
-	skillsJourneyCta,
 } from '$lib/content/site-content';
-import { navLinks, menuItems, errorPageContent, metroBookends } from '$lib/content/nav';
+import { navLinks, menuItems, errorPageContent } from '$lib/content/nav';
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
@@ -251,14 +247,9 @@ export const staticAdapter: ContentAdapter = {
 		about: async () => aboutContent,
 		cta: async () => ctaContent,
 		closer: async () => closerContent,
-		skillsJourneyCta: async () => skillsJourneyCta,
 		// Schema-validated content ports.
-		skillsJourneyPanels: async () =>
-			parsePort('content.skillsJourneyPanels', z.array(JourneyPanelSchema), skillsJourneyPanels),
 		navLinks: async () => parsePort('content.navLinks', z.array(NavLinkSchema), navLinks),
 		menuItems: async () => parsePort('content.menuItems', z.array(MenuItemSchema), menuItems),
-		metroBookends: async () =>
-			parsePort('content.metroBookends', MetroBookendsSchema, metroBookends),
 		errorPage: async () => parsePort('content.errorPage', ErrorPageContentSchema, errorPageContent),
 		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),

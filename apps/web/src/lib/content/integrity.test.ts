@@ -28,8 +28,7 @@ import { contactContent } from './contact-page.js';
 import * as metaModule from './site-meta.js';
 import * as blogModule from './blog.js';
 import * as techStackModule from './tech-stack.js';
-import { skillsJourneyPanels } from './site-content.js';
-import { navLinks, menuItems, metroBookends, errorPageContent } from './nav.js';
+import { navLinks, menuItems, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from './hero-data.js';
 import { techStackPageContent, getAllTechItems } from './tech-stack.js';
 import {
@@ -44,9 +43,7 @@ import {
 	HeroDataSchema,
 	NavLinkSchema,
 	MenuItemSchema,
-	MetroBookendsSchema,
 	ErrorPageContentSchema,
-	JourneyPanelSchema,
 } from '$lib/schemas';
 
 describe('projects data integrity', () => {
@@ -291,16 +288,8 @@ describe('seed data parses through schemas', () => {
 		expect(() => z.array(MenuItemSchema).parse(menuItems)).not.toThrow();
 	});
 
-	it('metroBookends → MetroBookendsSchema', () => {
-		expect(() => MetroBookendsSchema.parse(metroBookends)).not.toThrow();
-	});
-
 	it('errorPageContent → ErrorPageContentSchema', () => {
 		expect(() => ErrorPageContentSchema.parse(errorPageContent)).not.toThrow();
-	});
-
-	it('skillsJourneyPanels → JourneyPanelSchema[]', () => {
-		expect(() => z.array(JourneyPanelSchema).parse(skillsJourneyPanels)).not.toThrow();
 	});
 });
 
