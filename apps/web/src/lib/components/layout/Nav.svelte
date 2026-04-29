@@ -6,14 +6,23 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { wordmarkHover } from '$lib/motion/actions';
-	import { navLinks, sharedChromeContent } from '$lib/content';
+	import { sharedChromeContent, navLinks as staticNavLinks } from '$lib/content';
 	import { resolveLocale } from '$lib/utils/locale';
 	import MenuOverlay from './MenuOverlay.svelte';
+	import type { NavLink } from '$lib/content/nav';
 
 	const openMenuAria = resolveLocale(sharedChromeContent.openMenuAria, 'en');
 	const closeMenuAria = resolveLocale(sharedChromeContent.closeMenuAria, 'en');
 
-	let { pathname = '/' }: { pathname?: string } = $props();
+	let {
+		pathname = '/',
+		headerLinks = staticNavLinks as readonly NavLink[],
+		menuItems = [] as readonly NavLink[],
+	}: {
+		pathname?: string;
+		headerLinks?: readonly NavLink[];
+		menuItems?: readonly NavLink[];
+	} = $props();
 
 	let menuOpen = $state(false);
 	// True while overlay is visible (including during close animation).
@@ -92,7 +101,7 @@
 		<span class="nav-divider nav-collapsible {overlayActive ? 'nav-collapsed' : ''}" aria-hidden="true"></span>
 
 		<div class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
-			{#each navLinks as link}
+			{#each headerLinks as link}
 				<span class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}>
 					<a
 						href={link.href}
@@ -124,7 +133,7 @@
 
 </nav>
 
-<MenuOverlay open={menuOpen} {pathname} onclose={handleOverlayClose} onanimationdone={handleOverlayDone} />
+<MenuOverlay open={menuOpen} {pathname} {menuItems} onclose={handleOverlayClose} onanimationdone={handleOverlayDone} />
 
 <style>
 	.nav-root {
