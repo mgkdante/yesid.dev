@@ -1,0 +1,55 @@
+{
+  "collection": "nav_links",
+  "field": "icon",
+  "type": "string",
+  "meta": {
+    "collection": "nav_links",
+    "conditions": null,
+    "display": "related-values",
+    "display_options": {
+      "template": "{{name}} ({{iconify_id}})"
+    },
+    "field": "icon",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown-m2o",
+    "note": "Optional icon from the icons collection. Only used for icon-decorated nav links (e.g. social links in footer or mobile nav).",
+    "options": {
+      "template": "{{name}}"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 5,
+    "special": [
+      "m2o"
+    ],
+    "translations": [
+      {
+        "language": "en-US",
+        "translation": "Icon"
+      }
+    ],
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "icon",
+    "table": "nav_links",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": "icons",
+    "foreign_key_column": "id"
+  }
+}

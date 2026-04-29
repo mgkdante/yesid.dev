@@ -26,8 +26,9 @@
 	} from '$lib/motion/utils/gsap.js';
 	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
-	import { heroAnimContent, heroContent, INITIAL_HERO_DATA, generateHeroData } from '$lib/content';
+	import { generateHeroData } from '$lib/content';
 	import type { HeroData } from '$lib/content';
+	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import MetroNetwork from '$lib/motion/svg/MetroNetwork.svelte';
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
@@ -35,11 +36,16 @@
 	import HeroMobileSql from './HeroMobileSql.svelte';
 	import { Button } from '$lib/components/ui/button';
 
-	// Slice 18d Phase 8: metroSvg threaded in from +page.server.ts → HomePage.
+	// slice-18i Phase 7C: all hero content now flows as props from +page.server.ts
+	// → +page.svelte → HomePage → HeroBanner. No static imports for page content.
 	interface Props {
 		metroSvg: string;
+		hero: HeroContent;
+		heroAnim: HeroAnimContent;
+		heroMock: HeroData;
+		initialHeroData: HeroData;
 	}
-	let { metroSvg }: Props = $props();
+	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, heroMock: _heroMock, initialHeroData: INITIAL_HERO_DATA }: Props = $props();
 
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;

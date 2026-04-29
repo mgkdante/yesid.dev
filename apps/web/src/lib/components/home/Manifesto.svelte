@@ -5,8 +5,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { manifestoContent } from '$lib/content/site-content';
 	import { resolveLocale } from '$lib/utils/locale';
+	import type { ManifestoContent } from '$lib/types';
+
+	// slice-18i Phase 7C: manifestoContent now flows as a prop from the server load.
+	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
 	import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';

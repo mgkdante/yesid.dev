@@ -9,8 +9,12 @@
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
 
-	import { closerContent, getLatestPosts } from '$lib/content';
+	import { getLatestPosts } from '$lib/content';
 	import { siteMeta } from '$lib/content/site-meta';
+	import type { CloserContent } from '$lib/types';
+
+	// slice-18i Phase 7C: closerContent now flows as a prop from the server load.
+	let { closer: closerContent }: { closer: CloserContent } = $props();
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import CloserGraffiti from './CloserGraffiti.svelte';

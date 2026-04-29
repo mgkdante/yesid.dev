@@ -1,0 +1,28 @@
+{
+  "collection": "block_tech_stack_page_content_translations",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_tech_stack_page_content_translations",
+    "color": null,
+    "display_template": null,
+    "group": null,
+    "hidden": true,
+    "icon": "translate",
+    "item_duplication_fields": null,
+    "note": "Translated copy for block_tech_stack_page_content. 4 JSON columns (hero, actions, cta, meta).",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": null,
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "block_tech_stack_page_content_translations"
+  }
+}

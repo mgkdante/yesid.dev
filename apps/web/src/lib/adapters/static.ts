@@ -58,16 +58,20 @@ import {
 	BlogAnimationSchema,
 	SiteMetaSchema,
 	TechStackItemSchema,
-	JourneyPanelSchema,
 	NavLinkSchema,
 	MenuItemSchema,
-	MetroBookendsSchema,
 	ErrorPageContentSchema,
 	AboutContentSchema,
 	ContactContentSchema,
 	TechStackPageContentSchema,
 	HeroDataSchema,
 } from '$lib/schemas';
+import {
+	BlogPageContentSchema,
+	ProjectsPageContentSchema,
+	type BlogPageContent,
+	type ProjectsPageContent,
+} from '@repo/shared/schemas';
 import type { Locale } from '$lib/types';
 import {
 	getAllTechItems,
@@ -84,10 +88,8 @@ import {
 	aboutContent,
 	ctaContent,
 	closerContent,
-	skillsJourneyPanels,
-	skillsJourneyCta,
 } from '$lib/content/site-content';
-import { navLinks, menuItems, errorPageContent, metroBookends } from '$lib/content/nav';
+import { navLinks, menuItems, errorPageContent } from '$lib/content/nav';
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
@@ -251,19 +253,28 @@ export const staticAdapter: ContentAdapter = {
 		about: async () => aboutContent,
 		cta: async () => ctaContent,
 		closer: async () => closerContent,
-		skillsJourneyCta: async () => skillsJourneyCta,
 		// Schema-validated content ports.
-		skillsJourneyPanels: async () =>
-			parsePort('content.skillsJourneyPanels', z.array(JourneyPanelSchema), skillsJourneyPanels),
 		navLinks: async () => parsePort('content.navLinks', z.array(NavLinkSchema), navLinks),
 		menuItems: async () => parsePort('content.menuItems', z.array(MenuItemSchema), menuItems),
-		metroBookends: async () =>
-			parsePort('content.metroBookends', MetroBookendsSchema, metroBookends),
-		errorPage: async () => parsePort('content.errorPage', ErrorPageContentSchema, errorPageContent),
+		// statusCode accepted for ContentPort parity with the Directus adapter
+		// (Task 5.3 signature change). Static fallback always returns the same
+		// hardcoded content regardless of status code — it is the revert recipe.
+		errorPage: async (_statusCode?: number) =>
+			parsePort('content.errorPage', ErrorPageContentSchema, errorPageContent),
 		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
 		techStackPage: async () =>
 			parsePort('content.techStackPage', TechStackPageContentSchema, techStackPageContent),
+		// Phase 7 fallback stubs — minimal LocalizedString-only shapes matching the
+		// block_blog_page_content / block_projects_page_content Zod stubs.
+		blogPage: async (): Promise<BlogPageContent> =>
+			parsePort('content.blogPage', BlogPageContentSchema, {
+				intro: { en: 'Professional dispatches from the field.' },
+			}),
+		projectsPage: async (): Promise<ProjectsPageContent> =>
+			parsePort('content.projectsPage', ProjectsPageContentSchema, {
+				intro: { en: 'Selected work.' },
+			}),
 		heroMock: async () => parsePort('content.heroMock', HeroDataSchema, generateHeroData()),
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
@@ -278,6 +289,22 @@ export const staticAdapter: ContentAdapter = {
 				viewbox: '0 0 48 48',
 				sort: idx + 1,
 			}));
+		},
+	},
+
+	// Static nav port — reads from the static nav.ts constants, filtered by
+	// placement. Preserves the per-method revert recipe per spec §3.6.
+	nav: {
+		async byPlacement(placement) {
+			if (placement === 'header') {
+				return parsePort('nav.byPlacement', z.array(NavLinkSchema), navLinks);
+			}
+			if (placement === 'menu') {
+				return parsePort('nav.byPlacement', z.array(NavLinkSchema), menuItems);
+			}
+			// footer and mobile placements have no static fallback data —
+			// return an empty array so consumers degrade gracefully.
+			return [];
 		},
 	},
 };

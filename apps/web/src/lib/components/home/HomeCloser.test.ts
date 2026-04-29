@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HomeCloser from './HomeCloser.svelte';
+// slice-18i Phase 7C: HomeCloser now requires closer prop.
+import { closerContent } from '$lib/content/site-content';
 
 // Mock fetch to prevent happy-dom from making real HTTP requests during onMount
 const originalFetch = globalThis.fetch;
@@ -13,12 +15,12 @@ afterEach(() => {
 
 describe('HomeCloser', () => {
 	it('renders the section with correct testid', () => {
-		render(HomeCloser);
+		render(HomeCloser, { props: { closer: closerContent } });
 		expect(screen.getByTestId('closer-section')).toBeInTheDocument();
 	});
 
 	it('renders the departure board with 5 rows', () => {
-		render(HomeCloser);
+		render(HomeCloser, { props: { closer: closerContent } });
 		const board = screen.getByTestId('closer-board');
 		expect(board).toBeInTheDocument();
 		const rows = screen.getAllByTestId('closer-row');
@@ -26,7 +28,7 @@ describe('HomeCloser', () => {
 	});
 
 	it('renders CONTACT row linking to /contact', () => {
-		render(HomeCloser);
+		render(HomeCloser, { props: { closer: closerContent } });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows[0].getAttribute('href')).toBe('/contact');
 		expect(rows[0].textContent).toContain('CONTACT');
@@ -34,14 +36,14 @@ describe('HomeCloser', () => {
 	});
 
 	it('renders EXPLORE row linking to GitHub', () => {
-		render(HomeCloser);
+		render(HomeCloser, { props: { closer: closerContent } });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows[1].getAttribute('href')).toContain('github.com');
 		expect(rows[1].textContent).toContain('EXPLORE');
 	});
 
 	it('renders 2 READ rows with dynamic blog titles', () => {
-		render(HomeCloser);
+		render(HomeCloser, { props: { closer: closerContent } });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows[2].textContent).toContain('READ');
 		expect(rows[3].textContent).toContain('READ');
@@ -51,7 +53,7 @@ describe('HomeCloser', () => {
 	});
 
 	it('renders ABOUT row linking to /about', () => {
-		render(HomeCloser);
+		render(HomeCloser, { props: { closer: closerContent } });
 		const rows = screen.getAllByTestId('closer-row');
 		expect(rows[4].getAttribute('href')).toBe('/about');
 		expect(rows[4].textContent).toContain('ABOUT');
@@ -59,7 +61,7 @@ describe('HomeCloser', () => {
 	});
 
 	it('renders CTA linking to /contact', () => {
-		render(HomeCloser);
+		render(HomeCloser, { props: { closer: closerContent } });
 		const cta = screen.getByTestId('closer-cta');
 		expect(cta).toBeInTheDocument();
 		expect(cta.getAttribute('href')).toBe('/contact');
@@ -67,7 +69,7 @@ describe('HomeCloser', () => {
 	});
 
 	it('renders graffiti wrapper for dynamic SVG load', () => {
-		render(HomeCloser);
+		render(HomeCloser, { props: { closer: closerContent } });
 		const graffiti = screen.getByTestId('closer-graffiti');
 		expect(graffiti).toBeInTheDocument();
 		// SVG is loaded dynamically via fetch in onMount — not present in unit tests

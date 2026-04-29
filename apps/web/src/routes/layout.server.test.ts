@@ -1,0 +1,255 @@
+// layout.server.test.ts — Unit tests for the layout server load function.
+//
+// slice-18i Phase 6 review fix-up (High 4)
+//
+// +layout.server.ts is a pure data function with no DOM or SvelteKit SSR
+// runtime dependency — it calls adapter methods and returns a plain object.
+// The adapter is mocked via vi.mock('$lib/adapters') so no network calls
+// are issued.
+//
+// The `load` function is called without arguments (it uses no event fields —
+// only the adapter which is injected at module level). Return type is cast
+// to the known shape for clean assertion ergonomics.
+//
+// Coverage targets:
+//   - Happy path: all 4 nav slots + errorPage resolve → return shape correct
+//   - Partial nav failure: one slot throws → that slot falls back to static
+//   - errorPage failure: adapter.content.errorPage throws → falls back to static
+//   - All-slots failure: every adapter call throws → all slots use static fixtures
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import {
+	navLinks as staticNavLinks,
+	menuItems as staticMenuItems,
+	errorPageContent as staticErrorPageContent,
+} from '$lib/content/nav';
+import type { NavLink, ErrorPageContent } from '$lib/content/nav';
+
+// ---------------------------------------------------------------------------
+// Shared mock capture surface
+// ---------------------------------------------------------------------------
+
+const mockByPlacement = vi.fn();
+const mockErrorPage = vi.fn();
+
+// Mock '$lib/adapters' before importing the subject.
+// Vitest hoists vi.mock() calls, so this is safe even though the import
+// of the subject appears below.
+vi.mock('$lib/adapters', () => ({
+	adapter: {
+		nav: {
+			byPlacement: (...args: unknown[]) => mockByPlacement(...args),
+		},
+		content: {
+			errorPage: (...args: unknown[]) => mockErrorPage(...args),
+		},
+	},
+}));
+
+// Import subject AFTER mock is registered
+import { load } from './+layout.server';
+
+// ---------------------------------------------------------------------------
+// Type alias for the load return shape (avoids fighting SvelteKit's generated
+// void-union wrapper; the actual runtime value is always the plain object)
+// ---------------------------------------------------------------------------
+type LayoutData = {
+	headerLinks: readonly NavLink[];
+	footerLinks: readonly NavLink[];
+	mobileLinks: readonly NavLink[];
+	menuItems: readonly NavLink[];
+	errorPage: ErrorPageContent;
+};
+
+async function callLoad(): Promise<LayoutData> {
+	// load() takes no effective arguments (the function body never uses the event).
+	// Cast through unknown to avoid SvelteKit's generated void-union return type.
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (await (load as unknown as () => Promise<LayoutData>)()) as LayoutData;
+}
+
+// ---------------------------------------------------------------------------
+// Fixtures
+// ---------------------------------------------------------------------------
+
+const fakeHeaderLinks: readonly NavLink[] = [
+	{ label: { en: 'Services' }, href: '/services', priority: 1 },
+];
+const fakeFooterLinks: readonly NavLink[] = [
+	{ label: { en: 'About' }, href: '/about', priority: 1 },
+];
+const fakeMobileLinks: readonly NavLink[] = [
+	{ label: { en: 'Blog' }, href: '/blog', priority: 1 },
+];
+const fakeMenuItems: readonly NavLink[] = [
+	{ label: { en: 'Contact' }, href: '/contact', priority: 1 },
+];
+const fakeErrorPage: ErrorPageContent = {
+	label: { en: 'NOT FOUND' },
+	heading: { en: 'Page not found' },
+	description: { en: 'Try another route' },
+	terminalLine: '$ route --status 404',
+	suggestions: [],
+};
+
+// ---------------------------------------------------------------------------
+// Setup
+// ---------------------------------------------------------------------------
+
+beforeEach(() => {
+	mockByPlacement.mockReset();
+	mockErrorPage.mockReset();
+});
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+describe('+layout.server load', () => {
+	describe('happy path — all fetches resolve', () => {
+		it('returns all 4 nav slots and errorPage from adapter', async () => {
+			mockByPlacement.mockImplementation(async (placement: string) => {
+				if (placement === 'header') return fakeHeaderLinks;
+				if (placement === 'footer') return fakeFooterLinks;
+				if (placement === 'mobile') return fakeMobileLinks;
+				if (placement === 'menu') return fakeMenuItems;
+				return [];
+			});
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+
+			const result = await callLoad();
+
+			expect(result.headerLinks).toEqual(fakeHeaderLinks);
+			expect(result.footerLinks).toEqual(fakeFooterLinks);
+			expect(result.mobileLinks).toEqual(fakeMobileLinks);
+			expect(result.menuItems).toEqual(fakeMenuItems);
+			expect(result.errorPage).toEqual(fakeErrorPage);
+		});
+
+		it('errorPage is fetched with status code 0', async () => {
+			mockByPlacement.mockResolvedValue([]);
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+
+			await callLoad();
+
+			expect(mockErrorPage).toHaveBeenCalledWith(0);
+		});
+
+		it('all 4 placements are fetched via adapter.nav.byPlacement', async () => {
+			mockByPlacement.mockResolvedValue([]);
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+
+			await callLoad();
+
+			const placements = (mockByPlacement.mock.calls as [string][]).map(([p]) => p);
+			expect(placements).toContain('header');
+			expect(placements).toContain('footer');
+			expect(placements).toContain('mobile');
+			expect(placements).toContain('menu');
+		});
+	});
+
+	describe('partial nav failure — header throws', () => {
+		it('header slot falls back to staticNavLinks; other slots resolve normally', async () => {
+			mockByPlacement.mockImplementation(async (placement: string) => {
+				if (placement === 'header') throw new Error('CMS unreachable');
+				if (placement === 'footer') return fakeFooterLinks;
+				if (placement === 'mobile') return fakeMobileLinks;
+				if (placement === 'menu') return fakeMenuItems;
+				return [];
+			});
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+
+			const result = await callLoad();
+
+			// Header failed → falls back to static
+			expect(result.headerLinks).toEqual(staticNavLinks);
+			// Other slots resolved normally
+			expect(result.footerLinks).toEqual(fakeFooterLinks);
+			expect(result.mobileLinks).toEqual(fakeMobileLinks);
+			expect(result.menuItems).toEqual(fakeMenuItems);
+		});
+
+		it('footer slot failure returns empty array (no static fallback for footer)', async () => {
+			mockByPlacement.mockImplementation(async (placement: string) => {
+				if (placement === 'footer') throw new Error('CMS unreachable');
+				if (placement === 'header') return fakeHeaderLinks;
+				if (placement === 'mobile') return fakeMobileLinks;
+				if (placement === 'menu') return fakeMenuItems;
+				return [];
+			});
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+
+			const result = await callLoad();
+
+			// Footer has no static fallback — defaults to []
+			expect(result.footerLinks).toEqual([]);
+			// Header resolved normally
+			expect(result.headerLinks).toEqual(fakeHeaderLinks);
+		});
+
+		it('menu slot failure falls back to staticMenuItems', async () => {
+			mockByPlacement.mockImplementation(async (placement: string) => {
+				if (placement === 'menu') throw new Error('CMS unreachable');
+				return [];
+			});
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+
+			const result = await callLoad();
+
+			// Menu has staticMenuItems as fallback
+			expect(result.menuItems).toEqual(staticMenuItems);
+		});
+	});
+
+	describe('errorPage failure', () => {
+		it('falls back to staticErrorPageContent when adapter.content.errorPage throws', async () => {
+			mockByPlacement.mockResolvedValue([]);
+			mockErrorPage.mockRejectedValueOnce(new Error('CMS unreachable'));
+
+			const result = await callLoad();
+
+			expect(result.errorPage).toEqual(staticErrorPageContent);
+		});
+
+		it('nav slots still resolve when only errorPage throws', async () => {
+			mockByPlacement.mockImplementation(async (placement: string) => {
+				if (placement === 'header') return fakeHeaderLinks;
+				return [];
+			});
+			mockErrorPage.mockRejectedValueOnce(new Error('CMS unreachable'));
+
+			const result = await callLoad();
+
+			expect(result.headerLinks).toEqual(fakeHeaderLinks);
+			expect(result.errorPage).toEqual(staticErrorPageContent);
+		});
+	});
+
+	describe('all-slots failure', () => {
+		it('all nav slots fall back to static fixtures when every adapter call throws', async () => {
+			mockByPlacement.mockRejectedValue(new Error('Complete CMS outage'));
+			mockErrorPage.mockRejectedValueOnce(new Error('Complete CMS outage'));
+
+			const result = await callLoad();
+
+			// Each slot has its defined fallback
+			expect(result.headerLinks).toEqual(staticNavLinks);
+			expect(result.footerLinks).toEqual([]);   // footer fallback is []
+			expect(result.mobileLinks).toEqual([]);   // mobile fallback is []
+			expect(result.menuItems).toEqual(staticMenuItems);
+			expect(result.errorPage).toEqual(staticErrorPageContent);
+		});
+
+		it('returns a complete object shape — all 5 keys present', async () => {
+			mockByPlacement.mockRejectedValue(new Error('All down'));
+			mockErrorPage.mockRejectedValueOnce(new Error('All down'));
+
+			const result = await callLoad();
+
+			expect(Object.keys(result).sort()).toEqual(
+				['errorPage', 'footerLinks', 'headerLinks', 'menuItems', 'mobileLinks'].sort(),
+			);
+		});
+	});
+});

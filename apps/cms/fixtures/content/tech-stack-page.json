@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "title": { "en": "Tech Stack — yesid." },
+    "description": { "en": "{itemCount}+ technologies — an interactive map of how digital infrastructure gets built." }
+  },
+  "hero": {
+    "overline": { "en": "Infrastructure Map" },
+    "titleLine1": { "en": "The Control" },
+    "titleLine2": { "en": "Room" },
+    "terminalAria": { "en": "Infrastructure overview" },
+    "stats": {
+      "technologies": { "en": "technologies" }
+    }
+  },
+  "actions": {
+    "getInTouch": { "en": "Get In Touch" },
+    "viewServices": { "en": "View Services" }
+  },
+  "cta": {
+    "headingLine1": { "en": "Found your stack" },
+    "headingLine2": { "en": "Let's build it" },
+    "sub": { "en": "Whether it's a data pipeline, a web app, or a mobile product — the infrastructure is ready." },
+    "availability": { "en": "Available for Q2 2026" }
+  }
+}

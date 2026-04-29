@@ -6,19 +6,22 @@
 <script lang="ts">
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-	import { menuItems, sharedChromeContent } from '$lib/content';
+	import { menuItems as staticMenuItems, sharedChromeContent } from '$lib/content';
 	import { resolveLocale } from '$lib/utils/locale';
+	import type { NavLink } from '$lib/content/nav';
 
 	const dialogTitle = resolveLocale(sharedChromeContent.menuOverlayAria, 'en');
 	const footerLabel = resolveLocale(sharedChromeContent.menuOverlayFooterLabel, 'en');
 	let {
 		open = false,
 		pathname = '/',
+		menuItems = staticMenuItems as readonly NavLink[],
 		onclose,
 		onanimationdone
 	}: {
 		open: boolean;
 		pathname: string;
+		menuItems?: readonly NavLink[];
 		onclose?: () => void;
 		onanimationdone?: () => void;
 	} = $props();
@@ -130,7 +133,7 @@
 							<!-- Text -->
 							<span class="menu-text">
 								<span class="menu-label">{item.label.en}</span>
-								<span class="menu-subtitle">{item.subtitle.en}</span>
+								<span class="menu-subtitle">{item.subtitle?.en ?? ''}</span>
 							</span>
 						</a>
 					{/each}

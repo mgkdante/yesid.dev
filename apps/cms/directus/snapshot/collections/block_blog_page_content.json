@@ -1,0 +1,28 @@
+{
+  "collection": "block_blog_page_content",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_blog_page_content",
+    "color": null,
+    "display_template": "{{editor_label}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "article",
+    "item_duplication_fields": null,
+    "note": "Blog page chrome block (/blog). Minimal stub \u2014 only intro field per BlogPageContentSchema. Expand when content design lands.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "block_blog_page_content"
+  }
+}

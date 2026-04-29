@@ -229,8 +229,8 @@ describe('ContentAdapter contract', () => {
 			expect(result).toHaveProperty('queryTime');
 		});
 
-		it('errorPage() returns ErrorPageContent shape', async () => {
-			const result = await adapter.content.errorPage();
+		it('errorPage(404) returns ErrorPageContent shape', async () => {
+			const result = await adapter.content.errorPage(404);
 			expect(result).toBeDefined();
 		});
 

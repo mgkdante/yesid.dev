@@ -1,0 +1,28 @@
+{
+  "collection": "block_services_grid",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_services_grid",
+    "color": null,
+    "display_template": "{{editor_label}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "grid_view",
+    "item_duplication_fields": null,
+    "note": "Services Grid block \u2014 section 3 of /. All fields are LocalizedStrings \u2192 string columns in translations. No M2M to services collection (not needed for 18i scope).",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "block_services_grid"
+  }
+}

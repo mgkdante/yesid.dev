@@ -1,0 +1,28 @@
+{
+  "collection": "pages",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "pages",
+    "color": null,
+    "display_template": "{{slug}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "web",
+    "item_duplication_fields": null,
+    "note": "Page parent collection — one row per route. M2A 'blocks' wires to 12 block_* collections. Spec §2.2.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "pages"
+  }
+}

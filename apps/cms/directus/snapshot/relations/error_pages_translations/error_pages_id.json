@@ -1,0 +1,25 @@
+{
+  "collection": "error_pages_translations",
+  "field": "error_pages_id",
+  "related_collection": "error_pages",
+  "meta": {
+    "junction_field": "languages_code",
+    "many_collection": "error_pages_translations",
+    "many_field": "error_pages_id",
+    "one_allowed_collections": null,
+    "one_collection": "error_pages",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": "translations",
+    "sort_field": null
+  },
+  "schema": {
+    "table": "error_pages_translations",
+    "column": "error_pages_id",
+    "foreign_key_table": "error_pages",
+    "foreign_key_column": "id",
+    "constraint_name": "error_pages_translations_error_pages_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

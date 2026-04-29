@@ -1,0 +1,25 @@
+{
+  "collection": "block_manifesto_translations",
+  "field": "block_manifesto_id",
+  "related_collection": "block_manifesto",
+  "meta": {
+    "junction_field": "languages_code",
+    "many_collection": "block_manifesto_translations",
+    "many_field": "block_manifesto_id",
+    "one_allowed_collections": null,
+    "one_collection": "block_manifesto",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": "translations",
+    "sort_field": null
+  },
+  "schema": {
+    "table": "block_manifesto_translations",
+    "column": "block_manifesto_id",
+    "foreign_key_table": "block_manifesto",
+    "foreign_key_column": "id",
+    "constraint_name": "block_manifesto_translations_block_manifesto_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

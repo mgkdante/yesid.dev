@@ -1,0 +1,49 @@
+{
+  "collection": "nav_links",
+  "field": "priority",
+  "type": "integer",
+  "meta": {
+    "collection": "nav_links",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "priority",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown",
+    "note": "Display order within a placement slot. 1 = always visible, 2 = hidden on narrow viewports. Matches NavLinkSchema's z.union([z.literal(1), z.literal(2)]) so parsePort accepts Directus payloads without coercion.",
+    "options": {
+      "choices": [
+        { "text": "1 — always visible", "value": 1 },
+        { "text": "2 — hidden on narrow viewports", "value": 2 }
+      ]
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 4,
+    "special": null,
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "priority",
+    "table": "nav_links",
+    "data_type": "integer",
+    "default_value": 1,
+    "max_length": null,
+    "numeric_precision": 32,
+    "numeric_scale": 0,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "collection": "pages",
+  "field": "blocks",
+  "type": "alias",
+  "meta": {
+    "collection": "pages",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "blocks",
+    "group": null,
+    "hidden": false,
+    "interface": "list-m2a",
+    "note": "M2A — page blocks. Sort order is on pages_blocks junction. Block collections land in Tasks 1.3–1.4; allowed_collections wired on push.",
+    "options": {
+      "enableSelect": true,
+      "enableCreate": true
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": false,
+    "sort": 5,
+    "special": [
+      "m2a"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

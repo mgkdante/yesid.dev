@@ -1,0 +1,28 @@
+{
+  "collection": "block_hero",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_hero",
+    "color": null,
+    "display_template": "{{editor_label}} ({{status}})",
+    "group": null,
+    "hidden": false,
+    "icon": "home",
+    "item_duplication_fields": null,
+    "note": "Hero block — text-only top section of /. Translatable fields live in block_hero_translations (4 string + 4 JSON columns). No image or mock_data fields — hero is text-only; heroMock is runtime-computed.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "block_hero"
+  }
+}

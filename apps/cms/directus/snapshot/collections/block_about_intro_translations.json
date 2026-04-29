@@ -1,0 +1,28 @@
+{
+  "collection": "block_about_intro_translations",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_about_intro_translations",
+    "color": null,
+    "display_template": null,
+    "group": null,
+    "hidden": true,
+    "icon": "translate",
+    "item_duplication_fields": null,
+    "note": "Translated copy for block_about_intro. 7 string columns (name, title, bio, more_link, stack_label, location_label, interests_label) + 2 JSON columns (location, interests).",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": null,
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "block_about_intro_translations"
+  }
+}

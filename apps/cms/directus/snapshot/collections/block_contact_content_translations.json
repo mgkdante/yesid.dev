@@ -1,0 +1,28 @@
+{
+  "collection": "block_contact_content_translations",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "block_contact_content_translations",
+    "color": null,
+    "display_template": null,
+    "group": null,
+    "hidden": true,
+    "icon": "translate",
+    "item_duplication_fields": null,
+    "note": "Translated copy for block_contact_content. 3 string columns (page_title, station_label, send_error_message) + 4 JSON columns (info_terminal, form_terminal, validation, success, socials_json) + meta JSON.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": null,
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "block_contact_content_translations"
+  }
+}
