@@ -60,7 +60,7 @@
  *   bun run apps/cms/scripts/seed-pages-and-blocks.ts -- --reset   (post-merge only)
  */
 
-import { createItem, deleteItems, readItems } from '@directus/sdk';
+import { createItem, deleteItem, readItems } from '@directus/sdk';
 import { z } from 'zod';
 import {
 	HeroContentSchema,
@@ -277,8 +277,18 @@ export function toBlockHeroTranslationRows(
 
 // --- block_manifesto + translations -----------------------------------------
 
-export function toBlockManifestoRow(sort = 2): DirectusBlockParentRow {
-	return { editor_label: 'Home Manifesto', status: 'published', sort };
+export function toBlockManifestoRow(
+	raw: typeof siteContentFixture,
+	sort = 2,
+): DirectusBlockParentRow {
+	return {
+		editor_label: 'Home Manifesto',
+		status: 'published',
+		sort,
+		// Non-translatable JSON column on the parent: ManifestoContent.ticks is
+		// readonly string[] (transit ticks), no LocalizedString leaves.
+		ticks: raw.manifestoContent.ticks,
+	};
 }
 
 export function toBlockManifestoTranslationRows(
@@ -336,8 +346,22 @@ export function toBlockManifestoTranslationRows(
 
 // --- block_proof_reel + translations ----------------------------------------
 
-export function toBlockProofReelRow(sort = 3): DirectusBlockParentRow {
-	return { editor_label: 'Home Proof Reel', status: 'published', sort };
+export function toBlockProofReelRow(
+	raw: typeof siteContentFixture,
+	sort = 3,
+): DirectusBlockParentRow {
+	return {
+		editor_label: 'Home Proof Reel',
+		status: 'published',
+		sort,
+		// Non-translatable JSON columns on the parent. ProofReelContent.slugs is
+		// readonly string[] (project slugs to render); .images is
+		// Readonly<Record<slug, string>> (slug → image URL). Neither has
+		// LocalizedString leaves.
+		view_all_href: raw.proofReelContent.viewAllHref,
+		slugs: raw.proofReelContent.slugs,
+		images: raw.proofReelContent.images,
+	};
 }
 
 export function toBlockProofReelTranslationRows(
@@ -584,8 +608,19 @@ export function toBlockAboutContentTranslationRows(
 
 // --- block_contact_content + translations -----------------------------------
 
-export function toBlockContactContentRow(sort = 1): DirectusBlockParentRow {
-	return { editor_label: 'Contact Content', status: 'published', sort };
+export function toBlockContactContentRow(
+	raw: typeof contactPageFixture,
+	sort = 1,
+): DirectusBlockParentRow {
+	return {
+		editor_label: 'Contact Content',
+		status: 'published',
+		sort,
+		// Non-translatable parent column: web3formsKey is a public client-safe
+		// form-submission key (not a server secret), used by the contact form
+		// on the client side.
+		web3forms_key: raw.web3formsKey,
+	};
 }
 
 export function toBlockContactContentTranslationRows(
@@ -961,14 +996,14 @@ export async function seedPagesAndBlocks(opts: SeedRunOptions): Promise<void> {
 	// Block rows: hero through blog
 	const blockDefs = [
 		{ name: 'block_hero',                   row: toBlockHeroRow(),                    translations: toBlockHeroTranslationRows(siteContentFixture) },
-		{ name: 'block_manifesto',              row: toBlockManifestoRow(),               translations: toBlockManifestoTranslationRows(siteContentFixture) },
-		{ name: 'block_proof_reel',             row: toBlockProofReelRow(),               translations: toBlockProofReelTranslationRows(siteContentFixture) },
+		{ name: 'block_manifesto',              row: toBlockManifestoRow(siteContentFixture),  translations: toBlockManifestoTranslationRows(siteContentFixture) },
+		{ name: 'block_proof_reel',             row: toBlockProofReelRow(siteContentFixture),  translations: toBlockProofReelTranslationRows(siteContentFixture) },
 		{ name: 'block_services_grid',          row: toBlockServicesGridRow(),            translations: toBlockServicesGridTranslationRows(siteContentFixture) },
 		{ name: 'block_about_intro',            row: toBlockAboutIntroRow(),              translations: toBlockAboutIntroTranslationRows(siteContentFixture) },
 		{ name: 'block_cta',                    row: toBlockCtaRow(),                     translations: toBlockCtaTranslationRows(siteContentFixture) },
 		{ name: 'block_closer',                 row: toBlockCloserRow(),                  translations: toBlockCloserTranslationRows(siteContentFixture) },
 		{ name: 'block_about_content',          row: toBlockAboutContentRow(aboutPageFixture), translations: toBlockAboutContentTranslationRows(aboutPageFixture) },
-		{ name: 'block_contact_content',        row: toBlockContactContentRow(),          translations: toBlockContactContentTranslationRows(contactPageFixture) },
+		{ name: 'block_contact_content',        row: toBlockContactContentRow(contactPageFixture),  translations: toBlockContactContentTranslationRows(contactPageFixture) },
 		{ name: 'block_tech_stack_page_content',row: toBlockTechStackPageContentRow(),    translations: toBlockTechStackPageContentTranslationRows(techStackPageFixture) },
 		{ name: 'block_projects_page_content',  row: toBlockProjectsPageContentRow(),     translations: toBlockProjectsPageContentTranslationRows() },
 		{ name: 'block_blog_page_content',      row: toBlockBlogPageContentRow(),         translations: toBlockBlogPageContentTranslationRows() },
@@ -1030,39 +1065,63 @@ export async function seedPagesAndBlocks(opts: SeedRunOptions): Promise<void> {
 	if (opts.reset) {
 		log.info('--reset: clearing target collections...');
 
-		// Delete pages (FK CASCADE will clear pages_blocks when junction exists)
-		const existingPages = await client.request(readItems('pages', { fields: ['slug'], limit: -1 }));
+		// Delete pages (FK CASCADE will clear pages_blocks when junction exists).
+		// Pattern mirrors seed-tech-stack.ts / seed-services.ts: read IDs, then
+		// loop deleteItem(col, id) — Directus SDK v20's deleteItems requires an
+		// explicit array of primary keys, not a query object.
+		const existingPages = await client.request(
+			readItems('pages', { fields: ['id'], limit: -1 }),
+		);
 		if (existingPages.length > 0) {
 			log.info(`  clearing ${existingPages.length} pages rows...`);
-			try {
-				await client.request(deleteItems('pages', { limit: -1 }));
-			} catch (err) {
-				throw new DirectusError(500, `Failed to delete pages: ${parseErrors(err).join(' · ')}`);
+			for (const p of existingPages) {
+				try {
+					await client.request(deleteItem('pages', p.id));
+				} catch (err) {
+					throw new DirectusError(
+						500,
+						`Failed to delete pages/${p.id}: ${parseErrors(err).join(' · ')}`,
+					);
+				}
 			}
 		}
 
 		// Delete each block collection
 		for (const colName of BLOCK_COLLECTIONS) {
-			const existing = await client.request(readItems(colName, { fields: ['id'], limit: -1 }));
+			const existing = await client.request(
+				readItems(colName, { fields: ['id'], limit: -1 }),
+			);
 			if (existing.length > 0) {
 				log.info(`  clearing ${existing.length} ${colName} rows...`);
-				try {
-					await client.request(deleteItems(colName, { limit: -1 }));
-				} catch (err) {
-					throw new DirectusError(500, `Failed to delete ${colName}: ${parseErrors(err).join(' · ')}`);
+				for (const row of existing) {
+					try {
+						await client.request(deleteItem(colName, row.id));
+					} catch (err) {
+						throw new DirectusError(
+							500,
+							`Failed to delete ${colName}/${row.id}: ${parseErrors(err).join(' · ')}`,
+						);
+					}
 				}
 			}
 		}
 
 		// Delete nav_links and error_pages
 		for (const colName of ['nav_links', 'error_pages'] as const) {
-			const existing = await client.request(readItems(colName, { fields: ['id'], limit: -1 }));
+			const existing = await client.request(
+				readItems(colName, { fields: ['id'], limit: -1 }),
+			);
 			if (existing.length > 0) {
 				log.info(`  clearing ${existing.length} ${colName} rows...`);
-				try {
-					await client.request(deleteItems(colName, { limit: -1 }));
-				} catch (err) {
-					throw new DirectusError(500, `Failed to delete ${colName}: ${parseErrors(err).join(' · ')}`);
+				for (const row of existing) {
+					try {
+						await client.request(deleteItem(colName, row.id));
+					} catch (err) {
+						throw new DirectusError(
+							500,
+							`Failed to delete ${colName}/${row.id}: ${parseErrors(err).join(' · ')}`,
+						);
+					}
 				}
 			}
 		}

@@ -130,12 +130,20 @@ describe('toBlockHeroTranslationRows', () => {
 // ---------------------------------------------------------------------------
 
 describe('toBlockManifestoRow', () => {
+	const row = toBlockManifestoRow(siteContentFixture);
+
 	it('has correct editor_label', () => {
-		expect(toBlockManifestoRow().editor_label).toBe('Home Manifesto');
+		expect(row.editor_label).toBe('Home Manifesto');
 	});
 
 	it('sort defaults to 2', () => {
-		expect(toBlockManifestoRow().sort).toBe(2);
+		expect(row.sort).toBe(2);
+	});
+
+	it('exposes ticks as non-translatable JSON column on parent', () => {
+		expect(Array.isArray(row.ticks)).toBe(true);
+		expect((row.ticks as readonly string[]).length).toBe(7);
+		expect((row.ticks as readonly string[])[0]).toBe('0');
 	});
 });
 
@@ -170,10 +178,24 @@ describe('toBlockManifestoTranslationRows', () => {
 // ---------------------------------------------------------------------------
 
 describe('toBlockProofReelRow', () => {
+	const row = toBlockProofReelRow(siteContentFixture);
+
 	it('has correct editor_label and sort 3', () => {
-		const row = toBlockProofReelRow();
 		expect(row.editor_label).toBe('Home Proof Reel');
 		expect(row.sort).toBe(3);
+	});
+
+	it('exposes view_all_href, slugs, and images JSON columns on parent', () => {
+		expect(typeof row.view_all_href).toBe('string');
+		expect(Array.isArray(row.slugs)).toBe(true);
+		expect((row.slugs as readonly string[]).length).toBeGreaterThan(0);
+		expect(typeof row.images).toBe('object');
+		const images = row.images as Record<string, string>;
+		const slugs = row.slugs as readonly string[];
+		// every slug has a corresponding image entry
+		for (const s of slugs) {
+			expect(typeof images[s]).toBe('string');
+		}
 	});
 });
 
@@ -332,8 +354,15 @@ describe('toBlockAboutContentTranslationRows', () => {
 // ---------------------------------------------------------------------------
 
 describe('toBlockContactContentRow', () => {
+	const row = toBlockContactContentRow(contactPageFixture);
+
 	it('has correct editor_label', () => {
-		expect(toBlockContactContentRow().editor_label).toBe('Contact Content');
+		expect(row.editor_label).toBe('Contact Content');
+	});
+
+	it('exposes web3forms_key as non-translatable parent column', () => {
+		expect(typeof row.web3forms_key).toBe('string');
+		expect(row.web3forms_key).toBe(contactPageFixture.web3formsKey);
 	});
 });
 
