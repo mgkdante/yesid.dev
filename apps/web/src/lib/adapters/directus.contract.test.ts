@@ -71,8 +71,9 @@ describe('directusAdapter — structural contract', () => {
 		// 18g Phase 4: techStack port is now live (all/byId/content).
 		// 18h Phase 4 Task 10: meta.site + meta.siteSeoDefaults + meta.routeSeo
 		//   are live. Task 11: meta.forRoute composer is live.
-		// Only content (non-metroSvg/morphShapes) remain as TODO stubs.
-		await expect(directusAdapter.content.hero()).rejects.toThrow(/not implemented/);
+		// 18i Phase 4 Tasks 4.1–4.3: all 13 content.* methods are now live.
+		// Only 3 not-yet-flipped ports (navLinks, menuItems, errorPage) remain as TODO stubs.
+		await expect(directusAdapter.content.navLinks()).rejects.toThrow(/not implemented/);
 	});
 
 	it('techStack port exposes the 3 required methods', () => {
