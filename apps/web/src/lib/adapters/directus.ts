@@ -311,8 +311,8 @@ export const PAGE_FIELDS: string[] = [
  * found, and throws via parsePort with 'pages.bySlug' label when the raw
  * shape fails PageSchema validation.
  */
-export async function loadPage(slug: string, ctx?: { pageCache?: Map<string, Promise<PageData>> }): Promise<PageData> {
-	const cache = ctx?.pageCache;
+export async function loadPage(slug: string, ctx?: PreviewContext): Promise<PageData> {
+	const cache = ctx?.pageCache as Map<string, Promise<PageData>> | undefined;
 
 	if (cache?.has(slug)) {
 		return cache.get(slug)!;

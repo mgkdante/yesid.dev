@@ -550,6 +550,18 @@ export interface PreviewContext {
 	 * Absent → fall back to the normal locale resolver chain.
 	 */
 	locale?: Locale;
+
+	/**
+	 * Per-request loadPage memo. Threaded from event.locals.pageCache by
+	 * +page.server.ts load functions. Optional so legacy code paths and
+	 * tests can omit it; loadPage() degrades gracefully (one fetch per call)
+	 * when undefined.
+	 *
+	 * Uses Promise<unknown> rather than Promise<PageData> to avoid pulling
+	 * the @repo/shared/schemas PageData import into content.ts — content.ts
+	 * is the foundation the schemas depend on, so the direction must not reverse.
+	 */
+	pageCache?: Map<string, Promise<unknown>>;
 }
 
 // ---------------------------------------------------------------------------
