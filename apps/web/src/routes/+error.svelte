@@ -21,8 +21,12 @@
 
 	const locale = DEFAULT_LOCALE;
 
-	// Prefer CMS-sourced content from layout data; fall back to static fixture.
-	const errorPage: ErrorPageContent = $derived($page.data?.errorPage ?? staticErrorPageContent);
+	// Prefer the status-specific CMS row fetched by handleError (stashed on
+	// $page.error.cmsErrorPage). Fall back to the layout's status=0 fallback
+	// row ($page.data.errorPage), then to the static inline fixture.
+	const errorPage: ErrorPageContent = $derived(
+		$page.error?.cmsErrorPage ?? $page.data?.errorPage ?? staticErrorPageContent,
+	);
 
 	const label = $derived(resolveLocale(errorPage.label, locale));
 	const heading = $derived(resolveLocale(errorPage.heading, locale));
@@ -97,7 +101,7 @@
 			<span style="color: var(--primary);">$</span>
 			<span style="color: var(--secondary-foreground);"> route </span>
 			<span style="color: var(--secondary-foreground);">--status</span>
-			<span style="color: var(--primary);"> 404</span>
+			<span style="color: var(--primary);"> {$page.status}</span>
 			<span style="color: var(--muted-foreground);"> // requested path not in service</span>
 			{#if mounted && !$prefersReducedMotion}
 				<TerminalCursor />
