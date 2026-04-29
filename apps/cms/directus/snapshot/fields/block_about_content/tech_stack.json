@@ -1,9 +1,9 @@
 {
-  "collection": "block_about_content_translations",
+  "collection": "block_about_content",
   "field": "tech_stack",
   "type": "json",
   "meta": {
-    "collection": "block_about_content_translations",
+    "collection": "block_about_content",
     "conditions": null,
     "display": null,
     "display_options": null,
@@ -11,14 +11,14 @@
     "group": null,
     "hidden": false,
     "interface": "input-code",
-    "note": "Per-locale legacy tech stack items for About bento (AboutContent.techStack). JSON shape: Array<{ name, category, relatedServices: string[] }>.",
+    "note": "Non-translatable legacy tech stack items for About bento (AboutContent.techStack). JSON shape: Array<{ name, category, relatedServices: string[] }>. AboutTechItem has no LocalizedString leaves so it lives on the parent block, not on _translations.",
     "options": {
       "language": "json"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 6,
     "special": [
       "cast-json"
     ],
@@ -29,7 +29,7 @@
   },
   "schema": {
     "name": "tech_stack",
-    "table": "block_about_content_translations",
+    "table": "block_about_content",
     "data_type": "json",
     "default_value": null,
     "max_length": null,

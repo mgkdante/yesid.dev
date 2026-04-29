@@ -91,8 +91,9 @@ const AboutCtaLineSchema = z.object({
 });
 
 // Shared social-link shape (AboutCta.socials + ContactContent.socials both
-// use `{ label, href, icon }` with readonly wrapping).
-const AboutSocialLinkSchema = z.object({
+// use `{ label, href, icon }` with readonly wrapping). Exported so consumers
+// can import the primitive shape directly without re-deriving it.
+export const AboutSocialLinkSchema = z.object({
 	label: z.string(),
 	href: z.string(),
 	icon: z.string(),

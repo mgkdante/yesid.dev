@@ -94,3 +94,48 @@ feedback_serial_cms_pushes.md (incidents #79, #81 — concurrent feature
 branch pushes can wipe data via orphan-delete). The full snapshot will
 be applied to live in a single, serialized push after the slice-18i PR
 merges.
+
+## Known incomplete: pages_blocks M2A junction (Path B deferral)
+
+Phase 1's Gemini boundary review (2026-04-29) flagged that the `pages.blocks`
+M2A field is declared (`type: alias`, `special: ["m2a"]`) but the snapshot
+contains **no `pages_blocks` junction collection** and **no `relations/pages/`
+or `relations/pages_blocks/` files** wiring the M2A to its junction.
+
+This is intentional. The codebase has no prior M2A example to template from,
+and authoring the junction JSONs speculatively risks shape drift from what
+Directus will materialize on first push. **Path B chosen**: defer to first
+push.
+
+**Action required at first-push time** (post-merge, Task 7.x flow or
+follow-up):
+
+1. Run `bun cms run directus-sync push` against a clean local Directus.
+2. Verify Directus auto-generates the `pages_blocks` junction with
+   `pages_id`, `collection`, `item`, `sort` columns.
+3. Run `bun cms run directus-sync pull` to capture the junction +
+   the M2A relations into the snapshot.
+4. Commit the auto-captured files (expected: `collections/pages_blocks.json`,
+   `fields/pages_blocks/*.json`, `relations/pages_blocks/*.json`).
+5. Verify in Data Studio that `pages.blocks` M2A picker offers all 12
+   `block_*` collections.
+
+Until that roundtrip lands, Phase 3's `loadPage` deep-fields query (which
+expands `blocks.item:block_<name>.*`) is structurally testable against
+mocked data only — integration tests against live Directus must wait for
+the junction to materialize.
+
+## Phase 1 boundary post-review fix-ups (commit fd-aware)
+
+After Gemini review, three follow-up edits landed:
+
+1. Moved `tech_stack` and `client_logos` fields from
+   `fields/block_about_content_translations/` to
+   `fields/block_about_content/` — both shapes (`AboutTechItem`,
+   `AboutClientLogo`) have zero `LocalizedString` leaves and so belong on
+   the parent block per the Task 1.3 flattening pattern.
+2. Tightened `nav_links.priority` from nullable integer to required
+   `select-dropdown` constrained to `[1, 2]`, matching `NavLinkSchema`'s
+   `z.union([z.literal(1), z.literal(2)])`. Default `1`.
+3. Exported `AboutSocialLinkSchema` and `ContactSocialLinkSchema` from
+   `@repo/shared/schemas` (were internal `const`).

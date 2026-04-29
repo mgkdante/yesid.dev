@@ -61,7 +61,8 @@ export const ContactSuccessSchema = z.object({
 
 // `socials` is `readonly { label, href, icon }[]` in TS — use .readonly() so
 // z.infer produces the same readonly marker for bidirectional drift detection.
-const ContactSocialLinkSchema = z.object({
+// Exported so consumers can import the primitive shape directly.
+export const ContactSocialLinkSchema = z.object({
 	label: z.string(),
 	href: z.string(),
 	icon: z.string(),
