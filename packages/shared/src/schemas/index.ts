@@ -18,3 +18,7 @@ export * from './services-grid';
 export * from './cta';
 export * from './closer';
 export * from './about-intro';
+
+// Stub page schemas (fields locked in slice-18i Task 1.4)
+export * from './blog-page';
+export * from './projects-page';
