@@ -46,6 +46,7 @@ import {
 	transformBlockBlogPageContent,
 	transformBlockProjectsPageContent,
 } from './directus';
+import { PageSchema } from '@repo/shared';
 
 // ---------------------------------------------------------------------------
 // Raw Directus block fixture builders — per-locale translation row arrays
@@ -210,25 +211,39 @@ function rawBlockCta(): Record<string, unknown> {
 	};
 }
 
-/** Minimal raw `block_closer` Directus item. */
+/** Minimal raw `block_closer` Directus item.
+ *
+ * NOTE: `cta_href` and `attribution_url` are plain-string fields on the PARENT
+ * ROW (not inside the translation JSON), because the transform reads
+ * `raw.cta_href` and `raw.attribution_url` before falling back to the JSON
+ * column.  Putting `href` inside the cta JSON column would cause `toLSJSON` to
+ * wrap it as a LocalizedString, breaking the `cta.href: z.string()` schema gate.
+ * The `cta` translation column carries only `label` (LocalizedString).
+ * The `attribution` translation column carries only `text` (LocalizedString).
+ */
 function rawBlockCloser(): Record<string, unknown> {
 	return {
 		id: 'closer-uuid-1',
 		status: 'published',
+		// Non-translatable hrefs on parent row
+		cta_href: '/contact',
+		attribution_url: '/about',
 		translations: [
 			{
 				languages_code: 'en',
 				heading: 'Thanks',
 				heading_dot: '.',
 				subheading: 'See you around',
-				cta: { label: 'Contact', href: '/contact' },
+				// cta JSON carries only label (translatable); href comes from parent row
+				cta: { label: 'Contact' },
 				rows: {
 					contact: { label: 'Contact', description: 'Say hi', action: 'Email' },
 					connect: { label: 'Connect', description: 'LinkedIn', action: 'Follow' },
 					read: { label: 'Read', action: 'Blog' },
 					about: { label: 'About', description: 'Who I am', action: 'Learn' },
 				},
-				attribution: { text: 'Made with care', url: '/about' },
+				// attribution JSON carries only text (translatable); url comes from parent row
+				attribution: { text: 'Made with care' },
 				terminal: {
 					title: 'Terminal',
 					city: 'MTL',
@@ -504,7 +519,12 @@ function rawBlockContactContent(): Record<string, unknown> {
 	};
 }
 
-/** Minimal raw `block_tech_stack_page_content` Directus item. */
+/** Minimal raw `block_tech_stack_page_content` Directus item.
+ *
+ * Field names match TechStackPageContentSchema (overline, titleLine1, titleLine2,
+ * terminalAria, stats, getInTouch, viewServices, headingLine1, headingLine2,
+ * sub, availability) — note the schema does NOT have download/share/heading/body.
+ */
 function rawBlockTechStackPageContent(): Record<string, unknown> {
 	return {
 		id: 'techstack-page-uuid-1',
@@ -513,9 +533,20 @@ function rawBlockTechStackPageContent(): Record<string, unknown> {
 			{
 				languages_code: 'en',
 				meta: { title: 'Tech Stack', description: 'My tools' },
-				hero: { overline: 'Stack', heading: 'Tools I use', body: 'Description' },
-				actions: { download: 'Download', share: 'Share' },
-				cta: { heading: 'Hire me', body: 'Available now' },
+				hero: {
+					overline: 'Stack',
+					titleLine1: 'Tools',
+					titleLine2: 'I use',
+					terminalAria: 'Terminal',
+					stats: { technologies: '30+' },
+				},
+				actions: { getInTouch: 'Contact', viewServices: 'Services' },
+				cta: {
+					headingLine1: 'Hire',
+					headingLine2: 'me',
+					sub: 'Available',
+					availability: 'Now',
+				},
 			},
 		],
 	};
@@ -1073,5 +1104,105 @@ describe('transformBlockProjectsPageContent', () => {
 		const raw = rawBlockProjectsPageContent();
 		const result = transformBlockProjectsPageContent(raw as never);
 		expect(result.intro).toMatchObject({ en: 'Projects I have built' });
+	});
+});
+
+// ---------------------------------------------------------------------------
+// PageSchema — 12-variant parameterized smoke test (slice-18i Phase 6 Task 6.1)
+//
+// Each entry: [collection, transformFn, rawFixtureFn]
+// The test calls the transform, wraps the result in a minimal PageData envelope,
+// and asserts PageSchema.parse() succeeds — catching any schema/transform drift
+// before it reaches the load() pipeline.
+// ---------------------------------------------------------------------------
+
+/**
+ * Wraps an already-transformed block item in a minimal PageData envelope
+ * so PageSchema.parse() can validate the full shape.
+ */
+function pageEnvelope(
+	collection: string,
+	item: unknown,
+	pageSlug = 'test-slug',
+): unknown {
+	return {
+		id: 'page-test-id',
+		slug: pageSlug,
+		status: 'published',
+		title: 'Test Page',
+		blocks: [{ collection, item }],
+	};
+}
+
+describe('PageSchema — all 12 variants smoke (it.each)', () => {
+	it.each([
+		['block_hero',                     () => transformBlockHero(rawBlockHero() as never)],
+		['block_manifesto',                () => transformBlockManifesto(rawBlockManifesto() as never)],
+		['block_proof_reel',               () => transformBlockProofReel(rawBlockProofReel() as never)],
+		['block_services_grid',            () => transformBlockServicesGrid(rawBlockServicesGrid() as never)],
+		['block_cta',                      () => transformBlockCta(rawBlockCta() as never)],
+		['block_closer',                   () => transformBlockCloser(rawBlockCloser() as never)],
+		['block_about_intro',              () => transformBlockAboutIntro(rawBlockAboutIntro() as never)],
+		['block_about_content',            () => transformBlockAboutContent(rawBlockAboutContent() as never)],
+		['block_contact_content',          () => transformBlockContactContent(rawBlockContactContent() as never)],
+		['block_tech_stack_page_content',  () => transformBlockTechStackPageContent(rawBlockTechStackPageContent() as never)],
+		['block_blog_page_content',        () => transformBlockBlogPageContent(rawBlockBlogPageContent() as never)],
+		['block_projects_page_content',    () => transformBlockProjectsPageContent(rawBlockProjectsPageContent() as never)],
+	] as const)('PageSchema.parse() accepts %s', (collection, buildItem) => {
+		const item = buildItem();
+		expect(() =>
+			PageSchema.parse(pageEnvelope(collection, item)),
+		).not.toThrow();
+	});
+});
+
+// ---------------------------------------------------------------------------
+// PageSchema — mismatched (collection, item.shape) rejection tests
+//
+// These ensure the discriminated union correctly rejects when the item shape
+// does not match the declared collection. Three representative pairings are
+// tested — sufficient to confirm the discriminator is wired, without testing
+// every N×M permutation.
+// ---------------------------------------------------------------------------
+
+describe('PageSchema — wrong item shape rejects', () => {
+	it('rejects block_hero with block_manifesto item shape', () => {
+		const wrongItem = transformBlockManifesto(rawBlockManifesto() as never);
+		expect(() =>
+			PageSchema.parse(pageEnvelope('block_hero', wrongItem)),
+		).toThrow();
+	});
+
+	it('rejects block_cta with block_closer item shape', () => {
+		const wrongItem = transformBlockCloser(rawBlockCloser() as never);
+		expect(() =>
+			PageSchema.parse(pageEnvelope('block_cta', wrongItem)),
+		).toThrow();
+	});
+
+	it('rejects block_about_content with block_contact_content item shape', () => {
+		const wrongItem = transformBlockContactContent(rawBlockContactContent() as never);
+		expect(() =>
+			PageSchema.parse(pageEnvelope('block_about_content', wrongItem)),
+		).toThrow();
+	});
+
+	it('rejects any block variant with an empty item object', () => {
+		for (const collection of [
+			'block_hero',
+			'block_manifesto',
+			'block_proof_reel',
+		] as const) {
+			expect(() =>
+				PageSchema.parse(pageEnvelope(collection, {})),
+			).toThrow();
+		}
+	});
+
+	it('rejects an unknown collection name', () => {
+		const validItem = transformBlockHero(rawBlockHero() as never);
+		expect(() =>
+			PageSchema.parse(pageEnvelope('block_journey_panel', validItem)),
+		).toThrow();
 	});
 });
