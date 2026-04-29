@@ -1,0 +1,28 @@
+{
+  "collection": "block_blog_page_content",
+  "field": "translations",
+  "type": "alias",
+  "meta": {
+    "collection": "block_blog_page_content",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "translations",
+    "group": null,
+    "hidden": false,
+    "interface": "translations",
+    "note": null,
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 99,
+    "special": [
+      "translations"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}
