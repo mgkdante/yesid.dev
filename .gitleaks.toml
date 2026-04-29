@@ -28,6 +28,15 @@ regexes = [
   '''card-600(-avif)?''',
   '''thumb-240(-avif)?''',
   '''og-1200''',
+  # Slice-18i web3forms public form-submission key — embedded client-side in
+  # ContactForm.svelte to identify the form on web3forms.com's public submission
+  # endpoint. Per https://docs.web3forms.com these access keys are PUBLIC by
+  # design (the only auth is the keyholder's email validation on web3forms's
+  # side; rotating it doesn't add security against scraping). Stored in the
+  # contact-page fixture so the seed script can populate the CMS row, but the
+  # UUID-shaped value trips the generic-api-key entropy rule (~3.88).
+  '''"web3formsKey":\s*"[a-f0-9-]+"''',
+  '''"web3forms_key":\s*"[a-f0-9-]+"''',
 ]
 
 # Paths to skip entirely (generated/vendored code, binary assets, etc.).
