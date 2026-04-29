@@ -1,0 +1,63 @@
+{
+  "collection": "nav_links",
+  "field": "placement",
+  "type": "string",
+  "meta": {
+    "collection": "nav_links",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "placement",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown",
+    "note": "Which nav surface renders this link. header/footer/mobile = NavLink shape; menu = MenuItem shape (renders subtitle).",
+    "options": {
+      "choices": [
+        {
+          "text": "Header",
+          "value": "header"
+        },
+        {
+          "text": "Footer",
+          "value": "footer"
+        },
+        {
+          "text": "Mobile",
+          "value": "mobile"
+        },
+        {
+          "text": "Menu",
+          "value": "menu"
+        }
+      ]
+    },
+    "readonly": false,
+    "required": true,
+    "searchable": true,
+    "sort": 3,
+    "special": null,
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "placement",
+    "table": "nav_links",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 32,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": false,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": null,
+    "foreign_key_column": null
+  }
+}
