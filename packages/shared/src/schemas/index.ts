@@ -22,3 +22,6 @@ export * from './about-intro';
 // Stub page schemas (fields locked in slice-18i Task 1.4)
 export * from './blog-page';
 export * from './projects-page';
+
+// PageSchema — 12-variant discriminated union (slice-18i Task 1.1 Phase E)
+export * from './page';
