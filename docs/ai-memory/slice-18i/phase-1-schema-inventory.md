@@ -139,3 +139,68 @@ After Gemini review, three follow-up edits landed:
    `z.union([z.literal(1), z.literal(2)])`. Default `1`.
 3. Exported `AboutSocialLinkSchema` and `ContactSocialLinkSchema` from
    `@repo/shared/schemas` (were internal `const`).
+
+## Task 2.x seed validation (dry-run)
+
+Run: `bun run apps/cms/scripts/seed-pages-and-blocks.ts -- --dry-run --verbose`
+Output captured 2026-04-28:
+
+```
+[seed-pages-and-blocks] target: https://cms.yesid.dev [dry-run]
+[seed-pages-and-blocks] --- dry-run: validating all fixtures via @repo/shared Zod schemas ---
+[seed-pages-and-blocks] all Zod validations passed
+[seed-pages-and-blocks] Would seed:
+[seed-pages-and-blocks]   7 pages
+[seed-pages-and-blocks]   12 block_* rows (one per block collection)
+[seed-pages-and-blocks]   12 translation rows × up to 3 locales each
+[seed-pages-and-blocks]   12 pages_blocks M2A junctions (shape only — junction auto-materializes post-merge)
+[seed-pages-and-blocks]   15 nav_links rows
+[seed-pages-and-blocks]   3 error_pages rows
+[seed-pages-and-blocks] --- dry-run complete (no writes) ---
+```
+
+**Counts**: 7 pages, 12 blocks, 12 translation rows (en only — FR/ES via Data Studio),
+15 nav_links (header:3, footer:3, mobile:3, menu:6), 3 error_pages
+
+**Status**: dry-run green (exit 0); all @repo/shared Zod schemas accept fixture data.
+Live execution deferred to post-merge alongside the pages_blocks M2A junction
+roundtrip (see "Known incomplete" section above).
+
+### Task 2.2 deferral note
+
+Plan Task 2.2 instructed: run live, verify in Data Studio, re-run for idempotency,
+pull snapshot. **Deferred to post-merge per Path B constraint.** Owner: Task 7.x
+close-out flow.
+
+### Cross-repo import decision
+
+Static content modules in `apps/web/src/lib/content/` use `$lib/types` (SvelteKit
+alias) which cannot resolve outside the SvelteKit bundler context. Direct import
+from `apps/cms` would fail at runtime. Per D12 (apps/cms must not depend on
+apps/web), content was frozen as fixture JSON at `apps/cms/fixtures/content/`:
+
+- `site-content.json` — heroContent + heroAnimContent + manifestoContent +
+  proofReelContent + servicesGridContent + aboutIntroContent + ctaContent + closerContent
+- `about-page.json` — aboutPageContent
+- `contact-page.json` — contactContent
+- `nav.json` — navLinks + menuItems + errorPageContent
+- `tech-stack-page.json` — techStackPageContent
+
+These fixtures are the authoritative seed data source. After Slice 18 closes,
+Directus Data Studio is the authoring surface; the fixtures + web TS modules
+both freeze (Slice 19+ re-export step if regeneration is ever needed).
+
+### Task 7.x (post-merge live run) order of operations
+
+1. Run `bun cms run directus-sync push` against live Directus (serialized — no
+   other branch pushing simultaneously, per feedback_serial_cms_pushes).
+2. Confirm Directus auto-generates `pages_blocks` junction collection with
+   `pages_id`, `collection`, `item`, `sort` columns.
+3. Run `bun run apps/cms/scripts/seed-pages-and-blocks.ts` (live, no --dry-run).
+4. In Data Studio, wire the 12 M2A junction rows (or extend the script to create
+   them directly now that the junction collection is confirmed).
+5. Run `bun cms run directus-sync pull` to capture junction + M2A relations.
+6. Commit auto-captured files (expected: `collections/pages_blocks.json`,
+   `fields/pages_blocks/*.json`, `relations/pages_blocks/*.json`).
+7. Verify in Data Studio that `pages.blocks` M2A picker offers all 12 `block_*`
+   collections and the content is visible.
