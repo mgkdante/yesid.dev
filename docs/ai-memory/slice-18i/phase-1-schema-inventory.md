@@ -240,7 +240,7 @@ Two fixture defects were discovered by the new smoke test and corrected:
 
 ### Task 6.2 — ContentPort method coverage audit
 
-**Result: no gaps.** All 17 ContentPort methods have mocked tests in
+**Result: no gaps.** All 18 ContentPort methods have mocked tests in
 `apps/web/src/lib/adapters/directus.mocked.test.ts`:
 
 | Method | Describe block |
@@ -264,6 +264,9 @@ Two fixture defects were discovered by the new smoke test and corrected:
 | `content.metroSvg` | `content.metroSvg — fetch contract` |
 | `content.morphShapes` | `content.morphShapes — fetch contract` |
 
+Count note: pre-cleanup was 21 methods; post-cleanup is 18. The table above
+lists all 18. Earlier drafts of this section said "17" — that was off by one.
+
 `nav.byPlacement` covers all 4 placements: header, footer, mobile, menu.
 `errorPage` covers the 3 required paths: specific row, fallback (0), throws.
 
@@ -271,18 +274,37 @@ No new tests were needed for Task 6.2.
 
 ### Task 6.3 — Integration tests deferred to post-merge
 
-**Deferred.** Live Directus integration tests (Task 6.3) are blocked on
-the same constraint as the seed push: `feedback_serial_cms_pushes.md`
+**Deferred AND unmet.** Live Directus integration tests (Task 6.3) are
+blocked on the same constraint as the seed push: `feedback_serial_cms_pushes.md`
 prohibits pushing from feature branches to avoid orphan-delete incidents
 (#79, #81). The `pages_blocks` M2A junction also does not exist on live
 Directus until the first post-merge push.
 
-**Why mocked tests are a sufficient pre-merge gate**: every `content.*`
-method is exercised through `loadPage` → transform → `parsePort(PageSchema)`.
-The mock returns a real-Directus-shaped payload (same field names, same
-nesting, same translation row arrays). The only delta between mocked and live
-behavior is (a) network latency and (b) the M2A junction materialization.
-Neither affects the transform/schema correctness verified by the mocked tests.
+**What mocked tests cover vs. what they don't**: every `content.*` method is
+exercised through `loadPage` → transform → `parsePort(PageSchema)`. The mock
+returns a real-Directus-shaped payload (same field names, same nesting, same
+translation row arrays). Mocked tests prove code paths and transform correctness.
+They do NOT prove that live Directus returns data that aligns with those
+expectations. The §6 acceptance gate is **deferred AND unmet** until the
+post-merge live runner confirms all 7 page slugs and all 18 ContentPort methods
+against live Directus.
+
+**Known unknowns at live-integration time** (must be validated by post-merge runner):
+
+- **Directus API permissions**: does the public/anonymous policy allow reads on
+  `pages`, `block_*`, `nav_links`, and `error_pages` collections? A missing
+  policy rule returns 403, not a transform error — mocked tests cannot catch this.
+- **Deep-fields query response shape**: Directus may return slightly different
+  structures than mocked fixtures (e.g., missing `translations` rows, M2A items
+  in unexpected positions, junction shape from the auto-generated `pages_blocks`).
+- **FK relation expansion**: `icon.*` on `nav_links` — does the M2O actually
+  inline the icon row, or return null, requiring a follow-up read?
+- **Translation row coverage**: does Directus return rows for all configured
+  locales (en/fr/es), or only those with authored content? Missing rows produce
+  `undefined` leaves in `toLSJSON` that Zod may reject.
+- **Seed data shape**: does the live seeder produce rows accepted by Directus?
+  Field constraints (max-length, enum values, required fields) are only enforced
+  server-side — dry-run cannot catch rejected payloads.
 
 **Post-merge integration runner checklist** (owner: Task 7.x close-out):
 
@@ -290,12 +312,18 @@ Neither affects the transform/schema correctness verified by the mocked tests.
 - [ ] Seed: `bun run apps/cms/scripts/seed-pages-and-blocks.ts` (no --dry-run)
 - [ ] Run integration tests pointing at staging Directus (`PUBLIC_DIRECTUS_URL`
       set to `https://cms.yesid.dev`)
-- [ ] Verify all 17 `content.*` methods return Zod-valid payloads (no
+- [ ] Verify all 18 `content.*` methods return Zod-valid payloads (no
       `parsePort` throws in SSR logs)
 - [ ] Verify `loadPage` round-trip for all 7 slugs: home, about, contact,
       services, projects, tech-stack, blog
 - [ ] Confirm `pages_blocks` M2A junction is present in `directus-sync pull`
       snapshot (see Task 7.x order of operations above)
+- [ ] Confirm public/anonymous Directus policy allows reads on all required
+      collections (pages, block_*, nav_links, error_pages)
+- [ ] Confirm icon FK inline expansion works on nav_links (icon.* returns
+      the icon row, not null)
+- [ ] Confirm translation rows exist for all configured locales and all
+      LocalizedString leaves resolve without undefined
 
 ### Phase 6 coverage summary
 

@@ -1,59 +1,72 @@
 // pages.spec.ts — E2E Playwright tests for the 7 public routes + 404 error page.
 //
-// slice-18i Phase 6 Task 6.4
+// slice-18i Phase 6 Task 6.4 (updated in Phase 6 review fix-up)
 //
 // These tests run against the built + previewed app (playwright.config.ts:
 // webServer builds then starts `vite preview` on port 4173).
 //
-// Offline constraint: in CI and on dev machines without live Directus access,
-// routes that depend on CMS data (about, tech-stack) render the +error.svelte
-// fallback with "This station is under construction". The spec is written to
-// assert what ACTUALLY renders in both the online (CMS reachable) and offline
-// (CMS unreachable / 500) cases so the same spec works pre- and post-merge.
+// CMS_LIVE env gate:
+//   Routes that require live Directus data (/about, /tech-stack) are skipped
+//   when CMS_LIVE !== 'true'. Set CMS_LIVE=true in your environment to run the
+//   full suite against a live CMS deployment.
 //
-// Strategy per route:
-//   - / → 200, data-testid="app-root" + data-testid="hero-banner"
-//   - /services → 200, service cards (static adapter, no CMS dependency)
-//   - /projects → 200, static adapter, nav visible
-//   - /blog → 200, "Dispatches" hardcoded in +page.svelte
-//   - /contact → 200, data-testid="contact-info-terminal" (static adapter fallback)
-//   - /about → may be 200 (CMS) or 500 (error page) depending on CMS availability
-//   - /tech-stack → may be 200 (CMS) or 500 (error page)
-//   - unknown route → 404, error page heading visible
+//   Example:
+//     CMS_LIVE=true bun run test:e2e
+//
+//   When CMS_LIVE is not set (default in CI and local dev without live Directus):
+//   - The 5 non-CMS routes are asserted to return HTTP 200 + page-specific content.
+//   - /about and /tech-stack are explicitly skipped (not tolerated as 500s).
+//   - The 404 route is always asserted.
+//
+// Route strategy:
+//   - /           → 200, data-testid="hero-banner" + known static-fallback string
+//   - /services   → 200, nav visible (static adapter, no CMS dependency)
+//   - /projects   → 200, nav visible (static adapter)
+//   - /blog       → 200, "Dispatches" hardcoded in +page.svelte
+//   - /contact    → 200, data-testid="contact-info-terminal" (static fallback)
+//   - /about      → 200 + CMS content (CMS_LIVE=true only) — SKIPPED otherwise
+//   - /tech-stack → 200 + CMS content (CMS_LIVE=true only) — SKIPPED otherwise
+//   - unknown     → 404, error page heading visible
 
 import { test, expect } from '@playwright/test';
+
+const CMS_LIVE = process.env.CMS_LIVE === 'true';
 
 // ---------------------------------------------------------------------------
 // Routes with stable static content (no CMS dependency or static fallback)
 // ---------------------------------------------------------------------------
 
-test('route / (home) renders hero banner', async ({ page }) => {
-	await page.goto('/');
-	await expect(page.locator('[data-testid="app-root"]')).toBeVisible();
+test('route / (home) renders hero banner and static-fallback headline', async ({ page }) => {
+	const response = await page.goto('/');
+	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
+	// "PIPELINES THAT" is the static fallback headline in heroContent.headline.line1
+	// — this verifies the staticAdapter.content.hero → +page.svelte → DOM data flow.
+	await expect(page.getByText('PIPELINES THAT', { exact: false })).toBeVisible();
 });
 
-test('route /services renders service cards', async ({ page }) => {
-	await page.goto('/services');
-	// At least one service card is always present (static adapter feeds services)
-	await expect(page.locator('[data-testid]').first()).toBeVisible();
-	// Nav is always present
+test('route /services renders without crash', async ({ page }) => {
+	const response = await page.goto('/services');
+	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
 });
 
 test('route /projects renders without crash', async ({ page }) => {
-	await page.goto('/projects');
+	const response = await page.goto('/projects');
+	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
 });
 
 test('route /blog renders "Dispatches" heading', async ({ page }) => {
-	await page.goto('/blog');
+	const response = await page.goto('/blog');
+	expect(response?.status()).toBe(200);
 	// "Dispatches" is hard-coded in /blog +page.svelte — not CMS-sourced
 	await expect(page.getByText('Dispatches', { exact: false })).toBeVisible();
 });
 
 test('route /contact renders contact terminals', async ({ page }) => {
-	await page.goto('/contact');
+	const response = await page.goto('/contact');
+	expect(response?.status()).toBe(200);
 	// data-testid="contact-info-terminal" is rendered by ContactPage regardless
 	// of whether it uses the static fallback or CMS-sourced content
 	// (there are two instances — info + form; use .first() to avoid strict-mode error)
@@ -61,22 +74,28 @@ test('route /contact renders contact terminals', async ({ page }) => {
 });
 
 // ---------------------------------------------------------------------------
-// Routes that may show error page when CMS is unreachable
+// Routes that require live CMS data — skipped when CMS_LIVE !== 'true'
+//
+// To run these tests: set CMS_LIVE=true in your environment before invoking
+// the E2E runner (e.g. CMS_LIVE=true bun run test:e2e).
 // ---------------------------------------------------------------------------
 
-test('route /about renders page content or graceful error page', async ({ page }) => {
-	await page.goto('/about');
-	// Either the real about page renders, or the error page does —
-	// both are valid outcomes pre-merge. What must NOT happen is a blank page
-	// or an uncaught exception that prevents the layout from rendering.
-	// Nav is always rendered in layout.svelte regardless of page outcome.
+test('route /about returns 200 and renders CMS content', async ({ page }) => {
+	test.skip(!CMS_LIVE, 'Requires live CMS — set CMS_LIVE=true to run');
+	const response = await page.goto('/about');
+	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
+	// At least one about-page heading must be visible when CMS is live
+	await expect(page.getByText('About', { exact: false })).toBeVisible();
 });
 
-test('route /tech-stack renders page content or graceful error page', async ({ page }) => {
-	await page.goto('/tech-stack');
-	// Same resilience check: nav always renders even on error routes.
+test('route /tech-stack returns 200 and renders CMS content', async ({ page }) => {
+	test.skip(!CMS_LIVE, 'Requires live CMS — set CMS_LIVE=true to run');
+	const response = await page.goto('/tech-stack');
+	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
+	// At least one tech-stack heading must be visible when CMS is live
+	await expect(page.getByText('Stack', { exact: false })).toBeVisible();
 });
 
 // ---------------------------------------------------------------------------

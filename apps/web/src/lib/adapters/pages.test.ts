@@ -883,6 +883,26 @@ describe('transformBlockCloser', () => {
 		expect(result.rows.contact.label).toMatchObject({ en: 'Contact' });
 		expect(result.rows.read.action).toMatchObject({ en: 'Blog' });
 	});
+
+	// Regression: Phase 6 Task 6.1 fix-up — cta.href and attribution.url must
+	// come from parent row fields (raw.cta_href / raw.attribution_url), NOT from
+	// inside the translation JSON column. If they live in the JSON column,
+	// toLSJSON wraps them as LocalizedString, violating z.string() in the schema.
+	it('regression: cta.href comes from parent row field (not translation JSON)', () => {
+		const raw = rawBlockCloser();
+		const result = transformBlockCloser(raw as never);
+		// Must be a plain string, NOT a LocalizedString object
+		expect(typeof result.cta.href).toBe('string');
+		expect(result.cta.href).toBe('/contact');
+	});
+
+	it('regression: attribution.url comes from parent row field (not translation JSON)', () => {
+		const raw = rawBlockCloser();
+		const result = transformBlockCloser(raw as never);
+		// Must be a plain string, NOT a LocalizedString object
+		expect(typeof result.attribution.url).toBe('string');
+		expect(result.attribution.url).toBe('/about');
+	});
 });
 
 // ---------------------------------------------------------------------------
@@ -1080,6 +1100,41 @@ describe('transformBlockTechStackPageContent', () => {
 		const result = transformBlockTechStackPageContent(raw as never);
 		expect((result.meta as unknown as Record<string, unknown>).title).toMatchObject({ en: 'Tech Stack' });
 		expect((result.hero as unknown as Record<string, unknown>).overline).toMatchObject({ en: 'Stack' });
+	});
+
+	// Regression: Phase 6 Task 6.1 fix-up — stale field names (download, share,
+	// heading, body) that existed in an older TechStackPageContentSchema version
+	// were removed. The schema must reject any payload that still uses those names.
+	it('regression: PageSchema rejects stale field names (download, share, heading, body)', () => {
+		// Build a raw fixture with stale field names in the hero/actions/cta blocks
+		const staleRaw = {
+			id: 'stale-uuid-1',
+			status: 'published',
+			translations: [
+				{
+					languages_code: 'en',
+					meta: { title: 'Tech Stack', description: 'My tools' },
+					// Stale field names that no longer exist in TechStackPageContentSchema:
+					download: 'Download CV',
+					share: 'Share',
+					heading: 'My Stack',
+					body: 'These are the tools I use.',
+				},
+			],
+		};
+		// transformBlockTechStackPageContent maps through the raw shape —
+		// current field names (overline, titleLine1, etc.) will be missing/undefined.
+		// PageSchema.parse() must reject the resulting shape.
+		const item = transformBlockTechStackPageContent(staleRaw as never);
+		expect(() =>
+			PageSchema.parse({
+				id: 'page-id',
+				slug: 'tech-stack',
+				status: 'published',
+				title: 'Tech Stack',
+				blocks: [{ collection: 'block_tech_stack_page_content', item }],
+			}),
+		).toThrow();
 	});
 });
 
