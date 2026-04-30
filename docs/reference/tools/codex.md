@@ -9,13 +9,13 @@ Per-tool bindings for OpenAI Codex (desktop app + cloud). Resolves the abstract 
 | deeper-reasoning model          | <!-- FILL IN: e.g., gpt-5-codex-pro (high reasoning effort) -->      |
 | deeper-reasoning model (XL)     | <!-- FILL IN: e.g., gpt-5-codex-pro with extended context -->        |
 | faster/cheaper model            | <!-- FILL IN: e.g., gpt-5.3-codex-spark -->                          |
-| live progress tracker           | <!-- FILL IN: Codex tracker (or inline markdown in devlog) -->       |
+| live progress tracker           | <!-- FILL IN: Codex tracker plus STOP-message markdown table -->     |
 | parallel-dispatch mechanism     | <!-- FILL IN: Codex parallel agents / rescue tasks -->               |
 | mid-session model switch        | <!-- FILL IN: Codex model picker / CLI flag -->                      |
 | context-budget check            | <!-- FILL IN: Codex context usage indicator -->                      |
 | worktree create + switch        | Codex desktop: pick "Worktree" in thread-creation picker             |
 | worktree cleanup                | Codex desktop: managed by "Worktrees" retention setting              |
-| skill invocation                | `$<skill-name>` (e.g., `$workflow-add`) or slash in UI               |
+| skill invocation                | `$<skill-name>` (e.g., `$workflow-overlord-add`) or slash in UI      |
 | MCP config                      | Codex's plugin + MCP install via `codex plugin add`                  |
 
 ## Codex surfaces
@@ -39,17 +39,17 @@ Codex has three distinct surfaces. Workflow conventions per surface:
 ## Plugin install (for the workflow plugin)
 
 ```
-codex plugin marketplace add mgkdante/workflow
-codex plugin add workflow
+codex plugin marketplace add mgkdante/workflow-overlord
+codex plugin add workflow-overlord
 ```
 
-Then invoke `$workflow` to see the orchestrator's next-step recommendation.
+Then invoke `$workflow-overlord` to see the orchestrator's next-step recommendation.
 
 ## Cross-tool integration
 
-The `workflow` plugin's `workflow-handoff` and `workflow-close-slice` skills coordinate Claude ↔ Codex review via:
+The `workflow-overlord` plugin's `workflow-overlord-handoff` and `workflow-overlord-close-slice` skills coordinate Claude <-> Codex review via:
 
 - **codex-plugin-cc** ([openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc)) installed alongside in Claude Code — exposes `/codex:review`, `/codex:adversarial-review`, `/codex:rescue` inside Claude. When Claude spawns Codex as a subprocess through this plugin, the worktree is inherited from the parent shell.
-- **Reverse handoff branches** for Codex → Claude direction (`handoff/<slice>-claude-review-request`).
+- **Reverse handoff branches** for Codex -> Claude direction (`handoff/<slice>-claude-review-request`).
 
 Per D12 tool-ownership: whichever tool is assigned a task owns its response — never self-simulated.

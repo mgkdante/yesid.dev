@@ -18,7 +18,7 @@ Per-tool bindings for Claude Code. Resolves the abstract roles in `AGENTS.md` to
 | skill invocation                | `/skill <name>` slash command                                |
 | MCP config                      | `.mcp.json` at repo root + `.claude/settings.json`           |
 
-**Never** use a smaller / cheaper model than what's listed unless the task is explicitly clerical. Model-routing decisions are recorded in slice `spec.md` where applicable.
+**Never** use a smaller / cheaper model than what's listed unless the task is explicitly clerical. Model-routing decisions are recorded in the slice's Notion `*-spec` page where applicable.
 
 ## Token budget — absolute thresholds
 
@@ -42,13 +42,13 @@ Check current usage with `/cost` or `/context-budget`.
 ## Plugin install (for the workflow plugin)
 
 ```
-/plugin marketplace add mgkdante/workflow
-/plugin install workflow@mgkdante/workflow
+/plugin marketplace add mgkdante/workflow-overlord
+/plugin install workflow-overlord@mgkdante/workflow-overlord
 ```
 
-Then invoke `/workflow` to see the orchestrator's next-step recommendation.
+Then invoke `/workflow-overlord` to see the orchestrator's next-step recommendation.
 
 ## Notes
 
-- Claude Code's `EnterWorktree` is the preferred way to open a slice worktree — it creates the worktree AND switches the session atomically. Raw `git worktree add` leaves the session pointing at the main checkout even when Bash cwd moves.
-- `/workflow-close-slice` uses `ExitWorktree(action: "remove")` for Claude-native worktree cleanup.
+- Claude Code's `EnterWorktree` is the preferred way to open a slice worktree - it creates the worktree AND switches the session atomically. Raw `git worktree add` leaves the session pointing at the main checkout even when Bash cwd moves.
+- `/workflow-overlord-close-slice` uses `ExitWorktree(action: "remove")` for Claude-native worktree cleanup.
