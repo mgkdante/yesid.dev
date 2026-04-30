@@ -6,7 +6,7 @@ name: web
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
     paths:
       - 'apps/web/**'
       - 'packages/shared/**'
@@ -15,7 +15,7 @@ on:
       - 'bun.lock'
       - 'turbo.json'
   pull_request:
-    branches: [main]
+    branches: [main, develop]
     paths:
       - 'apps/web/**'
       - 'packages/shared/**'
