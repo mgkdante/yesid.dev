@@ -106,6 +106,16 @@
 
 <div
 	bind:this={containerEl}
-	class="flex max-h-[80dvh] w-full items-center justify-center"
+	class="metro-network-frame flex max-h-[80dvh] w-full items-center justify-center"
 	data-testid="metro-network-container"
 >{@html svg}</div>
+
+<style>
+	:global(.metro-network-frame svg [stroke="#E07800"]),
+	:global(.metro-network-frame svg [fill="#E07800"]),
+	:global(.metro-network-frame svg [fill="#1E1E1E"]),
+	:global(.metro-network-frame svg [fill="#808285"]),
+	:global(.metro-network-frame svg [fill="white"]) {
+		opacity: 0;
+	}
+</style>

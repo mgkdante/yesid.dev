@@ -54,6 +54,17 @@ describe('Home page', () => {
 		expect(screen.getByTestId('metro-network-container')).toBeInTheDocument();
 	});
 
+	it('renders the hero scroll prompt in its initial typewriter frame', () => {
+		const { container } = renderPage();
+		const scrollPrompt = container.querySelector('.scroll-prompt');
+		const scrollText = scrollPrompt?.querySelector('span:first-child');
+		const cursor = scrollPrompt?.querySelector('.scroll-block-cursor');
+
+		expect(scrollPrompt).toBeInTheDocument();
+		expect(scrollText?.textContent).toBe('');
+		expect(cursor).toHaveClass('typewriter-cursor');
+	});
+
 	it('renders the hero headline', () => {
 		renderPage();
 		expect(screen.getByTestId('hero-line1')).toBeInTheDocument();
