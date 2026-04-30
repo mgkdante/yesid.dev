@@ -26,12 +26,10 @@ import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageCont
 import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
 import type { NavLink, ErrorPageContent } from '$lib/content/nav';
 
-const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=60, stale-while-revalidate=300';
 const PUBLIC_CDN_CACHE_CONTROL = 'max-age=60, stale-while-revalidate=300';
 
 export const load: LayoutServerLoad = async ({ route, params, locals, setHeaders }) => {
 	setHeaders({
-		'cache-control': PUBLIC_PAGE_CACHE_CONTROL,
 		'cdn-cache-control': PUBLIC_CDN_CACHE_CONTROL,
 		'vercel-cdn-cache-control': PUBLIC_CDN_CACHE_CONTROL,
 	});

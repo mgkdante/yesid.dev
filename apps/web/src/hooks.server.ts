@@ -5,12 +5,14 @@ import type { ErrorPageContent } from '$lib/content/nav';
 const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=60, stale-while-revalidate=300';
 const PUBLIC_CDN_CACHE_CONTROL = 'max-age=60, stale-while-revalidate=300';
 
-function isCacheablePublicPage(pathname: string, response: Response): boolean {
+function isHtmlPage(response: Response): boolean {
 	const contentType = response.headers.get('content-type') ?? '';
-	return (
-		contentType.includes('text/html') ||
-		(pathname.endsWith('/__data.json') && contentType.includes('application/json'))
-	);
+	return contentType.includes('text/html');
+}
+
+function isDataPage(pathname: string, response: Response): boolean {
+	const contentType = response.headers.get('content-type') ?? '';
+	return pathname.endsWith('/__data.json') && contentType.includes('application/json');
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -23,11 +25,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (
 		event.request.method === 'GET' &&
 		response.status === 200 &&
-		isCacheablePublicPage(event.url.pathname, response)
+		(isHtmlPage(response) || isDataPage(event.url.pathname, response))
 	) {
-		response.headers.set('cache-control', PUBLIC_PAGE_CACHE_CONTROL);
 		response.headers.set('cdn-cache-control', PUBLIC_CDN_CACHE_CONTROL);
 		response.headers.set('vercel-cdn-cache-control', PUBLIC_CDN_CACHE_CONTROL);
+		if (isHtmlPage(response)) {
+			response.headers.set('cache-control', PUBLIC_PAGE_CACHE_CONTROL);
+		}
 	}
 	return response;
 };
