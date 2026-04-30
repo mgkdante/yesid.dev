@@ -1092,7 +1092,7 @@ describe('directusAdapter.content.* M2A methods — Task 4.2 detail-page blocks'
 		sharedMockFetch.mockResolvedValueOnce(
 			jsonResponse([rawPageWithBlocks('blog', [{
 				collection: 'block_blog_page_content',
-				item: { id: 'blog-content-uuid', status: 'published', translations: [{ languages_code: 'en', intro: 'Field dispatches.' }] },
+				item: { id: 'blog-content-uuid', status: 'published', translations: [{ languages_code: 'en', intro: 'Field dispatches.', heading: 'Dispatches', back_to_dispatches: '← back to dispatches', back_to_personal: '← back to personal corner' }] },
 			}])]),
 		);
 
