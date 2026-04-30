@@ -1,15 +1,18 @@
 #!/usr/bin/env bun
 /**
- * slice-close.ts — bun script that moves an active sub-slice bundle
- * from the repo to the cloud archive, then updates COMPLETED-SLICES.md.
+ * slice-close.ts - legacy pre-Notion helper.
+ *
+ * Current workflow uses /workflow-overlord-close-slice and Notion child
+ * artifact pages. Keep this script only for inspecting or recovering old
+ * local bundle archives; do not use it for new slice work.
  *
  * Invocation:
- *   bun run slice:close <sub-slice-id> [--name "<name>"] [--pr <pr-number>]
- *   bun run slice:close 17j --name "Workflow Efficiency" --pr 23
+ *   bun run slice:close:legacy <sub-slice-id> [--name "<name>"] [--pr <pr-number>]
+ *   bun run slice:close:legacy 17j --name "Workflow Efficiency" --pr 23
  *
  * Behavior:
  *   1. Parses <sub-slice-id> → parent slice ID + sub-slice id
- *   2. Validates the bundle at docs/slices/slice-<parent>/slice-<sub>/
+ *   2. Validates the legacy bundle at docs/slices/slice-<parent>/slice-<sub>/
  *      has spec.md + plan.md + log.md + handoff.md (all non-empty)
  *   3. Moves the folder to
  *      $YESITO_CLOUD_ROOT/yesid.dev/docs/archive/slices/slice-<parent>/slice-<sub>/
@@ -62,7 +65,7 @@ function parseArgs(argv: string[]): CloseArgs {
 
   if (positional.length === 0) {
     die(
-      'Usage: bun run slice:close <sub-slice-id> [--name "<name>"] [--pr <pr-number>]\nExample: bun run slice:close 17j --name "Workflow Efficiency" --pr 23',
+      'Usage: bun run slice:close:legacy <sub-slice-id> [--name "<name>"] [--pr <pr-number>]\nExample: bun run slice:close:legacy 17j --name "Workflow Efficiency" --pr 23',
       1
     );
   }
@@ -308,12 +311,8 @@ async function main(): Promise<void> {
     console.log(`  - Edit ${indexPath} to fill in TODO placeholders`);
   }
   console.log('  - Commit tree.txt if it changed');
-  console.log(
-    `  - Update docs/slices/slice-${args.parentId}/README.md sub-slice table + docs/slices/slice-${args.parentId}/CHECKPOINT.md if more sub-slices remain`
-  );
-  console.log(
-    `  - If Slice ${args.parentId} is fully complete, delete docs/slices/slice-${args.parentId}/CHECKPOINT.md`
-  );
+  console.log('  - Do not create new local slice bundles; use /workflow-overlord-close-slice for current work');
+  console.log('  - If this was a legacy recovery, update the matching Notion Slice row manually');
 }
 
 main().catch((err: unknown) => {
