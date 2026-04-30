@@ -14,8 +14,10 @@ name: cms
 #   cms.yesid.dev. Gated behind production environment for operator review.
 #
 # Required GitHub secrets (Settings → Secrets and variables → Actions):
-#   DIRECTUS_PROD_ADMIN_EMAIL      = admin account email
-#   DIRECTUS_PROD_ADMIN_PASSWORD   = admin account password
+#   DIRECTUS_PROD_ADMIN_TOKEN      = static admin token (cms.yesid.dev/admin →
+#                                    User Profile → Token → Generate). Bypasses
+#                                    OTP — required since admin enrolled 2FA in
+#                                    slice 18j (2026-04-30).
 # DIRECTUS_URL is hardcoded (public domain — not a secret).
 #
 # Slice: docs/slices/slice-18/plan.md § Phase 2 Task 22.
@@ -72,8 +74,7 @@ jobs:
     needs: test
     env:
       DIRECTUS_URL: https://cms.yesid.dev
-      DIRECTUS_ADMIN_EMAIL: ${{ secrets.DIRECTUS_PROD_ADMIN_EMAIL }}
-      DIRECTUS_ADMIN_PASSWORD: ${{ secrets.DIRECTUS_PROD_ADMIN_PASSWORD }}
+      DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -103,8 +104,7 @@ jobs:
       url: https://cms.yesid.dev
     env:
       DIRECTUS_URL: https://cms.yesid.dev
-      DIRECTUS_ADMIN_EMAIL: ${{ secrets.DIRECTUS_PROD_ADMIN_EMAIL }}
-      DIRECTUS_ADMIN_PASSWORD: ${{ secrets.DIRECTUS_PROD_ADMIN_PASSWORD }}
+      DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
