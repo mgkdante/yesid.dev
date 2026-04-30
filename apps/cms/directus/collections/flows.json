@@ -76,47 +76,5 @@
     },
     "operation": "_sync_op_translation_reminder_check_published",
     "_syncId": "c80a68ad-dabf-4ccc-95cc-e97095f51d90"
-  },
-  {
-    "name": "Vercel revalidate on publish",
-    "icon": "bolt",
-    "color": "#E07800",
-    "description": "POST to Vercel deploy hook when a user-content row is created or updated with status=published. Triggers a full SvelteKit rebuild.",
-    "status": "active",
-    "trigger": "event",
-    "accountability": "all",
-    "options": {
-      "type": "action",
-      "scope": [
-        "items.update",
-        "items.create"
-      ],
-      "collections": [
-        "pages",
-        "pages_blocks",
-        "blog_posts",
-        "projects",
-        "services",
-        "tech_stack",
-        "nav_links",
-        "error_pages",
-        "route_seo",
-        "site_meta",
-        "block_about_content",
-        "block_about_intro",
-        "block_blog_page_content",
-        "block_closer",
-        "block_contact_content",
-        "block_cta",
-        "block_hero",
-        "block_manifesto",
-        "block_projects_page_content",
-        "block_proof_reel",
-        "block_services_grid",
-        "block_tech_stack_page_content"
-      ]
-    },
-    "operation": null,
-    "_syncId": "e66ed43b-5ec6-4c91-b1a3-ccc2718991c1"
   }
 ]

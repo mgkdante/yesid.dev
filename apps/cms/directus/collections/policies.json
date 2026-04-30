@@ -2,7 +2,7 @@
   {
     "name": "AI Editor",
     "icon": "smart_toy",
-    "description": "Scoped policy for MCP-authenticated LLM clients (Claude Code, ChatGPT, Cursor). Read + Create + Update on user content collections. NO delete (archiving only via status field). NO admin access, NO app-system access. 18c Task 50 (D10).",
+    "description": "Policy for MCP-authenticated LLM clients (Claude Code, ChatGPT, Cursor). admin_access elevated 2026-04-30 (slice 18j) — full admin granted at the policy level so MCP clients can read/write across system collections (flows, dashboards, settings, etc.) for editorial workflows. The MCP system_prompt (set on directus_settings.mcp_system_prompt) is now the primary behavioral guard against destructive ops; it instructs LLMs to NEVER edit directus_* and NEVER delete rows. Treat this policy as 'admin with LLM-behavioral-guardrails', not 'sandboxed editor'.",
     "ip_access": null,
     "enforce_tfa": false,
     "admin_access": true,
@@ -53,7 +53,7 @@
   {
     "name": "Human Editor",
     "icon": "person",
-    "description": "Scoped policy for human content editors (Yesid + collaborators). Full read + create + update + delete on user content collections. App access enabled (Data Studio). NO admin access. 18e Phase 3.",
+    "description": "Policy for human content editors (Yesid + future collaborators). admin_access elevated 2026-04-30 (slice 18j) — collaborators on this policy now get full admin in Data Studio. Originally scoped to user-content collections only (18e Phase 3); revisit if external collaborators are onboarded.",
     "ip_access": null,
     "enforce_tfa": false,
     "admin_access": true,
