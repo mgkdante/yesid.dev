@@ -21,7 +21,12 @@
  *   bun run apps/cms/scripts/seed-site-meta.ts --reset    # accepted no-op
  */
 
-import { updateSingleton } from '@directus/sdk';
+import {
+	createItem,
+	deleteItems,
+	readItems,
+	updateSingleton,
+} from '@directus/sdk';
 import { z } from 'zod';
 import fixtureData from '../fixtures/singletons/site-meta.json' with { type: 'json' };
 import { createClient, defaultDirectusUrl } from './lib/sdk';
@@ -120,7 +125,39 @@ export function loadSiteMetaFixture(): SiteMetaFixture {
 // the value type is a non-array object.
 
 interface Schema {
-	site_meta: SiteMetaFixture;
+	site_meta: DirectusSiteMetaRow;
+	site_meta_translations: (DirectusSiteMetaTranslationRow & {
+		id?: number;
+		site_meta_id?: number;
+	})[];
+}
+
+export type DirectusSiteMetaTranslationRow = SiteMetaTranslationFixture;
+export type DirectusSiteMetaRow = Omit<SiteMetaFixture, 'translations'> & {
+	translations?: readonly DirectusSiteMetaTranslationRow[];
+};
+
+export function toSiteMetaTranslationRows(
+	fixture: SiteMetaFixture,
+): readonly DirectusSiteMetaTranslationRow[] {
+	return fixture.translations.map((t) => ({
+		languages_code: t.languages_code,
+		tagline: t.tagline,
+		description: t.description,
+		default_description: t.default_description,
+		owner_job_title: t.owner_job_title,
+	}));
+}
+
+/**
+ * Directus singleton nested-update does not auto-link translation FKs on
+ * re-run. Patch parent scalars only; translations are replaced explicitly.
+ */
+export function toSiteMetaSingletonPatch(
+	fixture: SiteMetaFixture,
+): Omit<DirectusSiteMetaRow, 'id' | 'translations'> {
+	const { id: _id, translations: _translations, ...patch } = fixture;
+	return patch;
 }
 
 const log = createLogger('seed-site-meta');
@@ -139,7 +176,7 @@ export async function seedSiteMeta(
 	if (opts.dryRun) {
 		const en = fixture.translations.find((t) => t.languages_code === 'en');
 		const taglinePreview = (en?.tagline ?? '').slice(0, 60);
-		const fieldCount = Object.keys(fixture).length;
+		const fieldCount = Object.keys(toSiteMetaSingletonPatch(fixture)).length;
 		log.info(
 			`dry-run: would upsert site_meta singleton against ${opts.directusUrl}`,
 		);
@@ -167,13 +204,12 @@ export async function seedSiteMeta(
 	const client = createClient<Schema>(opts.directusUrl, opts.token);
 
 	try {
-		// updateSingleton creates the row if missing; overwrites otherwise.
-		// SDK's NestedPartial<Item> generic accepts the full payload (including
-		// translations array) as the upsert body.
 		await client.request(
 			updateSingleton(
 				'site_meta',
-				fixture as unknown as Parameters<typeof updateSingleton>[1],
+				toSiteMetaSingletonPatch(
+					fixture,
+				) as unknown as Parameters<typeof updateSingleton>[1],
 			),
 		);
 	} catch (err) {
@@ -182,6 +218,48 @@ export async function seedSiteMeta(
 			500,
 			`Failed to upsert site_meta singleton: ${msgs.join(' · ')}`,
 		);
+	}
+
+	const existingTranslations = await client.request(
+		readItems('site_meta_translations', {
+			fields: ['id'],
+			filter: { site_meta_id: { _eq: fixture.id } },
+			limit: -1,
+		}),
+	);
+	const existingIds = existingTranslations
+		.map((row) => row.id)
+		.filter((id): id is number => typeof id === 'number');
+
+	if (existingIds.length > 0) {
+		try {
+			await client.request(deleteItems('site_meta_translations', existingIds));
+		} catch (err) {
+			const msgs = parseErrors(err);
+			throw new DirectusError(
+				500,
+				`Failed to clear site_meta translations: ${msgs.join(' · ')}`,
+			);
+		}
+	}
+
+	for (const t of toSiteMetaTranslationRows(fixture)) {
+		try {
+			await client.request(
+				createItem('site_meta_translations', {
+					...t,
+					site_meta_id: fixture.id,
+				} as unknown as DirectusSiteMetaTranslationRow & {
+					site_meta_id: number;
+				}),
+			);
+		} catch (err) {
+			const msgs = parseErrors(err);
+			throw new DirectusError(
+				500,
+				`Failed to create site_meta translation [${t.languages_code}]: ${msgs.join(' · ')}`,
+			);
+		}
 	}
 
 	log.info(`✓ site_meta upserted  id=${fixture.id}`);

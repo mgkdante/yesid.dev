@@ -47,6 +47,7 @@ import {
 	deleteFile,
 	readFolders,
 	readFiles,
+	updateFile,
 	uploadFiles,
 } from '@directus/sdk';
 import { z } from 'zod';
@@ -83,6 +84,11 @@ export const AssetsManifestSchema = z.object({
 
 export type AssetEntry = z.infer<typeof AssetEntrySchema>;
 export type AssetsManifest = z.infer<typeof AssetsManifestSchema>;
+export interface ImageMetadata {
+	type: string;
+	width?: number;
+	height?: number;
+}
 
 // --- Pure helpers (tested in tests/migrate-assets.test.ts) ------------------
 
@@ -156,6 +162,220 @@ export function deriveAltText(filename: string): string {
 		.join(' ');
 }
 
+export function mimeTypeForLegacyPath(legacyPath: string): string {
+	const ext = legacyPath.split('.').pop()?.toLowerCase();
+	switch (ext) {
+		case 'jpg':
+		case 'jpeg':
+			return 'image/jpeg';
+		case 'png':
+			return 'image/png';
+		case 'svg':
+			return 'image/svg+xml';
+		case 'webp':
+			return 'image/webp';
+		default:
+			return 'application/octet-stream';
+	}
+}
+
+function ascii(bytes: Uint8Array, start: number, length: number): string {
+	return String.fromCharCode(...bytes.slice(start, start + length));
+}
+
+function readUint16BE(bytes: Uint8Array, offset: number): number {
+	return (bytes[offset] << 8) | bytes[offset + 1];
+}
+
+function readUint16LE(bytes: Uint8Array, offset: number): number {
+	return bytes[offset] | (bytes[offset + 1] << 8);
+}
+
+function readUint24LE(bytes: Uint8Array, offset: number): number {
+	return bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16);
+}
+
+function readUint32BE(bytes: Uint8Array, offset: number): number {
+	return (
+		(bytes[offset] << 24) |
+		(bytes[offset + 1] << 16) |
+		(bytes[offset + 2] << 8) |
+		bytes[offset + 3]
+	) >>> 0;
+}
+
+function readUint32LE(bytes: Uint8Array, offset: number): number {
+	return (
+		bytes[offset] |
+		(bytes[offset + 1] << 8) |
+		(bytes[offset + 2] << 16) |
+		(bytes[offset + 3] << 24)
+	) >>> 0;
+}
+
+function validDimensions(
+	width: number,
+	height: number,
+): { width: number; height: number } | null {
+	if (!Number.isFinite(width) || !Number.isFinite(height)) return null;
+	if (width <= 0 || height <= 0) return null;
+	return { width, height };
+}
+
+function parsePngDimensions(bytes: Uint8Array): { width: number; height: number } | null {
+	const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+	if (bytes.length < 24) return null;
+	if (!pngSignature.every((value, index) => bytes[index] === value)) return null;
+	if (ascii(bytes, 12, 4) !== 'IHDR') return null;
+	return validDimensions(readUint32BE(bytes, 16), readUint32BE(bytes, 20));
+}
+
+function isJpegStartOfFrame(marker: number): boolean {
+	return (
+		(marker >= 0xc0 && marker <= 0xc3) ||
+		(marker >= 0xc5 && marker <= 0xc7) ||
+		(marker >= 0xc9 && marker <= 0xcb) ||
+		(marker >= 0xcd && marker <= 0xcf)
+	);
+}
+
+function parseJpegDimensions(bytes: Uint8Array): { width: number; height: number } | null {
+	if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return null;
+
+	let offset = 2;
+	while (offset + 4 < bytes.length) {
+		while (offset < bytes.length && bytes[offset] === 0xff) offset++;
+		const marker = bytes[offset];
+		offset++;
+
+		if (marker === 0xd9 || marker === 0xda) break;
+		if (offset + 2 > bytes.length) break;
+
+		const segmentLength = readUint16BE(bytes, offset);
+		if (segmentLength < 2 || offset + segmentLength > bytes.length) break;
+
+		if (isJpegStartOfFrame(marker) && segmentLength >= 7) {
+			const height = readUint16BE(bytes, offset + 3);
+			const width = readUint16BE(bytes, offset + 5);
+			return validDimensions(width, height);
+		}
+
+		offset += segmentLength;
+	}
+
+	return null;
+}
+
+function parseWebpDimensions(bytes: Uint8Array): { width: number; height: number } | null {
+	if (bytes.length < 30) return null;
+	if (ascii(bytes, 0, 4) !== 'RIFF' || ascii(bytes, 8, 4) !== 'WEBP') return null;
+
+	let offset = 12;
+	while (offset + 8 <= bytes.length) {
+		const chunkType = ascii(bytes, offset, 4);
+		const chunkSize = readUint32LE(bytes, offset + 4);
+		const dataOffset = offset + 8;
+		if (dataOffset + chunkSize > bytes.length) break;
+
+		if (chunkType === 'VP8X' && chunkSize >= 10) {
+			const width = readUint24LE(bytes, dataOffset + 4) + 1;
+			const height = readUint24LE(bytes, dataOffset + 7) + 1;
+			return validDimensions(width, height);
+		}
+
+		if (chunkType === 'VP8L' && chunkSize >= 5 && bytes[dataOffset] === 0x2f) {
+			const b0 = bytes[dataOffset + 1];
+			const b1 = bytes[dataOffset + 2];
+			const b2 = bytes[dataOffset + 3];
+			const b3 = bytes[dataOffset + 4];
+			const width = 1 + (((b1 & 0x3f) << 8) | b0);
+			const height = 1 + (((b3 & 0x0f) << 10) | (b2 << 2) | ((b1 & 0xc0) >> 6));
+			return validDimensions(width, height);
+		}
+
+		if (
+			chunkType === 'VP8 ' &&
+			chunkSize >= 10 &&
+			bytes[dataOffset + 3] === 0x9d &&
+			bytes[dataOffset + 4] === 0x01 &&
+			bytes[dataOffset + 5] === 0x2a
+		) {
+			const width = readUint16LE(bytes, dataOffset + 6) & 0x3fff;
+			const height = readUint16LE(bytes, dataOffset + 8) & 0x3fff;
+			return validDimensions(width, height);
+		}
+
+		offset = dataOffset + chunkSize + (chunkSize % 2);
+	}
+
+	return null;
+}
+
+function parseSvgNumber(value: string | undefined): number | null {
+	if (!value) return null;
+	const parsed = Number.parseFloat(value.trim());
+	return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
+function getSvgAttr(tag: string, attrName: string): string | undefined {
+	const match = tag.match(
+		new RegExp(`\\b${attrName}\\s*=\\s*(?:"([^"]+)"|'([^']+)'|([^\\s>]+))`, 'i'),
+	);
+	return match?.[1] ?? match?.[2] ?? match?.[3];
+}
+
+function parseSvgDimensions(bytes: Uint8Array): { width: number; height: number } | null {
+	const text = new TextDecoder('utf8').decode(bytes);
+	const svgTag = text.match(/<svg\b[^>]*>/i)?.[0];
+	if (!svgTag) return null;
+
+	const width = parseSvgNumber(getSvgAttr(svgTag, 'width'));
+	const height = parseSvgNumber(getSvgAttr(svgTag, 'height'));
+	if (width && height) return validDimensions(width, height);
+
+	const viewBox = getSvgAttr(svgTag, 'viewBox');
+	const parts = viewBox
+		?.trim()
+		.split(/[\s,]+/)
+		.map((part) => Number.parseFloat(part));
+	if (parts?.length === 4) {
+		return validDimensions(parts[2] ?? 0, parts[3] ?? 0);
+	}
+
+	return null;
+}
+
+export function imageMetadataFromBytes(legacyPath: string, bytes: Uint8Array): ImageMetadata {
+	const pngDimensions = parsePngDimensions(bytes);
+	if (pngDimensions) return { type: 'image/png', ...pngDimensions };
+
+	const jpegDimensions = parseJpegDimensions(bytes);
+	if (jpegDimensions) return { type: 'image/jpeg', ...jpegDimensions };
+
+	const webpDimensions = parseWebpDimensions(bytes);
+	if (webpDimensions) return { type: 'image/webp', ...webpDimensions };
+
+	const svgDimensions = parseSvgDimensions(bytes);
+	if (svgDimensions) return { type: 'image/svg+xml', ...svgDimensions };
+
+	return { type: mimeTypeForLegacyPath(legacyPath) };
+}
+
+export function imageMetadataForSource(absPath: string, legacyPath: string): ImageMetadata {
+	return imageMetadataFromBytes(legacyPath, readFileSync(absPath));
+}
+
+export function buildFileMetadataPatch(
+	file: Pick<DirectusFile, 'type' | 'width' | 'height'>,
+	expected: ImageMetadata,
+): { type?: string; width?: number; height?: number } {
+	const patch: { type?: string; width?: number; height?: number } = {};
+	if (file.type !== expected.type) patch.type = expected.type;
+	if (expected.width && file.width !== expected.width) patch.width = expected.width;
+	if (expected.height && file.height !== expected.height) patch.height = expected.height;
+	return patch;
+}
+
 /**
  * Partition manifest entries into { alreadyUploaded, toUpload } using a map of
  * existing files keyed by `legacy_path`. Replaces the pre-18c
@@ -214,6 +434,9 @@ interface DirectusFolder {
 interface DirectusFile {
 	id: string;
 	legacy_path: string | null;
+	type?: string | null;
+	width?: number | null;
+	height?: number | null;
 }
 
 async function ensureFolders(
@@ -253,7 +476,11 @@ async function uploadOne(
 	form.append('title', entry.title);
 	form.append('tags', JSON.stringify(['slice-18-migrated']));
 	const filename = entry.legacyPath.split('/').pop() ?? entry.legacyPath;
-	const blob = new Blob([bytes as unknown as BlobPart]);
+	const metadata = imageMetadataFromBytes(entry.legacyPath, bytes);
+	form.append('type', metadata.type);
+	if (metadata.width) form.append('width', String(metadata.width));
+	if (metadata.height) form.append('height', String(metadata.height));
+	const blob = new Blob([bytes as unknown as BlobPart], { type: metadata.type });
 	form.append('file', blob, filename);
 	const uploaded = (await client.request(uploadFiles(form))) as { id: string };
 	return uploaded.id;
@@ -309,11 +536,11 @@ export async function migrateAssets(
 	const wantedPaths = manifest.assets.map((a) => a.legacyPath);
 	const existingFiles = (await client.request(
 		readFiles({
-			fields: ['id', 'legacy_path'],
+			fields: ['id', 'legacy_path', 'type', 'width', 'height'],
 			filter: { legacy_path: { _in: wantedPaths } },
 			limit: -1,
 		}),
-	)) as Array<{ id: string; legacy_path: string | null }>;
+	)) as DirectusFile[];
 	const existingByLegacyPath = new Map<string, string>();
 	for (const f of existingFiles) {
 		if (f.legacy_path) existingByLegacyPath.set(f.legacy_path, f.id);
@@ -330,6 +557,36 @@ export async function migrateAssets(
 			}
 		}
 		existingByLegacyPath.clear();
+	} else {
+		const manifestByLegacyPath = new Map(
+			manifest.assets.map((entry) => [entry.legacyPath, entry]),
+		);
+		for (const file of existingFiles) {
+			if (!file.legacy_path) continue;
+			const entry = manifestByLegacyPath.get(file.legacy_path);
+			if (!entry) continue;
+			const expectedMetadata = imageMetadataForSource(
+				resolveSourcePath(entry, opts.sourceRoot),
+				file.legacy_path,
+			);
+			const patch = buildFileMetadataPatch(file, expectedMetadata);
+			if (Object.keys(patch).length === 0) continue;
+			try {
+				await client.request(updateFile(file.id, patch));
+				const changes = Object.entries(patch)
+					.map(([key, value]) => `${key}=${value}`)
+					.join(', ');
+				log.info(
+					`repaired file metadata: ${file.legacy_path} (${changes})`,
+				);
+			} catch (err) {
+				const msgs = parseErrors(err);
+				throw new DirectusError(
+					500,
+					`Failed to repair file metadata for ${file.legacy_path}: ${msgs.join(' · ')}`,
+				);
+			}
+		}
 	}
 
 	const { alreadyUploaded, toUpload } = filterToUpload(manifest, existingByLegacyPath);

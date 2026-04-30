@@ -17,6 +17,20 @@ function loadIdMap(): Record<string, string> {
 	return JSON.parse(readFileSync(path, 'utf8'));
 }
 
+function loadSharedIdMap(): Record<string, string> {
+	const path = joinPath(
+		import.meta.dir,
+		'..',
+		'..',
+		'..',
+		'packages',
+		'shared',
+		'fixtures',
+		'assets-id-map.json',
+	);
+	return JSON.parse(readFileSync(path, 'utf8'));
+}
+
 describe('fixtures/assets-id-map.json', () => {
 	it('parses against AssetsIdMapSchema (every key is "images/..." path; every value is UUID)', () => {
 		expect(() => AssetsIdMapSchema.parse(loadIdMap())).not.toThrow();
@@ -46,5 +60,9 @@ describe('fixtures/assets-id-map.json', () => {
 		expect(m['images/montreal-metro.svg']).toMatch(/^[0-9a-f-]{36}$/);
 		expect(m['images/about/headshot.webp']).toMatch(/^[0-9a-f-]{36}$/);
 		expect(m['images/work/yesid-dev.png']).toMatch(/^[0-9a-f-]{36}$/);
+	});
+
+	it('matches packages/shared copy exactly', () => {
+		expect(loadSharedIdMap()).toEqual(loadIdMap());
 	});
 });
