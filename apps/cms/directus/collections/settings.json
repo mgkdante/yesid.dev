@@ -2,6 +2,9 @@
   {
     "project_name": "yesid.dev CMS",
     "project_color": "#E07800",
+    "project_logo": "d610c3ad-e51a-4480-b3ed-0dfc78a7d511",
+    "public_foreground": "d610c3ad-e51a-4480-b3ed-0dfc78a7d511",
+    "public_favicon": "d610c3ad-e51a-4480-b3ed-0dfc78a7d511",
     "public_note": null,
     "auth_login_attempts": 25,
     "auth_password_policy": null,
@@ -95,9 +98,21 @@
     "custom_aspect_ratios": null,
     "default_appearance": "auto",
     "default_theme_light": "Directus Color Match",
-    "theme_light_overrides": null,
-    "default_theme_dark": "Directus Default",
-    "theme_dark_overrides": null,
+    "theme_light_overrides": {
+      "fontFamily": {
+        "sansSerif": "'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif",
+        "serif": "'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif",
+        "monospace": "'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace"
+      }
+    },
+    "default_theme_dark": "Directus Color Match",
+    "theme_dark_overrides": {
+      "fontFamily": {
+        "sansSerif": "'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif",
+        "serif": "'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif",
+        "monospace": "'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace"
+      }
+    },
     "report_error_url": null,
     "report_bug_url": null,
     "report_feature_url": null,
