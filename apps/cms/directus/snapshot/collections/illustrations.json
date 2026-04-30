@@ -9,7 +9,7 @@
     "collection": "illustrations",
     "color": null,
     "display_template": "{{label}} ({{category}})",
-    "group": null,
+    "group": "site_catalog",
     "hidden": false,
     "icon": "image",
     "item_duplication_fields": [
@@ -22,7 +22,7 @@
     "note": "Curated SVG illustration library — consumed by blog_posts.svg_illustration + projects.svg_illustration. Reusable across content types. ai-editor: cannot delete.",
     "preview_url": null,
     "singleton": false,
-    "sort": null,
+    "sort": 6,
     "sort_field": "sort",
     "translations": null,
     "unarchive_value": null,

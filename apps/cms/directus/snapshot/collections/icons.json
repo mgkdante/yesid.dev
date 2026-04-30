@@ -9,7 +9,7 @@
     "collection": "icons",
     "color": null,
     "display_template": "{{name}}",
-    "group": null,
+    "group": "site_catalog",
     "hidden": false,
     "icon": "emoji_symbols",
     "item_duplication_fields": [
@@ -21,7 +21,7 @@
     "note": "Editor-facing icon library. Each entry is a named icon that any content type can M2O reference. `iconify_id` stores the full Iconify reference (e.g. logos:react); `svg_override` takes precedence when set. Category tags for filtering.",
     "preview_url": null,
     "singleton": false,
-    "sort": null,
+    "sort": 5,
     "sort_field": "sort",
     "translations": null,
     "unarchive_value": "draft",

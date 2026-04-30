@@ -9,7 +9,7 @@
     "collection": "projects",
     "color": null,
     "display_template": "{{translations.title}}",
-    "group": null,
+    "group": "site_catalog",
     "hidden": false,
     "icon": "folder_special",
     "item_duplication_fields": [
@@ -26,7 +26,7 @@
     "note": "Portfolio projects with translated content (title, one_liner, description), sections, impact metrics, and M2M relations to services. AI-editor: cannot publish; cannot delete.",
     "preview_url": "https://yesid.dev/projects/{{id}}?share={{$CURRENT_SHARE.token}}",
     "singleton": false,
-    "sort": null,
+    "sort": 2,
     "sort_field": "sort",
     "translations": null,
     "unarchive_value": "draft",
