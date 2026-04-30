@@ -56,3 +56,4 @@ apps/web/static/images/*.source.svg
 # NOT ignored (stays tracked):
 #   /docs/ai-memory/, /docs/reference/{tools, WORKFLOW.md}
 # (brand/ and docs/superpowers/plans/ fully removed in chore/post-merge-cleanup PR.)
+.vercel
