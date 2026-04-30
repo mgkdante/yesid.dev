@@ -20,7 +20,7 @@ name: cms
 #                                    slice 18j (2026-04-30).
 # DIRECTUS_URL is hardcoded (public domain — not a secret).
 #
-# Slice: docs/slices/slice-18/plan.md § Phase 2 Task 22.
+# Source: Notion slice-18 plan, Phase 2 Task 22.
 
 on:
   push:

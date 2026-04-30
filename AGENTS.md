@@ -24,14 +24,14 @@ Setup for fork-safe Notion linkage:
 3. Replace each `<FILL IN>` with the real UUID from your Notion workspace.
 4. AI tools (Claude Code, Codex) merge AGENTS.local.md over AGENTS.md at session start.
 
-Specs do not have a dedicated DB — they're stored as slice trio child pages
-(`-spec` siblings of `-plan` and `-handoff`).
+Specs do not have a dedicated DB. Slice artifacts live as child pages under the
+Slice row: `-spec`, `-plan`, `-handoff`, and `-research`.
 -->
 
 
 # AGENTS.md — yesid.dev
 
-> Notion-canonical project. All workflow content lives in Notion at `Projects/yesid.dev/`. Plugin canonical docs at `Projects/mgkdante/workflow/`. Flat shape — no Public-safe/Private split.
+> Notion-canonical project. All workflow content lives in Notion at `Projects/yesid.dev/`. Plugin canonical docs live under `Projects/mgkdante/workflow-overlord/`. Flat shape - no Public-safe/Private split.
 
 ## Tool role bindings
 
@@ -39,12 +39,12 @@ See CLAUDE.md for Claude Code role bindings table.
 
 ## Where things live
 
-- Workflow discipline → Notion `Projects/mgkdante/workflow/WORKFLOW`
-- Project bindings (this project's specifics) → Notion `Projects/yesid.dev/Project/BINDINGS`
-- Brand → Notion `Projects/yesid.dev/Brand`
-- Slices, Specs (in slice trio child pages), Sessions, Conversations → databases (UUIDs in frontmatter above)
-- Memory → Notion `Projects/yesid.dev/Memory`; auto-pulled to local at session start (SessionStart hook)
-- Conversations → auto-pushed at session end (Stop hook)
+- Workflow discipline -> Notion `Projects/mgkdante/workflow-overlord/WORKFLOW`
+- Project bindings (this project's specifics) -> Notion `Projects/yesid.dev/Project/BINDINGS`
+- Brand -> Notion `Projects/yesid.dev/Brand`
+- Slices, slice child artifacts (`-spec`, `-plan`, `-handoff`, `-research`), Sessions, Conversations -> databases/pages (UUIDs in frontmatter above)
+- Memory -> Notion `Projects/yesid.dev/Memory`; auto-pulled to local at session start (SessionStart hook)
+- Conversations -> auto-pushed at session end (Stop hook)
 
 ## Runtime
 
@@ -68,19 +68,20 @@ All new API keys, tokens, passwords, service-account tokens, and client credenti
 
 ## Output destinations (Notion-canonical)
 
-**The plugin is Notion-canonical (post-2026-04-27, plugin v0.4.0+ / D21).** When AI tools (Claude Code, Codex) generate workflow artifacts during a session — specs, plans, handoffs, brainstorm output, session logs — those artifacts MUST land in Notion, not in the repo. The repo's `docs/` directory holds only `ai-memory/`. Every other documentation surface lives in Notion.
+**The plugin is Notion-canonical (post-2026-04-27, plugin v0.4.0+ / D21).** When AI tools (Claude Code, Codex) generate workflow artifacts during a session - specs, plans, handoffs, research, brainstorm output, session logs - those artifacts MUST land in Notion, not remain loose in the repo. The repo's `docs/` directory holds project-local support material only: `docs/ai-memory/`, `docs/reference/`, and explicit research-routing source files at `docs/research/<slice-id>-*.md` or `docs/slices/<slice-id>/research.md`. Every other workflow documentation surface lives in Notion.
 
-This rule overrides any third-party plugin's default file-output behavior (e.g., `superpowers:brainstorming`, `superpowers:writing-spec`, `superpowers:writing-plans` historically save to `docs/superpowers/specs/<date>-<name>.md` and `docs/superpowers/plans/<date>-<name>.md`). Under this workflow contract those defaults are SUPERSEDED — see the table below for canonical destinations.
+This rule overrides any third-party plugin's default file-output behavior (e.g., `superpowers:brainstorming`, `superpowers:writing-spec`, `superpowers:writing-plans` historically save to `docs/superpowers/specs/<date>-<name>.md` and `docs/superpowers/plans/<date>-<name>.md`). Under this workflow contract those defaults are superseded - see the table below for canonical destinations.
 
 ### Where each artifact goes
 
 | Artifact | Slice-context destination | Free-form (non-slice) destination |
 |---|---|---|
-| **Brainstorm output** (chat-driven option exploration) | Ephemeral; resolves into a Spec row body when planning completes. | Ephemeral; resolves into the Sessions DB row body. |
-| **Spec** (design decisions, scope, acceptance criteria) | Specs DB row body (linked from the Slice row's `Spec` relation). One row per spec. | Sessions DB row body OR a `Spec` child page under the Sessions row, if the work justifies a real spec. |
-| **Plan** (task breakdown, sequencing) | Slice row's child `Plan` page body (created by `/workflow-slice-open` from the plugin Plan template). | Sessions DB row body, or a `Plan` child page under the Sessions row. |
-| **Handoff** (PR body draft, peer-review notes, deferred risks) | Slice row's child `Handoff` page body. | N/A — non-slice work doesn't usually have a PR boundary. If it does, write to the Sessions row's body. |
-| **Mid-slice handoff** (`/workflow-handoff --action --for <topic>`) | A `Handoff: <topic>` child page under the Slice row (sibling of the slice-close `Handoff` page). | N/A — handoffs require a slice. |
+| **Brainstorm output** (chat-driven option exploration) | Ephemeral; resolves into the slice's `*-spec` page when planning completes. | Ephemeral; resolves into the Sessions DB row body. |
+| **Spec** (design decisions, scope, acceptance criteria) | Slice row child page: `<slice-id>-spec`. | Sessions DB row body OR a `Spec` child page under the Sessions row, if the work justifies a real spec. |
+| **Plan** (task breakdown, sequencing) | Slice row child page: `<slice-id>-plan`. | Sessions DB row body, or a `Plan` child page under the Sessions row. |
+| **Handoff** (PR body draft, peer-review notes, deferred risks) | Slice row child page: `<slice-id>-handoff`. | N/A - non-slice work doesn't usually have a PR boundary. If it does, write to the Sessions row's body. |
+| **Research** (slice-local source/provenance) | Slice row child page: `<slice-id>-research`, routed from `docs/research/<slice-id>-*.md` or `docs/slices/<slice-id>/research.md` via `/workflow-overlord-capture-research`. | N/A unless the Sessions row explicitly owns the research note. |
+| **Mid-slice handoff** (`/workflow-overlord-handoff --action --for <topic>`) | A `<slice-id>-handoff-<topic>` child page under the Slice row. | N/A - handoffs require a slice. |
 | **Session log** (cross-tool continuity narrative) | Sessions DB row (one per wall-clock session). The row's `Slices touched` relation links it to the active slice(s). | Sessions DB row with no `Slices touched` relation. |
 
 ### Override rule for third-party plugins
@@ -88,10 +89,10 @@ This rule overrides any third-party plugin's default file-output behavior (e.g.,
 When a third-party plugin (`superpowers`, others) wants to write to a `docs/<plugin-name>/` path during this workflow's session, the AI tool MUST:
 
 1. **Fetch** the artifact's intended content (per the plugin's normal flow).
-2. **Write** the content to the Notion destination from the table above (using `mcp__notion__notion-create-pages` / `notion-update-page`), NOT to the suggested file path.
+2. **Write** the content to the Notion destination from the table above (prefer `/workflow-overlord-capture <spec|plan|handoff>` or `/workflow-overlord-capture-research`; otherwise use the Notion four-primitive wrapper), NOT to the suggested file path.
 3. **Surface** the resolved Notion URL to the operator instead of the file path.
 
-The repo's `docs/` should only ever contain `ai-memory/` post-Phase-1. If the AI tool detects a non-`ai-memory/` path under `docs/` after a session, that's drift — flag it to the operator and propose moving the content to Notion.
+The repo's `docs/` should only contain `ai-memory/`, `reference/`, and research-routing sources post-Phase-1. If the AI tool detects any other workflow artifact under `docs/`, that's drift - flag it to the operator and move the content to Notion. Research files matching `docs/research/<slice-id>-*.md` or `docs/slices/<slice-id>/research.md` are allowed local source/provenance, but their canonical destination is still the slice's `*-research` page.
 
 ### Sessions DB row authoring (free-form)
 

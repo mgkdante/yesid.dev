@@ -94,7 +94,7 @@ Flags:
   --write                actually create files (default: dry-run preview)
   --force                overwrite existing files
 
-See docs/slices/slice-18/CONVENTIONS.md § 4 + § 6 for what the scaffolder targets.
+See the Notion slice-18 conventions page for what the scaffolder targets.
 `);
 }
 
