@@ -7,28 +7,39 @@
 import { fetchServiceSvgContents } from '$lib/utils';
 import {
 	getPublicProjects,
-	getAllTags,
-	getAllStackItems,
-	getServiceIdsForProjects,
 	getVisibleServices,
 	getProjectsPageContent,
 } from '$lib/repositories';
+import type { Project } from '$lib/types';
+
+function uniqueSorted(values: Iterable<string>): readonly string[] {
+	return [...new Set(values)].sort();
+}
+
+function tagsFromProjects(projects: readonly Project[]): readonly string[] {
+	return uniqueSorted(projects.flatMap((project) => project.tags));
+}
+
+function stackItemsFromProjects(projects: readonly Project[]): readonly string[] {
+	return uniqueSorted(projects.flatMap((project) => project.stack));
+}
+
+function serviceIdsFromProjects(projects: readonly Project[]): readonly string[] {
+	return uniqueSorted(projects.flatMap((project) => project.relatedServices));
+}
 
 export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; locals: App.Locals }) {
 	const ctx = { pageCache: locals.pageCache };
 
-	// services must resolve before fetchServiceSvgContents can run (post-17c
-	// the util no longer imports from $lib/content — services are threaded in
-	// explicitly). Everything else stays parallel.
-	const services = await getVisibleServices(ctx);
-	const [projects, tags, stackItems, serviceIds, serviceSvgContents, projectsPage] = await Promise.all([
+	const [services, projects, projectsPage] = await Promise.all([
+		getVisibleServices(ctx),
 		getPublicProjects(ctx),
-		getAllTags(ctx),
-		getAllStackItems(ctx),
-		getServiceIdsForProjects(ctx),
-		fetchServiceSvgContents(fetch, services),
 		getProjectsPageContent(ctx),
 	]);
+	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
+	const tags = tagsFromProjects(projects);
+	const stackItems = stackItemsFromProjects(projects);
+	const serviceIds = serviceIdsFromProjects(projects);
 
 	return { projects, tags, stackItems, serviceIds, services, serviceSvgContents, projectsPage };
 };

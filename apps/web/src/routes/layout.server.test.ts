@@ -12,7 +12,8 @@
 // to the known shape for clean assertion ergonomics.
 //
 // Coverage targets:
-//   - Happy path: all 4 nav slots + errorPage resolve → return shape correct
+//   - Happy path: all 4 nav slots resolve → return shape correct
+//   - Error route: errorPage resolves from adapter
 //   - Partial nav failure: one slot throws → that slot falls back to static
 //   - errorPage failure: adapter.content.errorPage throws → falls back to static
 //   - All-slots failure: every adapter call throws → all slots use static fixtures
@@ -82,10 +83,12 @@ async function callLoad(
 		route: { id: string | null };
 		params: Record<string, string>;
 		locals: App.Locals;
+		setHeaders: (headers: Record<string, string>) => void;
 	}) => Promise<LayoutData>)({
 		route: { id: routeId },
 		params,
 		locals: { pageCache: new Map() },
+		setHeaders: vi.fn(),
 	})) as LayoutData;
 }
 
@@ -149,7 +152,7 @@ beforeEach(() => {
 
 describe('+layout.server load', () => {
 	describe('happy path — all fetches resolve', () => {
-		it('returns all 4 nav slots and errorPage from adapter', async () => {
+		it('returns all 4 nav slots and static errorPage on normal routes', async () => {
 			mockByPlacement.mockImplementation(async (placement: string) => {
 				if (placement === 'header') return fakeHeaderLinks;
 				if (placement === 'footer') return fakeFooterLinks;
@@ -165,21 +168,34 @@ describe('+layout.server load', () => {
 			expect(result.footerLinks).toEqual(fakeFooterLinks);
 			expect(result.mobileLinks).toEqual(fakeMobileLinks);
 			expect(result.menuItems).toEqual(fakeMenuItems);
-			expect(result.errorPage).toEqual(fakeErrorPage);
+			expect(result.errorPage).toEqual(staticErrorPageContent);
 			expect(result.morphShapes).toEqual(fakeMorphShapes);
 			expect(result.seo).toEqual(fakeSeo);
 			expect(result.themeColor).toBe(fakeSiteSeoDefaults.themeColor);
 		});
 
+		it('does not fetch CMS errorPage on normal routes', async () => {
+			mockByPlacement.mockResolvedValue([]);
+
+			await callLoad('/');
+
+			expect(mockErrorPage).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('error route', () => {
 		it('errorPage is fetched with status code 0', async () => {
 			mockByPlacement.mockResolvedValue([]);
 			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
 
-			await callLoad();
+			const result = await callLoad(null);
 
+			expect(result.errorPage).toEqual(fakeErrorPage);
 			expect(mockErrorPage).toHaveBeenCalledWith(0, expect.objectContaining({ pageCache: expect.any(Map) }));
 		});
+	});
 
+	describe('happy path — all fetches resolve', () => {
 		it('all 4 placements are fetched via adapter.nav.byPlacement', async () => {
 			mockByPlacement.mockResolvedValue([]);
 			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
@@ -280,7 +296,7 @@ describe('+layout.server load', () => {
 			mockByPlacement.mockResolvedValue([]);
 			mockErrorPage.mockRejectedValueOnce(new Error('CMS unreachable'));
 
-			const result = await callLoad();
+			const result = await callLoad(null);
 
 			expect(result.errorPage).toEqual(staticErrorPageContent);
 		});
@@ -292,7 +308,7 @@ describe('+layout.server load', () => {
 			});
 			mockErrorPage.mockRejectedValueOnce(new Error('CMS unreachable'));
 
-			const result = await callLoad();
+			const result = await callLoad(null);
 
 			expect(result.headerLinks).toEqual(fakeHeaderLinks);
 			expect(result.errorPage).toEqual(staticErrorPageContent);
