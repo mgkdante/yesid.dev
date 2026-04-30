@@ -23,8 +23,17 @@ name: cms
 # Slice: docs/slices/slice-18/plan.md § Phase 2 Task 22.
 
 on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/cms/**'
+      - 'packages/shared/**'
+      - '.github/workflows/cms.yml'
+      - 'package.json'
+      - 'bun.lock'
+      - 'turbo.json'
   pull_request:
-    branches: [main]
+    branches: [main, develop]
     paths:
       - 'apps/cms/**'
       - 'packages/shared/**'
