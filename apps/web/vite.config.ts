@@ -27,7 +27,11 @@ export default defineConfig({
 	ssr: {
 		// bits-ui ships .svelte files in dist/ — Vite SSR must process them
 		// through the Svelte compiler instead of treating as native ESM.
-		noExternal: ['bits-ui'],
+		// gsap (+ plugins like Flip) ship CJS that breaks Node ESM SSR with
+		// "Named export not found" / "Cannot use import statement outside a
+		// module" — force Vite to bundle them so interop is resolved at build
+		// time. Verified fix for /blog + /projects 500 on yesid-dev.vercel.app.
+		noExternal: ['bits-ui', 'gsap'],
 	},
 	test: {
 		// Two projects: "data" for pure logic tests (node, fast),
