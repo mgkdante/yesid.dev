@@ -2,13 +2,34 @@ import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { adapter } from '$lib/adapters';
 import type { ErrorPageContent } from '$lib/content/nav';
 
+const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=60, stale-while-revalidate=300';
+const PUBLIC_CDN_CACHE_CONTROL = 'max-age=60, stale-while-revalidate=300';
+
+function isCacheablePublicPage(pathname: string, response: Response): boolean {
+	const contentType = response.headers.get('content-type') ?? '';
+	return (
+		contentType.includes('text/html') ||
+		(pathname.endsWith('/__data.json') && contentType.includes('application/json'))
+	);
+}
+
 export const handle: Handle = async ({ event, resolve }) => {
 	// Per-request memoization for loadPage(slug, ctx). One Map per HTTP
 	// request — multiple content.* calls within the same request resolve
 	// through the cache after the first fetch.
 	event.locals.pageCache = new Map();
 
-	return resolve(event);
+	const response = await resolve(event);
+	if (
+		event.request.method === 'GET' &&
+		response.status === 200 &&
+		isCacheablePublicPage(event.url.pathname, response)
+	) {
+		response.headers.set('cache-control', PUBLIC_PAGE_CACHE_CONTROL);
+		response.headers.set('cdn-cache-control', PUBLIC_CDN_CACHE_CONTROL);
+		response.headers.set('vercel-cdn-cache-control', PUBLIC_CDN_CACHE_CONTROL);
+	}
+	return response;
 };
 
 /**

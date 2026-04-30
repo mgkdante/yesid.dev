@@ -258,6 +258,26 @@ interface DirectusNavLinkRow {
 	translations?: DirectusNavLinkTranslation[];
 }
 
+const navRowsMemo = new WeakMap<object, Promise<DirectusNavLinkRow[]>>();
+
+async function fetchAllNavRows(ctx: PreviewContext): Promise<DirectusNavLinkRow[]> {
+	const cached = navRowsMemo.get(ctx as object);
+	if (cached) return cached;
+
+	const promise = client().request(
+		readItems('nav_links', {
+			filter: {
+				status: { _eq: 'published' },
+			} as unknown as Record<string, unknown>,
+			fields: ['*', 'translations.*', 'icon.*'] as unknown as (keyof DirectusNavLinkRow)[],
+			sort: ['priority'],
+		}),
+	) as Promise<DirectusNavLinkRow[]>;
+
+	navRowsMemo.set(ctx as object, promise);
+	return promise;
+}
+
 // ---------------------------------------------------------------------------
 // Error pages row shapes — slice-18i Phase 5 Task 5.3.
 //
@@ -1771,6 +1791,44 @@ export function toBlogPost(row: DirectusBlogPostRow): BlogPost {
 // $lib/content/blog.ts.
 export { resolveSvgFallbackNameSync as resolveSvgFallbackName, resolveAnimationDeterministic };
 
+const blogSvgAssetMemo = new Map<string, Promise<string>>();
+
+function fileUuidFromIllustration(row: DirectusIllustrationRow | undefined): string | null {
+	if (!row) return null;
+	return typeof row.file === 'object' ? row.file.id : row.file;
+}
+
+async function fetchIllustrationFileMap(illustrationIds: readonly string[]): Promise<Map<string, string>> {
+	const uniqueIds = [...new Set(illustrationIds.filter(Boolean))];
+	if (uniqueIds.length === 0) return new Map();
+
+	const rows = (await client().request(
+		readItems('illustrations', {
+			fields: ['id', { file: ['id'] } as unknown as keyof DirectusIllustrationRow],
+			filter: { id: { _in: uniqueIds } },
+			limit: -1,
+		}),
+	)) as unknown as DirectusIllustrationRow[];
+
+	const out = new Map<string, string>();
+	for (const row of rows) {
+		const fileUuid = fileUuidFromIllustration(row);
+		if (fileUuid) out.set(row.id, fileUuid);
+	}
+	return out;
+}
+
+async function fetchBlogSvgAsset(fileUuid: string): Promise<string> {
+	const cached = blogSvgAssetMemo.get(fileUuid);
+	if (cached) return cached;
+
+	const promise = assetsFetch()(`${assetsBaseUrl()}/assets/${fileUuid}`).then((res) =>
+		res.ok ? res.text() : '',
+	);
+	blogSvgAssetMemo.set(fileUuid, promise);
+	return promise;
+}
+
 // ---------------------------------------------------------------------------
 // Ports
 // ---------------------------------------------------------------------------
@@ -1792,10 +1850,10 @@ async function fetchServices(
 		}),
 	);
 	const services = (rows as unknown as DirectusService[]).map(toService);
-	for (const service of services) {
+	await Promise.all(services.map(async (service) => {
 		const ids = await fetchRelatedProjectsViaJunction(service.id, ctx);
 		(service as { relatedProjects: string[] }).relatedProjects = [...ids];
-	}
+	}));
 	return services;
 }
 
@@ -2576,50 +2634,25 @@ export const directusAdapter: ContentAdapter = {
 			return parsePort('blog.latest', z.array(BlogPostSchema), rows.map(toBlogPost));
 		},
 		svgContent: async (post, ctx) => {
-			// Step 1: resolve svg_illustration id for this post.
-			const rows = (await client().request(
-				readItems('blog_posts', {
-					fields: [
-						{ svg_illustration: ['id', { file: ['id'] }] } as unknown as keyof DirectusBlogPostRow,
-					],
-					filter: { id: { _eq: post.slug } },
-					limit: 1,
-				}),
-			)) as unknown as Array<{ svg_illustration: { id: string; file?: { id: string } } | string | null }>;
-			let illustrationId: string | null = null;
-			if (rows[0]) {
-				const ill = rows[0].svg_illustration;
-				illustrationId = typeof ill === 'object' && ill !== null ? ill.id : ill;
-			}
-			if (!illustrationId) {
-				illustrationId = resolveSvgFallbackNameSync(post.slug, post.category);
-			}
-			// Step 2: look up the file UUID from the illustrations collection.
-			const illRow = (await client().request(
-				readItems('illustrations', {
-					fields: [{ file: ['id'] } as unknown as 'file'],
-					filter: { id: { _eq: illustrationId } },
-					limit: 1,
-				}),
-			)) as unknown as Array<{ file: { id: string } | string }>;
-			const fileUuid = illRow[0]
-				? typeof illRow[0].file === 'object'
-					? illRow[0].file.id
-					: illRow[0].file
-				: null;
+			const illustrationId = post.svg || resolveSvgFallbackNameSync(post.slug, post.category);
+			const fileMap = await fetchIllustrationFileMap([illustrationId]);
+			const fileUuid = fileMap.get(illustrationId);
 			if (!fileUuid) return '';
-			// Step 3: fetch raw SVG bytes using the SSR-safe queued fetch.
-			const url = `${assetsBaseUrl()}/assets/${fileUuid}`;
-			const res = await assetsFetch()(url);
-			return res.ok ? await res.text() : '';
+			return fetchBlogSvgAsset(fileUuid);
 		},
 		svgContentsForPosts: async (posts, ctx) => {
-			const out: Record<string, string> = {};
-			const tasks = posts.map(async (p) => {
-				out[p.slug] = await directusAdapter.blog.svgContent(p, ctx);
-			});
-			await Promise.all(tasks);
-			return out;
+			const illustrationIds = posts.map((post) =>
+				post.svg || resolveSvgFallbackNameSync(post.slug, post.category),
+			);
+			const fileMap = await fetchIllustrationFileMap(illustrationIds);
+			const entries = await Promise.all(
+				posts.map(async (post, index) => {
+					const illustrationId = illustrationIds[index]!;
+					const fileUuid = fileMap.get(illustrationId);
+					return [post.slug, fileUuid ? await fetchBlogSvgAsset(fileUuid) : ''] as const;
+				}),
+			);
+			return Object.fromEntries(entries);
 		},
 		resolveSvgFallbackName: async (slug, category) => {
 			return resolveSvgFallbackNameSync(slug, category);
@@ -2986,17 +3019,22 @@ export const directusAdapter: ContentAdapter = {
 	// -------------------------------------------------------------------------
 
 	nav: {
-		async byPlacement(placement, _ctx?) {
-			const raw = (await client().request(
-				readItems('nav_links', {
-					filter: {
-						placement: { _eq: placement },
-						status: { _eq: 'published' },
-					} as unknown as Record<string, unknown>,
-					fields: ['*', 'translations.*', 'icon.*'] as unknown as (keyof DirectusNavLinkRow)[],
-					sort: ['priority'],
-				}),
-			)) as unknown as DirectusNavLinkRow[];
+		async byPlacement(placement, ctx?) {
+			let raw: DirectusNavLinkRow[];
+			if (ctx) {
+				raw = (await fetchAllNavRows(ctx)).filter((row) => row.placement === placement);
+			} else {
+				raw = (await client().request(
+					readItems('nav_links', {
+						filter: {
+							placement: { _eq: placement },
+							status: { _eq: 'published' },
+						} as unknown as Record<string, unknown>,
+						fields: ['*', 'translations.*', 'icon.*'] as unknown as (keyof DirectusNavLinkRow)[],
+						sort: ['priority'],
+					}),
+				)) as unknown as DirectusNavLinkRow[];
+			}
 
 			const transformed = raw.map(transformNavLink);
 			return parsePort('nav.byPlacement', z.array(NavLinkSchema), transformed);
