@@ -2,7 +2,7 @@
 	"name": "yesid-dev",
 	"private": true,
 	"type": "module",
-	"description": "yesid.dev monorepo — apps/web (SvelteKit consumer) + apps/cms (Directus config). See docs/slices/slice-18/plan.md.",
+	"description": "yesid.dev monorepo - apps/web (SvelteKit consumer) + apps/cms (Directus config). See docs/reference/WORKFLOW.md.",
 	"packageManager": "bun@1.3.11",
 	"workspaces": [
 		"apps/*",

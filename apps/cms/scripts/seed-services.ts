@@ -306,7 +306,7 @@ export async function seedServices(
 			`[seed] found ${existing.length} existing services. ` +
 				`Seed currently runs in reset-only mode. Re-run with --reset to clear + recreate, ` +
 				`or switch to Data Studio for incremental edits. ` +
-				`(Upsert support lands with projects in 18e — see docs/slices/slice-18/plan.md.)`,
+				`(Upsert support lands with projects in 18e - see the Notion slice-18 plan.)`,
 		);
 	}
 

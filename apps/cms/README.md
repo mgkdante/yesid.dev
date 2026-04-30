@@ -2,7 +2,7 @@
 
 Directus 11+ CMS backend for [yesid.dev](https://yesid.dev). Currently scaffolded, awaiting provisioning.
 
-The authoritative plan lives in the consumer repo: **[yesid.dev/docs/slices/slice-18](https://github.com/yesid-dev/yesid.dev/tree/main/docs/slices/slice-18)** — start there for decisions, tasks, research findings.
+The authoritative migration plan, decisions, tasks, and research findings live in Notion under the yesid.dev slice-18 artifact pages. This README is the operational reference for the CMS package.
 
 ## Current state
 
@@ -290,10 +290,10 @@ Pure consumer changes (new component, styling, route) do NOT need a PR here. Pur
 | Markdown for blog | Block Editor | Preserves `marked.parse` pipeline on yesid.dev; zero consumer changes. |
 | Native Translations field | JSON-per-field · collection-per-locale | Directus-idiomatic editor UX + adapter-boundary `toLocalizedString` transform keeps `LocalizedString` shape unchanged. |
 
-Full rationale in [yesid.dev slice-18 spec § Design decisions](https://github.com/yesid-dev/yesid.dev/blob/main/docs/slices/slice-18/spec.md).
+Full rationale lives in the Notion slice-18 spec and research pages.
 
 ## Related
 
-- [yesid.dev slice-18 plan](https://github.com/yesid-dev/yesid.dev/blob/main/docs/slices/slice-18/plan.md) — task roadmap
-- [yesid.dev slice-18 research.md](https://github.com/yesid-dev/yesid.dev/blob/main/docs/slices/slice-18/research.md) — Directus findings
-- [Pivot research](https://github.com/yesid-dev/yesid.dev/tree/main/docs/slices/slice-headless-cms-best-practices) — why Directus beat Payload (append-only reference)
+- Notion slice-18 plan - task roadmap.
+- Notion slice-18 research - Directus findings.
+- Notion headless-CMS pivot research - why Directus beat Payload.

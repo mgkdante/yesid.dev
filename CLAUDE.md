@@ -25,7 +25,7 @@ Tool-agnostic rules → `AGENTS.md`. Claude-specific detail → `docs/reference/
 
 ## Notion-canonical state
 
-This project is **Notion-canonical** as of 2026-04-28 (Phase 2 migration complete). All workflow content (slices, specs, sessions, conversations, brand narrative, project docs) lives in Notion at `Projects/yesid.dev/`. The local repo's `docs/` holds only `docs/ai-memory/` and `docs/reference/`.
+This project is **Notion-canonical** as of 2026-04-28 (Phase 2 migration complete). All workflow content (slices, specs, plans, handoffs, research, sessions, conversations, brand narrative, project docs) lives in Notion at `Projects/yesid.dev/`. The local repo's `docs/` holds only `docs/ai-memory/`, `docs/reference/`, and explicit research-routing sources at `docs/research/<slice-id>-*.md` or `docs/slices/<slice-id>/research.md`.
 
 ## Portability note
 
