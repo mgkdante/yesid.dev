@@ -255,7 +255,7 @@
 			bind:this={scrollPrompt}
 			class="scroll-prompt pointer-events-none absolute left-0 w-full text-center font-mono font-black uppercase leading-[0.95] text-primary md:whitespace-nowrap md:leading-none"
 		>
-			<span bind:this={scrollText}></span><span bind:this={scrollCursorEl} class="scroll-block-cursor" aria-hidden="true">&#x2588;</span>
+			<span bind:this={scrollText}></span><span bind:this={scrollCursorEl} class="scroll-block-cursor typewriter-cursor" aria-hidden="true">&#x2588;</span>
 		</p>
 	</div>
 
