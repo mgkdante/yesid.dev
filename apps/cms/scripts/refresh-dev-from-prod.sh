@@ -55,18 +55,29 @@ if [[ "$ans" != "y" && "$ans" != "Y" ]]; then
 fi
 echo ""
 
-echo "[1/3] Neon: reset dev branch from main..."
+echo "[1/3] Neon: reset dev branch from parent..."
 if [[ -z "${NEON_API_KEY:-}" ]]; then
   echo "  ERROR: NEON_API_KEY not set."
-  echo "  Add to apps/cms/.env: NEON_API_KEY=op://yesid-dev/<neon-api-key-item>/credential"
+  echo "  Add to apps/cms/.env: NEON_API_KEY=op://yesid-dev/Neon API key - yesid/credential"
   exit 1
 fi
+# Note: dev branch's registered parent in Neon is "production" (not "main").
+# reset_to_parent re-forks dev from the parent's current state — no source_branch_id needed.
 curl -sS -X POST \
   -H "Authorization: Bearer $NEON_API_KEY" \
   -H "Content-Type: application/json" \
-  "https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches/$NEON_DEV_BRANCH_ID/restore" \
-  --data "{\"source_branch_id\":\"$(curl -sS -H \"Authorization: Bearer $NEON_API_KEY\" \"https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches\" | python -c 'import sys,json; b=json.load(sys.stdin); main=next(x for x in b[\"branches\"] if x[\"name\"]==\"main\"); print(main[\"id\"])')\",\"preserve_under_name\":\"\"}" \
-  | python -c "import sys,json; d=json.load(sys.stdin); print('  OK' if d.get('branch') else f'  ERR: {json.dumps(d)[:200]}')"
+  "https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches/$NEON_DEV_BRANCH_ID/reset_to_parent" \
+  | python -c "
+import sys, json
+try:
+    d = json.load(sys.stdin)
+    if d.get('branch') or d.get('operations'):
+        print('  OK Neon dev branch reset to parent state')
+    else:
+        print(f'  ERR: {json.dumps(d)[:300]}')
+except Exception as e:
+    print(f'  Parse err: {e}')
+"
 
 echo ""
 echo "[2/3] R2: sync prod bucket → dev bucket..."
