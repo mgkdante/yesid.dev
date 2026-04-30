@@ -2283,7 +2283,10 @@
     "validation": null,
     "presets": null,
     "fields": [
+      "back_to_dispatches",
+      "back_to_personal",
       "block_blog_page_content_id",
+      "heading",
       "id",
       "intro",
       "languages_code"

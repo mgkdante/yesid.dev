@@ -105,6 +105,10 @@ type Query {
   site_meta_translations_by_version(version: String!, id: ID!): version_site_meta_translations
   site_meta(version: String): site_meta
   site_meta_by_version(version: String!): version_site_meta
+  block_blog_page_content_translations(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_blog_page_content_translations!]!
+  block_blog_page_content_translations_by_id(id: ID!, version: String): block_blog_page_content_translations
+  block_blog_page_content_translations_aggregated(groupBy: [String], filter: block_blog_page_content_translations_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [block_blog_page_content_translations_aggregated!]!
+  block_blog_page_content_translations_by_version(version: String!, id: ID!): version_block_blog_page_content_translations
   block_about_content(filter: block_about_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_about_content!]!
   block_about_content_by_id(id: ID!, version: String): block_about_content
   block_about_content_aggregated(groupBy: [String], filter: block_about_content_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [block_about_content_aggregated!]!
@@ -125,10 +129,6 @@ type Query {
   block_blog_page_content_by_id(id: ID!, version: String): block_blog_page_content
   block_blog_page_content_aggregated(groupBy: [String], filter: block_blog_page_content_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [block_blog_page_content_aggregated!]!
   block_blog_page_content_by_version(version: String!, id: ID!): version_block_blog_page_content
-  block_blog_page_content_translations(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_blog_page_content_translations!]!
-  block_blog_page_content_translations_by_id(id: ID!, version: String): block_blog_page_content_translations
-  block_blog_page_content_translations_aggregated(groupBy: [String], filter: block_blog_page_content_translations_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [block_blog_page_content_translations_aggregated!]!
-  block_blog_page_content_translations_by_version(version: String!, id: ID!): version_block_blog_page_content_translations
   block_closer(filter: block_closer_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): [block_closer!]!
   block_closer_by_id(id: ID!, version: String): block_closer
   block_closer_aggregated(groupBy: [String], filter: block_closer_filter, limit: Int, offset: Int, page: Int, search: String, sort: [String]): [block_closer_aggregated!]!
@@ -284,6 +284,8 @@ type Mutation {
   create_route_seo_item(data: create_route_seo_input!): route_seo
   create_site_meta_translations_items(filter: site_meta_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_site_meta_translations_input!]): [site_meta_translations!]!
   create_site_meta_translations_item(data: create_site_meta_translations_input!): site_meta_translations
+  create_block_blog_page_content_translations_items(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_block_blog_page_content_translations_input!]): [block_blog_page_content_translations!]!
+  create_block_blog_page_content_translations_item(data: create_block_blog_page_content_translations_input!): block_blog_page_content_translations
   create_block_about_content_items(filter: block_about_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_block_about_content_input!]): [block_about_content!]!
   create_block_about_content_item(data: create_block_about_content_input!): block_about_content
   create_block_about_content_translations_items(filter: block_about_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_block_about_content_translations_input!]): [block_about_content_translations!]!
@@ -294,8 +296,6 @@ type Mutation {
   create_block_about_intro_translations_item(data: create_block_about_intro_translations_input!): block_about_intro_translations
   create_block_blog_page_content_items(filter: block_blog_page_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_block_blog_page_content_input!]): [block_blog_page_content!]!
   create_block_blog_page_content_item(data: create_block_blog_page_content_input!): block_blog_page_content
-  create_block_blog_page_content_translations_items(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_block_blog_page_content_translations_input!]): [block_blog_page_content_translations!]!
-  create_block_blog_page_content_translations_item(data: create_block_blog_page_content_translations_input!): block_blog_page_content_translations
   create_block_closer_items(filter: block_closer_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_block_closer_input!]): [block_closer!]!
   create_block_closer_item(data: create_block_closer_input!): block_closer
   create_block_closer_translations_items(filter: block_closer_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [create_block_closer_translations_input!]): [block_closer_translations!]!
@@ -425,6 +425,9 @@ type Mutation {
   update_site_meta_translations_batch(filter: site_meta_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_site_meta_translations_input!]): [site_meta_translations!]!
   update_site_meta_translations_item(id: ID!, data: update_site_meta_translations_input!): site_meta_translations
   update_site_meta(data: update_site_meta_input!): site_meta
+  update_block_blog_page_content_translations_items(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_block_blog_page_content_translations_input!): [block_blog_page_content_translations!]!
+  update_block_blog_page_content_translations_batch(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_block_blog_page_content_translations_input!]): [block_blog_page_content_translations!]!
+  update_block_blog_page_content_translations_item(id: ID!, data: update_block_blog_page_content_translations_input!): block_blog_page_content_translations
   update_block_about_content_items(filter: block_about_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_block_about_content_input!): [block_about_content!]!
   update_block_about_content_batch(filter: block_about_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_block_about_content_input!]): [block_about_content!]!
   update_block_about_content_item(id: ID!, data: update_block_about_content_input!): block_about_content
@@ -440,9 +443,6 @@ type Mutation {
   update_block_blog_page_content_items(filter: block_blog_page_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_block_blog_page_content_input!): [block_blog_page_content!]!
   update_block_blog_page_content_batch(filter: block_blog_page_content_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_block_blog_page_content_input!]): [block_blog_page_content!]!
   update_block_blog_page_content_item(id: ID!, data: update_block_blog_page_content_input!): block_blog_page_content
-  update_block_blog_page_content_translations_items(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_block_blog_page_content_translations_input!): [block_blog_page_content_translations!]!
-  update_block_blog_page_content_translations_batch(filter: block_blog_page_content_translations_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_block_blog_page_content_translations_input!]): [block_blog_page_content_translations!]!
-  update_block_blog_page_content_translations_item(id: ID!, data: update_block_blog_page_content_translations_input!): block_blog_page_content_translations
   update_block_closer_items(filter: block_closer_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, ids: [ID]!, data: update_block_closer_input!): [block_closer!]!
   update_block_closer_batch(filter: block_closer_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String, data: [update_block_closer_input!]): [block_closer!]!
   update_block_closer_item(id: ID!, data: update_block_closer_input!): block_closer
@@ -570,6 +570,8 @@ type Mutation {
   delete_route_seo_item(id: ID!): delete_one
   delete_site_meta_translations_items(ids: [ID]!): delete_many
   delete_site_meta_translations_item(id: ID!): delete_one
+  delete_block_blog_page_content_translations_items(ids: [ID]!): delete_many
+  delete_block_blog_page_content_translations_item(id: ID!): delete_one
   delete_block_about_content_items(ids: [ID]!): delete_many
   delete_block_about_content_item(id: ID!): delete_one
   delete_block_about_content_translations_items(ids: [ID]!): delete_many
@@ -580,8 +582,6 @@ type Mutation {
   delete_block_about_intro_translations_item(id: ID!): delete_one
   delete_block_blog_page_content_items(ids: [ID]!): delete_many
   delete_block_blog_page_content_item(id: ID!): delete_one
-  delete_block_blog_page_content_translations_items(ids: [ID]!): delete_many
-  delete_block_blog_page_content_translations_item(id: ID!): delete_one
   delete_block_closer_items(ids: [ID]!): delete_many
   delete_block_closer_item(id: ID!): delete_one
   delete_block_closer_translations_items(ids: [ID]!): delete_many
@@ -685,12 +685,12 @@ type Subscription {
   route_seo_mutated(event: EventEnum): route_seo_mutated
   site_meta_translations_mutated(event: EventEnum): site_meta_translations_mutated
   site_meta_mutated(event: EventEnum): site_meta_mutated
+  block_blog_page_content_translations_mutated(event: EventEnum): block_blog_page_content_translations_mutated
   block_about_content_mutated(event: EventEnum): block_about_content_mutated
   block_about_content_translations_mutated(event: EventEnum): block_about_content_translations_mutated
   block_about_intro_mutated(event: EventEnum): block_about_intro_mutated
   block_about_intro_translations_mutated(event: EventEnum): block_about_intro_translations_mutated
   block_blog_page_content_mutated(event: EventEnum): block_blog_page_content_mutated
-  block_blog_page_content_translations_mutated(event: EventEnum): block_blog_page_content_translations_mutated
   block_closer_mutated(event: EventEnum): block_closer_mutated
   block_closer_translations_mutated(event: EventEnum): block_closer_translations_mutated
   block_contact_content_mutated(event: EventEnum): block_contact_content_mutated
@@ -1237,6 +1237,21 @@ type block_blog_page_content_translations {
   """
   intro: String
   languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Listing-page heading (BlogPageContent.heading). Currently "Dispatches" on /blog professional.
+  """
+  heading: String
+
+  """
+  Detail-page back-link label when post.category=professional (BlogPageContent.backToDispatches).
+  """
+  back_to_dispatches: String
+
+  """
+  Detail-page back-link label when post.category=personal (BlogPageContent.backToPersonal).
+  """
+  back_to_personal: String
 }
 
 type block_blog_page_content_translations_aggregated {
@@ -1261,6 +1276,21 @@ type block_blog_page_content_translations_aggregated_count {
   """
   intro: Int
   languages_code: Int
+
+  """
+  Listing-page heading (BlogPageContent.heading). Currently "Dispatches" on /blog professional.
+  """
+  heading: Int
+
+  """
+  Detail-page back-link label when post.category=professional (BlogPageContent.backToDispatches).
+  """
+  back_to_dispatches: Int
+
+  """
+  Detail-page back-link label when post.category=personal (BlogPageContent.backToPersonal).
+  """
+  back_to_personal: Int
 }
 
 type block_blog_page_content_translations_aggregated_fields {
@@ -5530,6 +5560,21 @@ type version_block_blog_page_content_translations {
   """
   intro: String
   languages_code: JSON
+
+  """
+  Listing-page heading (BlogPageContent.heading). Currently "Dispatches" on /blog professional.
+  """
+  heading: String
+
+  """
+  Detail-page back-link label when post.category=professional (BlogPageContent.backToDispatches).
+  """
+  back_to_dispatches: String
+
+  """
+  Detail-page back-link label when post.category=personal (BlogPageContent.backToPersonal).
+  """
+  back_to_personal: String
 }
 
 """"""
@@ -6818,6 +6863,9 @@ input block_blog_page_content_translations_filter {
   id: number_filter_operators
   intro: string_filter_operators
   languages_code: languages_filter
+  heading: string_filter_operators
+  back_to_dispatches: string_filter_operators
+  back_to_personal: string_filter_operators
   _and: [block_blog_page_content_translations_filter]
   _or: [block_blog_page_content_translations_filter]
 }
@@ -6828,6 +6876,9 @@ input block_blog_page_content_translations_quantifier_filter {
   id: number_filter_operators
   intro: string_filter_operators
   languages_code: languages_filter
+  heading: string_filter_operators
+  back_to_dispatches: string_filter_operators
+  back_to_personal: string_filter_operators
   _and: [block_blog_page_content_translations_filter]
   _or: [block_blog_page_content_translations_filter]
   _some: block_blog_page_content_translations_filter
@@ -7474,6 +7525,21 @@ input create_block_blog_page_content_translations_input {
   """
   intro: String
   languages_code: create_languages_input
+
+  """
+  Listing-page heading (BlogPageContent.heading). Currently "Dispatches" on /blog professional.
+  """
+  heading: String
+
+  """
+  Detail-page back-link label when post.category=professional (BlogPageContent.backToDispatches).
+  """
+  back_to_dispatches: String
+
+  """
+  Detail-page back-link label when post.category=personal (BlogPageContent.backToPersonal).
+  """
+  back_to_personal: String
 }
 
 input create_block_closer_input {
@@ -10161,6 +10227,21 @@ input update_block_blog_page_content_translations_input {
   """
   intro: String
   languages_code: update_languages_input
+
+  """
+  Listing-page heading (BlogPageContent.heading). Currently "Dispatches" on /blog professional.
+  """
+  heading: String
+
+  """
+  Detail-page back-link label when post.category=professional (BlogPageContent.backToDispatches).
+  """
+  back_to_dispatches: String
+
+  """
+  Detail-page back-link label when post.category=personal (BlogPageContent.backToPersonal).
+  """
+  back_to_personal: String
 }
 
 input update_block_closer_input {

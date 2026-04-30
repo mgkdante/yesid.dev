@@ -3,7 +3,7 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "b555e9e3bf484688cd3c7ad9b49aa5ac3aa0e0e7"
+    "version": "71f0423db03fd3f58d9b66a09efb7608ba2bc6e2"
   },
   "servers": [
     {
@@ -17618,6 +17618,395 @@
         ]
       }
     },
+    "/items/block_blog_page_content_translations": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new block_blog_page_content_translations item.",
+        "tags": [
+          "Items",
+          "ItemsBlockBlogPageContentTranslations"
+        ],
+        "operationId": "createItemsBlockBlogPageContentTranslations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the block_blog_page_content_translations items.",
+        "tags": [
+          "Items",
+          "ItemsBlockBlogPageContentTranslations"
+        ],
+        "operationId": "readItemsBlockBlogPageContentTranslations",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Multiple Items",
+        "description": "Update multiple block_blog_page_content_translations items at the same time.",
+        "tags": [
+          "Items",
+          "ItemsBlockBlogPageContentTranslations"
+        ],
+        "operationId": "updateItemsBlockBlogPageContentTranslations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Multiple Items",
+        "description": "Delete multiple existing block_blog_page_content_translations items.",
+        "tags": [
+          "Items",
+          "ItemsBlockBlogPageContentTranslations"
+        ],
+        "operationId": "deleteItemsBlockBlogPageContentTranslations",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/items/block_blog_page_content_translations/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single block_blog_page_content_translations item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsBlockBlogPageContentTranslations"
+        ],
+        "operationId": "readSingleItemsBlockBlogPageContentTranslations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Version"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing block_blog_page_content_translations item.",
+        "tags": [
+          "Items",
+          "ItemsBlockBlogPageContentTranslations"
+        ],
+        "operationId": "updateSingleItemsBlockBlogPageContentTranslations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing block_blog_page_content_translations item.",
+        "tags": [
+          "Items",
+          "ItemsBlockBlogPageContentTranslations"
+        ],
+        "operationId": "deleteSingleItemsBlockBlogPageContentTranslations",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "/items/block_about_content": {
       "post": {
         "summary": "Create an Item",
@@ -19528,395 +19917,6 @@
           "ItemsBlockBlogPageContent"
         ],
         "operationId": "deleteSingleItemsBlockBlogPageContent",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
-    "/items/block_blog_page_content_translations": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new block_blog_page_content_translations item.",
-        "tags": [
-          "Items",
-          "ItemsBlockBlogPageContentTranslations"
-        ],
-        "operationId": "createItemsBlockBlogPageContentTranslations",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the block_blog_page_content_translations items.",
-        "tags": [
-          "Items",
-          "ItemsBlockBlogPageContentTranslations"
-        ],
-        "operationId": "readItemsBlockBlogPageContentTranslations",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple block_blog_page_content_translations items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsBlockBlogPageContentTranslations"
-        ],
-        "operationId": "updateItemsBlockBlogPageContentTranslations",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing block_blog_page_content_translations items.",
-        "tags": [
-          "Items",
-          "ItemsBlockBlogPageContentTranslations"
-        ],
-        "operationId": "deleteItemsBlockBlogPageContentTranslations",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/block_blog_page_content_translations/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single block_blog_page_content_translations item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsBlockBlogPageContentTranslations"
-        ],
-        "operationId": "readSingleItemsBlockBlogPageContentTranslations",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing block_blog_page_content_translations item.",
-        "tags": [
-          "Items",
-          "ItemsBlockBlogPageContentTranslations"
-        ],
-        "operationId": "updateSingleItemsBlockBlogPageContentTranslations",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsBlockBlogPageContentTranslations"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing block_blog_page_content_translations item.",
-        "tags": [
-          "Items",
-          "ItemsBlockBlogPageContentTranslations"
-        ],
-        "operationId": "deleteSingleItemsBlockBlogPageContentTranslations",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -29927,6 +29927,11 @@
       "description": "Site identity + SEO defaults (brand name, contact links, owner identity, fallback OG image, theme color). Singleton — one row only. CMS source-of-truth replacing apps/web/src/lib/content/meta.ts § siteMeta."
     },
     {
+      "name": "ItemsBlockBlogPageContentTranslations",
+      "x-collection": "block_blog_page_content_translations",
+      "description": "Translated copy for block_blog_page_content. 1 string column (intro)."
+    },
+    {
       "name": "ItemsBlockAboutContent",
       "x-collection": "block_about_content",
       "description": "About page content block (/about). Non-translatable: client_count (integer) on parent. All other fields are JSON columns in translations — each top-level chunk (identity, metrics, methodology, testimonials, tech_stack, interests, weather, client_logos, cta, stop_labels, labels, meta) is one JSON column preserving the nested TS shape with bare strings."
@@ -29950,11 +29955,6 @@
       "name": "ItemsBlockBlogPageContent",
       "x-collection": "block_blog_page_content",
       "description": "Blog page chrome block (/blog). Minimal stub — only intro field per BlogPageContentSchema. Expand when content design lands."
-    },
-    {
-      "name": "ItemsBlockBlogPageContentTranslations",
-      "x-collection": "block_blog_page_content_translations",
-      "description": "Translated copy for block_blog_page_content. 1 string column (intro)."
     },
     {
       "name": "ItemsBlockCloser",
@@ -33569,6 +33569,63 @@
           "owner_region"
         ]
       },
+      "ItemsBlockBlogPageContentTranslations": {
+        "type": "object",
+        "properties": {
+          "block_blog_page_content_id": {
+            "nullable": false,
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsBlockBlogPageContent"
+              }
+            ]
+          },
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "intro": {
+            "nullable": true,
+            "description": "Per-locale intro copy (BlogPageContentSchema.intro). Expand schema here when content design lands.",
+            "type": "string"
+          },
+          "languages_code": {
+            "nullable": false,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsLanguages"
+              }
+            ]
+          },
+          "heading": {
+            "nullable": true,
+            "description": "Listing-page heading (BlogPageContent.heading). Currently \"Dispatches\" on /blog professional.",
+            "type": "string"
+          },
+          "back_to_dispatches": {
+            "nullable": true,
+            "description": "Detail-page back-link label when post.category=professional (BlogPageContent.backToDispatches).",
+            "type": "string"
+          },
+          "back_to_personal": {
+            "nullable": true,
+            "description": "Detail-page back-link label when post.category=personal (BlogPageContent.backToPersonal).",
+            "type": "string"
+          }
+        },
+        "x-collection": "block_blog_page_content_translations",
+        "required": [
+          "block_blog_page_content_id",
+          "languages_code"
+        ]
+      },
       "ItemsBlockAboutContent": {
         "type": "object",
         "properties": {
@@ -33877,48 +33934,6 @@
         "required": [
           "editor_label",
           "id"
-        ]
-      },
-      "ItemsBlockBlogPageContentTranslations": {
-        "type": "object",
-        "properties": {
-          "block_blog_page_content_id": {
-            "nullable": false,
-            "oneOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsBlockBlogPageContent"
-              }
-            ]
-          },
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "intro": {
-            "nullable": true,
-            "description": "Per-locale intro copy (BlogPageContentSchema.intro). Expand schema here when content design lands.",
-            "type": "string"
-          },
-          "languages_code": {
-            "nullable": false,
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsLanguages"
-              }
-            ]
-          }
-        },
-        "x-collection": "block_blog_page_content_translations",
-        "required": [
-          "block_blog_page_content_id",
-          "languages_code"
         ]
       },
       "ItemsBlockCloser": {

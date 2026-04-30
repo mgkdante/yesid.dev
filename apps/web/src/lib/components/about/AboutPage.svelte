@@ -90,7 +90,7 @@
 				</div>
 
 				<!-- SELL/PERSONAL ROW 3 -->
-				<div class="area-clients"><AboutLogos logos={c.clientLogos} count={c.clientCount} stop={s[5]} label={resolveLocale(c.stopLabels.clients, 'en')} /></div>
+				<div class="area-clients"><AboutLogos logos={c.clientLogos} count={c.clientCount} stop={s[5]} label={resolveLocale(c.stopLabels.clients, 'en')} counterLabel={resolveLocale(c.labels.clientsServed, 'en')} /></div>
 				<div class="area-interests"><AboutInterests interests={c.interests} stop={s[7]} label={resolveLocale(c.stopLabels.interests, 'en')} /></div>
 				<div class="area-snapshots" data-testid="about-polaroids-cell"><AboutPolaroids polaroids={c.identity.polaroids} stop={s[8]} label={resolveLocale(c.stopLabels.snapshots, 'en')} /></div>
 

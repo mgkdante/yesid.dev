@@ -4,6 +4,7 @@ import {
 	getPostBySlug,
 	getPostBody,
 	getSvgContent,
+	getBlogPageContent,
 } from '$lib/repositories';
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
 
@@ -11,10 +12,11 @@ export async function load({ params }: { params: { slug: string } }) {
 	const post = await getPostBySlug(params.slug);
 	if (!post) error(404, 'Post not found');
 
-	const [body, svgContent, allPosts] = await Promise.all([
+	const [body, svgContent, allPosts, blogPage] = await Promise.all([
 		getPostBody(params.slug),
 		getSvgContent(post),
 		getAllPosts(),
+		getBlogPageContent(),
 	]);
 
 	if (!body) error(404, 'Post body missing');
@@ -34,5 +36,6 @@ export async function load({ params }: { params: { slug: string } }) {
 		wordCount: words,
 		headings,
 		postIndex,
+		blogPage,
 	};
 }

@@ -18,13 +18,15 @@
     svgContent = '',
     accentColor = 'var(--primary)',
     readingTime = 0,
-    postIndex = 1
+    postIndex = 1,
+    blogPage
   }: {
     post: BlogPost;
     svgContent?: string;
     accentColor?: string;
     readingTime?: number;
     postIndex?: number;
+    blogPage?: import('@repo/shared').BlogPageContent;
   } = $props();
 
   let headerEl = $state<HTMLElement>(undefined!);
@@ -32,11 +34,21 @@
   const backHref = $derived(
     post.category === 'personal' ? '/blog/personal' : '/blog'
   );
-  const backLabel = $derived(
-    post.category === 'personal'
+  // Prefer CMS-sourced labels (blogPage.backToPersonal / backToDispatches);
+  // fall back to the legacy $lib/content/blog static module so the page still
+  // renders if Directus drops the field.
+  const backLabel = $derived.by(() => {
+    if (blogPage) {
+      const ls = post.category === 'personal'
+        ? blogPage.backToPersonal
+        : blogPage.backToDispatches;
+      const resolved = resolveLocale(ls, 'en');
+      if (resolved.trim()) return resolved;
+    }
+    return post.category === 'personal'
       ? resolveLocale(blogDetailContent.backNav.toPersonal, 'en')
-      : resolveLocale(blogDetailContent.backNav.toDispatches, 'en')
-  );
+      : resolveLocale(blogDetailContent.backNav.toDispatches, 'en');
+  });
   const postTagsAria = resolveLocale(blogDetailContent.header.postTagsAria, 'en');
   const readingTimeTemplate = resolveLocale(blogDetailContent.header.readingTimeLabel, 'en');
   const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));

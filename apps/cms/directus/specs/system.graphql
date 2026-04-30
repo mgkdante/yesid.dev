@@ -312,12 +312,12 @@ type Subscription {
   route_seo_mutated(event: EventEnum): route_seo_mutated
   site_meta_translations_mutated(event: EventEnum): site_meta_translations_mutated
   site_meta_mutated(event: EventEnum): site_meta_mutated
+  block_blog_page_content_translations_mutated(event: EventEnum): block_blog_page_content_translations_mutated
   block_about_content_mutated(event: EventEnum): block_about_content_mutated
   block_about_content_translations_mutated(event: EventEnum): block_about_content_translations_mutated
   block_about_intro_mutated(event: EventEnum): block_about_intro_mutated
   block_about_intro_translations_mutated(event: EventEnum): block_about_intro_translations_mutated
   block_blog_page_content_mutated(event: EventEnum): block_blog_page_content_mutated
-  block_blog_page_content_translations_mutated(event: EventEnum): block_blog_page_content_translations_mutated
   block_closer_mutated(event: EventEnum): block_closer_mutated
   block_closer_translations_mutated(event: EventEnum): block_closer_translations_mutated
   block_contact_content_mutated(event: EventEnum): block_contact_content_mutated
@@ -644,6 +644,21 @@ type block_blog_page_content_translations {
   """
   intro: String
   languages_code(filter: languages_filter, sort: [String], limit: Int, offset: Int, page: Int, search: String): languages
+
+  """
+  Listing-page heading (BlogPageContent.heading). Currently "Dispatches" on /blog professional.
+  """
+  heading: String
+
+  """
+  Detail-page back-link label when post.category=professional (BlogPageContent.backToDispatches).
+  """
+  back_to_dispatches: String
+
+  """
+  Detail-page back-link label when post.category=personal (BlogPageContent.backToPersonal).
+  """
+  back_to_personal: String
 }
 
 type block_blog_page_content_translations_mutated {
@@ -3836,6 +3851,9 @@ input block_blog_page_content_translations_filter {
   id: number_filter_operators
   intro: string_filter_operators
   languages_code: languages_filter
+  heading: string_filter_operators
+  back_to_dispatches: string_filter_operators
+  back_to_personal: string_filter_operators
   _and: [block_blog_page_content_translations_filter]
   _or: [block_blog_page_content_translations_filter]
 }
@@ -3846,6 +3864,9 @@ input block_blog_page_content_translations_quantifier_filter {
   id: number_filter_operators
   intro: string_filter_operators
   languages_code: languages_filter
+  heading: string_filter_operators
+  back_to_dispatches: string_filter_operators
+  back_to_personal: string_filter_operators
   _and: [block_blog_page_content_translations_filter]
   _or: [block_blog_page_content_translations_filter]
   _some: block_blog_page_content_translations_filter

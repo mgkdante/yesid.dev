@@ -5,8 +5,11 @@
 -->
 <script lang="ts">
 	import BlogListingPage from '$lib/components/blog/BlogListingPage.svelte';
+	import { resolveLocale } from '$lib/utils/locale';
 
 	let { data } = $props();
+
+	const heading = $derived(resolveLocale(data.blogPage.heading, 'en') || 'Dispatches');
 </script>
 
 <BlogListingPage
@@ -14,7 +17,7 @@
 	allTags={data.tags}
 	languages={data.languages}
 	svgContents={data.svgContents}
-	heading="Dispatches"
+	{heading}
 	subtitle="Data, SQL, and infrastructure — from the field"
 	accentColor="var(--primary)"
 	cornerLink={{
