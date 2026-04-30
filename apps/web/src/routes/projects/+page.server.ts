@@ -20,12 +20,12 @@ export async function load({ fetch, locals }: { fetch: typeof globalThis.fetch; 
 	// services must resolve before fetchServiceSvgContents can run (post-17c
 	// the util no longer imports from $lib/content — services are threaded in
 	// explicitly). Everything else stays parallel.
-	const services = await getVisibleServices();
+	const services = await getVisibleServices(ctx);
 	const [projects, tags, stackItems, serviceIds, serviceSvgContents, projectsPage] = await Promise.all([
-		getPublicProjects(),
-		getAllTags(),
-		getAllStackItems(),
-		getServiceIdsForProjects(),
+		getPublicProjects(ctx),
+		getAllTags(ctx),
+		getAllStackItems(ctx),
+		getServiceIdsForProjects(ctx),
 		fetchServiceSvgContents(fetch, services),
 		getProjectsPageContent(ctx),
 	]);

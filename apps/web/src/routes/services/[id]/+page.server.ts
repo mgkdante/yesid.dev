@@ -1,6 +1,5 @@
 // Load function for /services/[id] detail page.
-// Resolves the service by ID, loads adjacent services for prev/next nav,
-// related projects, and SVG content.
+// Server-only so Directus-backed service/project reads do not run in the browser.
 
 import { error } from '@sveltejs/kit';
 import { fetchServiceSvgContents } from '$lib/utils';
@@ -11,20 +10,18 @@ import {
 	getProjectsByService,
 } from '$lib/repositories';
 
-export async function load({ params, fetch }) {
-	const service = await getServiceById(params.id);
+export async function load({ params, fetch, locals }: { params: { id: string }; fetch: typeof globalThis.fetch; locals: App.Locals }) {
+	const ctx = { pageCache: locals.pageCache };
+	const service = await getServiceById(params.id, ctx);
 
 	if (!service || service.visible === false) {
 		error(404, { message: 'Service not found' });
 	}
 
-	// services must resolve before fetchServiceSvgContents can run (post-17c
-	// the util no longer imports from $lib/content — services are threaded in
-	// explicitly). Adjacent + related-projects stay parallel.
-	const services = await getVisibleServices();
+	const services = await getVisibleServices(ctx);
 	const [adjacent, relatedProjects, serviceSvgContents] = await Promise.all([
-		getAdjacentServices(params.id),
-		getProjectsByService(params.id),
+		getAdjacentServices(params.id, ctx),
+		getProjectsByService(params.id, ctx),
 		fetchServiceSvgContents(fetch, services),
 	]);
 

@@ -24,6 +24,7 @@ import {
 	errorPageContent as staticErrorPageContent,
 } from '$lib/content/nav';
 import type { NavLink, ErrorPageContent } from '$lib/content/nav';
+import type { MorphShape, PageSeo, SiteSeoDefaults } from '$lib/types';
 
 // ---------------------------------------------------------------------------
 // Shared mock capture surface
@@ -31,6 +32,9 @@ import type { NavLink, ErrorPageContent } from '$lib/content/nav';
 
 const mockByPlacement = vi.fn();
 const mockErrorPage = vi.fn();
+const mockMorphShapes = vi.fn();
+const mockForRoute = vi.fn();
+const mockSiteSeoDefaults = vi.fn();
 
 // Mock '$lib/adapters' before importing the subject.
 // Vitest hoists vi.mock() calls, so this is safe even though the import
@@ -42,6 +46,11 @@ vi.mock('$lib/adapters', () => ({
 		},
 		content: {
 			errorPage: (...args: unknown[]) => mockErrorPage(...args),
+			morphShapes: (...args: unknown[]) => mockMorphShapes(...args),
+		},
+		meta: {
+			forRoute: (...args: unknown[]) => mockForRoute(...args),
+			siteSeoDefaults: (...args: unknown[]) => mockSiteSeoDefaults(...args),
 		},
 	},
 }));
@@ -59,13 +68,25 @@ type LayoutData = {
 	mobileLinks: readonly NavLink[];
 	menuItems: readonly NavLink[];
 	errorPage: ErrorPageContent;
+	morphShapes: readonly MorphShape[];
+	seo: PageSeo;
+	themeColor: string;
 };
 
-async function callLoad(): Promise<LayoutData> {
-	// load() takes no effective arguments (the function body never uses the event).
-	// Cast through unknown to avoid SvelteKit's generated void-union return type.
+async function callLoad(
+	routeId: string | null = '/',
+	params: Record<string, string> = {},
+): Promise<LayoutData> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (await (load as unknown as () => Promise<LayoutData>)()) as LayoutData;
+	return (await (load as unknown as (event: {
+		route: { id: string | null };
+		params: Record<string, string>;
+		locals: App.Locals;
+	}) => Promise<LayoutData>)({
+		route: { id: routeId },
+		params,
+		locals: { pageCache: new Map() },
+	})) as LayoutData;
 }
 
 // ---------------------------------------------------------------------------
@@ -91,6 +112,21 @@ const fakeErrorPage: ErrorPageContent = {
 	terminalLine: '$ route --status 404',
 	suggestions: [],
 };
+const fakeSeo: PageSeo = {
+	title: { en: 'Home | yesid.dev' },
+	description: { en: 'A practical page description long enough for the SEO schema to accept.' },
+	canonical: 'https://yesid.dev',
+	ogType: 'website',
+	noIndex: false,
+};
+const fakeSiteSeoDefaults: SiteSeoDefaults = {
+	defaultOgImage: null,
+	themeColor: '#123456',
+	defaultDescription: { en: 'A practical fallback description long enough for the SEO schema.' },
+};
+const fakeMorphShapes: readonly MorphShape[] = [
+	{ id: 'triangle', label: 'Triangle', path: 'M24 8 L40 38 L8 38 Z', viewbox: '0 0 48 48', sort: 1 },
+];
 
 // ---------------------------------------------------------------------------
 // Setup
@@ -99,6 +135,12 @@ const fakeErrorPage: ErrorPageContent = {
 beforeEach(() => {
 	mockByPlacement.mockReset();
 	mockErrorPage.mockReset();
+	mockMorphShapes.mockReset();
+	mockForRoute.mockReset();
+	mockSiteSeoDefaults.mockReset();
+	mockForRoute.mockResolvedValue(fakeSeo);
+	mockSiteSeoDefaults.mockResolvedValue(fakeSiteSeoDefaults);
+	mockMorphShapes.mockResolvedValue(fakeMorphShapes);
 });
 
 // ---------------------------------------------------------------------------
@@ -124,6 +166,9 @@ describe('+layout.server load', () => {
 			expect(result.mobileLinks).toEqual(fakeMobileLinks);
 			expect(result.menuItems).toEqual(fakeMenuItems);
 			expect(result.errorPage).toEqual(fakeErrorPage);
+			expect(result.morphShapes).toEqual(fakeMorphShapes);
+			expect(result.seo).toEqual(fakeSeo);
+			expect(result.themeColor).toBe(fakeSiteSeoDefaults.themeColor);
 		});
 
 		it('errorPage is fetched with status code 0', async () => {
@@ -132,7 +177,7 @@ describe('+layout.server load', () => {
 
 			await callLoad();
 
-			expect(mockErrorPage).toHaveBeenCalledWith(0);
+			expect(mockErrorPage).toHaveBeenCalledWith(0, expect.objectContaining({ pageCache: expect.any(Map) }));
 		});
 
 		it('all 4 placements are fetched via adapter.nav.byPlacement', async () => {
@@ -146,6 +191,34 @@ describe('+layout.server load', () => {
 			expect(placements).toContain('footer');
 			expect(placements).toContain('mobile');
 			expect(placements).toContain('menu');
+		});
+
+		it('resolves route SEO on the server with route params and request ctx', async () => {
+			mockByPlacement.mockResolvedValue([]);
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+
+			await callLoad('/projects/[slug]', { slug: 'transit-data-pipeline' });
+
+			expect(mockForRoute).toHaveBeenCalledWith(
+				'/projects/[slug]',
+				'en',
+				{ slug: 'transit-data-pipeline' },
+				expect.objectContaining({ pageCache: expect.any(Map) }),
+			);
+			expect(mockSiteSeoDefaults).toHaveBeenCalledWith(
+				expect.objectContaining({ pageCache: expect.any(Map) }),
+			);
+		});
+
+		it('loads morph shapes on the server for client animation hydration', async () => {
+			mockByPlacement.mockResolvedValue([]);
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+
+			await callLoad('/');
+
+			expect(mockMorphShapes).toHaveBeenCalledWith(
+				expect.objectContaining({ pageCache: expect.any(Map) }),
+			);
 		});
 	});
 
@@ -226,6 +299,19 @@ describe('+layout.server load', () => {
 		});
 	});
 
+	describe('SEO failure', () => {
+		it('falls back to static error SEO without failing layout data', async () => {
+			mockByPlacement.mockResolvedValue([]);
+			mockErrorPage.mockResolvedValueOnce(fakeErrorPage);
+			mockForRoute.mockRejectedValueOnce(new Error('CMS unreachable'));
+
+			const result = await callLoad('/not-a-real-route');
+
+			expect(result.seo.noIndex).toBe(true);
+			expect(result.themeColor).toMatch(/^#/);
+		});
+	});
+
 	describe('all-slots failure', () => {
 		it('all nav slots fall back to static fixtures when every adapter call throws', async () => {
 			mockByPlacement.mockRejectedValue(new Error('Complete CMS outage'));
@@ -248,7 +334,7 @@ describe('+layout.server load', () => {
 			const result = await callLoad();
 
 			expect(Object.keys(result).sort()).toEqual(
-				['errorPage', 'footerLinks', 'headerLinks', 'menuItems', 'mobileLinks'].sort(),
+				['errorPage', 'footerLinks', 'headerLinks', 'menuItems', 'mobileLinks', 'morphShapes', 'seo', 'themeColor'].sort(),
 			);
 		});
 	});

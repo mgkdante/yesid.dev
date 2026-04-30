@@ -20,14 +20,17 @@
 	import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
+	import { setMorphShapes } from '$lib/utils/shapes';
 	import type { LayoutData } from './$types';
 	import type { NavLink } from '$lib/content/nav';
+	import type { MorphShape } from '$lib/types';
 
 	let { data, children }: { data: LayoutData & {
 		headerLinks?: readonly NavLink[];
 		footerLinks?: readonly NavLink[];
 		mobileLinks?: readonly NavLink[];
 		menuItems?: readonly NavLink[];
+		morphShapes?: readonly MorphShape[];
 	}; children: import('svelte').Snippet } = $props();
 
 	// Nav slots — threaded from +layout.server.ts via the adapter.nav port.
@@ -35,6 +38,12 @@
 	const headerLinks = $derived(data.headerLinks ?? []);
 	const footerLinks = $derived(data.footerLinks ?? []);
 	const menuItems = $derived(data.menuItems ?? []);
+
+	$effect(() => {
+		if (data.morphShapes) {
+			setMorphShapes(data.morphShapes);
+		}
+	});
 
 	onMount(() => {
 		if (browser) {

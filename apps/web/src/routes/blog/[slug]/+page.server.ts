@@ -8,15 +8,16 @@ import {
 } from '$lib/repositories';
 import { extractHeadings, extractText, wordCount, readingTime } from '@repo/shared';
 
-export async function load({ params }: { params: { slug: string } }) {
-	const post = await getPostBySlug(params.slug);
+export async function load({ params, locals }: { params: { slug: string }; locals: App.Locals }) {
+	const ctx = { pageCache: locals.pageCache };
+	const post = await getPostBySlug(params.slug, ctx);
 	if (!post) error(404, 'Post not found');
 
 	const [body, svgContent, allPosts, blogPage] = await Promise.all([
-		getPostBody(params.slug),
-		getSvgContent(post),
-		getAllPosts(),
-		getBlogPageContent(),
+		getPostBody(params.slug, ctx),
+		getSvgContent(post, ctx),
+		getAllPosts(ctx),
+		getBlogPageContent(ctx),
 	]);
 
 	if (!body) error(404, 'Post body missing');

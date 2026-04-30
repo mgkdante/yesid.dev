@@ -17,16 +17,26 @@
 
 import type { LayoutServerLoad } from './$types';
 import { adapter } from '$lib/adapters';
+import { getPageSeo, getSiteSeoDefaults } from '$lib/repositories/meta';
+import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
+import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
+import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
+import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
 import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageContent as staticErrorPageContent } from '$lib/content/nav';
+import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
 import type { NavLink, ErrorPageContent } from '$lib/content/nav';
 
-export const load: LayoutServerLoad = async () => {
+export const load: LayoutServerLoad = async ({ route, params, locals }) => {
+	const routeId = route.id ?? '/__error';
+	const locale = DEFAULT_LOCALE;
+	const ctx = { pageCache: locals.pageCache };
+
 	const safeByPlacement = async (
 		placement: 'header' | 'footer' | 'mobile' | 'menu',
 		fallback: readonly NavLink[] = [],
 	): Promise<readonly NavLink[]> => {
 		try {
-			return await adapter.nav.byPlacement(placement);
+			return await adapter.nav.byPlacement(placement, ctx);
 		} catch {
 			return fallback;
 		}
@@ -34,19 +44,51 @@ export const load: LayoutServerLoad = async () => {
 
 	const safeErrorPage = async (): Promise<ErrorPageContent> => {
 		try {
-			return await adapter.content.errorPage(0);
+			return await adapter.content.errorPage(0, ctx);
 		} catch {
 			return staticErrorPageContent;
 		}
 	};
 
-	const [headerLinks, footerLinks, mobileLinks, menuItems, errorPage] = await Promise.all([
+	const safeSeo = async () => {
+		try {
+			const [seo, siteSeoDefaults] = await Promise.all([
+				getPageSeo(routeId, locale, params as Record<string, string>, ctx),
+				getSiteSeoDefaults(ctx),
+			]);
+			return { seo, themeColor: siteSeoDefaults.themeColor };
+		} catch (err) {
+			if (import.meta.env.DEV) {
+				console.warn(`[+layout.server.ts] Falling back to error SEO for route "${routeId}":`, err);
+			}
+			return {
+				seo: errorSeoFallback({
+					locale,
+					siteMeta: STATIC_SITE_META,
+					siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
+				}),
+				themeColor: STATIC_SITE_SEO_DEFAULTS.themeColor,
+			};
+		}
+	};
+
+	const safeMorphShapes = async () => {
+		try {
+			return await adapter.content.morphShapes(ctx);
+		} catch {
+			return FALLBACK_MORPH_SHAPES;
+		}
+	};
+
+	const [headerLinks, footerLinks, mobileLinks, menuItems, errorPage, seoData, morphShapes] = await Promise.all([
 		safeByPlacement('header', staticNavLinks),
 		safeByPlacement('footer'),
 		safeByPlacement('mobile'),
 		safeByPlacement('menu', staticMenuItems),
 		safeErrorPage(),
+		safeSeo(),
+		safeMorphShapes(),
 	]);
 
-	return { headerLinks, footerLinks, mobileLinks, menuItems, errorPage };
+	return { headerLinks, footerLinks, mobileLinks, menuItems, errorPage, morphShapes, ...seoData };
 };

@@ -6,77 +6,86 @@ import type {
 	BlogCategory,
 	BlogAnimation,
 	Locale,
+	PreviewContext,
 } from '$lib/types';
 import type { BlockEditorDoc } from '@repo/shared';
 
-export async function getAllPosts(): Promise<readonly BlogPost[]> {
-	return adapter.blog.all();
+export async function getAllPosts(ctx?: PreviewContext): Promise<readonly BlogPost[]> {
+	return adapter.blog.all(ctx);
 }
 
-export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
-	return adapter.blog.bySlug(slug);
+export async function getPostBySlug(slug: string, ctx?: PreviewContext): Promise<BlogPost | undefined> {
+	return adapter.blog.bySlug(slug, ctx);
 }
 
-export async function getPostHtml(slug: string): Promise<string> {
-	return adapter.blog.html(slug);
+export async function getPostHtml(slug: string, ctx?: PreviewContext): Promise<string> {
+	return adapter.blog.html(slug, ctx);
 }
 
-export async function getPostBody(slug: string): Promise<BlockEditorDoc | null> {
-	return adapter.blog.bodyBySlug(slug);
+export async function getPostBody(slug: string, ctx?: PreviewContext): Promise<BlockEditorDoc | null> {
+	return adapter.blog.bodyBySlug(slug, ctx);
 }
 
 export async function getPostsByCategory(
-	category: BlogCategory
+	category: BlogCategory,
+	ctx?: PreviewContext,
 ): Promise<readonly BlogPost[]> {
-	return adapter.blog.byCategory(category);
+	return adapter.blog.byCategory(category, ctx);
 }
 
 export async function getPostsByTag(
 	category: BlogCategory,
-	tag: string
+	tag: string,
+	ctx?: PreviewContext,
 ): Promise<readonly BlogPost[]> {
-	return adapter.blog.byTag(category, tag);
+	return adapter.blog.byTag(category, tag, ctx);
 }
 
 export async function getTagsForCategory(
-	category: BlogCategory
+	category: BlogCategory,
+	ctx?: PreviewContext,
 ): Promise<readonly string[]> {
-	return adapter.blog.tagsForCategory(category);
+	return adapter.blog.tagsForCategory(category, ctx);
 }
 
 export async function getLanguagesForCategory(
-	category: BlogCategory
+	category: BlogCategory,
+	ctx?: PreviewContext,
 ): Promise<readonly Locale[]> {
-	return adapter.blog.languagesForCategory(category);
+	return adapter.blog.languagesForCategory(category, ctx);
 }
 
 export async function getLatestPosts(
 	count: number,
-	category?: BlogCategory
+	category?: BlogCategory,
+	ctx?: PreviewContext,
 ): Promise<readonly BlogPost[]> {
-	return adapter.blog.latest(count, category);
+	return adapter.blog.latest(count, category, ctx);
 }
 
-export async function getSvgContent(post: BlogPost): Promise<string> {
-	return adapter.blog.svgContent(post);
+export async function getSvgContent(post: BlogPost, ctx?: PreviewContext): Promise<string> {
+	return adapter.blog.svgContent(post, ctx);
 }
 
 export async function getSvgContentsForPosts(
-	posts: readonly BlogPost[]
+	posts: readonly BlogPost[],
+	ctx?: PreviewContext,
 ): Promise<Record<string, string>> {
-	return adapter.blog.svgContentsForPosts(posts);
+	return adapter.blog.svgContentsForPosts(posts, ctx);
 }
 
 export async function resolveSvgFallbackName(
 	slug: string,
-	category: BlogCategory
+	category: BlogCategory,
+	ctx?: PreviewContext,
 ): Promise<string> {
-	return adapter.blog.resolveSvgFallbackName(slug, category);
+	return adapter.blog.resolveSvgFallbackName(slug, category, ctx);
 }
 
 export async function resolveAnimation(
 	slug: string,
-	explicit: string | undefined
+	explicit: string | undefined,
+	ctx?: PreviewContext,
 ): Promise<BlogAnimation> {
-	return adapter.blog.resolveAnimation(slug, explicit);
+	return adapter.blog.resolveAnimation(slug, explicit, ctx);
 }
