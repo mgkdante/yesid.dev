@@ -22,7 +22,7 @@ describe('seed-projects pure helpers', () => {
 			expect(row.id).toBe('yesid-dev');
 			expect(row.status).toBe('published');
 			expect(row.featured).toBe(true);
-			expect(row.repo_url).toBe('https://github.com/mgkdante/yesid.dev');
+			expect(row.repo_url).toBe('https://github.com/yesid-dev/yesid.dev');
 			expect(row.live_url).toBe('https://yesid.dev');
 			expect(row.stack).toEqual(['SvelteKit', 'Svelte 5', 'TypeScript', 'Tailwind CSS', 'Vercel']);
 			expect(row.tags).toEqual(['portfolio', 'web', 'svelte']);
