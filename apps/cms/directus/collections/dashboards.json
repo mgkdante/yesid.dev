@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "name": "Blog ops",
+    "icon": "article",
+    "note": "Blog post counts and language split.",
+    "color": "#E07800",
+    "_syncId": "_sync_dashboard_blog_ops"
+  },
+  {
+    "name": "Catalog",
+    "icon": "category",
+    "note": "Services + projects + tech stack counts.",
+    "color": "#E07800",
+    "_syncId": "_sync_dashboard_catalog"
+  },
+  {
+    "name": "Content health",
+    "icon": "monitoring",
+    "note": "Pages + blocks + activity at a glance.",
+    "color": "#E07800",
+    "_syncId": "_sync_dashboard_content_health"
+  }
+]

@@ -1,1 +1,214 @@
-[]
+[
+  {
+    "dashboard": "_sync_dashboard_blog_ops",
+    "name": "Posts in English",
+    "icon": "language",
+    "color": null,
+    "show_header": true,
+    "note": "Posts where lang = en",
+    "type": "metric",
+    "position_x": 1,
+    "position_y": 7,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "blog_posts",
+      "field": "id",
+      "function": "count",
+      "filter": {
+        "lang": {
+          "_eq": "en"
+        }
+      }
+    },
+    "_syncId": "_sync_panel_blog_ops_english_posts"
+  },
+  {
+    "dashboard": "_sync_dashboard_blog_ops",
+    "name": "Published posts",
+    "icon": "check_circle",
+    "color": null,
+    "show_header": true,
+    "note": "Posts where status = published",
+    "type": "metric",
+    "position_x": 9,
+    "position_y": 1,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "blog_posts",
+      "field": "id",
+      "function": "count",
+      "filter": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "_syncId": "_sync_panel_blog_ops_published_posts"
+  },
+  {
+    "dashboard": "_sync_dashboard_blog_ops",
+    "name": "Total posts",
+    "icon": "article",
+    "color": null,
+    "show_header": true,
+    "note": "All blog posts",
+    "type": "metric",
+    "position_x": 1,
+    "position_y": 1,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "blog_posts",
+      "field": "id",
+      "function": "count"
+    },
+    "_syncId": "_sync_panel_blog_ops_total_posts"
+  },
+  {
+    "dashboard": "_sync_dashboard_catalog",
+    "name": "Projects",
+    "icon": "folder_special",
+    "color": null,
+    "show_header": true,
+    "note": "Total portfolio projects",
+    "type": "metric",
+    "position_x": 7,
+    "position_y": 1,
+    "width": 6,
+    "height": 6,
+    "options": {
+      "collection": "projects",
+      "field": "id",
+      "function": "count"
+    },
+    "_syncId": "_sync_panel_catalog_projects_count"
+  },
+  {
+    "dashboard": "_sync_dashboard_catalog",
+    "name": "Services",
+    "icon": "design_services",
+    "color": null,
+    "show_header": true,
+    "note": "Total service offerings",
+    "type": "metric",
+    "position_x": 1,
+    "position_y": 1,
+    "width": 6,
+    "height": 6,
+    "options": {
+      "collection": "services",
+      "field": "id",
+      "function": "count"
+    },
+    "_syncId": "_sync_panel_catalog_services_count"
+  },
+  {
+    "dashboard": "_sync_dashboard_catalog",
+    "name": "Tech stack items",
+    "icon": "memory",
+    "color": null,
+    "show_header": true,
+    "note": "Total tech stack entries (languages, frameworks, tools)",
+    "type": "metric",
+    "position_x": 13,
+    "position_y": 1,
+    "width": 6,
+    "height": 6,
+    "options": {
+      "collection": "tech_stack",
+      "field": "id",
+      "function": "count"
+    },
+    "_syncId": "_sync_panel_catalog_tech_stack_count"
+  },
+  {
+    "dashboard": "_sync_dashboard_content_health",
+    "name": "Block instances",
+    "icon": "view_module",
+    "color": null,
+    "show_header": true,
+    "note": "Count of pages_blocks junction rows = total block instances on pages",
+    "type": "metric",
+    "position_x": 1,
+    "position_y": 7,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "pages_blocks",
+      "field": "id",
+      "function": "count"
+    },
+    "_syncId": "_sync_panel_content_health_block_instances"
+  },
+  {
+    "dashboard": "_sync_dashboard_content_health",
+    "name": "Published pages",
+    "icon": "check_circle",
+    "color": null,
+    "show_header": true,
+    "note": "Pages where status = published",
+    "type": "metric",
+    "position_x": 9,
+    "position_y": 1,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "pages",
+      "field": "id",
+      "function": "count",
+      "filter": {
+        "status": {
+          "_eq": "published"
+        }
+      }
+    },
+    "_syncId": "_sync_panel_content_health_published_pages"
+  },
+  {
+    "dashboard": "_sync_dashboard_content_health",
+    "name": "Recent page edits",
+    "icon": "history",
+    "color": null,
+    "show_header": true,
+    "note": "5 most recently edited pages",
+    "type": "list",
+    "position_x": 9,
+    "position_y": 7,
+    "width": 12,
+    "height": 12,
+    "options": {
+      "collection": "pages",
+      "limit": 5,
+      "sort": [
+        "-date_updated"
+      ],
+      "displayFields": [
+        "slug",
+        "status",
+        "date_updated"
+      ]
+    },
+    "_syncId": "_sync_panel_content_health_recent_edits"
+  },
+  {
+    "dashboard": "_sync_dashboard_content_health",
+    "name": "Total pages",
+    "icon": "web",
+    "color": null,
+    "show_header": true,
+    "note": "Count of all pages rows (any status)",
+    "type": "metric",
+    "position_x": 1,
+    "position_y": 1,
+    "width": 8,
+    "height": 6,
+    "options": {
+      "collection": "pages",
+      "field": "id",
+      "function": "count"
+    },
+    "_syncId": "_sync_panel_content_health_total_pages"
+  }
+]

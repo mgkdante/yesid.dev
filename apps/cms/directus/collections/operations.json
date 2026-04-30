@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "name": "Check status published",
+    "key": "check_published",
+    "type": "condition",
+    "position_x": 19,
+    "position_y": 1,
+    "options": {
+      "filter": {
+        "payload": {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      }
+    },
+    "resolve": "_sync_op_translation_reminder_log",
+    "reject": null,
+    "flow": "c80a68ad-dabf-4ccc-95cc-e97095f51d90",
+    "_syncId": "_sync_op_translation_reminder_check_published"
+  },
+  {
+    "name": "Check status published",
+    "key": "check_published",
+    "type": "condition",
+    "position_x": 19,
+    "position_y": 1,
+    "options": {
+      "filter": {
+        "payload": {
+          "status": {
+            "_eq": "published"
+          }
+        }
+      }
+    },
+    "resolve": "_sync_op_vercel_revalidate_post_hook",
+    "reject": null,
+    "flow": "6696d9f8-6ff1-4286-838a-57675262d08b",
+    "_syncId": "_sync_op_vercel_revalidate_check_published"
+  },
+  {
+    "name": "Log reminder",
+    "key": "log_reminder",
+    "type": "log",
+    "position_x": 37,
+    "position_y": 1,
+    "options": {
+      "message": "Translation reminder: {{$trigger.collection}} item(s) {{$trigger.keys}} published. Verify fr and es translation rows have content where applicable."
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "c80a68ad-dabf-4ccc-95cc-e97095f51d90",
+    "_syncId": "_sync_op_translation_reminder_log"
+  },
+  {
+    "name": "POST deploy hook",
+    "key": "post_hook",
+    "type": "request",
+    "position_x": 37,
+    "position_y": 1,
+    "options": {
+      "url": "{{$env.VERCEL_DEPLOY_HOOK_URL}}",
+      "method": "POST",
+      "body": "{\"reason\":\"directus.publish\",\"collection\":\"{{$trigger.collection}}\",\"keys\":\"{{$trigger.keys}}\"}"
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "6696d9f8-6ff1-4286-838a-57675262d08b",
+    "_syncId": "_sync_op_vercel_revalidate_post_hook"
+  }
+]
