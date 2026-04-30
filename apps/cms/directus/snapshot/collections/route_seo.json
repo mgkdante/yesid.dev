@@ -9,7 +9,7 @@
     "collection": "route_seo",
     "color": null,
     "display_template": "{{path}}",
-    "group": null,
+    "group": "site_config",
     "hidden": false,
     "icon": "link",
     "item_duplication_fields": [
@@ -20,7 +20,7 @@
     "note": "Per-route SEO override (title + description + og_image) for static routes. Falls back to site_meta defaults when fields are empty. Static routes only — dynamic routes (/blog/[slug] etc.) use code factories.",
     "preview_url": "https://yesid.dev{{path}}",
     "singleton": false,
-    "sort": null,
+    "sort": 2,
     "sort_field": "sort",
     "translations": null,
     "unarchive_value": "draft",

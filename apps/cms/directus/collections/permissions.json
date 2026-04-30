@@ -2202,7 +2202,19 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_about_content_id",
+      "cta",
+      "id",
+      "identity",
+      "interests",
+      "labels",
+      "languages_code",
+      "meta",
+      "methodology",
+      "metrics",
+      "stop_labels",
+      "testimonials",
+      "weather"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "411da870-43d9-42f4-84b9-b262edb998ec"
@@ -2214,7 +2226,13 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "client_count",
+      "client_logos",
+      "id",
+      "sort",
+      "status",
+      "tech_stack",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "5d5f3ec3-a376-471f-8ad5-2126015da0cf"
@@ -2226,7 +2244,18 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "bio",
+      "block_about_intro_id",
+      "id",
+      "interests",
+      "interests_label",
+      "languages_code",
+      "location",
+      "location_label",
+      "more_link",
+      "name",
+      "stack_label",
+      "title"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "f4853d00-e61a-415f-9a37-ae84ac0a371c"
@@ -2238,7 +2267,11 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "stack_items",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "90eaf818-6063-4c64-a935-0bb9bdfa1f77"
@@ -2250,7 +2283,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_blog_page_content_id",
+      "id",
+      "intro",
+      "languages_code"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "071fa52d-f648-403a-ad9b-ae4846c50ddd"
@@ -2262,7 +2298,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "5166cbe5-bcae-4078-8eb1-fd0b4247413b"
@@ -2274,7 +2313,16 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "attribution",
+      "block_closer_id",
+      "cta",
+      "heading",
+      "heading_dot",
+      "id",
+      "languages_code",
+      "rows",
+      "subheading",
+      "terminal"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "7ee5011f-8eef-4244-8346-36cd6da730bf"
@@ -2286,7 +2334,12 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "attribution_url",
+      "cta_href",
+      "id",
+      "sort",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "690082b3-04a7-49e3-a8df-281e439f15c2"
@@ -2298,7 +2351,18 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_contact_content_id",
+      "form_terminal",
+      "id",
+      "info_terminal",
+      "languages_code",
+      "meta",
+      "page_title",
+      "send_error_message",
+      "socials",
+      "station_label",
+      "success",
+      "validation"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "801021f2-560f-4b38-a0ef-6681e55bb69e"
@@ -2310,7 +2374,11 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "translations",
+      "web3forms_key"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "191928e8-9fa5-4734-b46d-201f14ceb2ef"
@@ -2322,7 +2390,13 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_cta_id",
+      "cta_contact",
+      "cta_github",
+      "heading",
+      "id",
+      "languages_code",
+      "subtitle"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "f6eeef10-9937-47a3-ad97-4123969f2aa1"
@@ -2334,7 +2408,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "fefc356b-5eab-46a7-8899-e3494f475e68"
@@ -2346,7 +2423,17 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_hero_id",
+      "cta_contact",
+      "cta_work",
+      "headline",
+      "hero_anim",
+      "id",
+      "languages_code",
+      "refresh_button",
+      "sql_panel",
+      "subheadline",
+      "subtitle"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "d9921806-82b5-407a-b7cd-e898173c6ee3"
@@ -2358,7 +2445,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "b66b897f-bc85-4313-bc4a-caf54d8ff9a3"
@@ -2370,7 +2460,17 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_manifesto_id",
+      "edge_bottom",
+      "edge_left",
+      "edge_right",
+      "hidden_transit_lines",
+      "id",
+      "languages_code",
+      "pills",
+      "statement",
+      "terminal",
+      "transit"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "d8498cce-bdd0-455a-a946-77dc2aef9c8b"
@@ -2382,7 +2482,11 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "ticks",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "31cff824-6a9a-4dea-a6e4-e23eb207f18f"
@@ -2394,7 +2498,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_projects_page_content_id",
+      "id",
+      "intro",
+      "languages_code"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "28abded6-5957-4918-9bc0-df0d8872e6ac"
@@ -2406,7 +2513,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "7aafbb76-00d7-4152-8d70-c6e471f4cc11"
@@ -2418,7 +2528,15 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_proof_reel_id",
+      "heading",
+      "heading_dot",
+      "id",
+      "languages_code",
+      "section_label",
+      "subheading",
+      "toggle_color_aria",
+      "view_all_label"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "05e42ec2-6125-4639-b78f-31995ddd72b7"
@@ -2430,7 +2548,13 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "images",
+      "slugs",
+      "sort",
+      "status",
+      "translations",
+      "view_all_href"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "a9eb3e1f-024e-4a71-964b-9b2cb118a557"
@@ -2442,7 +2566,14 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "block_services_grid_id",
+      "heading",
+      "heading_dot",
+      "id",
+      "languages_code",
+      "subheading",
+      "view_all_link",
+      "view_illustration_aria"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "22c34d77-9626-4e26-acad-0eb8989130ff"
@@ -2454,7 +2585,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "dad0e5cf-4d9f-461f-b32f-c1b1e0796e03"
@@ -2466,7 +2600,13 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "actions",
+      "block_tech_stack_page_content_id",
+      "cta",
+      "hero",
+      "id",
+      "languages_code",
+      "meta"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "01b8952e-2df3-41d8-995c-9ecba66e5726"
@@ -2478,7 +2618,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "e2aca289-0dcb-4bda-aaa6-dab3b6c01fd7"
@@ -2555,7 +2698,14 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "description",
+      "error_pages_id",
+      "heading",
+      "id",
+      "label",
+      "languages_code",
+      "suggestions",
+      "terminal_line"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "26208700-e017-495a-a643-8e838687da86"
@@ -2567,7 +2717,11 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "sort",
+      "status",
+      "status_code",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "a22b9621-a2d4-4ca5-a775-fa9889dc00a9"
@@ -2651,7 +2805,11 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "label",
+      "languages_code",
+      "nav_links_id",
+      "subtitle"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "199ea9ad-df04-4967-b8bc-5653f6cf84f8"
@@ -2663,7 +2821,13 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "href",
+      "icon",
+      "id",
+      "placement",
+      "priority",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "8db31601-1402-41fc-abb7-ef2f2c806cde"
@@ -2675,7 +2839,11 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "collection",
+      "id",
+      "item",
+      "pages_id",
+      "sort"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "ca64ae4e-fd86-4418-8a23-2d2f385bdd1b"
@@ -2687,7 +2855,10 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "id",
+      "languages_code",
+      "pages_id",
+      "title"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "05a0eac1-b0a9-4984-9b68-c8240b91d96b"
@@ -2699,7 +2870,12 @@
     "validation": null,
     "presets": null,
     "fields": [
-      "*"
+      "blocks",
+      "id",
+      "slug",
+      "sort",
+      "status",
+      "translations"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "c1fa7107-4480-4aaa-8fe0-01901ce46078"

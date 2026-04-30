@@ -103,10 +103,9 @@ test('route /tech-stack returns 200 and renders CMS content', async ({ page }) =
 	const response = await page.goto('/tech-stack');
 	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
-	// At least one tech-stack heading must be visible when CMS is live.
-	// .first() avoids strict-mode violation when the word appears in nav,
-	// terminal line, and CTA heading simultaneously (all expected on page).
-	await expect(page.getByText('Stack', { exact: false }).first()).toBeVisible();
+	// Hero section is the page-level structural anchor — present iff the
+	// CMS-routed block_tech_stack_page_content rendered without throwing.
+	await expect(page.locator('[data-testid="tech-stack-hero"]')).toBeVisible();
 });
 
 // ---------------------------------------------------------------------------
