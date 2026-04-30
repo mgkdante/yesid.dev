@@ -2,7 +2,7 @@
 
 Directus 11+ CMS backend for [yesid.dev](https://yesid.dev). Currently scaffolded, awaiting provisioning.
 
-The authoritative plan lives in the consumer repo: **[yesid.dev/docs/slices/slice-18](https://github.com/yesid-dev/yesid.dev/tree/main/docs/slices/slice-18)** — start there for decisions, tasks, research findings.
+The authoritative plan lives in the consumer repo: **[yesid.dev/docs/slices/slice-18](https://github.com/mgkdante/yesid.dev/tree/main/docs/slices/slice-18)** — start there for decisions, tasks, research findings.
 
 ## Current state
 
@@ -290,10 +290,10 @@ Pure consumer changes (new component, styling, route) do NOT need a PR here. Pur
 | Markdown for blog | Block Editor | Preserves `marked.parse` pipeline on yesid.dev; zero consumer changes. |
 | Native Translations field | JSON-per-field · collection-per-locale | Directus-idiomatic editor UX + adapter-boundary `toLocalizedString` transform keeps `LocalizedString` shape unchanged. |
 
-Full rationale in [yesid.dev slice-18 spec § Design decisions](https://github.com/yesid-dev/yesid.dev/blob/main/docs/slices/slice-18/spec.md).
+Full rationale in [yesid.dev slice-18 spec § Design decisions](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/spec.md).
 
 ## Related
 
-- [yesid.dev slice-18 plan](https://github.com/yesid-dev/yesid.dev/blob/main/docs/slices/slice-18/plan.md) — task roadmap
-- [yesid.dev slice-18 research.md](https://github.com/yesid-dev/yesid.dev/blob/main/docs/slices/slice-18/research.md) — Directus findings
-- [Pivot research](https://github.com/yesid-dev/yesid.dev/tree/main/docs/slices/slice-headless-cms-best-practices) — why Directus beat Payload (append-only reference)
+- [yesid.dev slice-18 plan](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/plan.md) — task roadmap
+- [yesid.dev slice-18 research.md](https://github.com/mgkdante/yesid.dev/blob/main/docs/slices/slice-18/research.md) — Directus findings
+- [Pivot research](https://github.com/mgkdante/yesid.dev/tree/main/docs/slices/slice-headless-cms-best-practices) — why Directus beat Payload (append-only reference)
