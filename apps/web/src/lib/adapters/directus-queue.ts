@@ -11,6 +11,8 @@
 // Defaults tuned for a single-instance Directus on Railway Hobby:
 //   - 4 concurrent requests (Node keep-alive works best < 10)
 //   - 50 req / 1s rolling window (stays under the 50 pts / 1s server cap)
+//   - 8s per-attempt timeout so a hung upstream read cannot pin a warm
+//     serverless instance's queue slots forever
 //   - 3 retries with exponential backoff (250ms → 500ms → 1s → 2s, jittered)
 //   - Retryable: 429, 500, 502, 503, 504 (transient by spec)
 //   - Non-retryable: 400/401/403/404 (our bug or schema mismatch — retrying
@@ -30,6 +32,7 @@ export interface QueuedFetchOptions {
 	retries?: number;
 	baseDelayMs?: number;
 	maxDelayMs?: number;
+	timeoutMs?: number;
 	retryableStatuses?: ReadonlyArray<number>;
 	// Injection seams (testing)
 	fetch?: typeof fetch;
@@ -43,6 +46,7 @@ const DEFAULTS = {
 	retries: 3,
 	baseDelayMs: 250,
 	maxDelayMs: 4000,
+	timeoutMs: 8000,
 	retryableStatuses: [429, 500, 502, 503, 504] as const,
 };
 
@@ -58,6 +62,7 @@ export function createQueuedFetch(options: QueuedFetchOptions = {}): typeof fetc
 	const retries = options.retries ?? DEFAULTS.retries;
 	const baseDelayMs = options.baseDelayMs ?? DEFAULTS.baseDelayMs;
 	const maxDelayMs = options.maxDelayMs ?? DEFAULTS.maxDelayMs;
+	const timeoutMs = options.timeoutMs ?? DEFAULTS.timeoutMs;
 	const retryableStatuses = new Set(options.retryableStatuses ?? DEFAULTS.retryableStatuses);
 	const upstreamFetch = options.fetch ?? globalThis.fetch;
 	const sleep = options.sleep ?? defaultSleep;
@@ -71,7 +76,7 @@ export function createQueuedFetch(options: QueuedFetchOptions = {}): typeof fetc
 
 			while (true) {
 				try {
-					const res = await upstreamFetch(input, init);
+					const res = await fetchWithTimeout(upstreamFetch, input, init, timeoutMs);
 
 					// Non-retryable status OR retry budget exhausted → return as-is
 					if (!retryableStatuses.has(res.status) || attempt >= retries) {
@@ -129,4 +134,37 @@ function retryAfterDelay(res: Response, attempt: number, base: number, max: numb
 
 function defaultSleep(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchWithTimeout(
+	upstreamFetch: typeof fetch,
+	input: Parameters<typeof fetch>[0],
+	init: Parameters<typeof fetch>[1],
+	timeoutMs: number,
+): Promise<Response> {
+	if (timeoutMs <= 0) {
+		return upstreamFetch(input, init);
+	}
+
+	const controller = new AbortController();
+	const upstreamSignal = init?.signal;
+	const timeout = setTimeout(() => {
+		controller.abort(new DOMException('Directus fetch timed out', 'AbortError'));
+	}, timeoutMs);
+
+	const abortFromUpstream = () => {
+		controller.abort(upstreamSignal?.reason);
+	};
+
+	try {
+		if (upstreamSignal?.aborted) {
+			abortFromUpstream();
+		} else {
+			upstreamSignal?.addEventListener('abort', abortFromUpstream, { once: true });
+		}
+		return await upstreamFetch(input, { ...init, signal: controller.signal });
+	} finally {
+		clearTimeout(timeout);
+		upstreamSignal?.removeEventListener('abort', abortFromUpstream);
+	}
 }

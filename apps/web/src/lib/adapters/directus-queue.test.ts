@@ -155,6 +155,43 @@ describe('createQueuedFetch', () => {
 		expect(upstream).toHaveBeenCalledTimes(4);
 	});
 
+	it('times out a hung upstream fetch and releases the queue slot', async () => {
+		const upstream = vi.fn((input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
+			if (String(input).endsWith('/b')) {
+				return Promise.resolve(new Response('ok', { status: 200 }));
+			}
+
+			return new Promise<Response>((_resolve, reject) => {
+				const signal = init?.signal;
+				const rejectAbort = () => {
+					reject(signal?.reason ?? new DOMException('aborted', 'AbortError'));
+				};
+				if (signal?.aborted) {
+					rejectAbort();
+					return;
+				}
+				signal?.addEventListener('abort', rejectAbort, { once: true });
+			});
+		});
+		const fetch = createQueuedFetch({
+			fetch: upstream as unknown as typeof globalThis.fetch,
+			sleep: immediateSleep,
+			retries: 0,
+			timeoutMs: 5,
+			concurrency: 1,
+		});
+
+		const first = fetch('https://cms.example.com/a').catch((error: unknown) => error);
+		const second = await fetch('https://cms.example.com/b');
+		const firstError = await first;
+
+		expect(second.status).toBe(200);
+		expect(await second.text()).toBe('ok');
+		expect(firstError).toBeInstanceOf(DOMException);
+		expect((firstError as DOMException).name).toBe('AbortError');
+		expect(upstream).toHaveBeenCalledTimes(2);
+	});
+
 	it('enforces concurrency cap — with concurrency=1, call B waits for call A', async () => {
 		let activeCount = 0;
 		let maxActive = 0;
