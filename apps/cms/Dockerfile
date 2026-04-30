@@ -2,7 +2,7 @@
 # Extension is auto-discovered from node_modules via its `directus:extension`
 # manifest entry (no manual copy to EXTENSIONS_PATH folder required).
 #
-# See: docs/slices/slice-18/18c-foundations/research.md § P4 for design notes
+# See the Notion slice-18c research page for design notes
 # (package metadata, GPL-3.0 license stance, local verification steps).
 #
 # Build context: apps/cms/ only (Railway Option A per P7). No COPY from

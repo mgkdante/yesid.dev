@@ -42,7 +42,9 @@ apps/web/static/images/*.source.svg
 /docs/superpowers/specs/
 /docs/superpowers/research/
 /docs/superpowers/plans/
-/docs/slices/
+/docs/slices/*
+!/docs/slices/*/
+!/docs/slices/*/research.md
 /docs/sessions/
 /docs/ARCHIVE.md
 /docs/_TEMPLATES/
@@ -55,5 +57,6 @@ apps/web/static/images/*.source.svg
 
 # NOT ignored (stays tracked):
 #   /docs/ai-memory/, /docs/reference/{tools, WORKFLOW.md}
+#   /docs/research/<slice-id>-*.md, /docs/slices/<slice-id>/research.md
 # (brand/ and docs/superpowers/plans/ fully removed in chore/post-merge-cleanup PR.)
 .vercel

@@ -29,7 +29,7 @@ regexes = [
   # Slice-18 storage_asset_presets — JSON `"key": "<preset-name>"` triggers the
   # generic-api-key entropy rule (~3.66) on hyphenated preset labels. These are
   # routing identifiers for image transforms, not credentials. Closed set per
-  # docs/slices/slice-18/CONVENTIONS.md § 9 + 18d-asset-pipeline/research.md.
+  # the Notion slice-18 conventions and 18d asset-pipeline research artifacts.
   '''hero-1200(-avif)?''',
   '''card-600(-avif)?''',
   '''thumb-240(-avif)?''',
