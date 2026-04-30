@@ -24,8 +24,14 @@ import { gsap } from '$lib/motion/utils/gsap.js';
 // Flip imported directly — plugin is runtime-registered by loadFlip() at
 // consumer mount (BlogListingPage / ProjectListingPage); this import only
 // provides the symbol for Flip.getState() / Flip.from().
+//
+// CJS interop: gsap/Flip ships as CommonJS, so static `import { Flip }` fails
+// in Node ESM SSR (Vercel) with "Named export 'Flip' not found". Use default
+// import + property access — compatible with both Vite dev and Node SSR.
 // @ts-ignore — Windows casing conflict between gsap/types/flip.d.ts and gsap/Flip.js
-import { Flip } from 'gsap/Flip';
+import gsapFlipModule from 'gsap/Flip';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Flip: typeof import('gsap/Flip').Flip = (gsapFlipModule as any).Flip ?? (gsapFlipModule as any);
 
 /** State snapshot captured by {@link captureFlipState} for replay via `Flip.from()`. */
 export type FlipState = ReturnType<typeof Flip.getState> | null;
