@@ -249,7 +249,7 @@ describe('directus adapter — toProject', () => {
 		sort: 0,
 		featured: true,
 		hero_image: '66f6ddc8-c3f2-4bd7-97a5-978940757b77',
-		repo_url: 'https://github.com/mgkdante/yesid.dev',
+		repo_url: 'https://github.com/yesid-dev/yesid.dev',
 		live_url: 'https://yesid.dev',
 		readme_url: null,
 		location: null,
@@ -321,7 +321,7 @@ describe('directus adapter — toProject', () => {
 
 	it('preserves repoUrl/liveUrl when set', () => {
 		const p = toProject(baseRow);
-		expect(p.repoUrl).toBe('https://github.com/mgkdante/yesid.dev');
+		expect(p.repoUrl).toBe('https://github.com/yesid-dev/yesid.dev');
 		expect(p.liveUrl).toBe('https://yesid.dev');
 	});
 
