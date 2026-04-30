@@ -561,6 +561,9 @@ function rawBlockBlogPageContent(): Record<string, unknown> {
 			{
 				languages_code: 'en',
 				intro: 'Welcome to my blog',
+				heading: 'Dispatches',
+				back_to_dispatches: '← back to dispatches',
+				back_to_personal: '← back to personal corner',
 			},
 		],
 	};
