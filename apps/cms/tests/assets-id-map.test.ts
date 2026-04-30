@@ -5,10 +5,12 @@ import { z } from 'zod';
 
 /**
  * Schema for fixtures/assets-id-map.json — emitted by migrate-assets.ts and
- * consumed by 18e-18i (and packages/shared via re-export).
+ * consumed by 18e-18i (and packages/shared via re-export). Slice 18l added the
+ * `brand/` namespace for Directus admin chrome assets (icon + wordmark SVGs
+ * uploaded by seed-brand-assets.ts and referenced from settings.json).
  */
 const AssetsIdMapSchema = z.record(
-	z.string().regex(/^images\//),
+	z.string().regex(/^(images|brand)\//),
 	z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
 );
 
@@ -36,9 +38,9 @@ describe('fixtures/assets-id-map.json', () => {
 		expect(() => AssetsIdMapSchema.parse(loadIdMap())).not.toThrow();
 	});
 
-	it('contains exactly 14 entries (matches manifest cardinality)', () => {
+	it('contains exactly 16 entries (matches manifest cardinality)', () => {
 		const m = loadIdMap();
-		expect(Object.keys(m).length).toBe(14);
+		expect(Object.keys(m).length).toBe(16);
 	});
 
 	it('keys are sorted alphabetically (diff-friendly)', () => {
