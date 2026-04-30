@@ -74,10 +74,11 @@ jobs:
         run: bun test
 
   diff:
-    # Preview what sync:push WOULD apply. PR checks + explicit diff dispatch.
+    # Preview what sync:push WOULD apply. Main-bound PR checks + explicit diff dispatch.
+    # Develop PRs run unit tests only; prod diff is too noisy while dev CMS work is active.
     # Never writes — the `diff` subcommand is read-only.
     if: |
-      github.event_name == 'pull_request' ||
+      (github.event_name == 'pull_request' && github.base_ref == 'main') ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'diff')
     runs-on: ubuntu-latest
     needs: test
