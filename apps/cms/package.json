@@ -11,7 +11,7 @@
 		"migrate:tech-stack-icon": "bun scripts/migrate-tech-stack-icon.ts",
 		"migrate:assets": "bun scripts/migrate-assets.ts",
 		"sync:pull": "directus-sync pull",
-		"sync:push": "directus-sync push",
+		"sync:push": "bun scripts/sync-push.ts",
 		"sync:diff": "directus-sync diff",
 		"test": "bun test"
 	},

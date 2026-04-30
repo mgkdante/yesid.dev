@@ -38,6 +38,11 @@ on:
         options: [diff, push]
         default: diff
         required: true
+      include_permissions:
+        description: 'Include directus_permissions collection in push (dangerous; default false)'
+        type: boolean
+        default: false
+        required: false
 
 jobs:
   test:
@@ -113,4 +118,9 @@ jobs:
 
       - name: sync:push — apply to production
         working-directory: apps/cms
+        env:
+          DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH: '1'
+          DIRECTUS_SYNC_PUSH_ACK: sync-push-can-delete-cms-data
+          DIRECTUS_SYNC_INCLUDE_PERMISSIONS: ${{ inputs.include_permissions && '1' || '' }}
+          DIRECTUS_SYNC_PERMISSIONS_ACK: ${{ inputs.include_permissions && 'permissions-push-can-delete-parallel-work' || '' }}
         run: bun run sync:push

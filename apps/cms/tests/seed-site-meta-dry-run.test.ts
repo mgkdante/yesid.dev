@@ -2,6 +2,8 @@ import { describe, it, expect } from 'bun:test';
 import {
 	SiteMetaFixtureSchema,
 	loadSiteMetaFixture,
+	toSiteMetaSingletonPatch,
+	toSiteMetaTranslationRows,
 	type SiteMetaFixture,
 } from '../scripts/seed-site-meta';
 
@@ -53,6 +55,28 @@ describe('seed-site-meta pure helpers', () => {
 	});
 
 	describe('parent field shape', () => {
+		it('builds a parent-only patch for existing singleton re-runs', () => {
+			const patch = toSiteMetaSingletonPatch(fixture) as Record<string, unknown>;
+			expect(patch.id).toBeUndefined();
+			expect(patch.translations).toBeUndefined();
+			expect(Object.keys(patch).sort()).toEqual(
+				[
+					'name',
+					'email',
+					'github_url',
+					'linkedin_url',
+					'upwork_url',
+					'owner_name',
+					'owner_locality',
+					'owner_region',
+					'owner_country',
+					'owner_knows_about',
+					'default_og_image',
+					'theme_color',
+				].sort(),
+			);
+		});
+
 		it('preserves brand name', () => {
 			expect(fixture.name).toBe('yesid.');
 		});
@@ -124,6 +148,26 @@ describe('seed-site-meta pure helpers', () => {
 
 		it('owner_job_title is populated', () => {
 			expect(en!.owner_job_title).toBe('Digital Infrastructure Consultant');
+		});
+	});
+
+	describe('translation rows', () => {
+		it('builds FK-free rows for explicit delete-and-recreate upsert', () => {
+			const rows = toSiteMetaTranslationRows(fixture);
+			expect(rows.length).toBe(3);
+			for (const row of rows as Record<string, unknown>[]) {
+				expect(row.id).toBeUndefined();
+				expect(row.site_meta_id).toBeUndefined();
+				expect(Object.keys(row).sort()).toEqual(
+					[
+						'languages_code',
+						'tagline',
+						'description',
+						'default_description',
+						'owner_job_title',
+					].sort(),
+				);
+			}
 		});
 	});
 

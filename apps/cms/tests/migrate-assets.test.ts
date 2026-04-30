@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { join as joinPath } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
@@ -11,6 +11,9 @@ import {
 	filterToUpload,
 	buildIdMap,
 	parseManifest,
+	mimeTypeForLegacyPath,
+	imageMetadataFromBytes,
+	buildFileMetadataPatch,
 } from '../scripts/migrate-assets';
 
 /**
@@ -105,6 +108,79 @@ describe('deriveAltText', () => {
 
 	it('handles names with multiple dots', () => {
 		expect(deriveAltText('archive.tar.gz')).toBe('Archive.tar');
+	});
+});
+
+describe('mimeTypeForLegacyPath', () => {
+	it('returns image MIME types Directus needs for asset transforms', () => {
+		expect(mimeTypeForLegacyPath('images/work/yesid-dev.png')).toBe('image/png');
+		expect(mimeTypeForLegacyPath('images/about/headshot.webp')).toBe('image/webp');
+		expect(mimeTypeForLegacyPath('images/montreal-metro.svg')).toBe('image/svg+xml');
+		expect(mimeTypeForLegacyPath('images/project/photo.jpeg')).toBe('image/jpeg');
+	});
+
+	it('falls back to octet-stream for unknown extensions', () => {
+		expect(mimeTypeForLegacyPath('images/archive.bin')).toBe(
+			'application/octet-stream',
+		);
+	});
+});
+
+describe('imageMetadataFromBytes', () => {
+	const staticRoot = joinPath(import.meta.dir, '..', '..', 'web', 'static');
+
+	it('detects PNG dimensions from the source bytes', () => {
+		const legacyPath = 'images/work/yesid-dev.png';
+		const metadata = imageMetadataFromBytes(
+			legacyPath,
+			readFileSync(joinPath(staticRoot, legacyPath)),
+		);
+		expect(metadata).toEqual({ type: 'image/png', width: 2482, height: 1326 });
+	});
+
+	it('detects WebP dimensions from the source bytes', () => {
+		const legacyPath = 'images/about/headshot.webp';
+		const metadata = imageMetadataFromBytes(
+			legacyPath,
+			readFileSync(joinPath(staticRoot, legacyPath)),
+		);
+		expect(metadata).toEqual({ type: 'image/webp', width: 600, height: 400 });
+	});
+
+	it('trusts the file signature when extension and bytes disagree', () => {
+		const legacyPath = 'images/about/interests/dataviz.webp';
+		const metadata = imageMetadataFromBytes(
+			legacyPath,
+			readFileSync(joinPath(staticRoot, legacyPath)),
+		);
+		expect(metadata).toEqual({ type: 'image/jpeg', width: 400, height: 600 });
+	});
+
+	it('detects SVG dimensions from width and height attributes', () => {
+		const legacyPath = 'images/about/logo-1.svg';
+		const metadata = imageMetadataFromBytes(
+			legacyPath,
+			readFileSync(joinPath(staticRoot, legacyPath)),
+		);
+		expect(metadata).toEqual({ type: 'image/svg+xml', width: 120, height: 40 });
+	});
+});
+
+describe('buildFileMetadataPatch', () => {
+	it('returns only fields that need repair', () => {
+		const patch = buildFileMetadataPatch(
+			{ type: 'application/octet-stream', width: null, height: 1326 },
+			{ type: 'image/png', width: 2482, height: 1326 },
+		);
+		expect(patch).toEqual({ type: 'image/png', width: 2482 });
+	});
+
+	it('returns an empty patch when metadata already matches', () => {
+		const patch = buildFileMetadataPatch(
+			{ type: 'image/png', width: 2482, height: 1326 },
+			{ type: 'image/png', width: 2482, height: 1326 },
+		);
+		expect(patch).toEqual({});
 	});
 });
 

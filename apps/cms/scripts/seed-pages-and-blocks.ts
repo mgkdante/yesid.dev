@@ -456,7 +456,7 @@ export function toBlockCtaTranslationRows(
 // --- block_closer + translations -------------------------------------------
 
 export function toBlockCloserRow(
-	raw: typeof siteContentFixture,
+	raw: typeof siteContentFixture = siteContentFixture,
 	sort = 7,
 ): DirectusBlockParentRow & { cta_href: string; attribution_url: string } {
 	return {
@@ -943,7 +943,12 @@ export function validateAllFixtures(): void {
 	TechStackPageContentSchema.parse(techStackPageFixture);
 
 	// Blog + projects page stubs (just locale string)
-	BlogPageContentSchema.parse({ intro: { en: 'Notes on data engineering, infrastructure, and building reliable systems.' } });
+	BlogPageContentSchema.parse({
+		intro: { en: 'Notes on data engineering, infrastructure, and building reliable systems.' },
+		heading: { en: 'Dispatches' },
+		backToDispatches: { en: 'back to dispatches' },
+		backToPersonal: { en: 'back to personal corner' },
+	});
 	ProjectsPageContentSchema.parse({ intro: { en: 'A selection of data engineering projects — pipelines, dashboards, and infrastructure that ships.' } });
 
 	// Nav fixture (our own schema)
