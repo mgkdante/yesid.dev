@@ -52,6 +52,20 @@ See CLAUDE.md for Claude Code role bindings table.
 
 After `bun install`, run `bun run setup:hooks` once to activate the pre-commit hook (`.githooks/pre-commit`) that blocks edits to generated token files unless `packages/tokens/tokens.json` is also staged.
 
+## Secrets and 1Password
+
+All new API keys, tokens, passwords, service-account tokens, and client credentials go into 1Password before they are used in this repo.
+
+- yesid.dev secrets live in the `yesid-dev` vault unless there is a stronger reason to split them.
+- Client-project secrets live in a client-scoped vault, not in `yesid-dev`.
+- Local real references live in `.env` at the repo root. `.env` is gitignored.
+- The committed `.env.example` documents required variable names with placeholder `op://` references only.
+- Prefer copied 1Password secret references using vault/item IDs when possible.
+- Long-lived commands use `op run --env-file=.env -- <command>` so secrets resolve once for that process.
+- Repeated local ops can use `op inject -i .env -o apps/web/.env.local` or `apps/cms/.env.local`, then Bun's `--env-file` scripts, to avoid repeated 1Password calls.
+- Do not write loops that call `op item get`, `op read`, or `op inject` per request, per file, or per test. Resolve once at process start.
+- If a service account is used, check usage with `bun run secrets:ratelimit` before blaming the tool or brute-forcing another run.
+
 ## Output destinations (Notion-canonical)
 
 **The plugin is Notion-canonical (post-2026-04-27, plugin v0.4.0+ / D21).** When AI tools (Claude Code, Codex) generate workflow artifacts during a session — specs, plans, handoffs, brainstorm output, session logs — those artifacts MUST land in Notion, not in the repo. The repo's `docs/` directory holds only `ai-memory/`. Every other documentation surface lives in Notion.
