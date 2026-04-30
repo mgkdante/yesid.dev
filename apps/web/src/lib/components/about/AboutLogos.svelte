@@ -16,14 +16,20 @@
 		count = 10,
 		stop,
 		label,
+		counterLabel,
 	}: {
 		logos: readonly AboutClientLogo[];
 		count?: number;
 		stop: string;
 		label: string;
+		// Optional — when omitted, falls back to the static aboutPageContent
+		// module so the component still renders if the parent doesn't pass it.
+		counterLabel?: string;
 	} = $props();
 
-	const counterLabel = resolveLocale(aboutPageContent.labels.clientsServed, 'en');
+	const resolvedCounterLabel = $derived(
+		counterLabel ?? resolveLocale(aboutPageContent.labels.clientsServed, 'en'),
+	);
 </script>
 
 <div
@@ -36,7 +42,7 @@
 
 		<div class="flex flex-1 flex-col items-center justify-center gap-2">
 			<!-- Counter -->
-			<MetricDisplay value="{count}+" label={counterLabel} size="lg" labelBelow />
+			<MetricDisplay value="{count}+" label={resolvedCounterLabel} size="lg" labelBelow />
 
 			<!-- Logo grid -->
 			<div class="mt-1 grid grid-cols-2 gap-2">

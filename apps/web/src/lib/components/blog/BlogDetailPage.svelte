@@ -36,6 +36,7 @@
     wordCount = 0,
     headings = [],
     postIndex = 1,
+    blogPage,
   }: {
     post: BlogPost;
     body: BlockEditorDoc;
@@ -44,6 +45,7 @@
     wordCount?: number;
     headings?: readonly TocHeading[];
     postIndex?: number;
+    blogPage?: import('@repo/shared').BlogPageContent;
   } = $props();
 
   const accentColor = $derived(
@@ -105,7 +107,7 @@
 
 <article data-testid="blog-detail-page" class:reading-active={readingMode} style="--blog-accent: {accentColor};">
   <!-- Full-bleed header -->
-  <BlogDetailHeader {post} {svgContent} {accentColor} {readingTime} {postIndex} />
+  <BlogDetailHeader {post} {svgContent} {accentColor} {readingTime} {postIndex} {blogPage} />
 
   <!-- Edge-to-edge hazard stripes -->
   <Separator variant="hazard" />

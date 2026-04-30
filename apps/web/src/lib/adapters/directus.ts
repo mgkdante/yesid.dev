@@ -1448,6 +1448,9 @@ export function transformBlockBlogPageContent(raw: RawBlockItem): BlogPageConten
 	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
 	return {
 		intro: toLS(tr, 'intro'),
+		heading: toLS(tr, 'heading'),
+		backToDispatches: toLS(tr, 'back_to_dispatches'),
+		backToPersonal: toLS(tr, 'back_to_personal'),
 	};
 }
 

@@ -1,12 +1,17 @@
 // BlogPageContentSchema — /blog page chrome.
-// Minimal stub: fields locked in slice-18i Task 1.4 when block_blog_page_content
-// is authored in Directus. Extend this schema then, not before.
+// Slice-18i: minimal stub with `intro`.
+// Slice-18i.1 (post-merge polish): added `heading`, `backToDispatches`,
+// `backToPersonal` — text the routes were hardcoding before this slice.
+// Extend this schema when more chrome migrates to CMS.
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
 
 export const BlogPageContentSchema = z.object({
 	intro: LocalizedStringSchema,
+	heading: LocalizedStringSchema,
+	backToDispatches: LocalizedStringSchema,
+	backToPersonal: LocalizedStringSchema,
 });
 
 export type BlogPageContent = z.infer<typeof BlogPageContentSchema>;

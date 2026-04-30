@@ -748,6 +748,9 @@ export function toBlockBlogPageContentTranslationRows(): ReadonlyArray<DirectusB
 		{
 			languages_code: 'en' as Locale,
 			intro: { en: 'Notes on data engineering, infrastructure, and building reliable systems.' },
+			heading: 'Dispatches',
+			back_to_dispatches: '← back to dispatches',
+			back_to_personal: '← back to personal corner',
 		},
 	];
 }

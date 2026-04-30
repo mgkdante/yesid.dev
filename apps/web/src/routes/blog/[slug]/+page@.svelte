@@ -17,4 +17,5 @@
 	wordCount={data.wordCount}
 	headings={data.headings}
 	postIndex={data.postIndex}
+	blogPage={data.blogPage}
 />
