@@ -2,7 +2,7 @@
 
 **Closed:** 2026-04-29
 **Tip commit:** `b125ed7` (45 commits ahead of `main` at e417379)
-**PR:** _filled in by /workflow-close-slice_
+**PR:** _filled in by /workflow-overlord-close-slice_
 
 ## What shipped
 
