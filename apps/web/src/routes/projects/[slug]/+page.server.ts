@@ -1,30 +1,26 @@
-// Project detail page loader — resolves project by slug, fetches linked service SVGs,
-// and optionally fetches the README HTML if the project has a readmeUrl set.
-// 404s for unknown slugs or private projects.
+// Project detail page loader — server-only so hydration reuses __data.json
+// instead of calling the Directus adapter from the browser.
 
 import { error } from '@sveltejs/kit';
 import { marked } from '$lib/utils/markdown';
 import { getProjectBySlug, getServiceById } from '$lib/repositories';
 import type { Service } from '$lib/types';
 
-export async function load({ params, fetch }) {
-	const project = await getProjectBySlug(params.slug);
+export async function load({ params, fetch, locals }: { params: { slug: string }; fetch: typeof globalThis.fetch; locals: App.Locals }) {
+	const ctx = { pageCache: locals.pageCache };
+	const project = await getProjectBySlug(params.slug, ctx);
 
 	if (!project || project.status === 'private') {
 		error(404, { message: 'Project not found' });
 	}
 
-	// Resolve linked services from the project's relatedServices IDs.
-	// Adapter getServiceById is async, so fan out with Promise.all and then
-	// filter out any unresolved (missing-from-data) services.
 	const servicesResolved = await Promise.all(
-		project.relatedServices.map((id) => getServiceById(id))
+		project.relatedServices.map((id) => getServiceById(id, ctx)),
 	);
 	const services: Service[] = servicesResolved.filter(
-		(s): s is Service => s !== undefined
+		(s): s is Service => s !== undefined,
 	);
 
-	// Load service SVG contents for badges in the sidebar
 	const serviceSvgContents: Record<string, string> = {};
 	for (const service of services) {
 		if (service.svg) {
@@ -39,10 +35,8 @@ export async function load({ params, fetch }) {
 		}
 	}
 
-	// Fetch README and convert markdown → HTML (GitHub raw content)
 	let readmeHtml: string | undefined;
 	if (project.readmeUrl) {
-		// Auto-convert GitHub blob URLs to raw content URLs
 		let readmeUrl = project.readmeUrl;
 		if (readmeUrl.includes('github.com') && readmeUrl.includes('/blob/')) {
 			readmeUrl = readmeUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');

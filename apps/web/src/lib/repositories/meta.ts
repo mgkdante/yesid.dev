@@ -3,10 +3,10 @@
 // <JsonLd> component; the repository no longer participates in that flow.
 
 import { adapter } from '$lib/adapters';
-import type { Locale, PageSeo, SiteMeta, SiteSeoDefaults } from '$lib/types';
+import type { Locale, PageSeo, PreviewContext, SiteMeta, SiteSeoDefaults } from '$lib/types';
 
-export async function getSiteMeta(): Promise<SiteMeta> {
-	return adapter.meta.site();
+export async function getSiteMeta(ctx?: PreviewContext): Promise<SiteMeta> {
+	return adapter.meta.site(ctx);
 }
 
 /**
@@ -19,8 +19,8 @@ export async function getSiteMeta(): Promise<SiteMeta> {
  *
  * Consumers: root `+layout.ts` (threads `themeColor` to `<SeoHead>`).
  */
-export async function getSiteSeoDefaults(): Promise<SiteSeoDefaults> {
-	return adapter.meta.siteSeoDefaults();
+export async function getSiteSeoDefaults(ctx?: PreviewContext): Promise<SiteSeoDefaults> {
+	return adapter.meta.siteSeoDefaults(ctx);
 }
 
 /**
@@ -38,6 +38,7 @@ export async function getPageSeo(
 	routeId: string,
 	locale: Locale,
 	params?: Record<string, string>,
+	ctx?: PreviewContext,
 ): Promise<PageSeo> {
-	return adapter.meta.forRoute(routeId, locale, params);
+	return adapter.meta.forRoute(routeId, locale, params, ctx);
 }

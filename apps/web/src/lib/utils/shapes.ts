@@ -1,23 +1,18 @@
 // Geometric morph-target shapes.
 //
 // Slice 18 18f Phase 11: migrated from hardcoded const to CMS-managed
-// collection (morph_shapes). This file is now a thin async wrapper with a
-// module-level cache, plus legacy SHAPES export for the static-adapter
-// fallback path.
+// collection (morph_shapes). The actual CMS read happens in +layout.server.ts;
+// this browser-safe module only serves the hydrated list to animation code.
 
-import { adapter } from '$lib/adapters';
 import type { MorphShape } from '@repo/shared';
 
 let cache: readonly MorphShape[] | null = null;
 
 /**
- * Fetch morph shapes from the active adapter (Directus or static), with a
- * module-level cache. First call resolves; subsequent calls return cached.
+ * Seed the browser-side morph-shape cache from SSR data.
  */
-export async function getMorphShapes(): Promise<readonly MorphShape[]> {
-	if (cache) return cache;
-	cache = await adapter.content.morphShapes();
-	return cache;
+export function setMorphShapes(shapes: readonly MorphShape[]): void {
+	cache = shapes;
 }
 
 /**
@@ -43,7 +38,7 @@ export function pickRandomShape(
 // Will be removed in 18i once all consumers use getMorphShapes().
 // ---------------------------------------------------------------------------
 
-/** @deprecated Use getMorphShapes() — fetches from adapter (Directus or static). */
+/** @deprecated Use getMorphShapes() — returns SSR-hydrated CMS shapes. */
 export const SHAPES = {
 	triangle: 'M24 8 L40 38 L8 38 Z',
 	circle: 'M24 8 A16 16 0 1 1 23.99 8 Z',
@@ -56,3 +51,19 @@ export type ShapeKey = keyof typeof SHAPES;
 
 /** @deprecated derived from SHAPES — dropped in 18i. */
 export const SHAPE_KEYS = Object.keys(SHAPES) as ShapeKey[];
+
+export const FALLBACK_MORPH_SHAPES: readonly MorphShape[] = SHAPE_KEYS.map((key, index) => ({
+	id: key,
+	label: key[0]!.toUpperCase() + key.slice(1),
+	path: SHAPES[key],
+	viewbox: '0 0 48 48',
+	sort: index + 1,
+}));
+
+/**
+ * Return the SSR-hydrated morph shapes. If a component is mounted in isolation
+ * in tests or story-like environments, fall back to the legacy local shapes.
+ */
+export async function getMorphShapes(): Promise<readonly MorphShape[]> {
+	return cache ?? FALLBACK_MORPH_SHAPES;
+}
