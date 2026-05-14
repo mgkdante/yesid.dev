@@ -55,6 +55,7 @@ export async function createSessionRow(opts: {
   branch: string;
   tool: 'claude' | 'codex';
   title: string;
+  claudeSessionId?: string;
 }): Promise<string> {
   if (!opts.sessionsDbId) throw new Error('sessionsDbId required');
   const properties: any = {
@@ -64,6 +65,9 @@ export async function createSessionRow(opts: {
   };
   if (opts.sliceId) {
     properties.Slice = { relation: [{ id: opts.sliceId }] };
+  }
+  if (opts.claudeSessionId) {
+    properties['Session ID'] = { rich_text: [{ text: { content: opts.claudeSessionId } }] };
   }
   const row = await opts.notion.pages.create({
     parent: { database_id: opts.sessionsDbId },
@@ -93,8 +97,10 @@ if (import.meta.main) {
     const sliceId = await findActiveSliceId(notion, config.slicesDbId, branch);
     const today = new Date().toISOString().slice(0, 10);
     const title = `${today} ${branch}`;
+    const claudeSessionId = process.env.CLAUDE_CODE_SESSION_ID;
     const sessionId = await createSessionRow({
       notion, sessionsDbId: config.sessionsDbId, sliceId, branch, tool, title,
+      claudeSessionId,
     });
     console.error(`[workflow-overlord:session-start] Sessions row created: ${sessionId}`);
     // Stdout: machine-readable for hook chain

@@ -22,4 +22,12 @@ fi
 [ -n "${NOTION_TOKEN:-}" ] || { echo "[workflow-overlord:session-start] NOTION_TOKEN unresolved (set NOTION_INTEGRATION_TOKEN in .env.notion-hooks.local or op:// ref)" >&2; exit 2; }
 
 export WORKFLOW_OVERLORD_TOOL="${WORKFLOW_OVERLORD_TOOL:-claude}"
+
+# Read stdin payload from Claude/Codex hook spec to capture session_id
+PAYLOAD="$(cat 2>/dev/null || true)"
+if [ -n "$PAYLOAD" ] && command -v jq >/dev/null 2>&1; then
+  CLAUDE_SESSION_ID="$(echo "$PAYLOAD" | jq -r '.session_id // empty' 2>/dev/null || true)"
+  [ -n "$CLAUDE_SESSION_ID" ] && export CLAUDE_CODE_SESSION_ID="$CLAUDE_SESSION_ID"
+fi
+
 exec bun scripts/session-start.ts
