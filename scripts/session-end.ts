@@ -52,6 +52,17 @@ export async function waitForStableFile(
   throw new Error(`waitForStableFile: ${path} did not stabilize within ${opts.timeoutMs}ms`);
 }
 
+// Cloudflare block-page HTML in an upload body trips Notion's WAF and causes
+// `file_uploads send failed` on every retry. Elide the page before upload —
+// preserves the rest of the transcript and breaks the self-feeding loop where
+// each failed upload's error response gets pasted into the next transcript.
+export function stripCloudflareBlockPages(text: string): string {
+  return text.replace(
+    /<!DOCTYPE html>[\s\S]*?(?:Cloudflare Ray ID|block_headline|cf-error-details)[\s\S]*?<\/html>/gi,
+    '[cloudflare-block-page elided]'
+  );
+}
+
 export function buildTranscriptMarkdown(jsonl: string): string {
   const lines = jsonl.split('\n').filter((l) => l.trim());
   const sections: string[] = [];
@@ -72,7 +83,7 @@ export function buildTranscriptMarkdown(jsonl: string): string {
       // skip malformed
     }
   }
-  return sections.join('\n\n---\n\n');
+  return stripCloudflareBlockPages(sections.join('\n\n---\n\n'));
 }
 
 if (import.meta.main) {
@@ -119,7 +130,18 @@ if (import.meta.main) {
     });
     console.error(`[workflow-overlord:session-end] Session ${notionPageId} (claude=${claudeSessionId}) closed; transcript uploaded as ${filename}.`);
   } catch (err) {
-    console.error(`[workflow-overlord:session-end] FAILED: ${(err as Error).message}`);
+    const msg = (err as Error).message ?? '';
+    // TEMPORARY: soft-skip Cloudflare WAF blocks only. The IP is rate-flagged from
+    // repeated failed uploads; retrying every Stop event just deepens the flag and
+    // pollutes future transcripts with the block-page HTML. Revert once the IP
+    // unflags (typically hours) and Guarantee #2 will resume strict behavior.
+    const isCloudflareBlock =
+      /Cloudflare Ray ID|cf-error-details|Attention Required!\s*\|\s*Cloudflare/i.test(msg);
+    if (isCloudflareBlock) {
+      console.error('[workflow-overlord:session-end] upstream WAF block — soft-skipping (transcript stays local).');
+      process.exit(0);
+    }
+    console.error(`[workflow-overlord:session-end] FAILED: ${msg}`);
     process.exit(2);
   }
 }

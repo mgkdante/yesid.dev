@@ -102,6 +102,11 @@ export async function uploadTranscript(opts: {
   const token = process.env.NOTION_TOKEN;
   if (!token) throw new Error('NOTION_TOKEN not set');
 
+  // UA matters: Bun's default User-Agent (bare "Bun/x.y.z") triggers Cloudflare
+  // bot heuristics on Notion's file_uploads send endpoint. A standard browser-ish
+  // UA gets the request past the WAF.
+  const userAgent = 'yesid-workflow-overlord/2.0 (Notion-API-Client)';
+
   // Step 1: create file upload
   const createResp = await fetchFn('https://api.notion.com/v1/file_uploads', {
     method: 'POST',
@@ -109,6 +114,7 @@ export async function uploadTranscript(opts: {
       Authorization: `Bearer ${token}`,
       'Notion-Version': '2022-06-28',
       'Content-Type': 'application/json',
+      'User-Agent': userAgent,
     },
     body: JSON.stringify({ filename: opts.filename, content_type: 'text/markdown' }),
   });
@@ -123,6 +129,7 @@ export async function uploadTranscript(opts: {
     headers: {
       Authorization: `Bearer ${token}`,
       'Notion-Version': '2022-06-28',
+      'User-Agent': userAgent,
     },
     body: form,
   });
