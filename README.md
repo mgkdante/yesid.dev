@@ -2,41 +2,33 @@
 
 **Digital infrastructure that moves.**
 
-## What This Is
+The repo for [yesid.dev](https://yesid.dev) — Yesid O.'s freelance SQL and digital-infrastructure brand. Portfolio + tooling + workflow systems.
 
-The repo for yesid., a freelance SQL and digital infrastructure brand. Portfolio, tooling, and workflow systems.
+## How it works
 
-## How It Works
-
-All workflow state lives in **Notion** and is operated through the `workflow-overlord` plugin from Claude Code or Codex.
-
-AI tools follow `AGENTS.md` plus their thin overlays. Slice work has Notion child pages for spec, plan, handoff, and research; session continuity lives in the Sessions DB.
+All workflow state lives in **Notion**, operated through the [workflow-overlord](https://github.com/mgkdante/workflow-overlord) plugin from Claude Code or Codex. AI tools read the Notion subtree (per `AGENTS.local.md`) for context. Code lives in the repo.
 
 ## Structure
 
 ```
-├── CLAUDE.md                      # Rules for Claude Code
-├── docs/
-│   ├── ai-memory/                 # Durable AI memory support
-│   ├── reference/
-│   │   ├── WORKFLOW.md            # Development pipeline
-│   │   └── tools/                 # Claude/Codex overlays
-│   ├── research/                  # Optional routable research source files
-│   └── slices/<slice>/research.md # Optional routable slice-local research source
-├── apps/                          # apps/web and apps/cms
-├── packages/                      # shared packages
-└── static/                        # public assets where applicable
+├── apps/web/                    # SvelteKit site (public)
+├── apps/cms/                    # Directus CMS
+├── packages/                    # shared packages (tokens, etc.)
+├── overlord-bridge/             # workflow-overlord MCP server
+├── scripts/                     # session hooks (bun)
+├── skills/                      # workflow-overlord SKILLs
+├── .claude/, .codex/            # tool configs + hook symlinks
+├── AGENTS.md                    # workflow contract (tool-agnostic)
+├── CLAUDE.md                    # Claude Code entry pointer
+└── docs/reference/              # operational refs (cms-environments etc.)
 ```
 
-## For a New Dev or AI
+## For a new dev or AI
 
-1. Read `CLAUDE.md`
-2. Read `AGENTS.md`
-3. Read `docs/reference/WORKFLOW.md`
-4. Find active slice state in Notion `Projects/yesid.dev/`
-5. Check the latest Sessions DB row before editing
+1. Read `AGENTS.md`
+2. Find active slice state in Notion `Projects/yesid.dev/`
+3. Check the latest Sessions DB row before editing
 
 ## Brand
 
-Primary `#E07800` · Accent `#FFB627` · Inter + JetBrains Mono · Dark theme default.
-Narrative, foundations, and case-study material live in Notion.
+Primary `#E07800` · Accent `#FFB627` · Inter + JetBrains Mono · Dark-first. Full brand book lives in Notion → 🏢 Business → Brand.
