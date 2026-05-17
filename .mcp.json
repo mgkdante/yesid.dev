@@ -1,20 +1,26 @@
 {
   "$schema": "https://json.schemastore.org/mcp.json",
   "mcpServers": {
+    "overlord-bridge": {
+      "type": "stdio",
+      "command": "bun",
+      "args": ["overlord-bridge/server.ts"]
+    },
+    "notionhq": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@notionhq/notion-mcp-server@2.2.1"]
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
     "yesid-cms-prod": {
       "type": "http",
       "url": "https://cms.yesid.dev/mcp",
       "headers": {
         "Authorization": "Bearer ${YESID_CMS_MCP_TOKEN}"
       }
-    },
-    "notion": {
-      "type": "http",
-      "url": "https://mcp.notion.com/mcp"
-    },
-    "context7": {
-      "type": "http",
-      "url": "https://mcp.context7.com/mcp"
     }
   }
 }
