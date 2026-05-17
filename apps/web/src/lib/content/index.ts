@@ -30,7 +30,8 @@ export * from './morph-shapes'
 export * from './projects.companion'
 export * from './services.companion'
 export * from './blog.companion'
-export * from './tech-stack.companion'
 export * from './site-content.companion'
 export * from './nav.companion'
 export * from './contact-page.companion'
+// tech-stack.companion.ts deleted in slice-18m follow-up (GH #63/#64) — items
+// + page chrome now both emit from CMS via tech-stack.ts.

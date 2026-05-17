@@ -100,15 +100,38 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
-	if (data.techStackPage) {
+	if (data.techStackPage || data.techStack) {
+		// slice-18m follow-up (GH #63 + #64): tech-stack.ts emits BOTH the page
+		// chrome (techStackPageContent from block_tech_stack_page_content) AND the
+		// items array (techStackItems from tech_stack collection). The static
+		// adapter sources from these directly — no more MD-glob parser, no more
+		// companion module. apps/web/src/content/stack/*.md became orphans and
+		// were deleted alongside this change.
+		const items: { name: string; typeName: string; value: unknown }[] = [];
+		const typeImports = new Set<string>();
+		if (data.techStackPage) {
+			items.push({
+				name: 'techStackPageContent',
+				typeName: 'TechStackPageContent',
+				value: data.techStackPage,
+			});
+			typeImports.add('TechStackPageContent');
+		}
+		if (data.techStack) {
+			items.push({
+				name: 'techStackItems',
+				typeName: 'readonly TechStackItem[]',
+				value: data.techStack,
+			});
+			typeImports.add('TechStackItem');
+		}
 		out.push({
 			filePath: path('tech-stack.ts'),
-			description: '/tech-stack page chrome (hero, actions, CTA copy). Static tech_stack data lives in tech-stack.companion.ts (deferred to 18k cleanup).',
-			imports: [{ symbols: ['TechStackPageContent'], from: '@repo/shared', typeOnly: true }],
-			exports: [
-				{ name: 'techStackPageContent', typeName: 'TechStackPageContent', value: data.techStackPage },
+			description: '/tech-stack page chrome + tech-stack items array, both CMS-derived.',
+			imports: [
+				{ symbols: [...typeImports], from: '$lib/types', typeOnly: true },
 			],
-			reExportFromCompanion: './tech-stack.companion',
+			exports: items,
 		});
 	}
 

@@ -30,7 +30,7 @@ import * as blogModule from './blog.js';
 import * as techStackModule from './tech-stack.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from './hero-data.js';
-import { techStackPageContent, getAllTechItems } from './tech-stack.js';
+import { techStackPageContent, techStackItems } from './tech-stack.js';
 import {
 	ProjectSchema,
 	ServiceSchema,
@@ -260,7 +260,7 @@ describe('seed data parses through schemas', () => {
 	});
 
 	it('tech-stack items → TechStackItemSchema[]', () => {
-		expect(() => z.array(TechStackItemSchema).parse(getAllTechItems())).not.toThrow();
+		expect(() => z.array(TechStackItemSchema).parse(techStackItems)).not.toThrow();
 	});
 
 	// tech-stack scenarios test removed in slice-18g — StackScenario type and
