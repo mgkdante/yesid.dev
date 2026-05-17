@@ -4,7 +4,16 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": [".svelte-kit/**", ".vercel/**", "dist/**"],
-			"inputs": ["$TURBO_DEFAULT$", "!**/.env.local", "!**/.env.*.local"]
+			"inputs": ["$TURBO_DEFAULT$", "!**/.env.local", "!**/.env.*.local"],
+			"env": [
+				"PUBLIC_DIRECTUS_URL",
+				"DIRECTUS_ADMIN_TOKEN",
+				"DIRECTUS_ADMIN_EMAIL",
+				"DIRECTUS_ADMIN_PASSWORD",
+				"DIRECTUS_READ_TOKEN",
+				"OPENWEATHER_API_KEY",
+				"WEB3FORMS_ACCESS_KEY"
+			]
 		},
 		"test": {
 			"dependsOn": ["^build"],

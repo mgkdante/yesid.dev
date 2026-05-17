@@ -312,8 +312,22 @@ async function main(): Promise<void> {
 	const moduleFilter = typeof values.module === 'string' ? values.module : undefined;
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
 	const url = defaultDirectusUrl();
-	// Dry-run skips auth — no network call needed for the planning summary.
-	const token = dryRun ? '' : await getAdminToken(url);
+
+	// Token resolution is lenient — Vercel preview deploys without the secret
+	// shouldn't kill the build. Failure here surfaces in run() as a fetch error
+	// → cache fallback → if no cache, exit 0 and let the committed .ts files
+	// serve as the authoritative source for this build.
+	let token = '';
+	if (!dryRun) {
+		try {
+			token = await getAdminToken(url);
+		} catch (authErr) {
+			log.warn(`auth failed: ${(authErr as Error).message}`);
+			log.warn(
+				'continuing without token; will try cache fallback, else exit 0 (committed .ts files become authoritative).',
+			);
+		}
+	}
 
 	await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir });
 }
