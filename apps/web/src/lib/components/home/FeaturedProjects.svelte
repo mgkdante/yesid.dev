@@ -6,7 +6,7 @@
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils';
 
-	import { getProjectBySlug, rawProjectToProject } from '$lib/content';
+	import { getProjectBySlug } from '$lib/content';
 	import type { Project, ProofReelContent } from '$lib/types';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card } from '$lib/components/ui/card';
@@ -21,10 +21,11 @@
 	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, 'en');
 	const toggleColorAriaTemplate = resolveLocale(proofReelContent.toggleColorAria, 'en');
 
-	const projects: (Project | undefined)[] = proofReelContent.slugs.map((slug) => {
-		const raw = getProjectBySlug(slug);
-		return raw ? rawProjectToProject(raw) : undefined;
-	});
+	// slice-18m: getProjectBySlug now returns the full Project shape (description
+	// as LocalizedBlockEditorDoc); the legacy RawProject → Project wrapper is gone.
+	const projects: (Project | undefined)[] = proofReelContent.slugs.map((slug) =>
+		getProjectBySlug(slug),
+	);
 
 	// Mobile tap toggle: track which card image is active (-1 = none)
 	let activeImageIndex = $state(-1);
