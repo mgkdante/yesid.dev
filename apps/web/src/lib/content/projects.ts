@@ -1,357 +1,382 @@
-import type { Project, LocalizedString } from '$lib/types';
-import { wrapPlainText } from '@repo/shared';
-
-// ---------------------------------------------------------------------------
-// RawProject / RawProjectSection — static fixture types (#41 Task 78)
+// ----------------------------------------------------------------------
+// GENERATED FILE — do not edit by hand.
 //
-// The static fixtures store description and sections.content as plain
-// LocalizedString (readable author-facing strings). The static adapter
-// wraps them into LocalizedBlockEditorDoc via wrapPlainText before exposing
-// them as the public Project type. This separates authoring format (plain text)
-// from the public type contract (Block Editor JSON per locale).
-// ---------------------------------------------------------------------------
+// Projects array (slugs, titles, oneLiners, descriptions, sections, impact metrics, stack, tags, related services). Helpers live in projects.companion.ts.
+//
+// Source: live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
+// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// ----------------------------------------------------------------------
 
-/** Static-fixture shape for a project section. content is still LocalizedString. */
-export interface RawProjectSection {
-	title: LocalizedString;
-	content: LocalizedString;
-}
+import type { Project } from '$lib/types';
 
-/** Static-fixture shape for a project. description + sections.content are LocalizedString.
- *  The static adapter maps RawProject → Project before returning from port methods. */
-export type RawProject = Omit<Project, 'description' | 'sections'> & {
-	description: LocalizedString;
-	sections: RawProjectSection[];
-};
-
-/** HTML `<title>` + `<meta description>` for the `/projects` route. Extracted
- *  in Task 17b-7k. */
-export const projectsPageMeta = {
-	title: { en: 'Projects | yesid.' } satisfies LocalizedString,
-	description: {
-		en: 'Projects, pipelines, and systems built by yesid. — freelance SQL development and digital infrastructure.',
-	} satisfies LocalizedString,
-} as const;
-
-/** Projects-listing-page chrome copy extracted from components in Task 17b-7d.
- *  Consumed by ProjectListingPage, ProjectFilterMobile, ProjectFilterSidebar,
- *  ProjectCard, and (via re-use) the services detail's "see all projects" link. */
-export const projectsListingContent = {
-	heading: { en: 'Projects' } satisfies LocalizedString,
-	searchPlaceholder: { en: 'Search projects...' } satisfies LocalizedString,
-	/** "See all projects →" link — used from service detail pages pointing to /projects. */
-	seeAllLink: { en: 'See all projects \u2192' } satisfies LocalizedString,
-	filters: {
-		filtersLabel: { en: 'Filters' } satisfies LocalizedString,
-		services: { en: 'Services' } satisfies LocalizedString,
-		tags: { en: 'Tags' } satisfies LocalizedString,
-		techStack: { en: 'Tech Stack' } satisfies LocalizedString,
-		allLabel: { en: 'All' } satisfies LocalizedString,
-		showingPrefix: { en: 'Showing' } satisfies LocalizedString,
-	},
-	card: {
-		/** Suffix after the first N stack items; template `{count}` -> extra count. */
-		stackOverflowSuffix: { en: '+{count} more' } satisfies LocalizedString,
-	},
-} as const;
-
-/** Projects-detail-page chrome copy extracted from components in Task 17b-7e.
- *  Consumed by ProjectDetailHeader, ProjectDetailPage, ProjectGlancePanel(+Mobile),
- *  ProjectTocPill. */
-export const projectsDetailContent = {
-	backToListingLabel: { en: '\u2190 All Projects' } satisfies LocalizedString,
-	tocSectionTitle: { en: 'On this page' } satisfies LocalizedString,
-	readmeSectionTitle: { en: 'README' } satisfies LocalizedString,
-	/** Glance panel (desktop sidebar + mobile collapsible) section headings. */
-	glance: {
-		overview: { en: 'Overview' } satisfies LocalizedString,
-		impact: { en: 'Impact' } satisfies LocalizedString,
-		stack: { en: 'Stack' } satisfies LocalizedString,
-		services: { en: 'Services' } satisfies LocalizedString,
-		links: { en: 'Links' } satisfies LocalizedString,
-		/** Mobile-only rolled-up heading. */
-		projectInfo: { en: 'Project Info' } satisfies LocalizedString,
-		/** Link labels inside the Links section. */
-		liveSiteLabel: { en: 'Live Site' } satisfies LocalizedString,
-		liveSiteLabelMobile: { en: '\u2197 Live Site' } satisfies LocalizedString,
-		githubLabel: { en: 'GitHub' } satisfies LocalizedString,
-	},
-	tocPill: {
-		openAria: { en: 'Table of contents' } satisfies LocalizedString,
-		closeAria: { en: 'Close table of contents' } satisfies LocalizedString,
-	},
-} as const;
-
-// Seed data — English only. French and Spanish fields are intentionally omitted;
-// they will be filled in as content is translated (not in this slice).
-// One project is featured (surfaces on the home page), one is private (client NDA work
-// that exists in the data but is never rendered in public listings).
-const projects: readonly RawProject[] = [
+export const projects: readonly Project[] = [
 	{
-		slug: 'yesid-dev',
-		title: { en: 'yesid.dev — Portfolio Site' },
-		oneLiner: { en: 'The site you are looking at: a SvelteKit portfolio built slice by slice.' },
 		description: {
-			en: 'A personal brand and portfolio site for a freelance SQL developer and digital infrastructure consultant. Built with SvelteKit 2, Svelte 5, Tailwind CSS v4, and deployed to Vercel. Designed to be multilingual (en/fr/es) from day one.'
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'A personal brand and portfolio site for a freelance SQL developer and digital infrastructure consultant. Built with SvelteKit 2, Svelte 5, Tailwind CSS v4, and deployed to Vercel. Designed to be multilingual (en/fr/es) from day one.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242409366,
+				version: '2.31.2',
+			},
 		},
-		stack: ['SvelteKit', 'Svelte 5', 'TypeScript', 'Tailwind CSS', 'Vercel'],
-		tags: ['portfolio', 'web', 'svelte'],
-		status: 'public',
 		featured: true,
-		repoUrl: 'https://github.com/mgkdante/yesid.dev',
+		image: '8b57ccd1-bed1-46ae-bb24-a887714a8bcc',
 		liveUrl: 'https://yesid.dev',
-		image: 'yesid-dev.png',
+		oneLiner: {
+			en: 'The site you are looking at: a SvelteKit portfolio built slice by slice.',
+		},
 		relatedServices: ['web-development'],
+		repoUrl: 'https://github.com/mgkdante/yesid.dev',
 		sections: [
 			{
-				title: { en: 'Why SvelteKit?' },
 				content: {
-					en: 'SvelteKit compiles away the framework at build time, producing lean HTML and minimal JavaScript. For a portfolio site where first impression and load speed matter, that trade-off is worth making.'
-				}
-			}
-		]
+					en: {
+						blocks: [
+							{
+								data: {
+									text: 'SvelteKit compiles away the framework at build time, producing lean HTML and minimal JavaScript. For a portfolio site where first impression and load speed matter, that trade-off is worth making.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242409366,
+						version: '2.31.2',
+					},
+				},
+				title: { en: 'Why SvelteKit?' },
+			},
+		],
+		slug: 'yesid-dev',
+		stack: [
+			'SvelteKit',
+			'Svelte 5',
+			'TypeScript',
+			'Tailwind CSS',
+			'Vercel',
+		],
+		status: 'public',
+		tags: ['portfolio', 'web', 'svelte'],
+		title: { en: 'yesid.dev — Portfolio Site' },
 	},
 	{
-		slug: 'transit-data-pipeline',
-		title: { en: 'Transit Operations Data Pipeline' },
-		oneLiner: {
-			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.'
-		},
 		description: {
-			en: 'A production data pipeline ingesting GTFS-RT feeds, transforming them with dbt, and surfacing KPIs in a Power BI dashboard. Built for a transit authority in Quebec.'
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'A production data pipeline ingesting GTFS-RT feeds, transforming them with dbt, and surfacing KPIs in a Power BI dashboard. Built for a transit authority in Quebec.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242409586,
+				version: '2.31.2',
+			},
 		},
-		stack: ['PostgreSQL', 'Python', 'dbt', 'Power BI', 'Apache Airflow'],
-		tags: ['etl', 'transit', 'postgresql', 'dbt'],
-		status: 'public',
+		environment: 'production',
 		featured: false,
+		impactMetric: {
+			label: { en: 'Real-time refresh cycles' },
+			value: '30s',
+		},
+		impactMetrics: [
+			{
+				label: { en: 'Real-time refresh cycles' },
+				value: '30s',
+			},
+			{
+				label: { en: 'Pipeline uptime' },
+				value: '99.9%',
+			},
+		],
+		location: 'sherbrooke',
+		oneLiner: {
+			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.',
+		},
+		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
 		relatedServices: ['data-pipeline', 'sql-development'],
 		repoUrl: 'https://github.com/mgkdante/transit',
-		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
 		sections: [],
-		impactMetric: {
-			value: '30s',
-			label: { en: 'Real-time refresh cycles' },
-		},
-		location: 'sherbrooke',
-		environment: 'production',
-		version: '2.4.1',
-		impactMetrics: [
-			{ value: '30s', label: { en: 'Real-time refresh cycles' } },
-			{ value: '99.9%', label: { en: 'Pipeline uptime' } },
+		slug: 'transit-data-pipeline',
+		stack: [
+			'PostgreSQL',
+			'Python',
+			'dbt',
+			'Power BI',
+			'Apache Airflow',
 		],
+		status: 'public',
+		tags: ['etl', 'transit', 'postgresql', 'dbt'],
+		title: { en: 'Transit Operations Data Pipeline' },
+		version: '2.4.1',
 	},
 	{
-		slug: 'lorem-analytics-dashboard',
-		title: { en: 'Lorem Analytics Dashboard' },
-		oneLiner: { en: 'Executive KPI dashboard tracking operational metrics across 12 departments.' },
 		description: {
-			en: 'A Power BI dashboard suite built for a logistics company. Pulls data from SQL Server, applies business logic in DAX, and delivers daily refreshes to executive stakeholders. Reduced reporting time from 2 days to 15 minutes.'
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'A Power BI dashboard suite built for a logistics company. Pulls data from SQL Server, applies business logic in DAX, and delivers daily refreshes to executive stakeholders. Reduced reporting time from 2 days to 15 minutes.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242409843,
+				version: '2.31.2',
+			},
 		},
-		stack: ['Power BI', 'SQL Server', 'Python', 'DAX'],
-		tags: ['analytics', 'reporting', 'sql-server'],
-		status: 'public',
 		featured: false,
+		impactMetric: {
+			before: '2 days',
+			label: { en: 'Reporting across 12 depts' },
+			value: '15 min',
+		},
+		impactMetrics: [
+			{
+				before: '2 days',
+				label: { en: 'Reporting across 12 depts' },
+				value: '15 min',
+			},
+			{
+				label: { en: 'Query time reduction' },
+				value: '73%',
+			},
+		],
+		oneLiner: {
+			en: 'Executive KPI dashboard tracking operational metrics across 12 departments.',
+		},
+		readmeUrl: 'https://github.com/zen-browser/desktop/blob/dev/README.md',
 		relatedServices: ['analytics-reporting'],
 		repoUrl: 'https://github.com/zen-browser',
-		readmeUrl: 'https://github.com/zen-browser/desktop/blob/dev/README.md',
 		sections: [
 			{
-				title: { en: 'The Problem' },
 				content: {
-					en: 'Operations managers were spending two days each month compiling reports from multiple spreadsheets. Data was stale by the time decisions were made.'
-				}
+					en: {
+						blocks: [
+							{
+								data: {
+									text: 'Operations managers were spending two days each month compiling reports from multiple spreadsheets. Data was stale by the time decisions were made.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242409844,
+						version: '2.31.2',
+					},
+				},
+				title: { en: 'The Problem' },
 			},
 			{
-				title: { en: 'The Approach' },
 				content: {
-					en: 'Connected directly to SQL Server with scheduled refreshes. Built a semantic layer in DAX so business users could slice data without writing queries.'
-				}
-			}
+					en: {
+						blocks: [
+							{
+								data: {
+									text: 'Connected directly to SQL Server with scheduled refreshes. Built a semantic layer in DAX so business users could slice data without writing queries.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242409844,
+						version: '2.31.2',
+					},
+				},
+				title: { en: 'The Approach' },
+			},
 		],
+		slug: 'lorem-analytics-dashboard',
+		stack: ['Power BI', 'SQL Server', 'Python', 'DAX'],
+		status: 'public',
+		tags: ['analytics', 'reporting', 'sql-server'],
+		title: { en: 'Lorem Analytics Dashboard' },
+	},
+	{
+		description: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'Migrated a 500GB MySQL database to PostgreSQL with zero downtime using dual-write and shadow reads. Included schema redesign, data type mapping, and stored procedure conversion.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242410164,
+				version: '2.31.2',
+			},
+		},
+		featured: false,
 		impactMetric: {
-			value: '15 min',
-			label: { en: 'Reporting across 12 departments' },
-			before: '2 days',
+			label: { en: 'Zero-downtime migration' },
+			value: '500 GB',
 		},
 		impactMetrics: [
-			{ value: '15 min', label: { en: 'Reporting across 12 depts' }, before: '2 days' },
-			{ value: '73%', label: { en: 'Query time reduction' } },
+			{
+				label: { en: 'Zero-downtime migration' },
+				value: '500 GB',
+			},
 		],
-	},
-	{
-		slug: 'lorem-database-migration',
-		title: { en: 'Lorem Database Migration' },
-		oneLiner: { en: 'Zero-downtime migration from legacy MySQL to PostgreSQL for a SaaS platform.' },
-		description: {
-			en: 'Migrated a 500GB MySQL database to PostgreSQL with zero downtime using dual-write and shadow reads. Included schema redesign, data type mapping, and stored procedure conversion.'
+		oneLiner: {
+			en: 'Zero-downtime migration from legacy MySQL to PostgreSQL for a SaaS platform.',
 		},
-		stack: ['PostgreSQL', 'Python', 'Alembic', 'MySQL'],
-		tags: ['postgresql', 'migration', 'schema'],
-		status: 'public',
-		featured: false,
+		readmeUrl: 'https://github.com/oven-sh/bun/blob/main/README.md',
 		relatedServices: ['database-engineering', 'sql-development'],
 		repoUrl: 'https://github.com/oven-sh/bun',
-		readmeUrl: 'https://github.com/oven-sh/bun/blob/main/README.md',
 		sections: [
 			{
-				title: { en: 'Why Migrate?' },
 				content: {
-					en: 'The legacy MySQL instance was hitting performance limits. PostgreSQL offered better JSON support, CTEs, and window functions needed for the analytics layer.'
-				}
+					en: {
+						blocks: [
+							{
+								data: {
+									text: 'The legacy MySQL instance was hitting performance limits. PostgreSQL offered better JSON support, CTEs, and window functions needed for the analytics layer.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242410164,
+						version: '2.31.2',
+					},
+				},
+				title: { en: 'Why Migrate?' },
 			},
 			{
-				title: { en: 'Migration Strategy' },
 				content: {
-					en: 'Used a dual-write pattern: new writes go to both databases, reads gradually shift to PostgreSQL. Shadow reads validated correctness before the cutover.'
-				}
-			}
+					en: {
+						blocks: [
+							{
+								data: {
+									text: 'Used a dual-write pattern: new writes go to both databases, reads gradually shift to PostgreSQL. Shadow reads validated correctness before the cutover.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242410164,
+						version: '2.31.2',
+					},
+				},
+				title: { en: 'Migration Strategy' },
+			},
 		],
-		impactMetric: {
-			value: '500 GB',
-			label: { en: 'Zero-downtime migration' },
-		},
+		slug: 'lorem-database-migration',
+		stack: ['PostgreSQL', 'Python', 'Alembic', 'MySQL'],
+		status: 'public',
+		tags: ['postgresql', 'migration', 'schema'],
+		title: { en: 'Lorem Database Migration' },
 	},
 	{
-		slug: 'lorem-query-optimizer',
-		title: { en: 'Lorem Query Optimizer' },
-		oneLiner: { en: 'Automated SQL Server query analysis tool that identifies slow queries and suggests index improvements.' },
 		description: {
-			en: 'A Python-based tool that connects to SQL Server, analyzes execution plans, identifies missing indexes, and generates optimization recommendations. Reduced average query time by 73% across 200+ stored procedures.'
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'A Python-based tool that connects to SQL Server, analyzes execution plans, identifies missing indexes, and generates optimization recommendations. Reduced average query time by 73% across 200+ stored procedures.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242410452,
+				version: '2.31.2',
+			},
 		},
-		stack: ['SQL Server', 'Python', 'SSMS', 'T-SQL'],
-		tags: ['sql', 'performance', 'sql-server'],
-		status: 'public',
 		featured: false,
+		oneLiner: {
+			en: 'Automated SQL Server query analysis tool that identifies slow queries and suggests index improvements.',
+		},
 		relatedServices: ['sql-development', 'database-engineering'],
 		repoUrl: 'https://github.com/mgkdante/lorem-query-optimizer',
 		sections: [
 			{
-				title: { en: 'How It Works' },
 				content: {
-					en: 'Connects to the target SQL Server instance, captures execution plans for the heaviest queries, and analyzes them for common anti-patterns: table scans, implicit conversions, and parameter sniffing issues.'
-				}
-			}
-		]
+					en: {
+						blocks: [
+							{
+								data: {
+									text: 'Connects to the target SQL Server instance, captures execution plans for the heaviest queries, and analyzes them for common anti-patterns: table scans, implicit conversions, and parameter sniffing issues.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242410452,
+						version: '2.31.2',
+					},
+				},
+				title: { en: 'How It Works' },
+			},
+		],
+		slug: 'lorem-query-optimizer',
+		stack: ['SQL Server', 'Python', 'SSMS', 'T-SQL'],
+		status: 'public',
+		tags: ['sql', 'performance', 'sql-server'],
+		title: { en: 'Lorem Query Optimizer' },
 	},
 	{
-		slug: 'lorem-retool-admin',
-		title: { en: 'Lorem Retool Admin Panel' },
-		oneLiner: { en: 'Internal operations dashboard for managing inventory and approval workflows.' },
 		description: {
-			en: 'A Retool-based admin panel that replaced 6 spreadsheets with a unified interface. CRUD operations on PostgreSQL, role-based access control, and automated approval routing.'
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'A Retool-based admin panel that replaced 6 spreadsheets with a unified interface. CRUD operations on PostgreSQL, role-based access control, and automated approval routing.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242410643,
+				version: '2.31.2',
+			},
 		},
-		stack: ['Retool', 'PostgreSQL', 'REST API', 'Node.js'],
-		tags: ['retool', 'admin', 'postgresql'],
-		status: 'public',
 		featured: false,
+		oneLiner: {
+			en: 'Internal operations dashboard for managing inventory and approval workflows.',
+		},
 		relatedServices: ['internal-tooling', 'analytics-reporting'],
 		sections: [
 			{
-				title: { en: 'Before & After' },
 				content: {
-					en: 'Operations ran on 6 Google Sheets with manual copy-paste between them. The Retool panel centralized everything into one interface with real-time PostgreSQL queries.'
-				}
-			}
-		]
-	}
+					en: {
+						blocks: [
+							{
+								data: {
+									text: 'Operations ran on 6 Google Sheets with manual copy-paste between them. The Retool panel centralized everything into one interface with real-time PostgreSQL queries.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242410643,
+						version: '2.31.2',
+					},
+				},
+				title: { en: 'Before & After' },
+			},
+		],
+		slug: 'lorem-retool-admin',
+		stack: ['Retool', 'PostgreSQL', 'REST API', 'Node.js'],
+		status: 'public',
+		tags: ['retool', 'admin', 'postgresql'],
+		title: { en: 'Lorem Retool Admin Panel' },
+	},
 ];
 
-// --- Helper functions ---
-// These operate only on the local `projects` array. They are co-located here
-// because the helpers and the data they query are always changed together.
-
-/**
- * Returns the project with the given slug, or undefined if none matches.
- * Slugs are unique by convention (enforced in data-integrity.test.ts).
- */
-export function getProjectBySlug(slug: string): RawProject | undefined {
-	return projects.find((p) => p.slug === slug);
-}
-
-/**
- * Returns all projects marked as featured.
- * Featured projects appear in the home page showcase section.
- */
-export function getFeaturedProjects(): readonly RawProject[] {
-	return projects.filter((p) => p.featured);
-}
-
-/**
- * Returns all projects that are not private.
- * Includes 'public' and 'wip' — both are safe to display to visitors.
- */
-export function getPublicProjects(): readonly RawProject[] {
-	return projects.filter((p) => p.status !== 'private');
-}
-
-/**
- * Returns a deduplicated, alphabetically sorted array of all tags across all projects.
- * Used to build tag filter UIs without duplicates.
- */
-export function getAllTags(): string[] {
-	const allTags = projects.flatMap((p) => p.tags);
-	// Set removes duplicates; spread + sort gives a stable, readable order
-	return [...new Set(allTags)].sort();
-}
-
-/**
- * Returns all non-private projects linked to a given service ID.
- * Used on service detail pages and the work listing to show related projects.
- */
-export function getProjectsByService(serviceId: string): readonly RawProject[] {
-	return projects.filter(
-		(p) => p.status !== 'private' && p.relatedServices.includes(serviceId)
-	);
-}
-
-/**
- * Returns deduplicated, sorted service IDs from all public projects.
- * Used to build service filter UI on the work listing page.
- */
-export function getServiceIdsForProjects(): string[] {
-	const ids = projects
-		.filter((p) => p.status !== 'private')
-		.flatMap((p) => p.relatedServices);
-	return [...new Set(ids)].sort();
-}
-
-/**
- * Returns deduplicated, sorted tech stack items from all public projects.
- * Used to build tech stack filter UI on the work listing page.
- */
-export function getAllStackItems(): string[] {
-	const stacks = projects
-		.filter((p) => p.status !== 'private')
-		.flatMap((p) => p.stack);
-	return [...new Set(stacks)].sort();
-}
-
-/**
- * Converts a RawProject (plain LocalizedString description/sections) into a
- * full Project (LocalizedBlockEditorDoc description/sections) by wrapping each
- * locale's plain text through wrapPlainText.
- *
- * Call this at the boundary between the static fixtures and the public Project type —
- * i.e., inside port methods (static adapter) or when passing fixture data to
- * components that expect Project.
- */
-export function rawProjectToProject(raw: RawProject): Project {
-	return {
-		...raw,
-		description: {
-			en: wrapPlainText(raw.description.en),
-			...(raw.description.fr !== undefined && { fr: wrapPlainText(raw.description.fr) }),
-			...(raw.description.es !== undefined && { es: wrapPlainText(raw.description.es) }),
-		},
-		sections: raw.sections.map((s) => ({
-			title: s.title,
-			content: {
-				en: wrapPlainText(s.content.en),
-				...(s.content.fr !== undefined && { fr: wrapPlainText(s.content.fr) }),
-				...(s.content.es !== undefined && { es: wrapPlainText(s.content.es) }),
-			},
-		})),
-	};
-}
-
-export { projects };
+// Re-export hand-written companion module so consumers can keep importing
+// chrome / helpers / type defs from the original path 'projects'.
+export * from './projects.companion';

@@ -15,7 +15,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
-import { projects, rawProjectToProject } from './projects.js';
+import { projects } from './projects.js';
 import { services } from './services.js';
 import { siteMeta } from './site-meta.js';
 import { blogPosts } from './blog.js';
@@ -241,7 +241,10 @@ describe('blogPosts data integrity', () => {
 
 describe('seed data parses through schemas', () => {
 	it('projects → ProjectSchema[]', () => {
-		expect(() => z.array(ProjectSchema).parse(projects.map(rawProjectToProject))).not.toThrow();
+		// slice-18m: projects is now CMS-derived Project shape directly (no
+		// rawProjectToProject wrapping); description + sections.content are
+		// LocalizedBlockEditorDoc per the #41 migration.
+		expect(() => z.array(ProjectSchema).parse(projects)).not.toThrow();
 	});
 
 	it('services → ServiceSchema[]', () => {
@@ -323,8 +326,13 @@ interface LocalizedStringStats {
 
 function isLocalizedStringShape(v: unknown): v is Record<string, unknown> {
 	if (typeof v !== 'object' || v === null) return false;
-	// Must have an `en` key to be considered a LocalizedString candidate.
-	return 'en' in (v as Record<string, unknown>);
+	const obj = v as Record<string, unknown>;
+	// Must have an `en` key whose value is a STRING. Objects with `en` keys whose
+	// values are objects are LocalizedBlockEditorDoc / per-locale JSON columns
+	// (slice-18m: projects.description, projects.sections[].content are
+	// LocalizedBlockEditorDoc, not LocalizedString) — those are walked structurally,
+	// not validated as LocalizedStrings.
+	return 'en' in obj && typeof obj.en === 'string';
 }
 
 function isNonEmptyString(v: unknown): boolean {

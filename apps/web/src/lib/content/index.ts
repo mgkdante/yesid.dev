@@ -10,6 +10,7 @@
 // - Adapters (specifically $lib/adapters/static) are the long-term sole
 //   reader of $lib/content/* after 17b lands.
 
+// Generated CMS-derived modules (slice-18m export-fallbacks pipeline).
 export * from './projects'
 export * from './services'
 export * from './blog'
@@ -20,3 +21,16 @@ export * from './nav'
 export * from './about-page'
 export * from './contact-page'
 export * from './hero-data'
+export * from './blog-page'
+export * from './projects-page'
+export * from './morph-shapes'
+
+// Hand-written companions (slice-18m): route chrome, helper functions, type
+// definitions, and legacy fallbacks the generator does not emit.
+export * from './projects.companion'
+export * from './services.companion'
+export * from './blog.companion'
+export * from './tech-stack.companion'
+export * from './site-content.companion'
+export * from './nav.companion'
+export * from './contact-page.companion'

@@ -1,0 +1,106 @@
+/**
+ * blog-posts fetcher — reads `blog_posts` (flat, mono-language per row per AM2.5).
+ * Mirrors apps/web/src/lib/adapters/directus.ts:1770 `toBlogPost`.
+ *
+ * SVG fallback resolution: when a row has no svg_illustration FK, hashes the
+ * slug to pick from PRO/PERSONAL fallback lists — same deterministic policy
+ * as the runtime adapter (resolveSvgFallbackNameSync at L1750).
+ */
+
+import { readItems } from '@directus/sdk';
+import { z } from 'zod';
+import {
+	BlogPostSchema,
+	type BlogAnimation,
+	type BlogCategory,
+	type BlogPost,
+} from '../schemas/blog';
+import type { FetcherContext } from './types';
+
+export interface DirectusBlogPostRow {
+	id: string;
+	status: 'draft' | 'published' | 'archived';
+	date_published: string | null;
+	sort: number | null;
+	lang: 'en' | 'fr' | 'es';
+	category: BlogCategory;
+	tags: readonly string[] | null;
+	external: boolean;
+	url: string | null;
+	cover_image: { id: string } | string | null;
+	svg_illustration: { id: string; label?: string; category?: string; file?: { id: string } } | string | null;
+	animation: BlogAnimation;
+	title: string;
+	excerpt: string;
+}
+
+const PRO_FALLBACKS = ['pro-database', 'pro-code', 'pro-pipeline', 'pro-chart'] as const;
+const PERSONAL_FALLBACKS = [
+	'personal-rocket',
+	'personal-train',
+	'personal-telescope',
+	'personal-globe',
+] as const;
+
+function slugHash(slug: string): number {
+	let hash = 0;
+	for (let i = 0; i < slug.length; i++) {
+		hash = ((hash << 5) - hash + slug.charCodeAt(i)) | 0;
+	}
+	return Math.abs(hash);
+}
+
+export function resolveSvgFallbackName(slug: string, category: BlogCategory): string {
+	const list = category === 'personal' ? PERSONAL_FALLBACKS : PRO_FALLBACKS;
+	return list[slugHash(slug) % list.length]!;
+}
+
+/** Pure transform — DirectusBlogPostRow → BlogPost. Tested standalone. */
+export function toBlogPost(row: DirectusBlogPostRow): BlogPost {
+	const svgId =
+		typeof row.svg_illustration === 'object' && row.svg_illustration !== null
+			? row.svg_illustration.id
+			: (row.svg_illustration ?? resolveSvgFallbackName(row.id, row.category));
+	return {
+		slug: row.id,
+		title: row.title,
+		excerpt: row.excerpt,
+		date: row.date_published ? row.date_published.split('T')[0]! : '',
+		lang: row.lang,
+		category: row.category,
+		tags: [...(row.tags ?? [])],
+		animation: row.animation,
+		svg: svgId,
+		url: row.external ? (row.url ?? '') : `/blog/${row.id}`,
+		external: row.external,
+	};
+}
+
+/** Fetch + validate all published blog posts sorted by most-recent first. */
+export async function fetchBlogPosts({ client }: FetcherContext): Promise<readonly BlogPost[]> {
+	const rows = (await client.request(
+		readItems('blog_posts', {
+			fields: [
+				'id',
+				'status',
+				'date_published',
+				'sort',
+				'lang',
+				'category',
+				'tags',
+				'external',
+				'url',
+				'animation',
+				'title',
+				'excerpt',
+				{ cover_image: ['id'] } as unknown as string,
+				{ svg_illustration: ['id', 'label', 'category', { file: ['id'] }] } as unknown as string,
+			],
+			filter: { status: { _eq: 'published' } },
+			sort: ['-date_published'],
+			limit: -1,
+		}),
+	)) as unknown as DirectusBlogPostRow[];
+
+	return z.array(BlogPostSchema).parse(rows.map(toBlogPost));
+}

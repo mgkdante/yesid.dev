@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"prebuild": "bun ../../apps/cms/scripts/export-fallbacks.ts",
 		"build": "vite build && bun run check:sitemap",
 		"check:sitemap": "vitest run src/tests/sitemap-coverage.test.ts",
 		"og:default": "bun scripts/generate-og-default.ts",
