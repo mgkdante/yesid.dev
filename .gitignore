@@ -13,6 +13,7 @@ node_modules/
 .env.*
 !.env.example
 !.env.test
+!.env.1password
 
 # Per-machine overrides for tool-agnostic workflow contracts (workflow v0.6.0 R4-1).
 # Real Notion UUIDs and other workspace-specific config live in *.local.md files

@@ -1,1 +1,0 @@
-../../.claude/hooks/pretool-check-notion-edit.sh

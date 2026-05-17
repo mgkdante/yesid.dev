@@ -1,1 +1,6 @@
 .vercel
+
+# Build-time CMS export cache (slice-18m).
+# Regenerated on every successful `bun apps/cms/scripts/export-fallbacks.ts` run;
+# read as last-known-good fallback when Directus is unreachable.
+src/lib/content/.cms-cache.json

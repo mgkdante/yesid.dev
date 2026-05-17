@@ -60,7 +60,9 @@
 		<!-- Error text block -->
 		<div class="flex flex-col items-center gap-2 text-center sm:gap-3">
 			<!-- Monospace label -->
-			<SectionLabel text={label} variant="station" />
+			<div data-testid="error-label">
+				<SectionLabel text={label} variant="station" />
+			</div>
 
 			<!-- Heading -->
 			<h1 class="max-w-lg text-2xl font-bold leading-tight text-[var(--foreground)] sm:text-4xl">
@@ -78,6 +80,7 @@
 			{#each suggestions as suggestion, i}
 				<a
 					href={suggestion.href}
+					data-testid="error-suggestion-link"
 					class="suggestion-pill group flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.03] sm:text-base"
 					class:suggestion-primary={i === 0}
 					class:suggestion-secondary={i > 0}
