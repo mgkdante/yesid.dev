@@ -1,0 +1,32 @@
+# yesid.dev — workflow-overlord v2 Codex CLI config
+# Hooks registered IN-REPO so fresh clones pick them up.
+
+[features]
+codex_hooks = true
+hooks = true
+remote_connections = true
+
+[[hooks.SessionStart]]
+command = "bash .codex/hooks/session-start.sh"
+
+[[hooks.Stop]]
+command = "bash .codex/hooks/session-end.sh"
+
+[[hooks.UserPromptSubmit]]
+command = "bash .codex/hooks/session-end.sh"
+
+[[hooks.PreToolUse]]
+match = "mcp__.*__API-.*"
+command = "bash .codex/hooks/pretool-check-notion-config.sh"
+
+[[hooks.PreToolUse]]
+match = "mcp__.*__API-.*"
+command = "bash .codex/hooks/pretool-check-notion-edit.sh"
+
+[mcp_servers.overlord-bridge]
+command = "bun"
+args = ["overlord-bridge/server.ts"]
+
+[mcp_servers.notionhq]
+command = "npx"
+args = ["-y", "@notionhq/notion-mcp-server@2.2.1"]
