@@ -17,9 +17,7 @@
     "required": false,
     "searchable": true,
     "sort": 2,
-    "special": [
-      "cast-boolean"
-    ],
+    "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
