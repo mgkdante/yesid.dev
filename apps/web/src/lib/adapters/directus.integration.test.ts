@@ -105,6 +105,66 @@ describe.skipIf(!RUN || !URL_)('directusAdapter — live integration', () => {
 		expect(withDeliverables.length).toBeGreaterThan(0);
 		expect(withSections.length).toBeGreaterThan(0);
 	});
+
+	// slice-18k Phase 2 Task 2.4 (#43) — projects block. Closes "slice-18j:
+	// add projects block to directus.integration.test.ts" — covers the
+	// /items/projects + /items/projects_services round-trip against live CMS.
+	// Note: toProject() maps Directus `id` → consumer `slug` (Project.slug is
+	// the human-readable identifier in the consumer-facing shape).
+	it('projects.all() returns a non-empty readonly Project[] against live Directus', async () => {
+		process.env.PUBLIC_DIRECTUS_URL = URL_;
+		const { directusAdapter } = await import('./directus');
+		const projects = await directusAdapter.projects.all();
+		expect(projects.length).toBeGreaterThan(0);
+		for (const p of projects) {
+			expect(typeof p.slug).toBe('string');
+			expect(p.slug.length).toBeGreaterThan(0);
+			expect(typeof p.title.en).toBe('string');
+			expect(p.title.en.length).toBeGreaterThan(0);
+			expect(Array.isArray(p.relatedServices)).toBe(true);
+		}
+	});
+
+	it('every projects[*].relatedServices id resolves to a service in services.all() (M2M junction integrity)', async () => {
+		process.env.PUBLIC_DIRECTUS_URL = URL_;
+		const { directusAdapter } = await import('./directus');
+		const [projects, services] = await Promise.all([
+			directusAdapter.projects.all(),
+			directusAdapter.services.all(),
+		]);
+		const serviceIds = new Set(services.map((s) => s.id));
+		for (const p of projects) {
+			for (const sid of p.relatedServices) {
+				expect(serviceIds.has(sid)).toBe(true);
+			}
+		}
+	});
+
+	it('projects.byService() returns projects for a service that has at least one related project', async () => {
+		process.env.PUBLIC_DIRECTUS_URL = URL_;
+		const { directusAdapter } = await import('./directus');
+		const services = await directusAdapter.services.all();
+		// Find a service that we know has at least one related project (otherwise
+		// the test is vacuously true).
+		const projects = await directusAdapter.projects.all();
+		const serviceIdWithProjects = (() => {
+			for (const s of services) {
+				if (projects.some((p) => p.relatedServices.includes(s.id))) {
+					return s.id;
+				}
+			}
+			return undefined;
+		})();
+		if (!serviceIdWithProjects) {
+			// Empty seed for projects-services relation — skip rather than fail.
+			return;
+		}
+		const byService = await directusAdapter.projects.byService(serviceIdWithProjects);
+		expect(byService.length).toBeGreaterThan(0);
+		for (const p of byService) {
+			expect(p.relatedServices.includes(serviceIdWithProjects)).toBe(true);
+		}
+	});
 });
 
 describe.skipIf(RUN && URL_)('directusAdapter — integration guard', () => {
