@@ -19,8 +19,6 @@ import type { ExportData } from '../export-data';
 interface CacheEnvelope {
 	/** Schema version of the envelope. Bump if `data` shape changes. */
 	version: '1';
-	/** ISO timestamp when this cache was written. */
-	writtenAt: string;
 	/** Directus URL the snapshot was taken from (for debugging). */
 	directusUrl: string;
 	/** The fetched + validated ExportData. */
@@ -46,9 +44,14 @@ export async function writeCache(
 	data: ExportData,
 	directusUrl: string,
 ): Promise<void> {
+	// slice-18k Phase 8 Codex final fix #2: do NOT include `writtenAt`
+	// timestamp in the envelope. Every successful prebuild writes this
+	// file; including a fresh timestamp invalidates the @repo/web turbo
+	// build cache on every run even when source files + CMS data are
+	// unchanged. Use `stat` on this file for last-written time if needed
+	// for debugging.
 	const envelope: CacheEnvelope = {
 		version: '1',
-		writtenAt: new Date().toISOString(),
 		directusUrl,
 		data,
 	};

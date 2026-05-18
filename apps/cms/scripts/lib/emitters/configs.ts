@@ -65,7 +65,22 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		{ key: 'closer', name: 'closerContent', typeName: 'CloserContent' },
 	] as const;
 	const presentSiteContent = siteContentExports.filter((e) => data[e.key as keyof ExportData] !== undefined);
-	if (presentSiteContent.length > 0) {
+	// slice-18k Phase 8 Codex final fix #1: site-content.ts aggregates 7 home-page
+	// blocks. Emitting with partial data (e.g. only data.hero present from a
+	// `--module=hero` run) would clobber sibling exports like manifestoContent,
+	// proofReelContent, etc. that consumers import. Require ALL slots present
+	// before emitting — partial runs leave the file untouched (no-op + warn).
+	if (presentSiteContent.length > 0 && presentSiteContent.length < siteContentExports.length) {
+		// Partial site-content — skip emit to avoid clobbering siblings.
+		// Caller should rerun without --module (or with --module=site-content
+		// once we add that grouped mode) to regenerate the full file.
+		// eslint-disable-next-line no-console
+		console.warn(
+			`[buildEmitConfigs] skipping site-content.ts emit: only ${presentSiteContent.length}/${siteContentExports.length} ` +
+				`required slots populated (${presentSiteContent.map((e) => e.key).join(', ')}). ` +
+				`Run without --module to regenerate the full shared file.`,
+		);
+	} else if (presentSiteContent.length === siteContentExports.length) {
 		// heroAnimContent is destructured from heroContent.heroAnim — emit it as a
 		// separate export so the existing import sites (e.g. `import { heroAnimContent }`)
 		// keep resolving without changes.
@@ -100,39 +115,39 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
-	if (data.techStackPage || data.techStack) {
+	// slice-18k Phase 8 Codex final fix #1: tech-stack.ts aggregates 2 modules
+	// (techStackPage from block_tech_stack_page_content + techStack from
+	// tech_stack collection). Partial emit would clobber sibling exports.
+	// Require both present before emitting.
+	if (data.techStackPage && data.techStack) {
 		// slice-18m follow-up (GH #63 + #64): tech-stack.ts emits BOTH the page
-		// chrome (techStackPageContent from block_tech_stack_page_content) AND the
-		// items array (techStackItems from tech_stack collection). The static
-		// adapter sources from these directly — no more MD-glob parser, no more
-		// companion module. apps/web/src/content/stack/*.md became orphans and
-		// were deleted alongside this change.
-		const items: { name: string; typeName: string; value: unknown }[] = [];
-		const typeImports = new Set<string>();
-		if (data.techStackPage) {
-			items.push({
-				name: 'techStackPageContent',
-				typeName: 'TechStackPageContent',
-				value: data.techStackPage,
-			});
-			typeImports.add('TechStackPageContent');
-		}
-		if (data.techStack) {
-			items.push({
-				name: 'techStackItems',
-				typeName: 'readonly TechStackItem[]',
-				value: data.techStack,
-			});
-			typeImports.add('TechStackItem');
-		}
+		// chrome (techStackPageContent) AND the items array (techStackItems).
 		out.push({
 			filePath: path('tech-stack.ts'),
 			description: '/tech-stack page chrome + tech-stack items array, both CMS-derived.',
 			imports: [
-				{ symbols: [...typeImports], from: '$lib/types', typeOnly: true },
+				{ symbols: ['TechStackPageContent', 'TechStackItem'], from: '$lib/types', typeOnly: true },
 			],
-			exports: items,
+			exports: [
+				{
+					name: 'techStackPageContent',
+					typeName: 'TechStackPageContent',
+					value: data.techStackPage,
+				},
+				{
+					name: 'techStackItems',
+					typeName: 'readonly TechStackItem[]',
+					value: data.techStack,
+				},
+			],
 		});
+	} else if (data.techStackPage || data.techStack) {
+		// eslint-disable-next-line no-console
+		console.warn(
+			`[buildEmitConfigs] skipping tech-stack.ts emit: only ` +
+				`${data.techStackPage ? 'techStackPage' : 'techStack'} populated (need both). ` +
+				`Run without --module to regenerate the full shared file.`,
+		);
 	}
 
 	if (data.blogPosts) {
@@ -170,19 +185,10 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
-	if (data.nav || data.errorPageFallback) {
-		const navExports: { name: string; typeName: string; value: unknown }[] = [];
-		if (data.nav) {
-			navExports.push({ name: 'navLinks', typeName: 'readonly NavLink[]', value: data.nav.navLinks });
-			navExports.push({ name: 'menuItems', typeName: 'readonly MenuItem[]', value: data.nav.menuItems });
-		}
-		if (data.errorPageFallback) {
-			navExports.push({
-				name: 'errorPageContent',
-				typeName: 'ErrorPageContent',
-				value: data.errorPageFallback,
-			});
-		}
+	// slice-18k Phase 8 Codex final fix #1: nav.ts aggregates nav (navLinks +
+	// menuItems) AND errorPageFallback. Partial emit would clobber sibling
+	// exports. Require both present before emitting.
+	if (data.nav && data.errorPageFallback) {
 		out.push({
 			filePath: path('nav.ts'),
 			description: 'Navigation links (header + menu placements) + error page fallback. Interfaces, navDirections, sharedChromeContent live in nav.companion.ts.',
@@ -193,9 +199,24 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 					typeOnly: true,
 				},
 			],
-			exports: navExports,
+			exports: [
+				{ name: 'navLinks', typeName: 'readonly NavLink[]', value: data.nav.navLinks },
+				{ name: 'menuItems', typeName: 'readonly MenuItem[]', value: data.nav.menuItems },
+				{
+					name: 'errorPageContent',
+					typeName: 'ErrorPageContent',
+					value: data.errorPageFallback,
+				},
+			],
 			reExportFromCompanion: './nav.companion',
 		});
+	} else if (data.nav || data.errorPageFallback) {
+		// eslint-disable-next-line no-console
+		console.warn(
+			`[buildEmitConfigs] skipping nav.ts emit: only ` +
+				`${data.nav ? 'nav' : 'errorPageFallback'} populated (need both). ` +
+				`Run without --module to regenerate the full shared file.`,
+		);
 	}
 
 	if (data.blogPage) {

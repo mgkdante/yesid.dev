@@ -9,6 +9,12 @@ on:
     branches: [main, develop]
     paths:
       - 'apps/web/**'
+      # slice-18k Phase 8 Codex final fix #3: web prebuild runs
+      # apps/cms/scripts/export-fallbacks.ts which imports from
+      # apps/cms/scripts/lib/* (emitters, fetchers, helpers). PRs touching
+      # only the CMS export pipeline can break @repo/web builds without
+      # web.yml running otherwise.
+      - 'apps/cms/scripts/**'
       - 'packages/shared/**'
       - '.github/workflows/web.yml'
       - 'package.json'
@@ -18,6 +24,12 @@ on:
     branches: [main, develop]
     paths:
       - 'apps/web/**'
+      # slice-18k Phase 8 Codex final fix #3: web prebuild runs
+      # apps/cms/scripts/export-fallbacks.ts which imports from
+      # apps/cms/scripts/lib/* (emitters, fetchers, helpers). PRs touching
+      # only the CMS export pipeline can break @repo/web builds without
+      # web.yml running otherwise.
+      - 'apps/cms/scripts/**'
       - 'packages/shared/**'
       - '.github/workflows/web.yml'
       - 'package.json'
