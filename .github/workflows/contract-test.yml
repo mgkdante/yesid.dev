@@ -15,7 +15,13 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
     paths:
-      - 'apps/web/src/lib/adapters/**'
+      # Widened to apps/web/src/lib/** (slice-18k cycle 5): the composer
+      # parity tests in directus.contract.test.ts now import from
+      # $lib/content/site-meta, $lib/content/site-seo-defaults, and
+      # $lib/directus/assets in addition to the existing lib/adapters
+      # surface. Future test additions in other lib/ subdirs will also
+      # be covered automatically.
+      - 'apps/web/src/lib/**'
       - 'apps/web/static/images/**'
       - 'apps/cms/infra/directus/snapshot.yaml'
       - 'apps/cms/fixtures/**'
