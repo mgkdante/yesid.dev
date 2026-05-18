@@ -1480,3 +1480,146 @@ describe('directusAdapter.content.errorPage — fetch contract', () => {
 		expect(result.suggestions[1].label).toMatchObject({ en: 'Services', fr: 'Services' });
 	});
 });
+
+// ---------------------------------------------------------------------------
+// meta port — slice-18 18h Phase 4 Task 13 (#80)
+// ---------------------------------------------------------------------------
+//
+// 3 test groups split between this file + directus.contract.test.ts:
+//   #80a — single-fetch invariant: meta.site + meta.siteSeoDefaults with
+//          the same ctx must trigger ONE readSingleton('site_meta')
+//   #80b — composer parity: lives in directus.contract.test.ts (pure mapping)
+//   #80c — mocked-fetch contract: readSingleton('site_meta') + readItems
+//          ('route_seo') request shapes
+
+/** Minimal but Zod-valid DirectusSiteMetaRow payload for the singleton.
+ *  Translation array must have at least 1 EN row (per spec.md superRefine).
+ */
+function jsonSiteMetaRow(): unknown {
+	return {
+		id: 1,
+		name: 'yesid.',
+		email: 'contact@yesid.dev',
+		github_url: 'https://github.com/mgkdante',
+		linkedin_url: 'https://linkedin.com/in/x',
+		upwork_url: 'https://upwork.com/x',
+		owner_name: 'Yesid O.',
+		owner_locality: 'Montreal',
+		owner_region: 'QC',
+		owner_country: 'CA',
+		owner_knows_about: ['SQL', 'TypeScript'],
+		default_og_image: null,
+		theme_color: '#141414',
+		translations: [
+			{
+				languages_code: 'en',
+				tagline: 'Digital infrastructure that moves.',
+				description: 'Freelance SQL developer.',
+				default_description: 'yesid. — freelance data infrastructure consultant in Montreal.',
+				owner_job_title: 'Data infrastructure consultant',
+			},
+		],
+	};
+}
+
+describe('directusAdapter.meta — single-fetch invariant (#80a)', () => {
+	it('meta.site() + meta.siteSeoDefaults() called sequentially with same ctx fire ONE readSingleton', async () => {
+		sharedMockFetch.mockImplementation(() => Promise.resolve(jsonResponse(jsonSiteMetaRow())));
+
+		const ctx = {} as object;
+		await directusAdapter.meta.site(ctx);
+		await directusAdapter.meta.siteSeoDefaults(ctx);
+
+		const singletonCalls = sharedMockFetch.mock.calls.filter(([url]) => {
+			const u = typeof url === 'string' ? url : (url as URL).toString();
+			return u.includes('/items/site_meta');
+		});
+		expect(singletonCalls.length).toBe(1);
+	});
+
+	it('meta.site() called twice with same ctx fires ONE readSingleton (per-ctx WeakMap memoization)', async () => {
+		sharedMockFetch.mockImplementation(() => Promise.resolve(jsonResponse(jsonSiteMetaRow())));
+
+		const ctx = {} as object;
+		await directusAdapter.meta.site(ctx);
+		await directusAdapter.meta.site(ctx);
+
+		const singletonCalls = sharedMockFetch.mock.calls.filter(([url]) => {
+			const u = typeof url === 'string' ? url : (url as URL).toString();
+			return u.includes('/items/site_meta');
+		});
+		expect(singletonCalls.length).toBe(1);
+	});
+
+	it('meta.site() called with different ctx instances fires TWO readSingleton requests (per-ctx isolation)', async () => {
+		sharedMockFetch.mockImplementation(() => Promise.resolve(jsonResponse(jsonSiteMetaRow())));
+
+		await directusAdapter.meta.site({} as object);
+		await directusAdapter.meta.site({} as object);
+
+		const singletonCalls = sharedMockFetch.mock.calls.filter(([url]) => {
+			const u = typeof url === 'string' ? url : (url as URL).toString();
+			return u.includes('/items/site_meta');
+		});
+		expect(singletonCalls.length).toBe(2);
+	});
+});
+
+describe('directusAdapter.meta — mocked-fetch contract (#80c)', () => {
+	it('meta.site() requests /items/site_meta with expected fields list (name + default_og_image + translations.tagline)', async () => {
+		sharedMockFetch.mockImplementation(() => Promise.resolve(jsonResponse(jsonSiteMetaRow())));
+
+		await directusAdapter.meta.site({});
+
+		const urls = sharedMockFetch.mock.calls.map(([u]) =>
+			typeof u === 'string' ? u : (u as URL).toString(),
+		);
+		const metaCall = urls.find((u) => u.includes('/items/site_meta'));
+		expect(metaCall).toBeDefined();
+		const decoded = decodeURIComponent(metaCall!);
+		expect(decoded).toMatch(/fields=[^&]*name/);
+		expect(decoded).toMatch(/fields=[^&]*default_og_image/);
+		expect(decoded).toMatch(/fields=[^&]*owner_knows_about/);
+		expect(decoded).toMatch(/translations.*tagline/);
+		expect(decoded).toMatch(/translations.*default_description/);
+	});
+
+	it('meta.siteSeoDefaults() reuses the site_meta singleton (no separate fetch when ctx is shared with prior meta.site)', async () => {
+		sharedMockFetch.mockImplementation(() => Promise.resolve(jsonResponse(jsonSiteMetaRow())));
+
+		const ctx = {} as object;
+		await directusAdapter.meta.site(ctx);
+		sharedMockFetch.mockClear();
+		await directusAdapter.meta.siteSeoDefaults(ctx);
+
+		const additionalSingletonCalls = sharedMockFetch.mock.calls.filter(([url]) => {
+			const u = typeof url === 'string' ? url : (url as URL).toString();
+			return u.includes('/items/site_meta');
+		});
+		expect(additionalSingletonCalls.length).toBe(0);
+	});
+
+	it('meta.routeSeo.byPath("/services") requests /items/route_seo with path eq + status published filter', async () => {
+		sharedMockFetch.mockResolvedValue(jsonResponse([]));
+
+		await directusAdapter.meta.routeSeo.byPath('/services');
+
+		const urls = sharedMockFetch.mock.calls.map(([u]) =>
+			typeof u === 'string' ? u : (u as URL).toString(),
+		);
+		const routeCall = urls.find((u) => u.includes('/items/route_seo'));
+		expect(routeCall).toBeDefined();
+		const decoded = decodeURIComponent(routeCall!);
+		expect(decoded).toMatch(/path/);
+		expect(decoded).toMatch(/services/);
+		expect(decoded).toMatch(/published/);
+		expect(decoded).toMatch(/limit=1/);
+	});
+
+	it('meta.routeSeo.byPath returns undefined when no matching row is found', async () => {
+		sharedMockFetch.mockResolvedValue(jsonResponse([]));
+
+		const result = await directusAdapter.meta.routeSeo.byPath('/nonexistent');
+		expect(result).toBeUndefined();
+	});
+});
