@@ -15,6 +15,7 @@
 		"sync:pull": "directus-sync pull",
 		"sync:push": "bun scripts/sync-push.ts",
 		"sync:diff": "directus-sync diff",
+		"gen:types": "bun scripts/generate-types.ts",
 		"test": "bun test"
 	},
 	"devDependencies": {
