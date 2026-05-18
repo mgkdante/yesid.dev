@@ -1,6 +1,6 @@
 // Auto-generated from live Directus /collections + /fields. Do not edit by hand.
 // Regenerate via: cd apps/cms && bun scripts/generate-types.ts
-// Source: https://cms.yesid.dev · generated 2026-05-18T06:36:33.099Z
+// Source: https://cms.yesid.dev
 
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
