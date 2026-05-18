@@ -25,9 +25,11 @@ on:
       - 'apps/web/static/images/**'
       - 'apps/cms/infra/directus/snapshot.yaml'
       - 'apps/cms/fixtures/**'
-      - 'apps/cms/scripts/seed-services.ts'
-      - 'apps/cms/scripts/seed-projects.ts'
-      - 'apps/cms/scripts/migrate-assets.ts'
+      # Watch the entire scripts tree (slice-18k cycle 6 briefed): migrate:assets
+      # + seed:services + seed:projects all import from apps/cms/scripts/lib/*
+      # (bottleneck, logger, sdk, auth, catch-error). A PR touching just a helper
+      # would have skipped the workflow under the narrow per-script filter.
+      - 'apps/cms/scripts/**'
       - 'packages/shared/**'
       - '.github/workflows/contract-test.yml'
   workflow_dispatch:
