@@ -80,9 +80,14 @@ describe('mergeProtectedSettingsFields (slice-18k #120 per-env file FK auto-merg
 });
 
 describe('syncPushWillTouchSettings (slice-18k #120 settings-merge gating)', () => {
-	it('returns true for default args (no --exclude, no --only)', () => {
+	it('returns true for default args (no --exclude, no --only, no --no-collections)', () => {
 		expect(syncPushWillTouchSettings([])).toBe(true);
 		expect(syncPushWillTouchSettings(['--debug'])).toBe(true);
+	});
+
+	it('returns false when --no-collections is passed (snapshot-only push)', () => {
+		expect(syncPushWillTouchSettings(['--no-collections'])).toBe(false);
+		expect(syncPushWillTouchSettings(['--no-collections', '--debug'])).toBe(false);
 	});
 
 	it('returns false when settings is in --exclude-collections', () => {
@@ -91,8 +96,12 @@ describe('syncPushWillTouchSettings (slice-18k #120 settings-merge gating)', () 
 		expect(syncPushWillTouchSettings(['--exclude-collections=settings'])).toBe(false);
 	});
 
-	it('returns false when directus_settings is in --exclude-collections', () => {
-		expect(syncPushWillTouchSettings(['--exclude-collections', 'directus_settings'])).toBe(false);
+	it('does NOT treat directus_settings as equivalent to settings (only `settings` is the valid enum value per directus-sync 3.5.1)', () => {
+		// directus_settings is the system-table name; directus-sync only accepts `settings` in its CLI enum.
+		// Honoring directus_settings would silently no-op the preflight on a typo'd exclude flag while
+		// the underlying CLI rejects the same flag at option-parse time.
+		expect(syncPushWillTouchSettings(['--exclude-collections', 'directus_settings'])).toBe(true);
+		expect(syncPushWillTouchSettings(['--only-collections', 'directus_settings'])).toBe(false);
 	});
 
 	it('returns false when --only-collections is set but does NOT include settings', () => {
@@ -103,7 +112,7 @@ describe('syncPushWillTouchSettings (slice-18k #120 settings-merge gating)', () 
 	it('returns true when --only-collections explicitly includes settings', () => {
 		expect(syncPushWillTouchSettings(['--only-collections', 'settings'])).toBe(true);
 		expect(syncPushWillTouchSettings(['-o', 'permissions,settings'])).toBe(true);
-		expect(syncPushWillTouchSettings(['--only-collections=directus_settings'])).toBe(true);
+		expect(syncPushWillTouchSettings(['--only-collections=settings'])).toBe(true);
 	});
 
 	it('returns false when settings is excluded via comma-list', () => {

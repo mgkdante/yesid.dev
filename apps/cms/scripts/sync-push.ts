@@ -197,18 +197,24 @@ export function buildDirectusSyncPushArgs(
 	);
 }
 
-/** Returns true if the push will touch directus_settings (i.e., settings
- *  is not in --exclude-collections and either --only-collections is empty
- *  or includes 'settings').
+/** Returns true if the push will touch directus_settings.
+ *
+ *  Pushes settings when: `--no-collections` is not set AND `settings` is not
+ *  in `--exclude-collections` AND (either `--only-collections` is empty OR
+ *  includes `settings`). directus-sync 3.5.1's collection enum uses
+ *  `settings` (not `directus_settings`).
  */
 export function syncPushWillTouchSettings(args: readonly string[]): boolean {
+	if (args.includes('--no-collections')) {
+		return false;
+	}
 	const onlyCollections = splitCsv(readOptionValues(args, ['--only-collections', '-o']));
 	const excludeCollections = splitCsv(readOptionValues(args, ['--exclude-collections', '-x']));
-	if (excludeCollections.includes('settings') || excludeCollections.includes('directus_settings')) {
+	if (excludeCollections.includes('settings')) {
 		return false;
 	}
 	if (onlyCollections.length > 0) {
-		return onlyCollections.includes('settings') || onlyCollections.includes('directus_settings');
+		return onlyCollections.includes('settings');
 	}
 	return true;
 }
@@ -248,19 +254,27 @@ async function preMergeProtectedSettings(
 	// from here on: any unrecoverable preflight error aborts the push (Codex
 	// review P1 + P2 catches on slice-18k Phase 1).
 	let token: string;
-	try {
-		// getAdminToken supports both DIRECTUS_ADMIN_TOKEN/DIRECTUS_TOKEN
-		// (static) and DIRECTUS_ADMIN_EMAIL+DIRECTUS_ADMIN_PASSWORD
-		// (POST /auth/login fallback). Same auth path directus-sync uses
-		// per directus-sync.config.cjs.
-		token = await getAdminToken(directusUrl);
-	} catch (err) {
-		throw new Error(
-			`[sync-push] cannot authenticate for settings preflight (${err instanceof Error ? err.message : String(err)}). ` +
-				`settings.json has null ${nullFks.join(', ')} which would WIPE live env values on push. ` +
-				`Either: (a) set DIRECTUS_ADMIN_TOKEN (or DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD), ` +
-				`OR (b) run with --exclude-collections directus_settings to skip the settings push entirely.`,
-		);
+	const directusTokenFallback = process.env.DIRECTUS_TOKEN;
+	if (directusTokenFallback) {
+		// directus-sync.config.cjs explicitly aliases DIRECTUS_TOKEN to the
+		// admin token, so preserve invocations like `DIRECTUS_TOKEN=...
+		// bun run sync:push` that worked before this wrapper landed.
+		token = directusTokenFallback;
+	} else {
+		try {
+			// getAdminToken supports DIRECTUS_ADMIN_TOKEN (static) and
+			// DIRECTUS_ADMIN_EMAIL+DIRECTUS_ADMIN_PASSWORD (POST /auth/login
+			// fallback). Same auth paths directus-sync supports per its
+			// config.cjs.
+			token = await getAdminToken(directusUrl);
+		} catch (err) {
+			throw new Error(
+				`[sync-push] cannot authenticate for settings preflight (${err instanceof Error ? err.message : String(err)}). ` +
+					`settings.json has null ${nullFks.join(', ')} which would WIPE live env values on push. ` +
+					`Either: (a) set DIRECTUS_ADMIN_TOKEN (or DIRECTUS_TOKEN, or DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD), ` +
+					`OR (b) run with --exclude-collections settings to skip the settings push entirely.`,
+			);
+		}
 	}
 
 	const fieldList = nullFks.join(',');
@@ -273,7 +287,7 @@ async function preMergeProtectedSettings(
 			`[sync-push] failed to read live settings: ${liveRes.status} ${liveRes.statusText}. ` +
 				`settings.json has null ${nullFks.join(', ')} which would WIPE live env values on push. Aborting. ` +
 				`Either: (a) fix the auth/network/permission error and retry, ` +
-				`OR (b) run with --exclude-collections directus_settings to skip the settings push entirely.` +
+				`OR (b) run with --exclude-collections settings to skip the settings push entirely.` +
 				(body ? `\nResponse body: ${body.slice(0, 500)}` : ''),
 		);
 	}
