@@ -190,8 +190,13 @@ Per slice-18k closure decisions, the committed fixtures for these fields are **`
 **Operational rule when bootstrapping a fresh env (or restoring after Neon PITR):**
 
 1. Run `sync:push` to provision schema + folders (will set the file-FK fields to `null` because that's what's committed).
-2. Upload the env's brand assets:
-   - `bun --env-file=apps/cms/.env --cwd apps/cms run scripts/seed-brand-assets.ts` for project_logo + wordmark (writes UUIDs to `fixtures/assets-id-map.json`).
+2. **Important pre-step for `seed-brand-assets`:** the committed `apps/cms/fixtures/assets-id-map.json` is a STALE snapshot from an early dev env. Its UUIDs (including `brand/yesid-icon.svg → d610c3ad-...`) do NOT exist in current dev or current prod — this is the same orphan UUID family that #120 nulled from settings.json. Before running `seed-brand-assets` on any env, **clear the dev keys from assets-id-map.json first** so the script re-uploads + writes env-specific UUIDs. Otherwise the script skips upload (per the `if (existing)` short-circuit at `scripts/seed-brand-assets.ts:115-118`) and downstream PATCHes target the dead UUIDs.
+3. Upload the env's brand assets:
+   - Clear stale entries from `assets-id-map.json` (or delete the file entirely; it'll be re-created by the seed). Then from the repo root:
+     ```bash
+     cd apps/cms && bun --env-file=.env run scripts/seed-brand-assets.ts
+     ```
+     (Note: do NOT use `bun --cwd ... --env-file=... run ...` — bun's flag parser rejects that combination and prints `bun run` help instead. Must `cd` into the package first.)
    - For `site_meta.default_og_image`: upload `apps/web/static/og/default.en.png` to the `og/` folder via Directus admin UI (or a one-off upload script following the seed-brand-assets.ts pattern), then PATCH `site_meta.default_og_image` to the new UUID via admin UI or:
      ```bash
      curl -X PATCH "https://<env-cms-host>/items/site_meta" \
@@ -206,7 +211,21 @@ Per slice-18k closure decisions, the committed fixtures for these fields are **`
        -H "Content-Type: application/json" \
        -d '{"svg_override":"<new-file-uuid>"}'
      ```
-3. For `settings.project_logo / public_foreground / public_favicon`: follow the same PATCH pattern using `assets-id-map.json` UUIDs (or via Directus admin UI Settings panel).
+4. For `settings.project_logo / public_foreground / public_favicon`: read the post-seed `assets-id-map.json` (now populated with env-specific UUIDs from step 3) and PATCH each settings field via admin UI or REST. **Do NOT use the committed assets-id-map.json values directly** — they're the stale dev snapshot.
+
+### Existing Windows worktrees + `.gitattributes` LF enforcement (slice-18k #111)
+
+The new `.gitattributes` (committed in this slice) enforces LF for text files going forward. However, **gitattributes are only applied on checkout** — existing Windows worktrees that already have CRLF copies of `DESIGN.md`, `apps/web/src/app.css`, `apps/web/src/lib/styles/tokens.css`, `apps/web/src/lib/motion/tokens.ts`, etc., stay unchanged after pulling slice-18k.
+
+If `bun --cwd packages/tokens test` still fails on Windows after pulling slice-18k, run the one-time renormalize:
+
+```bash
+git add --renormalize .
+git status --short  # confirm any *.md/*.css/*.ts files were re-staged with LF
+git commit -m "chore: apply .gitattributes LF normalization (slice-18k #111 follow-up)"
+```
+
+Linux/macOS worktrees are unaffected (no CRLF in tracked files to begin with).
 
 **Why not just commit the dev UUID:** because seeding prod from the committed fixture would set prod's `site_meta.default_og_image` to dev's UUID, which prod's `directus_files` doesn't have → FK constraint error on next seed (re-creates #120). The null + per-env PATCH rule is the only setup that survives `sync:push` cleanly across all envs.
 
