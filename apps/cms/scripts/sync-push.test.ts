@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'bun:test';
 import {
 	PROTECTED_SETTINGS_FILE_FK_FIELDS,
+	extractCollectionsPathOverride,
+	extractDirectusUrlOverride,
 	mergeProtectedSettingsFields,
+	refuseUnsupportedConfigPathOverride,
 	syncPushWillTouchSettings,
 } from './sync-push';
 
@@ -117,5 +120,79 @@ describe('syncPushWillTouchSettings (slice-18k #120 settings-merge gating)', () 
 
 	it('returns false when settings is excluded via comma-list', () => {
 		expect(syncPushWillTouchSettings(['--exclude-collections', 'permissions,settings'])).toBe(false);
+	});
+});
+
+describe('extractDirectusUrlOverride (Codex review v6 P2 fix — honor CLI URL override)', () => {
+	it('returns undefined when --directus-url is absent', () => {
+		expect(extractDirectusUrlOverride([])).toBeUndefined();
+		expect(extractDirectusUrlOverride(['--debug'])).toBeUndefined();
+	});
+
+	it('returns the URL when --directus-url is passed', () => {
+		expect(extractDirectusUrlOverride(['--directus-url', 'https://other.example.com'])).toBe(
+			'https://other.example.com',
+		);
+		expect(extractDirectusUrlOverride(['-u', 'https://staging.example.com'])).toBe(
+			'https://staging.example.com',
+		);
+		expect(extractDirectusUrlOverride(['--directus-url=https://eq.example.com'])).toBe(
+			'https://eq.example.com',
+		);
+	});
+
+	it('returns the LAST override if specified multiple times (last-wins, matches CLI parser convention)', () => {
+		expect(
+			extractDirectusUrlOverride([
+				'-u',
+				'https://first.example.com',
+				'-u',
+				'https://second.example.com',
+			]),
+		).toBe('https://second.example.com');
+	});
+});
+
+describe('extractCollectionsPathOverride (Codex review v6 P2 fix — honor CLI path overrides)', () => {
+	it('returns undefined when neither --collections-path nor --dump-path is passed', () => {
+		expect(extractCollectionsPathOverride([])).toBeUndefined();
+		expect(extractCollectionsPathOverride(['--debug'])).toBeUndefined();
+	});
+
+	it('returns the explicit --collections-path value when set', () => {
+		expect(extractCollectionsPathOverride(['--collections-path', '/abs/coll'])).toBe('/abs/coll');
+		expect(extractCollectionsPathOverride(['--collections-path=relative/coll'])).toBe('relative/coll');
+	});
+
+	it('derives collections dir from --dump-path when --collections-path is absent', () => {
+		expect(extractCollectionsPathOverride(['--dump-path', '/abs/dump'])).toBe('/abs/dump/collections');
+		expect(extractCollectionsPathOverride(['--dump-path=relative/dump'])).toBe('relative/dump/collections');
+	});
+
+	it('--collections-path wins over --dump-path when both set', () => {
+		expect(
+			extractCollectionsPathOverride([
+				'--dump-path',
+				'/abs/dump',
+				'--collections-path',
+				'/abs/coll',
+			]),
+		).toBe('/abs/coll');
+	});
+});
+
+describe('refuseUnsupportedConfigPathOverride (Codex review v6 P2 fix — fail-closed on --config-path)', () => {
+	it('does NOT throw when --config-path is absent', () => {
+		expect(() => refuseUnsupportedConfigPathOverride([])).not.toThrow();
+		expect(() => refuseUnsupportedConfigPathOverride(['--debug', '-u', 'https://x.com'])).not.toThrow();
+	});
+
+	it('throws when --config-path is passed (out of scope for preflight)', () => {
+		expect(() => refuseUnsupportedConfigPathOverride(['--config-path', '/some/config.cjs'])).toThrow(
+			/config-path override is not supported/,
+		);
+		expect(() => refuseUnsupportedConfigPathOverride(['--config-path=relative/conf.cjs'])).toThrow(
+			/config-path override is not supported/,
+		);
 	});
 });

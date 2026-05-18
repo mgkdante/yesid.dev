@@ -197,6 +197,53 @@ export function buildDirectusSyncPushArgs(
 	);
 }
 
+/** Read the last value of an option from args (supports both `--key value`
+ *  and `--key=value` forms via existing readOptionValues helper). Returns
+ *  undefined if not present.
+ */
+export function readLastOptionValue(args: readonly string[], names: readonly string[]): string | undefined {
+	const values = readOptionValues(args, names);
+	return values.length > 0 ? values[values.length - 1] : undefined;
+}
+
+/** directus-sync supports `--directus-url <url>` (alias `-u`) to override
+ *  the target URL on the command line. Returns the override URL if present,
+ *  else undefined (caller falls back to env).
+ */
+export function extractDirectusUrlOverride(args: readonly string[]): string | undefined {
+	return readLastOptionValue(args, ['--directus-url', '-u']);
+}
+
+/** directus-sync supports `--collections-path` (directly the path to the
+ *  collections dump dir) and `--dump-path` (parent path, with collections at
+ *  <dump-path>/collections). Returns the effective collections directory
+ *  override if either flag is set, else undefined.
+ */
+export function extractCollectionsPathOverride(args: readonly string[]): string | undefined {
+	const collectionsPath = readLastOptionValue(args, ['--collections-path']);
+	if (collectionsPath) return collectionsPath;
+	const dumpPath = readLastOptionValue(args, ['--dump-path']);
+	if (dumpPath) return joinPath(dumpPath, 'collections');
+	return undefined;
+}
+
+/** Throws if --config-path is present. The preflight reads + writes
+ *  settings.json based on the assumed config layout (collectionsPath
+ *  resolved from CLI overrides above). Loading + evaluating an arbitrary
+ *  user-supplied config file at preflight-time is out of scope; operators
+ *  using --config-path should bypass this wrapper.
+ */
+export function refuseUnsupportedConfigPathOverride(args: readonly string[]): void {
+	if (readOptionValues(args, ['--config-path']).length > 0) {
+		throw new Error(
+			`[sync-push] --config-path override is not supported by the slice-18k per-env settings preflight. ` +
+				`Reading an arbitrary config file at preflight-time would require evaluating the user's directus-sync.config.* — out of scope for the wrapper. ` +
+				`Either: (a) remove --config-path and use the default apps/cms/directus-sync.config.cjs, ` +
+				`OR (b) bypass this wrapper and invoke directus-sync push directly (which skips the per-env settings merge protection — your responsibility to keep settings.json in sync with the target env).`,
+		);
+	}
+}
+
 /** Returns true if the push will touch directus_settings.
  *
  *  Pushes settings when: `--no-collections` is not set AND `settings` is not
@@ -235,7 +282,16 @@ async function preMergeProtectedSettings(
 	directusUrl: string,
 	finalArgs: readonly string[],
 ): Promise<SettingsMergeContext> {
-	const settingsPath = joinPath(cmsRoot, 'directus', 'collections', 'settings.json');
+	// CLI overrides may redirect the target URL or dump path; the preflight
+	// must read live values from the SAME URL the push will target, and edit
+	// the SAME settings.json file the push will read. (Codex review cycle 6
+	// P2 catches on slice-18k Phase 1.)
+	refuseUnsupportedConfigPathOverride(finalArgs);
+	const collectionsPathOverride = extractCollectionsPathOverride(finalArgs);
+	const collectionsDir = collectionsPathOverride
+		? (collectionsPathOverride.startsWith('/') ? collectionsPathOverride : joinPath(cmsRoot, collectionsPathOverride))
+		: joinPath(cmsRoot, 'directus', 'collections');
+	const settingsPath = joinPath(collectionsDir, 'settings.json');
 	const backupPath = `${settingsPath}.slice-18k-merge-backup`;
 	const noop: SettingsMergeContext = { settingsPath, backupPath, restoreBackup: () => {} };
 
@@ -328,7 +384,12 @@ async function main(): Promise<void> {
 		'entrypoint.js',
 	);
 
-	const directusUrl = (process.env.DIRECTUS_URL || PROD_DIRECTUS_URL).replace(/\/+$/, '');
+	// Resolve effective Directus URL: CLI override (--directus-url / -u)
+	// wins over DIRECTUS_URL env which wins over PROD default. Same precedence
+	// directus-sync itself uses. The preflight MUST hit the same URL the push
+	// will target — otherwise we'd merge wrong-env values into settings.json.
+	const cliUrlOverride = extractDirectusUrlOverride(finalArgs);
+	const directusUrl = (cliUrlOverride || process.env.DIRECTUS_URL || PROD_DIRECTUS_URL).replace(/\/+$/, '');
 	const mergeContext = await preMergeProtectedSettings(cmsRoot, directusUrl, finalArgs);
 
 	let exitCode = 0;
