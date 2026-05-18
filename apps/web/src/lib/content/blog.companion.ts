@@ -69,12 +69,12 @@ export const blogDetailContent = {
 
 // --- Fallback SVG + animation resolution ---
 
-const PRO_FALLBACKS = ['pro-database.svg', 'pro-code.svg', 'pro-pipeline.svg', 'pro-chart.svg'];
+const PRO_FALLBACKS = ['pro-database', 'pro-code', 'pro-pipeline', 'pro-chart'];
 const PERSONAL_FALLBACKS = [
-	'personal-rocket.svg',
-	'personal-train.svg',
-	'personal-telescope.svg',
-	'personal-globe.svg',
+	'personal-rocket',
+	'personal-train',
+	'personal-telescope',
+	'personal-globe',
 ];
 const ALL_ANIMATIONS: BlogAnimation[] = ['draw', 'morph', 'draw-fill'];
 
