@@ -16,9 +16,12 @@ on:
     types: [opened, synchronize, reopened, labeled]
     paths:
       - 'apps/web/src/lib/adapters/**'
+      - 'apps/web/static/images/**'
       - 'apps/cms/infra/directus/snapshot.yaml'
       - 'apps/cms/fixtures/**'
       - 'apps/cms/scripts/seed-services.ts'
+      - 'apps/cms/scripts/seed-projects.ts'
+      - 'apps/cms/scripts/migrate-assets.ts'
       - 'packages/shared/**'
       - '.github/workflows/contract-test.yml'
   workflow_dispatch:
