@@ -299,6 +299,7 @@ async function main(): Promise<void> {
 	const directusUrl = (process.env.DIRECTUS_URL || PROD_DIRECTUS_URL).replace(/\/+$/, '');
 	const mergeContext = await preMergeProtectedSettings(cmsRoot, directusUrl, finalArgs);
 
+	let exitCode = 0;
 	try {
 		const proc = Bun.spawn({
 			cmd: [process.execPath, entrypoint, 'push', ...finalArgs],
@@ -307,11 +308,14 @@ async function main(): Promise<void> {
 			stderr: 'inherit',
 			stdin: 'inherit',
 		});
-		const code = await proc.exited;
-		if (code !== 0) process.exit(code);
+		exitCode = await proc.exited;
 	} finally {
+		// Restore BEFORE exiting; calling process.exit() inside the try block
+		// would skip this restore and leak the merged settings.json + backup
+		// file to disk. (Codex review P2 catch on slice-18k Phase 1.)
 		mergeContext.restoreBackup();
 	}
+	if (exitCode !== 0) process.exit(exitCode);
 }
 
 if (import.meta.main) {
