@@ -179,13 +179,15 @@ The seed is **nuke-and-recreate** — idempotent, safe to re-run. It clears the 
 Singleton + collection fields that reference Directus `directus_files` UUIDs are **per-environment**. The UUID a file gets on dev (cms.dev.yesid.dev) is different from the UUID it gets on prod (cms.yesid.dev) because each Directus env mints its own file IDs.
 
 Affected fields (slice-18 close inventory):
-- `directus_settings.project_logo`
-- `directus_settings.public_foreground`
-- `directus_settings.public_favicon`
-- `site_meta.default_og_image`
-- `icons.svg_override` (for the 5 deferred rows: alembic, dax, rest-api, ssis, ssrs)
+- `directus_settings.project_logo` — auto-merged by `sync-push.ts` (slice-18k Codex review P2 fix)
+- `directus_settings.public_foreground` — auto-merged by `sync-push.ts`
+- `directus_settings.public_favicon` — auto-merged by `sync-push.ts`
+- `site_meta.default_og_image` — NOT auto-merged; seed-site-meta.ts uses updateSingleton which overwrites. Operator must manually re-PATCH after each `seed-site-meta` run on dev/prod.
+- `icons.svg_override` (for 5 deferred rows: alembic, dax, rest-api, ssis, ssrs) — NOT auto-merged; seed-icons.ts uses delete+create. Operator must re-upload + re-PATCH after each `seed-icons` run.
 
 Per slice-18k closure decisions, the committed fixtures for these fields are **`null`** to prevent the seed scripts from recreating FK-constraint failures on environments where the referenced UUID doesn't exist (the original `#120` pattern: settings.json had baked UUIDs `d610c3ad-...` that existed in no env, so `sync:push` failed on settings step with `RECORD_NOT_UNIQUE`).
+
+**Auto-merge protection for `directus_settings` (slice-18k sync-push.ts):** `apps/cms/scripts/sync-push.ts` reads the live env's current values for `project_logo` / `public_foreground` / `public_favicon` BEFORE invoking directus-sync push, merges any non-null live values into the committed settings.json in place (overwriting the committed null), runs the push (so live values are preserved), then restores settings.json from a backup so git stays clean. This means after step 3 below (uploading per-env brand assets + PATCHing live settings), all subsequent `bun run sync:push` runs are SAFE — the live branding survives. See `apps/cms/scripts/sync-push.ts` `mergeProtectedSettingsFields` + `preMergeProtectedSettings`.
 
 **Operational rule when bootstrapping a fresh env (or restoring after Neon PITR):**
 
@@ -212,6 +214,8 @@ Per slice-18k closure decisions, the committed fixtures for these fields are **`
        -d '{"svg_override":"<new-file-uuid>"}'
      ```
 4. For `settings.project_logo / public_foreground / public_favicon`: read the post-seed `assets-id-map.json` (now populated with env-specific UUIDs from step 3) and PATCH each settings field via admin UI or REST. **Do NOT use the committed assets-id-map.json values directly** — they're the stale dev snapshot.
+
+5. **Auto-merge takes over from here:** all subsequent `bun run sync:push` runs preserve the env-specific settings file FKs via the sync-push.ts merge wrapper (see "Auto-merge protection" above). No manual re-PATCH after each push is required for `directus_settings`. Manual re-PATCH IS still required for `site_meta.default_og_image` after `seed-site-meta` runs, and for `icons.svg_override` after `seed-icons` runs (those seed scripts don't have equivalent merge protection).
 
 ### Existing Windows worktrees + `.gitattributes` LF enforcement (slice-18k #111)
 
