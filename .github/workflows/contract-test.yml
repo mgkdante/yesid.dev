@@ -141,7 +141,15 @@ jobs:
         working-directory: apps/cms
         run: bun run seed:services
 
-      - name: Seed projects from apps/cms fixture (slice-18k #43 — enables projects integration block)
+      - name: Migrate assets (uploads apps/web/static/images/* per assets-manifest, writes ephemeral UUIDs to assets-id-map.json — required before seed:projects can resolve hero_image_legacy_path)
+        env:
+          PUBLIC_DIRECTUS_URL: http://localhost:8055
+          DIRECTUS_ADMIN_EMAIL: admin@example.com
+          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
+        working-directory: apps/cms
+        run: bun run migrate:assets
+
+      - name: Seed projects from apps/cms fixture (slice-18k #43 — enables projects integration block; requires migrate:assets first for hero_image FK resolution)
         env:
           PUBLIC_DIRECTUS_URL: http://localhost:8055
           DIRECTUS_ADMIN_EMAIL: admin@example.com
