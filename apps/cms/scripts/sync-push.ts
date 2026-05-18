@@ -19,6 +19,7 @@
 
 import { readFileSync, writeFileSync, copyFileSync, unlinkSync, existsSync } from 'node:fs';
 import { join as joinPath, resolve as resolvePath } from 'node:path';
+import { getAdminToken } from './lib/auth';
 
 export const PROD_DIRECTUS_URL = 'https://cms.yesid.dev';
 export const PROD_SCHEMA_PUSH_ACK = 'sync-push-can-delete-cms-data';
@@ -241,12 +242,25 @@ async function preMergeProtectedSettings(
 	const nullFks = PROTECTED_SETTINGS_FILE_FK_FIELDS.filter((f) => committed[0]![f] === null);
 	if (nullFks.length === 0) return noop;
 
-	const token = process.env.DIRECTUS_ADMIN_TOKEN || process.env.DIRECTUS_TOKEN;
-	if (!token) {
-		console.warn(
-			`[sync-push] no DIRECTUS_ADMIN_TOKEN/DIRECTUS_TOKEN — skipping per-env settings merge. Live env's ${nullFks.join(', ')} may be wiped.`,
+	// At this point, settings.json has null protected fields AND we're about
+	// to push directus_settings. Push WILL wipe live env values for these
+	// fields unless we successfully preflight + merge. Fail-closed semantics
+	// from here on: any unrecoverable preflight error aborts the push (Codex
+	// review P1 + P2 catches on slice-18k Phase 1).
+	let token: string;
+	try {
+		// getAdminToken supports both DIRECTUS_ADMIN_TOKEN/DIRECTUS_TOKEN
+		// (static) and DIRECTUS_ADMIN_EMAIL+DIRECTUS_ADMIN_PASSWORD
+		// (POST /auth/login fallback). Same auth path directus-sync uses
+		// per directus-sync.config.cjs.
+		token = await getAdminToken(directusUrl);
+	} catch (err) {
+		throw new Error(
+			`[sync-push] cannot authenticate for settings preflight (${err instanceof Error ? err.message : String(err)}). ` +
+				`settings.json has null ${nullFks.join(', ')} which would WIPE live env values on push. ` +
+				`Either: (a) set DIRECTUS_ADMIN_TOKEN (or DIRECTUS_ADMIN_EMAIL + DIRECTUS_ADMIN_PASSWORD), ` +
+				`OR (b) run with --exclude-collections directus_settings to skip the settings push entirely.`,
 		);
-		return noop;
 	}
 
 	const fieldList = nullFks.join(',');
@@ -254,10 +268,14 @@ async function preMergeProtectedSettings(
 		headers: { Authorization: `Bearer ${token}` },
 	});
 	if (!liveRes.ok) {
-		console.warn(
-			`[sync-push] failed to read live settings (${liveRes.status}) — skipping merge. Live ${fieldList} may be wiped.`,
+		const body = await liveRes.text().catch(() => '');
+		throw new Error(
+			`[sync-push] failed to read live settings: ${liveRes.status} ${liveRes.statusText}. ` +
+				`settings.json has null ${nullFks.join(', ')} which would WIPE live env values on push. Aborting. ` +
+				`Either: (a) fix the auth/network/permission error and retry, ` +
+				`OR (b) run with --exclude-collections directus_settings to skip the settings push entirely.` +
+				(body ? `\nResponse body: ${body.slice(0, 500)}` : ''),
 		);
-		return noop;
 	}
 	const liveJson = (await liveRes.json()) as { data?: Partial<Record<ProtectedField, string | null>> };
 	const liveValues = liveJson.data ?? {};
