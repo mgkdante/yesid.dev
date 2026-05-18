@@ -15,10 +15,21 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
     paths:
-      - 'apps/web/src/lib/adapters/**'
+      # Widened to apps/web/src/lib/** (slice-18k cycle 5): the composer
+      # parity tests in directus.contract.test.ts now import from
+      # $lib/content/site-meta, $lib/content/site-seo-defaults, and
+      # $lib/directus/assets in addition to the existing lib/adapters
+      # surface. Future test additions in other lib/ subdirs will also
+      # be covered automatically.
+      - 'apps/web/src/lib/**'
+      - 'apps/web/static/images/**'
       - 'apps/cms/infra/directus/snapshot.yaml'
       - 'apps/cms/fixtures/**'
-      - 'apps/cms/scripts/seed-services.ts'
+      # Watch the entire scripts tree (slice-18k cycle 6 briefed): migrate:assets
+      # + seed:services + seed:projects all import from apps/cms/scripts/lib/*
+      # (bottleneck, logger, sdk, auth, catch-error). A PR touching just a helper
+      # would have skipped the workflow under the narrow per-script filter.
+      - 'apps/cms/scripts/**'
       - 'packages/shared/**'
       - '.github/workflows/contract-test.yml'
   workflow_dispatch:
@@ -126,7 +137,7 @@ jobs:
           PUBLIC_POLICY_ID=$(curl -sf -H "Authorization: Bearer $TOKEN" \
             'http://localhost:8055/policies?filter[name][_eq]=Public&fields=id' \
             | jq -r '.data[0].id')
-          for COLLECTION in services services_translations services_deliverables services_deliverables_translations services_sections services_sections_translations languages; do
+          for COLLECTION in services services_translations services_deliverables services_deliverables_translations services_sections services_sections_translations languages projects projects_translations projects_sections projects_sections_translations projects_impact_metrics projects_impact_metrics_translations projects_services; do
             curl -sf -X POST http://localhost:8055/permissions \
               -H "Authorization: Bearer $TOKEN" \
               -H 'Content-Type: application/json' \
@@ -140,6 +151,22 @@ jobs:
           DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
         working-directory: apps/cms
         run: bun run seed:services
+
+      - name: Migrate assets (uploads apps/web/static/images/* per assets-manifest, writes ephemeral UUIDs to assets-id-map.json — required before seed:projects can resolve hero_image_legacy_path)
+        env:
+          PUBLIC_DIRECTUS_URL: http://localhost:8055
+          DIRECTUS_ADMIN_EMAIL: admin@example.com
+          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
+        working-directory: apps/cms
+        run: bun run migrate:assets
+
+      - name: Seed projects from apps/cms fixture (slice-18k #43 — enables projects integration block; requires migrate:assets first for hero_image FK resolution)
+        env:
+          PUBLIC_DIRECTUS_URL: http://localhost:8055
+          DIRECTUS_ADMIN_EMAIL: admin@example.com
+          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
+        working-directory: apps/cms
+        run: bun run seed:projects
 
       - name: Run apps/web adapter integration tests against ephemeral Directus
         env:
