@@ -111,24 +111,22 @@ jobs:
             exit 1
           fi
 
-      - name: Apply schema + collections from apps/cms via directus-sync push
-        # Replaces the legacy `apps/cms/infra/directus/snapshot.yaml` curl-based
-        # apply (file was deleted in slice-18m when directus-sync per-resource
-        # JSON took over). `bun run sync:push` is the canonical apply path.
-        #
-        # Permissions/roles/policies: not excluded — directus-sync will sync
-        # the committed permissions tree, then the next step explicitly grants
-        # Public read for the test domains (additive; existing permissions
-        # stay). Settings: handled by the slice-18k auto-merge wrapper (CI
-        # ephemeral has all-null live values for protected file FKs, so the
-        # preflight is a no-op and push proceeds with the committed nulls —
-        # no FK constraint failure).
-        env:
-          DIRECTUS_URL: http://localhost:8055
-          DIRECTUS_ADMIN_EMAIL: admin@example.com
-          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
-        working-directory: apps/cms
-        run: bun run sync:push
+      - name: Apply snapshot from apps/cms
+        run: |
+          TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
+            | jq -r '.data.access_token')
+          DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
+            -H "Authorization: Bearer $TOKEN" \
+            -F "file=@apps/cms/infra/directus/snapshot.yaml")
+          if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
+            echo "$DIFF" | jq '.data' | curl -sf -X POST http://localhost:8055/schema/apply \
+              -H "Authorization: Bearer $TOKEN" \
+              -H 'Content-Type: application/json' \
+              --data-binary @- >/dev/null
+            echo "::notice::Applied snapshot"
+          fi
 
       - name: Grant Public policy read on services domain
         run: |
