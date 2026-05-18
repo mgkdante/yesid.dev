@@ -78,14 +78,7 @@ jobs:
       - name: Install deps (monorepo root — covers both apps)
         run: bun install --frozen-lockfile
 
-      - name: Build CMS Docker image (includes directus-extension-sync needed by sync:push)
-        # apps/cms/Dockerfile extends directus/directus:11.17.3 with
-        # directus-extension-sync@3.0.6. The vanilla image lacks this
-        # extension; sync:push would 404 on /sync endpoint without it.
-        # Build context = apps/cms (self-contained per Dockerfile note).
-        run: docker build -t yesid-cms-ci:slice-18k -f apps/cms/Dockerfile apps/cms
-
-      - name: Boot ephemeral Directus (using custom image with sync extension)
+      - name: Boot ephemeral Directus
         run: |
           docker run -d --name directus \
             --add-host=host.docker.internal:host-gateway \
@@ -103,7 +96,7 @@ jobs:
             -e ADMIN_PASSWORD=ci-test-pass-rotate-immediately \
             -e TELEMETRY=false \
             -e LOG_LEVEL=info \
-            yesid-cms-ci:slice-18k \
+            directus/directus:11.17.3 \
             sh -c "npx directus bootstrap && exec npx directus start"
           for i in {1..100}; do
             if curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
