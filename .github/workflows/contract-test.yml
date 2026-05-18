@@ -126,7 +126,7 @@ jobs:
           PUBLIC_POLICY_ID=$(curl -sf -H "Authorization: Bearer $TOKEN" \
             'http://localhost:8055/policies?filter[name][_eq]=Public&fields=id' \
             | jq -r '.data[0].id')
-          for COLLECTION in services services_translations services_deliverables services_deliverables_translations services_sections services_sections_translations languages; do
+          for COLLECTION in services services_translations services_deliverables services_deliverables_translations services_sections services_sections_translations languages projects projects_translations projects_sections projects_sections_translations projects_impact_metrics projects_impact_metrics_translations projects_services; do
             curl -sf -X POST http://localhost:8055/permissions \
               -H "Authorization: Bearer $TOKEN" \
               -H 'Content-Type: application/json' \
@@ -140,6 +140,14 @@ jobs:
           DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
         working-directory: apps/cms
         run: bun run seed:services
+
+      - name: Seed projects from apps/cms fixture (slice-18k #43 — enables projects integration block)
+        env:
+          PUBLIC_DIRECTUS_URL: http://localhost:8055
+          DIRECTUS_ADMIN_EMAIL: admin@example.com
+          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
+        working-directory: apps/cms
+        run: bun run seed:projects
 
       - name: Run apps/web adapter integration tests against ephemeral Directus
         env:

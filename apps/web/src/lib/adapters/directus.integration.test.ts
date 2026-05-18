@@ -110,36 +110,20 @@ describe.skipIf(!RUN || !URL_)('directusAdapter — live integration', () => {
 	// add projects block to directus.integration.test.ts" — covers the
 	// /items/projects + /items/projects_services round-trip against live CMS.
 	//
-	// Compatible with the existing contract-test.yml CI workflow:
-	// contract-test.yml only seeds services + grants Public read to services
-	// collections (slice-18 18e era). Projects domain may not exist or be
-	// readable in CI, so each test checks projects.length first; if empty
-	// (or 403 on adapter read returning empty), the test returns early — same
-	// pattern as the existing services tests above (`if (!first) return;`).
-	// To get stricter coverage in a manual dispatch against a fully-populated
-	// CMS, the OPERATOR can run with RUN_PROJECTS_INTEGRATION_STRICT=1 which
-	// flips the early-returns into expect(...).toBeGreaterThan(0) hard fails.
+	// CI fixture: contract-test.yml seeds projects (in addition to services)
+	// + grants Public read on projects collections per slice-18k Phase 2
+	// extension. Tests therefore expect projects.length > 0 and treat any
+	// adapter exception as a real regression (NOT swallowed). If the
+	// projects fixture is removed from CI, these tests should fail loudly
+	// so the fixture/permissions drift is surfaced.
 	//
-	// Note: toProject() maps Directus `id` → consumer `slug` (Project.slug is
-	// the human-readable identifier in the consumer-facing shape).
-	const STRICT = process.env.RUN_PROJECTS_INTEGRATION_STRICT === '1';
-
-	it('projects.all() returns valid Project[] when populated (#43)', async () => {
+	// Note: toProject() maps Directus `id` → consumer `slug` (Project.slug
+	// is the human-readable identifier in the consumer-facing shape).
+	it('projects.all() returns a non-empty readonly Project[] against live Directus (#43)', async () => {
 		process.env.PUBLIC_DIRECTUS_URL = URL_;
 		const { directusAdapter } = await import('./directus');
-		let projects;
-		try {
-			projects = await directusAdapter.projects.all();
-		} catch (err) {
-			if (STRICT) throw err;
-			return; // CI ephemeral may 403 on projects read (Public scope = services only)
-		}
-		if (projects.length === 0) {
-			if (STRICT) {
-				expect(projects.length).toBeGreaterThan(0);
-			}
-			return; // CI ephemeral may have no project seed
-		}
+		const projects = await directusAdapter.projects.all();
+		expect(projects.length).toBeGreaterThan(0);
 		for (const p of projects) {
 			expect(typeof p.slug).toBe('string');
 			expect(p.slug.length).toBeGreaterThan(0);
@@ -152,20 +136,11 @@ describe.skipIf(!RUN || !URL_)('directusAdapter — live integration', () => {
 	it('every projects[*].relatedServices id resolves to a service in services.all() (M2M junction integrity)', async () => {
 		process.env.PUBLIC_DIRECTUS_URL = URL_;
 		const { directusAdapter } = await import('./directus');
-		let projects, services;
-		try {
-			[projects, services] = await Promise.all([
-				directusAdapter.projects.all(),
-				directusAdapter.services.all(),
-			]);
-		} catch (err) {
-			if (STRICT) throw err;
-			return;
-		}
-		if (projects.length === 0) {
-			if (STRICT) expect(projects.length).toBeGreaterThan(0);
-			return;
-		}
+		const [projects, services] = await Promise.all([
+			directusAdapter.projects.all(),
+			directusAdapter.services.all(),
+		]);
+		expect(projects.length).toBeGreaterThan(0);
 		const serviceIds = new Set(services.map((s) => s.id));
 		for (const p of projects) {
 			for (const sid of p.relatedServices) {
@@ -177,36 +152,23 @@ describe.skipIf(!RUN || !URL_)('directusAdapter — live integration', () => {
 	it('projects.byService() returns projects for a service that has at least one related project', async () => {
 		process.env.PUBLIC_DIRECTUS_URL = URL_;
 		const { directusAdapter } = await import('./directus');
-		let services, projects;
-		try {
-			services = await directusAdapter.services.all();
-			projects = await directusAdapter.projects.all();
-		} catch (err) {
-			if (STRICT) throw err;
-			return;
-		}
-		if (projects.length === 0) {
-			if (STRICT) expect(projects.length).toBeGreaterThan(0);
-			return;
-		}
-		const serviceIdWithProjects = (() => {
-			for (const s of services) {
-				if (projects.some((p) => p.relatedServices.includes(s.id))) {
-					return s.id;
-				}
-			}
-			return undefined;
-		})();
-		if (!serviceIdWithProjects) {
-			if (STRICT) {
-				expect(serviceIdWithProjects).toBeDefined();
-			}
-			return; // empty M2M relation in CI ephemeral
-		}
-		const byService = await directusAdapter.projects.byService(serviceIdWithProjects);
+		const [services, projects] = await Promise.all([
+			directusAdapter.services.all(),
+			directusAdapter.projects.all(),
+		]);
+		expect(projects.length).toBeGreaterThan(0);
+		// Find a service that has at least one related project. If the M2M
+		// junction is empty across the whole fixture, fail loudly — the
+		// junction is part of the slice-18 services-projects relation
+		// guaranteed by the seed (per apps/cms/scripts/seed-projects.ts).
+		const serviceIdWithProjects = services
+			.map((s) => s.id)
+			.find((sid) => projects.some((p) => p.relatedServices.includes(sid)));
+		expect(serviceIdWithProjects).toBeDefined();
+		const byService = await directusAdapter.projects.byService(serviceIdWithProjects!);
 		expect(byService.length).toBeGreaterThan(0);
 		for (const p of byService) {
-			expect(p.relatedServices.includes(serviceIdWithProjects)).toBe(true);
+			expect(p.relatedServices.includes(serviceIdWithProjects!)).toBe(true);
 		}
 	});
 });
