@@ -174,6 +174,44 @@ Alternatively, set `DIRECTUS_ADMIN_EMAIL` + `DIRECTUS_ADMIN_PASSWORD` to use the
 
 The seed is **nuke-and-recreate** — idempotent, safe to re-run. It clears the `services` domain tree (FK CASCADE removes translations, deliverables, sections) then re-creates from `fixtures/collections/services.json` via the Directus SDK.
 
+### Per-env file FK fields (slice-18k #120, #73, #86 — operational rule)
+
+Singleton + collection fields that reference Directus `directus_files` UUIDs are **per-environment**. The UUID a file gets on dev (cms.dev.yesid.dev) is different from the UUID it gets on prod (cms.yesid.dev) because each Directus env mints its own file IDs.
+
+Affected fields (slice-18 close inventory):
+- `directus_settings.project_logo`
+- `directus_settings.public_foreground`
+- `directus_settings.public_favicon`
+- `site_meta.default_og_image`
+- `icons.svg_override` (for the 5 deferred rows: alembic, dax, rest-api, ssis, ssrs)
+
+Per slice-18k closure decisions, the committed fixtures for these fields are **`null`** to prevent the seed scripts from recreating FK-constraint failures on environments where the referenced UUID doesn't exist (the original `#120` pattern: settings.json had baked UUIDs `d610c3ad-...` that existed in no env, so `sync:push` failed on settings step with `RECORD_NOT_UNIQUE`).
+
+**Operational rule when bootstrapping a fresh env (or restoring after Neon PITR):**
+
+1. Run `sync:push` to provision schema + folders (will set the file-FK fields to `null` because that's what's committed).
+2. Upload the env's brand assets:
+   - `bun --env-file=apps/cms/.env --cwd apps/cms run scripts/seed-brand-assets.ts` for project_logo + wordmark (writes UUIDs to `fixtures/assets-id-map.json`).
+   - For `site_meta.default_og_image`: upload `apps/web/static/og/default.en.png` to the `og/` folder via Directus admin UI (or a one-off upload script following the seed-brand-assets.ts pattern), then PATCH `site_meta.default_og_image` to the new UUID via admin UI or:
+     ```bash
+     curl -X PATCH "https://<env-cms-host>/items/site_meta" \
+       -H "Authorization: Bearer $DIRECTUS_ADMIN_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{"default_og_image":"<new-file-uuid>"}'
+     ```
+   - For `icons.svg_override` (5 deferred rows): upload each of `apps/cms/icons/{alembic,dax,rest-api,ssis,ssrs}.svg` to the `icons/` folder via admin UI or a one-off upload script, then PATCH each `icons` row:
+     ```bash
+     curl -X PATCH "https://<env-cms-host>/items/icons/<row-id>" \
+       -H "Authorization: Bearer $DIRECTUS_ADMIN_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{"svg_override":"<new-file-uuid>"}'
+     ```
+3. For `settings.project_logo / public_foreground / public_favicon`: follow the same PATCH pattern using `assets-id-map.json` UUIDs (or via Directus admin UI Settings panel).
+
+**Why not just commit the dev UUID:** because seeding prod from the committed fixture would set prod's `site_meta.default_og_image` to dev's UUID, which prod's `directus_files` doesn't have → FK constraint error on next seed (re-creates #120). The null + per-env PATCH rule is the only setup that survives `sync:push` cleanly across all envs.
+
+**Why not refactor to use `assets-id-map.json` for these fields:** would require teaching `seed-site-meta.ts` (and any other singleton seed touching file FKs) to resolve `@assets-map:<key>` sentinels at payload-construction time. The refactor is in scope for any future slice that adds substantial new file-FK fields; for slice-18 close it was rejected as scope-enlarging for a single field with graceful consumer fallback (web `<SeoHead>` resolves null `default_og_image` to static `/og/default.{locale}.png`).
+
 ### Asset migration (one-off, Slice 18 Task 9)
 
 Bulk-upload `yesid.dev/static/images/*` into Directus-managed R2 storage. Reads `fixtures/assets-manifest.json` for metadata + target folders; walks the source tree for the binaries.

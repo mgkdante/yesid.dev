@@ -40,7 +40,7 @@ workflow-overlord 2.0 orchestrates Claude Code + Codex sessions via Notion share
 2. **Sessions row gets transcript + summary at session end** — Stop/SessionEnd hook performs the final chunk sync, writes the full transcript artifact, and updates summary/Ended state
 3. **No surgical Notion edits (Rule 2)** — PreToolUse hook
 4. **Refuse placeholder Notion config (Rule 6)** — PreToolUse hook
-5. **Cross-tool parity** — shared workflow-overlord hook behavior lives in the plugin; Claude loads it through the plugin manifest, and Codex reuses the same repo hook wrappers through `.codex/hooks/*.sh` plus config-layer dispatchers until plugin-scoped lifecycle hook loading reaches parity
+5. **Cross-tool parity (partial)** — SessionStart / UserPromptSubmit / Stop are at parity between Claude Code and Codex via repo hook wrappers + workflow-overlord plugin manifest + per-project `.codex/config.toml` dispatchers. **PreToolUse Rules 2 + 6 are Claude-Code-only** as of workflow-overlord 3.0.1: the plugin's own `codex-setup-hooks.sh` documents no Codex-side PreToolUse setup. Codex sessions in this repo can perform surgical Notion `update_content` edits AND can target `<FILL IN>` placeholder UUIDs WITHOUT refusal. Mitigation: operator discipline (review every Notion edit before allowing) + post-hoc revert. Re-evaluate when workflow-overlord ships first-class Codex PreToolUse OR a custom project-side wrapper is added to `.codex/config.toml`. Closed in slice-18k as documented-wontfix (#123).
 
 Everything else is instruction + AI nudge — user decides.
 
