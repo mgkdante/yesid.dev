@@ -75,13 +75,19 @@ describe('cache', () => {
 		expect(readCache(path)).rejects.toThrow(/unsupported cache version/);
 	});
 
-	it('cache envelope includes writtenAt + directusUrl for debuggability', async () => {
+	it('cache envelope includes directusUrl + data + version (no writtenAt — slice-18k Phase 8 fix)', async () => {
+		// slice-18k Phase 8 Codex final fix #2: writtenAt removed because it
+		// rewrote on every successful prebuild + invalidated @repo/web turbo
+		// build cache. Use `stat` on the cache file for last-written time if
+		// needed for debugging.
 		const dir = await tmp();
 		const path = join(dir, '.cms-cache.json');
 		await writeCache(path, FIXTURE, 'https://cms.example');
 		const raw = await Bun.file(path).text();
-		const parsed = JSON.parse(raw) as { writtenAt: string; directusUrl: string };
-		expect(parsed.writtenAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+		const parsed = JSON.parse(raw) as { version: string; directusUrl: string; data: unknown; writtenAt?: string };
+		expect(parsed.version).toBe('1');
 		expect(parsed.directusUrl).toBe('https://cms.example');
+		expect(parsed.data).toBeDefined();
+		expect(parsed.writtenAt).toBeUndefined();
 	});
 });
