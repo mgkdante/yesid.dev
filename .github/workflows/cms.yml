@@ -27,26 +27,13 @@ name: cms
 # Source: Notion slice-18 plan, Phase 2 Task 22.
 
 on:
+  # slice-17f Phase 8: path filters removed (test/diff jobs are required
+  # status checks on main; required checks must always run or the merge
+  # gate hangs on docs-only PRs). Phase 7 caches make no-op runs cheap.
   push:
     branches: [main, develop]
-    paths:
-      - 'apps/cms/**'
-      - 'packages/shared/**'
-      - '.github/workflows/cms.yml'
-      - '.github/actions/setup/**'
-      - 'package.json'
-      - 'bun.lock'
-      - 'turbo.json'
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'apps/cms/**'
-      - 'packages/shared/**'
-      - '.github/workflows/cms.yml'
-      - '.github/actions/setup/**'
-      - 'package.json'
-      - 'bun.lock'
-      - 'turbo.json'
   workflow_dispatch:
     inputs:
       action:
