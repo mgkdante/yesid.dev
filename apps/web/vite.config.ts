@@ -52,6 +52,9 @@ export default defineConfig({
 						'src/lib/styles/**/*.test.ts',
 						'src/tests/**/*.test.ts',
 					],
+					// slice-17f L3+L4: utils/ tests use @testing-library/svelte render()
+					// which requires a DOM. Route them to the `dom` project instead.
+					exclude: ['src/tests/utils/**/*.test.ts'],
 					environment: 'node',
 					globals: true,
 					pool: 'threads',
@@ -66,6 +69,9 @@ export default defineConfig({
 						'src/lib/components/**/*.test.ts',
 						'src/lib/motion/**/*.test.ts',
 						'src/routes/**/*.test.ts',
+						// slice-17f L3+L4: tests/utils/ houses render fixtures + DOM
+						// assertion helpers. happy-dom env required.
+						'src/tests/utils/**/*.test.ts',
 					],
 					environment: 'happy-dom',
 					globals: true,

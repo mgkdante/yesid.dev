@@ -1,13 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import StationTabs from './StationTabs.svelte';
+import { serviceFactory } from '../../../tests/factories';
 
 // Minimal Service stubs that satisfy the component's required fields.
 // Station numbers are intentionally out of order to verify the component sorts them.
 const mockServices = [
-	{ id: 'sql-development', title: { en: 'SQL Development & Optimization' }, description: { en: '' }, station: 1, relatedProjects: [], visible: true },
-	{ id: 'data-pipeline', title: { en: 'Data Pipeline Architecture' }, description: { en: '' }, station: 2, relatedProjects: [], visible: true },
-	{ id: 'analytics-reporting', title: { en: 'Analytics & Reporting Systems' }, description: { en: '' }, station: 3, relatedProjects: [], visible: true }
+	serviceFactory.build({ id: 'sql-development',     title: { en: 'SQL Development & Optimization' }, description: { en: '' }, station: 1, visible: true }),
+	serviceFactory.build({ id: 'data-pipeline',       title: { en: 'Data Pipeline Architecture' },    description: { en: '' }, station: 2, visible: true }),
+	serviceFactory.build({ id: 'analytics-reporting', title: { en: 'Analytics & Reporting Systems' }, description: { en: '' }, station: 3, visible: true }),
 ];
 
 describe('StationTabs', () => {
