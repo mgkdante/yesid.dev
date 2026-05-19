@@ -828,3 +828,35 @@ describe('composePageSeo — parity across 8 static routes (#80b)', () => {
 		expect(composed.ogImage!.height).toBe(630);
 	});
 });
+
+// ---------------------------------------------------------------------------
+// slice-17f Phase 2 Task 2.3 — L2 smoke test
+//
+// Verifies the L2 directus mock helpers import cleanly from this test file's
+// location and behave correctly. Doesn't migrate the contract test itself —
+// that happens in Phase 5. This is purely a build/integration smoke check.
+// ---------------------------------------------------------------------------
+
+describe('slice-17f L2 mock helpers — smoke test', () => {
+	it('imports and exposes jsonResponse, parseCapturedUrl, assertFetchUrl, seedFetchResponses', async () => {
+		const mod = await import('../../tests/mocks/directus');
+		expect(typeof mod.jsonResponse).toBe('function');
+		expect(typeof mod.parseCapturedUrl).toBe('function');
+		expect(typeof mod.assertFetchUrl).toBe('function');
+		expect(typeof mod.seedFetchResponses).toBe('function');
+	});
+
+	it('jsonResponse builds a Directus { data: ... } envelope', async () => {
+		const { jsonResponse } = await import('../../tests/mocks/directus');
+		const res = jsonResponse({ slug: 'home' });
+		const json = await res.json();
+		expect(json).toEqual({ data: { slug: 'home' } });
+	});
+
+	it('assertFetchUrl + parseCapturedUrl work with a captured mock fetch', async () => {
+		const { assertFetchUrl } = await import('../../tests/mocks/directus');
+		const mockFetch = vi.fn();
+		mockFetch('https://cms.yesid.dev/items/projects?limit=-1');
+		expect(() => assertFetchUrl(mockFetch, '/items/projects', { limit: '-1' })).not.toThrow();
+	});
+});
