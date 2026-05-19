@@ -13,6 +13,10 @@ name: cms
 # - push (workflow_dispatch with action=push): applies the JSON tree to
 #   cms.yesid.dev. Gated behind production environment for operator review.
 #
+# slice-17f Phase 7: shared setup extracted to .github/actions/setup
+# (Bun + cache restores + install). concurrency cancel-in-progress on
+# pull_request kills duplicate runs on force-push / fast follow-up commits.
+#
 # Required GitHub secrets (Settings → Secrets and variables → Actions):
 #   DIRECTUS_PROD_ADMIN_TOKEN      = static admin token (cms.yesid.dev/admin →
 #                                    User Profile → Token → Generate). Bypasses
@@ -29,6 +33,7 @@ on:
       - 'apps/cms/**'
       - 'packages/shared/**'
       - '.github/workflows/cms.yml'
+      - '.github/actions/setup/**'
       - 'package.json'
       - 'bun.lock'
       - 'turbo.json'
@@ -38,6 +43,7 @@ on:
       - 'apps/cms/**'
       - 'packages/shared/**'
       - '.github/workflows/cms.yml'
+      - '.github/actions/setup/**'
       - 'package.json'
       - 'bun.lock'
       - 'turbo.json'
@@ -55,19 +61,19 @@ on:
         default: false
         required: false
 
+# Cancel in-progress duplicate runs on PR pushes; let main/develop pushes
+# AND workflow_dispatch (which may apply to prod) run to completion.
+concurrency:
+  group: cms-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: Run apps/cms unit tests (snapshot-shape + fixtures + seed-dry-run + lib)
         working-directory: apps/cms
@@ -101,13 +107,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: sync:diff — preview diff vs prod
         working-directory: apps/cms
@@ -131,13 +131,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: sync:push — apply to production
         working-directory: apps/cms

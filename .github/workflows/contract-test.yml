@@ -70,13 +70,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install deps (monorepo root — covers both apps)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: Boot ephemeral Directus
         run: |
