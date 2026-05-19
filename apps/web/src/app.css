@@ -31,6 +31,36 @@ select {
 	appearance: none;
 }
 
+/* slice-19 Phase 3: tap-feedback primitive layer (Layer 1).
+   Pair with motion/actions/pressBounce + tapRipple for nuanced cases (Layer 2).
+   Reduced-motion preference disables transitions; the press style still applies
+   on :active so users see a state change without animation timing. */
+@utility tap-press {
+	transition:
+		transform 120ms cubic-bezier(0.2, 0, 0, 1),
+		opacity 120ms cubic-bezier(0.2, 0, 0, 1);
+
+	&:active {
+		transform: scale(0.97);
+		opacity: 0.92;
+	}
+}
+
+@utility tap-feedback {
+	transition: opacity 120ms ease-out;
+
+	&:active {
+		opacity: 0.7;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tap-press,
+	.tap-feedback {
+		transition: none;
+	}
+}
+
 /* shadcn-svelte component animations */
 @import 'tw-animate-css';
 
