@@ -31,7 +31,7 @@ vi.mock('$env/dynamic/public', () => ({
 	env: { PUBLIC_DIRECTUS_URL: 'https://cms.yesid.dev' },
 }));
 
-import type { ContentAdapter } from './types';
+import type { ContentAdapter } from '../types';
 import {
 	directusAdapter,
 	type DirectusProject,
@@ -44,7 +44,7 @@ import {
 	toTechStackItem,
 	resolveSvgFallbackName,
 	resolveAnimationDeterministic,
-} from './directus';
+} from '../directus';
 
 describe('directusAdapter — structural contract', () => {
 	it('exposes every required ContentAdapter port', () => {
@@ -700,8 +700,8 @@ describe('toTechStackItem — pure row-to-domain mapping', () => {
 // equivalent.
 // ---------------------------------------------------------------------------
 
-import { composePageSeo } from './compose-page-seo';
-import { codeRouteSeoDefaults } from './route-seo-defaults';
+import { composePageSeo } from '../compose-page-seo';
+import { codeRouteSeoDefaults } from '../route-seo-defaults';
 import { siteMeta } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
 import type { Locale } from '$lib/types';
@@ -839,7 +839,7 @@ describe('composePageSeo — parity across 8 static routes (#80b)', () => {
 
 describe('slice-17f L2 mock helpers — smoke test', () => {
 	it('imports and exposes jsonResponse, parseCapturedUrl, assertFetchUrl, seedFetchResponses', async () => {
-		const mod = await import('../../tests/mocks/directus');
+		const mod = await import('../../../tests/mocks/directus');
 		expect(typeof mod.jsonResponse).toBe('function');
 		expect(typeof mod.parseCapturedUrl).toBe('function');
 		expect(typeof mod.assertFetchUrl).toBe('function');
@@ -847,14 +847,14 @@ describe('slice-17f L2 mock helpers — smoke test', () => {
 	});
 
 	it('jsonResponse builds a Directus { data: ... } envelope', async () => {
-		const { jsonResponse } = await import('../../tests/mocks/directus');
+		const { jsonResponse } = await import('../../../tests/mocks/directus');
 		const res = jsonResponse({ slug: 'home' });
 		const json = await res.json();
 		expect(json).toEqual({ data: { slug: 'home' } });
 	});
 
 	it('assertFetchUrl + parseCapturedUrl work with a captured mock fetch', async () => {
-		const { assertFetchUrl } = await import('../../tests/mocks/directus');
+		const { assertFetchUrl } = await import('../../../tests/mocks/directus');
 		const mockFetch = vi.fn();
 		mockFetch('https://cms.yesid.dev/items/projects?limit=-1');
 		expect(() => assertFetchUrl(mockFetch, '/items/projects', { limit: '-1' })).not.toThrow();
