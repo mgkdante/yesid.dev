@@ -12,6 +12,8 @@ import {
 	parseCapturedUrl,
 	assertFetchUrl,
 	seedFetchResponses,
+	assertFetchPath,
+	assertFilterContains,
 } from './helpers';
 
 describe('jsonResponse', () => {
@@ -102,5 +104,50 @@ describe('seedFetchResponses', () => {
 		seedFetchResponses(mock, [{ slug: 'home' }]);
 		const r = await mock();
 		expect(await r.json()).toEqual({ data: { slug: 'home' } });
+	});
+});
+
+describe('assertFetchPath', () => {
+	it('passes on exact string match', () => {
+		const mock = vi.fn();
+		mock('https://cms.yesid.dev/items/projects?x=1');
+		expect(() => assertFetchPath(mock, '/items/projects')).not.toThrow();
+	});
+
+	it('passes on regex match', () => {
+		const mock = vi.fn();
+		mock('https://cms.yesid.dev/assets/abc-123-def');
+		expect(() => assertFetchPath(mock, /^\/assets\/[a-z0-9-]+$/)).not.toThrow();
+	});
+
+	it('throws with helpful message on mismatch', () => {
+		const mock = vi.fn();
+		mock('https://cms.yesid.dev/items/wrong');
+		expect(() => assertFetchPath(mock, '/items/right')).toThrow(/expected pathname/);
+	});
+});
+
+describe('assertFilterContains', () => {
+	it('passes when filter contains all tokens', () => {
+		const mock = vi.fn();
+		mock(
+			'https://cms.yesid.dev/items/projects?filter=' +
+				encodeURIComponent('{"id":{"_eq":"sql-development"}}'),
+		);
+		expect(() =>
+			assertFilterContains(mock, 'id', '_eq', 'sql-development'),
+		).not.toThrow();
+	});
+
+	it('throws when a token is missing, naming it', () => {
+		const mock = vi.fn();
+		mock('https://cms.yesid.dev/items/projects?filter=' + encodeURIComponent('{"id":{"_eq":"foo"}}'));
+		expect(() => assertFilterContains(mock, 'sql-development')).toThrow(/sql-development/);
+	});
+
+	it('throws when filter param is missing entirely', () => {
+		const mock = vi.fn();
+		mock('https://cms.yesid.dev/items/projects');
+		expect(() => assertFilterContains(mock, 'anything')).toThrow(/filter/);
 	});
 });

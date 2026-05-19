@@ -6,4 +6,11 @@
 // `vi.mock()` boilerplate stays in each test file (it's hoisted by Vitest;
 // see helpers.ts header for the pivot rationale).
 
-export { jsonResponse, parseCapturedUrl, assertFetchUrl, seedFetchResponses } from './helpers';
+export {
+	jsonResponse,
+	parseCapturedUrl,
+	assertFetchUrl,
+	seedFetchResponses,
+	assertFetchPath,
+	assertFilterContains,
+} from './helpers';

@@ -129,3 +129,50 @@ export function seedFetchResponses(mockFetch: Mock, responses: Array<Response | 
 		}
 	}
 }
+
+/**
+ * Assert the captured fetch hit `expected` pathname. Accepts string (exact)
+ * or RegExp. Lighter-weight than assertFetchUrl when only the path matters.
+ *
+ * @example
+ *   assertFetchPath(sharedMockFetch, '/items/projects');
+ *   assertFetchPath(sharedMockFetch, /^\/assets\/[0-9a-f-]+$/);
+ */
+export function assertFetchPath(mockFetch: Mock, expected: string | RegExp): void {
+	const { pathname } = parseCapturedUrl(mockFetch);
+	if (typeof expected === 'string') {
+		if (pathname !== expected) {
+			throw new Error(`expected pathname ${expected}, got ${pathname}`);
+		}
+	} else if (!expected.test(pathname)) {
+		throw new Error(`expected pathname to match ${expected}, got ${pathname}`);
+	}
+}
+
+/**
+ * Assert that the captured fetch's `filter` param contains all `tokens` as
+ * substrings (after URL decoding). Use this for the Directus pattern where
+ * the SDK JSON-encodes the filter object, e.g. `filter={"id":{"_eq":"foo"}}`
+ * — token order isn't guaranteed, so substring checks are the right primitive.
+ *
+ * @example
+ *   // Replaces:
+ *   //   const filter = search.get('filter');
+ *   //   expect(filter).toBeTruthy();
+ *   //   expect(filter!).toContain('id');
+ *   //   expect(filter!).toContain('_eq');
+ *   //   expect(filter!).toContain('sql-development');
+ *   assertFilterContains(sharedMockFetch, 'id', '_eq', 'sql-development');
+ */
+export function assertFilterContains(mockFetch: Mock, ...tokens: string[]): void {
+	const { search } = parseCapturedUrl(mockFetch);
+	const filter = decodeURIComponent(search.get('filter') ?? '');
+	if (!filter) {
+		throw new Error('expected filter param to be set, got empty/missing');
+	}
+	for (const token of tokens) {
+		if (!filter.includes(token)) {
+			throw new Error(`filter missing token "${token}"\nactual: ${filter}`);
+		}
+	}
+}
