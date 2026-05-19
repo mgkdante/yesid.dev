@@ -16,6 +16,12 @@
 
 import type { ZodSchema } from 'zod';
 import type { RenderResult } from '@testing-library/svelte';
+import type { Component } from 'svelte';
+
+// `RenderResult` from @testing-library/svelte v5 is parameterized — it requires
+// a Component type arg. The helpers below don't care about the component
+// shape, so this alias generalizes to "any rendered component".
+type AnyRendered = RenderResult<Component<Record<string, never>>>;
 
 /**
  * Assert a value satisfies a Zod schema. Type-narrows on success.
@@ -42,7 +48,7 @@ export function expectValidSchema<T>(value: unknown, schema: ZodSchema<T>): asse
  *   expectAccessibleHeading(rendered, 1, /pipelines that don't break/i);
  */
 export function expectAccessibleHeading(
-	rendered: RenderResult,
+	rendered: AnyRendered,
 	level: number,
 	name?: string | RegExp,
 ): HTMLElement {
@@ -59,7 +65,7 @@ export function expectAccessibleHeading(
  *   });
  */
 export function expectStructuralMatch(
-	rendered: RenderResult,
+	rendered: AnyRendered,
 	structure: { testIds: string[] },
 ): void {
 	for (const id of structure.testIds) {
