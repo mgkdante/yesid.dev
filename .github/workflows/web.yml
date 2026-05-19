@@ -3,6 +3,10 @@ name: web
 # CI for apps/web (SvelteKit consumer deployed to Vercel).
 # Runs check + test + build via turbo. Filters to apps/web + packages/shared
 # changes; skips on cms-only changes.
+#
+# slice-17f Phase 7: shared setup extracted to .github/actions/setup
+# (Bun + cache restores + install). concurrency cancel-in-progress on
+# pull_request kills duplicate runs on force-push / fast follow-up commits.
 
 on:
   push:
@@ -17,6 +21,7 @@ on:
       - 'apps/cms/scripts/**'
       - 'packages/shared/**'
       - '.github/workflows/web.yml'
+      - '.github/actions/setup/**'
       - 'package.json'
       - 'bun.lock'
       - 'turbo.json'
@@ -24,17 +29,19 @@ on:
     branches: [main, develop]
     paths:
       - 'apps/web/**'
-      # slice-18k Phase 8 Codex final fix #3: web prebuild runs
-      # apps/cms/scripts/export-fallbacks.ts which imports from
-      # apps/cms/scripts/lib/* (emitters, fetchers, helpers). PRs touching
-      # only the CMS export pipeline can break @repo/web builds without
-      # web.yml running otherwise.
       - 'apps/cms/scripts/**'
       - 'packages/shared/**'
       - '.github/workflows/web.yml'
+      - '.github/actions/setup/**'
       - 'package.json'
       - 'bun.lock'
       - 'turbo.json'
+
+# Cancel in-progress duplicate runs on PR pushes; let main/develop pushes
+# complete (we want every main commit to have a recorded build).
+concurrency:
+  group: web-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   ci:
@@ -43,13 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install dependencies (monorepo root)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: Type check (svelte-kit sync + svelte-check)
         run: bun x turbo run check --filter=@repo/web
