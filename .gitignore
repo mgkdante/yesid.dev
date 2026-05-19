@@ -61,3 +61,6 @@ apps/web/static/images/*.source.svg
 #   /docs/research/<slice-id>-*.md, /docs/slices/<slice-id>/research.md
 # (brand/ and docs/superpowers/plans/ fully removed in chore/post-merge-cleanup PR.)
 .vercel
+
+# superpowers brainstorm sessions
+.superpowers/
