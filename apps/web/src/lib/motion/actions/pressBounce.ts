@@ -12,10 +12,12 @@ import { isTouchDevice } from '$lib/motion/utils/device';
 import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion';
 import { durationSec } from '$lib/motion/tokens';
 
-type ActionReturn = { destroy(): void } | void;
+type ActionReturn = { destroy(): void };
 
 export function pressBounce(node: HTMLElement): ActionReturn {
-	if (!isTouchDevice() || isPrefersReducedMotion()) return;
+	if (!isTouchDevice() || isPrefersReducedMotion()) {
+		return { destroy() {} };
+	}
 
 	const onDown = () => {
 		gsap.killTweensOf(node);

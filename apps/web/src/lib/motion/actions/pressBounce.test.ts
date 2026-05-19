@@ -55,9 +55,57 @@ describe('pressBounce action', () => {
 		const el = document.createElement('button');
 		const removeSpy = vi.spyOn(el, 'removeEventListener');
 		const result = pressBounce(el);
-		result?.destroy?.();
+		result.destroy();
 		expect(removeSpy).toHaveBeenCalledWith('pointerdown', expect.any(Function));
 		expect(removeSpy).toHaveBeenCalledWith('pointerup', expect.any(Function));
 		expect(removeSpy).toHaveBeenCalledWith('pointercancel', expect.any(Function));
+	});
+
+	it('on pointerdown, calls gsap.to with scale 0.94 + power2.out ease', async () => {
+		const { gsap: mockedGsap } = await import('$lib/motion/utils/gsap');
+		const el = document.createElement('button');
+		pressBounce(el);
+
+		el.dispatchEvent(new Event('pointerdown'));
+
+		expect(mockedGsap.to).toHaveBeenCalledWith(
+			el,
+			expect.objectContaining({
+				scale: 0.94,
+				ease: 'power2.out',
+			})
+		);
+	});
+
+	it('on pointerup, calls gsap.to with scale 1 + back.out(2) ease', async () => {
+		const { gsap: mockedGsap } = await import('$lib/motion/utils/gsap');
+		const el = document.createElement('button');
+		pressBounce(el);
+
+		el.dispatchEvent(new Event('pointerup'));
+
+		expect(mockedGsap.to).toHaveBeenCalledWith(
+			el,
+			expect.objectContaining({
+				scale: 1,
+				ease: 'back.out(2)',
+			})
+		);
+	});
+
+	it('on pointercancel, calls gsap.to with the release animation (same as pointerup)', async () => {
+		const { gsap: mockedGsap } = await import('$lib/motion/utils/gsap');
+		const el = document.createElement('button');
+		pressBounce(el);
+
+		el.dispatchEvent(new Event('pointercancel'));
+
+		expect(mockedGsap.to).toHaveBeenCalledWith(
+			el,
+			expect.objectContaining({
+				scale: 1,
+				ease: 'back.out(2)',
+			})
+		);
 	});
 });
