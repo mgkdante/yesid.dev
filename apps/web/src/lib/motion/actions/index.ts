@@ -11,3 +11,5 @@ export { cursorGlow, type CursorGlowParams } from './cursorGlow.js';
 export { wordmarkHover, type WordmarkHoverParams } from './wordmarkHover.js';
 export { morphHover, type MorphHoverParams } from './morphHover.js';
 export { scrollChain } from './scrollChain.js';
+export { pressBounce } from './pressBounce.js';
+export { tapRipple } from './tapRipple.js';
