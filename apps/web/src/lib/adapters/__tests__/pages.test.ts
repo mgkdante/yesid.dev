@@ -1,19 +1,23 @@
 // pages.test.ts — TDD tests for loadPage, ROUTE_TO_SLUG, ALL_BLOCK_COLLECTIONS,
 // and the 12 transformBlock<X> functions added in slice-18i Task 4.0.
 //
-// Mocking strategy mirrors directus.mocked.test.ts:
-//   - vi.mock('./directus-queue') replaces createQueuedFetch() with sharedMockFetch
+// Migrated from `adapters/pages.test.ts` in slice-17f Task 5.2:
+//   - Moved to __tests__/ for L5 taxonomy discoverability
+//   - jsonResponse helper imported from L2 (`tests/mocks/directus`)
+//   - Otherwise unchanged — this file's tests are already minimal: no URL
+//     assertion patterns to compress, fixtures are pre-transform Directus
+//     shapes (L1 domain factories don't apply), and the 5 loadPage tests +
+//     12 transformBlock unit tests are each tight.
+//
+// Mocking strategy mirrors __tests__/directus.test.ts:
+//   - vi.mock('../directus-queue') replaces createQueuedFetch() with sharedMockFetch
 //   - vi.mock('$env/dynamic/public') supplies PUBLIC_DIRECTUS_URL
 //   - vi.unmock('$lib/adapters/directus') keeps the subject under real test
 //
 // loadPage is NOT mocked — it's the subject. We mock at directus.request level
-// via the queued-fetch capture surface (same HTTP-level mock as mocked.test.ts).
+// via the queued-fetch capture surface (same HTTP-level mock as directus.test.ts).
 // parsePort runs REAL — the spec contract is "every adapter parse goes through
 // parsePort" and the Zod gate is part of what we're testing.
-//
-// Fixture shape: rawBlockHero() et al return the REAL Directus shape
-// (per-locale translation row arrays), not pre-shaped LocalizedStrings.
-// This exercises the full transform-merge-validate pipeline.
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
@@ -21,7 +25,7 @@ vi.unmock('$lib/adapters/directus');
 
 const sharedMockFetch = vi.fn();
 
-vi.mock('./directus-queue', () => ({
+vi.mock('../directus-queue', () => ({
 	createQueuedFetch: () => sharedMockFetch,
 }));
 
@@ -45,8 +49,9 @@ import {
 	transformBlockTechStackPageContent,
 	transformBlockBlogPageContent,
 	transformBlockProjectsPageContent,
-} from './directus';
+} from '../directus';
 import { PageSchema } from '@repo/shared';
+import { jsonResponse } from '../../../tests/mocks/directus';
 
 // ---------------------------------------------------------------------------
 // Raw Directus block fixture builders — per-locale translation row arrays
@@ -611,14 +616,6 @@ function rawHomePage(overrides: Record<string, unknown> = {}): Record<string, un
 		],
 		...overrides,
 	};
-}
-
-/** Returns a JSON Response in the Directus SDK envelope `{ data: [...] }`. */
-function jsonResponse(body: unknown, status = 200): Response {
-	return new Response(JSON.stringify({ data: body }), {
-		status,
-		headers: { 'content-type': 'application/json' },
-	});
 }
 
 // ---------------------------------------------------------------------------

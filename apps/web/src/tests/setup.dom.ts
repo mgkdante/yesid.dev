@@ -5,6 +5,12 @@ import '@testing-library/jest-dom/vitest';
 // Must be imported manually because the vite plugin skips auto-setup when globals:true.
 import '@testing-library/svelte/vitest';
 import { vi } from 'vitest';
+import { faker } from '@faker-js/faker';
+
+// Deterministic faker output for CI reproducibility (slice-17f L1 prerequisite).
+// Override per-test with `faker.seed(<n>)` if non-determinism is intentional.
+// Seed value 42 is arbitrary but stable.
+faker.seed(42);
 
 // happy-dom does not implement HTMLCanvasElement.getContext. Provide a minimal stub to
 // prevent "Cannot set properties of null" errors from canvas-dependent code in tests.

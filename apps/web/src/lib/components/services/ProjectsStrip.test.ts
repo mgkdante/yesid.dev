@@ -2,34 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import ProjectsStrip from './ProjectsStrip.svelte';
 import type { Project } from '$lib/types';
-
-const emptyDoc = { time: 0, version: '2.31.2', blocks: [] as never[] };
+import { projectFactory } from '../../../tests/factories';
 
 const mockProjects: Project[] = [
-	{
-		slug: 'transit-data-pipeline',
-		title: { en: 'Transit Data Pipeline' },
-		oneLiner: { en: '' },
-		description: { en: emptyDoc },
-		stack: [],
-		tags: [],
-		status: 'public',
-		featured: false,
-		relatedServices: [],
-		sections: []
-	},
-	{
-		slug: 'lorem-query-optimizer',
-		title: { en: 'Query Optimizer' },
-		oneLiner: { en: '' },
-		description: { en: emptyDoc },
-		stack: [],
-		tags: [],
-		status: 'public',
-		featured: false,
-		relatedServices: [],
-		sections: []
-	},
+	projectFactory.build({ slug: 'transit-data-pipeline', title: { en: 'Transit Data Pipeline' } }),
+	projectFactory.build({ slug: 'lorem-query-optimizer', title: { en: 'Query Optimizer' } }),
 ];
 
 describe('ProjectsStrip', () => {
