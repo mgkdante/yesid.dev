@@ -8,6 +8,7 @@
 
 import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
 import { initScrollTriggerConfig, ensureSplitTextRegistered, gsap, SplitText } from '../utils/gsap.js';
+import { isTouchDevice } from '../utils/device.js';
 
 export interface WordmarkHoverParams {
 	/** Reference to the dot element (the "." after "yesid") */
@@ -19,6 +20,7 @@ export interface WordmarkHoverParams {
 }
 
 export function wordmarkHover(node: HTMLElement, params: WordmarkHoverParams) {
+	if (isTouchDevice()) return { destroy() {} };
 	if (isPrefersReducedMotion() || typeof window === 'undefined') {
 		return { destroy() {} };
 	}
