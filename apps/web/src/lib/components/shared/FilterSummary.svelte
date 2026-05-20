@@ -26,7 +26,7 @@
 		{count} {noun}{count !== 1 ? 's' : ''}
 	</span>
 	<button
-		class="font-mono text-caption text-primary underline transition-colors hover:text-[var(--foreground)]"
+		class="tap-feedback inline-flex items-center min-h-11 px-2 font-mono text-caption text-primary underline transition-colors hover:text-[var(--foreground)] active:text-[var(--foreground)]"
 		onclick={onClear}
 	>
 		{clearFiltersLabel}

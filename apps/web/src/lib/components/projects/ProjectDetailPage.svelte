@@ -163,7 +163,7 @@
 						<nav class="toc-nav">
 								{#each tocEntries as entry}
 									<button
-										class="toc-item"
+										class="tap-press toc-item"
 										class:active={activeHeadingId === entry.id}
 										onclick={() => scrollToHeading(entry.id)}
 									>
@@ -174,7 +174,7 @@
 									</button>
 									{#each entry.children as child}
 										<button
-											class="toc-item toc-sub-item"
+											class="tap-press toc-item toc-sub-item"
 											class:active={activeHeadingId === child.id}
 											onclick={() => scrollToHeading(child.id)}
 											style="padding-left: {16 + Math.max(0, child.level - 3) * 10}px;"
@@ -262,6 +262,7 @@
 		border: none;
 		cursor: pointer;
 		padding: 0;
+		min-height: 44px;
 		color: var(--muted-foreground);
 		transition: color var(--duration-fast) var(--ease-default);
 	}

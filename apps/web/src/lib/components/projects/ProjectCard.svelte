@@ -84,7 +84,7 @@
 
 <a
 	href="/projects/{project.slug}"
-	class={cn("project-card group block h-full", className)}
+	class={cn("tap-press project-card group block h-full", className)}
 	data-testid="project-card"
 	data-flip-id={project.slug}
 	data-batch="project-item"
@@ -101,7 +101,7 @@
 				<img
 					src={asset(project.image, 'card-600')}
 					alt={resolveLocale(project.title, 'en')}
-					class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+					class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-active:scale-105"
 					loading="lazy"
 				/>
 			</div>
@@ -111,7 +111,7 @@
 				style="background: linear-gradient(135deg, color-mix(in srgb, {gradientColors[0]} 13%, transparent), color-mix(in srgb, {gradientColors[1]} 7%, transparent));"
 			>
 				{#if project.relatedServices[0] && serviceSvgContents[project.relatedServices[0]]}
-					<div class="opacity-30 transition-opacity duration-300 group-hover:opacity-50">
+					<div class="opacity-30 transition-opacity duration-300 group-hover:opacity-50 group-active:opacity-50">
 						<SvgIcon
 							svgContent={serviceSvgContents[project.relatedServices[0]]}
 							size={72}
@@ -125,7 +125,7 @@
 		<!-- Content area — all content stacks naturally below the banner -->
 		<div class="p-4">
 			<!-- Title below the gradient, not overlaid -->
-			<h2 class="text-base font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary md:text-lg">
+			<h2 class="text-base font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary group-active:text-primary md:text-lg">
 				{resolveLocale(project.title, 'en')}
 			</h2>
 

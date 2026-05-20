@@ -64,7 +64,7 @@
 				{#snippet child({ props })}
 					<button
 						{...props}
-						class="inline-flex items-center gap-1.5 rounded border px-2.5 py-1 font-mono text-xs transition-colors"
+						class="tap-press inline-flex items-center gap-1.5 rounded border px-4 py-2.5 min-h-11 font-mono text-xs transition-colors"
 						style="border-color: var(--primary); color: var(--primary);"
 					>
 						{resolveLocale(labels.filters, 'en')}
@@ -86,7 +86,7 @@
 					</div>
 					<div class="mt-1.5 flex flex-wrap gap-1.5">
 						<button
-							class="rounded px-2 py-1 text-caption transition-colors"
+							class="tap-press rounded px-3 py-2.5 min-h-11 text-caption transition-colors"
 							class:m-active={activeService === null}
 							onclick={() => onServiceSelect(null)}
 						>
@@ -94,7 +94,7 @@
 						</button>
 						{#each serviceIds as svcId}
 							<button
-								class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+								class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 								class:m-tag-active={activeService === svcId}
 								onclick={() => onServiceSelect(activeService === svcId ? null : svcId)}
 							>
@@ -111,7 +111,7 @@
 							</div>
 							<div class="mt-1.5 flex flex-wrap gap-1.5">
 								<button
-									class="rounded px-2 py-1 text-caption transition-colors"
+									class="tap-press rounded px-3 py-2.5 min-h-11 text-caption transition-colors"
 									class:m-active={activeStack === null}
 									onclick={() => onStackSelect(null)}
 								>
@@ -119,7 +119,7 @@
 								</button>
 								{#each stack as item}
 									<button
-										class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+										class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 										class:m-tag-active={activeStack === item}
 										onclick={() => onStackSelect(activeStack === item ? null : item)}
 									>
@@ -137,7 +137,7 @@
 						</div>
 						<div class="mt-1.5 flex flex-wrap gap-1.5">
 							<button
-								class="rounded px-2 py-1 text-caption transition-colors"
+								class="tap-press rounded px-3 py-2.5 min-h-11 text-caption transition-colors"
 								class:m-active={activeTag === null}
 								onclick={() => onTagSelect(null)}
 							>
@@ -145,7 +145,7 @@
 							</button>
 							{#each tags as tag}
 								<button
-									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeTag === tag}
 									onclick={() => onTagSelect(activeTag === tag ? null : tag)}
 								>
