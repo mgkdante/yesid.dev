@@ -107,44 +107,50 @@
 
 {#if mode === 'navigate'}
 	<!-- Navigate mode: plain nav + links (links can't be Tabs triggers) -->
-	<nav
-		aria-label={serviceNavAria}
-		class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center"
-		class:swipe-lock={swipeActive}
-		style="background: var(--primary); border: none;"
-		use:scrollChain
-		ontouchstart={onTouchStart}
-		ontouchmove={onTouchMove}
-		ontouchend={onTouchEnd}
-	>
-		{#each sorted as service, i (service.id)}
-			{@const isActive = service.id === activeId}
-			{@const opacity = isActive ? 1 : getOpacity(i)}
+	<!-- Wrapper provides position:relative anchor for the scroll-cue gradient overlay -->
+	<div class="station-tabs-wrapper">
+		<nav
+			aria-label={serviceNavAria}
+			class="station-tabs flex w-full overflow-x-auto justify-start xl:justify-center"
+			class:swipe-lock={swipeActive}
+			style="background: var(--primary); border: none;"
+			use:scrollChain
+			ontouchstart={onTouchStart}
+			ontouchmove={onTouchMove}
+			ontouchend={onTouchEnd}
+		>
+			{#each sorted as service, i (service.id)}
+				{@const isActive = service.id === activeId}
+				{@const opacity = isActive ? 1 : getOpacity(i)}
 
-			<a
-				href="/services/{service.id}"
-				class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all tap-press"
+				<a
+					href="/services/{service.id}"
+					class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all tap-press"
 
-				class:active={isActive}
-				style="opacity: {opacity};"
-				data-testid="station-tab-{service.id}"
-				data-active={isActive ? 'true' : undefined}
-			>
-				<span
-					class="station-num font-mono text-xs"
-					class:text-brand={isActive}
+					class:active={isActive}
+					style="opacity: {opacity};"
+					data-testid="station-tab-{service.id}"
+					data-active={isActive ? 'true' : undefined}
 				>
-					{padStation(service.station)}
-				</span>
-				<span
-					class="station-label text-sm"
-					class:font-bold={isActive}
-				>
-					{getLabel(service)}
-				</span>
-			</a>
-		{/each}
-	</nav>
+					<span
+						class="station-num font-mono text-xs"
+						class:text-brand={isActive}
+					>
+						{padStation(service.station)}
+					</span>
+					<span
+						class="station-label text-sm"
+						class:font-bold={isActive}
+					>
+						{getLabel(service)}
+					</span>
+				</a>
+			{/each}
+		</nav>
+		<!-- Scroll-cue: gradient fade on the right edge signals more tabs exist.
+		     Hidden at xl where all tabs are visible (justify-center). -->
+		<div class="scroll-cue" aria-hidden="true"></div>
+	</div>
 {:else}
 	<!-- Scroll mode: bits-ui Tabs for a11y (arrow keys, ARIA roles, focus management) -->
 	<Tabs.Root
@@ -243,5 +249,32 @@
 	   Prevents click/pointerdown from firing on buttons or links mid-swipe. */
 	.swipe-lock .station-tab {
 		pointer-events: none;
+	}
+
+	/* ── Navigate-mode scroll-cue ── */
+
+	/* Wrapper anchors the absolute overlay */
+	.station-tabs-wrapper {
+		position: relative;
+	}
+
+	/* Right-edge gradient fade: transparent → orange (--primary), signals "scroll right".
+	   pointer-events: none so it never blocks tab clicks. Hidden at xl (all tabs fit). */
+	.scroll-cue {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 3rem;
+		/* End-stop MUST match the .station-tabs nav background (both var(--primary)),
+		   so the cue fades tab content into the strip. Update both together if either changes. */
+		background: linear-gradient(to right, transparent, var(--primary));
+		pointer-events: none;
+	}
+
+	@media (min-width: 1280px) {
+		.scroll-cue {
+			display: none;
+		}
 	}
 </style>
