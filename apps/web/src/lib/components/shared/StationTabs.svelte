@@ -123,7 +123,7 @@
 
 			<a
 				href="/services/{service.id}"
-				class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all"
+				class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all tap-press"
 
 				class:active={isActive}
 				style="opacity: {opacity};"
@@ -169,7 +169,7 @@
 					{#snippet child({ props })}
 						<button
 							{...props}
-							class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm transition-all"
+							class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm transition-all tap-press"
 							class:active={isActive}
 							style="opacity: {opacity};"
 							data-testid="station-tab-{service.id}"
@@ -211,7 +211,7 @@
 		border-top: none;
 		border-left: none;
 		border-right: none;
-		padding: 0.875rem 1.25rem;
+		padding: 1rem 1.25rem;
 		font-family: var(--font-mono);
 		font-size: var(--text-small);
 		transition: opacity var(--duration-fast) var(--ease-default);
