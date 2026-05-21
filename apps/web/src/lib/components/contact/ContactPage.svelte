@@ -13,6 +13,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { ResizablePaneGroup, ResizablePane, ResizableHandle } from '$lib/components/ui/resizable';
 	import type { WeatherData } from '$lib/utils/weather';
+	import { pressBounce } from '$lib/motion/actions';
 
 	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
 	let {
@@ -238,7 +239,7 @@
 						<a
 							href={social.href}
 							data-testid="contact-social-{social.icon}"
-							class="flex items-center gap-2 rounded px-2 py-1.5 text-[var(--foreground)] transition-colors duration-200 hover:bg-primary/15"
+							class="tap-feedback flex items-center gap-2 rounded px-2 py-3 min-h-11 text-[var(--foreground)] transition-colors duration-200 hover:bg-primary/15 active:bg-primary/25"
 							{...(social.icon === 'email' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
 						>
 							<span class="text-[var(--primary)]">→</span>
@@ -288,7 +289,7 @@
 								type="text"
 								bind:value={name}
 								placeholder={resolveLocale(c.formTerminal.fields.name.placeholder, 'en')}
-								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
+								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
 							/>
 							{#if submitted && errors.name}
 								<div class="text-caption text-[var(--destructive)]">✗ {errors.name}</div>
@@ -306,7 +307,7 @@
 								type="email"
 								bind:value={email}
 								placeholder={resolveLocale(c.formTerminal.fields.email.placeholder, 'en')}
-								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
+								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
 							/>
 							{#if submitted && errors.email}
 								<div class="text-caption text-[var(--destructive)]">✗ {errors.email}</div>
@@ -324,7 +325,7 @@
 								bind:value={message}
 								placeholder={resolveLocale(c.formTerminal.fields.message.placeholder, 'en')}
 								rows="6"
-								class="rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
+								class="tap-feedback form-field rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
 							></textarea>
 							{#if submitted && errors.message}
 								<div class="text-caption text-[var(--destructive)]">✗ {errors.message}</div>
@@ -344,10 +345,12 @@
 						{/if}
 
 						<!-- Submit button -->
-						<Button variant="default" size="cta-sm" type="submit">
-							<span class="opacity-60">~ $</span>
-							{resolveLocale(c.formTerminal.submitLabel, 'en')}
-						</Button>
+						<span class="tap-press" use:pressBounce>
+							<Button variant="default" size="cta" type="submit">
+								<span class="opacity-60">~ $</span>
+								{resolveLocale(c.formTerminal.submitLabel, 'en')}
+							</Button>
+						</span>
 
 					</div>
 				</form>
@@ -366,8 +369,8 @@
 										: 'text-[var(--secondary-foreground)]'} text-small">
 								{#if line.color === 'muted' && line.text.includes('{work}') && line.text.includes('{blog}')}
 									{@html line.text
-										.replace('{work}', '<a href="/services" class="text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent)] transition-colors">work</a>')
-										.replace('{blog}', '<a href="/blog" class="text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent)] transition-colors">blog</a>')}
+										.replace('{work}', '<a href="/services" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors">work</a>')
+										.replace('{blog}', '<a href="/blog" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors">blog</a>')}
 								{:else}
 									{line.text}
 								{/if}
@@ -379,7 +382,7 @@
 					<Button
 						variant="ghost"
 						onclick={handleReset}
-						class="mt-4 self-start font-mono text-caption"
+						class="mt-4 self-start font-mono text-caption tap-feedback min-h-11 px-4"
 					>
 						{resolveLocale(c.success.resetLabel, 'en')}
 					</Button>
@@ -475,6 +478,12 @@
 		/* Swap visibility */
 		.desktop-terminals { display: block; flex: 1; min-height: 0; }
 		.mobile-terminals { display: none; }
+	}
+
+	/* ═══ iOS keyboard-overlap mitigation ═══ */
+	/* Focused form fields need breathing room above the virtual keyboard */
+	.form-field {
+		scroll-margin-bottom: 100px;
 	}
 
 	/* ═══ Resize Handle ═══ */

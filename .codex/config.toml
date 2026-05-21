@@ -1,4 +1,4 @@
-# yesid.dev — workflow-overlord v2 Codex CLI config.
+# yesid.dev — workflow-overlord Codex CLI config.
 #
 # Hook dispatchers live in the GLOBAL ~/.codex/config.toml — they `cd` into
 # the project root and exec `<root>/.codex/hooks/<event>.sh`. Redeclaring the

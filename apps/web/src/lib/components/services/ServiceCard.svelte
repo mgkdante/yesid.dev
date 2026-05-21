@@ -10,6 +10,7 @@
 	import { SectionLabel } from '$lib/components/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
 	import { cn } from '$lib/utils';
+	import { pressBounce } from '$lib/motion/actions';
 
 	export interface ServiceCardProps {
 		/** The service data to display */
@@ -99,7 +100,7 @@
 				{/if}
 
 				<!-- Desktop CTA — hidden on mobile -->
-				<a href="/services/{service.id}" class="deep-dive-cta desktop-only">
+				<a href="/services/{service.id}" class="deep-dive-cta desktop-only tap-press" use:pressBounce>
 					{deepDiveLabel}
 				</a>
 			</div>
@@ -107,7 +108,7 @@
 
 		<!-- Mobile: CTA + SVG side by side. Desktop: SVG panel only. -->
 		<div class="card-bottom">
-			<a href="/services/{service.id}" class="deep-dive-cta mobile-only">
+			<a href="/services/{service.id}" class="deep-dive-cta mobile-only tap-press" use:pressBounce>
 				{deepDiveLabel}
 			</a>
 			{#if svgContent}
@@ -327,8 +328,9 @@
 			font-size: clamp(28px, 6vw, 36px);
 		}
 		.deep-dive-cta {
-			padding: 0.75rem 1.5rem;
+			padding: 1rem 1.5rem;
 			font-size: var(--text-small);
+			min-height: 44px;
 		}
 	}
 </style>

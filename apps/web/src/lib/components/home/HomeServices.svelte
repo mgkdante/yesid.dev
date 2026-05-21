@@ -10,7 +10,7 @@
 	import { resolveLocale } from '$lib/utils';
 
 	import { getVisibleServices } from '$lib/content';
-	import { morphHover } from '$lib/motion/actions';
+	import { morphHover, pressBounce } from '$lib/motion/actions';
 	import { Card } from '$lib/components/ui/card';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
@@ -77,7 +77,7 @@
 				<a
 					href="/services/{service.id}"
 					data-testid="services-card"
-					class="group block"
+					class="group block tap-press"
 				>
 					<Card class="services-card flex h-full p-6">
 					<div class="card-inner flex w-full gap-5">
@@ -85,7 +85,7 @@
 						<button
 							type="button"
 							data-testid="services-svg-panel"
-							class="svg-panel relative flex flex-shrink-0 items-center justify-center rounded-xl transition-all duration-300"
+							class="svg-panel tap-press relative flex flex-shrink-0 items-center justify-center rounded-xl transition-all duration-300"
 							aria-label={viewIllustrationAriaTemplate.replace('{title}', title)}
 							use:morphHover={{ enabled: svgReady[i] }}
 						>
@@ -140,8 +140,9 @@
 		>
 			<a
 				href="/services"
-				class="view-all-link border-b pb-0.5 text-body font-medium tracking-wide transition-colors duration-200"
-				style="color: var(--secondary-foreground); border-color: var(--border);"
+				class="view-all-link tap-feedback inline-flex items-center border-b pb-0.5 text-body font-medium tracking-wide transition-colors duration-200"
+				style="color: var(--secondary-foreground); border-color: var(--border); min-height: 2.75rem; padding-inline: 0.5rem;"
+				use:pressBounce
 			>{viewAllLink}</a>
 		</div>
 	</div>
@@ -165,6 +166,15 @@
 	/* Grid — uniform row heights */
 	.services-grid {
 		grid-auto-rows: 1fr;
+	}
+
+	/* At 768px (iPad Mini / md breakpoint): force single-column to prevent
+	   cards from being too thin with badly-wrapping titles. sm:grid-cols-2
+	   kicks in at 640px, so we override back to 1-col in the 640–1023px range. */
+	@media (min-width: 640px) and (max-width: 1023px) {
+		.services-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	/* Service title — responsive via clamp */
