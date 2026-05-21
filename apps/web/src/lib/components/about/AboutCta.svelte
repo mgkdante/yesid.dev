@@ -63,7 +63,7 @@
 
 		<!-- Action row: button + availability -->
 		<div class="mt-3 flex flex-wrap items-center gap-3">
-			<Button variant="default" size="cta-sm" href={cta.buttonHref}>
+			<Button variant="default" size="cta" href={cta.buttonHref}>
 				{buttonLabel}
 			</Button>
 			<span class="font-mono text-caption tracking-[1px] text-[var(--accent)]">

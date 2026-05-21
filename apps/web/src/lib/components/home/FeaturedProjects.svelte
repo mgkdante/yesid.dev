@@ -45,7 +45,7 @@
 	class="relative py-[var(--space-section-y)] px-[var(--space-page-x)] lg:min-h-dvh lg:flex lg:flex-col lg:justify-center"
 >
 	<!-- 3-card grid -->
-	<div class="mb-8 grid grid-cols-1 gap-[var(--space-card-gap)] sm:grid-cols-2 lg:grid-cols-3 md:mb-10">
+	<div class="proof-tiles-grid mb-8 grid grid-cols-1 gap-[var(--space-card-gap)] sm:grid-cols-2 lg:grid-cols-3 md:mb-10">
 		{#each projects as project, i}
 			{#if project}
 				{@const title = resolveLocale(project.title, 'en')}
@@ -55,7 +55,7 @@
 					<!-- Image — B&W default, color on hover (desktop) / tap (mobile) -->
 					<button
 						type="button"
-						class="proof-image relative h-48 w-full overflow-hidden md:h-56"
+						class="proof-image tap-press relative h-48 w-full overflow-hidden md:h-56"
 						class:image-active={activeImageIndex === i}
 						data-testid="proof-card-image"
 						onclick={(e) => handleImageTap(e, i)}
@@ -73,7 +73,7 @@
 					<!-- Text — links to project -->
 					<a
 						href="/projects/{project.slug}"
-						class="block flex-1 p-5 md:p-6"
+						class="block flex-1 p-5 tap-press md:p-6"
 						data-testid="proof-card"
 					>
 						{#if metric}
@@ -122,8 +122,8 @@
 		<a
 			data-testid="proof-view-all"
 			href={proofReelContent.viewAllHref}
-			class="font-mono text-caption tracking-wider md:text-mono"
-			style="color: var(--primary); border-bottom: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);"
+			class="tap-feedback inline-flex items-center font-mono text-caption tracking-wider md:text-mono"
+			style="color: var(--primary); border-bottom: 1px solid color-mix(in srgb, var(--primary) 30%, transparent); min-height: 2.75rem; padding-inline: 0.25rem;"
 		>{viewAllLabel}</a>
 	</div>
 </section>
@@ -162,5 +162,21 @@
 		.proof-image {
 			cursor: pointer;
 		}
+	}
+
+	/* At 640–1023px (tablet range including 768px iPad Mini): force single-column
+	   to prevent the 3rd tile from orphaning in a 2-col grid at 768px.
+	   sm:grid-cols-2 sets 2-col from 640px; this overrides back to 1-col until
+	   lg:grid-cols-3 takes over at 1024px. */
+	@media (min-width: 640px) and (max-width: 1023px) {
+		.proof-tiles-grid {
+			grid-template-columns: 1fr !important;
+		}
+	}
+
+	/* Consistent card alignment: stretch ensures cards fill the grid cell
+	   cleanly and prevents tag-row misalignment at phone widths. */
+	.proof-tiles-grid :global(.proof-card) {
+		align-self: stretch;
 	}
 </style>

@@ -37,11 +37,11 @@ select {
    on :active so users see a state change without animation timing. */
 @utility tap-press {
 	transition:
-		transform 120ms cubic-bezier(0.2, 0, 0, 1),
+		scale 120ms cubic-bezier(0.2, 0, 0, 1),
 		opacity 120ms cubic-bezier(0.2, 0, 0, 1);
 
 	&:active {
-		transform: scale(0.97);
+		scale: 0.97;
 		opacity: 0.92;
 	}
 
