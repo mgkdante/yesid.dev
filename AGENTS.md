@@ -37,7 +37,7 @@ workflow-overlord 2.0 orchestrates Claude Code + Codex sessions via Notion share
 ## Core principles — the 5 mechanical guarantees (100% enforced)
 
 1. **Sessions row exists at session start** — SessionStart hook
-2. **Sessions row gets transcript + summary at session end** — Stop/SessionEnd hook performs the final chunk sync, writes the full transcript artifact, and updates summary/Ended state
+2. **Sessions row gets transcript + summary at session end** — Stop/SessionEnd hook performs the final chunk sync, writes the full transcript artifact, and updates `Summary`. **`Ended` is not written on Stop** — sessions are resumable and Stop is treated as "quiet for now," not "final close."
 3. **No surgical Notion edits (Rule 2)** — PreToolUse hook
 4. **Refuse placeholder Notion config (Rule 6)** — PreToolUse hook
 5. **Cross-tool parity (partial)** — SessionStart / UserPromptSubmit / Stop are at parity between Claude Code and Codex via repo hook wrappers + workflow-overlord plugin manifest + per-project `.codex/config.toml` dispatchers. **PreToolUse Rules 2 + 6 are Claude-Code-only** as of workflow-overlord 3.0.1: the plugin's own `codex-setup-hooks.sh` documents no Codex-side PreToolUse setup. Codex sessions in this repo can perform surgical Notion `update_content` edits AND can target `<FILL IN>` placeholder UUIDs WITHOUT refusal. Mitigation: operator discipline (review every Notion edit before allowing) + post-hoc revert. Re-evaluate when workflow-overlord ships first-class Codex PreToolUse OR a custom project-side wrapper is added to `.codex/config.toml`. Closed in slice-18k as documented-wontfix (#123).
@@ -98,7 +98,7 @@ The same `<path>` must survive across title, branch, and worktree. Active-slice 
 Session state is hook-owned, not manually maintained.
 1. SessionStart reads the current branch, finds the newest non-closed slice for that branch, and creates the Sessions row.
 2. During the session, transcript sync appends Notion-native `Transcript Chunks` pages related to the Sessions row and Slice when a slice relation exists.
-3. Stop / SessionEnd runs the final chunk sync, uploads the full transcript artifact to `Sessions.Transcript`, writes `Summary`, and sets `Ended`.
+3. Stop / SessionEnd runs the final chunk sync, uploads the full transcript artifact to `Sessions.Transcript`, and writes `Summary`. It does **not** set `Ended` on Stop — sessions remain resumable, and Notion's `Last edited time` carries the "last touched" signal instead.
 
 If SessionStart never created the Sessions row, SessionEnd soft-skips instead of inventing state.
 
