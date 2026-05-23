@@ -77,6 +77,7 @@
 					href="/services/{service.id}"
 					data-testid="services-card"
 					class="services-card-link group block tap-press"
+					use:morphHover={{ enabled: svgReady[i], disableClickToggle: true }}
 				>
 					<div class="services-card relative overflow-hidden">
 						<!-- Icon zone: centered SVG hero with radial glow + marker. -->
@@ -86,13 +87,14 @@
 								{String(service.station).padStart(2, '0')} / SERVICE
 							</div>
 
-							<!-- SVG icon button — morphHover on hover/tap once SVG is injected. -->
+							<!-- SVG icon button — morph triggers from the parent link's
+							     hover via use:morphHover above (with disableClickToggle
+							     so mobile taps navigate normally). -->
 							<button
 								type="button"
 								data-testid="services-svg-panel"
 								class="services-svg-panel"
 								aria-label={viewIllustrationAriaTemplate.replace('{title}', title)}
-								use:morphHover={{ enabled: svgReady[i] }}
 							>
 								<div class="svg-inline-wrapper pointer-events-none">
 									<!-- Fallback: static img until JS injects inline SVG -->
