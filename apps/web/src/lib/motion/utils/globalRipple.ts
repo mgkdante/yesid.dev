@@ -10,18 +10,17 @@
 // elements are position: fixed (relative to viewport) so they stay
 // where the user pressed even if a mid-ripple scroll happens.
 //
-// No-op under prefers-reduced-motion.
+// Reduced-motion: KEPT ACTIVE per operator policy (slice-23). Click ripple
+// is user-initiated, brief (<1.2s), expanding-ring visual — not a
+// vestibular trigger.
 //
 // Slice-23: wired in +layout.svelte's onMount.
-
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion';
 
 const OUTER_DURATION_MS = 1200;
 const INNER_DURATION_MS = 800;
 
 export function initGlobalRipple(): () => void {
 	if (typeof window === 'undefined') return () => {};
-	if (isPrefersReducedMotion()) return () => {};
 
 	function spawnRipple(x: number, y: number) {
 		const outer = document.createElement('div');

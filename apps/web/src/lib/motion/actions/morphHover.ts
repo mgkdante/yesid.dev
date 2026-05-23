@@ -7,7 +7,9 @@
 // Desktop hover → paths morph to a random shape from the adapter.
 // mouseleave   → paths morph back to their original `d`.
 // Mobile tap   → toggle morphed / unmorphed.
-// Reduced-motion → no-op (no listeners, paths stay at their primary shape).
+// Reduced-motion → KEPT ACTIVE per operator policy (slice-23). SVG path
+//   morphing is a visual transformation, not a translation/scale motion,
+//   and isn't a vestibular trigger. User-initiated, brief (~400ms).
 //
 // MorphSVG plugin is lazy-loaded on first hover via loadMorphSVG() so pages
 // that never hover a morph-capable element never ship the plugin.
@@ -21,7 +23,6 @@
 // Usage:
 //   <button use:morphHover={{ enabled: svgReady[i] }}>...</button>
 
-import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
 import { gsap, loadMorphSVG } from '../utils/gsap.js';
 import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';
 import { getMorphShapes, pickRandomShape } from '$lib/utils/shapes';
@@ -42,10 +43,6 @@ export interface MorphHoverParams {
 }
 
 export function morphHover(node: HTMLElement, params: MorphHoverParams) {
-	if (isPrefersReducedMotion()) {
-		return { update() {}, destroy() {} };
-	}
-
 	let currentParams = params;
 	let morphed = false;
 	let paths: SVGPathElement[] = [];
