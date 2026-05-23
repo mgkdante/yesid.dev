@@ -152,8 +152,8 @@ describe('proofReelContent', () => {
 		expect(proofReelContent.viewAllHref).toBe('/projects');
 	});
 
-	it('has exactly 5 featured project slugs (slice-23: carousel)', () => {
-		expect(proofReelContent.slugs).toHaveLength(5);
+	it('has exactly 3 featured project slugs', () => {
+		expect(proofReelContent.slugs).toHaveLength(3);
 	});
 
 	it('slugs match existing projects', () => {
@@ -169,8 +169,6 @@ describe('proofReelContent', () => {
 			'transit-data-pipeline',
 			'lorem-analytics-dashboard',
 			'lorem-database-migration',
-			'lorem-query-optimizer',
-			'lorem-retool-admin',
 		]);
 	});
 });

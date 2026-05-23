@@ -154,8 +154,6 @@ export const proofReelContent: ProofReelContent = {
 	images: {
 		'lorem-analytics-dashboard': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
 		'lorem-database-migration': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop',
-		'lorem-query-optimizer': 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop',
-		'lorem-retool-admin': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
 		'transit-data-pipeline': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&h=600&fit=crop',
 	},
 	sectionLabel: { en: '// PROOF' },
@@ -163,8 +161,6 @@ export const proofReelContent: ProofReelContent = {
 		'transit-data-pipeline',
 		'lorem-analytics-dashboard',
 		'lorem-database-migration',
-		'lorem-query-optimizer',
-		'lorem-retool-admin',
 	],
 	subheading: { en: 'SELECTED WORK' },
 	toggleColorAria: { en: 'Toggle color for {title}' },

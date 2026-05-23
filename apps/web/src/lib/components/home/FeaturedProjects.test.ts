@@ -10,21 +10,22 @@ describe('FeaturedProjects', () => {
 		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
 	});
 
-	it('renders exactly 5 project cards (slice-23: carousel)', () => {
+	it('renders exactly 3 project cards (slice-23: carousel handles N)', () => {
+		// Static fixture has 3 slugs; live page reads from Directus and can
+		// have more. FeaturedProjects iterates `projects`, so the component
+		// renders whatever the data source returns.
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const cards = screen.getAllByTestId('proof-card');
-		expect(cards).toHaveLength(5);
+		expect(cards).toHaveLength(3);
 	});
 
 	it('renders impact metrics for each card', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const metrics = screen.getAllByTestId('proof-metric-value');
-		expect(metrics).toHaveLength(5);
+		expect(metrics).toHaveLength(3);
 		expect(metrics[0].textContent).toContain('30s');
 		expect(metrics[1].textContent).toContain('15 min');
 		expect(metrics[2].textContent).toContain('500 GB');
-		expect(metrics[3].textContent).toContain('73%');
-		expect(metrics[4].textContent).toContain('6');
 	});
 
 	it('renders before value with strikethrough when present', () => {
@@ -37,19 +38,16 @@ describe('FeaturedProjects', () => {
 	it('renders project titles', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const titles = screen.getAllByTestId('proof-card-title');
-		expect(titles).toHaveLength(5);
+		expect(titles).toHaveLength(3);
 		expect(titles[0].textContent).toContain('Transit Operations');
 		expect(titles[1].textContent).toContain('Lorem Analytics');
 		expect(titles[2].textContent).toContain('Lorem Database');
-		expect(titles[3].textContent).toContain('Lorem Query Optimizer');
-		expect(titles[4].textContent).toContain('Lorem Retool Admin Panel');
 	});
 
 	it('renders tech stack tags', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const tags = screen.getAllByTestId('proof-tag');
-		// 5 cards × 4 tags each = 20 minimum
-		expect(tags.length).toBeGreaterThanOrEqual(15);
+		expect(tags.length).toBeGreaterThanOrEqual(9);
 	});
 
 	it('cards link to /projects/[slug]', () => {
@@ -58,8 +56,6 @@ describe('FeaturedProjects', () => {
 		expect(cards[0].closest('a')?.getAttribute('href')).toBe('/projects/transit-data-pipeline');
 		expect(cards[1].closest('a')?.getAttribute('href')).toBe('/projects/lorem-analytics-dashboard');
 		expect(cards[2].closest('a')?.getAttribute('href')).toBe('/projects/lorem-database-migration');
-		expect(cards[3].closest('a')?.getAttribute('href')).toBe('/projects/lorem-query-optimizer');
-		expect(cards[4].closest('a')?.getAttribute('href')).toBe('/projects/lorem-retool-admin');
 	});
 
 	it('renders view-all link to /projects', () => {
@@ -73,6 +69,6 @@ describe('FeaturedProjects', () => {
 	it('renders project images', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const images = screen.getAllByTestId('proof-card-image');
-		expect(images).toHaveLength(5);
+		expect(images).toHaveLength(3);
 	});
 });
