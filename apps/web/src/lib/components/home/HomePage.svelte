@@ -18,6 +18,7 @@
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
+	import { backgroundBreathing } from '$lib/motion/scrubs';
 	import type {
 		HeroContent,
 		HeroAnimContent,
@@ -69,9 +70,15 @@
 
 	onMount(() => {
 		if (!browser) return;
-		// Reserved for slice-23 Tasks 12 + 13: register sectionGlow +
-		// backgroundBreathing on projectsSectionEl, servicesSectionEl,
-		// closerSectionEl here. No setup currently active.
+		// Slice-23 Task 13: attach the backgroundBreathing scrub to each
+		// content section. The scrub yoyo-animates --breathing-phase 0→1
+		// on the section element; the .home-section::before pseudo reads
+		// that var to paint a slow ambient brand-orange pulse.
+		for (const el of [projectsSectionEl, servicesSectionEl, closerSectionEl]) {
+			if (!el) continue;
+			const ctrl = backgroundBreathing(el, { duration: 10 });
+			destroyFns.push(ctrl.destroy);
+		}
 	});
 
 	onDestroy(() => {
@@ -190,10 +197,31 @@
 		display: grid;
 		grid-template-columns: 1fr;
 		width: 100%;
+		position: relative;
+		isolation: isolate;
+	}
+
+	/* backgroundBreathing pulse — reads --breathing-phase (animated 0→1→0
+	   over 20s yoyo by use:backgroundBreathing on this same section).
+	   Capped at 3% brand-orange opacity so it stays in the "is it actually
+	   moving?" subtle range. */
+	.home-section::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: -1;
+		background: radial-gradient(
+			ellipse at 50% 50%,
+			color-mix(in srgb, var(--primary) calc(var(--breathing-phase, 0) * 3%), transparent),
+			transparent 65%
+		);
 	}
 
 	.home-section-content {
 		min-width: 0;
+		position: relative;
+		z-index: 1;
 	}
 
 	/* Left-side heading: heading | content */
