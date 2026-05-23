@@ -104,7 +104,7 @@
 		// Reduced motion (slice-23): the entire metro-network sequence is
 		// gated off — no scroll-pin, no typewriter, no GSAP timeline. The
 		// hero loads straight up via @media (prefers-reduced-motion: reduce)
-		// rules in the <style> block below: metro wrapper hidden, hero text
+		// rules in the stylesheet below: metro wrapper hidden, hero text
 		// forced visible, scroll prompt hidden, section reservation
 		// collapsed to a single viewport. No JS setup required.
 		if (reducedMotion) return;
@@ -174,7 +174,7 @@
 		style="padding-bottom: env(safe-area-inset-bottom, 0px);"
 	>
 		<!-- SVG wrapper — zooms into Berri-UQAM. Hidden under reduced-motion
-		     (see @media rule in <style>). -->
+		     via @media rule in the stylesheet. -->
 		<div
 			bind:this={svgWrapper}
 			class="hero-metro-wrapper absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
