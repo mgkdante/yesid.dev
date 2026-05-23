@@ -17,7 +17,7 @@
 	import { resolveLocale } from '$lib/utils';
 
 	import { getVisibleServices } from '$lib/content';
-	import { morphHover, pressBounce } from '$lib/motion/actions';
+	import { morphHover, pressBounce, cursorGlow, cardParallax } from '$lib/motion/actions';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import type { ServicesGridContent } from '$lib/types';
@@ -79,7 +79,11 @@
 					class="services-card-link group block tap-press"
 					use:morphHover={{ enabled: svgReady[i], disableClickToggle: true }}
 				>
-					<div class="services-card relative overflow-hidden">
+					<div
+						class="services-card relative overflow-hidden"
+						use:cursorGlow={{ intensity: 0.1 }}
+						use:cardParallax
+					>
 						<!-- Icon zone: centered SVG hero with radial glow + marker. -->
 						<div class="services-icon-zone relative">
 							<!-- 01 / SERVICE marker, top-left of icon zone. -->
@@ -269,6 +273,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		/* Icon drifts toward the cursor via cardParallax's ±4px clamp.
+		   1.5x multiplier (vs the Magazine title's 2.5x) keeps the effect
+		   subtle on the smaller icon canvas. */
+		transform: translate(
+			calc(var(--parallax-x, 0px) * 1.5),
+			calc(var(--parallax-y, 0px) * 1.5)
+		);
+		transition: transform 180ms var(--ease-default);
 	}
 
 	/* Content section — title + benefit, with the title dominant. */
