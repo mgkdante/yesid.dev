@@ -18,7 +18,6 @@
 	import { resolveLocale } from '$lib/utils';
 	import { getProjectBySlug } from '$lib/content';
 	import type { Project, ProofReelContent } from '$lib/types';
-	import { Card } from '$lib/components/ui/card';
 
 	let { proofReel: proofReelContent }: { proofReel: ProofReelContent } = $props();
 
@@ -98,7 +97,7 @@
 					{@const metric = project.impactMetric}
 					{@const metricLabel = metric ? resolveLocale(metric.label, 'en') : ''}
 					{@const imageUrl = proofReelContent.images[project.slug as keyof typeof proofReelContent.images]}
-					<Card class="proof-card !py-0 !gap-0 group relative flex flex-col overflow-hidden">
+					<div class="proof-card group relative flex flex-col overflow-hidden">
 						<!-- Image: full-bleed, B&W → color hover/tap toggle. -->
 						<button
 							type="button"
@@ -111,10 +110,10 @@
 							<img
 								src={imageUrl}
 								alt={title}
-								class="proof-img h-full w-full object-cover grayscale brightness-[0.4] transition-all duration-500 ease-out"
+								class="proof-img h-full w-full object-cover grayscale brightness-[0.7] transition-all duration-500 ease-out"
 								loading="lazy"
 							/>
-							<div class="proof-img-overlay absolute inset-0 bg-black/30 transition-opacity duration-500"></div>
+							<div class="proof-img-overlay absolute inset-0 bg-black/15 transition-opacity duration-500"></div>
 							<!-- Gradient overlay for title legibility. -->
 							<div class="proof-image-gradient pointer-events-none absolute inset-x-0 bottom-0 h-[60%]"></div>
 							<!-- 01 / FEATURED marker on the lower third of the image. -->
@@ -148,7 +147,7 @@
 								</div>
 							</div>
 						</a>
-					</Card>
+					</div>
 				{/if}
 			{/each}
 		</div>
@@ -237,26 +236,31 @@
 		opacity: var(--opacity-subtle);
 	}
 
-	/* Title: brand-orange. Below image on mobile, overlay on image on desktop. */
+	/* Title: brand-orange, big & flashy. Below image on mobile, overlay on
+	   image on desktop. Bumped weight + size + drop-shadow per operator
+	   feedback ("bigger and flashier"). */
 	.proof-title {
-		padding: 1rem 1.25rem 0.5rem;
+		padding: 1.25rem 1.5rem 0.5rem;
 		font-family: var(--font-heading);
-		font-weight: 700;
-		font-size: 1.375rem;
-		line-height: 1.2;
+		font-weight: 800;
+		font-size: 1.75rem;
+		line-height: 1.1;
 		color: var(--primary);
-		letter-spacing: -0.01em;
+		letter-spacing: -0.02em;
+		text-transform: uppercase;
 	}
 
 	@media (min-width: 768px) {
 		.proof-title {
 			/* Pull up to overlap the image's bottom — title sits over the
-			   gradient, anchored 1.25rem from the image's bottom edge. */
-			margin-top: -3.5rem;
-			padding: 0 1.25rem 0.875rem;
-			font-size: 1.5rem;
+			   gradient, anchored 1.5rem from the image's bottom edge. */
+			margin-top: -4.5rem;
+			padding: 0 1.5rem 1rem;
+			font-size: 2.125rem;
 			color: var(--primary);
-			text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+			text-shadow:
+				0 2px 16px rgba(0, 0, 0, 0.85),
+				0 0 24px color-mix(in srgb, var(--primary) 35%, transparent);
 			position: relative;
 			z-index: 2;
 		}
