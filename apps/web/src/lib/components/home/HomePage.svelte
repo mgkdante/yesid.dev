@@ -18,7 +18,6 @@
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
-	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
 	import type {
 		HeroContent,
 		HeroAnimContent,
@@ -58,30 +57,20 @@
 		initialHeroData,
 	}: Props = $props();
 
-	// Section + rotated-title bindings for crescendo scrubs (desktop only).
+	// Section bindings retained for upcoming slice-23 tasks (sectionGlow /
+	// backgroundBreathing). Crescendo scrubs were removed from the rotated
+	// titles per operator feedback — titles are sticky-only without scale
+	// animation, so the visual no longer overflows section bounds.
 	let projectsSectionEl = $state<HTMLElement>(undefined!);
-	let projectsTitleEl = $state<HTMLElement>(undefined!);
 	let servicesSectionEl = $state<HTMLElement>(undefined!);
-	let servicesTitleEl = $state<HTMLElement>(undefined!);
 	let closerSectionEl = $state<HTMLElement>(undefined!);
-	let closerTitleEl = $state<HTMLElement>(undefined!);
 
 	let destroyFns: Array<() => void> = [];
 
 	onMount(() => {
 		if (!browser) return;
-		// Rotated titles are display:none below 1024px — skip wiring on mobile.
-		if (window.matchMedia('(max-width: 1023px)').matches) return;
-
-		if (projectsTitleEl && projectsSectionEl) {
-			destroyFns.push(createCrescendoScrub(projectsTitleEl, { section: projectsSectionEl }));
-		}
-		if (servicesTitleEl && servicesSectionEl) {
-			destroyFns.push(createCrescendoScrub(servicesTitleEl, { section: servicesSectionEl }));
-		}
-		if (closerTitleEl && closerSectionEl) {
-			destroyFns.push(createCrescendoScrub(closerTitleEl, { section: closerSectionEl }));
-		}
+		// Section bindings kept for future ambient effects; no setup
+		// currently active.
 	});
 
 	onDestroy(() => {
@@ -106,7 +95,10 @@
 
 <!-- Section 3: Featured Projects — rotated title LEFT -->
 <section bind:this={projectsSectionEl} class="home-section home-section--left">
-	<div bind:this={projectsTitleEl} class="rotated-title rotated-title--left">
+	<div class="rotated-title rotated-title--left">
+		<SectionHeading heading="Projects" />
+	</div>
+	<div class="home-section-heading-mobile">
 		<SectionHeading heading="Projects" />
 	</div>
 	<div class="home-section-content">
@@ -121,10 +113,13 @@
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
 	</div>
+	<div class="home-section-heading-mobile">
+		<SectionHeading heading="Services" />
+	</div>
 	<div class="home-section-content">
 		<HomeServices {servicesGrid} />
 	</div>
-	<div bind:this={servicesTitleEl} class="rotated-title rotated-title--right">
+	<div class="rotated-title rotated-title--right">
 		<SectionHeading heading="Services" />
 	</div>
 </section>
@@ -133,7 +128,10 @@
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
 <section bind:this={closerSectionEl} class="home-section home-section--left">
-	<div bind:this={closerTitleEl} class="rotated-title rotated-title--left">
+	<div class="rotated-title rotated-title--left">
+		<SectionHeading heading="Terminus" />
+	</div>
+	<div class="home-section-heading-mobile">
 		<SectionHeading heading="Terminus" />
 	</div>
 	<div class="home-section-content">
@@ -142,18 +140,28 @@
 </section>
 
 <style>
-	/* Shared rotated title base. `transform` is reserved for crescendo scale
-	   scrub (17e-3); rotation uses the individual `rotate` property so the
-	   two layers don't conflict. */
+	/* Shared rotated title base. Both `scale` (crescendo scrub) and `rotate`
+	   use individual transform properties so they compose without disturbing
+	   the sticky positioning of the element itself. Slice-23 Task 4 caps the
+	   *physical* height so the title is visibly smaller than its containing
+	   section — sticky can only engage if the element has room to move within
+	   its containing block. `max-block-size` would target the horizontal axis
+	   here (vertical-rl writing mode flips block/inline), hence the physical
+	   `max-height`. */
 	.rotated-title {
 		position: sticky;
 		top: 50%;
+		/* Capped at 50dvh so the title leaves room for sticky to engage at
+		   top: 50% within a ~100dvh section (sticky's max position is
+		   `containing-block-bottom - element-height`). Physical `max-height`
+		   here, not `max-block-size`, because vertical-rl writing-mode flips
+		   the block axis to horizontal. */
+		max-height: 50dvh;
 		writing-mode: vertical-rl;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		white-space: nowrap;
-		transform-origin: center center;
 	}
 
 	/* Left side: rotate 180° (reads bottom → top) */
@@ -197,10 +205,22 @@
 		}
 	}
 
+	/* Mobile-only horizontal heading per section — the rotated vertical
+	   title is hidden below 1024px (impractical at narrow widths), so this
+	   horizontal heading takes its place at the top of each section. */
+	.home-section-heading-mobile {
+		display: none;
+	}
+
 	/* Hide rotated titles on mobile */
 	@media (max-width: 1023px) {
 		.rotated-title {
 			display: none;
+		}
+
+		.home-section-heading-mobile {
+			display: block;
+			padding: 2rem var(--space-page-x) 0.5rem;
 		}
 	}
 </style>

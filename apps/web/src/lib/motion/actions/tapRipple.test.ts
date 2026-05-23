@@ -35,12 +35,16 @@ describe('tapRipple action', () => {
 		result.destroy(); // no-op, should not throw
 	});
 
-	it('bails on prefers-reduced-motion — returns destroy no-op', () => {
+	it('STAYS ACTIVE under prefers-reduced-motion (slice-23 operator policy)', () => {
+		// Brief expanding-ring click feedback isn't a vestibular trigger.
+		// Operator chose to keep tapRipple active under reduced motion so
+		// touch users still get tactile confirmation.
 		mockIsPrefersReducedMotion.mockReturnValue(true);
+		mockIsTouchDevice.mockReturnValue(true);
 		const el = document.createElement('button');
 		const addSpy = vi.spyOn(el, 'addEventListener');
 		const result = tapRipple(el);
-		expect(addSpy).not.toHaveBeenCalled();
+		expect(addSpy).toHaveBeenCalledWith('pointerdown', expect.any(Function));
 		expect(typeof result.destroy).toBe('function');
 		result.destroy();
 	});

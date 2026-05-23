@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { wordmarkHover } from '$lib/motion/actions';
+	import { wordmarkHover, magnetic } from '$lib/motion/actions';
 	import { sharedChromeContent, navLinks as staticNavLinks } from '$lib/content';
 	import { resolveLocale } from '$lib/utils/locale';
 	import MenuOverlay from './MenuOverlay.svelte';
@@ -88,7 +88,7 @@
 		<a
 			href="/"
 			data-testid="nav-wordmark"
-			class="inline-flex min-h-11 items-baseline font-heading text-lg font-bold text-[var(--foreground)]"
+			class="inline-flex min-h-11 items-center font-heading text-lg font-bold text-[var(--foreground)]"
 		>
 			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
 				data-testid="nav-period"
@@ -102,7 +102,10 @@
 
 		<div class="nav-links nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
 			{#each headerLinks as link}
-				<span class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}>
+				<span
+					class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}
+					use:magnetic={{ strength: 6, radius: 50 }}
+				>
 					<a
 						href={link.href}
 						class="nav-pill-link inline-flex min-h-11 items-center px-1 transition-all {isActive(link.href)

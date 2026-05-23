@@ -6,7 +6,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { gsap } from '$lib/motion/utils/gsap.js';
+	import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 
 	type LetterData = { main: SVGPathElement; drips: SVGPathElement[] };
@@ -155,23 +155,31 @@
 		loadGraffiti(wrapperEl).then((letterData) => {
 			if (letterData.length === 0) return;
 
-			const allMains = letterData.map((l) => l.main);
-			const allDrips = letterData.flatMap((l) => l.drips);
 			const reduced = isPrefersReducedMotion();
-
-			if (reduced) {
-				gsap.set(allMains, { drawSVG: '100%', fill: GRAFFITI_COLOR });
-				gsap.set(allDrips, { fill: GRAFFITI_COLOR, scaleY: 1, stroke: 'none' });
-				return;
-			}
 
 			// Initial state: letters invisible, drips scaled to 0
 			resetGraffiti(letterData);
 
-			// Tell parent graffiti is ready — parent integrates into master timeline
-			onReady?.(() => animateGraffiti(letterData));
+			if (reduced) {
+				// Slice-23 policy: SVG drawing stays active under reduced-motion
+				// (brief one-time stroke animation, not a vestibular trigger).
+				// We don't go through the parent's master timeline — that
+				// would also animate the departure board + rows, which are
+				// scroll-driven and gated off under reduced-motion. Use our
+				// own ScrollTrigger so the draw fires when the graffiti
+				// scrolls into view.
+				ScrollTrigger.create({
+					trigger: wrapperEl,
+					start: 'top 80%',
+					once: true,
+					onEnter: () => animateGraffiti(letterData),
+				});
+			} else {
+				// Tell parent graffiti is ready — parent integrates into master timeline
+				onReady?.(() => animateGraffiti(letterData));
+			}
 
-			// Hover/tap replay
+			// Hover/tap replay — works under both motion preferences.
 			const replayDraw = () => animateGraffiti(letterData);
 			wrapperEl!.addEventListener('mouseenter', replayDraw);
 			wrapperEl!.addEventListener('touchstart', replayDraw, { passive: true });

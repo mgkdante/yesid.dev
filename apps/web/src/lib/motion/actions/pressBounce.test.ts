@@ -43,12 +43,17 @@ describe('pressBounce action', () => {
 		expect(addSpy).not.toHaveBeenCalled();
 	});
 
-	it('bails on prefers-reduced-motion (no listeners attached)', () => {
+	it('STAYS ACTIVE under prefers-reduced-motion (slice-23 operator policy)', () => {
+		// <200ms scale feedback on user action isn't a vestibular trigger.
+		// Operator chose to keep pressBounce active under reduced motion.
 		mockIsPrefersReducedMotion.mockReturnValue(true);
+		mockIsTouchDevice.mockReturnValue(true);
 		const el = document.createElement('button');
 		const addSpy = vi.spyOn(el, 'addEventListener');
 		pressBounce(el);
-		expect(addSpy).not.toHaveBeenCalled();
+		expect(addSpy).toHaveBeenCalledWith('pointerdown', expect.any(Function));
+		expect(addSpy).toHaveBeenCalledWith('pointerup', expect.any(Function));
+		expect(addSpy).toHaveBeenCalledWith('pointercancel', expect.any(Function));
 	});
 
 	it('destroy() removes listeners', () => {

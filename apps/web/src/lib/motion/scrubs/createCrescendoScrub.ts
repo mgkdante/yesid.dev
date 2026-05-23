@@ -12,7 +12,7 @@
 // registered; destroy is a no-op.
 
 import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-import { ScrollTrigger } from '$lib/motion/utils/gsap.js';
+import { ScrollTrigger, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 import type { EaseKey } from '$lib/motion/tokens.js';
 
 export interface CrescendoOpts {
@@ -37,10 +37,20 @@ export function createCrescendoScrub(
 	const { section, minScale = 0.6, maxScale = 1.4 } = opts;
 
 	// Reduced motion: render final state, skip ScrollTrigger, no-op destroy.
+	// Slice-23 Task 4: use the individual `scale` property instead of
+	// `transform: scale()` so the title's own sticky positioning is not
+	// disturbed by a self-applied transform shorthand. The individual
+	// property composes cleanly with the rotated-title's `rotate: 180deg`.
 	if (isPrefersReducedMotion()) {
-		target.style.transform = `scale(${maxScale})`;
+		target.style.scale = String(maxScale);
 		return () => {};
 	}
+
+	// Ensure gsap.registerPlugin(ScrollTrigger) ran. Other consumers (HeroBanner,
+	// SvgIcon, +layout, etc.) call init themselves, but Manifesto.svelte — the
+	// sole caller of this helper — does not. Without init, ScrollTrigger.create
+	// throws "Ui is not a function" in minified production. Idempotent.
+	initScrollTriggerConfig();
 
 	const st = ScrollTrigger.create({
 		trigger: section,
@@ -51,7 +61,7 @@ export function createCrescendoScrub(
 			// t ∈ [0, 1, 0] via sin(π·progress) — 0 at edges, 1 at mid-scroll.
 			const t = Math.sin(self.progress * Math.PI);
 			const scale = minScale + t * (maxScale - minScale);
-			target.style.transform = `scale(${scale})`;
+			target.style.scale = String(scale);
 		},
 	});
 

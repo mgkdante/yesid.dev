@@ -61,7 +61,9 @@ describe('motion/scrubs/createCrescendoScrub', () => {
 		const destroy = createCrescendoScrub(target, { section, maxScale: 1.4 });
 
 		expect(createSpy).not.toHaveBeenCalled();
-		expect(target.style.transform).toContain('scale(1.4)');
+		// Slice-23 Task 4: scale is applied via the individual `scale` property
+		// (not `transform: scale()`) to avoid disturbing sticky positioning.
+		expect(target.style.scale).toBe('1.4');
 		destroy(); // no-op
 	});
 

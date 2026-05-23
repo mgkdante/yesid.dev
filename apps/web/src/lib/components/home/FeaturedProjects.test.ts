@@ -10,16 +10,19 @@ describe('FeaturedProjects', () => {
 		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
 	});
 
-	it('renders exactly 3 project cards', () => {
+	it('renders exactly 5 project cards (slice-23: carousel handles N)', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const cards = screen.getAllByTestId('proof-card');
-		expect(cards).toHaveLength(3);
+		expect(cards).toHaveLength(5);
 	});
 
-	it('renders impact metrics for each card', () => {
+	it('renders impact metrics for each card with metric data', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const metrics = screen.getAllByTestId('proof-metric-value');
-		expect(metrics).toHaveLength(3);
+		// All 5 cards render the metric-value span; cards without
+		// impactMetric in Directus render an empty span. First three
+		// projects have populated metrics from CMS.
+		expect(metrics).toHaveLength(5);
 		expect(metrics[0].textContent).toContain('30s');
 		expect(metrics[1].textContent).toContain('15 min');
 		expect(metrics[2].textContent).toContain('500 GB');
@@ -35,16 +38,19 @@ describe('FeaturedProjects', () => {
 	it('renders project titles', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const titles = screen.getAllByTestId('proof-card-title');
-		expect(titles).toHaveLength(3);
+		expect(titles).toHaveLength(5);
 		expect(titles[0].textContent).toContain('Transit Operations');
 		expect(titles[1].textContent).toContain('Lorem Analytics');
 		expect(titles[2].textContent).toContain('Lorem Database');
+		expect(titles[3].textContent).toContain('Lorem Query Optimizer');
+		expect(titles[4].textContent).toContain('Lorem Retool Admin Panel');
 	});
 
 	it('renders tech stack tags', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const tags = screen.getAllByTestId('proof-tag');
-		expect(tags.length).toBeGreaterThanOrEqual(9);
+		// 5 cards × 4 tags each = 20 minimum
+		expect(tags.length).toBeGreaterThanOrEqual(15);
 	});
 
 	it('cards link to /projects/[slug]', () => {
@@ -53,6 +59,8 @@ describe('FeaturedProjects', () => {
 		expect(cards[0].closest('a')?.getAttribute('href')).toBe('/projects/transit-data-pipeline');
 		expect(cards[1].closest('a')?.getAttribute('href')).toBe('/projects/lorem-analytics-dashboard');
 		expect(cards[2].closest('a')?.getAttribute('href')).toBe('/projects/lorem-database-migration');
+		expect(cards[3].closest('a')?.getAttribute('href')).toBe('/projects/lorem-query-optimizer');
+		expect(cards[4].closest('a')?.getAttribute('href')).toBe('/projects/lorem-retool-admin');
 	});
 
 	it('renders view-all link to /projects', () => {
@@ -66,6 +74,6 @@ describe('FeaturedProjects', () => {
 	it('renders project images', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const images = screen.getAllByTestId('proof-card-image');
-		expect(images).toHaveLength(3);
+		expect(images).toHaveLength(5);
 	});
 });

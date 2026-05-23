@@ -56,11 +56,16 @@ describe('motion/actions/morphHover', () => {
 		result.destroy();
 	});
 
-	it('reduced-motion: returns a no-op destroy, does not attach listeners', () => {
+	it('reduced-motion: STAYS ACTIVE (slice-23 operator policy)', () => {
+		// SVG path morphing is a visual transformation, not a vestibular
+		// trigger. Operator chose to keep morphHover on under
+		// prefers-reduced-motion, so listeners attach as normal.
 		isReducedMock.mockReturnValue(true);
 		const addSpy = vi.spyOn(node, 'addEventListener');
 		const result = morphHover(node, {});
-		expect(addSpy).not.toHaveBeenCalled();
+		expect(addSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function));
+		expect(addSpy).toHaveBeenCalledWith('mouseleave', expect.any(Function));
+		expect(addSpy).toHaveBeenCalledWith('click', expect.any(Function));
 		expect(() => result.destroy()).not.toThrow();
 	});
 

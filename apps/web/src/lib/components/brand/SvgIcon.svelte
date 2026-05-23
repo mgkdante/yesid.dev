@@ -12,7 +12,9 @@
 	import type { BlogAnimation } from '$lib/types';
 	import { getMorphShapes, pickRandomShape } from '$lib/utils/shapes';
 	import type { MorphShape } from '@repo/shared';
-	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	// Slice-23: reduced-motion guards removed per operator policy. Draw-on-
+	// load entrance + hover/tap path morphing are not vestibular triggers
+	// (visual transformation, brief, user-initiated for hover/tap).
 	import { initScrollTriggerConfig, loadDrawSVG, loadMorphSVG, gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { convertSvgToMorphPaths } from '$lib/motion/utils/morphHelpers.js';
 	import { cn } from '$lib/utils';
@@ -45,7 +47,7 @@
 	let morphShapes = $state<readonly MorphShape[] | null>(null);
 
 	function handleMouseEnter() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0 || isHovered || !entranceDone) return;
+		if (svgPaths.length === 0 || isHovered || !entranceDone) return;
 		if (!morphShapes || morphShapes.length === 0) return;
 		isHovered = true;
 
@@ -64,7 +66,7 @@
 	let isMorphed = false;
 
 	function handleTap() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0 || !entranceDone) return;
+		if (svgPaths.length === 0 || !entranceDone) return;
 		if (!morphShapes || morphShapes.length === 0) return;
 
 		if (isMorphed) {
@@ -93,7 +95,7 @@
 	}
 
 	function handleMouseLeave() {
-		if (isPrefersReducedMotion() || svgPaths.length === 0 || !isHovered || !entranceDone) return;
+		if (svgPaths.length === 0 || !isHovered || !entranceDone) return;
 		isHovered = false;
 
 		svgPaths.forEach((path, i) => {
@@ -158,7 +160,7 @@
 	}
 
 	onMount(async () => {
-		if (isPrefersReducedMotion() || !container) return;
+		if (!container) return;
 		// animateMorph uses MorphSVG; all 3 entrance variants use DrawSVG.
 		// Fetch morph shapes from adapter (cached after first call).
 		await Promise.all([loadDrawSVG(), loadMorphSVG()]);
