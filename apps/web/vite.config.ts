@@ -31,7 +31,24 @@ export default defineConfig({
 		// "Named export not found" / "Cannot use import statement outside a
 		// module" — force Vite to bundle them so interop is resolved at build
 		// time. Verified fix for /blog + /projects 500 on yesid-dev.vercel.app.
-		noExternal: ['bits-ui', 'gsap'],
+		//
+		// slice-23: embla-carousel-wheel-gestures was left as a bare
+		// side-effect `import "embla-carousel-wheel-gestures"` in the SSR
+		// bundle (Rollup can't prove it's side-effect-free). The package's
+		// "exports.import" points to a .js file with ESM `import` syntax but
+		// no `"type":"module"` in its package.json, so Vercel's Node runtime
+		// parses it as CJS and throws "Cannot use import statement outside a
+		// module" on `/`. Inline it (+ siblings) at SSR build time to avoid
+		// the runtime resolution mismatch.
+		noExternal: [
+			'bits-ui',
+			'gsap',
+			'embla-carousel',
+			'embla-carousel-svelte',
+			'embla-carousel-wheel-gestures',
+			'embla-carousel-reactive-utils',
+			'wheel-gestures',
+		],
 	},
 	test: {
 		// Two projects: "data" for pure logic tests (node, fast),
