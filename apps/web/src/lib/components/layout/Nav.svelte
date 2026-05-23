@@ -104,7 +104,7 @@
 			{#each headerLinks as link}
 				<span
 					class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}
-					use:magnetic={{ strength: 2, radius: 24 }}
+					use:magnetic={{ strength: 6, radius: 50 }}
 				>
 					<a
 						href={link.href}
