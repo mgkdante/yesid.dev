@@ -152,11 +152,12 @@
 	   `max-height`. */
 	.rotated-title {
 		position: sticky;
-		top: 50%;
-		/* Sticky's max position is `containing-block-bottom - element-height`.
-		   For `top: 50%` to actually engage (not be clamped down) when a
-		   ~100dvh section is fully in view, the title must be at most ~50dvh:
-		   50dvh + 50dvh = 100dvh fits within the section's containing block. */
+		/* Sticky offset shifted up by ~10dvh from center to absorb the
+		   crescendoScrub's maxScale 1.4 visual overflow (= (1.4-1) × 50dvh / 2
+		   = 10dvh per side). With this shift the scaled visual lands exactly
+		   at the section's bottom edge on a 100dvh section — no clip, no
+		   leak. Math: layout box 40dvh→90dvh, scaled @ 1.4 → 30dvh→100dvh. */
+		top: calc(50% - 10dvh);
 		max-height: 50dvh;
 		writing-mode: vertical-rl;
 		display: flex;
@@ -191,14 +192,6 @@
 		display: grid;
 		grid-template-columns: 1fr;
 		width: 100%;
-		/* Clip the rotated-title's scaled visual at the section bounds.
-		   At maxScale 1.4 the title's visual extends ~10% above and below
-		   its layout box; without this it leaks into the adjacent
-		   <Separator /> and the next section. `overflow: clip` is sticky-
-		   safe — per CSS Overflow spec it does NOT establish a scroll
-		   container, so the sticky descendant still anchors to the
-		   viewport. */
-		overflow: clip;
 	}
 
 	.home-section-content {
