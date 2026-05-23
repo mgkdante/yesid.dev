@@ -16,6 +16,7 @@
 	import { resolveLocale } from '$lib/utils';
 	import { getProjectBySlug } from '$lib/content';
 	import type { Project, ProofReelContent } from '$lib/types';
+	import { cursorGlow, cardParallax, magnetic } from '$lib/motion/actions';
 
 	let { proofReel: proofReelContent }: { proofReel: ProofReelContent } = $props();
 
@@ -106,7 +107,12 @@
 				{@const metricLabel = metric ? resolveLocale(metric.label, 'en') : ''}
 				{@const imageUrl = proofReelContent.images[project.slug as keyof typeof proofReelContent.images]}
 				<div class="embla__slide">
-					<div class="proof-card group relative overflow-hidden" data-active={currentIndex === i}>
+					<div
+						class="proof-card group relative overflow-hidden"
+						data-active={currentIndex === i}
+						use:cursorGlow={{ intensity: 0.1 }}
+						use:cardParallax
+					>
 						<!-- Image: full-bleed in grid row 1. -->
 						<button
 							type="button"
@@ -153,7 +159,11 @@
 								</div>
 								<div class="proof-footer-right flex flex-wrap items-center justify-end gap-x-2">
 									{#each project.stack as tech, ti}
-										<span data-testid="proof-tag" class="proof-tag">{abbrev(tech)}{ti < project.stack.length - 1 ? ' ·' : ''}</span>
+										<span
+											data-testid="proof-tag"
+											class="proof-tag"
+											use:magnetic={{ strength: 2, radius: 30 }}
+										>{abbrev(tech)}{ti < project.stack.length - 1 ? ' ·' : ''}</span>
 									{/each}
 								</div>
 							</div>
@@ -242,12 +252,14 @@
 		grid-template-columns: 1fr;
 		transition:
 			border-color var(--duration-normal) var(--ease-default),
-			box-shadow var(--duration-normal) var(--ease-default);
+			box-shadow var(--duration-normal) var(--ease-default),
+			transform 220ms var(--ease-default);
 	}
 
 	.proof-card:hover {
 		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
 		box-shadow: var(--shadow-section);
+		transform: translateY(-3px);
 	}
 
 	/* Image button: fills row 1 of the grid exactly. */
@@ -326,7 +338,9 @@
 	}
 
 	/* Title — overlays the image's bottom via grid overlap on desktop;
-	   normal flow below the image on mobile. */
+	   normal flow below the image on mobile. Translates by --parallax-x /
+	   --parallax-y (set by cardParallax) so it drifts slightly toward the
+	   cursor. */
 	.proof-title {
 		grid-row: 1;
 		grid-column: 1;
@@ -342,6 +356,8 @@
 		letter-spacing: -0.02em;
 		text-transform: uppercase;
 		pointer-events: none;
+		transform: translate(var(--parallax-x, 0), var(--parallax-y, 0));
+		transition: transform 180ms var(--ease-default);
 	}
 
 	@media (min-width: 768px) {
