@@ -200,7 +200,7 @@
 		<a
 			data-testid="proof-view-all"
 			href={proofReelContent.viewAllHref}
-			class="proof-view-all tap-feedback ml-auto inline-flex items-center font-mono text-caption tracking-wider md:text-mono"
+			class="home-view-all tap-feedback ml-auto inline-flex items-center font-mono text-caption tracking-wider md:text-mono"
 		>{viewAllLabel}</a>
 	</div>
 </section>
@@ -505,11 +505,18 @@
 		color: color-mix(in srgb, var(--primary) 50%, transparent);
 	}
 
-	.proof-view-all {
+	/* Shared "View all ___ →" link styling — unified with HomeServices
+	   so both home sections present the same brand-aligned link pattern. */
+	.home-view-all {
 		color: var(--primary);
 		border-bottom: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
 		min-height: 2.75rem;
 		padding-inline: 0.25rem;
+		transition: border-color var(--duration-normal) var(--ease-default);
+	}
+
+	.home-view-all:hover {
+		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
 	}
 
 	/* ═════════════════════════════════════════════════════════════════
