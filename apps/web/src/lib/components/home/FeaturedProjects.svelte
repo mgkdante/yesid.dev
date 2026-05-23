@@ -521,10 +521,20 @@
 			grid-column: 1;
 		}
 
+		/* Stack metric (left) and tags (right) vertically — the side-by-side
+		   layout is too cramped at mobile widths. */
 		.proof-footer {
 			padding: 1rem 1.25rem;
 			min-height: 0;
 			height: auto;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: flex-start;
+			gap: 0.5rem;
+		}
+
+		.proof-footer-right {
+			justify-content: flex-start !important;
 		}
 
 		.proof-metric-value {
