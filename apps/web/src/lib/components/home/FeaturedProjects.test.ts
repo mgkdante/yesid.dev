@@ -28,11 +28,13 @@ describe('FeaturedProjects', () => {
 		expect(metrics[2].textContent).toContain('500 GB');
 	});
 
-	it('renders before value with strikethrough when present', () => {
+	it('does not render a before-value element when no project has impactMetric.before', () => {
+		// Slice-23 product decision: removed the '2 days' before value
+		// from lorem-analytics-dashboard so footer heights stay uniform
+		// across cards. Component still supports `before` conditionally
+		// if future projects re-add it.
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
-		const beforeEl = screen.getByTestId('proof-metric-before');
-		expect(beforeEl).toBeInTheDocument();
-		expect(beforeEl.textContent).toContain('2 days');
+		expect(screen.queryByTestId('proof-metric-before')).toBeNull();
 	});
 
 	it('renders project titles', () => {
