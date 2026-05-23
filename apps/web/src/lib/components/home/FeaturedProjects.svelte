@@ -185,28 +185,46 @@
 		padding-block: clamp(2rem, 4dvh, 4rem);
 	}
 
-	/* Card frame — Magazine DNA from slice-23 design. */
-	:global(.proof-card) {
-		background: #1e1e1e;
-		border: 1px solid #2a2a2a;
-		border-radius: 12px;
+	/* Card frame — brand-aligned card-surface pattern (matches
+	   $lib/components/ui/card/card.svelte's .card-surface): site background
+	   + brand-orange border that intensifies on hover, plus the global
+	   section shadow on hover. Padding/margin set to 0 explicitly so the
+	   image button sits flush against the rounded top edge. */
+	.proof-card {
+		background: var(--background);
+		border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+		border-radius: var(--radius-lg);
+		padding: 0;
+		margin: 0;
+		transition:
+			border-color var(--duration-normal) var(--ease-default),
+			box-shadow var(--duration-normal) var(--ease-default);
 	}
 
-	/* Button reset for image area. */
+	.proof-card:hover {
+		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+		box-shadow: var(--shadow-section);
+	}
+
+	/* Button reset for image area. Explicit zero on all spacing axes so the
+	   button hugs the card's rounded top edge without any user-agent or
+	   inherited margin sneaking in. */
 	button.proof-image {
 		appearance: none;
 		border: none;
 		padding: 0;
+		margin: 0;
 		font: inherit;
 		color: inherit;
 		text-align: start;
 		background: transparent;
+		display: block;
 	}
 
-	/* Image height — sized for the 100dvh section so 2-3 cards fit comfortably
-	   in view with the title overlay + slim footer band visible. */
+	/* Image height — sized for the 100dvh section so 2 cards comfortably
+	   fit in view with a third peeking, per operator direction. */
 	.proof-image {
-		height: clamp(14rem, 38dvh, 24rem);
+		height: clamp(16rem, 44dvh, 28rem);
 	}
 
 	/* Magazine gradient — fade from transparent to near-black at the bottom
@@ -226,12 +244,12 @@
 	}
 
 	/* Desktop hover: image turns color, overlay fades. */
-	:global(.proof-card:hover) .proof-img,
+	.proof-card:hover .proof-img,
 	.proof-image.image-active .proof-img {
-		filter: grayscale(0) brightness(0.7);
+		filter: grayscale(0) brightness(0.85);
 	}
 
-	:global(.proof-card:hover) .proof-img-overlay,
+	.proof-card:hover .proof-img-overlay,
 	.proof-image.image-active .proof-img-overlay {
 		opacity: var(--opacity-subtle);
 	}
@@ -328,9 +346,10 @@
 		display: none;
 	}
 
-	/* Each card sized so 2-3 fit in viewport (with peek of the next). */
-	:global(.proof-card) {
-		flex: 0 0 clamp(280px, 32vw, 480px);
+	/* Each card sized so 2 fit in viewport (with peek of the 3rd to signal
+	   the carousel). Operator preference: bigger cards, fewer in view. */
+	.proof-card {
+		flex: 0 0 clamp(340px, 44vw, 720px);
 		scroll-snap-align: start;
 	}
 
