@@ -116,7 +116,7 @@
 							<img
 								src={imageUrl}
 								alt={title}
-								class="proof-img h-full w-full object-cover grayscale brightness-[0.7] transition-all duration-500 ease-out"
+								class="proof-img absolute inset-0 h-full w-full object-cover grayscale brightness-[0.7] transition-all duration-500 ease-out"
 								loading="lazy"
 							/>
 							<div class="proof-img-overlay absolute inset-0 bg-black/15 transition-opacity duration-500"></div>
@@ -257,6 +257,16 @@
 		position: relative;
 	}
 
+	/* The global `img { height: auto }` rule in app.css wins over Tailwind's
+	   .h-full via cascade-layer ordering, leaving the image at its natural
+	   aspect ratio (e.g. 632×474 for an 800×600 source) inside a 632×571
+	   button — visible as a gap at the bottom of every card. Forced fill
+	   via !important on the scoped image selector. */
+	.proof-img {
+		height: 100% !important;
+		width: 100% !important;
+	}
+
 	/* Magazine gradient — fade from transparent to near-black at the bottom
 	   for title overlay legibility. */
 	.proof-image-gradient {
@@ -346,9 +356,9 @@
 	}
 
 	.proof-footer {
-		padding: 1.25rem 1.75rem;
+		padding: 1.75rem 1.75rem;
 		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
-		min-height: 5rem;
+		min-height: 7rem;
 	}
 
 	.proof-metric-before {
