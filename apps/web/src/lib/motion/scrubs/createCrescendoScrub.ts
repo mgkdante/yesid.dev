@@ -12,7 +12,7 @@
 // registered; destroy is a no-op.
 
 import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-import { ScrollTrigger } from '$lib/motion/utils/gsap.js';
+import { ScrollTrigger, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 import type { EaseKey } from '$lib/motion/tokens.js';
 
 export interface CrescendoOpts {
@@ -45,6 +45,12 @@ export function createCrescendoScrub(
 		target.style.scale = String(maxScale);
 		return () => {};
 	}
+
+	// Ensure gsap.registerPlugin(ScrollTrigger) ran. Other consumers (HeroBanner,
+	// SvgIcon, +layout, etc.) call init themselves, but Manifesto.svelte — the
+	// sole caller of this helper — does not. Without init, ScrollTrigger.create
+	// throws "Ui is not a function" in minified production. Idempotent.
+	initScrollTriggerConfig();
 
 	const st = ScrollTrigger.create({
 		trigger: section,
