@@ -162,7 +162,7 @@
 										<span
 											data-testid="proof-tag"
 											class="proof-tag"
-											use:magnetic={{ strength: 5, radius: 60 }}
+											use:magnetic={{ strength: 8, radius: 70 }}
 										>{abbrev(tech)}{ti < project.stack.length - 1 ? ' ·' : ''}</span>
 									{/each}
 								</div>
