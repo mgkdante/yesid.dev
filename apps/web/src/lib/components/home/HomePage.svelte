@@ -191,6 +191,14 @@
 		display: grid;
 		grid-template-columns: 1fr;
 		width: 100%;
+		/* Clip the rotated-title's scaled visual at the section bounds.
+		   At maxScale 1.4 the title's visual extends ~10% above and below
+		   its layout box; without this it leaks into the adjacent
+		   <Separator /> and the next section. `overflow: clip` is sticky-
+		   safe — per CSS Overflow spec it does NOT establish a scroll
+		   container, so the sticky descendant still anchors to the
+		   viewport. */
+		overflow: clip;
 	}
 
 	.home-section-content {
