@@ -201,10 +201,10 @@
 		isolation: isolate;
 	}
 
-	/* backgroundBreathing pulse — reads --breathing-phase (animated 0→1→0
-	   over 20s yoyo by use:backgroundBreathing on this same section).
-	   Capped at 3% brand-orange opacity so it stays in the "is it actually
-	   moving?" subtle range. */
+	/* backgroundBreathing pulse — 5% brand-orange max, calibrated visually
+	   to be perceptible without dominating the section content. Reads
+	   --breathing-phase from the same section element (animated 0→1→0
+	   over 20s yoyo by use:backgroundBreathing). */
 	.home-section::before {
 		content: '';
 		position: absolute;
@@ -213,8 +213,8 @@
 		z-index: -1;
 		background: radial-gradient(
 			ellipse at 50% 50%,
-			color-mix(in srgb, var(--primary) calc(var(--breathing-phase, 0) * 3%), transparent),
-			transparent 65%
+			color-mix(in srgb, var(--primary) calc(var(--breathing-phase, 0) * 5%), transparent),
+			transparent 75%
 		);
 	}
 
