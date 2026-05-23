@@ -32,6 +32,13 @@ export interface MorphHoverParams {
 	enabled?: boolean;
 	/** Optional deterministic starting shape index. Default: -1 (random). */
 	lastShapeIdx?: number;
+	/**
+	 * If true, skip the mobile click-to-toggle handler. Useful when applying
+	 * morphHover to a clickable parent (e.g. an `<a>` link) where you want
+	 * desktop hover-to-morph but still want mobile taps to navigate normally
+	 * instead of being intercepted by preventDefault. Default: false.
+	 */
+	disableClickToggle?: boolean;
 }
 
 export function morphHover(node: HTMLElement, params: MorphHoverParams) {
@@ -136,7 +143,9 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 
 	node.addEventListener('mouseenter', handleEnter);
 	node.addEventListener('mouseleave', handleLeave);
-	node.addEventListener('click', handleTap);
+	if (!params.disableClickToggle) {
+		node.addEventListener('click', handleTap);
+	}
 
 	return {
 		update(newParams: MorphHoverParams) {
@@ -145,7 +154,9 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 		destroy() {
 			node.removeEventListener('mouseenter', handleEnter);
 			node.removeEventListener('mouseleave', handleLeave);
-			node.removeEventListener('click', handleTap);
+			if (!params.disableClickToggle) {
+				node.removeEventListener('click', handleTap);
+			}
 		},
 	};
 }
