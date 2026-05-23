@@ -8,14 +8,17 @@
 // Pair with class="tap-press" (Layer 1 CSS baseline) for layered feedback.
 
 import { isTouchDevice } from '$lib/motion/utils/device';
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion';
 
 type ActionReturn = { destroy(): void };
 
 const RIPPLE_DURATION_MS = 500;
 
+// Reduced-motion: KEPT ACTIVE per operator policy (slice-23). Tap ripple
+// is brief (500ms), user-initiated, expanding-ring visual — not a
+// vestibular trigger.
+
 export function tapRipple(node: HTMLElement): ActionReturn {
-	if (!isTouchDevice() || isPrefersReducedMotion()) {
+	if (!isTouchDevice()) {
 		return { destroy() {} };
 	}
 
