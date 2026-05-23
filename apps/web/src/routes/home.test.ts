@@ -143,10 +143,10 @@ describe('Home page', () => {
 		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
 	});
 
-	it('renders 3 proof reel cards', () => {
+	it('renders 5 proof reel cards (slice-23: carousel of 5)', () => {
 		renderPage();
 		const cards = screen.getAllByTestId('proof-card');
-		expect(cards).toHaveLength(3);
+		expect(cards).toHaveLength(5);
 	});
 
 	it('renders the services section', () => {

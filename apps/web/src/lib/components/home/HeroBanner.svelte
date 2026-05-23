@@ -101,6 +101,14 @@
 	onMount(async () => {
 		reducedMotion = isPrefersReducedMotion();
 
+		// Reduced motion (slice-23): the entire metro-network sequence is
+		// gated off — no scroll-pin, no typewriter, no GSAP timeline. The
+		// hero loads straight up via @media (prefers-reduced-motion: reduce)
+		// rules in the stylesheet below: metro wrapper hidden, hero text
+		// forced visible, scroll prompt hidden, section reservation
+		// collapsed to a single viewport. No JS setup required.
+		if (reducedMotion) return;
+
 		await tick();
 		await new Promise((r) => setTimeout(r, 300));
 
@@ -109,21 +117,6 @@
 
 		// Resolve heroDot from DOM — inside HeroTextContent child component
 		const heroDot = heroTextContainer.querySelector('.hero-dot') as SVGSVGElement;
-
-		// Reduced motion: factory renders the static preview (network dimmed,
-		// heroTextContainer snapped to scale=1 visible) and no-ops. Skip the
-		// typewriter animation and the ScrollTrigger.refresh listener.
-		if (reducedMotion) {
-			createHeroTimeline(pinContainer, {
-				svgWrapper,
-				heroTextContainer,
-				heroDot,
-				scrollPrompt,
-				startBlink: () => {},
-				stopBlink: () => {},
-			});
-			return;
-		}
 
 		// Preload lazy plugins used inside createHeroTimeline (DrawSVG stroke
 		// scrub in Phase 2, CustomEase 'networkDraw' on the line draws).
@@ -174,17 +167,17 @@
 <section
 	class="hero-section-reserve relative"
 	data-testid="hero-banner"
-	style={reducedMotion ? 'min-height: 100svh' : ''}
 >
 	<div
 		bind:this={pinContainer}
 		class="hero-pin relative flex w-full items-center justify-center overflow-hidden"
 		style="padding-bottom: env(safe-area-inset-bottom, 0px);"
 	>
-		<!-- SVG wrapper — zooms into Berri-UQAM -->
+		<!-- SVG wrapper — zooms into Berri-UQAM. Hidden under reduced-motion
+		     via @media rule in the stylesheet. -->
 		<div
 			bind:this={svgWrapper}
-			class="absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
+			class="hero-metro-wrapper absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
 		>
 			<MetroNetwork svg={metroSvg} />
 		</div>
@@ -280,8 +273,7 @@
 	   Mobile pin = 300% → 100lvh trigger + 300lvh pin extension = 400lvh +
 	   ~150lvh HeroMobileSql natural-flow content + 50lvh buffer = 600lvh.
 	   Desktop pin = 800% → 100lvh + 800lvh = 900lvh, no trailing content
-	   (SQL panel is in-grid inside the pin). Reduced-motion overrides this
-	   via the inline style above to collapse to a single viewport. */
+	   (SQL panel is in-grid inside the pin). */
 	.hero-section-reserve {
 		min-height: 600svh;
 	}
@@ -295,6 +287,42 @@
 	/* Hero pin container — full viewport for the animation */
 	.hero-pin {
 		height: 100lvh;
+	}
+
+	/* ─────────────────────────────────────────────────────────────────
+	   Reduced motion: the metro-network scroll-pin sequence is entirely
+	   gated off. Operator policy (slice-23): no metro map background, no
+	   typing animation, hero text visible immediately, no oversized scroll
+	   reservation. CSS-only (not JS-toggled) so the server renders the
+	   correct layout — no flash between SSR and hydration.
+	   ─────────────────────────────────────────────────────────────────── */
+	@media (prefers-reduced-motion: reduce) {
+		.hero-section-reserve {
+			min-height: 100svh;
+		}
+
+		.hero-pin {
+			height: auto;
+			min-height: 100svh;
+		}
+
+		/* Kill the metro map entirely. */
+		.hero-metro-wrapper {
+			display: none;
+		}
+
+		/* Hide the "SCROLL DOWN" typewriter prompt. */
+		.scroll-prompt {
+			display: none;
+		}
+
+		/* Hero text container is opacity-0 in the base markup so the GSAP
+		   pin sequence can fade it in. Under reduced motion the sequence
+		   never runs — force it visible from the first paint. */
+		:global(.hero-section-reserve [data-testid='hero-text-container']) {
+			opacity: 1 !important;
+			position: relative !important;
+		}
 	}
 
 	/* Two-column hero grid: text | divider | SQL panel */

@@ -1,12 +1,19 @@
 // Hand-written companion to the CMS-derived `blog.ts` (slice-18m).
 //
-// Holds the route chrome (listing + detail) + the SVG fallback resolver +
-// the build-time markdown-glob loader that powers the static adapter's
-// blog.html() port + the per-post body/HTML maps. The CMS-derived `blog.ts`
-// only emits `blogPosts: readonly BlogPost[]`; the html/body bridge lives
-// in the runtime adapter (block-editor → HTML serialization).
+// Holds the route chrome (listing + detail) + the SVG fallback resolver.
+// The CMS-derived `blog.ts` only emits `blogPosts: readonly BlogPost[]`;
+// the html/body bridge lives in the runtime adapter (block-editor → HTML
+// serialization).
+//
+// Slice-23 mobile-perf: the marked-using markdown→HTML cache used to live
+// here (`htmlBySlug` + `getPostHtml`), but this file is re-exported through
+// `$lib/content/index.ts`. Home components that import any symbol from the
+// barrel (e.g. `getLatestPosts`, type imports) evaluated `marked` →
+// `$lib/utils/markdown` → Shiki + every language registration (≈58 KiB
+// unused JS in the home chunk). That cache now lives in
+// `./blog.html-cache.ts`, which is not re-exported and is consumed only by
+// the static adapter at SSR/build time.
 
-import { marked } from '$lib/utils/markdown';
 import type { BlogPost, BlogCategory, BlogAnimation, Locale, LocalizedString } from '$lib/types';
 import { blogPosts } from './blog';
 
@@ -98,14 +105,11 @@ export function resolveAnimation(slug: string, explicit: string | undefined): Bl
 	return ALL_ANIMATIONS[slugHash(slug) % ALL_ANIMATIONS.length];
 }
 
-// --- MD/SVG glob loading (static adapter fallback path) ---
-
-// Raw markdown for metadata + content extraction.
-const rawPosts = import.meta.glob('/src/content/blog/**/index.md', {
-	query: '?raw',
-	import: 'default',
-	eager: true,
-}) as Record<string, string>;
+// --- SVG glob loading (static adapter fallback path) ---
+//
+// Note: the raw-markdown glob + marked.parse loop that built `htmlBySlug`
+// moved to `./blog.html-cache.ts` so importing chrome from this file no
+// longer drags Shiki into client bundles. See header comment.
 
 // Custom illustration SVGs as raw strings for inline rendering + GSAP animation.
 const customSvgs = import.meta.glob('/src/content/blog/**/illustration.svg', {
@@ -124,39 +128,6 @@ const fallbackSvgs = import.meta.glob('/src/lib/assets/blog-fallbacks/*.svg', {
 const fallbackSvgMap = new Map<string, string>();
 for (const [path, content] of Object.entries(fallbackSvgs)) {
 	fallbackSvgMap.set(path.split('/').pop()!, content);
-}
-
-// Build per-slug markdown + HTML maps for legacy static adapter html() port.
-const contentBySlug = new Map<string, string>();
-const htmlBySlug = new Map<string, string>();
-
-function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
-	const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-	if (!match) return { data: {}, content: raw };
-	const frontmatter = match[1];
-	const content = match[2];
-	const data: Record<string, unknown> = {};
-	for (const line of frontmatter.split(/\r?\n/)) {
-		const colonIdx = line.indexOf(':');
-		if (colonIdx === -1) continue;
-		const key = line.slice(0, colonIdx).trim();
-		let value: unknown = line.slice(colonIdx + 1).trim();
-		if (typeof value === 'string' && value.startsWith('[') && value.endsWith(']')) {
-			value = value.slice(1, -1).split(',').map((s) => s.trim());
-		}
-		if (value === 'true') value = true;
-		if (value === 'false') value = false;
-		data[key] = value;
-	}
-	return { data, content };
-}
-
-for (const [filepath, raw] of Object.entries(rawPosts)) {
-	const { content } = parseFrontmatter(raw);
-	const parts = filepath.split('/');
-	const slug = parts[parts.length - 2];
-	contentBySlug.set(slug, content);
-	htmlBySlug.set(slug, marked.parse(content, { async: false }) as string);
 }
 
 // --- SVG content ---
@@ -191,10 +162,9 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
 	return blogPosts.find((p) => p.slug === slug);
 }
 
-/** Returns pre-rendered HTML from markdown for a post. */
-export function getPostHtml(slug: string): string {
-	return htmlBySlug.get(slug) ?? '';
-}
+// `getPostHtml(slug)` lives in `./blog.html-cache.ts` so importers of this
+// companion module don't transitively load Shiki. The static adapter and
+// blog-detail server load are the only legitimate callers.
 
 export function getPostsByCategory(category: BlogCategory): readonly BlogPost[] {
 	return [...blogPosts].filter((p) => p.category === category).sort((a, b) => b.date.localeCompare(a.date));
