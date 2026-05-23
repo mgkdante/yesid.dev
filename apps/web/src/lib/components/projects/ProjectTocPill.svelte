@@ -105,10 +105,17 @@
 
 {#if visible}
   <div class="toc-pill-container lg:hidden" data-testid="project-toc-pill">
+    <!--
+      A11y: the button shows visible text ("{activeName} {n}/{total}") while
+      tocOpenAria carries the purpose ("Table of contents"). Lighthouse 2.5.3
+      (label-content-name-mismatch) requires the visible text to appear as a
+      prefix of the accessible name. Compose aria-label so it starts with the
+      same visible string, then appends the purpose.
+    -->
     <button
       class="tap-press toc-pill"
       onclick={() => (drawerOpen = !drawerOpen)}
-      aria-label={tocOpenAria}
+      aria-label={`${activeName} ${activeIndex + 1}/${allEntries.length} — ${tocOpenAria}`}
     >
       <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
       <span class="toc-pill-name font-mono text-caption">
