@@ -142,12 +142,22 @@
 </section>
 
 <style>
-	/* Shared rotated title base. `transform` is reserved for crescendo scale
-	   scrub (17e-3); rotation uses the individual `rotate` property so the
-	   two layers don't conflict. */
+	/* Shared rotated title base. Both `scale` (crescendo scrub) and `rotate`
+	   use individual transform properties so they compose without disturbing
+	   the sticky positioning of the element itself. Slice-23 Task 4 caps the
+	   *physical* height so the title is visibly smaller than its containing
+	   section — sticky can only engage if the element has room to move within
+	   its containing block. `max-block-size` would target the horizontal axis
+	   here (vertical-rl writing mode flips block/inline), hence the physical
+	   `max-height`. */
 	.rotated-title {
 		position: sticky;
 		top: 50%;
+		/* Sticky's max position is `containing-block-bottom - element-height`.
+		   For `top: 50%` to actually engage (not be clamped down) when a
+		   ~100dvh section is fully in view, the title must be at most ~50dvh:
+		   50dvh + 50dvh = 100dvh fits within the section's containing block. */
+		max-height: 50dvh;
 		writing-mode: vertical-rl;
 		display: flex;
 		align-items: center;
