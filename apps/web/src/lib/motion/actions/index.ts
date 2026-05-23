@@ -11,6 +11,7 @@ export { magnetic, type MagneticParams } from './magnetic.js';
 // tilt — deleted in 17e-2 (absorbed into magnetic or cut)
 export { cursorGlow, type CursorGlowParams } from './cursorGlow.js';
 export { sectionGlow } from './sectionGlow.js';
+export { cardParallax } from './cardParallax.js';
 export { wordmarkHover, type WordmarkHoverParams } from './wordmarkHover.js';
 export { morphHover, type MorphHoverParams } from './morphHover.js';
 export { scrollChain } from './scrollChain.js';
