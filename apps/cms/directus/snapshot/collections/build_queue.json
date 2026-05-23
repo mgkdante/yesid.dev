@@ -1,0 +1,28 @@
+{
+  "collection": "build_queue",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": false,
+    "archive_field": null,
+    "archive_value": null,
+    "collapse": "open",
+    "collection": "build_queue",
+    "color": null,
+    "display_template": "cms_dirty: {{cms_dirty}}",
+    "group": "site_config",
+    "hidden": false,
+    "icon": "build_circle",
+    "item_duplication_fields": null,
+    "note": "Build refresh flag (slice-18m.2). Flow A (Mark Dirty on CMS Publish) sets cms_dirty=true on publish events. Flow B (Flush Build to Vercel) reads it on a 2-min CRON, POSTs the per-env webhook if true, then resets to false. Disable Flow B to pause CMS-triggered builds. Singleton — one row only.",
+    "preview_url": null,
+    "singleton": true,
+    "sort": 99,
+    "sort_field": null,
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "build_queue"
+  }
+}

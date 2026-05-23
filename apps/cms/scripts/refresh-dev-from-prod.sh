@@ -6,12 +6,12 @@
 #   4. Vercel auto-rebuilds develop branch on the push
 #
 # After this completes, dev mirrors prod exactly:
-#   - dev DB schema + content = prod (including admin user = prod's cms-admin@example.invalid)
+#   - dev DB schema + content = prod (including admin user = prod's admin@yesid.dev)
 #   - dev R2 files = prod files
 #   - dev code (origin/develop) = main
 #   - dev.yesid.dev rebuilds with this state via Vercel
 #
-# If you want admin@yesid.dev separation back, re-rotate after refresh
+# If you ever want separate dev credentials, re-rotate after refresh
 # (see the manual step at the end).
 #
 # Usage (recommended — wraps all op:// resolutions in one call):
@@ -67,7 +67,7 @@ curl -sS -X POST \
   -H "Authorization: Bearer $NEON_API_KEY" \
   -H "Content-Type: application/json" \
   "https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches/$NEON_DEV_BRANCH_ID/reset_to_parent" \
-  | python -c "
+  | python3 -c "
 import sys, json
 try:
     d = json.load(sys.stdin)
@@ -101,9 +101,9 @@ echo "Done. Dev now mirrors prod state."
 echo ""
 echo "Vercel will auto-rebuild dev.yesid.dev on the develop push."
 echo ""
-echo "If you want admin@yesid.dev separation back (instead of"
-echo "prod's cms-admin@example.invalid):"
-echo "  - Log in as cms-admin@example.invalid with prod password"
-echo "  - In Data Studio, Settings → Users → Edit your user → change email"
+echo "Admin login on dev now = prod admin (admin@yesid.dev + prod password)."
+echo "If you want separate dev creds, rotate after refresh:"
+echo "  - Log in as admin@yesid.dev with prod password"
+echo "  - In Data Studio, Settings → Users → Edit your user → change email/password"
 echo "  - Or run a SQL UPDATE on the dev DB"
 echo "============================================================"

@@ -6,7 +6,12 @@ The repo for [yesid.dev](https://yesid.dev) — Yesid O.'s freelance SQL and dig
 
 ## How it works
 
-All workflow state lives in **Notion**, operated through the [workflow-overlord](https://github.com/mgkdante/workflow-overlord) plugin from Claude Code or Codex. AI tools read the Notion subtree (per `AGENTS.local.md`) for context. Code lives in the repo.
+All workflow state lives in **Notion**, operated through the [workflow-overlord](https://github.com/mgkdante/workflow-overlord) plugin from Claude Code or Codex.
+
+- Interactive Notion work uses the hosted OAuth MCP at `https://mcp.notion.com/mcp`.
+- If that OAuth path is unavailable or failing, direct Notion REST is the fallback.
+- Hooks, session sync, and deterministic writes always use direct REST through the plugin.
+- Session retention is hybrid: one full transcript artifact on the Sessions row plus append-only `Transcript Chunks` pages for selective retrieval.
 
 ## Structure
 
@@ -14,10 +19,7 @@ All workflow state lives in **Notion**, operated through the [workflow-overlord]
 ├── apps/web/                    # SvelteKit site (public)
 ├── apps/cms/                    # Directus CMS
 ├── packages/                    # shared packages (tokens, etc.)
-├── overlord-bridge/             # workflow-overlord MCP server
-├── scripts/                     # session hooks (bun)
-├── skills/                      # workflow-overlord SKILLs
-├── .claude/, .codex/            # tool configs + hook symlinks
+├── .claude/, .codex/, .mcp.json # consumer-side tool config only
 ├── AGENTS.md                    # workflow contract (tool-agnostic)
 ├── CLAUDE.md                    # Claude Code entry pointer
 └── docs/reference/              # operational refs (cms-environments etc.)

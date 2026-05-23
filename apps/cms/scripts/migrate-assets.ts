@@ -420,7 +420,15 @@ interface MigrateOptions {
 	directusUrl: string;
 	token: string;
 	sourceRoot: string;
-	outputMapPath: string;
+	/**
+	 * One or more paths to emit the assets-id-map.json to. GH #40: a single
+	 * authoritative copy lives at `apps/cms/fixtures/assets-id-map.json`; a
+	 * mirror is written to `packages/shared/fixtures/assets-id-map.json` so
+	 * `@repo/shared.assetIdFor` resolves from a workspace-package import
+	 * without crossing the app-independence boundary (D12). Both paths are
+	 * written atomically in the same run — no manual `cp` needed afterward.
+	 */
+	outputMapPaths: readonly string[];
 	dryRun: boolean;
 	reset: boolean;
 }
@@ -628,9 +636,12 @@ export async function migrateAssets(
 	for (const key of [...idMap.keys()].sort()) {
 		outputObj[key] = idMap.get(key) ?? '';
 	}
-	writeFileSync(opts.outputMapPath, JSON.stringify(outputObj, null, '\t') + '\n');
+	const serialized = JSON.stringify(outputObj, null, '\t') + '\n';
+	for (const outPath of opts.outputMapPaths) {
+		writeFileSync(outPath, serialized);
+		log.info(`  ✓ emitted ${outPath} (${idMap.size} entries)`);
+	}
 	log.info('');
-	log.info(`emitted ${opts.outputMapPath} (${idMap.size} entries).`);
 
 	return idMap;
 }
@@ -678,12 +689,21 @@ async function main(): Promise<void> {
 		);
 	}
 
-	const outputMapPath = joinPath(
-		import.meta.dir,
-		'..',
-		'fixtures',
-		'assets-id-map.json',
-	);
+	// GH #40: emit to both apps/cms (authoritative) AND packages/shared (mirror)
+	// in one pass — eliminates the post-migrate manual `cp` step + drift risk.
+	const outputMapPaths = [
+		joinPath(import.meta.dir, '..', 'fixtures', 'assets-id-map.json'),
+		resolvePath(
+			import.meta.dir,
+			'..',
+			'..',
+			'..',
+			'packages',
+			'shared',
+			'fixtures',
+			'assets-id-map.json',
+		),
+	];
 
 	const token = dryRun ? 'dry-run' : await getAdminTokenLib(directusUrl);
 
@@ -691,7 +711,7 @@ async function main(): Promise<void> {
 		directusUrl,
 		token,
 		sourceRoot,
-		outputMapPath,
+		outputMapPaths,
 		dryRun,
 		reset,
 	});

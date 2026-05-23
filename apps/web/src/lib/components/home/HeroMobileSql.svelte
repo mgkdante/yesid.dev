@@ -51,7 +51,7 @@
 
 		<div class="mt-8 text-center">
 			<button
-				class="refresh-btn"
+				class="refresh-btn tap-press"
 				data-testid="hero-refresh-mobile"
 				onclick={onRefresh}
 			>
@@ -100,6 +100,7 @@
 		width: 100%;
 		justify-content: center;
 		padding: 14px;
+		min-height: 44px;
 		font-size: 14px;
 	}
 	.refresh-btn:hover {

@@ -23,14 +23,14 @@
 	<div class="relative flex h-full flex-col">
 		<StopLabel {stop} {label} />
 
-		<div class="flex flex-1 flex-col gap-4 md:flex-row md:items-center md:justify-around md:gap-0">
+		<div class="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center sm:justify-around sm:gap-0">
 			{#each metrics as metric, i}
 				{@const metricLabel = resolveLocale(metric.label, 'en')}
 
 				<!-- Divider (not before first item) -->
 				{#if i > 0}
 					<div
-						class="hidden h-12 w-px md:block"
+						class="hidden h-12 w-px sm:block"
 						style="background: linear-gradient(180deg, transparent, var(--border), transparent);"
 						aria-hidden="true"
 					></div>

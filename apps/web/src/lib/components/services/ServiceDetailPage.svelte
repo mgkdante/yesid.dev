@@ -10,6 +10,7 @@
 	import { servicesListingContent, servicesDetailContent } from '$lib/content/services';
 	import { projectsListingContent } from '$lib/content/projects';
 	import { boop } from '$lib/motion/actions/boop.js';
+	import { pressBounce } from '$lib/motion/actions/pressBounce.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
 	import ServiceNav from './ServiceNav.svelte';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
@@ -84,7 +85,7 @@
 		<div class="hero-area">
 			<a
 				href="/services"
-				class="back-link"
+				class="back-link tap-feedback inline-flex items-center min-h-11 px-2"
 				use:boop={{ scale: 1.05, timing: 200 }}
 			>
 				{backLinkLabel}
@@ -232,15 +233,16 @@
 								{#each relatedProjects as project}
 									<a
 										href="/projects/{project.slug}"
-										class="project-link"
+										class="project-link tap-press"
 										use:boop={{ scale: 1.02, timing: 150 }}
+										use:pressBounce
 									>
 										<span class="project-dot" aria-hidden="true"></span>
 										<span class="project-name">{resolveLocale(project.title, 'en')}</span>
 									</a>
 								{/each}
 							</nav>
-							<a href="/projects" class="projects-all">
+							<a href="/projects" class="projects-all tap-feedback">
 								{seeAllProjectsLabel}
 							</a>
 						</CollapsibleSection>
@@ -263,15 +265,16 @@
 						{#each relatedProjects as project}
 							<a
 								href="/projects/{project.slug}"
-								class="project-link"
+								class="project-link tap-press"
 								use:boop={{ scale: 1.02, timing: 150 }}
+								use:pressBounce
 							>
 								<span class="project-dot" aria-hidden="true"></span>
 								<span class="project-name">{resolveLocale(project.title, 'en')}</span>
 							</a>
 						{/each}
 					</nav>
-					<a href="/projects" class="projects-all">
+					<a href="/projects" class="projects-all tap-feedback">
 						{seeAllProjectsLabel}
 					</a>
 				</CollapsibleSection>
@@ -302,12 +305,16 @@
 	}
 
 	.back-link {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
 		color: var(--primary);
 		text-decoration: none;
 		margin-bottom: 1.5rem;
+		margin-left: -0.5rem; /* compensate px-2 so text stays visually flush */
+		min-height: 2.75rem; /* 44px touch target */
+		padding-inline: 0.5rem;
 		transition: opacity var(--duration-fast);
 	}
 	.back-link:hover {

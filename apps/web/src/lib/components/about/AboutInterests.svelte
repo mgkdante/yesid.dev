@@ -37,7 +37,7 @@
 			{@const interestLabel = resolveLocale(interest.label, 'en')}
 			<button
 				type="button"
-				class="interest-strip relative flex flex-1 items-center justify-center overflow-hidden transition-all duration-500 ease-out"
+				class="tap-press interest-strip relative flex flex-1 items-center justify-center overflow-hidden transition-all duration-500 ease-out"
 				class:strip-active={activeIndex === i}
 				onclick={() => handleTap(i)}
 				aria-label={interestLabel}

@@ -5,6 +5,7 @@
 	"description": "Config + snapshot + seed scripts for the Directus CMS backing yesid.dev. The Directus app itself runs from the pinned directus/directus:11.17.3 container on Railway — this repo ships schema, seed data, and ops tooling only.",
 	"scripts": {
 		"seed:services": "bun scripts/seed-services.ts",
+		"export:fallbacks": "bun scripts/export-fallbacks.ts",
 		"seed:projects": "bun scripts/seed-projects.ts",
 		"seed:presets": "bun scripts/seed-presets.ts",
 		"seed:icons": "bun scripts/seed-icons.ts",
@@ -14,6 +15,7 @@
 		"sync:pull": "directus-sync pull",
 		"sync:push": "bun scripts/sync-push.ts",
 		"sync:diff": "directus-sync diff",
+		"gen:types": "bun scripts/generate-types.ts",
 		"test": "bun test"
 	},
 	"devDependencies": {
