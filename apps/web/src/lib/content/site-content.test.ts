@@ -152,15 +152,17 @@ describe('proofReelContent', () => {
 		expect(proofReelContent.viewAllHref).toBe('/projects');
 	});
 
-	it('has exactly 3 featured project slugs', () => {
-		expect(proofReelContent.slugs).toHaveLength(3);
+	it('has exactly 5 featured project slugs (slice-23: carousel)', () => {
+		expect(proofReelContent.slugs).toHaveLength(5);
 	});
 
 	it('slugs match existing projects', () => {
+		// impactMetric is optional — newer projects in the carousel may
+		// not have one set in Directus yet; the component renders an
+		// empty footer in that case.
 		for (const slug of proofReelContent.slugs) {
 			const project = getProjectBySlug(slug);
 			expect(project).toBeDefined();
-			expect(project?.impactMetric).toBeDefined();
 		}
 	});
 
@@ -169,6 +171,8 @@ describe('proofReelContent', () => {
 			'transit-data-pipeline',
 			'lorem-analytics-dashboard',
 			'lorem-database-migration',
+			'lorem-query-optimizer',
+			'lorem-retool-admin',
 		]);
 	});
 });
