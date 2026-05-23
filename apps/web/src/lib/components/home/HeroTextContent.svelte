@@ -37,10 +37,6 @@
 		</span>
 	</h1>
 
-	<div class="my-6 md:my-6" data-hero-stagger="3">
-		<HeroMetrics metrics={heroData.metrics} />
-	</div>
-
 	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-hidden="true">
 		<span
 			class="block text-hero-mobile text-[var(--primary)] md:text-hero"
@@ -54,6 +50,16 @@
 			><circle cx="5" cy="5" r="5" fill="currentColor" /></svg>
 		</span>
 	</p>
+
+	<!--
+	  Metric cards sit BELOW the headline "PIPELINES THAT DON'T BREAK." —
+	  previously they slotted between line 1 and line 2 which broke the visual
+	  flow of the two-line headline. data-hero-stagger="3" preserved so the
+	  GSAP reveal timeline keeps the same step-3 order regardless of DOM order.
+	-->
+	<div class="my-6 md:my-6" data-hero-stagger="3">
+		<HeroMetrics metrics={heroData.metrics} />
+	</div>
 
 	<div
 		class="mt-3 text-title font-bold leading-[1.1] text-[var(--secondary-foreground)] md:mt-2.5 md:text-[clamp(26px,min(3.5vw,4svh),44px)]"
