@@ -340,23 +340,8 @@
 		}
 	}
 
-	@media (max-width: 767px) {
-		/* Mobile: title moves below the image (grid-row 2), footer becomes
-		   row 3. Drop the overlay treatment — text reads on a flat dark
-		   background instead of over the image. */
-		.proof-card {
-			grid-template-rows: 1fr auto auto;
-		}
-		.proof-title {
-			grid-row: 2;
-			align-self: auto;
-			text-shadow: none;
-			padding: 1rem 1.25rem 0.5rem;
-		}
-		.proof-footer-link {
-			grid-row: 3;
-		}
-	}
+	/* Mobile rules consolidated at the end of styles (search "MOBILE OVERRIDES")
+	   so the cascade order properly defeats the desktop defaults. */
 
 	/* Footer link — grid row 2 on desktop. */
 	.proof-footer-link {
@@ -487,8 +472,75 @@
 		padding-inline: 0.25rem;
 	}
 
-	/* Mobile tap cursor for image. */
+	/* ═════════════════════════════════════════════════════════════════
+	   MOBILE OVERRIDES — placed at the end of the cascade so they
+	   reliably defeat the desktop defaults (which all use the same
+	   .proof-* class specificity). DO NOT TOUCH the desktop rules
+	   above — those are locked.
+	   ═════════════════════════════════════════════════════════════════ */
 	@media (max-width: 767px) {
+		/* Card: shorter than desktop, grid switches to 3 rows
+		   (image / title / footer). No more overlap — title flows below
+		   the image instead of overlaying its bottom edge. */
+		.proof-card {
+			height: auto;
+			min-height: 26rem;
+			max-height: 40rem;
+			grid-template-rows: 13rem auto 1fr;
+		}
+
+		/* Image: fixed shorter height for mobile. */
+		button.proof-image {
+			grid-row: 1;
+			height: 13rem;
+		}
+
+		/* Marker: smaller on mobile, top-left of image. */
+		.proof-marker {
+			font-size: 0.75rem;
+			letter-spacing: 0.18em;
+		}
+
+		/* Title: row 2 (below image), normal flow, smaller, no overlay. */
+		.proof-title {
+			grid-row: 2;
+			grid-column: 1;
+			align-self: stretch;
+			justify-self: stretch;
+			z-index: 1;
+			padding: 0.875rem 1.25rem 0.5rem;
+			font-size: 1.375rem;
+			line-height: 1.1;
+			text-shadow: none;
+			pointer-events: auto;
+		}
+
+		/* Footer: row 3, scaled down. */
+		.proof-footer-link {
+			grid-row: 3;
+			grid-column: 1;
+		}
+
+		.proof-footer {
+			padding: 1rem 1.25rem;
+			min-height: 0;
+			height: auto;
+		}
+
+		.proof-metric-value {
+			font-size: 1.375rem;
+		}
+		.proof-metric-label {
+			font-size: 0.75rem;
+		}
+		.proof-tag {
+			font-size: 0.75rem;
+		}
+		.proof-metric-before {
+			font-size: 0.875rem;
+		}
+
+		/* Tap cursor on the image button. */
 		.proof-image {
 			cursor: pointer;
 		}
