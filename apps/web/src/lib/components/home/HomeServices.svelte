@@ -137,15 +137,15 @@
 			{/each}
 		</div>
 
-		<!-- View all link -->
+		<!-- View all link — shared mono-caption brand-orange style with the
+		     FeaturedProjects "View all projects →" link below. -->
 		<div
 			data-testid="services-viewall"
-			class="mt-12 text-center"
+			class="mt-12 flex justify-end"
 		>
 			<a
 				href="/services"
-				class="view-all-link tap-feedback inline-flex items-center border-b pb-0.5 text-body font-medium tracking-wide transition-colors duration-200"
-				style="color: var(--secondary-foreground); border-color: var(--border); min-height: 2.75rem; padding-inline: 0.5rem;"
+				class="home-view-all tap-feedback inline-flex items-center font-mono text-caption tracking-wider md:text-mono"
 				use:pressBounce
 			>{viewAllLink}</a>
 		</div>
@@ -335,10 +335,18 @@
 		}
 	}
 
-	/* View all link hover */
-	.view-all-link:hover {
+	/* Shared "View all ___ →" link styling — unified with FeaturedProjects
+	   so both home sections present the same brand-aligned link pattern. */
+	.home-view-all {
 		color: var(--primary);
-		border-color: var(--primary);
+		border-bottom: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+		min-height: 2.75rem;
+		padding-inline: 0.25rem;
+		transition: border-color var(--duration-normal) var(--ease-default);
+	}
+
+	.home-view-all:hover {
+		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
 	}
 
 	/* Mobile: shrink the icon zone so the cards aren't unnecessarily tall on
