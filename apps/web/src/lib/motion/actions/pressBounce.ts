@@ -3,19 +3,20 @@
 //
 // Gated by:
 //   - isTouchDevice() — pointer-only devices use hover/active CSS instead.
-//   - isPrefersReducedMotion() — no animation if user prefers reduced motion.
+//
+// Reduced-motion: KEPT ACTIVE per operator policy (slice-23). pressBounce
+// is <200ms scale feedback on user action — not a vestibular trigger.
 //
 // Pair with class="tap-press" (Layer 1 CSS baseline) for layered feedback.
 
 import { gsap } from '$lib/motion/utils/gsap';
 import { isTouchDevice } from '$lib/motion/utils/device';
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion';
 import { durationSec } from '$lib/motion/tokens';
 
 type ActionReturn = { destroy(): void };
 
 export function pressBounce(node: HTMLElement): ActionReturn {
-	if (!isTouchDevice() || isPrefersReducedMotion()) {
+	if (!isTouchDevice()) {
 		return { destroy() {} };
 	}
 
