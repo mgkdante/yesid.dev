@@ -1,6 +1,8 @@
 // Motion actions — Svelte actions for interaction signatures.
 // The Snappy Doctrine limits this surface to the 9-signature vocabulary
 // (boop, cursorGlow, magnetic, wordmarkHover, morphHover in 17e-5) + supporting types.
+// Slice-23 adds sectionGlow as a section-scoped feedback signature (related
+// to cursorGlow but applied to background layers rather than card surfaces).
 
 export { boop, type BoopParams } from './boop.js';
 // reveal — deleted in 17e-2 (Snappy Doctrine forbids entrance actions)
@@ -8,6 +10,8 @@ export { magnetic, type MagneticParams } from './magnetic.js';
 // ripple — deleted in 17e-2 (not in vocabulary)
 // tilt — deleted in 17e-2 (absorbed into magnetic or cut)
 export { cursorGlow, type CursorGlowParams } from './cursorGlow.js';
+export { sectionGlow } from './sectionGlow.js';
+export { cardParallax } from './cardParallax.js';
 export { wordmarkHover, type WordmarkHoverParams } from './wordmarkHover.js';
 export { morphHover, type MorphHoverParams } from './morphHover.js';
 export { scrollChain } from './scrollChain.js';

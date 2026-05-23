@@ -12,47 +12,27 @@ import type { NavLink, MenuItem, ErrorPageContent } from './nav.companion';
 
 export const navLinks: readonly NavLink[] = [
 	{
+		href: '/services',
+		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
+		priority: 1,
+	},
+	{
 		href: '/projects',
 		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
 		priority: 1,
 	},
 	{
-		href: '/services',
-		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
-		priority: 1,
-	},
-	{
 		href: '/tech-stack',
 		label: { en: 'Stack', es: 'Stack', fr: 'Stack' },
-		priority: 2,
+		priority: 1,
 	},
 ];
 
 export const menuItems: readonly MenuItem[] = [
 	{
-		href: '/contact',
-		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
-		priority: 1,
-		subtitle: {
-			en: 'open channel',
-			es: 'canal abierto',
-			fr: 'canal ouvert',
-		},
-	},
-	{
-		href: '/about',
-		label: { en: 'About', es: 'Acerca de', fr: 'À propos' },
-		priority: 1,
-		subtitle: {
-			en: 'the operator',
-			es: 'el operador',
-			fr: 'l\'opérateur',
-		},
-	},
-	{
 		href: '/services',
 		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
-		priority: 1,
+		priority: 2,
 		subtitle: {
 			en: 'what I build',
 			es: 'lo que construyo',
@@ -87,6 +67,26 @@ export const menuItems: readonly MenuItem[] = [
 			en: 'thoughts in transit',
 			es: 'pensamientos en tránsito',
 			fr: 'pensées en transit',
+		},
+	},
+	{
+		href: '/about',
+		label: { en: 'About', es: 'Acerca de', fr: 'À propos' },
+		priority: 1,
+		subtitle: {
+			en: 'the operator',
+			es: 'el operador',
+			fr: 'l\'opérateur',
+		},
+	},
+	{
+		href: '/contact',
+		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
+		priority: 1,
+		subtitle: {
+			en: 'open channel',
+			es: 'canal abierto',
+			fr: 'canal ouvert',
 		},
 	},
 ];

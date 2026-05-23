@@ -7,7 +7,9 @@
 // Desktop hover → paths morph to a random shape from the adapter.
 // mouseleave   → paths morph back to their original `d`.
 // Mobile tap   → toggle morphed / unmorphed.
-// Reduced-motion → no-op (no listeners, paths stay at their primary shape).
+// Reduced-motion → KEPT ACTIVE per operator policy (slice-23). SVG path
+//   morphing is a visual transformation, not a translation/scale motion,
+//   and isn't a vestibular trigger. User-initiated, brief (~400ms).
 //
 // MorphSVG plugin is lazy-loaded on first hover via loadMorphSVG() so pages
 // that never hover a morph-capable element never ship the plugin.
@@ -21,7 +23,6 @@
 // Usage:
 //   <button use:morphHover={{ enabled: svgReady[i] }}>...</button>
 
-import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
 import { gsap, loadMorphSVG } from '../utils/gsap.js';
 import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';
 import { getMorphShapes, pickRandomShape } from '$lib/utils/shapes';
@@ -32,13 +33,16 @@ export interface MorphHoverParams {
 	enabled?: boolean;
 	/** Optional deterministic starting shape index. Default: -1 (random). */
 	lastShapeIdx?: number;
+	/**
+	 * If true, skip the mobile click-to-toggle handler. Useful when applying
+	 * morphHover to a clickable parent (e.g. an `<a>` link) where you want
+	 * desktop hover-to-morph but still want mobile taps to navigate normally
+	 * instead of being intercepted by preventDefault. Default: false.
+	 */
+	disableClickToggle?: boolean;
 }
 
 export function morphHover(node: HTMLElement, params: MorphHoverParams) {
-	if (isPrefersReducedMotion()) {
-		return { update() {}, destroy() {} };
-	}
-
 	let currentParams = params;
 	let morphed = false;
 	let paths: SVGPathElement[] = [];
@@ -136,7 +140,9 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 
 	node.addEventListener('mouseenter', handleEnter);
 	node.addEventListener('mouseleave', handleLeave);
-	node.addEventListener('click', handleTap);
+	if (!params.disableClickToggle) {
+		node.addEventListener('click', handleTap);
+	}
 
 	return {
 		update(newParams: MorphHoverParams) {
@@ -145,7 +151,9 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 		destroy() {
 			node.removeEventListener('mouseenter', handleEnter);
 			node.removeEventListener('mouseleave', handleLeave);
-			node.removeEventListener('click', handleTap);
+			if (!params.disableClickToggle) {
+				node.removeEventListener('click', handleTap);
+			}
 		},
 	};
 }
