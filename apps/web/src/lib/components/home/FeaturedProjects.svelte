@@ -181,7 +181,11 @@
 		</div>
 	</div>
 
-	<!-- Carousel controls + position counter + View all link. -->
+	<!-- Carousel controls + position counter + View all link.
+	     Arrow glyphs are wrapped in aria-hidden so they don't compute as a
+	     visible text label competing with each button's aria-label
+	     (label-content-name-mismatch / WCAG 2.5.3). The accessible name is
+	     "Previous/Next projects"; the glyph is decoration. -->
 	<div class="proof-controls">
 		<button
 			type="button"
@@ -189,7 +193,7 @@
 			onclick={scrollPrev}
 			aria-label="Previous projects"
 		>
-			←
+			<span aria-hidden="true">←</span>
 		</button>
 		<button
 			type="button"
@@ -197,7 +201,7 @@
 			onclick={scrollNext}
 			aria-label="Next projects"
 		>
-			→
+			<span aria-hidden="true">→</span>
 		</button>
 		<div class="proof-count" aria-live="polite" data-testid="proof-count">
 			<span class="proof-count-current">{String(currentIndex + 1).padStart(2, '0')}</span>
