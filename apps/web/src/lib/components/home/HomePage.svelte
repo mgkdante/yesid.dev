@@ -18,6 +18,7 @@
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
+	import { sectionGlow } from '$lib/motion/actions';
 	import type {
 		HeroContent,
 		HeroAnimContent,
@@ -95,7 +96,7 @@
 <Separator variant="hazard" />
 
 <!-- Section 3: Featured Projects — rotated title LEFT -->
-<section bind:this={projectsSectionEl} class="home-section home-section--left">
+<section bind:this={projectsSectionEl} class="home-section home-section--left" use:sectionGlow>
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading="Projects" />
 	</div>
@@ -110,7 +111,7 @@
 <Separator variant="hazard" />
 
 <!-- Section 4: Services — rotated title RIGHT, blueprint background spans full width -->
-<section bind:this={servicesSectionEl} class="home-section home-section--right relative">
+<section bind:this={servicesSectionEl} class="home-section home-section--right relative" use:sectionGlow>
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
 	</div>
@@ -128,7 +129,7 @@
 <Separator variant="hazard" />
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
-<section bind:this={closerSectionEl} class="home-section home-section--left">
+<section bind:this={closerSectionEl} class="home-section home-section--left" use:sectionGlow>
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading="Terminus" />
 	</div>
@@ -190,10 +191,36 @@
 		display: grid;
 		grid-template-columns: 1fr;
 		width: 100%;
+		position: relative;
+		isolation: isolate;
+	}
+
+	/* sectionGlow background layer — reads --glow-x, --glow-y, --glow-opacity
+	   from use:sectionGlow on the same section. Brand-orange radial gradient
+	   that tracks the cursor's proximity within the section, fades on leave.
+	   Sits behind all content via z-index: -1 inside the section's own
+	   stacking context (created by `isolation: isolate` above). */
+	.home-section::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: -1;
+		background: radial-gradient(
+			circle 420px at var(--glow-x, 50%) var(--glow-y, 50%),
+			color-mix(in srgb, var(--primary) calc(var(--glow-opacity, 0) * 8%), transparent),
+			transparent 70%
+		);
+		opacity: var(--glow-opacity, 0);
+		transition:
+			background 80ms linear,
+			opacity 220ms ease-out;
 	}
 
 	.home-section-content {
 		min-width: 0;
+		position: relative;
+		z-index: 1;
 	}
 
 	/* Left-side heading: heading | content */
