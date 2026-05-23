@@ -20,6 +20,7 @@
 	import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
+	import { initGlobalRipple } from '$lib/motion/utils/globalRipple.js';
 	import { setMorphShapes } from '$lib/utils/shapes';
 	import type { LayoutData } from './$types';
 	import type { NavLink } from '$lib/content/nav';
@@ -46,16 +47,22 @@
 	});
 
 	onMount(() => {
-		if (browser) {
-			// Register ScrollTrigger + apply site-wide config early so
-			// ScrollTrigger.isTouch and pin behavior are available for all
-			// consumers. Plugin-specific loading (DrawSVG, MorphSVG, Flip,
-			// MotionPath) happens lazily per-consumer at mount.
-			initScrollTriggerConfig();
-			initLenis();
-		}
+		if (!browser) return;
+
+		// Register ScrollTrigger + apply site-wide config early so
+		// ScrollTrigger.isTouch and pin behavior are available for all
+		// consumers. Plugin-specific loading (DrawSVG, MorphSVG, Flip,
+		// MotionPath) happens lazily per-consumer at mount.
+		initScrollTriggerConfig();
+		initLenis();
+
+		// Slice-23: site-wide click ripple. Anywhere the user clicks/taps
+		// spawns the Manifesto-style two-ring expanding ripple.
+		const cleanupRipple = initGlobalRipple();
+
 		return () => {
 			destroyLenis();
+			cleanupRipple();
 		};
 	});
 
@@ -98,5 +105,41 @@
 
 	:global(.animate-page-fade-in) {
 		animation: page-fade-in 250ms ease-out;
+	}
+
+	/* Slice-23: site-wide click ripple — appended to <body> by
+	   motion/utils/globalRipple.ts on every pointerdown. Two expanding
+	   rings (outer brand-primary, inner accent) for Manifesto-style
+	   click feedback that works on desktop + mobile. position: fixed
+	   so ripples stay where pressed regardless of scroll. :global()
+	   because the elements live on <body>, outside any component scope. */
+	:global(.global-ripple) {
+		position: fixed;
+		border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+		z-index: 9999;
+		animation: global-ripple-expand 1.2s ease-out forwards;
+	}
+
+	:global(.global-ripple-inner) {
+		position: fixed;
+		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+		z-index: 9999;
+		animation: global-ripple-inner-expand 0.8s ease-out forwards;
+	}
+
+	@keyframes global-ripple-expand {
+		0%   { width: 0;     height: 0;     opacity: 0.6; }
+		100% { width: 200px; height: 200px; opacity: 0;   }
+	}
+
+	@keyframes global-ripple-inner-expand {
+		0%   { width: 0;     height: 0;     opacity: 0.8; }
+		100% { width: 100px; height: 100px; opacity: 0;   }
 	}
 </style>
