@@ -479,20 +479,18 @@
 	   above — those are locked.
 	   ═════════════════════════════════════════════════════════════════ */
 	@media (max-width: 767px) {
-		/* Card: shorter than desktop, grid switches to 3 rows
-		   (image / title / footer). No more overlap — title flows below
-		   the image instead of overlaying its bottom edge. */
+		/* Card: same 4:1 (image:footer) layout as desktop, just smaller.
+		   Fixed clamp height + explicit fr ratio so every card has the
+		   same image-row size and footer-row size regardless of content. */
 		.proof-card {
-			height: auto;
-			min-height: 26rem;
-			max-height: 40rem;
-			grid-template-rows: 13rem auto 1fr;
+			height: clamp(20rem, 52dvh, 28rem);
+			grid-template-rows: 4fr 1fr;
 		}
 
-		/* Image: fixed shorter height for mobile. */
+		/* Image: fills row 1 via the grid track. */
 		button.proof-image {
 			grid-row: 1;
-			height: 13rem;
+			height: 100%;
 		}
 
 		/* Marker: smaller on mobile, top-left of image. */
@@ -501,23 +499,25 @@
 			letter-spacing: 0.18em;
 		}
 
-		/* Title: row 2 (below image), normal flow, smaller, no overlay. */
+		/* Title: overlays the image's bottom (grid row 1, align-self: end)
+		   — same layout as desktop, just smaller. Drop-shadow restored for
+		   legibility over the gradient. */
 		.proof-title {
-			grid-row: 2;
+			grid-row: 1;
 			grid-column: 1;
-			align-self: stretch;
+			align-self: end;
 			justify-self: stretch;
-			z-index: 1;
-			padding: 0.875rem 1.25rem 0.5rem;
+			z-index: 2;
+			padding: 0.875rem 1.25rem;
 			font-size: 1.375rem;
 			line-height: 1.1;
-			text-shadow: none;
-			pointer-events: auto;
+			text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+			pointer-events: none;
 		}
 
-		/* Footer: row 3, scaled down. */
+		/* Footer: row 2 (below image), same as desktop. */
 		.proof-footer-link {
-			grid-row: 3;
+			grid-row: 2;
 			grid-column: 1;
 		}
 
