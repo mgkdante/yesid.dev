@@ -25,9 +25,12 @@ import {
 	getAdjacentServices,
 } from '$lib/content/services.companion';
 import { blogPosts } from '$lib/content/blog';
+// Slice-23: `getPostHtml` lives in blog.html-cache (separate from companion)
+// so the home page bundle doesn't transitively pull Shiki via the content
+// barrel. Direct import here is fine — static adapter runs server-side.
+import { getPostHtml } from '$lib/content/blog.html-cache';
 import {
 	getPostBySlug,
-	getPostHtml,
 	getPostsByCategory,
 	getPostsByTag,
 	getTagsForCategory,
