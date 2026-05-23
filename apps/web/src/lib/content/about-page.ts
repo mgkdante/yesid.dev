@@ -1,185 +1,258 @@
-// About page content — data-driven, cloud-ready.
-// Every user-facing string is a LocalizedString. Components import this
-// module and call resolveLocale() — no hardcoded English strings in templates.
+// ----------------------------------------------------------------------
+// GENERATED FILE — do not edit by hand.
 //
-// Placeholder values are realistic stand-ins that read well on-screen.
-// Yesid replaces them with real content when ready — zero component changes.
+// /about page content (identity, metrics, methodology, testimonials, etc.).
+//
+// Source: live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
+// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// ----------------------------------------------------------------------
 
 import type { AboutContent } from '$lib/types';
-import { siteMeta } from './site-meta.js';
 
 export const aboutPageContent: AboutContent = {
-	identity: {
-		name: { en: 'Yesid O.' },
-		title: { en: 'Freelance Digital Infrastructure Engineer' },
-		valueProp: {
-			en: 'I help teams ship reliable digital infrastructure — from databases to dashboards to the pipelines between them.',
-		},
-		headshot: '/images/about/headshot.webp',
-		polaroids: [
-			{
-				src: '/images/about/polaroid-1.webp',
-				alt: { en: 'Walking with my dog in Montreal' },
-				caption: { en: 'Off-duty mode' },
-				rotate: -3,
-			},
-			{
-				src: '/images/about/polaroid-2.webp',
-				alt: { en: 'Yesid smiling' },
-				caption: { en: 'The usual suspect' },
-				rotate: 4,
-			},
-			{
-				src: '/images/about/polaroid-3.webp',
-				alt: { en: 'Portrait — Yesid Otalora' },
-				caption: { en: 'Circa 2019' },
-				rotate: -2,
-			},
-		],
-	},
-
-	metrics: [
-		{ value: '5+', label: { en: 'years building data systems' } },
-		{ value: '30+', label: { en: 'databases designed & optimized' } },
-		{ value: '3x', label: { en: 'avg. query speed improvement' } },
-		{ value: '99.9%', label: { en: 'pipeline uptime delivered' } },
-	],
-
-	methodology: [
-		{
-			id: 'audit',
-			station: 1,
-			label: { en: 'AUDIT' },
-			description: { en: 'Map your current data landscape — what flows where, what breaks, and where the bottlenecks hide.' },
-		},
-		{
-			id: 'optimize',
-			station: 2,
-			label: { en: 'OPTIMIZE' },
-			description: { en: 'Redesign queries, schemas, and pipelines so your team gets clean data fast, every time.' },
-		},
-		{
-			id: 'document',
-			station: 3,
-			label: { en: 'DOCUMENT' },
-			description: { en: 'Write runbooks and architecture docs your team can actually follow without you in the room.' },
-		},
-		{
-			id: 'handoff',
-			station: 4,
-			label: { en: 'HANDOFF' },
-			description: { en: 'Transfer ownership cleanly. Your infra runs on its own — no vendor lock-in, no mystery code.' },
-		},
-	],
-
-	testimonials: [
-		{
-			quote: { en: '"Cut our dashboard load time from 45 seconds to under 2. Yesid rebuilt the entire reporting pipeline in three weeks."' },
-			author: 'Sarah Chen',
-			role: { en: 'VP of Engineering' },
-			company: 'Logistics Platform',
-		},
-		{
-			quote: { en: '"First engineer we\'ve hired who actually documents everything. Our team was fully self-sufficient within a week of handoff."' },
-			author: 'Marcus Tremblay',
-			role: { en: 'CTO' },
-			company: 'FinTech Startup',
-		},
-		{
-			quote: { en: '"We went from spreadsheet chaos to a proper data pipeline. The whole analytics team noticed the difference on day one."' },
-			author: 'Priya Sharma',
-			role: { en: 'Head of Analytics' },
-			company: 'E-Commerce Co.',
-		},
-	],
-
-	// Central tech stack source of truth — categorized, cascade-ready.
-	// When Slice 14 (cloud layer) arrives, services/projects will reference these.
-	techStack: [
-		{ name: 'PostgreSQL', category: 'databases', relatedServices: ['sql-development', 'database-engineering'] },
-		{ name: 'SQL Server', category: 'databases', relatedServices: ['sql-development', 'database-engineering'] },
-		{ name: 'Python', category: 'languages', relatedServices: ['data-pipelines', 'analytics'] },
-		{ name: 'TypeScript', category: 'languages', relatedServices: ['web-development', 'internal-tooling'] },
-		{ name: 'SvelteKit', category: 'frameworks', relatedServices: ['web-development'] },
-		{ name: 'Power BI', category: 'tools', relatedServices: ['analytics'] },
-		{ name: 'Retool', category: 'tools', relatedServices: ['internal-tooling'] },
-		{ name: 'Docker', category: 'tools', relatedServices: ['data-pipelines', 'database-engineering'] },
-	],
-
-	// Diagonal strip interests — background images (B&W → color on hover).
-	// Yesid provides real images later in static/images/about/interests/.
-	interests: [
-		{ id: 'anime', label: { en: 'Anime' }, image: '/images/about/interests/anime.webp' },
-		{ id: 'dataviz', label: { en: 'Data Viz' }, image: '/images/about/interests/dataviz.webp' },
-		{ id: 'opensource', label: { en: 'Open Source' }, image: '/images/about/interests/opensource.webp' },
-		{ id: 'food', label: { en: 'MTL Food' }, image: '/images/about/interests/food.webp' },
-	],
-
-	weather: {
-		city: { en: 'Montreal' },
-		hook: { en: 'Guess where I am?' },
-		enabled: true,
-	},
-
+	clientCount: 10,
 	clientLogos: [
 		{ name: 'Client 1', src: '/images/about/logo-1.svg' },
 		{ name: 'Client 2', src: '/images/about/logo-2.svg' },
 		{ name: 'Client 3', src: '/images/about/logo-3.svg' },
 		{ name: 'Client 4', src: '/images/about/logo-4.svg' },
 	],
-
-	clientCount: 10,
-
 	cta: {
+		availability: { en: 'Booking Q3 2026' },
+		buttonHref: '/contact',
+		buttonLabel: { en: 'Send message →' },
 		command: '$ yesid --contact',
 		lines: [
-			{ text: '> Ready for new projects', color: 'orange' },
-			{ text: `> Email: ${siteMeta.links.email}`, color: 'muted' },
-			{ text: `> GitHub: ${siteMeta.links.github}`, color: 'muted' },
-			{ text: `> LinkedIn: ${siteMeta.links.linkedin ?? ''}`, color: 'muted' },
+			{ color: 'orange', text: '> Ready for new projects' },
+			{ color: 'muted', text: '> Email: contact@yesid.dev' },
+			{
+				color: 'muted',
+				text: '> GitHub: https://github.com/mgkdante',
+			},
+			{
+				color: 'muted',
+				text: '> LinkedIn: https://www.linkedin.com/in/otaloray/',
+			},
 		],
-		buttonLabel: { en: 'Send message →' },
-		buttonHref: '/contact',
-		availability: { en: 'Booking Q3 2026' },
 		socials: [
-			{ label: 'Email', href: `mailto:${siteMeta.links.email}`, icon: 'email' },
-			{ label: 'GitHub', href: siteMeta.links.github, icon: 'github' },
-			{ label: 'LinkedIn', href: siteMeta.links.linkedin ?? '', icon: 'linkedin' },
+			{
+				href: 'mailto:contact@yesid.dev',
+				icon: 'email',
+				label: 'Email',
+			},
+			{
+				href: 'https://github.com/mgkdante',
+				icon: 'github',
+				label: 'GitHub',
+			},
+			{
+				href: 'https://www.linkedin.com/in/otaloray/',
+				icon: 'linkedin',
+				label: 'LinkedIn',
+			},
 		],
 	},
-
-	// Stop labels — 10 bento cards in AboutPage, one per grid area. Source of
-	// truth for the ALL-CAPS station labels; child components no longer carry
-	// default `label = 'XXX'` values. Extracted in Task 17b-7g.
-	stopLabels: {
-		identity: { en: 'IDENTITY' },
-		metrics: { en: 'METRICS' },
-		testimonials: { en: 'TESTIMONIALS' },
-		process: { en: 'PROCESS' },
-		stack: { en: 'STACK' },
-		clients: { en: 'CLIENTS' },
-		interests: { en: 'INTERESTS' },
-		snapshots: { en: 'SNAPSHOTS' },
-		location: { en: 'LOCATION' },
-		next: { en: 'NEXT' },
+	identity: {
+		headshot: '/images/about/headshot.webp',
+		name: { en: 'Yesid O.' },
+		polaroids: [
+			{
+				alt: { en: 'Walking with my dog in Montreal' },
+				caption: { en: 'Off-duty mode' },
+				rotate: -3,
+				src: '/images/about/polaroid-1.webp',
+			},
+			{
+				alt: { en: 'Yesid smiling' },
+				caption: { en: 'The usual suspect' },
+				rotate: 4,
+				src: '/images/about/polaroid-2.webp',
+			},
+			{
+				alt: { en: 'Portrait — Yesid Otalora' },
+				caption: { en: 'Circa 2019' },
+				rotate: -2,
+				src: '/images/about/polaroid-3.webp',
+			},
+		],
+		title: { en: 'Freelance Digital Infrastructure Engineer' },
+		valueProp: {
+			en: 'I help teams ship reliable digital infrastructure — from databases to dashboards to the pipelines between them.',
+		},
 	},
-
-	// Chrome labels used inside about-family components. Extracted in 17b-7g.
+	interests: [
+		{
+			id: 'anime',
+			image: '/images/about/interests/anime.webp',
+			label: { en: 'Anime' },
+		},
+		{
+			id: 'dataviz',
+			image: '/images/about/interests/dataviz.webp',
+			label: { en: 'Data Viz' },
+		},
+		{
+			id: 'opensource',
+			image: '/images/about/interests/opensource.webp',
+			label: { en: 'Open Source' },
+		},
+		{
+			id: 'food',
+			image: '/images/about/interests/food.webp',
+			label: { en: 'MTL Food' },
+		},
+	],
 	labels: {
 		clientsServed: { en: 'clients served' },
-		polaroidPrevAria: { en: 'Previous photo' },
 		polaroidNextAria: { en: 'Next photo' },
+		polaroidPrevAria: { en: 'Previous photo' },
+		showTestimonialAria: { en: 'Show testimonial {index}' },
+		testimonialSlideAria: { en: 'Testimonial {index} of {total}' },
 		testimonialsCarouselAria: { en: 'Client testimonials' },
 		testimonialsTabNavAria: { en: 'Testimonial navigation' },
-		testimonialSlideAria: { en: 'Testimonial {index} of {total}' },
-		showTestimonialAria: { en: 'Show testimonial {index}' },
 	},
-
-	// HTML <title> + <meta description> for /about. Extracted in 17b-7k.
 	meta: {
-		title: { en: 'About — yesid.' },
 		description: {
 			en: 'Freelance digital infrastructure engineer based in Montreal. PostgreSQL, SQL Server, Python, Power BI — building reliable infrastructure for teams that ship.',
 		},
+		title: { en: 'About — yesid.' },
+	},
+	methodology: [
+		{
+			description: {
+				en: 'Map your current data landscape — what flows where, what breaks, and where the bottlenecks hide.',
+			},
+			id: 'audit',
+			label: { en: 'AUDIT' },
+			station: 1,
+		},
+		{
+			description: {
+				en: 'Redesign queries, schemas, and pipelines so your team gets clean data fast, every time.',
+			},
+			id: 'optimize',
+			label: { en: 'OPTIMIZE' },
+			station: 2,
+		},
+		{
+			description: {
+				en: 'Write runbooks and architecture docs your team can actually follow without you in the room.',
+			},
+			id: 'document',
+			label: { en: 'DOCUMENT' },
+			station: 3,
+		},
+		{
+			description: {
+				en: 'Transfer ownership cleanly. Your infra runs on its own — no vendor lock-in, no mystery code.',
+			},
+			id: 'handoff',
+			label: { en: 'HANDOFF' },
+			station: 4,
+		},
+	],
+	metrics: [
+		{
+			label: { en: 'years building data systems' },
+			value: '5+',
+		},
+		{
+			label: { en: 'databases designed & optimized' },
+			value: '30+',
+		},
+		{
+			label: { en: 'avg. query speed improvement' },
+			value: '3x',
+		},
+		{
+			label: { en: 'pipeline uptime delivered' },
+			value: '99.9%',
+		},
+	],
+	stopLabels: {
+		clients: { en: 'CLIENTS' },
+		identity: { en: 'IDENTITY' },
+		interests: { en: 'INTERESTS' },
+		location: { en: 'LOCATION' },
+		metrics: { en: 'METRICS' },
+		next: { en: 'NEXT' },
+		process: { en: 'PROCESS' },
+		snapshots: { en: 'SNAPSHOTS' },
+		stack: { en: 'STACK' },
+		testimonials: { en: 'TESTIMONIALS' },
+	},
+	techStack: [
+		{
+			category: 'databases',
+			name: 'PostgreSQL',
+			relatedServices: ['sql-development', 'database-engineering'],
+		},
+		{
+			category: 'databases',
+			name: 'SQL Server',
+			relatedServices: ['sql-development', 'database-engineering'],
+		},
+		{
+			category: 'languages',
+			name: 'Python',
+			relatedServices: ['data-pipelines', 'analytics'],
+		},
+		{
+			category: 'languages',
+			name: 'TypeScript',
+			relatedServices: ['web-development', 'internal-tooling'],
+		},
+		{
+			category: 'frameworks',
+			name: 'SvelteKit',
+			relatedServices: ['web-development'],
+		},
+		{
+			category: 'tools',
+			name: 'Power BI',
+			relatedServices: ['analytics'],
+		},
+		{
+			category: 'tools',
+			name: 'Retool',
+			relatedServices: ['internal-tooling'],
+		},
+		{
+			category: 'tools',
+			name: 'Docker',
+			relatedServices: ['data-pipelines', 'database-engineering'],
+		},
+	],
+	testimonials: [
+		{
+			author: 'Sarah Chen',
+			company: 'Logistics Platform',
+			quote: {
+				en: '"Cut our dashboard load time from 45 seconds to under 2. Yesid rebuilt the entire reporting pipeline in three weeks."',
+			},
+			role: { en: 'VP of Engineering' },
+		},
+		{
+			author: 'Marcus Tremblay',
+			company: 'FinTech Startup',
+			quote: {
+				en: '"First engineer we\'ve hired who actually documents everything. Our team was fully self-sufficient within a week of handoff."',
+			},
+			role: { en: 'CTO' },
+		},
+		{
+			author: 'Priya Sharma',
+			company: 'E-Commerce Co.',
+			quote: {
+				en: '"We went from spreadsheet chaos to a proper data pipeline. The whole analytics team noticed the difference on day one."',
+			},
+			role: { en: 'Head of Analytics' },
+		},
+	],
+	weather: {
+		city: { en: 'Montreal' },
+		enabled: true,
+		hook: { en: 'Guess where I am?' },
 	},
 };

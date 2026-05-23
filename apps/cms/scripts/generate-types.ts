@@ -134,7 +134,12 @@ export async function generateTypes(opts: GenerateOptions): Promise<void> {
 	const lines: string[] = [
 		'// Auto-generated from live Directus /collections + /fields. Do not edit by hand.',
 		'// Regenerate via: cd apps/cms && bun scripts/generate-types.ts',
-		`// Source: ${opts.directusUrl} · generated ${new Date().toISOString()}`,
+		`// Source: ${opts.directusUrl}`,
+		// NOTE: timestamp intentionally omitted (slice-18k PR 3 drift CI fix).
+		// Including `new Date().toISOString()` here would make the drift check
+		// in .github/workflows/cms.yml fail every run because the timestamp
+		// differs vs the committed file's timestamp. Use `git log` on this
+		// file for last-regenerated time instead.
 		'',
 		'/* eslint-disable @typescript-eslint/consistent-type-definitions */',
 		'',

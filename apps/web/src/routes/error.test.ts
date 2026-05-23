@@ -8,21 +8,31 @@ describe('404 Error Page', () => {
 		expect(screen.getByTestId('construction-scene')).toBeInTheDocument();
 	});
 
-	it('renders the ROUTE NOT FOUND label', () => {
+	it('renders an error-page label', () => {
+		// slice-18m: label text is CMS-controlled (was hand-written 'ROUTE NOT FOUND').
 		render(ErrorPage);
-		expect(screen.getByText('ROUTE NOT FOUND')).toBeInTheDocument();
+		// Look for the structural element rather than specific copy.
+		expect(screen.getByTestId('error-label')).toBeInTheDocument();
 	});
 
-	it('renders the heading', () => {
+	it('renders a heading', () => {
+		// slice-18m: heading copy is CMS-controlled.
 		render(ErrorPage);
-		expect(screen.getByText('This station is under construction')).toBeInTheDocument();
+		expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
 	});
 
-	it('renders route suggestion links', () => {
+	it('renders route suggestion links with non-empty hrefs', () => {
+		// slice-18m: suggestion labels + hrefs are CMS-controlled (editor decides
+		// what 404 page links to). Assert structure: at least one link, hrefs are
+		// valid paths starting with /.
 		render(ErrorPage);
-		expect(screen.getByRole('link', { name: /Services/ })).toHaveAttribute('href', '/services');
-		expect(screen.getByRole('link', { name: /Projects/ })).toHaveAttribute('href', '/projects');
-		expect(screen.getByRole('link', { name: /Contact/ })).toHaveAttribute('href', '/contact');
+		const suggestionLinks = screen.getAllByTestId('error-suggestion-link');
+		expect(suggestionLinks.length).toBeGreaterThanOrEqual(1);
+		for (const link of suggestionLinks) {
+			const href = link.getAttribute('href');
+			expect(href).toBeTruthy();
+			expect(href).toMatch(/^\//);
+		}
 	});
 
 	it('renders the terminal status line', () => {

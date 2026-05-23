@@ -174,6 +174,67 @@ Alternatively, set `DIRECTUS_ADMIN_EMAIL` + `DIRECTUS_ADMIN_PASSWORD` to use the
 
 The seed is **nuke-and-recreate** — idempotent, safe to re-run. It clears the `services` domain tree (FK CASCADE removes translations, deliverables, sections) then re-creates from `fixtures/collections/services.json` via the Directus SDK.
 
+### Per-env file FK fields (slice-18k #120, #73, #86 — operational rule)
+
+Singleton + collection fields that reference Directus `directus_files` UUIDs are **per-environment**. The UUID a file gets on dev (cms.dev.yesid.dev) is different from the UUID it gets on prod (cms.yesid.dev) because each Directus env mints its own file IDs.
+
+Affected fields (slice-18 close inventory):
+- `directus_settings.project_logo` — auto-merged by `sync-push.ts` (slice-18k Codex review P2 fix)
+- `directus_settings.public_foreground` — auto-merged by `sync-push.ts`
+- `directus_settings.public_favicon` — auto-merged by `sync-push.ts`
+- `site_meta.default_og_image` — NOT auto-merged; seed-site-meta.ts uses updateSingleton which overwrites. Operator must manually re-PATCH after each `seed-site-meta` run on dev/prod.
+- `icons.svg_override` (for 5 deferred rows: alembic, dax, rest-api, ssis, ssrs) — NOT auto-merged; seed-icons.ts uses delete+create. Operator must re-upload + re-PATCH after each `seed-icons` run.
+
+Per slice-18k closure decisions, the committed fixtures for these fields are **`null`** to prevent the seed scripts from recreating FK-constraint failures on environments where the referenced UUID doesn't exist (the original `#120` pattern: settings.json had baked UUIDs `d610c3ad-...` that existed in no env, so `sync:push` failed on settings step with `RECORD_NOT_UNIQUE`).
+
+**Auto-merge protection for `directus_settings` (slice-18k sync-push.ts):** `apps/cms/scripts/sync-push.ts` reads the live env's current values for `project_logo` / `public_foreground` / `public_favicon` BEFORE invoking directus-sync push, merges any non-null live values into the committed settings.json in place (overwriting the committed null), runs the push (so live values are preserved), then restores settings.json from a backup so git stays clean. This means after step 3 below (uploading per-env brand assets + PATCHing live settings), all subsequent `bun run sync:push` runs are SAFE — the live branding survives. See `apps/cms/scripts/sync-push.ts` `mergeProtectedSettingsFields` + `preMergeProtectedSettings`.
+
+**Operational rule when bootstrapping a fresh env (or restoring after Neon PITR):**
+
+1. Run `sync:push` to provision schema + folders (will set the file-FK fields to `null` because that's what's committed).
+2. **Important pre-step for `seed-brand-assets`:** the committed `apps/cms/fixtures/assets-id-map.json` is a STALE snapshot from an early dev env. Its UUIDs (including `brand/yesid-icon.svg → d610c3ad-...`) do NOT exist in current dev or current prod — this is the same orphan UUID family that #120 nulled from settings.json. Before running `seed-brand-assets` on any env, **clear the dev keys from assets-id-map.json first** so the script re-uploads + writes env-specific UUIDs. Otherwise the script skips upload (per the `if (existing)` short-circuit at `scripts/seed-brand-assets.ts:115-118`) and downstream PATCHes target the dead UUIDs.
+3. Upload the env's brand assets:
+   - Clear stale entries from `assets-id-map.json` (or delete the file entirely; it'll be re-created by the seed). Then from the repo root:
+     ```bash
+     cd apps/cms && bun --env-file=.env run scripts/seed-brand-assets.ts
+     ```
+     (Note: do NOT use `bun --cwd ... --env-file=... run ...` — bun's flag parser rejects that combination and prints `bun run` help instead. Must `cd` into the package first.)
+   - For `site_meta.default_og_image`: upload `apps/web/static/og/default.en.png` to the `og/` folder via Directus admin UI (or a one-off upload script following the seed-brand-assets.ts pattern), then PATCH `site_meta.default_og_image` to the new UUID via admin UI or:
+     ```bash
+     curl -X PATCH "https://<env-cms-host>/items/site_meta" \
+       -H "Authorization: Bearer $DIRECTUS_ADMIN_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{"default_og_image":"<new-file-uuid>"}'
+     ```
+   - For `icons.svg_override` (5 deferred rows): upload each of `apps/cms/icons/{alembic,dax,rest-api,ssis,ssrs}.svg` to the `icons/` folder via admin UI or a one-off upload script, then PATCH each `icons` row:
+     ```bash
+     curl -X PATCH "https://<env-cms-host>/items/icons/<row-id>" \
+       -H "Authorization: Bearer $DIRECTUS_ADMIN_TOKEN" \
+       -H "Content-Type: application/json" \
+       -d '{"svg_override":"<new-file-uuid>"}'
+     ```
+4. For `settings.project_logo / public_foreground / public_favicon`: read the post-seed `assets-id-map.json` (now populated with env-specific UUIDs from step 3) and PATCH each settings field via admin UI or REST. **Do NOT use the committed assets-id-map.json values directly** — they're the stale dev snapshot.
+
+5. **Auto-merge takes over from here:** all subsequent `bun run sync:push` runs preserve the env-specific settings file FKs via the sync-push.ts merge wrapper (see "Auto-merge protection" above). No manual re-PATCH after each push is required for `directus_settings`. Manual re-PATCH IS still required for `site_meta.default_og_image` after `seed-site-meta` runs, and for `icons.svg_override` after `seed-icons` runs (those seed scripts don't have equivalent merge protection).
+
+### Existing Windows worktrees + `.gitattributes` LF enforcement (slice-18k #111)
+
+The new `.gitattributes` (committed in this slice) enforces LF for text files going forward. However, **gitattributes are only applied on checkout** — existing Windows worktrees that already have CRLF copies of `DESIGN.md`, `apps/web/src/app.css`, `apps/web/src/lib/styles/tokens.css`, `apps/web/src/lib/motion/tokens.ts`, etc., stay unchanged after pulling slice-18k.
+
+If `bun --cwd packages/tokens test` still fails on Windows after pulling slice-18k, run the one-time renormalize:
+
+```bash
+git add --renormalize .
+git status --short  # confirm any *.md/*.css/*.ts files were re-staged with LF
+git commit -m "chore: apply .gitattributes LF normalization (slice-18k #111 follow-up)"
+```
+
+Linux/macOS worktrees are unaffected (no CRLF in tracked files to begin with).
+
+**Why not just commit the dev UUID:** because seeding prod from the committed fixture would set prod's `site_meta.default_og_image` to dev's UUID, which prod's `directus_files` doesn't have → FK constraint error on next seed (re-creates #120). The null + per-env PATCH rule is the only setup that survives `sync:push` cleanly across all envs.
+
+**Why not refactor to use `assets-id-map.json` for these fields:** would require teaching `seed-site-meta.ts` (and any other singleton seed touching file FKs) to resolve `@assets-map:<key>` sentinels at payload-construction time. The refactor is in scope for any future slice that adds substantial new file-FK fields; for slice-18 close it was rejected as scope-enlarging for a single field with graceful consumer fallback (web `<SeoHead>` resolves null `default_og_image` to static `/og/default.{locale}.png`).
+
 ### Asset migration (one-off, Slice 18 Task 9)
 
 Bulk-upload `yesid.dev/static/images/*` into Directus-managed R2 storage. Reads `fixtures/assets-manifest.json` for metadata + target folders; walks the source tree for the binaries.

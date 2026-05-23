@@ -1,9 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import ServiceNav from './ServiceNav.svelte';
+import { serviceFactory } from '../../../tests/factories';
 
-const mockPrev = { id: 'sql-development', title: { en: 'SQL Development & Optimization' }, description: { en: '' }, station: 1, relatedProjects: [] };
-const mockNext = { id: 'analytics-reporting', title: { en: 'Analytics & Reporting Systems' }, description: { en: '' }, station: 3, relatedProjects: [] };
+const mockPrev = serviceFactory.build({
+	id: 'sql-development',
+	title: { en: 'SQL Development & Optimization' },
+	description: { en: '' },
+	station: 1,
+});
+const mockNext = serviceFactory.build({
+	id: 'analytics-reporting',
+	title: { en: 'Analytics & Reporting Systems' },
+	description: { en: '' },
+	station: 3,
+});
 
 describe('ServiceNav', () => {
 	it('renders prev and next links', () => {

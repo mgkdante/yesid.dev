@@ -19,9 +19,9 @@ describe('scripts/lib/sdk.ts', () => {
 	});
 
 	describe('defaultDirectusUrl', () => {
-		it('returns cms.yesid.dev fallback when PUBLIC_DIRECTUS_URL unset', () => {
+		it('returns cms.dev.yesid.dev fallback when PUBLIC_DIRECTUS_URL unset (slice-18m P6 flip)', () => {
 			delete process.env.PUBLIC_DIRECTUS_URL;
-			expect(defaultDirectusUrl()).toBe('https://cms.yesid.dev');
+			expect(defaultDirectusUrl()).toBe('https://cms.dev.yesid.dev');
 		});
 
 		it('returns PUBLIC_DIRECTUS_URL when set', () => {

@@ -35,11 +35,15 @@ describe('Footer', () => {
 	});
 
 	it('renders links to Services, Projects, Blog, Stack, About, Contact', () => {
+		// slice-18m: nav order is CMS-controlled (editors set `sort` per row in
+		// Directus). Assert SET membership, not order.
 		render(Footer);
 		const nav = screen.getByRole('navigation', { name: /footer navigation/i });
 		const navLinks = nav.querySelectorAll('a');
 		const hrefs = Array.from(navLinks).map((a) => a.getAttribute('href'));
-		expect(hrefs).toEqual(['/services', '/projects', '/tech-stack', '/blog', '/about', '/contact']);
+		expect(new Set(hrefs)).toEqual(
+			new Set(['/services', '/projects', '/tech-stack', '/blog', '/about', '/contact']),
+		);
 	});
 
 	it('renders GitHub social link with target=_blank', () => {

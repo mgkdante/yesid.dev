@@ -52,7 +52,7 @@
 		<div class="strip-separator" aria-hidden="true"></div>
 		<div class="strip-links" use:scrollChain>
 			{#each projects as project (project.slug)}
-				<a href="/projects/{project.slug}" class="strip-link">
+				<a href="/projects/{project.slug}" class="strip-link tap-feedback">
 					<span class="strip-dot" aria-hidden="true"></span>
 					<span class="strip-name">{resolveLocale(project.title, 'en')}</span>
 				</a>
@@ -141,6 +141,8 @@
 		font-weight: 600;
 		white-space: nowrap;
 		transition: opacity var(--duration-fast);
+		padding-block: 12px;
+		min-height: 44px;
 	}
 	.strip-link:hover {
 		opacity: 0.7;

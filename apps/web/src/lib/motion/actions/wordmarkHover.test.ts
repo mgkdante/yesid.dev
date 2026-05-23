@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+// Mock isTouchDevice so touch-bail tests can control the return value
+vi.mock('$lib/motion/utils/device.js', () => ({
+	isTouchDevice: vi.fn().mockReturnValue(false)
+}));
+
 // Mock GSAP and SplitText since jsdom can't run them
 vi.mock('$lib/motion/utils/gsap.js', () => {
 	const timelineMock = {
@@ -123,5 +128,60 @@ describe('wordmarkHover action', () => {
 		wordmarkHover(el, { dotEl: dot, autoPlay: true });
 
 		expect(gsapMod.gsap.timeline).toHaveBeenCalled();
+	});
+});
+
+describe('wordmarkHover device gating', () => {
+	beforeEach(() => {
+		mockMatchMedia(false);
+		vi.resetModules();
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	it('bails on touch device (no DOM mutation)', async () => {
+		const deviceMod = await import('$lib/motion/utils/device.js');
+		(deviceMod.isTouchDevice as ReturnType<typeof vi.fn>).mockReturnValue(true);
+
+		const { wordmarkHover } = await import('./wordmarkHover.js');
+		const el = document.createElement('span');
+		el.textContent = 'wordmark';
+		const dot = document.createElement('span');
+		const before = el.innerHTML;
+
+		wordmarkHover(el, { dotEl: dot });
+
+		expect(el.innerHTML).toBe(before);
+	});
+
+	it('bails on touch device (no SplitText instantiation)', async () => {
+		const deviceMod = await import('$lib/motion/utils/device.js');
+		(deviceMod.isTouchDevice as ReturnType<typeof vi.fn>).mockReturnValue(true);
+
+		const gsapMod = await import('$lib/motion/utils/gsap.js');
+		(gsapMod.SplitText as unknown as ReturnType<typeof vi.fn>).mockClear();
+
+		const { wordmarkHover } = await import('./wordmarkHover.js');
+		const el = document.createElement('span');
+		const dot = document.createElement('span');
+
+		wordmarkHover(el, { dotEl: dot });
+
+		expect(gsapMod.SplitText).not.toHaveBeenCalled();
+	});
+
+	it('returns a valid destroy-shaped object on touch bail', async () => {
+		const deviceMod = await import('$lib/motion/utils/device.js');
+		(deviceMod.isTouchDevice as ReturnType<typeof vi.fn>).mockReturnValue(true);
+
+		const { wordmarkHover } = await import('./wordmarkHover.js');
+		const el = document.createElement('span');
+		const dot = document.createElement('span');
+
+		const result = wordmarkHover(el, { dotEl: dot });
+
+		expect(typeof result.destroy).toBe('function');
 	});
 });

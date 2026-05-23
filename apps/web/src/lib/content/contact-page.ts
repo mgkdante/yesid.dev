@@ -1,63 +1,89 @@
+// ----------------------------------------------------------------------
+// GENERATED FILE — do not edit by hand.
+//
+// /contact page content (terminals, validation, success states).
+//
+// Source: live Directus CMS state via `bun run export:fallbacks`
+// (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
+// apps/web's `prebuild` hook. Commits surface as CMS-content diffs.
+// ----------------------------------------------------------------------
+
 import type { ContactContent } from '$lib/types';
-import { siteMeta } from './site-meta.js';
 
 export const contactContent: ContactContent = {
-	pageTitle: { en: 'Contact' },
-	stationLabel: { en: 'NEXT STOP: YOU' },
-	sendErrorMessage: { en: 'Failed to send message. Please try again.' },
-
-	// HTML <title> + <meta description> for /contact. Extracted in 17b-7k.
-	meta: {
-		title: { en: 'Contact — yesid.' },
-		description: {
-			en: 'Get in touch for freelance data engineering, database development, and digital infrastructure consulting.',
+	formTerminal: {
+		command: '$ yesid --contact',
+		commandOutput: { en: 'Opening contact form...' },
+		fields: {
+			email: {
+				label: 'email',
+				placeholder: { en: 'you@company.com' },
+			},
+			message: {
+				label: 'message',
+				placeholder: { en: 'Tell me about your project...' },
+			},
+			name: {
+				label: 'name',
+				placeholder: { en: 'Your name' },
+			},
 		},
+		submitLabel: { en: 'send --message →' },
+		title: 'yesid@mtl ~ /contact',
 	},
-
 	infoTerminal: {
-		title: 'yesid@mtl ~ /info',
 		command: '$ yesid --info',
 		location: { en: 'Montreal, QC, Canada' },
 		responseTime: { en: '~24h response time' },
 		sectionLabels: {
-			location: { en: 'LOCATION' },
 			connect: { en: 'CONNECT' },
+			location: { en: 'LOCATION' },
 		},
+		title: 'yesid@mtl ~ /info',
 	},
-
-	formTerminal: {
-		title: 'yesid@mtl ~ /contact',
-		command: '$ yesid --contact',
-		commandOutput: { en: 'Opening contact form...' },
-		fields: {
-			name: { label: 'name', placeholder: { en: 'Your name' } },
-			email: { label: 'email', placeholder: { en: 'you@company.com' } },
-			message: { label: 'message', placeholder: { en: 'Tell me about your project...' } },
+	meta: {
+		description: {
+			en: 'Get in touch for freelance data engineering, database development, and digital infrastructure consulting.',
 		},
-		submitLabel: { en: 'send --message →' },
+		title: { en: 'Contact — yesid.' },
 	},
-
-	validation: {
-		required: { en: 'required — {field} cannot be empty' },
-		invalidEmail: { en: 'invalid — enter a valid email address' },
-		errorSummary: { en: '{count} errors — fix and retry' },
-	},
-
+	pageTitle: { en: 'Contact' },
+	sendErrorMessage: { en: 'Failed to send message. Please try again.' },
+	socials: [
+		{
+			href: 'mailto:contact@yesid.dev',
+			icon: 'email',
+			label: 'Email',
+		},
+		{
+			href: 'https://github.com/mgkdante',
+			icon: 'github',
+			label: 'GitHub',
+		},
+		{
+			href: 'https://www.linkedin.com/in/otaloray/',
+			icon: 'linkedin',
+			label: 'LinkedIn',
+		},
+	],
+	stationLabel: { en: 'NEXT STOP: YOU' },
 	success: {
-		validating: { en: 'Validating fields...' },
-		sending: { en: 'Sending message...' },
-		sent: { en: 'Message sent successfully!' },
-		responseTime: { en: "I'll get back to you within 24h" },
+		fieldOk: { en: 'OK' },
 		meanwhile: { en: 'Meanwhile, check out my {work} or {blog}' },
 		resetLabel: { en: 'reset --form' },
-		fieldOk: { en: 'OK' },
+		responseTime: { en: 'I\'ll get back to you within 24h' },
+		sending: { en: 'Sending message...' },
+		sent: { en: 'Message sent successfully!' },
+		validating: { en: 'Validating fields...' },
 	},
-
-	socials: [
-		{ label: 'Email', href: `mailto:${siteMeta.links.email}`, icon: 'email' },
-		{ label: 'GitHub', href: siteMeta.links.github, icon: 'github' },
-		{ label: 'LinkedIn', href: siteMeta.links.linkedin ?? '', icon: 'linkedin' },
-	],
-
+	validation: {
+		errorSummary: { en: '{count} errors — fix and retry' },
+		invalidEmail: { en: 'invalid — enter a valid email address' },
+		required: { en: 'required — {field} cannot be empty' },
+	},
 	web3formsKey: '6887fd90-3348-4d31-ba03-bc0e285697b6',
 };
+
+// Re-export hand-written companion module so consumers can keep importing
+// chrome / helpers / type defs from the original path 'contact-page'.
+export * from './contact-page.companion';

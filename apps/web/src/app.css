@@ -31,6 +31,48 @@ select {
 	appearance: none;
 }
 
+/* slice-19 Phase 3: tap-feedback primitive layer (Layer 1).
+   Pair with motion/actions/pressBounce + tapRipple for nuanced cases (Layer 2).
+   Reduced-motion preference disables transitions; the press style still applies
+   on :active so users see a state change without animation timing. */
+@utility tap-press {
+	transition:
+		scale 120ms cubic-bezier(0.2, 0, 0, 1),
+		opacity 120ms cubic-bezier(0.2, 0, 0, 1);
+
+	&:active {
+		scale: 0.97;
+		opacity: 0.92;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+}
+
+@utility tap-feedback {
+	transition: opacity 120ms ease-out;
+
+	&:active {
+		opacity: 0.7;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+}
+
+/* slice-19 Phase 3: tap-ripple expand keyframe — consumed by motion/actions/tapRipple.ts.
+   Global @keyframes (not inside @utility) so the inline animation: ... in the ripple span
+   can reference it. The action gates on isTouchDevice + isPrefersReducedMotion before
+   appending the span, so no reduced-motion override is needed here. */
+@keyframes tap-ripple-expand {
+	to {
+		transform: scale(1);
+		opacity: 0;
+	}
+}
+
 /* shadcn-svelte component animations */
 @import 'tw-animate-css';
 
