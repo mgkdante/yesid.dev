@@ -72,6 +72,7 @@
 		"@fontsource-variable/jetbrains-mono": "^5.2.8",
 		"@iconify/svelte": "^5.2.1",
 		"@repo/shared": "workspace:*",
+		"embla-carousel-wheel-gestures": "^8.1.0",
 		"gsap": "^3.14.2",
 		"lenis": "^1.3.21",
 		"marked": "^17.0.6",

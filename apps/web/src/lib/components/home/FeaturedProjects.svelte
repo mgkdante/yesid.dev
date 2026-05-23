@@ -11,6 +11,7 @@
 -->
 <script lang="ts">
 	import emblaCarouselSvelte from 'embla-carousel-svelte';
+	import WheelGesturesPlugin from 'embla-carousel-wheel-gestures';
 	import type { EmblaCarouselType } from 'embla-carousel';
 	import { resolveLocale } from '$lib/utils';
 	import { getProjectBySlug } from '$lib/content';
@@ -94,8 +95,10 @@
 	data-testid="proof-reel-section"
 	class="proof-reel-section relative px-[var(--space-page-x)] lg:min-h-dvh lg:flex lg:flex-col lg:justify-center"
 >
-	<!-- Embla viewport — overflow hidden, slides translated by the library. -->
-	<div class="embla" use:emblaCarouselSvelte={{ options: emblaOptions, plugins: [] }} onemblaInit={onEmblaInit}>
+	<!-- Embla viewport — overflow hidden, slides translated by the library.
+	     WheelGesturesPlugin enables horizontal trackpad swipes / mouse-wheel
+	     scrolling to advance the carousel. -->
+	<div class="embla" use:emblaCarouselSvelte={{ options: emblaOptions, plugins: [WheelGesturesPlugin()] }} onemblaInit={onEmblaInit}>
 		<div class="embla__container">
 			{#each visibleProjects as project, i}
 				{@const title = resolveLocale(project.title, 'en')}
@@ -207,13 +210,18 @@
 
 	.embla__container {
 		display: flex;
-		gap: 1.25rem;
 		touch-action: pan-y pinch-zoom;
 	}
 
+	/* Per-slide margin instead of container `gap`. Embla's loop wraps slides
+	   via CSS transforms — flex `gap` doesn't apply across the loop seam,
+	   so card 1 ends up flush against card 5 with no spacing. Margin-right
+	   on every slide guarantees the gap shows up everywhere, including the
+	   wrap-around. */
 	.embla__slide {
 		flex: 0 0 clamp(340px, 44vw, 720px);
 		min-width: 0;
+		margin-right: 1.25rem;
 	}
 
 	/* Card frame — brand-aligned card-surface pattern. Grid with overlap:
