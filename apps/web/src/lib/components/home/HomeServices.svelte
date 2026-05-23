@@ -81,7 +81,7 @@
 				>
 					<div
 						class="services-card relative overflow-hidden"
-						use:cursorGlow={{ intensity: 0.1 }}
+						use:cursorGlow
 						use:cardParallax
 					>
 						<!-- Icon zone: centered SVG hero with radial glow + marker. -->
@@ -274,11 +274,10 @@
 		align-items: center;
 		justify-content: center;
 		/* Icon drifts toward the cursor via cardParallax's ±4px clamp.
-		   1.5x multiplier (vs the Magazine title's 2.5x) keeps the effect
-		   subtle on the smaller icon canvas. */
+		   3x multiplier → effective drift ±12px on the icon canvas. */
 		transform: translate(
-			calc(var(--parallax-x, 0px) * 1.5),
-			calc(var(--parallax-y, 0px) * 1.5)
+			calc(var(--parallax-x, 0px) * 3),
+			calc(var(--parallax-y, 0px) * 3)
 		);
 		transition: transform 180ms var(--ease-default);
 	}
