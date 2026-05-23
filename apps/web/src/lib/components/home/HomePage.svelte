@@ -18,7 +18,6 @@
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
-	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
 	import type {
 		HeroContent,
 		HeroAnimContent,
@@ -58,30 +57,21 @@
 		initialHeroData,
 	}: Props = $props();
 
-	// Section + rotated-title bindings for crescendo scrubs (desktop only).
+	// Section bindings retained for upcoming slice-23 tasks (sectionGlow /
+	// backgroundBreathing). Crescendo scrubs were removed from the rotated
+	// titles per operator feedback — titles are sticky-only without scale
+	// animation, so the visual no longer overflows section bounds.
 	let projectsSectionEl = $state<HTMLElement>(undefined!);
-	let projectsTitleEl = $state<HTMLElement>(undefined!);
 	let servicesSectionEl = $state<HTMLElement>(undefined!);
-	let servicesTitleEl = $state<HTMLElement>(undefined!);
 	let closerSectionEl = $state<HTMLElement>(undefined!);
-	let closerTitleEl = $state<HTMLElement>(undefined!);
 
 	let destroyFns: Array<() => void> = [];
 
 	onMount(() => {
 		if (!browser) return;
-		// Rotated titles are display:none below 1024px — skip wiring on mobile.
-		if (window.matchMedia('(max-width: 1023px)').matches) return;
-
-		if (projectsTitleEl && projectsSectionEl) {
-			destroyFns.push(createCrescendoScrub(projectsTitleEl, { section: projectsSectionEl }));
-		}
-		if (servicesTitleEl && servicesSectionEl) {
-			destroyFns.push(createCrescendoScrub(servicesTitleEl, { section: servicesSectionEl }));
-		}
-		if (closerTitleEl && closerSectionEl) {
-			destroyFns.push(createCrescendoScrub(closerTitleEl, { section: closerSectionEl }));
-		}
+		// Reserved for slice-23 Tasks 12 + 13: register sectionGlow +
+		// backgroundBreathing on projectsSectionEl, servicesSectionEl,
+		// closerSectionEl here. No setup currently active.
 	});
 
 	onDestroy(() => {
@@ -106,7 +96,7 @@
 
 <!-- Section 3: Featured Projects — rotated title LEFT -->
 <section bind:this={projectsSectionEl} class="home-section home-section--left">
-	<div bind:this={projectsTitleEl} class="rotated-title rotated-title--left">
+	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading="Projects" />
 	</div>
 	<div class="home-section-content">
@@ -124,7 +114,7 @@
 	<div class="home-section-content">
 		<HomeServices {servicesGrid} />
 	</div>
-	<div bind:this={servicesTitleEl} class="rotated-title rotated-title--right">
+	<div class="rotated-title rotated-title--right">
 		<SectionHeading heading="Services" />
 	</div>
 </section>
@@ -133,7 +123,7 @@
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
 <section bind:this={closerSectionEl} class="home-section home-section--left">
-	<div bind:this={closerTitleEl} class="rotated-title rotated-title--left">
+	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading="Terminus" />
 	</div>
 	<div class="home-section-content">
@@ -152,19 +142,18 @@
 	   `max-height`. */
 	.rotated-title {
 		position: sticky;
-		/* Sticky offset shifted up by ~10dvh from center to absorb the
-		   crescendoScrub's maxScale 1.4 visual overflow (= (1.4-1) × 50dvh / 2
-		   = 10dvh per side). With this shift the scaled visual lands exactly
-		   at the section's bottom edge on a 100dvh section — no clip, no
-		   leak. Math: layout box 40dvh→90dvh, scaled @ 1.4 → 30dvh→100dvh. */
-		top: calc(50% - 10dvh);
+		top: 50%;
+		/* Capped at 50dvh so the title leaves room for sticky to engage at
+		   top: 50% within a ~100dvh section (sticky's max position is
+		   `containing-block-bottom - element-height`). Physical `max-height`
+		   here, not `max-block-size`, because vertical-rl writing-mode flips
+		   the block axis to horizontal. */
 		max-height: 50dvh;
 		writing-mode: vertical-rl;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		white-space: nowrap;
-		transform-origin: center center;
 	}
 
 	/* Left side: rotate 180° (reads bottom → top) */
