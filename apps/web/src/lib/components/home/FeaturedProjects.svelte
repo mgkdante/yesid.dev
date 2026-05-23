@@ -233,7 +233,7 @@
 		border-radius: var(--radius-lg);
 		padding: 0;
 		margin: 0;
-		height: clamp(34rem, 78dvh, 56rem);
+		height: clamp(32rem, 70dvh, 50rem);
 		display: grid;
 		/* 4:1 ratio per design — image takes 4/5 of card height, footer 1/5.
 		   Explicit fr ratio (not 1fr/auto) so the footer scales with the
@@ -492,6 +492,12 @@
 	   above — those are locked.
 	   ═════════════════════════════════════════════════════════════════ */
 	@media (max-width: 767px) {
+		/* Extra padding-block on mobile so the section breathes between the
+		   adjacent <Separator /> bars and the carousel content. */
+		.proof-reel-section {
+			padding-block: clamp(2.5rem, 6dvh, 4rem);
+		}
+
 		/* Card: same 4:1 (image:footer) layout as desktop, just smaller.
 		   Fixed clamp height + explicit fr ratio so every card has the
 		   same image-row size and footer-row size regardless of content. */
