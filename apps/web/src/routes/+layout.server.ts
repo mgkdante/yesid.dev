@@ -26,14 +26,13 @@ import { navLinks as staticNavLinks, menuItems as staticMenuItems, errorPageCont
 import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
 import type { NavLink, ErrorPageContent } from '$lib/content/nav';
 
-const PUBLIC_CDN_CACHE_CONTROL = 'max-age=60, stale-while-revalidate=300';
+// CDN cache-control headers are set centrally in hooks.server.ts via
+// response.headers.set (not setHeaders). Setting them here too triggered a
+// runtime "header is already set" error on Vercel — the adapter-vercel
+// runtime appears to call setHeaders internally for caching, conflicting
+// with the manual setHeaders call. Single source of truth: hooks.server.ts.
 
-export const load: LayoutServerLoad = async ({ route, params, locals, setHeaders }) => {
-	setHeaders({
-		'cdn-cache-control': PUBLIC_CDN_CACHE_CONTROL,
-		'vercel-cdn-cache-control': PUBLIC_CDN_CACHE_CONTROL,
-	});
-
+export const load: LayoutServerLoad = async ({ route, params, locals }) => {
 	const routeId = route.id ?? '/__error';
 	const locale = DEFAULT_LOCALE;
 	const ctx = { pageCache: locals.pageCache };
