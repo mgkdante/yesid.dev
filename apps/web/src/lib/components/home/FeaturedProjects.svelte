@@ -162,7 +162,7 @@
 										<span
 											data-testid="proof-tag"
 											class="proof-tag"
-											use:magnetic={{ strength: 2, radius: 30 }}
+											use:magnetic={{ strength: 5, radius: 60 }}
 										>{abbrev(tech)}{ti < project.stack.length - 1 ? ' ·' : ''}</span>
 									{/each}
 								</div>
@@ -212,10 +212,16 @@
 	}
 
 	/* Embla viewport. The library translates slides inside; the viewport
-	   clips the overflow. */
+	   clips the overflow.
+	   overflow-x: clip + overflow-y: visible so the hover-lift on
+	   .proof-card (translateY(-3px)) doesn't get chopped off at the
+	   top edge. clip is non-scrollable and doesn't force overflow-y
+	   to auto, unlike `hidden`. */
 	.embla {
-		overflow: hidden;
+		overflow-x: clip;
+		overflow-y: visible;
 		margin-bottom: 1.5rem;
+		padding-block: 0.5rem;
 	}
 
 	.embla__container {
@@ -356,7 +362,12 @@
 		letter-spacing: -0.02em;
 		text-transform: uppercase;
 		pointer-events: none;
-		transform: translate(var(--parallax-x, 0), var(--parallax-y, 0));
+		/* 2.5× multiplier on top of cardParallax's ±4px clamp → effective
+		   drift of ±10px. Stronger response without forking the primitive. */
+		transform: translate(
+			calc(var(--parallax-x, 0px) * 2.5),
+			calc(var(--parallax-y, 0px) * 2.5)
+		);
 		transition: transform 180ms var(--ease-default);
 	}
 
