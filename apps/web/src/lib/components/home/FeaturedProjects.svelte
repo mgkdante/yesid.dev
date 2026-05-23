@@ -227,7 +227,10 @@
 		margin: 0;
 		height: clamp(34rem, 78dvh, 56rem);
 		display: grid;
-		grid-template-rows: 1fr auto;
+		/* 4:1 ratio per design — image takes 4/5 of card height, footer 1/5.
+		   Explicit fr ratio (not 1fr/auto) so the footer scales with the
+		   card instead of being content-sized. */
+		grid-template-rows: 4fr 1fr;
 		grid-template-columns: 1fr;
 		transition:
 			border-color var(--duration-normal) var(--ease-default),
@@ -358,7 +361,11 @@
 	.proof-footer {
 		padding: 1.75rem 1.75rem;
 		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
-		min-height: 7rem;
+		/* Dropped explicit min-height so the grid's 1fr ratio dictates row
+		   height instead of being bumped by content constraints. */
+		min-height: 0;
+		height: 100%;
+		box-sizing: border-box;
 	}
 
 	.proof-metric-before {
