@@ -297,10 +297,6 @@ export const projects: readonly Project[] = [
 			},
 		},
 		featured: false,
-		impactMetric: {
-			label: { en: 'Query time reduction' },
-			value: '73%',
-		},
 		oneLiner: {
 			en: 'Automated SQL Server query analysis tool that identifies slow queries and suggests index improvements.',
 		},
@@ -349,10 +345,6 @@ export const projects: readonly Project[] = [
 			},
 		},
 		featured: false,
-		impactMetric: {
-			label: { en: 'Spreadsheets replaced' },
-			value: '6',
-		},
 		oneLiner: {
 			en: 'Internal operations dashboard for managing inventory and approval workflows.',
 		},
