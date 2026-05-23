@@ -106,7 +106,7 @@
 				{@const metricLabel = metric ? resolveLocale(metric.label, 'en') : ''}
 				{@const imageUrl = proofReelContent.images[project.slug as keyof typeof proofReelContent.images]}
 				<div class="embla__slide">
-					<div class="proof-card group relative overflow-hidden">
+					<div class="proof-card group relative overflow-hidden" data-active={currentIndex === i}>
 						<!-- Image: full-bleed in grid row 1. -->
 						<button
 							type="button"
@@ -301,15 +301,28 @@
 		}
 	}
 
-	/* Desktop hover: image turns color, overlay fades. */
+	/* Image colour states:
+	   - hover (desktop) → in color
+	   - mobile-tap toggle → in color
+	   - the currently-active carousel slide → in color (persistent
+	     spotlight on the focused project on both desktop and mobile).
+	   - Active slide also gets a brighter border + heavier glow to
+	     reinforce the "you're looking at this one" cue. */
 	.proof-card:hover .proof-img,
-	.proof-image.image-active .proof-img {
-		filter: grayscale(0) brightness(0.85);
+	.proof-image.image-active .proof-img,
+	.proof-card[data-active='true'] .proof-img {
+		filter: grayscale(0) brightness(0.95);
 	}
 
 	.proof-card:hover .proof-img-overlay,
-	.proof-image.image-active .proof-img-overlay {
-		opacity: var(--opacity-subtle);
+	.proof-image.image-active .proof-img-overlay,
+	.proof-card[data-active='true'] .proof-img-overlay {
+		opacity: 0;
+	}
+
+	.proof-card[data-active='true'] {
+		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
+		box-shadow: var(--shadow-section);
 	}
 
 	/* Title — overlays the image's bottom via grid overlap on desktop;

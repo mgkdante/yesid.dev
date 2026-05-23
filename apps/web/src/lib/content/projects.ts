@@ -138,11 +138,13 @@ export const projects: readonly Project[] = [
 		},
 		featured: false,
 		impactMetric: {
+			before: '2 days',
 			label: { en: 'Reporting across 12 depts' },
 			value: '15 min',
 		},
 		impactMetrics: [
 			{
+				before: '2 days',
 				label: { en: 'Reporting across 12 depts' },
 				value: '15 min',
 			},
