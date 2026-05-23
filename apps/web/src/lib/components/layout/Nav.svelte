@@ -88,7 +88,7 @@
 		<a
 			href="/"
 			data-testid="nav-wordmark"
-			class="inline-flex min-h-11 items-baseline font-heading text-lg font-bold text-[var(--foreground)]"
+			class="inline-flex min-h-11 items-center font-heading text-lg font-bold text-[var(--foreground)]"
 		>
 			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
 				data-testid="nav-period"
