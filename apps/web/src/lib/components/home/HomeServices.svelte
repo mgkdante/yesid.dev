@@ -18,6 +18,8 @@
 
 	import { getVisibleServices } from '$lib/content';
 	import { morphHover, pressBounce, cursorGlow, cardParallax } from '$lib/motion/actions';
+	import { gsap, loadDrawSVG } from '$lib/motion/utils/gsap';
+	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import type { ServicesGridContent } from '$lib/types';
@@ -38,19 +40,51 @@
 	onMount(() => {
 		if (!browser || !sectionEl) return;
 
+		// Slice-23: kick off DrawSVG plugin load in parallel with the SVG
+		// fetches so the draw-in animation can fire as soon as both are
+		// ready (no eager-await stalling the icon injection).
+		const reducedMotion = isPrefersReducedMotion();
+		const drawPluginPromise: Promise<void> = reducedMotion
+			? Promise.resolve()
+			: loadDrawSVG();
+
 		const panels = sectionEl.querySelectorAll('[data-testid="services-svg-panel"]');
 		panels.forEach(async (panel, i) => {
 			const service = services[i];
 			if (!service?.svg) return;
 
 			try {
-				const res = await fetch(`/svg/services/${service.svg}`);
+				const [res] = await Promise.all([
+					fetch(`/svg/services/${service.svg}`),
+					drawPluginPromise,
+				]);
 				if (!res.ok) return;
 				const svgText = await res.text();
 
 				const wrapper = panel.querySelector('.svg-inline-wrapper');
 				if (!wrapper) return;
 				wrapper.innerHTML = svgText;
+
+				// Animate each path / line / shape from 0% draw to 100%, staggered
+				// per card so the 6 icons cascade in rather than fire together.
+				if (!reducedMotion) {
+					const svg = wrapper.querySelector('svg');
+					if (svg) {
+						const drawable = svg.querySelectorAll(
+							'path, line, polyline, polygon, rect, circle, ellipse',
+						);
+						if (drawable.length > 0) {
+							gsap.set(drawable, { drawSVG: '0%' });
+							gsap.to(drawable, {
+								drawSVG: '100%',
+								duration: 1.1,
+								stagger: 0.04,
+								ease: 'power2.inOut',
+								delay: i * 0.12,
+							});
+						}
+					}
+				}
 
 				svgReady[i] = true;
 			} catch {
