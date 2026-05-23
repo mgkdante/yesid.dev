@@ -110,7 +110,7 @@
 					<div
 						class="proof-card group relative overflow-hidden"
 						data-active={currentIndex === i}
-						use:cursorGlow={{ intensity: 0.1 }}
+						use:cursorGlow
 						use:cardParallax
 					>
 						<!-- Image: full-bleed in grid row 1. -->
