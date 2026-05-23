@@ -141,7 +141,7 @@
 					{@const metric = project.impactMetric}
 					{@const metricLabel = metric ? resolveLocale(metric.label, 'en') : ''}
 					{@const imageUrl = proofReelContent.images[project.slug as keyof typeof proofReelContent.images]}
-					<div class="proof-card group relative flex flex-col overflow-hidden">
+					<div class="proof-card group relative overflow-hidden">
 						<!-- Image: full-bleed, B&W → color hover/tap toggle. -->
 						<button
 							type="button"
@@ -159,9 +159,10 @@
 							/>
 							<div class="proof-img-overlay absolute inset-0 bg-black/15 transition-opacity duration-500"></div>
 							<!-- Gradient overlay for title legibility. -->
-							<div class="proof-image-gradient pointer-events-none absolute inset-x-0 bottom-0 h-[60%]"></div>
-							<!-- 01 / FEATURED marker on the lower third of the image. -->
-							<div class="proof-marker absolute left-[1.25rem] bottom-[4.25rem] z-[3]">
+							<div class="proof-image-gradient pointer-events-none absolute inset-x-0 bottom-0 h-[55%]"></div>
+							<!-- 01 / FEATURED marker — top-left of image, well clear of the
+							     title overlay at the bottom. -->
+							<div class="proof-marker absolute left-[1.75rem] top-[1.5rem] z-[3]">
 								{String(i + 1).padStart(2, '0')} / FEATURED
 							</div>
 						</button>
@@ -245,6 +246,13 @@
 		border-radius: var(--radius-lg);
 		padding: 0;
 		margin: 0;
+		/* Explicit height + grid rows so every card has the SAME total
+		   height, image row, and text row — image never floats with a gap
+		   above it, and the text section is consistent across cards
+		   regardless of content variation. */
+		height: clamp(34rem, 78dvh, 56rem);
+		display: grid;
+		grid-template-rows: clamp(22rem, 56dvh, 38rem) 1fr;
 		transition:
 			border-color var(--duration-normal) var(--ease-default),
 			box-shadow var(--duration-normal) var(--ease-default);
@@ -255,9 +263,7 @@
 		box-shadow: var(--shadow-section);
 	}
 
-	/* Button reset for image area. Explicit zero on all spacing axes so the
-	   button hugs the card's rounded top edge without any user-agent or
-	   inherited margin sneaking in. */
+	/* Image button: fills row 1 of the grid exactly. No spacing of its own. */
 	button.proof-image {
 		appearance: none;
 		border: none;
@@ -268,12 +274,18 @@
 		text-align: start;
 		background: transparent;
 		display: block;
+		width: 100%;
+		height: 100%;
+		grid-row: 1;
 	}
 
-	/* Image height — taller magazine-style cards, 2 in view with a peek
-	   of the 3rd. Per operator direction (taller cards + bigger text). */
-	.proof-image {
-		height: clamp(22rem, 56dvh, 38rem);
+	/* Link section: fills row 2 of the grid. Internal flex column so title
+	   and footer stack with the footer pushed to the bottom. */
+	.proof-card-link {
+		grid-row: 2;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
 	}
 
 	/* Magazine gradient — fade from transparent to near-black at the bottom
@@ -282,14 +294,21 @@
 		background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
 	}
 
-	/* "01 / FEATURED" marker — brand-orange mono caption. */
+	/* "01 / FEATURED" marker — brand-orange mono caption at top-left of image. */
 	.proof-marker {
 		color: var(--primary);
 		font-family: var(--font-mono);
-		font-size: 11px;
-		letter-spacing: 0.2em;
+		font-size: 0.875rem;
+		letter-spacing: 0.22em;
 		text-transform: uppercase;
-		font-weight: 600;
+		font-weight: 700;
+	}
+
+	@media (min-width: 768px) {
+		.proof-marker {
+			font-size: 1rem;
+			letter-spacing: 0.24em;
+		}
 	}
 
 	/* Desktop hover: image turns color, overlay fades. */
@@ -333,24 +352,25 @@
 		}
 	}
 
-	/* Footer band — slim, metric on the left, tags on the right. */
+	/* Footer band — slim, metric on the left, tags on the right.
+	   All text scaled up to match the taller cards + bigger title. */
 	.proof-footer {
-		padding: 1rem 1.25rem;
-		border-top-color: #262626;
-		min-height: 4rem;
+		padding: 1.25rem 1.75rem;
+		border-top-color: color-mix(in srgb, var(--primary) 15%, transparent);
+		min-height: 5rem;
 	}
 
 	.proof-metric-before {
 		color: var(--muted-foreground);
-		font-size: 0.8125rem;
+		font-size: 1.05rem;
 		text-decoration: line-through;
-		margin-bottom: 0.125rem;
+		margin-bottom: 0.25rem;
 	}
 
 	.proof-metric-value {
 		font-family: var(--font-heading);
 		font-weight: 800;
-		font-size: 1.375rem;
+		font-size: 1.875rem;
 		line-height: 1;
 		color: var(--primary);
 		letter-spacing: -0.02em;
@@ -358,17 +378,33 @@
 
 	.proof-metric-label {
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: 0.9rem;
 		color: var(--muted-foreground);
 		text-transform: uppercase;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.1em;
 	}
 
 	.proof-tag {
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: 0.9rem;
 		color: var(--muted-foreground);
-		letter-spacing: 0.08em;
+		letter-spacing: 0.1em;
+		font-weight: 500;
+	}
+
+	@media (min-width: 768px) {
+		.proof-metric-value {
+			font-size: 2.25rem;
+		}
+		.proof-metric-label {
+			font-size: 1rem;
+		}
+		.proof-tag {
+			font-size: 1rem;
+		}
+		.proof-metric-before {
+			font-size: 1.15rem;
+		}
 	}
 
 	.proof-card-link {
@@ -388,8 +424,13 @@
 		scroll-snap-type: x mandatory;
 		scroll-behavior: smooth;
 		scrollbar-width: none;
-		padding-inline: var(--space-page-x);
+		padding-inline-start: var(--space-page-x);
 		padding-bottom: 0.5rem;
+		/* Right padding sized so the LAST card can be scroll-snapped to the
+		   viewport's leading edge — without it, card 5 caps out at the
+		   right peek slot and clicking next at counts 4/5 produces no
+		   visible movement. */
+		padding-inline-end: calc(100vw - clamp(340px, 44vw, 720px));
 	}
 	.proof-carousel::-webkit-scrollbar {
 		display: none;
