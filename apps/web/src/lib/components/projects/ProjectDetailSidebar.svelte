@@ -48,7 +48,7 @@
 			</h3>
 			<div class="flex flex-wrap gap-1.5">
 				{#each project.stack as tech}
-					<a href="/work?tag={tech}" class="no-underline">
+					<a href="/work?tag={tech}" class="tap-feedback inline-flex items-center min-h-11 px-1 no-underline">
 						<Badge variant="tag" size="xs">{tech}</Badge>
 					</a>
 				{/each}
@@ -95,7 +95,7 @@
 						href={project.liveUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="sidebar-link inline-flex items-center gap-1.5 font-mono text-xs transition-colors hover:underline"
+						class="tap-press sidebar-link inline-flex items-center gap-1.5 py-2.5 min-h-11 font-mono text-xs transition-colors hover:underline active:underline"
 						style="color: var(--primary);"
 					>
 						<!-- Arrow-up-right icon -->
@@ -110,7 +110,7 @@
 						href={project.repoUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="sidebar-link inline-flex items-center gap-1.5 font-mono text-xs transition-colors hover:underline"
+						class="tap-press sidebar-link inline-flex items-center gap-1.5 py-2.5 min-h-11 font-mono text-xs transition-colors hover:underline active:underline"
 						style="color: var(--primary);"
 					>
 						<!-- GitHub icon -->

@@ -1,25 +1,22 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import ServiceCard from './ServiceCard.svelte';
+import { serviceFactory } from '../../../tests/factories';
 
-const mockService = {
+// L1 factory + overrides for the optional detail-page fields the component renders.
+const mockService = serviceFactory.build({
 	id: 'sql-development',
 	title: { en: 'SQL Development & Optimization' },
 	subtitle: { en: '& Optimization' },
-	description: {
-		en: 'Write, refactor, and tune SQL queries across PostgreSQL and SQL Server.'
-	},
+	description: { en: 'Write, refactor, and tune SQL queries across PostgreSQL and SQL Server.' },
 	station: 1,
 	relatedProjects: [],
 	stack: ['PostgreSQL', 'SQL Server', 'T-SQL'],
 	svg: 'service-sql.svg',
 	visible: true,
 	benefitHeadline: { en: 'Queries that run in seconds, not minutes' },
-	impactMetric: {
-		value: { en: '3x' },
-		label: { en: 'faster avg query' },
-	},
-};
+	impactMetric: { value: { en: '3x' }, label: { en: 'faster avg query' } },
+});
 
 describe('ServiceCard', () => {
 	it('renders the service title with dot', () => {

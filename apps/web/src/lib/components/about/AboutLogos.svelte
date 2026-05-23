@@ -53,7 +53,7 @@
 						href={logo.url ?? undefined}
 						target={logo.url ? '_blank' : undefined}
 						rel={logo.url ? 'noopener noreferrer' : undefined}
-						class="flex items-center justify-center grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
+						class="flex items-center justify-center grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100 active:grayscale-0 active:opacity-100 {logo.url ? 'tap-press' : ''}"
 						title={logo.name}
 					>
 						<img

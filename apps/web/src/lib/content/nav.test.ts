@@ -2,23 +2,24 @@ import { describe, it, expect } from 'vitest';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 
 describe('navLinks', () => {
-	it('contains Services, Projects, Stack as primary links', () => {
+	// slice-18m: nav links are CMS-derived. Order + copy are editor-controlled,
+	// so tests assert structural validity instead of specific text/order.
+	it('contains the 3 primary nav links (Services, Projects, Stack)', () => {
 		expect(navLinks).toHaveLength(3);
-		expect(navLinks[0].label.en).toBe('Services');
-		expect(navLinks[1].label.en).toBe('Projects');
-		expect(navLinks[2].label.en).toBe('Stack');
+		const hrefs = navLinks.map((l) => l.href).sort();
+		expect(hrefs).toEqual(['/projects', '/services', '/tech-stack']);
 	});
 
-	it('has correct hrefs', () => {
-		expect(navLinks[0].href).toBe('/services');
-		expect(navLinks[1].href).toBe('/projects');
-		expect(navLinks[2].href).toBe('/tech-stack');
+	it('every link has a non-empty English label', () => {
+		for (const link of navLinks) {
+			expect(link.label.en.trim()).not.toBe('');
+		}
 	});
 
-	it('marks each link with a priority for adaptive display', () => {
-		expect(navLinks[0].priority).toBe(1);
-		expect(navLinks[1].priority).toBe(1);
-		expect(navLinks[2].priority).toBe(2);
+	it('marks each link with priority 1 or 2 for adaptive display', () => {
+		for (const link of navLinks) {
+			expect([1, 2]).toContain(link.priority);
+		}
 	});
 });
 
@@ -54,11 +55,17 @@ describe('errorPageContent', () => {
 		expect(errorPageContent.description.en).toBeTruthy();
 	});
 
-	it('has a label', () => {
-		expect(errorPageContent.label.en).toBe('ROUTE NOT FOUND');
+	it('has a non-empty label', () => {
+		// slice-18m: label text is CMS-controlled (was hand-written 'ROUTE NOT FOUND').
+		expect(errorPageContent.label.en.trim()).not.toBe('');
 	});
 
-	it('has route suggestions', () => {
-		expect(errorPageContent.suggestions.length).toBeGreaterThanOrEqual(3);
+	it('has at least one route suggestion', () => {
+		// slice-18m: editor decides how many suggestions (was hand-written 3).
+		expect(errorPageContent.suggestions.length).toBeGreaterThanOrEqual(1);
+		for (const s of errorPageContent.suggestions) {
+			expect(s.label.en.trim()).not.toBe('');
+			expect(s.href.trim()).not.toBe('');
+		}
 	});
 });

@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"prebuild": "bun ../../apps/cms/scripts/export-fallbacks.ts",
 		"build": "vite build && bun run check:sitemap",
 		"check:sitemap": "vitest run src/tests/sitemap-coverage.test.ts",
 		"og:default": "bun scripts/generate-og-default.ts",
@@ -23,6 +24,7 @@
 		"seed:services": "op run --env-file=.env -- bun scripts/seed-directus-services.ts"
 	},
 	"devDependencies": {
+		"@faker-js/faker": "^10.4.0",
 		"@gltf-transform/core": "^4.3.0",
 		"@gltf-transform/extensions": "^4.3.0",
 		"@gltf-transform/functions": "^4.3.0",
@@ -42,6 +44,7 @@
 		"embla-carousel-svelte": "^8.6.0",
 		"formsnap": "^2.0.1",
 		"happy-dom": "^20.8.9",
+		"interface-forge": "^2.6.6",
 		"jsdom": "^29.0.1",
 		"layerchart": "2.0.0-next.48",
 		"meshoptimizer": "^1.1.0",

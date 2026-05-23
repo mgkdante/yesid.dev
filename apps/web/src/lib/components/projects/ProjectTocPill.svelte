@@ -106,7 +106,7 @@
 {#if visible}
   <div class="toc-pill-container lg:hidden" data-testid="project-toc-pill">
     <button
-      class="toc-pill"
+      class="tap-press toc-pill"
       onclick={() => (drawerOpen = !drawerOpen)}
       aria-label={tocOpenAria}
     >
@@ -131,7 +131,7 @@
         <nav class="toc-drawer-nav flex flex-col gap-0.5 p-4">
           {#each tocEntries as entry}
             <button
-              class="toc-drawer-item"
+              class="tap-press toc-drawer-item"
               class:active={activeId === entry.id}
               onclick={() => scrollTo(entry.id)}
             >
@@ -148,7 +148,7 @@
             <!-- Nested sub-headings -->
             {#each entry.children as child}
               <button
-                class="toc-drawer-item toc-drawer-sub"
+                class="tap-press toc-drawer-item toc-drawer-sub"
                 class:active={activeId === child.id}
                 onclick={() => scrollTo(child.id)}
               >
@@ -165,7 +165,7 @@
 <style>
   .toc-pill-container {
     position: fixed;
-    bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
     z-index: var(--z-sheet);
@@ -175,7 +175,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 20px;
+    padding: 12px 20px;
+    min-height: 44px;
     background: color-mix(in srgb, var(--background) 95%, transparent);
     border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
     border-radius: var(--radius-pill);
@@ -221,7 +222,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 12px;
+    padding: 12px 14px;
+    min-height: 44px;
     border: none;
     background: none;
     border-radius: 8px;

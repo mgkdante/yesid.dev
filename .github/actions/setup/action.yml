@@ -1,0 +1,50 @@
+name: Setup Bun + caches
+description: |
+  Standard CI setup for this monorepo:
+    1. setup-bun pinned via .bun-version
+    2. Restore Bun deps cache (~/.bun/install/cache, keyed by bun.lock)
+    3. Restore Turbo cache (node_modules/.cache/turbo, keyed by SHA with
+       prefix restore-keys so warm starts work)
+    4. Restore Vitest cache (apps/web/.vitest/cache — apps/cms uses bun test,
+       not Vitest, so no cache there)
+    5. `bun install --frozen-lockfile`
+
+  Caller must run `actions/checkout@v4` first.
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: .bun-version
+
+    - name: Cache Bun install cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.bun/install/cache
+        key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+        restore-keys: |
+          bun-${{ runner.os }}-
+
+    - name: Cache Turbo
+      uses: actions/cache@v4
+      with:
+        path: .turbo/cache
+        # SHA-pinned key for exact-match writes; prefix restore so warm starts
+        # pick up the most recent cache even when no exact match exists.
+        key: turbo-${{ runner.os }}-${{ github.sha }}
+        restore-keys: |
+          turbo-${{ runner.os }}-
+
+    - name: Cache Vitest
+      uses: actions/cache@v4
+      with:
+        path: apps/web/.vitest/cache
+        key: vitest-${{ runner.os }}-${{ hashFiles('bun.lock', 'apps/web/vite.config.ts') }}
+        restore-keys: |
+          vitest-${{ runner.os }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: bun install --frozen-lockfile

@@ -51,7 +51,7 @@
 			href={row.href}
 			data-testid="closer-row"
 			data-closer-row
-			class="terminal-row"
+			class="terminal-row tap-press"
 			class:terminal-row-primary={row.primary}
 			aria-label="{row.label} — {row.description}"
 			target={row.href.startsWith('http') ? '_blank' : undefined}

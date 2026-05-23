@@ -67,6 +67,11 @@ test('route /projects renders without crash', async ({ page }) => {
 });
 
 test('route /blog renders "Dispatches" heading', async ({ page }) => {
+	// slice-19 Phase 1 Task 1: this assertion targets the "SEC-BLOG / DISPATCHES"
+	// decorative ref-label in BlueprintShell, which is intentionally hidden
+	// (display:none) below 1024px. The visible mobile heading is "Blog." (different
+	// text) from BlogListingPage.svelte. Gate to desktop-chrome only.
+	test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only assertion');
 	const response = await page.goto('/blog');
 	expect(response?.status()).toBe(200);
 	// "Dispatches" is hard-coded in /blog +page.svelte — not CMS-sourced
@@ -74,6 +79,14 @@ test('route /blog renders "Dispatches" heading', async ({ page }) => {
 });
 
 test('route /contact renders contact terminals', async ({ page }) => {
+	// slice-19 Phase 1 Task 1: ContactPage renders the contact-info-terminal
+	// snippet inside BOTH a .desktop-terminals (resizable split) and a
+	// .mobile-terminals (stacked) container, with display:none toggled at the
+	// 1024px breakpoint. The .first() selector picks the .desktop-terminals
+	// instance, which is hidden below 1024px. Gate to desktop-chrome only;
+	// mobile coverage of contact-info-terminal visibility can be added in a
+	// later mobile-flow spec using a layout-aware selector.
+	test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only assertion');
 	const response = await page.goto('/contact');
 	expect(response?.status()).toBe(200);
 	// data-testid="contact-info-terminal" is rendered by ContactPage regardless

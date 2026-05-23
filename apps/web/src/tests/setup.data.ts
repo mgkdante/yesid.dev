@@ -4,6 +4,12 @@
 
 import { vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
+import { faker } from '@faker-js/faker';
+
+// Deterministic faker output for CI reproducibility (slice-17f L1 prerequisite).
+// Override per-test with `faker.seed(<n>)` if non-determinism is intentional.
+// Seed value 42 is arbitrary but stable.
+faker.seed(42);
 
 // Same $env stubs as DOM tests (see setup.dom.ts for rationale). Data-tier
 // tests run in Node so process.env exists, but it's not populated with the

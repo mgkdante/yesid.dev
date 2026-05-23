@@ -17,6 +17,7 @@
 	let { closer: closerContent }: { closer: CloserContent } = $props();
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
+	import { pressBounce } from '$lib/motion/actions';
 	import CloserGraffiti from './CloserGraffiti.svelte';
 	import CloserFloodlight from './CloserFloodlight.svelte';
 	import CloserProps from './CloserProps.svelte';
@@ -173,7 +174,7 @@
 		/>
 
 		<!-- CTA -->
-		<a href={ctaHref} data-testid="closer-cta" class="closer-cta">
+		<a href={ctaHref} data-testid="closer-cta" class="closer-cta tap-press" use:pressBounce>
 			{ctaLabel} <span class="closer-cta-arrow">-{'>'}</span>
 		</a>
 
@@ -222,7 +223,8 @@
 		font-weight: 600;
 		color: var(--accent);
 		text-decoration: none;
-		padding: 14px 28px;
+		padding: 16px 28px;
+		min-height: 44px;
 		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
 		border-radius: var(--radius-sm);
 		margin-block-end: 28px;

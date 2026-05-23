@@ -187,7 +187,7 @@
 		<!-- Capability pills -->
 		<nav class="manifesto__pills" aria-label="Capabilities">
 			{#each pills as pill}
-				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill">{pill.label}</a>
+				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback">{pill.label}</a>
 			{/each}
 		</nav>
 	</div>
@@ -355,7 +355,7 @@
 
 	/* ── Responsive ──────────────────────────────────────────────── */
 	@media (max-width: 640px) {
-		.manifesto__pill { font-size: 10px; padding: 5px 12px; }
+		.manifesto__pill { font-size: 10px; padding: 12px 16px; min-height: 44px; }
 		.manifesto__pills { gap: 6px; }
 	}
 

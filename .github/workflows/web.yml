@@ -1,28 +1,29 @@
 name: web
 
 # CI for apps/web (SvelteKit consumer deployed to Vercel).
-# Runs check + test + build via turbo. Filters to apps/web + packages/shared
-# changes; skips on cms-only changes.
+# Runs check + test + build via turbo on EVERY PR/push to main+develop.
+#
+# slice-17f Phase 7: shared setup extracted to .github/actions/setup
+# (Bun + cache restores + install). concurrency cancel-in-progress on
+# pull_request kills duplicate runs on force-push / fast follow-up commits.
+#
+# slice-17f Phase 8: path filters removed. Reason: this workflow is now a
+# REQUIRED status check on the main branch ruleset. Path-filtered workflows
+# don't run on excluded paths → the required check never reports → docs-only
+# PRs would be blocked forever. With the Phase 7 caches, cost on no-op runs
+# is ~20-30s end-to-end (FULL TURBO cache replay), so always-run is fine.
 
 on:
   push:
     branches: [main, develop]
-    paths:
-      - 'apps/web/**'
-      - 'packages/shared/**'
-      - '.github/workflows/web.yml'
-      - 'package.json'
-      - 'bun.lock'
-      - 'turbo.json'
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'apps/web/**'
-      - 'packages/shared/**'
-      - '.github/workflows/web.yml'
-      - 'package.json'
-      - 'bun.lock'
-      - 'turbo.json'
+
+# Cancel in-progress duplicate runs on PR pushes; let main/develop pushes
+# complete (we want every main commit to have a recorded build).
+concurrency:
+  group: web-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   ci:
@@ -31,13 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install dependencies (monorepo root)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: Type check (svelte-kit sync + svelte-check)
         run: bun x turbo run check --filter=@repo/web

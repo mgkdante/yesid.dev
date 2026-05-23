@@ -70,7 +70,7 @@
 		<!-- Arrow nav + counter -->
 		<div class="flex items-center justify-center gap-3 pb-1">
 			<button
-				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
+				class="tap-press flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] p-2.5 text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 				onclick={prev}
 				aria-label={prevPhotoAria}
 			>
@@ -78,7 +78,7 @@
 			</button>
 			<span class="font-mono text-caption text-[var(--muted-foreground)]">{currentIndex + 1}/{polaroids.length}</span>
 			<button
-				class="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--border)] text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
+				class="tap-press flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] p-2.5 text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 				onclick={next}
 				aria-label={nextPhotoAria}
 			>
