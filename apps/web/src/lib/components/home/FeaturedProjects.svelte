@@ -113,7 +113,14 @@
 						use:cursorGlow
 						use:cardParallax
 					>
-						<!-- Image: full-bleed in grid row 1. -->
+						<!-- Image: full-bleed in grid row 1.
+						     The button wraps the project image — image is decorative (alt="").
+						     Button's aria-label carries the accessible name including the title.
+						     Slice-23 a11y: alt={title} + aria-label="Toggle color: {title}" tripped
+						     Lighthouse's label-content-name-mismatch audit because the visible
+						     img-alt name ("Project Title") didn't match the button's accessible
+						     name ("Toggle color: Project Title"). Decorative-image pattern fixes
+						     both — no name competition, screen-reader still hears the toggle. -->
 						<button
 							type="button"
 							class="proof-image relative w-full overflow-hidden"
@@ -124,7 +131,7 @@
 						>
 							<img
 								src={imageUrl}
-								alt={title}
+								alt=""
 								class="proof-img absolute inset-0 h-full w-full object-cover grayscale brightness-[0.7] transition-all duration-500 ease-out"
 								loading="lazy"
 							/>
