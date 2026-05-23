@@ -99,6 +99,9 @@
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading="Projects" />
 	</div>
+	<div class="home-section-heading-mobile">
+		<SectionHeading heading="Projects" />
+	</div>
 	<div class="home-section-content">
 		<FeaturedProjects {proofReel} />
 	</div>
@@ -110,6 +113,9 @@
 <section bind:this={servicesSectionEl} class="home-section home-section--right relative">
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
+	</div>
+	<div class="home-section-heading-mobile">
+		<SectionHeading heading="Services" />
 	</div>
 	<div class="home-section-content">
 		<HomeServices {servicesGrid} />
@@ -124,6 +130,9 @@
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
 <section bind:this={closerSectionEl} class="home-section home-section--left">
 	<div class="rotated-title rotated-title--left">
+		<SectionHeading heading="Terminus" />
+	</div>
+	<div class="home-section-heading-mobile">
 		<SectionHeading heading="Terminus" />
 	</div>
 	<div class="home-section-content">
@@ -197,10 +206,22 @@
 		}
 	}
 
+	/* Mobile-only horizontal heading per section — the rotated vertical
+	   title is hidden below 1024px (impractical at narrow widths), so this
+	   horizontal heading takes its place at the top of each section. */
+	.home-section-heading-mobile {
+		display: none;
+	}
+
 	/* Hide rotated titles on mobile */
 	@media (max-width: 1023px) {
 		.rotated-title {
 			display: none;
+		}
+
+		.home-section-heading-mobile {
+			display: block;
+			padding: 2rem var(--space-page-x) 0.5rem;
 		}
 	}
 </style>
