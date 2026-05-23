@@ -64,23 +64,67 @@
 		return TECH_ABBR[tech] ?? tech.slice(0, 4).toUpperCase();
 	}
 
-	// Carousel controls: scroll by one card width per click.
+	// Carousel: track current index, wrap-around at boundaries, smooth scroll
+	// between adjacent cards / instant jump across the loop seam so the user
+	// experiences infinite cycling. The count display always reflects the
+	// active card (1-indexed) out of total.
 	let carouselEl = $state<HTMLDivElement | undefined>(undefined);
+	let currentIndex = $state(0);
+	const visibleProjects = $derived(projects.filter((p): p is Project => Boolean(p)));
+	const total = $derived(visibleProjects.length);
 
-	function getStep(): number {
-		if (!carouselEl) return 400;
-		const first = carouselEl.children[0] as HTMLElement | undefined;
-		if (!first) return 400;
-		const gap = parseFloat(getComputedStyle(carouselEl).columnGap || '24') || 24;
-		return first.getBoundingClientRect().width + gap;
+	function scrollToIndex(idx: number, behavior: ScrollBehavior = 'smooth') {
+		if (!carouselEl) return;
+		const card = carouselEl.children[idx] as HTMLElement | undefined;
+		if (!card) return;
+		carouselEl.scrollTo({ left: card.offsetLeft, behavior });
+		currentIndex = idx;
 	}
 
 	function scrollPrev() {
-		carouselEl?.scrollBy({ left: -getStep(), behavior: 'smooth' });
+		if (total === 0) return;
+		if (currentIndex === 0) {
+			// At the start — jump instantly to the end to keep the loop seamless.
+			scrollToIndex(total - 1, 'instant' as ScrollBehavior);
+		} else {
+			scrollToIndex(currentIndex - 1);
+		}
 	}
 
 	function scrollNext() {
-		carouselEl?.scrollBy({ left: getStep(), behavior: 'smooth' });
+		if (total === 0) return;
+		if (currentIndex === total - 1) {
+			// At the end — jump instantly to the start.
+			scrollToIndex(0, 'instant' as ScrollBehavior);
+		} else {
+			scrollToIndex(currentIndex + 1);
+		}
+	}
+
+	// Update currentIndex when the user drag-scrolls (so the count stays
+	// accurate without button presses). Debounce briefly so we read the
+	// settled scrollLeft after scroll-snap has locked onto a card.
+	let scrollDebounce: ReturnType<typeof setTimeout> | null = null;
+	function handleCarouselScroll() {
+		if (!carouselEl) return;
+		if (scrollDebounce) clearTimeout(scrollDebounce);
+		scrollDebounce = setTimeout(() => {
+			if (!carouselEl) return;
+			const cards = Array.from(carouselEl.children) as HTMLElement[];
+			if (cards.length === 0) return;
+			const scrollLeft = carouselEl.scrollLeft;
+			// Pick the card whose offsetLeft is closest to scrollLeft.
+			let nearest = 0;
+			let nearestDist = Infinity;
+			for (let i = 0; i < cards.length; i++) {
+				const dist = Math.abs(cards[i].offsetLeft - scrollLeft);
+				if (dist < nearestDist) {
+					nearest = i;
+					nearestDist = dist;
+				}
+			}
+			if (nearest !== currentIndex) currentIndex = nearest;
+		}, 120);
 	}
 </script>
 
@@ -90,7 +134,7 @@
 >
 	<!-- Horizontal carousel: 2-3 cards visible, scroll-snap on each. -->
 	<div class="proof-carousel-viewport">
-		<div class="proof-carousel" bind:this={carouselEl}>
+		<div class="proof-carousel" bind:this={carouselEl} onscroll={handleCarouselScroll}>
 			{#each projects as project, i}
 				{#if project}
 					{@const title = resolveLocale(project.title, 'en')}
@@ -153,7 +197,7 @@
 		</div>
 	</div>
 
-	<!-- Carousel controls + View all link. -->
+	<!-- Carousel controls + position counter + View all link. -->
 	<div class="proof-controls">
 		<button
 			type="button"
@@ -171,6 +215,11 @@
 		>
 			→
 		</button>
+		<div class="proof-count" aria-live="polite" data-testid="proof-count">
+			<span class="proof-count-current">{String(currentIndex + 1).padStart(2, '0')}</span>
+			<span class="proof-count-sep">/</span>
+			<span class="proof-count-total">{String(total).padStart(2, '0')}</span>
+		</div>
 		<a
 			data-testid="proof-view-all"
 			href={proofReelContent.viewAllHref}
@@ -221,10 +270,10 @@
 		display: block;
 	}
 
-	/* Image height — sized for the 100dvh section so 2 cards comfortably
-	   fit in view with a third peeking, per operator direction. */
+	/* Image height — taller magazine-style cards, 2 in view with a peek
+	   of the 3rd. Per operator direction (taller cards + bigger text). */
 	.proof-image {
-		height: clamp(16rem, 44dvh, 28rem);
+		height: clamp(22rem, 56dvh, 38rem);
 	}
 
 	/* Magazine gradient — fade from transparent to near-black at the bottom
@@ -255,14 +304,14 @@
 	}
 
 	/* Title: brand-orange, big & flashy. Below image on mobile, overlay on
-	   image on desktop. Bumped weight + size + drop-shadow per operator
-	   feedback ("bigger and flashier"). */
+	   image on desktop. Scaled up again per operator direction (taller
+	   cards → bigger title). */
 	.proof-title {
-		padding: 1.25rem 1.5rem 0.5rem;
+		padding: 1.5rem 1.75rem 0.75rem;
 		font-family: var(--font-heading);
 		font-weight: 800;
-		font-size: 1.75rem;
-		line-height: 1.1;
+		font-size: 2rem;
+		line-height: 1.05;
 		color: var(--primary);
 		letter-spacing: -0.02em;
 		text-transform: uppercase;
@@ -271,14 +320,14 @@
 	@media (min-width: 768px) {
 		.proof-title {
 			/* Pull up to overlap the image's bottom — title sits over the
-			   gradient, anchored 1.5rem from the image's bottom edge. */
-			margin-top: -4.5rem;
-			padding: 0 1.5rem 1rem;
-			font-size: 2.125rem;
+			   gradient, anchored 1.75rem from the image's bottom edge. */
+			margin-top: -5.25rem;
+			padding: 0 1.75rem 1.25rem;
+			font-size: 2.75rem;
 			color: var(--primary);
 			text-shadow:
-				0 2px 16px rgba(0, 0, 0, 0.85),
-				0 0 24px color-mix(in srgb, var(--primary) 35%, transparent);
+				0 2px 18px rgba(0, 0, 0, 0.9),
+				0 0 28px color-mix(in srgb, var(--primary) 40%, transparent);
 			position: relative;
 			z-index: 2;
 		}
@@ -382,6 +431,32 @@
 	.proof-control-btn:hover {
 		background: color-mix(in srgb, var(--primary) 10%, transparent);
 		border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+	}
+
+	/* Carousel position counter — mono caption, brand-orange. */
+	.proof-count {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.375rem;
+		margin-left: 0.5rem;
+		font-family: var(--font-mono);
+		letter-spacing: 0.15em;
+	}
+
+	.proof-count-current {
+		font-size: 1rem;
+		font-weight: 700;
+		color: var(--primary);
+	}
+
+	.proof-count-sep {
+		font-size: 0.875rem;
+		color: color-mix(in srgb, var(--primary) 40%, transparent);
+	}
+
+	.proof-count-total {
+		font-size: 0.875rem;
+		color: color-mix(in srgb, var(--primary) 50%, transparent);
 	}
 
 	.proof-view-all {
