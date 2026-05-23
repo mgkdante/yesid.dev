@@ -9,6 +9,7 @@
 // Usage: <button use:boop={{ scale: 1.05, rotation: 5, timing: 300 }}>
 
 import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
+import { isTouchDevice } from '../utils/device.js';
 
 export interface BoopParams {
 	/** Scale multiplier. Default: 1.05 */
@@ -20,6 +21,7 @@ export interface BoopParams {
 }
 
 export function boop(node: HTMLElement, params: BoopParams = {}) {
+	if (isTouchDevice()) return { update() {}, destroy() {} };
 	if (isPrefersReducedMotion()) return { update() {}, destroy() {} };
 
 	let { scale = 1.05, rotation = 0, timing = 300 } = params;

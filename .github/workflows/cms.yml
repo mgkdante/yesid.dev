@@ -13,6 +13,10 @@ name: cms
 # - push (workflow_dispatch with action=push): applies the JSON tree to
 #   cms.yesid.dev. Gated behind production environment for operator review.
 #
+# slice-17f Phase 7: shared setup extracted to .github/actions/setup
+# (Bun + cache restores + install). concurrency cancel-in-progress on
+# pull_request kills duplicate runs on force-push / fast follow-up commits.
+#
 # Required GitHub secrets (Settings → Secrets and variables → Actions):
 #   DIRECTUS_PROD_ADMIN_TOKEN      = static admin token (cms.yesid.dev/admin →
 #                                    User Profile → Token → Generate). Bypasses
@@ -23,24 +27,13 @@ name: cms
 # Source: Notion slice-18 plan, Phase 2 Task 22.
 
 on:
+  # slice-17f Phase 8: path filters removed (test/diff jobs are required
+  # status checks on main; required checks must always run or the merge
+  # gate hangs on docs-only PRs). Phase 7 caches make no-op runs cheap.
   push:
     branches: [main, develop]
-    paths:
-      - 'apps/cms/**'
-      - 'packages/shared/**'
-      - '.github/workflows/cms.yml'
-      - 'package.json'
-      - 'bun.lock'
-      - 'turbo.json'
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'apps/cms/**'
-      - 'packages/shared/**'
-      - '.github/workflows/cms.yml'
-      - 'package.json'
-      - 'bun.lock'
-      - 'turbo.json'
   workflow_dispatch:
     inputs:
       action:
@@ -55,23 +48,36 @@ on:
         default: false
         required: false
 
+# Cancel in-progress duplicate runs on PR pushes; let main/develop pushes
+# AND workflow_dispatch (which may apply to prod) run to completion.
+concurrency:
+  group: cms-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: Run apps/cms unit tests (snapshot-shape + fixtures + seed-dry-run + lib)
         working-directory: apps/cms
         run: bun test
+
+      - name: Schema codegen drift check (slice-18k gate 3 — Task 39 followthrough on the 18c Task 34 / F12 generator)
+        # Re-runs apps/cms/scripts/generate-types.ts against prod, then
+        # fails the build if the regenerated file differs from the committed
+        # packages/shared/src/types/directus-schema.ts. Prevents the committed
+        # schema types from drifting silently against the live CMS — once they
+        # drift, consumer typing in @repo/web is wrong without anyone noticing.
+        env:
+          PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
+          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
+        run: |
+          bun apps/cms/scripts/generate-types.ts
+          git diff --exit-code packages/shared/src/types/directus-schema.ts
 
   diff:
     # Preview what sync:push WOULD apply. Main-bound PR checks + explicit diff dispatch.
@@ -88,13 +94,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: sync:diff — preview diff vs prod
         working-directory: apps/cms
@@ -118,13 +118,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install deps (monorepo root)
-        run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup
 
       - name: sync:push — apply to production
         working-directory: apps/cms

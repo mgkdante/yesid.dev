@@ -63,7 +63,7 @@
 <div>
 	{#if collapsible}
 		<button
-			class="flex w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
+			class="tap-press flex w-full items-center justify-between label-section text-sm font-semibold py-2.5 min-h-11 transition-colors hover:text-[var(--foreground)] active:text-[var(--foreground)]"
 			onclick={() => (isOpen = !isOpen)}
 		>
 			{label}
@@ -88,7 +88,7 @@
 					{#snippet child({ props })}
 						<button
 							{...props}
-							class="filter-btn w-full rounded px-2 py-1.5 text-left text-sm transition-colors"
+							class="tap-press filter-btn w-full rounded px-2 py-3 min-h-11 text-left text-sm transition-colors"
 							class:active={activeKey === null}
 						>
 							{resolveLocale(allLabel, 'en')}
@@ -101,7 +101,7 @@
 						{#snippet child({ props })}
 							<button
 								{...props}
-								class="filter-btn w-full rounded border border-border-subtle px-2 py-1.5 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
+								class="tap-press filter-btn w-full rounded border border-border-subtle px-2 py-3 min-h-11 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 								class:tag-active={activeKey === item.key}
 								data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
 							>

@@ -1,32 +1,14 @@
-# yesid.dev — workflow-overlord v2 Codex CLI config
-# Hooks registered IN-REPO so fresh clones pick them up.
+# yesid.dev — workflow-overlord Codex CLI config.
+#
+# Hook dispatchers live in the GLOBAL ~/.codex/config.toml — they `cd` into
+# the project root and exec `<root>/.codex/hooks/<event>.sh`. Redeclaring the
+# same hooks here causes Codex to register them TWICE (global + project), so
+# every SessionStart fired two parallel dispatcher processes and produced
+# duplicate Sessions rows. v2.1.3 also added per-session file locking as a
+# belt-and-suspenders defense, but the right primary fix is "one place
+# registers each hook." Keep the [features] block only.
 
 [features]
-codex_hooks = true
 hooks = true
 remote_connections = true
-
-[[hooks.SessionStart]]
-command = "bash .codex/hooks/session-start.sh"
-
-[[hooks.Stop]]
-command = "bash .codex/hooks/session-end.sh"
-
-[[hooks.UserPromptSubmit]]
-command = "bash .codex/hooks/session-end.sh"
-
-[[hooks.PreToolUse]]
-match = "mcp__.*__API-.*"
-command = "bash .codex/hooks/pretool-check-notion-config.sh"
-
-[[hooks.PreToolUse]]
-match = "mcp__.*__API-.*"
-command = "bash .codex/hooks/pretool-check-notion-edit.sh"
-
-[mcp_servers.overlord-bridge]
-command = "bun"
-args = ["overlord-bridge/server.ts"]
-
-[mcp_servers.notionhq]
-command = "npx"
-args = ["-y", "@notionhq/notion-mcp-server@2.2.1"]
+suppress_unstable_features_warning = true

@@ -2,9 +2,9 @@
   {
     "project_name": "yesid.dev CMS",
     "project_color": "#E07800",
-    "project_logo": "d610c3ad-e51a-4480-b3ed-0dfc78a7d511",
-    "public_foreground": "d610c3ad-e51a-4480-b3ed-0dfc78a7d511",
-    "public_favicon": "d610c3ad-e51a-4480-b3ed-0dfc78a7d511",
+    "project_logo": null,
+    "public_foreground": null,
+    "public_favicon": null,
     "public_note": null,
     "auth_login_attempts": 25,
     "auth_password_policy": null,

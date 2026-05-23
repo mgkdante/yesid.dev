@@ -31,7 +31,7 @@
 	{#if prev}
 		<a
 			href="/services/{prev.id}"
-			class="nav-link nav-link--prev"
+			class="nav-link nav-link--prev tap-press"
 			data-testid="service-nav-prev"
 			use:boop={{ scale: 1.03, timing: 200 }}
 		>
@@ -46,7 +46,7 @@
 	{#if next}
 		<a
 			href="/services/{next.id}"
-			class="nav-link nav-link--next"
+			class="nav-link nav-link--next tap-press"
 			data-testid="service-nav-next"
 			use:boop={{ scale: 1.03, timing: 200 }}
 		>

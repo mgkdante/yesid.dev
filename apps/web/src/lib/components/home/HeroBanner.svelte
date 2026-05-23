@@ -234,7 +234,7 @@
 
 						<div class="mt-8 text-center" data-hero-stagger="7">
 							<button
-								class="refresh-btn"
+								class="refresh-btn tap-press"
 								data-testid="hero-refresh"
 								onclick={handleRefresh}
 							>
@@ -371,7 +371,8 @@
 		.refresh-btn {
 			width: 100%;
 			justify-content: center;
-			padding: 14px;
+			padding: 16px 14px;
+			min-height: 44px;
 			font-size: 14px;
 		}
 	}

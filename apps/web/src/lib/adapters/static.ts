@@ -8,8 +8,8 @@
 // repository). Missing a method is a compile error via the `: ContentAdapter`
 // annotation at the bottom.
 
+import { projects } from '$lib/content/projects';
 import {
-	projects,
 	getProjectBySlug,
 	getFeaturedProjects,
 	getPublicProjects,
@@ -17,16 +17,15 @@ import {
 	getAllTags,
 	getAllStackItems,
 	getServiceIdsForProjects,
-	rawProjectToProject,
-} from '$lib/content/projects';
+} from '$lib/content/projects.companion';
+import { services } from '$lib/content/services';
 import {
-	services,
 	getServiceById,
 	getVisibleServices,
 	getAdjacentServices,
-} from '$lib/content/services';
+} from '$lib/content/services.companion';
+import { blogPosts } from '$lib/content/blog';
 import {
-	blogPosts,
 	getPostBySlug,
 	getPostHtml,
 	getPostsByCategory,
@@ -38,7 +37,7 @@ import {
 	getSvgContentsForPosts,
 	resolveSvgFallbackName,
 	resolveAnimation,
-} from '$lib/content/blog';
+} from '$lib/content/blog.companion';
 import { siteMeta } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
 import { codeRouteSeoDefaults } from './route-seo-defaults';
@@ -73,12 +72,8 @@ import {
 	type ProjectsPageContent,
 } from '@repo/shared/schemas';
 import type { Locale } from '$lib/types';
-import {
-	getAllTechItems,
-	getTechItemById,
-	getTechItemContent,
-	techStackPageContent,
-} from '$lib/content/tech-stack';
+import { techStackItems, techStackPageContent } from '$lib/content/tech-stack';
+import { serializeBlocksToHtml } from '@repo/shared';
 import {
 	heroContent,
 	heroAnimContent,
@@ -104,42 +99,26 @@ import type { Project } from '$lib/types';
 import type { ContentAdapter } from './types';
 
 // ---------------------------------------------------------------------------
-// Static adapter — Project.image normalizer (18e Phase 7 Task 31)
-//
-// The static content layer stores project images as bare filenames (e.g.
-// 'yesid-dev.png'). Directus adapter returns them as UUIDs. To keep consumer
-// code uniform across both adapters (single asset(image, preset) call site),
-// we resolve the legacy filename to its Directus UUID here. If the UUID is
-// not in the map, the filename is left intact so the gradient-placeholder
-// fallback handles missing-uuid cases gracefully.
+// Static adapter — slice-18m note: Project.image is now a UUID (CMS-derived)
+// and description/sections.content are LocalizedBlockEditorDoc (slice-18 #41
+// migration complete). The legacy `RawProject → Project` wrapper +
+// `withImageUuid(filename → UUID)` shims are gone; the static array IS the
+// runtime shape now.
 // ---------------------------------------------------------------------------
-
-function withImageUuid(project: Project): Project {
-	if (!project.image) return project;
-	const legacyPath = `images/work/${project.image}`;
-	const uuid = assetIdForOrUndefined(legacyPath);
-	if (!uuid) {
-		// Fail-soft: leave the filename intact; consumer's gradient-placeholder
-		// fallback handles missing-uuid case.
-		return project;
-	}
-	return { ...project, image: uuid };
-}
 
 export const staticAdapter: ContentAdapter = {
 	projects: {
-		all: async () =>
-			parsePort('projects.all', z.array(ProjectSchema), projects.map((r) => withImageUuid(rawProjectToProject(r)))),
+		all: async () => parsePort('projects.all', z.array(ProjectSchema), projects),
 		bySlug: async (slug) => {
 			const p = getProjectBySlug(slug);
-			return parsePort('projects.bySlug', ProjectSchema.optional(), p ? withImageUuid(rawProjectToProject(p)) : undefined);
+			return parsePort('projects.bySlug', ProjectSchema.optional(), p);
 		},
 		featured: async () =>
-			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects().map((r) => withImageUuid(rawProjectToProject(r)))),
+			parsePort('projects.featured', z.array(ProjectSchema), getFeaturedProjects()),
 		public: async () =>
-			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects().map((r) => withImageUuid(rawProjectToProject(r)))),
+			parsePort('projects.public', z.array(ProjectSchema), getPublicProjects()),
 		byService: async (serviceId) =>
-			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId).map((r) => withImageUuid(rawProjectToProject(r)))),
+			parsePort('projects.byService', z.array(ProjectSchema), getProjectsByService(serviceId)),
 		// Utility ports — return primitives/strings, no schema needed (spec D2).
 		allTags: async () => getAllTags(),
 		allStackItems: async () => getAllStackItems(),
@@ -237,9 +216,29 @@ export const staticAdapter: ContentAdapter = {
 		},
 	},
 	techStack: {
-		all: async () => parsePort('techStack.all', z.array(TechStackItemSchema), getAllTechItems()),
-		byId: async (id) => parsePort('techStack.byId', TechStackItemSchema.optional(), getTechItemById(id)),
-		content: async (id) => getTechItemContent(id),
+		// slice-18m follow-up (GH #63/#64): tech-stack data sourced from the
+		// CMS-derived `techStackItems` array (generated by export-fallbacks)
+		// rather than the legacy MD-glob parser. `content(id)` serializes the
+		// 3 BlockEditorDoc fields (what_it_is + what_i_use_it_for +
+		// why_i_use_it_instead) for the English locale — mirrors the runtime
+		// adapter pattern at directus.ts:2817.
+		all: async () =>
+			parsePort('techStack.all', z.array(TechStackItemSchema), techStackItems),
+		byId: async (id) =>
+			parsePort(
+				'techStack.byId',
+				TechStackItemSchema.optional(),
+				techStackItems.find((it) => it.id === id),
+			),
+		content: async (id) => {
+			const item = techStackItems.find((it) => it.id === id);
+			if (!item) return '';
+			return [
+				serializeBlocksToHtml(item.what_it_is.en),
+				serializeBlocksToHtml(item.what_i_use_it_for.en),
+				serializeBlocksToHtml(item.why_i_use_it_instead.en),
+			].join('');
+		},
 	},
 	content: {
 		// Site-chrome literals — kept as `typeof import` shape via ContentPort,

@@ -21,6 +21,5 @@
       "Bash(curl -s \"https://www.figma.com/code-connect-docs/\")",
       "WebFetch(domain:github.com)"
     ]
-  },
-  "worktree": false
+  }
 }

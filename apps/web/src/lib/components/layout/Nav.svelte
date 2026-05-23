@@ -88,7 +88,7 @@
 		<a
 			href="/"
 			data-testid="nav-wordmark"
-			class="inline-flex items-baseline font-heading text-lg font-bold text-[var(--foreground)]"
+			class="inline-flex min-h-11 items-baseline font-heading text-lg font-bold text-[var(--foreground)]"
 		>
 			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
 				data-testid="nav-period"
@@ -105,9 +105,9 @@
 				<span class={link.priority === 2 ? 'hidden min-[480px]:block' : undefined}>
 					<a
 						href={link.href}
-						class="nav-pill-link transition-all {isActive(link.href)
+						class="nav-pill-link inline-flex min-h-11 items-center px-1 transition-all {isActive(link.href)
 							? 'text-primary nav-link-active'
-							: 'text-text-secondary hover:text-primary hover:nav-link-glow'}"
+							: 'text-text-secondary hover:text-primary hover:nav-link-glow active:text-primary'}"
 						aria-current={isActive(link.href) ? 'page' : undefined}
 					>
 						{link.label.en}
@@ -201,8 +201,11 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;
+		justify-content: center;
 		gap: 5px;
 		padding: 4px;
+		min-height: 44px;
+		min-width: 44px;
 		cursor: pointer;
 		background: none;
 		border: none;

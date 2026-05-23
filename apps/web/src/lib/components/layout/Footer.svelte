@@ -77,7 +77,7 @@
 			{#each footerNavLinks as link}
 				<a
 					href={link.href}
-					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary"
+					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 				>
 					{link.label}
 				</a>
@@ -91,7 +91,7 @@
 					href={link.href}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary"
+					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 					aria-label={link.label}
 				>
 					{link.label}
