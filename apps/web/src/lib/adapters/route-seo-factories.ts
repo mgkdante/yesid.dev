@@ -120,7 +120,7 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	const post = await adapter.blog.bySlug(params.slug, ctx);
 	if (!post) throw new Error(`Unknown blog slug: ${params.slug}`);
 	const canonicalUrl = `${SITE_HOST}/blog/${post.slug}`;
-	return {
+	const seo: PageSeo = {
 		title: { en: `${post.title} | ${siteMeta.name}` },
 		description: fitDescriptionForSeo({ en: post.excerpt }, siteSeoDefaults.defaultDescription),
 		canonical: canonicalUrl,
@@ -138,6 +138,19 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 			),
 		],
 	};
+
+	// New OG image wiring — slice-15c. Only set when title is non-empty so
+	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
+	if (post.title && post.title.length > 0) {
+		seo.ogImage = {
+			url: `/og/blog/${post.slug}.png`,
+			alt: { en: `${post.title} — yesid.` },
+			width: 1200,
+			height: 630,
+		};
+	}
+
+	return seo;
 }
 
 /**
