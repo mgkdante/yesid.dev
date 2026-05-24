@@ -1,5 +1,6 @@
 import { getPostBySlug, getProjectBySlug } from '$lib/repositories';
 import type { Locale } from '$lib/types';
+import { resolveLocale } from '$lib/utils/locale';
 
 export type OgType = 'blog' | 'project';
 
@@ -26,18 +27,17 @@ export async function loadOgTitle(
     if (type === 'blog') {
       const post = await getPostBySlug(slug);
       const title = post?.title;
-      if (!title || title.length === 0) return null;
+      if (!title) return null;
       return { eyebrow: EYEBROWS.blog, title };
     }
 
     // type === 'project'
     const project = await getProjectBySlug(slug);
-    const ls = project?.title;
-    if (!ls) return null;
-    // Per existing locale resolution pattern: requested locale first, fall
-    // back to en if missing (LocalizedString always has en per schema).
-    const resolved = ls[locale] ?? ls.en;
-    if (!resolved || resolved.length === 0) return null;
+    if (!project) return null;
+    // Use the canonical locale resolver — treats empty/whitespace strings as
+    // "not translated yet" and falls back to en (guaranteed by schema).
+    const resolved = resolveLocale(project.title, locale);
+    if (!resolved) return null;
     return { eyebrow: EYEBROWS.project, title: resolved };
   } catch (err) {
     console.error('[og]', type, slug, err);

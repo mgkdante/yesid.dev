@@ -61,6 +61,15 @@ describe('loadOgTitle', () => {
       expect(result).toEqual({ eyebrow: 'PROJECT', title: 'Fallback EN' });
     });
 
+    it('falls back to en when requested locale is empty string', async () => {
+      getProjectBySlugMock.mockResolvedValueOnce({
+        slug: 'p',
+        title: { en: 'EN Fallback', fr: '' },
+      });
+      const result = await loadOgTitle('project', 'p', 'fr');
+      expect(result).toEqual({ eyebrow: 'PROJECT', title: 'EN Fallback' });
+    });
+
     it('returns null when project title.en is empty', async () => {
       getProjectBySlugMock.mockResolvedValueOnce({ slug: 'p', title: { en: '' } });
       expect(await loadOgTitle('project', 'p', 'en')).toBeNull();
