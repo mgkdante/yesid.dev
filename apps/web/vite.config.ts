@@ -67,6 +67,7 @@ export default defineConfig({
 						'src/lib/schemas/**/*.test.ts',
 						'src/lib/utils/**/*.test.ts',
 						'src/lib/styles/**/*.test.ts',
+						'src/params/**/*.test.ts',
 						'src/tests/**/*.test.ts',
 					],
 					// slice-17f L3+L4: utils/ tests use @testing-library/svelte render()
