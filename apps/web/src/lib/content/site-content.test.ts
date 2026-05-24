@@ -1,64 +1,91 @@
+// Site-content data-shape contract tests.
+//
+// These tests validate the SHAPE of CMS-derived content modules, not the
+// VALUES inside them. The actual words (headlines, manifesto copy, section
+// labels, transit-line names, etc.) are owned by Directus and may change
+// independently of engineering — asserting on specific phrases makes the
+// suite break every time the marketing operator edits copy.
+//
+// What we test here:
+//   - Required fields exist and are non-empty strings
+//   - Counts (e.g. "5 manifesto pills", "9 hidden transit lines")
+//   - Data identifiers (service IDs, project slugs — URL contracts)
+//   - Structural shapes (Array.isArray, hex color regex, getProjectBySlug
+//     reference integrity)
+//
+// What we do NOT test here:
+//   - Specific copy ("PIPELINES THAT", "INFRASTRUCTURE", "TERMINUS", etc.)
+//   - Substring presence in flavor text (these belong in content-tier tests
+//     run by the editor, not in engineering CI)
+
 import { describe, it, expect } from 'vitest';
-import { heroContent, manifestoContent, aboutContent, ctaContent, proofReelContent, closerContent } from './site-content.js';
+import {
+	heroContent,
+	manifestoContent,
+	aboutContent,
+	ctaContent,
+	proofReelContent,
+	closerContent,
+} from './site-content.js';
 import { getProjectBySlug } from './projects.js';
 import { getVisibleServices } from './services.js';
 
 describe('heroContent', () => {
-	it('has headline lines as non-empty English strings', () => {
-		expect(heroContent.headline.line1.en).toBe('PIPELINES THAT');
-		expect(heroContent.headline.line2.en).toBe("DON'T BREAK.");
+	it('has non-empty headline lines (both English)', () => {
+		expect(heroContent.headline.line1.en.length).toBeGreaterThan(0);
+		expect(heroContent.headline.line2.en.length).toBeGreaterThan(0);
 	});
 
-	it('has subheadline text', () => {
-		expect(heroContent.subheadline.en).toBe('Data that tell the truth.');
-	});
-
-	it('has subtitle text', () => {
+	it('has non-empty subheadline and subtitle', () => {
+		expect(heroContent.subheadline.en.length).toBeGreaterThan(0);
 		expect(heroContent.subtitle.en.length).toBeGreaterThan(0);
 	});
 
-	it('has CTA labels', () => {
+	it('has non-empty CTA labels', () => {
 		expect(heroContent.ctaWork.en.length).toBeGreaterThan(0);
 		expect(heroContent.ctaContact.en.length).toBeGreaterThan(0);
 	});
 
-	it('has SQL panel labels', () => {
-		expect(heroContent.sqlPanel.prompt.en).toContain('yesid@transit');
-		expect(heroContent.sqlPanel.liveLabel.en).toBe('LIVE');
+	it('has non-empty SQL panel labels', () => {
+		expect(heroContent.sqlPanel.prompt.en.length).toBeGreaterThan(0);
+		expect(heroContent.sqlPanel.liveLabel.en.length).toBeGreaterThan(0);
 	});
 
-	it('has refresh button labels', () => {
-		expect(heroContent.refreshButton.label.en).toContain('PULL');
+	it('has non-empty refresh button labels', () => {
+		expect(heroContent.refreshButton.label.en.length).toBeGreaterThan(0);
 		expect(heroContent.refreshButton.helper.en.length).toBeGreaterThan(0);
 	});
 });
 
 describe('manifestoContent', () => {
-	it('has statement lines as LocalizedString', () => {
+	it('has non-empty statement lines', () => {
 		expect(manifestoContent.statement.line1.en.length).toBeGreaterThan(0);
-		expect(manifestoContent.statement.lineHuge.en).toBe('INFRASTRUCTURE');
+		expect(manifestoContent.statement.lineHuge.en.length).toBeGreaterThan(0);
 		expect(manifestoContent.statement.line3Part1.en.length).toBeGreaterThan(0);
-		expect(manifestoContent.statement.line3Highlight.en).toBe('OPERATIONS');
+		expect(manifestoContent.statement.line3Highlight.en.length).toBeGreaterThan(0);
 		expect(manifestoContent.statement.line3Part2.en.length).toBeGreaterThan(0);
 	});
 
-	it('has terminal prompt as LocalizedString', () => {
-		expect(manifestoContent.terminal.user.en).toContain('yesid');
-		expect(manifestoContent.terminal.command.en).toContain('cat');
+	it('has non-empty terminal user and command', () => {
+		expect(manifestoContent.terminal.user.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.terminal.command.en.length).toBeGreaterThan(0);
 	});
 
 	it('has exactly 5 capability pills', () => {
 		expect(manifestoContent.pills).toHaveLength(5);
 	});
 
-	it('every pill has an English label and a serviceId', () => {
+	it('every pill has a non-empty English label and a serviceId', () => {
 		for (const pill of manifestoContent.pills) {
 			expect(pill.label.en.length).toBeGreaterThan(0);
 			expect(pill.serviceId.length).toBeGreaterThan(0);
 		}
 	});
 
-	it('pills map to expected service IDs', () => {
+	it('pills map to expected service IDs (URL contract)', () => {
+		// Service IDs are URL slugs (`/services/[id]`) — changing them breaks
+		// inbound links. This assertion exists to catch accidental slug
+		// renames, not to gate copy changes.
 		const serviceIds = manifestoContent.pills.map((p) => p.serviceId);
 		expect(serviceIds).toEqual([
 			'data-pipeline',
@@ -69,56 +96,50 @@ describe('manifestoContent', () => {
 		]);
 	});
 
-	it('has edge decoration text as LocalizedString', () => {
-		expect(manifestoContent.edgeLeft.sectionNumber.en).toContain('SEC');
-		expect(manifestoContent.edgeLeft.sectionName.en).toBe('MANIFESTO');
-		expect(manifestoContent.edgeLeft.location.en).toContain('MTL');
+	it('has non-empty edge decoration text', () => {
+		expect(manifestoContent.edgeLeft.sectionNumber.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.edgeLeft.sectionName.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.edgeLeft.location.en.length).toBeGreaterThan(0);
 	});
 
-	it('has right edge with easter egg locations', () => {
-		expect(manifestoContent.edgeRight.src.en).toContain('Sherbrooke');
-		expect(manifestoContent.edgeRight.via.en).toContain('Lennoxville');
-		expect(manifestoContent.edgeRight.dst.en).toContain('Montréal');
+	it('has non-empty right-edge easter egg locations', () => {
+		expect(manifestoContent.edgeRight.src.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.edgeRight.via.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.edgeRight.dst.en.length).toBeGreaterThan(0);
 	});
 
-	it('has bottom status bar text', () => {
+	it('has non-empty bottom status bar text', () => {
 		expect(manifestoContent.edgeBottom.connected.en.length).toBeGreaterThan(0);
-		expect(manifestoContent.edgeBottom.line.en).toContain('ORANGE');
+		expect(manifestoContent.edgeBottom.line.en.length).toBeGreaterThan(0);
 	});
 
-	it('has transit element text', () => {
-		expect(manifestoContent.transit.arrivalLabel.en).toContain('PROCHAIN');
-		expect(manifestoContent.transit.platformBadge.en).toContain('QUAI');
-		expect(manifestoContent.transit.directionBadge.en).toContain('CENTRE-VILLE');
+	it('has non-empty transit element text', () => {
+		expect(manifestoContent.transit.arrivalLabel.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.transit.platformBadge.en.length).toBeGreaterThan(0);
+		expect(manifestoContent.transit.directionBadge.en.length).toBeGreaterThan(0);
 	});
 
-	it('has measurement tick labels', () => {
+	it('has at least 5 measurement tick labels', () => {
 		expect(manifestoContent.ticks.length).toBeGreaterThanOrEqual(5);
-		expect(manifestoContent.ticks[0]).toBe('0');
+		// Every tick must be a non-empty string (axis labels have to render).
+		for (const tick of manifestoContent.ticks) {
+			expect(typeof tick).toBe('string');
+			expect(tick.length).toBeGreaterThan(0);
+		}
 	});
 
-	it('has 9 hidden transit line easter eggs with name and color', () => {
+	it('has 9 hidden transit-line easter eggs with name + valid hex color', () => {
 		expect(manifestoContent.hiddenTransitLines).toHaveLength(9);
 		for (const line of manifestoContent.hiddenTransitLines) {
 			expect(line.name.en.length).toBeGreaterThan(0);
 			expect(line.color).toMatch(/^#[0-9A-Fa-f]{6}$/);
 		}
 	});
-
-	it('includes STM, REM, and Exo transit lines', () => {
-		const names = manifestoContent.hiddenTransitLines.map((l) => l.name.en);
-		expect(names).toContain('LIGNE BLEUE');
-		expect(names).toContain('LIGNE VERTE');
-		expect(names).toContain('LIGNE JAUNE');
-		expect(names).toContain('REM');
-		expect(names.some((n) => n.includes('VAUDREUIL'))).toBe(true);
-		expect(names.some((n) => n.includes('MASCOUCHE'))).toBe(true);
-	});
 });
 
 describe('aboutContent', () => {
 	it('has non-empty English strings', () => {
-		expect(aboutContent.name.en).toBe('Yesid O.');
+		expect(aboutContent.name.en.length).toBeGreaterThan(0);
 		expect(aboutContent.title.en.length).toBeGreaterThan(0);
 		expect(aboutContent.bio.en.length).toBeGreaterThan(0);
 		expect(aboutContent.interests.en.length).toBeGreaterThan(0);
@@ -130,15 +151,15 @@ describe('aboutContent', () => {
 		expect(Array.isArray(aboutContent.stackItems)).toBe(true);
 	});
 
-	it('has location data', () => {
-		expect(aboutContent.location.city.en).toBe('Montreal');
+	it('has non-empty location data', () => {
+		expect(aboutContent.location.city.en.length).toBeGreaterThan(0);
 		expect(aboutContent.location.region.en.length).toBeGreaterThan(0);
 	});
 });
 
 describe('ctaContent', () => {
 	it('has non-empty English strings', () => {
-		expect(ctaContent.heading.en).toContain('build something');
+		expect(ctaContent.heading.en.length).toBeGreaterThan(0);
 		expect(ctaContent.subtitle.en.length).toBeGreaterThan(0);
 		expect(ctaContent.ctaContact.en.length).toBeGreaterThan(0);
 		expect(ctaContent.ctaGithub.en.length).toBeGreaterThan(0);
@@ -146,9 +167,12 @@ describe('ctaContent', () => {
 });
 
 describe('proofReelContent', () => {
-	it('has section label and view-all link', () => {
-		expect(proofReelContent.sectionLabel.en).toBe('// PROOF');
-		expect(proofReelContent.viewAllLabel.en).toContain('View all projects');
+	it('has non-empty section label and view-all link', () => {
+		expect(proofReelContent.sectionLabel.en.length).toBeGreaterThan(0);
+		expect(proofReelContent.viewAllLabel.en.length).toBeGreaterThan(0);
+		// URL contract — the View all link must point at /projects so the
+		// proof reel CTA reaches the listing page. This IS engineering's
+		// concern, not content's.
 		expect(proofReelContent.viewAllHref).toBe('/projects');
 	});
 
@@ -156,24 +180,14 @@ describe('proofReelContent', () => {
 		expect(proofReelContent.slugs).toHaveLength(5);
 	});
 
-	it('slugs match existing projects', () => {
-		// impactMetric is optional — newer projects in the carousel may
-		// not have one set in Directus yet; the component renders an
-		// empty footer in that case.
+	it('every featured slug resolves to an existing project', () => {
+		// Reference-integrity check — the slugs are URL identifiers and
+		// must correspond to real projects, or the carousel breaks at runtime.
 		for (const slug of proofReelContent.slugs) {
+			expect(slug.length).toBeGreaterThan(0);
 			const project = getProjectBySlug(slug);
-			expect(project).toBeDefined();
+			expect(project, `proof-reel slug "${slug}" did not resolve`).toBeDefined();
 		}
-	});
-
-	it('slugs are in expected order', () => {
-		expect(proofReelContent.slugs).toEqual([
-			'transit-data-pipeline',
-			'lorem-analytics-dashboard',
-			'lorem-database-migration',
-			'lorem-query-optimizer',
-			'lorem-retool-admin',
-		]);
 	});
 });
 
@@ -202,37 +216,33 @@ describe('services — home grid fields (Slice 13g)', () => {
 });
 
 describe('closerContent', () => {
-	it('has heading and subheading', () => {
-		expect(closerContent.heading.en).toBe('TERMINUS');
-		expect(closerContent.headingDot.en).toBe('.');
-		expect(closerContent.subheading.en).toContain('END OF LINE');
+	it('has non-empty heading + subheading', () => {
+		expect(closerContent.heading.en.length).toBeGreaterThan(0);
+		expect(closerContent.headingDot.en.length).toBeGreaterThan(0);
+		expect(closerContent.subheading.en.length).toBeGreaterThan(0);
 	});
 
-	it('has contact row with label, description, and action', () => {
-		expect(closerContent.rows.contact.label.en).toBe('CONTACT');
-		expect(closerContent.rows.contact.description.en.length).toBeGreaterThan(0);
-		expect(closerContent.rows.contact.action.en).toContain('GO');
+	it('has 4 named rows (contact / connect / read / about) each with non-empty label + action', () => {
+		for (const key of ['contact', 'connect', 'read', 'about'] as const) {
+			const row = closerContent.rows[key];
+			expect(row, `${key} row missing`).toBeDefined();
+			expect(row.label.en.length, `${key} row label is empty`).toBeGreaterThan(0);
+			expect(row.action.en.length, `${key} row action is empty`).toBeGreaterThan(0);
+		}
 	});
 
-	it('has connect row with label, description, and action', () => {
-		expect(closerContent.rows.connect.label.en).toBe('EXPLORE');
-		expect(closerContent.rows.connect.description.en).toContain('GitHub');
-		expect(closerContent.rows.connect.action.en).toContain('GO');
+	it('contact / connect / about rows have non-empty descriptions', () => {
+		// The `read` row has no description in current schema — only label + action.
+		for (const key of ['contact', 'connect', 'about'] as const) {
+			expect(closerContent.rows[key].description.en.length).toBeGreaterThan(0);
+		}
 	});
 
-	it('has read row with label and action', () => {
-		expect(closerContent.rows.read.label.en).toBe('READ');
-		expect(closerContent.rows.read.action.en).toBe('cd');
-	});
-
-	it('has about row with label, description, and action', () => {
-		expect(closerContent.rows.about.label.en).toBe('ABOUT');
-		expect(closerContent.rows.about.description.en).toContain('Yesid');
-		expect(closerContent.rows.about.action.en).toBe('cd');
-	});
-
-	it('has attribution with text and URL', () => {
-		expect(closerContent.attribution.text.en).toContain('Vecteezy');
-		expect(closerContent.attribution.url).toContain('vecteezy.com');
+	it('has attribution with non-empty text + valid URL', () => {
+		expect(closerContent.attribution.text.en.length).toBeGreaterThan(0);
+		// URL contract — attribution must link somewhere. Asserting a
+		// well-formed URL rather than a specific host, because the
+		// attribution source may change.
+		expect(closerContent.attribution.url).toMatch(/^https?:\/\/\S+$/);
 	});
 });
