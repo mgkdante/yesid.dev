@@ -80,4 +80,11 @@ describe('GET /og/[type]/[slug].png', () => {
     await GET(makeEvent({ type: 'blog', slug: 's' }));
     expect(loadOgTitleMock).toHaveBeenCalledWith('blog', 's', 'en');
   });
+
+  it('falls back to DEFAULT_LOCALE on unsupported locale param', async () => {
+    loadOgTitleMock.mockResolvedValueOnce({ eyebrow: 'BLOG', title: 't' });
+    renderOgPngMock.mockResolvedValueOnce(new Uint8Array([0x89, 0x50, 0x4e, 0x47]));
+    await GET(makeEvent({ type: 'blog', slug: 's' }, '?locale=xx'));
+    expect(loadOgTitleMock).toHaveBeenCalledWith('blog', 's', 'en');
+  });
 });
