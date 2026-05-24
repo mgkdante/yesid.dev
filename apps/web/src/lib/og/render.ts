@@ -10,7 +10,9 @@ export async function renderOgPng(tree: unknown): Promise<Uint8Array> {
 		height: 630,
 		fonts: getOgFonts().map((f) => ({
 			name: f.name,
-			data: f.data,
+			// Satori's FontOptions.data accepts ArrayBuffer | Buffer; pass the
+			// underlying buffer to satisfy strict lib.dom typing (zero-copy).
+			data: f.data.buffer as ArrayBuffer,
 			weight: f.weight,
 			style: f.style,
 		})),
