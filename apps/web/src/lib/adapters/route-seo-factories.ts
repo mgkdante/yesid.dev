@@ -94,7 +94,7 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 			? descriptionText
 			: fitDescriptionForSeo(project.oneLiner, fallback);
 	const canonicalUrl = `${SITE_HOST}/projects/${project.slug}`;
-	return {
+	const seo: PageSeo = {
 		title: { en: `${project.title.en} | ${siteMeta.name}` },
 		description: desc,
 		canonical: canonicalUrl,
@@ -112,6 +112,19 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 			),
 		],
 	};
+
+	// OG image wiring (slice-15c). Only set when title.en is non-empty so
+	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
+	if (project.title?.en && project.title.en.length > 0) {
+		seo.ogImage = {
+			url: `/og/project/${project.slug}.png`,
+			alt: { en: `${project.title.en} — yesid.` },
+			width: 1200,
+			height: 630,
+		};
+	}
+
+	return seo;
 }
 
 /** /blog/[slug] — pulls post from collection adapter; brand suffix from siteMeta. */
