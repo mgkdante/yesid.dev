@@ -67,10 +67,15 @@ describe('Home page', () => {
 
 	it('renders the hero headline', () => {
 		renderPage();
-		expect(screen.getByTestId('hero-line1')).toBeInTheDocument();
-		expect(screen.getByTestId('hero-line1').textContent).toContain('PIPELINES THAT');
-		expect(screen.getByTestId('hero-line2')).toBeInTheDocument();
-		expect(screen.getByTestId('hero-line2').textContent).toContain("DON'T BREAK");
+		// Structural: both headline lines render with non-empty content from
+		// whatever data the adapter supplied. We do NOT assert specific copy —
+		// Directus owns the words; this test owns the chain integrity.
+		const line1 = screen.getByTestId('hero-line1');
+		const line2 = screen.getByTestId('hero-line2');
+		expect(line1).toBeInTheDocument();
+		expect(line1.textContent?.trim()).toBeTruthy();
+		expect(line2).toBeInTheDocument();
+		expect(line2.textContent?.trim()).toBeTruthy();
 	});
 
 	it('renders the hero orange dot', () => {
@@ -84,14 +89,14 @@ describe('Home page', () => {
 		renderPage();
 		const sub = screen.getByTestId('hero-subheadline');
 		expect(sub).toBeInTheDocument();
-		expect(sub.textContent).toContain('Data that tell the truth');
+		expect(sub.textContent?.trim()).toBeTruthy();
 	});
 
 	it('renders hero subtitle', () => {
 		renderPage();
 		const subtitle = screen.getByTestId('hero-subtitle');
 		expect(subtitle).toBeInTheDocument();
-		expect(subtitle.textContent).toContain('reliable infrastructure');
+		expect(subtitle.textContent?.trim()).toBeTruthy();
 	});
 
 	it('renders hero CTAs', () => {

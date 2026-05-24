@@ -12,12 +12,22 @@ import { defineConfig, devices } from '@playwright/test';
 // future task needs real WebKit (e.g. for Safari-specific bugs), gate it
 // behind a separate project that runs only where webkit deps are installed.
 
+// slice-16 verify pass: PLAYWRIGHT_BASE_URL points the suite at an external
+// URL (e.g. https://dev.yesid.dev). When set, we skip the local webServer
+// spawn — there's nothing to build because the deployed surface is the target.
+const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
+
 export default defineConfig({
-	webServer: {
-		command: 'bun run build && bun run preview',
-		port: 4173,
-		reuseExistingServer: !process.env.CI
-	},
+	use: { baseURL: externalBaseURL ?? 'http://localhost:4173' },
+	...(externalBaseURL
+		? {}
+		: {
+				webServer: {
+					command: 'bun run build && bun run preview',
+					port: 4173,
+					reuseExistingServer: !process.env.CI
+				}
+			}),
 	testDir: 'tests',
 	testMatch: '**/*.spec.ts',
 	projects: [

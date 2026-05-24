@@ -44,14 +44,16 @@ test('route / (home) renders hero banner', async ({ page }) => {
 	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
 });
 
-test('route / (home) renders static-fallback headline when CMS is live', async ({ page }) => {
-	// slice-18i Phase 7: home route now fetches all blocks from Directus M2A.
-	// "PIPELINES THAT" is the CMS headline (also the static-adapter fallback
-	// in heroContent.headline.line1). Only assert the text when CMS is live.
+test('route / (home) renders hero headline from CMS', async ({ page }) => {
+	// slice-18i Phase 7: home route fetches all blocks from Directus M2A.
+	// We assert the data chain works (testid present + non-empty content)
+	// rather than specific copy — Directus owns the words, not the test.
 	test.skip(!CMS_LIVE, 'Requires live CMS — set CMS_LIVE=true to run');
 	const response = await page.goto('/');
 	expect(response?.status()).toBe(200);
-	await expect(page.getByText('PIPELINES THAT', { exact: false })).toBeVisible();
+	const heroLine1 = page.getByTestId('hero-line1');
+	await expect(heroLine1).toBeVisible();
+	expect((await heroLine1.textContent())?.trim()).toBeTruthy();
 });
 
 test('route /services renders without crash', async ({ page }) => {
@@ -66,16 +68,13 @@ test('route /projects renders without crash', async ({ page }) => {
 	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
 });
 
-test('route /blog renders "Dispatches" heading', async ({ page }) => {
-	// slice-19 Phase 1 Task 1: this assertion targets the "SEC-BLOG / DISPATCHES"
-	// decorative ref-label in BlueprintShell, which is intentionally hidden
-	// (display:none) below 1024px. The visible mobile heading is "Blog." (different
-	// text) from BlogListingPage.svelte. Gate to desktop-chrome only.
-	test.skip(test.info().project.name !== 'desktop-chrome', 'desktop-only assertion');
+test('route /blog renders listing container', async ({ page }) => {
 	const response = await page.goto('/blog');
 	expect(response?.status()).toBe(200);
-	// "Dispatches" is hard-coded in /blog +page.svelte — not CMS-sourced
-	await expect(page.getByText('Dispatches', { exact: false })).toBeVisible();
+	// Asserts the blog listing component mounted. The page heading copy comes
+	// from Directus (blog-page.ts: heading.en — "Dispatches" today, anything
+	// tomorrow) and is not the engineering concern. Structural testid only.
+	await expect(page.locator('[data-testid="blog-listing"]')).toBeVisible();
 });
 
 test('route /contact renders contact terminals', async ({ page }) => {
@@ -102,13 +101,15 @@ test('route /contact renders contact terminals', async ({ page }) => {
 // the E2E runner (e.g. CMS_LIVE=true bun run test:e2e).
 // ---------------------------------------------------------------------------
 
-test('route /about returns 200 and renders CMS content', async ({ page }) => {
+test('route /about returns 200 and renders nav + main content', async ({ page }) => {
 	test.skip(!CMS_LIVE, 'Requires live CMS — set CMS_LIVE=true to run');
 	const response = await page.goto('/about');
 	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="nav"]')).toBeVisible();
-	// At least one about-page heading must be visible when CMS is live
-	await expect(page.getByText('About', { exact: false })).toBeVisible();
+	// Structural rendering check — about page chrome (nav + a non-empty <main>)
+	// proves the CMS routing worked without coupling to specific copy.
+	await expect(page.locator('main')).toBeVisible();
+	expect((await page.locator('main').textContent())?.trim().length ?? 0).toBeGreaterThan(0);
 });
 
 test('route /tech-stack returns 200 and renders CMS content', async ({ page }) => {
@@ -129,8 +130,8 @@ test('unknown route renders the 404 error page', async ({ page }) => {
 	const response = await page.goto('/this-route-does-not-exist-at-all');
 	// SvelteKit returns 404 for unknown routes
 	expect(response?.status()).toBe(404);
-	// +error.svelte renders the static fallback heading (no CMS needed for this)
-	await expect(
-		page.getByRole('heading', { name: 'This station is under construction', exact: false }),
-	).toBeVisible();
+	// +error.svelte renders structural testids regardless of copy. Asserting
+	// on testids rather than the heading text lets the brand copy evolve
+	// without breaking the test.
+	await expect(page.locator('[data-testid="error-label"]')).toBeVisible();
 });
