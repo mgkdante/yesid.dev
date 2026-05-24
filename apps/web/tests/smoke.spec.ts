@@ -7,15 +7,18 @@ test('home page loads', async ({ page }) => {
 	await expect(page.getByTestId('app-root')).toBeVisible();
 });
 
-test('hero section is visible with CMS-routed static fallback content', async ({ page }) => {
+test('hero section data chain renders a non-empty headline', async ({ page }) => {
 	await page.goto('/');
 	// Component shell assertion — the hero banner section is always rendered.
 	await expect(page.getByTestId('hero-banner')).toBeVisible();
-	// Data-flow assertion: the static adapter supplies heroContent.headline.line1
-	// ("PIPELINES THAT") which flows through staticAdapter.content.hero →
-	// +page.svelte → DOM. This verifies the full data chain is intact, not just
-	// that the component shell rendered.
-	await expect(page.getByText('PIPELINES THAT', { exact: false })).toBeVisible();
+	// Data-flow assertion: the headline element is present and non-empty.
+	// Verifies the static adapter / CMS adapter → +page.svelte → DOM chain
+	// without coupling to specific copy (which lives in Directus and changes
+	// independently of engineering). If the chain breaks, hero-line1 is missing
+	// or empty; we don't care what the words are.
+	const heroLine1 = page.getByTestId('hero-line1');
+	await expect(heroLine1).toBeVisible();
+	expect((await heroLine1.textContent())?.trim()).toBeTruthy();
 });
 
 test('wordmark is visible', async ({ page }) => {
