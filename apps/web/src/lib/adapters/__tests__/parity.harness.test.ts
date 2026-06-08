@@ -42,7 +42,7 @@
 //
 //   RUN_PARITY=1 bunx vitest run src/lib/adapters/__tests__/parity.harness.test.ts --reporter=basic
 //
-// Override the target with PUBLIC_DIRECTUS_URL=<url> (defaults to prod).
+// Override the target with PUBLIC_DIRECTUS_URL=<url> (defaults to dev).
 
 import { describe, expect, it, vi } from 'vitest';
 import { isDeepStrictEqual } from 'node:util';
@@ -60,13 +60,19 @@ vi.unmock('$lib/adapters/directus');
 // reference outer consts (Vitest throws "Cannot access X before
 // initialization"). Read process.env inline. Mirror the same default in the
 // PARITY_DIRECTUS_URL const below for the reporter header.
+//
+// DEFAULT = dev CMS: the static content modules are built from dev
+// (cms.dev.yesid.dev), so comparing static-dev vs directus-dev is the coherent
+// oracle. Cross-instance (static-dev vs directus-prod) would produce phantom
+// DIFFs from content drift rather than real code gaps. Override to prod via
+// PUBLIC_DIRECTUS_URL=https://cms.yesid.dev for a pre-27.2-flip sanity check.
 vi.mock('$env/dynamic/public', () => ({
 	env: {
-		PUBLIC_DIRECTUS_URL: process.env.PUBLIC_DIRECTUS_URL || 'https://cms.yesid.dev',
+		PUBLIC_DIRECTUS_URL: process.env.PUBLIC_DIRECTUS_URL || 'https://cms.dev.yesid.dev',
 	},
 }));
 
-const PARITY_DIRECTUS_URL = process.env.PUBLIC_DIRECTUS_URL || 'https://cms.yesid.dev';
+const PARITY_DIRECTUS_URL = process.env.PUBLIC_DIRECTUS_URL || 'https://cms.dev.yesid.dev';
 
 // --- Real adapters under test ----------------------------------------------
 
