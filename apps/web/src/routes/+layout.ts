@@ -6,6 +6,8 @@ import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
 import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,
+	footerLinks as staticFooterLinks,
+	mobileLinks as staticMobileLinks,
 	errorPageContent as staticErrorPageContent,
 } from '$lib/content/nav';
 import type { NavLink, ErrorPageContent } from '$lib/content/nav';
@@ -55,16 +57,22 @@ export const load: LayoutLoad = async ({ data }) => {
 	// unavailable (e.g., during CSR-only renders in tests).
 	const slotFallback: LayoutSlotData = {
 		headerLinks: staticNavLinks,
-		footerLinks: staticMenuItems,
-		mobileLinks: [],
+		footerLinks: staticFooterLinks,
+		mobileLinks: staticMobileLinks,
 		menuItems: staticMenuItems,
 		errorPage: staticErrorPageContent,
 	};
 
 	const slots: LayoutSlotData = {
 		headerLinks: serverData.headerLinks ?? slotFallback.headerLinks,
-		footerLinks: serverData.footerLinks ?? slotFallback.footerLinks,
-		mobileLinks: serverData.mobileLinks ?? slotFallback.mobileLinks,
+		// Use length-based fallback for footer + mobile: `??` does not replace an
+		// empty array returned by the server (staticAdapter pre-fix returned []).
+		// After the regen these server values will be populated, but the fallback
+		// guard ensures correct behaviour during any intermediate deploy window.
+		footerLinks:
+			serverData.footerLinks?.length ? serverData.footerLinks : slotFallback.footerLinks,
+		mobileLinks:
+			serverData.mobileLinks?.length ? serverData.mobileLinks : slotFallback.mobileLinks,
 		menuItems: serverData.menuItems ?? slotFallback.menuItems,
 		errorPage: serverData.errorPage ?? slotFallback.errorPage,
 	};

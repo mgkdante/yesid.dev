@@ -89,7 +89,7 @@ import {
 	ctaContent,
 	closerContent,
 } from '$lib/content/site-content';
-import { navLinks, menuItems, errorPageContent } from '$lib/content/nav';
+import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '$lib/content/nav';
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
 import { blogPageContent } from '$lib/content/blog-page';
@@ -319,8 +319,12 @@ export const staticAdapter: ContentAdapter = {
 			if (placement === 'menu') {
 				return parsePort('nav.byPlacement', z.array(NavLinkSchema), menuItems);
 			}
-			// footer and mobile placements have no static fallback data —
-			// return an empty array so consumers degrade gracefully.
+			if (placement === 'footer') {
+				return parsePort('nav.byPlacement', z.array(NavLinkSchema), footerLinks);
+			}
+			if (placement === 'mobile') {
+				return parsePort('nav.byPlacement', z.array(NavLinkSchema), mobileLinks);
+			}
 			return [];
 		},
 	},

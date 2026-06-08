@@ -14,6 +14,7 @@ import { describe, expect, it } from 'vitest';
 import { staticAdapter } from '$lib/adapters/static';
 import { blogPosts } from '$lib/content/blog';
 import { blogBodies } from '$lib/content/blog-bodies';
+import { footerLinks, mobileLinks } from '$lib/content/nav';
 import {
 	BlockEditorDocSchema,
 	BlogPageContentSchema,
@@ -141,5 +142,35 @@ describe('staticAdapter.content.projectsPage — full schema shape, clean intro 
 		expectCleanLocalizedString(page.intro);
 		expect(page.intro.en).not.toMatch(/^\{"en"/);
 		expect(page.intro.en.length).toBeGreaterThan(0);
+	});
+});
+
+describe('staticAdapter.nav.byPlacement — footer + mobile match generated module (slice-27.1 T7)', () => {
+	// Network-free: staticAdapter reads from the generated nav.ts content module.
+	// These confirm that footer/mobile no longer silently return [] and that the
+	// generated arrays are the exact source of truth the adapter passes through.
+
+	it('footer returns a non-empty array matching the generated footerLinks', async () => {
+		const result = await staticAdapter.nav.byPlacement('footer');
+		expect(result.length).toBeGreaterThan(0);
+		expect(result).toEqual(footerLinks);
+	});
+
+	it('mobile returns a non-empty array matching the generated mobileLinks', async () => {
+		const result = await staticAdapter.nav.byPlacement('mobile');
+		expect(result.length).toBeGreaterThan(0);
+		expect(result).toEqual(mobileLinks);
+	});
+
+	it('header still returns navLinks (no regression)', async () => {
+		const { navLinks } = await import('$lib/content/nav');
+		const result = await staticAdapter.nav.byPlacement('header');
+		expect(result).toEqual(navLinks);
+	});
+
+	it('menu still returns menuItems (no regression)', async () => {
+		const { menuItems } = await import('$lib/content/nav');
+		const result = await staticAdapter.nav.byPlacement('menu');
+		expect(result).toEqual(menuItems);
 	});
 });
