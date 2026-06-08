@@ -164,9 +164,12 @@ export const staticAdapter: ContentAdapter = {
 		// Mirror directusAdapter.blog.html: serialize the Block Editor body to HTML
 		// (same wrapper + heading ids), or '' when the post has no body.
 		html: async (slug) => {
-			const body = blogBodies[slug];
-			if (!body) return '';
-			return serializeBlocksToHtml(body);
+			// Mirror directusAdapter.blog.html: validate the body through the same
+			// parsePort gate as bodyBySlug, then serialize (byte-identical wrapper +
+			// heading ids), or '' when the post has no body.
+			const raw = blogBodies[slug];
+			if (!raw) return '';
+			return serializeBlocksToHtml(parsePort('blog.bodyBySlug', BlockEditorDocSchema, raw));
 		},
 		tagsForCategory: async (category) => getTagsForCategory(category),
 		languagesForCategory: async (category) => getLanguagesForCategory(category),
