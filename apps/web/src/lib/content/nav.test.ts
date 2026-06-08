@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { navLinks, menuItems, errorPageContent } from './nav.js';
+import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from './nav.js';
 
 describe('navLinks', () => {
 	// slice-18m: nav links are CMS-derived. Order + copy are editor-controlled,
@@ -43,6 +43,44 @@ describe('menuItems', () => {
 	it('includes Contact with subtitle "open channel"', () => {
 		const contact = menuItems.find(i => i.href === '/contact');
 		expect(contact?.subtitle!.en).toBe('open channel');
+	});
+});
+
+describe('footerLinks', () => {
+	it('is non-empty (3 rows from dev CMS)', () => {
+		expect(footerLinks.length).toBeGreaterThan(0);
+	});
+
+	it('every link has a non-empty English label and a valid href', () => {
+		for (const link of footerLinks) {
+			expect(link.label.en.trim()).not.toBe('');
+			expect(link.href.startsWith('/')).toBe(true);
+		}
+	});
+
+	it('marks each link with priority 1 or 2', () => {
+		for (const link of footerLinks) {
+			expect([1, 2]).toContain(link.priority);
+		}
+	});
+});
+
+describe('mobileLinks', () => {
+	it('is non-empty (3 rows from dev CMS)', () => {
+		expect(mobileLinks.length).toBeGreaterThan(0);
+	});
+
+	it('every link has a non-empty English label and a valid href', () => {
+		for (const link of mobileLinks) {
+			expect(link.label.en.trim()).not.toBe('');
+			expect(link.href.startsWith('/')).toBe(true);
+		}
+	});
+
+	it('marks each link with priority 1 or 2', () => {
+		for (const link of mobileLinks) {
+			expect([1, 2]).toContain(link.priority);
+		}
 	});
 });
 

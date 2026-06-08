@@ -140,7 +140,7 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	if (shouldRun(opts.module, 'nav')) {
 		log.info('  nav...');
 		out.nav = await fetchNavData({ client });
-		log.info(`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu).`);
+		log.info(`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu / ${out.nav.footerLinks.length} footer / ${out.nav.mobileLinks.length} mobile).`);
 	}
 	if (shouldRun(opts.module, 'blog-posts')) {
 		log.info('  blog-posts...');

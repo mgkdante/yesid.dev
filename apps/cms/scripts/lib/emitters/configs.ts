@@ -210,7 +210,7 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 	if (data.nav && data.errorPageFallback) {
 		out.push({
 			filePath: path('nav.ts'),
-			description: 'Navigation links (header + menu placements) + error page fallback. Interfaces, navDirections, sharedChromeContent live in nav.companion.ts.',
+			description: 'Navigation links (header + menu + footer + mobile placements) + error page fallback. Interfaces, navDirections, sharedChromeContent live in nav.companion.ts.',
 			imports: [
 				{
 					symbols: ['NavLink', 'MenuItem', 'ErrorPageContent'],
@@ -221,6 +221,8 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 			exports: [
 				{ name: 'navLinks', typeName: 'readonly NavLink[]', value: data.nav.navLinks },
 				{ name: 'menuItems', typeName: 'readonly MenuItem[]', value: data.nav.menuItems },
+				{ name: 'footerLinks', typeName: 'readonly NavLink[]', value: data.nav.footerLinks },
+				{ name: 'mobileLinks', typeName: 'readonly NavLink[]', value: data.nav.mobileLinks },
 				{
 					name: 'errorPageContent',
 					typeName: 'ErrorPageContent',

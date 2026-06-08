@@ -37,6 +37,8 @@ export interface DirectusNavLinkRow {
 export interface NavData {
 	navLinks: readonly NavLink[];
 	menuItems: readonly NavLink[];
+	footerLinks: readonly NavLink[];
+	mobileLinks: readonly NavLink[];
 }
 
 /** Pure transform — DirectusNavLinkRow → NavLink. Tested standalone. */
@@ -65,7 +67,7 @@ export function toNavLink(raw: DirectusNavLinkRow): NavLink {
 	return result;
 }
 
-/** Fetch + validate header + menu placements in one round-trip. */
+/** Fetch + validate all four placements (header, menu, footer, mobile) in one round-trip. */
 export async function fetchNavData({ client }: FetcherContext): Promise<NavData> {
 	const rows = (await client.request(
 		readItems('nav_links', {
@@ -79,9 +81,13 @@ export async function fetchNavData({ client }: FetcherContext): Promise<NavData>
 
 	const header = rows.filter((r) => r.placement === 'header').map(toNavLink);
 	const menu = rows.filter((r) => r.placement === 'menu').map(toNavLink);
+	const footer = rows.filter((r) => r.placement === 'footer').map(toNavLink);
+	const mobile = rows.filter((r) => r.placement === 'mobile').map(toNavLink);
 
 	return {
 		navLinks: z.array(NavLinkSchema).parse(header),
 		menuItems: z.array(NavLinkSchema).parse(menu),
+		footerLinks: z.array(NavLinkSchema).parse(footer),
+		mobileLinks: z.array(NavLinkSchema).parse(mobile),
 	};
 }
