@@ -125,9 +125,15 @@ const fallbackSvgs = import.meta.glob('/src/lib/assets/blog-fallbacks/*.svg', {
 	eager: true,
 }) as Record<string, string>;
 
+// Key by the bare illustration id (filename without the `.svg` extension) so a
+// post's `svg` field — which carries the illustration id, e.g. `pro-chart`, NOT
+// `pro-chart.svg` — resolves directly. The bundled fallback files are
+// byte-identical to the assets Directus serves for the same illustration id, so
+// this mirrors `directusAdapter.blog.svgContent` (which fetches the asset bytes).
 const fallbackSvgMap = new Map<string, string>();
 for (const [path, content] of Object.entries(fallbackSvgs)) {
-	fallbackSvgMap.set(path.split('/').pop()!, content);
+	const filename = path.split('/').pop()!;
+	fallbackSvgMap.set(filename.replace(/\.svg$/, ''), content);
 }
 
 // --- SVG content ---

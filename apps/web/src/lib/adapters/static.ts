@@ -25,10 +25,12 @@ import {
 	getAdjacentServices,
 } from '$lib/content/services.companion';
 import { blogPosts } from '$lib/content/blog';
-// Slice-23: `getPostHtml` lives in blog.html-cache (separate from companion)
-// so the home page bundle doesn't transitively pull Shiki via the content
-// barrel. Direct import here is fine — static adapter runs server-side.
-import { getPostHtml } from '$lib/content/blog.html-cache';
+// Slice-27.1: blog.html + blog.bodyBySlug now mirror the directus adapter —
+// `bodyBySlug` reads the CMS-derived Block Editor doc from blog-bodies.ts and
+// `html` is `serializeBlocksToHtml(body)`, byte-identical to directus. This
+// replaced the legacy markdown→Shiki `getPostHtml` bridge (blog.html-cache.ts),
+// whose `<h1>`-prefixed / id-less serialization diverged from the runtime path.
+import { blogBodies } from '$lib/content/blog-bodies';
 import {
 	getPostBySlug,
 	getPostsByCategory,
@@ -76,7 +78,7 @@ import {
 } from '@repo/shared/schemas';
 import type { Locale } from '$lib/types';
 import { techStackItems, techStackPageContent } from '$lib/content/tech-stack';
-import { serializeBlocksToHtml } from '@repo/shared';
+import { serializeBlocksToHtml, BlockEditorDocSchema } from '@repo/shared';
 import {
 	heroContent,
 	heroAnimContent,
@@ -142,10 +144,13 @@ export const staticAdapter: ContentAdapter = {
 	blog: {
 		all: async () => parsePort('blog.all', z.array(BlogPostSchema), blogPosts),
 		bySlug: async (slug) => parsePort('blog.bySlug', BlogPostSchema.optional(), getPostBySlug(slug)),
-		bodyBySlug: async () => {
-			// Static adapter has no Block Editor body; return null. Consumers fall back
-			// to the legacy html() path during 18f.
-			return null;
+		bodyBySlug: async (slug) => {
+			// Mirror directusAdapter.blog.bodyBySlug: return the CMS-derived Block
+			// Editor doc (validated) for a published post, or null when the slug has
+			// no body. blogBodies omits null-body posts, so the lookup miss == null.
+			const body = blogBodies[slug];
+			if (!body) return null;
+			return parsePort('blog.bodyBySlug', BlockEditorDocSchema, body);
 		},
 		byCategory: async (category) =>
 			parsePort('blog.byCategory', z.array(BlogPostSchema), getPostsByCategory(category)),
@@ -156,7 +161,13 @@ export const staticAdapter: ContentAdapter = {
 		resolveAnimation: async (slug, explicit) =>
 			parsePort('blog.resolveAnimation', BlogAnimationSchema, resolveAnimation(slug, explicit)),
 		// Utility ports — return strings/records, no schema needed (spec D2).
-		html: async (slug) => getPostHtml(slug),
+		// Mirror directusAdapter.blog.html: serialize the Block Editor body to HTML
+		// (same wrapper + heading ids), or '' when the post has no body.
+		html: async (slug) => {
+			const body = blogBodies[slug];
+			if (!body) return '';
+			return serializeBlocksToHtml(body);
+		},
 		tagsForCategory: async (category) => getTagsForCategory(category),
 		languagesForCategory: async (category) => getLanguagesForCategory(category),
 		svgContent: async (post) => getSvgContent(post),

@@ -160,6 +160,25 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	if (data.blogBodies) {
+		// Block Editor `body` per published post, keyed by slug. Mirrors the
+		// blog.html-cache.ts precedent (kept OUT of the $lib/content barrel) so the
+		// static adapter can serve blog.bodyBySlug + blog.html without a network
+		// round-trip. NEW in slice-27.1 — was previously a hardcoded `null` stub.
+		out.push({
+			filePath: path('blog-bodies.ts'),
+			description: 'Block Editor body per published blog post, keyed by slug. Powers static blog.bodyBySlug + blog.html (serializeBlocksToHtml).',
+			imports: [{ symbols: ['BlockEditorDoc'], from: '$lib/types', typeOnly: true }],
+			exports: [
+				{
+					name: 'blogBodies',
+					typeName: 'Readonly<Record<string, BlockEditorDoc>>',
+					value: data.blogBodies,
+				},
+			],
+		});
+	}
+
 	if (data.services) {
 		out.push({
 			filePath: path('services.ts'),
