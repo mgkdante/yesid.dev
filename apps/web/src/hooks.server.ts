@@ -2,8 +2,8 @@ import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { adapter } from '$lib/adapters';
 import type { ErrorPageContent } from '$lib/content/nav';
 
-const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=60, stale-while-revalidate=300';
-const PUBLIC_CDN_CACHE_CONTROL = 'max-age=60, stale-while-revalidate=300';
+const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800';
+const PUBLIC_CDN_CACHE_CONTROL = 'max-age=86400, stale-while-revalidate=604800';
 
 function isHtmlPage(response: Response): boolean {
 	const contentType = response.headers.get('content-type') ?? '';
