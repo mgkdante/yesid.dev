@@ -92,6 +92,8 @@ import {
 import { navLinks, menuItems, errorPageContent } from '$lib/content/nav';
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
+import { blogPageContent } from '$lib/content/blog-page';
+import { projectsPageContent } from '$lib/content/projects-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 // Slice 18d Phase 8: static fallback for content.metroSvg — keeps the legacy
 // build-time `?raw` source available for unit tests (which override
@@ -281,16 +283,15 @@ export const staticAdapter: ContentAdapter = {
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
 		techStackPage: async () =>
 			parsePort('content.techStackPage', TechStackPageContentSchema, techStackPageContent),
-		// Phase 7 fallback stubs — minimal LocalizedString-only shapes matching the
-		// block_blog_page_content / block_projects_page_content Zod stubs.
+		// slice-27.1 T4: source the generated CMS modules (blog-page.ts /
+		// projects-page.ts, emitted from dev Directus by export-fallbacks) instead
+		// of inline stubs. Drops the prior placeholder copy that was missing
+		// schema-required keys (heading / backToDispatches / backToPersonal) and
+		// makes this mirror the directus adapter byte-for-byte.
 		blogPage: async (): Promise<BlogPageContent> =>
-			parsePort('content.blogPage', BlogPageContentSchema, {
-				intro: { en: 'Professional dispatches from the field.' },
-			}),
+			parsePort('content.blogPage', BlogPageContentSchema, blogPageContent),
 		projectsPage: async (): Promise<ProjectsPageContent> =>
-			parsePort('content.projectsPage', ProjectsPageContentSchema, {
-				intro: { en: 'Selected work.' },
-			}),
+			parsePort('content.projectsPage', ProjectsPageContentSchema, projectsPageContent),
 		heroMock: async () => parsePort('content.heroMock', HeroDataSchema, generateHeroData()),
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
