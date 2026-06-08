@@ -42,7 +42,7 @@ import { fetchSiteMeta } from './lib/fetchers/site-meta';
 import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
 import { fetchErrorPageFallback } from './lib/fetchers/error-pages';
 import { fetchNavData, type NavData } from './lib/fetchers/nav';
-import { fetchBlogPosts } from './lib/fetchers/blog-posts';
+import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
 import { fetchTechStack } from './lib/fetchers/tech-stack';
@@ -145,7 +145,10 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	if (shouldRun(opts.module, 'blog-posts')) {
 		log.info('  blog-posts...');
 		out.blogPosts = await fetchBlogPosts({ client });
-		log.info(`  blog-posts done (${out.blogPosts.length} posts).`);
+		out.blogBodies = await fetchBlogBodies({ client });
+		log.info(
+			`  blog-posts done (${out.blogPosts.length} posts, ${Object.keys(out.blogBodies).length} bodies).`,
+		);
 	}
 	if (shouldRun(opts.module, 'services')) {
 		log.info('  services...');
