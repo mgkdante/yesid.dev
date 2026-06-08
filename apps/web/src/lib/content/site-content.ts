@@ -19,7 +19,7 @@ export const heroContent: HeroContent = {
 	ctaWork: { en: 'See how I build →' },
 	headline: {
 		ariaSuffix: { en: 'Don\'t Break.' },
-		line1: { en: 'PIPELINES THAT' },
+		line1: { en: 'SYSTEMS THAT' },
 		line2: { en: 'DON\'T BREAK.' },
 	},
 	heroAnim: {
