@@ -256,7 +256,7 @@ export const staticAdapter: ContentAdapter = {
 				serializeBlocksToHtml(item.what_it_is.en),
 				serializeBlocksToHtml(item.what_i_use_it_for.en),
 				serializeBlocksToHtml(item.why_i_use_it_instead.en),
-			].join('');
+			].join('\n');
 		},
 	},
 	content: {
