@@ -1,3 +1,7 @@
+// DORMANT (slice-27.2): build/test-only. Consumed only by the dormant
+// directus.ts adapter and the Directus test suites; not in the runtime SSR
+// import graph as of slice-27.2. Kept for the slice-26 parity oracle.
+//
 // Rate-limit + retry wrapper around native fetch, used by the Directus adapter
 // to harden content reads against transient 5xx + 429 throttling.
 //
