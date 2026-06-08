@@ -10,6 +10,11 @@
 // composes a LocalizedString at the adapter boundary so consumer code stays
 // unchanged.
 //
+// DEPRECATION HABIT (slice-27.2): there is no items.delete rebuild path. To
+// retire content, set status = "archived" — export-fallbacks and the static
+// companions already filter archived rows out, so the next deploy-hook rebuild
+// drops it from the SSR layer. Do NOT add a new Directus Flow for deletes.
+//
 // Only the `services` port has a real implementation — the remaining five
 // ports throw a clear "TODO Task 5+" error if called. The ContentAdapter
 // annotation at the bottom is the compile-time gate that Task 4 must clear.
