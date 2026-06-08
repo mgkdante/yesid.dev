@@ -28,6 +28,7 @@ import { contactContent } from './contact-page.js';
 import * as metaModule from './site-meta.js';
 import * as blogModule from './blog.js';
 import * as techStackModule from './tech-stack.js';
+import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from './hero-data.js';
 import { techStackPageContent, techStackItems } from './tech-stack.js';
@@ -399,6 +400,10 @@ describe('LocalizedString guard + translation debt', () => {
 		['meta', metaModule],
 		['blog', blogModule],
 		['tech-stack', techStackModule],
+		// site-seo-defaults carries defaultDescription (en-only at present — no
+		// fr/es SEO description in the CMS singleton yet). Included so the
+		// snapshot reflects the full generated-content surface.
+		['site-seo-defaults', siteSeoDefaultsModule],
 	];
 
 	function scan(): LocalizedStringStats {
@@ -446,5 +451,130 @@ describe('LocalizedString guard + translation debt', () => {
 		// Trivial assertion so the test counts as a pass (vitest requires at
 		// least one expect() call to mark a test passed).
 		expect(stats.total).toBeGreaterThan(0);
+	});
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// Locale-completeness integrity check (slice-27.1 T11)
+// ─────────────────────────────────────────────────────────────────────────
+//
+// SUPPORTED_LOCALES = ['en', 'fr', 'es']. As of slice-27.1 the content layer
+// is largely en-only because the CMS has only English copy for most fields.
+// Known fully-multilingual sources: nav.ts (navDirections, sharedChromeContent,
+// navLinks labels, cta labels) and owner jobTitle in site-meta.ts.
+//
+// The approach here is to snapshot the exact full/partial/en-only counts so
+// any change (regression OR improvement) is visible in the test diff. This
+// makes the FR/ES launch detectable: when translations land in the CMS and
+// the modules are regenerated, these counts will shift and the snapshot
+// assertion will guide the reviewer to confirm the increase is intentional.
+//
+// Known en-only fields as of slice-27.1 (documented so FR/ES launch later
+// doesn't silently no-op — regenerate + re-run tests to confirm coverage):
+//
+//   site-seo-defaults: defaultDescription
+//     → CMS site_meta.translations has no fr/es default_description row yet.
+//   site-meta: tagline, description
+//     → CMS site_meta.translations has no fr/es tagline/description rows yet.
+//   site-content (home blocks): all hero/manifesto/cta/closer copy
+//     → block collections have no fr/es translation rows yet.
+//   contact-page: all labels, terminal prompts, success states
+//     → block_contact_page_content has no fr/es translation rows yet.
+//   blog: all titles, excerpts, categories, tags
+//     → blog_posts has no fr/es translation rows yet.
+//   services: most title/description fields (some have fr/es, most don't)
+//     → services.translations partial — many entries missing fr/es.
+//   projects: most fields (oneLiner has fr/es for some, most others en-only)
+//     → projects.translations partial.
+//   about-page: most fields
+//     → about-page block collections partial.
+//   tech-stack: category labels mostly en-only, scenario descriptions mixed
+//     → tech_stack collection partial fr/es coverage.
+
+describe('locale-completeness snapshot (T11)', () => {
+	// SUPPORTED_LOCALES mirror — inlined to avoid importing from utils (avoids
+	// SvelteKit $lib/* resolution issues in this test file).
+	const SUPPORTED_LOCALES = ['en', 'fr', 'es'] as const;
+
+	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
+		// Canary: if SUPPORTED_LOCALES changes in locale.ts, this test reminds
+		// the author to revisit the locale-completeness expectations here.
+		expect(SUPPORTED_LOCALES).toEqual(['en', 'fr', 'es']);
+	});
+
+	it('fully-multilingual (en+fr+es) count is locked at 32 — nav + jobTitle only', () => {
+		// This count represents the nav module chrome (navDirections, sharedChromeContent,
+		// cta labels, nav link titles) plus site-meta owner.jobTitle.
+		// If this number increases, FR/ES translations have been added to the CMS
+		// and the modules regenerated — confirm the increase is intentional.
+		// If this number decreases, translations have been stripped — investigate.
+		const stats = newStats();
+		const seen = new WeakSet<object>();
+		const allSources: Array<[string, unknown]> = [
+			['site-content', siteContentModule],
+			['nav', navModule],
+			['services', servicesModule],
+			['projects', projectsModule],
+			['about-page', aboutPageContent],
+			['contact-page', contactContent],
+			['meta', metaModule],
+			['blog', blogModule],
+			['tech-stack', techStackModule],
+			['site-seo-defaults', siteSeoDefaultsModule],
+		];
+		for (const [name, value] of allSources) {
+			walkContent(value, stats, name, seen);
+		}
+		expect(stats.full).toBe(32);
+	});
+
+	it('en-only count is locked at 373 — documents current FR/ES debt', () => {
+		// 373 fields have only an English translation. This is the baseline
+		// as of slice-27.1. When FR/ES copy lands for any module (CMS regen
+		// → committed diff), this number drops and the test fails intentionally —
+		// update the count here to confirm the debt has been reduced.
+		const stats = newStats();
+		const seen = new WeakSet<object>();
+		const allSources: Array<[string, unknown]> = [
+			['site-content', siteContentModule],
+			['nav', navModule],
+			['services', servicesModule],
+			['projects', projectsModule],
+			['about-page', aboutPageContent],
+			['contact-page', contactContent],
+			['meta', metaModule],
+			['blog', blogModule],
+			['tech-stack', techStackModule],
+			['site-seo-defaults', siteSeoDefaultsModule],
+		];
+		for (const [name, value] of allSources) {
+			walkContent(value, stats, name, seen);
+		}
+		expect(stats.enOnly).toBe(373);
+	});
+
+	it('partial (en + one of fr/es) count is 0 — no half-translated fields', () => {
+		// Partial translations (en + only one of fr/es) indicate an inconsistency:
+		// either the CMS has a French translation but no Spanish (or vice versa).
+		// This should remain 0 — when FR/ES lands it should land for BOTH locales
+		// simultaneously (or use the en fallback until both are ready).
+		const stats = newStats();
+		const seen = new WeakSet<object>();
+		const allSources: Array<[string, unknown]> = [
+			['site-content', siteContentModule],
+			['nav', navModule],
+			['services', servicesModule],
+			['projects', projectsModule],
+			['about-page', aboutPageContent],
+			['contact-page', contactContent],
+			['meta', metaModule],
+			['blog', blogModule],
+			['tech-stack', techStackModule],
+			['site-seo-defaults', siteSeoDefaultsModule],
+		];
+		for (const [name, value] of allSources) {
+			walkContent(value, stats, name, seen);
+		}
+		expect(stats.partial).toBe(0);
 	});
 });
