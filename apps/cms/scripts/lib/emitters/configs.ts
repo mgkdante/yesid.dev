@@ -34,6 +34,21 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	if (data.siteSeoDefaults) {
+		out.push({
+			filePath: path('site-seo-defaults.ts'),
+			description: 'SEO defaults (defaultOgImage UUID, themeColor, defaultDescription). CMS-driven from site_meta singleton.',
+			imports: [{ symbols: ['SiteSeoDefaults'], from: '$lib/types', typeOnly: true }],
+			exports: [
+				{
+					name: 'STATIC_SITE_SEO_DEFAULTS',
+					typeName: 'SiteSeoDefaults',
+					value: data.siteSeoDefaults,
+				},
+			],
+		});
+	}
+
 	if (data.aboutPage) {
 		out.push({
 			filePath: path('about-page.ts'),

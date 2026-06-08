@@ -5,7 +5,7 @@
  */
 
 import type { BlockEditorDoc } from '@repo/shared';
-import type { SiteMeta } from './lib/schemas/site-meta';
+import type { SiteMeta, SiteSeoDefaults } from './lib/schemas/site-meta';
 import type { MorphShape } from './lib/schemas/morph-shape';
 import type { ErrorPageContent } from './lib/schemas/nav';
 import type { BlogPost } from './lib/schemas/blog';
@@ -30,6 +30,7 @@ import type { NavData } from './lib/fetchers/nav';
 
 export interface ExportData {
 	siteMeta?: SiteMeta;
+	siteSeoDefaults?: SiteSeoDefaults;
 	morphShapes?: readonly MorphShape[];
 	errorPageFallback?: ErrorPageContent;
 	/** All published error_pages rows keyed by status_code. Used to emit error-pages.ts. */

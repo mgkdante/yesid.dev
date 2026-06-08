@@ -38,7 +38,7 @@ import { buildEmitConfigs } from './lib/emitters/configs';
 import { emitModule } from './lib/emitters/emit-module';
 import { readCache, writeCache as persistCache } from './lib/cache';
 import type { ExportData } from './export-data';
-import { fetchSiteMeta } from './lib/fetchers/site-meta';
+import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
 import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
 import { fetchErrorPageFallback, fetchAllErrorPages } from './lib/fetchers/error-pages';
 import { fetchNavData, type NavData } from './lib/fetchers/nav';
@@ -85,6 +85,7 @@ export interface RunOptions {
 
 const ALL_MODULES = [
 	'site-meta',
+	'site-seo-defaults',
 	'morph-shapes',
 	'error-pages',
 	'nav',
@@ -142,6 +143,10 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		enqueue('site-meta', async () => {
 			out.siteMeta = await fetchSiteMeta({ client });
 			log.info('  site-meta done.');
+		});
+		enqueue('site-seo-defaults', async () => {
+			out.siteSeoDefaults = await fetchSiteSeoDefaults({ client });
+			log.info('  site-seo-defaults done.');
 		});
 		enqueue('morph-shapes', async () => {
 			out.morphShapes = await fetchMorphShapes({ client });
