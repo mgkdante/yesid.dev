@@ -8,7 +8,6 @@
 		"prebuild": "bun ../../apps/cms/scripts/export-fallbacks.ts",
 		"build": "vite build && bun run check:sitemap",
 		"check:sitemap": "vitest run src/tests/sitemap-coverage.test.ts",
-		"og:default": "bun scripts/generate-og-default.ts",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -20,7 +19,6 @@
 		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
 		"brand:export-logos": "bun ../../brand/scripts/export-logos.ts",
 		"brand:export-examples": "bun ../../brand/scripts/export-examples.ts",
-		"slice:close:legacy": "bun scripts/slice-close.ts",
 		"seed:services": "op run --env-file=.env -- bun scripts/seed-directus-services.ts"
 	},
 	"devDependencies": {
