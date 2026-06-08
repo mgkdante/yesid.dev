@@ -40,7 +40,7 @@ import { readCache, writeCache as persistCache } from './lib/cache';
 import type { ExportData } from './export-data';
 import { fetchSiteMeta } from './lib/fetchers/site-meta';
 import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
-import { fetchErrorPageFallback } from './lib/fetchers/error-pages';
+import { fetchErrorPageFallback, fetchAllErrorPages } from './lib/fetchers/error-pages';
 import { fetchNavData, type NavData } from './lib/fetchers/nav';
 import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
@@ -135,7 +135,8 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	if (shouldRun(opts.module, 'error-pages')) {
 		log.info('  error-pages...');
 		out.errorPageFallback = await fetchErrorPageFallback({ client });
-		log.info('  error-pages done.');
+		out.errorPages = await fetchAllErrorPages({ client });
+		log.info(`  error-pages done (${Object.keys(out.errorPages).length} rows).`);
 	}
 	if (shouldRun(opts.module, 'nav')) {
 		log.info('  nav...');

@@ -204,6 +204,30 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	// slice-27.1 FIX A: error-pages.ts emits the full per-statusCode map so the
+	// static adapter can mirror directus's _or: [status_code=N, status_code=0]
+	// lookup semantics. Keyed by numeric status_code (0 = generic fallback).
+	if (data.errorPages) {
+		out.push({
+			filePath: path('error-pages.ts'),
+			description: 'All published error_pages rows keyed by status_code. Powers static content.errorPage(statusCode) per-code lookup.',
+			imports: [
+				{
+					symbols: ['ErrorPageContent'],
+					from: './nav.companion',
+					typeOnly: true,
+				},
+			],
+			exports: [
+				{
+					name: 'errorPagesById',
+					typeName: 'Readonly<Record<number, ErrorPageContent>>',
+					value: data.errorPages,
+				},
+			],
+		});
+	}
+
 	// slice-18k Phase 8 Codex final fix #1: nav.ts aggregates nav (navLinks +
 	// menuItems) AND errorPageFallback. Partial emit would clobber sibling
 	// exports. Require both present before emitting.
