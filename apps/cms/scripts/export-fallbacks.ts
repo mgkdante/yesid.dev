@@ -81,6 +81,13 @@ export interface RunOptions {
 	module?: string;
 	/** Where to write emitted .ts modules. Defaults to apps/web/src/lib/content. */
 	emitDir?: string;
+	/**
+	 * When true (VERCEL_ENV==='production'), fetch failures and missing tokens
+	 * exit 1 instead of silently degrading. Vercel keeps the prior deploy
+	 * running, so a loud failure here is safe and far preferable to shipping
+	 * stale content without any signal.
+	 */
+	isProd?: boolean;
 }
 
 const ALL_MODULES = [
@@ -287,7 +294,7 @@ async function writeCache(data: ExportData, opts: RunOptions): Promise<void> {
 }
 
 export async function run(opts: RunOptions): Promise<void> {
-	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl}`);
+	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl}${opts.isProd ? ' [PRODUCTION]' : ''}`);
 	if (opts.module) log.info(`scope: --module=${opts.module}`);
 
 	let data: ExportData;
@@ -296,6 +303,13 @@ export async function run(opts: RunOptions): Promise<void> {
 		data = await fetchAll(opts);
 	} catch (fetchErr) {
 		log.warn(`fetch failed: ${(fetchErr as Error).message}`);
+		if (opts.isProd) {
+			log.error(
+				'PRODUCTION BUILD FAILED: fetch failed and no cache can substitute for a prod deploy. ' +
+					'Verify DIRECTUS_BUILD_TOKEN is set and the CMS is reachable.',
+			);
+			process.exit(1);
+		}
 		log.warn('attempting cache fallback...');
 		const cached = await readCache(cachePath(opts)).catch((err) => {
 			log.error(`cache read failed: ${(err as Error).message}`);
@@ -341,16 +355,25 @@ async function main(): Promise<void> {
 	const moduleFilter = typeof values.module === 'string' ? values.module : undefined;
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
 	const url = defaultDirectusUrl();
+	const isProd = process.env.VERCEL_ENV === 'production';
 
-	// Token resolution is lenient — Vercel preview deploys without the secret
-	// shouldn't kill the build. Failure here surfaces in run() as a fetch error
-	// → cache fallback → if no cache, exit 0 and let the committed .ts files
-	// serve as the authoritative source for this build.
+	// Token resolution: lenient for local/preview, strict for production.
+	// In production, a missing token is an operator error — fail loud so the
+	// build surfaces the problem instead of shipping stale content silently.
+	// Operator step: set DIRECTUS_BUILD_TOKEN in Vercel (Production env var)
+	// using a read-only "Build Bot" token from Directus.
 	let token = '';
 	if (!dryRun) {
 		try {
 			token = await getAdminToken(url);
 		} catch (authErr) {
+			if (isProd) {
+				log.error(
+					`PRODUCTION BUILD FAILED: token resolution failed — ${(authErr as Error).message}. ` +
+						'Set DIRECTUS_BUILD_TOKEN in Vercel Production environment variables.',
+				);
+				process.exit(1);
+			}
 			log.warn(`auth failed: ${(authErr as Error).message}`);
 			log.warn(
 				'continuing without token; will try cache fallback, else exit 0 (committed .ts files become authoritative).',
@@ -358,7 +381,7 @@ async function main(): Promise<void> {
 		}
 	}
 
-	await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir });
+	await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir, isProd });
 }
 
 if (import.meta.main) {
