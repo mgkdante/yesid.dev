@@ -29,11 +29,7 @@ export const services: readonly Service[] = [
 			label: { en: 'avg query improvement' },
 			value: { en: '3x faster' },
 		},
-		relatedProjects: [
-			'transit-data-pipeline',
-			'lorem-database-migration',
-			'lorem-query-optimizer',
-		],
+		relatedProjects: ['transit-data-pipeline'],
 		sections: [
 			{
 				content: {
@@ -106,7 +102,7 @@ export const services: readonly Service[] = [
 			label: { en: 'reporting turnaround' },
 			value: { en: '2d → 15m' },
 		},
-		relatedProjects: ['lorem-analytics-dashboard', 'lorem-retool-admin'],
+		relatedProjects: [],
 		sections: [
 			{
 				content: {
@@ -142,7 +138,7 @@ export const services: readonly Service[] = [
 			label: { en: 'migrated safely' },
 			value: { en: '500GB+' },
 		},
-		relatedProjects: ['lorem-database-migration', 'lorem-query-optimizer'],
+		relatedProjects: [],
 		sections: [
 			{
 				content: {
@@ -178,7 +174,7 @@ export const services: readonly Service[] = [
 			label: { en: 'less manual data entry' },
 			value: { en: '80%' },
 		},
-		relatedProjects: ['lorem-retool-admin'],
+		relatedProjects: [],
 		sections: [
 			{
 				content: {

@@ -9,12 +9,14 @@
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
+import type { BlockEditorDoc } from '@repo/shared';
 import {
 	BlogPostSchema,
 	type BlogAnimation,
 	type BlogCategory,
 	type BlogPost,
 } from '../schemas/blog';
+import { BlockEditorDocSchema } from '../schemas/blocks';
 import type { FetcherContext } from './types';
 
 export interface DirectusBlogPostRow {
@@ -103,4 +105,38 @@ export async function fetchBlogPosts({ client }: FetcherContext): Promise<readon
 	)) as unknown as DirectusBlogPostRow[];
 
 	return z.array(BlogPostSchema).parse(rows.map(toBlogPost));
+}
+
+/** Raw row shape for the body-only fetch (parent `id` + Block Editor `body`). */
+interface DirectusBlogBodyRow {
+	id: string;
+	body: BlockEditorDoc | null;
+}
+
+/**
+ * Fetch the Block Editor `body` for every published post, keyed by slug (= row id).
+ *
+ * Mirrors `directusAdapter.blog.bodyBySlug` (apps/web/src/lib/adapters/directus.ts):
+ * each value is the row's `body` validated against BlockEditorDocSchema. Posts
+ * whose `body` is null are omitted so the static `bodyBySlug` returns `null` for
+ * them — byte-identical to the runtime adapter's `if (body === null) return null`.
+ */
+export async function fetchBlogBodies({
+	client,
+}: FetcherContext): Promise<Record<string, BlockEditorDoc>> {
+	const rows = (await client.request(
+		readItems('blog_posts', {
+			fields: ['id', 'body'],
+			filter: { status: { _eq: 'published' } },
+			sort: ['-date_published'],
+			limit: -1,
+		}),
+	)) as unknown as DirectusBlogBodyRow[];
+
+	const out: Record<string, BlockEditorDoc> = {};
+	for (const row of rows) {
+		if (row.body === null || row.body === undefined) continue;
+		out[row.id] = BlockEditorDocSchema.parse(row.body);
+	}
+	return out;
 }

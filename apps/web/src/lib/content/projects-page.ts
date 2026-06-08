@@ -12,6 +12,6 @@ import type { ProjectsPageContent } from '@repo/shared';
 
 export const projectsPageContent: ProjectsPageContent = {
 	intro: {
-		en: '{"en":"A selection of data engineering projects — pipelines, dashboards, and infrastructure that ships."}',
+		en: 'A selection of data engineering projects — pipelines, dashboards, and infrastructure that ships.',
 	},
 };

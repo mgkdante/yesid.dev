@@ -8,7 +8,6 @@
 		"prebuild": "bun ../../apps/cms/scripts/export-fallbacks.ts",
 		"build": "vite build && bun run check:sitemap",
 		"check:sitemap": "vitest run src/tests/sitemap-coverage.test.ts",
-		"og:default": "bun scripts/generate-og-default.ts",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -20,7 +19,6 @@
 		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
 		"brand:export-logos": "bun ../../brand/scripts/export-logos.ts",
 		"brand:export-examples": "bun ../../brand/scripts/export-examples.ts",
-		"slice:close:legacy": "bun scripts/slice-close.ts",
 		"seed:services": "op run --env-file=.env -- bun scripts/seed-directus-services.ts"
 	},
 	"devDependencies": {
@@ -72,6 +70,7 @@
 		"@fontsource-variable/jetbrains-mono": "^5.2.8",
 		"@iconify/svelte": "^5.2.1",
 		"@repo/shared": "workspace:*",
+		"@resvg/resvg-js": "^2.6.2",
 		"embla-carousel": "^8.6.0",
 		"embla-carousel-wheel-gestures": "^8.1.0",
 		"gsap": "^3.14.2",
@@ -79,6 +78,7 @@
 		"marked": "^17.0.6",
 		"mdsvex": "^0.12.7",
 		"p-queue": "^9.1.2",
+		"satori": "^0.10.13",
 		"shiki": "^4.0.2",
 		"zod": "^4.3.6"
 	}

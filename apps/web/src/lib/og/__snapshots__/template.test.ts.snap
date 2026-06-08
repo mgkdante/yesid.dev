@@ -1,0 +1,448 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`buildOgTree > matches snapshot for short project title 1`] = `
+{
+  "props": {
+    "children": [
+      {
+        "props": {
+          "children": "PROJECT",
+          "style": {
+            "color": "#E07800",
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "18px",
+            "fontWeight": 500,
+            "letterSpacing": "0.12em",
+            "textTransform": "uppercase",
+          },
+        },
+        "type": "div",
+      },
+      {
+        "props": {
+          "children": [
+            {
+              "props": {
+                "children": [
+                  {
+                    "props": {
+                      "children": "yesid",
+                      "style": {
+                        "color": "#F5F5F5",
+                      },
+                    },
+                    "type": "span",
+                  },
+                  {
+                    "props": {
+                      "children": ".",
+                      "style": {
+                        "color": "#E07800",
+                      },
+                    },
+                    "type": "span",
+                  },
+                ],
+                "style": {
+                  "alignItems": "baseline",
+                  "display": "flex",
+                  "fontFamily": "Inter",
+                  "fontSize": "180px",
+                  "fontWeight": 900,
+                  "letterSpacing": "-0.04em",
+                  "lineHeight": 1,
+                },
+              },
+              "type": "div",
+            },
+            {
+              "props": {
+                "children": "Transit Pipelines",
+                "style": {
+                  "color": "#9CA3AF",
+                  "fontFamily": "Inter",
+                  "fontSize": "48px",
+                  "fontWeight": 500,
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": 1.15,
+                  "maxWidth": "1040px",
+                },
+              },
+              "type": "div",
+            },
+          ],
+          "style": {
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": "24px",
+          },
+        },
+        "type": "div",
+      },
+      {
+        "props": {
+          "children": [
+            {
+              "props": {
+                "children": [
+                  {
+                    "props": {
+                      "children": "",
+                      "style": {
+                        "backgroundColor": "#E07800",
+                        "height": "3px",
+                        "width": "120px",
+                      },
+                    },
+                    "type": "div",
+                  },
+                  {
+                    "props": {
+                      "children": "yesid.dev",
+                    },
+                    "type": "span",
+                  },
+                ],
+                "style": {
+                  "display": "flex",
+                  "flexDirection": "column",
+                  "gap": "16px",
+                },
+              },
+              "type": "div",
+            },
+            {
+              "props": {
+                "children": "Montréal · QC",
+              },
+              "type": "span",
+            },
+          ],
+          "style": {
+            "alignItems": "flex-end",
+            "color": "#9CA3AF",
+            "display": "flex",
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "18px",
+            "fontWeight": 500,
+            "justifyContent": "space-between",
+            "letterSpacing": "0.12em",
+            "textTransform": "uppercase",
+          },
+        },
+        "type": "div",
+      },
+    ],
+    "style": {
+      "backgroundColor": "#141414",
+      "color": "#F5F5F5",
+      "display": "flex",
+      "flexDirection": "column",
+      "fontFamily": "Inter",
+      "height": "630px",
+      "justifyContent": "space-between",
+      "padding": "80px",
+      "width": "1200px",
+    },
+  },
+  "type": "div",
+}
+`;
+
+exports[`buildOgTree > matches snapshot for title with special chars 1`] = `
+{
+  "props": {
+    "children": [
+      {
+        "props": {
+          "children": "BLOG",
+          "style": {
+            "color": "#E07800",
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "18px",
+            "fontWeight": 500,
+            "letterSpacing": "0.12em",
+            "textTransform": "uppercase",
+          },
+        },
+        "type": "div",
+      },
+      {
+        "props": {
+          "children": [
+            {
+              "props": {
+                "children": [
+                  {
+                    "props": {
+                      "children": "yesid",
+                      "style": {
+                        "color": "#F5F5F5",
+                      },
+                    },
+                    "type": "span",
+                  },
+                  {
+                    "props": {
+                      "children": ".",
+                      "style": {
+                        "color": "#E07800",
+                      },
+                    },
+                    "type": "span",
+                  },
+                ],
+                "style": {
+                  "alignItems": "baseline",
+                  "display": "flex",
+                  "fontFamily": "Inter",
+                  "fontSize": "180px",
+                  "fontWeight": 900,
+                  "letterSpacing": "-0.04em",
+                  "lineHeight": 1,
+                },
+              },
+              "type": "div",
+            },
+            {
+              "props": {
+                "children": "Why "&<>'" all matter",
+                "style": {
+                  "color": "#9CA3AF",
+                  "fontFamily": "Inter",
+                  "fontSize": "48px",
+                  "fontWeight": 500,
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": 1.15,
+                  "maxWidth": "1040px",
+                },
+              },
+              "type": "div",
+            },
+          ],
+          "style": {
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": "24px",
+          },
+        },
+        "type": "div",
+      },
+      {
+        "props": {
+          "children": [
+            {
+              "props": {
+                "children": [
+                  {
+                    "props": {
+                      "children": "",
+                      "style": {
+                        "backgroundColor": "#E07800",
+                        "height": "3px",
+                        "width": "120px",
+                      },
+                    },
+                    "type": "div",
+                  },
+                  {
+                    "props": {
+                      "children": "yesid.dev",
+                    },
+                    "type": "span",
+                  },
+                ],
+                "style": {
+                  "display": "flex",
+                  "flexDirection": "column",
+                  "gap": "16px",
+                },
+              },
+              "type": "div",
+            },
+            {
+              "props": {
+                "children": "Montréal · QC",
+              },
+              "type": "span",
+            },
+          ],
+          "style": {
+            "alignItems": "flex-end",
+            "color": "#9CA3AF",
+            "display": "flex",
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "18px",
+            "fontWeight": 500,
+            "justifyContent": "space-between",
+            "letterSpacing": "0.12em",
+            "textTransform": "uppercase",
+          },
+        },
+        "type": "div",
+      },
+    ],
+    "style": {
+      "backgroundColor": "#141414",
+      "color": "#F5F5F5",
+      "display": "flex",
+      "flexDirection": "column",
+      "fontFamily": "Inter",
+      "height": "630px",
+      "justifyContent": "space-between",
+      "padding": "80px",
+      "width": "1200px",
+    },
+  },
+  "type": "div",
+}
+`;
+
+exports[`buildOgTree > matches snapshot for typical blog title 1`] = `
+{
+  "props": {
+    "children": [
+      {
+        "props": {
+          "children": "BLOG",
+          "style": {
+            "color": "#E07800",
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "18px",
+            "fontWeight": 500,
+            "letterSpacing": "0.12em",
+            "textTransform": "uppercase",
+          },
+        },
+        "type": "div",
+      },
+      {
+        "props": {
+          "children": [
+            {
+              "props": {
+                "children": [
+                  {
+                    "props": {
+                      "children": "yesid",
+                      "style": {
+                        "color": "#F5F5F5",
+                      },
+                    },
+                    "type": "span",
+                  },
+                  {
+                    "props": {
+                      "children": ".",
+                      "style": {
+                        "color": "#E07800",
+                      },
+                    },
+                    "type": "span",
+                  },
+                ],
+                "style": {
+                  "alignItems": "baseline",
+                  "display": "flex",
+                  "fontFamily": "Inter",
+                  "fontSize": "180px",
+                  "fontWeight": 900,
+                  "letterSpacing": "-0.04em",
+                  "lineHeight": 1,
+                },
+              },
+              "type": "div",
+            },
+            {
+              "props": {
+                "children": "Postgres Vacuum Tuning for High-Write Tables",
+                "style": {
+                  "color": "#9CA3AF",
+                  "fontFamily": "Inter",
+                  "fontSize": "48px",
+                  "fontWeight": 500,
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": 1.15,
+                  "maxWidth": "1040px",
+                },
+              },
+              "type": "div",
+            },
+          ],
+          "style": {
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": "24px",
+          },
+        },
+        "type": "div",
+      },
+      {
+        "props": {
+          "children": [
+            {
+              "props": {
+                "children": [
+                  {
+                    "props": {
+                      "children": "",
+                      "style": {
+                        "backgroundColor": "#E07800",
+                        "height": "3px",
+                        "width": "120px",
+                      },
+                    },
+                    "type": "div",
+                  },
+                  {
+                    "props": {
+                      "children": "yesid.dev",
+                    },
+                    "type": "span",
+                  },
+                ],
+                "style": {
+                  "display": "flex",
+                  "flexDirection": "column",
+                  "gap": "16px",
+                },
+              },
+              "type": "div",
+            },
+            {
+              "props": {
+                "children": "Montréal · QC",
+              },
+              "type": "span",
+            },
+          ],
+          "style": {
+            "alignItems": "flex-end",
+            "color": "#9CA3AF",
+            "display": "flex",
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "18px",
+            "fontWeight": 500,
+            "justifyContent": "space-between",
+            "letterSpacing": "0.12em",
+            "textTransform": "uppercase",
+          },
+        },
+        "type": "div",
+      },
+    ],
+    "style": {
+      "backgroundColor": "#141414",
+      "color": "#F5F5F5",
+      "display": "flex",
+      "flexDirection": "column",
+      "fontFamily": "Inter",
+      "height": "630px",
+      "justifyContent": "space-between",
+      "padding": "80px",
+      "width": "1200px",
+    },
+  },
+  "type": "div",
+}
+`;

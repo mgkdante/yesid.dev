@@ -9,7 +9,7 @@
 
 import { readSingleton } from '@directus/sdk';
 import { toLocalizedString } from '../locale';
-import { SiteMetaSchema, type SiteMeta } from '../schemas/site-meta';
+import { SiteMetaSchema, SiteSeoDefaultsSchema, type SiteMeta, type SiteSeoDefaults } from '../schemas/site-meta';
 import type { FetcherContext } from './types';
 
 // Mirror of DirectusSiteMetaRow from apps/web/src/lib/adapters/directus.ts.
@@ -69,6 +69,38 @@ export function toSiteMeta(row: DirectusSiteMetaRow): SiteMeta {
 			knowsAbout,
 		},
 	};
+}
+
+/**
+ * SiteSeoDefaults transform — DirectusSiteMetaRow → SiteSeoDefaults.
+ * Mirrors `toSiteSeoDefaults` from apps/web/src/lib/adapters/directus.ts.
+ * Sourced from the same singleton row as toSiteMeta — no extra network call.
+ */
+export function toSiteSeoDefaults(row: DirectusSiteMetaRow): SiteSeoDefaults {
+	return {
+		defaultOgImage: row.default_og_image,
+		themeColor: row.theme_color,
+		defaultDescription: toLocalizedString(row.translations, 'default_description'),
+	};
+}
+
+/** Fetch + validate the SiteSeoDefaults shape. Re-uses the same singleton row as fetchSiteMeta. */
+export async function fetchSiteSeoDefaults({ client }: FetcherContext): Promise<SiteSeoDefaults> {
+	const row = (await client.request(
+		readSingleton('site_meta', {
+			fields: [
+				'default_og_image',
+				'theme_color',
+				{
+					translations: [
+						'languages_code',
+						'default_description',
+					],
+				} as unknown as string,
+			],
+		}),
+	)) as unknown as DirectusSiteMetaRow;
+	return SiteSeoDefaultsSchema.parse(toSiteSeoDefaults(row));
 }
 
 /** Fetch + validate. Throws on Zod parse failure (loud over silent corruption). */
