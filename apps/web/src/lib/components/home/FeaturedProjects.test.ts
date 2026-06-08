@@ -3,77 +3,106 @@ import { render, screen } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 // slice-18i Phase 7C: FeaturedProjects now requires proofReel prop.
 import { proofReelContent } from '$lib/content/site-content';
+import { getProjectBySlug } from '$lib/content';
+import { resolveLocale } from '$lib/utils';
+import type { Project } from '$lib/types';
+
+// These tests validate the SHAPE / behaviour of the proof-reel carousel, not
+// the specific CMS values inside it. Both `proofReelContent.slugs` and the
+// `projects` collection are generated from live Directus state (see the
+// "GENERATED FILE" headers in site-content.ts / projects.ts) and change when
+// the operator edits the CMS — hardcoding slugs, titles, or a fixed card count
+// makes the suite break on every content edit. Precedent: slice-16 commit
+// 8259c6b "decouple test assertions from CMS-controlled copy".
+//
+// The component renders one card per slug that resolves to a real project and
+// silently drops slugs whose project row no longer exists. Expectations are
+// therefore DERIVED from the same data the component consumes.
+const resolvedProjects: Project[] = proofReelContent.slugs
+	.map((slug) => getProjectBySlug(slug))
+	.filter((p): p is Project => Boolean(p));
+
+const expectedCount = resolvedProjects.length;
 
 describe('FeaturedProjects', () => {
+	// Guard: the carousel is meaningless with zero cards. If this trips, the
+	// CMS proof-reel block references no existing projects — a data-quality
+	// issue for the operator, surfaced here rather than as silent empty render.
+	it('renders at least one resolvable project (CMS data-integrity guard)', () => {
+		expect(expectedCount).toBeGreaterThan(0);
+	});
+
 	it('renders the section with correct testid', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
 	});
 
-	it('renders exactly 5 project cards (slice-23: carousel handles N)', () => {
+	it('renders one card per resolvable featured slug', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const cards = screen.getAllByTestId('proof-card');
-		expect(cards).toHaveLength(5);
+		expect(cards).toHaveLength(expectedCount);
 	});
 
-	it('renders impact metrics for each card with metric data', () => {
+	it('renders a metric-value span for every card', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		// Every card renders the metric-value span (empty when the project has
+		// no impactMetric in Directus). Count, not content — the words are CMS.
 		const metrics = screen.getAllByTestId('proof-metric-value');
-		// All 5 cards render the metric-value span; cards without
-		// impactMetric in Directus render an empty span. First three
-		// projects have populated metrics from CMS.
-		expect(metrics).toHaveLength(5);
-		expect(metrics[0].textContent).toContain('30s');
-		expect(metrics[1].textContent).toContain('15 min');
-		expect(metrics[2].textContent).toContain('500 GB');
+		expect(metrics).toHaveLength(expectedCount);
 	});
 
-	it('renders before value with strikethrough when present', () => {
+	it('renders a strikethrough before-value for cards whose metric has one', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
-		const beforeEl = screen.getByTestId('proof-metric-before');
-		expect(beforeEl).toBeInTheDocument();
-		expect(beforeEl.textContent).toContain('2 days');
+		// Derive how many resolved projects carry a metric `before` value — the
+		// component only renders proof-metric-before when present.
+		const withBefore = resolvedProjects.filter((p) => p.impactMetric?.before);
+		const beforeEls = screen.queryAllByTestId('proof-metric-before');
+		expect(beforeEls).toHaveLength(withBefore.length);
+		// When at least one exists, its text must match the CMS value (contract:
+		// the component renders the raw `before` string).
+		for (let i = 0; i < withBefore.length; i++) {
+			expect(beforeEls[i]?.textContent).toContain(withBefore[i]!.impactMetric!.before!);
+		}
 	});
 
-	it('renders project titles', () => {
+	it('renders project titles matching the resolved CMS data', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const titles = screen.getAllByTestId('proof-card-title');
-		expect(titles).toHaveLength(5);
-		expect(titles[0].textContent).toContain('Transit Operations');
-		expect(titles[1].textContent).toContain('Lorem Analytics');
-		expect(titles[2].textContent).toContain('Lorem Database');
-		expect(titles[3].textContent).toContain('Lorem Query Optimizer');
-		expect(titles[4].textContent).toContain('Lorem Retool Admin Panel');
+		expect(titles).toHaveLength(expectedCount);
+		resolvedProjects.forEach((project, i) => {
+			expect(titles[i]?.textContent).toContain(resolveLocale(project.title, 'en'));
+		});
 	});
 
-	it('renders tech stack tags', () => {
+	it('renders tech stack tags for cards that have a stack', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
-		const tags = screen.getAllByTestId('proof-tag');
-		// 5 cards × 4 tags each = 20 minimum
-		expect(tags.length).toBeGreaterThanOrEqual(15);
+		const expectedTags = resolvedProjects.reduce((sum, p) => sum + p.stack.length, 0);
+		const tags = screen.queryAllByTestId('proof-tag');
+		expect(tags).toHaveLength(expectedTags);
 	});
 
-	it('cards link to /projects/[slug]', () => {
+	it('cards link to /projects/[slug] for each resolved project (URL contract)', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const cards = screen.getAllByTestId('proof-card');
-		expect(cards[0].closest('a')?.getAttribute('href')).toBe('/projects/transit-data-pipeline');
-		expect(cards[1].closest('a')?.getAttribute('href')).toBe('/projects/lorem-analytics-dashboard');
-		expect(cards[2].closest('a')?.getAttribute('href')).toBe('/projects/lorem-database-migration');
-		expect(cards[3].closest('a')?.getAttribute('href')).toBe('/projects/lorem-query-optimizer');
-		expect(cards[4].closest('a')?.getAttribute('href')).toBe('/projects/lorem-retool-admin');
+		resolvedProjects.forEach((project, i) => {
+			expect(cards[i]?.closest('a')?.getAttribute('href')).toBe(`/projects/${project.slug}`);
+		});
 	});
 
 	it('renders view-all link to /projects', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const link = screen.getByTestId('proof-view-all');
 		expect(link).toBeInTheDocument();
+		// URL contract — the View all link must reach the listing page. The href
+		// is engineering's concern; the label text is CMS-owned, so assert it
+		// renders the configured label rather than a hardcoded phrase.
 		expect(link.getAttribute('href')).toBe('/projects');
-		expect(link.textContent).toContain('View all projects');
+		expect(link.textContent).toContain(resolveLocale(proofReelContent.viewAllLabel, 'en'));
 	});
 
-	it('renders project images', () => {
+	it('renders one image button per card', () => {
 		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
 		const images = screen.getAllByTestId('proof-card-image');
-		expect(images).toHaveLength(5);
+		expect(images).toHaveLength(expectedCount);
 	});
 });
