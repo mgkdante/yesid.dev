@@ -4,6 +4,8 @@ import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 import {
 	navLinks as staticNavLinks,
 	menuItems as staticMenuItems,
+	footerLinks as staticFooterLinks,
+	mobileLinks as staticMobileLinks,
 	errorPageContent as staticErrorPageContent,
 } from '$lib/content/nav';
 import type { ErrorPageContent, NavLink } from '$lib/content/nav';
@@ -56,9 +58,13 @@ describe('+layout.ts load', () => {
 	it('uses static fallbacks without touching the adapter when server slots are missing', async () => {
 		const result = await load(fakeEvent({ seo: fakeSeo, themeColor: '#123456' }));
 
+		// slice-27.1 T7: header / footer / mobile / menu are now distinct static
+		// fallback sources (footer + mobile placements added to nav.ts so the
+		// static adapter is byte-faithful to Directus). Each slot falls back to
+		// its own export, not a shared `menuItems`.
 		expect(result.headerLinks).toEqual(staticNavLinks);
-		expect(result.footerLinks).toEqual(staticMenuItems);
-		expect(result.mobileLinks).toEqual([]);
+		expect(result.footerLinks).toEqual(staticFooterLinks);
+		expect(result.mobileLinks).toEqual(staticMobileLinks);
 		expect(result.menuItems).toEqual(staticMenuItems);
 		expect(result.errorPage).toEqual(staticErrorPageContent);
 	});
