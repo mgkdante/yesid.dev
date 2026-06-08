@@ -15,6 +15,6 @@ export const blogPageContent: BlogPageContent = {
 	backToPersonal: { en: '← back to personal corner' },
 	heading: { en: 'Dispatches' },
 	intro: {
-		en: '{"en":"Notes on data engineering, infrastructure, and building reliable systems."}',
+		en: 'Notes on data engineering, infrastructure, and building reliable systems.',
 	},
 };

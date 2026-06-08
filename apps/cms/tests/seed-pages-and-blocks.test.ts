@@ -414,7 +414,11 @@ describe('toBlockProjectsPageContentTranslationRows', () => {
 	const rows = toBlockProjectsPageContentTranslationRows();
 	it('returns 1 row with intro as bare string', () => {
 		expect(rows.length).toBe(1);
-		expect(typeof rows[0]?.intro).toBe('object');
+		// slice-27.1 T4: `intro` is a FLAT string column (type=string,
+		// interface=input). The seed writes a bare string; the fetcher/adapter
+		// wrap it into `{ en }` downstream. Writing an object here re-introduces
+		// the double-encoding bug (serialized literal `{"en":"…"}`).
+		expect(typeof rows[0]?.intro).toBe('string');
 	});
 });
 

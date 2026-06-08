@@ -117,6 +117,26 @@ describe('SeoHead — tag emission', () => {
 		});
 		expect(getMeta('property', 'og:image')?.content).toBe('https://cdn.example.com/img.png');
 	});
+
+	it('emits og:image pointing at /og/blog/{slug}.png when seo.ogImage.url is the OG endpoint', () => {
+		render(SeoHead, {
+			props: {
+				seo: {
+					...validSeo,
+					ogImage: {
+						url: '/og/blog/postgres-vacuum-tuning.png',
+						alt: { en: 'Postgres Vacuum Tuning — yesid.' },
+						width: 1200,
+						height: 630,
+					},
+				},
+				locale: 'en',
+			},
+		});
+		expect(getMeta('property', 'og:image')?.content).toBe(
+			'https://yesid.dev/og/blog/postgres-vacuum-tuning.png',
+		);
+	});
 });
 
 describe('SeoHead — dev warnings', () => {

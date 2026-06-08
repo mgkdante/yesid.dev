@@ -7,6 +7,7 @@
 
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import type { DirectusClient, RestClient, StaticTokenClient } from '@directus/sdk';
+import { createQueuedFetch } from './queued-fetch';
 
 /**
  * Default Directus URL for ops scripts. Reads `PUBLIC_DIRECTUS_URL` from env
@@ -47,5 +48,8 @@ export function createClient<TSchema extends object = object>(
 	url: string,
 	token: string,
 ): DirectusClient<TSchema> & StaticTokenClient<TSchema> & RestClient<TSchema> {
-	return createDirectus<TSchema>(url).with(staticToken(token)).with(rest());
+	const queuedFetch = createQueuedFetch();
+	return createDirectus<TSchema>(url, { globals: { fetch: queuedFetch } })
+		.with(staticToken(token))
+		.with(rest());
 }

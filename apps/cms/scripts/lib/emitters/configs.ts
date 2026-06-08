@@ -34,6 +34,21 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	if (data.siteSeoDefaults) {
+		out.push({
+			filePath: path('site-seo-defaults.ts'),
+			description: 'SEO defaults (defaultOgImage UUID, themeColor, defaultDescription). CMS-driven from site_meta singleton.',
+			imports: [{ symbols: ['SiteSeoDefaults'], from: '$lib/types', typeOnly: true }],
+			exports: [
+				{
+					name: 'STATIC_SITE_SEO_DEFAULTS',
+					typeName: 'SiteSeoDefaults',
+					value: data.siteSeoDefaults,
+				},
+			],
+		});
+	}
+
 	if (data.aboutPage) {
 		out.push({
 			filePath: path('about-page.ts'),
@@ -160,6 +175,25 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	if (data.blogBodies) {
+		// Block Editor `body` per published post, keyed by slug. Mirrors the
+		// blog.html-cache.ts precedent (kept OUT of the $lib/content barrel) so the
+		// static adapter can serve blog.bodyBySlug + blog.html without a network
+		// round-trip. NEW in slice-27.1 — was previously a hardcoded `null` stub.
+		out.push({
+			filePath: path('blog-bodies.ts'),
+			description: 'Block Editor body per published blog post, keyed by slug. Powers static blog.bodyBySlug + blog.html (serializeBlocksToHtml).',
+			imports: [{ symbols: ['BlockEditorDoc'], from: '$lib/types', typeOnly: true }],
+			exports: [
+				{
+					name: 'blogBodies',
+					typeName: 'Readonly<Record<string, BlockEditorDoc>>',
+					value: data.blogBodies,
+				},
+			],
+		});
+	}
+
 	if (data.services) {
 		out.push({
 			filePath: path('services.ts'),
@@ -185,13 +219,37 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	// slice-27.1 FIX A: error-pages.ts emits the full per-statusCode map so the
+	// static adapter can mirror directus's _or: [status_code=N, status_code=0]
+	// lookup semantics. Keyed by numeric status_code (0 = generic fallback).
+	if (data.errorPages) {
+		out.push({
+			filePath: path('error-pages.ts'),
+			description: 'All published error_pages rows keyed by status_code. Powers static content.errorPage(statusCode) per-code lookup.',
+			imports: [
+				{
+					symbols: ['ErrorPageContent'],
+					from: './nav.companion',
+					typeOnly: true,
+				},
+			],
+			exports: [
+				{
+					name: 'errorPagesById',
+					typeName: 'Readonly<Record<number, ErrorPageContent>>',
+					value: data.errorPages,
+				},
+			],
+		});
+	}
+
 	// slice-18k Phase 8 Codex final fix #1: nav.ts aggregates nav (navLinks +
 	// menuItems) AND errorPageFallback. Partial emit would clobber sibling
 	// exports. Require both present before emitting.
 	if (data.nav && data.errorPageFallback) {
 		out.push({
 			filePath: path('nav.ts'),
-			description: 'Navigation links (header + menu placements) + error page fallback. Interfaces, navDirections, sharedChromeContent live in nav.companion.ts.',
+			description: 'Navigation links (header + menu + footer + mobile placements) + error page fallback. Interfaces, navDirections, sharedChromeContent live in nav.companion.ts.',
 			imports: [
 				{
 					symbols: ['NavLink', 'MenuItem', 'ErrorPageContent'],
@@ -202,6 +260,8 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 			exports: [
 				{ name: 'navLinks', typeName: 'readonly NavLink[]', value: data.nav.navLinks },
 				{ name: 'menuItems', typeName: 'readonly MenuItem[]', value: data.nav.menuItems },
+				{ name: 'footerLinks', typeName: 'readonly NavLink[]', value: data.nav.footerLinks },
+				{ name: 'mobileLinks', typeName: 'readonly NavLink[]', value: data.nav.mobileLinks },
 				{
 					name: 'errorPageContent',
 					typeName: 'ErrorPageContent',

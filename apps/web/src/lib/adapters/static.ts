@@ -25,10 +25,12 @@ import {
 	getAdjacentServices,
 } from '$lib/content/services.companion';
 import { blogPosts } from '$lib/content/blog';
-// Slice-23: `getPostHtml` lives in blog.html-cache (separate from companion)
-// so the home page bundle doesn't transitively pull Shiki via the content
-// barrel. Direct import here is fine — static adapter runs server-side.
-import { getPostHtml } from '$lib/content/blog.html-cache';
+// Slice-27.1: blog.html + blog.bodyBySlug now mirror the directus adapter —
+// `bodyBySlug` reads the CMS-derived Block Editor doc from blog-bodies.ts and
+// `html` is `serializeBlocksToHtml(body)`, byte-identical to directus. This
+// replaced the legacy markdown→Shiki `getPostHtml` bridge (blog.html-cache.ts),
+// whose `<h1>`-prefixed / id-less serialization diverged from the runtime path.
+import { blogBodies } from '$lib/content/blog-bodies';
 import {
 	getPostBySlug,
 	getPostsByCategory,
@@ -76,7 +78,7 @@ import {
 } from '@repo/shared/schemas';
 import type { Locale } from '$lib/types';
 import { techStackItems, techStackPageContent } from '$lib/content/tech-stack';
-import { serializeBlocksToHtml } from '@repo/shared';
+import { serializeBlocksToHtml, BlockEditorDocSchema } from '@repo/shared';
 import {
 	heroContent,
 	heroAnimContent,
@@ -87,9 +89,12 @@ import {
 	ctaContent,
 	closerContent,
 } from '$lib/content/site-content';
-import { navLinks, menuItems, errorPageContent } from '$lib/content/nav';
+import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '$lib/content/nav';
+import { errorPagesById } from '$lib/content/error-pages';
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
+import { blogPageContent } from '$lib/content/blog-page';
+import { projectsPageContent } from '$lib/content/projects-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 // Slice 18d Phase 8: static fallback for content.metroSvg — keeps the legacy
 // build-time `?raw` source available for unit tests (which override
@@ -142,10 +147,13 @@ export const staticAdapter: ContentAdapter = {
 	blog: {
 		all: async () => parsePort('blog.all', z.array(BlogPostSchema), blogPosts),
 		bySlug: async (slug) => parsePort('blog.bySlug', BlogPostSchema.optional(), getPostBySlug(slug)),
-		bodyBySlug: async () => {
-			// Static adapter has no Block Editor body; return null. Consumers fall back
-			// to the legacy html() path during 18f.
-			return null;
+		bodyBySlug: async (slug) => {
+			// Mirror directusAdapter.blog.bodyBySlug: return the CMS-derived Block
+			// Editor doc (validated) for a published post, or null when the slug has
+			// no body. blogBodies omits null-body posts, so the lookup miss == null.
+			const body = blogBodies[slug];
+			if (!body) return null;
+			return parsePort('blog.bodyBySlug', BlockEditorDocSchema, body);
 		},
 		byCategory: async (category) =>
 			parsePort('blog.byCategory', z.array(BlogPostSchema), getPostsByCategory(category)),
@@ -156,7 +164,16 @@ export const staticAdapter: ContentAdapter = {
 		resolveAnimation: async (slug, explicit) =>
 			parsePort('blog.resolveAnimation', BlogAnimationSchema, resolveAnimation(slug, explicit)),
 		// Utility ports — return strings/records, no schema needed (spec D2).
-		html: async (slug) => getPostHtml(slug),
+		// Mirror directusAdapter.blog.html: serialize the Block Editor body to HTML
+		// (same wrapper + heading ids), or '' when the post has no body.
+		html: async (slug) => {
+			// Mirror directusAdapter.blog.html: validate the body through the same
+			// parsePort gate as bodyBySlug, then serialize (byte-identical wrapper +
+			// heading ids), or '' when the post has no body.
+			const raw = blogBodies[slug];
+			if (!raw) return '';
+			return serializeBlocksToHtml(parsePort('blog.bodyBySlug', BlockEditorDocSchema, raw));
+		},
 		tagsForCategory: async (category) => getTagsForCategory(category),
 		languagesForCategory: async (category) => getLanguagesForCategory(category),
 		svgContent: async (post) => getSvgContent(post),
@@ -240,7 +257,7 @@ export const staticAdapter: ContentAdapter = {
 				serializeBlocksToHtml(item.what_it_is.en),
 				serializeBlocksToHtml(item.what_i_use_it_for.en),
 				serializeBlocksToHtml(item.why_i_use_it_instead.en),
-			].join('');
+			].join('\n');
 		},
 	},
 	content: {
@@ -258,25 +275,28 @@ export const staticAdapter: ContentAdapter = {
 		// Schema-validated content ports.
 		navLinks: async () => parsePort('content.navLinks', z.array(NavLinkSchema), navLinks),
 		menuItems: async () => parsePort('content.menuItems', z.array(MenuItemSchema), menuItems),
-		// statusCode accepted for ContentPort parity with the Directus adapter
-		// (Task 5.3 signature change). Static fallback always returns the same
-		// hardcoded content regardless of status code — it is the revert recipe.
-		errorPage: async (_statusCode?: number) =>
-			parsePort('content.errorPage', ErrorPageContentSchema, errorPageContent),
+		// slice-27.1 FIX A: mirror directus's _or: [status_code=N, status_code=0]
+		// semantics — look up the specific status code first, then fall back to the
+		// 0-row (generic fallback). errorPagesById is keyed by status_code (number).
+		errorPage: async (statusCode?: number) => {
+			const specific = statusCode !== undefined ? errorPagesById[statusCode] : undefined;
+			const fallback = errorPagesById[0] ?? errorPageContent;
+			const chosen = specific ?? fallback;
+			return parsePort('content.errorPage', ErrorPageContentSchema, chosen);
+		},
 		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
 		techStackPage: async () =>
 			parsePort('content.techStackPage', TechStackPageContentSchema, techStackPageContent),
-		// Phase 7 fallback stubs — minimal LocalizedString-only shapes matching the
-		// block_blog_page_content / block_projects_page_content Zod stubs.
+		// slice-27.1 T4: source the generated CMS modules (blog-page.ts /
+		// projects-page.ts, emitted from dev Directus by export-fallbacks) instead
+		// of inline stubs. Drops the prior placeholder copy that was missing
+		// schema-required keys (heading / backToDispatches / backToPersonal) and
+		// makes this mirror the directus adapter byte-for-byte.
 		blogPage: async (): Promise<BlogPageContent> =>
-			parsePort('content.blogPage', BlogPageContentSchema, {
-				intro: { en: 'Professional dispatches from the field.' },
-			}),
+			parsePort('content.blogPage', BlogPageContentSchema, blogPageContent),
 		projectsPage: async (): Promise<ProjectsPageContent> =>
-			parsePort('content.projectsPage', ProjectsPageContentSchema, {
-				intro: { en: 'Selected work.' },
-			}),
+			parsePort('content.projectsPage', ProjectsPageContentSchema, projectsPageContent),
 		heroMock: async () => parsePort('content.heroMock', HeroDataSchema, generateHeroData()),
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
@@ -304,8 +324,12 @@ export const staticAdapter: ContentAdapter = {
 			if (placement === 'menu') {
 				return parsePort('nav.byPlacement', z.array(NavLinkSchema), menuItems);
 			}
-			// footer and mobile placements have no static fallback data —
-			// return an empty array so consumers degrade gracefully.
+			if (placement === 'footer') {
+				return parsePort('nav.byPlacement', z.array(NavLinkSchema), footerLinks);
+			}
+			if (placement === 'mobile') {
+				return parsePort('nav.byPlacement', z.array(NavLinkSchema), mobileLinks);
+			}
 			return [];
 		},
 	},
