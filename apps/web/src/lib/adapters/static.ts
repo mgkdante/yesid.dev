@@ -90,6 +90,7 @@ import {
 	closerContent,
 } from '$lib/content/site-content';
 import { navLinks, menuItems, footerLinks, mobileLinks, errorPageContent } from '$lib/content/nav';
+import { errorPagesById } from '$lib/content/error-pages';
 import { aboutPageContent } from '$lib/content/about-page';
 import { contactContent } from '$lib/content/contact-page';
 import { blogPageContent } from '$lib/content/blog-page';
@@ -274,11 +275,15 @@ export const staticAdapter: ContentAdapter = {
 		// Schema-validated content ports.
 		navLinks: async () => parsePort('content.navLinks', z.array(NavLinkSchema), navLinks),
 		menuItems: async () => parsePort('content.menuItems', z.array(MenuItemSchema), menuItems),
-		// statusCode accepted for ContentPort parity with the Directus adapter
-		// (Task 5.3 signature change). Static fallback always returns the same
-		// hardcoded content regardless of status code — it is the revert recipe.
-		errorPage: async (_statusCode?: number) =>
-			parsePort('content.errorPage', ErrorPageContentSchema, errorPageContent),
+		// slice-27.1 FIX A: mirror directus's _or: [status_code=N, status_code=0]
+		// semantics — look up the specific status code first, then fall back to the
+		// 0-row (generic fallback). errorPagesById is keyed by status_code (number).
+		errorPage: async (statusCode?: number) => {
+			const specific = statusCode !== undefined ? errorPagesById[statusCode] : undefined;
+			const fallback = errorPagesById[0] ?? errorPageContent;
+			const chosen = specific ?? fallback;
+			return parsePort('content.errorPage', ErrorPageContentSchema, chosen);
+		},
 		aboutPage: async () => parsePort('content.aboutPage', AboutContentSchema, aboutPageContent),
 		contactPage: async () => parsePort('content.contactPage', ContactContentSchema, contactContent),
 		techStackPage: async () =>

@@ -32,6 +32,8 @@ export interface ExportData {
 	siteMeta?: SiteMeta;
 	morphShapes?: readonly MorphShape[];
 	errorPageFallback?: ErrorPageContent;
+	/** All published error_pages rows keyed by status_code. Used to emit error-pages.ts. */
+	errorPages?: Record<number, ErrorPageContent>;
 	nav?: NavData;
 	blogPosts?: readonly BlogPost[];
 	/** Block Editor `body` per published post, keyed by slug. Powers static blog.bodyBySlug + blog.html. */
