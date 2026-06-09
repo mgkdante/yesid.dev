@@ -335,7 +335,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 		id: 'dax',
 		name: 'DAX',
-		relatedProjects: ['lorem-analytics-dashboard'],
+		relatedProjects: [],
 		relatedServices: ['analytics-reporting'],
 		what_i_use_it_for: {
 			en: {
@@ -1076,7 +1076,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 		id: 'power-bi',
 		name: 'Power BI',
-		relatedProjects: ['lorem-analytics-dashboard'],
+		relatedProjects: [],
 		relatedServices: ['analytics-reporting'],
 		what_i_use_it_for: {
 			en: {
@@ -1361,7 +1361,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 		id: 'sql-server',
 		name: 'SQL Server',
-		relatedProjects: ['lorem-analytics-dashboard'],
+		relatedProjects: [],
 		relatedServices: ['sql-development', 'database-engineering'],
 		what_i_use_it_for: {
 			en: {
@@ -1646,7 +1646,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 		id: 't-sql',
 		name: 'T-SQL',
-		relatedProjects: ['lorem-analytics-dashboard'],
+		relatedProjects: [],
 		relatedServices: ['sql-development', 'analytics-reporting'],
 		what_i_use_it_for: {
 			en: {

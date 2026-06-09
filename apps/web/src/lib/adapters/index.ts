@@ -1,95 +1,43 @@
-// The CMS swap point — port-by-port hybrid.
+// The CMS swap point — fully static as of slice-27.2.
 //
-// Slice 18 (Directus) migrates content types one at a time rather than in a
-// single atomic flip. Each port below picks its source explicitly:
+// Slice 18 ran a port-by-port hybrid that migrated content types to Directus
+// one at a time. Slice 27.2 reverts every read-port back to the static layer:
+// Directus is dropped from the SSR data path entirely. Every port below now
+// resolves from staticAdapter (TS modules under $lib/content, snapshotted via
+// the export-fallbacks). The directus module stays in-tree only as a
+// test-only oracle (parity harness / integration tests).
 //
-//   - services: Directus (live at cms.yesid.dev, seeded from services.ts via
-//     scripts/seed-directus-services.ts; verified by Task 6).
-//   - projects, blog, meta, techStack, content: static (TS modules under
-//     $lib/content). Migrate each by: (a) designing the Directus schema,
-//     (b) seeding content, (c) implementing the DirectusAdapter port,
-//     (d) swapping the line below from `staticAdapter.X` → `directusAdapter.X`.
-//
-// Why port-by-port instead of a whole-adapter flip:
-//   - Production risk is bounded per content type. A broken services port
-//     affects /services + /services/[id]; a broken whole adapter affects
-//     every route.
-//   - Migration tasks can land in small, reviewable slices instead of a
-//     mega-PR that stalls.
-//   - Contract types still enforce the shape uniformly — the `ContentAdapter`
-//     type annotation on this composite object fails compile if any port
-//     drifts from spec.
+// Contract types still enforce the shape uniformly — the `ContentAdapter`
+// type annotation on this composite object fails compile if any port drifts
+// from spec.
 
 import { staticAdapter } from './static';
-import { directusAdapter } from './directus';
 import type { ContentAdapter } from './types';
 
 export const adapter: ContentAdapter = {
-	// Migrated to Directus (Slice 18 Task 7).
-	services: directusAdapter.services,
+	// Reverted to static in slice-27.2 (Directus dropped from SSR data path).
+	services: staticAdapter.services,
 
-	// Migrated to Directus (Slice 18e Phase 8 Task 33).
-	projects: directusAdapter.projects,
+	// Reverted to static in slice-27.2 (Directus dropped from SSR data path).
+	projects: staticAdapter.projects,
 
-	// Migrated to Directus (Slice 18 18f — Block Editor body via
-	// directus.blog.bodyBySlug; flat title+excerpt per AM2.5).
-	blog: directusAdapter.blog,
+	// Reverted to static in slice-27.2 (Directus dropped from SSR data path).
+	blog: staticAdapter.blog,
 
-	// Migrated to Directus (slice-18 18h Phase 4). meta.site() returns brand
-	// SiteMeta from the `site_meta` singleton; meta.siteSeoDefaults() returns
-	// the SEO defaults shape from the same singleton row (shared via
-	// fetchSingletonRow() WeakMap memo); meta.routeSeo.byPath() reads
-	// per-route overrides from `route_seo`; meta.forRoute() is a composer.
-	meta: directusAdapter.meta,
+	// Reverted to static in slice-27.2 (Directus dropped from SSR data path).
+	// meta.site/siteSeoDefaults/routeSeo.byPath/forRoute now resolve from the
+	// static $lib/content modules via the export-fallbacks snapshot.
+	meta: staticAdapter.meta,
 
 	techStack: staticAdapter.techStack,
 
-	// content: hybrid — all 18 ContentPort methods now route through
-	// directusAdapter as of slice-18i Phase 5. The spread is left as a safety
-	// net for any future ContentPort additions not yet flipped.
-	//
-	// Flip history:
-	//   - metroSvg:       Directus (Slice 18d Phase 8 / Task 28-33)
-	//   - morphShapes:    Directus (Slice 18 18f)
-	//   - hero, heroAnim, manifesto, proofReel, servicesGrid, about, cta,
-	//     closer:         Directus M2A (slice-18i Task 4.1)
-	//   - aboutPage, contactPage, techStackPage: Directus M2A (slice-18i Task 4.2)
-	//   - heroMock, initialHeroData: Directus local (slice-18i Task 4.3)
-	//   - navLinks, menuItems:    Directus nav_links (slice-18i Task 5.1)
-	//   - errorPage:              Directus error_pages (slice-18i Task 5.3)
-	content: {
-		...staticAdapter.content,
-		// Flipped to Directus M2A in slice-18i Task 4.1 (home-page blocks):
-		hero: directusAdapter.content.hero,
-		heroAnim: directusAdapter.content.heroAnim,
-		manifesto: directusAdapter.content.manifesto,
-		proofReel: directusAdapter.content.proofReel,
-		servicesGrid: directusAdapter.content.servicesGrid,
-		about: directusAdapter.content.about,
-		cta: directusAdapter.content.cta,
-		closer: directusAdapter.content.closer,
-		// Flipped to Directus M2A in slice-18i Task 4.2 (detail-page blocks):
-		aboutPage: directusAdapter.content.aboutPage,
-		contactPage: directusAdapter.content.contactPage,
-		techStackPage: directusAdapter.content.techStackPage,
-		// Flipped in slice-18i Phase 7 (blog/projects page chrome):
-		blogPage: directusAdapter.content.blogPage,
-		projectsPage: directusAdapter.content.projectsPage,
-		// Flipped in slice-18i Task 4.3 (derived — no Directus query):
-		heroMock: directusAdapter.content.heroMock,
-		initialHeroData: directusAdapter.content.initialHeroData,
-		// Pre-existing Directus overrides:
-		metroSvg: directusAdapter.content.metroSvg,
-		morphShapes: directusAdapter.content.morphShapes,
-		// Flipped in slice-18i Task 5.1 (nav port):
-		navLinks: directusAdapter.content.navLinks,
-		menuItems: directusAdapter.content.menuItems,
-		// Flipped in slice-18i Task 5.3 (errorPage):
-		errorPage: directusAdapter.content.errorPage,
-	},
+	// Reverted to static in slice-27.2: all ContentPort methods resolve from
+	// staticAdapter; the Directus M2A overrides are gone from the SSR data path;
+	// the directus module stays in-tree as a test-only oracle.
+	content: { ...staticAdapter.content },
 
-	// nav sub-port — wired in slice-18i Phase 5 Task 5.1.
-	nav: directusAdapter.nav,
+	// nav sub-port — reverted to static in slice-27.2.
+	nav: staticAdapter.nav,
 };
 
 export type { ContentAdapter } from './types';

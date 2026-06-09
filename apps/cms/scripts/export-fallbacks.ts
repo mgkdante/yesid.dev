@@ -38,11 +38,11 @@ import { buildEmitConfigs } from './lib/emitters/configs';
 import { emitModule } from './lib/emitters/emit-module';
 import { readCache, writeCache as persistCache } from './lib/cache';
 import type { ExportData } from './export-data';
-import { fetchSiteMeta } from './lib/fetchers/site-meta';
+import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
 import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
-import { fetchErrorPageFallback } from './lib/fetchers/error-pages';
+import { fetchErrorPageFallback, fetchAllErrorPages } from './lib/fetchers/error-pages';
 import { fetchNavData, type NavData } from './lib/fetchers/nav';
-import { fetchBlogPosts } from './lib/fetchers/blog-posts';
+import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
 import { fetchTechStack } from './lib/fetchers/tech-stack';
@@ -81,10 +81,18 @@ export interface RunOptions {
 	module?: string;
 	/** Where to write emitted .ts modules. Defaults to apps/web/src/lib/content. */
 	emitDir?: string;
+	/**
+	 * When true (VERCEL_ENV==='production'), fetch failures and missing tokens
+	 * exit 1 instead of silently degrading. Vercel keeps the prior deploy
+	 * running, so a loud failure here is safe and far preferable to shipping
+	 * stale content without any signal.
+	 */
+	isProd?: boolean;
 }
 
 const ALL_MODULES = [
 	'site-meta',
+	'site-seo-defaults',
 	'morph-shapes',
 	'error-pages',
 	'nav',
@@ -111,6 +119,9 @@ function shouldRun(filter: string | undefined, name: ModuleName): boolean {
 	return !filter || filter === name;
 }
 
+/** Timeout (ms) for the entire fetchAll operation before falling back to cache. */
+const FETCH_ALL_TIMEOUT_MS = 60_000;
+
 async function fetchAll(opts: RunOptions): Promise<ExportData> {
 	log.info(`fetch: source=${opts.directusUrl}`);
 	if (opts.dryRun) {
@@ -119,113 +130,138 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		return {};
 	}
 
-	const client = createClient(opts.directusUrl, opts.token) as unknown as CmsClient;
-	const out: ExportData = {};
+	const fetchAllInner = async (): Promise<ExportData> => {
+		const client = createClient(opts.directusUrl, opts.token) as unknown as CmsClient;
+		const out: ExportData = {};
 
-	if (shouldRun(opts.module, 'site-meta')) {
-		log.info('  site-meta...');
-		out.siteMeta = await fetchSiteMeta({ client });
-		log.info('  site-meta done.');
-	}
-	if (shouldRun(opts.module, 'morph-shapes')) {
-		log.info('  morph-shapes...');
-		out.morphShapes = await fetchMorphShapes({ client });
-		log.info(`  morph-shapes done (${out.morphShapes.length} rows).`);
-	}
-	if (shouldRun(opts.module, 'error-pages')) {
-		log.info('  error-pages...');
-		out.errorPageFallback = await fetchErrorPageFallback({ client });
-		log.info('  error-pages done.');
-	}
-	if (shouldRun(opts.module, 'nav')) {
-		log.info('  nav...');
-		out.nav = await fetchNavData({ client });
-		log.info(`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu).`);
-	}
-	if (shouldRun(opts.module, 'blog-posts')) {
-		log.info('  blog-posts...');
-		out.blogPosts = await fetchBlogPosts({ client });
-		log.info(`  blog-posts done (${out.blogPosts.length} posts).`);
-	}
-	if (shouldRun(opts.module, 'services')) {
-		log.info('  services...');
-		out.services = await fetchServices({ client });
-		log.info(`  services done (${out.services.length} services).`);
-	}
-	if (shouldRun(opts.module, 'projects')) {
-		log.info('  projects...');
-		out.projects = await fetchProjects({ client });
-		log.info(`  projects done (${out.projects.length} projects).`);
-	}
-	if (shouldRun(opts.module, 'tech-stack')) {
-		log.info('  tech-stack...');
-		out.techStack = await fetchTechStack({ client });
-		log.info(`  tech-stack done (${out.techStack.length} items).`);
-	}
-	if (shouldRun(opts.module, 'blog-page')) {
-		log.info('  blog-page...');
-		out.blogPage = await fetchBlogPageContent({ client });
-		log.info('  blog-page done.');
-	}
-	if (shouldRun(opts.module, 'projects-page')) {
-		log.info('  projects-page...');
-		out.projectsPage = await fetchProjectsPageContent({ client });
-		log.info('  projects-page done.');
-	}
-	if (shouldRun(opts.module, 'tech-stack-page')) {
-		log.info('  tech-stack-page...');
-		out.techStackPage = await fetchTechStackPageContent({ client });
-		log.info('  tech-stack-page done.');
-	}
-	if (shouldRun(opts.module, 'contact-page')) {
-		log.info('  contact-page...');
-		out.contactPage = await fetchContactContent({ client });
-		log.info('  contact-page done.');
-	}
-	if (shouldRun(opts.module, 'hero')) {
-		log.info('  hero...');
-		out.hero = await fetchHeroContent({ client });
-		log.info('  hero done.');
-	}
-	if (shouldRun(opts.module, 'manifesto')) {
-		log.info('  manifesto...');
-		out.manifesto = await fetchManifestoContent({ client });
-		log.info(`  manifesto done (${out.manifesto.pills.length} pills, ${out.manifesto.hiddenTransitLines.length} transit lines).`);
-	}
-	if (shouldRun(opts.module, 'proof-reel')) {
-		log.info('  proof-reel...');
-		out.proofReel = await fetchProofReelContent({ client });
-		log.info(`  proof-reel done (${out.proofReel.slugs.length} slugs).`);
-	}
-	if (shouldRun(opts.module, 'services-grid')) {
-		log.info('  services-grid...');
-		out.servicesGrid = await fetchServicesGridContent({ client });
-		log.info('  services-grid done.');
-	}
-	if (shouldRun(opts.module, 'about-intro')) {
-		log.info('  about-intro...');
-		out.aboutIntro = await fetchAboutIntroContent({ client });
-		log.info(`  about-intro done (${out.aboutIntro.stackItems.length} stack items).`);
-	}
-	if (shouldRun(opts.module, 'cta')) {
-		log.info('  cta...');
-		out.cta = await fetchCtaContent({ client });
-		log.info('  cta done.');
-	}
-	if (shouldRun(opts.module, 'closer')) {
-		log.info('  closer...');
-		out.closer = await fetchCloserContent({ client });
-		log.info('  closer done.');
-	}
-	if (shouldRun(opts.module, 'about-page')) {
-		log.info('  about-page...');
-		out.aboutPage = await fetchAboutContent({ client });
-		log.info(
-			`  about-page done (${out.aboutPage.metrics.length} metrics, ${out.aboutPage.methodology.length} steps, ${out.aboutPage.testimonials.length} testimonials, ${out.aboutPage.techStack.length} tech, ${out.aboutPage.clientLogos.length} logos).`,
-		);
-	}
+		// Each task is [moduleName, async () => void that assigns to out.*].
+		// Only enqueue if shouldRun passes; then fan-out in parallel.
+		// The Bottleneck limiter inside createQueuedFetch() keeps actual
+		// in-flight HTTP requests ≤ 4 concurrent / ≤ 50 req/s.
+		const tasks: Array<Promise<void>> = [];
 
-	return out;
+		const enqueue = (name: ModuleName, task: () => Promise<void>) => {
+			if (shouldRun(opts.module, name)) {
+				log.info(`  ${name}...`);
+				tasks.push(task());
+			}
+		};
+
+		enqueue('site-meta', async () => {
+			out.siteMeta = await fetchSiteMeta({ client });
+			log.info('  site-meta done.');
+		});
+		enqueue('site-seo-defaults', async () => {
+			out.siteSeoDefaults = await fetchSiteSeoDefaults({ client });
+			log.info('  site-seo-defaults done.');
+		});
+		enqueue('morph-shapes', async () => {
+			out.morphShapes = await fetchMorphShapes({ client });
+			log.info(`  morph-shapes done (${out.morphShapes.length} rows).`);
+		});
+		enqueue('error-pages', async () => {
+			// Two fetches for the same module — kept together to preserve semantics.
+			out.errorPageFallback = await fetchErrorPageFallback({ client });
+			out.errorPages = await fetchAllErrorPages({ client });
+			log.info(`  error-pages done (${Object.keys(out.errorPages).length} rows).`);
+		});
+		enqueue('nav', async () => {
+			out.nav = await fetchNavData({ client });
+			log.info(
+				`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu / ${out.nav.footerLinks.length} footer / ${out.nav.mobileLinks.length} mobile).`,
+			);
+		});
+		enqueue('blog-posts', async () => {
+			// fetchBlogPosts + fetchBlogBodies are independent of each other.
+			const [posts, bodies] = await Promise.all([
+				fetchBlogPosts({ client }),
+				fetchBlogBodies({ client }),
+			]);
+			out.blogPosts = posts;
+			out.blogBodies = bodies;
+			log.info(
+				`  blog-posts done (${out.blogPosts.length} posts, ${Object.keys(out.blogBodies).length} bodies).`,
+			);
+		});
+		enqueue('services', async () => {
+			out.services = await fetchServices({ client });
+			log.info(`  services done (${out.services.length} services).`);
+		});
+		enqueue('projects', async () => {
+			out.projects = await fetchProjects({ client });
+			log.info(`  projects done (${out.projects.length} projects).`);
+		});
+		enqueue('tech-stack', async () => {
+			out.techStack = await fetchTechStack({ client });
+			log.info(`  tech-stack done (${out.techStack.length} items).`);
+		});
+		enqueue('blog-page', async () => {
+			out.blogPage = await fetchBlogPageContent({ client });
+			log.info('  blog-page done.');
+		});
+		enqueue('projects-page', async () => {
+			out.projectsPage = await fetchProjectsPageContent({ client });
+			log.info('  projects-page done.');
+		});
+		enqueue('tech-stack-page', async () => {
+			out.techStackPage = await fetchTechStackPageContent({ client });
+			log.info('  tech-stack-page done.');
+		});
+		enqueue('contact-page', async () => {
+			out.contactPage = await fetchContactContent({ client });
+			log.info('  contact-page done.');
+		});
+		enqueue('hero', async () => {
+			out.hero = await fetchHeroContent({ client });
+			log.info('  hero done.');
+		});
+		enqueue('manifesto', async () => {
+			out.manifesto = await fetchManifestoContent({ client });
+			log.info(
+				`  manifesto done (${out.manifesto.pills.length} pills, ${out.manifesto.hiddenTransitLines.length} transit lines).`,
+			);
+		});
+		enqueue('proof-reel', async () => {
+			out.proofReel = await fetchProofReelContent({ client });
+			log.info(`  proof-reel done (${out.proofReel.slugs.length} slugs).`);
+		});
+		enqueue('services-grid', async () => {
+			out.servicesGrid = await fetchServicesGridContent({ client });
+			log.info('  services-grid done.');
+		});
+		enqueue('about-intro', async () => {
+			out.aboutIntro = await fetchAboutIntroContent({ client });
+			log.info(`  about-intro done (${out.aboutIntro.stackItems.length} stack items).`);
+		});
+		enqueue('cta', async () => {
+			out.cta = await fetchCtaContent({ client });
+			log.info('  cta done.');
+		});
+		enqueue('closer', async () => {
+			out.closer = await fetchCloserContent({ client });
+			log.info('  closer done.');
+		});
+		enqueue('about-page', async () => {
+			out.aboutPage = await fetchAboutContent({ client });
+			log.info(
+				`  about-page done (${out.aboutPage.metrics.length} metrics, ${out.aboutPage.methodology.length} steps, ${out.aboutPage.testimonials.length} testimonials, ${out.aboutPage.techStack.length} tech, ${out.aboutPage.clientLogos.length} logos).`,
+			);
+		});
+
+		await Promise.all(tasks);
+		return out;
+	};
+
+	// Top-level stall guard: if the entire fetch hasn't completed within
+	// FETCH_ALL_TIMEOUT_MS, reject so the caller falls through to cache.
+	const timeoutReject = new Promise<never>((_, reject) =>
+		setTimeout(
+			() => reject(new Error(`fetchAll timed out after ${FETCH_ALL_TIMEOUT_MS}ms`)),
+			FETCH_ALL_TIMEOUT_MS,
+		),
+	);
+
+	return Promise.race([fetchAllInner(), timeoutReject]);
 }
 
 async function emitAll(data: ExportData, opts: RunOptions): Promise<void> {
@@ -258,7 +294,7 @@ async function writeCache(data: ExportData, opts: RunOptions): Promise<void> {
 }
 
 export async function run(opts: RunOptions): Promise<void> {
-	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl}`);
+	log.info(`mode=${opts.dryRun ? 'dry-run' : 'live'} target=${opts.directusUrl}${opts.isProd ? ' [PRODUCTION]' : ''}`);
 	if (opts.module) log.info(`scope: --module=${opts.module}`);
 
 	let data: ExportData;
@@ -267,6 +303,13 @@ export async function run(opts: RunOptions): Promise<void> {
 		data = await fetchAll(opts);
 	} catch (fetchErr) {
 		log.warn(`fetch failed: ${(fetchErr as Error).message}`);
+		if (opts.isProd) {
+			log.error(
+				'PRODUCTION BUILD FAILED: fetch failed and no cache can substitute for a prod deploy. ' +
+					'Verify DIRECTUS_BUILD_TOKEN is set and the CMS is reachable.',
+			);
+			process.exit(1);
+		}
 		log.warn('attempting cache fallback...');
 		const cached = await readCache(cachePath(opts)).catch((err) => {
 			log.error(`cache read failed: ${(err as Error).message}`);
@@ -312,16 +355,25 @@ async function main(): Promise<void> {
 	const moduleFilter = typeof values.module === 'string' ? values.module : undefined;
 	const emitDir = typeof values['emit-dir'] === 'string' ? values['emit-dir'] : undefined;
 	const url = defaultDirectusUrl();
+	const isProd = process.env.VERCEL_ENV === 'production';
 
-	// Token resolution is lenient — Vercel preview deploys without the secret
-	// shouldn't kill the build. Failure here surfaces in run() as a fetch error
-	// → cache fallback → if no cache, exit 0 and let the committed .ts files
-	// serve as the authoritative source for this build.
+	// Token resolution: lenient for local/preview, strict for production.
+	// In production, a missing token is an operator error — fail loud so the
+	// build surfaces the problem instead of shipping stale content silently.
+	// Operator step: set DIRECTUS_BUILD_TOKEN in Vercel (Production env var)
+	// using a read-only "Build Bot" token from Directus.
 	let token = '';
 	if (!dryRun) {
 		try {
 			token = await getAdminToken(url);
 		} catch (authErr) {
+			if (isProd) {
+				log.error(
+					`PRODUCTION BUILD FAILED: token resolution failed — ${(authErr as Error).message}. ` +
+						'Set DIRECTUS_BUILD_TOKEN in Vercel Production environment variables.',
+				);
+				process.exit(1);
+			}
 			log.warn(`auth failed: ${(authErr as Error).message}`);
 			log.warn(
 				'continuing without token; will try cache fallback, else exit 0 (committed .ts files become authoritative).',
@@ -329,7 +381,7 @@ async function main(): Promise<void> {
 		}
 	}
 
-	await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir });
+	await run({ directusUrl: url, token, dryRun, module: moduleFilter, emitDir, isProd });
 }
 
 if (import.meta.main) {
