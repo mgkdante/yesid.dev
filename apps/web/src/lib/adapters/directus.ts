@@ -1,14 +1,19 @@
-// Directus adapter — scaffold for Slice 18 Task 4.
-//
-// NOT yet wired: `src/lib/adapters/index.ts` still re-exports the static
-// adapter. The flip happens in Slice 18 Task 7 after Tasks 5 (real collection
-// design in Data Studio) and 6 (seed + full port impls) land.
+// DORMANT (slice-27.2): build/test-only. NOT in the runtime SSR data path as
+// of slice-27.2 — index.ts binds all read-ports to staticAdapter. This module
+// is kept in-tree solely as the RUN_PARITY regression oracle for the slice-26
+// Directus v12 upgrade. (Historical: began as the Slice 18 adapter scaffold;
+// the "wired in Slice 18 Task 7" note is obsolete — reverted in 27.2.)
 //
 // Q6 locale strategy (spec D1/D2/D3 context): we target the native Directus
 // Translations field type — each domain collection exposes a `translations`
 // alias that expands to rows keyed by `languages_code`. `toLocalizedString`
 // composes a LocalizedString at the adapter boundary so consumer code stays
 // unchanged.
+//
+// DEPRECATION HABIT (slice-27.2): there is no items.delete rebuild path. To
+// retire content, set status = "archived" — export-fallbacks and the static
+// companions already filter archived rows out, so the next deploy-hook rebuild
+// drops it from the SSR layer. Do NOT add a new Directus Flow for deletes.
 //
 // Only the `services` port has a real implementation — the remaining five
 // ports throw a clear "TODO Task 5+" error if called. The ContentAdapter

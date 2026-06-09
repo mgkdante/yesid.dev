@@ -21,6 +21,10 @@ import { describe, expect, it } from 'vitest';
 // here by reading from `process.env` at call-time in the adapter's buildClient.
 // When RUN_DIRECTUS_INTEGRATION=1, the adapter's env check picks up the real
 // URL. When not set, the buildClient throws; we skip the entire suite.
+// DORMANT post-slice-27.2: directusAdapter is no longer in the SSR data path.
+// This live-network test stays opt-in only (RUN_DIRECTUS_INTEGRATION=1 + a live
+// PUBLIC_DIRECTUS_URL) as the slice-26 oracle; it MUST remain SKIPPED in the
+// normal bunx vitest run; it still PASSES when run against a live CMS.
 const RUN = process.env.RUN_DIRECTUS_INTEGRATION === '1';
 const URL_ = process.env.PUBLIC_DIRECTUS_URL;
 
