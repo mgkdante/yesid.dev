@@ -105,3 +105,34 @@ export async function fetchErrorPageFallback({ client }: FetcherContext): Promis
 
 	return ErrorPageContentSchema.parse(toErrorPageContent(rows[0]));
 }
+
+/**
+ * Fetch ALL published error_pages rows and return a Record keyed by status_code.
+ * Used by the static adapter for per-statusCode errorPage lookup (mirrors the
+ * directus adapter's _or: [status_code=N, status_code=0] semantics).
+ */
+export async function fetchAllErrorPages({
+	client,
+}: FetcherContext): Promise<Record<number, ErrorPageContent>> {
+	const rows = (await client.request(
+		readItems('error_pages', {
+			filter: {
+				status: { _eq: 'published' },
+			} as unknown as Record<string, unknown>,
+			fields: ['*', 'translations.*'] as unknown as (keyof DirectusErrorPageRow)[],
+			limit: -1,
+		}),
+	)) as unknown as DirectusErrorPageRow[];
+
+	if (rows.length === 0) {
+		throw new Error(
+			'[fetchAllErrorPages] no published error_pages rows found. Seed at least a status_code=0 fallback.',
+		);
+	}
+
+	const result: Record<number, ErrorPageContent> = {};
+	for (const row of rows) {
+		result[row.status_code] = ErrorPageContentSchema.parse(toErrorPageContent(row));
+	}
+	return result;
+}

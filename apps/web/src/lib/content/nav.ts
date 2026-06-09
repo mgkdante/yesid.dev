@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 // GENERATED FILE — do not edit by hand.
 //
-// Navigation links (header + menu placements) + error page fallback. Interfaces, navDirections, sharedChromeContent live in nav.companion.ts.
+// Navigation links (header + menu + footer + mobile placements) + error page fallback. Interfaces, navDirections, sharedChromeContent live in nav.companion.ts.
 //
 // Source: live Directus CMS state via `bun run export:fallbacks`
 // (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
@@ -88,6 +88,42 @@ export const menuItems: readonly MenuItem[] = [
 			es: 'canal abierto',
 			fr: 'canal ouvert',
 		},
+	},
+];
+
+export const footerLinks: readonly NavLink[] = [
+	{
+		href: '/blog',
+		label: { en: 'Blog', es: 'Blog', fr: 'Blog' },
+		priority: 1,
+	},
+	{
+		href: '/about',
+		label: { en: 'About', es: 'Acerca de', fr: 'À propos' },
+		priority: 1,
+	},
+	{
+		href: '/contact',
+		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
+		priority: 1,
+	},
+];
+
+export const mobileLinks: readonly NavLink[] = [
+	{
+		href: '/services',
+		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
+		priority: 1,
+	},
+	{
+		href: '/projects',
+		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
+		priority: 1,
+	},
+	{
+		href: '/tech-stack',
+		label: { en: 'Stack', es: 'Stack', fr: 'Stack' },
+		priority: 1,
 	},
 ];
 

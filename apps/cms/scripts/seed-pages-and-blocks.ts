@@ -732,7 +732,12 @@ export function toBlockProjectsPageContentTranslationRows(): ReadonlyArray<Direc
 	return [
 		{
 			languages_code: 'en' as Locale,
-			intro: { en: 'A selection of data engineering projects — pipelines, dashboards, and infrastructure that ships.' },
+			// `intro` is a FLAT string column (type=string, interface=input) — the
+			// fetcher/adapter wrap it into `{ en }` downstream. Writing an object
+			// here serialized to the literal text `{"en":"…"}` (the slice-27.1 T4
+			// double-encoding bug). Pass the bare string, exactly like heading /
+			// back_to_* below.
+			intro: 'A selection of data engineering projects — pipelines, dashboards, and infrastructure that ships.',
 		},
 	];
 }
@@ -747,7 +752,10 @@ export function toBlockBlogPageContentTranslationRows(): ReadonlyArray<DirectusB
 	return [
 		{
 			languages_code: 'en' as Locale,
-			intro: { en: 'Notes on data engineering, infrastructure, and building reliable systems.' },
+			// `intro` is a FLAT string column — pass the bare string like the
+			// sibling fields. See toBlockProjectsPageContentTranslationRows for the
+			// slice-27.1 T4 double-encoding rationale.
+			intro: 'Notes on data engineering, infrastructure, and building reliable systems.',
 			heading: 'Dispatches',
 			back_to_dispatches: '← back to dispatches',
 			back_to_personal: '← back to personal corner',

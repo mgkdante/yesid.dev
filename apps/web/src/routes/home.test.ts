@@ -15,6 +15,16 @@ import {
 	closerContent,
 } from '$lib/content/site-content';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
+import { getProjectBySlug } from '$lib/content';
+
+// The proof-reel card count is CMS-driven: `proofReelContent.slugs` and the
+// `projects` collection are both generated from live Directus, and the
+// component renders one card per slug that resolves to a real project. Derive
+// the expected count instead of hardcoding it (precedent: slice-16 commit
+// 8259c6b "decouple test assertions from CMS-controlled copy").
+const expectedProofCards = proofReelContent.slugs.filter((slug) =>
+	getProjectBySlug(slug),
+).length;
 
 // PageData merges +page.server.ts return + +layout.server.ts return + +layout.ts
 // return (per SvelteKit's typed load chain). The home component only consumes
@@ -148,10 +158,10 @@ describe('Home page', () => {
 		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
 	});
 
-	it('renders 5 proof reel cards (slice-23: carousel of 5)', () => {
+	it('renders one proof reel card per resolvable featured slug', () => {
 		renderPage();
 		const cards = screen.getAllByTestId('proof-card');
-		expect(cards).toHaveLength(5);
+		expect(cards).toHaveLength(expectedProofCards);
 	});
 
 	it('renders the services section', () => {

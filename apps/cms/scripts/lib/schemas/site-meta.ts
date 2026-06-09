@@ -39,3 +39,18 @@ export const SiteMetaSchema = z.object({
 });
 
 export type SiteMeta = z.infer<typeof SiteMetaSchema>;
+
+/**
+ * SiteSeoDefaults Zod schema for the export-fallbacks pipeline.
+ *
+ * Mirrors `apps/web/src/lib/schemas/site-seo-defaults.ts`. Sourced from the
+ * same `site_meta` singleton row as SiteMetaSchema — defaultOgImage (UUID or
+ * null), themeColor (6-digit hex), and defaultDescription (localized).
+ */
+export const SiteSeoDefaultsSchema = z.object({
+	defaultOgImage: z.string().uuid().nullable(),
+	themeColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+	defaultDescription: LocalizedStringSchema,
+});
+
+export type SiteSeoDefaults = z.infer<typeof SiteSeoDefaultsSchema>;
