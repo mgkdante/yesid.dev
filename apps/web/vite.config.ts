@@ -53,7 +53,8 @@ export default defineConfig({
 	test: {
 		// Two projects: "data" for pure logic tests (node, fast),
 		// "dom" for component/motion tests (happy-dom, full mocks).
-		// See docs/superpowers/specs/2026-04-08-testing-optimization-design.md
+		// Split introduced in the 2026-04-08 testing-optimization pass
+		// (slice-17f); design notes live in Notion.
 		projects: [
 			{
 				extends: true,
