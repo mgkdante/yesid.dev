@@ -15,16 +15,24 @@ import {
 	closerContent,
 } from '$lib/content/site-content';
 import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
-import { getProjectBySlug } from '$lib/content';
+import { getProjectBySlug, getVisibleServices } from '$lib/content';
+import type { Project } from '$lib/types';
 
 // The proof-reel card count is CMS-driven: `proofReelContent.slugs` and the
 // `projects` collection are both generated from live Directus, and the
 // component renders one card per slug that resolves to a real project. Derive
 // the expected count instead of hardcoding it (precedent: slice-16 commit
 // 8259c6b "decouple test assertions from CMS-controlled copy").
-const expectedProofCards = proofReelContent.slugs.filter((slug) =>
-	getProjectBySlug(slug),
-).length;
+//
+// slice-28.5 (#124): services + featuredProjects are now resolved by
+// +page.server.ts through the repository layer and arrive as page data. The
+// stub mirrors that load output, derived from the same content modules the
+// static adapter reads (companion calls are fine in TESTS — the boundary rule
+// only governs runtime component code; see adapters/static.ts header).
+const featuredProjects = proofReelContent.slugs
+	.map((slug) => getProjectBySlug(slug))
+	.filter((p): p is Project => Boolean(p));
+const expectedProofCards = featuredProjects.length;
 
 // PageData merges +page.server.ts return + +layout.server.ts return + +layout.ts
 // return (per SvelteKit's typed load chain). The home component only consumes
@@ -43,6 +51,8 @@ const stubData = {
 	cta: ctaContent,
 	closer: closerContent,
 	initialHeroData: INITIAL_HERO_DATA,
+	services: getVisibleServices(),
+	featuredProjects,
 } as unknown as PageData;
 
 const renderPage = () => render(Page, { props: { data: stubData } });
