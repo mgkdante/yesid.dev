@@ -50,21 +50,21 @@ describe('GET /og/[type]/[slug].png', () => {
     expect(res.status).toBe(400);
   });
 
-  it('302 to default OG on slug-not-found', async () => {
+  it('302 to default OG on slug-not-found (edge-cached a day — slice-28.1, audit #24)', async () => {
     loadOgTitleMock.mockResolvedValueOnce(null);
     const res = await GET(makeEvent({ type: 'blog', slug: 'missing-slug' }));
     expect(res.status).toBe(302);
     expect(res.headers.get('location')).toBe('/og/default.en.png');
-    expect(res.headers.get('cache-control')).toBe('public, max-age=300');
+    expect(res.headers.get('cache-control')).toBe('public, max-age=300, s-maxage=86400');
   });
 
-  it('302 to default OG when satori throws', async () => {
+  it('302 to default OG when satori throws (edge-cached a day — slice-28.1, audit #24)', async () => {
     loadOgTitleMock.mockResolvedValueOnce({ eyebrow: 'BLOG', title: 'x' });
     renderOgPngMock.mockRejectedValueOnce(new Error('satori boom'));
     const res = await GET(makeEvent({ type: 'blog', slug: 'ok-slug' }));
     expect(res.status).toBe(302);
     expect(res.headers.get('location')).toBe('/og/default.en.png');
-    expect(res.headers.get('cache-control')).toBe('public, max-age=60');
+    expect(res.headers.get('cache-control')).toBe('public, max-age=60, s-maxage=86400');
   });
 
   it('forwards ?locale=fr to loadOgTitle', async () => {
