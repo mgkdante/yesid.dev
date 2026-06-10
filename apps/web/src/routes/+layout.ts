@@ -70,9 +70,11 @@ export const load: LayoutLoad = async ({ data }) => {
 	const slots: LayoutSlotData = {
 		headerLinks: serverData.headerLinks ?? slotFallback.headerLinks,
 		// Use length-based fallback for footer + mobile: `??` does not replace an
-		// empty array returned by the server (staticAdapter pre-fix returned []).
-		// After the regen these server values will be populated, but the fallback
-		// guard ensures correct behaviour during any intermediate deploy window.
+		// empty array, and +layout.server.ts's guarded slots return [] when a
+		// read fails (footer/mobile have no server-side fallback arg). The
+		// length check keeps nav rendering from the static fallback in that
+		// case. (Historical trigger: a pre-fix staticAdapter returned [] for
+		// these slots during a deploy window.)
 		footerLinks:
 			serverData.footerLinks?.length ? serverData.footerLinks : slotFallback.footerLinks,
 		mobileLinks:
