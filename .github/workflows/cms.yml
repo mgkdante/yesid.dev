@@ -66,18 +66,10 @@ jobs:
         working-directory: apps/cms
         run: bun test
 
-      - name: Schema codegen drift check (slice-18k gate 3 — Task 39 followthrough on the 18c Task 34 / F12 generator)
-        # Re-runs apps/cms/scripts/generate-types.ts against prod, then
-        # fails the build if the regenerated file differs from the committed
-        # packages/shared/src/types/directus-schema.ts. Prevents the committed
-        # schema types from drifting silently against the live CMS — once they
-        # drift, consumer typing in @repo/web is wrong without anyone noticing.
-        env:
-          PUBLIC_DIRECTUS_URL: https://cms.yesid.dev
-          DIRECTUS_ADMIN_TOKEN: ${{ secrets.DIRECTUS_PROD_ADMIN_TOKEN }}
-        run: |
-          bun apps/cms/scripts/generate-types.ts
-          git diff --exit-code packages/shared/src/types/directus-schema.ts
+      # Schema codegen drift check removed in slice-28.3 (#78): the generated
+      # packages/shared/src/types/directus-schema.ts had zero consumers, and
+      # this step hit the prod CMS on every test run. The generator
+      # (apps/cms/scripts/generate-types.ts) was deleted with it.
 
   diff:
     # Preview what sync:push WOULD apply. Main-bound PR checks + explicit diff dispatch.
