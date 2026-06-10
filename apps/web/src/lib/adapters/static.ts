@@ -119,6 +119,8 @@ import { contactContent } from '$lib/content/contact-page';
 import { blogPageContent } from '$lib/content/blog-page';
 import { projectsPageContent } from '$lib/content/projects-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
+import { morphShapes } from '$lib/content/morph-shapes';
+import { MorphShapeSchema } from '$lib/schemas/morph-shape';
 // Slice 18d Phase 8: static fallback for content.metroSvg — keeps the legacy
 // build-time `?raw` source available for unit tests (which override
 // directusAdapter with staticAdapter via setup.data.ts) and for future
@@ -324,17 +326,14 @@ export const staticAdapter: ContentAdapter = {
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
 		metroSvg: async () => metroSvgRaw,
-		morphShapes: async () => {
-			// Static fallback: derive 4 hardcoded shapes from utils/shapes.ts.
-			const { SHAPES } = await import('$lib/utils/shapes');
-			return Object.entries(SHAPES).map(([id, path], idx) => ({
-				id,
-				label: id.charAt(0).toUpperCase() + id.slice(1),
-				path,
-				viewbox: '0 0 48 48',
-				sort: idx + 1,
-			}));
-		},
+		// slice-28.5 (#120): read the GENERATED $lib/content/morph-shapes module
+		// (emitted from the Directus morph_shapes collection by export-fallbacks),
+		// matching every other port. Previously this derived shapes from the
+		// hardcoded SHAPES const in utils/shapes.ts, so CMS morph_shapes edits
+		// regenerated the module but never reached the render. SHAPES survives
+		// only as the documented last-resort seed (utils/shapes.ts).
+		morphShapes: async () =>
+			parsePort('content.morphShapes', z.array(MorphShapeSchema), morphShapes),
 	},
 
 	// Static nav port — reads from the static nav.ts constants, filtered by
