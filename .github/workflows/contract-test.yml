@@ -111,13 +111,13 @@ jobs:
             directus-ci \
             sh -c "npx directus bootstrap && exec npx directus start"
           for i in {1..100}; do
-            if curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+            if curl -sf http://localhost:8055/server/ping >/dev/null 2>&1; then
               echo "::notice::Directus healthy after ${i} polls"
               break
             fi
             sleep 3
           done
-          if ! curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+          if ! curl -sf http://localhost:8055/server/ping >/dev/null 2>&1; then
             echo "::error::Health check timed out"
             docker logs --tail=200 directus
             exit 1
