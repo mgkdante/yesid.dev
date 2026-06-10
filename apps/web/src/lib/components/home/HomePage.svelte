@@ -27,6 +27,8 @@
 		AboutIntroContent,
 		CtaContent,
 		CloserContent,
+		Project,
+		Service,
 	} from '$lib/types';
 	import type { HeroData } from '$lib/content/hero-data';
 
@@ -41,6 +43,11 @@
 		cta: CtaContent;
 		closer: CloserContent;
 		initialHeroData: HeroData;
+		/** slice-28.5 (#124): primary collection data resolved by +page.server.ts
+		 *  through the repository layer — section components no longer call the
+		 *  $lib/content companions for services/projects. */
+		services: readonly Service[];
+		featuredProjects: readonly Project[];
 	}
 	let {
 		metroSvg,
@@ -53,6 +60,8 @@
 		cta: _cta,
 		closer,
 		initialHeroData,
+		services,
+		featuredProjects,
 	}: Props = $props();
 
 	// Section bindings retained for upcoming slice-23 tasks (sectionGlow /
@@ -100,7 +109,7 @@
 		<SectionHeading heading="Projects" />
 	</div>
 	<div class="home-section-content">
-		<FeaturedProjects {proofReel} />
+		<FeaturedProjects {proofReel} projects={featuredProjects} />
 	</div>
 </section>
 
@@ -115,7 +124,7 @@
 		<SectionHeading heading="Services" />
 	</div>
 	<div class="home-section-content">
-		<HomeServices {servicesGrid} />
+		<HomeServices {servicesGrid} {services} />
 	</div>
 	<div class="rotated-title rotated-title--right">
 		<SectionHeading heading="Services" />

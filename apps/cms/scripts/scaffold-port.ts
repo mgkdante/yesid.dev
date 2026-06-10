@@ -1,5 +1,18 @@
 #!/usr/bin/env bun
 //
+// DORMANT (slice-28.5, audit #40): do not use as-is. This scaffolder's emit
+// targets predate the slice-27 export-pipeline layout — it tells you to paste
+// adapter skeletons into apps/web/src/lib/adapters/directus.ts (DORMANT since
+// 27.2; new ports do not go there) and test skeletons into
+// directus.mocked.test.ts (deleted in slice-17f). New collections are wired
+// through the export pipeline instead: write a fetcher in
+// apps/cms/scripts/lib/fetchers/, register an emit module in
+// apps/cms/scripts/lib/emitters/configs.ts, and add the port to the STATIC
+// adapter (apps/web/src/lib/adapters/static.ts). Kept in-tree per the 27.2
+// archive-not-delete convention; refit the emit targets before reviving.
+//
+// ---------------------------------------------------------------------------
+//
 // scaffold-port.ts — generate boilerplate for a new Directus content port.
 //
 // Slice 18 18c Task 54. Eliminates the rote setup work when adding a new

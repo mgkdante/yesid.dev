@@ -34,11 +34,21 @@ export function pickRandomShape(
 }
 
 // ---------------------------------------------------------------------------
-// LEGACY EXPORTS — for static-adapter fallback only.
-// Will be removed in 18i once all consumers use getMorphShapes().
+// FALLBACK SEED (slice-28.5, audit #120 — the old "will be removed in 18i"
+// deprecation note was stale by ten slices; this is the honest role).
+//
+// SHAPES is the hand-written, last-resort seed — NOT the data source. The
+// canonical morph-shape data is the GENERATED $lib/content/morph-shapes
+// module (emitted from the Directus morph_shapes collection), which
+// staticAdapter.content.morphShapes serves and +layout.server.ts ships to the
+// client. The seed exists only for:
+//   - +layout.server.ts catch{} — if the adapter port/generated module throws
+//   - getMorphShapes() below — components mounted with no SSR hydration
+//     (isolated component tests)
+// If you edit shapes, edit them in Directus; touching SHAPES changes only the
+// disaster-fallback rendering.
 // ---------------------------------------------------------------------------
 
-/** @deprecated Use getMorphShapes() — returns SSR-hydrated CMS shapes. */
 export const SHAPES = {
 	triangle: 'M24 8 L40 38 L8 38 Z',
 	circle: 'M24 8 A16 16 0 1 1 23.99 8 Z',
@@ -46,10 +56,10 @@ export const SHAPES = {
 	hexagon: 'M24 7 L39 15.5 L39 32.5 L24 41 L9 32.5 L9 15.5 Z',
 } as const;
 
-/** @deprecated derived from SHAPES — dropped in 18i. */
+/** Derived from the SHAPES seed — fallback plumbing only. */
 export type ShapeKey = keyof typeof SHAPES;
 
-/** @deprecated derived from SHAPES — dropped in 18i. */
+/** Derived from the SHAPES seed — fallback plumbing only. */
 export const SHAPE_KEYS = Object.keys(SHAPES) as ShapeKey[];
 
 export const FALLBACK_MORPH_SHAPES: readonly MorphShape[] = SHAPE_KEYS.map((key, index) => ({
@@ -61,8 +71,9 @@ export const FALLBACK_MORPH_SHAPES: readonly MorphShape[] = SHAPE_KEYS.map((key,
 }));
 
 /**
- * Return the SSR-hydrated morph shapes. If a component is mounted in isolation
- * in tests or story-like environments, fall back to the legacy local shapes.
+ * Return the SSR-hydrated morph shapes (CMS-generated, set via setMorphShapes
+ * in +layout.svelte). If a component is mounted in isolation in tests or
+ * story-like environments, fall back to the SHAPES seed above.
  */
 export async function getMorphShapes(): Promise<readonly MorphShape[]> {
 	return cache ?? FALLBACK_MORPH_SHAPES;

@@ -1,3 +1,19 @@
+// MEDIA RUNTIME SEAM (slice-28.5 audit #123): this module is the ONE live
+// runtime Directus dependency left after slice-27.2. All *data* reads resolve
+// from the static adapter ($lib/content snapshots — see the DORMANT banner in
+// $lib/adapters/directus.ts), but every CMS-managed image still composes a
+// `${PUBLIC_DIRECTUS_URL}/assets/<uuid>` URL HERE, at request time, via
+// dynamic env. Consumers: ProjectCard.svelte (project images, SSR'd on
+// /projects and home), ImageBlock.svelte (blog-body images), and
+// compose-page-seo.ts (OG image when a CMS UUID is set). If
+// PUBLIC_DIRECTUS_URL is unset in the runtime environment, defaultAssets()
+// below throws DURING SSR — deliberate fail-loud (a silently broken image
+// host is worse to debug than a named error). Cross-ref:
+// packages/shared/src/assets.ts carries the build-time half of this seam
+// (legacyPath → UUID map).
+//
+// ---------------------------------------------------------------------------
+//
 // Directus asset URL helper (18c Task 47).
 //
 // Composes `/assets/:id?key=<preset>` URLs against cms.yesid.dev. The server
@@ -87,7 +103,10 @@ function defaultAssets(): AssetHelpers {
 	const url = publicEnv.PUBLIC_DIRECTUS_URL;
 	if (!url) {
 		throw new Error(
-			'[assets] PUBLIC_DIRECTUS_URL is required to build Directus asset URLs. Set it in your environment.',
+			'[assets] PUBLIC_DIRECTUS_URL is unset — cannot compose Directus /assets/<uuid> URLs. ' +
+				'This is the media runtime seam ($lib/directus/assets.ts): the ONE live Directus ' +
+				'dependency left after slice-27.2, read at request time, so this throw surfaces in SSR. ' +
+				'Set PUBLIC_DIRECTUS_URL in the runtime environment (Vercel env, not just build env).',
 		);
 	}
 	cachedDefault = createAssets(url);

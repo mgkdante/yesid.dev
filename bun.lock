@@ -15,9 +15,6 @@
     },
     "apps/cms": {
       "name": "@repo/cms",
-      "dependencies": {
-        "marked": "^18.0.2",
-      },
       "devDependencies": {
         "@aws-sdk/client-s3": "^3.1039.0",
         "@directus/sdk": "^20.3.0",
@@ -25,6 +22,7 @@
         "bottleneck": "^2.19.5",
         "bun-types": "latest",
         "directus-sync": "^3.5.0",
+        "marked": "^18.0.2",
         "zod": "^4.3.6",
       },
     },

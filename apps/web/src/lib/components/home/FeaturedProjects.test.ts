@@ -24,6 +24,11 @@ const resolvedProjects: Project[] = proofReelContent.slugs
 
 const expectedCount = resolvedProjects.length;
 
+// slice-28.5 (#124): the component no longer resolves slugs itself — the home
+// +page.server.ts does (repository layer) and passes the filtered array as the
+// `projects` prop. The stub below mirrors that load output exactly.
+const renderProps = { proofReel: proofReelContent, projects: resolvedProjects };
+
 describe('FeaturedProjects', () => {
 	// Guard: the carousel is meaningless with zero cards. If this trips, the
 	// CMS proof-reel block references no existing projects — a data-quality
@@ -33,18 +38,18 @@ describe('FeaturedProjects', () => {
 	});
 
 	it('renders the section with correct testid', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		expect(screen.getByTestId('proof-reel-section')).toBeInTheDocument();
 	});
 
 	it('renders one card per resolvable featured slug', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		const cards = screen.getAllByTestId('proof-card');
 		expect(cards).toHaveLength(expectedCount);
 	});
 
 	it('renders a metric-value span for every card', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		// Every card renders the metric-value span (empty when the project has
 		// no impactMetric in Directus). Count, not content — the words are CMS.
 		const metrics = screen.getAllByTestId('proof-metric-value');
@@ -52,7 +57,7 @@ describe('FeaturedProjects', () => {
 	});
 
 	it('renders a strikethrough before-value for cards whose metric has one', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		// Derive how many resolved projects carry a metric `before` value — the
 		// component only renders proof-metric-before when present.
 		const withBefore = resolvedProjects.filter((p) => p.impactMetric?.before);
@@ -66,7 +71,7 @@ describe('FeaturedProjects', () => {
 	});
 
 	it('renders project titles matching the resolved CMS data', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		const titles = screen.getAllByTestId('proof-card-title');
 		expect(titles).toHaveLength(expectedCount);
 		resolvedProjects.forEach((project, i) => {
@@ -75,14 +80,14 @@ describe('FeaturedProjects', () => {
 	});
 
 	it('renders tech stack tags for cards that have a stack', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		const expectedTags = resolvedProjects.reduce((sum, p) => sum + p.stack.length, 0);
 		const tags = screen.queryAllByTestId('proof-tag');
 		expect(tags).toHaveLength(expectedTags);
 	});
 
 	it('cards link to /projects/[slug] for each resolved project (URL contract)', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		const cards = screen.getAllByTestId('proof-card');
 		resolvedProjects.forEach((project, i) => {
 			expect(cards[i]?.closest('a')?.getAttribute('href')).toBe(`/projects/${project.slug}`);
@@ -90,7 +95,7 @@ describe('FeaturedProjects', () => {
 	});
 
 	it('renders view-all link to /projects', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		const link = screen.getByTestId('proof-view-all');
 		expect(link).toBeInTheDocument();
 		// URL contract — the View all link must reach the listing page. The href
@@ -101,7 +106,7 @@ describe('FeaturedProjects', () => {
 	});
 
 	it('renders one image button per card', () => {
-		render(FeaturedProjects, { props: { proofReel: proofReelContent } });
+		render(FeaturedProjects, { props: renderProps });
 		const images = screen.getAllByTestId('proof-card-image');
 		expect(images).toHaveLength(expectedCount);
 	});

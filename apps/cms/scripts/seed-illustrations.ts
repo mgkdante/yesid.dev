@@ -1,4 +1,10 @@
 #!/usr/bin/env bun
+//
+// DONE — one-shot seed, completed (slice-18f Phase 8; banner added in
+// slice-28.5, audit #34). The illustrations collection + uploaded SVG files
+// live in Directus. Keep for fresh-environment bootstrap only (--dry-run /
+// --reset guarded). Kept in-tree per the 27.2 archive-not-delete convention.
+//
 /**
  * Seed the Directus `illustrations` collection from
  * `fixtures/collections/illustrations.json`.

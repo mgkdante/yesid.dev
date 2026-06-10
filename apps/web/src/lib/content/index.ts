@@ -1,14 +1,15 @@
 // Content-layer barrel.
 // Aggregates every static source module under $lib/content.
 //
-// Import boundaries (enforced by reviewer; codified in ARCHITECTURE.md after Slice 17b):
-// - Route loaders should prefer $lib/repositories (Task 17b-3+). They may still
-//   hit $lib/content for the short window of 17b-1 before the repository layer
-//   lands.
-// - Components should not import from here after 17b-4 migration — data flows
-//   through props from loaders. Kept transitional during the slice.
-// - Adapters (specifically $lib/adapters/static) are the long-term sole
-//   reader of $lib/content/* after 17b lands.
+// Import boundaries (rewritten slice-28.5, audit #124 — the 17b-era "adapters
+// become the sole reader" plan never fully landed; this states the actual rule.
+// Canonical long-form version: $lib/adapters/static.ts header):
+// - COLLECTION / PRIMARY data (anything with an adapter port) is read at
+//   runtime only by $lib/adapters/static.ts; routes get it via
+//   $lib/repositories and pass it to components as props.
+// - CODE-OWNED UI LITERALS (listing chrome copy, aria templates, companion
+//   constants) may be imported directly by display components — sanctioned.
+// - Static-fallback imports in layout/error shells + test stubs are sanctioned.
 
 // Generated CMS-derived modules (slice-18m export-fallbacks pipeline).
 export * from './projects'
