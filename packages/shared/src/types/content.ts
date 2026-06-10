@@ -86,7 +86,9 @@ export interface Project {
 	featured: boolean;
 	repoUrl?: string;
 	liveUrl?: string;
-	// Project thumbnail/hero image filename in static/images/work/.
+	// Directus file UUID for the project thumbnail/hero image (hero_image on
+	// the CMS row). Consumers build the URL via asset(image, '<preset>')
+	// against PUBLIC_DIRECTUS_URL — the one live runtime CMS seam.
 	// If omitted, cards show a gradient placeholder. Detail pages show no hero image.
 	image?: string;
 	// Service IDs this project is associated with. SVGs cascade from services.

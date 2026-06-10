@@ -197,13 +197,16 @@ export function wrapPlainText(str: string): BlockEditorDoc {
 }
 
 // ---------------------------------------------------------------------------
-// serializeBlocksToHtml — Editor.js doc → HTML string (legacy bridge)
+// serializeBlocksToHtml — Editor.js doc → HTML string
 // ---------------------------------------------------------------------------
 
 /**
- * Serialize an Editor.js doc to an HTML string. Used by
- * `directus.blog.html()` as a legacy bridge during 18f; removed in 18i
- * when the static adapter is deleted and consumers all use BlockRenderer.
+ * Serialize an Editor.js doc to an HTML string. LIVE in the static adapter
+ * (the runtime content layer post-27.2): `static.blog.html()` and the
+ * tech-stack search-text flattening both call it, and the dormant
+ * directus adapter + cms export emitters mirror the same serialization.
+ * (An earlier note called this a "legacy bridge to be removed in 18i" —
+ * inverted: the static adapter became the live adapter and kept it.)
  *
  * Inline marks (already HTML inside data.text) pass through as-is.
  * External links rendered without rel/target — relies on Block Editor

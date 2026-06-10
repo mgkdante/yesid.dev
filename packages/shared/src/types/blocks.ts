@@ -6,11 +6,13 @@
 // Per D14: types + Zod only. No runtime helpers in `types/`; pure utils
 // live in `utils/blocks.ts`.
 //
-// Per D15: Block Editor is the only rich-content interface in slice-18+.
+// Per D15: Block Editor is the only CMS rich-content interface in slice-18+.
 // `BlockRenderer.svelte` (slice-18 18f Phase 10) is the single source of
-// truth for rendering; no `marked.parse` in consumer bundle after 18i closes.
+// truth for rendering CMS rich content. (`marked` does survive in apps/web,
+// but only for the GitHub-README import path on project detail pages — not
+// for any CMS-authored content.)
 //
-// Per AM1 (decisions.md): shape locked against the live P3 probe — Editor.js,
+// Per AM1 (slice-18f decisions, Notion): shape locked against the live P3 probe — Editor.js,
 // not tiptap. Top-level: { time, blocks, version }. Per-block: { id, type, data }.
 // Inline marks (bold/italic/link/etc.) are stored as RAW HTML strings inside
 // `data.text` (paragraph + header + nestedlist items). Code blocks have NO
