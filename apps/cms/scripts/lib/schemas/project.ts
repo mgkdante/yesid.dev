@@ -5,8 +5,8 @@
  */
 
 import { z } from 'zod';
-import { LocalizedStringSchema } from './shared';
-import { LocalizedBlockEditorDocSchema } from './blocks';
+import { LocalizedStringSchema } from '@repo/shared';
+import { LocalizedBlockEditorDocSchema } from '@repo/shared';
 
 export const ProjectStatusSchema = z.enum(['public', 'private', 'wip']);
 

@@ -17,6 +17,7 @@
 // language attribute (AM3 — drop language hints). Embeds not configured (AM4).
 
 import { z } from 'zod';
+import type { LocalizedBlockEditorDoc } from './content';
 
 // ---------------------------------------------------------------------------
 // Block-specific types
@@ -235,6 +236,17 @@ export const BlockEditorDocSchema: z.ZodType<BlockEditorDoc> = z.object({
 	time: z.number(),
 	blocks: z.array(BlockEditorBlockSchema as unknown as z.ZodType<BlockEditorBlock>),
 	version: z.string(),
+});
+
+// Localized Block Editor doc — locale map of BlockEditorDocSchema, mirroring
+// the LocalizedBlockEditorDoc interface in ./content. Relocated here from
+// apps/web/src/lib/schemas/project.ts in slice-28.3 (#82) so apps/cms can
+// share the same Zod-4 instance instead of maintaining a local mirror.
+// (Type-only import — the content↔blocks type cycle erases at runtime.)
+export const LocalizedBlockEditorDocSchema: z.ZodType<LocalizedBlockEditorDoc> = z.object({
+	en: BlockEditorDocSchema,
+	fr: BlockEditorDocSchema.optional(),
+	es: BlockEditorDocSchema.optional(),
 });
 
 // ---------------------------------------------------------------------------

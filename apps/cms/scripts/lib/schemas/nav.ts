@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { LocalizedStringSchema } from './shared';
+import { LocalizedStringSchema } from '@repo/shared';
 
 export const NavLinkSchema = z.object({
 	label: LocalizedStringSchema,

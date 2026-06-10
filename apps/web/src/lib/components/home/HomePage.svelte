@@ -40,7 +40,6 @@
 		about: AboutIntroContent;
 		cta: CtaContent;
 		closer: CloserContent;
-		heroMock: HeroData;
 		initialHeroData: HeroData;
 	}
 	let {
@@ -53,7 +52,6 @@
 		about: _about,
 		cta: _cta,
 		closer,
-		heroMock,
 		initialHeroData,
 	}: Props = $props();
 
@@ -81,7 +79,7 @@
 
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
 <section class="w-full">
-	<HeroBanner {metroSvg} {hero} {heroAnim} {heroMock} {initialHeroData} />
+	<HeroBanner {metroSvg} {hero} {heroAnim} {initialHeroData} />
 </section>
 
 <Separator variant="hazard" />

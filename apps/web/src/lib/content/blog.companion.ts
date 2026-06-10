@@ -5,14 +5,9 @@
 // the html/body bridge lives in the runtime adapter (block-editor → HTML
 // serialization).
 //
-// Slice-23 mobile-perf: the marked-using markdown→HTML cache used to live
-// here (`htmlBySlug` + `getPostHtml`), but this file is re-exported through
-// `$lib/content/index.ts`. Home components that import any symbol from the
-// barrel (e.g. `getLatestPosts`, type imports) evaluated `marked` →
-// `$lib/utils/markdown` → Shiki + every language registration (≈58 KiB
-// unused JS in the home chunk). That cache now lives in
-// `./blog.html-cache.ts`, which is not re-exported and is consumed only by
-// the static adapter at SSR/build time.
+// Slice-28.3 (#54/#115): the legacy markdown→HTML cache (`blog.html-cache.ts`)
+// and the `/src/content/blog/**` markdown tree were deleted — post HTML now
+// flows exclusively from the CMS block-editor pipeline.
 
 import type { BlogPost, BlogCategory, BlogAnimation, Locale, LocalizedString } from '$lib/types';
 import { blogPosts } from './blog';
@@ -106,17 +101,6 @@ export function resolveAnimation(slug: string, explicit: string | undefined): Bl
 }
 
 // --- SVG glob loading (static adapter fallback path) ---
-//
-// Note: the raw-markdown glob + marked.parse loop that built `htmlBySlug`
-// moved to `./blog.html-cache.ts` so importing chrome from this file no
-// longer drags Shiki into client bundles. See header comment.
-
-// Custom illustration SVGs as raw strings for inline rendering + GSAP animation.
-const customSvgs = import.meta.glob('/src/content/blog/**/illustration.svg', {
-	query: '?raw',
-	import: 'default',
-	eager: true,
-}) as Record<string, string>;
 
 // Fallback SVGs as raw strings.
 const fallbackSvgs = import.meta.glob('/src/lib/assets/blog-fallbacks/*.svg', {
@@ -139,11 +123,6 @@ for (const [path, content] of Object.entries(fallbackSvgs)) {
 // --- SVG content ---
 
 export function getSvgContent(post: BlogPost): string {
-	if (post.svg === '__custom__') {
-		for (const [path, content] of Object.entries(customSvgs)) {
-			if (path.includes(`/${post.slug}/`)) return content;
-		}
-	}
 	return fallbackSvgMap.get(post.svg) ?? '';
 }
 
@@ -167,10 +146,6 @@ export function getLatestPosts(count: number, category?: BlogCategory): readonly
 export function getPostBySlug(slug: string): BlogPost | undefined {
 	return blogPosts.find((p) => p.slug === slug);
 }
-
-// `getPostHtml(slug)` lives in `./blog.html-cache.ts` so importers of this
-// companion module don't transitively load Shiki. The static adapter and
-// blog-detail server load are the only legitimate callers.
 
 export function getPostsByCategory(category: BlogCategory): readonly BlogPost[] {
 	return [...blogPosts].filter((p) => p.category === category).sort((a, b) => b.date.localeCompare(a.date));

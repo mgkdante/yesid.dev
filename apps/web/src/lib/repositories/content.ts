@@ -10,7 +10,6 @@
 
 import { adapter } from '$lib/adapters';
 import type { AboutContent, ContactContent, PreviewContext } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
 
@@ -46,17 +45,8 @@ export async function getCloserContent(ctx?: PreviewContext) {
 	return adapter.content.closer(ctx);
 }
 
-export async function getNavLinks(ctx?: PreviewContext): Promise<readonly NavLink[]> {
-	return adapter.content.navLinks(ctx);
-}
-
-export async function getMenuItems(ctx?: PreviewContext): Promise<readonly MenuItem[]> {
-	return adapter.content.menuItems(ctx);
-}
-
-export async function getErrorPageContent(statusCode = 404, ctx?: PreviewContext): Promise<ErrorPageContent> {
-	return adapter.content.errorPage(statusCode, ctx);
-}
+// getNavLinks / getMenuItems / getErrorPageContent — pruned in slice-28.3
+// (#117, zero consumers; nav + error chrome read static content directly).
 
 export async function getAboutPageContent(ctx?: PreviewContext): Promise<AboutContent> {
 	return adapter.content.aboutPage(ctx);
@@ -79,12 +69,11 @@ export async function getProjectsPageContent(ctx?: PreviewContext): Promise<Proj
 	return adapter.content.projectsPage(ctx);
 }
 
-// Hero mock data — heroMock() returns a freshly shuffled HeroData on each
-// call; initialHeroData() returns the deterministic seed used during SSR.
-export async function getHeroMockData(ctx?: PreviewContext): Promise<HeroData> {
-	return adapter.content.heroMock(ctx);
-}
+// getHeroMockData — pruned in slice-28.3 (#107/#116) with the heroMock render
+// plumbing (HeroBanner regenerates client-side via generateHeroData()).
+// adapter.content.heroMock stays — the oracle suites exercise it.
 
+// initialHeroData() returns the deterministic seed used during SSR.
 export async function getInitialHeroData(ctx?: PreviewContext): Promise<HeroData> {
 	return adapter.content.initialHeroData(ctx);
 }

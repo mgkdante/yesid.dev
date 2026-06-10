@@ -1,15 +1,15 @@
 // Project-repository tests — moved from content/projects.test.ts in Task 17b-3.
 // All functions are async now (they go through the adapter).
+// Slice-28.3 (#117): tests for the pruned wrappers (getAllProjects,
+// getFeaturedProjects, getAllTags, getServiceIdsForProjects) were removed;
+// the wip-visibility test now reads the full set via adapter.projects.all().
 
 import { describe, it, expect } from 'vitest';
+import { adapter } from '$lib/adapters';
 import {
-	getAllProjects,
 	getProjectBySlug,
-	getFeaturedProjects,
 	getPublicProjects,
-	getAllTags,
 	getProjectsByService,
-	getServiceIdsForProjects,
 } from './project';
 
 describe('getProjectBySlug', () => {
@@ -25,29 +25,6 @@ describe('getProjectBySlug', () => {
 
 	it('returns undefined for an empty string', async () => {
 		expect(await getProjectBySlug('')).toBeUndefined();
-	});
-});
-
-describe('getFeaturedProjects', () => {
-	it('returns only projects where featured is true', async () => {
-		const featured = await getFeaturedProjects();
-		expect(featured.length).toBeGreaterThan(0);
-		featured.forEach((p) => {
-			expect(p.featured).toBe(true);
-		});
-	});
-
-	it('does not include non-featured projects', async () => {
-		const [featured, all] = await Promise.all([
-			getFeaturedProjects(),
-			getAllProjects(),
-		]);
-		const featuredSlugs = new Set(featured.map((p) => p.slug));
-		all
-			.filter((p) => !p.featured)
-			.forEach((p) => {
-				expect(featuredSlugs.has(p.slug)).toBe(false);
-			});
 	});
 });
 
@@ -71,37 +48,11 @@ describe('getPublicProjects', () => {
 		// exist in the seed data.
 		const [publicProjects, all] = await Promise.all([
 			getPublicProjects(),
-			getAllProjects(),
+			adapter.projects.all(),
 		]);
 		const wipInSeed = all.filter((p) => p.status === 'wip');
 		wipInSeed.forEach((p) => {
 			expect(publicProjects.some((pub) => pub.slug === p.slug)).toBe(true);
-		});
-	});
-});
-
-describe('getAllTags', () => {
-	it('returns a non-empty array', async () => {
-		const tags = await getAllTags();
-		expect(tags.length).toBeGreaterThan(0);
-	});
-
-	it('returns tags in alphabetical order', async () => {
-		const tags = await getAllTags();
-		const sorted = [...tags].sort();
-		expect(tags).toEqual(sorted);
-	});
-
-	it('returns no duplicate tags', async () => {
-		const tags = await getAllTags();
-		const unique = new Set(tags);
-		expect(tags.length).toBe(unique.size);
-	});
-
-	it('returns no empty strings', async () => {
-		const tags = await getAllTags();
-		tags.forEach((tag) => {
-			expect(tag.trim()).not.toBe('');
 		});
 	});
 });
@@ -124,16 +75,6 @@ describe('getProjectsByService', () => {
 
 	it('returns empty array for unknown service ID', async () => {
 		expect(await getProjectsByService('nonexistent')).toEqual([]);
-	});
-});
-
-describe('getServiceIdsForProjects', () => {
-	it('returns deduplicated sorted service IDs from public projects', async () => {
-		const ids = await getServiceIdsForProjects();
-		expect(ids.length).toBeGreaterThan(0);
-		const sorted = [...ids].sort();
-		expect(ids).toEqual(sorted);
-		expect(new Set(ids).size).toBe(ids.length);
 	});
 });
 

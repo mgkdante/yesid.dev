@@ -14,7 +14,7 @@ import {
 	ctaContent,
 	closerContent,
 } from '$lib/content/site-content';
-import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
+import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
 import { getProjectBySlug } from '$lib/content';
 
 // The proof-reel card count is CMS-driven: `proofReelContent.slugs` and the
@@ -42,7 +42,6 @@ const stubData = {
 	about: aboutContent,
 	cta: ctaContent,
 	closer: closerContent,
-	heroMock: generateHeroData(),
 	initialHeroData: INITIAL_HERO_DATA,
 } as unknown as PageData;
 
