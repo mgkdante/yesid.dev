@@ -16,6 +16,7 @@
 //   - /services   → nav visible
 //   - /projects   → nav visible
 //   - /blog       → data-testid="blog-listing" (copy lives in content modules)
+//   - /blog/personal → data-testid="blog-listing" (Personal Corner; slice-28.1, audit #29)
 //   - /contact    → data-testid="contact-info-terminal"
 //   - /about      → nav + non-empty <main>
 //   - /tech-stack → data-testid="tech-stack-hero"
@@ -64,6 +65,15 @@ test('route /blog renders listing container', async ({ page }) => {
 	// from the committed content module (blog-page.ts: heading.en —
 	// "Dispatches" today, anything tomorrow after the next export-fallbacks
 	// run) and is not the engineering concern. Structural testid only.
+	await expect(page.locator('[data-testid="blog-listing"]')).toBeVisible();
+});
+
+test('route /blog/personal renders listing container', async ({ page }) => {
+	// slice-28.1 (audit #29): /blog/personal was the only public page route
+	// missing from this spec. Same structural assertion as /blog — the
+	// Personal Corner listing reuses BlogListingPage (data-testid="blog-listing").
+	const response = await page.goto('/blog/personal');
+	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="blog-listing"]')).toBeVisible();
 });
 

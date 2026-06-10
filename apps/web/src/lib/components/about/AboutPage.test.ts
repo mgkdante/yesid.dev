@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/svelte';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import AboutPage from './AboutPage.svelte';
@@ -97,6 +97,32 @@ describe('AboutPage', () => {
 		const weatherWidget = screen.getByTestId('about-weather');
 		expect(weatherWidget.textContent).toContain('15°C');
 		expect(weatherWidget.textContent).toContain('clear sky');
+	});
+
+	// slice-28.1 (audit #20/#122): SSR-baked weather is CDN-stale; AboutWeather
+	// refreshes from /api/weather in onMount. Default setup.dom stub returns
+	// null — this test overrides fetch to exercise the fresh-data branch.
+	it('refreshes weather from /api/weather on mount', async () => {
+		const prevFetch = globalThis.fetch;
+		globalThis.fetch = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ temp: -21, condition: 'blowing snow', icon: '13d' }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			}),
+		) as typeof globalThis.fetch;
+		try {
+			render(AboutPage, {
+				props: { aboutPage: aboutPageContent, weather: { temp: 15, condition: 'clear sky', icon: '01d' } }
+			});
+			const weatherWidget = screen.getByTestId('about-weather');
+			await waitFor(() => {
+				expect(weatherWidget.textContent).toContain('-21°C');
+			});
+			expect(weatherWidget.textContent).toContain('blowing snow');
+			expect(weatherWidget.textContent).not.toContain('15°C');
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
 	});
 
 	it('does not render its own footer (layout provides it)', () => {
