@@ -1,0 +1,24 @@
+# .gitleaksignore — fingerprints of known-false-positive findings in immutable
+# git history (slice-28.4, task 10). The weekly scheduled full-history scan in
+# secret-scan.yml had failed on these 5 since 2026-04-27; PR/push scans never
+# see them because their commit ranges exclude old history.
+#
+# Fingerprint format: <commit>:<file>:<rule-id>:<line>
+# None of these are live credentials:
+#  - web3formsKey (3x): Web3Forms public form-submission key — public by
+#    design per https://docs.web3forms.com (same rationale as the JSON-form
+#    allowlist regexes in .gitleaks.toml; these occurrences are the TS
+#    single-quote / markdown forms the regexes don't cover, in files deleted
+#    from the current tree).
+#  - .env.example: placeholder values from the pre-Directus Payload era.
+#  - notion-page-manifest.json: Notion page UUIDs (identifiers, not secrets).
+
+# web3formsKey in old static contact-page data module (file deleted)
+e52af934356e6cbce92001797dccdaa281217e3d:src/lib/data/contact-page.ts:generic-api-key:55
+# web3formsKey examples in learning doc (doc migrated out of repo)
+504f29e6a7e83a05398eaf2df41cd247d39d0f33:docs/learn/devops/environment-variables.md:generic-api-key:114
+504f29e6a7e83a05398eaf2df41cd247d39d0f33:docs/learn/devops/environment-variables.md:generic-api-key:135
+# Placeholder secret in example env file (Payload era, file since rewritten)
+9da6638c7a308ef04a88ba735e5228a68453ba0f:.env.example:generic-api-key:10
+# Notion page-ID manifest captured as plan evidence (UUIDs, not keys)
+035b739e6bc7e3fbdf16e1bc39bd9fe106b89831:docs/superpowers/plans/phase-2-evidence/04-notion-page-manifest.json:generic-api-key:17
