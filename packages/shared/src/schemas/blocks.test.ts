@@ -31,6 +31,7 @@ describe('HeroContentSchema', () => {
 			metaTemplate: ls('{n} rows'),
 		},
 		refreshButton: { label: ls('Refresh'), helper: ls('helper') },
+		heroAnim: { scrollDown: ls('scroll') },
 	};
 
 	it('parses a minimal valid HeroContent', () => {

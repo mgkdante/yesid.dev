@@ -34,45 +34,41 @@ function xmlEscape(s: string): string {
 		.replace(/'/g, '&apos;');
 }
 
-function urlEntry(loc: string, lastmod: string | undefined): string {
+// slice-28.1 (audit #19): <lastmod> dropped entirely. It is optional per the
+// sitemaps spec, and the previous value was request-time noise — static
+// routes got "now" on every request, defeating crawler change detection.
+function urlEntry(loc: string): string {
 	const altLinks = PUBLISHED_LOCALES.map(
 		(l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${xmlEscape(loc)}" />`,
 	).join('\n');
-	const lastmodLine = lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : '';
 	return `  <url>
     <loc>${xmlEscape(loc)}</loc>
-${lastmodLine}${altLinks}
+${altLinks}
   </url>`;
 }
 
 // Exported so the build-time coverage gate (Task 11) can diff expected vs
 // actual without HTTP round-tripping.
 export async function _buildSitemapEntries(): Promise<string[]> {
-	const buildTime = new Date().toISOString();
 	const entries: string[] = [];
 
 	for (const path of _STATIC_ROUTES) {
-		entries.push(urlEntry(canonical(path), buildTime));
+		entries.push(urlEntry(canonical(path)));
 	}
 
 	const projects = await adapter.projects.public();
 	for (const project of projects) {
-		entries.push(urlEntry(canonical(`/projects/${project.slug}`), buildTime));
+		entries.push(urlEntry(canonical(`/projects/${project.slug}`)));
 	}
 
 	const services = await adapter.services.visible();
 	for (const service of services) {
-		entries.push(urlEntry(canonical(`/services/${service.id}`), buildTime));
+		entries.push(urlEntry(canonical(`/services/${service.id}`)));
 	}
 
 	const posts = await adapter.blog.all();
 	for (const post of posts) {
-		const lastmod =
-			(post as { publishedAt?: string; updatedAt?: string; date?: string }).updatedAt ??
-			(post as { publishedAt?: string; date?: string }).publishedAt ??
-			(post as { date?: string }).date ??
-			buildTime;
-		entries.push(urlEntry(canonical(`/blog/${post.slug}`), lastmod));
+		entries.push(urlEntry(canonical(`/blog/${post.slug}`)));
 	}
 
 	return entries;
@@ -89,7 +85,10 @@ ${entries.join('\n')}
 	return new Response(xml, {
 		headers: {
 			'content-type': 'application/xml; charset=utf-8',
-			'cache-control': 'public, max-age=3600',
+			// slice-28.1 (audit #18): edge-cache a day + a week of SWR so crawler
+			// hits stop invoking the lambda; browser TTL stays 1h. Vercel's CDN
+			// cache is reset on deploy, so new routes/posts surface immediately.
+			'cache-control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
 		},
 	});
 };
