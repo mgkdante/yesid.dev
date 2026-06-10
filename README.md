@@ -16,14 +16,17 @@ All workflow state lives in **Notion**, operated through the [workflow-overlord]
 ## Structure
 
 ```
-├── apps/web/                    # SvelteKit site (public)
-├── apps/cms/                    # Directus CMS
-├── packages/                    # shared packages (tokens, etc.)
-├── .claude/, .codex/, .mcp.json # consumer-side tool config only
-├── AGENTS.md                    # workflow contract (tool-agnostic)
-├── CLAUDE.md                    # Claude Code entry pointer
-└── docs/reference/              # operational refs (cms-environments etc.)
+├── apps/web/                       # SvelteKit site (public)
+├── apps/cms/                       # Directus config + schema dumps + ops scripts
+├── packages/                       # shared packages (shared, tokens)
+├── overlord-bridge/, scripts/, skills/  # workflow-overlord session tooling
+├── .claude/, .codex/, .mcp.json    # consumer-side tool config only
+├── AGENTS.md                       # workflow contract (tool-agnostic)
+├── CLAUDE.md                       # Claude Code entry pointer
+└── DESIGN.md                       # generated from packages/tokens — do not hand-edit
 ```
+
+Operational references live in Notion (Architecture → Dev vs Prod, Business → Brand) — there is no `docs/` tree in this repo.
 
 ## For a new dev or AI
 

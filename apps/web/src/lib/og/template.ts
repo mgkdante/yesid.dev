@@ -1,8 +1,10 @@
 // Satori accepts a plain-object tree shaped like React.createElement output —
 // no JSX runtime needed. We construct POJOs directly. Layout mirrors the
-// SVG in scripts/generate-og-default.ts (dark background, wordmark + dot
-// accent, eyebrow chip, footer rail with accent bar) but swaps the tagline
-// slot for the per-content title.
+// committed default OG asset (static/og/default.en.png: dark background,
+// wordmark + dot accent, eyebrow chip, footer rail with accent bar) but
+// swaps the tagline slot for the per-content title. The script that
+// generated that default was deleted in slice-27.1 (restore from a5f28f2^
+// if a new locale needs a fresh default).
 
 export interface OgTreeInput {
   eyebrow: string; // 'BLOG' or 'PROJECT'

@@ -1,4 +1,18 @@
 #!/usr/bin/env bun
+//
+// DONE — one-shot seed, completed (slice-18g Phase 3; banner added in
+// slice-28.5, audit #32). tech_stack rows live in Directus and Data Studio is
+// the authoring surface. Keep for fresh-environment bootstrap only (--dry-run
+// / --reset guarded), and note bootstrap ORDER: run seed-icons first —
+// icon_id below is an M2O FK into the icons collection.
+//
+// SCHEMA FIX (slice-28.5, audit #32): the parent-row shape now writes
+// `icon_id` (the M2O FK that replaced the legacy `icon` string when 18h-ii
+// dropped that field — see migrate-tech-stack-icon.ts). The fixture keeps its
+// `icon` key; fixture icon values are verified identical to icons.id slugs,
+// so the seeder maps fixture.icon -> row.icon_id directly. Before this fix a
+// fresh bootstrap would have written a field the schema no longer has.
+//
 /**
  * Seed the Directus `tech_stack` family from `fixtures/collections/tech-stack.json`.
  *
@@ -33,7 +47,7 @@ import { DirectusError, parseErrors } from './lib/catch-error';
 
 // --- Types -----------------------------------------------------------------
 
-export type Locale = 'en' | 'fr' | 'es';
+import type { Locale } from '@repo/shared';
 export const SUPPORTED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'] as const;
 
 export type TechStackStatus = 'draft' | 'published' | 'archived';
@@ -103,7 +117,8 @@ export function loadTechStackFixture(): readonly TechStackFixture[] {
 export interface DirectusTechStackRow {
 	id: string;
 	name: string;
-	icon: string;
+	/** M2O FK into the icons collection (fixture key `icon` carries the slug). */
+	icon_id: string;
 	status: TechStackStatus;
 	sort: number;
 }
@@ -135,7 +150,9 @@ export function toTechStackRow(item: TechStackFixture): DirectusTechStackRow {
 	return {
 		id: item.id,
 		name: item.name,
-		icon: item.icon,
+		// 28.5 schema fix: tech_stack.icon (string) was dropped in 18h-ii;
+		// the fixture's icon slug doubles as the icons.id FK value.
+		icon_id: item.icon,
 		status: item.status,
 		sort: item.sort,
 	};

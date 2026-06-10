@@ -37,13 +37,15 @@ export const handle: Handle = async ({ event, resolve }) => {
 };
 
 /**
- * slice-18i Phase 7D: handleError fetches the status-specific CMS errorPage
- * row and stashes it on the error object as `cmsErrorPage`. +error.svelte
- * reads it from $page.error.cmsErrorPage and falls back to the layout's
- * pre-fetched $page.data.errorPage (status 0 row) if not present.
+ * slice-18i Phase 7D: handleError resolves the status-specific errorPage
+ * content and stashes it on the error object as `cmsErrorPage`. Post-27.2
+ * the adapter read resolves from the build-time static content layer (no
+ * live CMS call). +error.svelte reads it from $page.error.cmsErrorPage and
+ * falls back to the layout's pre-fetched $page.data.errorPage (status 0
+ * row) if not present.
  *
- * Fail-graceful: if the CMS is down during error handling, the error page
- * still renders using the layout's status=0 fallback row.
+ * Fail-graceful: if the adapter read throws during error handling, the
+ * error page still renders using the layout's status=0 fallback row.
  */
 export const handleError: HandleServerError = async ({ error, event, status }) => {
 	const message =
@@ -55,8 +57,9 @@ export const handleError: HandleServerError = async ({ error, event, status }) =
 			pageCache: event.locals.pageCache,
 		});
 	} catch {
-		// CMS unreachable during error handling — $page.data.errorPage (status=0
-		// fallback from +layout.server.ts) will be used by +error.svelte instead.
+		// Adapter read failed during error handling — $page.data.errorPage
+		// (status=0 fallback from +layout.server.ts) will be used by
+		// +error.svelte instead.
 	}
 
 	return { message, cmsErrorPage };

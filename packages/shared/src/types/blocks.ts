@@ -6,17 +6,20 @@
 // Per D14: types + Zod only. No runtime helpers in `types/`; pure utils
 // live in `utils/blocks.ts`.
 //
-// Per D15: Block Editor is the only rich-content interface in slice-18+.
+// Per D15: Block Editor is the only CMS rich-content interface in slice-18+.
 // `BlockRenderer.svelte` (slice-18 18f Phase 10) is the single source of
-// truth for rendering; no `marked.parse` in consumer bundle after 18i closes.
+// truth for rendering CMS rich content. (`marked` does survive in apps/web,
+// but only for the GitHub-README import path on project detail pages — not
+// for any CMS-authored content.)
 //
-// Per AM1 (decisions.md): shape locked against the live P3 probe — Editor.js,
+// Per AM1 (slice-18f decisions, Notion): shape locked against the live P3 probe — Editor.js,
 // not tiptap. Top-level: { time, blocks, version }. Per-block: { id, type, data }.
 // Inline marks (bold/italic/link/etc.) are stored as RAW HTML strings inside
 // `data.text` (paragraph + header + nestedlist items). Code blocks have NO
 // language attribute (AM3 — drop language hints). Embeds not configured (AM4).
 
 import { z } from 'zod';
+import type { LocalizedBlockEditorDoc } from './content';
 
 // ---------------------------------------------------------------------------
 // Block-specific types
@@ -235,6 +238,17 @@ export const BlockEditorDocSchema: z.ZodType<BlockEditorDoc> = z.object({
 	time: z.number(),
 	blocks: z.array(BlockEditorBlockSchema as unknown as z.ZodType<BlockEditorBlock>),
 	version: z.string(),
+});
+
+// Localized Block Editor doc — locale map of BlockEditorDocSchema, mirroring
+// the LocalizedBlockEditorDoc interface in ./content. Relocated here from
+// apps/web/src/lib/schemas/project.ts in slice-28.3 (#82) so apps/cms can
+// share the same Zod-4 instance instead of maintaining a local mirror.
+// (Type-only import — the content↔blocks type cycle erases at runtime.)
+export const LocalizedBlockEditorDocSchema: z.ZodType<LocalizedBlockEditorDoc> = z.object({
+	en: BlockEditorDocSchema,
+	fr: BlockEditorDocSchema.optional(),
+	es: BlockEditorDocSchema.optional(),
 });
 
 // ---------------------------------------------------------------------------

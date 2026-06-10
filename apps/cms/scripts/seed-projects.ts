@@ -1,4 +1,11 @@
 #!/usr/bin/env bun
+//
+// DONE — one-shot seed, completed (slice-18e; banner added in slice-28.5,
+// audit #34). The projects family lives in Directus and Data Studio is the
+// authoring surface; export-fallbacks reads it back at build time. Keep for
+// fresh-environment bootstrap only — it throws on a populated DB unless
+// --reset is passed. Kept in-tree per the 27.2 archive-not-delete convention.
+//
 /**
  * Seed the Directus `projects` family from `fixtures/collections/projects.json`.
  *
@@ -22,7 +29,7 @@ import { DirectusError, parseErrors } from './lib/catch-error';
 
 // --- Types -----------------------------------------------------------------
 
-export type Locale = 'en' | 'fr' | 'es';
+import type { Locale } from '@repo/shared';
 export const SUPPORTED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'] as const;
 
 export type ProjectStatus = 'draft' | 'published' | 'archived';

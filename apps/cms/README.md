@@ -1,93 +1,65 @@
-# yesid.dev-cms
+# yesid.dev — apps/cms
 
-Directus 11+ CMS backend for [yesid.dev](https://yesid.dev). Currently scaffolded, awaiting provisioning.
+Directus 11 CMS backing [yesid.dev](https://yesid.dev). Two live environments on Railway, schema-as-code via directus-sync, content shipped to the consumer site through build-time export.
 
-The authoritative migration plan, decisions, tasks, and research findings live in Notion under the yesid.dev slice-18 artifact pages. This README is the operational reference for the CMS package.
+Long-form decisions, research, and slice history live in Notion (Architecture → Dev vs Prod, plus the slice-18* artifact pages). This README is the operational reference for the CMS package.
 
 ## Current state
 
 | Field | Value |
 |-------|-------|
-| Backend | Scaffolded (no runtime yet). Directus install lands in slice-18 Task 3b. |
-| Version pin | `directus/directus:11.17.3` (Directus 11; don't float `latest` — Directus 12 license revision pending) |
-| Hosting target | **Railway Hobby** (~$5/mo). See slice-18 spec § D1. |
-| Database | **Neon Postgres** (BYO — preserved across migration) |
-| Storage | **Cloudflare R2** via Directus's built-in `s3` driver (`$0` egress, 10 GB free). See slice-18 spec § D2. |
-| Email | **Resend** (preserved; SMTP config) |
-| Admin URL | `cms.yesid.dev` — offline until Task 3b DNS cutover |
-| Consumer site | [yesid.dev](https://yesid.dev) — unaffected, reads content from a static TypeScript adapter throughout the migration |
+| Prod | `https://cms.yesid.dev` — Railway service, live |
+| Dev | `https://cms.dev.yesid.dev` — Railway service, live (refreshed from prod via `scripts/refresh-dev-from-prod.sh`) |
+| Image | `directus/directus:11.17.3` + `directus-extension-sync@3.0.6`, pinned in `apps/cms/Dockerfile` (don't float `latest` — Directus 12 upgrade is slice-26 work) |
+| Database | Neon Postgres (BYO; separate Neon target per environment) |
+| Storage | Cloudflare R2 via Directus's built-in `s3` driver |
+| Email | Resend (SMTP transport) |
+| Consumer site | [yesid.dev](https://yesid.dev) — reads all *data* from a build-time static content layer; live Directus serves only `/assets/*` media URLs at runtime |
 
-## Provisioning checklist (Task 3b — dashboard work)
+## How content reaches production
 
-> Run this once to stand up the production instance. Every step is in an external dashboard — no code changes.
+Publishing is a build-time pipeline, not a runtime read:
 
-### 1. Prerequisites
+1. Editor publishes (or updates a published row) in Data Studio on prod.
+2. The "Vercel revalidate on publish" Flow POSTs `VERCEL_DEPLOY_HOOK_URL` (env var on the Railway service, consumed by the Flow's request operation).
+3. Vercel rebuilds `apps/web`; the `prebuild` step (`apps/cms/scripts/export-fallbacks.ts`) re-exports CMS content into the static content layer, authenticating with `DIRECTUS_BUILD_TOKEN`.
+4. The deployed site serves the freshly exported content — no Directus data reads at request time.
 
-- Neon Postgres project (already provisioned — reuse the existing `yesid-dev-cms` project).
-  - Get the **pooled** connection string from Neon Console → the production branch → Connection details.
-- Cloudflare account (free tier).
-- Railway account (free tier for trial; Hobby plan required for production).
-- The pre-merged PR: `.env.example` + `infra/directus/` scaffold.
+**Deprecation policy: archive, don't delete.** There is no delete-triggered rebuild path. To retire content, set `status = "archived"` — export-fallbacks and the static companions filter archived rows out, so the next publish-triggered rebuild drops it. Do not add a Directus Flow for deletes.
 
-### 2. Cloudflare R2 bucket + keys
+## Schema workflow (directus-sync)
 
-1. Cloudflare Dashboard → **R2** → Create bucket `yesid-dev-cms`.
-2. Navigate to **Manage R2 API Tokens** → Create token → Object Read & Write → scope to the bucket.
-3. Save the Access Key ID, Secret Access Key, and the S3 Endpoint URL (format `https://<ACCOUNT_ID>.r2.cloudflarestorage.com`).
-4. Paste into the `STORAGE_S3_*` vars (see `.env.example`).
+Schema is code: `apps/cms/directus/**` (collections + snapshot JSON) is the reviewed artifact.
 
-### 3. Railway project from the Directus template
+```bash
+# 1) Author schema changes in Data Studio (dev first: cms.dev.yesid.dev).
+# 2) Preview the drift, then materialize it locally:
+op run --env-file=apps/cms/.env -- bun run --cwd apps/cms sync:diff   # read-only preview
+op run --env-file=apps/cms/.env -- bun run --cwd apps/cms sync:pull   # overwrite apps/cms/directus/** with remote state
+# 3) Review the diff, commit, open a PR.
+git add apps/cms/directus/ && git commit -m "feat(cms): ..."
+```
 
-1. https://railway.com/deploy/directus-cms → deploy.
-2. Railway provisions: Directus + Postgres + Redis + S3-compat storage.
-3. In Railway Dashboard → your project → **Variables**:
-   - **Replace** the auto-provisioned Postgres → set `DB_CONNECTION_STRING` to Neon's pooled URL.
-   - **Remove** the Railway-provisioned Postgres plugin if we aren't using it (free the resource).
-   - Replace storage vars with the R2 values from step 2.
-   - Set `KEY` + `SECRET` (generate: `openssl rand -hex 16` and `openssl rand -hex 32`).
-   - Set `ADMIN_EMAIL` + `ADMIN_PASSWORD` (temporary — you'll rotate after first login).
-   - Paste every other block from `.env.example`.
-4. Verify the Directus image pins to `directus/directus:11.17.3` (Railway → Settings → Source → override if needed).
-5. Deploy. Wait for the health check to go green.
+Prod apply is gated: the `cms.yml` workflow's push job runs on manual `workflow_dispatch` (environment-protected). `sync:push` locally is wrapped by `scripts/sync-push.ts`, which requires explicit prod acks (`DIRECTUS_SYNC_ALLOW_PROD_SCHEMA_PUSH=1` + `DIRECTUS_SYNC_PUSH_ACK=...` — see `.env.example`) and auto-merges per-env file FKs (see below).
 
-### 4. First admin + rotate credentials
+Config lives in `apps/cms/directus-sync.config.cjs` (dumpPath, enabled features, env-var connection). The sync extension is installed via `apps/cms/Dockerfile`; the `directus-sync` CLI is a devDependency of this package.
 
-1. Open the Railway-assigned temporary domain (e.g. `directus-xxx.up.railway.app`).
-2. Log in with the `ADMIN_EMAIL` + `ADMIN_PASSWORD` from the env.
-3. Data Studio → User menu → change the admin password to something stored only in 1Password.
-4. Railway → Variables → **delete** `ADMIN_EMAIL` and `ADMIN_PASSWORD` (they're bootstrap-only).
+CI (`.github/workflows/cms.yml`): unit tests on PR, `sync:diff` preview on main-bound PRs, gated `sync:push` on dispatch. `contract-test.yml` boots an ephemeral Directus **in this repo** (intra-repo since the 2026-04-24 monorepo pivot — both apps live here; no sibling checkout) and runs the apps/web adapter integration tests against the seeded schema.
 
-### 5. Custom domain + DNS cutover
+## Shared secrets (cross-service)
 
-1. Railway → Settings → Custom Domain → add `cms.yesid.dev`.
-2. Railway shows the required CNAME target (a `*.up.railway.app` host).
-3. **Only once Railway finishes auto-TLS on the temporary domain**: DNS provider for `yesid.dev` → update the `cms` A/CNAME to point at Railway's target (removing the prior Vercel record).
-4. Wait for DNS propagation + Railway's TLS cert issuance (usually a few minutes).
-5. Verify `https://cms.yesid.dev/server/health` returns 200.
+Two secrets connect the CMS to the consumer build. Real values live in 1Password / the respective dashboards — never in git.
 
-### 6. Retire the old Vercel project
+| Secret | Lives in | Purpose |
+|---|---|---|
+| `VERCEL_DEPLOY_HOOK_URL` | Railway service env (read by the publish Flow) | The single rebuild trigger: Flow POSTs it after a publish; Vercel rebuilds the site |
+| `DIRECTUS_BUILD_TOKEN` | Vercel build env (Production) | Auth for `export-fallbacks.ts` during the build. **Currently an admin-privileged token** — minting a read-only "Build Bot" policy/user is slice-26 work |
 
-1. Vercel Dashboard → the `yesid-dev-cms` project (was Payload) → Settings → Delete.
-2. (Optional) Remove the Vercel integration from the GitHub repo. `vercel.json` in this repo can be deleted in the Task 3c follow-up commit.
-
-### 7. Enable MCP (native since v11.13)
-
-1. Data Studio → Settings → AI → enable MCP server.
-2. Roles → Create **`ai-editor`** → scope to content collections only (no `directus_users`, no `directus_settings`, no system collections).
-3. Users → Create a dedicated MCP user in the `ai-editor` role → generate a static access token.
-4. Register with Claude Code:
-   ```bash
-   claude mcp add --transport http yesid-cms-prod https://cms.yesid.dev/mcp \
-     --header "Authorization: Bearer <AI-EDITOR-TOKEN>"
-   ```
-
-### 8. Report back
-
-Once the production URL serves Data Studio on `https://cms.yesid.dev`, ping for Task 3c: schema snapshot capture + CI workflow + final handoff block.
+The preview-era tokens (`VERCEL_BYPASS_TOKEN`, `EDITOR_PREVIEW_TOKEN`) are gone: `/preview/*` routes and ISR revalidation webhooks never shipped, and slice-27.2 removed the runtime CMS seam they were designed for.
 
 ## Local development (optional)
 
-Pull the Directus image and run against a local Postgres, or against your Railway instance's staging branch:
+Run the pinned image against a local Postgres or the dev environment's Neon branch:
 
 ```bash
 cp .env.example .env
@@ -96,83 +68,43 @@ docker run --rm -p 8055:8055 --env-file .env directus/directus:11.17.3
 # open http://localhost:8055
 ```
 
-A minimal `package.json` lives here for **scripts-only** tooling (seed, migration, snapshot tests). Directus itself runs from the pinned container image — this repo ships config + snapshots + scripts + tests only.
+The `package.json` here is **scripts-only** tooling (seed, export, migration, sync, tests). Directus itself always runs from the pinned container image — this package ships config + schema dumps + scripts + tests.
 
 ```bash
-bun install          # installs @directus/sdk + zod + yaml + bun-types
-bun test             # runs snapshot-shape + fixture + seed-dry-run + asset-manifest + preset tests (no network)
-bun run seed:services   # seeds the live services domain (requires admin creds — see below)
-bun run seed:presets    # seeds the 4 saved asset presets (hero-1200 / card-600 / thumb-240 / og-1200)
-bun run migrate:assets  # uploads yesid.dev/static/images/* into Directus + R2 (one-off migration)
+bun install              # installs @directus/sdk + directus-sync + zod + helpers
+bun test                 # fixture + seed-dry-run + sync-push + lib tests (no network)
 
-# directus-sync (18c Task 21+) — requires directus-extension-sync@3.0.6 on the CMS side + DIRECTUS_ADMIN_TOKEN env
-bun run sync:diff       # preview schema/permissions/flows diff (local ↔ remote), no writes
-bun run sync:pull       # overwrite local apps/cms/directus/**.json with remote CMS state
-bun run sync:push       # apply local apps/cms/directus/**.json to remote CMS (prod — gated behind CI manual approval)
+# From the repo root, 1Password-injected (see .env.example for the recipe):
+op run --env-file=apps/cms/.env -- bun run --cwd apps/cms sync:diff
+op run --env-file=apps/cms/.env -- bun run --cwd apps/cms sync:pull
+
+# Root package.json shortcuts (root .env):
+bun run cms:sync:diff:op
+bun run cms:sync:push:op
 ```
 
-### directus-sync workflow
-
-Local authoring:
-```bash
-cd apps/cms
-export DIRECTUS_ADMIN_TOKEN=$(op read op://yesid-dev/cms-admin/token)
-# Make schema changes in Data Studio → Settings/Data Model/Flows/...
-bun run sync:diff          # review what changed
-bun run sync:pull          # materialize the diff into apps/cms/directus/
-git add apps/cms/directus/ && git commit -m "..."
-```
-
-Prod apply lives in `cms.yml` workflow (manual `workflow_dispatch` with `target=prod`).
-
-Config: `apps/cms/directus-sync.config.js` defines dumpPath + enabled features. Extension (`directus-extension-sync@3.0.6`) is installed via `apps/cms/Dockerfile`; CLI (`directus-sync@3.x`) is a devDependency in `apps/cms/package.json`.
-
-## Repo layout
-
-```
-yesid.dev-cms/
-├── infra/directus/
-│   └── snapshot.yaml           # schema-as-code (authoritative)
-├── fixtures/
-│   ├── services.json               # seed data (exported from yesid.dev/src/lib/content/services.ts)
-│   ├── assets-manifest.json        # asset migration plan (Task 9)
-│   └── assets-id-map.json          # emitted by migrate-assets.ts; maps legacyPath → Directus file UUID
-├── scripts/
-│   ├── seed-services.ts        # idempotent services seeder (pure helpers exported for tests)
-│   ├── seed-presets.ts         # idempotent saved-asset-preset seeder (Task 9)
-│   └── migrate-assets.ts       # one-off asset uploader; reads assets-manifest.json + source tree (Task 9)
-├── tests/
-│   ├── services-fixture.test.ts    # Zod-validates fixtures/collections/services.json
-│   ├── seed-dry-run.test.ts        # unit tests on services-seed pure helpers
-│   ├── snapshot-shape.test.ts      # asserts on snapshot.yaml structure (drift catcher)
-│   ├── assets-manifest.test.ts     # Zod-validates fixtures/assets-manifest.json (Task 9)
-│   ├── migrate-assets.test.ts      # unit tests on migrate-assets pure helpers + idempotency (Task 9)
-│   └── seed-presets.test.ts        # unit tests on SLICE_18_PRESETS + schema guards (Task 9)
-├── .github/workflows/
-│   ├── schema-apply.yml        # ephemeral smoke + prod-gated apply + bun test + optional seed
-│   └── contract-test.yml       # checks out yesid.dev sibling; runs adapter integration test against our snapshot
-├── package.json                # scripts-only; @directus/sdk + zod + yaml + bun-types
-├── tsconfig.json               # strict mode; bun-types; scripts+tests+fixtures only
-├── .env.example                # Directus env var template
-└── README.md                   # this file
-```
+> Bun 1.3.x flag-parsing gotcha: `bun --cwd <dir> run <script>` silently prints
+> `bun run` help instead of running the script. Use `bun run --cwd <dir> <script>`
+> (flags after `run`) or `cd` into the package first. Verified on bun 1.3.13.
 
 ## Operations
 
-### Running the seed against production
+### Seeding content domains
+
+Seed scripts are one-shot/idempotent per domain (`seed:services`, `seed:projects`, `seed:presets`, ...). Most domains were seeded once in slice-18 and are now maintained in Data Studio — re-run a seeder only when you know it's the right tool (several are stamped DONE in their headers).
 
 ```bash
-# 1) Pull the admin token from 1Password (no hand-copying credentials).
+# 1) Admin credentials from 1Password (no hand-copying).
 export DIRECTUS_ADMIN_TOKEN=$(op read "op://yesid-dev/directus-admin/credential")
 export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 
-# 2) Seed.
+# 2) Seed (from apps/cms).
 bun run seed:services
 ```
 
 Alternatively, set `DIRECTUS_ADMIN_EMAIL` + `DIRECTUS_ADMIN_PASSWORD` to use the `/auth/login` flow.
 
-The seed is **nuke-and-recreate** — idempotent, safe to re-run. It clears the `services` domain tree (FK CASCADE removes translations, deliverables, sections) then re-creates from `fixtures/collections/services.json` via the Directus SDK.
+`seed:services` is **nuke-and-recreate** — idempotent, safe to re-run. It clears the `services` domain tree (FK CASCADE removes translations, deliverables, sections) then re-creates from `fixtures/collections/services.json`.
 
 ### Per-env file FK fields (slice-18k #120, #73, #86 — operational rule)
 
@@ -187,18 +119,18 @@ Affected fields (slice-18 close inventory):
 
 Per slice-18k closure decisions, the committed fixtures for these fields are **`null`** to prevent the seed scripts from recreating FK-constraint failures on environments where the referenced UUID doesn't exist (the original `#120` pattern: settings.json had baked UUIDs `d610c3ad-...` that existed in no env, so `sync:push` failed on settings step with `RECORD_NOT_UNIQUE`).
 
-**Auto-merge protection for `directus_settings` (slice-18k sync-push.ts):** `apps/cms/scripts/sync-push.ts` reads the live env's current values for `project_logo` / `public_foreground` / `public_favicon` BEFORE invoking directus-sync push, merges any non-null live values into the committed settings.json in place (overwriting the committed null), runs the push (so live values are preserved), then restores settings.json from a backup so git stays clean. This means after step 3 below (uploading per-env brand assets + PATCHing live settings), all subsequent `bun run sync:push` runs are SAFE — the live branding survives. See `apps/cms/scripts/sync-push.ts` `mergeProtectedSettingsFields` + `preMergeProtectedSettings`.
+**Auto-merge protection for `directus_settings` (slice-18k sync-push.ts):** `apps/cms/scripts/sync-push.ts` reads the live env's current values for `project_logo` / `public_foreground` / `public_favicon` BEFORE invoking directus-sync push, merges any non-null live values into the committed settings.json in place (overwriting the committed null), runs the push (so live values are preserved), then restores settings.json from a backup so git stays clean. This means after step 3 below (uploading per-env brand assets + PATCHing live settings), all subsequent `sync:push` runs are SAFE — the live branding survives. See `apps/cms/scripts/sync-push.ts` `mergeProtectedSettingsFields` + `preMergeProtectedSettings`.
 
 **Operational rule when bootstrapping a fresh env (or restoring after Neon PITR):**
 
 1. Run `sync:push` to provision schema + folders (will set the file-FK fields to `null` because that's what's committed).
-2. **Important pre-step for `seed-brand-assets`:** the committed `apps/cms/fixtures/assets-id-map.json` is a STALE snapshot from an early dev env. Its UUIDs (including `brand/yesid-icon.svg → d610c3ad-...`) do NOT exist in current dev or current prod — this is the same orphan UUID family that #120 nulled from settings.json. Before running `seed-brand-assets` on any env, **clear the dev keys from assets-id-map.json first** so the script re-uploads + writes env-specific UUIDs. Otherwise the script skips upload (per the `if (existing)` short-circuit at `scripts/seed-brand-assets.ts:115-118`) and downstream PATCHes target the dead UUIDs.
+2. **Important pre-step for `seed-brand-assets`:** the committed `apps/cms/fixtures/assets-id-map.json` is a STALE snapshot from an early dev env. Its UUIDs (including `brand/yesid-icon.svg → d610c3ad-...`) do NOT exist in current dev or current prod — this is the same orphan UUID family that #120 nulled from settings.json. Before running `seed-brand-assets` on any env, **clear the dev keys from assets-id-map.json first** so the script re-uploads + writes env-specific UUIDs. Otherwise the script skips upload (per the `if (existing)` short-circuit in `scripts/seed-brand-assets.ts`) and downstream PATCHes target the dead UUIDs.
 3. Upload the env's brand assets:
    - Clear stale entries from `assets-id-map.json` (or delete the file entirely; it'll be re-created by the seed). Then from the repo root:
      ```bash
      cd apps/cms && bun --env-file=.env run scripts/seed-brand-assets.ts
      ```
-     (Note: do NOT use `bun --cwd ... --env-file=... run ...` — bun's flag parser rejects that combination and prints `bun run` help instead. Must `cd` into the package first.)
+     (`bun run --env-file=apps/cms/.env --cwd apps/cms ...` also parses correctly on bun 1.3.13; the broken form is `bun --cwd ... run ...` — see the gotcha note above.)
    - For `site_meta.default_og_image`: upload `apps/web/static/og/default.en.png` to the `og/` folder via Directus admin UI (or a one-off upload script following the seed-brand-assets.ts pattern), then PATCH `site_meta.default_og_image` to the new UUID via admin UI or:
      ```bash
      curl -X PATCH "https://<env-cms-host>/items/site_meta" \
@@ -215,13 +147,17 @@ Per slice-18k closure decisions, the committed fixtures for these fields are **`
      ```
 4. For `settings.project_logo / public_foreground / public_favicon`: read the post-seed `assets-id-map.json` (now populated with env-specific UUIDs from step 3) and PATCH each settings field via admin UI or REST. **Do NOT use the committed assets-id-map.json values directly** — they're the stale dev snapshot.
 
-5. **Auto-merge takes over from here:** all subsequent `bun run sync:push` runs preserve the env-specific settings file FKs via the sync-push.ts merge wrapper (see "Auto-merge protection" above). No manual re-PATCH after each push is required for `directus_settings`. Manual re-PATCH IS still required for `site_meta.default_og_image` after `seed-site-meta` runs, and for `icons.svg_override` after `seed-icons` runs (those seed scripts don't have equivalent merge protection).
+5. **Auto-merge takes over from here:** all subsequent `sync:push` runs preserve the env-specific settings file FKs via the sync-push.ts merge wrapper (see "Auto-merge protection" above). No manual re-PATCH after each push is required for `directus_settings`. Manual re-PATCH IS still required for `site_meta.default_og_image` after `seed-site-meta` runs, and for `icons.svg_override` after `seed-icons` runs (those seed scripts don't have equivalent merge protection).
+
+**Why not just commit the dev UUID:** because seeding prod from the committed fixture would set prod's `site_meta.default_og_image` to dev's UUID, which prod's `directus_files` doesn't have → FK constraint error on next seed (re-creates #120). The null + per-env PATCH rule is the only setup that survives `sync:push` cleanly across all envs.
+
+**Why not refactor to use `assets-id-map.json` for these fields:** would require teaching `seed-site-meta.ts` (and any other singleton seed touching file FKs) to resolve `@assets-map:<key>` sentinels at payload-construction time. The refactor is in scope for any future slice that adds substantial new file-FK fields; for slice-18 close it was rejected as scope-enlarging for a single field with graceful consumer fallback (web `<SeoHead>` resolves null `default_og_image` to static `/og/default.{locale}.png`).
 
 ### Existing Windows worktrees + `.gitattributes` LF enforcement (slice-18k #111)
 
-The new `.gitattributes` (committed in this slice) enforces LF for text files going forward. However, **gitattributes are only applied on checkout** — existing Windows worktrees that already have CRLF copies of `DESIGN.md`, `apps/web/src/app.css`, `apps/web/src/lib/styles/tokens.css`, `apps/web/src/lib/motion/tokens.ts`, etc., stay unchanged after pulling slice-18k.
+`.gitattributes` enforces LF for text files going forward. However, **gitattributes are only applied on checkout** — Windows worktrees created before slice-18k may still have CRLF copies of `DESIGN.md`, `apps/web/src/app.css`, `apps/web/src/lib/styles/tokens.css`, `apps/web/src/lib/motion/tokens.ts`, etc.
 
-If `bun --cwd packages/tokens test` still fails on Windows after pulling slice-18k, run the one-time renormalize:
+If `packages/tokens` tests still fail on Windows after pulling slice-18k, run the one-time renormalize:
 
 ```bash
 git add --renormalize .
@@ -231,13 +167,9 @@ git commit -m "chore: apply .gitattributes LF normalization (slice-18k #111 foll
 
 Linux/macOS worktrees are unaffected (no CRLF in tracked files to begin with).
 
-**Why not just commit the dev UUID:** because seeding prod from the committed fixture would set prod's `site_meta.default_og_image` to dev's UUID, which prod's `directus_files` doesn't have → FK constraint error on next seed (re-creates #120). The null + per-env PATCH rule is the only setup that survives `sync:push` cleanly across all envs.
-
-**Why not refactor to use `assets-id-map.json` for these fields:** would require teaching `seed-site-meta.ts` (and any other singleton seed touching file FKs) to resolve `@assets-map:<key>` sentinels at payload-construction time. The refactor is in scope for any future slice that adds substantial new file-FK fields; for slice-18 close it was rejected as scope-enlarging for a single field with graceful consumer fallback (web `<SeoHead>` resolves null `default_og_image` to static `/og/default.{locale}.png`).
-
 ### Asset migration (one-off, Slice 18 Task 9)
 
-Bulk-upload `yesid.dev/static/images/*` into Directus-managed R2 storage. Reads `fixtures/assets-manifest.json` for metadata + target folders; walks the source tree for the binaries.
+Bulk-upload `apps/web/static/images/*` into Directus-managed R2 storage. Reads `fixtures/assets-manifest.json` for metadata + target folders; walks the source tree for the binaries.
 
 ```bash
 # 1) Pull the admin token from 1Password.
@@ -247,25 +179,22 @@ export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 # 2) Dry-run first — prints what would upload without touching Directus.
 bun run migrate:assets -- --dry-run
 
-# 3) Real run. Auto-detects the sibling yesid.dev repo at ../yesid.dev/static/images.
-#    Override with --source <path> if needed.
+# 3) Real run (auto-detects the static/images tree; override with --source <path>).
 bun run migrate:assets
 
 # 4) Verify: the run emits `fixtures/assets-id-map.json` mapping each legacyPath
-#    to the uploaded Directus file UUID. Commit it — Tasks 10–14 consume it.
+#    to the uploaded Directus file UUID. Commit it — downstream consumers read it.
 git add fixtures/assets-id-map.json
-git commit -m "chore(slice-18 task-9): emit assets-id-map.json after live migration"
+git commit -m "chore(cms): emit assets-id-map.json after live migration"
 ```
 
 **Idempotency.** The script tags every uploaded file's `description` with a leading `[legacy:<path>]` marker. Re-runs read existing files, skip entries whose `legacyPath` is already tagged, and only upload new ones. Safe to re-run after adding new entries to the manifest.
 
-**Folder creation.** Folders are created on first run if missing (`about`, `brand`, `projects`). Existing folders with matching names are reused.
-
-**What's in the manifest right now:** 19 assets across 3 folders (about, brand, projects). Future content types (Task 10 projects detail covers, Task 11 blog illustrations, Task 13 OG images) may add more folders + entries — append to the manifest + re-run migrate-assets.
+**Folder creation.** Folders are created on first run if missing. Existing folders with matching names are reused.
 
 ### Asset presets (saved transforms)
 
-Directus saved asset presets let consumers request named sizes via `?key=<preset>` instead of string-building query params. They bypass the 5-op-per-request transform cap in production. Slice 18 installs four: `hero-1200`, `card-600`, `thumb-240`, `og-1200`.
+Directus saved asset presets let consumers request named sizes via `?key=<preset>` instead of string-building query params. They bypass the 5-op-per-request transform cap in production. Slice 18 installed four: `hero-1200`, `card-600`, `thumb-240`, `og-1200`.
 
 ```bash
 # Idempotent — overwrites directus_settings.storage_asset_presets with the
@@ -275,86 +204,106 @@ export PUBLIC_DIRECTUS_URL=https://cms.yesid.dev
 bun run seed:presets
 ```
 
-Presets live in `directus_settings.storage_asset_presets` — a JSON column on the singleton settings record, NOT part of the schema snapshot. Adding / changing presets is a re-run of `seed:presets`, not a schema-apply.
+Presets live in `directus_settings.storage_asset_presets` — a JSON column on the singleton settings record, NOT part of the schema snapshot. Adding / changing presets is a re-run of `seed:presets`, not a schema apply.
 
-### Shared secret rotation policy
+### PR coordination (monorepo)
 
-Two tokens are shared between this repo (Railway env) and the consumer repo (Vercel env):
+Since the 2026-04-24 monorepo pivot, schema + consumer changes ship from this one repo. Sequence within a PR (or PR train):
 
-| Token | Where used | Purpose |
-|---|---|---|
-| `VERCEL_BYPASS_TOKEN` | Directus Flow → Vercel ISR | `x-prerender-revalidate` header on Flow webhook ops that invalidate yesid.dev page cache after content publishes |
-| `EDITOR_PREVIEW_TOKEN` | Directus Visual Editor → yesid.dev `/preview/*` routes | Validates preview-route requests against the `?token=…` query param |
+1. **Schema first** — `apps/cms/directus/**` changes reviewed and applied to prod via `cms.yml` dispatch.
+2. **Consumer second** — adapter/static-layer changes in `apps/web` that depend on the new schema.
 
-**Rotate every 90 days** or immediately on suspected leak.
+Pure consumer changes (component, styling, route) don't touch this package. Pure schema/seed changes don't need apps/web edits unless the adapter shape changes.
 
-```bash
-# 1) Generate a new token (≥ 32 chars per Vercel's requirement).
-NEW_TOKEN=$(openssl rand -hex 32)
+## Repo layout
 
-# 2) Update Railway (CMS side).
-#    Dashboard → Directus CMS service → Variables → VERCEL_BYPASS_TOKEN (or EDITOR_PREVIEW_TOKEN) → set new value → Redeploy.
-#    OR via CLI:
-railway variables --service "Directus CMS" --set "VERCEL_BYPASS_TOKEN=$NEW_TOKEN"
-railway redeploy --service "Directus CMS"
-
-# 3) Update Vercel (consumer side).
-#    Dashboard → yesid.dev project → Settings → Environment Variables → update → Redeploy latest production.
-#    OR via CLI (requires `vercel env rm` then `vercel env add`):
-vercel env rm VERCEL_BYPASS_TOKEN production
-echo "$NEW_TOKEN" | vercel env add VERCEL_BYPASS_TOKEN production
-
-# 4) Verify both sides.
-#    Directus Flow: manually trigger via Data Studio → Flows → Log shows 200 from Vercel.
-#    Preview route: curl -H 'x-prerender-revalidate: wrong-token' https://yesid.dev/preview/... → 401.
-#                   curl -H 'x-prerender-revalidate: '"$NEW_TOKEN" https://yesid.dev/preview/... → 200.
-
-# 5) Rotate the prior value out of 1Password after verification.
+```
+apps/cms/
+├── Dockerfile                   # directus/directus:11.17.3 + directus-extension-sync (Railway builds this)
+├── directus-sync.config.cjs     # directus-sync CLI config (dumpPath, features, env connection)
+├── directus/
+│   ├── collections/             # directus-sync dumps: flows, operations, permissions, policies, roles, settings, ...
+│   └── snapshot/                # schema snapshot (authoritative, reviewed in PRs)
+├── fixtures/                    # seed data + assets manifest/id-map (frozen content snapshots)
+├── brand/                       # brand SVGs uploaded per-env by seed-brand-assets
+├── icons/                       # SVG overrides for icon rows the icon pipeline can't render
+├── scripts/                     # export-fallbacks, sync-push wrapper, seed-*, migrate-*, refresh-dev-from-prod
+│   └── lib/                     # shared fetchers/emitters/auth used by export + seeds
+├── tests/                       # fixture + dry-run + sync-push tests (bun test, no network)
+├── vercel.json                  # ignoreCommand guard from the standalone-repo era (skips any Vercel build rooted here); harmless
+├── .env.example                 # Railway env reference + local op-inject recipes
+└── README.md                    # this file
 ```
 
-Never share either token outside the two repo env stores. Never commit them to Git. Never log them.
-
-### Schema changes (Data Studio → snapshot.yaml → PR)
-
-```bash
-# 1) Author in Data Studio against the live CMS.
-# 2) Re-snapshot:
-DIRECTUS_URL=https://cms.yesid.dev \
-DIRECTUS_TOKEN=$(op read "op://yesid-dev/directus-admin/credential") \
-  bunx @directus/sdk@^20 schema-snapshot --url "$DIRECTUS_URL" --token "$DIRECTUS_TOKEN" \
-  > infra/directus/snapshot.yaml
-#    (or export via the CLI / API that matches your 11.17.3 workflow)
-# 3) git checkout -b schema/<change-name>
-# 4) bun test  (snapshot-shape test catches drift before PR)
-# 5) git commit + open PR → schema-apply.yml runs ephemeral smoke
-# 6) After merge: workflow_dispatch → target=prod → review printed diff → confirm apply
-```
-
-**Destructive schema apply** (field removal, type change) prints the full diff in the prod-apply workflow log — operator MUST review before confirming. The snapshot-shape test in CI guards against accidental collection/field removals by asserting required-collection presence.
-
-### Consumer-side PR coordination
-
-Per slice-18 spec D12, schema changes follow a two-PR rule:
-
-1. **This repo's PR first** — snapshot + seed changes. Smoke-CI green. Prod-apply via `workflow_dispatch` after operator review.
-2. **yesid.dev's PR second** — adapter + consumer changes. Link to this repo's merged PR in the description.
-
-Pure consumer changes (new component, styling, route) do NOT need a PR here. Pure schema + seed changes do NOT need a PR on yesid.dev.
+CI workflows live at the repo root: `.github/workflows/cms.yml` (tests + gated sync) and `.github/workflows/contract-test.yml` (ephemeral Directus + adapter integration tests, intra-repo).
 
 ## Why these choices (TL;DR)
 
 | Choice | Alternatives rejected | Why |
 |---|---|---|
-| Railway hosting | Directus Cloud ($15/mo, no Neon BYO) · Fly.io (PAYG) · Hetzner (DIY TLS) · Vercel (non-starter for Directus) | Official Directus template + BYO Neon + auto-TLS + $5/mo predictable cost. Best DX-per-dollar at this scale. |
-| Cloudflare R2 storage | Vercel Blob (no Directus driver) · AWS S3 ($0.09/GB egress) · Backblaze B2 (needs CDN layer) | `$0` egress to Vercel frontend + 10 GB free + built-in `s3` driver + S3-compat portability. |
-| Schema snapshot in Git | Data Studio-only · hand-rolled SQL | Reviewable PR diffs + reproducible + drift-detection. |
-| Markdown for blog | Block Editor | Preserves `marked.parse` pipeline on yesid.dev; zero consumer changes. |
+| Railway hosting | Directus Cloud ($15/mo, no Neon BYO) · Fly.io (PAYG) · Hetzner (DIY TLS) · Vercel (non-starter for Directus) | Official Directus support + BYO Neon + auto-TLS + predictable cost. Best DX-per-dollar at this scale. |
+| Cloudflare R2 storage | Vercel Blob (no Directus driver) · AWS S3 ($0.09/GB egress) · Backblaze B2 (needs CDN layer) | `$0` egress + 10 GB free + built-in `s3` driver + S3-compat portability. |
+| Schema dumps in Git (directus-sync) | Data Studio-only · hand-rolled SQL | Reviewable PR diffs + reproducible + drift-detection. |
+| Block Editor for rich content | Markdown columns | Directus-native editing; the consumer renders Block Editor JSON via BlockRenderer / serializeBlocksToHtml. |
 | Native Translations field | JSON-per-field · collection-per-locale | Directus-idiomatic editor UX + adapter-boundary `toLocalizedString` transform keeps `LocalizedString` shape unchanged. |
+| Build-time export over runtime reads | SSR reads against live CMS | slice-27.2: site stays up when the CMS is down; CMS load is one build per publish, not per request. Media URLs remain the one live runtime seam. |
 
 Full rationale lives in the Notion slice-18 spec and research pages.
 
+## Appendix: historical provisioning (April 2026)
+
+> **Historical.** This checklist stood up the production instance in slice-18 (April 2026). Both environments have been live since; keep this only as a reference for standing up a *new* environment from zero. Where it conflicts with current state (e.g. snapshot paths, workflow names), current state wins.
+
+### 1. Prerequisites
+
+- Neon Postgres project (reuse the existing `yesid-dev-cms` project; pooled connection string from Neon Console).
+- Cloudflare account (free tier).
+- Railway account (Hobby plan for production).
+
+### 2. Cloudflare R2 bucket + keys
+
+1. Cloudflare Dashboard → **R2** → Create bucket `yesid-dev-cms`.
+2. **Manage R2 API Tokens** → Create token → Object Read & Write → scope to the bucket.
+3. Save the Access Key ID, Secret Access Key, and the S3 Endpoint URL (`https://<ACCOUNT_ID>.r2.cloudflarestorage.com`).
+4. Paste into the `STORAGE_S3_*` vars (see `.env.example`).
+
+### 3. Railway project
+
+1. Deploy from the Directus template (https://railway.com/deploy/directus-cms) — or point a Railway service at this repo's `apps/cms/Dockerfile` (current setup).
+2. In Railway Dashboard → Variables:
+   - Set `DB_CONNECTION_STRING` to Neon's pooled URL (remove any Railway-provisioned Postgres).
+   - Set the `STORAGE_S3_*` vars from step 2.
+   - Set `KEY` + `SECRET` (`openssl rand -hex 16` / `openssl rand -hex 32`).
+   - Set `ADMIN_EMAIL` + `ADMIN_PASSWORD` (bootstrap-only — rotate + delete after first login).
+   - Paste the remaining blocks from `.env.example`.
+3. Deploy; wait for the health check.
+
+### 4. First admin + rotate credentials
+
+1. Open the Railway-assigned temporary domain.
+2. Log in with the bootstrap `ADMIN_EMAIL` + `ADMIN_PASSWORD`.
+3. Change the admin password to something stored only in 1Password.
+4. Railway → Variables → **delete** `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+
+### 5. Custom domain + DNS
+
+1. Railway → Settings → Custom Domain → add the `cms.*` host.
+2. Point the DNS CNAME at Railway's target once auto-TLS completes on the temporary domain.
+3. Verify `https://<host>/server/health` returns 200.
+
+### 6. MCP (native since Directus 11.13)
+
+1. Data Studio → Settings → AI → enable MCP server.
+2. Roles → Create **`ai-editor`** → scope to content collections only (no system collections).
+3. Create a dedicated MCP user in that role → generate a static access token.
+4. Register with Claude Code:
+   ```bash
+   claude mcp add --transport http yesid-cms-prod https://cms.yesid.dev/mcp \
+     --header "Authorization: Bearer <AI-EDITOR-TOKEN>"
+   ```
+
 ## Related
 
-- Notion slice-18 plan - task roadmap.
-- Notion slice-18 research - Directus findings.
-- Notion headless-CMS pivot research - why Directus beat Payload.
+- Notion → Architecture → Dev vs Prod — environment procedures.
+- Notion slice-18* plan/research pages — migration history + Directus findings.
+- Notion headless-CMS pivot research — why Directus beat Payload.

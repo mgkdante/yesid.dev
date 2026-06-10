@@ -3,8 +3,8 @@
 // +page.server.ts so we can thread event.locals.pageCache as ctx for
 // loadPage('tech-stack') memoization.
 //
-// Tech items come from the adapter (Directus) via the repository boundary.
-// Page chrome (techStackPage) flows through the adapter.
+// Tech items come from the adapter (static content layer post-27.2) via the
+// repository boundary. Page chrome (techStackPage) flows through the adapter.
 
 import {
 	getAllTechItems,

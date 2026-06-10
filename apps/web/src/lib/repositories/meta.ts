@@ -3,19 +3,13 @@
 // <JsonLd> component; the repository no longer participates in that flow.
 
 import { adapter } from '$lib/adapters';
-import type { Locale, PageSeo, PreviewContext, SiteMeta, SiteSeoDefaults } from '$lib/types';
+import type { Locale, PageSeo, PreviewContext, SiteSeoDefaults } from '$lib/types';
 
-export async function getSiteMeta(ctx?: PreviewContext): Promise<SiteMeta> {
-	return adapter.meta.site(ctx);
-}
+// getSiteMeta — pruned in slice-28.3 (#117, zero consumers). The underlying
+// adapter.meta.site port stays for the slice-26 RUN_PARITY oracle.
 
 /**
  * Slice-18 18h Q9: site-wide SEO defaults from the `site_meta` singleton.
- *
- * Backed by the same row as `getSiteMeta()` — both repository wrappers share
- * the per-request `fetchSingletonRow()` WeakMap memo in the directus adapter,
- * so calling both in the same `+layout.ts` `Promise.all` triggers exactly ONE
- * CMS round-trip.
  *
  * Consumers: root `+layout.ts` (threads `themeColor` to `<SeoHead>`).
  */

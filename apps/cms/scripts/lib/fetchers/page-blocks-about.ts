@@ -10,8 +10,7 @@
 
 import { readItems } from '@directus/sdk';
 import { toLocalizedJSON } from '../locale';
-import type { LocalizedString } from '../schemas/shared';
-import { AboutContentSchema, type AboutContent } from '../schemas/page-blocks';
+import { AboutContentSchema, type LocalizedString, type AboutContent } from '@repo/shared';
 import type { FetcherContext } from './types';
 
 interface BlockRow {

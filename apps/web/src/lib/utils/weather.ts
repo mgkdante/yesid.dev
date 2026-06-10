@@ -1,6 +1,16 @@
 // Shared weather fetch for Montreal.
-// Server-side only — uses $env/dynamic/private.
-// 30-minute in-memory cache to avoid hitting API on every page load.
+// Server-side only — uses $env/dynamic/private. Client code may import the
+// WeatherData TYPE only (type imports are erased; the env import must never
+// reach the browser bundle).
+//
+// Freshness model (slice-28.1, audit #20/#122):
+//   - The 30-minute in-memory TTL below only bounds OpenWeather API calls
+//     within a warm server instance — it is NOT what visitors see.
+//   - /about + /contact SSR-bake this value into HTML that the CDN caches
+//     for up to a day (hooks.server.ts s-maxage=86400), so the baked number
+//     can be that stale.
+//   - GET /api/weather re-exposes this util with a 30-minute edge TTL;
+//     ContactPage/AboutWeather refresh from it after hydration.
 
 import { env } from '$env/dynamic/private';
 

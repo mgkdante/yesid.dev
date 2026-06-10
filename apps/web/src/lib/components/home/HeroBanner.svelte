@@ -1,6 +1,9 @@
 <!--
   Hero banner: scroll-driven SVG metro network animation (Slice A + Slice C).
-  Renders the home-page hero band; layered backdrop with the metro-network motion (SVG fetched from Directus, no static map asset).
+  Renders the home-page hero band; layered backdrop with the metro-network motion.
+  The SVG arrives as the `metroSvg` prop via adapter.content.metroSvg — post-27.2
+  the live static adapter inlines static/images/montreal-metro.svg at build time
+  (no runtime Directus fetch).
 
   Phase 1 (0-3%)    — Berri-UQAM dot + "yesid" + "SCROLL DOWN" visible at load
   Phase 1b (3-15%)   — Dot + text pulse (light on/off, opacity)
@@ -26,6 +29,7 @@
 	} from '$lib/motion/utils/gsap.js';
 	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
+	import { isViewportAtMost } from '$lib/motion/utils/device.js';
 	import { generateHeroData } from '$lib/content';
 	import type { HeroData } from '$lib/content';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
@@ -42,10 +46,9 @@
 		metroSvg: string;
 		hero: HeroContent;
 		heroAnim: HeroAnimContent;
-		heroMock: HeroData;
 		initialHeroData: HeroData;
 	}
-	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, heroMock: _heroMock, initialHeroData: INITIAL_HERO_DATA }: Props = $props();
+	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, initialHeroData: INITIAL_HERO_DATA }: Props = $props();
 
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;
@@ -136,7 +139,7 @@
 		// Mobile pin length branch per design spec §5.1 + plan decision A1.
 		// Single mount-time matchMedia check; no gsap.matchMedia rebuild on
 		// resize across 1024px — accepted trade-off for simpler architecture.
-		const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+		const isMobile = isViewportAtMost(1023);
 
 		const destroyHero = createHeroTimeline(pinContainer, {
 			svgWrapper,

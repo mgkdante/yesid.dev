@@ -9,6 +9,14 @@ import { visualizer } from 'rollup-plugin-visualizer';
 //   - adds @testing-library/svelte* to ssr.noExternal (forces Vite transform)
 // It only activates when process.env.VITEST is set, so it's safe to include always.
 export default defineConfig({
+	// Vitest stores its results cache (per-file test timings used for
+	// sequencing) under Vite's cacheDir at <cacheDir>/vitest/. The default is
+	// node_modules/.vite, which CI can't cache safely (bun install owns
+	// node_modules). Relocate it to .vitest/cache ONLY under Vitest — dev/build
+	// keep the default dep-optimizer location. CI restores apps/web/.vitest/cache
+	// in .github/actions/setup (slice-28.4, audit #132; pattern per Vitest 4
+	// cache docs).
+	cacheDir: process.env.VITEST ? '.vitest/cache' : undefined,
 	plugins: [
 		tailwindcss(),
 		sveltekit(),
@@ -53,7 +61,8 @@ export default defineConfig({
 	test: {
 		// Two projects: "data" for pure logic tests (node, fast),
 		// "dom" for component/motion tests (happy-dom, full mocks).
-		// See docs/superpowers/specs/2026-04-08-testing-optimization-design.md
+		// Split introduced in the 2026-04-08 testing-optimization pass
+		// (slice-17f); design notes live in Notion.
 		projects: [
 			{
 				extends: true,

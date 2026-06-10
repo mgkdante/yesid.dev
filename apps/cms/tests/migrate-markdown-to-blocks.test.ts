@@ -1,6 +1,4 @@
 import { describe, it, expect } from 'bun:test';
-import { resolve, join } from 'node:path';
-import { readFileSync } from 'node:fs';
 import {
 	parseFrontmatter,
 	mapMarkdownToBlocks,
@@ -315,35 +313,10 @@ const x = 1;
 	});
 });
 
-// ---- Real-content round-trip on all 7 blog posts ----
-
-describe('mapMarkdownToBlocks — real-content round-trip (all 7 posts)', () => {
-	const blogRoot = resolve(__dirname, '..', '..', 'web', 'src', 'content', 'blog');
-	const posts = [
-		'professional/why-i-left-orm-for-raw-sql',
-		'professional/anime-data-viz-challenge',
-		'professional/building-a-transit-pipeline',
-		'professional/lorem-data-warehousing',
-		'professional/lorem-etl-patterns',
-		'personal/lorem-space-exploration',
-		'personal/lorem-transit-future',
-	] as const;
-
-	for (const slugPath of posts) {
-		it(`migrates ${slugPath} cleanly`, () => {
-			const filepath = join(blogRoot, slugPath, 'index.md');
-			const raw = readFileSync(filepath, 'utf-8');
-			const { data, content } = parseFrontmatter(raw);
-			const doc = mapMarkdownToBlocks(content, {
-				stripLeadingTitle: data.title,
-				assetIdFor: () => undefined, // none of the 7 posts have inline images
-			});
-			const validated = BlockEditorDocSchema.safeParse(doc);
-			if (!validated.success) {
-				console.error(slugPath, validated.error.issues);
-			}
-			expect(validated.success).toBe(true);
-			expect(doc.blocks.length).toBeGreaterThan(0);
-		});
-	}
-});
+// ---- Real-content round-trip ----
+//
+// slice-28.3: the "all 7 posts" round-trip describe was removed with the
+// legacy apps/web/src/content/blog/** markdown tree (#54) it read from.
+// The one-time md→blocks migration completed long ago (blog content is
+// CMS-canonical); the mapper itself stays live for
+// generate-tech-stack-fixture.ts and keeps its unit coverage above.

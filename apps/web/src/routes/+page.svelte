@@ -24,8 +24,9 @@
 			about={data.about}
 			cta={data.cta}
 			closer={data.closer}
-			heroMock={data.heroMock}
 			initialHeroData={data.initialHeroData}
+			services={data.services}
+			featuredProjects={data.featuredProjects}
 		/>
 	</div>
 </div>

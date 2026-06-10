@@ -1,5 +1,6 @@
 // Load function for /services/[id] detail page.
-// Server-only so Directus-backed service/project reads do not run in the browser.
+// Server-only so service/project reads (static content layer post-27.2)
+// resolve once on the server and hydrate via __data.json.
 
 import { error } from '@sveltejs/kit';
 import { fetchServiceSvgContents } from '$lib/utils';
