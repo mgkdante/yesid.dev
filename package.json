@@ -19,7 +19,6 @@
 		"cms:sync:diff:op": "op run --env-file=.env -- bun --cwd apps/cms run sync:diff",
 		"cms:sync:push:op": "op run --env-file=.env -- bun --cwd apps/cms run sync:push",
 		"cms:sync:diff:local-env": "bun --env-file=apps/cms/.env.local --cwd apps/cms run sync:diff",
-		"cms:gen:types": "bun --env-file=.env apps/cms/scripts/generate-types.ts",
 		"secrets:inject:web": "op inject -i .env -o apps/web/.env.local",
 		"secrets:inject:cms": "op inject -i .env -o apps/cms/.env.local",
 		"secrets:whoami": "op whoami",
