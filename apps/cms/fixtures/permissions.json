@@ -1,4 +1,0 @@
-{
-	"description": "Role/policy permission rows for directus_permissions. Populated at Task 36 (MCP delete protection + ai-editor publish-blocked permissions per D10 + F15). Seeded via scripts/seed-permissions.ts → directus-sync push after Task 22. See CONVENTIONS.md § 8.3.",
-	"permissions": []
-}
