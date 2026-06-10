@@ -4,6 +4,12 @@
 // Directus v12 upgrade. (Historical: began as the Slice 18 adapter scaffold;
 // the "wired in Slice 18 Task 7" note is obsolete — reverted in 27.2.)
 //
+// EXCEPTION — media is still live (slice-28.5 audit #123): "not in the SSR
+// path" covers DATA only. Asset URLs are still composed against live Directus
+// at request time by $lib/directus/assets.ts (PUBLIC_DIRECTUS_URL via dynamic
+// env; throws into SSR if unset). See the MEDIA RUNTIME SEAM banners there
+// and in packages/shared/src/assets.ts.
+//
 // Q6 locale strategy (spec D1/D2/D3 context): we target the native Directus
 // Translations field type — each domain collection exposes a `translations`
 // alias that expands to rows keyed by `languages_code`. `toLocalizedString`
