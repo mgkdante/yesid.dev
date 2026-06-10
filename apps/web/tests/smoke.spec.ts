@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test('home page loads', async ({ page }) => {
 	await page.goto('/');
-	// No <title> is set in slice 01 — checking the app root renders instead.
-	// Title will be added when real page content is built (slice 05+).
+	// Shell-level smoke: the app root mounted. <title>/SEO tags are owned by
+	// the per-route SEO chain and covered by unit tests, not this smoke.
 	await expect(page.getByTestId('app-root')).toBeVisible();
 });
 
