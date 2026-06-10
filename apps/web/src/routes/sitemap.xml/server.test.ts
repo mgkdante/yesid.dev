@@ -69,4 +69,9 @@ describe('GET /sitemap.xml', () => {
 		expect(body.startsWith('<?xml')).toBe(true);
 		expect(body).toContain('</urlset>');
 	});
+
+	it('emits no <lastmod> (request-time noise, dropped in slice-28.1 — audit #19)', async () => {
+		const { body } = await fetchBody();
+		expect(body).not.toContain('<lastmod>');
+	});
 });
