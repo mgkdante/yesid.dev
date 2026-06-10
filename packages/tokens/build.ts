@@ -33,6 +33,14 @@ function buildAll(): BuildTarget[] {
   // For app.css we replace only the sentinel region. If the file doesn't exist or
   // lacks sentinels, we error loudly — this is intentional, the migration step
   // (Task 1.10) adds the sentinels.
+  //
+  // Ownership boundary (clarified in slice-28.3): ONLY the sentinel region
+  // (`GENERATED FROM packages/tokens/tokens.json` … `TOKENS:END`) is generated.
+  // Everything else in app.css — utilities, keyframes, prose styles — is
+  // hand-maintained and edited directly in apps/web. The pre-commit
+  // generated-files guard is deliberately coarse (it flags ANY app.css edit),
+  // so hand-region commits must pair with a tokens source change like this
+  // file; see .githooks/pre-commit.
   let appCssContent: string;
   if (existsSync(APP_CSS)) {
     appCssContent = replaceThemeRegion(readFileSync(APP_CSS, 'utf-8'), themeBlock);
