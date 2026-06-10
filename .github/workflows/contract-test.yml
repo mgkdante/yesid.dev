@@ -164,9 +164,21 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
             | jq -r '.data.access_token')
-          PUBLIC_POLICY_ID=$(curl -sf -H "Authorization: Bearer $TOKEN" \
-            'http://localhost:8055/policies?filter[name][_eq]=Public&fields=id' \
-            | jq -r '.data[0].id')
+          # Fresh v11+/v12 bootstraps name the default public policy
+          # '$t:public_label' (a translation key); migrated instances (prod)
+          # carry the literal 'Public'. Fetch all policies and match either —
+          # and fail LOUD if neither exists, instead of POSTing policy:"" into
+          # a uuid column (the silent-empty failure mode of run 27311875212).
+          POLICIES=$(curl -sf -H "Authorization: Bearer $TOKEN" \
+            'http://localhost:8055/policies?fields=id,name&limit=-1')
+          PUBLIC_POLICY_ID=$(echo "$POLICIES" \
+            | jq -r '.data[] | select(.name == "Public" or .name == "$t:public_label") | .id' | head -1)
+          if [ -z "$PUBLIC_POLICY_ID" ] || [ "$PUBLIC_POLICY_ID" = "null" ]; then
+            echo "::error::No public policy found; policies present:"
+            echo "$POLICIES" | jq -r '.data[].name'
+            exit 1
+          fi
+          echo "::notice::Public policy resolved: $PUBLIC_POLICY_ID"
           for COLLECTION in services services_translations services_deliverables services_deliverables_translations services_sections services_sections_translations languages projects projects_translations projects_sections projects_sections_translations projects_impact_metrics projects_impact_metrics_translations projects_services; do
             curl -sf -X POST http://localhost:8055/permissions \
               -H "Authorization: Bearer $TOKEN" \
