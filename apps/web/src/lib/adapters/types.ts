@@ -2,7 +2,7 @@
 // Any backend (Directus, Keystatic, mock, static files) implements this
 // interface; the single `as adapter` re-export in index.ts picks the active one.
 //
-// Signature rules codified in Slice 17b (see ARCHITECTURE.md once it lands):
+// Signature rules codified in Slice 17b:
 //   - Every method is async (`Promise<T>`) — CMS-ready from day one.
 //   - Collections return `readonly T[]` — adapters don't promise mutability.
 //   - Not-found returns `undefined`, never `null` — matches TypeScript idiom.
@@ -71,9 +71,11 @@ export interface ContentAdapter {
 	nav: NavPort;
 }
 
-// Every port method accepts an optional trailing `ctx?: PreviewContext` so
-// preview routes (D6, post-Slice-18) can thread share tokens through the
-// adapter boundary. TS allows implementations to omit trailing optional
+// Every port method accepts an optional trailing `ctx?: PreviewContext`. The
+// name is historical — the D6 /shares share-token preview design was never
+// wired and is moot post-27.2; today ctx carries the per-request pageCache
+// memo (threaded from event.locals by the server loads) plus an optional
+// locale override. TS allows implementations to omit trailing optional
 // params, so the static adapter keeps its current arrow-function signatures.
 
 export interface ProjectPort {
