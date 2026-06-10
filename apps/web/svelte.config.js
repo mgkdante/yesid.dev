@@ -1,13 +1,9 @@
 import adapter from '@sveltejs/adapter-vercel';
-import { mdsvex } from 'mdsvex';
 import { relative, sep } from 'node:path';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	extensions: ['.svelte', '.md'],
-	preprocess: [
-		mdsvex({ extensions: ['.md'] })
-	],
+	extensions: ['.svelte'],
 	compilerOptions: {
 		// defaults to rune mode for the project, except for `node_modules`. Can be removed in svelte 6.
 		runes: ({ filename }) => {
