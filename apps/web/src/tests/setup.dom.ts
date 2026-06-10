@@ -194,10 +194,22 @@ vi.mock('gsap/SplitText', () => ({
 	}
 }));
 
-// Mock global fetch for Web3Forms client-side calls in tests.
-// Returns a successful response so the success animation fires.
-const originalFetch = globalThis.fetch;
-vi.stubGlobal('fetch', async (url: string | URL | Request, init?: RequestInit) => {
+// Mock global fetch for ALL network surfaces components touch in DOM tests.
+// happy-dom has no server behind it: anything that fell through to the real
+// fetch used to resolve against the default http://localhost:3000 origin and
+// spray "connect ECONNREFUSED 127.0.0.1:3000" + teardown AbortError stacks
+// across the run (slice-28.4, audit #92). Stubbed surfaces:
+//   - web3forms.com   → canned success JSON so the contact form's success
+//                       animation fires.
+//   - /api/weather    → JSON null ("no fresh data") so ContactPage/AboutWeather
+//                       keep their SSR-baked prop (slice-28.1 onMount refresh).
+//   - /svg/** assets  → minimal valid SVG (decorative illustrations fetched
+//                       at mount by CloserGraffiti/CloserProps/HomeServices
+//                       et al; consumers res.text() + DOMParser it).
+//   - anything else   → loud rejection naming the URL. Add a branch here or
+//                       stub fetch per-test when a new surface appears —
+//                       never let DOM tests open real sockets.
+vi.stubGlobal('fetch', async (url: string | URL | Request) => {
 	const urlStr = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url;
 	if (urlStr.includes('web3forms.com')) {
 		return new Response(JSON.stringify({ success: true }), {
@@ -205,5 +217,24 @@ vi.stubGlobal('fetch', async (url: string | URL | Request, init?: RequestInit) =
 			headers: { 'Content-Type': 'application/json' },
 		});
 	}
-	return originalFetch(url, init);
+	// slice-28.1: ContactPage/AboutWeather refresh weather from /api/weather in
+	// onMount. Default stub answers JSON null ("no fresh data") so components
+	// keep their SSR-baked prop and tests stay deterministic without network.
+	// Tests exercising the refresh path override globalThis.fetch locally.
+	if (urlStr.includes('/api/weather')) {
+		return new Response('null', {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
+	if (urlStr.includes('/svg/')) {
+		return new Response('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>', {
+			status: 200,
+			headers: { 'Content-Type': 'image/svg+xml' },
+		});
+	}
+	throw new Error(
+		`[setup.dom] Unstubbed fetch in DOM test: ${urlStr} — happy-dom has no network. ` +
+			'Add a branch to the fetch stub in src/tests/setup.dom.ts or vi.stubGlobal("fetch", ...) in the test.',
+	);
 });

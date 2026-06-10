@@ -8,8 +8,21 @@ name: contract-test (intra-repo)
 # intra-repo (single checkout). Previously was cross-repo with two checkouts.
 #
 # Opt-in on PRs via label `contract-test` to limit CI cost (heavy — spins
-# Postgres + Directus + both app installs). Always runs on schedule (nightly)
-# and on manual dispatch.
+# Postgres + Directus + both app installs), or manual dispatch. The nightly
+# cron was removed in slice-28.4 (audit #0/#44/#87): since slice-27.2 Directus
+# is out of the SSR data path, so unattended drift cannot break prod — this
+# venue exists for label-gated PR runs (slice-26 dormant-adapter parity work)
+# and on-demand checks.
+#
+# Provisioning (slice-28.4 rewrite): the ephemeral Directus is provisioned
+# from the directus-sync tree (apps/cms/directus/**) via
+# `bun --cwd apps/cms run sync:push`, mirroring how cms.yml pushes to prod.
+# The image is built from apps/cms/Dockerfile (Directus 11.17.3 +
+# directus-extension-sync — the same image Railway runs; the extension is
+# required for directus-sync's id-map endpoints). The previous step POSTed
+# apps/cms/infra/directus/snapshot.yaml to /schema/apply — a path deleted
+# when the directus-sync tree replaced the YAML snapshot, so the step was
+# silently broken.
 
 on:
   pull_request:
@@ -23,7 +36,9 @@ on:
       # be covered automatically.
       - 'apps/web/src/lib/**'
       - 'apps/web/static/images/**'
-      - 'apps/cms/infra/directus/snapshot.yaml'
+      # directus-sync tree: schema snapshot + collections config (slice-28.4
+      # fix — replaced the deleted apps/cms/infra/directus/snapshot.yaml path).
+      - 'apps/cms/directus/**'
       - 'apps/cms/fixtures/**'
       # Watch the entire scripts tree (slice-18k cycle 6 briefed): migrate:assets
       # + seed:services + seed:projects all import from apps/cms/scripts/lib/*
@@ -38,14 +53,11 @@ on:
         description: 'Branch/SHA to test (default: PR head)'
         type: string
         required: false
-  schedule:
-    # 07:00 UTC daily — catches drift without a PR touching either side.
-    - cron: '0 7 * * *'
 
 jobs:
   contract-test:
     # PRs: only run when labeled `contract-test` (opt-in — heavy job).
-    # Scheduled + manual dispatch: always run.
+    # Manual dispatch: always run.
     if: |
       github.event_name != 'pull_request' ||
       contains(github.event.pull_request.labels.*.name, 'contract-test')
@@ -72,6 +84,12 @@ jobs:
 
       - uses: ./.github/actions/setup
 
+      - name: Build ephemeral Directus image (11.17.3 + directus-extension-sync, mirrors Railway)
+        # directus-sync push needs the directus-extension-sync id-map endpoints
+        # on the target instance — the stock directus/directus image lacks
+        # them. apps/cms/Dockerfile is exactly the image Railway runs.
+        run: docker build -t directus-ci apps/cms
+
       - name: Boot ephemeral Directus
         run: |
           docker run -d --name directus \
@@ -90,7 +108,7 @@ jobs:
             -e ADMIN_PASSWORD=ci-test-pass-rotate-immediately \
             -e TELEMETRY=false \
             -e LOG_LEVEL=info \
-            directus/directus:11.17.3 \
+            directus-ci \
             sh -c "npx directus bootstrap && exec npx directus start"
           for i in {1..100}; do
             if curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
@@ -105,22 +123,18 @@ jobs:
             exit 1
           fi
 
-      - name: Apply snapshot from apps/cms
-        run: |
-          TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
-            -H 'Content-Type: application/json' \
-            -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
-            | jq -r '.data.access_token')
-          DIFF=$(curl -sf -X POST http://localhost:8055/schema/diff \
-            -H "Authorization: Bearer $TOKEN" \
-            -F "file=@apps/cms/infra/directus/snapshot.yaml")
-          if [ "$(echo "$DIFF" | jq -r '.data')" != "null" ]; then
-            echo "$DIFF" | jq '.data' | curl -sf -X POST http://localhost:8055/schema/apply \
-              -H "Authorization: Bearer $TOKEN" \
-              -H 'Content-Type: application/json' \
-              --data-binary @- >/dev/null
-            echo "::notice::Applied snapshot"
-          fi
+      - name: Provision schema + config from the directus-sync tree (mirrors cms.yml push)
+        # Non-prod target (localhost) so sync-push.ts requires no prod acks;
+        # the wrapper default-excludes the permissions collection — the
+        # explicit grant step below provides Public read for the test surface.
+        # NOTE: `bun --cwd apps/cms run <script>` mis-parses on bun 1.3.x
+        # (prints usage) — use working-directory like cms.yml does.
+        env:
+          DIRECTUS_URL: http://localhost:8055
+          DIRECTUS_ADMIN_EMAIL: admin@example.com
+          DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
+        working-directory: apps/cms
+        run: bun run sync:push
 
       - name: Grant Public policy read on services domain
         run: |

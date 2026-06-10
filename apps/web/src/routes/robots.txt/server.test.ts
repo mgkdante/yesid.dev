@@ -8,6 +8,7 @@ describe('GET /robots.txt', () => {
 			status: response.status,
 			body: await response.text(),
 			contentType: response.headers.get('content-type'),
+			cacheControl: response.headers.get('cache-control'),
 		};
 	}
 
@@ -15,6 +16,13 @@ describe('GET /robots.txt', () => {
 		const { status, contentType } = await fetchBody();
 		expect(status).toBe(200);
 		expect(contentType).toMatch(/text\/plain/);
+	});
+
+	it('edge-caches a day with a week of SWR (slice-28.1, audit #18)', async () => {
+		const { cacheControl } = await fetchBody();
+		expect(cacheControl).toBe(
+			'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+		);
 	});
 
 	it('allows everything by default', async () => {
