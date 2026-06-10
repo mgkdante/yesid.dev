@@ -91,8 +91,24 @@ jobs:
         run: docker build -t directus-ci apps/cms
 
       - name: Boot ephemeral Directus
+        # v12 licensing: FRESH instances hard-enforce core-tier limits at
+        # /schema/apply ("collections limit exceeded" — our tree is ~50
+        # collections), unlike upgrades-in-place which get a 30-day grace.
+        # Provide DIRECTUS_LICENSE_KEY (repo secret) once the Open Innovation
+        # Grant key arrives; LICENSE_TOKEN (offline variant) is preferred for
+        # CI if the grant tier issues one. Empty secret = keyless boot.
+        env:
+          LICENSE_KEY: ${{ secrets.DIRECTUS_LICENSE_KEY }}
         run: |
+          EXTRA_ENV=()
+          if [ -n "$LICENSE_KEY" ]; then
+            EXTRA_ENV+=(-e "LICENSE_KEY=$LICENSE_KEY")
+            echo "::notice::Booting with LICENSE_KEY from repo secret"
+          else
+            echo "::warning::No DIRECTUS_LICENSE_KEY secret — keyless core tier; /schema/apply will fail on collection limits for fresh v12 instances"
+          fi
           docker run -d --name directus \
+            "${EXTRA_ENV[@]}" \
             --add-host=host.docker.internal:host-gateway \
             -p 8055:8055 \
             -e KEY=ci-test-key-16-bytes-hex-aabbccdd \
