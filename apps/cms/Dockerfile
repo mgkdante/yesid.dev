@@ -15,8 +15,11 @@
 #
 # DEPLOY PREREQS (Railway env, not this file — see slice-26 Research runbook):
 #   - IP_TRUST_PROXY=true            (v12 flipped the default to false)
-#   - software key env when the Innovation Grant key arrives (boots in
-#     Core-tier grace without it)
+#   - LICENSE_KEY=<Open Innovation Grant key> (or LICENSE_TOKEN, never both).
+#     v12 licensing: UPGRADED instances above core limits get a 30-day grace;
+#     FRESH instances hard-enforce ("collections limit exceeded" at
+#     /schema/apply — proven on CI run 27310910938 with our ~50 collections).
+#     Activations bind to PUBLIC_URL; the grant allows 5.
 #   - health checks must use /server/ping (v12 gates /server/health behind auth)
 #   - Neon branch the env's DB BEFORE first v12 boot (migrations run on boot)
 # ─────────────────────────────────────────────────────────────────────────────
