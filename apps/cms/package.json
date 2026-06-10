@@ -10,7 +10,7 @@
 		"seed:presets": "bun scripts/seed-presets.ts",
 		"seed:icons": "bun scripts/seed-icons.ts",
 		"seed:brand-assets": "bun scripts/seed-brand-assets.ts",
-		"migrate:tech-stack-icon": "bun scripts/migrate-tech-stack-icon.ts",
+		"seed:pages": "bun scripts/seed-pages-and-blocks.ts",
 		"migrate:assets": "bun scripts/migrate-assets.ts",
 		"sync:pull": "directus-sync pull",
 		"sync:push": "bun scripts/sync-push.ts",
@@ -24,9 +24,7 @@
 		"bottleneck": "^2.19.5",
 		"bun-types": "latest",
 		"directus-sync": "^3.5.0",
+		"marked": "^18.0.2",
 		"zod": "^4.3.6"
-	},
-	"dependencies": {
-		"marked": "^18.0.2"
 	}
 }

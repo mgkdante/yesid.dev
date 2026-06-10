@@ -1,4 +1,12 @@
 #!/usr/bin/env bun
+//
+// DONE — one-shot seed, completed (slice-18 Task 8 era; banner added in
+// slice-28.5, audit #34). The services tree lives in Directus and Data Studio
+// is the authoring surface; export-fallbacks reads it back at build time.
+// Keep for fresh-environment bootstrap only — it throws on a populated DB
+// unless --reset is passed. Kept in-tree per the 27.2 archive-not-delete
+// convention.
+//
 /**
  * Seed the Directus `services` domain tree from `fixtures/collections/services.json`.
  *
