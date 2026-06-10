@@ -32,21 +32,25 @@ FROM directus/directus:12.0.0
 USER root
 WORKDIR /directus
 
-# Install the extension via npm. Using pnpm fails with ERR_PNPM_UNEXPECTED_STORE
-# (Directus image's existing node_modules is linked from node-user's pnpm store;
-# our root-user pnpm invocation defaults to root's store path).
+# Install the extension FOLDER-BASED under EXTENSIONS_PATH (/directus/extensions).
 #
-# Critical: do NOT use --no-save. Directus auto-discovery scans the root
-# /directus/package.json dependencies list for directus:extension manifests
-# (not just node_modules). --no-save would skip the package.json update,
-# leaving the extension unregistered at boot (verified empirically 2026-04-24
-# on commit 9d555d9: Data Studio Extensions list was empty).
+# Do NOT `npm install` into /directus — the 11.x-era technique. The v12 image's
+# node_modules is a pnpm-symlinked layout; npm install rewrites it and breaks
+# Directus's own imports (verified 2026-06-10 on CI run 27301210728: boot died
+# with ERR_MODULE_NOT_FOUND '@directus/update-check' imported from cli.js).
+# Folder extensions are scanned natively from EXTENSIONS_PATH; the package has
+# zero runtime deps (extensions-sdk bundles them into dist), so pack+untar is
+# the whole install.
 #
-# The second step widens the extension's host range so Directus 12's boot-time
-# semver check accepts it (see OVERRIDE banner above). The third step fails the
+# The patch step widens the extension's host range so Directus 12's boot-time
+# semver check accepts it (see OVERRIDE banner above). The verify step fails the
 # image build loudly if the patch ever stops matching (e.g. after a version bump).
-RUN npm install --no-audit --no-fund directus-extension-sync@3.0.6 \
-	&& node -e "const fs=require('fs');const p='/directus/node_modules/directus-extension-sync/package.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));j['directus:extension'].host='^11.0.0 || ^12.0.0';fs.writeFileSync(p,JSON.stringify(j,null,2));" \
-	&& node -e "const h=require('/directus/node_modules/directus-extension-sync/package.json')['directus:extension'].host;if(h!=='^11.0.0 || ^12.0.0'){console.error('host patch failed: '+h);process.exit(1)};console.log('extension host patched: '+h)"
+RUN npm pack directus-extension-sync@3.0.6 --pack-destination /tmp --quiet \
+	&& mkdir -p /directus/extensions/directus-extension-sync \
+	&& tar -xzf /tmp/directus-extension-sync-3.0.6.tgz -C /directus/extensions/directus-extension-sync --strip-components=1 \
+	&& rm /tmp/directus-extension-sync-3.0.6.tgz \
+	&& node -e "const fs=require('fs');const p='/directus/extensions/directus-extension-sync/package.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));j['directus:extension'].host='^11.0.0 || ^12.0.0';fs.writeFileSync(p,JSON.stringify(j,null,2));" \
+	&& node -e "const h=require('/directus/extensions/directus-extension-sync/package.json')['directus:extension'].host;if(h!=='^11.0.0 || ^12.0.0'){console.error('host patch failed: '+h);process.exit(1)};console.log('extension host patched: '+h)" \
+	&& chown -R node:node /directus/extensions
 
 USER node
