@@ -35,7 +35,12 @@ module.exports = {
 	dumpPath: './directus',
 	collectionsPath: 'collections',
 	snapshotPath: 'snapshot',
-	specsPath: 'specs',
+	// specs dump disabled (slice-28.5, audit #36): the GraphQL/OpenAPI dump
+	// (1.7MB) had zero consumers and went 5+ weeks stale the moment a snapshot
+	// was hand-edited without re-running sync:pull. The directus/specs/ tree
+	// was deleted with this change; re-enable (specs: true + specsPath) only
+	// if something actually reads the specs.
+	specs: false,
 
 	// Features — all enabled; directus-sync tracks schema + roles +
 	// permissions + policies + flows + operations + settings + translations
