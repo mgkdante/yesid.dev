@@ -314,30 +314,9 @@ export interface AboutTechItem {
 
 // --- Tech Stack Page types (Slice 10) ---
 
-// Infrastructure layers — vertical tiers in the Control Room diagram.
-export type InfraLayer =
-	| 'data'
-	| 'backend'
-	| 'api'
-	| 'frontend'
-	| 'mobile'
-	| 'analytics'
-	| 'devops'
-	| 'testing'
-	| 'systems';
-
-// Domain clusters — horizontal groupings across layers.
-export type DomainCluster =
-	| 'data-engineering'
-	| 'web-development'
-	| 'mobile-development'
-	| 'analytics-bi'
-	| 'systems-programming'
-	| 'devops-infra'
-	| 'internal-tooling';
-
-// Proficiency levels for each technology.
-export type Proficiency = 'expert' | 'proficient' | 'familiar';
+// InfraLayer / DomainCluster / Proficiency — deleted in slice-28.3 (#79).
+// The Control Room layer/domain/proficiency graph was dropped in slice-18g
+// and the consuming /tech-stack components no longer exist.
 
 // A resolved icon record from the `icons` Directus collection (slice-18h-ii Phase 2+3).
 // The `id` is a kebab-slug PK matching the legacy tech_stack.icon strings.
@@ -352,8 +331,6 @@ export interface IconRecord {
 // Expanded tech stack item for /tech-stack — 18g shape.
 // Block Editor body fields replace the legacy layer/domain/proficiency graph
 // that was removed in slice-18g (decisions Q1, Q2, Q5).
-// InfraLayer, DomainCluster, Proficiency kept below — still used by legacy
-// /tech-stack components (cleanup deferred to slice-18k).
 // slice-18h-ii Phase 5: icon changed from string to IconRecord | null.
 export interface TechStackItem {
 	id: string;
@@ -366,9 +343,8 @@ export interface TechStackItem {
 	relatedProjects: string[];
 }
 
-// TechRelation and StackScenario dropped in slice-18g (decisions Q1+Q2).
-// Phase 5 / slice-18k will remove consumers in lib/components/stack/*.svelte
-// and lib/content/tech-stack.ts.
+// TechRelation and StackScenario dropped in slice-18g (decisions Q1+Q2);
+// their consumers (lib/components/stack/*.svelte) are gone as of slice-28.3.
 
 // A client logo for the trust strip.
 export interface AboutClientLogo {
