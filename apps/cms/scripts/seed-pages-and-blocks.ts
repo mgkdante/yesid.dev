@@ -25,7 +25,7 @@
  *
  * 3. pages_blocks M2A junction rows — in --dry-run, prints shape; in live
  *    run (post-merge), assumes junction has been materialized (Path B deferral
- *    per docs/ai-memory/slice-18i/phase-1-schema-inventory.md).
+ *    per the Notion slice-18i page, phase-1 schema inventory).
  *
  * 4. ~14 `nav_links` rows split across placements:
  *    header (3), footer (3), mobile (4), menu (6)

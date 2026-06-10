@@ -86,7 +86,9 @@ export interface Project {
 	featured: boolean;
 	repoUrl?: string;
 	liveUrl?: string;
-	// Project thumbnail/hero image filename in static/images/work/.
+	// Directus file UUID for the project thumbnail/hero image (hero_image on
+	// the CMS row). Consumers build the URL via asset(image, '<preset>')
+	// against PUBLIC_DIRECTUS_URL — the one live runtime CMS seam.
 	// If omitted, cards show a gradient placeholder. Detail pages show no hero image.
 	image?: string;
 	// Service IDs this project is associated with. SVGs cascade from services.
@@ -496,21 +498,23 @@ export interface ContactContent {
 // a single import surface.
 
 // ---------------------------------------------------------------------------
-// PreviewContext — adapter-level preview-mode signal (F5 + D6 — 18c Task 43)
+// PreviewContext — per-request adapter context (historically a preview signal)
 // ---------------------------------------------------------------------------
 //
 // Optional, last-param on every ContentAdapter port method.
 //
-// slice-28.3 (#83): the `shareToken` field (Directus /shares preview auth)
-// was deleted — preview routes never landed and nothing read it. The type
-// itself stays: pageCache threading is live in every +page.server.ts load.
+// Name is historical: this began as the carrier for the Directus /shares
+// share-token preview design (F5 + D6 — 18c Task 43), which was NEVER wired —
+// no /preview route ever shipped, and post-27.2 (static content layer at
+// runtime) the design is moot. slice-28.3 (#83) deleted the `shareToken`
+// field. The type itself stays live: pageCache threading is real in every
+// +page.server.ts load.
 
 export interface PreviewContext {
 	/**
-	 * Locale override for preview renders — useful when a share link pins
-	 * the preview to a single locale (e.g., reviewer is native-French and
-	 * the editor wants French-only preview regardless of browser default).
-	 * Absent → fall back to the normal locale resolver chain.
+	 * Locale override. Absent → fall back to the normal locale resolver
+	 * chain. (Originally for share-link-pinned preview locales; kept as a
+	 * generic override hook for when FR/ES ship.)
 	 */
 	locale?: Locale;
 

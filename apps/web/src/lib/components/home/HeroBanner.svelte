@@ -1,6 +1,9 @@
 <!--
   Hero banner: scroll-driven SVG metro network animation (Slice A + Slice C).
-  Renders the home-page hero band; layered backdrop with the metro-network motion (SVG fetched from Directus, no static map asset).
+  Renders the home-page hero band; layered backdrop with the metro-network motion.
+  The SVG arrives as the `metroSvg` prop via adapter.content.metroSvg — post-27.2
+  the live static adapter inlines static/images/montreal-metro.svg at build time
+  (no runtime Directus fetch).
 
   Phase 1 (0-3%)    — Berri-UQAM dot + "yesid" + "SCROLL DOWN" visible at load
   Phase 1b (3-15%)   — Dot + text pulse (light on/off, opacity)

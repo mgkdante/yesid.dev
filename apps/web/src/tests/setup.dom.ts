@@ -58,11 +58,12 @@ HTMLCanvasElement.prototype.getContext = (() => {
 vi.mock('$env/dynamic/private', () => ({ env: {} }));
 vi.mock('$env/dynamic/public', () => ({ env: {} }));
 
-// Force the hybrid adapter's services port to resolve through staticAdapter
-// during DOM tests (layout, sitemap server, component tests). Without this,
-// any test that transitively invokes adapter.services.* attempts to fetch
-// from cms.yesid.dev — fails fast because PUBLIC_DIRECTUS_URL is unset in
-// the test env. See setup.data.ts for the same mock + detailed rationale.
+// Keep the DORMANT Directus adapter inert during DOM tests (layout, sitemap
+// server, component tests). Post-27.2 every live read-port is staticAdapter
+// already; this mock pins that in the test graph so nothing that imports the
+// dormant module ($lib/adapters/directus — the slice-26 RUN_PARITY oracle)
+// can attempt network I/O against an unset PUBLIC_DIRECTUS_URL. See
+// setup.data.ts for the same mock + detailed rationale.
 vi.mock('$lib/adapters/directus', async () => {
 	const original = await vi.importActual<typeof import('$lib/adapters/directus')>(
 		'$lib/adapters/directus',

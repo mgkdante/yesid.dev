@@ -20,10 +20,6 @@
 // retire content, set status = "archived" — export-fallbacks and the static
 // companions already filter archived rows out, so the next deploy-hook rebuild
 // drops it from the SSR layer. Do NOT add a new Directus Flow for deletes.
-//
-// Only the `services` port has a real implementation — the remaining five
-// ports throw a clear "TODO Task 5+" error if called. The ContentAdapter
-// annotation at the bottom is the compile-time gate that Task 4 must clear.
 
 import { createDirectus, rest, readItems, readSingleton } from '@directus/sdk';
 import { env as publicEnv } from '$env/dynamic/public';
@@ -1904,12 +1900,6 @@ async function getAdjacencyList(
 	adjacencyMemo.set(ctx, p);
 	return p;
 }
-
-const todo = (where: string): never => {
-	throw new Error(
-		`[directusAdapter] ${where} not implemented yet — lands in Slice 18 Task 5+ once the collection is designed.`,
-	);
-};
 
 // ---------------------------------------------------------------------------
 // transformNavLink — slice-18i Phase 5 Task 5.1

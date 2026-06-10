@@ -1,5 +1,6 @@
 // Project detail page loader — server-only so hydration reuses __data.json
-// instead of calling the Directus adapter from the browser.
+// instead of re-running the load in the browser (reads resolve from the
+// static content layer post-27.2).
 
 import { error } from '@sveltejs/kit';
 import { marked } from '$lib/utils/markdown';

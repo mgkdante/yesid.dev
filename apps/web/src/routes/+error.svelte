@@ -2,12 +2,13 @@
 	import { onMount } from 'svelte';
 	import ErrorIllustration from '$lib/components/home/ErrorIllustration.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
-	// slice-18i Phase 5 Task 5.4: error page copy is now sourced from
-	// $page.data.errorPage (pre-fetched by +layout.server.ts via
-	// adapter.content.errorPage(0) — status 0 = CMS generic-fallback row).
-	// If layout data is unavailable (e.g., CMS down on initial render),
-	// staticErrorPageContent is used as a synchronous inline fallback so the
-	// page always renders something meaningful.
+	// slice-18i Phase 5 Task 5.4: error page copy is sourced from
+	// $page.data.errorPage (pre-resolved by +layout.server.ts via
+	// adapter.content.errorPage(0) — status 0 = generic-fallback row, served
+	// from the static content layer post-27.2). If layout data is unavailable
+	// (e.g., the adapter read threw), staticErrorPageContent is used as a
+	// synchronous inline fallback so the page always renders something
+	// meaningful.
 	//
 	// Slice 15a resolved the SEO half: root +layout.ts falls back to
 	// getPageSeo('/__error', locale), so 404s ship noindex,nofollow server-side.
@@ -21,7 +22,7 @@
 
 	const locale = DEFAULT_LOCALE;
 
-	// Prefer the status-specific CMS row fetched by handleError (stashed on
+	// Prefer the status-specific row resolved by handleError (stashed on
 	// $page.error.cmsErrorPage). Fall back to the layout's status=0 fallback
 	// row ($page.data.errorPage), then to the static inline fixture.
 	const errorPage: ErrorPageContent = $derived(
