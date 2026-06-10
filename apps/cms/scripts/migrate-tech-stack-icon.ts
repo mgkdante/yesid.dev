@@ -35,9 +35,9 @@
  *   bun run apps/cms/scripts/migrate-tech-stack-icon.ts --dry-run
  *   bun run apps/cms/scripts/migrate-tech-stack-icon.ts
  *
- * Or from apps/cms/:
- *   bun run migrate:tech-stack-icon -- --dry-run
- *   bun run migrate:tech-stack-icon
+ * (The `migrate:tech-stack-icon` package.json entry was removed in slice-28.5
+ * — direct path invocation only, and per the DONE banner above there is no
+ * reason to run it.)
  */
 
 import { readItems, updateItem } from '@directus/sdk';
