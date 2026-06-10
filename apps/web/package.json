@@ -16,10 +16,7 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:e2e": "playwright test",
-		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
-		"brand:export-logos": "bun ../../brand/scripts/export-logos.ts",
-		"brand:export-examples": "bun ../../brand/scripts/export-examples.ts",
-		"seed:services": "op run --env-file=.env -- bun scripts/seed-directus-services.ts"
+		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'"
 	},
 	"devDependencies": {
 		"@directus/sdk": "20.3.0",
