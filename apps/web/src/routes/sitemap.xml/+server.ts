@@ -3,8 +3,9 @@ import { adapter } from '$lib/adapters';
 import { PUBLISHED_LOCALES, SITE_HOST } from '$lib/utils/seo-defaults';
 
 // Route ids that are always present in the router. Keep this list in sync
-// with content/meta.ts when adding a new static route. The build-time
-// coverage script (Task 11) asserts parity.
+// with the static-route set in $lib/adapters/route-seo-defaults.ts when
+// adding a new static route. The build-time coverage script (Task 11)
+// asserts parity.
 // `_` prefix required — SvelteKit rejects any non-reserved named exports from
 // +server routes. Underscore-prefixed names are allowed. Imported by the build-
 // time coverage script (Task 11) so expected routes stay in one place.
