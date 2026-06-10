@@ -10,7 +10,6 @@
 
 import { adapter } from '$lib/adapters';
 import type { AboutContent, ContactContent, PreviewContext } from '$lib/types';
-import type { ErrorPageContent, NavLink, MenuItem } from '$lib/content/nav';
 import type { HeroData } from '$lib/content/hero-data';
 import type { TechStackPageContent, BlogPageContent, ProjectsPageContent } from '@repo/shared/schemas';
 
@@ -46,17 +45,8 @@ export async function getCloserContent(ctx?: PreviewContext) {
 	return adapter.content.closer(ctx);
 }
 
-export async function getNavLinks(ctx?: PreviewContext): Promise<readonly NavLink[]> {
-	return adapter.content.navLinks(ctx);
-}
-
-export async function getMenuItems(ctx?: PreviewContext): Promise<readonly MenuItem[]> {
-	return adapter.content.menuItems(ctx);
-}
-
-export async function getErrorPageContent(statusCode = 404, ctx?: PreviewContext): Promise<ErrorPageContent> {
-	return adapter.content.errorPage(statusCode, ctx);
-}
+// getNavLinks / getMenuItems / getErrorPageContent — pruned in slice-28.3
+// (#117, zero consumers; nav + error chrome read static content directly).
 
 export async function getAboutPageContent(ctx?: PreviewContext): Promise<AboutContent> {
 	return adapter.content.aboutPage(ctx);
