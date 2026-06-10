@@ -16,7 +16,7 @@ import {
 	type BlogCategory,
 	type BlogPost,
 } from '../schemas/blog';
-import { BlockEditorDocSchema } from '../schemas/blocks';
+import { BlockEditorDocSchema } from '@repo/shared';
 import type { FetcherContext } from './types';
 
 export interface DirectusBlogPostRow {

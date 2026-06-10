@@ -91,7 +91,7 @@ import { DirectusError, parseErrors } from './lib/catch-error';
 // Types
 // ---------------------------------------------------------------------------
 
-export type Locale = 'en' | 'fr' | 'es';
+import type { Locale } from '@repo/shared';
 export const SUPPORTED_LOCALES: readonly Locale[] = ['en', 'fr', 'es'] as const;
 
 export type PublicationStatus = 'draft' | 'published';
