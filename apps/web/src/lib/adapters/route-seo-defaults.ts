@@ -1,8 +1,23 @@
 // Code-side per-route technical SEO defaults — slice-18 18h Phase 4 Task 11.
 //
-// CMS owns editorial copy (title body, description override, og_image); code
-// owns technical fields (ogType, noIndex) + jsonLd factories that consume the
-// brand SiteMeta. Single file, easy to audit, low maintenance cost.
+// CANONICAL SEO OVERRIDE SOURCE (decision, slice-28.5 audit #62): this file
+// is where per-route SEO is authored. The Directus route_seo +
+// route_seo_translations collections are a DEAD END — they hold zero rows,
+// no export-fallbacks fetcher/emitter exists for them (dropped as YAGNI in
+// 27.1), and the live static adapter returns `routeSeo.byPath -> undefined`
+// unconditionally, so a Data Studio edit there never reaches a rendered
+// <title>/<meta>. Decision on record: ARCHIVE those collections rather than
+// build the fetcher — the actual archival (CMS schema change, drift-gated)
+// is flagged to slice-26; do NOT seed rows into route_seo expecting them to
+// render. If per-locale SEO copy needs CMS ownership when French ships,
+// revisit by adding a route-seo fetcher + emitter and wiring routeOverride —
+// until then, edit THIS file. (The byPath plumbing in static.ts/types.ts
+// stays: the RUN_PARITY oracle exercises it — see static.ts.)
+//
+// The 18h split still applies within the code side: the (now-archived-path)
+// CMS was to own editorial copy; code owns technical fields (ogType, noIndex)
+// + jsonLd factories that consume the brand SiteMeta. Single file, easy to
+// audit, low maintenance cost.
 //
 // Kept tightly scoped: 8 static routes (`/`, `/about`, `/contact`, `/services`,
 // `/projects`, `/blog`, `/blog/personal`, `/tech-stack`). Dynamic routes
