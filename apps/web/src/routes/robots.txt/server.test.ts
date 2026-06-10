@@ -23,9 +23,9 @@ describe('GET /robots.txt', () => {
 		expect(body).toContain('Allow: /');
 	});
 
-	it('disallows /preview (Slice 18 Payload draft route)', async () => {
+	it('has no Disallow rules — /preview never shipped (slice-28.2)', async () => {
 		const { body } = await fetchBody();
-		expect(body).toContain('Disallow: /preview');
+		expect(body).not.toContain('Disallow:');
 	});
 
 	it('references the sitemap with absolute URL', async () => {

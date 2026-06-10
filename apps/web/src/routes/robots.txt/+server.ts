@@ -4,7 +4,6 @@ import { SITE_HOST } from '$lib/utils/seo-defaults';
 export const GET: RequestHandler = async () => {
 	const body = `User-agent: *
 Allow: /
-Disallow: /preview
 
 Sitemap: ${SITE_HOST}/sitemap.xml
 `;
