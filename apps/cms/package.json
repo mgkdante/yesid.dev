@@ -11,6 +11,7 @@
 		"seed:icons": "bun scripts/seed-icons.ts",
 		"seed:brand-assets": "bun scripts/seed-brand-assets.ts",
 		"seed:pages": "bun scripts/seed-pages-and-blocks.ts",
+		"archive:lorem": "bun scripts/archive-lorem-posts.ts",
 		"migrate:assets": "bun scripts/migrate-assets.ts",
 		"sync:pull": "directus-sync pull",
 		"sync:push": "bun scripts/sync-push.ts",

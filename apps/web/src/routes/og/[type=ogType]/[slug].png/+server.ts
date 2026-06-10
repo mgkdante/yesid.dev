@@ -14,6 +14,21 @@ getOgFonts();
 const SLUG_RE = /^[a-z0-9-]+$/;
 const DEFAULT_OG_URL = '/og/default.en.png';
 
+// slice-28.1 (audit #24): 302 fallbacks carry s-maxage=86400 so repeat
+// crawler hits on a missing/broken slug are served from the CDN edge instead
+// of re-invoking the lambda (the not-found path still does a CMS lookup, the
+// error path still attempts a render). Browser TTLs stay short (60s/300s);
+// Vercel's CDN cache resets on deploy, so a fixed render or newly published
+// slug surfaces with the next deploy at the latest.
+const NOT_FOUND_FALLBACK_HEADERS = {
+  location: DEFAULT_OG_URL,
+  'cache-control': 'public, max-age=300, s-maxage=86400',
+};
+const ERROR_FALLBACK_HEADERS = {
+  location: DEFAULT_OG_URL,
+  'cache-control': 'public, max-age=60, s-maxage=86400',
+};
+
 const HAPPY_HEADERS = {
   'content-type': 'image/png',
   'cache-control': 'public, max-age=60, s-maxage=31536000, stale-while-revalidate=86400',
@@ -47,16 +62,10 @@ export const GET: RequestHandler = async (event) => {
     titleResult = await loadOgTitle(type, slug, locale);
   } catch (err) {
     console.error('[og]', type, slug, err);
-    return new Response(null, {
-      status: 302,
-      headers: { location: DEFAULT_OG_URL, 'cache-control': 'public, max-age=60' },
-    });
+    return new Response(null, { status: 302, headers: ERROR_FALLBACK_HEADERS });
   }
   if (!titleResult) {
-    return new Response(null, {
-      status: 302,
-      headers: { location: DEFAULT_OG_URL, 'cache-control': 'public, max-age=300' },
-    });
+    return new Response(null, { status: 302, headers: NOT_FOUND_FALLBACK_HEADERS });
   }
 
   // Render. Any failure → 302 short-TTL + log.
@@ -70,9 +79,6 @@ export const GET: RequestHandler = async (event) => {
     return new Response(png as BodyInit, { status: 200, headers: HAPPY_HEADERS });
   } catch (err) {
     console.error('[og]', type, slug, err);
-    return new Response(null, {
-      status: 302,
-      headers: { location: DEFAULT_OG_URL, 'cache-control': 'public, max-age=60' },
-    });
+    return new Response(null, { status: 302, headers: ERROR_FALLBACK_HEADERS });
   }
 };

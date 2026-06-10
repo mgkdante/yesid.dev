@@ -4,6 +4,9 @@
 	"private": true,
 	"type": "module",
 	"description": "Shared domain types + Zod schemas for the yesid.dev monorepo. Type-only + Zod — no runtime helpers, no app-specific imports.",
+	"scripts": {
+		"test": "bun test"
+	},
 	"exports": {
 		".": "./src/index.ts",
 		"./types": "./src/types/index.ts",

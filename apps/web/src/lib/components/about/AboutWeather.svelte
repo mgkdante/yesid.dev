@@ -5,7 +5,9 @@
   Stop number computed from prop.
 -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { AboutWeatherConfig } from '$lib/types';
+	import type { WeatherData } from '$lib/utils/weather';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
@@ -18,23 +20,45 @@
 		label,
 	}: {
 		config: AboutWeatherConfig;
-		weather?: { temp: number; condition: string; icon: string } | null;
+		weather?: WeatherData | null;
 		stop: string;
 		label: string;
 	} = $props();
 
+	// --- Weather freshness (slice-28.1, audit #20/#122) ---
+	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
+	// day old). Render it immediately, then refresh from /api/weather after
+	// hydration. Any failure is a graceful no-op — the baked value stays.
+	let freshWeather = $state<WeatherData | null>(null);
+	const currentWeather = $derived(freshWeather ?? weather ?? null);
+
+	onMount(() => {
+		void refreshWeather();
+	});
+
+	async function refreshWeather() {
+		try {
+			const res = await fetch('/api/weather');
+			if (!res.ok) return;
+			const data = (await res.json()) as WeatherData | null;
+			if (data && typeof data.temp === 'number') freshWeather = data;
+		} catch {
+			// Keep the SSR-baked value.
+		}
+	}
+
 	const city = $derived(resolveLocale(config.city, 'en'));
 	const hook = $derived(resolveLocale(config.hook, 'en'));
-	const hasWeather = $derived(weather != null);
+	const hasWeather = $derived(currentWeather != null);
 	const iconUrl = $derived(
-		weather ? `https://openweathermap.org/img/wn/${weather.icon}@2x.png` : null
+		currentWeather ? `https://openweathermap.org/img/wn/${currentWeather.icon}@2x.png` : null
 	);
 
 	// Derive weather animation type from icon code
 	type WeatherAnim = 'clear' | 'clouds' | 'rain' | 'storm' | 'snow' | 'mist' | 'none';
 	const weatherAnim: WeatherAnim = $derived.by(() => {
-		if (!weather) return 'none';
-		const code = weather.icon.replace(/[dn]$/, ''); // strip day/night suffix
+		if (!currentWeather) return 'none';
+		const code = currentWeather.icon.replace(/[dn]$/, ''); // strip day/night suffix
 		if (code === '01') return 'clear';
 		if (code === '02' || code === '03' || code === '04') return 'clouds';
 		if (code === '09' || code === '10') return 'rain';
@@ -46,8 +70,8 @@
 
 	// Condition-based gradient tint
 	const gradientTint = $derived.by(() => {
-		if (!weather) return 'transparent';
-		const temp = weather.temp;
+		if (!currentWeather) return 'transparent';
+		const temp = currentWeather.temp;
 		if (temp <= -10) return 'rgba(100, 150, 255, 0.06)'; // icy blue
 		if (temp <= 0) return 'rgba(130, 170, 255, 0.05)';   // cold blue
 		if (temp <= 15) return 'rgba(180, 200, 255, 0.04)';  // cool
@@ -120,16 +144,16 @@
 				{city}
 			</div>
 
-			{#if hasWeather && weather}
+			{#if hasWeather && currentWeather}
 				<!-- Temperature + icon -->
 				<div class="mt-1 flex items-center justify-center gap-2">
 					<span class="font-mono text-2xl font-bold text-[var(--accent)]">
-						{weather.temp}°C
+						{currentWeather.temp}°C
 					</span>
 					{#if iconUrl}
 						<img
 							src={iconUrl}
-							alt={weather.condition}
+							alt={currentWeather.condition}
 							class="h-8 w-8 opacity-80"
 							loading="lazy"
 						/>
@@ -138,7 +162,7 @@
 
 				<!-- Condition -->
 				<div class="mt-0.5 text-sm capitalize text-[var(--secondary-foreground)]">
-					{weather.condition}
+					{currentWeather.condition}
 				</div>
 			{:else}
 				<!-- Fallback -->
