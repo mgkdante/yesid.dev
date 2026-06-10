@@ -29,6 +29,24 @@
 	const stationLabel = resolveLocale(c.stationLabel, 'en');
 	const sendErrorMessage = resolveLocale(c.sendErrorMessage, 'en');
 
+	// --- Weather freshness (slice-28.1, audit #20/#122) ---
+	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
+	// day old). Render it immediately, then refresh from /api/weather after
+	// hydration. Any failure is a graceful no-op — the baked value stays.
+	let freshWeather = $state<WeatherData | null>(null);
+	const currentWeather = $derived(freshWeather ?? weather);
+
+	async function refreshWeather() {
+		try {
+			const res = await fetch('/api/weather');
+			if (!res.ok) return;
+			const data = (await res.json()) as WeatherData | null;
+			if (data && typeof data.temp === 'number') freshWeather = data;
+		} catch {
+			// Keep the SSR-baked value.
+		}
+	}
+
 	// --- Local time (Montreal) ---
 	let localTime = $state('');
 	let timeInterval: ReturnType<typeof setInterval> | undefined;
@@ -47,6 +65,7 @@
 	onMount(() => {
 		updateTime();
 		timeInterval = setInterval(updateTime, 60_000);
+		void refreshWeather();
 	});
 
 	onDestroy(() => {
@@ -219,9 +238,9 @@
 			<div class="mb-4">
 				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(c.infoTerminal.sectionLabels.location, 'en')}</div>
 				<div class="text-[var(--secondary-foreground)]">{resolveLocale(c.infoTerminal.location, 'en')}</div>
-				{#if weather}
+				{#if currentWeather}
 					<div class="mt-0.5 font-mono text-small text-[var(--accent)]">
-						{weather.temp}°C — <span class="capitalize">{weather.condition}</span>
+						{currentWeather.temp}°C — <span class="capitalize">{currentWeather.condition}</span>
 					</div>
 				{/if}
 				{#if localTime}

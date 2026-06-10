@@ -12,6 +12,13 @@ name: web
 # don't run on excluded paths → the required check never reports → docs-only
 # PRs would be blocked forever. With the Phase 7 caches, cost on no-op runs
 # is ~20-30s end-to-end (FULL TURBO cache replay), so always-run is fine.
+#
+# E2E (Playwright) is intentionally NOT in CI (slice-28.4 decision, audit #90):
+# the suite under apps/web/tests is run manually pre-deploy via
+# `bun run test:e2e` from apps/web. By default it builds + serves a local
+# preview; set PLAYWRIGHT_BASE_URL=<deployed URL> to target dev/prod surfaces
+# instead. Browser-install + build-boot cost outweighs CI value while deploys
+# are operator-driven; revisit if deploy cadence ever outgrows manual QA.
 
 on:
   push:
@@ -40,5 +47,18 @@ jobs:
       - name: Unit tests
         run: bun x turbo run test --filter=@repo/web
 
+      - name: Token drift + packages tests (slice-28.4, audit #81/#94/#60)
+        # ci:tokens regenerates the token build outputs and fails on diff vs
+        # the committed files; the package suites cover packages/tokens
+        # (vitest) and packages/shared (bun test) which the turbo @repo/web
+        # filter above never reaches.
+        run: bun run ci:tokens && bun run --cwd packages/tokens test && bun run --cwd packages/shared test
+
       - name: Build
+        env:
+          # Hermetic CI build (slice-28.4, audit #137): skip the
+          # export-fallbacks prebuild — the committed content modules are the
+          # content source and CI must not reach a live CMS. Declared in
+          # turbo.json build env so turbo strict mode forwards it.
+          EXPORT_FALLBACKS_SKIP: '1'
         run: bun x turbo run build --filter=@repo/web

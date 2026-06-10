@@ -10,6 +10,7 @@
 		"seed:presets": "bun scripts/seed-presets.ts",
 		"seed:icons": "bun scripts/seed-icons.ts",
 		"seed:brand-assets": "bun scripts/seed-brand-assets.ts",
+		"archive:lorem": "bun scripts/archive-lorem-posts.ts",
 		"migrate:tech-stack-icon": "bun scripts/migrate-tech-stack-icon.ts",
 		"migrate:assets": "bun scripts/migrate-assets.ts",
 		"sync:pull": "directus-sync pull",
