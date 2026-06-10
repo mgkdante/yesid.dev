@@ -158,7 +158,7 @@ jobs:
         # prod pushes, where the version guard is protective.
         run: bun run sync:push -- --force
 
-      - name: Grant Public policy read on services domain
+      - name: Grant Public policy read + seed languages
         run: |
           TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
             -H 'Content-Type: application/json' \
@@ -185,6 +185,19 @@ jobs:
               -H 'Content-Type: application/json' \
               -d "{\"policy\":\"$PUBLIC_POLICY_ID\",\"collection\":\"$COLLECTION\",\"action\":\"read\",\"fields\":[\"*\"]}" >/dev/null
           done
+          # Seed the languages rows the *_translations NOT NULL FKs require.
+          # Audit #72 (slice-28.6 carries the durable fixture fix): no seed
+          # script or fixture provisions languages, so every fresh environment
+          # fails its first translated insert — proven on run 27312030014
+          # (INVALID_FOREIGN_KEY "en" for languages_code).
+          for LANG in "en:English" "fr:Français" "es:Español"; do
+            CODE="${LANG%%:*}"; NAME="${LANG#*:}"
+            curl -sf -X POST http://localhost:8055/items/languages \
+              -H "Authorization: Bearer $TOKEN" \
+              -H 'Content-Type: application/json' \
+              -d "{\"code\":\"$CODE\",\"name\":\"$NAME\",\"direction\":\"ltr\"}" >/dev/null
+          done
+          echo "::notice::Seeded languages en/fr/es"
 
       - name: Seed services from apps/cms fixture
         env:
