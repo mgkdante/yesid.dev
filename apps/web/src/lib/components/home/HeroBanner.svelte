@@ -26,6 +26,7 @@
 	} from '$lib/motion/utils/gsap.js';
 	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
+	import { isViewportAtMost } from '$lib/motion/utils/device.js';
 	import { generateHeroData } from '$lib/content';
 	import type { HeroData } from '$lib/content';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
@@ -136,7 +137,7 @@
 		// Mobile pin length branch per design spec §5.1 + plan decision A1.
 		// Single mount-time matchMedia check; no gsap.matchMedia rebuild on
 		// resize across 1024px — accepted trade-off for simpler architecture.
-		const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+		const isMobile = isViewportAtMost(1023);
 
 		const destroyHero = createHeroTimeline(pinContainer, {
 			svgWrapper,

@@ -22,6 +22,7 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { isViewportAtMost } from '$lib/motion/utils/device.js';
 
 	interface Props {
 		svg: string;
@@ -48,7 +49,8 @@
 		found.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 		// Mobile: crop viewBox to a taller region so the SVG renders bigger,
 		// keeping Berri-UQAM at the same ~80% horizontal position
-		const isMobile = window.innerWidth < 768;
+		// (replaces `window.innerWidth < 768` — same boundary at integer widths)
+		const isMobile = isViewportAtMost(767);
 		if (isMobile) {
 			found.setAttribute('viewBox', '972 300 600 600');
 		}
