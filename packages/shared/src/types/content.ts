@@ -499,26 +499,13 @@ export interface ContactContent {
 // PreviewContext — adapter-level preview-mode signal (F5 + D6 — 18c Task 43)
 // ---------------------------------------------------------------------------
 //
-// Optional, last-param on every ContentAdapter port method. When populated,
-// the Directus adapter authenticates reads via `/shares/:token` instead of
-// the anonymous Public policy — surfacing draft content scoped to the share.
+// Optional, last-param on every ContentAdapter port method.
 //
-// Shape intentionally minimal for now; preview routes land post-Slice-18
-// (D6). Static adapter ignores ctx; the field exists so we can thread
-// ctx through SvelteKit `load()` helpers today without a breaking change
-// when the consumer wiring follows.
+// slice-28.3 (#83): the `shareToken` field (Directus /shares preview auth)
+// was deleted — preview routes never landed and nothing read it. The type
+// itself stays: pageCache threading is live in every +page.server.ts load.
 
 export interface PreviewContext {
-	/**
-	 * Directus /shares token granting access to a specific draft/draft-set.
-	 * Absent → anonymous reads via the Public policy (published only).
-	 *
-	 * Resolution happens server-side only (never in the client bundle) —
-	 * the token comes from the share URL, is validated by Directus, and is
-	 * discarded after the `load()` completes.
-	 */
-	shareToken?: string;
-
 	/**
 	 * Locale override for preview renders — useful when a share link pins
 	 * the preview to a single locale (e.g., reviewer is native-French and
