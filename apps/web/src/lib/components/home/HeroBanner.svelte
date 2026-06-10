@@ -43,10 +43,9 @@
 		metroSvg: string;
 		hero: HeroContent;
 		heroAnim: HeroAnimContent;
-		heroMock: HeroData;
 		initialHeroData: HeroData;
 	}
-	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, heroMock: _heroMock, initialHeroData: INITIAL_HERO_DATA }: Props = $props();
+	let { metroSvg, hero: heroContent, heroAnim: heroAnimContent, initialHeroData: INITIAL_HERO_DATA }: Props = $props();
 
 	let pinContainer: HTMLDivElement;
 	let svgWrapper: HTMLDivElement;
