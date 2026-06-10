@@ -24,8 +24,9 @@ export const SITE_NAME = 'yesid.';
 //   - hreflang link tags to include this locale
 //   - sitemap to iterate routes × this locale
 //   - canonicalFor to need a URL scheme (TODO when first non-EN locale ships)
-//   - `bun run og:default` to emit `static/og/default.{locale}.png` if
-//     siteMeta.tagline.{locale} is filled in
+//   - a `static/og/default.{locale}.png` asset to be needed. The generator
+//     script was deleted in slice-27.1 (restore from a5f28f2^ at French
+//     launch); until then the asset is produced manually and committed.
 export const PUBLISHED_LOCALES: readonly Locale[] = ['en'];
 
 // Re-exported from $lib/utils/locale so there's exactly one DEFAULT_LOCALE
@@ -35,10 +36,11 @@ export { DEFAULT_LOCALE };
 /**
  * Returns the default OG image path for a given locale.
  *
- * For published locales, returns `/og/default.{locale}.png` — the generator
- * script (scripts/generate-og-default.ts) emits one image per published
- * locale with a siteMeta.tagline translation. For unpublished locales, falls
- * back to the EN default so `og:image` meta always resolves to a real file.
+ * For published locales, returns `/og/default.{locale}.png` — a manually
+ * produced, committed asset under `static/og/` (the generate-og-default
+ * script was deleted in slice-27.1; restorable from a5f28f2^ when a new
+ * locale launches). For unpublished locales, falls back to the EN default
+ * so `og:image` meta always resolves to a real file.
  */
 export function defaultOgImageFor(locale: Locale): string {
 	if (PUBLISHED_LOCALES.includes(locale)) return `/og/default.${locale}.png`;
