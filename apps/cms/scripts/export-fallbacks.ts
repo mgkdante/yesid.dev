@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
 /**
  * Export Directus CMS state into static TS modules under apps/web/src/lib/content/.
- * Becomes the apps/web `prebuild` step in P6 — output is committed so CMS edits
- * surface as PR diffs and the static adapter has fresh fallback data when
- * Directus is unreachable at runtime.
+ * Runs as the apps/web `prebuild` step — output is committed so CMS edits
+ * surface as PR diffs. Since slice-27.2 (Directus dropped from the SSR data
+ * path) these modules are NOT a fallback: they are the sole runtime content
+ * source, regenerated per build. What this script emits is exactly what ships.
  *
  * Run:
  *   bun apps/cms/scripts/export-fallbacks.ts                   # full export
@@ -11,6 +12,10 @@
  *   bun apps/cms/scripts/export-fallbacks.ts --module=services # single module
  *
  * Env:
+ *   EXPORT_FALLBACKS_SKIP  — set to 1 to skip the export entirely (logs + exits
+ *                            0 before any network). Used by hermetic CI builds
+ *                            (web.yml) where the committed modules already ARE
+ *                            the content source and no CMS should be contacted.
  *   PUBLIC_DIRECTUS_URL    — Directus URL. Defaults to cms.dev.yesid.dev (P6 flip,
  *                            once dev mirrors prod). Set to https://cms.yesid.dev
  *                            for production builds (Vercel: encrypted env var
@@ -341,6 +346,19 @@ export async function run(opts: RunOptions): Promise<void> {
 }
 
 async function main(): Promise<void> {
+	// Hermetic-build escape hatch (slice-28.4, audit #137): CI builds must not
+	// reach out to any live CMS — the committed content modules are already the
+	// authoritative source. Checked before ANY token resolution or fetch.
+	if (['1', 'true'].includes((process.env.EXPORT_FALLBACKS_SKIP ?? '').toLowerCase())) {
+		if (process.env.VERCEL_ENV === 'production') {
+			log.warn(
+				'EXPORT_FALLBACKS_SKIP is set on a PRODUCTION build — shipping the committed content modules as-is (no CMS refresh).',
+			);
+		}
+		log.info('EXPORT_FALLBACKS_SKIP set — skipping export, committed content modules remain authoritative. Exiting 0.');
+		return;
+	}
+
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
