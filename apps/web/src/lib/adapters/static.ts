@@ -214,6 +214,14 @@ export const staticAdapter: ContentAdapter = {
 		// Static adapter has no per-route overrides — composer falls through to
 		// code-side defaults. Returning undefined matches the directus shape
 		// when no row matches the path.
+		//
+		// slice-28.5 (#62): KEPT, not pruned. The route_seo collections are a
+		// decided dead end (zero rows; archival flagged to slice-26) and
+		// route-seo-defaults.ts is the canonical override source — but this port
+		// cannot be removed: it is part of the ContentAdapter contract and the
+		// RUN_PARITY oracle exercises meta.routeSeo.byPath on BOTH adapters
+		// (parity.harness.test.ts). Prune it together with the dormant adapter at
+		// slice-26 close.
 		routeSeo: {
 			byPath: async () => undefined,
 		},
