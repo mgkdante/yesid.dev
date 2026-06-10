@@ -32,7 +32,7 @@ select {
 }
 
 /* slice-19 Phase 3: tap-feedback primitive layer (Layer 1).
-   Pair with motion/actions/pressBounce + tapRipple for nuanced cases (Layer 2).
+   Pair with motion/actions/pressBounce for nuanced cases (Layer 2).
    Reduced-motion preference disables transitions; the press style still applies
    on :active so users see a state change without animation timing. */
 @utility tap-press {
@@ -59,17 +59,6 @@ select {
 
 	@media (prefers-reduced-motion: reduce) {
 		transition: none;
-	}
-}
-
-/* slice-19 Phase 3: tap-ripple expand keyframe — consumed by motion/actions/tapRipple.ts.
-   Global @keyframes (not inside @utility) so the inline animation: ... in the ripple span
-   can reference it. The action gates on isTouchDevice + isPrefersReducedMotion before
-   appending the span, so no reduced-motion override is needed here. */
-@keyframes tap-ripple-expand {
-	to {
-		transform: scale(1);
-		opacity: 0;
 	}
 }
 
@@ -350,38 +339,7 @@ pre, code, table {
   display: none;
 }
 
-/* 4. Hover glow — card border + shadow on hover */
-.brand-glow-hover {
-  transition: border-color var(--duration-normal) var(--ease-default),
-              box-shadow var(--duration-normal) var(--ease-default),
-              transform var(--duration-normal) var(--ease-default);
-}
-.brand-glow-hover:hover {
-  border-color: color-mix(in srgb, var(--primary) 25%, transparent);
-  box-shadow: var(--shadow-glow-sm);
-}
-
-/* 5. Desaturated image — B&W default, color on hover */
-.img-desat {
-  filter: grayscale(1) brightness(0.4);
-  transition: filter var(--duration-slow) var(--ease-default);
-}
-.img-desat:hover {
-  filter: grayscale(0) brightness(1);
-}
-
-/* 6. Responsive card grid — 1→2→3 columns */
-.grid-responsive-cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-card-gap);
-}
-@media (min-width: 640px) {
-  .grid-responsive-cards { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 1024px) {
-  .grid-responsive-cards { grid-template-columns: repeat(3, 1fr); }
-}
+/* 4–6. brand-glow-hover / img-desat / grid-responsive-cards — deleted in slice-28.3 (#110, orphaned) */
 
 /* 7–9. Label styles — mono uppercase patterns */
 .label-section {
@@ -507,15 +465,7 @@ pre, code, table {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* 12. Grid rows collapse — animate open/close with CSS grid rows */
-.grid-rows-collapse {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows var(--duration-slow) var(--ease-default);
-}
-.grid-rows-collapse[data-state="open"] {
-  grid-template-rows: 1fr;
-}
+/* 12. grid-rows-collapse — deleted in slice-28.3 (#110, orphaned) */
 
 /* 13. Scroll offset for anchor links — headings land below the sticky nav */
 h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
