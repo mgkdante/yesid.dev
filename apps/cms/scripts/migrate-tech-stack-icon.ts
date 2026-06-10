@@ -1,4 +1,12 @@
 #!/usr/bin/env bun
+//
+// DONE — completed one-time backfill (slice-18h-ii: tech_stack.icon string ->
+// icon_id M2O FK; banner + package.json entry removal in slice-28.5, audit
+// #34). The live tech_stack rows all carry icon_id; re-running is an
+// idempotent no-op (skips non-null icon_id). There is no scenario that needs
+// this again — a fresh bootstrap seeds icon_id directly via seed-tech-stack.
+// Kept in-tree per the 27.2 archive-not-delete convention.
+//
 /**
  * Backfill `tech_stack.icon_id` using a hardcoded tech_stack.id → icons.id map.
  *

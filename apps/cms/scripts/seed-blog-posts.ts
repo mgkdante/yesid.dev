@@ -1,4 +1,11 @@
 #!/usr/bin/env bun
+//
+// DONE — one-shot seed, completed (slice-18f Phase 8; banner added in
+// slice-28.5, audit #34). blog_posts rows live in Directus and Data Studio is
+// the authoring surface; export-fallbacks reads them back at build time. Keep
+// for fresh-environment bootstrap only (--dry-run / --reset guarded). Kept
+// in-tree per the 27.2 archive-not-delete convention.
+//
 /**
  * Seed Directus `blog_posts` from `fixtures/collections/blog-posts.json`.
  *
