@@ -62,7 +62,7 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Run apps/cms unit tests (snapshot-shape + fixtures + seed-dry-run + lib)
+      - name: Run apps/cms unit tests (fixtures + seed dry-runs + sync-push + lib)
         working-directory: apps/cms
         run: bun test
 
