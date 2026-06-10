@@ -200,6 +200,8 @@ vi.mock('gsap/SplitText', () => ({
 // across the run (slice-28.4, audit #92). Stubbed surfaces:
 //   - web3forms.com   → canned success JSON so the contact form's success
 //                       animation fires.
+//   - /api/weather    → JSON null ("no fresh data") so ContactPage/AboutWeather
+//                       keep their SSR-baked prop (slice-28.1 onMount refresh).
 //   - /svg/** assets  → minimal valid SVG (decorative illustrations fetched
 //                       at mount by CloserGraffiti/CloserProps/HomeServices
 //                       et al; consumers res.text() + DOMParser it).
@@ -210,6 +212,16 @@ vi.stubGlobal('fetch', async (url: string | URL | Request) => {
 	const urlStr = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url;
 	if (urlStr.includes('web3forms.com')) {
 		return new Response(JSON.stringify({ success: true }), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
+	// slice-28.1: ContactPage/AboutWeather refresh weather from /api/weather in
+	// onMount. Default stub answers JSON null ("no fresh data") so components
+	// keep their SSR-baked prop and tests stay deterministic without network.
+	// Tests exercising the refresh path override globalThis.fetch locally.
+	if (urlStr.includes('/api/weather')) {
+		return new Response('null', {
 			status: 200,
 			headers: { 'Content-Type': 'application/json' },
 		});
