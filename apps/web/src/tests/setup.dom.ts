@@ -204,5 +204,15 @@ vi.stubGlobal('fetch', async (url: string | URL | Request, init?: RequestInit) =
 			headers: { 'Content-Type': 'application/json' },
 		});
 	}
+	// slice-28.1: ContactPage/AboutWeather refresh weather from /api/weather in
+	// onMount. Default stub answers JSON null ("no fresh data") so components
+	// keep their SSR-baked prop and tests stay deterministic without network.
+	// Tests exercising the refresh path override globalThis.fetch locally.
+	if (urlStr.includes('/api/weather')) {
+		return new Response('null', {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
 	return originalFetch(url, init);
 });
