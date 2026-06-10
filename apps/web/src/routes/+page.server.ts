@@ -8,7 +8,6 @@ import {
 	getAboutContent,
 	getCtaContent,
 	getCloserContent,
-	getHeroMockData,
 	getInitialHeroData,
 } from '$lib/repositories';
 
@@ -37,7 +36,6 @@ export async function load({ locals }: { locals: App.Locals }) {
 		about,
 		cta,
 		closer,
-		heroMock,
 		initialHeroData,
 	] = await Promise.all([
 		getMetroSvg(ctx),
@@ -49,9 +47,8 @@ export async function load({ locals }: { locals: App.Locals }) {
 		getAboutContent(ctx),
 		getCtaContent(ctx),
 		getCloserContent(ctx),
-		getHeroMockData(ctx),
 		getInitialHeroData(ctx),
 	]);
 
-	return { metroSvg, hero, heroAnim, manifesto, proofReel, servicesGrid, about, cta, closer, heroMock, initialHeroData };
+	return { metroSvg, hero, heroAnim, manifesto, proofReel, servicesGrid, about, cta, closer, initialHeroData };
 };

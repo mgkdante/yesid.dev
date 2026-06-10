@@ -69,12 +69,11 @@ export async function getProjectsPageContent(ctx?: PreviewContext): Promise<Proj
 	return adapter.content.projectsPage(ctx);
 }
 
-// Hero mock data — heroMock() returns a freshly shuffled HeroData on each
-// call; initialHeroData() returns the deterministic seed used during SSR.
-export async function getHeroMockData(ctx?: PreviewContext): Promise<HeroData> {
-	return adapter.content.heroMock(ctx);
-}
+// getHeroMockData — pruned in slice-28.3 (#107/#116) with the heroMock render
+// plumbing (HeroBanner regenerates client-side via generateHeroData()).
+// adapter.content.heroMock stays — the oracle suites exercise it.
 
+// initialHeroData() returns the deterministic seed used during SSR.
 export async function getInitialHeroData(ctx?: PreviewContext): Promise<HeroData> {
 	return adapter.content.initialHeroData(ctx);
 }
