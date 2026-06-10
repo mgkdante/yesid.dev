@@ -1,10 +1,11 @@
-// Unit tests for the Directus adapter's pure helpers.
+// Unit tests for the DORMANT Directus adapter's pure helpers.
 //
-// Scoped narrowly: `toLocalizedString` is the one runtime function that lands
-// in Task 4 scaffolding. The rest of the adapter (ports, client, row mapping)
-// is exercised later — once Task 5 redefines the collection schema in Data
-// Studio and Task 6 seeds data, a contract test can pull `directusAdapter`
-// through `adapter.test.ts` the same way the static adapter does today.
+// Post-27.2 the adapter is out of the runtime data path (see the DORMANT
+// banner in directus.ts) but stays in-tree as the slice-26 RUN_PARITY oracle.
+// These tests keep its pure transform helpers (toLocalizedString et al.)
+// honest without any network; the live-network port coverage lives in
+// directus.integration.test.ts, opt-in via RUN_DIRECTUS_INTEGRATION=1
+// (CI: contract-test.yml against an ephemeral Directus).
 
 import { describe, it, expect } from 'vitest';
 import { toLocalizedString } from './directus';
