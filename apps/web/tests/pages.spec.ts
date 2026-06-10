@@ -24,6 +24,7 @@
 //   - /services   → 200, nav visible (static adapter, no CMS dependency)
 //   - /projects   → 200, nav visible (static adapter)
 //   - /blog       → 200, "Dispatches" hardcoded in +page.svelte
+//   - /blog/personal → 200, data-testid="blog-listing" (Personal Corner)
 //   - /contact    → 200, data-testid="contact-info-terminal" (static fallback)
 //   - /about      → 200 + CMS content (CMS_LIVE=true only) — SKIPPED otherwise
 //   - /tech-stack → 200 + CMS content (CMS_LIVE=true only) — SKIPPED otherwise
@@ -74,6 +75,15 @@ test('route /blog renders listing container', async ({ page }) => {
 	// Asserts the blog listing component mounted. The page heading copy comes
 	// from Directus (blog-page.ts: heading.en — "Dispatches" today, anything
 	// tomorrow) and is not the engineering concern. Structural testid only.
+	await expect(page.locator('[data-testid="blog-listing"]')).toBeVisible();
+});
+
+test('route /blog/personal renders listing container', async ({ page }) => {
+	// slice-28.1 (audit #29): /blog/personal was the only public page route
+	// missing from this spec. Same structural assertion as /blog — the
+	// Personal Corner listing reuses BlogListingPage (data-testid="blog-listing").
+	const response = await page.goto('/blog/personal');
+	expect(response?.status()).toBe(200);
 	await expect(page.locator('[data-testid="blog-listing"]')).toBeVisible();
 });
 
