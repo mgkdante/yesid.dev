@@ -13,10 +13,6 @@ export async function getAllTechItems(): Promise<readonly TechStackItem[]> {
 	return adapter.techStack.all();
 }
 
-export async function getTechItemById(id: string): Promise<TechStackItem | undefined> {
-	return adapter.techStack.byId(id);
-}
-
-export async function getTechItemContent(id: string): Promise<string> {
-	return adapter.techStack.content(id);
-}
+// getTechItemById / getTechItemContent — pruned in slice-28.3 (#117, zero
+// route consumers). adapter.techStack.byId/content stay for the slice-26
+// RUN_PARITY oracle suites, which exercise them directly.

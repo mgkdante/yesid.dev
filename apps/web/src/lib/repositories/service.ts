@@ -3,9 +3,8 @@
 import { adapter } from '$lib/adapters';
 import type { PreviewContext, Service } from '$lib/types';
 
-export async function getAllServices(ctx?: PreviewContext): Promise<readonly Service[]> {
-	return adapter.services.all(ctx);
-}
+// getAllServices — pruned in slice-28.3 (#117, zero consumers; routes use
+// getVisibleServices). adapter.services.all stays for the slice-26 oracle.
 
 export async function getServiceById(id: string, ctx?: PreviewContext): Promise<Service | undefined> {
 	return adapter.services.byId(id, ctx);
