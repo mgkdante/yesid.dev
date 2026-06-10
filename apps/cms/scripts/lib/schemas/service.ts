@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { LocalizedStringSchema } from './shared';
+import { LocalizedStringSchema } from '@repo/shared';
 
 export const ServiceSectionSchema = z.object({
 	title: LocalizedStringSchema,

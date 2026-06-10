@@ -11,7 +11,7 @@
  * (regen vs committed) will surface the mismatch.
  */
 
-export type Locale = 'en' | 'fr' | 'es';
+import type { Locale } from '@repo/shared';
 
 export interface LocalizedString {
 	en: string;

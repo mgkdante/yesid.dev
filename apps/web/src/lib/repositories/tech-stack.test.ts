@@ -1,9 +1,6 @@
-// Tech-stack repository tests — reshaped in slice-18g Phase 4 Task 9.
-//
-// Dropped tests: layer/domain/connections/relations/scenarios (those
-// fields and methods were removed from TechStackItem + TechStackPort in 18g).
-// Only all/byId/content remain; Phase 5 will extend coverage once the static
-// content helpers are updated to the new TechStackItem shape.
+// Tech-stack repository tests — reshaped in slice-18g Phase 4 Task 9,
+// pruned again in slice-28.3 (#117): only getAllTechItems remains as a
+// repository wrapper.
 //
 // Note: at runtime the static adapter will fail the new TechStackItemSchema
 // (static data still uses the old shape). Tests that call getAllTechItems()
@@ -12,11 +9,7 @@
 // integration seam. The structural tests here remain valid.
 
 import { describe, it, expect } from 'vitest';
-import {
-	getAllTechItems,
-	getTechItemById,
-	getTechItemContent,
-} from './tech-stack';
+import { getAllTechItems } from './tech-stack';
 import { services } from '$lib/content/services';
 import { projects } from '$lib/content/projects';
 
@@ -53,24 +46,6 @@ describe('tech stack data integrity', () => {
 	});
 });
 
-describe('tech stack API', () => {
-	it('getTechItemById returns correct item', async () => {
-		const pg = await getTechItemById('postgresql');
-		expect(pg).toBeDefined();
-		expect(pg!.name).toBe('PostgreSQL');
-	});
-
-	it('getTechItemById returns undefined for unknown ID', async () => {
-		expect(await getTechItemById('nonexistent')).toBeUndefined();
-	});
-
-	it('getTechItemContent returns non-empty string for known items', async () => {
-		const content = await getTechItemContent('postgresql');
-		expect(typeof content).toBe('string');
-		expect(content.length).toBeGreaterThan(0);
-	});
-
-	it('getTechItemContent returns empty string for unknown items', async () => {
-		expect(await getTechItemContent('nonexistent')).toBe('');
-	});
-});
+// 'tech stack API' describe (getTechItemById/getTechItemContent) — removed in
+// slice-28.3 with the pruned repository wrappers. The adapter-port equivalents
+// remain covered by the adapter __tests__ suites.

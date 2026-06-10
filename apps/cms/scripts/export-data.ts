@@ -25,7 +25,7 @@ import type {
 	CtaContent,
 	CloserContent,
 	AboutContent,
-} from './lib/schemas/page-blocks';
+} from '@repo/shared';
 import type { NavData } from './lib/fetchers/nav';
 
 export interface ExportData {

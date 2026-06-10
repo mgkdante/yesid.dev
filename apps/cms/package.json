@@ -16,7 +16,6 @@
 		"sync:pull": "directus-sync pull",
 		"sync:push": "bun scripts/sync-push.ts",
 		"sync:diff": "directus-sync diff",
-		"gen:types": "bun scripts/generate-types.ts",
 		"test": "bun test"
 	},
 	"devDependencies": {
@@ -26,8 +25,7 @@
 		"bottleneck": "^2.19.5",
 		"bun-types": "latest",
 		"directus-sync": "^3.5.0",
-		"yaml": "^2.6.1",
-		"zod": "^3.24.1"
+		"zod": "^4.3.6"
 	},
 	"dependencies": {
 		"marked": "^18.0.2"
