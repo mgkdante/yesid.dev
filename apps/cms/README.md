@@ -289,7 +289,7 @@ Full rationale lives in the Notion slice-18 spec and research pages.
 
 1. Railway → Settings → Custom Domain → add the `cms.*` host.
 2. Point the DNS CNAME at Railway's target once auto-TLS completes on the temporary domain.
-3. Verify `https://<host>/server/health` returns 200.
+3. Verify `https://<host>/server/ping` returns 200 (v12 gates `/server/health` behind auth).
 
 ### 6. MCP (native since Directus 11.13)
 
