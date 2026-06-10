@@ -83,8 +83,12 @@ export const load: LayoutServerLoad = async ({ route, params, locals }) => {
 
 	const safeMorphShapes = async () => {
 		try {
+			// CMS-generated shapes via the adapter port ($lib/content/morph-shapes
+			// since slice-28.5 #120).
 			return await adapter.content.morphShapes(ctx);
 		} catch {
+			// Last-resort hand-written seed — see the FALLBACK SEED banner in
+			// utils/shapes.ts.
 			return FALLBACK_MORPH_SHAPES;
 		}
 	};

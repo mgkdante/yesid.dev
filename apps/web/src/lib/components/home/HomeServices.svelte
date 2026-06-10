@@ -16,16 +16,20 @@
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
 
-	import { getVisibleServices } from '$lib/content';
 	import { morphHover, pressBounce, cursorGlow, cardParallax } from '$lib/motion/actions';
 	import { gsap, loadDrawSVG } from '$lib/motion/utils/gsap';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
-	import type { ServicesGridContent } from '$lib/types';
+	import type { Service, ServicesGridContent } from '$lib/types';
 
-	let { servicesGrid: servicesGridContent }: { servicesGrid: ServicesGridContent } = $props();
-
-	const services = getVisibleServices();
+	// slice-28.5 (#124): services arrive as a prop from the home
+	// +page.server.ts load (repository -> adapter), replacing the previous
+	// direct getVisibleServices() call into the $lib/content companion. Same
+	// data, adapter-resolved — so a slice-26 adapter re-point reaches this grid.
+	let {
+		servicesGrid: servicesGridContent,
+		services,
+	}: { servicesGrid: ServicesGridContent; services: readonly Service[] } = $props();
 	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, 'en');
 	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, 'en');
 

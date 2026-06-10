@@ -1,4 +1,11 @@
 #!/usr/bin/env bun
+//
+// DONE — one-shot seed, completed (slice-18f Phase 8; banner added in
+// slice-28.5, audit #34). morph_shapes rows live in Directus; the render path
+// reads them via the generated $lib/content/morph-shapes module (wired in
+// slice-28.5 #120). Keep for fresh-environment bootstrap only. Kept in-tree
+// per the 27.2 archive-not-delete convention.
+//
 /**
  * Seed the Directus `morph_shapes` collection.
  * Slice 18 18f Phase 8. Pure data seed; no file uploads.

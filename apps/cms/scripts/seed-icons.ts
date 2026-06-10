@@ -1,4 +1,10 @@
 #!/usr/bin/env bun
+//
+// DONE — one-shot seed, completed (slice-18h-ii Phase 3; banner added in
+// slice-28.5, audit #34). The icons collection (34 rows) lives in Directus.
+// Keep for fresh-environment bootstrap only (--dry-run / --reset guarded).
+// Kept in-tree per the 27.2 archive-not-delete convention.
+//
 /**
  * Seed the Directus `icons` collection from `fixtures/collections/icons.json`.
  *

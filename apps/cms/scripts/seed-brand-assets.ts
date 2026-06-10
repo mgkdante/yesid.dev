@@ -1,4 +1,11 @@
 #!/usr/bin/env bun
+//
+// DONE — one-shot seed, completed (slice-18l; banner added in slice-28.5,
+// audit #34). The brand SVGs are uploaded and their UUIDs are mapped in
+// fixtures/assets-id-map.json (re-runs are no-ops once mapped). Keep for
+// fresh-environment bootstrap only. Kept in-tree per the 27.2
+// archive-not-delete convention.
+//
 /**
  * Upload yesid.dev brand SVGs (icon + wordmark) to Directus and capture their
  * file UUIDs in `apps/cms/fixtures/assets-id-map.json` so settings.json can

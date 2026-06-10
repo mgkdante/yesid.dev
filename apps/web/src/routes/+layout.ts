@@ -11,7 +11,11 @@ import {
 	errorPageContent as staticErrorPageContent,
 } from '$lib/content/nav';
 import type { NavLink, ErrorPageContent } from '$lib/content/nav';
-import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
+// slice-28.5 (#120): client fallback reads the GENERATED morph-shapes module
+// (same source the static adapter serves), not the utils/shapes.ts seed —
+// otherwise a CSR-only render would show pre-CMS shapes while SSR shows CMS
+// shapes. The seed remains the catch{} fallback in +layout.server.ts only.
+import { morphShapes as generatedMorphShapes } from '$lib/content/morph-shapes';
 import type { MorphShape, PageSeo, SiteSeoDefaults } from '$lib/types';
 
 /** Shape of the layout-data slots merged from +layout.server.ts. */
@@ -83,7 +87,7 @@ export const load: LayoutLoad = async ({ data }) => {
 			siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
 		});
 	const themeColor = serverData.themeColor ?? STATIC_SITE_SEO_DEFAULTS.themeColor;
-	const morphShapes = serverData.morphShapes ?? FALLBACK_MORPH_SHAPES;
+	const morphShapes = serverData.morphShapes ?? generatedMorphShapes;
 
 	return { seo, themeColor, morphShapes, ...slots };
 };

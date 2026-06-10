@@ -1,7 +1,30 @@
 // Static adapter — reads from $lib/content directly.
-// This is the ONLY module that imports from $lib/content (outside of content/
-// internals). Every other layer goes through a repository, which goes through
-// `adapter` re-exported from ./index.
+//
+// BOUNDARY RULE (rewritten slice-28.5, audit #124 — the old "ONLY module that
+// imports from $lib/content" claim was false):
+//
+//   1. COLLECTION / PRIMARY data (projects, services, blog, tech-stack, page
+//      blocks, meta singletons, morph shapes — anything with an adapter port)
+//      must flow  load() -> $lib/repositories -> adapter -> this module.
+//      This module is the only RUNTIME reader of that data; it is what makes
+//      a slice-26 adapter re-point reach the render. HomeServices and
+//      FeaturedProjects were the last component-level bypasses for primary
+//      data; slice-28.5 threaded both through the home +page.server.ts.
+//   2. CODE-OWNED UI LITERALS (listing chrome copy, aria templates —
+//      projectsListingContent, servicesDetailContent, blogListingContent,
+//      sharedChromeContent, navDirections, etc.) MAY be imported directly by
+//      display components. They are hand-written companion constants the
+//      adapter does not port; routing them through props would add plumbing
+//      with no CMS benefit. ~30 components do this today — sanctioned.
+//   3. SANCTIONED EXCEPTIONS: +layout.ts / +layout.server.ts / +error.svelte /
+//      Nav / MenuOverlay / Footer static-fallback imports (CSR-only fallback
+//      when server data is absent); HeroBanner's client-side
+//      generateHeroData() refresh (interactive mock regen, not CMS data);
+//      test files stubbing load output.
+//   KNOWN LEFTOVER (out of 28.5 scope, on record): HomeCloser.svelte still
+//   calls getLatestPosts(2,'professional') + reads siteMeta directly for the
+//   departure board — thread it through the home load() if/when slice-26
+//   needs the home route fully adapter-resolved.
 //
 // Each method is a thin async wrapper around a content-layer export. No
 // transformation, no validation (Zod lands in Slice 17c between adapter and
@@ -96,6 +119,8 @@ import { contactContent } from '$lib/content/contact-page';
 import { blogPageContent } from '$lib/content/blog-page';
 import { projectsPageContent } from '$lib/content/projects-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
+import { morphShapes } from '$lib/content/morph-shapes';
+import { MorphShapeSchema } from '$lib/schemas/morph-shape';
 // Slice 18d Phase 8: static fallback for content.metroSvg — keeps the legacy
 // build-time `?raw` source available for unit tests (which override
 // directusAdapter with staticAdapter via setup.data.ts) and for future
@@ -189,6 +214,14 @@ export const staticAdapter: ContentAdapter = {
 		// Static adapter has no per-route overrides — composer falls through to
 		// code-side defaults. Returning undefined matches the directus shape
 		// when no row matches the path.
+		//
+		// slice-28.5 (#62): KEPT, not pruned. The route_seo collections are a
+		// decided dead end (zero rows; archival flagged to slice-26) and
+		// route-seo-defaults.ts is the canonical override source — but this port
+		// cannot be removed: it is part of the ContentAdapter contract and the
+		// RUN_PARITY oracle exercises meta.routeSeo.byPath on BOTH adapters
+		// (parity.harness.test.ts). Prune it together with the dormant adapter at
+		// slice-26 close.
 		routeSeo: {
 			byPath: async () => undefined,
 		},
@@ -301,17 +334,14 @@ export const staticAdapter: ContentAdapter = {
 		initialHeroData: async () =>
 			parsePort('content.initialHeroData', HeroDataSchema, INITIAL_HERO_DATA),
 		metroSvg: async () => metroSvgRaw,
-		morphShapes: async () => {
-			// Static fallback: derive 4 hardcoded shapes from utils/shapes.ts.
-			const { SHAPES } = await import('$lib/utils/shapes');
-			return Object.entries(SHAPES).map(([id, path], idx) => ({
-				id,
-				label: id.charAt(0).toUpperCase() + id.slice(1),
-				path,
-				viewbox: '0 0 48 48',
-				sort: idx + 1,
-			}));
-		},
+		// slice-28.5 (#120): read the GENERATED $lib/content/morph-shapes module
+		// (emitted from the Directus morph_shapes collection by export-fallbacks),
+		// matching every other port. Previously this derived shapes from the
+		// hardcoded SHAPES const in utils/shapes.ts, so CMS morph_shapes edits
+		// regenerated the module but never reached the render. SHAPES survives
+		// only as the documented last-resort seed (utils/shapes.ts).
+		morphShapes: async () =>
+			parsePort('content.morphShapes', z.array(MorphShapeSchema), morphShapes),
 	},
 
 	// Static nav port — reads from the static nav.ts constants, filtered by
