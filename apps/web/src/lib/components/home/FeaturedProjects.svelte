@@ -14,19 +14,23 @@
 	import WheelGesturesPlugin from 'embla-carousel-wheel-gestures';
 	import type { EmblaCarouselType } from 'embla-carousel';
 	import { resolveLocale } from '$lib/utils';
-	import { getProjectBySlug } from '$lib/content';
 	import type { Project, ProofReelContent } from '$lib/types';
 	import { cursorGlow, cardParallax, magnetic } from '$lib/motion/actions';
 
-	let { proofReel: proofReelContent }: { proofReel: ProofReelContent } = $props();
+	// slice-28.5 (#124): the resolved featured projects arrive as a prop from
+	// the home +page.server.ts load (repository -> adapter), replacing the
+	// previous direct getProjectBySlug() calls into the $lib/content companion.
+	// The server load preserves this component's exact prior semantics:
+	// proofReel.slugs order, unresolvable slugs silently dropped.
+	let {
+		proofReel: proofReelContent,
+		projects,
+	}: { proofReel: ProofReelContent; projects: readonly Project[] } = $props();
 
 	const toggleColorAriaTemplate = resolveLocale(proofReelContent.toggleColorAria, 'en');
 	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, 'en');
 
-	const projects: (Project | undefined)[] = proofReelContent.slugs.map((slug) =>
-		getProjectBySlug(slug),
-	);
-	const visibleProjects = $derived(projects.filter((p): p is Project => Boolean(p)));
+	const visibleProjects = $derived(projects);
 	const total = $derived(visibleProjects.length);
 
 	// Mobile tap toggle: which card image is in color mode (-1 = none).

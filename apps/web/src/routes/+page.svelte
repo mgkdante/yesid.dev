@@ -25,6 +25,8 @@
 			cta={data.cta}
 			closer={data.closer}
 			initialHeroData={data.initialHeroData}
+			services={data.services}
+			featuredProjects={data.featuredProjects}
 		/>
 	</div>
 </div>

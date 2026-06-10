@@ -1,7 +1,30 @@
 // Static adapter — reads from $lib/content directly.
-// This is the ONLY module that imports from $lib/content (outside of content/
-// internals). Every other layer goes through a repository, which goes through
-// `adapter` re-exported from ./index.
+//
+// BOUNDARY RULE (rewritten slice-28.5, audit #124 — the old "ONLY module that
+// imports from $lib/content" claim was false):
+//
+//   1. COLLECTION / PRIMARY data (projects, services, blog, tech-stack, page
+//      blocks, meta singletons, morph shapes — anything with an adapter port)
+//      must flow  load() -> $lib/repositories -> adapter -> this module.
+//      This module is the only RUNTIME reader of that data; it is what makes
+//      a slice-26 adapter re-point reach the render. HomeServices and
+//      FeaturedProjects were the last component-level bypasses for primary
+//      data; slice-28.5 threaded both through the home +page.server.ts.
+//   2. CODE-OWNED UI LITERALS (listing chrome copy, aria templates —
+//      projectsListingContent, servicesDetailContent, blogListingContent,
+//      sharedChromeContent, navDirections, etc.) MAY be imported directly by
+//      display components. They are hand-written companion constants the
+//      adapter does not port; routing them through props would add plumbing
+//      with no CMS benefit. ~30 components do this today — sanctioned.
+//   3. SANCTIONED EXCEPTIONS: +layout.ts / +layout.server.ts / +error.svelte /
+//      Nav / MenuOverlay / Footer static-fallback imports (CSR-only fallback
+//      when server data is absent); HeroBanner's client-side
+//      generateHeroData() refresh (interactive mock regen, not CMS data);
+//      test files stubbing load output.
+//   KNOWN LEFTOVER (out of 28.5 scope, on record): HomeCloser.svelte still
+//   calls getLatestPosts(2,'professional') + reads siteMeta directly for the
+//   departure board — thread it through the home load() if/when slice-26
+//   needs the home route fully adapter-resolved.
 //
 // Each method is a thin async wrapper around a content-layer export. No
 // transformation, no validation (Zod lands in Slice 17c between adapter and
