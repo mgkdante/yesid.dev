@@ -6,7 +6,7 @@
 
 - **Project:** yesid.dev — freelance digital-infrastructure practice
 - **Stack:** Bun · SvelteKit · Directus · Neon · Vercel · Railway · TypeScript
-- **Workflow:** workflow-overlord 2.0 plugin (orchestrates Claude Code + Codex via Notion)
+- **Workflow:** workflow-overlord 3.x (installed plugin; orchestrates Claude Code + Codex via Notion)
 
 ## Where context lives
 
@@ -16,14 +16,20 @@ Architecture / Business / Vocabulary / Slices / Sessions / Roadmap → Notion su
 
 - `bun install` — install deps
 - `bun run setup:hooks` — activate git pre-commit hook
-- `bun test` — run tests
-- `bun --cwd apps/web dev` — local dev server
-- `op run --env-file=apps/cms/.env -- bun --cwd apps/cms run sync:diff` — Directus schema diff
+- `bun run test` — run tests via turbo. **Exception:** apps/web tests must run as `bunx vitest run` from `apps/web` (bare `bun test` uses Bun's native runner, skipping the Vitest happy-dom config → false "window is not defined" failures)
+- `bun run dev` — local dev server (root script; cds into apps/web)
+- `bun run cms:sync:diff:op` — Directus schema diff (1Password-injected)
+
+> Bun 1.3.x gotcha: `bun --cwd <dir> run <script>` mis-parses (prints `bun run`
+> help, exits 0). Use `bun run --cwd <dir> <script>` or cd into the package.
 
 ## Workflow commands
 
 - `/workflow-overlord` — orchestrator (always-on)
+- `/workflow-overlord-roadmap-open <SUMMARY>` — create a Roadmap row + child pages
 - `/workflow-overlord-slice-open <SUMMARY>` — start a slice
+- `/workflow-overlord-slice-pick` — attach a slice to the current session
+- `/workflow-overlord-slice-unpick` — detach a slice from the current session
 - `/workflow-overlord-slice-implement` — work the active slice
 - `/workflow-overlord-slice-close` — finalize the active slice
 - `/workflow-overlord-status` — read-only

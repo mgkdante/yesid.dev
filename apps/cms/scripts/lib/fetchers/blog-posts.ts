@@ -1,10 +1,10 @@
 /**
  * blog-posts fetcher — reads `blog_posts` (flat, mono-language per row per AM2.5).
- * Mirrors apps/web/src/lib/adapters/directus.ts:1770 `toBlogPost`.
+ * Mirrors `toBlogPost` in apps/web/src/lib/adapters/directus.ts.
  *
  * SVG fallback resolution: when a row has no svg_illustration FK, hashes the
  * slug to pick from PRO/PERSONAL fallback lists — same deterministic policy
- * as the runtime adapter (resolveSvgFallbackNameSync at L1750).
+ * as the adapter (`resolveSvgFallbackNameSync` in the same directus.ts).
  */
 
 import { readItems } from '@directus/sdk';

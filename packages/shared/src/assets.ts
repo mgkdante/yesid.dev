@@ -21,10 +21,10 @@
  * 18e-18i + the metro-svg consumer in 18d phase 8 use this to resolve a
  * legacyPath to its Directus file UUID.
  *
- * Source of truth: apps/cms/fixtures/assets-id-map.json. This package
- * re-exports a copy at packages/shared/fixtures/assets-id-map.json. The two
- * MUST stay in sync — if you change one, change the other (slice-18d notes a
- * sync-script as a post-slice-18 follow-up).
+ * Source of truth: apps/cms/fixtures/assets-id-map.json (authoritative);
+ * packages/shared/fixtures/assets-id-map.json is a mirror. BOTH copies are
+ * emitted by apps/cms/scripts/migrate-assets.ts (GH #40) — refresh them by
+ * re-running migrate-assets, never by hand-editing either file.
  */
 import idMap from '../fixtures/assets-id-map.json' with { type: 'json' };
 

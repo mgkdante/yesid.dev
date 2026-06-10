@@ -32,7 +32,7 @@ notion:
 
 ## Workflow
 
-workflow-overlord 2.0 orchestrates Claude Code + Codex sessions via Notion shared state. Anti-hallucination through chunked work (slice → tasks). User drives; AI reminds.
+workflow-overlord 3.x (installed plugin) orchestrates Claude Code + Codex sessions via Notion shared state. Anti-hallucination through chunked work (slice → tasks). User drives; AI reminds.
 
 ## Core principles — the 5 mechanical guarantees (100% enforced)
 
@@ -40,7 +40,7 @@ workflow-overlord 2.0 orchestrates Claude Code + Codex sessions via Notion share
 2. **Sessions row gets transcript + summary at session end** — Stop/SessionEnd hook performs the final chunk sync, writes the full transcript artifact, and updates `Summary`. **`Ended` is not written on Stop** — sessions are resumable and Stop is treated as "quiet for now," not "final close."
 3. **No surgical Notion edits (Rule 2)** — PreToolUse hook
 4. **Refuse placeholder Notion config (Rule 6)** — PreToolUse hook
-5. **Cross-tool parity (partial)** — SessionStart / UserPromptSubmit / Stop are at parity between Claude Code and Codex via repo hook wrappers + workflow-overlord plugin manifest + per-project `.codex/config.toml` dispatchers. **PreToolUse Rules 2 + 6 are Claude-Code-only** as of workflow-overlord 3.0.1: the plugin's own `codex-setup-hooks.sh` documents no Codex-side PreToolUse setup. Codex sessions in this repo can perform surgical Notion `update_content` edits AND can target `<FILL IN>` placeholder UUIDs WITHOUT refusal. Mitigation: operator discipline (review every Notion edit before allowing) + post-hoc revert. Re-evaluate when workflow-overlord ships first-class Codex PreToolUse OR a custom project-side wrapper is added to `.codex/config.toml`. Closed in slice-18k as documented-wontfix (#123).
+5. **Cross-tool parity** — all five guarantees are at parity between Claude Code and Codex. SessionStart / UserPromptSubmit / Stop run via repo hook wrappers + workflow-overlord plugin manifest + per-project `.codex/config.toml` dispatchers. PreToolUse Rules 2 + 6 reached Codex parity in slice-19 via the `.codex/hooks/pretool-check-notion-edit.sh` + `.codex/hooks/pretool-check-notion-config.sh` wrappers (fail-open dispatchers that exec the installed plugin's hooks; registered through the `[[hooks.PreToolUse]]` config layer). The slice-18k "Claude-Code-only" gap note is historical.
 
 Everything else is instruction + AI nudge — user decides.
 
