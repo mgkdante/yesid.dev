@@ -17,9 +17,9 @@ name: contract-test (intra-repo)
 # Provisioning (slice-28.4 rewrite): the ephemeral Directus is provisioned
 # from the directus-sync tree (apps/cms/directus/**) via
 # `bun --cwd apps/cms run sync:push`, mirroring how cms.yml pushes to prod.
-# The image is built from apps/cms/Dockerfile (Directus 11.17.3 +
-# directus-extension-sync — the same image Railway runs; the extension is
-# required for directus-sync's id-map endpoints). The previous step POSTed
+# The image is built from apps/cms/Dockerfile (Directus + directus-extension-sync
+# at whatever versions the Dockerfile pins — the same image Railway runs; the
+# extension is required for directus-sync's id-map endpoints). The previous step POSTed
 # apps/cms/infra/directus/snapshot.yaml to /schema/apply — a path deleted
 # when the directus-sync tree replaced the YAML snapshot, so the step was
 # silently broken.
@@ -84,7 +84,7 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Build ephemeral Directus image (11.17.3 + directus-extension-sync, mirrors Railway)
+      - name: Build ephemeral Directus image (from apps/cms/Dockerfile, mirrors Railway)
         # directus-sync push needs the directus-extension-sync id-map endpoints
         # on the target instance — the stock directus/directus image lacks
         # them. apps/cms/Dockerfile is exactly the image Railway runs.
@@ -134,7 +134,13 @@ jobs:
           DIRECTUS_ADMIN_EMAIL: admin@example.com
           DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
         working-directory: apps/cms
-        run: bun run sync:push
+        # --force: the committed snapshot is stamped with the version it was
+        # pulled from (currently 11.17.3) while the ephemeral image runs 12.0.0
+        # — /schema/diff hard-rejects cross-version pushes without it. Safe
+        # here (throwaway instance). Becomes a no-op once the post-flip
+        # sync:pull re-stamps the snapshot at 12.x; never add this to cms.yml
+        # prod pushes, where the version guard is protective.
+        run: bun run sync:push -- --force
 
       - name: Grant Public policy read on services domain
         run: |
