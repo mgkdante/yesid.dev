@@ -1,4 +1,15 @@
 #!/usr/bin/env bun
+//
+// DONE / CANNOT RUN AGAIN — one-off generator, completed (slice-18g Phase 1
+// Task 3; banner added in slice-28.5, audit #32). Its input tree
+// (apps/web/src/content/stack/*.md) was deleted in slice-28.3 with the rest
+// of the legacy markdown pipeline, so this script can never re-run — the
+// committed fixtures/collections/tech-stack.json is the frozen output of its
+// final run. Tech-stack content is authored in Directus Data Studio now.
+// Kept in-tree per the 27.2 archive-not-delete convention (it documents how
+// the fixture was derived, incl. the icon-slug convention seed-tech-stack's
+// icon_id mapping relies on).
+//
 /**
  * Generate `apps/cms/fixtures/collections/tech-stack.json` from the 34
  * static markdown files at `apps/web/src/content/stack/*.md`.

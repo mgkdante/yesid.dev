@@ -39,18 +39,20 @@ describe('seed-tech-stack pure helpers', () => {
 	});
 
 	describe('toTechStackRow', () => {
+		// slice-28.5 (#32): parent row writes icon_id (M2O FK into icons) — the
+		// legacy `icon` string field was dropped from the schema in 18h-ii.
 		it('returns flat parent shape — no translation or junction fields', () => {
 			const row = toTechStackRow(airflow);
 			expect(Object.keys(row).sort()).toEqual(
-				['id', 'icon', 'name', 'sort', 'status'].sort(),
+				['id', 'icon_id', 'name', 'sort', 'status'].sort(),
 			);
 		});
 
-		it('preserves id, name, icon, status, sort', () => {
+		it('preserves id, name, icon_id, status, sort', () => {
 			const row = toTechStackRow(airflow);
 			expect(row.id).toBe('airflow');
 			expect(row.name).toBe('Apache Airflow');
-			expect(row.icon).toBe('airflow');
+			expect(row.icon_id).toBe('airflow');
 			expect(row.status).toBe('published');
 			expect(row.sort).toBe(1);
 		});
@@ -66,7 +68,7 @@ describe('seed-tech-stack pure helpers', () => {
 			const row = toTechStackRow(cpp);
 			expect(row.id).toBe('cpp');
 			expect(row.name).toBe('C++');
-			expect(row.icon).toBe('cpp');
+			expect(row.icon_id).toBe('cpp');
 			expect(row.sort).toBe(4);
 		});
 	});
