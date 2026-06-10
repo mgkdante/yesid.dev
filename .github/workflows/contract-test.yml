@@ -17,9 +17,9 @@ name: contract-test (intra-repo)
 # Provisioning (slice-28.4 rewrite): the ephemeral Directus is provisioned
 # from the directus-sync tree (apps/cms/directus/**) via
 # `bun --cwd apps/cms run sync:push`, mirroring how cms.yml pushes to prod.
-# The image is built from apps/cms/Dockerfile (Directus 11.17.3 +
-# directus-extension-sync — the same image Railway runs; the extension is
-# required for directus-sync's id-map endpoints). The previous step POSTed
+# The image is built from apps/cms/Dockerfile (Directus + directus-extension-sync
+# at whatever versions the Dockerfile pins — the same image Railway runs; the
+# extension is required for directus-sync's id-map endpoints). The previous step POSTed
 # apps/cms/infra/directus/snapshot.yaml to /schema/apply — a path deleted
 # when the directus-sync tree replaced the YAML snapshot, so the step was
 # silently broken.
@@ -84,15 +84,31 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Build ephemeral Directus image (11.17.3 + directus-extension-sync, mirrors Railway)
+      - name: Build ephemeral Directus image (from apps/cms/Dockerfile, mirrors Railway)
         # directus-sync push needs the directus-extension-sync id-map endpoints
         # on the target instance — the stock directus/directus image lacks
         # them. apps/cms/Dockerfile is exactly the image Railway runs.
         run: docker build -t directus-ci apps/cms
 
       - name: Boot ephemeral Directus
+        # v12 licensing: FRESH instances hard-enforce core-tier limits at
+        # /schema/apply ("collections limit exceeded" — our tree is ~50
+        # collections), unlike upgrades-in-place which get a 30-day grace.
+        # Provide DIRECTUS_LICENSE_KEY (repo secret) once the Open Innovation
+        # Grant key arrives; LICENSE_TOKEN (offline variant) is preferred for
+        # CI if the grant tier issues one. Empty secret = keyless boot.
+        env:
+          LICENSE_KEY: ${{ secrets.DIRECTUS_LICENSE_KEY }}
         run: |
+          EXTRA_ENV=()
+          if [ -n "$LICENSE_KEY" ]; then
+            EXTRA_ENV+=(-e "LICENSE_KEY=$LICENSE_KEY")
+            echo "::notice::Booting with LICENSE_KEY from repo secret"
+          else
+            echo "::warning::No DIRECTUS_LICENSE_KEY secret — keyless core tier; /schema/apply will fail on collection limits for fresh v12 instances"
+          fi
           docker run -d --name directus \
+            "${EXTRA_ENV[@]}" \
             --add-host=host.docker.internal:host-gateway \
             -p 8055:8055 \
             -e KEY=ci-test-key-16-bytes-hex-aabbccdd \
@@ -111,13 +127,13 @@ jobs:
             directus-ci \
             sh -c "npx directus bootstrap && exec npx directus start"
           for i in {1..100}; do
-            if curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+            if curl -sf http://localhost:8055/server/ping >/dev/null 2>&1; then
               echo "::notice::Directus healthy after ${i} polls"
               break
             fi
             sleep 3
           done
-          if ! curl -sf http://localhost:8055/server/health >/dev/null 2>&1; then
+          if ! curl -sf http://localhost:8055/server/ping >/dev/null 2>&1; then
             echo "::error::Health check timed out"
             docker logs --tail=200 directus
             exit 1
@@ -134,23 +150,54 @@ jobs:
           DIRECTUS_ADMIN_EMAIL: admin@example.com
           DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
         working-directory: apps/cms
-        run: bun run sync:push
+        # --force: the committed snapshot is stamped with the version it was
+        # pulled from (currently 11.17.3) while the ephemeral image runs 12.0.0
+        # — /schema/diff hard-rejects cross-version pushes without it. Safe
+        # here (throwaway instance). Becomes a no-op once the post-flip
+        # sync:pull re-stamps the snapshot at 12.x; never add this to cms.yml
+        # prod pushes, where the version guard is protective.
+        run: bun run sync:push -- --force
 
-      - name: Grant Public policy read on services domain
+      - name: Grant Public policy read + seed languages
         run: |
           TOKEN=$(curl -sf -X POST http://localhost:8055/auth/login \
             -H 'Content-Type: application/json' \
             -d '{"email":"admin@example.com","password":"ci-test-pass-rotate-immediately"}' \
             | jq -r '.data.access_token')
-          PUBLIC_POLICY_ID=$(curl -sf -H "Authorization: Bearer $TOKEN" \
-            'http://localhost:8055/policies?filter[name][_eq]=Public&fields=id' \
-            | jq -r '.data[0].id')
+          # Fresh v11+/v12 bootstraps name the default public policy
+          # '$t:public_label' (a translation key); migrated instances (prod)
+          # carry the literal 'Public'. Fetch all policies and match either —
+          # and fail LOUD if neither exists, instead of POSTing policy:"" into
+          # a uuid column (the silent-empty failure mode of run 27311875212).
+          POLICIES=$(curl -sf -H "Authorization: Bearer $TOKEN" \
+            'http://localhost:8055/policies?fields=id,name&limit=-1')
+          PUBLIC_POLICY_ID=$(echo "$POLICIES" \
+            | jq -r '.data[] | select(.name == "Public" or .name == "$t:public_label") | .id' | head -1)
+          if [ -z "$PUBLIC_POLICY_ID" ] || [ "$PUBLIC_POLICY_ID" = "null" ]; then
+            echo "::error::No public policy found; policies present:"
+            echo "$POLICIES" | jq -r '.data[].name'
+            exit 1
+          fi
+          echo "::notice::Public policy resolved: $PUBLIC_POLICY_ID"
           for COLLECTION in services services_translations services_deliverables services_deliverables_translations services_sections services_sections_translations languages projects projects_translations projects_sections projects_sections_translations projects_impact_metrics projects_impact_metrics_translations projects_services; do
             curl -sf -X POST http://localhost:8055/permissions \
               -H "Authorization: Bearer $TOKEN" \
               -H 'Content-Type: application/json' \
               -d "{\"policy\":\"$PUBLIC_POLICY_ID\",\"collection\":\"$COLLECTION\",\"action\":\"read\",\"fields\":[\"*\"]}" >/dev/null
           done
+          # Seed the languages rows the *_translations NOT NULL FKs require.
+          # Audit #72 (slice-28.6 carries the durable fixture fix): no seed
+          # script or fixture provisions languages, so every fresh environment
+          # fails its first translated insert — proven on run 27312030014
+          # (INVALID_FOREIGN_KEY "en" for languages_code).
+          for LANG in "en:English" "fr:Français" "es:Español"; do
+            CODE="${LANG%%:*}"; NAME="${LANG#*:}"
+            curl -sf -X POST http://localhost:8055/items/languages \
+              -H "Authorization: Bearer $TOKEN" \
+              -H 'Content-Type: application/json' \
+              -d "{\"code\":\"$CODE\",\"name\":\"$NAME\",\"direction\":\"ltr\"}" >/dev/null
+          done
+          echo "::notice::Seeded languages en/fr/es"
 
       - name: Seed services from apps/cms fixture
         env:
