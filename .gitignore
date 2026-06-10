@@ -9,6 +9,9 @@ node_modules/
 **/dist/
 **/test-results/
 **/.turbo/
+# Vitest results cache — relocated from node_modules/.vite so CI can cache it
+# (apps/web/vite.config.ts cacheDir under VITEST; slice-28.4 audit #132)
+**/.vitest/
 .env
 .env.*
 !.env.example
