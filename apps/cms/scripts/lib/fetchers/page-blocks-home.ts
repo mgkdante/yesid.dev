@@ -7,12 +7,21 @@
  * loses page-context linkage but vastly simpler code; P7 drift check catches
  * any mismatch against the runtime adapter's M2A-validated output.
  *
+ * pages / pages_blocks / pages_translations (slice-28.5, audit #69): because
+ * every fetcher queries block_* collections directly, the pages M2A trio is
+ * ADMIN-GROUPING-ONLY — pages_translations.title (and the rest of the trio)
+ * is read by no export path and cannot affect rendered output. Translators
+ * should skip it. The matching field-note edit in the Directus schema
+ * (snapshot/collections/pages_translations.json) is flagged to slice-26 —
+ * schema changes are drift-gated and out of 28.5 scope. (The dormant
+ * directus.ts adapter does read the M2A tree; that path is the slice-26
+ * parity oracle, not production.)
+ *
  * Mirrors apps/web/src/lib/adapters/directus.ts transformBlock<X> functions.
  */
 
 import { readItems } from '@directus/sdk';
 import { toLocalizedString, toLocalizedJSON } from '../locale';
-import type { LocalizedString } from '../schemas/shared';
 import {
 	HeroContentSchema,
 	ManifestoContentSchema,
@@ -21,6 +30,7 @@ import {
 	AboutIntroContentSchema,
 	CtaContentSchema,
 	CloserContentSchema,
+	type LocalizedString,
 	type HeroContent,
 	type HeroAnimContent,
 	type ManifestoContent,
@@ -29,7 +39,7 @@ import {
 	type AboutIntroContent,
 	type CtaContent,
 	type CloserContent,
-} from '../schemas/page-blocks';
+} from '@repo/shared';
 import type { FetcherContext } from './types';
 
 interface BlockRow {

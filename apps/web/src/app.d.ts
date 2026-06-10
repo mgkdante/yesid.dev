@@ -8,13 +8,16 @@ declare global {
 	namespace App {
 		/**
 		 * slice-18i Phase 7D: handleError enriches the error object with the
-		 * status-specific CMS errorPage row. +error.svelte reads it from
+		 * status-specific errorPage content. +error.svelte reads it from
 		 * $page.error.cmsErrorPage so each status code can show distinct copy.
 		 */
 		interface Error {
 			message: string;
-			/** CMS-fetched errorPage row matching the response status code.
-			 * Undefined when handleError cannot reach the CMS (fails gracefully). */
+			/** errorPage content matching the response status code. Name is
+			 * historical — post-27.2 it resolves from the static content layer
+			 * (CMS-authored, exported at build time), not a live CMS call.
+			 * Undefined when the adapter read fails (handleError degrades
+			 * gracefully). */
 			cmsErrorPage?: ErrorPageContent;
 		}
 		interface Locals {

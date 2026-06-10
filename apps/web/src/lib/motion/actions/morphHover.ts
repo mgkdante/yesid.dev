@@ -25,6 +25,7 @@
 
 import { gsap, loadMorphSVG } from '../utils/gsap.js';
 import { convertSvgToMorphPaths } from '../utils/morphHelpers.js';
+import { isViewportAtMost } from '../utils/device.js';
 import { getMorphShapes, pickRandomShape } from '$lib/utils/shapes';
 import type { MorphShape } from '@repo/shared';
 
@@ -52,10 +53,7 @@ export function morphHover(node: HTMLElement, params: MorphHoverParams) {
 	let pluginLoaded = false;
 	let shapesLoaded = false;
 
-	function isMobile(): boolean {
-		if (typeof window === 'undefined') return false;
-		return window.matchMedia('(max-width: 767px)').matches;
-	}
+	const isMobile = () => isViewportAtMost(767);
 
 	async function ensureShapes() {
 		if (shapesLoaded) return;

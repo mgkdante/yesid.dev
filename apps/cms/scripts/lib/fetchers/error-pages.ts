@@ -16,7 +16,7 @@ import {
 	ErrorPageContentSchema,
 	type ErrorPageContent,
 } from '../schemas/nav';
-import type { LocalizedString } from '../schemas/shared';
+import type { LocalizedString } from '@repo/shared';
 import type { FetcherContext } from './types';
 
 export interface DirectusErrorPageTranslation {

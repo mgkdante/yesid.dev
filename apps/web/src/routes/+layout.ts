@@ -11,7 +11,11 @@ import {
 	errorPageContent as staticErrorPageContent,
 } from '$lib/content/nav';
 import type { NavLink, ErrorPageContent } from '$lib/content/nav';
-import { FALLBACK_MORPH_SHAPES } from '$lib/utils/shapes';
+// slice-28.5 (#120): client fallback reads the GENERATED morph-shapes module
+// (same source the static adapter serves), not the utils/shapes.ts seed —
+// otherwise a CSR-only render would show pre-CMS shapes while SSR shows CMS
+// shapes. The seed remains the catch{} fallback in +layout.server.ts only.
+import { morphShapes as generatedMorphShapes } from '$lib/content/morph-shapes';
 import type { MorphShape, PageSeo, SiteSeoDefaults } from '$lib/types';
 
 /** Shape of the layout-data slots merged from +layout.server.ts. */
@@ -66,9 +70,11 @@ export const load: LayoutLoad = async ({ data }) => {
 	const slots: LayoutSlotData = {
 		headerLinks: serverData.headerLinks ?? slotFallback.headerLinks,
 		// Use length-based fallback for footer + mobile: `??` does not replace an
-		// empty array returned by the server (staticAdapter pre-fix returned []).
-		// After the regen these server values will be populated, but the fallback
-		// guard ensures correct behaviour during any intermediate deploy window.
+		// empty array, and +layout.server.ts's guarded slots return [] when a
+		// read fails (footer/mobile have no server-side fallback arg). The
+		// length check keeps nav rendering from the static fallback in that
+		// case. (Historical trigger: a pre-fix staticAdapter returned [] for
+		// these slots during a deploy window.)
 		footerLinks:
 			serverData.footerLinks?.length ? serverData.footerLinks : slotFallback.footerLinks,
 		mobileLinks:
@@ -83,7 +89,7 @@ export const load: LayoutLoad = async ({ data }) => {
 			siteSeoDefaults: STATIC_SITE_SEO_DEFAULTS,
 		});
 	const themeColor = serverData.themeColor ?? STATIC_SITE_SEO_DEFAULTS.themeColor;
-	const morphShapes = serverData.morphShapes ?? FALLBACK_MORPH_SHAPES;
+	const morphShapes = serverData.morphShapes ?? generatedMorphShapes;
 
 	return { seo, themeColor, morphShapes, ...slots };
 };

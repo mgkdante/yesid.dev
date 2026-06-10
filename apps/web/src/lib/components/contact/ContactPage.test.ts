@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/svelte';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import ContactPage from './ContactPage.svelte';
 // slice-18i Phase 7C: ContactPage now requires contactPage prop.
@@ -131,5 +131,45 @@ describe('ContactPage', () => {
 		render(ContactPage, { props: { contactPage: contactContent, weather: null } });
 		expect(screen.queryAllByText(/°C/).length).toBe(0);
 		expect(screen.getByTestId('page-contact')).toBeTruthy();
+	});
+
+	// slice-28.1 (audit #20/#122): SSR-baked weather is CDN-stale; onMount
+	// refreshes from /api/weather. Default setup.dom stub returns null (no
+	// fresh data) — these tests override fetch to exercise both branches.
+	it('refreshes weather from /api/weather on mount', async () => {
+		const prevFetch = globalThis.fetch;
+		globalThis.fetch = vi.fn().mockResolvedValue(
+			new Response(JSON.stringify({ temp: 99, condition: 'fresh breeze', icon: '01d' }), {
+				status: 200,
+				headers: { 'Content-Type': 'application/json' },
+			}),
+		) as typeof globalThis.fetch;
+		try {
+			render(ContactPage, {
+				props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } }
+			});
+			await waitFor(() => {
+				expect(screen.getAllByText(/99°C/).length).toBeGreaterThanOrEqual(1);
+			});
+			expect(screen.getAllByText(/fresh breeze/i).length).toBeGreaterThanOrEqual(1);
+			expect(screen.queryAllByText(/12°C/).length).toBe(0);
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
+	});
+
+	it('keeps the SSR-baked weather when /api/weather fails', async () => {
+		const prevFetch = globalThis.fetch;
+		globalThis.fetch = vi.fn().mockRejectedValue(new Error('offline')) as typeof globalThis.fetch;
+		try {
+			render(ContactPage, {
+				props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } }
+			});
+			// Give the rejected refresh a microtask turn to (not) apply.
+			await new Promise((r) => setTimeout(r, 20));
+			expect(screen.getAllByText(/12°C/).length).toBeGreaterThanOrEqual(1);
+		} finally {
+			globalThis.fetch = prevFetch;
+		}
 	});
 });

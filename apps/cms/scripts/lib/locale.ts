@@ -11,7 +11,7 @@
  * (regen vs committed) will surface the mismatch.
  */
 
-export type Locale = 'en' | 'fr' | 'es';
+import type { Locale } from '@repo/shared';
 
 export interface LocalizedString {
 	en: string;
@@ -81,7 +81,7 @@ import type { BlockEditorDoc, LocalizedBlockEditorDoc } from '@repo/shared';
  * row as the structural template, collecting matching paths from fr/es, and
  * produces a structure where every string leaf is a LocalizedString.
  *
- * Mirrors apps/web/src/lib/adapters/directus.ts:554 `toLocalizedJSON`.
+ * Mirrors `toLocalizedJSON` in apps/web/src/lib/adapters/directus.ts.
  *
  * Non-string primitives (numbers, booleans) pass through unchanged from the
  * en row. Arrays merge element-wise by index.
@@ -153,7 +153,7 @@ function mergeJsonLocales(enTemplate: unknown, byLocale: Map<string, unknown>): 
 /**
  * Compose a LocalizedBlockEditorDoc from translation rows whose `field` column
  * holds a BlockEditorDoc JSON value per locale. Mirrors `toLocalizedBlockEditorDoc`
- * at apps/web/src/lib/adapters/directus.ts:510. Required `en` falls back to an
+ * in apps/web/src/lib/adapters/directus.ts. Required `en` falls back to an
  * empty single-paragraph doc when no English translation is present so the
  * LocalizedBlockEditorDocSchema's `.en` requirement is always satisfied.
  */

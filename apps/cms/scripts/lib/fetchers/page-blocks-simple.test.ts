@@ -3,7 +3,7 @@ import {
 	toBlogPageContent,
 	toProjectsPageContent,
 } from './page-blocks-simple';
-import { BlogPageContentSchema, ProjectsPageContentSchema } from '../schemas/page-blocks';
+import { BlogPageContentSchema, ProjectsPageContentSchema } from '@repo/shared';
 
 describe('blog-page transform', () => {
 	const fixture = {

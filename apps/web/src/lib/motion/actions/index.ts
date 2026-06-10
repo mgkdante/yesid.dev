@@ -16,4 +16,4 @@ export { wordmarkHover, type WordmarkHoverParams } from './wordmarkHover.js';
 export { morphHover, type MorphHoverParams } from './morphHover.js';
 export { scrollChain } from './scrollChain.js';
 export { pressBounce } from './pressBounce.js';
-export { tapRipple } from './tapRipple.js';
+// tapRipple — deleted in slice-28.3 (#104, zero template consumers)

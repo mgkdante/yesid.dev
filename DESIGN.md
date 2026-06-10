@@ -64,7 +64,7 @@ spacing:
   "card-gap": "clamp(1rem, 2vw, 1.5rem)"
 
 components:
-  # populated in slice-design-3-figma
+  # see Notion design system page
 ---
 
 ## Overview
@@ -72,8 +72,7 @@ components:
 yesid.dev is a freelance digital-infrastructure brand. The design language is edge-to-edge,
 dark-first, restrained-orange. Every visual decision traces back to one of five principles:
 edge-to-edge layout, dark-first surfaces, one-orange interactivity, motion-with-intent,
-no fluff. Full narrative: `brand/BRAND.md`. Implementation rules:
-`docs/project/CONSTITUTION.md`.
+no fluff. Full narrative and implementation rules: Notion → Business → Brand.
 
 ## Colors
 
@@ -91,8 +90,7 @@ Hard floors: body ≥ 16px, mono ≥ 13px, labels ≥ 12px, micro for chrome onl
 
 Four CSS Grid recipes: Full-Bleed · Contained · Content+Sidebars · Edge-Title-Grid. Container
 widths cap at `64rem` (content) / `72rem` (wide). Page gutters scale via `--space-page-x`.
-Section spacing scales via `--space-section-y`. Detailed recipes:
-`docs/project/CONSTITUTION.md § 2`.
+Section spacing scales via `--space-section-y`. Detailed recipes: Notion → Business → Brand.
 
 ## Elevation & Depth
 
@@ -108,8 +106,8 @@ Borders use semantic tokens (`border`, `border-subtle`, `border-strong`).
 ## Components
 
 See `apps/web/src/lib/components/brand/` (12 brand primitives) and `apps/web/src/lib/components/ui/`
-(19 shadcn-svelte primitives, customized with brand tokens). Figma documentation:
-`brand/foundations/figma.md`.
+(19 shadcn-svelte primitives, customized with brand tokens). Design-system documentation:
+Notion → Business → Brand.
 
 ## Do's and Don'ts
 

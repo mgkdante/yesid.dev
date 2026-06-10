@@ -18,13 +18,14 @@ faker.seed(42);
 vi.mock('$env/dynamic/private', () => ({ env: {} }));
 vi.mock('$env/dynamic/public', () => ({ env: {} }));
 
-// Force the hybrid adapter to behave as all-static during data-layer tests.
+// Keep the DORMANT Directus adapter inert during data-layer tests.
 //
-// The production adapter at $lib/adapters/index.ts composes `services` from
-// `directusAdapter` with the rest from `staticAdapter` (port-by-port
-// migration, Slice 18 Task 7). Without this mock, any test that transitively
-// invokes `adapter.services.*` would try to fetch from cms.yesid.dev and fail
-// fast because PUBLIC_DIRECTUS_URL is empty in test env.
+// Post-27.2, $lib/adapters/index.ts binds every read-port to staticAdapter;
+// directus.ts stays in-tree only as the RUN_PARITY oracle for the slice-26
+// upgrade (see its DORMANT banner). This mock pins that reality in the test
+// graph: any suite that (transitively) imports the dormant module gets
+// staticAdapter behaviour instead of a module that could attempt network
+// I/O against an empty PUBLIC_DIRECTUS_URL.
 //
 // Why mock at `$lib/adapters/directus` rather than `$lib/adapters` (the
 // composite): meta.ts uses a late-binding `await import('$lib/adapters')`
