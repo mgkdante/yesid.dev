@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { LocalizedBlockEditorDocSchema } from './blocks';
+import { LocalizedBlockEditorDocSchema } from '@repo/shared';
 import { IconRecordSchema } from './icon';
 
 export const TechStackItemSchema = z.object({

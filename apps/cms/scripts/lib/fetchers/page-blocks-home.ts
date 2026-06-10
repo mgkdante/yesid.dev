@@ -12,7 +12,6 @@
 
 import { readItems } from '@directus/sdk';
 import { toLocalizedString, toLocalizedJSON } from '../locale';
-import type { LocalizedString } from '../schemas/shared';
 import {
 	HeroContentSchema,
 	ManifestoContentSchema,
@@ -21,6 +20,7 @@ import {
 	AboutIntroContentSchema,
 	CtaContentSchema,
 	CloserContentSchema,
+	type LocalizedString,
 	type HeroContent,
 	type HeroAnimContent,
 	type ManifestoContent,
@@ -29,7 +29,7 @@ import {
 	type AboutIntroContent,
 	type CtaContent,
 	type CloserContent,
-} from '../schemas/page-blocks';
+} from '@repo/shared';
 import type { FetcherContext } from './types';
 
 interface BlockRow {

@@ -7,16 +7,14 @@
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
-import { BlockEditorDocSchema } from '@repo/shared';
-import type { Project, ProjectSection, ImpactMetric, ProjectStatus, LocalizedBlockEditorDoc } from '$lib/types';
+import { LocalizedBlockEditorDocSchema } from '@repo/shared';
+import type { Project, ProjectSection, ImpactMetric, ProjectStatus } from '$lib/types';
 
 export const ProjectStatusSchema = z.enum(['public', 'private', 'wip']);
 
-export const LocalizedBlockEditorDocSchema: z.ZodType<LocalizedBlockEditorDoc> = z.object({
-	en: BlockEditorDocSchema,
-	fr: BlockEditorDocSchema.optional(),
-	es: BlockEditorDocSchema.optional(),
-});
+// LocalizedBlockEditorDocSchema relocated to @repo/shared (slice-28.3 #82);
+// re-exported so existing `$lib/schemas/project` consumers keep working.
+export { LocalizedBlockEditorDocSchema } from '@repo/shared';
 
 export const ProjectSectionSchema = z.object({
 	title: LocalizedStringSchema,

@@ -4,10 +4,7 @@
  */
 
 import { z } from 'zod';
-
-// LocaleSchema defined locally — @repo/shared is on Zod 4.x while apps/cms is
-// on Zod 3.x; sharing schema instances across major versions fails at runtime.
-const LocaleSchema = z.enum(['en', 'fr', 'es']);
+import { LocaleSchema } from '@repo/shared';
 
 export const BlogCategorySchema = z.enum(['professional', 'personal']);
 export const BlogAnimationSchema = z.enum(['draw', 'morph', 'draw-fill']);

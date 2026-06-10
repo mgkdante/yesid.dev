@@ -12,13 +12,13 @@
 
 import { readItems } from '@directus/sdk';
 import { toLocalizedString, toLocalizedJSON } from '../locale';
-import type { LocalizedString } from '../schemas/shared';
 import {
 	TechStackPageContentSchema,
 	ContactContentSchema,
+	type LocalizedString,
 	type TechStackPageContent,
 	type ContactContent,
-} from '../schemas/page-blocks';
+} from '@repo/shared';
 import type { FetcherContext } from './types';
 
 // ---------------------------------------------------------------------------

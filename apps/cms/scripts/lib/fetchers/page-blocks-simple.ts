@@ -19,7 +19,7 @@ import {
 	ProjectsPageContentSchema,
 	type BlogPageContent,
 	type ProjectsPageContent,
-} from '../schemas/page-blocks';
+} from '@repo/shared';
 import type { FetcherContext } from './types';
 
 interface BlogPageTranslation {
