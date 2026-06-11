@@ -1,22 +1,22 @@
 /**
  * Medium-complexity page-block fetchers — tech-stack-page + contact-page.
  *
- * - tech-stack-page (block_tech_stack_page_content): all fields are JSON columns
- *   with nested LocalizedString leaves → toLocalizedJSON for everything.
- * - contact-page (block_contact_content): mixed plain/LocalizedString in nested
- *   terminals + per-field placeholder LS; web3formsKey is a parent-row scalar.
+ * go2-t1b2: both transforms read FLAT columns (terminal chrome scalars on the
+ * parent row; per-locale strings on translations) and recompose the exact
+ * module shapes the legacy JSON columns produced. The hero terminal templates
+ * (operator addendum) recompose under hero.terminal with a literal {count}
+ * token interpolated by the /tech-stack component.
  *
  * Mirrors transformBlockTechStackPageContent + transformBlockContactContent in
  * apps/web/src/lib/adapters/directus.ts.
  */
 
 import { readSingleton } from '@directus/sdk';
-import { toLocalizedString, toLocalizedJSON } from '../locale';
+import { toLocalizedString } from '../locale';
 import { asSingletonRow } from './singleton';
 import {
 	TechStackPageContentSchema,
 	ContactContentSchema,
-	type LocalizedString,
 	type TechStackPageContent,
 	type ContactContent,
 } from '@repo/shared';
@@ -33,12 +33,40 @@ interface BlockRow {
 }
 
 export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
-	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const tr = (raw.translations ?? []) as ReadonlyArray<
+		Record<string, unknown> & { languages_code: string }
+	>;
 	return {
-		meta: toLocalizedJSON(tr, 'meta') as TechStackPageContent['meta'],
-		hero: toLocalizedJSON(tr, 'hero') as TechStackPageContent['hero'],
-		actions: toLocalizedJSON(tr, 'actions') as TechStackPageContent['actions'],
-		cta: toLocalizedJSON(tr, 'cta') as TechStackPageContent['cta'],
+		meta: {
+			title: toLocalizedString(tr, 'meta_title'),
+			description: toLocalizedString(tr, 'meta_description'),
+		},
+		hero: {
+			overline: toLocalizedString(tr, 'hero_overline'),
+			titleLine1: toLocalizedString(tr, 'hero_title_line1'),
+			titleLine2: toLocalizedString(tr, 'hero_title_line2'),
+			terminalAria: toLocalizedString(tr, 'hero_terminal_aria'),
+			// Operator addendum: terminal line templates — literal {count} token
+			// interpolated by the component from data.items.length.
+			terminal: {
+				cmd: toLocalizedString(tr, 'terminal_cmd'),
+				loading: toLocalizedString(tr, 'terminal_loading'),
+				success: toLocalizedString(tr, 'terminal_success'),
+				cataloged: toLocalizedString(tr, 'terminal_cataloged'),
+				status: toLocalizedString(tr, 'terminal_status'),
+			},
+			stats: { technologies: toLocalizedString(tr, 'hero_stat_technologies') },
+		},
+		actions: {
+			getInTouch: toLocalizedString(tr, 'action_get_in_touch'),
+			viewServices: toLocalizedString(tr, 'action_view_services'),
+		},
+		cta: {
+			headingLine1: toLocalizedString(tr, 'cta_heading_line1'),
+			headingLine2: toLocalizedString(tr, 'cta_heading_line2'),
+			sub: toLocalizedString(tr, 'cta_sub'),
+			availability: toLocalizedString(tr, 'cta_availability'),
+		},
 	};
 }
 
@@ -62,166 +90,60 @@ export async function fetchTechStackPageContent({
 // ---------------------------------------------------------------------------
 
 export function toContactContent(raw: BlockRow): ContactContent {
-	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
-
-	// --- infoTerminal: title/command plain; location/responseTime/sectionLabels LS ---
-	const infoByLocale = new Map<string, Record<string, unknown>>();
-	for (const row of tr) {
-		const code = row.languages_code as string;
-		const it = row.info_terminal;
-		if (it && typeof it === 'object' && !Array.isArray(it)) {
-			infoByLocale.set(code, it as Record<string, unknown>);
-		}
-	}
-	const enInfo = infoByLocale.get('en') ?? {};
-	const locationLS: LocalizedString = {
-		en: typeof enInfo.location === 'string' ? enInfo.location : '',
-	};
-	const responseTimeLS: LocalizedString = {
-		en: typeof enInfo.responseTime === 'string' ? enInfo.responseTime : '',
-	};
-	const sectionLabelLocationLS: LocalizedString = { en: '' };
-	const sectionLabelConnectLS: LocalizedString = { en: '' };
-	const enSectionLabels =
-		enInfo.sectionLabels && typeof enInfo.sectionLabels === 'object' && !Array.isArray(enInfo.sectionLabels)
-			? (enInfo.sectionLabels as Record<string, unknown>)
-			: {};
-	sectionLabelLocationLS.en =
-		typeof enSectionLabels.location === 'string' ? enSectionLabels.location : '';
-	sectionLabelConnectLS.en =
-		typeof enSectionLabels.connect === 'string' ? enSectionLabels.connect : '';
-	for (const [locale, it] of infoByLocale) {
-		if (locale === 'en') continue;
-		if (typeof it.location === 'string' && it.location.length > 0) {
-			if (locale === 'fr') locationLS.fr = it.location;
-			else if (locale === 'es') locationLS.es = it.location;
-		}
-		if (typeof it.responseTime === 'string' && it.responseTime.length > 0) {
-			if (locale === 'fr') responseTimeLS.fr = it.responseTime;
-			else if (locale === 'es') responseTimeLS.es = it.responseTime;
-		}
-		const sl =
-			it.sectionLabels && typeof it.sectionLabels === 'object' && !Array.isArray(it.sectionLabels)
-				? (it.sectionLabels as Record<string, unknown>)
-				: {};
-		if (typeof sl.location === 'string' && sl.location.length > 0) {
-			if (locale === 'fr') sectionLabelLocationLS.fr = sl.location;
-			else if (locale === 'es') sectionLabelLocationLS.es = sl.location;
-		}
-		if (typeof sl.connect === 'string' && sl.connect.length > 0) {
-			if (locale === 'fr') sectionLabelConnectLS.fr = sl.connect;
-			else if (locale === 'es') sectionLabelConnectLS.es = sl.connect;
-		}
-	}
-	const infoTerminal: ContactContent['infoTerminal'] = {
-		title: typeof enInfo.title === 'string' ? enInfo.title : '',
-		command: typeof enInfo.command === 'string' ? enInfo.command : '',
-		location: locationLS,
-		responseTime: responseTimeLS,
-		sectionLabels: {
-			location: sectionLabelLocationLS,
-			connect: sectionLabelConnectLS,
-		},
-	};
-
-	// --- formTerminal: nested with mixed plain/LS ---
-	const formByLocale = new Map<string, Record<string, unknown>>();
-	for (const row of tr) {
-		const code = row.languages_code as string;
-		const ft = row.form_terminal;
-		if (ft && typeof ft === 'object' && !Array.isArray(ft)) {
-			formByLocale.set(code, ft as Record<string, unknown>);
-		}
-	}
-	const enForm = formByLocale.get('en') ?? {};
-	const commandOutputLS: LocalizedString = {
-		en: typeof enForm.commandOutput === 'string' ? enForm.commandOutput : '',
-	};
-	const submitLabelLS: LocalizedString = {
-		en: typeof enForm.submitLabel === 'string' ? enForm.submitLabel : '',
-	};
-	for (const [locale, ft] of formByLocale) {
-		if (locale === 'en') continue;
-		if (typeof ft.commandOutput === 'string' && ft.commandOutput.length > 0) {
-			if (locale === 'fr') commandOutputLS.fr = ft.commandOutput;
-			else if (locale === 'es') commandOutputLS.es = ft.commandOutput;
-		}
-		if (typeof ft.submitLabel === 'string' && ft.submitLabel.length > 0) {
-			if (locale === 'fr') submitLabelLS.fr = ft.submitLabel;
-			else if (locale === 'es') submitLabelLS.es = ft.submitLabel;
-		}
-	}
-
-	function buildTerminalField(fieldName: string): ContactContent['formTerminal']['fields']['name'] {
-		const enFields =
-			enForm.fields && typeof enForm.fields === 'object' && !Array.isArray(enForm.fields)
-				? (enForm.fields as Record<string, unknown>)
-				: {};
-		const enField =
-			enFields[fieldName] && typeof enFields[fieldName] === 'object'
-				? (enFields[fieldName] as Record<string, unknown>)
-				: {};
-		const label = typeof enField.label === 'string' ? enField.label : '';
-		const placeholderLS: LocalizedString = {
-			en: typeof enField.placeholder === 'string' ? enField.placeholder : '',
-		};
-		for (const [locale, ft] of formByLocale) {
-			if (locale === 'en') continue;
-			const ftFields =
-				ft.fields && typeof ft.fields === 'object' && !Array.isArray(ft.fields)
-					? (ft.fields as Record<string, unknown>)
-					: {};
-			const ftField =
-				ftFields[fieldName] && typeof ftFields[fieldName] === 'object'
-					? (ftFields[fieldName] as Record<string, unknown>)
-					: {};
-			if (typeof ftField.placeholder === 'string' && ftField.placeholder.length > 0) {
-				if (locale === 'fr') placeholderLS.fr = ftField.placeholder;
-				else if (locale === 'es') placeholderLS.es = ftField.placeholder;
-			}
-		}
-		return { label, placeholder: placeholderLS };
-	}
-
-	const formTerminal: ContactContent['formTerminal'] = {
-		title: typeof enForm.title === 'string' ? enForm.title : '',
-		command: typeof enForm.command === 'string' ? enForm.command : '',
-		commandOutput: commandOutputLS,
-		fields: {
-			name: buildTerminalField('name'),
-			email: buildTerminalField('email'),
-			message: buildTerminalField('message'),
-		},
-		submitLabel: submitLabelLS,
-	};
-
-	const validation = toLocalizedJSON(tr, 'validation') as ContactContent['validation'];
-	const success = toLocalizedJSON(tr, 'success') as ContactContent['success'];
-
+	const tr = (raw.translations ?? []) as ReadonlyArray<
+		Record<string, unknown> & { languages_code: string }
+	>;
+	const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 	const enRow = tr.find((r) => r.languages_code === 'en') ?? tr[0];
 	const rawSocials =
-		enRow && Array.isArray(enRow.socials)
-			? (enRow.socials as Array<Record<string, unknown>>)
-			: [];
-	const socials: ContactContent['socials'] = rawSocials.map((s) => ({
-		label: typeof s.label === 'string' ? s.label : '',
-		href: typeof s.href === 'string' ? s.href : '',
-		icon: typeof s.icon === 'string' ? s.icon : '',
-	}));
-
-	const meta = toLocalizedJSON(tr, 'meta') as ContactContent['meta'];
-
+		enRow && Array.isArray(enRow.socials) ? (enRow.socials as Array<Record<string, unknown>>) : [];
 	return {
 		pageTitle: toLocalizedString(tr, 'page_title'),
 		stationLabel: toLocalizedString(tr, 'station_label'),
 		sendErrorMessage: toLocalizedString(tr, 'send_error_message'),
-		meta,
-		infoTerminal,
-		formTerminal,
-		validation,
-		success,
-		socials,
-		web3formsKey: typeof raw.web3forms_key === 'string' ? raw.web3forms_key : '',
+		meta: {
+			title: toLocalizedString(tr, 'meta_title'),
+			description: toLocalizedString(tr, 'meta_description'),
+		},
+		infoTerminal: {
+			title: str(raw.info_terminal_title),
+			command: str(raw.info_terminal_command),
+			location: toLocalizedString(tr, 'info_location'),
+			responseTime: toLocalizedString(tr, 'info_response_time'),
+			sectionLabels: {
+				location: toLocalizedString(tr, 'info_section_label_location'),
+				connect: toLocalizedString(tr, 'info_section_label_connect'),
+			},
+		},
+		formTerminal: {
+			title: str(raw.form_terminal_title),
+			command: str(raw.form_terminal_command),
+			commandOutput: toLocalizedString(tr, 'form_command_output'),
+			fields: {
+				name: { label: str(raw.form_field_name_label), placeholder: toLocalizedString(tr, 'form_field_name_placeholder') },
+				email: { label: str(raw.form_field_email_label), placeholder: toLocalizedString(tr, 'form_field_email_placeholder') },
+				message: { label: str(raw.form_field_message_label), placeholder: toLocalizedString(tr, 'form_field_message_placeholder') },
+			},
+			submitLabel: toLocalizedString(tr, 'form_submit_label'),
+		},
+		validation: {
+			required: toLocalizedString(tr, 'validation_required'),
+			invalidEmail: toLocalizedString(tr, 'validation_invalid_email'),
+			errorSummary: toLocalizedString(tr, 'validation_error_summary'),
+		},
+		success: {
+			validating: toLocalizedString(tr, 'success_validating'),
+			sending: toLocalizedString(tr, 'success_sending'),
+			sent: toLocalizedString(tr, 'success_sent'),
+			responseTime: toLocalizedString(tr, 'success_response_time'),
+			meanwhile: toLocalizedString(tr, 'success_meanwhile'),
+			resetLabel: toLocalizedString(tr, 'success_reset_label'),
+			fieldOk: toLocalizedString(tr, 'success_field_ok'),
+		},
+		socials: rawSocials.map((s) => ({
+			label: str(s.label), href: str(s.href), icon: str(s.icon),
+		})),
+		web3formsKey: str(raw.web3forms_key),
 	};
 }
 
