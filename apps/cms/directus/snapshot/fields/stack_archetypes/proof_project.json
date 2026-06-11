@@ -1,0 +1,48 @@
+{
+  "collection": "stack_archetypes",
+  "field": "proof_project",
+  "type": "string",
+  "meta": {
+    "collection": "stack_archetypes",
+    "conditions": null,
+    "display": "related-values",
+    "display_options": {
+      "template": "{{id}}"
+    },
+    "field": "proof_project",
+    "group": null,
+    "hidden": false,
+    "interface": "select-dropdown-m2o",
+    "note": "the real project that proves this archetype",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 7,
+    "special": [
+      "m2o"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
+  },
+  "schema": {
+    "name": "proof_project",
+    "table": "stack_archetypes",
+    "data_type": "character varying",
+    "default_value": null,
+    "max_length": 255,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "is_generated": false,
+    "generation_expression": null,
+    "has_auto_increment": false,
+    "foreign_key_table": "projects",
+    "foreign_key_column": "id"
+  }
+}

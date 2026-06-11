@@ -6,7 +6,8 @@ import { adapter } from '$lib/adapters';
 import type { Locale, PageSeo, PreviewContext, SiteSeoDefaults } from '$lib/types';
 
 // getSiteMeta — pruned in slice-28.3 (#117, zero consumers). The underlying
-// adapter.meta.site port stays for the slice-26 RUN_PARITY oracle.
+// adapter.meta.site port stays on the ContentAdapter contract (route-SEO
+// factories consume siteMeta; adapter.test.ts exercises the port).
 
 /**
  * Slice-18 18h Q9: site-wide SEO defaults from the `site_meta` singleton.

@@ -17,7 +17,7 @@
     "note": "Supported locales (en required, fr/es optional). Used by Translations fields across all collections.",
     "preview_url": null,
     "singleton": false,
-    "sort": 3,
+    "sort": 5,
     "sort_field": null,
     "status": "active",
     "translations": null,

@@ -19,7 +19,6 @@
 		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'"
 	},
 	"devDependencies": {
-		"@directus/sdk": "20.3.0",
 		"@faker-js/faker": "^10.4.0",
 		"@playwright/test": "^1.58.2",
 		"@sveltejs/adapter-vercel": "^6.3.1",
@@ -33,7 +32,6 @@
 		"embla-carousel-svelte": "^8.6.0",
 		"happy-dom": "^20.8.9",
 		"interface-forge": "^2.6.6",
-		"p-queue": "9.1.2",
 		"paneforge": "^1.0.2",
 		"rollup-plugin-visualizer": "^7.0.1",
 		"svelte": "^5.54.0",

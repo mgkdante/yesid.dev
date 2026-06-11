@@ -8,15 +8,17 @@
     "display": null,
     "display_options": null,
     "field": "deliverables",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "list-o2m",
     "note": null,
-    "options": null,
+    "options": {
+      "template": "{{translations}}"
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 100,
+    "sort": 35,
     "special": [
       "o2m"
     ],

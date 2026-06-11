@@ -9,7 +9,7 @@
     "collapse": "open",
     "collection": "projects_impact_metrics_translations",
     "color": null,
-    "display_template": null,
+    "display_template": "{{label}}",
     "group": null,
     "hidden": true,
     "icon": "translate",

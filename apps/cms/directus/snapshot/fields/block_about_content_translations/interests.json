@@ -10,10 +10,46 @@
     "field": "interests",
     "group": null,
     "hidden": false,
-    "interface": "input-code",
+    "interface": "list",
     "note": "Per-locale interests strips (AboutContent.interests). JSON shape: Array<{ id, label, image: string }>.",
     "options": {
-      "language": "json"
+      "addLabel": "Add row",
+      "fields": [
+        {
+          "field": "id",
+          "meta": {
+            "field": "id",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "field": "label",
+          "meta": {
+            "field": "label",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "field": "image",
+          "meta": {
+            "field": "image",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "image",
+          "type": "string"
+        }
+      ],
+      "template": "{{id}}"
     },
     "readonly": false,
     "required": false,

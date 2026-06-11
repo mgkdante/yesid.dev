@@ -1,0 +1,30 @@
+{
+  "collection": "stack_archetypes",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": "status",
+    "archive_value": "archived",
+    "autosave_revision_interval": null,
+    "collapse": "open",
+    "collection": "stack_archetypes",
+    "color": null,
+    "display_template": "{{slug}}",
+    "group": "tech_stack_page",
+    "hidden": false,
+    "icon": "hub",
+    "item_duplication_fields": null,
+    "note": "Goal archetypes for the Tech Stack Engine — each row is a buildable outcome whose layered tech links draw the blueprint.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": null,
+    "sort_field": "sort",
+    "status": "active",
+    "translations": null,
+    "unarchive_value": "published",
+    "versioning": false
+  },
+  "schema": {
+    "name": "stack_archetypes"
+  }
+}

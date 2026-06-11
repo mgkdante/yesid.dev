@@ -10,10 +10,35 @@
     "field": "client_logos",
     "group": null,
     "hidden": false,
-    "interface": "input-code",
+    "interface": "list",
     "note": "Non-translatable client logos (AboutContent.clientLogos). JSON shape: Array<{ name, src: string, url?: string }>. AboutClientLogo has no LocalizedString leaves so it lives on the parent block, not on _translations.",
     "options": {
-      "language": "json"
+      "addLabel": "Add row",
+      "fields": [
+        {
+          "field": "name",
+          "meta": {
+            "field": "name",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "field": "src",
+          "meta": {
+            "field": "src",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "src",
+          "type": "string"
+        }
+      ],
+      "template": "{{name}}"
     },
     "readonly": false,
     "required": false,

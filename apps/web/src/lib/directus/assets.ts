@@ -1,7 +1,7 @@
 // MEDIA RUNTIME SEAM (slice-28.5 audit #123): this module is the ONE live
 // runtime Directus dependency left after slice-27.2. All *data* reads resolve
-// from the static adapter ($lib/content snapshots — see the DORMANT banner in
-// $lib/adapters/directus.ts), but every CMS-managed image still composes a
+// from the static adapter ($lib/content snapshots — the dormant directus
+// adapter was removed at slice-26 close), but every CMS-managed image still composes a
 // `${PUBLIC_DIRECTUS_URL}/assets/<uuid>` URL HERE, at request time, via
 // dynamic env. Consumers: ProjectCard.svelte (project images, SSR'd on
 // /projects and home), ImageBlock.svelte (blog-body images), and

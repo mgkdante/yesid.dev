@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "repo_url",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "input",
     "note": "GitHub or source repository URL.",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 7,
+    "sort": 44,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "repo_url",

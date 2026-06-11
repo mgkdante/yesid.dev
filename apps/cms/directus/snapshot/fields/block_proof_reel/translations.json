@@ -16,7 +16,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 99,
+    "sort": 10,
     "special": [
       "translations"
     ],

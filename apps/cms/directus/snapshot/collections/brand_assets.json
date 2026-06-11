@@ -1,0 +1,27 @@
+{
+  "collection": "brand_assets",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "autosave_revision_interval": null,
+    "collapse": "open",
+    "collection": "brand_assets",
+    "color": null,
+    "display_template": null,
+    "group": null,
+    "hidden": false,
+    "icon": "palette",
+    "item_duplication_fields": null,
+    "note": "Reusable visual assets: icons, illustrations, hero morph shapes.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": 8,
+    "sort_field": null,
+    "status": "active",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": false
+  }
+}

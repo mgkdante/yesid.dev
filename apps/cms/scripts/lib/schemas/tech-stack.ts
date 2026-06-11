@@ -4,6 +4,7 @@
 
 import { z } from 'zod';
 import { LocalizedBlockEditorDocSchema } from '@repo/shared';
+import { LocalizedStringSchema, StackLayerSchema } from '@repo/shared/schemas';
 import { IconRecordSchema } from './icon';
 
 export const TechStackItemSchema = z.object({
@@ -15,6 +16,9 @@ export const TechStackItemSchema = z.object({
 	why_i_use_it_instead: LocalizedBlockEditorDocSchema,
 	relatedServices: z.array(z.string()),
 	relatedProjects: z.array(z.string()),
+	// slice-29 engine support fields — optional, omitted when the CMS has no value.
+	layer: StackLayerSchema.optional(),
+	enables: LocalizedStringSchema.optional(),
 });
 
 export type TechStackItem = z.infer<typeof TechStackItemSchema>;

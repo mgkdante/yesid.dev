@@ -10,10 +10,57 @@
     "field": "methodology",
     "group": null,
     "hidden": false,
-    "interface": "input-code",
+    "interface": "list",
     "note": "Per-locale methodology steps (AboutContent.methodology). JSON shape: Array<{ id, label, description, station: number }>.",
     "options": {
-      "language": "json"
+      "addLabel": "Add row",
+      "fields": [
+        {
+          "field": "id",
+          "meta": {
+            "field": "id",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "field": "station",
+          "meta": {
+            "field": "station",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "station",
+          "type": "string"
+        },
+        {
+          "field": "label",
+          "meta": {
+            "field": "label",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "field": "description",
+          "meta": {
+            "field": "description",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "description",
+          "type": "string"
+        }
+      ],
+      "template": "{{id}}"
     },
     "readonly": false,
     "required": false,

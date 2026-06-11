@@ -105,7 +105,6 @@
         "tech_stack",
         "nav_links",
         "error_pages",
-        "route_seo",
         "site_meta",
         "block_about_content",
         "block_about_intro",
@@ -118,7 +117,9 @@
         "block_projects_page_content",
         "block_proof_reel",
         "block_services_grid",
-        "block_tech_stack_page_content"
+        "block_tech_stack_page_content",
+        "site_pages",
+        "stack_archetypes"
       ]
     },
     "operation": "_sync_op_vercel_revalidate_check_published",

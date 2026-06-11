@@ -26,7 +26,6 @@ import type {
 	BlogAnimation,
 	SiteMeta,
 	SiteSeoDefaults,
-	RouteSeoOverride,
 	TechStackItem,
 	Locale,
 	AboutContent,
@@ -150,26 +149,19 @@ export interface MetaPort {
 	siteSeoDefaults(ctx?: PreviewContext): Promise<SiteSeoDefaults>;
 
 	/**
-	 * Per-route SEO overrides (slice-18 18h): editor-authored title body +
-	 * description + per-route OG image. `byPath` returns undefined when no row
-	 * matches — composer falls through to code-side defaults +
-	 * `siteSeoDefaults`.
-	 */
-	routeSeo: {
-		byPath(path: string, ctx?: PreviewContext): Promise<RouteSeoOverride | undefined>;
-	};
-
-	/**
 	 * Resolve PageSeo for a route + locale + optional dynamic params.
 	 *
 	 * Route id is the SvelteKit route pattern from event.route.id
 	 * (e.g. '/', '/about', '/blog/[slug]'). Params come from event.params
 	 * for dynamic routes. Unknown routes throw — unknown routes are a bug
-	 * (a route added without a content/meta.ts entry), not an expected state.
+	 * (a route added without a route-seo-defaults.ts entry), not an expected
+	 * state.
 	 *
-	 * directus adapter: composer pattern — fetches site() + siteSeoDefaults()
-	 * + routeSeo.byPath(), merges with code-side technical defaults
-	 * (canonical, ogType, noIndex, jsonLd factory).
+	 * Composer pattern: merges siteMeta + siteSeoDefaults with code-side
+	 * technical defaults (canonical, ogType, noIndex, jsonLd factory) via
+	 * composePageSeo. The per-route CMS override port (`routeSeo.byPath`)
+	 * was removed with the dormant directus adapter at slice-26 close —
+	 * route-seo-defaults.ts is the canonical override source.
 	 *
 	 * Returned shape is parsed through PageSeoSchema at the adapter boundary,
 	 * so any adapter (static, Directus, mock) can only emit valid SEO.
