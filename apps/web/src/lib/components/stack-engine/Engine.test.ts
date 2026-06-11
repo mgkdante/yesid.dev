@@ -54,6 +54,18 @@ describe('Engine shell', () => {
 		expect(screen.queryByTestId('product-preview')).toBeNull();
 	});
 
+	// GO-w2t5 operator addendum: the section is full-bleed inside the route's
+	// engine-band; the width cap lives on an inner container so engine content
+	// stays a readable centered column.
+	it('GO-w2t5 addendum: engine content sits in the engine-inner width container', () => {
+		render(Engine, { props: { animate: false } });
+		const section = screen.getByTestId('stack-engine');
+		const inner = section.querySelector(':scope > .engine-inner');
+		expect(inner).not.toBeNull();
+		expect(inner!.contains(screen.getByTestId('mode-toggle-goal'))).toBe(true);
+		expect(inner!.contains(screen.getByTestId('engine-goal-region'))).toBe(true);
+	});
+
 	it('backing out of a blueprint returns to the goal picker', async () => {
 		render(Engine, { props: { animate: false } });
 		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
