@@ -16,8 +16,18 @@
 //
 // Failure strategy: each read is individually guarded. A failing slot returns
 // [] or the static fallback rather than crashing the layout.
+//
+// slice-26.1 (content controls): this load is ALSO the single route-gating
+// point for the site_pages registry. Before any data resolution, the request
+// path is resolved against $lib/content/site-pages (published rows only —
+// exact match, else longest listing prefix). No entry → the section was
+// archived in the CMS (or never existed) → 404. Non-page surfaces (/og/,
+// /sitemap.xml, /robots.txt, /work, /api/) never run this load (+server.ts
+// endpoints skip layout loads) and are additionally exempt inside the helper.
 
+import { error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
+import { isPathPublished } from '$lib/utils/page-registry';
 import { adapter } from '$lib/adapters';
 import { getPageSeo, getSiteSeoDefaults } from '$lib/repositories/meta';
 import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
@@ -34,8 +44,16 @@ import type { NavLink, ErrorPageContent } from '$lib/content/nav';
 // runtime appears to call setHeaders internally for caching, conflicting
 // with the manual setHeaders call. Single source of truth: hooks.server.ts.
 
-export const load: LayoutServerLoad = async ({ route, params, locals }) => {
+export const load: LayoutServerLoad = async ({ route, params, locals, url }) => {
 	const routeId = route.id ?? '/__error';
+
+	// Registry route-gate (slice-26.1). Only gate real page routes: a null
+	// route.id means SvelteKit is already rendering the error page for an
+	// unmatched path — gating there would just re-throw inside the error
+	// render. Archived/unknown sections 404 before any content resolution.
+	if (route.id !== null && !isPathPublished(url.pathname)) {
+		error(404, { message: 'Not found' });
+	}
 	const locale = DEFAULT_LOCALE;
 	const ctx = { pageCache: locals.pageCache };
 
