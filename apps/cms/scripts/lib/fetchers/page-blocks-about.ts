@@ -8,9 +8,10 @@
  * Mirrors transformBlockAboutContent in apps/web/src/lib/adapters/directus.ts:952.
  */
 
-import { readItems } from '@directus/sdk';
+import { readSingleton } from '@directus/sdk';
 import { toLocalizedJSON } from '../locale';
 import { AboutContentSchema, type LocalizedString, type AboutContent } from '@repo/shared';
+import { asSingletonRow } from './singleton';
 import type { FetcherContext } from './types';
 
 interface BlockRow {
@@ -350,14 +351,11 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 }
 
 export async function fetchAboutContent({ client }: FetcherContext): Promise<AboutContent> {
-	const rows = (await client.request(
-		readItems('block_about_content', {
+	const result = await client.request(
+		readSingleton('block_about_content', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0) {
-		throw new Error('[fetchAboutContent] no block_about_content row found');
-	}
-	return AboutContentSchema.parse(toAboutContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchAboutContent/block_about_content');
+	return AboutContentSchema.parse(toAboutContent(row));
 }

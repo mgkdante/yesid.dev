@@ -2,10 +2,11 @@
  * Home-page block fetchers — 7 blocks under pages('home'):
  *   hero, manifesto, proof-reel, services-grid, about-intro, cta, closer
  *
- * Each block is queried directly via `readItems('block_*', { limit: 1 })`
- * rather than via the M2A pages query. Same trade-off as page-blocks-simple:
- * loses page-context linkage but vastly simpler code; P7 drift check catches
- * any mismatch against the runtime adapter's M2A-validated output.
+ * Each block is queried directly via `readSingleton` + `asSingletonRow`
+ * (shape-tolerant during flips) rather than via the M2A pages query. Same
+ * trade-off as page-blocks-simple: loses page-context linkage but vastly
+ * simpler code; P7 drift check catches any mismatch against the runtime
+ * adapter's M2A-validated output.
  *
  * pages / pages_blocks / pages_translations (slice-28.5, audit #69): because
  * every fetcher queries block_* collections directly, the pages M2A trio is
@@ -20,8 +21,9 @@
  * Mirrors apps/web/src/lib/adapters/directus.ts transformBlock<X> functions.
  */
 
-import { readItems } from '@directus/sdk';
+import { readSingleton } from '@directus/sdk';
 import { toLocalizedString, toLocalizedJSON } from '../locale';
+import { asSingletonRow } from './singleton';
 import {
 	HeroContentSchema,
 	ManifestoContentSchema,
@@ -81,14 +83,13 @@ export function toHeroContent(raw: BlockRow): HeroContent {
 }
 
 export async function fetchHeroContent({ client }: FetcherContext): Promise<HeroContent> {
-	const rows = (await client.request(
-		readItems('block_hero', {
+	const result = await client.request(
+		readSingleton('block_hero', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0) throw new Error('[fetchHeroContent] no block_hero row found');
-	return HeroContentSchema.parse(toHeroContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchHeroContent/block_hero');
+	return HeroContentSchema.parse(toHeroContent(row));
 }
 
 // ---------------------------------------------------------------------------
@@ -177,14 +178,13 @@ export function toManifestoContent(raw: BlockRow): ManifestoContent {
 }
 
 export async function fetchManifestoContent({ client }: FetcherContext): Promise<ManifestoContent> {
-	const rows = (await client.request(
-		readItems('block_manifesto', {
+	const result = await client.request(
+		readSingleton('block_manifesto', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0) throw new Error('[fetchManifestoContent] no block_manifesto row found');
-	return ManifestoContentSchema.parse(toManifestoContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchManifestoContent/block_manifesto');
+	return ManifestoContentSchema.parse(toManifestoContent(row));
 }
 
 // ---------------------------------------------------------------------------
@@ -212,14 +212,13 @@ export function toProofReelContent(raw: BlockRow): ProofReelContent {
 }
 
 export async function fetchProofReelContent({ client }: FetcherContext): Promise<ProofReelContent> {
-	const rows = (await client.request(
-		readItems('block_proof_reel', {
+	const result = await client.request(
+		readSingleton('block_proof_reel', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0) throw new Error('[fetchProofReelContent] no block_proof_reel row found');
-	return ProofReelContentSchema.parse(toProofReelContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchProofReelContent/block_proof_reel');
+	return ProofReelContentSchema.parse(toProofReelContent(row));
 }
 
 // ---------------------------------------------------------------------------
@@ -240,15 +239,13 @@ export function toServicesGridContent(raw: BlockRow): ServicesGridContent {
 export async function fetchServicesGridContent({
 	client,
 }: FetcherContext): Promise<ServicesGridContent> {
-	const rows = (await client.request(
-		readItems('block_services_grid', {
+	const result = await client.request(
+		readSingleton('block_services_grid', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0)
-		throw new Error('[fetchServicesGridContent] no block_services_grid row found');
-	return ServicesGridContentSchema.parse(toServicesGridContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchServicesGridContent/block_services_grid');
+	return ServicesGridContentSchema.parse(toServicesGridContent(row));
 }
 
 // ---------------------------------------------------------------------------
@@ -276,15 +273,13 @@ export function toAboutIntroContent(raw: BlockRow): AboutIntroContent {
 export async function fetchAboutIntroContent({
 	client,
 }: FetcherContext): Promise<AboutIntroContent> {
-	const rows = (await client.request(
-		readItems('block_about_intro', {
+	const result = await client.request(
+		readSingleton('block_about_intro', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0)
-		throw new Error('[fetchAboutIntroContent] no block_about_intro row found');
-	return AboutIntroContentSchema.parse(toAboutIntroContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchAboutIntroContent/block_about_intro');
+	return AboutIntroContentSchema.parse(toAboutIntroContent(row));
 }
 
 // ---------------------------------------------------------------------------
@@ -302,14 +297,13 @@ export function toCtaContent(raw: BlockRow): CtaContent {
 }
 
 export async function fetchCtaContent({ client }: FetcherContext): Promise<CtaContent> {
-	const rows = (await client.request(
-		readItems('block_cta', {
+	const result = await client.request(
+		readSingleton('block_cta', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0) throw new Error('[fetchCtaContent] no block_cta row found');
-	return CtaContentSchema.parse(toCtaContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchCtaContent/block_cta');
+	return CtaContentSchema.parse(toCtaContent(row));
 }
 
 // ---------------------------------------------------------------------------
@@ -357,12 +351,11 @@ export function toCloserContent(raw: BlockRow): CloserContent {
 }
 
 export async function fetchCloserContent({ client }: FetcherContext): Promise<CloserContent> {
-	const rows = (await client.request(
-		readItems('block_closer', {
+	const result = await client.request(
+		readSingleton('block_closer', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0) throw new Error('[fetchCloserContent] no block_closer row found');
-	return CloserContentSchema.parse(toCloserContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchCloserContent/block_closer');
+	return CloserContentSchema.parse(toCloserContent(row));
 }
