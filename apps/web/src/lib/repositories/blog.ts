@@ -2,8 +2,8 @@
 // Slice-28.3 (#117): pruned wrappers with zero route/test consumers
 // (getPostHtml, getPostsByTag, getTagsForCategory, getLanguagesForCategory,
 // getLatestPosts, resolveSvgFallbackName, resolveAnimation). The matching
-// adapter-port methods stay — the dormant directus adapter + oracle suites
-// (slice-26 RUN_PARITY) still exercise them.
+// adapter-port methods stay on the ContentAdapter contract — the static
+// suites (adapter.test.ts, __tests__/static-blog.test.ts) still exercise them.
 
 import { adapter } from '$lib/adapters';
 import type { BlogPost, BlogCategory, PreviewContext } from '$lib/types';

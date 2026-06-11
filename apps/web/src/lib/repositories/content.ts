@@ -78,9 +78,10 @@ export async function getInitialHeroData(ctx?: PreviewContext): Promise<HeroData
 	return adapter.content.initialHeroData(ctx);
 }
 
-// Slice 18d Phase 8: Montreal-metro hero SVG, fetched from Directus
-// `/assets/<uuid>` at SSR time and threaded into MetroNetwork.svelte as a
-// prop. See adapter.content.metroSvg in directus.ts for the fetch layer.
+// Slice 18d Phase 8: Montreal-metro hero SVG, threaded into
+// MetroNetwork.svelte as a prop. Resolves from the static adapter's
+// build-time `?raw` snapshot; the Directus `/assets/<uuid>` SSR fetch layer
+// was removed with the dormant adapter at slice-26 close.
 export async function getMetroSvg(ctx?: PreviewContext): Promise<string> {
 	return adapter.content.metroSvg(ctx);
 }

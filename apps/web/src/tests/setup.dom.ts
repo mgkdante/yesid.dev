@@ -51,28 +51,15 @@ HTMLCanvasElement.prototype.getContext = (() => {
 
 // SvelteKit $env/dynamic/* virtual modules assume Node's `process.env`. In
 // happy-dom (DOM-tier tests) `process` isn't defined, so importing the real
-// modules throws TypeError at top-level evaluation of $lib/adapters/directus.
-// Stub them as empty objects — the adapter's buildClient() only reads env
-// lazily when a Directus-backed port is actually invoked, and those
-// invocations are short-circuited by the directus-adapter mock below.
+// modules throws TypeError at top-level evaluation of any $env-importing
+// module (e.g. $lib/directus/assets, the live media-URL seam). Stub them as
+// empty objects; tests that need a value mock the module locally.
+//
+// The dormant directus-adapter mock that used to live here was removed at
+// slice-26 close together with $lib/adapters/directus itself (Directus 12
+// verified on both environments; the git history holds the module).
 vi.mock('$env/dynamic/private', () => ({ env: {} }));
 vi.mock('$env/dynamic/public', () => ({ env: {} }));
-
-// Keep the DORMANT Directus adapter inert during DOM tests (layout, sitemap
-// server, component tests). Post-27.2 every live read-port is staticAdapter
-// already; this mock pins that in the test graph so nothing that imports the
-// dormant module ($lib/adapters/directus — the slice-26 RUN_PARITY oracle)
-// can attempt network I/O against an unset PUBLIC_DIRECTUS_URL. See
-// setup.data.ts for the same mock + detailed rationale.
-vi.mock('$lib/adapters/directus', async () => {
-	const original = await vi.importActual<typeof import('$lib/adapters/directus')>(
-		'$lib/adapters/directus',
-	);
-	const { staticAdapter } = await vi.importActual<typeof import('$lib/adapters/static')>(
-		'$lib/adapters/static',
-	);
-	return { ...original, directusAdapter: staticAdapter };
-});
 
 // happy-dom does not implement IntersectionObserver. Stub it so any Svelte
 // component using IO-based scroll triggers (lazy load, scroll-driven motion,
