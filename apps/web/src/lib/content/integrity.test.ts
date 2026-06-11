@@ -36,6 +36,7 @@ import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';
 import * as stackArchetypesModule from './stack-archetypes.js';
 import { stackArchetypes } from './stack-archetypes.js';
+import { siteLabels as siteLabelsModule } from './site-labels.js';
 import { StackArchetypeSchema, STACK_LAYERS } from '@repo/shared/schemas';
 import {
 	ProjectSchema,
@@ -501,6 +502,8 @@ describe('LocalizedString guard + translation debt', () => {
 		['site-pages', sitePagesModule],
 		// stack_archetypes engine recipes (slice-29) — seeded with en+fr+es.
 		['stack-archetypes', stackArchetypesModule],
+		// site_labels microcopy singleton (go2-t1c2) — 22 en-only seeds.
+		['site-labels', siteLabelsModule],
 	];
 
 	function scan(): LocalizedStringStats {
@@ -605,6 +608,8 @@ describe('locale-completeness snapshot (T11)', () => {
 		// site_pages registry titles (slice-26.1 — seeded with en+fr+es: 32 → 40),
 		// plus the slice-29 Tech Stack Engine content: 3 archetypes × 3 trilingual
 		// strings (title/hook/description = 9) + 7 tech `enables` captions (40 → 56).
+		// site-labels (go2-t1c2) is walked too but its 22 seeds are en-only today,
+		// so it contributes 0 here.
 		// If this number increases, FR/ES translations have been added to the CMS
 		// and the modules regenerated — confirm the increase is intentional.
 		// If this number decreases, translations have been stripped — investigate.
@@ -623,6 +628,7 @@ describe('locale-completeness snapshot (T11)', () => {
 			['site-seo-defaults', siteSeoDefaultsModule],
 			['site-pages', sitePagesModule],
 			['stack-archetypes', stackArchetypesModule],
+			['site-labels', siteLabelsModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
@@ -630,13 +636,15 @@ describe('locale-completeness snapshot (T11)', () => {
 		expect(stats.full).toBe(56);
 	});
 
-	it('en-only count is locked at 378 — documents current FR/ES debt', () => {
-		// 378 fields have only an English translation. Baseline was 373 as of
+	it('en-only count is locked at 400 — documents current FR/ES debt', () => {
+		// 400 fields have only an English translation. Baseline was 373 as of
 		// slice-27.1; go2-t1b2 added the 5 CMS-driven hero terminal templates to
 		// tech-stack.ts (techStackPageContent.hero.terminal — operator addendum),
-		// 373 → 378. When FR/ES copy lands for any module (CMS regen
-		// → committed diff), this number drops and the test fails intentionally —
-		// update the count here to confirm the debt has been reduced.
+		// 373 → 378; go2-t1c2 added the site-labels module (22 en-only microcopy
+		// seeds from the site_labels singleton), 378 → 400. When FR/ES copy lands
+		// for any module (CMS regen → committed diff), this number drops and the
+		// test fails intentionally — update the count here to confirm the debt
+		// has been reduced.
 		const stats = newStats();
 		const seen = new WeakSet<object>();
 		const allSources: Array<[string, unknown]> = [
@@ -652,11 +660,12 @@ describe('locale-completeness snapshot (T11)', () => {
 			['site-seo-defaults', siteSeoDefaultsModule],
 			['site-pages', sitePagesModule],
 			['stack-archetypes', stackArchetypesModule],
+			['site-labels', siteLabelsModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
 		}
-		expect(stats.enOnly).toBe(378);
+		expect(stats.enOnly).toBe(400);
 	});
 
 	it('partial (en + one of fr/es) count is 0 — no half-translated fields', () => {
@@ -679,6 +688,7 @@ describe('locale-completeness snapshot (T11)', () => {
 			['site-seo-defaults', siteSeoDefaultsModule],
 			['site-pages', sitePagesModule],
 			['stack-archetypes', stackArchetypesModule],
+			['site-labels', siteLabelsModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
