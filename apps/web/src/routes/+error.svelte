@@ -13,7 +13,7 @@
 	// Slice 15a resolved the SEO half: root +layout.ts falls back to
 	// getPageSeo('/__error', locale), so 404s ship noindex,nofollow server-side.
 	import { page } from '$app/stores';
-	import { errorPageContent as staticErrorPageContent } from '$lib/content';
+	import { errorPageContent as staticErrorPageContent, siteLabels } from '$lib/content';
 	import type { ErrorPageContent } from '$lib/content/nav';
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { prefersReducedMotion } from '$lib/motion/stores';
@@ -106,7 +106,7 @@
 			<span style="color: var(--secondary-foreground);"> route </span>
 			<span style="color: var(--secondary-foreground);">--status</span>
 			<span style="color: var(--primary);"> {$page.status}</span>
-			<span style="color: var(--muted-foreground);"> // requested path not in service</span>
+			<span style="color: var(--muted-foreground);"> {resolveLocale(siteLabels.ui.errorStatusNote, 'en') || '// requested path not in service'}</span>
 			{#if mounted && !$prefersReducedMotion}
 				<TerminalCursor />
 			{/if}

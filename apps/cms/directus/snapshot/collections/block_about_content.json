@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "About page content block (/about). Non-translatable: client_count (integer) on parent. All other fields are JSON columns in translations — each top-level chunk (identity, metrics, methodology, testimonials, tech_stack, interests, weather, client_logos, cta, stop_labels, labels, meta) is one JSON column preserving the nested TS shape with bare strings.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 2,
     "sort_field": "sort",
     "status": "active",

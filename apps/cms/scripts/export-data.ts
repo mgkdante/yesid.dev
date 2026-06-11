@@ -5,7 +5,7 @@
  */
 
 import type { BlockEditorDoc, SitePage } from '@repo/shared';
-import type { StackArchetype } from '@repo/shared/schemas';
+import type { StackArchetype, SiteLabels } from '@repo/shared/schemas';
 import type { SiteMeta, SiteSeoDefaults } from './lib/schemas/site-meta';
 import type { MorphShape } from './lib/schemas/morph-shape';
 import type { ErrorPageContent } from './lib/schemas/nav';
@@ -53,6 +53,11 @@ export interface ExportData {
 	 * recipes whose layered tech links draw the /tech-stack blueprint.
 	 */
 	stackArchetypes?: readonly StackArchetype[];
+	/**
+	 * Global UI microcopy (go2-t1c): aria labels, card markers, edge titles,
+	 * email templates from the site_labels singleton.
+	 */
+	siteLabels?: SiteLabels;
 	blogPage?: BlogPageContent;
 	projectsPage?: ProjectsPageContent;
 	techStackPage?: TechStackPageContent;

@@ -1,16 +1,19 @@
 /**
  * about-page block fetcher — block_about_content.
  *
- * The most complex block: 13 nested types, mix of plain strings + LocalizedString
- * leaves in deeply nested per-locale JSON columns. `tech_stack` and `client_logos`
- * live on the parent row (Phase 1 fix-up 377401c) — NOT in translations.
+ * The most complex block: 13 nested types. go2-t1b2: identity/weather/cta/
+ * stop_labels/labels/meta now read FLAT columns (locale-invariant leaves on
+ * the parent row, per-locale strings + the polaroids repeater on
+ * translations); the list repeaters (metrics/methodology/testimonials/
+ * interests) and parent-row arrays (tech_stack, client_logos) are unchanged.
  *
  * Mirrors transformBlockAboutContent in apps/web/src/lib/adapters/directus.ts:952.
  */
 
-import { readItems } from '@directus/sdk';
-import { toLocalizedJSON } from '../locale';
+import { readSingleton } from '@directus/sdk';
+import { toLocalizedString } from '../locale';
 import { AboutContentSchema, type LocalizedString, type AboutContent } from '@repo/shared';
+import { asSingletonRow } from './singleton';
 import type { FetcherContext } from './types';
 
 interface BlockRow {
@@ -20,51 +23,20 @@ interface BlockRow {
 }
 
 export function toAboutContent(raw: BlockRow): AboutContent {
-	const tr = (raw.translations ?? []) as ReadonlyArray<Record<string, unknown>>;
+	const tr = (raw.translations ?? []) as ReadonlyArray<
+		Record<string, unknown> & { languages_code: string }
+	>;
 	const clientCount = typeof raw.client_count === 'number' ? raw.client_count : 0;
 
-	function enVal<T>(field: string, fallback: T): T {
-		const enRow = tr.find((r) => r.languages_code === 'en') ?? tr[0];
-		if (!enRow) return fallback;
-		const v = (enRow as Record<string, unknown>)[field];
-		return (v !== undefined && v !== null ? v : fallback) as T;
-	}
-
-	// --- identity ---
-	const rawIdentity = enVal<Record<string, unknown>>('identity', {});
-	const rawPolaroids = Array.isArray(rawIdentity.polaroids)
-		? (rawIdentity.polaroids as Array<Record<string, unknown>>)
-		: [];
-
-	const identityByLocale = new Map<string, Record<string, unknown>>();
-	for (const row of tr) {
-		const code = row.languages_code as string;
-		const id = row.identity;
-		if (id && typeof id === 'object' && !Array.isArray(id)) {
-			identityByLocale.set(code, id as Record<string, unknown>);
-		}
-	}
-	function identityLS(field: string): LocalizedString {
-		const result: LocalizedString = { en: '' };
-		for (const [locale, id] of identityByLocale) {
-			const v = (id as Record<string, unknown>)[field];
-			if (typeof v === 'string' && v.length > 0) {
-				if (locale === 'en') result.en = v;
-				else if (locale === 'fr') result.fr = v;
-				else if (locale === 'es') result.es = v;
-			}
-		}
-		return result;
-	}
-
+	// --- identity: flat columns + per-locale polaroids repeater ---
 	const polaroidsByLocale = new Map<string, Array<Record<string, unknown>>>();
-	for (const [locale, id] of identityByLocale) {
-		const pols = (id as Record<string, unknown>).polaroids;
-		if (Array.isArray(pols)) {
-			polaroidsByLocale.set(locale, pols as Array<Record<string, unknown>>);
+	for (const row of tr) {
+		if (Array.isArray(row.polaroids)) {
+			polaroidsByLocale.set(row.languages_code, row.polaroids as Array<Record<string, unknown>>);
 		}
 	}
-	const polaroids = rawPolaroids.map((enPol, idx) => {
+	const enPolaroids = polaroidsByLocale.get('en') ?? [];
+	const polaroids = enPolaroids.map((enPol, idx) => {
 		const altLS: LocalizedString = { en: typeof enPol.alt === 'string' ? enPol.alt : '' };
 		const captionLS: LocalizedString = {
 			en: typeof enPol.caption === 'string' ? enPol.caption : '',
@@ -91,10 +63,10 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 	});
 
 	const identity: AboutContent['identity'] = {
-		name: identityLS('name'),
-		title: identityLS('title'),
-		valueProp: identityLS('valueProp'),
-		headshot: typeof rawIdentity.headshot === 'string' ? rawIdentity.headshot : '',
+		name: toLocalizedString(tr, 'identity_name'),
+		title: toLocalizedString(tr, 'identity_title'),
+		valueProp: toLocalizedString(tr, 'identity_value_prop'),
+		headshot: typeof raw.headshot === 'string' ? raw.headshot : '',
 		polaroids,
 	};
 
@@ -235,33 +207,11 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		};
 	});
 
-	// --- weather ---
-	const weatherByLocale = new Map<string, Record<string, unknown>>();
-	for (const row of tr) {
-		const code = row.languages_code as string;
-		const w = row.weather;
-		if (w && typeof w === 'object' && !Array.isArray(w)) {
-			weatherByLocale.set(code, w as Record<string, unknown>);
-		}
-	}
-	const enWeather = weatherByLocale.get('en') ?? {};
-	const cityLS: LocalizedString = { en: typeof enWeather.city === 'string' ? enWeather.city : '' };
-	const hookLS: LocalizedString = { en: typeof enWeather.hook === 'string' ? enWeather.hook : '' };
-	for (const [locale, w] of weatherByLocale) {
-		if (locale === 'en') continue;
-		if (typeof w.city === 'string' && w.city.length > 0) {
-			if (locale === 'fr') cityLS.fr = w.city;
-			else if (locale === 'es') cityLS.es = w.city;
-		}
-		if (typeof w.hook === 'string' && w.hook.length > 0) {
-			if (locale === 'fr') hookLS.fr = w.hook;
-			else if (locale === 'es') hookLS.es = w.hook;
-		}
-	}
+	// --- weather: flat LS + parent boolean ---
 	const weather: AboutContent['weather'] = {
-		city: cityLS,
-		hook: hookLS,
-		enabled: typeof enWeather.enabled === 'boolean' ? enWeather.enabled : false,
+		city: toLocalizedString(tr, 'weather_city'),
+		hook: toLocalizedString(tr, 'weather_hook'),
+		enabled: raw.weather_enabled === true,
 	};
 
 	// --- clientLogos: read from parent row ---
@@ -277,60 +227,54 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		return cl;
 	});
 
-	// --- cta ---
-	const ctaByLocale = new Map<string, Record<string, unknown>>();
-	for (const row of tr) {
-		const code = row.languages_code as string;
-		const c = row.cta;
-		if (c && typeof c === 'object' && !Array.isArray(c)) {
-			ctaByLocale.set(code, c as Record<string, unknown>);
-		}
-	}
-	const enCta = ctaByLocale.get('en') ?? {};
-	const buttonLabelLS: LocalizedString = {
-		en: typeof enCta.buttonLabel === 'string' ? enCta.buttonLabel : '',
-	};
-	const availabilityLS: LocalizedString = {
-		en: typeof enCta.availability === 'string' ? enCta.availability : '',
-	};
-	for (const [locale, c] of ctaByLocale) {
-		if (locale === 'en') continue;
-		if (typeof c.buttonLabel === 'string' && c.buttonLabel.length > 0) {
-			if (locale === 'fr') buttonLabelLS.fr = c.buttonLabel;
-			else if (locale === 'es') buttonLabelLS.es = c.buttonLabel;
-		}
-		if (typeof c.availability === 'string' && c.availability.length > 0) {
-			if (locale === 'fr') availabilityLS.fr = c.availability;
-			else if (locale === 'es') availabilityLS.es = c.availability;
-		}
-	}
-	const rawCtaLines = Array.isArray(enCta.lines)
-		? (enCta.lines as Array<Record<string, unknown>>)
+	// --- cta: parent scalars/arrays + flat LS ---
+	const rawCtaLines = Array.isArray(raw.cta_lines)
+		? (raw.cta_lines as Array<Record<string, unknown>>)
 		: [];
-	const ctaLines = rawCtaLines.map((l) => ({
-		text: typeof l.text === 'string' ? l.text : '',
-		color: (l.color as 'orange' | 'muted' | 'accent') ?? 'muted',
-	}));
-	const rawCtaSocials = Array.isArray(enCta.socials)
-		? (enCta.socials as Array<Record<string, unknown>>)
+	const rawCtaSocials = Array.isArray(raw.cta_socials)
+		? (raw.cta_socials as Array<Record<string, unknown>>)
 		: [];
-	const ctaSocials = rawCtaSocials.map((s) => ({
-		label: typeof s.label === 'string' ? s.label : '',
-		href: typeof s.href === 'string' ? s.href : '',
-		icon: typeof s.icon === 'string' ? s.icon : '',
-	}));
 	const cta: AboutContent['cta'] = {
-		command: typeof enCta.command === 'string' ? enCta.command : '',
-		lines: ctaLines,
-		buttonLabel: buttonLabelLS,
-		buttonHref: typeof enCta.buttonHref === 'string' ? enCta.buttonHref : '',
-		availability: availabilityLS,
-		socials: ctaSocials,
+		command: typeof raw.cta_command === 'string' ? raw.cta_command : '',
+		lines: rawCtaLines.map((l) => ({
+			text: typeof l.text === 'string' ? l.text : '',
+			color: (l.color as 'orange' | 'muted' | 'accent') ?? 'muted',
+		})),
+		buttonLabel: toLocalizedString(tr, 'cta_button_label'),
+		buttonHref: typeof raw.cta_button_href === 'string' ? raw.cta_button_href : '',
+		availability: toLocalizedString(tr, 'cta_availability'),
+		socials: rawCtaSocials.map((s) => ({
+			label: typeof s.label === 'string' ? s.label : '',
+			href: typeof s.href === 'string' ? s.href : '',
+			icon: typeof s.icon === 'string' ? s.icon : '',
+		})),
 	};
 
-	const stopLabels = toLocalizedJSON(tr, 'stop_labels') as AboutContent['stopLabels'];
-	const labels = toLocalizedJSON(tr, 'labels') as AboutContent['labels'];
-	const meta = toLocalizedJSON(tr, 'meta') as AboutContent['meta'];
+	const stopLabels: AboutContent['stopLabels'] = {
+		identity: toLocalizedString(tr, 'stop_identity'),
+		metrics: toLocalizedString(tr, 'stop_metrics'),
+		testimonials: toLocalizedString(tr, 'stop_testimonials'),
+		process: toLocalizedString(tr, 'stop_process'),
+		stack: toLocalizedString(tr, 'stop_stack'),
+		clients: toLocalizedString(tr, 'stop_clients'),
+		interests: toLocalizedString(tr, 'stop_interests'),
+		snapshots: toLocalizedString(tr, 'stop_snapshots'),
+		location: toLocalizedString(tr, 'stop_location'),
+		next: toLocalizedString(tr, 'stop_next'),
+	};
+	const labels: AboutContent['labels'] = {
+		clientsServed: toLocalizedString(tr, 'label_clients_served'),
+		polaroidPrevAria: toLocalizedString(tr, 'label_polaroid_prev_aria'),
+		polaroidNextAria: toLocalizedString(tr, 'label_polaroid_next_aria'),
+		testimonialsCarouselAria: toLocalizedString(tr, 'label_testimonials_carousel_aria'),
+		testimonialsTabNavAria: toLocalizedString(tr, 'label_testimonials_tab_nav_aria'),
+		testimonialSlideAria: toLocalizedString(tr, 'label_testimonial_slide_aria'),
+		showTestimonialAria: toLocalizedString(tr, 'label_show_testimonial_aria'),
+	};
+	const meta: AboutContent['meta'] = {
+		title: toLocalizedString(tr, 'meta_title'),
+		description: toLocalizedString(tr, 'meta_description'),
+	};
 
 	return {
 		identity,
@@ -350,14 +294,11 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 }
 
 export async function fetchAboutContent({ client }: FetcherContext): Promise<AboutContent> {
-	const rows = (await client.request(
-		readItems('block_about_content', {
+	const result = await client.request(
+		readSingleton('block_about_content', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-	if (rows.length === 0) {
-		throw new Error('[fetchAboutContent] no block_about_content row found');
-	}
-	return AboutContentSchema.parse(toAboutContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchAboutContent/block_about_content');
+	return AboutContentSchema.parse(toAboutContent(row));
 }

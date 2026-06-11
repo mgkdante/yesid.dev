@@ -8,7 +8,9 @@
 <script lang="ts">
   import type { BlogPost } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
+  import { fillTemplate } from '$lib/utils/labels';
   import { blogDetailContent } from '$lib/content/blog';
+  import { siteLabels } from '$lib/content';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
@@ -52,12 +54,19 @@
   const postTagsAria = resolveLocale(blogDetailContent.header.postTagsAria, 'en');
   const readingTimeTemplate = resolveLocale(blogDetailContent.header.readingTimeLabel, 'en');
   const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));
+  // go2-t1c2: category/watermark/edition microcopy from site_labels, previous
+  // literals kept as code fallbacks.
   const categoryLabel = $derived(
-    post.category === 'personal' ? 'Personal' : 'Professional'
+    post.category === 'personal'
+      ? resolveLocale(siteLabels.ui.categoryPersonal, 'en') || 'Personal'
+      : resolveLocale(siteLabels.ui.categoryProfessional, 'en') || 'Professional'
   );
   const watermarkText = $derived(
-    post.category === 'personal' ? 'Personal' : 'Dispatch'
+    post.category === 'personal'
+      ? resolveLocale(siteLabels.ui.watermarkPersonal, 'en') || 'Personal'
+      : resolveLocale(siteLabels.ui.watermarkProfessional, 'en') || 'Dispatch'
   );
+  const editionTemplate = resolveLocale(siteLabels.ui.blogEditionTemplate, 'en') || 'VOL. 01 // ISS. {issue}';
 
   // Format date as "Apr 2026"
   const formattedDate = $derived.by(() => {
@@ -116,7 +125,7 @@
 
       <!-- Edge labels (rotated, desktop only) -->
       <div class="header__edge header__edge-left hidden lg:block" aria-hidden="true">
-        VOL. 01 // ISS. {String(postIndex).padStart(2, '0')}
+        {fillTemplate(editionTemplate, { issue: String(postIndex).padStart(2, '0') })}
       </div>
       <div class="header__edge header__edge-right hidden lg:block" aria-hidden="true">
         {edgeDate} // {readingTime} MIN

@@ -10,6 +10,17 @@ const TechStackHeroStatsSchema = z.object({
 	technologies: LocalizedStringSchema,
 });
 
+// go2-t1b2 (operator addendum): hero terminal line templates, CMS-driven from
+// the flat terminal_* columns. Each may carry a literal {count} token that the
+// page component interpolates from data.items.length (computed, never stored).
+const TechStackHeroTerminalSchema = z.object({
+	cmd: LocalizedStringSchema,
+	loading: LocalizedStringSchema,
+	success: LocalizedStringSchema,
+	cataloged: LocalizedStringSchema,
+	status: LocalizedStringSchema,
+});
+
 export const TechStackPageContentSchema = z.object({
 	meta: PageMetaSchema,
 	hero: z.object({
@@ -17,6 +28,7 @@ export const TechStackPageContentSchema = z.object({
 		titleLine1: LocalizedStringSchema,
 		titleLine2: LocalizedStringSchema,
 		terminalAria: LocalizedStringSchema,
+		terminal: TechStackHeroTerminalSchema,
 		stats: TechStackHeroStatsSchema,
 	}),
 	actions: z.object({

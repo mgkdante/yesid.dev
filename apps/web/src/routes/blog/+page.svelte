@@ -17,6 +17,7 @@
 	allTags={data.tags}
 	languages={data.languages}
 	svgContents={data.svgContents}
+	blogPage={data.blogPage}
 	{heading}
 	subtitle="Data, SQL, and infrastructure — from the field"
 	accentColor="var(--primary)"
