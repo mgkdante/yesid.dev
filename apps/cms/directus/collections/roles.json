@@ -19,5 +19,12 @@
     "description": "CI/build automation. No app access.",
     "parent": null,
     "_syncId": "f97a8995-ad8a-42eb-91e3-23d015417be0"
+  },
+  {
+    "name": "Editor",
+    "icon": "edit_note",
+    "description": "Daily-driver human editor. Scoped Human Editor policy (190 collection perms + files); no Settings / Data Model / Policies. Admin account remains for schema surgery.",
+    "parent": null,
+    "_syncId": "_sync_editor_role"
   }
 ]
