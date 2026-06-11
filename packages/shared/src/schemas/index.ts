@@ -26,5 +26,8 @@ export * from './projects-page';
 // site_pages registry rows (slice-26.1 content controls)
 export * from './site-pages';
 
+// stack_archetypes rows + canonical blueprint layers (slice-29 Tech Stack Engine)
+export * from './stack-archetypes';
+
 // PageSchema — 12-variant discriminated union (slice-18i Task 1.1 Phase E)
 export * from './page';
