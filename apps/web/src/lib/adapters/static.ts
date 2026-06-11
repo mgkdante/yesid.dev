@@ -211,22 +211,14 @@ export const staticAdapter: ContentAdapter = {
 		// The directus adapter sources from CMS singleton; this static fallback
 		// keeps the adapter contract uniform for tests and static-mode scenarios.
 		siteSeoDefaults: async () => STATIC_SITE_SEO_DEFAULTS,
-		// Static adapter has no per-route overrides — composer falls through to
-		// code-side defaults. Returning undefined matches the directus shape
-		// when no row matches the path.
-		//
-		// slice-28.5 (#62): KEPT, not pruned. The route_seo collections are a
-		// decided dead end (zero rows; archival flagged to slice-26) and
-		// route-seo-defaults.ts is the canonical override source — but this port
-		// cannot be removed: it is part of the ContentAdapter contract and the
-		// RUN_PARITY oracle exercises meta.routeSeo.byPath on BOTH adapters
-		// (parity.harness.test.ts). Prune it together with the dormant adapter at
-		// slice-26 close.
-		routeSeo: {
-			byPath: async () => undefined,
-		},
+		// routeSeo.byPath — pruned at slice-26 close together with the dormant
+		// directus adapter (the RUN_PARITY oracle that exercised it on both
+		// adapters is fulfilled). route-seo-defaults.ts is the canonical
+		// per-route override source; the composer receives routeOverride:
+		// undefined below (its cold-start contract, still covered by
+		// __tests__/compose-page-seo.test.ts).
 		// slice-18 18h Phase 5 Task 15: forRoute now uses the same composer pattern
-		// as the directus adapter (compose-page-seo + route-seo-factories +
+		// as the (since-removed) directus adapter (compose-page-seo + route-seo-factories +
 		// route-seo-defaults). Replaces the legacy `routeSeoEntries` lookup that
 		// got deleted with `apps/web/src/lib/content/meta.ts`.
 		forRoute: async (
