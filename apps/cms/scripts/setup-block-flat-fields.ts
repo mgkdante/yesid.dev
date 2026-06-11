@@ -8,6 +8,11 @@
  * Idempotent: an already-existing field answers 409/400 and is logged as
  * `skip`. Mirrors setup-stack-archetypes-schema.ts (slice-29 house pattern).
  *
+ * --archive-old (go2-t1b3): instead of creating flat columns, PATCH the 30
+ * retired JSON source columns to hidden + ARCHIVED note (archive-not-delete;
+ * columns and data stay). Run only after the flat-column fetcher swap is
+ * deployed. 404 answers log as `skip`.
+ *
  * Orchestrator runs (NEVER implementers — live CMS write):
  *   op run --env-file=.env -- env -u DIRECTUS_BUILD_TOKEN \
  *     PUBLIC_DIRECTUS_URL=https://cms.dev.yesid.dev \
@@ -87,15 +92,79 @@ export function buildFieldSteps(): FieldStep[] {
 	});
 }
 
-export function parseFlags(argv: readonly string[]): { apply: boolean } {
+export interface ArchiveStep {
+	method: 'PATCH';
+	path: string; // /fields/{collection}/{field}
+	payload: { meta: { hidden: true; note: string } };
+}
+
+export function buildArchiveSteps(): ArchiveStep[] {
+	// One archive PATCH per retired JSON source column. Seeded addendum
+	// entries have no JSON source of their own — their collection//sourceField
+	// key (…//hero) is already covered by the real hero flatten entries, so
+	// the dedupe map keeps the count at 30.
+	const retired = [...new Map(
+		FLAT_FIELD_PLAN.map((f) => [`${f.scope === 'parent' ? f.translationsCollection : f.collection}//${f.sourceField}`, f]),
+	).keys()];
+	return retired.map((key) => {
+		const [collection, field] = key.split('//');
+		return {
+			method: 'PATCH' as const,
+			path: `/fields/${collection}/${field}`,
+			payload: {
+				meta: {
+					hidden: true as const,
+					note: `(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)`,
+				},
+			},
+		};
+	});
+}
+
+export function parseFlags(argv: readonly string[]): { apply: boolean; archiveOld: boolean } {
 	// --dry-run is the default; only an explicit --apply writes.
-	return { apply: argv.includes('--apply') };
+	return { apply: argv.includes('--apply'), archiveOld: argv.includes('--archive-old') };
 }
 
 const log = createLogger('setup-block-flat-fields');
 
+async function runArchivePass(apply: boolean): Promise<void> {
+	const steps = buildArchiveSteps();
+	log.info(`${steps.length} archive (hide) steps planned (${apply ? 'APPLY' : 'dry-run'})`);
+	for (const s of steps) log.info(`  PATCH ${s.path} → hidden:true`);
+	if (!apply) {
+		log.info('dry-run complete — pass --apply to write.');
+		return;
+	}
+	const url = defaultDirectusUrl();
+	const token = await getAdminToken(url);
+	let archived = 0;
+	let skipped = 0;
+	for (const s of steps) {
+		const res = await fetch(`${url}${s.path}`, {
+			method: s.method,
+			headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+			body: JSON.stringify(s.payload),
+		});
+		if (res.ok) {
+			archived++;
+			log.info(`  archived ${s.path}`);
+		} else if (res.status === 404) {
+			skipped++;
+			log.info(`  skip ${s.path} (not found)`);
+		} else {
+			throw new Error(`PATCH ${s.path} → ${res.status} ${await res.text()}`);
+		}
+	}
+	log.info(`done. archived=${archived} skipped=${skipped}`);
+}
+
 async function main(): Promise<void> {
-	const { apply } = parseFlags(process.argv.slice(2));
+	const { apply, archiveOld } = parseFlags(process.argv.slice(2));
+	if (archiveOld) {
+		await runArchivePass(apply);
+		return;
+	}
 	const steps = buildFieldSteps();
 	log.info(`${steps.length} field-create steps planned (${apply ? 'APPLY' : 'dry-run'})`);
 	for (const s of steps) log.info(`  POST ${s.path} → ${s.payload.field} (${s.payload.type})`);

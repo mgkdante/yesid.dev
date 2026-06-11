@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { buildFieldSteps, parseFlags } from '../scripts/setup-block-flat-fields';
+import { buildFieldSteps, buildArchiveSteps, parseFlags } from '../scripts/setup-block-flat-fields';
 import { FLAT_FIELD_PLAN } from '../scripts/lib/flat-field-plan';
 
 describe('setup-block-flat-fields buildFieldSteps', () => {
@@ -46,7 +46,35 @@ describe('setup-block-flat-fields buildFieldSteps', () => {
 		expect((cmd!.payload.meta as { note: string }).note).toContain('{count}');
 	});
 	it('parseFlags: dry-run default, --apply opt-in', () => {
-		expect(parseFlags([])).toEqual({ apply: false });
-		expect(parseFlags(['--apply'])).toEqual({ apply: true });
+		expect(parseFlags([])).toEqual({ apply: false, archiveOld: false });
+		expect(parseFlags(['--apply'])).toEqual({ apply: true, archiveOld: false });
+		expect(parseFlags(['--archive-old', '--apply'])).toEqual({ apply: true, archiveOld: true });
+	});
+});
+
+describe('setup-block-flat-fields buildArchiveSteps (go2-t1b3)', () => {
+	it('archive pass hides exactly the 30 retired JSON columns', () => {
+		const steps = buildArchiveSteps();
+		expect(steps.length).toBe(30);
+		for (const s of steps) {
+			expect(s.method).toBe('PATCH');
+			expect((s.payload.meta as { hidden: boolean }).hidden).toBe(true);
+			expect((s.payload.meta as { note: string }).note).toContain('ARCHIVED');
+		}
+	});
+	it('does not archive list repeaters, parent arrays, or pre-existing flat columns', () => {
+		const paths = buildArchiveSteps().map((s) => s.path);
+		for (const keep of [
+			'/fields/block_manifesto_translations/pills',
+			'/fields/block_manifesto_translations/hidden_transit_lines',
+			'/fields/block_contact_content_translations/socials',
+			'/fields/block_about_content_translations/metrics',
+			'/fields/block_about_content/tech_stack',
+			'/fields/block_closer/cta_href',
+		]) {
+			expect(paths).not.toContain(keep);
+		}
+		// Seeded addendum fields have no JSON source — hero is archived exactly once.
+		expect(paths.filter((p) => p === '/fields/block_tech_stack_page_content_translations/hero').length).toBe(1);
 	});
 });
