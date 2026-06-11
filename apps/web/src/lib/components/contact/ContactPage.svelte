@@ -7,6 +7,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { fillTemplate } from '$lib/utils/labels';
+	import { siteLabels } from '$lib/content';
 	import type { ContactContent } from '$lib/types';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { TerminalChrome } from '$lib/components/brand';
@@ -131,7 +133,10 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					access_key: c.web3formsKey,
-					subject: `New contact from ${name} via yesid.dev`,
+					subject: fillTemplate(
+						resolveLocale(siteLabels.email.contactSubjectTemplate, 'en') || 'New contact from {name} via yesid.dev',
+						{ name },
+					),
 					from_name: name,
 					email,
 					message,

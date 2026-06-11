@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent } from '$lib/content';
+	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent, siteLabels } from '$lib/content';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { fillTemplate } from '$lib/utils/labels';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
 	import type { NavLink } from '$lib/content/nav';
@@ -20,6 +21,12 @@
 	} = $props();
 
 	const year = new Date().getFullYear();
+	// go2-t1c2: copyright template from site_labels (orange dot stays code =
+	// placement), previous literal as fallback.
+	const copyrightText = fillTemplate(
+		resolveLocale(siteLabels.ui.copyrightTemplate, 'en') || '© {year} yesid',
+		{ year: String(year) },
+	);
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
@@ -102,7 +109,7 @@
 
 	<!-- Row 2: Status bar -->
 	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--muted-foreground)] sm:flex-row sm:justify-between sm:px-10">
-		<small>&copy; {year} yesid<span class="text-primary">.</span></small>
+		<small>{copyrightText}<span class="text-primary">.</span></small>
 		<address class="not-italic">{location}</address>
 		<span class="flex items-center gap-1.5">
 			<StatusDot color="orange" pulse />

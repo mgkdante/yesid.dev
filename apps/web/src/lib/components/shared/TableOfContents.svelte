@@ -12,7 +12,7 @@
 	import type { TocHeading } from '@repo/shared';
 	import { onMount, onDestroy } from 'svelte';
 	import { resolveLocale } from '$lib/utils/locale';
-	import { sharedChromeContent } from '$lib/content';
+	import { sharedChromeContent, siteLabels } from '$lib/content';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
@@ -20,6 +20,8 @@
 	const toggleSectionAria = resolveLocale(sharedChromeContent.tocToggleSectionAria, 'en');
 	const tocHeading = resolveLocale(sharedChromeContent.tocHeading, 'en');
 	const tocMobileButton = resolveLocale(sharedChromeContent.tocMobileButton, 'en');
+	// go2-t1c2: nav aria from site_labels, previous literal as fallback.
+	const tocAria = resolveLocale(siteLabels.a11y.toc, 'en') || 'Table of contents';
 
 	let {
 		headings,
@@ -162,7 +164,7 @@
 {#if embedded}
 	<!-- Embedded mode: parent controls layout/visibility -->
 	{#if headings.length > 0}
-		<nav class="toc-embedded {className}" aria-label="Table of contents" data-testid="toc-embedded">
+		<nav class="toc-embedded {className}" aria-label={tocAria} data-testid="toc-embedded">
 			<Collapsible bind:open={tocOpen}>
 				<CollapsibleTrigger>
 					{#snippet child({ props })}
@@ -189,7 +191,7 @@
 	<!-- Desktop: sticky sidebar ToC (hidden below lg breakpoint) -->
 	<nav
 		class="toc-desktop hidden lg:block {className}"
-		aria-label="Table of contents"
+		aria-label={tocAria}
 		data-testid="toc-desktop"
 	>
 		<Collapsible bind:open={tocOpen}>
