@@ -193,7 +193,7 @@
 	function fieldBorderClass(field: string): string {
 		if (!submitted) return 'border-[var(--border)]';
 		if (errors[field]) return 'border-[var(--destructive)]';
-		return 'border-[#28c840]';
+		return 'border-[var(--success)]';
 	}
 
 </script>
@@ -393,7 +393,7 @@
 							<div class="{line.color === 'orange'
 								? 'text-[var(--primary)]'
 								: line.color === 'green'
-									? 'text-[#28c840]'
+									? 'text-[var(--success)]'
 									: line.color === 'accent'
 										? 'text-[var(--accent)]'
 										: 'text-[var(--secondary-foreground)]'} text-small">

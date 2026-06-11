@@ -72,9 +72,9 @@
   <!-- Results table -->
   <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
     <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-xs md:text-sm md:gap-y-1.5">
-      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">{columnRoute}</span>
-      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">{columnAvgDelay}</span>
-      <span class="border-b border-bg-card pb-1.5 text-[var(--muted-foreground)]">{columnVehicles}</span>
+      <span class="border-b border-border-subtle pb-1.5 text-[var(--muted-foreground)]">{columnRoute}</span>
+      <span class="border-b border-border-subtle pb-1.5 text-[var(--muted-foreground)]">{columnAvgDelay}</span>
+      <span class="border-b border-border-subtle pb-1.5 text-[var(--muted-foreground)]">{columnVehicles}</span>
       {#each rows as row (row.route)}
         <span class="text-[var(--foreground)]" data-testid="sql-result-row">{row.route}</span>
         <span class="text-[var(--accent)]">{row.avgDelayS}</span>
