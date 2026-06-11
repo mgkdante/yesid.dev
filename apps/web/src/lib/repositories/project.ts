@@ -3,8 +3,8 @@
 // directly (only the adapter does).
 // Slice-28.3 (#117): pruned wrappers with zero route/test consumers
 // (getAllProjects, getFeaturedProjects, getAllTags, getAllStackItems,
-// getServiceIdsForProjects). Adapter-port methods stay for the slice-26
-// RUN_PARITY oracle.
+// getServiceIdsForProjects). Adapter-port methods stay on the
+// ContentAdapter contract (the static contract suites exercise them).
 
 import { adapter } from '$lib/adapters';
 import type { PreviewContext, Project } from '$lib/types';
