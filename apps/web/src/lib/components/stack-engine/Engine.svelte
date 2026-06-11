@@ -16,6 +16,8 @@
 -->
 <script lang="ts">
 	import { EngineState } from './engine-state.svelte';
+	import GoalPicker from './GoalPicker.svelte';
+	import TechMatcher from './TechMatcher.svelte';
 
 	let { animate = true }: { animate?: boolean } = $props();
 
@@ -55,8 +57,7 @@
 	{#if engine.mode === 'goal'}
 		<div class="engine-region" data-testid="engine-goal-region">
 			{#if engine.view === 'select'}
-				<!-- GoalPicker lands in Task 9 -->
-				<p class="engine-placeholder">goal picker — coming in Task 9</p>
+				<GoalPicker {engine} />
 			{:else}
 				<!-- BlueprintCanvas / ProductPreview / BlueprintCTA land in Tasks 10–12 -->
 				<p class="engine-placeholder">blueprint — coming in Task 10</p>
@@ -64,8 +65,12 @@
 		</div>
 	{:else}
 		<div class="engine-region" data-testid="engine-compose-region">
-			<!-- TechMatcher lands in Task 9 -->
-			<p class="engine-placeholder">tech matcher — coming in Task 9</p>
+			{#if engine.view === 'select'}
+				<TechMatcher {engine} />
+			{:else}
+				<!-- Compose blueprint (matched/missing ghosting) lands in Task 10 -->
+				<p class="engine-placeholder">blueprint — coming in Task 10</p>
+			{/if}
 		</div>
 	{/if}
 </section>
