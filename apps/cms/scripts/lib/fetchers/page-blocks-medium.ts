@@ -10,8 +10,9 @@
  * apps/web/src/lib/adapters/directus.ts.
  */
 
-import { readItems } from '@directus/sdk';
+import { readSingleton } from '@directus/sdk';
 import { toLocalizedString, toLocalizedJSON } from '../locale';
+import { asSingletonRow } from './singleton';
 import {
 	TechStackPageContentSchema,
 	ContactContentSchema,
@@ -44,18 +45,16 @@ export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 export async function fetchTechStackPageContent({
 	client,
 }: FetcherContext): Promise<TechStackPageContent> {
-	const rows = (await client.request(
-		readItems('block_tech_stack_page_content', {
+	const result = await client.request(
+		readSingleton('block_tech_stack_page_content', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-
-	if (rows.length === 0) {
-		throw new Error('[fetchTechStackPageContent] no block_tech_stack_page_content row found');
-	}
-
-	return TechStackPageContentSchema.parse(toTechStackPageContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(
+		result,
+		'fetchTechStackPageContent/block_tech_stack_page_content',
+	);
+	return TechStackPageContentSchema.parse(toTechStackPageContent(row));
 }
 
 // ---------------------------------------------------------------------------
@@ -227,16 +226,11 @@ export function toContactContent(raw: BlockRow): ContactContent {
 }
 
 export async function fetchContactContent({ client }: FetcherContext): Promise<ContactContent> {
-	const rows = (await client.request(
-		readItems('block_contact_content', {
+	const result = await client.request(
+		readSingleton('block_contact_content', {
 			fields: ['*', { translations: ['*'] } as unknown as string],
-			limit: 1,
 		}),
-	)) as unknown as BlockRow[];
-
-	if (rows.length === 0) {
-		throw new Error('[fetchContactContent] no block_contact_content row found');
-	}
-
-	return ContactContentSchema.parse(toContactContent(rows[0]));
+	);
+	const row = asSingletonRow<BlockRow>(result, 'fetchContactContent/block_contact_content');
+	return ContactContentSchema.parse(toContactContent(row));
 }
