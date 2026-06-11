@@ -15,6 +15,8 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
+	import { fillTemplate } from '$lib/utils/labels';
+	import { siteLabels } from '$lib/content';
 
 	import { morphHover, pressBounce, cursorGlow, cardParallax, sectionGlow } from '$lib/motion/actions';
 	import { gsap, loadDrawSVG } from '$lib/motion/utils/gsap';
@@ -32,6 +34,9 @@
 	}: { servicesGrid: ServicesGridContent; services: readonly Service[] } = $props();
 	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, 'en');
 	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, 'en');
+
+	// go2-t1c2: card marker template from site_labels, previous literal as fallback.
+	const markerServiceTemplate = resolveLocale(siteLabels.ui.markerService, 'en') || '{num} / SERVICE';
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
 
@@ -123,7 +128,7 @@
 						<div class="services-icon-zone relative">
 							<!-- 01 / SERVICE marker, top-left of icon zone. -->
 							<div class="services-marker">
-								{String(service.station).padStart(2, '0')} / SERVICE
+								{fillTemplate(markerServiceTemplate, { num: String(service.station).padStart(2, '0') })}
 							</div>
 
 							<!-- SVG icon button — morph triggers from the parent link's

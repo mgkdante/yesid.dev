@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "About teaser block — home page About section (NOT /about page). Non-translatable: stack_items (string[]) on parent. All LocalizedString leaves in translations.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",

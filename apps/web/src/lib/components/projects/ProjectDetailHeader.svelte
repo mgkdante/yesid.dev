@@ -12,10 +12,13 @@
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
   import { projectsDetailContent } from '$lib/content/projects';
+  import { siteLabels } from '$lib/content';
 
   let { project }: { project: Project } = $props();
 
   const backToListingLabel = resolveLocale(projectsDetailContent.backToListingLabel, 'en');
+  // go2-t1c2: aria microcopy from site_labels, previous literal as fallback.
+  const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, 'en') || 'Tech stack';
 
   const location = $derived(project.location ?? 'sherbrooke');
   const environment = $derived(project.environment ?? 'production');
@@ -122,7 +125,7 @@
         {resolveLocale(project.title, 'en')}
       </h1>
 
-      <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label="Tech stack">
+      <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label={navTechStackAria}>
         {#each project.stack as tech}
           <span class="header__pill">{tech}</span>
         {/each}

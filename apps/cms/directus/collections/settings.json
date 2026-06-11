@@ -53,12 +53,12 @@
       {
         "type": "module",
         "id": "visual",
-        "enabled": true
+        "enabled": false
       },
       {
         "type": "module",
         "id": "users",
-        "enabled": true
+        "enabled": false
       },
       {
         "type": "module",

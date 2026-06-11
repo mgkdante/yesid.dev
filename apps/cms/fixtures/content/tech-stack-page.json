@@ -8,6 +8,13 @@
     "titleLine1": { "en": "The Control" },
     "titleLine2": { "en": "Room" },
     "terminalAria": { "en": "Infrastructure overview" },
+    "terminal": {
+      "cmd": { "en": "~ yesid --stack --verbose" },
+      "loading": { "en": "→ loading {count} nodes..." },
+      "success": { "en": "✓ successful" },
+      "cataloged": { "en": "→ {count} technologies cataloged" },
+      "status": { "en": "interactive map online." }
+    },
     "stats": {
       "technologies": { "en": "technologies" }
     }

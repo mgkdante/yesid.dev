@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { siteLabels } from '$lib/content';
 	import type { ManifestoContent } from '$lib/types';
 
 	// slice-18i Phase 7C: manifestoContent now flows as a prop from the server load.
@@ -186,7 +187,7 @@
 		</div>
 
 		<!-- Capability pills -->
-		<nav class="manifesto__pills" aria-label="Capabilities">
+		<nav class="manifesto__pills" aria-label={resolveLocale(siteLabels.a11y.navCapabilities, 'en') || 'Capabilities'}>
 			{#each pills as pill}
 				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback" use:boop={{ scale: 1.03, timing: 200 }}>{pill.label}</a>
 			{/each}

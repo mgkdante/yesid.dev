@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { fillTemplate } from '$lib/utils/labels';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { StatusDot, SectionLabel } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
@@ -48,12 +49,16 @@
 		visible: boolean;
 	}
 
+	// CMS-driven line templates (go2-t1b2 operator addendum) with the previous
+	// hardcoded strings as code fallbacks. The literal {count} token is
+	// interpolated here from data.items.length — computed, never stored.
+	const count = String(itemCount);
 	const terminalLines: TerminalLine[] = [
-		{ text: '~ yesid --stack --verbose', color: 'default', visible: true },
-		{ text: `→ loading ${itemCount} nodes...`, color: 'muted', visible: false },
-		{ text: '✓ successful', color: 'green', visible: false },
-		{ text: `→ ${itemCount} technologies cataloged`, color: 'orange', visible: false },
-		{ text: 'interactive map online.', color: 'accent', visible: false },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.cmd, 'en') || '~ yesid --stack --verbose', { count }), color: 'default', visible: true },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.loading, 'en') || '→ loading {count} nodes...', { count }), color: 'muted', visible: false },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.success, 'en') || '✓ successful', { count }), color: 'green', visible: false },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.cataloged, 'en') || '→ {count} technologies cataloged', { count }), color: 'orange', visible: false },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.status, 'en') || 'interactive map online.', { count }), color: 'accent', visible: false },
 	];
 
 	let heroLines = $state<TerminalLine[]>(terminalLines);
