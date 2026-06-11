@@ -10,6 +10,7 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import MenuOverlay from './MenuOverlay.svelte';
 	import type { NavLink } from '$lib/content/nav';
+	import ThemeToggle from './ThemeToggle.svelte';
 
 	const openMenuAria = resolveLocale(sharedChromeContent.openMenuAria, 'en');
 	const closeMenuAria = resolveLocale(sharedChromeContent.closeMenuAria, 'en');
@@ -121,6 +122,9 @@
 
 		<!-- Divider -->
 		<span class="nav-divider" aria-hidden="true"></span>
+
+		<!-- Theme toggle (GO-W2.2) -->
+		<ThemeToggle />
 
 		<!-- Menu toggle -->
 		<button
