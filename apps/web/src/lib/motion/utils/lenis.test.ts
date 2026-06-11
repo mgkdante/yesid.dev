@@ -7,11 +7,25 @@ function setTouch(value: number): void {
 	(ScrollTrigger as unknown as { isTouch: number }).isTouch = value;
 }
 
+// GO-w2t5: control prefers-reduced-motion per test (boop.test.ts pattern).
+function mockMatchMedia(matches: boolean): void {
+	Object.defineProperty(window, 'matchMedia', {
+		writable: true,
+		configurable: true,
+		value: vi.fn().mockReturnValue({
+			matches,
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+		}),
+	});
+}
+
 describe('motion/utils/lenis', () => {
 	beforeEach(() => {
 		destroyLenis();
 		vi.clearAllMocks();
 		setTouch(0);
+		mockMatchMedia(false);
 	});
 
 	afterEach(() => {
@@ -64,5 +78,20 @@ describe('motion/utils/lenis', () => {
 		initLenis();
 		destroyLenis();
 		expect(ScrollTrigger.normalizeScroll).not.toHaveBeenCalled();
+	});
+
+	it('GO-w2t5: reduced-motion does NOT create a Lenis instance (MOTION-GATED tier)', () => {
+		setTouch(0);
+		mockMatchMedia(true);
+		initLenis();
+		expect(getLenis()).toBeNull();
+	});
+
+	it('GO-w2t5: destroyLenis is a safe no-op after a reduced-motion bail', () => {
+		setTouch(0);
+		mockMatchMedia(true);
+		initLenis();
+		expect(() => destroyLenis()).not.toThrow();
+		expect(getLenis()).toBeNull();
 	});
 });
