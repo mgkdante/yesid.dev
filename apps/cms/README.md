@@ -44,7 +44,7 @@ Prod apply is gated: the `cms.yml` workflow's push job runs on manual `workflow_
 
 Config lives in `apps/cms/directus-sync.config.cjs` (dumpPath, enabled features, env-var connection). The sync extension is installed via `apps/cms/Dockerfile`; the `directus-sync` CLI is a devDependency of this package.
 
-CI (`.github/workflows/cms.yml`): unit tests on PR, `sync:diff` preview on main-bound PRs, gated `sync:push` on dispatch. `contract-test.yml` boots an ephemeral Directus **in this repo** (intra-repo since the 2026-04-24 monorepo pivot — both apps live here; no sibling checkout) and runs the apps/web adapter integration tests against the seeded schema.
+CI (`.github/workflows/cms.yml`): unit tests on PR, `sync:diff` preview on main-bound PRs, gated `sync:push` on dispatch. (The former `contract-test.yml` — ephemeral Directus + apps/web adapter integration tests — was retired at slice-26 close together with the dormant apps/web directus adapter it existed to test.)
 
 ## Shared secrets (cross-service)
 
@@ -235,7 +235,7 @@ apps/cms/
 └── README.md                    # this file
 ```
 
-CI workflows live at the repo root: `.github/workflows/cms.yml` (tests + gated sync) and `.github/workflows/contract-test.yml` (ephemeral Directus + adapter integration tests, intra-repo).
+CI workflows live at the repo root: `.github/workflows/cms.yml` (tests + gated sync). The former `contract-test.yml` (ephemeral Directus + adapter integration tests) was retired at slice-26 close with the dormant apps/web directus adapter.
 
 ## Why these choices (TL;DR)
 
