@@ -1,5 +1,5 @@
 {
-  "collection": "languages",
+  "collection": "about_page",
   "meta": {
     "accountability": "all",
     "archive_app_filter": true,
@@ -7,24 +7,21 @@
     "archive_value": null,
     "autosave_revision_interval": null,
     "collapse": "open",
-    "collection": "languages",
+    "collection": "about_page",
     "color": null,
-    "display_template": "{{name}}",
-    "group": "site_config",
+    "display_template": null,
+    "group": null,
     "hidden": false,
-    "icon": "translate",
+    "icon": "person",
     "item_duplication_fields": null,
-    "note": "Supported locales (en required, fr/es optional). Used by Translations fields across all collections.",
+    "note": "About page sections.",
     "preview_url": null,
     "singleton": false,
-    "sort": 5,
+    "sort": 6,
     "sort_field": null,
     "status": "active",
     "translations": null,
     "unarchive_value": null,
     "versioning": false
-  },
-  "schema": {
-    "name": "languages"
   }
 }

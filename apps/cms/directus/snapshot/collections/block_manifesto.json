@@ -10,7 +10,7 @@
     "collection": "block_manifesto",
     "color": null,
     "display_template": "{{editor_label}} ({{status}})",
-    "group": "site_blocks",
+    "group": "home_page",
     "hidden": false,
     "icon": "format_quote",
     "item_duplication_fields": null,

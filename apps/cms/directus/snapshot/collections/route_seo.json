@@ -21,7 +21,7 @@
     "note": "Per-route SEO override (title + description + og_image) for static routes. Falls back to site_meta defaults when fields are empty. Static routes only — dynamic routes (/blog/[slug] etc.) use code factories.",
     "preview_url": "https://yesid.dev{{path}}",
     "singleton": false,
-    "sort": 2,
+    "sort": 4,
     "sort_field": "sort",
     "status": "active",
     "translations": null,
