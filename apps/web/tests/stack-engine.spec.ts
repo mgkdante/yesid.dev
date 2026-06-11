@@ -57,3 +57,22 @@ test('compose path: an absurd single pick shows the zero-match CTA (never blank)
 	await expect(zeroMatch).toBeVisible();
 	await expect(zeroMatch.locator('a')).toHaveAttribute('href', '/contact?bp=custom~dax');
 });
+
+test('blueprint fits the viewport — whole drawing at a glance (GO-w2t5 operator playtest)', async ({
+	page,
+}) => {
+	await page.goto('/tech-stack');
+	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
+	await page.locator('[data-testid="archetype-card-data-dashboard"]').click();
+
+	const canvas = page.locator('[data-testid="blueprint-canvas"]');
+	await expect(canvas).toBeVisible();
+
+	const box = await canvas.boundingBox();
+	const viewport = page.viewportSize();
+	expect(box).not.toBeNull();
+	expect(viewport).not.toBeNull();
+	// Runs on desktop-chrome AND all three mobile projects.
+	expect(box!.height).toBeLessThanOrEqual(viewport!.height * 0.85);
+	expect(box!.width).toBeLessThanOrEqual(viewport!.width);
+});

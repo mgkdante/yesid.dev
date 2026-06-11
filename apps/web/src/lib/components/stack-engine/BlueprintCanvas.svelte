@@ -63,6 +63,12 @@
 		`${-PAD} ${-PAD} ${layout.width + PAD * 2} ${layout.height + STAMP_H + PAD * 2}`,
 	);
 
+	/** GO-w2t5 sizing fix: cap rendered scale at 1 SVG unit = 1px. Launch
+	 *  archetypes are one box per row (width 160 → viewBox 208), and the old
+	 *  flat `max-width: 720px` inflated them ~3.5× — "one node fills the
+	 *  viewport height" (operator playtest). Natural width = real pixels. */
+	const naturalWidth = $derived(layout.width + PAD * 2);
+
 	let svgEl: SVGSVGElement | null = $state(null);
 
 	// Draw sequence — re-runs whenever the layout identity changes (archetype
@@ -123,6 +129,7 @@
 	class="blueprint-canvas"
 	data-testid="blueprint-canvas"
 	{viewBox}
+	style:max-width={`${naturalWidth}px`}
 	role="img"
 	aria-label={`Blueprint: ${title}`}
 >
@@ -183,8 +190,12 @@
 <style>
 	.blueprint-canvas {
 		width: 100%;
-		max-width: 720px;
+		/* max-width set inline = layout natural width (render scale ≤ 1). */
 		height: auto;
+		/* Safety net for tall compose blueprints: the default
+		   preserveAspectRatio (xMidYMid meet) letterboxes the drawing down —
+		   the WHOLE blueprint stays visible without scrolling. */
+		max-height: min(56svh, 440px);
 		display: block;
 		margin: 0 auto;
 		overflow: visible;
