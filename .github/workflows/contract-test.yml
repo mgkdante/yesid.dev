@@ -78,7 +78,7 @@ jobs:
           --health-retries 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
@@ -150,13 +150,12 @@ jobs:
           DIRECTUS_ADMIN_EMAIL: admin@example.com
           DIRECTUS_ADMIN_PASSWORD: ci-test-pass-rotate-immediately
         working-directory: apps/cms
-        # --force: the committed snapshot is stamped with the version it was
-        # pulled from (currently 11.17.3) while the ephemeral image runs 12.0.0
-        # — /schema/diff hard-rejects cross-version pushes without it. Safe
-        # here (throwaway instance). Becomes a no-op once the post-flip
-        # sync:pull re-stamps the snapshot at 12.x; never add this to cms.yml
-        # prod pushes, where the version guard is protective.
-        run: bun run sync:push -- --force
+        # No --force: the snapshot is stamped 12.0.0 (post-flip sync:pull,
+        # slice-26) and matches the image — the /schema/diff version guard is
+        # protective again. If a future Directus major reintroduces a stamp
+        # mismatch, add `-- --force` HERE ONLY (never cms.yml prod pushes)
+        # until the post-upgrade re-stamp lands.
+        run: bun run sync:push
 
       - name: Grant Public policy read + seed languages
         run: |
