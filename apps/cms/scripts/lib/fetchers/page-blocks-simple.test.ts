@@ -36,12 +36,21 @@ describe('blog-page transform', () => {
 });
 
 describe('projects-page transform', () => {
-	it('produces a LocalizedString intro from translations', () => {
+	it('produces LocalizedString intro/heading/emptyState from translations', () => {
 		const result = toProjectsPageContent({
 			id: 1,
-			translations: [{ languages_code: 'en', intro: 'Selected work.' }],
+			translations: [
+				{
+					languages_code: 'en',
+					intro: 'Selected work.',
+					heading: 'Projects',
+					empty_state: 'No projects match the selected filters.',
+				},
+			],
 		});
 		expect(result.intro).toEqual({ en: 'Selected work.' });
+		expect(result.heading).toEqual({ en: 'Projects' });
+		expect(result.emptyState).toEqual({ en: 'No projects match the selected filters.' });
 		expect(() => ProjectsPageContentSchema.parse(result)).not.toThrow();
 	});
 });
