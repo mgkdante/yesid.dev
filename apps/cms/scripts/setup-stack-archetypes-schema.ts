@@ -564,7 +564,8 @@ function isAlreadyExists(status: number, json: any): boolean {
 	return errors.some(
 		(e) =>
 			e.extensions?.code === 'RECORD_NOT_UNIQUE' ||
-			/already exists/i.test(e.message ?? ''),
+			/already exists/i.test(e.message ?? '') ||
+			/already has an associated relationship/i.test(e.message ?? ''),
 	);
 }
 
@@ -611,7 +612,10 @@ async function applyPermission(ctx: ApplyContext, step: SchemaStep): Promise<voi
 		names.includes(p.name),
 	);
 	if (!policy) {
-		throw new Error(`policy not found by any name in [${names.join(', ')}]`);
+		// Build Bot exists on prod only — a missing policy on this instance is a
+		// skip, not a failure (the prod apply grants it there).
+		log.info(`  skip permission — no policy named [${names.join(', ')}] on this instance`);
+		return;
 	}
 	const payload = step.payload as { collection: string; action: string };
 	const existing = await rest(
