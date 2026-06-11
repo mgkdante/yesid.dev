@@ -29,7 +29,10 @@
       "filter": {
         "payload": {
           "status": {
-            "_eq": "published"
+            "_in": [
+              "published",
+              "archived"
+            ]
           }
         }
       }
@@ -38,6 +41,26 @@
     "reject": null,
     "flow": "6696d9f8-6ff1-4286-838a-57675262d08b",
     "_syncId": "_sync_op_vercel_revalidate_check_published"
+  },
+  {
+    "name": "Is Dirty?",
+    "key": "is_dirty",
+    "type": "condition",
+    "position_x": 21,
+    "position_y": 1,
+    "options": {
+      "filter": {
+        "$last": {
+          "cms_dirty": {
+            "_eq": true
+          }
+        }
+      }
+    },
+    "resolve": "fb71d073-65d9-462a-aa96-d1579ef978a8",
+    "reject": null,
+    "flow": "196caf88-5082-477e-b396-d6b0a5bd31c4",
+    "_syncId": "cdc7a61d-6ed8-4c04-ae74-c2d74fe4a369"
   },
   {
     "name": "Log reminder",
@@ -54,6 +77,25 @@
     "_syncId": "_sync_op_translation_reminder_log"
   },
   {
+    "name": "Mark Dirty",
+    "key": "mark_dirty",
+    "type": "item-update",
+    "position_x": 41,
+    "position_y": 1,
+    "options": {
+      "collection": "build_queue",
+      "permissions": "$full",
+      "emitEvents": false,
+      "payload": {
+        "cms_dirty": true
+      }
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "4e59885c-8e18-41fd-b8f4-89f0f6baa951",
+    "_syncId": "6f409ed1-cd21-42a5-b504-e1532ab428d6"
+  },
+  {
     "name": "POST deploy hook",
     "key": "post_hook",
     "type": "request",
@@ -68,5 +110,134 @@
     "reject": null,
     "flow": "6696d9f8-6ff1-4286-838a-57675262d08b",
     "_syncId": "_sync_op_vercel_revalidate_post_hook"
+  },
+  {
+    "name": "POST Vercel Deploy Hook",
+    "key": "post_vercel",
+    "type": "request",
+    "position_x": 41,
+    "position_y": 1,
+    "options": {
+      "method": "POST",
+      "url": "{{ $env.VERCEL_DEPLOY_HOOK_PROD }}?buildCache=false&source=slice-18m2",
+      "headers": [
+        {
+          "header": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"source\":\"slice-18m.2\",\"env\":\"prod\",\"trigger\":\"flow_b_cron\"}"
+    },
+    "resolve": "ca420a66-4a57-43ea-bedf-4b93b7859145",
+    "reject": null,
+    "flow": "196caf88-5082-477e-b396-d6b0a5bd31c4",
+    "_syncId": "fb71d073-65d9-462a-aa96-d1579ef978a8"
+  },
+  {
+    "name": "Read build_queue",
+    "key": "read_bq",
+    "type": "item-read",
+    "position_x": 1,
+    "position_y": 1,
+    "options": {
+      "collection": "build_queue",
+      "permissions": "$full",
+      "key": [
+        1
+      ]
+    },
+    "resolve": "cdc7a61d-6ed8-4c04-ae74-c2d74fe4a369",
+    "reject": null,
+    "flow": "196caf88-5082-477e-b396-d6b0a5bd31c4",
+    "_syncId": "bd029e69-6067-4f92-9721-00bba2735ef1"
+  },
+  {
+    "name": "Reset Flag",
+    "key": "reset_flag",
+    "type": "item-update",
+    "position_x": 61,
+    "position_y": 1,
+    "options": {
+      "collection": "build_queue",
+      "permissions": "$full",
+      "emitEvents": false,
+      "payload": {
+        "cms_dirty": false
+      }
+    },
+    "resolve": null,
+    "reject": null,
+    "flow": "196caf88-5082-477e-b396-d6b0a5bd31c4",
+    "_syncId": "ca420a66-4a57-43ea-bedf-4b93b7859145"
+  },
+  {
+    "name": "Should Trigger",
+    "key": "should_trigger",
+    "type": "condition",
+    "position_x": 19,
+    "position_y": 1,
+    "options": {
+      "filter": {
+        "_or": [
+          {
+            "$trigger": {
+              "event": {
+                "_ends_with": ".items.delete"
+              }
+            }
+          },
+          {
+            "$trigger": {
+              "payload": {
+                "status": {
+                  "_eq": "published"
+                }
+              }
+            }
+          },
+          {
+            "$trigger": {
+              "collection": {
+                "_in": [
+                  "site_meta",
+                  "services",
+                  "projects_services",
+                  "morph_shapes",
+                  "pages_translations",
+                  "route_seo_translations",
+                  "blog_posts_translations",
+                  "error_pages_translations",
+                  "nav_links_translations",
+                  "projects_translations",
+                  "projects_sections_translations",
+                  "projects_impact_metrics_translations",
+                  "services_translations",
+                  "services_sections_translations",
+                  "services_deliverables_translations",
+                  "site_meta_translations",
+                  "tech_stack_translations",
+                  "block_about_content_translations",
+                  "block_about_intro_translations",
+                  "block_blog_page_content_translations",
+                  "block_closer_translations",
+                  "block_contact_content_translations",
+                  "block_cta_translations",
+                  "block_hero_translations",
+                  "block_manifesto_translations",
+                  "block_projects_page_content_translations",
+                  "block_proof_reel_translations",
+                  "block_services_grid_translations",
+                  "block_tech_stack_page_content_translations"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "resolve": "6f409ed1-cd21-42a5-b504-e1532ab428d6",
+    "reject": null,
+    "flow": "4e59885c-8e18-41fd-b8f4-89f0f6baa951",
+    "_syncId": "dc01c036-4e5b-44a2-bd3d-87031b718d8f"
   }
 ]
