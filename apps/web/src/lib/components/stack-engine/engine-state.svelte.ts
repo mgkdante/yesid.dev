@@ -71,4 +71,10 @@ export class EngineState {
 		if (this.view === 'select') return;
 		this.view = this.view === 'blueprint' ? 'preview' : 'blueprint';
 	}
+
+	/** Back out of a blueprint/preview to the mode's select surface. */
+	backToSelect(): void {
+		this.view = 'select';
+		this.activeArchetype = null;
+	}
 }

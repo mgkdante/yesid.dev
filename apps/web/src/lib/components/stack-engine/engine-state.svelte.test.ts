@@ -119,6 +119,17 @@ describe('EngineState', () => {
 		expect(s.view).toBe('blueprint');
 	});
 
+	it('backToSelect leaves blueprint/preview and clears the active archetype', () => {
+		const s = new EngineState(FIXTURES);
+		s.toggleTech('docker');
+		s.selectArchetype('data-dashboard');
+		s.backToSelect();
+		expect(s.view).toBe('select');
+		expect(s.activeArchetype).toBeNull();
+		// Picks survive backing out too.
+		expect(s.pickedTechs.has('docker')).toBe(true);
+	});
+
 	it('exposes the active archetype object via active', () => {
 		const s = new EngineState(FIXTURES);
 		expect(s.active).toBeNull();
