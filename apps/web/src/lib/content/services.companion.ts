@@ -34,7 +34,7 @@ export const servicesListingContent = {
 export const servicesPageMeta = {
 	title: { en: 'Services — yesid.' } satisfies LocalizedString,
 	description: {
-		en: 'Digital infrastructure, tools, and systems. SQL development, data pipelines, analytics, database engineering, internal tooling, and web development.',
+		en: 'Four stations: Databases & SQL, Pipelines & Automation, Dashboards & Analytics, Websites & E-commerce. Built in Montreal, shipped with numbers.',
 	} satisfies LocalizedString,
 } as const;
 
