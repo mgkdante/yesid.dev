@@ -630,9 +630,11 @@ describe('locale-completeness snapshot (T11)', () => {
 		expect(stats.full).toBe(56);
 	});
 
-	it('en-only count is locked at 373 — documents current FR/ES debt', () => {
-		// 373 fields have only an English translation. This is the baseline
-		// as of slice-27.1. When FR/ES copy lands for any module (CMS regen
+	it('en-only count is locked at 378 — documents current FR/ES debt', () => {
+		// 378 fields have only an English translation. Baseline was 373 as of
+		// slice-27.1; go2-t1b2 added the 5 CMS-driven hero terminal templates to
+		// tech-stack.ts (techStackPageContent.hero.terminal — operator addendum),
+		// 373 → 378. When FR/ES copy lands for any module (CMS regen
 		// → committed diff), this number drops and the test fails intentionally —
 		// update the count here to confirm the debt has been reduced.
 		const stats = newStats();
@@ -654,7 +656,7 @@ describe('locale-completeness snapshot (T11)', () => {
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
 		}
-		expect(stats.enOnly).toBe(373);
+		expect(stats.enOnly).toBe(378);
 	});
 
 	it('partial (en + one of fr/es) count is 0 — no half-translated fields', () => {

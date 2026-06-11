@@ -28,6 +28,13 @@ export const techStackPageContent: TechStackPageContent = {
 		stats: {
 			technologies: { en: 'technologies' },
 		},
+		terminal: {
+			cataloged: { en: '→ {count} technologies cataloged' },
+			cmd: { en: '~ yesid --stack --verbose' },
+			loading: { en: '→ loading {count} nodes...' },
+			status: { en: 'interactive map online.' },
+			success: { en: '✓ successful' },
+		},
 		terminalAria: { en: 'Infrastructure overview' },
 		titleLine1: { en: 'The Control' },
 		titleLine2: { en: 'Room' },
