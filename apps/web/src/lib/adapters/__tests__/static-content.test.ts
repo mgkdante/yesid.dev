@@ -1,10 +1,12 @@
 // Static adapter — content method shape tests (slice-27.1 FIX A + FIX B).
 //
-// Network-free, CI-runnable companion to the parity harness. Asserts:
+// Network-free, CI-runnable shape coverage. Born as the companion to the
+// RUN_PARITY harness (deleted at slice-26 close after Directus 12 passed it
+// on both environments); now the canonical suite asserting:
 //   FIX A: content.errorPage(statusCode) returns per-status content, and
 //          errorPage(404) ≠ errorPage(500) ≠ errorPage(0-fallback).
 //   FIX B: techStack.content('airflow') joins the 3 HTML blocks with '\n'
-//          (matches directus.ts:2822 .join('\n')).
+//          (matches the retired directus adapter's .join('\n')).
 //
 // Runs in the "data" Vitest project (Node env, $env stubbed to {}). The static
 // adapter never touches the network, so importing it directly is safe here.
@@ -99,7 +101,7 @@ describe('staticAdapter.techStack.content — join separator (FIX B)', () => {
 
 		const result = await staticAdapter.techStack.content(item.id);
 
-		// Build expected using the same serializer + \n join (mirrors directus.ts:2822).
+		// Build expected using the same serializer + \n join (the retired directus adapter's pattern).
 		const expected = [
 			serializeBlocksToHtml(item.what_it_is.en),
 			serializeBlocksToHtml(item.what_i_use_it_for.en),
