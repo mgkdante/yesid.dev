@@ -47,6 +47,7 @@ import { fetchSiteMeta, fetchSiteSeoDefaults } from './lib/fetchers/site-meta';
 import { fetchMorphShapes } from './lib/fetchers/morph-shapes';
 import { fetchErrorPageFallback, fetchAllErrorPages } from './lib/fetchers/error-pages';
 import { fetchNavData, type NavData } from './lib/fetchers/nav';
+import { fetchSitePages } from './lib/fetchers/site-pages';
 import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
@@ -101,6 +102,7 @@ const ALL_MODULES = [
 	'morph-shapes',
 	'error-pages',
 	'nav',
+	'site-pages',
 	'blog-posts',
 	'services',
 	'projects',
@@ -175,6 +177,10 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 			log.info(
 				`  nav done (${out.nav.navLinks.length} header / ${out.nav.menuItems.length} menu / ${out.nav.footerLinks.length} footer / ${out.nav.mobileLinks.length} mobile).`,
 			);
+		});
+		enqueue('site-pages', async () => {
+			out.sitePages = await fetchSitePages({ client });
+			log.info(`  site-pages done (${out.sitePages.length} published rows).`);
 		});
 		enqueue('blog-posts', async () => {
 			// fetchBlogPosts + fetchBlogBodies are independent of each other.
