@@ -20,7 +20,7 @@
 		class="w-full h-auto max-w-sm mx-auto"
 	>
 		<!-- Platform line -->
-		<line x1="20" y1="200" x2="380" y2="200" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+		<line class="scene-ground" x1="20" y1="200" x2="380" y2="200" stroke-width="2" />
 
 		<!-- Left scaffolding (taller) -->
 		<g class="scaffolding">
@@ -74,22 +74,22 @@
 				fill="#E07800"
 			>404</text>
 			<!-- Sign post -->
-			<line x1="200" y1="150" x2="200" y2="200" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+			<line class="scene-post" x1="200" y1="150" x2="200" y2="200" stroke-width="2" />
 		</g>
 
 		<!-- Left barrier -->
 		<g class="barrier">
 			<!-- Legs -->
-			<line x1="105" y1="185" x2="100" y2="200" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-			<line x1="135" y1="185" x2="140" y2="200" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+			<line class="scene-leg" x1="105" y1="185" x2="100" y2="200" stroke-width="1.5" />
+			<line class="scene-leg" x1="135" y1="185" x2="140" y2="200" stroke-width="1.5" />
 			<!-- Bar with hazard chevrons -->
 			<rect x="98" y="178" width="44" height="8" rx="1" fill="url(#hazard-pattern)" />
 		</g>
 
 		<!-- Right barrier -->
 		<g class="barrier">
-			<line x1="265" y1="185" x2="260" y2="200" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-			<line x1="295" y1="185" x2="300" y2="200" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+			<line class="scene-leg" x1="265" y1="185" x2="260" y2="200" stroke-width="1.5" />
+			<line class="scene-leg" x1="295" y1="185" x2="300" y2="200" stroke-width="1.5" />
 			<rect x="258" y="178" width="44" height="8" rx="1" fill="url(#hazard-pattern)" />
 		</g>
 
@@ -129,6 +129,13 @@
 		display: flex;
 		justify-content: center;
 	}
+
+	/* GO-W2.2: structural strokes follow the theme (white-alpha was invisible
+	   on paper). Orange/yellow brand elements and the dark station sign are
+	   theme-invariant on purpose. */
+	.scene-ground { stroke: color-mix(in srgb, var(--foreground) 8%, transparent); }
+	.scene-post { stroke: color-mix(in srgb, var(--foreground) 10%, transparent); }
+	.scene-leg { stroke: color-mix(in srgb, var(--foreground) 15%, transparent); }
 
 	/* Alternating blink for construction lights */
 	.light-a, .light-glow.light-a {

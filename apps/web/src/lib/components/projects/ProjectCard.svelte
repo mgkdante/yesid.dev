@@ -144,7 +144,7 @@
 					<div class="flex flex-wrap gap-1.5">
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-2 rounded-full border bg-bg-primary px-3 py-1.5"
+							class="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1.5"
 							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}

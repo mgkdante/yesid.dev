@@ -63,7 +63,7 @@
 	<link rel="canonical" href={canonicalAbsolute} />
 
 	<meta name="theme-color" content={themeColor} />
-	<meta name="color-scheme" content="dark" />
+	<meta name="color-scheme" content="dark light" />
 
 	{#if seo.noIndex}
 		<meta name="robots" content="noindex,nofollow" />
