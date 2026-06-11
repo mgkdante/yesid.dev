@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "stack",
-    "group": null,
+    "group": "grp_meta",
     "hidden": false,
     "interface": "tags",
     "note": "Array of tech names (e.g. PostgreSQL, Python, Retool).",
@@ -23,7 +23,7 @@
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "stack",

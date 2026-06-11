@@ -11,17 +11,19 @@
     "group": null,
     "hidden": false,
     "interface": "boolean",
-    "note": "Show in listings. Default true; set false to hide without deleting.",
-    "options": null,
+    "note": "Off = hidden everywhere on yesid.dev after the auto-rebuild (services have no draft/archive — this toggle IS the switch).",
+    "options": {
+      "label": "Visible on the site"
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 1,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "visible",

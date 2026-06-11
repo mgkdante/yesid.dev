@@ -9,7 +9,7 @@
     "collapse": "open",
     "collection": "services_sections",
     "color": null,
-    "display_template": null,
+    "display_template": "{{translations}}",
     "group": null,
     "hidden": true,
     "icon": "view_agenda",
