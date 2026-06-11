@@ -16,7 +16,8 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:e2e": "playwright test",
-		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'"
+		"bundle-size": "bun run build && echo 'Bundle stats at dist/stats.html'",
+		"check:engine-chunk": "node scripts/check-engine-chunk.mjs"
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^10.4.0",

@@ -31,4 +31,12 @@ describe('GoalPicker', () => {
 		expect(engine.activeArchetype).toBe('data-dashboard');
 		expect(engine.view).toBe('blueprint');
 	});
+
+	it('GO-w2t5: archetype cards carry tactile press affordances', () => {
+		const engine = new EngineState();
+		render(GoalPicker, { props: { engine } });
+		expect(screen.getByTestId('archetype-card-data-dashboard').className).toContain(
+			'tap-press',
+		);
+	});
 });

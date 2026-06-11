@@ -213,6 +213,18 @@ pre, code, table {
   color: #000000;
 }
 
+/* GO-w2t5: keyboard-focus polish — engineered, on-brand ring everywhere.
+   Today only ui/* primitives have rings; nav links, manifesto pills, toc
+   pills and filter chips fall back to UA defaults. @layer base so component
+   focus utilities (utilities layer, higher precedence) still win where they
+   define their own ring. :where() keeps specificity at the pseudo-class only. */
+@layer base {
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
 /* Brand scrollbar — orange thumb on dark track, site-wide */
 * {
   scrollbar-width: thin;
@@ -433,8 +445,21 @@ pre, code, table {
 .prose-dark h4 { font-size: 1.1rem; font-weight: 600; }
 .prose-dark p { margin-bottom: 1rem; }
 .prose-dark strong { color: var(--foreground); font-weight: 600; }
-.prose-dark a { color: var(--primary); text-decoration: none; }
-.prose-dark a:hover { text-decoration: underline; }
+/* GO-w2t5: underline draws in from the left — the blueprint "line being
+   drawn" at word scale. background-size only → SAFE-ALWAYS tier. */
+.prose-dark a {
+  color: var(--primary);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size var(--duration-fast) var(--ease-out);
+}
+.prose-dark a:hover,
+.prose-dark a:focus-visible {
+  background-size: 100% 1px;
+}
 .prose-dark pre,
 .prose-dark pre.shiki {
   background: var(--terminal) !important;

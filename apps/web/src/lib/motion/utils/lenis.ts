@@ -5,6 +5,7 @@
 // Strategy:
 // - Desktop: Lenis provides buttery easing for wheel scroll.
 // - Touch devices: native browser scroll. NO scroll-jacking.
+// - Reduced motion: native scroll, no Lenis (GO-w2t5, MOTION-GATED tier).
 //
 // Previous versions called `ScrollTrigger.normalizeScroll({ allowNestedScroll: true })`
 // on touch devices. That call applied `touch-action: pan-x pinch-zoom` to html/body,
@@ -15,6 +16,7 @@
 
 import Lenis from 'lenis';
 import { gsap, ScrollTrigger } from './gsap.js';
+import { shouldAnimate } from '../policy.js';
 
 let instance: Lenis | null = null;
 let tickerCallback: ((time: number) => void) | null = null;
@@ -22,6 +24,11 @@ let isTouchDevice = false;
 
 export function initLenis(): void {
 	if (instance) return;
+
+	// MOTION-GATED tier (GO-w2t5 retier): reduced-motion users get native
+	// browser scroll — no 1.2s eased scroll-jacking. Native scroll is the
+	// correct reduce behavior; ScrollTrigger keeps working off native scroll.
+	if (!shouldAnimate('motion-gated')) return;
 
 	// ScrollTrigger.isTouch: 0 = no touch, 1 = touch only, 2 = touch + pointer
 	isTouchDevice = ScrollTrigger.isTouch > 0;
