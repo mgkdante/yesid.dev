@@ -10,7 +10,7 @@
     "collection": "morph_shapes",
     "color": null,
     "display_template": "{{label}} ({{viewbox}})",
-    "group": "site_catalog",
+    "group": "brand_assets",
     "hidden": false,
     "icon": "category",
     "item_duplication_fields": [
@@ -23,7 +23,7 @@
     "note": "Geometric morph-target library. Consumed by SVG morph animations. Adding a new shape via Data Studio works without a code deploy. Public read.",
     "preview_url": null,
     "singleton": false,
-    "sort": 7,
+    "sort": 3,
     "sort_field": "sort",
     "status": "active",
     "translations": null,
