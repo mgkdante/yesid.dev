@@ -106,7 +106,6 @@
 								type="date"
 								bind:value={dateFrom}
 								class="mt-0.5 w-full rounded border border-[var(--input)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
-								style="color-scheme: dark;"
 							/>
 						</label>
 						<label class="flex-1 text-caption text-[var(--muted-foreground)]">
@@ -115,7 +114,6 @@
 								type="date"
 								bind:value={dateTo}
 								class="mt-0.5 w-full rounded border border-[var(--input)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
-								style="color-scheme: dark;"
 							/>
 						</label>
 					</div>
