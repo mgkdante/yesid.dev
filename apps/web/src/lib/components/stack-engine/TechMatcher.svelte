@@ -10,6 +10,7 @@
 <script lang="ts">
 	import { STACK_LAYERS } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { pressBounce } from '$lib/motion/actions';
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { encodeBlueprint } from '$lib/utils/blueprint-param';
 	import type { EngineState } from './engine-state.svelte';
@@ -47,13 +48,14 @@
 				{#each group.items as tech (tech.id)}
 					<button
 						type="button"
-						class="tech-chip"
+						class="tech-chip tap-press"
 						class:tech-chip-picked={engine.pickedTechs.has(tech.id)}
 						aria-pressed={engine.pickedTechs.has(tech.id)}
 						data-testid={`tech-chip-${tech.id}`}
+						use:pressBounce
 						onclick={() => engine.toggleTech(tech.id)}
 					>
-						{tech.name}
+						<span class="chip-label">{tech.name}</span>
 					</button>
 				{/each}
 			</div>
@@ -72,9 +74,10 @@
 				{#if archetype}
 					<button
 						type="button"
-						class="match-card"
+						class="match-card tap-press"
 						class:match-card-full={match.coverage === 1}
 						data-testid={`match-card-${match.slug}`}
+						use:pressBounce
 						onclick={() => engine.selectArchetype(match.slug)}
 					>
 						<span class="match-title">
@@ -135,6 +138,25 @@
 		background: var(--primary);
 		border-color: var(--primary);
 		color: var(--primary-foreground);
+	}
+
+	.chip-label {
+		display: inline-block;
+	}
+
+	/* GO-w2t5: select settle — one micro pop on pick. User-initiated, <400ms,
+	   tiny element → SAFE-ALWAYS. Runs on the inner span so it composes with
+	   pressBounce's scale tween on the button (same `scale` property, two
+	   different elements — no fight). Toggle-OFF just decays color (existing
+	   transition). */
+	.tech-chip-picked .chip-label {
+		animation: chip-settle 180ms var(--ease-bounce);
+	}
+
+	@keyframes chip-settle {
+		0% { scale: 1; }
+		50% { scale: 1.06; }
+		100% { scale: 1; }
 	}
 
 	.match-rail {
