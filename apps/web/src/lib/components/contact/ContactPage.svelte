@@ -16,12 +16,17 @@
 	import { pressBounce } from '$lib/motion/actions';
 
 	// slice-18i Phase 7C: contactContent now flows as a prop from the server load.
+	// slice-29: initialMessage carries the decoded ?bp= blueprint prefill from
+	// the Tech Stack Engine handoff (computed client-side in the route so
+	// CDN-cached HTML can't bake a stale blueprint in).
 	let {
 		contactPage,
 		weather = null,
+		initialMessage = null,
 	}: {
 		contactPage: ContactContent;
 		weather?: WeatherData | null;
+		initialMessage?: string | null;
 	} = $props();
 
 	const c = contactPage;
@@ -75,7 +80,13 @@
 	// --- Form state ---
 	let name = $state('');
 	let email = $state('');
-	let message = $state('');
+	let message = $state(initialMessage ?? '');
+
+	// slice-29: late-arriving blueprint prefill (e.g. client-side ?bp= change)
+	// only applies while the field is untouched — never clobber typed text.
+	$effect(() => {
+		if (initialMessage && message === '') message = initialMessage;
+	});
 	let submitted = $state(false);
 	let errors = $state<Record<string, string>>({});
 	let showSuccess = $state(false);
