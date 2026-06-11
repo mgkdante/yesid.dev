@@ -12,6 +12,7 @@
 	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
+	import { boop } from '$lib/motion/actions';
 	import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
@@ -187,7 +188,7 @@
 		<!-- Capability pills -->
 		<nav class="manifesto__pills" aria-label="Capabilities">
 			{#each pills as pill}
-				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback">{pill.label}</a>
+				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback" use:boop={{ scale: 1.03, timing: 200 }}>{pill.label}</a>
 			{/each}
 		</nav>
 	</div>
