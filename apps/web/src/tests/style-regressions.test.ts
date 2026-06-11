@@ -37,3 +37,23 @@ describe('style regressions — broken utilities & undefined vars', () => {
 		});
 	}
 });
+
+describe('GO-W2.2 T7 — art direction', () => {
+	const closer = readFileSync(resolve(SRC, 'lib/components/home/HomeCloser.svelte'), 'utf-8');
+	const error = readFileSync(resolve(SRC, 'lib/components/home/ErrorIllustration.svelte'), 'utf-8');
+	const metro = readFileSync(resolve(SRC, 'lib/motion/svg/MetroNetwork.svelte'), 'utf-8');
+
+	it('home closer is pinned dark (.theme-dark + painted background)', () => {
+		expect(closer).toMatch(/class="closer-section relative theme-dark"/);
+		expect(closer).toContain('background: var(--background);');
+	});
+
+	it('404 illustration has no white-alpha hardcodes', () => {
+		expect(error).not.toContain('rgba(255,255,255');
+	});
+
+	it('metro network ships light-theme attribute overrides', () => {
+		expect(metro).toContain('[data-theme="light"]');
+		expect(metro).toContain('fill: var(--muted);');
+	});
+});
