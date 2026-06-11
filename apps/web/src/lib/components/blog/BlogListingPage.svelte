@@ -32,7 +32,8 @@
 		subtitle,
 		accentColor = 'var(--primary)',
 		cornerLink = null,
-		svgContents = {}
+		svgContents = {},
+		blogPage = undefined
 	}: {
 		posts: readonly BlogPost[];
 		allTags: readonly string[];
@@ -42,6 +43,8 @@
 		accentColor?: string;
 		cornerLink?: { href: string; label: string; subtitle: string } | null;
 		svgContents?: Record<string, string>;
+		/** go2-t1c2: CMS /blog chrome (optional — /blog passes it, /blog/personal does not). */
+		blogPage?: import('@repo/shared').BlogPageContent;
 	} = $props();
 
 	// Filter state
@@ -173,7 +176,8 @@
 			<!-- Subtitle: always visible, overlaid on blueprints -->
 			<div class="blog-header-text">
 				<!-- "Blog." heading: only on mobile (edge title in route layout carries it on desktop) -->
-				<h1 class="blog-mobile-heading">{resolveLocale(blogListingContent.mobileHeading, 'en')}<span class="text-[var(--primary)]">.</span></h1>
+				<!-- go2-t1c2: prefer CMS blogPage.heading; static module stays the fallback -->
+				<h1 class="blog-mobile-heading">{resolveLocale(blogPage?.heading ?? blogListingContent.mobileHeading, 'en')}<span class="text-[var(--primary)]">.</span></h1>
 				<div class="blog-header-subtitle">{subtitle}</div>
 			</div>
 		</div>

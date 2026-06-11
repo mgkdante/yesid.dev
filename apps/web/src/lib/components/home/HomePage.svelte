@@ -18,6 +18,8 @@
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { siteLabels } from '$lib/content';
 	import type {
 		HeroContent,
 		HeroAnimContent,
@@ -64,6 +66,12 @@
 		featuredProjects,
 	}: Props = $props();
 
+	// go2-t1c2: rotated home section titles from site_labels, previous
+	// literals kept as code fallbacks.
+	const sectionProjects = resolveLocale(siteLabels.pages.homeSectionProjects, 'en') || 'Projects';
+	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, 'en') || 'Services';
+	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, 'en') || 'Terminus';
+
 	// Section bindings retained for upcoming slice-23 tasks (sectionGlow /
 	// backgroundBreathing). Crescendo scrubs were removed from the rotated
 	// titles per operator feedback — titles are sticky-only without scale
@@ -103,10 +111,10 @@
 <!-- Section 3: Featured Projects — rotated title LEFT -->
 <section bind:this={projectsSectionEl} class="home-section home-section--left">
 	<div class="rotated-title rotated-title--left">
-		<SectionHeading heading="Projects" />
+		<SectionHeading heading={sectionProjects} />
 	</div>
 	<div class="home-section-heading-mobile">
-		<SectionHeading heading="Projects" />
+		<SectionHeading heading={sectionProjects} />
 	</div>
 	<div class="home-section-content">
 		<FeaturedProjects {proofReel} projects={featuredProjects} />
@@ -121,13 +129,13 @@
 		<ServicesBlueprint />
 	</div>
 	<div class="home-section-heading-mobile">
-		<SectionHeading heading="Services" />
+		<SectionHeading heading={sectionServices} />
 	</div>
 	<div class="home-section-content">
 		<HomeServices {servicesGrid} {services} />
 	</div>
 	<div class="rotated-title rotated-title--right">
-		<SectionHeading heading="Services" />
+		<SectionHeading heading={sectionServices} />
 	</div>
 </section>
 
@@ -136,10 +144,10 @@
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
 <section bind:this={closerSectionEl} class="home-section home-section--left">
 	<div class="rotated-title rotated-title--left">
-		<SectionHeading heading="Terminus" />
+		<SectionHeading heading={sectionTerminus} />
 	</div>
 	<div class="home-section-heading-mobile">
-		<SectionHeading heading="Terminus" />
+		<SectionHeading heading={sectionTerminus} />
 	</div>
 	<div class="home-section-content">
 		<HomeCloser {closer} />
