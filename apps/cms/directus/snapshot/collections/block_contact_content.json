@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "Contact page content block (/contact). Non-translatable: web3forms_key (string) on parent. All LocalizedString leaves in translations as JSON columns per top-level chunk.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",

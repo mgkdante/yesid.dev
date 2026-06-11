@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "Services Grid block — section 3 of /. All fields are LocalizedStrings → string columns in translations. No M2M to services collection (not needed for 18i scope).",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 4,
     "sort_field": "sort",
     "status": "active",
