@@ -1,6 +1,6 @@
 # yesid.dev — apps/cms
 
-Directus 11 CMS backing [yesid.dev](https://yesid.dev). Two live environments on Railway, schema-as-code via directus-sync, content shipped to the consumer site through build-time export.
+Directus 12 CMS backing [yesid.dev](https://yesid.dev). Two live environments on Railway, schema-as-code via directus-sync, content shipped to the consumer site through build-time export.
 
 Long-form decisions, research, and slice history live in Notion (Architecture → Dev vs Prod, plus the slice-18* artifact pages). This README is the operational reference for the CMS package.
 
@@ -10,7 +10,7 @@ Long-form decisions, research, and slice history live in Notion (Architecture �
 |-------|-------|
 | Prod | `https://cms.yesid.dev` — Railway service, live |
 | Dev | `https://cms.dev.yesid.dev` — Railway service, live (refreshed from prod via `scripts/refresh-dev-from-prod.sh`) |
-| Image | `directus/directus:11.17.3` + `directus-extension-sync@3.0.6`, pinned in `apps/cms/Dockerfile` (don't float `latest` — Directus 12 upgrade is slice-26 work) |
+| Image | `directus/directus:12.0.0` + `directus-extension-sync@3.0.6` (manifest host-overridden to load on v12 — see the Dockerfile banner; drop the override when tractr ships v12 support), pinned in `apps/cms/Dockerfile` |
 | Database | Neon Postgres (BYO; separate Neon target per environment) |
 | Storage | Cloudflare R2 via Directus's built-in `s3` driver |
 | Email | Resend (SMTP transport) |
@@ -20,12 +20,12 @@ Long-form decisions, research, and slice history live in Notion (Architecture �
 
 Publishing is a build-time pipeline, not a runtime read:
 
-1. Editor publishes (or updates a published row) in Data Studio on prod.
+1. Editor publishes, updates a published row, or archives a row in Data Studio on prod (the Flow condition matches `status ∈ {published, archived}` — widened at slice-26 close so deprecations deploy too).
 2. The "Vercel revalidate on publish" Flow POSTs `VERCEL_DEPLOY_HOOK_URL` (env var on the Railway service, consumed by the Flow's request operation).
 3. Vercel rebuilds `apps/web`; the `prebuild` step (`apps/cms/scripts/export-fallbacks.ts`) re-exports CMS content into the static content layer, authenticating with `DIRECTUS_BUILD_TOKEN`.
 4. The deployed site serves the freshly exported content — no Directus data reads at request time.
 
-**Deprecation policy: archive, don't delete.** There is no delete-triggered rebuild path. To retire content, set `status = "archived"` — export-fallbacks and the static companions filter archived rows out, so the next publish-triggered rebuild drops it. Do not add a Directus Flow for deletes.
+**Deprecation policy: archive, don't delete.** There is no delete-triggered rebuild path. To retire content, set `status = "archived"` — the archive transition itself fires the rebuild Flow (since the slice-26 condition fix), and export-fallbacks filters archived rows out. Do not add a Directus Flow for deletes.
 
 ## Schema workflow (directus-sync)
 
@@ -52,10 +52,18 @@ Two secrets connect the CMS to the consumer build. Real values live in 1Password
 
 | Secret | Lives in | Purpose |
 |---|---|---|
-| `VERCEL_DEPLOY_HOOK_URL` | Railway service env (read by the publish Flow) | The single rebuild trigger: Flow POSTs it after a publish; Vercel rebuilds the site |
-| `DIRECTUS_BUILD_TOKEN` | Vercel build env (Production) | Auth for `export-fallbacks.ts` during the build. **Currently an admin-privileged token** — minting a read-only "Build Bot" policy/user is slice-26 work |
+| `VERCEL_DEPLOY_HOOK_URL` | Railway service env (read by the publish Flow) | The single rebuild trigger: Flow POSTs it after a publish/archive; Vercel rebuilds the site |
+| `DIRECTUS_BUILD_TOKEN` | Vercel build env (Production) | Auth for `export-fallbacks.ts` during the build. Scoped read-only token of the **Build Bot** user (policy "Build Bot — content read", 1P item "API — Directus — Build Bot"); swapped off the admin token at slice-26 close |
+| `LICENSE_KEY` | Railway service env (both services) + GH Actions secret `DIRECTUS_LICENSE_KEY` (contract-test) | Directus 12 Open Innovation Grant key (1P item "API — Directus — License", renews 2027-06-10; 5 activations bound to PUBLIC_URL) |
 
 The preview-era tokens (`VERCEL_BYPASS_TOKEN`, `EDITOR_PREVIEW_TOKEN`) are gone: `/preview/*` routes and ISR revalidation webhooks never shipped, and slice-27.2 removed the runtime CMS seam they were designed for.
+
+### Rotation runbook
+
+- **`VERCEL_DEPLOY_HOOK_URL`** — Vercel dashboard → yesid-dev project → Settings → Git → Deploy Hooks: create a new hook, copy the URL into the Railway service variable (`railway variables --service "Directus CMS" --set "VERCEL_DEPLOY_HOOK_URL=<new>"`), delete the old hook in Vercel, then verify by re-saving any published row and watching a Production build start. Update the 1P item.
+- **`DIRECTUS_BUILD_TOKEN`** — mint a fresh token for the Build Bot user (`PATCH /users/<build-bot-id> {"token": "<openssl rand -hex 24>"}` with an admin token), update the Vercel env (`vercel env rm DIRECTUS_BUILD_TOKEN production --yes && printf '%s' "<new>" | vercel env add DIRECTUS_BUILD_TOKEN production`), update the 1P item, then fire the deploy hook once and confirm `export-fallbacks` logs `mode=live` in the Vercel build.
+- **Prod admin token** — rotate in Data Studio (admin user → token), then update BOTH consumers in the same sitting: the GH Actions secret `DIRECTUS_PROD_ADMIN_TOKEN` (`gh secret set`) and the 1P item "API — Directus — Prod/Dev" `admin_token` field. A mid-deploy rotation orphaned CI once (slice-27.2) — do it between releases.
+- **`LICENSE_KEY`** — only on grant renewal: update the Railway vars on both services + the GH secret + the 1P item. Deactivate stale activations in Data Studio → Settings → License if URLs changed.
 
 ## Local development (optional)
 
@@ -64,7 +72,7 @@ Run the pinned image against a local Postgres or the dev environment's Neon bran
 ```bash
 cp .env.example .env
 # fill .env with dev values (local Postgres or Neon dev branch, R2 optional)
-docker run --rm -p 8055:8055 --env-file .env directus/directus:11.17.3
+docker build -t directus-local apps/cms && docker run --rm -p 8055:8055 --env-file .env directus-local  # build from the Dockerfile — the stock image lacks the sync extension + host override
 # open http://localhost:8055
 ```
 

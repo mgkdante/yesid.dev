@@ -10,7 +10,7 @@
     "collection": "block_services_grid",
     "color": null,
     "display_template": "{{editor_label}} ({{status}})",
-    "group": "site_blocks",
+    "group": "home_page",
     "hidden": false,
     "icon": "grid_view",
     "item_duplication_fields": null,

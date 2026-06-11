@@ -10,7 +10,7 @@
     "collection": "nav_links",
     "color": null,
     "display_template": "{{placement}} — {{href}}",
-    "group": "site_layout",
+    "group": "site_config",
     "hidden": false,
     "icon": "link",
     "item_duplication_fields": null,
