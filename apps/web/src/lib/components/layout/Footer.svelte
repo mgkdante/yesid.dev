@@ -77,7 +77,7 @@
 			{#each footerNavLinks as link}
 				<a
 					href={link.href}
-					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
+					class="footer-link text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 				>
 					{link.label}
 				</a>
@@ -91,7 +91,7 @@
 					href={link.href}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
+					class="footer-link text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 					aria-label={link.label}
 				>
 					{link.label}
@@ -125,5 +125,20 @@
 
 	footer {
 		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	/* GO-w2t5: underline draw, blueprint line at word scale (SAFE-ALWAYS). */
+	.footer-link {
+		background-image: linear-gradient(var(--primary), var(--primary));
+		background-repeat: no-repeat;
+		background-position: 0 100%;
+		background-size: 0% 1px;
+		transition:
+			background-size var(--duration-fast) var(--ease-out),
+			color var(--duration-fast) var(--ease-default);
+	}
+	.footer-link:hover,
+	.footer-link:focus-visible {
+		background-size: 100% 1px;
 	}
 </style>

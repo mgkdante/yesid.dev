@@ -514,6 +514,8 @@
 	/* Focused form fields need breathing room above the virtual keyboard */
 	.form-field {
 		scroll-margin-bottom: 100px;
+		/* GO-w2t5: terminal-orange caret — zero-risk brand signal. */
+		caret-color: var(--primary);
 	}
 
 	/* ═══ Resize Handle ═══ */

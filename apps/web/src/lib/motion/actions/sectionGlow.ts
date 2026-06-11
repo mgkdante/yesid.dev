@@ -1,5 +1,3 @@
-import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
-
 /**
  * `sectionGlow` — Svelte action.
  *
@@ -22,8 +20,9 @@ import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
  *     transition: opacity 200ms ease-out;
  *   }
  *
- * The action is a no-op under `prefers-reduced-motion: reduce` and on
- * touch-only devices (no `(hover: hover)` capability).
+ * SAFE-ALWAYS tier (GO-w2t5): output is an alpha-only radial gradient, so
+ * the action runs under `prefers-reduced-motion: reduce`. It remains a
+ * no-op on touch-only devices (no `(hover: hover)` capability).
  *
  * Pointerleave debounce: the opacity flip to 0 is delayed 200ms so that
  * a moving cursor that briefly crosses the section boundary doesn't
@@ -33,7 +32,6 @@ import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
  */
 export function sectionGlow(node: HTMLElement) {
 	if (typeof window === 'undefined') return { destroy: () => {} };
-	if (isPrefersReducedMotion()) return { destroy: () => {} };
 	if (!window.matchMedia('(hover: hover)').matches) return { destroy: () => {} };
 
 	let leaveTimer: ReturnType<typeof setTimeout> | null = null;

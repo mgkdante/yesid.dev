@@ -282,4 +282,19 @@
 		0%   { opacity: 0.3; transform: translateY(0); }
 		100% { opacity: 0.7; transform: translateY(-6px); }
 	}
+
+	/* GO-w2t5 retier: ambient/infinite particle translation is MOTION-GATED.
+	   Under reduce the card keeps a STATIC weather scene — sun glow and
+	   clouds/mist rest at their base styles; drops & flakes park off-canvas
+	   (top: -6px/-4px, clipped by the overflow-hidden layer). */
+	@media (prefers-reduced-motion: reduce) {
+		.weather-drop,
+		.weather-flake,
+		.weather-lightning,
+		.weather-sun,
+		.weather-cloud,
+		.weather-mist {
+			animation: none;
+		}
+	}
 </style>
