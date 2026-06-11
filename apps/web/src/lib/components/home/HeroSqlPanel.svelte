@@ -38,7 +38,7 @@
 </script>
 
 <div
-  class="rounded-lg border border-[var(--border-subtle)] bg-[var(--terminal)] p-5 font-mono"
+  class="rounded-lg border border-[var(--border)] bg-[var(--terminal)] p-5 font-mono"
   data-testid="sql-panel"
 >
   <!-- Header: prompt + live dot -->

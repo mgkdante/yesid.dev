@@ -220,8 +220,8 @@
 	   the same icon-zone size, content section, and footer band
 	   regardless of title/benefit length. */
 	.services-card {
-		background: var(--background);
-		border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+		background: var(--surface-1);
+		border: 1px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		display: grid;
 		grid-template-rows: 11rem 1fr auto;
@@ -233,7 +233,7 @@
 	}
 
 	.services-card-link:hover .services-card {
-		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+		border-color: var(--border-brand-active);
 		box-shadow: var(--shadow-section);
 		transform: translateY(-3px);
 	}
@@ -245,14 +245,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: linear-gradient(135deg, #1f1f1f, #161616);
+		background: linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, var(--foreground)), color-mix(in srgb, var(--surface-1) 92%, var(--terminal)));
 		background-image:
 			radial-gradient(
 				circle at 50% 55%,
 				color-mix(in srgb, var(--primary) 9%, transparent),
 				transparent 65%
 			),
-			linear-gradient(135deg, #1f1f1f, #161616);
+			linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, var(--foreground)), color-mix(in srgb, var(--surface-1) 92%, var(--terminal)));
 	}
 
 	/* "01 / SERVICE" marker — top-left of icon zone, brand-orange mono. */

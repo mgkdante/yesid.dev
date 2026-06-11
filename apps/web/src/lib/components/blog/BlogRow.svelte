@@ -91,7 +91,7 @@
 				<div class="mt-3 flex flex-wrap items-center gap-2">
 					{#each post.tags as tag}
 						<span use:magnetic={{ strength: 2, radius: 30 }}>
-							<Badge variant="tag-active" size="xs" style="border-color: {accentColor}30; background: {accentColor}15; color: {accentColor}">{tag}</Badge>
+							<Badge variant="tag-active" size="xs" style="border-color: color-mix(in srgb, {accentColor} 30%, transparent); background: color-mix(in srgb, {accentColor} 15%, transparent); color: {accentColor}">{tag}</Badge>
 						</span>
 					{/each}
 				</div>
