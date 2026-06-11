@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { GET } from './+server';
+import { GET, _buildSitemapEntries } from './+server';
+import { sitePages } from '$lib/content/site-pages';
 
 describe('GET /sitemap.xml', () => {
 	async function fetchBody() {
@@ -73,5 +74,60 @@ describe('GET /sitemap.xml', () => {
 	it('emits no <lastmod> (request-time noise, dropped in slice-28.1 — audit #19)', async () => {
 		const { body } = await fetchBody();
 		expect(body).not.toContain('<lastmod>');
+	});
+});
+
+// slice-26.1: the sitemap is registry-gated — entries appear iff the
+// site_pages registry resolves their path (exact, else longest listing
+// prefix). The registry fixture is injected so the cascade is testable
+// without editing the committed content module.
+describe('_buildSitemapEntries — site_pages registry gating (slice-26.1)', () => {
+	function pathnamesOf(entries: string[]): string[] {
+		return entries
+			.map((e) => e.match(/<loc>([^<]+)<\/loc>/)?.[1])
+			.filter((loc): loc is string => Boolean(loc))
+			.map((loc) => {
+				const { pathname } = new URL(loc);
+				return pathname === '' ? '/' : pathname;
+			});
+	}
+
+	it('full registry → every static route present (parity with today)', async () => {
+		const paths = pathnamesOf(await _buildSitemapEntries(sitePages));
+		for (const p of ['/', '/about', '/contact', '/services', '/projects', '/blog', '/blog/personal', '/tech-stack']) {
+			expect(paths).toContain(p);
+		}
+	});
+
+	it('archiving /blog drops the listing AND its posts, but NOT /blog/personal (own row)', async () => {
+		const registry = sitePages.filter((p) => p.path !== '/blog');
+		const paths = pathnamesOf(await _buildSitemapEntries(registry));
+
+		expect(paths).not.toContain('/blog');
+		expect(paths.filter((p) => p.startsWith('/blog/'))).toEqual(['/blog/personal']);
+	});
+
+	it('archiving /services drops the listing and every service detail page', async () => {
+		const registry = sitePages.filter((p) => p.path !== '/services');
+		const paths = pathnamesOf(await _buildSitemapEntries(registry));
+
+		expect(paths).not.toContain('/services');
+		expect(paths.some((p) => p.startsWith('/services/'))).toBe(false);
+		// untouched sections keep their entries
+		expect(paths).toContain('/projects');
+		expect(paths.some((p) => p.startsWith('/projects/'))).toBe(true);
+	});
+
+	it('archiving a freeform page drops exactly that path', async () => {
+		const registry = sitePages.filter((p) => p.path !== '/about');
+		const paths = pathnamesOf(await _buildSitemapEntries(registry));
+
+		expect(paths).not.toContain('/about');
+		expect(paths).toContain('/contact');
+	});
+
+	it('/ stays in the sitemap regardless (system root always resolves)', async () => {
+		const paths = pathnamesOf(await _buildSitemapEntries([]));
+		expect(paths).toContain('/');
 	});
 });

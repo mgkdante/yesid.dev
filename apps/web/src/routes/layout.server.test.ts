@@ -77,17 +77,23 @@ type LayoutData = {
 async function callLoad(
 	routeId: string | null = '/',
 	params: Record<string, string> = {},
+	// Request pathname for the registry route-gate (slice-26.1). Defaults to
+	// '/' (always published) so routeId-focused tests are unaffected by the
+	// gate; gate tests pass an explicit pathname.
+	pathname = '/',
 ): Promise<LayoutData> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return (await (load as unknown as (event: {
 		route: { id: string | null };
 		params: Record<string, string>;
 		locals: App.Locals;
+		url: URL;
 		setHeaders: (headers: Record<string, string>) => void;
 	}) => Promise<LayoutData>)({
 		route: { id: routeId },
 		params,
 		locals: { pageCache: new Map() },
+		url: new URL(`https://yesid.dev${pathname}`),
 		setHeaders: vi.fn(),
 	})) as LayoutData;
 }
@@ -151,6 +157,40 @@ beforeEach(() => {
 // ---------------------------------------------------------------------------
 
 describe('+layout.server load', () => {
+	describe('registry route-gate (slice-26.1)', () => {
+		beforeEach(() => {
+			mockByPlacement.mockResolvedValue([]);
+			mockErrorPage.mockResolvedValue(fakeErrorPage);
+		});
+
+		it('404s a path with no site_pages registry entry (archived/unknown section)', async () => {
+			await expect(callLoad('/secret-section', {}, '/secret-section')).rejects.toMatchObject({
+				status: 404,
+			});
+		});
+
+		it('404s detail paths of an unregistered section', async () => {
+			await expect(
+				callLoad('/secret-section/[slug]', { slug: 'x' }, '/secret-section/x'),
+			).rejects.toMatchObject({ status: 404 });
+		});
+
+		it('resolves published registry paths (exact + longest listing prefix)', async () => {
+			await expect(callLoad('/about', {}, '/about')).resolves.toBeTruthy();
+			await expect(
+				callLoad('/blog/[slug]', { slug: 'some-post' }, '/blog/some-post'),
+			).resolves.toBeTruthy();
+		});
+
+		it('never gates the root path', async () => {
+			await expect(callLoad('/', {}, '/')).resolves.toBeTruthy();
+		});
+
+		it('skips the gate on the error pseudo-route (route.id null) to avoid re-throwing inside the error render', async () => {
+			await expect(callLoad(null, {}, '/whatever-missing-path')).resolves.toBeTruthy();
+		});
+	});
+
 	describe('happy path — all fetches resolve', () => {
 		it('returns all 4 nav slots and static errorPage on normal routes', async () => {
 			mockByPlacement.mockImplementation(async (placement: string) => {
