@@ -1,6 +1,9 @@
 import type { RequestHandler } from './$types';
 import { adapter } from '$lib/adapters';
 import { PUBLISHED_LOCALES, SITE_HOST } from '$lib/utils/seo-defaults';
+import { isPathPublished } from '$lib/utils/page-registry';
+import { sitePages } from '$lib/content/site-pages';
+import type { SitePage } from '$lib/types';
 
 // Route ids that are always present in the router. Keep this list in sync
 // with the static-route set in $lib/adapters/route-seo-defaults.ts when
@@ -49,26 +52,38 @@ ${altLinks}
 
 // Exported so the build-time coverage gate (Task 11) can diff expected vs
 // actual without HTTP round-tripping.
-export async function _buildSitemapEntries(): Promise<string[]> {
+//
+// slice-26.1: every candidate path is filtered through the site_pages
+// registry (same predicate as the +layout.server.ts route gate). Static
+// routes appear iff their registry entry exists; detail pages appear iff
+// their section's listing entry exists (longest-prefix resolution). An
+// archived section therefore drops out of the sitemap on the same rebuild
+// that 404s its routes. `pages` is injectable for tests only.
+export async function _buildSitemapEntries(
+	pages: readonly SitePage[] = sitePages,
+): Promise<string[]> {
 	const entries: string[] = [];
+	const pushIfPublished = (path: string) => {
+		if (isPathPublished(path, pages)) entries.push(urlEntry(canonical(path)));
+	};
 
 	for (const path of _STATIC_ROUTES) {
-		entries.push(urlEntry(canonical(path)));
+		pushIfPublished(path);
 	}
 
 	const projects = await adapter.projects.public();
 	for (const project of projects) {
-		entries.push(urlEntry(canonical(`/projects/${project.slug}`)));
+		pushIfPublished(`/projects/${project.slug}`);
 	}
 
 	const services = await adapter.services.visible();
 	for (const service of services) {
-		entries.push(urlEntry(canonical(`/services/${service.id}`)));
+		pushIfPublished(`/services/${service.id}`);
 	}
 
 	const posts = await adapter.blog.all();
 	for (const post of posts) {
-		entries.push(urlEntry(canonical(`/blog/${post.slug}`)));
+		pushIfPublished(`/blog/${post.slug}`);
 	}
 
 	return entries;
