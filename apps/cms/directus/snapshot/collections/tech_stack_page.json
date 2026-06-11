@@ -1,5 +1,5 @@
 {
-  "collection": "languages",
+  "collection": "tech_stack_page",
   "meta": {
     "accountability": "all",
     "archive_app_filter": true,
@@ -7,14 +7,14 @@
     "archive_value": null,
     "autosave_revision_interval": null,
     "collapse": "open",
-    "collection": "languages",
+    "collection": "tech_stack_page",
     "color": null,
-    "display_template": "{{name}}",
-    "group": "site_config",
+    "display_template": null,
+    "group": null,
     "hidden": false,
-    "icon": "translate",
+    "icon": "memory",
     "item_duplication_fields": null,
-    "note": "Supported locales (en required, fr/es optional). Used by Translations fields across all collections.",
+    "note": "Tech stack items + the tech-stack page intro.",
     "preview_url": null,
     "singleton": false,
     "sort": 5,
@@ -23,8 +23,5 @@
     "translations": null,
     "unarchive_value": null,
     "versioning": false
-  },
-  "schema": {
-    "name": "languages"
   }
 }

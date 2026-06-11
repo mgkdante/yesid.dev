@@ -10,7 +10,7 @@
     "collection": "block_cta",
     "color": null,
     "display_template": "{{editor_label}} ({{status}})",
-    "group": "site_blocks",
+    "group": "home_page",
     "hidden": false,
     "icon": "campaign",
     "item_duplication_fields": null,

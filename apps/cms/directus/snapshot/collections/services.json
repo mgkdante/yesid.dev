@@ -10,7 +10,7 @@
     "collection": "services",
     "color": null,
     "display_template": "Station {{station}} · {{id}}",
-    "group": "site_catalog",
+    "group": "services_page",
     "hidden": false,
     "icon": "build",
     "item_duplication_fields": null,
