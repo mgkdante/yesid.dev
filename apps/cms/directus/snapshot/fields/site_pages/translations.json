@@ -1,9 +1,9 @@
 {
-  "collection": "route_seo",
+  "collection": "site_pages",
   "field": "translations",
   "type": "alias",
   "meta": {
-    "collection": "route_seo",
+    "collection": "site_pages",
     "conditions": null,
     "display": null,
     "display_options": null,
@@ -12,11 +12,13 @@
     "hidden": false,
     "interface": "translations",
     "note": null,
-    "options": null,
+    "options": {
+      "languageField": "code"
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 99,
+    "sort": 6,
     "special": [
       "translations"
     ],

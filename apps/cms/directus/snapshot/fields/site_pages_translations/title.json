@@ -1,22 +1,22 @@
 {
-  "collection": "route_seo_translations",
-  "field": "languages_code",
+  "collection": "site_pages_translations",
+  "field": "title",
   "type": "string",
   "meta": {
-    "collection": "route_seo_translations",
+    "collection": "site_pages_translations",
     "conditions": null,
     "display": null,
     "display_options": null,
-    "field": "languages_code",
+    "field": "title",
     "group": null,
-    "hidden": true,
-    "interface": "select-dropdown-m2o",
-    "note": null,
+    "hidden": false,
+    "interface": "input",
+    "note": "Page title — used as the default nav/footer label (nav_links.label overrides).",
     "options": null,
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 3,
+    "sort": 4,
     "special": null,
     "translations": null,
     "validation": null,
@@ -24,8 +24,8 @@
     "width": "full"
   },
   "schema": {
-    "name": "languages_code",
-    "table": "route_seo_translations",
+    "name": "title",
+    "table": "site_pages_translations",
     "data_type": "character varying",
     "default_value": null,
     "max_length": 255,
@@ -38,7 +38,7 @@
     "is_generated": false,
     "generation_expression": null,
     "has_auto_increment": false,
-    "foreign_key_table": "languages",
-    "foreign_key_column": "code"
+    "foreign_key_table": null,
+    "foreign_key_column": null
   }
 }

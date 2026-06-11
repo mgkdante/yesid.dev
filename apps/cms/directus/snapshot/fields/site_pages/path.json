@@ -1,9 +1,9 @@
 {
-  "collection": "route_seo",
+  "collection": "site_pages",
   "field": "path",
   "type": "string",
   "meta": {
-    "collection": "route_seo",
+    "collection": "site_pages",
     "conditions": null,
     "display": null,
     "display_options": null,
@@ -11,31 +11,21 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "SvelteKit route id, e.g., /, /about, /services. Static routes only.",
-    "options": {
-      "trim": true
-    },
+    "note": "Route path, e.g. /about. Code-defined routes today; freeform builder pages in slice-26.2.",
+    "options": null,
     "readonly": false,
-    "required": true,
+    "required": false,
     "searchable": true,
-    "sort": 2,
+    "sort": 3,
     "special": null,
     "translations": null,
-    "validation": {
-      "_and": [
-        {
-          "path": {
-            "_regex": "^/"
-          }
-        }
-      ]
-    },
-    "validation_message": "Path must start with a forward slash (e.g., /about).",
-    "width": "full"
+    "validation": null,
+    "validation_message": null,
+    "width": "half"
   },
   "schema": {
     "name": "path",
-    "table": "route_seo",
+    "table": "site_pages",
     "data_type": "character varying",
     "default_value": null,
     "max_length": 255,

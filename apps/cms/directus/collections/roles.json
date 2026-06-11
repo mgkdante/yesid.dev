@@ -12,5 +12,12 @@
     "description": "For LLM/MCP clients (Claude Code, ChatGPT, Cursor). Read+Update on user collections only. No deletes. No system access.",
     "parent": null,
     "_syncId": "5fc8b311-90d4-48bb-b7e2-8ed498c583da"
+  },
+  {
+    "name": "Build Bot",
+    "icon": "smart_toy",
+    "description": "CI/build automation. No app access.",
+    "parent": null,
+    "_syncId": "f97a8995-ad8a-42eb-91e3-23d015417be0"
   }
 ]
