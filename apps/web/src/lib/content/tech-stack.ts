@@ -384,6 +384,11 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'packages every service to run the same anywhere',
+			es: 'empaqueta cada servicio para que corra igual en cualquier lugar',
+			fr: 'emballe chaque service pour qu\'il tourne pareil partout',
+		},
 		icon: {
 			iconify_id: 'logos:docker',
 			id: 'docker',
@@ -391,6 +396,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'docker',
+		layer: 'infra',
 		name: 'Docker',
 		relatedProjects: ['transit-data-pipeline'],
 		relatedServices: ['data-pipeline'],
@@ -1011,6 +1017,11 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'stores and queries your data reliably',
+			es: 'almacena y consulta tus datos de forma fiable',
+			fr: 'stocke et interroge vos données de manière fiable',
+		},
 		icon: {
 			iconify_id: 'logos:postgresql',
 			id: 'postgresql',
@@ -1018,6 +1029,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'postgresql',
+		layer: 'data',
 		name: 'PostgreSQL',
 		relatedProjects: ['yesid-dev', 'transit-data-pipeline'],
 		relatedServices: ['sql-development', 'database-engineering'],
@@ -1125,6 +1137,11 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'automates the data work: ingest, clean, transform',
+			es: 'automatiza el trabajo de datos: ingesta, limpieza, transformación',
+			fr: 'automatise le travail des données : ingestion, nettoyage, transformation',
+		},
 		icon: {
 			iconify_id: 'logos:python',
 			id: 'python',
@@ -1132,6 +1149,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'python',
+		layer: 'logic',
 		name: 'Python',
 		relatedProjects: ['transit-data-pipeline'],
 		relatedServices: ['data-pipeline', 'analytics-reporting'],
@@ -1239,6 +1257,11 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'lets your interface and services talk over clean endpoints',
+			es: 'permite que tu interfaz y tus servicios se comuniquen mediante endpoints claros',
+			fr: 'permet à votre interface et vos services de communiquer via des points d\'accès propres',
+		},
 		icon: {
 			iconify_id: null,
 			id: 'rest-api',
@@ -1246,6 +1269,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'rest-api',
+		layer: 'logic',
 		name: 'REST API',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: ['web-development', 'internal-tooling'],
@@ -1581,6 +1605,11 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'renders fast, app-like pages from one codebase',
+			es: 'genera páginas rápidas tipo aplicación desde una sola base de código',
+			fr: 'affiche des pages rapides, façon application, depuis une seule base de code',
+		},
 		icon: {
 			iconify_id: 'logos:svelte-kit',
 			id: 'sveltekit',
@@ -1588,6 +1617,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'sveltekit',
+		layer: 'interface',
 		name: 'SvelteKit',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: ['web-development'],
@@ -1818,6 +1848,11 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'keeps the codebase typed, refactorable, and honest',
+			es: 'mantiene el código tipado, refactorizable y confiable',
+			fr: 'garde le code typé, refactorisable et fiable',
+		},
 		icon: {
 			iconify_id: 'logos:typescript',
 			id: 'typescript',
@@ -1825,6 +1860,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'typescript',
+		layer: 'logic',
 		name: 'TypeScript',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: ['web-development'],
@@ -1875,6 +1911,11 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'ships the site globally with zero-config deploys',
+			es: 'publica el sitio globalmente con despliegues sin configuración',
+			fr: 'déploie le site mondialement sans configuration',
+		},
 		icon: {
 			iconify_id: 'logos:vercel',
 			id: 'vercel',
@@ -1882,6 +1923,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'vercel',
+		layer: 'infra',
 		name: 'Vercel',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: ['web-development'],

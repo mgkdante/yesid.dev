@@ -343,6 +343,14 @@ export interface TechStackItem {
 	why_i_use_it_instead: LocalizedBlockEditorDoc;
 	relatedServices: string[];
 	relatedProjects: string[];
+	/**
+	 * slice-29 Tech Stack Engine: default blueprint layer (mirrors the
+	 * STACK_LAYERS order in schemas/stack-archetypes). Optional — omitted
+	 * until the CMS row is layered; per-archetype links may override.
+	 */
+	layer?: 'interface' | 'logic' | 'data' | 'infra';
+	/** slice-29: one sentence — what this tech enables (preview-slot caption). */
+	enables?: LocalizedString;
 }
 
 // TechRelation and StackScenario dropped in slice-18g (decisions Q1+Q2);

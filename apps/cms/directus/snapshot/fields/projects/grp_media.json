@@ -1,0 +1,33 @@
+{
+  "collection": "projects",
+  "field": "grp_media",
+  "type": "alias",
+  "meta": {
+    "collection": "projects",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_media",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "🔗 Links & media",
+    "options": {
+      "headerColor": "#E07800",
+      "start": "open"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 40,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

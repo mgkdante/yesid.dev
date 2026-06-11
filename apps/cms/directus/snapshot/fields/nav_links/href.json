@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Link destination. Supports internal paths (/about), anchors (#contact), and external URLs (https://github.com/...).",
+    "note": "Legacy/external only — when a Page is linked, the URL comes from the page path automatically.",
     "options": {
       "placeholder": "e.g. /about or https://github.com/..."
     },
@@ -23,7 +23,7 @@
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "href",

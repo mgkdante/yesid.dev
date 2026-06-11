@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Slug — kebab-case, URL-safe. Becomes the route segment at /blog/{id}.",
+    "note": "The slug = the URL (/blog/<this>). Cannot change after publish without breaking links.",
     "options": {
       "slug": true,
       "trim": true

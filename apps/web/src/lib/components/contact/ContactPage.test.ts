@@ -119,6 +119,24 @@ describe('ContactPage', () => {
 		expect(screen.getAllByTestId('contact-success').length).toBeGreaterThanOrEqual(1);
 	});
 
+	// slice-29: the Tech Stack Engine hands off via /contact?bp=… — the decoded
+	// blueprint arrives as initialMessage and pre-fills the message field.
+	it('pre-fills the message field from initialMessage (blueprint handoff)', () => {
+		const prefill =
+			"I'm interested in something like A data dashboard built on SvelteKit, REST API, PostgreSQL, Docker.";
+		render(ContactPage, {
+			props: { contactPage: contactContent, initialMessage: prefill },
+		});
+		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
+		expect(messageInputs[0].value).toBe(prefill);
+	});
+
+	it('message field stays empty without initialMessage', () => {
+		render(ContactPage, { props: { contactPage: contactContent } });
+		const messageInputs = screen.getAllByLabelText(/^message/i) as HTMLTextAreaElement[];
+		expect(messageInputs[0].value).toBe('');
+	});
+
 	it('displays weather when provided', () => {
 		render(ContactPage, {
 			props: { contactPage: contactContent, weather: { temp: 12, condition: 'partly cloudy', icon: '02d' } }

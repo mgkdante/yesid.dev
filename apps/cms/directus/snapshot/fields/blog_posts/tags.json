@@ -8,24 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "tags",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "tags",
     "note": "Lowercase keywords, used in listing filter.",
     "options": {
-      "alphabetize": true
+      "alphabetize": false,
+      "iconLeft": "sell"
     },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 45,
     "special": [
       "cast-json"
     ],
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "tags",

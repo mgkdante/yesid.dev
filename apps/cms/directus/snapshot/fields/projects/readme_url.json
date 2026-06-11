@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "readme_url",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "input",
     "note": "Direct link to the project README.",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 9,
+    "sort": 45,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "readme_url",

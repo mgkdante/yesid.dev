@@ -10,10 +10,35 @@
     "field": "suggestions",
     "group": null,
     "hidden": false,
-    "interface": "input-code",
+    "interface": "list",
     "note": "Per-locale suggestion links — JSON array of {label: string, href: string}. The label is the locale-resolved display text; href is the destination path.",
     "options": {
-      "language": "json"
+      "addLabel": "Add row",
+      "fields": [
+        {
+          "field": "label",
+          "meta": {
+            "field": "label",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "field": "href",
+          "meta": {
+            "field": "href",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "href",
+          "type": "string"
+        }
+      ],
+      "template": "{{label}}"
     },
     "readonly": false,
     "required": false,

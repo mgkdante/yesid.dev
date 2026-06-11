@@ -165,6 +165,22 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		);
 	}
 
+	if (data.stackArchetypes) {
+		out.push({
+			filePath: path('stack-archetypes.ts'),
+			description:
+				'Published stack_archetypes rows (slug, trilingual copy, proof project, service, layered tech links). Feeds the pure client-side Tech Stack Engine on /tech-stack — tech links arrive pre-sorted by (STACK_LAYERS render order, sort) so the blueprint derives its rows from data. NEW in slice-29.',
+			imports: [{ symbols: ['StackArchetype'], from: '@repo/shared/schemas', typeOnly: true }],
+			exports: [
+				{
+					name: 'stackArchetypes',
+					typeName: 'StackArchetype[]',
+					value: data.stackArchetypes,
+				},
+			],
+		});
+	}
+
 	if (data.blogPosts) {
 		out.push({
 			filePath: path('blog.ts'),

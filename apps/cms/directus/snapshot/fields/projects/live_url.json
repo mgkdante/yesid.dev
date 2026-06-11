@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "live_url",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "input",
     "note": "Live deployed URL of the project.",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 8,
+    "sort": 43,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "live_url",

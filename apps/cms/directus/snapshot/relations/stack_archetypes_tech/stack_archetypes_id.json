@@ -1,0 +1,25 @@
+{
+  "collection": "stack_archetypes_tech",
+  "field": "stack_archetypes_id",
+  "related_collection": "stack_archetypes",
+  "meta": {
+    "junction_field": "tech_stack_id",
+    "many_collection": "stack_archetypes_tech",
+    "many_field": "stack_archetypes_id",
+    "one_allowed_collections": null,
+    "one_collection": "stack_archetypes",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": "tech",
+    "sort_field": "sort"
+  },
+  "schema": {
+    "table": "stack_archetypes_tech",
+    "column": "stack_archetypes_id",
+    "foreign_key_table": "stack_archetypes",
+    "foreign_key_column": "id",
+    "constraint_name": "stack_archetypes_tech_stack_archetypes_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

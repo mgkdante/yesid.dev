@@ -10,10 +10,46 @@
     "field": "socials",
     "group": null,
     "hidden": false,
-    "interface": "input-code",
+    "interface": "list",
     "note": "Per-locale socials array (ContactContent.socials). JSON shape: Array<{ label, href, icon: string }>. label is translatable; href/icon are non-locale-specific but bundled in JSON for simplicity.",
     "options": {
-      "language": "json"
+      "addLabel": "Add row",
+      "fields": [
+        {
+          "field": "label",
+          "meta": {
+            "field": "label",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "field": "href",
+          "meta": {
+            "field": "href",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "href",
+          "type": "string"
+        },
+        {
+          "field": "icon",
+          "meta": {
+            "field": "icon",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "icon",
+          "type": "string"
+        }
+      ],
+      "template": "{{label}}"
     },
     "readonly": false,
     "required": false,

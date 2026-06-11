@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": "Sequential position in the train journey (1..N). Drives ordering + prev/next nav.",
+    "note": "Display order on the services page (drag rows in the list view to change).",
     "options": null,
     "readonly": false,
     "required": true,
@@ -21,7 +21,7 @@
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "station",

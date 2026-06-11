@@ -1,5 +1,6 @@
-<!-- /tech-stack route: hero + CTA (engine re-engineered in Phase 2) -->
+<!-- /tech-stack route: hero + Tech Stack Engine (slice-29) + CTA -->
 <script lang="ts">
+	import type { Component } from 'svelte';
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { resolveLocale } from '$lib/utils/locale';
@@ -8,6 +9,13 @@
 	import { Button } from '$lib/components/ui/button';
 
 	let { data } = $props();
+
+	// slice-29: the engine mounts below the hero via dynamic import() so ALL
+	// engine code (state, sub-views, GSAP Flip) lives in its own async chunk —
+	// the route's entry chunk stays hero-sized. `animate` is the single
+	// reduced-motion switch for the whole engine tree.
+	let EngineComponent = $state<Component<{ animate?: boolean }> | null>(null);
+	let engineAnimate = $state(true);
 
 	// Dynamic counts from data layer.
 	const itemCount = data.items.length;
@@ -44,7 +52,7 @@
 		{ text: `→ loading ${itemCount} nodes...`, color: 'muted', visible: false },
 		{ text: '✓ successful', color: 'green', visible: false },
 		{ text: `→ ${itemCount} technologies cataloged`, color: 'orange', visible: false },
-		{ text: 'interactive map coming soon.', color: 'accent', visible: false },
+		{ text: 'interactive map online.', color: 'accent', visible: false },
 	];
 
 	let heroLines = $state<TerminalLine[]>(terminalLines);
@@ -52,6 +60,13 @@
 	let heroCursorVisible = $state(false);
 
 	onMount(() => {
+		// Engine chunk: kicked off immediately (parallel with the hero typing
+		// sequence); reduced motion computed once here and passed down.
+		engineAnimate = !isPrefersReducedMotion();
+		void import('$lib/components/stack-engine/Engine.svelte').then((mod) => {
+			EngineComponent = mod.default;
+		});
+
 		if (isPrefersReducedMotion()) {
 			heroLines = terminalLines.map((l) => ({ ...l, visible: true }));
 			heroReady = true;
@@ -122,6 +137,15 @@
 			</Button>
 		</div>
 	</section>
+
+	<!-- ═══ ENGINE ZONE (slice-29, own async chunk) ═══ -->
+	{#if EngineComponent}
+		<EngineComponent animate={engineAnimate} />
+	{:else}
+		<section class="engine-loading" data-testid="stack-engine-loading" aria-hidden="true">
+			<span class="engine-loading-line">~ loading engine…</span>
+		</section>
+	{/if}
 
 	<!-- ═══ CTA ZONE ═══ -->
 	<section class="cta-zone" data-testid="tech-stack-cta">
@@ -264,6 +288,21 @@
 		gap: 1rem;
 		flex-wrap: wrap;
 		padding-bottom: 2rem;
+	}
+
+	/* ═══ ENGINE ZONE ═══ */
+
+	.engine-loading {
+		max-width: var(--container-wide);
+		margin: 0 auto;
+		padding: 2rem var(--space-page-x);
+		min-height: 200px;
+	}
+
+	.engine-loading-line {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--muted-foreground);
 	}
 
 	/* ═══ CTA ZONE ═══ */

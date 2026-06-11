@@ -1,0 +1,28 @@
+{
+  "collection": "stack_archetypes",
+  "field": "tech",
+  "type": "alias",
+  "meta": {
+    "collection": "stack_archetypes",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "tech",
+    "group": null,
+    "hidden": false,
+    "interface": "list-m2m",
+    "note": "stack composition — layer drives the blueprint row",
+    "options": null,
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 9,
+    "special": [
+      "m2m"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

@@ -8,22 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "tags",
-    "group": null,
+    "group": "grp_class",
     "hidden": false,
     "interface": "tags",
     "note": "Free-form classification tags (e.g. data-engineering, analytics).",
-    "options": null,
+    "options": {
+      "alphabetize": false,
+      "iconLeft": "sell"
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 14,
+    "sort": 54,
     "special": [
       "cast-json"
     ],
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "tags",

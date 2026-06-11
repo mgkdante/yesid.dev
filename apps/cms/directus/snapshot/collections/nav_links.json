@@ -3,8 +3,8 @@
   "meta": {
     "accountability": "all",
     "archive_app_filter": false,
-    "archive_field": null,
-    "archive_value": null,
+    "archive_field": "status",
+    "archive_value": "archived",
     "autosave_revision_interval": null,
     "collapse": "open",
     "collection": "nav_links",
@@ -21,7 +21,7 @@
     "sort_field": "sort",
     "status": "active",
     "translations": null,
-    "unarchive_value": null,
+    "unarchive_value": "published",
     "versioning": true
   },
   "schema": {
