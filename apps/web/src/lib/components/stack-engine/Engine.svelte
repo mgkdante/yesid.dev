@@ -66,6 +66,10 @@
 </script>
 
 <section class="stack-engine" data-testid="stack-engine">
+	<!-- GO-w2t5 addendum: section is full-bleed (route wraps it in the
+	     hazard-framed engine-band); the width cap lives on this inner
+	     container so content stays a readable centered column. -->
+	<div class="engine-inner">
 	<div class="engine-mode-toggle" role="group" aria-label="Engine mode">
 		<button
 			type="button"
@@ -166,13 +170,19 @@
 			{/if}
 		</div>
 	{/if}
+	</div>
 </section>
 
 <style>
 	.stack-engine {
+		/* GO-w2t5 addendum: no width cap here — the section bleeds with the
+		   route's engine-band; .engine-inner carries the content column. */
+		padding: 2rem var(--space-page-x);
+	}
+
+	.engine-inner {
 		max-width: var(--container-wide);
 		margin: 0 auto;
-		padding: 2rem var(--space-page-x);
 	}
 
 	.engine-mode-toggle {
@@ -198,6 +208,12 @@
 
 	.mode-btn + .mode-btn {
 		border-left: 1px solid var(--border);
+	}
+
+	/* GO-w2t5 cute pass: inactive mode hints orange before commit —
+	   color-only → SAFE-ALWAYS, consistent with the fun-pass accents. */
+	.mode-btn:hover:not(.mode-btn-active) {
+		color: var(--primary);
 	}
 
 	.mode-btn-active {

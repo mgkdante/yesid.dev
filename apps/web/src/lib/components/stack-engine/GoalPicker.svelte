@@ -51,6 +51,9 @@
 	.archetype-card:hover {
 		border-color: var(--primary);
 		transform: translateY(-2px);
+		/* GO-w2t5 cute pass: soft brand glow under the lift — shadow-only →
+		   SAFE-ALWAYS, pairs with the committed pressBounce on tap. */
+		box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 12%, transparent);
 	}
 
 	.card-title {

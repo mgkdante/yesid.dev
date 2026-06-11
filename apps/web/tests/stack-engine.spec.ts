@@ -58,6 +58,42 @@ test('compose path: an absurd single pick shows the zero-match CTA (never blank)
 	await expect(zeroMatch.locator('a')).toHaveAttribute('href', '/contact?bp=custom~dax');
 });
 
+test('engine band is full-bleed with hazard frame; hero + CTA stay constrained (GO-w2t5 addendum)', async ({
+	page,
+	isMobile,
+}) => {
+	await page.goto('/tech-stack');
+	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
+
+	// clientWidth excludes any classic scrollbar — the honest "edge to edge".
+	const pageWidth = await page.evaluate(() => document.documentElement.clientWidth);
+
+	const band = await page.locator('[data-testid="engine-band"]').boundingBox();
+	expect(band).not.toBeNull();
+	expect(Math.round(band!.width)).toBe(pageWidth);
+	expect(Math.round(band!.x)).toBe(0);
+
+	// The hazard frame (shared /projects divider) spans the full bleed too.
+	for (const tid of ['engine-band-hazard-top', 'engine-band-hazard-bottom']) {
+		const strip = await page.locator(`[data-testid="${tid}"]`).boundingBox();
+		expect(strip, `${tid} must render`).not.toBeNull();
+		expect(Math.round(strip!.width)).toBe(pageWidth);
+		expect(Math.round(strip!.x)).toBe(0);
+	}
+
+	// Desktop only: hero above + CTA below keep their constrained width
+	// EXACTLY ("perfect that way") — container-wide cap < page width. On
+	// mobile every section is naturally edge-to-edge, so "constrained" is
+	// not observable (current width behavior, unchanged).
+	if (!isMobile) {
+		const hero = await page.locator('[data-testid="tech-stack-hero"]').boundingBox();
+		const cta = await page.locator('[data-testid="tech-stack-cta"]').boundingBox();
+		expect(hero!.width).toBeLessThan(pageWidth);
+		expect(cta!.width).toBeLessThan(pageWidth);
+		expect(Math.round(band!.width)).toBeGreaterThan(Math.round(hero!.width));
+	}
+});
+
 test('blueprint fits the viewport — whole drawing at a glance (GO-w2t5 operator playtest)', async ({
 	page,
 }) => {

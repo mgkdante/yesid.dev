@@ -112,6 +112,18 @@
 		color: var(--muted-foreground);
 	}
 
+	/* GO-w2t5 cute pass: tiny orange tick before each layer label — echoes
+	   the hero overline's brand dash at chip-group scale. */
+	.layer-label::before {
+		content: '';
+		display: inline-block;
+		width: 12px;
+		height: 1px;
+		background: var(--primary);
+		vertical-align: middle;
+		margin-right: 6px;
+	}
+
 	.layer-chips {
 		display: flex;
 		flex-wrap: wrap;
@@ -183,6 +195,12 @@
 	.match-card:hover,
 	.match-card-full {
 		border-color: var(--primary);
+	}
+
+	/* GO-w2t5 cute pass: same soft brand glow as the goal cards (shadow-only
+	   → SAFE-ALWAYS) so both modes speak one hover language. */
+	.match-card:hover {
+		box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 12%, transparent);
 	}
 
 	.match-title {
