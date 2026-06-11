@@ -14,7 +14,7 @@ import { projects } from './projects';
 export const projectsPageMeta = {
 	title: { en: 'Projects | yesid.' } satisfies LocalizedString,
 	description: {
-		en: 'Projects, pipelines, and systems built by yesid. — freelance SQL development and digital infrastructure.',
+		en: 'Projects, pipelines, and systems built by yesid. — freelance digital infrastructure in Montreal.',
 	} satisfies LocalizedString,
 } as const;
 
