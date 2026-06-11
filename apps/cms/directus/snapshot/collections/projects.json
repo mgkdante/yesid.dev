@@ -9,7 +9,7 @@
     "collapse": "open",
     "collection": "projects",
     "color": null,
-    "display_template": "{{translations.title}}",
+    "display_template": "{{translations}}",
     "group": "projects_page",
     "hidden": false,
     "icon": "folder_special",
@@ -31,7 +31,7 @@
     "sort_field": "sort",
     "status": "active",
     "translations": null,
-    "unarchive_value": "draft",
+    "unarchive_value": "published",
     "versioning": true
   },
   "schema": {

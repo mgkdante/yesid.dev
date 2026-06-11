@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "translations",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "translations",
     "note": null,
@@ -16,7 +16,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 99,
+    "sort": 20,
     "special": [
       "translations"
     ],

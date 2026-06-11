@@ -2734,7 +2734,9 @@
       "placement",
       "priority",
       "status",
-      "translations"
+      "translations",
+      "page",
+      "sort"
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "8db31601-1402-41fc-abb7-ef2f2c806cde"
@@ -3034,6 +3036,42 @@
     ],
     "policy": "_sync_default_public_policy",
     "_syncId": "a05a6921-4055-421e-a898-660c57c13f3e"
+  },
+  {
+    "collection": "stack_archetypes_tech",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "fb391715-68d5-4209-8da6-1e8250b3a078"
+  },
+  {
+    "collection": "stack_archetypes_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "0609cf5d-df5a-492f-a2a6-864179d8c6a4"
+  },
+  {
+    "collection": "stack_archetypes",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "44b6a55f-729e-4ea8-b646-bb1dd8b436b9"
   },
   {
     "collection": "tech_stack_projects",
@@ -6091,6 +6129,42 @@
     ],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "c095868b-7a8a-48fd-8473-0e5234c3c545"
+  },
+  {
+    "collection": "stack_archetypes_tech",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "65068f81-6ef7-4394-a337-b9d70d7cf117"
+  },
+  {
+    "collection": "stack_archetypes_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "b33d3b25-e482-4a66-ad53-3e08826ae675"
+  },
+  {
+    "collection": "stack_archetypes",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "3c0362b8-b4ad-4179-9f65-2b482d571a3d"
   },
   {
     "collection": "tech_stack_projects",

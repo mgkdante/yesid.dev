@@ -6,8 +6,9 @@
 
 import { readItems } from '@directus/sdk';
 import { z } from 'zod';
-import { toLocalizedBlockEditorDoc } from '../locale';
+import { toLocalizedBlockEditorDoc, toLocalizedStringOrUndef } from '../locale';
 import type { BlockEditorDoc } from '@repo/shared';
+import type { StackLayer } from '@repo/shared/schemas';
 import { TechStackItemSchema, type TechStackItem } from '../schemas/tech-stack';
 import type { IconRecord } from '../schemas/icon';
 import type { FetcherContext } from './types';
@@ -17,6 +18,8 @@ export interface DirectusTechStackTranslation {
 	what_it_is: BlockEditorDoc | null;
 	what_i_use_it_for: BlockEditorDoc | null;
 	why_i_use_it_instead: BlockEditorDoc | null;
+	/** slice-29: one sentence — what this tech enables (preview-slot caption). */
+	enables?: string | null;
 }
 
 export interface DirectusTechStackRow {
@@ -26,6 +29,8 @@ export interface DirectusTechStackRow {
 	icon_id?: IconRecord | null;
 	status: 'draft' | 'published' | 'archived';
 	sort: number;
+	/** slice-29: default blueprint layer — per-archetype links may override. */
+	layer?: StackLayer | null;
 	translations: readonly DirectusTechStackTranslation[];
 	services?: ReadonlyArray<{ services_id: string }>;
 	projects?: ReadonlyArray<{ projects_id: string }>;
@@ -33,6 +38,9 @@ export interface DirectusTechStackRow {
 
 /** Pure transform — DirectusTechStackRow → TechStackItem. Tested standalone. */
 export function toTechStackItem(row: DirectusTechStackRow): TechStackItem {
+	// slice-29 engine fields are OPTIONAL — keys are omitted (not null) when the
+	// CMS has no value, so pre-slice-29 emitted modules stay byte-identical.
+	const enables = toLocalizedStringOrUndef(row.translations, 'enables');
 	return {
 		id: row.id,
 		name: row.name,
@@ -42,6 +50,8 @@ export function toTechStackItem(row: DirectusTechStackRow): TechStackItem {
 		why_i_use_it_instead: toLocalizedBlockEditorDoc(row.translations, 'why_i_use_it_instead'),
 		relatedServices: row.services?.map((s) => s.services_id) ?? [],
 		relatedProjects: row.projects?.map((p) => p.projects_id) ?? [],
+		...(row.layer ? { layer: row.layer } : {}),
+		...(enables ? { enables } : {}),
 	};
 }
 
@@ -55,12 +65,14 @@ export async function fetchTechStack({ client }: FetcherContext): Promise<readon
 				{ icon_id: ['id', 'name', 'iconify_id', 'svg_override'] } as unknown as string,
 				'status',
 				'sort',
+				'layer',
 				{
 					translations: [
 						'languages_code',
 						'what_it_is',
 						'what_i_use_it_for',
 						'why_i_use_it_instead',
+						'enables',
 					],
 				} as unknown as string,
 				{ services: ['services_id'] } as unknown as string,

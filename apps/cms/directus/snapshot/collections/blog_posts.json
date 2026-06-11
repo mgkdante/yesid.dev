@@ -9,7 +9,7 @@
     "collapse": "open",
     "collection": "blog_posts",
     "color": null,
-    "display_template": "{{title}}",
+    "display_template": "{{translations}}",
     "group": "blog_page",
     "hidden": false,
     "icon": "article",
@@ -32,7 +32,7 @@
     "sort_field": "sort",
     "status": "active",
     "translations": null,
-    "unarchive_value": "draft",
+    "unarchive_value": "published",
     "versioning": true
   },
   "schema": {

@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "cover_image",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "file-image",
     "note": "Optional hero image (preset hero-1200 used at render).",
@@ -18,14 +18,14 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 9,
+    "sort": 41,
     "special": [
       "file"
     ],
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "cover_image",

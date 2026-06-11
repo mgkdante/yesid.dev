@@ -1,0 +1,25 @@
+{
+  "collection": "stack_archetypes_tech",
+  "field": "tech_stack_id",
+  "related_collection": "tech_stack",
+  "meta": {
+    "junction_field": "stack_archetypes_id",
+    "many_collection": "stack_archetypes_tech",
+    "many_field": "tech_stack_id",
+    "one_allowed_collections": null,
+    "one_collection": "tech_stack",
+    "one_collection_field": null,
+    "one_deselect_action": "nullify",
+    "one_field": null,
+    "sort_field": null
+  },
+  "schema": {
+    "table": "stack_archetypes_tech",
+    "column": "tech_stack_id",
+    "foreign_key_table": "tech_stack",
+    "foreign_key_column": "id",
+    "constraint_name": "stack_archetypes_tech_tech_stack_id_foreign",
+    "on_update": "NO ACTION",
+    "on_delete": "CASCADE"
+  }
+}

@@ -8,10 +8,10 @@
     "display": null,
     "display_options": null,
     "field": "svg_illustration",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "select-dropdown-m2o",
-    "note": "Optional decorative illustration. Cascade fallback to related-services SVGs is unchanged.",
+    "note": "Decorative SVG ref — becomes a Brand Assets picker in the chrome batch.",
     "options": {
       "filter": {
         "_or": [
@@ -32,7 +32,7 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 18,
+    "sort": 42,
     "special": [
       "m2o"
     ],

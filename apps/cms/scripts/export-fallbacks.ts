@@ -52,6 +52,7 @@ import { fetchBlogPosts, fetchBlogBodies } from './lib/fetchers/blog-posts';
 import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
 import { fetchTechStack } from './lib/fetchers/tech-stack';
+import { fetchStackArchetypes } from './lib/fetchers/stack-archetypes';
 import {
 	fetchBlogPageContent,
 	fetchProjectsPageContent,
@@ -107,6 +108,7 @@ const ALL_MODULES = [
 	'services',
 	'projects',
 	'tech-stack',
+	'stack-archetypes',
 	'blog-page',
 	'projects-page',
 	'tech-stack-page',
@@ -205,6 +207,10 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		enqueue('tech-stack', async () => {
 			out.techStack = await fetchTechStack({ client });
 			log.info(`  tech-stack done (${out.techStack.length} items).`);
+		});
+		enqueue('stack-archetypes', async () => {
+			out.stackArchetypes = await fetchStackArchetypes({ client });
+			log.info(`  stack-archetypes done (${out.stackArchetypes.length} archetypes).`);
 		});
 		enqueue('blog-page', async () => {
 			out.blogPage = await fetchBlogPageContent({ client });

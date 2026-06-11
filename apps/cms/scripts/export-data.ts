@@ -5,6 +5,7 @@
  */
 
 import type { BlockEditorDoc, SitePage } from '@repo/shared';
+import type { StackArchetype } from '@repo/shared/schemas';
 import type { SiteMeta, SiteSeoDefaults } from './lib/schemas/site-meta';
 import type { MorphShape } from './lib/schemas/morph-shape';
 import type { ErrorPageContent } from './lib/schemas/nav';
@@ -47,6 +48,11 @@ export interface ExportData {
 	services?: readonly Service[];
 	projects?: readonly Project[];
 	techStack?: readonly TechStackItem[];
+	/**
+	 * Published stack_archetypes rows (slice-29 Tech Stack Engine) — goal
+	 * recipes whose layered tech links draw the /tech-stack blueprint.
+	 */
+	stackArchetypes?: readonly StackArchetype[];
 	blogPage?: BlogPageContent;
 	projectsPage?: ProjectsPageContent;
 	techStackPage?: TechStackPageContent;

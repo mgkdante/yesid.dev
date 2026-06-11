@@ -5,8 +5,30 @@
   "meta": {
     "collection": "site_pages",
     "conditions": null,
-    "display": null,
-    "display_options": null,
+    "display": "labels",
+    "display_options": {
+      "choices": [
+        {
+          "background": "#2F9E44",
+          "foreground": "#FFFFFF",
+          "text": "Published",
+          "value": "published"
+        },
+        {
+          "background": "#FFB627",
+          "foreground": "#18222F",
+          "text": "Draft",
+          "value": "draft"
+        },
+        {
+          "background": "#6C757D",
+          "foreground": "#FFFFFF",
+          "text": "Archived",
+          "value": "archived"
+        }
+      ],
+      "showAsDot": false
+    },
     "field": "status",
     "group": null,
     "hidden": false,
