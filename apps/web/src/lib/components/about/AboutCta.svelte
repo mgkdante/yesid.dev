@@ -47,7 +47,7 @@
 					<div class="{line.color === 'orange'
 						? 'text-[var(--primary)]'
 						: line.color === 'accent'
-							? 'text-[var(--accent)]'
+							? 'text-[var(--accent-text)]'
 							: 'text-[var(--secondary-foreground)]'}">
 						{line.text}
 					</div>
@@ -66,7 +66,7 @@
 			<Button variant="default" size="cta" href={cta.buttonHref}>
 				{buttonLabel}
 			</Button>
-			<span class="font-mono text-caption tracking-[1px] text-[var(--accent)]">
+			<span class="font-mono text-caption tracking-[1px] text-[var(--accent-text)]">
 				{availability}
 			</span>
 		</div>

@@ -231,7 +231,7 @@
 					{#snippet child({ props })}
 						<button
 							{...props}
-							class="toc-toggle flex items-center gap-1.5 rounded border border-[var(--border-subtle)] bg-[var(--background)] px-3 py-2 font-mono text-caption text-[var(--secondary-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
+							class="toc-toggle flex items-center gap-1.5 rounded border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 font-mono text-caption text-[var(--secondary-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 						>
 							<ChevronToggle open={mobileOpen} size="sm" direction="right" />
 							{tocMobileButton}
@@ -241,7 +241,7 @@
 
 				<CollapsibleContent forceMount class="toc-mobile-body">
 					<div class="min-h-0 overflow-hidden">
-						<div class="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--background)] p-3">
+						<div class="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-3)] p-3">
 							{@render tocEntries()}
 						</div>
 					</div>

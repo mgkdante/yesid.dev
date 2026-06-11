@@ -77,7 +77,7 @@
 										<div class="mt-1 flex flex-wrap gap-1">
 											{#each items as item, i}
 												<span
-													class="rounded border border-[var(--border)] bg-[var(--background)] px-2 py-0.5 text-caption text-[var(--secondary-foreground)] transition-colors duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
+													class="rounded border border-[var(--border)] bg-transparent px-2 py-0.5 text-caption text-[var(--secondary-foreground)] transition-colors duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 												>{item.name}</span>
 											{/each}
 										</div>

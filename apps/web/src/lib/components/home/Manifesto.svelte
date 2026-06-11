@@ -262,7 +262,7 @@
 	.manifesto__prompt-text {
 		font-family: var(--font-mono);
 		font-size: 13px;
-		color: color-mix(in srgb, var(--primary) 60%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
 	/* ── Statement ───────────────────────────────────────────────── */
@@ -308,7 +308,7 @@
 		font-family: var(--font-mono);
 		font-size: clamp(0.75rem, 1.2vw, 1rem);
 		letter-spacing: 0.04em;
-		color: color-mix(in srgb, var(--primary) 60%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 		border-radius: var(--radius-pill);
 		padding: 8px 20px;
@@ -319,7 +319,7 @@
 
 	.manifesto__pill:hover {
 		border-color: color-mix(in srgb, var(--primary) 40%, transparent);
-		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		color: var(--primary);
 		background: color-mix(in srgb, var(--primary) 8%, transparent);
 	}
 

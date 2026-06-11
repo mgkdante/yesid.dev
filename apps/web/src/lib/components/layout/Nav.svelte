@@ -10,6 +10,7 @@
 	import { resolveLocale } from '$lib/utils/locale';
 	import MenuOverlay from './MenuOverlay.svelte';
 	import type { NavLink } from '$lib/content/nav';
+	import ThemeToggle from './ThemeToggle.svelte';
 
 	const openMenuAria = resolveLocale(sharedChromeContent.openMenuAria, 'en');
 	const closeMenuAria = resolveLocale(sharedChromeContent.closeMenuAria, 'en');
@@ -110,7 +111,7 @@
 						href={link.href}
 						class="nav-pill-link inline-flex min-h-11 items-center px-1 transition-all {isActive(link.href)
 							? 'text-primary nav-link-active'
-							: 'text-text-secondary hover:text-primary hover:nav-link-glow active:text-primary'}"
+							: 'text-secondary-foreground hover:text-primary hover:nav-link-glow active:text-primary'}"
 						aria-current={isActive(link.href) ? 'page' : undefined}
 					>
 						{link.label.en}
@@ -121,6 +122,9 @@
 
 		<!-- Divider -->
 		<span class="nav-divider" aria-hidden="true"></span>
+
+		<!-- Theme toggle (GO-W2.2) -->
+		<ThemeToggle />
 
 		<!-- Menu toggle -->
 		<button

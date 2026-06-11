@@ -55,7 +55,7 @@
 				type="text"
 				placeholder={searchPlaceholder}
 				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-3 py-3 min-h-11 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]"
+				class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-3 min-h-11 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]"
 				data-testid="project-search-sidebar"
 			/>
 			<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
