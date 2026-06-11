@@ -274,9 +274,10 @@ describe('stackArchetypes engine data integrity (slice-29)', () => {
 		});
 	});
 
-	it('every proofProjectSlug references a committed project', () => {
+	it('every present proofProjectSlug references a committed project (scenarios may omit)', () => {
 		const validSlugs = new Set(projects.map((p) => p.slug));
 		stackArchetypes.forEach((a) => {
+			if (a.proofProjectSlug === undefined) return;
 			expect(
 				validSlugs.has(a.proofProjectSlug),
 				`proof project "${a.proofProjectSlug}" in archetype "${a.slug}" not found`
@@ -284,9 +285,10 @@ describe('stackArchetypes engine data integrity (slice-29)', () => {
 		});
 	});
 
-	it('every serviceId references a committed service', () => {
+	it('every present serviceId references a committed service (scenarios may omit)', () => {
 		const validIds = new Set(services.map((s) => s.id));
 		stackArchetypes.forEach((a) => {
+			if (a.serviceId === undefined) return;
 			expect(
 				validIds.has(a.serviceId),
 				`service "${a.serviceId}" in archetype "${a.slug}" not found`
