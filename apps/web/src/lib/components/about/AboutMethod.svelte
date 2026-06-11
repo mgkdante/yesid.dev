@@ -39,7 +39,7 @@
 					<div class="mt-1 font-mono text-caption font-semibold tracking-[1px] text-[var(--primary)]">
 						{stepLabel}
 					</div>
-					<div class="mt-1 max-w-[100px] text-center text-caption leading-tight text-[var(--secondary-foreground)] opacity-60">
+					<div class="mt-1 max-w-[100px] text-center text-caption leading-tight text-[var(--secondary-foreground)]">
 						{stepDesc}
 					</div>
 				</div>

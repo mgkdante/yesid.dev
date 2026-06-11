@@ -231,6 +231,7 @@
     transform: translate(-50%, -50%);
     font-size: clamp(100px, 14vw, 180px);
     font-weight: 900;
+    /* contrast-exempt: decorative (aria-hidden watermark) */
     color: color-mix(in srgb, var(--blog-accent) 2.5%, transparent);
     text-transform: uppercase;
     letter-spacing: -0.06em;
@@ -247,6 +248,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 2px;
+    /* contrast-exempt: decorative (aria-hidden edge ornament) */
     color: color-mix(in srgb, var(--blog-accent) 20%, transparent);
     text-transform: uppercase;
     white-space: nowrap;
@@ -380,7 +382,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--blog-accent) 50%, transparent);
+    color: color-mix(in srgb, var(--blog-accent) 85%, transparent);
     border: 1px solid color-mix(in srgb, var(--blog-accent) 12%, transparent);
     border-radius: var(--radius-pill);
     padding: 4px 12px;
@@ -390,7 +392,7 @@
   @media (min-width: 1024px) {
     .header__pill {
       font-size: 13px;
-      color: color-mix(in srgb, var(--blog-accent) 60%, transparent);
+      color: color-mix(in srgb, var(--blog-accent) 90%, transparent);
       border-color: color-mix(in srgb, var(--blog-accent) 15%, transparent);
       padding: 7px 18px;
       background: color-mix(in srgb, var(--blog-accent) 4%, transparent);
@@ -405,7 +407,7 @@
     gap: 1rem;
     font-family: var(--font-mono);
     font-size: 11px;
-    color: color-mix(in srgb, var(--blog-accent) 35%, transparent);
+    color: color-mix(in srgb, var(--blog-accent) 85%, transparent);
   }
 
   .header__meta-sep {

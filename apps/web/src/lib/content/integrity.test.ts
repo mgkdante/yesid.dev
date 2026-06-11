@@ -602,7 +602,7 @@ describe('locale-completeness snapshot (T11)', () => {
 		expect(SUPPORTED_LOCALES).toEqual(['en', 'fr', 'es']);
 	});
 
-	it('fully-multilingual (en+fr+es) count is locked at 56 — nav + jobTitle + site-pages + engine', () => {
+	it('fully-multilingual (en+fr+es) count is locked at 57 — nav + jobTitle + site-pages + engine + theme toggle', () => {
 		// This count represents the nav module chrome (navDirections, sharedChromeContent,
 		// cta labels, nav link titles) plus site-meta owner.jobTitle, plus the 8
 		// site_pages registry titles (slice-26.1 — seeded with en+fr+es: 32 → 40),
@@ -633,7 +633,7 @@ describe('locale-completeness snapshot (T11)', () => {
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
 		}
-		expect(stats.full).toBe(56);
+		expect(stats.full).toBe(57);
 	});
 
 	it('en-only count is locked at 400 — documents current FR/ES debt', () => {

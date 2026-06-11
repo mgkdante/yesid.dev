@@ -6,7 +6,8 @@
   pair it with the matching preview slot (Task 11).
 
   Draw sequence (animate=true): rows stagger-pop → connectors draw via
-  stroke-dash → title stamp last; replays when the links identity changes.
+  stroke-dash → title stamp → one-shot signal dash per connector; replays
+  when the links identity changes.
   animate=false (reduced motion): gsap.set final states only.
 
   Compose entry: matched boxes light up (bp-matched), missing boxes ghost
@@ -63,6 +64,12 @@
 		`${-PAD} ${-PAD} ${layout.width + PAD * 2} ${layout.height + STAMP_H + PAD * 2}`,
 	);
 
+	/** GO-w2t5 sizing fix: cap rendered scale at 1 SVG unit = 1px. Launch
+	 *  archetypes are one box per row (width 160 → viewBox 208), and the old
+	 *  flat `max-width: 720px` inflated them ~3.5× — "one node fills the
+	 *  viewport height" (operator playtest). Natural width = real pixels. */
+	const naturalWidth = $derived(layout.width + PAD * 2);
+
 	let svgEl: SVGSVGElement | null = $state(null);
 
 	// Draw sequence — re-runs whenever the layout identity changes (archetype
@@ -112,6 +119,26 @@
 				{ autoAlpha: 1, scale: 1, duration: 0.3, ease: 'power2.out' },
 			);
 		}
+		// GO-w2t5: signal dash — a short bright segment travels each
+		// connector once, then fades. dasharray "12 <len+12>" shows exactly
+		// one 12-unit dash; sliding dashoffset 12 → -len walks it
+		// start→end. One-shot, no repeat, dies with tl.kill().
+		const signalEls = svg.querySelectorAll<SVGPathElement>('.bp-signal');
+		if (signalEls.length > 0) {
+			tl.addLabel('signals');
+			signalEls.forEach((sig, i) => {
+				const length =
+					typeof sig.getTotalLength === 'function' ? sig.getTotalLength() : ROW_GAP * 2;
+				const at = `signals+=${i * 0.08}`;
+				tl.set(
+					sig,
+					{ strokeDasharray: `12 ${length + 12}`, strokeDashoffset: 12, autoAlpha: 1 },
+					at,
+				);
+				tl.to(sig, { strokeDashoffset: -length, duration: 0.5, ease: 'power1.inOut' }, at);
+				tl.to(sig, { autoAlpha: 0, duration: 0.15 }, `signals+=${i * 0.08 + 0.45}`);
+			});
+		}
 		return () => {
 			tl.kill();
 		};
@@ -123,6 +150,7 @@
 	class="blueprint-canvas"
 	data-testid="blueprint-canvas"
 	{viewBox}
+	style:max-width={`${naturalWidth}px`}
 	role="img"
 	aria-label={`Blueprint: ${title}`}
 >
@@ -157,6 +185,14 @@
 		</g>
 	{/each}
 
+	<!-- GO-w2t5 fun-pass: one-shot signal dash per connector. Rest opacity 0
+	     (CSS); only the animate=true timeline ever lights them. -->
+	<g class="bp-signals" aria-hidden="true">
+		{#each layout.connectors as connector (connector.from + '→' + connector.to)}
+			<path class="bp-signal" d={connector.path} />
+		{/each}
+	</g>
+
 	{#if firstMissingBox}
 		<text
 			class="bp-annotation"
@@ -183,8 +219,12 @@
 <style>
 	.blueprint-canvas {
 		width: 100%;
-		max-width: 720px;
+		/* max-width set inline = layout natural width (render scale ≤ 1). */
 		height: auto;
+		/* Safety net for tall compose blueprints: the default
+		   preserveAspectRatio (xMidYMid meet) letterboxes the drawing down —
+		   the WHOLE blueprint stays visible without scrolling. */
+		max-height: min(56svh, 440px);
 		display: block;
 		margin: 0 auto;
 		overflow: visible;
@@ -194,6 +234,15 @@
 		fill: none;
 		stroke: var(--border);
 		stroke-width: 1.5;
+	}
+
+	.bp-signal {
+		fill: none;
+		stroke: var(--primary);
+		stroke-width: 2.5;
+		stroke-linecap: round;
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	.bp-box-rect {

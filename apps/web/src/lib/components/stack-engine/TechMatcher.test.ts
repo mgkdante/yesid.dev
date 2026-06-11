@@ -49,6 +49,20 @@ describe('TechMatcher chips', () => {
 		expect(engine.pickedTechs.has('postgresql')).toBe(false);
 		expect(chip.getAttribute('aria-pressed')).toBe('false');
 	});
+
+	it('GO-w2t5: chips and match cards carry tactile press affordances', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		const chip = screen.getByTestId('tech-chip-postgresql');
+		expect(chip.className).toContain('tap-press');
+		// Label lives on an inner span so the settle keyframe composes with
+		// pressBounce's scale tween on the button itself.
+		expect(chip.querySelector('.chip-label')?.textContent).toBe('PostgreSQL');
+
+		await fireEvent.click(chip);
+		const card = screen.getByTestId('match-card-data-pipeline');
+		expect(card.className).toContain('tap-press');
+	});
 });
 
 describe('TechMatcher match cards', () => {

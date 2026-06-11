@@ -8,6 +8,7 @@
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { StatusDot, SectionLabel } from '$lib/components/brand';
 	import { Button } from '$lib/components/ui/button';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let { data } = $props();
 
@@ -143,14 +144,25 @@
 		</div>
 	</section>
 
-	<!-- ═══ ENGINE ZONE (slice-29, own async chunk) ═══ -->
-	{#if EngineComponent}
-		<EngineComponent animate={engineAnimate} />
-	{:else}
-		<section class="engine-loading" data-testid="stack-engine-loading" aria-hidden="true">
-			<span class="engine-loading-line">~ loading engine…</span>
-		</section>
-	{/if}
+	<!-- ═══ ENGINE ZONE (slice-29, own async chunk) ═══
+	     GO-w2t5 operator addendum: the zone is a full-bleed band — edge-to-edge
+	     on desktop, framed top + bottom by the shared full-width hazard strips
+	     (the /projects dashed orange divider, reused — not reinvented). Hero
+	     above and CTA below keep their constrained width EXACTLY ("perfect
+	     that way"). Mobile width behavior is unchanged: sections are already
+	     naturally edge-to-edge below --container-wide. The band wraps the
+	     loading placeholder too, so the frame is stable while the chunk lands. -->
+	<div class="engine-band" data-testid="engine-band">
+		<Separator variant="hazard" data-testid="engine-band-hazard-top" />
+		{#if EngineComponent}
+			<EngineComponent animate={engineAnimate} />
+		{:else}
+			<section class="engine-loading" data-testid="stack-engine-loading" aria-hidden="true">
+				<span class="engine-loading-line">~ loading engine…</span>
+			</section>
+		{/if}
+		<Separator variant="hazard" data-testid="engine-band-hazard-bottom" />
+	</div>
 
 	<!-- ═══ CTA ZONE ═══ -->
 	<section class="cta-zone" data-testid="tech-stack-cta">
@@ -237,7 +249,7 @@
 	.hero-line-color-default { color: var(--secondary-foreground); }
 	.hero-line-color-muted { color: var(--muted-foreground); }
 	.hero-line-color-orange { color: var(--primary); }
-	.hero-line-color-accent { color: var(--accent); }
+	.hero-line-color-accent { color: var(--accent-text); }
 	.hero-line-color-green { color: var(--success); }
 
 	.hero-line-animate { animation: hero-line-in 0.3s ease-out both; }
@@ -296,6 +308,16 @@
 	}
 
 	/* ═══ ENGINE ZONE ═══ */
+
+	/* GO-w2t5 addendum: full-bleed work-zone band. No max-width — the band
+	   runs edge-to-edge between its hazard strips; the faint brand tint marks
+	   the interactive zone (cute-pass anchor; alpha-only over the global
+	   circuit grid). The width math only bites where the viewport exceeds
+	   --container-wide, so mobile keeps its current width behavior. */
+	.engine-band {
+		margin-block: 2rem;
+		background: color-mix(in srgb, var(--primary) 3%, transparent);
+	}
 
 	.engine-loading {
 		max-width: var(--container-wide);
@@ -364,7 +386,7 @@
 		font-family: var(--font-mono);
 		font-size: 10px;
 		letter-spacing: 1px;
-		color: var(--accent);
+		color: var(--accent-text);
 		text-transform: uppercase;
 	}
 

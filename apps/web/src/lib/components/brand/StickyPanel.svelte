@@ -32,7 +32,7 @@
     position: sticky;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    background: var(--muted);
+    background: var(--surface-3);
     padding: 1.25rem;
     overflow-y: auto;
     max-height: calc(100dvh - 8rem);
