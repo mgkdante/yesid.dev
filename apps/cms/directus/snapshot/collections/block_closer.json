@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "Closer block — TERMINUS / end-of-line section of /. Non-translatable: cta_href (string), attribution_url (string) on parent. All LocalizedString leaves in translations as JSON columns.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 5,
     "sort_field": "sort",
     "status": "active",

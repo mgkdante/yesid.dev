@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "CTA block — bottom of /. All 4 fields are LocalizedStrings → 4 string columns in translations.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 6,
     "sort_field": "sort",
     "status": "active",
