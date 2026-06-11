@@ -186,6 +186,14 @@
 		margin-inline: 0;
 	}
 
+	/* GO-w2t5 retier: the menu-open link collapse is a width/opacity slide —
+	   MOTION-GATED; snap instead of sliding under reduce. */
+	@media (prefers-reduced-motion: reduce) {
+		.nav-collapsible {
+			transition: none;
+		}
+	}
+
 	.nav-pill-link {
 		font-size: 13.5px;
 		font-weight: 500;
