@@ -65,8 +65,10 @@ select {
 /* shadcn-svelte component animations */
 @import 'tw-animate-css';
 
-/* Map dark: variant to our attribute-based theme switching */
-@custom-variant dark (&:is([data-theme="dark"] *));
+/* Map dark: variant to our attribute-based theme switching.
+   GO-W2.2: .theme-dark wrapper included so dark: utilities also fire inside
+   pinned-dark scenes (e.g. the home closer) on light pages. */
+@custom-variant dark (&:is([data-theme="dark"] *, .theme-dark *));
 
 /*
   Brand design tokens in Tailwind v4's CSS-first @theme format.
@@ -106,6 +108,7 @@ select {
   --shadow-card: var(--shadow-card);
   --shadow-section: var(--shadow-section);
   --shadow-nav: var(--shadow-nav);
+  --shadow-sheet: var(--shadow-sheet);
   --z-index-base: var(--z-base);
   --z-index-content: var(--z-content);
   --z-index-rail: var(--z-rail);
@@ -158,8 +161,10 @@ select {
   /* Our extensions — same convention */
   --color-terminal: var(--terminal);
   --color-manifesto: var(--manifesto);
-  --color-dim-foreground: var(--dim-foreground);
-  --color-light-foreground: var(--light-foreground);
+  /* GO-W2.2 archived (2026-06): aliases pointed at vars defined nowhere.
+     --color-dim-foreground: var(--dim-foreground);
+     --color-light-foreground: var(--light-foreground); */
+  --color-accent-text: var(--accent-text);
   --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
   --color-success: var(--success);
@@ -244,6 +249,42 @@ pre, code, table {
 
   pointer-events: none;
   z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GO-W2.2 light-theme hand overrides (see build.ts ownership note —
+   this region is hand-maintained; the generator owns only the sentinel
+   region above). Dark theme = brand default; these fire only under
+   [data-theme="light"] / .theme-light.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Shadows: dark elevates with orange glow on black; light elevates with
+   neutral ink shadows on paper. Glow mixes are halved, not removed, so
+   hover affordances stay brand-warm. */
+[data-theme="light"], .theme-light {
+	--shadow-card: 0 1px 2px rgba(20, 20, 20, 0.06), 0 4px 12px rgba(20, 20, 20, 0.08);
+	--shadow-nav: 0 4px 24px rgba(20, 20, 20, 0.1), 0 0 0 1px rgba(20, 20, 20, 0.04);
+	--shadow-section: 0 8px 32px rgba(20, 20, 20, 0.08);
+	--shadow-glow-sm: 0 0 6px color-mix(in srgb, var(--primary) 18%, transparent);
+	--shadow-glow-md: 0 0 12px color-mix(in srgb, var(--primary) 12%, transparent);
+	--shadow-glow-lg: 0 0 24px color-mix(in srgb, var(--primary) 9%, transparent), 0 0 60px color-mix(in srgb, var(--primary) 4%, transparent);
+	--shadow-sheet: 0 -8px 32px rgba(20, 20, 20, 0.12);
+}
+
+/* Code blocks stay night-mode in light theme: Shiki token colors are baked
+   against the dark brand theme (lib/utils/markdown.ts). Pinning the block
+   dark keeps syntax readable with zero highlighter changes. Values are the
+   dark-theme --terminal / --border literals on purpose (the vars flip). */
+[data-theme="light"] .prose-dark pre,
+[data-theme="light"] .prose-dark pre.shiki,
+.theme-light .prose-dark pre,
+.theme-light .prose-dark pre.shiki {
+	background: #0a0a0a !important;
+	border-color: #3A3A3A;
+}
+[data-theme="light"] .prose-dark pre:not(.shiki) code,
+.theme-light .prose-dark pre:not(.shiki) code {
+	color: #E07800;
 }
 
 /* ═══════════════════════════════════════════════════════════════
