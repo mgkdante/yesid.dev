@@ -94,7 +94,7 @@
 						</button>
 						{#each serviceIds as svcId}
 							<button
-								class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
+								class="tap-press rounded border border-[var(--border)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 								class:m-tag-active={activeService === svcId}
 								onclick={() => onServiceSelect(activeService === svcId ? null : svcId)}
 							>
@@ -119,7 +119,7 @@
 								</button>
 								{#each stack as item}
 									<button
-										class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
+										class="tap-press rounded border border-[var(--border)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 										class:m-tag-active={activeStack === item}
 										onclick={() => onStackSelect(activeStack === item ? null : item)}
 									>
@@ -145,7 +145,7 @@
 							</button>
 							{#each tags as tag}
 								<button
-									class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="tap-press rounded border border-[var(--border)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeTag === tag}
 									onclick={() => onTagSelect(activeTag === tag ? null : tag)}
 								>

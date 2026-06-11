@@ -49,7 +49,7 @@
   } = $props();
 
   const accentColor = $derived(
-    post.category === 'personal' ? 'var(--accent)' : 'var(--primary)'
+    post.category === 'personal' ? 'var(--accent-text)' : 'var(--primary)'
   );
 
   // Reading mode — dims everything except left panel + blog content

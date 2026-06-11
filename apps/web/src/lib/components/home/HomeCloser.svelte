@@ -163,7 +163,7 @@
 <section
 	bind:this={sectionEl}
 	data-testid="closer-section"
-	class="closer-section relative"
+	class="closer-section relative theme-dark"
 >
 	<!-- Graffiti "THE END" — SVG loaded dynamically for DrawSVG animation -->
 	<CloserGraffiti onReady={handleGraffitiReady} />
@@ -195,7 +195,12 @@
 </section>
 
 <style>
+	/* GO-W2.2: night construction tableau — intentionally pinned dark in BOTH
+	   themes via .theme-dark (tokens.css class alias re-scopes all vars).
+	   The painted background is required: without it the light page shows
+	   through. dark: Tailwind variant also fires here (app.css custom-variant). */
 	.closer-section {
+		background: var(--background);
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;

@@ -44,4 +44,21 @@ describe('generateDesignMd', () => {
   it('includes the GENERATED warning in the body', () => {
     expect(md).toContain('GENERATED FROM packages/tokens/tokens.json');
   });
+
+  it('dedupes theme-level overrides of brand color names (no duplicate YAML keys)', () => {
+    const treeWithOverride: TokenTree = {
+      ...fixture,
+      color: {
+        brand: { primary: { $type: 'color', $value: '#E07800' } },
+        dark: {
+          primary: { $type: 'color', $value: '#E07800' },
+          background: { $type: 'color', $value: '#141414' },
+        },
+        light: {},
+      },
+    };
+    const dedupedMd = generateDesignMd(treeWithOverride);
+    const primaryLines = dedupedMd.split('\n').filter((l) => /^\s+primary:/.test(l));
+    expect(primaryLines).toHaveLength(1);
+  });
 });

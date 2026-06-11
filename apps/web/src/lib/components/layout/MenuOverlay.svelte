@@ -9,6 +9,7 @@
 	import { menuItems as staticMenuItems, sharedChromeContent } from '$lib/content';
 	import { resolveLocale } from '$lib/utils/locale';
 	import type { NavLink } from '$lib/content/nav';
+	import ThemeToggle from './ThemeToggle.svelte';
 
 	const dialogTitle = resolveLocale(sharedChromeContent.menuOverlayAria, 'en');
 	const footerLabel = resolveLocale(sharedChromeContent.menuOverlayFooterLabel, 'en');
@@ -144,6 +145,7 @@
 					<span class="menu-footer-line"></span>
 					<span class="menu-footer-label">{footerLabel}</span>
 					<span class="menu-footer-line"></span>
+					<ThemeToggle class="menu-theme-toggle" />
 				</div>
 					</div>
 				{/snippet}
@@ -316,7 +318,12 @@
 		font-family: var(--font-mono);
 		font-size: 10px;
 		letter-spacing: 3px;
-		color: color-mix(in srgb, var(--primary) 50%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 		white-space: nowrap;
+	}
+
+	/* GO-W2.2: theme toggle rides the footer rail */
+	:global(.menu-theme-toggle) {
+		margin-inline-start: 4px;
 	}
 </style>
