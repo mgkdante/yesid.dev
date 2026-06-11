@@ -109,7 +109,11 @@
 						data-testid="view-toggle"
 						onclick={toggleView}
 					>
-						{engine.view === 'blueprint' ? 'see it as a product →' : '← back to blueprint'}
+						{#if engine.view === 'blueprint'}
+						see it as a product <span class="toggle-arrow" aria-hidden="true">→</span>
+					{:else}
+						<span class="toggle-arrow toggle-arrow-back" aria-hidden="true">←</span> back to blueprint
+					{/if}
 					</button>
 				</div>
 				{#if engine.view === 'blueprint'}
@@ -140,7 +144,11 @@
 						data-testid="view-toggle"
 						onclick={toggleView}
 					>
-						{engine.view === 'blueprint' ? 'see it as a product →' : '← back to blueprint'}
+						{#if engine.view === 'blueprint'}
+						see it as a product <span class="toggle-arrow" aria-hidden="true">→</span>
+					{:else}
+						<span class="toggle-arrow toggle-arrow-back" aria-hidden="true">←</span> back to blueprint
+					{/if}
 					</button>
 				</div>
 				{#if engine.view === 'blueprint'}
@@ -239,6 +247,21 @@
 	.engine-view-toggle:hover {
 		background: var(--primary);
 		color: var(--primary-foreground);
+	}
+
+	/* GO-w2t5: Flip anticipation — the arrow leans toward the target view on
+	   hover; the Flip morph on activate is the payoff. ≤4px → SAFE-ALWAYS. */
+	.toggle-arrow {
+		display: inline-block;
+		transition: transform var(--duration-fast) var(--ease-out);
+	}
+
+	.engine-view-toggle:hover .toggle-arrow {
+		transform: translateX(2px);
+	}
+
+	.engine-view-toggle:hover .toggle-arrow-back {
+		transform: translateX(-2px);
 	}
 
 	.engine-placeholder {
