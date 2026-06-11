@@ -68,4 +68,10 @@ describe('GO-w2t5 micro-interactions — SAFE-ALWAYS additions present', () => {
 		const src = read('src/lib/components/contact/ContactPage.svelte');
 		expect(src).toMatch(/\.form-field \{[\s\S]*?caret-color: var\(--primary\);/);
 	});
+
+	it('project card pipeline brightens on hover (stroke-opacity only)', () => {
+		const src = read('src/lib/components/projects/ProjectCard.svelte');
+		expect(src).toMatch(/\.project-card:hover :global\(\.df-line\)/);
+		expect(src).toContain('stroke-opacity: 1');
+	});
 });

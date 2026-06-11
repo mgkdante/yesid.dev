@@ -209,4 +209,14 @@
 			scale: 1;
 		}
 	}
+
+	/* GO-w2t5: the pipeline "goes live" on card attention — alpha-only →
+	   SAFE-ALWAYS. Rest state is the diagram's stroke-opacity=0.5 attribute. */
+	.project-card :global(.df-line) {
+		transition: stroke-opacity var(--duration-normal) var(--ease-default);
+	}
+	.project-card:hover :global(.df-line),
+	.project-card:active :global(.df-line) {
+		stroke-opacity: 1;
+	}
 </style>
