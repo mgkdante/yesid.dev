@@ -51,6 +51,12 @@ export const sharedChromeContent = {
 		fr: 'Fermer le menu',
 		es: 'Cerrar menú',
 	} satisfies LocalizedString,
+	/** GO-W2.2 theme toggle. Switch semantics: checked = dark (brand default). */
+	themeToggleAria: {
+		en: 'Dark theme',
+		fr: 'Thème sombre',
+		es: 'Tema oscuro',
+	} satisfies LocalizedString,
 	footerNavAria: {
 		en: 'Footer navigation',
 		fr: 'Navigation du pied de page',

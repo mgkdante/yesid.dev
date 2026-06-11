@@ -84,7 +84,7 @@
 							</button>
 							{#each languages as lang}
 								<button
-									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="rounded border border-[var(--border)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeLang === lang}
 																		onclick={() => onLangSelect(lang)}
 								>
@@ -105,8 +105,7 @@
 							<input
 								type="date"
 								bind:value={dateFrom}
-								class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
-								style="color-scheme: dark;"
+								class="mt-0.5 w-full rounded border border-[var(--input)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
 							/>
 						</label>
 						<label class="flex-1 text-caption text-[var(--muted-foreground)]">
@@ -114,8 +113,7 @@
 							<input
 								type="date"
 								bind:value={dateTo}
-								class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
-								style="color-scheme: dark;"
+								class="mt-0.5 w-full rounded border border-[var(--input)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
 							/>
 						</label>
 					</div>
@@ -132,7 +130,7 @@
 							</button>
 							{#each tags as tag}
 								<button
-									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="rounded border border-[var(--border)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeTag === tag}
 																		onclick={() => onTagSelect(tag)}
 								>
@@ -148,7 +146,7 @@
 							<a
 								href={cornerLink.href}
 								class="text-xs font-semibold no-underline"
-								style="color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'};"
+								style="color: {cornerLink.href.includes('personal') ? 'var(--accent-text)' : 'var(--primary)'};"
 							>
 								{cornerLink.label} &rarr;
 							</a>
@@ -169,8 +167,8 @@
 		color: var(--foreground);
 	}
 	.m-tag-active {
-		border-color: var(--accent) !important;
-		color: var(--accent) !important;
+		border-color: var(--accent-text) !important;
+		color: var(--accent-text) !important;
 	}
 	/* CSS grid animation for smooth expand/collapse — matches CollapsibleSection pattern */
 	:global([data-slot="collapsible-content"].blog-filter-body) {

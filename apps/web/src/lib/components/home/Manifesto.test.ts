@@ -95,4 +95,11 @@ describe('Manifesto', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
 		expect(screen.getByTestId('manifesto-canvas')).toBeInTheDocument();
 	});
+
+	it('GO-w2t5: pills boop on hover (SAFE-ALWAYS micro-feedback)', () => {
+		render(Manifesto, { props: { manifesto: manifestoContent } });
+		const pill = screen.getAllByTestId('manifesto-pill')[0];
+		pill.dispatchEvent(new MouseEvent('mouseenter'));
+		expect(pill.style.transform).toContain('scale(1.03)');
+	});
 });

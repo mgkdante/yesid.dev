@@ -66,16 +66,18 @@
 		featuredProjects,
 	}: Props = $props();
 
-	// go2-t1c2: rotated home section titles from site_labels, previous
+// go2-t1c2: rotated home section titles from site_labels, previous
 	// literals kept as code fallbacks.
 	const sectionProjects = resolveLocale(siteLabels.pages.homeSectionProjects, 'en') || 'Projects';
 	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, 'en') || 'Services';
 	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, 'en') || 'Terminus';
 
-	// Section bindings retained for upcoming slice-23 tasks (sectionGlow /
-	// backgroundBreathing). Crescendo scrubs were removed from the rotated
-	// titles per operator feedback — titles are sticky-only without scale
-	// animation, so the visual no longer overflows section bounds.
+	// GO-w2t5: the slice-23 orphans are wired — sectionGlow lives inside
+	// HomeServices, backgroundBreathing inside HomeCloser (each section
+	// component owns its own effect). Bindings stay for future section-scoped
+	// motion. Crescendo scrubs were removed from the rotated titles per
+	// operator feedback — titles are sticky-only without scale animation, so
+	// the visual no longer overflows section bounds.
 	let projectsSectionEl = $state<HTMLElement>(undefined!);
 	let servicesSectionEl = $state<HTMLElement>(undefined!);
 	let closerSectionEl = $state<HTMLElement>(undefined!);

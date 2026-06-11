@@ -488,7 +488,7 @@
 		align-items: baseline;
 		gap: 0.5rem;
 		padding-bottom: 1rem;
-		border-bottom: 1px solid var(--card);
+		border-bottom: 1px solid var(--border-subtle);
 		margin-bottom: 0.5rem;
 	}
 
@@ -533,7 +533,7 @@
 	.section-body {
 		font-size: var(--text-body);
 		line-height: 1.7;
-		color: var(--text-light);
+		color: var(--secondary-foreground);
 	}
 
 	/* Deliverables grid */
@@ -553,7 +553,7 @@
 		align-items: center;
 		gap: 0.5rem;
 		font-size: var(--text-small);
-		color: var(--text-light);
+		color: var(--secondary-foreground);
 	}
 
 	.deliverable-dot {

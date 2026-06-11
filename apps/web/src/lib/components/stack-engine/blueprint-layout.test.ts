@@ -140,3 +140,14 @@ describe('layoutBlueprint stacked mode', () => {
 		}
 	});
 });
+
+describe('GO-w2t5 at-a-glance geometry contract', () => {
+	it('pins the blueprint constants the sizing fix relies on', () => {
+		expect(BOX_W).toBe(160);
+		expect(BOX_H).toBe(48);
+		expect(GUTTER).toBe(24);
+		// 64 → 48 (GO-w2t5): rows had more air than box (gap 64 > box 48);
+		// tightening keeps the whole blueprint inside one viewport.
+		expect(ROW_GAP).toBe(48);
+	});
+});

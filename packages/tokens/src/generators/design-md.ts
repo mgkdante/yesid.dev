@@ -31,6 +31,7 @@ function yamlMap(tree: TokenTree, indent: number, transformKey?: (k: string) => 
  */
 function flatColorMap(colorTree: TokenTree): string {
   const lines: string[] = [];
+  const seen = new Set<string>();
   // brand colors
   const brand = colorTree.brand as TokenTree | undefined;
   if (brand) {
@@ -39,6 +40,7 @@ function flatColorMap(colorTree: TokenTree): string {
       // Only emit hex color values (skip rgb channels and other non-hex)
       if (typeof v.$value === 'string' && v.$value.startsWith('#')) {
         lines.push(`  ${k}: ${serializeYaml(v)}`);
+        seen.add(k);
       }
     }
   }
@@ -46,7 +48,7 @@ function flatColorMap(colorTree: TokenTree): string {
   const dark = colorTree.dark as TokenTree | undefined;
   if (dark) {
     for (const [k, v] of Object.entries(dark)) {
-      if (k.startsWith('$') || !isLeaf(v)) continue;
+      if (k.startsWith('$') || !isLeaf(v) || seen.has(k)) continue; // skip brand re-pins (GO-W2.2)
       if (typeof v.$value === 'string' && v.$value.startsWith('#')) {
         lines.push(`  ${k}: ${serializeYaml(v)}`);
       }

@@ -25,7 +25,7 @@
 <!-- Clickable badge → /services/{service.id} (page built in future slice, 404 until then) -->
 <a
 	href="/services/{service.id}"
-	class="service-badge inline-flex items-center gap-2 rounded-full border bg-bg-card px-4 py-2.5 no-underline"
+	class="service-badge inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2.5 no-underline"
 	style="border-color: color-mix(in srgb, var(--primary) 40%, transparent);"
 	data-testid="work-service-badge"
 	onmouseenter={() => (badgeHovered = true)}
@@ -53,7 +53,7 @@
 			transform var(--duration-normal) var(--ease-default), box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.service-badge:hover {
-		background-color: var(--border-strong);
+		background-color: var(--surface-4);
 		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
 		transform: scale(1.02);
 		box-shadow: var(--shadow-glow-md);

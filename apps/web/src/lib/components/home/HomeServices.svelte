@@ -18,7 +18,7 @@
 	import { fillTemplate } from '$lib/utils/labels';
 	import { siteLabels } from '$lib/content';
 
-	import { morphHover, pressBounce, cursorGlow, cardParallax } from '$lib/motion/actions';
+	import { morphHover, pressBounce, cursorGlow, cardParallax, sectionGlow } from '$lib/motion/actions';
 	import { gsap, loadDrawSVG } from '$lib/motion/utils/gsap';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
@@ -103,6 +103,7 @@
 	bind:this={sectionEl}
 	data-testid="services-section"
 	class="services-section relative overflow-hidden"
+	use:sectionGlow
 >
 	<div class="relative z-10">
 		<!-- 3-column grid (1 col on tablet/mobile). Cards in the same row share height. -->
@@ -209,6 +210,22 @@
 		}
 	}
 
+	/* GO-w2t5: slice-23 orphan wired — section-scale light follows the cursor.
+	   Recipe from sectionGlow.ts header. Alpha-only → SAFE-ALWAYS tier. */
+	.services-section::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: radial-gradient(
+			circle at var(--glow-x, 50%) var(--glow-y, 50%),
+			color-mix(in srgb, var(--primary) calc(var(--glow-opacity, 0) * 6%), transparent),
+			transparent 70%
+		);
+		opacity: var(--glow-opacity, 0);
+		transition: opacity 200ms ease-out;
+	}
+
 	/* Grid — uniform row heights across the 3 columns. */
 	.services-grid {
 		grid-auto-rows: 1fr;
@@ -225,8 +242,8 @@
 	   the same icon-zone size, content section, and footer band
 	   regardless of title/benefit length. */
 	.services-card {
-		background: var(--background);
-		border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+		background: var(--surface-1);
+		border: 1px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		display: grid;
 		grid-template-rows: 11rem 1fr auto;
@@ -238,7 +255,7 @@
 	}
 
 	.services-card-link:hover .services-card {
-		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+		border-color: var(--border-brand-active);
 		box-shadow: var(--shadow-section);
 		transform: translateY(-3px);
 	}
@@ -250,14 +267,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: linear-gradient(135deg, #1f1f1f, #161616);
+		background: linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, var(--foreground)), color-mix(in srgb, var(--surface-1) 92%, var(--terminal)));
 		background-image:
 			radial-gradient(
 				circle at 50% 55%,
 				color-mix(in srgb, var(--primary) 9%, transparent),
 				transparent 65%
 			),
-			linear-gradient(135deg, #1f1f1f, #161616);
+			linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, var(--foreground)), color-mix(in srgb, var(--surface-1) 92%, var(--terminal)));
 	}
 
 	/* "01 / SERVICE" marker — top-left of icon zone, brand-orange mono. */
