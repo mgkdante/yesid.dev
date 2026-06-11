@@ -31,14 +31,18 @@
 
 <div class="blueprint-cta" data-testid="blueprint-cta">
 	<a class="cta-link cta-primary" data-testid="cta-blueprint" href={blueprintHref}>
-		Send me this blueprint →
+		{archetype.proofProjectSlug ? 'Send me this blueprint →' : 'Want to be the first? Send me this blueprint →'}
 	</a>
-	<a class="cta-link" data-testid="cta-proof" href={`/projects/${archetype.proofProjectSlug}`}>
-		I built this
-	</a>
-	<a class="cta-link" data-testid="cta-service" href={`/services/${archetype.serviceId}`}>
-		Hire this
-	</a>
+	{#if archetype.proofProjectSlug}
+		<a class="cta-link" data-testid="cta-proof" href={`/projects/${archetype.proofProjectSlug}`}>
+			I built this
+		</a>
+	{/if}
+	{#if archetype.serviceId}
+		<a class="cta-link" data-testid="cta-service" href={`/services/${archetype.serviceId}`}>
+			Hire this
+		</a>
+	{/if}
 </div>
 
 <style>

@@ -98,13 +98,11 @@ describe('stack-archetypes fetcher transform', () => {
 		expect(() => toStackArchetype(missing)).toThrow(/zero tech links/);
 	});
 
-	it('FAILS LOUD when proof_project or service is missing', () => {
-		expect(() => toStackArchetype({ ...DASHBOARD_ROW, proof_project: null })).toThrow(
-			/data-dashboard/,
-		);
-		expect(() => toStackArchetype({ ...DASHBOARD_ROW, service: null })).toThrow(
-			/data-dashboard/,
-		);
+	it('treats missing proof_project/service as a scenario (proof-optional amendment)', () => {
+		const scenario = toStackArchetype({ ...DASHBOARD_ROW, proof_project: null, service: null });
+		expect(scenario.proofProjectSlug).toBeUndefined();
+		expect(scenario.serviceId).toBeUndefined();
+		expect(scenario.tech.length).toBeGreaterThan(0);
 	});
 
 	it('junction sort accepts null (treated as last within the layer)', () => {

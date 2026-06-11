@@ -46,3 +46,20 @@ describe('BlueprintCTA (compose mode — picked techs)', () => {
 		);
 	});
 });
+
+describe('scenario archetypes (proof-optional spec amendment)', () => {
+	const scenario = {
+		...dashboard,
+		slug: 'automated-workflow',
+		proofProjectSlug: undefined,
+		serviceId: undefined,
+	};
+
+	it('hides proof and service links, flips the primary label', () => {
+		render(BlueprintCTA, { archetype: scenario });
+		expect(screen.queryByTestId('cta-proof')).toBeNull();
+		expect(screen.queryByTestId('cta-service')).toBeNull();
+		expect(screen.getByTestId('cta-blueprint').textContent).toContain('Want to be the first?');
+		expect(screen.getByTestId('cta-blueprint').getAttribute('href')).toContain('bp=automated-workflow~');
+	});
+});

@@ -34,9 +34,9 @@ export const StackArchetypeSchema = z.object({
 	hook: LocalizedStringSchema,
 	description: LocalizedStringSchema,
 	/** Slug of the real project that proves this archetype. */
-	proofProjectSlug: z.string().min(1),
+	proofProjectSlug: z.string().min(1).optional(),
 	/** Id of the service that delivers this outcome. */
-	serviceId: z.string().min(1),
+	serviceId: z.string().min(1).optional(),
 	/** Stack composition — layer drives the blueprint row. Never empty. */
 	tech: z.array(ArchetypeTechLinkSchema).min(1),
 });
