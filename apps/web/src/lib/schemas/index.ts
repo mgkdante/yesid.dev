@@ -52,6 +52,14 @@ export {
 	TechStackPageContentSchema,
 	type TechStackPageContent,
 } from '@repo/shared/schemas';
+// site_pages registry rows (slice-26.1) — schema lives in @repo/shared so the
+// cms fetcher and the web content layer validate against one source of truth.
+export {
+	SitePageSchema,
+	SitePageTypeSchema,
+	type SitePage,
+	type SitePageType,
+} from '@repo/shared/schemas';
 export * from './nav';
 export * from './hero-data';
 

@@ -32,6 +32,8 @@ import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from './hero-data.js';
 import { techStackPageContent, techStackItems } from './tech-stack.js';
+import * as sitePagesModule from './site-pages.js';
+import { sitePages } from './site-pages.js';
 import {
 	ProjectSchema,
 	ServiceSchema,
@@ -45,6 +47,7 @@ import {
 	NavLinkSchema,
 	MenuItemSchema,
 	ErrorPageContentSchema,
+	SitePageSchema,
 } from '$lib/schemas';
 
 describe('projects data integrity', () => {
@@ -230,6 +233,25 @@ describe('blogPosts data integrity', () => {
 	});
 });
 
+describe('sitePages registry integrity (slice-26.1)', () => {
+	it('all paths are unique', () => {
+		const paths = sitePages.map((p) => p.path);
+		expect(new Set(paths).size).toBe(paths.length);
+	});
+
+	it('the root row is present — its absence would be a registry outage, not an archive', () => {
+		expect(sitePages.some((p) => p.path === '/')).toBe(true);
+	});
+
+	it('every detail-bearing section is listing-typed (detail routes resolve via prefix)', () => {
+		for (const path of ['/services', '/projects', '/blog']) {
+			const row = sitePages.find((p) => p.path === path);
+			expect(row, `registry row ${path} missing — archived? Detail routes will 404.`).toBeTruthy();
+			expect(row?.type).toBe('listing');
+		}
+	});
+});
+
 // ─────────────────────────────────────────────────────────────────────────
 // Seed data parses through schemas (slice-17c)
 // ─────────────────────────────────────────────────────────────────────────
@@ -294,6 +316,10 @@ describe('seed data parses through schemas', () => {
 
 	it('errorPageContent → ErrorPageContentSchema', () => {
 		expect(() => ErrorPageContentSchema.parse(errorPageContent)).not.toThrow();
+	});
+
+	it('sitePages → SitePageSchema[]', () => {
+		expect(() => z.array(SitePageSchema).parse(sitePages)).not.toThrow();
 	});
 });
 
@@ -404,6 +430,8 @@ describe('LocalizedString guard + translation debt', () => {
 		// fr/es SEO description in the CMS singleton yet). Included so the
 		// snapshot reflects the full generated-content surface.
 		['site-seo-defaults', siteSeoDefaultsModule],
+		// site_pages registry titles (slice-26.1) — seeded with en+fr+es.
+		['site-pages', sitePagesModule],
 	];
 
 	function scan(): LocalizedStringStats {
@@ -502,9 +530,10 @@ describe('locale-completeness snapshot (T11)', () => {
 		expect(SUPPORTED_LOCALES).toEqual(['en', 'fr', 'es']);
 	});
 
-	it('fully-multilingual (en+fr+es) count is locked at 32 — nav + jobTitle only', () => {
+	it('fully-multilingual (en+fr+es) count is locked at 40 — nav + jobTitle + site-pages titles', () => {
 		// This count represents the nav module chrome (navDirections, sharedChromeContent,
-		// cta labels, nav link titles) plus site-meta owner.jobTitle.
+		// cta labels, nav link titles) plus site-meta owner.jobTitle, plus the 8
+		// site_pages registry titles (slice-26.1 — seeded with en+fr+es: 32 → 40).
 		// If this number increases, FR/ES translations have been added to the CMS
 		// and the modules regenerated — confirm the increase is intentional.
 		// If this number decreases, translations have been stripped — investigate.
@@ -521,11 +550,12 @@ describe('locale-completeness snapshot (T11)', () => {
 			['blog', blogModule],
 			['tech-stack', techStackModule],
 			['site-seo-defaults', siteSeoDefaultsModule],
+			['site-pages', sitePagesModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
 		}
-		expect(stats.full).toBe(32);
+		expect(stats.full).toBe(40);
 	});
 
 	it('en-only count is locked at 373 — documents current FR/ES debt', () => {
@@ -546,6 +576,7 @@ describe('locale-completeness snapshot (T11)', () => {
 			['blog', blogModule],
 			['tech-stack', techStackModule],
 			['site-seo-defaults', siteSeoDefaultsModule],
+			['site-pages', sitePagesModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
@@ -571,6 +602,7 @@ describe('locale-completeness snapshot (T11)', () => {
 			['blog', blogModule],
 			['tech-stack', techStackModule],
 			['site-seo-defaults', siteSeoDefaultsModule],
+			['site-pages', sitePagesModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);

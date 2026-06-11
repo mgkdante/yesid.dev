@@ -3012,6 +3012,30 @@
     "_syncId": "_sync_perm_site_meta_public_read"
   },
   {
+    "collection": "site_pages_translations",
+    "action": "read",
+    "permissions": null,
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "7d55e06d-7ae4-4d8e-b6e5-e462cc9142fe"
+  },
+  {
+    "collection": "site_pages",
+    "action": "read",
+    "permissions": null,
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_default_public_policy",
+    "_syncId": "a05a6921-4055-421e-a898-660c57c13f3e"
+  },
+  {
     "collection": "tech_stack_projects",
     "action": "read",
     "permissions": {
@@ -6043,6 +6067,30 @@
     ],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "44c977e9-e410-47c0-a639-6e92139e6de5"
+  },
+  {
+    "collection": "site_pages_translations",
+    "action": "read",
+    "permissions": null,
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "cba0d474-0629-4abc-a696-974e48f2369a"
+  },
+  {
+    "collection": "site_pages",
+    "action": "read",
+    "permissions": null,
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "c095868b-7a8a-48fd-8473-0e5234c3c545"
   },
   {
     "collection": "tech_stack_projects",

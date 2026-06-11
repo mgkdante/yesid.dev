@@ -1,0 +1,30 @@
+{
+  "collection": "site_pages",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": "status",
+    "archive_value": "archived",
+    "autosave_revision_interval": null,
+    "collapse": "open",
+    "collection": "site_pages",
+    "color": null,
+    "display_template": "{{path}}",
+    "group": "site_config",
+    "hidden": false,
+    "icon": "menu_book",
+    "item_duplication_fields": null,
+    "note": "THE page registry — one row per site page. status here cascades: archived ⇒ gone from navbar, footer, sitemap, and the route 404s. Nav placement/order lives on nav_links rows linked to these pages.",
+    "preview_url": null,
+    "singleton": false,
+    "sort": 0,
+    "sort_field": "sort",
+    "status": "active",
+    "translations": null,
+    "unarchive_value": "published",
+    "versioning": false
+  },
+  "schema": {
+    "name": "site_pages"
+  }
+}

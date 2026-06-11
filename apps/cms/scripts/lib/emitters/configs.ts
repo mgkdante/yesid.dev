@@ -279,6 +279,16 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		);
 	}
 
+	if (data.sitePages) {
+		out.push({
+			filePath: path('site-pages.ts'),
+			description:
+				'Published site_pages registry rows (path, type, title). PUBLISHED rows only — a path\'s absence IS the hidden signal: the route gate 404s it, the sitemap drops it, and nav links pointing at it disappear (cascade applied in the nav fetcher). NEW in slice-26.1.',
+			imports: [{ symbols: ['SitePage'], from: '$lib/types', typeOnly: true }],
+			exports: [{ name: 'sitePages', typeName: 'readonly SitePage[]', value: data.sitePages }],
+		});
+	}
+
 	if (data.blogPage) {
 		out.push({
 			filePath: path('blog-page.ts'),
