@@ -61,6 +61,10 @@ describe('StackArchetypeSchema', () => {
 		expect(() => StackArchetypeSchema.parse(bad)).toThrow();
 	});
 
+	it('accepts scenario archetypes without proof/service (amendment 2026-06-11)', () => {
+		const { proofProjectSlug, serviceId, ...scenario } = valid;
+		expect(StackArchetypeSchema.parse(scenario)).toEqual(scenario);
+	});
 	it('rejects empty proofProjectSlug / serviceId', () => {
 		expect(() => StackArchetypeSchema.parse({ ...valid, proofProjectSlug: '' })).toThrow();
 		expect(() => StackArchetypeSchema.parse({ ...valid, serviceId: '' })).toThrow();

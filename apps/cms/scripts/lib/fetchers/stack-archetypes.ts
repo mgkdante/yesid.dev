@@ -84,18 +84,10 @@ export function toStackArchetype(raw: DirectusStackArchetypeRow): StackArchetype
 			`[fetchStackArchetypes] published archetype '${raw.slug}' has zero tech links — it cannot draw a blueprint. Link tech rows in Directus or archive the archetype.`,
 		);
 	}
-	const proofProjectSlug = m2oId(raw.proof_project);
-	if (!proofProjectSlug) {
-		throw new Error(
-			`[fetchStackArchetypes] published archetype '${raw.slug}' has no proof_project — the CTA rail needs a real project.`,
-		);
-	}
-	const serviceId = m2oId(raw.service);
-	if (!serviceId) {
-		throw new Error(
-			`[fetchStackArchetypes] published archetype '${raw.slug}' has no service — the CTA rail needs the delivering service.`,
-		);
-	}
+	// Scenarios are first-class (spec amendment 2026-06-11): an archetype without
+	// a proof project or service still ships — the CTA degrades gracefully.
+	const proofProjectSlug = m2oId(raw.proof_project) ?? undefined;
+	const serviceId = m2oId(raw.service) ?? undefined;
 	const tr = raw.translations ?? [];
 	return {
 		slug: raw.slug,
