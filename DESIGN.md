@@ -15,17 +15,20 @@ colors:
   background: "#141414"
   foreground: "#F5F5F0"
   muted: "#1E1E1E"
-  muted-foreground: "#666666"
+  muted-foreground: "#949494"
   card: "#1a1a1a"
   popover: "#2A2A2A"
   secondary-foreground: "#999999"
   terminal: "#0a0a0a"
   manifesto: "#0f0d0a"
   border: "#3A3A3A"
-  border-subtle: "#2a2a2a"
-  border-strong: "#333333"
+  border-subtle: "#2f2f2f"
+  border-strong: "#4A4A4A"
   destructive: "#ff5f57"
   success: "#28c840"
+  accent-text: "#FFB627"
+  accent-foreground: "#141414"
+  input: "#3A3A3A"
 
 typography:
   hero:

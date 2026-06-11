@@ -48,11 +48,24 @@ describe('push-to-figma', () => {
     expect(Object.keys(colorCard!.values).sort()).toEqual(['dark', 'light']);
   });
 
-  it('produces 69 variables (post-trim baseline)', () => {
-    // Sanity check on the overall count after slice-design's trim of
-    // dim-foreground, light-foreground, text-body-lg.
+  it('produces 82 variables (GO-W2.2 baseline)', () => {
+    // Sanity check on the overall count. 69 after slice-design's trim of
+    // dim-foreground, light-foreground, text-body-lg; GO-W2.2 adds 13:
+    // 3 color (accent-text, explicit accent-foreground/input — theme-moded),
+    // 6 surface aliases, 3 border aliases (brand/brand-active/hairline),
+    // 1 shadow (sheet). Theme-level primary/primary-hover/primary-rgb re-pins
+    // merge into the existing brand variables as dark/light modes.
     const vars = runScript();
-    expect(vars.length).toBe(69);
+    expect(vars.length).toBe(82);
+  });
+
+  it('theme re-pins of brand names merge as modes of one variable (no duplicates)', () => {
+    // GO-W2.2: color.dark.primary + color.light.primary collapse onto the
+    // brand color/primary variable as dark/light modes alongside default.
+    const vars = runScript();
+    const primary = vars.filter((v) => v.name === 'color/primary');
+    expect(primary).toHaveLength(1);
+    expect(Object.keys(primary[0]!.values).sort()).toEqual(['dark', 'default', 'light']);
   });
 
   it('every variable has at least one value mode', () => {

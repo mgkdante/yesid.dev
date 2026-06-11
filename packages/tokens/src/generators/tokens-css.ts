@@ -9,18 +9,19 @@ const HEADER = `/* GENERATED FROM packages/tokens/tokens.json — DO NOT EDIT */
 /**
  * Paired tokens: CSS architectural cross-references (not raw DTCG values).
  * These map shadcn-compatible aliases to primary semantic tokens via var().
- * They are identical in both dark and light themes.
+ * A theme group may override any of these by declaring the same token name
+ * explicitly (e.g. light accent-foreground #111111) — explicit wins, the
+ * paired alias is skipped for that theme (GO-day W2 Track 2).
  */
-const PAIRED_TOKENS = [
-  '  /* Paired tokens (shadcn-compatible) */',
-  '  --card-foreground: var(--foreground);',
-  '  --popover-foreground: var(--foreground);',
-  '  --primary-foreground: var(--background);',
-  '  --accent-foreground: var(--background);',
-  '  --secondary: var(--popover);',
-  '  --ring: var(--primary);',
-  '  --input: var(--border);',
-].join('\n');
+const PAIRED_DEFS: ReadonlyArray<{ name: string; line: string }> = [
+  { name: 'card-foreground', line: '--card-foreground: var(--foreground);' },
+  { name: 'popover-foreground', line: '--popover-foreground: var(--foreground);' },
+  { name: 'primary-foreground', line: '--primary-foreground: var(--background);' },
+  { name: 'accent-foreground', line: '--accent-foreground: var(--background);' },
+  { name: 'secondary', line: '--secondary: var(--popover);' },
+  { name: 'ring', line: '--ring: var(--primary);' },
+  { name: 'input', line: '--input: var(--border);' },
+];
 
 interface FlatToken {
   cssName: string;
@@ -42,15 +43,39 @@ function flatten(tree: TokenTree, prefix = ''): FlatToken[] {
   return out;
 }
 
-function emitBlock(selector: string, items: FlatToken[], extra?: string): string {
+/** Paired-alias emitter at a given indent; skips names the theme declares explicitly. */
+function pairedBlock(items: FlatToken[], indent: string): string {
+  const explicit = new Set(items.map((i) => i.cssName));
+  const lines = PAIRED_DEFS.filter((p) => !explicit.has(p.name)).map(
+    (p) => `${indent}${p.line}`,
+  );
+  return [`${indent}/* Paired tokens (shadcn-compatible) */`, ...lines].join('\n');
+}
+
+function emitBlock(selector: string, colorScheme: 'dark' | 'light' | null, items: FlatToken[], extra?: string): string {
   if (items.length === 0) return '';
+  const lead = colorScheme ? [`  color-scheme: ${colorScheme};`] : [];
   const lines = items.map(({ cssName, token }) => `  --${cssName}: ${serializeCss(token)};`);
-  const body = extra ? `${lines.join('\n')}\n\n${extra}` : lines.join('\n');
+  const body = [...lead, ...lines].join('\n') + (extra ? `\n\n${extra}` : '');
   return `${selector} {\n${body}\n}\n`;
 }
 
+function emitMedia(scheme: 'dark' | 'light', guard: string, items: FlatToken[]): string {
+  const lines = items.map(({ cssName, token }) => `    --${cssName}: ${serializeCss(token)};`);
+  return (
+    `@media (prefers-color-scheme: ${scheme}) {\n` +
+    `  ${guard} {\n` +
+    `    color-scheme: ${scheme};\n` +
+    lines.join('\n') +
+    `\n\n` +
+    pairedBlock(items, '    ') +
+    `\n  }\n}\n`
+  );
+}
+
 export function generateTokensCss(tree: TokenTree): string {
-  // :root holds brand + non-themed tokens (radius, duration, ease, z, opacity, container, font, text, space, shadow, color.brand).
+  // :root holds brand + non-themed tokens (radius, duration, ease, z, opacity,
+  // container, font, text, space, shadow, surface aliases, color.brand).
   const rootItems: FlatToken[] = [];
   const darkItems: FlatToken[] = [];
   const lightItems: FlatToken[] = [];
@@ -58,9 +83,8 @@ export function generateTokensCss(tree: TokenTree): string {
   for (const [topKey, topValue] of Object.entries(tree)) {
     if (topKey.startsWith('$')) continue;
     if (topKey === 'color') {
-      // color.brand → :root; color.dark → dark theme; color.light → light theme
       for (const [subKey, subValue] of Object.entries(topValue as TokenTree)) {
-        const flat = flatten(subValue as TokenTree, subKey === 'brand' ? '' : '');
+        const flat = flatten(subValue as TokenTree, '');
         if (subKey === 'brand') rootItems.push(...flat);
         else if (subKey === 'dark') darkItems.push(...flat);
         else if (subKey === 'light') lightItems.push(...flat);
@@ -71,41 +95,23 @@ export function generateTokensCss(tree: TokenTree): string {
     }
   }
 
-  // :root gets a shadcn --radius alias pointing to our --radius-md
   const rootExtra = '  /* shadcn alias — components reference --radius */\n  --radius: var(--radius-md);';
 
-  const darkBlock = emitBlock('[data-theme="dark"], .theme-dark', darkItems, PAIRED_TOKENS);
-  const lightBlock = emitBlock('[data-theme="light"], .theme-light', lightItems, PAIRED_TOKENS);
+  const darkBlock = emitBlock('[data-theme="dark"], .theme-dark', 'dark', darkItems, pairedBlock(darkItems, '  '));
+  const lightBlock = emitBlock('[data-theme="light"], .theme-light', 'light', lightItems, pairedBlock(lightItems, '  '));
 
   // prefers-color-scheme fallbacks mirror the attribute-selector theme blocks.
-  // These fire when the user hasn't explicitly set a data-theme attribute.
-  const darkMedia =
-    `@media (prefers-color-scheme: dark) {\n` +
-    `  :root:not([data-theme="light"]) {\n` +
-    darkItems.map(({ cssName, token }) => `    --${cssName}: ${serializeCss(token)};`).join('\n') +
-    `\n\n` +
-    PAIRED_TOKENS.split('\n').map(l => `  ${l}`).join('\n') +
-    `\n  }\n}\n`;
-
-  const lightMedia =
-    `@media (prefers-color-scheme: light) {\n` +
-    `  :root:not([data-theme="dark"]) {\n` +
-    lightItems.map(({ cssName, token }) => `    --${cssName}: ${serializeCss(token)};`).join('\n') +
-    `\n\n` +
-    PAIRED_TOKENS.split('\n').map(l => `  ${l}`).join('\n') +
-    `\n  }\n}\n`;
+  // These fire only when no data-theme attribute exists (belt-and-braces; the
+  // app.html inline script always sets one).
+  const darkMedia = emitMedia('dark', ':root:not([data-theme="light"])', darkItems);
+  const lightMedia = emitMedia('light', ':root:not([data-theme="dark"])', lightItems);
 
   return (
-    HEADER +
-    '\n' +
-    emitBlock(':root', rootItems, rootExtra) +
-    '\n' +
-    darkBlock +
-    '\n' +
-    lightBlock +
-    '\n' +
-    darkMedia +
-    '\n' +
+    HEADER + '\n' +
+    emitBlock(':root', null, rootItems, rootExtra) + '\n' +
+    darkBlock + '\n' +
+    lightBlock + '\n' +
+    darkMedia + '\n' +
     lightMedia
   );
 }
