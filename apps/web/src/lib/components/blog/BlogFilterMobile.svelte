@@ -84,7 +84,7 @@
 							</button>
 							{#each languages as lang}
 								<button
-									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="rounded border border-[var(--border)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeLang === lang}
 																		onclick={() => onLangSelect(lang)}
 								>
@@ -105,7 +105,7 @@
 							<input
 								type="date"
 								bind:value={dateFrom}
-								class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
+								class="mt-0.5 w-full rounded border border-[var(--input)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
 								style="color-scheme: dark;"
 							/>
 						</label>
@@ -114,7 +114,7 @@
 							<input
 								type="date"
 								bind:value={dateTo}
-								class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
+								class="mt-0.5 w-full rounded border border-[var(--input)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
 								style="color-scheme: dark;"
 							/>
 						</label>
@@ -132,7 +132,7 @@
 							</button>
 							{#each tags as tag}
 								<button
-									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="rounded border border-[var(--border)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeTag === tag}
 																		onclick={() => onTagSelect(tag)}
 								>

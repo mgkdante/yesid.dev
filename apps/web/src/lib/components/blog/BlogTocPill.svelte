@@ -189,7 +189,7 @@
     border: 1px solid color-mix(in srgb, var(--blog-accent, var(--primary)) 15%, transparent);
     border-radius: 12px;
     backdrop-filter: blur(12px);
-    box-shadow: 0 -8px 32px rgb(0 0 0 / 0.4);
+    box-shadow: var(--shadow-sheet);
   }
 
   .toc-drawer-item {

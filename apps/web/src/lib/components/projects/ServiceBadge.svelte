@@ -53,7 +53,7 @@
 			transform var(--duration-normal) var(--ease-default), box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.service-badge:hover {
-		background-color: var(--border-strong);
+		background-color: var(--surface-4);
 		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
 		transform: scale(1.02);
 		box-shadow: var(--shadow-glow-md);

@@ -22,16 +22,17 @@
 </div>
 
 <style>
-	/* Unified ProofReel surface — Constitution Section 13 Card spec */
+	/* Unified card surface — Constitution Section 13 spec, tokenized GO-W2.2.
+	   Spec lives in packages/tokens/tokens.json (surface.1 / border.brand). */
 	.card-surface {
-		background: var(--background);
-		border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+		background: var(--surface-1);
+		border: 1px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		transition: border-color var(--duration-normal) var(--ease-default),
 		            box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.card-surface:hover {
-		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+		border-color: var(--border-brand-active);
 		box-shadow: var(--shadow-section);
 	}
 </style>
