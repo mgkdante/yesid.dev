@@ -14,6 +14,7 @@
 		"archive:lorem": "bun scripts/archive-lorem-posts.ts",
 		"setup:archetypes": "bun scripts/setup-stack-archetypes-schema.ts",
 		"setup:flat-fields": "bun scripts/setup-block-flat-fields.ts",
+		"migrate:flat-fields": "bun scripts/migrate-block-json-to-flat.ts",
 		"seed:archetypes": "bun scripts/seed-stack-archetypes.ts",
 		"migrate:assets": "bun scripts/migrate-assets.ts",
 		"sync:pull": "directus-sync pull",
