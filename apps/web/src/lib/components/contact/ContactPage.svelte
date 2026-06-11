@@ -250,7 +250,7 @@
 				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(c.infoTerminal.sectionLabels.location, 'en')}</div>
 				<div class="text-[var(--secondary-foreground)]">{resolveLocale(c.infoTerminal.location, 'en')}</div>
 				{#if currentWeather}
-					<div class="mt-0.5 font-mono text-small text-[var(--accent)]">
+					<div class="mt-0.5 font-mono text-small text-[var(--accent-text)]">
 						{currentWeather.temp}°C — <span class="capitalize">{currentWeather.condition}</span>
 					</div>
 				{/if}
@@ -395,12 +395,12 @@
 								: line.color === 'green'
 									? 'text-[var(--success)]'
 									: line.color === 'accent'
-										? 'text-[var(--accent)]'
+										? 'text-[var(--accent-text)]'
 										: 'text-[var(--secondary-foreground)]'} text-small">
 								{#if line.color === 'muted' && line.text.includes('{work}') && line.text.includes('{blog}')}
 									{@html line.text
-										.replace('{work}', '<a href="/services" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors">work</a>')
-										.replace('{blog}', '<a href="/blog" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors">blog</a>')}
+										.replace('{work}', '<a href="/services" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">work</a>')
+										.replace('{blog}', '<a href="/blog" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">blog</a>')}
 								{:else}
 									{line.text}
 								{/if}

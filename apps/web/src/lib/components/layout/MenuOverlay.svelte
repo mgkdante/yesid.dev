@@ -316,7 +316,7 @@
 		font-family: var(--font-mono);
 		font-size: 10px;
 		letter-spacing: 3px;
-		color: color-mix(in srgb, var(--primary) 50%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 		white-space: nowrap;
 	}
 </style>

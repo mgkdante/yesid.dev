@@ -147,7 +147,7 @@
 			{#if hasWeather && currentWeather}
 				<!-- Temperature + icon -->
 				<div class="mt-1 flex items-center justify-center gap-2">
-					<span class="font-mono text-2xl font-bold text-[var(--accent)]">
+					<span class="font-mono text-2xl font-bold text-[var(--accent-text)]">
 						{currentWeather.temp}°C
 					</span>
 					{#if iconUrl}
