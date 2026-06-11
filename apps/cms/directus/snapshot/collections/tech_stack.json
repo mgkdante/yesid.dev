@@ -25,7 +25,7 @@
     "sort_field": "sort",
     "status": "active",
     "translations": null,
-    "unarchive_value": "draft",
+    "unarchive_value": "published",
     "versioning": true
   },
   "schema": {

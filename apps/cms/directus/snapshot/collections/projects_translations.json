@@ -9,7 +9,7 @@
     "collapse": "open",
     "collection": "projects_translations",
     "color": null,
-    "display_template": null,
+    "display_template": "{{title}}",
     "group": null,
     "hidden": true,
     "icon": "translate",

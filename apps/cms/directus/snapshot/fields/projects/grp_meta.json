@@ -1,0 +1,33 @@
+{
+  "collection": "projects",
+  "field": "grp_meta",
+  "type": "alias",
+  "meta": {
+    "collection": "projects",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_meta",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "⚙️ Details (rarely needed)",
+    "options": {
+      "headerColor": "#E07800",
+      "start": "closed"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 60,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

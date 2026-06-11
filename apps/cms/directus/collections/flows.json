@@ -118,7 +118,8 @@
         "block_proof_reel",
         "block_services_grid",
         "block_tech_stack_page_content",
-        "site_pages"
+        "site_pages",
+        "stack_archetypes"
       ]
     },
     "operation": "_sync_op_vercel_revalidate_check_published",

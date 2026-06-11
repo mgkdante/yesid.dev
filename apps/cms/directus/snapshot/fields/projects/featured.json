@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "featured",
-    "group": null,
+    "group": "grp_meta",
     "hidden": false,
     "interface": "boolean",
     "note": "Highlight this project on the portfolio landing page.",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 61,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "featured",

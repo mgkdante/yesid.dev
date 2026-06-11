@@ -9,7 +9,7 @@
     "collapse": "open",
     "collection": "services",
     "color": null,
-    "display_template": "Station {{station}} · {{id}}",
+    "display_template": "{{translations}}",
     "group": "services_page",
     "hidden": false,
     "icon": "build",

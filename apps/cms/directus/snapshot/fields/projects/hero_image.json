@@ -8,7 +8,7 @@
     "display": "image",
     "display_options": null,
     "field": "hero_image",
-    "group": null,
+    "group": "grp_media",
     "hidden": false,
     "interface": "file-image",
     "note": "Hero image for the project detail page.",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 6,
+    "sort": 41,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "hero_image",

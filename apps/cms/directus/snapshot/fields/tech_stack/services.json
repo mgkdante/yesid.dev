@@ -8,21 +8,23 @@
     "display": null,
     "display_options": null,
     "field": "services",
-    "group": null,
+    "group": "grp_links",
     "hidden": false,
     "interface": "list-m2m",
     "note": null,
-    "options": null,
+    "options": {
+      "template": "{{services_id}}"
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 100,
+    "sort": 42,
     "special": [
       "m2m"
     ],
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   }
 }

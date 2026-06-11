@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "editor_label",
-    "group": null,
+    "group": "grp_admin",
     "hidden": false,
     "interface": "input",
     "note": "Non-translatable admin label for Data Studio M2A picker (e.g. 'Home Services Grid'). Required.",

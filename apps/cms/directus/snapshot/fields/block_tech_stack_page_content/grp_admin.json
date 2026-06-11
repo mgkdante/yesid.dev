@@ -1,0 +1,32 @@
+{
+  "collection": "block_tech_stack_page_content",
+  "field": "grp_admin",
+  "type": "alias",
+  "meta": {
+    "collection": "block_tech_stack_page_content",
+    "conditions": null,
+    "display": null,
+    "display_options": null,
+    "field": "grp_admin",
+    "group": null,
+    "hidden": false,
+    "interface": "group-detail",
+    "note": "🔧 Internal (picker label & state)",
+    "options": {
+      "start": "closed"
+    },
+    "readonly": false,
+    "required": false,
+    "searchable": true,
+    "sort": 90,
+    "special": [
+      "alias",
+      "no-data",
+      "group"
+    ],
+    "translations": null,
+    "validation": null,
+    "validation_message": null,
+    "width": "full"
+  }
+}

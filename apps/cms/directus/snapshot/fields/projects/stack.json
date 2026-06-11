@@ -8,22 +8,25 @@
     "display": null,
     "display_options": null,
     "field": "stack",
-    "group": null,
+    "group": "grp_class",
     "hidden": false,
     "interface": "tags",
-    "note": "Array of tech names (e.g. PostgreSQL, Python, Svelte).",
-    "options": null,
+    "note": "Display chips on the site cards — plain words (e.g. Shopify). The Tech Stack relation below is the engine-grade link.",
+    "options": {
+      "alphabetize": false,
+      "iconLeft": "sell"
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 13,
+    "sort": 53,
     "special": [
       "cast-json"
     ],
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "stack",

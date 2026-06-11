@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "environment",
-    "group": null,
+    "group": "grp_meta",
     "hidden": false,
     "interface": "input",
     "note": "Deployment environment descriptor (e.g. Production, Staging).",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 11,
+    "sort": 63,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "environment",

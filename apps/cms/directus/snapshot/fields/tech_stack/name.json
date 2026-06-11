@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "name",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "input",
     "note": "International display name (tech names are universal — no translation needed). E.g. \"Apache Airflow\", \"PostgreSQL\".",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": true,
     "searchable": true,
-    "sort": 2,
+    "sort": 5,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "name",

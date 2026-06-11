@@ -2,7 +2,7 @@
   {
     "project_name": "yesid.dev CMS",
     "project_color": "#E07800",
-    "public_note": null,
+    "public_note": "**digital infrastructure that moves.**",
     "auth_login_attempts": 25,
     "auth_password_policy": null,
     "storage_asset_transform": "all",
@@ -93,11 +93,32 @@
     "project_descriptor": "Directus 12 backend for yesid.dev",
     "default_language": "en-US",
     "custom_aspect_ratios": null,
-    "default_appearance": "auto",
+    "default_appearance": "dark",
     "default_theme_light": "Directus Color Match",
-    "theme_light_overrides": null,
+    "theme_light_overrides": {
+      "primary": "#E07800"
+    },
     "default_theme_dark": "Directus Default",
-    "theme_dark_overrides": null,
+    "theme_dark_overrides": {
+      "primary": "#E07800",
+      "fonts": {
+        "monospace": {
+          "fontFamily": "'JetBrains Mono', ui-monospace, monospace"
+        }
+      },
+      "navigation": {
+        "modules": {
+          "button": {
+            "foregroundActive": "#E07800"
+          }
+        }
+      },
+      "header": {
+        "headline": {
+          "foreground": "#E07800"
+        }
+      }
+    },
     "report_error_url": null,
     "report_bug_url": null,
     "report_feature_url": null,

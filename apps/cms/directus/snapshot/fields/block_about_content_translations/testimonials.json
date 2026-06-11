@@ -10,10 +10,57 @@
     "field": "testimonials",
     "group": null,
     "hidden": false,
-    "interface": "input-code",
+    "interface": "list",
     "note": "Per-locale testimonials (AboutContent.testimonials). JSON shape: Array<{ quote, author: string, role, company: string, logo?: string }>.",
     "options": {
-      "language": "json"
+      "addLabel": "Add row",
+      "fields": [
+        {
+          "field": "quote",
+          "meta": {
+            "field": "quote",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "quote",
+          "type": "string"
+        },
+        {
+          "field": "author",
+          "meta": {
+            "field": "author",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "author",
+          "type": "string"
+        },
+        {
+          "field": "role",
+          "meta": {
+            "field": "role",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "role",
+          "type": "string"
+        },
+        {
+          "field": "company",
+          "meta": {
+            "field": "company",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "company",
+          "type": "string"
+        }
+      ],
+      "template": "{{quote}}"
     },
     "readonly": false,
     "required": false,

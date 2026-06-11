@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "svg",
-    "group": null,
+    "group": "grp_meta",
     "hidden": false,
     "interface": "input",
     "note": "SVG illustration filename (e.g. service-sql.svg). Served from static/svg/services/.",
@@ -21,7 +21,7 @@
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "svg",

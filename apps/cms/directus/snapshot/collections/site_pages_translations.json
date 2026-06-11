@@ -1,9 +1,5 @@
 {
-<<<<<<<< HEAD:apps/cms/directus/snapshot/collections/site_pages_translations.json
   "collection": "site_pages_translations",
-========
-  "collection": "about_page",
->>>>>>>> origin/develop:apps/cms/directus/snapshot/collections/about_page.json
   "meta": {
     "accountability": "all",
     "archive_app_filter": true,
@@ -11,35 +7,24 @@
     "archive_value": null,
     "autosave_revision_interval": null,
     "collapse": "open",
-<<<<<<<< HEAD:apps/cms/directus/snapshot/collections/site_pages_translations.json
     "collection": "site_pages_translations",
-========
-    "collection": "about_page",
->>>>>>>> origin/develop:apps/cms/directus/snapshot/collections/about_page.json
     "color": null,
     "display_template": null,
     "group": null,
-    "hidden": false,
-    "icon": "person",
+    "hidden": true,
+    "icon": "translate",
     "item_duplication_fields": null,
-<<<<<<<< HEAD:apps/cms/directus/snapshot/collections/site_pages_translations.json
     "note": null,
-========
-    "note": "About page sections.",
->>>>>>>> origin/develop:apps/cms/directus/snapshot/collections/about_page.json
     "preview_url": null,
     "singleton": false,
-    "sort": 6,
+    "sort": null,
     "sort_field": null,
     "status": "active",
     "translations": null,
     "unarchive_value": null,
     "versioning": false
-<<<<<<<< HEAD:apps/cms/directus/snapshot/collections/site_pages_translations.json
   },
   "schema": {
     "name": "site_pages_translations"
-========
->>>>>>>> origin/develop:apps/cms/directus/snapshot/collections/about_page.json
   }
 }
