@@ -26,6 +26,9 @@ export * from './projects-page';
 // site_pages registry rows (slice-26.1 content controls)
 export * from './site-pages';
 
+// site_labels global UI microcopy singleton (go2-t1c)
+export * from './site-labels';
+
 // stack_archetypes rows + canonical blueprint layers (slice-29 Tech Stack Engine)
 export * from './stack-archetypes';
 

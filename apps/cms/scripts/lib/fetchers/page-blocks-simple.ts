@@ -59,6 +59,8 @@ export async function fetchBlogPageContent({ client }: FetcherContext): Promise<
 interface ProjectsPageTranslation {
 	languages_code: string;
 	intro?: string | null;
+	heading?: string | null;
+	empty_state?: string | null;
 }
 
 interface ProjectsPageRow {
@@ -70,6 +72,8 @@ export function toProjectsPageContent(row: ProjectsPageRow): ProjectsPageContent
 	const tr = (row.translations ?? []) as ReadonlyArray<{ languages_code: string }>;
 	return {
 		intro: toLocalizedString(tr, 'intro'),
+		heading: toLocalizedString(tr, 'heading'),
+		emptyState: toLocalizedString(tr, 'empty_state'),
 	};
 }
 
