@@ -9,8 +9,8 @@
     "collapse": "open",
     "collection": "blog_posts",
     "color": null,
-    "display_template": "{{title}}",
-    "group": "site_catalog",
+    "display_template": "{{translations}}",
+    "group": "blog_page",
     "hidden": false,
     "icon": "article",
     "item_duplication_fields": [
@@ -28,11 +28,11 @@
     "note": "Blog posts. Mono-language by editorial design (lang field on parent). ai-editor cannot publish; cannot delete. Body uses Block Editor (rich content per CONVENTIONS § 7).",
     "preview_url": "https://yesid.dev/blog/{{id}}?share={{$CURRENT_SHARE.token}}",
     "singleton": false,
-    "sort": 4,
+    "sort": 1,
     "sort_field": "sort",
     "status": "active",
     "translations": null,
-    "unarchive_value": "draft",
+    "unarchive_value": "published",
     "versioning": true
   },
   "schema": {

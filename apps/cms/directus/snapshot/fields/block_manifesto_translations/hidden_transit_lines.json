@@ -10,10 +10,35 @@
     "field": "hidden_transit_lines",
     "group": null,
     "hidden": false,
-    "interface": "input-code",
+    "interface": "list",
     "note": "Per-locale hidden transit lines (ManifestoContent.hiddenTransitLines). JSON shape: Array<{ name: string, color: string }>. color is non-translatable hex; name is the per-locale string.",
     "options": {
-      "language": "json"
+      "addLabel": "Add row",
+      "fields": [
+        {
+          "field": "name",
+          "meta": {
+            "field": "name",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "field": "color",
+          "meta": {
+            "field": "color",
+            "interface": "input",
+            "type": "string",
+            "width": "half"
+          },
+          "name": "color",
+          "type": "string"
+        }
+      ],
+      "template": "{{name}}"
     },
     "readonly": false,
     "required": false,

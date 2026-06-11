@@ -2,7 +2,7 @@
 //
 // Given CMS data (siteMeta + siteSeoDefaults + optional routeOverride) and
 // code-side defaults (ogType, noIndex, jsonLd factory, fallbackTitle), produce
-// a `PageSeo`. Used by `directus.meta.forRoute()` for STATIC routes only;
+// a `PageSeo`. Used by `staticAdapter.meta.forRoute()` for STATIC routes only;
 // dynamic routes go through `route-seo-factories.ts`.
 //
 // Title strategy (P3 finding 2026-04-27):
@@ -40,8 +40,8 @@ export interface ComposePageSeoArgs {
 /**
  * Compose final PageSeo for a static route.
  *
- * Pure — no I/O. The composer is called from `directus.meta.forRoute()` after
- * all required CMS shapes have been fetched.
+ * Pure — no I/O. The composer is called from `staticAdapter.meta.forRoute()`
+ * with the static site shapes already in hand.
  */
 export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	const { routeId, locale, siteMeta, siteSeoDefaults, routeOverride, codeDefaults } = args;

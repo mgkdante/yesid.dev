@@ -8,7 +8,7 @@
     "display": null,
     "display_options": null,
     "field": "version",
-    "group": null,
+    "group": "grp_meta",
     "hidden": false,
     "interface": "input",
     "note": "Version string or milestone (e.g. v2.1, Phase 3).",
@@ -16,12 +16,12 @@
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 12,
+    "sort": 64,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
     "name": "version",

@@ -32,6 +32,11 @@ import * as siteSeoDefaultsModule from './site-seo-defaults.js';
 import { navLinks, menuItems, errorPageContent } from './nav.js';
 import { INITIAL_HERO_DATA } from './hero-data.js';
 import { techStackPageContent, techStackItems } from './tech-stack.js';
+import * as sitePagesModule from './site-pages.js';
+import { sitePages } from './site-pages.js';
+import * as stackArchetypesModule from './stack-archetypes.js';
+import { stackArchetypes } from './stack-archetypes.js';
+import { StackArchetypeSchema, STACK_LAYERS } from '@repo/shared/schemas';
 import {
 	ProjectSchema,
 	ServiceSchema,
@@ -45,6 +50,7 @@ import {
 	NavLinkSchema,
 	MenuItemSchema,
 	ErrorPageContentSchema,
+	SitePageSchema,
 } from '$lib/schemas';
 
 describe('projects data integrity', () => {
@@ -230,6 +236,85 @@ describe('blogPosts data integrity', () => {
 	});
 });
 
+describe('sitePages registry integrity (slice-26.1)', () => {
+	it('all paths are unique', () => {
+		const paths = sitePages.map((p) => p.path);
+		expect(new Set(paths).size).toBe(paths.length);
+	});
+
+	it('the root row is present — its absence would be a registry outage, not an archive', () => {
+		expect(sitePages.some((p) => p.path === '/')).toBe(true);
+	});
+
+	it('every detail-bearing section is listing-typed (detail routes resolve via prefix)', () => {
+		for (const path of ['/services', '/projects', '/blog']) {
+			const row = sitePages.find((p) => p.path === path);
+			expect(row, `registry row ${path} missing — archived? Detail routes will 404.`).toBeTruthy();
+			expect(row?.type).toBe('listing');
+		}
+	});
+});
+
+describe('stackArchetypes engine data integrity (slice-29)', () => {
+	it('all slugs are unique and URL-safe', () => {
+		const slugs = stackArchetypes.map((a) => a.slug);
+		expect(new Set(slugs).size).toBe(slugs.length);
+		slugs.forEach((s) => expect(s).toMatch(/^[a-z0-9-]+$/));
+	});
+
+	it('every tech link references a committed tech-stack item', () => {
+		const validTechIds = new Set(techStackItems.map((t) => t.id));
+		stackArchetypes.forEach((a) => {
+			a.tech.forEach((link) => {
+				expect(
+					validTechIds.has(link.id),
+					`tech "${link.id}" in archetype "${a.slug}" not found in techStackItems`
+				).toBe(true);
+			});
+		});
+	});
+
+	it('every present proofProjectSlug references a committed project (scenarios may omit)', () => {
+		const validSlugs = new Set(projects.map((p) => p.slug));
+		stackArchetypes.forEach((a) => {
+			if (a.proofProjectSlug === undefined) return;
+			expect(
+				validSlugs.has(a.proofProjectSlug),
+				`proof project "${a.proofProjectSlug}" in archetype "${a.slug}" not found`
+			).toBe(true);
+		});
+	});
+
+	it('every present serviceId references a committed service (scenarios may omit)', () => {
+		const validIds = new Set(services.map((s) => s.id));
+		stackArchetypes.forEach((a) => {
+			if (a.serviceId === undefined) return;
+			expect(
+				validIds.has(a.serviceId),
+				`service "${a.serviceId}" in archetype "${a.slug}" not found`
+			).toBe(true);
+		});
+	});
+
+	it('tech links arrive pre-sorted by STACK_LAYERS render order', () => {
+		stackArchetypes.forEach((a) => {
+			const indices = a.tech.map((l) => STACK_LAYERS.indexOf(l.layer));
+			const sorted = [...indices].sort((x, y) => x - y);
+			expect(indices).toEqual(sorted);
+		});
+	});
+
+	it('every referenced tech has a committed layer + enables (preview taps never blank)', () => {
+		const byId = new Map(techStackItems.map((t) => [t.id, t]));
+		const referenced = new Set(stackArchetypes.flatMap((a) => a.tech.map((l) => l.id)));
+		for (const id of referenced) {
+			const item = byId.get(id);
+			expect(item?.layer, `tech "${id}" missing layer`).toBeTruthy();
+			expect(item?.enables?.en?.trim(), `tech "${id}" missing enables.en`).toBeTruthy();
+		}
+	});
+});
+
 // ─────────────────────────────────────────────────────────────────────────
 // Seed data parses through schemas (slice-17c)
 // ─────────────────────────────────────────────────────────────────────────
@@ -294,6 +379,14 @@ describe('seed data parses through schemas', () => {
 
 	it('errorPageContent → ErrorPageContentSchema', () => {
 		expect(() => ErrorPageContentSchema.parse(errorPageContent)).not.toThrow();
+	});
+
+	it('sitePages → SitePageSchema[]', () => {
+		expect(() => z.array(SitePageSchema).parse(sitePages)).not.toThrow();
+	});
+
+	it('stackArchetypes → StackArchetypeSchema[]', () => {
+		expect(() => z.array(StackArchetypeSchema).parse(stackArchetypes)).not.toThrow();
 	});
 });
 
@@ -404,6 +497,10 @@ describe('LocalizedString guard + translation debt', () => {
 		// fr/es SEO description in the CMS singleton yet). Included so the
 		// snapshot reflects the full generated-content surface.
 		['site-seo-defaults', siteSeoDefaultsModule],
+		// site_pages registry titles (slice-26.1) — seeded with en+fr+es.
+		['site-pages', sitePagesModule],
+		// stack_archetypes engine recipes (slice-29) — seeded with en+fr+es.
+		['stack-archetypes', stackArchetypesModule],
 	];
 
 	function scan(): LocalizedStringStats {
@@ -502,9 +599,12 @@ describe('locale-completeness snapshot (T11)', () => {
 		expect(SUPPORTED_LOCALES).toEqual(['en', 'fr', 'es']);
 	});
 
-	it('fully-multilingual (en+fr+es) count is locked at 32 — nav + jobTitle only', () => {
+	it('fully-multilingual (en+fr+es) count is locked at 56 — nav + jobTitle + site-pages + engine', () => {
 		// This count represents the nav module chrome (navDirections, sharedChromeContent,
-		// cta labels, nav link titles) plus site-meta owner.jobTitle.
+		// cta labels, nav link titles) plus site-meta owner.jobTitle, plus the 8
+		// site_pages registry titles (slice-26.1 — seeded with en+fr+es: 32 → 40),
+		// plus the slice-29 Tech Stack Engine content: 3 archetypes × 3 trilingual
+		// strings (title/hook/description = 9) + 7 tech `enables` captions (40 → 56).
 		// If this number increases, FR/ES translations have been added to the CMS
 		// and the modules regenerated — confirm the increase is intentional.
 		// If this number decreases, translations have been stripped — investigate.
@@ -521,11 +621,13 @@ describe('locale-completeness snapshot (T11)', () => {
 			['blog', blogModule],
 			['tech-stack', techStackModule],
 			['site-seo-defaults', siteSeoDefaultsModule],
+			['site-pages', sitePagesModule],
+			['stack-archetypes', stackArchetypesModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
 		}
-		expect(stats.full).toBe(32);
+		expect(stats.full).toBe(56);
 	});
 
 	it('en-only count is locked at 373 — documents current FR/ES debt', () => {
@@ -546,6 +648,8 @@ describe('locale-completeness snapshot (T11)', () => {
 			['blog', blogModule],
 			['tech-stack', techStackModule],
 			['site-seo-defaults', siteSeoDefaultsModule],
+			['site-pages', sitePagesModule],
+			['stack-archetypes', stackArchetypesModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
@@ -571,6 +675,8 @@ describe('locale-completeness snapshot (T11)', () => {
 			['blog', blogModule],
 			['tech-stack', techStackModule],
 			['site-seo-defaults', siteSeoDefaultsModule],
+			['site-pages', sitePagesModule],
+			['stack-archetypes', stackArchetypesModule],
 		];
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);

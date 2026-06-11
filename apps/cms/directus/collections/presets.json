@@ -1,1 +1,74 @@
-[]
+[
+  {
+    "bookmark": "Published",
+    "role": null,
+    "collection": "tech_stack",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": null,
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "status": {
+        "_eq": "published"
+      }
+    },
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "0088331e-acb9-4e66-a1fb-2540939badbd"
+  },
+  {
+    "bookmark": "Published",
+    "role": null,
+    "collection": "projects",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": null,
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "status": {
+        "_eq": "published"
+      }
+    },
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "39d0eb9b-0ccf-4260-9eb9-145344fbc706"
+  },
+  {
+    "bookmark": "Visible",
+    "role": null,
+    "collection": "services",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": null,
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "visible": {
+        "_eq": true
+      }
+    },
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "995b8ed9-1d46-4ed1-bb7d-0c4628b5003a"
+  },
+  {
+    "bookmark": "Published",
+    "role": null,
+    "collection": "blog_posts",
+    "search": null,
+    "layout": "tabular",
+    "layout_query": null,
+    "layout_options": null,
+    "refresh_interval": null,
+    "filter": {
+      "status": {
+        "_eq": "published"
+      }
+    },
+    "icon": "bookmark",
+    "color": null,
+    "_syncId": "b6e32c3f-b1ae-4a79-b1d4-1c28e1d13e57"
+  }
+]

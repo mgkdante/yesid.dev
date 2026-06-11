@@ -4,7 +4,8 @@
  * the export-fallbacks.ts orchestrator.
  */
 
-import type { BlockEditorDoc } from '@repo/shared';
+import type { BlockEditorDoc, SitePage } from '@repo/shared';
+import type { StackArchetype } from '@repo/shared/schemas';
 import type { SiteMeta, SiteSeoDefaults } from './lib/schemas/site-meta';
 import type { MorphShape } from './lib/schemas/morph-shape';
 import type { ErrorPageContent } from './lib/schemas/nav';
@@ -36,12 +37,22 @@ export interface ExportData {
 	/** All published error_pages rows keyed by status_code. Used to emit error-pages.ts. */
 	errorPages?: Record<number, ErrorPageContent>;
 	nav?: NavData;
+	/**
+	 * Published site_pages registry rows (slice-26.1). Absence of a path from
+	 * this array IS the hidden signal — route gate 404s, sitemap drops it.
+	 */
+	sitePages?: readonly SitePage[];
 	blogPosts?: readonly BlogPost[];
 	/** Block Editor `body` per published post, keyed by slug. Powers static blog.bodyBySlug + blog.html. */
 	blogBodies?: Record<string, BlockEditorDoc>;
 	services?: readonly Service[];
 	projects?: readonly Project[];
 	techStack?: readonly TechStackItem[];
+	/**
+	 * Published stack_archetypes rows (slice-29 Tech Stack Engine) — goal
+	 * recipes whose layered tech links draw the /tech-stack blueprint.
+	 */
+	stackArchetypes?: readonly StackArchetype[];
 	blogPage?: BlogPageContent;
 	projectsPage?: ProjectsPageContent;
 	techStackPage?: TechStackPageContent;

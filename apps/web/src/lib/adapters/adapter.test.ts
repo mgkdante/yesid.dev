@@ -6,11 +6,10 @@
 // verifies that the static implementation returns sane cardinality + shapes
 // (non-empty where expected, undefined for not-found).
 //
-// For the Directus adapter (Slice 18 Task 4+), contract enforcement is
-// compile-time via `directusAdapter: ContentAdapter` in ./directus.ts. Live
-// integration testing against cms.yesid.dev is out of scope for `bun run
-// test` (would require env credentials + network) — covered by the seed
-// script's verify step + manual browser smoke at slice close.
+// The Directus adapter that once shared this contract was removed at
+// slice-26 close (Directus 12 verified on both environments; the parity
+// oracle it fed is fulfilled). staticAdapter is the sole implementation —
+// this file is the contract's runtime coverage.
 
 import { describe, it, expect } from 'vitest';
 import { staticAdapter as adapter } from './static';

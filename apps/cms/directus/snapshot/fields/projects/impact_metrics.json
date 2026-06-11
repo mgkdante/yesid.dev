@@ -8,15 +8,17 @@
     "display": null,
     "display_options": null,
     "field": "impact_metrics",
-    "group": null,
+    "group": "grp_class",
     "hidden": false,
     "interface": "list-o2m",
     "note": null,
-    "options": null,
+    "options": {
+      "template": "{{translations}}"
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 101,
+    "sort": 55,
     "special": [
       "o2m"
     ],

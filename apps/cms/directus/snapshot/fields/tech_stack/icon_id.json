@@ -10,7 +10,7 @@
       "template": "{{name}} ({{iconify_id}})"
     },
     "field": "icon_id",
-    "group": null,
+    "group": "grp_content",
     "hidden": false,
     "interface": "select-dropdown-m2o",
     "note": null,

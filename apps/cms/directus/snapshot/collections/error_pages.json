@@ -10,7 +10,7 @@
     "collection": "error_pages",
     "color": null,
     "display_template": "{{status_code}} ({{status}})",
-    "group": "site_layout",
+    "group": "site_config",
     "hidden": false,
     "icon": "error",
     "item_duplication_fields": null,

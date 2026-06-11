@@ -2,9 +2,10 @@
 // in slice-18 18h Phase 4 Task 11.
 //
 // Each factory consumes (params, locale, ctx, adapter, siteMeta, siteSeoDefaults)
-// and returns a PageSeo. The composer in directus.ts fetches both site shapes
-// ONCE per layout load (shared `fetchSingletonRow()` memo) and threads them
-// through here — factories never re-fetch, never import the adapter directly.
+// and returns a PageSeo. The caller — staticAdapter.meta.forRoute() since the
+// dormant directus adapter was removed at slice-26 close — supplies both site
+// shapes and threads them through here; factories never re-fetch, never
+// import the adapter directly.
 //
 // `errorSeoFallback` is synchronous and serves as the last-resort SEO when
 // any other route's resolution throws (per +layout.ts try/catch chain).

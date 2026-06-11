@@ -111,6 +111,9 @@ test('route /tech-stack returns 200 and renders page content', async ({ page }) 
 	// Hero section is the page-level structural anchor — present iff the
 	// tech-stack page content block rendered without throwing.
 	await expect(page.locator('[data-testid="tech-stack-hero"]')).toBeVisible();
+	// slice-29: the Tech Stack Engine mounts below the hero via its own async
+	// chunk — visible once hydration finishes loading it.
+	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
 });
 
 // ---------------------------------------------------------------------------

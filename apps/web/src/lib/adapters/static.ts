@@ -121,10 +121,10 @@ import { projectsPageContent } from '$lib/content/projects-page';
 import { generateHeroData, INITIAL_HERO_DATA } from '$lib/content/hero-data';
 import { morphShapes } from '$lib/content/morph-shapes';
 import { MorphShapeSchema } from '$lib/schemas/morph-shape';
-// Slice 18d Phase 8: static fallback for content.metroSvg — keeps the legacy
-// build-time `?raw` source available for unit tests (which override
-// directusAdapter with staticAdapter via setup.data.ts) and for future
-// no-network test scenarios. The Directus path lives in directus.ts.
+// Slice 18d Phase 8 introduced this as the static fallback for
+// content.metroSvg; since slice-27.2 (static-only data path — the directus
+// fetch layer was removed at slice-26 close) the build-time `?raw` import IS
+// the live source.
 import metroSvgRaw from '../../../static/images/montreal-metro.svg?raw';
 import { assetIdForOrUndefined } from '@repo/shared';
 import type { Project } from '$lib/types';
@@ -208,25 +208,17 @@ export const staticAdapter: ContentAdapter = {
 	meta: {
 		site: async () => parsePort('meta.site', SiteMetaSchema, siteMeta),
 		// slice-18 18h Q9: SEO defaults shape sourced from the static fallback.
-		// The directus adapter sources from CMS singleton; this static fallback
-		// keeps the adapter contract uniform for tests and static-mode scenarios.
+		// (The retired directus adapter sourced this from the CMS singleton;
+		// the static module keeps the same shape so the contract is uniform.)
 		siteSeoDefaults: async () => STATIC_SITE_SEO_DEFAULTS,
-		// Static adapter has no per-route overrides — composer falls through to
-		// code-side defaults. Returning undefined matches the directus shape
-		// when no row matches the path.
-		//
-		// slice-28.5 (#62): KEPT, not pruned. The route_seo collections are a
-		// decided dead end (zero rows; archival flagged to slice-26) and
-		// route-seo-defaults.ts is the canonical override source — but this port
-		// cannot be removed: it is part of the ContentAdapter contract and the
-		// RUN_PARITY oracle exercises meta.routeSeo.byPath on BOTH adapters
-		// (parity.harness.test.ts). Prune it together with the dormant adapter at
-		// slice-26 close.
-		routeSeo: {
-			byPath: async () => undefined,
-		},
+		// routeSeo.byPath — pruned at slice-26 close together with the dormant
+		// directus adapter (the RUN_PARITY oracle that exercised it on both
+		// adapters is fulfilled). route-seo-defaults.ts is the canonical
+		// per-route override source; the composer receives routeOverride:
+		// undefined below (its cold-start contract, still covered by
+		// __tests__/compose-page-seo.test.ts).
 		// slice-18 18h Phase 5 Task 15: forRoute now uses the same composer pattern
-		// as the directus adapter (compose-page-seo + route-seo-factories +
+		// as the (since-removed) directus adapter (compose-page-seo + route-seo-factories +
 		// route-seo-defaults). Replaces the legacy `routeSeoEntries` lookup that
 		// got deleted with `apps/web/src/lib/content/meta.ts`.
 		forRoute: async (
@@ -274,7 +266,7 @@ export const staticAdapter: ContentAdapter = {
 		// rather than the legacy MD-glob parser. `content(id)` serializes the
 		// 3 BlockEditorDoc fields (what_it_is + what_i_use_it_for +
 		// why_i_use_it_instead) for the English locale — mirrors the runtime
-		// adapter pattern at directus.ts:2817.
+		// adapter pattern of the retired directus adapter.
 		all: async () =>
 			parsePort('techStack.all', z.array(TechStackItemSchema), techStackItems),
 		byId: async (id) =>
