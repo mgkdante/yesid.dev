@@ -315,6 +315,51 @@ describe('stackArchetypes engine data integrity (slice-29)', () => {
 	});
 });
 
+// ── GO2-T8-UNSKIP ─────────────────────────────────────────────────────────
+// Post-consolidation referential locks (GO-2 Track 3, T8 step 8a). SKIPPED
+// until the orchestrator's Gate A CMS apply + export-fallbacks regen lands
+// in the working tree: about-page.ts ships 2 invalid techStack service ids
+// today (data-pipelines/analytics) that only the regen fixes.
+// T8 unskip step: change `describe.skip` → `describe` after the regen diff
+// is staged, then run the full suite — these must go green against the
+// regenerated modules.
+describe.skip('cross-module service references (GO-2 consolidation locks)', () => {
+	const visibleIds = new Set(
+		services.filter((s) => s.visible !== false).map((s) => s.id),
+	);
+
+	it('every manifesto pill points at a VISIBLE service (pills are links — archived target = dead link)', () => {
+		for (const pill of siteContentModule.manifestoContent.pills) {
+			expect(
+				visibleIds.has(pill.serviceId),
+				`pill "${pill.label.en}" -> "${pill.serviceId}" is not a visible service`,
+			).toBe(true);
+		}
+	});
+
+	it('every about-page techStack relatedServices id is a visible service (was broken pre-GO-2: data-pipelines/analytics)', () => {
+		for (const item of aboutPageContent.techStack) {
+			for (const sid of item.relatedServices) {
+				expect(
+					visibleIds.has(sid),
+					`about techStack "${item.name}" -> "${sid}" is not a visible service`,
+				).toBe(true);
+			}
+		}
+	});
+
+	it('every tech_stack relatedServices id is a visible service', () => {
+		for (const item of techStackItems) {
+			for (const sid of item.relatedServices) {
+				expect(
+					visibleIds.has(sid),
+					`tech "${item.id}" -> "${sid}" is not a visible service`,
+				).toBe(true);
+			}
+		}
+	});
+});
+
 // ─────────────────────────────────────────────────────────────────────────
 // Seed data parses through schemas (slice-17c)
 // ─────────────────────────────────────────────────────────────────────────
@@ -608,6 +653,10 @@ describe('locale-completeness snapshot (T11)', () => {
 		// If this number increases, FR/ES translations have been added to the CMS
 		// and the modules regenerated — confirm the increase is intentional.
 		// If this number decreases, translations have been stripped — investigate.
+		// GO2-T8-VERIFY: 56 is EXPECTED to hold through the GO-2 consolidation
+		// regen — the fr/es owner_job_title edits keep all three locales
+		// non-empty. If the post-regen run moves this number, stop and explain
+		// the drift before touching the literal.
 		const stats = newStats();
 		const seen = new WeakSet<object>();
 		const allSources: Array<[string, unknown]> = [
@@ -635,6 +684,13 @@ describe('locale-completeness snapshot (T11)', () => {
 		// as of slice-27.1. When FR/ES copy lands for any module (CMS regen
 		// → committed diff), this number drops and the test fails intentionally —
 		// update the count here to confirm the debt has been reduced.
+		// GO2-T8-UPDATE: after the Gate A regen the prediction is 375
+		// (−1 manifesto pill label 5→4 stations, +2 merged station-1
+		// deliverables, +1 absorbed pipeline deliverable). T8 step: run
+		// `bunx vitest run src/lib/content/integrity.test.ts`, read the printed
+		// translation-debt snapshot, and set this literal to the ACTUAL number.
+		// If the actual delta differs from +2, STOP and explain every unit of
+		// drift against the regen diff before updating.
 		const stats = newStats();
 		const seen = new WeakSet<object>();
 		const allSources: Array<[string, unknown]> = [
