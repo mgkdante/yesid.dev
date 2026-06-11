@@ -24,6 +24,7 @@
 	import TechMatcher from './TechMatcher.svelte';
 	import BlueprintCanvas from './BlueprintCanvas.svelte';
 	import ProductPreview from './ProductPreview.svelte';
+	import BlueprintCTA from './BlueprintCTA.svelte';
 
 	// Registered ONCE inside the engine chunk — Flip never touches the route's
 	// entry chunk (the whole engine, GSAP plugin included, is the async chunk).
@@ -116,7 +117,7 @@
 				{:else}
 					<ProductPreview archetype={engine.active} {animate} />
 				{/if}
-				<!-- BlueprintCTA lands in Task 12 -->
+				<BlueprintCTA archetype={engine.active} />
 			{/if}
 		</div>
 	{:else}
@@ -153,6 +154,7 @@
 				{:else}
 					<ProductPreview archetype={engine.active} {animate} />
 				{/if}
+				<BlueprintCTA archetype={engine.active} composeTechs={[...engine.pickedTechs]} />
 			{/if}
 		</div>
 	{/if}
