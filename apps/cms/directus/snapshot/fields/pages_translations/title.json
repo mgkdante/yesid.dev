@@ -11,7 +11,7 @@
     "group": null,
     "hidden": false,
     "interface": "input",
-    "note": null,
+    "note": "ADMIN-DISPLAY-ONLY: this title is never exported to the site (the pages M2A experiment is unused by the export pipeline — audit #69). Translators can skip it.",
     "options": null,
     "readonly": false,
     "required": true,
