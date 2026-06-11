@@ -57,13 +57,12 @@
 	);
 
 	// Gradient color based on the first related service's position in the palette.
-	// Creates visual variety across cards without requiring thumbnails.
+	// GO-2: keyed by the 4 consolidated stations; unknown/archived ids take the
+	// fallback pair below.
 	const SERVICE_GRADIENTS: Record<string, [string, string]> = {
-		'sql-development': ['var(--primary)', 'var(--primary-hover)'],
+		'database-engineering': ['var(--primary)', 'var(--primary-hover)'],
 		'data-pipeline': ['var(--accent)', 'var(--accent-hover)'],
 		'analytics-reporting': ['var(--primary)', 'var(--accent)'],
-		'database-engineering': ['var(--primary-hover)', 'var(--primary)'],
-		'internal-tooling': ['var(--accent-hover)', 'var(--accent)'],
 		'web-development': ['var(--accent)', 'var(--primary)']
 	};
 
