@@ -100,4 +100,15 @@ describe('BlueprintCanvas', () => {
 			'-24 -24 208 420',
 		);
 	});
+
+	it('GO-w2t5: one parked signal path per connector (CSS keeps them invisible at rest)', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const canvas = screen.getByTestId('blueprint-canvas');
+		// Rest state is opacity:0 via CSS — with animate=false they are never
+		// touched by GSAP, so reduce users simply never see them.
+		expect(canvas.querySelectorAll('.bp-signal')).toHaveLength(3);
+		expect(canvas.querySelector('.bp-signals')?.getAttribute('aria-hidden')).toBe('true');
+	});
 });
