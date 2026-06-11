@@ -15,15 +15,39 @@
   tree sits behind it.
 -->
 <script lang="ts">
+	import { tick } from 'svelte';
+	import { gsap } from 'gsap';
+	import { Flip } from 'gsap/Flip';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { EngineState } from './engine-state.svelte';
 	import GoalPicker from './GoalPicker.svelte';
 	import TechMatcher from './TechMatcher.svelte';
 	import BlueprintCanvas from './BlueprintCanvas.svelte';
+	import ProductPreview from './ProductPreview.svelte';
+
+	// Registered ONCE inside the engine chunk — Flip never touches the route's
+	// entry chunk (the whole engine, GSAP plugin included, is the async chunk).
+	gsap.registerPlugin(Flip);
 
 	let { animate = true }: { animate?: boolean } = $props();
 
 	const engine = new EngineState();
+
+	/**
+	 * Blueprint ⇄ preview morph: capture every [data-flip-id] box, swap the
+	 * view, then Flip from the captured state so each blueprint box flies into
+	 * its preview slot (and back). animate=false → plain swap, zero GSAP.
+	 */
+	async function toggleView(): Promise<void> {
+		if (!animate) {
+			engine.toggleBlueprintPreview();
+			return;
+		}
+		const state = Flip.getState('[data-flip-id]');
+		engine.toggleBlueprintPreview();
+		await tick();
+		Flip.from(state, { duration: 0.6, ease: 'power2.inOut', absolute: true, nested: true });
+	}
 
 	// Mode toggle labels — pinned EXACTLY by Engine.test.ts (spec wording).
 	const MODE_LABELS = {
@@ -69,19 +93,28 @@
 			{#if engine.view === 'select' || !engine.active}
 				<GoalPicker {engine} />
 			{:else}
-				<button
-					type="button"
-					class="engine-back"
-					data-testid="engine-back"
-					onclick={() => engine.backToSelect()}
-				>
-					← all goals
-				</button>
+				<div class="engine-viewbar">
+					<button
+						type="button"
+						class="engine-back"
+						data-testid="engine-back"
+						onclick={() => engine.backToSelect()}
+					>
+						← all goals
+					</button>
+					<button
+						type="button"
+						class="engine-view-toggle"
+						data-testid="view-toggle"
+						onclick={toggleView}
+					>
+						{engine.view === 'blueprint' ? 'see it as a product →' : '← back to blueprint'}
+					</button>
+				</div>
 				{#if engine.view === 'blueprint'}
 					<BlueprintCanvas links={engine.active.tech} title={activeTitle} {animate} />
 				{:else}
-					<!-- ProductPreview lands in Task 11 -->
-					<p class="engine-placeholder">preview — coming in Task 11</p>
+					<ProductPreview archetype={engine.active} {animate} />
 				{/if}
 				<!-- BlueprintCTA lands in Task 12 -->
 			{/if}
@@ -91,14 +124,24 @@
 			{#if engine.view === 'select' || !engine.active}
 				<TechMatcher {engine} />
 			{:else}
-				<button
-					type="button"
-					class="engine-back"
-					data-testid="engine-back"
-					onclick={() => engine.backToSelect()}
-				>
-					← all picks
-				</button>
+				<div class="engine-viewbar">
+					<button
+						type="button"
+						class="engine-back"
+						data-testid="engine-back"
+						onclick={() => engine.backToSelect()}
+					>
+						← all picks
+					</button>
+					<button
+						type="button"
+						class="engine-view-toggle"
+						data-testid="view-toggle"
+						onclick={toggleView}
+					>
+						{engine.view === 'blueprint' ? 'see it as a product →' : '← back to blueprint'}
+					</button>
+				</div>
 				{#if engine.view === 'blueprint'}
 					<BlueprintCanvas
 						links={engine.active.tech}
@@ -108,8 +151,7 @@
 						{animate}
 					/>
 				{:else}
-					<!-- ProductPreview lands in Task 11 -->
-					<p class="engine-placeholder">preview — coming in Task 11</p>
+					<ProductPreview archetype={engine.active} {animate} />
 				{/if}
 			{/if}
 		</div>
@@ -157,18 +199,44 @@
 		min-height: 200px;
 	}
 
+	.engine-viewbar {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding-bottom: 1rem;
+	}
+
 	.engine-back {
 		font-family: var(--font-mono);
 		font-size: 12px;
 		color: var(--muted-foreground);
 		background: none;
 		border: none;
-		padding: 0 0 1rem;
+		padding: 0;
 		cursor: pointer;
 	}
 
 	.engine-back:hover {
 		color: var(--primary);
+	}
+
+	.engine-view-toggle {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--primary);
+		background: none;
+		border: 1px solid var(--primary);
+		border-radius: 999px;
+		padding: 0.35rem 0.9rem;
+		cursor: pointer;
+		transition: background-color 150ms ease, color 150ms ease;
+	}
+
+	.engine-view-toggle:hover {
+		background: var(--primary);
+		color: var(--primary-foreground);
 	}
 
 	.engine-placeholder {

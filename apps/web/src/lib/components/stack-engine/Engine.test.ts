@@ -36,4 +36,29 @@ describe('Engine shell', () => {
 		expect(screen.getByTestId('engine-compose-region')).toBeTruthy();
 		expect(screen.queryByTestId('engine-goal-region')).toBeNull();
 	});
+
+	// slice-29 Task 11: blueprint ⇄ preview behind the view toggle. animate=false
+	// → plain swap (no Flip), which is exactly what happy-dom can assert.
+	it('view toggle swaps blueprint ⇄ preview for the active archetype', async () => {
+		render(Engine, { props: { animate: false } });
+		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
+		expect(screen.getByTestId('blueprint-canvas')).toBeTruthy();
+		expect(screen.queryByTestId('product-preview')).toBeNull();
+
+		await fireEvent.click(screen.getByTestId('view-toggle'));
+		expect(screen.getByTestId('product-preview')).toBeTruthy();
+		expect(screen.queryByTestId('blueprint-canvas')).toBeNull();
+
+		await fireEvent.click(screen.getByTestId('view-toggle'));
+		expect(screen.getByTestId('blueprint-canvas')).toBeTruthy();
+		expect(screen.queryByTestId('product-preview')).toBeNull();
+	});
+
+	it('backing out of a blueprint returns to the goal picker', async () => {
+		render(Engine, { props: { animate: false } });
+		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
+		await fireEvent.click(screen.getByTestId('engine-back'));
+		expect(screen.getByTestId('archetype-card-data-dashboard')).toBeTruthy();
+		expect(screen.queryByTestId('blueprint-canvas')).toBeNull();
+	});
 });
