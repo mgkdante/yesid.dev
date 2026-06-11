@@ -1,34 +1,49 @@
 {
-  "collection": "route_seo_translations",
-  "field": "description",
+  "collection": "site_pages",
+  "field": "type",
   "type": "string",
   "meta": {
-    "collection": "route_seo_translations",
+    "collection": "site_pages",
     "conditions": null,
     "display": null,
     "display_options": null,
-    "field": "description",
+    "field": "type",
     "group": null,
     "hidden": false,
-    "interface": "input-multiline",
-    "note": "Per-route description override. Empty -> fall back to site_meta.default_description.",
-    "options": null,
+    "interface": "select-dropdown",
+    "note": "listing pages cascade to their detail routes: archive /blog and posts 404 too.",
+    "options": {
+      "choices": [
+        {
+          "text": "Free-form (block-composed)",
+          "value": "freeform"
+        },
+        {
+          "text": "Listing (article family section)",
+          "value": "listing"
+        },
+        {
+          "text": "System",
+          "value": "system"
+        }
+      ]
+    },
     "readonly": false,
     "required": false,
     "searchable": true,
-    "sort": 5,
+    "sort": 4,
     "special": null,
     "translations": null,
     "validation": null,
     "validation_message": null,
-    "width": "full"
+    "width": "half"
   },
   "schema": {
-    "name": "description",
-    "table": "route_seo_translations",
+    "name": "type",
+    "table": "site_pages",
     "data_type": "character varying",
-    "default_value": null,
-    "max_length": 200,
+    "default_value": "freeform",
+    "max_length": 255,
     "numeric_precision": null,
     "numeric_scale": null,
     "is_nullable": true,

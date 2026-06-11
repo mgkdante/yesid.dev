@@ -1,5 +1,5 @@
 {
-  "collection": "languages",
+  "collection": "site_pages_translations",
   "meta": {
     "accountability": "all",
     "archive_app_filter": true,
@@ -7,17 +7,17 @@
     "archive_value": null,
     "autosave_revision_interval": null,
     "collapse": "open",
-    "collection": "languages",
+    "collection": "site_pages_translations",
     "color": null,
-    "display_template": "{{name}}",
-    "group": "site_config",
-    "hidden": false,
+    "display_template": null,
+    "group": null,
+    "hidden": true,
     "icon": "translate",
     "item_duplication_fields": null,
-    "note": "Supported locales (en required, fr/es optional). Used by Translations fields across all collections.",
+    "note": null,
     "preview_url": null,
     "singleton": false,
-    "sort": 5,
+    "sort": null,
     "sort_field": null,
     "status": "active",
     "translations": null,
@@ -25,6 +25,6 @@
     "versioning": false
   },
   "schema": {
-    "name": "languages"
+    "name": "site_pages_translations"
   }
 }

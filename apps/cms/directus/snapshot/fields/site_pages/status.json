@@ -1,9 +1,9 @@
 {
-  "collection": "route_seo",
+  "collection": "site_pages",
   "field": "status",
   "type": "string",
   "meta": {
-    "collection": "route_seo",
+    "collection": "site_pages",
     "conditions": null,
     "display": null,
     "display_options": null,
@@ -11,27 +11,23 @@
     "group": null,
     "hidden": false,
     "interface": "select-dropdown",
-    "note": "Publication state. AI-editor cannot set to published.",
+    "note": "Archive = page vanishes from nav/footer/sitemap and 404s, after the auto-rebuild.",
     "options": {
       "choices": [
-        {
-          "text": "Draft",
-          "value": "draft"
-        },
         {
           "text": "Published",
           "value": "published"
         },
         {
-          "text": "Archived",
+          "text": "Archived (hidden everywhere)",
           "value": "archived"
         }
       ]
     },
     "readonly": false,
-    "required": true,
+    "required": false,
     "searchable": true,
-    "sort": 4,
+    "sort": 2,
     "special": null,
     "translations": null,
     "validation": null,
@@ -40,9 +36,9 @@
   },
   "schema": {
     "name": "status",
-    "table": "route_seo",
+    "table": "site_pages",
     "data_type": "character varying",
-    "default_value": "draft",
+    "default_value": "published",
     "max_length": 255,
     "numeric_precision": null,
     "numeric_scale": null,
