@@ -82,7 +82,7 @@
 
 			<!-- Content -->
 			<div class="relative z-10 min-w-0 flex-1">
-				<h2 class="text-base font-semibold leading-snug text-[var(--foreground)] transition-colors duration-300 group-hover:text-[var(--accent)] md:text-lg">
+				<h2 class="text-base font-semibold leading-snug text-[var(--foreground)] transition-colors duration-300 group-hover:text-[var(--accent-text)] md:text-lg">
 					{post.title}
 				</h2>
 				<p class="mt-2 text-sm leading-relaxed text-[var(--secondary-foreground)] line-clamp-2 md:text-base">

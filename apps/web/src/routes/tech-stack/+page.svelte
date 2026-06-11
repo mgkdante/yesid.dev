@@ -232,7 +232,7 @@
 	.hero-line-color-default { color: var(--secondary-foreground); }
 	.hero-line-color-muted { color: var(--muted-foreground); }
 	.hero-line-color-orange { color: var(--primary); }
-	.hero-line-color-accent { color: var(--accent); }
+	.hero-line-color-accent { color: var(--accent-text); }
 	.hero-line-color-green { color: var(--success); }
 
 	.hero-line-animate { animation: hero-line-in 0.3s ease-out both; }
@@ -359,7 +359,7 @@
 		font-family: var(--font-mono);
 		font-size: 10px;
 		letter-spacing: 1px;
-		color: var(--accent);
+		color: var(--accent-text);
 		text-transform: uppercase;
 	}
 

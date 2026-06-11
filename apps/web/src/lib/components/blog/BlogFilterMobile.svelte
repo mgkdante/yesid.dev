@@ -148,7 +148,7 @@
 							<a
 								href={cornerLink.href}
 								class="text-xs font-semibold no-underline"
-								style="color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'};"
+								style="color: {cornerLink.href.includes('personal') ? 'var(--accent-text)' : 'var(--primary)'};"
 							>
 								{cornerLink.label} &rarr;
 							</a>
@@ -169,8 +169,8 @@
 		color: var(--foreground);
 	}
 	.m-tag-active {
-		border-color: var(--accent) !important;
-		color: var(--accent) !important;
+		border-color: var(--accent-text) !important;
+		color: var(--accent-text) !important;
 	}
 	/* CSS grid animation for smooth expand/collapse — matches CollapsibleSection pattern */
 	:global([data-slot="collapsible-content"].blog-filter-body) {

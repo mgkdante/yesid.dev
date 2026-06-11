@@ -512,12 +512,12 @@
 
 	.proof-count-sep {
 		font-size: 0.875rem;
-		color: color-mix(in srgb, var(--primary) 40%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
 	.proof-count-total {
 		font-size: 0.875rem;
-		color: color-mix(in srgb, var(--primary) 50%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
 	/* Shared "View all ___ →" link styling — unified with HomeServices

@@ -193,11 +193,11 @@
   }
 
   .toc-pill-name {
-    color: color-mix(in srgb, var(--foreground) 50%, transparent);
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
   }
 
   .toc-pill-counter {
-    color: color-mix(in srgb, var(--primary) 30%, transparent);
+    color: color-mix(in srgb, var(--primary) 85%, transparent);
   }
 
   .toc-drawer-backdrop {
@@ -237,7 +237,7 @@
     cursor: pointer;
     font-family: var(--font-heading);
     font-size: 14px;
-    color: color-mix(in srgb, var(--foreground) 40%, transparent);
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
     transition: background var(--duration-fast) var(--ease-default),
                 color var(--duration-fast) var(--ease-default);
     text-align: left;
@@ -255,18 +255,18 @@
   }
 
   .toc-drawer-number {
-    color: color-mix(in srgb, var(--primary) 30%, transparent);
+    color: color-mix(in srgb, var(--primary) 85%, transparent);
   }
 
   /* Sub-headings indented */
   .toc-drawer-sub {
     padding-left: 32px;
     font-size: 13px;
-    color: color-mix(in srgb, var(--foreground) 25%, transparent);
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
   }
 
   .toc-drawer-sub:hover {
-    color: color-mix(in srgb, var(--foreground) 55%, transparent);
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
   }
 
   .toc-drawer-sub.active {
