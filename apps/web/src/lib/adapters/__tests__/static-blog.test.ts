@@ -1,10 +1,12 @@
 // Static adapter — blog method shape tests (slice-27.1 Task T3).
 //
-// Network-free, CI-runnable companion to the parity harness (parity.harness.test.ts,
-// which is opt-in via RUN_PARITY and hits live Directus). These tests assert that
-// the three static blog methods fixed in T3 — bodyBySlug, html, svgContent /
-// svgContentsForPosts — return the SAME shapes the directus adapter produces,
-// using the committed CMS-derived content modules (no Directus round-trip).
+// Network-free, CI-runnable shape coverage. Born as the companion to the
+// RUN_PARITY harness (parity.harness.test.ts — deleted at slice-26 close
+// after Directus 12 passed it on both environments); now the canonical
+// suite for the three static blog methods fixed in T3 — bodyBySlug, html,
+// svgContent / svgContentsForPosts — asserting they keep the shapes the
+// retired directus adapter produced, using the committed CMS-derived
+// content modules (no network).
 //
 // Runs in the "data" Vitest project (Node env, $env stubbed to {}). The static
 // adapter never touches the network, so importing it directly is safe here.

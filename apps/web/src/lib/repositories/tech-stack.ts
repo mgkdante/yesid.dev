@@ -14,5 +14,6 @@ export async function getAllTechItems(): Promise<readonly TechStackItem[]> {
 }
 
 // getTechItemById / getTechItemContent — pruned in slice-28.3 (#117, zero
-// route consumers). adapter.techStack.byId/content stay for the slice-26
-// RUN_PARITY oracle suites, which exercise them directly.
+// route consumers). adapter.techStack.byId/content stay on the ContentAdapter
+// contract — the static suites (adapter.test.ts, __tests__/
+// static-content.test.ts) exercise them directly.
