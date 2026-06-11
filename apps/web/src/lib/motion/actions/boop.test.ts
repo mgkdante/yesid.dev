@@ -85,7 +85,7 @@ describe('boop action', () => {
 		// The point is destroy() doesn't throw.
 	});
 
-	it('does nothing when prefers-reduced-motion is on', async () => {
+	it('GO-w2t5 retier: boops under prefers-reduced-motion (SAFE-ALWAYS, ≤1.05 scale)', async () => {
 		mockMatchMedia(true);
 		vi.resetModules();
 		const { boop } = await import('./boop.js');
@@ -94,7 +94,7 @@ describe('boop action', () => {
 
 		el.dispatchEvent(new MouseEvent('mouseenter'));
 
-		expect(el.style.transform).toBe('');
+		expect(el.style.transform).toContain('scale(1.05)');
 	});
 
 	it('update() changes the params applied on next hover', async () => {

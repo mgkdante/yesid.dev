@@ -5,10 +5,11 @@
 //   A boop fires once — like a tap — then immediately returns to rest. This creates a
 //   "alive" feeling: the element responds to attention without staying in a transformed
 //   state that can look stuck or heavy. Concept from joshwcomeau.com.
+// SAFE-ALWAYS tier (GO-w2t5): ≤1.05 scale, user-initiated, self-resetting —
+// runs under prefers-reduced-motion (pressBounce precedent, slice-23 policy).
 //
 // Usage: <button use:boop={{ scale: 1.05, rotation: 5, timing: 300 }}>
 
-import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
 import { isTouchDevice } from '../utils/device.js';
 
 export interface BoopParams {
@@ -22,7 +23,6 @@ export interface BoopParams {
 
 export function boop(node: HTMLElement, params: BoopParams = {}) {
 	if (isTouchDevice()) return { update() {}, destroy() {} };
-	if (isPrefersReducedMotion()) return { update() {}, destroy() {} };
 
 	let { scale = 1.05, rotation = 0, timing = 300 } = params;
 	let timeoutId: ReturnType<typeof setTimeout> | null = null;
