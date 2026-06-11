@@ -59,4 +59,45 @@ describe('tech-stack fetcher transform', () => {
 		const result = toTechStackItem(noIcon);
 		expect(result.icon).toBeNull();
 	});
+
+	// slice-29: engine support fields (layer + enables), both optional.
+
+	it('passes layer through when set, omits the key when null/absent', () => {
+		const withLayer: DirectusTechStackRow = { ...FIXTURE, layer: 'data' };
+		expect(toTechStackItem(withLayer).layer).toBe('data');
+		expect('layer' in toTechStackItem(FIXTURE)).toBe(false);
+		const nullLayer: DirectusTechStackRow = { ...FIXTURE, layer: null };
+		expect('layer' in toTechStackItem(nullLayer)).toBe(false);
+	});
+
+	it('flattens enables into a LocalizedString, omitting the key when absent', () => {
+		const withEnables: DirectusTechStackRow = {
+			...FIXTURE,
+			translations: [
+				{ ...FIXTURE.translations[0], enables: 'stores and queries your data reliably' },
+				{
+					languages_code: 'fr',
+					what_it_is: null,
+					what_i_use_it_for: null,
+					why_i_use_it_instead: null,
+					enables: 'stocke et interroge vos données de manière fiable',
+				},
+			],
+		};
+		expect(toTechStackItem(withEnables).enables).toEqual({
+			en: 'stores and queries your data reliably',
+			fr: 'stocke et interroge vos données de manière fiable',
+		});
+		expect('enables' in toTechStackItem(FIXTURE)).toBe(false);
+	});
+
+	it('layer + enables variants still parse through TechStackItemSchema', () => {
+		const full: DirectusTechStackRow = {
+			...FIXTURE,
+			layer: 'data',
+			translations: [{ ...FIXTURE.translations[0], enables: 'stores your data' }],
+		};
+		expect(() => TechStackItemSchema.parse(toTechStackItem(full))).not.toThrow();
+		expect(() => TechStackItemSchema.parse(toTechStackItem(FIXTURE))).not.toThrow();
+	});
 });
