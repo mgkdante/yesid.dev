@@ -43,3 +43,29 @@ describe('GO-w2t5 motion policy — MOTION-GATED CSS surfaces park under reduce'
 		);
 	});
 });
+
+describe('GO-w2t5 micro-interactions — SAFE-ALWAYS additions present', () => {
+	it('app.css ships a global :focus-visible brand ring in @layer base', () => {
+		const appCSS = read('src/app.css');
+		expect(appCSS).toMatch(
+			/:focus-visible \{\s*outline: 2px solid var\(--primary\);\s*outline-offset: 2px;/,
+		);
+	});
+
+	it('prose links draw their underline (background-size 0% → 100%)', () => {
+		const appCSS = read('src/app.css');
+		expect(appCSS).toMatch(/\.prose-dark a \{[\s\S]*?background-size: 0% 1px;/);
+		expect(appCSS).toMatch(/\.prose-dark a:hover[\s\S]*?background-size: 100% 1px;/);
+	});
+
+	it('footer links draw their underline', () => {
+		const src = read('src/lib/components/layout/Footer.svelte');
+		expect(src).toContain('footer-link');
+		expect(src).toMatch(/\.footer-link \{[\s\S]*?background-size: 0% 1px;/);
+	});
+
+	it('contact form caret is brand orange', () => {
+		const src = read('src/lib/components/contact/ContactPage.svelte');
+		expect(src).toMatch(/\.form-field \{[\s\S]*?caret-color: var\(--primary\);/);
+	});
+});
