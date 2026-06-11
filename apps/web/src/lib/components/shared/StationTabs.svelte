@@ -19,15 +19,14 @@
 
 	const serviceNavAria = resolveLocale(servicesDetailContent.serviceNavAria, 'en');
 
-	// Short labels map — first word or simple abbreviation for compact tab display.
-	// Keyed by service ID so adding a new service only requires one new entry here.
+	// Short labels map — one entry per station. GO-2 consolidation: 4 stations,
+	// labels match the manifesto pills (databases/pipelines/dashboards/websites).
+	// Unknown ids fall back to the first word of the title (getLabel below).
 	const SHORT_LABELS: Record<string, string> = {
-		'sql-development': 'SQL Dev',
-		'data-pipeline': 'Pipeline',
-		'analytics-reporting': 'Analytics',
-		'database-engineering': 'DB Eng.',
-		'internal-tooling': 'Tooling',
-		'web-development': 'Web Dev'
+		'database-engineering': 'Databases',
+		'data-pipeline': 'Pipelines',
+		'analytics-reporting': 'Dashboards',
+		'web-development': 'Websites'
 	};
 
 	let {
