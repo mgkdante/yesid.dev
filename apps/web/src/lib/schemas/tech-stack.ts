@@ -10,6 +10,7 @@
 
 import { z } from 'zod';
 import type { TechStackItem } from '$lib/types';
+import { LocalizedStringSchema, StackLayerSchema } from '@repo/shared/schemas';
 import { LocalizedBlockEditorDocSchema } from '$lib/schemas/project';
 import { IconRecordSchema } from '$lib/schemas/icon';
 
@@ -22,6 +23,9 @@ export const TechStackItemSchema = z.object({
 	why_i_use_it_instead: LocalizedBlockEditorDocSchema,
 	relatedServices: z.array(z.string()),
 	relatedProjects: z.array(z.string()),
+	// slice-29 engine support fields — optional, omitted when the CMS has no value.
+	layer: StackLayerSchema.optional(),
+	enables: LocalizedStringSchema.optional(),
 });
 
 // Drift detector.
