@@ -8,6 +8,7 @@ import HomeServices from './HomeServices.svelte';
 // derives the same data from the content module the static adapter reads.
 import { servicesGridContent } from '$lib/content/site-content';
 import { getVisibleServices } from '$lib/content';
+import { serviceFactory } from '../../../tests/factories';
 
 const services = getVisibleServices();
 
@@ -68,5 +69,22 @@ describe('HomeServices', () => {
 		const anchor = container.querySelector('a');
 		expect(anchor?.getAttribute('href')).toBe('/services');
 		expect(anchor?.textContent).toContain('View all services');
+	});
+});
+
+describe('HomeServices station ordering (GO-2)', () => {
+	it('renders cards in station order even when the services prop arrives shuffled', () => {
+		const shuffled = [
+			serviceFactory.build({ id: 'svc-c', title: { en: 'C' }, station: 3, visible: true }),
+			serviceFactory.build({ id: 'svc-a', title: { en: 'A' }, station: 1, visible: true }),
+			serviceFactory.build({ id: 'svc-b', title: { en: 'B' }, station: 2, visible: true }),
+		];
+		render(HomeServices, { props: { servicesGrid: servicesGridContent, services: shuffled } });
+		const cards = screen.getAllByTestId('services-card');
+		expect(cards.map((c) => c.getAttribute('href'))).toEqual([
+			'/services/svc-a',
+			'/services/svc-b',
+			'/services/svc-c',
+		]);
 	});
 });
