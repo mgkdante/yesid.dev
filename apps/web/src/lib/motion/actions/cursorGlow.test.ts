@@ -44,12 +44,12 @@ describe('cursorGlow', () => {
 		Object.defineProperty(navigator, 'maxTouchPoints', { value: 0, configurable: true });
 	});
 
-	it('returns no-op when reduced motion is preferred', async () => {
+	it('GO-w2t5 retier: stays ACTIVE under reduced motion (SAFE-ALWAYS — opacity-only light)', async () => {
 		const { isPrefersReducedMotion } = await import('../stores/reducedMotion.js');
 		(isPrefersReducedMotion as ReturnType<typeof vi.fn>).mockReturnValueOnce(true);
 		const action = cursorGlow(node);
 		node.dispatchEvent(new PointerEvent('pointermove', { clientX: 50, clientY: 50 }));
-		expect(node.style.getPropertyValue('--glow-x')).toBe('');
+		expect(node.style.getPropertyValue('--glow-x')).toBe('50px');
 		action.destroy();
 	});
 });

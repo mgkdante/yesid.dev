@@ -7,12 +7,11 @@
 // a manual <div> with radial-gradient — the action creates and manages it.
 //
 // Pattern: same as tilt.ts — event listeners, cleanup in destroy().
-// Disabled on touch devices and reduced-motion.
+// Disabled on touch devices. SAFE-ALWAYS under reduced motion (GO-w2t5 retier).
 //
 // Usage: <div use:cursorGlow={{ intensity: 0.06 }}>
 //   That's it — overlay is auto-injected.
 
-import { isPrefersReducedMotion } from '../stores/reducedMotion.js';
 import { isTouchDevice } from '../utils/device.js';
 
 export interface CursorGlowParams {
@@ -25,7 +24,9 @@ export interface CursorGlowParams {
 }
 
 export function cursorGlow(node: HTMLElement, params: CursorGlowParams = {}) {
-	if (isPrefersReducedMotion() || isTouchDevice()) {
+	// SAFE-ALWAYS tier (GO-w2t5): the glow is an opacity-only gradient that
+	// follows the pointer — nothing translates or scales. Touch-gated only.
+	if (isTouchDevice()) {
 		return { update() {}, destroy() {} };
 	}
 
