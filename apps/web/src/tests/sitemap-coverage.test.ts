@@ -4,11 +4,18 @@
 // declared public route is missing from the sitemap's output, or if the
 // sitemap emits a route that doesn't exist on disk. Forces sitemap + routes
 // to stay in sync as pages are added, removed, or renamed.
+//
+// slice-26.1: routes are additionally filtered through the site_pages
+// registry on BOTH sides of the diff. A route whose registry entry is absent
+// (archived section) is expected to be missing from the sitemap — the same
+// rebuild 404s it via the +layout.server.ts gate, so dropping it here is
+// correct, not a coverage hole.
 
 import { readdirSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { adapter } from '$lib/adapters';
+import { isPathPublished } from '$lib/utils/page-registry';
 import { _buildSitemapEntries } from '../routes/sitemap.xml/+server';
 
 const ROUTES_DIR = 'src/routes';
@@ -68,7 +75,11 @@ describe('sitemap coverage gate', () => {
 		for (const route of declared) {
 			if (EXCLUDES.has(route)) continue;
 			const paths = await expandDynamic(route);
-			for (const p of paths) expected.add(p);
+			// Registry gate (slice-26.1): routes whose site_pages entry is absent
+			// are 404'd by +layout.server.ts and must NOT appear in the sitemap.
+			for (const p of paths) {
+				if (isPathPublished(p)) expected.add(p);
+			}
 		}
 
 		const entries = await _buildSitemapEntries();
