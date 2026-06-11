@@ -5,6 +5,7 @@
     "archive_app_filter": false,
     "archive_field": null,
     "archive_value": null,
+    "autosave_revision_interval": null,
     "collapse": "open",
     "collection": "block_manifesto",
     "color": null,
@@ -18,6 +19,7 @@
     "singleton": false,
     "sort": 2,
     "sort_field": "sort",
+    "status": "active",
     "translations": null,
     "unarchive_value": null,
     "versioning": true
