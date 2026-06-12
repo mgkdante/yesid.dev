@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "cta",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale CTA section (TechStackPageContentSchema.cta). JSON shape: { headingLine1, headingLine2, sub, availability: string }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

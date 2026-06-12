@@ -100,12 +100,16 @@ async function getRows(ctx: Ctx, collection: string): Promise<Row[]> {
 }
 
 async function patchRow(ctx: Ctx, collection: string, id: number | string, patch: Record<string, unknown>): Promise<void> {
-	const res = await fetch(`${ctx.url}/items/${collection}/${id}`, {
+	// Parent block_* collections became singletons in the same PR (group A) —
+	// singleton items are addressed without an id.
+	const singleton = collection.startsWith('block_') && !collection.endsWith('_translations');
+	const url = singleton ? `${ctx.url}/items/${collection}` : `${ctx.url}/items/${collection}/${id}`;
+	const res = await fetch(url, {
 		method: 'PATCH',
 		headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${ctx.token}` },
 		body: JSON.stringify(patch),
 	});
-	if (!res.ok) throw new Error(`PATCH /items/${collection}/${id} → ${res.status} ${await res.text()}`);
+	if (!res.ok) throw new Error(`PATCH ${url.slice(ctx.url.length)} → ${res.status} ${await res.text()}`);
 }
 
 async function main(): Promise<void> {

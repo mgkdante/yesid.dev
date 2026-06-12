@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "success",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale success state messages (ContactContent.success). JSON shape: { validating, sending, sent, responseTime, meanwhile, resetLabel, fieldOk }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

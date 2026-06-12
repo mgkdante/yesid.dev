@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "edge_left",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale left edge chrome (ManifestoContent.edgeLeft). JSON shape: { sectionNumber: string, sectionName: string, location: string }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

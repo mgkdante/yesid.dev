@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "cta",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale terminal CTA block (AboutContent.cta). JSON shape: { command: string, lines: Array<{text,color}>, buttonLabel, buttonHref: string, availability, socials: Array<{label,href,icon}> }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },
