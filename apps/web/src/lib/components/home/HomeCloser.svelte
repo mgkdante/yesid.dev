@@ -166,7 +166,7 @@
 <section
 	bind:this={sectionEl}
 	data-testid="closer-section"
-	class="closer-section relative theme-dark"
+	class="closer-section relative"
 >
 	<!-- Graffiti "THE END" — SVG loaded dynamically for DrawSVG animation -->
 	<CloserGraffiti onReady={handleGraffitiReady} />
@@ -198,10 +198,10 @@
 </section>
 
 <style>
-	/* GO-W2.2: night construction tableau — intentionally pinned dark in BOTH
-	   themes via .theme-dark (tokens.css class alias re-scopes all vars).
-	   The painted background is required: without it the light page shows
-	   through. dark: Tailwind variant also fires here (app.css custom-variant). */
+	/* go2/w4 operator QA: the GO-W2.2 .theme-dark pin is REMOVED — it read as
+	   an extra dark layer and kept the closer terminal dark in light mode.
+	   The section (and the TerminalChrome board inside) now follows the
+	   active theme: light terminals in light mode, dark in dark. */
 	.closer-section {
 		background: var(--background);
 		min-height: 100dvh;
@@ -249,6 +249,9 @@
 	}
 
 	/* ===== CTA ===== */
+	/* go2/w4: accent → accent-text (theme-aware AA). Dark is byte-identical
+	   (--accent-text is #FFB627 there); light gets the AA gold #8A6400 now
+	   that the section follows the active theme. */
 	.closer-cta {
 		display: inline-flex;
 		align-items: center;
@@ -256,19 +259,19 @@
 		font-family: var(--font-mono);
 		font-size: 15px;
 		font-weight: 600;
-		color: var(--accent);
+		color: var(--accent-text);
 		text-decoration: none;
 		padding: 16px 28px;
 		min-height: 44px;
-		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+		border: 1px solid color-mix(in srgb, var(--accent-text) 30%, transparent);
 		border-radius: var(--radius-sm);
 		margin-block-end: 28px;
 		transition: background-color var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default), color var(--duration-normal) var(--ease-default);
 		letter-spacing: 0.5px;
 	}
 	.closer-cta:hover {
-		background: color-mix(in srgb, var(--accent) 8%, transparent);
-		border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+		background: color-mix(in srgb, var(--accent-text) 8%, transparent);
+		border-color: color-mix(in srgb, var(--accent-text) 60%, transparent);
 		color: var(--foreground);
 	}
 	.closer-cta-arrow {

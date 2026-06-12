@@ -20,7 +20,11 @@
 
   let { project }: { project: Project } = $props();
 
-  const backToListingLabel = resolveLocale(projectsDetailContent.backToListingLabel, locale);
+  // go2/w4: "← All Projects" now comes from site_labels (CMS-editable),
+  // previous companion literal kept as the code fallback.
+  const backToListingLabel =
+    resolveLocale(siteLabels.ui.backToProjects, locale) ||
+    resolveLocale(projectsDetailContent.backToListingLabel, locale);
   // go2-t1c2: aria microcopy from site_labels, previous literal as fallback.
   const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, locale) || 'Tech stack';
 

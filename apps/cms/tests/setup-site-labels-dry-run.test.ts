@@ -14,10 +14,12 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(meta.singleton).toBe(true);
 		expect(meta.group).toBe('site_config');
 	});
-	it('translations collection carries the 22 label columns + pk/fks', () => {
+	it('translations collection carries the 23 label columns + pk/fks', () => {
+		// go2/w4: +1 — ui_back_to_projects ("← All Projects" on /projects/[slug]).
 		const fields = (plan[1].payload as { fields: { field: string }[] }).fields.map((f) => f.field);
-		expect(fields.length).toBe(25); // id + site_labels_id + languages_code + 22
+		expect(fields.length).toBe(26); // id + site_labels_id + languages_code + 23
 		for (const key of Object.keys(SITE_LABEL_SEEDS)) expect(fields).toContain(key);
+		expect(fields).toContain('ui_back_to_projects');
 	});
 	it('adds heading + empty_state to block_projects_page_content_translations', () => {
 		const chrome = plan.filter((s) => s.kind === 'field' && s.path === '/fields/block_projects_page_content_translations');
@@ -32,7 +34,8 @@ describe('setup-site-labels-and-chrome plan', () => {
 	});
 	it('seeds are exactly the fixture', () => {
 		expect(SITE_LABEL_SEEDS.ui_copyright_template).toBe('© {year} yesid');
-		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(22);
+		expect(SITE_LABEL_SEEDS.ui_back_to_projects).toBe('← All Projects');
+		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(23);
 	});
 	it('parseFlags dry-run default', () => {
 		expect(parseFlags([])).toEqual({ apply: false, seed: false });
