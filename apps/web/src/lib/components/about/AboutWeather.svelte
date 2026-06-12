@@ -9,6 +9,9 @@
 	import type { AboutWeatherConfig } from '$lib/types';
 	import type { WeatherData } from '$lib/utils/weather';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -47,8 +50,8 @@
 		}
 	}
 
-	const city = $derived(resolveLocale(config.city, 'en'));
-	const hook = $derived(resolveLocale(config.hook, 'en'));
+	const city = $derived(resolveLocale(config.city, locale));
+	const hook = $derived(resolveLocale(config.hook, locale));
 	const hasWeather = $derived(currentWeather != null);
 	const iconUrl = $derived(
 		currentWeather ? `https://openweathermap.org/img/wn/${currentWeather.icon}@2x.png` : null

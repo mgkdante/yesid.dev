@@ -7,6 +7,9 @@
 <script lang="ts">
 	import type { AboutMetric } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { MetricDisplay } from '$lib/components/brand';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
@@ -25,7 +28,7 @@
 
 		<div class="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center sm:justify-around sm:gap-0">
 			{#each metrics as metric, i}
-				{@const metricLabel = resolveLocale(metric.label, 'en')}
+				{@const metricLabel = resolveLocale(metric.label, locale)}
 
 				<!-- Divider (not before first item) -->
 				{#if i > 0}
