@@ -225,6 +225,62 @@ test.describe('light mode — per-page audit', () => {
 		});
 		expect(rowBorder).toBe('3px');
 	});
+
+	test('round 5: yellow-conversion doctrine + card parity + bolder rails', async ({ page }) => {
+		const AMBER = 'rgb(255, 182, 39)'; // #FFB627 --accent (theme-invariant)
+		const SIGNAGE_INK = 'rgb(28, 24, 20)'; // #1C1814 --signage-bg
+		const LIGHT_PRIMARY = 'rgb(157, 82, 0)'; // #9D5200
+
+		// Contact submit = THE yellow conversion button (signage pair, light too).
+		await page.goto('/contact', { waitUntil: 'networkidle' });
+		const submit = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="contact-submit"]');
+			if (!el) return null;
+			const s = getComputedStyle(el);
+			return { bg: s.backgroundColor, ink: s.color };
+		});
+		expect(submit).toEqual({ bg: AMBER, ink: SIGNAGE_INK });
+
+		// Hero: contact CTA yellow, projects CTA stays orange (≤1 yellow per view).
+		await page.goto('/', { waitUntil: 'networkidle' });
+		const hero = await page.evaluate(() => {
+			const contact = document.querySelector('[data-testid="hero-cta-contact"]');
+			const projects = document.querySelector('[data-testid="hero-cta-projects"]');
+			return {
+				contactBg: contact ? getComputedStyle(contact).backgroundColor : null,
+				projectsBg: projects ? getComputedStyle(projects).backgroundColor : null,
+			};
+		});
+		expect(hero.contactBg).toBe(AMBER);
+		expect(hero.projectsBg).toBe(LIGHT_PRIMARY);
+
+		// Closer CTA = solid yellow signage button.
+		const closerCta = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="closer-cta"]');
+			if (!el) return null;
+			const s = getComputedStyle(el);
+			return { bg: s.backgroundColor, ink: s.color };
+		});
+		expect(closerCta).toEqual({ bg: AMBER, ink: SIGNAGE_INK });
+
+		// R5-2 card parity: project card chassis = bare 3px frame, no inset
+		// route strip in the box-shadow stack. (Chrome serializes shadows as
+		// "color X Y blur spread inset" — the old strip read "2px 0px 0px 0px inset".)
+		await page.goto('/projects', { waitUntil: 'networkidle' });
+		const cardShadow = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="project-card"] .card-surface');
+			return el ? getComputedStyle(el).boxShadow : null;
+		});
+		expect(cardShadow).toBeTruthy();
+		expect(cardShadow).not.toContain('2px 0px 0px 0px inset');
+
+		// R5-3 bolder rails: the edge-title rule draws at 2px.
+		const railWidth = await page.evaluate(() => {
+			const el = document.querySelector('.accent-rail');
+			return el ? (el as HTMLElement).offsetWidth : null;
+		});
+		expect(railWidth).toBe(2);
+	});
 });
 
 test.describe('theme toggle behaviour', () => {

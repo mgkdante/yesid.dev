@@ -236,6 +236,108 @@ describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
 	});
 });
 
+describe('GO2-W5 round 5 — closer: fun SVGs, card parity, bolder rails, yellow-conversion doctrine', () => {
+	const read = (rel: string) => readFileSync(resolve(SRC, rel), 'utf-8');
+
+	it('R5-1 — home service art is the hero again (128px tile / 96px art) with the light-register remap', () => {
+		const home = read('lib/components/home/HomeServices.svelte');
+		expect(home).toMatch(/button\.services-svg-panel \{[\s\S]*?width: 128px;\s*\n\t*height: 128px;/);
+		expect(home).toMatch(/\.svg-inline-wrapper \{\s*\n\t*width: 96px;\s*\n\t*height: 96px;/);
+		// ~40% of the art strokes var(--accent) (#FFB627, theme-unmapped) —
+		// remapped to --line-amber inside the art scope so it survives paper.
+		expect(home).toMatch(/\.svg-inline-wrapper \{[\s\S]*?--accent: var\(--line-amber\);/);
+	});
+
+	it('R5-1 — services panel runs the same remap + the fluid icon cap (desktop only)', () => {
+		const panel = read('lib/components/services/ServiceSvgPanel.svelte');
+		expect(panel).toMatch(/\.svg-art \{[\s\S]*?--accent: var\(--line-amber\);/);
+		expect(panel).toMatch(/@media \(min-width: 768px\) \{[\s\S]*?width: min\(224px, 100%\) !important;/);
+		// Panel-wide hover drives the morph.
+		expect(panel).toContain('hovered={panelHovered}');
+	});
+
+	it('R5b — four stations, uniform 2-up desktop grid on home', () => {
+		expect(read('lib/components/home/HomeServices.svelte')).toContain('lg:grid-cols-2');
+		expect(read('lib/components/home/HomeServices.svelte')).not.toContain('lg:grid-cols-3');
+	});
+
+	it('R5-2 — ProjectCard chassis is EXACTLY the blog list card (no extra inset route strip)', () => {
+		const card = read('lib/components/projects/ProjectCard.svelte');
+		// The round-1 "route lights up" inset painted a 2px primary band inside
+		// the left border — the chassis must be the bare .card-surface + 3px.
+		expect(card).not.toContain('inset 2px 0 0');
+		expect(card).toMatch(/\.project-card :global\(\.card-surface\) \{\s*\n\t*border-width: 3px;/);
+	});
+
+	it('R5-3 — listing rails one step bolder (2px rule @35%, dots up a step) in blog/projects/contact', () => {
+		for (const f of [
+			'routes/[[lang=locale]]/blog/+layout.svelte',
+			'routes/[[lang=locale]]/projects/+layout.svelte',
+		]) {
+			const layout = readFileSync(resolve(SRC, f), 'utf-8');
+			expect(layout, f).toContain('grid-template-columns: auto 2px 1fr;');
+			expect(layout, f).toMatch(/\.accent-rail \{[\s\S]*?color-mix\(in srgb, var\(--primary\) 35%, transparent\)/);
+			expect(layout, f).toMatch(/\.metro-line \{\s*\n\t*width: 2px;/);
+			expect(layout, f).toMatch(/\.metro-dot-lg \{\s*\n\t*width: 10px;/);
+		}
+		const contact = read('lib/components/contact/ContactPage.svelte');
+		expect(contact).toContain('grid-template-columns: auto 2px 1fr;');
+		expect(contact).toMatch(/\.accent-rail \{[\s\S]*?color-mix\(in srgb, var\(--primary\) 35%, transparent\)/);
+	});
+
+	it('R5-3 — metro timeline spine draws at 3px with the bolder 32px roundel', () => {
+		const metro = read('lib/components/brand/MetroStation.svelte');
+		expect(metro).toContain('viewBox="0 0 3 100"');
+		expect(metro.match(/stroke-width="3"/g)?.length).toBe(2);
+		expect(metro).toMatch(/\.station-badge-wrapper :global\(\.station-number-badge\) \{[\s\S]*?width: 2rem;/);
+	});
+
+	it('R5c — yellow-conversion doctrine: the conversion variant exists and carries the signage pair', () => {
+		const button = read('lib/components/ui/button/button.svelte');
+		expect(button).toContain('conversion: "bg-accent text-signage-bg hover:bg-accent-hover');
+		// The signage utilities must stay mapped in the Tailwind theme.
+		const appCss = readFileSync(resolve(process.cwd(), 'src/app.css'), 'utf-8');
+		expect(appCss).toContain('--color-signage-bg: var(--signage-bg);');
+		expect(appCss).toContain('--color-signage-text: var(--signage-text);');
+	});
+
+	it('R5c — every conversion-to-contact moment is yellow (≤1 per view): contact submit, hero contact, about send, closer CTA', () => {
+		expect(read('lib/components/contact/ContactPage.svelte')).toMatch(
+			/<Button variant="conversion" size="cta" type="submit"/,
+		);
+		expect(read('lib/components/home/HeroTextContent.svelte')).toMatch(
+			/<Button variant="conversion"[^>]*data-testid="hero-cta-contact"/,
+		);
+		expect(read('lib/components/about/AboutCta.svelte')).toMatch(
+			/<Button variant="conversion" size="cta" href=\{cta\.buttonHref\}/,
+		);
+		const closer = read('lib/components/home/HomeCloser.svelte');
+		expect(closer).toMatch(/\.closer-cta \{[\s\S]*?color: var\(--signage-bg\);[\s\S]*?background: var\(--accent\);/);
+		expect(closer).toMatch(/\.closer-cta:hover \{[\s\S]*?background: var\(--accent-hover\);/);
+	});
+
+	it('R5c — everything else stays orange: deep dives + view-alls keep primary; stack-engine untouched', () => {
+		// Deep-dive CTAs (services listing/detail) stay route-set orange.
+		expect(read('lib/components/services/ServiceCard.svelte')).toMatch(
+			/\.deep-dive-cta \{[\s\S]*?background: var\(--primary\);/,
+		);
+		// Home view-all links stay orange.
+		expect(read('lib/components/home/HomeServices.svelte')).toMatch(
+			/\.home-view-all \{\s*\n\t*color: var\(--primary\);/,
+		);
+		// Hero projects CTA stays the default orange variant.
+		expect(read('lib/components/home/HeroTextContent.svelte')).toMatch(
+			/<Button variant="default"[^>]*data-testid="hero-cta-projects"/,
+		);
+		// Stack-engine is out of scope (engine branch owns its CTA).
+		const engineDir = resolve(SRC, 'lib/components/stack-engine');
+		const engineHits = walk(engineDir).filter((f) =>
+			readFileSync(f, 'utf-8').includes('variant="conversion"'),
+		);
+		expect(engineHits).toEqual([]);
+	});
+});
+
 describe('GO-W2.2 T7 — art direction', () => {
 	const closer = readFileSync(resolve(SRC, 'lib/components/home/HomeCloser.svelte'), 'utf-8');
 	const error = readFileSync(resolve(SRC, 'lib/components/home/ErrorIllustration.svelte'), 'utf-8');

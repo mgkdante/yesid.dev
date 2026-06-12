@@ -230,25 +230,14 @@
 
 	/* Round-4: dividers between list items one step thicker — the project-card
 	   frame steps 2px → 3px (round-3 divider progression applied to listing
-	   list items; shared ui/card elsewhere stays 2px). */
+	   list items; shared ui/card elsewhere stays 2px).
+	   Round 5 card parity (operator): the chassis is EXACTLY the blog list
+	   card's — same width (3px), color (--border-brand via .card-surface) and
+	   radius (--radius-lg), both modes. The round-1 "route lights up" inset
+	   left strip is gone: it painted a 2px primary band inside the left border
+	   and made the project frame read 5px vs the blog row's clean 3px. */
 	.project-card :global(.card-surface) {
 		border-width: 3px;
-	}
-
-	/* GO2-W5 "route lights up": hover sets the route — an inset left route
-	   strip brightens from 35% primary to the full route-set aspect.
-	   box-shadow only (zero layout); composes the card bevel + hover glow. */
-	.project-card :global(.card-surface) {
-		box-shadow:
-			inset 2px 0 0 color-mix(in srgb, var(--primary) 35%, transparent),
-			inset 0 1px 0 var(--edge-highlight);
-	}
-	.project-card:hover :global(.card-surface),
-	.project-card:active :global(.card-surface) {
-		box-shadow:
-			inset 2px 0 0 var(--primary),
-			inset 0 1px 0 var(--edge-highlight),
-			var(--shadow-section);
 	}
 
 	/* GO-w2t5 retier: large-surface image scale is MOTION-GATED — rest under
