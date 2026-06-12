@@ -273,4 +273,36 @@ describe('Design System Tokens', () => {
       expect(labelStation).toContain('color: var(--accent-text);');
     });
   });
+
+  describe('GO2-W5 final batch (6c) — the asphalt footer (operator: BELOVED; never repave)', () => {
+    // The footer paints bg-[var(--muted)] (wiring locked in
+    // style-regressions). These pins make the STREET values themselves
+    // immovable: dark --muted is the asphalt road surface — #1E1E1E exactly,
+    // a NEUTRAL grey (round 1's warm #251E18 repave is the historical
+    // failure mode; round 2 restored asphalt). Light --muted stays the
+    // approved station paper. Both attribute blocks and the
+    // prefers-color-scheme fallbacks must agree.
+    const darkBlock = tokensCSS.match(/\[data-theme="dark"\], \.theme-dark \{([\s\S]*?)\n\}/)?.[1] ?? '';
+    const lightBlock = tokensCSS.match(/\[data-theme="light"\], \.theme-light \{([\s\S]*?)\n\}/)?.[1] ?? '';
+    const mediaDark = tokensCSS.match(/@media \(prefers-color-scheme: dark\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+    const mediaLight = tokensCSS.match(/@media \(prefers-color-scheme: light\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+    it('dark --muted is asphalt: #1E1E1E exactly (the street the footer paints)', () => {
+      expect(darkBlock).toContain('--muted: #1E1E1E;');
+      expect(mediaDark).toContain('--muted: #1E1E1E;');
+    });
+
+    it('the asphalt is a NEUTRAL grey — equal RGB channels, no warm bakelite repave', () => {
+      const m = darkBlock.match(/--muted: #([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2});/);
+      expect(m).not.toBeNull();
+      const [, r, g, b] = m!;
+      expect(r.toUpperCase()).toBe(g.toUpperCase());
+      expect(g.toUpperCase()).toBe(b.toUpperCase());
+    });
+
+    it('light --muted is the approved station paper: #F1E9DA exactly', () => {
+      expect(lightBlock).toContain('--muted: #F1E9DA;');
+      expect(mediaLight).toContain('--muted: #F1E9DA;');
+    });
+  });
 });

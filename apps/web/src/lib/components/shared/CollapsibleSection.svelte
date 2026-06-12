@@ -29,6 +29,25 @@
 		icon?: Snippet;
 		children?: Snippet;
 	} = $props();
+
+	// GO2-W5 final batch (6d): the WHOLE card is the toggle surface.
+	// Interactive children take priority — a click that originates inside a
+	// link/button/input never toggles. The header button matches 'button'
+	// here too, which is exactly right: its own bits-ui trigger already
+	// toggles, so skipping it prevents a double-toggle. The header stays the
+	// semantic button (aria-expanded, keyboard) — this handler is a pointer
+	// convenience on top.
+	const INTERACTIVE_CHILD = 'a,button,input,select,textarea,[role="button"]';
+	function onCardClick(event: MouseEvent) {
+		const target = event.target as Element | null;
+		if (!target) return;
+		if (target.closest(INTERACTIVE_CHILD)) return;
+		// A nested card owns its own clicks — never toggle an ancestor card.
+		if (target.closest('[data-slot="card"]') !== event.currentTarget) return;
+		// A click that ends a text selection is content interaction, not a toggle.
+		if (window.getSelection()?.toString()) return;
+		open = !open;
+	}
 </script>
 
 {#snippet headerContent()}
@@ -47,7 +66,11 @@
   --accent CSS custom property propagates accentColor into the style block.
   Collapsible.Root renders a div that we use as the card wrapper.
 -->
-<Card class="section-card" style="--accent: {accentColor};">
+<Card
+	class="section-card {collapsible ? 'section-card--toggleable' : ''}"
+	style="--accent: {accentColor};"
+	onclick={collapsible ? onCardClick : undefined}
+>
 	<Collapsible bind:open>
 		{#if collapsible}
 			<CollapsibleTrigger>
@@ -90,6 +113,36 @@
 
 	:global([data-slot="card"].section-card:hover) {
 		border-color: var(--accent);
+	}
+
+	/* GO2-W5 final batch (6d): the whole card is the toggle surface — pointer
+	   affordance + the fun-pass tap-press tier (scale .97 / opacity .92,
+	   ProjectCard precedent) on the NON-INTERACTIVE surface only. Presses that
+	   start on interactive children (links/buttons/inputs — they keep priority
+	   and their own feedback, incl. the header button) don't press the shell.
+	   Extra .section-card qualifier outranks card.svelte's scoped transition. */
+	:global([data-slot="card"].section-card.section-card--toggleable) {
+		cursor: pointer;
+		transition:
+			border-color var(--duration-normal) var(--ease-default),
+			box-shadow var(--duration-normal) var(--ease-default),
+			scale 120ms cubic-bezier(0.2, 0, 0, 1),
+			opacity 120ms cubic-bezier(0.2, 0, 0, 1);
+	}
+	:global([data-slot="card"].section-card.section-card--toggleable:active:not(
+		:has(a:active, button:active, input:active, select:active, textarea:active, [role="button"]:active)
+	)) {
+		scale: 0.97;
+		opacity: 0.92;
+	}
+	/* tap-press contract: reduced motion drops the timing, keeps the :active
+	   state change (color transitions stay — SAFE-ALWAYS). */
+	@media (prefers-reduced-motion: reduce) {
+		:global([data-slot="card"].section-card.section-card--toggleable) {
+			transition:
+				border-color var(--duration-normal) var(--ease-default),
+				box-shadow var(--duration-normal) var(--ease-default);
+		}
 	}
 
 	:global([data-slot="card"].section-card:hover .section-title) {

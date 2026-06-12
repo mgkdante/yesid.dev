@@ -407,3 +407,70 @@ describe('GO2-W5 round 6 — transparent terminus, detail SVGs back, top-band pa
 		expect(read('lib/components/services/ServiceDetailPage.svelte')).toMatch(backdrop);
 	});
 });
+
+describe('GO2-W5 final batch (6b) — ONE tape at the footer seam', () => {
+	// The footer's platform-edge hazard tape owns the footer seam (round 4).
+	// A page whose template ENDS with its own hazard separator stacks TWO
+	// tapes at that seam (operator QA caught About + the error page doing
+	// this). Rule: after the LAST page-level hazard separator there must be
+	// real rendered content — otherwise the tape sits against the footer.
+	const PAGE_TEMPLATES = [
+		'lib/components/home/HomePage.svelte',
+		'lib/components/about/AboutPage.svelte',
+		'lib/components/contact/ContactPage.svelte',
+		'lib/components/projects/ProjectListingPage.svelte',
+		'lib/components/projects/ProjectDetailPage.svelte',
+		'lib/components/services/ServiceListingPage.svelte',
+		'lib/components/services/ServiceDetailPage.svelte',
+		'lib/components/blog/BlogListingPage.svelte',
+		'lib/components/blog/BlogDetailPage.svelte',
+		'routes/[[lang=locale]]/tech-stack/+page.svelte',
+		'routes/+error.svelte',
+	];
+
+	it.each(PAGE_TEMPLATES)(
+		'%s does not end with a hazard separator (footer platform edge owns the seam)',
+		(rel) => {
+			const src = readFileSync(resolve(SRC, rel), 'utf-8');
+			const template = src.split(/<style[\s>]/)[0];
+			const lastHazard = template.lastIndexOf('variant="hazard"');
+			if (lastHazard === -1) return; // page renders no tape of its own — fine
+			const after = template.slice(lastHazard);
+			// Strip the rest of the separator tag, then comments, closing tags
+			// and svelte block closers. Anything left = real content below the
+			// tape; nothing left = the tape is the page bottom (double tape).
+			const tail = after
+				.slice(after.indexOf('>') + 1)
+				.replace(/<!--[\s\S]*?-->/g, '')
+				.replace(/<\/[a-zA-Z][^>]*>/g, '')
+				.replace(/\{\/(if|each|key|await|snippet)\}/g, '')
+				.trim();
+			expect(
+				tail,
+				`${rel}: template ends with a hazard separator — the footer's platform-edge tape already owns this seam`,
+			).not.toBe('');
+		},
+	);
+});
+
+describe('GO2-W5 final batch (6c) — the asphalt footer is BELOVED (never repave)', () => {
+	// Operator: "the footer being that asphalt color was amazing!" The footer
+	// is the street beneath the platform-edge tape: bg-[var(--muted)] — the
+	// asphalt road surface in dark (#1E1E1E, locked in tokens.test) and the
+	// approved station paper in light (#F1E9DA). Wiring locked here so no
+	// future pass repaves the footer onto another surface token.
+	const footer = readFileSync(resolve(SRC, 'lib/components/layout/Footer.svelte'), 'utf-8');
+
+	it('the footer element paints the muted street panel — not background/card/popover', () => {
+		expect(footer).toMatch(/<footer[^>]*class="[^"]*bg-\[var\(--muted\)\]/);
+		expect(footer).not.toMatch(/<footer[^>]*class="[^"]*bg-\[var\(--background\)\]/);
+		expect(footer).not.toMatch(/<footer[^>]*class="[^"]*bg-\[var\(--card\)\]/);
+		expect(footer).not.toMatch(/<footer[^>]*class="[^"]*bg-\[var\(--popover\)\]/);
+	});
+
+	it('the platform-edge tape still sits on the street (hazard tokens, 3px band)', () => {
+		expect(footer).toMatch(
+			/\.footer-gradient-sep \{[\s\S]*?height: 3px;[\s\S]*?var\(--hazard-a\)[\s\S]*?var\(--hazard-b\)/,
+		);
+	});
+});
