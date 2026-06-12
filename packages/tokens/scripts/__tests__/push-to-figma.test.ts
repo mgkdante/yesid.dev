@@ -48,7 +48,7 @@ describe('push-to-figma', () => {
     expect(Object.keys(colorCard!.values).sort()).toEqual(['dark', 'light']);
   });
 
-  it('produces 101 variables (GO2-W5 INTERLOCKING baseline)', () => {
+  it('produces 103 variables (GO2-W5 taste-round-2 baseline)', () => {
     // Sanity check on the overall count. 82 at GO-W2.2 (69 after
     // slice-design's trim + 13: 3 theme-moded colors, 6 surface aliases,
     // 3 border aliases, shadow/sheet). GO2-W5 adds 19: 7 theme-invariant
@@ -58,9 +58,10 @@ describe('push-to-figma', () => {
     // lamp-bezel, line-amber, accent-surface, grid-line-major/minor,
     // grid-block-marker, grid-glow, edge-highlight). destructive-foreground
     // moved brand → per-mode, which re-modes the existing variable without
-    // changing the count.
+    // changing the count. Taste round 2 adds 2: the BOLD structural rules
+    // border/rule + border/rule-accent (solid orange / yellow voices).
     const vars = runScript();
-    expect(vars.length).toBe(101);
+    expect(vars.length).toBe(103);
   });
 
   it('theme re-pins of brand names merge as modes of one variable (no duplicates)', () => {

@@ -87,14 +87,15 @@
 </div>
 
 <style>
-  /* GO2-W5 INTERLOCKING terminal: dark = signal-box black; light = warm
-     CREAM CONSOLE (not stuck-dark, not a white div). border-strong reads as
-     the console chassis edge; titlebar/footer get the chrome strip. */
+  /* GO2-W5 taste round 2: the terminal body IS the site background
+     (--terminal === --background by token contract, SOLID) — identity is
+     carried by the chrome strips, the solid-orange rule chassis and the
+     mono type, never by a special surface color. */
   .terminal {
     display: flex;
     flex-direction: column;
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border-rule);
     background: var(--terminal);
     overflow: hidden;
   }

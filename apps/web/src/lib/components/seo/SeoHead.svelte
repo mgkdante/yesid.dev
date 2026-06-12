@@ -20,7 +20,7 @@
 	let {
 		seo,
 		locale,
-		themeColor = '#171310',
+		themeColor = '#141414',
 		dev = runtimeDev,
 	}: { seo: PageSeo; locale: Locale; themeColor?: string; dev?: boolean } = $props();
 

@@ -12,7 +12,7 @@ describe('theme store', () => {
 		document.head.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.remove());
 		const meta = document.createElement('meta');
 		meta.setAttribute('name', 'theme-color');
-		meta.setAttribute('content', '#171310');
+		meta.setAttribute('content', '#141414');
 		document.head.appendChild(meta);
 		themeStore.set('dark');
 		localStorage.clear();
@@ -31,7 +31,7 @@ describe('theme store', () => {
 		themeStore.set('light');
 		expect(metaThemeColor()).toBe('#F7F2E9');
 		themeStore.set('dark');
-		expect(metaThemeColor()).toBe('#171310');
+		expect(metaThemeColor()).toBe('#141414');
 	});
 
 	it('dispatches a themechange CustomEvent', () => {

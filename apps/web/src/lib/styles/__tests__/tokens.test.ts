@@ -112,21 +112,36 @@ describe('Design System Tokens', () => {
     });
   });
 
-  describe('GO2-W5 INTERLOCKING — warm AA palette + surfaces + color-scheme', () => {
+  describe('GO2-W5 INTERLOCKING (taste round 2) — restored dark board + warm light wall + color-scheme', () => {
     const darkBlock = tokensCSS.match(/\[data-theme="dark"\], \.theme-dark \{([\s\S]*?)\n\}/)?.[1] ?? '';
     const lightBlock = tokensCSS.match(/\[data-theme="light"\], \.theme-light \{([\s\S]*?)\n\}/)?.[1] ?? '';
 
-    it('dark neutrals are the warm bakelite set', () => {
-      expect(darkBlock).toContain('--background: #171310;');
-      expect(darkBlock).toContain('--card: #1F1915;');
-      expect(darkBlock).toContain('--terminal: #0D0A07;');
-      expect(darkBlock).toContain('--muted-foreground: #A09686;');
+    it('dark neutrals are the RESTORED near-black board (amber/bakelite rejected — operator round 2)', () => {
+      expect(darkBlock).toContain('--background: #141414;');
+      expect(darkBlock).toContain('--card: #1a1a1a;');
+      expect(darkBlock).toContain('--muted: #1E1E1E;');
+      expect(darkBlock).toContain('--popover: #2A2A2A;');
+      expect(darkBlock).toContain('--manifesto: #0f0d0a;');
+      expect(darkBlock).toContain('--foreground: #F5F5F0;');
+      expect(darkBlock).toContain('--muted-foreground: #949494;');
+      expect(darkBlock).toContain('--secondary-foreground: #999999;');
     });
 
-    it('dark border scale is not inverted (strong > default > subtle)', () => {
-      expect(darkBlock).toContain('--border: #41382E;');
-      expect(darkBlock).toContain('--border-subtle: #322A22;');
-      expect(darkBlock).toContain('--border-strong: #52473A;');
+    it('terminals ARE the site background in both modes (solid; identity = chrome/border/type)', () => {
+      expect(darkBlock).toContain('--terminal: #141414;');
+      expect(lightBlock).toContain('--terminal: #F7F2E9;');
+    });
+
+    it('dark border scale is the restored neutral ladder (subtle < default < strong)', () => {
+      expect(darkBlock).toContain('--border: #3A3A3A;');
+      expect(darkBlock).toContain('--border-subtle: #2f2f2f;');
+      expect(darkBlock).toContain('--border-strong: #4A4A4A;');
+    });
+
+    it('light borders are HARDER (round 2 — old family was too soft)', () => {
+      expect(lightBlock).toContain('--border: #C9BCA1;');
+      expect(lightBlock).toContain('--border-subtle: #D5C9B2;');
+      expect(lightBlock).toContain('--border-strong: #A08F70;');
     });
 
     it('dark input boundary conforms to 1.4.11 (was #3A3A3A = 1.8:1)', () => {
@@ -136,7 +151,6 @@ describe('Design System Tokens', () => {
     it('light interactive palette is AA-safe on the warm paper', () => {
       expect(lightBlock).toContain('--background: #F7F2E9;');
       expect(lightBlock).toContain('--card: #FFFDF8;');
-      expect(lightBlock).toContain('--terminal: #F6EFE2;');
       expect(lightBlock).toContain('--primary: #9D5200;');
       expect(lightBlock).toContain('--primary-hover: #854500;');
       expect(lightBlock).toContain('--primary-rgb: 157 82 0;');
@@ -169,7 +183,7 @@ describe('Design System Tokens', () => {
     });
 
     it('per-mode signal & infrastructure families exist', () => {
-      expect(darkBlock).toContain('--terminal-chrome: #15100B;');
+      expect(darkBlock).toContain('--terminal-chrome: #0E0E0E;');
       expect(lightBlock).toContain('--terminal-chrome: #EDE3CF;');
       expect(darkBlock).toContain('--terminal-ink: #E9E2D2;');
       expect(lightBlock).toContain('--terminal-ink: #3D362B;');
@@ -194,11 +208,16 @@ describe('Design System Tokens', () => {
       for (const t of [
         '--surface-0: var(--terminal);', '--surface-1: var(--card);', '--surface-2: var(--card);',
         '--surface-3: var(--muted);', '--surface-4: var(--popover);', '--surface-hero: var(--manifesto);',
-        '--border-brand: color-mix(in srgb, var(--primary) 25%, transparent);',
-        '--border-brand-active: color-mix(in srgb, var(--primary) 60%, transparent);',
+        '--border-brand: color-mix(in srgb, var(--primary) 45%, transparent);',
+        '--border-brand-active: color-mix(in srgb, var(--primary) 85%, transparent);',
         '--border-hairline: color-mix(in srgb, var(--foreground) 8%, transparent);',
         '--shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.4);',
       ]) expect(tokensCSS).toContain(t);
+    });
+
+    it('ships the round-2 BOLD structural rules — both voices as solid lines', () => {
+      expect(tokensCSS).toContain('--border-rule: var(--primary);');
+      expect(tokensCSS).toContain('--border-rule-accent: var(--line-amber);');
     });
 
     it('shadow.card folds the platform-lamp catch-light into the token', () => {
@@ -209,7 +228,7 @@ describe('Design System Tokens', () => {
       expect(appCSS).toContain('--shadow-nav: 0 4px 24px rgba(28, 24, 19, 0.1)');
       expect(appCSS).toContain('inset 0 1px 0 var(--edge-highlight)');
       expect(appCSS).toMatch(/\[data-theme="light"\] \.prose-dark pre/);
-      expect(appCSS).toContain('background: #0D0A07 !important;');
+      expect(appCSS).toContain('background: #141414 !important;');
     });
 
     it('app.css grid recipe is the NX track schematic (block markers + fine grid + glow)', () => {
@@ -217,6 +236,18 @@ describe('Design System Tokens', () => {
       expect(appCSS).toContain('var(--grid-block-marker) 0px, transparent 1px, transparent 400px');
       expect(appCSS).toContain('var(--grid-line-major) 0px, transparent 1px, transparent 80px');
       expect(appCSS).toContain('var(--grid-line-minor) 0px, transparent 1px, transparent 16px');
+    });
+
+    it('the page grid paints UNDER content (round-2 solidity: isolate + negative z)', () => {
+      const grid = appCSS.match(/\.circuit-grid \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(grid).toContain('isolation: isolate;');
+      const gridBefore = appCSS.match(/\.circuit-grid::before \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(gridBefore).toContain('z-index: -1;');
+    });
+
+    it('dashed delimitations speak the route-set voice (.divider-dashed = border-rule)', () => {
+      const divider = appCSS.match(/\.divider-dashed \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(divider).toContain('border-top: 1px dashed var(--border-rule);');
     });
 
     it('station labels speak the wayfinding voice (.label-station = accent-text)', () => {

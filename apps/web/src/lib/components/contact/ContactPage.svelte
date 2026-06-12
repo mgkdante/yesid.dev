@@ -527,10 +527,13 @@
 		caret-color: var(--primary);
 	}
 
-	/* ═══ Resize Handle ═══ */
+	/* ═══ Resize Handle ═══
+	   Taste round 2: the grab bar between the two terminals is a real
+	   delimitation — visible border tone idle (var(--card) was invisible on
+	   both boards), full route-set orange on hover. */
 	.contact-grid :global(.contact-resize-handle) {
 		width: 8px;
-		background: var(--card);
+		background: var(--border);
 		border-radius: var(--radius-sm);
 		transition: background var(--duration-fast) var(--ease-default);
 	}

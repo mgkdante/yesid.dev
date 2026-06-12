@@ -87,7 +87,9 @@ test.describe('light mode — per-page audit', () => {
 	test('home closer follows light mode (go2/w4: dark pin removed)', async ({ page }) => {
 		// Operator QA: the closer's pinned-dark wrapper was the "extra layer"
 		// keeping its terminal dark in light mode. Section + terminal now
-		// follow the active theme.
+		// follow the active theme. GO2-W5 taste round 2: the terminal body IS
+		// the site background (--terminal === --background, solid) — identity
+		// lives in chrome/rule-border/type, not a special surface color.
 		await page.goto('/', { waitUntil: 'networkidle' });
 		const closerBg = await page
 			.getByTestId('closer-section')
@@ -97,7 +99,7 @@ test.describe('light mode — per-page audit', () => {
 		const terminalBg = await page
 			.getByTestId('closer-board')
 			.evaluate((el) => getComputedStyle(el).backgroundColor);
-		expect(terminalBg).toBe('rgb(246, 239, 226)'); // --terminal light #F6EFE2 — cream console
+		expect(terminalBg).toBe(LIGHT_BG); // --terminal === --background (round-2 contract)
 	});
 
 	test('muted text resolves to the AA light value', async ({ page }) => {
