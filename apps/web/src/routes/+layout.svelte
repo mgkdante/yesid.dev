@@ -111,7 +111,7 @@
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
 	<div class="relative z-[45]">
-		<Footer {locale} {footerLinks} />
+		<Footer {locale} pathname={$page.url.pathname} {footerLinks} />
 	</div>
 </div>
 
