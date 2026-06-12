@@ -84,9 +84,10 @@
 	.terminal-welcome {
 		padding: 4px 24px 12px;
 	}
+	/* GO2-W5: terminal text speaks console ink — comments/dim = ink-muted. */
 	.terminal-comment {
 		font-size: 14px;
-		color: var(--muted-foreground);
+		color: var(--terminal-ink-muted);
 		font-style: italic;
 	}
 
@@ -111,7 +112,7 @@
 
 	.terminal-line-num {
 		font-size: 12px;
-		color: var(--muted-foreground);
+		color: var(--terminal-ink-muted);
 		user-select: none;
 	}
 
@@ -125,17 +126,17 @@
 
 	.terminal-row-desc {
 		font-size: 15px;
-		color: var(--muted-foreground);
+		color: var(--terminal-ink-muted);
 	}
 	.terminal-row-desc-primary {
 		font-size: 16px;
-		color: var(--secondary-foreground);
+		color: var(--terminal-ink);
 	}
 
 	.terminal-row-action {
 		text-align: right;
 		font-size: 13px;
-		color: var(--muted-foreground);
+		color: var(--terminal-ink-muted);
 		transition: color var(--duration-normal);
 	}
 	.terminal-row-action-primary {

@@ -73,8 +73,8 @@
 	});
 </script>
 
-<footer data-testid="footer" class="relative z-50 bg-[var(--background)]">
-	<!-- Gradient separator -->
+<footer data-testid="footer" class="relative z-50 bg-[var(--muted)]">
+	<!-- GO2-W5 platform edge: the footer's top line is real hazard tape -->
 	<div class="footer-gradient-sep" aria-hidden="true"></div>
 
 	<!-- Row 1: Main content -->
@@ -138,7 +138,10 @@
 				{/each}
 			</nav>
 		{/if}
-		<span class="flex items-center gap-1.5">
+		<!-- Round-4 doctrine: the system status line is a departure-board
+		     readout — the YELLOW voice under the amber departure rule
+		     (the lamp stays the orange route-set aspect). -->
+		<span class="flex items-center gap-1.5 text-[var(--accent-text)]">
 			<StatusDot color="orange" pulse />
 			{statusPrefix} {systemDate}
 		</span>
@@ -147,14 +150,25 @@
 </footer>
 
 <style>
+	/* GO2-W5: platform-edge hazard strip (sm tape geometry, theme-invariant
+	   yellow + warm black — matches the Separator hazard recipe).
+	   Round 3: one step thicker (2px → 3px) with the rest of the structure. */
 	.footer-gradient-sep {
-		height: 1px;
-		background: linear-gradient(90deg, transparent, var(--primary) 20%, var(--primary) 80%, transparent);
-		opacity: var(--opacity-subtle);
+		height: 3px;
+		background: repeating-linear-gradient(
+			-45deg,
+			var(--hazard-a) 0px,
+			var(--hazard-a) 6px,
+			var(--hazard-b) 6px,
+			var(--hazard-b) 12px
+		);
 	}
 
+	/* Taste round 2: the status bar's top line is a BOLD departure-board rule
+	   — the yellow wayfinding voice as structure (was a 6% foreground ghost).
+	   Round 3: one step thicker (1px → 2px). */
 	.footer-status-border {
-		border-top: 1px solid color-mix(in srgb, var(--foreground) 6%, transparent);
+		border-top: 2px solid var(--border-rule-accent);
 	}
 
 	footer {

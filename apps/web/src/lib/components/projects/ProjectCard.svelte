@@ -70,6 +70,16 @@
 		'web-development': ['var(--accent)', 'var(--primary)']
 	};
 
+	// GO2-W5 STM line bullets: each service chip carries its line color —
+	// database = orange line, pipeline = yellow line (line-amber survives
+	// daylight), analytics = green line, web = lunar white.
+	const SERVICE_LINE_COLORS: Record<string, string> = {
+		'database-engineering': 'var(--primary)',
+		'data-pipeline': 'var(--line-amber)',
+		'analytics-reporting': 'var(--signal-proceed)',
+		'web-development': 'var(--signal-lunar)'
+	};
+
 	let gradientColors = $derived(
 		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['var(--primary)', 'var(--accent)']
 	);
@@ -147,7 +157,7 @@
 					<div class="flex flex-wrap gap-1.5">
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1.5"
+							class="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5"
 							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
@@ -159,6 +169,11 @@
 									/>
 								</div>
 							{/if}
+							<span
+								class="line-bullet"
+								style="background: {SERVICE_LINE_COLORS[service.id] ?? 'var(--signal-lunar)'};"
+								aria-hidden="true"
+							></span>
 							<span class="font-mono text-caption leading-tight text-[var(--foreground)]">
 								{resolveLocale(service.title, locale)}
 							</span>
@@ -202,6 +217,27 @@
 		border: none;
 		background: transparent;
 		border-radius: 0;
+	}
+
+	/* GO2-W5 STM line bullet — the service's line color as a roundel dot. */
+	.line-bullet {
+		display: inline-block;
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	/* Round-4: dividers between list items one step thicker — the project-card
+	   frame steps 2px → 3px (round-3 divider progression applied to listing
+	   list items; shared ui/card elsewhere stays 2px).
+	   Round 5 card parity (operator): the chassis is EXACTLY the blog list
+	   card's — same width (3px), color (--border-brand via .card-surface) and
+	   radius (--radius-lg), both modes. The round-1 "route lights up" inset
+	   left strip is gone: it painted a 2px primary band inside the left border
+	   and made the project frame read 5px vs the blog row's clean 3px. */
+	.project-card :global(.card-surface) {
+		border-width: 3px;
 	}
 
 	/* GO-w2t5 retier: large-surface image scale is MOTION-GATED — rest under

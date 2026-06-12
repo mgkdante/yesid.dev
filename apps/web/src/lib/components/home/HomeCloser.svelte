@@ -200,10 +200,13 @@
 <style>
 	/* go2/w4 operator QA: the GO-W2.2 .theme-dark pin is REMOVED — it read as
 	   an extra dark layer and kept the closer terminal dark in light mode.
-	   The section (and the TerminalChrome board inside) now follows the
-	   active theme: light terminals in light mode, dark in dark. */
+	   GO2-W5 round 6 (operator): the section paints NOTHING of its own —
+	   transparent in both themes so the page's circuit-grid schematic shows
+	   through the terminus. Solidity lives in the terminal board inside
+	   (--terminal === --background, the round-2 contract), never on the
+	   section wrapper. */
 	.closer-section {
-		background: var(--background);
+		background: transparent;
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
@@ -249,9 +252,10 @@
 	}
 
 	/* ===== CTA ===== */
-	/* go2/w4: accent → accent-text (theme-aware AA). Dark is byte-identical
-	   (--accent-text is #FFB627 there); light gets the AA gold #8A6400 now
-	   that the section follows the active theme. */
+	/* Round 5c YELLOW-CONVERSION doctrine: "Initialize connection ->" is the
+	   terminus conversion action — a SOLID yellow signage button, not a ghost
+	   outline. Theme-invariant pair (--accent #FFB627 ground, --signage-bg
+	   #1C1814 ink, ≈10:1 both modes); hover per the accent system. */
 	.closer-cta {
 		display: inline-flex;
 		align-items: center;
@@ -259,20 +263,21 @@
 		font-family: var(--font-mono);
 		font-size: 15px;
 		font-weight: 600;
-		color: var(--accent-text);
+		color: var(--signage-bg);
+		background: var(--accent);
 		text-decoration: none;
 		padding: 16px 28px;
 		min-height: 44px;
-		border: 1px solid color-mix(in srgb, var(--accent-text) 30%, transparent);
+		border: 1px solid transparent;
 		border-radius: var(--radius-sm);
 		margin-block-end: 28px;
 		transition: background-color var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default), color var(--duration-normal) var(--ease-default);
 		letter-spacing: 0.5px;
 	}
+	/* Color-only hover — pressBounce owns this element's transform. */
 	.closer-cta:hover {
-		background: color-mix(in srgb, var(--accent-text) 8%, transparent);
-		border-color: color-mix(in srgb, var(--accent-text) 60%, transparent);
-		color: var(--foreground);
+		background: var(--accent-hover);
+		color: var(--signage-bg);
 	}
 	.closer-cta-arrow {
 		transition: transform var(--duration-normal);

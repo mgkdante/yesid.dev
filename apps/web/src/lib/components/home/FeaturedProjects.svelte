@@ -270,10 +270,14 @@
 	/* Card frame — brand-aligned card-surface pattern. Grid with overlap:
 	   image and title share row 1 (title align-self: end pins it to the
 	   image's bottom edge); footer is row 2. No empty space anywhere. */
+	/* GO2-W5: surface-1 now aliases --card (tokens.json flip) so the panel
+	   lifts solid off the board; inset bevel = panel catching the lamp.
+	   Round 3: brand grid at 2px. */
 	.proof-card {
 		background: var(--surface-1);
-		border: 1px solid var(--border-brand);
+		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-lg);
+		box-shadow: inset 0 1px 0 var(--edge-highlight);
 		padding: 0;
 		margin: 0;
 		height: clamp(32rem, 70dvh, 50rem);
@@ -291,7 +295,7 @@
 
 	.proof-card:hover {
 		border-color: var(--border-brand-active);
-		box-shadow: var(--shadow-section);
+		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 		transform: translateY(-3px);
 	}
 
@@ -329,9 +333,11 @@
 		background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
 	}
 
-	/* "01 / FEATURED" marker — brand-orange mono caption at top-left of image. */
+	/* "01 / FEATURED" marker — mono caption at top-left of image. Round-4
+	   doctrine: station markers are wayfinding overlines — the YELLOW voice
+	   (label-station precedent; accent-text = AA amber both modes). */
 	.proof-marker {
-		color: var(--primary);
+		color: var(--accent-text);
 		font-family: var(--font-mono);
 		font-size: 0.875rem;
 		letter-spacing: 0.22em;
@@ -367,13 +373,16 @@
 
 	.proof-card[data-active='true'] {
 		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
-		box-shadow: var(--shadow-section);
+		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 	}
 
 	/* Title — overlays the image's bottom via grid overlap on desktop;
 	   normal flow below the image on mobile. Translates by --parallax-x /
 	   --parallax-y (set by cardParallax) so it drifts slightly toward the
-	   cursor. */
+	   cursor. Round-4 doctrine: key headline words over the photo gradient
+	   speak the WHITE reflective voice (theme-invariant — the gradient
+	   ground is near-black in both modes); the orange glow stays as the
+	   signage catch-light. */
 	.proof-title {
 		grid-row: 1;
 		grid-column: 1;
@@ -385,7 +394,7 @@
 		font-weight: 800;
 		font-size: 2rem;
 		line-height: 1.05;
-		color: var(--primary);
+		color: var(--reflective);
 		letter-spacing: -0.02em;
 		text-transform: uppercase;
 		pointer-events: none;
@@ -435,12 +444,13 @@
 		margin-bottom: 0.25rem;
 	}
 
+	/* Round-4 doctrine: metric/number callouts speak the YELLOW voice. */
 	.proof-metric-value {
 		font-family: var(--font-heading);
 		font-weight: 800;
 		font-size: 1.875rem;
 		line-height: 1;
-		color: var(--primary);
+		color: var(--accent-text);
 		letter-spacing: -0.02em;
 	}
 
@@ -506,7 +516,9 @@
 		border-color: color-mix(in srgb, var(--primary) 55%, transparent);
 	}
 
-	/* Carousel position counter — mono caption, brand-orange. */
+	/* Carousel position counter — mono caption. Round-4 doctrine: a position
+	   readout is a departure-board value — the YELLOW voice (the arrows next
+	   to it stay orange: they're the interactive controls). */
 	.proof-count {
 		display: inline-flex;
 		align-items: baseline;
@@ -519,17 +531,17 @@
 	.proof-count-current {
 		font-size: 1rem;
 		font-weight: 700;
-		color: var(--primary);
+		color: var(--accent-text);
 	}
 
 	.proof-count-sep {
 		font-size: 0.875rem;
-		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		color: color-mix(in srgb, var(--accent-text) 85%, transparent);
 	}
 
 	.proof-count-total {
 		font-size: 0.875rem;
-		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		color: color-mix(in srgb, var(--accent-text) 85%, transparent);
 	}
 
 	/* Shared "View all ___ →" link styling — unified with HomeServices

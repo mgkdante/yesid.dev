@@ -30,11 +30,7 @@
 		svgEl?: SVGSVGElement;
 	}
 
-	let {
-		svg,
-		containerEl = $bindable(),
-		svgEl = $bindable(),
-	}: Props = $props();
+	let { svg, containerEl = $bindable(), svgEl = $bindable() }: Props = $props();
 
 	onMount(() => {
 		if (!containerEl) return;
@@ -106,9 +102,13 @@
 	});
 </script>
 
+<!-- go2/w5 taste-2: the in-frame STM/REM legend is REMOVED (it overlapped the
+     map art on mobile). The art is named by ONE caption instead — rendered by
+     HeroBanner at the metro wrapper's bottom strip, outside this frame, so it
+     can never overlap the SVG at any breakpoint. -->
 <div
 	bind:this={containerEl}
-	class="metro-network-frame flex max-h-[80dvh] w-full items-center justify-center"
+	class="metro-network-frame relative flex max-h-[80dvh] w-full items-center justify-center"
 	data-testid="metro-network-container"
 >{@html svg}</div>
 

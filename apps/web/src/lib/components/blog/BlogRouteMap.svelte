@@ -192,9 +192,16 @@
     opacity: 0.8;
   }
 
-  /* ── Station nodes ─────────────────────────────────────────── */
+  /* ── Station nodes ─────────────────────────────────────────────
+     GO2-W5 métro-map recipe: white-core station dots with a colored ring,
+     Montréal-map style. Round-4 doctrine: the core is the WHITE reflective
+     voice (var(--reflective), theme-invariant — var(--card) was dark in
+     dark mode). Current position rides the yellow line (--line-amber
+     survives daylight, graphics ≥3:1). */
   .route-station--major {
-    fill: var(--blog-accent, var(--primary));
+    fill: var(--reflective);
+    stroke: var(--blog-accent, var(--primary));
+    stroke-width: 2;
     opacity: 0.25;
     transition:
       opacity var(--duration-normal, 200ms) var(--ease-default, ease),
@@ -202,14 +209,17 @@
   }
 
   .route-station--minor {
-    fill: var(--blog-accent, var(--primary));
+    fill: var(--reflective);
+    stroke: var(--blog-accent, var(--primary));
+    stroke-width: 1.5;
     opacity: 0.15;
     transition: opacity var(--duration-normal, 200ms) var(--ease-default, ease);
   }
 
   .route-station--active {
+    stroke: var(--line-amber, var(--accent));
     opacity: 1;
-    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--blog-accent, var(--primary)) 40%, transparent));
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--line-amber, var(--accent)) 40%, transparent));
   }
 
   .route-station--passed {

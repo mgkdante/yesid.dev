@@ -64,6 +64,22 @@ describe('Nav — Pill Structure', () => {
 
 });
 
+describe('Nav — mobile compaction (go2/w5)', () => {
+	// The wordmark anchor carries .nav-wordmark: white-space nowrap +
+	// flex-shrink 0 so "yesid." can NEVER wrap, no matter how narrow the
+	// viewport gets. Geometry is asserted in tests/mobile/nav.spec.ts
+	// (Playwright viewport matrix); this locks the CSS hook in place.
+	it('wordmark anchor carries the nav-wordmark no-wrap hook', () => {
+		render(Nav);
+		expect(screen.getByTestId('nav-wordmark')).toHaveClass('nav-wordmark');
+	});
+
+	it('exactly one theme toggle lives in the chrome (nav owns it)', () => {
+		render(Nav);
+		expect(screen.getAllByTestId('theme-toggle')).toHaveLength(1);
+	});
+});
+
 describe('Nav — locale threading (slice-28.6)', () => {
 	it('renders link labels via resolveLocale — fr prop yields fr labels', () => {
 		render(Nav, {

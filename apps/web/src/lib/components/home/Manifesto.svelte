@@ -212,13 +212,16 @@
 		cursor: crosshair;
 	}
 
-	/* ── BG Layer 1: Circuit Grid ────────────────────────────────── */
+	/* ── BG Layer 1: Circuit Grid ─────────────────────────────────────
+	   Round-4 home-art bolden (operator: "don't forget the blueprints on
+	   the home page"): grid lines 3.5% → 6%, solder dots up a step — the
+	   manifesto schematic reads in both modes instead of subliminal. */
 	.manifesto__circuit-grid {
 		position: absolute;
 		inset: 0;
 		background-image:
-			repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px),
-			repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 3.5%, transparent) 0px, color-mix(in srgb, var(--primary) 3.5%, transparent) 1px, transparent 1px, transparent 80px);
+			repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 6%, transparent) 0px, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px, transparent 80px),
+			repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 6%, transparent) 0px, color-mix(in srgb, var(--primary) 6%, transparent) 1px, transparent 1px, transparent 80px);
 		z-index: var(--z-base);
 	}
 
@@ -227,10 +230,10 @@
 		position: absolute;
 		inset: 0;
 		background-image:
-			radial-gradient(circle 2.5px at 80px 80px, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 4px),
-			radial-gradient(circle 2px at 160px 160px, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 3px),
-			radial-gradient(circle 2.5px at 240px 80px, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 4px),
-			radial-gradient(circle 2px at 80px 240px, color-mix(in srgb, var(--primary) 6%, transparent) 0%, transparent 3px);
+			radial-gradient(circle 2.5px at 80px 80px, color-mix(in srgb, var(--primary) 18%, transparent) 0%, transparent 4px),
+			radial-gradient(circle 2px at 160px 160px, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 3px),
+			radial-gradient(circle 2.5px at 240px 80px, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 4px),
+			radial-gradient(circle 2px at 80px 240px, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 3px);
 		background-size: 320px 320px;
 	}
 
