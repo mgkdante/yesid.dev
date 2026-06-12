@@ -118,7 +118,7 @@ describe('FeaturedProjects', () => {
 		expect(tags.map((tag) => tag.textContent)).toEqual(['etl', 'transit']);
 	});
 
-	it('renders optional location and environment metadata when present', () => {
+	it('renders environment metadata only — never location (worldwide work)', () => {
 		const project = projectFactory.build({
 			slug: 'synthetic-meta',
 			location: 'Québec, CA',
@@ -131,10 +131,10 @@ describe('FeaturedProjects', () => {
 				services,
 			},
 		});
-		expect(screen.getByTestId('proof-project-meta').textContent).toBe('Québec, CA · Production');
+		expect(screen.getByTestId('proof-project-meta').textContent).toBe('Production'); // location banned by operator — worldwide ;)
 	});
 
-	it('omits the project metadata line when location and environment are empty', () => {
+	it('omits the project metadata line when environment is empty', () => {
 		const project = projectFactory.build({
 			slug: 'synthetic-no-meta',
 			location: '',

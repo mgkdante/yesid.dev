@@ -120,7 +120,7 @@ test('home cards: solid card chassis (3px blog parity) + tamed image band', asyn
 		img: el.querySelector('[data-testid="proof-card-image"]')!.getBoundingClientRect().height,
 		card: el.getBoundingClientRect().height,
 	}));
-	expect(band.img).toBeLessThan(band.card * 0.5);
+	expect(band.img).toBeLessThan(band.card * 0.62); // round 8: bigger band by operator order — still must not dominate
 
 	// Active slide spotlight keeps the fun pass: in color (grayscale(0)).
 	const activeImg = page.locator('.proof-card[data-active="true"] .proof-img');

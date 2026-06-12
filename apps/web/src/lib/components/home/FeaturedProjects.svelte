@@ -130,9 +130,8 @@
 	}
 
 	function projectMeta(project: Project): string {
-		return [project.location?.trim() ?? '', formatEnvironment(project.environment)]
-			.filter(Boolean)
-			.join(' · ');
+		// Operator: no location — the work is worldwide. Environment only.
+		return formatEnvironment(project.environment);
 	}
 
 	// Embla carousel — infinite loop. The library handles slide cloning
@@ -421,7 +420,7 @@
 		   Row 2 is a bare 1fr (= minmax(auto, 1fr)): the auto floor lets the
 		   track GROW with content (narrow cards, wrapped labels) instead of
 		   letting the footer spill past the card edge. */
-		grid-template-rows: clamp(11rem, 26dvh, 16rem) 1fr;
+		grid-template-rows: clamp(15rem, 38dvh, 22rem) 1fr; /* round 8: bigger hero band — content earned its balance */
 		grid-template-columns: 1fr;
 		transition:
 			border-color var(--duration-normal) var(--ease-default),
