@@ -33,3 +33,31 @@ describe('MetroNetwork', () => {
 	// class application) still requires E2E (Playwright) — unit tests verify
 	// the container renders + the prop is inlined.
 });
+
+describe('MetroNetwork — STM/REM legend (go2/w5)', () => {
+	const svg = '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
+
+	it('renders the legend with both labels when provided', () => {
+		const { container } = render(MetroNetwork, {
+			props: { svg, legendStm: 'STM MÉTRO', legendRem: 'REM LIGHT RAIL' },
+		});
+		const legend = container.querySelector('[data-testid="metro-legend"]');
+		expect(legend).toBeInTheDocument();
+		expect(legend?.textContent).toContain('STM MÉTRO');
+		expect(legend?.textContent).toContain('REM LIGHT RAIL');
+	});
+
+	it('legend is decorative art labelling: aria-hidden + .metro-legend fade hook', () => {
+		const { container } = render(MetroNetwork, {
+			props: { svg, legendStm: 'STM MÉTRO', legendRem: 'REM LIGHT RAIL' },
+		});
+		const legend = container.querySelector('[data-testid="metro-legend"]');
+		expect(legend).toHaveAttribute('aria-hidden', 'true');
+		expect(legend).toHaveClass('metro-legend');
+	});
+
+	it('renders NO legend when the labels are not provided (back-compat)', () => {
+		const { container } = render(MetroNetwork, { props: { svg } });
+		expect(container.querySelector('[data-testid="metro-legend"]')).toBeNull();
+	});
+});
