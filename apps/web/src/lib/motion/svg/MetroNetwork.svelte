@@ -28,12 +28,18 @@
 		svg: string;
 		containerEl?: HTMLDivElement;
 		svgEl?: SVGSVGElement;
+		/** go2/w5: STM métro legend label (site_labels ui.metroLegendStm). */
+		legendStm?: string;
+		/** go2/w5: REM light-rail legend label (site_labels ui.metroLegendRem). */
+		legendRem?: string;
 	}
 
 	let {
 		svg,
 		containerEl = $bindable(),
 		svgEl = $bindable(),
+		legendStm = '',
+		legendRem = '',
 	}: Props = $props();
 
 	onMount(() => {
@@ -108,9 +114,37 @@
 
 <div
 	bind:this={containerEl}
-	class="metro-network-frame flex max-h-[80dvh] w-full items-center justify-center"
+	class="metro-network-frame relative flex max-h-[80dvh] w-full items-center justify-center"
 	data-testid="metro-network-container"
->{@html svg}</div>
+>{@html svg}{#if legendStm && legendRem}<!--
+	go2/w5: name the art for what it is — Montréal's STM métro + REM light
+	rail. The legend is PART of the art (aria-hidden, zooms away with the
+	wrapper in Phase 5); .metro-legend starts at opacity 0 and fades in with
+	the Phase 4 station labels via createHeroTimeline.
+--><div class="metro-legend" data-testid="metro-legend" aria-hidden="true">
+		<span class="metro-legend-item">
+			<svg class="metro-legend-swatch" viewBox="0 0 28 10" aria-hidden="true">
+				<line x1="1" y1="5" x2="27" y2="5" stroke="currentColor" stroke-width="2.5" />
+				<circle cx="14" cy="5" r="4" fill="currentColor" stroke="var(--background)" stroke-width="1.5" />
+			</svg>
+			<span class="metro-legend-text">{legendStm}</span>
+		</span>
+		<span class="metro-legend-item">
+			<svg class="metro-legend-swatch" viewBox="0 0 28 10" aria-hidden="true">
+				<line
+					x1="1"
+					y1="5"
+					x2="27"
+					y2="5"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-dasharray="5 3"
+					stroke-linecap="round"
+				/>
+			</svg>
+			<span class="metro-legend-text">{legendRem}</span>
+		</span>
+	</div>{/if}</div>
 
 <style>
 	:global(.metro-network-frame svg [stroke="#E07800"]),
@@ -119,6 +153,52 @@
 	:global(.metro-network-frame svg [fill="#808285"]),
 	:global(.metro-network-frame svg [fill="white"]) {
 		opacity: 0;
+	}
+
+	/* go2/w5 STM/REM legend — map-corner plaque, both themes via tokens.
+	   Hidden until Phase 4 (label fade) of the hero timeline; pointer-events
+	   none so it never blocks the scrub. Swatches ride currentColor =
+	   --primary (brand orange on dark AND light); text uses
+	   --secondary-foreground for AA on both surfaces. */
+	.metro-legend {
+		position: absolute;
+		left: clamp(8px, 4%, 48px);
+		bottom: clamp(8px, 6%, 56px);
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		opacity: 0;
+		pointer-events: none;
+		font-family: var(--font-mono);
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+
+	.metro-legend-item {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		color: var(--primary);
+	}
+
+	.metro-legend-swatch {
+		width: 28px;
+		height: 10px;
+		flex-shrink: 0;
+	}
+
+	.metro-legend-text {
+		font-size: 10px;
+		color: var(--secondary-foreground);
+	}
+
+	@media (min-width: 768px) {
+		.metro-legend {
+			gap: 8px;
+		}
+		.metro-legend-text {
+			font-size: 11px;
+		}
 	}
 
 	/* GO-W2.2 light theme: recolor the CMS-sourced metro art via attribute

@@ -82,6 +82,9 @@
 	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, locale);
 	// go2/w5: hero-dot replay button aria — site_labels with code fallback.
 	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale) || 'Replay intro';
+	// go2/w5: STM/REM legend on the metro art — site_labels, code fallbacks.
+	const metroLegendStm = resolveLocale(siteLabels.ui.metroLegendStm, locale) || 'STM MÉTRO';
+	const metroLegendRem = resolveLocale(siteLabels.ui.metroLegendRem, locale) || 'REM LIGHT RAIL';
 
 	let heroTextContainer: HTMLDivElement;
 	let refreshIcon: HTMLSpanElement;
@@ -254,7 +257,7 @@
 			bind:this={svgWrapper}
 			class="hero-metro-wrapper absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
 		>
-			<MetroNetwork svg={metroSvg} />
+			<MetroNetwork svg={metroSvg} legendStm={metroLegendStm} legendRem={metroLegendRem} />
 		</div>
 
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->

@@ -172,6 +172,43 @@ describe('motion/scrubs/createHeroTimeline', () => {
 		destroy();
 	});
 
+	// go2/w5: the STM/REM legend (HTML overlay inside the pin container)
+	// fades in with the Phase 4 labels — by the end of the scrub it must be
+	// fully readable.
+	it('fades the .metro-legend overlay in with the labels', () => {
+		const legend = document.createElement('div');
+		legend.classList.add('metro-legend');
+		refs.pinContainer.append(legend);
+
+		const createSpy = vi.spyOn(ScrollTrigger, 'create');
+		const destroy = createHeroTimeline(refs.pinContainer, {
+			svgWrapper: refs.svgWrapper,
+			heroTextContainer: refs.heroTextContainer,
+			heroDot: refs.heroDot,
+			scrollPrompt: refs.scrollPrompt,
+			startBlink: () => {},
+			stopBlink: () => {},
+		});
+		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
+		// gsap is mocked in the dom tier (setup.dom.ts) — assert through the
+		// mock timeline's call record: a `.to()` targeting the legend, to full
+		// opacity (informative text, AA — unlike the 0.6 decorative labels),
+		// at the Phase 4 label slot (0.58).
+		const tl = pinCall![0].animation as unknown as { to: ReturnType<typeof vi.fn> };
+		const legendCall = tl.to.mock.calls.find((c) => {
+			const targets = c[0] as Element | ArrayLike<Element>;
+			if (targets === legend) return true;
+			return (
+				typeof (targets as ArrayLike<Element>).length === 'number' &&
+				Array.from(targets as ArrayLike<Element>).includes(legend)
+			);
+		});
+		expect(legendCall, 'no tween targets the .metro-legend overlay').toBeDefined();
+		expect(legendCall![1].opacity).toBe(1);
+		expect(legendCall![2]).toBe(0.58);
+		destroy();
+	});
+
 	// go2/w5: the replayable-intro persistence hook. The ScrollTrigger's
 	// onUpdate drives it: crossing ~the end of the scrub fires the callback
 	// exactly once (HeroBanner persists the day-key there).

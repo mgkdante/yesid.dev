@@ -242,6 +242,14 @@ export function createHeroTimeline(
 		0.58,
 	);
 
+	// go2/w5: the STM/REM legend (HTML overlay inside the metro frame) joins
+	// the label fade — to full opacity, it is informative text (AA), unlike
+	// the decorative 0.6-opacity station-name paths.
+	const legend = pinContainer.querySelectorAll('.metro-legend');
+	if (legend.length > 0) {
+		tl.to(legend, { opacity: 1, duration: 0.07, ease: 'power1.out' }, 0.58);
+	}
+
 	// === Phase 5 (0.65–0.95): Zoom into Berri-UQAM ===
 	tl.to(
 		svgWrapper,
