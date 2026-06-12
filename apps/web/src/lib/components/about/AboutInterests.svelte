@@ -7,6 +7,9 @@
 <script lang="ts">
 	import type { AboutInterest } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -34,7 +37,7 @@
 	<!-- Diagonal strips container -->
 	<div class="flex h-full min-h-36">
 		{#each interests as interest, i}
-			{@const interestLabel = resolveLocale(interest.label, 'en')}
+			{@const interestLabel = resolveLocale(interest.label, locale)}
 			<button
 				type="button"
 				class="tap-press interest-strip relative flex flex-1 items-center justify-center overflow-hidden transition-all duration-500 ease-out"
