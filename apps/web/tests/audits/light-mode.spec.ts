@@ -325,6 +325,56 @@ test.describe('light mode — per-page audit', () => {
 		expect(layout!.panelRight).toBeLessThanOrEqual(layout!.textLeft);
 	});
 
+	test('go2/home-cards: solid paper cards, signage chip, yellow metric, whitened image band', async ({ page }) => {
+		// Story-first proof cards must stay theme-correct in light mode:
+		// solid --card paper surface (no grid bleed-through), 3px blog-parity
+		// chassis, theme-INVARIANT signage chip, YELLOW-voice metric, ORANGE
+		// exploration line, and the F5 image doctrine (light WHITENS the
+		// resting B&W band instead of dimming it).
+		await page.goto('/', { waitUntil: 'networkidle' });
+		await page.getByTestId('proof-reel-section').scrollIntoViewIfNeeded();
+
+		const chassis = await page.locator('.proof-card').first().evaluate((el) => {
+			const s = getComputedStyle(el);
+			return { bg: s.backgroundColor, borderW: s.borderTopWidth };
+		});
+		expect(chassis.bg).toBe('rgb(255, 253, 248)'); // #FFFDF8 light --card — solid
+		expect(chassis.borderW).toBe('3px'); // round-5 blog-card chassis parity
+
+		// Signage chip: real signs don't reskin when the lights change.
+		const chip = await page.getByTestId('proof-station-chip').first().evaluate((el) => {
+			const s = getComputedStyle(el);
+			return { bg: s.backgroundColor, ink: s.color };
+		});
+		expect(chip).toEqual({ bg: 'rgb(28, 24, 20)', ink: 'rgb(255, 182, 39)' });
+
+		// Metric = YELLOW wayfinding voice; exploration line = ORANGE action.
+		const metricColor = await page
+			.getByTestId('proof-metric-value')
+			.first()
+			.evaluate((el) => getComputedStyle(el).color);
+		expect(metricColor).toBe('rgb(129, 93, 0)'); // #815D00 light accent-text
+		const seeBuildColor = await page
+			.getByTestId('proof-see-build')
+			.first()
+			.evaluate((el) => getComputedStyle(el).color);
+		expect(seeBuildColor).toBe('rgb(157, 82, 0)'); // #9D5200 light primary
+
+		// F5 doctrine on the resting band: light mode whitens the B&W photo
+		// (brightness > 1), never the dark dim. Active slide stays colored.
+		const restingImg = page.locator('.proof-card[data-active="false"] .proof-img');
+		if ((await restingImg.count()) > 0) {
+			const filter = await restingImg.first().evaluate((el) => getComputedStyle(el).filter);
+			expect(filter).toContain('grayscale(1)');
+			expect(filter).toContain('brightness(1.12)');
+		}
+		const activeImg = page.locator('.proof-card[data-active="true"] .proof-img');
+		if ((await activeImg.count()) > 0) {
+			const filter = await activeImg.first().evaluate((el) => getComputedStyle(el).filter);
+			expect(filter).toContain('grayscale(0)');
+		}
+	});
+
 	test('final batch: the footer street panel + ONE platform-edge tape at the seam', async ({ page }) => {
 		// 6c: the footer paints the muted street panel (light = station paper
 		// #F1E9DA; dark asphalt #1E1E1E is pinned in tokens.test) under the
