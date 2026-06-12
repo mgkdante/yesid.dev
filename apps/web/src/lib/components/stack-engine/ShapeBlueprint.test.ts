@@ -162,13 +162,14 @@ describe('ShapeBlueprint — the mini-blueprint is total over the 15-subset matr
 		const { container } = render(ShapeBlueprint, {
 			props: { picked, missing: ['logic', 'infra'] satisfies StackLayer[] },
 		});
-		// Natural width caps at the 4-box wrap line: 4×160 + 3×24 = 712, plus
-		// 2×PAD 48 + LABEL_GUTTER 64 = 824 — and the svg renders EXACTLY that
+		// Natural width caps at the 4-box wrap line: 4×192 + 3×24 = 840, plus
+		// 2×PAD 48 + LABEL_GUTTER 84 = 972 — and the svg renders EXACTLY that
 		// wide (render scale = 1, the floor), inside the horizontal pan rail.
+		// (Legibility pass: BOX 192×56, gutter 84 for the 12px row labels.)
 		const svg = container.querySelector(
 			'[data-testid="shape-blueprint"]',
 		) as SVGSVGElement;
-		expect(svg.style.width).toBe('824px');
+		expect(svg.style.width).toBe('972px');
 		expect(svg.style.maxWidth).toBe('');
 		expect(container.querySelector('[data-testid="shape-blueprint-pan"]')).toBeTruthy();
 		// The interface band holds two lines; every box keeps full geometry.
@@ -179,8 +180,8 @@ describe('ShapeBlueprint — the mini-blueprint is total over the 15-subset matr
 		);
 		expect(uiYs.size).toBeGreaterThanOrEqual(3); // 2 interface lines + data row
 		for (const rect of svg.querySelectorAll('.sbp-box-rect')) {
-			expect(rect.getAttribute('width')).toBe('160');
-			expect(rect.getAttribute('height')).toBe('48');
+			expect(rect.getAttribute('width')).toBe('192');
+			expect(rect.getAttribute('height')).toBe('56');
 		}
 		// One label per LAYER BAND — wrapped lines never duplicate their name.
 		const labels = [...svg.querySelectorAll('.sbp-row-label')].map((l) => l.textContent?.trim());
@@ -256,9 +257,9 @@ describe('ShapeBlueprint — the mini-blueprint is total over the 15-subset matr
 			},
 		});
 		const svg = container.querySelector('[data-testid="shape-blueprint-stacked"]')!;
-		// Stacked layout: width = BOX_W 160 + 2×PAD 24 = 208, no label gutter —
+		// Stacked layout: width = BOX_W 192 + 2×PAD 24 = 240, no label gutter —
 		// rendered 1:1 (finale floor: style.width, not a shrinkable max-width).
-		expect((svg as SVGSVGElement).style.width).toBe('208px');
+		expect((svg as SVGSVGElement).style.width).toBe('240px');
 		// Straight verticals (L commands), not the wide variant's cubic curves.
 		for (const wire of svg.querySelectorAll('.sbp-connector')) {
 			expect(wire.getAttribute('d')).toContain('L');

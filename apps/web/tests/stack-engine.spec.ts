@@ -307,12 +307,13 @@ test('finale: 10 picks never shrink a box below the readable floor; the phrase s
 	);
 	await expect(drawing).toHaveCount(1);
 	await expect(drawing.locator('.sbp-box-solid')).toHaveCount(10);
-	// …and a rendered box keeps its FULL drawn size (BOX_W 160 × BOX_H 48 at
-	// render scale 1 — the floor; small tolerance for sub-pixel rounding).
+	// …and a rendered box keeps its FULL drawn size (BOX_W 192 × BOX_H 56 at
+	// render scale 1 — the floor, raised by the go2/w5 legibility pass so the
+	// 16px box labels keep their room; small tolerance for sub-pixel rounding).
 	const rect = await drawing.locator('.sbp-box-solid .sbp-box-rect').first().boundingBox();
 	expect(rect).not.toBeNull();
-	expect(rect!.width).toBeGreaterThanOrEqual(150);
-	expect(rect!.height).toBeGreaterThanOrEqual(45);
+	expect(rect!.width).toBeGreaterThanOrEqual(180);
+	expect(rect!.height).toBeGreaterThanOrEqual(53);
 
 	// The phrase builder composes one market sentence over all 10 picks.
 	await expect(page.locator('[data-testid="shape-phrase"]')).toContainText(/^A .+\.$/);

@@ -24,8 +24,12 @@
 
 import { STACK_LAYERS, type ArchetypeTechLink, type StackLayer } from '@repo/shared/schemas';
 
-export const BOX_W = 160;
-export const BOX_H = 48;
+// go2/w5 legibility pass: 160×48 → 192×56 so the box labels can wear
+// --text-body (16px mono) with honest margins — the longest committed name
+// ("Three.js / Threlte", 18ch ≈ 173px at 16px) clears the 3px layer tab and
+// both rounded corners. The readability-floor probes (e2e ≥180×53) ride this.
+export const BOX_W = 192;
+export const BOX_H = 56;
 export const GUTTER = 24;
 // GO-w2t5: 64 → 48. At ROW_GAP 64 the column had more air than box
 // (gap 64 > BOX_H 48) — the blueprint overflowed a viewport at render

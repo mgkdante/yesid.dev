@@ -105,7 +105,10 @@
 	// Same drawing geometry as BlueprintCanvas — the mini IS a blueprint.
 	const PAD = 24;
 	const STAMP_H = 36;
-	const LABEL_GUTTER = 64;
+	// go2/w5 legibility pass: 64 → 84. Row labels wear --text-caption (12px)
+	// now; right-anchored "INTERFACE" (9ch ≈ 70px) needs the wider gutter to
+	// stay inside the viewBox.
+	const LABEL_GUTTER = 84;
 
 	const gutter = $derived(stacked ? 0 : LABEL_GUTTER);
 	const viewBox = $derived(
@@ -303,9 +306,12 @@
 		stroke-width: 1;
 	}
 
+	/* go2/w5 legibility pass: every SVG label steps up one rung of the site
+	   type scale (tokens, never raw px) — labels --text-body, supporting ink
+	   --text-mono/--text-caption. The svg renders 1:1, so token px = real px. */
 	.sbp-row-label {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		letter-spacing: 0.5px;
 		text-transform: uppercase;
 	}
@@ -345,7 +351,7 @@
 
 	.sbp-box-label {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: var(--text-body);
 		fill: var(--foreground);
 	}
 
@@ -375,7 +381,7 @@
 
 	.sbp-ghost-label {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		letter-spacing: 0.5px;
 		text-transform: uppercase;
 	}
@@ -384,7 +390,7 @@
 	   under each ghost; connectors break for the label, drafting style. */
 	.sbp-annotation {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		fill: var(--primary);
 		stroke: var(--engine-paper, var(--background));
 		stroke-width: 3px;
@@ -399,7 +405,7 @@
 
 	.sbp-stamp-title {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		fill: var(--muted-foreground);
@@ -407,7 +413,7 @@
 
 	.sbp-stamp-meta {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		fill: var(--muted-foreground);
 	}
 </style>

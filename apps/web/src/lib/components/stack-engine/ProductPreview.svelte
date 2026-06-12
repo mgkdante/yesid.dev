@@ -197,10 +197,12 @@
 	}
 
 	/* Round 4: roles are story phrases now ("pulls the raw feeds") — let them
-	   wrap inside roomy lanes; shallow bars still clamp via overflow:hidden. */
+	   wrap inside roomy lanes; shallow bars still clamp via overflow:hidden.
+	   go2/w5 legibility pass: slot type steps up one full rung (tokens only);
+	   the shallow bars in preview-configs grew to h≥26 to hold the pair. */
 	.slot-role {
 		font-family: var(--font-mono);
-		font-size: 8px;
+		font-size: var(--text-micro);
 		letter-spacing: 0.5px;
 		text-transform: uppercase;
 		color: var(--muted-foreground);
@@ -220,14 +222,14 @@
 
 	.slot-name {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		color: var(--foreground);
 		line-height: 1.1;
 	}
 
 	.enables-caption {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--muted-foreground);
 		margin: 0;
 		max-width: 540px;
@@ -240,7 +242,7 @@
 
 	.preview-pending {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--muted-foreground);
 	}
 </style>

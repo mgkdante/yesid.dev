@@ -420,9 +420,11 @@
 		min-height: 200px;
 	}
 
+	/* go2/w5 legibility pass: the placeholder reads at the engine's new base
+	   size (--text-small) so the chunk landing never visibly shrinks type. */
 	.engine-loading-line {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--muted-foreground);
 	}
 

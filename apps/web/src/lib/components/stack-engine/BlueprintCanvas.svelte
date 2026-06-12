@@ -73,17 +73,19 @@
 	// Drawing geometry (declared before the stamp deriveds below read them).
 	const PAD = 24;
 	const STAMP_H = 36;
-	/** go2/w5 §8: left gutter for the layer row labels (engine renders only). */
-	const LABEL_GUTTER = 64;
+	/** go2/w5 §8: left gutter for the layer row labels (engine renders only).
+	 *  Legibility pass: 64 → 84 — row labels wear --text-caption (12px) now;
+	 *  right-anchored "INTERFACE" (9ch ≈ 70px) needs the room. */
+	const LABEL_GUTTER = 84;
 
 	// go2/w5 taste round 2 (fit audit): the old `{TITLE} — REV A` single line
-	// overflowed the stamp frame on one-box-per-row blueprints ("AN AUTOMATED
-	// WORKFLOW — REV A" ≈ 267px vs a 208px frame). REV A now leads the meta
-	// line, and the title gets a deterministic textLength clamp when its
-	// estimated width (12px mono + 2px letter-spacing ≈ 9.2px/char) exceeds
-	// the frame's inner width — long CMS titles squeeze instead of escaping.
+	// overflowed the stamp frame on one-box-per-row blueprints. REV A now
+	// leads the meta line, and the title gets a deterministic textLength clamp
+	// when its estimated width exceeds the frame's inner width — long CMS
+	// titles squeeze instead of escaping. Legibility pass: the title wears
+	// --text-small (14px mono) + 2px letter-spacing ≈ 10.4px/char.
 	const stampTitle = $derived(title.toUpperCase());
-	const STAMP_CHAR_W = 9.2;
+	const STAMP_CHAR_W = 10.4;
 	const stampAvail = $derived(layout.width + PAD * 2 - 16);
 	const stampTitleLength = $derived(
 		stampTitle.length * STAMP_CHAR_W > stampAvail ? stampAvail : undefined,
@@ -407,8 +409,12 @@
 		height: auto;
 		/* Safety net for tall compose blueprints: the default
 		   preserveAspectRatio (xMidYMid meet) letterboxes the drawing down —
-		   the WHOLE blueprint stays visible without scrolling. */
-		max-height: min(56svh, 440px);
+		   the WHOLE blueprint stays visible without scrolling. Legibility
+		   pass: 440 → 480 so the taller 56px boxes (a 4-row drawing's viewBox
+		   is 452 now) render 1:1 instead of letterboxing the new type back
+		   down; still ≤ 85% of every project viewport (56svh governs first
+		   on short screens). */
+		max-height: min(56svh, 480px);
 		display: block;
 		margin: 0 auto;
 		overflow: visible;
@@ -420,10 +426,12 @@
 		stroke-width: 1;
 	}
 
-	/* go2/w5 §8: layer row labels — printed names in layer color. */
+	/* go2/w5 §8: layer row labels — printed names in layer color. Legibility
+	   pass: every SVG label steps up one rung of the site type scale (tokens,
+	   never raw px); the svg renders 1:1 so token px = real px. */
 	.bp-row-label {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		letter-spacing: 0.5px;
 		text-transform: uppercase;
 	}
@@ -481,7 +489,7 @@
 
 	.bp-box-label {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: var(--text-body);
 		fill: var(--foreground);
 	}
 
@@ -502,7 +510,7 @@
 
 	.bp-annotation {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		fill: var(--primary);
 	}
 
@@ -513,7 +521,7 @@
 	   the tinted band. */
 	.bp-pair-note {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		fill: var(--engine-teach-ink);
 		stroke: var(--engine-paper, var(--background));
 		stroke-width: 3px;
@@ -531,7 +539,7 @@
 		margin: 0.5rem auto 0;
 		padding-left: 1.25rem;
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		color: var(--engine-teach-ink);
 	}
 
@@ -554,7 +562,7 @@
 
 	.bp-stamp-title {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		fill: var(--muted-foreground);
@@ -562,7 +570,7 @@
 
 	.bp-stamp-meta {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		fill: var(--muted-foreground);
 	}
 </style>

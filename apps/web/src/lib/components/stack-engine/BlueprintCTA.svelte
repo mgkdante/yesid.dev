@@ -73,16 +73,17 @@
 		flex-wrap: wrap;
 	}
 
+	/* go2/w5 legibility pass: CTA labels step up one full rung (tokens only). */
 	.cta-whisper {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		color: var(--engine-teach-ink, var(--secondary-foreground));
 		margin: 0;
 	}
 
 	.cta-link {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--secondary-foreground);
 		text-decoration: underline;
 		text-underline-offset: 3px;
