@@ -137,7 +137,7 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 		expect(await typesFor('/blog')).toEqual(['CollectionPage', 'BreadcrumbList']);
 	});
 
-	it('/blog/personal emits CollectionPage + BreadcrumbList (nested: Home → Blog → Personal)', async () => {
+	it('/blog/personal emits CollectionPage + BreadcrumbList (nested: Home → Blog → Personal Corner)', async () => {
 		const seo = await adapter.meta.forRoute('/blog/personal', 'en');
 		const types = (seo.jsonLd ?? []).map((n) => n['@type']);
 		expect(types).toEqual(['CollectionPage', 'BreadcrumbList']);
@@ -147,7 +147,10 @@ describe('adapter.meta.forRoute + jsonLd — per-route coverage', () => {
 		if (breadcrumb && breadcrumb['@type'] === 'BreadcrumbList') {
 			expect(breadcrumb.itemListElement).toHaveLength(3);
 			expect(breadcrumb.itemListElement[1].name).toBe('Blog');
-			expect(breadcrumb.itemListElement[2].name).toBe('Personal');
+			// slice-28.6: crumb names come from the trilingual site_pages
+			// registry — its en title for this row is 'Personal Corner'
+			// (previously a hardcoded 'Personal' literal).
+			expect(breadcrumb.itemListElement[2].name).toBe('Personal Corner');
 		}
 	});
 

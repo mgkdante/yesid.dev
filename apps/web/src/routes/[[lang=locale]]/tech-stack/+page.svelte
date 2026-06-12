@@ -4,6 +4,10 @@
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { fillTemplate } from '$lib/utils/labels';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { StatusDot, SectionLabel } from '$lib/components/brand';
@@ -22,25 +26,26 @@
 	// Dynamic counts from data layer.
 	const itemCount = data.items.length;
 
-	// Pre-resolved chrome — all static English for now (swap to $derived on
-	// locale when translation arrives).
+	// Pre-resolved chrome via the layout-provided locale (slice-28.6). Init-time
+	// consts are correct: the page remounts per pathname under the root
+	// layout's {#key $page.url.pathname}.
 	// SEO meta + title emitted by <SeoHead> in +layout.svelte (Slice 15a).
 	// Chrome content flows through adapter → repository → load() post-17c
 	// (closed the 17b seam leak that had this file importing $lib/content).
 	const c = data.techStackPage;
-	const heroOverline = resolveLocale(c.hero.overline, 'en');
-	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, 'en');
-	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, 'en');
-	const heroTerminalAria = resolveLocale(c.hero.terminalAria, 'en');
+	const heroOverline = resolveLocale(c.hero.overline, locale);
+	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, locale);
+	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, locale);
+	const heroTerminalAria = resolveLocale(c.hero.terminalAria, locale);
 	const statLabels = {
-		technologies: resolveLocale(c.hero.stats.technologies, 'en'),
+		technologies: resolveLocale(c.hero.stats.technologies, locale),
 	};
-	const getInTouchLabel = resolveLocale(c.actions.getInTouch, 'en');
-	const viewServicesLabel = resolveLocale(c.actions.viewServices, 'en');
-	const ctaHeadingLine1 = resolveLocale(c.cta.headingLine1, 'en');
-	const ctaHeadingLine2 = resolveLocale(c.cta.headingLine2, 'en');
-	const ctaSub = resolveLocale(c.cta.sub, 'en');
-	const ctaAvailability = resolveLocale(c.cta.availability, 'en');
+	const getInTouchLabel = resolveLocale(c.actions.getInTouch, locale);
+	const viewServicesLabel = resolveLocale(c.actions.viewServices, locale);
+	const ctaHeadingLine1 = resolveLocale(c.cta.headingLine1, locale);
+	const ctaHeadingLine2 = resolveLocale(c.cta.headingLine2, locale);
+	const ctaSub = resolveLocale(c.cta.sub, locale);
+	const ctaAvailability = resolveLocale(c.cta.availability, locale);
 
 	// Hero terminal typed sequence
 	interface TerminalLine {
@@ -54,11 +59,11 @@
 	// interpolated here from data.items.length — computed, never stored.
 	const count = String(itemCount);
 	const terminalLines: TerminalLine[] = [
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.cmd, 'en') || '~ yesid --stack --verbose', { count }), color: 'default', visible: true },
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.loading, 'en') || '→ loading {count} nodes...', { count }), color: 'muted', visible: false },
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.success, 'en') || '✓ successful', { count }), color: 'green', visible: false },
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.cataloged, 'en') || '→ {count} technologies cataloged', { count }), color: 'orange', visible: false },
-		{ text: fillTemplate(resolveLocale(c.hero.terminal.status, 'en') || 'interactive map online.', { count }), color: 'accent', visible: false },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.cmd, locale) || '~ yesid --stack --verbose', { count }), color: 'default', visible: true },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.loading, locale) || '→ loading {count} nodes...', { count }), color: 'muted', visible: false },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.success, locale) || '✓ successful', { count }), color: 'green', visible: false },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.cataloged, locale) || '→ {count} technologies cataloged', { count }), color: 'orange', visible: false },
+		{ text: fillTemplate(resolveLocale(c.hero.terminal.status, locale) || 'interactive map online.', { count }), color: 'accent', visible: false },
 	];
 
 	let heroLines = $state<TerminalLine[]>(terminalLines);
@@ -135,10 +140,10 @@
 		</div>
 
 		<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
-			<Button variant="default" size="cta" href="/contact">
+			<Button variant="default" size="cta" href={localizeHref('/contact', locale)}>
 				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
 			</Button>
-			<Button variant="outline" size="cta" href="/services">
+			<Button variant="outline" size="cta" href={localizeHref('/services', locale)}>
 				{viewServicesLabel}
 			</Button>
 		</div>
@@ -175,10 +180,10 @@
 			{ctaSub}
 		</p>
 		<div class="cta-buttons">
-			<Button variant="default" size="cta" href="/contact">
+			<Button variant="default" size="cta" href={localizeHref('/contact', locale)}>
 				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
 			</Button>
-			<Button variant="outline" size="cta" href="/services">
+			<Button variant="outline" size="cta" href={localizeHref('/services', locale)}>
 				{viewServicesLabel}
 			</Button>
 		</div>

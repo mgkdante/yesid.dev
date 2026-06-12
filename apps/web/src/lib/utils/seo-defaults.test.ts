@@ -36,13 +36,23 @@ describe('canonicalFor', () => {
 		expect(canonicalFor('/', 'en')).toBe(SITE_HOST);
 	});
 
-	it('non-EN locales pass-through to SITE_HOST + path today (URL scheme deferred)', () => {
-		// 15a does not commit to a locale URL scheme. Other locales return the
-		// same URL as EN; the slice that introduces FR/ES decides the scheme.
+	it('non-EN locales self-canonicalize to the EN URL while unpublished (slice-28.6 /fr scheme)', () => {
+		// /fr path-prefix scheme: published non-EN locales get /{locale}; an
+		// UNPUBLISHED prefix locale self-canonicalizes to the EN URL so /fr can
+		// be QA'd live pre-flip without index pollution.
 		expect(canonicalFor('/about', 'fr')).toBe(`${SITE_HOST}/about`);
 	});
 
 	it('strips any trailing slash', () => {
 		expect(canonicalFor('/about/', 'en')).toBe(`${SITE_HOST}/about`);
+	});
+
+	it('delocalizes before resolving (idempotent on prefixed input)', () => {
+		expect(canonicalFor('/fr/about', 'en')).toBe(`${SITE_HOST}/about`);
+		expect(canonicalFor('/fr/about', 'fr')).toBe(`${SITE_HOST}/about`); // fr unpublished today
+	});
+
+	it('unpublished prefix locales self-canonicalize to the EN URL (pre-flip crawl safety)', () => {
+		expect(canonicalFor('/', 'fr')).toBe(SITE_HOST);
 	});
 });

@@ -7,25 +7,40 @@
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { menuItems as staticMenuItems, sharedChromeContent } from '$lib/content';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
+	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 	import type { NavLink } from '$lib/content/nav';
+	import type { Locale } from '$lib/types';
 	import ThemeToggle from './ThemeToggle.svelte';
 
-	const dialogTitle = resolveLocale(sharedChromeContent.menuOverlayAria, 'en');
-	const footerLabel = resolveLocale(sharedChromeContent.menuOverlayFooterLabel, 'en');
 	let {
 		open = false,
 		pathname = '/',
+		locale = DEFAULT_LOCALE,
 		menuItems = staticMenuItems as readonly NavLink[],
+		availableLocales = PUBLISHED_LOCALES as readonly Locale[],
 		onclose,
 		onanimationdone
 	}: {
 		open: boolean;
 		pathname: string;
+		locale?: Locale;
 		menuItems?: readonly NavLink[];
+		/** Locale switcher entries; hidden until more than one is published. */
+		availableLocales?: readonly Locale[];
 		onclose?: () => void;
 		onanimationdone?: () => void;
 	} = $props();
+
+	// $derived (not const): the overlay rides the persistent Nav — it never
+	// remounts, and locale changes on /fr↔/ navigation.
+	const dialogTitle = $derived(resolveLocale(sharedChromeContent.menuOverlayAria, locale));
+	const footerLabel = $derived(resolveLocale(sharedChromeContent.menuOverlayFooterLabel, locale));
+	const basePath = $derived(delocalizePath(pathname));
+	const switcherAria = $derived(resolveLocale(sharedChromeContent.localeSwitcherAria, locale));
+	// Path-preserving: /fr/about ↔ /about.
+	const switchHref = (l: Locale) => localizeHref(delocalizePath(pathname), l);
 
 	let overlayEl: HTMLElement = $state(null!);
 
@@ -36,8 +51,8 @@
 	let closing = $state(false);
 
 	function isActive(href: string): boolean {
-		if (href === '/') return pathname === '/';
-		return pathname.startsWith(href);
+		if (href === '/') return basePath === '/';
+		return basePath.startsWith(href);
 	}
 
 	// React to open/close from parent
@@ -113,7 +128,7 @@
 					{#each menuItems as item, i}
 						<a
 							data-menu-item
-							href={item.href}
+							href={localizeHref(item.href, locale)}
 							class="menu-item {isActive(item.href) ? 'menu-item-active' : ''}"
 							aria-current={isActive(item.href) ? 'page' : undefined}
 							onclick={() => onclose?.()}
@@ -133,19 +148,32 @@
 
 							<!-- Text -->
 							<span class="menu-text">
-								<span class="menu-label">{item.label.en}</span>
-								<span class="menu-subtitle">{item.subtitle?.en ?? ''}</span>
+								<span class="menu-label">{resolveLocale(item.label, locale)}</span>
+								<span class="menu-subtitle">{item.subtitle ? resolveLocale(item.subtitle, locale) : ''}</span>
 							</span>
 						</a>
 					{/each}
 				</nav>
 
-				<!-- Bottom label -->
+				<!-- Bottom label + locale switch (slice-28.6; hidden until 2+ published locales) -->
 				<div class="menu-footer">
 					<span class="menu-footer-line"></span>
 					<span class="menu-footer-label">{footerLabel}</span>
+					{#if availableLocales.length > 1}
+						<nav class="menu-locale-switch" data-testid="locale-switch" aria-label={switcherAria}>
+							{#each availableLocales as l, i (l)}
+								{#if i > 0}<span class="locale-sep" aria-hidden="true">|</span>{/if}
+								<a
+									href={switchHref(l)}
+									class="locale-link {l === locale ? 'locale-active' : ''}"
+									aria-current={l === locale ? 'true' : undefined}
+									onclick={() => onclose?.()}
+								>{l.toUpperCase()}</a>
+							{/each}
+						</nav>
+					{/if}
 					<span class="menu-footer-line"></span>
-					<ThemeToggle class="menu-theme-toggle" />
+					<ThemeToggle class="menu-theme-toggle" {locale} />
 				</div>
 					</div>
 				{/snippet}
@@ -325,5 +353,36 @@
 	/* GO-W2.2: theme toggle rides the footer rail */
 	:global(.menu-theme-toggle) {
 		margin-inline-start: 4px;
+	}
+
+	/* slice-28.6: EN|FR locale switch — JetBrains Mono caps, brand chrome. */
+	.menu-locale-switch {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-family: var(--font-mono);
+		font-size: var(--text-caption, 12px);
+		letter-spacing: 0.1em;
+	}
+	.locale-link {
+		color: var(--muted-foreground);
+		text-decoration: none;
+		transition: color var(--duration-fast) var(--ease-default);
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		padding-inline: 4px;
+	}
+	.locale-link:hover {
+		color: var(--primary);
+	}
+	.locale-active {
+		color: var(--primary);
+	}
+	/* Decorative divider (aria-hidden): opacity keeps the contrast-floors gate
+	   happy — low-% foreground color-mixes are banned on color: decls. */
+	.locale-sep {
+		color: var(--muted-foreground);
+		opacity: 0.5;
 	}
 </style>

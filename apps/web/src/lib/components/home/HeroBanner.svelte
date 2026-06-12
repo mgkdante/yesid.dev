@@ -34,6 +34,9 @@
 	import type { HeroData } from '$lib/content';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import MetroNetwork from '$lib/motion/svg/MetroNetwork.svelte';
 	import HeroSqlPanel from './HeroSqlPanel.svelte';
 	import HeroTextContent from './HeroTextContent.svelte';
@@ -57,21 +60,21 @@
 	let scrollCursorEl: HTMLSpanElement;
 	let reducedMotion = false;
 
-	const scrollDownLabel = resolveLocale(heroAnimContent.scrollDown, 'en');
-	const headlineLine1 = resolveLocale(heroContent.headline.line1, 'en');
-	const subheadlineText = resolveLocale(heroContent.subheadline, 'en');
-	const subtitleText = resolveLocale(heroContent.subtitle, 'en');
-	const ctaWorkLabel = resolveLocale(heroContent.ctaWork, 'en');
-	const ctaContactLabel = resolveLocale(heroContent.ctaContact, 'en');
-	const sqlPrompt = resolveLocale(heroContent.sqlPanel.prompt, 'en');
-	const sqlLiveLabel = resolveLocale(heroContent.sqlPanel.liveLabel, 'en');
-	const headlineAriaSuffix = resolveLocale(heroContent.headline.ariaSuffix, 'en');
-	const sqlColumnRoute = resolveLocale(heroContent.sqlPanel.columns.route, 'en');
-	const sqlColumnAvgDelay = resolveLocale(heroContent.sqlPanel.columns.avgDelayS, 'en');
-	const sqlColumnVehicles = resolveLocale(heroContent.sqlPanel.columns.vehicles, 'en');
-	const sqlMetaTemplate = resolveLocale(heroContent.sqlPanel.metaTemplate, 'en');
-	const refreshLabel = resolveLocale(heroContent.refreshButton.label, 'en');
-	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, 'en');
+	const scrollDownLabel = resolveLocale(heroAnimContent.scrollDown, locale);
+	const headlineLine1 = resolveLocale(heroContent.headline.line1, locale);
+	const subheadlineText = resolveLocale(heroContent.subheadline, locale);
+	const subtitleText = resolveLocale(heroContent.subtitle, locale);
+	const ctaWorkLabel = resolveLocale(heroContent.ctaWork, locale);
+	const ctaContactLabel = resolveLocale(heroContent.ctaContact, locale);
+	const sqlPrompt = resolveLocale(heroContent.sqlPanel.prompt, locale);
+	const sqlLiveLabel = resolveLocale(heroContent.sqlPanel.liveLabel, locale);
+	const headlineAriaSuffix = resolveLocale(heroContent.headline.ariaSuffix, locale);
+	const sqlColumnRoute = resolveLocale(heroContent.sqlPanel.columns.route, locale);
+	const sqlColumnAvgDelay = resolveLocale(heroContent.sqlPanel.columns.avgDelayS, locale);
+	const sqlColumnVehicles = resolveLocale(heroContent.sqlPanel.columns.vehicles, locale);
+	const sqlMetaTemplate = resolveLocale(heroContent.sqlPanel.metaTemplate, locale);
+	const refreshLabel = resolveLocale(heroContent.refreshButton.label, locale);
+	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, locale);
 
 	let heroTextContainer: HTMLDivElement;
 	let refreshIcon: HTMLSpanElement;

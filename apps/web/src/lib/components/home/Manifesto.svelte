@@ -6,6 +6,9 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
 	import type { ManifestoContent } from '$lib/types';
 
@@ -23,55 +26,55 @@
 	import ManifestoTransit from './ManifestoTransit.svelte';
 
 	// ── Resolve all text from data layer ──────────────────────────────
-	const statementLine1 = resolveLocale(manifestoContent.statement.line1, 'en');
-	const statementLineHuge = resolveLocale(manifestoContent.statement.lineHuge, 'en');
-	const statementLine3Part1 = resolveLocale(manifestoContent.statement.line3Part1, 'en');
-	const statementLine3Highlight = resolveLocale(manifestoContent.statement.line3Highlight, 'en');
-	const statementLine3Part2 = resolveLocale(manifestoContent.statement.line3Part2, 'en');
+	const statementLine1 = resolveLocale(manifestoContent.statement.line1, locale);
+	const statementLineHuge = resolveLocale(manifestoContent.statement.lineHuge, locale);
+	const statementLine3Part1 = resolveLocale(manifestoContent.statement.line3Part1, locale);
+	const statementLine3Highlight = resolveLocale(manifestoContent.statement.line3Highlight, locale);
+	const statementLine3Part2 = resolveLocale(manifestoContent.statement.line3Part2, locale);
 
-	const terminalUser = resolveLocale(manifestoContent.terminal.user, 'en');
-	const terminalCommand = resolveLocale(manifestoContent.terminal.command, 'en');
+	const terminalUser = resolveLocale(manifestoContent.terminal.user, locale);
+	const terminalCommand = resolveLocale(manifestoContent.terminal.command, locale);
 
 	const pills = manifestoContent.pills.map((p) => ({
-		label: resolveLocale(p.label, 'en'),
+		label: resolveLocale(p.label, locale),
 		href: `/services/${p.serviceId}`,
 	}));
 
 	// Edge + transit data (passed to sub-components)
 	const edgeLeft = {
-		sectionNumber: resolveLocale(manifestoContent.edgeLeft.sectionNumber, 'en'),
-		sectionName: resolveLocale(manifestoContent.edgeLeft.sectionName, 'en'),
-		location: resolveLocale(manifestoContent.edgeLeft.location, 'en'),
+		sectionNumber: resolveLocale(manifestoContent.edgeLeft.sectionNumber, locale),
+		sectionName: resolveLocale(manifestoContent.edgeLeft.sectionName, locale),
+		location: resolveLocale(manifestoContent.edgeLeft.location, locale),
 	};
 
 	const edgeRight = {
-		lat: resolveLocale(manifestoContent.edgeRight.lat, 'en'),
-		lng: resolveLocale(manifestoContent.edgeRight.lng, 'en'),
-		src: resolveLocale(manifestoContent.edgeRight.src, 'en'),
-		via: resolveLocale(manifestoContent.edgeRight.via, 'en'),
-		dst: resolveLocale(manifestoContent.edgeRight.dst, 'en'),
-		node: resolveLocale(manifestoContent.edgeRight.node, 'en'),
-		status: resolveLocale(manifestoContent.edgeRight.status, 'en'),
+		lat: resolveLocale(manifestoContent.edgeRight.lat, locale),
+		lng: resolveLocale(manifestoContent.edgeRight.lng, locale),
+		src: resolveLocale(manifestoContent.edgeRight.src, locale),
+		via: resolveLocale(manifestoContent.edgeRight.via, locale),
+		dst: resolveLocale(manifestoContent.edgeRight.dst, locale),
+		node: resolveLocale(manifestoContent.edgeRight.node, locale),
+		status: resolveLocale(manifestoContent.edgeRight.status, locale),
 	};
 
 	const edgeBottom = {
-		connected: resolveLocale(manifestoContent.edgeBottom.connected, 'en'),
-		line: resolveLocale(manifestoContent.edgeBottom.line, 'en'),
-		url: resolveLocale(manifestoContent.edgeBottom.url, 'en'),
-		version: resolveLocale(manifestoContent.edgeBottom.version, 'en'),
-		scrollHint: resolveLocale(manifestoContent.edgeBottom.scrollHint, 'en'),
+		connected: resolveLocale(manifestoContent.edgeBottom.connected, locale),
+		line: resolveLocale(manifestoContent.edgeBottom.line, locale),
+		url: resolveLocale(manifestoContent.edgeBottom.url, locale),
+		version: resolveLocale(manifestoContent.edgeBottom.version, locale),
+		scrollHint: resolveLocale(manifestoContent.edgeBottom.scrollHint, locale),
 	};
 
 	const transit = {
-		arrivalLabel: resolveLocale(manifestoContent.transit.arrivalLabel, 'en'),
-		platformBadge: resolveLocale(manifestoContent.transit.platformBadge, 'en'),
-		directionBadge: resolveLocale(manifestoContent.transit.directionBadge, 'en'),
+		arrivalLabel: resolveLocale(manifestoContent.transit.arrivalLabel, locale),
+		platformBadge: resolveLocale(manifestoContent.transit.platformBadge, locale),
+		directionBadge: resolveLocale(manifestoContent.transit.directionBadge, locale),
 	};
 
 	const ticks = manifestoContent.ticks;
 
 	const hiddenLines = manifestoContent.hiddenTransitLines.map((l) => ({
-		name: resolveLocale(l.name, 'en'),
+		name: resolveLocale(l.name, locale),
 		color: l.color,
 	}));
 
@@ -187,7 +190,7 @@
 		</div>
 
 		<!-- Capability pills -->
-		<nav class="manifesto__pills" aria-label={resolveLocale(siteLabels.a11y.navCapabilities, 'en') || 'Capabilities'}>
+		<nav class="manifesto__pills" aria-label={resolveLocale(siteLabels.a11y.navCapabilities, locale) || 'Capabilities'}>
 			{#each pills as pill}
 				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback" use:boop={{ scale: 1.03, timing: 200 }}>{pill.label}</a>
 			{/each}

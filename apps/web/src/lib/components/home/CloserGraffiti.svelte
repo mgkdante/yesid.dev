@@ -9,12 +9,15 @@
 	import { gsap, ScrollTrigger } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
 
 	type LetterData = { main: SVGPathElement; drips: SVGPathElement[] };
 
 	// go2-t1c2: img-role aria from site_labels, previous literal as fallback.
-	const graffitiAria = resolveLocale(siteLabels.a11y.closerGraffiti, 'en') || 'THE END graffiti';
+	const graffitiAria = resolveLocale(siteLabels.a11y.closerGraffiti, locale) || 'THE END graffiti';
 
 	let {
 		onReady,

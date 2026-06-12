@@ -8,6 +8,9 @@
 	import { browser } from '$app/environment';
 	import type { Service, Project } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { servicesListingContent } from '$lib/content/services';
 	import { getLenis } from '$lib/motion/utils/lenis.js';
 	import StationTabs from '$lib/components/shared/StationTabs.svelte';
@@ -32,7 +35,7 @@
 	let currentProjects = $derived(serviceProjects[activeId] ?? []);
 	let currentServiceTitle = $derived(() => {
 		const svc = sorted.find((s) => s.id === activeId);
-		return svc ? resolveLocale(svc.title, 'en') : undefined;
+		return svc ? resolveLocale(svc.title, locale) : undefined;
 	});
 
 	function handleTabSelect(id: string) {
@@ -74,7 +77,7 @@
 </script>
 
 <div class="services-page" data-testid="service-listing-page">
-	<h1 class="sr-only">{resolveLocale(servicesListingContent.heading, 'en')}</h1>
+	<h1 class="sr-only">{resolveLocale(servicesListingContent.heading, locale)}</h1>
 
 	<!-- Sticky station tabs -->
 	<div class="tabs-bar">

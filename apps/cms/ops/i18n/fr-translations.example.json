@@ -1,0 +1,31 @@
+{
+	"locale": "fr",
+	"entries": [
+		{
+			"collection": "services",
+			"id": "data-pipeline",
+			"parentFk": "services_id",
+			"fields": {
+				"title": "Pipelines de données et automatisation",
+				"description": "Des flux de données fiables, de la source au tableau de bord — extraction, transformation, planification."
+			}
+		},
+		{
+			"collection": "block_about_content",
+			"id": 1,
+			"parentFk": "block_about_content_id",
+			"fields": {
+				"heading": "À propos de Yesid"
+			}
+		},
+		{
+			"collection": "site_meta",
+			"id": 1,
+			"parentFk": "site_meta_id",
+			"fields": {
+				"tagline": "Infrastructure numérique en mouvement",
+				"description": "Ingénieur indépendant en infrastructure numérique à Montréal. Bases de données, pipelines, tableaux de bord — PostgreSQL, dbt, Power BI, SvelteKit."
+			}
+		}
+	]
+}

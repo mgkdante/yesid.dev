@@ -8,10 +8,13 @@
   import { onMount, onDestroy } from 'svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
   import { resolveLocale } from '$lib/utils/locale';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { projectsDetailContent } from '$lib/content/projects';
 
-  const tocOpenAria = resolveLocale(projectsDetailContent.tocPill.openAria, 'en');
-  const tocCloseAria = resolveLocale(projectsDetailContent.tocPill.closeAria, 'en');
+  const tocOpenAria = resolveLocale(projectsDetailContent.tocPill.openAria, locale);
+  const tocCloseAria = resolveLocale(projectsDetailContent.tocPill.closeAria, locale);
 
   interface TocChild {
     id: string;

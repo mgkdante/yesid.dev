@@ -11,7 +11,10 @@ const appHtml = readFileSync(resolve(process.cwd(), 'src/app.html'), 'utf-8');
 
 describe('theme activation (app.html)', () => {
 	it('keeps data-theme="dark" as the markup default', () => {
-		expect(appHtml).toMatch(/<html lang="en" data-theme="dark">/);
+		// lang is the %lang% placeholder since slice-28.6 (hooks.server.ts
+		// transformPageChunk replaces it per request) — this test pins the
+		// data-theme default, not the lang value.
+		expect(appHtml).toMatch(/<html lang="%lang%" data-theme="dark">/);
 	});
 	it('drops the dead class="dark" hook', () => {
 		expect(appHtml).not.toContain('class="dark"');

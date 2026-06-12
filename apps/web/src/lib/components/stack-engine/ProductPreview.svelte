@@ -11,6 +11,9 @@
 <script lang="ts">
 	import { STACK_LAYERS, type StackArchetype, type StackLayer } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { FRAME_SIZES, PREVIEW_CONFIGS } from './preview-configs';
 
@@ -63,7 +66,7 @@
 	const captionText = $derived.by(() => {
 		if (!captionTech) return null;
 		const enables = techById.get(captionTech)?.enables;
-		return enables ? resolveLocale(enables, 'en') : null;
+		return enables ? resolveLocale(enables, locale) : null;
 	});
 
 	const pct = (v: number, total: number) => `${(v / total) * 100}%`;
