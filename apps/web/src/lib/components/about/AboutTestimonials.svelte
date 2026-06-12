@@ -136,7 +136,7 @@
 				<button
 					class="relative tap-press h-2 w-2 rounded-full transition-colors duration-300 before:absolute before:inset-[-18px] before:content-[''] {i === activeIndex
 						? 'bg-[var(--primary)]'
-						: 'bg-[var(--popover)] hover:bg-[var(--muted-foreground)] active:bg-[var(--muted-foreground)]'}"
+						: 'bg-[var(--border)] hover:bg-[var(--muted-foreground)] active:bg-[var(--muted-foreground)]'}"
 					aria-label={showAriaTemplate.replace('{index}', String(i + 1))}
 					aria-selected={i === activeIndex}
 					role="tab"

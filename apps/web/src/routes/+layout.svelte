@@ -19,6 +19,7 @@
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
 	import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
+	import { themeStore } from '$lib/stores/theme.svelte';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 	import { initGlobalRipple } from '$lib/motion/utils/globalRipple.js';
 	import { setMorphShapes } from '$lib/utils/shapes';
@@ -60,9 +61,14 @@
 		// spawns the Manifesto-style two-ring expanding ripple.
 		const cleanupRipple = initGlobalRipple();
 
+		// GO-W2.2: re-sync theme store with the pre-paint attribute + watch
+		// system preference for users with no stored choice.
+		const cleanupTheme = themeStore.init();
+
 		return () => {
 			destroyLenis();
 			cleanupRipple();
+			cleanupTheme();
 		};
 	});
 

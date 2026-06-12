@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
+	import { pressBounce } from '$lib/motion/actions';
 	import type { EngineState } from './engine-state.svelte';
 
 	let { engine }: { engine: EngineState } = $props();
@@ -14,8 +15,9 @@
 	{#each engine.archetypes as archetype (archetype.slug)}
 		<button
 			type="button"
-			class="archetype-card"
+			class="archetype-card tap-press"
 			data-testid={`archetype-card-${archetype.slug}`}
+			use:pressBounce
 			onclick={() => engine.selectArchetype(archetype.slug)}
 		>
 			<span class="card-title">{resolveLocale(archetype.title, 'en')}</span>
@@ -49,6 +51,9 @@
 	.archetype-card:hover {
 		border-color: var(--primary);
 		transform: translateY(-2px);
+		/* GO-w2t5 cute pass: soft brand glow under the lift — shadow-only →
+		   SAFE-ALWAYS, pairs with the committed pressBounce on tap. */
+		box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 12%, transparent);
 	}
 
 	.card-title {

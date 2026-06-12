@@ -57,4 +57,9 @@ describe('Nav — Pill Structure', () => {
 		expect(screen.getByTestId('nav-menu-toggle')).toHaveAttribute('aria-label', 'Open menu');
 	});
 
+	it('renders the theme toggle inside the pill', () => {
+		render(Nav);
+		expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
+	});
+
 });

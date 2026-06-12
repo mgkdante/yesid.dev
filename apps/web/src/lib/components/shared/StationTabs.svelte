@@ -57,11 +57,13 @@
 		return SHORT_LABELS[service.id] ?? service.title.en.split(' ')[0];
 	}
 
-	/** Inactive tabs fade by distance from active: closer tabs stay brighter */
+	/** Inactive tabs fade by distance from active: closer tabs stay brighter.
+	 *  GO-W2.2: floor raised 0.35 → 0.8 — #141414-on-orange at 0.35 computed
+	 *  to 1.87:1. At 0.8 the worst tab is ≥4.8:1 in both themes. */
 	function getOpacity(index: number): number {
 		if (activeIndex === -1) return 1;
 		const distance = Math.abs(index - activeIndex);
-		return Math.max(0.35, 1 - distance * 0.15);
+		return Math.max(0.8, 1 - distance * 0.15);
 	}
 
 	// Swipe guard — disables pointer-events on tabs during swipe so no click fires.

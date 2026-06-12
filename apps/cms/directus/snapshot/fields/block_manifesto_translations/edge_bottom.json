@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "edge_bottom",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale bottom edge chrome (ManifestoContent.edgeBottom). JSON shape: { connected: string, line: string, url: string, version: string, scrollHint: string }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

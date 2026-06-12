@@ -6,12 +6,14 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { siteLabels } from '$lib/content';
 	import type { ManifestoContent } from '$lib/types';
 
 	// slice-18i Phase 7C: manifestoContent now flows as a prop from the server load.
 	let { manifesto: manifestoContent }: { manifesto: ManifestoContent } = $props();
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { createCrescendoScrub } from '$lib/motion/scrubs/index.js';
+	import { boop } from '$lib/motion/actions';
 	import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import ManifestoEdgeLeft from './ManifestoEdgeLeft.svelte';
@@ -185,9 +187,9 @@
 		</div>
 
 		<!-- Capability pills -->
-		<nav class="manifesto__pills" aria-label="Capabilities">
+		<nav class="manifesto__pills" aria-label={resolveLocale(siteLabels.a11y.navCapabilities, 'en') || 'Capabilities'}>
 			{#each pills as pill}
-				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback">{pill.label}</a>
+				<a data-testid="manifesto-pill" href={pill.href} class="manifesto__pill tap-feedback" use:boop={{ scale: 1.03, timing: 200 }}>{pill.label}</a>
 			{/each}
 		</nav>
 	</div>
@@ -261,7 +263,7 @@
 	.manifesto__prompt-text {
 		font-family: var(--font-mono);
 		font-size: 13px;
-		color: color-mix(in srgb, var(--primary) 60%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
 	/* ── Statement ───────────────────────────────────────────────── */
@@ -307,7 +309,7 @@
 		font-family: var(--font-mono);
 		font-size: clamp(0.75rem, 1.2vw, 1rem);
 		letter-spacing: 0.04em;
-		color: color-mix(in srgb, var(--primary) 60%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 		border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 		border-radius: var(--radius-pill);
 		padding: 8px 20px;
@@ -318,7 +320,7 @@
 
 	.manifesto__pill:hover {
 		border-color: color-mix(in srgb, var(--primary) 40%, transparent);
-		color: color-mix(in srgb, var(--primary) 85%, transparent);
+		color: var(--primary);
 		background: color-mix(in srgb, var(--primary) 8%, transparent);
 	}
 

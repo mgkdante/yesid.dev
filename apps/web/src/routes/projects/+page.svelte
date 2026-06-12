@@ -12,4 +12,5 @@
 	serviceIds={data.serviceIds}
 	services={data.services}
 	serviceSvgContents={data.serviceSvgContents}
+	projectsPage={data.projectsPage}
 />

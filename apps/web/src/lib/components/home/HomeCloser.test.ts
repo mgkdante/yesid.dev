@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/svelte';
 import HomeCloser from './HomeCloser.svelte';
 // slice-18i Phase 7C: HomeCloser now requires closer prop.
 import { closerContent } from '$lib/content/site-content';
+import { gsap } from '$lib/motion/utils/gsap';
 
 // Mock fetch to prevent happy-dom from making real HTTP requests during onMount
 const originalFetch = globalThis.fetch;
@@ -75,5 +76,20 @@ describe('HomeCloser', () => {
 		// SVG is loaded dynamically via fetch in onMount — not present in unit tests
 		expect(graffiti.getAttribute('role')).toBe('img');
 		expect(graffiti.getAttribute('aria-label')).toContain('THE END');
+	});
+
+	it('GO-w2t5: ambient breathing mounts on the closer section (MOTION-GATED factory)', () => {
+		vi.mocked(gsap.to).mockClear();
+		render(HomeCloser, { props: { closer: closerContent } });
+		const breathingCall = vi
+			.mocked(gsap.to)
+			.mock.calls.find(
+				([, vars]) =>
+					!!vars && Object.prototype.hasOwnProperty.call(vars, '--breathing-phase'),
+			);
+		expect(breathingCall).toBeTruthy();
+		expect((breathingCall![0] as HTMLElement).dataset.testid).toBe('closer-section');
+		expect((breathingCall![1] as Record<string, unknown>).repeat).toBe(-1);
+		expect((breathingCall![1] as Record<string, unknown>).yoyo).toBe(true);
 	});
 });

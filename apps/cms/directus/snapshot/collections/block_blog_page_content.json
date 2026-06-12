@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "Blog page chrome block (/blog). Minimal stub — only intro field per BlogPageContentSchema. Expand when content design lands.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 2,
     "sort_field": "sort",
     "status": "active",

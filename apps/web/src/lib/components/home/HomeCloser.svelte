@@ -18,6 +18,7 @@
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { pressBounce } from '$lib/motion/actions';
+	import { backgroundBreathing, type BreathingControls } from '$lib/motion/scrubs/index.js';
 	import CloserGraffiti from './CloserGraffiti.svelte';
 	import CloserFloodlight from './CloserFloodlight.svelte';
 	import CloserProps from './CloserProps.svelte';
@@ -92,6 +93,7 @@
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
 	let masterTl: gsap.core.Timeline | undefined;
+	let breathing: BreathingControls | null = null;
 	let timelineBuilt = false;
 
 	function buildMasterTimeline(graffitiAnimateFn?: () => gsap.core.Timeline) {
@@ -142,6 +144,17 @@
 		}
 	});
 
+	// GO-w2t5: slice-23 orphan wired — ambient breathing behind the depot
+	// board. MOTION-GATED tier: backgroundBreathing self-no-ops under reduce.
+	onMount(() => {
+		if (!sectionEl) return;
+		breathing = backgroundBreathing(sectionEl, { duration: 12 });
+		return () => {
+			breathing?.destroy();
+			breathing = null;
+		};
+	});
+
 	onDestroy(() => {
 		masterTl?.kill();
 	});
@@ -150,7 +163,7 @@
 <section
 	bind:this={sectionEl}
 	data-testid="closer-section"
-	class="closer-section relative"
+	class="closer-section relative theme-dark"
 >
 	<!-- Graffiti "THE END" — SVG loaded dynamically for DrawSVG animation -->
 	<CloserGraffiti onReady={handleGraffitiReady} />
@@ -182,12 +195,31 @@
 </section>
 
 <style>
+	/* GO-W2.2: night construction tableau — intentionally pinned dark in BOTH
+	   themes via .theme-dark (tokens.css class alias re-scopes all vars).
+	   The painted background is required: without it the light page shows
+	   through. dark: Tailwind variant also fires here (app.css custom-variant). */
 	.closer-section {
+		background: var(--background);
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
 		padding: var(--space-section-y) var(--space-page-x) 100px;
 		position: relative;
+	}
+
+	/* GO-w2t5: breathing consumer — var(--breathing-phase) 0↔1 modulates a
+	   faint floor glow under the board ("is it actually moving?" subtle). */
+	.closer-section::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: radial-gradient(
+			ellipse 80% 55% at 50% 100%,
+			color-mix(in srgb, var(--primary) calc(2% + var(--breathing-phase, 0) * 3%), transparent),
+			transparent 75%
+		);
 	}
 
 	/* Content area — wide, leaves room for graffiti on the right */

@@ -8,7 +8,9 @@
 <script lang="ts">
   import type { BlogPost } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
+  import { fillTemplate } from '$lib/utils/labels';
   import { blogDetailContent } from '$lib/content/blog';
+  import { siteLabels } from '$lib/content';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
@@ -52,12 +54,19 @@
   const postTagsAria = resolveLocale(blogDetailContent.header.postTagsAria, 'en');
   const readingTimeTemplate = resolveLocale(blogDetailContent.header.readingTimeLabel, 'en');
   const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));
+  // go2-t1c2: category/watermark/edition microcopy from site_labels, previous
+  // literals kept as code fallbacks.
   const categoryLabel = $derived(
-    post.category === 'personal' ? 'Personal' : 'Professional'
+    post.category === 'personal'
+      ? resolveLocale(siteLabels.ui.categoryPersonal, 'en') || 'Personal'
+      : resolveLocale(siteLabels.ui.categoryProfessional, 'en') || 'Professional'
   );
   const watermarkText = $derived(
-    post.category === 'personal' ? 'Personal' : 'Dispatch'
+    post.category === 'personal'
+      ? resolveLocale(siteLabels.ui.watermarkPersonal, 'en') || 'Personal'
+      : resolveLocale(siteLabels.ui.watermarkProfessional, 'en') || 'Dispatch'
   );
+  const editionTemplate = resolveLocale(siteLabels.ui.blogEditionTemplate, 'en') || 'VOL. 01 // ISS. {issue}';
 
   // Format date as "Apr 2026"
   const formattedDate = $derived.by(() => {
@@ -116,7 +125,7 @@
 
       <!-- Edge labels (rotated, desktop only) -->
       <div class="header__edge header__edge-left hidden lg:block" aria-hidden="true">
-        VOL. 01 // ISS. {String(postIndex).padStart(2, '0')}
+        {fillTemplate(editionTemplate, { issue: String(postIndex).padStart(2, '0') })}
       </div>
       <div class="header__edge header__edge-right hidden lg:block" aria-hidden="true">
         {edgeDate} // {readingTime} MIN
@@ -222,6 +231,7 @@
     transform: translate(-50%, -50%);
     font-size: clamp(100px, 14vw, 180px);
     font-weight: 900;
+    /* contrast-exempt: decorative (aria-hidden watermark) */
     color: color-mix(in srgb, var(--blog-accent) 2.5%, transparent);
     text-transform: uppercase;
     letter-spacing: -0.06em;
@@ -238,6 +248,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 2px;
+    /* contrast-exempt: decorative (aria-hidden edge ornament) */
     color: color-mix(in srgb, var(--blog-accent) 20%, transparent);
     text-transform: uppercase;
     white-space: nowrap;
@@ -371,7 +382,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--blog-accent) 50%, transparent);
+    color: color-mix(in srgb, var(--blog-accent) 85%, transparent);
     border: 1px solid color-mix(in srgb, var(--blog-accent) 12%, transparent);
     border-radius: var(--radius-pill);
     padding: 4px 12px;
@@ -381,7 +392,7 @@
   @media (min-width: 1024px) {
     .header__pill {
       font-size: 13px;
-      color: color-mix(in srgb, var(--blog-accent) 60%, transparent);
+      color: color-mix(in srgb, var(--blog-accent) 90%, transparent);
       border-color: color-mix(in srgb, var(--blog-accent) 15%, transparent);
       padding: 7px 18px;
       background: color-mix(in srgb, var(--blog-accent) 4%, transparent);
@@ -396,7 +407,7 @@
     gap: 1rem;
     font-family: var(--font-mono);
     font-size: 11px;
-    color: color-mix(in srgb, var(--blog-accent) 35%, transparent);
+    color: color-mix(in srgb, var(--blog-accent) 85%, transparent);
   }
 
   .header__meta-sep {

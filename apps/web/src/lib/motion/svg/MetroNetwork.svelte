@@ -120,4 +120,16 @@
 	:global(.metro-network-frame svg [fill="white"]) {
 		opacity: 0;
 	}
+
+	/* GO-W2.2 light theme: recolor the CMS-sourced metro art via attribute
+	   overrides. Dark is untouched (selectors scoped to light). Orange lines/
+	   stations stay #E07800 — decorative, brand-true on paper. */
+	:global([data-theme="light"] .metro-network-frame svg [fill="#1E1E1E"]),
+	:global(.theme-light .metro-network-frame svg [fill="#1E1E1E"]) {
+		fill: var(--muted);
+	}
+	:global([data-theme="light"] .metro-network-frame svg [fill="#808285"]),
+	:global(.theme-light .metro-network-frame svg [fill="#808285"]) {
+		fill: var(--muted-foreground);
+	}
 </style>
