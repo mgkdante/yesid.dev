@@ -14,12 +14,17 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(meta.singleton).toBe(true);
 		expect(meta.group).toBe('site_config');
 	});
-	it('translations collection carries the 23 label columns + pk/fks', () => {
+	it('translations collection carries the 26 label columns + pk/fks', () => {
 		// go2/w4: +1 — ui_back_to_projects ("← All Projects" on /projects/[slug]).
+		// go2/w5: +3 — ui_metro_legend_stm / ui_metro_legend_rem (hero metro art
+		// legend) + a11y_replay_intro (hero dot replay button aria).
 		const fields = (plan[1].payload as { fields: { field: string }[] }).fields.map((f) => f.field);
-		expect(fields.length).toBe(26); // id + site_labels_id + languages_code + 23
+		expect(fields.length).toBe(29); // id + site_labels_id + languages_code + 26
 		for (const key of Object.keys(SITE_LABEL_SEEDS)) expect(fields).toContain(key);
 		expect(fields).toContain('ui_back_to_projects');
+		expect(fields).toContain('ui_metro_legend_stm');
+		expect(fields).toContain('ui_metro_legend_rem');
+		expect(fields).toContain('a11y_replay_intro');
 	});
 	it('adds heading + empty_state to block_projects_page_content_translations', () => {
 		const chrome = plan.filter((s) => s.kind === 'field' && s.path === '/fields/block_projects_page_content_translations');
@@ -35,7 +40,10 @@ describe('setup-site-labels-and-chrome plan', () => {
 	it('seeds are exactly the fixture', () => {
 		expect(SITE_LABEL_SEEDS.ui_copyright_template).toBe('© {year} yesid');
 		expect(SITE_LABEL_SEEDS.ui_back_to_projects).toBe('← All Projects');
-		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(23);
+		expect(SITE_LABEL_SEEDS.ui_metro_legend_stm).toBe('STM MÉTRO');
+		expect(SITE_LABEL_SEEDS.ui_metro_legend_rem).toBe('REM LIGHT RAIL');
+		expect(SITE_LABEL_SEEDS.a11y_replay_intro).toBe('Replay intro');
+		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(26);
 	});
 	it('parseFlags dry-run default', () => {
 		expect(parseFlags([])).toEqual({ apply: false, seed: false });
