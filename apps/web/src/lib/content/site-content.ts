@@ -41,7 +41,7 @@ export const heroContent: HeroContent = {
 		metaTemplate: { en: '5 rows · {queryTime}s · updated {updatedAgo}' },
 		prompt: { en: 'yesid@transit:gold>' },
 	},
-	subheadline: { en: 'Data that tell the truth.' },
+	subheadline: { en: 'I make data tell the truth.' },
 	subtitle: {
 		en: 'Building reliable infrastructure for teams that can\'t afford downtime.',
 	},
@@ -109,23 +109,19 @@ export const manifestoContent: ManifestoContent = {
 	],
 	pills: [
 		{
-			label: { en: 'pipelines' },
-			serviceId: 'data-pipeline',
-		},
-		{
 			label: { en: 'databases' },
 			serviceId: 'database-engineering',
+		},
+		{
+			label: { en: 'pipelines' },
+			serviceId: 'data-pipeline',
 		},
 		{
 			label: { en: 'dashboards' },
 			serviceId: 'analytics-reporting',
 		},
 		{
-			label: { en: 'internal_tools' },
-			serviceId: 'internal-tooling',
-		},
-		{
-			label: { en: 'web_apps' },
+			label: { en: 'websites' },
 			serviceId: 'web-development',
 		},
 	],
@@ -152,16 +148,11 @@ export const proofReelContent: ProofReelContent = {
 	heading: { en: 'PROOF' },
 	headingDot: { en: '.' },
 	images: {
-		'lorem-analytics-dashboard': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
-		'lorem-database-migration': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop',
-		'transit-data-pipeline': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&h=400&fit=crop',
+		'transit-data-pipeline': 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&h=600&fit=crop',
+		'yesid-dev': 'https://cms.yesid.dev/assets/8b57ccd1-bed1-46ae-bb24-a887714a8bcc?key=card-600',
 	},
 	sectionLabel: { en: '// PROOF' },
-	slugs: [
-		'transit-data-pipeline',
-		'lorem-analytics-dashboard',
-		'lorem-database-migration',
-	],
+	slugs: ['transit-data-pipeline', 'yesid-dev'],
 	subheading: { en: 'SELECTED WORK' },
 	toggleColorAria: { en: 'Toggle color for {title}' },
 	viewAllHref: '/projects',
@@ -178,7 +169,7 @@ export const servicesGridContent: ServicesGridContent = {
 
 export const aboutContent: AboutIntroContent = {
 	bio: {
-		en: 'Montreal, QC — building digital infrastructure for teams that ship.',
+		en: 'Montreal, QC — I bring data, make it tell stories, and build the systems it moves through.',
 	},
 	interests: {
 		en: 'Anime · Data viz · Open source · Montreal food scene',
@@ -193,7 +184,7 @@ export const aboutContent: AboutIntroContent = {
 	name: { en: 'Yesid O.' },
 	stackItems: [],
 	stackLabel: { en: 'STACK' },
-	title: { en: 'Freelance Data Engineer' },
+	title: { en: 'Freelance Digital Infrastructure Engineer' },
 };
 
 export const ctaContent: CtaContent = {

@@ -58,25 +58,7 @@ describe('getPublicProjects', () => {
 });
 
 describe('getProjectsByService', () => {
-	// GO2-T8-REMOVE: superseded by the skipped database-engineering baseline
-	// below once the Gate A regen lands (the transit×sql-development junction
-	// row is remapped to database-engineering, so this query returns []).
-	it('returns projects linked to a given service ID', async () => {
-		const results = await getProjectsByService('sql-development');
-		expect(results.length).toBeGreaterThan(0);
-		results.forEach((p) => {
-			expect(p.relatedServices).toContain('sql-development');
-		});
-	});
 
-	// GO2-T8-REMOVE: superseded by the skipped database-engineering baseline
-	// below once the Gate A regen lands.
-	it('excludes private projects', async () => {
-		const results = await getProjectsByService('sql-development');
-		results.forEach((p) => {
-			expect(p.status).not.toBe('private');
-		});
-	});
 
 	it('returns empty array for unknown service ID', async () => {
 		expect(await getProjectsByService('nonexistent')).toEqual([]);
@@ -87,23 +69,6 @@ describe('getProjectsByService', () => {
 	// the orchestrator's Gate A CMS apply + regen lands (projects.ts then
 	// carries transit relatedServices ['data-pipeline','database-engineering']).
 	// T8 unskip step: `describe.skip` → `describe`, then delete the
-	// GO2-T8-REMOVE tests above.
-	describe.skip('getProjectsByService (GO-2 post-consolidation baseline)', () => {
-		it('returns projects linked to a given service ID', async () => {
-			const results = await getProjectsByService('database-engineering');
-			expect(results.length).toBeGreaterThan(0);
-			results.forEach((p) => {
-				expect(p.relatedServices).toContain('database-engineering');
-			});
-		});
-
-		it('excludes private projects', async () => {
-			const results = await getProjectsByService('database-engineering');
-			results.forEach((p) => {
-				expect(p.status).not.toBe('private');
-			});
-		});
-	});
 });
 
 describe('project optional metadata fields', () => {

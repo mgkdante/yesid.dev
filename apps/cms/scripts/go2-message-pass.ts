@@ -19,7 +19,7 @@
  * the pills point at the post-consolidation station ids.
  */
 
-import { readItems, updateItem } from '@directus/sdk';
+import { readItems, updateItem, updateSingleton } from '@directus/sdk';
 import { createClient, defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
@@ -146,9 +146,12 @@ interface GenericRow { id: number | string; [key: string]: unknown }
 type Client = ReturnType<typeof createClient<Record<string, GenericRow[]>>>;
 
 async function patchEnTranslation(client: Client, edit: TranslationEdit): Promise<void> {
-	const parents = (await client.request(
+	const raw = (await client.request(
 		readItems(edit.collection as never, { fields: ['id'], limit: 1 } as never),
-	)) as unknown as GenericRow[];
+	)) as unknown;
+	// block_* parents are singletons since go2/t1 group A — the API returns an
+	// object for them and an array for everything else; normalize both.
+	const parents = (Array.isArray(raw) ? raw : raw ? [raw] : []) as GenericRow[];
 	if (parents.length === 0) throw new Error(`[go2-message-pass] no ${edit.collection} row found`);
 	const parentId = parents[0].id;
 
@@ -215,12 +218,14 @@ export async function applyMessagePass(opts: { directusUrl: string; token: strin
 	}
 
 	// proof reel — slugs + images live on the PARENT row.
-	const reels = (await client.request(
+	const reelRaw = (await client.request(
 		readItems('block_proof_reel' as never, { fields: ['id'], limit: 1 } as never),
-	)) as unknown as GenericRow[];
+	)) as unknown;
+	// singleton since go2/t1 group A — object, not array; updateSingleton route.
+	const reels = (Array.isArray(reelRaw) ? reelRaw : reelRaw ? [reelRaw] : []) as GenericRow[];
 	if (reels.length === 0) throw new Error('[go2-message-pass] no block_proof_reel row found');
 	await client.request(
-		updateItem('block_proof_reel' as never, reels[0].id as never, PROOF_REEL_PATCH as never),
+		updateSingleton('block_proof_reel' as never, PROOF_REEL_PATCH as never),
 	);
 	log.info(`  ✓ block_proof_reel: slugs -> [${PROOF_REEL_PATCH.slugs.join(', ')}]`);
 
