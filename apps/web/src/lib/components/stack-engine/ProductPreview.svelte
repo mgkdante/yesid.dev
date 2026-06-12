@@ -1,120 +1,115 @@
 <!--
-  ProductPreview (slice-29) — the crafted payoff: what the archetype's stack
-  looks like as a labeled product (browser or phone frame).
+  ProductPreview (slice-29, go2/w5 round 4) — the crafted payoff: what a
+  stack looks like as a labeled product (browser or phone frame).
 
-  Slots come from PREVIEW_CONFIGS (crafted, never generated). Each slot is
-  occupied by the archetype tech of its layer (first by sort); the FIRST slot
-  of each layer carries data-flip-id=<tech id> so the blueprint box morphs
-  into it. Tapping any slot toggles an inline caption with the tech's
-  `enables` line (en) from the committed tech module.
+  Two sources, one renderer:
+  - `archetype` → the slug's crafted PREVIEW_CONFIGS entry, occupants resolved
+    per slot (layer + pick index, first slot per TECH carries the flip id).
+  - `picks` (round 4) → the composed build's GENERIC preview — frame derived
+    from covered layers, one slot per pick ("see your build as a product").
+
+  Round 4 dual-role rule: every slot prints its ROLE line (the slot's job in
+  this product) above the tech name, so the same tech in two boxes tells two
+  stories (Python "pulls the raw feeds" vs Python "cleans & reshapes").
+  Captions are therefore PER SLOT (not per tech): tapping each Python reads
+  its own role into the caption — and tapping the second no longer toggles
+  the first's caption off.
 -->
 <script lang="ts">
-	import { STACK_LAYERS, type StackArchetype, type StackLayer } from '@repo/shared/schemas';
+	import type { StackArchetype, StackLayer } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
 	import { techStackItems } from '$lib/content/tech-stack';
-	import { FRAME_SIZES, PREVIEW_CONFIGS } from './preview-configs';
+	import { LAYER_TEACHING } from './layer-teaching';
+	import { FRAME_SIZES, buildComposedPreview, resolveArchetypePreview } from './preview-configs';
 
-	let { archetype }: { archetype: StackArchetype; animate?: boolean } = $props();
+	let {
+		archetype = null,
+		picks = null,
+	}: {
+		archetype?: StackArchetype | null;
+		/** Composed mode (round 4): the picked techs — overrides archetype. */
+		picks?: readonly { id: string; layer: StackLayer }[] | null;
+		animate?: boolean;
+	} = $props();
 
 	const techById = new Map(techStackItems.map((t) => [t.id, t]));
 
-	const config = $derived(PREVIEW_CONFIGS[archetype.slug] ?? null);
-	const frame = $derived(config ? FRAME_SIZES[config.frame] : FRAME_SIZES.browser);
+	const resolved = $derived(
+		picks ? buildComposedPreview(picks) : archetype ? resolveArchetypePreview(archetype) : null,
+	);
+	const frame = $derived(resolved ? FRAME_SIZES[resolved.frame] : FRAME_SIZES.browser);
 
-	/** Occupant per layer: the archetype's tech of that layer, first by sort. */
-	const occupantByLayer = $derived.by(() => {
-		const map = new Map<StackLayer, string>();
-		for (const layer of STACK_LAYERS) {
-			const links = archetype.tech
-				.filter((l) => l.layer === layer)
-				.sort((a, b) => a.sort - b.sort);
-			if (links.length > 0) map.set(layer, links[0].id);
-		}
-		return map;
-	});
+	/** Tapped slot index — captions are per SLOT so dual-role techs read distinctly. */
+	let captionSlot = $state<number | null>(null);
 
-	/** Slots resolved with occupants; the first slot per layer carries the flip id. */
-	const resolvedSlots = $derived.by(() => {
-		if (!config) return [];
-		const flipTagged = new Set<StackLayer>();
-		const out: {
-			slot: (typeof config.slots)[number];
-			techId: string;
-			name: string;
-			flip: boolean;
-		}[] = [];
-		for (const slot of config.slots) {
-			const techId = occupantByLayer.get(slot.layer);
-			if (!techId) continue; // layer unoccupied for this archetype — skip slot
-			const flip = !flipTagged.has(slot.layer);
-			flipTagged.add(slot.layer);
-			out.push({ slot, techId, name: techById.get(techId)?.name ?? techId, flip });
-		}
-		return out;
-	});
-
-	/** Tapped slot tech — caption toggles per tech id. */
-	let captionTech = $state<string | null>(null);
-
-	function toggleCaption(techId: string): void {
-		captionTech = captionTech === techId ? null : techId;
+	function toggleCaption(index: number): void {
+		captionSlot = captionSlot === index ? null : index;
 	}
 
-	const captionText = $derived.by(() => {
-		if (!captionTech) return null;
-		const enables = techById.get(captionTech)?.enables;
-		return enables ? resolveLocale(enables, locale) : null;
+	// go2/w5 §3 goal-mode parity + round 4 roles: the caption opens with the
+	// slot's role story, then the tech's `enables` line, then the layer
+	// teaching line (same const module as the chip teach line). Missing
+	// `enables` degrades gracefully — never blank when a layer exists.
+	const caption = $derived.by(() => {
+		if (captionSlot === null || !resolved) return null;
+		const slot = resolved.slots[captionSlot];
+		if (!slot) return null;
+		const tech = techById.get(slot.techId);
+		const name = tech?.name ?? slot.techId;
+		const enables = tech?.enables ? resolveLocale(tech.enables, locale) : '';
+		const layerLine = `${slot.layer}: ${LAYER_TEACHING[slot.layer]}`;
+		const tail = enables ? `${enables} · ${layerLine}` : `lives in ${layerLine}`;
+		return { techId: slot.techId, name, text: `${slot.role} here. ${tail}` };
 	});
 
 	const pct = (v: number, total: number) => `${(v / total) * 100}%`;
 </script>
 
 <div class="product-preview" data-testid="product-preview">
-	{#if config}
+	{#if resolved}
 		<div
-			class="frame frame-{config.frame}"
+			class="frame frame-{resolved.frame}"
 			style:aspect-ratio={`${frame.w} / ${frame.h}`}
 		>
 			<div class="frame-chrome" aria-hidden="true">
-				{#if config.frame === 'browser'}
+				{#if resolved.frame === 'browser'}
 					<span class="chrome-dot"></span><span class="chrome-dot"></span><span class="chrome-dot"></span>
 				{:else}
 					<span class="chrome-notch"></span>
 				{/if}
 			</div>
-			{#each resolvedSlots as { slot, techId, name, flip }, i (i)}
+			{#each resolved.slots as slot, i (i)}
 				<button
 					type="button"
 					class="slot slot-layer-{slot.layer}"
-					class:slot-active={captionTech === techId}
-					data-testid={`slot-${techId}`}
-					data-flip-id={flip ? techId : undefined}
+					class:slot-active={captionSlot === i}
+					data-testid={`slot-${slot.techId}`}
+					data-flip-id={slot.flip ? slot.techId : undefined}
 					style:left={pct(slot.x, frame.w)}
 					style:top={pct(slot.y, frame.h)}
 					style:width={pct(slot.w, frame.w)}
 					style:height={pct(slot.h, frame.h)}
-					onclick={() => toggleCaption(techId)}
+					onclick={() => toggleCaption(i)}
 				>
-					{#if slot.label}
-						<span class="slot-role">{slot.label}</span>
-					{/if}
-					<span class="slot-name">{name}</span>
+					<span class="slot-role">{slot.role}</span>
+					<span class="slot-name">{techById.get(slot.techId)?.name ?? slot.techId}</span>
 				</button>
 			{/each}
 		</div>
 
-		{#if captionTech && captionText}
-			<p class="enables-caption" data-testid={`enables-${captionTech}`}>
-				<span class="caption-tech">{techById.get(captionTech)?.name ?? captionTech}</span>
-				— {captionText}
+		{#if caption}
+			<p class="enables-caption" data-testid={`enables-${caption.techId}`}>
+				<span class="caption-tech">{caption.name}</span>
+				— {caption.text}
 			</p>
 		{/if}
 	{:else}
-		<!-- Crafted previews only — an archetype without one says so (never blank). -->
-		<p class="preview-pending">preview pending for this archetype.</p>
+		<!-- Defensive only (round 4 totality: every published slug HAS a config) —
+		     an unknown slug says so rather than rendering blank. -->
+		<p class="preview-pending">this one's still on the drawing board — the blueprint view has the full picture.</p>
 	{/if}
 </div>
 
@@ -201,25 +196,40 @@
 		border-color: var(--primary);
 	}
 
+	/* Round 4: roles are story phrases now ("pulls the raw feeds") — let them
+	   wrap inside roomy lanes; shallow bars still clamp via overflow:hidden.
+	   go2/w5 legibility pass: slot type steps up one full rung (tokens only);
+	   the shallow bars in preview-configs grew to h≥26 to hold the pair. */
 	.slot-role {
 		font-family: var(--font-mono);
-		font-size: 8px;
+		font-size: var(--text-micro);
 		letter-spacing: 0.5px;
 		text-transform: uppercase;
 		color: var(--muted-foreground);
-		line-height: 1;
+		line-height: 1.2;
+		text-align: center;
+		max-width: 100%;
+	}
+
+	/* go2/w5 taste round 2 (fit audit): shallow slots (infra/data bars ≈ 18px
+	   rendered at 375px viewports) can't hold role + name — the name is the
+	   payload, the role hint yields below 480px instead of clipping it. */
+	@media (max-width: 479px) {
+		.slot-role {
+			display: none;
+		}
 	}
 
 	.slot-name {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		color: var(--foreground);
 		line-height: 1.1;
 	}
 
 	.enables-caption {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--muted-foreground);
 		margin: 0;
 		max-width: 540px;
@@ -232,7 +242,7 @@
 
 	.preview-pending {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--muted-foreground);
 	}
 </style>

@@ -1,14 +1,25 @@
 <!--
-  BlueprintCanvas (slice-29) — the living blueprint.
+  BlueprintCanvas (slice-29, go2/w5 layered learning) — the living blueprint.
 
   Pure SVG over layoutBlueprint(links): rows derive from layer data, never
-  hand coordinates. Every box carries data-flip-id=<tech id> so GSAP Flip can
-  pair it with the matching preview slot (Task 11).
+  hand coordinates (blueprint-layout.ts is UNTOUCHED — all go2/w5 geometry
+  lives in constants here). Every box carries data-flip-id=<tech id> so GSAP
+  Flip can pair it with the matching preview slot.
 
   Draw sequence (animate=true): rows stagger-pop → connectors draw via
-  stroke-dash → title stamp → one-shot signal dash per connector; replays
-  when the links identity changes.
+  stroke-dash → annotations + pair notes fade → title block stamp → one-shot
+  signal dash per connector; replays when the links identity changes.
   animate=false (reduced motion): gsap.set final states only.
+
+  go2/w5 teaching layer:
+  - layer ROW LABELS in the left gutter + a 3px layer tab on each box's left
+    edge (color always rides next to the printed layer name);
+  - ONE pair note per distinct adjacent layer pair, centered in the row gap —
+    hidden <768px (an <ol> below the SVG takes over) and suppressed in
+    compose entry (the '+ add …' annotation owns the gaps there);
+  - drafting-paper furniture: dot grid, registration ticks, title block;
+  - hover (hover:hover only): a box brightens its outgoing connector to the
+    box's layer color — color confirms the pair note's claim.
 
   Compose entry: matched boxes light up (bp-matched), missing boxes ghost
   (bp-ghost, dashed) and the FIRST missing box gets a single
@@ -16,7 +27,7 @@
 -->
 <script lang="ts">
 	import { gsap } from 'gsap';
-	import type { ArchetypeTechLink } from '@repo/shared/schemas';
+	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { layoutBlueprint, ROW_GAP } from './blueprint-layout';
 
@@ -44,6 +55,7 @@
 	/** Compose entry = caller provided matched/missing partition. */
 	const compose = $derived((matched?.length ?? 0) + (missing?.length ?? 0) > 0);
 	const firstMissingBox = $derived(layout.boxes.find((b) => missingSet.has(b.id)) ?? null);
+	const layerById = $derived(new Map(layout.boxes.map((b) => [b.id, b.layer])));
 
 	/** Boxes grouped per row (by y) — the stagger unit of the draw sequence. */
 	const rows = $derived.by(() => {
@@ -56,21 +68,79 @@
 		return [...byY.entries()].sort(([a], [b]) => a - b).map(([, row]) => row);
 	});
 
-	const stampText = $derived(`${title.toUpperCase()} — REV A`);
+	const layerCount = $derived(new Set(layout.boxes.map((b) => b.layer)).size);
 
+	// Drawing geometry (declared before the stamp deriveds below read them).
 	const PAD = 24;
 	const STAMP_H = 36;
+	/** go2/w5 §8: left gutter for the layer row labels (engine renders only).
+	 *  Legibility pass: 64 → 84 — row labels wear --text-caption (12px) now;
+	 *  right-anchored "INTERFACE" (9ch ≈ 70px) needs the room. */
+	const LABEL_GUTTER = 84;
+
+	// go2/w5 taste round 2 (fit audit): the old `{TITLE} — REV A` single line
+	// overflowed the stamp frame on one-box-per-row blueprints. REV A now
+	// leads the meta line, and the title gets a deterministic textLength clamp
+	// when its estimated width exceeds the frame's inner width — long CMS
+	// titles squeeze instead of escaping. Legibility pass: the title wears
+	// --text-small (14px mono) + 2px letter-spacing ≈ 10.4px/char.
+	const stampTitle = $derived(title.toUpperCase());
+	const STAMP_CHAR_W = 10.4;
+	const stampAvail = $derived(layout.width + PAD * 2 - 16);
+	const stampTitleLength = $derived(
+		stampTitle.length * STAMP_CHAR_W > stampAvail ? stampAvail : undefined,
+	);
+
+	// go2/w5 §4: layer-pair teaching — full map of every possible occupied-row
+	// adjacency (copy ≤ 30 chars each, homey-teacher voice).
+	const PAIR_NOTES: Record<string, string> = {
+		'interface-logic': 'the UI asks logic over HTTP',
+		'logic-data': 'logic reads & writes the data',
+		'data-infra': 'storage runs on this ground',
+		'interface-data': 'the UI reads the data directly',
+		'logic-infra': 'the logic runs on this ground',
+		'interface-infra': 'pages are served from here',
+	};
+
+	/** ONE annotation per DISTINCT adjacent layer pair (first occurrence). */
+	const pairNotes = $derived.by(() => {
+		if (stacked) return [];
+		const seen = new Set<string>();
+		const out: { from: StackLayer; to: StackLayer; text: string; x: number; y: number }[] = [];
+		for (let r = 0; r < rows.length - 1; r++) {
+			const from = rows[r][0].layer;
+			const to = rows[r + 1][0].layer;
+			const key = `${from}-${to}`;
+			if (seen.has(key)) continue;
+			seen.add(key);
+			const text = PAIR_NOTES[key];
+			if (!text) continue;
+			out.push({
+				from,
+				to,
+				text,
+				x: layout.width / 2,
+				y: (rows[r][0].y + rows[r][0].h + rows[r + 1][0].y) / 2,
+			});
+		}
+		return out;
+	});
+
+	const gutter = $derived(stacked ? 0 : LABEL_GUTTER);
 	const viewBox = $derived(
-		`${-PAD} ${-PAD} ${layout.width + PAD * 2} ${layout.height + STAMP_H + PAD * 2}`,
+		`${-(PAD + gutter)} ${-PAD} ${layout.width + PAD * 2 + gutter} ${layout.height + STAMP_H + PAD * 2}`,
 	);
 
 	/** GO-w2t5 sizing fix: cap rendered scale at 1 SVG unit = 1px. Launch
-	 *  archetypes are one box per row (width 160 → viewBox 208), and the old
-	 *  flat `max-width: 720px` inflated them ~3.5× — "one node fills the
-	 *  viewport height" (operator playtest). Natural width = real pixels. */
-	const naturalWidth = $derived(layout.width + PAD * 2);
+	 *  archetypes are one box per row (width 160 → viewBox 272 with the label
+	 *  gutter), and the old flat `max-width: 720px` inflated them ~3.5× — "one
+	 *  node fills the viewport height" (operator playtest). Natural width =
+	 *  real pixels; 272px stays mobile-safe (< 360px viewports). */
+	const naturalWidth = $derived(layout.width + PAD * 2 + gutter);
 
 	let svgEl: SVGSVGElement | null = $state(null);
+	/** Hovered box id — its outgoing connector brightens to the layer color. */
+	let hoverBoxId = $state<string | null>(null);
 
 	// Draw sequence — re-runs whenever the layout identity changes (archetype
 	// switch) or the animate flag flips. All GSAP sits behind `animate`.
@@ -81,8 +151,9 @@
 
 		const rowEls = svg.querySelectorAll<SVGGElement>('.bp-row');
 		const connectorEls = svg.querySelectorAll<SVGPathElement>('.bp-connector');
-		const stampEl = svg.querySelector<SVGTextElement>('.bp-stamp');
-		const annotationEls = svg.querySelectorAll<SVGTextElement>('.bp-annotation');
+		const stampEl = svg.querySelector<SVGGElement>('.bp-stamp');
+		// go2/w5: pair notes join the existing annotation fade — no new GSAP step.
+		const annotationEls = svg.querySelectorAll<SVGTextElement>('.bp-annotation, .bp-pair-note');
 
 		if (!animate) {
 			gsap.set([...rowEls, ...annotationEls, ...(stampEl ? [stampEl] : [])], {
@@ -152,25 +223,89 @@
 	{viewBox}
 	style:max-width={`${naturalWidth}px`}
 	role="img"
-	aria-label={`Blueprint: ${title}`}
+	aria-label={`Blueprint: ${title} — ${layout.boxes.length} parts in ${layerCount} layers`}
 >
+	<!-- go2/w5 §8 drafting paper: dot grid + registration ticks — static
+	     furniture in --bp-grid-ink, decorative (sub-3:1 by design). -->
+	<defs>
+		<pattern id="bp-dot-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+			<circle cx="1" cy="1" r="1" fill="var(--bp-grid-ink)" />
+		</pattern>
+	</defs>
+	<rect
+		class="bp-grid"
+		aria-hidden="true"
+		x={-PAD}
+		y={-PAD}
+		width={layout.width + PAD * 2}
+		height={layout.height + PAD * 2}
+		fill="url(#bp-dot-grid)"
+	/>
+	<g class="bp-reg-ticks" aria-hidden="true">
+		<path d={`M ${-PAD} ${-PAD + 8} V ${-PAD} H ${-PAD + 8}`} />
+		<path d={`M ${layout.width + PAD - 8} ${-PAD} H ${layout.width + PAD} V ${-PAD + 8}`} />
+		<path d={`M ${-PAD} ${layout.height + PAD - 8} V ${layout.height + PAD} H ${-PAD + 8}`} />
+		<path d={`M ${layout.width + PAD - 8} ${layout.height + PAD} H ${layout.width + PAD} V ${layout.height + PAD - 8}`} />
+	</g>
+
+	{#if !stacked}
+		<!-- go2/w5 §8: layer row labels in the left gutter — the printed name
+		     beside every layer-colored element (hue never the sole carrier). -->
+		<g class="bp-row-labels" aria-hidden="true">
+			{#each rows as row, rowIndex (rowIndex)}
+				<text
+					class={`bp-row-label bp-ink-${row[0].layer}`}
+					x={-PAD - 6}
+					y={row[0].y + row[0].h / 2}
+					text-anchor="end"
+					dominant-baseline="central"
+				>
+					{row[0].layer}
+				</text>
+			{/each}
+		</g>
+	{/if}
+
 	<g class="bp-connectors">
-		{#each layout.connectors as connector (connector.from + '→' + connector.to)}
-			<path class="bp-connector" d={connector.path} data-from={connector.from} data-to={connector.to} />
+		{#each layout.connectors as connector (connector.kind + connector.from + '→' + connector.to)}
+			<path
+				class={`bp-connector bp-from-${layerById.get(connector.from)}`}
+				class:bp-connector-rail={connector.kind === 'rail'}
+				class:bp-connector-hot={hoverBoxId === connector.from}
+				d={connector.path}
+				data-from={connector.from}
+				data-to={connector.to}
+			/>
 		{/each}
 	</g>
 
 	{#each rows as row, rowIndex (rowIndex)}
 		<g class="bp-row">
 			{#each row as box (box.id)}
+				<!-- role=presentation: the svg is role="img" (children are not
+				     exposed); the pointer handlers are a hover-only teaching
+				     enrichment, gated visually behind @media (hover: hover). -->
 				<g
 					class="bp-box"
 					class:bp-matched={compose && matchedSet.has(box.id)}
 					class:bp-ghost={compose && missingSet.has(box.id)}
 					data-flip-id={box.id}
 					data-testid={`bp-box-${box.id}`}
+					role="presentation"
+					onpointerenter={() => (hoverBoxId = box.id)}
+					onpointerleave={() => (hoverBoxId = null)}
 				>
 					<rect x={box.x} y={box.y} width={box.w} height={box.h} rx="4" class="bp-box-rect" />
+					<!-- go2/w5 §8: 3px layer tab on the left edge — stroke
+					     semantics untouched (matched/ghost ride the rect). -->
+					<rect
+						class={`bp-box-tab bp-fill-${box.layer}`}
+						x={box.x + 1.5}
+						y={box.y + 1.5}
+						width="3"
+						height={box.h - 3}
+						rx="1"
+					/>
 					<text
 						x={box.x + box.w / 2}
 						y={box.y + box.h / 2}
@@ -185,13 +320,33 @@
 		</g>
 	{/each}
 
-	<!-- GO-w2t5 fun-pass: one-shot signal dash per connector. Rest opacity 0
-	     (CSS); only the animate=true timeline ever lights them. -->
+	<!-- GO-w2t5 fun-pass: one-shot signal dash per FLOW connector (finale:
+	     sibling rails carry no traffic — a signal pulsing 24px sideways is
+	     noise). Rest opacity 0 (CSS); only the animate=true timeline lights
+	     them. -->
 	<g class="bp-signals" aria-hidden="true">
-		{#each layout.connectors as connector (connector.from + '→' + connector.to)}
+		{#each layout.connectors.filter((c) => c.kind === 'flow') as connector (connector.from + '→' + connector.to)}
 			<path class="bp-signal" d={connector.path} />
 		{/each}
 	</g>
+
+	{#if !compose}
+		<!-- go2/w5 §4: pair notes — suppressed in compose entry (the '+ add …'
+		     annotation owns the row gaps there); hidden <768px via CSS (the
+		     <ol> below the SVG takes over). -->
+		{#each pairNotes as note (note.from + '-' + note.to)}
+			<text
+				class="bp-pair-note"
+				data-testid={`bp-pair-note-${note.from}-${note.to}`}
+				x={note.x}
+				y={note.y}
+				text-anchor="middle"
+				dominant-baseline="central"
+			>
+				{note.text}
+			</text>
+		{/each}
+	{/if}
 
 	{#if firstMissingBox}
 		<text
@@ -205,16 +360,47 @@
 		</text>
 	{/if}
 
-	<text
-		class="bp-stamp"
-		data-testid="blueprint-stamp"
-		x={layout.width}
-		y={layout.height + STAMP_H}
-		text-anchor="end"
-	>
-		{stampText}
-	</text>
+	<!-- go2/w5 §8: stamp → title block (rail plate): framed REV A line plus a
+	     parts · layers meta line. -->
+	<g class="bp-stamp" data-testid="blueprint-stamp">
+		<rect
+			class="bp-stamp-frame"
+			x={-PAD}
+			y={layout.height + STAMP_H - 16}
+			width={layout.width + PAD * 2}
+			height="36"
+			rx="2"
+		/>
+		<text
+			class="bp-stamp-title"
+			x={layout.width + PAD - 8}
+			y={layout.height + STAMP_H}
+			text-anchor="end"
+			textLength={stampTitleLength}
+			lengthAdjust={stampTitleLength === undefined ? undefined : 'spacingAndGlyphs'}
+		>
+			{stampTitle}
+		</text>
+		<text
+			class="bp-stamp-meta"
+			x={layout.width + PAD - 8}
+			y={layout.height + STAMP_H + 14}
+			text-anchor="end"
+		>
+			REV A · {layout.boxes.length} parts · {layerCount} layers
+		</text>
+	</g>
 </svg>
+
+{#if !compose && pairNotes.length > 0}
+	<!-- go2/w5 §4 mobile: the same derived pairs as a list below the SVG
+	     (shown only <768px; the in-SVG notes hide there). -->
+	<ol class="bp-pair-list" data-testid="bp-pair-list">
+		{#each pairNotes as note (note.from + '-' + note.to)}
+			<li>{note.text}</li>
+		{/each}
+	</ol>
+{/if}
 
 <style>
 	.blueprint-canvas {
@@ -223,17 +409,62 @@
 		height: auto;
 		/* Safety net for tall compose blueprints: the default
 		   preserveAspectRatio (xMidYMid meet) letterboxes the drawing down —
-		   the WHOLE blueprint stays visible without scrolling. */
-		max-height: min(56svh, 440px);
+		   the WHOLE blueprint stays visible without scrolling. Legibility
+		   pass: 440 → 480 so the taller 56px boxes (a 4-row drawing's viewBox
+		   is 452 now) render 1:1 instead of letterboxing the new type back
+		   down; still ≤ 85% of every project viewport (56svh governs first
+		   on short screens). */
+		max-height: min(56svh, 480px);
 		display: block;
 		margin: 0 auto;
 		overflow: visible;
 	}
 
+	.bp-reg-ticks path {
+		fill: none;
+		stroke: var(--bp-grid-ink);
+		stroke-width: 1;
+	}
+
+	/* go2/w5 §8: layer row labels — printed names in layer color. Legibility
+	   pass: every SVG label steps up one rung of the site type scale (tokens,
+	   never raw px); the svg renders 1:1 so token px = real px. */
+	.bp-row-label {
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+	}
+
+	.bp-ink-interface { fill: var(--layer-interface); }
+	.bp-ink-logic { fill: var(--layer-logic); }
+	.bp-ink-data { fill: var(--layer-data); }
+	.bp-ink-infra { fill: var(--layer-infra); }
+
 	.bp-connector {
 		fill: none;
 		stroke: var(--border);
 		stroke-width: 1.5;
+	}
+
+	/* Finale (4b): sibling rails — same-row ties keeping multi-box rows on one
+	   circuit (total connectivity). Quieter than the flow wiring. */
+	.bp-connector-rail {
+		stroke-width: 1;
+	}
+
+	/* go2/w5 §8: hover teaching (pointer devices only) — the hovered box's
+	   outgoing connector takes the box's layer color; color confirms the
+	   pair note's claim. Signal dash stays --primary (brand pulse). */
+	@media (hover: hover) {
+		.bp-connector {
+			transition: stroke 150ms ease;
+		}
+
+		.bp-connector-hot.bp-from-interface { stroke: var(--layer-interface); }
+		.bp-connector-hot.bp-from-logic { stroke: var(--layer-logic); }
+		.bp-connector-hot.bp-from-data { stroke: var(--layer-data); }
+		.bp-connector-hot.bp-from-infra { stroke: var(--layer-infra); }
 	}
 
 	.bp-signal {
@@ -251,9 +482,14 @@
 		stroke-width: 1.5;
 	}
 
+	.bp-fill-interface { fill: var(--layer-interface); }
+	.bp-fill-logic { fill: var(--layer-logic); }
+	.bp-fill-data { fill: var(--layer-data); }
+	.bp-fill-infra { fill: var(--layer-infra); }
+
 	.bp-box-label {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: var(--text-body);
 		fill: var(--foreground);
 	}
 
@@ -263,7 +499,7 @@
 		stroke-width: 2;
 	}
 
-	/* …missing techs ghost out. */
+	/* …missing techs ghost out (group opacity dims the layer tab with it). */
 	.bp-ghost {
 		opacity: 0.4;
 	}
@@ -274,15 +510,67 @@
 
 	.bp-annotation {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		fill: var(--primary);
 	}
 
-	.bp-stamp {
+	/* go2/w5 §4: pair notes — teach ink with a paper halo so they read over
+	   the connectors they annotate (classic drafting: the line breaks for the
+	   label). Taste round 2: halo = --engine-paper (the band's composited
+	   color), not raw --background — the old halo ghosted a lighter box on
+	   the tinted band. */
+	.bp-pair-note {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-caption);
+		fill: var(--engine-teach-ink);
+		stroke: var(--engine-paper, var(--background));
+		stroke-width: 3px;
+		paint-order: stroke;
+	}
+
+	@media (max-width: 767px) {
+		.bp-pair-note {
+			display: none;
+		}
+	}
+
+	.bp-pair-list {
+		display: none;
+		margin: 0.5rem auto 0;
+		padding-left: 1.25rem;
+		font-family: var(--font-mono);
+		font-size: var(--text-mono);
+		color: var(--engine-teach-ink);
+	}
+
+	.bp-pair-list li {
+		line-height: 1.6;
+	}
+
+	@media (max-width: 767px) {
+		.bp-pair-list {
+			display: block;
+			width: fit-content;
+		}
+	}
+
+	.bp-stamp-frame {
+		fill: none;
+		stroke: var(--border);
+		stroke-width: 1;
+	}
+
+	.bp-stamp-title {
+		font-family: var(--font-mono);
+		font-size: var(--text-small);
 		letter-spacing: 2px;
 		text-transform: uppercase;
+		fill: var(--muted-foreground);
+	}
+
+	.bp-stamp-meta {
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
 		fill: var(--muted-foreground);
 	}
 </style>
