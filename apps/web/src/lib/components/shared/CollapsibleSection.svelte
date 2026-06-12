@@ -121,6 +121,12 @@
 	   start on interactive children (links/buttons/inputs — they keep priority
 	   and their own feedback, incl. the header button) don't press the shell.
 	   Extra .section-card qualifier outranks card.svelte's scoped transition. */
+	/* Round 7: buttons default to cursor:default in UAs — state the pointer on
+	   the header trigger explicitly so the affordance covers the WHOLE card. */
+	.section-header {
+		cursor: pointer;
+	}
+
 	:global([data-slot="card"].section-card.section-card--toggleable) {
 		cursor: pointer;
 		transition:
@@ -138,7 +144,13 @@
 	/* tap-press contract: reduced motion drops the timing, keeps the :active
 	   state change (color transitions stay — SAFE-ALWAYS). */
 	@media (prefers-reduced-motion: reduce) {
-		:global([data-slot="card"].section-card.section-card--toggleable) {
+		/* Round 7: buttons default to cursor:default in UAs — state the pointer on
+	   the header trigger explicitly so the affordance covers the WHOLE card. */
+	.section-header {
+		cursor: pointer;
+	}
+
+	:global([data-slot="card"].section-card.section-card--toggleable) {
 			transition:
 				border-color var(--duration-normal) var(--ease-default),
 				box-shadow var(--duration-normal) var(--ease-default);
