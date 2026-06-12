@@ -32,12 +32,16 @@ describe('Manifesto', () => {
 		expect(huge.textContent).toBe('INFRASTRUCTURE');
 	});
 
+	// GO2-T8-REMOVE: superseded by the skipped 4-station baseline at the bottom
+	// of this file once the Gate A regen lands (pills drop 5 → 4).
 	it('renders exactly 5 capability pills', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
 		const pills = screen.getAllByTestId('manifesto-pill');
 		expect(pills).toHaveLength(5);
 	});
 
+	// GO2-T8-REMOVE: superseded by the skipped 4-station baseline at the bottom
+	// of this file once the Gate A regen lands.
 	it('each pill links to the correct service route', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
 		const pills = screen.getAllByTestId('manifesto-pill');
@@ -101,5 +105,33 @@ describe('Manifesto', () => {
 		const pill = screen.getAllByTestId('manifesto-pill')[0];
 		pill.dispatchEvent(new MouseEvent('mouseenter'));
 		expect(pill.style.transform).toContain('scale(1.03)');
+	});
+});
+
+// ── GO2-T8-UNSKIP ──────────────────────────────────────────────────────────
+// Post-consolidation baseline (GO-2 Track 3, T8 step 8b). SKIPPED until the
+// orchestrator's Gate A CMS apply + regen lands (manifestoContent.pills is
+// regenerated from the live CMS — 4 stations, data-flow order). T8 unskip
+// step: `describe.skip` → `describe`, then delete the GO2-T8-REMOVE tests
+// above.
+describe.skip('Manifesto pills (GO-2 post-consolidation baseline)', () => {
+	it('renders exactly 4 capability pills', () => {
+		render(Manifesto, { props: { manifesto: manifestoContent } });
+		const pills = screen.getAllByTestId('manifesto-pill');
+		expect(pills).toHaveLength(4);
+	});
+
+	it('each pill links to its station detail page in data-flow order', () => {
+		render(Manifesto, { props: { manifesto: manifestoContent } });
+		const pills = screen.getAllByTestId('manifesto-pill');
+		const expectedRoutes = [
+			'/services/database-engineering',
+			'/services/data-pipeline',
+			'/services/analytics-reporting',
+			'/services/web-development',
+		];
+		pills.forEach((pill, i) => {
+			expect(pill).toHaveAttribute('href', expectedRoutes[i]);
+		});
 	});
 });

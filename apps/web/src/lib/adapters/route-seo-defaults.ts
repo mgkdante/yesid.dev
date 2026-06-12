@@ -108,7 +108,7 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 			buildCollectionPageNode({
 				name: 'Services',
 				description:
-					'Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms.',
+					'Digital infrastructure services in four stations: databases & SQL, data pipelines & automation, dashboards & analytics, websites & e-commerce.',
 				url: `${SITE_HOST}/services`,
 			}),
 			buildBreadcrumbListNode(

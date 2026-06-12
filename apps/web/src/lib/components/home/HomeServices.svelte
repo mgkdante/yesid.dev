@@ -32,6 +32,11 @@
 		servicesGrid: servicesGridContent,
 		services,
 	}: { servicesGrid: ServicesGridContent; services: readonly Service[] } = $props();
+
+	// GO-2: station order IS the journey order. Sort defensively — the CMS
+	// export carries no order guarantee after the station renumber.
+	const orderedServices = [...services].sort((a, b) => a.station - b.station);
+
 	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, 'en');
 	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, 'en');
 
@@ -43,7 +48,7 @@
 	// One flag per card — flipped true after the SVG is fetched and injected.
 	// `use:morphHover` reads this via its `enabled` param to gate morphs until
 	// the SVG paths are actually in the DOM.
-	const svgReady = $state<boolean[]>(services.map(() => false));
+	const svgReady = $state<boolean[]>(orderedServices.map(() => false));
 
 	onMount(() => {
 		if (!browser || !sectionEl) return;
@@ -57,7 +62,7 @@
 
 		const panels = sectionEl.querySelectorAll('[data-testid="services-svg-panel"]');
 		panels.forEach(async (panel, i) => {
-			const service = services[i];
+			const service = orderedServices[i];
 			if (!service?.svg) return;
 
 			try {
@@ -108,7 +113,7 @@
 	<div class="relative z-10">
 		<!-- 3-column grid (1 col on tablet/mobile). Cards in the same row share height. -->
 		<div class="services-grid grid grid-cols-1 gap-5 lg:grid-cols-3">
-			{#each services as service, i}
+			{#each orderedServices as service, i}
 				{@const benefit = service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : ''}
 				{@const title = resolveLocale(service.title, 'en')}
 				{@const metricValue = service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : ''}
