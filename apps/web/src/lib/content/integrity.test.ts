@@ -582,7 +582,10 @@ describe('LocalizedString guard + translation debt', () => {
 // → WITH_FR 82, NO_FR 432, TOTAL 514.
 // go2/w4: +1 en-only — siteLabels.ui.backToProjects ("← All Projects" wired
 // to site_labels per operator QA) → NO_FR 433, TOTAL 515.
-const LOCKED = { TOTAL: 515, WITH_FR: 82, NO_FR: 433, ES_WITHOUT_FR: 0 } as const;
+// go2/w5: +3 en-only — siteLabels.ui.metroLegendStm / metroLegendRem (hero
+// metro art legend: STM métro + REM light rail) + a11y.replayIntro (hero
+// dot replay button aria) → NO_FR 436, TOTAL 518.
+const LOCKED = { TOTAL: 518, WITH_FR: 82, NO_FR: 436, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
