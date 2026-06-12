@@ -60,7 +60,7 @@ test('first visit plays the intro; scrolling through persists + arms the dot', a
 		await dot
 			.locator('[data-testid="hero-dot"]')
 			.evaluate((el) => getComputedStyle(el).animationName),
-	).toBe('hero-dot-pulse');
+	).toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
 });
 
 test('same-day reload lands completed; pulsing dot replays the intro', async ({ page }) => {
@@ -89,7 +89,7 @@ test('same-day reload lands completed; pulsing dot replays the intro', async ({ 
 		await dot
 			.locator('[data-testid="hero-dot"]')
 			.evaluate((el) => getComputedStyle(el).animationName),
-	).toBe('hero-dot-pulse');
+	).toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
 
 	// Click = re-arm + replay: collapse class drops, metro art returns, the
 	// scroll-scrub pin rebuilds, and we ride back to the top.
