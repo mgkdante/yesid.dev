@@ -88,6 +88,30 @@
 		z-index: var(--z-base);
 	}
 
+	/* GO2-W5 round 3: light-mode visibility — same treatment BlueprintShell
+	   got in round 2 (this wall never received it; the dark-tuned utility
+	   opacities 0.08/0.10 vanish on warm paper). Values sit below the
+	   listing-header shells (0.46/0.42) because card content stacks on top
+	   here — confident drawing behind the grid, not noise. */
+	:global([data-theme='light']) .train-svg,
+	:global(.theme-light) .train-svg {
+		opacity: 0.26;
+	}
+	:global([data-theme='light']) .edge-details,
+	:global(.theme-light) .edge-details {
+		opacity: 0.32;
+	}
+	:global([data-theme='light']) .crosshair::before,
+	:global([data-theme='light']) .crosshair::after,
+	:global(.theme-light) .crosshair::before,
+	:global(.theme-light) .crosshair::after {
+		background: color-mix(in srgb, var(--primary) 55%, transparent);
+	}
+	:global([data-theme='light']) .ref-label,
+	:global(.theme-light) .ref-label {
+		color: color-mix(in srgb, var(--primary) 70%, transparent);
+	}
+
 	/* Edge detail positioning — targets SVG root elements inside components */
 	:global(.edge-detail) {
 		position: absolute;
@@ -109,6 +133,15 @@
 
 		.train-svg {
 			opacity: var(--opacity-faint);
+		}
+
+		/* Light keeps the mobile damping too (these out-specificity the
+		   desktop light rules above; equal specificity → later wins). */
+		:global([data-theme='light']) .edge-details,
+		:global(.theme-light) .edge-details,
+		:global([data-theme='light']) .train-svg,
+		:global(.theme-light) .train-svg {
+			opacity: 0.12;
 		}
 	}
 </style>

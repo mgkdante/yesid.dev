@@ -271,10 +271,11 @@
 	   image and title share row 1 (title align-self: end pins it to the
 	   image's bottom edge); footer is row 2. No empty space anywhere. */
 	/* GO2-W5: surface-1 now aliases --card (tokens.json flip) so the panel
-	   lifts solid off the board; inset bevel = panel catching the lamp. */
+	   lifts solid off the board; inset bevel = panel catching the lamp.
+	   Round 3: brand grid at 2px. */
 	.proof-card {
 		background: var(--surface-1);
-		border: 1px solid var(--border-brand);
+		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		box-shadow: inset 0 1px 0 var(--edge-highlight);
 		padding: 0;

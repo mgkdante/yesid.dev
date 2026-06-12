@@ -245,9 +245,19 @@ describe('Design System Tokens', () => {
       expect(gridBefore).toContain('z-index: -1;');
     });
 
-    it('dashed delimitations speak the route-set voice (.divider-dashed = border-rule)', () => {
+    it('dashed delimitations speak the route-set voice (.divider-dashed = border-rule, round-3 2px)', () => {
       const divider = appCSS.match(/\.divider-dashed \{([\s\S]*?)\}/)?.[1] ?? '';
-      expect(divider).toContain('border-top: 1px dashed var(--border-rule);');
+      expect(divider).toContain('border-top: 2px dashed var(--border-rule);');
+    });
+
+    it('round 3: light mode strengthens the brand grid (--border-brand 45% → 60% hand override)', () => {
+      // Operator: light "still needs more demarcation with its structural
+      // lines" — the light page runs a stronger --border-brand mix than the
+      // :root 45% so the 2px grid reads slightly more pronounced than dark.
+      const lightOverride = appCSS.match(
+        /\[data-theme="light"\], \.theme-light \{\s*\n\t--border-brand:([^;]*);/,
+      )?.[1] ?? '';
+      expect(lightOverride.trim()).toBe('color-mix(in srgb, var(--primary) 60%, transparent)');
     });
 
     it('station labels speak the wayfinding voice (.label-station = accent-text)', () => {

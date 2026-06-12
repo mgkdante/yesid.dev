@@ -311,6 +311,16 @@ pre, code, table {
 	--shadow-sheet: 0 -8px 32px rgba(28, 24, 19, 0.12);
 }
 
+/* GO2-W5 round 3: light mode "needs more demarcation with its structural
+   lines" (operator). The brand grid — card/panel/nav edges drawn with
+   --border-brand — runs a stronger mix on paper than on the dark board
+   (45% → 60%), so with the system-wide 2px step light lands slightly more
+   pronounced than dark, as directed. Solid rules (--border-rule/-accent)
+   are already full-strength in both modes and only gain thickness. */
+[data-theme="light"], .theme-light {
+	--border-brand: color-mix(in srgb, var(--primary) 60%, transparent);
+}
+
 /* Code blocks stay night-mode in light theme: Shiki token colors are baked
    against the dark brand theme (lib/utils/markdown.ts). Pinning the block
    dark keeps syntax readable with zero highlighter changes. Values are the
@@ -426,9 +436,11 @@ pre, code, table {
 
 /* 2. Dashed divider — filter group separators.
    Taste round 2: delimitations speak the route-set voice — solid-orange
-   dashed rule (NX diagram energy) instead of a neutral gray. */
+   dashed rule (NX diagram energy) instead of a neutral gray.
+   Round 3: one step thicker (1px → 2px) — operator wants the dividers
+   bolder in both modes. */
 .divider-dashed {
-  border-top: 1px dashed var(--border-rule);
+  border-top: 2px dashed var(--border-rule);
 }
 
 /* 3. Hidden scrollbar — preserves scroll, hides chrome */

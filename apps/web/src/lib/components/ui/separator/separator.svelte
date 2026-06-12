@@ -26,8 +26,10 @@
 	} = $props();
 
 	const stripeWidth = { sm: 6, md: 8, lg: 12 } as const;
-	const hazardHeightClass = { sm: 'h-0.5', md: 'h-1', lg: 'h-2' } as const;
-	const hazardWidthClass = { sm: 'w-0.5', md: 'w-1', lg: 'w-2' } as const;
+	// GO2-W5 round 3: tape one step thicker in both modes (sm 2→3px,
+	// md 4→6px, lg 8→10px) — stripe period unchanged, only the band grows.
+	const hazardHeightClass = { sm: 'h-[3px]', md: 'h-1.5', lg: 'h-2.5' } as const;
+	const hazardWidthClass = { sm: 'w-[3px]', md: 'w-1.5', lg: 'w-2.5' } as const;
 
 	const isVertical = $derived(restProps.orientation === 'vertical');
 
