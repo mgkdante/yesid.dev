@@ -25,6 +25,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			navTechStack: ls('a11y_nav_tech_stack'),
 			toc: ls('a11y_toc'),
 			closerGraffiti: ls('a11y_closer_graffiti'),
+			replayIntro: ls('a11y_replay_intro'),
 		},
 		ui: {
 			markerService: ls('ui_marker_service'),
@@ -38,6 +39,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			categoryProfessional: ls('ui_category_professional'),
 			watermarkPersonal: ls('ui_watermark_personal'),
 			watermarkProfessional: ls('ui_watermark_professional'),
+			metroCaption: ls('ui_metro_caption'),
 		},
 		pages: {
 			blogEdgeTitle: ls('pages_blog_edge_title'),

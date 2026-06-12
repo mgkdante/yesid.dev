@@ -93,11 +93,11 @@
 		data-testid="nav-pill"
 		class="nav-pill pointer-events-auto flex items-center gap-0 {overlayActive ? 'nav-pill-compact' : ''}"
 	>
-		<!-- Wordmark -->
+		<!-- Wordmark — .nav-wordmark guarantees "yesid." never wraps (go2/w5) -->
 		<a
 			href={localizeHref('/', locale)}
 			data-testid="nav-wordmark"
-			class="inline-flex min-h-11 items-center font-heading text-lg font-bold text-[var(--foreground)]"
+			class="nav-wordmark inline-flex min-h-11 items-center font-heading font-bold text-[var(--foreground)]"
 		>
 			<span data-testid="nav-wordmark-letters" bind:this={wordmarkEl}>yesid</span><span
 				data-testid="nav-period"
@@ -174,6 +174,16 @@
 		border-color: var(--border-brand-active);
 	}
 
+	/* Wordmark sizing lives here (not a Tailwind text-* utility) so the
+	   mobile compaction tiers below can shrink it. nowrap + flex-shrink: 0
+	   guarantee "yesid." NEVER wraps — the SplitText letter spans inherit
+	   the anchor's content-box width, so they stay on one line too. */
+	.nav-wordmark {
+		font-size: 18px;
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+
 	.nav-divider {
 		display: inline-block;
 		width: 2px;
@@ -187,6 +197,76 @@
 		display: flex;
 		align-items: center;
 		gap: 28px;
+	}
+
+	/* go2/w5 mobile compaction — the pill previously kept its desktop paddings
+	   (12/28) + 20px divider margins + 28px link gaps at every width, which
+	   overflowed below ~450px and let the wordmark wrap. Two tiers: phones
+	   get a visibly smaller pill, sub-480 (where the priority-2 link is
+	   already hidden) tightens further. Interactive hit areas stay 44px. */
+	@media (max-width: 767px) {
+		.nav-pill {
+			padding: 8px 18px;
+		}
+		.nav-pill-compact {
+			padding: 8px 14px;
+		}
+		.nav-wordmark {
+			font-size: 17px;
+		}
+		.nav-divider {
+			margin-inline: 14px;
+		}
+		.nav-links {
+			gap: 18px;
+		}
+		.nav-pill-link {
+			font-size: 13px;
+		}
+	}
+
+	@media (max-width: 479px) {
+		.nav-pill {
+			padding: 6px 12px;
+		}
+		.nav-pill-compact {
+			padding: 6px 10px;
+		}
+		.nav-wordmark {
+			font-size: 16px;
+		}
+		.nav-divider {
+			margin-inline: 9px;
+		}
+		.nav-links {
+			gap: 13px;
+		}
+		.nav-pill-link {
+			font-size: 12.5px;
+		}
+	}
+
+	/* Tightest tier (320–359px): the two 44px toggles + two links leave very
+	   little room — squeeze the decorative spacing, never the hit areas. */
+	@media (max-width: 359px) {
+		.nav-pill {
+			padding: 6px 10px;
+		}
+		.nav-pill-compact {
+			padding: 6px 8px;
+		}
+		.nav-wordmark {
+			font-size: 15px;
+		}
+		.nav-divider {
+			margin-inline: 6px;
+		}
+		.nav-links {
+			gap: 9px;
+		}
+		.nav-pill-link {
+			font-size: 12px;
+		}
 	}
 
 	/* Collapse links + divider when menu opens, grow back on close */

@@ -12,7 +12,6 @@
 	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
 	import type { NavLink } from '$lib/content/nav';
 	import type { Locale } from '$lib/types';
-	import ThemeToggle from './ThemeToggle.svelte';
 
 	let {
 		open = false,
@@ -155,7 +154,9 @@
 					{/each}
 				</nav>
 
-				<!-- Bottom label + locale switch (slice-28.6; hidden until 2+ published locales) -->
+				<!-- Bottom label + locale switch (slice-28.6; hidden until 2+ published locales).
+				     go2/w5: the duplicate theme toggle is gone — the nav pill (which stays
+				     visible above the sheet) owns the only theme toggle. -->
 				<div class="menu-footer">
 					<span class="menu-footer-line"></span>
 					<span class="menu-footer-label">{footerLabel}</span>
@@ -173,7 +174,6 @@
 						</nav>
 					{/if}
 					<span class="menu-footer-line"></span>
-					<ThemeToggle class="menu-theme-toggle" {locale} />
 				</div>
 					</div>
 				{/snippet}
@@ -348,11 +348,6 @@
 		letter-spacing: 3px;
 		color: color-mix(in srgb, var(--primary) 85%, transparent);
 		white-space: nowrap;
-	}
-
-	/* GO-W2.2: theme toggle rides the footer rail */
-	:global(.menu-theme-toggle) {
-		margin-inline-start: 4px;
 	}
 
 	/* slice-28.6: EN|FR locale switch — JetBrains Mono caps, brand chrome. */
