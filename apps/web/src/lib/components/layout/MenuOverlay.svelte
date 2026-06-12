@@ -7,25 +7,33 @@
 	import { Dialog as DialogPrimitive } from 'bits-ui';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { menuItems as staticMenuItems, sharedChromeContent } from '$lib/content';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
 	import type { NavLink } from '$lib/content/nav';
+	import type { Locale } from '$lib/types';
 	import ThemeToggle from './ThemeToggle.svelte';
 
-	const dialogTitle = resolveLocale(sharedChromeContent.menuOverlayAria, 'en');
-	const footerLabel = resolveLocale(sharedChromeContent.menuOverlayFooterLabel, 'en');
 	let {
 		open = false,
 		pathname = '/',
+		locale = DEFAULT_LOCALE,
 		menuItems = staticMenuItems as readonly NavLink[],
 		onclose,
 		onanimationdone
 	}: {
 		open: boolean;
 		pathname: string;
+		locale?: Locale;
 		menuItems?: readonly NavLink[];
 		onclose?: () => void;
 		onanimationdone?: () => void;
 	} = $props();
+
+	// $derived (not const): the overlay rides the persistent Nav — it never
+	// remounts, and locale changes on /fr↔/ navigation.
+	const dialogTitle = $derived(resolveLocale(sharedChromeContent.menuOverlayAria, locale));
+	const footerLabel = $derived(resolveLocale(sharedChromeContent.menuOverlayFooterLabel, locale));
+	const basePath = $derived(delocalizePath(pathname));
 
 	let overlayEl: HTMLElement = $state(null!);
 
@@ -36,8 +44,8 @@
 	let closing = $state(false);
 
 	function isActive(href: string): boolean {
-		if (href === '/') return pathname === '/';
-		return pathname.startsWith(href);
+		if (href === '/') return basePath === '/';
+		return basePath.startsWith(href);
 	}
 
 	// React to open/close from parent
@@ -113,7 +121,7 @@
 					{#each menuItems as item, i}
 						<a
 							data-menu-item
-							href={item.href}
+							href={localizeHref(item.href, locale)}
 							class="menu-item {isActive(item.href) ? 'menu-item-active' : ''}"
 							aria-current={isActive(item.href) ? 'page' : undefined}
 							onclick={() => onclose?.()}
@@ -133,8 +141,8 @@
 
 							<!-- Text -->
 							<span class="menu-text">
-								<span class="menu-label">{item.label.en}</span>
-								<span class="menu-subtitle">{item.subtitle?.en ?? ''}</span>
+								<span class="menu-label">{resolveLocale(item.label, locale)}</span>
+								<span class="menu-subtitle">{item.subtitle ? resolveLocale(item.subtitle, locale) : ''}</span>
 							</span>
 						</a>
 					{/each}

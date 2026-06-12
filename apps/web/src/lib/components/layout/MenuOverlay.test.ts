@@ -41,3 +41,40 @@ describe('MenuOverlay', () => {
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	});
 });
+
+describe('MenuOverlay — locale threading (slice-28.6)', () => {
+	it('renders item label + subtitle via resolveLocale for fr', () => {
+		render(MenuOverlay, {
+			props: {
+				open: true,
+				pathname: '/fr',
+				locale: 'fr',
+				menuItems: [
+					{
+						label: { en: 'Services', fr: 'Services' },
+						subtitle: { en: 'what I build', fr: 'ce que je construis' },
+						href: '/services',
+						priority: 1,
+					},
+				],
+			},
+		});
+		expect(screen.getByText('ce que je construis')).toBeInTheDocument();
+	});
+
+	it('localizes item hrefs and resolves active state from a prefixed pathname', () => {
+		render(MenuOverlay, {
+			props: {
+				open: true,
+				pathname: '/fr/services',
+				locale: 'fr',
+				menuItems: [
+					{ label: { en: 'Services', fr: 'Services' }, href: '/services', priority: 1 },
+				],
+			},
+		});
+		const link = screen.getByRole('link', { name: /Services/ });
+		expect(link).toHaveAttribute('href', '/fr/services');
+		expect(link).toHaveAttribute('aria-current', 'page');
+	});
+});

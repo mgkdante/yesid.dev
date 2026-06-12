@@ -1,32 +1,37 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent, siteLabels } from '$lib/content';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
 	import { fillTemplate } from '$lib/utils/labels';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
 	import type { NavLink } from '$lib/content/nav';
-
-	const tagline = resolveLocale(footerContent.tagline, 'en');
-	const location = resolveLocale(footerContent.location, 'en');
-	const statusPrefix = resolveLocale(footerContent.statusPrefix, 'en');
-	const footerNavAria = resolveLocale(sharedChromeContent.footerNavAria, 'en');
+	import type { Locale } from '$lib/types';
 
 	// footerLinks: adapter-sourced footer placement links (from +layout.server.ts).
 	// Falls back to the menu items (which serve as footer fallback in static mode).
 	let {
+		locale = DEFAULT_LOCALE,
 		footerLinks = staticMenuItems as readonly NavLink[],
 	}: {
+		locale?: Locale;
 		footerLinks?: readonly NavLink[];
 	} = $props();
+
+	// $derived (not const): Footer never remounts; locale changes on /fr↔/ navigation.
+	const tagline = $derived(resolveLocale(footerContent.tagline, locale));
+	const location = $derived(resolveLocale(footerContent.location, locale));
+	const statusPrefix = $derived(resolveLocale(footerContent.statusPrefix, locale));
+	const footerNavAria = $derived(resolveLocale(sharedChromeContent.footerNavAria, locale));
 
 	const year = new Date().getFullYear();
 	// go2-t1c2: copyright template from site_labels (orange dot stays code =
 	// placement), previous literal as fallback.
-	const copyrightText = fillTemplate(
-		resolveLocale(siteLabels.ui.copyrightTemplate, 'en') || '© {year} yesid',
+	const copyrightText = $derived(fillTemplate(
+		resolveLocale(siteLabels.ui.copyrightTemplate, locale) || '© {year} yesid',
 		{ year: String(year) },
-	);
+	));
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
@@ -34,8 +39,8 @@
 	// Use footerLinks when available; fall back to staticMenuItems for backwards compat.
 	const footerNavLinks = $derived(
 		(footerLinks.length > 0 ? footerLinks : staticMenuItems).map((item) => ({
-			label: item.label.en,
-			href: item.href,
+			label: resolveLocale(item.label, locale),
+			href: localizeHref(item.href, locale),
 		})),
 	);
 
@@ -67,7 +72,7 @@
 		<!-- Left: Wordmark -->
 		<div class="flex flex-col items-center sm:items-start">
 			<a
-				href="/"
+				href={localizeHref('/', locale)}
 				data-testid="footer-wordmark"
 				class="inline-flex items-baseline font-heading text-xl font-bold text-[var(--foreground)]"
 			>
