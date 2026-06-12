@@ -242,6 +242,29 @@
 		}
 	}
 
+	/* Tightest tier (320–359px): the two 44px toggles + two links leave very
+	   little room — squeeze the decorative spacing, never the hit areas. */
+	@media (max-width: 359px) {
+		.nav-pill {
+			padding: 6px 10px;
+		}
+		.nav-pill-compact {
+			padding: 6px 8px;
+		}
+		.nav-wordmark {
+			font-size: 15px;
+		}
+		.nav-divider {
+			margin-inline: 6px;
+		}
+		.nav-links {
+			gap: 9px;
+		}
+		.nav-pill-link {
+			font-size: 12px;
+		}
+	}
+
 	/* Collapse links + divider when menu opens, grow back on close */
 	.nav-collapsible {
 		overflow: hidden;
