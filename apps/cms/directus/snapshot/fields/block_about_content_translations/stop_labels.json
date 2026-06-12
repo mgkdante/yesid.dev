@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "stop_labels",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale metro stop labels (AboutContent.stopLabels). JSON shape: { identity, metrics, testimonials, process, stack, clients, interests, snapshots, location, next } — all strings.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

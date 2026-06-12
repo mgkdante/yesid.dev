@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "edge_right",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale right edge chrome (ManifestoContent.edgeRight). JSON shape: { lat: string, lng: string, src: string, via: string, dst: string, node: string, status: string }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

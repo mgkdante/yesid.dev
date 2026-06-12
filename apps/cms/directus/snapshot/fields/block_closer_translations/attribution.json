@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "attribution",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale attribution text (CloserContent.attribution.text). JSON shape: { text: string }. url lives as attribution_url on parent.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

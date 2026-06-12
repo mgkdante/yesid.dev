@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "transit",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale transit arrival panel chrome (ManifestoContent.transit). JSON shape: { arrivalLabel: string, platformBadge: string, directionBadge: string }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

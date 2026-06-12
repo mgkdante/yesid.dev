@@ -49,63 +49,9 @@ export const techStackPageContent: TechStackPageContent = {
 
 export const techStackItems: readonly TechStackItem[] = [
 	{
-		icon: {
-			iconify_id: 'logos:airflow',
-			id: 'airflow',
-			name: 'Apache Airflow',
-			svg_override: null,
+		enables: {
+			en: 'versions every database schema change, with rollbacks',
 		},
-		id: 'airflow',
-		name: 'Apache Airflow',
-		relatedProjects: ['transit-data-pipeline'],
-		relatedServices: ['data-pipeline'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'The Transit Operations Data Pipeline runs on Airflow — orchestrating the daily cycle of GTFS-RT feed ingestion, Python transformations, PostgreSQL loads, and Power BI dataset refreshes. Each task has retry logic, SLA alerts, and dependency chains that ensure data quality gates pass before downstream consumers see new data. Airflow\'s web UI gives the operations team visibility into pipeline health without needing to SSH into servers or read log files.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977602,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Apache Airflow is a workflow orchestration platform that lets you define, schedule, and monitor data pipelines as Python code. Instead of cron jobs or manual scripts, you write DAGs (Directed Acyclic Graphs) that declare tasks and their dependencies — "extract data, then transform it, then load it, and if any step fails, retry three times and alert me." Airflow provides a web UI for monitoring, a scheduler for timing, and integrations with virtually every data tool.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977601,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Airflow turns "a bunch of scripts that run in order" into a proper orchestration system with retries, logging, alerting, and dependency management. I use it when pipelines have multiple steps that need to run in a specific order, when failures need automatic retry logic, and when stakeholders need visibility into pipeline health. I write DAGs as Python code (not YAML configuration), which means the full power of Python is available for dynamic task generation and conditional logic.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977602,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
 		icon: {
 			iconify_id: null,
 			id: 'alembic',
@@ -113,6 +59,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'alembic',
+		layer: 'data',
 		name: 'Alembic',
 		relatedProjects: ['transit-data-pipeline'],
 		relatedServices: ['data-pipeline', 'database-engineering'],
@@ -170,6 +117,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'bun',
+		layer: 'infra',
 		name: 'Bun',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: ['web-development'],
@@ -220,182 +168,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
-		icon: {
-			iconify_id: 'logos:c-plusplus',
-			id: 'cpp',
-			name: 'C++',
-			svg_override: null,
-		},
-		id: 'cpp',
-		name: 'C++',
-		relatedProjects: [],
-		relatedServices: [],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'C++ informs my systems thinking more than my daily coding. When I\'m optimizing SQL Server query plans or understanding why a PostgreSQL index choice matters, that knowledge traces back to understanding how B-trees work at the memory level, how hash joins use memory allocation, and how CPU cache lines affect scan performance. It\'s the foundational layer that makes my higher-level optimizations more informed.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977606,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'C++ is a general-purpose systems programming language that gives you direct control over hardware and memory. It\'s the language behind operating systems, game engines, databases (including PostgreSQL itself), browsers, and performance-critical infrastructure. Modern C++ (C++17/20/23) has evolved significantly from its roots — with smart pointers, ranges, concepts, and coroutines that make it safer and more expressive while maintaining its zero-overhead abstraction principle.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977606,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'C++ gives me an understanding of how the systems I build on actually work. Knowing C++ means I understand memory layout, cache behavior, and the performance characteristics that matter when I\'m tuning database queries or designing high-throughput pipelines. It\'s foundational knowledge — even when I\'m writing Python or TypeScript, understanding what the runtime is doing under the hood helps me make better performance decisions.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977607,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		icon: {
-			iconify_id: 'logos:c-sharp',
-			id: 'csharp',
-			name: 'C#',
-			svg_override: null,
-		},
-		id: 'csharp',
-		name: 'C#',
-		relatedProjects: [],
-		relatedServices: ['web-development'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'In SQL Server environments, C# is often the application layer sitting on top of the databases I tune. When I optimize stored procedures or redesign schemas for a client, I verify that their C# data access code handles the changes correctly — checking Entity Framework mappings, connection pooling settings, and transaction scopes. That full-stack awareness prevents the "the database is fine, it must be the app" finger-pointing.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977607,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'C# is a modern, statically-typed language developed by Microsoft, primarily used for building Windows applications, web APIs with ASP.NET, and game development with Unity. It runs on the .NET runtime (now cross-platform) and combines the performance of a compiled language with developer-friendly features like LINQ, async/await, and pattern matching. If an organization uses Microsoft tools, C# is likely their primary development language.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977607,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'C# connects my data work to the Microsoft enterprise ecosystem. Many of my SQL Server clients have C# applications that consume the databases I optimize — understanding both sides of that boundary means I can diagnose performance issues end-to-end. I\'ve written data access layers in C# with Entity Framework, built console tools for database maintenance, and debugged ASP.NET applications to trace slow queries back to their ORM origins.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977608,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		icon: {
-			iconify_id: null,
-			id: 'dax',
-			name: 'DAX',
-			svg_override: null,
-		},
-		id: 'dax',
-		name: 'DAX',
-		relatedProjects: [],
-		relatedServices: ['analytics-reporting'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'On the Lorem Analytics Dashboard, DAX powers every KPI calculation — from department-level revenue metrics to cross-department comparisons with dynamic date ranges. The semantic layer I built uses DAX measures exclusively (no calculated columns where measures suffice) to keep the model lean and the refreshes fast. Understanding DAX at a deep level means I can diagnose "the numbers don\'t match" issues that typically take teams days to resolve.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977608,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'DAX (Data Analysis Expressions) is a formula language used in Power BI, Analysis Services, and Power Pivot. Think of it as a specialized language for writing business calculations — revenue growth, running totals, year-over-year comparisons, weighted averages — that work across filtered and sliced data. DAX operates on a columnar data model and uses concepts like filter context and row context to evaluate expressions dynamically as users interact with dashboards.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977608,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'DAX is where business logic meets data modeling, and getting it right is the difference between dashboards that perform and dashboards that lie. I write DAX measures that handle complex time intelligence (YTD, prior year comparison, rolling averages), dynamic segmentation, and what-if analysis. I understand the evaluation context deeply — filter context propagation, CALCULATE overrides, and the iterator vs. aggregator distinction that trips up most Power BI developers.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977609,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		enables: {
-			en: 'packages every service to run the same anywhere',
-			es: 'empaqueta cada servicio para que corra igual en cualquier lugar',
-			fr: 'emballe chaque service pour qu\'il tourne pareil partout',
-		},
+		enables: { en: 'packages every service to run the same anywhere' },
 		icon: {
 			iconify_id: 'logos:docker',
 			id: 'docker',
@@ -454,63 +227,9 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
-		icon: {
-			iconify_id: 'logos:flutter',
-			id: 'flutter',
-			name: 'Flutter',
-			svg_override: null,
+		enables: {
+			en: 'runs the checks and ships every change automatically',
 		},
-		id: 'flutter',
-		name: 'Flutter',
-		relatedProjects: [],
-		relatedServices: [],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Flutter is part of my expanding mobile toolkit, complementing Kotlin/Jetpack Compose for native Android work. I\'m exploring it for projects where cross-platform reach matters more than platform-native feel — internal tools, data visualization apps, and client-facing dashboards that need to work on both phone platforms without maintaining two separate codebases.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977611,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Flutter is Google\'s cross-platform UI toolkit for building natively compiled applications for mobile, web, and desktop from a single Dart codebase. Instead of using platform-specific widgets, Flutter draws every pixel itself using its own rendering engine (Skia/Impeller), giving you precise control over the look and feel across iOS and Android. Hot reload lets you see changes instantly during development.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977610,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Flutter is my cross-platform exploration path. When a project needs to ship on both iOS and Android with a shared codebase, Flutter\'s widget system and Dart\'s type safety make it a compelling choice. I\'m building familiarity with its layout model (which shares concepts with CSS Flexbox) and its state management patterns. Coming from web development, Flutter\'s declarative UI approach feels natural — components are functions of state, just like Svelte.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977611,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
 		icon: {
 			iconify_id: 'logos:github-actions',
 			id: 'github-actions',
@@ -518,6 +237,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'github-actions',
+		layer: 'infra',
 		name: 'GitHub Actions',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: [],
@@ -575,6 +295,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'gsap',
+		layer: 'interface',
 		name: 'GSAP',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: ['web-development'],
@@ -626,297 +347,13 @@ export const techStackItems: readonly TechStackItem[] = [
 	},
 	{
 		icon: {
-			iconify_id: 'logos:java',
-			id: 'java',
-			name: 'Java',
-			svg_override: null,
-		},
-		id: 'java',
-		name: 'Java',
-		relatedProjects: [],
-		relatedServices: ['web-development'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Java shows up in my consulting work when clients have existing Spring Boot services or Android applications. My Java experience bridges naturally to Kotlin — I understand the JVM fundamentals, the memory model, and the concurrency primitives that both languages share. When evaluating whether to modernize a Java service to Kotlin or rewrite it entirely, that dual fluency helps me make practical recommendations.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977614,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Java is a statically-typed, object-oriented programming language that runs on the Java Virtual Machine (JVM). It\'s been the backbone of enterprise software for over 25 years — powering everything from Android apps to banking systems to massive distributed services. Its "write once, run anywhere" promise means compiled Java code runs on any platform with a JVM, and its mature ecosystem includes frameworks like Spring Boot, Hibernate, and Apache Kafka.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977613,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Java is part of my backend toolkit, especially for enterprise environments where JVM-based systems are the standard. I\'m proficient with Spring Boot for web services and familiar with the broader Java ecosystem (Maven, Gradle, JUnit). When a client\'s team is Java-native, I work within that stack rather than pushing a language change. Java\'s strong typing, mature tooling, and performance characteristics make it a solid choice for long-lived systems.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977614,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		icon: {
-			iconify_id: 'devicon:jetpackcompose',
-			id: 'jetpack-compose',
-			name: 'Jetpack Compose',
-			svg_override: null,
-		},
-		id: 'jetpack-compose',
-		name: 'Jetpack Compose',
-		relatedProjects: [],
-		relatedServices: [],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Jetpack Compose is part of my mobile development growth path, paired with Kotlin. The goal is to build native Android apps that connect to the same backend APIs and databases I architect for web clients — extending the digital infrastructure story from dashboard to pocket. Understanding both Compose and Flutter lets me advise clients on native vs. cross-platform tradeoffs from hands-on experience.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977615,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Jetpack Compose is Android\'s modern UI toolkit for building native interfaces with Kotlin. Instead of XML layouts, you write composable functions that describe your UI declaratively — similar to how React components or Svelte files work. The framework handles re-rendering when state changes, animation APIs are built in, and Material Design 3 components are available out of the box. Google now recommends Compose as the default way to build Android UIs.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977615,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Jetpack Compose feels like the mobile equivalent of Svelte\'s approach to UI: declarative, reactive, and close to the metal. I\'m learning it as my entry point into native Android development, specifically for building data-connected mobile applications. The composable function model maps well to my existing mental model of component-based UI, and Kotlin\'s type system catches errors the same way TypeScript does on the web side.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977615,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		icon: {
-			iconify_id: 'logos:kotlin',
-			id: 'kotlin',
-			name: 'Kotlin',
-			svg_override: null,
-		},
-		id: 'kotlin',
-		name: 'Kotlin',
-		relatedProjects: [],
-		relatedServices: ['web-development'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Kotlin is part of my mobile development learning path, paired with Jetpack Compose for building native Android interfaces. The language\'s interoperability with Java means I can work within existing Android codebases without rewriting everything — adopting Kotlin file by file. As I expand from digital infrastructure into mobile app development, Kotlin is the bridge between my backend JVM experience and native mobile UIs.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977616,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Kotlin is a modern programming language that runs on the JVM, developed by JetBrains. It\'s fully interoperable with Java but offers a more concise and expressive syntax — null safety built into the type system, coroutines for async programming, and extension functions that make APIs feel natural. Google made it the preferred language for Android development in 2019, and it\'s increasingly used for backend services with Ktor and Spring Boot.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977616,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Kotlin is where I\'m expanding my mobile and backend capabilities. Its null safety alone prevents an entire class of runtime crashes that plague Java codebases, and coroutines make async code readable without callback hell. I\'m learning it through Jetpack Compose for Android development — building declarative UIs that feel similar to Svelte\'s component model. The JVM foundation means my Java knowledge transfers directly.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977616,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		icon: {
-			iconify_id: 'logos:mysql',
-			id: 'mysql',
-			name: 'MySQL',
-			svg_override: null,
-		},
-		id: 'mysql',
-		name: 'MySQL',
-		relatedProjects: [],
-		relatedServices: ['sql-development', 'database-engineering'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'MySQL has been the source database in several migration projects I\'ve handled. The Lorem Database Migration started as a MySQL instance that had outgrown its schema design — I mapped every data type, converted stored procedures, and built the dual-write migration path to PostgreSQL. Understanding MySQL\'s storage engines and locking behavior was critical to planning the zero-downtime cutover.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977616,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'MySQL is one of the most widely deployed relational databases in the world, especially in web applications. It stores data in tables with defined schemas, supports transactions, and is the "M" in the classic LAMP stack (Linux, Apache, MySQL, PHP). It\'s fast for read-heavy workloads and has a massive community with extensive documentation and tooling.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977616,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'MySQL shows up in legacy systems more than in my new projects. I\'m proficient at working with it — optimizing queries, designing schemas, managing replication — but I typically recommend PostgreSQL for new work because of its richer feature set. That said, when a client\'s infrastructure is already MySQL-based, I work within that ecosystem rather than pushing an unnecessary migration. Knowing both MySQL and PostgreSQL well means I can make honest recommendations about when a migration is worth the effort.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977617,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		icon: {
-			iconify_id: 'logos:nextjs',
-			id: 'nextjs',
-			name: 'Next.js',
-			svg_override: null,
-		},
-		id: 'nextjs',
-		name: 'Next.js',
-		relatedProjects: [],
-		relatedServices: ['web-development'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Next.js appears in my consulting work when clients have existing React codebases. My experience with both SvelteKit and Next.js gives me perspective on the tradeoffs: Next.js offers a richer ecosystem and easier hiring, while SvelteKit offers better performance defaults and less boilerplate. When a client asks "which framework should we use?", I can answer from direct experience with both, not theory.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977617,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Next.js is a React-based full-stack framework developed by Vercel. It provides file-based routing, server-side rendering, static generation, API routes, and middleware out of the box. The App Router (introduced in v13) uses React Server Components to render on the server by default, sending less JavaScript to the browser. It\'s the most popular React framework and the default choice for production React applications.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977617,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Next.js is my React framework of choice when a project requires the React ecosystem — existing component libraries, team familiarity, or third-party integrations that assume React. I\'m proficient with the App Router, server actions, and the caching model. I choose SvelteKit for my own projects because of its smaller bundle sizes and simpler mental model, but I reach for Next.js when collaborating with React-native teams or when the project benefits from React\'s massive component ecosystem.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977617,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		icon: {
 			iconify_id: 'logos:nodejs-icon',
 			id: 'node-js',
 			name: 'Node.js',
 			svg_override: null,
 		},
 		id: 'node-js',
+		layer: 'logic',
 		name: 'Node.js',
 		relatedProjects: [],
 		relatedServices: ['web-development', 'internal-tooling'],
@@ -967,68 +404,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
-		icon: {
-			iconify_id: 'logos:playwright',
-			id: 'playwright',
-			name: 'Playwright',
-			svg_override: null,
-		},
-		id: 'playwright',
-		name: 'Playwright',
-		relatedProjects: ['yesid-dev'],
-		relatedServices: ['web-development'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Playwright is planned for yesid.dev\'s E2E testing layer — verifying critical user flows like navigating the tech stack diagram, opening detail panels, using filters, and the Build Your Stack configurator across Chrome, Firefox, and Safari. It integrates with GitHub Actions to run browser tests on every push, and its screenshot comparison can catch visual regressions that unit tests would never detect.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977619,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Playwright is a browser automation framework by Microsoft for end-to-end testing. It controls real browsers (Chromium, Firefox, WebKit) programmatically — navigating pages, clicking buttons, filling forms, and asserting on page content. Unlike unit tests that test components in isolation, E2E tests verify that the entire application works as a user would experience it: real HTTP requests, real rendering, real interactions.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977619,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Playwright catches the bugs that unit tests miss — the ones that only appear when components interact in a real browser with real data. I\'m building my E2E testing practice around it because it\'s the most capable browser testing tool available: auto-waiting (no flaky <code>sleep()</code> calls), multi-browser support, network interception, and built-in trace viewer for debugging failures. For visual-heavy sites like yesid.dev, Playwright can verify animations, responsive layouts, and interaction flows.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977619,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		enables: {
-			en: 'stores and queries your data reliably',
-			es: 'almacena y consulta tus datos de forma fiable',
-			fr: 'stocke et interroge vos données de manière fiable',
-		},
+		enables: { en: 'stores and queries your data reliably' },
 		icon: {
 			iconify_id: 'logos:postgresql',
 			id: 'postgresql',
@@ -1087,6 +463,9 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'turns warehouse tables into boardroom-ready dashboards',
+		},
 		icon: {
 			iconify_id: 'logos:microsoft-power-bi',
 			id: 'power-bi',
@@ -1094,8 +473,9 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'power-bi',
+		layer: 'data',
 		name: 'Power BI',
-		relatedProjects: [],
+		relatedProjects: ['lorem-analytics-dashboard'],
 		relatedServices: ['analytics-reporting'],
 		what_i_use_it_for: {
 			en: {
@@ -1144,11 +524,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
-		enables: {
-			en: 'automates the data work: ingest, clean, transform',
-			es: 'automatiza el trabajo de datos: ingesta, limpieza, transformación',
-			fr: 'automatise le travail des données : ingestion, nettoyage, transformation',
-		},
+		enables: { en: 'automates the data work: ingest, clean, transform' },
 		icon: {
 			iconify_id: 'logos:python',
 			id: 'python',
@@ -1214,6 +590,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'react',
+		layer: 'interface',
 		name: 'React',
 		relatedProjects: [],
 		relatedServices: ['web-development'],
@@ -1266,8 +643,6 @@ export const techStackItems: readonly TechStackItem[] = [
 	{
 		enables: {
 			en: 'lets your interface and services talk over clean endpoints',
-			es: 'permite que tu interfaz y tus servicios se comuniquen mediante endpoints claros',
-			fr: 'permet à votre interface et vos services de communiquer via des points d\'accès propres',
 		},
 		icon: {
 			iconify_id: null,
@@ -1327,63 +702,9 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
-		icon: {
-			iconify_id: 'mdi:language-rust',
-			id: 'rust',
-			name: 'Rust',
-			svg_override: null,
+		enables: {
+			en: 'runs enterprise reporting workloads and the T-SQL estate',
 		},
-		id: 'rust',
-		name: 'Rust',
-		relatedProjects: [],
-		relatedServices: [],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Rust is part of my long-term systems programming development. The immediate practical angle is WebAssembly — Rust compiles to WASM with excellent tooling (wasm-pack, wasm-bindgen), enabling performance-critical code to run in the browser. For a digital infrastructure consultant, that means potentially building fast client-side data processing tools, interactive visualizations, or compression utilities that run at native speed without a server round-trip.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977625,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Rust is a systems programming language focused on safety, speed, and concurrency. Its ownership system eliminates entire categories of bugs — null pointer dereferences, data races, use-after-free — at compile time, without needing a garbage collector. Rust achieves C/C++ performance levels while preventing the memory safety issues that cause the majority of security vulnerabilities in systems software. It\'s used in production at Mozilla, Cloudflare, Discord, and AWS.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977625,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Rust represents the direction I\'m growing in systems programming. Its ownership model enforces at compile time what other languages leave to programmer discipline, and its zero-cost abstractions mean you don\'t pay a performance penalty for safety. I\'m building familiarity with Rust for use cases where Python is too slow and C++ is too dangerous: high-throughput data processing, CLI tools, and WebAssembly modules that run at near-native speed in the browser.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977625,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
 		icon: {
 			iconify_id: 'devicon:microsoftsqlserver',
 			id: 'sql-server',
@@ -1391,8 +712,9 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'sql-server',
+		layer: 'data',
 		name: 'SQL Server',
-		relatedProjects: [],
+		relatedProjects: ['lorem-analytics-dashboard'],
 		relatedServices: ['sql-development', 'database-engineering'],
 		what_i_use_it_for: {
 			en: {
@@ -1448,6 +770,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'ssis',
+		layer: 'logic',
 		name: 'SSIS',
 		relatedProjects: [],
 		relatedServices: ['data-pipeline'],
@@ -1505,6 +828,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'ssrs',
+		layer: 'data',
 		name: 'SSRS',
 		relatedProjects: [],
 		relatedServices: ['analytics-reporting'],
@@ -1562,6 +886,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'svelte-5',
+		layer: 'interface',
 		name: 'Svelte 5',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: ['web-development'],
@@ -1612,11 +937,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
-		enables: {
-			en: 'renders fast, app-like pages from one codebase',
-			es: 'genera páginas rápidas tipo aplicación desde una sola base de código',
-			fr: 'affiche des pages rapides, façon application, depuis une seule base de code',
-		},
+		enables: { en: 'renders fast, app-like pages from one codebase' },
 		icon: {
 			iconify_id: 'logos:svelte-kit',
 			id: 'sveltekit',
@@ -1682,8 +1003,9 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 't-sql',
+		layer: 'data',
 		name: 'T-SQL',
-		relatedProjects: [],
+		relatedProjects: ['lorem-analytics-dashboard'],
 		relatedServices: ['sql-development', 'analytics-reporting'],
 		what_i_use_it_for: {
 			en: {
@@ -1739,6 +1061,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'tailwind',
+		layer: 'interface',
 		name: 'Tailwind CSS',
 		relatedProjects: ['yesid-dev'],
 		relatedServices: ['web-development'],
@@ -1796,6 +1119,7 @@ export const techStackItems: readonly TechStackItem[] = [
 			svg_override: null,
 		},
 		id: 'threejs-threlte',
+		layer: 'interface',
 		name: 'Three.js / Threlte',
 		relatedProjects: [],
 		relatedServices: ['web-development'],
@@ -1855,11 +1179,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
-		enables: {
-			en: 'keeps the codebase typed, refactorable, and honest',
-			es: 'mantiene el código tipado, refactorizable y confiable',
-			fr: 'garde le code typé, refactorisable et fiable',
-		},
+		enables: { en: 'keeps the codebase typed, refactorable, and honest' },
 		icon: {
 			iconify_id: 'logos:typescript',
 			id: 'typescript',
@@ -1919,9 +1239,7 @@ export const techStackItems: readonly TechStackItem[] = [
 	},
 	{
 		enables: {
-			en: 'ships the site globally with zero-config deploys',
-			es: 'publica el sitio globalmente con despliegues sin configuración',
-			fr: 'déploie le site mondialement sans configuration',
+			en: 'serves the site from the edge, close to every visitor',
 		},
 		icon: {
 			iconify_id: 'logos:vercel',
@@ -1976,63 +1294,6 @@ export const techStackItems: readonly TechStackItem[] = [
 					},
 				],
 				time: 1777263977636,
-				version: '2.31.2',
-			},
-		},
-	},
-	{
-		icon: {
-			iconify_id: 'logos:vitest',
-			id: 'vitest',
-			name: 'Vitest',
-			svg_override: null,
-		},
-		id: 'vitest',
-		name: 'Vitest',
-		relatedProjects: ['yesid-dev'],
-		relatedServices: ['web-development'],
-		what_i_use_it_for: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'yesid.dev uses Vitest with a dual-project configuration: one project for component tests (using happy-dom for DOM simulation) and another for data-layer unit tests (pure TypeScript, no DOM needed). The test suite validates data integrity (all 34 tech items have valid connections, no dangling references), component behavior (filters, collapsible sections, stack panels), and type safety. Tests run on every commit via <code>bun run test</code> and in CI via GitHub Actions.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977637,
-				version: '2.31.2',
-			},
-		},
-		what_it_is: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Vitest is a fast unit testing framework built on Vite\'s transformation pipeline. It runs TypeScript and JSX natively (no separate compile step), supports ESM imports, and provides a Jest-compatible API — so if you know Jest, you already know Vitest. It includes snapshot testing, code coverage, watch mode, and a browser UI for exploring test results. For Vite-based projects (SvelteKit, React with Vite), Vitest shares the same config and plugin ecosystem.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977636,
-				version: '2.31.2',
-			},
-		},
-		why_i_use_it_instead: {
-			en: {
-				blocks: [
-					{
-						data: {
-							text: 'Vitest is fast, and speed matters when you\'re running tests after every code change. It uses Vite\'s on-demand module transformation, so only the files that changed get re-processed. Combined with Bun as the runtime, test suites that took minutes with Jest now run in seconds. I pair it with <code>@testing-library/svelte</code> for component tests and use the multi-project configuration to run different test types (unit vs. component) with optimized settings for each.',
-						},
-						id: 'm00000001',
-						type: 'paragraph',
-					},
-				],
-				time: 1777263977637,
 				version: '2.31.2',
 			},
 		},

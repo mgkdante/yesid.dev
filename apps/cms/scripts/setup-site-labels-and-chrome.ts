@@ -285,9 +285,10 @@ async function seed(ctx: ApplyContext): Promise<void> {
 	const existing = await apiGet(ctx, '/items/site_labels');
 	let parentId = (existing?.data as { id?: string } | null)?.id;
 	if (!parentId) {
-		const created = await apiPost(ctx, '/items/site_labels', {});
+		// Singletons take PATCH (create-or-update); POST /items/<singleton> is ROUTE_NOT_FOUND.
+		const created = await apiPatch(ctx, '/items/site_labels', {});
 		parentId = (created.data as { id: string }).id;
-		log.info(`  created site_labels singleton row ${parentId}`);
+		log.info(`  materialized site_labels singleton row ${parentId}`);
 	}
 	// 2. upsert the EN translation row
 	const trs = await apiGet(ctx, `/items/site_labels_translations?filter[languages_code][_eq]=en&limit=1`);
