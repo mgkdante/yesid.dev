@@ -35,6 +35,7 @@ export const services: readonly Service[] = [
 			'transit-data-pipeline',
 			'lorem-database-migration',
 			'lorem-query-optimizer',
+			'yesid-dev',
 		],
 		sections: [
 			{
@@ -110,7 +111,11 @@ export const services: readonly Service[] = [
 			label: { en: 'reporting turnaround' },
 			value: { en: '2d → 15m' },
 		},
-		relatedProjects: ['lorem-analytics-dashboard', 'lorem-retool-admin'],
+		relatedProjects: [
+			'lorem-analytics-dashboard',
+			'lorem-retool-admin',
+			'transit-data-pipeline',
+		],
 		sections: [
 			{
 				content: {
@@ -146,7 +151,7 @@ export const services: readonly Service[] = [
 			label: { en: 'Lighthouse performance' },
 			value: { en: '100' },
 		},
-		relatedProjects: ['yesid-dev', 'cafe-arona'],
+		relatedProjects: ['yesid-dev', 'cafe-arona', 'transit-data-pipeline'],
 		sections: [
 			{
 				content: {
