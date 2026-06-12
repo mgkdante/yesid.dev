@@ -13,6 +13,10 @@
 	import { SvgIcon } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 	import { cn } from '$lib/utils';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 
 	export interface BlogRowProps {
 		/** The blog post data to display */
@@ -48,7 +52,7 @@
 </script>
 
 <a
-	href={post.url}
+	href={post.external ? post.url : localizeHref(post.url, locale)}
 	target={post.external ? '_blank' : undefined}
 	rel={post.external ? 'noopener noreferrer' : undefined}
 	class={cn("group block", className)}

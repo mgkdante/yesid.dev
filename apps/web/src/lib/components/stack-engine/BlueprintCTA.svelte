@@ -9,6 +9,10 @@
 <script lang="ts">
 	import type { StackArchetype } from '@repo/shared/schemas';
 	import { encodeBlueprint } from '$lib/utils/blueprint-param';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 
 	let {
 		archetype,
@@ -34,12 +38,12 @@
 		{archetype.proofProjectSlug ? 'Send me this blueprint →' : 'Want to be the first? Send me this blueprint →'}
 	</a>
 	{#if archetype.proofProjectSlug}
-		<a class="cta-link" data-testid="cta-proof" href={`/projects/${archetype.proofProjectSlug}`}>
+		<a class="cta-link" data-testid="cta-proof" href={localizeHref(`/projects/${archetype.proofProjectSlug}`, locale)}>
 			I built this
 		</a>
 	{/if}
 	{#if archetype.serviceId}
-		<a class="cta-link" data-testid="cta-service" href={`/services/${archetype.serviceId}`}>
+		<a class="cta-link" data-testid="cta-service" href={localizeHref(`/services/${archetype.serviceId}`, locale)}>
 			Hire this
 		</a>
 	{/if}

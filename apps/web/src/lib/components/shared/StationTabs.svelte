@@ -12,6 +12,7 @@
 	import type { Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { localizeHref } from '$lib/utils/locale-routing';
 	import { servicesDetailContent } from '$lib/content/services';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tabs from '$lib/components/ui/tabs';
@@ -129,7 +130,7 @@
 				{@const opacity = isActive ? 1 : getOpacity(i)}
 
 				<a
-					href="/services/{service.id}"
+					href={localizeHref(`/services/${service.id}`, locale)}
 					class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all tap-press"
 
 					class:active={isActive}

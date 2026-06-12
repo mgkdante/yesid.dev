@@ -9,6 +9,10 @@
 <script lang="ts">
 	import type { Project, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
@@ -82,7 +86,7 @@
 </script>
 
 <a
-	href="/projects/{project.slug}"
+	href={localizeHref(`/projects/${project.slug}`, locale)}
 	class={cn("tap-press project-card group block h-full", className)}
 	data-testid="project-card"
 	data-flip-id={project.slug}

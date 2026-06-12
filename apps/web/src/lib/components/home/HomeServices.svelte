@@ -15,6 +15,10 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { fillTemplate } from '$lib/utils/labels';
 	import { siteLabels } from '$lib/content';
 
@@ -119,7 +123,7 @@
 				{@const metricValue = service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : ''}
 				{@const metricLabel = service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : ''}
 				<a
-					href="/services/{service.id}"
+					href={localizeHref(`/services/${service.id}`, locale)}
 					data-testid="services-card"
 					class="services-card-link group block tap-press"
 					use:morphHover={{ enabled: svgReady[i], disableClickToggle: true }}
@@ -193,7 +197,7 @@
 			class="mt-12 flex justify-end"
 		>
 			<a
-				href="/services"
+				href={localizeHref('/services', locale)}
 				class="home-view-all tap-feedback inline-flex items-center font-mono text-caption tracking-wider md:text-mono"
 				use:pressBounce
 			>{viewAllLink}</a>
