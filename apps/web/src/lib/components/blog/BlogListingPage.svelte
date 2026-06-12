@@ -10,6 +10,9 @@
 	import { goto } from '$app/navigation';
 	import type { BlogPost, Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { blogListingContent } from '$lib/content/blog';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
@@ -177,7 +180,7 @@
 			<div class="blog-header-text">
 				<!-- "Blog." heading: only on mobile (edge title in route layout carries it on desktop) -->
 				<!-- go2-t1c2: prefer CMS blogPage.heading; static module stays the fallback -->
-				<h1 class="blog-mobile-heading">{resolveLocale(blogPage?.heading ?? blogListingContent.mobileHeading, 'en')}<span class="text-[var(--primary)]">.</span></h1>
+				<h1 class="blog-mobile-heading">{resolveLocale(blogPage?.heading ?? blogListingContent.mobileHeading, locale)}<span class="text-[var(--primary)]">.</span></h1>
 				<div class="blog-header-subtitle">{subtitle}</div>
 			</div>
 		</div>
@@ -210,7 +213,7 @@
 
 		<!-- Mobile search (always visible below lg, hidden when sideLeft shows it) -->
 		<div class="mb-4 lg:hidden">
-			<SearchInput placeholder={resolveLocale(blogListingContent.searchPlaceholder, 'en')} bind:value={searchQuery} testId="blog-search-mobile" />
+			<SearchInput placeholder={resolveLocale(blogListingContent.searchPlaceholder, locale)} bind:value={searchQuery} testId="blog-search-mobile" />
 		</div>
 
 		<!-- Mobile filter (visible below lg, hidden when sideLeft shows) -->
@@ -228,12 +231,12 @@
 		/>
 
 		{#if hasActiveFilters}
-			<FilterSummary count={filteredPosts.length} noun={resolveLocale(blogListingContent.resultNoun, 'en')} onClear={clearFilters} />
+			<FilterSummary count={filteredPosts.length} noun={resolveLocale(blogListingContent.resultNoun, locale)} onClear={clearFilters} />
 		{/if}
 
 		{#if filteredPosts.length === 0}
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]">
-				{resolveLocale(blogListingContent.noPostsMessage, 'en')}
+				{resolveLocale(blogListingContent.noPostsMessage, locale)}
 			</p>
 		{:else}
 			<div class="flex flex-col gap-4">
