@@ -1,13 +1,19 @@
-// Section magnetism (go2/w5) — gentle ease-to-nearest-section on scroll
-// settle for the home page. Desktop AND mobile: the magnet sits on top of
-// whatever scroll engine is live (Lenis wheel easing on desktop, native
-// touch scroll on mobile) by listening for settle and nudging the window.
+// Section magnetism (go2/w5) — ease-to-nearest-section on scroll settle for
+// the home page. The magnet sits on top of whatever scroll engine is live
+// (Lenis wheel easing on desktop, native touch scroll on mobile) by listening
+// for settle and nudging the window.
+//
+// Taste round 2 (operator): the magnet is TIERED by input modality.
+//   - Desktop (wheel / keyboard / mouse): STRONGER — a wider attraction
+//     radius and a firmer, quicker ease make the pull into sections decisive.
+//   - Touch: GENTLER — natural touch scrolling must never fight the magnet,
+//     so the radius shrinks, the settle debounce waits out momentum, and the
+//     nudge rides the browser's native smooth scroll (never Lenis).
 //
 // SOFT magnet, never hard paging: it only acts when the settle point is
-// already within a small attraction radius of a section top (≤ ~22% of the
-// viewport, capped). Outside the radius nothing moves — free scrolling is
-// untouched, and the hero pin interior (hundreds of vh from any boundary)
-// can never be yanked.
+// already within the attraction radius of a section top. Outside the radius
+// nothing moves — free scrolling is untouched, and the hero pin interior
+// (hundreds of vh from any boundary) can never be yanked.
 //
 // Reduced motion (operator-corrected): the magnet is ASSISTIVE, not
 // vestibular — reduce users KEEP the alignment but get an instant settle
@@ -58,14 +64,27 @@ export function findSettleTarget(
 	return best;
 }
 
+export interface MagnetTier {
+	/** Attraction radius as a fraction of viewport height. */
+	radiusVh: number;
+	/** Hard cap on the radius in px. */
+	maxRadiusPx: number;
+	/** Debounce after the last scroll event before settling. */
+	settleMs: number;
+}
+
+/** Desktop tier — decisive pull (taste round 2: radius up 0.22→0.32). */
+export const DESKTOP_TIER: MagnetTier = { radiusVh: 0.32, maxRadiusPx: 360, settleMs: 150 };
+
+/** Touch tier — gentler than round 1 (0.22→0.16) + waits out momentum. */
+export const TOUCH_TIER: MagnetTier = { radiusVh: 0.16, maxRadiusPx: 160, settleMs: 260 };
+
 export interface SectionMagnetOpts {
-	/** Attraction radius as a fraction of viewport height. Default 0.22. */
-	radiusVh?: number;
-	/** Hard cap on the radius in px. Default 240. */
-	maxRadiusPx?: number;
-	/** Debounce after the last scroll event before settling. Default 180ms. */
-	settleMs?: number;
-	/** Smooth-ease duration when Lenis drives the nudge. Default 0.7s. */
+	/** Desktop (wheel/keyboard/mouse) tier overrides. */
+	desktop?: Partial<MagnetTier>;
+	/** Touch tier overrides. */
+	touch?: Partial<MagnetTier>;
+	/** Smooth-ease duration when Lenis drives the desktop nudge. Default 0.8s. */
 	lenisDuration?: number;
 }
 
@@ -78,10 +97,27 @@ export function initSectionMagnet(
 	getSections: () => readonly HTMLElement[],
 	opts: SectionMagnetOpts = {},
 ): () => void {
-	const { radiusVh = 0.22, maxRadiusPx = 240, settleMs = 180, lenisDuration = 0.7 } = opts;
+	const desktopTier: MagnetTier = { ...DESKTOP_TIER, ...opts.desktop };
+	const touchTier: MagnetTier = { ...TOUCH_TIER, ...opts.touch };
+	const lenisDuration = opts.lenisDuration ?? 0.8;
 
 	let timer: ReturnType<typeof setTimeout> | null = null;
 	let pointerDown = false;
+	// Last observed input modality. Touch scrolling must never be fought, so
+	// when in doubt (no input seen yet) fall back to the coarse-pointer media
+	// query — i.e. phones default to the gentle tier before the first touch.
+	let modality: 'precise' | 'touch' | null = null;
+
+	function isTouchMode(): boolean {
+		if (modality !== null) return modality === 'touch';
+		return (
+			typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+		);
+	}
+
+	function tier(): MagnetTier {
+		return isTouchMode() ? touchTier : desktopTier;
+	}
 
 	function clearTimer(): void {
 		if (timer !== null) {
@@ -92,13 +128,15 @@ export function initSectionMagnet(
 
 	function schedule(): void {
 		clearTimer();
-		timer = setTimeout(settle, settleMs);
+		timer = setTimeout(settle, tier().settleMs);
 	}
 
 	function settle(): void {
 		timer = null;
 		if (pointerDown) return; // scrollbar drag in progress — wait for release
 
+		const touchMode = isTouchMode();
+		const { radiusVh, maxRadiusPx } = touchMode ? touchTier : desktopTier;
 		const viewport = window.innerHeight;
 		const maxScroll = Math.max(0, document.documentElement.scrollHeight - viewport);
 		const scrollY = window.scrollY;
@@ -116,22 +154,29 @@ export function initSectionMagnet(
 			return;
 		}
 
-		const lenis = getLenis();
-		if (lenis) {
-			lenis.scrollTo(target, {
-				duration: lenisDuration,
-				easing: (t: number) => 1 - Math.pow(1 - t, 3),
-			});
-			return;
+		if (!touchMode) {
+			const lenis = getLenis();
+			if (lenis) {
+				// Decisive desktop pull: starts fast, lands soft (quart-out).
+				lenis.scrollTo(target, {
+					duration: lenisDuration,
+					easing: (t: number) => 1 - Math.pow(1 - t, 4),
+				});
+				return;
+			}
 		}
 
+		// Touch (and Lenis-less desktop): the browser's native smooth scroll —
+		// interruptible by any user input, so touch is never fought.
 		window.scrollTo({ top: target, behavior: 'smooth' });
 	}
 
 	function onScroll(): void {
 		schedule();
 	}
-	function onPointerDown(): void {
+	function onPointerDown(e: PointerEvent): void {
+		if (e.pointerType === 'touch') modality = 'touch';
+		else if (e.pointerType === 'mouse' || e.pointerType === 'pen') modality = 'precise';
 		pointerDown = true;
 		clearTimer();
 	}
@@ -139,27 +184,36 @@ export function initSectionMagnet(
 		pointerDown = false;
 		schedule();
 	}
-	function onUserEngage(): void {
-		// wheel / touchstart / keydown: the user took over — never fight them.
+	function onWheel(): void {
+		modality = 'precise';
+		// The user took over — never fight them.
+		clearTimer();
+	}
+	function onTouchStart(): void {
+		modality = 'touch';
+		clearTimer();
+	}
+	function onKeyDown(): void {
+		modality = 'precise';
 		clearTimer();
 	}
 
 	window.addEventListener('scroll', onScroll, { passive: true });
-	window.addEventListener('pointerdown', onPointerDown, { passive: true });
+	window.addEventListener('pointerdown', onPointerDown as EventListener, { passive: true });
 	window.addEventListener('pointerup', onPointerUp, { passive: true });
 	window.addEventListener('pointercancel', onPointerUp, { passive: true });
-	window.addEventListener('wheel', onUserEngage, { passive: true });
-	window.addEventListener('touchstart', onUserEngage, { passive: true });
-	window.addEventListener('keydown', onUserEngage);
+	window.addEventListener('wheel', onWheel, { passive: true });
+	window.addEventListener('touchstart', onTouchStart, { passive: true });
+	window.addEventListener('keydown', onKeyDown);
 
 	return () => {
 		clearTimer();
 		window.removeEventListener('scroll', onScroll);
-		window.removeEventListener('pointerdown', onPointerDown);
+		window.removeEventListener('pointerdown', onPointerDown as EventListener);
 		window.removeEventListener('pointerup', onPointerUp);
 		window.removeEventListener('pointercancel', onPointerUp);
-		window.removeEventListener('wheel', onUserEngage);
-		window.removeEventListener('touchstart', onUserEngage);
-		window.removeEventListener('keydown', onUserEngage);
+		window.removeEventListener('wheel', onWheel);
+		window.removeEventListener('touchstart', onTouchStart);
+		window.removeEventListener('keydown', onKeyDown);
 	};
 }

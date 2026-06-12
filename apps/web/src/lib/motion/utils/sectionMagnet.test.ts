@@ -116,10 +116,11 @@ describe('motion/utils/sectionMagnet — initSectionMagnet (wiring)', () => {
 		vi.restoreAllMocks();
 	});
 
+	/** Advance past BOTH tier debounces (desktop 150ms / touch 260ms). */
 	function settleAt(scrollY: number): void {
 		setScrollY(scrollY);
 		window.dispatchEvent(new Event('scroll'));
-		vi.advanceTimersByTime(200);
+		vi.advanceTimersByTime(300);
 	}
 
 	it('eases to the nearest section top after scroll settles (native smooth)', () => {
@@ -134,6 +135,77 @@ describe('motion/utils/sectionMagnet — initSectionMagnet (wiring)', () => {
 		destroy = initSectionMagnet(() => sections);
 		settleAt(3500);
 		expect(scrollToSpy).not.toHaveBeenCalled();
+	});
+
+	// Taste round 2: STRONGER desktop pull — radius 0.32×viewport (capped
+	// 360px). At a 1000px viewport that is 320px; round 1's 240px cap would
+	// have ignored a 300px-out settle.
+	it('desktop tier pulls from 300px out (decisive radius, round-2)', () => {
+		const sections = [fakeSection(0), fakeSection(2000)];
+		destroy = initSectionMagnet(() => sections);
+		window.dispatchEvent(new Event('wheel')); // precise modality
+		settleAt(2300);
+		expect(scrollToSpy).toHaveBeenCalledWith({ top: 2000, behavior: 'smooth' });
+	});
+
+	it('desktop tier still soft: nothing beyond the 0.32×viewport radius', () => {
+		const sections = [fakeSection(0), fakeSection(2000)];
+		destroy = initSectionMagnet(() => sections);
+		window.dispatchEvent(new Event('wheel'));
+		settleAt(2330); // 330 > 320 radius
+		expect(scrollToSpy).not.toHaveBeenCalled();
+	});
+
+	// Taste round 2: touch is GENTLER than round 1 — radius 0.16×viewport
+	// (capped 160px) so natural touch scrolling is never fought.
+	it('touch tier ignores a settle the desktop tier would magnetize', () => {
+		const sections = [fakeSection(0), fakeSection(2000)];
+		destroy = initSectionMagnet(() => sections);
+		window.dispatchEvent(new Event('touchstart'));
+		settleAt(2300); // 300 > 160 touch radius
+		expect(scrollToSpy).not.toHaveBeenCalled();
+	});
+
+	it('touch tier still assists when genuinely close (within 160px)', () => {
+		const sections = [fakeSection(0), fakeSection(2000)];
+		destroy = initSectionMagnet(() => sections);
+		window.dispatchEvent(new Event('touchstart'));
+		settleAt(2100);
+		expect(scrollToSpy).toHaveBeenCalledWith({ top: 2000, behavior: 'smooth' });
+	});
+
+	it('touch debounce waits out momentum (260ms, longer than desktop)', () => {
+		const sections = [fakeSection(0), fakeSection(2000)];
+		destroy = initSectionMagnet(() => sections);
+		window.dispatchEvent(new Event('touchstart'));
+		setScrollY(2100);
+		window.dispatchEvent(new Event('scroll'));
+		vi.advanceTimersByTime(200); // desktop would have settled by now
+		expect(scrollToSpy).not.toHaveBeenCalled();
+		vi.advanceTimersByTime(100);
+		expect(scrollToSpy).toHaveBeenCalledWith({ top: 2000, behavior: 'smooth' });
+	});
+
+	it('touch never routes through Lenis — native smooth only (hybrid device)', () => {
+		setTouch(0);
+		initLenis();
+		const lenis = getLenis()!;
+		const lenisScrollTo = vi.spyOn(lenis, 'scrollTo').mockImplementation(() => {});
+		const sections = [fakeSection(0), fakeSection(2000)];
+		destroy = initSectionMagnet(() => sections);
+		window.dispatchEvent(new Event('touchstart'));
+		settleAt(2100);
+		expect(lenisScrollTo).not.toHaveBeenCalled();
+		expect(scrollToSpy).toHaveBeenCalledWith({ top: 2000, behavior: 'smooth' });
+	});
+
+	it('wheel after touch flips back to the precise tier (hybrid device)', () => {
+		const sections = [fakeSection(0), fakeSection(2000)];
+		destroy = initSectionMagnet(() => sections);
+		window.dispatchEvent(new Event('touchstart'));
+		window.dispatchEvent(new Event('wheel'));
+		settleAt(2300); // desktop radius again
+		expect(scrollToSpy).toHaveBeenCalledWith({ top: 2000, behavior: 'smooth' });
 	});
 
 	it('does nothing before the settle debounce elapses', () => {
