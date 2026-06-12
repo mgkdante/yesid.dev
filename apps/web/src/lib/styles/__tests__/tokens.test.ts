@@ -246,11 +246,20 @@ describe('Design System Tokens', () => {
       expect(appCSS).toContain('var(--grid-line-minor) 0px, transparent 1px, transparent 16px');
     });
 
-    it('the page grid paints UNDER content (round-2 solidity: isolate + negative z)', () => {
+    it('the page grid paints UNDER content as the wrapper background, with NO stacking context', () => {
+      // Round-2 solidity intent: solid surfaces occlude the schematic.
+      // go2 integration mechanism: the grid is .circuit-grid's own
+      // background-image (always below content). The round-2 isolate +
+      // z-index:-1 ::before created a stacking context that trapped the
+      // fixed Nav (z 70) under the body-portaled MenuOverlay (z 60) — the
+      // navbar vanished while the menu sheet was open. Isolation (or any
+      // ::before resurrection) on .circuit-grid is a regression.
       const grid = appCSS.match(/\.circuit-grid \{([\s\S]*?)\}/)?.[1] ?? '';
-      expect(grid).toContain('isolation: isolate;');
-      const gridBefore = appCSS.match(/\.circuit-grid::before \{([\s\S]*?)\}/)?.[1] ?? '';
-      expect(gridBefore).toContain('z-index: -1;');
+      expect(grid).toContain('background-image:');
+      expect(grid).toContain('var(--grid-glow)');
+      expect(grid).not.toContain('isolation');
+      expect(grid).not.toContain('z-index');
+      expect(appCSS).not.toMatch(/\.circuit-grid::before/);
     });
 
     it('dashed delimitations speak the route-set voice (.divider-dashed = border-rule, round-3 2px)', () => {

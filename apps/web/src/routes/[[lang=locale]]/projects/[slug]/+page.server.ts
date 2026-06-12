@@ -4,6 +4,7 @@
 
 import { error } from '@sveltejs/kit';
 import { marked } from '$lib/utils/markdown';
+import { fetchServiceSvgContents } from '$lib/utils';
 import { getProjectBySlug, getServiceById } from '$lib/repositories';
 import type { Service } from '$lib/types';
 
@@ -22,19 +23,9 @@ export async function load({ params, fetch, locals }: { params: { slug: string }
 		(s): s is Service => s !== undefined,
 	);
 
-	const serviceSvgContents: Record<string, string> = {};
-	for (const service of services) {
-		if (service.svg) {
-			try {
-				const res = await fetch(`/svg/services/${service.svg}`);
-				if (res.ok) {
-					serviceSvgContents[service.id] = await res.text();
-				}
-			} catch {
-				// SVG not found — skip silently, badge renders without icon
-			}
-		}
-	}
+	// Resolved from the build-time glob in fetchServiceSvgContents — a runtime
+	// self-fetch of /svg/services/* 401s on auth-protected Vercel previews.
+	const serviceSvgContents = await fetchServiceSvgContents(fetch, services);
 
 	let readmeHtml: string | undefined;
 	if (project.readmeUrl) {
