@@ -84,17 +84,18 @@ test.describe('light mode — per-page audit', () => {
 		await assertRendersLight(page, href!);
 	});
 
-	test('home closer follows light mode (go2/w4: dark pin removed)', async ({ page }) => {
-		// Operator QA: the closer's pinned-dark wrapper was the "extra layer"
-		// keeping its terminal dark in light mode. Section + terminal now
-		// follow the active theme. GO2-W5 taste round 2: the terminal body IS
-		// the site background (--terminal === --background, solid) — identity
-		// lives in chrome/rule-border/type, not a special surface color.
+	test('home closer is transparent over the grid (round 6), terminal stays solid', async ({ page }) => {
+		// GO2-W5 round 6 (operator): the terminus section paints NOTHING — the
+		// page's circuit-grid schematic shows through in both themes (inverts
+		// the old "closer painted solid" probe). Solidity lives only in the
+		// terminal board inside: GO2-W5 taste round 2 contract — the terminal
+		// body IS the site background (--terminal === --background, solid);
+		// identity lives in chrome/rule-border/type, not a surface color.
 		await page.goto('/', { waitUntil: 'networkidle' });
 		const closerBg = await page
 			.getByTestId('closer-section')
 			.evaluate((el) => getComputedStyle(el).backgroundColor);
-		expect(closerBg).toBe(LIGHT_BG);
+		expect(closerBg).toBe('rgba(0, 0, 0, 0)'); // transparent — grid shows through
 
 		const terminalBg = await page
 			.getByTestId('closer-board')
@@ -280,6 +281,48 @@ test.describe('light mode — per-page audit', () => {
 			return el ? (el as HTMLElement).offsetWidth : null;
 		});
 		expect(railWidth).toBe(2);
+	});
+
+	test('round 6: detail art on the LEFT + top band matches the listing', async ({ page }) => {
+		// Resolve a real detail route from the listing (nothing hardcoded
+		// below the collection level — Track 4 may rename service slugs).
+		await page.goto('/services', { waitUntil: 'networkidle' });
+
+		// The listing's solid backdrop above the sticky tabs (the reference
+		// treatment the detail page must match).
+		const listingBand = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="service-listing-page"] .tabs-bar');
+			return el ? getComputedStyle(el, '::before').backgroundColor : null;
+		});
+		expect(listingBand).toBe(LIGHT_BG);
+
+		const href = await page.locator('a[href^="/services/"]').first().getAttribute('href');
+		expect(href, 'listing must link to a service detail route').toBeTruthy();
+		await page.goto(href!, { waitUntil: 'networkidle' });
+
+		// R6-3 top-band parity: the detail page paints the same solid band
+		// above its StationTabs (was transparent — grid peeked through).
+		const detailBand = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="service-detail-page"] .tabs-bar');
+			return el ? getComputedStyle(el, '::before').backgroundColor : null;
+		});
+		expect(detailBand).toBe(LIGHT_BG);
+
+		// R6-2 fun art restored on the LEFT: the svg panel renders and sits
+		// left of the hero text column (desktop viewport).
+		const layout = await page.evaluate(() => {
+			const panel = document.querySelector('.svg-desktop [data-testid="service-svg-panel"]');
+			const text = document.querySelector('.hero-text');
+			if (!panel || !text) return null;
+			return {
+				panelRight: panel.getBoundingClientRect().right,
+				textLeft: text.getBoundingClientRect().left,
+				hasArt: !!panel.querySelector('svg'),
+			};
+		});
+		expect(layout, 'detail hero must render the svg panel + text column').toBeTruthy();
+		expect(layout!.hasArt).toBe(true);
+		expect(layout!.panelRight).toBeLessThanOrEqual(layout!.textLeft);
 	});
 });
 

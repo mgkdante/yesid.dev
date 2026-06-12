@@ -200,10 +200,13 @@
 <style>
 	/* go2/w4 operator QA: the GO-W2.2 .theme-dark pin is REMOVED — it read as
 	   an extra dark layer and kept the closer terminal dark in light mode.
-	   The section (and the TerminalChrome board inside) now follows the
-	   active theme: light terminals in light mode, dark in dark. */
+	   GO2-W5 round 6 (operator): the section paints NOTHING of its own —
+	   transparent in both themes so the page's circuit-grid schematic shows
+	   through the terminus. Solidity lives in the terminal board inside
+	   (--terminal === --background, the round-2 contract), never on the
+	   section wrapper. */
 	.closer-section {
-		background: var(--background);
+		background: transparent;
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
