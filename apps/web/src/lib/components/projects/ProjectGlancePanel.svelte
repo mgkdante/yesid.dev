@@ -16,6 +16,7 @@
   import ServiceBadge from './ServiceBadge.svelte';
   import { projectsDetailContent } from '$lib/content/projects';
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
+  import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 
   const glanceOverviewTitle = resolveLocale(projectsDetailContent.glance.overview, locale);
   const glanceImpactTitle = resolveLocale(projectsDetailContent.glance.impact, locale);
@@ -53,9 +54,13 @@
 </script>
 
 <StickyPanel top="5rem">
+  <!-- Inner scroller: the real overflow lives here (the StickyPanel shell only
+       overflows by its padding). It needs its own scrollChain so the nested-
+       scroll exemption tracks THIS element's boundaries, not the shell's. -->
   <div
     class="glance-panel"
     data-testid="project-glance-panel"
+    use:scrollChain
   >
     <!-- Overview -->
     <div class="mb-4">
