@@ -22,6 +22,10 @@
     narrowing: "{n} picks → {m} known builds".
 -->
 <script lang="ts">
+	import { tick } from 'svelte';
+	import { MediaQuery } from 'svelte/reactivity';
+	import { gsap } from 'gsap';
+	import { Flip } from 'gsap/Flip';
 	import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -34,11 +38,16 @@
 	import { LAYER_TEACHING } from './layer-teaching';
 	import { composeStackShape, layerArticle, readShape } from './stack-shape';
 	import ShapeBlueprint from './ShapeBlueprint.svelte';
+	import ProductPreview from './ProductPreview.svelte';
 	import type { EngineState } from './engine-state.svelte';
+
+	// Idempotent (Engine.svelte registers it too) — the card morph below uses
+	// Flip directly; everything stays inside the engine's async chunk.
+	gsap.registerPlugin(Flip);
 
 	type Tech = (typeof techStackItems)[number];
 
-	let { engine }: { engine: EngineState } = $props();
+	let { engine, animate = true }: { engine: EngineState; animate?: boolean } = $props();
 
 	// Layer groups in render order; layerless techs trail under 'more'.
 	const groups: { key: string; label: string; items: typeof techStackItems }[] = [
@@ -111,6 +120,35 @@
 			.map(({ id, name, layer }) => ({ id, name, layer })),
 	);
 
+	// ── Round 4: 'see your build as a product' — the composed shape gets the
+	// same drawing ⇄ product flip as the archetypes. The drawing flip-tags
+	// only the VISIBLE variant (wide/stacked are CSS-swapped at 768px) so
+	// GSAP Flip never sees duplicate ids.
+	let shapeView = $state<'drawing' | 'product'>('drawing');
+	let shapeBoardEl: HTMLElement | null = $state(null);
+	const wideDrawing = new MediaQuery('(min-width: 768px)');
+
+	// The view state outlives the card's {#if hasPicks} block — 'start over'
+	// then re-picking must reopen on the DRAWING (the teaching surface), not
+	// resurrect a stale product view.
+	$effect(() => {
+		if (!hasPicks && shapeView !== 'drawing') shapeView = 'drawing';
+	});
+
+	async function toggleShapeView(): Promise<void> {
+		const next = shapeView === 'drawing' ? 'product' : 'drawing';
+		if (!animate) {
+			shapeView = next;
+			return;
+		}
+		const state = Flip.getState(
+			shapeBoardEl?.querySelectorAll('[data-flip-id]') ?? '[data-flip-id]',
+		);
+		shapeView = next;
+		await tick();
+		Flip.from(state, { duration: 0.6, ease: 'power2.inOut', absolute: true, nested: true });
+	}
+
 	// ── Teach line (go2/w5 §3) — ONE fixed slot, last trigger wins. ─────────
 	const TEACH_EMPTY = "tap a part — I'll tell you what it does.";
 	let teachLine = $state(TEACH_EMPTY);
@@ -178,18 +216,44 @@
 
 	<!-- Live build counter (go2/w5 §5) — departures-board row; THE single
 	     aria-live element of the matcher (the rail re-announcing whole cards
-	     was noise; the counter is the meaningful delta). -->
-	<p class="build-counter" data-testid="build-counter" aria-live="polite">
-		<span class="counter-prompt" aria-hidden="true">~</span>
-		<StatusDot color="orange" pulse />
-		{#if !hasPicks}
-			<span>{engine.archetypes.length} known builds on the board — tap parts to narrow</span>
-		{:else if zeroMatch}
-			<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → no known build — your shape's below</span>
-		{:else}
-			<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → {engine.matches.length} known build{engine.matches.length === 1 ? '' : 's'}<span class="counter-suffix"> · each pick narrows, never widens</span></span>
+	     was noise; the counter is the meaningful delta). Round 4: the pick
+	     tools share the row but live OUTSIDE the live region (announcing
+	     button labels on every pick would be noise too). -->
+	<div class="counter-row">
+		<p class="build-counter" data-testid="build-counter" aria-live="polite">
+			<span class="counter-prompt" aria-hidden="true">~</span>
+			<StatusDot color="orange" pulse />
+			{#if !hasPicks}
+				<span>{engine.archetypes.length} known builds on the board — tap parts to narrow</span>
+			{:else if zeroMatch}
+				<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → no known build — your shape's below</span>
+			{:else}
+				<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → {engine.matches.length} known build{engine.matches.length === 1 ? '' : 's'}<span class="counter-suffix"> · each pick narrows, never widens</span></span>
+			{/if}
+		</p>
+		{#if hasPicks}
+			<!-- Round 4 nav: native buttons (keyboard + SR for free), homey
+			     labels; the counter narrates the result of either press. -->
+			<div class="pick-tools" data-testid="pick-tools">
+				<button
+					type="button"
+					class="pick-tool"
+					data-testid="pick-undo"
+					onclick={() => engine.undoLastPick()}
+				>
+					<span aria-hidden="true">↶</span> undo last pick
+				</button>
+				<button
+					type="button"
+					class="pick-tool"
+					data-testid="pick-clear"
+					onclick={() => engine.clearPicks()}
+				>
+					<span aria-hidden="true">✕</span> start over
+				</button>
+			</div>
 		{/if}
-	</p>
+	</div>
 
 	<div class="match-rail">
 		{#if hasPicks}
@@ -202,23 +266,53 @@
 			     The reading re-keys on coverage so it settles in with a
 			     micro-pop (fun pass, <400ms → SAFE-ALWAYS). -->
 			<div class="build-shape" data-testid="build-shape">
-				<p class="shape-heading">{shapeHeading}</p>
-				<div class="shape-board">
+				<div class="shape-head">
+					<p class="shape-heading">{shapeHeading}</p>
+					{#if shapePicked.length > 0}
+						<!-- Round 4: the composed shape gets the archetype payoff
+						     too — drawing ⇄ generic product, Flip-morphed. -->
+						<button
+							type="button"
+							class="shape-view-toggle"
+							data-testid="shape-view-toggle"
+							onclick={toggleShapeView}
+						>
+							{#if shapeView === 'drawing'}
+								see your build as a product <span class="shape-toggle-arrow" aria-hidden="true">→</span>
+							{:else}
+								<span class="shape-toggle-arrow" aria-hidden="true">←</span> back to the drawing
+							{/if}
+						</button>
+					{/if}
+				</div>
+				<div class="shape-board" bind:this={shapeBoardEl}>
 					<!-- Both variants render; CSS swaps at 768px (bp-pair-list
 					     precedent) — wide rows on desktop, the blueprint-layout
 					     stacked column on mobile. display:none keeps the hidden
-					     one out of the a11y tree. -->
-					<div class="shape-drawing shape-drawing-wide">
-						<ShapeBlueprint picked={shapePicked} missing={shape.missing} />
-					</div>
-					<div class="shape-drawing shape-drawing-stacked">
-						<ShapeBlueprint
-							picked={shapePicked}
-							missing={shape.missing}
-							stacked
-							testid="shape-blueprint-stacked"
-						/>
-					</div>
+					     one out of the a11y tree; only the VISIBLE one flip-tags
+					     (MediaQuery mirrors the CSS breakpoint). -->
+					{#if shapeView === 'drawing' || shapePicked.length === 0}
+						<div class="shape-drawing shape-drawing-wide">
+							<ShapeBlueprint
+								picked={shapePicked}
+								missing={shape.missing}
+								flip={wideDrawing.current}
+							/>
+						</div>
+						<div class="shape-drawing shape-drawing-stacked">
+							<ShapeBlueprint
+								picked={shapePicked}
+								missing={shape.missing}
+								stacked
+								testid="shape-blueprint-stacked"
+								flip={!wideDrawing.current}
+							/>
+						</div>
+					{:else}
+						<div class="shape-product" data-testid="shape-product">
+							<ProductPreview picks={shapePicked} />
+						</div>
+					{/if}
 					<div class="shape-notes">
 						{#key shape.present.join('+')}
 							<p class="shape-reading">{shapeReading}</p>
@@ -407,7 +501,15 @@
 		100% { scale: 1; }
 	}
 
-	/* go2/w5 §5: departures-board counter row. */
+	/* go2/w5 §5: departures-board counter row (+ round 4: pick tools beside). */
+	.counter-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem 1rem;
+		flex-wrap: wrap;
+	}
+
 	.build-counter {
 		display: flex;
 		align-items: center;
@@ -417,6 +519,29 @@
 		font-variant-numeric: tabular-nums;
 		color: var(--foreground);
 		margin: 0;
+	}
+
+	/* Round 4 nav: undo / start-over — quiet text buttons, chip vocabulary. */
+	.pick-tools {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.pick-tool {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--muted-foreground);
+		background: none;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		padding: 0.25rem 0.7rem;
+		cursor: pointer;
+		transition: border-color 150ms ease, color 150ms ease;
+	}
+
+	.pick-tool:hover {
+		color: var(--primary);
+		border-color: var(--primary);
 	}
 
 	.counter-prompt {
@@ -568,12 +693,55 @@
 		}
 	}
 
+	/* Round 4: heading + the product toggle share the card's head row. */
+	.shape-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem 1rem;
+		flex-wrap: wrap;
+	}
+
 	.shape-heading {
 		font-family: var(--font-mono);
 		font-size: 13px;
 		font-weight: 700;
 		color: var(--foreground);
 		margin: 0;
+	}
+
+	/* Round 4: same pill language as the engine's view toggle — one hover
+	   grammar for every blueprint ⇄ product flip. */
+	.shape-view-toggle {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--primary);
+		background: none;
+		border: 1px solid var(--primary);
+		border-radius: 999px;
+		padding: 0.35rem 0.9rem;
+		cursor: pointer;
+		transition: background-color 150ms ease, color 150ms ease;
+	}
+
+	.shape-view-toggle:hover {
+		background: var(--primary);
+		color: var(--primary-foreground);
+	}
+
+	.shape-toggle-arrow {
+		display: inline-block;
+		transition: transform var(--duration-fast) var(--ease-out);
+	}
+
+	.shape-view-toggle:hover .shape-toggle-arrow {
+		transform: translateX(2px);
+	}
+
+	.shape-product {
+		flex: 1 1 280px;
+		min-width: 0;
+		max-width: 540px;
 	}
 
 	/* The matrix reading — re-keyed per coverage change, eases in 2px. */

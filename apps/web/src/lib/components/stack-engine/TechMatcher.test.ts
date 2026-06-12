@@ -395,6 +395,86 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		);
 	});
 
+	// ── Round 4: pick tools + the composed product preview. ────────────────
+	it('round 4: pick tools appear with picks; undo forgets the newest; start over clears everything', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		expect(screen.queryByTestId('pick-tools')).toBeNull();
+
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		await fireEvent.click(screen.getByTestId('tech-chip-docker'));
+		expect(screen.getByTestId('pick-undo').textContent).toContain('undo last pick');
+		expect(screen.getByTestId('pick-clear').textContent).toContain('start over');
+
+		// Undo = the NEWEST pick leaves (docker), postgresql stays pressed.
+		await fireEvent.click(screen.getByTestId('pick-undo'));
+		expect([...engine.pickedTechs]).toEqual(['postgresql']);
+		expect(screen.getByTestId('tech-chip-docker').getAttribute('aria-pressed')).toBe('false');
+		expect(screen.getByTestId('tech-chip-postgresql').getAttribute('aria-pressed')).toBe('true');
+
+		// Start over: picks gone, card retires, tools retire, counter resets.
+		await fireEvent.click(screen.getByTestId('pick-clear'));
+		expect(engine.pickedTechs.size).toBe(0);
+		expect(screen.queryByTestId('build-shape')).toBeNull();
+		expect(screen.queryByTestId('pick-tools')).toBeNull();
+		expect(screen.getByTestId('build-counter').textContent).toContain(
+			'known builds on the board',
+		);
+	});
+
+	it("round 4: the shape card flips to 'see your build as a product' and back (still exactly one <a>)", async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine, animate: false } });
+		await fireEvent.click(screen.getByTestId('tech-chip-node-js'));
+		await fireEvent.click(screen.getByTestId('tech-chip-github-actions'));
+
+		const card = screen.getByTestId('build-shape');
+		const toggle = () => screen.getByTestId('shape-view-toggle');
+		expect(toggle().textContent).toContain('see your build as a product');
+
+		await fireEvent.click(toggle());
+		// The generic product: one slot per pick, in the build-shape card.
+		expect(card.querySelector('[data-testid="shape-product"]')).toBeTruthy();
+		expect(card.querySelector('[data-testid="slot-node-js"]')).toBeTruthy();
+		expect(card.querySelector('[data-testid="slot-github-actions"]')).toBeTruthy();
+		// The drawings yield while the product is up…
+		expect(card.querySelector('[data-testid="shape-blueprint"]')).toBeNull();
+		expect(card.querySelector('[data-testid="shape-blueprint-stacked"]')).toBeNull();
+		// …the notes stay, and the card still carries exactly ONE link.
+		expect(card.querySelectorAll('a')).toHaveLength(1);
+		expect(toggle().textContent).toContain('back to the drawing');
+
+		await fireEvent.click(toggle());
+		expect(card.querySelector('[data-testid="shape-blueprint"]')).toBeTruthy();
+		expect(card.querySelector('[data-testid="shape-product"]')).toBeNull();
+	});
+
+	it("round 4: 'start over' then re-picking reopens on the DRAWING — never a stale product view", async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine, animate: false } });
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		await fireEvent.click(screen.getByTestId('shape-view-toggle'));
+		expect(
+			screen.getByTestId('build-shape').querySelector('[data-testid="shape-product"]'),
+		).toBeTruthy();
+
+		await fireEvent.click(screen.getByTestId('pick-clear'));
+		expect(screen.queryByTestId('build-shape')).toBeNull();
+
+		await fireEvent.click(screen.getByTestId('tech-chip-docker'));
+		const card = screen.getByTestId('build-shape');
+		expect(card.querySelector('[data-testid="shape-blueprint"]')).toBeTruthy();
+		expect(card.querySelector('[data-testid="shape-product"]')).toBeNull();
+	});
+
+	it('round 4 morph hygiene: exactly ONE flip id per tech in the card (only the visible drawing variant tags)', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine, animate: false } });
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		const card = screen.getByTestId('build-shape');
+		expect(card.querySelectorAll('[data-flip-id="postgresql"]')).toHaveLength(1);
+	});
+
 	it('card leaves only when the last pick leaves', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });

@@ -224,6 +224,26 @@ describe('ShapeBlueprint — the mini-blueprint is total over the 15-subset matr
 		}
 	});
 
+	it('round 4: flip tags solid boxes only — and only when asked', () => {
+		const props = {
+			picked: [pick('postgresql', 'data', 'PostgreSQL')],
+			missing: ['interface', 'logic', 'infra'] satisfies StackLayer[],
+		};
+		// flip: solid boxes carry data-flip-id (morph into the composed
+		// product preview); ghosts never (no slot to fly to).
+		const flipped = render(ShapeBlueprint, { props: { ...props, flip: true } });
+		const svg = flipped.container.querySelector('[data-testid="shape-blueprint"]')!;
+		expect(
+			svg.querySelector('[data-testid="sbp-box-postgresql"]')?.getAttribute('data-flip-id'),
+		).toBe('postgresql');
+		expect(svg.querySelectorAll('[data-flip-id]')).toHaveLength(1);
+		flipped.unmount();
+
+		// Default: untagged — only the card's visible variant ever flip-tags.
+		const plain = render(ShapeBlueprint, { props });
+		expect(plain.container.querySelectorAll('[data-flip-id]')).toHaveLength(0);
+	});
+
 	it('defensive: zero drawable picks still draws — four ghosts, fully sketched', () => {
 		const { container } = render(ShapeBlueprint, {
 			props: { picked: [], missing: [...STACK_LAYERS] },
