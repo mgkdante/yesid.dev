@@ -5,6 +5,10 @@
 <script lang="ts">
 	import type { Project } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { relatedProjectsStripContent } from '$lib/content/site-content';
@@ -25,7 +29,7 @@
 	<div class="proof-projects" use:scrollChain>
 		{#each projects as project (project.slug)}
 			<a
-				href="/projects/{project.slug}"
+				href={localizeHref(`/projects/${project.slug}`, locale)}
 				class="proof-link"
 			>
 				<span class="proof-dot" aria-hidden="true"></span>

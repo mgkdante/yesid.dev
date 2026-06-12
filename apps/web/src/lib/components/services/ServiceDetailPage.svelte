@@ -7,6 +7,10 @@
 <script lang="ts">
 	import type { Service, Project } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { servicesListingContent, servicesDetailContent } from '$lib/content/services';
 	import { projectsListingContent } from '$lib/content/projects';
 	import { boop } from '$lib/motion/actions/boop.js';
@@ -84,7 +88,7 @@
 		<!-- Hero — asymmetric split: text left, SVG right -->
 		<div class="hero-area">
 			<a
-				href="/services"
+				href={localizeHref('/services', locale)}
 				class="back-link tap-feedback inline-flex items-center min-h-11 px-2"
 				use:boop={{ scale: 1.05, timing: 200 }}
 			>
@@ -232,7 +236,7 @@
 							<nav class="projects-list" aria-label={relatedProjectsAria}>
 								{#each relatedProjects as project}
 									<a
-										href="/projects/{project.slug}"
+										href={localizeHref(`/projects/${project.slug}`, locale)}
 										class="project-link tap-press"
 										use:boop={{ scale: 1.02, timing: 150 }}
 										use:pressBounce
@@ -242,7 +246,7 @@
 									</a>
 								{/each}
 							</nav>
-							<a href="/projects" class="projects-all tap-feedback">
+							<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
 								{seeAllProjectsLabel}
 							</a>
 						</CollapsibleSection>
@@ -264,7 +268,7 @@
 					<nav class="projects-list" aria-label={relatedProjectsAria}>
 						{#each relatedProjects as project}
 							<a
-								href="/projects/{project.slug}"
+								href={localizeHref(`/projects/${project.slug}`, locale)}
 								class="project-link tap-press"
 								use:boop={{ scale: 1.02, timing: 150 }}
 								use:pressBounce
@@ -274,7 +278,7 @@
 							</a>
 						{/each}
 					</nav>
-					<a href="/projects" class="projects-all tap-feedback">
+					<a href={localizeHref('/projects', locale)} class="projects-all tap-feedback">
 						{seeAllProjectsLabel}
 					</a>
 				</CollapsibleSection>

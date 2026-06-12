@@ -6,6 +6,10 @@
 <script lang="ts">
 	import type { Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { servicesListingContent } from '$lib/content/services';
 	import { SectionLabel } from '$lib/components/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
@@ -100,7 +104,7 @@
 				{/if}
 
 				<!-- Desktop CTA — hidden on mobile -->
-				<a href="/services/{service.id}" class="deep-dive-cta desktop-only tap-press" use:pressBounce>
+				<a href={localizeHref(`/services/${service.id}`, locale)} class="deep-dive-cta desktop-only tap-press" use:pressBounce>
 					{deepDiveLabel}
 				</a>
 			</div>
@@ -108,7 +112,7 @@
 
 		<!-- Mobile: CTA + SVG side by side. Desktop: SVG panel only. -->
 		<div class="card-bottom">
-			<a href="/services/{service.id}" class="deep-dive-cta mobile-only tap-press" use:pressBounce>
+			<a href={localizeHref(`/services/${service.id}`, locale)} class="deep-dive-cta mobile-only tap-press" use:pressBounce>
 				{deepDiveLabel}
 			</a>
 			{#if svgContent}

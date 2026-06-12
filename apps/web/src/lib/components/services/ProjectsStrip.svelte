@@ -6,6 +6,10 @@
 <script lang="ts">
 	import type { Project } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { servicesListingContent } from '$lib/content/services';
 	import { Separator } from '$lib/components/ui/separator';
 	import { cn } from '$lib/utils';
@@ -52,7 +56,7 @@
 		<div class="strip-separator" aria-hidden="true"></div>
 		<div class="strip-links" use:scrollChain>
 			{#each projects as project (project.slug)}
-				<a href="/projects/{project.slug}" class="strip-link tap-feedback">
+				<a href={localizeHref(`/projects/${project.slug}`, locale)} class="strip-link tap-feedback">
 					<span class="strip-dot" aria-hidden="true"></span>
 					<span class="strip-name">{resolveLocale(project.title, 'en')}</span>
 				</a>

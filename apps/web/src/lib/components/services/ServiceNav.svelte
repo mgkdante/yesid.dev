@@ -6,6 +6,10 @@
 <script lang="ts">
 	import type { Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { servicesDetailContent } from '$lib/content/services';
 	import { navDirections } from '$lib/content/nav';
 	import { boop } from '$lib/motion/actions/boop.js';
@@ -30,7 +34,7 @@
 <nav class="service-nav" aria-label={navAria}>
 	{#if prev}
 		<a
-			href="/services/{prev.id}"
+			href={localizeHref(`/services/${prev.id}`, locale)}
 			class="nav-link nav-link--prev tap-press"
 			data-testid="service-nav-prev"
 			use:boop={{ scale: 1.03, timing: 200 }}
@@ -45,7 +49,7 @@
 
 	{#if next}
 		<a
-			href="/services/{next.id}"
+			href={localizeHref(`/services/${next.id}`, locale)}
 			class="nav-link nav-link--next tap-press"
 			data-testid="service-nav-next"
 			use:boop={{ scale: 1.03, timing: 200 }}

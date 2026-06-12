@@ -4,6 +4,10 @@
 	import { onMount } from 'svelte';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { fillTemplate } from '$lib/utils/labels';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { StatusDot, SectionLabel } from '$lib/components/brand';
@@ -135,10 +139,10 @@
 		</div>
 
 		<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
-			<Button variant="default" size="cta" href="/contact">
+			<Button variant="default" size="cta" href={localizeHref('/contact', locale)}>
 				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
 			</Button>
-			<Button variant="outline" size="cta" href="/services">
+			<Button variant="outline" size="cta" href={localizeHref('/services', locale)}>
 				{viewServicesLabel}
 			</Button>
 		</div>
@@ -175,10 +179,10 @@
 			{ctaSub}
 		</p>
 		<div class="cta-buttons">
-			<Button variant="default" size="cta" href="/contact">
+			<Button variant="default" size="cta" href={localizeHref('/contact', locale)}>
 				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
 			</Button>
-			<Button variant="outline" size="cta" href="/services">
+			<Button variant="outline" size="cta" href={localizeHref('/services', locale)}>
 				{viewServicesLabel}
 			</Button>
 		</div>

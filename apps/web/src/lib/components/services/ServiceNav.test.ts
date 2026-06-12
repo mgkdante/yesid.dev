@@ -46,4 +46,17 @@ describe('ServiceNav', () => {
 		expect(screen.getByTestId('service-nav-prev')).toBeTruthy();
 		expect(screen.queryByTestId('service-nav-next')).toBeNull();
 	});
+
+	it('localizes prev/next hrefs inside a fr locale provider (slice-28.6)', () => {
+		render(ServiceNav, {
+			props: { prev: mockPrev, next: mockNext },
+			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+		});
+		expect(screen.getByTestId('service-nav-prev').getAttribute('href')).toBe(
+			'/fr/services/sql-development',
+		);
+		expect(screen.getByTestId('service-nav-next').getAttribute('href')).toBe(
+			'/fr/services/analytics-reporting',
+		);
+	});
 });

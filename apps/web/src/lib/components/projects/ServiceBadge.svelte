@@ -8,6 +8,10 @@
 <script lang="ts">
 	import type { Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { SvgIcon } from '$lib/components/brand';
 
 	let {
@@ -24,7 +28,7 @@
 
 <!-- Clickable badge → /services/{service.id} (page built in future slice, 404 until then) -->
 <a
-	href="/services/{service.id}"
+	href={localizeHref(`/services/${service.id}`, locale)}
 	class="service-badge inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2.5 no-underline"
 	style="border-color: color-mix(in srgb, var(--primary) 40%, transparent);"
 	data-testid="work-service-badge"

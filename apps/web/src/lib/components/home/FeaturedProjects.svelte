@@ -14,6 +14,10 @@
 	import WheelGesturesPlugin from 'embla-carousel-wheel-gestures';
 	import type { EmblaCarouselType } from 'embla-carousel';
 	import { resolveLocale } from '$lib/utils';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { fillTemplate } from '$lib/utils/labels';
 	import { siteLabels } from '$lib/content';
 	import type { Project, ProofReelContent } from '$lib/types';
@@ -162,7 +166,7 @@
 
 						<!-- Footer: grid-row 2 (or 3 on mobile). Click target for nav. -->
 						<a
-							href="/projects/{project.slug}"
+							href={localizeHref(`/projects/${project.slug}`, locale)}
 							class="proof-footer-link tap-press"
 							data-testid="proof-card"
 						>

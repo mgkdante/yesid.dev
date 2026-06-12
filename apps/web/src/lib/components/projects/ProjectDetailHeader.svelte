@@ -7,6 +7,10 @@
 <script lang="ts">
   import type { Project } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
+  import { localizeHref } from '$lib/utils/locale-routing';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { getStackRole } from '$lib/utils/stack-roles';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
@@ -112,7 +116,7 @@
     <!-- Center content -->
     <div class="header__content">
       <a
-        href="/projects"
+        href={localizeHref('/projects', locale)}
         class="mb-5 inline-block font-mono text-xs tracking-[0.5px] text-primary opacity-70 transition-opacity hover:opacity-100 lg:mb-7"
         use:boop={{ scale: 1.05, timing: 200 }}
       >
