@@ -252,8 +252,9 @@ describe('GO2-W5 round 5 — closer: fun SVGs, card parity, bolder rails, yellow
 		const panel = read('lib/components/services/ServiceSvgPanel.svelte');
 		expect(panel).toMatch(/\.svg-art \{[\s\S]*?--accent: var\(--line-amber\);/);
 		expect(panel).toMatch(/@media \(min-width: 768px\) \{[\s\S]*?width: min\(224px, 100%\) !important;/);
-		// Panel-wide hover drives the morph.
-		expect(panel).toContain('hovered={panelHovered}');
+		// Panel-wide hover drives the morph (round 6 renames the state to
+		// panelMorphed — hover AND tap share the one switch).
+		expect(panel).toContain('hovered={panelMorphed}');
 	});
 
 	it('R5b — four stations, uniform 2-up desktop grid on home', () => {
@@ -348,8 +349,9 @@ describe('GO-W2.2 T7 — art direction', () => {
 		// closer terminal and kept it dark in light mode. The closer now follows
 		// the active theme — terminals are a single clean themed surface.
 		// (Class attributes only — comments may reference the removed pin.)
+		// Round 6 supersedes the w4 solid paint: the section is TRANSPARENT
+		// (locked in the round-6 block below).
 		expect(closer).not.toMatch(/class="[^"]*theme-dark[^"]*"/);
-		expect(closer).toContain('background: var(--background);');
 	});
 
 	it('404 illustration has no white-alpha hardcodes', () => {
@@ -359,5 +361,49 @@ describe('GO-W2.2 T7 — art direction', () => {
 	it('metro network ships light-theme attribute overrides', () => {
 		expect(metro).toContain('[data-theme="light"]');
 		expect(metro).toContain('fill: var(--muted);');
+	});
+});
+
+describe('GO2-W5 round 6 — transparent terminus, detail SVGs back, top-band parity', () => {
+	const read = (rel: string) => readFileSync(resolve(SRC, rel), 'utf-8');
+
+	it('R6-1 — the home closer section is TRANSPARENT: the circuit grid shows through', () => {
+		// Operator: the terminus paints nothing of its own — solidity lives in
+		// the terminal board inside (--terminal === --background, round-2
+		// contract). No solid section paint may come back in either theme.
+		const closer = read('lib/components/home/HomeCloser.svelte');
+		expect(closer).toMatch(/\.closer-section \{[\s\S]*?background: transparent;/);
+		expect(closer).not.toContain('background: var(--background);');
+	});
+
+	it('R6-2 — detail page art is back on the LEFT of the hero (slice-09 order)', () => {
+		const detail = read('lib/components/services/ServiceDetailPage.svelte');
+		// Source order: the svg column precedes the text column…
+		const svgIdx = detail.indexOf('class="svg-desktop"');
+		const textIdx = detail.indexOf('class="hero-text"');
+		expect(svgIdx).toBeGreaterThan(-1);
+		expect(textIdx).toBeGreaterThan(-1);
+		expect(svgIdx).toBeLessThan(textIdx);
+		// …and the grid puts the auto (art) track first.
+		expect(detail).toMatch(/\.hero-grid \{[\s\S]*?grid-template-columns: auto 1fr;/);
+	});
+
+	it('R6-2 — the panel morphs on hover AND tap (button toy, slice-09 semantics)', () => {
+		const panel = read('lib/components/services/ServiceSvgPanel.svelte');
+		// A real <button> owns the tap; pointerenter/leave own the hover —
+		// filtered to non-touch so a tap can't cancel its own toggle.
+		expect(panel).toMatch(/<button\s+type="button"/);
+		expect(panel).toContain('onclick={() => (panelMorphed = !panelMorphed)}');
+		expect(panel).toMatch(/onpointerenter=\{[\s\S]*?pointerType !== 'touch'[\s\S]*?panelMorphed = true/);
+		expect(panel).toContain('hovered={panelMorphed}');
+	});
+
+	it('R6-3 — services detail top band = the listing top band (same solid backdrop)', () => {
+		// Both routes paint the identical solid var(--background) backdrop
+		// above their StationTabs (covers main's pt-20 nav gap — no grid
+		// peeking through on one route but not the other).
+		const backdrop = /\.tabs-bar::before \{[\s\S]*?bottom: 100%;[\s\S]*?height: calc\(5rem \+ env\(safe-area-inset-top, 0px\) \+ 1rem\);[\s\S]*?background: var\(--background\);/;
+		expect(read('lib/components/services/ServiceListingPage.svelte')).toMatch(backdrop);
+		expect(read('lib/components/services/ServiceDetailPage.svelte')).toMatch(backdrop);
 	});
 });

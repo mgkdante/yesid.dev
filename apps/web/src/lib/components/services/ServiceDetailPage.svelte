@@ -77,12 +77,18 @@
 </script>
 
 <div class="service-detail" data-testid="service-detail-page">
-	<!-- Station tabs — navigate mode (orange strip) -->
-	<StationTabs
-		{services}
-		activeId={service.id}
-		mode="navigate"
-	/>
+	<!-- Station tabs — navigate mode (orange strip).
+	     Round 6: wrapped in the same solid top-band treatment as the
+	     /services listing's .tabs-bar — the backdrop ::before paints the
+	     nav gap above the tabs solid (was showing the circuit grid here
+	     while the listing showed solid background). -->
+	<div class="tabs-bar">
+		<StationTabs
+			{services}
+			activeId={service.id}
+			mode="navigate"
+		/>
+	</div>
 
 	<article class="detail-article">
 		<!-- Hero — asymmetric split: text left, SVG right -->
@@ -96,6 +102,16 @@
 			</a>
 
 			<header class="hero-grid">
+				<!-- SVG panel — desktop/tablet only (wrapper controls visibility).
+				     GO2-W5 round 6 (operator): the fun art lives on the LEFT of the
+				     detail hero, as it did originally (slice-09) — morph on hover
+				     AND tap, both themes. -->
+				{#if svgContent}
+					<div class="svg-desktop">
+						<ServiceSvgPanel {svgContent} />
+					</div>
+				{/if}
+
 				<!-- Text column -->
 				<div class="hero-text">
 					<SectionLabel text={stationLabelText} variant="station" class="mb-4 block" />
@@ -118,13 +134,6 @@
 						</div>
 					{/if}
 				</div>
-
-				<!-- SVG panel — desktop/tablet only (wrapper controls visibility) -->
-				{#if svgContent}
-					<div class="svg-desktop">
-						<ServiceSvgPanel {svgContent} />
-					</div>
-				{/if}
 			</header>
 
 			<!-- SVG banner — mobile only (wrapper controls visibility) -->
@@ -302,6 +311,27 @@
 		padding-bottom: 0;
 	}
 
+	/* ── Top band (round 6) ── */
+
+	/* Solid backdrop above the tabs — identical treatment to the /services
+	   listing's .tabs-bar::before: covers the nav gap (main's pt-20 strip)
+	   so the page top reads as the same solid band on both routes. The
+	   detail tabs are not sticky, so no position: sticky here — just the
+	   positioning anchor for the backdrop. */
+	.tabs-bar {
+		position: relative;
+	}
+
+	.tabs-bar::before {
+		content: '';
+		position: absolute;
+		inset-inline: 0;
+		bottom: 100%;
+		height: calc(5rem + env(safe-area-inset-top, 0px) + 1rem);
+		background: var(--background);
+		pointer-events: none;
+	}
+
 	/* ── Hero ── */
 
 	.hero-area {
@@ -325,7 +355,7 @@
 		text-decoration: underline;
 	}
 
-	/* Desktop: text left, SVG panel right */
+	/* Desktop: SVG panel LEFT, text right (round 6 — original slice-09 order) */
 	.hero-grid {
 		display: flex;
 		flex-direction: column;
@@ -335,7 +365,7 @@
 	@media (min-width: 768px) {
 		.hero-grid {
 			display: grid;
-			grid-template-columns: 1fr auto;
+			grid-template-columns: auto 1fr;
 			gap: clamp(2rem, 4vw, 4rem);
 			align-items: start;
 		}

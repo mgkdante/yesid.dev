@@ -6,6 +6,12 @@
   surface — hovering anywhere on it morphs the art (SvgIcon's built-in icon
   hover only fired over the icon box itself), and the art runs the
   light-register --accent remap so its amber linework survives daylight.
+  Round 6: the panel is a <button> and the morph fires on hover AND tap —
+  the original slice-09 hero-svg-box semantics (enter morphs, leave reverts,
+  click/tap toggles). pointerenter/leave are filtered to non-touch so a tap
+  doesn't fire a synthetic hover that instantly cancels its own toggle.
+  Decorative toy: aria-hidden + tabindex -1 (same a11y surface as the round-5
+  presentation div — SvgIcon inside is aria-hidden too).
 -->
 <script lang="ts">
 	import { cn } from '$lib/utils';
@@ -27,29 +33,37 @@
 		...rest
 	}: ServiceSvgPanelProps = $props();
 
-	let panelHovered = $state(false);
+	// Single morph switch — hover sets/clears it (mouse/pen only), tap toggles.
+	let panelMorphed = $state(false);
 </script>
 
 {#if svgContent}
-	<div
+	<button
+		type="button"
 		class={cn(
 			'svg-panel',
 			variant === 'banner' && 'svg-panel--banner',
 			className
 		)}
 		data-testid="service-svg-panel"
-		onmouseenter={() => (panelHovered = true)}
-		onmouseleave={() => (panelHovered = false)}
-		role="presentation"
+		onpointerenter={(e) => {
+			if (e.pointerType !== 'touch') panelMorphed = true;
+		}}
+		onpointerleave={(e) => {
+			if (e.pointerType !== 'touch') panelMorphed = false;
+		}}
+		onclick={() => (panelMorphed = !panelMorphed)}
+		aria-hidden="true"
+		tabindex="-1"
 		{...rest}
 	>
 		<CornerMarks size="sm" />
-		<!-- pointer-events-none: the panel owns the hover, so the morph fires
-		     across the whole tile (HomeServices wrapper precedent). -->
+		<!-- pointer-events-none: the panel owns the hover/tap, so the morph
+		     fires across the whole tile (HomeServices wrapper precedent). -->
 		<div class="svg-art pointer-events-none">
-			<SvgIcon {svgContent} size={variant === 'banner' ? 120 : 224} hovered={panelHovered} />
+			<SvgIcon {svgContent} size={variant === 'banner' ? 120 : 224} hovered={panelMorphed} />
 		</div>
-	</div>
+	</button>
 {/if}
 
 <style>
@@ -61,6 +75,11 @@
 		justify-content: center;
 		padding: 1.5rem;
 		overflow: hidden;
+		/* Round 6 button resets — the panel is a tap-able morph toy now. */
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
 	}
 
 	/* Round 5 light-register: service SVG linework is ~half var(--accent)

@@ -54,4 +54,17 @@ describe('ServiceSvgPanel', () => {
 		expect(art).toBeTruthy();
 		expect(art?.classList.contains('pointer-events-none')).toBe(true);
 	});
+
+	// Round 6 (operator: restore the fun left-side detail SVG): the panel is a
+	// real <button> so the morph fires on TAP as well as hover — the original
+	// slice-09 hero-svg-box semantics. Decorative toy: hidden from the a11y
+	// tree and out of the tab order, exactly like the round-5 presentation div.
+	it('round 6 — the panel is a tap-able button outside the a11y tree', () => {
+		render(ServiceSvgPanel, { props: { svgContent: '<svg></svg>' } });
+		const el = screen.getByTestId('service-svg-panel');
+		expect(el.tagName).toBe('BUTTON');
+		expect(el.getAttribute('type')).toBe('button');
+		expect(el.getAttribute('aria-hidden')).toBe('true');
+		expect(el.getAttribute('tabindex')).toBe('-1');
+	});
 });
