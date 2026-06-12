@@ -49,3 +49,19 @@ describe('StationTabs', () => {
 		expect(link.closest('a')?.getAttribute('href')).toBe('/services/data-pipeline');
 	});
 });
+
+describe('StationTabs — locale-resolved fallback label (slice-28.6)', () => {
+	it('derives the short label from the locale-resolved title (no SHORT_LABELS entry, no provider → en)', () => {
+		const service = serviceFactory.build({
+			id: 'new-service',
+			title: { en: 'Brand Engineering Stuff', fr: 'Ingénierie de marque' },
+			description: { en: '' },
+			station: 1,
+			visible: true,
+		});
+		render(StationTabs, { props: { services: [service], activeId: 'new-service', mode: 'navigate' } });
+		// no provider → locale 'en' → first word of EN title
+		expect(screen.getByText('Brand')).toBeInTheDocument();
+		expect(screen.queryByText('Ingénierie')).toBeNull();
+	});
+});

@@ -85,3 +85,26 @@ describe('Footer', () => {
 		expect(screen.getByText(/digital infrastructure/)).toBeInTheDocument();
 	});
 });
+
+describe('Footer — locale threading (slice-28.6)', () => {
+	it('renders footer nav labels via resolveLocale for fr', () => {
+		render(Footer, {
+			props: {
+				locale: 'fr',
+				footerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
+			},
+		});
+		expect(screen.getByText('Projets')).toBeInTheDocument();
+	});
+
+	it('localizes nav link hrefs and the wordmark for fr', () => {
+		render(Footer, {
+			props: {
+				locale: 'fr',
+				footerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
+			},
+		});
+		expect(screen.getByText('Projets').closest('a')).toHaveAttribute('href', '/fr/projects');
+		expect(screen.getByTestId('footer-wordmark')).toHaveAttribute('href', '/fr');
+	});
+});
