@@ -30,6 +30,7 @@ export const siteLabels: SiteLabels = {
 		projectsEdgeTitle: { en: 'Projects' },
 	},
 	ui: {
+		backToProjects: { en: '← All Projects' },
 		blogEditionTemplate: { en: 'VOL. 01 // ISS. {issue}' },
 		categoryPersonal: { en: 'Personal' },
 		categoryProfessional: { en: 'Professional' },

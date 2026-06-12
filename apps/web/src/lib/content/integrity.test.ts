@@ -580,7 +580,9 @@ describe('LocalizedString guard + translation debt', () => {
 // (WITH_FR never decreases; ES_WITHOUT_FR stays 0 until a deliberate ES pass).
 // Baselines at rewrite time (post-T10): full 82 / en-only 432 / partial 0
 // → WITH_FR 82, NO_FR 432, TOTAL 514.
-const LOCKED = { TOTAL: 514, WITH_FR: 82, NO_FR: 432, ES_WITHOUT_FR: 0 } as const;
+// go2/w4: +1 en-only — siteLabels.ui.backToProjects ("← All Projects" wired
+// to site_labels per operator QA) → NO_FR 433, TOTAL 515.
+const LOCKED = { TOTAL: 515, WITH_FR: 82, NO_FR: 433, ES_WITHOUT_FR: 0 } as const;
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
