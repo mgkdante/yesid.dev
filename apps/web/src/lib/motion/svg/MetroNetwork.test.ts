@@ -32,32 +32,15 @@ describe('MetroNetwork', () => {
 	// from Directus via +page.server.ts). Full DOM testing (GSAP-targeted
 	// class application) still requires E2E (Playwright) — unit tests verify
 	// the container renders + the prop is inlined.
-});
 
-describe('MetroNetwork — STM/REM legend (go2/w5)', () => {
-	const svg = '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
-
-	it('renders the legend with both labels when provided', () => {
+	// go2/w5 taste-2: the in-frame STM/REM legend is gone (it overlapped the
+	// art on mobile). The frame must render nothing but the inlined svg —
+	// the naming caption lives in HeroBanner, outside this component.
+	it('renders no legend overlay inside the frame (taste-2)', () => {
 		const { container } = render(MetroNetwork, {
-			props: { svg, legendStm: 'STM MÉTRO', legendRem: 'REM LIGHT RAIL' },
+			props: { svg: '<svg xmlns="http://www.w3.org/2000/svg"></svg>' },
 		});
-		const legend = container.querySelector('[data-testid="metro-legend"]');
-		expect(legend).toBeInTheDocument();
-		expect(legend?.textContent).toContain('STM MÉTRO');
-		expect(legend?.textContent).toContain('REM LIGHT RAIL');
-	});
-
-	it('legend is decorative art labelling: aria-hidden + .metro-legend fade hook', () => {
-		const { container } = render(MetroNetwork, {
-			props: { svg, legendStm: 'STM MÉTRO', legendRem: 'REM LIGHT RAIL' },
-		});
-		const legend = container.querySelector('[data-testid="metro-legend"]');
-		expect(legend).toHaveAttribute('aria-hidden', 'true');
-		expect(legend).toHaveClass('metro-legend');
-	});
-
-	it('renders NO legend when the labels are not provided (back-compat)', () => {
-		const { container } = render(MetroNetwork, { props: { svg } });
 		expect(container.querySelector('[data-testid="metro-legend"]')).toBeNull();
+		expect(container.querySelector('.metro-legend')).toBeNull();
 	});
 });

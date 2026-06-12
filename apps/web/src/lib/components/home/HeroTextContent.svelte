@@ -115,7 +115,12 @@
 
 <style>
 	/* SVG period dot — replaces text "." for pixel-perfect zoom center.
-	   Sized in em so it scales with the heading font-size. */
+	   Sized in em so it scales with the heading font-size. The markup keeps
+	   it whitespace-glued to "DON'T BREAK" (no soft-wrap point), so it always
+	   renders as that headline's period — never a lone dot on its own line.
+	   overflow:visible (go2/w5 taste-2): the heartbeat scales the element, so
+	   the circle must never be edge-clipped by the svg viewport at any
+	   breakpoint/zoom rounding. */
 	.hero-dot {
 		display: inline-block;
 		width: 0.19em;
@@ -123,6 +128,7 @@
 		vertical-align: baseline;
 		margin-bottom: 0.03em;
 		color: var(--primary);
+		overflow: visible;
 	}
 
 	/* go2/w5: the dot rides inside a button so the completed intro can be
@@ -156,14 +162,43 @@
 		border-radius: 50%;
 	}
 
-	/* Operator-specified SAFE-ALWAYS tier: opacity-only pulse, indefinite —
-	   it IS the replay affordance cue, so it keeps running under
-	   prefers-reduced-motion (assistive, not vestibular). */
+	/* go2/w5 taste-2: HEARTBEAT pulse — a strong, unmistakable double-beat
+	   scale (lub-dub, then rest). transform only: zero layout shift, and the
+	   element-level scale can never clip the circle (the svg viewport scales
+	   with it, overflow stays visible). Arming requires the intro to have
+	   PLAYED, which reduced motion never does — and the reduce tier below
+	   still swaps scale for the round-1 opacity pulse as belt-and-suspenders
+	   (the affordance cue is assistive, so it keeps running). */
 	.hero-dot-armed .hero-dot {
-		animation: hero-dot-pulse 1.8s ease-in-out infinite;
+		animation: hero-dot-pulse 1.5s ease-in-out infinite;
+		transform-origin: center;
+		will-change: transform;
 	}
 
 	@keyframes hero-dot-pulse {
+		0%,
+		56%,
+		100% {
+			transform: scale(1);
+		}
+		14% {
+			transform: scale(1.5);
+		}
+		28% {
+			transform: scale(1);
+		}
+		42% {
+			transform: scale(1.32);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-dot-armed .hero-dot {
+			animation: hero-dot-pulse-reduce 1.8s ease-in-out infinite;
+		}
+	}
+
+	@keyframes hero-dot-pulse-reduce {
 		0%,
 		100% {
 			opacity: 1;

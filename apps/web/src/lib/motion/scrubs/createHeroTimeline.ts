@@ -65,9 +65,22 @@ export interface HeroTimelineOpts {
 	/** Pin length as a GSAP-compatible percent string. Default '800%'. Mobile callers pass '300%'. */
 	pinLength?: string;
 	/**
-	 * go2/w5 replayable intro: fired ONCE when the scrub progress first
-	 * reaches the end of the pin (the visitor scrolled the intro through).
-	 * HeroBanner persists the localStorage day-key here.
+	 * go2/w5 taste-2: skip the deferred (next-frame) ScrollTrigger.refresh().
+	 * The replay rebuild refreshes explicitly BEFORE starting its rewind —
+	 * a refresh of a pinned trigger restores the scroll position (a scroll
+	 * write), which would cancel the in-flight native smooth rewind on
+	 * touch devices. Initial mounts keep the deferred refresh (layout is
+	 * still settling there).
+	 */
+	skipDeferredRefresh?: boolean;
+	/**
+	 * go2/w5 replayable intro: fired when the scrub progress crosses INTO the
+	 * end of the pin from below (the visitor scrolled the intro through).
+	 * HeroBanner persists the localStorage day-key + collapses the track here.
+	 * Taste-2 latch semantics: a first render already AT the end never fires
+	 * (the replay path jumps a rebuilt pin straight to its end), and dropping
+	 * back below the threshold re-arms it — a replayed intro fires again on
+	 * re-completion, so the collapse re-applies.
 	 */
 	onIntroComplete?: () => void;
 }
@@ -143,6 +156,7 @@ export function createHeroTimeline(
 		stopBlink,
 		pinLength = '800%',
 		onIntroComplete,
+		skipDeferredRefresh = false,
 	} = opts;
 
 	const svg = pinContainer.querySelector('[data-testid="metro-network"]');
@@ -242,12 +256,13 @@ export function createHeroTimeline(
 		0.58,
 	);
 
-	// go2/w5: the STM/REM legend (HTML overlay inside the metro frame) joins
-	// the label fade — to full opacity, it is informative text (AA), unlike
-	// the decorative 0.6-opacity station-name paths.
-	const legend = pinContainer.querySelectorAll('.metro-legend');
-	if (legend.length > 0) {
-		tl.to(legend, { opacity: 1, duration: 0.07, ease: 'power1.out' }, 0.58);
+	// go2/w5 taste-2: the metro caption (ONE small line naming the art at the
+	// wrapper's bottom strip — the in-frame legend is gone) joins the label
+	// fade — to full opacity, it is informative text (AA), unlike the
+	// decorative 0.6-opacity station-name paths.
+	const caption = pinContainer.querySelectorAll('.metro-caption');
+	if (caption.length > 0) {
+		tl.to(caption, { opacity: 1, duration: 0.07, ease: 'power1.out' }, 0.58);
 	}
 
 	// === Phase 5 (0.65–0.95): Zoom into Berri-UQAM ===
@@ -266,7 +281,19 @@ export function createHeroTimeline(
 
 	// === Phase 6 (1.00–1.05): Cross-fade SVG → hero text container ===
 	tl.to(svgWrapper, { opacity: 0, duration: 0.05, ease: 'power2.inOut' }, 1.0);
-	tl.to(heroTextContainer, { opacity: 1, duration: 0.05, ease: 'power2.inOut' }, 1.0);
+	// fromTo, not .to (go2/w5 taste-2): the replay path rebuilds this timeline
+	// and first renders it at the END of the track while a temporary inline
+	// opacity:1 shield keeps the settled hero text painted — a lazy .to()
+	// would capture that shield as its start and the cross-fade would
+	// degenerate to 1→1. Explicit 0→1 is shield-proof; immediateRender:false
+	// keeps first-visit behavior identical (the CSS opacity-0 base holds
+	// until the playhead reaches Phase 6).
+	tl.fromTo(
+		heroTextContainer,
+		{ opacity: 0 },
+		{ opacity: 1, duration: 0.05, ease: 'power2.inOut', immediateRender: false },
+		1.0,
+	);
 
 	// === Phase 7 (1.05–1.40): Zoom hero text container back to scale=1 ===
 	tl.to(
@@ -306,10 +333,14 @@ export function createHeroTimeline(
 	// Mobile (native touch): scrub:0.5 = small buffer for stable touch feel.
 	const isTouch = ScrollTrigger.isTouch > 0;
 
-	// go2/w5: persist-once latch — the visitor "scrolled it through" when
-	// progress first reaches the end of the pin (0.99 tolerates scrub
-	// smoothing never emitting exactly 1).
-	let introCompleteFired = false;
+	// go2/w5 taste-2: ARMED-CROSSING completion latch. "Scrolled it through"
+	// = the scrub was genuinely below the end threshold on this instance and
+	// then crossed into it (0.99 tolerates scrub smoothing never emitting
+	// exactly 1). A first render already at the end stays silent — the
+	// replay path rebuilds the pin and jumps straight to its end, and that
+	// jump must never read as a completion. Dropping below the threshold
+	// re-arms, so a replayed intro re-fires (the collapse re-applies).
+	let introCompleteArmed = false;
 
 	const st = ScrollTrigger.create({
 		trigger: pinContainer,
@@ -325,17 +356,22 @@ export function createHeroTimeline(
 			} else if (self.progress <= 0.005 && self.direction === -1) {
 				startBlink();
 			}
-			if (!introCompleteFired && self.progress >= 0.99) {
-				introCompleteFired = true;
+			if (self.progress < 0.99) {
+				introCompleteArmed = true;
+			} else if (introCompleteArmed) {
+				introCompleteArmed = false;
 				onIntroComplete?.();
 			}
 		},
 	});
 
 	// Force-sync timeline to current scroll position after layout settles.
-	requestAnimationFrame(() => {
-		ScrollTrigger.refresh();
-	});
+	// Skipped for the replay rebuild — see skipDeferredRefresh docs above.
+	if (!skipDeferredRefresh) {
+		requestAnimationFrame(() => {
+			ScrollTrigger.refresh();
+		});
+	}
 
 	return () => {
 		st.kill();

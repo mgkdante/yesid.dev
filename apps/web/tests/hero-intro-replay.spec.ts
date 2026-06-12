@@ -1,12 +1,16 @@
-// Hero intro replay — go2/w5 deliverable 4. Runs on every Playwright project
-// (desktop-chrome + mobile profiles → both breakpoints).
+// Hero intro replay — go2/w5 deliverable 4 + taste round 2. Runs on every
+// Playwright project (desktop-chrome + mobile profiles → both breakpoints).
 //
 //   1. First visit of the day: the scroll intro plays as today; scrolling it
-//      through persists the localStorage day-key and arms the pulsing dot.
-//   2. Same-day reload: intro SKIPPED — land in the completed state (hero
-//      text visible, no metro art, no giant scroll reserve); the orange dot
-//      after "DON'T BREAK" pulses, is clickable (aria "Replay intro"), and
-//      clicking re-arms the intro + scrolls back up.
+//      through persists the localStorage day-key, arms the pulsing dot AND
+//      (taste-2) collapses the intro's scroll allowance in place — the page
+//      scroll height shrinks and the settled hero becomes natural top-of-page.
+//   2. Same-day reload: intro SKIPPED — land in the same collapsed geometry;
+//      the orange dot after "DON'T BREAK" heartbeats, is clickable (aria
+//      "Replay intro"); clicking RE-ENLARGES the track, film-rewinds to the
+//      top, and scrolling through again re-collapses.
+//   3. The metro art carries ONE caption ('STM métro + REM') that never
+//      overlaps the SVG; the old in-frame legend is gone.
 
 import { test, expect } from '@playwright/test';
 
@@ -22,7 +26,7 @@ function localDayKeyScript(storageKey: string): string {
 	})()`;
 }
 
-test('first visit plays the intro; scrolling through persists + arms the dot', async ({
+test('first visit plays the intro; scrolling through persists, arms the dot + collapses the track', async ({
 	page,
 }) => {
 	await page.goto('/');
@@ -36,11 +40,66 @@ test('first visit plays the intro; scrolling through persists + arms the dot', a
 	).toBe(false);
 	await expect(page.locator('[data-testid="metro-network-container"]')).toBeVisible();
 
+	// Taste-2: the in-frame legend is GONE; ONE caption names the art. The
+	// caption's shrink-wrapped text box must never overlap DRAWN metro ink at
+	// any project shape. Element-box math is the wrong proxy here (the wide
+	// art bleeds past its 80dvh frame on short viewports, and the mobile
+	// viewBox crop + overflow:visible bleeds ink outside the element box), so
+	// sample the caption box and test true ink presence per drawn path via
+	// isPointInStroke/isPointInFill in path-local coordinates.
+	await expect(page.locator('[data-testid="metro-legend"]')).toHaveCount(0);
+	const caption = page.locator('[data-testid="metro-caption"]');
+	await expect(caption).toHaveCount(1);
+	expect(await caption.textContent()).toContain('STM métro + REM');
+	const inkHits = await page.evaluate(() => {
+		const svg = document.querySelector('[data-testid="metro-network-container"] svg');
+		const cap = document.querySelector('[data-testid="metro-caption"]');
+		if (!svg || !cap) return null;
+		const c = cap.getBoundingClientRect();
+		const hits: string[] = [];
+		const paths = Array.from(svg.querySelectorAll('path')) as SVGGeometryElement[];
+		for (const el of paths) {
+			const r = el.getBoundingClientRect();
+			if (r.width === 0 && r.height === 0) continue;
+			// Cheap reject: bounding boxes don't even touch.
+			if (!(r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top)) {
+				continue;
+			}
+			const ctm = el.getScreenCTM();
+			if (!ctm) continue;
+			const inv = ctm.inverse();
+			let hit = false;
+			for (let gx = 0; gx <= 12 && !hit; gx++) {
+				for (let gy = 0; gy <= 4 && !hit; gy++) {
+					const px = c.left + (c.width * gx) / 12;
+					const py = c.top + (c.height * gy) / 4;
+					const pt = new DOMPoint(px, py).matrixTransform(inv);
+					try {
+						if (el.getAttribute('stroke') && el.isPointInStroke(pt as DOMPointInit)) hit = true;
+						const fill = el.getAttribute('fill');
+						if (fill && fill !== 'none' && el.isPointInFill(pt as DOMPointInit)) hit = true;
+					} catch {
+						// isPointIn* unsupported — treat the bbox touch as a hit
+						// so a regression can never silently pass.
+						hit = true;
+					}
+				}
+			}
+			if (hit) hits.push(el.getAttribute('class') || 'unclassed');
+		}
+		return hits;
+	});
+	expect(inkHits, 'caption or metro svg missing').not.toBeNull();
+	expect(inkHits, `caption overlaps drawn metro ink: ${inkHits?.join(', ')}`).toEqual([]);
+
 	// Dot exists but is dormant until the intro completes.
 	await expect(page.locator('[data-testid="hero-dot-replay"]')).toBeDisabled();
 
 	// Wait for the scroll-scrub to mount (GSAP wraps the pin in .pin-spacer).
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
+
+	const expandedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+	const viewportHeight = page.viewportSize()!.height;
 
 	// Scroll the intro through (straight past the pin end).
 	await page.evaluate(() => {
@@ -52,7 +111,22 @@ test('first visit plays the intro; scrolling through persists + arms the dot', a
 		.poll(() => page.evaluate((k) => window.localStorage.getItem(k), KEY), { timeout: 15_000 })
 		.toMatch(/^\d{4}-\d{2}-\d{2}$/);
 
-	// …and the dot is armed: enabled, labelled, pulsing.
+	// …taste-2: the intro's scroll allowance collapses IN PLACE — the
+	// completed-state class lands live, the pin spacer is gone, and the page
+	// scroll height shrinks by viewports (the settled hero is now natural
+	// top-of-page geometry, so same-day reloads restore 1:1).
+	await expect(page.locator('[data-testid="hero-banner"]')).toHaveClass(/hero-intro-done/, {
+		timeout: 15_000,
+	});
+	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
+	const collapsedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+	expect(
+		expandedHeight - collapsedHeight,
+		`scroll allowance did not collapse (was ${expandedHeight}, now ${collapsedHeight})`,
+	).toBeGreaterThan(viewportHeight * 2);
+	await expect(page.locator('[data-testid="metro-network-container"]')).toBeHidden();
+
+	// …and the dot is armed: enabled, labelled, heartbeating.
 	const dot = page.locator('[data-testid="hero-dot-replay"]');
 	await expect(dot).toBeEnabled();
 	await expect(dot).toHaveAttribute('aria-label', 'Replay intro');
@@ -63,7 +137,9 @@ test('first visit plays the intro; scrolling through persists + arms the dot', a
 	).toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
 });
 
-test('same-day reload lands completed; pulsing dot replays the intro', async ({ page }) => {
+test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-collapses', async ({
+	page,
+}) => {
 	// Seed today's day-key BEFORE the app boots.
 	await page.addInitScript(localDayKeyScript(KEY));
 	await page.goto('/');
@@ -80,22 +156,42 @@ test('same-day reload lands completed; pulsing dot replays the intro', async ({ 
 	const bannerHeight = await banner.evaluate((el) => el.getBoundingClientRect().height);
 	expect(bannerHeight).toBeLessThan(viewport.height * 3);
 
-	// The dot pulses (opacity keyframes), reads as clickable, aria-labelled.
+	// The dot heartbeats (scale keyframes), reads as clickable, aria-labelled,
+	// and renders as a true '.': a real box, never clipped away.
 	const dot = page.locator('[data-testid="hero-dot-replay"]');
 	await expect(dot).toBeEnabled();
 	await expect(dot).toHaveAttribute('aria-label', 'Replay intro');
 	expect(await dot.evaluate((el) => getComputedStyle(el).cursor)).toBe('pointer');
-	expect(
-		await dot
-			.locator('[data-testid="hero-dot"]')
-			.evaluate((el) => getComputedStyle(el).animationName),
-	).toMatch(/hero-dot-pulse/); // Svelte scopes @keyframes names
+	const dotGlyph = dot.locator('[data-testid="hero-dot"]');
+	expect(await dotGlyph.evaluate((el) => getComputedStyle(el).animationName)).toMatch(
+		/hero-dot-pulse/,
+	); // Svelte scopes @keyframes names
+	const dotBox = await dotGlyph.evaluate((el) => {
+		const r = el.getBoundingClientRect();
+		return { width: r.width, height: r.height, overflow: getComputedStyle(el).overflow };
+	});
+	expect(dotBox.width).toBeGreaterThan(2);
+	expect(dotBox.height).toBeGreaterThan(2);
+	expect(dotBox.overflow).toBe('visible');
 
-	// Click = re-arm + replay: collapse class drops, metro art returns, the
-	// scroll-scrub pin rebuilds, and we ride back to the top.
+	// Click = re-enlarge + film-rewind: the track re-expands (scroll height
+	// grows back by viewports), the scroll-scrub pin rebuilds, the metro art
+	// returns, and we ride the rewind back to the very top.
+	const collapsedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
 	await dot.click();
 	await expect(banner).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
+	await expect
+		.poll(() => page.evaluate(() => document.documentElement.scrollHeight), { timeout: 15_000 })
+		.toBeGreaterThan(collapsedHeight + viewport.height * 2);
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
 	await expect(page.locator('[data-testid="metro-network-container"]')).toBeVisible();
 	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(8);
+
+	// Scrolling the replayed intro through again re-applies the collapse —
+	// the round-trip is idempotent.
+	await page.evaluate(() => {
+		window.scrollTo(0, document.body.scrollHeight);
+	});
+	await expect(banner).toHaveClass(/hero-intro-done/, { timeout: 15_000 });
+	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBe(0);
 });
