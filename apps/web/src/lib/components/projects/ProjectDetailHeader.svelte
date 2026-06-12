@@ -20,9 +20,9 @@
 
   let { project }: { project: Project } = $props();
 
-  const backToListingLabel = resolveLocale(projectsDetailContent.backToListingLabel, 'en');
+  const backToListingLabel = resolveLocale(projectsDetailContent.backToListingLabel, locale);
   // go2-t1c2: aria microcopy from site_labels, previous literal as fallback.
-  const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, 'en') || 'Tech stack';
+  const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, locale) || 'Tech stack';
 
   const location = $derived(project.location ?? 'sherbrooke');
   const environment = $derived(project.environment ?? 'production');
@@ -98,7 +98,7 @@
         <div>STATUS <span class="edge-value">{project.status}</span></div>
         <div class="edge-separator">───────</div>
         {#each metrics as metric}
-          <div>{metric.value} {resolveLocale(metric.label, 'en')}</div>
+          <div>{metric.value} {resolveLocale(metric.label, locale)}</div>
         {/each}
       </div>
 
@@ -126,7 +126,7 @@
       <h1
         class="header-title mb-3 font-heading font-black uppercase leading-[0.95] tracking-[-0.03em] text-primary lg:mb-4"
       >
-        {resolveLocale(project.title, 'en')}
+        {resolveLocale(project.title, locale)}
       </h1>
 
       <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label={navTechStackAria}>
