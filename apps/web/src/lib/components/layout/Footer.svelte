@@ -138,7 +138,10 @@
 				{/each}
 			</nav>
 		{/if}
-		<span class="flex items-center gap-1.5">
+		<!-- Round-4 doctrine: the system status line is a departure-board
+		     readout — the YELLOW voice under the amber departure rule
+		     (the lamp stays the orange route-set aspect). -->
+		<span class="flex items-center gap-1.5 text-[var(--accent-text)]">
 			<StatusDot color="orange" pulse />
 			{statusPrefix} {systemDate}
 		</span>

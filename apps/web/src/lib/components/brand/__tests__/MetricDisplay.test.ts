@@ -46,9 +46,10 @@ describe('MetricDisplay', () => {
     expect(valueEl.className).toContain('text-title');
   });
 
-  it('uses brand-primary for value color', () => {
+  it('value speaks the yellow metric-callout voice (round-4 doctrine: accent-text)', () => {
     const { container } = render(MetricDisplay, { props: { value: '5+', label: 'TEST' } });
     const valueEl = container.querySelectorAll('span')[1];
-    expect(valueEl.className).toContain('text-primary');
+    expect(valueEl.className).toContain('text-accent-text');
+    expect(valueEl.className).not.toContain('text-primary');
   });
 });

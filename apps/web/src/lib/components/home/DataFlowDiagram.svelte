@@ -157,8 +157,10 @@
 			{/if}
 		{/each}
 
-		<!-- Traveling dot markers — GO2-W5 métro-map station dots: white core
-		     (var(--card)) with a colored ring, Montréal-map style. -->
+		<!-- Traveling dot markers — métro-map station dots, Montréal-map style.
+		     Round-4 doctrine: the core is the WHITE reflective voice
+		     (var(--reflective), theme-invariant — var(--card) was dark in dark
+		     mode, so the "white core" was never actually white there). -->
 		{#each nodes as _, i}
 			{#if i > 0}
 				<circle
@@ -166,7 +168,7 @@
 					cx={nodes[i - 1].x + cfg.nodeW}
 					cy={cfg.padY + cfg.nodeH / 2}
 					r={cfg.dotR}
-					fill="var(--card)"
+					fill="var(--reflective)"
 					stroke={BRAND_COLORS[(i - 1) % BRAND_COLORS.length]}
 					stroke-width={cfg.lineStroke}
 					opacity="0.8"

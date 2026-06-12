@@ -180,6 +180,51 @@ test.describe('light mode — per-page audit', () => {
 		});
 		expect(heroOpacity).toBe('0.46');
 	});
+
+	test('round 4: four-color doctrine — yellow readouts, black structure, 3px list frames', async ({ page }) => {
+		// Operator doctrine: orange signage / yellow wayfinding / reflective
+		// white / black tape-structure. Probe the light-mode computed values.
+		await page.goto('/projects', { waitUntil: 'networkidle' });
+
+		// Listing-header subline = YELLOW overline (accent-text #815D00).
+		const subtitle = await page.evaluate(() => {
+			const el = document.querySelector('.projects-header-subtitle');
+			return el ? getComputedStyle(el).color : null;
+		});
+		expect(subtitle).toBe('rgb(129, 93, 0)');
+
+		// Project cards (list items) draw the 3px round-4 frame.
+		const cardBorder = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="project-card"] .card-surface');
+			return el ? getComputedStyle(el).borderTopWidth : null;
+		});
+		expect(cardBorder).toBe('3px');
+
+		// Footer status line = YELLOW departure-board readout. (:scope > spans
+		// only — nested spans inside <small>/<nav> are different voices.)
+		const statusColor = await page.evaluate(() => {
+			const rule = document.querySelector('.footer-status-border');
+			const span = rule?.querySelector(':scope > span:last-of-type');
+			return span ? getComputedStyle(span).color : null;
+		});
+		expect(statusColor).toBe('rgb(129, 93, 0)');
+
+		// BLACK structure: light --border-strong resolves to the #1C1814
+		// signage family (black tape on paper). The prod CSS pipeline
+		// lowercases hex literals — compare case-insensitively.
+		const borderStrong = await page.evaluate(() =>
+			getComputedStyle(document.documentElement).getPropertyValue('--border-strong').trim(),
+		);
+		expect(borderStrong.toUpperCase()).toBe('#1C1814');
+
+		// Blog rows carry the 3px list-item frame too.
+		await page.goto('/blog', { waitUntil: 'networkidle' });
+		const rowBorder = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="blog-row"] .card-surface');
+			return el ? getComputedStyle(el).borderTopWidth : null;
+		});
+		expect(rowBorder).toBe('3px');
+	});
 });
 
 test.describe('theme toggle behaviour', () => {

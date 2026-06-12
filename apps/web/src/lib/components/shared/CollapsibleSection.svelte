@@ -81,6 +81,13 @@
 </Card>
 
 <style>
+	/* Round-4: thicker delimitation around content blocks — the section-card
+	   frame steps 2px → 3px (round-3 divider progression; blog/project/service
+	   detail sections all compose this card). */
+	:global([data-slot="card"].section-card) {
+		border-width: 3px;
+	}
+
 	:global([data-slot="card"].section-card:hover) {
 		border-color: var(--accent);
 	}

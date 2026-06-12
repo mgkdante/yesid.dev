@@ -452,11 +452,13 @@
 		flex-direction: column;
 	}
 
+	/* Round-4 doctrine: the impact metric is a number callout — the YELLOW
+	   wayfinding voice (accent-text = AA amber both modes). */
 	.impact-value {
 		font-family: var(--font-heading);
 		font-size: clamp(88px, 10vw, 140px);
 		font-weight: 900;
-		color: var(--primary);
+		color: var(--accent-text);
 		line-height: 0.8;
 		letter-spacing: -0.05em;
 	}
@@ -464,7 +466,7 @@
 	.impact-label {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: var(--primary);
+		color: var(--accent-text);
 		text-transform: uppercase;
 		letter-spacing: 2px;
 		margin-top: 0.5rem;
@@ -502,18 +504,19 @@
 		}
 	}
 
+	/* Round-4 doctrine: mobile metric callout = YELLOW voice too. */
 	.metric-inline-value {
 		font-family: var(--font-heading);
 		font-size: clamp(32px, 5vw, 40px);
 		font-weight: 900;
-		color: var(--primary);
+		color: var(--accent-text);
 		line-height: 1;
 	}
 
 	.metric-inline-label {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: var(--primary);
+		color: var(--accent-text);
 		text-transform: uppercase;
 		letter-spacing: 1px;
 	}

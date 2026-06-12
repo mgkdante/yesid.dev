@@ -137,12 +137,102 @@ describe('GO2-W5 round 3 — bolder structure (operator: dividers thicker both m
 	});
 
 	it('the home services blueprint wall ships light-mode overrides (was dark-only opacities)', () => {
-		// Round 3: this wall never got the round-2 light treatment and was
-		// invisible on paper. Train + details + annotations now override.
+		// Round 3 introduced the light treatment; round 4 boldens it a step
+		// (train 0.26 → 0.30, details 0.32 → 0.36, ref labels 70% → 80%).
 		expect(servicesBp).toMatch(/\[data-theme='light'\][\s\S]*\.train-svg/);
-		expect(servicesBp).toContain('opacity: 0.26;');
-		expect(servicesBp).toContain('opacity: 0.32;');
-		expect(servicesBp).toContain('color-mix(in srgb, var(--primary) 70%, transparent)');
+		expect(servicesBp).toContain('opacity: 0.30;');
+		expect(servicesBp).toContain('opacity: 0.36;');
+		expect(servicesBp).toContain('color-mix(in srgb, var(--primary) 80%, transparent)');
+	});
+});
+
+describe('GO2-W5 round 4 — four-color infrastructure doctrine', () => {
+	const read = (rel: string) => readFileSync(resolve(SRC, rel), 'utf-8');
+
+	it('home blueprints are boldened in DARK too (operator: "don\'t forget the blueprints on the home page")', () => {
+		// The wall shipped dark-tuned subliminal opacities (0.08/0.10) since
+		// round 1 — round 4 gives dark its first bolden (0.18/0.22 inline,
+		// crosshairs 35%, ref labels 45%).
+		const bp = read('lib/components/home/ServicesBlueprint.svelte');
+		expect(bp).toContain('opacity-[0.18]');
+		expect(bp).toContain('opacity-[0.22]');
+		expect(bp).toContain('color-mix(in srgb, var(--primary) 35%, transparent)');
+		expect(bp).toContain('color-mix(in srgb, var(--primary) 45%, transparent)');
+	});
+
+	it('manifesto home art is boldened and the arrival board speaks the YELLOW voice', () => {
+		const manifesto = read('lib/components/home/Manifesto.svelte');
+		expect(manifesto).toContain('color-mix(in srgb, var(--primary) 6%, transparent)'); // grid 3.5% → 6%
+		const transit = read('lib/components/home/ManifestoTransit.svelte');
+		const arrival = transit.match(/\.manifesto__arr-label \{([\s\S]*?)\}[\s\S]*?\.manifesto__arr-time \{([\s\S]*?)\}/);
+		expect(arrival?.[1]).toContain('color: var(--accent-text);');
+		expect(arrival?.[2]).toContain('color: var(--accent-text);');
+	});
+
+	it('YELLOW role — station markers/overlines speak accent-text (label-station precedent)', () => {
+		expect(read('lib/components/home/HomeServices.svelte')).toMatch(
+			/\.services-marker \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+		expect(read('lib/components/home/FeaturedProjects.svelte')).toMatch(
+			/\.proof-marker \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+		// Listing-header sublines are overlines too.
+		expect(read('lib/components/blog/BlogListingPage.svelte')).toMatch(
+			/\.blog-header-subtitle \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+		expect(read('lib/components/projects/ProjectListingPage.svelte')).toMatch(
+			/\.projects-header-subtitle \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+	});
+
+	it('YELLOW role — metric/number callouts speak accent-text everywhere', () => {
+		expect(read('lib/components/brand/MetricDisplay.svelte')).toContain('text-accent-text');
+		expect(read('lib/components/home/HomeServices.svelte')).toMatch(
+			/\.services-metric-value \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+		expect(read('lib/components/home/FeaturedProjects.svelte')).toMatch(
+			/\.proof-metric-value \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+		expect(read('lib/components/services/ServiceCard.svelte')).toMatch(
+			/\.metric-value \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+		expect(read('lib/components/services/ServiceDetailPage.svelte')).toMatch(
+			/\.impact-value \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+	});
+
+	it('YELLOW role — departure-board/status readouts (footer status line, carousel counter, blog dates)', () => {
+		expect(read('lib/components/layout/Footer.svelte')).toMatch(
+			/text-\[var\(--accent-text\)\][^>]*>\s*<StatusDot/,
+		);
+		expect(read('lib/components/home/FeaturedProjects.svelte')).toMatch(
+			/\.proof-count-current \{[\s\S]*?color: var\(--accent-text\);/,
+		);
+		expect(read('lib/components/blog/BlogRow.svelte')).toMatch(
+			/<time[^>]*text-\[var\(--accent-text\)\]/,
+		);
+	});
+
+	it('WHITE role — reflective voice: proof titles over photo gradients + métro dot cores', () => {
+		expect(read('lib/components/home/FeaturedProjects.svelte')).toMatch(
+			/\.proof-title \{[\s\S]*?color: var\(--reflective\);/,
+		);
+		expect(read('lib/components/home/DataFlowDiagram.svelte')).toContain('fill="var(--reflective)"');
+		expect(read('lib/components/blog/BlogRouteMap.svelte')).toContain('fill: var(--reflective);');
+	});
+
+	it('round 4 — blog/projects list items + content blocks draw one step thicker (3px frames)', () => {
+		expect(read('lib/components/blog/BlogRow.svelte')).toMatch(
+			/\.card-surface\.blog-row\) \{\s*\n\t*border-width: 3px;/,
+		);
+		expect(read('lib/components/projects/ProjectCard.svelte')).toMatch(
+			/\.project-card :global\(\.card-surface\) \{\s*\n\t*border-width: 3px;/,
+		);
+		expect(read('lib/components/shared/CollapsibleSection.svelte')).toMatch(
+			/\.section-card\) \{\s*\n\t*border-width: 3px;/,
+		);
+		// Blog prose content block: 1px → 2px.
+		expect(read('lib/components/blog/BlogContent.svelte')).toContain('border-2 border-[var(--border-subtle)]');
 	});
 });
 

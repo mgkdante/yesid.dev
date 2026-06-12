@@ -16,8 +16,10 @@
 
 <!-- Blog content card — matches work detail structure.
      go2/w4: prose centers inside the card (prose-dark caps at 72ch; the card
-     itself is capped + centered by BlogDetailPage's .content-column). -->
-<div class="mt-8 min-w-0 overflow-x-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-6 md:p-8" data-testid="blog-content">
+     itself is capped + centered by BlogDetailPage's .content-column).
+     Round-4: the content-block frame steps up 1px → 2px (thicker
+     delimitation around content blocks, round-3 divider progression). -->
+<div class="mt-8 min-w-0 overflow-x-hidden rounded-lg border-2 border-[var(--border-subtle)] bg-[var(--card)] p-6 md:p-8" data-testid="blog-content">
 	<div class="blog-content prose-dark mx-auto" style="--blog-accent: {accentColor};">
 		{@render children()}
 	</div>
