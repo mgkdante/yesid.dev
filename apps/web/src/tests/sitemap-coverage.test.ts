@@ -39,6 +39,13 @@ function collectPageRoutes(dir: string, prefix = ''): string[] {
 		if (!statSync(full).isDirectory()) continue;
 		if (entry.startsWith('.')) continue;
 		if (entry.startsWith('(')) continue; // SvelteKit route group
+		// [[lang=locale]] is the optional locale prefix (slice-28.6) —
+		// transparent for coverage purposes: declared routes are the EN
+		// canonical tree.
+		if (entry.startsWith('[[')) {
+			routes.push(...collectPageRoutes(full, prefix));
+			continue;
+		}
 		const nextPrefix = `${prefix}/${entry}`.replace(new RegExp(`\\${sep}`, 'g'), '/');
 		routes.push(...collectPageRoutes(full, nextPrefix));
 	}
