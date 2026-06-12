@@ -210,6 +210,22 @@
 		font-size: 13.5px;
 		font-weight: 500;
 		white-space: nowrap;
+		position: relative;
+	}
+
+	/* GO2-W5 "you are here" lamp: the active link gets an amber wayfinding
+	   dot (absolute — zero layout shift). Underline/hover voice stays
+	   primary; the dot is indicator-only, never the interactive hue. */
+	.nav-pill-link[aria-current='page']::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		bottom: 4px;
+		width: 3px;
+		height: 3px;
+		border-radius: 50%;
+		transform: translateX(-50%);
+		background: var(--accent);
 	}
 
 	:global(.nav-link-glow) {

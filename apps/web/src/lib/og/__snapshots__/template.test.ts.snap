@@ -134,7 +134,7 @@ exports[`buildOgTree > matches snapshot for short project title 1`] = `
       },
     ],
     "style": {
-      "backgroundColor": "#141414",
+      "backgroundColor": "#171310",
       "color": "#F5F5F5",
       "display": "flex",
       "flexDirection": "column",
@@ -283,7 +283,7 @@ exports[`buildOgTree > matches snapshot for title with special chars 1`] = `
       },
     ],
     "style": {
-      "backgroundColor": "#141414",
+      "backgroundColor": "#171310",
       "color": "#F5F5F5",
       "display": "flex",
       "flexDirection": "column",
@@ -432,7 +432,7 @@ exports[`buildOgTree > matches snapshot for typical blog title 1`] = `
       },
     ],
     "style": {
-      "backgroundColor": "#141414",
+      "backgroundColor": "#171310",
       "color": "#F5F5F5",
       "display": "flex",
       "flexDirection": "column",

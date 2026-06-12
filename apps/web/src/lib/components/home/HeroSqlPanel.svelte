@@ -37,16 +37,18 @@
   );
 </script>
 
+<!-- GO2-W5: terminal stays TERMINAL in light — cream console body with
+     chassis-edge border; output speaks terminal-ink, dim text ink-muted. -->
 <div
-  class="rounded-lg border border-[var(--border)] bg-[var(--terminal)] p-5 font-mono"
+  class="rounded-lg border border-[var(--border-strong)] bg-[var(--terminal)] p-5 font-mono"
   data-testid="sql-panel"
 >
   <!-- Header: prompt + live dot -->
   <div class="mb-4 flex items-center justify-between">
-    <span class="text-caption tracking-[1px] text-[var(--muted-foreground)] md:text-mono" data-testid="sql-prompt">
+    <span class="text-caption tracking-[1px] text-[var(--terminal-ink-muted)] md:text-mono" data-testid="sql-prompt">
       {prompt}
     </span>
-    <span class="flex items-center gap-1.5 text-caption text-[var(--muted-foreground)]" data-testid="sql-live">
+    <span class="flex items-center gap-1.5 text-caption text-[var(--terminal-ink-muted)]" data-testid="sql-live">
       <StatusDot color="green" pulse />
       {liveLabel}
     </span>
@@ -55,33 +57,33 @@
   <!-- Query with syntax highlighting -->
   <div class="text-xs leading-[1.7] md:text-sm md:leading-[1.8]" data-testid="sql-query">
     <span class="text-[var(--primary)]">SELECT</span><br />
-    <span class="text-[var(--secondary-foreground)]">&nbsp;&nbsp;d.route_short_name,</span><br />
-    <span class="text-[var(--secondary-foreground)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">round</span><span class="text-[var(--secondary-foreground)]">(</span><span class="text-[var(--primary)]">avg</span><span class="text-[var(--secondary-foreground)]">(f.delay_seconds)::numeric, 1)</span><br />
-    <span class="text-[var(--secondary-foreground)]">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">AS</span> <span class="text-[var(--secondary-foreground)]">avg_delay_s,</span><br />
-    <span class="text-[var(--secondary-foreground)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">count</span><span class="text-[var(--secondary-foreground)]">(</span><span class="text-[var(--primary)]">DISTINCT</span> <span class="text-[var(--secondary-foreground)]">f.vehicle_id)</span><br />
-    <span class="text-[var(--secondary-foreground)]">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">AS</span> <span class="text-[var(--secondary-foreground)]">vehicles</span><br />
-    <span class="text-[var(--primary)]">FROM</span> <span class="text-[var(--accent-text)]">gold.latest_trip_delay_snapshot</span> <span class="text-[var(--secondary-foreground)]">f</span><br />
-    <span class="text-[var(--primary)]">JOIN</span> <span class="text-[var(--accent-text)]">gold.dim_route</span> <span class="text-[var(--secondary-foreground)]">d</span><br />
-    <span class="text-[var(--secondary-foreground)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">USING</span> <span class="text-[var(--secondary-foreground)]">(provider_id, route_id)</span><br />
-    <span class="text-[var(--primary)]">WHERE</span> <span class="text-[var(--secondary-foreground)]">f.delay_seconds</span> <span class="text-[var(--primary)]">IS NOT NULL</span><br />
-    <span class="text-[var(--primary)]">GROUP BY</span> <span class="text-[var(--secondary-foreground)]">d.route_short_name</span><br />
-    <span class="text-[var(--primary)]">ORDER BY</span> <span class="text-[var(--secondary-foreground)]">vehicles</span> <span class="text-[var(--primary)]">DESC</span><br />
-    <span class="text-[var(--primary)]">LIMIT</span> <span class="text-[var(--accent-text)]">5</span><span class="text-[var(--secondary-foreground)]">;</span>
+    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;d.route_short_name,</span><br />
+    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">round</span><span class="text-[var(--terminal-ink)]">(</span><span class="text-[var(--primary)]">avg</span><span class="text-[var(--terminal-ink)]">(f.delay_seconds)::numeric, 1)</span><br />
+    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">AS</span> <span class="text-[var(--terminal-ink)]">avg_delay_s,</span><br />
+    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">count</span><span class="text-[var(--terminal-ink)]">(</span><span class="text-[var(--primary)]">DISTINCT</span> <span class="text-[var(--terminal-ink)]">f.vehicle_id)</span><br />
+    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-[var(--primary)]">AS</span> <span class="text-[var(--terminal-ink)]">vehicles</span><br />
+    <span class="text-[var(--primary)]">FROM</span> <span class="text-[var(--accent-text)]">gold.latest_trip_delay_snapshot</span> <span class="text-[var(--terminal-ink)]">f</span><br />
+    <span class="text-[var(--primary)]">JOIN</span> <span class="text-[var(--accent-text)]">gold.dim_route</span> <span class="text-[var(--terminal-ink)]">d</span><br />
+    <span class="text-[var(--terminal-ink)]">&nbsp;&nbsp;</span><span class="text-[var(--primary)]">USING</span> <span class="text-[var(--terminal-ink)]">(provider_id, route_id)</span><br />
+    <span class="text-[var(--primary)]">WHERE</span> <span class="text-[var(--terminal-ink)]">f.delay_seconds</span> <span class="text-[var(--primary)]">IS NOT NULL</span><br />
+    <span class="text-[var(--primary)]">GROUP BY</span> <span class="text-[var(--terminal-ink)]">d.route_short_name</span><br />
+    <span class="text-[var(--primary)]">ORDER BY</span> <span class="text-[var(--terminal-ink)]">vehicles</span> <span class="text-[var(--primary)]">DESC</span><br />
+    <span class="text-[var(--primary)]">LIMIT</span> <span class="text-[var(--accent-text)]">5</span><span class="text-[var(--terminal-ink)]">;</span>
   </div>
 
   <!-- Results table -->
   <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
     <div class="grid grid-cols-3 gap-x-3 gap-y-1 text-xs md:text-sm md:gap-y-1.5">
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--muted-foreground)]">{columnRoute}</span>
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--muted-foreground)]">{columnAvgDelay}</span>
-      <span class="border-b border-border-subtle pb-1.5 text-[var(--muted-foreground)]">{columnVehicles}</span>
+      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnRoute}</span>
+      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnAvgDelay}</span>
+      <span class="border-b border-border-subtle pb-1.5 text-[var(--terminal-ink-muted)]">{columnVehicles}</span>
       {#each rows as row (row.route)}
-        <span class="text-[var(--foreground)]" data-testid="sql-result-row">{row.route}</span>
+        <span class="text-[var(--terminal-ink)]" data-testid="sql-result-row">{row.route}</span>
         <span class="text-[var(--accent-text)]">{row.avgDelayS}</span>
-        <span class="text-[var(--secondary-foreground)]">{row.vehicles}</span>
+        <span class="text-[var(--terminal-ink)]">{row.vehicles}</span>
       {/each}
     </div>
-    <div class="mt-2.5 text-caption text-[var(--muted-foreground)]" data-testid="sql-meta">
+    <div class="mt-2.5 text-caption text-[var(--terminal-ink-muted)]" data-testid="sql-meta">
       {metaCaption}
     </div>
   </div>

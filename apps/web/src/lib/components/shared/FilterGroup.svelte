@@ -119,15 +119,33 @@
 </div>
 
 <style>
+	/* GO2-W5: text on the route-set fill pairs with primary-foreground
+	   (foreground-on-primary computed 2.4–2.9:1 — latent AA fail). */
 	.active {
 		background: var(--primary);
-		color: var(--foreground);
+		color: var(--primary-foreground);
 	}
 
+	/* GO2-W5 selected chip = yellow wayfinding voice: SOLID --accent-surface
+	   (no alpha — the grid never bleeds through a chip), --accent-text type,
+	   and an --accent "you are here" lamp on the right edge (absolute, zero
+	   layout shift). */
 	.tag-active {
-		border-color: var(--primary) !important;
-		color: var(--primary) !important;
-		background: color-mix(in srgb, var(--primary) 10%, transparent);
+		border-color: var(--accent-text) !important;
+		color: var(--accent-text) !important;
+		background: var(--accent-surface);
+		position: relative;
+	}
+	.tag-active::after {
+		content: '';
+		position: absolute;
+		right: 8px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--accent);
 	}
 
 	/* Smooth collapse/expand via CSS grid rows */

@@ -118,7 +118,7 @@
 		<defs>
 			<pattern id="hazard-pattern" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
 				<rect width="4" height="8" fill="#FFB627" />
-				<rect x="4" width="4" height="8" fill="#0a0a0a" />
+				<rect x="4" width="4" height="8" fill="#1C1814" />
 			</pattern>
 		</defs>
 	</svg>

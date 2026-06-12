@@ -229,10 +229,12 @@
 		transition: opacity var(--duration-fast) var(--ease-default);
 	}
 
-	/* Active tab: dark bottom border, bold text */
+	/* Active tab — GO2-W5: backlit station sign (theme-invariant signage chip,
+	   10.06:1 both modes; real signs don't reskin when the lights change). */
 	.station-tab.active {
-		border-bottom-color: var(--background);
-		color: var(--background);
+		background: var(--signage-bg);
+		border-bottom-color: var(--signage-text);
+		color: var(--signage-text);
 		font-weight: 800;
 	}
 
@@ -241,9 +243,9 @@
 		opacity: 0.7;
 	}
 
-	/* Station number inherits dark text on orange */
+	/* Station number inherits dark text on orange; signage amber when active */
 	.text-brand {
-		color: var(--background);
+		color: var(--signage-text);
 	}
 
 	/* JetBrains Mono for station numbers — matches brand mono font */

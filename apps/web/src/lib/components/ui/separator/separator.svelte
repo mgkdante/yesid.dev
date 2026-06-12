@@ -31,9 +31,12 @@
 
 	const isVertical = $derived(restProps.orientation === 'vertical');
 
+	// GO2-W5 INTERLOCKING: hazard = REAL safety tape — yellow + warm black in
+	// BOTH modes (theme-invariant tokens; tape doesn't reskin when the lights
+	// change). 10.06:1 stripe pair.
 	const hazardGradient = $derived(
 		variant === 'hazard'
-			? `repeating-linear-gradient(${hazardAngle}deg, var(--primary) 0px, var(--primary) ${stripeWidth[hazardSize]}px, var(--background) ${stripeWidth[hazardSize]}px, var(--background) ${stripeWidth[hazardSize] * 2}px)`
+			? `repeating-linear-gradient(${hazardAngle}deg, var(--hazard-a) 0px, var(--hazard-a) ${stripeWidth[hazardSize]}px, var(--hazard-b) ${stripeWidth[hazardSize]}px, var(--hazard-b) ${stripeWidth[hazardSize] * 2}px)`
 			: ''
 	);
 </script>

@@ -235,10 +235,13 @@
 	   Magazine proof cards. Grid with explicit rows so every card has
 	   the same icon-zone size, content section, and footer band
 	   regardless of title/benefit length. */
+	/* GO2-W5: surface-1 now aliases --card (tokens.json flip) so the panel
+	   lifts solid off the board; inset bevel = panel catching the lamp. */
 	.services-card {
 		background: var(--surface-1);
 		border: 1px solid var(--border-brand);
 		border-radius: var(--radius-lg);
+		box-shadow: inset 0 1px 0 var(--edge-highlight);
 		display: grid;
 		grid-template-rows: 11rem 1fr auto;
 		height: 100%;
@@ -250,7 +253,7 @@
 
 	.services-card-link:hover .services-card {
 		border-color: var(--border-brand-active);
-		box-shadow: var(--shadow-section);
+		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 		transform: translateY(-3px);
 	}
 

@@ -38,6 +38,46 @@ describe('style regressions — broken utilities & undefined vars', () => {
 	}
 });
 
+describe('GO2-W5 INTERLOCKING — signal-systems art direction', () => {
+	const separator = readFileSync(
+		resolve(SRC, 'lib/components/ui/separator/separator.svelte'),
+		'utf-8',
+	);
+	const card = readFileSync(resolve(SRC, 'lib/components/ui/card/card.svelte'), 'utf-8');
+	const terminalChrome = readFileSync(
+		resolve(SRC, 'lib/components/brand/TerminalChrome.svelte'),
+		'utf-8',
+	);
+	const footer = readFileSync(resolve(SRC, 'lib/components/layout/Footer.svelte'), 'utf-8');
+
+	it('hazard separator is real tape — theme-invariant hazard tokens, not primary/background', () => {
+		expect(separator).toContain('var(--hazard-a)');
+		expect(separator).toContain('var(--hazard-b)');
+		expect(separator).not.toMatch(/repeating-linear-gradient\([^)]*var\(--primary\)/);
+	});
+
+	it('card surface lifts off the board (surface-2 + edge-highlight bevel, solid)', () => {
+		expect(card).toContain('background: var(--surface-2);');
+		expect(card).toContain('inset 0 1px 0 var(--edge-highlight)');
+	});
+
+	it('terminal chrome strips use the chrome token and the body keeps var(--terminal)', () => {
+		expect(terminalChrome).toContain('background: var(--terminal-chrome);');
+		expect(terminalChrome).toContain('background: var(--terminal);');
+		expect(terminalChrome).toContain('border: 1px solid var(--border-strong);');
+	});
+
+	it('terminal footer values speak the wayfinding voice (departure board)', () => {
+		expect(terminalChrome).toContain('text-[var(--accent-text)]');
+	});
+
+	it('footer platform edge is hazard tape on the warm muted panel', () => {
+		expect(footer).toContain('var(--hazard-a)');
+		expect(footer).toContain('var(--hazard-b)');
+		expect(footer).toContain('bg-[var(--muted)]');
+	});
+});
+
 describe('GO-W2.2 T7 — art direction', () => {
 	const closer = readFileSync(resolve(SRC, 'lib/components/home/HomeCloser.svelte'), 'utf-8');
 	const error = readFileSync(resolve(SRC, 'lib/components/home/ErrorIllustration.svelte'), 'utf-8');
