@@ -12,10 +12,13 @@ import { gzipSync } from 'node:zlib';
 
 const CLIENT_DIR = '.svelte-kit/output/client/_app/immutable';
 const MARKER = 'engine-goal-region';
-// Measured 7,266 bytes gzip on 2026-06-11 (GO-w2t5 final state, full-bleed
-// addendum included; GSAP Flip rides the shared chunks, not this one).
+// Measured 10,459 bytes gzip on 2026-06-12 (go2/w5 engine 2.0 layered
+// learning: legend, teach line, build counter, stable grid, zero-match shape
+// composer, pair notes, row labels, drafting furniture — all engine-chunk
+// teaching UI; GSAP Flip still rides the shared chunks, not this one).
 // Pinned to measured × 1.2 rounded up to the nearest 5,000.
-const BUDGET_GZIP = Number(process.env.ENGINE_CHUNK_BUDGET_GZIP ?? 10_000);
+// Previous pin: 10,000 (measured 7,266 on 2026-06-11, GO-w2t5 final state).
+const BUDGET_GZIP = Number(process.env.ENGINE_CHUNK_BUDGET_GZIP ?? 15_000);
 
 function* walk(dir) {
 	for (const entry of readdirSync(dir, { withFileTypes: true })) {
