@@ -376,16 +376,17 @@ describe('GO2-W5 round 6 — transparent terminus, detail SVGs back, top-band pa
 		expect(closer).not.toContain('background: var(--background);');
 	});
 
-	it('R6-2 — detail page art is back on the LEFT of the hero (slice-09 order)', () => {
+	it('R6-2 — detail page text leads and art sits on the RIGHT of the hero', () => {
 		const detail = read('lib/components/services/ServiceDetailPage.svelte');
-		// Source order: the svg column precedes the text column…
+		// Source order: the text column precedes the svg column so desktop
+		// reads copy first while mobile keeps its text-first stack.
 		const svgIdx = detail.indexOf('class="svg-desktop"');
 		const textIdx = detail.indexOf('class="hero-text"');
 		expect(svgIdx).toBeGreaterThan(-1);
 		expect(textIdx).toBeGreaterThan(-1);
-		expect(svgIdx).toBeLessThan(textIdx);
-		// …and the grid puts the auto (art) track first.
-		expect(detail).toMatch(/\.hero-grid \{[\s\S]*?grid-template-columns: auto 1fr;/);
+		expect(textIdx).toBeLessThan(svgIdx);
+		// …and the grid puts the flexible text track first, auto art track last.
+		expect(detail).toMatch(/\.hero-grid \{[\s\S]*?grid-template-columns: 1fr auto;/);
 	});
 
 	it('R6-2 — the panel morphs on hover AND tap (button toy, slice-09 semantics)', () => {
