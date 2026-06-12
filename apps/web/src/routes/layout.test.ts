@@ -31,9 +31,10 @@ const fakeErrorPage: ErrorPageContent = {
 	suggestions: [],
 };
 
-function fakeEvent(data: Record<string, unknown> = {}) {
+function fakeEvent(data: Record<string, unknown> = {}, pathname = '/') {
 	return {
 		data,
+		url: new URL(`https://yesid.dev${pathname}`),
 	} as unknown as Parameters<typeof load>[0];
 }
 
@@ -78,5 +79,14 @@ describe('+layout.ts load', () => {
 
 	it('uses DEFAULT_LOCALE', () => {
 		expect(DEFAULT_LOCALE).toBe('en');
+	});
+
+	it('forwards the server-derived locale; falls back to the URL locale', async () => {
+		const withServer = await load(fakeEvent({ seo: fakeSeo, themeColor: '#123456', locale: 'fr' }));
+		expect(withServer.locale).toBe('fr');
+		const fromUrl = await load(fakeEvent({}, '/fr/about'));
+		expect(fromUrl.locale).toBe('fr');
+		const plain = await load(fakeEvent({}, '/about'));
+		expect(plain.locale).toBe('en');
 	});
 });
