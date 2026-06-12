@@ -54,16 +54,37 @@ describe('Engine shell', () => {
 		expect(screen.queryByTestId('product-preview')).toBeNull();
 	});
 
-	// GO-w2t5 operator addendum: the section is full-bleed inside the route's
-	// engine-band; the width cap lives on an inner container so engine content
-	// stays a readable centered column.
-	it('GO-w2t5 addendum: engine content sits in the engine-inner width container', () => {
+	// GO-w2t5 addendum + go2/w5 taste round 2: the section is full-bleed inside
+	// the route's engine-band and the inner wrapper is UNCAPPED too (truly
+	// edge-to-edge — engine-fullbleed-css.test.ts locks the CSS); this pins the
+	// DOM chain the CSS lock assumes.
+	it('engine content sits in the (uncapped) engine-inner wrapper', () => {
 		render(Engine, { props: { animate: false } });
 		const section = screen.getByTestId('stack-engine');
 		const inner = section.querySelector(':scope > .engine-inner');
 		expect(inner).not.toBeNull();
 		expect(inner!.contains(screen.getByTestId('mode-toggle-goal'))).toBe(true);
 		expect(inner!.contains(screen.getByTestId('engine-goal-region'))).toBe(true);
+	});
+
+	// go2/w5 taste round 2 (operator bug: legend labels rendered "under the
+	// line"): the metro track is now an in-flow per-station segment AFTER the
+	// printed name — it can never paint over text. Pin the DOM order the CSS
+	// relies on: dot → name → track, track decorative.
+	it('taste round 2: legend stations print name BEFORE the (decorative) track segment', () => {
+		render(Engine, { props: { animate: false } });
+		for (const layer of ['interface', 'logic', 'data', 'infra']) {
+			const station = screen
+				.getByTestId(`legend-${layer}`)
+				.querySelector('.legend-station')!;
+			// classList[0] — Svelte appends its scoping class after the authored one.
+			const children = [...station.children].map((el) => el.classList[0]);
+			expect(children).toEqual(['legend-dot', 'legend-name', 'legend-track']);
+			expect(station.querySelector('.legend-track')!.getAttribute('aria-hidden')).toBe(
+				'true',
+			);
+			expect(station.querySelector('.legend-name')!.textContent).toBe(layer);
+		}
 	});
 
 	it('backing out of a blueprint returns to the goal picker', async () => {

@@ -42,11 +42,27 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 		expect(src).toMatch(/\.cta-zone \{[^}]*max-width: var\(--container-wide\);/);
 	});
 
-	it('stack-engine section is uncapped; the width cap moves to engine-inner', () => {
+	it('taste round 2: the WHOLE engine chain is uncapped — section AND inner (gutters via padding only)', () => {
 		const src = engine();
 		const sectionRule = src.match(/\.stack-engine \{[^}]*\}/);
 		expect(sectionRule, '.stack-engine rule must exist').not.toBeNull();
 		expect(sectionRule![0]).not.toContain('max-width');
-		expect(src).toMatch(/\.engine-inner \{[^}]*max-width: var\(--container-wide\);/);
+		// Operator verdict (round 2): the engine "still feels constrained" —
+		// .engine-inner's container-wide cap was re-constraining the content
+		// the band had just un-constrained. No width cap anywhere in the
+		// engine; readable gutters come from the section's --space-page-x
+		// padding.
+		const innerRule = src.match(/\.engine-inner \{[^}]*\}/);
+		expect(innerRule, '.engine-inner rule must exist').not.toBeNull();
+		expect(innerRule![0]).not.toContain('max-width');
+		expect(sectionRule![0]).toContain('var(--space-page-x)');
+	});
+
+	it('taste round 2: the loading placeholder inside the band is uncapped too (no constrained flash)', () => {
+		const src = page();
+		const rule = src.match(/\.engine-loading \{[^}]*\}/);
+		expect(rule, '.engine-loading rule must exist').not.toBeNull();
+		expect(rule![0]).not.toContain('max-width');
+		expect(rule![0]).toContain('var(--space-page-x)');
 	});
 });

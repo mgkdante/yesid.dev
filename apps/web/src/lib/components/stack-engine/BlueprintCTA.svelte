@@ -1,11 +1,14 @@
 <!--
-  BlueprintCTA (slice-29, go2/w5 tone pass) — the engine's three exits, all
-  real, all whispering (teacher voice, never a hard sell):
-    cta-proof     → the project that proves it ('I built this — see it live')
-    cta-service   → the service behind it ('See the service behind it')
+  BlueprintCTA (slice-29, go2/w5 taste round 2) — the engine's two exits,
+  both real, both whispering (teacher voice, never a hard sell):
     cta-blueprint → /contact?bp=… handoff ('Take this blueprint with you →')
+    cta-service   → hire the service behind it ('Hire this — …', homey voice)
   plus the whisper line under the row. Goal mode encodes the archetype's full
   stack (layer order); compose mode encodes the visitor's picked ids instead.
+
+  Taste round 2 (operator verdict): proof-project links are GONE from the
+  engine — proofProjectSlug stays in schema/content for other surfaces, the
+  engine just never renders it.
 -->
 <script lang="ts">
 	import type { StackArchetype } from '@repo/shared/schemas';
@@ -37,16 +40,11 @@
 <div class="blueprint-cta" data-testid="blueprint-cta">
 	<div class="cta-row">
 		<a class="cta-link cta-primary" data-testid="cta-blueprint" href={blueprintHref}>
-			{archetype.proofProjectSlug ? 'Take this blueprint with you →' : 'Want to be the first? Take this blueprint with you →'}
+			Take this blueprint with you →
 		</a>
-		{#if archetype.proofProjectSlug}
-			<a class="cta-link" data-testid="cta-proof" href={localizeHref(`/projects/${archetype.proofProjectSlug}`, locale)}>
-				I built this — see it live
-			</a>
-		{/if}
 		{#if archetype.serviceId}
 			<a class="cta-link" data-testid="cta-service" href={localizeHref(`/services/${archetype.serviceId}`, locale)}>
-				See the service behind it
+				Hire this — see the service behind it
 			</a>
 		{/if}
 	</div>

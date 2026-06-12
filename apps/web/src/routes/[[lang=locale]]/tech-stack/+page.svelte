@@ -360,9 +360,11 @@
 		background: color-mix(in srgb, var(--primary) 3%, transparent);
 	}
 
+	/* go2/w5 taste round 2: the placeholder rides the full bleed like the
+	   engine it stands in for — no width cap anywhere inside the band (the
+	   old container-wide cap flashed the "constrained" look while the chunk
+	   loaded). Gutters via the same --space-page-x padding. */
 	.engine-loading {
-		max-width: var(--container-wide);
-		margin: 0 auto;
 		padding: 2rem var(--space-page-x);
 		min-height: 200px;
 	}
