@@ -256,10 +256,31 @@ describe('Design System Tokens', () => {
       // ::before resurrection) on .circuit-grid is a regression.
       const grid = appCSS.match(/\.circuit-grid \{([\s\S]*?)\}/)?.[1] ?? '';
       expect(grid).toContain('background-image:');
-      expect(grid).toContain('var(--grid-glow)');
       expect(grid).not.toContain('isolation');
       expect(grid).not.toContain('z-index');
       expect(appCSS).not.toMatch(/\.circuit-grid::before/);
+    });
+
+    it('the sodium lamp is viewport-glued (.grid-lamp sticky overlay), never document-sized', () => {
+      // The glow began life as a %-sized radial layer on .circuit-grid —
+      // sized by the PAGE WRAPPER, so the hero intro's track collapse
+      // re-scaled it mid-frame (the operator's "tint glitch") and it
+      // drained away while the pinned metro intro scrolled its track.
+      // The lamp is now a zero-height sticky child glued to the viewport
+      // top: constant light over the map animation, the settled hero, and
+      // every page. Reintroducing a %-sized or wrapper-background glow is
+      // a regression; z-index:-1 lives on the LAMP (its own context), so
+      // the no-isolation law on .circuit-grid above still holds.
+      const lamp = appCSS.match(/\.grid-lamp \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(lamp).toContain('position: sticky');
+      expect(lamp).toContain('z-index: -1');
+      expect(lamp).toContain('pointer-events: none');
+      const lampGlow = appCSS.match(/\.grid-lamp::before \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(lampGlow).toContain('var(--grid-glow)');
+      expect(lampGlow).toContain('100lvh');
+      // The wrapper background must never carry the glow again.
+      const grid2 = appCSS.match(/\.circuit-grid \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(grid2).not.toContain('var(--grid-glow)');
     });
 
     it('dashed delimitations speak the route-set voice (.divider-dashed = border-rule, round-3 2px)', () => {

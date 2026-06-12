@@ -20,6 +20,7 @@
 		ctaContactLabel,
 		heroData,
 		introCompleted = false,
+		ringsArmed = false,
 		replayAriaLabel = 'Replay intro',
 		onReplay,
 	}: {
@@ -32,6 +33,10 @@
 		heroData: HeroData;
 		/** go2/w5: arms the hero-dot replay button once the intro completed. */
 		introCompleted?: boolean;
+		/** Beacon rings render only in SETTLED completed geometry (armed AND
+		    collapsed) — during a replay the GSAP zoom scales this same svg to
+		    ~213×, and rings living inside it would blow up with it. */
+		ringsArmed?: boolean;
 		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
 		replayAriaLabel?: string;
 		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
@@ -71,7 +76,25 @@
 					data-testid="hero-dot"
 					viewBox="0 0 10 10"
 					aria-hidden="true"
-				><circle cx="5" cy="5" r="5" fill="currentColor" /></svg></button>
+				><circle cx="5" cy="5" r="5" fill="currentColor" />{#if ringsArmed}<circle
+							class="hero-dot-ring"
+							cx="5"
+							cy="5"
+							r="5"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.5"
+							vector-effect="non-scaling-stroke"
+						/><circle
+							class="hero-dot-ring hero-dot-ring--late"
+							cx="5"
+							cy="5"
+							r="5"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.5"
+							vector-effect="non-scaling-stroke"
+						/>{/if}</svg></button>
 		</span>
 	</p>
 
@@ -125,8 +148,11 @@
 	   breakpoint/zoom rounding. */
 	.hero-dot {
 		display: inline-block;
-		width: 0.19em;
-		height: 0.19em;
+		/* go2 beacon pass: 0.19em → 0.22em — the armed dot is the page's one
+		   replay affordance and must read from across the room. Still period-
+		   proportioned; the intro zoom only over-covers with a bigger glyph. */
+		width: 0.22em;
+		height: 0.22em;
 		vertical-align: baseline;
 		margin-bottom: 0.03em;
 		color: var(--primary);
@@ -171,10 +197,16 @@
 	   PLAYED, which reduced motion never does — and the reduce tier below
 	   still swaps scale for the round-1 opacity pulse as belt-and-suspenders
 	   (the affordance cue is assistive, so it keeps running). */
+	/* go2 beacon pass: SUPER-obvious tier — the heartbeat doubles its punch
+	   and the dot wears a sodium glow; the rings below radiate the metro
+	   "you are here" ping. The glow is em-scaled so desktop and mobile read
+	   identically loud. */
 	.hero-dot-armed .hero-dot {
 		animation: hero-dot-pulse 1.5s ease-in-out infinite;
 		transform-origin: center;
-		will-change: transform;
+		will-change: transform, filter;
+		filter: drop-shadow(0 0 0.09em color-mix(in srgb, var(--primary) 95%, transparent))
+			drop-shadow(0 0 0.28em color-mix(in srgb, var(--primary) 55%, transparent));
 	}
 
 	@keyframes hero-dot-pulse {
@@ -184,19 +216,67 @@
 			transform: scale(1);
 		}
 		14% {
-			transform: scale(1.5);
+			transform: scale(2.1);
 		}
 		28% {
 			transform: scale(1);
 		}
 		42% {
-			transform: scale(1.32);
+			transform: scale(1.65);
+		}
+	}
+
+	/* Station-beacon rings — two staggered pings expanding from the dot's
+	   edge and fading out. They live INSIDE the svg (overflow: visible) so
+	   they stay pixel-centered on the dot at every font size; non-scaling
+	   stroke keeps the line weight constant as they grow. They inherit the
+	   svg's heartbeat scale, so each ping surges with the beat — on purpose. */
+	.hero-dot-ring {
+		transform-box: fill-box;
+		transform-origin: center;
+		opacity: 0;
+		animation: hero-dot-ring 2.4s cubic-bezier(0.2, 0.55, 0.35, 1) infinite;
+		pointer-events: none;
+	}
+
+	.hero-dot-ring--late {
+		animation-delay: 1.2s;
+	}
+
+	@keyframes hero-dot-ring {
+		0% {
+			transform: scale(1);
+			opacity: 0.9;
+		}
+		70%,
+		100% {
+			transform: scale(4.6);
+			opacity: 0;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.hero-dot-armed .hero-dot {
 			animation: hero-dot-pulse-reduce 1.8s ease-in-out infinite;
+		}
+		/* Reduce tier: no expansion — one static halo breathing in opacity
+		   (fades are SAFE-ALWAYS; the affordance cue stays assistive). */
+		.hero-dot-ring {
+			animation: hero-dot-halo 1.8s ease-in-out infinite;
+			transform: scale(2.4);
+		}
+		.hero-dot-ring--late {
+			display: none;
+		}
+	}
+
+	@keyframes hero-dot-halo {
+		0%,
+		100% {
+			opacity: 0.55;
+		}
+		50% {
+			opacity: 0.15;
 		}
 	}
 
