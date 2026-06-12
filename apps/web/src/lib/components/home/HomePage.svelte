@@ -20,6 +20,7 @@
 	import { SectionHeading } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { initSectionMagnet } from '$lib/motion/utils/sectionMagnet.js';
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
@@ -90,8 +91,16 @@
 
 	onMount(() => {
 		if (!browser) return;
-		// Section bindings kept for future ambient effects; no setup
-		// currently active.
+		// go2/w5: soft section magnetism — on scroll settle, gently ease to
+		// the nearest home-section top when already close (desktop Lenis +
+		// mobile native; reduced motion keeps the magnet, settles instantly).
+		// Sections are queried lazily per settle so pin spacers / hero
+		// collapse are always measured fresh.
+		destroyFns.push(
+			initSectionMagnet(() =>
+				Array.from(document.querySelectorAll<HTMLElement>('[data-magnet-section]')),
+			),
+		);
 	});
 
 	onDestroy(() => {
@@ -101,21 +110,21 @@
 </script>
 
 <!-- Section 1: Hero — full-bleed, scroll-locked GSAP -->
-<section class="w-full">
+<section data-magnet-section class="w-full">
 	<HeroBanner {metroSvg} {hero} {heroAnim} {initialHeroData} />
 </section>
 
 <Separator variant="hazard" />
 
 <!-- Section 2: Manifesto — full-bleed, GSAP targets children by class -->
-<section class="w-full">
+<section data-magnet-section class="w-full">
 	<Manifesto {manifesto} />
 </section>
 
 <Separator variant="hazard" />
 
 <!-- Section 3: Featured Projects — rotated title LEFT -->
-<section bind:this={projectsSectionEl} class="home-section home-section--left">
+<section bind:this={projectsSectionEl} data-magnet-section class="home-section home-section--left">
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading={sectionProjects} />
 	</div>
@@ -130,7 +139,7 @@
 <Separator variant="hazard" />
 
 <!-- Section 4: Services — rotated title RIGHT, blueprint background spans full width -->
-<section bind:this={servicesSectionEl} class="home-section home-section--right relative">
+<section bind:this={servicesSectionEl} data-magnet-section class="home-section home-section--right relative">
 	<div class="absolute inset-0 -z-10 pointer-events-none">
 		<ServicesBlueprint />
 	</div>
@@ -148,7 +157,7 @@
 <Separator variant="hazard" />
 
 <!-- Section 5: Closer — rotated title LEFT (Terminus — D263 crescendo target) -->
-<section bind:this={closerSectionEl} class="home-section home-section--left">
+<section bind:this={closerSectionEl} data-magnet-section class="home-section home-section--left">
 	<div class="rotated-title rotated-title--left">
 		<SectionHeading heading={sectionTerminus} />
 	</div>
