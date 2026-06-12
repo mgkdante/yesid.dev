@@ -380,17 +380,13 @@ pre, code, table {
 /* Hero typewriter cursor (slice 17e-4). Global so the .typewriter-cursor
    activation class (added/removed from heroTypewriter.ts) can override it
    without the Svelte scoped-style specificity fight.
-   GO2-W5 signal-lamp cursor: the most-watched pixel blinks the second voice —
-   amber lamp in dark, amber ink in light (11.26:1 / 5.38:1). Never clickable,
-   so the yellow-is-never-interactive rule survives. */
+   GO2-W5d cursor law (operator): a terminal cursor matches the color of the
+   text it types — the NEXT STOP prompt types orange, so its cursor blinks
+   orange. currentColor inherits the prompt's own color in both themes. */
 .scroll-block-cursor {
   margin-left: 0.15em;
   opacity: 0;
-  color: var(--accent);
-}
-[data-theme="light"] .scroll-block-cursor,
-.theme-light .scroll-block-cursor {
-  color: var(--accent-text);
+  color: currentColor;
 }
 
 /* Typewriter cursor blink (slice 17e-4). Uses visibility instead of opacity
