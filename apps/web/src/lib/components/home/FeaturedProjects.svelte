@@ -36,6 +36,7 @@
 	import { siteLabels } from '$lib/content';
 	import type { Project, ProofReelContent, Service } from '$lib/types';
 	import { cursorGlow, cardParallax, magnetic } from '$lib/motion/actions';
+	import { Badge } from '$lib/components/ui/badge';
 
 	// slice-28.5 (#124): the resolved featured projects arrive as a prop from
 	// the home +page.server.ts load (repository -> adapter), replacing the
@@ -118,27 +119,20 @@
 		}
 	}
 
-	// Slice-23: abbreviate tech stack labels to mono codes for the stack line.
-	const TECH_ABBR: Record<string, string> = {
-		PostgreSQL: 'PG',
-		'SQL Server': 'SQL',
-		Python: 'PY',
-		DAX: 'DAX',
-		'Power BI': 'BI',
-		dbt: 'DBT',
-		'Apache Airflow': 'AIRFLOW',
-		Alembic: 'ALEM',
-		MySQL: 'MY',
-		SSMS: 'SSMS',
-		'T-SQL': 'T-SQL',
-		Retool: 'RT',
-		'REST API': 'API',
-		'Node.js': 'NODE',
-		'PL/pgSQL': 'PLSQL',
-	};
+	function formatEnvironment(environment?: string): string {
+		const value = environment?.trim();
+		if (!value) return '';
+		return value
+			.replace(/[-_]+/g, ' ')
+			.split(/\s+/)
+			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+			.join(' ');
+	}
 
-	function abbrev(tech: string): string {
-		return TECH_ABBR[tech] ?? tech.slice(0, 4).toUpperCase();
+	function projectMeta(project: Project): string {
+		return [project.location?.trim() ?? '', formatEnvironment(project.environment)]
+			.filter(Boolean)
+			.join(' · ');
 	}
 
 	// Embla carousel — infinite loop. The library handles slide cloning
@@ -188,6 +182,7 @@
 				{@const stations = projectStations(project)}
 				{@const service = stations[0]}
 				{@const gradient = fallbackGradient(project)}
+				{@const meta = projectMeta(project)}
 				<div class="embla__slide">
 					<div
 						class="proof-card group relative overflow-hidden"
@@ -282,16 +277,26 @@
 								<!-- The story line — the project's operator-written one-liner. -->
 								<p class="proof-excerpt" data-testid="proof-excerpt">{excerpt}</p>
 
+								{#if project.tags.length > 0}
+									<div class="proof-project-tags" data-testid="proof-project-tags">
+										{#each project.tags as tag}
+											<span use:magnetic={{ strength: 2, radius: 30 }}>
+												<Badge variant="tag-active" size="xs" data-testid="proof-project-tag">{tag}</Badge>
+											</span>
+										{/each}
+									</div>
+								{/if}
+
+								{#if meta}
+									<div class="proof-project-meta" data-testid="proof-project-meta">{meta}</div>
+								{/if}
+
 								<!-- Tech stack as a quiet mono line, pinned above the footer. -->
-								<div class="proof-stack flex flex-wrap items-center gap-x-2">
-									{#each project.stack as tech, ti}
-										<span
-											data-testid="proof-tag"
-											class="proof-tag"
-											use:magnetic={{ strength: 8, radius: 70 }}
-										>{abbrev(tech)}{ti < project.stack.length - 1 ? ' ·' : ''}</span>
-									{/each}
-								</div>
+								{#if project.stack.length > 0}
+									<div class="proof-stack" data-testid="proof-stack-line">
+										{project.stack.join(' · ')}
+									</div>
+								{/if}
 							</div>
 
 							<div class="proof-footer">
@@ -683,16 +688,33 @@
 		overflow: hidden;
 	}
 
-	/* Tech stack line — quiet mono codes pinned just above the footer rule. */
-	.proof-stack {
-		margin-top: auto;
+	.proof-project-tags {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
 	}
 
-	.proof-tag {
+	.proof-project-meta {
+		font-family: var(--font-mono);
+		font-size: var(--text-caption);
+		line-height: 1.35;
+		color: var(--muted-foreground);
+		letter-spacing: 0.04em;
+	}
+
+	/* Tech stack line — quiet full names pinned just above the footer rule. */
+	.proof-stack {
+		margin-top: auto;
+		width: 100%;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
 		color: var(--muted-foreground);
-		letter-spacing: 0.1em;
+		letter-spacing: 0.04em;
 		font-weight: 500;
 	}
 
@@ -764,7 +786,8 @@
 		.proof-metric-label {
 			font-size: var(--text-mono);
 		}
-		.proof-tag {
+		.proof-stack,
+		.proof-project-meta {
 			font-size: var(--text-mono);
 		}
 		.proof-metric-before {
@@ -934,7 +957,8 @@
 		.proof-metric-label {
 			font-size: var(--text-caption);
 		}
-		.proof-tag {
+		.proof-stack,
+		.proof-project-meta {
 			font-size: var(--text-caption);
 		}
 		.proof-metric-before {
