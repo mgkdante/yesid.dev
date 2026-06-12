@@ -91,11 +91,14 @@
 	<meta name="twitter:image" content={ogImageAbsolute} />
 	<meta name="twitter:image:alt" content={ogImageAlt} />
 
-	<!-- hreflang per published locale + x-default -->
-	{#each PUBLISHED_LOCALES as l}
-		<link rel="alternate" hreflang={l} href={canonicalFor(pathForCanonical, l)} />
-	{/each}
-	<link rel="alternate" hreflang="x-default" href={canonicalFor(pathForCanonical, 'en')} />
+	<!-- hreflang per published locale + x-default. Mono-language pages (blog
+	     post bodies, AM2.5) have no locale alternates — suppressed entirely. -->
+	{#if seo.singleLocale !== true}
+		{#each PUBLISHED_LOCALES as l (l)}
+			<link rel="alternate" hreflang={l} href={canonicalFor(pathForCanonical, l)} />
+		{/each}
+		<link rel="alternate" hreflang="x-default" href={canonicalFor(pathForCanonical, 'en')} />
+	{/if}
 </svelte:head>
 
 {#if seo.jsonLd && seo.jsonLd.length > 0}

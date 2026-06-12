@@ -71,6 +71,11 @@ describe('SeoHead — tag emission', () => {
 		expect(getLink('alternate', { name: 'hreflang', value: 'x-default' })).not.toBeNull();
 	});
 
+	it('suppresses the hreflang cluster for singleLocale pages (blog posts, AM2.5)', () => {
+		render(SeoHead, { props: { seo: { ...validSeo, singleLocale: true }, locale: 'en' } });
+		expect(document.head.querySelectorAll('link[rel="alternate"]').length).toBe(0);
+	});
+
 	it('falls back to locale-specific default OG image when ogImage is omitted', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'en' } });
 		const ogImage = getMeta('property', 'og:image');

@@ -98,6 +98,19 @@
 							<Badge variant="tag-active" size="xs" style="border-color: color-mix(in srgb, {accentColor} 30%, transparent); background: color-mix(in srgb, {accentColor} 15%, transparent); color: {accentColor}">{tag}</Badge>
 						</span>
 					{/each}
+					<!-- slice-28.6 AM2.5: original-language chip — only when the post's
+					     body language differs from the page locale (e.g. EN posts
+					     listed under /fr/blog). Invisible on EN pages today. -->
+					{#if post.lang !== locale}
+						<Badge
+							variant="outline"
+							size="xs"
+							data-testid="blog-lang-chip"
+							class="font-mono uppercase tracking-wider"
+						>
+							{post.lang}
+						</Badge>
+					{/if}
 				</div>
 				<time datetime={post.date} class="mt-2 block font-mono text-xs text-[var(--muted-foreground)]">
 					{post.date}

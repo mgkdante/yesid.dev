@@ -83,6 +83,17 @@ describe('BlogRow', () => {
 		expect(getByText('2025-01-15')).toBeTruthy();
 	});
 
+	it('shows a lang chip only when the post language differs from the page locale (slice-28.6)', () => {
+		const en = render(BlogRow, { props: { post: makePost({ lang: 'en' }), index: 0 } });
+		expect(en.queryByTestId('blog-lang-chip')).toBeNull(); // en post on en page
+
+		const fr = render(BlogRow, {
+			props: { post: makePost({ lang: 'en' }), index: 0 },
+			context: new Map([[Symbol.for('yesid.locale'), () => 'fr']]),
+		});
+		expect(fr.getByTestId('blog-lang-chip').textContent?.trim()).toBe('en');
+	});
+
 	it('localizes internal post urls inside a fr provider; external urls untouched (slice-28.6)', () => {
 		const frContext = () => new Map([[Symbol.for('yesid.locale'), () => 'fr']]);
 		const internal = render(BlogRow, {
