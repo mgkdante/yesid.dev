@@ -303,9 +303,11 @@
 		margin-bottom: 1.5rem;
 	}
 
+	/* go2/w5 legibility pass (here and below): engine chrome steps up one full
+	   rung of the site type scale — tokens only, never raw px. */
 	.mode-btn {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		letter-spacing: 0.4px;
 		padding: 0.6rem 1rem;
 		background: var(--background);
@@ -350,7 +352,7 @@
 		display: flex;
 		align-items: center;
 		gap: 6px;
-		height: 14px;
+		height: 16px;
 	}
 
 	.legend-dot {
@@ -363,7 +365,7 @@
 
 	.legend-name {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		color: var(--legend-color);
@@ -378,7 +380,7 @@
 
 	.legend-teach {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		color: var(--engine-teach-ink);
 	}
 
@@ -421,7 +423,7 @@
 
 	.engine-back {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--muted-foreground);
 		background: none;
 		border: none;
@@ -435,7 +437,7 @@
 
 	.engine-view-toggle {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--primary);
 		background: none;
 		border: 1px solid var(--primary);

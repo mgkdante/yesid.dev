@@ -66,6 +66,9 @@ export const FRAME_SIZES = {
 	phone: { w: 180, h: 320 },
 } as const;
 
+// go2/w5 legibility pass: shallow bars (infra chips, base bars) are h ≥ 26
+// frame units everywhere — the bumped slot type (role --text-micro 10px +
+// name --text-caption 12px) needs the room at every rendered frame scale.
 export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 	// ── The 3 seeds (roles upgraded to round-4 story voice). ────────────────
 	// Browser dashboard: topbar + 2 KPI cards (interface ×3 — three SvelteKit
@@ -78,8 +81,8 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 			{ layer: 'interface', x: 12, y: 38, w: 166, h: 50, role: 'this revenue card' },
 			{ layer: 'interface', x: 190, y: 38, w: 158, h: 50, role: 'this traffic card' },
 			{ layer: 'logic', x: 12, y: 100, w: 336, h: 88, role: 'feeds the chart live numbers' },
-			{ layer: 'data', x: 12, y: 200, w: 336, h: 22, role: 'where the numbers live' },
-			{ layer: 'infra', x: 240, y: 232, w: 108, h: 20, role: 'ships it anywhere' },
+			{ layer: 'data', x: 12, y: 200, w: 336, h: 26, role: 'where the numbers live' },
+			{ layer: 'infra', x: 240, y: 232, w: 108, h: 26, role: 'ships it anywhere' },
 		],
 	},
 	// Browser pipeline: the operator's dual-Python case — source AND transform
@@ -91,7 +94,7 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 			{ layer: 'logic', x: 12, y: 40, w: 100, h: 120, role: 'pulls the raw feeds' },
 			{ layer: 'logic', x: 130, y: 40, w: 100, h: 120, role: 'cleans & reshapes' },
 			{ layer: 'data', x: 248, y: 40, w: 100, h: 120, role: 'lands the clean tables' },
-			{ layer: 'infra', x: 12, y: 176, w: 110, h: 20, role: 'runs the whole line' },
+			{ layer: 'infra', x: 12, y: 176, w: 110, h: 26, role: 'runs the whole line' },
 		],
 	},
 	// Phone site: hero block (interface), three content sections (logic —
@@ -104,7 +107,7 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 			{ layer: 'logic', x: 12, y: 138, w: 156, h: 34, role: 'the services section, typed' },
 			{ layer: 'logic', x: 12, y: 180, w: 156, h: 34, role: 'the projects section, typed' },
 			{ layer: 'logic', x: 12, y: 222, w: 156, h: 34, role: 'the contact form, typed' },
-			{ layer: 'infra', x: 40, y: 276, w: 100, h: 20, role: 'served from the edge' },
+			{ layer: 'infra', x: 40, y: 276, w: 100, h: 26, role: 'served from the edge' },
 		],
 	},
 	// ── Round 4: the remaining 9 — every archetype previews as a product. ───
@@ -115,7 +118,7 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slots: [
 			{ layer: 'logic', x: 12, y: 40, w: 220, h: 120, role: 'runs the job, hands-free' },
 			{ layer: 'data', x: 248, y: 40, w: 100, h: 120, role: 'logs every run' },
-			{ layer: 'infra', x: 12, y: 176, w: 150, h: 20, role: 'fires it on schedule' },
+			{ layer: 'infra', x: 12, y: 176, w: 150, h: 26, role: 'fires it on schedule' },
 		],
 	},
 	// DB admin window: the tables themselves + the migration rail beside them
@@ -126,7 +129,7 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slots: [
 			{ layer: 'data', x: 12, y: 40, w: 220, h: 148, role: 'the tables, source of truth' },
 			{ layer: 'data', pick: 1, x: 248, y: 40, w: 100, h: 148, role: 'migrates the schema safely' },
-			{ layer: 'infra', x: 12, y: 204, w: 160, h: 20, role: 'same database, any machine' },
+			{ layer: 'infra', x: 12, y: 204, w: 160, h: 26, role: 'same database, any machine' },
 		],
 	},
 	// Whole-system window: site topbar, pipeline lane, dashboard panel
@@ -139,7 +142,7 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 			{ layer: 'logic', x: 12, y: 38, w: 166, h: 98, role: 'moves & cleans the data' },
 			{ layer: 'data', pick: 1, x: 190, y: 38, w: 158, h: 98, role: 'the boardroom dashboard' },
 			{ layer: 'data', x: 12, y: 148, w: 336, h: 26, role: 'one database feeds it all' },
-			{ layer: 'infra', x: 240, y: 204, w: 108, h: 20, role: 'every piece runs the same' },
+			{ layer: 'infra', x: 240, y: 204, w: 108, h: 26, role: 'every piece runs the same' },
 		],
 	},
 	// Team app: sidebar of screens, a checked form, the records table.
@@ -160,7 +163,7 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 			{ layer: 'interface', x: 12, y: 36, w: 156, h: 112, role: 'the shop window' },
 			{ layer: 'logic', x: 12, y: 160, w: 156, h: 40, role: 'keeps checkout honest' },
 			{ layer: 'data', x: 12, y: 212, w: 156, h: 32, role: 'remembers stock & orders' },
-			{ layer: 'infra', x: 40, y: 276, w: 100, h: 20, role: 'fast for every visitor' },
+			{ layer: 'infra', x: 40, y: 276, w: 100, h: 26, role: 'fast for every visitor' },
 		],
 	},
 	// Health console: watcher lane + health board, TWO infra chips with two
@@ -171,8 +174,8 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slots: [
 			{ layer: 'logic', x: 12, y: 40, w: 166, h: 120, role: 'watches every run' },
 			{ layer: 'data', x: 190, y: 40, w: 158, h: 120, role: 'the health board' },
-			{ layer: 'infra', x: 12, y: 176, w: 160, h: 20, role: 'the boxes it runs in' },
-			{ layer: 'infra', pick: 1, x: 190, y: 176, w: 158, h: 20, role: 'reruns & alerts' },
+			{ layer: 'infra', x: 12, y: 176, w: 160, h: 26, role: 'the boxes it runs in' },
+			{ layer: 'infra', pick: 1, x: 190, y: 176, w: 158, h: 26, role: 'reruns & alerts' },
 		],
 	},
 	// Query console over BOTH stores (pick 1 = SQL Server beside Postgres).
@@ -193,7 +196,7 @@ export const PREVIEW_CONFIGS: Record<string, PreviewConfig> = {
 		slots: [
 			{ layer: 'data', x: 12, y: 40, w: 220, h: 148, role: 'the Monday report, drawn' },
 			{ layer: 'data', pick: 1, x: 248, y: 40, w: 100, h: 148, role: 'where the numbers live' },
-			{ layer: 'logic', x: 12, y: 204, w: 200, h: 22, role: 'compiles it overnight' },
+			{ layer: 'logic', x: 12, y: 204, w: 200, h: 26, role: 'compiles it overnight' },
 		],
 	},
 	// Storefront with a dashboard heart: shop topbar, sales chart (pick 1 =
@@ -260,13 +263,13 @@ const COMPOSED_BANDS: Record<'browser' | 'phone', Record<StackLayer, { y: number
 		interface: { y: 26, h: 64 },
 		logic: { y: 102, h: 64 },
 		data: { y: 178, h: 36 },
-		infra: { y: 230, h: 20 },
+		infra: { y: 230, h: 26 },
 	},
 	phone: {
 		interface: { y: 36, h: 104 },
 		logic: { y: 152, h: 64 },
 		data: { y: 228, h: 34 },
-		infra: { y: 276, h: 20 },
+		infra: { y: 276, h: 26 },
 	},
 };
 

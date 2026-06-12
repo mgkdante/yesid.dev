@@ -462,7 +462,10 @@
 	}
 
 	/* Finale (4c): the journey stepper — quiet mono row, the lit station in
-	   brand ink. An affordance, not chrome: no borders, no widget. */
+	   brand ink. An affordance, not chrome: no borders, no widget.
+	   go2/w5 legibility pass (here and below): every engine size steps up one
+	   full rung of the site type scale, via tokens only — caption→small,
+	   11px→mono, 10px→caption, 9px→micro. */
 	.journey-steps {
 		list-style: none;
 		display: flex;
@@ -472,7 +475,7 @@
 		margin: 0;
 		padding: 0;
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		color: var(--muted-foreground);
 	}
 
@@ -491,11 +494,11 @@
 	.journey-step-num {
 		display: inline-grid;
 		place-items: center;
-		width: 15px;
-		height: 15px;
+		width: 17px;
+		height: 17px;
 		border: 1px solid currentColor;
 		border-radius: 50%;
-		font-size: 9px;
+		font-size: var(--text-micro);
 		line-height: 1;
 	}
 
@@ -504,22 +507,24 @@
 	}
 
 	/* go2/w5 §3: fixed teach slot — reserved height (1 line wide / 2 lines
-	   below 1024px) so a longer line never reflows the chips below it.
-	   Taste round 2 (fit audit): the 2-line reservation now covers up to
-	   1023px — full teach lines (~115ch) wrap once between 768–1023px and
-	   used to push the chips down on hover. */
+	   below 1280px) so a longer line never reflows the chips below it.
+	   Taste round 2 (fit audit) established the 2-line reservation; the
+	   legibility pass moves its ceiling 1023 → 1279: at --text-small (14px
+	   mono) a full teach line (~115ch ≈ 966px) wraps once on content columns
+	   narrower than ~1050px, so the 1024–1279 range needs the reservation
+	   too. */
 	.tech-teach-line {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		line-height: 1.5;
 		color: var(--engine-teach-ink);
 		margin: 0;
-		min-height: calc(12px * 1.5);
+		min-height: calc(var(--text-small) * 1.5);
 	}
 
-	@media (max-width: 1023px) {
+	@media (max-width: 1279px) {
 		.tech-teach-line {
-			min-height: calc(12px * 1.5 * 2);
+			min-height: calc(var(--text-small) * 1.5 * 2);
 		}
 	}
 
@@ -531,7 +536,7 @@
 
 	.layer-label {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		color: var(--muted-foreground);
@@ -558,7 +563,7 @@
 
 	.tech-chip {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		padding: 0.35rem 0.75rem;
 		border: 1px solid var(--border);
 		border-radius: 999px;
@@ -611,7 +616,7 @@
 		align-items: center;
 		gap: 8px;
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		font-variant-numeric: tabular-nums;
 		color: var(--foreground);
 		margin: 0;
@@ -625,7 +630,7 @@
 
 	.pick-tool {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		color: var(--muted-foreground);
 		background: none;
 		border: 1px solid var(--border);
@@ -702,14 +707,14 @@
 
 	.match-title {
 		font-family: var(--font-heading);
-		font-size: 0.95rem;
+		font-size: var(--text-subheading);
 		font-weight: 700;
 		color: var(--foreground);
 	}
 
 	.match-tag {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		letter-spacing: 0.5px;
 		text-transform: uppercase;
 		color: var(--primary);
@@ -720,19 +725,19 @@
 
 	.match-parts {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		color: var(--secondary-foreground);
 	}
 
 	.match-reason {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		color: var(--muted-foreground);
 	}
 
 	.match-hook {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		color: var(--muted-foreground);
 	}
 
@@ -809,17 +814,18 @@
 	   layer names, no longer the headline. */
 	.shape-kicker {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		letter-spacing: 0.5px;
 		color: var(--muted-foreground);
 		margin: 0;
 	}
 
 	/* The product sentence — the card now leads with what this build IS in
-	   market words; heading voice, sized to carry the card. */
+	   market words; heading voice, sized to carry the card. Legibility pass:
+	   it's the headline of the card, so it wears the site's heading token. */
 	.shape-phrase {
 		font-family: var(--font-heading);
-		font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+		font-size: var(--text-heading);
 		font-weight: 700;
 		line-height: 1.3;
 		letter-spacing: -0.01em;
@@ -832,7 +838,7 @@
 	   grammar for every blueprint ⇄ product flip. */
 	.shape-view-toggle {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--primary);
 		background: none;
 		border: 1px solid var(--primary);
@@ -865,7 +871,7 @@
 	/* The matrix reading — re-keyed per coverage change, eases in 2px. */
 	.shape-reading {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--foreground);
 		margin: 0;
 		animation: shape-note-in 180ms ease-out;
@@ -890,7 +896,7 @@
 		margin: 0;
 		padding: 0;
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 	}
 
 	.roster-name {
@@ -903,14 +909,14 @@
 
 	.shape-next {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--engine-teach-ink);
 		margin: 0;
 	}
 
 	.shape-link {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--primary);
 		text-decoration: underline;
 		text-underline-offset: 3px;
@@ -923,7 +929,7 @@
 		align-items: center;
 		gap: 7px;
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		margin: 0;
 	}
 
@@ -946,7 +952,7 @@
 	.rail-label {
 		grid-column: 1 / -1;
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: var(--text-mono);
 		letter-spacing: 0.5px;
 		color: var(--muted-foreground);
 		margin: 0.25rem 0 0;

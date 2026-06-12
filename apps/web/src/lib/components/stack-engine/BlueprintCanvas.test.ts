@@ -44,20 +44,21 @@ describe('BlueprintCanvas', () => {
 	});
 
 	it('taste round 2 fit audit: long titles on narrow layouts clamp via textLength', () => {
-		// One box per row → frame inner width 160 + 48 − 16 = 192; the
-		// 21-char title estimates 193.2px → the clamp engages at 192.
+		// One box per row → frame inner width 192 + 48 − 16 = 224 (legibility
+		// pass: BOX_W 192, title at --text-small + 2px tracking ≈ 10.4px/char);
+		// the 28-char title estimates 291.2px → the clamp engages at 224.
 		const narrow: ArchetypeTechLink[] = [
 			{ id: 'python', layer: 'logic', sort: 1 },
 			{ id: 'postgresql', layer: 'data', sort: 2 },
 			{ id: 'github-actions', layer: 'infra', sort: 3 },
 		];
 		render(BlueprintCanvas, {
-			props: { links: narrow, title: 'An automated workflow', animate: false },
+			props: { links: narrow, title: 'A report that writes itself', animate: false },
 		});
 		const title = screen
 			.getByTestId('blueprint-stamp')
 			.querySelector('.bp-stamp-title')!;
-		expect(title.getAttribute('textLength')).toBe('192');
+		expect(title.getAttribute('textLength')).toBe('224');
 		expect(title.getAttribute('lengthAdjust')).toBe('spacingAndGlyphs');
 	});
 
@@ -119,20 +120,21 @@ describe('BlueprintCanvas', () => {
 			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
 		});
 		const canvas = screen.getByTestId('blueprint-canvas') as unknown as SVGSVGElement;
-		// BOX_W 160 + 2×PAD 24 + LABEL_GUTTER 64 (go2/w5 row labels) — a
+		// BOX_W 192 + 2×PAD 24 + LABEL_GUTTER 84 (legibility pass) — a
 		// one-box-per-row blueprint must NOT blow up to 720px wide (operator
-		// playtest: "one node fills the viewport"); 272px stays mobile-safe.
-		expect(canvas.style.maxWidth).toBe('272px');
+		// playtest: "one node fills the viewport"); 324px stays mobile-safe
+		// (≤ the 327px content column of a 375px viewport).
+		expect(canvas.style.maxWidth).toBe('324px');
 	});
 
 	it('GO-w2t5 at-a-glance: viewBox reflects the tightened geometry', () => {
 		render(BlueprintCanvas, {
 			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
 		});
-		// 4 rows: height 4×48 + 3×48 = 336; + STAMP_H 36 + 2×PAD 48 = 420.
-		// go2/w5: LABEL_GUTTER 64 extends the LEFT edge only (row labels).
+		// 4 rows: height 4×56 + 3×48 = 368; + STAMP_H 36 + 2×PAD 48 = 452.
+		// go2/w5: LABEL_GUTTER 84 extends the LEFT edge only (row labels).
 		expect(screen.getByTestId('blueprint-canvas').getAttribute('viewBox')).toBe(
-			'-88 -24 272 420',
+			'-108 -24 324 452',
 		);
 	});
 
