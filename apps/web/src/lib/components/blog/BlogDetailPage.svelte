@@ -23,7 +23,9 @@
   const locale = getLocale();
   import { blogDetailContent } from '$lib/content/blog';
 
-  const readingModeLabel = resolveLocale(blogDetailContent.page.readingMode, locale);
+  // go2/w4: reading mode removed per operator QA — the default reading
+  // experience is the only one. (blogDetailContent.page.readingMode stays in
+  // the content module, dormant, to avoid CMS churn.)
   const tocSectionTitle = resolveLocale(blogDetailContent.page.tocSectionTitle, locale);
   const metaCategoryLabel = resolveLocale(blogDetailContent.page.metaCategory, locale);
   const metaWordsLabel = resolveLocale(blogDetailContent.page.metaWords, locale);
@@ -54,9 +56,6 @@
   const accentColor = $derived(
     post.category === 'personal' ? 'var(--accent-text)' : 'var(--primary)'
   );
-
-  // Reading mode — dims everything except left panel + blog content
-  let readingMode = $state(false);
 
   // Shared active heading state — drives TOC + pill
   let activeHeadingId = $state('');
@@ -108,7 +107,7 @@
   // Edge label sizing: font-size calculated so rotated text spans exactly 100dvh.
 </script>
 
-<article data-testid="blog-detail-page" class:reading-active={readingMode} style="--blog-accent: {accentColor};">
+<article data-testid="blog-detail-page" style="--blog-accent: {accentColor};">
   <!-- Full-bleed header -->
   <BlogDetailHeader {post} {svgContent} {accentColor} {readingTime} {postIndex} {blogPage} />
 
@@ -121,20 +120,6 @@
     <div class="toc-column">
       <StickyPanel top="5rem">
         <div class="toc-panel toc-scroll" use:scrollChain>
-          <!-- Reading mode switch -->
-          <label class="reading-toggle">
-            <span class="reading-toggle__label">{readingModeLabel}</span>
-            <button
-              class="reading-switch"
-              class:reading-switch--on={readingMode}
-              onclick={() => (readingMode = !readingMode)}
-              role="switch"
-              aria-checked={readingMode}
-            >
-              <span class="reading-switch__thumb"></span>
-            </button>
-          </label>
-
           <CollapsibleSection title={tocSectionTitle} open={true}>
             <nav class="toc-nav">
               {#each headings as heading}
@@ -218,8 +203,16 @@
     display: none;
   }
 
+  /* go2/w4 operator QA: classic blog measure on BOTH breakpoints — the
+     prose card is capped at a readable column and centered. 46rem box
+     (card padding included) keeps the inner text at the .prose-dark 72ch
+     cap or below (~65-75ch at the 1.0625-1.125rem prose sizes), consistent
+     with the --container-* token family. */
   .content-column {
     min-width: 0;
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
   }
 
   @media (min-width: 1024px) {
@@ -352,68 +345,5 @@
     padding-bottom: 1rem;
   }
 
-  /* ── Reading mode switch ────────────────────────────────────── */
-  .reading-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    margin-bottom: 1rem;
-    cursor: pointer;
-  }
-
-  .reading-toggle__label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--foreground) 40%, transparent);
-    user-select: none;
-  }
-
-  .reading-switch {
-    position: relative;
-    width: 36px;
-    height: 20px;
-    border-radius: 10px;
-    background: color-mix(in srgb, var(--foreground) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
-    cursor: pointer;
-    padding: 0;
-    transition: background var(--duration-fast) var(--ease-default),
-                border-color var(--duration-fast) var(--ease-default);
-  }
-
-  .reading-switch--on {
-    background: var(--blog-accent, var(--primary));
-    border-color: var(--blog-accent, var(--primary));
-  }
-
-  .reading-switch__thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--foreground);
-    transition: transform var(--duration-fast) var(--ease-default);
-  }
-
-  .reading-switch--on .reading-switch__thumb {
-    transform: translateX(16px);
-  }
-
-  /* ── Reading mode: dim everything except left panel + content ── */
-  :global(.reading-active) :global([data-testid="blog-detail-header"]),
-  :global(.reading-active) .body-edge {
-    opacity: 0.1;
-    transition: opacity 0.3s ease;
-  }
-
-  :global(.reading-active) ~ :global(div:has(> footer)),
-  :global(.reading-active) ~ :global(footer) {
-    opacity: 0.1;
-    transition: opacity 0.3s ease;
-  }
+  /* go2/w4: reading-mode switch + dim styles removed per operator QA. */
 </style>

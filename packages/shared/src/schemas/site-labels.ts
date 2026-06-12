@@ -17,6 +17,8 @@ export const SiteLabelsSchema = z.object({
 	ui: z.object({
 		markerService: LocalizedStringSchema,
 		markerFeatured: LocalizedStringSchema,
+		/** "← All Projects" back-to-listing link on /projects/[slug] (go2/w4). */
+		backToProjects: LocalizedStringSchema,
 		errorStatusNote: LocalizedStringSchema,
 		blogEditionTemplate: LocalizedStringSchema,
 		copyrightTemplate: LocalizedStringSchema,

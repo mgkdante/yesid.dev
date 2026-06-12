@@ -103,8 +103,10 @@
 	.terminal-row:hover {
 		background-color: color-mix(in srgb, var(--primary) 5%, transparent);
 	}
+	/* go2/w4: accent → accent-text — AA on the now-theme-following terminal
+	   surface (dark byte-identical, light gets the AA gold). */
 	.terminal-row:hover .terminal-row-action {
-		color: var(--accent);
+		color: var(--accent-text);
 	}
 
 	.terminal-line-num {
@@ -137,7 +139,7 @@
 		transition: color var(--duration-normal);
 	}
 	.terminal-row-action-primary {
-		color: var(--accent);
+		color: var(--accent-text);
 		font-weight: 600;
 	}
 

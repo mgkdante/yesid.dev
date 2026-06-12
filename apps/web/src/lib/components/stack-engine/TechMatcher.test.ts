@@ -1,6 +1,8 @@
-// TechMatcher tests (slice-29 Task 9) — written FIRST per TDD.
+// TechMatcher tests (slice-29 Task 9, AND-rewrite go2/w4) — written FIRST per TDD.
 // Compose-as-matching: chips grouped by layer, picks light archetype match
 // cards, and an unusual combo gets a CTA — never a blank state.
+// go2/w4: matching is AND — every pick must be in a card's stack, so more
+// picks narrow the rail (and reach zero-match more often).
 
 import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
@@ -74,7 +76,7 @@ describe('TechMatcher chips', () => {
 });
 
 describe('TechMatcher match cards', () => {
-	it('lights archetype cards with "<title> — <matched>/<stackSize>" sorted by coverage', async () => {
+	it('lights archetype cards with "<title> — <matched>/<stackSize>" ranked closest-to-complete', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
@@ -91,6 +93,32 @@ describe('TechMatcher match cards', () => {
 		expect(screen.getByTestId(`match-card-${top.slug}`).textContent).toContain(
 			`— ${top.matched.length}/${top.matched.length + top.missing.length}`,
 		);
+	});
+
+	it('AND contract: every rendered card contains every picked tech, and more picks narrow the rail', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		const afterOne = screen
+			.getAllByTestId(/^match-card-/)
+			.map((c) => c.getAttribute('data-testid')!);
+
+		await fireEvent.click(screen.getByTestId('tech-chip-sveltekit'));
+		const afterTwo = screen
+			.getAllByTestId(/^match-card-/)
+			.map((c) => c.getAttribute('data-testid')!);
+
+		// Narrowing, never widening — the operator's "more clicks, fewer products".
+		expect(afterTwo.length).toBeLessThanOrEqual(afterOne.length);
+		expect(afterTwo.every((id) => afterOne.includes(id))).toBe(true);
+
+		// Every surviving card's archetype carries BOTH picks.
+		for (const id of afterTwo) {
+			const slug = id.replace('match-card-', '');
+			const stack = stackArchetypes.find((a) => a.slug === slug)!.tech.map((l) => l.id);
+			expect(stack).toContain('postgresql');
+			expect(stack).toContain('sveltekit');
+		}
 	});
 
 	it('clicking a match card opens that archetype blueprint', async () => {
@@ -139,11 +167,26 @@ describe('TechMatcher zero-match state', () => {
 		expect(link?.getAttribute('href')).toBe('/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId, secondUnmatchedId] }));
 	});
 
-	it('zero-match card disappears once a pick matches an archetype', async () => {
+	it('AND contract: adding a matchable pick on top of an unmatched one stays zero-match', async () => {
+		// Under AND, a single out-of-catalogue pick poisons every combo — the
+		// warm CTA must hold even when a popular tech joins it.
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
 		expect(screen.getByTestId('zero-match-cta')).toBeTruthy();
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		expect(screen.getByTestId('zero-match-cta')).toBeTruthy();
+		expect(screen.queryAllByTestId(/^match-card-/)).toHaveLength(0);
+	});
+
+	it('zero-match card disappears once the picks fit an archetype again', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
+		expect(screen.getByTestId('zero-match-cta')).toBeTruthy();
+		// Toggle the unmatched pick OFF, then pick a catalogue tech — the picks
+		// are a subset of data-pipeline's stack again.
+		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
 		expect(screen.queryByTestId('zero-match-cta')).toBeNull();
 		expect(screen.getByTestId('match-card-data-pipeline')).toBeTruthy();
