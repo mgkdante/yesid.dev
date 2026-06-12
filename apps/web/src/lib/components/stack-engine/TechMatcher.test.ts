@@ -321,6 +321,80 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		);
 	});
 
+	// ── Round 3: the build shape IS a blueprint. ──────────────────────────
+	it('round 3: the card draws BOTH mini-blueprint variants (wide + stacked) from the first pick', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+
+		const card = screen.getByTestId('build-shape');
+		// CSS swaps them at 768px; both live in the DOM (bp-pair-list precedent).
+		const wide = card.querySelector('[data-testid="shape-blueprint"]')!;
+		const stacked = card.querySelector('[data-testid="shape-blueprint-stacked"]')!;
+		expect(wide).toBeTruthy();
+		expect(stacked).toBeTruthy();
+
+		// One pick → 1 solid box + 3 ghosted layers, in EACH variant.
+		for (const svg of [wide, stacked]) {
+			expect(svg.querySelectorAll('.sbp-box-solid')).toHaveLength(1);
+			expect(svg.querySelectorAll('.sbp-box-ghost')).toHaveLength(3);
+		}
+		// The drawing teaches the gaps in established annotation voice.
+		expect(wide.textContent).toContain('+ add an interface layer');
+		expect(wide.textContent).toContain('+ add a logic layer');
+		expect(wide.textContent).toContain('+ add an infra layer');
+	});
+
+	it('round 3: picking into a missing layer flips its ghost solid in the drawing (and back on unpick)', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId('tech-chip-node-js'));
+
+		const wide = () =>
+			screen.getByTestId('build-shape').querySelector('[data-testid="shape-blueprint"]')!;
+		expect(wide().querySelector('[data-testid="sbp-ghost-data"]')).toBeTruthy();
+		expect(wide().querySelector('[data-testid="sbp-box-postgresql"]')).toBeNull();
+
+		// The flip the operator loves — ghost out, solid (settle-popping) box in.
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		expect(wide().querySelector('[data-testid="sbp-ghost-data"]')).toBeNull();
+		const solid = wide().querySelector('[data-testid="sbp-box-postgresql"]')!;
+		expect(solid.classList.contains('sbp-box-solid')).toBe(true);
+		expect(wide().querySelectorAll('.sbp-box-solid')).toHaveLength(2);
+		expect(wide().querySelectorAll('.sbp-box-ghost')).toHaveLength(2);
+
+		// Unpick → the placeholder returns; the drawing never lies.
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		expect(wide().querySelector('[data-testid="sbp-ghost-data"]')).toBeTruthy();
+		expect(wide().querySelectorAll('.sbp-box-ghost')).toHaveLength(3);
+	});
+
+	it('round 3: complete coverage graduates the drawing — no ghosts, REV A on the title block', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		for (const id of ['sveltekit', 'rest-api', 'postgresql', 'docker']) {
+			await fireEvent.click(screen.getByTestId(`tech-chip-${id}`));
+		}
+		const wide = screen
+			.getByTestId('build-shape')
+			.querySelector('[data-testid="shape-blueprint"]')!;
+		expect(wide.querySelectorAll('.sbp-box-solid')).toHaveLength(4);
+		expect(wide.querySelectorAll('.sbp-box-ghost')).toHaveLength(0);
+		expect(wide.querySelectorAll('.sbp-connector-ghost')).toHaveLength(0);
+		expect(wide.textContent).toContain('REV A · 4 parts · 4/4 layers');
+	});
+
+	it('round 3: the drawing adds no anchors — the card still has exactly ONE <a> (pinned href)', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		const links = screen.getByTestId('build-shape').querySelectorAll('a');
+		expect(links).toHaveLength(1);
+		expect(links[0].getAttribute('href')).toBe(
+			'/contact?bp=' + encodeBlueprint({ archetype: null, techs: ['postgresql'] }),
+		);
+	});
+
 	it('card leaves only when the last pick leaves', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });

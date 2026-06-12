@@ -4,7 +4,7 @@
 import { describe, it, expect } from 'vitest';
 import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
 import type { TechStackItem } from '$lib/types';
-import { composeStackShape, readShape, SHAPE_READINGS } from './stack-shape';
+import { composeStackShape, layerArticle, readShape, SHAPE_READINGS } from './stack-shape';
 import { techStackItems } from '$lib/content/tech-stack';
 
 // Minimal fixture items — only id + layer matter to the composer.
@@ -93,5 +93,14 @@ describe('readShape — the coverage matrix is TOTAL (taste round 2)', () => {
 
 	it('empty coverage (defensive — layerless-only picks) gets a prompt, never a blank', () => {
 		expect(readShape([])).toContain('no layers covered yet');
+	});
+});
+
+describe('layerArticle — one source for the gap line AND the ghost annotations (round 3)', () => {
+	it('an interface / a logic / a data / an infra', () => {
+		expect(layerArticle('interface')).toBe('an');
+		expect(layerArticle('logic')).toBe('a');
+		expect(layerArticle('data')).toBe('a');
+		expect(layerArticle('infra')).toBe('an');
 	});
 });
