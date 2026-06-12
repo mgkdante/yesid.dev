@@ -12,16 +12,19 @@
 	import type { TocHeading } from '@repo/shared';
 	import { onMount, onDestroy } from 'svelte';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { sharedChromeContent, siteLabels } from '$lib/content';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 
-	const toggleSectionAria = resolveLocale(sharedChromeContent.tocToggleSectionAria, 'en');
-	const tocHeading = resolveLocale(sharedChromeContent.tocHeading, 'en');
-	const tocMobileButton = resolveLocale(sharedChromeContent.tocMobileButton, 'en');
+	const toggleSectionAria = resolveLocale(sharedChromeContent.tocToggleSectionAria, locale);
+	const tocHeading = resolveLocale(sharedChromeContent.tocHeading, locale);
+	const tocMobileButton = resolveLocale(sharedChromeContent.tocMobileButton, locale);
 	// go2-t1c2: nav aria from site_labels, previous literal as fallback.
-	const tocAria = resolveLocale(siteLabels.a11y.toc, 'en') || 'Table of contents';
+	const tocAria = resolveLocale(siteLabels.a11y.toc, locale) || 'Table of contents';
 
 	let {
 		headings,

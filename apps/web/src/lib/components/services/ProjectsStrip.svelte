@@ -33,18 +33,18 @@
 
 	let label = $derived(
 		serviceTitle
-			? resolveLocale(servicesListingContent.projectsStrip.builtWithService, 'en').replace(
+			? resolveLocale(servicesListingContent.projectsStrip.builtWithService, locale).replace(
 					'{serviceTitle}',
 					serviceTitle
 				)
-			: resolveLocale(servicesListingContent.projectsStrip.builtWithFallback, 'en')
+			: resolveLocale(servicesListingContent.projectsStrip.builtWithFallback, locale)
 	);
 	let countLabel = $derived(
 		`${projects.length} ${resolveLocale(
 			projects.length === 1
 				? servicesListingContent.projectsStrip.projectSingular
 				: servicesListingContent.projectsStrip.projectPlural,
-			'en'
+			locale
 		)}`
 	);
 </script>
@@ -58,7 +58,7 @@
 			{#each projects as project (project.slug)}
 				<a href={localizeHref(`/projects/${project.slug}`, locale)} class="strip-link tap-feedback">
 					<span class="strip-dot" aria-hidden="true"></span>
-					<span class="strip-name">{resolveLocale(project.title, 'en')}</span>
+					<span class="strip-name">{resolveLocale(project.title, locale)}</span>
 				</a>
 			{/each}
 		</div>

@@ -24,11 +24,11 @@
 	} = $props();
 
 	// Resolve titles reactively so locale changes propagate without remounting
-	let prevTitle = $derived(prev ? resolveLocale(prev.title, 'en') : '');
-	let nextTitle = $derived(next ? resolveLocale(next.title, 'en') : '');
-	let navAria = $derived(resolveLocale(servicesDetailContent.serviceNavAria, 'en'));
-	let prevLabel = $derived(resolveLocale(navDirections.previous, 'en'));
-	let nextLabel = $derived(resolveLocale(navDirections.next, 'en'));
+	let prevTitle = $derived(prev ? resolveLocale(prev.title, locale) : '');
+	let nextTitle = $derived(next ? resolveLocale(next.title, locale) : '');
+	let navAria = $derived(resolveLocale(servicesDetailContent.serviceNavAria, locale));
+	let prevLabel = $derived(resolveLocale(navDirections.previous, locale));
+	let nextLabel = $derived(resolveLocale(navDirections.next, locale));
 </script>
 
 <nav class="service-nav" aria-label={navAria}>

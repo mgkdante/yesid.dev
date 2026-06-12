@@ -41,22 +41,22 @@
 	let stationNum = $derived(String(service.station).padStart(2, '0'));
 	let totalStr = $derived(String(total).padStart(2, '0'));
 	let stationLabelText = $derived(
-		resolveLocale(servicesListingContent.stationLabelTemplate, 'en')
+		resolveLocale(servicesListingContent.stationLabelTemplate, locale)
 			.replace('{stationNum}', stationNum)
 			.replace('{totalStr}', totalStr)
 	);
-	let deepDiveLabel = $derived(resolveLocale(servicesListingContent.deepDiveLabel, 'en'));
-	let title = $derived(resolveLocale(service.title, 'en'));
-	let description = $derived(resolveLocale(service.description, 'en'));
-	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, 'en') : null);
+	let deepDiveLabel = $derived(resolveLocale(servicesListingContent.deepDiveLabel, locale));
+	let title = $derived(resolveLocale(service.title, locale));
+	let description = $derived(resolveLocale(service.description, locale));
+	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, locale) : null);
 	let benefitHeadline = $derived(
-		service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : null
+		service.benefitHeadline ? resolveLocale(service.benefitHeadline, locale) : null
 	);
 	let metricValue = $derived(
-		service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : null
+		service.impactMetric ? resolveLocale(service.impactMetric.value, locale) : null
 	);
 	let metricLabel = $derived(
-		service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : null
+		service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : null
 	);
 </script>
 
