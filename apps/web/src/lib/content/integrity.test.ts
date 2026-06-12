@@ -633,7 +633,7 @@ describe('locale-completeness snapshot (T11)', () => {
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
 		}
-		expect(stats.full).toBe(57);
+		expect(stats.full).toBe(81); // +24 at go-day apply: 9 matrix archetypes seeded trilingual (title/hook/desc, minus overlap) + cafe-arona sections completed to ES
 	});
 
 	it('en-only count is locked at 400 — documents current FR/ES debt', () => {
@@ -665,7 +665,7 @@ describe('locale-completeness snapshot (T11)', () => {
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
 		}
-		expect(stats.enOnly).toBe(400);
+		expect(stats.enOnly).toBe(430); // +30 at go-day apply: matrix archetype scaffolding + 5 new tech enables lines (en) — FR/ES debt for Track 4
 	});
 
 	it('partial (en + one of fr/es) count is 0 — no half-translated fields', () => {

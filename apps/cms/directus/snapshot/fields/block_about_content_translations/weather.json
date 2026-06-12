@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "weather",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale weather widget config (AboutContent.weather). JSON shape: { city, hook: string, enabled: boolean }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },
