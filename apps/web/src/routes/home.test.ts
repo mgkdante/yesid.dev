@@ -159,7 +159,7 @@ describe('Home page', () => {
 	it('renders manifesto capability pills', () => {
 		renderPage();
 		const pills = screen.getAllByTestId('manifesto-pill');
-		expect(pills).toHaveLength(5);
+		expect(pills).toHaveLength(4); // gate A: 4 stations
 	});
 
 	it('renders the proof reel section', () => {
@@ -181,13 +181,13 @@ describe('Home page', () => {
 	it('renders 6 service cards', () => {
 		renderPage();
 		const cards = screen.getAllByTestId('services-card');
-		expect(cards).toHaveLength(6);
+		expect(cards).toHaveLength(4); // gate A: 4 stations
 	});
 
 	it('renders service benefit headlines', () => {
 		renderPage();
 		const benefits = screen.getAllByTestId('services-benefit');
-		expect(benefits).toHaveLength(6);
+		expect(benefits).toHaveLength(4); // gate A: 4 stations
 	});
 
 	it('renders the closer section', () => {

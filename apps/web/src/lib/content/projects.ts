@@ -17,7 +17,7 @@ export const projects: readonly Project[] = [
 				blocks: [
 					{
 						data: {
-							text: 'A personal brand and portfolio site for a freelance SQL developer and digital infrastructure consultant. Built with SvelteKit 2, Svelte 5, Tailwind CSS v4, and deployed to Vercel. Designed to be multilingual (en/fr/es) from day one.',
+							text: 'A personal brand and portfolio site for a freelance digital infrastructure engineer. Built with SvelteKit 2, Svelte 5, Tailwind CSS v4, and deployed to Vercel. Designed to be multilingual (en/fr/es) from day one.',
 						},
 						id: 'p1',
 						type: 'paragraph',
@@ -104,7 +104,7 @@ export const projects: readonly Project[] = [
 			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.',
 		},
 		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
-		relatedServices: ['data-pipeline', 'sql-development'],
+		relatedServices: ['data-pipeline', 'database-engineering'],
 		repoUrl: 'https://github.com/mgkdante/transit',
 		sections: [],
 		slug: 'transit-data-pipeline',
@@ -234,7 +234,7 @@ export const projects: readonly Project[] = [
 			en: 'Zero-downtime migration from legacy MySQL to PostgreSQL for a SaaS platform.',
 		},
 		readmeUrl: 'https://github.com/oven-sh/bun/blob/main/README.md',
-		relatedServices: ['database-engineering', 'sql-development'],
+		relatedServices: ['database-engineering'],
 		repoUrl: 'https://github.com/oven-sh/bun',
 		sections: [
 			{
@@ -482,7 +482,7 @@ export const projects: readonly Project[] = [
 		oneLiner: {
 			en: 'Automated SQL Server query analysis tool that identifies slow queries and suggests index improvements.',
 		},
-		relatedServices: ['sql-development', 'database-engineering'],
+		relatedServices: ['database-engineering'],
 		repoUrl: 'https://github.com/mgkdante/lorem-query-optimizer',
 		sections: [
 			{
@@ -530,7 +530,7 @@ export const projects: readonly Project[] = [
 		oneLiner: {
 			en: 'Internal operations dashboard for managing inventory and approval workflows.',
 		},
-		relatedServices: ['internal-tooling', 'analytics-reporting'],
+		relatedServices: ['data-pipeline', 'analytics-reporting'],
 		sections: [
 			{
 				content: {

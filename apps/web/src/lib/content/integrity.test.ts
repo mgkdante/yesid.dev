@@ -665,7 +665,7 @@ describe('locale-completeness snapshot (T11)', () => {
 		for (const [name, value] of allSources) {
 			walkContent(value, stats, name, seen);
 		}
-		expect(stats.enOnly).toBe(430); // +30 at go-day apply: matrix archetype scaffolding + 5 new tech enables lines (en) — FR/ES debt for Track 4
+		expect(stats.enOnly).toBe(432); // +2 at gate A message pass (intro/meta rewrites) // +30 at go-day apply: matrix archetype scaffolding + 5 new tech enables lines (en) — FR/ES debt for Track 4
 	});
 
 	it('partial (en + one of fr/es) count is 0 — no half-translated fields', () => {
