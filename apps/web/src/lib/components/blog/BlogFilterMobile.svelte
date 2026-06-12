@@ -7,17 +7,20 @@
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { blogListingContent } from '$lib/content/blog';
 
 	const LANG_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', es: 'ES' };
 
-	const filtersLabel = resolveLocale(blogListingContent.filters.filtersLabel, 'en');
-	const allLabel = resolveLocale(blogListingContent.filters.allLabel, 'en');
-	const languageLabel = resolveLocale(blogListingContent.filters.language, 'en');
-	const dateRangeLabel = resolveLocale(blogListingContent.filters.dateRange, 'en');
-	const fromLabel = resolveLocale(blogListingContent.filters.from, 'en');
-	const toLabel = resolveLocale(blogListingContent.filters.to, 'en');
-	const showingPrefix = resolveLocale(blogListingContent.filters.showingPrefix, 'en');
+	const filtersLabel = resolveLocale(blogListingContent.filters.filtersLabel, locale);
+	const allLabel = resolveLocale(blogListingContent.filters.allLabel, locale);
+	const languageLabel = resolveLocale(blogListingContent.filters.language, locale);
+	const dateRangeLabel = resolveLocale(blogListingContent.filters.dateRange, locale);
+	const fromLabel = resolveLocale(blogListingContent.filters.from, locale);
+	const toLabel = resolveLocale(blogListingContent.filters.to, locale);
+	const showingPrefix = resolveLocale(blogListingContent.filters.showingPrefix, locale);
 
 	let {
 		tags,

@@ -8,6 +8,9 @@
 <script lang="ts">
   import type { BlogPost } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { fillTemplate } from '$lib/utils/labels';
   import { blogDetailContent } from '$lib/content/blog';
   import { siteLabels } from '$lib/content';
@@ -44,29 +47,29 @@
       const ls = post.category === 'personal'
         ? blogPage.backToPersonal
         : blogPage.backToDispatches;
-      const resolved = resolveLocale(ls, 'en');
+      const resolved = resolveLocale(ls, locale);
       if (resolved.trim()) return resolved;
     }
     return post.category === 'personal'
-      ? resolveLocale(blogDetailContent.backNav.toPersonal, 'en')
-      : resolveLocale(blogDetailContent.backNav.toDispatches, 'en');
+      ? resolveLocale(blogDetailContent.backNav.toPersonal, locale)
+      : resolveLocale(blogDetailContent.backNav.toDispatches, locale);
   });
-  const postTagsAria = resolveLocale(blogDetailContent.header.postTagsAria, 'en');
-  const readingTimeTemplate = resolveLocale(blogDetailContent.header.readingTimeLabel, 'en');
+  const postTagsAria = resolveLocale(blogDetailContent.header.postTagsAria, locale);
+  const readingTimeTemplate = resolveLocale(blogDetailContent.header.readingTimeLabel, locale);
   const readingTimeText = $derived(readingTimeTemplate.replace('{minutes}', String(readingTime)));
   // go2-t1c2: category/watermark/edition microcopy from site_labels, previous
   // literals kept as code fallbacks.
   const categoryLabel = $derived(
     post.category === 'personal'
-      ? resolveLocale(siteLabels.ui.categoryPersonal, 'en') || 'Personal'
-      : resolveLocale(siteLabels.ui.categoryProfessional, 'en') || 'Professional'
+      ? resolveLocale(siteLabels.ui.categoryPersonal, locale) || 'Personal'
+      : resolveLocale(siteLabels.ui.categoryProfessional, locale) || 'Professional'
   );
   const watermarkText = $derived(
     post.category === 'personal'
-      ? resolveLocale(siteLabels.ui.watermarkPersonal, 'en') || 'Personal'
-      : resolveLocale(siteLabels.ui.watermarkProfessional, 'en') || 'Dispatch'
+      ? resolveLocale(siteLabels.ui.watermarkPersonal, locale) || 'Personal'
+      : resolveLocale(siteLabels.ui.watermarkProfessional, locale) || 'Dispatch'
   );
-  const editionTemplate = resolveLocale(siteLabels.ui.blogEditionTemplate, 'en') || 'VOL. 01 // ISS. {issue}';
+  const editionTemplate = resolveLocale(siteLabels.ui.blogEditionTemplate, locale) || 'VOL. 01 // ISS. {issue}';
 
   // Format date as "Apr 2026"
   const formattedDate = $derived.by(() => {

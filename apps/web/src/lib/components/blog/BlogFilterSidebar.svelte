@@ -9,6 +9,9 @@
 <script lang="ts">
 	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { blogListingContent } from '$lib/content/blog';
@@ -17,7 +20,7 @@
 
 	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.
 	const labels = blogListingContent.filters;
-	const searchPlaceholder = resolveLocale(blogListingContent.searchPlaceholder, 'en');
+	const searchPlaceholder = resolveLocale(blogListingContent.searchPlaceholder, locale);
 
 	// WHY: date range section is not a FilterGroup, so it needs its own collapse state
 	let dateOpen = $state(true);
@@ -71,7 +74,7 @@
 	{#if languages.length > 1}
 		<div class="mt-5 divider-dashed pt-3">
 			<FilterGroup
-				label={resolveLocale(labels.language, 'en')}
+				label={resolveLocale(labels.language, locale)}
 				items={languages.map((lang) => ({ key: lang, label: LANG_LABELS[lang] }))}
 				activeKey={activeLang}
 				{accentColor}
@@ -88,14 +91,14 @@
 		class="flex w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
 		onclick={() => (dateOpen = !dateOpen)}
 	>
-		{resolveLocale(labels.dateRange, 'en')}
+		{resolveLocale(labels.dateRange, locale)}
 		<ChevronToggle open={dateOpen} size="sm" direction="down" />
 	</button>
 	<div class="date-collapse" class:date-open={dateOpen}>
 		<div class="date-collapse-inner">
 			<div class="mt-2 flex flex-col gap-1.5">
 				<label class="text-sm text-[var(--muted-foreground)]">
-					{resolveLocale(labels.from, 'en')}
+					{resolveLocale(labels.from, locale)}
 					<input
 						type="date"
 						bind:value={dateFrom}
@@ -103,7 +106,7 @@
 					/>
 				</label>
 				<label class="text-sm text-[var(--muted-foreground)]">
-					{resolveLocale(labels.to, 'en')}
+					{resolveLocale(labels.to, locale)}
 					<input
 						type="date"
 						bind:value={dateTo}
@@ -118,7 +121,7 @@
 	<!-- Tags filter — closed by default -->
 	<div class="mt-5 divider-dashed pt-3">
 		<FilterGroup
-			label={resolveLocale(labels.tags, 'en')}
+			label={resolveLocale(labels.tags, locale)}
 			items={tags.map((tag) => ({ key: tag, label: tag }))}
 			activeKey={activeTag}
 			{accentColor}
