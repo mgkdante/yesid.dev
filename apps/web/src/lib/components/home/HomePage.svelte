@@ -75,12 +75,13 @@
 	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, locale) || 'Services';
 	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, locale) || 'Terminus';
 
-	// GO-w2t5: the slice-23 orphans are wired — sectionGlow lives inside
-	// HomeServices, backgroundBreathing inside HomeCloser (each section
-	// component owns its own effect). Bindings stay for future section-scoped
-	// motion. Crescendo scrubs were removed from the rotated titles per
-	// operator feedback — titles are sticky-only without scale animation, so
-	// the visual no longer overflows section bounds.
+	// GO-w2t5 → go2/w4: backgroundBreathing lives inside HomeCloser (each
+	// section component owns its own effect). HomeServices' sectionGlow was
+	// unwired in w4 per operator QA — the primitive stays in
+	// $lib/motion/actions. Bindings stay for future section-scoped motion.
+	// Crescendo scrubs were removed from the rotated titles per operator
+	// feedback — titles are sticky-only without scale animation, so the
+	// visual no longer overflows section bounds.
 	let projectsSectionEl = $state<HTMLElement>(undefined!);
 	let servicesSectionEl = $state<HTMLElement>(undefined!);
 	let closerSectionEl = $state<HTMLElement>(undefined!);
