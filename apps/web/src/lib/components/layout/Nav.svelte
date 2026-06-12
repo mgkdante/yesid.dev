@@ -154,11 +154,15 @@
 	.nav-root {
 		top: calc(1rem + env(safe-area-inset-top, 0px));
 	}
+	/* Taste round 2: the wayfinding chrome joins the brand grid — the pill
+	   border speaks the same bold brand-border as cards (was a 10% ghost) and
+	   the internal dividers are orange delimitations, not foreground smudges.
+	   Round 3: the grid draws at 2px (pill + divider step up with cards). */
 	.nav-pill {
 		background: color-mix(in srgb, var(--background) 92%, transparent);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
+		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-pill);
 		box-shadow: var(--shadow-nav);
 		padding: 12px 28px;
@@ -167,7 +171,7 @@
 	.nav-pill-compact {
 		padding: 12px 20px;
 		box-shadow: none;
-		border-color: color-mix(in srgb, var(--primary) 15%, transparent);
+		border-color: var(--border-brand-active);
 	}
 
 	/* Wordmark sizing lives here (not a Tailwind text-* utility) so the
@@ -182,9 +186,9 @@
 
 	.nav-divider {
 		display: inline-block;
-		width: 1px;
+		width: 2px;
 		height: 18px;
-		background: color-mix(in srgb, var(--foreground) 8%, transparent);
+		background: var(--border-brand);
 		margin-inline: 20px;
 		flex-shrink: 0;
 	}
@@ -290,6 +294,22 @@
 		font-size: 13.5px;
 		font-weight: 500;
 		white-space: nowrap;
+		position: relative;
+	}
+
+	/* GO2-W5 "you are here" lamp: the active link gets an amber wayfinding
+	   dot (absolute — zero layout shift). Underline/hover voice stays
+	   primary; the dot is indicator-only, never the interactive hue. */
+	.nav-pill-link[aria-current='page']::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		bottom: 4px;
+		width: 3px;
+		height: 3px;
+		border-radius: 50%;
+		transform: translateX(-50%);
+		background: var(--accent);
 	}
 
 	:global(.nav-link-glow) {

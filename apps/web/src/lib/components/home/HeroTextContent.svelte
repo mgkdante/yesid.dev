@@ -101,13 +101,15 @@
 		{subtitleText}
 	</p>
 
+	<!-- Round 5c doctrine: orange = deep dive (projects); yellow = the single
+	     "talk to Yesid" conversion action in this view (contact). -->
 	<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
 		<span class="tap-press" use:pressBounce>
 			<Button variant="default" size="cta-lg" href={localizeHref('/projects', locale)} data-testid="hero-cta-projects">
 				{ctaWorkLabel}
 			</Button>
 		</span>
-		<Button variant="outline" size="cta-lg" href={localizeHref('/contact', locale)} data-testid="hero-cta-contact" class="tap-press">
+		<Button variant="conversion" size="cta-lg" href={localizeHref('/contact', locale)} data-testid="hero-cta-contact" class="tap-press">
 			{ctaContactLabel}
 		</Button>
 	</div>

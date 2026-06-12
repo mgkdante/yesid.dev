@@ -294,10 +294,12 @@
 		.blog-mobile-heading { display: none; }
 	}
 
+	/* Round-4 doctrine: the listing-header subline is a section overline —
+	   the YELLOW wayfinding voice (label-station precedent). */
 	.blog-header-subtitle {
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
-		color: var(--foreground);
+		color: var(--accent-text);
 		letter-spacing: 2px;
 		text-transform: uppercase;
 		margin-top: 0.35rem;

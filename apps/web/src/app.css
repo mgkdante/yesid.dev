@@ -170,6 +170,10 @@ select {
   --color-success: var(--success);
   --color-primary-hover: var(--primary-hover);
   --color-accent-hover: var(--accent-hover);
+  /* Round 5c yellow-conversion doctrine: the theme-invariant signage pair as
+     utilities (bg/text-signage-*) — conversion buttons ride real sign colors. */
+  --color-signage-bg: var(--signage-bg);
+  --color-signage-text: var(--signage-text);
 }
 
 /* Self-hosted variable fonts — override @theme values with variable font names.
@@ -245,22 +249,49 @@ pre, code, table {
   background: color-mix(in srgb, var(--primary) 60%, transparent);
 }
 
+/* GO2-W5: scrollbar on cream — light-mode thumb mix raised 35% → 50% so the
+   orange route-thumb reads on warm paper. */
+[data-theme="light"] *,
+.theme-light * {
+  scrollbar-color: color-mix(in srgb, var(--primary) 50%, transparent) transparent;
+}
+[data-theme="light"] *::-webkit-scrollbar-thumb,
+.theme-light *::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--primary) 50%, transparent);
+}
+
 /* Circuit grid background — site-wide except nav/footer.
    Applied via main content wrapper in +layout.svelte or per-section.
-   Uses brand orange at very low opacity for a subtle engineering texture. */
+   GO2-W5 "NX track schematic": same 80px rhythm (no layout change) plus a
+   16px fine schematic grid, a 400px amber block-boundary vertical, and (dark
+   only, via --grid-glow) a sodium-lamp radial spill from the top. All colors
+   come from the grid-* tokens so both modes tune independently.
+
+   Taste round 2 SOLIDITY fix: the ::before used to sit at z-index: 0 — a
+   positioned box paints ABOVE in-flow content (CSS2.1 App. E layer 6 vs 3/5),
+   so the schematic visibly crossed terminal/card surfaces and text (operator:
+   contact terminals "lacking solidity"). isolation: isolate makes the wrapper
+   a stacking context and z-index: -1 drops the grid to the negative layer:
+   above the wrapper's own background, below ALL content. Solid surfaces now
+   genuinely occlude the grid; transparent sections still show it through. */
 .circuit-grid {
   position: relative;
+  isolation: isolate;
 }
 .circuit-grid::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    repeating-linear-gradient(90deg, color-mix(in srgb, var(--primary) 5%, transparent) 0px, transparent 1px, transparent 80px),
-    repeating-linear-gradient(0deg, color-mix(in srgb, var(--primary) 5%, transparent) 0px, transparent 1px, transparent 80px);
+    radial-gradient(120% 70% at 50% 0%, var(--grid-glow), transparent 60%),
+    repeating-linear-gradient(90deg, var(--grid-block-marker) 0px, transparent 1px, transparent 400px),
+    repeating-linear-gradient(90deg, var(--grid-line-major) 0px, transparent 1px, transparent 80px),
+    repeating-linear-gradient(0deg, var(--grid-line-major) 0px, transparent 1px, transparent 80px),
+    repeating-linear-gradient(90deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px),
+    repeating-linear-gradient(0deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px);
 
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -271,32 +302,53 @@ pre, code, table {
    ═══════════════════════════════════════════════════════════════ */
 
 /* Shadows: dark elevates with orange glow on black; light elevates with
-   neutral ink shadows on paper. Glow mixes are halved, not removed, so
-   hover affordances stay brand-warm. */
+   warm ink shadows on paper (GO2-W5: blacks warmed rgba(20,20,20) →
+   rgba(28,24,19); card keeps the folded enamel-bevel catch-light). Glow
+   mixes are halved, not removed, so hover affordances stay brand-warm. */
 [data-theme="light"], .theme-light {
-	--shadow-card: 0 1px 2px rgba(20, 20, 20, 0.06), 0 4px 12px rgba(20, 20, 20, 0.08);
-	--shadow-nav: 0 4px 24px rgba(20, 20, 20, 0.1), 0 0 0 1px rgba(20, 20, 20, 0.04);
-	--shadow-section: 0 8px 32px rgba(20, 20, 20, 0.08);
+	--shadow-card: 0 1px 2px rgba(28, 24, 19, 0.06), 0 4px 12px rgba(28, 24, 19, 0.08), inset 0 1px 0 var(--edge-highlight);
+	--shadow-nav: 0 4px 24px rgba(28, 24, 19, 0.1), 0 0 0 1px rgba(28, 24, 19, 0.04);
+	--shadow-section: 0 8px 32px rgba(28, 24, 19, 0.08);
 	--shadow-glow-sm: 0 0 6px color-mix(in srgb, var(--primary) 18%, transparent);
 	--shadow-glow-md: 0 0 12px color-mix(in srgb, var(--primary) 12%, transparent);
 	--shadow-glow-lg: 0 0 24px color-mix(in srgb, var(--primary) 9%, transparent), 0 0 60px color-mix(in srgb, var(--primary) 4%, transparent);
-	--shadow-sheet: 0 -8px 32px rgba(20, 20, 20, 0.12);
+	--shadow-sheet: 0 -8px 32px rgba(28, 24, 19, 0.12);
+}
+
+/* GO2-W5 round 3: light mode "needs more demarcation with its structural
+   lines" (operator). The brand grid — card/panel/nav edges drawn with
+   --border-brand — runs a stronger mix on paper than on the dark board
+   (45% → 60%), so with the system-wide 2px step light lands slightly more
+   pronounced than dark, as directed. Solid rules (--border-rule/-accent)
+   are already full-strength in both modes and only gain thickness. */
+[data-theme="light"], .theme-light {
+	--border-brand: color-mix(in srgb, var(--primary) 60%, transparent);
 }
 
 /* Code blocks stay night-mode in light theme: Shiki token colors are baked
    against the dark brand theme (lib/utils/markdown.ts). Pinning the block
    dark keeps syntax readable with zero highlighter changes. Values are the
-   dark-theme --terminal / --border literals on purpose (the vars flip). */
+   dark-theme --terminal / --border literals on purpose (the vars flip) —
+   taste round 2: back to the restored near-black board values. */
 [data-theme="light"] .prose-dark pre,
 [data-theme="light"] .prose-dark pre.shiki,
 .theme-light .prose-dark pre,
 .theme-light .prose-dark pre.shiki {
-	background: #0a0a0a !important;
+	background: #141414 !important;
 	border-color: #3A3A3A;
 }
 [data-theme="light"] .prose-dark pre:not(.shiki) code,
 .theme-light .prose-dark pre:not(.shiki) code {
 	color: #E07800;
+}
+
+/* GO2-W5: inline code chips in light mode — manila label on the paper
+   (var(--muted) + strong border) instead of var(--card): a #FFFDF8 chip is
+   near-invisible on #F7F2E9 prose and disappears entirely inside cards. */
+[data-theme="light"] .prose-dark code:not(pre code),
+.theme-light .prose-dark code:not(pre code) {
+	background: var(--muted);
+	border-color: var(--border-strong);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -327,10 +379,14 @@ pre, code, table {
 
 /* Hero typewriter cursor (slice 17e-4). Global so the .typewriter-cursor
    activation class (added/removed from heroTypewriter.ts) can override it
-   without the Svelte scoped-style specificity fight. */
+   without the Svelte scoped-style specificity fight.
+   GO2-W5d cursor law (operator): a terminal cursor matches the color of the
+   text it types — the NEXT STOP prompt types orange, so its cursor blinks
+   orange. currentColor inherits the prompt's own color in both themes. */
 .scroll-block-cursor {
   margin-left: 0.15em;
   opacity: 0;
+  color: currentColor;
 }
 
 /* Typewriter cursor blink (slice 17e-4). Uses visibility instead of opacity
@@ -378,9 +434,13 @@ pre, code, table {
   height: 1px;
 }
 
-/* 2. Dashed divider — filter group separators */
+/* 2. Dashed divider — filter group separators.
+   Taste round 2: delimitations speak the route-set voice — solid-orange
+   dashed rule (NX diagram energy) instead of a neutral gray.
+   Round 3: one step thicker (1px → 2px) — operator wants the dividers
+   bolder in both modes. */
 .divider-dashed {
-  border-top: 1px dashed var(--border-strong);
+  border-top: 2px dashed var(--border-rule);
 }
 
 /* 3. Hidden scrollbar — preserves scroll, hides chrome */
@@ -394,7 +454,12 @@ pre, code, table {
 
 /* 4–6. brand-glow-hover / img-desat / grid-responsive-cards — deleted in slice-28.3 (#110, orphaned) */
 
-/* 7–9. Label styles — mono uppercase patterns */
+/* 7–9. Label styles — mono uppercase patterns.
+   Round-4 four-color doctrine: label-section = quiet in-card caption (muted);
+   label-station = the YELLOW wayfinding voice for overlines/section labels —
+   the precedent every marker/overline follows ("01 / SERVICE", "01 / FEATURED",
+   listing-header sublines); label-metric = quiet metric caption (the metric
+   VALUE carries the yellow callout voice — see MetricDisplay). */
 .label-section {
   font-family: var(--font-mono);
   font-size: var(--text-caption);
@@ -402,12 +467,14 @@ pre, code, table {
   letter-spacing: 0.1em;
   color: var(--muted-foreground);
 }
+/* GO2-W5: station labels ARE wayfinding signage — yellow voice as text
+   (accent-text holds AA everywhere; worst case 4.71:1 light). */
 .label-station {
   font-family: var(--font-mono);
   font-size: var(--text-small);
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--primary);
+  color: var(--accent-text);
 }
 .label-metric {
   font-family: var(--font-mono);
@@ -496,9 +563,10 @@ pre, code, table {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
 }
+/* GO2-W5: blockquote = announcement board — recessed warm panel. */
 .prose-dark blockquote {
   border-left: 3px solid var(--primary);
-  background: var(--background);
+  background: var(--muted);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   padding: 0.75rem 1rem;
   margin: 1rem 0;

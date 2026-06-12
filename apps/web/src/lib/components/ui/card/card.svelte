@@ -23,16 +23,23 @@
 
 <style>
 	/* Unified card surface — Constitution Section 13 spec, tokenized GO-W2.2.
-	   Spec lives in packages/tokens/tokens.json (surface.1 / border.brand). */
+	   Spec lives in packages/tokens/tokens.json (surface.2 / border.brand).
+	   GO2-W5 INTERLOCKING: the panel lifts off the board — surface.2 (--card)
+	   sits one solid step above the page, plus a 1px inset top bevel
+	   (--edge-highlight) so the panel catches the lamp light. SOLID hex
+	   always; alpha on --card is forbidden (grid must never bleed through).
+	   Round 3: the brand grid draws at 2px (light also runs a stronger
+	   --border-brand mix — see app.css hand region). */
 	.card-surface {
-		background: var(--surface-1);
-		border: 1px solid var(--border-brand);
+		background: var(--surface-2);
+		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-lg);
+		box-shadow: inset 0 1px 0 var(--edge-highlight);
 		transition: border-color var(--duration-normal) var(--ease-default),
 		            box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.card-surface:hover {
 		border-color: var(--border-brand-active);
-		box-shadow: var(--shadow-section);
+		box-shadow: var(--shadow-section), inset 0 1px 0 var(--edge-highlight);
 	}
 </style>
