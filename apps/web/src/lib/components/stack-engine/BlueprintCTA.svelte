@@ -1,10 +1,20 @@
 <!--
-  BlueprintCTA (slice-29) — the engine's three exits, all real:
-    cta-proof     → the project that proves the archetype ('I built this')
-    cta-service   → the service that delivers it ('Hire this')
-    cta-blueprint → /contact?bp=… prefilled handoff ('Send me this blueprint')
-  Goal mode encodes the archetype's full stack (layer order); compose mode
-  encodes the visitor's picked ids instead.
+  BlueprintCTA (slice-29, go2/w5 taste round 2) — the engine's two exits,
+  both real, both whispering (teacher voice, never a hard sell):
+    cta-blueprint → /contact?bp=… handoff ('Take this blueprint with you →')
+    cta-service   → hire the service behind it ('Hire this — …', homey voice)
+  plus the whisper line under the row. Goal mode encodes the archetype's full
+  stack (layer order); compose mode encodes the visitor's picked ids instead.
+
+  Taste round 2 (operator verdict): proof-project links are GONE from the
+  engine — proofProjectSlug stays in schema/content for other surfaces, the
+  engine just never renders it.
+
+  Yellow-conversion rule (go2/w5 operator doctrine): yellow buttons mean
+  "talk to Yesid" ONLY; orange covers every other interaction. The blueprint
+  handoff IS the conversation starter, so cta-blueprint wears the signage
+  pairing (--accent under fixed near-black ink); the service link stays in
+  the orange grammar (exploration, not conversation).
 -->
 <script lang="ts">
 	import type { StackArchetype } from '@repo/shared/schemas';
@@ -34,33 +44,46 @@
 </script>
 
 <div class="blueprint-cta" data-testid="blueprint-cta">
-	<a class="cta-link cta-primary" data-testid="cta-blueprint" href={blueprintHref}>
-		{archetype.proofProjectSlug ? 'Send me this blueprint →' : 'Want to be the first? Send me this blueprint →'}
-	</a>
-	{#if archetype.proofProjectSlug}
-		<a class="cta-link" data-testid="cta-proof" href={localizeHref(`/projects/${archetype.proofProjectSlug}`, locale)}>
-			I built this
+	<div class="cta-row">
+		<a class="cta-link cta-primary" data-testid="cta-blueprint" href={blueprintHref}>
+			Take this blueprint with you →
 		</a>
-	{/if}
-	{#if archetype.serviceId}
-		<a class="cta-link" data-testid="cta-service" href={localizeHref(`/services/${archetype.serviceId}`, locale)}>
-			Hire this
-		</a>
-	{/if}
+		{#if archetype.serviceId}
+			<a class="cta-link" data-testid="cta-service" href={localizeHref(`/services/${archetype.serviceId}`, locale)}>
+				Hire this — see the service behind it
+			</a>
+		{/if}
+	</div>
+	<!-- go2/w5 tone pass: the whisper — warm, zero pressure. -->
+	<p class="cta-whisper">if you ever want help building it, I'm around.</p>
 </div>
 
 <style>
 	.blueprint-cta {
 		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding-top: 1.5rem;
+	}
+
+	.cta-row {
+		display: flex;
 		align-items: center;
 		gap: 1rem;
 		flex-wrap: wrap;
-		padding-top: 1.5rem;
+	}
+
+	/* go2/w5 legibility pass: CTA labels step up one full rung (tokens only). */
+	.cta-whisper {
+		font-family: var(--font-mono);
+		font-size: var(--text-mono);
+		color: var(--engine-teach-ink, var(--secondary-foreground));
+		margin: 0;
 	}
 
 	.cta-link {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--secondary-foreground);
 		text-decoration: underline;
 		text-underline-offset: 3px;
@@ -70,16 +93,20 @@
 		color: var(--primary);
 	}
 
+	/* Yellow-conversion rule: the signage pairing. --accent (#FFB627) and the
+	   near-black ink are theme-constant — #1C1814 on #FFB627 ≈ 10:1 (AA in
+	   BOTH themes). Hover steps down the accent system's own darker yellow
+	   (--accent-hover #E5A220, ≈ 8:1 against the same ink) — never orange. */
 	.cta-primary {
-		color: var(--primary-foreground);
-		background: var(--primary);
+		color: #1C1814;
+		background: var(--accent);
 		text-decoration: none;
 		border-radius: 999px;
 		padding: 0.5rem 1.1rem;
 	}
 
 	.cta-primary:hover {
-		color: var(--primary-foreground);
-		filter: brightness(1.08);
+		color: #1C1814;
+		background: var(--accent-hover);
 	}
 </style>

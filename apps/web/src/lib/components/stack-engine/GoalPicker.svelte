@@ -59,22 +59,25 @@
 		box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 12%, transparent);
 	}
 
+	/* go2/w5 legibility pass: card type steps up one full rung of the site
+	   scale — the title reads like a card headline (--text-heading), hook and
+	   meta follow on tokens. */
 	.card-title {
 		font-family: var(--font-heading);
-		font-size: 1.1rem;
+		font-size: var(--text-heading);
 		font-weight: 700;
 		color: var(--foreground);
 	}
 
 	.card-hook {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--primary);
 	}
 
 	.card-meta {
 		font-family: var(--font-mono);
-		font-size: 10px;
+		font-size: var(--text-caption);
 		letter-spacing: 0.5px;
 		text-transform: uppercase;
 		color: var(--muted-foreground);
