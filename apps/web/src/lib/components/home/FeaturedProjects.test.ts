@@ -83,11 +83,71 @@ describe('FeaturedProjects', () => {
 		});
 	});
 
-	it('renders tech stack tags for cards that have a stack', () => {
-		render(FeaturedProjects, { props: renderProps });
-		const expectedTags = resolvedProjects.reduce((sum, p) => sum + p.stack.length, 0);
-		const tags = screen.queryAllByTestId('proof-tag');
-		expect(tags).toHaveLength(expectedTags);
+	it('renders the full tech stack names as one quiet mono line', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-full-stack',
+			stack: ['PostgreSQL', 'Python', 'SvelteKit'],
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		const stackLine = screen.getByTestId('proof-stack-line');
+		expect(stackLine.textContent).toBe('PostgreSQL · Python · SvelteKit');
+		expect(stackLine.textContent).not.toContain('PG');
+		expect(stackLine.textContent).not.toContain('PY');
+	});
+
+	it('renders project tags as chips when tags exist', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-tags',
+			tags: ['etl', 'transit'],
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		const tags = screen.getAllByTestId('proof-project-tag');
+		expect(tags).toHaveLength(2);
+		expect(tags.map((tag) => tag.textContent)).toEqual(['etl', 'transit']);
+	});
+
+	it('renders optional location and environment metadata when present', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-meta',
+			location: 'Québec, CA',
+			environment: 'production',
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		expect(screen.getByTestId('proof-project-meta').textContent).toBe('Québec, CA · Production');
+	});
+
+	it('omits the project metadata line when location and environment are empty', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-no-meta',
+			location: '',
+			environment: '',
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		expect(screen.queryByTestId('proof-project-meta')).toBeNull();
 	});
 
 	it('cards link to /projects/[slug] for each resolved project (URL contract)', () => {
