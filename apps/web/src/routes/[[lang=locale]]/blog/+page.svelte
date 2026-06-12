@@ -6,10 +6,13 @@
 <script lang="ts">
 	import BlogListingPage from '$lib/components/blog/BlogListingPage.svelte';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
 
 	let { data } = $props();
 
-	const heading = $derived(resolveLocale(data.blogPage.heading, 'en') || 'Dispatches');
+	const locale = getLocale();
+
+	const heading = $derived(resolveLocale(data.blogPage.heading, locale) || 'Dispatches');
 </script>
 
 <BlogListingPage
