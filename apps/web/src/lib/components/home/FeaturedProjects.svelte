@@ -237,7 +237,7 @@
 								</div>
 							{/if}
 							<!-- 01 / FEATURED marker at the band's top-left. -->
-							<div class="proof-marker absolute left-[1.75rem] top-[1.25rem] z-[3]">
+							<div class="proof-marker absolute left-[1.25rem] top-[1.25rem] z-[3] md:left-[1.75rem]">
 								{fillTemplate(markerFeaturedTemplate, { num: String(i + 1).padStart(2, '0') })}
 							</div>
 						</button>
@@ -388,11 +388,20 @@
 	   go2/home-cards: display flex so the card stretches to the tallest
 	   sibling (flex cross-axis stretch) — uniform card heights with zero
 	   content clipping at any excerpt/title length. */
+	/* Mobile fit: one full-width card per view — the slide tracks the
+	   content width exactly (a fixed 340px floor bled past the page
+	   padding on narrow phones). Desktop keeps the multi-card clamp. */
 	.embla__slide {
-		flex: 0 0 clamp(340px, 44vw, 720px);
+		flex: 0 0 100%;
 		min-width: 0;
 		margin-right: 1.25rem;
 		display: flex;
+	}
+
+	@media (min-width: 768px) {
+		.embla__slide {
+			flex-basis: clamp(340px, 44vw, 720px);
+		}
 	}
 
 	/* Card frame — brand-aligned card-surface pattern. Grid with overlap:
@@ -420,12 +429,21 @@
 		   Row 2 is a bare 1fr (= minmax(auto, 1fr)): the auto floor lets the
 		   track GROW with content (narrow cards, wrapped labels) instead of
 		   letting the footer spill past the card edge. */
-		grid-template-rows: clamp(15rem, 38dvh, 22rem) 1fr; /* round 8: bigger hero band — content earned its balance */
+		/* Mobile: the band stays generous but bounded so the text below keeps
+		   room to breathe on a phone screen. */
+		grid-template-rows: clamp(12rem, 30dvh, 17rem) 1fr;
 		grid-template-columns: 1fr;
 		transition:
 			border-color var(--duration-normal) var(--ease-default),
 			box-shadow var(--duration-normal) var(--ease-default),
 			transform 220ms var(--ease-default);
+	}
+
+	@media (min-width: 768px) {
+		.proof-card {
+			/* round 8: bigger hero band — content earned its balance */
+			grid-template-rows: clamp(15rem, 38dvh, 22rem) 1fr;
+		}
 	}
 
 	.proof-card:hover {
@@ -575,7 +593,10 @@
 		align-self: end;
 		justify-self: stretch;
 		z-index: 2;
-		padding: 0.875rem 1.75rem 1rem;
+		/* Mobile-first: tighter inline padding buys the uppercase headline
+		   more characters per line on a ~340px card; 768px+ restores the
+		   roomy 1.75rem rhythm (see the min-width block below). */
+		padding: 0.875rem 1.25rem 1rem;
 		font-family: var(--font-heading);
 		font-weight: 800;
 		font-size: var(--text-heading);
@@ -628,7 +649,7 @@
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 0.875rem;
-		padding: 1.25rem 1.75rem 1rem;
+		padding: 1.25rem 1.25rem 1rem;
 	}
 
 	/* Station signage chip — backlit station sign (StationTabs precedent):
@@ -719,10 +740,13 @@
 
 	.proof-footer {
 		display: flex;
+		/* wrap: a big metric + the see-build line can't collide on a narrow
+		   card — the link drops to its own row instead of overflowing. */
+		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-between;
-		gap: 1rem;
-		padding: 1rem 1.75rem 1.25rem;
+		gap: 0.5rem 1rem;
+		padding: 1rem 1.25rem 1.25rem;
 		border-top: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
 	}
 
@@ -779,6 +803,15 @@
 	}
 
 	@media (min-width: 768px) {
+		.proof-title {
+			padding-inline: 1.75rem;
+		}
+		.proof-body {
+			padding: 1.25rem 1.75rem 1rem;
+		}
+		.proof-footer {
+			padding: 1rem 1.75rem 1.25rem;
+		}
 		.proof-metric-value {
 			font-size: 2.25rem;
 		}
