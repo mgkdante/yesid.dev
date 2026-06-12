@@ -43,8 +43,12 @@ describe('GO-W2.2 T7 — art direction', () => {
 	const error = readFileSync(resolve(SRC, 'lib/components/home/ErrorIllustration.svelte'), 'utf-8');
 	const metro = readFileSync(resolve(SRC, 'lib/motion/svg/MetroNetwork.svelte'), 'utf-8');
 
-	it('home closer is pinned dark (.theme-dark + painted background)', () => {
-		expect(closer).toMatch(/class="closer-section relative theme-dark"/);
+	it('home closer follows the active theme (go2/w4: theme-dark pin removed)', () => {
+		// Operator QA: the pinned-dark wrapper read as an "extra layer" on the
+		// closer terminal and kept it dark in light mode. The closer now follows
+		// the active theme — terminals are a single clean themed surface.
+		// (Class attributes only — comments may reference the removed pin.)
+		expect(closer).not.toMatch(/class="[^"]*theme-dark[^"]*"/);
 		expect(closer).toContain('background: var(--background);');
 	});
 
