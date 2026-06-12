@@ -82,3 +82,32 @@ describe('HomeServices station ordering (GO-2)', () => {
 // Post-consolidation baseline (GO-2 Track 3, T8 step 8b). SKIPPED until the
 // orchestrator's Gate A CMS apply + regen lands (getVisibleServices() then
 // returns the 4 stations). T8 unskip step: `describe.skip` → `describe`,
+
+describe('GO2-W5 round 5 — fun service SVGs + 2×2 station grid', () => {
+	// R5-1 regression lock: the playful per-service SVG art must render in the
+	// home services surface. SSR contract = one icon panel per visible service,
+	// each carrying the /svg/services/{file} fallback <img> inside the
+	// .svg-inline-wrapper that the onMount fetch upgrades to inline SVG.
+	it('every services card renders its service SVG surface (wrapper + /svg/services fallback)', () => {
+		render(HomeServices, { props: { servicesGrid: servicesGridContent, services } });
+		const panels = screen.getAllByTestId('services-svg-panel');
+		expect(panels.length).toBe(services.length);
+		const sorted = [...services].sort((a, b) => a.station - b.station);
+		panels.forEach((panel, i) => {
+			const wrapper = panel.querySelector('.svg-inline-wrapper');
+			expect(wrapper, `card ${i} missing .svg-inline-wrapper`).toBeTruthy();
+			const img = wrapper?.querySelector('img');
+			expect(img?.getAttribute('src')).toBe(`/svg/services/${sorted[i].svg}`);
+		});
+	});
+
+	// R5b (operator-ordered): four stations → uniform 2-column desktop grid.
+	it('the services grid is 2-up on desktop (lg:grid-cols-2), stacked below', () => {
+		render(HomeServices, { props: { servicesGrid: servicesGridContent, services } });
+		const section = screen.getByTestId('services-section');
+		const grid = section.querySelector('.services-grid');
+		expect(grid?.classList.contains('grid-cols-1')).toBe(true);
+		expect(grid?.classList.contains('lg:grid-cols-2')).toBe(true);
+		expect(grid?.classList.contains('lg:grid-cols-3')).toBe(false);
+	});
+});

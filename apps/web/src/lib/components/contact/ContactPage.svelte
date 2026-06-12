@@ -383,9 +383,11 @@
 							</div>
 						{/if}
 
-						<!-- Submit button -->
+						<!-- Submit button — Round 5c: THE conversion action. Yellow
+						     signage treatment (bg --accent, ink --signage-bg),
+						     never orange: yellow = "talk to Yesid" only. -->
 						<span class="tap-press" use:pressBounce>
-							<Button variant="default" size="cta" type="submit">
+							<Button variant="conversion" size="cta" type="submit" data-testid="contact-submit">
 								<span class="opacity-60">~ $</span>
 								{resolveLocale(c.formTerminal.submitLabel, locale)}
 							</Button>
@@ -471,7 +473,9 @@
 	@media (min-width: 1024px) {
 		.contact-grid {
 			display: grid;
-			grid-template-columns: auto 1px 1fr;
+			/* Round 5: edge-title rule one step bolder, in lockstep with the
+			   blog/projects listing layouts (same Recipe-4 rail voice). */
+			grid-template-columns: auto 2px 1fr;
 			padding-block: 0;
 			height: 100%;
 			/* Edge title + divider extend behind nav (same as blog/projects) */
@@ -511,7 +515,7 @@
 		}
 		.accent-rail {
 			display: block;
-			background: color-mix(in srgb, var(--primary) 20%, transparent);
+			background: color-mix(in srgb, var(--primary) 35%, transparent);
 		}
 
 		/* Swap visibility */
@@ -527,10 +531,13 @@
 		caret-color: var(--primary);
 	}
 
-	/* ═══ Resize Handle ═══ */
+	/* ═══ Resize Handle ═══
+	   Taste round 2: the grab bar between the two terminals is a real
+	   delimitation — visible border tone idle (var(--card) was invisible on
+	   both boards), full route-set orange on hover. */
 	.contact-grid :global(.contact-resize-handle) {
 		width: 8px;
-		background: var(--card);
+		background: var(--border);
 		border-radius: var(--radius-sm);
 		transition: background var(--duration-fast) var(--ease-default);
 	}

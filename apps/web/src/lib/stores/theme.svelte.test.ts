@@ -29,7 +29,7 @@ describe('theme store', () => {
 
 	it('set("light") updates the theme-color meta to the light surface', () => {
 		themeStore.set('light');
-		expect(metaThemeColor()).toBe('#FAFAF8');
+		expect(metaThemeColor()).toBe('#F7F2E9');
 		themeStore.set('dark');
 		expect(metaThemeColor()).toBe('#141414');
 	});
@@ -49,7 +49,7 @@ describe('theme store', () => {
 		document.documentElement.dataset.theme = 'light';
 		const cleanup = themeStore.init();
 		expect(themeStore.theme).toBe('light');
-		expect(metaThemeColor()).toBe('#FAFAF8');
+		expect(metaThemeColor()).toBe('#F7F2E9');
 		cleanup();
 	});
 });

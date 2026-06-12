@@ -18,14 +18,19 @@
 	import BlueprintDetailSeat from '$lib/components/svg/detail/BlueprintDetailSeat.svelte';
 </script>
 
+<!-- Round-4 (operator: "don't forget the blueprints on the home page"):
+     DARK opacities boldened for the first time (train 0.08 → 0.18, details
+     0.10 → 0.22, crosshairs 15% → 35%, ref labels 20% → 45%) — the wall was
+     dark-tuned to subliminal. Light overrides below step up in lockstep so
+     light keeps reading slightly more pronounced than dark (round-3 rule). -->
 <div class="blueprint-bg absolute inset-0 z-0 text-[var(--primary)]" aria-hidden="true">
 	<!-- AZUR side elevation — primary full-page blueprint (centered, faint) -->
-	<div class="train-svg absolute inset-x-[2%] top-[25%] bottom-[25%] z-0 opacity-[0.08]">
+	<div class="train-svg absolute inset-x-[2%] top-[25%] bottom-[25%] z-0 opacity-[0.18]">
 		<BlueprintAzurSide class="h-full w-full" />
 	</div>
 
 	<!-- ALL 12 blueprint SVGs — tiled wall-to-wall, no gaps -->
-	<div class="edge-details absolute inset-0 z-0 opacity-[0.10] overflow-hidden">
+	<div class="edge-details absolute inset-0 z-0 opacity-[0.22] overflow-hidden">
 		<!-- Row 1: top band (4 panels spanning full width) -->
 		<BlueprintAzurFront class="edge-detail" style="top:0;left:0;width:22%;height:38%;" />
 		<BlueprintDetailBogie class="edge-detail" style="top:0;left:22%;width:28%;height:28%;" />
@@ -67,7 +72,7 @@
 		position: absolute;
 		width: 32px;
 		height: 1px;
-		background: color-mix(in srgb, var(--primary) 15%, transparent);
+		background: color-mix(in srgb, var(--primary) 35%, transparent);
 		top: 50%;
 	}
 	.crosshair::after {
@@ -75,7 +80,7 @@
 		position: absolute;
 		width: 1px;
 		height: 32px;
-		background: color-mix(in srgb, var(--primary) 15%, transparent);
+		background: color-mix(in srgb, var(--primary) 35%, transparent);
 		left: 50%;
 	}
 
@@ -83,9 +88,34 @@
 		position: absolute;
 		font-family: var(--font-mono);
 		font-size: 10px;
-		color: color-mix(in srgb, var(--primary) 20%, transparent);
+		color: color-mix(in srgb, var(--primary) 45%, transparent);
 		letter-spacing: 1.5px;
 		z-index: var(--z-base);
+	}
+
+	/* GO2-W5 round 3 gave this wall its light treatment; round 4 boldens BOTH
+	   modes one step (operator: home blueprints, both modes, to the services
+	   register or stronger). Light: train 0.26 → 0.30, details 0.32 → 0.36,
+	   crosshairs 55% → 65%, ref labels 70% → 80%. Values still sit below the
+	   listing-header shells (0.46/0.42) because card content stacks on top
+	   here — confident drawing behind the grid, not noise. */
+	:global([data-theme='light']) .train-svg,
+	:global(.theme-light) .train-svg {
+		opacity: 0.30;
+	}
+	:global([data-theme='light']) .edge-details,
+	:global(.theme-light) .edge-details {
+		opacity: 0.36;
+	}
+	:global([data-theme='light']) .crosshair::before,
+	:global([data-theme='light']) .crosshair::after,
+	:global(.theme-light) .crosshair::before,
+	:global(.theme-light) .crosshair::after {
+		background: color-mix(in srgb, var(--primary) 65%, transparent);
+	}
+	:global([data-theme='light']) .ref-label,
+	:global(.theme-light) .ref-label {
+		color: color-mix(in srgb, var(--primary) 80%, transparent);
 	}
 
 	/* Edge detail positioning — targets SVG root elements inside components */
@@ -101,14 +131,25 @@
 		}
 	}
 
-	/* Reduce opacity on mobile */
+	/* Reduce opacity on mobile — round 4: damping steps up with the wall
+	   (dark 0.05 → 0.10, light 0.12 → 0.16) so mobile keeps a visible wall
+	   without drowning the single-column cards. */
 	@media (max-width: 767px) {
 		.edge-details {
-			opacity: var(--opacity-faint);
+			opacity: 0.1;
 		}
 
 		.train-svg {
-			opacity: var(--opacity-faint);
+			opacity: 0.1;
+		}
+
+		/* Light keeps the mobile damping too (these out-specificity the
+		   desktop light rules above; equal specificity → later wins). */
+		:global([data-theme='light']) .edge-details,
+		:global(.theme-light) .edge-details,
+		:global([data-theme='light']) .train-svg,
+		:global(.theme-light) .train-svg {
+			opacity: 0.16;
 		}
 	}
 </style>

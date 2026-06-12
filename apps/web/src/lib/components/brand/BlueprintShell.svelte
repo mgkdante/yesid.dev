@@ -81,6 +81,33 @@
 		z-index: var(--z-base);
 	}
 
+	/* GO2-W5 taste round 2: the blueprint art must be VISIBLE in light —
+	   operator verdict. The hero/detail layers ship dark-tuned opacities
+	   (0.10–0.18) that vanish on warm paper, so light mode roughly doubles
+	   them (!important beats the consumers' inline detail opacities) and
+	   hardens the annotations. The whole shell stays aria-hidden decoration.
+	   Round 3 (operator: light "still needs more demarcation"): each value up
+	   another step — hero 0.34→0.46, details 0.30→0.42, crosshairs 40→55%,
+	   ref labels 55→70%. Confident drawing on paper, still background art. */
+	:global([data-theme='light']) .hero-svg,
+	:global(.theme-light) .hero-svg {
+		opacity: 0.46;
+	}
+	:global([data-theme='light']) .edge-details :global(.edge-detail),
+	:global(.theme-light) .edge-details :global(.edge-detail) {
+		opacity: 0.42 !important;
+	}
+	:global([data-theme='light']) .crosshair::before,
+	:global([data-theme='light']) .crosshair::after,
+	:global(.theme-light) .crosshair::before,
+	:global(.theme-light) .crosshair::after {
+		background: color-mix(in srgb, var(--primary) 55%, transparent);
+	}
+	:global([data-theme='light']) .ref-label,
+	:global(.theme-light) .ref-label {
+		color: color-mix(in srgb, var(--primary) 70%, transparent);
+	}
+
 	:global(.edge-detail) {
 		position: absolute;
 	}

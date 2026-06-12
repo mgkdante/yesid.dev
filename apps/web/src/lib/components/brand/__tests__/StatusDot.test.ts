@@ -15,10 +15,21 @@ describe('StatusDot', () => {
     expect(dot.className).not.toContain('led-pulse');
   });
 
-  it('applies green color class', () => {
+  it('applies green color class (signal-proceed lamp alias)', () => {
     const { container } = render(StatusDot, { props: { color: 'green' } });
     const dot = container.querySelector('span')!;
-    expect(dot.classList.contains('bg-[var(--success)]')).toBe(true);
+    expect(dot.classList.contains('bg-[var(--signal-proceed)]')).toBe(true);
+  });
+
+  // GO2-W5 signal aspects: caution (amber), stop (red), lunar (white shunt).
+  it.each([
+    ['caution', 'bg-[var(--signal-caution)]'],
+    ['stop', 'bg-[var(--signal-stop)]'],
+    ['lunar', 'bg-[var(--signal-lunar)]'],
+  ] as const)('applies %s signal-aspect class', (color, expected) => {
+    const { container } = render(StatusDot, { props: { color } });
+    const dot = container.querySelector('span')!;
+    expect(dot.classList.contains(expected)).toBe(true);
   });
 
   it('applies pulse animation class', () => {
