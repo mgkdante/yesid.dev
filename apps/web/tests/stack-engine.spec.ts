@@ -83,6 +83,25 @@ test('compose path: every combo TEACHES — the operator example (node.js + gith
 	await expect(shape).toContainText(
 		'add an interface layer + a data layer and this becomes a working product',
 	);
+
+	// Round 3: the build shape IS a blueprint. Exactly one variant is visible
+	// (wide ≥768px / stacked below — both DOM-rendered, CSS-swapped), drawing
+	// the 2 picks as solid boxes and the 2 missing layers as ghosted
+	// placeholders with add-a-layer annotations.
+	const drawing = shape.locator(
+		'[data-testid="shape-blueprint"]:visible, [data-testid="shape-blueprint-stacked"]:visible',
+	);
+	await expect(drawing).toHaveCount(1);
+	await expect(drawing.locator('.sbp-box-solid')).toHaveCount(2);
+	await expect(drawing.locator('.sbp-box-ghost')).toHaveCount(2);
+	await expect(drawing.locator('[data-testid="sbp-annotation-interface"]')).toContainText(
+		'+ add an interface layer',
+	);
+	await expect(drawing.locator('[data-testid="sbp-annotation-data"]')).toContainText(
+		'+ add a data layer',
+	);
+	// Ghost wiring is dashed; the drawing is drafted, not yet run.
+	await expect(drawing.locator('.sbp-connector-ghost')).toHaveCount(3);
 	// Warm exit: exactly one link, carrying both picks.
 	await expect(shape.locator('a')).toHaveAttribute(
 		'href',

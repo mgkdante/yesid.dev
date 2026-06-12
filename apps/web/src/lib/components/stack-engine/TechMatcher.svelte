@@ -22,7 +22,7 @@
     narrowing: "{n} picks → {m} known builds".
 -->
 <script lang="ts">
-	import { STACK_LAYERS } from '@repo/shared/schemas';
+	import { STACK_LAYERS, type StackLayer } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
@@ -32,7 +32,8 @@
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { encodeBlueprint } from '$lib/utils/blueprint-param';
 	import { LAYER_TEACHING } from './layer-teaching';
-	import { composeStackShape, readShape } from './stack-shape';
+	import { composeStackShape, layerArticle, readShape } from './stack-shape';
+	import ShapeBlueprint from './ShapeBlueprint.svelte';
 	import type { EngineState } from './engine-state.svelte';
 
 	type Tech = (typeof techStackItems)[number];
@@ -66,11 +67,12 @@
 		'/contact?bp=' + encodeBlueprint({ archetype: null, techs: [...engine.pickedTechs] }),
 	);
 
-	// ── Build shape (taste round 2) — the ALWAYS-ON primary teaching surface.
-	// Every pick re-reads the 15-cell layer-coverage matrix: heading names the
-	// covered layers, the reading says what they do TOGETHER, the roster
-	// grounds it in the actual picks (enables lines), and the next-step line
-	// names what a complete build still needs.
+	// ── Build shape (taste round 2; round 3 makes it a DRAWING) — the
+	// ALWAYS-ON primary teaching surface. Every pick re-reads the 15-cell
+	// layer-coverage matrix: the mini-blueprint draws it (solid picks, ghost
+	// layers), the heading names the covered layers, the reading says what
+	// they do TOGETHER, the roster grounds it in the actual picks (enables
+	// lines), and the next-step line names what a complete build still needs.
 	const shape = $derived(composeStackShape([...engine.pickedTechs], techStackItems));
 	const shapeHeading = $derived(
 		shape.present.length > 0
@@ -78,11 +80,10 @@
 			: 'Your build: no layers covered yet',
 	);
 	const shapeReading = $derived(`that's ${readShape(shape.present)}.`);
-	const an = (layer: string) => (layer === 'interface' || layer === 'infra' ? 'an' : 'a');
 	const shapeNext = $derived(
 		shape.missing.length === 0
 			? "nothing missing — this one's ready to build."
-			: `add ${shape.missing.map((l) => `${an(l)} ${l} layer`).join(' + ')} and this becomes a working product.`,
+			: `add ${shape.missing.map((l) => `${layerArticle(l)} ${l} layer`).join(' + ')} and this becomes a working product.`,
 	);
 	/** Picked techs in STACK_LAYERS order (stable within a layer), with enables. */
 	const layerRank = new Map<string, number>(
@@ -96,8 +97,18 @@
 			.map((t) => ({
 				id: t.id,
 				name: t.name,
+				layer: t.layer,
 				enables: t.enables ? resolveLocale(t.enables, locale) : '',
 			})),
+	);
+	/** The drawable picks — roster order, layered only (defensive: a layerless
+	 *  pick has no blueprint row; it still lists in the roster). */
+	const shapePicked = $derived(
+		shapeRoster
+			.filter((p): p is typeof p & { layer: StackLayer } =>
+				Boolean(p.layer && (STACK_LAYERS as readonly string[]).includes(p.layer)),
+			)
+			.map(({ id, name, layer }) => ({ id, name, layer })),
 	);
 
 	// ── Teach line (go2/w5 §3) — ONE fixed slot, last trigger wins. ─────────
@@ -182,40 +193,51 @@
 
 	<div class="match-rail">
 		{#if hasPicks}
-			<!-- Build shape (taste round 2) — THE primary teaching surface,
-			     present from the first pick onward; archetype cards below are
-			     bonus "known builds". Exactly ONE <a> (href formula pinned by
-			     unit + e2e suites). The reading re-keys on coverage so it
-			     settles in with a micro-pop (fun pass, <400ms → SAFE-ALWAYS). -->
+			<!-- Build shape (taste round 2; round 3: the shape IS a blueprint) —
+			     THE primary teaching surface, present from the first pick
+			     onward; archetype cards below are bonus "known builds". The
+			     mini-blueprint carries the teaching visually (solid picks,
+			     ghosted missing layers, dashed wiring); the words support it.
+			     Exactly ONE <a> (href formula pinned by unit + e2e suites).
+			     The reading re-keys on coverage so it settles in with a
+			     micro-pop (fun pass, <400ms → SAFE-ALWAYS). -->
 			<div class="build-shape" data-testid="build-shape">
-				<div class="shape-strip" aria-hidden="true">
-					{#each STACK_LAYERS as layer (layer)}
-						<span class="shape-cell" style:--shape-color={`var(--layer-${layer})`}>
-							<span
-								class="shape-dot"
-								class:shape-dot-missing={!shape.present.includes(layer)}
-							></span>
-							<span class="shape-dot-name">{layer}</span>
-						</span>
-					{/each}
-				</div>
 				<p class="shape-heading">{shapeHeading}</p>
-				{#key shape.present.join('+')}
-					<p class="shape-reading">{shapeReading}</p>
-				{/key}
-				<ul class="shape-roster">
-					{#each shapeRoster as part (part.id)}
-						<li>
-							<!-- The separator lives in the expression: Svelte trims a text
-							     node's leading whitespace at the element boundary, which
-							     ate the space ("PostgreSQL— stores…"). -->
-							<span class="roster-name">{part.name}</span>{#if part.enables}<span class="roster-enables">{` — ${part.enables}`}</span>{/if}
-						</li>
-					{/each}
-				</ul>
-				<p class="shape-next">{shapeNext}</p>
-				<a class="shape-link" href={shapeHref}>Take this combo with you →</a>
-				<p class="shape-whisper">if you ever want help building it, I'm around.</p>
+				<div class="shape-board">
+					<!-- Both variants render; CSS swaps at 768px (bp-pair-list
+					     precedent) — wide rows on desktop, the blueprint-layout
+					     stacked column on mobile. display:none keeps the hidden
+					     one out of the a11y tree. -->
+					<div class="shape-drawing shape-drawing-wide">
+						<ShapeBlueprint picked={shapePicked} missing={shape.missing} />
+					</div>
+					<div class="shape-drawing shape-drawing-stacked">
+						<ShapeBlueprint
+							picked={shapePicked}
+							missing={shape.missing}
+							stacked
+							testid="shape-blueprint-stacked"
+						/>
+					</div>
+					<div class="shape-notes">
+						{#key shape.present.join('+')}
+							<p class="shape-reading">{shapeReading}</p>
+						{/key}
+						<ul class="shape-roster">
+							{#each shapeRoster as part (part.id)}
+								<li>
+									<!-- The separator lives in the expression: Svelte trims a text
+									     node's leading whitespace at the element boundary, which
+									     ate the space ("PostgreSQL— stores…"). -->
+									<span class="roster-name">{part.name}</span>{#if part.enables}<span class="roster-enables">{` — ${part.enables}`}</span>{/if}
+								</li>
+							{/each}
+						</ul>
+						<p class="shape-next">{shapeNext}</p>
+						<a class="shape-link" href={shapeHref}>Take this combo with you →</a>
+						<p class="shape-whisper">if you ever want help building it, I'm around.</p>
+					</div>
+				</div>
 			</div>
 
 			<p class="rail-label" data-testid="known-builds-label">
@@ -493,7 +515,9 @@
 		color: var(--muted-foreground);
 	}
 
-	/* Taste round 2: the build-shape card — the ever-present companion. */
+	/* Taste round 2: the build-shape card — the ever-present companion.
+	   Round 3: the card is a drawing board — mini-blueprint beside (desktop)
+	   or above (mobile) the supporting words. */
 	.build-shape {
 		grid-column: 1 / -1;
 		display: flex;
@@ -504,45 +528,44 @@
 		border-radius: var(--radius, 6px);
 	}
 
-	/* go2/w5 §6: the composition made visible — present layers solid,
-	   missing layers hollow; names printed under each dot. */
-	.shape-strip {
+	/* Round 3: drawing + notes share the board — drawing keeps its natural
+	   width (render scale ≤ 1), the words wrap beside it and drop below when
+	   the row gets tight. */
+	.shape-board {
 		display: flex;
-		gap: 1.25rem;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 1rem 2.5rem;
 	}
 
-	.shape-cell {
+	.shape-drawing {
+		flex: 0 1 auto;
+		min-width: 0;
+		max-width: 100%;
+	}
+
+	.shape-notes {
+		flex: 1 1 280px;
+		min-width: 0;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: 0.25rem;
+		gap: 0.5rem;
 	}
 
-	.shape-dot {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: var(--shape-color);
+	/* The wide ⇄ stacked swap (bp-pair-list breakpoint): exactly one variant
+	   is ever displayed; display:none keeps the other out of the a11y tree. */
+	.shape-drawing-wide {
+		display: none;
 	}
 
-	/* Fun pass: a dot turning solid settles in with the chips' own pop —
-	   the keyframe re-runs each time a layer flips hollow → solid.
-	   User-initiated, tiny, <400ms → SAFE-ALWAYS (pressBounce precedent). */
-	.shape-dot:not(.shape-dot-missing) {
-		animation: chip-settle 180ms var(--ease-bounce);
-	}
+	@media (min-width: 768px) {
+		.shape-drawing-wide {
+			display: block;
+		}
 
-	.shape-dot-missing {
-		background: transparent;
-		box-shadow: inset 0 0 0 1.5px var(--shape-color);
-	}
-
-	.shape-dot-name {
-		font-family: var(--font-mono);
-		font-size: 10px;
-		letter-spacing: 0.5px;
-		text-transform: uppercase;
-		color: var(--engine-teach-ink);
+		.shape-drawing-stacked {
+			display: none;
+		}
 	}
 
 	.shape-heading {

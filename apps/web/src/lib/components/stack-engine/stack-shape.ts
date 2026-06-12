@@ -78,3 +78,12 @@ export function readShape(present: readonly StackLayer[]): string {
 		'no layers covered yet — pick a part with a layer to give the build a shape'
 	);
 }
+
+/**
+ * English indefinite article for a layer name — ONE source so the gap line
+ * ("add an interface layer + a data layer…") and the mini-blueprint ghost
+ * annotations ("+ add an interface layer") can never disagree (round 3).
+ */
+export function layerArticle(layer: StackLayer): 'a' | 'an' {
+	return layer === 'interface' || layer === 'infra' ? 'an' : 'a';
+}
