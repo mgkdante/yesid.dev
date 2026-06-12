@@ -11,7 +11,7 @@ import { resolve } from 'path';
 const read = (p: string) => readFileSync(resolve(process.cwd(), p), 'utf-8');
 
 describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
-	const page = () => read('src/routes/tech-stack/+page.svelte');
+	const page = () => read('src/routes/[[lang=locale]]/tech-stack/+page.svelte');
 	const engine = () => read('src/lib/components/stack-engine/Engine.svelte');
 
 	it('route wraps the engine zone in an engine-band framed by TWO hazard separators', () => {
