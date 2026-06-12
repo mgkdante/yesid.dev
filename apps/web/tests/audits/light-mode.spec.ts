@@ -324,6 +324,44 @@ test.describe('light mode — per-page audit', () => {
 		expect(layout!.hasArt).toBe(true);
 		expect(layout!.panelRight).toBeLessThanOrEqual(layout!.textLeft);
 	});
+
+	test('final batch: the footer street panel + ONE platform-edge tape at the seam', async ({ page }) => {
+		// 6c: the footer paints the muted street panel (light = station paper
+		// #F1E9DA; dark asphalt #1E1E1E is pinned in tokens.test) under the
+		// theme-invariant platform-edge tape. 6b: the page above contributes
+		// NO second tape at the footer seam.
+		await page.goto('/about', { waitUntil: 'networkidle' });
+
+		const footer = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="footer"]');
+			if (!el) return null;
+			const sep = el.querySelector('.footer-gradient-sep');
+			return {
+				bg: getComputedStyle(el).backgroundColor,
+				tape: sep ? getComputedStyle(sep).backgroundImage : '',
+			};
+		});
+		expect(footer).not.toBeNull();
+		expect(footer!.bg).toBe('rgb(241, 233, 218)'); // #F1E9DA light --muted
+		expect(footer!.tape).toContain('rgb(255, 182, 39)'); // #FFB627 hazard-a
+		expect(footer!.tape).toContain('rgb(28, 24, 20)'); // #1C1814 hazard-b
+
+		// 6b: About's only page-owned hazard stripe is the TOP one — nothing
+		// tape-shaped may sit between the bento section and the footer tape
+		// (tapes INSIDE cards, e.g. the CTA terminal chrome, are fine).
+		const tapesBelowPage = await page.evaluate(() => {
+			const section = document.querySelector('[data-testid="page-about"]');
+			if (!section) return -1;
+			return Array.from(document.querySelectorAll('main div[style]')).filter((el) => {
+				if (!(el.getAttribute('style') ?? '').includes('repeating-linear-gradient')) return false;
+				const pos = section.compareDocumentPosition(el);
+				return (
+					pos & Node.DOCUMENT_POSITION_FOLLOWING && !(pos & Node.DOCUMENT_POSITION_CONTAINED_BY)
+				);
+			}).length;
+		});
+		expect(tapesBelowPage).toBe(0);
+	});
 });
 
 test.describe('theme toggle behaviour', () => {

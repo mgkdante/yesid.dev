@@ -106,10 +106,9 @@
 		</div>
 </section>
 
-<!-- Bottom Stripe -->
-<div class="px-3 pb-1" aria-hidden="true">
-	<Separator variant="hazard" />
-</div>
+<!-- GO2-W5 final batch (6b): no page-level bottom stripe. The footer's
+     platform-edge hazard tape owns the footer seam — a second tape here
+     stacked two stripes at the page bottom (operator QA). -->
 
 <style>
 	/* ═══ DASHBOARD: CSS Grid Named Areas ═══ */
