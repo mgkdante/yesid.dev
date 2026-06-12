@@ -1,7 +1,8 @@
 // GO-W2.2 T8: per-page light-mode audit. Forces theme=light via the same
 // localStorage channel the inline script reads, walks every page shape, and
-// asserts: attribute applied pre-hydration, light surface painted, pinned-dark
-// scenes stay dark, the toggle round-trips, and zero console errors.
+// asserts: attribute applied pre-hydration, light surface painted, the home
+// closer + its terminal follow the theme (go2/w4 — the old pinned-dark scene
+// is gone), the toggle round-trips, and zero console errors.
 //
 // Detail routes are resolved dynamically (first card href on /projects and
 // /blog) — Track 4 may rename service slugs this wave, so nothing is
@@ -9,7 +10,6 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const LIGHT_BG = 'rgb(250, 250, 248)'; // #FAFAF8
-const DARK_BG = 'rgb(20, 20, 20)'; // #141414
 
 const ROUTES = [
 	'/',
@@ -84,12 +84,20 @@ test.describe('light mode — per-page audit', () => {
 		await assertRendersLight(page, href!);
 	});
 
-	test('home closer stays pinned dark inside light mode', async ({ page }) => {
+	test('home closer follows light mode (go2/w4: dark pin removed)', async ({ page }) => {
+		// Operator QA: the closer's pinned-dark wrapper was the "extra layer"
+		// keeping its terminal dark in light mode. Section + terminal now
+		// follow the active theme.
 		await page.goto('/', { waitUntil: 'networkidle' });
 		const closerBg = await page
 			.getByTestId('closer-section')
 			.evaluate((el) => getComputedStyle(el).backgroundColor);
-		expect(closerBg).toBe(DARK_BG);
+		expect(closerBg).toBe(LIGHT_BG);
+
+		const terminalBg = await page
+			.getByTestId('closer-board')
+			.evaluate((el) => getComputedStyle(el).backgroundColor);
+		expect(terminalBg).toBe('rgb(245, 245, 240)'); // --terminal light #F5F5F0
 	});
 
 	test('muted text resolves to the AA light value', async ({ page }) => {
