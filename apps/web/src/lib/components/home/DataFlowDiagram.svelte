@@ -26,7 +26,11 @@
 
 	let container: HTMLDivElement;
 
-	const BRAND_COLORS = ['var(--primary)', 'var(--accent)'];
+	// GO2-W5 INTERLOCKING: the alternating second voice is --line-amber (the
+	// yellow line that survives daylight, graphics ≥3:1 both modes); text on
+	// amber nodes uses --accent-text so type stays AA.
+	const BRAND_COLORS = ['var(--primary)', 'var(--line-amber)'];
+	const TEXT_COLORS = ['var(--primary)', 'var(--accent-text)'];
 
 	// Size-dependent layout constants — sm fits inside cards, lg is prominent on detail pages
 	let cfg = $derived(size === 'lg'
@@ -44,7 +48,8 @@
 			x: cfg.padX + i * (cfg.nodeW + cfg.gap),
 			y: cfg.padY,
 			label: tech,
-			color: BRAND_COLORS[i % BRAND_COLORS.length]
+			color: BRAND_COLORS[i % BRAND_COLORS.length],
+			textColor: TEXT_COLORS[i % TEXT_COLORS.length]
 		}))
 	);
 
@@ -152,7 +157,10 @@
 			{/if}
 		{/each}
 
-		<!-- Traveling dot markers for each connection -->
+		<!-- Traveling dot markers — métro-map station dots, Montréal-map style.
+		     Round-4 doctrine: the core is the WHITE reflective voice
+		     (var(--reflective), theme-invariant — var(--card) was dark in dark
+		     mode, so the "white core" was never actually white there). -->
 		{#each nodes as _, i}
 			{#if i > 0}
 				<circle
@@ -160,7 +168,9 @@
 					cx={nodes[i - 1].x + cfg.nodeW}
 					cy={cfg.padY + cfg.nodeH / 2}
 					r={cfg.dotR}
-					fill={BRAND_COLORS[(i - 1) % BRAND_COLORS.length]}
+					fill="var(--reflective)"
+					stroke={BRAND_COLORS[(i - 1) % BRAND_COLORS.length]}
+					stroke-width={cfg.lineStroke}
 					opacity="0.8"
 				/>
 			{/if}
@@ -186,7 +196,7 @@
 					y={node.y + cfg.nodeH / 2}
 					text-anchor="middle"
 					dominant-baseline="central"
-					fill={node.color}
+					fill={node.textColor}
 					font-size={cfg.fontSize}
 					font-family="'JetBrains Mono', monospace"
 				>

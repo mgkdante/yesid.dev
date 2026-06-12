@@ -35,7 +35,12 @@
 <div data-testid="manifesto-direction-badge" class="manifesto__badge manifesto__badge--direction">{directionBadge}</div>
 
 <style>
-	/* ── Arrival ─────────────────────────────────────────────────── */
+	/* ── Arrival ─────────────────────────────────────────────────────
+	   Round-4 doctrine: the arrival countdown IS a departure-board
+	   readout — the YELLOW wayfinding voice at full strength (was a
+	   15–20% orange ghost; accent-text = 11.06:1 dark / 4.98:1 light
+	   on the manifesto surface). The manifesto viewport's one yellow
+	   wayfinding element. */
 	.manifesto__arrival {
 		position: absolute;
 		left: 60px;
@@ -50,14 +55,14 @@
 	.manifesto__arr-label {
 		font-size: 7px;
 		letter-spacing: 2px;
-		color: color-mix(in srgb, var(--primary) 15%, transparent);
+		color: var(--accent-text);
 		text-transform: uppercase;
 	}
 
 	.manifesto__arr-time {
 		font-size: 18px;
 		font-weight: 600;
-		color: color-mix(in srgb, var(--primary) 20%, transparent);
+		color: var(--accent-text);
 		letter-spacing: 2px;
 		font-variant-numeric: tabular-nums;
 	}
@@ -73,25 +78,30 @@
 	.manifesto__chevrons--right { right: 60px; top: 110px; flex-direction: row; }
 	.manifesto__chevrons--down { left: 80px; top: 60px; flex-direction: column; }
 
+	/* Round-4 home-art bolden: chevrons up a step (0.15 → 0.3) — still
+	   ambience, no longer subliminal. */
 	.manifesto__chevron {
 		width: 12px;
 		height: 12px;
 		border-right: 2px solid var(--primary);
 		border-bottom: 2px solid var(--primary);
-		opacity: var(--opacity-subtle);
+		opacity: var(--opacity-dim);
 	}
 
 	.manifesto__chevrons--right .manifesto__chevron { transform: rotate(-45deg); }
 	.manifesto__chevrons--down .manifesto__chevron { transform: rotate(45deg); }
 
-	/* ── Platform Badges ─────────────────────────────────────────── */
+	/* ── Platform Badges ─────────────────────────────────────────────
+	   Round-4: platform/direction plates are wayfinding chrome — the
+	   YELLOW voice, boldened a step from the 20%/10% orange ghosts
+	   (decorative scene ambience, not body text). */
 	.manifesto__badge {
 		position: absolute;
 		font-family: var(--font-mono);
 		font-size: 8px;
 		letter-spacing: 2px;
-		color: color-mix(in srgb, var(--primary) 20%, transparent);
-		border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
+		color: color-mix(in srgb, var(--accent-text) 45%, transparent);
+		border: 1px solid color-mix(in srgb, var(--accent-text) 25%, transparent);
 		border-radius: var(--radius-sm);
 		padding: 3px 8px;
 		text-transform: uppercase;

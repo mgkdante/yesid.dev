@@ -46,10 +46,13 @@
 	.accent-rail { display: none; }
 	.listing-content { min-width: 0; }
 
+	/* Round 5: rails one step bolder (operator) — the edge-title rule draws
+	   at 2px / 35% primary (was 1px / 20%), the station dots and their lead
+	   lines step up with it. Both modes (primary is theme-mapped). */
 	@media (min-width: 1024px) {
 		.listing-layout {
 			display: grid;
-			grid-template-columns: auto 1px 1fr;
+			grid-template-columns: auto 2px 1fr;
 			margin-top: -5rem;
 		}
 		.listing-content {
@@ -80,7 +83,7 @@
 		}
 		.accent-rail {
 			display: block;
-			background: color-mix(in srgb, var(--primary) 20%, transparent);
+			background: color-mix(in srgb, var(--primary) 35%, transparent);
 		}
 	}
 
@@ -98,20 +101,20 @@
 	.metro-dots-top { top: 16px; }
 	.metro-dots-bottom { bottom: 16px; }
 	.metro-line {
-		width: 1px;
+		width: 2px;
 		height: 32px;
-		background: color-mix(in srgb, var(--primary) 12%, transparent);
+		background: color-mix(in srgb, var(--primary) 25%, transparent);
 	}
 	.metro-dot { border-radius: 50%; }
 	.metro-dot-sm {
-		width: 5px;
-		height: 5px;
-		border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+		width: 6px;
+		height: 6px;
+		border: 1.5px solid color-mix(in srgb, var(--primary) 35%, transparent);
 	}
 	.metro-dot-lg {
-		width: 8px;
-		height: 8px;
-		background: color-mix(in srgb, var(--primary) 15%, transparent);
-		border: 1.5px solid color-mix(in srgb, var(--primary) 30%, transparent);
+		width: 10px;
+		height: 10px;
+		background: color-mix(in srgb, var(--primary) 25%, transparent);
+		border: 2px solid color-mix(in srgb, var(--primary) 45%, transparent);
 	}
 </style>

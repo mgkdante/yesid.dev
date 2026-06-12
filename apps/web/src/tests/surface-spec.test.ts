@@ -13,14 +13,25 @@ const CARD_FILES = [
 ];
 
 describe('surface spec — one card spec, defined once', () => {
+	// GO2-W5: surface-1 now aliases var(--card) in tokens.json (the
+	// "panel lifts off the board" flip); ui/card consumes the canonical
+	// surface-2 alias, the home card families keep surface-1 — both resolve
+	// to the same solid card token, so the single-spec guarantee holds.
+	// Round 3: the shared card spec draws the brand grid at 2px.
 	for (const f of CARD_FILES) {
-		it(`${f} consumes surface-1 + border-brand tokens`, () => {
+		it(`${f} consumes a card surface alias + border-brand tokens`, () => {
 			const src = read(f);
-			expect(src).toContain('background: var(--surface-1);');
-			expect(src).toContain('border: 1px solid var(--border-brand);');
+			expect(src).toMatch(/background: var\(--surface-[12]\);/);
+			expect(src).toContain('border: 2px solid var(--border-brand);');
 			expect(src).toContain('border-color: var(--border-brand-active);');
 		});
 	}
+
+	it('surface-1 and surface-2 both alias the solid card token (tokens.css)', () => {
+		const tokensCss = read('src/lib/styles/tokens.css');
+		expect(tokensCss).toContain('--surface-1: var(--card);');
+		expect(tokensCss).toContain('--surface-2: var(--card);');
+	});
 
 	it('HomeServices icon zone gradient is tokenized (no #1f1f1f/#161616)', () => {
 		const src = read('src/lib/components/home/HomeServices.svelte');

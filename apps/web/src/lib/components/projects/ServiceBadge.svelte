@@ -24,6 +24,16 @@
 
 	// Track hover state to pass down to WorkSvgIcon for MorphSVG effect
 	let badgeHovered = $state(false);
+
+	// GO2-W5 STM line bullets — service id → line color (database = orange
+	// line, pipeline = yellow line, analytics = green line, web = lunar).
+	const SERVICE_LINE_COLORS: Record<string, string> = {
+		'database-engineering': 'var(--primary)',
+		'data-pipeline': 'var(--line-amber)',
+		'analytics-reporting': 'var(--signal-proceed)',
+		'web-development': 'var(--signal-lunar)'
+	};
+	const lineColor = $derived(SERVICE_LINE_COLORS[service.id] ?? 'var(--signal-lunar)');
 </script>
 
 <!-- Clickable badge → /services/{service.id} (page built in future slice, 404 until then) -->
@@ -38,6 +48,7 @@
 	{#if svgContent}
 		<SvgIcon {svgContent} size={28} hovered={badgeHovered} />
 	{/if}
+	<span class="line-bullet" style="background: {lineColor};" aria-hidden="true"></span>
 	<span class="font-mono text-caption leading-tight text-[var(--foreground)] md:text-mono">
 		{resolveLocale(service.title, locale)}
 	</span>
@@ -49,6 +60,15 @@
 		border: none;
 		background: transparent;
 		border-radius: 0;
+	}
+
+	/* GO2-W5 STM line bullet — the service's line color as a roundel dot. */
+	.line-bullet {
+		display: inline-block;
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		flex-shrink: 0;
 	}
 
 	/* Hover: glow, bg shift, slight scale — makes badges feel interactive */
