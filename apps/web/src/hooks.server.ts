@@ -1,5 +1,6 @@
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { adapter } from '$lib/adapters';
+import { pathLocale } from '$lib/utils/locale-routing';
 import type { ErrorPageContent } from '$lib/content/nav';
 
 const PUBLIC_PAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800';
@@ -21,7 +22,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 	// through the cache after the first fetch.
 	event.locals.pageCache = new Map();
 
-	const response = await resolve(event);
+	// i18n (slice-28.6): app.html carries <html lang="%lang%">; locale is
+	// path-derived so each URL is one cacheable representation (no Vary,
+	// CDN-safe) and error renders get the right lang too.
+	const lang = pathLocale(event.url.pathname);
+	const response = await resolve(event, {
+		transformPageChunk: ({ html }) => html.replace('%lang%', lang),
+	});
 	if (
 		event.request.method === 'GET' &&
 		response.status === 200 &&
