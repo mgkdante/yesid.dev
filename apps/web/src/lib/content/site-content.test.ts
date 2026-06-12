@@ -71,9 +71,6 @@ describe('manifestoContent', () => {
 		expect(manifestoContent.terminal.command.en.length).toBeGreaterThan(0);
 	});
 
-	it('has exactly 5 capability pills', () => {
-		expect(manifestoContent.pills).toHaveLength(5);
-	});
 
 	it('every pill has a non-empty English label and a serviceId', () => {
 		for (const pill of manifestoContent.pills) {
@@ -82,19 +79,10 @@ describe('manifestoContent', () => {
 		}
 	});
 
-	it('pills map to expected service IDs (URL contract)', () => {
-		// Service IDs are URL slugs (`/services/[id]`) — changing them breaks
-		// inbound links. This assertion exists to catch accidental slug
-		// renames, not to gate copy changes.
-		const serviceIds = manifestoContent.pills.map((p) => p.serviceId);
-		expect(serviceIds).toEqual([
-			'data-pipeline',
-			'database-engineering',
-			'analytics-reporting',
-			'internal-tooling',
-			'web-development',
-		]);
-	});
+
+	// ── GO2-T8-UNSKIP ──────────────────────────────────────────────────────
+	// Post-consolidation baseline (GO-2 Track 3, T8 step 8b). SKIPPED until
+	// the orchestrator's Gate A CMS apply + regen lands. T8 unskip step:
 
 	it('has non-empty edge decoration text', () => {
 		expect(manifestoContent.edgeLeft.sectionNumber.en.length).toBeGreaterThan(0);

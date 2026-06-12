@@ -100,6 +100,7 @@ import {
 	type ProjectsPageContent,
 } from '@repo/shared/schemas';
 import type { Locale } from '$lib/types';
+import { resolveLocale } from '$lib/utils/locale';
 import { techStackItems, techStackPageContent } from '$lib/content/tech-stack';
 import { serializeBlocksToHtml, BlockEditorDocSchema } from '@repo/shared';
 import {
@@ -275,13 +276,13 @@ export const staticAdapter: ContentAdapter = {
 				TechStackItemSchema.optional(),
 				techStackItems.find((it) => it.id === id),
 			),
-		content: async (id) => {
+		content: async (id, locale = 'en') => {
 			const item = techStackItems.find((it) => it.id === id);
 			if (!item) return '';
 			return [
-				serializeBlocksToHtml(item.what_it_is.en),
-				serializeBlocksToHtml(item.what_i_use_it_for.en),
-				serializeBlocksToHtml(item.why_i_use_it_instead.en),
+				serializeBlocksToHtml(resolveLocale(item.what_it_is, locale)),
+				serializeBlocksToHtml(resolveLocale(item.what_i_use_it_for, locale)),
+				serializeBlocksToHtml(resolveLocale(item.why_i_use_it_instead, locale)),
 			].join('\n');
 		},
 	},

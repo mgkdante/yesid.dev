@@ -1,9 +1,22 @@
 <!doctype html>
-<html lang="en" class="dark" data-theme="dark">
+<html lang="%lang%" data-theme="dark">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<meta name="text-scale" content="scale" />
+		<!-- GO-W2.2 pre-paint theme resolution. Markup default stays dark (no-JS,
+		     crawlers, OG). Synchronous + before CSSOM => zero flash on every
+		     edge-cached page. localStorage choice wins; otherwise system pref. -->
+		<script>
+			(function () {
+				var d = document.documentElement, t = null;
+				try { t = localStorage.getItem('theme'); } catch (e) {}
+				if (t !== 'light' && t !== 'dark') {
+					t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+				}
+				d.dataset.theme = t;
+			})();
+		</script>
 		<!-- Fonts: self-hosted via @fontsource-variable (no external requests) -->
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		%sveltekit.head%

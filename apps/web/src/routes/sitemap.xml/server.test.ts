@@ -75,6 +75,25 @@ describe('GET /sitemap.xml', () => {
 		const { body } = await fetchBody();
 		expect(body).not.toContain('<lastmod>');
 	});
+
+	// ── slice-28.6 T11: per-locale variants, byte-stable pre-flip ──
+	it('pre-flip output is unchanged for chrome routes: one <url> per path, en self-alternate, no x-default', async () => {
+		const entries = await _buildSitemapEntries();
+		const joined = entries.join('\n');
+		expect(joined).not.toContain('hreflang="fr"');
+		expect(joined).not.toContain('x-default');
+		expect(joined).toContain('<loc>https://yesid.dev/about</loc>');
+		expect(joined).not.toContain('<loc>https://yesid.dev/fr/about</loc>');
+	});
+
+	it('blog post entries carry no alternate cluster (mono-language, AM2.5)', async () => {
+		const entries = await _buildSitemapEntries();
+		const post = entries.find(
+			(e) => e.includes('/blog/') && !e.includes('/blog</loc>') && !e.includes('/blog/personal'),
+		);
+		expect(post).toBeDefined();
+		expect(post).not.toContain('xhtml:link');
+	});
 });
 
 // slice-26.1: the sitemap is registry-gated — entries appear iff the

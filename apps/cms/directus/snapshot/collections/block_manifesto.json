@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "Manifesto block — section 2 of /. Non-translatable fields: ticks (string[]) on parent. All LocalizedString leaves live in block_manifesto_translations as JSON columns.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 2,
     "sort_field": "sort",
     "status": "active",

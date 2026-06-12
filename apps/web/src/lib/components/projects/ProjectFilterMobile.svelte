@@ -7,6 +7,9 @@
 -->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { projectsListingContent } from '$lib/content/projects';
@@ -53,7 +56,7 @@
 		if (activeService) parts.push(serviceMap.get(activeService) ?? activeService);
 		if (activeStack) parts.push(activeStack);
 		if (activeTag) parts.push(activeTag);
-		return parts.length > 0 ? parts.join(' + ') : resolveLocale(labels.all, 'en');
+		return parts.length > 0 ? parts.join(' + ') : resolveLocale(labels.all, locale);
 	});
 </script>
 
@@ -67,13 +70,13 @@
 						class="tap-press inline-flex items-center gap-1.5 rounded border px-4 py-2.5 min-h-11 font-mono text-xs transition-colors"
 						style="border-color: var(--primary); color: var(--primary);"
 					>
-						{resolveLocale(labels.filters, 'en')}
+						{resolveLocale(labels.filters, locale)}
 						<span class="text-caption">{open ? '\u25B2' : '\u25BC'}</span>
 					</button>
 				{/snippet}
 			</CollapsibleTrigger>
 			<span class="text-caption text-[var(--muted-foreground)]">
-				{resolveLocale(labels.showing, 'en')}: {summary}
+				{resolveLocale(labels.showing, locale)}: {summary}
 			</span>
 		</div>
 
@@ -82,7 +85,7 @@
 				<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3" use:scrollChain>
 					<!-- Service filter -->
 					<div class="label-section font-semibold">
-						{resolveLocale(labels.services, 'en')}
+						{resolveLocale(labels.services, locale)}
 					</div>
 					<div class="mt-1.5 flex flex-wrap gap-1.5">
 						<button
@@ -90,11 +93,11 @@
 							class:m-active={activeService === null}
 							onclick={() => onServiceSelect(null)}
 						>
-							{resolveLocale(labels.all, 'en')}
+							{resolveLocale(labels.all, locale)}
 						</button>
 						{#each serviceIds as svcId}
 							<button
-								class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
+								class="tap-press rounded border border-[var(--border)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 								class:m-tag-active={activeService === svcId}
 								onclick={() => onServiceSelect(activeService === svcId ? null : svcId)}
 							>
@@ -107,7 +110,7 @@
 					{#if stack.length > 0 && onStackSelect}
 						<div class="mt-3 divider-dashed pt-2">
 							<div class="label-section font-semibold">
-								{resolveLocale(labels.stack, 'en')}
+								{resolveLocale(labels.stack, locale)}
 							</div>
 							<div class="mt-1.5 flex flex-wrap gap-1.5">
 								<button
@@ -115,11 +118,11 @@
 									class:m-active={activeStack === null}
 									onclick={() => onStackSelect(null)}
 								>
-									{resolveLocale(labels.all, 'en')}
+									{resolveLocale(labels.all, locale)}
 								</button>
 								{#each stack as item}
 									<button
-										class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
+										class="tap-press rounded border border-[var(--border)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 										class:m-tag-active={activeStack === item}
 										onclick={() => onStackSelect(activeStack === item ? null : item)}
 									>
@@ -133,7 +136,7 @@
 					<!-- Tags -->
 					<div class="mt-3 divider-dashed pt-2">
 						<div class="label-section font-semibold">
-							{resolveLocale(labels.tags, 'en')}
+							{resolveLocale(labels.tags, locale)}
 						</div>
 						<div class="mt-1.5 flex flex-wrap gap-1.5">
 							<button
@@ -141,11 +144,11 @@
 								class:m-active={activeTag === null}
 								onclick={() => onTagSelect(null)}
 							>
-								{resolveLocale(labels.all, 'en')}
+								{resolveLocale(labels.all, locale)}
 							</button>
 							{#each tags as tag}
 								<button
-									class="tap-press rounded border border-[var(--border-subtle)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="tap-press rounded border border-[var(--border)] px-3 py-2.5 min-h-11 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeTag === tag}
 									onclick={() => onTagSelect(activeTag === tag ? null : tag)}
 								>

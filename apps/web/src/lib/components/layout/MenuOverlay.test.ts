@@ -41,3 +41,62 @@ describe('MenuOverlay', () => {
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	});
 });
+
+describe('MenuOverlay — locale threading (slice-28.6)', () => {
+	it('renders item label + subtitle via resolveLocale for fr', () => {
+		render(MenuOverlay, {
+			props: {
+				open: true,
+				pathname: '/fr',
+				locale: 'fr',
+				menuItems: [
+					{
+						label: { en: 'Services', fr: 'Services' },
+						subtitle: { en: 'what I build', fr: 'ce que je construis' },
+						href: '/services',
+						priority: 1,
+					},
+				],
+			},
+		});
+		expect(screen.getByText('ce que je construis')).toBeInTheDocument();
+	});
+
+	it('hides the locale switcher while only one locale is published', () => {
+		render(MenuOverlay, { props: { open: true, pathname: '/', menuItems: [] } });
+		expect(screen.queryByTestId('locale-switch')).toBeNull();
+	});
+
+	it('renders path-preserving EN|FR links when two locales are available', () => {
+		render(MenuOverlay, {
+			props: {
+				open: true,
+				pathname: '/fr/about',
+				locale: 'fr',
+				menuItems: [],
+				availableLocales: ['en', 'fr'],
+			},
+		});
+		const sw = screen.getByTestId('locale-switch');
+		const links = sw.querySelectorAll('a');
+		expect(links[0].getAttribute('href')).toBe('/about');
+		expect(links[1].getAttribute('href')).toBe('/fr/about');
+		expect(links[1].getAttribute('aria-current')).toBe('true');
+	});
+
+	it('localizes item hrefs and resolves active state from a prefixed pathname', () => {
+		render(MenuOverlay, {
+			props: {
+				open: true,
+				pathname: '/fr/services',
+				locale: 'fr',
+				menuItems: [
+					{ label: { en: 'Services', fr: 'Services' }, href: '/services', priority: 1 },
+				],
+			},
+		});
+		const link = screen.getByRole('link', { name: /Services/ });
+		expect(link).toHaveAttribute('href', '/fr/services');
+		expect(link).toHaveAttribute('aria-current', 'page');
+	});
+});

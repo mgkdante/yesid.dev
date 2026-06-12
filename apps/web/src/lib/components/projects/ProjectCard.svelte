@@ -9,6 +9,10 @@
 <script lang="ts">
 	import type { Project, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { magnetic } from '$lib/motion/actions/magnetic.js';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { SvgIcon } from '$lib/components/brand';
@@ -57,13 +61,12 @@
 	);
 
 	// Gradient color based on the first related service's position in the palette.
-	// Creates visual variety across cards without requiring thumbnails.
+	// GO-2: keyed by the 4 consolidated stations; unknown/archived ids take the
+	// fallback pair below.
 	const SERVICE_GRADIENTS: Record<string, [string, string]> = {
-		'sql-development': ['var(--primary)', 'var(--primary-hover)'],
+		'database-engineering': ['var(--primary)', 'var(--primary-hover)'],
 		'data-pipeline': ['var(--accent)', 'var(--accent-hover)'],
 		'analytics-reporting': ['var(--primary)', 'var(--accent)'],
-		'database-engineering': ['var(--primary-hover)', 'var(--primary)'],
-		'internal-tooling': ['var(--accent-hover)', 'var(--accent)'],
 		'web-development': ['var(--accent)', 'var(--primary)']
 	};
 
@@ -74,7 +77,7 @@
 	// i18n labels pulled from content layer (Task 17b-7d).
 	const stackLabel = projectsListingContent.filters.techStack;
 	const servicesLabel = projectsListingContent.filters.services;
-	const stackOverflowTemplate = resolveLocale(projectsListingContent.card.stackOverflowSuffix, 'en');
+	const stackOverflowTemplate = resolveLocale(projectsListingContent.card.stackOverflowSuffix, locale);
 	const stackOverflow = $derived(
 		project.stack.length > 5
 			? stackOverflowTemplate.replace('{count}', String(project.stack.length - 5))
@@ -83,7 +86,7 @@
 </script>
 
 <a
-	href="/projects/{project.slug}"
+	href={localizeHref(`/projects/${project.slug}`, locale)}
 	class={cn("tap-press project-card group block h-full", className)}
 	data-testid="project-card"
 	data-flip-id={project.slug}
@@ -100,8 +103,8 @@
 			<div class="h-52 overflow-hidden">
 				<img
 					src={asset(project.image, 'card-600')}
-					alt={resolveLocale(project.title, 'en')}
-					class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-active:scale-105"
+					alt={resolveLocale(project.title, locale)}
+					class="project-card-img h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-active:scale-105"
 					loading="lazy"
 					decoding="async"
 				/>
@@ -127,24 +130,24 @@
 		<div class="p-4">
 			<!-- Title below the gradient, not overlaid -->
 			<h2 class="text-base font-bold text-[var(--foreground)] transition-colors duration-300 group-hover:text-primary group-active:text-primary md:text-lg">
-				{resolveLocale(project.title, 'en')}
+				{resolveLocale(project.title, locale)}
 			</h2>
 
 			<!-- Description -->
 			<p class="mt-1.5 text-sm leading-relaxed text-[var(--secondary-foreground)]">
-				{resolveLocale(project.oneLiner, 'en')}
+				{resolveLocale(project.oneLiner, locale)}
 			</p>
 
 			<!-- Service badges row — SVGs with MorphSVG on card hover -->
 			{#if projectServices.length > 0}
 				<div class="mt-3">
 					<div class="mb-1.5 label-section font-semibold">
-						{resolveLocale(servicesLabel, 'en')}
+						{resolveLocale(servicesLabel, locale)}
 					</div>
 					<div class="flex flex-wrap gap-1.5">
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-2 rounded-full border bg-bg-primary px-3 py-1.5"
+							class="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1.5"
 							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
@@ -157,7 +160,7 @@
 								</div>
 							{/if}
 							<span class="font-mono text-caption leading-tight text-[var(--foreground)]">
-								{resolveLocale(service.title, 'en')}
+								{resolveLocale(service.title, locale)}
 							</span>
 						</div>
 					{/each}
@@ -169,7 +172,7 @@
 			{#if displayStack.length > 0}
 				<div class="mt-3">
 					<div class="mb-1.5 label-section font-semibold">
-						{resolveLocale(stackLabel, 'en')}
+						{resolveLocale(stackLabel, locale)}
 					</div>
 					<DataFlowDiagram stack={displayStack} size="sm" />
 					{#if stackOverflow}
@@ -199,5 +202,24 @@
 		border: none;
 		background: transparent;
 		border-radius: 0;
+	}
+
+	/* GO-w2t5 retier: large-surface image scale is MOTION-GATED — rest under
+	   reduce. Unlayered component CSS outrides the @layer utilities zoom. */
+	@media (prefers-reduced-motion: reduce) {
+		.project-card-img {
+			transition: none;
+			scale: 1;
+		}
+	}
+
+	/* GO-w2t5: the pipeline "goes live" on card attention — alpha-only →
+	   SAFE-ALWAYS. Rest state is the diagram's stroke-opacity=0.5 attribute. */
+	.project-card :global(.df-line) {
+		transition: stroke-opacity var(--duration-normal) var(--ease-default);
+	}
+	.project-card:hover :global(.df-line),
+	.project-card:active :global(.df-line) {
+		stroke-opacity: 1;
 	}
 </style>

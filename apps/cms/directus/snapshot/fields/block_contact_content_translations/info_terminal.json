@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "info_terminal",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale info terminal block (ContactContent.infoTerminal). JSON shape: { title, command: string, location, responseTime, sectionLabels: { location, connect } }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

@@ -36,7 +36,8 @@ import {
 	buildProfilePageNode,
 	buildWebSiteNode,
 } from '$lib/adapters/jsonld';
-import { SITE_HOST } from '$lib/utils/seo-defaults';
+import { crumbName } from '$lib/adapters/route-seo-factories';
+import { canonicalFor } from '$lib/utils/seo-defaults';
 
 export interface CodeRouteSeoDefaults {
 	/** Per-route OG type — `<meta property="og:type">`. */
@@ -61,10 +62,10 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'yesid. — Digital Infrastructure that Moves.' },
 		composedTitleStrategy: 'verbatim',
-		jsonLdFactory: (sm) => [
-			buildPersonNode(sm),
-			buildWebSiteNode(sm),
-			buildProfilePageNode(SITE_HOST),
+		jsonLdFactory: (sm, locale) => [
+			buildPersonNode(sm, locale),
+			buildWebSiteNode(sm, locale),
+			buildProfilePageNode(canonicalFor('/', locale)),
 		],
 	},
 	'/about': {
@@ -72,15 +73,15 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'About Yesid' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: (sm) => [
-			buildPersonNode(sm),
-			buildProfilePageNode(`${SITE_HOST}/about`),
+		jsonLdFactory: (sm, locale) => [
+			buildPersonNode(sm, locale),
+			buildProfilePageNode(canonicalFor('/about', locale)),
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'About', url: `${SITE_HOST}/about` },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/about', locale, 'About'), url: canonicalFor('/about', locale) },
 				],
-				`${SITE_HOST}/about`,
+				canonicalFor('/about', locale),
 			),
 		],
 	},
@@ -89,13 +90,13 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Contact' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: () => [
+		jsonLdFactory: (_sm, locale) => [
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Contact', url: `${SITE_HOST}/contact` },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/contact', locale, 'Contact'), url: canonicalFor('/contact', locale) },
 				],
-				`${SITE_HOST}/contact`,
+				canonicalFor('/contact', locale),
 			),
 		],
 	},
@@ -104,19 +105,20 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Services' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: () => [
+		jsonLdFactory: (_sm, locale) => [
 			buildCollectionPageNode({
-				name: 'Services',
+				name: crumbName('/services', locale, 'Services'),
+				// Code-side EN literal (documented); FR copy optional at content drop.
 				description:
-					'Digital infrastructure services: SQL and PostgreSQL consulting, dbt pipelines, Power BI analytics, Python ETL, and real-time data platforms.',
-				url: `${SITE_HOST}/services`,
+					'Digital infrastructure services in four stations: databases & SQL, data pipelines & automation, dashboards & analytics, websites & e-commerce.',
+				url: canonicalFor('/services', locale),
 			}),
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Services', url: `${SITE_HOST}/services` },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/services', locale, 'Services'), url: canonicalFor('/services', locale) },
 				],
-				`${SITE_HOST}/services`,
+				canonicalFor('/services', locale),
 			),
 		],
 	},
@@ -125,19 +127,19 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Projects' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: () => [
+		jsonLdFactory: (_sm, locale) => [
 			buildCollectionPageNode({
-				name: 'Projects',
+				name: crumbName('/projects', locale, 'Projects'),
 				description:
 					'Recent freelance and client work: transit pipelines, analytics platforms, dashboards, ETL, and infrastructure projects.',
-				url: `${SITE_HOST}/projects`,
+				url: canonicalFor('/projects', locale),
 			}),
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Projects', url: `${SITE_HOST}/projects` },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/projects', locale, 'Projects'), url: canonicalFor('/projects', locale) },
 				],
-				`${SITE_HOST}/projects`,
+				canonicalFor('/projects', locale),
 			),
 		],
 	},
@@ -146,19 +148,19 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Blog' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: () => [
+		jsonLdFactory: (_sm, locale) => [
 			buildCollectionPageNode({
-				name: 'Blog',
+				name: crumbName('/blog', locale, 'Blog'),
 				description:
 					'Notes on data infrastructure, SQL, PostgreSQL, dbt, Power BI, and analytics systems.',
-				url: `${SITE_HOST}/blog`,
+				url: canonicalFor('/blog', locale),
 			}),
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Blog', url: `${SITE_HOST}/blog` },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/blog', locale, 'Blog'), url: canonicalFor('/blog', locale) },
 				],
-				`${SITE_HOST}/blog`,
+				canonicalFor('/blog', locale),
 			),
 		],
 	},
@@ -167,20 +169,20 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Personal Blog' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: () => [
+		jsonLdFactory: (_sm, locale) => [
 			buildCollectionPageNode({
-				name: 'Personal Blog',
+				name: crumbName('/blog/personal', locale, 'Personal Blog'),
 				description:
 					'Off-work notes: tools, reading, experiments, and side projects. Longer-form than the professional blog.',
-				url: `${SITE_HOST}/blog/personal`,
+				url: canonicalFor('/blog/personal', locale),
 			}),
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Blog', url: `${SITE_HOST}/blog` },
-					{ name: 'Personal', url: `${SITE_HOST}/blog/personal` },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/blog', locale, 'Blog'), url: canonicalFor('/blog', locale) },
+					{ name: crumbName('/blog/personal', locale, 'Personal'), url: canonicalFor('/blog/personal', locale) },
 				],
-				`${SITE_HOST}/blog/personal`,
+				canonicalFor('/blog/personal', locale),
 			),
 		],
 	},
@@ -189,13 +191,13 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 		noIndex: false,
 		fallbackTitle: { en: 'Tech Stack' },
 		composedTitleStrategy: 'append-brand',
-		jsonLdFactory: () => [
+		jsonLdFactory: (_sm, locale) => [
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Tech Stack', url: `${SITE_HOST}/tech-stack` },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/tech-stack', locale, 'Tech Stack'), url: canonicalFor('/tech-stack', locale) },
 				],
-				`${SITE_HOST}/tech-stack`,
+				canonicalFor('/tech-stack', locale),
 			),
 		],
 	},

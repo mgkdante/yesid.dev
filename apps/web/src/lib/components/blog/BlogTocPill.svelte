@@ -9,10 +9,13 @@
   import { onMount, onDestroy } from 'svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
   import { resolveLocale } from '$lib/utils/locale';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { blogDetailContent } from '$lib/content/blog';
 
-  const tocOpenAria = resolveLocale(blogDetailContent.tocPill.openAria, 'en');
-  const tocCloseAria = resolveLocale(blogDetailContent.tocPill.closeAria, 'en');
+  const tocOpenAria = resolveLocale(blogDetailContent.tocPill.openAria, locale);
+  const tocCloseAria = resolveLocale(blogDetailContent.tocPill.closeAria, locale);
 
   interface TocHeading {
     id: string;
@@ -160,11 +163,11 @@
   }
 
   .toc-pill-name {
-    color: color-mix(in srgb, var(--foreground) 50%, transparent);
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
   }
 
   .toc-pill-counter {
-    color: color-mix(in srgb, var(--blog-accent, var(--primary)) 30%, transparent);
+    color: color-mix(in srgb, var(--blog-accent, var(--primary)) 85%, transparent);
   }
 
   .toc-drawer-backdrop {
@@ -189,7 +192,7 @@
     border: 1px solid color-mix(in srgb, var(--blog-accent, var(--primary)) 15%, transparent);
     border-radius: 12px;
     backdrop-filter: blur(12px);
-    box-shadow: 0 -8px 32px rgb(0 0 0 / 0.4);
+    box-shadow: var(--shadow-sheet);
   }
 
   .toc-drawer-item {
@@ -203,7 +206,7 @@
     cursor: pointer;
     font-family: var(--font-heading);
     font-size: 14px;
-    color: color-mix(in srgb, var(--foreground) 40%, transparent);
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
     transition: background var(--duration-fast) var(--ease-default),
                 color var(--duration-fast) var(--ease-default);
     text-align: left;
@@ -221,17 +224,17 @@
   }
 
   .toc-drawer-number {
-    color: color-mix(in srgb, var(--blog-accent, var(--primary)) 30%, transparent);
+    color: color-mix(in srgb, var(--blog-accent, var(--primary)) 85%, transparent);
   }
 
   .toc-drawer-sub {
     padding-left: 32px;
     font-size: 13px;
-    color: color-mix(in srgb, var(--foreground) 25%, transparent);
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
   }
 
   .toc-drawer-sub:hover {
-    color: color-mix(in srgb, var(--foreground) 55%, transparent);
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
   }
 
   .toc-drawer-sub.active {

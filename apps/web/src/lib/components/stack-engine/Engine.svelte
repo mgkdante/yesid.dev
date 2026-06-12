@@ -19,6 +19,9 @@
 	import { gsap } from 'gsap';
 	import { Flip } from 'gsap/Flip';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { EngineState } from './engine-state.svelte';
 	import GoalPicker from './GoalPicker.svelte';
 	import TechMatcher from './TechMatcher.svelte';
@@ -56,7 +59,7 @@
 		compose: 'What can these build?',
 	} as const;
 
-	const activeTitle = $derived(engine.active ? resolveLocale(engine.active.title, 'en') : '');
+	const activeTitle = $derived(engine.active ? resolveLocale(engine.active.title, locale) : '');
 	/** Compose entry: the matched/missing partition for the active archetype. */
 	const activeMatch = $derived(
 		engine.mode === 'compose' && engine.activeArchetype
@@ -66,6 +69,10 @@
 </script>
 
 <section class="stack-engine" data-testid="stack-engine">
+	<!-- GO-w2t5 addendum: section is full-bleed (route wraps it in the
+	     hazard-framed engine-band); the width cap lives on this inner
+	     container so content stays a readable centered column. -->
+	<div class="engine-inner">
 	<div class="engine-mode-toggle" role="group" aria-label="Engine mode">
 		<button
 			type="button"
@@ -109,7 +116,11 @@
 						data-testid="view-toggle"
 						onclick={toggleView}
 					>
-						{engine.view === 'blueprint' ? 'see it as a product →' : '← back to blueprint'}
+						{#if engine.view === 'blueprint'}
+						see it as a product <span class="toggle-arrow" aria-hidden="true">→</span>
+					{:else}
+						<span class="toggle-arrow toggle-arrow-back" aria-hidden="true">←</span> back to blueprint
+					{/if}
 					</button>
 				</div>
 				{#if engine.view === 'blueprint'}
@@ -140,7 +151,11 @@
 						data-testid="view-toggle"
 						onclick={toggleView}
 					>
-						{engine.view === 'blueprint' ? 'see it as a product →' : '← back to blueprint'}
+						{#if engine.view === 'blueprint'}
+						see it as a product <span class="toggle-arrow" aria-hidden="true">→</span>
+					{:else}
+						<span class="toggle-arrow toggle-arrow-back" aria-hidden="true">←</span> back to blueprint
+					{/if}
 					</button>
 				</div>
 				{#if engine.view === 'blueprint'}
@@ -158,13 +173,19 @@
 			{/if}
 		</div>
 	{/if}
+	</div>
 </section>
 
 <style>
 	.stack-engine {
+		/* GO-w2t5 addendum: no width cap here — the section bleeds with the
+		   route's engine-band; .engine-inner carries the content column. */
+		padding: 2rem var(--space-page-x);
+	}
+
+	.engine-inner {
 		max-width: var(--container-wide);
 		margin: 0 auto;
-		padding: 2rem var(--space-page-x);
 	}
 
 	.engine-mode-toggle {
@@ -190,6 +211,12 @@
 
 	.mode-btn + .mode-btn {
 		border-left: 1px solid var(--border);
+	}
+
+	/* GO-w2t5 cute pass: inactive mode hints orange before commit —
+	   color-only → SAFE-ALWAYS, consistent with the fun-pass accents. */
+	.mode-btn:hover:not(.mode-btn-active) {
+		color: var(--primary);
 	}
 
 	.mode-btn-active {
@@ -239,6 +266,21 @@
 	.engine-view-toggle:hover {
 		background: var(--primary);
 		color: var(--primary-foreground);
+	}
+
+	/* GO-w2t5: Flip anticipation — the arrow leans toward the target view on
+	   hover; the Flip morph on activate is the payoff. ≤4px → SAFE-ALWAYS. */
+	.toggle-arrow {
+		display: inline-block;
+		transition: transform var(--duration-fast) var(--ease-out);
+	}
+
+	.engine-view-toggle:hover .toggle-arrow {
+		transform: translateX(2px);
+	}
+
+	.engine-view-toggle:hover .toggle-arrow-back {
+		transform: translateX(-2px);
 	}
 
 	.engine-placeholder {

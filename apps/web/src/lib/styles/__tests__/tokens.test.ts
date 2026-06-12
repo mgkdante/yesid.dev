@@ -111,4 +111,58 @@ describe('Design System Tokens', () => {
       expect(appCSS).not.toContain('--radius-brand:');
     });
   });
+
+  describe('GO-day W2 Track 2 — AA palette + surfaces + color-scheme', () => {
+    const darkBlock = tokensCSS.match(/\[data-theme="dark"\], \.theme-dark \{([\s\S]*?)\n\}/)?.[1] ?? '';
+    const lightBlock = tokensCSS.match(/\[data-theme="light"\], \.theme-light \{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+    it('dark muted-foreground passes AA (#949494)', () => {
+      expect(darkBlock).toContain('--muted-foreground: #949494;');
+    });
+
+    it('dark border scale is not inverted (strong #4A4A4A > default #3A3A3A > subtle #2f2f2f)', () => {
+      expect(darkBlock).toContain('--border: #3A3A3A;');
+      expect(darkBlock).toContain('--border-subtle: #2f2f2f;');
+      expect(darkBlock).toContain('--border-strong: #4A4A4A;');
+    });
+
+    it('light interactive orange is AA-safe', () => {
+      expect(lightBlock).toContain('--primary: #A65600;');
+      expect(lightBlock).toContain('--primary-hover: #8F4A00;');
+      expect(lightBlock).toContain('--primary-rgb: 166 86 0;');
+      expect(lightBlock).toContain('--muted-foreground: #6F6F6F;');
+      expect(lightBlock).toContain('--destructive: #C62828;');
+      expect(lightBlock).toContain('--success: #15803D;');
+      expect(lightBlock).toContain('--accent-foreground: #111111;');
+      expect(lightBlock).toContain('--accent-text: #8A6400;');
+      expect(lightBlock).toContain('--input: #949083;');
+    });
+
+    it('dark re-declares brand tokens so .theme-dark pinning works inside light pages', () => {
+      expect(darkBlock).toContain('--primary: #E07800;');
+      expect(darkBlock).toContain('--primary-rgb: 224 120 0;');
+      expect(darkBlock).toContain('--accent-text: #FFB627;');
+    });
+
+    it('emits color-scheme declarations per theme', () => {
+      expect(darkBlock).toContain('color-scheme: dark;');
+      expect(lightBlock).toContain('color-scheme: light;');
+    });
+
+    it('defines surface + brand-border aliases in :root', () => {
+      for (const t of [
+        '--surface-0: var(--terminal);', '--surface-1: var(--background);', '--surface-2: var(--card);',
+        '--surface-3: var(--muted);', '--surface-4: var(--popover);', '--surface-hero: var(--manifesto);',
+        '--border-brand: color-mix(in srgb, var(--primary) 25%, transparent);',
+        '--border-brand-active: color-mix(in srgb, var(--primary) 60%, transparent);',
+        '--border-hairline: color-mix(in srgb, var(--foreground) 8%, transparent);',
+        '--shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.4);',
+      ]) expect(tokensCSS).toContain(t);
+    });
+
+    it('app.css ships light shadow overrides + pinned-dark code blocks (hand region)', () => {
+      expect(appCSS).toContain('--shadow-nav: 0 4px 24px rgba(20, 20, 20, 0.1)');
+      expect(appCSS).toMatch(/\[data-theme="light"\] \.prose-dark pre/);
+    });
+  });
 });

@@ -9,6 +9,9 @@
 -->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
 	import { projectsListingContent } from '$lib/content/projects';
 
@@ -44,7 +47,7 @@
 		tags: projectsListingContent.filters.tags,
 		stack: projectsListingContent.filters.techStack,
 	};
-	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, 'en');
+	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, locale);
 </script>
 
 <aside data-testid="project-filter-sidebar">
@@ -55,7 +58,7 @@
 				type="text"
 				placeholder={searchPlaceholder}
 				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-3 py-3 min-h-11 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]"
+				class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-3 min-h-11 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]"
 				data-testid="project-search-sidebar"
 			/>
 			<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -68,7 +71,7 @@
 	<!-- Services section — delegated to FilterGroup with deselect enabled -->
 	<div class="mt-5 divider-dashed pt-3">
 		<FilterGroup
-			label={resolveLocale(labels.services, 'en')}
+			label={resolveLocale(labels.services, locale)}
 			items={serviceIds.map((id) => ({ key: id, label: serviceMap.get(id) ?? id }))}
 			activeKey={activeService}
 			allowDeselect={true}
@@ -82,7 +85,7 @@
 	{#if stack.length > 0 && onStackSelect}
 		<div class="mt-5 divider-dashed pt-3">
 			<FilterGroup
-				label={resolveLocale(labels.stack, 'en')}
+				label={resolveLocale(labels.stack, locale)}
 				items={stack.map((s) => ({ key: s, label: s }))}
 				activeKey={activeStack}
 				allowDeselect={true}
@@ -97,7 +100,7 @@
 	<!-- Tags section — delegated to FilterGroup with deselect enabled -->
 	<div class="mt-5 divider-dashed pt-3">
 		<FilterGroup
-			label={resolveLocale(labels.tags, 'en')}
+			label={resolveLocale(labels.tags, locale)}
 			items={tags.map((tag) => ({ key: tag, label: tag }))}
 			activeKey={activeTag}
 			allowDeselect={true}

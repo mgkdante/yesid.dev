@@ -25,6 +25,7 @@ export * from './hero-data'
 export * from './blog-page'
 export * from './projects-page'
 export * from './morph-shapes'
+export * from './site-labels'
 
 // Hand-written companions (slice-18m): route chrome, helper functions, type
 // definitions, and legacy fallbacks the generator does not emit.

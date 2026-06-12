@@ -6,15 +6,18 @@
 <script lang="ts">
   import type { Project, ImpactMetric } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { MetricDisplay } from '$lib/components/brand';
   import { Badge } from '$lib/components/ui/badge';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
   import { projectsDetailContent } from '$lib/content/projects';
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
 
-  const projectInfoTitle = resolveLocale(projectsDetailContent.glance.projectInfo, 'en');
-  const liveSiteMobileLabel = resolveLocale(projectsDetailContent.glance.liveSiteLabelMobile, 'en');
-  const githubLabel = resolveLocale(projectsDetailContent.glance.githubLabel, 'en');
+  const projectInfoTitle = resolveLocale(projectsDetailContent.glance.projectInfo, locale);
+  const liveSiteMobileLabel = resolveLocale(projectsDetailContent.glance.liveSiteLabelMobile, locale);
+  const githubLabel = resolveLocale(projectsDetailContent.glance.githubLabel, locale);
 
   let { project }: { project: Project } = $props();
 
@@ -38,7 +41,7 @@
     <div class="space-y-5">
       <!-- Overview -->
       <div class="mobile-glance-overview text-small leading-relaxed">
-        <BlockRenderer doc={resolveLocale(project.description, 'en')} />
+        <BlockRenderer doc={resolveLocale(project.description, locale)} />
       </div>
 
       <!-- Metrics -->
@@ -57,7 +60,7 @@
                   {metric.value}
                 </div>
                 <div class="mobile-glance-metric-label mt-1 font-mono text-micro">
-                  {resolveLocale(metric.label, 'en')}
+                  {resolveLocale(metric.label, locale)}
                 </div>
               </div>
             </div>

@@ -15,8 +15,14 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
 
-	import { morphHover, pressBounce, cursorGlow, cardParallax } from '$lib/motion/actions';
+	const locale = getLocale();
+	import { fillTemplate } from '$lib/utils/labels';
+	import { siteLabels } from '$lib/content';
+
+	import { morphHover, pressBounce, cursorGlow, cardParallax, sectionGlow } from '$lib/motion/actions';
 	import { gsap, loadDrawSVG } from '$lib/motion/utils/gsap';
 	import { SectionHeading } from '$lib/components/brand';
 	import ServicesBlueprint from './ServicesBlueprint.svelte';
@@ -30,15 +36,23 @@
 		servicesGrid: servicesGridContent,
 		services,
 	}: { servicesGrid: ServicesGridContent; services: readonly Service[] } = $props();
-	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, 'en');
-	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, 'en');
+
+	// GO-2: station order IS the journey order. Sort defensively — the CMS
+	// export carries no order guarantee after the station renumber.
+	const orderedServices = [...services].sort((a, b) => a.station - b.station);
+
+	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, locale);
+	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, locale);
+
+	// go2-t1c2: card marker template from site_labels, previous literal as fallback.
+	const markerServiceTemplate = resolveLocale(siteLabels.ui.markerService, locale) || '{num} / SERVICE';
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
 
 	// One flag per card — flipped true after the SVG is fetched and injected.
 	// `use:morphHover` reads this via its `enabled` param to gate morphs until
 	// the SVG paths are actually in the DOM.
-	const svgReady = $state<boolean[]>(services.map(() => false));
+	const svgReady = $state<boolean[]>(orderedServices.map(() => false));
 
 	onMount(() => {
 		if (!browser || !sectionEl) return;
@@ -52,7 +66,7 @@
 
 		const panels = sectionEl.querySelectorAll('[data-testid="services-svg-panel"]');
 		panels.forEach(async (panel, i) => {
-			const service = services[i];
+			const service = orderedServices[i];
 			if (!service?.svg) return;
 
 			try {
@@ -98,17 +112,18 @@
 	bind:this={sectionEl}
 	data-testid="services-section"
 	class="services-section relative overflow-hidden"
+	use:sectionGlow
 >
 	<div class="relative z-10">
 		<!-- 3-column grid (1 col on tablet/mobile). Cards in the same row share height. -->
 		<div class="services-grid grid grid-cols-1 gap-5 lg:grid-cols-3">
-			{#each services as service, i}
-				{@const benefit = service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : ''}
-				{@const title = resolveLocale(service.title, 'en')}
-				{@const metricValue = service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : ''}
-				{@const metricLabel = service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : ''}
+			{#each orderedServices as service, i}
+				{@const benefit = service.benefitHeadline ? resolveLocale(service.benefitHeadline, locale) : ''}
+				{@const title = resolveLocale(service.title, locale)}
+				{@const metricValue = service.impactMetric ? resolveLocale(service.impactMetric.value, locale) : ''}
+				{@const metricLabel = service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : ''}
 				<a
-					href="/services/{service.id}"
+					href={localizeHref(`/services/${service.id}`, locale)}
 					data-testid="services-card"
 					class="services-card-link group block tap-press"
 					use:morphHover={{ enabled: svgReady[i], disableClickToggle: true }}
@@ -122,7 +137,7 @@
 						<div class="services-icon-zone relative">
 							<!-- 01 / SERVICE marker, top-left of icon zone. -->
 							<div class="services-marker">
-								{String(service.station).padStart(2, '0')} / SERVICE
+								{fillTemplate(markerServiceTemplate, { num: String(service.station).padStart(2, '0') })}
 							</div>
 
 							<!-- SVG icon button — morph triggers from the parent link's
@@ -182,7 +197,7 @@
 			class="mt-12 flex justify-end"
 		>
 			<a
-				href="/services"
+				href={localizeHref('/services', locale)}
 				class="home-view-all tap-feedback inline-flex items-center font-mono text-caption tracking-wider md:text-mono"
 				use:pressBounce
 			>{viewAllLink}</a>
@@ -204,6 +219,22 @@
 		}
 	}
 
+	/* GO-w2t5: slice-23 orphan wired — section-scale light follows the cursor.
+	   Recipe from sectionGlow.ts header. Alpha-only → SAFE-ALWAYS tier. */
+	.services-section::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: radial-gradient(
+			circle at var(--glow-x, 50%) var(--glow-y, 50%),
+			color-mix(in srgb, var(--primary) calc(var(--glow-opacity, 0) * 6%), transparent),
+			transparent 70%
+		);
+		opacity: var(--glow-opacity, 0);
+		transition: opacity 200ms ease-out;
+	}
+
 	/* Grid — uniform row heights across the 3 columns. */
 	.services-grid {
 		grid-auto-rows: 1fr;
@@ -220,8 +251,8 @@
 	   the same icon-zone size, content section, and footer band
 	   regardless of title/benefit length. */
 	.services-card {
-		background: var(--background);
-		border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+		background: var(--surface-1);
+		border: 1px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		display: grid;
 		grid-template-rows: 11rem 1fr auto;
@@ -233,7 +264,7 @@
 	}
 
 	.services-card-link:hover .services-card {
-		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+		border-color: var(--border-brand-active);
 		box-shadow: var(--shadow-section);
 		transform: translateY(-3px);
 	}
@@ -245,14 +276,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: linear-gradient(135deg, #1f1f1f, #161616);
+		background: linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, var(--foreground)), color-mix(in srgb, var(--surface-1) 92%, var(--terminal)));
 		background-image:
 			radial-gradient(
 				circle at 50% 55%,
 				color-mix(in srgb, var(--primary) 9%, transparent),
 				transparent 65%
 			),
-			linear-gradient(135deg, #1f1f1f, #161616);
+			linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, var(--foreground)), color-mix(in srgb, var(--surface-1) 92%, var(--terminal)));
 	}
 
 	/* "01 / SERVICE" marker — top-left of icon zone, brand-orange mono. */

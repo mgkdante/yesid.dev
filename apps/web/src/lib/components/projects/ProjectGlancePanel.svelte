@@ -7,6 +7,9 @@
 <script lang="ts">
   import type { Project, Service, ImpactMetric } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { MetricDisplay, StickyPanel } from '$lib/components/brand';
   import { Badge } from '$lib/components/ui/badge';
   import CollapsibleSection from '$lib/components/shared/CollapsibleSection.svelte';
@@ -14,13 +17,13 @@
   import { projectsDetailContent } from '$lib/content/projects';
   import BlockRenderer from '$lib/components/cms/BlockRenderer.svelte';
 
-  const glanceOverviewTitle = resolveLocale(projectsDetailContent.glance.overview, 'en');
-  const glanceImpactTitle = resolveLocale(projectsDetailContent.glance.impact, 'en');
-  const glanceStackTitle = resolveLocale(projectsDetailContent.glance.stack, 'en');
-  const glanceServicesTitle = resolveLocale(projectsDetailContent.glance.services, 'en');
-  const glanceLinksTitle = resolveLocale(projectsDetailContent.glance.links, 'en');
-  const liveSiteLabel = resolveLocale(projectsDetailContent.glance.liveSiteLabel, 'en');
-  const githubLabel = resolveLocale(projectsDetailContent.glance.githubLabel, 'en');
+  const glanceOverviewTitle = resolveLocale(projectsDetailContent.glance.overview, locale);
+  const glanceImpactTitle = resolveLocale(projectsDetailContent.glance.impact, locale);
+  const glanceStackTitle = resolveLocale(projectsDetailContent.glance.stack, locale);
+  const glanceServicesTitle = resolveLocale(projectsDetailContent.glance.services, locale);
+  const glanceLinksTitle = resolveLocale(projectsDetailContent.glance.links, locale);
+  const liveSiteLabel = resolveLocale(projectsDetailContent.glance.liveSiteLabel, locale);
+  const githubLabel = resolveLocale(projectsDetailContent.glance.githubLabel, locale);
 
   let {
     project,
@@ -58,7 +61,7 @@
     <div class="mb-4">
       <CollapsibleSection title={glanceOverviewTitle} open={true}>
         <div class="glance-overview text-small leading-[1.7]">
-          <BlockRenderer doc={resolveLocale(project.description, 'en')} />
+          <BlockRenderer doc={resolveLocale(project.description, locale)} />
         </div>
       </CollapsibleSection>
     </div>
@@ -71,7 +74,7 @@
             {#each allMetrics as metric, i}
               <MetricDisplay
                 value={metric.value}
-                label={resolveLocale(metric.label, 'en')}
+                label={resolveLocale(metric.label, locale)}
                 size="md"
                 labelBelow
                 style="--metric-color: {metricColors[i % 2]};"

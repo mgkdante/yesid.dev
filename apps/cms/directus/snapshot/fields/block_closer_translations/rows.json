@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "rows",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale rows object (CloserContent.rows). JSON shape: { contact: { label, description, action }, connect: { label, description, action }, read: { label, action }, about: { label, description, action } }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

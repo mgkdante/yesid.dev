@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 // GENERATED FILE — do not edit by hand.
 //
-// /projects page chrome (intro). NEW in slice-18m — was previously inlined as a static fallback in adapters/static.ts.
+// /projects page chrome (intro, heading, empty-state). NEW in slice-18m; heading/emptyState added in go2-t1c2.
 //
 // Source: live Directus CMS state via `bun run export:fallbacks`
 // (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
@@ -11,7 +11,9 @@
 import type { ProjectsPageContent } from '@repo/shared';
 
 export const projectsPageContent: ProjectsPageContent = {
+	emptyState: { en: 'No projects match the selected filters.' },
+	heading: { en: 'Projects' },
 	intro: {
-		en: 'A selection of data engineering projects — pipelines, dashboards, and infrastructure that ships.',
+		en: 'Projects that shipped — pipelines, dashboards, and the infrastructure under them.',
 	},
 };

@@ -16,6 +16,8 @@ import { join, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { adapter } from '$lib/adapters';
 import { isPathPublished } from '$lib/utils/page-registry';
+import { delocalizePath } from '$lib/utils/locale-routing';
+import { PUBLISHED_LOCALES, canonicalFor } from '$lib/utils/seo-defaults';
 import { _buildSitemapEntries } from '../routes/sitemap.xml/+server';
 
 const ROUTES_DIR = 'src/routes';
@@ -39,6 +41,13 @@ function collectPageRoutes(dir: string, prefix = ''): string[] {
 		if (!statSync(full).isDirectory()) continue;
 		if (entry.startsWith('.')) continue;
 		if (entry.startsWith('(')) continue; // SvelteKit route group
+		// [[lang=locale]] is the optional locale prefix (slice-28.6) —
+		// transparent for coverage purposes: declared routes are the EN
+		// canonical tree.
+		if (entry.startsWith('[[')) {
+			routes.push(...collectPageRoutes(full, prefix));
+			continue;
+		}
 		const nextPrefix = `${prefix}/${entry}`.replace(new RegExp(`\\${sep}`, 'g'), '/');
 		routes.push(...collectPageRoutes(full, nextPrefix));
 	}
@@ -88,7 +97,9 @@ describe('sitemap coverage gate', () => {
 			const m = entry.match(/<loc>([^<]+)<\/loc>/);
 			if (!m) continue;
 			const url = new URL(m[1]);
-			actual.add(url.pathname === '' ? '/' : url.pathname);
+			// slice-28.6: per-locale variants share one declared route — compare
+			// on the delocalized, de-duplicated path set.
+			actual.add(delocalizePath(url.pathname === '' ? '/' : url.pathname));
 		}
 
 		const missingInSitemap = [...expected].filter((r) => !actual.has(r));
@@ -96,5 +107,18 @@ describe('sitemap coverage gate', () => {
 
 		expect(missingInSitemap, `routes missing from sitemap`).toEqual([]);
 		expect(extraInSitemap, `routes in sitemap but missing from src/routes`).toEqual([]);
+
+		// slice-28.6: per-locale variants — every chrome path appears once per
+		// published locale; mono-language blog posts only at their body language.
+		const blogPaths = new Set((await adapter.blog.all()).map((p) => `/blog/${p.slug}`));
+		const rawActual = new Set(
+			entries.map((e) => e.match(/<loc>([^<]+)<\/loc>/)?.[1]).filter(Boolean) as string[],
+		);
+		for (const path of expected) {
+			if (blogPaths.has(path)) continue; // mono-language: body-language URL only
+			for (const l of PUBLISHED_LOCALES) {
+				expect(rawActual, `missing ${l} variant of ${path}`).toContain(canonicalFor(path, l));
+			}
+		}
 	});
 });

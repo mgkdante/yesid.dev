@@ -7,6 +7,9 @@
 -->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import type { AboutContent } from '$lib/types';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
@@ -59,17 +62,17 @@
 		<div class="dashboard">
 
 				<!-- SELL ROW 1 -->
-				<div class="area-identity"><AboutIdentity identity={c.identity} stop={s[0]} label={resolveLocale(c.stopLabels.identity, 'en')} /></div>
-				<div class="area-metrics"><AboutMetrics metrics={c.metrics} stop={s[1]} label={resolveLocale(c.stopLabels.metrics, 'en')} /></div>
-				<div class="area-testimonials"><AboutTestimonials testimonials={c.testimonials} stop={s[4]} label={resolveLocale(c.stopLabels.testimonials, 'en')} /></div>
+				<div class="area-identity"><AboutIdentity identity={c.identity} stop={s[0]} label={resolveLocale(c.stopLabels.identity, locale)} /></div>
+				<div class="area-metrics"><AboutMetrics metrics={c.metrics} stop={s[1]} label={resolveLocale(c.stopLabels.metrics, locale)} /></div>
+				<div class="area-testimonials"><AboutTestimonials testimonials={c.testimonials} stop={s[4]} label={resolveLocale(c.stopLabels.testimonials, locale)} /></div>
 
 				<!-- SELL ROW 2 -->
-				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label={resolveLocale(c.stopLabels.process, 'en')} /></div>
+				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label={resolveLocale(c.stopLabels.process, locale)} /></div>
 				<div class="area-stack">
 					<div class="group h-full" use:cursorGlow>
 					<Card class="relative h-full p-3" data-testid="about-tech-stack">
 						<div class="relative flex h-full flex-col">
-							<StopLabel stop={s[3]} label={resolveLocale(c.stopLabels.stack, 'en')} />
+							<StopLabel stop={s[3]} label={resolveLocale(c.stopLabels.stack, locale)} />
 							<div class="mt-2 flex flex-1 flex-col justify-center gap-2">
 								{#each stackCategories as [category, items]}
 									<div>
@@ -77,7 +80,7 @@
 										<div class="mt-1 flex flex-wrap gap-1">
 											{#each items as item, i}
 												<span
-													class="rounded border border-[var(--border)] bg-[var(--background)] px-2 py-0.5 text-caption text-[var(--secondary-foreground)] transition-colors duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
+													class="rounded border border-[var(--border)] bg-transparent px-2 py-0.5 text-caption text-[var(--secondary-foreground)] transition-colors duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 												>{item.name}</span>
 											{/each}
 										</div>
@@ -90,14 +93,14 @@
 				</div>
 
 				<!-- SELL/PERSONAL ROW 3 -->
-				<div class="area-clients"><AboutLogos logos={c.clientLogos} count={c.clientCount} stop={s[5]} label={resolveLocale(c.stopLabels.clients, 'en')} counterLabel={resolveLocale(c.labels.clientsServed, 'en')} /></div>
-				<div class="area-interests"><AboutInterests interests={c.interests} stop={s[7]} label={resolveLocale(c.stopLabels.interests, 'en')} /></div>
-				<div class="area-snapshots" data-testid="about-polaroids-cell"><AboutPolaroids polaroids={c.identity.polaroids} stop={s[8]} label={resolveLocale(c.stopLabels.snapshots, 'en')} /></div>
+				<div class="area-clients"><AboutLogos logos={c.clientLogos} count={c.clientCount} stop={s[5]} label={resolveLocale(c.stopLabels.clients, locale)} counterLabel={resolveLocale(c.labels.clientsServed, locale)} /></div>
+				<div class="area-interests"><AboutInterests interests={c.interests} stop={s[7]} label={resolveLocale(c.stopLabels.interests, locale)} /></div>
+				<div class="area-snapshots" data-testid="about-polaroids-cell"><AboutPolaroids polaroids={c.identity.polaroids} stop={s[8]} label={resolveLocale(c.stopLabels.snapshots, locale)} /></div>
 
 				<!-- ACTION ROW 4 -->
-				<div class="area-weather"><AboutWeather config={c.weather} {weather} stop={s[6]} label={resolveLocale(c.stopLabels.location, 'en')} /></div>
+				<div class="area-weather"><AboutWeather config={c.weather} {weather} stop={s[6]} label={resolveLocale(c.stopLabels.location, locale)} /></div>
 				<div class="area-train"><AboutTrain /></div>
-				<div class="area-cta"><AboutCta cta={c.cta} stop={s[9]} label={resolveLocale(c.stopLabels.next, 'en')} /></div>
+				<div class="area-cta"><AboutCta cta={c.cta} stop={s[9]} label={resolveLocale(c.stopLabels.next, locale)} /></div>
 
 			</div>
 		</div>

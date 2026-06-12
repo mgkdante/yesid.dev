@@ -7,6 +7,13 @@
     "_syncId": "_sync_default_admin_role"
   },
   {
+    "name": "Editor",
+    "icon": "edit_note",
+    "description": "Daily-driver human editor. Scoped Human Editor policy (190 collection perms + files); no Settings / Data Model / Policies. Admin account remains for schema surgery.",
+    "parent": null,
+    "_syncId": "_sync_editor_role"
+  },
+  {
     "name": "AI Editor",
     "icon": "smart_toy",
     "description": "For LLM/MCP clients (Claude Code, ChatGPT, Cursor). Read+Update on user collections only. No deletes. No system access.",

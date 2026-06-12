@@ -51,6 +51,12 @@ export const sharedChromeContent = {
 		fr: 'Fermer le menu',
 		es: 'Cerrar menú',
 	} satisfies LocalizedString,
+	/** GO-W2.2 theme toggle. Switch semantics: checked = dark (brand default). */
+	themeToggleAria: {
+		en: 'Dark theme',
+		fr: 'Thème sombre',
+		es: 'Tema oscuro',
+	} satisfies LocalizedString,
 	footerNavAria: {
 		en: 'Footer navigation',
 		fr: 'Navigation du pied de page',
@@ -63,6 +69,13 @@ export const sharedChromeContent = {
 	} satisfies LocalizedString,
 	/** Decorative all-caps label in the menu overlay footer. */
 	menuOverlayFooterLabel: { en: 'NAVIGATION — ALL ROUTES' } satisfies LocalizedString,
+	/** aria-label for the EN|FR locale switcher (slice-28.6). Locale display
+	 *  labels are the codes themselves (EN/FR — brand mono caps, not prose). */
+	localeSwitcherAria: {
+		en: 'Language',
+		fr: 'Langue',
+		es: 'Idioma',
+	} satisfies LocalizedString,
 	searchPlaceholder: {
 		en: 'Search...',
 		fr: 'Rechercher...',

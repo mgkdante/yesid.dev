@@ -12,7 +12,10 @@ import { STACK_LAYERS, type ArchetypeTechLink, type StackLayer } from '@repo/sha
 export const BOX_W = 160;
 export const BOX_H = 48;
 export const GUTTER = 24;
-export const ROW_GAP = 64;
+// GO-w2t5: 64 → 48. At ROW_GAP 64 the column had more air than box
+// (gap 64 > BOX_H 48) — the blueprint overflowed a viewport at render
+// scale 1. Connector curves derive from this, so they tighten with it.
+export const ROW_GAP = 48;
 
 export interface BlueprintBox {
 	id: string;

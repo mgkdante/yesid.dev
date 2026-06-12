@@ -6,6 +6,9 @@
 <script lang="ts">
 	import type { AboutClientLogo } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { aboutPageContent } from '$lib/content/about-page';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, MetricDisplay } from '$lib/components/brand';
@@ -28,7 +31,7 @@
 	} = $props();
 
 	const resolvedCounterLabel = $derived(
-		counterLabel ?? resolveLocale(aboutPageContent.labels.clientsServed, 'en'),
+		counterLabel ?? resolveLocale(aboutPageContent.labels.clientsServed, locale),
 	);
 </script>
 

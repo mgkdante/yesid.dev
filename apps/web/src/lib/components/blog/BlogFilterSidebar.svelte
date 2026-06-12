@@ -9,6 +9,9 @@
 <script lang="ts">
 	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { blogListingContent } from '$lib/content/blog';
@@ -17,7 +20,7 @@
 
 	// Labels pulled from the content layer (Task 17b-7b) — shared with the mobile filter.
 	const labels = blogListingContent.filters;
-	const searchPlaceholder = resolveLocale(blogListingContent.searchPlaceholder, 'en');
+	const searchPlaceholder = resolveLocale(blogListingContent.searchPlaceholder, locale);
 
 	// WHY: date range section is not a FilterGroup, so it needs its own collapse state
 	let dateOpen = $state(true);
@@ -57,7 +60,7 @@
 				type="text"
 				placeholder={searchPlaceholder}
 				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
+				class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
 				data-testid="blog-search-sidebar"
 			/>
 			<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -71,7 +74,7 @@
 	{#if languages.length > 1}
 		<div class="mt-5 divider-dashed pt-3">
 			<FilterGroup
-				label={resolveLocale(labels.language, 'en')}
+				label={resolveLocale(labels.language, locale)}
 				items={languages.map((lang) => ({ key: lang, label: LANG_LABELS[lang] }))}
 				activeKey={activeLang}
 				{accentColor}
@@ -88,28 +91,26 @@
 		class="flex w-full items-center justify-between label-section text-sm font-semibold transition-colors hover:text-[var(--foreground)]"
 		onclick={() => (dateOpen = !dateOpen)}
 	>
-		{resolveLocale(labels.dateRange, 'en')}
+		{resolveLocale(labels.dateRange, locale)}
 		<ChevronToggle open={dateOpen} size="sm" direction="down" />
 	</button>
 	<div class="date-collapse" class:date-open={dateOpen}>
 		<div class="date-collapse-inner">
 			<div class="mt-2 flex flex-col gap-1.5">
 				<label class="text-sm text-[var(--muted-foreground)]">
-					{resolveLocale(labels.from, 'en')}
+					{resolveLocale(labels.from, locale)}
 					<input
 						type="date"
 						bind:value={dateFrom}
-						class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
-						style="color-scheme: dark;"
+						class="mt-0.5 w-full rounded border border-border bg-background px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
 					/>
 				</label>
 				<label class="text-sm text-[var(--muted-foreground)]">
-					{resolveLocale(labels.to, 'en')}
+					{resolveLocale(labels.to, locale)}
 					<input
 						type="date"
 						bind:value={dateTo}
-						class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
-						style="color-scheme: dark;"
+						class="mt-0.5 w-full rounded border border-border bg-background px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
 					/>
 				</label>
 			</div>
@@ -120,7 +121,7 @@
 	<!-- Tags filter — closed by default -->
 	<div class="mt-5 divider-dashed pt-3">
 		<FilterGroup
-			label={resolveLocale(labels.tags, 'en')}
+			label={resolveLocale(labels.tags, locale)}
 			items={tags.map((tag) => ({ key: tag, label: tag }))}
 			activeKey={activeTag}
 			{accentColor}

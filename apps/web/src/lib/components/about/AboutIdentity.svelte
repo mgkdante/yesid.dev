@@ -7,15 +7,18 @@
 <script lang="ts">
 	import type { AboutIdentity } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StatusDot, StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
 	let { identity, stop, label }: { identity: AboutIdentity; stop: string; label: string } = $props();
 
-	const name = $derived(resolveLocale(identity.name, 'en'));
-	const title = $derived(resolveLocale(identity.title, 'en'));
-	const valueProp = $derived(resolveLocale(identity.valueProp, 'en'));
+	const name = $derived(resolveLocale(identity.name, locale));
+	const title = $derived(resolveLocale(identity.title, locale));
+	const valueProp = $derived(resolveLocale(identity.valueProp, locale));
 </script>
 
 <div

@@ -12,7 +12,7 @@ import type { SiteMeta } from '$lib/types';
 
 export const siteMeta: SiteMeta = {
 	description: {
-		en: 'Freelance SQL developer and digital infrastructure consultant based in Montreal. PostgreSQL, dbt, Power BI, and Python.',
+		en: 'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power — PostgreSQL, dbt, Power BI, SvelteKit.',
 	},
 	links: {
 		email: 'contact@yesid.dev',
@@ -24,9 +24,9 @@ export const siteMeta: SiteMeta = {
 	owner: {
 		address: { country: 'CA', locality: 'Montreal', region: 'QC' },
 		jobTitle: {
-			en: 'Digital Infrastructure Consultant',
-			es: 'Consultor de infraestructura digital',
-			fr: 'Consultant en infrastructure numérique',
+			en: 'Freelance Digital Infrastructure Engineer',
+			es: 'Ingeniero independiente en infraestructura digital',
+			fr: 'Ingénieur indépendant en infrastructure numérique',
 		},
 		knowsAbout: [
 			'PostgreSQL',

@@ -30,7 +30,7 @@ import type { LayoutServerLoad } from './$types';
 import { isPathPublished } from '$lib/utils/page-registry';
 import { adapter } from '$lib/adapters';
 import { getPageSeo, getSiteSeoDefaults } from '$lib/repositories/meta';
-import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
+import { localeFromParams, stripLocaleSegment, delocalizePath } from '$lib/utils/locale-routing';
 import { siteMeta as STATIC_SITE_META } from '$lib/content/site-meta';
 import { STATIC_SITE_SEO_DEFAULTS } from '$lib/content/site-seo-defaults';
 import { errorSeoFallback } from '$lib/adapters/route-seo-factories';
@@ -45,16 +45,22 @@ import type { NavLink, ErrorPageContent } from '$lib/content/nav';
 // with the manual setHeaders call. Single source of truth: hooks.server.ts.
 
 export const load: LayoutServerLoad = async ({ route, params, locals, url }) => {
-	const routeId = route.id ?? '/__error';
+	// Route ids stay keyed by their canonical (unprefixed) form everywhere
+	// downstream — route-seo registries, getPageSeo, the composer (slice-28.6).
+	const routeId = stripLocaleSegment(route.id ?? '/__error');
 
 	// Registry route-gate (slice-26.1). Only gate real page routes: a null
 	// route.id means SvelteKit is already rendering the error page for an
 	// unmatched path — gating there would just re-throw inside the error
 	// render. Archived/unknown sections 404 before any content resolution.
-	if (route.id !== null && !isPathPublished(url.pathname)) {
+	// Registry paths are locale-less, so the gate compares the delocalized
+	// pathname ('/fr/about' gates as '/about').
+	if (route.id !== null && !isPathPublished(delocalizePath(url.pathname))) {
 		error(404, { message: 'Not found' });
 	}
-	const locale = DEFAULT_LOCALE;
+	// slice-28.6: locale from params.lang (page routes) with a pathname
+	// fallback (error renders carry no params).
+	const locale = localeFromParams(params as Record<string, string>, url.pathname);
 	const ctx = { pageCache: locals.pageCache };
 
 	const safeByPlacement = async (
@@ -123,5 +129,5 @@ export const load: LayoutServerLoad = async ({ route, params, locals, url }) => 
 		safeMorphShapes(),
 	]);
 
-	return { headerLinks, footerLinks, mobileLinks, menuItems, errorPage, morphShapes, ...seoData };
+	return { headerLinks, footerLinks, mobileLinks, menuItems, errorPage, morphShapes, locale, ...seoData };
 };

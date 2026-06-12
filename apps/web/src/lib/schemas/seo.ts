@@ -43,6 +43,9 @@ export const PageSeoSchema = z.object({
 	ogType: z.enum(['website', 'article', 'profile']).default('website'),
 	noIndex: z.boolean().default(false),
 	jsonLd: z.array(SchemaOrgNodeSchema).optional(),
+	// AM2.5 (slice-28.6): mono-language pages (blog post bodies) suppress the
+	// cross-locale hreflang cluster — they have no locale alternates.
+	singleLocale: z.boolean().optional(),
 });
 
 export type PageSeo = z.infer<typeof PageSeoSchema>;

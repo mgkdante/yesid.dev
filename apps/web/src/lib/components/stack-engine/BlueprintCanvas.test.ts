@@ -80,4 +80,35 @@ describe('BlueprintCanvas', () => {
 		const canvas = screen.getByTestId('blueprint-canvas');
 		expect(canvas.querySelectorAll('path.bp-connector')).toHaveLength(3);
 	});
+
+	it('GO-w2t5 at-a-glance: svg max-width caps render scale at the layout natural width', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const canvas = screen.getByTestId('blueprint-canvas') as unknown as SVGSVGElement;
+		// BOX_W 160 + 2×PAD 24 — a one-box-per-row blueprint must NOT blow up
+		// to 720px wide (operator playtest: "one node fills the viewport").
+		expect(canvas.style.maxWidth).toBe('208px');
+	});
+
+	it('GO-w2t5 at-a-glance: viewBox reflects the tightened geometry', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		// 4 rows: height 4×48 + 3×48 = 336; + STAMP_H 36 + 2×PAD 48 = 420.
+		expect(screen.getByTestId('blueprint-canvas').getAttribute('viewBox')).toBe(
+			'-24 -24 208 420',
+		);
+	});
+
+	it('GO-w2t5: one parked signal path per connector (CSS keeps them invisible at rest)', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const canvas = screen.getByTestId('blueprint-canvas');
+		// Rest state is opacity:0 via CSS — with animate=false they are never
+		// touched by GSAP, so reduce users simply never see them.
+		expect(canvas.querySelectorAll('.bp-signal')).toHaveLength(3);
+		expect(canvas.querySelector('.bp-signals')?.getAttribute('aria-hidden')).toBe('true');
+	});
 });

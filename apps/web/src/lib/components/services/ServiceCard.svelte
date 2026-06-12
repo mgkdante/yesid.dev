@@ -6,6 +6,10 @@
 <script lang="ts">
 	import type { Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { servicesListingContent } from '$lib/content/services';
 	import { SectionLabel } from '$lib/components/brand';
 	import ServiceSvgPanel from './ServiceSvgPanel.svelte';
@@ -37,22 +41,22 @@
 	let stationNum = $derived(String(service.station).padStart(2, '0'));
 	let totalStr = $derived(String(total).padStart(2, '0'));
 	let stationLabelText = $derived(
-		resolveLocale(servicesListingContent.stationLabelTemplate, 'en')
+		resolveLocale(servicesListingContent.stationLabelTemplate, locale)
 			.replace('{stationNum}', stationNum)
 			.replace('{totalStr}', totalStr)
 	);
-	let deepDiveLabel = $derived(resolveLocale(servicesListingContent.deepDiveLabel, 'en'));
-	let title = $derived(resolveLocale(service.title, 'en'));
-	let description = $derived(resolveLocale(service.description, 'en'));
-	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, 'en') : null);
+	let deepDiveLabel = $derived(resolveLocale(servicesListingContent.deepDiveLabel, locale));
+	let title = $derived(resolveLocale(service.title, locale));
+	let description = $derived(resolveLocale(service.description, locale));
+	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, locale) : null);
 	let benefitHeadline = $derived(
-		service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : null
+		service.benefitHeadline ? resolveLocale(service.benefitHeadline, locale) : null
 	);
 	let metricValue = $derived(
-		service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : null
+		service.impactMetric ? resolveLocale(service.impactMetric.value, locale) : null
 	);
 	let metricLabel = $derived(
-		service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : null
+		service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : null
 	);
 </script>
 
@@ -100,7 +104,7 @@
 				{/if}
 
 				<!-- Desktop CTA — hidden on mobile -->
-				<a href="/services/{service.id}" class="deep-dive-cta desktop-only tap-press" use:pressBounce>
+				<a href={localizeHref(`/services/${service.id}`, locale)} class="deep-dive-cta desktop-only tap-press" use:pressBounce>
 					{deepDiveLabel}
 				</a>
 			</div>
@@ -108,7 +112,7 @@
 
 		<!-- Mobile: CTA + SVG side by side. Desktop: SVG panel only. -->
 		<div class="card-bottom">
-			<a href="/services/{service.id}" class="deep-dive-cta mobile-only tap-press" use:pressBounce>
+			<a href={localizeHref(`/services/${service.id}`, locale)} class="deep-dive-cta mobile-only tap-press" use:pressBounce>
 				{deepDiveLabel}
 			</a>
 			{#if svgContent}

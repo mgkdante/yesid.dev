@@ -17,8 +17,11 @@
 	// is gone; the Slice 17b "documented exception" reading siteMeta directly
 	// is likewise resolved.
 	import SeoHead from '$lib/components/seo/SeoHead.svelte';
-	import { DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
+	import { DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { provideLocale } from '$lib/utils/locale-context';
+	import { delocalizePath } from '$lib/utils/locale-routing';
 	import { initLenis, destroyLenis } from '$lib/motion/utils/lenis.js';
+	import { themeStore } from '$lib/stores/theme.svelte';
 	import { initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 	import { initGlobalRipple } from '$lib/motion/utils/globalRipple.js';
 	import { setMorphShapes } from '$lib/utils/shapes';
@@ -40,6 +43,13 @@
 	const footerLinks = $derived(data.footerLinks ?? []);
 	const menuItems = $derived(data.menuItems ?? []);
 
+	// slice-28.6: request locale. Persistent chrome (Nav/MenuOverlay/Footer/
+	// SeoHead) receives it as a prop ($derived — it never remounts); everything
+	// under {#key $page.url.pathname} reads it via getLocale() context
+	// (page components remount per pathname, so an init-time read is correct).
+	const locale = $derived(data.locale ?? DEFAULT_LOCALE);
+	provideLocale(() => data.locale ?? DEFAULT_LOCALE);
+
 	$effect(() => {
 		if (data.morphShapes) {
 			setMorphShapes(data.morphShapes);
@@ -60,29 +70,37 @@
 		// spawns the Manifesto-style two-ring expanding ripple.
 		const cleanupRipple = initGlobalRipple();
 
+		// GO-W2.2: re-sync theme store with the pre-paint attribute + watch
+		// system preference for users with no stored choice.
+		const cleanupTheme = themeStore.init();
+
 		return () => {
 			destroyLenis();
 			cleanupRipple();
+			cleanupTheme();
 		};
 	});
 
 	// Full-bleed pages skip pt-20 (hero is full-viewport).
 	// Home page + project detail pages have manifesto-style headers.
+	// Compares the canonical (delocalized) pathname so /fr/projects/x gets the
+	// same treatment as /projects/x (slice-28.6).
+	const basePath = $derived(delocalizePath($page.url.pathname));
 	let isFullBleed = $derived(
-		$page.url.pathname === '/' ||
-		($page.url.pathname.startsWith('/projects/') && $page.url.pathname !== '/projects') ||
-		($page.url.pathname.startsWith('/blog/') && $page.url.pathname !== '/blog' && $page.url.pathname !== '/blog/personal')
+		basePath === '/' ||
+		(basePath.startsWith('/projects/') && basePath !== '/projects') ||
+		(basePath.startsWith('/blog/') && basePath !== '/blog' && basePath !== '/blog/personal')
 	);
 </script>
 
-<SeoHead seo={data.seo} locale={DEFAULT_LOCALE} themeColor={data.themeColor} />
+<SeoHead seo={data.seo} {locale} themeColor={data.themeColor} />
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
-	<Nav pathname={$page.url.pathname} {headerLinks} {menuItems} />
+	<Nav pathname={$page.url.pathname} {locale} {headerLinks} {menuItems} />
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
 	{#key $page.url.pathname}
@@ -93,7 +111,7 @@
 
 	<!-- Footer wrapper: z-[45] so it paints over the fixed rail (z-40) -->
 	<div class="relative z-[45]">
-		<Footer {footerLinks} />
+		<Footer {locale} pathname={$page.url.pathname} {footerLinks} />
 	</div>
 </div>
 

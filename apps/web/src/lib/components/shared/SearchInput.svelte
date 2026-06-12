@@ -4,6 +4,9 @@
 -->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { sharedChromeContent } from '$lib/content';
 
 	export interface SearchInputProps {
@@ -12,7 +15,7 @@
 		testId?: string;
 	}
 
-	const defaultPlaceholder = resolveLocale(sharedChromeContent.searchPlaceholder, 'en');
+	const defaultPlaceholder = resolveLocale(sharedChromeContent.searchPlaceholder, locale);
 
 	let {
 		placeholder = defaultPlaceholder,
@@ -26,7 +29,7 @@
 		type="text"
 		{placeholder}
 		bind:value
-		class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-4 py-3.5 min-h-11 pl-10 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)] focus:shadow-[0_0_12px_color-mix(in_srgb,var(--accent)_15%,transparent)]"
+		class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-4 py-3.5 min-h-11 pl-10 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)] focus:shadow-[0_0_12px_color-mix(in_srgb,var(--accent)_15%,transparent)]"
 		data-testid={testId}
 	/>
 	<svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
