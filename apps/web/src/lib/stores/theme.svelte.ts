@@ -1,10 +1,9 @@
 /**
  * GO-W2.2 theme store (runes). The pre-paint script in app.html owns FIRST
  * paint; this store owns everything after hydration: toggle writes, the
- * theme-color meta, the themechange event (for canvas consumers), and the
- * system-preference listener for users with no stored choice.
+ * theme-color meta, and the themechange event (for canvas consumers).
  *
- * Dark is the brand default: no-JS and no-signal both resolve dark.
+ * Dark is the brand default: no-JS and no stored choice both resolve dark.
  */
 import { browser } from '$app/environment';
 
@@ -21,16 +20,6 @@ function readDocumentTheme(): Theme {
 }
 
 let current = $state<Theme>(readDocumentTheme());
-
-function storedChoice(): Theme | null {
-	if (!browser) return null;
-	try {
-		const s = localStorage.getItem('theme');
-		return s === 'light' || s === 'dark' ? s : null;
-	} catch {
-		return null;
-	}
-}
 
 function apply(theme: Theme, persist: boolean): void {
 	current = theme;
@@ -63,8 +52,7 @@ export const themeStore = {
 	/**
 	 * Call once from the root layout onMount. Re-syncs with whatever the
 	 * inline script applied pre-hydration (incl. meta theme-color, which is
-	 * SSR'd dark) and keeps "system" users live on OS preference changes.
-	 * Returns a cleanup function.
+	 * SSR'd dark). Returns a cleanup function.
 	 */
 	init(): () => void {
 		if (!browser) return () => {};
@@ -72,12 +60,6 @@ export const themeStore = {
 		if (docTheme !== current || docTheme === 'light') {
 			apply(docTheme, false);
 		}
-		const mql = window.matchMedia('(prefers-color-scheme: light)');
-		const onChange = (e: MediaQueryListEvent) => {
-			if (storedChoice()) return; // explicit choice wins
-			apply(e.matches ? 'light' : 'dark', false);
-		};
-		mql.addEventListener('change', onChange);
-		return () => mql.removeEventListener('change', onChange);
+		return () => {};
 	},
 };

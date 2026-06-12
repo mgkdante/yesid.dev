@@ -6,13 +6,13 @@
 		<meta name="text-scale" content="scale" />
 		<!-- GO-W2.2 pre-paint theme resolution. Markup default stays dark (no-JS,
 		     crawlers, OG). Synchronous + before CSSOM => zero flash on every
-		     edge-cached page. localStorage choice wins; otherwise system pref. -->
+		     edge-cached page. localStorage choice wins; otherwise dark. -->
 		<script>
 			(function () {
 				var d = document.documentElement, t = null;
 				try { t = localStorage.getItem('theme'); } catch (e) {}
 				if (t !== 'light' && t !== 'dark') {
-					t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+					t = 'dark';
 				}
 				d.dataset.theme = t;
 			})();

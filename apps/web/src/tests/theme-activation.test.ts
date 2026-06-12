@@ -1,8 +1,7 @@
 // GO-W2.2 T5: app.html must ship the pre-paint theme script. Dark stays the
-// no-JS/markup default; the script honors localStorage('theme') then
-// prefers-color-scheme. Edge-cached HTML is shared across users, so this
-// inline script is the ONLY correct theming channel (hooks.server.ts
-// s-maxage=86400).
+// no-JS/markup default; the script honors localStorage('theme') and otherwise
+// stays dark. Edge-cached HTML is shared across users, so this inline script is
+// the ONLY correct theming channel (hooks.server.ts s-maxage=86400).
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -24,7 +23,9 @@ describe('theme activation (app.html)', () => {
 		const headIdx = appHtml.indexOf('%sveltekit.head%');
 		expect(scriptIdx).toBeGreaterThan(-1);
 		expect(scriptIdx).toBeLessThan(headIdx);
-		expect(appHtml).toContain("matchMedia('(prefers-color-scheme: light)')");
+		expect(appHtml).not.toContain('prefers-color-scheme');
+		expect(appHtml).not.toContain('matchMedia');
+		expect(appHtml).toContain("t = 'dark';");
 		expect(appHtml).toContain('d.dataset.theme = t;');
 	});
 });
