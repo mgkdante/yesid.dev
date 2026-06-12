@@ -39,8 +39,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			categoryProfessional: ls('ui_category_professional'),
 			watermarkPersonal: ls('ui_watermark_personal'),
 			watermarkProfessional: ls('ui_watermark_professional'),
-			metroLegendStm: ls('ui_metro_legend_stm'),
-			metroLegendRem: ls('ui_metro_legend_rem'),
+			metroCaption: ls('ui_metro_caption'),
 		},
 		pages: {
 			blogEdgeTitle: ls('pages_blog_edge_title'),

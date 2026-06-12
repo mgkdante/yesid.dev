@@ -29,10 +29,9 @@ export const SiteLabelsSchema = z.object({
 		categoryProfessional: LocalizedStringSchema,
 		watermarkPersonal: LocalizedStringSchema,
 		watermarkProfessional: LocalizedStringSchema,
-		/** Hero metro-art legend: STM métro line swatch label (go2/w5). */
-		metroLegendStm: LocalizedStringSchema,
-		/** Hero metro-art legend: REM light-rail swatch label (go2/w5). */
-		metroLegendRem: LocalizedStringSchema,
+		/** Hero metro-art caption — ONE line naming the art: "STM métro + REM"
+		 *  (go2/w5 taste-2; replaces the two-row in-frame legend). */
+		metroCaption: LocalizedStringSchema,
 	}),
 	pages: z.object({
 		blogEdgeTitle: LocalizedStringSchema,

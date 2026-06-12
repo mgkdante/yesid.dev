@@ -26,6 +26,7 @@
 		loadDrawSVG,
 		loadCustomEase,
 		ScrollTrigger,
+		gsap,
 	} from '$lib/motion/utils/gsap.js';
 	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
@@ -82,9 +83,9 @@
 	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, locale);
 	// go2/w5: hero-dot replay button aria — site_labels with code fallback.
 	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale) || 'Replay intro';
-	// go2/w5: STM/REM legend on the metro art — site_labels, code fallbacks.
-	const metroLegendStm = resolveLocale(siteLabels.ui.metroLegendStm, locale) || 'STM MÉTRO';
-	const metroLegendRem = resolveLocale(siteLabels.ui.metroLegendRem, locale) || 'REM LIGHT RAIL';
+	// go2/w5 taste-2: ONE caption names the metro art (the in-frame legend is
+	// gone — it overlapped the SVG on mobile). site_labels, code fallback.
+	const metroCaption = resolveLocale(siteLabels.ui.metroCaption, locale) || 'STM métro + REM';
 
 	let heroTextContainer: HTMLDivElement;
 	let refreshIcon: HTMLSpanElement;
@@ -114,20 +115,30 @@
 	let cleanup: (() => void) | undefined;
 	onDestroy(() => cleanup?.());
 
-	// go2/w5 replayable intro:
+	// go2/w5 replayable intro (taste-2 geometry):
 	//   - introCompleted arms the pulsing hero-dot replay button (set when the
 	//     visitor scrolls the intro through, or on a same-day skipped reload).
-	//   - introSkipped collapses the hero to its completed state (CSS class
-	//     mirrors the reduced-motion block) on same-day reloads.
+	//   - introCollapsed is the GEOMETRY state: the intro's scroll allowance is
+	//     collapsed in place (.hero-intro-done — reserve → 100svh, pin killed,
+	//     metro art hidden, hero text natural top-of-page). Applied LIVE the
+	//     moment the intro completes AND on same-day skipped reloads, so a
+	//     reload after completion lands in exactly the same geometry — zero
+	//     displacement. Removed (track re-enlarged) only while a replay runs.
 	// localStorage is only touched inside onMount/handlers — never at render
 	// time, so SSR stays clean.
 	let introCompleted = $state(false);
-	let introSkipped = $state(false);
+	let introCollapsed = $state(false);
 	let replayArming = false;
 
-	async function setupIntro(): Promise<void> {
+	async function setupIntro(opts: { replayRebuild?: boolean } = {}): Promise<void> {
 		await tick();
-		await new Promise((r) => setTimeout(r, 300));
+		// Initial mount: give layout a beat to settle before measuring. The
+		// replay rebuild skips it — fonts/layout are long settled, and keeping
+		// every await microtask-sized makes the rebuild paint-atomic (no
+		// intermediate frame can show the reset intro states).
+		if (!opts.replayRebuild) {
+			await new Promise((r) => setTimeout(r, 300));
+		}
 
 		const svg = pinContainer?.querySelector('[data-testid="metro-network"]');
 		if (!svg) return;
@@ -163,10 +174,20 @@
 			startBlink: typewriter.startBlink,
 			stopBlink: typewriter.stopBlink,
 			pinLength: isMobile ? '300%' : '800%',
-			// Scrolled through once → persist the day-key + arm the replay dot.
+			// Replay rebuilds refresh explicitly before their rewind starts —
+			// the factory's deferred refresh would land mid-rewind and its
+			// scroll restoration would cancel the native smooth scroll.
+			skipDeferredRefresh: opts.replayRebuild === true,
+			// Scrolled through once → persist the day-key, arm the replay dot,
+			// and collapse the intro's scroll allowance in place (taste-2).
+			// Deferred a frame: never tear the trigger down from inside its
+			// own onUpdate.
 			onIntroComplete: () => {
 				introCompleted = true;
 				markHeroIntroCompleted();
+				requestAnimationFrame(() => {
+					void collapseIntroTrack();
+				});
 			},
 		});
 
@@ -188,28 +209,113 @@
 	function scrollBackToTop(): void {
 		const lenis = getLenis();
 		if (lenis) {
-			lenis.scrollTo(0, { duration: 1.1, easing: (t: number) => 1 - Math.pow(1 - t, 3) });
+			// Film-rewind pace: quick out of the gate, soft landing at the top.
+			lenis.scrollTo(0, { duration: 1.6, easing: (t: number) => 1 - Math.pow(1 - t, 3) });
 		} else {
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 		}
 	}
 
-	// Click on the armed dot: scroll back up and replay. From the skipped
-	// state the pin doesn't exist yet — un-collapse, build the timeline,
-	// refresh trigger measurements, then ride up into the re-armed intro.
-	async function handleReplay(): Promise<void> {
-		if (replayArming) return;
-		if (introSkipped) {
-			replayArming = true;
-			try {
-				introSkipped = false;
-				await setupIntro();
-				ScrollTrigger.refresh();
-			} finally {
-				replayArming = false;
-			}
+	// Reset every inline style the intro wrote (timeline tweens, build-time
+	// gsap.set()s, manual transform-origins, MetroNetwork's onMount opacity
+	// seeds) back to the stylesheet state. After this, .hero-intro-done
+	// renders the finished hero (text forced visible, art display:none), and
+	// a replay rebuild starts from EXACTLY the same baseline as a fresh
+	// mount — the e2e-verified skip-path rebuild.
+	function clearIntroSceneStyles(): void {
+		const pieces = pinContainer.querySelectorAll(
+			'.metro-line, .metro-station, .metro-bg, .metro-label, .metro-caption',
+		);
+		const staggers = heroTextContainer.querySelectorAll('[data-hero-stagger]');
+		gsap.set(
+			[svgWrapper, scrollPrompt, heroTextContainer, ...Array.from(staggers), ...Array.from(pieces)],
+			{ clearProps: 'all' },
+		);
+		svgWrapper.style.transformOrigin = '';
+		heroTextContainer.style.transformOrigin = '';
+	}
+
+	// Taste-2 core: on intro completion, the intro's scroll allowance
+	// COLLAPSES IN PLACE. The pin dies (spacer removed), .hero-intro-done
+	// shrinks the section reserve to one viewport, and the scroll position is
+	// re-anchored by exactly the removed height — the settled hero becomes the
+	// natural top of the page with zero visual displacement (the pinned final
+	// frame and the collapsed hero are the same pixels). Same-day reloads then
+	// land in identical geometry, so restored scroll positions match 1:1.
+	async function collapseIntroTrack(): Promise<void> {
+		if (introCollapsed) return;
+		const beforeHeight = document.documentElement.scrollHeight;
+		const beforeY = window.scrollY;
+		cleanup?.(); // kills the pin (ScrollTrigger.kill() reverts the spacer) + timeline + typewriter
+		cleanup = undefined;
+		clearIntroSceneStyles();
+		introCollapsed = true;
+		await tick();
+		const delta = Math.max(0, beforeHeight - document.documentElement.scrollHeight);
+		jumpTo(Math.max(0, beforeY - delta));
+		// Downstream triggers (manifesto, closer…) measured against the full
+		// reserve — re-measure against the collapsed geometry.
+		ScrollTrigger.refresh();
+	}
+
+	/** Instant scroll that keeps Lenis' internal position in sync. */
+	function jumpTo(top: number): void {
+		const lenis = getLenis();
+		if (lenis) {
+			lenis.scrollTo(top, { immediate: true, force: true });
+		} else {
+			window.scrollTo({ top, behavior: 'auto' });
 		}
-		scrollBackToTop();
+	}
+
+	// Click on the armed dot (taste-2): RE-ENLARGE the scroll track, place the
+	// viewport (invisibly — identical settled pixels) at the END of the
+	// rebuilt intro, then Lenis-ease back to the top so the whole intro scrubs
+	// BACKWARD through the viewport — a film rewind, never a jump. Scrolling
+	// it through again re-fires onIntroComplete, so the collapse re-applies.
+	//
+	// Ordering is load-bearing: the pre-jump happens BEFORE the rebuild so the
+	// new trigger's very first render is already at its end — the armed-
+	// crossing latch in createHeroTimeline therefore stays silent (the jump
+	// must never read as "scrolled the intro through"). Every await in the
+	// chain is a microtask (settle delay skipped), so no frame can paint the
+	// intermediate states: the first painted frame after the click is the
+	// settled hero at the end of the re-enlarged track.
+	async function handleReplay(): Promise<void> {
+		if (replayArming || !introCompleted) return;
+		replayArming = true;
+		try {
+			if (introCollapsed) {
+				const beforeHeight = document.documentElement.scrollHeight;
+				const beforeY = window.scrollY;
+				// Shield: the base markup is opacity-0; keep the settled hero
+				// text painted across the class flip + rebuild. The rebuilt
+				// timeline's first render (at the end, Phase 6 fromTo end = 1)
+				// takes ownership of the same value.
+				heroTextContainer.style.opacity = '1';
+				introCollapsed = false; // re-enlarge the track
+				await tick();
+				// Pre-position at the approximate track end (height delta of
+				// the re-enlarge) so the pin is created already-at-end.
+				jumpTo(beforeY + Math.max(0, document.documentElement.scrollHeight - beforeHeight));
+				await setupIntro({ replayRebuild: true });
+				// Re-measure: downstream triggers shifted by the re-enlarge.
+				ScrollTrigger.refresh();
+				// Correct to the EXACT pin end (+ whatever the visitor had
+				// scrolled within the collapsed hero) — identical pixels.
+				const st = ScrollTrigger.getAll().find(
+					(t) => t.trigger === pinContainer && Boolean(t.vars.pin),
+				);
+				if (st) {
+					jumpTo(st.end + Math.max(0, beforeY - st.start));
+					// Render the corrected position before the next paint.
+					ScrollTrigger.update();
+				}
+			}
+			scrollBackToTop();
+		} finally {
+			replayArming = false;
+		}
 	}
 
 	onMount(async () => {
@@ -226,9 +332,11 @@
 
 		// go2/w5: already scrolled the intro through today — land in the
 		// completed state (hero-intro-done CSS collapses the reserve, hides
-		// the metro art, shows the hero text) and arm the replay dot.
+		// the metro art, shows the hero text) and arm the replay dot. Since
+		// taste-2 the LIVE completion collapses the same way, so the reload
+		// geometry matches the pre-reload geometry exactly.
 		if (isHeroIntroCompletedToday()) {
-			introSkipped = true;
+			introCollapsed = true;
 			introCompleted = true;
 			// Downstream ScrollTriggers (manifesto, closer…) may have measured
 			// against the un-collapsed 900svh reserve — re-measure once layout
@@ -243,7 +351,7 @@
 </script>
 
 <section
-	class="hero-section-reserve relative {introSkipped ? 'hero-intro-done' : ''}"
+	class="hero-section-reserve relative {introCollapsed ? 'hero-intro-done' : ''}"
 	data-testid="hero-banner"
 >
 	<div
@@ -257,7 +365,19 @@
 			bind:this={svgWrapper}
 			class="hero-metro-wrapper absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
 		>
-			<MetroNetwork svg={metroSvg} legendStm={metroLegendStm} legendRem={metroLegendRem} />
+			<MetroNetwork svg={metroSvg} />
+			<!-- go2/w5 taste-2: ONE unobtrusive caption names the art (the
+			     in-frame legend is gone). Anchored to the wrapper's bottom
+			     strip — the metro frame is capped at 80dvh and centered, so
+			     the wrapper's bottom band is art-free at every breakpoint:
+			     the caption can never overlap the SVG. Part of the art
+			     (aria-hidden, fades in with Phase 4, zooms away with the
+			     wrapper in Phase 5). -->
+			{#if metroCaption}
+				<p class="metro-caption" data-testid="metro-caption" aria-hidden="true">
+					{metroCaption}
+				</p>
+			{/if}
 		</div>
 
 		<!-- Hero text reveal layer — initially hidden, revealed during zoom-out -->
@@ -407,11 +527,12 @@
 	}
 
 	/* ─────────────────────────────────────────────────────────────────
-	   go2/w5 replayable intro — completed state for same-day reloads.
-	   Mirrors the reduced-motion block above: the visitor already scrolled
-	   the intro through today, so land on the finished hero (text visible,
-	   no metro art, no 900svh scroll reservation). Removed again when the
-	   pulsing dot replays the intro.
+	   go2/w5 replayable intro — collapsed (completed) geometry. Mirrors the
+	   reduced-motion block above: the finished hero (text visible, no metro
+	   art, no 900svh scroll reservation). Applied LIVE the moment the intro
+	   completes (taste-2: the scroll allowance collapses in place) AND on
+	   same-day reloads, so both land in identical geometry. Removed only
+	   while the pulsing dot replays the intro.
 	   ─────────────────────────────────────────────────────────────────── */
 	.hero-section-reserve.hero-intro-done {
 		min-height: 100svh;
@@ -434,6 +555,38 @@
 		opacity: 1 !important;
 		position: relative !important;
 		transform: none !important;
+	}
+
+	/* go2/w5 taste-2: metro caption — ONE small line naming the art. Lives in
+	   the wrapper's bottom strip: the frame is capped at 80dvh and vertically
+	   centered, so ≥10% of the wrapper's height below it is always art-free —
+	   no overlap at any breakpoint. Starts at opacity 0; createHeroTimeline
+	   fades it in with the Phase 4 station labels. Visually uppercase via CSS
+	   (the LocalizedString stays operator-cased: 'STM métro + REM'). */
+	.metro-caption {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		bottom: clamp(10px, 2.5vh, 28px);
+		margin: 0;
+		/* Shrink-wrapped to the text — the caption's box is exactly the ink it
+		   draws, so it occupies nothing it doesn't paint. */
+		width: max-content;
+		max-width: calc(100vw - 32px);
+		text-align: center;
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--secondary-foreground);
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	@media (min-width: 768px) {
+		.metro-caption {
+			font-size: 11px;
+		}
 	}
 
 	/* Two-column hero grid: text | divider | SQL panel */
