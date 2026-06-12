@@ -76,23 +76,89 @@ describe('TechMatcher chips', () => {
 });
 
 describe('TechMatcher match cards', () => {
-	it('lights archetype cards with "<title> — <matched>/<stackSize>" ranked closest-to-complete', async () => {
+	it('lights archetype cards in the stable grid; matches[0] carries the closest-to-complete tag (go2/w5)', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
 		await fireEvent.click(screen.getByTestId('tech-chip-docker'));
 
-		// Data-driven (go-day matrix: archetype set grows with the portfolio):
-		// the rendered card order must mirror the matching engine exactly.
+		// Data-driven (go-day matrix: archetype set grows with the portfolio).
+		// go2/w5 stable grid: cards render in CATALOGUE order (never move), so
+		// the assertion is SET equality against the matching engine; ranking
+		// surfaces as the tag chip on matches[0] instead of position.
 		const expected = matchArchetypes(['postgresql', 'docker'], stackArchetypes);
 		const cards = screen.getAllByTestId(/^match-card-/);
-		expect(cards.map((c) => c.getAttribute('data-testid'))).toEqual(
-			expected.map((m) => `match-card-${m.slug}`),
+		expect(new Set(cards.map((c) => c.getAttribute('data-testid')))).toEqual(
+			new Set(expected.map((m) => `match-card-${m.slug}`)),
 		);
 		const top = expected[0];
-		expect(screen.getByTestId(`match-card-${top.slug}`).textContent).toContain(
-			`— ${top.matched.length}/${top.matched.length + top.missing.length}`,
+		const topCard = screen.getByTestId(`match-card-${top.slug}`);
+		expect(topCard.textContent).toContain(
+			top.missing.length > 0 ? 'closest to complete' : 'complete — tap to draw it',
 		);
+		// Parts line teaches the gap: "{matched} of {total} parts — {missing} to go".
+		expect(topCard.textContent).toContain(
+			`${top.matched.length} of ${top.matched.length + top.missing.length} parts`,
+		);
+		expect(topCard.textContent).toContain(`${top.missing.length} to go`);
+	});
+
+	it('go2/w5 stable grid: full catalogue renders pre-pick; ruled-out cards print the AND lesson', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+
+		// Pre-pick: every archetype is an idle compose-card (12 on the board).
+		expect(screen.getAllByTestId(/^compose-card-/)).toHaveLength(
+			engine.archetypes.length,
+		);
+
+		// Pick postgresql: the grid stays full — matches + ruled-out cards
+		// together still cover the whole catalogue.
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		const matchCards = screen.getAllByTestId(/^match-card-/);
+		const outCards = screen.getAllByTestId(/^compose-card-/);
+		expect(matchCards.length + outCards.length).toBe(engine.archetypes.length);
+
+		// A ruled-out card names the first conflicting pick (insertion order).
+		const out = outCards.find((c) => c.textContent?.includes('ruled out'));
+		expect(out).toBeTruthy();
+		expect(out!.textContent).toContain("ruled out — PostgreSQL isn't in this recipe");
+		expect(out!.getAttribute('aria-disabled')).toBe('true');
+	});
+
+	it('go2/w5 build counter narrates the narrowing (single aria-live element)', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		const counter = screen.getByTestId('build-counter');
+		expect(counter.getAttribute('aria-live')).toBe('polite');
+		expect(counter.textContent).toContain(
+			`${engine.archetypes.length} recipes on the board — tap parts to narrow`,
+		);
+
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		await fireEvent.click(screen.getByTestId('tech-chip-docker'));
+		const expected = matchArchetypes(['postgresql', 'docker'], stackArchetypes);
+		expect(counter.textContent).toContain(`2 picks → ${expected.length} possible builds`);
+		expect(counter.textContent).toContain('each pick narrows, never widens');
+
+		// The counter is THE live region — the rail must not double-announce.
+		expect(screen.getByTestId('tech-matcher').querySelectorAll('[aria-live]')).toHaveLength(1);
+	});
+
+	it('go2/w5 teach line: empty prompt, then hover/pick explains the tech and its layer', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		const slot = screen.getByTestId('tech-teach-line');
+		expect(slot.textContent).toContain("tap a part — I'll tell you what it does.");
+
+		// Pick (mobile path: every pick teaches) — postgresql has `enables`.
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		expect(slot.textContent).toContain('PostgreSQL —');
+		expect(slot.textContent).toContain('lives in data: the remembering part — where records live');
+
+		// A tech without `enables` still teaches its layer (graceful, no blank).
+		await fireEvent.mouseEnter(screen.getByTestId('tech-chip-threejs-threlte'));
+		expect(slot.textContent).toContain('lives in interface: the part people see and touch');
 	});
 
 	it('AND contract: every rendered card contains every picked tech, and more picks narrow the rail', async () => {
@@ -141,7 +207,7 @@ describe('TechMatcher match cards', () => {
 });
 
 describe('TechMatcher zero-match state', () => {
-	it('shows the exact unusual-combo card + prefilled contact link', async () => {
+	it('composes the project shape as a teaching moment + prefilled contact link (go2/w5)', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		// derive a published tech no archetype uses → picked.size>0 && matches.length===0.
@@ -150,8 +216,13 @@ describe('TechMatcher zero-match state', () => {
 
 		const cta = screen.getByTestId('zero-match-cta');
 		expect(cta.textContent).toContain(
-			"Unusual combo — I like it. Tell me what you're after.",
+			'No drawn recipe uses all of these — but the shape is real.',
 		);
+		// The shape line teaches what a working build usually still needs.
+		expect(cta.textContent).toContain('A working build usually still needs');
+		// Warm CTA + whisper (teacher voice, never a hard sell).
+		expect(cta.textContent).toContain('Take this combo with you →');
+		expect(cta.textContent).toContain("if you ever want help building it, I'm around.");
 		const link = cta.querySelector('a');
 		expect(link?.getAttribute('href')).toBe(
 			'/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId] }),

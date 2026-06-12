@@ -86,9 +86,10 @@ describe('BlueprintCanvas', () => {
 			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
 		});
 		const canvas = screen.getByTestId('blueprint-canvas') as unknown as SVGSVGElement;
-		// BOX_W 160 + 2×PAD 24 — a one-box-per-row blueprint must NOT blow up
-		// to 720px wide (operator playtest: "one node fills the viewport").
-		expect(canvas.style.maxWidth).toBe('208px');
+		// BOX_W 160 + 2×PAD 24 + LABEL_GUTTER 64 (go2/w5 row labels) — a
+		// one-box-per-row blueprint must NOT blow up to 720px wide (operator
+		// playtest: "one node fills the viewport"); 272px stays mobile-safe.
+		expect(canvas.style.maxWidth).toBe('272px');
 	});
 
 	it('GO-w2t5 at-a-glance: viewBox reflects the tightened geometry', () => {
@@ -96,8 +97,9 @@ describe('BlueprintCanvas', () => {
 			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
 		});
 		// 4 rows: height 4×48 + 3×48 = 336; + STAMP_H 36 + 2×PAD 48 = 420.
+		// go2/w5: LABEL_GUTTER 64 extends the LEFT edge only (row labels).
 		expect(screen.getByTestId('blueprint-canvas').getAttribute('viewBox')).toBe(
-			'-24 -24 208 420',
+			'-88 -24 272 420',
 		);
 	});
 
@@ -110,5 +112,82 @@ describe('BlueprintCanvas', () => {
 		// touched by GSAP, so reduce users simply never see them.
 		expect(canvas.querySelectorAll('.bp-signal')).toHaveLength(3);
 		expect(canvas.querySelector('.bp-signals')?.getAttribute('aria-hidden')).toBe('true');
+	});
+});
+
+describe('BlueprintCanvas go2/w5 layered learning', () => {
+	it('goal entry annotates each distinct adjacent layer pair once', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const canvas = screen.getByTestId('blueprint-canvas');
+		expect(
+			canvas.querySelector('[data-testid="bp-pair-note-interface-logic"]')?.textContent,
+		).toContain('the UI asks logic over HTTP');
+		expect(
+			canvas.querySelector('[data-testid="bp-pair-note-logic-data"]')?.textContent,
+		).toContain('logic reads & writes the data');
+		expect(
+			canvas.querySelector('[data-testid="bp-pair-note-data-infra"]')?.textContent,
+		).toContain('storage runs on this ground');
+		// The same pairs repeat as the <768px list below the SVG.
+		expect(screen.getByTestId('bp-pair-list').querySelectorAll('li')).toHaveLength(3);
+	});
+
+	it('compose entry suppresses pair notes (the + add annotation owns the gaps)', () => {
+		render(BlueprintCanvas, {
+			props: {
+				links: DASHBOARD_LINKS,
+				title: 'A data dashboard',
+				animate: false,
+				matched: ['sveltekit', 'docker'],
+				missing: ['rest-api', 'postgresql'],
+			},
+		});
+		const canvas = screen.getByTestId('blueprint-canvas');
+		expect(canvas.querySelectorAll('.bp-pair-note')).toHaveLength(0);
+		expect(screen.queryByTestId('bp-pair-list')).toBeNull();
+		expect(canvas.querySelectorAll('[data-testid="bp-annotation"]')).toHaveLength(1);
+	});
+
+	it('row labels print each layer name in the left gutter; boxes carry layer tabs', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const canvas = screen.getByTestId('blueprint-canvas');
+		const labels = [...canvas.querySelectorAll('.bp-row-label')].map((l) =>
+			l.textContent?.trim(),
+		);
+		expect(labels).toEqual(['interface', 'logic', 'data', 'infra']);
+		// One 3px layer tab per box — stroke semantics untouched.
+		expect(canvas.querySelectorAll('.bp-box-tab')).toHaveLength(4);
+		expect(
+			canvas
+				.querySelector('[data-flip-id="postgresql"] .bp-box-tab')
+				?.classList.contains('bp-fill-data'),
+		).toBe(true);
+	});
+
+	it('title block: framed stamp + parts·layers meta line + teaching aria-label', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const stamp = screen.getByTestId('blueprint-stamp');
+		expect(stamp.textContent).toContain('A DATA DASHBOARD — REV A');
+		expect(stamp.textContent).toContain('4 parts · 4 layers');
+		expect(stamp.querySelector('.bp-stamp-frame')).toBeTruthy();
+		expect(screen.getByTestId('blueprint-canvas').getAttribute('aria-label')).toBe(
+			'Blueprint: A data dashboard — 4 parts in 4 layers',
+		);
+	});
+
+	it('drafting furniture: dot grid + four registration ticks, decorative', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const canvas = screen.getByTestId('blueprint-canvas');
+		expect(canvas.querySelector('.bp-grid')?.getAttribute('aria-hidden')).toBe('true');
+		expect(canvas.querySelector('pattern#bp-dot-grid')).toBeTruthy();
+		expect(canvas.querySelectorAll('.bp-reg-ticks path')).toHaveLength(4);
 	});
 });

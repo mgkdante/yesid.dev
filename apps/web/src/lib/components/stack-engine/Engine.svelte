@@ -18,11 +18,13 @@
 	import { tick } from 'svelte';
 	import { gsap } from 'gsap';
 	import { Flip } from 'gsap/Flip';
+	import { STACK_LAYERS } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
 	import { EngineState } from './engine-state.svelte';
+	import { LAYER_TEACHING } from './layer-teaching';
 	import GoalPicker from './GoalPicker.svelte';
 	import TechMatcher from './TechMatcher.svelte';
 	import BlueprintCanvas from './BlueprintCanvas.svelte';
@@ -94,6 +96,22 @@
 		>
 			{MODE_LABELS.compose}
 		</button>
+	</div>
+
+	<!-- go2/w5 layered learning: persistent layer legend — never unmounted, so
+	     it teaches across goal/compose AND select/blueprint/preview. The metro
+	     track behind the dots (desktop ::before) echoes the site's station
+	     vocabulary. Teaching lines come from layer-teaching.ts (single source). -->
+	<div class="layer-legend" data-testid="layer-legend">
+		{#each STACK_LAYERS as layer (layer)}
+			<div class="legend-cell" data-testid={`legend-${layer}`} style:--legend-color={`var(--layer-${layer})`}>
+				<span class="legend-station">
+					<span class="legend-dot" aria-hidden="true"></span>
+					<span class="legend-name">{layer}</span>
+				</span>
+				<span class="legend-teach">{LAYER_TEACHING[layer]}</span>
+			</div>
+		{/each}
 	</div>
 
 	{#if engine.mode === 'goal'}
@@ -181,6 +199,18 @@
 		/* GO-w2t5 addendum: no width cap here — the section bleeds with the
 		   route's engine-band; .engine-inner carries the content column. */
 		padding: 2rem var(--space-page-x);
+
+		/* go2/w5 §B: engine-LOCAL layer accents — scoped aliases over existing
+		   global tokens (theme implementer owns globals; no new global tokens,
+		   no hex literals). Light/dark flips ride the underlying tokens.
+		   Rule: hue is NEVER the sole carrier — every layer-colored element
+		   sits next to its printed layer name. */
+		--layer-interface: var(--primary);
+		--layer-logic: var(--accent-text);
+		--layer-data: var(--success);
+		--layer-infra: var(--muted-foreground);
+		--bp-grid-ink: color-mix(in srgb, var(--border) 45%, transparent);
+		--engine-teach-ink: var(--secondary-foreground);
 	}
 
 	.engine-inner {
@@ -222,6 +252,73 @@
 	.mode-btn-active {
 		background: var(--primary);
 		color: var(--primary-foreground);
+	}
+
+	/* go2/w5: persistent layer legend — 2×2 grid <768px, one metro row ≥768px. */
+	.layer-legend {
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.75rem 1.25rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.legend-cell {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	.legend-station {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		height: 14px;
+	}
+
+	.legend-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--legend-color);
+		flex-shrink: 0;
+	}
+
+	.legend-name {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		color: var(--legend-color);
+		/* Station name plate: keeps the metro track from striking the name. */
+		background: var(--background);
+		padding-inline: 4px;
+		border-radius: 2px;
+	}
+
+	.legend-teach {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--engine-teach-ink);
+	}
+
+	@media (min-width: 768px) {
+		.layer-legend {
+			display: flex;
+			gap: 1.25rem;
+		}
+
+		/* Metro-line micro-detail: a 1px track runs behind the 4 dots — the
+		   legend reads as a transit line map. Pure CSS, decorative. */
+		.layer-legend::before {
+			content: '';
+			position: absolute;
+			left: 2px;
+			right: 2px;
+			top: 6.5px; /* dot center within the 14px station row */
+			height: 1px;
+			background: var(--border);
+		}
 	}
 
 	.engine-region {
@@ -281,11 +378,5 @@
 
 	.engine-view-toggle:hover .toggle-arrow-back {
 		transform: translateX(-2px);
-	}
-
-	.engine-placeholder {
-		font-family: var(--font-mono);
-		font-size: 12px;
-		color: var(--muted-foreground);
 	}
 </style>

@@ -16,17 +16,25 @@ describe('BlueprintCTA (goal mode — archetype stack)', () => {
 
 		const proof = screen.getByTestId('cta-proof');
 		expect(proof.getAttribute('href')).toBe('/projects/transit-data-pipeline');
-		expect(proof.textContent).toContain('I built this');
+		// go2/w5 tone pass: proof reads "here's one I made".
+		expect(proof.textContent).toContain('I built this — see it live');
 
 		const service = screen.getByTestId('cta-service');
 		expect(service.getAttribute('href')).toBe(`/services/${dashboard.serviceId}`); // consolidation remaps live (gate A: analytics-reporting)
-		expect(service.textContent).toContain('Hire this');
+		expect(service.textContent).toContain('See the service behind it');
 
 		const blueprint = screen.getByTestId('cta-blueprint');
 		expect(blueprint.getAttribute('href')).toBe(
 			'/contact?bp=' + encodeBlueprint({ archetype: 'data-dashboard', techs: dashboard.tech.map((l) => l.id) }),
 		);
-		expect(blueprint.textContent).toContain('Send me this blueprint');
+		expect(blueprint.textContent).toContain('Take this blueprint with you');
+	});
+
+	it('go2/w5: the whisper line sits under the CTA row', () => {
+		render(BlueprintCTA, { props: { archetype: dashboard } });
+		expect(screen.getByTestId('blueprint-cta').textContent).toContain(
+			"if you ever want help building it, I'm around.",
+		);
 	});
 });
 

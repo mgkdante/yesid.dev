@@ -1,10 +1,11 @@
 <!--
-  BlueprintCTA (slice-29) — the engine's three exits, all real:
-    cta-proof     → the project that proves the archetype ('I built this')
-    cta-service   → the service that delivers it ('Hire this')
-    cta-blueprint → /contact?bp=… prefilled handoff ('Send me this blueprint')
-  Goal mode encodes the archetype's full stack (layer order); compose mode
-  encodes the visitor's picked ids instead.
+  BlueprintCTA (slice-29, go2/w5 tone pass) — the engine's three exits, all
+  real, all whispering (teacher voice, never a hard sell):
+    cta-proof     → the project that proves it ('I built this — see it live')
+    cta-service   → the service behind it ('See the service behind it')
+    cta-blueprint → /contact?bp=… handoff ('Take this blueprint with you →')
+  plus the whisper line under the row. Goal mode encodes the archetype's full
+  stack (layer order); compose mode encodes the visitor's picked ids instead.
 -->
 <script lang="ts">
 	import type { StackArchetype } from '@repo/shared/schemas';
@@ -34,28 +35,45 @@
 </script>
 
 <div class="blueprint-cta" data-testid="blueprint-cta">
-	<a class="cta-link cta-primary" data-testid="cta-blueprint" href={blueprintHref}>
-		{archetype.proofProjectSlug ? 'Send me this blueprint →' : 'Want to be the first? Send me this blueprint →'}
-	</a>
-	{#if archetype.proofProjectSlug}
-		<a class="cta-link" data-testid="cta-proof" href={localizeHref(`/projects/${archetype.proofProjectSlug}`, locale)}>
-			I built this
+	<div class="cta-row">
+		<a class="cta-link cta-primary" data-testid="cta-blueprint" href={blueprintHref}>
+			{archetype.proofProjectSlug ? 'Take this blueprint with you →' : 'Want to be the first? Take this blueprint with you →'}
 		</a>
-	{/if}
-	{#if archetype.serviceId}
-		<a class="cta-link" data-testid="cta-service" href={localizeHref(`/services/${archetype.serviceId}`, locale)}>
-			Hire this
-		</a>
-	{/if}
+		{#if archetype.proofProjectSlug}
+			<a class="cta-link" data-testid="cta-proof" href={localizeHref(`/projects/${archetype.proofProjectSlug}`, locale)}>
+				I built this — see it live
+			</a>
+		{/if}
+		{#if archetype.serviceId}
+			<a class="cta-link" data-testid="cta-service" href={localizeHref(`/services/${archetype.serviceId}`, locale)}>
+				See the service behind it
+			</a>
+		{/if}
+	</div>
+	<!-- go2/w5 tone pass: the whisper — warm, zero pressure. -->
+	<p class="cta-whisper">if you ever want help building it, I'm around.</p>
 </div>
 
 <style>
 	.blueprint-cta {
 		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding-top: 1.5rem;
+	}
+
+	.cta-row {
+		display: flex;
 		align-items: center;
 		gap: 1rem;
 		flex-wrap: wrap;
-		padding-top: 1.5rem;
+	}
+
+	.cta-whisper {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--engine-teach-ink, var(--secondary-foreground));
+		margin: 0;
 	}
 
 	.cta-link {
