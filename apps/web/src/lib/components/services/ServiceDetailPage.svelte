@@ -134,13 +134,6 @@
 					</div>
 				{/if}
 			</header>
-
-			<!-- SVG banner — mobile only (wrapper controls visibility) -->
-			{#if svgContent}
-				<div class="svg-mobile">
-					<ServiceSvgPanel {svgContent} variant="banner" />
-				</div>
-			{/if}
 		</div>
 
 		<Separator variant="hazard" />
@@ -176,6 +169,14 @@
 							{#if benefitHeadline}
 								<p class="metric-inline-headline">{benefitHeadline}</p>
 							{/if}
+						</div>
+					{/if}
+
+					<!-- SVG banner — mobile only, between the metric and the deep
+					     dive (operator order: metric → art → sections). -->
+					{#if svgContent}
+						<div class="svg-mobile">
+							<ServiceSvgPanel {svgContent} variant="banner" />
 						</div>
 					{/if}
 
@@ -380,9 +381,8 @@
 		}
 	}
 
-	.svg-mobile {
-		margin-top: 1.5rem;
-	}
+	/* Lives inside .sections now — the column's own gap spaces it between
+	   the inline metric and the first deep-dive card. */
 	@media (min-width: 768px) {
 		.svg-mobile {
 			display: none;
