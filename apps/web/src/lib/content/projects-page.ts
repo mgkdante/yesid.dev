@@ -13,7 +13,5 @@ import type { ProjectsPageContent } from '@repo/shared';
 export const projectsPageContent: ProjectsPageContent = {
 	emptyState: { en: 'No projects match the selected filters.' },
 	heading: { en: 'Projects' },
-	intro: {
-		en: 'Projects that shipped — pipelines, dashboards, and the infrastructure under them.',
-	},
+	intro: { en: 'Projects, pipelines, and systems I have built.' },
 };
