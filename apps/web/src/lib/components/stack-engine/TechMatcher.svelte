@@ -2,10 +2,12 @@
   TechMatcher (slice-29) — compose-as-matching, never free-form wiring.
 
   Chips for every committed tech, grouped by STACK_LAYERS render order via
-  tech.layer (layerless techs under a trailing 'more' group). Picks rank the
-  archetypes through engine.matches; a zero-match combo gets the unusual-combo
-  CTA with a blueprint-prefilled contact link. Never a blank state: the chip
-  groups always render, and picked-with-no-match shows the CTA card.
+  tech.layer (layerless techs under a trailing 'more' group). Picks filter the
+  archetypes through engine.matches (AND contract — every pick must be in a
+  card's stack, so more picks narrow the rail); a zero-match combo gets the
+  unusual-combo CTA with a blueprint-prefilled contact link. Never a blank
+  state: the chip groups always render, and picked-with-no-match shows the
+  CTA card.
 -->
 <script lang="ts">
 	import { STACK_LAYERS } from '@repo/shared/schemas';

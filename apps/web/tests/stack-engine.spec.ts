@@ -3,9 +3,11 @@
 //
 // Goal path:    archetype card → living blueprint → preview morph → blueprint
 //               CTA hands off to /contact?bp=<archetype>~…
-// Compose path: mode switch → tech chips light match cards; an absurd pick
-//               (dax — committed tech, member of no launch archetype) shows
-//               the zero-match CTA instead of a blank state.
+// Compose path: mode switch → tech chips light match cards (AND contract —
+//               go2/w4: every pick must be in a card's stack, more picks
+//               narrow the rail); an absurd pick (committed tech, member of
+//               no launch archetype) shows the zero-match CTA instead of a
+//               blank state.
 
 import { test, expect } from '@playwright/test';
 
@@ -29,17 +31,23 @@ test('goal path: card → blueprint → preview → blueprint-prefilled contact'
 	expect(page.url()).toContain('/contact?bp=data-dashboard~');
 });
 
-test('compose path: chips rank archetypes into match cards', async ({ page }) => {
+test('compose path: chips rank archetypes into match cards (AND)', async ({ page }) => {
 	await page.goto('/tech-stack');
 	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
 
 	await page.locator('[data-testid="mode-toggle-compose"]').click();
 	await page.locator('[data-testid="tech-chip-postgresql"]').click();
+	const cardsAfterOne = page.locator('[data-testid^="match-card-"]');
+	await expect(cardsAfterOne.first()).toBeVisible();
+	const countAfterOne = await cardsAfterOne.count();
+
 	await page.locator('[data-testid="tech-chip-docker"]').click();
 
-	// postgresql+docker covers data-pipeline best — a match card lights up.
-	await expect(page.locator('[data-testid^="match-card-"]').first()).toBeVisible();
+	// data-pipeline carries BOTH picks and sits closest to complete (1 missing).
 	await expect(page.locator('[data-testid="match-card-data-pipeline"]')).toBeVisible();
+	// AND narrows: the two-pick rail is never wider than the one-pick rail.
+	const countAfterTwo = await page.locator('[data-testid^="match-card-"]').count();
+	expect(countAfterTwo).toBeLessThanOrEqual(countAfterOne);
 });
 
 test('compose path: an absurd single pick shows the zero-match CTA (never blank)', async ({
@@ -49,13 +57,18 @@ test('compose path: an absurd single pick shows the zero-match CTA (never blank)
 	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
 
 	await page.locator('[data-testid="mode-toggle-compose"]').click();
-	// 'dax' is a committed tech that belongs to no launch archetype — the
-	// guaranteed zero-match pick (verified against the seed in unit tests).
-	await page.locator('[data-testid="tech-chip-dax"]').click();
+	// 'threejs-threlte' is a committed tech that belongs to no launch
+	// archetype — a guaranteed zero-match pick. (go2/w4: was 'dax', which the
+	// Gate-A regen dropped from the published tech items; the unit suite
+	// derives its unmatched pick dynamically and locks that one exists.)
+	await page.locator('[data-testid="tech-chip-threejs-threlte"]').click();
 
 	const zeroMatch = page.locator('[data-testid="zero-match-cta"]');
 	await expect(zeroMatch).toBeVisible();
-	await expect(zeroMatch.locator('a')).toHaveAttribute('href', '/contact?bp=custom~dax');
+	await expect(zeroMatch.locator('a')).toHaveAttribute(
+		'href',
+		'/contact?bp=custom~threejs-threlte',
+	);
 });
 
 test('engine band is full-bleed with hazard frame; hero + CTA stay constrained (GO-w2t5 addendum)', async ({

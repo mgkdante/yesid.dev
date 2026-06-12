@@ -33,9 +33,10 @@ describe('HomeServices', () => {
 		expect(anchor?.textContent).toContain('View all services');
 	});
 
-	it('GO-w2t5: section glow wired — pointermove writes --glow vars on the section', () => {
-		// Claim hover capability (sectionGlow gates on `(hover: hover)` only
-		// post-retier; reduce no longer matters — SAFE-ALWAYS).
+	it('go2/w4: hover glow unwired — pointermove writes NO --glow vars on the section', () => {
+		// Operator QA: the section-scale cursor glow is gone. The sectionGlow
+		// primitive itself survives (other consumers untouched); this section
+		// just no longer uses it.
 		const realMatchMedia = window.matchMedia;
 		window.matchMedia = vi.fn().mockImplementation((q: string) => ({
 			matches: true,
@@ -53,8 +54,8 @@ describe('HomeServices', () => {
 			}),
 		});
 		section.dispatchEvent(new PointerEvent('pointermove', { clientX: 100, clientY: 50 }));
-		expect(section.style.getPropertyValue('--glow-x')).toBe('50%');
-		expect(section.style.getPropertyValue('--glow-opacity')).toBe('1');
+		expect(section.style.getPropertyValue('--glow-x')).toBe('');
+		expect(section.style.getPropertyValue('--glow-opacity')).toBe('');
 
 		window.matchMedia = realMatchMedia;
 	});
