@@ -112,30 +112,61 @@ describe('Design System Tokens', () => {
     });
   });
 
-  describe('GO-day W2 Track 2 — AA palette + surfaces + color-scheme', () => {
+  describe('GO2-W5 INTERLOCKING (taste round 2) — restored dark board + warm light wall + color-scheme', () => {
     const darkBlock = tokensCSS.match(/\[data-theme="dark"\], \.theme-dark \{([\s\S]*?)\n\}/)?.[1] ?? '';
     const lightBlock = tokensCSS.match(/\[data-theme="light"\], \.theme-light \{([\s\S]*?)\n\}/)?.[1] ?? '';
 
-    it('dark muted-foreground passes AA (#949494)', () => {
+    it('dark neutrals are the RESTORED near-black board (amber/bakelite rejected — operator round 2)', () => {
+      expect(darkBlock).toContain('--background: #141414;');
+      expect(darkBlock).toContain('--card: #1a1a1a;');
+      expect(darkBlock).toContain('--muted: #1E1E1E;');
+      expect(darkBlock).toContain('--popover: #2A2A2A;');
+      expect(darkBlock).toContain('--manifesto: #0f0d0a;');
+      expect(darkBlock).toContain('--foreground: #F5F5F0;');
       expect(darkBlock).toContain('--muted-foreground: #949494;');
+      expect(darkBlock).toContain('--secondary-foreground: #999999;');
     });
 
-    it('dark border scale is not inverted (strong #4A4A4A > default #3A3A3A > subtle #2f2f2f)', () => {
+    it('terminals ARE the site background in both modes (solid; identity = chrome/border/type)', () => {
+      expect(darkBlock).toContain('--terminal: #141414;');
+      expect(lightBlock).toContain('--terminal: #F7F2E9;');
+    });
+
+    it('dark border scale is the restored neutral ladder (subtle < default < strong)', () => {
       expect(darkBlock).toContain('--border: #3A3A3A;');
       expect(darkBlock).toContain('--border-subtle: #2f2f2f;');
       expect(darkBlock).toContain('--border-strong: #4A4A4A;');
     });
 
-    it('light interactive orange is AA-safe', () => {
-      expect(lightBlock).toContain('--primary: #A65600;');
-      expect(lightBlock).toContain('--primary-hover: #8F4A00;');
-      expect(lightBlock).toContain('--primary-rgb: 166 86 0;');
-      expect(lightBlock).toContain('--muted-foreground: #6F6F6F;');
+    it('light borders are HARDER (round 2) and strong rules are BLACK tape (round 4 doctrine)', () => {
+      expect(lightBlock).toContain('--border: #C9BCA1;');
+      expect(lightBlock).toContain('--border-subtle: #D5C9B2;');
+      // Round 4: light strong rules lean true-dark — the #1C1814 signage
+      // family draws structure as black tape on paper (was #A08F70).
+      expect(lightBlock).toContain('--border-strong: #1C1814;');
+    });
+
+    it('dark input boundary conforms to 1.4.11 (was #3A3A3A = 1.8:1)', () => {
+      expect(darkBlock).toContain('--input: #75664F;');
+    });
+
+    it('light interactive palette is AA-safe on the warm paper', () => {
+      expect(lightBlock).toContain('--background: #F7F2E9;');
+      expect(lightBlock).toContain('--card: #FFFDF8;');
+      expect(lightBlock).toContain('--primary: #9D5200;');
+      expect(lightBlock).toContain('--primary-hover: #854500;');
+      expect(lightBlock).toContain('--primary-rgb: 157 82 0;');
+      expect(lightBlock).toContain('--muted-foreground: #6E6557;');
       expect(lightBlock).toContain('--destructive: #C62828;');
-      expect(lightBlock).toContain('--success: #15803D;');
-      expect(lightBlock).toContain('--accent-foreground: #111111;');
-      expect(lightBlock).toContain('--accent-text: #8A6400;');
-      expect(lightBlock).toContain('--input: #949083;');
+      expect(lightBlock).toContain('--success: #127336;');
+      expect(lightBlock).toContain('--accent-foreground: #1C1813;');
+      expect(lightBlock).toContain('--accent-text: #815D00;');
+      expect(lightBlock).toContain('--input: #94897A;');
+    });
+
+    it('destructive-foreground is mode-split (old single #FAFAF8 failed on #ff5f57)', () => {
+      expect(darkBlock).toContain('--destructive-foreground: #1B0F0D;');
+      expect(lightBlock).toContain('--destructive-foreground: #FAF6EE;');
     });
 
     it('dark re-declares brand tokens so .theme-dark pinning works inside light pages', () => {
@@ -144,25 +175,134 @@ describe('Design System Tokens', () => {
       expect(darkBlock).toContain('--accent-text: #FFB627;');
     });
 
+    it('theme-invariant signal-systems tokens live in :root (real tape/signs do not reskin)', () => {
+      for (const t of [
+        '--hazard-a: #FFB627;', '--hazard-b: #1C1814;',
+        '--signage-bg: #1C1814;', '--signage-text: #FFB627;',
+        '--signal-proceed: var(--success);', '--signal-caution: var(--accent);',
+        '--signal-stop: var(--destructive);',
+      ]) expect(tokensCSS).toContain(t);
+    });
+
+    it('round 4: the WHITE reflective voice is a theme-invariant :root token', () => {
+      // Four-color doctrine — reflective material doesn't reskin: white-core
+      // métro dots, key headline words over photo gradients.
+      expect(tokensCSS).toContain('--reflective: #F5F5F0;');
+    });
+
+    it('per-mode signal & infrastructure families exist', () => {
+      expect(darkBlock).toContain('--terminal-chrome: #0E0E0E;');
+      expect(lightBlock).toContain('--terminal-chrome: #EDE3CF;');
+      expect(darkBlock).toContain('--terminal-ink: #E9E2D2;');
+      expect(lightBlock).toContain('--terminal-ink: #3D362B;');
+      expect(darkBlock).toContain('--line-amber: #FFB627;');
+      expect(lightBlock).toContain('--line-amber: #B57F00;');
+      expect(darkBlock).toContain('--accent-surface: #332812;');
+      expect(lightBlock).toContain('--accent-surface: #FAEECC;');
+      expect(darkBlock).toContain('--signal-lunar: #DAD2C2;');
+      expect(lightBlock).toContain('--signal-lunar: #5E5749;');
+      expect(darkBlock).toContain('--grid-glow: color-mix(in srgb, var(--primary) 5%, transparent);');
+      expect(lightBlock).toContain('--grid-glow: transparent;');
+      expect(darkBlock).toContain('--edge-highlight: color-mix(in srgb, var(--foreground) 5%, transparent);');
+      expect(lightBlock).toContain('--edge-highlight: rgba(255, 255, 255, 0.6);');
+    });
+
     it('emits color-scheme declarations per theme', () => {
       expect(darkBlock).toContain('color-scheme: dark;');
       expect(lightBlock).toContain('color-scheme: light;');
     });
 
-    it('defines surface + brand-border aliases in :root', () => {
+    it('defines surface + brand-border aliases in :root (surface-1 flipped to card — GO2-W5)', () => {
       for (const t of [
-        '--surface-0: var(--terminal);', '--surface-1: var(--background);', '--surface-2: var(--card);',
+        '--surface-0: var(--terminal);', '--surface-1: var(--card);', '--surface-2: var(--card);',
         '--surface-3: var(--muted);', '--surface-4: var(--popover);', '--surface-hero: var(--manifesto);',
-        '--border-brand: color-mix(in srgb, var(--primary) 25%, transparent);',
-        '--border-brand-active: color-mix(in srgb, var(--primary) 60%, transparent);',
+        '--border-brand: color-mix(in srgb, var(--primary) 45%, transparent);',
+        '--border-brand-active: color-mix(in srgb, var(--primary) 85%, transparent);',
         '--border-hairline: color-mix(in srgb, var(--foreground) 8%, transparent);',
         '--shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.4);',
       ]) expect(tokensCSS).toContain(t);
     });
 
-    it('app.css ships light shadow overrides + pinned-dark code blocks (hand region)', () => {
-      expect(appCSS).toContain('--shadow-nav: 0 4px 24px rgba(20, 20, 20, 0.1)');
+    it('ships the round-2 BOLD structural rules — both voices as solid lines', () => {
+      expect(tokensCSS).toContain('--border-rule: var(--primary);');
+      expect(tokensCSS).toContain('--border-rule-accent: var(--line-amber);');
+    });
+
+    it('shadow.card folds the platform-lamp catch-light into the token', () => {
+      expect(tokensCSS).toContain('--shadow-card: 0 0 16px color-mix(in srgb, var(--primary) 8%, transparent), 0 2px 8px rgba(10, 7, 4, 0.35), inset 0 1px 0 var(--edge-highlight);');
+    });
+
+    it('app.css ships warm light shadow overrides + pinned-dark code blocks (hand region)', () => {
+      expect(appCSS).toContain('--shadow-nav: 0 4px 24px rgba(28, 24, 19, 0.1)');
+      expect(appCSS).toContain('inset 0 1px 0 var(--edge-highlight)');
       expect(appCSS).toMatch(/\[data-theme="light"\] \.prose-dark pre/);
+      expect(appCSS).toContain('background: #141414 !important;');
+    });
+
+    it('app.css grid recipe is the NX track schematic (block markers + fine grid + glow)', () => {
+      expect(appCSS).toContain('var(--grid-glow)');
+      expect(appCSS).toContain('var(--grid-block-marker) 0px, transparent 1px, transparent 400px');
+      expect(appCSS).toContain('var(--grid-line-major) 0px, transparent 1px, transparent 80px');
+      expect(appCSS).toContain('var(--grid-line-minor) 0px, transparent 1px, transparent 16px');
+    });
+
+    it('the page grid paints UNDER content (round-2 solidity: isolate + negative z)', () => {
+      const grid = appCSS.match(/\.circuit-grid \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(grid).toContain('isolation: isolate;');
+      const gridBefore = appCSS.match(/\.circuit-grid::before \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(gridBefore).toContain('z-index: -1;');
+    });
+
+    it('dashed delimitations speak the route-set voice (.divider-dashed = border-rule, round-3 2px)', () => {
+      const divider = appCSS.match(/\.divider-dashed \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(divider).toContain('border-top: 2px dashed var(--border-rule);');
+    });
+
+    it('round 3: light mode strengthens the brand grid (--border-brand 45% → 60% hand override)', () => {
+      // Operator: light "still needs more demarcation with its structural
+      // lines" — the light page runs a stronger --border-brand mix than the
+      // :root 45% so the 2px grid reads slightly more pronounced than dark.
+      const lightOverride = appCSS.match(
+        /\[data-theme="light"\], \.theme-light \{\s*\n\t--border-brand:([^;]*);/,
+      )?.[1] ?? '';
+      expect(lightOverride.trim()).toBe('color-mix(in srgb, var(--primary) 60%, transparent)');
+    });
+
+    it('station labels speak the wayfinding voice (.label-station = accent-text)', () => {
+      const labelStation = appCSS.match(/\.label-station \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(labelStation).toContain('color: var(--accent-text);');
+    });
+  });
+
+  describe('GO2-W5 final batch (6c) — the asphalt footer (operator: BELOVED; never repave)', () => {
+    // The footer paints bg-[var(--muted)] (wiring locked in
+    // style-regressions). These pins make the STREET values themselves
+    // immovable: dark --muted is the asphalt road surface — #1E1E1E exactly,
+    // a NEUTRAL grey (round 1's warm #251E18 repave is the historical
+    // failure mode; round 2 restored asphalt). Light --muted stays the
+    // approved station paper. Both attribute blocks and the
+    // prefers-color-scheme fallbacks must agree.
+    const darkBlock = tokensCSS.match(/\[data-theme="dark"\], \.theme-dark \{([\s\S]*?)\n\}/)?.[1] ?? '';
+    const lightBlock = tokensCSS.match(/\[data-theme="light"\], \.theme-light \{([\s\S]*?)\n\}/)?.[1] ?? '';
+    const mediaDark = tokensCSS.match(/@media \(prefers-color-scheme: dark\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+    const mediaLight = tokensCSS.match(/@media \(prefers-color-scheme: light\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+    it('dark --muted is asphalt: #1E1E1E exactly (the street the footer paints)', () => {
+      expect(darkBlock).toContain('--muted: #1E1E1E;');
+      expect(mediaDark).toContain('--muted: #1E1E1E;');
+    });
+
+    it('the asphalt is a NEUTRAL grey — equal RGB channels, no warm bakelite repave', () => {
+      const m = darkBlock.match(/--muted: #([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2});/);
+      expect(m).not.toBeNull();
+      const [, r, g, b] = m!;
+      expect(r.toUpperCase()).toBe(g.toUpperCase());
+      expect(g.toUpperCase()).toBe(b.toUpperCase());
+    });
+
+    it('light --muted is the approved station paper: #F1E9DA exactly', () => {
+      expect(lightBlock).toContain('--muted: #F1E9DA;');
+      expect(mediaLight).toContain('--muted: #F1E9DA;');
     });
   });
 });

@@ -44,17 +44,23 @@
 </script>
 
 <div class={cn("terminal", className)} data-slot="terminal-chrome" {...rest}>
-  <!-- Title bar -->
+  <!-- Title bar — GO2-W5: three-aspect signal head (proceed lit; caution +
+       stop unlit at 25%) replaces the single orange dot. Inline dots, zero
+       layout shift. -->
   <div class="terminal-titlebar">
     <div class="flex items-center gap-2">
-      <StatusDot color="orange" pulse size="sm" />
+      <span class="flex items-center gap-1" data-slot="signal-head" aria-hidden="true">
+        <StatusDot color="green" pulse size="sm" />
+        <StatusDot color="caution" size="sm" class="opacity-25" />
+        <StatusDot color="stop" size="sm" class="opacity-25" />
+      </span>
       <span class="font-mono text-caption text-[var(--secondary-foreground)]">{title}</span>
       {#if tag}
-        <span class="rounded-sm bg-[var(--popover)] px-1.5 py-0.5 font-mono text-[0.625rem] text-[var(--muted-foreground)]">{tag}</span>
+        <span class="rounded-sm bg-[var(--accent-surface)] px-1.5 py-0.5 font-mono text-[0.625rem] text-[var(--accent-text)]">{tag}</span>
       {/if}
     </div>
     {#if status}
-      <span class="font-mono text-caption text-[var(--muted-foreground)]">{status}</span>
+      <span class="font-mono text-caption text-[var(--terminal-ink-muted)]">{status}</span>
     {/if}
   </div>
 
@@ -66,13 +72,14 @@
     {@render children()}
   </div>
 
-  <!-- Footer -->
+  <!-- Footer — GO2-W5 departure board: values speak the wayfinding voice
+       (accent-text; "PROCHAIN DÉPART / À L'HEURE" energy). -->
   {#if footer && footer.length > 0}
     <div class="terminal-footer">
       {#each footer as item}
         <div class="flex gap-2">
-          <span class="font-mono text-caption text-[var(--muted-foreground)]">{item.label}</span>
-          <span class="font-mono text-caption text-[var(--secondary-foreground)]">{item.value}</span>
+          <span class="font-mono text-caption text-[var(--terminal-ink-muted)]">{item.label}</span>
+          <span class="font-mono text-caption text-[var(--accent-text)]">{item.value}</span>
         </div>
       {/each}
     </div>
@@ -80,11 +87,16 @@
 </div>
 
 <style>
+  /* GO2-W5 taste round 2: the terminal body IS the site background
+     (--terminal === --background by token contract, SOLID) — identity is
+     carried by the chrome strips, the solid-orange rule chassis and the
+     mono type, never by a special surface color.
+     Round 3: chassis one step thicker (1px → 2px) — bolder structure. */
   .terminal {
     display: flex;
     flex-direction: column;
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
+    border: 2px solid var(--border-rule);
     background: var(--terminal);
     overflow: hidden;
   }
@@ -94,6 +106,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 0.75rem;
+    background: var(--terminal-chrome);
     border-bottom: 1px solid var(--border-subtle);
   }
 
@@ -110,6 +123,7 @@
     display: flex;
     gap: 1.5rem;
     padding: 0.5rem 0.75rem;
+    background: var(--terminal-chrome);
     border-top: 1px solid var(--border-subtle);
   }
 </style>
