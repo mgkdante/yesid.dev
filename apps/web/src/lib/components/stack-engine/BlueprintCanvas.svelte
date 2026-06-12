@@ -69,7 +69,25 @@
 	});
 
 	const layerCount = $derived(new Set(layout.boxes.map((b) => b.layer)).size);
-	const stampText = $derived(`${title.toUpperCase()} — REV A`);
+
+	// Drawing geometry (declared before the stamp deriveds below read them).
+	const PAD = 24;
+	const STAMP_H = 36;
+	/** go2/w5 §8: left gutter for the layer row labels (engine renders only). */
+	const LABEL_GUTTER = 64;
+
+	// go2/w5 taste round 2 (fit audit): the old `{TITLE} — REV A` single line
+	// overflowed the stamp frame on one-box-per-row blueprints ("AN AUTOMATED
+	// WORKFLOW — REV A" ≈ 267px vs a 208px frame). REV A now leads the meta
+	// line, and the title gets a deterministic textLength clamp when its
+	// estimated width (12px mono + 2px letter-spacing ≈ 9.2px/char) exceeds
+	// the frame's inner width — long CMS titles squeeze instead of escaping.
+	const stampTitle = $derived(title.toUpperCase());
+	const STAMP_CHAR_W = 9.2;
+	const stampAvail = $derived(layout.width + PAD * 2 - 16);
+	const stampTitleLength = $derived(
+		stampTitle.length * STAMP_CHAR_W > stampAvail ? stampAvail : undefined,
+	);
 
 	// go2/w5 §4: layer-pair teaching — full map of every possible occupied-row
 	// adjacency (copy ≤ 30 chars each, homey-teacher voice).
@@ -106,10 +124,6 @@
 		return out;
 	});
 
-	const PAD = 24;
-	const STAMP_H = 36;
-	/** go2/w5 §8: left gutter for the layer row labels (engine renders only). */
-	const LABEL_GUTTER = 64;
 	const gutter = $derived(stacked ? 0 : LABEL_GUTTER);
 	const viewBox = $derived(
 		`${-(PAD + gutter)} ${-PAD} ${layout.width + PAD * 2 + gutter} ${layout.height + STAMP_H + PAD * 2}`,
@@ -352,8 +366,15 @@
 			height="36"
 			rx="2"
 		/>
-		<text class="bp-stamp-title" x={layout.width + PAD - 8} y={layout.height + STAMP_H} text-anchor="end">
-			{stampText}
+		<text
+			class="bp-stamp-title"
+			x={layout.width + PAD - 8}
+			y={layout.height + STAMP_H}
+			text-anchor="end"
+			textLength={stampTitleLength}
+			lengthAdjust={stampTitleLength === undefined ? undefined : 'spacingAndGlyphs'}
+		>
+			{stampTitle}
 		</text>
 		<text
 			class="bp-stamp-meta"
@@ -361,7 +382,7 @@
 			y={layout.height + STAMP_H + 14}
 			text-anchor="end"
 		>
-			{layout.boxes.length} parts · {layerCount} layers
+			REV A · {layout.boxes.length} parts · {layerCount} layers
 		</text>
 	</g>
 </svg>
@@ -476,13 +497,16 @@
 		fill: var(--primary);
 	}
 
-	/* go2/w5 §4: pair notes — teach ink with a background halo so they read
-	   over the connectors they annotate. */
+	/* go2/w5 §4: pair notes — teach ink with a paper halo so they read over
+	   the connectors they annotate (classic drafting: the line breaks for the
+	   label). Taste round 2: halo = --engine-paper (the band's composited
+	   color), not raw --background — the old halo ghosted a lighter box on
+	   the tinted band. */
 	.bp-pair-note {
 		font-family: var(--font-mono);
 		font-size: 10px;
 		fill: var(--engine-teach-ink);
-		stroke: var(--background);
+		stroke: var(--engine-paper, var(--background));
 		stroke-width: 3px;
 		paint-order: stroke;
 	}

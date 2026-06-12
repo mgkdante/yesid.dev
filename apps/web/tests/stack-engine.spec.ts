@@ -5,9 +5,10 @@
 //               CTA hands off to /contact?bp=<archetype>~…
 // Compose path: mode switch → tech chips light match cards (AND contract —
 //               go2/w4: every pick must be in a card's stack, more picks
-//               narrow the rail); an absurd pick (committed tech, member of
-//               no launch archetype) shows the zero-match CTA instead of a
-//               blank state.
+//               narrow the rail). go2/w5 taste round 2: the live-composed
+//               build-shape card is the ALWAYS-ON primary teaching surface —
+//               every pick combo teaches (operator example pinned below);
+//               AND-matched archetypes are the bonus "known builds" rail.
 
 import { test, expect } from '@playwright/test';
 
@@ -41,6 +42,10 @@ test('compose path: chips rank archetypes into match cards (AND)', async ({ page
 	await expect(cardsAfterOne.first()).toBeVisible();
 	const countAfterOne = await cardsAfterOne.count();
 
+	// Taste round 2: the build-shape card is ALWAYS-ON from the first pick —
+	// the primary teaching surface coexists with the known-builds rail.
+	await expect(page.locator('[data-testid="build-shape"]')).toBeVisible();
+
 	await page.locator('[data-testid="tech-chip-docker"]').click();
 
 	// data-pipeline carries BOTH picks and sits closest to complete (1 missing).
@@ -49,30 +54,43 @@ test('compose path: chips rank archetypes into match cards (AND)', async ({ page
 	const countAfterTwo = await page.locator('[data-testid^="match-card-"]').count();
 	expect(countAfterTwo).toBeLessThanOrEqual(countAfterOne);
 
-	// go2/w5: the live build counter narrates the narrowing.
+	// go2/w5: the live build counter narrates the narrowing (taste round 2
+	// vocabulary: archetypes are "known builds").
 	await expect(page.locator('[data-testid="build-counter"]')).toContainText(
-		/2 picks → \d+ possible builds/,
+		/2 picks → \d+ known builds/,
 	);
 });
 
-test('compose path: an absurd single pick shows the zero-match CTA (never blank)', async ({
+test('compose path: every combo TEACHES — the operator example (node.js + github-actions) composes a shape, never a blank', async ({
 	page,
 }) => {
 	await page.goto('/tech-stack');
 	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
 
 	await page.locator('[data-testid="mode-toggle-compose"]').click();
-	// 'threejs-threlte' is a committed tech that belongs to no launch
-	// archetype — a guaranteed zero-match pick. (go2/w4: was 'dax', which the
-	// Gate-A regen dropped from the published tech items; the unit suite
-	// derives its unmatched pick dynamically and locks that one exists.)
-	await page.locator('[data-testid="tech-chip-threejs-threlte"]').click();
+	// Taste round 2 acceptance example: node.js + github-actions matches NO
+	// drawn archetype under AND — round 1 showed nothing here; now the
+	// live-composed build-shape card must read the coverage matrix out loud.
+	await page.locator('[data-testid="tech-chip-node-js"]').click();
+	await page.locator('[data-testid="tech-chip-github-actions"]').click();
 
-	const zeroMatch = page.locator('[data-testid="zero-match-cta"]');
-	await expect(zeroMatch).toBeVisible();
-	await expect(zeroMatch.locator('a')).toHaveAttribute(
+	const shape = page.locator('[data-testid="build-shape"]');
+	await expect(shape).toBeVisible();
+	// Names what the picks do TOGETHER…
+	await expect(shape).toContainText('Your build: logic + infra covered');
+	await expect(shape).toContainText('a bot, a scheduled job, an automation');
+	// …and what a complete build still needs.
+	await expect(shape).toContainText(
+		'add an interface layer + a data layer and this becomes a working product',
+	);
+	// Warm exit: exactly one link, carrying both picks.
+	await expect(shape.locator('a')).toHaveAttribute(
 		'href',
-		'/contact?bp=custom~threejs-threlte',
+		'/contact?bp=custom~node-js.github-actions',
+	);
+	// The bonus rail says plainly why no known build lit up.
+	await expect(page.locator('[data-testid="known-builds-label"]')).toContainText(
+		'no drawn recipe uses all of these yet',
 	);
 });
 

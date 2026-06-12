@@ -131,14 +131,15 @@ describe('TechMatcher match cards', () => {
 		render(TechMatcher, { props: { engine } });
 		const counter = screen.getByTestId('build-counter');
 		expect(counter.getAttribute('aria-live')).toBe('polite');
+		// Taste round 2 vocabulary: archetypes are "known builds" everywhere.
 		expect(counter.textContent).toContain(
-			`${engine.archetypes.length} recipes on the board — tap parts to narrow`,
+			`${engine.archetypes.length} known builds on the board — tap parts to narrow`,
 		);
 
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
 		await fireEvent.click(screen.getByTestId('tech-chip-docker'));
 		const expected = matchArchetypes(['postgresql', 'docker'], stackArchetypes);
-		expect(counter.textContent).toContain(`2 picks → ${expected.length} possible builds`);
+		expect(counter.textContent).toContain(`2 picks → ${expected.length} known builds`);
 		expect(counter.textContent).toContain('each pick narrows, never widens');
 
 		// The counter is THE live region — the rail must not double-announce.
@@ -196,70 +197,143 @@ describe('TechMatcher match cards', () => {
 		expect(engine.view).toBe('blueprint');
 	});
 
-	it('shows no match cards and no zero-match CTA before any pick (but never blank)', () => {
+	it('shows no match cards and no build-shape card before any pick (but never blank)', () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		expect(screen.queryAllByTestId(/^match-card-/)).toHaveLength(0);
-		expect(screen.queryByTestId('zero-match-cta')).toBeNull();
+		expect(screen.queryByTestId('build-shape')).toBeNull();
+		expect(screen.queryByTestId('known-builds-label')).toBeNull();
 		// Never a blank state: the matcher always renders its chip groups.
 		expect(screen.getAllByTestId(/^tech-layer-group-/).length).toBeGreaterThan(0);
 	});
 });
 
-describe('TechMatcher zero-match state', () => {
-	it('composes the project shape as a teaching moment + prefilled contact link (go2/w5)', async () => {
+describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)', () => {
+	it('appears from the FIRST pick and coexists with the known-builds rail', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
-		// derive a published tech no archetype uses → picked.size>0 && matches.length===0.
-		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
-		expect(engine.matches).toHaveLength(0);
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
 
-		const cta = screen.getByTestId('zero-match-cta');
-		expect(cta.textContent).toContain(
-			'No drawn recipe uses all of these — but the shape is real.',
+		// Matches exist AND the shape card teaches alongside them — the shape
+		// is the primary surface, the archetype cards are the bonus rail.
+		expect(engine.matches.length).toBeGreaterThan(0);
+		const card = screen.getByTestId('build-shape');
+		expect(card.textContent).toContain('Your build: data covered');
+		expect(card.textContent).toContain(
+			"that's memory with nothing using it yet — records kept safe and queryable.",
 		);
-		// The shape line teaches what a working build usually still needs.
-		expect(cta.textContent).toContain('A working build usually still needs');
-		// Warm CTA + whisper (teacher voice, never a hard sell).
-		expect(cta.textContent).toContain('Take this combo with you →');
-		expect(cta.textContent).toContain("if you ever want help building it, I'm around.");
-		const link = cta.querySelector('a');
-		expect(link?.getAttribute('href')).toBe(
+		expect(screen.getAllByTestId(/^match-card-/).length).toBe(engine.matches.length);
+		expect(screen.getByTestId('known-builds-label').textContent).toContain(
+			"known builds — recipes I've already drawn",
+		);
+	});
+
+	it("pins the operator example: node-js + github-actions always teaches the automation shape", async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId('tech-chip-node-js'));
+		await fireEvent.click(screen.getByTestId('tech-chip-github-actions'));
+
+		// AND over 12 archetypes finds nothing here — and that must no longer
+		// mean NOTHING is taught.
+		expect(engine.matches).toHaveLength(0);
+		const card = screen.getByTestId('build-shape');
+		expect(card.textContent).toContain('Your build: logic + infra covered');
+		expect(card.textContent).toContain(
+			"that's code with ground to run on — a bot, a scheduled job, an automation.",
+		);
+		expect(card.textContent).toContain(
+			'add an interface layer + a data layer and this becomes a working product.',
+		);
+		// The picks themselves are named in the roster.
+		expect(card.textContent).toContain('Node.js');
+		expect(card.textContent).toContain('GitHub Actions');
+	});
+
+	it('roster grounds the shape in the picks: enables line when present, name alone when not', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		// postgresql carries an `enables` line; node-js does not (content task
+		// pending) — both must list gracefully.
+		await fireEvent.click(screen.getByTestId('tech-chip-node-js'));
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+
+		const roster = screen.getByTestId('build-shape').querySelector('.shape-roster')!;
+		const items = [...roster.querySelectorAll('li')].map((li) => li.textContent?.trim());
+		expect(items).toHaveLength(2);
+		// STACK_LAYERS order: logic (node-js) before data (postgresql).
+		expect(items[0]).toBe('Node.js');
+		expect(items[1]).toMatch(/^PostgreSQL — .+/);
+	});
+
+	it('complete coverage flips the next-step line to ready-to-build', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		// data-dashboard's stack covers all four layers.
+		for (const id of ['sveltekit', 'rest-api', 'postgresql', 'docker']) {
+			await fireEvent.click(screen.getByTestId(`tech-chip-${id}`));
+		}
+		const card = screen.getByTestId('build-shape');
+		expect(card.textContent).toContain('Your build: interface + logic + data + infra covered');
+		expect(card.textContent).toContain(
+			"that's all four layers — the shape of a complete, working product.",
+		);
+		expect(card.textContent).toContain("nothing missing — this one's ready to build.");
+	});
+
+	it('warm CTA + whisper + prefilled contact link (exactly one <a>, href formula pinned)', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
+
+		const card = screen.getByTestId('build-shape');
+		expect(card.textContent).toContain('Take this combo with you →');
+		expect(card.textContent).toContain("if you ever want help building it, I'm around.");
+		const links = card.querySelectorAll('a');
+		expect(links).toHaveLength(1);
+		expect(links[0].getAttribute('href')).toBe(
 			'/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId] }),
 		);
 	});
 
-	it('zero-match link carries every picked tech', async () => {
+	it('shape link carries every picked tech', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
 		await fireEvent.click(screen.getByTestId(`tech-chip-${secondUnmatchedId}`));
-		const link = screen.getByTestId('zero-match-cta').querySelector('a');
+		const link = screen.getByTestId('build-shape').querySelector('a');
 		expect(link?.getAttribute('href')).toBe('/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId, secondUnmatchedId] }));
 	});
 
-	it('AND contract: adding a matchable pick on top of an unmatched one stays zero-match', async () => {
+	it('zero-match is just the card with an all-ruled-out rail under it (no dead end)', async () => {
 		// Under AND, a single out-of-catalogue pick poisons every combo — the
-		// warm CTA must hold even when a popular tech joins it.
+		// shape card holds even when a popular tech joins it.
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
-		expect(screen.getByTestId('zero-match-cta')).toBeTruthy();
+		expect(screen.getByTestId('build-shape')).toBeTruthy();
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
-		expect(screen.getByTestId('zero-match-cta')).toBeTruthy();
+		expect(screen.getByTestId('build-shape')).toBeTruthy();
 		expect(screen.queryAllByTestId(/^match-card-/)).toHaveLength(0);
+		// The label says plainly why the rail is gray.
+		expect(screen.getByTestId('known-builds-label').textContent).toContain(
+			'no drawn recipe uses all of these yet',
+		);
 	});
 
-	it('zero-match card disappears once the picks fit an archetype again', async () => {
+	it('card leaves only when the last pick leaves', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
-		expect(screen.getByTestId('zero-match-cta')).toBeTruthy();
-		// Toggle the unmatched pick OFF, then pick a catalogue tech — the picks
-		// are a subset of data-pipeline's stack again.
+		expect(screen.getByTestId('build-shape')).toBeTruthy();
+		// Swapping the unmatched pick for a catalogue one keeps the card AND
+		// brings the known builds back.
 		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
-		expect(screen.queryByTestId('zero-match-cta')).toBeNull();
+		expect(screen.getByTestId('build-shape')).toBeTruthy();
 		expect(screen.getByTestId('match-card-data-pipeline')).toBeTruthy();
+		// Unpick everything → the card retires with the picks.
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		expect(screen.queryByTestId('build-shape')).toBeNull();
 	});
 });

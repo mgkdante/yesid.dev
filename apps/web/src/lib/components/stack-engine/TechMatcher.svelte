@@ -1,21 +1,25 @@
 <!--
-  TechMatcher (slice-29, go2/w5 layered learning) — compose-as-matching,
+  TechMatcher (slice-29, go2/w5 taste round 2) — compose-as-matching,
   never free-form wiring.
 
   Chips for every committed tech, grouped by STACK_LAYERS render order via
   tech.layer (layerless techs under a trailing 'more' group). Matching is AND
   (picked ⊆ stack) per stack-matching.ts — more picks narrow, never widen.
 
-  go2/w5 teaching layer:
+  Taste round 2 — SHAPE-FIRST matrix (operator verdict):
+  - The composed BUILD SHAPE is the PRIMARY teaching surface: an always-on
+    card (any pick → card) that re-reads the 15-cell layer-coverage matrix
+    (stack-shape.ts) on every pick — which layers the picks cover, what they
+    can do TOGETHER (per-tech `enables` roster), and what a complete build
+    still needs. Zero-match is no longer an edge case — it's just the card
+    with zero bonus rail under it.
+  - AND-matched archetypes are the BONUS rail of "known builds" — recipes
+    already drawn. Stable grid: the FULL catalogue renders ALWAYS, ruled-out
+    cards gray out (never vanish) and print the AND lesson.
   - ONE fixed teach-line slot above the chips (hover/focus/pick — last trigger
     wins) explains what a tech does and which layer it lives in.
   - A live build counter (the single aria-live element) narrates the
-    narrowing: "{n} picks → {m} possible builds".
-  - The rail renders the FULL catalogue ALWAYS — stable grid, gray-out not
-    vanish. Ruled-out cards print the AND lesson ("ruled out — X isn't in
-    this recipe"); dimming IS the narrowing.
-  - Zero-match composes a generic project SHAPE from the picked layers
-    (stack-shape.ts) before the warm CTA — a teaching moment, never a dead end.
+    narrowing: "{n} picks → {m} known builds".
 -->
 <script lang="ts">
 	import { STACK_LAYERS } from '@repo/shared/schemas';
@@ -28,7 +32,7 @@
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { encodeBlueprint } from '$lib/utils/blueprint-param';
 	import { LAYER_TEACHING } from './layer-teaching';
-	import { composeStackShape } from './stack-shape';
+	import { composeStackShape, readShape } from './stack-shape';
 	import type { EngineState } from './engine-state.svelte';
 
 	type Tech = (typeof techStackItems)[number];
@@ -58,19 +62,43 @@
 	const zeroMatch = $derived(hasPicks && engine.matches.length === 0);
 	/** matches[0] — closest to complete (fewest missing, AND contract). */
 	const topMatchSlug = $derived(engine.matches[0]?.slug ?? null);
-	const zeroMatchHref = $derived(
+	const shapeHref = $derived(
 		'/contact?bp=' + encodeBlueprint({ archetype: null, techs: [...engine.pickedTechs] }),
 	);
-	/** Zero-match teaching: the picked layers composed into a project shape. */
+
+	// ── Build shape (taste round 2) — the ALWAYS-ON primary teaching surface.
+	// Every pick re-reads the 15-cell layer-coverage matrix: heading names the
+	// covered layers, the reading says what they do TOGETHER, the roster
+	// grounds it in the actual picks (enables lines), and the next-step line
+	// names what a complete build still needs.
 	const shape = $derived(composeStackShape([...engine.pickedTechs], techStackItems));
-	const shapeLine = $derived.by(() => {
-		if (shape.missing.length === 0) {
-			return "That covers all four layers — a complete shape. I just haven't drawn this exact recipe yet.";
-		}
-		const needs = `A working build usually still needs ${shape.missing.join(' + ')} — ${LAYER_TEACHING[shape.missing[0]]}.`;
-		if (shape.present.length === 0) return needs; // defensive: layerless-only picks
-		return `You've got ${shape.present.join(' + ')} parts. ${needs}`;
-	});
+	const shapeHeading = $derived(
+		shape.present.length > 0
+			? `Your build: ${shape.present.join(' + ')} covered`
+			: 'Your build: no layers covered yet',
+	);
+	const shapeReading = $derived(`that's ${readShape(shape.present)}.`);
+	const an = (layer: string) => (layer === 'interface' || layer === 'infra' ? 'an' : 'a');
+	const shapeNext = $derived(
+		shape.missing.length === 0
+			? "nothing missing — this one's ready to build."
+			: `add ${shape.missing.map((l) => `${an(l)} ${l} layer`).join(' + ')} and this becomes a working product.`,
+	);
+	/** Picked techs in STACK_LAYERS order (stable within a layer), with enables. */
+	const layerRank = new Map<string, number>(
+		STACK_LAYERS.map((l, i) => [l as string, i] as const),
+	);
+	const shapeRoster = $derived(
+		[...engine.pickedTechs]
+			.map((id) => techById.get(id))
+			.filter((t): t is Tech => Boolean(t))
+			.sort((a, b) => (layerRank.get(a.layer ?? '') ?? 99) - (layerRank.get(b.layer ?? '') ?? 99))
+			.map((t) => ({
+				id: t.id,
+				name: t.name,
+				enables: t.enables ? resolveLocale(t.enables, locale) : '',
+			})),
+	);
 
 	// ── Teach line (go2/w5 §3) — ONE fixed slot, last trigger wins. ─────────
 	const TEACH_EMPTY = "tap a part — I'll tell you what it does.";
@@ -144,20 +172,22 @@
 		<span class="counter-prompt" aria-hidden="true">~</span>
 		<StatusDot color="orange" pulse />
 		{#if !hasPicks}
-			<span>{engine.archetypes.length} recipes on the board — tap parts to narrow</span>
+			<span>{engine.archetypes.length} known builds on the board — tap parts to narrow</span>
 		{:else if zeroMatch}
-			<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → no drawn recipe — see below</span>
+			<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → no known build — your shape's below</span>
 		{:else}
-			<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → {engine.matches.length} possible build{engine.matches.length === 1 ? '' : 's'}<span class="counter-suffix"> · each pick narrows, never widens</span></span>
+			<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → {engine.matches.length} known build{engine.matches.length === 1 ? '' : 's'}<span class="counter-suffix"> · each pick narrows, never widens</span></span>
 		{/if}
 	</p>
 
 	<div class="match-rail">
-		{#if zeroMatch}
-			<!-- Zero-match = teaching moment (go2/w5 §6): compose the project
-			     shape over STACK_LAYERS, then the warm CTA. Exactly ONE <a>
-			     (href pinned by unit + e2e suites). -->
-			<div class="zero-match" data-testid="zero-match-cta">
+		{#if hasPicks}
+			<!-- Build shape (taste round 2) — THE primary teaching surface,
+			     present from the first pick onward; archetype cards below are
+			     bonus "known builds". Exactly ONE <a> (href formula pinned by
+			     unit + e2e suites). The reading re-keys on coverage so it
+			     settles in with a micro-pop (fun pass, <400ms → SAFE-ALWAYS). -->
+			<div class="build-shape" data-testid="build-shape">
 				<div class="shape-strip" aria-hidden="true">
 					{#each STACK_LAYERS as layer (layer)}
 						<span class="shape-cell" style:--shape-color={`var(--layer-${layer})`}>
@@ -169,11 +199,32 @@
 						</span>
 					{/each}
 				</div>
-				<p class="zero-match-heading">No drawn recipe uses all of these — but the shape is real.</p>
-				<p class="zero-match-shape">{shapeLine}</p>
-				<a class="zero-match-link" href={zeroMatchHref}>Take this combo with you →</a>
-				<p class="zero-match-whisper">if you ever want help building it, I'm around.</p>
+				<p class="shape-heading">{shapeHeading}</p>
+				{#key shape.present.join('+')}
+					<p class="shape-reading">{shapeReading}</p>
+				{/key}
+				<ul class="shape-roster">
+					{#each shapeRoster as part (part.id)}
+						<li>
+							<!-- The separator lives in the expression: Svelte trims a text
+							     node's leading whitespace at the element boundary, which
+							     ate the space ("PostgreSQL— stores…"). -->
+							<span class="roster-name">{part.name}</span>{#if part.enables}<span class="roster-enables">{` — ${part.enables}`}</span>{/if}
+						</li>
+					{/each}
+				</ul>
+				<p class="shape-next">{shapeNext}</p>
+				<a class="shape-link" href={shapeHref}>Take this combo with you →</a>
+				<p class="shape-whisper">if you ever want help building it, I'm around.</p>
 			</div>
+
+			<p class="rail-label" data-testid="known-builds-label">
+				{#if zeroMatch}
+					no drawn recipe uses all of these yet — the shape above is already yours
+				{:else}
+					known builds — recipes I've already drawn with these parts
+				{/if}
+			</p>
 		{/if}
 
 		<!-- Stable grid (go2/w5 §5): the FULL catalogue renders ALWAYS, in
@@ -240,8 +291,11 @@
 		gap: 1rem;
 	}
 
-	/* go2/w5 §3: fixed teach slot — reserved height (1 line desktop / 2 lines
-	   mobile) so a longer line never reflows the chips below it. */
+	/* go2/w5 §3: fixed teach slot — reserved height (1 line wide / 2 lines
+	   below 1024px) so a longer line never reflows the chips below it.
+	   Taste round 2 (fit audit): the 2-line reservation now covers up to
+	   1023px — full teach lines (~115ch) wrap once between 768–1023px and
+	   used to push the chips down on hover. */
 	.tech-teach-line {
 		font-family: var(--font-mono);
 		font-size: 12px;
@@ -251,7 +305,7 @@
 		min-height: calc(12px * 1.5);
 	}
 
-	@media (max-width: 767px) {
+	@media (max-width: 1023px) {
 		.tech-teach-line {
 			min-height: calc(12px * 1.5 * 2);
 		}
@@ -439,7 +493,8 @@
 		color: var(--muted-foreground);
 	}
 
-	.zero-match {
+	/* Taste round 2: the build-shape card — the ever-present companion. */
+	.build-shape {
 		grid-column: 1 / -1;
 		display: flex;
 		flex-direction: column;
@@ -470,6 +525,13 @@
 		background: var(--shape-color);
 	}
 
+	/* Fun pass: a dot turning solid settles in with the chips' own pop —
+	   the keyframe re-runs each time a layer flips hollow → solid.
+	   User-initiated, tiny, <400ms → SAFE-ALWAYS (pressBounce precedent). */
+	.shape-dot:not(.shape-dot-missing) {
+		animation: chip-settle 180ms var(--ease-bounce);
+	}
+
 	.shape-dot-missing {
 		background: transparent;
 		box-shadow: inset 0 0 0 1.5px var(--shape-color);
@@ -483,21 +545,61 @@
 		color: var(--engine-teach-ink);
 	}
 
-	.zero-match-heading {
+	.shape-heading {
 		font-family: var(--font-mono);
 		font-size: 13px;
+		font-weight: 700;
 		color: var(--foreground);
 		margin: 0;
 	}
 
-	.zero-match-shape {
+	/* The matrix reading — re-keyed per coverage change, eases in 2px. */
+	.shape-reading {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--foreground);
+		margin: 0;
+		animation: shape-note-in 180ms ease-out;
+	}
+
+	@keyframes shape-note-in {
+		from {
+			opacity: 0;
+			translate: 0 2px;
+		}
+		to {
+			opacity: 1;
+			translate: 0 0;
+		}
+	}
+
+	.shape-roster {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		margin: 0;
+		padding: 0;
+		font-family: var(--font-mono);
+		font-size: 11px;
+	}
+
+	.roster-name {
+		color: var(--secondary-foreground);
+	}
+
+	.roster-enables {
+		color: var(--engine-teach-ink);
+	}
+
+	.shape-next {
 		font-family: var(--font-mono);
 		font-size: 12px;
 		color: var(--engine-teach-ink);
 		margin: 0;
 	}
 
-	.zero-match-link {
+	.shape-link {
 		font-family: var(--font-mono);
 		font-size: 12px;
 		color: var(--primary);
@@ -506,10 +608,20 @@
 		width: fit-content;
 	}
 
-	.zero-match-whisper {
+	.shape-whisper {
 		font-family: var(--font-mono);
 		font-size: 11px;
 		color: var(--engine-teach-ink);
 		margin: 0;
+	}
+
+	/* The bonus rail's nameplate — bridges shape card and known builds. */
+	.rail-label {
+		grid-column: 1 / -1;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.5px;
+		color: var(--muted-foreground);
+		margin: 0.25rem 0 0;
 	}
 </style>

@@ -71,9 +71,10 @@
 </script>
 
 <section class="stack-engine" data-testid="stack-engine">
-	<!-- GO-w2t5 addendum: section is full-bleed (route wraps it in the
-	     hazard-framed engine-band); the width cap lives on this inner
-	     container so content stays a readable centered column. -->
+	<!-- GO-w2t5 addendum + go2/w5 taste round 2: section is full-bleed (route
+	     wraps it in the hazard-framed engine-band) and the inner container is
+	     now UNCAPPED too — the engine genuinely spans the viewport; the
+	     section's --space-page-x padding is the readable gutter. -->
 	<div class="engine-inner">
 	<div class="engine-mode-toggle" role="group" aria-label="Engine mode">
 		<button
@@ -100,14 +101,21 @@
 
 	<!-- go2/w5 layered learning: persistent layer legend — never unmounted, so
 	     it teaches across goal/compose AND select/blueprint/preview. The metro
-	     track behind the dots (desktop ::before) echoes the site's station
-	     vocabulary. Teaching lines come from layer-teaching.ts (single source). -->
+	     track between the stations (per-cell flex segments, ≥768px) echoes the
+	     site's station vocabulary. Teaching lines come from layer-teaching.ts
+	     (single source). -->
 	<div class="layer-legend" data-testid="layer-legend">
 		{#each STACK_LAYERS as layer (layer)}
 			<div class="legend-cell" data-testid={`legend-${layer}`} style:--legend-color={`var(--layer-${layer})`}>
 				<span class="legend-station">
 					<span class="legend-dot" aria-hidden="true"></span>
 					<span class="legend-name">{layer}</span>
+					<!-- go2/w5 taste round 2: the metro track is a per-cell flex
+					     segment AFTER the name — it fills the gap to the next
+					     station and can never paint over text (the old absolute
+					     ::before sat in the positioned layer, striking the
+					     in-flow labels: "labels under the line"). -->
+					<span class="legend-track" aria-hidden="true"></span>
 				</span>
 				<span class="legend-teach">{LAYER_TEACHING[layer]}</span>
 			</div>
@@ -211,11 +219,20 @@
 		--layer-infra: var(--muted-foreground);
 		--bp-grid-ink: color-mix(in srgb, var(--border) 45%, transparent);
 		--engine-teach-ink: var(--secondary-foreground);
+		/* Taste round 2 (fit audit): what the engine band actually composites —
+		   route tint (3% primary) over the page background. Text halos that
+		   must mask connector lines (pair notes) use THIS, not raw
+		   --background, so the mask is invisible on the tinted band. */
+		--engine-paper: color-mix(in srgb, var(--primary) 3%, var(--background));
 	}
 
+	/* go2/w5 taste round 2: TRULY edge-to-edge — the old var(--container-wide)
+	   cap here re-constrained the content the band had just un-constrained
+	   ("still feels constrained", operator). The inner now rides the full
+	   bleed; the section's --space-page-x padding keeps readable gutters.
+	   Chips, legend rail and the known-builds grid all breathe the viewport. */
 	.engine-inner {
-		max-width: var(--container-wide);
-		margin: 0 auto;
+		width: 100%;
 	}
 
 	.engine-mode-toggle {
@@ -254,9 +271,10 @@
 		color: var(--primary-foreground);
 	}
 
-	/* go2/w5: persistent layer legend — 2×2 grid <768px, one metro row ≥768px. */
+	/* go2/w5: persistent layer legend — 2×2 grid <768px, one metro row ≥768px.
+	   Taste round 2: the track is now a per-cell flex segment between stations
+	   (see markup note) — nothing ever overlaps the printed names. */
 	.layer-legend {
-		position: relative;
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 0.75rem 1.25rem;
@@ -290,10 +308,13 @@
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		color: var(--legend-color);
-		/* Station name plate: keeps the metro track from striking the name. */
-		background: var(--background);
-		padding-inline: 4px;
-		border-radius: 2px;
+	}
+
+	/* Metro-line micro-detail, in-flow edition: each station trails a 1px
+	   rail toward the next dot. Hidden <768px (2×2 grid has no line to draw)
+	   and after the last station (the line terminates there). */
+	.legend-track {
+		display: none;
 	}
 
 	.legend-teach {
@@ -308,16 +329,21 @@
 			gap: 1.25rem;
 		}
 
-		/* Metro-line micro-detail: a 1px track runs behind the 4 dots — the
-		   legend reads as a transit line map. Pure CSS, decorative. */
-		.layer-legend::before {
-			content: '';
-			position: absolute;
-			left: 2px;
-			right: 2px;
-			top: 6.5px; /* dot center within the 14px station row */
+		.legend-cell {
+			flex: 1 1 0;
+			min-width: 0;
+		}
+
+		.legend-track {
+			display: block;
+			flex: 1;
 			height: 1px;
 			background: var(--border);
+			margin-left: 2px;
+		}
+
+		.legend-cell:last-child .legend-track {
+			display: none;
 		}
 	}
 

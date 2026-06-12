@@ -30,12 +30,45 @@ describe('BlueprintCanvas', () => {
 		expect(canvas.textContent).toContain('PostgreSQL');
 	});
 
-	it('stamps the title uppercase with the REV A suffix', () => {
+	it('stamps the title uppercase; REV A leads the meta line (taste round 2 fit fix)', () => {
 		render(BlueprintCanvas, {
 			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
 		});
 		const stamp = screen.getByTestId('blueprint-stamp');
-		expect(stamp.textContent).toContain('A DATA DASHBOARD — REV A');
+		// The old single `{TITLE} — REV A` line overflowed 208px frames on
+		// one-box-per-row blueprints — REV A now lives on the meta line.
+		expect(stamp.querySelector('.bp-stamp-title')?.textContent?.trim()).toBe(
+			'A DATA DASHBOARD',
+		);
+		expect(stamp.textContent).toContain('REV A · 4 parts · 4 layers');
+	});
+
+	it('taste round 2 fit audit: long titles on narrow layouts clamp via textLength', () => {
+		// One box per row → frame inner width 160 + 48 − 16 = 192; the
+		// 21-char title estimates 193.2px → the clamp engages at 192.
+		const narrow: ArchetypeTechLink[] = [
+			{ id: 'python', layer: 'logic', sort: 1 },
+			{ id: 'postgresql', layer: 'data', sort: 2 },
+			{ id: 'github-actions', layer: 'infra', sort: 3 },
+		];
+		render(BlueprintCanvas, {
+			props: { links: narrow, title: 'An automated workflow', animate: false },
+		});
+		const title = screen
+			.getByTestId('blueprint-stamp')
+			.querySelector('.bp-stamp-title')!;
+		expect(title.getAttribute('textLength')).toBe('192');
+		expect(title.getAttribute('lengthAdjust')).toBe('spacingAndGlyphs');
+	});
+
+	it('taste round 2 fit audit: short titles render unclamped (no textLength)', () => {
+		render(BlueprintCanvas, {
+			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
+		});
+		const title = screen
+			.getByTestId('blueprint-stamp')
+			.querySelector('.bp-stamp-title')!;
+		expect(title.getAttribute('textLength')).toBeNull();
 	});
 
 	it('compose entry: matched boxes get bp-matched, missing get bp-ghost + one annotation', () => {
@@ -173,8 +206,8 @@ describe('BlueprintCanvas go2/w5 layered learning', () => {
 			props: { links: DASHBOARD_LINKS, title: 'A data dashboard', animate: false },
 		});
 		const stamp = screen.getByTestId('blueprint-stamp');
-		expect(stamp.textContent).toContain('A DATA DASHBOARD — REV A');
-		expect(stamp.textContent).toContain('4 parts · 4 layers');
+		expect(stamp.textContent).toContain('A DATA DASHBOARD');
+		expect(stamp.textContent).toContain('REV A · 4 parts · 4 layers');
 		expect(stamp.querySelector('.bp-stamp-frame')).toBeTruthy();
 		expect(screen.getByTestId('blueprint-canvas').getAttribute('aria-label')).toBe(
 			'Blueprint: A data dashboard — 4 parts in 4 layers',

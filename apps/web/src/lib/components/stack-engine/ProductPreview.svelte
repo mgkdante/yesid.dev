@@ -219,6 +219,15 @@
 		line-height: 1;
 	}
 
+	/* go2/w5 taste round 2 (fit audit): shallow slots (infra/data bars ≈ 18px
+	   rendered at 375px viewports) can't hold role + name — the name is the
+	   payload, the role hint yields below 480px instead of clipping it. */
+	@media (max-width: 479px) {
+		.slot-role {
+			display: none;
+		}
+	}
+
 	.slot-name {
 		font-family: var(--font-mono);
 		font-size: 10px;
