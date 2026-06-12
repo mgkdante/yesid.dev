@@ -1,5 +1,17 @@
 <!--
-  ShapeBlueprint (go2/w5 round 3) — the build shape IS a blueprint.
+  ShapeBlueprint (go2/w5 round 3, finale 4b) — the build shape IS a blueprint.
+
+  Finale (4b) — the READABILITY FLOOR: the drawing renders at 1:1, ALWAYS.
+  Big pick sets used to scale the whole svg down (width:100% against a fixed
+  container); now layoutBlueprint WRAPS crowded layers into multiple lines
+  (the drawing grows vertically) and the svg keeps its natural pixel width
+  inside a pan wrapper — at extreme widths the band pans horizontally instead
+  of shrinking a single box. The old 56svh letterbox is gone for the same
+  reason: tall drawings grow, the page scrolls, boxes stay readable.
+
+  Finale (4b) — TOTAL CONNECTIVITY: sibling boxes in a line are tied by rails
+  (kind 'rail' from blueprint-layout), so every box — ghosts included — joins
+  one connected drawing.
 
   Operator verdict on round 2: the build-shape card felt "still on the drawing
   board" next to the real blueprint view. Round 3 makes the always-teaching
@@ -80,15 +92,14 @@
 	const nameById = $derived(new Map(picked.map((p) => [p.id, p.name])));
 	const ghostBoxes = $derived(layout.boxes.filter((b) => ghostIds.has(b.id)));
 
-	/** Boxes grouped per row (by y) — drives the wide variant's row labels. */
-	const rows = $derived.by(() => {
-		const byY = new Map<number, typeof layout.boxes>();
+	/** One label per LAYER BAND (finale: a wrapped layer is several lines but
+	 *  one band) — anchored at the band's first (topmost) box. */
+	const layerLabels = $derived.by(() => {
+		const firstByLayer = new Map<StackLayer, (typeof layout.boxes)[number]>();
 		for (const box of layout.boxes) {
-			const row = byY.get(box.y) ?? [];
-			row.push(box);
-			byY.set(box.y, row);
+			if (!firstByLayer.has(box.layer)) firstByLayer.set(box.layer, box);
 		}
-		return [...byY.entries()].sort(([a], [b]) => a - b).map(([, row]) => row);
+		return [...firstByLayer.values()];
 	});
 
 	// Same drawing geometry as BlueprintCanvas — the mini IS a blueprint.
@@ -100,7 +111,9 @@
 	const viewBox = $derived(
 		`${-(PAD + gutter)} ${-PAD} ${layout.width + PAD * 2 + gutter} ${layout.height + STAMP_H + PAD * 2}`,
 	);
-	/** Render scale ≤ 1 (GO-w2t5 sizing rule): natural width = real pixels. */
+	/** Finale (4b) readability floor: render scale = 1, exactly. The svg keeps
+	 *  its natural pixel width; the pan wrapper scrolls when the container is
+	 *  narrower. (Round 1 capped scale at ≤1; the floor pins it at 1.) */
 	const naturalWidth = $derived(layout.width + PAD * 2 + gutter);
 
 	const complete = $derived(missing.length === 0);
@@ -112,11 +125,14 @@
 	);
 </script>
 
+<!-- Finale (4b): contained horizontal pan — when even the wrapped drawing is
+     wider than the card column, the BAND scrolls; boxes never shrink. -->
+<div class="sbp-pan" data-testid={`${testid}-pan`}>
 <svg
 	class="shape-blueprint"
 	data-testid={testid}
 	{viewBox}
-	style:max-width={`${naturalWidth}px`}
+	style:width={`${naturalWidth}px`}
 	role="img"
 	aria-label={ariaLabel}
 >
@@ -144,27 +160,29 @@
 	</g>
 
 	{#if !stacked}
-		<!-- Layer row labels in the left gutter — with ghosts filling every
-		     empty layer, all four names always print (the full picture). -->
+		<!-- Layer band labels in the left gutter — one per LAYER (wrapped lines
+		     share their band's label); with ghosts filling every empty layer,
+		     all four names always print (the full picture). -->
 		<g class="sbp-row-labels" aria-hidden="true">
-			{#each rows as row, rowIndex (rowIndex)}
+			{#each layerLabels as box (box.layer)}
 				<text
-					class={`sbp-row-label sbp-ink-${row[0].layer}`}
+					class={`sbp-row-label sbp-ink-${box.layer}`}
 					x={-PAD - 6}
-					y={row[0].y + row[0].h / 2}
+					y={box.y + box.h / 2}
 					text-anchor="end"
 					dominant-baseline="central"
 				>
-					{row[0].layer}
+					{box.layer}
 				</text>
 			{/each}
 		</g>
 	{/if}
 
 	<g class="sbp-connectors">
-		{#each layout.connectors as connector (connector.from + '→' + connector.to)}
+		{#each layout.connectors as connector (connector.kind + connector.from + '→' + connector.to)}
 			<path
 				class="sbp-connector"
+				class:sbp-connector-rail={connector.kind === 'rail'}
 				class:sbp-connector-ghost={ghostIds.has(connector.from) || ghostIds.has(connector.to)}
 				d={connector.path}
 				data-from={connector.from}
@@ -257,15 +275,23 @@
 		</text>
 	</g>
 </svg>
+</div>
 
 <style>
-	.shape-blueprint {
+	/* Finale (4b): the pan rail. Wider-than-column drawings scroll INSIDE the
+	   band (contained pan); narrower ones center. No vertical cap — the
+	   drawing grows down and stays readable at any pick count. */
+	.sbp-pan {
 		width: 100%;
-		/* max-width set inline = layout natural width (render scale ≤ 1). */
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+	}
+
+	.shape-blueprint {
+		/* width set inline = layout natural width (render scale = 1, the
+		   readability floor — boxes never shrink below 1:1). */
+		max-width: none;
 		height: auto;
-		/* Same letterbox safety net as the archetype canvas: tall stacked
-		   columns shrink to stay whole-drawing-at-a-glance. */
-		max-height: min(56svh, 440px);
 		display: block;
 		margin: 0 auto;
 		overflow: visible;
@@ -298,6 +324,12 @@
 	/* Ghosts connect with dashed lines — the wire is sketched, not run yet. */
 	.sbp-connector-ghost {
 		stroke-dasharray: 4 4;
+	}
+
+	/* Finale (4b): sibling rails — the same-line tie that keeps every box on
+	   one circuit. Quieter than the flow wiring (1px), same ink. */
+	.sbp-connector-rail {
+		stroke-width: 1;
 	}
 
 	.sbp-box-rect {

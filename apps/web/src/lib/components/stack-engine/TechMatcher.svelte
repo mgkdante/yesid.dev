@@ -35,8 +35,16 @@
 	import { StatusDot } from '$lib/components/brand';
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { encodeBlueprint } from '$lib/utils/blueprint-param';
+	import { localizeHref } from '$lib/utils/locale-routing';
 	import { LAYER_TEACHING } from './layer-teaching';
-	import { composeStackShape, layerArticle, readShape } from './stack-shape';
+	import {
+		AVAILABILITY_LINE,
+		composePhrase,
+		composeStackShape,
+		JOURNEY_STEPS,
+		layerArticle,
+		readShape,
+	} from './stack-shape';
 	import ShapeBlueprint from './ShapeBlueprint.svelte';
 	import ProductPreview from './ProductPreview.svelte';
 	import type { EngineState } from './engine-state.svelte';
@@ -120,6 +128,16 @@
 			.map(({ id, name, layer }) => ({ id, name, layer })),
 	);
 
+	// ── Finale (4c): THE PHRASE BUILDER — the card now LEADS with a
+	// market-friendly product sentence composed by the layer grammar
+	// (stack-shape.ts); the category line demotes to the kicker above it and
+	// the 15-subset reading stays as the supporting teaching line below.
+	const shapePhrase = $derived(
+		resolveLocale(composePhrase(shapePicked, shape.present), locale),
+	);
+
+	const availabilityLine = $derived(resolveLocale(AVAILABILITY_LINE, locale));
+
 	// ── Round 4: 'see your build as a product' — the composed shape gets the
 	// same drawing ⇄ product flip as the archetypes. The drawing flip-tags
 	// only the VISIBLE variant (wide/stacked are CSS-swapped at 768px) so
@@ -127,6 +145,10 @@
 	let shapeView = $state<'drawing' | 'product'>('drawing');
 	let shapeBoardEl: HTMLElement | null = $state(null);
 	const wideDrawing = new MediaQuery('(min-width: 768px)');
+
+	// Finale (4c): the guided journey — which stepper station is lit. The
+	// fourth (take it with you) is the standing invitation, never 'current'.
+	const journeyStep = $derived(!hasPicks ? 0 : shapeView === 'product' ? 2 : 1);
 
 	// The view state outlives the card's {#if hasPicks} block — 'start over'
 	// then re-picking must reopen on the DRAWING (the teaching surface), not
@@ -184,6 +206,23 @@
 </script>
 
 <div class="tech-matcher" data-testid="tech-matcher">
+	<!-- Finale (4c): the guided journey — a light stepper in the teaching
+	     voice. The lit station follows the visitor (pick → read → product);
+	     the last is the standing invitation. Numbers + arrows are decorative;
+	     the labels carry the meaning. -->
+	<ol class="journey-steps" data-testid="engine-stepper" aria-label="How this works">
+		{#each JOURNEY_STEPS as step, i (step.en)}
+			<li
+				class="journey-step"
+				class:journey-step-now={i === journeyStep}
+				aria-current={i === journeyStep ? 'step' : undefined}
+			>
+				<span class="journey-step-num" aria-hidden="true">{i + 1}</span>
+				{resolveLocale(step, locale)}
+			</li>
+		{/each}
+	</ol>
+
 	<!-- Fixed teach slot — min-height reserved so it never reflows the chips.
 	     Plain visible text, deliberately NOT aria-live (hover spam). -->
 	<p class="tech-teach-line" data-testid="tech-teach-line">{teachLine}</p>
@@ -267,7 +306,13 @@
 			     micro-pop (fun pass, <400ms → SAFE-ALWAYS). -->
 			<div class="build-shape" data-testid="build-shape">
 				<div class="shape-head">
-					<p class="shape-heading">{shapeHeading}</p>
+					<!-- Finale (4c): the PHRASE leads — a market-friendly product
+					     sentence from the layer grammar; the category line
+					     demotes to the kicker above it. -->
+					<div class="shape-head-text">
+						<p class="shape-kicker">{shapeHeading}</p>
+						<p class="shape-phrase" data-testid="shape-phrase">{shapePhrase}</p>
+					</div>
 					{#if shapePicked.length > 0}
 						<!-- Round 4: the composed shape gets the archetype payoff
 						     too — drawing ⇄ generic product, Flip-morphed. -->
@@ -328,8 +373,17 @@
 							{/each}
 						</ul>
 						<p class="shape-next">{shapeNext}</p>
-						<a class="shape-link" href={shapeHref}>Take this combo with you →</a>
-						<p class="shape-whisper">if you ever want help building it, I'm around.</p>
+						<a class="shape-link" data-testid="shape-link" href={shapeHref}>Take this combo with you →</a>
+						<!-- Finale (4c): the operator's open door, woven next to the
+						     CTA — warm, small, homey; the whole line is the link. -->
+						<p class="shape-availability">
+							<StatusDot color="green" pulse />
+							<a
+								class="shape-availability-link"
+								data-testid="shape-availability"
+								href={localizeHref('/contact', locale)}
+							>{availabilityLine}</a>
+						</p>
 					</div>
 				</div>
 			</div>
@@ -405,6 +459,48 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+	}
+
+	/* Finale (4c): the journey stepper — quiet mono row, the lit station in
+	   brand ink. An affordance, not chrome: no borders, no widget. */
+	.journey-steps {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.25rem 0.5rem;
+		margin: 0;
+		padding: 0;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--muted-foreground);
+	}
+
+	.journey-step {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+	}
+
+	.journey-step:not(:last-child)::after {
+		content: '→';
+		margin-left: 0.5rem;
+		color: var(--border);
+	}
+
+	.journey-step-num {
+		display: inline-grid;
+		place-items: center;
+		width: 15px;
+		height: 15px;
+		border: 1px solid currentColor;
+		border-radius: 50%;
+		font-size: 9px;
+		line-height: 1;
+	}
+
+	.journey-step-now {
+		color: var(--primary);
 	}
 
 	/* go2/w5 §3: fixed teach slot — reserved height (1 line wide / 2 lines
@@ -702,12 +798,34 @@
 		flex-wrap: wrap;
 	}
 
-	.shape-heading {
+	.shape-head-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		min-width: 0;
+	}
+
+	/* Finale (4c): the category line, demoted to kicker — still teaching the
+	   layer names, no longer the headline. */
+	.shape-kicker {
 		font-family: var(--font-mono);
-		font-size: 13px;
+		font-size: 11px;
+		letter-spacing: 0.5px;
+		color: var(--muted-foreground);
+		margin: 0;
+	}
+
+	/* The product sentence — the card now leads with what this build IS in
+	   market words; heading voice, sized to carry the card. */
+	.shape-phrase {
+		font-family: var(--font-heading);
+		font-size: clamp(1.05rem, 1.6vw, 1.35rem);
 		font-weight: 700;
+		line-height: 1.3;
+		letter-spacing: -0.01em;
 		color: var(--foreground);
 		margin: 0;
+		max-width: 56ch;
 	}
 
 	/* Round 4: same pill language as the engine's view toggle — one hover
@@ -799,11 +917,24 @@
 		width: fit-content;
 	}
 
-	.shape-whisper {
+	/* Finale (4c): the open door — a green dot and one warm linked line. */
+	.shape-availability {
+		display: flex;
+		align-items: center;
+		gap: 7px;
 		font-family: var(--font-mono);
 		font-size: 11px;
-		color: var(--engine-teach-ink);
 		margin: 0;
+	}
+
+	.shape-availability-link {
+		color: var(--engine-teach-ink);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	.shape-availability-link:hover {
+		color: var(--primary);
 	}
 
 	/* The bonus rail's nameplate — bridges shape card and known builds. */

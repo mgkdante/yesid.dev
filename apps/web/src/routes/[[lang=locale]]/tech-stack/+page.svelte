@@ -216,14 +216,19 @@
 
 	/* ═══ HERO ZONE ═══ */
 
+	/* go2/w5 finale (4d): the CONTROL ROOM goes full-bleed — edge to edge,
+	   superseding the old constrained-hero rule for THIS page. The hero and
+	   the engine band below read as ONE continuous wide instrument panel:
+	   same edge-to-edge width, same --space-page-x gutters, same faint brand
+	   tint; the hazard strip is the panel's seam, not a fence. Type scales up
+	   confidently — the title commands the viewport. */
 	.hero {
-		max-width: var(--container-wide);
-		margin: 0 auto;
-		padding: 2rem var(--space-page-x) 0;
+		padding: 3rem var(--space-page-x) 0;
 		display: flex;
 		flex-direction: column;
 		min-height: 50dvh;
 		justify-content: center;
+		background: color-mix(in srgb, var(--primary) 3%, transparent);
 	}
 
 	.hero-overline {
@@ -243,41 +248,43 @@
 
 	.hero-title {
 		font-family: var(--font-heading);
-		font-size: clamp(2.5rem, 6vw, 5rem);
+		font-size: clamp(2.75rem, 8vw, 7.5rem);
 		font-weight: 800;
-		line-height: 1.05;
+		line-height: 1.02;
 		letter-spacing: -0.03em;
 		color: var(--foreground);
-		margin-bottom: 1.5rem;
+		margin-bottom: 2rem;
 	}
 
 	.hero-title-accent { color: var(--primary); }
 
-	/* go2/w5 §1: the teaching voice is the human voice — site sans, not mono. */
+	/* go2/w5 §1: the teaching voice is the human voice — site sans, not mono.
+	   Finale (4d): a comfortable BIG reading size on the wide panel. */
 	.stack-explainer {
-		font-size: 15px;
-		line-height: 1.65;
+		font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
+		line-height: 1.6;
 		color: var(--secondary-foreground);
-		max-width: 56ch;
-		margin: 0 0 2rem;
+		max-width: 62ch;
+		margin: 0 0 2.5rem;
 	}
 
 	.explainer-kicker {
 		display: block;
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: 12px;
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		color: var(--accent-text);
-		margin-bottom: 0.35rem;
+		margin-bottom: 0.5rem;
 	}
 
+	/* Finale (4d): the terminal sits proud — bigger type, wider line. */
 	.hero-terminal {
 		font-family: var(--font-mono);
-		font-size: clamp(12px, 1.4vw, 14px);
+		font-size: clamp(13px, 1.3vw, 17px);
 		line-height: 1.8;
 		margin-bottom: 2.5rem;
-		max-width: 600px;
+		max-width: 760px;
 	}
 
 	.hero-terminal-line {
@@ -323,9 +330,10 @@
 		gap: 4px;
 	}
 
+	/* Finale (4d): the technologies count reads like a gauge on the panel. */
 	.hero-stat-value {
 		font-family: var(--font-mono);
-		font-size: clamp(22px, 3vw, 28px);
+		font-size: clamp(28px, 3.2vw, 44px);
 		font-weight: 700;
 		color: var(--foreground);
 		line-height: 1;
@@ -335,7 +343,7 @@
 
 	.hero-stat-label {
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: 12px;
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		color: var(--muted-foreground);
@@ -353,10 +361,11 @@
 	/* GO-w2t5 addendum: full-bleed work-zone band. No max-width — the band
 	   runs edge-to-edge between its hazard strips; the faint brand tint marks
 	   the interactive zone (cute-pass anchor; alpha-only over the global
-	   circuit grid). The width math only bites where the viewport exceeds
-	   --container-wide, so mobile keeps its current width behavior. */
+	   circuit grid). Finale (4d): margin-top is GONE — the hero carries the
+	   same tint and the top hazard strip becomes the seam of one continuous
+	   instrument panel. */
 	.engine-band {
-		margin-block: 2rem;
+		margin: 0 0 2rem;
 		background: color-mix(in srgb, var(--primary) 3%, transparent);
 	}
 
@@ -436,13 +445,15 @@
 	/* ═══ Responsive ═══ */
 
 	@media (max-width: 767px) {
+		/* Finale (4d): mobile stays composed — big but never broken. The clamp
+		   minima above already fit a 360px viewport; tighten the frame only. */
 		.hero {
-			padding: 1.5rem var(--space-page-x) 0;
+			padding: 2rem var(--space-page-x) 0;
 			min-height: 40dvh;
 		}
 
-		.stack-explainer {
-			font-size: 14px;
+		.hero-terminal {
+			margin-bottom: 2rem;
 		}
 
 		.hero-stats {

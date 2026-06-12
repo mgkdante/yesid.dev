@@ -76,10 +76,13 @@ test('compose path: every combo TEACHES — the operator example (node.js + gith
 
 	const shape = page.locator('[data-testid="build-shape"]');
 	await expect(shape).toBeVisible();
-	// Names what the picks do TOGETHER…
+	// Finale (4c): the card LEADS with the phrase builder's market sentence…
+	await expect(page.locator('[data-testid="shape-phrase"]')).toContainText(/automation/i);
+	// …the category line survives as the kicker…
 	await expect(shape).toContainText('Your build: logic + infra covered');
+	// …and the 15-subset reading stays as the supporting teaching line,
 	await expect(shape).toContainText('a bot, a scheduled job, an automation');
-	// …and what a complete build still needs.
+	// naming what a complete build still needs.
 	await expect(shape).toContainText(
 		'add an interface layer + a data layer and this becomes a working product',
 	);
@@ -102,11 +105,15 @@ test('compose path: every combo TEACHES — the operator example (node.js + gith
 	);
 	// Ghost wiring is dashed; the drawing is drafted, not yet run.
 	await expect(drawing.locator('.sbp-connector-ghost')).toHaveCount(3);
-	// Warm exit: exactly one link, carrying both picks.
-	await expect(shape.locator('a')).toHaveAttribute(
+	// Warm exit: the take-it-with-you link carries both picks…
+	await expect(shape.locator('[data-testid="shape-link"]')).toHaveAttribute(
 		'href',
 		'/contact?bp=custom~node-js.github-actions',
 	);
+	// …and the operator's door is open right beside it (finale 4c).
+	const door = shape.locator('[data-testid="shape-availability"]');
+	await expect(door).toContainText("I'm online");
+	await expect(door).toHaveAttribute('href', '/contact');
 	// The bonus rail says plainly why no known build lit up.
 	await expect(page.locator('[data-testid="known-builds-label"]')).toContainText(
 		'no drawn recipe uses all of these yet',
@@ -208,7 +215,7 @@ test('round 4 compose: undo + start over narrate through the counter; the build 
 	await expect(shape).not.toBeVisible();
 });
 
-test('engine band is full-bleed with hazard frame; hero + CTA stay constrained (GO-w2t5 addendum)', async ({
+test('finale 4d: hero + engine band are ONE full-bleed instrument panel; CTA stays constrained', async ({
 	page,
 	isMobile,
 }) => {
@@ -223,6 +230,13 @@ test('engine band is full-bleed with hazard frame; hero + CTA stay constrained (
 	expect(Math.round(band!.width)).toBe(pageWidth);
 	expect(Math.round(band!.x)).toBe(0);
 
+	// Finale (4d): the CONTROL ROOM hero runs the same full bleed — the old
+	// constrained-hero rule is superseded for THIS page.
+	const hero = await page.locator('[data-testid="tech-stack-hero"]').boundingBox();
+	expect(hero).not.toBeNull();
+	expect(Math.round(hero!.width)).toBe(pageWidth);
+	expect(Math.round(hero!.x)).toBe(0);
+
 	// The hazard frame (shared /projects divider) spans the full bleed too.
 	for (const tid of ['engine-band-hazard-top', 'engine-band-hazard-bottom']) {
 		const strip = await page.locator(`[data-testid="${tid}"]`).boundingBox();
@@ -231,16 +245,13 @@ test('engine band is full-bleed with hazard frame; hero + CTA stay constrained (
 		expect(Math.round(strip!.x)).toBe(0);
 	}
 
-	// Desktop only: hero above + CTA below keep their constrained width
-	// EXACTLY ("perfect that way") — container-wide cap < page width. On
-	// mobile every section is naturally edge-to-edge, so "constrained" is
-	// not observable (current width behavior, unchanged).
+	// Desktop only: the CTA below keeps its constrained width EXACTLY
+	// ("perfect that way") — container-wide cap < page width. On mobile every
+	// section is naturally edge-to-edge, so "constrained" is not observable.
 	if (!isMobile) {
-		const hero = await page.locator('[data-testid="tech-stack-hero"]').boundingBox();
 		const cta = await page.locator('[data-testid="tech-stack-cta"]').boundingBox();
-		expect(hero!.width).toBeLessThan(pageWidth);
 		expect(cta!.width).toBeLessThan(pageWidth);
-		expect(Math.round(band!.width)).toBeGreaterThan(Math.round(hero!.width));
+		expect(Math.round(band!.width)).toBeGreaterThan(Math.round(cta!.width));
 	}
 });
 
@@ -261,4 +272,47 @@ test('blueprint fits the viewport — whole drawing at a glance (GO-w2t5 operato
 	// Runs on desktop-chrome AND all three mobile projects.
 	expect(box!.height).toBeLessThanOrEqual(viewport!.height * 0.85);
 	expect(box!.width).toBeLessThanOrEqual(viewport!.width);
+});
+
+// go2/w5 finale (4b): the READABILITY FLOOR at a HIGH pick count — boxes hold
+// their full size at 10 picks (the layout wraps/pans instead of shrinking),
+// on desktop AND every mobile project. (4c rides along: the phrase heading
+// and the journey stepper are live at the same time.)
+test('finale: 10 picks never shrink a box below the readable floor; the phrase still leads', async ({
+	page,
+}) => {
+	await page.goto('/tech-stack');
+	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
+
+	await page.locator('[data-testid="mode-toggle-compose"]').click();
+	// The guided journey starts at 'pick parts'.
+	const stepper = page.locator('[data-testid="engine-stepper"]');
+	await expect(stepper.locator('[aria-current="step"]')).toContainText('pick parts');
+
+	// 10 picks, interface-heavy — the historical shrink case.
+	const picks = [
+		'sveltekit', 'svelte-5', 'react', 'threejs-threlte', 'tailwind', 'gsap',
+		'node-js', 'python', 'postgresql', 'docker',
+	];
+	for (const id of picks) {
+		await page.locator(`[data-testid="tech-chip-${id}"]`).click();
+	}
+	await expect(page.locator('[data-testid="build-counter"]')).toContainText(/10 picks/);
+	await expect(stepper.locator('[aria-current="step"]')).toContainText('read your build');
+
+	// Exactly one drawing variant visible (wide ≥768px / stacked below)…
+	const drawing = page.locator(
+		'[data-testid="shape-blueprint"]:visible, [data-testid="shape-blueprint-stacked"]:visible',
+	);
+	await expect(drawing).toHaveCount(1);
+	await expect(drawing.locator('.sbp-box-solid')).toHaveCount(10);
+	// …and a rendered box keeps its FULL drawn size (BOX_W 160 × BOX_H 48 at
+	// render scale 1 — the floor; small tolerance for sub-pixel rounding).
+	const rect = await drawing.locator('.sbp-box-solid .sbp-box-rect').first().boundingBox();
+	expect(rect).not.toBeNull();
+	expect(rect!.width).toBeGreaterThanOrEqual(150);
+	expect(rect!.height).toBeGreaterThanOrEqual(45);
+
+	// The phrase builder composes one market sentence over all 10 picks.
+	await expect(page.locator('[data-testid="shape-phrase"]')).toContainText(/^A .+\.$/);
 });

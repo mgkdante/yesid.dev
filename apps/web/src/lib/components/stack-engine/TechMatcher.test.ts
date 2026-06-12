@@ -281,19 +281,22 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		expect(card.textContent).toContain("nothing missing — this one's ready to build.");
 	});
 
-	it('warm CTA + whisper + prefilled contact link (exactly one <a>, href formula pinned)', async () => {
+	it('warm CTA + availability door + prefilled contact link (exactly TWO <a>s, hrefs pinned)', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
 
 		const card = screen.getByTestId('build-shape');
 		expect(card.textContent).toContain('Take this combo with you →');
-		expect(card.textContent).toContain("if you ever want help building it, I'm around.");
+		// Finale (4c): the whisper grew a door — the warm availability line IS
+		// a link to /contact (code-owned LocalizedString, en fallback).
+		expect(card.textContent).toContain("Questions? I'm online — ask me anything.");
 		const links = card.querySelectorAll('a');
-		expect(links).toHaveLength(1);
-		expect(links[0].getAttribute('href')).toBe(
+		expect(links).toHaveLength(2);
+		expect(screen.getByTestId('shape-link').getAttribute('href')).toBe(
 			'/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId] }),
 		);
+		expect(screen.getByTestId('shape-availability').getAttribute('href')).toBe('/contact');
 	});
 
 	it('shape link carries every picked tech', async () => {
@@ -301,8 +304,8 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
 		await fireEvent.click(screen.getByTestId(`tech-chip-${secondUnmatchedId}`));
-		const link = screen.getByTestId('build-shape').querySelector('a');
-		expect(link?.getAttribute('href')).toBe('/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId, secondUnmatchedId] }));
+		const link = screen.getByTestId('shape-link');
+		expect(link.getAttribute('href')).toBe('/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId, secondUnmatchedId] }));
 	});
 
 	it('zero-match is just the card with an all-ruled-out rail under it (no dead end)', async () => {
@@ -384,15 +387,16 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		expect(wide.textContent).toContain('REV A · 4 parts · 4/4 layers');
 	});
 
-	it('round 3: the drawing adds no anchors — the card still has exactly ONE <a> (pinned href)', async () => {
+	it('round 3 (finale-adjusted): the drawing adds no anchors — the card has exactly the TWO pinned links', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
 		const links = screen.getByTestId('build-shape').querySelectorAll('a');
-		expect(links).toHaveLength(1);
-		expect(links[0].getAttribute('href')).toBe(
+		expect(links).toHaveLength(2);
+		expect(screen.getByTestId('shape-link').getAttribute('href')).toBe(
 			'/contact?bp=' + encodeBlueprint({ archetype: null, techs: ['postgresql'] }),
 		);
+		expect(screen.getByTestId('shape-availability').getAttribute('href')).toBe('/contact');
 	});
 
 	// ── Round 4: pick tools + the composed product preview. ────────────────
@@ -440,8 +444,8 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		// The drawings yield while the product is up…
 		expect(card.querySelector('[data-testid="shape-blueprint"]')).toBeNull();
 		expect(card.querySelector('[data-testid="shape-blueprint-stacked"]')).toBeNull();
-		// …the notes stay, and the card still carries exactly ONE link.
-		expect(card.querySelectorAll('a')).toHaveLength(1);
+		// …the notes stay, and the card still carries exactly its two links.
+		expect(card.querySelectorAll('a')).toHaveLength(2);
 		expect(toggle().textContent).toContain('back to the drawing');
 
 		await fireEvent.click(toggle());
@@ -489,5 +493,59 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		// Unpick everything → the card retires with the picks.
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
 		expect(screen.queryByTestId('build-shape')).toBeNull();
+	});
+});
+
+describe('TechMatcher finale 4c — the phrase leads, the journey guides', () => {
+	it('the card LEADS with the product sentence; the category line demotes to the kicker', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId('tech-chip-node-js'));
+		await fireEvent.click(screen.getByTestId('tech-chip-github-actions'));
+
+		const phrase = screen.getByTestId('shape-phrase');
+		// The operator pin: logic + infra reads as an automation, market voice.
+		expect(phrase.textContent).toMatch(/automation/i);
+		expect(phrase.textContent).toContain('ships itself reliably');
+		// The old heading survives as the kicker right above the phrase…
+		const card = screen.getByTestId('build-shape');
+		expect(card.querySelector('.shape-kicker')?.textContent).toBe(
+			'Your build: logic + infra covered',
+		);
+		// …and the 15-subset reading stays as the supporting teaching line.
+		expect(card.textContent).toContain(
+			"that's code with ground to run on — a bot, a scheduled job, an automation.",
+		);
+	});
+
+	it('the phrase re-composes as picks change (data layer joins → records language)', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine } });
+		await fireEvent.click(screen.getByTestId('tech-chip-node-js'));
+		expect(screen.getByTestId('shape-phrase').textContent).not.toContain('keeps clean records');
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		expect(screen.getByTestId('shape-phrase').textContent).toContain('keeps clean records');
+	});
+
+	it('the stepper lights pick parts → read your build → see it as a product', async () => {
+		const engine = new EngineState();
+		render(TechMatcher, { props: { engine, animate: false } });
+		const stepper = screen.getByTestId('engine-stepper');
+		const current = () => stepper.querySelector('[aria-current="step"]')?.textContent ?? '';
+		expect(stepper.querySelectorAll('li')).toHaveLength(4);
+		expect(stepper.textContent).toContain('take it with you');
+		expect(current()).toContain('pick parts');
+
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		expect(current()).toContain('read your build');
+
+		await fireEvent.click(screen.getByTestId('shape-view-toggle'));
+		expect(current()).toContain('see it as a product');
+
+		// Back to the drawing → back to reading; clearing → back to picking.
+		await fireEvent.click(screen.getByTestId('shape-view-toggle'));
+		expect(current()).toContain('read your build');
+		await fireEvent.click(screen.getByTestId('pick-clear'));
+		expect(current()).toContain('pick parts');
 	});
 });
