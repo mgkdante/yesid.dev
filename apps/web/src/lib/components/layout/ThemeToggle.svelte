@@ -7,11 +7,15 @@
 <script lang="ts">
 	import { themeStore } from '$lib/stores/theme.svelte';
 	import { sharedChromeContent } from '$lib/content';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import type { Locale } from '$lib/types';
 
-	let { class: className = '' }: { class?: string } = $props();
+	// PERSISTENT CHROME (rides Nav/MenuOverlay — never remounts): locale is a
+	// prop with $derived strings, NOT getLocale() (init-frozen). slice-28.6.
+	let { class: className = '', locale = DEFAULT_LOCALE }: { class?: string; locale?: Locale } =
+		$props();
 
-	const label = resolveLocale(sharedChromeContent.themeToggleAria, 'en');
+	const label = $derived(resolveLocale(sharedChromeContent.themeToggleAria, locale));
 	const isDark = $derived(themeStore.isDark);
 </script>
 

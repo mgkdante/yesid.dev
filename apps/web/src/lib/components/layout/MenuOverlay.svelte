@@ -173,7 +173,7 @@
 						</nav>
 					{/if}
 					<span class="menu-footer-line"></span>
-					<ThemeToggle class="menu-theme-toggle" />
+					<ThemeToggle class="menu-theme-toggle" {locale} />
 				</div>
 					</div>
 				{/snippet}
