@@ -267,31 +267,27 @@ pre, code, table {
    only, via --grid-glow) a sodium-lamp radial spill from the top. All colors
    come from the grid-* tokens so both modes tune independently.
 
-   Taste round 2 SOLIDITY fix: the ::before used to sit at z-index: 0 — a
-   positioned box paints ABOVE in-flow content (CSS2.1 App. E layer 6 vs 3/5),
-   so the schematic visibly crossed terminal/card surfaces and text (operator:
-   contact terminals "lacking solidity"). isolation: isolate makes the wrapper
-   a stacking context and z-index: -1 drops the grid to the negative layer:
-   above the wrapper's own background, below ALL content. Solid surfaces now
-   genuinely occlude the grid; transparent sections still show it through. */
+   Taste round 2 SOLIDITY fix, go2 integration revision: the grid is the
+   wrapper's OWN background-image — an element's background paints below all
+   of its content by definition, so solid surfaces genuinely occlude the grid
+   and transparent sections still show it through (the round-2 goal). The
+   round-2 mechanism (isolation: isolate + a z-index:-1 ::before) achieved
+   the same paint order but made the wrapper a stacking context, which
+   trapped the fixed Nav (z 70) underneath the body-portaled MenuOverlay
+   (z 60): the navbar vanished whenever the menu sheet opened. No isolation
+   here, ever — Nav must compete with the overlay at the root context.
+   background-image (not the background shorthand) so the Tailwind
+   bg-[var(--background)] color on the layout wrapper keeps painting
+   underneath the gradient stack. */
 .circuit-grid {
   position: relative;
-  isolation: isolate;
-}
-.circuit-grid::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
+  background-image:
     radial-gradient(120% 70% at 50% 0%, var(--grid-glow), transparent 60%),
     repeating-linear-gradient(90deg, var(--grid-block-marker) 0px, transparent 1px, transparent 400px),
     repeating-linear-gradient(90deg, var(--grid-line-major) 0px, transparent 1px, transparent 80px),
     repeating-linear-gradient(0deg, var(--grid-line-major) 0px, transparent 1px, transparent 80px),
     repeating-linear-gradient(90deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px),
     repeating-linear-gradient(0deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px);
-
-  pointer-events: none;
-  z-index: -1;
 }
 
 /* ═══════════════════════════════════════════════════════════════
