@@ -8,6 +8,9 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 
 	import { getLatestPosts } from '$lib/content';
 	import { siteMeta } from '$lib/content/site-meta';
@@ -25,29 +28,29 @@
 	import CloserTerminalBoard from './CloserTerminalBoard.svelte';
 
 	// Static content
-	const heading = resolveLocale(closerContent.heading, 'en');
-	const headingDot = resolveLocale(closerContent.headingDot, 'en');
-	const subheading = resolveLocale(closerContent.subheading, 'en');
-	const ctaLabel = resolveLocale(closerContent.cta.label, 'en');
+	const heading = resolveLocale(closerContent.heading, locale);
+	const headingDot = resolveLocale(closerContent.headingDot, locale);
+	const subheading = resolveLocale(closerContent.subheading, locale);
+	const ctaLabel = resolveLocale(closerContent.cta.label, locale);
 	const ctaHref = closerContent.cta.href;
-	const contactLabel = resolveLocale(closerContent.rows.contact.label, 'en');
-	const contactDesc = resolveLocale(closerContent.rows.contact.description, 'en');
-	const contactAction = resolveLocale(closerContent.rows.contact.action, 'en');
-	const connectLabel = resolveLocale(closerContent.rows.connect.label, 'en');
-	const connectDesc = resolveLocale(closerContent.rows.connect.description, 'en');
-	const connectAction = resolveLocale(closerContent.rows.connect.action, 'en');
-	const readLabel = resolveLocale(closerContent.rows.read.label, 'en');
-	const readAction = resolveLocale(closerContent.rows.read.action, 'en');
-	const aboutLabel = resolveLocale(closerContent.rows.about.label, 'en');
-	const aboutDesc = resolveLocale(closerContent.rows.about.description, 'en');
-	const aboutAction = resolveLocale(closerContent.rows.about.action, 'en');
+	const contactLabel = resolveLocale(closerContent.rows.contact.label, locale);
+	const contactDesc = resolveLocale(closerContent.rows.contact.description, locale);
+	const contactAction = resolveLocale(closerContent.rows.contact.action, locale);
+	const connectLabel = resolveLocale(closerContent.rows.connect.label, locale);
+	const connectDesc = resolveLocale(closerContent.rows.connect.description, locale);
+	const connectAction = resolveLocale(closerContent.rows.connect.action, locale);
+	const readLabel = resolveLocale(closerContent.rows.read.label, locale);
+	const readAction = resolveLocale(closerContent.rows.read.action, locale);
+	const aboutLabel = resolveLocale(closerContent.rows.about.label, locale);
+	const aboutDesc = resolveLocale(closerContent.rows.about.description, locale);
+	const aboutAction = resolveLocale(closerContent.rows.about.action, locale);
 
 	// Terminal chrome copy — added in Task 17b-7a.
-	const terminalTitleText = resolveLocale(closerContent.terminal.title, 'en');
-	const terminalCityLabel = resolveLocale(closerContent.terminal.city, 'en');
-	const terminalEncodingLabel = resolveLocale(closerContent.terminal.encoding, 'en');
-	const terminalDestinationsTemplate = resolveLocale(closerContent.terminal.destinationsLabel, 'en');
-	const terminalPromptLine = resolveLocale(closerContent.terminal.prompt, 'en');
+	const terminalTitleText = resolveLocale(closerContent.terminal.title, locale);
+	const terminalCityLabel = resolveLocale(closerContent.terminal.city, locale);
+	const terminalEncodingLabel = resolveLocale(closerContent.terminal.encoding, locale);
+	const terminalDestinationsTemplate = resolveLocale(closerContent.terminal.destinationsLabel, locale);
+	const terminalPromptLine = resolveLocale(closerContent.terminal.prompt, locale);
 
 	// Dynamic blog posts
 	const latestPosts = getLatestPosts(2, 'professional');
