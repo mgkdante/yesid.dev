@@ -73,4 +73,26 @@ describe('Engine shell', () => {
 		expect(screen.getByTestId('archetype-card-data-dashboard')).toBeTruthy();
 		expect(screen.queryByTestId('blueprint-canvas')).toBeNull();
 	});
+
+	// go2/w5 layered learning: the layer legend persists across goal/compose
+	// AND select/blueprint — never unmounted, one cell per STACK_LAYERS entry.
+	it('go2/w5: layer legend renders one teaching cell per layer and persists across views', async () => {
+		render(Engine, { props: { animate: false } });
+		const legend = screen.getByTestId('layer-legend');
+		for (const layer of ['interface', 'logic', 'data', 'infra']) {
+			expect(screen.getByTestId(`legend-${layer}`)).toBeTruthy();
+		}
+		expect(legend.textContent).toContain('the part people see and touch');
+		expect(legend.textContent).toContain('the thinking part — rules and decisions');
+		expect(legend.textContent).toContain('the remembering part — where records live');
+		expect(legend.textContent).toContain('the ground it runs on — servers and deploys');
+
+		// Still mounted inside a goal blueprint…
+		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
+		expect(screen.getByTestId('layer-legend')).toBeTruthy();
+
+		// …and across the mode switch into compose.
+		await fireEvent.click(screen.getByTestId('mode-toggle-compose'));
+		expect(screen.getByTestId('layer-legend')).toBeTruthy();
+	});
 });

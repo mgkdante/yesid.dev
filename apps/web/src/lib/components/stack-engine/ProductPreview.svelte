@@ -15,6 +15,7 @@
 
 	const locale = getLocale();
 	import { techStackItems } from '$lib/content/tech-stack';
+	import { LAYER_TEACHING } from './layer-teaching';
 	import { FRAME_SIZES, PREVIEW_CONFIGS } from './preview-configs';
 
 	let { archetype }: { archetype: StackArchetype; animate?: boolean } = $props();
@@ -63,10 +64,18 @@
 		captionTech = captionTech === techId ? null : techId;
 	}
 
+	// go2/w5 §3 goal-mode parity: the caption appends the layer teaching line
+	// (same const module as the chip teach line). Missing `enables` degrades
+	// gracefully to the layer line alone — never blank when a layer exists.
 	const captionText = $derived.by(() => {
 		if (!captionTech) return null;
-		const enables = techById.get(captionTech)?.enables;
-		return enables ? resolveLocale(enables, locale) : null;
+		const tech = techById.get(captionTech);
+		if (!tech) return null;
+		const enables = tech.enables ? resolveLocale(tech.enables, locale) : '';
+		const layerLine = tech.layer ? `${tech.layer}: ${LAYER_TEACHING[tech.layer]}` : '';
+		if (enables && layerLine) return `${enables} · ${layerLine}`;
+		if (layerLine) return `lives in ${layerLine}`;
+		return enables || null;
 	});
 
 	const pct = (v: number, total: number) => `${(v / total) * 100}%`;
@@ -114,7 +123,7 @@
 		{/if}
 	{:else}
 		<!-- Crafted previews only — an archetype without one says so (never blank). -->
-		<p class="preview-pending">preview pending for this archetype.</p>
+		<p class="preview-pending">this one's still on the drawing board — the blueprint view has the full picture.</p>
 	{/if}
 </div>
 

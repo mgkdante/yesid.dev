@@ -48,6 +48,11 @@ test('compose path: chips rank archetypes into match cards (AND)', async ({ page
 	// AND narrows: the two-pick rail is never wider than the one-pick rail.
 	const countAfterTwo = await page.locator('[data-testid^="match-card-"]').count();
 	expect(countAfterTwo).toBeLessThanOrEqual(countAfterOne);
+
+	// go2/w5: the live build counter narrates the narrowing.
+	await expect(page.locator('[data-testid="build-counter"]')).toContainText(
+		/2 picks → \d+ possible builds/,
+	);
 });
 
 test('compose path: an absurd single pick shows the zero-match CTA (never blank)', async ({

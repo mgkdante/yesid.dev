@@ -37,6 +37,15 @@
 	const heroTitleLine1 = resolveLocale(c.hero.titleLine1, locale);
 	const heroTitleLine2 = resolveLocale(c.hero.titleLine2, locale);
 	const heroTerminalAria = resolveLocale(c.hero.terminalAria, locale);
+	// go2/w5 §1: "What is a stack?" explainer — CMS-backed (stack_explainer flat
+	// column) with a byte-identical EN code fallback. The committed module has
+	// no stackExplainer until the orchestrator applies the field + regenerates,
+	// so the fallback is what EXPORT_FALLBACKS_SKIP=1 builds render. Never blank.
+	const FALLBACK_STACK_EXPLAINER =
+		'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you — poke the blueprints below and see for yourself.';
+	const stackExplainer = c.hero.stackExplainer
+		? resolveLocale(c.hero.stackExplainer, locale) || FALLBACK_STACK_EXPLAINER
+		: FALLBACK_STACK_EXPLAINER;
 	const statLabels = {
 		technologies: resolveLocale(c.hero.stats.technologies, locale),
 	};
@@ -113,6 +122,14 @@
 			<span class="hero-title-accent">{heroTitleLine2}.</span>
 		</h1>
 
+		<!-- go2/w5 §1: educational FIRST — the plain-language explainer reads
+		     before the machine voice starts typing. Human voice = site sans;
+		     mono stays the machine's. -->
+		<p class="stack-explainer" data-testid="stack-explainer">
+			<span class="explainer-kicker">what's a "stack"?</span>
+			{stackExplainer}
+		</p>
+
 		<div class="hero-terminal" aria-label={heroTerminalAria}>
 			{#each heroLines as line}
 				<div
@@ -163,7 +180,7 @@
 			<EngineComponent animate={engineAnimate} />
 		{:else}
 			<section class="engine-loading" data-testid="stack-engine-loading" aria-hidden="true">
-				<span class="engine-loading-line">~ loading engine…</span>
+				<span class="engine-loading-line">~ rolling out the drawing board…</span>
 			</section>
 		{/if}
 		<Separator variant="hazard" data-testid="engine-band-hazard-bottom" />
@@ -235,6 +252,25 @@
 	}
 
 	.hero-title-accent { color: var(--primary); }
+
+	/* go2/w5 §1: the teaching voice is the human voice — site sans, not mono. */
+	.stack-explainer {
+		font-size: 15px;
+		line-height: 1.65;
+		color: var(--secondary-foreground);
+		max-width: 56ch;
+		margin: 0 0 2rem;
+	}
+
+	.explainer-kicker {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		color: var(--accent-text);
+		margin-bottom: 0.35rem;
+	}
 
 	.hero-terminal {
 		font-family: var(--font-mono);
@@ -401,6 +437,10 @@
 		.hero {
 			padding: 1.5rem var(--space-page-x) 0;
 			min-height: 40dvh;
+		}
+
+		.stack-explainer {
+			font-size: 14px;
 		}
 
 		.hero-stats {
