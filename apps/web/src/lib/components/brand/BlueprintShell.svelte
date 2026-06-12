@@ -81,11 +81,28 @@
 		z-index: var(--z-base);
 	}
 
-	/* GO2-W5: bump label mix 20% → 30% in light so the blueprint annotations
-	   survive the warm paper (aria-hidden ornament — decorative). */
+	/* GO2-W5 taste round 2: the blueprint art must be VISIBLE in light —
+	   operator verdict. The hero/detail layers ship dark-tuned opacities
+	   (0.10–0.18) that vanish on warm paper, so light mode roughly doubles
+	   them (!important beats the consumers' inline detail opacities) and
+	   hardens the annotations. The whole shell stays aria-hidden decoration. */
+	:global([data-theme='light']) .hero-svg,
+	:global(.theme-light) .hero-svg {
+		opacity: 0.34;
+	}
+	:global([data-theme='light']) .edge-details :global(.edge-detail),
+	:global(.theme-light) .edge-details :global(.edge-detail) {
+		opacity: 0.3 !important;
+	}
+	:global([data-theme='light']) .crosshair::before,
+	:global([data-theme='light']) .crosshair::after,
+	:global(.theme-light) .crosshair::before,
+	:global(.theme-light) .crosshair::after {
+		background: color-mix(in srgb, var(--primary) 40%, transparent);
+	}
 	:global([data-theme='light']) .ref-label,
 	:global(.theme-light) .ref-label {
-		color: color-mix(in srgb, var(--primary) 30%, transparent);
+		color: color-mix(in srgb, var(--primary) 55%, transparent);
 	}
 
 	:global(.edge-detail) {

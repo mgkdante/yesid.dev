@@ -86,9 +86,12 @@ describe('contrast floors on color: declarations', () => {
 });
 
 // ──────────────────────────────────────────────────────────────────────
-// GO2-W5 INTERLOCKING: token-level AA lock. Computes WCAG 2.x relative-
-// luminance ratios straight from packages/tokens/tokens.json so any palette
-// drift that breaks a contracted pair fails here, with the actual number.
+// GO2-W5 INTERLOCKING (taste round 2): token-level AA lock. Computes WCAG
+// 2.x relative-luminance ratios straight from packages/tokens/tokens.json so
+// any palette drift that breaks a contracted pair fails here, with the
+// actual number. Round 2 recomputed every pair against the restored
+// near-black dark board + page-colored terminals, and grew 48 → 50 pairs
+// (D primary/background rule voice; L border-strong/card structure floor).
 // ──────────────────────────────────────────────────────────────────────
 describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 	const tokens = JSON.parse(
@@ -124,6 +127,7 @@ describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 		['D secondary-foreground/terminal-chrome', ['dark', 'secondary-foreground'], ['dark', 'terminal-chrome'], 4.5],
 		['D primary/popover (worst case)', ['dark', 'primary'], ['dark', 'popover'], 4.5],
 		['D primary/card', ['dark', 'primary'], ['dark', 'card'], 4.5],
+		['D primary/background (border-rule voice)', ['dark', 'primary'], ['dark', 'background'], 4.5],
 		['D background-as-primary-foreground/primary', ['dark', 'background'], ['dark', 'primary'], 4.5],
 		['D accent-text/card', ['dark', 'accent-text'], ['dark', 'card'], 4.5],
 		['D accent-text/accent-surface', ['dark', 'accent-text'], ['dark', 'accent-surface'], 4.5],
@@ -166,6 +170,7 @@ describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 		['L line-amber/background (graphics)', ['light', 'line-amber'], ['light', 'background'], 3],
 		['L line-amber/card (graphics)', ['light', 'line-amber'], ['light', 'card'], 3],
 		['L signal-lunar/muted (graphics)', ['light', 'signal-lunar'], ['light', 'muted'], 3],
+		['L border-strong/card (round-2 hard structure)', ['light', 'border-strong'], ['light', 'card'], 3],
 		// theme-invariant signal systems
 		['hazard stripe pair (tape)', ['brand', 'hazard-a'], ['brand', 'hazard-b'], 3],
 		['signage chip (both modes)', ['brand', 'signage-text'], ['brand', 'signage-bg'], 4.5],
@@ -177,4 +182,14 @@ describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 			expect(r, `${name} computed ${r.toFixed(2)}:1`).toBeGreaterThanOrEqual(floor);
 		});
 	}
+
+	// Taste round 2 operator contract: terminals are the SITE background —
+	// same solid surface as the page in BOTH modes. The terminal identity
+	// lives in chrome/border/type, never in a special surface color.
+	it('terminal IS the site background (dark)', () => {
+		expect(hex('dark', 'terminal')).toBe(hex('dark', 'background'));
+	});
+	it('terminal IS the site background (light)', () => {
+		expect(hex('light', 'terminal')).toBe(hex('light', 'background'));
+	});
 });

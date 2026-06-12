@@ -261,9 +261,18 @@ pre, code, table {
    GO2-W5 "NX track schematic": same 80px rhythm (no layout change) plus a
    16px fine schematic grid, a 400px amber block-boundary vertical, and (dark
    only, via --grid-glow) a sodium-lamp radial spill from the top. All colors
-   come from the grid-* tokens so both modes tune independently. */
+   come from the grid-* tokens so both modes tune independently.
+
+   Taste round 2 SOLIDITY fix: the ::before used to sit at z-index: 0 — a
+   positioned box paints ABOVE in-flow content (CSS2.1 App. E layer 6 vs 3/5),
+   so the schematic visibly crossed terminal/card surfaces and text (operator:
+   contact terminals "lacking solidity"). isolation: isolate makes the wrapper
+   a stacking context and z-index: -1 drops the grid to the negative layer:
+   above the wrapper's own background, below ALL content. Solid surfaces now
+   genuinely occlude the grid; transparent sections still show it through. */
 .circuit-grid {
   position: relative;
+  isolation: isolate;
 }
 .circuit-grid::before {
   content: '';
@@ -278,7 +287,7 @@ pre, code, table {
     repeating-linear-gradient(0deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px);
 
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -306,13 +315,13 @@ pre, code, table {
    against the dark brand theme (lib/utils/markdown.ts). Pinning the block
    dark keeps syntax readable with zero highlighter changes. Values are the
    dark-theme --terminal / --border literals on purpose (the vars flip) —
-   GO2-W5: warmed to the signal-box black palette. */
+   taste round 2: back to the restored near-black board values. */
 [data-theme="light"] .prose-dark pre,
 [data-theme="light"] .prose-dark pre.shiki,
 .theme-light .prose-dark pre,
 .theme-light .prose-dark pre.shiki {
-	background: #0D0A07 !important;
-	border-color: #41382E;
+	background: #141414 !important;
+	border-color: #3A3A3A;
 }
 [data-theme="light"] .prose-dark pre:not(.shiki) code,
 .theme-light .prose-dark pre:not(.shiki) code {
@@ -415,9 +424,11 @@ pre, code, table {
   height: 1px;
 }
 
-/* 2. Dashed divider — filter group separators */
+/* 2. Dashed divider — filter group separators.
+   Taste round 2: delimitations speak the route-set voice — solid-orange
+   dashed rule (NX diagram energy) instead of a neutral gray. */
 .divider-dashed {
-  border-top: 1px dashed var(--border-strong);
+  border-top: 1px dashed var(--border-rule);
 }
 
 /* 3. Hidden scrollbar — preserves scroll, hides chrome */

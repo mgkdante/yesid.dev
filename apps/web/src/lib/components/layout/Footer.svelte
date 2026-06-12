@@ -160,8 +160,10 @@
 		);
 	}
 
+	/* Taste round 2: the status bar's top line is a BOLD departure-board rule
+	   — the yellow wayfinding voice as structure (was a 6% foreground ghost). */
 	.footer-status-border {
-		border-top: 1px solid color-mix(in srgb, var(--foreground) 6%, transparent);
+		border-top: 1px solid var(--border-rule-accent);
 	}
 
 	footer {

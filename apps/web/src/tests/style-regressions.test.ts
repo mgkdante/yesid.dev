@@ -61,20 +61,36 @@ describe('GO2-W5 INTERLOCKING — signal-systems art direction', () => {
 		expect(card).toContain('inset 0 1px 0 var(--edge-highlight)');
 	});
 
-	it('terminal chrome strips use the chrome token and the body keeps var(--terminal)', () => {
+	it('terminal chrome strips use the chrome token; body keeps var(--terminal); chassis is the bold rule', () => {
 		expect(terminalChrome).toContain('background: var(--terminal-chrome);');
 		expect(terminalChrome).toContain('background: var(--terminal);');
-		expect(terminalChrome).toContain('border: 1px solid var(--border-strong);');
+		// Taste round 2: terminal identity = chrome/border/type — the chassis
+		// is the solid-orange structural rule, not a neutral strong border.
+		expect(terminalChrome).toContain('border: 1px solid var(--border-rule);');
 	});
 
 	it('terminal footer values speak the wayfinding voice (departure board)', () => {
 		expect(terminalChrome).toContain('text-[var(--accent-text)]');
 	});
 
-	it('footer platform edge is hazard tape on the warm muted panel', () => {
+	it('hero SQL terminal carries the same rule chassis (terminal = page bg, solid)', () => {
+		const sql = readFileSync(resolve(SRC, 'lib/components/home/HeroSqlPanel.svelte'), 'utf-8');
+		expect(sql).toContain('border-[var(--border-rule)]');
+		expect(sql).toContain('bg-[var(--terminal)]');
+	});
+
+	it('footer platform edge is hazard tape on the muted panel + amber departure rule', () => {
 		expect(footer).toContain('var(--hazard-a)');
 		expect(footer).toContain('var(--hazard-b)');
 		expect(footer).toContain('bg-[var(--muted)]');
+		// Taste round 2: the status bar rule is the bold yellow voice.
+		expect(footer).toContain('border-top: 1px solid var(--border-rule-accent);');
+	});
+
+	it('nav chrome joins the brand grid (pill border + dividers = brand-border tokens)', () => {
+		const nav = readFileSync(resolve(SRC, 'lib/components/layout/Nav.svelte'), 'utf-8');
+		expect(nav).toContain('border: 1px solid var(--border-brand);');
+		expect(nav).toContain('background: var(--border-brand);');
 	});
 });
 

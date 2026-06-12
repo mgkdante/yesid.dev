@@ -37,10 +37,10 @@
   );
 </script>
 
-<!-- GO2-W5: terminal stays TERMINAL in light — cream console body with
-     chassis-edge border; output speaks terminal-ink, dim text ink-muted. -->
+<!-- GO2-W5 taste round 2: terminal body = the SITE background (solid);
+     identity = solid-orange rule chassis + terminal-ink type. -->
 <div
-  class="rounded-lg border border-[var(--border-strong)] bg-[var(--terminal)] p-5 font-mono"
+  class="rounded-lg border border-[var(--border-rule)] bg-[var(--terminal)] p-5 font-mono"
   data-testid="sql-panel"
 >
   <!-- Header: prompt + live dot -->
