@@ -191,6 +191,31 @@ describe('+layout.server load', () => {
 		});
 	});
 
+	describe('locale derivation (slice-28.6)', () => {
+		beforeEach(() => {
+			mockByPlacement.mockResolvedValue([]);
+			mockErrorPage.mockResolvedValue(fakeErrorPage);
+		});
+		it('returns locale en for unprefixed requests', async () => {
+			const result = await callLoad('/about', {}, '/about');
+			expect((result as LayoutData & { locale: string }).locale).toBe('en');
+		});
+		it('derives fr from params.lang, strips the segment for SEO lookup, and gates on the delocalized path', async () => {
+			const result = await callLoad('/[[lang=locale]]/about', { lang: 'fr' }, '/fr/about');
+			expect((result as LayoutData & { locale: string }).locale).toBe('fr');
+			expect(mockForRoute).toHaveBeenCalledWith(
+				'/about',
+				'fr',
+				{ lang: 'fr' },
+				expect.objectContaining({ pageCache: expect.any(Map) }),
+			);
+		});
+		it('derives fr from the pathname on error renders (no params)', async () => {
+			const result = await callLoad(null, {}, '/fr/ghost-path');
+			expect((result as LayoutData & { locale: string }).locale).toBe('fr');
+		});
+	});
+
 	describe('happy path — all fetches resolve', () => {
 		it('returns all 4 nav slots and static errorPage on normal routes', async () => {
 			mockByPlacement.mockImplementation(async (placement: string) => {
@@ -390,7 +415,7 @@ describe('+layout.server load', () => {
 			const result = await callLoad();
 
 			expect(Object.keys(result).sort()).toEqual(
-				['errorPage', 'footerLinks', 'headerLinks', 'menuItems', 'mobileLinks', 'morphShapes', 'seo', 'themeColor'].sort(),
+				['errorPage', 'footerLinks', 'headerLinks', 'locale', 'menuItems', 'mobileLinks', 'morphShapes', 'seo', 'themeColor'].sort(),
 			);
 		});
 	});
