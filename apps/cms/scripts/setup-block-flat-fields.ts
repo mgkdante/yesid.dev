@@ -69,7 +69,7 @@ export function buildFieldSteps(): FieldStep[] {
 		const seed = f.scope === 'translation' ? f.seed : undefined;
 		const note =
 			seed !== undefined
-				? `(go2-t1b flat field) replaces a hardcoded /tech-stack hero terminal template; literal {count} is interpolated by the component from data.items.length. Seed: "${seed}"`
+				? `(go2-t1b flat field) replaces a hardcoded /tech-stack component string; literal {count} is interpolated by the component from data.items.length. Seed: "${seed}"`
 				: `(go2-t1b flat field) replaces ${f.sourceField}${f.sourcePath.length ? '.' + f.sourcePath.join('.') : ''}`;
 		let meta: Record<string, unknown>;
 		const type: string = f.type;
