@@ -9,6 +9,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import BlueprintCTA from './BlueprintCTA.svelte';
 import { encodeBlueprint } from '$lib/utils/blueprint-param';
 import { stackArchetypes } from '$lib/content/stack-archetypes';
@@ -56,6 +58,39 @@ describe('BlueprintCTA (compose mode — picked techs)', () => {
 		);
 		// The service still points at the archetype's row.
 		expect(screen.getByTestId('cta-service').getAttribute('href')).toBe(`/services/${dashboard.serviceId}`);
+	});
+});
+
+// Yellow-conversion rule (go2/w5 operator doctrine): yellow buttons mean
+// "talk to Yesid" conversion ONLY; orange covers every other interaction.
+// happy-dom can't compute scoped component CSS, so these are SOURCE locks
+// (engine-fullbleed-css / style-regressions precedent).
+describe('yellow-conversion rule — the blueprint CTA wears signage yellow', () => {
+	const src = readFileSync(
+		resolve(process.cwd(), 'src/lib/components/stack-engine/BlueprintCTA.svelte'),
+		'utf-8',
+	);
+
+	it('cta-primary: signage pairing — --accent surface under the fixed near-black ink (#1C1814 on #FFB627 ≈ 10:1, AA in both themes)', () => {
+		const rule = src.match(/\.cta-primary \{[^}]*\}/);
+		expect(rule, '.cta-primary rule must exist').not.toBeNull();
+		expect(rule![0]).toContain('background: var(--accent);');
+		expect(rule![0]).toContain('color: #1C1814;');
+		expect(rule![0]).not.toContain('var(--primary)');
+	});
+
+	it('hover steps down the accent system (darker yellow via --accent-hover, ink holds, never orange)', () => {
+		const hover = src.match(/\.cta-primary:hover \{[^}]*\}/);
+		expect(hover, '.cta-primary:hover rule must exist').not.toBeNull();
+		expect(hover![0]).toContain('background: var(--accent-hover);');
+		expect(hover![0]).toContain('color: #1C1814;');
+		expect(hover![0]).not.toContain('var(--primary)');
+	});
+
+	it("the 'Hire this' service link STAYS in the orange grammar (exploration, not conversation)", () => {
+		const hover = src.match(/\.cta-link:hover \{[^}]*\}/);
+		expect(hover, '.cta-link:hover rule must exist').not.toBeNull();
+		expect(hover![0]).toContain('color: var(--primary);');
 	});
 });
 

@@ -927,14 +927,19 @@
 		margin: 0;
 	}
 
+	/* Yellow-conversion rule (go2/w5): the door is a conversion moment, so its
+	   accent joins the signage family — --accent-text is accent-AS-text
+	   (#FFB627 dark / darkened #8A6400 light; AA on both engine surfaces).
+	   Subtler than the blueprint button — a door, not a billboard: hover
+	   thickens the underline and never goes orange (orange = exploration). */
 	.shape-availability-link {
-		color: var(--engine-teach-ink);
+		color: var(--accent-text);
 		text-decoration: underline;
 		text-underline-offset: 3px;
 	}
 
 	.shape-availability-link:hover {
-		color: var(--primary);
+		text-decoration-thickness: 2px;
 	}
 
 	/* The bonus rail's nameplate — bridges shape card and known builds. */

@@ -9,6 +9,12 @@
   Taste round 2 (operator verdict): proof-project links are GONE from the
   engine — proofProjectSlug stays in schema/content for other surfaces, the
   engine just never renders it.
+
+  Yellow-conversion rule (go2/w5 operator doctrine): yellow buttons mean
+  "talk to Yesid" ONLY; orange covers every other interaction. The blueprint
+  handoff IS the conversation starter, so cta-blueprint wears the signage
+  pairing (--accent under fixed near-black ink); the service link stays in
+  the orange grammar (exploration, not conversation).
 -->
 <script lang="ts">
 	import type { StackArchetype } from '@repo/shared/schemas';
@@ -86,16 +92,20 @@
 		color: var(--primary);
 	}
 
+	/* Yellow-conversion rule: the signage pairing. --accent (#FFB627) and the
+	   near-black ink are theme-constant — #1C1814 on #FFB627 ≈ 10:1 (AA in
+	   BOTH themes). Hover steps down the accent system's own darker yellow
+	   (--accent-hover #E5A220, ≈ 8:1 against the same ink) — never orange. */
 	.cta-primary {
-		color: var(--primary-foreground);
-		background: var(--primary);
+		color: #1C1814;
+		background: var(--accent);
 		text-decoration: none;
 		border-radius: 999px;
 		padding: 0.5rem 1.1rem;
 	}
 
 	.cta-primary:hover {
-		color: var(--primary-foreground);
-		filter: brightness(1.08);
+		color: #1C1814;
+		background: var(--accent-hover);
 	}
 </style>
