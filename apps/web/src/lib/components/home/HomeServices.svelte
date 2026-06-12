@@ -236,10 +236,11 @@
 	   the same icon-zone size, content section, and footer band
 	   regardless of title/benefit length. */
 	/* GO2-W5: surface-1 now aliases --card (tokens.json flip) so the panel
-	   lifts solid off the board; inset bevel = panel catching the lamp. */
+	   lifts solid off the board; inset bevel = panel catching the lamp.
+	   Round 3: brand grid at 2px. */
 	.services-card {
 		background: var(--surface-1);
-		border: 1px solid var(--border-brand);
+		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		box-shadow: inset 0 1px 0 var(--edge-highlight);
 		display: grid;

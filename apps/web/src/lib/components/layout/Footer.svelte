@@ -148,9 +148,10 @@
 
 <style>
 	/* GO2-W5: platform-edge hazard strip (sm tape geometry, theme-invariant
-	   yellow + warm black — matches the Separator hazard recipe). */
+	   yellow + warm black — matches the Separator hazard recipe).
+	   Round 3: one step thicker (2px → 3px) with the rest of the structure. */
 	.footer-gradient-sep {
-		height: 2px;
+		height: 3px;
 		background: repeating-linear-gradient(
 			-45deg,
 			var(--hazard-a) 0px,
@@ -161,9 +162,10 @@
 	}
 
 	/* Taste round 2: the status bar's top line is a BOLD departure-board rule
-	   — the yellow wayfinding voice as structure (was a 6% foreground ghost). */
+	   — the yellow wayfinding voice as structure (was a 6% foreground ghost).
+	   Round 3: one step thicker (1px → 2px). */
 	.footer-status-border {
-		border-top: 1px solid var(--border-rule-accent);
+		border-top: 2px solid var(--border-rule-accent);
 	}
 
 	footer {

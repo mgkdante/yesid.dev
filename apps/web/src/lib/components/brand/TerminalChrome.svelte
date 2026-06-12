@@ -90,12 +90,13 @@
   /* GO2-W5 taste round 2: the terminal body IS the site background
      (--terminal === --background by token contract, SOLID) — identity is
      carried by the chrome strips, the solid-orange rule chassis and the
-     mono type, never by a special surface color. */
+     mono type, never by a special surface color.
+     Round 3: chassis one step thicker (1px → 2px) — bolder structure. */
   .terminal {
     display: flex;
     flex-direction: column;
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border-rule);
+    border: 2px solid var(--border-rule);
     background: var(--terminal);
     overflow: hidden;
   }

@@ -66,16 +66,17 @@ describe('GO2-W5 INTERLOCKING — signal-systems art direction', () => {
 		expect(terminalChrome).toContain('background: var(--terminal);');
 		// Taste round 2: terminal identity = chrome/border/type — the chassis
 		// is the solid-orange structural rule, not a neutral strong border.
-		expect(terminalChrome).toContain('border: 1px solid var(--border-rule);');
+		// Round 3: chassis one step thicker (2px).
+		expect(terminalChrome).toContain('border: 2px solid var(--border-rule);');
 	});
 
 	it('terminal footer values speak the wayfinding voice (departure board)', () => {
 		expect(terminalChrome).toContain('text-[var(--accent-text)]');
 	});
 
-	it('hero SQL terminal carries the same rule chassis (terminal = page bg, solid)', () => {
+	it('hero SQL terminal carries the same rule chassis (terminal = page bg, solid, round-3 2px)', () => {
 		const sql = readFileSync(resolve(SRC, 'lib/components/home/HeroSqlPanel.svelte'), 'utf-8');
-		expect(sql).toContain('border-[var(--border-rule)]');
+		expect(sql).toContain('border-2 border-[var(--border-rule)]');
 		expect(sql).toContain('bg-[var(--terminal)]');
 	});
 
@@ -84,13 +85,64 @@ describe('GO2-W5 INTERLOCKING — signal-systems art direction', () => {
 		expect(footer).toContain('var(--hazard-b)');
 		expect(footer).toContain('bg-[var(--muted)]');
 		// Taste round 2: the status bar rule is the bold yellow voice.
-		expect(footer).toContain('border-top: 1px solid var(--border-rule-accent);');
+		// Round 3: one step thicker (2px rule, 3px tape).
+		expect(footer).toContain('border-top: 2px solid var(--border-rule-accent);');
+		expect(footer).toContain('height: 3px;');
 	});
 
 	it('nav chrome joins the brand grid (pill border + dividers = brand-border tokens)', () => {
 		const nav = readFileSync(resolve(SRC, 'lib/components/layout/Nav.svelte'), 'utf-8');
-		expect(nav).toContain('border: 1px solid var(--border-brand);');
+		expect(nav).toContain('border: 2px solid var(--border-brand);');
 		expect(nav).toContain('background: var(--border-brand);');
+	});
+});
+
+describe('GO2-W5 round 3 — bolder structure (operator: dividers thicker both modes, light art stronger)', () => {
+	const separator = readFileSync(
+		resolve(SRC, 'lib/components/ui/separator/separator.svelte'),
+		'utf-8',
+	);
+	const card = readFileSync(resolve(SRC, 'lib/components/ui/card/card.svelte'), 'utf-8');
+	const shell = readFileSync(
+		resolve(SRC, 'lib/components/brand/BlueprintShell.svelte'),
+		'utf-8',
+	);
+	const servicesBp = readFileSync(
+		resolve(SRC, 'lib/components/home/ServicesBlueprint.svelte'),
+		'utf-8',
+	);
+
+	it('hazard tape is one step thicker in both modes (sm 3px / md 6px / lg 10px)', () => {
+		expect(separator).toContain("{ sm: 'h-[3px]', md: 'h-1.5', lg: 'h-2.5' }");
+		expect(separator).toContain("{ sm: 'w-[3px]', md: 'w-1.5', lg: 'w-2.5' }");
+	});
+
+	it('the brand grid draws at 2px (card surface + section panels)', () => {
+		expect(card).toContain('border: 2px solid var(--border-brand);');
+		for (const f of [
+			'lib/components/home/HomeServices.svelte',
+			'lib/components/home/FeaturedProjects.svelte',
+		]) {
+			expect(readFileSync(resolve(SRC, f), 'utf-8'), f).toContain(
+				'border: 2px solid var(--border-brand);',
+			);
+		}
+	});
+
+	it('blueprint shells run the round-3 light visibility (hero 0.46 / details 0.42 / 55% / 70%)', () => {
+		expect(shell).toContain('opacity: 0.46;');
+		expect(shell).toContain('opacity: 0.42 !important;');
+		expect(shell).toContain('color-mix(in srgb, var(--primary) 55%, transparent)');
+		expect(shell).toContain('color-mix(in srgb, var(--primary) 70%, transparent)');
+	});
+
+	it('the home services blueprint wall ships light-mode overrides (was dark-only opacities)', () => {
+		// Round 3: this wall never got the round-2 light treatment and was
+		// invisible on paper. Train + details + annotations now override.
+		expect(servicesBp).toMatch(/\[data-theme='light'\][\s\S]*\.train-svg/);
+		expect(servicesBp).toContain('opacity: 0.26;');
+		expect(servicesBp).toContain('opacity: 0.32;');
+		expect(servicesBp).toContain('color-mix(in srgb, var(--primary) 70%, transparent)');
 	});
 });
 

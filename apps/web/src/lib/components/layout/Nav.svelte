@@ -156,12 +156,13 @@
 	}
 	/* Taste round 2: the wayfinding chrome joins the brand grid — the pill
 	   border speaks the same bold brand-border as cards (was a 10% ghost) and
-	   the internal dividers are orange delimitations, not foreground smudges. */
+	   the internal dividers are orange delimitations, not foreground smudges.
+	   Round 3: the grid draws at 2px (pill + divider step up with cards). */
 	.nav-pill {
 		background: color-mix(in srgb, var(--background) 92%, transparent);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 1px solid var(--border-brand);
+		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-pill);
 		box-shadow: var(--shadow-nav);
 		padding: 12px 28px;
@@ -175,7 +176,7 @@
 
 	.nav-divider {
 		display: inline-block;
-		width: 1px;
+		width: 2px;
 		height: 18px;
 		background: var(--border-brand);
 		margin-inline: 20px;

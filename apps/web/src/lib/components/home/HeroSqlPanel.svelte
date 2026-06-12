@@ -38,9 +38,10 @@
 </script>
 
 <!-- GO2-W5 taste round 2: terminal body = the SITE background (solid);
-     identity = solid-orange rule chassis + terminal-ink type. -->
+     identity = solid-orange rule chassis + terminal-ink type.
+     Round 3: chassis one step thicker (border-2) — bolder structure. -->
 <div
-  class="rounded-lg border border-[var(--border-rule)] bg-[var(--terminal)] p-5 font-mono"
+  class="rounded-lg border-2 border-[var(--border-rule)] bg-[var(--terminal)] p-5 font-mono"
   data-testid="sql-panel"
 >
   <!-- Header: prompt + live dot -->

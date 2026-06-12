@@ -17,11 +17,12 @@ describe('surface spec — one card spec, defined once', () => {
 	// "panel lifts off the board" flip); ui/card consumes the canonical
 	// surface-2 alias, the home card families keep surface-1 — both resolve
 	// to the same solid card token, so the single-spec guarantee holds.
+	// Round 3: the shared card spec draws the brand grid at 2px.
 	for (const f of CARD_FILES) {
 		it(`${f} consumes a card surface alias + border-brand tokens`, () => {
 			const src = read(f);
 			expect(src).toMatch(/background: var\(--surface-[12]\);/);
-			expect(src).toContain('border: 1px solid var(--border-brand);');
+			expect(src).toContain('border: 2px solid var(--border-brand);');
 			expect(src).toContain('border-color: var(--border-brand-active);');
 		});
 	}

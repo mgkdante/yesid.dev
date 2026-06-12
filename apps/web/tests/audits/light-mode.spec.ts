@@ -141,6 +141,45 @@ test.describe('light mode — per-page audit', () => {
 		expect(bgImage).toContain('rgb(255, 182, 39)'); // #FFB627 hazard-a
 		expect(bgImage).toContain('rgb(28, 24, 20)'); // #1C1814 hazard-b
 	});
+
+	test('round 3: bolder structure — 2px rules and stronger blueprint art in light', async ({ page }) => {
+		// Operator round 3: dividers one step thicker in both modes; light-mode
+		// blueprint art up another step. Probe computed styles on /projects
+		// (blueprint header + footer present on one page).
+		await page.goto('/projects', { waitUntil: 'networkidle' });
+
+		// .divider-dashed: 2px dashed route-set rule (light primary #9D5200).
+		const divider = await page.evaluate(() => {
+			const probe = document.createElement('div');
+			probe.className = 'divider-dashed';
+			document.body.appendChild(probe);
+			const s = getComputedStyle(probe);
+			const out = {
+				width: s.borderTopWidth,
+				style: s.borderTopStyle,
+				color: s.borderTopColor,
+			};
+			probe.remove();
+			return out;
+		});
+		expect(divider).toEqual({ width: '2px', style: 'dashed', color: 'rgb(157, 82, 0)' });
+
+		// Footer departure rule: 2px solid amber (#B57F00 light line-amber).
+		const footerRule = await page.evaluate(() => {
+			const el = document.querySelector('.footer-status-border');
+			if (!el) return null;
+			const s = getComputedStyle(el);
+			return { width: s.borderTopWidth, color: s.borderTopColor };
+		});
+		expect(footerRule).toEqual({ width: '2px', color: 'rgb(181, 127, 0)' });
+
+		// Blueprint header hero layer: round-3 light opacity (0.34 → 0.46).
+		const heroOpacity = await page.evaluate(() => {
+			const el = document.querySelector('.hero-svg');
+			return el ? getComputedStyle(el).opacity : null;
+		});
+		expect(heroOpacity).toBe('0.46');
+	});
 });
 
 test.describe('theme toggle behaviour', () => {
