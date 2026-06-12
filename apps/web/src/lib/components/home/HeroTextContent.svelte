@@ -19,6 +19,9 @@
 		ctaWorkLabel,
 		ctaContactLabel,
 		heroData,
+		introCompleted = false,
+		replayAriaLabel = 'Replay intro',
+		onReplay,
 	}: {
 		headlineLine1: string;
 		headlineAriaSuffix: string;
@@ -27,6 +30,12 @@
 		ctaWorkLabel: string;
 		ctaContactLabel: string;
 		heroData: HeroData;
+		/** go2/w5: arms the hero-dot replay button once the intro completed. */
+		introCompleted?: boolean;
+		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
+		replayAriaLabel?: string;
+		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
+		onReplay?: () => void;
 	} = $props();
 </script>
 
@@ -41,17 +50,28 @@
 		</span>
 	</h1>
 
-	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-hidden="true">
+	<!-- go2/w5: aria-hidden moved from the <p> to the text span — the replay
+	     button inside must stay reachable by AT once armed (an aria-hidden
+	     ancestor would hide it). The h1 above still carries the full phrase. -->
+	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 		<span
 			class="block text-hero-mobile text-[var(--primary)] md:text-hero"
 			data-testid="hero-line2"
 		>
-			<span data-hero-stagger="1">DON'T BREAK</span><svg
-				class="hero-dot"
-				data-testid="hero-dot"
-				viewBox="0 0 10 10"
-				aria-hidden="true"
-			><circle cx="5" cy="5" r="5" fill="currentColor" /></svg>
+			<span data-hero-stagger="1" aria-hidden="true">DON'T BREAK</span><button
+				type="button"
+				class="hero-dot-btn {introCompleted ? 'hero-dot-armed' : ''}"
+				data-testid="hero-dot-replay"
+				disabled={!introCompleted}
+				aria-hidden={introCompleted ? undefined : 'true'}
+				aria-label={introCompleted ? replayAriaLabel : undefined}
+				onclick={() => onReplay?.()}
+			><svg
+					class="hero-dot"
+					data-testid="hero-dot"
+					viewBox="0 0 10 10"
+					aria-hidden="true"
+				><circle cx="5" cy="5" r="5" fill="currentColor" /></svg></button>
 		</span>
 	</p>
 
@@ -81,13 +101,15 @@
 		{subtitleText}
 	</p>
 
+	<!-- Round 5c doctrine: orange = deep dive (projects); yellow = the single
+	     "talk to Yesid" conversion action in this view (contact). -->
 	<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
 		<span class="tap-press" use:pressBounce>
 			<Button variant="default" size="cta-lg" href={localizeHref('/projects', locale)} data-testid="hero-cta-projects">
 				{ctaWorkLabel}
 			</Button>
 		</span>
-		<Button variant="outline" size="cta-lg" href={localizeHref('/contact', locale)} data-testid="hero-cta-contact" class="tap-press">
+		<Button variant="conversion" size="cta-lg" href={localizeHref('/contact', locale)} data-testid="hero-cta-contact" class="tap-press">
 			{ctaContactLabel}
 		</Button>
 	</div>
@@ -95,7 +117,12 @@
 
 <style>
 	/* SVG period dot — replaces text "." for pixel-perfect zoom center.
-	   Sized in em so it scales with the heading font-size. */
+	   Sized in em so it scales with the heading font-size. The markup keeps
+	   it whitespace-glued to "DON'T BREAK" (no soft-wrap point), so it always
+	   renders as that headline's period — never a lone dot on its own line.
+	   overflow:visible (go2/w5 taste-2): the heartbeat scales the element, so
+	   the circle must never be edge-clipped by the svg viewport at any
+	   breakpoint/zoom rounding. */
 	.hero-dot {
 		display: inline-block;
 		width: 0.19em;
@@ -103,6 +130,84 @@
 		vertical-align: baseline;
 		margin-bottom: 0.03em;
 		color: var(--primary);
+		overflow: visible;
+	}
+
+	/* go2/w5: the dot rides inside a button so the completed intro can be
+	   replayed. The reset keeps the glyph metrics identical to the bare svg
+	   (font/line-height inherit → the 0.19em sizing is unchanged). */
+	.hero-dot-btn {
+		display: inline;
+		padding: 0;
+		margin: 0;
+		background: none;
+		border: none;
+		font: inherit;
+		line-height: inherit;
+		color: inherit;
+		cursor: default;
+		position: relative;
+	}
+
+	.hero-dot-armed {
+		cursor: pointer;
+	}
+	/* Generous invisible hit area (~44px) without any layout shift. */
+	.hero-dot-armed::after {
+		content: '';
+		position: absolute;
+		inset: -14px;
+	}
+	.hero-dot-armed:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 6px;
+		border-radius: 50%;
+	}
+
+	/* go2/w5 taste-2: HEARTBEAT pulse — a strong, unmistakable double-beat
+	   scale (lub-dub, then rest). transform only: zero layout shift, and the
+	   element-level scale can never clip the circle (the svg viewport scales
+	   with it, overflow stays visible). Arming requires the intro to have
+	   PLAYED, which reduced motion never does — and the reduce tier below
+	   still swaps scale for the round-1 opacity pulse as belt-and-suspenders
+	   (the affordance cue is assistive, so it keeps running). */
+	.hero-dot-armed .hero-dot {
+		animation: hero-dot-pulse 1.5s ease-in-out infinite;
+		transform-origin: center;
+		will-change: transform;
+	}
+
+	@keyframes hero-dot-pulse {
+		0%,
+		56%,
+		100% {
+			transform: scale(1);
+		}
+		14% {
+			transform: scale(1.5);
+		}
+		28% {
+			transform: scale(1);
+		}
+		42% {
+			transform: scale(1.32);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-dot-armed .hero-dot {
+			animation: hero-dot-pulse-reduce 1.8s ease-in-out infinite;
+		}
+	}
+
+	@keyframes hero-dot-pulse-reduce {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.35;
+		}
 	}
 
 	/* Mobile: text + buttons MUST fit in 100svh - nav.

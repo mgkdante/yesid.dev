@@ -229,17 +229,19 @@
 		gap: 0.75rem;
 	}
 
+	/* Round-4 doctrine: metric/number callouts speak the YELLOW voice
+	   (accent-text = AA amber both modes); the CTA next to it stays orange. */
 	.metric-value {
 		font-size: clamp(36px, 4vw, 48px);
 		font-weight: 900;
-		color: var(--primary);
+		color: var(--accent-text);
 		line-height: 1;
 	}
 
 	.metric-label {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: var(--primary);
+		color: var(--accent-text);
 		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
