@@ -15,12 +15,17 @@
 	import { page } from '$app/stores';
 	import { errorPageContent as staticErrorPageContent, siteLabels } from '$lib/content';
 	import type { ErrorPageContent } from '$lib/content/nav';
-	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { pathLocale, localizeHref } from '$lib/utils/locale-routing';
 	import { prefersReducedMotion } from '$lib/motion/stores';
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel } from '$lib/components/brand';
 
-	const locale = DEFAULT_LOCALE;
+	// slice-28.6: error pages can render under /fr/* — derive the locale from
+	// the URL (error renders carry no params). Defensive optional chain: the
+	// error page is the last surface that may throw (and bare test renders
+	// provide no $page.url).
+	const locale = $derived(pathLocale($page.url?.pathname ?? '/'));
 
 	// Prefer the status-specific row resolved by handleError (stashed on
 	// $page.error.cmsErrorPage). Fall back to the layout's status=0 fallback
@@ -36,7 +41,7 @@
 	const suggestions = $derived(
 		errorPage.suggestions.map((s) => ({
 			label: resolveLocale(s.label, locale),
-			href: s.href,
+			href: localizeHref(s.href, locale),
 		})),
 	);
 
@@ -106,7 +111,7 @@
 			<span style="color: var(--secondary-foreground);"> route </span>
 			<span style="color: var(--secondary-foreground);">--status</span>
 			<span style="color: var(--primary);"> {$page.status}</span>
-			<span style="color: var(--muted-foreground);"> {resolveLocale(siteLabels.ui.errorStatusNote, 'en') || '// requested path not in service'}</span>
+			<span style="color: var(--muted-foreground);"> {resolveLocale(siteLabels.ui.errorStatusNote, locale) || '// requested path not in service'}</span>
 			{#if mounted && !$prefersReducedMotion}
 				<TerminalCursor />
 			{/if}

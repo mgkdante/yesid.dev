@@ -11,13 +11,18 @@
 <script lang="ts">
 	import type { Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+	import { localizeHref } from '$lib/utils/locale-routing';
 	import { servicesDetailContent } from '$lib/content/services';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { onMount, onDestroy } from 'svelte';
 
-	const serviceNavAria = resolveLocale(servicesDetailContent.serviceNavAria, 'en');
+	// StationTabs lives inside remounting pages ({#key pathname} in the root
+	// layout) — an init-time context read is always current.
+	const locale = getLocale();
+	const serviceNavAria = resolveLocale(servicesDetailContent.serviceNavAria, locale);
 
 	// Short labels map — one entry per station. GO-2 consolidation: 4 stations,
 	// labels match the manifesto pills (databases/pipelines/dashboards/websites).
@@ -52,9 +57,9 @@
 		return String(n).padStart(2, '0');
 	}
 
-	/** Get short label for a service — falls back to first word of the title */
+	/** Get short label for a service — falls back to first word of the locale-resolved title */
 	function getLabel(service: Service): string {
-		return SHORT_LABELS[service.id] ?? service.title.en.split(' ')[0];
+		return SHORT_LABELS[service.id] ?? resolveLocale(service.title, locale).split(' ')[0];
 	}
 
 	/** Inactive tabs fade by distance from active: closer tabs stay brighter.
@@ -125,7 +130,7 @@
 				{@const opacity = isActive ? 1 : getOpacity(i)}
 
 				<a
-					href="/services/{service.id}"
+					href={localizeHref(`/services/${service.id}`, locale)}
 					class="station-tab flex shrink-0 items-center gap-2 px-4 py-3 text-sm no-underline transition-all tap-press"
 
 					class:active={isActive}

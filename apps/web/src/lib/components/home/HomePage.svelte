@@ -19,6 +19,9 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionHeading } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
 	import type {
 		HeroContent,
@@ -68,9 +71,9 @@
 
 // go2-t1c2: rotated home section titles from site_labels, previous
 	// literals kept as code fallbacks.
-	const sectionProjects = resolveLocale(siteLabels.pages.homeSectionProjects, 'en') || 'Projects';
-	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, 'en') || 'Services';
-	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, 'en') || 'Terminus';
+	const sectionProjects = resolveLocale(siteLabels.pages.homeSectionProjects, locale) || 'Projects';
+	const sectionServices = resolveLocale(siteLabels.pages.homeSectionServices, locale) || 'Services';
+	const sectionTerminus = resolveLocale(siteLabels.pages.homeSectionTerminus, locale) || 'Terminus';
 
 	// GO-w2t5: the slice-23 orphans are wired — sectionGlow lives inside
 	// HomeServices, backgroundBreathing inside HomeCloser (each section

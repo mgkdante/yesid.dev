@@ -10,6 +10,9 @@
 <script lang="ts">
 	import { STACK_LAYERS } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { pressBounce } from '$lib/motion/actions';
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { encodeBlueprint } from '$lib/utils/blueprint-param';
@@ -81,9 +84,9 @@
 						onclick={() => engine.selectArchetype(match.slug)}
 					>
 						<span class="match-title">
-							{resolveLocale(archetype.title, 'en')} — {match.matched.length}/{archetype.tech.length}
+							{resolveLocale(archetype.title, locale)} — {match.matched.length}/{archetype.tech.length}
 						</span>
-						<span class="match-hook">{resolveLocale(archetype.hook, 'en')}</span>
+						<span class="match-hook">{resolveLocale(archetype.hook, locale)}</span>
 					</button>
 				{/if}
 			{/each}

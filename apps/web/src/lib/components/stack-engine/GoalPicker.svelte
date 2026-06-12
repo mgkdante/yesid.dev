@@ -1,10 +1,13 @@
 <!--
   GoalPicker (slice-29) — goal-mode entry: one card per archetype.
-  Title + hook resolve like sibling components (resolveLocale(…, 'en'));
+  Title + hook resolve like sibling components (resolveLocale(…, locale));
   clicking a card hands the slug to the engine → blueprint view.
 -->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { pressBounce } from '$lib/motion/actions';
 	import type { EngineState } from './engine-state.svelte';
 
@@ -20,8 +23,8 @@
 			use:pressBounce
 			onclick={() => engine.selectArchetype(archetype.slug)}
 		>
-			<span class="card-title">{resolveLocale(archetype.title, 'en')}</span>
-			<span class="card-hook">{resolveLocale(archetype.hook, 'en')}</span>
+			<span class="card-title">{resolveLocale(archetype.title, locale)}</span>
+			<span class="card-hook">{resolveLocale(archetype.hook, locale)}</span>
 			<span class="card-meta">{archetype.tech.length} parts · tap to draw</span>
 		</button>
 	{/each}

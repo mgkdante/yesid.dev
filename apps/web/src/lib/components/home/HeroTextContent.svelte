@@ -5,6 +5,10 @@
 <script lang="ts">
 	import HeroMetrics from './HeroMetrics.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { pressBounce } from '$lib/motion/actions';
 	import type { HeroData } from '$lib/content';
 	let {
@@ -79,11 +83,11 @@
 
 	<div class="mt-6 flex flex-wrap gap-3.5" data-hero-stagger="6">
 		<span class="tap-press" use:pressBounce>
-			<Button variant="default" size="cta-lg" href="/projects" data-testid="hero-cta-projects">
+			<Button variant="default" size="cta-lg" href={localizeHref('/projects', locale)} data-testid="hero-cta-projects">
 				{ctaWorkLabel}
 			</Button>
 		</span>
-		<Button variant="outline" size="cta-lg" href="/contact" data-testid="hero-cta-contact" class="tap-press">
+		<Button variant="outline" size="cta-lg" href={localizeHref('/contact', locale)} data-testid="hero-cta-contact" class="tap-press">
 			{ctaContactLabel}
 		</Button>
 	</div>

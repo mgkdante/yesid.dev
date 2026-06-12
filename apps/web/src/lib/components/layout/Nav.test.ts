@@ -63,3 +63,43 @@ describe('Nav — Pill Structure', () => {
 	});
 
 });
+
+describe('Nav — locale threading (slice-28.6)', () => {
+	it('renders link labels via resolveLocale — fr prop yields fr labels', () => {
+		render(Nav, {
+			props: {
+				pathname: '/',
+				locale: 'fr',
+				headerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
+				menuItems: [],
+			},
+		});
+		expect(screen.getByText('Projets')).toBeInTheDocument();
+		expect(screen.queryByText('Projects')).toBeNull();
+	});
+
+	it('marks the active link from a locale-prefixed pathname', () => {
+		render(Nav, {
+			props: {
+				pathname: '/fr/projects',
+				locale: 'fr',
+				headerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
+				menuItems: [],
+			},
+		});
+		expect(screen.getByText('Projets').closest('a')).toHaveAttribute('aria-current', 'page');
+	});
+
+	it('localizes internal link hrefs for fr', () => {
+		render(Nav, {
+			props: {
+				pathname: '/fr',
+				locale: 'fr',
+				headerLinks: [{ label: { en: 'Projects', fr: 'Projets' }, href: '/projects', priority: 1 }],
+				menuItems: [],
+			},
+		});
+		expect(screen.getByText('Projets').closest('a')).toHaveAttribute('href', '/fr/projects');
+		expect(screen.getByTestId('nav-wordmark').closest('a')).toHaveAttribute('href', '/fr');
+	});
+});

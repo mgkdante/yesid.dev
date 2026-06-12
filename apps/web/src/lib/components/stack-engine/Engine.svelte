@@ -19,6 +19,9 @@
 	import { gsap } from 'gsap';
 	import { Flip } from 'gsap/Flip';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { EngineState } from './engine-state.svelte';
 	import GoalPicker from './GoalPicker.svelte';
 	import TechMatcher from './TechMatcher.svelte';
@@ -56,7 +59,7 @@
 		compose: 'What can these build?',
 	} as const;
 
-	const activeTitle = $derived(engine.active ? resolveLocale(engine.active.title, 'en') : '');
+	const activeTitle = $derived(engine.active ? resolveLocale(engine.active.title, locale) : '');
 	/** Compose entry: the matched/missing partition for the active archetype. */
 	const activeMatch = $derived(
 		engine.mode === 'compose' && engine.activeArchetype

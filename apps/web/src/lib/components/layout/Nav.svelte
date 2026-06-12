@@ -7,23 +7,31 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { wordmarkHover, magnetic } from '$lib/motion/actions';
 	import { sharedChromeContent, navLinks as staticNavLinks } from '$lib/content';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
 	import MenuOverlay from './MenuOverlay.svelte';
 	import type { NavLink } from '$lib/content/nav';
+	import type { Locale } from '$lib/types';
 	import ThemeToggle from './ThemeToggle.svelte';
-
-	const openMenuAria = resolveLocale(sharedChromeContent.openMenuAria, 'en');
-	const closeMenuAria = resolveLocale(sharedChromeContent.closeMenuAria, 'en');
 
 	let {
 		pathname = '/',
+		locale = DEFAULT_LOCALE,
 		headerLinks = staticNavLinks as readonly NavLink[],
 		menuItems = [] as readonly NavLink[],
 	}: {
 		pathname?: string;
+		locale?: Locale;
 		headerLinks?: readonly NavLink[];
 		menuItems?: readonly NavLink[];
 	} = $props();
+
+	// $derived (not const): Nav never remounts; locale changes on /fr↔/ navigation.
+	const openMenuAria = $derived(resolveLocale(sharedChromeContent.openMenuAria, locale));
+	const closeMenuAria = $derived(resolveLocale(sharedChromeContent.closeMenuAria, locale));
+	// isActive compares the canonical (delocalized) pathname so /fr/projects
+	// activates the same link as /projects.
+	const basePath = $derived(delocalizePath(pathname));
 
 	let menuOpen = $state(false);
 	// True while overlay is visible (including during close animation).
@@ -52,8 +60,8 @@
 	let wordmarkAction: ReturnType<typeof wordmarkHover> | undefined;
 
 	function isActive(href: string): boolean {
-		if (href === '/') return pathname === '/';
-		return pathname.startsWith(href);
+		if (href === '/') return basePath === '/';
+		return basePath.startsWith(href);
 	}
 
 	function onKeydown(e: KeyboardEvent) {
@@ -87,7 +95,7 @@
 	>
 		<!-- Wordmark -->
 		<a
-			href="/"
+			href={localizeHref('/', locale)}
 			data-testid="nav-wordmark"
 			class="inline-flex min-h-11 items-center font-heading text-lg font-bold text-[var(--foreground)]"
 		>
@@ -108,13 +116,13 @@
 					use:magnetic={{ strength: 6, radius: 50 }}
 				>
 					<a
-						href={link.href}
+						href={localizeHref(link.href, locale)}
 						class="nav-pill-link inline-flex min-h-11 items-center px-1 transition-all {isActive(link.href)
 							? 'text-primary nav-link-active'
 							: 'text-secondary-foreground hover:text-primary hover:nav-link-glow active:text-primary'}"
 						aria-current={isActive(link.href) ? 'page' : undefined}
 					>
-						{link.label.en}
+						{resolveLocale(link.label, locale)}
 					</a>
 				</span>
 			{/each}
@@ -124,7 +132,7 @@
 		<span class="nav-divider" aria-hidden="true"></span>
 
 		<!-- Theme toggle (GO-W2.2) -->
-		<ThemeToggle />
+		<ThemeToggle {locale} />
 
 		<!-- Menu toggle -->
 		<button
@@ -140,7 +148,7 @@
 
 </nav>
 
-<MenuOverlay open={menuOpen} {pathname} {menuItems} onclose={handleOverlayClose} onanimationdone={handleOverlayDone} />
+<MenuOverlay open={menuOpen} {pathname} {locale} {menuItems} onclose={handleOverlayClose} onanimationdone={handleOverlayDone} />
 
 <style>
 	.nav-root {

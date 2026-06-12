@@ -20,6 +20,9 @@
 
 <script lang="ts">
   import { resolveLocale } from '$lib/utils/locale';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { blogListingContent } from '$lib/content/blog';
 
   let {
@@ -28,8 +31,8 @@
     class: className = ''
   }: BlogRouteMapProps = $props();
 
-  const routeMapLabel = resolveLocale(blogListingContent.routeMap.title, 'en');
-  const terminusLabel = resolveLocale(blogListingContent.routeMap.terminus, 'en');
+  const routeMapLabel = resolveLocale(blogListingContent.routeMap.title, locale);
+  const terminusLabel = resolveLocale(blogListingContent.routeMap.terminus, locale);
 
   const CX = 50;
   const START_Y = 30;

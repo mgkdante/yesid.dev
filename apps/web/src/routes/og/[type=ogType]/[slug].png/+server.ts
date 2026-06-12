@@ -5,6 +5,7 @@ import { renderOgPng } from '$lib/og/render';
 import { getOgFonts } from '$lib/og/fonts';
 import type { Locale } from '$lib/types';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '$lib/utils/locale';
+import { defaultOgImageFor } from '$lib/utils/seo-defaults';
 
 // Eager-call so font failures surface at deploy time, not mid-request.
 // If this throws at module init, the whole route fails loud (500) — that
@@ -12,7 +13,6 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '$lib/utils/locale';
 getOgFonts();
 
 const SLUG_RE = /^[a-z0-9-]+$/;
-const DEFAULT_OG_URL = '/og/default.en.png';
 
 // slice-28.1 (audit #24): 302 fallbacks carry s-maxage=86400 so repeat
 // crawler hits on a missing/broken slug are served from the CDN edge instead
@@ -20,14 +20,12 @@ const DEFAULT_OG_URL = '/og/default.en.png';
 // error path still attempts a render). Browser TTLs stay short (60s/300s);
 // Vercel's CDN cache resets on deploy, so a fixed render or newly published
 // slug surfaces with the next deploy at the latest.
-const NOT_FOUND_FALLBACK_HEADERS = {
-  location: DEFAULT_OG_URL,
-  'cache-control': 'public, max-age=300, s-maxage=86400',
-};
-const ERROR_FALLBACK_HEADERS = {
-  location: DEFAULT_OG_URL,
-  'cache-control': 'public, max-age=60, s-maxage=86400',
-};
+// slice-28.6: fallback target is locale-aware — defaultOgImageFor falls back
+// to the EN asset until the requested locale is published.
+const fallbackHeaders = (locale: Locale, browserTtl: number) => ({
+  location: defaultOgImageFor(locale),
+  'cache-control': `public, max-age=${browserTtl}, s-maxage=86400`,
+});
 
 const HAPPY_HEADERS = {
   'content-type': 'image/png',
@@ -62,10 +60,10 @@ export const GET: RequestHandler = async (event) => {
     titleResult = await loadOgTitle(type, slug, locale);
   } catch (err) {
     console.error('[og]', type, slug, err);
-    return new Response(null, { status: 302, headers: ERROR_FALLBACK_HEADERS });
+    return new Response(null, { status: 302, headers: fallbackHeaders(locale, 60) });
   }
   if (!titleResult) {
-    return new Response(null, { status: 302, headers: NOT_FOUND_FALLBACK_HEADERS });
+    return new Response(null, { status: 302, headers: fallbackHeaders(locale, 300) });
   }
 
   // Render. Any failure → 302 short-TTL + log.
@@ -79,6 +77,6 @@ export const GET: RequestHandler = async (event) => {
     return new Response(png as BodyInit, { status: 200, headers: HAPPY_HEADERS });
   } catch (err) {
     console.error('[og]', type, slug, err);
-    return new Response(null, { status: 302, headers: ERROR_FALLBACK_HEADERS });
+    return new Response(null, { status: 302, headers: fallbackHeaders(locale, 60) });
   }
 };

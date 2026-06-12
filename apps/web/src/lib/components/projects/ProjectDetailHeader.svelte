@@ -7,6 +7,10 @@
 <script lang="ts">
   import type { Project } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
+  import { localizeHref } from '$lib/utils/locale-routing';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { getStackRole } from '$lib/utils/stack-roles';
   import { CornerMarks } from '$lib/components/brand';
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
@@ -16,9 +20,9 @@
 
   let { project }: { project: Project } = $props();
 
-  const backToListingLabel = resolveLocale(projectsDetailContent.backToListingLabel, 'en');
+  const backToListingLabel = resolveLocale(projectsDetailContent.backToListingLabel, locale);
   // go2-t1c2: aria microcopy from site_labels, previous literal as fallback.
-  const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, 'en') || 'Tech stack';
+  const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, locale) || 'Tech stack';
 
   const location = $derived(project.location ?? 'sherbrooke');
   const environment = $derived(project.environment ?? 'production');
@@ -94,7 +98,7 @@
         <div>STATUS <span class="edge-value">{project.status}</span></div>
         <div class="edge-separator">───────</div>
         {#each metrics as metric}
-          <div>{metric.value} {resolveLocale(metric.label, 'en')}</div>
+          <div>{metric.value} {resolveLocale(metric.label, locale)}</div>
         {/each}
       </div>
 
@@ -112,7 +116,7 @@
     <!-- Center content -->
     <div class="header__content">
       <a
-        href="/projects"
+        href={localizeHref('/projects', locale)}
         class="mb-5 inline-block font-mono text-xs tracking-[0.5px] text-primary opacity-70 transition-opacity hover:opacity-100 lg:mb-7"
         use:boop={{ scale: 1.05, timing: 200 }}
       >
@@ -122,7 +126,7 @@
       <h1
         class="header-title mb-3 font-heading font-black uppercase leading-[0.95] tracking-[-0.03em] text-primary lg:mb-4"
       >
-        {resolveLocale(project.title, 'en')}
+        {resolveLocale(project.title, locale)}
       </h1>
 
       <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label={navTechStackAria}>

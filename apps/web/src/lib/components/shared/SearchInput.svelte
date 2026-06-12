@@ -4,6 +4,9 @@
 -->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { sharedChromeContent } from '$lib/content';
 
 	export interface SearchInputProps {
@@ -12,7 +15,7 @@
 		testId?: string;
 	}
 
-	const defaultPlaceholder = resolveLocale(sharedChromeContent.searchPlaceholder, 'en');
+	const defaultPlaceholder = resolveLocale(sharedChromeContent.searchPlaceholder, locale);
 
 	let {
 		placeholder = defaultPlaceholder,
