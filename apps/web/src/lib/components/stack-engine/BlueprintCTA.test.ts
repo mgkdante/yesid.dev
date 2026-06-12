@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import BlueprintCTA from './BlueprintCTA.svelte';
+import { encodeBlueprint } from '$lib/utils/blueprint-param';
 import { stackArchetypes } from '$lib/content/stack-archetypes';
 
 const dashboard = stackArchetypes.find((a) => a.slug === 'data-dashboard')!;
@@ -18,12 +19,12 @@ describe('BlueprintCTA (goal mode — archetype stack)', () => {
 		expect(proof.textContent).toContain('I built this');
 
 		const service = screen.getByTestId('cta-service');
-		expect(service.getAttribute('href')).toBe('/services/sql-development');
+		expect(service.getAttribute('href')).toBe(`/services/${dashboard.serviceId}`); // consolidation remaps live (gate A: analytics-reporting)
 		expect(service.textContent).toContain('Hire this');
 
 		const blueprint = screen.getByTestId('cta-blueprint');
 		expect(blueprint.getAttribute('href')).toBe(
-			'/contact?bp=data-dashboard~sveltekit.rest-api.postgresql.docker',
+			'/contact?bp=' + encodeBlueprint({ archetype: 'data-dashboard', techs: dashboard.tech.map((l) => l.id) }),
 		);
 		expect(blueprint.textContent).toContain('Send me this blueprint');
 	});
@@ -41,9 +42,7 @@ describe('BlueprintCTA (compose mode — picked techs)', () => {
 		expect(screen.getByTestId('cta-proof').getAttribute('href')).toBe(
 			'/projects/transit-data-pipeline',
 		);
-		expect(screen.getByTestId('cta-service').getAttribute('href')).toBe(
-			'/services/sql-development',
-		);
+		expect(screen.getByTestId('cta-service').getAttribute('href')).toBe(`/services/${dashboard.serviceId}`);
 	});
 });
 

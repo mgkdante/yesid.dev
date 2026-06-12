@@ -356,7 +356,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		layer: 'logic',
 		name: 'Node.js',
 		relatedProjects: [],
-		relatedServices: ['web-development', 'internal-tooling'],
+		relatedServices: ['web-development', 'data-pipeline'],
 		what_i_use_it_for: {
 			en: {
 				blocks: [
@@ -415,7 +415,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		layer: 'data',
 		name: 'PostgreSQL',
 		relatedProjects: ['yesid-dev', 'transit-data-pipeline'],
-		relatedServices: ['sql-development', 'database-engineering'],
+		relatedServices: ['database-engineering'],
 		what_i_use_it_for: {
 			en: {
 				blocks: [
@@ -654,7 +654,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		layer: 'logic',
 		name: 'REST API',
 		relatedProjects: ['yesid-dev'],
-		relatedServices: ['web-development', 'internal-tooling'],
+		relatedServices: ['web-development', 'data-pipeline'],
 		what_i_use_it_for: {
 			en: {
 				blocks: [
@@ -715,7 +715,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		layer: 'data',
 		name: 'SQL Server',
 		relatedProjects: ['lorem-analytics-dashboard'],
-		relatedServices: ['sql-development', 'database-engineering'],
+		relatedServices: ['database-engineering'],
 		what_i_use_it_for: {
 			en: {
 				blocks: [
@@ -1006,7 +1006,7 @@ export const techStackItems: readonly TechStackItem[] = [
 		layer: 'data',
 		name: 'T-SQL',
 		relatedProjects: ['lorem-analytics-dashboard'],
-		relatedServices: ['sql-development', 'analytics-reporting'],
+		relatedServices: ['database-engineering', 'analytics-reporting'],
 		what_i_use_it_for: {
 			en: {
 				blocks: [
