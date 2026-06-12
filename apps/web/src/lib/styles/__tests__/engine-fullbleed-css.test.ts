@@ -36,7 +36,7 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 		expect(src).toMatch(/\.engine-band \{[^}]*color-mix\(in srgb, var\(--primary\)/);
 	});
 
-	it('finale 4d: the HERO is full-bleed too — the old constrained-hero rule is superseded for THIS page', () => {
+	it('finale 4d + micro-pass 4e: the HERO is full-bleed on the PLAIN site background — the tint is the band\'s alone', () => {
 		const src = page();
 		const hero = src.match(/\.hero \{[^}]*\}/);
 		expect(hero, '.hero rule must exist').not.toBeNull();
@@ -44,11 +44,46 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 		// the shared --space-page-x padding.
 		expect(hero![0]).not.toContain('max-width');
 		expect(hero![0]).toContain('var(--space-page-x)');
-		// One continuous instrument panel: the hero carries the SAME brand tint
-		// as the engine band; the hazard strip is the seam between them.
-		expect(hero![0]).toMatch(/color-mix\(in srgb, var\(--primary\)/);
+		// Micro-pass (4e), operator verdict: hero background = plain site
+		// background ("just usual black" in dark, plain paper in light). NO
+		// background declaration on the hero rule at all — the 3% brand tint
+		// belongs to the engine band alone (asserted above), and the hazard
+		// strip is the band's front edge, not a seam between tinted panels.
+		expect(hero![0]).not.toContain('background');
+		expect(hero![0]).not.toContain('color-mix');
 		// No dead air between hero and band — margin-top is gone.
 		expect(src).toMatch(/\.engine-band \{[^}]*margin: 0 0 /);
+	});
+
+	it('micro-pass 4f: two-column control room on desktop — reading column dominant (~60/40), stacked below 768px', () => {
+		const src = page();
+		// Single-column base (mobile stacks in source order)…
+		expect(src).toMatch(/\.hero-columns \{[^}]*display: grid;[^}]*grid-template-columns: 1fr;/);
+		// …and the ≥768px grid is left-dominant 3fr/2fr with aligned bottoms
+		// (one rhythm line: terminal prompt and action row share the rail).
+		const desktop = src.match(/@media \(min-width: 768px\) \{[\s\S]*?\n\t\}/);
+		expect(desktop, 'desktop hero media block must exist').not.toBeNull();
+		expect(desktop![0]).toMatch(
+			/\.hero-columns \{[^}]*grid-template-columns: minmax\(0, 3fr\) minmax\(0, 2fr\);[^}]*align-items: end;/,
+		);
+	});
+
+	it('micro-pass 4f: yellow-conversion rule — hero get-in-touch wears the signage pairing; view-services stays standard', () => {
+		const src = page();
+		// Markup: ONLY the get-in-touch button carries the local class.
+		const talks = src.match(/class="hero-cta-talk"/g) ?? [];
+		expect(talks).toHaveLength(1);
+		expect(src).toMatch(/class="hero-cta-talk" href=\{localizeHref\('\/contact'/);
+		// CSS: the BlueprintCTA recipe verbatim — --accent under fixed
+		// near-black ink, hover steps to --accent-hover (never orange).
+		expect(src).toMatch(
+			/:global\(\.hero-cta-talk\) \{[^}]*background: var\(--accent\);[^}]*color: #1C1814;/,
+		);
+		expect(src).toMatch(
+			/:global\(\.hero-cta-talk:hover\) \{[^}]*background: var\(--accent-hover\);[^}]*color: #1C1814;/,
+		);
+		// The standard (orange) services button never picks up the class.
+		expect(src).toMatch(/<Button variant="outline" size="cta" href=\{localizeHref\('\/services'/);
 	});
 
 	it('finale 4d: hero type commands the viewport (clamped big, viewport-driven)', () => {

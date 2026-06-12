@@ -117,52 +117,68 @@
 			<SectionLabel text={heroOverline} variant="station" />
 		</div>
 
-		<h1 class="hero-title">
-			{heroTitleLine1}<br>
-			<span class="hero-title-accent">{heroTitleLine2}.</span>
-		</h1>
+		<!-- go2/w5 micro-pass (4f): two columns on desktop — the READING column
+		     (title → explainer → terminal) leads at ~60, the READOUT column
+		     (count gauge + actions) anchors the right ~40. Mobile stacks in
+		     source order — exactly the finale order: title → explainer →
+		     terminal → count → actions. -->
+		<div class="hero-columns">
+			<div class="hero-col-main" data-testid="hero-col-main">
+				<h1 class="hero-title">
+					{heroTitleLine1}<br>
+					<span class="hero-title-accent">{heroTitleLine2}.</span>
+				</h1>
 
-		<!-- go2/w5 §1: educational FIRST — the plain-language explainer reads
-		     before the machine voice starts typing. Human voice = site sans;
-		     mono stays the machine's. -->
-		<p class="stack-explainer" data-testid="stack-explainer">
-			<span class="explainer-kicker">what's a "stack"?</span>
-			{stackExplainer}
-		</p>
+				<!-- go2/w5 §1: educational FIRST — the plain-language explainer reads
+				     before the machine voice starts typing. Human voice = site sans;
+				     mono stays the machine's. -->
+				<p class="stack-explainer" data-testid="stack-explainer">
+					<span class="explainer-kicker">what's a "stack"?</span>
+					{stackExplainer}
+				</p>
 
-		<div class="hero-terminal" aria-label={heroTerminalAria}>
-			{#each heroLines as line}
-				<div
-					class="hero-terminal-line hero-line-color-{line.color}"
-					class:hero-line-visible={line.visible}
-					class:hero-line-animate={line.visible && !isPrefersReducedMotion()}
-				>
-					{line.text}
+				<div class="hero-terminal" aria-label={heroTerminalAria}>
+					{#each heroLines as line}
+						<div
+							class="hero-terminal-line hero-line-color-{line.color}"
+							class:hero-line-visible={line.visible}
+							class:hero-line-animate={line.visible && !isPrefersReducedMotion()}
+						>
+							{line.text}
+						</div>
+					{/each}
+					<div
+						class="hero-terminal-line"
+						class:hero-line-visible={heroCursorVisible}
+					>
+						<span class="hero-prompt">~</span>
+						<TerminalCursor />
+					</div>
 				</div>
-			{/each}
-			<div
-				class="hero-terminal-line"
-				class:hero-line-visible={heroCursorVisible}
-			>
-				<span class="hero-prompt">~</span>
-				<TerminalCursor />
 			</div>
-		</div>
 
-		<div class="hero-stats" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
-			<div class="hero-stat">
-				<span class="hero-stat-value flex items-center gap-2"><StatusDot color="orange" pulse />{itemCount}</span>
-				<span class="hero-stat-label">{statLabels.technologies}</span>
+			<div class="hero-col-side" data-testid="hero-col-side">
+				<div class="hero-stats" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
+					<div class="hero-stat">
+						<span class="hero-stat-value flex items-center gap-2"><StatusDot color="orange" pulse />{itemCount}</span>
+						<span class="hero-stat-label">{statLabels.technologies}</span>
+					</div>
+				</div>
+
+				<!-- Yellow-conversion rule (ratified): 'Get in touch' IS the
+				     conversation starter, so it wears the signage yellow — the
+				     BlueprintCTA recipe (--accent under fixed near-black ink,
+				     hover steps to --accent-hover, never orange). 'View services'
+				     is exploration → stays in the standard orange grammar. -->
+				<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
+					<Button variant="default" size="cta" class="hero-cta-talk" href={localizeHref('/contact', locale)}>
+						{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
+					</Button>
+					<Button variant="outline" size="cta" href={localizeHref('/services', locale)}>
+						{viewServicesLabel}
+					</Button>
+				</div>
 			</div>
-		</div>
-
-		<div class="hero-actions" class:hero-reveal={heroReady} class:hero-hidden={!heroReady}>
-			<Button variant="default" size="cta" href={localizeHref('/contact', locale)}>
-				{getInTouchLabel} <span aria-hidden="true">&rarr;</span>
-			</Button>
-			<Button variant="outline" size="cta" href={localizeHref('/services', locale)}>
-				{viewServicesLabel}
-			</Button>
 		</div>
 	</section>
 
@@ -216,19 +232,26 @@
 
 	/* ═══ HERO ZONE ═══ */
 
-	/* go2/w5 finale (4d): the CONTROL ROOM goes full-bleed — edge to edge,
-	   superseding the old constrained-hero rule for THIS page. The hero and
-	   the engine band below read as ONE continuous wide instrument panel:
-	   same edge-to-edge width, same --space-page-x gutters, same faint brand
-	   tint; the hazard strip is the panel's seam, not a fence. Type scales up
-	   confidently — the title commands the viewport. */
+	/* go2/w5 finale (4d) + micro-pass (4e): the CONTROL ROOM stays full-bleed —
+	   edge to edge, superseding the old constrained-hero rule for THIS page —
+	   but it sits on the PLAIN site background (operator: "just usual black"
+	   in dark; plain paper in light). The 3% brand tint belongs to the ENGINE
+	   BAND alone; the hazard strip below is the band's front edge, not a seam
+	   between two tinted panels. Type keeps the finale's confident scale. */
 	.hero {
-		padding: 3rem var(--space-page-x) 0;
+		padding: 3rem var(--space-page-x) 2rem;
 		display: flex;
 		flex-direction: column;
 		min-height: 50dvh;
 		justify-content: center;
-		background: color-mix(in srgb, var(--primary) 3%, transparent);
+	}
+
+	/* Micro-pass (4f): the two-column control room. Single column by default
+	   (mobile stacks in source order: title → explainer → terminal → count →
+	   actions); the ≥768px grid lives in the Responsive section below. */
+	.hero-columns {
+		display: grid;
+		grid-template-columns: 1fr;
 	}
 
 	.hero-overline {
@@ -353,7 +376,25 @@
 		display: flex;
 		gap: 1rem;
 		flex-wrap: wrap;
-		padding-bottom: 2rem;
+	}
+
+	/* Yellow-conversion rule (go2/w5 operator doctrine): yellow means "talk
+	   to Yesid" ONLY. The hero's get-in-touch is the conversation starter, so
+	   it wears the signage pairing — the BlueprintCTA recipe verbatim:
+	   --accent (#FFB627) under fixed near-black ink (#1C1814 ≈ 10:1, AA in
+	   BOTH themes); hover steps down the accent system's own darker yellow
+	   (--accent-hover #E5A220), never orange. Unlayered scoped rules outrank
+	   the Button's layered utility classes; the glow swaps to the accent hue
+	   so no orange halo sneaks under the yellow. */
+	.hero-actions :global(.hero-cta-talk) {
+		background: var(--accent);
+		color: #1C1814;
+	}
+
+	.hero-actions :global(.hero-cta-talk:hover) {
+		background: var(--accent-hover);
+		color: #1C1814;
+		box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 30%, transparent);
 	}
 
 	/* ═══ ENGINE ZONE ═══ */
@@ -361,9 +402,10 @@
 	/* GO-w2t5 addendum: full-bleed work-zone band. No max-width — the band
 	   runs edge-to-edge between its hazard strips; the faint brand tint marks
 	   the interactive zone (cute-pass anchor; alpha-only over the global
-	   circuit grid). Finale (4d): margin-top is GONE — the hero carries the
-	   same tint and the top hazard strip becomes the seam of one continuous
-	   instrument panel. */
+	   circuit grid). Finale (4d): margin-top is GONE. Micro-pass (4e): the
+	   tint is the BAND'S alone again ("I love the engine!") — the hero above
+	   went back to plain site background, so the top hazard strip reads as
+	   the engine's front edge. */
 	.engine-band {
 		margin: 0 0 2rem;
 		background: color-mix(in srgb, var(--primary) 3%, transparent);
@@ -444,11 +486,38 @@
 
 	/* ═══ Responsive ═══ */
 
+	@media (min-width: 768px) {
+		/* Micro-pass (4f): desktop control room is TWO columns — the reading
+		   column drives at ~60/40 and both columns sit on one bottom rhythm
+		   line (align-items: end → the terminal's resting prompt and the
+		   action row share the rail; terminal lines are always in flow, so
+		   the typing sequence never shifts the grid). */
+		.hero-columns {
+			grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+			column-gap: clamp(2.5rem, 6vw, 6rem);
+			align-items: end;
+		}
+
+		/* The shared rhythm line does the separating — no trailing margin on
+		   the reading column's last block. */
+		.hero-terminal {
+			margin-bottom: 0;
+		}
+
+		/* The count is the readout column's anchor gauge — bigger on the
+		   panel, still mono, still a number you can read across the room. */
+		.hero-stat-value {
+			font-size: clamp(2.75rem, 4.5vw, 5rem);
+		}
+	}
+
 	@media (max-width: 767px) {
 		/* Finale (4d): mobile stays composed — big but never broken. The clamp
-		   minima above already fit a 360px viewport; tighten the frame only. */
+		   minima above already fit a 360px viewport; tighten the frame only.
+		   (4f: the bottom 2rem rides the section now that the action row lost
+		   its own padding-bottom spacer.) */
 		.hero {
-			padding: 2rem var(--space-page-x) 0;
+			padding: 2rem var(--space-page-x) 2rem;
 			min-height: 40dvh;
 		}
 
