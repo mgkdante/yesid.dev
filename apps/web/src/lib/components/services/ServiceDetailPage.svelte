@@ -102,16 +102,6 @@
 			</a>
 
 			<header class="hero-grid">
-				<!-- SVG panel — desktop/tablet only (wrapper controls visibility).
-				     GO2-W5 round 6 (operator): the fun art lives on the LEFT of the
-				     detail hero, as it did originally (slice-09) — morph on hover
-				     AND tap, both themes. -->
-				{#if svgContent}
-					<div class="svg-desktop">
-						<ServiceSvgPanel {svgContent} />
-					</div>
-				{/if}
-
 				<!-- Text column -->
 				<div class="hero-text">
 					<SectionLabel text={stationLabelText} variant="station" class="mb-4 block" />
@@ -134,6 +124,15 @@
 						</div>
 					{/if}
 				</div>
+
+				<!-- SVG panel — desktop/tablet only (wrapper controls visibility).
+				     Operator pass 2: text leads the detail hero, art sits to the
+				     right on desktop — morph on hover AND tap, both themes. -->
+				{#if svgContent}
+					<div class="svg-desktop">
+						<ServiceSvgPanel {svgContent} />
+					</div>
+				{/if}
 			</header>
 
 			<!-- SVG banner — mobile only (wrapper controls visibility) -->
@@ -355,7 +354,7 @@
 		text-decoration: underline;
 	}
 
-	/* Desktop: SVG panel LEFT, text right (round 6 — original slice-09 order) */
+	/* Desktop: text left, SVG panel right */
 	.hero-grid {
 		display: flex;
 		flex-direction: column;
@@ -365,7 +364,7 @@
 	@media (min-width: 768px) {
 		.hero-grid {
 			display: grid;
-			grid-template-columns: auto 1fr;
+			grid-template-columns: 1fr auto;
 			gap: clamp(2rem, 4vw, 4rem);
 			align-items: start;
 		}

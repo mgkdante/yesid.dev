@@ -33,7 +33,7 @@ export const projects: readonly Project[] = [
 		oneLiner: {
 			en: 'The site you are looking at: a SvelteKit portfolio built slice by slice.',
 		},
-		relatedServices: ['web-development'],
+		relatedServices: ['web-development', 'database-engineering'],
 		repoUrl: 'https://github.com/mgkdante/yesid.dev',
 		sections: [
 			{
@@ -104,7 +104,12 @@ export const projects: readonly Project[] = [
 			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.',
 		},
 		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
-		relatedServices: ['data-pipeline', 'database-engineering'],
+		relatedServices: [
+			'data-pipeline',
+			'database-engineering',
+			'analytics-reporting',
+			'web-development',
+		],
 		repoUrl: 'https://github.com/mgkdante/transit',
 		sections: [],
 		slug: 'transit-data-pipeline',

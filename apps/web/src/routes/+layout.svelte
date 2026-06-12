@@ -70,8 +70,7 @@
 		// spawns the Manifesto-style two-ring expanding ripple.
 		const cleanupRipple = initGlobalRipple();
 
-		// GO-W2.2: re-sync theme store with the pre-paint attribute + watch
-		// system preference for users with no stored choice.
+		// GO-W2.2: re-sync theme store with the pre-paint attribute.
 		const cleanupTheme = themeStore.init();
 
 		return () => {
