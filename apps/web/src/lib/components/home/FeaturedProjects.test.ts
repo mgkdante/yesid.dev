@@ -135,17 +135,21 @@ describe('FeaturedProjects', () => {
 
 	it('renders a station signage chip naming the primary service per card', () => {
 		render(FeaturedProjects, { props: renderProps });
-		// A chip renders for every card whose relatedServices[0] resolves in
-		// the visible services array (archived ids → no chip, never a crash).
-		const withService = resolvedProjects
-			.map((p) => services.find((s) => s.id === p.relatedServices[0]))
-			.filter((s): s is NonNullable<typeof s> => Boolean(s));
+		// Round 7: stations are MANY-TO-MANY — one chip per resolvable
+		// service per card, station-number sorted (archived ids drop out,
+		// never a crash). Titles render only when a card has ≤2 stations;
+		// 3+ stations compress to numbers + the 'one system' caption.
+		const expected = resolvedProjects.flatMap((p) =>
+			p.relatedServices
+				.map((id) => services.find((s) => s.id === id))
+				.filter((s): s is NonNullable<typeof s> => Boolean(s)),
+		);
 		const chips = screen.queryAllByTestId('proof-station-chip');
-		expect(chips).toHaveLength(withService.length);
-		withService.forEach((svc, i) => {
-			expect(chips[i]?.textContent).toContain(String(svc.station).padStart(2, '0'));
-			expect(chips[i]?.textContent).toContain(resolveLocale(svc.title, 'en'));
-		});
+		expect(chips).toHaveLength(expected.length);
+		const allText = chips.map((c) => c.textContent).join(' ');
+		for (const svc of expected) {
+			expect(allText).toContain(String(svc.station).padStart(2, '0'));
+		}
 	});
 
 	it('renders the quiet exploration line on every card', () => {
@@ -191,7 +195,7 @@ describe('FeaturedProjects', () => {
 		);
 	});
 
-	it('renders no signage chip when the primary service id is unresolvable', () => {
+	it('renders no signage chips when every service id is unresolvable', () => {
 		const project = projectFactory.build({
 			slug: 'synthetic-orphan',
 			relatedServices: ['archived-station-id'],

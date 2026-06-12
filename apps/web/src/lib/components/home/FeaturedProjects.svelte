@@ -75,12 +75,18 @@
 	const visibleProjects = $derived(projects);
 	const total = $derived(visibleProjects.length);
 
-	// go2/home-cards: each card declares the station that built it — the
-	// project's primary service (relatedServices[0]) resolved against the
-	// services prop. Unresolvable ids (archived stations) render no chip.
+	// go2/home-cards (operator round 7): projects are MANY-TO-MANY with
+	// stations — transit wears all four. Resolve every station, sorted by
+	// station number; unresolvable ids (archived stations) drop out.
+	function projectStations(project: Project): Service[] {
+		return project.relatedServices
+			.map((id) => services.find((s) => s.id === id))
+			.filter((s): s is Service => Boolean(s))
+			.sort((a, b) => a.station - b.station);
+	}
+	/** First station keeps powering the imageless fallback gradient. */
 	function primaryService(project: Project): Service | undefined {
-		const id = project.relatedServices[0];
-		return id ? services.find((s) => s.id === id) : undefined;
+		return projectStations(project)[0];
 	}
 
 	/** Pad station number to 2 digits (1 → "01") — StationTabs convention. */
@@ -179,7 +185,8 @@
 				{@const metric = project.impactMetric}
 				{@const metricLabel = metric ? resolveLocale(metric.label, locale) : ''}
 				{@const imageUrl = proofReelContent.images[project.slug]}
-				{@const service = primaryService(project)}
+				{@const stations = projectStations(project)}
+				{@const service = stations[0]}
 				{@const gradient = fallbackGradient(project)}
 				<div class="embla__slide">
 					<div
@@ -260,10 +267,15 @@
 							<div class="proof-body">
 								<!-- Station signage chip — which station built it. Theme-
 								     invariant signage pair (StationTabs backlit-sign precedent). -->
-								{#if service}
-									<span class="proof-station-chip" data-testid="proof-station-chip">
-										<span class="proof-station-chip-num">{padStation(service.station)}</span>
-										<span>{resolveLocale(service.title, locale)}</span>
+								{#if stations.length > 0}
+									<span class="proof-station-row" data-testid="proof-station-row">
+										{#each stations as station, si (station.id)}
+											<span class="proof-station-chip" data-testid="proof-station-chip">
+												<span class="proof-station-chip-num">{padStation(station.station)}</span>
+												{#if stations.length <= 2}<span>{resolveLocale(station.title, locale)}</span>{/if}
+											</span>
+										{/each}
+										{#if stations.length > 2}<span class="proof-station-caption">{stations.length} stations · one system</span>{/if}
 									</span>
 								{/if}
 
@@ -618,6 +630,21 @@
 	/* Station signage chip — backlit station sign (StationTabs precedent):
 	   theme-INVARIANT signage pair, 10.06:1 both modes. Declares the
 	   station that built the project. */
+	.proof-station-row {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.45em;
+		flex-wrap: wrap;
+	}
+
+	.proof-station-caption {
+		font-family: var(--font-mono);
+		font-size: var(--text-micro);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--accent-text);
+	}
+
 	.proof-station-chip {
 		display: inline-flex;
 		align-items: baseline;
