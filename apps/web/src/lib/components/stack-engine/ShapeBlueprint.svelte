@@ -47,11 +47,17 @@
 		missing,
 		stacked = false,
 		testid = 'shape-blueprint',
+		flip = false,
 	}: {
 		picked: readonly ShapePick[];
 		missing: readonly StackLayer[];
 		stacked?: boolean;
 		testid?: string;
+		/** Round 4: solid boxes carry data-flip-id so the drawing morphs into
+		 *  the composed product preview. The card flip-tags only the VISIBLE
+		 *  variant (wide/stacked are CSS-swapped) — duplicate flip ids would
+		 *  confuse GSAP Flip's pairing. Ghosts never flip (no slot to fly to). */
+		flip?: boolean;
 	} = $props();
 
 	// Two instances render side by side (wide + stacked) — the dot-grid
@@ -185,7 +191,11 @@
 				</text>
 			</g>
 		{:else}
-			<g class="sbp-box sbp-box-solid" data-testid={`sbp-box-${box.id}`}>
+			<g
+				class="sbp-box sbp-box-solid"
+				data-testid={`sbp-box-${box.id}`}
+				data-flip-id={flip ? box.id : undefined}
+			>
 				<rect x={box.x} y={box.y} width={box.w} height={box.h} rx="4" class="sbp-box-rect" />
 				<rect
 					class={`sbp-box-tab sbp-fill-${box.layer}`}

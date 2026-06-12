@@ -113,6 +113,101 @@ test('compose path: every combo TEACHES — the operator example (node.js + gith
 	);
 });
 
+// go2/w5 round 4: previews exist for EVERY archetype — the morph must work
+// beyond the 3 seeds. ops-autopilot is a non-seed with TWO infra techs, so
+// this also covers the round-4 `pick` slots (Docker AND GitHub Actions each
+// get their own labeled box).
+test('round 4: a NON-SEED archetype morphs into a product preview too', async ({ page }) => {
+	await page.goto('/tech-stack');
+	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
+
+	await page.locator('[data-testid="archetype-card-ops-autopilot"]').click();
+	await expect(page.locator('[data-testid="blueprint-canvas"]')).toBeVisible();
+
+	await page.locator('[data-testid="view-toggle"]').click();
+	await expect(page.locator('[data-testid="product-preview"]')).toBeVisible();
+	// Both same-layer techs land their own slot (dual-role rule, audit-pinned
+	// at unit level; role text itself yields below 480px so don't assert it).
+	await expect(page.locator('[data-testid="slot-docker"]')).toBeVisible();
+	await expect(page.locator('[data-testid="slot-github-actions"]')).toBeVisible();
+	await expect(page.locator('[data-testid="slot-power-bi"]')).toBeVisible();
+});
+
+// go2/w5 round 4: stateful nav — the '←' steps preview → blueprint → map,
+// and the BROWSER back button closes a drawing instead of leaving the page
+// (shallow history entry per drawing).
+test('round 4 nav: stepped back + browser back close the drawing, never strand the visitor', async ({
+	page,
+}) => {
+	await page.goto('/tech-stack');
+	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
+
+	await page.locator('[data-testid="archetype-card-data-dashboard"]').click();
+	const back = page.locator('[data-testid="engine-back"]');
+	await expect(back).toContainText('back to the map');
+
+	await page.locator('[data-testid="view-toggle"]').click();
+	await expect(page.locator('[data-testid="product-preview"]')).toBeVisible();
+	await expect(back).toContainText('back to the blueprint');
+
+	// Step 1: preview → blueprint. Step 2: blueprint → the map.
+	await back.click();
+	await expect(page.locator('[data-testid="blueprint-canvas"]')).toBeVisible();
+	await back.click();
+	await expect(page.locator('[data-testid="archetype-card-data-dashboard"]')).toBeVisible();
+
+	// Browser back: re-open a drawing, then use the BROWSER's back button —
+	// the drawing folds back to the map and the visitor stays on /tech-stack.
+	await page.locator('[data-testid="archetype-card-data-dashboard"]').click();
+	await expect(page.locator('[data-testid="blueprint-canvas"]')).toBeVisible();
+	await page.goBack();
+	await expect(page.locator('[data-testid="archetype-card-data-dashboard"]')).toBeVisible();
+	await expect(page.locator('[data-testid="blueprint-canvas"]')).not.toBeVisible();
+	expect(page.url()).toContain('/tech-stack');
+});
+
+// go2/w5 round 4: compose nav (undo last pick / start over) + the composed
+// build's OWN product preview ('see your build as a product').
+test('round 4 compose: undo + start over narrate through the counter; the build flips to a product', async ({
+	page,
+}) => {
+	await page.goto('/tech-stack');
+	await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
+
+	await page.locator('[data-testid="mode-toggle-compose"]').click();
+	await page.locator('[data-testid="tech-chip-postgresql"]').click();
+	await page.locator('[data-testid="tech-chip-docker"]').click();
+	await expect(page.locator('[data-testid="build-counter"]')).toContainText(/2 picks/);
+
+	// Undo forgets the newest pick (docker) — one pick left.
+	await page.locator('[data-testid="pick-undo"]').click();
+	await expect(page.locator('[data-testid="build-counter"]')).toContainText(/1 pick →/);
+	await expect(page.locator('[data-testid="tech-chip-docker"]')).toHaveAttribute(
+		'aria-pressed',
+		'false',
+	);
+
+	// 'see your build as a product' — the composed generic preview, morphing
+	// inside the build-shape card; the drawing returns on toggle-back.
+	const shape = page.locator('[data-testid="build-shape"]');
+	await page.locator('[data-testid="shape-view-toggle"]').click();
+	await expect(shape.locator('[data-testid="product-preview"]')).toBeVisible();
+	await expect(shape.locator('[data-testid="slot-postgresql"]')).toBeVisible();
+	await page.locator('[data-testid="shape-view-toggle"]').click();
+	await expect(
+		shape.locator(
+			'[data-testid="shape-blueprint"]:visible, [data-testid="shape-blueprint-stacked"]:visible',
+		),
+	).toHaveCount(1);
+
+	// Start over: picks gone, card retires, the board resets.
+	await page.locator('[data-testid="pick-clear"]').click();
+	await expect(page.locator('[data-testid="build-counter"]')).toContainText(
+		'known builds on the board',
+	);
+	await expect(shape).not.toBeVisible();
+});
+
 test('engine band is full-bleed with hazard frame; hero + CTA stay constrained (GO-w2t5 addendum)', async ({
 	page,
 	isMobile,

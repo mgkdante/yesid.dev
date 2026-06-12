@@ -18,6 +18,8 @@
 	import { tick } from 'svelte';
 	import { gsap } from 'gsap';
 	import { Flip } from 'gsap/Flip';
+	import { pushState } from '$app/navigation';
+	import { page } from '$app/state';
 	import { STACK_LAYERS } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
@@ -38,6 +40,61 @@
 	let { animate = true }: { animate?: boolean } = $props();
 
 	const engine = new EngineState();
+
+	// ── Round 4 nav: browser-back friendliness via SvelteKit shallow routing.
+	// Opening a drawing pushes ONE history entry (URL unchanged); the browser
+	// back button then closes the drawing back to the map instead of leaving
+	// the page. Blueprint ⇄ preview toggles share the entry — one drawing, one
+	// entry. pushState needs the running router: in unit tests (no router) the
+	// try/catch keeps in-page nav fully working without history — and
+	// `historyLive` stays false so the fold-back effect below never fires.
+	let historyLive = false;
+	engine.onDetailOpen = (slug) => {
+		if (page.state.stackEngineDetail === slug) return;
+		try {
+			pushState('', { stackEngineDetail: slug });
+			historyLive = true;
+		} catch {
+			/* router-less environment (unit tests) — nav works without history */
+		}
+	};
+
+	// Browser back (or forward past the entry) clears the shallow state — fold
+	// the engine back to the select surface. Close-only on purpose: re-OPENING
+	// on forward is judged out (a stale entry after a mode switch would fight
+	// setMode's view reset — don't overbuild). The reactive reads happen
+	// BEFORE the historyLive guard: effects track per-run, and a short-circuit
+	// on the plain flag would leave the effect with zero dependencies.
+	$effect(() => {
+		const detail = page.state.stackEngineDetail;
+		const view = engine.view;
+		if (historyLive && !detail && view !== 'select') {
+			engine.backToSelect();
+		}
+	});
+
+	/**
+	 * The '←' step: preview → blueprint stays inside the history entry;
+	 * blueprint → select pops our shallow entry when it's on top (so the
+	 * browser's own back lands where the visitor already is), else folds
+	 * directly (unit tests, stale-entry edge cases).
+	 */
+	function backStep(): void {
+		if (engine.view === 'preview') {
+			engine.back();
+			return;
+		}
+		if (page.state.stackEngineDetail) {
+			history.back();
+		} else {
+			engine.back();
+		}
+	}
+
+	// Homey nav labels (round 4) — the breadcrumb step reads like a place.
+	const backLabel = $derived(
+		engine.view === 'preview' ? '← back to the blueprint' : '← back to the map',
+	);
 
 	/**
 	 * Blueprint ⇄ preview morph: capture every [data-flip-id] box, swap the
@@ -128,13 +185,15 @@
 				<GoalPicker {engine} />
 			{:else}
 				<div class="engine-viewbar">
+					<!-- Round 4: stepped back — preview → blueprint → map (the
+					     view toggle stays for the lateral flip). -->
 					<button
 						type="button"
 						class="engine-back"
 						data-testid="engine-back"
-						onclick={() => engine.backToSelect()}
+						onclick={backStep}
 					>
-						← all goals
+						{backLabel}
 					</button>
 					<button
 						type="button"
@@ -160,16 +219,16 @@
 	{:else}
 		<div class="engine-region" data-testid="engine-compose-region">
 			{#if engine.view === 'select' || !engine.active}
-				<TechMatcher {engine} />
+				<TechMatcher {engine} {animate} />
 			{:else}
 				<div class="engine-viewbar">
 					<button
 						type="button"
 						class="engine-back"
 						data-testid="engine-back"
-						onclick={() => engine.backToSelect()}
+						onclick={backStep}
 					>
-						← all picks
+						{backLabel}
 					</button>
 					<button
 						type="button"

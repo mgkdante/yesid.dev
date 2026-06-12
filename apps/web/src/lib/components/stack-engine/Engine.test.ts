@@ -95,6 +95,44 @@ describe('Engine shell', () => {
 		expect(screen.queryByTestId('blueprint-canvas')).toBeNull();
 	});
 
+	// Round 4 nav: the '←' is a breadcrumb STEP (preview → blueprint → map),
+	// not a jump-home — the view toggle keeps the lateral flip. Labels are
+	// homey places, pinned here.
+	it('round 4: the back step walks preview → blueprint → map, label naming each place', async () => {
+		render(Engine, { props: { animate: false } });
+		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
+		const back = () => screen.getByTestId('engine-back');
+		expect(back().textContent?.trim()).toBe('← back to the map');
+
+		await fireEvent.click(screen.getByTestId('view-toggle'));
+		expect(screen.getByTestId('product-preview')).toBeTruthy();
+		expect(back().textContent?.trim()).toBe('← back to the blueprint');
+
+		// Step 1: preview → blueprint (the drawing stays active).
+		await fireEvent.click(back());
+		expect(screen.getByTestId('blueprint-canvas')).toBeTruthy();
+		expect(screen.queryByTestId('product-preview')).toBeNull();
+		expect(back().textContent?.trim()).toBe('← back to the map');
+
+		// Step 2: blueprint → the map.
+		await fireEvent.click(back());
+		expect(screen.getByTestId('archetype-card-data-dashboard')).toBeTruthy();
+		expect(screen.queryByTestId('blueprint-canvas')).toBeNull();
+	});
+
+	it('round 4: compose entries get the same stepped back', async () => {
+		render(Engine, { props: { animate: false } });
+		await fireEvent.click(screen.getByTestId('mode-toggle-compose'));
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		await fireEvent.click(screen.getByTestId('match-card-data-pipeline'));
+		expect(screen.getByTestId('blueprint-canvas')).toBeTruthy();
+		expect(screen.getByTestId('engine-back').textContent?.trim()).toBe('← back to the map');
+		await fireEvent.click(screen.getByTestId('engine-back'));
+		// Back on the compose map — chips + cards, picks intact.
+		expect(screen.getByTestId('tech-matcher')).toBeTruthy();
+		expect(screen.getByTestId('tech-chip-postgresql').getAttribute('aria-pressed')).toBe('true');
+	});
+
 	// go2/w5 layered learning: the layer legend persists across goal/compose
 	// AND select/blueprint — never unmounted, one cell per STACK_LAYERS entry.
 	it('go2/w5: layer legend renders one teaching cell per layer and persists across views', async () => {
