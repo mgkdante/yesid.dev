@@ -6,6 +6,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { STACK_LAYERS } from '@repo/shared/schemas';
 import TechMatcher from './TechMatcher.svelte';
 import { stackArchetypes } from '$lib/content/stack-archetypes';
@@ -547,5 +549,29 @@ describe('TechMatcher finale 4c — the phrase leads, the journey guides', () =>
 		expect(current()).toContain('read your build');
 		await fireEvent.click(screen.getByTestId('pick-clear'));
 		expect(current()).toContain('pick parts');
+	});
+});
+
+// Yellow-conversion rule (go2/w5 operator doctrine): the availability door is
+// a conversion moment, so its link accent joins the signage family — subtler
+// than the blueprint button (a door, not a billboard). SOURCE locks, since
+// happy-dom can't compute scoped component CSS (engine-fullbleed precedent).
+describe('yellow-conversion rule — the availability door speaks accent, softly', () => {
+	const src = readFileSync(
+		resolve(process.cwd(), 'src/lib/components/stack-engine/TechMatcher.svelte'),
+		'utf-8',
+	);
+
+	it('door link wears --accent-text (theme-aware accent-as-text: #FFB627 dark / #8A6400 light — AA in both themes)', () => {
+		const rule = src.match(/\.shape-availability-link \{[^}]*\}/);
+		expect(rule, '.shape-availability-link rule must exist').not.toBeNull();
+		expect(rule![0]).toContain('color: var(--accent-text);');
+	});
+
+	it('door hover stays in the accent family — underline thickens, never goes orange (orange = exploration)', () => {
+		const hover = src.match(/\.shape-availability-link:hover \{[^}]*\}/);
+		expect(hover, '.shape-availability-link:hover rule must exist').not.toBeNull();
+		expect(hover![0]).toContain('text-decoration-thickness: 2px;');
+		expect(hover![0]).not.toContain('var(--primary)');
 	});
 });
