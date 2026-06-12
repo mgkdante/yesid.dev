@@ -4355,6 +4355,54 @@
     "_syncId": "_sync_perm_blog_posts_human_update"
   },
   {
+    "collection": "directus_files",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a3f1c2d4-0001-4e0e-9b0a-90210e5f1a01"
+  },
+  {
+    "collection": "directus_files",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a3f1c2d4-0002-4e0e-9b0a-90210e5f1a02"
+  },
+  {
+    "collection": "directus_files",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a3f1c2d4-0003-4e0e-9b0a-90210e5f1a03"
+  },
+  {
+    "collection": "directus_folders",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "a3f1c2d4-0004-4e0e-9b0a-90210e5f1a04"
+  },
+  {
     "collection": "error_pages_translations",
     "action": "create",
     "permissions": {},
@@ -5169,6 +5217,102 @@
     ],
     "policy": "_sync_human_editor_policy",
     "_syncId": "he-projects-update-0045-000000000032"
+  },
+  {
+    "collection": "site_labels_translations",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "fa554aa5-596d-4976-ad17-df0830955e6a"
+  },
+  {
+    "collection": "site_labels_translations",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "e7264405-7fe0-462b-9114-94ecfabd7604"
+  },
+  {
+    "collection": "site_labels_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "67b17802-0e65-43bc-94b8-5a0efd109978"
+  },
+  {
+    "collection": "site_labels_translations",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "af889951-06a4-4ada-a032-6c6af48e6ac3"
+  },
+  {
+    "collection": "site_labels",
+    "action": "create",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "fd74edfd-bacc-4f80-a97b-191d3702c6d3"
+  },
+  {
+    "collection": "site_labels",
+    "action": "delete",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "1347d8b5-daa7-42f9-bf71-6a8763918d70"
+  },
+  {
+    "collection": "site_labels",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "8789aa11-a42c-4a11-8127-75b286087856"
+  },
+  {
+    "collection": "site_labels",
+    "action": "update",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "_sync_human_editor_policy",
+    "_syncId": "4483cf04-8dbb-4eee-b995-d01712d39a23"
   },
   {
     "collection": "site_meta_translations",
@@ -6069,6 +6213,30 @@
     ],
     "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
     "_syncId": "caa7ea24-d366-4c9c-bbef-0383a2e44d0a"
+  },
+  {
+    "collection": "site_labels_translations",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "6dcfb17b-d623-4f20-8515-f7a75bee92ae"
+  },
+  {
+    "collection": "site_labels",
+    "action": "read",
+    "permissions": {},
+    "validation": null,
+    "presets": null,
+    "fields": [
+      "*"
+    ],
+    "policy": "8a69d5ef-e94b-44ec-ac4d-736fb4d328f1",
+    "_syncId": "d24d2756-e310-4c7b-aec1-06279ca53ac2"
   },
   {
     "collection": "site_layout",

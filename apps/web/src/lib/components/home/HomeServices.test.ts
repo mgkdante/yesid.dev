@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import HomeServices from './HomeServices.svelte';
 // slice-18i Phase 7C: HomeServices now requires servicesGrid prop.
@@ -81,6 +81,32 @@ describe('HomeServices', () => {
 		const anchor = container.querySelector('a');
 		expect(anchor?.getAttribute('href')).toBe('/services');
 		expect(anchor?.textContent).toContain('View all services');
+	});
+
+	it('GO-w2t5: section glow wired — pointermove writes --glow vars on the section', () => {
+		// Claim hover capability (sectionGlow gates on `(hover: hover)` only
+		// post-retier; reduce no longer matters — SAFE-ALWAYS).
+		const realMatchMedia = window.matchMedia;
+		window.matchMedia = vi.fn().mockImplementation((q: string) => ({
+			matches: true,
+			media: q,
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+		})) as unknown as typeof window.matchMedia;
+
+		render(HomeServices, { props: { servicesGrid: servicesGridContent, services } });
+		const section = screen.getByTestId('services-section');
+		Object.defineProperty(section, 'getBoundingClientRect', {
+			value: () => ({
+				left: 0, top: 0, width: 200, height: 100,
+				right: 200, bottom: 100, x: 0, y: 0, toJSON: () => '',
+			}),
+		});
+		section.dispatchEvent(new PointerEvent('pointermove', { clientX: 100, clientY: 50 }));
+		expect(section.style.getPropertyValue('--glow-x')).toBe('50%');
+		expect(section.style.getPropertyValue('--glow-opacity')).toBe('1');
+
+		window.matchMedia = realMatchMedia;
 	});
 });
 

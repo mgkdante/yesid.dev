@@ -12,10 +12,13 @@
   import ManifestoCanvas from '$lib/components/home/ManifestoCanvas.svelte';
   import { boop } from '$lib/motion/actions/boop.js';
   import { projectsDetailContent } from '$lib/content/projects';
+  import { siteLabels } from '$lib/content';
 
   let { project }: { project: Project } = $props();
 
   const backToListingLabel = resolveLocale(projectsDetailContent.backToListingLabel, 'en');
+  // go2-t1c2: aria microcopy from site_labels, previous literal as fallback.
+  const navTechStackAria = resolveLocale(siteLabels.a11y.navTechStack, 'en') || 'Tech stack';
 
   const location = $derived(project.location ?? 'sherbrooke');
   const environment = $derived(project.environment ?? 'production');
@@ -73,7 +76,7 @@
         </svg>
       </div>
 
-      <!-- Ticks (top center) -->
+      <!-- Ticks (top center) — contrast-exempt: decorative (aria-hidden watermark) -->
       <div class="header__decoration absolute left-1/2 top-[18px] hidden -translate-x-1/2 gap-7 font-mono text-micro lg:flex" aria-hidden="true"
         style="color: color-mix(in srgb, var(--primary) 8%, transparent);"
       >
@@ -122,7 +125,7 @@
         {resolveLocale(project.title, 'en')}
       </h1>
 
-      <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label="Tech stack">
+      <nav class="flex flex-wrap justify-center gap-1.5 lg:gap-2" aria-label={navTechStackAria}>
         {#each project.stack as tech}
           <span class="header__pill">{tech}</span>
         {/each}
@@ -205,6 +208,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 1.5px;
+    /* contrast-exempt: decorative (aria-hidden edge ornament) */
     color: color-mix(in srgb, var(--primary) 15%, transparent);
     line-height: 2.4;
     text-transform: uppercase;
@@ -215,6 +219,7 @@
   .edge-right { right: 28px; text-align: right; }
 
   .edge-value {
+    /* contrast-exempt: decorative (aria-hidden edge ornament) */
     color: color-mix(in srgb, var(--primary) 25%, transparent);
   }
 
@@ -246,7 +251,7 @@
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--primary) 50%, transparent);
+    color: color-mix(in srgb, var(--primary) 85%, transparent);
     border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
     border-radius: var(--radius-pill);
     padding: 4px 12px;
@@ -256,7 +261,7 @@
   @media (min-width: 1024px) {
     .header__pill {
       font-size: 13px;
-      color: color-mix(in srgb, var(--primary) 60%, transparent);
+      color: color-mix(in srgb, var(--primary) 90%, transparent);
       border-color: color-mix(in srgb, var(--primary) 15%, transparent);
       padding: 7px 18px;
       background: color-mix(in srgb, var(--primary) 4%, transparent);

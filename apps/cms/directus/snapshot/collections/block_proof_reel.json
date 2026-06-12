@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "Proof Reel block — featured projects section of /. Non-translatable fields: view_all_href (string), slugs (string[]), images (Record<string,string>) on parent. LocalizedString leaves in block_proof_reel_translations.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 3,
     "sort_field": "sort",
     "status": "active",

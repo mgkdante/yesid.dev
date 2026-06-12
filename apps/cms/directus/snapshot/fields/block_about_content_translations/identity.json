@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "identity",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale identity block (AboutContent.identity + AboutIdentity). JSON shape: { name, title, valueProp, headshot: string (URL), polaroids: Array<{src, alt, caption, rotate}> }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

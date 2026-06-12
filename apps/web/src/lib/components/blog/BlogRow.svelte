@@ -82,7 +82,7 @@
 
 			<!-- Content -->
 			<div class="relative z-10 min-w-0 flex-1">
-				<h2 class="text-base font-semibold leading-snug text-[var(--foreground)] transition-colors duration-300 group-hover:text-[var(--accent)] md:text-lg">
+				<h2 class="text-base font-semibold leading-snug text-[var(--foreground)] transition-colors duration-300 group-hover:text-[var(--accent-text)] md:text-lg">
 					{post.title}
 				</h2>
 				<p class="mt-2 text-sm leading-relaxed text-[var(--secondary-foreground)] line-clamp-2 md:text-base">
@@ -91,7 +91,7 @@
 				<div class="mt-3 flex flex-wrap items-center gap-2">
 					{#each post.tags as tag}
 						<span use:magnetic={{ strength: 2, radius: 30 }}>
-							<Badge variant="tag-active" size="xs" style="border-color: {accentColor}30; background: {accentColor}15; color: {accentColor}">{tag}</Badge>
+							<Badge variant="tag-active" size="xs" style="border-color: color-mix(in srgb, {accentColor} 30%, transparent); background: color-mix(in srgb, {accentColor} 15%, transparent); color: {accentColor}">{tag}</Badge>
 						</span>
 					{/each}
 				</div>

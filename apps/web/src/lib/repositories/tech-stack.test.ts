@@ -14,9 +14,9 @@ import { services } from '$lib/content/services';
 import { projects } from '$lib/content/projects';
 
 describe('tech stack data integrity', () => {
-	it('loads at least 34 tech items', async () => {
+	it('loads a non-trivial curated tech set', async () => {
 		const items = await getAllTechItems();
-		expect(items.length).toBeGreaterThanOrEqual(34);
+		expect(items.length).toBeGreaterThanOrEqual(15); // curated at go-day: 21 published (operator archived mobile ghosts; set grows with learning)
 	});
 
 	it('all IDs are unique', async () => {

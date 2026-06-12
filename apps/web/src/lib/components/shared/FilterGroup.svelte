@@ -101,7 +101,7 @@
 						{#snippet child({ props })}
 							<button
 								{...props}
-								class="tap-press filter-btn w-full rounded border border-border-subtle px-2 py-3 min-h-11 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
+								class="tap-press filter-btn w-full rounded border border-border px-2 py-3 min-h-11 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 								class:tag-active={activeKey === item.key}
 								data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
 							>

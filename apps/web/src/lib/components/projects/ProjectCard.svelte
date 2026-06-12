@@ -100,7 +100,7 @@
 				<img
 					src={asset(project.image, 'card-600')}
 					alt={resolveLocale(project.title, 'en')}
-					class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-active:scale-105"
+					class="project-card-img h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-active:scale-105"
 					loading="lazy"
 					decoding="async"
 				/>
@@ -143,7 +143,7 @@
 					<div class="flex flex-wrap gap-1.5">
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-2 rounded-full border bg-bg-primary px-3 py-1.5"
+							class="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1.5"
 							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
@@ -198,5 +198,24 @@
 		border: none;
 		background: transparent;
 		border-radius: 0;
+	}
+
+	/* GO-w2t5 retier: large-surface image scale is MOTION-GATED — rest under
+	   reduce. Unlayered component CSS outrides the @layer utilities zoom. */
+	@media (prefers-reduced-motion: reduce) {
+		.project-card-img {
+			transition: none;
+			scale: 1;
+		}
+	}
+
+	/* GO-w2t5: the pipeline "goes live" on card attention — alpha-only →
+	   SAFE-ALWAYS. Rest state is the diagram's stroke-opacity=0.5 attribute. */
+	.project-card :global(.df-line) {
+		transition: stroke-opacity var(--duration-normal) var(--ease-default);
+	}
+	.project-card:hover :global(.df-line),
+	.project-card:active :global(.df-line) {
+		stroke-opacity: 1;
 	}
 </style>

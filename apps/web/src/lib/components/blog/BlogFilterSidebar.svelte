@@ -57,7 +57,7 @@
 				type="text"
 				placeholder={searchPlaceholder}
 				bind:value={searchQuery}
-				class="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
+				class="w-full rounded-lg border border-[var(--input)] bg-[var(--card)] px-3 py-2 pl-9 font-mono text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--accent)]"
 				data-testid="blog-search-sidebar"
 			/>
 			<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -99,8 +99,7 @@
 					<input
 						type="date"
 						bind:value={dateFrom}
-						class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
-						style="color-scheme: dark;"
+						class="mt-0.5 w-full rounded border border-border bg-background px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
 					/>
 				</label>
 				<label class="text-sm text-[var(--muted-foreground)]">
@@ -108,8 +107,7 @@
 					<input
 						type="date"
 						bind:value={dateTo}
-						class="mt-0.5 w-full rounded border border-border-subtle bg-bg-primary px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
-						style="color-scheme: dark;"
+						class="mt-0.5 w-full rounded border border-border bg-background px-2 py-1.5 font-mono text-sm text-[var(--foreground)] outline-none focus:border-[var(--accent)]"
 					/>
 				</label>
 			</div>

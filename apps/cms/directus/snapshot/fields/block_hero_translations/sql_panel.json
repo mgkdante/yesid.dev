@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "sql_panel",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale SQL panel copy (HeroContent.sqlPanel). JSON shape: { prompt: string, liveLabel: string, columns: { route: string, avgDelayS: string, vehicles: string }, metaTemplate: string }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

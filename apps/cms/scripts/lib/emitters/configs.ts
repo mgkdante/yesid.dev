@@ -305,6 +305,15 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 		});
 	}
 
+	if (data.siteLabels) {
+		out.push({
+			filePath: path('site-labels.ts'),
+			description: 'Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton.',
+			imports: [{ symbols: ['SiteLabels'], from: '$lib/types', typeOnly: true }],
+			exports: [{ name: 'siteLabels', typeName: 'SiteLabels', value: data.siteLabels }],
+		});
+	}
+
 	if (data.blogPage) {
 		out.push({
 			filePath: path('blog-page.ts'),
@@ -317,7 +326,7 @@ export function buildEmitConfigs(data: ExportData, contentDir: string): readonly
 	if (data.projectsPage) {
 		out.push({
 			filePath: path('projects-page.ts'),
-			description: '/projects page chrome (intro). NEW in slice-18m — was previously inlined as a static fallback in adapters/static.ts.',
+			description: '/projects page chrome (intro, heading, empty-state). NEW in slice-18m; heading/emptyState added in go2-t1c2.',
 			imports: [{ symbols: ['ProjectsPageContent'], from: '@repo/shared', typeOnly: true }],
 			exports: [
 				{ name: 'projectsPageContent', typeName: 'ProjectsPageContent', value: data.projectsPage },

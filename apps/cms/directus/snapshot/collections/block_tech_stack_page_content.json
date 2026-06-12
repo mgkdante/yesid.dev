@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "Tech Stack page chrome block (/tech-stack). All fields are LocalizedStrings → 4 JSON columns in translations (hero, actions, cta, meta). No M2M to tech_stack collection (not in TS shape).",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 2,
     "sort_field": "sort",
     "status": "active",

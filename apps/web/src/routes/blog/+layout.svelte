@@ -1,10 +1,16 @@
 <script lang="ts">
+	import { resolveLocale } from '$lib/utils/locale';
+	import { siteLabels } from '$lib/content';
+
 	let { children } = $props();
+
+	// go2-t1c2: edge title from site_labels, previous literal as fallback.
+	const edgeTitle = resolveLocale(siteLabels.pages.blogEdgeTitle, 'en') || 'Blog';
 </script>
 
 <div class="listing-layout">
 	<div class="edge-title-column">
-		<div class="edge-title">Blog<span class="edge-dot">.</span></div>
+		<div class="edge-title">{edgeTitle}<span class="edge-dot">.</span></div>
 		<div class="metro-dots metro-dots-top">
 			<div class="metro-line"></div>
 			<div class="metro-dot metro-dot-sm"></div>

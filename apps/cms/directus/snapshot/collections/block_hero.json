@@ -16,7 +16,7 @@
     "item_duplication_fields": null,
     "note": "Hero block — text-only top section of /. Translatable fields live in block_hero_translations (4 string + 4 JSON columns). No image or mock_data fields — hero is text-only; heroMock is runtime-computed.",
     "preview_url": null,
-    "singleton": false,
+    "singleton": true,
     "sort": 1,
     "sort_field": "sort",
     "status": "active",

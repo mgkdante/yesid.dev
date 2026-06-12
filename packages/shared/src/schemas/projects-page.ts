@@ -1,12 +1,16 @@
-// ProjectsPageContentSchema — /work page chrome.
-// Minimal stub: fields locked in slice-18i Task 1.4 when block_projects_page_content
-// is authored in Directus. Extend this schema then, not before.
+// ProjectsPageContentSchema — /projects page chrome.
+// Slice-18i: minimal stub with `intro`.
+// go2-t1c2: added `heading` (H1) + `emptyState` (empty-filter message) — the
+// listing component was hardcoding both; the orphaned CMS intro is now
+// rendered as the header subtitle.
 
 import { z } from 'zod';
 import { LocalizedStringSchema } from './shared';
 
 export const ProjectsPageContentSchema = z.object({
 	intro: LocalizedStringSchema,
+	heading: LocalizedStringSchema,
+	emptyState: LocalizedStringSchema,
 });
 
 export type ProjectsPageContent = z.infer<typeof ProjectsPageContentSchema>;
