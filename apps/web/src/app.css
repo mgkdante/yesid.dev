@@ -170,6 +170,10 @@ select {
   --color-success: var(--success);
   --color-primary-hover: var(--primary-hover);
   --color-accent-hover: var(--accent-hover);
+  /* Round 5c yellow-conversion doctrine: the theme-invariant signage pair as
+     utilities (bg/text-signage-*) — conversion buttons ride real sign colors. */
+  --color-signage-bg: var(--signage-bg);
+  --color-signage-text: var(--signage-text);
 }
 
 /* Self-hosted variable fonts — override @theme values with variable font names.

@@ -32,6 +32,21 @@ describe('MetroStation', () => {
 		expect(ties?.getAttribute('stroke-dasharray')).toBe('1 4');
 	});
 
+	// Round 5: the dotted spine + roundel draw one step bolder.
+	it('round 5 — spine draws at 3px and the roundel carries the bolder station class', () => {
+		const { container } = render(MetroStation, { props: { index: 1, showLine: true } });
+		const svg = container.querySelector('[data-metro-line]');
+		expect(svg?.getAttribute('width')).toBe('3');
+		expect(svg?.getAttribute('viewBox')).toBe('0 0 3 100');
+		const lines = svg ? Array.from(svg.querySelectorAll('line')) : [];
+		expect(lines.length).toBe(2);
+		for (const line of lines) {
+			expect(line.getAttribute('stroke-width')).toBe('3');
+		}
+		const badge = container.querySelector('[data-slot="badge"]');
+		expect(badge?.classList.contains('station-number-badge')).toBe(true);
+	});
+
 	// GO2-W5: backlit STM signage roundel — theme-invariant chip.
 	it('station number badge carries the signage chip colors', () => {
 		const { container } = render(MetroStation, { props: { index: 1 } });

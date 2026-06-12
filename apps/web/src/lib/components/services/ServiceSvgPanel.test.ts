@@ -32,4 +32,26 @@ describe('ServiceSvgPanel', () => {
 		const el = screen.getByTestId('service-svg-panel');
 		expect(el.classList.contains('svg-panel--banner')).toBe(true);
 	});
+
+	// Round 5 regression lock (operator: "you removed the fun svgs!"): the
+	// provided SVG markup must actually land in the icon slot — the panel is
+	// the services listing/detail art surface.
+	it('round 5 — the svg markup itself renders inside the icon slot', () => {
+		render(ServiceSvgPanel, {
+			props: { svgContent: '<svg data-fun-art><circle r="10"/></svg>' }
+		});
+		const slot = screen
+			.getByTestId('service-svg-panel')
+			.querySelector('[data-slot="svg-icon"]');
+		expect(slot?.querySelector('svg[data-fun-art] circle')).toBeTruthy();
+	});
+
+	// Round 5: hovering anywhere on the panel drives the art morph — the art
+	// sits in a pointer-events-none wrapper so the panel owns the hover.
+	it('round 5 — the art wrapper is pointer-transparent (panel-wide hover morph)', () => {
+		render(ServiceSvgPanel, { props: { svgContent: '<svg></svg>' } });
+		const art = screen.getByTestId('service-svg-panel').querySelector('.svg-art');
+		expect(art).toBeTruthy();
+		expect(art?.classList.contains('pointer-events-none')).toBe(true);
+	});
 });

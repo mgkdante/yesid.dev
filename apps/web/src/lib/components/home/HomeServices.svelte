@@ -6,7 +6,8 @@
   radial glow), the service title + benefit headline below, and a
   slim footer band with the impact metric.
 
-  3 columns on desktop (≥1024px), 1 column on tablet/mobile.
+  Round 5b: 2×2 grid on desktop (≥1024px) — four stations, two per row —
+  1 column on tablet/mobile.
   Carnegie-informed: benefit text leads, service title is the visual
   star — same content priority as before, restructured into the
   Station Card frame.
@@ -116,8 +117,10 @@
 	class="services-section relative overflow-hidden"
 >
 	<div class="relative z-10">
-		<!-- 3-column grid (1 col on tablet/mobile). Cards in the same row share height. -->
-		<div class="services-grid grid grid-cols-1 gap-5 lg:grid-cols-3">
+		<!-- Round 5b (operator-ordered): with four stations the section is a
+		     uniform 2×2 grid on desktop (2 per row; mobile/tablet stays
+		     stacked). Cards in the same row share height. -->
+		<div class="services-grid grid grid-cols-1 gap-5 lg:grid-cols-2">
 			{#each orderedServices as service, i}
 				{@const benefit = service.benefitHeadline ? resolveLocale(service.benefitHeadline, locale) : ''}
 				{@const title = resolveLocale(service.title, locale)}
@@ -155,8 +158,8 @@
 									<img
 										src="/svg/services/{service.svg}"
 										alt=""
-										width="64"
-										height="64"
+										width="96"
+										height="96"
 									/>
 								</div>
 							</button>
@@ -238,13 +241,17 @@
 	/* GO2-W5: surface-1 now aliases --card (tokens.json flip) so the panel
 	   lifts solid off the board; inset bevel = panel catching the lamp.
 	   Round 3: brand grid at 2px. */
+	/* Round 5 (operator: "you removed the fun svgs!"): the icon zone grows a
+	   step so the service art is the hero of the card again — rounds 3/4
+	   boldened every structural line around the 64px icons and visually
+	   drowned them. */
 	.services-card {
 		background: var(--surface-1);
 		border: 2px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		box-shadow: inset 0 1px 0 var(--edge-highlight);
 		display: grid;
-		grid-template-rows: 11rem 1fr auto;
+		grid-template-rows: 12.5rem 1fr auto;
 		height: 100%;
 		transition:
 			border-color var(--duration-normal) var(--ease-default),
@@ -298,7 +305,9 @@
 		}
 	}
 
-	/* SVG panel — circular tile centered in the icon zone. */
+	/* SVG panel — rounded tile centered in the icon zone. Round 5: one big
+	   step up (92px → 128px tile, 64px → 96px art) — the fun SVGs are
+	   unmistakably present again. */
 	button.services-svg-panel {
 		appearance: none;
 		padding: 0;
@@ -306,9 +315,9 @@
 		color: inherit;
 		text-align: inherit;
 		cursor: pointer;
-		width: 92px;
-		height: 92px;
-		border-radius: 18px;
+		width: 128px;
+		height: 128px;
+		border-radius: 22px;
 		background: color-mix(in srgb, var(--primary) 6%, var(--background));
 		border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
 		display: flex;
@@ -324,11 +333,17 @@
 	}
 
 	.svg-inline-wrapper {
-		width: 64px;
-		height: 64px;
+		width: 96px;
+		height: 96px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		/* Round 5 light-register: ~40% of each service SVG's linework strokes
+		   var(--accent) (#FFB627 brand amber, no theme mapping) — invisible on
+		   paper. Remap to --line-amber inside the art scope only: dark resolves
+		   to the same #FFB627, light to the daylight-surviving #B57F00
+		   (MetroStation track precedent). */
+		--accent: var(--line-amber);
 		/* Icon drifts toward the cursor via cardParallax's ±4px clamp.
 		   3x multiplier → effective drift ±12px on the icon canvas. */
 		transform: translate(
@@ -418,19 +433,20 @@
 	}
 
 	/* Mobile: shrink the icon zone so the cards aren't unnecessarily tall on
-	   single-column layouts. */
+	   single-column layouts. Round 5: scaled up in lockstep with desktop so
+	   the art stays the hero (72→96 tile, 48→64 art). */
 	@media (max-width: 767px) {
 		.services-card {
-			grid-template-rows: 8.5rem 1fr auto;
+			grid-template-rows: 10rem 1fr auto;
 		}
 		button.services-svg-panel {
-			width: 72px;
-			height: 72px;
-			border-radius: 14px;
+			width: 96px;
+			height: 96px;
+			border-radius: 16px;
 		}
 		.svg-inline-wrapper {
-			width: 48px;
-			height: 48px;
+			width: 64px;
+			height: 64px;
 		}
 		.services-content {
 			padding: 1.25rem 1.5rem 0.875rem;
