@@ -19,13 +19,22 @@ import type {
 } from '$lib/types';
 import type { ContentAdapter } from '$lib/adapters/types';
 import { extractText } from '@repo/shared';
-import { SITE_HOST } from '$lib/utils/seo-defaults';
+import { SITE_HOST, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
+import { resolveLocale } from '$lib/utils/locale';
+import { resolveSitePage } from '$lib/utils/page-registry';
+import { appendBrandPerLocale } from '$lib/adapters/compose-page-seo';
 import {
 	buildBlogPostingNode,
 	buildBreadcrumbListNode,
 	buildCreativeWorkNode,
 	buildServiceNode,
 } from '$lib/adapters/jsonld';
+
+/** Breadcrumb display name from the trilingual site_pages registry; code fallback otherwise. */
+export function crumbName(path: string, locale: Locale, fallback: string): string {
+	const page = resolveSitePage(path);
+	return page ? resolveLocale(page.title, locale) : fallback;
+}
 
 export interface FactoryArgs {
 	params: Record<string, string>;
@@ -56,9 +65,9 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
 	const service = await adapter.services.byId(params.id, ctx);
 	if (!service) throw new Error(`Unknown service id: ${params.id}`);
-	const canonicalUrl = `${SITE_HOST}/services/${service.id}`;
+	const canonicalUrl = canonicalFor(`/services/${service.id}`, locale);
 	return {
-		title: { en: `${service.title.en} | ${siteMeta.name}` },
+		title: appendBrandPerLocale(service.title, siteMeta.name),
 		description: fitDescriptionForSeo(service.description, siteSeoDefaults.defaultDescription),
 		canonical: canonicalUrl,
 		ogType: 'article',
@@ -67,9 +76,9 @@ export async function servicesIdSeoFactory(args: FactoryArgs): Promise<PageSeo> 
 			buildServiceNode(service, locale),
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Services', url: `${SITE_HOST}/services` },
-					{ name: service.title.en, url: canonicalUrl },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/services', locale, 'Services'), url: canonicalFor('/services', locale) },
+					{ name: resolveLocale(service.title, locale), url: canonicalUrl },
 				],
 				canonicalUrl,
 			),
@@ -94,9 +103,9 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 		fitDescriptionForSeo(descriptionText, fallback) !== fallback
 			? descriptionText
 			: fitDescriptionForSeo(project.oneLiner, fallback);
-	const canonicalUrl = `${SITE_HOST}/projects/${project.slug}`;
+	const canonicalUrl = canonicalFor(`/projects/${project.slug}`, locale);
 	const seo: PageSeo = {
-		title: { en: `${project.title.en} | ${siteMeta.name}` },
+		title: appendBrandPerLocale(project.title, siteMeta.name),
 		description: desc,
 		canonical: canonicalUrl,
 		ogType: 'article',
@@ -105,9 +114,9 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 			buildCreativeWorkNode(project, locale),
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Projects', url: `${SITE_HOST}/projects` },
-					{ name: project.title.en, url: canonicalUrl },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/projects', locale, 'Projects'), url: canonicalFor('/projects', locale) },
+					{ name: resolveLocale(project.title, locale), url: canonicalUrl },
 				],
 				canonicalUrl,
 			),
@@ -116,10 +125,16 @@ export async function projectsSlugSeoFactory(args: FactoryArgs): Promise<PageSeo
 
 	// OG image wiring (slice-15c). Only set when title.en is non-empty so
 	// SeoHead falls through to defaultOgImageFor(locale) on empty title.
+	// Non-default locales request the per-locale render via ?locale= (the og
+	// endpoint resolves per-locale title with EN fallback).
 	if (project.title?.en && project.title.en.length > 0) {
 		seo.ogImage = {
-			url: `/og/project/${project.slug}.png`,
-			alt: { en: `${project.title.en} — yesid.` },
+			url: `/og/project/${project.slug}.png${locale !== DEFAULT_LOCALE ? `?locale=${locale}` : ''}`,
+			alt: {
+				en: `${project.title.en} — yesid.`,
+				...(project.title.fr && { fr: `${project.title.fr} — yesid.` }),
+				...(project.title.es && { es: `${project.title.es} — yesid.` }),
+			},
 			width: 1200,
 			height: 630,
 		};
@@ -133,19 +148,23 @@ export async function blogSlugSeoFactory(args: FactoryArgs): Promise<PageSeo> {
 	const { params, locale, ctx, adapter, siteMeta, siteSeoDefaults } = args;
 	const post = await adapter.blog.bySlug(params.slug, ctx);
 	if (!post) throw new Error(`Unknown blog slug: ${params.slug}`);
-	const canonicalUrl = `${SITE_HOST}/blog/${post.slug}`;
+	// AM2.5 (slice-28.6): blog posts are mono-language — the canonical points
+	// at the BODY-language URL (an EN post under /fr/blog/x canonicals to
+	// /blog/x), and singleLocale suppresses the cross-locale hreflang cluster.
+	const canonicalUrl = canonicalFor(`/blog/${post.slug}`, post.lang);
 	const seo: PageSeo = {
 		title: { en: `${post.title} | ${siteMeta.name}` },
 		description: fitDescriptionForSeo({ en: post.excerpt }, siteSeoDefaults.defaultDescription),
 		canonical: canonicalUrl,
 		ogType: 'article',
 		noIndex: false,
+		singleLocale: true,
 		jsonLd: [
 			buildBlogPostingNode(post, locale),
 			buildBreadcrumbListNode(
 				[
-					{ name: 'Home', url: SITE_HOST },
-					{ name: 'Blog', url: `${SITE_HOST}/blog` },
+					{ name: crumbName('/', locale, 'Home'), url: canonicalFor('/', locale) },
+					{ name: crumbName('/blog', locale, 'Blog'), url: canonicalFor('/blog', locale) },
 					{ name: post.title, url: canonicalUrl },
 				],
 				canonicalUrl,

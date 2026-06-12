@@ -4,6 +4,7 @@
 
 import type { Locale } from '$lib/types';
 import { DEFAULT_LOCALE } from '$lib/utils/locale';
+import { delocalizePath } from '$lib/utils/locale-routing';
 
 // Production canonical host. No trailing slash. Upgrade to an env var when
 // a staging domain is introduced (currently yesid.dev is the only target).
@@ -19,14 +20,18 @@ export const DEFAULT_OG_IMAGE = '/og/default.en.png';
 export const SITE_NAME = 'yesid.';
 
 // Locales that currently have translated content AND published URL coverage.
-// Adding a locale here causes:
+// THE FLIP LEVER (slice-28.6): adding a locale here causes:
 //   - og:locale:alternate meta to emit for this locale
 //   - hreflang link tags to include this locale
 //   - sitemap to iterate routes × this locale
-//   - canonicalFor to need a URL scheme (TODO when first non-EN locale ships)
-//   - a `static/og/default.{locale}.png` asset to be needed. The generator
-//     script was deleted in slice-27.1 (restore from a5f28f2^ at French
-//     launch); until then the asset is produced manually and committed.
+//   - canonicalFor to emit /{locale}-prefixed canonicals (scheme DONE — /fr
+//     path prefix per slice-28.6; routing opens separately via PREFIX_LOCALES
+//     in $lib/utils/locale-routing)
+//   - the EN|FR locale switcher (MenuOverlay/Footer) to become visible
+//   - a `static/og/default.{locale}.png` asset to be needed (generator script
+//     restored in slice-28.6: apps/web/scripts/generate-og-default.ts)
+// Flip checklist lives in the slice-28.6 runbook (PR body): FR content drop →
+// og/default.fr.png → flip this const → update the three flip-keyed tests.
 export const PUBLISHED_LOCALES: readonly Locale[] = ['en'];
 
 // Re-exported from $lib/utils/locale so there's exactly one DEFAULT_LOCALE
@@ -48,16 +53,17 @@ export function defaultOgImageFor(locale: Locale): string {
 }
 
 /**
- * Returns the canonical absolute URL for a route in a given locale.
- *
- * 15a: EN-only today. When FR/ES launch, the slice that introduces them picks
- * a URL scheme (subdomain, path prefix, or accept-language negotiation) and
- * updates this helper in one place.
- *
- * Trailing slashes are stripped so "/about/" and "/about" produce the same URL.
+ * Canonical absolute URL for a route in a locale. /fr path-prefix scheme
+ * (slice-28.6): EN unprefixed; published non-EN locales get /{locale}; an
+ * UNPUBLISHED prefix locale self-canonicalizes to the EN URL so /fr can be
+ * QA'd live pre-flip without index pollution. Idempotent on prefixed input;
+ * trailing slashes stripped.
  */
-export function canonicalFor(pathname: string, _locale: Locale): string {
+export function canonicalFor(pathname: string, locale: Locale): string {
 	const trimmed = pathname.replace(/\/+$/, '');
-	if (trimmed === '' || trimmed === '/') return SITE_HOST;
-	return `${SITE_HOST}${trimmed}`;
+	const base = delocalizePath(trimmed === '' ? '/' : trimmed);
+	const effective =
+		locale !== DEFAULT_LOCALE && PUBLISHED_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
+	const prefix = effective === DEFAULT_LOCALE ? '' : `/${effective}`;
+	return `${SITE_HOST}${prefix}${base === '/' ? '' : base}`;
 }
