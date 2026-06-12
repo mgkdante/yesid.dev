@@ -132,7 +132,9 @@
 		<SectionHeading heading={sectionProjects} />
 	</div>
 	<div class="home-section-content">
-		<FeaturedProjects {proofReel} projects={featuredProjects} />
+		<!-- go2/home-cards: services join the proof reel so each card can name
+		     the station that built it (same prop the services grid consumes). -->
+		<FeaturedProjects {proofReel} projects={featuredProjects} {services} />
 	</div>
 </section>
 
