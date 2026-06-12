@@ -38,41 +38,41 @@
 		serviceSvgContents: Record<string, string>;
 	} = $props();
 
-	let title = $derived(resolveLocale(service.title, 'en'));
-	let description = $derived(resolveLocale(service.description, 'en'));
-	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, 'en') : null);
+	let title = $derived(resolveLocale(service.title, locale));
+	let description = $derived(resolveLocale(service.description, locale));
+	let subtitle = $derived(service.subtitle ? resolveLocale(service.subtitle, locale) : null);
 	let stationNum = $derived(String(service.station).padStart(2, '0'));
 	let totalStr = $derived(String(services.length).padStart(2, '0'));
 	let stationLabelText = $derived(
-		resolveLocale(servicesListingContent.stationLabelTemplate, 'en')
+		resolveLocale(servicesListingContent.stationLabelTemplate, locale)
 			.replace('{stationNum}', stationNum)
 			.replace('{totalStr}', totalStr)
 	);
 	let svgContent = $derived(serviceSvgContents[service.id] ?? '');
 	let benefitHeadline = $derived(
-		service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : null
+		service.benefitHeadline ? resolveLocale(service.benefitHeadline, locale) : null
 	);
 	let metricValue = $derived(
-		service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : null
+		service.impactMetric ? resolveLocale(service.impactMetric.value, locale) : null
 	);
 	let metricLabel = $derived(
-		service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : null
+		service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : null
 	);
-	let backLinkLabel = $derived(resolveLocale(servicesDetailContent.backToServicesLabel, 'en'));
+	let backLinkLabel = $derived(resolveLocale(servicesDetailContent.backToServicesLabel, locale));
 	let valuePropositionHeading = $derived(
-		resolveLocale(servicesDetailContent.valuePropositionHeading, 'en')
+		resolveLocale(servicesDetailContent.valuePropositionHeading, locale)
 	);
 	let deliverablesHeading = $derived(
-		resolveLocale(servicesDetailContent.deliverablesHeading, 'en')
+		resolveLocale(servicesDetailContent.deliverablesHeading, locale)
 	);
 	let relatedProjectsHeading = $derived(
-		resolveLocale(servicesDetailContent.relatedProjectsHeading, 'en')
+		resolveLocale(servicesDetailContent.relatedProjectsHeading, locale)
 	);
 	let relatedProjectsAria = $derived(
-		resolveLocale(servicesDetailContent.relatedProjectsNavAria, 'en')
+		resolveLocale(servicesDetailContent.relatedProjectsNavAria, locale)
 	);
 	let seeAllProjectsLabel = $derived(
-		resolveLocale(projectsListingContent.seeAllLink, 'en')
+		resolveLocale(projectsListingContent.seeAllLink, locale)
 	);
 </script>
 
@@ -182,7 +182,7 @@
 									</svg>
 								{/snippet}
 								<p class="section-body">
-									{resolveLocale(service.valueProposition, 'en')}
+									{resolveLocale(service.valueProposition, locale)}
 								</p>
 							</CollapsibleSection>
 						</div>
@@ -201,7 +201,7 @@
 									{#each service.deliverables as deliverable}
 										<div class="deliverable-item">
 											<span class="deliverable-dot" aria-hidden="true"></span>
-											<span>{resolveLocale(deliverable, 'en')}</span>
+											<span>{resolveLocale(deliverable, locale)}</span>
 										</div>
 									{/each}
 								</div>
@@ -213,9 +213,9 @@
 					{#if service.sections}
 						{#each service.sections as section, i}
 							<div>
-								<CollapsibleSection title={resolveLocale(section.title, 'en')} open={true} index={i}>
+								<CollapsibleSection title={resolveLocale(section.title, locale)} open={true} index={i}>
 									<p class="section-body">
-										{resolveLocale(section.content, 'en')}
+										{resolveLocale(section.content, locale)}
 									</p>
 								</CollapsibleSection>
 							</div>
@@ -242,7 +242,7 @@
 										use:pressBounce
 									>
 										<span class="project-dot" aria-hidden="true"></span>
-										<span class="project-name">{resolveLocale(project.title, 'en')}</span>
+										<span class="project-name">{resolveLocale(project.title, locale)}</span>
 									</a>
 								{/each}
 							</nav>
@@ -274,7 +274,7 @@
 								use:pressBounce
 							>
 								<span class="project-dot" aria-hidden="true"></span>
-								<span class="project-name">{resolveLocale(project.title, 'en')}</span>
+								<span class="project-name">{resolveLocale(project.title, locale)}</span>
 							</a>
 						{/each}
 					</nav>
