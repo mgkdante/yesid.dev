@@ -12,13 +12,13 @@ import type { NavLink, MenuItem, ErrorPageContent } from './nav.companion';
 
 export const navLinks: readonly NavLink[] = [
 	{
-		href: '/projects',
-		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
+		href: '/services',
+		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
 		priority: 1,
 	},
 	{
-		href: '/services',
-		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
+		href: '/projects',
+		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
 		priority: 1,
 	},
 	{
@@ -29,6 +29,26 @@ export const navLinks: readonly NavLink[] = [
 ];
 
 export const menuItems: readonly MenuItem[] = [
+	{
+		href: '/services',
+		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
+		priority: 1,
+		subtitle: {
+			en: 'what I build',
+			es: 'lo que construyo',
+			fr: 'ce que je construis',
+		},
+	},
+	{
+		href: '/projects',
+		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
+		priority: 1,
+		subtitle: {
+			en: 'proof it ships',
+			es: 'prueba de que se entrega',
+			fr: 'la preuve que ça livre',
+		},
+	},
 	{
 		href: '/tech-stack',
 		label: { en: 'Stack', es: 'Stack', fr: 'Stack' },
@@ -60,16 +80,6 @@ export const menuItems: readonly MenuItem[] = [
 		},
 	},
 	{
-		href: '/projects',
-		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
-		priority: 1,
-		subtitle: {
-			en: 'proof it ships',
-			es: 'prueba de que se entrega',
-			fr: 'la preuve que ça livre',
-		},
-	},
-	{
 		href: '/contact',
 		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
 		priority: 1,
@@ -79,24 +89,9 @@ export const menuItems: readonly MenuItem[] = [
 			fr: 'canal ouvert',
 		},
 	},
-	{
-		href: '/services',
-		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
-		priority: 1,
-		subtitle: {
-			en: 'what I build',
-			es: 'lo que construyo',
-			fr: 'ce que je construis',
-		},
-	},
 ];
 
 export const footerLinks: readonly NavLink[] = [
-	{
-		href: '/contact',
-		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
-		priority: 1,
-	},
 	{
 		href: '/blog',
 		label: { en: 'Blog', es: 'Blog', fr: 'Blog' },
@@ -107,17 +102,22 @@ export const footerLinks: readonly NavLink[] = [
 		label: { en: 'About', es: 'Acerca de', fr: 'À propos' },
 		priority: 1,
 	},
+	{
+		href: '/contact',
+		label: { en: 'Contact', es: 'Contacto', fr: 'Contact' },
+		priority: 1,
+	},
 ];
 
 export const mobileLinks: readonly NavLink[] = [
 	{
-		href: '/projects',
-		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
+		href: '/services',
+		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
 		priority: 1,
 	},
 	{
-		href: '/services',
-		label: { en: 'Services', es: 'Servicios', fr: 'Services' },
+		href: '/projects',
+		label: { en: 'Projects', es: 'Proyectos', fr: 'Projets' },
 		priority: 1,
 	},
 	{
