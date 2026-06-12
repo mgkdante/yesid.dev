@@ -47,7 +47,7 @@ export const stackArchetypes: StackArchetype[] = [
 			fr: 'Voyez vos chiffres bouger.',
 		},
 		proofProjectSlug: 'transit-data-pipeline',
-		serviceId: 'sql-development',
+		serviceId: 'analytics-reporting',
 		slug: 'data-dashboard',
 		tech: [
 			{ id: 'sveltekit', layer: 'interface', sort: 1 },
