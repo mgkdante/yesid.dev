@@ -265,9 +265,10 @@
 	{/if}
 
 	<g class="bp-connectors">
-		{#each layout.connectors as connector (connector.from + '→' + connector.to)}
+		{#each layout.connectors as connector (connector.kind + connector.from + '→' + connector.to)}
 			<path
 				class={`bp-connector bp-from-${layerById.get(connector.from)}`}
+				class:bp-connector-rail={connector.kind === 'rail'}
 				class:bp-connector-hot={hoverBoxId === connector.from}
 				d={connector.path}
 				data-from={connector.from}
@@ -317,10 +318,12 @@
 		</g>
 	{/each}
 
-	<!-- GO-w2t5 fun-pass: one-shot signal dash per connector. Rest opacity 0
-	     (CSS); only the animate=true timeline ever lights them. -->
+	<!-- GO-w2t5 fun-pass: one-shot signal dash per FLOW connector (finale:
+	     sibling rails carry no traffic — a signal pulsing 24px sideways is
+	     noise). Rest opacity 0 (CSS); only the animate=true timeline lights
+	     them. -->
 	<g class="bp-signals" aria-hidden="true">
-		{#each layout.connectors as connector (connector.from + '→' + connector.to)}
+		{#each layout.connectors.filter((c) => c.kind === 'flow') as connector (connector.from + '→' + connector.to)}
 			<path class="bp-signal" d={connector.path} />
 		{/each}
 	</g>
@@ -434,6 +437,12 @@
 		fill: none;
 		stroke: var(--border);
 		stroke-width: 1.5;
+	}
+
+	/* Finale (4b): sibling rails — same-row ties keeping multi-box rows on one
+	   circuit (total connectivity). Quieter than the flow wiring. */
+	.bp-connector-rail {
+		stroke-width: 1;
 	}
 
 	/* go2/w5 §8: hover teaching (pointer devices only) — the hovered box's

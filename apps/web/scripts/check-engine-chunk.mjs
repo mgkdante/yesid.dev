@@ -12,11 +12,12 @@ import { gzipSync } from 'node:zlib';
 
 const CLIENT_DIR = '.svelte-kit/output/client/_app/immutable';
 const MARKER = 'engine-goal-region';
-// Measured 15,019 bytes gzip on 2026-06-12 (go2/w5 round 4: crafted preview
-// configs for all 12 archetypes + dual-role lines + composed product builder
-// + engine nav — data-only config payload, ~2.2 KB gzip over round 3's
-// 12,804). Pinned to measured × 1.2 rounded up to the nearest 5,000.
-// Previous pin: 15,000 (measured 10,459 on 2026-06-12, engine 2.0 round 1).
+// Measured 16,280 bytes gzip on 2026-06-12 (go2/w5 finale: phrase-builder
+// grammar + lean TECH_VOICES vocabulary + journey stepper + availability
+// line + wrap/rail layout — ~1.3 KB gzip over round 4's 15,019). The pin
+// formula (measured × 1.2 rounded up to the nearest 5,000) still lands on
+// 20,000 — no re-pin needed.
+// Previous pins: 20,000 (15,019, round 4); 15,000 (10,459, round 1).
 const BUDGET_GZIP = Number(process.env.ENGINE_CHUNK_BUDGET_GZIP ?? 20_000);
 
 function* walk(dir) {

@@ -36,9 +36,30 @@ describe('GO-w2t5 addendum — /tech-stack full-bleed engine band', () => {
 		expect(src).toMatch(/\.engine-band \{[^}]*color-mix\(in srgb, var\(--primary\)/);
 	});
 
-	it("hero above and CTA below keep their constrained width EXACTLY ('perfect that way')", () => {
+	it('finale 4d: the HERO is full-bleed too — the old constrained-hero rule is superseded for THIS page', () => {
 		const src = page();
-		expect(src).toMatch(/\.hero \{[^}]*max-width: var\(--container-wide\);/);
+		const hero = src.match(/\.hero \{[^}]*\}/);
+		expect(hero, '.hero rule must exist').not.toBeNull();
+		// No width cap — the control room runs edge to edge; gutters come from
+		// the shared --space-page-x padding.
+		expect(hero![0]).not.toContain('max-width');
+		expect(hero![0]).toContain('var(--space-page-x)');
+		// One continuous instrument panel: the hero carries the SAME brand tint
+		// as the engine band; the hazard strip is the seam between them.
+		expect(hero![0]).toMatch(/color-mix\(in srgb, var\(--primary\)/);
+		// No dead air between hero and band — margin-top is gone.
+		expect(src).toMatch(/\.engine-band \{[^}]*margin: 0 0 /);
+	});
+
+	it('finale 4d: hero type commands the viewport (clamped big, viewport-driven)', () => {
+		const src = page();
+		expect(src).toMatch(/\.hero-title \{[^}]*font-size: clamp\(2\.75rem, 8vw, 7\.5rem\);/);
+		expect(src).toMatch(/\.stack-explainer \{[^}]*font-size: clamp\(/);
+		expect(src).toMatch(/\.hero-terminal \{[^}]*font-size: clamp\(13px/);
+	});
+
+	it("CTA below keeps its constrained width EXACTLY ('perfect that way' still holds under the panel)", () => {
+		const src = page();
 		expect(src).toMatch(/\.cta-zone \{[^}]*max-width: var\(--container-wide\);/);
 	});
 
