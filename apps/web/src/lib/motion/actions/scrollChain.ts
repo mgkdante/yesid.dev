@@ -16,10 +16,30 @@
  * Timing: Our handler fires on the element (closer to target), then the event
  * bubbles to document where Lenis catches it. By the time Lenis checks for
  * `data-lenis-prevent`, we've already toggled it.
+ *
+ * Glide cancel (go2 nested-scroll fix): toggling the attribute only stops Lenis
+ * from CONSUMING the next event — it does not stop an ease already in flight.
+ * After a boundary handoff (card bottoms out → wheel chains to Lenis → 1.2s
+ * eased page glide), reversing the wheel over the card re-claimed the events
+ * for native card scroll, but the page kept gliding underneath for up to a
+ * second AND Lenis's targetScroll stayed parked far away — so "scroll up over
+ * a scrolled card" felt dead. Whenever the card claims a wheel event while
+ * Lenis is mid-ease, freeze the page exactly where it is (public API:
+ * scrollTo current position with immediate:true stops the internal animation
+ * and re-syncs targetScroll to the actual position).
  */
+import { getLenis } from '../utils/lenis.js';
+
 export function scrollChain(node: HTMLElement) {
 	function hasVerticalOverflow(): boolean {
 		return node.scrollHeight > node.clientHeight + 1;
+	}
+
+	function cancelLenisGlide(): void {
+		const lenis = getLenis();
+		if (lenis && lenis.isScrolling === 'smooth') {
+			lenis.scrollTo(lenis.scroll, { immediate: true, programmatic: true });
+		}
 	}
 
 	function handleWheel(e: WheelEvent) {
@@ -50,6 +70,9 @@ export function scrollChain(node: HTMLElement) {
 			if (!node.hasAttribute('data-lenis-prevent')) {
 				node.setAttribute('data-lenis-prevent', '');
 			}
+			// The card owns this event: any in-flight Lenis ease must stop NOW,
+			// or the page glides under the card while it tries to unwind.
+			cancelLenisGlide();
 		}
 	}
 
