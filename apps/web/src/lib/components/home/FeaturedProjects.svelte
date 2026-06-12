@@ -33,14 +33,14 @@
 		projects,
 	}: { proofReel: ProofReelContent; projects: readonly Project[] } = $props();
 
-	const toggleColorAriaTemplate = resolveLocale(proofReelContent.toggleColorAria, 'en');
-	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, 'en');
+	const toggleColorAriaTemplate = resolveLocale(proofReelContent.toggleColorAria, locale);
+	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, locale);
 
 	// go2-t1c2: chrome microcopy from the site_labels singleton, previous
 	// literals kept as code fallbacks.
-	const carouselPrevAria = resolveLocale(siteLabels.a11y.carouselPrev, 'en') || 'Previous projects';
-	const carouselNextAria = resolveLocale(siteLabels.a11y.carouselNext, 'en') || 'Next projects';
-	const markerFeaturedTemplate = resolveLocale(siteLabels.ui.markerFeatured, 'en') || '{num} / FEATURED';
+	const carouselPrevAria = resolveLocale(siteLabels.a11y.carouselPrev, locale) || 'Previous projects';
+	const carouselNextAria = resolveLocale(siteLabels.a11y.carouselNext, locale) || 'Next projects';
+	const markerFeaturedTemplate = resolveLocale(siteLabels.ui.markerFeatured, locale) || '{num} / FEATURED';
 
 	const visibleProjects = $derived(projects);
 	const total = $derived(visibleProjects.length);
@@ -118,9 +118,9 @@
 	<div class="embla" use:emblaCarouselSvelte={{ options: emblaOptions, plugins: [WheelGesturesPlugin()] }} onemblaInit={onEmblaInit}>
 		<div class="embla__container">
 			{#each visibleProjects as project, i}
-				{@const title = resolveLocale(project.title, 'en')}
+				{@const title = resolveLocale(project.title, locale)}
 				{@const metric = project.impactMetric}
-				{@const metricLabel = metric ? resolveLocale(metric.label, 'en') : ''}
+				{@const metricLabel = metric ? resolveLocale(metric.label, locale) : ''}
 				{@const imageUrl = proofReelContent.images[project.slug as keyof typeof proofReelContent.images]}
 				<div class="embla__slide">
 					<div

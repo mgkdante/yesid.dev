@@ -15,9 +15,9 @@
 
 	let { projects }: { projects: readonly Project[] } = $props();
 
-	const builtWithLabel = resolveLocale(relatedProjectsStripContent.builtWithLabel, 'en');
-	const countSingular = resolveLocale(relatedProjectsStripContent.projectCount.singular, 'en');
-	const countPlural = resolveLocale(relatedProjectsStripContent.projectCount.plural, 'en');
+	const builtWithLabel = resolveLocale(relatedProjectsStripContent.builtWithLabel, locale);
+	const countSingular = resolveLocale(relatedProjectsStripContent.projectCount.singular, locale);
+	const countPlural = resolveLocale(relatedProjectsStripContent.projectCount.plural, locale);
 </script>
 
 <div
@@ -33,7 +33,7 @@
 				class="proof-link"
 			>
 				<span class="proof-dot" aria-hidden="true"></span>
-				<span class="proof-name">{resolveLocale(project.title, 'en')}</span>
+				<span class="proof-name">{resolveLocale(project.title, locale)}</span>
 			</a>
 		{/each}
 	</div>

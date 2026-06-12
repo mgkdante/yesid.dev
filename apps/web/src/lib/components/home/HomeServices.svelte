@@ -41,11 +41,11 @@
 	// export carries no order guarantee after the station renumber.
 	const orderedServices = [...services].sort((a, b) => a.station - b.station);
 
-	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, 'en');
-	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, 'en');
+	const viewIllustrationAriaTemplate = resolveLocale(servicesGridContent.viewIllustrationAria, locale);
+	const viewAllLink = resolveLocale(servicesGridContent.viewAllLink, locale);
 
 	// go2-t1c2: card marker template from site_labels, previous literal as fallback.
-	const markerServiceTemplate = resolveLocale(siteLabels.ui.markerService, 'en') || '{num} / SERVICE';
+	const markerServiceTemplate = resolveLocale(siteLabels.ui.markerService, locale) || '{num} / SERVICE';
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
 
@@ -118,10 +118,10 @@
 		<!-- 3-column grid (1 col on tablet/mobile). Cards in the same row share height. -->
 		<div class="services-grid grid grid-cols-1 gap-5 lg:grid-cols-3">
 			{#each orderedServices as service, i}
-				{@const benefit = service.benefitHeadline ? resolveLocale(service.benefitHeadline, 'en') : ''}
-				{@const title = resolveLocale(service.title, 'en')}
-				{@const metricValue = service.impactMetric ? resolveLocale(service.impactMetric.value, 'en') : ''}
-				{@const metricLabel = service.impactMetric ? resolveLocale(service.impactMetric.label, 'en') : ''}
+				{@const benefit = service.benefitHeadline ? resolveLocale(service.benefitHeadline, locale) : ''}
+				{@const title = resolveLocale(service.title, locale)}
+				{@const metricValue = service.impactMetric ? resolveLocale(service.impactMetric.value, locale) : ''}
+				{@const metricLabel = service.impactMetric ? resolveLocale(service.impactMetric.label, locale) : ''}
 				<a
 					href={localizeHref(`/services/${service.id}`, locale)}
 					data-testid="services-card"
