@@ -29,6 +29,7 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 		ui: {
 			markerService: ls('ui_marker_service'),
 			markerFeatured: ls('ui_marker_featured'),
+			backToProjects: ls('ui_back_to_projects'),
 			errorStatusNote: ls('ui_error_status_note'),
 			blogEditionTemplate: ls('ui_blog_edition_template'),
 			copyrightTemplate: ls('ui_copyright_template'),
