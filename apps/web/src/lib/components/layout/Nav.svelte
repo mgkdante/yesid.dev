@@ -132,7 +132,7 @@
 		<span class="nav-divider" aria-hidden="true"></span>
 
 		<!-- Theme toggle (GO-W2.2) -->
-		<ThemeToggle />
+		<ThemeToggle {locale} />
 
 		<!-- Menu toggle -->
 		<button
