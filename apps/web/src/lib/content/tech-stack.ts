@@ -16,15 +16,18 @@ export const techStackPageContent: TechStackPageContent = {
 		viewServices: { en: 'View Services' },
 	},
 	cta: {
-		availability: { en: 'Available for Q2 2026' },
+		availability: { en: 'Booking Q3 2026' },
 		headingLine1: { en: 'Found your stack' },
 		headingLine2: { en: 'Let\'s build it' },
 		sub: {
-			en: 'Whether it\'s a data pipeline, a web app, or a mobile product — the infrastructure is ready.',
+			en: 'A pipeline, a dashboard, a database, a store — the infrastructure is ready.',
 		},
 	},
 	hero: {
 		overline: { en: 'Infrastructure Map' },
+		stackExplainer: {
+			en: 'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you — poke the blueprints below and see for yourself.',
+		},
 		stats: {
 			technologies: { en: 'technologies' },
 		},
@@ -48,6 +51,67 @@ export const techStackPageContent: TechStackPageContent = {
 };
 
 export const techStackItems: readonly TechStackItem[] = [
+	{
+		enables: {
+			en: 'schedules and babysits your data pipelines, end to end',
+		},
+		icon: {
+			iconify_id: 'logos:airflow',
+			id: 'airflow',
+			name: 'Apache Airflow',
+			svg_override: null,
+		},
+		id: 'airflow',
+		layer: 'logic',
+		name: 'Apache Airflow',
+		relatedProjects: ['transit-data-pipeline'],
+		relatedServices: ['data-pipeline'],
+		what_i_use_it_for: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'The Transit Operations Data Pipeline runs on Airflow — orchestrating the daily cycle of GTFS-RT feed ingestion, Python transformations, PostgreSQL loads, and Power BI dataset refreshes. Each task has retry logic, SLA alerts, and dependency chains that ensure data quality gates pass before downstream consumers see new data. Airflow\'s web UI gives the operations team visibility into pipeline health without needing to SSH into servers or read log files.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977602,
+				version: '2.31.2',
+			},
+		},
+		what_it_is: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'Apache Airflow is a workflow orchestration platform that lets you define, schedule, and monitor data pipelines as Python code. Instead of cron jobs or manual scripts, you write DAGs (Directed Acyclic Graphs) that declare tasks and their dependencies — "extract data, then transform it, then load it, and if any step fails, retry three times and alert me." Airflow provides a web UI for monitoring, a scheduler for timing, and integrations with virtually every data tool.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977601,
+				version: '2.31.2',
+			},
+		},
+		why_i_use_it_instead: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'Airflow turns "a bunch of scripts that run in order" into a proper orchestration system with retries, logging, alerting, and dependency management. I use it when pipelines have multiple steps that need to run in a specific order, when failures need automatic retry logic, and when stakeholders need visibility into pipeline health. I write DAGs as Python code (not YAML configuration), which means the full power of Python is available for dynamic task generation and conditional logic.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977602,
+				version: '2.31.2',
+			},
+		},
+	},
 	{
 		enables: {
 			en: 'versions every database schema change, with rollbacks',
@@ -163,6 +227,67 @@ export const techStackItems: readonly TechStackItem[] = [
 					},
 				],
 				time: 1777263977606,
+				version: '2.31.2',
+			},
+		},
+	},
+	{
+		enables: {
+			en: 'turns Power BI models into sharp, reusable measures',
+		},
+		icon: {
+			iconify_id: null,
+			id: 'dax',
+			name: 'DAX',
+			svg_override: null,
+		},
+		id: 'dax',
+		layer: 'data',
+		name: 'DAX',
+		relatedProjects: ['lorem-analytics-dashboard'],
+		relatedServices: ['analytics-reporting'],
+		what_i_use_it_for: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'On the Lorem Analytics Dashboard, DAX powers every KPI calculation — from department-level revenue metrics to cross-department comparisons with dynamic date ranges. The semantic layer I built uses DAX measures exclusively (no calculated columns where measures suffice) to keep the model lean and the refreshes fast. Understanding DAX at a deep level means I can diagnose "the numbers don\'t match" issues that typically take teams days to resolve.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977608,
+				version: '2.31.2',
+			},
+		},
+		what_it_is: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'DAX (Data Analysis Expressions) is a formula language used in Power BI, Analysis Services, and Power Pivot. Think of it as a specialized language for writing business calculations — revenue growth, running totals, year-over-year comparisons, weighted averages — that work across filtered and sliced data. DAX operates on a columnar data model and uses concepts like filter context and row context to evaluate expressions dynamically as users interact with dashboards.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977608,
+				version: '2.31.2',
+			},
+		},
+		why_i_use_it_instead: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'DAX is where business logic meets data modeling, and getting it right is the difference between dashboards that perform and dashboards that lie. I write DAX measures that handle complex time intelligence (YTD, prior year comparison, rolling averages), dynamic segmentation, and what-if analysis. I understand the evaluation context deeply — filter context propagation, CALCULATE overrides, and the iterator vs. aggregator distinction that trips up most Power BI developers.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977609,
 				version: '2.31.2',
 			},
 		},
@@ -346,6 +471,67 @@ export const techStackItems: readonly TechStackItem[] = [
 		},
 	},
 	{
+		enables: {
+			en: 'the other workhorse relational database — same care as Postgres',
+		},
+		icon: {
+			iconify_id: 'logos:mysql',
+			id: 'mysql',
+			name: 'MySQL',
+			svg_override: null,
+		},
+		id: 'mysql',
+		layer: 'data',
+		name: 'MySQL',
+		relatedProjects: [],
+		relatedServices: ['database-engineering'],
+		what_i_use_it_for: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'MySQL has been the source database in several migration projects I\'ve handled. The Lorem Database Migration started as a MySQL instance that had outgrown its schema design — I mapped every data type, converted stored procedures, and built the dual-write migration path to PostgreSQL. Understanding MySQL\'s storage engines and locking behavior was critical to planning the zero-downtime cutover.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977616,
+				version: '2.31.2',
+			},
+		},
+		what_it_is: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'MySQL is one of the most widely deployed relational databases in the world, especially in web applications. It stores data in tables with defined schemas, supports transactions, and is the "M" in the classic LAMP stack (Linux, Apache, MySQL, PHP). It\'s fast for read-heavy workloads and has a massive community with extensive documentation and tooling.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977616,
+				version: '2.31.2',
+			},
+		},
+		why_i_use_it_instead: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'MySQL shows up in legacy systems more than in my new projects. I\'m proficient at working with it — optimizing queries, designing schemas, managing replication — but I typically recommend PostgreSQL for new work because of its richer feature set. That said, when a client\'s infrastructure is already MySQL-based, I work within that ecosystem rather than pushing an unnecessary migration. Knowing both MySQL and PostgreSQL well means I can make honest recommendations about when a migration is worth the effort.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977617,
+				version: '2.31.2',
+			},
+		},
+	},
+	{
 		icon: {
 			iconify_id: 'logos:nodejs-icon',
 			id: 'node-js',
@@ -399,6 +585,67 @@ export const techStackItems: readonly TechStackItem[] = [
 					},
 				],
 				time: 1777263977618,
+				version: '2.31.2',
+			},
+		},
+	},
+	{
+		enables: {
+			en: 'proves the whole product works in a real browser, on every change',
+		},
+		icon: {
+			iconify_id: 'logos:playwright',
+			id: 'playwright',
+			name: 'Playwright',
+			svg_override: null,
+		},
+		id: 'playwright',
+		layer: 'infra',
+		name: 'Playwright',
+		relatedProjects: ['yesid-dev'],
+		relatedServices: ['web-development'],
+		what_i_use_it_for: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'Playwright is planned for yesid.dev\'s E2E testing layer — verifying critical user flows like navigating the tech stack diagram, opening detail panels, using filters, and the Build Your Stack configurator across Chrome, Firefox, and Safari. It integrates with GitHub Actions to run browser tests on every push, and its screenshot comparison can catch visual regressions that unit tests would never detect.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977619,
+				version: '2.31.2',
+			},
+		},
+		what_it_is: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'Playwright is a browser automation framework by Microsoft for end-to-end testing. It controls real browsers (Chromium, Firefox, WebKit) programmatically — navigating pages, clicking buttons, filling forms, and asserting on page content. Unlike unit tests that test components in isolation, E2E tests verify that the entire application works as a user would experience it: real HTTP requests, real rendering, real interactions.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977619,
+				version: '2.31.2',
+			},
+		},
+		why_i_use_it_instead: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'Playwright catches the bugs that unit tests miss — the ones that only appear when components interact in a real browser with real data. I\'m building my E2E testing practice around it because it\'s the most capable browser testing tool available: auto-waiting (no flaky <code>sleep()</code> calls), multi-browser support, network interception, and built-in trace viewer for debugging failures. For visual-heavy sites like yesid.dev, Playwright can verify animations, responsive layouts, and interaction flows.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977619,
 				version: '2.31.2',
 			},
 		},
@@ -1294,6 +1541,167 @@ export const techStackItems: readonly TechStackItem[] = [
 					},
 				],
 				time: 1777263977636,
+				version: '2.31.2',
+			},
+		},
+	},
+	{
+		enables: {
+			en: 'runs thousands of unit checks in seconds, on every change',
+		},
+		icon: {
+			iconify_id: 'logos:vitest',
+			id: 'vitest',
+			name: 'Vitest',
+			svg_override: null,
+		},
+		id: 'vitest',
+		layer: 'infra',
+		name: 'Vitest',
+		relatedProjects: ['yesid-dev'],
+		relatedServices: ['web-development'],
+		what_i_use_it_for: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'yesid.dev uses Vitest with a dual-project configuration: one project for component tests (using happy-dom for DOM simulation) and another for data-layer unit tests (pure TypeScript, no DOM needed). The test suite validates data integrity (all 34 tech items have valid connections, no dangling references), component behavior (filters, collapsible sections, stack panels), and type safety. Tests run on every commit via <code>bun run test</code> and in CI via GitHub Actions.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977637,
+				version: '2.31.2',
+			},
+		},
+		what_it_is: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'Vitest is a fast unit testing framework built on Vite\'s transformation pipeline. It runs TypeScript and JSX natively (no separate compile step), supports ESM imports, and provides a Jest-compatible API — so if you know Jest, you already know Vitest. It includes snapshot testing, code coverage, watch mode, and a browser UI for exploring test results. For Vite-based projects (SvelteKit, React with Vite), Vitest shares the same config and plugin ecosystem.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977636,
+				version: '2.31.2',
+			},
+		},
+		why_i_use_it_instead: {
+			en: {
+				blocks: [
+					{
+						data: {
+							text: 'Vitest is fast, and speed matters when you\'re running tests after every code change. It uses Vite\'s on-demand module transformation, so only the files that changed get re-processed. Combined with Bun as the runtime, test suites that took minutes with Jest now run in seconds. I pair it with <code>@testing-library/svelte</code> for component tests and use the multi-project configuration to run different test types (unit vs. component) with optimized settings for each.',
+						},
+						id: 'm00000001',
+						type: 'paragraph',
+					},
+				],
+				time: 1777263977637,
+				version: '2.31.2',
+			},
+		},
+	},
+	{
+		enables: {
+			en: 'reshapes warehouse data into clean, tested, documented models',
+		},
+		icon: null,
+		id: 'dbt',
+		layer: 'logic',
+		name: 'dbt',
+		relatedProjects: [],
+		relatedServices: [],
+		what_i_use_it_for: {
+			en: {
+				blocks: [
+					{
+						data: { text: '' },
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 0,
+				version: '2.31.2',
+			},
+		},
+		what_it_is: {
+			en: {
+				blocks: [
+					{
+						data: { text: '' },
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 0,
+				version: '2.31.2',
+			},
+		},
+		why_i_use_it_instead: {
+			en: {
+				blocks: [
+					{
+						data: { text: '' },
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 0,
+				version: '2.31.2',
+			},
+		},
+	},
+	{
+		enables: {
+			en: 'runs the whole storefront — products, checkout and payments in one admin',
+		},
+		icon: null,
+		id: 'shopify',
+		layer: 'logic',
+		name: 'Shopify',
+		relatedProjects: [],
+		relatedServices: [],
+		what_i_use_it_for: {
+			en: {
+				blocks: [
+					{
+						data: { text: '' },
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 0,
+				version: '2.31.2',
+			},
+		},
+		what_it_is: {
+			en: {
+				blocks: [
+					{
+						data: { text: '' },
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 0,
+				version: '2.31.2',
+			},
+		},
+		why_i_use_it_instead: {
+			en: {
+				blocks: [
+					{
+						data: { text: '' },
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 0,
 				version: '2.31.2',
 			},
 		},
