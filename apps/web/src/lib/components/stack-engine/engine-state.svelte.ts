@@ -5,7 +5,8 @@
 // (zero runtime fetches), matching is the pure matchArchetypes function.
 //
 // Modes: 'goal' (pick an outcome → blueprint → preview) and 'compose'
-// ("what can these build?" — picks rank archetypes; never free-form wiring).
+// ("what can these build?" — picks filter archetypes with AND semantics,
+// every pick must be in a match's stack; never free-form wiring).
 // Switching mode resets the view/active archetype but PRESERVES picks, so a
 // visitor can bounce between framings without losing work.
 
