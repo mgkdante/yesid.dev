@@ -39,7 +39,7 @@
 		<SvgIcon {svgContent} size={28} hovered={badgeHovered} />
 	{/if}
 	<span class="font-mono text-caption leading-tight text-[var(--foreground)] md:text-mono">
-		{resolveLocale(service.title, 'en')}
+		{resolveLocale(service.title, locale)}
 	</span>
 </a>
 

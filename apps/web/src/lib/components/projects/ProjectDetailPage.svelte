@@ -7,10 +7,13 @@
 <script lang="ts">
 	import type { Project, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { projectsDetailContent } from '$lib/content/projects';
 
-	const tocSectionTitle = resolveLocale(projectsDetailContent.tocSectionTitle, 'en');
-	const readmeSectionTitle = resolveLocale(projectsDetailContent.readmeSectionTitle, 'en');
+	const tocSectionTitle = resolveLocale(projectsDetailContent.tocSectionTitle, locale);
+	const readmeSectionTitle = resolveLocale(projectsDetailContent.readmeSectionTitle, locale);
 	import { Separator } from '$lib/components/ui/separator';
 	import { SectionLabel, StickyPanel, ChevronToggle } from '$lib/components/brand';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
@@ -51,7 +54,7 @@
 		for (let i = 0; i < project.sections.length; i++) {
 			entries.push({
 				id: `section-${i}`,
-				title: resolveLocale(project.sections[i].title, 'en'),
+				title: resolveLocale(project.sections[i].title, locale),
 				level: 2,
 				children: [],
 			});
@@ -206,11 +209,11 @@
 					data-section-index={i}
 				>
 					<CollapsibleSection
-						title={resolveLocale(section.title, 'en')}
+						title={resolveLocale(section.title, locale)}
 						index={i}
 						open={true}
 					>
-						<div class="section-body"><BlockRenderer doc={resolveLocale(section.content, 'en')} /></div>
+						<div class="section-body"><BlockRenderer doc={resolveLocale(section.content, locale)} /></div>
 					</CollapsibleSection>
 				</div>
 			{/each}

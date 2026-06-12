@@ -14,6 +14,9 @@
 	import { goto } from '$app/navigation';
 	import type { Project, ProjectsPageContent, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
 	import { loadDrawSVG, loadFlip, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
@@ -54,12 +57,12 @@
 	// generated listing module + previous literals as code fallbacks. The
 	// formerly orphaned CMS intro is rendered as the header subtitle.
 	const listingHeading =
-		resolveLocale(projectsPage.heading, 'en') || resolveLocale(projectsListingContent.heading, 'en');
-	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, 'en');
-	const listingIntro = resolveLocale(projectsPage.intro, 'en');
+		resolveLocale(projectsPage.heading, locale) || resolveLocale(projectsListingContent.heading, locale);
+	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, locale);
+	const listingIntro = resolveLocale(projectsPage.intro, locale);
 	const emptyStateText =
-		resolveLocale(projectsPage.emptyState, 'en') || 'No projects match the selected filters.';
-	const filterNoun = resolveLocale(siteLabels.ui.nounProject, 'en') || 'project';
+		resolveLocale(projectsPage.emptyState, locale) || 'No projects match the selected filters.';
+	const filterNoun = resolveLocale(siteLabels.ui.nounProject, locale) || 'project';
 
 	// Filter state — read from URL params
 	let activeService = $derived($page.url.searchParams.get('service'));
@@ -87,8 +90,8 @@
 		if (searchQuery.trim()) {
 			const q = searchQuery.trim().toLowerCase();
 			result = result.filter((p) => {
-				const title = resolveLocale(p.title, 'en').toLowerCase();
-				const oneLiner = resolveLocale(p.oneLiner, 'en').toLowerCase();
+				const title = resolveLocale(p.title, locale).toLowerCase();
+				const oneLiner = resolveLocale(p.oneLiner, locale).toLowerCase();
 				const tags = p.tags.join(' ').toLowerCase();
 				const stack = p.stack.join(' ').toLowerCase();
 				return title.includes(q) || oneLiner.includes(q) || tags.includes(q) || stack.includes(q);
@@ -124,7 +127,7 @@
 
 	// Build a lookup from service ID to service title for the filter pills
 	let serviceMap = $derived(
-		new Map(services.map((s) => [s.id, resolveLocale(s.title, 'en')]))
+		new Map(services.map((s) => [s.id, resolveLocale(s.title, locale)]))
 	);
 
 	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack || searchQuery.trim() !== '');
