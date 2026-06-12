@@ -1,9 +1,9 @@
 import type { RequestHandler } from './$types';
 import { adapter } from '$lib/adapters';
-import { PUBLISHED_LOCALES, SITE_HOST } from '$lib/utils/seo-defaults';
+import { PUBLISHED_LOCALES, canonicalFor, DEFAULT_LOCALE } from '$lib/utils/seo-defaults';
 import { isPathPublished } from '$lib/utils/page-registry';
 import { sitePages } from '$lib/content/site-pages';
-import type { SitePage } from '$lib/types';
+import type { Locale, SitePage } from '$lib/types';
 
 // Route ids that are always present in the router. Keep this list in sync
 // with the static-route set in $lib/adapters/route-seo-defaults.ts when
@@ -23,11 +23,6 @@ export const _STATIC_ROUTES: readonly string[] = [
 	'/tech-stack',
 ];
 
-function canonical(path: string): string {
-	if (path === '' || path === '/') return SITE_HOST;
-	return `${SITE_HOST}${path}`;
-}
-
 function xmlEscape(s: string): string {
 	return s
 		.replace(/&/g, '&amp;')
@@ -40,14 +35,29 @@ function xmlEscape(s: string): string {
 // slice-28.1 (audit #19): <lastmod> dropped entirely. It is optional per the
 // sitemaps spec, and the previous value was request-time noise — static
 // routes got "now" on every request, defeating crawler change detection.
-function urlEntry(loc: string): string {
-	const altLinks = PUBLISHED_LOCALES.map(
-		(l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${xmlEscape(loc)}" />`,
-	).join('\n');
-	return `  <url>
-    <loc>${xmlEscape(loc)}</loc>
-${altLinks}
-  </url>`;
+//
+// slice-28.6 T11: one <url> per locale VARIANT of a path. Multi-locale paths
+// carry the full alternate cluster (every published locale + x-default→en) on
+// each variant, per Google's sitemap-alternates spec. With exactly ['en']
+// published, output keeps the legacy one-entry-with-en-self-link shape
+// (locked by test).
+function urlEntries(path: string, variants: readonly Locale[]): string[] {
+	const multi = variants.length > 1;
+	return variants.map((v) => {
+		const loc = canonicalFor(path, v);
+		const altLinks = [
+			...variants.map(
+				(m) =>
+					`    <xhtml:link rel="alternate" hreflang="${m}" href="${xmlEscape(canonicalFor(path, m))}" />`,
+			),
+			...(multi
+				? [
+						`    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(canonicalFor(path, DEFAULT_LOCALE))}" />`,
+					]
+				: []),
+		];
+		return `  <url>\n    <loc>${xmlEscape(loc)}</loc>\n${altLinks.join('\n')}\n  </url>`;
+	});
 }
 
 // Exported so the build-time coverage gate (Task 11) can diff expected vs
@@ -63,8 +73,8 @@ export async function _buildSitemapEntries(
 	pages: readonly SitePage[] = sitePages,
 ): Promise<string[]> {
 	const entries: string[] = [];
-	const pushIfPublished = (path: string) => {
-		if (isPathPublished(path, pages)) entries.push(urlEntry(canonical(path)));
+	const pushIfPublished = (path: string, variants: readonly Locale[] = PUBLISHED_LOCALES) => {
+		if (isPathPublished(path, pages)) entries.push(...urlEntries(path, variants));
 	};
 
 	for (const path of _STATIC_ROUTES) {
@@ -81,9 +91,14 @@ export async function _buildSitemapEntries(
 		pushIfPublished(`/services/${service.id}`);
 	}
 
+	// Blog posts are mono-language (AM2.5): one URL at the body language, no
+	// alternate cluster ever — a /fr/blog/<en-post> page is FR chrome around an
+	// EN body and canonicals back here.
 	const posts = await adapter.blog.all();
 	for (const post of posts) {
-		pushIfPublished(`/blog/${post.slug}`);
+		if (!isPathPublished(`/blog/${post.slug}`, pages)) continue;
+		const loc = canonicalFor(`/blog/${post.slug}`, post.lang);
+		entries.push(`  <url>\n    <loc>${xmlEscape(loc)}</loc>\n  </url>`);
 	}
 
 	return entries;
