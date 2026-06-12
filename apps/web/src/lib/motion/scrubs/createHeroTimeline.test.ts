@@ -172,6 +172,59 @@ describe('motion/scrubs/createHeroTimeline', () => {
 		destroy();
 	});
 
+	// go2/w5: the replayable-intro persistence hook. The ScrollTrigger's
+	// onUpdate drives it: crossing ~the end of the scrub fires the callback
+	// exactly once (HeroBanner persists the day-key there).
+	it('fires onIntroComplete once when scrub progress reaches the end', () => {
+		const createSpy = vi.spyOn(ScrollTrigger, 'create');
+		const onIntroComplete = vi.fn();
+		const destroy = createHeroTimeline(refs.pinContainer, {
+			svgWrapper: refs.svgWrapper,
+			heroTextContainer: refs.heroTextContainer,
+			heroDot: refs.heroDot,
+			scrollPrompt: refs.scrollPrompt,
+			startBlink: () => {},
+			stopBlink: () => {},
+			onIntroComplete,
+		});
+		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
+		const onUpdate = pinCall![0].onUpdate as (self: {
+			progress: number;
+			direction: number;
+		}) => void;
+
+		onUpdate({ progress: 0.5, direction: 1 });
+		expect(onIntroComplete).not.toHaveBeenCalled();
+
+		onUpdate({ progress: 0.999, direction: 1 });
+		expect(onIntroComplete).toHaveBeenCalledTimes(1);
+
+		// Re-crossing the threshold (replay) does not re-fire.
+		onUpdate({ progress: 0.2, direction: -1 });
+		onUpdate({ progress: 1, direction: 1 });
+		expect(onIntroComplete).toHaveBeenCalledTimes(1);
+		destroy();
+	});
+
+	it('omitting onIntroComplete keeps onUpdate safe at full progress', () => {
+		const createSpy = vi.spyOn(ScrollTrigger, 'create');
+		const destroy = createHeroTimeline(refs.pinContainer, {
+			svgWrapper: refs.svgWrapper,
+			heroTextContainer: refs.heroTextContainer,
+			heroDot: refs.heroDot,
+			scrollPrompt: refs.scrollPrompt,
+			startBlink: () => {},
+			stopBlink: () => {},
+		});
+		const pinCall = createSpy.mock.calls.find((c) => c[0].pin !== undefined);
+		const onUpdate = pinCall![0].onUpdate as (self: {
+			progress: number;
+			direction: number;
+		}) => void;
+		expect(() => onUpdate({ progress: 1, direction: 1 })).not.toThrow();
+		destroy();
+	});
+
 	it('returns a no-op destroy when the container has no metro network SVG', () => {
 		const bareContainer = document.createElement('div');
 		document.body.append(bareContainer);

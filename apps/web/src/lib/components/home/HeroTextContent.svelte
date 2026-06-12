@@ -19,6 +19,9 @@
 		ctaWorkLabel,
 		ctaContactLabel,
 		heroData,
+		introCompleted = false,
+		replayAriaLabel = 'Replay intro',
+		onReplay,
 	}: {
 		headlineLine1: string;
 		headlineAriaSuffix: string;
@@ -27,6 +30,12 @@
 		ctaWorkLabel: string;
 		ctaContactLabel: string;
 		heroData: HeroData;
+		/** go2/w5: arms the hero-dot replay button once the intro completed. */
+		introCompleted?: boolean;
+		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
+		replayAriaLabel?: string;
+		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
+		onReplay?: () => void;
 	} = $props();
 </script>
 
@@ -41,17 +50,28 @@
 		</span>
 	</h1>
 
-	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]" aria-hidden="true">
+	<!-- go2/w5: aria-hidden moved from the <p> to the text span — the replay
+	     button inside must stay reachable by AT once armed (an aria-hidden
+	     ancestor would hide it). The h1 above still carries the full phrase. -->
+	<p class="font-heading font-black leading-[0.88] tracking-[-0.04em]">
 		<span
 			class="block text-hero-mobile text-[var(--primary)] md:text-hero"
 			data-testid="hero-line2"
 		>
-			<span data-hero-stagger="1">DON'T BREAK</span><svg
-				class="hero-dot"
-				data-testid="hero-dot"
-				viewBox="0 0 10 10"
-				aria-hidden="true"
-			><circle cx="5" cy="5" r="5" fill="currentColor" /></svg>
+			<span data-hero-stagger="1" aria-hidden="true">DON'T BREAK</span><button
+				type="button"
+				class="hero-dot-btn {introCompleted ? 'hero-dot-armed' : ''}"
+				data-testid="hero-dot-replay"
+				disabled={!introCompleted}
+				aria-hidden={introCompleted ? undefined : 'true'}
+				aria-label={introCompleted ? replayAriaLabel : undefined}
+				onclick={() => onReplay?.()}
+			><svg
+					class="hero-dot"
+					data-testid="hero-dot"
+					viewBox="0 0 10 10"
+					aria-hidden="true"
+				><circle cx="5" cy="5" r="5" fill="currentColor" /></svg></button>
 		</span>
 	</p>
 
@@ -103,6 +123,54 @@
 		vertical-align: baseline;
 		margin-bottom: 0.03em;
 		color: var(--primary);
+	}
+
+	/* go2/w5: the dot rides inside a button so the completed intro can be
+	   replayed. The reset keeps the glyph metrics identical to the bare svg
+	   (font/line-height inherit → the 0.19em sizing is unchanged). */
+	.hero-dot-btn {
+		display: inline;
+		padding: 0;
+		margin: 0;
+		background: none;
+		border: none;
+		font: inherit;
+		line-height: inherit;
+		color: inherit;
+		cursor: default;
+		position: relative;
+	}
+
+	.hero-dot-armed {
+		cursor: pointer;
+	}
+	/* Generous invisible hit area (~44px) without any layout shift. */
+	.hero-dot-armed::after {
+		content: '';
+		position: absolute;
+		inset: -14px;
+	}
+	.hero-dot-armed:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 6px;
+		border-radius: 50%;
+	}
+
+	/* Operator-specified SAFE-ALWAYS tier: opacity-only pulse, indefinite —
+	   it IS the replay affordance cue, so it keeps running under
+	   prefers-reduced-motion (assistive, not vestibular). */
+	.hero-dot-armed .hero-dot {
+		animation: hero-dot-pulse 1.8s ease-in-out infinite;
+	}
+
+	@keyframes hero-dot-pulse {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.35;
+		}
 	}
 
 	/* Mobile: text + buttons MUST fit in 100svh - nav.

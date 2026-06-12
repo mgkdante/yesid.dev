@@ -30,7 +30,12 @@
 	import { createHeroTimeline } from '$lib/motion/scrubs/index.js';
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
 	import { isViewportAtMost } from '$lib/motion/utils/device.js';
-	import { generateHeroData } from '$lib/content';
+	import {
+		isHeroIntroCompletedToday,
+		markHeroIntroCompleted,
+	} from '$lib/motion/utils/heroIntroReplay.js';
+	import { getLenis } from '$lib/motion/utils/lenis.js';
+	import { generateHeroData, siteLabels } from '$lib/content';
 	import type { HeroData } from '$lib/content';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
@@ -75,6 +80,8 @@
 	const sqlMetaTemplate = resolveLocale(heroContent.sqlPanel.metaTemplate, locale);
 	const refreshLabel = resolveLocale(heroContent.refreshButton.label, locale);
 	const refreshHelper = resolveLocale(heroContent.refreshButton.helper, locale);
+	// go2/w5: hero-dot replay button aria — site_labels with code fallback.
+	const replayAriaLabel = resolveLocale(siteLabels.a11y.replayIntro, locale) || 'Replay intro';
 
 	let heroTextContainer: HTMLDivElement;
 	let refreshIcon: HTMLSpanElement;
@@ -104,17 +111,18 @@
 	let cleanup: (() => void) | undefined;
 	onDestroy(() => cleanup?.());
 
-	onMount(async () => {
-		reducedMotion = isPrefersReducedMotion();
+	// go2/w5 replayable intro:
+	//   - introCompleted arms the pulsing hero-dot replay button (set when the
+	//     visitor scrolls the intro through, or on a same-day skipped reload).
+	//   - introSkipped collapses the hero to its completed state (CSS class
+	//     mirrors the reduced-motion block) on same-day reloads.
+	// localStorage is only touched inside onMount/handlers — never at render
+	// time, so SSR stays clean.
+	let introCompleted = $state(false);
+	let introSkipped = $state(false);
+	let replayArming = false;
 
-		// Reduced motion (slice-23): the entire metro-network sequence is
-		// gated off — no scroll-pin, no typewriter, no GSAP timeline. The
-		// hero loads straight up via @media (prefers-reduced-motion: reduce)
-		// rules in the stylesheet below: metro wrapper hidden, hero text
-		// forced visible, scroll prompt hidden, section reservation
-		// collapsed to a single viewport. No JS setup required.
-		if (reducedMotion) return;
-
+	async function setupIntro(): Promise<void> {
 		await tick();
 		await new Promise((r) => setTimeout(r, 300));
 
@@ -152,6 +160,11 @@
 			startBlink: typewriter.startBlink,
 			stopBlink: typewriter.stopBlink,
 			pinLength: isMobile ? '300%' : '800%',
+			// Scrolled through once → persist the day-key + arm the replay dot.
+			onIntroComplete: () => {
+				introCompleted = true;
+				markHeroIntroCompleted();
+			},
 		});
 
 		// Sleep/wake: refresh ScrollTrigger when tab becomes visible again
@@ -167,11 +180,67 @@
 			destroyHero();
 			document.removeEventListener('visibilitychange', onVisibilityChange);
 		};
+	}
+
+	function scrollBackToTop(): void {
+		const lenis = getLenis();
+		if (lenis) {
+			lenis.scrollTo(0, { duration: 1.1, easing: (t: number) => 1 - Math.pow(1 - t, 3) });
+		} else {
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+	}
+
+	// Click on the armed dot: scroll back up and replay. From the skipped
+	// state the pin doesn't exist yet — un-collapse, build the timeline,
+	// refresh trigger measurements, then ride up into the re-armed intro.
+	async function handleReplay(): Promise<void> {
+		if (replayArming) return;
+		if (introSkipped) {
+			replayArming = true;
+			try {
+				introSkipped = false;
+				await setupIntro();
+				ScrollTrigger.refresh();
+			} finally {
+				replayArming = false;
+			}
+		}
+		scrollBackToTop();
+	}
+
+	onMount(async () => {
+		reducedMotion = isPrefersReducedMotion();
+
+		// Reduced motion (slice-23): the entire metro-network sequence is
+		// gated off — no scroll-pin, no typewriter, no GSAP timeline. The
+		// hero loads straight up via @media (prefers-reduced-motion: reduce)
+		// rules in the stylesheet below: metro wrapper hidden, hero text
+		// forced visible, scroll prompt hidden, section reservation
+		// collapsed to a single viewport. No JS setup required. (There is
+		// nothing to replay either, so the dot stays dormant.)
+		if (reducedMotion) return;
+
+		// go2/w5: already scrolled the intro through today — land in the
+		// completed state (hero-intro-done CSS collapses the reserve, hides
+		// the metro art, shows the hero text) and arm the replay dot.
+		if (isHeroIntroCompletedToday()) {
+			introSkipped = true;
+			introCompleted = true;
+			// Downstream ScrollTriggers (manifesto, closer…) may have measured
+			// against the un-collapsed 900svh reserve — re-measure once layout
+			// settles.
+			initScrollTriggerConfig();
+			requestAnimationFrame(() => ScrollTrigger.refresh());
+			return;
+		}
+
+		await setupIntro();
 	});
 </script>
 
 <section
-	class="hero-section-reserve relative"
+	class="hero-section-reserve relative {introSkipped ? 'hero-intro-done' : ''}"
 	data-testid="hero-banner"
 >
 	<div
@@ -205,6 +274,9 @@
 						{ctaWorkLabel}
 						{ctaContactLabel}
 						{heroData}
+						{introCompleted}
+						{replayAriaLabel}
+						onReplay={handleReplay}
 					/>
 
 					<!-- VERTICAL DIVIDER (desktop only) -->
@@ -329,6 +401,36 @@
 			opacity: 1 !important;
 			position: relative !important;
 		}
+	}
+
+	/* ─────────────────────────────────────────────────────────────────
+	   go2/w5 replayable intro — completed state for same-day reloads.
+	   Mirrors the reduced-motion block above: the visitor already scrolled
+	   the intro through today, so land on the finished hero (text visible,
+	   no metro art, no 900svh scroll reservation). Removed again when the
+	   pulsing dot replays the intro.
+	   ─────────────────────────────────────────────────────────────────── */
+	.hero-section-reserve.hero-intro-done {
+		min-height: 100svh;
+	}
+
+	.hero-intro-done .hero-pin {
+		height: auto;
+		min-height: 100svh;
+	}
+
+	.hero-intro-done .hero-metro-wrapper {
+		display: none;
+	}
+
+	.hero-intro-done .scroll-prompt {
+		display: none;
+	}
+
+	:global(.hero-section-reserve.hero-intro-done [data-testid='hero-text-container']) {
+		opacity: 1 !important;
+		position: relative !important;
+		transform: none !important;
 	}
 
 	/* Two-column hero grid: text | divider | SQL panel */
