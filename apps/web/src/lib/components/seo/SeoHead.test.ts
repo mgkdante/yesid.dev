@@ -71,6 +71,11 @@ describe('SeoHead — tag emission', () => {
 		expect(getLink('alternate', { name: 'hreflang', value: 'x-default' })).not.toBeNull();
 	});
 
+	it('suppresses the hreflang cluster for singleLocale pages (blog posts, AM2.5)', () => {
+		render(SeoHead, { props: { seo: { ...validSeo, singleLocale: true }, locale: 'en' } });
+		expect(document.head.querySelectorAll('link[rel="alternate"]').length).toBe(0);
+	});
+
 	it('falls back to locale-specific default OG image when ogImage is omitted', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'en' } });
 		const ogImage = getMeta('property', 'og:image');
@@ -92,7 +97,7 @@ describe('SeoHead — tag emission', () => {
 	it('emits theme-color and color-scheme meta', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'en' } });
 		expect(getMeta('name', 'theme-color')?.content).toBe('#141414');
-		expect(getMeta('name', 'color-scheme')?.content).toBe('dark');
+		expect(getMeta('name', 'color-scheme')?.content).toBe('dark light');
 	});
 
 	it('resolves og:image to absolute URL when url is relative', () => {

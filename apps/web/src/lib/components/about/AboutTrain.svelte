@@ -1,7 +1,8 @@
 <!--
   Train micro-widget — stopless, fun, interactive.
   A tiny metro train that loops on a circular track.
-  Drag to move it manually. Respects reduced motion.
+  Drag to move it manually. Respects reduced motion (static frame always
+  drawn; loop gated).
   No stop label — this card is pure delight.
 -->
 <script lang="ts">
@@ -114,12 +115,18 @@
 	}
 
 	onMount(() => {
-		if (isPrefersReducedMotion()) return;
 		// Guard: canvas may not be fully supported in test environments (jsdom)
 		if (!canvas) return;
 		const ctx = canvas.getContext('2d');
 		if (!ctx || typeof ctx.setLineDash !== 'function') return;
 		if (!cardEl) return;
+
+		// GO-w2t5 fix: paint the static frame BEFORE the reduced-motion bail —
+		// reduce users get the drawn scene (track, stations, parked train)
+		// instead of a blank card. The loop itself stays MOTION-GATED.
+		draw(ctx);
+
+		if (isPrefersReducedMotion()) return;
 
 		// IO gate — pause the train when the card scrolls out of view.
 		// rootMargin: 50px so the train resumes slightly before re-entering
@@ -131,10 +138,6 @@
 			{ rootMargin: '50px' },
 		);
 		visibilityObserver.observe(cardEl);
-
-		// Paint an initial frame so the canvas isn't blank while waiting
-		// for the IntersectionObserver to fire its first callback.
-		draw(ctx);
 
 		subscribe(SUBSCRIPTION_ID, loop);
 	});

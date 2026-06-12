@@ -14,6 +14,9 @@
 <script lang="ts">
 	import { ChevronToggle } from '$lib/components/brand';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
 
 	const defaultAllLabel = { en: 'All' };
@@ -91,7 +94,7 @@
 							class="tap-press filter-btn w-full rounded px-2 py-3 min-h-11 text-left text-sm transition-colors"
 							class:active={activeKey === null}
 						>
-							{resolveLocale(allLabel, 'en')}
+							{resolveLocale(allLabel, locale)}
 						</button>
 					{/snippet}
 				</ToggleGroupItem>
@@ -101,7 +104,7 @@
 						{#snippet child({ props })}
 							<button
 								{...props}
-								class="tap-press filter-btn w-full rounded border border-border-subtle px-2 py-3 min-h-11 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
+								class="tap-press filter-btn w-full rounded border border-border px-2 py-3 min-h-11 text-left text-sm text-[var(--muted-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
 								class:tag-active={activeKey === item.key}
 								data-testid={testIdPrefix ? `${testIdPrefix}-${item.key}` : undefined}
 							>

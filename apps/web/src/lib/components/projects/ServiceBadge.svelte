@@ -8,6 +8,10 @@
 <script lang="ts">
 	import type { Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { SvgIcon } from '$lib/components/brand';
 
 	let {
@@ -24,8 +28,8 @@
 
 <!-- Clickable badge → /services/{service.id} (page built in future slice, 404 until then) -->
 <a
-	href="/services/{service.id}"
-	class="service-badge inline-flex items-center gap-2 rounded-full border bg-bg-card px-4 py-2.5 no-underline"
+	href={localizeHref(`/services/${service.id}`, locale)}
+	class="service-badge inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2.5 no-underline"
 	style="border-color: color-mix(in srgb, var(--primary) 40%, transparent);"
 	data-testid="work-service-badge"
 	onmouseenter={() => (badgeHovered = true)}
@@ -35,7 +39,7 @@
 		<SvgIcon {svgContent} size={28} hovered={badgeHovered} />
 	{/if}
 	<span class="font-mono text-caption leading-tight text-[var(--foreground)] md:text-mono">
-		{resolveLocale(service.title, 'en')}
+		{resolveLocale(service.title, locale)}
 	</span>
 </a>
 
@@ -53,7 +57,7 @@
 			transform var(--duration-normal) var(--ease-default), box-shadow var(--duration-normal) var(--ease-default);
 	}
 	.service-badge:hover {
-		background-color: var(--border-strong);
+		background-color: var(--surface-4);
 		border-color: color-mix(in srgb, var(--primary) 70%, transparent);
 		transform: scale(1.02);
 		box-shadow: var(--shadow-glow-md);

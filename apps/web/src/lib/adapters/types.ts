@@ -181,7 +181,8 @@ export interface MetaPort {
 export interface TechStackPort {
 	all(ctx?: PreviewContext): Promise<readonly TechStackItem[]>;
 	byId(id: string, ctx?: PreviewContext): Promise<TechStackItem | undefined>;
-	content(id: string, ctx?: PreviewContext): Promise<string>;
+	/** Serialized longform docs; `locale` resolves per-locale with EN fallback (slice-28.6). */
+	content(id: string, locale?: Locale, ctx?: PreviewContext): Promise<string>;
 }
 
 export interface ContentPort {

@@ -4,6 +4,9 @@
 -->
 <script lang="ts">
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { sharedChromeContent } from '$lib/content';
 
 	export interface FilterSummaryProps {
@@ -18,7 +21,7 @@
 		onClear
 	}: FilterSummaryProps = $props();
 
-	const clearFiltersLabel = resolveLocale(sharedChromeContent.clearFiltersLabel, 'en');
+	const clearFiltersLabel = resolveLocale(sharedChromeContent.clearFiltersLabel, locale);
 </script>
 
 <div class="mb-3 flex items-center gap-2">

@@ -7,6 +7,9 @@
 <script lang="ts">
 	import type { AboutPolaroid } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { aboutPageContent } from '$lib/content/about-page';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
@@ -24,10 +27,10 @@
 	}
 
 	const current = $derived(polaroids[currentIndex]);
-	const alt = $derived(resolveLocale(current.alt, 'en'));
-	const caption = $derived(resolveLocale(current.caption, 'en'));
-	const prevPhotoAria = resolveLocale(aboutPageContent.labels.polaroidPrevAria, 'en');
-	const nextPhotoAria = resolveLocale(aboutPageContent.labels.polaroidNextAria, 'en');
+	const alt = $derived(resolveLocale(current.alt, locale));
+	const caption = $derived(resolveLocale(current.caption, locale));
+	const prevPhotoAria = resolveLocale(aboutPageContent.labels.polaroidPrevAria, locale);
+	const nextPhotoAria = resolveLocale(aboutPageContent.labels.polaroidNextAria, locale);
 </script>
 
 <div

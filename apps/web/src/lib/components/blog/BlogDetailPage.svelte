@@ -18,15 +18,18 @@
   import { onMount } from 'svelte';
   import { scrollChain } from '$lib/motion/actions/scrollChain.js';
   import { resolveLocale } from '$lib/utils/locale';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
   import { blogDetailContent } from '$lib/content/blog';
 
-  const readingModeLabel = resolveLocale(blogDetailContent.page.readingMode, 'en');
-  const tocSectionTitle = resolveLocale(blogDetailContent.page.tocSectionTitle, 'en');
-  const metaCategoryLabel = resolveLocale(blogDetailContent.page.metaCategory, 'en');
-  const metaWordsLabel = resolveLocale(blogDetailContent.page.metaWords, 'en');
-  const metaReadTimeLabel = resolveLocale(blogDetailContent.page.metaReadTime, 'en');
-  const metaLanguageLabel = resolveLocale(blogDetailContent.page.metaLanguage, 'en');
-  const metaTagsLabel = resolveLocale(blogDetailContent.page.metaTags, 'en');
+  const readingModeLabel = resolveLocale(blogDetailContent.page.readingMode, locale);
+  const tocSectionTitle = resolveLocale(blogDetailContent.page.tocSectionTitle, locale);
+  const metaCategoryLabel = resolveLocale(blogDetailContent.page.metaCategory, locale);
+  const metaWordsLabel = resolveLocale(blogDetailContent.page.metaWords, locale);
+  const metaReadTimeLabel = resolveLocale(blogDetailContent.page.metaReadTime, locale);
+  const metaLanguageLabel = resolveLocale(blogDetailContent.page.metaLanguage, locale);
+  const metaTagsLabel = resolveLocale(blogDetailContent.page.metaTags, locale);
 
   let {
     post,
@@ -49,7 +52,7 @@
   } = $props();
 
   const accentColor = $derived(
-    post.category === 'personal' ? 'var(--accent)' : 'var(--primary)'
+    post.category === 'personal' ? 'var(--accent-text)' : 'var(--primary)'
   );
 
   // Reading mode — dims everything except left panel + blog content

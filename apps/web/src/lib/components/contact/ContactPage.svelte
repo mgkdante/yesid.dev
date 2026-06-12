@@ -7,6 +7,12 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
+	import { fillTemplate } from '$lib/utils/labels';
+	import { siteLabels } from '$lib/content';
 	import type { ContactContent } from '$lib/types';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { TerminalChrome } from '$lib/components/brand';
@@ -30,9 +36,9 @@
 	} = $props();
 
 	const c = contactPage;
-	const pageTitle = resolveLocale(c.pageTitle, 'en');
-	const stationLabel = resolveLocale(c.stationLabel, 'en');
-	const sendErrorMessage = resolveLocale(c.sendErrorMessage, 'en');
+	const pageTitle = resolveLocale(c.pageTitle, locale);
+	const stationLabel = resolveLocale(c.stationLabel, locale);
+	const sendErrorMessage = resolveLocale(c.sendErrorMessage, locale);
 
 	// --- Weather freshness (slice-28.1, audit #20/#122) ---
 	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
@@ -97,15 +103,15 @@
 		const newErrors: Record<string, string> = {};
 
 		if (!name.trim()) {
-			newErrors.name = resolveLocale(c.validation.required, 'en').replace('{field}', 'name');
+			newErrors.name = resolveLocale(c.validation.required, locale).replace('{field}', 'name');
 		}
 		if (!email.trim()) {
-			newErrors.email = resolveLocale(c.validation.required, 'en').replace('{field}', 'email');
+			newErrors.email = resolveLocale(c.validation.required, locale).replace('{field}', 'email');
 		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-			newErrors.email = resolveLocale(c.validation.invalidEmail, 'en');
+			newErrors.email = resolveLocale(c.validation.invalidEmail, locale);
 		}
 		if (!message.trim()) {
-			newErrors.message = resolveLocale(c.validation.required, 'en').replace('{field}', 'message');
+			newErrors.message = resolveLocale(c.validation.required, locale).replace('{field}', 'message');
 		}
 
 		errors = newErrors;
@@ -131,7 +137,10 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					access_key: c.web3formsKey,
-					subject: `New contact from ${name} via yesid.dev`,
+					subject: fillTemplate(
+						resolveLocale(siteLabels.email.contactSubjectTemplate, locale) || 'New contact from {name} via yesid.dev',
+						{ name },
+					),
 					from_name: name,
 					email,
 					message,
@@ -156,17 +165,17 @@
 
 	// --- Success animation sequence ---
 	async function playSuccessSequence() {
-		const okText = resolveLocale(c.success.fieldOk, 'en');
+		const okText = resolveLocale(c.success.fieldOk, locale);
 		const lines = [
 			{ text: '~ $ send --message', color: 'muted' },
-			{ text: `→ ${resolveLocale(c.success.validating, 'en')}`, color: 'orange' },
+			{ text: `→ ${resolveLocale(c.success.validating, locale)}`, color: 'orange' },
 			{ text: `✓ ${c.formTerminal.fields.name.label}: ${okText}`, color: 'green' },
 			{ text: `✓ ${c.formTerminal.fields.email.label}: ${okText}`, color: 'green' },
 			{ text: `✓ ${c.formTerminal.fields.message.label}: ${okText}`, color: 'green' },
-			{ text: `→ ${resolveLocale(c.success.sending, 'en')}`, color: 'orange' },
-			{ text: `✓ ${resolveLocale(c.success.sent, 'en')}`, color: 'green' },
-			{ text: `→ ${resolveLocale(c.success.responseTime, 'en')}`, color: 'accent' },
-			{ text: `→ ${resolveLocale(c.success.meanwhile, 'en')}`, color: 'muted' }
+			{ text: `→ ${resolveLocale(c.success.sending, locale)}`, color: 'orange' },
+			{ text: `✓ ${resolveLocale(c.success.sent, locale)}`, color: 'green' },
+			{ text: `→ ${resolveLocale(c.success.responseTime, locale)}`, color: 'accent' },
+			{ text: `→ ${resolveLocale(c.success.meanwhile, locale)}`, color: 'muted' }
 		];
 
 		successLines = lines.map((l) => ({ ...l, visible: false }));
@@ -193,7 +202,7 @@
 	function fieldBorderClass(field: string): string {
 		if (!submitted) return 'border-[var(--border)]';
 		if (errors[field]) return 'border-[var(--destructive)]';
-		return 'border-[#28c840]';
+		return 'border-[var(--success)]';
 	}
 
 </script>
@@ -247,10 +256,10 @@
 
 			<!-- LOCATION section -->
 			<div class="mb-4">
-				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(c.infoTerminal.sectionLabels.location, 'en')}</div>
-				<div class="text-[var(--secondary-foreground)]">{resolveLocale(c.infoTerminal.location, 'en')}</div>
+				<div class="mb-1 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(c.infoTerminal.sectionLabels.location, locale)}</div>
+				<div class="text-[var(--secondary-foreground)]">{resolveLocale(c.infoTerminal.location, locale)}</div>
 				{#if currentWeather}
-					<div class="mt-0.5 font-mono text-small text-[var(--accent)]">
+					<div class="mt-0.5 font-mono text-small text-[var(--accent-text)]">
 						{currentWeather.temp}°C — <span class="capitalize">{currentWeather.condition}</span>
 					</div>
 				{/if}
@@ -263,7 +272,7 @@
 
 			<!-- CONNECT section -->
 			<div class="mb-4">
-				<div class="mb-2 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(c.infoTerminal.sectionLabels.connect, 'en')}</div>
+				<div class="mb-2 text-caption uppercase tracking-[2px] text-[var(--primary)]">{resolveLocale(c.infoTerminal.sectionLabels.connect, locale)}</div>
 				<div class="flex flex-col gap-1">
 					{#each c.socials as social}
 						<a
@@ -297,7 +306,7 @@
 				<span class="text-[var(--foreground)]">~</span> {c.formTerminal.command}
 			</div>
 			<div class="mb-4 text-caption text-[var(--muted-foreground)]">
-				{resolveLocale(c.formTerminal.commandOutput, 'en')}
+				{resolveLocale(c.formTerminal.commandOutput, locale)}
 			</div>
 
 			{#if !showSuccess}
@@ -318,7 +327,7 @@
 								name="name"
 								type="text"
 								bind:value={name}
-								placeholder={resolveLocale(c.formTerminal.fields.name.placeholder, 'en')}
+								placeholder={resolveLocale(c.formTerminal.fields.name.placeholder, locale)}
 								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('name')}"
 							/>
 							{#if submitted && errors.name}
@@ -336,7 +345,7 @@
 								name="email"
 								type="email"
 								bind:value={email}
-								placeholder={resolveLocale(c.formTerminal.fields.email.placeholder, 'en')}
+								placeholder={resolveLocale(c.formTerminal.fields.email.placeholder, locale)}
 								class="form-field tap-feedback rounded border bg-[var(--background)] px-4 py-3 min-h-11 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 {fieldBorderClass('email')}"
 							/>
 							{#if submitted && errors.email}
@@ -353,7 +362,7 @@
 								id="contact-message"
 								name="message"
 								bind:value={message}
-								placeholder={resolveLocale(c.formTerminal.fields.message.placeholder, 'en')}
+								placeholder={resolveLocale(c.formTerminal.fields.message.placeholder, locale)}
 								rows="6"
 								class="tap-feedback form-field rounded border bg-[var(--background)] px-4 py-3 font-mono text-body text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors duration-200 resize-none {fieldBorderClass('message')}"
 							></textarea>
@@ -370,7 +379,7 @@
 						<!-- Error summary -->
 						{#if submitted && errorCount() > 0}
 							<div class="rounded border border-[var(--destructive)]/30 bg-[var(--destructive)]/10 px-3 py-2 text-caption text-[var(--destructive)]">
-								✗ {resolveLocale(c.validation.errorSummary, 'en').replace('{count}', String(errorCount()))}
+								✗ {resolveLocale(c.validation.errorSummary, locale).replace('{count}', String(errorCount()))}
 							</div>
 						{/if}
 
@@ -378,7 +387,7 @@
 						<span class="tap-press" use:pressBounce>
 							<Button variant="default" size="cta" type="submit">
 								<span class="opacity-60">~ $</span>
-								{resolveLocale(c.formTerminal.submitLabel, 'en')}
+								{resolveLocale(c.formTerminal.submitLabel, locale)}
 							</Button>
 						</span>
 
@@ -393,14 +402,14 @@
 							<div class="{line.color === 'orange'
 								? 'text-[var(--primary)]'
 								: line.color === 'green'
-									? 'text-[#28c840]'
+									? 'text-[var(--success)]'
 									: line.color === 'accent'
-										? 'text-[var(--accent)]'
+										? 'text-[var(--accent-text)]'
 										: 'text-[var(--secondary-foreground)]'} text-small">
 								{#if line.color === 'muted' && line.text.includes('{work}') && line.text.includes('{blog}')}
 									{@html line.text
-										.replace('{work}', '<a href="/services" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors">work</a>')
-										.replace('{blog}', '<a href="/blog" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors">blog</a>')}
+										.replace('{work}', `<a href="${localizeHref('/services', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">work</a>`)
+										.replace('{blog}', `<a href="${localizeHref('/blog', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">blog</a>`)}
 								{:else}
 									{line.text}
 								{/if}
@@ -414,7 +423,7 @@
 						onclick={handleReset}
 						class="mt-4 self-start font-mono text-caption tap-feedback min-h-11 px-4"
 					>
-						{resolveLocale(c.success.resetLabel, 'en')}
+						{resolveLocale(c.success.resetLabel, locale)}
 					</Button>
 				</div>
 			{/if}
@@ -514,6 +523,8 @@
 	/* Focused form fields need breathing room above the virtual keyboard */
 	.form-field {
 		scroll-margin-bottom: 100px;
+		/* GO-w2t5: terminal-orange caret — zero-risk brand signal. */
+		caret-color: var(--primary);
 	}
 
 	/* ═══ Resize Handle ═══ */

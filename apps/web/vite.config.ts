@@ -95,6 +95,7 @@ export default defineConfig({
 					name: 'dom',
 					include: [
 						'src/lib/components/**/*.test.ts',
+						'src/lib/stores/**/*.test.ts',
 						'src/lib/motion/**/*.test.ts',
 						'src/routes/**/*.test.ts',
 						// slice-17f L3+L4: tests/utils/ houses render fixtures + DOM

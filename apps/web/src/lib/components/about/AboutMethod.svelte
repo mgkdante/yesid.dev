@@ -6,6 +6,9 @@
 <script lang="ts">
 	import type { AboutMethodStep } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -24,8 +27,8 @@
 		<!-- Horizontal pipeline with descriptions -->
 		<div class="mt-auto mb-auto flex items-start justify-around">
 			{#each steps as step, i}
-				{@const stepLabel = resolveLocale(step.label, 'en')}
-				{@const stepDesc = resolveLocale(step.description, 'en')}
+				{@const stepLabel = resolveLocale(step.label, locale)}
+				{@const stepDesc = resolveLocale(step.description, locale)}
 
 				<!-- Connecting line (not before first) -->
 				{#if i > 0}
@@ -39,7 +42,7 @@
 					<div class="mt-1 font-mono text-caption font-semibold tracking-[1px] text-[var(--primary)]">
 						{stepLabel}
 					</div>
-					<div class="mt-1 max-w-[100px] text-center text-caption leading-tight text-[var(--secondary-foreground)] opacity-60">
+					<div class="mt-1 max-w-[100px] text-center text-caption leading-tight text-[var(--secondary-foreground)]">
 						{stepDesc}
 					</div>
 				</div>

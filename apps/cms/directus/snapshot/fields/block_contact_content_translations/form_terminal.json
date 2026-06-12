@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "form_terminal",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale form terminal block (ContactContent.formTerminal). JSON shape: { title, command: string, commandOutput, fields: { name: {label,placeholder}, email: {label,placeholder}, message: {label,placeholder} }, submitLabel }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

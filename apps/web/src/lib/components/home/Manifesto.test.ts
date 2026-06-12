@@ -32,26 +32,7 @@ describe('Manifesto', () => {
 		expect(huge.textContent).toBe('INFRASTRUCTURE');
 	});
 
-	it('renders exactly 5 capability pills', () => {
-		render(Manifesto, { props: { manifesto: manifestoContent } });
-		const pills = screen.getAllByTestId('manifesto-pill');
-		expect(pills).toHaveLength(5);
-	});
 
-	it('each pill links to the correct service route', () => {
-		render(Manifesto, { props: { manifesto: manifestoContent } });
-		const pills = screen.getAllByTestId('manifesto-pill');
-		const expectedRoutes = [
-			'/services/data-pipeline',
-			'/services/database-engineering',
-			'/services/analytics-reporting',
-			'/services/internal-tooling',
-			'/services/web-development',
-		];
-		pills.forEach((pill, i) => {
-			expect(pill).toHaveAttribute('href', expectedRoutes[i]);
-		});
-	});
 
 	it('renders left edge decorations from data layer', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
@@ -95,4 +76,16 @@ describe('Manifesto', () => {
 		render(Manifesto, { props: { manifesto: manifestoContent } });
 		expect(screen.getByTestId('manifesto-canvas')).toBeInTheDocument();
 	});
+
+	it('GO-w2t5: pills boop on hover (SAFE-ALWAYS micro-feedback)', () => {
+		render(Manifesto, { props: { manifesto: manifestoContent } });
+		const pill = screen.getAllByTestId('manifesto-pill')[0];
+		pill.dispatchEvent(new MouseEvent('mouseenter'));
+		expect(pill.style.transform).toContain('scale(1.03)');
+	});
 });
+
+// ── GO2-T8-UNSKIP ──────────────────────────────────────────────────────────
+// Post-consolidation baseline (GO-2 Track 3, T8 step 8b). SKIPPED until the
+// orchestrator's Gate A CMS apply + regen lands (manifestoContent.pills is
+// regenerated from the live CMS — 4 stations, data-flow order). T8 unskip

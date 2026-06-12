@@ -14,6 +14,12 @@
 	import WheelGesturesPlugin from 'embla-carousel-wheel-gestures';
 	import type { EmblaCarouselType } from 'embla-carousel';
 	import { resolveLocale } from '$lib/utils';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
+	import { fillTemplate } from '$lib/utils/labels';
+	import { siteLabels } from '$lib/content';
 	import type { Project, ProofReelContent } from '$lib/types';
 	import { cursorGlow, cardParallax, magnetic } from '$lib/motion/actions';
 
@@ -27,8 +33,14 @@
 		projects,
 	}: { proofReel: ProofReelContent; projects: readonly Project[] } = $props();
 
-	const toggleColorAriaTemplate = resolveLocale(proofReelContent.toggleColorAria, 'en');
-	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, 'en');
+	const toggleColorAriaTemplate = resolveLocale(proofReelContent.toggleColorAria, locale);
+	const viewAllLabel = resolveLocale(proofReelContent.viewAllLabel, locale);
+
+	// go2-t1c2: chrome microcopy from the site_labels singleton, previous
+	// literals kept as code fallbacks.
+	const carouselPrevAria = resolveLocale(siteLabels.a11y.carouselPrev, locale) || 'Previous projects';
+	const carouselNextAria = resolveLocale(siteLabels.a11y.carouselNext, locale) || 'Next projects';
+	const markerFeaturedTemplate = resolveLocale(siteLabels.ui.markerFeatured, locale) || '{num} / FEATURED';
 
 	const visibleProjects = $derived(projects);
 	const total = $derived(visibleProjects.length);
@@ -106,9 +118,9 @@
 	<div class="embla" use:emblaCarouselSvelte={{ options: emblaOptions, plugins: [WheelGesturesPlugin()] }} onemblaInit={onEmblaInit}>
 		<div class="embla__container">
 			{#each visibleProjects as project, i}
-				{@const title = resolveLocale(project.title, 'en')}
+				{@const title = resolveLocale(project.title, locale)}
 				{@const metric = project.impactMetric}
-				{@const metricLabel = metric ? resolveLocale(metric.label, 'en') : ''}
+				{@const metricLabel = metric ? resolveLocale(metric.label, locale) : ''}
 				{@const imageUrl = proofReelContent.images[project.slug as keyof typeof proofReelContent.images]}
 				<div class="embla__slide">
 					<div
@@ -144,7 +156,7 @@
 							<div class="proof-image-gradient pointer-events-none absolute inset-x-0 bottom-0 h-[55%]"></div>
 							<!-- 01 / FEATURED marker at the image's top-left. -->
 							<div class="proof-marker absolute left-[1.75rem] top-[1.5rem] z-[3]">
-								{String(i + 1).padStart(2, '0')} / FEATURED
+								{fillTemplate(markerFeaturedTemplate, { num: String(i + 1).padStart(2, '0') })}
 							</div>
 						</button>
 
@@ -154,7 +166,7 @@
 
 						<!-- Footer: grid-row 2 (or 3 on mobile). Click target for nav. -->
 						<a
-							href="/projects/{project.slug}"
+							href={localizeHref(`/projects/${project.slug}`, locale)}
 							class="proof-footer-link tap-press"
 							data-testid="proof-card"
 						>
@@ -195,7 +207,7 @@
 			type="button"
 			class="proof-control-btn"
 			onclick={scrollPrev}
-			aria-label="Previous projects"
+			aria-label={carouselPrevAria}
 		>
 			<span aria-hidden="true">←</span>
 		</button>
@@ -203,7 +215,7 @@
 			type="button"
 			class="proof-control-btn"
 			onclick={scrollNext}
-			aria-label="Next projects"
+			aria-label={carouselNextAria}
 		>
 			<span aria-hidden="true">→</span>
 		</button>
@@ -259,8 +271,8 @@
 	   image and title share row 1 (title align-self: end pins it to the
 	   image's bottom edge); footer is row 2. No empty space anywhere. */
 	.proof-card {
-		background: var(--background);
-		border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+		background: var(--surface-1);
+		border: 1px solid var(--border-brand);
 		border-radius: var(--radius-lg);
 		padding: 0;
 		margin: 0;
@@ -278,7 +290,7 @@
 	}
 
 	.proof-card:hover {
-		border-color: color-mix(in srgb, var(--primary) 60%, transparent);
+		border-color: var(--border-brand-active);
 		box-shadow: var(--shadow-section);
 		transform: translateY(-3px);
 	}
@@ -512,12 +524,12 @@
 
 	.proof-count-sep {
 		font-size: 0.875rem;
-		color: color-mix(in srgb, var(--primary) 40%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
 	.proof-count-total {
 		font-size: 0.875rem;
-		color: color-mix(in srgb, var(--primary) 50%, transparent);
+		color: color-mix(in srgb, var(--primary) 85%, transparent);
 	}
 
 	/* Shared "View all ___ →" link styling — unified with HomeServices

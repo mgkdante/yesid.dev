@@ -7,17 +7,20 @@
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { blogListingContent } from '$lib/content/blog';
 
 	const LANG_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', es: 'ES' };
 
-	const filtersLabel = resolveLocale(blogListingContent.filters.filtersLabel, 'en');
-	const allLabel = resolveLocale(blogListingContent.filters.allLabel, 'en');
-	const languageLabel = resolveLocale(blogListingContent.filters.language, 'en');
-	const dateRangeLabel = resolveLocale(blogListingContent.filters.dateRange, 'en');
-	const fromLabel = resolveLocale(blogListingContent.filters.from, 'en');
-	const toLabel = resolveLocale(blogListingContent.filters.to, 'en');
-	const showingPrefix = resolveLocale(blogListingContent.filters.showingPrefix, 'en');
+	const filtersLabel = resolveLocale(blogListingContent.filters.filtersLabel, locale);
+	const allLabel = resolveLocale(blogListingContent.filters.allLabel, locale);
+	const languageLabel = resolveLocale(blogListingContent.filters.language, locale);
+	const dateRangeLabel = resolveLocale(blogListingContent.filters.dateRange, locale);
+	const fromLabel = resolveLocale(blogListingContent.filters.from, locale);
+	const toLabel = resolveLocale(blogListingContent.filters.to, locale);
+	const showingPrefix = resolveLocale(blogListingContent.filters.showingPrefix, locale);
 
 	let {
 		tags,
@@ -84,7 +87,7 @@
 							</button>
 							{#each languages as lang}
 								<button
-									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="rounded border border-[var(--border)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeLang === lang}
 																		onclick={() => onLangSelect(lang)}
 								>
@@ -105,8 +108,7 @@
 							<input
 								type="date"
 								bind:value={dateFrom}
-								class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
-								style="color-scheme: dark;"
+								class="mt-0.5 w-full rounded border border-[var(--input)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
 							/>
 						</label>
 						<label class="flex-1 text-caption text-[var(--muted-foreground)]">
@@ -114,8 +116,7 @@
 							<input
 								type="date"
 								bind:value={dateTo}
-								class="mt-0.5 w-full rounded border border-[var(--border-subtle)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
-								style="color-scheme: dark;"
+								class="mt-0.5 w-full rounded border border-[var(--input)] bg-[var(--background)] px-1.5 py-1 font-mono text-caption text-[var(--foreground)] outline-none"
 							/>
 						</label>
 					</div>
@@ -132,7 +133,7 @@
 							</button>
 							{#each tags as tag}
 								<button
-									class="rounded border border-[var(--border-subtle)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
+									class="rounded border border-[var(--border)] px-2 py-1 text-caption text-[var(--muted-foreground)] transition-colors"
 									class:m-tag-active={activeTag === tag}
 																		onclick={() => onTagSelect(tag)}
 								>
@@ -148,7 +149,7 @@
 							<a
 								href={cornerLink.href}
 								class="text-xs font-semibold no-underline"
-								style="color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'};"
+								style="color: {cornerLink.href.includes('personal') ? 'var(--accent-text)' : 'var(--primary)'};"
 							>
 								{cornerLink.label} &rarr;
 							</a>
@@ -169,8 +170,8 @@
 		color: var(--foreground);
 	}
 	.m-tag-active {
-		border-color: var(--accent) !important;
-		color: var(--accent) !important;
+		border-color: var(--accent-text) !important;
+		color: var(--accent-text) !important;
 	}
 	/* CSS grid animation for smooth expand/collapse — matches CollapsibleSection pattern */
 	:global([data-slot="collapsible-content"].blog-filter-body) {

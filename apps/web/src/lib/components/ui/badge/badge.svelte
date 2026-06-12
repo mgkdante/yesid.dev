@@ -1,6 +1,11 @@
 <script lang="ts" module>
 	import { type VariantProps, tv } from "tailwind-variants";
 
+	// GO-W2.2 chip color vocabulary (geometry stays per-component):
+	//   tag        = surface-4 bg + border + secondary-foreground text
+	//   tag-active = primary/15 bg + primary/30 border + primary text (brand emphasis)
+	//   ghost-tag  = transparent bg + border + secondary-foreground text
+	// Any new chip/pill picks one of these three color sets.
 	export const badgeVariants = tv({
 		base: "gap-1 rounded-4xl border border-transparent font-mono font-medium transition-all has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&>svg]:size-3! focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive group/badge inline-flex w-fit shrink-0 items-center justify-center overflow-hidden whitespace-nowrap transition-colors focus-visible:ring-[3px] [&>svg]:pointer-events-none",
 		variants: {

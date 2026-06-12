@@ -12,14 +12,19 @@
 	import type { TocHeading } from '@repo/shared';
 	import { onMount, onDestroy } from 'svelte';
 	import { resolveLocale } from '$lib/utils/locale';
-	import { sharedChromeContent } from '$lib/content';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
+	import { sharedChromeContent, siteLabels } from '$lib/content';
 	import { ChevronToggle } from '$lib/components/brand';
 	import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '$lib/components/ui/collapsible';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 
-	const toggleSectionAria = resolveLocale(sharedChromeContent.tocToggleSectionAria, 'en');
-	const tocHeading = resolveLocale(sharedChromeContent.tocHeading, 'en');
-	const tocMobileButton = resolveLocale(sharedChromeContent.tocMobileButton, 'en');
+	const toggleSectionAria = resolveLocale(sharedChromeContent.tocToggleSectionAria, locale);
+	const tocHeading = resolveLocale(sharedChromeContent.tocHeading, locale);
+	const tocMobileButton = resolveLocale(sharedChromeContent.tocMobileButton, locale);
+	// go2-t1c2: nav aria from site_labels, previous literal as fallback.
+	const tocAria = resolveLocale(siteLabels.a11y.toc, locale) || 'Table of contents';
 
 	let {
 		headings,
@@ -162,7 +167,7 @@
 {#if embedded}
 	<!-- Embedded mode: parent controls layout/visibility -->
 	{#if headings.length > 0}
-		<nav class="toc-embedded {className}" aria-label="Table of contents" data-testid="toc-embedded">
+		<nav class="toc-embedded {className}" aria-label={tocAria} data-testid="toc-embedded">
 			<Collapsible bind:open={tocOpen}>
 				<CollapsibleTrigger>
 					{#snippet child({ props })}
@@ -189,7 +194,7 @@
 	<!-- Desktop: sticky sidebar ToC (hidden below lg breakpoint) -->
 	<nav
 		class="toc-desktop hidden lg:block {className}"
-		aria-label="Table of contents"
+		aria-label={tocAria}
 		data-testid="toc-desktop"
 	>
 		<Collapsible bind:open={tocOpen}>
@@ -231,7 +236,7 @@
 					{#snippet child({ props })}
 						<button
 							{...props}
-							class="toc-toggle flex items-center gap-1.5 rounded border border-[var(--border-subtle)] bg-[var(--background)] px-3 py-2 font-mono text-caption text-[var(--secondary-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
+							class="toc-toggle flex items-center gap-1.5 rounded border border-[var(--border-subtle)] bg-[var(--surface-3)] px-3 py-2 font-mono text-caption text-[var(--secondary-foreground)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
 						>
 							<ChevronToggle open={mobileOpen} size="sm" direction="right" />
 							{tocMobileButton}
@@ -241,7 +246,7 @@
 
 				<CollapsibleContent forceMount class="toc-mobile-body">
 					<div class="min-h-0 overflow-hidden">
-						<div class="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--background)] p-3">
+						<div class="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-3)] p-3">
 							{@render tocEntries()}
 						</div>
 					</div>

@@ -9,6 +9,9 @@
 	import { onMount, onDestroy } from 'svelte';
 	import type { AboutTestimonial } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { aboutPageContent } from '$lib/content/about-page';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
@@ -16,10 +19,10 @@
 
 	let { testimonials, stop, label }: { testimonials: readonly AboutTestimonial[]; stop: string; label: string } = $props();
 
-	const carouselAria = resolveLocale(aboutPageContent.labels.testimonialsCarouselAria, 'en');
-	const tabNavAria = resolveLocale(aboutPageContent.labels.testimonialsTabNavAria, 'en');
-	const slideAriaTemplate = resolveLocale(aboutPageContent.labels.testimonialSlideAria, 'en');
-	const showAriaTemplate = resolveLocale(aboutPageContent.labels.showTestimonialAria, 'en');
+	const carouselAria = resolveLocale(aboutPageContent.labels.testimonialsCarouselAria, locale);
+	const tabNavAria = resolveLocale(aboutPageContent.labels.testimonialsTabNavAria, locale);
+	const slideAriaTemplate = resolveLocale(aboutPageContent.labels.testimonialSlideAria, locale);
+	const showAriaTemplate = resolveLocale(aboutPageContent.labels.showTestimonialAria, locale);
 
 	let activeIndex = $state(0);
 	let paused = $state(false);
@@ -74,8 +77,8 @@
 	});
 
 	const active = $derived(testimonials[activeIndex]);
-	const quote = $derived(resolveLocale(active.quote, 'en'));
-	const role = $derived(resolveLocale(active.role, 'en'));
+	const quote = $derived(resolveLocale(active.quote, locale));
+	const role = $derived(resolveLocale(active.role, locale));
 </script>
 
 <div
@@ -136,7 +139,7 @@
 				<button
 					class="relative tap-press h-2 w-2 rounded-full transition-colors duration-300 before:absolute before:inset-[-18px] before:content-[''] {i === activeIndex
 						? 'bg-[var(--primary)]'
-						: 'bg-[var(--popover)] hover:bg-[var(--muted-foreground)] active:bg-[var(--muted-foreground)]'}"
+						: 'bg-[var(--border)] hover:bg-[var(--muted-foreground)] active:bg-[var(--muted-foreground)]'}"
 					aria-label={showAriaTemplate.replace('{index}', String(i + 1))}
 					aria-selected={i === activeIndex}
 					role="tab"

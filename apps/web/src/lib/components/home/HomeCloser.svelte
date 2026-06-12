@@ -8,6 +8,9 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 
 	import { getLatestPosts } from '$lib/content';
 	import { siteMeta } from '$lib/content/site-meta';
@@ -18,35 +21,36 @@
 	import { initScrollTriggerConfig, loadDrawSVG, gsap } from '$lib/motion/utils/gsap.js';
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { pressBounce } from '$lib/motion/actions';
+	import { backgroundBreathing, type BreathingControls } from '$lib/motion/scrubs/index.js';
 	import CloserGraffiti from './CloserGraffiti.svelte';
 	import CloserFloodlight from './CloserFloodlight.svelte';
 	import CloserProps from './CloserProps.svelte';
 	import CloserTerminalBoard from './CloserTerminalBoard.svelte';
 
 	// Static content
-	const heading = resolveLocale(closerContent.heading, 'en');
-	const headingDot = resolveLocale(closerContent.headingDot, 'en');
-	const subheading = resolveLocale(closerContent.subheading, 'en');
-	const ctaLabel = resolveLocale(closerContent.cta.label, 'en');
+	const heading = resolveLocale(closerContent.heading, locale);
+	const headingDot = resolveLocale(closerContent.headingDot, locale);
+	const subheading = resolveLocale(closerContent.subheading, locale);
+	const ctaLabel = resolveLocale(closerContent.cta.label, locale);
 	const ctaHref = closerContent.cta.href;
-	const contactLabel = resolveLocale(closerContent.rows.contact.label, 'en');
-	const contactDesc = resolveLocale(closerContent.rows.contact.description, 'en');
-	const contactAction = resolveLocale(closerContent.rows.contact.action, 'en');
-	const connectLabel = resolveLocale(closerContent.rows.connect.label, 'en');
-	const connectDesc = resolveLocale(closerContent.rows.connect.description, 'en');
-	const connectAction = resolveLocale(closerContent.rows.connect.action, 'en');
-	const readLabel = resolveLocale(closerContent.rows.read.label, 'en');
-	const readAction = resolveLocale(closerContent.rows.read.action, 'en');
-	const aboutLabel = resolveLocale(closerContent.rows.about.label, 'en');
-	const aboutDesc = resolveLocale(closerContent.rows.about.description, 'en');
-	const aboutAction = resolveLocale(closerContent.rows.about.action, 'en');
+	const contactLabel = resolveLocale(closerContent.rows.contact.label, locale);
+	const contactDesc = resolveLocale(closerContent.rows.contact.description, locale);
+	const contactAction = resolveLocale(closerContent.rows.contact.action, locale);
+	const connectLabel = resolveLocale(closerContent.rows.connect.label, locale);
+	const connectDesc = resolveLocale(closerContent.rows.connect.description, locale);
+	const connectAction = resolveLocale(closerContent.rows.connect.action, locale);
+	const readLabel = resolveLocale(closerContent.rows.read.label, locale);
+	const readAction = resolveLocale(closerContent.rows.read.action, locale);
+	const aboutLabel = resolveLocale(closerContent.rows.about.label, locale);
+	const aboutDesc = resolveLocale(closerContent.rows.about.description, locale);
+	const aboutAction = resolveLocale(closerContent.rows.about.action, locale);
 
 	// Terminal chrome copy — added in Task 17b-7a.
-	const terminalTitleText = resolveLocale(closerContent.terminal.title, 'en');
-	const terminalCityLabel = resolveLocale(closerContent.terminal.city, 'en');
-	const terminalEncodingLabel = resolveLocale(closerContent.terminal.encoding, 'en');
-	const terminalDestinationsTemplate = resolveLocale(closerContent.terminal.destinationsLabel, 'en');
-	const terminalPromptLine = resolveLocale(closerContent.terminal.prompt, 'en');
+	const terminalTitleText = resolveLocale(closerContent.terminal.title, locale);
+	const terminalCityLabel = resolveLocale(closerContent.terminal.city, locale);
+	const terminalEncodingLabel = resolveLocale(closerContent.terminal.encoding, locale);
+	const terminalDestinationsTemplate = resolveLocale(closerContent.terminal.destinationsLabel, locale);
+	const terminalPromptLine = resolveLocale(closerContent.terminal.prompt, locale);
 
 	// Dynamic blog posts
 	const latestPosts = getLatestPosts(2, 'professional');
@@ -92,6 +96,7 @@
 
 	let sectionEl: HTMLElement | undefined = $state(undefined);
 	let masterTl: gsap.core.Timeline | undefined;
+	let breathing: BreathingControls | null = null;
 	let timelineBuilt = false;
 
 	function buildMasterTimeline(graffitiAnimateFn?: () => gsap.core.Timeline) {
@@ -142,6 +147,17 @@
 		}
 	});
 
+	// GO-w2t5: slice-23 orphan wired — ambient breathing behind the depot
+	// board. MOTION-GATED tier: backgroundBreathing self-no-ops under reduce.
+	onMount(() => {
+		if (!sectionEl) return;
+		breathing = backgroundBreathing(sectionEl, { duration: 12 });
+		return () => {
+			breathing?.destroy();
+			breathing = null;
+		};
+	});
+
 	onDestroy(() => {
 		masterTl?.kill();
 	});
@@ -150,7 +166,7 @@
 <section
 	bind:this={sectionEl}
 	data-testid="closer-section"
-	class="closer-section relative"
+	class="closer-section relative theme-dark"
 >
 	<!-- Graffiti "THE END" — SVG loaded dynamically for DrawSVG animation -->
 	<CloserGraffiti onReady={handleGraffitiReady} />
@@ -182,12 +198,31 @@
 </section>
 
 <style>
+	/* GO-W2.2: night construction tableau — intentionally pinned dark in BOTH
+	   themes via .theme-dark (tokens.css class alias re-scopes all vars).
+	   The painted background is required: without it the light page shows
+	   through. dark: Tailwind variant also fires here (app.css custom-variant). */
 	.closer-section {
+		background: var(--background);
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
 		padding: var(--space-section-y) var(--space-page-x) 100px;
 		position: relative;
+	}
+
+	/* GO-w2t5: breathing consumer — var(--breathing-phase) 0↔1 modulates a
+	   faint floor glow under the board ("is it actually moving?" subtle). */
+	.closer-section::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: radial-gradient(
+			ellipse 80% 55% at 50% 100%,
+			color-mix(in srgb, var(--primary) calc(2% + var(--breathing-phase, 0) * 3%), transparent),
+			transparent 75%
+		);
 	}
 
 	/* Content area — wide, leaves room for graffiti on the right */

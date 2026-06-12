@@ -53,6 +53,7 @@ import { fetchServices } from './lib/fetchers/services';
 import { fetchProjects } from './lib/fetchers/projects';
 import { fetchTechStack } from './lib/fetchers/tech-stack';
 import { fetchStackArchetypes } from './lib/fetchers/stack-archetypes';
+import { fetchSiteLabels } from './lib/fetchers/site-labels';
 import {
 	fetchBlogPageContent,
 	fetchProjectsPageContent,
@@ -109,6 +110,7 @@ const ALL_MODULES = [
 	'projects',
 	'tech-stack',
 	'stack-archetypes',
+	'site-labels',
 	'blog-page',
 	'projects-page',
 	'tech-stack-page',
@@ -211,6 +213,10 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		enqueue('stack-archetypes', async () => {
 			out.stackArchetypes = await fetchStackArchetypes({ client });
 			log.info(`  stack-archetypes done (${out.stackArchetypes.length} archetypes).`);
+		});
+		enqueue('site-labels', async () => {
+			out.siteLabels = await fetchSiteLabels({ client });
+			log.info('  site-labels done.');
 		});
 		enqueue('blog-page', async () => {
 			out.blogPage = await fetchBlogPageContent({ client });

@@ -7,6 +7,9 @@
 <script lang="ts">
 	import type { AboutCta } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel, TerminalChrome } from '$lib/components/brand';
@@ -15,8 +18,8 @@
 
 	let { cta, stop, label }: { cta: AboutCta; stop: string; label: string } = $props();
 
-	const buttonLabel = $derived(resolveLocale(cta.buttonLabel, 'en'));
-	const availability = $derived(resolveLocale(cta.availability, 'en'));
+	const buttonLabel = $derived(resolveLocale(cta.buttonLabel, locale));
+	const availability = $derived(resolveLocale(cta.availability, locale));
 </script>
 
 <div
@@ -47,7 +50,7 @@
 					<div class="{line.color === 'orange'
 						? 'text-[var(--primary)]'
 						: line.color === 'accent'
-							? 'text-[var(--accent)]'
+							? 'text-[var(--accent-text)]'
 							: 'text-[var(--secondary-foreground)]'}">
 						{line.text}
 					</div>
@@ -66,7 +69,7 @@
 			<Button variant="default" size="cta" href={cta.buttonHref}>
 				{buttonLabel}
 			</Button>
-			<span class="font-mono text-caption tracking-[1px] text-[var(--accent)]">
+			<span class="font-mono text-caption tracking-[1px] text-[var(--accent-text)]">
 				{availability}
 			</span>
 		</div>

@@ -36,6 +36,7 @@ import * as sitePagesModule from './site-pages.js';
 import { sitePages } from './site-pages.js';
 import * as stackArchetypesModule from './stack-archetypes.js';
 import { stackArchetypes } from './stack-archetypes.js';
+import { siteLabels as siteLabelsModule } from './site-labels.js';
 import { StackArchetypeSchema, STACK_LAYERS } from '@repo/shared/schemas';
 import {
 	ProjectSchema,
@@ -411,9 +412,11 @@ describe('seed data parses through schemas', () => {
 // expected to be rare — grep audit found none as of Task 17b-8 authoring.
 
 interface LocalizedStringStats {
-	full: number; // has en + fr + es
-	partial: number; // has en + (fr XOR es)
-	enOnly: number; // has en, no fr or es
+	full: number; // en + fr + es
+	withFr: number; // non-empty fr (regardless of es)
+	withEs: number; // non-empty es
+	esWithoutFr: number; // POLICY violation counter: FR-first ordering (slice-28.6)
+	noFr: number; // FR debt (the number the FR drop drives toward 0)
 	malformed: string[]; // paths where `en` is missing/empty
 	total: number;
 }
@@ -459,8 +462,12 @@ function walkContent(
 		const hasFr = isNonEmptyString(ls.fr);
 		const hasEs = isNonEmptyString(ls.es);
 		if (hasFr && hasEs) stats.full++;
-		else if (hasFr || hasEs) stats.partial++;
-		else stats.enOnly++;
+		if (hasFr) stats.withFr++;
+		else stats.noFr++;
+		if (hasEs) {
+			stats.withEs++;
+			if (!hasFr) stats.esWithoutFr++;
+		}
 		return;
 	}
 
@@ -477,43 +484,44 @@ function walkContent(
 }
 
 function newStats(): LocalizedStringStats {
-	return { full: 0, partial: 0, enOnly: 0, malformed: [], total: 0 };
+	return { full: 0, withFr: 0, withEs: 0, esWithoutFr: 0, noFr: 0, malformed: [], total: 0 };
+}
+
+// Module-keyed walker sources. ⚠️ EVERY new generated module (e.g. a future
+// chrome/labels module) MUST be added here or its strings silently escape the
+// debt report and the locked counts below.
+const WALKER_SOURCES: Array<[string, unknown]> = [
+	['site-content', siteContentModule],
+	['nav', navModule],
+	['services', servicesModule],
+	['projects', projectsModule],
+	['about-page', aboutPageContent],
+	['contact-page', contactContent],
+	['meta', metaModule],
+	['blog', blogModule],
+	['tech-stack', techStackModule],
+	// site-seo-defaults carries defaultDescription (en-only at present).
+	['site-seo-defaults', siteSeoDefaultsModule],
+	// site_pages registry titles (slice-26.1) — seeded with en+fr+es.
+	['site-pages', sitePagesModule],
+	// stack_archetypes engine recipes (slice-29).
+	['stack-archetypes', stackArchetypesModule],
+	// site_labels microcopy singleton (go2-t1c2) — en-only seeds.
+	['site-labels', siteLabelsModule],
+];
+
+function scanAll(): LocalizedStringStats {
+	const stats = newStats();
+	const seen = new WeakSet<object>();
+	for (const [name, value] of WALKER_SOURCES) {
+		walkContent(value, stats, name, seen);
+	}
+	return stats;
 }
 
 describe('LocalizedString guard + translation debt', () => {
-	// Module-keyed sources. Walker uses the module name as the root path so
-	// malformed errors point to the right file.
-	const sources: Array<[string, unknown]> = [
-		['site-content', siteContentModule],
-		['nav', navModule],
-		['services', servicesModule],
-		['projects', projectsModule],
-		['about-page', aboutPageContent],
-		['contact-page', contactContent],
-		['meta', metaModule],
-		['blog', blogModule],
-		['tech-stack', techStackModule],
-		// site-seo-defaults carries defaultDescription (en-only at present — no
-		// fr/es SEO description in the CMS singleton yet). Included so the
-		// snapshot reflects the full generated-content surface.
-		['site-seo-defaults', siteSeoDefaultsModule],
-		// site_pages registry titles (slice-26.1) — seeded with en+fr+es.
-		['site-pages', sitePagesModule],
-		// stack_archetypes engine recipes (slice-29) — seeded with en+fr+es.
-		['stack-archetypes', stackArchetypesModule],
-	];
-
-	function scan(): LocalizedStringStats {
-		const stats = newStats();
-		const seen = new WeakSet<object>();
-		for (const [name, value] of sources) {
-			walkContent(value, stats, name, seen);
-		}
-		return stats;
-	}
-
 	it('every LocalizedString has a non-empty English value', () => {
-		const stats = scan();
+		const stats = scanAll();
 		expect(
 			stats.malformed,
 			`Malformed LocalizedStrings (missing or empty .en):\n  ${stats.malformed.join('\n  ')}`
@@ -523,21 +531,23 @@ describe('LocalizedString guard + translation debt', () => {
 	it('at least one LocalizedString is fully multilingual', () => {
 		// Sanity floor — if fully-multilingual drops to 0, someone has accidentally
 		// stripped fr/es from nav.ts / navDirections / sharedChromeContent.
-		const stats = scan();
+		const stats = scanAll();
 		expect(stats.full).toBeGreaterThan(0);
 	});
 
 	it('prints translation-debt snapshot', () => {
-		const stats = scan();
+		const stats = scanAll();
 		const pct = (n: number) => (stats.total === 0 ? 0 : Math.round((n / stats.total) * 100));
 		const lines = [
 			'',
-			'  LocalizedString translation-debt snapshot (Task 17b-8):',
+			'  LocalizedString translation-debt snapshot (slice-28.6 FR-first tiers):',
 			`  ─────────────────────────────────────────────────────────`,
 			`  Total LocalizedStrings walked:  ${stats.total}`,
 			`  Full (en + fr + es):            ${stats.full} (${pct(stats.full)}%)`,
-			`  Partial (en + one other):       ${stats.partial} (${pct(stats.partial)}%)`,
-			`  en-only:                        ${stats.enOnly} (${pct(stats.enOnly)}%)`,
+			`  With fr:                        ${stats.withFr} (${pct(stats.withFr)}%)`,
+			`  With es:                        ${stats.withEs} (${pct(stats.withEs)}%)`,
+			`  FR debt (no fr):                ${stats.noFr} (${pct(stats.noFr)}%)`,
+			`  es-without-fr (policy):         ${stats.esWithoutFr}`,
 			`  Malformed (missing en):         ${stats.malformed.length}`,
 			'',
 		];
@@ -552,135 +562,51 @@ describe('LocalizedString guard + translation debt', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────
-// Locale-completeness integrity check (slice-27.1 T11)
+// Locale-completeness locks — slice-28.6 FR-first model
 // ─────────────────────────────────────────────────────────────────────────
 //
-// SUPPORTED_LOCALES = ['en', 'fr', 'es']. As of slice-27.1 the content layer
-// is largely en-only because the CMS has only English copy for most fields.
-// Known fully-multilingual sources: nav.ts (navDirections, sharedChromeContent,
-// navLinks labels, cta labels) and owner jobTitle in site-meta.ts.
+// SUPPORTED_LOCALES = ['en', 'fr', 'es']. Slice-28.6 policy is FR-FIRST /
+// ES-LATER: French translations may land without Spanish (en+fr partials are
+// the expected steady state mid-rollout); a field with es but NOT fr signals
+// translations entered out of order (or an accidental ES backfill) and stays
+// a hard failure.
 //
-// The approach here is to snapshot the exact full/partial/en-only counts so
-// any change (regression OR improvement) is visible in the test diff. This
-// makes the FR/ES launch detectable: when translations land in the CMS and
-// the modules are regenerated, these counts will shift and the snapshot
-// assertion will guide the reviewer to confirm the increase is intentional.
-//
-// Known en-only fields as of slice-27.1 (documented so FR/ES launch later
-// doesn't silently no-op — regenerate + re-run tests to confirm coverage):
-//
-//   site-seo-defaults: defaultDescription
-//     → CMS site_meta.translations has no fr/es default_description row yet.
-//   site-meta: tagline, description
-//     → CMS site_meta.translations has no fr/es tagline/description rows yet.
-//   site-content (home blocks): all hero/manifesto/cta/closer copy
-//     → block collections have no fr/es translation rows yet.
-//   contact-page: all labels, terminal prompts, success states
-//     → block_contact_page_content has no fr/es translation rows yet.
-//   blog: all titles, excerpts, categories, tags
-//     → blog_posts has no fr/es translation rows yet.
-//   services: most title/description fields (some have fr/es, most don't)
-//     → services.translations partial — many entries missing fr/es.
-//   projects: most fields (oneLiner has fr/es for some, most others en-only)
-//     → projects.translations partial.
-//   about-page: most fields
-//     → about-page block collections partial.
-//   tech-stack: category labels mostly en-only, scenario descriptions mixed
-//     → tech_stack collection partial fr/es coverage.
+// ─── LOCKED COUNTS — single bump point ─────────────────────────────────────
+// These WILL move exactly once more during the GO-day campaign:
+//   - The slice-28.6 FR content drop (WITH_FR jumps toward TOTAL, NO_FR → ~0
+//     for launch surfaces; tech-stack longform fr stays deferred).
+// Update procedure: run `bunx vitest run src/lib/content/integrity.test.ts`,
+// read the printed snapshot, set the consts, sanity-check the DIRECTION
+// (WITH_FR never decreases; ES_WITHOUT_FR stays 0 until a deliberate ES pass).
+// Baselines at rewrite time (post-T10): full 82 / en-only 432 / partial 0
+// → WITH_FR 82, NO_FR 432, TOTAL 514.
+const LOCKED = { TOTAL: 514, WITH_FR: 82, NO_FR: 432, ES_WITHOUT_FR: 0 } as const;
 
-describe('locale-completeness snapshot (T11)', () => {
-	// SUPPORTED_LOCALES mirror — inlined to avoid importing from utils (avoids
-	// SvelteKit $lib/* resolution issues in this test file).
-	const SUPPORTED_LOCALES = ['en', 'fr', 'es'] as const;
-
+describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
 		// Canary: if SUPPORTED_LOCALES changes in locale.ts, this test reminds
 		// the author to revisit the locale-completeness expectations here.
+		// (Inlined to avoid importing from utils — SvelteKit $lib resolution.)
+		const SUPPORTED_LOCALES = ['en', 'fr', 'es'] as const;
 		expect(SUPPORTED_LOCALES).toEqual(['en', 'fr', 'es']);
 	});
 
-	it('fully-multilingual (en+fr+es) count is locked at 56 — nav + jobTitle + site-pages + engine', () => {
-		// This count represents the nav module chrome (navDirections, sharedChromeContent,
-		// cta labels, nav link titles) plus site-meta owner.jobTitle, plus the 8
-		// site_pages registry titles (slice-26.1 — seeded with en+fr+es: 32 → 40),
-		// plus the slice-29 Tech Stack Engine content: 3 archetypes × 3 trilingual
-		// strings (title/hook/description = 9) + 7 tech `enables` captions (40 → 56).
-		// If this number increases, FR/ES translations have been added to the CMS
-		// and the modules regenerated — confirm the increase is intentional.
-		// If this number decreases, translations have been stripped — investigate.
-		const stats = newStats();
-		const seen = new WeakSet<object>();
-		const allSources: Array<[string, unknown]> = [
-			['site-content', siteContentModule],
-			['nav', navModule],
-			['services', servicesModule],
-			['projects', projectsModule],
-			['about-page', aboutPageContent],
-			['contact-page', contactContent],
-			['meta', metaModule],
-			['blog', blogModule],
-			['tech-stack', techStackModule],
-			['site-seo-defaults', siteSeoDefaultsModule],
-			['site-pages', sitePagesModule],
-			['stack-archetypes', stackArchetypesModule],
-		];
-		for (const [name, value] of allSources) {
-			walkContent(value, stats, name, seen);
-		}
-		expect(stats.full).toBe(56);
+	it(`fr coverage is locked at ${LOCKED.WITH_FR}`, () => {
+		// Increase = FR translations landed (confirm intentional, bump const).
+		// Decrease = translations stripped — investigate before touching the const.
+		expect(scanAll().withFr).toBe(LOCKED.WITH_FR);
 	});
 
-	it('en-only count is locked at 373 — documents current FR/ES debt', () => {
-		// 373 fields have only an English translation. This is the baseline
-		// as of slice-27.1. When FR/ES copy lands for any module (CMS regen
-		// → committed diff), this number drops and the test fails intentionally —
-		// update the count here to confirm the debt has been reduced.
-		const stats = newStats();
-		const seen = new WeakSet<object>();
-		const allSources: Array<[string, unknown]> = [
-			['site-content', siteContentModule],
-			['nav', navModule],
-			['services', servicesModule],
-			['projects', projectsModule],
-			['about-page', aboutPageContent],
-			['contact-page', contactContent],
-			['meta', metaModule],
-			['blog', blogModule],
-			['tech-stack', techStackModule],
-			['site-seo-defaults', siteSeoDefaultsModule],
-			['site-pages', sitePagesModule],
-			['stack-archetypes', stackArchetypesModule],
-		];
-		for (const [name, value] of allSources) {
-			walkContent(value, stats, name, seen);
-		}
-		expect(stats.enOnly).toBe(373);
+	it(`fr debt (no-fr fields) is locked at ${LOCKED.NO_FR}`, () => {
+		expect(scanAll().noFr).toBe(LOCKED.NO_FR);
 	});
 
-	it('partial (en + one of fr/es) count is 0 — no half-translated fields', () => {
-		// Partial translations (en + only one of fr/es) indicate an inconsistency:
-		// either the CMS has a French translation but no Spanish (or vice versa).
-		// This should remain 0 — when FR/ES lands it should land for BOTH locales
-		// simultaneously (or use the en fallback until both are ready).
-		const stats = newStats();
-		const seen = new WeakSet<object>();
-		const allSources: Array<[string, unknown]> = [
-			['site-content', siteContentModule],
-			['nav', navModule],
-			['services', servicesModule],
-			['projects', projectsModule],
-			['about-page', aboutPageContent],
-			['contact-page', contactContent],
-			['meta', metaModule],
-			['blog', blogModule],
-			['tech-stack', techStackModule],
-			['site-seo-defaults', siteSeoDefaultsModule],
-			['site-pages', sitePagesModule],
-			['stack-archetypes', stackArchetypesModule],
-		];
-		for (const [name, value] of allSources) {
-			walkContent(value, stats, name, seen);
-		}
-		expect(stats.partial).toBe(0);
+	it('FR-first ordering: no field has es without fr', () => {
+		// Replaces the old partial===0 lock ("FR and ES land simultaneously").
+		expect(scanAll().esWithoutFr).toBe(LOCKED.ES_WITHOUT_FR);
+	});
+
+	it('total walked surface is locked (new modules must register in WALKER_SOURCES)', () => {
+		expect(scanAll().total).toBe(LOCKED.TOTAL);
 	});
 });

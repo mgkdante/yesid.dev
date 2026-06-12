@@ -3,27 +3,38 @@ import { render, screen } from '@testing-library/svelte';
 import StationTabs from './StationTabs.svelte';
 import { serviceFactory } from '../../../tests/factories';
 
-// Minimal Service stubs that satisfy the component's required fields.
-// Station numbers are intentionally out of order to verify the component sorts them.
+// GO-2: fixtures mirror the 4 post-consolidation stations.
+// Station numbers intentionally out of order to verify the component sorts.
 const mockServices = [
-	serviceFactory.build({ id: 'sql-development',     title: { en: 'SQL Development & Optimization' }, description: { en: '' }, station: 1, visible: true }),
-	serviceFactory.build({ id: 'data-pipeline',       title: { en: 'Data Pipeline Architecture' },    description: { en: '' }, station: 2, visible: true }),
-	serviceFactory.build({ id: 'analytics-reporting', title: { en: 'Analytics & Reporting Systems' }, description: { en: '' }, station: 3, visible: true }),
+	serviceFactory.build({ id: 'analytics-reporting',  title: { en: 'Dashboards & Analytics' },  description: { en: '' }, station: 3, visible: true }),
+	serviceFactory.build({ id: 'database-engineering', title: { en: 'Databases & SQL' },         description: { en: '' }, station: 1, visible: true }),
+	serviceFactory.build({ id: 'data-pipeline',        title: { en: 'Pipelines & Automation' },  description: { en: '' }, station: 2, visible: true }),
+	serviceFactory.build({ id: 'web-development',      title: { en: 'Websites & E-commerce' },   description: { en: '' }, station: 4, visible: true }),
 ];
 
 describe('StationTabs', () => {
-	it('renders a tab for each service', () => {
-		render(StationTabs, { props: { services: mockServices, activeId: 'sql-development' } });
-		expect(screen.getByText('SQL Dev')).toBeTruthy();
-		expect(screen.getByText('Pipeline')).toBeTruthy();
-		expect(screen.getByText('Analytics')).toBeTruthy();
+	it('renders the 4 station short labels', () => {
+		render(StationTabs, { props: { services: mockServices, activeId: 'database-engineering' } });
+		expect(screen.getByText('Databases')).toBeTruthy();
+		expect(screen.getByText('Pipelines')).toBeTruthy();
+		expect(screen.getByText('Dashboards')).toBeTruthy();
+		expect(screen.getByText('Websites')).toBeTruthy();
 	});
 
 	it('renders station numbers', () => {
-		render(StationTabs, { props: { services: mockServices, activeId: 'sql-development' } });
+		render(StationTabs, { props: { services: mockServices, activeId: 'database-engineering' } });
 		expect(screen.getByText('01')).toBeTruthy();
 		expect(screen.getByText('02')).toBeTruthy();
 		expect(screen.getByText('03')).toBeTruthy();
+		expect(screen.getByText('04')).toBeTruthy();
+	});
+
+	it('falls back to the first title word for an id missing from SHORT_LABELS', () => {
+		const unknown = [
+			serviceFactory.build({ id: 'mystery-service', title: { en: 'Mystery Offering' }, description: { en: '' }, station: 1, visible: true }),
+		];
+		render(StationTabs, { props: { services: unknown, activeId: 'mystery-service' } });
+		expect(screen.getByText('Mystery')).toBeTruthy();
 	});
 
 	it('marks the active tab', () => {
@@ -33,8 +44,24 @@ describe('StationTabs', () => {
 	});
 
 	it('renders links in navigate mode', () => {
-		render(StationTabs, { props: { services: mockServices, activeId: 'sql-development', mode: 'navigate' } });
+		render(StationTabs, { props: { services: mockServices, activeId: 'database-engineering', mode: 'navigate' } });
 		const link = screen.getByTestId('station-tab-data-pipeline');
 		expect(link.closest('a')?.getAttribute('href')).toBe('/services/data-pipeline');
+	});
+});
+
+describe('StationTabs — locale-resolved fallback label (slice-28.6)', () => {
+	it('derives the short label from the locale-resolved title (no SHORT_LABELS entry, no provider → en)', () => {
+		const service = serviceFactory.build({
+			id: 'new-service',
+			title: { en: 'Brand Engineering Stuff', fr: 'Ingénierie de marque' },
+			description: { en: '' },
+			station: 1,
+			visible: true,
+		});
+		render(StationTabs, { props: { services: [service], activeId: 'new-service', mode: 'navigate' } });
+		// no provider → locale 'en' → first word of EN title
+		expect(screen.getByText('Brand')).toBeInTheDocument();
+		expect(screen.queryByText('Ingénierie')).toBeNull();
 	});
 });

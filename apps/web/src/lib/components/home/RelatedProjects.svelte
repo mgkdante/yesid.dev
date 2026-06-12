@@ -5,15 +5,19 @@
 <script lang="ts">
 	import type { Project } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { localizeHref } from '$lib/utils/locale-routing';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { relatedProjectsStripContent } from '$lib/content/site-content';
 
 	let { projects }: { projects: readonly Project[] } = $props();
 
-	const builtWithLabel = resolveLocale(relatedProjectsStripContent.builtWithLabel, 'en');
-	const countSingular = resolveLocale(relatedProjectsStripContent.projectCount.singular, 'en');
-	const countPlural = resolveLocale(relatedProjectsStripContent.projectCount.plural, 'en');
+	const builtWithLabel = resolveLocale(relatedProjectsStripContent.builtWithLabel, locale);
+	const countSingular = resolveLocale(relatedProjectsStripContent.projectCount.singular, locale);
+	const countPlural = resolveLocale(relatedProjectsStripContent.projectCount.plural, locale);
 </script>
 
 <div
@@ -25,11 +29,11 @@
 	<div class="proof-projects" use:scrollChain>
 		{#each projects as project (project.slug)}
 			<a
-				href="/projects/{project.slug}"
+				href={localizeHref(`/projects/${project.slug}`, locale)}
 				class="proof-link"
 			>
 				<span class="proof-dot" aria-hidden="true"></span>
-				<span class="proof-name">{resolveLocale(project.title, 'en')}</span>
+				<span class="proof-name">{resolveLocale(project.title, locale)}</span>
 			</a>
 		{/each}
 	</div>

@@ -9,6 +9,9 @@
 	import type { AboutWeatherConfig } from '$lib/types';
 	import type { WeatherData } from '$lib/utils/weather';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
@@ -47,8 +50,8 @@
 		}
 	}
 
-	const city = $derived(resolveLocale(config.city, 'en'));
-	const hook = $derived(resolveLocale(config.hook, 'en'));
+	const city = $derived(resolveLocale(config.city, locale));
+	const hook = $derived(resolveLocale(config.hook, locale));
 	const hasWeather = $derived(currentWeather != null);
 	const iconUrl = $derived(
 		currentWeather ? `https://openweathermap.org/img/wn/${currentWeather.icon}@2x.png` : null
@@ -147,7 +150,7 @@
 			{#if hasWeather && currentWeather}
 				<!-- Temperature + icon -->
 				<div class="mt-1 flex items-center justify-center gap-2">
-					<span class="font-mono text-2xl font-bold text-[var(--accent)]">
+					<span class="font-mono text-2xl font-bold text-[var(--accent-text)]">
 						{currentWeather.temp}°C
 					</span>
 					{#if iconUrl}
@@ -281,5 +284,20 @@
 	@keyframes weather-haze {
 		0%   { opacity: 0.3; transform: translateY(0); }
 		100% { opacity: 0.7; transform: translateY(-6px); }
+	}
+
+	/* GO-w2t5 retier: ambient/infinite particle translation is MOTION-GATED.
+	   Under reduce the card keeps a STATIC weather scene — sun glow and
+	   clouds/mist rest at their base styles; drops & flakes park off-canvas
+	   (top: -6px/-4px, clipped by the overflow-hidden layer). */
+	@media (prefers-reduced-motion: reduce) {
+		.weather-drop,
+		.weather-flake,
+		.weather-lightning,
+		.weather-sun,
+		.weather-cloud,
+		.weather-mist {
+			animation: none;
+		}
 	}
 </style>

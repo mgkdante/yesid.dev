@@ -86,7 +86,7 @@
 	}
 
 	:global([data-slot="card"].section-card:hover .section-title) {
-		color: var(--accent);
+		color: var(--accent-text);
 	}
 
 	:global(.section-title) {

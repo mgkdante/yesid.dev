@@ -12,8 +12,11 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import type { Project, Service } from '$lib/types';
+	import type { Project, ProjectsPageContent, Service } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
 	import { loadDrawSVG, loadFlip, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
@@ -29,10 +32,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { projectsListingContent } from '$lib/content/projects';
-
-	const listingHeading = resolveLocale(projectsListingContent.heading, 'en');
-	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, 'en');
-
+	import { siteLabels } from '$lib/content';
 
 	let {
 		projects,
@@ -40,7 +40,8 @@
 		allStack = [],
 		serviceIds,
 		services,
-		serviceSvgContents
+		serviceSvgContents,
+		projectsPage
 	}: {
 		projects: readonly Project[];
 		allTags: readonly string[];
@@ -48,14 +49,20 @@
 		serviceIds: readonly string[];
 		services: readonly Service[];
 		serviceSvgContents: Record<string, string>;
+		projectsPage: ProjectsPageContent;
 	} = $props();
 
-	// i18n content — all user-facing strings go through LocalizedString
-	const content = {
-		heading: { en: 'Work' },
-		subtitle: { en: 'Projects, pipelines, and systems I have built.' },
-		emptyState: { en: 'No projects match the selected filters.' }
-	};
+	// go2-t1c2: /projects chrome now flows from the CMS block
+	// (block_projects_page_content — heading/intro/empty_state), with the
+	// generated listing module + previous literals as code fallbacks. The
+	// formerly orphaned CMS intro is rendered as the header subtitle.
+	const listingHeading =
+		resolveLocale(projectsPage.heading, locale) || resolveLocale(projectsListingContent.heading, locale);
+	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, locale);
+	const listingIntro = resolveLocale(projectsPage.intro, locale);
+	const emptyStateText =
+		resolveLocale(projectsPage.emptyState, locale) || 'No projects match the selected filters.';
+	const filterNoun = resolveLocale(siteLabels.ui.nounProject, locale) || 'project';
 
 	// Filter state — read from URL params
 	let activeService = $derived($page.url.searchParams.get('service'));
@@ -83,8 +90,8 @@
 		if (searchQuery.trim()) {
 			const q = searchQuery.trim().toLowerCase();
 			result = result.filter((p) => {
-				const title = resolveLocale(p.title, 'en').toLowerCase();
-				const oneLiner = resolveLocale(p.oneLiner, 'en').toLowerCase();
+				const title = resolveLocale(p.title, locale).toLowerCase();
+				const oneLiner = resolveLocale(p.oneLiner, locale).toLowerCase();
 				const tags = p.tags.join(' ').toLowerCase();
 				const stack = p.stack.join(' ').toLowerCase();
 				return title.includes(q) || oneLiner.includes(q) || tags.includes(q) || stack.includes(q);
@@ -120,7 +127,7 @@
 
 	// Build a lookup from service ID to service title for the filter pills
 	let serviceMap = $derived(
-		new Map(services.map((s) => [s.id, resolveLocale(s.title, 'en')]))
+		new Map(services.map((s) => [s.id, resolveLocale(s.title, locale)]))
 	);
 
 	let hasActiveFilters = $derived(!!activeService || !!activeTag || !!activeStack || searchQuery.trim() !== '');
@@ -183,7 +190,7 @@
 		<ProjectsBlueprint />
 		<div class="projects-header-text">
 			<h1 class="projects-mobile-heading">{listingHeading}<span class="text-[var(--primary)]">.</span></h1>
-			<div class="projects-header-subtitle">{resolveLocale(content.subtitle, 'en')}</div>
+			<div class="projects-header-subtitle">{listingIntro}</div>
 		</div>
 	</div>
 
@@ -233,13 +240,13 @@
 
 		<!-- Active filter summary -->
 		{#if hasActiveFilters}
-			<FilterSummary count={filteredProjects.length} noun="project" onClear={clearFilters} />
+			<FilterSummary count={filteredProjects.length} noun={filterNoun} onClear={clearFilters} />
 		{/if}
 
 		<!-- Card grid -->
 		{#if filteredProjects.length === 0}
 			<p class="py-12 text-center text-sm text-[var(--muted-foreground)]" data-testid="work-empty-state">
-				{resolveLocale(content.emptyState, 'en')}
+				{emptyStateText}
 			</p>
 		{:else}
 			<div class="project-grid">

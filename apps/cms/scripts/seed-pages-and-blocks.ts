@@ -737,7 +737,12 @@ export function toBlockProjectsPageContentTranslationRows(): ReadonlyArray<Direc
 			// here serialized to the literal text `{"en":"…"}` (the slice-27.1 T4
 			// double-encoding bug). Pass the bare string, exactly like heading /
 			// back_to_* below.
-			intro: 'A selection of data engineering projects — pipelines, dashboards, and infrastructure that ships.',
+			// go2-t1c: aligned to the rendered strings (heading/empty_state new;
+			// intro overwritten to the previously hardcoded listing subtitle —
+			// matches the setup-site-labels-and-chrome --seed values).
+			intro: 'Projects, pipelines, and systems I have built.',
+			heading: 'Projects',
+			empty_state: 'No projects match the selected filters.',
 		},
 	];
 }
@@ -957,7 +962,11 @@ export function validateAllFixtures(): void {
 		backToDispatches: { en: 'back to dispatches' },
 		backToPersonal: { en: 'back to personal corner' },
 	});
-	ProjectsPageContentSchema.parse({ intro: { en: 'A selection of data engineering projects — pipelines, dashboards, and infrastructure that ships.' } });
+	ProjectsPageContentSchema.parse({
+		intro: { en: 'Projects, pipelines, and systems I have built.' },
+		heading: { en: 'Projects' },
+		emptyState: { en: 'No projects match the selected filters.' },
+	});
 
 	// Nav fixture (our own schema)
 	NavFixtureSchema.parse(navFixture);

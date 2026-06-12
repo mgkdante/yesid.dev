@@ -24,14 +24,14 @@ import type {
 	WebSite,
 } from '$lib/schemas/jsonld';
 import type { BlogPost, Locale, Project, Service as ServiceDomain, SiteMeta } from '$lib/types';
-import { resolveLocale } from '$lib/utils/locale';
+import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 import { SITE_HOST } from '$lib/utils/seo-defaults';
 import { extractText } from '@repo/shared';
 
 export const PERSON_ID = `${SITE_HOST}/#person`;
 export const WEBSITE_ID = `${SITE_HOST}/#website`;
 
-export function buildPersonNode(meta: SiteMeta): Person {
+export function buildPersonNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE): Person {
 	const sameAs: string[] = [];
 	if (meta.links.github) sameAs.push(meta.links.github);
 	if (meta.links.linkedin) sameAs.push(meta.links.linkedin);
@@ -41,7 +41,7 @@ export function buildPersonNode(meta: SiteMeta): Person {
 		'@type': 'Person' as const,
 		'@id': PERSON_ID,
 		name: meta.owner.name,
-		jobTitle: meta.owner.jobTitle.en,
+		jobTitle: resolveLocale(meta.owner.jobTitle, locale),
 		url: SITE_HOST,
 		email: meta.links.email,
 		sameAs,
@@ -57,13 +57,13 @@ export function buildPersonNode(meta: SiteMeta): Person {
 	return SchemaOrgNodeSchema.parse(built) as Person;
 }
 
-export function buildWebSiteNode(meta: SiteMeta): WebSite {
+export function buildWebSiteNode(meta: SiteMeta, locale: Locale = DEFAULT_LOCALE): WebSite {
 	const built = {
 		'@type': 'WebSite' as const,
 		'@id': WEBSITE_ID,
 		name: meta.name,
 		url: SITE_HOST,
-		description: meta.description.en,
+		description: resolveLocale(meta.description, locale),
 		publisher: { '@id': PERSON_ID },
 	};
 

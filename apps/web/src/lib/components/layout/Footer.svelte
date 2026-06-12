@@ -1,25 +1,47 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent } from '$lib/content';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { siteMeta, menuItems as staticMenuItems, sharedChromeContent, footerContent, siteLabels } from '$lib/content';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
+	import { delocalizePath, localizeHref } from '$lib/utils/locale-routing';
+	import { PUBLISHED_LOCALES } from '$lib/utils/seo-defaults';
+	import { fillTemplate } from '$lib/utils/labels';
 	import { wordmarkHover } from '$lib/motion/actions';
 	import { StatusDot } from '$lib/components/brand';
 	import type { NavLink } from '$lib/content/nav';
-
-	const tagline = resolveLocale(footerContent.tagline, 'en');
-	const location = resolveLocale(footerContent.location, 'en');
-	const statusPrefix = resolveLocale(footerContent.statusPrefix, 'en');
-	const footerNavAria = resolveLocale(sharedChromeContent.footerNavAria, 'en');
+	import type { Locale } from '$lib/types';
 
 	// footerLinks: adapter-sourced footer placement links (from +layout.server.ts).
 	// Falls back to the menu items (which serve as footer fallback in static mode).
 	let {
+		locale = DEFAULT_LOCALE,
+		pathname = '/',
 		footerLinks = staticMenuItems as readonly NavLink[],
+		availableLocales = PUBLISHED_LOCALES as readonly Locale[],
 	}: {
+		locale?: Locale;
+		/** Current pathname — the locale switch preserves it across locales. */
+		pathname?: string;
 		footerLinks?: readonly NavLink[];
+		/** Locale switcher entries; hidden until more than one is published. */
+		availableLocales?: readonly Locale[];
 	} = $props();
 
+	// $derived (not const): Footer never remounts; locale changes on /fr↔/ navigation.
+	const tagline = $derived(resolveLocale(footerContent.tagline, locale));
+	const location = $derived(resolveLocale(footerContent.location, locale));
+	const statusPrefix = $derived(resolveLocale(footerContent.statusPrefix, locale));
+	const footerNavAria = $derived(resolveLocale(sharedChromeContent.footerNavAria, locale));
+	const switcherAria = $derived(resolveLocale(sharedChromeContent.localeSwitcherAria, locale));
+	// Path-preserving: /fr/about ↔ /about (slice-28.6).
+	const switchHref = (l: Locale) => localizeHref(delocalizePath(pathname), l);
+
 	const year = new Date().getFullYear();
+	// go2-t1c2: copyright template from site_labels (orange dot stays code =
+	// placement), previous literal as fallback.
+	const copyrightText = $derived(fillTemplate(
+		resolveLocale(siteLabels.ui.copyrightTemplate, locale) || '© {year} yesid',
+		{ year: String(year) },
+	));
 
 	const now = new Date();
 	const systemDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
@@ -27,8 +49,8 @@
 	// Use footerLinks when available; fall back to staticMenuItems for backwards compat.
 	const footerNavLinks = $derived(
 		(footerLinks.length > 0 ? footerLinks : staticMenuItems).map((item) => ({
-			label: item.label.en,
-			href: item.href,
+			label: resolveLocale(item.label, locale),
+			href: localizeHref(item.href, locale),
 		})),
 	);
 
@@ -60,7 +82,7 @@
 		<!-- Left: Wordmark -->
 		<div class="flex flex-col items-center sm:items-start">
 			<a
-				href="/"
+				href={localizeHref('/', locale)}
 				data-testid="footer-wordmark"
 				class="inline-flex items-baseline font-heading text-xl font-bold text-[var(--foreground)]"
 			>
@@ -77,7 +99,7 @@
 			{#each footerNavLinks as link}
 				<a
 					href={link.href}
-					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
+					class="footer-link text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 				>
 					{link.label}
 				</a>
@@ -91,7 +113,7 @@
 					href={link.href}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
+					class="footer-link text-small text-[var(--secondary-foreground)] transition-colors hover:text-primary active:text-primary"
 					aria-label={link.label}
 				>
 					{link.label}
@@ -102,8 +124,20 @@
 
 	<!-- Row 2: Status bar -->
 	<div class="footer-status-border mx-auto flex max-w-5xl flex-col items-center gap-2 px-6 py-4 font-mono text-caption text-[var(--muted-foreground)] sm:flex-row sm:justify-between sm:px-10">
-		<small>&copy; {year} yesid<span class="text-primary">.</span></small>
+		<small>{copyrightText}<span class="text-primary">.</span></small>
 		<address class="not-italic">{location}</address>
+		{#if availableLocales.length > 1}
+			<nav data-testid="footer-locale-switch" aria-label={switcherAria} class="flex items-center gap-2">
+				{#each availableLocales as l, i (l)}
+					{#if i > 0}<span aria-hidden="true" class="opacity-30">|</span>{/if}
+					<a
+						href={switchHref(l)}
+						aria-current={l === locale ? 'true' : undefined}
+						class={l === locale ? 'text-primary' : 'transition-colors hover:text-primary'}
+					>{l.toUpperCase()}</a>
+				{/each}
+			</nav>
+		{/if}
 		<span class="flex items-center gap-1.5">
 			<StatusDot color="orange" pulse />
 			{statusPrefix} {systemDate}
@@ -125,5 +159,20 @@
 
 	footer {
 		padding-bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	/* GO-w2t5: underline draw, blueprint line at word scale (SAFE-ALWAYS). */
+	.footer-link {
+		background-image: linear-gradient(var(--primary), var(--primary));
+		background-repeat: no-repeat;
+		background-position: 0 100%;
+		background-size: 0% 1px;
+		transition:
+			background-size var(--duration-fast) var(--ease-out),
+			color var(--duration-fast) var(--ease-default);
+	}
+	.footer-link:hover,
+	.footer-link:focus-visible {
+		background-size: 100% 1px;
 	}
 </style>

@@ -6,13 +6,16 @@
 <script lang="ts">
 	import type { CodeBlock } from '@repo/shared';
 	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
+
+	const locale = getLocale();
 	import { blogDetailContent } from '$lib/content/blog';
 
 	let { data }: { data: CodeBlock['data'] } = $props();
 
-	const copyLabel = resolveLocale(blogDetailContent.code.copyLabel, 'en');
-	const copyAria = resolveLocale(blogDetailContent.code.copyAria, 'en');
-	const errorLabel = resolveLocale(blogDetailContent.code.errorLabel, 'en');
+	const copyLabel = resolveLocale(blogDetailContent.code.copyLabel, locale);
+	const copyAria = resolveLocale(blogDetailContent.code.copyAria, locale);
+	const errorLabel = resolveLocale(blogDetailContent.code.errorLabel, locale);
 
 	let buttonLabel = $state(copyLabel);
 	let resetTimeout: ReturnType<typeof setTimeout> | null = null;

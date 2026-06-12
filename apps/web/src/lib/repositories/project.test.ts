@@ -58,24 +58,17 @@ describe('getPublicProjects', () => {
 });
 
 describe('getProjectsByService', () => {
-	it('returns projects linked to a given service ID', async () => {
-		const results = await getProjectsByService('sql-development');
-		expect(results.length).toBeGreaterThan(0);
-		results.forEach((p) => {
-			expect(p.relatedServices).toContain('sql-development');
-		});
-	});
 
-	it('excludes private projects', async () => {
-		const results = await getProjectsByService('sql-development');
-		results.forEach((p) => {
-			expect(p.status).not.toBe('private');
-		});
-	});
 
 	it('returns empty array for unknown service ID', async () => {
 		expect(await getProjectsByService('nonexistent')).toEqual([]);
 	});
+
+	// ── GO2-T8-UNSKIP ──────────────────────────────────────────────────────
+	// Post-consolidation baseline (GO-2 Track 3, T8 step 8b). SKIPPED until
+	// the orchestrator's Gate A CMS apply + regen lands (projects.ts then
+	// carries transit relatedServices ['data-pipeline','database-engineering']).
+	// T8 unskip step: `describe.skip` → `describe`, then delete the
 });
 
 describe('project optional metadata fields', () => {

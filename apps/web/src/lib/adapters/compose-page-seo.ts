@@ -24,9 +24,18 @@ import type {
 	SiteMeta,
 	SiteSeoDefaults,
 } from '$lib/types';
-import { SITE_HOST } from '$lib/utils/seo-defaults';
+import { canonicalFor } from '$lib/utils/seo-defaults';
 import { asset } from '$lib/directus/assets';
 import type { CodeRouteSeoDefaults } from './route-seo-defaults';
+
+/** Append the brand suffix to every locale present in `body` (slice-28.6). */
+export function appendBrandPerLocale(body: LocalizedString, brand: string): LocalizedString {
+	return {
+		en: `${body.en} | ${brand}`,
+		...(body.fr && { fr: `${body.fr} | ${brand}` }),
+		...(body.es && { es: `${body.es} | ${brand}` }),
+	};
+}
 
 export interface ComposePageSeoArgs {
 	routeId: string;
@@ -45,7 +54,6 @@ export interface ComposePageSeoArgs {
  */
 export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	const { routeId, locale, siteMeta, siteSeoDefaults, routeOverride, codeDefaults } = args;
-	void locale;
 
 	// Title body comes from CMS override if present, else code-side fallback.
 	const titleBody: LocalizedString = (routeOverride?.title ?? codeDefaults.fallbackTitle) as LocalizedString;
@@ -55,11 +63,7 @@ export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	const title: LocalizedString =
 		codeDefaults.composedTitleStrategy === 'verbatim'
 			? titleBody
-			: {
-					en: `${titleBody.en} | ${siteMeta.name}`,
-					...(titleBody.fr && { fr: `${titleBody.fr} | ${siteMeta.name}` }),
-					...(titleBody.es && { es: `${titleBody.es} | ${siteMeta.name}` }),
-				};
+			: appendBrandPerLocale(titleBody, siteMeta.name);
 
 	// Description fallback chain.
 	const description: LocalizedString =
@@ -71,7 +75,8 @@ export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	// undefined and let <SeoHead> resolve `defaultOgImageFor(locale)` to the
 	// static `/og/default.{locale}.png` fallback.
 	const ogImageUuid = routeOverride?.ogImage ?? siteSeoDefaults.defaultOgImage;
-	const canonical = `${SITE_HOST}${routeId === '/' ? '' : routeId}`;
+	// slice-28.6: locale-aware canonical (/fr prefix once published; EN until then).
+	const canonical = canonicalFor(routeId === '/' ? '/' : routeId, locale);
 
 	const seo: PageSeo = {
 		title,
@@ -85,7 +90,11 @@ export function composePageSeo(args: ComposePageSeoArgs): PageSeo {
 	if (ogImageUuid) {
 		seo.ogImage = {
 			url: asset(ogImageUuid, 'og-1200'),
-			alt: { en: `${siteMeta.name} — ${titleBody.en}` },
+			alt: {
+				en: `${siteMeta.name} — ${titleBody.en}`,
+				...(titleBody.fr && { fr: `${siteMeta.name} — ${titleBody.fr}` }),
+				...(titleBody.es && { es: `${siteMeta.name} — ${titleBody.es}` }),
+			},
 			width: 1200,
 			height: 630,
 		};
