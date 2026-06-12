@@ -64,6 +64,12 @@ export interface HeroTimelineOpts {
 	stopBlink: () => void;
 	/** Pin length as a GSAP-compatible percent string. Default '800%'. Mobile callers pass '300%'. */
 	pinLength?: string;
+	/**
+	 * go2/w5 replayable intro: fired ONCE when the scrub progress first
+	 * reaches the end of the pin (the visitor scrolled the intro through).
+	 * HeroBanner persists the localStorage day-key here.
+	 */
+	onIntroComplete?: () => void;
 }
 
 // ---- Measurement utilities ----
@@ -136,6 +142,7 @@ export function createHeroTimeline(
 		startBlink,
 		stopBlink,
 		pinLength = '800%',
+		onIntroComplete,
 	} = opts;
 
 	const svg = pinContainer.querySelector('[data-testid="metro-network"]');
@@ -291,6 +298,11 @@ export function createHeroTimeline(
 	// Mobile (native touch): scrub:0.5 = small buffer for stable touch feel.
 	const isTouch = ScrollTrigger.isTouch > 0;
 
+	// go2/w5: persist-once latch — the visitor "scrolled it through" when
+	// progress first reaches the end of the pin (0.99 tolerates scrub
+	// smoothing never emitting exactly 1).
+	let introCompleteFired = false;
+
 	const st = ScrollTrigger.create({
 		trigger: pinContainer,
 		start: 'top top',
@@ -304,6 +316,10 @@ export function createHeroTimeline(
 				stopBlink();
 			} else if (self.progress <= 0.005 && self.direction === -1) {
 				startBlink();
+			}
+			if (!introCompleteFired && self.progress >= 0.99) {
+				introCompleteFired = true;
+				onIntroComplete?.();
 			}
 		},
 	});
