@@ -415,10 +415,8 @@ test.describe('light mode — per-page audit', () => {
 });
 
 test.describe('theme toggle behaviour', () => {
-	// Playwright's default emulated colorScheme is LIGHT, and the pre-paint
-	// script honors system preference when no choice is stored — so these
-	// round-trips pin a dark-preferring user (the brand-default story).
-	// System-preference behaviour itself is covered explicitly below.
+	// Pin the brand-default story explicitly; system color preference is ignored
+	// unless the user has stored a real theme choice.
 	test.use({ colorScheme: 'dark' });
 
 	test('toggle flips theme, persists across navigation + reload, updates meta', async ({ page }) => {
@@ -441,12 +439,17 @@ test.describe('theme toggle behaviour', () => {
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 	});
 
-	test('system preference applies when no stored choice (dark default otherwise)', async ({ page }) => {
+	test('system preference is ignored: defaults dark, stored light still wins', async ({ page }) => {
 		await page.emulateMedia({ colorScheme: 'light' });
 		await page.goto('/', { waitUntil: 'domcontentloaded' });
+		await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+
+		await page.evaluate(() => localStorage.setItem('theme', 'light'));
+		await page.reload({ waitUntil: 'domcontentloaded' });
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 
 		await page.emulateMedia({ colorScheme: 'dark' });
+		await page.evaluate(() => localStorage.removeItem('theme'));
 		await page.reload({ waitUntil: 'domcontentloaded' });
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 	});
