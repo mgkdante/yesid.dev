@@ -215,7 +215,7 @@ test('round 4 compose: undo + start over narrate through the counter; the build 
 	await expect(shape).not.toBeVisible();
 });
 
-test('finale 4d: hero + engine band are ONE full-bleed instrument panel; CTA stays constrained', async ({
+test('finale 4d + micro-pass 4e: hero and engine band each run full bleed; CTA stays constrained', async ({
 	page,
 	isMobile,
 }) => {
@@ -231,7 +231,8 @@ test('finale 4d: hero + engine band are ONE full-bleed instrument panel; CTA sta
 	expect(Math.round(band!.x)).toBe(0);
 
 	// Finale (4d): the CONTROL ROOM hero runs the same full bleed — the old
-	// constrained-hero rule is superseded for THIS page.
+	// constrained-hero rule is superseded for THIS page. (Micro-pass 4e: the
+	// hero is plain site background now — width is shared, the tint is not.)
 	const hero = await page.locator('[data-testid="tech-stack-hero"]').boundingBox();
 	expect(hero).not.toBeNull();
 	expect(Math.round(hero!.width)).toBe(pageWidth);
