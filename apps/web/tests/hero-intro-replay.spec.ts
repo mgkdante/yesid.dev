@@ -12,9 +12,37 @@
 //   3. The metro art carries ONE caption ('STM métro + REM') that never
 //      overlaps the SVG; the old in-frame legend is gone.
 
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+import { decodePng, pixelAt, isBrandOrange, type Rgb } from './lib/png.js';
 
 const KEY = 'yesid:hero-intro-day';
+
+// PAINT probe points (fractions of the viewport, below the floating nav).
+// The orange-wall regression painted brand orange at EVERY one of these;
+// a healthy frame never does (page background dominates at least one).
+const PAINT_PROBES: ReadonlyArray<readonly [number, number]> = [
+	[0.5, 0.5],
+	[0.5, 0.85],
+	[0.15, 0.6],
+	[0.85, 0.6],
+	[0.3, 0.35],
+];
+
+/**
+ * Screenshot the viewport and assert it is NOT painting the orange wall.
+ * Threshold: ≥3 of 5 spread probes brand-orange = wall (the regression hit
+ * 4-5/5; healthy frames hit at most 1 — a stray glyph or metro stroke).
+ */
+async function expectNotOrangeWall(page: Page, moment: string): Promise<void> {
+	const png = decodePng(await page.screenshot());
+	const samples: Rgb[] = PAINT_PROBES.map(([fx, fy]) => pixelAt(png, fx, fy));
+	const orange = samples.filter(isBrandOrange).length;
+	expect(
+		orange,
+		`${moment}: viewport paints a brand-orange wall — ` +
+			`probes [${samples.map((rgb) => rgb.join(',')).join(' | ')}]`,
+	).toBeLessThan(3);
+}
 
 /** Local-timezone YYYY-MM-DD — must match heroIntroDayKey(). */
 function localDayKeyScript(storageKey: string): string {
@@ -185,7 +213,46 @@ test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-colla
 		.toBeGreaterThan(collapsedHeight + viewport.height * 2);
 	await expect.poll(() => page.locator('.pin-spacer').count(), { timeout: 15_000 }).toBeGreaterThan(0);
 	await expect(page.locator('[data-testid="metro-network-container"]')).toBeVisible();
+
+	// PAINT-LEVEL rewind probe (regression: the rewind once painted a solid
+	// brand-orange wall — the hero-text container stuck at its 200×+ initial
+	// scale with the replay opacity shield, its giant dot glyph covering the
+	// viewport, because the pre-position jumps were clamped to Lenis' stale
+	// cached limit and the scrub never rendered the track's top segment).
+	// Scroll assertions alone can't catch that class of bug, so: wait for the
+	// rewind to pass BELOW 40% of the pin distance (timeline time < Phase 5
+	// start ⇒ no legitimate full-viewport orange zoom frame exists), then
+	// assert real painted pixels + the offending element's scrubbed state.
+	const pinDistance = await page
+		.locator('.pin-spacer')
+		.evaluate((el) => parseFloat(getComputedStyle(el).paddingBottom));
+	expect(pinDistance).toBeGreaterThan(viewport.height);
+	await page.waitForFunction(
+		(band) => window.scrollY < band,
+		pinDistance * 0.4,
+		{ polling: 'raf', timeout: 15_000 },
+	);
+	await expectNotOrangeWall(page, 'mid-rewind (below Phase 5 band)');
+	// The scrub must have rendered the backward pass: below Phase 6 the
+	// hero-text container is scrubbed back to opacity 0 (the temporary
+	// replay shield released before the rebuilt timeline's first render).
+	// In the orange-wall bug it stayed at the shield's opacity 1 forever.
+	expect(
+		await page
+			.locator('[data-testid="hero-text-container"]')
+			.evaluate((el) => getComputedStyle(el).opacity),
+	).toBe('0');
+
 	await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 15_000 }).toBeLessThan(8);
+
+	// Settled paint: top-of-track is the Phase 1 frame (Berri dot + page
+	// background) — never a wall, and the hero text layer stays scrubbed out.
+	await expectNotOrangeWall(page, 'settled at top after rewind');
+	expect(
+		await page
+			.locator('[data-testid="hero-text-container"]')
+			.evaluate((el) => getComputedStyle(el).opacity),
+	).toBe('0');
 
 	// Scrolling the replayed intro through again re-applies the collapse —
 	// the round-trip is idempotent.

@@ -258,10 +258,19 @@
 		ScrollTrigger.refresh();
 	}
 
-	/** Instant scroll that keeps Lenis' internal position in sync. */
+	/** Instant scroll that keeps Lenis' internal position AND limits in sync. */
 	function jumpTo(top: number): void {
 		const lenis = getLenis();
 		if (lenis) {
+			// Lenis CLAMPS scrollTo targets to its cached dimensions, and that
+			// cache refreshes through a 250ms-DEBOUNCED ResizeObserver. Every
+			// jumpTo here runs right after a geometry flip (collapse/re-enlarge),
+			// i.e. inside that debounce window — without a synchronous re-measure
+			// the replay pre-position silently lands at the stale collapsed-track
+			// limit, the rebuilt scrub never renders its top segment, and the
+			// 200×-scaled hero text paints the viewport solid orange (the
+			// replay-rewind orange-wall bug).
+			lenis.resize();
 			lenis.scrollTo(top, { immediate: true, force: true });
 		} else {
 			window.scrollTo({ top, behavior: 'auto' });
@@ -274,18 +283,31 @@
 	// BACKWARD through the viewport — a film rewind, never a jump. Scrolling
 	// it through again re-fires onIntroComplete, so the collapse re-applies.
 	//
-	// Ordering is load-bearing: the pre-jump happens BEFORE the rebuild so the
-	// new trigger's very first render is already at its end — the armed-
-	// crossing latch in createHeroTimeline therefore stays silent (the jump
-	// must never read as "scrolled the intro through"). Every await in the
-	// chain is a microtask (settle delay skipped), so no frame can paint the
-	// intermediate states: the first painted frame after the click is the
-	// settled hero at the end of the re-enlarged track.
+	// Ordering is load-bearing:
+	//   1. plugins preload FIRST — afterwards every await in the chain is a
+	//      microtask (settle delay skipped), so no frame can paint the
+	//      intermediate states: the first painted frame after the click is
+	//      the settled hero at the end of the re-enlarged track;
+	//   2. the pre-jump OVERSHOOTS the approximate end before the rebuild so
+	//      the new trigger's very first render is already at/past its end —
+	//      the armed-crossing latch in createHeroTimeline therefore stays
+	//      silent (the jump must never read as "scrolled the intro through");
+	//   3. the global refresh runs AFTER the rebuild — it materializes the
+	//      new pin's start/end (creation alone leaves them undefined) and
+	//      performs the timeline's first render, at progress 1;
+	//   4. the corrective jump dials in the exact pin end and renders it
+	//      before the next paint, then the rewind starts.
 	async function handleReplay(): Promise<void> {
 		if (replayArming || !introCompleted) return;
 		replayArming = true;
 		try {
 			if (introCollapsed) {
+				// Preload the timeline's lazy plugins BEFORE touching geometry.
+				// On a same-day skipped load they were never imported, and a
+				// chunk fetch inside the rebuild would break the paint-atomic
+				// microtask chain (frames would paint the half-rebuilt scene).
+				// Idempotent: instant when already loaded.
+				await Promise.all([loadDrawSVG(), loadCustomEase()]);
 				const beforeHeight = document.documentElement.scrollHeight;
 				const beforeY = window.scrollY;
 				// Shield: the base markup is opacity-0; keep the settled hero
@@ -295,11 +317,40 @@
 				heroTextContainer.style.opacity = '1';
 				introCollapsed = false; // re-enlarge the track
 				await tick();
-				// Pre-position at the approximate track end (height delta of
-				// the re-enlarge) so the pin is created already-at-end.
-				jumpTo(beforeY + Math.max(0, document.documentElement.scrollHeight - beforeHeight));
+				// Pre-position at the re-enlarge height delta PLUS one viewport
+				// of overshoot so the rebuilt pin's first render is already
+				// AT/PAST its end. The delta alone can land a hair SHORT of the
+				// pin end (the section reserve holds more than the pin), and a
+				// first render below the 0.99 threshold would arm the
+				// completion latch — the corrective end render would then read
+				// as "scrolled through" and instantly re-collapse the track
+				// mid-replay.
+				jumpTo(
+					beforeY +
+						Math.max(0, document.documentElement.scrollHeight - beforeHeight) +
+						window.innerHeight,
+				);
 				await setupIntro({ replayRebuild: true });
-				// Re-measure: downstream triggers shifted by the re-enlarge.
+				// Release the shield BEFORE the rebuilt timeline's first render
+				// (same synchronous block as the refresh below — no frame can
+				// paint the gap). GSAP records a tween target's PRE-tween value
+				// at init and reverts to it whenever the playhead scrubs back
+				// below the tween's start: the Phase 6 fromTo must therefore
+				// init against the stylesheet state (class opacity-0), not the
+				// shield — otherwise the rewind passing below Phase 6 reverts
+				// the 200×-scaled hero text back to the shield's opacity 1 and
+				// its giant dot glyph paints the viewport solid orange.
+				heroTextContainer.style.opacity = '';
+				// Global re-measure, load-bearing twice over: downstream
+				// triggers (manifesto, closer…) shifted by the re-enlarge, AND
+				// the new pin's start/end only materialize here —
+				// ScrollTrigger.create() does NOT fully refresh synchronously,
+				// so without this pass st.end below reads undefined and the
+				// corrective jump degenerates to scrollTo(NaN) (which Lenis
+				// turns into a scroll-to-0 and a poisoned internal position).
+				// This is also the timeline's FIRST render: at the overshot
+				// scroll it lands at progress 1 — tween starts + zoom getters
+				// init from the clean build state, and the latch stays silent.
 				ScrollTrigger.refresh();
 				// Correct to the EXACT pin end (+ whatever the visitor had
 				// scrolled within the collapsed hero) — identical pixels.
