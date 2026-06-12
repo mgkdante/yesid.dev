@@ -275,12 +275,14 @@
 			linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 96%, var(--foreground)), color-mix(in srgb, var(--surface-1) 92%, var(--terminal)));
 	}
 
-	/* "01 / SERVICE" marker — top-left of icon zone, brand-orange mono. */
+	/* "01 / SERVICE" marker — top-left of icon zone. Round-4 doctrine:
+	   station markers are wayfinding overlines — the YELLOW voice
+	   (label-station precedent; accent-text = AA amber both modes). */
 	.services-marker {
 		position: absolute;
 		left: 1.25rem;
 		top: 1rem;
-		color: var(--primary);
+		color: var(--accent-text);
 		font-family: var(--font-mono);
 		font-size: 0.875rem;
 		letter-spacing: 0.22em;
@@ -374,12 +376,13 @@
 		gap: 0.625rem;
 	}
 
+	/* Round-4 doctrine: metric/number callouts speak the YELLOW voice. */
 	.services-metric-value {
 		font-family: var(--font-heading);
 		font-weight: 800;
 		font-size: 1.5rem;
 		line-height: 1;
-		color: var(--primary);
+		color: var(--accent-text);
 		letter-spacing: -0.02em;
 	}
 

@@ -454,7 +454,12 @@ pre, code, table {
 
 /* 4–6. brand-glow-hover / img-desat / grid-responsive-cards — deleted in slice-28.3 (#110, orphaned) */
 
-/* 7–9. Label styles — mono uppercase patterns */
+/* 7–9. Label styles — mono uppercase patterns.
+   Round-4 four-color doctrine: label-section = quiet in-card caption (muted);
+   label-station = the YELLOW wayfinding voice for overlines/section labels —
+   the precedent every marker/overline follows ("01 / SERVICE", "01 / FEATURED",
+   listing-header sublines); label-metric = quiet metric caption (the metric
+   VALUE carries the yellow callout voice — see MetricDisplay). */
 .label-section {
   font-family: var(--font-mono);
   font-size: var(--text-caption);

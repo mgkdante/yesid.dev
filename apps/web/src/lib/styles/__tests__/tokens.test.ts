@@ -138,10 +138,12 @@ describe('Design System Tokens', () => {
       expect(darkBlock).toContain('--border-strong: #4A4A4A;');
     });
 
-    it('light borders are HARDER (round 2 — old family was too soft)', () => {
+    it('light borders are HARDER (round 2) and strong rules are BLACK tape (round 4 doctrine)', () => {
       expect(lightBlock).toContain('--border: #C9BCA1;');
       expect(lightBlock).toContain('--border-subtle: #D5C9B2;');
-      expect(lightBlock).toContain('--border-strong: #A08F70;');
+      // Round 4: light strong rules lean true-dark — the #1C1814 signage
+      // family draws structure as black tape on paper (was #A08F70).
+      expect(lightBlock).toContain('--border-strong: #1C1814;');
     });
 
     it('dark input boundary conforms to 1.4.11 (was #3A3A3A = 1.8:1)', () => {
@@ -180,6 +182,12 @@ describe('Design System Tokens', () => {
         '--signal-proceed: var(--success);', '--signal-caution: var(--accent);',
         '--signal-stop: var(--destructive);',
       ]) expect(tokensCSS).toContain(t);
+    });
+
+    it('round 4: the WHITE reflective voice is a theme-invariant :root token', () => {
+      // Four-color doctrine — reflective material doesn't reskin: white-core
+      // métro dots, key headline words over photo gradients.
+      expect(tokensCSS).toContain('--reflective: #F5F5F0;');
     });
 
     it('per-mode signal & infrastructure families exist', () => {

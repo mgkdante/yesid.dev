@@ -92,6 +92,10 @@ describe('contrast floors on color: declarations', () => {
 // actual number. Round 2 recomputed every pair against the restored
 // near-black dark board + page-colored terminals, and grew 48 → 50 pairs
 // (D primary/background rule voice; L border-strong/card structure floor).
+// Round 4 (four-color doctrine) grows 50 → 57: accent-text wayfinding pairs
+// on background/manifesto (overlines, markers, metric callouts, readouts),
+// the WHITE reflective voice on the signage/hazard black family, and the
+// light BLACK structural border (#1C1814 family) on paper.
 // ──────────────────────────────────────────────────────────────────────
 describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 	const tokens = JSON.parse(
@@ -174,6 +178,14 @@ describe('GO2-W5 — computed AA pairs from tokens.json', () => {
 		// theme-invariant signal systems
 		['hazard stripe pair (tape)', ['brand', 'hazard-a'], ['brand', 'hazard-b'], 3],
 		['signage chip (both modes)', ['brand', 'signage-text'], ['brand', 'signage-bg'], 4.5],
+		// round 4 — four-color doctrine pairs
+		['D accent-text/background (wayfinding overlines/markers/readouts)', ['dark', 'accent-text'], ['dark', 'background'], 4.5],
+		['D accent-text/manifesto (arrival board)', ['dark', 'accent-text'], ['dark', 'manifesto'], 4.5],
+		['L accent-text/background (wayfinding overlines/markers/readouts)', ['light', 'accent-text'], ['light', 'background'], 4.5],
+		['L accent-text/card (metric callouts on cards)', ['light', 'accent-text'], ['light', 'card'], 4.5],
+		['L accent-text/manifesto (arrival board)', ['light', 'accent-text'], ['light', 'manifesto'], 4.5],
+		['reflective/signage-bg (white voice on the black family)', ['brand', 'reflective'], ['brand', 'signage-bg'], 4.5],
+		['L border-strong/background (black tape structure, graphics)', ['light', 'border-strong'], ['light', 'background'], 3],
 	];
 
 	for (const [name, fg, bg, floor] of PAIRS) {

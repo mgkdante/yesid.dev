@@ -228,6 +228,13 @@
 		flex-shrink: 0;
 	}
 
+	/* Round-4: dividers between list items one step thicker — the project-card
+	   frame steps 2px → 3px (round-3 divider progression applied to listing
+	   list items; shared ui/card elsewhere stays 2px). */
+	.project-card :global(.card-surface) {
+		border-width: 3px;
+	}
+
 	/* GO2-W5 "route lights up": hover sets the route — an inset left route
 	   strip brightens from 35% primary to the full route-set aspect.
 	   box-shadow only (zero layout); composes the card bevel + hover glow. */
