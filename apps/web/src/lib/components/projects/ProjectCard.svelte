@@ -70,6 +70,16 @@
 		'web-development': ['var(--accent)', 'var(--primary)']
 	};
 
+	// GO2-W5 STM line bullets: each service chip carries its line color —
+	// database = orange line, pipeline = yellow line (line-amber survives
+	// daylight), analytics = green line, web = lunar white.
+	const SERVICE_LINE_COLORS: Record<string, string> = {
+		'database-engineering': 'var(--primary)',
+		'data-pipeline': 'var(--line-amber)',
+		'analytics-reporting': 'var(--signal-proceed)',
+		'web-development': 'var(--signal-lunar)'
+	};
+
 	let gradientColors = $derived(
 		SERVICE_GRADIENTS[project.relatedServices[0]] ?? ['var(--primary)', 'var(--accent)']
 	);
@@ -147,7 +157,7 @@
 					<div class="flex flex-wrap gap-1.5">
 					{#each projectServices as service}
 						<div
-							class="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1.5"
+							class="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5"
 							style="border-color: color-mix(in srgb, var(--primary) 35%, transparent);"
 						>
 							{#if serviceSvgContents[service.id]}
@@ -159,6 +169,11 @@
 									/>
 								</div>
 							{/if}
+							<span
+								class="line-bullet"
+								style="background: {SERVICE_LINE_COLORS[service.id] ?? 'var(--signal-lunar)'};"
+								aria-hidden="true"
+							></span>
 							<span class="font-mono text-caption leading-tight text-[var(--foreground)]">
 								{resolveLocale(service.title, locale)}
 							</span>
@@ -202,6 +217,31 @@
 		border: none;
 		background: transparent;
 		border-radius: 0;
+	}
+
+	/* GO2-W5 STM line bullet — the service's line color as a roundel dot. */
+	.line-bullet {
+		display: inline-block;
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	/* GO2-W5 "route lights up": hover sets the route — an inset left route
+	   strip brightens from 35% primary to the full route-set aspect.
+	   box-shadow only (zero layout); composes the card bevel + hover glow. */
+	.project-card :global(.card-surface) {
+		box-shadow:
+			inset 2px 0 0 color-mix(in srgb, var(--primary) 35%, transparent),
+			inset 0 1px 0 var(--edge-highlight);
+	}
+	.project-card:hover :global(.card-surface),
+	.project-card:active :global(.card-surface) {
+		box-shadow:
+			inset 2px 0 0 var(--primary),
+			inset 0 1px 0 var(--edge-highlight),
+			var(--shadow-section);
 	}
 
 	/* GO-w2t5 retier: large-surface image scale is MOTION-GATED — rest under

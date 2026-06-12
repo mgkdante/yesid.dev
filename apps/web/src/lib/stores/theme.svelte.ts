@@ -11,8 +11,8 @@ import { browser } from '$app/environment';
 export type Theme = 'dark' | 'light';
 
 const THEME_SURFACE: Record<Theme, string> = {
-	dark: '#141414', // --background (dark)
-	light: '#FAFAF8', // --background (light)
+	dark: '#171310', // --background (dark) — GO2-W5 warm bakelite black
+	light: '#F7F2E9', // --background (light) — GO2-W5 warm station paper
 };
 
 function readDocumentTheme(): Theme {

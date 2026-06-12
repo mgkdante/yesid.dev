@@ -12,7 +12,7 @@ describe('theme store', () => {
 		document.head.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.remove());
 		const meta = document.createElement('meta');
 		meta.setAttribute('name', 'theme-color');
-		meta.setAttribute('content', '#141414');
+		meta.setAttribute('content', '#171310');
 		document.head.appendChild(meta);
 		themeStore.set('dark');
 		localStorage.clear();
@@ -29,9 +29,9 @@ describe('theme store', () => {
 
 	it('set("light") updates the theme-color meta to the light surface', () => {
 		themeStore.set('light');
-		expect(metaThemeColor()).toBe('#FAFAF8');
+		expect(metaThemeColor()).toBe('#F7F2E9');
 		themeStore.set('dark');
-		expect(metaThemeColor()).toBe('#141414');
+		expect(metaThemeColor()).toBe('#171310');
 	});
 
 	it('dispatches a themechange CustomEvent', () => {
@@ -49,7 +49,7 @@ describe('theme store', () => {
 		document.documentElement.dataset.theme = 'light';
 		const cleanup = themeStore.init();
 		expect(themeStore.theme).toBe('light');
-		expect(metaThemeColor()).toBe('#FAFAF8');
+		expect(metaThemeColor()).toBe('#F7F2E9');
 		cleanup();
 	});
 });

@@ -73,8 +73,8 @@
 	});
 </script>
 
-<footer data-testid="footer" class="relative z-50 bg-[var(--background)]">
-	<!-- Gradient separator -->
+<footer data-testid="footer" class="relative z-50 bg-[var(--muted)]">
+	<!-- GO2-W5 platform edge: the footer's top line is real hazard tape -->
 	<div class="footer-gradient-sep" aria-hidden="true"></div>
 
 	<!-- Row 1: Main content -->
@@ -147,10 +147,17 @@
 </footer>
 
 <style>
+	/* GO2-W5: platform-edge hazard strip (sm tape geometry, theme-invariant
+	   yellow + warm black — matches the Separator hazard recipe). */
 	.footer-gradient-sep {
-		height: 1px;
-		background: linear-gradient(90deg, transparent, var(--primary) 20%, var(--primary) 80%, transparent);
-		opacity: var(--opacity-subtle);
+		height: 2px;
+		background: repeating-linear-gradient(
+			-45deg,
+			var(--hazard-a) 0px,
+			var(--hazard-a) 6px,
+			var(--hazard-b) 6px,
+			var(--hazard-b) 12px
+		);
 	}
 
 	.footer-status-border {

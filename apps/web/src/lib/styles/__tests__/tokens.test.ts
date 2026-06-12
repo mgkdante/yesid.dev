@@ -112,30 +112,45 @@ describe('Design System Tokens', () => {
     });
   });
 
-  describe('GO-day W2 Track 2 — AA palette + surfaces + color-scheme', () => {
+  describe('GO2-W5 INTERLOCKING — warm AA palette + surfaces + color-scheme', () => {
     const darkBlock = tokensCSS.match(/\[data-theme="dark"\], \.theme-dark \{([\s\S]*?)\n\}/)?.[1] ?? '';
     const lightBlock = tokensCSS.match(/\[data-theme="light"\], \.theme-light \{([\s\S]*?)\n\}/)?.[1] ?? '';
 
-    it('dark muted-foreground passes AA (#949494)', () => {
-      expect(darkBlock).toContain('--muted-foreground: #949494;');
+    it('dark neutrals are the warm bakelite set', () => {
+      expect(darkBlock).toContain('--background: #171310;');
+      expect(darkBlock).toContain('--card: #1F1915;');
+      expect(darkBlock).toContain('--terminal: #0D0A07;');
+      expect(darkBlock).toContain('--muted-foreground: #A09686;');
     });
 
-    it('dark border scale is not inverted (strong #4A4A4A > default #3A3A3A > subtle #2f2f2f)', () => {
-      expect(darkBlock).toContain('--border: #3A3A3A;');
-      expect(darkBlock).toContain('--border-subtle: #2f2f2f;');
-      expect(darkBlock).toContain('--border-strong: #4A4A4A;');
+    it('dark border scale is not inverted (strong > default > subtle)', () => {
+      expect(darkBlock).toContain('--border: #41382E;');
+      expect(darkBlock).toContain('--border-subtle: #322A22;');
+      expect(darkBlock).toContain('--border-strong: #52473A;');
     });
 
-    it('light interactive orange is AA-safe', () => {
-      expect(lightBlock).toContain('--primary: #A65600;');
-      expect(lightBlock).toContain('--primary-hover: #8F4A00;');
-      expect(lightBlock).toContain('--primary-rgb: 166 86 0;');
-      expect(lightBlock).toContain('--muted-foreground: #6F6F6F;');
+    it('dark input boundary conforms to 1.4.11 (was #3A3A3A = 1.8:1)', () => {
+      expect(darkBlock).toContain('--input: #75664F;');
+    });
+
+    it('light interactive palette is AA-safe on the warm paper', () => {
+      expect(lightBlock).toContain('--background: #F7F2E9;');
+      expect(lightBlock).toContain('--card: #FFFDF8;');
+      expect(lightBlock).toContain('--terminal: #F6EFE2;');
+      expect(lightBlock).toContain('--primary: #9D5200;');
+      expect(lightBlock).toContain('--primary-hover: #854500;');
+      expect(lightBlock).toContain('--primary-rgb: 157 82 0;');
+      expect(lightBlock).toContain('--muted-foreground: #6E6557;');
       expect(lightBlock).toContain('--destructive: #C62828;');
-      expect(lightBlock).toContain('--success: #15803D;');
-      expect(lightBlock).toContain('--accent-foreground: #111111;');
-      expect(lightBlock).toContain('--accent-text: #8A6400;');
-      expect(lightBlock).toContain('--input: #949083;');
+      expect(lightBlock).toContain('--success: #127336;');
+      expect(lightBlock).toContain('--accent-foreground: #1C1813;');
+      expect(lightBlock).toContain('--accent-text: #815D00;');
+      expect(lightBlock).toContain('--input: #94897A;');
+    });
+
+    it('destructive-foreground is mode-split (old single #FAFAF8 failed on #ff5f57)', () => {
+      expect(darkBlock).toContain('--destructive-foreground: #1B0F0D;');
+      expect(lightBlock).toContain('--destructive-foreground: #FAF6EE;');
     });
 
     it('dark re-declares brand tokens so .theme-dark pinning works inside light pages', () => {
@@ -144,14 +159,40 @@ describe('Design System Tokens', () => {
       expect(darkBlock).toContain('--accent-text: #FFB627;');
     });
 
+    it('theme-invariant signal-systems tokens live in :root (real tape/signs do not reskin)', () => {
+      for (const t of [
+        '--hazard-a: #FFB627;', '--hazard-b: #1C1814;',
+        '--signage-bg: #1C1814;', '--signage-text: #FFB627;',
+        '--signal-proceed: var(--success);', '--signal-caution: var(--accent);',
+        '--signal-stop: var(--destructive);',
+      ]) expect(tokensCSS).toContain(t);
+    });
+
+    it('per-mode signal & infrastructure families exist', () => {
+      expect(darkBlock).toContain('--terminal-chrome: #15100B;');
+      expect(lightBlock).toContain('--terminal-chrome: #EDE3CF;');
+      expect(darkBlock).toContain('--terminal-ink: #E9E2D2;');
+      expect(lightBlock).toContain('--terminal-ink: #3D362B;');
+      expect(darkBlock).toContain('--line-amber: #FFB627;');
+      expect(lightBlock).toContain('--line-amber: #B57F00;');
+      expect(darkBlock).toContain('--accent-surface: #332812;');
+      expect(lightBlock).toContain('--accent-surface: #FAEECC;');
+      expect(darkBlock).toContain('--signal-lunar: #DAD2C2;');
+      expect(lightBlock).toContain('--signal-lunar: #5E5749;');
+      expect(darkBlock).toContain('--grid-glow: color-mix(in srgb, var(--primary) 5%, transparent);');
+      expect(lightBlock).toContain('--grid-glow: transparent;');
+      expect(darkBlock).toContain('--edge-highlight: color-mix(in srgb, var(--foreground) 5%, transparent);');
+      expect(lightBlock).toContain('--edge-highlight: rgba(255, 255, 255, 0.6);');
+    });
+
     it('emits color-scheme declarations per theme', () => {
       expect(darkBlock).toContain('color-scheme: dark;');
       expect(lightBlock).toContain('color-scheme: light;');
     });
 
-    it('defines surface + brand-border aliases in :root', () => {
+    it('defines surface + brand-border aliases in :root (surface-1 flipped to card — GO2-W5)', () => {
       for (const t of [
-        '--surface-0: var(--terminal);', '--surface-1: var(--background);', '--surface-2: var(--card);',
+        '--surface-0: var(--terminal);', '--surface-1: var(--card);', '--surface-2: var(--card);',
         '--surface-3: var(--muted);', '--surface-4: var(--popover);', '--surface-hero: var(--manifesto);',
         '--border-brand: color-mix(in srgb, var(--primary) 25%, transparent);',
         '--border-brand-active: color-mix(in srgb, var(--primary) 60%, transparent);',
@@ -160,9 +201,27 @@ describe('Design System Tokens', () => {
       ]) expect(tokensCSS).toContain(t);
     });
 
-    it('app.css ships light shadow overrides + pinned-dark code blocks (hand region)', () => {
-      expect(appCSS).toContain('--shadow-nav: 0 4px 24px rgba(20, 20, 20, 0.1)');
+    it('shadow.card folds the platform-lamp catch-light into the token', () => {
+      expect(tokensCSS).toContain('--shadow-card: 0 0 16px color-mix(in srgb, var(--primary) 8%, transparent), 0 2px 8px rgba(10, 7, 4, 0.35), inset 0 1px 0 var(--edge-highlight);');
+    });
+
+    it('app.css ships warm light shadow overrides + pinned-dark code blocks (hand region)', () => {
+      expect(appCSS).toContain('--shadow-nav: 0 4px 24px rgba(28, 24, 19, 0.1)');
+      expect(appCSS).toContain('inset 0 1px 0 var(--edge-highlight)');
       expect(appCSS).toMatch(/\[data-theme="light"\] \.prose-dark pre/);
+      expect(appCSS).toContain('background: #0D0A07 !important;');
+    });
+
+    it('app.css grid recipe is the NX track schematic (block markers + fine grid + glow)', () => {
+      expect(appCSS).toContain('var(--grid-glow)');
+      expect(appCSS).toContain('var(--grid-block-marker) 0px, transparent 1px, transparent 400px');
+      expect(appCSS).toContain('var(--grid-line-major) 0px, transparent 1px, transparent 80px');
+      expect(appCSS).toContain('var(--grid-line-minor) 0px, transparent 1px, transparent 16px');
+    });
+
+    it('station labels speak the wayfinding voice (.label-station = accent-text)', () => {
+      const labelStation = appCSS.match(/\.label-station \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(labelStation).toContain('color: var(--accent-text);');
     });
   });
 });

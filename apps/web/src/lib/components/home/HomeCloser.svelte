@@ -250,7 +250,7 @@
 
 	/* ===== CTA ===== */
 	/* go2/w4: accent → accent-text (theme-aware AA). Dark is byte-identical
-	   (--accent-text is #FFB627 there); light gets the AA gold #8A6400 now
+	   (--accent-text is #FFB627 there); light gets the AA gold (--accent-text) now
 	   that the section follows the active theme. */
 	.closer-cta {
 		display: inline-flex;

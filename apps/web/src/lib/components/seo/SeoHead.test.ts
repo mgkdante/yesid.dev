@@ -96,7 +96,7 @@ describe('SeoHead — tag emission', () => {
 
 	it('emits theme-color and color-scheme meta', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'en' } });
-		expect(getMeta('name', 'theme-color')?.content).toBe('#141414');
+		expect(getMeta('name', 'theme-color')?.content).toBe('#171310');
 		expect(getMeta('name', 'color-scheme')?.content).toBe('dark light');
 	});
 

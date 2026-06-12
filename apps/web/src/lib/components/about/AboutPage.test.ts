@@ -21,9 +21,14 @@ describe('AboutPage', () => {
 	});
 
 	it('renders metro stop labels on cards', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByText('STOP 00 — IDENTITY')).toBeTruthy();
-		expect(screen.getByText('STOP 08 — SNAPSHOTS')).toBeTruthy();
+		// GO2-W5: StopLabel wraps the digits in a wayfinding span, so match the
+		// combined textContent of the stop-label nodes.
+		const { container } = render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
+		const labels = Array.from(container.querySelectorAll('[data-slot="stop-label"]')).map(
+			(el) => el.textContent,
+		);
+		expect(labels).toContain('STOP 00 — IDENTITY');
+		expect(labels).toContain('STOP 08 — SNAPSHOTS');
 	});
 
 	it('renders the identity section', () => {

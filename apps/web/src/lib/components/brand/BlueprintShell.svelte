@@ -81,6 +81,13 @@
 		z-index: var(--z-base);
 	}
 
+	/* GO2-W5: bump label mix 20% → 30% in light so the blueprint annotations
+	   survive the warm paper (aria-hidden ornament — decorative). */
+	:global([data-theme='light']) .ref-label,
+	:global(.theme-light) .ref-label {
+		color: color-mix(in srgb, var(--primary) 30%, transparent);
+	}
+
 	:global(.edge-detail) {
 		position: absolute;
 	}

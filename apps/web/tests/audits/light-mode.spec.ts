@@ -9,7 +9,7 @@
 // hardcoded below the collection level.
 import { test, expect, type Page } from '@playwright/test';
 
-const LIGHT_BG = 'rgb(250, 250, 248)'; // #FAFAF8
+const LIGHT_BG = 'rgb(247, 242, 233)'; // #F7F2E9 — GO2-W5 warm station paper
 
 const ROUTES = [
 	'/',
@@ -97,7 +97,7 @@ test.describe('light mode — per-page audit', () => {
 		const terminalBg = await page
 			.getByTestId('closer-board')
 			.evaluate((el) => getComputedStyle(el).backgroundColor);
-		expect(terminalBg).toBe('rgb(245, 245, 240)'); // --terminal light #F5F5F0
+		expect(terminalBg).toBe('rgb(246, 239, 226)'); // --terminal light #F6EFE2 — cream console
 	});
 
 	test('muted text resolves to the AA light value', async ({ page }) => {
@@ -110,7 +110,34 @@ test.describe('light mode — per-page audit', () => {
 			probe.remove();
 			return c;
 		});
-		expect(color).toBe('rgb(111, 111, 111)'); // #6F6F6F
+		expect(color).toBe('rgb(110, 101, 87)'); // #6E6557 — GO2-W5 warm muted-foreground
+	});
+
+	test('station labels speak the wayfinding voice (accent-text, not primary)', async ({ page }) => {
+		// GO2-W5: .label-station is signage — amber ink in light (#815D00).
+		await page.goto('/', { waitUntil: 'networkidle' });
+		const color = await page.evaluate(() => {
+			const probe = document.createElement('span');
+			probe.className = 'label-station';
+			document.body.appendChild(probe);
+			const c = getComputedStyle(probe).color;
+			probe.remove();
+			return c;
+		});
+		expect(color).toBe('rgb(129, 93, 0)'); // #815D00 --accent-text (light)
+	});
+
+	test('hazard separators render real black+yellow tape in light mode', async ({ page }) => {
+		// GO2-W5 non-negotiable: light-mode hazard strips stay BLACK+YELLOW
+		// (theme-invariant tokens), never orange+white. Probe the strip under
+		// the closer board's titlebar (TerminalChrome composes Separator).
+		await page.goto('/', { waitUntil: 'networkidle' });
+		const bgImage = await page.evaluate(() => {
+			const el = document.querySelector('[data-testid="closer-board"] > div:nth-child(2)');
+			return el ? getComputedStyle(el).backgroundImage : '';
+		});
+		expect(bgImage).toContain('rgb(255, 182, 39)'); // #FFB627 hazard-a
+		expect(bgImage).toContain('rgb(28, 24, 20)'); // #1C1814 hazard-b
 	});
 });
 
@@ -127,7 +154,7 @@ test.describe('theme toggle behaviour', () => {
 
 		await page.getByTestId('theme-toggle').first().click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-		await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#FAFAF8');
+		await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#F7F2E9');
 		expect(await page.evaluate(() => localStorage.getItem('theme'))).toBe('light');
 
 		await page.getByRole('link', { name: 'Projects' }).first().click();

@@ -24,16 +24,19 @@
 </script>
 
 <div data-slot="metro-station" class={cn('flex flex-col items-center', className)} {...rest}>
-	<!-- Station badge with sonar pulse -->
+	<!-- Station badge with sonar pulse — GO2-W5: backlit STM station roundel
+	     (theme-invariant signage chip; real signs don't reskin). -->
 	<div class="station-badge-wrapper">
 		<div
 			data-slot="metro-station-pulse"
 			class="station-pulse"
 			style="animation-delay: {pulseDelay}s;"
 		></div>
-		<Badge variant="number" aria-hidden="true">{String(index).padStart(2, '0')}</Badge>
+		<Badge variant="number" style="background-color: var(--signage-bg); color: var(--signage-text);" aria-hidden="true">{String(index).padStart(2, '0')}</Badge>
 	</div>
-	<!-- Vertical metro line connecting stations -->
+	<!-- Vertical metro line connecting stations — GO2-W5: real track. The
+	     yellow line survives daylight via --line-amber; darker dashes overlay
+	     as rail ties (SVG attrs only, zero layout change). -->
 	{#if showLine}
 		<svg
 			class="metro-line-svg flex-1"
@@ -45,8 +48,15 @@
 		>
 			<line
 				x1="1" y1="0" x2="1" y2="100"
-				stroke="var(--accent, var(--primary))"
+				stroke="var(--line-amber, var(--primary))"
 				stroke-width="2"
+			/>
+			<line
+				x1="1" y1="0" x2="1" y2="100"
+				stroke="var(--border-strong)"
+				stroke-width="2"
+				stroke-dasharray="1 4"
+				data-metro-line-ties
 			/>
 		</svg>
 	{/if}
