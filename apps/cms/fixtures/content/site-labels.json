@@ -7,6 +7,7 @@
 	"a11y_closer_graffiti": "THE END graffiti",
 	"ui_marker_service": "{num} / SERVICE",
 	"ui_marker_featured": "{num} / FEATURED",
+	"ui_back_to_projects": "← All Projects",
 	"ui_error_status_note": "// requested path not in service",
 	"ui_blog_edition_template": "VOL. 01 // ISS. {issue}",
 	"ui_copyright_template": "© {year} yesid",
