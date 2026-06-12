@@ -9,9 +9,9 @@
     "display_options": null,
     "field": "statement",
     "group": null,
-    "hidden": false,
+    "hidden": true,
     "interface": "input-code",
-    "note": "Per-locale manifesto statement (ManifestoContent.statement). JSON shape: { line1: string, lineHuge: string, line3Part1: string, line3Highlight: string, line3Part2: string }.",
+    "note": "(ARCHIVED go2-t1b3 — replaced by flat columns; data retained, archive-not-delete. Do not edit: no longer read by the export pipeline.)",
     "options": {
       "language": "json"
     },

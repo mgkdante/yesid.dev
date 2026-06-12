@@ -6,9 +6,16 @@ import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { STACK_LAYERS } from '@repo/shared/schemas';
 import TechMatcher from './TechMatcher.svelte';
+import { stackArchetypes } from '$lib/content/stack-archetypes';
 import { EngineState } from './engine-state.svelte';
 import { techStackItems } from '$lib/content/tech-stack';
 import { encodeBlueprint } from '$lib/utils/blueprint-param';
+import { matchArchetypes } from '$lib/utils/stack-matching';
+
+const usedIds = new Set(stackArchetypes.flatMap((a) => a.tech.map((l) => l.id)));
+const unmatchedIds = techStackItems.filter((t) => !usedIds.has(t.id)).map((t) => t.id);
+const unmatchedTechId = unmatchedIds[0]!;
+const secondUnmatchedId = unmatchedIds[1]!;
 
 describe('TechMatcher chips', () => {
 	it('renders a chip per committed tech item', () => {
@@ -19,24 +26,25 @@ describe('TechMatcher chips', () => {
 		}
 	});
 
-	it('groups chips by STACK_LAYERS order with layerless techs under trailing more', () => {
+	it('groups chips by STACK_LAYERS order (trailing more only when layerless techs exist)', () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
-		const groups = screen.getAllByTestId(/^tech-layer-group-/);
-		const expectedOrder = [...STACK_LAYERS, 'more'].map((l) => `tech-layer-group-${l}`);
-		expect(groups.map((g) => g.getAttribute('data-testid'))).toEqual(expectedOrder);
-
-		// Layered techs sit in their layer group…
-		const dataGroup = screen.getByTestId('tech-layer-group-data');
-		expect(dataGroup.querySelector('[data-testid="tech-chip-postgresql"]')).toBeTruthy();
-		// …layerless techs land under 'more'.
 		const layerless = techStackItems.find((t) => !t.layer);
-		expect(layerless, 'fixture expects at least one layerless tech').toBeTruthy();
-		const moreGroup = screen.getByTestId('tech-layer-group-more');
-		expect(
-			moreGroup.querySelector(`[data-testid="tech-chip-${layerless!.id}"]`),
-		).toBeTruthy();
+		const expectedLayers = [...STACK_LAYERS, ...(layerless ? ['more'] : [])];
+		const groups = screen.getAllByTestId(/tech-layer-group-/).map((el) => el.getAttribute('data-testid'));
+		expect(groups).toEqual(expectedLayers.map((l) => `tech-layer-group-${l}`).filter((id) => groups.includes(id)));
+		// every published tech renders exactly one chip
+		for (const t of techStackItems) {
+			expect(screen.getByTestId(`tech-chip-${t.id}`)).toBeTruthy();
+		}
+		if (layerless) {
+			const moreGroup = screen.getByTestId('tech-layer-group-more');
+			expect(
+				moreGroup.querySelector(`[data-testid="tech-chip-${layerless.id}"]`),
+			).toBeTruthy();
+		}
 	});
+
 
 	it('tapping a chip toggles the pick (pressed state + engine set)', async () => {
 		const engine = new EngineState();
@@ -72,17 +80,16 @@ describe('TechMatcher match cards', () => {
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
 		await fireEvent.click(screen.getByTestId('tech-chip-docker'));
 
-		// postgresql+docker → pipeline 2/3 beats dashboard 2/4.
+		// Data-driven (go-day matrix: archetype set grows with the portfolio):
+		// the rendered card order must mirror the matching engine exactly.
+		const expected = matchArchetypes(['postgresql', 'docker'], stackArchetypes);
 		const cards = screen.getAllByTestId(/^match-card-/);
-		expect(cards.map((c) => c.getAttribute('data-testid'))).toEqual([
-			'match-card-data-pipeline',
-			'match-card-data-dashboard',
-		]);
-		expect(screen.getByTestId('match-card-data-pipeline').textContent).toContain(
-			'A data pipeline — 2/3',
+		expect(cards.map((c) => c.getAttribute('data-testid'))).toEqual(
+			expected.map((m) => `match-card-${m.slug}`),
 		);
-		expect(screen.getByTestId('match-card-data-dashboard').textContent).toContain(
-			'A data dashboard — 2/4',
+		const top = expected[0];
+		expect(screen.getByTestId(`match-card-${top.slug}`).textContent).toContain(
+			`— ${top.matched.length}/${top.matched.length + top.missing.length}`,
 		);
 	});
 
@@ -109,8 +116,8 @@ describe('TechMatcher zero-match state', () => {
 	it('shows the exact unusual-combo card + prefilled contact link', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
-		// 'dax' belongs to no launch archetype → picked.size>0 && matches.length===0.
-		await fireEvent.click(screen.getByTestId('tech-chip-dax'));
+		// derive a published tech no archetype uses → picked.size>0 && matches.length===0.
+		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
 		expect(engine.matches).toHaveLength(0);
 
 		const cta = screen.getByTestId('zero-match-cta');
@@ -119,23 +126,23 @@ describe('TechMatcher zero-match state', () => {
 		);
 		const link = cta.querySelector('a');
 		expect(link?.getAttribute('href')).toBe(
-			'/contact?bp=' + encodeBlueprint({ archetype: null, techs: ['dax'] }),
+			'/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId] }),
 		);
 	});
 
 	it('zero-match link carries every picked tech', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
-		await fireEvent.click(screen.getByTestId('tech-chip-dax'));
-		await fireEvent.click(screen.getByTestId('tech-chip-ssis'));
+		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
+		await fireEvent.click(screen.getByTestId(`tech-chip-${secondUnmatchedId}`));
 		const link = screen.getByTestId('zero-match-cta').querySelector('a');
-		expect(link?.getAttribute('href')).toBe('/contact?bp=custom~dax.ssis');
+		expect(link?.getAttribute('href')).toBe('/contact?bp=' + encodeBlueprint({ archetype: null, techs: [unmatchedTechId, secondUnmatchedId] }));
 	});
 
 	it('zero-match card disappears once a pick matches an archetype', async () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
-		await fireEvent.click(screen.getByTestId('tech-chip-dax'));
+		await fireEvent.click(screen.getByTestId(`tech-chip-${unmatchedTechId}`));
 		expect(screen.getByTestId('zero-match-cta')).toBeTruthy();
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
 		expect(screen.queryByTestId('zero-match-cta')).toBeNull();

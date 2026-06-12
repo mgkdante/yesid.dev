@@ -1,0 +1,30 @@
+{
+  "collection": "site_labels",
+  "meta": {
+    "accountability": "all",
+    "archive_app_filter": true,
+    "archive_field": null,
+    "archive_value": null,
+    "autosave_revision_interval": null,
+    "collapse": "open",
+    "collection": "site_labels",
+    "color": null,
+    "display_template": null,
+    "group": "site_config",
+    "hidden": false,
+    "icon": "sell",
+    "item_duplication_fields": null,
+    "note": "Global UI microcopy singleton (go2-t1c): aria labels, card markers, edge titles, email templates. Grouped by field-name prefix: a11y_ / ui_ / pages_ / email_.",
+    "preview_url": null,
+    "singleton": true,
+    "sort": null,
+    "sort_field": null,
+    "status": "active",
+    "translations": null,
+    "unarchive_value": null,
+    "versioning": true
+  },
+  "schema": {
+    "name": "site_labels"
+  }
+}

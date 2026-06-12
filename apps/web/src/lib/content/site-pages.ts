@@ -14,7 +14,7 @@ export const sitePages: readonly SitePage[] = [
 	{
 		path: '/',
 		title: { en: 'Home', es: 'Inicio', fr: 'Accueil' },
-		type: 'system',
+		type: 'freeform',
 	},
 	{
 		path: '/services',
@@ -34,16 +34,20 @@ export const sitePages: readonly SitePage[] = [
 	{
 		path: '/blog/personal',
 		title: {
-			en: 'Personal Blog',
-			es: 'Blog personal',
-			fr: 'Blog personnel',
+			en: 'Personal Corner',
+			es: 'Rincón personal',
+			fr: 'Coin perso',
 		},
 		type: 'listing',
 	},
 	{
 		path: '/tech-stack',
-		title: { en: 'Tech Stack', es: 'Tech Stack', fr: 'Tech Stack' },
-		type: 'freeform',
+		title: {
+			en: 'Tech Stack',
+			es: 'Stack tecnológico',
+			fr: 'Stack technique',
+		},
+		type: 'listing',
 	},
 	{
 		path: '/about',
