@@ -167,7 +167,36 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 			cataloged: { en: '→ {count} technologies cataloged' },
 			status: { en: 'interactive map online.' },
 		});
+		// go2/w5: stack_explainer column absent → the optional key is OMITTED
+		// (a bare { en: '' } would fail LocalizedStringSchema's non-blank en).
+		expect(ts.hero.stackExplainer).toBeUndefined();
 		expect(() => TechStackPageContentSchema.parse(ts)).not.toThrow();
+
+		// go2/w5 present case: a populated stack_explainer column recomposes as
+		// hero.stackExplainer (per-locale) and still parses.
+		const tsWithExplainer = toTechStackPageContent({
+			id: 1,
+			translations: [
+				{
+					languages_code: 'en',
+					meta_title: 'Tech | yesid.', meta_description: 'd',
+					hero_overline: 'o', hero_title_line1: 'TECH', hero_title_line2: 'STACK',
+					hero_terminal_aria: 'Hero terminal', hero_stat_technologies: '{n} technologies',
+					terminal_cmd: '~ yesid --stack --verbose', terminal_loading: '→ loading {count} nodes...',
+					terminal_success: '✓ successful', terminal_cataloged: '→ {count} technologies cataloged',
+					terminal_status: 'interactive map online.',
+					stack_explainer: 'A "stack" is just the parts list.',
+					action_get_in_touch: 'Get in touch', action_view_services: 'View services',
+					cta_heading_line1: 'h1', cta_heading_line2: 'h2', cta_sub: 's', cta_availability: 'a',
+				},
+				{ languages_code: 'fr', stack_explainer: 'Un « stack », c\'est la liste des pièces.' },
+			],
+		});
+		expect(tsWithExplainer.hero.stackExplainer).toEqual({
+			en: 'A "stack" is just the parts list.',
+			fr: 'Un « stack », c\'est la liste des pièces.',
+		});
+		expect(() => TechStackPageContentSchema.parse(tsWithExplainer)).not.toThrow();
 
 		const ai = toAboutIntroContent({
 			id: 1, stack_items: ['Bun'],
