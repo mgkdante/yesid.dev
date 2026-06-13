@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
+	forgetHeroIntroCompleted,
 	heroIntroDayKey,
 	isHeroIntroCompletedToday,
 	markHeroIntroCompleted,
@@ -40,6 +41,15 @@ describe('motion/utils/heroIntroReplay — storage round-trip', () => {
 	it('yesterday\'s completion does NOT skip today (intro replays each day)', () => {
 		markHeroIntroCompleted(new Date(2026, 5, 11, 22, 0));
 		expect(isHeroIntroCompletedToday(new Date(2026, 5, 12, 8, 0))).toBe(false);
+	});
+
+	it('forget() makes the intro "still to do" again (replay-dot click)', () => {
+		const now = new Date(2026, 5, 12, 9, 0);
+		markHeroIntroCompleted(now);
+		expect(isHeroIntroCompletedToday(now)).toBe(true);
+		forgetHeroIntroCompleted();
+		expect(isHeroIntroCompletedToday(now)).toBe(false);
+		expect(window.localStorage.getItem(HERO_INTRO_STORAGE_KEY)).toBeNull();
 	});
 
 	it('a corrupt stored value reads as not completed', () => {

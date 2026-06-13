@@ -207,6 +207,12 @@ test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-colla
 	// returns, and we ride the rewind back to the very top.
 	const collapsedHeight = await page.evaluate(() => document.documentElement.scrollHeight);
 	await dot.click();
+	// Operator lock: the click FORGETS the day-key immediately — a refresh
+	// from here on lands on the animation again ("still to do"). Completing
+	// the replay scroll-through below re-persists it.
+	await expect
+		.poll(() => page.evaluate(() => window.localStorage.getItem('yesid:hero-intro-day')))
+		.toBeNull();
 	await expect(banner).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
 	await expect
 		.poll(() => page.evaluate(() => document.documentElement.scrollHeight), { timeout: 15_000 })
