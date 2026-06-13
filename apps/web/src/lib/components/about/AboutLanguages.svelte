@@ -11,13 +11,11 @@
 		<div class="relative flex h-full flex-col">
 			<StopLabel {stop} {label} />
 
-			<div class="mt-3 flex flex-1 flex-col justify-center gap-2">
-				{#each languages as language, i}
-					<div class="language-row">
-						<span class="signal-dot" aria-hidden="true"></span>
-						<span>{language}</span>
-						<span class="route-line" aria-hidden="true"></span>
-						<span class="text-[var(--muted-foreground)]">{String(i + 1).padStart(2, '0')}</span>
+			<div class="lang-line mt-4 flex flex-1 flex-col justify-center">
+				{#each languages as language}
+					<div class="lang-stop">
+						<span class="lang-node" aria-hidden="true"></span>
+						<span class="lang-name">{language}</span>
 					</div>
 				{/each}
 			</div>
@@ -26,31 +24,60 @@
 </div>
 
 <style>
-	.language-row {
-		display: grid;
-		grid-template-columns: auto auto minmax(1.5rem, 1fr) auto;
-		align-items: center;
-		gap: 0.6rem;
-		border: 1px solid var(--border);
-		padding: 0.45rem 0.55rem;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		color: var(--secondary-foreground);
-		background: color-mix(in srgb, var(--card) 88%, var(--primary) 12%);
+	/* No filled rows (operator). The three languages are STATIONS on one
+	   orange transit line — the brand motif carried over from Education. The
+	   vertical line threads the nodes; names are big and legible. */
+	.lang-line {
+		position: relative;
+		gap: 1.4rem;
+		padding-left: 0.35rem;
 	}
 
-	.signal-dot {
-		width: 0.45rem;
-		height: 0.45rem;
+	/* The line itself — runs through the node centres (node is 0.85rem wide,
+	   so its centre sits at padding-left + 0.425rem). */
+	.lang-line::before {
+		content: '';
+		position: absolute;
+		left: calc(0.35rem + 0.42rem);
+		top: 0.6rem;
+		bottom: 0.6rem;
+		width: 2px;
+		transform: translateX(-50%);
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--primary) 70%, transparent),
+			color-mix(in srgb, var(--primary) 35%, transparent)
+		);
+	}
+
+	.lang-stop {
+		position: relative;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: center;
+		gap: 0.85rem;
+	}
+
+	/* Station node — orange dot with a soft halo, sitting on the line. */
+	.lang-node {
+		width: 0.85rem;
+		height: 0.85rem;
 		border-radius: 999px;
 		background: var(--primary);
-		box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 14%, transparent);
+		transition: box-shadow var(--duration-normal) var(--ease-default);
 	}
 
-	.route-line {
-		height: 1px;
-		background: linear-gradient(90deg, var(--primary), transparent);
+	.group:hover .lang-node {
+		box-shadow: 0 0 0 5px color-mix(in srgb, var(--primary) 22%, transparent);
+	}
+
+	/* Legible native names — bigger heading type, foreground ink. */
+	.lang-name {
+		font-family: var(--font-heading);
+		font-size: var(--text-body);
+		font-weight: 700;
+		letter-spacing: -0.005em;
+		color: var(--foreground);
 	}
 </style>
