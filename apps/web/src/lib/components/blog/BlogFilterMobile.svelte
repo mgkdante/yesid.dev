@@ -8,6 +8,7 @@
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { localizeHref } from '$lib/utils/locale-routing';
 
 	const locale = getLocale();
 	import { blogListingContent } from '$lib/content/blog';
@@ -148,7 +149,7 @@
 					{#if cornerLink}
 						<div class="mt-3 divider-dashed pt-2">
 							<a
-								href={cornerLink.href}
+								href={localizeHref(cornerLink.href, locale)}
 								class="text-xs font-semibold no-underline"
 								style="color: {cornerLink.href.includes('personal') ? 'var(--accent-text)' : 'var(--primary)'};"
 							>
