@@ -215,14 +215,16 @@
 		100% {
 			transform: scale(1);
 		}
+		/* Operator trim: the glow + rings carry the highlight — the beat
+		   itself steps back a notch (was 2.1 / 1.65). */
 		14% {
-			transform: scale(2.1);
+			transform: scale(1.8);
 		}
 		28% {
 			transform: scale(1);
 		}
 		42% {
-			transform: scale(1.65);
+			transform: scale(1.5);
 		}
 	}
 
