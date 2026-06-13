@@ -306,18 +306,14 @@ describe('toBlockAboutContentRow', () => {
 		expect(row.editor_label).toBe('About Content');
 	});
 
-	it('tech_stack is an array on the parent row (non-translatable)', () => {
-		expect(Array.isArray(row.tech_stack)).toBe(true);
-		expect((row.tech_stack as unknown[]).length).toBeGreaterThan(0);
+	it('languages is an array on the parent row', () => {
+		expect(Array.isArray(row.languages)).toBe(true);
+		expect(row.languages).toEqual(['Español', 'English', 'Français']);
 	});
 
-	it('client_count is a number on the parent row', () => {
-		expect(typeof row.client_count).toBe('number');
-		expect(row.client_count).toBe(10);
-	});
-
-	it('client_logos is an array on the parent row', () => {
-		expect(Array.isArray(row.client_logos)).toBe(true);
+	it('education is an array on the parent row', () => {
+		expect(Array.isArray(row.education)).toBe(true);
+		expect((row.education as unknown[]).length).toBe(2);
 	});
 });
 
