@@ -20,7 +20,7 @@
 		ctaContactLabel,
 		heroData,
 		introCompleted = false,
-		ringsArmed = false,
+		beaconSettled = false,
 		replayAriaLabel = 'Replay intro',
 		onReplay,
 	}: {
@@ -33,10 +33,15 @@
 		heroData: HeroData;
 		/** go2/w5: arms the hero-dot replay button once the intro completed. */
 		introCompleted?: boolean;
-		/** Beacon rings render only in SETTLED completed geometry (armed AND
-		    collapsed) — during a replay the GSAP zoom scales this same svg to
-		    ~213×, and rings living inside it would blow up with it. */
-		ringsArmed?: boolean;
+		/** The FULL beacon dress (pulse + glow + rings) renders only in
+		    SETTLED completed geometry (armed AND collapsed). The moment a
+		    replay starts, GSAP owns this same svg and scrubs it through
+		    ~213× zooms — an infinite CSS transform animation overrides
+		    GSAP's inline transform every frame, and a drop-shadow filter
+		    rasterizes a gigantic surface at zoom scale. Both read as "the
+		    animation glitches on clicking the dot" (operator-reported), so
+		    while any animation owns the dot it must be a BARE circle. */
+		beaconSettled?: boolean;
 		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
 		replayAriaLabel?: string;
 		/** Fired when the armed dot is clicked — HeroBanner replays the intro. */
@@ -65,7 +70,9 @@
 		>
 			<span data-hero-stagger="1" aria-hidden="true">DON'T BREAK</span><button
 				type="button"
-				class="hero-dot-btn {introCompleted ? 'hero-dot-armed' : ''}"
+				class="hero-dot-btn {introCompleted ? 'hero-dot-armed' : ''} {beaconSettled
+					? 'hero-dot-settled'
+					: ''}"
 				data-testid="hero-dot-replay"
 				disabled={!introCompleted}
 				aria-hidden={introCompleted ? undefined : 'true'}
@@ -76,7 +83,7 @@
 					data-testid="hero-dot"
 					viewBox="0 0 10 10"
 					aria-hidden="true"
-				><circle cx="5" cy="5" r="5" fill="currentColor" />{#if ringsArmed}<circle
+				><circle cx="5" cy="5" r="5" fill="currentColor" />{#if beaconSettled}<circle
 							class="hero-dot-ring"
 							cx="5"
 							cy="5"
@@ -197,14 +204,15 @@
 	   PLAYED, which reduced motion never does — and the reduce tier below
 	   still swaps scale for the round-1 opacity pulse as belt-and-suspenders
 	   (the affordance cue is assistive, so it keeps running). */
-	/* go2 beacon pass: SUPER-obvious tier — the heartbeat doubles its punch
-	   and the dot wears a sodium glow; the rings below radiate the metro
-	   "you are here" ping. The glow is em-scaled so desktop and mobile read
-	   identically loud. */
-	.hero-dot-armed .hero-dot {
+	/* go2 beacon pass: SUPER-obvious tier — heartbeat punch + sodium glow +
+	   radiating rings, em-scaled so desktop and mobile read identically
+	   loud. Scoped to .hero-dot-settled (NOT merely armed): armed stays true
+	   through a replay, and a pulsing/filtered dot under GSAP's zoom is the
+	   click-the-dot glitch. Settled drops the instant a replay starts. */
+	.hero-dot-settled .hero-dot {
 		animation: hero-dot-pulse 1.5s ease-in-out infinite;
 		transform-origin: center;
-		will-change: transform, filter;
+		will-change: transform;
 		filter: drop-shadow(0 0 0.09em color-mix(in srgb, var(--primary) 95%, transparent))
 			drop-shadow(0 0 0.28em color-mix(in srgb, var(--primary) 55%, transparent));
 	}
@@ -258,7 +266,7 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.hero-dot-armed .hero-dot {
+		.hero-dot-settled .hero-dot {
 			animation: hero-dot-pulse-reduce 1.8s ease-in-out infinite;
 		}
 		/* Reduce tier: no expansion — one static halo breathing in opacity
