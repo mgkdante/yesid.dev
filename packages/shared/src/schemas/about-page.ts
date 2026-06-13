@@ -111,7 +111,6 @@ export const AboutCtaSchema = z.object({
 	lines: z.array(AboutCtaLineSchema).readonly(),
 	buttonLabel: LocalizedStringSchema,
 	buttonHref: z.string(),
-	availability: LocalizedStringSchema.optional(),
 	socials: z.array(AboutSocialLinkSchema).readonly(),
 }) satisfies z.ZodType<AboutCta>;
 

@@ -202,10 +202,6 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.cta.buttonLabel.en.length).toBeGreaterThan(0);
 		});
 
-		it('no longer advertises a booking window (availability killed)', () => {
-			expect(aboutPageContent.cta.availability).toBeUndefined();
-		});
-
 		it('has at least 2 social links', () => {
 			expect(aboutPageContent.cta.socials.length).toBeGreaterThanOrEqual(2);
 			for (const s of aboutPageContent.cta.socials) {

@@ -586,7 +586,7 @@ describe('LocalizedString guard + translation debt', () => {
 // ONE siteLabels.ui.metroCaption ('STM métro + REM' — names the hero metro
 // art) — net +2 with a11y.replayIntro (hero dot replay button aria)
 // → NO_FR 435, TOTAL 517.
-const LOCKED = { TOTAL: 531, WITH_FR: 82, NO_FR: 449, ES_WITHOUT_FR: 0 } as const; // about-real-person (en): +education + polaroids 3→7 − testimonials 3→1; then availability killed on about + tech-stack cta (−2 en-only). About FR lands in the FR pass.
+const LOCKED = { TOTAL: 531, WITH_FR: 427, NO_FR: 104, ES_WITHOUT_FR: 0 } as const; // FR superman pass: 446 CMS fields translated to Québécois → +345 strings gained fr (WITH_FR 82→427, NO_FR 449→104). Remaining no-fr = blog (mono-language) + a few labels.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
