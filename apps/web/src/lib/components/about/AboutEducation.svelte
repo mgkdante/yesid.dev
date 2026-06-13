@@ -20,23 +20,24 @@
 		<div class="relative flex h-full flex-col">
 			<StopLabel {stop} {label} />
 
-			<div class="mt-3 flex flex-1 flex-col justify-center gap-3">
+			<div class="edu-line mt-4 flex flex-1 flex-col justify-center">
 				{#each education as item}
 					{@const school = resolveLocale(item.school, locale)}
 					{@const program = resolveLocale(item.program, locale)}
-					<div class="education-row">
-						<div class="icon-shell">
+					<div class="edu-stop">
+						<div class="edu-mark">
 							<!-- Real school marks, pixel-traced to vector (Champlain
 							     Cougars navy paw / Bishop's purple BU monogram). Brand
 							     colours are baked into the artwork; the white outline
-							     keeps each mark legible in both themes. -->
+							     keeps each mark legible in both themes. The orange ring
+							     is the wayfinding chrome — the station the school sits on. -->
 							<img
 								src={item.icon === 'champlain'
 									? '/images/about/edu-champlain.svg'
 									: '/images/about/edu-bishops.svg'}
 								alt=""
-								width="32"
-								height="32"
+								width="40"
+								height="40"
 								loading="lazy"
 							/>
 						</div>
@@ -52,42 +53,62 @@
 </div>
 
 <style>
-	.education-row {
+	/* No filled backgrounds (operator). Each school is a STOP on a vertical
+	   metro line — the orange line is the brand chrome, the marks keep their
+	   school colours. Airy, legible, cute. */
+	.edu-line {
+		position: relative;
+		gap: 1.1rem;
+		padding-left: 0.35rem;
+	}
+
+	.edu-stop {
 		display: grid;
 		grid-template-columns: auto minmax(0, 1fr);
 		align-items: center;
-		gap: 0.75rem;
-		border-left: 2px solid color-mix(in srgb, var(--primary) 65%, transparent);
-		padding: 0.55rem 0.5rem 0.55rem 0.7rem;
-		background: color-mix(in srgb, var(--card) 86%, var(--accent) 14%);
+		gap: 0.9rem;
 	}
 
-	.icon-shell {
+	/* The mark sits in a clean orange wayfinding ring — transparent centre,
+	   no fill — so the navy paw / purple monogram pop as the station glyph. */
+	.edu-mark {
 		display: grid;
+		place-items: center;
+		width: 3rem;
+		height: 3rem;
+		flex: 0 0 auto;
+		border-radius: 999px;
+		border: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 8%, transparent);
+		transition: border-color var(--duration-normal) var(--ease-default);
+	}
+
+	.group:hover .edu-mark {
+		border-color: var(--primary);
+	}
+
+	.edu-mark img {
 		width: 2.25rem;
 		height: 2.25rem;
-		place-items: center;
-	}
-
-	.icon-shell img {
-		width: 2rem;
-		height: 2rem;
 		object-fit: contain;
 	}
 
+	/* Legible: school name steps up to text-small heading weight, program to
+	   a comfortable readable line. */
 	.school {
 		overflow-wrap: anywhere;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption);
-		font-weight: 700;
-		letter-spacing: 0.04em;
+		font-family: var(--font-heading);
+		font-size: var(--text-small);
+		font-weight: 800;
+		letter-spacing: -0.01em;
+		line-height: 1.2;
 		color: var(--foreground);
 	}
 
 	.program {
-		margin-top: 0.15rem;
-		font-size: var(--text-caption);
-		line-height: 1.35;
+		margin-top: 0.25rem;
+		font-size: var(--text-small);
+		line-height: 1.45;
 		color: var(--secondary-foreground);
 	}
 </style>
