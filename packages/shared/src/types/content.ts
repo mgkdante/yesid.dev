@@ -301,26 +301,10 @@ export interface AboutInterest {
 	image: string; // path to background image (static/images/about/interests/)
 }
 
-// About page EDUCATION list — repurposes the former `stack` stop.
-// school/program are localized; icon selects the brand SVG mark
-// (static/images/about/edu-{champlain,bishops}.svg).
 export interface AboutEducationItem {
 	school: LocalizedString;
 	program: LocalizedString;
 	icon: 'champlain' | 'bishops';
-}
-
-// Central tech stack source of truth. Categories relate to services.
-// When cloud layer arrives (Slice 14), this cascades to services/projects.
-export type TechCategory = 'databases' | 'languages' | 'tools' | 'frameworks';
-
-// Legacy tech stack item — used by About page bento dashboard only.
-// Slice 18g expanded TechStackItem supersedes this for /tech-stack
-// (data-only ship; Block Editor body fields land here; layer/domain graph removed).
-export interface AboutTechItem {
-	name: string;
-	category: TechCategory;
-	relatedServices: readonly string[];
 }
 
 // --- Tech Stack Page types (Slice 10) ---
@@ -365,13 +349,6 @@ export interface TechStackItem {
 // TechRelation and StackScenario dropped in slice-18g (decisions Q1+Q2);
 // their consumers (lib/components/stack/*.svelte) are gone as of slice-28.3.
 
-// A client logo for the trust strip.
-export interface AboutClientLogo {
-	name: string;
-	src: string;
-	url?: string;
-}
-
 // Weather + location widget. The weather reveals the location.
 // Wordplay header leads the visitor to discover where you're based.
 export interface AboutWeatherConfig {
@@ -407,8 +384,6 @@ export interface AboutStopLabels {
 /** Misc chrome labels used inside about-family components (arias + counter copy).
  *  Added in Task 17b-7g. Template placeholders are noted per field. */
 export interface AboutLabels {
-	/** MetricDisplay label under the client counter on AboutLogos. */
-	clientsServed: LocalizedString;
 	polaroidPrevAria: LocalizedString;
 	polaroidNextAria: LocalizedString;
 	testimonialsCarouselAria: LocalizedString;
@@ -432,13 +407,10 @@ export interface AboutContent {
 	metrics: readonly AboutMetric[];
 	methodology: readonly AboutMethodStep[];
 	testimonials: readonly AboutTestimonial[];
-	languages: readonly string[]; // spoken languages, locale-invariant (LANGUAGES stop)
-	education: readonly AboutEducationItem[]; // schools + programs (EDUCATION stop)
-	techStack: readonly AboutTechItem[];
+	languages: readonly string[];
+	education: readonly AboutEducationItem[];
 	interests: readonly AboutInterest[];
 	weather: AboutWeatherConfig;
-	clientLogos: readonly AboutClientLogo[];
-	clientCount: number; // "10+" displayed in counter
 	cta: AboutCta;
 	stopLabels: AboutStopLabels;
 	labels: AboutLabels;

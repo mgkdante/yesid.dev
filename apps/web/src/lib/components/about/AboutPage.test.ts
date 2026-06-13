@@ -75,7 +75,10 @@ describe('AboutPage', () => {
 
 	it('renders the education section', () => {
 		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-education')).toBeTruthy();
+		const education = screen.getByTestId('about-education');
+		expect(education).toBeTruthy();
+		expect(education.textContent).toContain('Champlain Regional College');
+		expect(education.textContent).toContain("Bishop's University");
 	});
 
 	it('renders the weather section', () => {
@@ -90,7 +93,33 @@ describe('AboutPage', () => {
 
 	it('renders the languages section', () => {
 		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-languages')).toBeTruthy();
+		const languages = screen.getByTestId('about-languages');
+		expect(languages).toBeTruthy();
+		expect(languages.textContent).toContain('Español');
+		expect(languages.textContent).toContain('English');
+		expect(languages.textContent).toContain('Français');
+	});
+
+	it('renders exactly one playful quote with no carousel controls', () => {
+		const { container } = render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
+		const testimonials = screen.getByTestId('about-testimonials');
+		expect(testimonials.textContent).toContain(
+			"You have the gift of perseverance, and that's what makes you a genius too.",
+		);
+		expect(testimonials.textContent).toContain('Guy Sensei');
+		expect(container.querySelector('[role="tablist"]')).toBeNull();
+	});
+
+	it('renders seven polaroids in the counter', () => {
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
+		expect(screen.getByTestId('about-polaroids').textContent).toContain('1/7');
+	});
+
+	it('renders the interests attribution credit line', () => {
+		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
+		expect(screen.getByTestId('about-interests').textContent).toContain(
+			'Transit photo: Harrison Keely · CC BY 4.0 — Space: NASA',
+		);
 	});
 
 	it('renders the CTA section', () => {

@@ -16,8 +16,8 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.identity.headshot).toMatch(/\.webp$/);
 		});
 
-		it('has at least 1 polaroid', () => {
-			expect(aboutPageContent.identity.polaroids.length).toBeGreaterThanOrEqual(1);
+		it('has exactly 7 polaroids', () => {
+			expect(aboutPageContent.identity.polaroids.length).toBe(7);
 		});
 
 		it('polaroids have rotate between -5 and 5', () => {
@@ -70,9 +70,15 @@ describe('aboutPageContent', () => {
 	});
 
 	describe('testimonials', () => {
-		it('has exactly one playful quote (Guy Sensei)', () => {
+		it('has exactly one playful quote', () => {
 			expect(aboutPageContent.testimonials).toHaveLength(1);
-			expect(aboutPageContent.testimonials[0].author).toBe('Guy Sensei');
+			expect(aboutPageContent.testimonials[0]?.quote.en).toBe(
+				"You have the gift of perseverance, and that's what makes you a genius too.",
+			);
+			expect(aboutPageContent.testimonials[0]?.quote.fr).toBe(
+				"Tu as le don de la persévérance, et c'est ce qui fait de toi un génie.",
+			);
+			expect(aboutPageContent.testimonials[0]?.author).toBe('Guy Sensei');
 		});
 
 		it('every testimonial has required fields', () => {
@@ -86,50 +92,31 @@ describe('aboutPageContent', () => {
 	});
 
 	describe('languages', () => {
-		it('lists the three spoken languages in display order', () => {
-			expect(aboutPageContent.languages).toEqual(['Français', 'English', 'Español']);
+		it('has exactly the three native language names', () => {
+			expect(aboutPageContent.languages).toEqual(['Español', 'English', 'Français']);
 		});
 	});
 
 	describe('education', () => {
-		it('has both degrees with valid icons', () => {
-			expect(aboutPageContent.education).toHaveLength(2);
-			for (const e of aboutPageContent.education) {
-				expect(e.school.en.length).toBeGreaterThan(0);
-				expect(e.program.en.length).toBeGreaterThan(0);
-				expect(['champlain', 'bishops']).toContain(e.icon);
-			}
-		});
-
-		it("covers Champlain and Bishop's", () => {
-			const schools = aboutPageContent.education.map((e) => e.school.en);
-			expect(schools.some((str) => str.includes('Champlain'))).toBe(true);
-			expect(schools.some((str) => str.includes("Bishop's"))).toBe(true);
-		});
-	});
-
-	describe('techStack', () => {
-		it('has at least 5 items', () => {
-			expect(aboutPageContent.techStack.length).toBeGreaterThanOrEqual(5);
-		});
-
-		it('every item has name, category, and relatedServices', () => {
-			for (const item of aboutPageContent.techStack) {
-				expect(item.name.length).toBeGreaterThan(0);
-				expect(['databases', 'languages', 'tools', 'frameworks']).toContain(item.category);
-				expect(Array.isArray(item.relatedServices)).toBe(true);
-			}
-		});
-
-		it('contains known technologies', () => {
-			const names = aboutPageContent.techStack.map((t) => t.name);
-			expect(names).toContain('PostgreSQL');
-			expect(names).toContain('SQL Server');
-		});
-
-		it('has at least 2 categories', () => {
-			const categories = new Set(aboutPageContent.techStack.map((t) => t.category));
-			expect(categories.size).toBeGreaterThanOrEqual(2);
+		it('has Champlain and Bishop education rows', () => {
+			expect(aboutPageContent.education).toEqual([
+				{
+					school: { en: 'Champlain Regional College, Lennoxville', fr: 'Champlain Regional College, Lennoxville' },
+					program: {
+						en: 'DEC, Accounting & Management Technology',
+						fr: 'DEC, Techniques de comptabilité et de gestion',
+					},
+					icon: 'champlain',
+				},
+				{
+					school: { en: "Bishop's University", fr: "Bishop's University" },
+					program: {
+						en: 'B.Sc. Computer Science, minor in Business Administration',
+						fr: 'B. Sc. informatique, mineure en administration des affaires',
+					},
+					icon: 'bishops',
+				},
+			]);
 		});
 	});
 
@@ -150,6 +137,21 @@ describe('aboutPageContent', () => {
 			const ids = aboutPageContent.interests.map((i) => i.id);
 			expect(new Set(ids).size).toBe(ids.length);
 		});
+
+		it('uses the real-person transit and space rows', () => {
+			const ids = aboutPageContent.interests.map((i) => i.id);
+			expect(ids).toEqual(['anime', 'transit', 'space', 'food']);
+			expect(aboutPageContent.interests[1]).toMatchObject({
+				id: 'transit',
+				image: '/images/about/interests/transit.webp',
+				label: { en: 'Transit', fr: 'Transport collectif' },
+			});
+			expect(aboutPageContent.interests[2]).toMatchObject({
+				id: 'space',
+				image: '/images/about/interests/space.webp',
+				label: { en: 'Space', fr: "L'espace" },
+			});
+		});
 	});
 
 	describe('weather', () => {
@@ -163,25 +165,6 @@ describe('aboutPageContent', () => {
 
 		it('enabled is a boolean', () => {
 			expect(typeof aboutPageContent.weather.enabled).toBe('boolean');
-		});
-	});
-
-	describe('clientLogos', () => {
-		it('has at least 3 logos', () => {
-			expect(aboutPageContent.clientLogos.length).toBeGreaterThanOrEqual(3);
-		});
-
-		it('every logo has name and src', () => {
-			for (const logo of aboutPageContent.clientLogos) {
-				expect(logo.name.length).toBeGreaterThan(0);
-				expect(logo.src.length).toBeGreaterThan(0);
-			}
-		});
-	});
-
-	describe('clientCount', () => {
-		it('is a positive number', () => {
-			expect(aboutPageContent.clientCount).toBeGreaterThan(0);
 		});
 	});
 

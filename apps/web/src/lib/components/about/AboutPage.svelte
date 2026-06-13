@@ -11,10 +11,7 @@
 
 	const locale = getLocale();
 	import type { AboutContent } from '$lib/types';
-	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
-	import { StopLabel } from '$lib/components/brand';
 	import { Separator } from '$lib/components/ui/separator';
-	import { Card } from '$lib/components/ui/card';
 	import AboutIdentity from './AboutIdentity.svelte';
 	import AboutPolaroids from './AboutPolaroids.svelte';
 	import AboutMetrics from './AboutMetrics.svelte';
@@ -22,6 +19,7 @@
 	import AboutTestimonials from './AboutTestimonials.svelte';
 	import AboutWeather from './AboutWeather.svelte';
 	import AboutLanguages from './AboutLanguages.svelte';
+	import AboutEducation from './AboutEducation.svelte';
 	import AboutInterests from './AboutInterests.svelte';
 	import AboutCta from './AboutCta.svelte';
 	import AboutTrain from './AboutTrain.svelte';
@@ -35,16 +33,10 @@
 		weather?: { temp: number; condition: string; icon: string } | null;
 	} = $props();
 
-	const c = aboutPage;
+	const c = $derived(aboutPage);
 
 	// Programmatic stop numbers from card render order. Train is stopless.
 	const s = Array.from({ length: 10 }, (_, i) => String(i).padStart(2, '0'));
-
-	// EDUCATION stop (repurposed from the former tech-stack stop): icon → brand SVG mark.
-	const EDU_MARKS: Record<'champlain' | 'bishops', string> = {
-		champlain: '/images/about/edu-champlain.svg',
-		bishops: '/images/about/edu-bishops.svg',
-	};
 </script>
 
 <!-- Top Stripe -->
@@ -64,33 +56,7 @@
 
 				<!-- SELL ROW 2 -->
 				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label={resolveLocale(c.stopLabels.process, locale)} /></div>
-				<div class="area-stack">
-					<div class="group h-full" use:cursorGlow>
-					<Card class="relative h-full p-3" data-testid="about-education">
-						<div class="relative flex h-full flex-col">
-							<StopLabel stop={s[3]} label={resolveLocale(c.stopLabels.stack, locale)} />
-							<ul class="mt-2 flex flex-1 flex-col justify-center gap-3">
-								{#each c.education as edu}
-									<li class="flex items-center gap-3">
-										<img
-											src={EDU_MARKS[edu.icon]}
-											alt={resolveLocale(edu.school, locale)}
-											class="h-9 w-9 shrink-0 object-contain"
-											loading="lazy"
-											width="36"
-											height="36"
-										/>
-										<div class="min-w-0">
-											<div class="truncate text-small font-semibold text-[var(--foreground)]">{resolveLocale(edu.school, locale)}</div>
-											<div class="text-caption leading-tight text-[var(--secondary-foreground)]">{resolveLocale(edu.program, locale)}</div>
-										</div>
-									</li>
-								{/each}
-							</ul>
-						</div>
-					</Card>
-					</div>
-				</div>
+				<div class="area-stack"><AboutEducation education={c.education} stop={s[3]} label={resolveLocale(c.stopLabels.stack, locale)} /></div>
 
 				<!-- SELL/PERSONAL ROW 3 -->
 				<div class="area-clients"><AboutLanguages languages={c.languages} stop={s[5]} label={resolveLocale(c.stopLabels.clients, locale)} /></div>

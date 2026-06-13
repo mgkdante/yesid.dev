@@ -12,18 +12,13 @@ import type {
 	AboutMetric,
 	AboutMethodStep,
 	AboutTestimonial,
-	AboutTechItem,
 	AboutInterest,
 	AboutEducationItem,
 	AboutWeatherConfig,
-	AboutClientLogo,
 	AboutCta,
 	AboutStopLabels,
 	AboutLabels,
-	TechCategory,
 } from '../types/content';
-
-export const TechCategorySchema = z.enum(['databases', 'languages', 'tools', 'frameworks']);
 
 export const AboutPolaroidSchema = z.object({
 	src: z.string(),
@@ -61,12 +56,6 @@ export const AboutTestimonialSchema = z.object({
 	logo: z.string().optional(),
 }) satisfies z.ZodType<AboutTestimonial>;
 
-export const AboutTechItemSchema = z.object({
-	name: z.string(),
-	category: TechCategorySchema,
-	relatedServices: z.array(z.string()).readonly(),
-}) satisfies z.ZodType<AboutTechItem>;
-
 export const AboutInterestSchema = z.object({
 	id: z.string(),
 	label: LocalizedStringSchema,
@@ -84,12 +73,6 @@ export const AboutWeatherConfigSchema = z.object({
 	hook: LocalizedStringSchema,
 	enabled: z.boolean(),
 }) satisfies z.ZodType<AboutWeatherConfig>;
-
-export const AboutClientLogoSchema = z.object({
-	name: z.string(),
-	src: z.string(),
-	url: z.string().optional(),
-}) satisfies z.ZodType<AboutClientLogo>;
 
 // AboutCta.lines uses a narrow color union, mirrored as z.enum.
 const AboutCtaLineSchema = z.object({
@@ -128,7 +111,6 @@ export const AboutStopLabelsSchema = z.object({
 }) satisfies z.ZodType<AboutStopLabels>;
 
 export const AboutLabelsSchema = z.object({
-	clientsServed: LocalizedStringSchema,
 	polaroidPrevAria: LocalizedStringSchema,
 	polaroidNextAria: LocalizedStringSchema,
 	testimonialsCarouselAria: LocalizedStringSchema,
@@ -144,22 +126,10 @@ export const AboutContentSchema = z.object({
 	testimonials: z.array(AboutTestimonialSchema).readonly(),
 	languages: z.array(z.string()).readonly(),
 	education: z.array(AboutEducationItemSchema).readonly(),
-	techStack: z.array(AboutTechItemSchema).readonly(),
 	interests: z.array(AboutInterestSchema).readonly(),
 	weather: AboutWeatherConfigSchema,
-	clientLogos: z.array(AboutClientLogoSchema).readonly(),
-	clientCount: z.number(),
 	cta: AboutCtaSchema,
 	stopLabels: AboutStopLabelsSchema,
 	labels: AboutLabelsSchema,
 	meta: PageMetaSchema,
 }) satisfies z.ZodType<AboutContent>;
-
-// Drift detector for TechCategory enum.
-type _TechCategoryCheck = z.infer<typeof TechCategorySchema> extends TechCategory
-	? TechCategory extends z.infer<typeof TechCategorySchema>
-		? true
-		: false
-	: false;
-const _techCategoryCheck: _TechCategoryCheck = true;
-void _techCategoryCheck;

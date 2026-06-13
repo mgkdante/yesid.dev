@@ -28,22 +28,17 @@ test.describe('reduced-motion retier (GO-w2t5)', () => {
 		).toBe(false);
 	});
 
-	test('reduce: about train canvas draws a static frame (not blank)', async ({ page }) => {
+	test('reduce: about train↔rocket renders the train, idle bob gated off', async ({ page }) => {
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/about');
-		const canvas = page.locator('[data-testid="about-train"] canvas');
-		await expect(canvas).toBeVisible();
-		const hasInk = await canvas.evaluate((el) => {
-			const c = el as HTMLCanvasElement;
-			const ctx = c.getContext('2d');
-			if (!ctx) return false;
-			const { data } = ctx.getImageData(0, 0, c.width, c.height);
-			for (let i = 3; i < data.length; i += 4) {
-				if (data[i] > 0) return true;
-			}
-			return false;
-		});
-		expect(hasInk).toBe(true);
+		// SVG morph widget paints the train at rest (paths present, not blank).
+		const widget = page.locator('[data-testid="about-train-button"]');
+		await expect(widget).toBeVisible();
+		const paths = widget.locator('svg path');
+		expect(await paths.count()).toBeGreaterThan(5);
+		// The ceaseless idle bob must be suppressed under reduced motion.
+		const bob = await widget.evaluate((el) => getComputedStyle(el).animationName);
+		expect(bob).toBe('none');
 	});
 
 	test('reduce: weather scene is a static composition (parked, never blank)', async ({

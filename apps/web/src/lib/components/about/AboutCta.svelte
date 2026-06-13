@@ -1,7 +1,7 @@
 <!--
   CTA — Terminal style.
   Fake terminal: $ yesid --contact with typed lines.
-  Social links, send button, availability tag.
+  Social links, send button.
   Stop label top-left.
 -->
 <script lang="ts">
@@ -63,8 +63,7 @@
 			</div>
 		</TerminalChrome>
 
-		<!-- Action row: button + availability. Round 5c: "Send message →" is
-		     the About view's one "talk to Yesid" conversion → yellow. -->
+		<!-- Action row: the About view's one "talk to Yesid" conversion → yellow. -->
 		<div class="mt-3 flex flex-wrap items-center gap-3">
 			<Button variant="conversion" size="cta" href={cta.buttonHref} data-testid="about-cta-button">
 				{buttonLabel}

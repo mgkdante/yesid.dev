@@ -151,7 +151,7 @@ export function validateFolderReferences(manifest: AssetsManifest): string[] {
  * Derive a sentence-case alt text from a filename.
  *   'headshot.webp'        → 'Headshot'
  *   'polaroid-1.webp'      → 'Polaroid 1'
- *   'logo-3.svg'           → 'Logo 3'
+ *   'edu-bishops.svg'      → 'Edu Bishops'
  *   'montreal-metro.svg'   → 'Montreal Metro'
  */
 export function deriveAltText(filename: string): string {
