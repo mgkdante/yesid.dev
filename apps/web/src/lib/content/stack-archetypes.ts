@@ -20,7 +20,7 @@ export const stackArchetypes: StackArchetype[] = [
 		hook: {
 			en: 'Stop doing it by hand.',
 			es: 'Deja de hacerlo a mano.',
-			fr: 'Arrêtez de le faire à la main.',
+			fr: 'Arrête de le faire à la main.',
 		},
 		serviceId: 'data-pipeline',
 		slug: 'automated-workflow',
@@ -39,12 +39,12 @@ export const stackArchetypes: StackArchetype[] = [
 		description: {
 			en: 'Live metrics drawn straight from data you own.',
 			es: 'Métricas en vivo extraídas de datos que te pertenecen.',
-			fr: 'Des métriques en direct issues de données qui vous appartiennent.',
+			fr: 'Des métriques en direct issues de données qui t’appartiennent.',
 		},
 		hook: {
 			en: 'See your numbers move.',
 			es: 'Mira tus números moverse.',
-			fr: 'Voyez vos chiffres bouger.',
+			fr: 'Vois tes chiffres bouger.',
 		},
 		proofProjectSlug: 'transit-data-pipeline',
 		serviceId: 'analytics-reporting',
@@ -90,7 +90,7 @@ export const stackArchetypes: StackArchetype[] = [
 		description: {
 			en: 'A data model designed for the business you are becoming, migrations, integrity and room to grow without rewrites.',
 			es: 'Un modelo de datos para la empresa que estás construyendo, migraciones, integridad y espacio para crecer.',
-			fr: 'Un modèle de données pensé pour l’entreprise que vous devenez, migrations, intégrité et marge de croissance.',
+			fr: 'Un modèle de données pensé pour l’entreprise que tu deviens, migrations, intégrité et marge de croissance.',
 		},
 		hook: {
 			en: 'Schema today, growth tomorrow.',
@@ -170,7 +170,7 @@ export const stackArchetypes: StackArchetype[] = [
 		hook: {
 			en: 'The app your spreadsheet wants to be.',
 			es: 'La app que tu hoja de cálculo quiere ser.',
-			fr: 'L’app que votre tableur rêve d’être.',
+			fr: 'L’app que ton tableur rêve d’être.',
 		},
 		serviceId: 'web-development',
 		slug: 'internal-tool',
@@ -240,7 +240,7 @@ export const stackArchetypes: StackArchetype[] = [
 		description: {
 			en: 'The reports you already run, made fast, indexes, query plans and schema fixes on the database you already own.',
 			es: 'Tus reportes actuales, pero rápidos, índices, planes de consulta y arreglos de esquema en tu base existente.',
-			fr: 'Vos rapports actuels, rendus rapides, index, plans de requête et corrections de schéma sur votre base existante.',
+			fr: 'Tes rapports actuels, rendus rapides, index, plans de requête et corrections de schéma sur ta base existante.',
 		},
 		hook: {
 			en: 'Seconds, not minutes.',
@@ -265,7 +265,7 @@ export const stackArchetypes: StackArchetype[] = [
 		description: {
 			en: 'The numbers your team compiles by hand, delivered automatically, same format, zero mornings lost.',
 			es: 'Los números que tu equipo compila a mano, entregados automáticamente, mismo formato, cero mañanas perdidas.',
-			fr: 'Les chiffres que votre équipe compile à la main, livrés automatiquement, même format, zéro matinée perdue.',
+			fr: 'Les chiffres que ton équipe compile à la main, livrés automatiquement, même format, zéro matinée perdue.',
 		},
 		hook: {
 			en: 'Monday numbers, before Monday.',
@@ -289,7 +289,7 @@ export const stackArchetypes: StackArchetype[] = [
 		description: {
 			en: 'Your shop and your metrics in one loop, what sells, what stalls, and what to reorder, visible daily.',
 			es: 'Tu tienda y tus métricas en un ciclo, qué se vende, qué se estanca y qué reordenar, visible a diario.',
-			fr: 'Votre boutique et vos métriques en boucle, ce qui se vend, ce qui stagne, quoi recommander, visible chaque jour.',
+			fr: 'Ta boutique et tes métriques en boucle, ce qui se vend, ce qui stagne, quoi recommander, visible chaque jour.',
 		},
 		hook: {
 			en: 'Commerce with a dashboard heart.',

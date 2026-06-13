@@ -50,7 +50,7 @@ export const servicesPageMeta = {
  *  `servicesListingContent` (shared with ServiceCard) — imported separately. */
 export const servicesDetailContent = {
 	backToServicesLabel: { en: '← All Services', fr: '← Tous les services' } satisfies LocalizedString,
-	valuePropositionHeading: { en: 'How This Helps You', fr: 'Comment ça vous aide' } satisfies LocalizedString,
+	valuePropositionHeading: { en: 'How This Helps You', fr: 'Comment ça t\'aide' } satisfies LocalizedString,
 	deliverablesHeading: { en: 'Typical Deliverables', fr: 'Livrables typiques' } satisfies LocalizedString,
 	relatedProjectsHeading: { en: 'Related Projects', fr: 'Projets liés' } satisfies LocalizedString,
 	/** Aria-label on the nav listing the related project links. */

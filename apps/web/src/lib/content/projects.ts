@@ -45,7 +45,7 @@ export const projects: readonly Project[] = [
 		liveUrl: 'https://yesid.dev',
 		oneLiner: {
 			en: 'The site you are looking at: a SvelteKit portfolio built slice by slice.',
-			fr: 'Le site que vous regardez en ce moment : un portfolio SvelteKit bâti morceau par morceau.',
+			fr: 'Le site que tu regardes en ce moment : un portfolio SvelteKit bâti morceau par morceau.',
 		},
 		relatedServices: ['web-development'],
 		repoUrl: 'https://github.com/mgkdante/yesid.dev',

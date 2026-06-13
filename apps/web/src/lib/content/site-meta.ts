@@ -27,7 +27,7 @@ export const siteMeta: SiteMeta = {
 		jobTitle: {
 			en: 'Freelance Digital Infrastructure Engineer',
 			es: 'Ingeniero independiente en infraestructura digital',
-			fr: 'Ingénieur indépendant en infrastructure numérique',
+			fr: 'Ingénieur pigiste en infrastructure numérique',
 		},
 		knowsAbout: [
 			'PostgreSQL',

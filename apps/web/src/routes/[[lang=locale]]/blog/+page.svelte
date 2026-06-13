@@ -13,6 +13,12 @@
 	const locale = getLocale();
 
 	const heading = $derived(resolveLocale(data.blogPage.heading, locale) || 'Dispatches');
+	const subtitle = $derived(
+		resolveLocale(
+			{ en: 'Data, SQL, and infrastructure, from the field', fr: 'Données, SQL et infrastructure, du terrain' },
+			locale,
+		),
+	);
 </script>
 
 <BlogListingPage
@@ -22,7 +28,7 @@
 	svgContents={data.svgContents}
 	blogPage={data.blogPage}
 	{heading}
-	subtitle="Data, SQL, and infrastructure — from the field"
+	subtitle={subtitle}
 	accentColor="var(--primary)"
 	cornerLink={{
 		href: '/blog/personal',

@@ -14,7 +14,7 @@ export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	'0': {
 		description: {
 			en: 'The page you were looking for could not be found.',
-			fr: 'La page que vous cherchiez est introuvable.',
+			fr: 'La page que tu cherchais est introuvable.',
 		},
 		heading: {
 			en: 'This station is offline',
@@ -68,7 +68,7 @@ export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	'500': {
 		description: {
 			en: 'The server encountered an unexpected error. Please try again later.',
-			fr: 'Le serveur a rencontré une erreur inattendue. Réessayez plus tard.',
+			fr: 'Le serveur a rencontré une erreur inattendue. Réessaie plus tard.',
 		},
 		heading: {
 			en: 'Something went wrong',
