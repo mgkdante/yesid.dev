@@ -23,7 +23,7 @@ export const heroContent: HeroContent = {
 	headline: {
 		ariaSuffix: { en: 'Don\'t Break.', fr: 'Ne cassent pas.' },
 		line1: { en: 'SYSTEMS THAT', fr: 'DES SYSTÈMES QUI' },
-		line2: { en: 'DON\'T BREAK.', fr: 'NE CASSENT PAS.' },
+		line2: { en: 'DON\'T BREAK', fr: 'NE CASSENT PAS' },
 	},
 	heroAnim: {
 		scrollDown: {
