@@ -70,8 +70,9 @@
 		</div>
 	</div>
 
-	<!-- Language filter — only shown when more than one language exists -->
-	{#if languages.length > 1}
+	<!-- Language filter — surfaces the languages present in the active posts, like
+	     Tags (shown whenever ≥1 language exists, even when posts are EN-only). -->
+	{#if languages.length >= 1}
 		<div class="mt-5 divider-dashed pt-3">
 			<FilterGroup
 				label={resolveLocale(labels.language, locale)}

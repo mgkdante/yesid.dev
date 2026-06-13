@@ -72,8 +72,9 @@
 		<CollapsibleContent forceMount class="blog-filter-body">
 			<div class="min-h-0 overflow-hidden">
 				<div class="mb-4 max-h-[60dvh] overflow-y-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--card)] p-3" use:scrollChain>
-					<!-- Language filter -->
-					{#if languages.length > 1}
+					<!-- Language filter — surfaces the languages present in the active posts,
+					     like Tags (shown whenever ≥1 language exists, even EN-only). -->
+					{#if languages.length >= 1}
 						<div class="label-section font-semibold">
 							{languageLabel}
 						</div>

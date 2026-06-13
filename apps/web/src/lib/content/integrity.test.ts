@@ -586,7 +586,7 @@ describe('LocalizedString guard + translation debt', () => {
 // ONE siteLabels.ui.metroCaption ('STM métro + REM' — names the hero metro
 // art) — net +2 with a11y.replayIntro (hero dot replay button aria)
 // → NO_FR 435, TOTAL 517.
-const LOCKED = { TOTAL: 530, WITH_FR: 528, NO_FR: 2, ES_WITHOUT_FR: 0 } as const; // slice-30 FR-coverage sweep: companion chrome + site-content fully translated (Québécois), only 2 walked fields lack fr
+const LOCKED = { TOTAL: 530, WITH_FR: 530, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // slice-30: 100% FR coverage on walked fields (last gap, first About polaroid, closed). ES deliberately deferred.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

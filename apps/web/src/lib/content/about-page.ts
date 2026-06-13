@@ -71,8 +71,8 @@ export const aboutPageContent: AboutContent = {
 		name: { en: 'Yesid', fr: 'Yesid' },
 		polaroids: [
 			{
-				alt: { en: 'Walking with my dog in Montreal' },
-				caption: { en: 'Off-duty mode' },
+				alt: { en: 'Walking with my dog in Montreal', fr: 'En promenade avec mon chien à Montréal' },
+				caption: { en: 'Off-duty mode', fr: 'Mode relâche' },
 				rotate: -3,
 				src: '/images/about/polaroid-1.webp',
 			},

@@ -13,8 +13,9 @@ describe('GET /api/weather', () => {
 		fetchMontrealWeatherMock.mockReset();
 	});
 
-	async function call() {
-		const response = await GET({} as Parameters<typeof GET>[0]);
+	async function call(lang?: string) {
+		const url = new URL(`http://localhost/api/weather${lang ? `?lang=${lang}` : ''}`);
+		const response = await GET({ url } as Parameters<typeof GET>[0]);
 		return {
 			status: response.status,
 			body: await response.json(),
@@ -57,5 +58,19 @@ describe('GET /api/weather', () => {
 		});
 		const { body } = await call();
 		expect(Object.keys(body).sort()).toEqual(['condition', 'icon', 'temp']);
+	});
+
+	it('threads a supported ?lang= through to fetchMontrealWeather', async () => {
+		fetchMontrealWeatherMock.mockResolvedValueOnce({ temp: 1, condition: 'neige', icon: '13d' });
+		await call('fr');
+		expect(fetchMontrealWeatherMock).toHaveBeenCalledWith('fr');
+	});
+
+	it('defaults to en when ?lang= is missing or unsupported', async () => {
+		fetchMontrealWeatherMock.mockResolvedValue({ temp: 1, condition: 'clear sky', icon: '01d' });
+		await call();
+		expect(fetchMontrealWeatherMock).toHaveBeenLastCalledWith('en');
+		await call('de');
+		expect(fetchMontrealWeatherMock).toHaveBeenLastCalledWith('en');
 	});
 });
