@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 // GENERATED FILE — do not edit by hand.
 //
-// Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton.
+// Global UI microcopy (aria labels, card markers, edge titles, email templates) from the site_labels singleton. slice-30 t1: also carries the code-owned chrome groups (projectsChrome/blogChrome/servicesChrome/navChrome/footerChrome/heroDashboard) recomposed from the companion-shaped flat columns, so a future regen sources the companion/hero-data labels straight from Directus.
 //
 // Source: live Directus CMS state via `bun run export:fallbacks`
 // (apps/cms/scripts/export-fallbacks.ts). Regenerated on every build via
