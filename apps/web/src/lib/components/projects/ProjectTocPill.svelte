@@ -118,7 +118,7 @@
     <button
       class="tap-press toc-pill"
       onclick={() => (drawerOpen = !drawerOpen)}
-      aria-label={`${activeName} ${activeIndex + 1}/${allEntries.length} — ${tocOpenAria}`}
+      aria-label={`${activeName} ${activeIndex + 1}/${allEntries.length} · ${tocOpenAria}`}
     >
       <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
       <span class="toc-pill-name font-mono text-caption">

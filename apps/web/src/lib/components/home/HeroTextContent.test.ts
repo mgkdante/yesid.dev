@@ -6,6 +6,7 @@ import { generateHeroData } from '$lib/content';
 function baseProps(overrides: Record<string, unknown> = {}) {
 	return {
 		headlineLine1: 'PIPELINES THAT',
+		headlineLine2: "DON'T BREAK.",
 		headlineAriaSuffix: "don't break.",
 		subheadlineText: 'sub',
 		subtitleText: 'subtitle',

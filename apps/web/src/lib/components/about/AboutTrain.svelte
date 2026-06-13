@@ -12,10 +12,27 @@
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { gsap } from '$lib/motion/utils/gsap.js';
 	import { Card } from '$lib/components/ui/card';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
 	import {
 		TRAIN_ROCKET_SHAPES,
 		TRAIN_ROCKET_VIEWBOX,
 	} from './train-rocket-shapes.js';
+
+	const locale = getLocale();
+
+	// Accessible name for the morph toy. No localized CMS source feeds it
+	// (about-page.ts is CMS-generated), so the QC/EN copy lives inline here.
+	const TRAIN_ARIA = {
+		rocket: {
+			en: 'Rocket · tap to land it back into a train',
+			fr: 'Fusée · clique pour la reposer en train',
+		},
+		train: {
+			en: 'Train · tap to launch it into a rocket',
+			fr: 'Train · clique pour le lancer en fusée',
+		},
+	} as const;
 
 	// ── Pre-parse each shape into a number-stripped skeleton + the train and
 	//    rocket number vectors. Structural parity (verified at authoring time)
@@ -129,8 +146,8 @@
 		data-testid="about-train-button"
 		aria-pressed={tapped}
 		aria-label={launched
-			? 'Rocket — tap to land it back into a train'
-			: 'Train — tap to launch it into a rocket'}
+			? resolveLocale(TRAIN_ARIA.rocket, locale)
+			: resolveLocale(TRAIN_ARIA.train, locale)}
 		onpointerenter={onEnter}
 		onpointerleave={onLeave}
 		onclick={onClick}

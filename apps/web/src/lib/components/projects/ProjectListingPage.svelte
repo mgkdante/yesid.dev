@@ -61,8 +61,17 @@
 	const searchPlaceholder = resolveLocale(projectsListingContent.searchPlaceholder, locale);
 	const listingIntro = resolveLocale(projectsPage.intro, locale);
 	const emptyStateText =
-		resolveLocale(projectsPage.emptyState, locale) || 'No projects match the selected filters.';
-	const filterNoun = resolveLocale(siteLabels.ui.nounProject, locale) || 'project';
+		resolveLocale(projectsPage.emptyState, locale) ||
+		resolveLocale(
+			{
+				en: 'No projects match the selected filters.',
+				fr: 'Aucun projet ne correspond aux filtres choisis.',
+			},
+			locale
+		);
+	const filterNoun =
+		resolveLocale(siteLabels.ui.nounProject, locale) ||
+		resolveLocale({ en: 'project', fr: 'projet' }, locale);
 
 	// Filter state — read from URL params
 	let activeService = $derived($page.url.searchParams.get('service'));

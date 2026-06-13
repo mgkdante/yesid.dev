@@ -37,7 +37,7 @@
 		markHeroIntroCompleted,
 	} from '$lib/motion/utils/heroIntroReplay.js';
 	import { getLenis } from '$lib/motion/utils/lenis.js';
-	import { generateHeroData, siteLabels } from '$lib/content';
+	import { generateHeroData, localizeHeroData, siteLabels } from '$lib/content';
 	import type { HeroData } from '$lib/content';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
@@ -69,6 +69,7 @@
 
 	const scrollDownLabel = resolveLocale(heroAnimContent.scrollDown, locale);
 	const headlineLine1 = resolveLocale(heroContent.headline.line1, locale);
+	const headlineLine2 = resolveLocale(heroContent.headline.line2, locale);
 	const subheadlineText = resolveLocale(heroContent.subheadline, locale);
 	const subtitleText = resolveLocale(heroContent.subtitle, locale);
 	const ctaWorkLabel = resolveLocale(heroContent.ctaWork, locale);
@@ -92,7 +93,15 @@
 	let refreshIcon: HTMLSpanElement;
 
 	let heroData: HeroData = $state(INITIAL_HERO_DATA);
-	let updatedAgo: string = $state('30s ago');
+	// Resolve the dashboard LABEL/SUB strings (VEHICLES TRACKED, AVG DELAY,
+	// COVERAGE…) into the active locale. Numbers, units, query rows and the
+	// "STM" wordmark pass through untouched. Children stay locale-agnostic.
+	const localizedHeroData = $derived(localizeHeroData(heroData, locale));
+	// go2/about: relative-time strings localized. EN "just now"/"30s ago" →
+	// FR "à l'instant"/"il y a 30 s" (NB: French inserts a space before the unit).
+	const updatedAgoInitial = locale === 'fr' ? 'il y a 30 s' : '30s ago';
+	const updatedAgoJustNow = locale === 'fr' ? "à l'instant" : 'just now';
+	let updatedAgo: string = $state(updatedAgoInitial);
 	// Section min-height reserves scroll space for the pin + trailing content.
 	// Desktop pin is 800% → 900svh matches exactly (100% + 800% = 900svh, no
 	// trailing content because SQL is in-grid). Mobile pin is 300% → need
@@ -102,7 +111,7 @@
 
 	function handleRefresh() {
 		heroData = generateHeroData();
-		updatedAgo = 'just now';
+		updatedAgo = updatedAgoJustNow;
 		if (refreshIcon) {
 			refreshIcon.style.transition = 'transform 0.6s ease';
 			refreshIcon.style.transform = 'rotate(360deg)';
@@ -455,12 +464,13 @@
 					<!-- LEFT COLUMN: text content -->
 					<HeroTextContent
 						{headlineLine1}
+						{headlineLine2}
 						{headlineAriaSuffix}
 						{subheadlineText}
 						{subtitleText}
 						{ctaWorkLabel}
 						{ctaContactLabel}
-						{heroData}
+						heroData={localizedHeroData}
 						{introCompleted}
 						beaconSettled={introCompleted && introCollapsed}
 						{replayAriaLabel}
@@ -479,8 +489,8 @@
 					<div class="hero-viewport-sql hidden md:block">
 						<div data-hero-stagger="4">
 							<HeroSqlPanel
-								rows={heroData.queryRows}
-								queryTime={heroData.queryTime}
+								rows={localizedHeroData.queryRows}
+								queryTime={localizedHeroData.queryTime}
 								prompt={sqlPrompt}
 								liveLabel={sqlLiveLabel}
 								columnRoute={sqlColumnRoute}
@@ -520,7 +530,7 @@
 
 	<!-- Mobile SQL section — outside the pin, scrolls naturally after hero text -->
 	<HeroMobileSql
-		{heroData}
+		heroData={localizedHeroData}
 		{sqlPrompt}
 		{sqlLiveLabel}
 		{sqlColumnRoute}

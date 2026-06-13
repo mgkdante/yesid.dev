@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="15" y="16" font-family="JetBrains Mono" font-size="9" fill="currentColor">TBM — TYPE EPB  &#216; 9.4m</text>
+	<text x="15" y="16" font-family="JetBrains Mono" font-size="9" fill="currentColor">TBM · TYPE EPB  &#216; 9.4m</text>
 	<line x1="15" y1="20" x2="260" y2="20" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Border frame -->
@@ -183,7 +183,7 @@
 	<line x1="175" y1="175" x2="615" y2="175" stroke="currentColor" stroke-width="0.5"/>
 	<line x1="175" y1="171" x2="175" y2="179" stroke="currentColor" stroke-width="0.5"/>
 	<line x1="615" y1="171" x2="615" y2="179" stroke="currentColor" stroke-width="0.5"/>
-	<text x="395" y="182" font-family="JetBrains Mono" font-size="5.5" fill="currentColor" text-anchor="middle">11.2m — BOUCLIER</text>
+	<text x="395" y="182" font-family="JetBrains Mono" font-size="5.5" fill="currentColor" text-anchor="middle">11.2m · BOUCLIER</text>
 
 	<!-- Total length dimension -->
 	<line x1="65" y1="192" x2="798" y2="192" stroke="currentColor" stroke-width="0.5"/>

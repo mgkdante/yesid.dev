@@ -29,6 +29,13 @@
 		transit: 'Harrison Keely · CC BY 4.0',
 		space: 'NASA',
 	};
+
+	// Footer photo-credit line. Names/licenses stay verbatim; only the
+	// connective labels localize. Em-dash-free (middot separator).
+	const CREDITS = {
+		en: 'Transit photo: Harrison Keely · CC BY 4.0 · Space: NASA',
+		fr: 'Photo transport collectif : Harrison Keely · CC BY 4.0 · Espace : NASA',
+	} as const;
 </script>
 
 <div
@@ -92,7 +99,7 @@
 	</div>
 
 	<div class="absolute right-3 bottom-1.5 left-3 z-20 truncate text-right font-mono text-[0.625rem] text-[var(--muted-foreground)]">
-		Transit photo: Harrison Keely · CC BY 4.0 — Space: NASA
+		{resolveLocale(CREDITS, locale)}
 	</div>
 </Card>
 </div>
