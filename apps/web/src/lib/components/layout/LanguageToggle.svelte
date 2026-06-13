@@ -1,22 +1,18 @@
 <!--
-  LanguageToggle — the métro DIRECTION blind.
+  LanguageToggle — a fingerpost signpost (the wayfinding direction pole).
 
-  A Montréal-métro "DIRECTION ▸" destination plate whose destination is the SITE
-  LANGUAGE, self-named on a Solari split-flap leaf (Français / English / Español).
-  It is mechanical signage — an orange enamel cap, a dark flap blind, an amber
-  rule — deliberately NOT light-based, so it never collides with the theme
-  toggle's traffic-light metaphor.
+  A small vertical pole with one pointed fingerboard per published locale
+  (EN / FR / ES), the CURRENT locale's board lit in --primary (the others muted
+  outlines) — exactly how the theme toggle lights its current signal lens. Pure
+  SVG, sized like that signal head. Mechanical wayfinding signage, distinct from
+  the theme toggle's traffic-light. On switch the boards swing (a signpost
+  catching the change); disabled under prefers-reduced-motion.
 
-  Self-naming (each language in its own tongue) means a French or Spanish speaker
-  spots theirs instantly — no flags, which are ambiguous.
+  Data-driven by PUBLISHED_LOCALES: one board per published locale, cycling on
+  click, path-preserving. Renders NOTHING when fewer than 2 are published — so
+  it is absent today (['en']) and appears EN⇄FR the instant French is flipped on.
 
-  Data-driven by PUBLISHED_LOCALES (the build-time cache regenerated FROM the CMS):
-  one destination per published locale, cycling on click. Renders NOTHING when
-  fewer than 2 locales are published — today PUBLISHED_LOCALES === ['en'], so the
-  control is absent until the operator flips French (then EN⇄FR; later +ES).
-
-  Persistent chrome (rides Nav, never remounts): `locale` is a PROP, like
-  ThemeToggle — getLocale() would init-freeze here (slice-28.6).
+  Persistent chrome (rides Nav): locale + pathname are PROPS (ThemeToggle convention).
 -->
 <script lang="ts">
 	import { sharedChromeContent } from '$lib/content';
@@ -25,9 +21,6 @@
 	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import type { Locale } from '$lib/types';
 
-	// Persistent chrome (rides Nav, never remounts): locale + pathname are PROPS
-	// (getLocale()/$page would init-freeze here) — same convention as ThemeToggle
-	// + Footer's locale switcher.
 	let {
 		class: className = '',
 		locale = DEFAULT_LOCALE,
@@ -40,16 +33,38 @@
 		availableLocales?: readonly Locale[];
 	} = $props();
 
-	// Self-names — each language in its own tongue (no flags: ambiguous). Invariant.
+	// Two-letter codes on the boards (legible at signpost scale); full self-names
+	// drive the accessible label/title (a French/Spanish speaker hears theirs).
+	const CODE: Record<Locale, string> = { en: 'EN', fr: 'FR', es: 'ES' };
 	const NAMES: Record<Locale, string> = { en: 'English', fr: 'Français', es: 'Español' };
 
 	const idx = $derived(Math.max(0, availableLocales.indexOf(locale)));
 	const next = $derived(availableLocales[(idx + 1) % availableLocales.length]);
-	// Path-preserving locale switch — same mechanism as the footer/menu switchers.
 	const nextHref = $derived(localizeHref(delocalizePath(pathname), next));
-	const currentName = $derived(NAMES[locale] ?? locale);
 	const switcherAria = $derived(resolveLocale(sharedChromeContent.localeSwitcherAria, locale));
-	const ariaLabel = $derived(`${switcherAria}: ${currentName}`);
+	const ariaLabel = $derived(`${switcherAria}: ${NAMES[locale] ?? locale}`);
+
+	// One fingerboard per locale, alternating sides of the pole, current lit.
+	const boards = $derived(
+		availableLocales.map((loc, k) => {
+			const n = availableLocales.length;
+			const span = 36 / n;
+			const h = Math.min(12, span - 2);
+			const yTop = 4 + k * span + (span - h) / 2;
+			const mid = yTop + h / 2;
+			const right = k % 2 === 1;
+			const path = right
+				? `M30 ${yTop} H49 L54 ${mid} L49 ${yTop + h} H30 Z`
+				: `M26 ${yTop} H7 L2 ${mid} L7 ${yTop + h} H26 Z`;
+			return {
+				code: CODE[loc] ?? loc.slice(0, 2).toUpperCase(),
+				path,
+				tx: right ? 39 : 16,
+				ty: mid + 3.8,
+				active: loc === locale,
+			};
+		}),
+	);
 </script>
 
 {#if availableLocales.length >= 2}
@@ -57,107 +72,85 @@
 		href={nextHref}
 		data-testid="language-toggle"
 		data-sveltekit-preload-data="hover"
-		class="dir-plate tap-press {className}"
+		class="lang-post tap-press {className}"
 		aria-label={ariaLabel}
-		title={currentName}
+		title={NAMES[locale] ?? locale}
 	>
-		<span class="cap" aria-hidden="true">
-			<span class="cap-word">DIRECTION</span>
-			<svg class="cap-arrow" viewBox="0 0 26 12" width="20" height="9">
-				<path d="M2 6 H21 M21 6 L16 2 M21 6 L16 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-			</svg>
-		</span>
-		<span class="blind" aria-hidden="true">
-			<span class="hinge"></span>
+		<svg viewBox="0 0 56 44" width="46" height="36" aria-hidden="true">
+			<rect class="pole" x="25.5" y="3" width="5" height="38" rx="2.5" />
 			{#key locale}
-				<span class="leaf">{currentName}</span>
+				<g class="boards">
+					{#each boards as b}
+						<g class="board" class:active={b.active}>
+							<path d={b.path} />
+							<text x={b.tx} y={b.ty}>{b.code}</text>
+						</g>
+					{/each}
+				</g>
 			{/key}
-		</span>
-		<span class="sr-only" aria-live="polite">{currentName}</span>
+		</svg>
+		<span class="sr-only" aria-live="polite">{NAMES[locale] ?? locale}</span>
 	</a>
 {/if}
 
 <style>
-	.dir-plate {
+	.lang-post {
 		display: inline-flex;
-		align-items: stretch;
-		min-height: 44px; /* hit target — content sits centered, like ThemeToggle */
-		padding: 6px 0;
-		border-radius: var(--radius-sm);
-		text-decoration: none;
-		line-height: 1;
+		align-items: center;
+		justify-content: center;
+		min-height: 44px;
+		min-width: 44px;
+		padding: 4px;
 		color: var(--secondary-foreground);
+		border-radius: var(--radius-sm);
+		transition: color var(--duration-fast) var(--ease-default);
 	}
-	.dir-plate:focus-visible {
+	.lang-post:hover {
+		color: var(--foreground);
+	}
+	.lang-post:focus-visible {
 		outline: 2px solid var(--ring);
 		outline-offset: 2px;
 	}
 
-	/* Orange enamel cap — the métro "DIRECTION ▸" signage. Orange stays orange
-	   across both themes (tokens.css), with dark ink on it. */
-	.cap {
-		display: inline-flex;
-		align-items: center;
-		gap: 5px;
-		padding: 0 8px;
-		background: var(--primary);
-		color: color-mix(in srgb, var(--foreground) 14%, #1c1814);
-		border-radius: 4px 0 0 4px;
+	.pole {
+		fill: color-mix(in srgb, var(--secondary-foreground) 55%, transparent);
+	}
+	.board path {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.25;
+		stroke-linejoin: round;
+	}
+	.board text {
 		font-family: var(--font-mono);
-		font-size: 9px;
+		font-size: 13px;
 		font-weight: 700;
-		letter-spacing: 0.16em;
+		letter-spacing: 0.02em;
+		fill: currentColor;
+		text-anchor: middle;
 	}
-	.cap-arrow { display: block; }
-
-	/* The flap blind — dark hardware in BOTH themes (a split-flap reads as
-	   dark even on paper), so it stays distinct from surrounding chrome. */
-	.blind {
-		position: relative;
-		display: grid;
-		place-items: center;
-		min-width: 6.2em;
-		padding: 0 10px;
-		background: color-mix(in srgb, var(--background) 72%, #000);
-		border: 1px solid var(--border);
-		border-left: none;
-		border-radius: 0 4px 4px 0;
-		/* the lit amber rule under the housing, like real transit signage */
-		box-shadow: inset 0 -2px 0 var(--border-rule-accent);
-		overflow: hidden;
-		perspective: 240px;
+	/* current locale's board is lit, like the theme toggle's lit lens */
+	.board.active path {
+		fill: var(--primary);
+		stroke: var(--primary);
 	}
-	/* hinge seam across the middle of the blind */
-	.hinge {
-		position: absolute;
-		inset-inline: 0;
-		top: 50%;
-		height: 1px;
-		background: color-mix(in srgb, #000 70%, transparent);
-		box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 18%, transparent);
-		z-index: 2;
-	}
-	/* the destination word — the only non-mono text, the "name" reads as a sign */
-	.leaf {
-		grid-area: 1 / 1;
-		font-family: var(--font-heading);
-		font-size: 15px;
-		font-weight: 600;
-		color: var(--accent);
-		white-space: nowrap;
-		transform-origin: top center;
-		animation: flap 300ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
-		backface-visibility: hidden;
+	.board.active text {
+		fill: color-mix(in srgb, var(--foreground) 12%, #1c1814);
 	}
 
-	/* split-flap hand-off: the new destination hinges down into place */
-	@keyframes flap {
-		0% { transform: rotateX(-90deg); opacity: 0; }
-		55% { transform: rotateX(14deg); opacity: 1; }
-		100% { transform: rotateX(0deg); opacity: 1; }
+	/* boards swing on switch — a signpost catching the change */
+	.boards {
+		transform-origin: 27px 22px;
+		animation: post-swing 380ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
 	}
-
+	@keyframes post-swing {
+		0% { transform: rotate(-7deg); }
+		60% { transform: rotate(2deg); }
+		100% { transform: rotate(0deg); }
+	}
 	@media (prefers-reduced-motion: reduce) {
-		.leaf { animation: none; }
+		.lang-post { transition: none; }
+		.boards { animation: none; }
 	}
 </style>
