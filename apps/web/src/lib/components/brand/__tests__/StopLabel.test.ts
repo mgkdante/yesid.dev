@@ -5,12 +5,12 @@ import StopLabel from '../StopLabel.svelte';
 describe('StopLabel', () => {
   it('renders stop number and label', () => {
     const { container } = render(StopLabel, { props: { stop: '03', label: 'STACK' } });
-    expect(container.querySelector('.stop-label')?.textContent).toBe('STOP 03 — STACK');
+    expect(container.querySelector('.stop-label')?.textContent).toBe('STOP 03 · STACK');
   });
 
   it('renders with different stop values', () => {
     const { container } = render(StopLabel, { props: { stop: '07', label: 'CONTACT' } });
-    expect(container.querySelector('.stop-label')?.textContent).toBe('STOP 07 — CONTACT');
+    expect(container.querySelector('.stop-label')?.textContent).toBe('STOP 07 · CONTACT');
   });
 
   it('uses the stop-label class', () => {

@@ -152,8 +152,8 @@ export const aboutPageContent: AboutContent = {
 	languages: ['Español', 'English', 'Français'],
 	meta: {
 		description: {
-			en: 'Freelance digital infrastructure engineer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that ship.',
-			fr: 'Ingénieur pigiste en infrastructure numérique basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l\'infrastructure fiable pour les équipes qui livrent.',
+			en: 'Freelance digital infrastructure engineer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can\'t afford downtime.',
+			fr: 'Ingénieur pigiste en infrastructure numérique basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l\'infrastructure fiable pour les équipes qui n\'ont pas les moyens d\'avoir des pannes.',
 		},
 		title: { en: 'About · yesid.', fr: 'À propos · yesid.' },
 	},

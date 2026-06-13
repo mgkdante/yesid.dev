@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 160 110" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="5" y="9" font-family="JetBrains Mono" font-size="5" fill="currentColor">INJECTION DE COULIS &#8212; D&#201;TAIL</text>
+	<text x="5" y="9" font-family="JetBrains Mono" font-size="5" fill="currentColor">INJECTION DE COULIS · D&#201;TAIL</text>
 	<line x1="5" y1="12" x2="120" y2="12" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Drawing number + scale -->

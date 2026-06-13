@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 1000 200" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="15" y="14" font-family="JetBrains Mono" font-size="8" fill="currentColor">COUPE G&#201;OLOGIQUE &#8212; PROFIL LONGITUDINAL</text>
+	<text x="15" y="14" font-family="JetBrains Mono" font-size="8" fill="currentColor">COUPE G&#201;OLOGIQUE · PROFIL LONGITUDINAL</text>
 	<line x1="15" y1="18" x2="340" y2="18" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Drawing number + scale -->

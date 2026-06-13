@@ -4,8 +4,8 @@
 
 <svg class={className} {...rest} viewBox="0 0 600 500" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title -->
-	<text x="300" y="24" font-family="monospace" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">BOGIE — ALSTOM CL 449</text>
-	<text x="300" y="38" font-family="monospace" font-size="10" fill="currentColor" text-anchor="middle">MPM-10 AZUR — RUBBER-TIRE BOGIE SYSTEM (SIDE VIEW)</text>
+	<text x="300" y="24" font-family="monospace" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">BOGIE · ALSTOM CL 449</text>
+	<text x="300" y="38" font-family="monospace" font-size="10" fill="currentColor" text-anchor="middle">MPM-10 AZUR · RUBBER-TIRE BOGIE SYSTEM (SIDE VIEW)</text>
 	<line x1="40" y1="46" x2="560" y2="46" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- ======================== -->
