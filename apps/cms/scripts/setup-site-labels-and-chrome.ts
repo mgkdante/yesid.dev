@@ -25,11 +25,21 @@
  */
 
 import seedsJson from '../fixtures/content/site-labels.json';
+import frSeedsJson from '../fixtures/content/site-labels.fr.json';
 import { defaultDirectusUrl } from './lib/sdk';
 import { getAdminToken } from './lib/auth';
 import { createLogger } from './lib/logger';
 
+/** EN seeds — also the column source (one CMS column per key). */
 export const SITE_LABEL_SEEDS: Record<string, string> = seedsJson;
+
+/**
+ * FR translations seed (slice-30 t1). A sparse subset of SITE_LABEL_SEEDS keys
+ * — only the columns whose companion source already carries a `fr`. Seeded as a
+ * SEPARATE site_labels_translations row (languages_code = 'fr'), mirroring how
+ * the existing a11y_/ui_/pages_/email_ FR translations live as a distinct row.
+ */
+export const SITE_LABEL_FR_SEEDS: Record<string, string> = frSeedsJson;
 
 // --- Plan types (mirror setup-stack-archetypes-schema.ts) -------------------
 
@@ -303,6 +313,20 @@ async function seed(ctx: ApplyContext): Promise<void> {
 			...SITE_LABEL_SEEDS,
 		});
 		log.info(`  created site_labels_translations (en) with ${Object.keys(SITE_LABEL_SEEDS).length} seeds`);
+	}
+	// 2b. upsert the FR translation row (slice-30 t1 chrome translations seed).
+	const frTrs = await apiGet(ctx, `/items/site_labels_translations?filter[languages_code][_eq]=fr&limit=1`);
+	const frRow = (frTrs.data as Array<{ id: number }>)[0];
+	if (frRow) {
+		await apiPatch(ctx, `/items/site_labels_translations/${frRow.id}`, SITE_LABEL_FR_SEEDS);
+		log.info(`  updated site_labels_translations#${frRow.id} (fr) with ${Object.keys(SITE_LABEL_FR_SEEDS).length} seeds`);
+	} else {
+		await apiPost(ctx, '/items/site_labels_translations', {
+			site_labels_id: parentId,
+			languages_code: 'fr',
+			...SITE_LABEL_FR_SEEDS,
+		});
+		log.info(`  created site_labels_translations (fr) with ${Object.keys(SITE_LABEL_FR_SEEDS).length} seeds`);
 	}
 	// 3. /projects chrome seeds — GO-DAY RULE: visible output must not change.
 	//    heading = current rendered H1; empty_state = current rendered empty message;

@@ -43,5 +43,182 @@ export const SiteLabelsSchema = z.object({
 	email: z.object({
 		contactSubjectTemplate: LocalizedStringSchema,
 	}),
+	// --- slice-30 t1: code-owned chrome groups -------------------------------
+	// Mirror the companion-module shapes 1:1 so a future export:fallbacks regen
+	// recomposes the flat CMS columns straight back into the constants the
+	// components already import (projects/blog/services/nav/site-content
+	// companions + hero-data dashboard labels). Leaves stay LocalizedString.
+	projectsChrome: z.object({
+		// projects.companion.ts → projectsPageMeta
+		pageMeta: z.object({
+			title: LocalizedStringSchema,
+			description: LocalizedStringSchema,
+		}),
+		// projects.companion.ts → projectsListingContent
+		listing: z.object({
+			heading: LocalizedStringSchema,
+			searchPlaceholder: LocalizedStringSchema,
+			seeAllLink: LocalizedStringSchema,
+			filters: z.object({
+				filtersLabel: LocalizedStringSchema,
+				services: LocalizedStringSchema,
+				tags: LocalizedStringSchema,
+				techStack: LocalizedStringSchema,
+				allLabel: LocalizedStringSchema,
+				showingPrefix: LocalizedStringSchema,
+			}),
+			card: z.object({
+				stackOverflowSuffix: LocalizedStringSchema,
+			}),
+		}),
+		// projects.companion.ts → projectsDetailContent
+		detail: z.object({
+			backToListingLabel: LocalizedStringSchema,
+			tocSectionTitle: LocalizedStringSchema,
+			readmeSectionTitle: LocalizedStringSchema,
+			glance: z.object({
+				overview: LocalizedStringSchema,
+				impact: LocalizedStringSchema,
+				stack: LocalizedStringSchema,
+				services: LocalizedStringSchema,
+				links: LocalizedStringSchema,
+				projectInfo: LocalizedStringSchema,
+				liveSiteLabel: LocalizedStringSchema,
+				liveSiteLabelMobile: LocalizedStringSchema,
+				githubLabel: LocalizedStringSchema,
+			}),
+			tocPill: z.object({
+				openAria: LocalizedStringSchema,
+				closeAria: LocalizedStringSchema,
+			}),
+		}),
+	}),
+	blogChrome: z.object({
+		// blog.companion.ts → blogListingContent
+		listing: z.object({
+			mobileHeading: LocalizedStringSchema,
+			searchPlaceholder: LocalizedStringSchema,
+			resultNoun: LocalizedStringSchema,
+			noPostsMessage: LocalizedStringSchema,
+			filters: z.object({
+				filtersLabel: LocalizedStringSchema,
+				allLabel: LocalizedStringSchema,
+				language: LocalizedStringSchema,
+				dateRange: LocalizedStringSchema,
+				from: LocalizedStringSchema,
+				to: LocalizedStringSchema,
+				tags: LocalizedStringSchema,
+				showingPrefix: LocalizedStringSchema,
+			}),
+			routeMap: z.object({
+				title: LocalizedStringSchema,
+				terminus: LocalizedStringSchema,
+			}),
+		}),
+		// blog.companion.ts → blogDetailContent
+		detail: z.object({
+			code: z.object({
+				copyAria: LocalizedStringSchema,
+				copyLabel: LocalizedStringSchema,
+				errorLabel: LocalizedStringSchema,
+			}),
+			backNav: z.object({
+				toPersonal: LocalizedStringSchema,
+				toDispatches: LocalizedStringSchema,
+			}),
+			header: z.object({
+				postTagsAria: LocalizedStringSchema,
+				readingTimeLabel: LocalizedStringSchema,
+			}),
+			page: z.object({
+				readingMode: LocalizedStringSchema,
+				tocSectionTitle: LocalizedStringSchema,
+				metaCategory: LocalizedStringSchema,
+				metaWords: LocalizedStringSchema,
+				metaReadTime: LocalizedStringSchema,
+				metaLanguage: LocalizedStringSchema,
+				metaTags: LocalizedStringSchema,
+			}),
+			tocPill: z.object({
+				openAria: LocalizedStringSchema,
+				closeAria: LocalizedStringSchema,
+			}),
+		}),
+	}),
+	servicesChrome: z.object({
+		// services.companion.ts → servicesListingContent
+		listing: z.object({
+			heading: LocalizedStringSchema,
+			stationLabelTemplate: LocalizedStringSchema,
+			deepDiveLabel: LocalizedStringSchema,
+			projectsStrip: z.object({
+				builtWithService: LocalizedStringSchema,
+				builtWithFallback: LocalizedStringSchema,
+				projectSingular: LocalizedStringSchema,
+				projectPlural: LocalizedStringSchema,
+			}),
+		}),
+		// services.companion.ts → servicesPageMeta
+		pageMeta: z.object({
+			title: LocalizedStringSchema,
+			description: LocalizedStringSchema,
+		}),
+		// services.companion.ts → servicesDetailContent
+		detail: z.object({
+			backToServicesLabel: LocalizedStringSchema,
+			valuePropositionHeading: LocalizedStringSchema,
+			deliverablesHeading: LocalizedStringSchema,
+			relatedProjectsHeading: LocalizedStringSchema,
+			relatedProjectsNavAria: LocalizedStringSchema,
+			serviceNavAria: LocalizedStringSchema,
+		}),
+	}),
+	navChrome: z.object({
+		// nav.companion.ts → navDirections
+		directions: z.object({
+			previous: LocalizedStringSchema,
+			next: LocalizedStringSchema,
+		}),
+		// nav.companion.ts → sharedChromeContent
+		shared: z.object({
+			openMenuAria: LocalizedStringSchema,
+			closeMenuAria: LocalizedStringSchema,
+			themeToggleAria: LocalizedStringSchema,
+			footerNavAria: LocalizedStringSchema,
+			menuOverlayAria: LocalizedStringSchema,
+			menuOverlayFooterLabel: LocalizedStringSchema,
+			localeSwitcherAria: LocalizedStringSchema,
+			searchPlaceholder: LocalizedStringSchema,
+			clearFiltersLabel: LocalizedStringSchema,
+			tocToggleSectionAria: LocalizedStringSchema,
+			tocHeading: LocalizedStringSchema,
+			tocMobileButton: LocalizedStringSchema,
+		}),
+	}),
+	footerChrome: z.object({
+		// site-content.companion.ts → relatedProjectsStripContent
+		relatedProjectsStrip: z.object({
+			builtWithLabel: LocalizedStringSchema,
+			projectCountSingular: LocalizedStringSchema,
+			projectCountPlural: LocalizedStringSchema,
+		}),
+		// site-content.companion.ts → footerContent
+		footer: z.object({
+			tagline: LocalizedStringSchema,
+			location: LocalizedStringSchema,
+			statusPrefix: LocalizedStringSchema,
+		}),
+	}),
+	heroDashboard: z.object({
+		// hero-data.ts → metric labelI18n / subI18n (verbatim seeds)
+		vehiclesLabel: LocalizedStringSchema,
+		vehiclesSub: LocalizedStringSchema,
+		delayLabel: LocalizedStringSchema,
+		// subs carry runtime numbers; seeded as templates ({coverage} / {total})
+		// so the localizable WORDS are CMS-owned while the figures stay runtime.
+		delaySub: LocalizedStringSchema,
+		routesLabel: LocalizedStringSchema,
+		routesSub: LocalizedStringSchema,
+	}),
 });
 export type SiteLabels = z.infer<typeof SiteLabelsSchema>;
