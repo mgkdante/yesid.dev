@@ -19,28 +19,31 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(meta.singleton).toBe(true);
 		expect(meta.group).toBe('site_config');
 	});
-	it('translations collection carries the 122 label columns + pk/fks', () => {
-		// go2/w4: +1 — ui_back_to_projects ("← All Projects" on /projects/[slug]).
-		// go2/w5: +3, then taste-2 merges the two metro legend labels into ONE
-		// ui_metro_caption ('STM métro + REM') — net +2: ui_metro_caption +
-		// a11y_replay_intro (hero dot replay button aria). → 25 original.
-		// slice-30 t1: +97 code-owned chrome columns (projects_/blog_/services_/
-		// nav_/footer_/hero_) mirroring the companion + hero-data labels → 122.
-		const fields = (plan[1].payload as { fields: { field: string }[] }).fields.map((f) => f.field);
-		expect(fields.length).toBe(125); // id + site_labels_id + languages_code + 122
-		for (const key of Object.keys(SITE_LABEL_SEEDS)) expect(fields).toContain(key);
-		expect(fields).toContain('ui_back_to_projects');
-		expect(fields).toContain('ui_metro_caption');
-		expect(fields).toContain('a11y_replay_intro');
-		expect(fields).not.toContain('ui_metro_legend_stm');
-		expect(fields).not.toContain('ui_metro_legend_rem');
+	it('emits the 122 label columns as standalone POST /fields steps (not inline in the collection)', () => {
+		// The collection-create carries only structural fields (pk + 2 fks); each
+		// label column is a SEPARATE field step so new chrome columns are added to
+		// the ALREADY-EXISTING translations collection (the inline collection POST
+		// is skipped once it exists — that bug is why the chrome never persisted).
+		// slice-30 t1: 25 base + 97 chrome = 122.
+		const collFields = (plan[1].payload as { fields: { field: string }[] }).fields.map((f) => f.field);
+		expect(collFields).toEqual(['id', 'site_labels_id', 'languages_code']);
+		const colNames = plan
+			.filter((s) => s.kind === 'field' && s.path === '/fields/site_labels_translations')
+			.map((s) => (s.payload as { field: string }).field);
+		expect(colNames.length).toBe(122);
+		for (const key of Object.keys(SITE_LABEL_SEEDS)) expect(colNames).toContain(key);
+		expect(colNames).toContain('ui_back_to_projects');
+		expect(colNames).toContain('ui_metro_caption');
+		expect(colNames).toContain('a11y_replay_intro');
+		expect(colNames).not.toContain('ui_metro_legend_stm');
+		expect(colNames).not.toContain('ui_metro_legend_rem');
 		// slice-30 t1 chrome columns — one representative per new group.
-		expect(fields).toContain('projects_chrome_listing_heading');
-		expect(fields).toContain('blog_chrome_listing_mobile_heading');
-		expect(fields).toContain('services_chrome_detail_back_to_services_label');
-		expect(fields).toContain('nav_chrome_shared_open_menu_aria');
-		expect(fields).toContain('footer_chrome_footer_tagline');
-		expect(fields).toContain('hero_dashboard_vehicles_label');
+		expect(colNames).toContain('projects_chrome_listing_heading');
+		expect(colNames).toContain('blog_chrome_listing_mobile_heading');
+		expect(colNames).toContain('services_chrome_detail_back_to_services_label');
+		expect(colNames).toContain('nav_chrome_shared_open_menu_aria');
+		expect(colNames).toContain('footer_chrome_footer_tagline');
+		expect(colNames).toContain('hero_dashboard_vehicles_label');
 	});
 	it('adds heading + empty_state to block_projects_page_content_translations', () => {
 		const chrome = plan.filter((s) => s.kind === 'field' && s.path === '/fields/block_projects_page_content_translations');
@@ -66,16 +69,18 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(SITE_LABEL_SEEDS.hero_dashboard_vehicles_label).toBe('VEHICLES TRACKED');
 		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(122);
 	});
-	it('FR translations seed is a sparse subset of the EN columns', () => {
-		// slice-30 t1: FR is a SEPARATE site_labels_translations row. Every FR key
-		// must be a real EN column; the original a11y_/ui_/pages_/email_ FR lives
-		// in the live CMS, so only the chrome groups carry FR in the fixture layer.
+	it('FR translations seed covers every EN column (complete after t1 reconciliation)', () => {
+		// slice-30 t1: FR is a SEPARATE site_labels_translations row. The base
+		// a11y_/ui_/pages_/email_ FR was assumed to already live in the CMS, but it
+		// was NULL there — so the fixture now carries the FULL FR for every EN
+		// column. A regen then reproduces the committed site-labels.ts byte-for-byte.
 		const enKeys = new Set(Object.keys(SITE_LABEL_SEEDS));
 		for (const key of Object.keys(SITE_LABEL_FR_SEEDS)) expect(enKeys.has(key)).toBe(true);
 		expect(SITE_LABEL_FR_SEEDS.projects_chrome_meta_title).toBe('Projets | yesid.');
 		expect(SITE_LABEL_FR_SEEDS.footer_chrome_footer_tagline).toBe('// infrastructure numérique');
 		expect(SITE_LABEL_FR_SEEDS.hero_dashboard_vehicles_label).toBe('VÉHICULES SUIVIS');
-		expect(Object.keys(SITE_LABEL_FR_SEEDS).length).toBe(97);
+		expect(SITE_LABEL_FR_SEEDS.a11y_replay_intro).toBe("Rejouer l'intro");
+		expect(Object.keys(SITE_LABEL_FR_SEEDS).length).toBe(122);
 	});
 	it('parseFlags dry-run default', () => {
 		expect(parseFlags([])).toEqual({ apply: false, seed: false });

@@ -114,7 +114,6 @@ export function buildSiteLabelsPlan(): SchemaStep[] {
 					autoincrementPkField(),
 					{ field: 'site_labels_id', type: 'uuid', meta: { hidden: true }, schema: {} },
 					{ field: 'languages_code', type: 'string', meta: { hidden: true }, schema: {} },
-					...labelColumns,
 				],
 			},
 		},
@@ -142,6 +141,17 @@ export function buildSiteLabelsPlan(): SchemaStep[] {
 				schema: { on_delete: 'SET NULL' },
 			},
 		},
+		// per-column translation fields — emitted individually (POST /fields) so new
+		// chrome columns land on the ALREADY-EXISTING translations collection (the
+		// inline collection.fields above only fire on a fresh instance, and that
+		// POST is skipped once the collection exists).
+		...labelColumns.map((col): SchemaStep => ({
+			kind: 'field',
+			target: `site_labels_translations.${col.field}`,
+			method: 'POST',
+			path: '/fields/site_labels_translations',
+			payload: col,
+		})),
 		// /projects chrome columns
 		{
 			kind: 'field', target: 'block_projects_page_content_translations.heading', method: 'POST',
