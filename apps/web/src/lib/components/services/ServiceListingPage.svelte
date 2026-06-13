@@ -111,7 +111,8 @@
 <style>
 	.services-page {
 		position: relative;
-		background: var(--background);
+		/* transparent so the root layout's single .circuit-grid shows through,
+		   matching /projects (the canonical single-grid background). */
 		overflow-x: clip;
 	}
 
@@ -121,15 +122,15 @@
 		z-index: var(--z-rail);
 	}
 
-	/* Solid backdrop above tabs — covers the nav gap so content doesn't
-	   show through the semi-transparent nav pill on scroll. */
+	/* Nav-gap above the sticky tabs is left transparent so the global grid
+	   reads through, same as /projects (the nav pill carries its own backing). */
 	.tabs-bar::before {
 		content: '';
 		position: absolute;
 		inset-inline: 0;
 		bottom: 100%;
 		height: calc(5rem + env(safe-area-inset-top, 0px) + 1rem);
-		background: var(--background);
+		background: transparent;
 		pointer-events: none;
 	}
 
