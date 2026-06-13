@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 500 130" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="10" y="14" font-family="JetBrains Mono" font-size="8" fill="currentColor">CATÉNAIRE 25kV — SECTION TYPE CT-2</text>
+	<text x="10" y="14" font-family="JetBrains Mono" font-size="8" fill="currentColor">CATÉNAIRE 25kV · SECTION TYPE CT-2</text>
 	<line x1="10" y1="17" x2="260" y2="17" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Border frame -->

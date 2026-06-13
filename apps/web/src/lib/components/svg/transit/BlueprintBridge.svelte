@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 1000 250" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="15" y="18" font-family="JetBrains Mono" font-size="10" fill="currentColor">ÉLÉVATION — PONT-RAIL TYPE PR-4</text>
+	<text x="15" y="18" font-family="JetBrains Mono" font-size="10" fill="currentColor">ÉLÉVATION · PONT-RAIL TYPE PR-4</text>
 	<line x1="15" y1="22" x2="310" y2="22" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Border frame -->
@@ -119,7 +119,7 @@
 	<line x1="80" y1="235" x2="920" y2="235" stroke="currentColor" stroke-width="0.5"/>
 	<line x1="80" y1="231" x2="80" y2="239" stroke="currentColor" stroke-width="0.5"/>
 	<line x1="920" y1="231" x2="920" y2="239" stroke="currentColor" stroke-width="0.5"/>
-	<text x="500" y="243" font-family="JetBrains Mono" font-size="7" fill="currentColor" text-anchor="middle">960.0 m — LONGUEUR TOTALE</text>
+	<text x="500" y="243" font-family="JetBrains Mono" font-size="7" fill="currentColor" text-anchor="middle">960.0 m · LONGUEUR TOTALE</text>
 
 	<!-- Deck detail — expansion joints -->
 	<line x1="495" y1="64" x2="505" y2="64" stroke="currentColor" stroke-width="0.75"/>

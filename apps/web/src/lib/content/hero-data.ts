@@ -2,12 +2,24 @@
 // Phase 1: constrained random data simulating STM transit pipeline KPIs.
 // Phase 2 (future): wire to live Neon Postgres API, fall back to this on error.
 
+import type { Locale, LocalizedString } from '$lib/types';
+import { resolveLocale } from '$lib/utils/locale';
+
 export interface HeroMetric {
+  // Resolved, display-ready label/sub (plain strings). The metric cards
+  // (HeroMetrics → MetricDisplay) render these directly. EN by default; the
+  // consumer (HeroBanner) overwrites them with the locale-resolved value of
+  // labelI18n/subI18n at render time via localizeHeroData().
   label: string;
   value: number;
   unit?: string;
   sub: string;
   key: 'vehicles' | 'delay' | 'routes';
+  // go2/about: localized sources for the dashboard LABELS. Numbers/units and
+  // the "STM" wordmark stay verbatim; only the words get a fr. Optional so bare
+  // generators/fixtures (EN-only label/sub) still satisfy HeroMetric.
+  labelI18n?: LocalizedString;
+  subI18n?: LocalizedString;
 }
 
 export interface HeroQueryRow {
@@ -55,9 +67,31 @@ export function generateHeroData(): HeroData {
 
   return {
     metrics: [
-      { label: 'VEHICLES TRACKED', value: vehicles, key: 'vehicles', sub: 'STM \u00b7 LIVE' },
-      { label: 'AVG DELAY', value: avgDelay, unit: 's', key: 'delay', sub: `${coverage}% COVERAGE` },
-      { label: 'ROUTES LIVE', value: routesLive, key: 'routes', sub: `OF ${ROUTES_TOTAL} TOTAL` },
+      {
+        label: 'VEHICLES TRACKED',
+        value: vehicles,
+        key: 'vehicles',
+        sub: 'STM \u00b7 LIVE',
+        labelI18n: { en: 'VEHICLES TRACKED', fr: 'V\u00c9HICULES SUIVIS' },
+        subI18n: { en: 'STM \u00b7 LIVE', fr: 'STM \u00b7 EN DIRECT' },
+      },
+      {
+        label: 'AVG DELAY',
+        value: avgDelay,
+        unit: 's',
+        key: 'delay',
+        sub: `${coverage}% COVERAGE`,
+        labelI18n: { en: 'AVG DELAY', fr: 'RETARD MOYEN' },
+        subI18n: { en: `${coverage}% COVERAGE`, fr: `${coverage}% DE COUVERTURE` },
+      },
+      {
+        label: 'ROUTES LIVE',
+        value: routesLive,
+        key: 'routes',
+        sub: `OF ${ROUTES_TOTAL} TOTAL`,
+        labelI18n: { en: 'ROUTES LIVE', fr: 'LIGNES EN DIRECT' },
+        subI18n: { en: `OF ${ROUTES_TOTAL} TOTAL`, fr: `SUR ${ROUTES_TOTAL} AU TOTAL` },
+      },
     ],
     queryRows,
     queryTime: randomFloat(0.015, 0.045, 3),
@@ -67,9 +101,31 @@ export function generateHeroData(): HeroData {
 // Stable initial data so the first render is deterministic for SSR/tests.
 export const INITIAL_HERO_DATA: HeroData = {
   metrics: [
-    { label: 'VEHICLES TRACKED', value: 1247, key: 'vehicles', sub: 'STM \u00b7 LIVE' },
-    { label: 'AVG DELAY', value: 47.3, unit: 's', key: 'delay', sub: '87.6% COVERAGE' },
-    { label: 'ROUTES LIVE', value: 186, key: 'routes', sub: 'OF 203 TOTAL' },
+    {
+      label: 'VEHICLES TRACKED',
+      value: 1247,
+      key: 'vehicles',
+      sub: 'STM \u00b7 LIVE',
+      labelI18n: { en: 'VEHICLES TRACKED', fr: 'V\u00c9HICULES SUIVIS' },
+      subI18n: { en: 'STM \u00b7 LIVE', fr: 'STM \u00b7 EN DIRECT' },
+    },
+    {
+      label: 'AVG DELAY',
+      value: 47.3,
+      unit: 's',
+      key: 'delay',
+      sub: '87.6% COVERAGE',
+      labelI18n: { en: 'AVG DELAY', fr: 'RETARD MOYEN' },
+      subI18n: { en: '87.6% COVERAGE', fr: '87.6% DE COUVERTURE' },
+    },
+    {
+      label: 'ROUTES LIVE',
+      value: 186,
+      key: 'routes',
+      sub: 'OF 203 TOTAL',
+      labelI18n: { en: 'ROUTES LIVE', fr: 'LIGNES EN DIRECT' },
+      subI18n: { en: 'OF 203 TOTAL', fr: 'SUR 203 AU TOTAL' },
+    },
   ],
   queryRows: [
     { route: '24', avgDelayS: 32.1, vehicles: 28 },
@@ -80,3 +136,18 @@ export const INITIAL_HERO_DATA: HeroData = {
   ],
   queryTime: 0.023,
 };
+
+// go2/about: resolve each metric's localized LABEL/SUB into the display-ready
+// `label`/`sub` plain strings for the requested locale, leaving values, units,
+// keys, and query rows untouched (numbers/units never localize). The metric
+// cards stay locale-agnostic — HeroBanner feeds them this resolved copy.
+export function localizeHeroData(data: HeroData, locale: Locale): HeroData {
+  return {
+    ...data,
+    metrics: data.metrics.map((metric) => ({
+      ...metric,
+      label: metric.labelI18n ? resolveLocale(metric.labelI18n, locale) : metric.label,
+      sub: metric.subI18n ? resolveLocale(metric.subI18n, locale) : metric.sub,
+    })),
+  };
+}

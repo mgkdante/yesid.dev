@@ -129,11 +129,14 @@
 			{/each}
 		</div>
 
-		<!-- Divider -->
-		<span class="nav-divider" aria-hidden="true"></span>
+		<!-- Divider — collapses with the locale toggle when the menu sheet is open. -->
+		<span class="nav-divider nav-collapsible {overlayActive ? 'nav-collapsed' : ''}" aria-hidden="true"></span>
 
-		<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published -->
-		<LanguageToggle {locale} {pathname} />
+		<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published.
+		     Hidden while the menu sheet is open: the sheet carries its own locale switch (no double EN/FR). -->
+		<span class="nav-collapsible {overlayActive ? 'nav-collapsed' : ''}">
+			<LanguageToggle {locale} {pathname} />
+		</span>
 
 		<!-- Theme toggle (GO-W2.2) -->
 		<ThemeToggle {locale} />

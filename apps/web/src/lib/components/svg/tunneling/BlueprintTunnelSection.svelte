@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 250 260" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="12" y="14" font-family="JetBrains Mono" font-size="7" fill="currentColor">SECTION — ANNEAU DE VOUSSOIRS</text>
+	<text x="12" y="14" font-family="JetBrains Mono" font-size="7" fill="currentColor">SECTION · ANNEAU DE VOUSSOIRS</text>
 	<line x1="12" y1="17" x2="220" y2="17" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Border frame -->
@@ -129,5 +129,5 @@
 	<text x="236" y="14" font-family="JetBrains Mono" font-size="5" fill="currentColor" text-anchor="end">DWG VS-001</text>
 
 	<!-- Ring number annotation -->
-	<text x="125" y="248" font-family="JetBrains Mono" font-size="5.5" fill="currentColor" text-anchor="middle">ANNEAU TYPE 7+1 — LARGEUR 1.5m</text>
+	<text x="125" y="248" font-family="JetBrains Mono" font-size="5.5" fill="currentColor" text-anchor="middle">ANNEAU TYPE 7+1 · LARGEUR 1.5m</text>
 </svg>
