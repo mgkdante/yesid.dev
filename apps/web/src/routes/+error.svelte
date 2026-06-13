@@ -118,8 +118,10 @@
 		</div>
 	</div>
 
-	<!-- Bottom hazard tape -->
-	<div data-testid="hazard-tape"><Separator variant="hazard" /></div>
+	<!-- GO2-W5 final batch (6b): no page-level bottom tape. The page fills the
+	     viewport exactly, so the footer's platform-edge hazard tape sits at the
+	     fold and closes the construction frame — a second tape here stacked two
+	     stripes at the footer seam. -->
 </div>
 
 <style>

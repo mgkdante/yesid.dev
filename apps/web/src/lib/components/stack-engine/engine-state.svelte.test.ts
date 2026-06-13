@@ -138,4 +138,66 @@ describe('EngineState', () => {
 		s.selectArchetype('not-a-slug');
 		expect(s.active).toBeNull();
 	});
+
+	// ── Round 4 nav: stepped back, undo, start over, history hook. ──────────
+	it('round 4: back() steps preview → blueprint → select (and is inert in select)', () => {
+		const s = new EngineState(FIXTURES);
+		s.back();
+		expect(s.view).toBe('select');
+
+		s.selectArchetype('data-dashboard');
+		s.toggleBlueprintPreview();
+		expect(s.view).toBe('preview');
+
+		s.back();
+		expect(s.view).toBe('blueprint');
+		expect(s.activeArchetype).toBe('data-dashboard'); // still on the drawing
+
+		s.back();
+		expect(s.view).toBe('select');
+		expect(s.activeArchetype).toBeNull();
+	});
+
+	it('round 4: undoLastPick removes the MOST RECENT pick (insertion order, re-toggles re-rank)', () => {
+		const s = new EngineState(FIXTURES);
+		s.toggleTech('postgresql');
+		s.toggleTech('docker');
+		s.toggleTech('python');
+		s.undoLastPick();
+		expect([...s.pickedTechs]).toEqual(['postgresql', 'docker']);
+
+		// Re-toggling moves a pick to the end — undo forgets THAT one.
+		s.toggleTech('postgresql');
+		s.toggleTech('postgresql');
+		expect([...s.pickedTechs]).toEqual(['docker', 'postgresql']);
+		s.undoLastPick();
+		expect([...s.pickedTechs]).toEqual(['docker']);
+
+		// Empty set: a no-op, never a throw.
+		s.undoLastPick();
+		s.undoLastPick();
+		expect(s.pickedTechs.size).toBe(0);
+	});
+
+	it('round 4: clearPicks starts over (matches re-derive to empty)', () => {
+		const s = new EngineState(FIXTURES);
+		s.toggleTech('postgresql');
+		s.toggleTech('docker');
+		expect(s.matches.length).toBeGreaterThan(0);
+		s.clearPicks();
+		expect(s.pickedTechs.size).toBe(0);
+		expect(s.matches).toEqual([]);
+	});
+
+	it('round 4: selectArchetype notifies the onDetailOpen hook (Engine wires shallow history there)', () => {
+		const s = new EngineState(FIXTURES);
+		const opened: string[] = [];
+		s.onDetailOpen = (slug) => opened.push(slug);
+		s.selectArchetype('data-pipeline');
+		expect(opened).toEqual(['data-pipeline']);
+		// No hook → no throw (unit-test/router-less default).
+		s.onDetailOpen = null;
+		s.selectArchetype('data-dashboard');
+		expect(opened).toEqual(['data-pipeline']);
+	});
 });

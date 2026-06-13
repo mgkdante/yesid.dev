@@ -1,7 +1,8 @@
-// stack-matching (slice-29) — THE one pure function behind compose-as-matching.
+// stack-matching (slice-29, AND-rewrite go2/w4) — THE one pure function
+// behind compose-as-matching.
 //
 // The Tech Stack Engine never free-form wires picked techs; it answers
-// "what can these build?" by ranking the curated archetypes against the
+// "what can these build?" by filtering the curated archetypes against the
 // picks. Pure data-in/data-out: no DOM, no state, no fetches — fully covered
 // by stack-matching.test.ts.
 
@@ -9,23 +10,23 @@ import type { StackArchetype } from '@repo/shared/schemas';
 
 export interface Match {
 	slug: string;
-	/** |picked ∩ stackIds| / |stackIds| — share of the archetype already picked. */
+	/** |picked| / |stackIds| — share of the matched archetype already picked. */
 	coverage: number;
-	/** Picked ids present in the archetype, in archetype tech order. */
+	/** Picked ids (all of them — AND contract), in archetype tech order. */
 	matched: string[];
 	/** Archetype ids not yet picked, in archetype tech order. */
 	missing: string[];
 }
 
 /**
- * Rank archetypes by how much of their stack the picked techs cover.
+ * Filter + rank archetypes against the picked techs — AND semantics.
  *
  * Rules (pinned by tests):
  * - empty picks → []
- * - coverage = |picked ∩ stackIds| / |stackIds| (picks outside every
- *   archetype never distort the denominator)
- * - zero-coverage archetypes are excluded
- * - sort: coverage desc, then slug asc
+ * - an archetype matches ONLY if EVERY picked tech is in its stack
+ *   (picked ⊆ stackIds) — more picks narrow the results, never widen them
+ * - coverage = |picked| / |stackIds| (duplicates in picks count once)
+ * - sort: fewer missing first (closest to complete), then slug asc
  * - matched/missing preserve the archetype's tech order (layer-major, the
  *   same order the blueprint draws)
  */
@@ -39,8 +40,10 @@ export function matchArchetypes(
 	const matches: Match[] = [];
 	for (const archetype of archetypes) {
 		const stackIds = archetype.tech.map((link) => link.id);
+		const stackSet = new Set(stackIds);
+		// AND contract: any pick outside the stack disqualifies the archetype.
+		if (![...picks].every((id) => stackSet.has(id))) continue;
 		const matched = stackIds.filter((id) => picks.has(id));
-		if (matched.length === 0) continue;
 		matches.push({
 			slug: archetype.slug,
 			coverage: matched.length / stackIds.length,
@@ -50,7 +53,7 @@ export function matchArchetypes(
 	}
 
 	return matches.sort((a, b) => {
-		if (a.coverage !== b.coverage) return b.coverage - a.coverage;
+		if (a.missing.length !== b.missing.length) return a.missing.length - b.missing.length;
 		return a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0;
 	});
 }

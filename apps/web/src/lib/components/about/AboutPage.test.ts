@@ -13,17 +13,39 @@ describe('AboutPage', () => {
 		expect(screen.getByTestId('page-about')).toBeTruthy();
 	});
 
-	it('renders the top hazard stripe', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		// Heading was removed — dashboard has a hazard stripe instead
-		const page = screen.getByTestId('page-about');
-		expect(page).toBeTruthy();
+	it('keeps the top hazard stripe but renders NONE below the bento — the footer platform edge owns the bottom seam', () => {
+		// GO2-W5 final batch (6b): the page-level bottom stripe stacked on the
+		// footer's platform-edge tape. Only the top stripe remains page-owned;
+		// tapes INSIDE cards (e.g. the CTA terminal chrome) are fine.
+		const { container } = render(AboutPage, {
+			props: { aboutPage: aboutPageContent, weather: null },
+		});
+		const section = screen.getByTestId('page-about');
+		const stripes = Array.from(
+			container.querySelectorAll('div[style*="repeating-linear-gradient"]'),
+		);
+		const before = stripes.filter(
+			(el) => section.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING,
+		);
+		const below = stripes.filter((el) => {
+			const pos = section.compareDocumentPosition(el);
+			return (
+				pos & Node.DOCUMENT_POSITION_FOLLOWING && !(pos & Node.DOCUMENT_POSITION_CONTAINED_BY)
+			);
+		});
+		expect(before.length).toBe(1); // the top stripe survives
+		expect(below).toEqual([]); // nothing tape-shaped between the page and the footer
 	});
 
 	it('renders metro stop labels on cards', () => {
-		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByText('STOP 00 — IDENTITY')).toBeTruthy();
-		expect(screen.getByText('STOP 08 — SNAPSHOTS')).toBeTruthy();
+		// GO2-W5: StopLabel wraps the digits in a wayfinding span, so match the
+		// combined textContent of the stop-label nodes.
+		const { container } = render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
+		const labels = Array.from(container.querySelectorAll('[data-slot="stop-label"]')).map(
+			(el) => el.textContent,
+		);
+		expect(labels).toContain('STOP 00 — IDENTITY');
+		expect(labels).toContain('STOP 08 — SNAPSHOTS');
 	});
 
 	it('renders the identity section', () => {

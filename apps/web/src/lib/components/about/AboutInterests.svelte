@@ -46,14 +46,17 @@
 				aria-label={interestLabel}
 				aria-pressed={activeIndex === i}
 			>
-				<!-- Background image: skewed, B&W → color on hover/tap -->
+				<!-- Background image: skewed, B&W → color on hover/tap.
+				     go2/w4: treatment is theme-aware — dark keeps the darkened
+				     look, light whitens instead (filters live in <style>). -->
 				<div
-					class="strip-bg absolute inset-[-20px] bg-cover bg-center grayscale brightness-[0.3] transition-all duration-500 ease-out"
+					class="strip-bg absolute inset-[-20px] bg-cover bg-center transition-all duration-500 ease-out"
 					style="background-image: url('{interest.image}'); transform: skewX(-8deg) scale(1.2);"
 				></div>
 
-				<!-- Dark overlay for text readability -->
-				<div class="strip-overlay absolute inset-0 bg-black/40 transition-opacity duration-500"></div>
+				<!-- Theme-tinted overlay for text readability (background-mix,
+				     not hardcoded black: dark ink in dark mode, paper in light). -->
+				<div class="strip-overlay absolute inset-0 transition-opacity duration-500"></div>
 
 				<!-- Diagonal orange divider (not after last) -->
 				{#if i < interests.length - 1}
@@ -64,9 +67,9 @@
 					></div>
 				{/if}
 
-				<!-- Label -->
+				<!-- Label — theme-aware ink + halo (see .strip-label below) -->
 				<div class="relative z-10 flex flex-col items-center justify-center">
-					<span class="font-mono text-caption font-semibold tracking-[3px] text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
+					<span class="strip-label font-mono text-caption font-semibold tracking-[3px]">
 						{interestLabel.toUpperCase()}
 					</span>
 				</div>
@@ -77,10 +80,38 @@
 </div>
 
 <style>
+	/* go2/w4 operator QA: theme-aware image treatment. Dark mode keeps the
+	   original darkened B&W (brightness 0.3 + ink overlay); light mode
+	   WHITENS instead (brightness up + paper overlay) so the strips read as
+	   bleached paper, not a dark slab on a light page. Tokens drive the
+	   overlay (var(--background) flips per theme) — no hardcoded black. */
+	.strip-bg {
+		filter: grayscale(1) brightness(0.3);
+	}
+	.strip-overlay {
+		background: color-mix(in srgb, var(--background) 40%, transparent);
+	}
+	.strip-label {
+		color: var(--foreground);
+		text-shadow: 0 1px 4px color-mix(in srgb, var(--background) 80%, transparent);
+	}
+
+	/* Light theme: whitening equivalent of the dark treatment. */
+	:global([data-theme='light']) .strip-bg,
+	:global(.theme-light) .strip-bg {
+		filter: grayscale(1) brightness(1.45) contrast(0.85);
+	}
+
 	/* Desktop hover: strip turns color + grows */
 	.interest-strip:hover .strip-bg,
 	.interest-strip.strip-active .strip-bg {
 		filter: grayscale(0) brightness(0.6);
+	}
+	:global([data-theme='light']) .interest-strip:hover .strip-bg,
+	:global(.theme-light) .interest-strip:hover .strip-bg,
+	:global([data-theme='light']) .interest-strip.strip-active .strip-bg,
+	:global(.theme-light) .interest-strip.strip-active .strip-bg {
+		filter: grayscale(0) brightness(1.1);
 	}
 	.interest-strip:hover .strip-overlay,
 	.interest-strip.strip-active .strip-overlay {

@@ -43,7 +43,7 @@ export const contactContent: ContactContent = {
 	},
 	meta: {
 		description: {
-			en: 'Get in touch for freelance data engineering, database development, and digital infrastructure consulting.',
+			en: 'Get in touch for freelance digital infrastructure — databases, pipelines, dashboards, and websites. Montreal, ~24h response time.',
 		},
 		title: { en: 'Contact — yesid.' },
 	},

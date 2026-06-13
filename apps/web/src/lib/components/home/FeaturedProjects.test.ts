@@ -3,9 +3,10 @@ import { render, screen } from '@testing-library/svelte';
 import FeaturedProjects from './FeaturedProjects.svelte';
 // slice-18i Phase 7C: FeaturedProjects now requires proofReel prop.
 import { proofReelContent } from '$lib/content/site-content';
-import { getProjectBySlug } from '$lib/content';
+import { getProjectBySlug, getVisibleServices } from '$lib/content';
 import { resolveLocale } from '$lib/utils';
 import type { Project } from '$lib/types';
+import { projectFactory } from '../../../tests/factories';
 
 // These tests validate the SHAPE / behaviour of the proof-reel carousel, not
 // the specific CMS values inside it. Both `proofReelContent.slugs` and the
@@ -27,7 +28,10 @@ const expectedCount = resolvedProjects.length;
 // slice-28.5 (#124): the component no longer resolves slugs itself — the home
 // +page.server.ts does (repository layer) and passes the filtered array as the
 // `projects` prop. The stub below mirrors that load output exactly.
-const renderProps = { proofReel: proofReelContent, projects: resolvedProjects };
+// go2/home-cards: services join the props (same array the home load passes to
+// HomeServices) so each card can render its station signage chip.
+const services = getVisibleServices();
+const renderProps = { proofReel: proofReelContent, projects: resolvedProjects, services };
 
 describe('FeaturedProjects', () => {
 	// Guard: the carousel is meaningless with zero cards. If this trips, the
@@ -79,11 +83,71 @@ describe('FeaturedProjects', () => {
 		});
 	});
 
-	it('renders tech stack tags for cards that have a stack', () => {
-		render(FeaturedProjects, { props: renderProps });
-		const expectedTags = resolvedProjects.reduce((sum, p) => sum + p.stack.length, 0);
-		const tags = screen.queryAllByTestId('proof-tag');
-		expect(tags).toHaveLength(expectedTags);
+	it('renders the full tech stack names as one quiet mono line', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-full-stack',
+			stack: ['PostgreSQL', 'Python', 'SvelteKit'],
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		const stackLine = screen.getByTestId('proof-stack-line');
+		expect(stackLine.textContent).toBe('PostgreSQL · Python · SvelteKit');
+		expect(stackLine.textContent).not.toContain('PG');
+		expect(stackLine.textContent).not.toContain('PY');
+	});
+
+	it('renders project tags as chips when tags exist', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-tags',
+			tags: ['etl', 'transit'],
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		const tags = screen.getAllByTestId('proof-project-tag');
+		expect(tags).toHaveLength(2);
+		expect(tags.map((tag) => tag.textContent)).toEqual(['etl', 'transit']);
+	});
+
+	it('renders environment metadata only — never location (worldwide work)', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-meta',
+			location: 'Québec, CA',
+			environment: 'production',
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		expect(screen.getByTestId('proof-project-meta').textContent).toBe('Production'); // location banned by operator — worldwide ;)
+	});
+
+	it('omits the project metadata line when environment is empty', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-no-meta',
+			location: '',
+			environment: '',
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		expect(screen.queryByTestId('proof-project-meta')).toBeNull();
 	});
 
 	it('cards link to /projects/[slug] for each resolved project (URL contract)', () => {
@@ -109,5 +173,103 @@ describe('FeaturedProjects', () => {
 		render(FeaturedProjects, { props: renderProps });
 		const images = screen.getAllByTestId('proof-card-image');
 		expect(images).toHaveLength(expectedCount);
+	});
+
+	// ── go2/home-cards: story-first recompose render lock ──────────────────
+	// Operator verdict: the cards "don't say nothing". Each card must now
+	// carry the excerpt (one-liner), the station signage chip, the metric and
+	// the exploration line. Counts/derivations follow the CMS-decoupling
+	// precedent above — content words are CMS-owned, presence is engineering.
+
+	it('renders the one-liner excerpt as the story line on every card', () => {
+		render(FeaturedProjects, { props: renderProps });
+		const excerpts = screen.getAllByTestId('proof-excerpt');
+		expect(excerpts).toHaveLength(expectedCount);
+		resolvedProjects.forEach((project, i) => {
+			expect(excerpts[i]?.textContent).toContain(resolveLocale(project.oneLiner, 'en'));
+			// Visibility grade (unit tier): real text, not an empty shell — the
+			// computed-size grade runs in the home-cards e2e spec.
+			expect(excerpts[i]?.textContent?.trim().length).toBeGreaterThan(0);
+		});
+	});
+
+	it('renders a station signage chip naming the primary service per card', () => {
+		render(FeaturedProjects, { props: renderProps });
+		// Round 7: stations are MANY-TO-MANY — one chip per resolvable
+		// service per card, station-number sorted (archived ids drop out,
+		// never a crash). Titles render only when a card has ≤2 stations;
+		// 3+ stations compress to numbers + the 'one system' caption.
+		const expected = resolvedProjects.flatMap((p) =>
+			p.relatedServices
+				.map((id) => services.find((s) => s.id === id))
+				.filter((s): s is NonNullable<typeof s> => Boolean(s)),
+		);
+		const chips = screen.queryAllByTestId('proof-station-chip');
+		expect(chips).toHaveLength(expected.length);
+		const allText = chips.map((c) => c.textContent).join(' ');
+		for (const svc of expected) {
+			expect(allText).toContain(String(svc.station).padStart(2, '0'));
+		}
+	});
+
+	it('renders the quiet exploration line on every card', () => {
+		render(FeaturedProjects, { props: renderProps });
+		const lines = screen.getAllByTestId('proof-see-build');
+		expect(lines).toHaveLength(expectedCount);
+		for (const line of lines) {
+			expect(line.textContent).toContain('see the build');
+			expect(line.textContent).toContain('→');
+		}
+	});
+
+	it('falls back to the gradient + service-SVG panel for imageless projects', () => {
+		// cafe-arona case: a featured project with no proof-reel image entry
+		// must render the fallback panel (ProjectCard parity), not a broken
+		// <img>. Synthetic project via factory; service derived from CMS data.
+		const svc = services.find((s) => s.svg);
+		expect(svc, 'CMS must expose at least one visible service with an svg').toBeTruthy();
+		const project = projectFactory.build({
+			slug: 'synthetic-imageless',
+			relatedServices: [svc!.id],
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		expect(screen.getByTestId('proof-image-fallback')).toBeInTheDocument();
+		// No photo element — the band is the gradient panel + service art.
+		expect(document.querySelector('.proof-img')).toBeNull();
+		expect(
+			screen.getByTestId('proof-image-fallback').querySelector('img')?.getAttribute('src'),
+		).toBe(`/svg/services/${svc!.svg}`);
+		// Title drops the reflective voice off-photo — foreground ink class.
+		expect(screen.getByTestId('proof-card-title').classList.contains('proof-title--ink')).toBe(
+			true,
+		);
+		// The chip still names the station on fallback cards.
+		expect(screen.getByTestId('proof-station-chip').textContent).toContain(
+			String(svc!.station).padStart(2, '0'),
+		);
+	});
+
+	it('renders no signage chips when every service id is unresolvable', () => {
+		const project = projectFactory.build({
+			slug: 'synthetic-orphan',
+			relatedServices: ['archived-station-id'],
+		});
+		render(FeaturedProjects, {
+			props: {
+				proofReel: { ...proofReelContent, slugs: [project.slug], images: {} },
+				projects: [project],
+				services,
+			},
+		});
+		expect(screen.queryAllByTestId('proof-station-chip')).toHaveLength(0);
+		// The rest of the card still composes.
+		expect(screen.getByTestId('proof-excerpt')).toBeInTheDocument();
+		expect(screen.getByTestId('proof-see-build')).toBeInTheDocument();
 	});
 });

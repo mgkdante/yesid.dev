@@ -93,7 +93,7 @@ export function generateDesignMd(tree: TokenTree, opts: DesignMdOptions = {}): s
   return `---
 version: alpha
 name: yesid.dev
-description: Digital infrastructure that moves. Edge-to-edge, dark-first, one orange, motion-with-intent.
+description: Digital infrastructure that moves. Edge-to-edge, dark-first, four-color infrastructure doctrine (orange signage · yellow wayfinding · reflective white · structural black), motion-with-intent.
 
 # GENERATED FROM packages/tokens/tokens.json — DO NOT EDIT
 # Run \`bun run --cwd packages/tokens build\` to regenerate.
@@ -117,15 +117,38 @@ ${componentsBlock}
 ## Overview
 
 yesid.dev is a freelance digital-infrastructure brand. The design language is edge-to-edge,
-dark-first, restrained-orange. Every visual decision traces back to one of five principles:
-edge-to-edge layout, dark-first surfaces, one-orange interactivity, motion-with-intent,
-no fluff. Full narrative and implementation rules: Notion → Business → Brand.
+dark-first, governed by the four-color infrastructure doctrine below. Every visual decision
+traces back to one of five principles: edge-to-edge layout, dark-first surfaces, one-orange
+interactivity (orange is the clickable hue — with a single doctrinal exception: yellow
+conversion buttons, see Colors), motion-with-intent, no fluff.
+Full narrative and implementation rules: Notion → Business → Brand.
 
 ## Colors
 
-Single brand orange (\`#E07800\`) reserved for interactive surfaces only. Semantic tokens
-(\`background\`, \`foreground\`, \`card\`, \`muted\`, etc.) carry theme-switching responsibility.
-Contrast verified on dark first, then light.
+**THE FOUR-COLOR INFRASTRUCTURE DOCTRINE** (constitutional). Real infrastructure speaks four
+colors — orange signage, yellow hazard stripes (with black), reflective white, black tape and
+structure. Each holds a named role; every component usage maps to exactly one:
+
+- **ORANGE — interactive/signage** (\`primary\` \`#E07800\`, light \`#9D5200\`): links, buttons,
+  CTAs, focus rings, active/hover states, signage accents. The clickable hue for everything
+  except conversion (below).
+- **YELLOW — wayfinding & hazard & highlight** (\`accent\` \`#FFB627\` as surface/art;
+  \`accent-text\` as AA text, light \`#815D00\`; \`line-amber\`; \`accent-surface\`): section
+  labels/overlines (\`.label-station\`), departure-board and status readouts, metric/number
+  callouts, data-viz/diagram amber, selected/highlight states, hazard tape. Round 5c —
+  THE YELLOW-CONVERSION RULE: yellow holds exactly ONE clickable job, "talk to Yesid"
+  conversion buttons (contact submit, hero contact, about send, closer CTA) drawn as the
+  theme-invariant signage pair (\`accent\` \`#FFB627\` ground / \`signage-bg\` \`#1C1814\` ink,
+  ~10:1, hover \`accent-hover\`), at most one per view. Every other yellow stays unclickable.
+- **WHITE — reflective** (\`reflective\` \`#F5F5F0\`, theme-invariant; dark \`foreground\`):
+  key headline words on dark, catch-lights (\`edge-highlight\`), white-core métro dots and
+  reflective chips over guaranteed-dark grounds.
+- **BLACK — tape/structure** (\`hazard-b\` / \`signage-bg\` \`#1C1814\`; light \`border-strong\`
+  joins the family): hazard stripe pairing, signage chip grounds, light-mode strong
+  structural rules drawn as black tape on paper. Dark mode's deep board IS the black voice.
+
+Semantic tokens (\`background\`, \`foreground\`, \`card\`, \`muted\`, etc.) carry theme-switching
+responsibility. Contrast verified on dark first, then light — all pairs script-computed.
 
 ## Typography
 

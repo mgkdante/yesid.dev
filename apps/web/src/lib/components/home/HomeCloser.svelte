@@ -166,7 +166,7 @@
 <section
 	bind:this={sectionEl}
 	data-testid="closer-section"
-	class="closer-section relative theme-dark"
+	class="closer-section relative"
 >
 	<!-- Graffiti "THE END" — SVG loaded dynamically for DrawSVG animation -->
 	<CloserGraffiti onReady={handleGraffitiReady} />
@@ -198,12 +198,15 @@
 </section>
 
 <style>
-	/* GO-W2.2: night construction tableau — intentionally pinned dark in BOTH
-	   themes via .theme-dark (tokens.css class alias re-scopes all vars).
-	   The painted background is required: without it the light page shows
-	   through. dark: Tailwind variant also fires here (app.css custom-variant). */
+	/* go2/w4 operator QA: the GO-W2.2 .theme-dark pin is REMOVED — it read as
+	   an extra dark layer and kept the closer terminal dark in light mode.
+	   GO2-W5 round 6 (operator): the section paints NOTHING of its own —
+	   transparent in both themes so the page's circuit-grid schematic shows
+	   through the terminus. Solidity lives in the terminal board inside
+	   (--terminal === --background, the round-2 contract), never on the
+	   section wrapper. */
 	.closer-section {
-		background: var(--background);
+		background: transparent;
 		min-height: 100dvh;
 		display: flex;
 		align-items: center;
@@ -249,6 +252,10 @@
 	}
 
 	/* ===== CTA ===== */
+	/* Round 5c YELLOW-CONVERSION doctrine: "Initialize connection ->" is the
+	   terminus conversion action — a SOLID yellow signage button, not a ghost
+	   outline. Theme-invariant pair (--accent #FFB627 ground, --signage-bg
+	   #1C1814 ink, ≈10:1 both modes); hover per the accent system. */
 	.closer-cta {
 		display: inline-flex;
 		align-items: center;
@@ -256,20 +263,21 @@
 		font-family: var(--font-mono);
 		font-size: 15px;
 		font-weight: 600;
-		color: var(--accent);
+		color: var(--signage-bg);
+		background: var(--accent);
 		text-decoration: none;
 		padding: 16px 28px;
 		min-height: 44px;
-		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+		border: 1px solid transparent;
 		border-radius: var(--radius-sm);
 		margin-block-end: 28px;
 		transition: background-color var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default), color var(--duration-normal) var(--ease-default);
 		letter-spacing: 0.5px;
 	}
+	/* Color-only hover — pressBounce owns this element's transform. */
 	.closer-cta:hover {
-		background: color-mix(in srgb, var(--accent) 8%, transparent);
-		border-color: color-mix(in srgb, var(--accent) 60%, transparent);
-		color: var(--foreground);
+		background: var(--accent-hover);
+		color: var(--signage-bg);
 	}
 	.closer-cta-arrow {
 		transition: transform var(--duration-normal);
