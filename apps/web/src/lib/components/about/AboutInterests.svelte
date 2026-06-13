@@ -35,7 +35,7 @@
 	</div>
 
 	<!-- Diagonal strips container -->
-	<div class="flex h-full min-h-36">
+	<div class="flex h-full min-h-36 pb-5">
 		{#each interests as interest, i}
 			{@const interestLabel = resolveLocale(interest.label, locale)}
 			<button
@@ -75,6 +75,10 @@
 				</div>
 			</button>
 		{/each}
+	</div>
+
+	<div class="absolute right-3 bottom-1.5 left-3 z-20 truncate text-right font-mono text-[0.625rem] text-[var(--muted-foreground)]">
+		Transit photo: Harrison Keely · CC BY 4.0 — Space: NASA
 	</div>
 </Card>
 </div>

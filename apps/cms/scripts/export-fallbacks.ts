@@ -267,7 +267,7 @@ async function fetchAll(opts: RunOptions): Promise<ExportData> {
 		enqueue('about-page', async () => {
 			out.aboutPage = await fetchAboutContent({ client });
 			log.info(
-				`  about-page done (${out.aboutPage.metrics.length} metrics, ${out.aboutPage.methodology.length} steps, ${out.aboutPage.testimonials.length} testimonials, ${out.aboutPage.techStack.length} tech, ${out.aboutPage.clientLogos.length} logos).`,
+				`  about-page done (${out.aboutPage.metrics.length} metrics, ${out.aboutPage.methodology.length} beliefs, ${out.aboutPage.testimonials.length} testimonials, ${out.aboutPage.languages.length} languages, ${out.aboutPage.education.length} education rows).`,
 			);
 		});
 
