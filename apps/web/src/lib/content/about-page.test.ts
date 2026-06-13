@@ -4,7 +4,7 @@ import { aboutPageContent } from './about-page.js';
 describe('aboutPageContent', () => {
 	describe('identity', () => {
 		it('has name with en key', () => {
-			expect(aboutPageContent.identity.name.en).toBe('Yesid O.');
+			expect(aboutPageContent.identity.name.en).toBe('Yesid');
 		});
 
 		it('has non-empty title and value prop', () => {
@@ -101,7 +101,7 @@ describe('aboutPageContent', () => {
 		it('has Champlain and Bishop education rows', () => {
 			expect(aboutPageContent.education).toEqual([
 				{
-					school: { en: 'Champlain Regional College — Lennoxville', fr: 'Champlain Regional College — Lennoxville' },
+					school: { en: 'Champlain Regional College, Lennoxville', fr: 'Champlain Regional College, Lennoxville' },
 					program: {
 						en: 'DEC, Accounting & Management Technology',
 						fr: 'DEC, Techniques de comptabilité et de gestion',
@@ -181,9 +181,8 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.cta.buttonHref).toBe('/contact');
 		});
 
-		it('has button label and availability', () => {
+		it('has a button label', () => {
 			expect(aboutPageContent.cta.buttonLabel.en.length).toBeGreaterThan(0);
-			expect(aboutPageContent.cta.availability.en.length).toBeGreaterThan(0);
 		});
 
 		it('has at least 2 social links', () => {

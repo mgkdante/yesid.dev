@@ -672,15 +672,15 @@
 		align-items: start;
 	}
 
-	/* Vertical divider with faded ends */
+	/* Vertical divider — amber rule (matches the footer's accent rule), faded ends */
 	.hero-divider {
 		width: 1px;
 		height: 100%;
 		background: linear-gradient(
 			180deg,
 			transparent 0%,
-			var(--border) 15%,
-			var(--border) 85%,
+			var(--border-rule-accent) 15%,
+			var(--border-rule-accent) 85%,
 			transparent 100%
 		);
 	}

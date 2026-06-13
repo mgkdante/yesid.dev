@@ -26,9 +26,9 @@ describe('buildPersonNode locale', () => {
 });
 
 describe('meta.forRoute locale threading', () => {
-	it('static route SEO for fr keeps the EN canonical while fr is unpublished', async () => {
+	it('static route SEO for fr canonicalizes to the /fr URL (fr published)', async () => {
 		const seo = await staticAdapter.meta.forRoute('/about', 'fr');
-		expect(seo.canonical).toBe('https://yesid.dev/about');
+		expect(seo.canonical).toBe('https://yesid.dev/fr/about');
 	});
 	it('breadcrumb names come from the trilingual site_pages registry', async () => {
 		const seo = await staticAdapter.meta.forRoute('/about', 'fr');
@@ -45,12 +45,13 @@ describe('meta.forRoute locale threading', () => {
 });
 
 describe('techStack.content locale param', () => {
-	it('defaults to en and accepts a locale (falls back to en docs when fr absent)', async () => {
+	it('defaults to en and accepts a locale (fr now translated by the FR pass)', async () => {
 		const items = await staticAdapter.techStack.all();
 		const id = items[0].id;
 		const en = await staticAdapter.techStack.content(id);
 		const fr = await staticAdapter.techStack.content(id, 'fr');
 		expect(en.length).toBeGreaterThan(0);
-		expect(fr).toBe(en); // tech-stack longform is en-only today (deferred surface)
+		expect(fr.length).toBeGreaterThan(0);
+		expect(fr).not.toBe(en); // tech-stack longform now carries Québécois fr
 	});
 });

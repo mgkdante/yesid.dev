@@ -363,7 +363,6 @@ export interface AboutCta {
 	lines: readonly { text: string; color: 'orange' | 'muted' | 'accent' }[];
 	buttonLabel: LocalizedString;
 	buttonHref: string;
-	availability: LocalizedString;
 	socials: readonly { label: string; href: string; icon: string }[];
 }
 

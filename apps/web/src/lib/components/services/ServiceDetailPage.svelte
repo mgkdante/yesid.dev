@@ -302,7 +302,7 @@
 
 <style>
 	.service-detail {
-		background: var(--background);
+		/* transparent so the root .circuit-grid shows through, matching /projects */
 		min-height: 100dvh;
 	}
 
@@ -327,7 +327,7 @@
 		inset-inline: 0;
 		bottom: 100%;
 		height: calc(5rem + env(safe-area-inset-top, 0px) + 1rem);
-		background: var(--background);
+		background: transparent;
 		pointer-events: none;
 	}
 

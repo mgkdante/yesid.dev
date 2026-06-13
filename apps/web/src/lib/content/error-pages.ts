@@ -12,17 +12,23 @@ import type { ErrorPageContent } from './nav.companion';
 
 export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	'0': {
-		description: { en: 'The page you were looking for could not be found.' },
-		heading: { en: 'This station is offline' },
-		label: { en: 'PAGE NOT FOUND' },
+		description: {
+			en: 'The page you were looking for could not be found.',
+			fr: 'La page que vous cherchiez est introuvable.',
+		},
+		heading: {
+			en: 'This station is offline',
+			fr: 'Cette station est hors ligne',
+		},
+		label: { en: 'PAGE NOT FOUND', fr: 'PAGE INTROUVABLE' },
 		suggestions: [
 			{
 				href: '/',
-				label: { en: 'Home' },
+				label: { en: 'Home', fr: 'Accueil' },
 			},
 			{
 				href: '/services',
-				label: { en: 'Services' },
+				label: { en: 'Services', fr: 'Services' },
 			},
 		],
 		terminalLine: '$ route --status 0 // generic fallback',
@@ -62,17 +68,21 @@ export const errorPagesById: Readonly<Record<number, ErrorPageContent>> = {
 	'500': {
 		description: {
 			en: 'The server encountered an unexpected error. Please try again later.',
+			fr: 'Le serveur a rencontré une erreur inattendue. Réessayez plus tard.',
 		},
-		heading: { en: 'Something went wrong' },
-		label: { en: 'SYSTEM ERROR' },
+		heading: {
+			en: 'Something went wrong',
+			fr: 'Quelque chose a mal tourné',
+		},
+		label: { en: 'SYSTEM ERROR', fr: 'ERREUR SYSTÈME' },
 		suggestions: [
 			{
 				href: '/',
-				label: { en: 'Home' },
+				label: { en: 'Home', fr: 'Accueil' },
 			},
 			{
 				href: '/contact',
-				label: { en: 'Contact' },
+				label: { en: 'Contact', fr: 'Contact' },
 			},
 		],
 		terminalLine: '$ route --status 500 // internal server error',

@@ -97,8 +97,8 @@ describe('Footer — locale threading (slice-28.6)', () => {
 		expect(screen.getByText('Projets')).toBeInTheDocument();
 	});
 
-	it('hides the locale switcher while only one locale is published', () => {
-		render(Footer);
+	it('hides the locale switcher when only one locale is available', () => {
+		render(Footer, { props: { availableLocales: ['en'] } });
 		expect(screen.queryByTestId('footer-locale-switch')).toBeNull();
 	});
 

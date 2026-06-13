@@ -399,13 +399,17 @@ describe('GO2-W5 round 6 — transparent terminus, detail SVGs back, top-band pa
 		expect(panel).toContain('hovered={panelMorphed}');
 	});
 
-	it('R6-3 — services detail top band = the listing top band (same solid backdrop)', () => {
-		// Both routes paint the identical solid var(--background) backdrop
-		// above their StationTabs (covers main's pt-20 nav gap — no grid
-		// peeking through on one route but not the other).
-		const backdrop = /\.tabs-bar::before \{[\s\S]*?bottom: 100%;[\s\S]*?height: calc\(5rem \+ env\(safe-area-inset-top, 0px\) \+ 1rem\);[\s\S]*?background: var\(--background\);/;
-		expect(read('lib/components/services/ServiceListingPage.svelte')).toMatch(backdrop);
-		expect(read('lib/components/services/ServiceDetailPage.svelte')).toMatch(backdrop);
+	it('R6-3 — services pages are TRANSPARENT: the global circuit grid shows through (matches /projects + the closer)', () => {
+		// Operator: every page shows the single root .circuit-grid like /projects.
+		// The services listing + detail no longer paint a solid var(--background)
+		// page fill or nav-gap backdrop — both are transparent so the grid reads
+		// through (same intent as R6-1's transparent closer).
+		const listing = read('lib/components/services/ServiceListingPage.svelte');
+		const detail = read('lib/components/services/ServiceDetailPage.svelte');
+		expect(listing).toMatch(/\.tabs-bar::before \{[\s\S]*?background: transparent;/);
+		expect(detail).toMatch(/\.tabs-bar::before \{[\s\S]*?background: transparent;/);
+		expect(listing).not.toMatch(/\.services-page \{[\s\S]*?background: var\(--background\);/);
+		expect(detail).not.toMatch(/\.service-detail \{[\s\S]*?background: var\(--background\);/);
 	});
 });
 
