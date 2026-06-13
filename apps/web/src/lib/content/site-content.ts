@@ -18,7 +18,7 @@ export const heroAnimContent: HeroAnimContent = {
 };
 
 export const heroContent: HeroContent = {
-	ctaContact: { en: 'Let\'s talk', fr: 'Jasons-en' },
+	ctaContact: { en: 'Let\'s talk', fr: 'Parlons-en' },
 	ctaWork: { en: 'See how I build →', fr: 'Vois comment je bâtis →' },
 	headline: {
 		ariaSuffix: { en: 'Don\'t Break.', fr: 'Ne cassent pas.' },
@@ -227,7 +227,7 @@ export const ctaContent: CtaContent = {
 	},
 	subtitle: {
 		en: 'Have a data problem? Let\'s talk.',
-		fr: 'Un problème de données? Jasons-en.',
+		fr: 'Un problème de données? Parlons-en.',
 	},
 };
 

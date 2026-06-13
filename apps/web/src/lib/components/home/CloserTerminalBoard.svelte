@@ -5,6 +5,10 @@
 <script lang="ts">
 	import { TerminalChrome } from '$lib/components/brand';
 	import TerminalCursor from '$lib/components/shared/TerminalCursor.svelte';
+	import { getLocale } from '$lib/utils/locale-context';
+	import { localizeHref } from '$lib/utils/locale-routing';
+
+	const locale = getLocale();
 
 	let {
 		rows,
@@ -48,7 +52,7 @@
 	</div>
 	{#each rows as row, i}
 		<a
-			href={row.href}
+			href={localizeHref(row.href, locale)}
 			data-testid="closer-row"
 			data-closer-row
 			class="terminal-row tap-press"
