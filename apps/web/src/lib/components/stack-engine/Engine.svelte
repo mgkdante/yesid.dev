@@ -18,11 +18,15 @@
 	import { tick } from 'svelte';
 	import { gsap } from 'gsap';
 	import { Flip } from 'gsap/Flip';
+	import { pushState } from '$app/navigation';
+	import { page } from '$app/state';
+	import { STACK_LAYERS } from '@repo/shared/schemas';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
 	import { EngineState } from './engine-state.svelte';
+	import { LAYER_TEACHING } from './layer-teaching';
 	import GoalPicker from './GoalPicker.svelte';
 	import TechMatcher from './TechMatcher.svelte';
 	import BlueprintCanvas from './BlueprintCanvas.svelte';
@@ -36,6 +40,61 @@
 	let { animate = true }: { animate?: boolean } = $props();
 
 	const engine = new EngineState();
+
+	// ── Round 4 nav: browser-back friendliness via SvelteKit shallow routing.
+	// Opening a drawing pushes ONE history entry (URL unchanged); the browser
+	// back button then closes the drawing back to the map instead of leaving
+	// the page. Blueprint ⇄ preview toggles share the entry — one drawing, one
+	// entry. pushState needs the running router: in unit tests (no router) the
+	// try/catch keeps in-page nav fully working without history — and
+	// `historyLive` stays false so the fold-back effect below never fires.
+	let historyLive = false;
+	engine.onDetailOpen = (slug) => {
+		if (page.state.stackEngineDetail === slug) return;
+		try {
+			pushState('', { stackEngineDetail: slug });
+			historyLive = true;
+		} catch {
+			/* router-less environment (unit tests) — nav works without history */
+		}
+	};
+
+	// Browser back (or forward past the entry) clears the shallow state — fold
+	// the engine back to the select surface. Close-only on purpose: re-OPENING
+	// on forward is judged out (a stale entry after a mode switch would fight
+	// setMode's view reset — don't overbuild). The reactive reads happen
+	// BEFORE the historyLive guard: effects track per-run, and a short-circuit
+	// on the plain flag would leave the effect with zero dependencies.
+	$effect(() => {
+		const detail = page.state.stackEngineDetail;
+		const view = engine.view;
+		if (historyLive && !detail && view !== 'select') {
+			engine.backToSelect();
+		}
+	});
+
+	/**
+	 * The '←' step: preview → blueprint stays inside the history entry;
+	 * blueprint → select pops our shallow entry when it's on top (so the
+	 * browser's own back lands where the visitor already is), else folds
+	 * directly (unit tests, stale-entry edge cases).
+	 */
+	function backStep(): void {
+		if (engine.view === 'preview') {
+			engine.back();
+			return;
+		}
+		if (page.state.stackEngineDetail) {
+			history.back();
+		} else {
+			engine.back();
+		}
+	}
+
+	// Homey nav labels (round 4) — the breadcrumb step reads like a place.
+	const backLabel = $derived(
+		engine.view === 'preview' ? '← back to the blueprint' : '← back to the map',
+	);
 
 	/**
 	 * Blueprint ⇄ preview morph: capture every [data-flip-id] box, swap the
@@ -69,9 +128,10 @@
 </script>
 
 <section class="stack-engine" data-testid="stack-engine">
-	<!-- GO-w2t5 addendum: section is full-bleed (route wraps it in the
-	     hazard-framed engine-band); the width cap lives on this inner
-	     container so content stays a readable centered column. -->
+	<!-- GO-w2t5 addendum + go2/w5 taste round 2: section is full-bleed (route
+	     wraps it in the hazard-framed engine-band) and the inner container is
+	     now UNCAPPED too — the engine genuinely spans the viewport; the
+	     section's --space-page-x padding is the readable gutter. -->
 	<div class="engine-inner">
 	<div class="engine-mode-toggle" role="group" aria-label="Engine mode">
 		<button
@@ -96,19 +156,44 @@
 		</button>
 	</div>
 
+	<!-- go2/w5 layered learning: persistent layer legend — never unmounted, so
+	     it teaches across goal/compose AND select/blueprint/preview. The metro
+	     track between the stations (per-cell flex segments, ≥768px) echoes the
+	     site's station vocabulary. Teaching lines come from layer-teaching.ts
+	     (single source). -->
+	<div class="layer-legend" data-testid="layer-legend">
+		{#each STACK_LAYERS as layer (layer)}
+			<div class="legend-cell" data-testid={`legend-${layer}`} style:--legend-color={`var(--layer-${layer})`}>
+				<span class="legend-station">
+					<span class="legend-dot" aria-hidden="true"></span>
+					<span class="legend-name">{layer}</span>
+					<!-- go2/w5 taste round 2: the metro track is a per-cell flex
+					     segment AFTER the name — it fills the gap to the next
+					     station and can never paint over text (the old absolute
+					     ::before sat in the positioned layer, striking the
+					     in-flow labels: "labels under the line"). -->
+					<span class="legend-track" aria-hidden="true"></span>
+				</span>
+				<span class="legend-teach">{LAYER_TEACHING[layer]}</span>
+			</div>
+		{/each}
+	</div>
+
 	{#if engine.mode === 'goal'}
 		<div class="engine-region" data-testid="engine-goal-region">
 			{#if engine.view === 'select' || !engine.active}
 				<GoalPicker {engine} />
 			{:else}
 				<div class="engine-viewbar">
+					<!-- Round 4: stepped back — preview → blueprint → map (the
+					     view toggle stays for the lateral flip). -->
 					<button
 						type="button"
 						class="engine-back"
 						data-testid="engine-back"
-						onclick={() => engine.backToSelect()}
+						onclick={backStep}
 					>
-						← all goals
+						{backLabel}
 					</button>
 					<button
 						type="button"
@@ -134,16 +219,16 @@
 	{:else}
 		<div class="engine-region" data-testid="engine-compose-region">
 			{#if engine.view === 'select' || !engine.active}
-				<TechMatcher {engine} />
+				<TechMatcher {engine} {animate} />
 			{:else}
 				<div class="engine-viewbar">
 					<button
 						type="button"
 						class="engine-back"
 						data-testid="engine-back"
-						onclick={() => engine.backToSelect()}
+						onclick={backStep}
 					>
-						← all picks
+						{backLabel}
 					</button>
 					<button
 						type="button"
@@ -181,11 +266,32 @@
 		/* GO-w2t5 addendum: no width cap here — the section bleeds with the
 		   route's engine-band; .engine-inner carries the content column. */
 		padding: 2rem var(--space-page-x);
+
+		/* go2/w5 §B: engine-LOCAL layer accents — scoped aliases over existing
+		   global tokens (theme implementer owns globals; no new global tokens,
+		   no hex literals). Light/dark flips ride the underlying tokens.
+		   Rule: hue is NEVER the sole carrier — every layer-colored element
+		   sits next to its printed layer name. */
+		--layer-interface: var(--primary);
+		--layer-logic: var(--accent-text);
+		--layer-data: var(--success);
+		--layer-infra: var(--muted-foreground);
+		--bp-grid-ink: color-mix(in srgb, var(--border) 45%, transparent);
+		--engine-teach-ink: var(--secondary-foreground);
+		/* Taste round 2 (fit audit): what the engine band actually composites —
+		   route tint (3% primary) over the page background. Text halos that
+		   must mask connector lines (pair notes) use THIS, not raw
+		   --background, so the mask is invisible on the tinted band. */
+		--engine-paper: color-mix(in srgb, var(--primary) 3%, var(--background));
 	}
 
+	/* go2/w5 taste round 2: TRULY edge-to-edge — the old var(--container-wide)
+	   cap here re-constrained the content the band had just un-constrained
+	   ("still feels constrained", operator). The inner now rides the full
+	   bleed; the section's --space-page-x padding keeps readable gutters.
+	   Chips, legend rail and the known-builds grid all breathe the viewport. */
 	.engine-inner {
-		max-width: var(--container-wide);
-		margin: 0 auto;
+		width: 100%;
 	}
 
 	.engine-mode-toggle {
@@ -197,9 +303,11 @@
 		margin-bottom: 1.5rem;
 	}
 
+	/* go2/w5 legibility pass (here and below): engine chrome steps up one full
+	   rung of the site type scale — tokens only, never raw px. */
 	.mode-btn {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		letter-spacing: 0.4px;
 		padding: 0.6rem 1rem;
 		background: var(--background);
@@ -224,6 +332,82 @@
 		color: var(--primary-foreground);
 	}
 
+	/* go2/w5: persistent layer legend — 2×2 grid <768px, one metro row ≥768px.
+	   Taste round 2: the track is now a per-cell flex segment between stations
+	   (see markup note) — nothing ever overlaps the printed names. */
+	.layer-legend {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.75rem 1.25rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.legend-cell {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	.legend-station {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		height: 16px;
+	}
+
+	.legend-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--legend-color);
+		flex-shrink: 0;
+	}
+
+	.legend-name {
+		font-family: var(--font-mono);
+		font-size: var(--text-mono);
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		color: var(--legend-color);
+	}
+
+	/* Metro-line micro-detail, in-flow edition: each station trails a 1px
+	   rail toward the next dot. Hidden <768px (2×2 grid has no line to draw)
+	   and after the last station (the line terminates there). */
+	.legend-track {
+		display: none;
+	}
+
+	.legend-teach {
+		font-family: var(--font-mono);
+		font-size: var(--text-mono);
+		color: var(--engine-teach-ink);
+	}
+
+	@media (min-width: 768px) {
+		.layer-legend {
+			display: flex;
+			gap: 1.25rem;
+		}
+
+		.legend-cell {
+			flex: 1 1 0;
+			min-width: 0;
+		}
+
+		.legend-track {
+			display: block;
+			flex: 1;
+			height: 1px;
+			background: var(--border);
+			margin-left: 2px;
+		}
+
+		.legend-cell:last-child .legend-track {
+			display: none;
+		}
+	}
+
 	.engine-region {
 		min-height: 200px;
 	}
@@ -239,7 +423,7 @@
 
 	.engine-back {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--muted-foreground);
 		background: none;
 		border: none;
@@ -253,7 +437,7 @@
 
 	.engine-view-toggle {
 		font-family: var(--font-mono);
-		font-size: 12px;
+		font-size: var(--text-small);
 		color: var(--primary);
 		background: none;
 		border: 1px solid var(--primary);
@@ -281,11 +465,5 @@
 
 	.engine-view-toggle:hover .toggle-arrow-back {
 		transform: translateX(-2px);
-	}
-
-	.engine-placeholder {
-		font-family: var(--font-mono);
-		font-size: 12px;
-		color: var(--muted-foreground);
 	}
 </style>

@@ -67,4 +67,22 @@ describe('Button (ui/button)', () => {
 		// Compound variant adds hover effects for CTA buttons
 		expect(btn.className).toContain('bg-primary');
 	});
+
+	// Round 5c YELLOW-CONVERSION doctrine: yellow buttons = "talk to Yesid"
+	// conversion actions only. The variant must carry the theme-invariant
+	// signage pair (accent ground / signage-bg ink) + accent-system hover.
+	it('applies conversion variant signage classes (yellow ground, signage ink, accent hover)', () => {
+		const { container } = render(ButtonTest, { props: { text: 'Talk', variant: 'conversion', size: 'cta' } });
+		const btn = container.querySelector('button')!;
+		expect(btn.className).toContain('bg-accent');
+		expect(btn.className).toContain('text-signage-bg');
+		expect(btn.className).toContain('hover:bg-accent-hover');
+		expect(btn.className).not.toContain('bg-primary');
+	});
+
+	it('conversion CTAs lift on hover like default CTAs (compound variant)', () => {
+		const { container } = render(ButtonTest, { props: { text: 'Talk', variant: 'conversion', size: 'cta-lg' } });
+		const btn = container.querySelector('button')!;
+		expect(btn.className).toContain('hover:-translate-y-px');
+	});
 });

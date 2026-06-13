@@ -14,10 +14,19 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(meta.singleton).toBe(true);
 		expect(meta.group).toBe('site_config');
 	});
-	it('translations collection carries the 22 label columns + pk/fks', () => {
+	it('translations collection carries the 25 label columns + pk/fks', () => {
+		// go2/w4: +1 — ui_back_to_projects ("← All Projects" on /projects/[slug]).
+		// go2/w5: +3, then taste-2 merges the two metro legend labels into ONE
+		// ui_metro_caption ('STM métro + REM') — net +2: ui_metro_caption +
+		// a11y_replay_intro (hero dot replay button aria).
 		const fields = (plan[1].payload as { fields: { field: string }[] }).fields.map((f) => f.field);
-		expect(fields.length).toBe(25); // id + site_labels_id + languages_code + 22
+		expect(fields.length).toBe(28); // id + site_labels_id + languages_code + 25
 		for (const key of Object.keys(SITE_LABEL_SEEDS)) expect(fields).toContain(key);
+		expect(fields).toContain('ui_back_to_projects');
+		expect(fields).toContain('ui_metro_caption');
+		expect(fields).toContain('a11y_replay_intro');
+		expect(fields).not.toContain('ui_metro_legend_stm');
+		expect(fields).not.toContain('ui_metro_legend_rem');
 	});
 	it('adds heading + empty_state to block_projects_page_content_translations', () => {
 		const chrome = plan.filter((s) => s.kind === 'field' && s.path === '/fields/block_projects_page_content_translations');
@@ -32,7 +41,11 @@ describe('setup-site-labels-and-chrome plan', () => {
 	});
 	it('seeds are exactly the fixture', () => {
 		expect(SITE_LABEL_SEEDS.ui_copyright_template).toBe('© {year} yesid');
-		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(22);
+		expect(SITE_LABEL_SEEDS.ui_back_to_projects).toBe('← All Projects');
+		// taste-2: caption stays operator-cased; the web caption uppercases via CSS.
+		expect(SITE_LABEL_SEEDS.ui_metro_caption).toBe('STM métro + REM');
+		expect(SITE_LABEL_SEEDS.a11y_replay_intro).toBe('Replay intro');
+		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(25);
 	});
 	it('parseFlags dry-run default', () => {
 		expect(parseFlags([])).toEqual({ apply: false, seed: false });

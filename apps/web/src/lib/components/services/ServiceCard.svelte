@@ -110,7 +110,15 @@
 			</div>
 		</div>
 
-		<!-- Mobile: CTA + SVG side by side. Desktop: SVG panel only. -->
+		<!-- Mobile-only SVG banner — operator order: metric → art → deep dive.
+		     The text column above ends on the metric; the CTA row closes below. -->
+		{#if svgContent}
+			<div class="svg-mobile-banner">
+				<ServiceSvgPanel {svgContent} variant="banner" />
+			</div>
+		{/if}
+
+		<!-- Mobile: full-width deep-dive CTA. Desktop: SVG panel only. -->
 		<div class="card-bottom">
 			<a href={localizeHref(`/services/${service.id}`, locale)} class="deep-dive-cta mobile-only tap-press" use:pressBounce>
 				{deepDiveLabel}
@@ -219,6 +227,13 @@
 		overflow: hidden; /* clips SVG during initial render — prevents size flash */
 	}
 
+	/* Mobile-only banner — hidden from tablet up (desktop keeps the side panel). */
+	@media (min-width: 768px) {
+		.svg-mobile-banner {
+			display: none;
+		}
+	}
+
 	/* Desktop CTA visible, mobile CTA hidden — combined selector beats .deep-dive-cta */
 	.deep-dive-cta.mobile-only { display: none; }
 	.deep-dive-cta.desktop-only { display: inline-block; }
@@ -229,17 +244,19 @@
 		gap: 0.75rem;
 	}
 
+	/* Round-4 doctrine: metric/number callouts speak the YELLOW voice
+	   (accent-text = AA amber both modes); the CTA next to it stays orange. */
 	.metric-value {
 		font-size: clamp(36px, 4vw, 48px);
 		font-weight: 900;
-		color: var(--primary);
+		color: var(--accent-text);
 		line-height: 1;
 	}
 
 	.metric-label {
 		font-family: var(--font-mono);
 		font-size: var(--text-caption);
-		color: var(--primary);
+		color: var(--accent-text);
 		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
@@ -270,12 +287,17 @@
 	/* Mobile: card = usable area height, SVG stacked on top, flex centered.
 	   scroll-margin-top aligns tab clicks below the sticky tabs. */
 	@media (max-width: 767px) {
+		/* min-height instead of a hard cap: the banner row can push past the
+		   usable area on short phones — the card grows rather than clipping
+		   its ends (justify-center + fixed height would crop both). */
 		.service-viewport {
-			height: calc(100svh - 12rem);
+			height: auto;
+			min-height: calc(100svh - 12rem);
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
 			scroll-margin-top: 8.75rem;
+			padding-block: 1rem;
 		}
 		.viewport-inner {
 			position: static;
@@ -286,23 +308,23 @@
 		/* Swap CTA visibility */
 		.deep-dive-cta.desktop-only { display: none; }
 		.deep-dive-cta.mobile-only { display: inline-block; }
-		/* CTA + SVG at opposite ends of the row */
+		/* The side panel belongs to desktop — mobile gets the banner above. */
+		.card-bottom :global(.svg-panel-responsive) {
+			display: none;
+		}
+		/* Deep dive closes the card as a full-width tappable bar. */
 		.card-bottom {
 			display: flex;
-			flex-direction: row;
-			align-items: center;
-			justify-content: space-between;
 		}
-		/* Same card as desktop, just scaled down */
-		.card-bottom :global(.svg-panel-responsive) {
-			width: 80px;
-			min-width: 80px;
-			flex-shrink: 0;
+		.deep-dive-cta.mobile-only {
+			flex: 1;
+			text-align: center;
 		}
-		.card-bottom :global(.svg-panel-responsive [data-slot="svg-icon"]) {
-			--svg-icon-size: 48px;
-			width: 48px;
-			height: 48px;
+		/* Banner icon bounded so the capped viewport keeps its rhythm. */
+		.svg-mobile-banner :global([data-slot='svg-icon']) {
+			--svg-icon-size: 96px;
+			width: 96px;
+			height: 96px;
 		}
 		.service-subtitle {
 			display: none;

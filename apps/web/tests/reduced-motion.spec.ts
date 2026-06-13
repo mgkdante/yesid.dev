@@ -46,14 +46,23 @@ test.describe('reduced-motion retier (GO-w2t5)', () => {
 		expect(hasInk).toBe(true);
 	});
 
-	test('reduce: weather particles are parked (animation none)', async ({ page }) => {
+	test('reduce: weather scene is a static composition (parked, never blank)', async ({
+		page,
+	}) => {
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/about');
 		await expect(page.locator('[data-testid="about-weather"]')).toBeVisible();
-		// Particle set depends on live weather; whatever rendered must be parked.
+		// GO Wave 4 scene system: the scene root + skyline always render
+		// (whatever the live condition — offline included), so reduce must show
+		// a composed still, not an empty card.
+		const scene = page.locator('[data-testid="about-weather"] .weather-scene');
+		await expect(scene).toHaveCount(1);
+		await expect(scene.locator('.weather-sky')).toHaveCount(1);
+		await expect(scene.locator('.weather-skyline')).toBeVisible();
+		// Every scene element (animated or not) must compute animation none.
 		const particles = page.locator('[data-testid="about-weather"] [class*="weather-"]');
 		const count = await particles.count();
-		test.skip(count === 0, 'no particles for current live weather condition');
+		expect(count).toBeGreaterThan(0);
 		for (let i = 0; i < count; i++) {
 			expect(
 				await particles.nth(i).evaluate((el) => getComputedStyle(el).animationName),

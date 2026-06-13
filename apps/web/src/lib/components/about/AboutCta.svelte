@@ -64,9 +64,10 @@
 			</div>
 		</TerminalChrome>
 
-		<!-- Action row: button + availability -->
+		<!-- Action row: button + availability. Round 5c: "Send message →" is
+		     the About view's one "talk to Yesid" conversion → yellow. -->
 		<div class="mt-3 flex flex-wrap items-center gap-3">
-			<Button variant="default" size="cta" href={cta.buttonHref}>
+			<Button variant="conversion" size="cta" href={cta.buttonHref} data-testid="about-cta-button">
 				{buttonLabel}
 			</Button>
 			<span class="font-mono text-caption tracking-[1px] text-[var(--accent-text)]">

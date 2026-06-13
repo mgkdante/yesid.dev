@@ -17,6 +17,7 @@ export const siteLabels: SiteLabels = {
 		closerGraffiti: { en: 'THE END graffiti' },
 		navCapabilities: { en: 'Capabilities' },
 		navTechStack: { en: 'Tech stack' },
+		replayIntro: { en: 'Replay intro' },
 		toc: { en: 'Table of contents' },
 	},
 	email: {
@@ -30,6 +31,7 @@ export const siteLabels: SiteLabels = {
 		projectsEdgeTitle: { en: 'Projects' },
 	},
 	ui: {
+		backToProjects: { en: '← All Projects' },
 		blogEditionTemplate: { en: 'VOL. 01 // ISS. {issue}' },
 		categoryPersonal: { en: 'Personal' },
 		categoryProfessional: { en: 'Professional' },
@@ -37,6 +39,7 @@ export const siteLabels: SiteLabels = {
 		errorStatusNote: { en: '// requested path not in service' },
 		markerFeatured: { en: '{num} / FEATURED' },
 		markerService: { en: '{num} / SERVICE' },
+		metroCaption: { en: 'STM métro + REM' },
 		nounProject: { en: 'project' },
 		watermarkPersonal: { en: 'Personal' },
 		watermarkProfessional: { en: 'Dispatch' },

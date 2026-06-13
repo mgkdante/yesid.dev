@@ -40,9 +40,11 @@ describe('404 Error Page', () => {
 		expect(screen.getByTestId('terminal-line')).toBeInTheDocument();
 	});
 
-	it('renders hazard tape accents', () => {
+	it('renders exactly ONE hazard tape (top) — the footer platform edge owns the bottom seam', () => {
+		// GO2-W5 final batch (6b): the page-level bottom tape stacked on the
+		// footer's platform-edge tape. The footer closes the frame at the fold.
 		render(ErrorPage);
 		const tapes = screen.getAllByTestId('hazard-tape');
-		expect(tapes.length).toBe(2);
+		expect(tapes.length).toBe(1);
 	});
 });

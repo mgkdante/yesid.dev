@@ -5,7 +5,8 @@
 // (zero runtime fetches), matching is the pure matchArchetypes function.
 //
 // Modes: 'goal' (pick an outcome → blueprint → preview) and 'compose'
-// ("what can these build?" — picks rank archetypes; never free-form wiring).
+// ("what can these build?" — picks filter archetypes with AND semantics,
+// every pick must be in a match's stack; never free-form wiring).
 // Switching mode resets the view/active archetype but PRESERVES picks, so a
 // visitor can bounce between framings without losing work.
 
@@ -31,6 +32,14 @@ export class EngineState {
 	activeArchetype = $state<string | null>(null);
 	pickedTechs = new SvelteSet<string>();
 
+	/**
+	 * Round 4 nav hook: Engine.svelte wires SvelteKit shallow history here so
+	 * opening a drawing pushes ONE history entry (browser back closes the
+	 * drawing instead of leaving the page). Optional by design — the class
+	 * stays router-free and unit tests never touch history.
+	 */
+	onDetailOpen: ((slug: string) => void) | null = null;
+
 	/** Ranked compose-mode matches — recomputed whenever picks change. */
 	matches: Match[] = $derived(matchArchetypes([...this.pickedTechs], this.archetypes));
 
@@ -55,6 +64,7 @@ export class EngineState {
 	selectArchetype(slug: string): void {
 		this.activeArchetype = slug;
 		this.view = 'blueprint';
+		this.onDetailOpen?.(slug);
 	}
 
 	/** Compose mode: tap a tech chip on/off. Matches re-derive automatically. */
@@ -64,6 +74,21 @@ export class EngineState {
 		} else {
 			this.pickedTechs.add(id);
 		}
+	}
+
+	/**
+	 * Round 4 nav: forget the MOST RECENT pick. SvelteSet preserves insertion
+	 * order and toggleTech deletes before re-adding, so the last element is
+	 * always the chronologically newest pick.
+	 */
+	undoLastPick(): void {
+		const last = [...this.pickedTechs].at(-1);
+		if (last !== undefined) this.pickedTechs.delete(last);
+	}
+
+	/** Round 4 nav: start over — drop every pick at once. */
+	clearPicks(): void {
+		this.pickedTechs.clear();
 	}
 
 	/** Blueprint ⇄ preview. Inert in the select view (nothing to morph yet). */
@@ -76,5 +101,17 @@ export class EngineState {
 	backToSelect(): void {
 		this.view = 'select';
 		this.activeArchetype = null;
+	}
+
+	/**
+	 * Round 4 nav: step back ONE surface — preview → blueprint → select.
+	 * (backToSelect remains the jump-home; back is the breadcrumb step.)
+	 */
+	back(): void {
+		if (this.view === 'preview') {
+			this.view = 'blueprint';
+		} else if (this.view === 'blueprint') {
+			this.backToSelect();
+		}
 	}
 }

@@ -30,6 +30,11 @@ export const TechStackPageContentSchema = z.object({
 		terminalAria: LocalizedStringSchema,
 		terminal: TechStackHeroTerminalSchema,
 		stats: TechStackHeroStatsSchema,
+		// go2 engine-layered-learning: plain-language "what is a stack?"
+		// explainer; optional so the committed module parses before the
+		// orchestrator applies the CMS field + regen; the component carries
+		// the EN fallback.
+		stackExplainer: LocalizedStringSchema.optional(),
 	}),
 	actions: z.object({
 		getInTouch: LocalizedStringSchema,

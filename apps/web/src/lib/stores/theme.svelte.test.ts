@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { themeStore } from './theme.svelte';
 
 function metaThemeColor(): string | null {
@@ -29,7 +29,7 @@ describe('theme store', () => {
 
 	it('set("light") updates the theme-color meta to the light surface', () => {
 		themeStore.set('light');
-		expect(metaThemeColor()).toBe('#FAFAF8');
+		expect(metaThemeColor()).toBe('#F7F2E9');
 		themeStore.set('dark');
 		expect(metaThemeColor()).toBe('#141414');
 	});
@@ -49,7 +49,29 @@ describe('theme store', () => {
 		document.documentElement.dataset.theme = 'light';
 		const cleanup = themeStore.init();
 		expect(themeStore.theme).toBe('light');
-		expect(metaThemeColor()).toBe('#FAFAF8');
+		expect(metaThemeColor()).toBe('#F7F2E9');
 		cleanup();
+	});
+
+	it('init() does not subscribe to system preference changes', () => {
+		const originalMatchMedia = window.matchMedia;
+		const addEventListener = vi.fn();
+		const removeEventListener = vi.fn();
+		window.matchMedia = vi.fn().mockReturnValue({
+			matches: true,
+			addEventListener,
+			removeEventListener,
+		} as unknown as MediaQueryList);
+
+		try {
+			const cleanup = themeStore.init();
+			expect(window.matchMedia).not.toHaveBeenCalled();
+			expect(addEventListener).not.toHaveBeenCalled();
+			cleanup();
+			expect(removeEventListener).not.toHaveBeenCalled();
+			expect(document.documentElement.dataset.theme).toBe('dark');
+		} finally {
+			window.matchMedia = originalMatchMedia;
+		}
 	});
 });

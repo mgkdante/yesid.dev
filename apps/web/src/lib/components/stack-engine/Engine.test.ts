@@ -54,10 +54,11 @@ describe('Engine shell', () => {
 		expect(screen.queryByTestId('product-preview')).toBeNull();
 	});
 
-	// GO-w2t5 operator addendum: the section is full-bleed inside the route's
-	// engine-band; the width cap lives on an inner container so engine content
-	// stays a readable centered column.
-	it('GO-w2t5 addendum: engine content sits in the engine-inner width container', () => {
+	// GO-w2t5 addendum + go2/w5 taste round 2: the section is full-bleed inside
+	// the route's engine-band and the inner wrapper is UNCAPPED too (truly
+	// edge-to-edge — engine-fullbleed-css.test.ts locks the CSS); this pins the
+	// DOM chain the CSS lock assumes.
+	it('engine content sits in the (uncapped) engine-inner wrapper', () => {
 		render(Engine, { props: { animate: false } });
 		const section = screen.getByTestId('stack-engine');
 		const inner = section.querySelector(':scope > .engine-inner');
@@ -66,11 +67,91 @@ describe('Engine shell', () => {
 		expect(inner!.contains(screen.getByTestId('engine-goal-region'))).toBe(true);
 	});
 
+	// go2/w5 taste round 2 (operator bug: legend labels rendered "under the
+	// line"): the metro track is now an in-flow per-station segment AFTER the
+	// printed name — it can never paint over text. Pin the DOM order the CSS
+	// relies on: dot → name → track, track decorative.
+	it('taste round 2: legend stations print name BEFORE the (decorative) track segment', () => {
+		render(Engine, { props: { animate: false } });
+		for (const layer of ['interface', 'logic', 'data', 'infra']) {
+			const station = screen
+				.getByTestId(`legend-${layer}`)
+				.querySelector('.legend-station')!;
+			// classList[0] — Svelte appends its scoping class after the authored one.
+			const children = [...station.children].map((el) => el.classList[0]);
+			expect(children).toEqual(['legend-dot', 'legend-name', 'legend-track']);
+			expect(station.querySelector('.legend-track')!.getAttribute('aria-hidden')).toBe(
+				'true',
+			);
+			expect(station.querySelector('.legend-name')!.textContent).toBe(layer);
+		}
+	});
+
 	it('backing out of a blueprint returns to the goal picker', async () => {
 		render(Engine, { props: { animate: false } });
 		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
 		await fireEvent.click(screen.getByTestId('engine-back'));
 		expect(screen.getByTestId('archetype-card-data-dashboard')).toBeTruthy();
 		expect(screen.queryByTestId('blueprint-canvas')).toBeNull();
+	});
+
+	// Round 4 nav: the '←' is a breadcrumb STEP (preview → blueprint → map),
+	// not a jump-home — the view toggle keeps the lateral flip. Labels are
+	// homey places, pinned here.
+	it('round 4: the back step walks preview → blueprint → map, label naming each place', async () => {
+		render(Engine, { props: { animate: false } });
+		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
+		const back = () => screen.getByTestId('engine-back');
+		expect(back().textContent?.trim()).toBe('← back to the map');
+
+		await fireEvent.click(screen.getByTestId('view-toggle'));
+		expect(screen.getByTestId('product-preview')).toBeTruthy();
+		expect(back().textContent?.trim()).toBe('← back to the blueprint');
+
+		// Step 1: preview → blueprint (the drawing stays active).
+		await fireEvent.click(back());
+		expect(screen.getByTestId('blueprint-canvas')).toBeTruthy();
+		expect(screen.queryByTestId('product-preview')).toBeNull();
+		expect(back().textContent?.trim()).toBe('← back to the map');
+
+		// Step 2: blueprint → the map.
+		await fireEvent.click(back());
+		expect(screen.getByTestId('archetype-card-data-dashboard')).toBeTruthy();
+		expect(screen.queryByTestId('blueprint-canvas')).toBeNull();
+	});
+
+	it('round 4: compose entries get the same stepped back', async () => {
+		render(Engine, { props: { animate: false } });
+		await fireEvent.click(screen.getByTestId('mode-toggle-compose'));
+		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
+		await fireEvent.click(screen.getByTestId('match-card-data-pipeline'));
+		expect(screen.getByTestId('blueprint-canvas')).toBeTruthy();
+		expect(screen.getByTestId('engine-back').textContent?.trim()).toBe('← back to the map');
+		await fireEvent.click(screen.getByTestId('engine-back'));
+		// Back on the compose map — chips + cards, picks intact.
+		expect(screen.getByTestId('tech-matcher')).toBeTruthy();
+		expect(screen.getByTestId('tech-chip-postgresql').getAttribute('aria-pressed')).toBe('true');
+	});
+
+	// go2/w5 layered learning: the layer legend persists across goal/compose
+	// AND select/blueprint — never unmounted, one cell per STACK_LAYERS entry.
+	it('go2/w5: layer legend renders one teaching cell per layer and persists across views', async () => {
+		render(Engine, { props: { animate: false } });
+		const legend = screen.getByTestId('layer-legend');
+		for (const layer of ['interface', 'logic', 'data', 'infra']) {
+			expect(screen.getByTestId(`legend-${layer}`)).toBeTruthy();
+		}
+		expect(legend.textContent).toContain('the part people see and touch');
+		expect(legend.textContent).toContain('the thinking part — rules and decisions');
+		expect(legend.textContent).toContain('the remembering part — where records live');
+		expect(legend.textContent).toContain('the ground it runs on — servers and deploys');
+
+		// Still mounted inside a goal blueprint…
+		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
+		expect(screen.getByTestId('layer-legend')).toBeTruthy();
+
+		// …and across the mode switch into compose.
+		await fireEvent.click(screen.getByTestId('mode-toggle-compose'));
+		expect(screen.getByTestId('layer-legend')).toBeTruthy();
 	});
 });

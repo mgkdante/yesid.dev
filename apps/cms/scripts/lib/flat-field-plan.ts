@@ -7,12 +7,12 @@
  * - scope 'parent': locale-invariant leaf; new column on the parent block
  *   row; value copied from the EN translation row's JSON column.
  *
- * Seeded entries (operator addendum): the 5 hero terminal templates on
- * block_tech_stack_page_content_translations have NO JSON source — they are
- * extracted from hardcoded /tech-stack component strings. Each carries an EN
- * `seed`; the migration writes the seed to the EN row when the JSON dig
- * misses. `{count}` stays a literal token — the component interpolates it
- * from data.items.length (computed, never stored).
+ * Seeded entries (operator addendum + go2/w5): the 5 hero terminal templates
+ * and the stack_explainer on block_tech_stack_page_content_translations have
+ * NO JSON source — they are extracted from hardcoded /tech-stack component
+ * strings. Each carries an EN `seed`; the migration writes the seed to the EN
+ * row when the JSON dig misses. `{count}` stays a literal token — the
+ * component interpolates it from data.items.length (computed, never stored).
  *
  * Consumed by: setup-block-flat-fields.ts (creates fields),
  * migrate-block-json-to-flat.ts (backfills + verifies), and the
@@ -158,7 +158,7 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		rows_about_action: ['about', 'action'],
 	}),
 
-	// ── block_tech_stack_page_content_translations (18) ──────────────────
+	// ── block_tech_stack_page_content_translations (19) ──────────────────
 	...t('block_tech_stack_page_content_translations', 'meta', {
 		meta_title: ['title'],
 		meta_description: ['description'],
@@ -218,6 +218,19 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		sourceField: 'hero',
 		sourcePath: ['terminal', 'status'],
 		seed: 'interactive map online.',
+	},
+	// "What is a stack?" explainer (go2/w5 engine-layered-learning) — seeded,
+	// same precedent as the terminal templates: the hero JSON has no
+	// `stackExplainer` key, so the dig always misses and the EN seed applies.
+	// type 'text' → setup script emits input-multiline, width full.
+	{
+		scope: 'translation',
+		collection: 'block_tech_stack_page_content_translations',
+		field: 'stack_explainer',
+		type: 'text',
+		sourceField: 'hero',
+		sourcePath: ['stackExplainer'],
+		seed: 'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you — poke the blueprints below and see for yourself.',
 	},
 	...t('block_tech_stack_page_content_translations', 'actions', {
 		action_get_in_touch: ['getInTouch'],

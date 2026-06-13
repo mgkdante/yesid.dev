@@ -11,7 +11,7 @@ export interface OgTreeInput {
   title: string;
 }
 
-const BG = '#141414';
+const BG = '#141414'; // taste round 2: restored near-black board (= dark --background)
 const ACCENT = '#E07800';
 const TEXT_PRIMARY = '#F5F5F5';
 const TEXT_MUTED = '#9CA3AF';

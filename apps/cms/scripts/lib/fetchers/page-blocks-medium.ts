@@ -36,6 +36,11 @@ export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
+	// go2/w5: stack_explainer is optional in the schema (pre-seed builds parse
+	// without it). toLocalizedString returns { en: '' } when the column is
+	// empty and LocalizedStringSchema rejects whitespace-only en — so include
+	// the key only when real content exists.
+	const explainer = toLocalizedString(tr, 'stack_explainer');
 	return {
 		meta: {
 			title: toLocalizedString(tr, 'meta_title'),
@@ -56,6 +61,7 @@ export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 				status: toLocalizedString(tr, 'terminal_status'),
 			},
 			stats: { technologies: toLocalizedString(tr, 'hero_stat_technologies') },
+			...(explainer.en.trim() ? { stackExplainer: explainer } : {}),
 		},
 		actions: {
 			getInTouch: toLocalizedString(tr, 'action_get_in_touch'),

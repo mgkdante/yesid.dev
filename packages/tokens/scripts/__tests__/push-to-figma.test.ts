@@ -48,15 +48,22 @@ describe('push-to-figma', () => {
     expect(Object.keys(colorCard!.values).sort()).toEqual(['dark', 'light']);
   });
 
-  it('produces 82 variables (GO-W2.2 baseline)', () => {
-    // Sanity check on the overall count. 69 after slice-design's trim of
-    // dim-foreground, light-foreground, text-body-lg; GO-W2.2 adds 13:
-    // 3 color (accent-text, explicit accent-foreground/input — theme-moded),
-    // 6 surface aliases, 3 border aliases (brand/brand-active/hairline),
-    // 1 shadow (sheet). Theme-level primary/primary-hover/primary-rgb re-pins
-    // merge into the existing brand variables as dark/light modes.
+  it('produces 104 variables (GO2-W5 round-4 doctrine baseline)', () => {
+    // Sanity check on the overall count. 82 at GO-W2.2 (69 after
+    // slice-design's trim + 13: 3 theme-moded colors, 6 surface aliases,
+    // 3 border aliases, shadow/sheet). GO2-W5 adds 19: 7 theme-invariant
+    // signal-systems tokens (hazard-a/b, signage-bg/text, signal-
+    // proceed/caution/stop) + 12 per-mode pairs that merge to one variable
+    // each (terminal-chrome, terminal-ink, terminal-ink-muted, signal-lunar,
+    // lamp-bezel, line-amber, accent-surface, grid-line-major/minor,
+    // grid-block-marker, grid-glow, edge-highlight). destructive-foreground
+    // moved brand → per-mode, which re-modes the existing variable without
+    // changing the count. Taste round 2 adds 2: the BOLD structural rules
+    // border/rule + border/rule-accent (solid orange / yellow voices).
+    // Round 4 adds 1: color/reflective — the theme-invariant WHITE voice of
+    // the four-color infrastructure doctrine.
     const vars = runScript();
-    expect(vars.length).toBe(82);
+    expect(vars.length).toBe(104);
   });
 
   it('theme re-pins of brand names merge as modes of one variable (no duplicates)', () => {

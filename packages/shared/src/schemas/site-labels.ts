@@ -13,10 +13,14 @@ export const SiteLabelsSchema = z.object({
 		navTechStack: LocalizedStringSchema,
 		toc: LocalizedStringSchema,
 		closerGraffiti: LocalizedStringSchema,
+		/** "Replay intro" — hero dot replay button aria-label (go2/w5). */
+		replayIntro: LocalizedStringSchema,
 	}),
 	ui: z.object({
 		markerService: LocalizedStringSchema,
 		markerFeatured: LocalizedStringSchema,
+		/** "← All Projects" back-to-listing link on /projects/[slug] (go2/w4). */
+		backToProjects: LocalizedStringSchema,
 		errorStatusNote: LocalizedStringSchema,
 		blogEditionTemplate: LocalizedStringSchema,
 		copyrightTemplate: LocalizedStringSchema,
@@ -25,6 +29,9 @@ export const SiteLabelsSchema = z.object({
 		categoryProfessional: LocalizedStringSchema,
 		watermarkPersonal: LocalizedStringSchema,
 		watermarkProfessional: LocalizedStringSchema,
+		/** Hero metro-art caption — ONE line naming the art: "STM métro + REM"
+		 *  (go2/w5 taste-2; replaces the two-row in-frame legend). */
+		metroCaption: LocalizedStringSchema,
 	}),
 	pages: z.object({
 		blogEdgeTitle: LocalizedStringSchema,
