@@ -69,6 +69,7 @@
 
 	const scrollDownLabel = resolveLocale(heroAnimContent.scrollDown, locale);
 	const headlineLine1 = resolveLocale(heroContent.headline.line1, locale);
+	const headlineLine2 = resolveLocale(heroContent.headline.line2, locale);
 	const subheadlineText = resolveLocale(heroContent.subheadline, locale);
 	const subtitleText = resolveLocale(heroContent.subtitle, locale);
 	const ctaWorkLabel = resolveLocale(heroContent.ctaWork, locale);
@@ -455,6 +456,7 @@
 					<!-- LEFT COLUMN: text content -->
 					<HeroTextContent
 						{headlineLine1}
+						{headlineLine2}
 						{headlineAriaSuffix}
 						{subheadlineText}
 						{subtitleText}
