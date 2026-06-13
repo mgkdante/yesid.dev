@@ -28,8 +28,13 @@
 <script lang="ts">
 	import { gsap } from 'gsap';
 	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
+	import type { LocalizedString } from '$lib/types';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
 	import { techStackItems } from '$lib/content/tech-stack';
 	import { layoutBlueprint, ROW_GAP } from './blueprint-layout';
+
+	const locale = getLocale();
 
 	let {
 		links,
@@ -92,14 +97,14 @@
 	);
 
 	// go2/w5 §4: layer-pair teaching — full map of every possible occupied-row
-	// adjacency (copy ≤ 30 chars each, homey-teacher voice).
-	const PAIR_NOTES: Record<string, string> = {
-		'interface-logic': 'the UI asks logic over HTTP',
-		'logic-data': 'logic reads & writes the data',
-		'data-infra': 'storage runs on this ground',
-		'interface-data': 'the UI reads the data directly',
-		'logic-infra': 'the logic runs on this ground',
-		'interface-infra': 'pages are served from here',
+	// adjacency (copy short, homey-teacher voice). Localized; HTTP stays verbatim.
+	const PAIR_NOTES: Record<string, LocalizedString> = {
+		'interface-logic': { en: 'the UI asks logic over HTTP', fr: 'l\'UI parle à la logique en HTTP' },
+		'logic-data': { en: 'logic reads & writes the data', fr: 'la logique lit pis écrit les données' },
+		'data-infra': { en: 'storage runs on this ground', fr: 'le stockage roule sur ce terrain' },
+		'interface-data': { en: 'the UI reads the data directly', fr: 'l\'UI lit les données direct' },
+		'logic-infra': { en: 'the logic runs on this ground', fr: 'la logique roule sur ce terrain' },
+		'interface-infra': { en: 'pages are served from here', fr: 'les pages sont servies d\'icitte' },
 	};
 
 	/** ONE annotation per DISTINCT adjacent layer pair (first occurrence). */
@@ -113,12 +118,12 @@
 			const key = `${from}-${to}`;
 			if (seen.has(key)) continue;
 			seen.add(key);
-			const text = PAIR_NOTES[key];
-			if (!text) continue;
+			const note = PAIR_NOTES[key];
+			if (!note) continue;
 			out.push({
 				from,
 				to,
-				text,
+				text: resolveLocale(note, locale),
 				x: layout.width / 2,
 				y: (rows[r][0].y + rows[r][0].h + rows[r + 1][0].y) / 2,
 			});
@@ -137,6 +142,23 @@
 	 *  node fills the viewport height" (operator playtest). Natural width =
 	 *  real pixels; 272px stays mobile-safe (< 360px viewports). */
 	const naturalWidth = $derived(layout.width + PAD * 2 + gutter);
+
+	// Localized chrome words (parts/layers) + the canvas aria-label + the
+	// "complete it" annotation. Code-owned, em-dash-free.
+	const PARTS_WORD = { en: 'parts', fr: 'morceaux' };
+	const LAYERS_WORD = { en: 'layers', fr: 'couches' };
+	const partsWord = $derived(resolveLocale(PARTS_WORD, locale));
+	const layersWord = $derived(resolveLocale(LAYERS_WORD, locale));
+	const canvasAria = $derived(
+		locale === 'fr'
+			? `Plan : ${title}, ${layout.boxes.length} morceaux dans ${layerCount} couches`
+			: `Blueprint: ${title}, ${layout.boxes.length} parts in ${layerCount} layers`,
+	);
+	const completeAnnotation = $derived.by(() => {
+		if (!firstMissingBox) return '';
+		const name = nameById.get(firstMissingBox.id) ?? firstMissingBox.id;
+		return locale === 'fr' ? `+ ajoute ${name} pour le compléter` : `+ add ${name} to complete it`;
+	});
 
 	let svgEl: SVGSVGElement | null = $state(null);
 	/** Hovered box id — its outgoing connector brightens to the layer color. */
@@ -223,7 +245,7 @@
 	{viewBox}
 	style:max-width={`${naturalWidth}px`}
 	role="img"
-	aria-label={`Blueprint: ${title} — ${layout.boxes.length} parts in ${layerCount} layers`}
+	aria-label={canvasAria}
 >
 	<!-- go2/w5 §8 drafting paper: dot grid + registration ticks — static
 	     furniture in --bp-grid-ink, decorative (sub-3:1 by design). -->
@@ -356,7 +378,7 @@
 			y={firstMissingBox.y + firstMissingBox.h + 16}
 			text-anchor="middle"
 		>
-			+ add {nameById.get(firstMissingBox.id) ?? firstMissingBox.id} to complete it
+			{completeAnnotation}
 		</text>
 	{/if}
 
@@ -387,7 +409,7 @@
 			y={layout.height + STAMP_H + 14}
 			text-anchor="end"
 		>
-			REV A · {layout.boxes.length} parts · {layerCount} layers
+			REV A · {layout.boxes.length} {partsWord} · {layerCount} {layersWord}
 		</text>
 	</g>
 </svg>

@@ -68,7 +68,11 @@ export const sharedChromeContent = {
 		es: 'Menú de navegación',
 	} satisfies LocalizedString,
 	/** Decorative all-caps label in the menu overlay footer. */
-	menuOverlayFooterLabel: { en: 'NAVIGATION — ALL ROUTES' } satisfies LocalizedString,
+	menuOverlayFooterLabel: {
+		en: 'NAVIGATION · ALL ROUTES',
+		fr: 'NAVIGATION · TOUTES LES ROUTES',
+		es: 'NAVEGACIÓN · TODAS LAS RUTAS',
+	} satisfies LocalizedString,
 	/** aria-label for the EN|FR locale switcher (slice-28.6). Locale display
 	 *  labels are the codes themselves (EN/FR — brand mono caps, not prose). */
 	localeSwitcherAria: {
@@ -86,7 +90,11 @@ export const sharedChromeContent = {
 		fr: 'effacer les filtres',
 		es: 'borrar filtros',
 	} satisfies LocalizedString,
-	tocToggleSectionAria: { en: 'Toggle section' } satisfies LocalizedString,
+	tocToggleSectionAria: {
+		en: 'Toggle section',
+		fr: 'Basculer la section',
+		es: 'Alternar sección',
+	} satisfies LocalizedString,
 	tocHeading: {
 		en: 'On this page',
 		fr: 'Sur cette page',

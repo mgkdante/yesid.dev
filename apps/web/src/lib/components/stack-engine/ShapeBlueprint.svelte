@@ -45,8 +45,12 @@
 -->
 <script lang="ts">
 	import type { ArchetypeTechLink, StackLayer } from '@repo/shared/schemas';
+	import { resolveLocale } from '$lib/utils/locale';
+	import { getLocale } from '$lib/utils/locale-context';
 	import { layoutBlueprint } from './blueprint-layout';
-	import { layerArticle } from './stack-shape';
+	import { layerArticle, layerGapFr } from './stack-shape';
+
+	const locale = getLocale();
 
 	interface ShapePick {
 		id: string;
@@ -121,11 +125,26 @@
 
 	const complete = $derived(missing.length === 0);
 	const coveredCount = $derived(4 - missing.length);
-	const ariaLabel = $derived(
-		complete
-			? `Your build blueprint: ${picked.length} part${picked.length === 1 ? '' : 's'} placed, all 4 layers covered`
-			: `Your build blueprint: ${picked.length} part${picked.length === 1 ? '' : 's'} placed, ${missing.length} layer${missing.length === 1 ? '' : 's'} still to add`,
+	// FR plural for "morceau" / "couche"; the EN copy pluralizes with a trailing s.
+	const partWord = $derived(
+		locale === 'fr'
+			? `morceau${picked.length === 1 ? '' : 'x'}`
+			: `part${picked.length === 1 ? '' : 's'}`,
 	);
+	const layersWord = $derived(locale === 'fr' ? 'couches' : 'layers');
+	const ariaLabel = $derived(
+		locale === 'fr'
+			? complete
+				? `Plan de ton build : ${picked.length} ${partWord} placé${picked.length === 1 ? '' : 's'}, les 4 couches couvertes`
+				: `Plan de ton build : ${picked.length} ${partWord} placé${picked.length === 1 ? '' : 's'}, ${missing.length} couche${missing.length === 1 ? '' : 's'} encore à ajouter`
+			: complete
+				? `Your build blueprint: ${picked.length} ${partWord} placed, all 4 layers covered`
+				: `Your build blueprint: ${picked.length} ${partWord} placed, ${missing.length} layer${missing.length === 1 ? '' : 's'} still to add`,
+	);
+	// The ghost annotation per missing layer: "+ add an interface layer" /
+	// "+ ajoute une couche interface". ONE source via layerArticle / layerGapFr.
+	const ghostAnnotation = (layer: StackLayer): string =>
+		locale === 'fr' ? `+ ajoute ${layerGapFr(layer)}` : `+ add ${layerArticle(layer)} ${layer} layer`;
 </script>
 
 <!-- Finale (4b): contained horizontal pan — when even the wrapped drawing is
@@ -250,7 +269,7 @@
 			y={box.y + box.h + 16}
 			text-anchor="middle"
 		>
-			+ add {layerArticle(box.layer)} {box.layer} layer
+			{ghostAnnotation(box.layer)}
 		</text>
 	{/each}
 
@@ -274,7 +293,7 @@
 			y={layout.height + STAMP_H + 14}
 			text-anchor="end"
 		>
-			REV {complete ? 'A' : '0'} · {picked.length} part{picked.length === 1 ? '' : 's'} · {coveredCount}/4 layers
+			REV {complete ? 'A' : '0'} · {picked.length} {partWord} · {coveredCount}/4 {layersWord}
 		</text>
 	</g>
 </svg>
