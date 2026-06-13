@@ -26,9 +26,9 @@ describe('buildPersonNode locale', () => {
 });
 
 describe('meta.forRoute locale threading', () => {
-	it('static route SEO for fr keeps the EN canonical while fr is unpublished', async () => {
+	it('static route SEO for fr canonicalizes to the /fr URL (fr published)', async () => {
 		const seo = await staticAdapter.meta.forRoute('/about', 'fr');
-		expect(seo.canonical).toBe('https://yesid.dev/about');
+		expect(seo.canonical).toBe('https://yesid.dev/fr/about');
 	});
 	it('breadcrumb names come from the trilingual site_pages registry', async () => {
 		const seo = await staticAdapter.meta.forRoute('/about', 'fr');

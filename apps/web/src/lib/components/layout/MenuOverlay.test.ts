@@ -110,8 +110,8 @@ describe('MenuOverlay — locale threading (slice-28.6)', () => {
 		expect(screen.getByText('ce que je construis')).toBeInTheDocument();
 	});
 
-	it('hides the locale switcher while only one locale is published', () => {
-		render(MenuOverlay, { props: { open: true, pathname: '/', menuItems: [] } });
+	it('hides the locale switcher when only one locale is available', () => {
+		render(MenuOverlay, { props: { open: true, pathname: '/', menuItems: [], availableLocales: ['en'] } });
 		expect(screen.queryByTestId('locale-switch')).toBeNull();
 	});
 
