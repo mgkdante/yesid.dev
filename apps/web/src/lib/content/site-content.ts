@@ -13,13 +13,13 @@ import type { HeroAnimContent, HeroContent, ManifestoContent, ProofReelContent, 
 export const heroAnimContent: HeroAnimContent = {
 	scrollDown: {
 		en: 'NEXT STOP: SCROLL DOWN',
-		fr: 'PROCHAIN ARRÊT : DESCENDEZ',
+		fr: 'PROCHAIN ARRÊT : FAIS DÉFILER',
 	},
 };
 
 export const heroContent: HeroContent = {
 	ctaContact: { en: 'Let\'s talk', fr: 'Jasons-en' },
-	ctaWork: { en: 'See how I build →', fr: 'Voyez comment je bâtis →' },
+	ctaWork: { en: 'See how I build →', fr: 'Vois comment je bâtis →' },
 	headline: {
 		ariaSuffix: { en: 'Don\'t Break.', fr: 'Ne cassent pas.' },
 		line1: { en: 'SYSTEMS THAT', fr: 'DES SYSTÈMES QUI' },
@@ -28,7 +28,7 @@ export const heroContent: HeroContent = {
 	heroAnim: {
 		scrollDown: {
 			en: 'NEXT STOP: SCROLL DOWN',
-			fr: 'PROCHAIN ARRÊT : DESCENDEZ',
+			fr: 'PROCHAIN ARRÊT : FAIS DÉFILER',
 		},
 	},
 	refreshButton: {
@@ -141,7 +141,7 @@ export const manifestoContent: ManifestoContent = {
 	],
 	statement: {
 		line1: { en: 'I BUILD THE', fr: 'JE BÂTIS L\'' },
-		line3Highlight: { en: 'OPERATIONS', fr: 'VOS OPÉRATIONS' },
+		line3Highlight: { en: 'OPERATIONS', fr: 'TES OPÉRATIONS' },
 		line3Part1: { en: 'YOUR', fr: 'DONT' },
 		line3Part2: { en: 'RUN ON', fr: 'ONT BESOIN' },
 		lineHuge: { en: 'INFRASTRUCTURE', fr: 'INFRASTRUCTURE' },

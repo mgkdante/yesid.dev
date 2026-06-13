@@ -193,7 +193,7 @@ export const siteLabels: SiteLabels = {
 		pageMeta: {
 			description: {
 				en: 'Projects, pipelines, and systems built by yesid., freelance digital infrastructure in Montreal.',
-				fr: 'Des projets, des pipelines pis des systèmes bâtis par yesid., infrastructure numérique en freelance à Montréal.',
+				fr: 'Des projets, des pipelines pis des systèmes bâtis par yesid., infrastructure numérique à la pige à Montréal.',
 			},
 			title: { en: 'Projects | yesid.', fr: 'Projets | yesid.' },
 		},
@@ -205,7 +205,7 @@ export const siteLabels: SiteLabels = {
 			relatedProjectsHeading: { en: 'Related Projects', fr: 'Projets liés' },
 			relatedProjectsNavAria: { en: 'Related projects', fr: 'Projets liés' },
 			serviceNavAria: { en: 'Service navigation', fr: 'Navigation des services' },
-			valuePropositionHeading: { en: 'How This Helps You', fr: 'Comment ça vous aide' },
+			valuePropositionHeading: { en: 'How This Helps You', fr: 'Comment ça t\'aide' },
 		},
 		listing: {
 			deepDiveLabel: { en: 'Deep dive →', fr: 'Voir en détail →' },

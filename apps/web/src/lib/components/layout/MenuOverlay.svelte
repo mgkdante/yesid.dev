@@ -37,9 +37,6 @@
 	const dialogTitle = $derived(resolveLocale(sharedChromeContent.menuOverlayAria, locale));
 	const footerLabel = $derived(resolveLocale(sharedChromeContent.menuOverlayFooterLabel, locale));
 	const basePath = $derived(delocalizePath(pathname));
-	const switcherAria = $derived(resolveLocale(sharedChromeContent.localeSwitcherAria, locale));
-	// Path-preserving: /fr/about ↔ /about.
-	const switchHref = (l: Locale) => localizeHref(delocalizePath(pathname), l);
 
 	let overlayEl: HTMLElement = $state(null!);
 
@@ -160,19 +157,6 @@
 				<div class="menu-footer">
 					<span class="menu-footer-line"></span>
 					<span class="menu-footer-label">{footerLabel}</span>
-					{#if availableLocales.length > 1}
-						<nav class="menu-locale-switch" data-testid="locale-switch" aria-label={switcherAria}>
-							{#each availableLocales as l, i (l)}
-								{#if i > 0}<span class="locale-sep" aria-hidden="true">|</span>{/if}
-								<a
-									href={switchHref(l)}
-									class="locale-link {l === locale ? 'locale-active' : ''}"
-									aria-current={l === locale ? 'true' : undefined}
-									onclick={() => onclose?.()}
-								>{l.toUpperCase()}</a>
-							{/each}
-						</nav>
-					{/if}
 					<span class="menu-footer-line"></span>
 				</div>
 					</div>
@@ -350,34 +334,4 @@
 		white-space: nowrap;
 	}
 
-	/* slice-28.6: EN|FR locale switch — JetBrains Mono caps, brand chrome. */
-	.menu-locale-switch {
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		font-family: var(--font-mono);
-		font-size: var(--text-caption, 12px);
-		letter-spacing: 0.1em;
-	}
-	.locale-link {
-		color: var(--muted-foreground);
-		text-decoration: none;
-		transition: color var(--duration-fast) var(--ease-default);
-		min-height: 44px;
-		display: inline-flex;
-		align-items: center;
-		padding-inline: 4px;
-	}
-	.locale-link:hover {
-		color: var(--primary);
-	}
-	.locale-active {
-		color: var(--primary);
-	}
-	/* Decorative divider (aria-hidden): opacity keeps the contrast-floors gate
-	   happy — low-% foreground color-mixes are banned on color: decls. */
-	.locale-sep {
-		color: var(--muted-foreground);
-		opacity: 0.5;
-	}
 </style>

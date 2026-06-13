@@ -12,13 +12,13 @@ import type { TechStackPageContent, TechStackItem } from '$lib/types';
 
 export const techStackPageContent: TechStackPageContent = {
 	actions: {
-		getInTouch: { en: 'Get In Touch', fr: 'Écrivez-moi' },
+		getInTouch: { en: 'Get In Touch', fr: 'Écris-moi' },
 		viewServices: { en: 'View Services', fr: 'Voir les services' },
 	},
 	cta: {
 		headingLine1: {
 			en: 'Found your stack',
-			fr: 'Vous avez trouvé votre stack',
+			fr: 'T\'as trouvé ton stack',
 		},
 		headingLine2: { en: 'Let\'s build it', fr: 'On le bâtit ensemble' },
 		sub: {
@@ -33,7 +33,7 @@ export const techStackPageContent: TechStackPageContent = {
 		},
 		stackExplainer: {
 			en: 'A "stack" is just the parts list of a piece of software: the interface people touch, the logic that decides things, the data it remembers, and the infrastructure it runs on. That\'s the whole secret. Once you can read a stack, a quote can\'t hide much from you, poke the blueprints below and see for yourself.',
-			fr: 'Un « stack », c\'est juste la liste des morceaux d\'un logiciel : l\'interface que le monde touche, la logique qui décide des choses, les données qu\'il garde en mémoire et l\'infrastructure sur laquelle il roule. C\'est tout le secret. Une fois que vous savez lire un stack, une soumission ne peut plus vous cacher grand-chose, fouillez dans les plans plus bas et voyez par vous-même.',
+			fr: 'Un « stack », c\'est juste la liste des morceaux d\'un logiciel : l\'interface que le monde touche, la logique qui décide des choses, les données qu\'il garde en mémoire et l\'infrastructure sur laquelle il roule. C\'est tout le secret. Une fois que tu sais lire un stack, une soumission ne peut plus te cacher grand-chose, fouille dans les plans plus bas et vois par toi-même.',
 		},
 		stats: {
 			technologies: { en: 'technologies', fr: 'technologies' },
@@ -1036,7 +1036,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Playwright est un framework d\'automatisation de navigateur de Microsoft pour les tests de bout en bout. Il contrôle de vrais navigateurs (Chromium, Firefox, WebKit) par programmation : naviguer dans les pages, cliquer sur des boutons, remplir des formulaires et valider le contenu des pages. Contrairement aux tests unitaires qui testent les composants en isolation, les tests E2E vérifient que l\'application au complet fonctionne comme un utilisateur la vivrait : de vraies requêtes HTTP, un vrai rendu, de vraies interactions.',
+							text: 'Playwright est un cadriciel d\'automatisation de navigateur de Microsoft pour les tests de bout en bout. Il contrôle de vrais navigateurs (Chromium, Firefox, WebKit) par programmation : naviguer dans les pages, cliquer sur des boutons, remplir des formulaires et valider le contenu des pages. Contrairement aux tests unitaires qui testent les composants en isolation, les tests E2E vérifient que l\'application au complet fonctionne comme un utilisateur la vivrait : de vraies requêtes HTTP, un vrai rendu, de vraies interactions.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
@@ -2224,7 +2224,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Tailwind CSS, c\'est un framework CSS basé sur les classes utilitaires. Au lieu d\'écrire des classes CSS personnalisées comme <code>.card-header</code>, on assemble des petites classes utilitaires directement dans le HTML : <code>flex items-center gap-4 text-sm font-medium</code>. Tailwind analyse tes fichiers au moment du build et génère seulement le CSS que tu utilises vraiment, ce qui donne des feuilles de style de production minuscules. La version 4 a amené un moteur natif en CSS avec <code>@theme</code> pour les jetons de design.',
+							text: 'Tailwind CSS, c\'est un cadriciel CSS basé sur les classes utilitaires. Au lieu d\'écrire des classes CSS personnalisées comme <code>.card-header</code>, on assemble des petites classes utilitaires directement dans le HTML : <code>flex items-center gap-4 text-sm font-medium</code>. Tailwind analyse tes fichiers au moment du build et génère seulement le CSS que tu utilises vraiment, ce qui donne des feuilles de style de production minuscules. La version 4 a amené un moteur natif en CSS avec <code>@theme</code> pour les jetons de design.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
@@ -2541,7 +2541,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Vercel, c\'est une plateforme infonuagique pour déployer des applications web. Tu pousses ton code sur Git, et Vercel le build et le déploie automatiquement, avec des URL d\'aperçu pour chaque pull request et des déploiements en production au moment du merge. Ça fournit un réseau de périphérie mondial (CDN), des fonctions sans serveur, et des optimisations propres à chaque framework pour Next.js, SvelteKit, Nuxt et d\'autres. Vercel gère le SSL, la mise en cache et la mise à l\'échelle sans gestion manuelle de l\'infrastructure.',
+							text: 'Vercel, c\'est une plateforme infonuagique pour déployer des applications web. Tu pousses ton code sur Git, et Vercel le build et le déploie automatiquement, avec des URL d\'aperçu pour chaque pull request et des déploiements en production au moment du merge. Ça fournit un réseau de périphérie mondial (CDN), des fonctions sans serveur, et des optimisations propres à chaque cadriciel pour Next.js, SvelteKit, Nuxt et d\'autres. Vercel gère le SSL, la mise en cache et la mise à l\'échelle sans gestion manuelle de l\'infrastructure.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',
@@ -2642,7 +2642,7 @@ export const techStackItems: readonly TechStackItem[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Vitest, c\'est un framework de tests unitaires rapide bâti sur le pipeline de transformation de Vite. Il roule TypeScript et JSX nativement (pas d\'étape de compilation séparée), supporte les imports ESM, et fournit une API compatible avec Jest : si tu connais Jest, tu connais déjà Vitest. Ça inclut les tests par instantané, la couverture de code, le mode surveillance, et une interface navigateur pour explorer les résultats de tests. Pour les projets basés sur Vite (SvelteKit, React avec Vite), Vitest partage la même configuration et le même écosystème de plugiciels.',
+							text: 'Vitest, c\'est un cadriciel de tests unitaires rapide bâti sur le pipeline de transformation de Vite. Il roule TypeScript et JSX nativement (pas d\'étape de compilation séparée), supporte les imports ESM, et fournit une API compatible avec Jest : si tu connais Jest, tu connais déjà Vitest. Ça inclut les tests par instantané, la couverture de code, le mode surveillance, et une interface navigateur pour explorer les résultats de tests. Pour les projets basés sur Vite (SvelteKit, React avec Vite), Vitest partage la même configuration et le même écosystème de plugiciels.',
 						},
 						id: 'm00000001',
 						type: 'paragraph',

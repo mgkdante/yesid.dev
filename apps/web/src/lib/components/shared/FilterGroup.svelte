@@ -19,7 +19,7 @@
 	const locale = getLocale();
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
 
-	const defaultAllLabel = { en: 'All' };
+	const defaultAllLabel = { en: 'All', fr: 'Tous', es: 'Todos' };
 
 	let {
 		label,
