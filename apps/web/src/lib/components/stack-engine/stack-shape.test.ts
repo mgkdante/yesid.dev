@@ -69,8 +69,8 @@ describe('composeStackShape', () => {
 	});
 });
 
-describe('readShape — the coverage matrix is TOTAL (taste round 2)', () => {
-	it('has a hand-written reading for every one of the 15 non-empty layer combinations', () => {
+describe('readShape — the coverage matrix is TOTAL (taste round 2; go2 FR pass)', () => {
+	it('has a LocalizedString reading (en + fr, em-dash-free) for every one of the 15 non-empty layer combinations', () => {
 		// Enumerate the powerset of STACK_LAYERS minus the empty set.
 		const layers = [...STACK_LAYERS];
 		const subsets: StackLayer[][] = [];
@@ -84,26 +84,34 @@ describe('readShape — the coverage matrix is TOTAL (taste round 2)', () => {
 			expect(reading, `subset ${subset.join('+')} must have its own reading`).toBe(
 				SHAPE_READINGS[subset.join('+')],
 			);
-			expect(reading.length).toBeGreaterThan(0);
+			expect(reading.en.length).toBeGreaterThan(0);
+			expect(reading.fr?.length ?? 0).toBeGreaterThan(0);
 			// One scannable line — readings are card copy, not paragraphs.
-			expect(reading.length).toBeLessThanOrEqual(90);
+			expect(reading.en.length).toBeLessThanOrEqual(110);
+			expect(reading.fr!.length).toBeLessThanOrEqual(130);
+			expect(reading.en).not.toContain('—');
+			expect(reading.fr).not.toContain('—');
 		}
 	});
 
-	it("pins the operator's example: logic + infra reads as an automation", () => {
-		expect(readShape(['logic', 'infra'])).toBe(
-			'code with ground to run on — a bot, a scheduled job, an automation',
+	it("pins the operator's example: logic + infra reads as an automation (en + fr)", () => {
+		expect(readShape(['logic', 'infra']).en).toBe(
+			'code with ground to run on, a bot, a scheduled job, an automation',
+		);
+		expect(readShape(['logic', 'infra']).fr).toBe(
+			'du code avec du terrain pour rouler, un bot, une job planifiée, une automatisation',
 		);
 	});
 
 	it('pins the complete shape reading', () => {
-		expect(readShape([...STACK_LAYERS])).toBe(
-			'all four layers — the shape of a complete, working product',
+		expect(readShape([...STACK_LAYERS]).en).toBe(
+			'all four layers, the shape of a complete, working product',
 		);
 	});
 
 	it('empty coverage (defensive — layerless-only picks) gets a prompt, never a blank', () => {
-		expect(readShape([])).toContain('no layers covered yet');
+		expect(readShape([]).en).toContain('no layers covered yet');
+		expect(readShape([]).fr).toContain('aucune couche couverte');
 	});
 });
 
@@ -187,30 +195,54 @@ describe('composePhrase — the layer grammar speaks market, not category', () =
 		expect(composePhrase(a, layersOf(a))).toEqual(composePhrase(b, layersOf(b)));
 	});
 
-	it('LocalizedString-shaped, en-only for now (FR can come later); empty picks get a gentle prompt', () => {
+	it('LocalizedString-shaped with EN + QC FR; empty picks get a gentle prompt in both', () => {
 		const result = composePhrase([], []);
-		expect(Object.keys(result)).toEqual(['en']);
+		expect(Object.keys(result).sort()).toEqual(['en', 'fr']);
 		expect(result.en).toContain('Pick a part');
-		// Every vocabulary fragment is a plain string — the lean code-owned map.
+		expect(result.fr).toContain('Choisis un morceau');
+		expect(result.en).not.toContain('—');
+		expect(result.fr).not.toContain('—');
+		// Every vocabulary fragment is now a LocalizedString ({ en, fr }) — the
+		// lean code-owned map speaks both locales, em-dash-free.
 		for (const voice of Object.values(TECH_VOICES)) {
 			for (const fragment of Object.values(voice)) {
-				expect(typeof fragment).toBe('string');
+				expect(typeof fragment.en).toBe('string');
+				expect(typeof fragment.fr).toBe('string');
+				expect(fragment.en).not.toContain('—');
+				expect(fragment.fr).not.toContain('—');
 			}
 		}
 	});
+
+	it('the FR phrase speaks Québécois with the "qui … pis …" grammar', () => {
+		const result = composePhrase(
+			[pick('node-js', 'logic'), pick('github-actions', 'infra')],
+			['logic', 'infra'],
+		);
+		expect(result.fr).toMatch(/automatisation/i);
+		expect(result.fr).toContain('se déploie tout seul, fiable');
+		expect(result.fr).not.toContain('—');
+	});
 });
 
-describe('finale 4c — journey steps + the availability line (code-owned, en fallback)', () => {
-	it('the stepper walks pick → read → product → take it with you', () => {
+describe('finale 4c — journey steps + the availability line (code-owned, en + fr)', () => {
+	it('the stepper walks pick → read → product → take it with you (en + fr present)', () => {
 		expect(JOURNEY_STEPS.map((s) => s.en)).toEqual([
 			'pick parts',
 			'read your build',
 			'see it as a product',
 			'take it with you',
 		]);
+		expect(JOURNEY_STEPS.map((s) => s.fr)).toEqual([
+			'choisis des morceaux',
+			'lis ton build',
+			'vois-le comme un produit',
+			'apporte-le avec toi',
+		]);
 	});
 
-	it("the operator's open door is warm, small, and homey", () => {
+	it("the operator's open door is warm, small, and homey, in both locales", () => {
 		expect(AVAILABILITY_LINE.en).toBe('Questions? Ask me anything.');
+		expect(AVAILABILITY_LINE.fr).toBe('Des questions? Demande-moi n\'importe quoi.');
 	});
 });

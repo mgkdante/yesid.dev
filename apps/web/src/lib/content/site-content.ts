@@ -53,7 +53,7 @@ export const heroContent: HeroContent = {
 	},
 	subheadline: {
 		en: 'I make data tell the truth.',
-		fr: 'Je fais dire la vérité à la donnée.',
+		fr: 'Je fais parler les données, pour vrai.',
 	},
 	subtitle: {
 		en: 'Building reliable infrastructure for teams that can\'t afford downtime.',
@@ -219,7 +219,7 @@ export const aboutContent: AboutIntroContent = {
 };
 
 export const ctaContent: CtaContent = {
-	ctaContact: { en: 'Get in touch', fr: 'Prenons contact' },
+	ctaContact: { en: 'Get in touch', fr: 'Parlons-en' },
 	ctaGithub: { en: 'View on GitHub', fr: 'Voir sur GitHub' },
 	heading: {
 		en: 'Let\'s build something\nthat moves',

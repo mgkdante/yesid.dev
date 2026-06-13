@@ -30,7 +30,7 @@ describe('BlueprintCTA (goal mode — archetype stack)', () => {
 		// Taste round 2: the service link speaks hire in the homey voice.
 		const service = screen.getByTestId('cta-service');
 		expect(service.getAttribute('href')).toBe(`/services/${dashboard.serviceId}`); // consolidation remaps live (gate A: analytics-reporting)
-		expect(service.textContent).toContain('Hire this — see the service behind it');
+		expect(service.textContent).toContain('Hire this, see the service behind it');
 	});
 
 	it('taste round 2: NO proof link, even when the archetype carries a proofProjectSlug', () => {
