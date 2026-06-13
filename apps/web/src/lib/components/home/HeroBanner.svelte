@@ -32,6 +32,7 @@
 	import { createTypewriter } from '$lib/motion/utils/heroTypewriter.js';
 	import { isViewportAtMost } from '$lib/motion/utils/device.js';
 	import {
+		forgetHeroIntroCompleted,
 		isHeroIntroCompletedToday,
 		markHeroIntroCompleted,
 	} from '$lib/motion/utils/heroIntroReplay.js';
@@ -300,6 +301,10 @@
 	async function handleReplay(): Promise<void> {
 		if (replayArming || !introCompleted) return;
 		replayArming = true;
+		// Operator: clicking the dot un-completes the intro for the day — a
+		// refresh from here on lands on the animation again ("still to do").
+		// Scrolling the replay through re-fires completion and re-persists.
+		forgetHeroIntroCompleted();
 		try {
 			if (introCollapsed) {
 				// Preload the timeline's lazy plugins BEFORE touching geometry.
