@@ -239,8 +239,7 @@ describe('Design System Tokens', () => {
       expect(appCSS).toContain('background: #141414 !important;');
     });
 
-    it('app.css grid recipe is the NX track schematic (block markers + fine grid + glow)', () => {
-      expect(appCSS).toContain('var(--grid-glow)');
+    it('app.css grid recipe is the NX track schematic (block markers + fine grid)', () => {
       expect(appCSS).toContain('var(--grid-block-marker) 0px, transparent 1px, transparent 400px');
       expect(appCSS).toContain('var(--grid-line-major) 0px, transparent 1px, transparent 80px');
       expect(appCSS).toContain('var(--grid-line-minor) 0px, transparent 1px, transparent 16px');
@@ -261,26 +260,26 @@ describe('Design System Tokens', () => {
       expect(appCSS).not.toMatch(/\.circuit-grid::before/);
     });
 
-    it('the sodium lamp is viewport-glued (.grid-lamp sticky overlay), never document-sized', () => {
-      // The glow began life as a %-sized radial layer on .circuit-grid —
-      // sized by the PAGE WRAPPER, so the hero intro's track collapse
-      // re-scaled it mid-frame (the operator's "tint glitch") and it
-      // drained away while the pinned metro intro scrolled its track.
-      // The lamp is now a zero-height sticky child glued to the viewport
-      // top: constant light over the map animation, the settled hero, and
-      // every page. Reintroducing a %-sized or wrapper-background glow is
-      // a regression; z-index:-1 lives on the LAMP (its own context), so
-      // the no-isolation law on .circuit-grid above still holds.
-      const lamp = appCSS.match(/\.grid-lamp \{([\s\S]*?)\}/)?.[1] ?? '';
-      expect(lamp).toContain('position: sticky');
-      expect(lamp).toContain('z-index: -1');
+    it('the sodium lamp belongs to the intro animation ONLY — never to page chrome', () => {
+      // History: the glow was (1) a %-sized radial on .circuit-grid — the
+      // hero track collapse re-scaled it mid-frame (tint glitch #1) — then
+      // (2) a viewport-glued sticky .grid-lamp — operator: "super glitchy",
+      // rejected. Final doctrine: the lamp lives INSIDE the hero's metro
+      // wrapper, so it exists exactly as long as the map animation does
+      // (zooms away with the art; absent on settled hero, same-day
+      // reloads, and reduced motion). app.css must stay glow-free.
+      expect(appCSS).not.toContain('var(--grid-glow)');
+      expect(appCSS).not.toContain('.grid-lamp');
+      const heroBanner = readFileSync(
+        new URL('../../components/home/HeroBanner.svelte', import.meta.url),
+        'utf-8',
+      );
+      const lamp = heroBanner.match(/\.hero-lamp \{([\s\S]*?)\}/)?.[1] ?? '';
+      expect(lamp).toContain('var(--grid-glow)');
       expect(lamp).toContain('pointer-events: none');
-      const lampGlow = appCSS.match(/\.grid-lamp::before \{([\s\S]*?)\}/)?.[1] ?? '';
-      expect(lampGlow).toContain('var(--grid-glow)');
-      expect(lampGlow).toContain('100lvh');
-      // The wrapper background must never carry the glow again.
-      const grid2 = appCSS.match(/\.circuit-grid \{([\s\S]*?)\}/)?.[1] ?? '';
-      expect(grid2).not.toContain('var(--grid-glow)');
+      // Sized by the pin (100%), never by the document or viewport units —
+      // geometry flips (collapse, replay re-enlarge) must not touch it.
+      expect(lamp).toContain('120vw 100% at 50% 0%');
     });
 
     it('dashed delimitations speak the route-set voice (.divider-dashed = border-rule, round-3 2px)', () => {

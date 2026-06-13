@@ -263,9 +263,13 @@ pre, code, table {
 /* Circuit grid background — site-wide except nav/footer.
    Applied via main content wrapper in +layout.svelte or per-section.
    GO2-W5 "NX track schematic": same 80px rhythm (no layout change) plus a
-   16px fine schematic grid, a 400px amber block-boundary vertical, and (dark
-   only, via --grid-glow) a sodium-lamp radial spill from the top. All colors
-   come from the grid-* tokens so both modes tune independently.
+   16px fine schematic grid and a 400px amber block-boundary vertical. All
+   colors come from the grid-* tokens so both modes tune independently.
+   The sodium-lamp glow (--grid-glow) is NOT part of the page recipe — it
+   belongs exclusively to the hero intro animation (see HeroBanner's
+   .hero-lamp): document- or viewport-anchored variants both read as
+   background glitches around the intro's geometry flips (operator-rejected
+   twice).
 
    Taste round 2 SOLIDITY fix, go2 integration revision: the grid is the
    wrapper's OWN background-image — an element's background paints below all
@@ -287,39 +291,6 @@ pre, code, table {
     repeating-linear-gradient(0deg, var(--grid-line-major) 0px, transparent 1px, transparent 80px),
     repeating-linear-gradient(90deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px),
     repeating-linear-gradient(0deg, var(--grid-line-minor) 0px, transparent 1px, transparent 16px);
-}
-
-/* Sodium-lamp spill — VIEWPORT-glued, not document-anchored. It used to be a
-   radial layer on .circuit-grid sized in %, i.e. relative to the whole page
-   wrapper: the hero intro's track collapse changed the wrapper height, the
-   gradient re-scaled mid-frame, and the page background visibly jumped (the
-   operator's "tint glitch"). It also drained away while the pinned metro
-   intro scrolled its 900svh track — map animation and hero never shared the
-   same light.
-
-   Now the lamp is a zero-height position:sticky child of the wrapper: it
-   rides the viewport top on every page at every scroll position, so the map
-   animation, the settled hero, and any later geometry flip (collapse,
-   replay re-enlarge) all sit under the SAME constant light — same pixels
-   before and after. z-index:-1 paints it above the wrapper's own grid
-   background but below all content, so solid surfaces (terminals, cards,
-   footer asphalt) occlude it exactly as before. Sticky does NOT isolate the
-   wrapper — the Nav/MenuOverlay paint-order law (see above) holds. */
-.grid-lamp {
-  position: sticky;
-  top: 0;
-  height: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.grid-lamp::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  inset-inline: 0;
-  height: 100lvh;
-  background-image: radial-gradient(120vw 100lvh at 50% 0%, var(--grid-glow), transparent 60%);
 }
 
 /* ═══════════════════════════════════════════════════════════════

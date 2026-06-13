@@ -416,6 +416,14 @@
 			bind:this={svgWrapper}
 			class="hero-metro-wrapper absolute inset-0 flex items-center justify-center md:px-4 md:pr-20"
 		>
+			<!-- Sodium lamp — lives INSIDE the metro wrapper, so it exists only
+			     while the animation does: on from the first intro frame, zooms
+			     away with the art in Phase 5, display:none'd by hero-intro-done
+			     (settled hero + same-day reloads) and by reduced motion. Sized
+			     by the 100lvh pin, never by the document — no geometry flip can
+			     re-scale it (the page-wrapper and sticky variants both
+			     glitched; operator-rejected). -->
+			<div class="hero-lamp" aria-hidden="true"></div>
 			<MetroNetwork svg={metroSvg} />
 			<!-- go2/w5 taste-2: ONE unobtrusive caption names the art (the
 			     in-frame legend is gone). Anchored to the wrapper's bottom
@@ -539,6 +547,16 @@
 	/* Hero pin container — full viewport for the animation */
 	.hero-pin {
 		height: 100lvh;
+	}
+
+	/* The intro's sodium lamp: a top-anchored radial filling the metro
+	   wrapper (inset-0 of the 100lvh pin). DOM-first inside the wrapper =
+	   painted under the metro art; no z-index games. */
+	.hero-lamp {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image: radial-gradient(120vw 100% at 50% 0%, var(--grid-glow), transparent 60%);
 	}
 
 	/* ─────────────────────────────────────────────────────────────────
