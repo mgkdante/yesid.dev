@@ -5,9 +5,7 @@
  * stop_labels/labels/meta now read FLAT columns (locale-invariant leaves on
  * the parent row, per-locale strings + the polaroids repeater on
  * translations); the list repeaters (metrics/methodology/testimonials/
- * interests) and parent-row arrays (tech_stack, client_logos) are unchanged.
- *
- * Mirrors transformBlockAboutContent in apps/web/src/lib/adapters/directus.ts:952.
+ * interests) are unchanged. Parent-row arrays now carry languages + education.
  */
 
 import { readSingleton } from '@directus/sdk';
@@ -26,7 +24,6 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 	const tr = (raw.translations ?? []) as ReadonlyArray<
 		Record<string, unknown> & { languages_code: string }
 	>;
-	const clientCount = typeof raw.client_count === 'number' ? raw.client_count : 0;
 
 	// --- identity: flat columns + per-locale polaroids repeater ---
 	const polaroidsByLocale = new Map<string, Array<Record<string, unknown>>>();
@@ -168,17 +165,30 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		return testimonial;
 	});
 
-	// --- techStack: read from parent row ---
-	const rawTechStack = Array.isArray(raw.tech_stack)
-		? (raw.tech_stack as Array<Record<string, unknown>>)
+	// --- languages: read from parent row ---
+	const languages = Array.isArray(raw.languages)
+		? (raw.languages as unknown[]).filter((item): item is string => typeof item === 'string')
 		: [];
-	const techStack: AboutContent['techStack'] = rawTechStack.map((item) => ({
-		name: typeof item.name === 'string' ? item.name : '',
-		category: (item.category as AboutContent['techStack'][number]['category']) ?? 'tools',
-		relatedServices: Array.isArray(item.relatedServices)
-			? (item.relatedServices as string[])
-			: [],
-	}));
+
+	// --- education: read from parent row ---
+	const rawEducation = Array.isArray(raw.education)
+		? (raw.education as Array<Record<string, unknown>>)
+		: [];
+	const education: AboutContent['education'] = rawEducation.map((item) => {
+		const school: LocalizedString = {
+			en: typeof item.school_en === 'string' ? item.school_en : '',
+		};
+		const program: LocalizedString = {
+			en: typeof item.program_en === 'string' ? item.program_en : '',
+		};
+		if (typeof item.school_fr === 'string' && item.school_fr.length > 0) school.fr = item.school_fr;
+		if (typeof item.program_fr === 'string' && item.program_fr.length > 0) program.fr = item.program_fr;
+		return {
+			school,
+			program,
+			icon: item.icon === 'bishops' ? 'bishops' : 'champlain',
+		};
+	});
 
 	// --- interests: id (plain), image (plain), label (LS) ---
 	const interestsByLocale = new Map<string, Array<Record<string, unknown>>>();
@@ -213,19 +223,6 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		hook: toLocalizedString(tr, 'weather_hook'),
 		enabled: raw.weather_enabled === true,
 	};
-
-	// --- clientLogos: read from parent row ---
-	const rawClientLogos = Array.isArray(raw.client_logos)
-		? (raw.client_logos as Array<Record<string, unknown>>)
-		: [];
-	const clientLogos: AboutContent['clientLogos'] = rawClientLogos.map((logo) => {
-		const cl: AboutContent['clientLogos'][number] = {
-			name: typeof logo.name === 'string' ? logo.name : '',
-			src: typeof logo.src === 'string' ? logo.src : '',
-		};
-		if (typeof logo.url === 'string' && logo.url.length > 0) cl.url = logo.url;
-		return cl;
-	});
 
 	// --- cta: parent scalars/arrays + flat LS ---
 	const rawCtaLines = Array.isArray(raw.cta_lines)
@@ -263,7 +260,6 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		next: toLocalizedString(tr, 'stop_next'),
 	};
 	const labels: AboutContent['labels'] = {
-		clientsServed: toLocalizedString(tr, 'label_clients_served'),
 		polaroidPrevAria: toLocalizedString(tr, 'label_polaroid_prev_aria'),
 		polaroidNextAria: toLocalizedString(tr, 'label_polaroid_next_aria'),
 		testimonialsCarouselAria: toLocalizedString(tr, 'label_testimonials_carousel_aria'),
@@ -281,11 +277,10 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		metrics,
 		methodology,
 		testimonials,
-		techStack,
+		languages,
+		education,
 		interests,
 		weather,
-		clientLogos,
-		clientCount,
 		cta,
 		stopLabels,
 		labels,

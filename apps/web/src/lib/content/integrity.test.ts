@@ -586,7 +586,7 @@ describe('LocalizedString guard + translation debt', () => {
 // ONE siteLabels.ui.metroCaption ('STM métro + REM' — names the hero metro
 // art) — net +2 with a11y.replayIntro (hero dot replay button aria)
 // → NO_FR 435, TOTAL 517.
-const LOCKED = { TOTAL: 525, WITH_FR: 82, NO_FR: 443, ES_WITHOUT_FR: 0 } as const; // integration regen 2026-06-12: +7 roster enables (en) + metro caption (en)
+const LOCKED = { TOTAL: 532, WITH_FR: 141, NO_FR: 391, ES_WITHOUT_FR: 0 } as const; // go2/about-real-person: +7 walked surface, bilingual about copy raises FR coverage
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

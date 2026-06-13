@@ -82,13 +82,19 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 
 	it('about: flat identity/weather/cta + parent scalars + per-locale polaroids', () => {
 		const row = {
-			id: 1, client_count: 10,
+			id: 1,
 			headshot: '/img/y.jpg', weather_enabled: true,
 			cta_command: 'whoami', cta_button_href: '/contact',
 			cta_lines: [{ text: 'hi', color: 'muted' }],
 			cta_socials: [{ label: 'GH', href: 'https://g', icon: 'gh' }],
-			tech_stack: [{ name: 'Postgres', category: 'databases', relatedServices: ['database-engineering'] }],
-			client_logos: [{ name: 'A', src: '/a.svg' }],
+			languages: ['English'],
+			education: [{
+				school_en: 'School',
+				school_fr: 'École',
+				program_en: 'Program',
+				program_fr: 'Programme',
+				icon: 'champlain',
+			}],
 			translations: [
 				{
 					languages_code: 'en',
@@ -99,7 +105,7 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 					stop_identity: 's1', stop_metrics: 's2', stop_testimonials: 's3', stop_process: 's4',
 					stop_stack: 's5', stop_clients: 's6', stop_interests: 's7', stop_snapshots: 's8',
 					stop_location: 's9', stop_next: 's10',
-					label_clients_served: 'l1', label_polaroid_prev_aria: 'l2', label_polaroid_next_aria: 'l3',
+					label_polaroid_prev_aria: 'l2', label_polaroid_next_aria: 'l3',
 					label_testimonials_carousel_aria: 'l4', label_testimonials_tab_nav_aria: 'l5',
 					label_testimonial_slide_aria: 'l6', label_show_testimonial_aria: 'l7',
 					meta_title: 'About', meta_description: 'd',
@@ -119,6 +125,8 @@ describe('flat-column recomposition (go2-t1b2)', () => {
 		expect(out.weather).toEqual({ city: { en: 'Montreal', fr: 'Montréal' }, hook: { en: 'rain' }, enabled: true });
 		expect(out.cta.command).toBe('whoami');
 		expect(out.stopLabels.next).toEqual({ en: 's10' });
+		expect(out.languages).toEqual(['English']);
+		expect(out.education[0]?.school).toEqual({ en: 'School', fr: 'École' });
 		expect(() => AboutContentSchema.parse(out)).not.toThrow();
 	});
 
