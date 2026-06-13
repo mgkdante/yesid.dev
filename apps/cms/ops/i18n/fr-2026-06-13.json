@@ -1,0 +1,3016 @@
+{
+  "locale": "fr",
+  "entries": [
+    {
+      "collection": "services",
+      "id": "sql-development",
+      "parentFk": "services_id",
+      "fields": {
+        "title": "Développement et optimisation SQL",
+        "subtitle": "et optimisation",
+        "description": "J'écris, je refais et j'ajuste les requêtes SQL sur PostgreSQL et SQL Server. Des requêtes de rapports complexes jusqu'aux procédures stockées, bâties pour être justes et performantes.",
+        "value_proposition": "Les requêtes lentes coûtent cher : en temps de calcul, en rapports qui retardent, en analystes frustrés qui attendent leurs données. J'examine votre couche SQL, je repère les requêtes qui coûtent cher et je les réécris pour la vitesse et la clarté. Vous obtenez des tableaux de bord plus rapides, des coûts de base de données plus bas, et du code que votre équipe peut vraiment entretenir.",
+        "benefit_headline": "Des requêtes qui roulent en secondes, pas en minutes",
+        "impact_metric_value": "3x plus vite",
+        "impact_metric_label": "amélioration moyenne des requêtes"
+      }
+    },
+    {
+      "collection": "services",
+      "id": "data-pipeline",
+      "parentFk": "services_id",
+      "fields": {
+        "title": "Pipelines et automatisation",
+        "description": "Les données passent de la source à l'entrepôt selon l'horaire, et le copier-coller manuel disparaît.",
+        "value_proposition": "Des données coincées dans des silos, c'est des données que personne peut utiliser, et une équipe des opérations qui copie d'un fichier à l'autre, c'est le symptôme. Je bâtis des pipelines et de l'automatisation de flux de travail qui transportent l'information des systèmes sources vers votre entrepôt de façon fiable, avec journalisation, logique de reprise et validation de schéma. Vos analystes ont des données propres et fraîches chaque matin; votre équipe arrête de faire de la saisie de données.",
+        "benefit_headline": "Vos données arrivent propres, à temps, chaque matin",
+        "impact_metric_value": "99,9 %",
+        "impact_metric_label": "disponibilité des pipelines"
+      }
+    },
+    {
+      "collection": "services",
+      "id": "analytics-reporting",
+      "parentFk": "services_id",
+      "fields": {
+        "title": "Tableaux de bord et analytique",
+        "description": "Une seule couche sémantique, des chiffres qui concordent dans tous les rapports, des tableaux de bord en qui votre équipe a confiance.",
+        "value_proposition": "Un tableau de bord en qui personne n'a confiance, c'est pire que pas de tableau de bord pantoute. Je bâtis des systèmes de rapports ancrés dans une couche sémantique propre, pour que les chiffres concordent d'un rapport à l'autre, que les filtres marchent de façon intuitive, et que votre équipe arrête de douter des données. Vous obtenez des tableaux de bord qui guident les décisions, pas qui sèment la confusion.",
+        "benefit_headline": "Des décisions en 15 minutes, pas en 2 jours",
+        "impact_metric_value": "2 j → 15 min",
+        "impact_metric_label": "délai de production des rapports"
+      }
+    },
+    {
+      "collection": "services",
+      "id": "database-engineering",
+      "parentFk": "services_id",
+      "fields": {
+        "title": "Bases de données et SQL",
+        "description": "Schémas, requêtes et migrations : une base de données qui reste rapide à mesure que vos données grossissent.",
+        "value_proposition": "Des requêtes lentes et des migrations risquées, c'est le même problème : une base de données que personne n'a vraiment conçue. J'examine la couche SQL, je réécris les requêtes qui coûtent cher, je conçois des schémas qui montent en charge, et je fais les migrations avec des plans de retour en arrière : plus de 500 Go déplacés en toute sécurité jusqu'ici. Des tableaux de bord plus rapides, des coûts de base de données plus bas, une base de données qui est un atout, pas un fardeau.",
+        "benefit_headline": "Des requêtes qui roulent en secondes, pas en minutes",
+        "impact_metric_value": "3x plus vite",
+        "impact_metric_label": "amélioration moyenne des requêtes"
+      }
+    },
+    {
+      "collection": "services",
+      "id": "internal-tooling",
+      "parentFk": "services_id",
+      "fields": {
+        "title": "Outils internes",
+        "description": "Je bâtis des panneaux d'administration et des outils de flux de travail qui remplacent les fichiers Excel. Retool, tableaux de bord sur mesure et systèmes d'approbation conçus pour les équipes des opérations.",
+        "value_proposition": "Votre équipe des opérations copie des données entre des fichiers Excel et des fils Slack. Je bâtis des outils internes, des panneaux d'administration, des flux d'approbation, des formulaires de saisie, qui centralisent les opérations et éliminent le travail manuel. Vous livrez plus vite parce que votre équipe passe son temps sur les décisions, pas sur la saisie de données.",
+        "benefit_headline": "Votre équipe arrête de copier d'un fichier à l'autre",
+        "impact_metric_value": "80 %",
+        "impact_metric_label": "de saisie manuelle en moins"
+      }
+    },
+    {
+      "collection": "services",
+      "id": "web-development",
+      "parentFk": "services_id",
+      "fields": {
+        "title": "Sites web et commerce en ligne",
+        "description": "Des sites et des boutiques rapides, branchés sur vos données, de la vitrine jusqu'à l'arrière-boutique.",
+        "value_proposition": "Votre infrastructure numérique mérite un frontend à sa hauteur. Je bâtis des applications web qui se branchent directement sur votre couche de données : portails clients, tableaux de bord internes, outils accessibles au public, avec le même souci de performance et de fiabilité que j'apporte au backend.",
+        "benefit_headline": "Un frontend à la hauteur de la qualité de votre backend",
+        "impact_metric_value": "100",
+        "impact_metric_label": "performance Lighthouse"
+      }
+    },
+    {
+      "collection": "services_sections",
+      "id": 13,
+      "parentFk": "services_sections_id",
+      "fields": {
+        "title": "Mon approche",
+        "content": "Je commence par vos requêtes les plus lentes, celles qui bloquent les tableaux de bord et qui font enrager les usagers. À l'aide des plans d'exécution et des outils de profilage, je trouve la cause profonde (index manquants, conversions implicites, parameter sniffing) et je la corrige méthodiquement. Chaque changement est testé sur des données à l'échelle de la production avant le déploiement."
+      }
+    },
+    {
+      "collection": "services_sections",
+      "id": 14,
+      "parentFk": "services_sections_id",
+      "fields": {
+        "title": "Mon approche",
+        "content": "Je conçois des pipelines plates dans le bon sens du terme : prévisibles, observables et faciles à déboguer à 3 h du matin. Chaque pipeline reçoit des chargements idempotents, des contrats de schéma et une journalisation claire. Je préfère dbt pour la logique de transformation, parce que ça rend le SQL testable et versionné."
+      }
+    },
+    {
+      "collection": "services_sections",
+      "id": 15,
+      "parentFk": "services_sections_id",
+      "fields": {
+        "title": "Mon approche",
+        "content": "Je commence par comprendre comment votre équipe prend ses décisions : quelles questions elle se pose, à quelle fréquence, et à quelles données elle fait confiance. Ensuite, je bâtis une couche sémantique qui rend ces questions faciles à répondre. Le tableau de bord, c'est la dernière étape, pas la première."
+      }
+    },
+    {
+      "collection": "services_sections",
+      "id": 16,
+      "parentFk": "services_sections_id",
+      "fields": {
+        "title": "Mon approche",
+        "content": "Je commence par vos requêtes les plus lentes : les plans d'exécution et le profilage trouvent la cause profonde (index manquants, conversions implicites, parameter sniffing), et je la corrige méthodiquement. Un changement de base de données, c'est un changement d'infrastructure : chaque migration reçoit un script de retour en arrière, et chaque changement de schéma est mesuré sur des données à l'échelle de la production avant le déploiement."
+      }
+    },
+    {
+      "collection": "services_sections",
+      "id": 17,
+      "parentFk": "services_sections_id",
+      "fields": {
+        "title": "Mon approche",
+        "content": "Je commence par observer le flux de travail de près, en regardant comment les données circulent dans votre équipe. Ensuite, je bâtis l'outil le plus simple qui élimine le goulot d'étranglement. Retool pour le prototypage rapide, du code sur mesure quand Retool atteint ses limites. Chaque outil arrive avec sa documentation pour que votre équipe puisse l'étendre sans moi."
+      }
+    },
+    {
+      "collection": "services_sections",
+      "id": 18,
+      "parentFk": "services_sections_id",
+      "fields": {
+        "title": "Mon approche",
+        "content": "Je bâtis avec SvelteKit parce que ça compile et fait disparaître le framework : vous obtenez des pages rapides avec un minimum de JavaScript. Chaque composant est typé, chaque page est rendue côté serveur pour le référencement, et la couche de données se connecte proprement à votre backend. Je déploie sur Vercel pour du CI/CD sans configuration et de la mise en cache en périphérie."
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 73,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Audit de performance des requêtes"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 74,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Procédures stockées optimisées"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 75,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Stratégie d'optimisation des index"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 76,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Plan de refonte du schéma"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 77,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Scripts de migration avec retour en arrière"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 78,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Documentation et guide d'exploitation"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 79,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Conception de l'architecture du pipeline"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 80,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Implémentation ELT/ETL"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 81,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Mise en place de l'orchestration (Airflow/cron)"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 82,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Conception et validation du schéma"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 83,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Gestion des erreurs et alertes"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 84,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Guide d'exploitation et tableau de bord de surveillance"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 85,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Conception de la couche sémantique / du modèle de données"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 86,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Tableaux de bord Power BI ou Retool"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 87,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Définition et documentation des KPI"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 88,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Livraison automatisée des rapports"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 89,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Formation et accompagnement des usagers"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 90,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Optimisation de la performance pour les grands jeux de données"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 91,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Audit de performance des requêtes"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 92,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Procédures stockées optimisées"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 93,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Révision de la conception et de la normalisation du schéma"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 94,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Stratégie d'optimisation des index"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 95,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Scripts de migration avec retour en arrière"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 96,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Plan de sauvegarde et de récupération"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 97,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Cartographie des besoins et des flux de travail"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 98,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Panneau d'administration Retool ou sur mesure"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 99,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Couche d'intégration API"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 100,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Contrôle d'accès par rôle"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 101,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Documentation d'accueil des utilisateurs"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 102,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Guide d'entretien et d'extension"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 103,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Application SvelteKit pleine pile"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 104,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Mise en place d'un design adaptatif"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 105,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Intégration API et couche de données"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 106,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Authentification et autorisation"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 107,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Déploiement et configuration CI/CD"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 108,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Optimisation de la performance"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 109,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Mesure de la performance"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 110,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Documentation, guides d'exploitation et diagrammes entité-relation"
+      }
+    },
+    {
+      "collection": "services_deliverables",
+      "id": 111,
+      "parentFk": "services_deliverables_id",
+      "fields": {
+        "label": "Automatisation des flux de travail (flux d'approbation, tâches planifiées)"
+      }
+    },
+    {
+      "collection": "projects",
+      "id": "yesid-dev",
+      "parentFk": "projects_id",
+      "fields": {
+        "description": {
+          "time": 1777242409366,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Un site de marque personnelle et de portfolio pour un ingénieur d'infrastructure numérique pigiste. Bâti avec SvelteKit 2, Svelte 5, Tailwind CSS v4, et déployé sur Vercel. Conçu pour être multilingue (en/fr/es) dès le premier jour."
+              }
+            }
+          ]
+        },
+        "one_liner": "Le site que vous regardez en ce moment : un portfolio SvelteKit bâti morceau par morceau.",
+        "title": "yesid.dev · Site portfolio"
+      }
+    },
+    {
+      "collection": "projects",
+      "id": "transit-data-pipeline",
+      "parentFk": "projects_id",
+      "fields": {
+        "description": {
+          "time": 1777242409586,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Un pipeline de données en production qui ingère des flux GTFS-RT, les transforme avec dbt, et fait ressortir les KPI dans un tableau de bord Power BI. Bâti pour une société de transport au Québec."
+              }
+            }
+          ]
+        },
+        "one_liner": "Un pipeline ELT de bout en bout qui traite les données de transport en temps réel pour un opérateur régional.",
+        "title": "Pipeline de données des opérations de transport"
+      }
+    },
+    {
+      "collection": "projects",
+      "id": "lorem-analytics-dashboard",
+      "parentFk": "projects_id",
+      "fields": {
+        "description": {
+          "time": 1777242409843,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Une suite de tableaux de bord Power BI bâtie pour une entreprise de logistique. Tire les données de SQL Server, applique la logique d'affaires en DAX, et livre des rafraîchissements quotidiens aux décideurs. A fait passer le temps de production des rapports de 2 jours à 15 minutes."
+              }
+            }
+          ]
+        },
+        "one_liner": "Tableau de bord des KPI pour la direction, qui suit les indicateurs opérationnels à travers 12 départements.",
+        "title": "Tableau de bord analytique Lorem"
+      }
+    },
+    {
+      "collection": "projects",
+      "id": "lorem-database-migration",
+      "parentFk": "projects_id",
+      "fields": {
+        "description": {
+          "time": 1777242410164,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Migration d'une base de données MySQL de 500 Go vers PostgreSQL sans aucune interruption, grâce à l'écriture double et aux lectures fantômes. Comprenait une refonte du schéma, le mappage des types de données, et la conversion des procédures stockées."
+              }
+            }
+          ]
+        },
+        "one_liner": "Migration sans interruption d'un MySQL hérité vers PostgreSQL pour une plateforme SaaS.",
+        "title": "Migration de base de données Lorem"
+      }
+    },
+    {
+      "collection": "projects",
+      "id": "lorem-query-optimizer",
+      "parentFk": "projects_id",
+      "fields": {
+        "description": {
+          "time": 1777242410452,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Un outil en Python qui se connecte à SQL Server, analyse les plans d'exécution, repère les index manquants, et génère des recommandations d'optimisation. A réduit le temps moyen des requêtes de 73 % à travers plus de 200 procédures stockées."
+              }
+            }
+          ]
+        },
+        "one_liner": "Outil automatisé d'analyse de requêtes SQL Server qui repère les requêtes lentes et suggère des améliorations d'index.",
+        "title": "Optimiseur de requêtes Lorem"
+      }
+    },
+    {
+      "collection": "projects",
+      "id": "lorem-retool-admin",
+      "parentFk": "projects_id",
+      "fields": {
+        "description": {
+          "time": 1777242410643,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Un panneau d'administration en Retool qui a remplacé 6 feuilles de calcul par une interface unifiée. Opérations CRUD sur PostgreSQL, contrôle d'accès par rôle, et acheminement automatisé des approbations."
+              }
+            }
+          ]
+        },
+        "one_liner": "Tableau de bord des opérations internes pour gérer l'inventaire et les flux d'approbation.",
+        "title": "Panneau d'administration Retool Lorem"
+      }
+    },
+    {
+      "collection": "projects_sections",
+      "id": 8,
+      "parentFk": "projects_sections_id",
+      "fields": {
+        "content": {
+          "time": 1777242409366,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "SvelteKit fait disparaître le cadriciel au moment de la compilation, ce qui produit du HTML léger et un minimum de JavaScript. Pour un site portfolio où la première impression et la vitesse de chargement comptent, ce compromis vaut la peine."
+              }
+            }
+          ]
+        },
+        "title": "Pourquoi SvelteKit?"
+      }
+    },
+    {
+      "collection": "projects_sections",
+      "id": 9,
+      "parentFk": "projects_sections_id",
+      "fields": {
+        "content": {
+          "time": 1777242409844,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Les gestionnaires des opérations passaient deux jours chaque mois à monter des rapports à partir de plusieurs feuilles de calcul. Les données étaient déjà périmées au moment de prendre les décisions."
+              }
+            }
+          ]
+        },
+        "title": "Le problème"
+      }
+    },
+    {
+      "collection": "projects_sections",
+      "id": 10,
+      "parentFk": "projects_sections_id",
+      "fields": {
+        "content": {
+          "time": 1777242409844,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Connecté directement à SQL Server avec des rafraîchissements planifiés. Construction d'une couche sémantique en DAX pour que les utilisateurs d'affaires puissent découper les données sans écrire de requêtes."
+              }
+            }
+          ]
+        },
+        "title": "L'approche"
+      }
+    },
+    {
+      "collection": "projects_sections",
+      "id": 11,
+      "parentFk": "projects_sections_id",
+      "fields": {
+        "content": {
+          "time": 1777242410164,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "L'instance MySQL existante atteignait ses limites de performance. PostgreSQL offrait un meilleur support du JSON, les CTE et les fonctions de fenêtrage dont la couche analytique avait besoin."
+              }
+            }
+          ]
+        },
+        "title": "Pourquoi migrer?"
+      }
+    },
+    {
+      "collection": "projects_sections",
+      "id": 12,
+      "parentFk": "projects_sections_id",
+      "fields": {
+        "content": {
+          "time": 1777242410164,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "On a utilisé un patron d'écriture double : les nouvelles écritures vont dans les deux bases de données, et les lectures basculent peu à peu vers PostgreSQL. Des lectures fantômes ont validé la justesse des données avant la bascule."
+              }
+            }
+          ]
+        },
+        "title": "Stratégie de migration"
+      }
+    },
+    {
+      "collection": "projects_sections",
+      "id": 13,
+      "parentFk": "projects_sections_id",
+      "fields": {
+        "content": {
+          "time": 1777242410452,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Se connecte à l'instance SQL Server cible, capte les plans d'exécution des requêtes les plus lourdes et les analyse pour repérer les anti-patrons courants : balayages de table, conversions implicites et problèmes de reniflage de paramètres."
+              }
+            }
+          ]
+        },
+        "title": "Comment ça marche"
+      }
+    },
+    {
+      "collection": "projects_sections",
+      "id": 14,
+      "parentFk": "projects_sections_id",
+      "fields": {
+        "content": {
+          "time": 1777242410643,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "p1",
+              "type": "paragraph",
+              "data": {
+                "text": "Les opérations roulaient sur 6 Google Sheets avec du copier-coller manuel entre eux. Le panneau Retool a tout centralisé dans une seule interface, avec des requêtes PostgreSQL en temps réel."
+              }
+            }
+          ]
+        },
+        "title": "Avant et après"
+      }
+    },
+    {
+      "collection": "projects_impact_metrics",
+      "id": 6,
+      "parentFk": "projects_impact_metrics_id",
+      "fields": {
+        "label": "Cycles de rafraîchissement en temps réel"
+      }
+    },
+    {
+      "collection": "projects_impact_metrics",
+      "id": 7,
+      "parentFk": "projects_impact_metrics_id",
+      "fields": {
+        "label": "Disponibilité du pipeline"
+      }
+    },
+    {
+      "collection": "projects_impact_metrics",
+      "id": 8,
+      "parentFk": "projects_impact_metrics_id",
+      "fields": {
+        "label": "Rapports répartis sur 12 services"
+      }
+    },
+    {
+      "collection": "projects_impact_metrics",
+      "id": 9,
+      "parentFk": "projects_impact_metrics_id",
+      "fields": {
+        "label": "Réduction du temps de requête"
+      }
+    },
+    {
+      "collection": "projects_impact_metrics",
+      "id": 10,
+      "parentFk": "projects_impact_metrics_id",
+      "fields": {
+        "label": "Migration sans temps d'arrêt"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "airflow",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977601,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Apache Airflow est une plateforme d'orchestration de flux de travail qui te permet de définir, planifier et surveiller tes pipelines de données sous forme de code Python. Au lieu de tâches cron ou de scripts manuels, tu écris des DAG (graphes orientés acycliques) qui déclarent les tâches et leurs dépendances : \"extraire les données, ensuite les transformer, ensuite les charger, et si une étape échoue, réessaie trois fois et avertis-moi.\" Airflow fournit une interface web pour la surveillance, un planificateur pour le minutage, et des intégrations avec pratiquement tous les outils de données."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977602,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Le pipeline de données des opérations de transport roule sur Airflow, qui orchestre le cycle quotidien : ingestion des flux GTFS-RT, transformations Python, chargements dans PostgreSQL et rafraîchissements des jeux de données Power BI. Chaque tâche a sa logique de réessai, ses alertes de SLA et ses chaînes de dépendances qui s'assurent que les contrôles de qualité des données passent avant que les consommateurs en aval voient de nouvelles données. L'interface web d'Airflow donne à l'équipe des opérations une vue sur la santé du pipeline sans avoir à se connecter en SSH aux serveurs ni à lire les fichiers journaux."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977602,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Airflow transforme \"un paquet de scripts qui roulent l'un après l'autre\" en un vrai système d'orchestration, avec réessais, journalisation, alertes et gestion des dépendances. Je l'utilise quand les pipelines ont plusieurs étapes qui doivent rouler dans un ordre précis, quand les échecs ont besoin d'une logique de réessai automatique, et quand les parties prenantes ont besoin de voir la santé du pipeline. J'écris mes DAG en code Python (pas en configuration YAML), ce qui veut dire que toute la puissance de Python est disponible pour la génération dynamique de tâches et la logique conditionnelle."
+              }
+            }
+          ]
+        },
+        "enables": "planifie et surveille tes pipelines de données, du début à la fin"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "alembic",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977603,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Alembic est un outil de migration de base de données pour Python, bâti par-dessus SQLAlchemy. Il gère les versions du schéma de ta base de données de la même façon que Git gère les versions de ton code : chaque changement (ajouter une colonne, créer une table, modifier une contrainte) est un fichier de migration numéroté qu'on peut appliquer vers l'avant ou annuler. Ça veut dire que la structure de ta base de données est reproductible, vérifiable et déployable d'un environnement à l'autre."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977603,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur le pipeline de données des opérations de transport, Alembic gère le schéma PostgreSQL à mesure que le modèle de données évolue : ajout de nouveaux types de flux, modification des tables de calcul des KPI, ajustement des index selon l'analyse de performance des requêtes. Pour la migration de la base de données Lorem, Alembic a suivi chaque changement de schéma pendant la transition de MySQL vers PostgreSQL, donnant à l'équipe une piste de vérification claire et la possibilité d'annuler n'importe quelle étape de la migration de façon indépendante."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977603,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Les changements de base de données sans outil de migration, c'est la recette parfaite pour les catastrophes du genre \"ça marche sur ma machine\". Alembic me donne des changements de schéma versionnés et réversibles que je peux tester en préproduction avant de toucher à la production. J'écris chaque migration avec son chemin d'annulation correspondant, et je teste les deux directions sur des volumes de données réalistes. La fonction de génération automatique accélère le développement, mais je révise toujours le SQL généré : les outils de migration automatique manquent des nuances comme les remplissages de données et les stratégies d'index."
+              }
+            }
+          ]
+        },
+        "enables": "versionne chaque changement de schéma de base de données, avec annulations"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "bun",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977605,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Bun est un environnement d'exécution JavaScript tout-en-un, à la fois bundler et gestionnaire de paquets, bâti à partir de zéro en Zig. Il est conçu comme un remplacement direct de Node.js : il exécute le même code JavaScript et TypeScript, mais nettement plus vite. Bun s'occupe de l'installation des paquets (en remplacement de npm/yarn), exécute TypeScript nativement sans étape de compilation séparée, inclut un lanceur de tests intégré et démarre plus vite que Node.js. Il est compatible avec npm, donc les paquets existants fonctionnent sans changement."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977605,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "yesid.dev roule entièrement sur Bun : <code>bun install</code> pour les dépendances, <code>bun run dev</code> pour le serveur de développement, <code>bun run test</code> pour Vitest, <code>bun run check</code> pour les vérifications TypeScript et Svelte. Le fichier de verrouillage est <code>bun.lockb</code> (format binaire, plus rapide que le JSON), et tout le flux de développement utilise exclusivement les commandes Bun. La différence de vitesse est la plus marquée en CI : l'installation et l'exécution de tests rapides de Bun gardent la boucle de rétroaction serrée à chaque poussée."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977606,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Bun est mon environnement d'exécution pour tous mes nouveaux projets JavaScript/TypeScript. Une installation de paquets qui prend 30 secondes avec npm prend 2 secondes avec Bun. Le lanceur de tests est intégré et rapide. TypeScript roule sans étape de compilation. Chaque jour, je sauve des minutes sur l'installation des dépendances, les exécutions de tests et les démarrages du serveur de développement, et ces minutes-là s'additionnent à travers des centaines d'itérations de développement. Bun est aussi une occasion d'apprentissage : je l'ai choisi délibérément pour rester à jour avec l'écosystème des environnements d'exécution JavaScript."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "cpp",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977606,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "C++ est un langage de programmation système polyvalent qui te donne un contrôle direct sur le matériel et la mémoire. C'est le langage derrière les systèmes d'exploitation, les moteurs de jeu, les bases de données (y compris PostgreSQL lui-même), les navigateurs et l'infrastructure où la performance est critique. Le C++ moderne (C++17/20/23) a beaucoup évolué depuis ses débuts, avec les pointeurs intelligents, les ranges, les concepts et les coroutines qui le rendent plus sûr et plus expressif tout en gardant son principe d'abstraction sans surcoût."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977606,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "C++ nourrit ma façon de penser les systèmes plus que mon code de tous les jours. Quand j'optimise des plans de requête SQL Server ou que je comprends pourquoi un choix d'index PostgreSQL compte, ce savoir-là remonte à comprendre comment fonctionnent les arbres B au niveau de la mémoire, comment les jointures par hachage utilisent l'allocation de mémoire, et comment les lignes de cache du processeur affectent la performance des balayages. C'est la couche de fondation qui rend mes optimisations de plus haut niveau plus éclairées."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977607,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "C++ me donne une compréhension de comment fonctionnent vraiment les systèmes sur lesquels je bâtis. Connaître C++, ça veut dire que je comprends l'agencement de la mémoire, le comportement de la cache et les caractéristiques de performance qui comptent quand je tune des requêtes de base de données ou que je conçois des pipelines à haut débit. C'est un savoir de fondation : même quand j'écris du Python ou du TypeScript, comprendre ce que fait l'environnement d'exécution sous le capot m'aide à prendre de meilleures décisions de performance."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "csharp",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977607,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "C# est un langage moderne à typage statique développé par Microsoft, surtout utilisé pour bâtir des applications Windows, des API web avec ASP.NET et du développement de jeux avec Unity. Il roule sur l'environnement d'exécution .NET (maintenant multiplateforme) et combine la performance d'un langage compilé avec des fonctionnalités conviviales pour les développeurs comme LINQ, async/await et le filtrage par motif. Si une organisation utilise les outils Microsoft, C# est probablement son principal langage de développement."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977607,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Dans les environnements SQL Server, C# est souvent la couche applicative qui repose sur les bases de données que je tune. Quand j'optimise des procédures stockées ou que je refais un schéma pour un client, je vérifie que leur code d'accès aux données en C# gère bien les changements : je vérifie les mappages Entity Framework, les paramètres de regroupement de connexions et les portées de transactions. Cette conscience pleine pile évite le jeu du blâme du genre \"la base de données est correcte, ça doit être l'application\"."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977608,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "C# relie mon travail de données à l'écosystème d'entreprise de Microsoft. Beaucoup de mes clients SQL Server ont des applications C# qui consomment les bases de données que j'optimise : comprendre les deux côtés de cette frontière veut dire que je peux diagnostiquer les problèmes de performance d'un bout à l'autre. J'ai écrit des couches d'accès aux données en C# avec Entity Framework, bâti des outils en ligne de commande pour la maintenance de bases de données, et débogué des applications ASP.NET pour remonter des requêtes lentes jusqu'à leur origine dans l'ORM."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "dax",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977608,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "DAX (Data Analysis Expressions) est un langage de formules utilisé dans Power BI, Analysis Services et Power Pivot. Vois-le comme un langage spécialisé pour écrire des calculs d'affaires : croissance des revenus, totaux cumulatifs, comparaisons d'une année à l'autre, moyennes pondérées, qui fonctionnent sur des données filtrées et découpées. DAX opère sur un modèle de données en colonnes et utilise des concepts comme le contexte de filtre et le contexte de ligne pour évaluer les expressions dynamiquement à mesure que les utilisateurs interagissent avec les tableaux de bord."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977608,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur le tableau de bord analytique Lorem, DAX alimente chaque calcul de KPI, des mesures de revenus au niveau des services aux comparaisons inter-services avec des plages de dates dynamiques. La couche sémantique que j'ai bâtie utilise exclusivement des mesures DAX (pas de colonnes calculées quand des mesures suffisent) pour garder le modèle léger et les rafraîchissements rapides. Comprendre DAX en profondeur veut dire que je peux diagnostiquer les problèmes de \"les chiffres ne concordent pas\" qui prennent habituellement des jours à régler aux équipes."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977609,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "DAX, c'est là où la logique d'affaires rencontre la modélisation de données, et bien le faire, c'est la différence entre des tableaux de bord qui performent et des tableaux de bord qui mentent. J'écris des mesures DAX qui gèrent l'intelligence temporelle complexe (cumul annuel, comparaison avec l'année précédente, moyennes mobiles), la segmentation dynamique et l'analyse de scénarios. Je comprends le contexte d'évaluation en profondeur : la propagation du contexte de filtre, les substitutions de CALCULATE, et la distinction entre itérateur et agrégateur qui fait trébucher la plupart des développeurs Power BI."
+              }
+            }
+          ]
+        },
+        "enables": "transforme tes modèles Power BI en mesures nettes et réutilisables"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "docker",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977609,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Docker empaquette les applications et leurs dépendances dans des conteneurs : des environnements légers et portables qui roulent de façon cohérente partout. Au lieu des problèmes du genre \"ça marche sur ma machine\", un conteneur Docker regroupe ton code, ton environnement d'exécution, tes bibliothèques et ta configuration dans une seule image. Cette image roule de façon identique sur ton portable, en CI/CD et en production. Docker Compose te permet de définir des montages multiconteneurs (application + base de données + cache) dans un seul fichier."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977609,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Le pipeline de données des opérations de transport est entièrement conteneurisé avec Docker : les services Python, PostgreSQL et Airflow roulent tous comme des conteneurs Docker orchestrés avec Docker Compose. Ça veut dire que tout le pipeline peut être reproduit dans n'importe quel environnement : les portables de développement, les exécuteurs de CI et les serveurs de production. Docker Compose définit les dépendances des services, les vérifications de santé et les montages de volumes, alors démarrer le pipeline au complet, c'est une seule commande."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977610,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Docker élimine la dérive d'environnement, le tueur silencieux des pipelines de données et des déploiements. Quand je remets un pipeline à l'équipe des opérations d'un client, ils lancent <code>docker compose up</code> et obtiennent exactement le même environnement dans lequel j'ai développé. Aucun paquet Python manquant, aucune mauvaise version de PostgreSQL, aucun conflit de bibliothèques. J'utilise Docker pour le développement de pipelines de données, les tests d'intégration (en démarrant de vraies bases de données pour les tests) et l'empaquetage des applications pour le déploiement."
+              }
+            }
+          ]
+        },
+        "enables": "empaquette chaque service pour qu'il roule pareil partout"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "flutter",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977610,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Flutter est la boîte à outils d'interface multiplateforme de Google pour bâtir des applications compilées en natif pour le mobile, le web et le bureau à partir d'un seul code en Dart. Au lieu d'utiliser des composants propres à chaque plateforme, Flutter dessine lui-même chaque pixel avec son propre moteur de rendu (Skia/Impeller), ce qui te donne un contrôle précis sur l'allure et le ressenti sur iOS comme sur Android. Le hot reload te laisse voir tes changements sur-le-champ pendant le développement."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977611,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Flutter fait partie de ma boîte à outils mobile qui prend de l'expansion, en complément de Kotlin/Jetpack Compose pour le travail Android natif. Je l'explore pour les projets où la portée multiplateforme compte plus que le ressenti natif de la plateforme : outils internes, applications de visualisation de données et tableaux de bord pour les clients qui doivent fonctionner sur les deux plateformes de téléphone sans avoir à maintenir deux codes séparés."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977611,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Flutter, c'est mon chemin d'exploration du multiplateforme. Quand un projet doit sortir sur iOS et Android avec un code partagé, le système de composants de Flutter et la sûreté de typage de Dart en font un choix qui se défend bien. Je me bâtis une aisance avec son modèle de mise en page (qui partage des concepts avec CSS Flexbox) et ses patrons de gestion d'état. Venant du développement web, l'approche déclarative de l'interface de Flutter me semble naturelle : les composants sont des fonctions de l'état, tout comme dans Svelte."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "github-actions",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977611,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "GitHub Actions est une plateforme CI/CD intégrée directement dans GitHub. Tu définis des workflows dans des fichiers YAML qui s'exécutent automatiquement sur des événements : push, pull request, planification ou déclenchement manuel. Chaque workflow roule sur une machine virtuelle (Ubuntu, Windows ou macOS) et peut exécuter des commandes shell, lancer des tests, compiler du code, déployer des applications ou interagir avec n'importe quelle API. Le marketplace offre des milliers d'actions toutes prêtes pour les tâches courantes."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977612,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur yesid.dev, GitHub Actions roule la suite de tests (<code>bun run test</code>), les vérifications de types (<code>bun run check</code>) et déclenche les déploiements Vercel à chaque push. Les workflows de pull request roulent toute la matrice de tests et bloquent la fusion si les tests échouent. Le pipeline gère aussi les tâches planifiées et peut être étendu avec des tests E2E Playwright à mesure que le projet grandit. Avoir la CI qui roule à chaque commit, ça veut dire que j'attrape les builds brisés tout de suite, pas après le déploiement en production."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977612,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "GitHub Actions s'intègre directement là où mon code vit : pas de service CI séparé à configurer, pas de webhooks à maintenir, pas de comptes additionnels à gérer. Je définis mon pipeline de test et de déploiement dans <code>.github/workflows/</code>, et ça roule à chaque push. L'intégration serrée fait que les vérifications de PR affichent les résultats de tests directement dans la page, l'état du déploiement apparaît sur le commit, et je peux déclencher des workflows depuis l'interface de GitHub au besoin. Pour les projets solos et en petite équipe, c'est le chemin le plus simple vers une CI/CD professionnelle."
+              }
+            }
+          ]
+        },
+        "enables": "roule les vérifications et déploie chaque changement automatiquement"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "gsap",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977613,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "GSAP (GreenSock Animation Platform) est une bibliothèque d'animation JavaScript de calibre professionnel. Elle anime n'importe quelle propriété numérique : transformations CSS, attributs SVG, éléments canvas, même des valeurs d'objets personnalisés, avec un timing précis à l'image près et une performance fluide à 60 ips. Son écosystème de plugins inclut ScrollTrigger pour les animations liées au défilement, DrawSVGPlugin pour animer le tracé des chemins SVG, et MotionPathPlugin pour faire bouger des éléments le long de courbes. GSAP est maintenant entièrement gratuit et open-source, avec tous les plugins inclus."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977613,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur yesid.dev, GSAP fait rouler chaque élément en mouvement. Le diagramme de la pile technique utilise DrawSVGPlugin pour animer le tracé des lignes de connexion entre les nœuds, MotionPathPlugin pour les points de paquets de données qui voyagent le long de ces lignes, et ScrollTrigger pour la séquence d'entrée où les couches démarrent du bas vers le haut. La page des services utilise des timelines GSAP pour les animations de révélation des stations, et la séquence du hero de la page d'accueil chorégraphie le texte, les formes et les éléments SVG dans une timeline liée au défilement."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977613,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Les animations CSS font la job pour les états de survol et les transitions simples, mais elles s'écroulent quand t'as besoin de séquences chorégraphiées, de timelines liées au défilement ou d'animations de chemins SVG. GSAP me donne un contrôle à l'image près avec une API propre. Je peux bâtir une animation d'entrée échelonnée, la lier à la position de défilement, l'inverser à la sortie et respecter <code>prefers-reduced-motion</code>, le tout en quelques lignes de code. L'API de timeline rend la chorégraphie complexe à plusieurs éléments composable et facile à déboguer."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "java",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977613,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Java est un langage de programmation à typage statique et orienté objet qui roule sur la machine virtuelle Java (JVM). Il est l'épine dorsale des logiciels d'entreprise depuis plus de 25 ans, faisant rouler de tout : applications Android, systèmes bancaires, services distribués massifs. Sa promesse « écris une fois, roule partout » veut dire que le code Java compilé roule sur n'importe quelle plateforme munie d'une JVM, et son écosystème mature inclut des frameworks comme Spring Boot, Hibernate et Apache Kafka."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977614,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Java apparaît dans mon travail de consultation quand les clients ont des services Spring Boot ou des applications Android déjà en place. Mon expérience avec Java fait un pont naturel vers Kotlin : je comprends les fondations de la JVM, le modèle de mémoire et les primitives de concurrence que les deux langages partagent. Quand vient le temps d'évaluer s'il vaut mieux moderniser un service Java vers Kotlin ou le réécrire au complet, cette double aisance m'aide à faire des recommandations pratiques."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977614,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Java fait partie de ma boîte à outils backend, surtout pour les environnements d'entreprise où les systèmes basés sur la JVM sont la norme. Je suis à l'aise avec Spring Boot pour les services web et familier avec l'écosystème Java plus large (Maven, Gradle, JUnit). Quand l'équipe d'un client travaille nativement en Java, je travaille dans cette pile plutôt que de pousser un changement de langage. Le typage fort de Java, son outillage mature et ses caractéristiques de performance en font un choix solide pour les systèmes qui doivent durer."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "jetpack-compose",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977615,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Jetpack Compose est la boîte à outils d'interface moderne d'Android pour bâtir des interfaces natives avec Kotlin. Au lieu de mises en page XML, tu écris des fonctions composables qui décrivent ton interface de façon déclarative, un peu comme fonctionnent les composants React ou les fichiers Svelte. Le framework gère le re-rendu quand l'état change, les API d'animation sont intégrées, et les composants Material Design 3 sont disponibles d'emblée. Google recommande maintenant Compose comme la façon par défaut de bâtir des interfaces Android."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977615,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Jetpack Compose fait partie de mon chemin de croissance en développement mobile, jumelé à Kotlin. Le but, c'est de bâtir des applications Android natives qui se connectent aux mêmes API et bases de données backend que j'architecture pour mes clients web, ce qui prolonge l'histoire de l'infrastructure numérique du tableau de bord jusque dans la poche. Comprendre Compose et Flutter me permet de conseiller mes clients sur les compromis entre natif et multiplateforme à partir d'une expérience concrète."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977615,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Jetpack Compose, ça me donne l'impression d'être l'équivalent mobile de l'approche de Svelte pour l'interface : déclaratif, réactif et proche de la machine. Je l'apprends comme porte d'entrée vers le développement Android natif, précisément pour bâtir des applications mobiles connectées aux données. Le modèle de fonction composable s'arrime bien à mon modèle mental existant d'interface basée sur les composants, et le système de typage de Kotlin attrape les erreurs de la même façon que TypeScript le fait du côté web."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "kotlin",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977616,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Kotlin est un langage de programmation moderne qui roule sur la JVM, développé par JetBrains. Il est entièrement interopérable avec Java, mais offre une syntaxe plus concise et expressive, la sûreté contre le null intégrée dans le système de typage, des coroutines pour la programmation asynchrone, et des fonctions d'extension qui rendent les API plus naturelles. Google en a fait le langage préféré pour le développement Android en 2019, et il est de plus en plus utilisé pour les services backend avec Ktor et Spring Boot."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977616,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Kotlin fait partie de mon chemin d'apprentissage en développement mobile, jumelé à Jetpack Compose pour bâtir des interfaces Android natives. L'interopérabilité du langage avec Java fait que je peux travailler dans des codes Android existants sans tout réécrire, en adoptant Kotlin fichier par fichier. À mesure que je passe de l'infrastructure numérique au développement d'applications mobiles, Kotlin est le pont entre mon expérience backend sur la JVM et les interfaces mobiles natives."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977616,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Kotlin, c'est là que j'agrandis mes capacités mobiles et backend. Sa sûreté contre le null à elle seule prévient toute une catégorie de plantages à l'exécution qui empoisonnent les codes Java, et les coroutines rendent le code asynchrone lisible sans l'enfer des callbacks. Je l'apprends à travers Jetpack Compose pour le développement Android, en bâtissant des interfaces déclaratives qui ressemblent au modèle de composants de Svelte. La fondation JVM fait que mes connaissances en Java se transfèrent directement."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "mysql",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977616,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "MySQL est une des bases de données relationnelles les plus déployées au monde, surtout dans les applications web. Elle stocke les données dans des tables avec des schémas définis, supporte les transactions, et c'est le « M » de la pile classique LAMP (Linux, Apache, MySQL, PHP). Elle est rapide pour les charges de travail axées sur la lecture et possède une communauté immense avec une documentation et un outillage étendus."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977616,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "MySQL a été la base de données source dans plusieurs projets de migration que j'ai menés. La migration de base de données Lorem est partie d'une instance MySQL qui avait dépassé la conception de son schéma : j'ai cartographié chaque type de données, converti les procédures stockées et bâti le chemin de migration en double écriture vers PostgreSQL. Comprendre les moteurs de stockage de MySQL et son comportement de verrouillage était essentiel pour planifier la bascule sans temps d'arrêt."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977617,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "MySQL apparaît plus souvent dans les systèmes existants que dans mes nouveaux projets. Je suis à l'aise pour travailler avec : optimiser les requêtes, concevoir les schémas, gérer la réplication, mais je recommande habituellement PostgreSQL pour le nouveau travail à cause de son ensemble de fonctionnalités plus riche. Cela dit, quand l'infrastructure d'un client est déjà basée sur MySQL, je travaille dans cet écosystème plutôt que de pousser une migration inutile. Bien connaître MySQL et PostgreSQL, ça veut dire que je peux faire des recommandations honnêtes sur les moments où une migration vaut l'effort."
+              }
+            }
+          ]
+        },
+        "enables": "l'autre base de données relationnelle de fond, le même soin que Postgres"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "nextjs",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977617,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Next.js est un framework full-stack basé sur React, développé par Vercel. Il fournit le routage basé sur les fichiers, le rendu côté serveur, la génération statique, les routes d'API et les middlewares d'emblée. L'App Router (introduit dans la v13) utilise les React Server Components pour faire le rendu côté serveur par défaut, ce qui envoie moins de JavaScript au navigateur. C'est le framework React le plus populaire et le choix par défaut pour les applications React en production."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977617,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Next.js apparaît dans mon travail de consultation quand les clients ont des codes React déjà en place. Mon expérience avec SvelteKit et Next.js me donne du recul sur les compromis : Next.js offre un écosystème plus riche et un recrutement plus facile, tandis que SvelteKit offre de meilleures performances par défaut et moins de code répétitif. Quand un client demande « quel framework devrait-on utiliser? », je peux répondre à partir d'une expérience directe avec les deux, pas juste de la théorie."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977617,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Next.js est mon framework React de choix quand un projet demande l'écosystème React : bibliothèques de composants existantes, familiarité de l'équipe, ou intégrations tierces qui présupposent React. Je suis à l'aise avec l'App Router, les server actions et le modèle de mise en cache. Je choisis SvelteKit pour mes propres projets à cause de ses bundles plus petits et de son modèle mental plus simple, mais je me tourne vers Next.js quand je collabore avec des équipes natives en React ou quand le projet profite de l'immense écosystème de composants de React."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "node-js",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977618,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Node.js est un runtime JavaScript bâti sur le moteur V8 de Chrome qui te laisse rouler du JavaScript en dehors du navigateur : sur des serveurs, des outils en ligne de commande et des services backend. Il utilise un modèle d'E/S non bloquant et piloté par événements, ce qui le rend efficace pour gérer plusieurs connexions simultanées. npm, son gestionnaire de paquets, héberge le plus gros écosystème de bibliothèques open-source de tous les langages."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977618,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Le panneau d'administration Retool Lorem utilise Node.js comme couche d'API, en gérant les opérations CRUD contre PostgreSQL avec un contrôle d'accès basé sur les rôles et un routage d'approbation automatisé. Node.js est aussi la fondation du rendu côté serveur de SvelteKit sur yesid.dev, où il gère le pipeline de build, les routes serveur et la génération des actifs statiques que Vercel déploie en périphérie."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977618,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Node.js est le runtime derrière mon outillage interne et mes couches d'API. Pour les projets où le frontend est déjà en JavaScript/TypeScript, utiliser Node au backend fait que toute la pile partage un seul langage, un seul système de typage et un seul ensemble de bibliothèques. Je le jumelle avec Express ou les routes serveur de SvelteKit selon le projet. Pour les nouveaux projets, je me tourne souvent vers Bun à la place, mais Node.js reste la norme pour les déploiements en production où la compatibilité de l'écosystème compte le plus."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "playwright",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977619,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Playwright est un framework d'automatisation de navigateur de Microsoft pour les tests de bout en bout. Il contrôle de vrais navigateurs (Chromium, Firefox, WebKit) par programmation : naviguer dans les pages, cliquer sur des boutons, remplir des formulaires et valider le contenu des pages. Contrairement aux tests unitaires qui testent les composants en isolation, les tests E2E vérifient que l'application au complet fonctionne comme un utilisateur la vivrait : de vraies requêtes HTTP, un vrai rendu, de vraies interactions."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977619,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Playwright est prévu pour la couche de tests E2E de yesid.dev, en vérifiant les parcours utilisateurs critiques comme naviguer dans le diagramme de la pile technique, ouvrir les panneaux de détails, utiliser les filtres et le configurateur Build Your Stack à travers Chrome, Firefox et Safari. Il s'intègre avec GitHub Actions pour rouler les tests de navigateur à chaque push, et sa comparaison de captures d'écran peut attraper les régressions visuelles que les tests unitaires ne détecteraient jamais."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977619,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Playwright attrape les bugs que les tests unitaires manquent, ceux qui apparaissent seulement quand les composants interagissent dans un vrai navigateur avec de vraies données. Je bâtis ma pratique de tests E2E autour de lui parce que c'est l'outil de test de navigateur le plus capable qui existe : attente automatique (pas d'appels <code>sleep()</code> instables), support multi-navigateurs, interception réseau et visualiseur de traces intégré pour déboguer les échecs. Pour les sites très visuels comme yesid.dev, Playwright peut vérifier les animations, les mises en page adaptatives et les parcours d'interaction."
+              }
+            }
+          ]
+        },
+        "enables": "prouve que tout le produit fonctionne dans un vrai navigateur, à chaque changement"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "postgresql",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977620,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "PostgreSQL est une base de données relationnelle open-source qui stocke des données structurées dans des tables avec des rangées et des colonnes. Vois ça comme un système de classement très organisé où chaque donnée a un type défini, où les relations sont imposées par le système lui-même, et où tu peux poser des questions complexes à travers des millions d'enregistrements en quelques millisecondes. Elle supporte le JSON, la recherche en texte intégral, les fonctions de fenêtrage et les extensions, ce qui en fait une des bases de données les plus polyvalentes qui existent."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977620,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur le pipeline de données des opérations de transport, PostgreSQL sert d'entrepôt central : il ingère les flux GTFS-RT, stocke les données d'horaire transformées et fait rouler les requêtes de KPI qui alimentent les tableaux de bord Power BI. Sur yesid.dev, il soutient la couche de contenu et servira de stockage pour le CMS Keystatic quand cette tranche sortira. Pour la migration de base de données Lorem, j'ai déplacé une base MySQL de 500 Go vers PostgreSQL sans temps d'arrêt en utilisant la double écriture et les lectures fantômes."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977620,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "PostgreSQL est ma base de données par défaut pour tout ce qui touche la production. Son planificateur de requêtes est excellent, les CTE et les fonctions de fenêtrage rendent les requêtes analytiques complexes lisibles, et l'écosystème d'extensions (PostGIS, pg_cron, pgvector) fait que j'ai rarement besoin d'une deuxième base de données. J'ai migré des clients de MySQL et de SQL Server vers PostgreSQL précisément parce qu'il gère les demandes « on a aussi besoin de X » sans avoir à greffer un autre outil."
+              }
+            }
+          ]
+        },
+        "enables": "stocke et interroge tes données de façon fiable"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "power-bi",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977621,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Power BI, c'est la plateforme d'intelligence d'affaires de Microsoft pour transformer des données brutes en tableaux de bord et rapports interactifs. Elle se connecte à pratiquement n'importe quelle source de données (SQL Server, PostgreSQL, Excel, API), te laisse bâtir un modèle de données sémantique avec des relations et des calculs, et publie des tableaux de bord que les gens d'affaires peuvent filtrer, explorer et partager. C'est l'outil d'intelligence d'affaires le plus répandu dans les milieux d'entreprise."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977621,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Le tableau de bord analytique Lorem est une suite Power BI qui suit les indicateurs opérationnels de 12 départements. J'ai bâti la couche sémantique en DAX par-dessus SQL Server, conçu le schéma en étoile pour la performance des requêtes, et configuré les rafraîchissements planifiés pour que les dirigeants voient des données fraîches chaque matin. Résultat : le temps de production des rapports est passé de 2 jours à 15 minutes. Sur le pipeline de données de transport, Power BI consomme les données PostgreSQL transformées pour faire ressortir les KPI aux gestionnaires des opérations de transport."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977621,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Power BI, c'est là où mon travail d'ingénierie de données devient visible pour les parties prenantes. Je ne le traite pas comme un simple bâtisseur de graphiques par glisser-déposer, je conçois de vraies couches sémantiques avec des mesures DAX, des schémas en étoile et de la sécurité au niveau des lignes, pour que les tableaux de bord soient rapides, exacts et fiables. La différence entre un tableau de bord Power BI ordinaire et un excellent, c'est le modèle de données en dessous, et c'est là que mon expérience en SQL et en ingénierie de données fait la plus grande différence."
+              }
+            }
+          ]
+        },
+        "enables": "transforme les tables de l'entrepôt en tableaux de bord prêts pour la haute direction"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "python",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977622,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Python, c'est un langage de programmation polyvalent reconnu pour sa syntaxe lisible et son immense écosystème. C'est le langage dominant en ingénierie de données, en apprentissage automatique et en scriptage : si t'as besoin de déplacer des données, de les analyser ou d'automatiser un flux de travail, Python a probablement une bibliothèque pour ça. Sa bibliothèque standard « batteries incluses » et son gestionnaire de paquets pip rendent le prototypage et le déploiement rapides."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977622,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur le pipeline de données des opérations de transport, Python gère tout le flux ELT : l'ingestion des flux GTFS-RT, la transformation des données d'horaire avec pandas, le chargement dans PostgreSQL, et l'orchestration de tout le pipeline avec Airflow. Pour l'optimiseur de requêtes Lorem, Python se connecte aux instances SQL Server et analyse les plans d'exécution par programmation. C'est aussi le langage de liaison dans mes projets analytiques : il va chercher les données dans les API, les nettoie, et les charge dans des tables prêtes pour Power BI."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977622,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Python, c'est mon langage principal pour tout ce qui touche aux données. pandas pour la transformation, SQLAlchemy pour l'accès aux bases de données, Airflow pour l'orchestration, pytest pour les tests : l'écosystème est inégalé pour le travail de données. J'écris du Python de qualité production : typé avec mypy, testé, et structuré avec des frontières de modules claires. J'écris pas du « Python de carnet » pour la production, j'écris du code maintenable que les équipes d'opérations peuvent déboguer à 3 h du matin."
+              }
+            }
+          ]
+        },
+        "enables": "automatise le travail de données : ingestion, nettoyage, transformation"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "react",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977623,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "React, c'est une bibliothèque JavaScript pour bâtir des interfaces utilisateur, créée par Meta. Elle a introduit le concept de composants : des morceaux d'interface réutilisables et autonomes qui gèrent leur propre état. React utilise un DOM virtuel pour mettre à jour efficacement juste les parties de la page qui ont changé, et la syntaxe JSX qui te laisse écrire du code à la HTML à l'intérieur du JavaScript. C'est la bibliothèque frontend la plus répandue au monde, qui propulse autant Facebook qu'Airbnb que Notion."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977623,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "React apparaît dans les projets clients et le travail collaboratif où l'équipe baigne dans React. Mes principes de conception de composants se transfèrent directement entre React et Svelte : props typées, rendu piloté par les données, composition plutôt qu'héritage. La différence de modèle mental (le « re-rends tout, compare le DOM virtuel » de React versus le « compile en mises à jour chirurgicales du DOM » de Svelte) me donne une perspective unique sur les compromis de performance quand je conseille des clients sur leurs choix d'architecture."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977623,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "React, c'est le standard de l'industrie, et bien le connaître me rend efficace dans la plupart des équipes web. Je comprends les hooks, le contexte, le suspense et le cycle de vie du rendu. J'utilise React à travers Next.js plutôt que tout seul, parce que le cadriciel s'occupe des parties difficiles, le routage, le SSR, le découpage du code, que t'aurais autrement à câbler à la main. Mon cadriciel principal, c'est Svelte, mais ma maîtrise de React fait que je peux embarquer dans n'importe quelle base de code React et contribuer tout de suite."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "rest-api",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977624,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "REST (Representational State Transfer), c'est un style d'architecture pour bâtir des API web. Au lieu d'inventer des protocoles maison, REST utilise les méthodes HTTP standards : GET pour lire, POST pour créer, PUT pour mettre à jour, DELETE pour supprimer. Les ressources sont identifiées par des URL, et les données circulent en JSON. C'est la façon la plus courante pour les applications frontend, les applications mobiles et les services de communiquer avec les systèmes backend."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977624,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur yesid.dev, les points de terminaison REST propulsent le formulaire de contact (intégration Web3Forms) et vont gérer l'API du CMS Keystatic. Le panneau d'administration Retool Lorem expose une couche d'API REST que Retool consomme : opérations CRUD avec contrôle d'accès basé sur les rôles, validation des entrées, et réponses d'erreur cohérentes. Chaque API que je bâtis suit le même patron d'enveloppe : <code>{ success, data, error, meta }</code> pour que les clients sachent toujours à quoi s'attendre."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977624,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "REST, c'est mon choix par défaut pour la conception d'API parce que c'est compris universellement. Tous les cadriciels frontend, toutes les plateformes mobiles, et tous les outils d'intégration parlent HTTP. Je conçois des API RESTful avec des patrons cohérents : des structures d'URL prévisibles, des bons codes de statut, des métadonnées de pagination, et des enveloppes d'erreur. Je préfère REST à GraphQL pour la plupart des projets parce que l'outillage est plus simple, la mise en cache fonctionne naturellement avec HTTP, et l'expérience de débogage avec les outils de développement standards du navigateur est meilleure."
+              }
+            }
+          ]
+        },
+        "enables": "laisse ton interface et tes services se parler par des points de terminaison propres"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "rust",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977625,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Rust, c'est un langage de programmation système axé sur la sécurité, la vitesse et la concurrence. Son système de propriété élimine des catégories entières de bogues, les déréférencements de pointeurs nuls, les courses de données, les utilisations après libération, au moment de la compilation, sans avoir besoin d'un ramasse-miettes. Rust atteint les niveaux de performance de C et C++ tout en prévenant les problèmes de sécurité mémoire qui causent la majorité des vulnérabilités de sécurité dans les logiciels système. Il est utilisé en production chez Mozilla, Cloudflare, Discord et AWS."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977625,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Rust fait partie de mon développement à long terme en programmation système. L'angle pratique immédiat, c'est WebAssembly : Rust se compile en WASM avec un excellent outillage (wasm-pack, wasm-bindgen), ce qui permet à du code critique pour la performance de rouler dans le navigateur. Pour un consultant en infrastructure numérique, ça veut dire pouvoir bâtir des outils de traitement de données côté client rapides, des visualisations interactives, ou des utilitaires de compression qui roulent à vitesse native sans aller-retour vers un serveur."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977625,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Rust représente la direction dans laquelle je grandis en programmation système. Son modèle de propriété impose à la compilation ce que d'autres langages laissent à la discipline du programmeur, et ses abstractions à coût nul font que tu paies pas de pénalité de performance pour la sécurité. Je bâtis ma familiarité avec Rust pour les cas où Python est trop lent et C++ est trop dangereux : traitement de données à haut débit, outils en ligne de commande, et modules WebAssembly qui roulent à une vitesse quasi native dans le navigateur."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "sql-server",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977626,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "SQL Server, c'est la base de données relationnelle d'entreprise de Microsoft, largement utilisée dans les milieux corporatifs pour les systèmes transactionnels, la production de rapports et l'intelligence d'affaires. Elle vient avec un riche écosystème : SSMS pour la gestion, SSIS pour l'intégration de données, SSRS pour les rapports, et une intégration serrée avec Power BI et la pile .NET. Si ta compagnie roule des serveurs Windows et des outils Microsoft, SQL Server est probablement déjà dans le portrait."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977626,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Pour le tableau de bord analytique Lorem, SQL Server est la source de données principale : j'ai bâti des couches sémantiques en DAX par-dessus ses tables pour propulser les tableaux de bord de KPI de la direction. Sur le projet d'optimiseur de requêtes Lorem, j'ai écrit un outil Python qui se connecte aux instances SQL Server, capture les plans d'exécution des requêtes les plus lourdes, et génère des recommandations d'optimisation qui ont réduit le temps moyen des requêtes de 73 % sur plus de 200 procédures stockées."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977627,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "La plupart de mes clients d'entreprise roulent déjà SQL Server, c'est l'épine dorsale de leurs systèmes ERP, CRM et financiers. Je connais son optimiseur de requêtes sur le bout des doigts, y compris ses bizarreries : le reniflage de paramètres, les conversions implicites, et le cache des plans d'exécution. Quand je règle la performance, je lis les vrais plans d'exécution, pas juste ceux estimés. Les tables temporelles et les index columnstore de SQL Server sont des fonctionnalités sous-utilisées que j'exploite régulièrement pour les pistes d'audit et les charges de travail analytiques."
+              }
+            }
+          ]
+        },
+        "enables": "fait rouler les charges de production de rapports d'entreprise et le parc T-SQL"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "ssis",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977627,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "SSIS (SQL Server Integration Services), c'est la plateforme ETL de Microsoft pour déplacer et transformer des données entre les systèmes. Elle utilise un concepteur de flux de travail visuel où tu bâtis des paquets, des séquences de tâches de flux de données qui extraient des sources (bases de données, fichiers, API), appliquent des transformations (recherches, conversions de types de données, agrégations), et chargent dans des destinations. Les paquets SSIS peuvent être planifiés, paramétrés et surveillés à travers SQL Server Agent."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977627,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Dans les milieux d'entreprise, SSIS fait souvent rouler les pipelines de données qui alimentent les tableaux de bord et les rapports que je bâtis. Quand je conçois une nouvelle solution analytique sur SQL Server, j'évalue si SSIS, Python ou Airflow est le bon outil d'orchestration selon les compétences de l'équipe et la complexité du pipeline. Pour les flux simples de SQL à SQL, SSIS est efficace. Pour tout ce qui implique des API, de la logique complexe, ou des sources multiplateformes, je recommande Python avec Airflow."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977628,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "SSIS, c'est l'outil ETL que je croise le plus dans les entreprises de la pile Microsoft. Beaucoup de clients ont des années de paquets SSIS qui roulent à chaque nuit, certains bien conçus, beaucoup pas. Je suis capable de bâtir des nouveaux paquets, mais mon rôle le plus courant, c'est d'auditer et d'optimiser ceux qui existent : repérer les goulots d'étranglement dans les flux de données, remplacer les transformations lentes ligne par ligne par des opérations ensemblistes, et convertir les vieux paquets en Python ou Airflow quand SSIS devient une limite."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "ssrs",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977628,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "SSRS (SQL Server Reporting Services), c'est la plateforme de génération de rapports basée sur serveur de Microsoft. Elle produit des rapports paginés, le genre que t'imprimes, envoies en PDF par courriel, ou intègres dans des applications, avec un contrôle de mise en page précis, des paramètres, des sous-rapports et des liens d'exploration. Pense à ça comme le pendant « prêt à imprimer » des tableaux de bord interactifs de Power BI. Les rapports sont définis en RDL (Report Definition Language) et hébergés sur un serveur de rapports."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977628,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Dans les milieux SQL Server, SSRS gère typiquement la production de rapports de conformité et opérationnels qui accompagne les tableaux de bord de direction de Power BI. J'ai bâti des rapports SSRS qui génèrent automatiquement les sommaires mensuels par département, les mettent en forme en PDF aux couleurs de l'entreprise, et les distribuent par abonnements courriel, libérant les analystes de la compilation manuelle de rapports qui prenait des jours chaque mois."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977629,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "SSRS comble un créneau précis que Power BI ne couvre pas : les documents paginés au pixel près. Les factures, les déclarations réglementaires, les rapports d'audit, et tout ce qui doit être imprimé ou archivé en PDF, c'est le terrain de SSRS. Je bâtis des rapports SSRS quand la sortie a besoin d'un contrôle de mise en forme exact, et je sais quand recommander Power BI à la place (exploration interactive) versus SSRS (génération de documents formels). Bien des organisations ont besoin des deux, et je conçois des solutions qui utilisent chaque outil pour sa force."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "svelte-5",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977629,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Svelte, c'est un cadriciel d'interface qui prend une approche fondamentalement différente de React ou Vue. Au lieu d'envoyer une bibliothèque d'exécution au navigateur qui interprète tes composants, Svelte compile tes composants en JavaScript pur et efficace au moment de la construction. Svelte 5 a introduit les runes, un nouveau système de réactivité avec <code>$state</code>, <code>$derived</code> et <code>$effect</code>, qui rend les données réactives explicites et granulaires. Le résultat, c'est des paquets plus petits, des mises à jour plus rapides, et du code qui se lit presque comme du HTML ordinaire avec des superpouvoirs."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977630,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Chaque composant sur yesid.dev est un composant Svelte 5 qui utilise les runes. Le diagramme de la pile technologique utilise <code>$state</code> pour le nœud sélectionné, <code>$derived</code> pour les connexions filtrées, et <code>$effect</code> pour le cycle de vie des animations GSAP. Le composant CollapsibleSection utilise <code>$state</code> pour l'état ouvert/fermé avec des transitions CSS. L'approche à la compilation de Svelte 5 fait que le site envoie un minimum de JavaScript malgré ses animations complexes, ses diagrammes interactifs, et ses mises en page adaptatives."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977630,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Le système de runes de Svelte 5, c'est le modèle de réactivité le plus propre avec lequel j'ai travaillé. <code>$state</code> pour les variables réactives, <code>$derived</code> pour les valeurs calculées, <code>$effect</code> pour les effets de bord : pas de règles de hooks à mémoriser, pas de tableaux de dépendances à manquer, pas de <code>useCallback</code> à envelopper. Venant d'un parcours en données où je pense en termes de flux et de transformations de données, le modèle de Svelte correspond naturellement à comment je raisonne sur l'interface : données en entrée, DOM en sortie, pas de re-rendus cachés."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "sveltekit",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977630,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "SvelteKit, c'est un cadriciel web pleine pile bâti sur Svelte. Il gère le routage, le rendu côté serveur, le chargement des données et le déploiement, tout ce qu'il te faut pour bâtir une application web complète. Contrairement aux cadriciels qui envoient une lourde bibliothèque d'exécution JavaScript au navigateur, SvelteKit compile tes composants en JavaScript minimal et optimisé au moment de la construction. Le résultat, c'est des pages rapides avec moins de code envoyé à l'utilisateur."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977631,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "yesid.dev est bâti entièrement sur SvelteKit 2. Chaque route, le portfolio, les services, le blogue, la pile technologique et la page de contact, est une page SvelteKit avec des fonctions de chargement typées qui tirent de la couche de données. Le site utilise l'adapter-vercel de SvelteKit pour le déploiement, ses routes serveur pour les points de terminaison d'API, et son prérendu pour les pages statiques. Le diagramme de la salle de contrôle que t'es en train de regarder, c'est une page SvelteKit qui charge 34 éléments technologiques à partir de fichiers markdown au moment de la construction."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977631,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "SvelteKit, c'est mon cadriciel web principal et la fondation de chaque nouveau projet web que je bâtis. L'expérience de développement est la meilleure que j'ai utilisée : routage basé sur les fichiers qui correspond directement aux URL, fonctions de chargement qui gardent la récupération de données explicite et testable, et une étape de construction qui élimine la surcharge du cadriciel. Venant de l'ingénierie de données où je valorise la prévisibilité et l'observabilité, la philosophie « pas de magie cachée » de SvelteKit me parle : je peux retracer exactement ce qui roule sur le serveur, ce qui roule sur le client, et où les données circulent."
+              }
+            }
+          ]
+        },
+        "enables": "produit des pages rapides à la sensation d'application à partir d'une seule base de code"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "t-sql",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977631,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "T-SQL (Transact-SQL), c'est l'extension de Microsoft au SQL standard, utilisée exclusivement avec SQL Server. Elle ajoute des fonctionnalités de programmation procédurale, des variables, du contrôle de flux (IF/WHILE), de la gestion d'erreurs (TRY/CATCH), et des procédures stockées, par-dessus les requêtes SQL standards. Si SQL est le langage pour poser des questions à tes données, T-SQL est le langage pour bâtir des programmes complets de traitement de données à l'intérieur même de la base de données."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977631,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur le tableau de bord analytique Lorem, des procédures stockées T-SQL gèrent la logique ETL qui alimente Power BI, agrégeant les données de transactions, calculant des indicateurs dérivés, et maintenant des tables de sommaire matérialisées. Le projet d'optimiseur de requêtes Lorem utilise les DMV (Dynamic Management Views) de T-SQL pour repérer les requêtes lentes, les index manquants, et les anomalies de plan d'exécution par programmation. T-SQL est aussi la fondation de chaque audit de performance SQL Server que je mène."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977632,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "T-SQL, c'est ma compétence la plus éprouvée au combat. J'ai écrit de tout, des simples requêtes SELECT jusqu'aux procédures stockées de 1000 lignes qui traitent des millions de lignes à chaque nuit. Je connais l'optimiseur assez bien pour prédire quand il va choisir un balayage plutôt qu'une recherche, quand le reniflage de paramètres va causer une régression de plan, et quand une CTE vaut mieux qu'une table temporaire. C'est dans le réglage de performance du T-SQL que j'ai livré la valeur la plus mesurable à mes clients, en transformant des rapports de 30 minutes en requêtes de 30 secondes."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "tailwind",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977632,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Tailwind CSS, c'est un framework CSS basé sur les classes utilitaires. Au lieu d'écrire des classes CSS personnalisées comme <code>.card-header</code>, on assemble des petites classes utilitaires directement dans le HTML : <code>flex items-center gap-4 text-sm font-medium</code>. Tailwind analyse tes fichiers au moment du build et génère seulement le CSS que tu utilises vraiment, ce qui donne des feuilles de style de production minuscules. La version 4 a amené un moteur natif en CSS avec <code>@theme</code> pour les jetons de design."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977632,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur yesid.dev, Tailwind CSS v4 gère tout le stylage de composition. Le bloc <code>@theme</code> dans <code>app.css</code> définit les valeurs de la marque (orange <code>#E07800</code>, jaune <code>#FFB627</code>, les polices Inter et JetBrains Mono), tandis que <code>tokens.css</code> fournit des jetons sémantiques comme <code>--bg-primary</code> et <code>--text-muted</code> que les composants vont chercher. Chaque composant utilise les utilitaires Tailwind pour la mise en page et l'espacement, avec des blocs <code>&lt;style&gt;</code> scopés réservés aux grilles complexes ou aux animations qui auraient besoin de plus de trois utilitaires sur un même élément."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977633,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Tailwind règle le problème de nommage qui empoisonne le CSS à grande échelle. J'ai pas besoin d'inventer des noms de classes, de maintenir une feuille de style séparée, ni de me casser la tête avec les conflits de spécificité. Pour une architecture par composants comme Svelte, garder les styles à côté du markup rend les composants vraiment autonomes. Je jumelle Tailwind avec des propriétés CSS personnalisées sémantiques pour le thème : Tailwind gère la composition (espacement, flex, typographie), tandis que <code>tokens.css</code> gère le sens (ce que veut dire « arrière-plan primaire » en mode clair par rapport au mode sombre)."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "threejs-threlte",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977633,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Three.js, c'est une librairie JavaScript qui rend WebGL accessible : elle fournit un graphe de scène, un système de caméra, l'éclairage, les matériaux et des primitives de géométrie pour que tu puisses créer du graphisme 3D dans le navigateur sans écrire de code de shader brut. Threlte, c'est l'enrobage Svelte autour de Three.js, qui te laisse bâtir des scènes 3D avec des composants Svelte au lieu de JavaScript impératif. Un composant <code>&lt;T.Mesh&gt;</code> dans Threlte se compile vers un mesh Three.js avec des props réactives et un nettoyage automatique."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977634,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Sur yesid.dev, Three.js / Threlte a fait rouler une scène hero 3D expérimentale durant les débuts du build : des meshes, des lumières et du post-traitement (bloom, vignette) assemblés en composants Svelte, avec de l'interactivité liée à la souris et au défilement par-dessus. La scène a été tuée après une revue de performance et d'accessibilité : le coût d'initialisation de WebGL sur les appareils bas de gamme, des trous d'a11y sur le canvas 3D, et un repli <code>prefers-reduced-motion</code> qui dans les faits dédoublait un parcours SVG plus simple. Le mandat en avait pas besoin, et la pile SVG + GSAP livrait le même feeling pour une fraction du coût. Tué, pas mis de côté. Voir <code>brand/decisions/what-i-killed.md</code> pour le raisonnement complet (livré dans la Slice 17h)."
+              }
+            },
+            {
+              "id": "m00000002",
+              "type": "quote",
+              "data": {
+                "text": "Les composants de la scène vivaient avant dans <code>src/lib/motion/three/</code> ; retirés lors de la réingénierie du mouvement de la Slice 17.",
+                "caption": "",
+                "alignment": "left"
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977634,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "La 3D sur le web, c'est un facteur de différenciation : la plupart des sites portfolio sont plats. Three.js m'a donné la capacité de créer des scènes immersives qui rendent un site mémorable sans exiger une expertise WebGL des futurs mainteneurs. Threlte cadrait particulièrement bien avec une pile Svelte : les objets 3D sont des composants avec des props, ils participent au système de réactivité de Svelte, et ils se nettoient tout seuls quand ils sont démontés. J'ai jumelé Threlte avec GSAP pour le timing des animations et les transitions 3D liées au défilement."
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "typescript",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977634,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "TypeScript, c'est du JavaScript avec un système de types. Il ajoute des types statiques au langage : tu déclares la forme qu'a ta donnée, et le compilateur attrape les erreurs avant même que ton code roule dans un navigateur. Chaque fichier JavaScript valide est aussi un fichier TypeScript valide, donc l'adoption se fait graduellement. TypeScript se compile vers du JavaScript ordinaire, alors les navigateurs et Node.js le font rouler sans aucun coût à l'exécution."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977635,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Chaque fichier sur yesid.dev est en TypeScript. La couche de données (projets, services, pile technique) est entièrement typée avec des interfaces comme <code>TechStackItem</code>, <code>Project</code> et <code>LocalizedString</code>. Les composants reçoivent des props typées, et la suite de tests valide l'intégrité des données au moment du build. Quand j'ai ajouté 34 items de pile technique au diagramme du Control Room, TypeScript a attrapé chaque coquille dans les références de connexion et les noms de domaine avant même que j'ouvre un navigateur."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977635,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "J'écris plus de JavaScript, juste du TypeScript. Le système de types attrape des catégories entières de bogues à la compilation qui sortiraient autrement en erreurs à l'exécution en production. Pour des sites pilotés par les données comme celui-ci, où les composants s'affichent à partir d'interfaces de données typées, TypeScript garantit qu'ajouter un projet ou un service ne brise jamais l'interface en silence. L'expérience développeur avec IntelliSense de VS Code est aussi nettement meilleure : l'autocomplétion, le refactoring et le aller-à-la-définition fonctionnent tous parce que les types sont là."
+              }
+            }
+          ]
+        },
+        "enables": "garde la base de code typée, refactorable et honnête"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "vercel",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977635,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Vercel, c'est une plateforme infonuagique pour déployer des applications web. Tu pousses ton code sur Git, et Vercel le build et le déploie automatiquement, avec des URL d'aperçu pour chaque pull request et des déploiements en production au moment du merge. Ça fournit un réseau de périphérie mondial (CDN), des fonctions sans serveur, et des optimisations propres à chaque framework pour Next.js, SvelteKit, Nuxt et d'autres. Vercel gère le SSL, la mise en cache et la mise à l'échelle sans gestion manuelle de l'infrastructure."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977636,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "yesid.dev se déploie sur Vercel à chaque push sur main. Chaque branche de fonctionnalité reçoit un déploiement d'aperçu avec une URL unique, ben utile pour les revues clients et le QA visuel. Le pipeline de build de Vercel roule <code>bun run build</code>, gère la configuration de l'adaptateur SvelteKit, et sert les pages statiques et rendues côté serveur à partir d'emplacements de périphérie. L'intégration avec GitHub Actions fait que les tests roulent en CI avant que Vercel promeuve un déploiement en production."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977636,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Vercel, c'est ma plateforme de déploiement parce qu'elle enlève chaque friction d'infrastructure. Je pousse sur GitHub, et le site est en ligne en moins d'une minute, avec des URL d'aperçu pour chaque branche pour que je puisse partager du travail en cours avec les clients. L'adaptateur SvelteKit marche d'emblée, le HTTPS automatique est configuré, et le CDN assure des temps de chargement rapides partout dans le monde. Pour un développeur pigiste, le déploiement sans configuration de Vercel veut dire que je passe mon temps à bâtir des fonctionnalités au lieu de gérer des serveurs."
+              }
+            }
+          ]
+        },
+        "enables": "sert le site depuis la périphérie, proche de chaque visiteur"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "vitest",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "what_it_is": {
+          "time": 1777263977636,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Vitest, c'est un framework de tests unitaires rapide bâti sur le pipeline de transformation de Vite. Il roule TypeScript et JSX nativement (pas d'étape de compilation séparée), supporte les imports ESM, et fournit une API compatible avec Jest : si tu connais Jest, tu connais déjà Vitest. Ça inclut les tests par instantané, la couverture de code, le mode surveillance, et une interface navigateur pour explorer les résultats de tests. Pour les projets basés sur Vite (SvelteKit, React avec Vite), Vitest partage la même configuration et le même écosystème de plugiciels."
+              }
+            }
+          ]
+        },
+        "what_i_use_it_for": {
+          "time": 1777263977637,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "yesid.dev utilise Vitest avec une configuration à deux projets : un projet pour les tests de composants (avec happy-dom pour simuler le DOM) et un autre pour les tests unitaires de la couche de données (du TypeScript pur, pas besoin de DOM). La suite de tests valide l'intégrité des données (les 34 items techniques ont tous des connexions valides, aucune référence pendante), le comportement des composants (filtres, sections repliables, panneaux de pile), et la sûreté des types. Les tests roulent à chaque commit via <code>bun run test</code> et en CI via GitHub Actions."
+              }
+            }
+          ]
+        },
+        "why_i_use_it_instead": {
+          "time": 1777263977637,
+          "version": "2.31.2",
+          "blocks": [
+            {
+              "id": "m00000001",
+              "type": "paragraph",
+              "data": {
+                "text": "Vitest est rapide, et la vitesse compte quand tu roules tes tests après chaque changement de code. Il utilise la transformation de modules à la demande de Vite, alors juste les fichiers qui ont changé se font retraiter. Combiné avec Bun comme environnement d'exécution, des suites de tests qui prenaient des minutes avec Jest roulent maintenant en quelques secondes. Je le jumelle avec <code>@testing-library/svelte</code> pour les tests de composants et j'utilise la configuration multi-projets pour rouler différents types de tests (unitaires par rapport à composants) avec des réglages optimisés pour chacun."
+              }
+            }
+          ]
+        },
+        "enables": "roule des milliers de vérifications unitaires en quelques secondes, à chaque changement"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "dbt",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "enables": "remodèle les données de l'entrepôt en modèles propres, testés et documentés"
+      }
+    },
+    {
+      "collection": "tech_stack",
+      "id": "shopify",
+      "parentFk": "tech_stack_id",
+      "fields": {
+        "enables": "fait rouler toute la boutique en ligne : produits, paiement et transactions dans une seule console d'administration"
+      }
+    },
+    {
+      "collection": "block_about_content",
+      "id": "32f35417-d230-400b-9c17-98a49055ec86",
+      "parentFk": "block_about_content_id",
+      "fields": {
+        "interests": [
+          {
+            "id": "anime",
+            "label": "Anime",
+            "image": "/images/about/interests/anime.webp"
+          },
+          {
+            "id": "transit",
+            "label": "Transport en commun",
+            "image": "/images/about/interests/transit.webp"
+          },
+          {
+            "id": "space",
+            "label": "Espace",
+            "image": "/images/about/interests/space.webp"
+          },
+          {
+            "id": "food",
+            "label": "Bouffe à MTL",
+            "image": "/images/about/interests/food.webp"
+          }
+        ],
+        "methodology": [
+          {
+            "id": "curiosity",
+            "station": 1,
+            "label": "CURIOSITÉ",
+            "description": "Je démonte les choses pour comprendre comment elles marchent, après j'en bâtis des meilleures."
+          },
+          {
+            "id": "aesthetics",
+            "station": 2,
+            "label": "ESTHÉTIQUE",
+            "description": "Si ça marche mais que c'est laid, c'est juste à moitié fini."
+          },
+          {
+            "id": "community",
+            "station": 3,
+            "label": "COMMUNAUTÉ",
+            "description": "Les bons outils font grandir le monde autour. C'est tout le but de l'affaire."
+          },
+          {
+            "id": "quality",
+            "station": 4,
+            "label": "QUALITÉ",
+            "description": "J'aime mieux le bâtir comme du monde que de le bâtir deux fois."
+          }
+        ],
+        "metrics": [
+          {
+            "value": "5+",
+            "label": "ans à bâtir des systèmes de données"
+          },
+          {
+            "value": "30+",
+            "label": "bases de données conçues et optimisées"
+          },
+          {
+            "value": "3x",
+            "label": "gain de vitesse moyen sur les requêtes"
+          },
+          {
+            "value": "99.9%",
+            "label": "de disponibilité livrée sur les pipelines"
+          }
+        ],
+        "testimonials": [
+          {
+            "quote": "Tu as le don de la persévérance, pis c'est ça qui fait de toi un génie en plus.",
+            "author": "Guy Sensei",
+            "role": "Sensei",
+            "company": "Lore personnel"
+          }
+        ],
+        "identity_name": "Yesid",
+        "identity_title": "Bâtisseur curieux, bricoleur depuis toujours",
+        "identity_value_prop": "Je suis Yesid (Yesito pour mes chums). Je suis né à Zipaquirá, en Colombie, et j'ai grandi à Sherbrooke, au Québec, depuis l'âge de dix ans. Je démonte des ordinateurs depuis que je suis tout petit. Le premier PC de la famille est arrivé en 2002, et dès 2005 je le bricolais tellement que ma mère pognait les nerfs. Aujourd'hui, je suis fier d'être son ingénieur numéro un. Cette curiosité-là ne m'a jamais lâché. Astheure, je bâtis des systèmes clairs et je les explique en mots simples, comme ça tu sais toujours exactement ce que tu reçois.",
+        "polaroids": [
+          {
+            "src": "/images/about/polaroid-1.webp",
+            "alt": "En marche avec mon chien à Montréal",
+            "caption": "Mode relâche",
+            "rotate": -3
+          },
+          {
+            "src": "/images/about/polaroid-dante.webp",
+            "alt": "Dante, le chien de la famille",
+            "caption": "Dante, le bon gars de la famille",
+            "rotate": 3
+          },
+          {
+            "src": "/images/about/polaroid-poupoune.webp",
+            "alt": "Poupoune, mon chien",
+            "caption": "Poupoune 🐾",
+            "rotate": -2
+          },
+          {
+            "src": "/images/about/polaroid-yesid.webp",
+            "alt": "Yesid",
+            "caption": "C'est moi ça",
+            "rotate": 2
+          },
+          {
+            "src": "/images/about/polaroid-family.webp",
+            "alt": "Avec ma famille",
+            "caption": "La famille",
+            "rotate": -4
+          },
+          {
+            "src": "/images/about/polaroid-friends.webp",
+            "alt": "Avec mes chums",
+            "caption": "Les chums",
+            "rotate": 3
+          },
+          {
+            "src": "/images/about/polaroid-museum.webp",
+            "alt": "Au musée des beaux-arts à Ottawa",
+            "caption": "Journée au musée, Ottawa",
+            "rotate": -3
+          }
+        ],
+        "weather_city": "Montréal",
+        "weather_hook": "Devine où je suis?",
+        "cta_button_label": "Envoyer un message →",
+        "stop_identity": "IDENTITÉ",
+        "stop_metrics": "CHIFFRES",
+        "stop_testimonials": "TÉMOIGNAGES",
+        "stop_process": "VALEURS DE BASE",
+        "stop_stack": "FORMATION",
+        "stop_clients": "LANGUES",
+        "stop_interests": "INTÉRÊTS",
+        "stop_snapshots": "INSTANTANÉS",
+        "stop_location": "EMPLACEMENT",
+        "stop_next": "SUIVANT",
+        "label_clients_served": "clients servis",
+        "label_polaroid_prev_aria": "Photo précédente",
+        "label_polaroid_next_aria": "Photo suivante",
+        "label_testimonials_carousel_aria": "Témoignages de clients",
+        "label_testimonials_tab_nav_aria": "Navigation des témoignages",
+        "label_testimonial_slide_aria": "Témoignage {index} de {total}",
+        "label_show_testimonial_aria": "Afficher le témoignage {index}",
+        "meta_title": "À propos · yesid.",
+        "meta_description": "Ingénieur pigiste en infrastructure numérique basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l'infrastructure fiable pour les équipes qui livrent.",
+        "education": [
+          {
+            "school": "Champlain Regional College, Lennoxville",
+            "program": "DEC, Techniques de comptabilité et de gestion",
+            "icon": "champlain"
+          },
+          {
+            "school": "Bishop's University",
+            "program": "B. Sc. informatique, mineure en administration des affaires",
+            "icon": "bishops"
+          }
+        ]
+      }
+    },
+    {
+      "collection": "block_about_intro",
+      "id": "277c93ff-5416-4d6a-8580-50cf6cdec713",
+      "parentFk": "block_about_intro_id",
+      "fields": {
+        "bio": "Montréal, QC. Je prends la donnée, je lui fais raconter des histoires, et je bâtis les systèmes dans lesquels elle circule.",
+        "interests": "Anime · Visualisation de données · Open source · Scène bouffe de Montréal",
+        "interests_label": "INTÉRÊTS",
+        "location": {
+          "city": "Montréal",
+          "region": "QC, Canada"
+        },
+        "location_label": "EMPLACEMENT",
+        "more_link": "→ En savoir plus sur moi",
+        "name": "Yesid O.",
+        "stack_label": "STACK",
+        "title": "Ingénieur en infrastructure numérique, à la pige",
+        "location_city": "Montréal",
+        "location_region": "QC, Canada"
+      }
+    },
+    {
+      "collection": "block_hero",
+      "id": "4acac46d-6d45-4344-bdee-04122e4a64d1",
+      "parentFk": "block_hero_id",
+      "fields": {
+        "cta_contact": "Jasons-en",
+        "cta_work": "Voyez comment je bâtis →",
+        "headline": {
+          "line1": "DES SYSTÈMES QUI",
+          "line2": "NE CASSENT PAS.",
+          "ariaSuffix": "Ne cassent pas."
+        },
+        "hero_anim": {
+          "scrollDown": "PROCHAIN ARRÊT : DESCENDEZ"
+        },
+        "refresh_button": {
+          "label": "TIRER DES DONNÉES FRAÎCHES",
+          "helper": "Rafraîchit les métriques et les résultats de requête à partir du pipeline en direct"
+        },
+        "sql_panel": {
+          "prompt": "yesid@transit:gold>",
+          "liveLabel": "EN DIRECT",
+          "columns": {
+            "route": "route",
+            "avgDelayS": "avg_delay_s",
+            "vehicles": "vehicles"
+          },
+          "metaTemplate": "5 lignes · {queryTime}s · mis à jour {updatedAgo}"
+        },
+        "subheadline": "Je fais dire la vérité à la donnée.",
+        "subtitle": "Je bâtis de l'infrastructure fiable pour les équipes qui n'ont pas les moyens d'avoir des pannes.",
+        "headline_line1": "DES SYSTÈMES QUI",
+        "headline_line2": "NE CASSENT PAS.",
+        "headline_aria_suffix": "Ne cassent pas.",
+        "sql_prompt": "yesid@transit:gold>",
+        "sql_live_label": "EN DIRECT",
+        "sql_col_route": "route",
+        "sql_col_avg_delay": "avg_delay_s",
+        "sql_col_vehicles": "vehicles",
+        "sql_meta_template": "5 lignes · {queryTime}s · mis à jour {updatedAgo}",
+        "refresh_label": "TIRER DES DONNÉES FRAÎCHES",
+        "refresh_helper": "Rafraîchit les métriques et les résultats de requête à partir du pipeline en direct",
+        "scroll_down": "PROCHAIN ARRÊT : DESCENDEZ"
+      }
+    },
+    {
+      "collection": "block_manifesto",
+      "id": "be09d2ee-e057-4a26-9aae-b49e83273ec4",
+      "parentFk": "block_manifesto_id",
+      "fields": {
+        "edge_bottom": {
+          "connected": "CONNECTÉ",
+          "line": "LIGNE ORANGE",
+          "url": "yesid.dev",
+          "version": "v2.0",
+          "scrollHint": "DÉFILER ↓"
+        },
+        "edge_right": {
+          "lat": "LAT 45.5017°N",
+          "lng": "LNG 73.5673°W",
+          "src": "SRC Sherbrooke, QC",
+          "via": "VIA Lennoxville, QC",
+          "dst": "DST Montréal, QC",
+          "node": "NODE berri-uqam",
+          "status": "STATUS active"
+        },
+        "hidden_transit_lines": [
+          {
+            "name": "LIGNE BLEUE",
+            "color": "#003DA5"
+          },
+          {
+            "name": "LIGNE VERTE",
+            "color": "#008F4F"
+          },
+          {
+            "name": "LIGNE JAUNE",
+            "color": "#F0CB00"
+          },
+          {
+            "name": "REM",
+            "color": "#78BE20"
+          },
+          {
+            "name": "11 VAUDREUIL/HUDSON",
+            "color": "#DA291C"
+          },
+          {
+            "name": "12 SAINT-JÉRÔME",
+            "color": "#009B3A"
+          },
+          {
+            "name": "13 MONT-SAINT-HILAIRE",
+            "color": "#FFD100"
+          },
+          {
+            "name": "14 CANDIAC",
+            "color": "#7B2D8E"
+          },
+          {
+            "name": "15 MASCOUCHE",
+            "color": "#0072CE"
+          }
+        ],
+        "pills": [
+          {
+            "label": "bases de données",
+            "serviceId": "database-engineering"
+          },
+          {
+            "label": "pipelines",
+            "serviceId": "data-pipeline"
+          },
+          {
+            "label": "tableaux de bord",
+            "serviceId": "analytics-reporting"
+          },
+          {
+            "label": "sites web",
+            "serviceId": "web-development"
+          }
+        ],
+        "statement": {
+          "line1": "JE BÂTIS L'",
+          "lineHuge": "INFRASTRUCTURE",
+          "line3Part1": "DONT",
+          "line3Highlight": "VOS OPÉRATIONS",
+          "line3Part2": "ONT BESOIN"
+        },
+        "terminal": {
+          "user": "yesid@mtl",
+          "command": ":~$ cat manifesto.md"
+        },
+        "transit": {
+          "arrivalLabel": "PROCHAIN / NEXT",
+          "platformBadge": "QUAI / PLATFORM 2",
+          "directionBadge": "DIRECTION: CENTRE-VILLE"
+        },
+        "statement_line1": "JE BÂTIS L'",
+        "statement_line_huge": "INFRASTRUCTURE",
+        "statement_line3_part1": "DONT",
+        "statement_line3_highlight": "VOS OPÉRATIONS",
+        "terminal_user": "yesid@mtl",
+        "terminal_command": ":~$ cat manifesto.md",
+        "edge_left_section_number": "SEC-02",
+        "edge_left_section_name": "MANIFESTE",
+        "edge_left_location": "MTL-QC",
+        "edge_right_lat": "LAT 45.5017°N",
+        "edge_right_lng": "LNG 73.5673°W",
+        "edge_right_src": "SRC Sherbrooke, QC",
+        "edge_right_via": "VIA Lennoxville, QC",
+        "edge_right_dst": "DST Montréal, QC",
+        "edge_right_node": "NODE berri-uqam",
+        "edge_right_status": "STATUS active",
+        "edge_bottom_connected": "CONNECTÉ",
+        "edge_bottom_line": "LIGNE ORANGE",
+        "edge_bottom_url": "yesid.dev",
+        "edge_bottom_version": "v2.0",
+        "edge_bottom_scroll_hint": "DÉFILER ↓",
+        "transit_arrival_label": "PROCHAIN / NEXT",
+        "transit_platform_badge": "QUAI / PLATFORM 2",
+        "transit_direction_badge": "DIRECTION: CENTRE-VILLE",
+        "statement_line3_part2": "ONT BESOIN"
+      }
+    },
+    {
+      "collection": "block_cta",
+      "id": "77d71216-9eb6-45d0-bd4c-b69fc94dcd45",
+      "parentFk": "block_cta_id",
+      "fields": {
+        "cta_contact": "Prenons contact",
+        "cta_github": "Voir sur GitHub",
+        "heading": "Bâtissons quelque chose\nqui avance",
+        "subtitle": "Un problème de données? Jasons-en."
+      }
+    },
+    {
+      "collection": "block_closer",
+      "id": "9aca5265-6e5f-4c61-8c35-1960061cbbd4",
+      "parentFk": "block_closer_id",
+      "fields": {
+        "heading": "TERMINUS",
+        "heading_dot": ".",
+        "subheading": "FIN DE LA LIGNE",
+        "cta_label": "Initialiser la connexion",
+        "attribution_text": "Graffiti Vectors by Vecteezy",
+        "terminal_title": "yesid@terminus:~/destinations",
+        "terminal_city": "Montréal, QC",
+        "terminal_encoding": "UTF-8",
+        "terminal_destinations_label": "{count} destinations",
+        "terminal_prompt": "// on va où, là?",
+        "rows_contact_label": "CONTACT",
+        "rows_contact_description": "Partir un projet ensemble",
+        "rows_contact_action": "GO",
+        "rows_connect_label": "EXPLORER",
+        "rows_connect_description": "GitHub · travail open-source",
+        "rows_connect_action": "GO",
+        "rows_read_label": "LIRE",
+        "rows_read_action": "cd",
+        "rows_about_label": "À PROPOS",
+        "rows_about_description": "Yesid O. · Montréal",
+        "rows_about_action": "cd",
+        "attribution": {
+          "text": "Vecteurs graffiti par Vecteezy",
+          "url": "https://www.vecteezy.com/free-vector/graffiti"
+        },
+        "rows": {
+          "contact": {
+            "label": "CONTACT",
+            "description": "Démarrons un projet ensemble",
+            "action": "GO"
+          },
+          "connect": {
+            "label": "EXPLORER",
+            "description": "GitHub · projets à code ouvert",
+            "action": "GO"
+          },
+          "read": {
+            "label": "LIRE",
+            "action": "cd"
+          },
+          "about": {
+            "label": "À PROPOS",
+            "description": "Yesid O. · Montréal",
+            "action": "cd"
+          }
+        },
+        "terminal": {
+          "title": "yesid@terminus:~/destinations",
+          "city": "Montréal, QC",
+          "encoding": "UTF-8",
+          "destinationsLabel": "{count} destinations",
+          "prompt": "// on va où ensuite?"
+        }
+      }
+    },
+    {
+      "collection": "block_contact_content",
+      "id": "4fc472d5-6bd0-4194-afc9-8997229b2a59",
+      "parentFk": "block_contact_content_id",
+      "fields": {
+        "form_terminal": {
+          "title": "yesid@mtl ~ /contact",
+          "command": "$ yesid --contact",
+          "commandOutput": "Ouverture du formulaire de contact...",
+          "fields": {
+            "name": {
+              "label": "nom",
+              "placeholder": "Votre nom"
+            },
+            "email": {
+              "label": "courriel",
+              "placeholder": "vous@compagnie.com"
+            },
+            "message": {
+              "label": "message",
+              "placeholder": "Parlez-moi de votre projet..."
+            }
+          },
+          "submitLabel": "send --message →"
+        },
+        "info_terminal": {
+          "title": "yesid@mtl ~ /info",
+          "command": "$ yesid --info",
+          "location": "Montréal, QC, Canada",
+          "responseTime": "réponse en ~24h",
+          "sectionLabels": {
+            "location": "EMPLACEMENT",
+            "connect": "CONNEXION"
+          }
+        },
+        "page_title": "Contact",
+        "send_error_message": "L'envoi du message a échoué. Réessayez, s'il vous plaît.",
+        "socials": [
+          {
+            "label": "Courriel",
+            "href": "mailto:contact@yesid.dev",
+            "icon": "email"
+          },
+          {
+            "label": "GitHub",
+            "href": "https://github.com/mgkdante",
+            "icon": "github"
+          },
+          {
+            "label": "LinkedIn",
+            "href": "https://www.linkedin.com/in/otaloray/",
+            "icon": "linkedin"
+          }
+        ],
+        "station_label": "PROCHAIN ARRÊT : VOUS",
+        "success": {
+          "validating": "Validation des champs...",
+          "sending": "Envoi du message...",
+          "sent": "Message envoyé avec succès!",
+          "responseTime": "Je vous reviens d'ici 24h",
+          "meanwhile": "En attendant, jetez un œil à mes {work} ou mon {blog}",
+          "resetLabel": "reset --form",
+          "fieldOk": "OK"
+        },
+        "meta_title": "Contact · yesid.",
+        "meta_description": "Écrivez-moi pour de l'infrastructure numérique en freelance : bases de données, pipelines, tableaux de bord et sites web. Montréal, réponse en ~24h.",
+        "info_location": "Montréal, QC, Canada",
+        "info_response_time": "réponse en ~24h",
+        "info_section_label_location": "EMPLACEMENT",
+        "info_section_label_connect": "CONNEXION",
+        "form_command_output": "Ouverture du formulaire de contact...",
+        "form_submit_label": "send --message →",
+        "form_field_name_placeholder": "Votre nom",
+        "form_field_email_placeholder": "vous@compagnie.com",
+        "form_field_message_placeholder": "Parlez-moi de votre projet...",
+        "validation_required": "requis, {field} ne peut pas être vide",
+        "validation_invalid_email": "invalide, entrez une adresse courriel valide",
+        "validation_error_summary": "{count} erreurs, corrigez et réessayez",
+        "success_validating": "Validation des champs...",
+        "success_sending": "Envoi du message...",
+        "success_sent": "Message envoyé avec succès!",
+        "success_response_time": "Je vous reviens d'ici 24h",
+        "success_meanwhile": "En attendant, jetez un œil à mes {work} ou mon {blog}",
+        "success_reset_label": "reset --form",
+        "success_field_ok": "OK"
+      }
+    },
+    {
+      "collection": "block_services_grid",
+      "id": "df55e0eb-c529-4339-b6c5-c9d03652f714",
+      "parentFk": "block_services_grid_id",
+      "fields": {
+        "heading": "SERVICES",
+        "heading_dot": ".",
+        "subheading": "CE QUE JE BÂTIS",
+        "view_all_link": "Voir tous les services →",
+        "view_illustration_aria": "Voir l'illustration de {title}"
+      }
+    },
+    {
+      "collection": "block_proof_reel",
+      "id": "6c8a6ba1-d44c-4c17-8fa3-736ef77fd1ff",
+      "parentFk": "block_proof_reel_id",
+      "fields": {
+        "heading": "PREUVES",
+        "heading_dot": ".",
+        "section_label": "// PREUVES",
+        "subheading": "TRAVAUX CHOISIS",
+        "toggle_color_aria": "Activer la couleur pour {title}",
+        "view_all_label": "Voir tous les projets →"
+      }
+    },
+    {
+      "collection": "block_tech_stack_page_content",
+      "id": "b41089d8-f7c2-408c-8ed5-9018425080a0",
+      "parentFk": "block_tech_stack_page_content_id",
+      "fields": {
+        "actions": {
+          "getInTouch": "Écrivez-moi",
+          "viewServices": "Voir les services"
+        },
+        "hero": {
+          "overline": "Carte de l'infrastructure",
+          "titleLine1": "La salle de",
+          "titleLine2": "contrôle",
+          "terminalAria": "Survol de l'infrastructure",
+          "stats": {
+            "technologies": "technologies"
+          }
+        },
+        "meta_title": "Stack technologique · yesid.",
+        "meta_description": "Plus de {itemCount} technologies, une carte interactive de la manière dont une infrastructure numérique se bâtit.",
+        "hero_overline": "Carte de l'infrastructure",
+        "hero_title_line1": "La salle de",
+        "hero_title_line2": "contrôle",
+        "hero_terminal_aria": "Survol de l'infrastructure",
+        "hero_stat_technologies": "technologies",
+        "terminal_cmd": "~ yesid --stack --verbose",
+        "terminal_loading": "→ chargement de {count} nœuds...",
+        "terminal_success": "✓ réussi",
+        "terminal_cataloged": "→ {count} technologies cataloguées",
+        "terminal_status": "carte interactive en ligne.",
+        "action_get_in_touch": "Écrivez-moi",
+        "action_view_services": "Voir les services",
+        "cta_heading_line1": "Vous avez trouvé votre stack",
+        "cta_heading_line2": "On le bâtit ensemble",
+        "cta_sub": "Un pipeline, un tableau de bord, une base de données, une boutique, l'infrastructure est prête.",
+        "stack_explainer": "Un « stack », c'est juste la liste des morceaux d'un logiciel : l'interface que le monde touche, la logique qui décide des choses, les données qu'il garde en mémoire et l'infrastructure sur laquelle il roule. C'est tout le secret. Une fois que vous savez lire un stack, une soumission ne peut plus vous cacher grand-chose, fouillez dans les plans plus bas et voyez par vous-même."
+      }
+    },
+    {
+      "collection": "block_blog_page_content",
+      "id": "74ef9d4b-9e57-41e1-9d62-1be677bd9a74",
+      "parentFk": "block_blog_page_content_id",
+      "fields": {
+        "intro": "Des notes sur l'infrastructure numérique, les bases de données et la construction de systèmes fiables.",
+        "heading": "Dépêches",
+        "back_to_dispatches": "← retour aux dépêches",
+        "back_to_personal": "← retour au coin personnel"
+      }
+    },
+    {
+      "collection": "block_projects_page_content",
+      "id": "1036c81f-8f0b-4023-9554-43772fbf38fc",
+      "parentFk": "block_projects_page_content_id",
+      "fields": {
+        "intro": "Des projets, des pipelines et des systèmes que j'ai bâtis.",
+        "heading": "Projets",
+        "empty_state": "Aucun projet ne correspond aux filtres sélectionnés."
+      }
+    },
+    {
+      "collection": "site_meta",
+      "id": 1,
+      "parentFk": "site_meta_id",
+      "fields": {
+        "default_description": "yesid., ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler. Livré avec des chiffres.",
+        "description": "Ingénieur d'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.",
+        "tagline": "Une infrastructure numérique qui bouge."
+      }
+    },
+    {
+      "collection": "error_pages",
+      "id": "373a1281-9e65-473c-b374-9352db95519e",
+      "parentFk": "error_pages_id",
+      "fields": {
+        "description": "Le serveur a rencontré une erreur inattendue. Réessayez plus tard.",
+        "heading": "Quelque chose a mal tourné",
+        "label": "ERREUR SYSTÈME",
+        "suggestions": [
+          {
+            "label": "Accueil",
+            "href": "/"
+          },
+          {
+            "label": "Contact",
+            "href": "/contact"
+          }
+        ],
+        "terminal_line": "$ route --status 500 // internal server error"
+      }
+    },
+    {
+      "collection": "error_pages",
+      "id": "0ed501b3-0866-497e-93d1-55245c864a9f",
+      "parentFk": "error_pages_id",
+      "fields": {
+        "description": "La page que vous cherchiez est introuvable.",
+        "heading": "Cette station est hors ligne",
+        "label": "PAGE INTROUVABLE",
+        "suggestions": [
+          {
+            "label": "Accueil",
+            "href": "/"
+          },
+          {
+            "label": "Services",
+            "href": "/services"
+          }
+        ],
+        "terminal_line": "$ route --status 0 // generic fallback"
+      }
+    }
+  ]
+}

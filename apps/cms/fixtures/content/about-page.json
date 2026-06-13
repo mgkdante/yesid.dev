@@ -42,6 +42,11 @@
       "company": "E-Commerce Co."
     }
   ],
+  "languages": ["Français", "English", "Español"],
+  "education": [
+    { "school": { "en": "Champlain Regional College, Lennoxville", "fr": "Champlain Regional College, Lennoxville" }, "program": { "en": "DEC, Accounting & Management Technology", "fr": "DEC, Techniques de comptabilité et de gestion" }, "icon": "champlain" },
+    { "school": { "en": "Bishop's University", "fr": "Bishop's University" }, "program": { "en": "B.Sc. Computer Science, minor in Business Administration", "fr": "B. Sc. informatique, mineure en administration des affaires" }, "icon": "bishops" }
+  ],
   "techStack": [
     { "name": "PostgreSQL", "category": "databases", "relatedServices": ["sql-development", "database-engineering"] },
     { "name": "SQL Server", "category": "databases", "relatedServices": ["sql-development", "database-engineering"] },

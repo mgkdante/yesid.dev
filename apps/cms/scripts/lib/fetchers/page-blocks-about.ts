@@ -281,9 +281,6 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		})),
 		buttonLabel: toLocalizedString(tr, 'cta_button_label'),
 		buttonHref: typeof raw.cta_button_href === 'string' ? raw.cta_button_href : '',
-		...(toLocalizedString(tr, 'cta_availability').en.trim()
-			? { availability: toLocalizedString(tr, 'cta_availability') }
-			: {}),
 		socials: rawCtaSocials.map((s) => ({
 			label: typeof s.label === 'string' ? s.label : '',
 			href: typeof s.href === 'string' ? s.href : '',

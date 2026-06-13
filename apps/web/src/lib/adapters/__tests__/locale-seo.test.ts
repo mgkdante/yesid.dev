@@ -45,12 +45,13 @@ describe('meta.forRoute locale threading', () => {
 });
 
 describe('techStack.content locale param', () => {
-	it('defaults to en and accepts a locale (falls back to en docs when fr absent)', async () => {
+	it('defaults to en and accepts a locale (fr now translated by the FR pass)', async () => {
 		const items = await staticAdapter.techStack.all();
 		const id = items[0].id;
 		const en = await staticAdapter.techStack.content(id);
 		const fr = await staticAdapter.techStack.content(id, 'fr');
 		expect(en.length).toBeGreaterThan(0);
-		expect(fr).toBe(en); // tech-stack longform is en-only today (deferred surface)
+		expect(fr.length).toBeGreaterThan(0);
+		expect(fr).not.toBe(en); // tech-stack longform now carries Québécois fr
 	});
 });

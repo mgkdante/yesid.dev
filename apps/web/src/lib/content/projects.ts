@@ -26,12 +26,26 @@ export const projects: readonly Project[] = [
 				time: 1777242409366,
 				version: '2.31.2',
 			},
+			fr: {
+				blocks: [
+					{
+						data: {
+							text: 'Un site de marque personnelle et de portfolio pour un ingénieur d\'infrastructure numérique pigiste. Bâti avec SvelteKit 2, Svelte 5, Tailwind CSS v4, et déployé sur Vercel. Conçu pour être multilingue (en/fr/es) dès le premier jour.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242409366,
+				version: '2.31.2',
+			},
 		},
 		featured: true,
 		image: '8b57ccd1-bed1-46ae-bb24-a887714a8bcc',
 		liveUrl: 'https://yesid.dev',
 		oneLiner: {
 			en: 'The site you are looking at: a SvelteKit portfolio built slice by slice.',
+			fr: 'Le site que vous regardez en ce moment : un portfolio SvelteKit bâti morceau par morceau.',
 		},
 		relatedServices: ['web-development'],
 		repoUrl: 'https://github.com/mgkdante/yesid.dev',
@@ -51,8 +65,21 @@ export const projects: readonly Project[] = [
 						time: 1777242409366,
 						version: '2.31.2',
 					},
+					fr: {
+						blocks: [
+							{
+								data: {
+									text: 'SvelteKit fait disparaître le cadriciel au moment de la compilation, ce qui produit du HTML léger et un minimum de JavaScript. Pour un site portfolio où la première impression et la vitesse de chargement comptent, ce compromis vaut la peine.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242409366,
+						version: '2.31.2',
+					},
 				},
-				title: { en: 'Why SvelteKit?' },
+				title: { en: 'Why SvelteKit?', fr: 'Pourquoi SvelteKit?' },
 			},
 		],
 		slug: 'yesid-dev',
@@ -65,7 +92,10 @@ export const projects: readonly Project[] = [
 		],
 		status: 'public',
 		tags: ['portfolio', 'web', 'svelte'],
-		title: { en: 'yesid.dev · Portfolio Site' },
+		title: {
+			en: 'yesid.dev · Portfolio Site',
+			fr: 'yesid.dev · Site portfolio',
+		},
 	},
 	{
 		description: {
@@ -82,26 +112,46 @@ export const projects: readonly Project[] = [
 				time: 1777242409586,
 				version: '2.31.2',
 			},
+			fr: {
+				blocks: [
+					{
+						data: {
+							text: 'Un pipeline de données en production qui ingère des flux GTFS-RT, les transforme avec dbt, et fait ressortir les KPI dans un tableau de bord Power BI. Bâti pour une société de transport au Québec.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242409586,
+				version: '2.31.2',
+			},
 		},
 		environment: 'production',
 		featured: false,
 		impactMetric: {
-			label: { en: 'Real-time refresh cycles' },
+			label: {
+				en: 'Real-time refresh cycles',
+				fr: 'Cycles de rafraîchissement en temps réel',
+			},
 			value: '30s',
 		},
 		impactMetrics: [
 			{
-				label: { en: 'Real-time refresh cycles' },
+				label: {
+					en: 'Real-time refresh cycles',
+					fr: 'Cycles de rafraîchissement en temps réel',
+				},
 				value: '30s',
 			},
 			{
-				label: { en: 'Pipeline uptime' },
+				label: { en: 'Pipeline uptime', fr: 'Disponibilité du pipeline' },
 				value: '99.9%',
 			},
 		],
 		location: 'sherbrooke',
 		oneLiner: {
 			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.',
+			fr: 'Un pipeline ELT de bout en bout qui traite les données de transport en temps réel pour un opérateur régional.',
 		},
 		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
 		relatedServices: ['data-pipeline', 'database-engineering'],
@@ -117,7 +167,10 @@ export const projects: readonly Project[] = [
 		],
 		status: 'public',
 		tags: ['etl', 'transit', 'postgresql', 'dbt'],
-		title: { en: 'Transit Operations Data Pipeline' },
+		title: {
+			en: 'Transit Operations Data Pipeline',
+			fr: 'Pipeline de données des opérations de transport',
+		},
 		version: '2.4.1',
 	},
 	{
@@ -135,26 +188,49 @@ export const projects: readonly Project[] = [
 				time: 1777242409843,
 				version: '2.31.2',
 			},
+			fr: {
+				blocks: [
+					{
+						data: {
+							text: 'Une suite de tableaux de bord Power BI bâtie pour une entreprise de logistique. Tire les données de SQL Server, applique la logique d\'affaires en DAX, et livre des rafraîchissements quotidiens aux décideurs. A fait passer le temps de production des rapports de 2 jours à 15 minutes.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242409843,
+				version: '2.31.2',
+			},
 		},
 		featured: false,
 		impactMetric: {
 			before: '2 days',
-			label: { en: 'Reporting across 12 depts' },
+			label: {
+				en: 'Reporting across 12 depts',
+				fr: 'Rapports répartis sur 12 services',
+			},
 			value: '15 min',
 		},
 		impactMetrics: [
 			{
 				before: '2 days',
-				label: { en: 'Reporting across 12 depts' },
+				label: {
+					en: 'Reporting across 12 depts',
+					fr: 'Rapports répartis sur 12 services',
+				},
 				value: '15 min',
 			},
 			{
-				label: { en: 'Query time reduction' },
+				label: {
+					en: 'Query time reduction',
+					fr: 'Réduction du temps de requête',
+				},
 				value: '73%',
 			},
 		],
 		oneLiner: {
 			en: 'Executive KPI dashboard tracking operational metrics across 12 departments.',
+			fr: 'Tableau de bord des KPI pour la direction, qui suit les indicateurs opérationnels à travers 12 départements.',
 		},
 		readmeUrl: 'https://github.com/zen-browser/desktop/blob/dev/README.md',
 		relatedServices: ['analytics-reporting'],
@@ -175,8 +251,21 @@ export const projects: readonly Project[] = [
 						time: 1777242409844,
 						version: '2.31.2',
 					},
+					fr: {
+						blocks: [
+							{
+								data: {
+									text: 'Les gestionnaires des opérations passaient deux jours chaque mois à monter des rapports à partir de plusieurs feuilles de calcul. Les données étaient déjà périmées au moment de prendre les décisions.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242409844,
+						version: '2.31.2',
+					},
 				},
-				title: { en: 'The Problem' },
+				title: { en: 'The Problem', fr: 'Le problème' },
 			},
 			{
 				content: {
@@ -193,15 +282,31 @@ export const projects: readonly Project[] = [
 						time: 1777242409844,
 						version: '2.31.2',
 					},
+					fr: {
+						blocks: [
+							{
+								data: {
+									text: 'Connecté directement à SQL Server avec des rafraîchissements planifiés. Construction d\'une couche sémantique en DAX pour que les utilisateurs d\'affaires puissent découper les données sans écrire de requêtes.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242409844,
+						version: '2.31.2',
+					},
 				},
-				title: { en: 'The Approach' },
+				title: { en: 'The Approach', fr: 'L\'approche' },
 			},
 		],
 		slug: 'lorem-analytics-dashboard',
 		stack: ['Power BI', 'SQL Server', 'Python', 'DAX'],
 		status: 'private',
 		tags: ['analytics', 'reporting', 'sql-server'],
-		title: { en: 'Lorem Analytics Dashboard' },
+		title: {
+			en: 'Lorem Analytics Dashboard',
+			fr: 'Tableau de bord analytique Lorem',
+		},
 	},
 	{
 		description: {
@@ -218,20 +323,40 @@ export const projects: readonly Project[] = [
 				time: 1777242410164,
 				version: '2.31.2',
 			},
+			fr: {
+				blocks: [
+					{
+						data: {
+							text: 'Migration d\'une base de données MySQL de 500 Go vers PostgreSQL sans aucune interruption, grâce à l\'écriture double et aux lectures fantômes. Comprenait une refonte du schéma, le mappage des types de données, et la conversion des procédures stockées.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242410164,
+				version: '2.31.2',
+			},
 		},
 		featured: false,
 		impactMetric: {
-			label: { en: 'Zero-downtime migration' },
+			label: {
+				en: 'Zero-downtime migration',
+				fr: 'Migration sans temps d\'arrêt',
+			},
 			value: '500 GB',
 		},
 		impactMetrics: [
 			{
-				label: { en: 'Zero-downtime migration' },
+				label: {
+					en: 'Zero-downtime migration',
+					fr: 'Migration sans temps d\'arrêt',
+				},
 				value: '500 GB',
 			},
 		],
 		oneLiner: {
 			en: 'Zero-downtime migration from legacy MySQL to PostgreSQL for a SaaS platform.',
+			fr: 'Migration sans interruption d\'un MySQL hérité vers PostgreSQL pour une plateforme SaaS.',
 		},
 		readmeUrl: 'https://github.com/oven-sh/bun/blob/main/README.md',
 		relatedServices: ['database-engineering'],
@@ -252,8 +377,21 @@ export const projects: readonly Project[] = [
 						time: 1777242410164,
 						version: '2.31.2',
 					},
+					fr: {
+						blocks: [
+							{
+								data: {
+									text: 'L\'instance MySQL existante atteignait ses limites de performance. PostgreSQL offrait un meilleur support du JSON, les CTE et les fonctions de fenêtrage dont la couche analytique avait besoin.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242410164,
+						version: '2.31.2',
+					},
 				},
-				title: { en: 'Why Migrate?' },
+				title: { en: 'Why Migrate?', fr: 'Pourquoi migrer?' },
 			},
 			{
 				content: {
@@ -270,15 +408,31 @@ export const projects: readonly Project[] = [
 						time: 1777242410164,
 						version: '2.31.2',
 					},
+					fr: {
+						blocks: [
+							{
+								data: {
+									text: 'On a utilisé un patron d\'écriture double : les nouvelles écritures vont dans les deux bases de données, et les lectures basculent peu à peu vers PostgreSQL. Des lectures fantômes ont validé la justesse des données avant la bascule.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242410164,
+						version: '2.31.2',
+					},
 				},
-				title: { en: 'Migration Strategy' },
+				title: { en: 'Migration Strategy', fr: 'Stratégie de migration' },
 			},
 		],
 		slug: 'lorem-database-migration',
 		stack: ['PostgreSQL', 'Python', 'Alembic', 'MySQL'],
 		status: 'private',
 		tags: ['postgresql', 'migration', 'schema'],
-		title: { en: 'Lorem Database Migration' },
+		title: {
+			en: 'Lorem Database Migration',
+			fr: 'Migration de base de données Lorem',
+		},
 	},
 	{
 		description: {
@@ -477,10 +631,24 @@ export const projects: readonly Project[] = [
 				time: 1777242410452,
 				version: '2.31.2',
 			},
+			fr: {
+				blocks: [
+					{
+						data: {
+							text: 'Un outil en Python qui se connecte à SQL Server, analyse les plans d\'exécution, repère les index manquants, et génère des recommandations d\'optimisation. A réduit le temps moyen des requêtes de 73 % à travers plus de 200 procédures stockées.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242410452,
+				version: '2.31.2',
+			},
 		},
 		featured: false,
 		oneLiner: {
 			en: 'Automated SQL Server query analysis tool that identifies slow queries and suggests index improvements.',
+			fr: 'Outil automatisé d\'analyse de requêtes SQL Server qui repère les requêtes lentes et suggère des améliorations d\'index.',
 		},
 		relatedServices: ['database-engineering'],
 		repoUrl: 'https://github.com/mgkdante/lorem-query-optimizer',
@@ -500,15 +668,31 @@ export const projects: readonly Project[] = [
 						time: 1777242410452,
 						version: '2.31.2',
 					},
+					fr: {
+						blocks: [
+							{
+								data: {
+									text: 'Se connecte à l\'instance SQL Server cible, capte les plans d\'exécution des requêtes les plus lourdes et les analyse pour repérer les anti-patrons courants : balayages de table, conversions implicites et problèmes de reniflage de paramètres.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242410452,
+						version: '2.31.2',
+					},
 				},
-				title: { en: 'How It Works' },
+				title: { en: 'How It Works', fr: 'Comment ça marche' },
 			},
 		],
 		slug: 'lorem-query-optimizer',
 		stack: ['SQL Server', 'Python', 'SSMS', 'T-SQL'],
 		status: 'private',
 		tags: ['sql', 'performance', 'sql-server'],
-		title: { en: 'Lorem Query Optimizer' },
+		title: {
+			en: 'Lorem Query Optimizer',
+			fr: 'Optimiseur de requêtes Lorem',
+		},
 	},
 	{
 		description: {
@@ -525,10 +709,24 @@ export const projects: readonly Project[] = [
 				time: 1777242410643,
 				version: '2.31.2',
 			},
+			fr: {
+				blocks: [
+					{
+						data: {
+							text: 'Un panneau d\'administration en Retool qui a remplacé 6 feuilles de calcul par une interface unifiée. Opérations CRUD sur PostgreSQL, contrôle d\'accès par rôle, et acheminement automatisé des approbations.',
+						},
+						id: 'p1',
+						type: 'paragraph',
+					},
+				],
+				time: 1777242410643,
+				version: '2.31.2',
+			},
 		},
 		featured: false,
 		oneLiner: {
 			en: 'Internal operations dashboard for managing inventory and approval workflows.',
+			fr: 'Tableau de bord des opérations internes pour gérer l\'inventaire et les flux d\'approbation.',
 		},
 		relatedServices: ['data-pipeline', 'analytics-reporting'],
 		sections: [
@@ -547,15 +745,31 @@ export const projects: readonly Project[] = [
 						time: 1777242410643,
 						version: '2.31.2',
 					},
+					fr: {
+						blocks: [
+							{
+								data: {
+									text: 'Les opérations roulaient sur 6 Google Sheets avec du copier-coller manuel entre eux. Le panneau Retool a tout centralisé dans une seule interface, avec des requêtes PostgreSQL en temps réel.',
+								},
+								id: 'p1',
+								type: 'paragraph',
+							},
+						],
+						time: 1777242410643,
+						version: '2.31.2',
+					},
 				},
-				title: { en: 'Before & After' },
+				title: { en: 'Before & After', fr: 'Avant et après' },
 			},
 		],
 		slug: 'lorem-retool-admin',
 		stack: ['Retool', 'PostgreSQL', 'REST API', 'Node.js'],
 		status: 'private',
 		tags: ['retool', 'admin', 'postgresql'],
-		title: { en: 'Lorem Retool Admin Panel' },
+		title: {
+			en: 'Lorem Retool Admin Panel',
+			fr: 'Panneau d\'administration Retool Lorem',
+		},
 	},
 ];
 
