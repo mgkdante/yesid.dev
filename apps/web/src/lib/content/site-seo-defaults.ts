@@ -12,7 +12,7 @@ import type { SiteSeoDefaults } from '$lib/types';
 
 export const STATIC_SITE_SEO_DEFAULTS: SiteSeoDefaults = {
 	defaultDescription: {
-		en: 'yesid. — freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
+		en: 'yesid., freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power. Shipped with numbers.',
 	},
 	defaultOgImage: null,
 	themeColor: '#141414',

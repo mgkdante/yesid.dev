@@ -198,9 +198,12 @@ describe('aboutPageContent', () => {
 			expect(aboutPageContent.cta.buttonHref).toBe('/contact');
 		});
 
-		it('has button label and availability', () => {
+		it('has a button label', () => {
 			expect(aboutPageContent.cta.buttonLabel.en.length).toBeGreaterThan(0);
-			expect(aboutPageContent.cta.availability.en.length).toBeGreaterThan(0);
+		});
+
+		it('no longer advertises a booking window (availability killed)', () => {
+			expect(aboutPageContent.cta.availability).toBeUndefined();
 		});
 
 		it('has at least 2 social links', () => {

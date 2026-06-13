@@ -12,7 +12,7 @@ import type { SiteMeta } from '$lib/types';
 
 export const siteMeta: SiteMeta = {
 	description: {
-		en: 'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power — PostgreSQL, dbt, Power BI, SvelteKit.',
+		en: 'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
 	},
 	links: {
 		email: 'contact@yesid.dev',

@@ -232,5 +232,5 @@ export const JOURNEY_STEPS: readonly LocalizedString[] = [
 /** The warm availability line woven next to the CTA — links to /contact.
  *  Small and homey, not a widget. */
 export const AVAILABILITY_LINE: LocalizedString = {
-	en: "Questions? I'm online — ask me anything.",
+	en: 'Questions? Ask me anything.',
 };

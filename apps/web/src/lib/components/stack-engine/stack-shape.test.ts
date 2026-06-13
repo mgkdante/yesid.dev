@@ -211,6 +211,6 @@ describe('finale 4c — journey steps + the availability line (code-owned, en fa
 	});
 
 	it("the operator's open door is warm, small, and homey", () => {
-		expect(AVAILABILITY_LINE.en).toBe("Questions? I'm online — ask me anything.");
+		expect(AVAILABILITY_LINE.en).toBe('Questions? Ask me anything.');
 	});
 });

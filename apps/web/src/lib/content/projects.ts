@@ -33,7 +33,7 @@ export const projects: readonly Project[] = [
 		oneLiner: {
 			en: 'The site you are looking at: a SvelteKit portfolio built slice by slice.',
 		},
-		relatedServices: ['web-development', 'database-engineering'],
+		relatedServices: ['web-development'],
 		repoUrl: 'https://github.com/mgkdante/yesid.dev',
 		sections: [
 			{
@@ -65,7 +65,7 @@ export const projects: readonly Project[] = [
 		],
 		status: 'public',
 		tags: ['portfolio', 'web', 'svelte'],
-		title: { en: 'yesid.dev — Portfolio Site' },
+		title: { en: 'yesid.dev · Portfolio Site' },
 	},
 	{
 		description: {
@@ -104,12 +104,7 @@ export const projects: readonly Project[] = [
 			en: 'An end-to-end ELT pipeline processing real-time transit data for a regional operator.',
 		},
 		readmeUrl: 'https://raw.githubusercontent.com/mgkdante/transit/main/README.md',
-		relatedServices: [
-			'data-pipeline',
-			'database-engineering',
-			'analytics-reporting',
-			'web-development',
-		],
+		relatedServices: ['data-pipeline', 'database-engineering'],
 		repoUrl: 'https://github.com/mgkdante/transit',
 		sections: [],
 		slug: 'transit-data-pipeline',
@@ -291,21 +286,21 @@ export const projects: readonly Project[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Café Arona imports Cameroonian coffee into Québec — and ran its content in Webflow while selling through Webflow Ecommerce. Two surfaces, one small team. The goal: a single Shopify admin where they edit pages and run commerce in one place.',
+							text: 'Café Arona imports Cameroonian coffee into Québec, and ran its content in Webflow while selling through Webflow Ecommerce. Two surfaces, one small team. The goal: a single Shopify admin where they edit pages and run commerce in one place.',
 						},
 						id: 'p1',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'The build is a Shopify Online Store 2.0 Liquid theme, built up from the Skeleton Theme baseline to match the brand’s Figma identity — not a template re-skin. Content moved over programmatically: Bun and TypeScript importer scripts migrated the Webflow content into Shopify, repeatable and verifiable instead of copy-paste weekends.',
+							text: 'The build is a Shopify Online Store 2.0 Liquid theme, built up from the Skeleton Theme baseline to match the brand’s Figma identity, not a template re-skin. Content moved over programmatically: Bun and TypeScript importer scripts migrated the Webflow content into Shopify, repeatable and verifiable instead of copy-paste weekends.',
 						},
 						id: 'p2',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'French-primary and English-ready via Shopify Markets, with typography engineered from the Figma tokens and performance, accessibility and structured-data budgets wired into the tooling. Currently in final delivery with the client reviewing live rounds — full case study lands after cutover.',
+							text: 'French-primary and English-ready via Shopify Markets, with typography engineered from the Figma tokens and performance, accessibility and structured-data budgets wired into the tooling. Currently in final delivery with the client reviewing live rounds, full case study lands after cutover.',
 						},
 						id: 'p3',
 						type: 'paragraph',
@@ -331,21 +326,21 @@ export const projects: readonly Project[] = [
 				blocks: [
 					{
 						data: {
-							text: 'Café Arona importe du café camerounais au Québec — avec son contenu dans Webflow et sa boutique dans Webflow Ecommerce. Deux surfaces, une petite équipe. L’objectif : un seul admin Shopify pour gérer les pages et le commerce au même endroit.',
+							text: 'Café Arona importe du café camerounais au Québec, avec son contenu dans Webflow et sa boutique dans Webflow Ecommerce. Deux surfaces, une petite équipe. L’objectif : un seul admin Shopify pour gérer les pages et le commerce au même endroit.',
 						},
 						id: 'p1',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'Le projet : un thème Liquid Shopify Online Store 2.0, construit à partir du Skeleton Theme pour respecter l’identité Figma de la marque — pas un simple re-skin. Le contenu a été migré par programmation : des scripts Bun/TypeScript ont importé le contenu Webflow vers Shopify, de façon répétable et vérifiable.',
+							text: 'Le projet : un thème Liquid Shopify Online Store 2.0, construit à partir du Skeleton Theme pour respecter l’identité Figma de la marque, pas un simple re-skin. Le contenu a été migré par programmation : des scripts Bun/TypeScript ont importé le contenu Webflow vers Shopify, de façon répétable et vérifiable.',
 						},
 						id: 'p2',
 						type: 'paragraph',
 					},
 					{
 						data: {
-							text: 'Français d’abord, anglais via Shopify Markets, typographie calibrée depuis les tokens Figma, budgets de performance et d’accessibilité intégrés à l’outillage. Livraison finale en cours avec le client — l’étude de cas complète arrive après la mise en ligne.',
+							text: 'Français d’abord, anglais via Shopify Markets, typographie calibrée depuis les tokens Figma, budgets de performance et d’accessibilité intégrés à l’outillage. Livraison finale en cours avec le client, l’étude de cas complète arrive après la mise en ligne.',
 						},
 						id: 'p3',
 						type: 'paragraph',
@@ -418,7 +413,7 @@ export const projects: readonly Project[] = [
 						blocks: [
 							{
 								data: {
-									text: 'The client edits pages and products in a single Shopify admin. French leads, English follows through Shopify Markets — with an on-brand FR｜EN switcher on the storefront.',
+									text: 'The client edits pages and products in a single Shopify admin. French leads, English follows through Shopify Markets, with an on-brand FR｜EN switcher on the storefront.',
 								},
 								id: 'p1',
 								type: 'paragraph',
@@ -431,7 +426,7 @@ export const projects: readonly Project[] = [
 						blocks: [
 							{
 								data: {
-									text: 'El cliente gestiona páginas y productos en un solo admin de Shopify. El francés lidera y el inglés sigue vía Shopify Markets — con un selector FR｜EN fiel a la marca.',
+									text: 'El cliente gestiona páginas y productos en un solo admin de Shopify. El francés lidera y el inglés sigue vía Shopify Markets, con un selector FR｜EN fiel a la marca.',
 								},
 								id: 'p1',
 								type: 'paragraph',
@@ -444,7 +439,7 @@ export const projects: readonly Project[] = [
 						blocks: [
 							{
 								data: {
-									text: 'Le client gère pages et produits dans un seul admin Shopify. Le français mène, l’anglais suit via Shopify Markets — avec un sélecteur FR｜EN fidèle à la marque.',
+									text: 'Le client gère pages et produits dans un seul admin Shopify. Le français mène, l’anglais suit via Shopify Markets, avec un sélecteur FR｜EN fidèle à la marque.',
 								},
 								id: 'p1',
 								type: 'paragraph',

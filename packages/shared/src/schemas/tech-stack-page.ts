@@ -44,7 +44,7 @@ export const TechStackPageContentSchema = z.object({
 		headingLine1: LocalizedStringSchema,
 		headingLine2: LocalizedStringSchema,
 		sub: LocalizedStringSchema,
-		availability: LocalizedStringSchema,
+		availability: LocalizedStringSchema.optional(),
 	}),
 });
 

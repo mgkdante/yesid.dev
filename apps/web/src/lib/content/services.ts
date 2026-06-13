@@ -24,7 +24,7 @@ export const services: readonly Service[] = [
 			{ en: 'Documentation, runbooks, and ER diagrams' },
 		],
 		description: {
-			en: 'Schemas, queries, and migrations — a database that stays fast as your data grows.',
+			en: 'Schemas, queries, and migrations, a database that stays fast as your data grows.',
 		},
 		id: 'database-engineering',
 		impactMetric: {
@@ -35,12 +35,11 @@ export const services: readonly Service[] = [
 			'transit-data-pipeline',
 			'lorem-database-migration',
 			'lorem-query-optimizer',
-			'yesid-dev',
 		],
 		sections: [
 			{
 				content: {
-					en: 'I start with your slowest queries — execution plans and profiling find the root cause (missing indexes, implicit conversions, parameter sniffing) — and fix them systematically. Database changes are infrastructure changes: every migration gets a rollback script, and every schema change is benchmarked against production-scale data before deployment.',
+					en: 'I start with your slowest queries, execution plans and profiling find the root cause (missing indexes, implicit conversions, parameter sniffing), and fix them systematically. Database changes are infrastructure changes: every migration gets a rollback script, and every schema change is benchmarked against production-scale data before deployment.',
 				},
 				title: { en: 'My Approach' },
 			},
@@ -50,7 +49,7 @@ export const services: readonly Service[] = [
 		svg: 'service-database.svg',
 		title: { en: 'Databases & SQL' },
 		valueProposition: {
-			en: 'Slow queries and risky migrations are the same problem: a database nobody engineered. I audit the SQL layer, rewrite the expensive queries, design schemas that scale, and run migrations with rollback plans — 500GB+ moved safely so far. Faster dashboards, lower database costs, a database that\'s an asset, not a liability.',
+			en: 'Slow queries and risky migrations are the same problem: a database nobody engineered. I audit the SQL layer, rewrite the expensive queries, design schemas that scale, and run migrations with rollback plans, 500GB+ moved safely so far. Faster dashboards, lower database costs, a database that\'s an asset, not a liability.',
 		},
 		visible: true,
 	},
@@ -68,7 +67,7 @@ export const services: readonly Service[] = [
 			},
 		],
 		description: {
-			en: 'Data moves from source to warehouse on schedule — and the manual copy-paste work goes away.',
+			en: 'Data moves from source to warehouse on schedule, and the manual copy-paste work goes away.',
 		},
 		id: 'data-pipeline',
 		impactMetric: {
@@ -79,7 +78,7 @@ export const services: readonly Service[] = [
 		sections: [
 			{
 				content: {
-					en: 'I design pipelines that are boring in the best way — predictable, observable, and easy to debug at 3 AM. Every pipeline gets idempotent loads, schema contracts, and clear logging. I prefer dbt for transformation logic because it makes SQL testable and version-controlled.',
+					en: 'I design pipelines that are boring in the best way, predictable, observable, and easy to debug at 3 AM. Every pipeline gets idempotent loads, schema contracts, and clear logging. I prefer dbt for transformation logic because it makes SQL testable and version-controlled.',
 				},
 				title: { en: 'My Approach' },
 			},
@@ -89,7 +88,7 @@ export const services: readonly Service[] = [
 		svg: 'service-pipeline.svg',
 		title: { en: 'Pipelines & Automation' },
 		valueProposition: {
-			en: 'Data stuck in silos is data nobody can use — and an ops team copying between spreadsheets is the symptom. I build pipelines and workflow automation that move information from source systems to your warehouse reliably, with logging, retry logic, and schema validation. Your analysts get clean, fresh data every morning; your team stops doing data entry.',
+			en: 'Data stuck in silos is data nobody can use, and an ops team copying between spreadsheets is the symptom. I build pipelines and workflow automation that move information from source systems to your warehouse reliably, with logging, retry logic, and schema validation. Your analysts get clean, fresh data every morning; your team stops doing data entry.',
 		},
 		visible: true,
 	},
@@ -104,22 +103,18 @@ export const services: readonly Service[] = [
 			{ en: 'Performance tuning for large datasets' },
 		],
 		description: {
-			en: 'One semantic layer, numbers that match in every report — dashboards your team trusts.',
+			en: 'One semantic layer, numbers that match in every report, dashboards your team trusts.',
 		},
 		id: 'analytics-reporting',
 		impactMetric: {
 			label: { en: 'reporting turnaround' },
 			value: { en: '2d → 15m' },
 		},
-		relatedProjects: [
-			'lorem-analytics-dashboard',
-			'lorem-retool-admin',
-			'transit-data-pipeline',
-		],
+		relatedProjects: ['lorem-analytics-dashboard', 'lorem-retool-admin'],
 		sections: [
 			{
 				content: {
-					en: 'I start by understanding how your team makes decisions — what questions they ask, how often, and what data they trust. Then I build a semantic layer that makes those questions easy to answer. The dashboard is the last step, not the first.',
+					en: 'I start by understanding how your team makes decisions, what questions they ask, how often, and what data they trust. Then I build a semantic layer that makes those questions easy to answer. The dashboard is the last step, not the first.',
 				},
 				title: { en: 'My Approach' },
 			},
@@ -129,7 +124,7 @@ export const services: readonly Service[] = [
 		svg: 'service-reporting.svg',
 		title: { en: 'Dashboards & Analytics' },
 		valueProposition: {
-			en: 'A dashboard nobody trusts is worse than no dashboard. I build reporting systems grounded in a clean semantic layer — so the numbers match across reports, filters work intuitively, and your team stops second-guessing the data. You get dashboards that drive decisions, not confusion.',
+			en: 'A dashboard nobody trusts is worse than no dashboard. I build reporting systems grounded in a clean semantic layer, so the numbers match across reports, filters work intuitively, and your team stops second-guessing the data. You get dashboards that drive decisions, not confusion.',
 		},
 		visible: true,
 	},
@@ -144,18 +139,18 @@ export const services: readonly Service[] = [
 			{ en: 'Performance optimization' },
 		],
 		description: {
-			en: 'Fast sites and stores wired to your data — storefront to back office.',
+			en: 'Fast sites and stores wired to your data, storefront to back office.',
 		},
 		id: 'web-development',
 		impactMetric: {
 			label: { en: 'Lighthouse performance' },
 			value: { en: '100' },
 		},
-		relatedProjects: ['yesid-dev', 'cafe-arona', 'transit-data-pipeline'],
+		relatedProjects: ['yesid-dev', 'cafe-arona'],
 		sections: [
 			{
 				content: {
-					en: 'I build with SvelteKit because it compiles away the framework — you get fast pages with minimal JavaScript. Every component is typed, every page is server-rendered for SEO, and the data layer connects cleanly to your backend. I deploy to Vercel for zero-config CI/CD and edge caching.',
+					en: 'I build with SvelteKit because it compiles away the framework, you get fast pages with minimal JavaScript. Every component is typed, every page is server-rendered for SEO, and the data layer connects cleanly to your backend. I deploy to Vercel for zero-config CI/CD and edge caching.',
 				},
 				title: { en: 'My Approach' },
 			},
@@ -171,7 +166,7 @@ export const services: readonly Service[] = [
 		svg: 'service-web.svg',
 		title: { en: 'Websites & E-commerce' },
 		valueProposition: {
-			en: 'Your digital infrastructure deserves a frontend that matches. I build web applications that connect directly to your data layer — client portals, internal dashboards, public-facing tools — with the same attention to performance and reliability I bring to the backend.',
+			en: 'Your digital infrastructure deserves a frontend that matches. I build web applications that connect directly to your data layer, client portals, internal dashboards, public-facing tools, with the same attention to performance and reliability I bring to the backend.',
 		},
 		visible: true,
 	},
@@ -197,7 +192,7 @@ export const services: readonly Service[] = [
 		sections: [
 			{
 				content: {
-					en: 'I start with your slowest queries — the ones that block dashboards and frustrate users. Using execution plans and profiling tools, I identify the root cause (missing indexes, implicit conversions, parameter sniffing) and fix them systematically. Every change is tested against production-scale data before deployment.',
+					en: 'I start with your slowest queries, the ones that block dashboards and frustrate users. Using execution plans and profiling tools, I identify the root cause (missing indexes, implicit conversions, parameter sniffing) and fix them systematically. Every change is tested against production-scale data before deployment.',
 				},
 				title: { en: 'My Approach' },
 			},
@@ -208,7 +203,7 @@ export const services: readonly Service[] = [
 		svg: 'service-sql.svg',
 		title: { en: 'SQL Development & Optimization' },
 		valueProposition: {
-			en: 'Slow queries cost money — in compute, in delayed reports, in frustrated analysts waiting for data. I audit your SQL layer, identify the expensive queries, and rewrite them for speed and clarity. You get faster dashboards, lower database costs, and code your team can actually maintain.',
+			en: 'Slow queries cost money, in compute, in delayed reports, in frustrated analysts waiting for data. I audit your SQL layer, identify the expensive queries, and rewrite them for speed and clarity. You get faster dashboards, lower database costs, and code your team can actually maintain.',
 		},
 		visible: false,
 	},
@@ -234,7 +229,7 @@ export const services: readonly Service[] = [
 		sections: [
 			{
 				content: {
-					en: 'I start by shadowing the workflow — watching how data moves through your team. Then I build the simplest tool that eliminates the bottleneck. Retool for rapid prototyping, custom code when Retool hits its limits. Every tool ships with docs so your team can extend it without me.',
+					en: 'I start by shadowing the workflow, watching how data moves through your team. Then I build the simplest tool that eliminates the bottleneck. Retool for rapid prototyping, custom code when Retool hits its limits. Every tool ships with docs so your team can extend it without me.',
 				},
 				title: { en: 'My Approach' },
 			},
@@ -244,7 +239,7 @@ export const services: readonly Service[] = [
 		svg: 'service-tooling.svg',
 		title: { en: 'Internal Tooling' },
 		valueProposition: {
-			en: 'Your ops team is copying data between spreadsheets and Slack threads. I build internal tools — admin panels, approval workflows, data entry forms — that centralize operations and eliminate manual work. You ship faster because your team spends time on decisions, not data entry.',
+			en: 'Your ops team is copying data between spreadsheets and Slack threads. I build internal tools, admin panels, approval workflows, data entry forms, that centralize operations and eliminate manual work. You ship faster because your team spends time on decisions, not data entry.',
 		},
 		visible: false,
 	},

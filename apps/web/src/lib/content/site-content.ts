@@ -56,9 +56,9 @@ export const manifestoContent: ManifestoContent = {
 		version: { en: 'v2.0' },
 	},
 	edgeLeft: {
-		location: { en: 'MTL—QC' },
+		location: { en: 'MTL-QC' },
 		sectionName: { en: 'MANIFESTO' },
-		sectionNumber: { en: 'SEC—02' },
+		sectionNumber: { en: 'SEC-02' },
 	},
 	edgeRight: {
 		dst: { en: 'DST Montréal, QC' },
@@ -169,7 +169,7 @@ export const servicesGridContent: ServicesGridContent = {
 
 export const aboutContent: AboutIntroContent = {
 	bio: {
-		en: 'Montreal, QC — I bring data, make it tell stories, and build the systems it moves through.',
+		en: 'Montreal, QC, I bring data, make it tell stories, and build the systems it moves through.',
 	},
 	interests: {
 		en: 'Anime · Data viz · Open source · Montreal food scene',
@@ -191,9 +191,7 @@ export const ctaContent: CtaContent = {
 	ctaContact: { en: 'Get in touch' },
 	ctaGithub: { en: 'View on GitHub' },
 	heading: { en: 'Let\'s build something\nthat moves' },
-	subtitle: {
-		en: 'Have a data problem? Let\'s talk. Available for freelance projects and consulting.',
-	},
+	subtitle: { en: 'Have a data problem? Let\'s talk.' },
 };
 
 export const closerContent: CloserContent = {
