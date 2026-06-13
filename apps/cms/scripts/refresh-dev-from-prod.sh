@@ -58,7 +58,7 @@ echo ""
 echo "[1/3] Neon: reset dev branch from parent..."
 if [[ -z "${NEON_API_KEY:-}" ]]; then
   echo "  ERROR: NEON_API_KEY not set."
-  echo "  Add to apps/cms/.env: NEON_API_KEY=op://yesid-dev/Neon API key - yesid/credential"
+  echo "  Add to apps/cms/.env: NEON_API_KEY=op://yesid-dev/6zhyunzrgwiz47dv6lso53yd3q/credential"
   exit 1
 fi
 # Note: dev branch's registered parent in Neon is "production" (not "main").
