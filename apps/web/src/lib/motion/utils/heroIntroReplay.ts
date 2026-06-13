@@ -43,6 +43,20 @@ export function isHeroIntroCompletedToday(now: Date = new Date()): boolean {
 	}
 }
 
+/** Forget the completion — the intro is "still to do" again. Fired when the
+    visitor clicks the replay dot (operator: a refresh after clicking must
+    land on the animation, not the collapsed hero). Scrolling the replay
+    through to the end re-persists via markHeroIntroCompleted. */
+export function forgetHeroIntroCompleted(): void {
+	const storage = safeStorage();
+	if (!storage) return;
+	try {
+		storage.removeItem(HERO_INTRO_STORAGE_KEY);
+	} catch {
+		// Denied — worst case a reload still lands collapsed. Fine.
+	}
+}
+
 /** Persist "intro completed today". Quietly no-ops when storage is denied. */
 export function markHeroIntroCompleted(now: Date = new Date()): void {
 	const storage = safeStorage();
