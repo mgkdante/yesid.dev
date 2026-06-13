@@ -122,15 +122,17 @@
 		z-index: var(--z-rail);
 	}
 
-	/* Nav-gap above the sticky tabs is left transparent so the global grid
-	   reads through, same as /projects (the nav pill carries its own backing). */
+	/* Solid band filling the nav gap above the sticky tabs — same colour as the
+	   page background, so service content scrolling up underneath disappears
+	   cleanly into it instead of bleeding through (transparent looked broken on
+	   scroll). Masks the gap between the floating nav pill and the orange tabs. */
 	.tabs-bar::before {
 		content: '';
 		position: absolute;
 		inset-inline: 0;
 		bottom: 100%;
 		height: calc(5rem + env(safe-area-inset-top, 0px) + 1rem);
-		background: transparent;
+		background: var(--background);
 		pointer-events: none;
 	}
 

@@ -399,17 +399,22 @@ describe('GO2-W5 round 6 — transparent terminus, detail SVGs back, top-band pa
 		expect(panel).toContain('hovered={panelMorphed}');
 	});
 
-	it('R6-3 — services pages are TRANSPARENT: the global circuit grid shows through (matches /projects + the closer)', () => {
-		// Operator: every page shows the single root .circuit-grid like /projects.
-		// The services listing + detail no longer paint a solid var(--background)
-		// page fill or nav-gap backdrop — both are transparent so the grid reads
-		// through (same intent as R6-1's transparent closer).
+	it('R6-3 — services PAGE BODY is transparent (grid shows through), but the sticky-tabs nav-gap band is SOLID', () => {
+		// The page fill stays transparent so the single root .circuit-grid reads
+		// through the content (matches /projects + the R6-1 closer). BUT the
+		// .tabs-bar::before nav-gap backdrop above the sticky tabs is now a SOLID
+		// var(--background) band: transparent there let service content scroll up
+		// and bleed through above the orange tabs, which looked broken (operator
+		// QA, 2026-06-13). Same colour as the background, so it reads as clean
+		// empty space rather than a visible bar.
 		const listing = read('lib/components/services/ServiceListingPage.svelte');
 		const detail = read('lib/components/services/ServiceDetailPage.svelte');
-		expect(listing).toMatch(/\.tabs-bar::before \{[\s\S]*?background: transparent;/);
-		expect(detail).toMatch(/\.tabs-bar::before \{[\s\S]*?background: transparent;/);
-		expect(listing).not.toMatch(/\.services-page \{[\s\S]*?background: var\(--background\);/);
-		expect(detail).not.toMatch(/\.service-detail \{[\s\S]*?background: var\(--background\);/);
+		expect(listing).toMatch(/\.tabs-bar::before \{[\s\S]*?background: var\(--background\);/);
+		expect(detail).toMatch(/\.tabs-bar::before \{[\s\S]*?background: var\(--background\);/);
+		// Page body fill stays transparent — the grid still shows through content.
+		// Scope to the rule block ([^}]*) so it can't match the band's var(--background) below.
+		expect(listing).not.toMatch(/\.services-page \{[^}]*background: var\(--background\);/);
+		expect(detail).not.toMatch(/\.service-detail \{[^}]*background: var\(--background\);/);
 	});
 });
 
