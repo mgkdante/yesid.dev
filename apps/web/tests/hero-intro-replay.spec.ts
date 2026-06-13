@@ -213,6 +213,19 @@ test('same-day reload lands collapsed; heartbeat dot rewinds, replays + re-colla
 	await expect
 		.poll(() => page.evaluate(() => window.localStorage.getItem('yesid:hero-intro-day')))
 		.toBeNull();
+	// Glitch lock (operator: "the hero animation glitches on clicking the
+	// dot"): the moment a replay starts, GSAP owns the dot svg — the beacon
+	// dress must be GONE. An infinite CSS transform animation overrides
+	// GSAP's inline transform every frame, and a drop-shadow filter
+	// rasterizes a gigantic surface mid-zoom; either reads as the glitch.
+	const bare = await dot
+		.locator('[data-testid="hero-dot"]')
+		.evaluate((el) => {
+			const cs = getComputedStyle(el);
+			return { animation: cs.animationName, filter: cs.filter };
+		});
+	expect(bare.animation).toBe('none');
+	expect(bare.filter).toBe('none');
 	await expect(banner).not.toHaveClass(/hero-intro-done/, { timeout: 15_000 });
 	await expect
 		.poll(() => page.evaluate(() => document.documentElement.scrollHeight), { timeout: 15_000 })
