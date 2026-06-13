@@ -15,7 +15,7 @@ export const projectsPageMeta = {
 	title: { en: 'Projects | yesid.', fr: 'Projets | yesid.' } satisfies LocalizedString,
 	description: {
 		en: 'Projects, pipelines, and systems built by yesid., freelance digital infrastructure in Montreal.',
-		fr: 'Des projets, des pipelines pis des systèmes bâtis par yesid., infrastructure numérique en freelance à Montréal.',
+		fr: 'Des projets, des pipelines pis des systèmes bâtis par yesid., infrastructure numérique à la pige à Montréal.',
 	} satisfies LocalizedString,
 } as const;
 

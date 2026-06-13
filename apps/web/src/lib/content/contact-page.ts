@@ -20,18 +20,18 @@ export const contactContent: ContactContent = {
 		fields: {
 			email: {
 				label: 'email',
-				placeholder: { en: 'you@company.com', fr: 'vous@compagnie.com' },
+				placeholder: { en: 'you@company.com', fr: 'toi@compagnie.com' },
 			},
 			message: {
 				label: 'message',
 				placeholder: {
 					en: 'Tell me about your project...',
-					fr: 'Parlez-moi de votre projet...',
+					fr: 'Parle-moi de ton projet...',
 				},
 			},
 			name: {
 				label: 'name',
-				placeholder: { en: 'Your name', fr: 'Votre nom' },
+				placeholder: { en: 'Your name', fr: 'Ton nom' },
 			},
 		},
 		submitLabel: { en: 'send --message →', fr: 'send --message →' },
@@ -50,14 +50,14 @@ export const contactContent: ContactContent = {
 	meta: {
 		description: {
 			en: 'Get in touch for freelance digital infrastructure, databases, pipelines, dashboards, and websites. Montreal, ~24h response time.',
-			fr: 'Écrivez-moi pour de l\'infrastructure numérique en freelance : bases de données, pipelines, tableaux de bord et sites web. Montréal, réponse en ~24h.',
+			fr: 'Écris-moi pour de l\'infrastructure numérique à la pige : bases de données, pipelines, tableaux de bord et sites web. Montréal, réponse en ~24h.',
 		},
 		title: { en: 'Contact · yesid.', fr: 'Contact · yesid.' },
 	},
 	pageTitle: { en: 'Contact', fr: 'Contact' },
 	sendErrorMessage: {
 		en: 'Failed to send message. Please try again.',
-		fr: 'L\'envoi du message a échoué. Réessayez, s\'il vous plaît.',
+		fr: 'L\'envoi du message a échoué. Réessaie, s\'il te plaît.',
 	},
 	socials: [
 		{
@@ -76,17 +76,17 @@ export const contactContent: ContactContent = {
 			label: 'LinkedIn',
 		},
 	],
-	stationLabel: { en: 'NEXT STOP: YOU', fr: 'PROCHAIN ARRÊT : VOUS' },
+	stationLabel: { en: 'NEXT STOP: YOU', fr: 'PROCHAIN ARRÊT : TOI' },
 	success: {
 		fieldOk: { en: 'OK', fr: 'OK' },
 		meanwhile: {
 			en: 'Meanwhile, check out my {work} or {blog}',
-			fr: 'En attendant, jetez un œil à mes {work} ou mon {blog}',
+			fr: 'En attendant, jette un œil à mes {work} ou mon {blog}',
 		},
 		resetLabel: { en: 'reset --form', fr: 'reset --form' },
 		responseTime: {
 			en: 'I\'ll get back to you within 24h',
-			fr: 'Je vous reviens d\'ici 24h',
+			fr: 'Je te reviens d\'ici 24h',
 		},
 		sending: { en: 'Sending message...', fr: 'Envoi du message...' },
 		sent: {
@@ -101,11 +101,11 @@ export const contactContent: ContactContent = {
 	validation: {
 		errorSummary: {
 			en: '{count} errors, fix and retry',
-			fr: '{count} erreurs, corrigez et réessayez',
+			fr: '{count} erreurs, corrige et réessaie',
 		},
 		invalidEmail: {
 			en: 'invalid, enter a valid email address',
-			fr: 'invalide, entrez une adresse courriel valide',
+			fr: 'invalide, entre une adresse courriel valide',
 		},
 		required: {
 			en: 'required, {field} cannot be empty',
