@@ -14,6 +14,7 @@ import type {
 	AboutTestimonial,
 	AboutTechItem,
 	AboutInterest,
+	AboutEducationItem,
 	AboutWeatherConfig,
 	AboutClientLogo,
 	AboutCta,
@@ -71,6 +72,12 @@ export const AboutInterestSchema = z.object({
 	label: LocalizedStringSchema,
 	image: z.string(),
 }) satisfies z.ZodType<AboutInterest>;
+
+export const AboutEducationItemSchema = z.object({
+	school: LocalizedStringSchema,
+	program: LocalizedStringSchema,
+	icon: z.enum(['champlain', 'bishops']),
+}) satisfies z.ZodType<AboutEducationItem>;
 
 export const AboutWeatherConfigSchema = z.object({
 	city: LocalizedStringSchema,
@@ -136,6 +143,8 @@ export const AboutContentSchema = z.object({
 	metrics: z.array(AboutMetricSchema).readonly(),
 	methodology: z.array(AboutMethodStepSchema).readonly(),
 	testimonials: z.array(AboutTestimonialSchema).readonly(),
+	languages: z.array(z.string()).readonly(),
+	education: z.array(AboutEducationItemSchema).readonly(),
 	techStack: z.array(AboutTechItemSchema).readonly(),
 	interests: z.array(AboutInterestSchema).readonly(),
 	weather: AboutWeatherConfigSchema,

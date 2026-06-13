@@ -21,7 +21,7 @@
 	import AboutMethod from './AboutMethod.svelte';
 	import AboutTestimonials from './AboutTestimonials.svelte';
 	import AboutWeather from './AboutWeather.svelte';
-	import AboutLogos from './AboutLogos.svelte';
+	import AboutLanguages from './AboutLanguages.svelte';
 	import AboutInterests from './AboutInterests.svelte';
 	import AboutCta from './AboutCta.svelte';
 	import AboutTrain from './AboutTrain.svelte';
@@ -40,15 +40,11 @@
 	// Programmatic stop numbers from card render order. Train is stopless.
 	const s = Array.from({ length: 10 }, (_, i) => String(i).padStart(2, '0'));
 
-	// Group tech stack by category
-	const stackCategories = $derived.by(() => {
-		const groups = new Map<string, typeof c.techStack[number][]>();
-		for (const item of c.techStack) {
-			const existing = groups.get(item.category) ?? [];
-			groups.set(item.category, [...existing, item]);
-		}
-		return [...groups.entries()];
-	});
+	// EDUCATION stop (repurposed from the former tech-stack stop): icon → brand SVG mark.
+	const EDU_MARKS: Record<'champlain' | 'bishops', string> = {
+		champlain: '/images/about/edu-champlain.svg',
+		bishops: '/images/about/edu-bishops.svg',
+	};
 </script>
 
 <!-- Top Stripe -->
@@ -70,30 +66,34 @@
 				<div class="area-process"><AboutMethod steps={c.methodology} stop={s[2]} label={resolveLocale(c.stopLabels.process, locale)} /></div>
 				<div class="area-stack">
 					<div class="group h-full" use:cursorGlow>
-					<Card class="relative h-full p-3" data-testid="about-tech-stack">
+					<Card class="relative h-full p-3" data-testid="about-education">
 						<div class="relative flex h-full flex-col">
 							<StopLabel stop={s[3]} label={resolveLocale(c.stopLabels.stack, locale)} />
-							<div class="mt-2 flex flex-1 flex-col justify-center gap-2">
-								{#each stackCategories as [category, items]}
-									<div>
-										<div class="label-metric text-[var(--secondary-foreground)]">{category}</div>
-										<div class="mt-1 flex flex-wrap gap-1">
-											{#each items as item, i}
-												<span
-													class="rounded border border-[var(--border)] bg-transparent px-2 py-0.5 text-caption text-[var(--secondary-foreground)] transition-colors duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)] active:border-[var(--primary)] active:text-[var(--primary)]"
-												>{item.name}</span>
-											{/each}
+							<ul class="mt-2 flex flex-1 flex-col justify-center gap-3">
+								{#each c.education as edu}
+									<li class="flex items-center gap-3">
+										<img
+											src={EDU_MARKS[edu.icon]}
+											alt={resolveLocale(edu.school, locale)}
+											class="h-9 w-9 shrink-0 object-contain"
+											loading="lazy"
+											width="36"
+											height="36"
+										/>
+										<div class="min-w-0">
+											<div class="truncate text-small font-semibold text-[var(--foreground)]">{resolveLocale(edu.school, locale)}</div>
+											<div class="text-caption leading-tight text-[var(--secondary-foreground)]">{resolveLocale(edu.program, locale)}</div>
 										</div>
-									</div>
+									</li>
 								{/each}
-							</div>
+							</ul>
 						</div>
 					</Card>
 					</div>
 				</div>
 
 				<!-- SELL/PERSONAL ROW 3 -->
-				<div class="area-clients"><AboutLogos logos={c.clientLogos} count={c.clientCount} stop={s[5]} label={resolveLocale(c.stopLabels.clients, locale)} counterLabel={resolveLocale(c.labels.clientsServed, locale)} /></div>
+				<div class="area-clients"><AboutLanguages languages={c.languages} stop={s[5]} label={resolveLocale(c.stopLabels.clients, locale)} /></div>
 				<div class="area-interests"><AboutInterests interests={c.interests} stop={s[7]} label={resolveLocale(c.stopLabels.interests, locale)} /></div>
 				<div class="area-snapshots" data-testid="about-polaroids-cell"><AboutPolaroids polaroids={c.identity.polaroids} stop={s[8]} label={resolveLocale(c.stopLabels.snapshots, locale)} /></div>
 

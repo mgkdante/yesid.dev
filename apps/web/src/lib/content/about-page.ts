@@ -53,9 +53,23 @@ export const aboutPageContent: AboutContent = {
 			},
 		],
 	},
+	education: [
+		{
+			icon: 'champlain',
+			program: { en: 'DEC, Accounting & Management Technology' },
+			school: { en: 'Champlain Regional College, Lennoxville' },
+		},
+		{
+			icon: 'bishops',
+			program: {
+				en: 'B.Sc. Computer Science, minor in Business Administration',
+			},
+			school: { en: 'Bishop\'s University' },
+		},
+	],
 	identity: {
 		headshot: '/images/about/headshot.webp',
-		name: { en: 'Yesid O.' },
+		name: { en: 'Yesid' },
 		polaroids: [
 			{
 				alt: { en: 'Walking with my dog in Montreal' },
@@ -64,21 +78,45 @@ export const aboutPageContent: AboutContent = {
 				src: '/images/about/polaroid-1.webp',
 			},
 			{
-				alt: { en: 'Yesid smiling' },
-				caption: { en: 'The usual suspect' },
-				rotate: 4,
-				src: '/images/about/polaroid-2.webp',
+				alt: { en: 'Dante, the family dog' },
+				caption: { en: 'Dante, the family\'s good boy' },
+				rotate: 3,
+				src: '/images/about/polaroid-dante.webp',
 			},
 			{
-				alt: { en: 'Portrait — Yesid Otalora' },
-				caption: { en: 'Circa 2019' },
+				alt: { en: 'Poupoune, my dog' },
+				caption: { en: 'Poupoune 🐾' },
 				rotate: -2,
-				src: '/images/about/polaroid-3.webp',
+				src: '/images/about/polaroid-poupoune.webp',
+			},
+			{
+				alt: { en: 'Yesid' },
+				caption: { en: 'That\'s me' },
+				rotate: 2,
+				src: '/images/about/polaroid-yesid.webp',
+			},
+			{
+				alt: { en: 'With my family' },
+				caption: { en: 'Family' },
+				rotate: -4,
+				src: '/images/about/polaroid-family.webp',
+			},
+			{
+				alt: { en: 'With friends' },
+				caption: { en: 'Friends' },
+				rotate: 3,
+				src: '/images/about/polaroid-friends.webp',
+			},
+			{
+				alt: { en: 'At the art museum in Ottawa' },
+				caption: { en: 'Museum day, Ottawa' },
+				rotate: -3,
+				src: '/images/about/polaroid-museum.webp',
 			},
 		],
-		title: { en: 'Freelance Digital Infrastructure Engineer' },
+		title: { en: 'Curious builder, lifelong tinkerer' },
 		valueProp: {
-			en: 'I help teams ship reliable digital infrastructure — from databases to dashboards to the pipelines between them.',
+			en: 'I\'m Yesid (Yesito to my friends). I was born in Zipaquirá, Colombia, and grew up in Sherbrooke, Québec from the age of ten. I\'ve been pulling computers apart since I was a kid. The family\'s first PC showed up in 2002, and by 2005 I was tinkering with it so much my mom would get mad. These days I\'m proud to be her engineer #1. That curiosity never left. Now I build clear systems and explain them in plain words, so you always know exactly what you\'re getting.',
 		},
 	},
 	interests: [
@@ -88,14 +126,14 @@ export const aboutPageContent: AboutContent = {
 			label: { en: 'Anime' },
 		},
 		{
-			id: 'dataviz',
-			image: '/images/about/interests/dataviz.webp',
-			label: { en: 'Data Viz' },
+			id: 'transit',
+			image: '/images/about/interests/transit.webp',
+			label: { en: 'Transit' },
 		},
 		{
-			id: 'opensource',
-			image: '/images/about/interests/opensource.webp',
-			label: { en: 'Open Source' },
+			id: 'space',
+			image: '/images/about/interests/space.webp',
+			label: { en: 'Space' },
 		},
 		{
 			id: 'food',
@@ -112,43 +150,40 @@ export const aboutPageContent: AboutContent = {
 		testimonialsCarouselAria: { en: 'Client testimonials' },
 		testimonialsTabNavAria: { en: 'Testimonial navigation' },
 	},
+	languages: ['Français', 'English', 'Español'],
 	meta: {
 		description: {
-			en: 'Freelance digital infrastructure engineer based in Montreal. PostgreSQL, SQL Server, Python, Power BI — building reliable infrastructure for teams that ship.',
+			en: 'Freelance digital infrastructure engineer based in Montreal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that ship.',
 		},
-		title: { en: 'About — yesid.' },
+		title: { en: 'About · yesid.' },
 	},
 	methodology: [
 		{
 			description: {
-				en: 'Map your current data landscape — what flows where, what breaks, and where the bottlenecks hide.',
+				en: 'I take things apart to learn how they work, then build better ones.',
 			},
-			id: 'audit',
-			label: { en: 'AUDIT' },
+			id: 'curiosity',
+			label: { en: 'CURIOSITY' },
 			station: 1,
 		},
 		{
-			description: {
-				en: 'Redesign queries, schemas, and pipelines so your team gets clean data fast, every time.',
-			},
-			id: 'optimize',
-			label: { en: 'OPTIMIZE' },
+			description: { en: 'If it works but it\'s ugly, it\'s only half done.' },
+			id: 'aesthetics',
+			label: { en: 'AESTHETICS' },
 			station: 2,
 		},
 		{
 			description: {
-				en: 'Write runbooks and architecture docs your team can actually follow without you in the room.',
+				en: 'Good tools lift the people around them. That\'s the whole point.',
 			},
-			id: 'document',
-			label: { en: 'DOCUMENT' },
+			id: 'community',
+			label: { en: 'COMMUNITY' },
 			station: 3,
 		},
 		{
-			description: {
-				en: 'Transfer ownership cleanly. Your infra runs on its own — no vendor lock-in, no mystery code.',
-			},
-			id: 'handoff',
-			label: { en: 'HANDOFF' },
+			description: { en: 'I\'d rather build it right than build it twice.' },
+			id: 'quality',
+			label: { en: 'QUALITY' },
 			station: 4,
 		},
 	],
@@ -171,15 +206,15 @@ export const aboutPageContent: AboutContent = {
 		},
 	],
 	stopLabels: {
-		clients: { en: 'CLIENTS' },
+		clients: { en: 'LANGUAGES' },
 		identity: { en: 'IDENTITY' },
 		interests: { en: 'INTERESTS' },
 		location: { en: 'LOCATION' },
 		metrics: { en: 'METRICS' },
 		next: { en: 'NEXT' },
-		process: { en: 'PROCESS' },
+		process: { en: 'CORE BELIEFS' },
 		snapshots: { en: 'SNAPSHOTS' },
-		stack: { en: 'STACK' },
+		stack: { en: 'EDUCATION' },
 		testimonials: { en: 'TESTIMONIALS' },
 	},
 	techStack: [
@@ -226,28 +261,12 @@ export const aboutPageContent: AboutContent = {
 	],
 	testimonials: [
 		{
-			author: 'Sarah Chen',
-			company: 'Logistics Platform',
+			author: 'Guy Sensei',
+			company: 'Personal lore',
 			quote: {
-				en: '"Cut our dashboard load time from 45 seconds to under 2. Yesid rebuilt the entire reporting pipeline in three weeks."',
+				en: 'You have the gift of perseverance, and that\'s what makes you a genius too.',
 			},
-			role: { en: 'VP of Engineering' },
-		},
-		{
-			author: 'Marcus Tremblay',
-			company: 'FinTech Startup',
-			quote: {
-				en: '"First engineer we\'ve hired who actually documents everything. Our team was fully self-sufficient within a week of handoff."',
-			},
-			role: { en: 'CTO' },
-		},
-		{
-			author: 'Priya Sharma',
-			company: 'E-Commerce Co.',
-			quote: {
-				en: '"We went from spreadsheet chaos to a proper data pipeline. The whole analytics team noticed the difference on day one."',
-			},
-			role: { en: 'Head of Analytics' },
+			role: { en: 'Sensei' },
 		},
 	],
 	weather: {

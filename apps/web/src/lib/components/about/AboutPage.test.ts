@@ -73,9 +73,9 @@ describe('AboutPage', () => {
 		expect(screen.getByTestId('about-testimonials')).toBeTruthy();
 	});
 
-	it('renders the tech stack section', () => {
+	it('renders the education section', () => {
 		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-tech-stack')).toBeTruthy();
+		expect(screen.getByTestId('about-education')).toBeTruthy();
 	});
 
 	it('renders the weather section', () => {
@@ -88,9 +88,9 @@ describe('AboutPage', () => {
 		expect(screen.getByTestId('about-interests')).toBeTruthy();
 	});
 
-	it('renders the logos section', () => {
+	it('renders the languages section', () => {
 		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
-		expect(screen.getByTestId('about-logos')).toBeTruthy();
+		expect(screen.getByTestId('about-languages')).toBeTruthy();
 	});
 
 	it('renders the CTA section', () => {
