@@ -60,12 +60,28 @@
 		const tech = techById.get(slot.techId);
 		const name = tech?.name ?? slot.techId;
 		const enables = tech?.enables ? resolveLocale(tech.enables, locale) : '';
-		const layerLine = `${slot.layer}: ${LAYER_TEACHING[slot.layer]}`;
-		const tail = enables ? `${enables} · ${layerLine}` : `lives in ${layerLine}`;
-		return { techId: slot.techId, name, text: `${slot.role} here. ${tail}` };
+		const layerLine = `${slot.layer}: ${resolveLocale(LAYER_TEACHING[slot.layer], locale)}`;
+		const role = resolveLocale(slot.role, locale);
+		const tail =
+			locale === 'fr'
+				? enables
+					? `${enables} · ${layerLine}`
+					: `vit dans ${layerLine}`
+				: enables
+					? `${enables} · ${layerLine}`
+					: `lives in ${layerLine}`;
+		const here = locale === 'fr' ? `${role} icitte.` : `${role} here.`;
+		return { techId: slot.techId, name, text: `${here} ${tail}` };
 	});
 
 	const pct = (v: number, total: number) => `${(v / total) * 100}%`;
+
+	// Defensive fallback copy (no published slug ever hits this).
+	const PREVIEW_PENDING = {
+		en: "this one's still on the drawing board, the blueprint view has the full picture.",
+		fr: 'celui-là est encore sur la table à dessin, la vue plan a le portrait complet.',
+	};
+	const previewPending = $derived(resolveLocale(PREVIEW_PENDING, locale));
 </script>
 
 <div class="product-preview" data-testid="product-preview">
@@ -94,7 +110,7 @@
 					style:height={pct(slot.h, frame.h)}
 					onclick={() => toggleCaption(i)}
 				>
-					<span class="slot-role">{slot.role}</span>
+					<span class="slot-role">{resolveLocale(slot.role, locale)}</span>
 					<span class="slot-name">{techById.get(slot.techId)?.name ?? slot.techId}</span>
 				</button>
 			{/each}
@@ -102,14 +118,14 @@
 
 		{#if caption}
 			<p class="enables-caption" data-testid={`enables-${caption.techId}`}>
-				<span class="caption-tech">{caption.name}</span>
-				— {caption.text}
+				<span class="caption-tech">{caption.name}</span>,
+				{caption.text}
 			</p>
 		{/if}
 	{:else}
 		<!-- Defensive only (round 4 totality: every published slug HAS a config) —
 		     an unknown slug says so rather than rendering blank. -->
-		<p class="preview-pending">this one's still on the drawing board — the blueprint view has the full picture.</p>
+		<p class="preview-pending">{previewPending}</p>
 	{/if}
 </div>
 

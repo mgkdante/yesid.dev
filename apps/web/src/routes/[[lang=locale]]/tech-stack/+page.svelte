@@ -54,7 +54,6 @@
 	const ctaHeadingLine1 = resolveLocale(c.cta.headingLine1, locale);
 	const ctaHeadingLine2 = resolveLocale(c.cta.headingLine2, locale);
 	const ctaSub = resolveLocale(c.cta.sub, locale);
-	const ctaAvailability = resolveLocale(c.cta.availability, locale);
 
 	// Hero terminal typed sequence
 	interface TerminalLine {
@@ -220,7 +219,6 @@
 				{viewServicesLabel}
 			</Button>
 		</div>
-		<span class="cta-avail">{ctaAvailability}</span>
 	</section>
 </main>
 
@@ -476,14 +474,6 @@
 		gap: 1rem;
 		margin-bottom: 1rem;
 		flex-wrap: wrap;
-	}
-
-	.cta-avail {
-		font-family: var(--font-mono);
-		font-size: 10px;
-		letter-spacing: 1px;
-		color: var(--accent-text);
-		text-transform: uppercase;
 	}
 
 	/* ═══ Responsive ═══ */

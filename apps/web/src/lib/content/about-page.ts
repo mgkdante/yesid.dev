@@ -12,7 +12,6 @@ import type { AboutContent } from '$lib/types';
 
 export const aboutPageContent: AboutContent = {
 	cta: {
-		availability: { en: 'Booking Q3 2026', fr: 'Ouvert pour Q3 2026' },
 		buttonHref: '/contact',
 		buttonLabel: { en: 'Send message →', fr: 'Envoyer un message →' },
 		command: '$ yesid --contact',
@@ -54,8 +53,8 @@ export const aboutPageContent: AboutContent = {
 				fr: 'DEC, Techniques de comptabilité et de gestion',
 			},
 			school: {
-				en: 'Champlain Regional College — Lennoxville',
-				fr: 'Champlain Regional College — Lennoxville',
+				en: 'Champlain Regional College, Lennoxville',
+				fr: 'Champlain Regional College, Lennoxville',
 			},
 		},
 		{
@@ -69,7 +68,7 @@ export const aboutPageContent: AboutContent = {
 	],
 	identity: {
 		headshot: '/images/about/headshot.webp',
-		name: { en: 'Yesid O.', fr: 'Yesid O.' },
+		name: { en: 'Yesid', fr: 'Yesid' },
 		polaroids: [
 			{
 				alt: { en: 'Walking with my dog in Montreal' },
@@ -79,7 +78,7 @@ export const aboutPageContent: AboutContent = {
 			},
 			{
 				alt: { en: 'Dante, the family dog', fr: 'Dante, le chien de la famille' },
-				caption: { en: "Dante — the family's good boy", fr: 'Dante — le bon chien de la famille' },
+				caption: { en: "Dante, the family's good boy", fr: 'Dante, le bon chien de la famille' },
 				rotate: 3,
 				src: '/images/about/polaroid-dante.webp',
 			},
@@ -114,10 +113,10 @@ export const aboutPageContent: AboutContent = {
 				src: '/images/about/polaroid-museum.webp',
 			},
 		],
-		title: { en: 'SQL developer, builder, and patient explainer', fr: 'Développeur SQL, bâtisseur et vulgarisateur patient' },
+		title: { en: 'Curious builder, lifelong tinkerer', fr: 'Bâtisseur curieux, bricoleur depuis toujours' },
 		valueProp: {
-			en: "I'm Yesid, a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so nobody can take advantage of them.",
-			fr: "Je suis Yesid, un gars de Montréal qui aime les systèmes clairs et les explications simples. Quand je travaille avec des clients, je leur explique ce que les choses veulent dire pour que personne ne puisse profiter d'eux.",
+			en: "I'm Yesid (Yesito to my friends). I was born in Zipaquirá, Colombia, and grew up in Sherbrooke, Québec from the age of ten. I've been pulling computers apart since I was a kid. The family's first PC showed up in 2002, and by 2005 I was tinkering with it so much my mom would get mad. These days I'm proud to be her engineer #1. That curiosity never left. Now I build clear systems and explain them in plain words, so you always know exactly what you're getting.",
+			fr: "Je suis Yesid (Yesito pour mes chums). Je suis né à Zipaquirá, en Colombie, et j'ai grandi à Sherbrooke, au Québec, depuis l'âge de dix ans. Je démonte des ordinateurs depuis que je suis tout petit. Le premier PC de la famille est arrivé en 2002, et dès 2005 je le bricolais tellement que ma mère pognait les nerfs. Aujourd'hui, je suis fier d'être son ingénieur numéro un. Cette curiosité-là ne m'a jamais lâché. Astheure, je bâtis des systèmes clairs et je les explique en mots simples, comme ça tu sais toujours exactement ce que tu reçois.",
 		},
 	},
 	interests: [
@@ -153,10 +152,10 @@ export const aboutPageContent: AboutContent = {
 	languages: ['Español', 'English', 'Français'],
 	meta: {
 		description: {
-			en: 'About Yesid O., a Montréal SQL developer, builder, and patient explainer.',
-			fr: 'À propos de Yesid O., développeur SQL à Montréal, bâtisseur et vulgarisateur patient.',
+			en: 'Freelance digital infrastructure engineer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that ship.',
+			fr: 'Ingénieur pigiste en infrastructure numérique basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l\'infrastructure fiable pour les équipes qui livrent.',
 		},
-		title: { en: 'About — yesid.', fr: 'À propos — yesid.' },
+		title: { en: 'About · yesid.', fr: 'À propos · yesid.' },
 	},
 	methodology: [
 		{
@@ -179,8 +178,8 @@ export const aboutPageContent: AboutContent = {
 		},
 		{
 			description: {
-				en: 'Good tools lift the people around them — that’s the whole point.',
-				fr: "Les bons outils élèvent les gens autour d'eux — c'est tout l'intérêt.",
+				en: 'Good tools lift the people around them, that’s the whole point.',
+				fr: "Les bons outils élèvent les gens autour d'eux, c'est tout l'intérêt.",
 			},
 			id: 'community',
 			label: { en: 'COMMUNITY', fr: 'COMMUNAUTÉ' },

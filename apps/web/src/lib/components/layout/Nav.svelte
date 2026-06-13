@@ -13,6 +13,7 @@
 	import type { NavLink } from '$lib/content/nav';
 	import type { Locale } from '$lib/types';
 	import ThemeToggle from './ThemeToggle.svelte';
+	import LanguageToggle from './LanguageToggle.svelte';
 
 	let {
 		pathname = '/',
@@ -130,6 +131,9 @@
 
 		<!-- Divider -->
 		<span class="nav-divider" aria-hidden="true"></span>
+
+		<!-- Language toggle — métro DIRECTION blind; renders only when ≥2 locales are published -->
+		<LanguageToggle {locale} {pathname} />
 
 		<!-- Theme toggle (GO-W2.2) -->
 		<ThemeToggle {locale} />

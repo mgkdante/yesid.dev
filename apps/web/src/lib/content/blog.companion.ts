@@ -15,26 +15,27 @@ import { blogPosts } from './blog';
 /** Listing-page chrome copy extracted from components in Task 17b-7b.
  *  Consumed by BlogListingPage, BlogFilterMobile, BlogFilterSidebar, BlogRouteMap. */
 export const blogListingContent = {
-	mobileHeading: { en: 'Blog' } satisfies LocalizedString,
-	searchPlaceholder: { en: 'Search posts...' } satisfies LocalizedString,
-	resultNoun: { en: 'result' } satisfies LocalizedString,
+	mobileHeading: { en: 'Blog', fr: 'Blogue' } satisfies LocalizedString,
+	searchPlaceholder: { en: 'Search posts...', fr: 'Chercher des articles...' } satisfies LocalizedString,
+	resultNoun: { en: 'result', fr: 'résultat' } satisfies LocalizedString,
 	noPostsMessage: {
 		en: 'No posts found. Try adjusting your filters.',
+		fr: 'Aucun article trouvé. Essaie d\'ajuster tes filtres.',
 	} satisfies LocalizedString,
 	filters: {
-		filtersLabel: { en: 'Filters' } satisfies LocalizedString,
-		allLabel: { en: 'All' } satisfies LocalizedString,
-		language: { en: 'Language' } satisfies LocalizedString,
-		dateRange: { en: 'Date Range' } satisfies LocalizedString,
-		from: { en: 'From' } satisfies LocalizedString,
-		to: { en: 'To' } satisfies LocalizedString,
-		tags: { en: 'Tags' } satisfies LocalizedString,
+		filtersLabel: { en: 'Filters', fr: 'Filtres' } satisfies LocalizedString,
+		allLabel: { en: 'All', fr: 'Tous' } satisfies LocalizedString,
+		language: { en: 'Language', fr: 'Langue' } satisfies LocalizedString,
+		dateRange: { en: 'Date Range', fr: 'Période' } satisfies LocalizedString,
+		from: { en: 'From', fr: 'De' } satisfies LocalizedString,
+		to: { en: 'To', fr: 'À' } satisfies LocalizedString,
+		tags: { en: 'Tags', fr: 'Étiquettes' } satisfies LocalizedString,
 		/** Prefix before active filter in the "Showing: {tag}" mobile status label. */
-		showingPrefix: { en: 'Showing' } satisfies LocalizedString,
+		showingPrefix: { en: 'Showing', fr: 'Affichage' } satisfies LocalizedString,
 	},
 	routeMap: {
-		title: { en: 'Route Map' } satisfies LocalizedString,
-		terminus: { en: 'Terminus' } satisfies LocalizedString,
+		title: { en: 'Route Map', fr: 'Carte du trajet' } satisfies LocalizedString,
+		terminus: { en: 'Terminus', fr: 'Terminus' } satisfies LocalizedString,
 	},
 } as const;
 
@@ -42,30 +43,30 @@ export const blogListingContent = {
  *  Consumed by BlogContent, BlogDetailHeader, BlogDetailPage, BlogTocPill. */
 export const blogDetailContent = {
 	code: {
-		copyAria: { en: 'Copy code to clipboard' } satisfies LocalizedString,
-		copyLabel: { en: 'Copy' } satisfies LocalizedString,
-		errorLabel: { en: 'Error' } satisfies LocalizedString,
+		copyAria: { en: 'Copy code to clipboard', fr: 'Copier le code dans le presse-papiers' } satisfies LocalizedString,
+		copyLabel: { en: 'Copy', fr: 'Copier' } satisfies LocalizedString,
+		errorLabel: { en: 'Error', fr: 'Erreur' } satisfies LocalizedString,
 	},
 	backNav: {
-		toPersonal: { en: '← back to personal corner' } satisfies LocalizedString,
-		toDispatches: { en: '← back to dispatches' } satisfies LocalizedString,
+		toPersonal: { en: '← back to personal corner', fr: '← retour au coin personnel' } satisfies LocalizedString,
+		toDispatches: { en: '← back to dispatches', fr: '← retour aux dépêches' } satisfies LocalizedString,
 	},
 	header: {
-		postTagsAria: { en: 'Post tags' } satisfies LocalizedString,
-		readingTimeLabel: { en: '{minutes} min read' } satisfies LocalizedString,
+		postTagsAria: { en: 'Post tags', fr: 'Étiquettes de l\'article' } satisfies LocalizedString,
+		readingTimeLabel: { en: '{minutes} min read', fr: '{minutes} min de lecture' } satisfies LocalizedString,
 	},
 	page: {
-		readingMode: { en: 'Reading mode' } satisfies LocalizedString,
-		tocSectionTitle: { en: 'On this page' } satisfies LocalizedString,
-		metaCategory: { en: 'Category' } satisfies LocalizedString,
-		metaWords: { en: 'Words' } satisfies LocalizedString,
-		metaReadTime: { en: 'Read time' } satisfies LocalizedString,
-		metaLanguage: { en: 'Language' } satisfies LocalizedString,
-		metaTags: { en: 'Tags' } satisfies LocalizedString,
+		readingMode: { en: 'Reading mode', fr: 'Mode lecture' } satisfies LocalizedString,
+		tocSectionTitle: { en: 'On this page', fr: 'Sur cette page' } satisfies LocalizedString,
+		metaCategory: { en: 'Category', fr: 'Catégorie' } satisfies LocalizedString,
+		metaWords: { en: 'Words', fr: 'Mots' } satisfies LocalizedString,
+		metaReadTime: { en: 'Read time', fr: 'Temps de lecture' } satisfies LocalizedString,
+		metaLanguage: { en: 'Language', fr: 'Langue' } satisfies LocalizedString,
+		metaTags: { en: 'Tags', fr: 'Étiquettes' } satisfies LocalizedString,
 	},
 	tocPill: {
-		openAria: { en: 'Table of contents' } satisfies LocalizedString,
-		closeAria: { en: 'Close table of contents' } satisfies LocalizedString,
+		openAria: { en: 'Table of contents', fr: 'Table des matières' } satisfies LocalizedString,
+		closeAria: { en: 'Close table of contents', fr: 'Fermer la table des matières' } satisfies LocalizedString,
 	},
 } as const;
 

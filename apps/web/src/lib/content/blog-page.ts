@@ -11,10 +11,14 @@
 import type { BlogPageContent } from '@repo/shared';
 
 export const blogPageContent: BlogPageContent = {
-	backToDispatches: { en: '← back to dispatches' },
-	backToPersonal: { en: '← back to personal corner' },
-	heading: { en: 'Dispatches' },
+	backToDispatches: { en: '← back to dispatches', fr: '← retour aux dépêches' },
+	backToPersonal: {
+		en: '← back to personal corner',
+		fr: '← retour au coin personnel',
+	},
+	heading: { en: 'Dispatches', fr: 'Dépêches' },
 	intro: {
 		en: 'Notes on digital infrastructure, databases, and building reliable systems.',
+		fr: 'Des notes sur l\'infrastructure numérique, les bases de données et la construction de systèmes fiables.',
 	},
 };

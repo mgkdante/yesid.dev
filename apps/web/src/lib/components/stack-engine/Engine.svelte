@@ -92,8 +92,10 @@
 	}
 
 	// Homey nav labels (round 4) — the breadcrumb step reads like a place.
+	const BACK_TO_BLUEPRINT = { en: '← back to the blueprint', fr: '← retour au plan' };
+	const BACK_TO_MAP = { en: '← back to the map', fr: '← retour à la carte' };
 	const backLabel = $derived(
-		engine.view === 'preview' ? '← back to the blueprint' : '← back to the map',
+		resolveLocale(engine.view === 'preview' ? BACK_TO_BLUEPRINT : BACK_TO_MAP, locale),
 	);
 
 	/**
@@ -114,9 +116,17 @@
 
 	// Mode toggle labels — pinned EXACTLY by Engine.test.ts (spec wording).
 	const MODE_LABELS = {
-		goal: 'I want to build…',
-		compose: 'What can these build?',
+		goal: { en: 'I want to build…', fr: 'Je veux bâtir…' },
+		compose: { en: 'What can these build?', fr: 'Ça peut bâtir quoi?' },
 	} as const;
+	const modeGoalLabel = $derived(resolveLocale(MODE_LABELS.goal, locale));
+	const modeComposeLabel = $derived(resolveLocale(MODE_LABELS.compose, locale));
+
+	// View-toggle copy (blueprint ⇄ product) — pinned by Engine.test.ts.
+	const SEE_AS_PRODUCT = { en: 'see it as a product', fr: 'vois-le comme un produit' };
+	const BACK_TO_BLUEPRINT_INLINE = { en: 'back to blueprint', fr: 'retour au plan' };
+	const seeAsProductLabel = $derived(resolveLocale(SEE_AS_PRODUCT, locale));
+	const backToBlueprintInline = $derived(resolveLocale(BACK_TO_BLUEPRINT_INLINE, locale));
 
 	const activeTitle = $derived(engine.active ? resolveLocale(engine.active.title, locale) : '');
 	/** Compose entry: the matched/missing partition for the active archetype. */
@@ -142,7 +152,7 @@
 			data-testid="mode-toggle-goal"
 			onclick={() => engine.setMode('goal')}
 		>
-			{MODE_LABELS.goal}
+			{modeGoalLabel}
 		</button>
 		<button
 			type="button"
@@ -152,7 +162,7 @@
 			data-testid="mode-toggle-compose"
 			onclick={() => engine.setMode('compose')}
 		>
-			{MODE_LABELS.compose}
+			{modeComposeLabel}
 		</button>
 	</div>
 
@@ -174,7 +184,7 @@
 					     in-flow labels: "labels under the line"). -->
 					<span class="legend-track" aria-hidden="true"></span>
 				</span>
-				<span class="legend-teach">{LAYER_TEACHING[layer]}</span>
+				<span class="legend-teach">{resolveLocale(LAYER_TEACHING[layer], locale)}</span>
 			</div>
 		{/each}
 	</div>
@@ -202,9 +212,9 @@
 						onclick={toggleView}
 					>
 						{#if engine.view === 'blueprint'}
-						see it as a product <span class="toggle-arrow" aria-hidden="true">→</span>
+						{seeAsProductLabel} <span class="toggle-arrow" aria-hidden="true">→</span>
 					{:else}
-						<span class="toggle-arrow toggle-arrow-back" aria-hidden="true">←</span> back to blueprint
+						<span class="toggle-arrow toggle-arrow-back" aria-hidden="true">←</span> {backToBlueprintInline}
 					{/if}
 					</button>
 				</div>
@@ -237,9 +247,9 @@
 						onclick={toggleView}
 					>
 						{#if engine.view === 'blueprint'}
-						see it as a product <span class="toggle-arrow" aria-hidden="true">→</span>
+						{seeAsProductLabel} <span class="toggle-arrow" aria-hidden="true">→</span>
 					{:else}
-						<span class="toggle-arrow toggle-arrow-back" aria-hidden="true">←</span> back to blueprint
+						<span class="toggle-arrow toggle-arrow-back" aria-hidden="true">←</span> {backToBlueprintInline}
 					{/if}
 					</button>
 				</div>
