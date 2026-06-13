@@ -19,7 +19,7 @@
 	let { cta, stop, label }: { cta: AboutCta; stop: string; label: string } = $props();
 
 	const buttonLabel = $derived(resolveLocale(cta.buttonLabel, locale));
-	const availability = $derived(resolveLocale(cta.availability, locale));
+	const availability = $derived(cta.availability ? resolveLocale(cta.availability, locale) : '');
 </script>
 
 <div
@@ -70,9 +70,11 @@
 			<Button variant="conversion" size="cta" href={cta.buttonHref} data-testid="about-cta-button">
 				{buttonLabel}
 			</Button>
-			<span class="font-mono text-caption tracking-[1px] text-[var(--accent-text)]">
-				{availability}
-			</span>
+			{#if availability}
+				<span class="font-mono text-caption tracking-[1px] text-[var(--accent-text)]">
+					{availability}
+				</span>
+			{/if}
 		</div>
 	</div>
 </Card>

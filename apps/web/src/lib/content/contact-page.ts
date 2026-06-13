@@ -43,9 +43,9 @@ export const contactContent: ContactContent = {
 	},
 	meta: {
 		description: {
-			en: 'Get in touch for freelance digital infrastructure — databases, pipelines, dashboards, and websites. Montreal, ~24h response time.',
+			en: 'Get in touch for freelance digital infrastructure, databases, pipelines, dashboards, and websites. Montreal, ~24h response time.',
 		},
-		title: { en: 'Contact — yesid.' },
+		title: { en: 'Contact · yesid.' },
 	},
 	pageTitle: { en: 'Contact' },
 	sendErrorMessage: { en: 'Failed to send message. Please try again.' },
@@ -77,9 +77,9 @@ export const contactContent: ContactContent = {
 		validating: { en: 'Validating fields...' },
 	},
 	validation: {
-		errorSummary: { en: '{count} errors — fix and retry' },
-		invalidEmail: { en: 'invalid — enter a valid email address' },
-		required: { en: 'required — {field} cannot be empty' },
+		errorSummary: { en: '{count} errors, fix and retry' },
+		invalidEmail: { en: 'invalid, enter a valid email address' },
+		required: { en: 'required, {field} cannot be empty' },
 	},
 	web3formsKey: '6887fd90-3348-4d31-ba03-bc0e285697b6',
 };

@@ -71,7 +71,9 @@ export function toTechStackPageContent(raw: BlockRow): TechStackPageContent {
 			headingLine1: toLocalizedString(tr, 'cta_heading_line1'),
 			headingLine2: toLocalizedString(tr, 'cta_heading_line2'),
 			sub: toLocalizedString(tr, 'cta_sub'),
-			availability: toLocalizedString(tr, 'cta_availability'),
+			...(toLocalizedString(tr, 'cta_availability').en.trim()
+				? { availability: toLocalizedString(tr, 'cta_availability') }
+				: {}),
 		},
 	};
 }

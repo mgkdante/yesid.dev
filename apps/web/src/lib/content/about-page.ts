@@ -19,7 +19,6 @@ export const aboutPageContent: AboutContent = {
 		{ name: 'Client 4', src: '/images/about/logo-4.svg' },
 	],
 	cta: {
-		availability: { en: 'Booking Q3 2026' },
 		buttonHref: '/contact',
 		buttonLabel: { en: 'Send message →' },
 		command: '$ yesid --contact',

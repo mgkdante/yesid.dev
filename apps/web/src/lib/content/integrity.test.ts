@@ -586,7 +586,7 @@ describe('LocalizedString guard + translation debt', () => {
 // ONE siteLabels.ui.metroCaption ('STM métro + REM' — names the hero metro
 // art) — net +2 with a11y.replayIntro (hero dot replay button aria)
 // → NO_FR 435, TOTAL 517.
-const LOCKED = { TOTAL: 533, WITH_FR: 82, NO_FR: 451, ES_WITHOUT_FR: 0 } as const; // about-real-person (en): +education (2 schools+programs) + polaroids 3→7 − testimonials 3→1 = net TOTAL +8 / NO_FR +8 (About FR lands in the FR pass, which will move these to WITH_FR)
+const LOCKED = { TOTAL: 531, WITH_FR: 82, NO_FR: 449, ES_WITHOUT_FR: 0 } as const; // about-real-person (en): +education + polaroids 3→7 − testimonials 3→1; then availability killed on about + tech-stack cta (−2 en-only). About FR lands in the FR pass.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

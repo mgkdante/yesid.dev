@@ -54,7 +54,7 @@
 	const ctaHeadingLine1 = resolveLocale(c.cta.headingLine1, locale);
 	const ctaHeadingLine2 = resolveLocale(c.cta.headingLine2, locale);
 	const ctaSub = resolveLocale(c.cta.sub, locale);
-	const ctaAvailability = resolveLocale(c.cta.availability, locale);
+	const ctaAvailability = c.cta.availability ? resolveLocale(c.cta.availability, locale) : '';
 
 	// Hero terminal typed sequence
 	interface TerminalLine {
@@ -220,7 +220,7 @@
 				{viewServicesLabel}
 			</Button>
 		</div>
-		<span class="cta-avail">{ctaAvailability}</span>
+		{#if ctaAvailability}<span class="cta-avail">{ctaAvailability}</span>{/if}
 	</section>
 </main>
 

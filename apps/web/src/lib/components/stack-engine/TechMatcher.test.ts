@@ -292,7 +292,7 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		expect(card.textContent).toContain('Take this combo with you →');
 		// Finale (4c): the whisper grew a door — the warm availability line IS
 		// a link to /contact (code-owned LocalizedString, en fallback).
-		expect(card.textContent).toContain("Questions? I'm online — ask me anything.");
+		expect(card.textContent).toContain('Questions? Ask me anything.');
 		const links = card.querySelectorAll('a');
 		expect(links).toHaveLength(2);
 		expect(screen.getByTestId('shape-link').getAttribute('href')).toBe(
