@@ -32,7 +32,7 @@
 	accentColor="var(--primary)"
 	cornerLink={{
 		href: '/blog/personal',
-		label: 'Personal Corner',
-		subtitle: 'Off the clock'
+		label: resolveLocale({ en: 'Personal Corner', fr: 'Coin perso' }, locale),
+		subtitle: resolveLocale({ en: 'Off the clock', fr: 'À mes heures' }, locale)
 	}}
 />
