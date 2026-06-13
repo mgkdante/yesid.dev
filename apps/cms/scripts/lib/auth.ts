@@ -13,7 +13,7 @@
  *      POST /auth/login.
  *
  * CLI scripts typically retrieve the static token via 1Password:
- *   DIRECTUS_ADMIN_TOKEN=$(op read op://yesid-dev/cms-admin/token) \
+ *   DIRECTUS_ADMIN_TOKEN=$(op read op://yesid-dev/5maqocwjgg5uxeckueadwkmzuy/admin_token) \
  *     bun run seed:services
  */
 
