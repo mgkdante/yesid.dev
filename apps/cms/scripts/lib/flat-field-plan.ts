@@ -311,7 +311,6 @@ export const FLAT_FIELD_PLAN: readonly FlatField[] = [
 		stop_next: ['next'],
 	}),
 	...t('block_about_content_translations', 'labels', {
-		label_clients_served: ['clientsServed'],
 		label_polaroid_prev_aria: ['polaroidPrevAria'],
 		label_polaroid_next_aria: ['polaroidNextAria'],
 		label_testimonials_carousel_aria: ['testimonialsCarouselAria'],
