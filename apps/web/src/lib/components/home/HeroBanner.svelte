@@ -462,6 +462,7 @@
 						{ctaContactLabel}
 						{heroData}
 						{introCompleted}
+						beaconSettled={introCompleted && introCollapsed}
 						{replayAriaLabel}
 						onReplay={handleReplay}
 					/>
