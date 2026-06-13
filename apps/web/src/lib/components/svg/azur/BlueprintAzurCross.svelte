@@ -15,7 +15,7 @@
 	     ============================================================ -->
 
 	<!-- === TITLE === -->
-	<text x="275" y="28" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="14" font-weight="700" fill="currentColor" letter-spacing="3">MPM-10 — CROSS SECTION</text>
+	<text x="275" y="28" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="14" font-weight="700" fill="currentColor" letter-spacing="3">MPM-10 · CROSS SECTION</text>
 	<line x1="80" y1="36" x2="470" y2="36" stroke="currentColor" stroke-width="0.5" opacity="0.4"/>
 
 	<!-- === TUNNEL PROFILE (dashed arc, 7100mm diameter) === -->
@@ -376,10 +376,10 @@
 
 	<!-- === DRAWING INFO BLOCK === -->
 	<line x1="80" y1="580" x2="470" y2="580" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
-	<text x="275" y="596" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="5.5" fill="currentColor" opacity="0.4">MONTREAL METRO — RUBBER-TIRED SYSTEM</text>
-	<text x="275" y="608" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="5" fill="currentColor" opacity="0.35">ALSTOM / BOMBARDIER — MPM-10 AZUR (2014)</text>
+	<text x="275" y="596" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="5.5" fill="currentColor" opacity="0.4">MONTREAL METRO · RUBBER-TIRED SYSTEM</text>
+	<text x="275" y="608" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="5" fill="currentColor" opacity="0.35">ALSTOM / BOMBARDIER · MPM-10 AZUR (2014)</text>
 	<text x="275" y="620" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="4.5" fill="currentColor" opacity="0.3">CROSS-SECTION PERPENDICULAR TO TRACK AXIS</text>
-	<text x="275" y="632" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="4" fill="currentColor" opacity="0.25">NOT TO SCALE — FOR REFERENCE ONLY</text>
+	<text x="275" y="632" text-anchor="middle" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="4" fill="currentColor" opacity="0.25">NOT TO SCALE · FOR REFERENCE ONLY</text>
 
 	<!-- === REVISION BLOCK (bottom right) === -->
 	<rect x="390" y="648" width="80" height="28" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>

@@ -20,7 +20,7 @@
   <!-- ============================== -->
   <!-- TITLE                          -->
   <!-- ============================== -->
-  <text x="900" y="28" class="title-text" text-anchor="middle">MPM-10 — PLAN VIEW (END CAR)</text>
+  <text x="900" y="28" class="title-text" text-anchor="middle">MPM-10 · PLAN VIEW (END CAR)</text>
 
   <!-- ============================== -->
   <!-- MAIN BODY OUTLINE              -->

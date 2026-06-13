@@ -3,7 +3,7 @@
 </script>
 
 <svg class={className} {...rest} viewBox="0 0 200 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<text x="10" y="16" font-family="JetBrains Mono" font-size="9" fill="currentColor">SECTION D-D — INTERIOR</text>
+	<text x="10" y="16" font-family="JetBrains Mono" font-size="9" fill="currentColor">SECTION D-D · INTERIOR</text>
 	<rect x="5" y="22" width="190" height="290" rx="4" stroke="currentColor" stroke-width="0.75" stroke-dasharray="4 2"/>
 	<path d="M30 50 Q100 30 170 50 L170 270 L30 270 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
 	<rect x="45" y="70" width="110" height="70" rx="8" stroke="currentColor" stroke-width="1.5"/>

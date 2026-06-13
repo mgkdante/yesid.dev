@@ -44,8 +44,8 @@ describe('AboutPage', () => {
 		const labels = Array.from(container.querySelectorAll('[data-slot="stop-label"]')).map(
 			(el) => el.textContent,
 		);
-		expect(labels).toContain('STOP 00 — IDENTITY');
-		expect(labels).toContain('STOP 08 — SNAPSHOTS');
+		expect(labels).toContain('STOP 00 · IDENTITY');
+		expect(labels).toContain('STOP 08 · SNAPSHOTS');
 	});
 
 	it('renders the identity section', () => {
@@ -118,7 +118,7 @@ describe('AboutPage', () => {
 	it('renders the interests attribution credit line', () => {
 		render(AboutPage, { props: { aboutPage: aboutPageContent, weather: null } });
 		expect(screen.getByTestId('about-interests').textContent).toContain(
-			'Transit photo: Harrison Keely · CC BY 4.0 — Space: NASA',
+			'Transit photo: Harrison Keely · CC BY 4.0 · Space: NASA',
 		);
 	});
 

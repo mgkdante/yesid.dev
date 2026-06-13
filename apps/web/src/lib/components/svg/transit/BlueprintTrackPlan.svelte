@@ -4,7 +4,7 @@
 
 <svg class={className} {...rest} viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<!-- Title block -->
-	<text x="10" y="16" font-family="JetBrains Mono" font-size="9" fill="currentColor">PLAN DE VOIE — AIGUILLAGE SW-14</text>
+	<text x="10" y="16" font-family="JetBrains Mono" font-size="9" fill="currentColor">PLAN DE VOIE · AIGUILLAGE SW-14</text>
 	<line x1="10" y1="20" x2="285" y2="20" stroke="currentColor" stroke-width="0.5"/>
 
 	<!-- Border frame -->
