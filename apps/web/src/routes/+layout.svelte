@@ -99,9 +99,6 @@
 </svelte:head>
 
 <div class="circuit-grid flex min-h-screen flex-col overflow-x-clip bg-[var(--background)] font-body text-[var(--foreground)]">
-	<!-- Sodium lamp: viewport-glued glow overlay (see .grid-lamp in app.css).
-	     Zero height — contributes nothing to layout. -->
-	<div class="grid-lamp" aria-hidden="true"></div>
 	<Nav pathname={$page.url.pathname} {locale} {headerLinks} {menuItems} />
 
 	<!-- Page content fades in on route change; instant when reduced motion is on -->
