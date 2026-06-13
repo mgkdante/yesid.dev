@@ -82,11 +82,11 @@ describe('SeoHead — tag emission', () => {
 		expect(ogImage?.content).toMatch(/\/og\/default\.en\.png$/);
 	});
 
-	it('falls back to EN default OG image for unpublished locale', () => {
+	it('uses the locale-specific default OG image for a published locale (fr live)', () => {
 		render(SeoHead, { props: { seo: validSeo, locale: 'fr' } });
 		const ogImage = getMeta('property', 'og:image');
-		// fr is not yet in PUBLISHED_LOCALES — falls back to EN
-		expect(ogImage?.content).toMatch(/\/og\/default\.en\.png$/);
+		// fr is now in PUBLISHED_LOCALES → its own /og/default.fr.png
+		expect(ogImage?.content).toMatch(/\/og\/default\.fr\.png$/);
 	});
 
 	it('emits noindex,nofollow robots meta when seo.noIndex is true', () => {
