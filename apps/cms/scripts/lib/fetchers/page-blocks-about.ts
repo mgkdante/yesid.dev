@@ -133,6 +133,40 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		};
 	});
 
+	// --- education: school (LS), program (LS), icon (plain) — merged en+fr by index ---
+	const educationByLocale = new Map<string, Array<Record<string, unknown>>>();
+	for (const row of tr) {
+		const code = row.languages_code as string;
+		if (Array.isArray(row.education)) {
+			educationByLocale.set(code, row.education as Array<Record<string, unknown>>);
+		}
+	}
+	const enEducation = educationByLocale.get('en') ?? [];
+	const education: AboutContent['education'] = enEducation.map((enE, idx) => {
+		const schoolLS: LocalizedString = { en: typeof enE.school === 'string' ? enE.school : '' };
+		const programLS: LocalizedString = {
+			en: typeof enE.program === 'string' ? enE.program : '',
+		};
+		for (const [locale, eList] of educationByLocale) {
+			if (locale === 'en') continue;
+			const e = eList[idx];
+			if (!e) continue;
+			if (typeof e.school === 'string' && e.school.length > 0) {
+				if (locale === 'fr') schoolLS.fr = e.school;
+				else if (locale === 'es') schoolLS.es = e.school;
+			}
+			if (typeof e.program === 'string' && e.program.length > 0) {
+				if (locale === 'fr') programLS.fr = e.program;
+				else if (locale === 'es') programLS.es = e.program;
+			}
+		}
+		return {
+			school: schoolLS,
+			program: programLS,
+			icon: (enE.icon === 'bishops' ? 'bishops' : 'champlain') as 'champlain' | 'bishops',
+		};
+	});
+
 	// --- testimonials ---
 	const testimonialsByLocale = new Map<string, Array<Record<string, unknown>>>();
 	for (const row of tr) {
@@ -179,6 +213,11 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 			? (item.relatedServices as string[])
 			: [],
 	}));
+
+	// --- languages: read from parent row (locale-invariant string[]) ---
+	const languages: AboutContent['languages'] = Array.isArray(raw.languages)
+		? (raw.languages as unknown[]).filter((l): l is string => typeof l === 'string')
+		: [];
 
 	// --- interests: id (plain), image (plain), label (LS) ---
 	const interestsByLocale = new Map<string, Array<Record<string, unknown>>>();
@@ -281,6 +320,8 @@ export function toAboutContent(raw: BlockRow): AboutContent {
 		metrics,
 		methodology,
 		testimonials,
+		languages,
+		education,
 		techStack,
 		interests,
 		weather,

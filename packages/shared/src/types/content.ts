@@ -301,6 +301,15 @@ export interface AboutInterest {
 	image: string; // path to background image (static/images/about/interests/)
 }
 
+// About page EDUCATION list — repurposes the former `stack` stop.
+// school/program are localized; icon selects the brand SVG mark
+// (static/images/about/edu-{champlain,bishops}.svg).
+export interface AboutEducationItem {
+	school: LocalizedString;
+	program: LocalizedString;
+	icon: 'champlain' | 'bishops';
+}
+
 // Central tech stack source of truth. Categories relate to services.
 // When cloud layer arrives (Slice 14), this cascades to services/projects.
 export type TechCategory = 'databases' | 'languages' | 'tools' | 'frameworks';
@@ -424,6 +433,8 @@ export interface AboutContent {
 	metrics: readonly AboutMetric[];
 	methodology: readonly AboutMethodStep[];
 	testimonials: readonly AboutTestimonial[];
+	languages: readonly string[]; // spoken languages, locale-invariant (LANGUAGES stop)
+	education: readonly AboutEducationItem[]; // schools + programs (EDUCATION stop)
 	techStack: readonly AboutTechItem[];
 	interests: readonly AboutInterest[];
 	weather: AboutWeatherConfig;

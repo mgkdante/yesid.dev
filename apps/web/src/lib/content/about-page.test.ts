@@ -4,7 +4,7 @@ import { aboutPageContent } from './about-page.js';
 describe('aboutPageContent', () => {
 	describe('identity', () => {
 		it('has name with en key', () => {
-			expect(aboutPageContent.identity.name.en).toBe('Yesid O.');
+			expect(aboutPageContent.identity.name.en).toBe('Yesid');
 		});
 
 		it('has non-empty title and value prop', () => {
@@ -70,8 +70,9 @@ describe('aboutPageContent', () => {
 	});
 
 	describe('testimonials', () => {
-		it('has at least 2 testimonials', () => {
-			expect(aboutPageContent.testimonials.length).toBeGreaterThanOrEqual(2);
+		it('has exactly one playful quote (Guy Sensei)', () => {
+			expect(aboutPageContent.testimonials).toHaveLength(1);
+			expect(aboutPageContent.testimonials[0].author).toBe('Guy Sensei');
 		});
 
 		it('every testimonial has required fields', () => {
@@ -81,6 +82,29 @@ describe('aboutPageContent', () => {
 				expect(t.role.en.length).toBeGreaterThan(0);
 				expect(t.company.length).toBeGreaterThan(0);
 			}
+		});
+	});
+
+	describe('languages', () => {
+		it('lists the three spoken languages in display order', () => {
+			expect(aboutPageContent.languages).toEqual(['Français', 'English', 'Español']);
+		});
+	});
+
+	describe('education', () => {
+		it('has both degrees with valid icons', () => {
+			expect(aboutPageContent.education).toHaveLength(2);
+			for (const e of aboutPageContent.education) {
+				expect(e.school.en.length).toBeGreaterThan(0);
+				expect(e.program.en.length).toBeGreaterThan(0);
+				expect(['champlain', 'bishops']).toContain(e.icon);
+			}
+		});
+
+		it("covers Champlain and Bishop's", () => {
+			const schools = aboutPageContent.education.map((e) => e.school.en);
+			expect(schools.some((str) => str.includes('Champlain'))).toBe(true);
+			expect(schools.some((str) => str.includes("Bishop's"))).toBe(true);
 		});
 	});
 
