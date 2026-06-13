@@ -52,7 +52,7 @@ export const services: readonly Service[] = [
 		],
 		description: {
 			en: 'Schemas, queries, and migrations, a database that stays fast as your data grows.',
-			fr: 'Schémas, requêtes et migrations : une base de données qui reste rapide à mesure que vos données grossissent.',
+			fr: 'Schémas, requêtes et migrations : une base de données qui reste rapide à mesure que tes données grossissent.',
 		},
 		id: 'database-engineering',
 		impactMetric: {
@@ -71,7 +71,7 @@ export const services: readonly Service[] = [
 			{
 				content: {
 					en: 'I start with your slowest queries, execution plans and profiling find the root cause (missing indexes, implicit conversions, parameter sniffing), and fix them systematically. Database changes are infrastructure changes: every migration gets a rollback script, and every schema change is benchmarked against production-scale data before deployment.',
-					fr: 'Je commence par vos requêtes les plus lentes : les plans d\'exécution et le profilage trouvent la cause profonde (index manquants, conversions implicites, parameter sniffing), et je la corrige méthodiquement. Un changement de base de données, c\'est un changement d\'infrastructure : chaque migration reçoit un script de retour en arrière, et chaque changement de schéma est mesuré sur des données à l\'échelle de la production avant le déploiement.',
+					fr: 'Je commence par tes requêtes les plus lentes : les plans d\'exécution et le profilage trouvent la cause profonde (index manquants, conversions implicites, parameter sniffing), et je la corrige méthodiquement. Un changement de base de données, c\'est un changement d\'infrastructure : chaque migration reçoit un script de retour en arrière, et chaque changement de schéma est mesuré sur des données à l\'échelle de la production avant le déploiement.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -89,7 +89,7 @@ export const services: readonly Service[] = [
 	{
 		benefitHeadline: {
 			en: 'Your data arrives clean, on time, every morning',
-			fr: 'Vos données arrivent propres, à temps, chaque matin',
+			fr: 'Tes données arrivent propres, à temps, chaque matin',
 		},
 		deliverables: [
 			{
@@ -149,7 +149,7 @@ export const services: readonly Service[] = [
 		},
 		valueProposition: {
 			en: 'Data stuck in silos is data nobody can use, and an ops team copying between spreadsheets is the symptom. I build pipelines and workflow automation that move information from source systems to your warehouse reliably, with logging, retry logic, and schema validation. Your analysts get clean, fresh data every morning; your team stops doing data entry.',
-			fr: 'Des données coincées dans des silos, c\'est des données que personne peut utiliser, et une équipe des opérations qui copie d\'un fichier à l\'autre, c\'est le symptôme. Je bâtis des pipelines et de l\'automatisation de flux de travail qui transportent l\'information des systèmes sources vers votre entrepôt de façon fiable, avec journalisation, logique de reprise et validation de schéma. Vos analystes ont des données propres et fraîches chaque matin; votre équipe arrête de faire de la saisie de données.',
+			fr: 'Des données coincées dans des silos, c\'est des données que personne peut utiliser, et une équipe des opérations qui copie d\'un tableur à l\'autre, c\'est le symptôme. Je bâtis des pipelines et de l\'automatisation de flux de travail qui transportent l\'information des systèmes sources vers ton entrepôt de façon fiable, avec journalisation, logique de reprise et validation de schéma. Tes analystes ont des données propres et fraîches chaque matin; ton équipe arrête de faire de la saisie de données.',
 		},
 		visible: true,
 	},
@@ -186,7 +186,7 @@ export const services: readonly Service[] = [
 		],
 		description: {
 			en: 'One semantic layer, numbers that match in every report, dashboards your team trusts.',
-			fr: 'Une seule couche sémantique, des chiffres qui concordent dans tous les rapports, des tableaux de bord en qui votre équipe a confiance.',
+			fr: 'Une seule couche sémantique, des chiffres qui concordent dans tous les rapports, des tableaux de bord en qui ton équipe a confiance.',
 		},
 		id: 'analytics-reporting',
 		impactMetric: {
@@ -201,7 +201,7 @@ export const services: readonly Service[] = [
 			{
 				content: {
 					en: 'I start by understanding how your team makes decisions, what questions they ask, how often, and what data they trust. Then I build a semantic layer that makes those questions easy to answer. The dashboard is the last step, not the first.',
-					fr: 'Je commence par comprendre comment votre équipe prend ses décisions : quelles questions elle se pose, à quelle fréquence, et à quelles données elle fait confiance. Ensuite, je bâtis une couche sémantique qui rend ces questions faciles à répondre. Le tableau de bord, c\'est la dernière étape, pas la première.',
+					fr: 'Je commence par comprendre comment ton équipe prend ses décisions : quelles questions elle se pose, à quelle fréquence, et à quelles données elle fait confiance. Ensuite, je bâtis une couche sémantique qui rend ces questions faciles à répondre. Le tableau de bord, c\'est la dernière étape, pas la première.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -215,14 +215,14 @@ export const services: readonly Service[] = [
 		},
 		valueProposition: {
 			en: 'A dashboard nobody trusts is worse than no dashboard. I build reporting systems grounded in a clean semantic layer, so the numbers match across reports, filters work intuitively, and your team stops second-guessing the data. You get dashboards that drive decisions, not confusion.',
-			fr: 'Un tableau de bord en qui personne n\'a confiance, c\'est pire que pas de tableau de bord pantoute. Je bâtis des systèmes de rapports ancrés dans une couche sémantique propre, pour que les chiffres concordent d\'un rapport à l\'autre, que les filtres marchent de façon intuitive, et que votre équipe arrête de douter des données. Vous obtenez des tableaux de bord qui guident les décisions, pas qui sèment la confusion.',
+			fr: 'Un tableau de bord en qui personne n\'a confiance, c\'est pire que pas de tableau de bord pantoute. Je bâtis des systèmes de rapports ancrés dans une couche sémantique propre, pour que les chiffres concordent d\'un rapport à l\'autre, que les filtres marchent de façon intuitive, et que ton équipe arrête de douter des données. Tu obtiens des tableaux de bord qui guident les décisions, pas qui sèment la confusion.',
 		},
 		visible: true,
 	},
 	{
 		benefitHeadline: {
 			en: 'A frontend that matches your backend quality',
-			fr: 'Un frontend à la hauteur de la qualité de votre backend',
+			fr: 'Un frontend à la hauteur de la qualité de ton backend',
 		},
 		deliverables: [
 			{
@@ -252,7 +252,7 @@ export const services: readonly Service[] = [
 		],
 		description: {
 			en: 'Fast sites and stores wired to your data, storefront to back office.',
-			fr: 'Des sites et des boutiques rapides, branchés sur vos données, de la vitrine jusqu\'à l\'arrière-boutique.',
+			fr: 'Des sites et des boutiques rapides, branchés sur tes données, de la vitrine jusqu\'à l\'arrière-boutique.',
 		},
 		id: 'web-development',
 		impactMetric: {
@@ -267,7 +267,7 @@ export const services: readonly Service[] = [
 			{
 				content: {
 					en: 'I build with SvelteKit because it compiles away the framework, you get fast pages with minimal JavaScript. Every component is typed, every page is server-rendered for SEO, and the data layer connects cleanly to your backend. I deploy to Vercel for zero-config CI/CD and edge caching.',
-					fr: 'Je bâtis avec SvelteKit parce que ça compile et fait disparaître le framework : vous obtenez des pages rapides avec un minimum de JavaScript. Chaque composant est typé, chaque page est rendue côté serveur pour le référencement, et la couche de données se connecte proprement à votre backend. Je déploie sur Vercel pour du CI/CD sans configuration et de la mise en cache en périphérie.',
+					fr: 'Je bâtis avec SvelteKit parce que ça compile et fait disparaître le cadriciel : tu obtiens des pages rapides avec un minimum de JavaScript. Chaque composant est typé, chaque page est rendue côté serveur pour le référencement, et la couche de données se connecte proprement à ton backend. Je déploie sur Vercel pour du CI/CD sans configuration et de la mise en cache en périphérie.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -287,7 +287,7 @@ export const services: readonly Service[] = [
 		},
 		valueProposition: {
 			en: 'Your digital infrastructure deserves a frontend that matches. I build web applications that connect directly to your data layer, client portals, internal dashboards, public-facing tools, with the same attention to performance and reliability I bring to the backend.',
-			fr: 'Votre infrastructure numérique mérite un frontend à sa hauteur. Je bâtis des applications web qui se branchent directement sur votre couche de données : portails clients, tableaux de bord internes, outils accessibles au public, avec le même souci de performance et de fiabilité que j\'apporte au backend.',
+			fr: 'Ton infrastructure numérique mérite un frontend à sa hauteur. Je bâtis des applications web qui se branchent directement sur ta couche de données : portails clients, tableaux de bord internes, outils accessibles au public, avec le même souci de performance et de fiabilité que j\'apporte au backend.',
 		},
 		visible: true,
 	},
@@ -339,7 +339,7 @@ export const services: readonly Service[] = [
 			{
 				content: {
 					en: 'I start with your slowest queries, the ones that block dashboards and frustrate users. Using execution plans and profiling tools, I identify the root cause (missing indexes, implicit conversions, parameter sniffing) and fix them systematically. Every change is tested against production-scale data before deployment.',
-					fr: 'Je commence par vos requêtes les plus lentes, celles qui bloquent les tableaux de bord et qui font enrager les usagers. À l\'aide des plans d\'exécution et des outils de profilage, je trouve la cause profonde (index manquants, conversions implicites, parameter sniffing) et je la corrige méthodiquement. Chaque changement est testé sur des données à l\'échelle de la production avant le déploiement.',
+					fr: 'Je commence par tes requêtes les plus lentes, celles qui bloquent les tableaux de bord et qui font enrager les usagers. À l\'aide des plans d\'exécution et des outils de profilage, je trouve la cause profonde (index manquants, conversions implicites, parameter sniffing) et je la corrige méthodiquement. Chaque changement est testé sur des données à l\'échelle de la production avant le déploiement.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -354,14 +354,14 @@ export const services: readonly Service[] = [
 		},
 		valueProposition: {
 			en: 'Slow queries cost money, in compute, in delayed reports, in frustrated analysts waiting for data. I audit your SQL layer, identify the expensive queries, and rewrite them for speed and clarity. You get faster dashboards, lower database costs, and code your team can actually maintain.',
-			fr: 'Les requêtes lentes coûtent cher : en temps de calcul, en rapports qui retardent, en analystes frustrés qui attendent leurs données. J\'examine votre couche SQL, je repère les requêtes qui coûtent cher et je les réécris pour la vitesse et la clarté. Vous obtenez des tableaux de bord plus rapides, des coûts de base de données plus bas, et du code que votre équipe peut vraiment entretenir.',
+			fr: 'Les requêtes lentes coûtent cher : en temps de calcul, en rapports qui retardent, en analystes frustrés qui attendent leurs données. J\'examine ta couche SQL, je repère les requêtes qui coûtent cher et je les réécris pour la vitesse et la clarté. Tu obtiens des tableaux de bord plus rapides, des coûts de base de données plus bas, et du code que ton équipe peut vraiment entretenir.',
 		},
 		visible: false,
 	},
 	{
 		benefitHeadline: {
 			en: 'Your team stops copying between spreadsheets',
-			fr: 'Votre équipe arrête de copier d\'un fichier à l\'autre',
+			fr: 'Ton équipe arrête de copier d\'un tableur à l\'autre',
 		},
 		deliverables: [
 			{
@@ -391,7 +391,7 @@ export const services: readonly Service[] = [
 		],
 		description: {
 			en: 'Build admin panels and workflow tools that replace spreadsheets. Retool, custom dashboards, and approval systems designed for operations teams.',
-			fr: 'Je bâtis des panneaux d\'administration et des outils de flux de travail qui remplacent les fichiers Excel. Retool, tableaux de bord sur mesure et systèmes d\'approbation conçus pour les équipes des opérations.',
+			fr: 'Je bâtis des panneaux d\'administration et des outils de flux de travail qui remplacent les tableurs. Retool, tableaux de bord sur mesure et systèmes d\'approbation conçus pour les équipes des opérations.',
 		},
 		id: 'internal-tooling',
 		impactMetric: {
@@ -406,7 +406,7 @@ export const services: readonly Service[] = [
 			{
 				content: {
 					en: 'I start by shadowing the workflow, watching how data moves through your team. Then I build the simplest tool that eliminates the bottleneck. Retool for rapid prototyping, custom code when Retool hits its limits. Every tool ships with docs so your team can extend it without me.',
-					fr: 'Je commence par observer le flux de travail de près, en regardant comment les données circulent dans votre équipe. Ensuite, je bâtis l\'outil le plus simple qui élimine le goulot d\'étranglement. Retool pour le prototypage rapide, du code sur mesure quand Retool atteint ses limites. Chaque outil arrive avec sa documentation pour que votre équipe puisse l\'étendre sans moi.',
+					fr: 'Je commence par observer le flux de travail de près, en regardant comment les données circulent dans ton équipe. Ensuite, je bâtis l\'outil le plus simple qui élimine le goulot d\'étranglement. Retool pour le prototypage rapide, du code sur mesure quand Retool atteint ses limites. Chaque outil arrive avec sa documentation pour que ton équipe puisse l\'étendre sans moi.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -417,7 +417,7 @@ export const services: readonly Service[] = [
 		title: { en: 'Internal Tooling', fr: 'Outils internes' },
 		valueProposition: {
 			en: 'Your ops team is copying data between spreadsheets and Slack threads. I build internal tools, admin panels, approval workflows, data entry forms, that centralize operations and eliminate manual work. You ship faster because your team spends time on decisions, not data entry.',
-			fr: 'Votre équipe des opérations copie des données entre des fichiers Excel et des fils Slack. Je bâtis des outils internes, des panneaux d\'administration, des flux d\'approbation, des formulaires de saisie, qui centralisent les opérations et éliminent le travail manuel. Vous livrez plus vite parce que votre équipe passe son temps sur les décisions, pas sur la saisie de données.',
+			fr: 'Ton équipe des opérations copie des données entre des tableurs et des fils Slack. Je bâtis des outils internes, des panneaux d\'administration, des flux d\'approbation, des formulaires de saisie, qui centralisent les opérations et éliminent le travail manuel. Tu livres plus vite parce que ton équipe passe son temps sur les décisions, pas sur la saisie de données.',
 		},
 		visible: false,
 	},

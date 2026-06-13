@@ -130,7 +130,7 @@ export const mobileLinks: readonly NavLink[] = [
 export const errorPageContent: ErrorPageContent = {
 	description: {
 		en: 'The page you were looking for could not be found.',
-		fr: 'La page que vous cherchiez est introuvable.',
+		fr: 'La page que tu cherchais est introuvable.',
 	},
 	heading: {
 		en: 'This station is offline',
