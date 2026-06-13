@@ -523,14 +523,19 @@ export function toBlockCloserTranslationRows(
 export function toBlockAboutContentRow(
 	raw: typeof aboutPageFixture,
 	sort = 1,
-): DirectusBlockParentRow & { tech_stack: unknown; client_logos: unknown; client_count: number } {
+): DirectusBlockParentRow & { languages: unknown; education: unknown } {
 	return {
 		editor_label: 'About Content',
 		status: 'published',
 		sort,
-		tech_stack: raw.techStack,
-		client_logos: raw.clientLogos,
-		client_count: raw.clientCount,
+		languages: raw.languages,
+		education: raw.education.map((item) => ({
+			school_en: item.school.en,
+			school_fr: item.school.fr,
+			program_en: item.program.en,
+			program_fr: item.program.fr,
+			icon: item.icon,
+		})),
 	};
 }
 
@@ -599,7 +604,6 @@ export function toBlockAboutContentTranslationRows(
 				next: raw.stopLabels.next.en,
 			},
 			labels: {
-				clientsServed: raw.labels.clientsServed.en,
 				polaroidPrevAria: raw.labels.polaroidPrevAria.en,
 				polaroidNextAria: raw.labels.polaroidNextAria.en,
 				testimonialsCarouselAria: raw.labels.testimonialsCarouselAria.en,
@@ -1011,7 +1015,7 @@ interface Schema {
 	block_about_intro: DirectusBlockParentRow[];
 	block_cta: DirectusBlockParentRow[];
 	block_closer: DirectusBlockParentRow[];
-	block_about_content: (DirectusBlockParentRow & { tech_stack: unknown; client_logos: unknown; client_count: number })[];
+	block_about_content: (DirectusBlockParentRow & { languages: unknown; education: unknown })[];
 	block_contact_content: DirectusBlockParentRow[];
 	block_tech_stack_page_content: DirectusBlockParentRow[];
 	block_projects_page_content: DirectusBlockParentRow[];

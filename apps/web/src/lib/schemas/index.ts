@@ -25,16 +25,14 @@ export * from './meta';
 export * from './tech-stack';
 // about-page, contact-page, tech-stack-page relocated to @repo/shared/schemas (slice-18i Task 1.1 Phase B).
 export {
-	TechCategorySchema,
 	AboutPolaroidSchema,
 	AboutIdentitySchema,
 	AboutMetricSchema,
 	AboutMethodStepSchema,
 	AboutTestimonialSchema,
-	AboutTechItemSchema,
 	AboutInterestSchema,
+	AboutEducationItemSchema,
 	AboutWeatherConfigSchema,
-	AboutClientLogoSchema,
 	AboutCtaSchema,
 	AboutStopLabelsSchema,
 	AboutLabelsSchema,

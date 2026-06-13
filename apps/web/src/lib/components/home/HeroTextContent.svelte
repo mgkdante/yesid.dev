@@ -33,14 +33,16 @@
 		heroData: HeroData;
 		/** go2/w5: arms the hero-dot replay button once the intro completed. */
 		introCompleted?: boolean;
-		/** The FULL beacon dress (pulse + glow + rings) renders only in
-		    SETTLED completed geometry (armed AND collapsed). The moment a
-		    replay starts, GSAP owns this same svg and scrubs it through
-		    ~213× zooms — an infinite CSS transform animation overrides
-		    GSAP's inline transform every frame, and a drop-shadow filter
+		/** The beacon dress (pulse + glow) renders only in SETTLED
+		    completed geometry (armed AND collapsed). The moment a replay
+		    starts, GSAP owns this same svg and scrubs it through ~213×
+		    zooms — an infinite CSS transform animation overrides GSAP's
+		    inline transform every frame, and a drop-shadow filter
 		    rasterizes a gigantic surface at zoom scale. Both read as "the
 		    animation glitches on clicking the dot" (operator-reported), so
-		    while any animation owns the dot it must be a BARE circle. */
+		    while any animation owns the dot it must be a BARE circle.
+		    (Radiating rings were tried and cut — operator: "remove the
+		    ring and we're golden".) */
 		beaconSettled?: boolean;
 		/** aria-label for the armed dot (site_labels a11y.replayIntro). */
 		replayAriaLabel?: string;
@@ -83,25 +85,7 @@
 					data-testid="hero-dot"
 					viewBox="0 0 10 10"
 					aria-hidden="true"
-				><circle cx="5" cy="5" r="5" fill="currentColor" />{#if beaconSettled}<circle
-							class="hero-dot-ring"
-							cx="5"
-							cy="5"
-							r="5"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2.5"
-							vector-effect="non-scaling-stroke"
-						/><circle
-							class="hero-dot-ring hero-dot-ring--late"
-							cx="5"
-							cy="5"
-							r="5"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2.5"
-							vector-effect="non-scaling-stroke"
-						/>{/if}</svg></button>
+				><circle cx="5" cy="5" r="5" fill="currentColor" /></svg></button>
 		</span>
 	</p>
 
@@ -204,11 +188,11 @@
 	   PLAYED, which reduced motion never does — and the reduce tier below
 	   still swaps scale for the round-1 opacity pulse as belt-and-suspenders
 	   (the affordance cue is assistive, so it keeps running). */
-	/* go2 beacon pass: SUPER-obvious tier — heartbeat punch + sodium glow +
-	   radiating rings, em-scaled so desktop and mobile read identically
-	   loud. Scoped to .hero-dot-settled (NOT merely armed): armed stays true
-	   through a replay, and a pulsing/filtered dot under GSAP's zoom is the
-	   click-the-dot glitch. Settled drops the instant a replay starts. */
+	/* go2 beacon pass: heartbeat punch + sodium glow, em-scaled so desktop
+	   and mobile read identically loud. Scoped to .hero-dot-settled (NOT
+	   merely armed): armed stays true through a replay, and a
+	   pulsing/filtered dot under GSAP's zoom is the click-the-dot glitch.
+	   Settled drops the instant a replay starts. */
 	.hero-dot-settled .hero-dot {
 		animation: hero-dot-pulse 1.5s ease-in-out infinite;
 		transform-origin: center;
@@ -223,8 +207,8 @@
 		100% {
 			transform: scale(1);
 		}
-		/* Operator trim: the glow + rings carry the highlight — the beat
-		   itself steps back a notch (was 2.1 / 1.65). */
+		/* Operator trim: the glow carries the highlight — the beat itself
+		   steps back a notch (was 2.1 / 1.65). */
 		14% {
 			transform: scale(1.8);
 		}
@@ -236,57 +220,9 @@
 		}
 	}
 
-	/* Station-beacon rings — two staggered pings expanding from the dot's
-	   edge and fading out. They live INSIDE the svg (overflow: visible) so
-	   they stay pixel-centered on the dot at every font size; non-scaling
-	   stroke keeps the line weight constant as they grow. They inherit the
-	   svg's heartbeat scale, so each ping surges with the beat — on purpose. */
-	.hero-dot-ring {
-		transform-box: fill-box;
-		transform-origin: center;
-		opacity: 0;
-		animation: hero-dot-ring 2.4s cubic-bezier(0.2, 0.55, 0.35, 1) infinite;
-		pointer-events: none;
-	}
-
-	.hero-dot-ring--late {
-		animation-delay: 1.2s;
-	}
-
-	@keyframes hero-dot-ring {
-		0% {
-			transform: scale(1);
-			opacity: 0.9;
-		}
-		70%,
-		100% {
-			transform: scale(4.6);
-			opacity: 0;
-		}
-	}
-
 	@media (prefers-reduced-motion: reduce) {
 		.hero-dot-settled .hero-dot {
 			animation: hero-dot-pulse-reduce 1.8s ease-in-out infinite;
-		}
-		/* Reduce tier: no expansion — one static halo breathing in opacity
-		   (fades are SAFE-ALWAYS; the affordance cue stays assistive). */
-		.hero-dot-ring {
-			animation: hero-dot-halo 1.8s ease-in-out infinite;
-			transform: scale(2.4);
-		}
-		.hero-dot-ring--late {
-			display: none;
-		}
-	}
-
-	@keyframes hero-dot-halo {
-		0%,
-		100% {
-			opacity: 0.55;
-		}
-		50% {
-			opacity: 0.15;
 		}
 	}
 
