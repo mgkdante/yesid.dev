@@ -41,14 +41,16 @@
 		href: localizeHref(`/services/${p.serviceId}`, locale),
 	}));
 
-	// Edge + transit data (passed to sub-components)
-	const edgeLeft = {
+	// Edge + transit data (passed to sub-components). $derived so they recompute
+	// when locale flips (the language toggle) — a plain const captures only the
+	// initial value, which Svelte 5 flags and which would freeze the EN copy.
+	const edgeLeft = $derived({
 		sectionNumber: resolveLocale(manifestoContent.edgeLeft.sectionNumber, locale),
 		sectionName: resolveLocale(manifestoContent.edgeLeft.sectionName, locale),
 		location: resolveLocale(manifestoContent.edgeLeft.location, locale),
-	};
+	});
 
-	const edgeRight = {
+	const edgeRight = $derived({
 		lat: resolveLocale(manifestoContent.edgeRight.lat, locale),
 		lng: resolveLocale(manifestoContent.edgeRight.lng, locale),
 		src: resolveLocale(manifestoContent.edgeRight.src, locale),
@@ -56,21 +58,21 @@
 		dst: resolveLocale(manifestoContent.edgeRight.dst, locale),
 		node: resolveLocale(manifestoContent.edgeRight.node, locale),
 		status: resolveLocale(manifestoContent.edgeRight.status, locale),
-	};
+	});
 
-	const edgeBottom = {
+	const edgeBottom = $derived({
 		connected: resolveLocale(manifestoContent.edgeBottom.connected, locale),
 		line: resolveLocale(manifestoContent.edgeBottom.line, locale),
 		url: resolveLocale(manifestoContent.edgeBottom.url, locale),
 		version: resolveLocale(manifestoContent.edgeBottom.version, locale),
 		scrollHint: resolveLocale(manifestoContent.edgeBottom.scrollHint, locale),
-	};
+	});
 
-	const transit = {
+	const transit = $derived({
 		arrivalLabel: resolveLocale(manifestoContent.transit.arrivalLabel, locale),
 		platformBadge: resolveLocale(manifestoContent.transit.platformBadge, locale),
 		directionBadge: resolveLocale(manifestoContent.transit.directionBadge, locale),
-	};
+	});
 
 	const ticks = manifestoContent.ticks;
 

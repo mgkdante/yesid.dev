@@ -25,7 +25,10 @@ export default defineConfig({
 				webServer: {
 					command: 'bun run build && bun run preview',
 					port: 4173,
-					reuseExistingServer: !process.env.CI
+					reuseExistingServer: !process.env.CI,
+					// CI cold-build (vite build + check:sitemap) can exceed the
+					// default 60s before the preview answers on :4173.
+					timeout: 180_000
 				}
 			}),
 	testDir: 'tests',
