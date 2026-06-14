@@ -29,12 +29,12 @@ describe('StationTabs', () => {
 		expect(screen.getByText('04')).toBeTruthy();
 	});
 
-	it('falls back to the first title word for an id missing from SHORT_LABELS', () => {
+	it('falls back to the full service title for an id missing from the CMS short-labels', () => {
 		const unknown = [
 			serviceFactory.build({ id: 'mystery-service', title: { en: 'Mystery Offering' }, description: { en: '' }, station: 1, visible: true }),
 		];
 		render(StationTabs, { props: { services: unknown, activeId: 'mystery-service' } });
-		expect(screen.getByText('Mystery')).toBeTruthy();
+		expect(screen.getByText('Mystery Offering')).toBeTruthy();
 	});
 
 	it('marks the active tab', () => {
@@ -51,7 +51,7 @@ describe('StationTabs', () => {
 });
 
 describe('StationTabs — locale-resolved fallback label (slice-28.6)', () => {
-	it('derives the short label from the locale-resolved title (no SHORT_LABELS entry, no provider → en)', () => {
+	it('falls back to the locale-resolved full title when an id has no CMS short-label (no provider → en)', () => {
 		const service = serviceFactory.build({
 			id: 'new-service',
 			title: { en: 'Brand Engineering Stuff', fr: 'Ingénierie de marque' },
@@ -60,8 +60,8 @@ describe('StationTabs — locale-resolved fallback label (slice-28.6)', () => {
 			visible: true,
 		});
 		render(StationTabs, { props: { services: [service], activeId: 'new-service', mode: 'navigate' } });
-		// no provider → locale 'en' → first word of EN title
-		expect(screen.getByText('Brand')).toBeInTheDocument();
-		expect(screen.queryByText('Ingénierie')).toBeNull();
+		// no provider → locale 'en' → full EN title (CMS short-labels only cover the 4 real services)
+		expect(screen.getByText('Brand Engineering Stuff')).toBeInTheDocument();
+		expect(screen.queryByText('Ingénierie de marque')).toBeNull();
 	});
 });

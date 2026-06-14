@@ -223,6 +223,12 @@ export const siteLabels: SiteLabels = {
 				en: 'Service {stationNum} / {totalStr}',
 				fr: 'Service {stationNum} / {totalStr}',
 			},
+			stationShortLabels: {
+				'analytics-reporting': { en: 'Dashboards', fr: 'Tableaux de bord' },
+				'data-pipeline': { en: 'Pipelines', fr: 'Pipelines' },
+				'database-engineering': { en: 'Databases', fr: 'Bases de données' },
+				'web-development': { en: 'Websites', fr: 'Sites web' },
+			},
 		},
 		pageMeta: {
 			description: {
@@ -245,10 +251,23 @@ export const siteLabels: SiteLabels = {
 			en: '// requested path not in service',
 			fr: '// chemin demandé hors service',
 		},
+		languageNames: {
+			en: { en: 'English', fr: 'Anglais' },
+			es: { en: 'Spanish', fr: 'Espagnol' },
+			fr: { en: 'French', fr: 'Français' },
+		},
 		markerFeatured: { en: '{num} / FEATURED', fr: '{num} / EN VEDETTE' },
 		markerService: { en: '{num} / SERVICE', fr: '{num} / SERVICE' },
 		metroCaption: { en: 'STM métro + REM', fr: 'métro STM + REM' },
 		nounProject: { en: 'project', fr: 'projet' },
+		resultCount: {
+			plural: { en: '{count} results', fr: '{count} résultats' },
+			singular: { en: '{count} result', fr: '{count} résultat' },
+		},
+		stationsOneSystem: {
+			en: '{count} stations · one system',
+			fr: '{count} stations · un seul système',
+		},
 		watermarkPersonal: { en: 'Personal', fr: 'Perso' },
 		watermarkProfessional: { en: 'Dispatch', fr: 'Dépêche' },
 	},

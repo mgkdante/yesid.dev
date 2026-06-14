@@ -593,11 +593,18 @@ describe('LocalizedString guard + translation debt', () => {
 // (530 → 627), NO_FR stays 0.
 // fr-leak fix (FilterSummary pluralization): the hardcoded English `+ "s"` rule
 // in FilterSummary.svelte was wrong for French zero ("0 résultat", not "résultats").
-// Replaced with locale-aware singular/plural count templates living in the
-// editable companions: blogListingContent.resultCount {singular,plural} (blog) and
-// sharedChromeContent.projectCount {singular,plural} (projects). +4 LocalizedString
-// leaves, all fr-complete → WITH_FR + TOTAL both +4 (627 → 631), NO_FR stays 0.
-const LOCKED = { TOTAL: 631, WITH_FR: 631, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // slice-30 t1: +97 chrome leaves (100% fr). ES deliberately deferred.
+// Replaced with locale-aware singular/plural count templates. Originally parked in
+// the editable companions (blogListingContent.resultCount + sharedChromeContent
+// .projectCount, +4 leaves → 631) pending the generic CMS field.
+// fr-leaks-cms-truth: that CMS field now exists — `siteLabels.ui.resultCount`
+// {singular,plural} (en+fr) was seeded into Directus and regenerated into the
+// site_labels singleton. BlogListingPage + ProjectListingPage now read the CMS
+// field via FilterSummary's countLabel prop, and the two interim companion fields
+// were removed (single source = CMS). Net for the walker: the regen added 10
+// fr-complete leaves to site-labels (the operator's seed batch, incl. the 2
+// resultCount leaves) and the 4 interim companion leaves were removed
+// → WITH_FR + TOTAL both 631 + 10 − 4 = 637, NO_FR stays 0.
+const LOCKED = { TOTAL: 637, WITH_FR: 637, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // slice-30 t1: +97 chrome leaves (100% fr). ES deliberately deferred.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {

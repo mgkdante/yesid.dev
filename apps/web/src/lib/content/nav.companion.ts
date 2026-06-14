@@ -90,22 +90,6 @@ export const sharedChromeContent = {
 		fr: 'effacer les filtres',
 		es: 'borrar filtros',
 	} satisfies LocalizedString,
-	/** Locale-aware "{count} project(s)" templates for FilterSummary on /projects.
-	 *  Singular/plural split keeps pluralization per-locale (EN: plural unless 1;
-	 *  FR: 0 & 1 singular). Ready-to-wire to `siteLabels.ui.resultCount` once that
-	 *  generic CMS field exists. */
-	projectCount: {
-		singular: {
-			en: '{count} project',
-			fr: '{count} projet',
-			es: '{count} proyecto',
-		} satisfies LocalizedString,
-		plural: {
-			en: '{count} projects',
-			fr: '{count} projets',
-			es: '{count} proyectos',
-		} satisfies LocalizedString,
-	},
 	tocToggleSectionAria: {
 		en: 'Toggle section',
 		fr: 'Basculer la section',
