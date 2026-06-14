@@ -5,9 +5,9 @@ import { test, expect } from '@playwright/test';
 
 test('contact form is interactive and inputs are tappable', async ({ page }) => {
 	await page.goto('/contact');
-	await page.waitForLoadState('networkidle');
 
-	// Contact page container
+	// Deterministic load gate: the contact page container is the landmark the old
+	// networkidle wait implicitly guarded. This web-first expect auto-retries.
 	await expect(page.locator('[data-testid="page-contact"]')).toBeVisible();
 
 	// ContactPage renders the form in both a mobile-stacked and a desktop-resizable
@@ -27,7 +27,10 @@ test('contact form is interactive and inputs are tappable', async ({ page }) => 
 
 test('contact submit button has touch-friendly size', async ({ page }) => {
 	await page.goto('/contact');
-	await page.waitForLoadState('networkidle');
+
+	// Deterministic load gate (was networkidle): the contact page container is the
+	// landmark the old wait implicitly guarded. This web-first expect auto-retries.
+	await expect(page.locator('[data-testid="page-contact"]')).toBeVisible();
 
 	// Button component renders as <button type="submit"> inside the form.
 	// Both mobile-stacked and desktop-resizable containers render a submit button;

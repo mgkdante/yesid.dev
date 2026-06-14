@@ -22,7 +22,11 @@ test.describe('reduced-motion retier (GO-w2t5)', () => {
 		test.skip(Boolean(isMobile), 'Lenis is desktop-wheel only');
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/');
-		await page.waitForLoadState('networkidle');
+		// Deterministic substitute for the deleted networkidle: wait until the
+		// homepage root is hydrated (app-root visible + scripts loaded) so onMount
+		// → initLenis() has definitely run, THEN assert Lenis never attached.
+		await page.waitForLoadState('load');
+		await expect(page.getByTestId('app-root')).toBeVisible();
 		expect(
 			await page.evaluate(() => document.documentElement.classList.contains('lenis')),
 		).toBe(false);

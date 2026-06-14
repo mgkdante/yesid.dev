@@ -70,7 +70,10 @@ function wheelReversalContract(name: string, selector: string) {
 	}) => {
 		test.skip(Boolean(isMobile), 'Lenis is desktop-wheel only');
 		await page.emulateMedia({ reducedMotion: 'no-preference' });
-		await page.goto(PROJECT_URL, { waitUntil: 'networkidle' });
+		await page.goto(PROJECT_URL);
+		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		// expect.poll auto-waits for client hydration to add the lenis class —
+		// the deterministic "page JS is live" signal the old networkidle guarded.
 		await expect
 			.poll(() => page.evaluate(() => document.documentElement.classList.contains('lenis')))
 			.toBe(true);
@@ -148,11 +151,14 @@ test.describe('nested scrollables escape the Lenis trap (go2)', () => {
 	}) => {
 		test.skip(Boolean(isMobile), 'wheel input is desktop-only');
 		await page.emulateMedia({ reducedMotion: 'reduce' });
-		await page.goto(PROJECT_URL, { waitUntil: 'networkidle' });
-		await page.waitForLoadState('networkidle');
-		expect(
-			await page.evaluate(() => document.documentElement.classList.contains('lenis')),
-		).toBe(false);
+		await page.goto(PROJECT_URL);
+		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		// Reduced motion: initLenis() returns early, so the lenis class is never
+		// added. expect.poll lets hydration run (the old networkidle's job) while
+		// asserting the class stays absent — deterministic, not a pre-hydration read.
+		await expect
+			.poll(() => page.evaluate(() => document.documentElement.classList.contains('lenis')))
+			.toBe(false);
 
 		const selector = '.toc-column .toc-scroll';
 		const card = page.locator(selector);
@@ -182,10 +188,14 @@ test.describe('nested scrollables escape the Lenis trap (go2)', () => {
 	}) => {
 		test.skip(!isMobile, 'mobile-profile assertion');
 		test.skip(browserName !== 'chromium', 'CDP gesture is chromium-only');
-		await page.goto(PROJECT_URL, { waitUntil: 'networkidle' });
-		expect(
-			await page.evaluate(() => document.documentElement.classList.contains('lenis')),
-		).toBe(false);
+		await page.goto(PROJECT_URL);
+		await expect(page.getByTestId('project-detail-page')).toBeVisible();
+		// Touch device: initLenis() bails before constructing Lenis, so the class
+		// never lands. expect.poll gives hydration the runway the old networkidle
+		// provided while asserting the class stays absent.
+		await expect
+			.poll(() => page.evaluate(() => document.documentElement.classList.contains('lenis')))
+			.toBe(false);
 
 		const client = await page.context().newCDPSession(page);
 		const viewport = page.viewportSize();

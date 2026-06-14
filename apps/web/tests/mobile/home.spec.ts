@@ -5,9 +5,10 @@ import { test, expect } from '@playwright/test';
 
 test('home page loads + primary CTA is tappable', async ({ page }) => {
 	await page.goto('/');
-	await page.waitForLoadState('networkidle');
 
-	// Hero banner must be present
+	// Hero banner must be present. This web-first assertion auto-waits, so it is the
+	// deterministic readiness signal — no networkidle needed (the contact
+	// info-terminal's one-shot /api/weather fetch + clock interval never settle).
 	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
 
 	// Primary CTA: data-testid added in Task 22 (hero-cta-projects → /projects)
@@ -27,7 +28,12 @@ test('home page loads + primary CTA is tappable', async ({ page }) => {
 
 test('home page scrolls without horizontal overflow', async ({ page }) => {
 	await page.goto('/');
-	await page.waitForLoadState('networkidle');
+
+	// Wait on the hero landmark instead of networkidle (the contact info-terminal's
+	// one-shot /api/weather fetch + clock interval never settle). This web-first
+	// assertion auto-waits until the page has rendered, so the layout is stable
+	// before we measure scrollWidth below.
+	await expect(page.locator('[data-testid="hero-banner"]')).toBeVisible();
 
 	// Scroll to the bottom first — catches overflow from elements that only affect layout below the fold.
 	await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
