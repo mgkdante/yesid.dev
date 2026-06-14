@@ -64,32 +64,27 @@ jobs:
           EXPORT_FALLBACKS_SKIP: '1'
         run: bun x turbo run build --filter=@repo/web
 
-  e2e:
-    runs-on: ubuntu-latest
-    # Runs the Playwright suite against the DEPLOYED Vercel PREVIEW (the real
-    # build), NOT a hermetic local one. This avoids hermetic-only failures
-    # (@resvg/resvg-js native binary not installed by Bun --frozen-lockfile,
-    # the /projects SSR 500, sub-pixel font drift) and lets the suite run with
-    # full parallelism (workers hit the edge independently — see
-    # playwright.config.ts, which gates fullyParallel + workers on an external
-    # PLAYWRIGHT_BASE_URL). Canonical/hreflang asserts are host-independent
-    # (SITE_HOST is hardcoded), so they hold on the preview host too.
-    # Kept continue-on-error for one shake-out cycle; drop it + add `e2e` to the
-    # branch ruleset to make it a hard gate.
-    continue-on-error: true
+  # ── E2E (Playwright) against the DEPLOYED Vercel PREVIEW ──────────────────
+  # Three jobs, so the suite SCALES: resolve the preview URL ONCE, fan the run
+  # out across a shard MATRIX (each runner hits the edge independently), then
+  # merge the per-shard blob reports into one HTML report. Adding tests never
+  # grows wall-clock — bump SHARD_TOTAL. Targeting the real preview (not a
+  # hermetic build) sidesteps the @resvg/resvg-js native-binary gap, the
+  # /projects SSR 500 and sub-pixel font drift; canonical/hreflang asserts are
+  # host-independent (SITE_HOST is hardcoded) so they hold on the preview host.
 
-    # The preview-resolver below reads the Deployments API (Vercel posts the
-    # preview URL there). The default GITHUB_TOKEN is contents-only, so the call
-    # 403s ("Resource not accessible by integration") without this grant.
+  # 1) Resolve the preview URL once. Tiny job (just the Deployments API poll) —
+  #    its output feeds every shard, so we don't poll N times.
+  e2e-preview:
+    runs-on: ubuntu-latest
+    # The Deployments API (where Vercel posts the preview URL) is not readable by
+    # the default contents-only GITHUB_TOKEN → 403 without this grant.
     permissions:
       contents: read
       deployments: read
-
+    outputs:
+      url: ${{ steps.preview.outputs.url }}
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: ./.github/actions/setup
-
       - name: Resolve the Vercel preview URL (wait for the deploy)
         id: preview
         uses: actions/github-script@v7
@@ -125,20 +120,73 @@ jobs:
             }
             core.setFailed(`No successful Vercel preview deployment found for ${sha} within 12m`);
 
+  # 2) Run the suite, sharded across the matrix. fail-fast:false so one red shard
+  #    doesn't kill the others. Each shard emits a blob report artifact.
+  e2e:
+    needs: e2e-preview
+    runs-on: ubuntu-latest
+    # NON-BLOCKING during shake-out. To make it a hard gate: drop this, drop it
+    # on e2e-report, and add `e2e-report` to the branch ruleset.
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        # SHARD_TOTAL = length of this list. Bump both to scale.
+        shard: [1, 2, 3, 4]
+    env:
+      SHARD_TOTAL: 4
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
       - name: Install Playwright Chromium (+ system deps)
         working-directory: apps/web
         run: bun x playwright install --with-deps chromium
 
-      - name: Playwright e2e (against the deployed Vercel preview)
+      - name: Playwright e2e shard ${{ matrix.shard }}/${{ env.SHARD_TOTAL }}
         working-directory: apps/web
         env:
-          PLAYWRIGHT_BASE_URL: ${{ steps.preview.outputs.url }}
-        run: bun run test:e2e
+          PLAYWRIGHT_BASE_URL: ${{ needs.e2e-preview.outputs.url }}
+          # Per-shard parallelism: the preview edge is horizontally scalable, so
+          # workers hit it concurrently. 4 × 4 shards = 16 concurrent — plenty,
+          # without a serverless thundering herd on /api/weather, og, sitemap.
+          PLAYWRIGHT_WORKERS: 4
+        run: bun x playwright test --shard=${{ matrix.shard }}/${{ env.SHARD_TOTAL }} --reporter=blob
 
-      - name: Upload Playwright report on failure
-        if: ${{ failure() }}
+      - name: Upload blob report (shard ${{ matrix.shard }})
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: apps/web/playwright-report/
+          name: blob-report-${{ matrix.shard }}
+          path: apps/web/blob-report/
           retention-days: 7
+
+  # 3) Merge the per-shard blob reports into one HTML report. Runs even if a
+  #    shard failed, so the report is always complete.
+  e2e-report:
+    needs: e2e
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: ./.github/actions/setup
+
+      - name: Download all shard blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: apps/web/all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into one HTML report
+        working-directory: apps/web
+        run: bun x playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload merged HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: apps/web/playwright-report/
+          retention-days: 14
