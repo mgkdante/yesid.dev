@@ -66,16 +66,16 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    # NON-BLOCKING for now. The suite is green locally + pre-deploy, but the
-    # HERMETIC CI build surfaces environment-only failures that do NOT reflect
-    # real bugs (prod is green): a /projects SSR 500 under the pinned Bun /
-    # ubuntu-runner toolchain (passes on local Bun + on Vercel), plus sub-pixel
-    # font-rendering drift on tight-viewport geometry asserts. The right fix is
-    # to point the suite at the deployed Vercel PREVIEW (PLAYWRIGHT_BASE_URL) so
-    # it tests the real build, not a hermetic one — tracked as a follow-up.
-    # Until then this runs for signal without gating merges. Flip to blocking
-    # (drop continue-on-error + add to the branch ruleset) once it targets the
-    # preview.
+    # Runs the Playwright suite against the DEPLOYED Vercel PREVIEW (the real
+    # build), NOT a hermetic local one. This avoids hermetic-only failures
+    # (@resvg/resvg-js native binary not installed by Bun --frozen-lockfile,
+    # the /projects SSR 500, sub-pixel font drift) and lets the suite run with
+    # full parallelism (workers hit the edge independently — see
+    # playwright.config.ts, which gates fullyParallel + workers on an external
+    # PLAYWRIGHT_BASE_URL). Canonical/hreflang asserts are host-independent
+    # (SITE_HOST is hardcoded), so they hold on the preview host too.
+    # Kept continue-on-error for one shake-out cycle; drop it + add `e2e` to the
+    # branch ruleset to make it a hard gate.
     continue-on-error: true
 
     steps:
@@ -83,17 +83,44 @@ jobs:
 
       - uses: ./.github/actions/setup
 
+      - name: Resolve the Vercel preview URL (wait for the deploy)
+        id: preview
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.payload.pull_request?.head?.sha ?? context.sha;
+            core.info(`Waiting for a Vercel preview deployment for ${sha}…`);
+            const deadline = Date.now() + 12 * 60 * 1000;
+            while (Date.now() < deadline) {
+              const { data: deployments } = await github.rest.repos.listDeployments({
+                owner: context.repo.owner, repo: context.repo.repo, sha, per_page: 30,
+              });
+              for (const d of deployments) {
+                const { data: statuses } = await github.rest.repos.listDeploymentStatuses({
+                  owner: context.repo.owner, repo: context.repo.repo, deployment_id: d.id, per_page: 30,
+                });
+                const ok = statuses.find((s) => s.state === 'success' && s.environment_url);
+                if (ok) {
+                  core.info(`preview ready: ${ok.environment_url}`);
+                  core.setOutput('url', ok.environment_url);
+                  return;
+                }
+                if (statuses.some((s) => ['failure', 'error'].includes(s.state))) {
+                  core.warning(`a deployment for ${sha} reported failure; still polling for a good one`);
+                }
+              }
+              await new Promise((r) => setTimeout(r, 15000));
+            }
+            core.setFailed(`No successful Vercel preview deployment found for ${sha} within 12m`);
+
       - name: Install Playwright Chromium (+ system deps)
         working-directory: apps/web
         run: bun x playwright install --with-deps chromium
 
-      - name: Playwright e2e (hermetic — committed .ts, local preview)
+      - name: Playwright e2e (against the deployed Vercel preview)
         working-directory: apps/web
         env:
-          # The webServer runs `bun run build`, whose prebuild would otherwise
-          # hit the live CMS via export-fallbacks. Keep CI hermetic like the
-          # `ci` build job above — the committed content modules are the source.
-          EXPORT_FALLBACKS_SKIP: '1'
+          PLAYWRIGHT_BASE_URL: ${{ steps.preview.outputs.url }}
         run: bun run test:e2e
 
       - name: Upload Playwright report on failure
