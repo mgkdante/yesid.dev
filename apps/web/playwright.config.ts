@@ -43,13 +43,21 @@ const DESKTOP_ONLY_SPECS = [
 
 export default defineConfig({
 	// Parallelism pays off ONLY against an external, horizontally-scalable surface
-	// (the deployed Vercel preview via PLAYWRIGHT_BASE_URL): then each worker hits
-	// the CDN/edge independently. Against the single local hermetic preview server
-	// fullyParallel + many workers CONTEND and run SLOWER (measured 188s vs 150s,
-	// worst on the screenshot-heavy weather specs) — so keep the hermetic path
-	// lean (1 worker in CI), and crank parallelism only when external.
+	// (the deployed Vercel preview via PLAYWRIGHT_BASE_URL): each worker hits the
+	// CDN/edge independently and the suite is I/O-bound (every nav is a network
+	// round-trip), so fan out HARD. Playwright's default (≈ cores/2 → only ~2 on a
+	// GitHub runner) leaves it running nearly serially against remote latency —
+	// that's the difference between a ~3-min and a ~13-min e2e job. Default to 8,
+	// overridable via PLAYWRIGHT_WORKERS. Against the single local hermetic preview
+	// server, by contrast, many workers CONTEND and run SLOWER (measured 188s vs
+	// 150s, worst on the screenshot-heavy weather specs) — so keep the hermetic CI
+	// path lean at 1 worker.
 	fullyParallel: Boolean(externalBaseURL),
-	workers: externalBaseURL ? undefined : process.env.CI ? 1 : undefined,
+	workers: externalBaseURL
+		? Number(process.env.PLAYWRIGHT_WORKERS ?? 8)
+		: process.env.CI
+			? 1
+			: undefined,
 	use: { baseURL: externalBaseURL ?? 'http://localhost:4173' },
 	...(externalBaseURL
 		? {}
