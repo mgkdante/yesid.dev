@@ -65,6 +65,18 @@
 	const carouselNextAria = resolveLocale(siteLabels.a11y.carouselNext, locale) || 'Next projects';
 	const markerFeaturedTemplate = resolveLocale(siteLabels.ui.markerFeatured, locale) || '{num} / FEATURED';
 
+	// FR-LEAK (needs-cms-field): the 3+-stations compression caption is an
+	// EN-only template literal at the {#each} site below — it ships English on
+	// /fr. The matching CMS field does NOT exist yet in siteLabels.ui (the
+	// SiteLabelsSchema z.object in @repo/shared has no index signature, so a
+	// live reference would fail typecheck until the field is seeded). Once
+	// `ui.stationsOneSystem` lands in Directus + the regenerated export, swap
+	// the literal below for this line (it keeps the {count} placeholder so the
+	// station count still substitutes via fillTemplate):
+	//   const stationsOneSystemTemplate = resolveLocale(siteLabels.ui.stationsOneSystem, locale);
+	//   ...
+	//   {fillTemplate(stationsOneSystemTemplate, { count: String(stations.length) })}
+
 	// go2/home-cards: quiet exploration line — ORANGE standard action (it's
 	// exploration, not conversion). Code literal per locale pending a
 	// ui_see_the_build site_labels seed in a future CMS pass.
@@ -269,6 +281,10 @@
 												{#if stations.length <= 2}<span>{resolveLocale(station.title, locale)}</span>{/if}
 											</span>
 										{/each}
+										<!-- FR-LEAK (needs-cms-field siteLabels.ui.stationsOneSystem):
+										     EN-only literal — ships English on /fr. Swap for
+										     fillTemplate(stationsOneSystemTemplate, { count: String(stations.length) })
+										     once the CMS field is seeded (see script TODO above). -->
 										{#if stations.length > 2}<span class="proof-station-caption">{stations.length} stations · one system</span>{/if}
 									</span>
 								{/if}

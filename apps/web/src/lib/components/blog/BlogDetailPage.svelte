@@ -22,6 +22,8 @@
 
   const locale = getLocale();
   import { blogDetailContent } from '$lib/content/blog';
+  import { siteLabels } from '$lib/content';
+  import type { Locale } from '$lib/types';
 
   // go2/w4: reading mode removed per operator QA — the default reading
   // experience is the only one. (blogDetailContent.page.readingMode stays in
@@ -56,6 +58,26 @@
   const accentColor = $derived(
     post.category === 'personal' ? 'var(--accent-text)' : 'var(--primary)'
   );
+
+  // Value localization for the meta sidebar (was rendering raw enum/code values).
+  // Category name: CMS-backed via siteLabels.ui.category{Personal,Professional}
+  // (same fields BlogDetailHeader already resolves for its category line).
+  const categoryName = $derived(
+    post.category === 'personal'
+      ? resolveLocale(siteLabels.ui.categoryPersonal, locale)
+      : resolveLocale(siteLabels.ui.categoryProfessional, locale)
+  );
+
+  // Language name: no CMS label map exists yet (reported as needsCmsField:
+  // siteLabels.ui.languageNames). Until that lands, display the language's
+  // endonym via the same constant the listing filters use (BlogFilterSidebar),
+  // not the raw `en`/`fr` code. Endonyms are locale-stable by design.
+  const LANGUAGE_ENDONYMS: Record<Locale, string> = {
+    en: 'English',
+    fr: 'Français',
+    es: 'Español',
+  };
+  const languageName = $derived(LANGUAGE_ENDONYMS[post.lang] ?? post.lang);
 
   // Shared active heading state — drives TOC + pill
   let activeHeadingId = $state('');
@@ -150,7 +172,7 @@
           <div class="left-meta" aria-hidden="true">
             <div class="left-meta__item">
               <span class="left-meta__label">{metaCategoryLabel}</span>
-              <span class="left-meta__value">{post.category}</span>
+              <span class="left-meta__value">{categoryName}</span>
             </div>
             <div class="left-meta__item">
               <span class="left-meta__label">{metaWordsLabel}</span>
@@ -162,7 +184,7 @@
             </div>
             <div class="left-meta__item">
               <span class="left-meta__label">{metaLanguageLabel}</span>
-              <span class="left-meta__value">{post.lang}</span>
+              <span class="left-meta__value">{languageName}</span>
             </div>
             {#if post.tags.length > 0}
               <div class="left-meta__item">

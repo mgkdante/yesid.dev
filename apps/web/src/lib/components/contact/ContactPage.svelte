@@ -40,6 +40,17 @@
 	const stationLabel = resolveLocale(c.stationLabel, locale);
 	const sendErrorMessage = resolveLocale(c.sendErrorMessage, locale);
 
+	// Inline anchor words for the success "Meanwhile, check out my {work} or {blog}"
+	// line (c.success.meanwhile). These render INSIDE the localized template, so on
+	// /fr the link text must be French too — today they leak English ("work"/"blog").
+	// READY-TO-WIRE: once the CMS fields land, swap the literals for
+	//   resolveLocale(c.success.workLinkLabel, locale) / c.success.blogLinkLabel.
+	// See needsCmsField: siteLabels is the wrong home — these belong on the
+	// generated contact-page.ts `success` group beside `meanwhile`.
+	// TODO(cms): wire to c.success.workLinkLabel / c.success.blogLinkLabel.
+	const workLinkLabel = 'work';
+	const blogLinkLabel = 'blog';
+
 	// --- Weather freshness (slice-28.1, audit #20/#122) ---
 	// The `weather` prop is SSR-baked and CDN-cached with the page (up to a
 	// day old). Render it immediately, then refresh from /api/weather after
@@ -410,8 +421,8 @@
 										: 'text-[var(--secondary-foreground)]'} text-small">
 								{#if line.color === 'muted' && line.text.includes('{work}') && line.text.includes('{blog}')}
 									{@html line.text
-										.replace('{work}', `<a href="${localizeHref('/services', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">work</a>`)
-										.replace('{blog}', `<a href="${localizeHref('/blog', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">blog</a>`)}
+										.replace('{work}', `<a href="${localizeHref('/services', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">${workLinkLabel}</a>`)
+										.replace('{blog}', `<a href="${localizeHref('/blog', locale)}" class="tap-feedback text-[var(--primary)] underline underline-offset-2 hover:text-[var(--accent-text)] active:text-[var(--accent-text)] transition-colors">${blogLinkLabel}</a>`)}
 								{:else}
 									{line.text}
 								{/if}

@@ -231,7 +231,7 @@
 		/>
 
 		{#if hasActiveFilters}
-			<FilterSummary count={filteredPosts.length} noun={resolveLocale(blogListingContent.resultNoun, locale)} onClear={clearFilters} />
+			<FilterSummary count={filteredPosts.length} countLabel={blogListingContent.resultCount} onClear={clearFilters} />
 		{/if}
 
 		{#if filteredPosts.length === 0}

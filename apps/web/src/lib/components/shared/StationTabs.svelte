@@ -24,16 +24,6 @@
 	const locale = getLocale();
 	const serviceNavAria = resolveLocale(servicesDetailContent.serviceNavAria, locale);
 
-	// Short labels map — one entry per station. GO-2 consolidation: 4 stations,
-	// labels match the manifesto pills (databases/pipelines/dashboards/websites).
-	// Unknown ids fall back to the first word of the title (getLabel below).
-	const SHORT_LABELS: Record<string, string> = {
-		'database-engineering': 'Databases',
-		'data-pipeline': 'Pipelines',
-		'analytics-reporting': 'Dashboards',
-		'web-development': 'Websites'
-	};
-
 	let {
 		services,
 		activeId,
@@ -57,9 +47,15 @@
 		return String(n).padStart(2, '0');
 	}
 
-	/** Get short label for a service — falls back to first word of the locale-resolved title */
+	/** Compact tab label: first word of the locale-resolved service title.
+	 *  EN titles ("Databases & SQL" → "Databases") yield the same single-word
+	 *  labels the old hardcoded EN map did, so EN output is unchanged; /fr now
+	 *  reads the French first word instead of an English literal.
+	 *  TODO(cms): proper short labels live in siteLabels.servicesChrome.listing
+	 *  .stationShortLabels once that field exists — see needsCmsField report.
+	 *  Wire as: resolveLocale(siteLabels.servicesChrome.listing.stationShortLabels[service.id], locale). */
 	function getLabel(service: Service): string {
-		return SHORT_LABELS[service.id] ?? resolveLocale(service.title, locale).split(' ')[0];
+		return resolveLocale(service.title, locale).split(' ')[0];
 	}
 
 	/** Inactive tabs fade by distance from active: closer tabs stay brighter.
