@@ -18,6 +18,13 @@ export const blogListingContent = {
 	mobileHeading: { en: 'Blog', fr: 'Blogue' } satisfies LocalizedString,
 	searchPlaceholder: { en: 'Search posts...', fr: 'Chercher des articles...' } satisfies LocalizedString,
 	resultNoun: { en: 'result', fr: 'résultat' } satisfies LocalizedString,
+	/** Locale-aware "{count} result(s)" templates for FilterSummary. Singular/plural
+	 *  split keeps pluralization per-locale (EN: plural unless 1; FR: 0 & 1 singular).
+	 *  Ready-to-wire to `siteLabels.ui.resultCount` once that CMS field exists. */
+	resultCount: {
+		singular: { en: '{count} result', fr: '{count} résultat' } satisfies LocalizedString,
+		plural: { en: '{count} results', fr: '{count} résultats' } satisfies LocalizedString,
+	},
 	noPostsMessage: {
 		en: 'No posts found. Try adjusting your filters.',
 		fr: 'Aucun article trouvé. Essaie d\'ajuster tes filtres.',

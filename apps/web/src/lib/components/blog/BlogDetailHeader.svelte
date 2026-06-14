@@ -6,7 +6,7 @@
   No entrance animation — Snappy Doctrine (17e-2). ManifestoCanvas is ambient (doctrine-allowed).
 -->
 <script lang="ts">
-  import type { BlogPost } from '$lib/types';
+  import type { BlogPost, Locale } from '$lib/types';
   import { resolveLocale } from '$lib/utils/locale';
   import { getLocale } from '$lib/utils/locale-context';
 
@@ -71,14 +71,27 @@
   );
   const editionTemplate = resolveLocale(siteLabels.ui.blogEditionTemplate, locale) || 'VOL. 01 // ISS. {issue}';
 
-  // Format date as "Apr 2026"
+  // Format date as "Apr 2026" (EN) / "avr. 2026" (FR). Month abbrev is
+  // localized natively by Intl from the active UI locale — no hardcoded
+  // 'en-US' (which leaked English month names onto /fr).
+  const dateLocale = $derived(locale === 'fr' ? 'fr-CA' : 'en-US');
   const formattedDate = $derived.by(() => {
     const d = new Date(post.date + 'T00:00:00');
-    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    return d.toLocaleDateString(dateLocale, { month: 'short', year: 'numeric' });
   });
 
   // Format date for edge label: "2026.04.15"
   const edgeDate = $derived(post.date.replace(/-/g, '.'));
+
+  // Post body language as an endonym (English/Français), not the raw `en`/`fr`
+  // code that leaked into the meta row. No CMS label map exists yet — reported
+  // as needsCmsField: siteLabels.ui.languageNames. Endonyms are locale-stable.
+  const LANGUAGE_ENDONYMS: Record<Locale, string> = {
+    en: 'English',
+    fr: 'Français',
+    es: 'Español',
+  };
+  const languageName = $derived(LANGUAGE_ENDONYMS[post.lang] ?? post.lang);
 
   // Highlight first tag keyword in title
   const titleParts = $derived.by(() => {
@@ -174,7 +187,7 @@
         <span class="header__meta-sep" aria-hidden="true"></span>
         <span>{readingTimeText}</span>
         <span class="header__meta-sep" aria-hidden="true"></span>
-        <span>{post.lang}</span>
+        <span>{languageName}</span>
       </div>
     </div>
   </section>

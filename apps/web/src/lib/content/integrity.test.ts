@@ -591,7 +591,13 @@ describe('LocalizedString guard + translation debt', () => {
 // recomposed from the companion + hero-data labels. +97 LocalizedString leaves,
 // ALL with fr (the chrome translations seed) → WITH_FR + TOTAL both +97
 // (530 → 627), NO_FR stays 0.
-const LOCKED = { TOTAL: 627, WITH_FR: 627, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // slice-30 t1: +97 chrome leaves (100% fr). ES deliberately deferred.
+// fr-leak fix (FilterSummary pluralization): the hardcoded English `+ "s"` rule
+// in FilterSummary.svelte was wrong for French zero ("0 résultat", not "résultats").
+// Replaced with locale-aware singular/plural count templates living in the
+// editable companions: blogListingContent.resultCount {singular,plural} (blog) and
+// sharedChromeContent.projectCount {singular,plural} (projects). +4 LocalizedString
+// leaves, all fr-complete → WITH_FR + TOTAL both +4 (627 → 631), NO_FR stays 0.
+const LOCKED = { TOTAL: 631, WITH_FR: 631, NO_FR: 0, ES_WITHOUT_FR: 0 } as const; // slice-30 t1: +97 chrome leaves (100% fr). ES deliberately deferred.
 
 describe('locale-completeness locks (slice-28.6 FR-first model)', () => {
 	it('SUPPORTED_LOCALES has exactly 3 entries: en, fr, es', () => {
