@@ -124,7 +124,7 @@ describe('TechMatcher match cards', () => {
 		// A ruled-out card names the first conflicting pick (insertion order).
 		const out = outCards.find((c) => c.textContent?.includes('ruled out'));
 		expect(out).toBeTruthy();
-		expect(out!.textContent).toContain("ruled out — PostgreSQL isn't in this recipe");
+		expect(out!.textContent).toContain("ruled out, PostgreSQL isn't in this recipe");
 		expect(out!.getAttribute('aria-disabled')).toBe('true');
 	});
 
@@ -135,7 +135,7 @@ describe('TechMatcher match cards', () => {
 		expect(counter.getAttribute('aria-live')).toBe('polite');
 		// Taste round 2 vocabulary: archetypes are "known builds" everywhere.
 		expect(counter.textContent).toContain(
-			`${engine.archetypes.length} known builds on the board — tap parts to narrow`,
+			`${engine.archetypes.length} known builds on the board, tap parts to narrow`,
 		);
 
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
@@ -152,12 +152,12 @@ describe('TechMatcher match cards', () => {
 		const engine = new EngineState();
 		render(TechMatcher, { props: { engine } });
 		const slot = screen.getByTestId('tech-teach-line');
-		expect(slot.textContent).toContain("tap a part — I'll tell you what it does.");
+		expect(slot.textContent).toContain("tap a part, I'll tell you what it does.");
 
 		// Pick (mobile path: every pick teaches) — postgresql has `enables`.
 		await fireEvent.click(screen.getByTestId('tech-chip-postgresql'));
-		expect(slot.textContent).toContain('PostgreSQL —');
-		expect(slot.textContent).toContain('lives in data: the remembering part — where records live');
+		expect(slot.textContent).toContain('PostgreSQL,');
+		expect(slot.textContent).toContain('lives in data: the remembering part, where records live');
 
 		// A tech without `enables` still teaches its layer (graceful, no blank).
 		await fireEvent.mouseEnter(screen.getByTestId('tech-chip-threejs-threlte'));
@@ -222,11 +222,11 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		const card = screen.getByTestId('build-shape');
 		expect(card.textContent).toContain('Your build: data covered');
 		expect(card.textContent).toContain(
-			"that's memory with nothing using it yet — records kept safe and queryable.",
+			"that's memory with nothing using it yet, records kept safe and queryable.",
 		);
 		expect(screen.getAllByTestId(/^match-card-/).length).toBe(engine.matches.length);
 		expect(screen.getByTestId('known-builds-label').textContent).toContain(
-			"known builds — recipes I've already drawn",
+			"known builds, recipes I've already drawn",
 		);
 	});
 
@@ -242,7 +242,7 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		const card = screen.getByTestId('build-shape');
 		expect(card.textContent).toContain('Your build: logic + infra covered');
 		expect(card.textContent).toContain(
-			"that's code with ground to run on — a bot, a scheduled job, an automation.",
+			"that's code with ground to run on, a bot, a scheduled job, an automation.",
 		);
 		expect(card.textContent).toContain(
 			'add an interface layer + a data layer and this becomes a working product.',
@@ -265,7 +265,7 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		expect(items).toHaveLength(2);
 		// STACK_LAYERS order: logic (node-js) before data (postgresql).
 		expect(items[0]).toBe('Node.js');
-		expect(items[1]).toMatch(/^PostgreSQL — .+/);
+		expect(items[1]).toMatch(/^PostgreSQL, .+/);
 	});
 
 	it('complete coverage flips the next-step line to ready-to-build', async () => {
@@ -278,9 +278,9 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		const card = screen.getByTestId('build-shape');
 		expect(card.textContent).toContain('Your build: interface + logic + data + infra covered');
 		expect(card.textContent).toContain(
-			"that's all four layers — the shape of a complete, working product.",
+			"that's all four layers, the shape of a complete, working product.",
 		);
-		expect(card.textContent).toContain("nothing missing — this one's ready to build.");
+		expect(card.textContent).toContain("nothing missing, this one's ready to build.");
 	});
 
 	it('warm CTA + availability door + prefilled contact link (exactly TWO <a>s, hrefs pinned)', async () => {
@@ -292,7 +292,7 @@ describe('TechMatcher build-shape card (taste round 2 — the always-on matrix)'
 		expect(card.textContent).toContain('Take this combo with you →');
 		// Finale (4c): the whisper grew a door — the warm availability line IS
 		// a link to /contact (code-owned LocalizedString, en fallback).
-		expect(card.textContent).toContain("Questions? I'm online — ask me anything.");
+		expect(card.textContent).toContain('Questions? Ask me anything.');
 		const links = card.querySelectorAll('a');
 		expect(links).toHaveLength(2);
 		expect(screen.getByTestId('shape-link').getAttribute('href')).toBe(
@@ -516,7 +516,7 @@ describe('TechMatcher finale 4c — the phrase leads, the journey guides', () =>
 		);
 		// …and the 15-subset reading stays as the supporting teaching line.
 		expect(card.textContent).toContain(
-			"that's code with ground to run on — a bot, a scheduled job, an automation.",
+			"that's code with ground to run on, a bot, a scheduled job, an automation.",
 		);
 	});
 

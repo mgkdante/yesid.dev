@@ -17,7 +17,7 @@
   let { stop, label, class: className, ...restProps }: StopLabelProps = $props();
 </script>
 
-<div class={cn("stop-label", className)} data-slot="stop-label" {...restProps}><span class="stop-label-num">STOP {stop}</span> — {label}</div>
+<div class={cn("stop-label", className)} data-slot="stop-label" {...restProps}><span class="stop-label-num">STOP {stop}</span> · {label}</div>
 
 <style>
   .stop-label {

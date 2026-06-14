@@ -13,6 +13,7 @@
 	import type { HeroData } from '$lib/content';
 	let {
 		headlineLine1,
+		headlineLine2,
 		headlineAriaSuffix,
 		subheadlineText,
 		subtitleText,
@@ -25,6 +26,7 @@
 		onReplay,
 	}: {
 		headlineLine1: string;
+		headlineLine2: string;
 		headlineAriaSuffix: string;
 		subheadlineText: string;
 		subtitleText: string;
@@ -70,7 +72,7 @@
 			class="block text-hero-mobile text-[var(--primary)] md:text-hero"
 			data-testid="hero-line2"
 		>
-			<span data-hero-stagger="1" aria-hidden="true">DON'T BREAK</span><button
+			<span data-hero-stagger="1" aria-hidden="true">{headlineLine2}</span><button
 				type="button"
 				class="hero-dot-btn {introCompleted ? 'hero-dot-armed' : ''} {beaconSettled
 					? 'hero-dot-settled'

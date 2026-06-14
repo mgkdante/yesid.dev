@@ -32,7 +32,7 @@ export const SITE_NAME = 'yesid.';
 //     restored in slice-28.6: apps/web/scripts/generate-og-default.ts)
 // Flip checklist lives in the slice-28.6 runbook (PR body): FR content drop →
 // og/default.fr.png → flip this const → update the three flip-keyed tests.
-export const PUBLISHED_LOCALES: readonly Locale[] = ['en'];
+export const PUBLISHED_LOCALES: readonly Locale[] = ['en', 'fr'];
 
 // Re-exported from $lib/utils/locale so there's exactly one DEFAULT_LOCALE
 // in the codebase. Consumers of seo-defaults get it without a second import.

@@ -18,6 +18,7 @@
 		"check": "turbo run check",
 		"cms:sync:diff:op": "op run --env-file=.env -- bun run --cwd apps/cms sync:diff",
 		"cms:sync:push:op": "op run --env-file=.env -- bun run --cwd apps/cms sync:push",
+		"cms:setup:site-labels:op": "op run --env-file=apps/cms/.env -- bun run --cwd apps/cms setup:site-labels",
 		"cms:sync:diff:local-env": "bun run --env-file=apps/cms/.env.local --cwd apps/cms sync:diff",
 		"secrets:inject:web": "op inject -i .env -o apps/web/.env.local",
 		"secrets:inject:cms": "op inject -i .env -o apps/cms/.env.local",

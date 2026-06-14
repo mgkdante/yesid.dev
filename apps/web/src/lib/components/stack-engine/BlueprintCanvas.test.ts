@@ -212,7 +212,7 @@ describe('BlueprintCanvas go2/w5 layered learning', () => {
 		expect(stamp.textContent).toContain('REV A · 4 parts · 4 layers');
 		expect(stamp.querySelector('.bp-stamp-frame')).toBeTruthy();
 		expect(screen.getByTestId('blueprint-canvas').getAttribute('aria-label')).toBe(
-			'Blueprint: A data dashboard — 4 parts in 4 layers',
+			'Blueprint: A data dashboard, 4 parts in 4 layers',
 		);
 	});
 

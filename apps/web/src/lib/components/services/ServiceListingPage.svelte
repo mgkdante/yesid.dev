@@ -111,7 +111,8 @@
 <style>
 	.services-page {
 		position: relative;
-		background: var(--background);
+		/* transparent so the root layout's single .circuit-grid shows through,
+		   matching /projects (the canonical single-grid background). */
 		overflow-x: clip;
 	}
 
@@ -121,8 +122,10 @@
 		z-index: var(--z-rail);
 	}
 
-	/* Solid backdrop above tabs — covers the nav gap so content doesn't
-	   show through the semi-transparent nav pill on scroll. */
+	/* Solid band filling the nav gap above the sticky tabs — same colour as the
+	   page background, so service content scrolling up underneath disappears
+	   cleanly into it instead of bleeding through (transparent looked broken on
+	   scroll). Masks the gap between the floating nav pill and the orange tabs. */
 	.tabs-bar::before {
 		content: '';
 		position: absolute;

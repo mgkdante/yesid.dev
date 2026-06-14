@@ -12,7 +12,8 @@ import type { SiteMeta } from '$lib/types';
 
 export const siteMeta: SiteMeta = {
 	description: {
-		en: 'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power — PostgreSQL, dbt, Power BI, SvelteKit.',
+		en: 'Freelance digital infrastructure engineer in Montreal. Databases, pipelines, dashboards, and the websites they power, PostgreSQL, dbt, Power BI, SvelteKit.',
+		fr: 'Ingénieur d\'infrastructure numérique pigiste à Montréal. Bases de données, pipelines, tableaux de bord et les sites web qu\'ils font rouler, PostgreSQL, dbt, Power BI, SvelteKit.',
 	},
 	links: {
 		email: 'contact@yesid.dev',
@@ -26,7 +27,7 @@ export const siteMeta: SiteMeta = {
 		jobTitle: {
 			en: 'Freelance Digital Infrastructure Engineer',
 			es: 'Ingeniero independiente en infraestructura digital',
-			fr: 'Ingénieur indépendant en infrastructure numérique',
+			fr: 'Ingénieur pigiste en infrastructure numérique',
 		},
 		knowsAbout: [
 			'PostgreSQL',
@@ -41,5 +42,8 @@ export const siteMeta: SiteMeta = {
 		],
 		name: 'Yesid O.',
 	},
-	tagline: { en: 'Digital infrastructure that moves.' },
+	tagline: {
+		en: 'Digital infrastructure that moves.',
+		fr: 'Une infrastructure numérique qui bouge.',
+	},
 };

@@ -1,162 +1,41 @@
-<!--
-  Rotating testimonial carousel. Auto-rotates 6s, pauses on hover.
-  Metro stop label + cursor glow.
-  Uses proper ARIA carousel semantics (aria-roledescription="carousel",
-  role="group" + aria-roledescription="slide" on active content).
-  Kept as manual fade carousel (not embla) to preserve fade transition.
--->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
 	import type { AboutTestimonial } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
-
-	const locale = getLocale();
-	import { aboutPageContent } from '$lib/content/about-page';
 	import { cursorGlow } from '$lib/motion/actions/cursorGlow.js';
 	import { StopLabel } from '$lib/components/brand';
 	import { Card } from '$lib/components/ui/card';
 
+	const locale = getLocale();
+
 	let { testimonials, stop, label }: { testimonials: readonly AboutTestimonial[]; stop: string; label: string } = $props();
 
-	const carouselAria = resolveLocale(aboutPageContent.labels.testimonialsCarouselAria, locale);
-	const tabNavAria = resolveLocale(aboutPageContent.labels.testimonialsTabNavAria, locale);
-	const slideAriaTemplate = resolveLocale(aboutPageContent.labels.testimonialSlideAria, locale);
-	const showAriaTemplate = resolveLocale(aboutPageContent.labels.showTestimonialAria, locale);
-
-	let activeIndex = $state(0);
-	let paused = $state(false);
-	let intervalId: ReturnType<typeof setInterval> | undefined;
-	let rootEl = $state<HTMLElement>(undefined!);
-	let visibilityObserver: IntersectionObserver | null = null;
-	let isVisible = false;
-
-	const ROTATE_MS = 6000;
-
-	function goTo(index: number) {
-		activeIndex = index;
-		// Reset timer on manual navigation so user gets full 6s to read.
-		// Only restart the timer if the carousel is in view — an offscreen
-		// click shouldn't wake a paused rotation.
-		if (isVisible) startTimer();
-	}
-
-	function startTimer() {
-		stopTimer();
-		intervalId = setInterval(() => {
-			if (!paused) {
-				activeIndex = (activeIndex + 1) % testimonials.length;
-			}
-		}, ROTATE_MS);
-	}
-
-	function stopTimer() {
-		if (intervalId !== undefined) {
-			clearInterval(intervalId);
-			intervalId = undefined;
-		}
-	}
-
-	onMount(() => {
-		// IO-gate rotation — testimonials only rotate while the carousel
-		// is in view. Hover pause (via `paused`) still applies on top.
-		visibilityObserver = new IntersectionObserver(
-			(entries) => {
-				isVisible = entries[0].isIntersecting;
-				if (isVisible) startTimer();
-				else stopTimer();
-			},
-			{ rootMargin: '100px' },
-		);
-		if (rootEl) visibilityObserver.observe(rootEl);
-	});
-	onDestroy(() => {
-		stopTimer();
-		visibilityObserver?.disconnect();
-		visibilityObserver = null;
-	});
-
-	const active = $derived(testimonials[activeIndex]);
-	const quote = $derived(resolveLocale(active.quote, locale));
-	const role = $derived(resolveLocale(active.role, locale));
+	const active = $derived(testimonials[0]);
+	const quote = $derived(active ? resolveLocale(active.quote, locale) : '');
+	const author = $derived(locale === 'fr' && active?.role.fr ? active.role.fr : active?.author);
 </script>
 
-<div
-	bind:this={rootEl}
-	class="group h-full"
-	use:cursorGlow
->
-<Card
-	class="h-full p-3"
-	data-testid="about-testimonials"
-	onmouseenter={() => (paused = true)}
-	onmouseleave={() => (paused = false)}
-	role="region"
-	aria-roledescription="carousel"
-	aria-label={carouselAria}
->
-	<div class="relative flex h-full flex-col">
-		<!-- Stop label: always top-left -->
-		<StopLabel {stop} {label} />
+<div class="group h-full" use:cursorGlow>
+	<Card class="h-full p-3" data-testid="about-testimonials" role="region" aria-label={label}>
+		<div class="relative flex h-full flex-col">
+			<StopLabel {stop} {label} />
 
-		<!-- Centered content area — active slide -->
-		<div
-			class="flex flex-1 flex-col justify-center"
-			role="group"
-			aria-roledescription="slide"
-			aria-label={slideAriaTemplate.replace('{index}', String(activeIndex + 1)).replace('{total}', String(testimonials.length))}
-		>
-			<!-- Decorative quote mark -->
-			<div class="text-center font-heading text-5xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
-				&ldquo;
-			</div>
+			<div class="flex flex-1 flex-col justify-center">
+				<div class="font-heading text-7xl leading-none text-[var(--primary)] select-none" aria-hidden="true">
+					&ldquo;
+				</div>
 
-			<!-- Quote -->
-			<div class="min-h-20 flex items-center" aria-live="polite" aria-atomic="true">
-				{#key activeIndex}
-					<blockquote class="animate-fade-in text-center text-base leading-relaxed text-[var(--foreground)] italic md:text-lg">
-						{quote}
-					</blockquote>
-				{/key}
-			</div>
+				<blockquote class="-mt-2 max-w-xl text-pretty text-xl leading-tight font-semibold text-[var(--foreground)] md:text-2xl">
+					{quote}
+				</blockquote>
 
-			<!-- Author -->
-			<div class="mt-3">
-				{#key activeIndex}
-					<div class="animate-fade-in text-right">
-						<span class="text-sm font-semibold text-[var(--foreground)]">{active.author}</span>
-						<span class="text-sm text-[var(--secondary-foreground)]">
-							— {role}, {active.company}
-						</span>
-					</div>
-				{/key}
+				<div class="mt-5 flex items-center gap-3">
+					<span class="h-px w-10 bg-[var(--primary)]" aria-hidden="true"></span>
+					<span class="font-mono text-caption font-bold tracking-[0.12em] text-[var(--accent-text)]">
+						{author}
+					</span>
+				</div>
 			</div>
 		</div>
-
-		<!-- Dot indicators: bottom-left -->
-		<div class="mt-auto flex gap-5" role="tablist" aria-label={tabNavAria}>
-			{#each testimonials as _, i}
-				<button
-					class="relative tap-press h-2 w-2 rounded-full transition-colors duration-300 before:absolute before:inset-[-18px] before:content-[''] {i === activeIndex
-						? 'bg-[var(--primary)]'
-						: 'bg-[var(--border)] hover:bg-[var(--muted-foreground)] active:bg-[var(--muted-foreground)]'}"
-					aria-label={showAriaTemplate.replace('{index}', String(i + 1))}
-					aria-selected={i === activeIndex}
-					role="tab"
-					onclick={() => goTo(i)}
-				></button>
-			{/each}
-		</div>
-	</div>
-</Card>
+	</Card>
 </div>
-
-<style>
-	@keyframes fade-in {
-		from { opacity: 0; transform: translateY(4px); }
-		to { opacity: 1; transform: translateY(0); }
-	}
-	:global(.animate-fade-in) {
-		animation: fade-in 0.4s ease-out;
-	}
-</style>

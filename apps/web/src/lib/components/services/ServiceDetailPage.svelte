@@ -302,7 +302,7 @@
 
 <style>
 	.service-detail {
-		background: var(--background);
+		/* transparent so the root .circuit-grid shows through, matching /projects */
 		min-height: 100dvh;
 	}
 

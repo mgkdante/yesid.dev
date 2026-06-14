@@ -15,7 +15,7 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 		blocks: [
 			{
 				data: {
-					text: 'I watch a lot of anime. I also spend a lot of time in databases. So when I found a dataset of 10 years of MyAnimeList ratings, genres, and studios — I knew what I had to do.',
+					text: 'I watch a lot of anime. I also spend a lot of time in databases. So when I found a dataset of 10 years of MyAnimeList ratings, genres, and studios, I knew what I had to do.',
 				},
 				id: 'm00000001',
 				type: 'paragraph',
@@ -108,7 +108,7 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 			},
 			{
 				data: {
-					text: 'Single-cour anime (12-13 episodes) have the highest average rating. Two-cour shows (24-26) are close behind. Anything over 100 episodes drops significantly — length fatigue is real.',
+					text: 'Single-cour anime (12-13 episodes) have the highest average rating. Two-cour shows (24-26) are close behind. Anything over 100 episodes drops significantly, length fatigue is real.',
 				},
 				id: 'm0000000b',
 				type: 'paragraph',
@@ -120,7 +120,7 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 			},
 			{
 				data: {
-					text: 'Before 2016, isekai (transported to another world) was a niche genre. After 2016, it accounts for 15% of all new anime. The data doesn\'t lie — we\'re living in the isekai era.',
+					text: 'Before 2016, isekai (transported to another world) was a niche genre. After 2016, it accounts for 15% of all new anime. The data doesn\'t lie, we\'re living in the isekai era.',
 				},
 				id: 'm0000000d',
 				type: 'paragraph',
@@ -178,7 +178,7 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 		blocks: [
 			{
 				data: {
-					text: 'When a Quebec transit operator needed real-time visibility into their operations, they had data — lots of it. GTFS-RT feeds streaming vehicle positions, trip updates, and service alerts every 15 seconds. What they didn\'t have was a way to turn that firehose into decisions.',
+					text: 'When a Quebec transit operator needed real-time visibility into their operations, they had data, lots of it. GTFS-RT feeds streaming vehicle positions, trip updates, and service alerts every 15 seconds. What they didn\'t have was a way to turn that firehose into decisions.',
 				},
 				id: 'm00000001',
 				type: 'paragraph',
@@ -325,7 +325,7 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 		blocks: [
 			{
 				data: {
-					text: 'For years, I relied on ORMs — SQLAlchemy, Django ORM, Prisma. They promised productivity. They delivered abstraction. But somewhere along the way, I stopped understanding what my database was actually doing.',
+					text: 'For years, I relied on ORMs, SQLAlchemy, Django ORM, Prisma. They promised productivity. They delivered abstraction. But somewhere along the way, I stopped understanding what my database was actually doing.',
 				},
 				id: 'm00000001',
 				type: 'paragraph',
@@ -356,7 +356,7 @@ export const blogBodies: Readonly<Record<string, BlockEditorDoc>> = {
 				data: {
 					items: [
 						{
-							content: '<b>You need to know your database.</b> ORMs hide the database behind an abstraction. That\'s fine until the abstraction leaks — and it always leaks.',
+							content: '<b>You need to know your database.</b> ORMs hide the database behind an abstraction. That\'s fine until the abstraction leaks, and it always leaks.',
 							items: [],
 						},
 						{

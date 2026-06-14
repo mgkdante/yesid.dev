@@ -11,17 +11,9 @@
 import type { AboutContent } from '$lib/types';
 
 export const aboutPageContent: AboutContent = {
-	clientCount: 10,
-	clientLogos: [
-		{ name: 'Client 1', src: '/images/about/logo-1.svg' },
-		{ name: 'Client 2', src: '/images/about/logo-2.svg' },
-		{ name: 'Client 3', src: '/images/about/logo-3.svg' },
-		{ name: 'Client 4', src: '/images/about/logo-4.svg' },
-	],
 	cta: {
-		availability: { en: 'Booking Q3 2026' },
 		buttonHref: '/contact',
-		buttonLabel: { en: 'Send message →' },
+		buttonLabel: { en: 'Send message →', fr: 'Envoyer un message →' },
 		command: '$ yesid --contact',
 		lines: [
 			{ color: 'orange', text: '> Ready for new projects' },
@@ -53,206 +45,233 @@ export const aboutPageContent: AboutContent = {
 			},
 		],
 	},
+	education: [
+		{
+			icon: 'champlain',
+			program: {
+				en: 'DEC, Accounting & Management Technology',
+				fr: 'DEC, Techniques de comptabilité et de gestion',
+			},
+			school: {
+				en: 'Champlain Regional College, Lennoxville',
+				fr: 'Champlain Regional College, Lennoxville',
+			},
+		},
+		{
+			icon: 'bishops',
+			program: {
+				en: 'B.Sc. Computer Science, minor in Business Administration',
+				fr: 'B. Sc. informatique, mineure en administration des affaires',
+			},
+			school: { en: 'Bishop\'s University', fr: 'Bishop\'s University' },
+		},
+	],
 	identity: {
 		headshot: '/images/about/headshot.webp',
-		name: { en: 'Yesid O.' },
+		name: { en: 'Yesid', fr: 'Yesid' },
 		polaroids: [
 			{
-				alt: { en: 'Walking with my dog in Montreal' },
-				caption: { en: 'Off-duty mode' },
+				alt: {
+					en: 'Walking with my dog in Montreal',
+					fr: 'En promenade avec mon chien à Montréal',
+				},
+				caption: { en: 'Off-duty mode', fr: 'Mode relâche' },
 				rotate: -3,
 				src: '/images/about/polaroid-1.webp',
 			},
 			{
-				alt: { en: 'Yesid smiling' },
-				caption: { en: 'The usual suspect' },
-				rotate: 4,
-				src: '/images/about/polaroid-2.webp',
+				alt: {
+					en: 'Dante, the family dog',
+					fr: 'Dante, le chien de la famille',
+				},
+				caption: {
+					en: 'Dante, the family\'s good boy',
+					fr: 'Dante, le bon chien de la famille',
+				},
+				rotate: 3,
+				src: '/images/about/polaroid-dante.webp',
 			},
 			{
-				alt: { en: 'Portrait — Yesid Otalora' },
-				caption: { en: 'Circa 2019' },
+				alt: { en: 'Poupoune, my dog', fr: 'Poupoune, mon chien' },
+				caption: { en: 'Poupoune 🐾', fr: 'Poupoune 🐾' },
 				rotate: -2,
-				src: '/images/about/polaroid-3.webp',
+				src: '/images/about/polaroid-poupoune.webp',
+			},
+			{
+				alt: { en: 'Yesid', fr: 'Yesid' },
+				caption: { en: 'That\'s me', fr: 'C\'est moi' },
+				rotate: 2,
+				src: '/images/about/polaroid-yesid.webp',
+			},
+			{
+				alt: { en: 'With my family', fr: 'Avec ma famille' },
+				caption: { en: 'Family', fr: 'La famille' },
+				rotate: -4,
+				src: '/images/about/polaroid-family.webp',
+			},
+			{
+				alt: { en: 'With friends', fr: 'Avec les amis' },
+				caption: { en: 'Friends', fr: 'Les amis' },
+				rotate: 3,
+				src: '/images/about/polaroid-friends.webp',
+			},
+			{
+				alt: {
+					en: 'At the art museum in Ottawa',
+					fr: 'Au musée d\'art à Ottawa',
+				},
+				caption: { en: 'Museum day, Ottawa', fr: 'Journée musée, Ottawa' },
+				rotate: -3,
+				src: '/images/about/polaroid-museum.webp',
 			},
 		],
-		title: { en: 'Freelance Digital Infrastructure Engineer' },
+		title: {
+			en: 'Curious builder, lifelong tinkerer',
+			fr: 'Bâtisseur curieux, bricoleur depuis toujours',
+		},
 		valueProp: {
-			en: 'I help teams ship reliable digital infrastructure — from databases to dashboards to the pipelines between them.',
+			en: 'I\'m Yesid (Yesito to my friends). I was born in Zipaquirá, Colombia, and grew up in Sherbrooke, Québec from the age of ten. I\'ve been pulling computers apart since I was a kid. The family\'s first PC showed up in 2002, and by 2005 I was tinkering with it so much my mom would get mad. These days I\'m proud to be her engineer #1. That curiosity never left. Now I build clear systems and explain them in plain words, so you always know exactly what you\'re getting.',
+			fr: 'Je suis Yesid (Yesito pour mes chums). Je suis né à Zipaquirá, en Colombie, et j\'ai grandi à Sherbrooke, au Québec, depuis l\'âge de dix ans. Je démonte des ordinateurs depuis que je suis tout petit. Le premier PC de la famille est arrivé en 2002, et dès 2005 je le bricolais tellement que ma mère pognait les nerfs. Aujourd\'hui, je suis fier d\'être son ingénieur numéro un. Cette curiosité-là ne m\'a jamais lâché. Astheure, je bâtis des systèmes clairs et je les explique en mots simples, comme ça tu sais toujours exactement ce que tu reçois.',
 		},
 	},
 	interests: [
 		{
 			id: 'anime',
 			image: '/images/about/interests/anime.webp',
-			label: { en: 'Anime' },
+			label: { en: 'Anime', fr: 'Anime' },
 		},
 		{
-			id: 'dataviz',
-			image: '/images/about/interests/dataviz.webp',
-			label: { en: 'Data Viz' },
+			id: 'transit',
+			image: '/images/about/interests/transit.webp',
+			label: { en: 'Transit', fr: 'Transport collectif' },
 		},
 		{
-			id: 'opensource',
-			image: '/images/about/interests/opensource.webp',
-			label: { en: 'Open Source' },
+			id: 'space',
+			image: '/images/about/interests/space.webp',
+			label: { en: 'Space', fr: 'L\'espace' },
 		},
 		{
 			id: 'food',
 			image: '/images/about/interests/food.webp',
-			label: { en: 'MTL Food' },
+			label: { en: 'MTL Food', fr: 'Bouffe MTL' },
 		},
 	],
 	labels: {
-		clientsServed: { en: 'clients served' },
-		polaroidNextAria: { en: 'Next photo' },
-		polaroidPrevAria: { en: 'Previous photo' },
-		showTestimonialAria: { en: 'Show testimonial {index}' },
-		testimonialSlideAria: { en: 'Testimonial {index} of {total}' },
-		testimonialsCarouselAria: { en: 'Client testimonials' },
-		testimonialsTabNavAria: { en: 'Testimonial navigation' },
+		polaroidNextAria: { en: 'Next photo', fr: 'Photo suivante' },
+		polaroidPrevAria: { en: 'Previous photo', fr: 'Photo précédente' },
+		showTestimonialAria: {
+			en: 'Show testimonial {index}',
+			fr: 'Afficher le témoignage {index}',
+		},
+		testimonialSlideAria: {
+			en: 'Testimonial {index} of {total}',
+			fr: 'Témoignage {index} sur {total}',
+		},
+		testimonialsCarouselAria: { en: 'Personal quote', fr: 'Citation personnelle' },
+		testimonialsTabNavAria: { en: 'Quote navigation', fr: 'Navigation de citation' },
 	},
+	languages: ['Español', 'English', 'Français'],
 	meta: {
 		description: {
-			en: 'Freelance digital infrastructure engineer based in Montreal. PostgreSQL, SQL Server, Python, Power BI — building reliable infrastructure for teams that ship.',
+			en: 'Freelance digital infrastructure engineer based in Montréal. PostgreSQL, SQL Server, Python, Power BI, building reliable infrastructure for teams that can\'t afford downtime.',
+			fr: 'Ingénieur pigiste en infrastructure numérique basé à Montréal. PostgreSQL, SQL Server, Python, Power BI, je bâtis de l\'infrastructure fiable pour les équipes qui n\'ont pas les moyens d\'avoir des pannes.',
 		},
-		title: { en: 'About — yesid.' },
+		title: { en: 'About · yesid.', fr: 'À propos · yesid.' },
 	},
 	methodology: [
 		{
 			description: {
-				en: 'Map your current data landscape — what flows where, what breaks, and where the bottlenecks hide.',
+				en: 'I take things apart to learn how they work, then build better ones.',
+				fr: 'Je démonte les choses pour comprendre comment elles marchent, puis j\'en construis de meilleures.',
 			},
-			id: 'audit',
-			label: { en: 'AUDIT' },
+			id: 'curiosity',
+			label: { en: 'CURIOSITY', fr: 'CURIOSITÉ' },
 			station: 1,
 		},
 		{
 			description: {
-				en: 'Redesign queries, schemas, and pipelines so your team gets clean data fast, every time.',
+				en: 'If it works but it\'s ugly, it\'s only half done.',
+				fr: 'Si ça fonctionne mais que c\'est laid, ce n\'est qu\'à moitié fait.',
 			},
-			id: 'optimize',
-			label: { en: 'OPTIMIZE' },
+			id: 'aesthetics',
+			label: { en: 'AESTHETICS', fr: 'ESTHÉTIQUE' },
 			station: 2,
 		},
 		{
 			description: {
-				en: 'Write runbooks and architecture docs your team can actually follow without you in the room.',
+				en: 'Good tools lift the people around them, that’s the whole point.',
+				fr: 'Les bons outils élèvent les gens autour d\'eux, c\'est tout l\'intérêt.',
 			},
-			id: 'document',
-			label: { en: 'DOCUMENT' },
+			id: 'community',
+			label: { en: 'COMMUNITY', fr: 'COMMUNAUTÉ' },
 			station: 3,
 		},
 		{
 			description: {
-				en: 'Transfer ownership cleanly. Your infra runs on its own — no vendor lock-in, no mystery code.',
+				en: 'I\'d rather build it right than build it twice.',
+				fr: 'Je préfère bien le bâtir que le bâtir deux fois.',
 			},
-			id: 'handoff',
-			label: { en: 'HANDOFF' },
+			id: 'quality',
+			label: { en: 'QUALITY', fr: 'QUALITÉ' },
 			station: 4,
 		},
 	],
 	metrics: [
 		{
-			label: { en: 'years building data systems' },
+			label: {
+				en: 'years building data systems',
+				fr: 'années à bâtir des systèmes de données',
+			},
 			value: '5+',
 		},
 		{
-			label: { en: 'databases designed & optimized' },
+			label: {
+				en: 'databases designed & optimized',
+				fr: 'bases de données conçues et optimisées',
+			},
 			value: '30+',
 		},
 		{
-			label: { en: 'avg. query speed improvement' },
+			label: {
+				en: 'avg. query speed improvement',
+				fr: 'amélioration moyenne des requêtes',
+			},
 			value: '3x',
 		},
 		{
-			label: { en: 'pipeline uptime delivered' },
+			label: {
+				en: 'pipeline uptime delivered',
+				fr: 'disponibilité livrée sur les pipelines',
+			},
 			value: '99.9%',
 		},
 	],
 	stopLabels: {
-		clients: { en: 'CLIENTS' },
-		identity: { en: 'IDENTITY' },
-		interests: { en: 'INTERESTS' },
-		location: { en: 'LOCATION' },
-		metrics: { en: 'METRICS' },
-		next: { en: 'NEXT' },
-		process: { en: 'PROCESS' },
-		snapshots: { en: 'SNAPSHOTS' },
-		stack: { en: 'STACK' },
-		testimonials: { en: 'TESTIMONIALS' },
+		clients: { en: 'LANGUAGES', fr: 'LANGUES' },
+		identity: { en: 'IDENTITY', fr: 'IDENTITÉ' },
+		interests: { en: 'INTERESTS', fr: 'INTÉRÊTS' },
+		location: { en: 'LOCATION', fr: 'LOCALISATION' },
+		metrics: { en: 'METRICS', fr: 'MESURES' },
+		next: { en: 'NEXT', fr: 'SUITE' },
+		process: { en: 'CORE BELIEFS', fr: 'CONVICTIONS' },
+		snapshots: { en: 'SNAPSHOTS', fr: 'PHOTOS' },
+		stack: { en: 'EDUCATION', fr: 'FORMATION' },
+		testimonials: { en: 'QUOTE', fr: 'CITATION' },
 	},
-	techStack: [
-		{
-			category: 'databases',
-			name: 'PostgreSQL',
-			relatedServices: ['sql-development', 'database-engineering'],
-		},
-		{
-			category: 'databases',
-			name: 'SQL Server',
-			relatedServices: ['sql-development', 'database-engineering'],
-		},
-		{
-			category: 'languages',
-			name: 'Python',
-			relatedServices: ['data-pipelines', 'analytics'],
-		},
-		{
-			category: 'languages',
-			name: 'TypeScript',
-			relatedServices: ['web-development', 'internal-tooling'],
-		},
-		{
-			category: 'frameworks',
-			name: 'SvelteKit',
-			relatedServices: ['web-development'],
-		},
-		{
-			category: 'tools',
-			name: 'Power BI',
-			relatedServices: ['analytics'],
-		},
-		{
-			category: 'tools',
-			name: 'Retool',
-			relatedServices: ['internal-tooling'],
-		},
-		{
-			category: 'tools',
-			name: 'Docker',
-			relatedServices: ['data-pipelines', 'database-engineering'],
-		},
-	],
 	testimonials: [
 		{
-			author: 'Sarah Chen',
-			company: 'Logistics Platform',
+			author: 'Guy Sensei',
+			company: 'Personal lore',
 			quote: {
-				en: '"Cut our dashboard load time from 45 seconds to under 2. Yesid rebuilt the entire reporting pipeline in three weeks."',
+				en: 'You have the gift of perseverance, and that\'s what makes you a genius too.',
+				fr: 'Tu as le don de la persévérance, et c\'est ce qui fait de toi un génie.',
 			},
-			role: { en: 'VP of Engineering' },
-		},
-		{
-			author: 'Marcus Tremblay',
-			company: 'FinTech Startup',
-			quote: {
-				en: '"First engineer we\'ve hired who actually documents everything. Our team was fully self-sufficient within a week of handoff."',
-			},
-			role: { en: 'CTO' },
-		},
-		{
-			author: 'Priya Sharma',
-			company: 'E-Commerce Co.',
-			quote: {
-				en: '"We went from spreadsheet chaos to a proper data pipeline. The whole analytics team noticed the difference on day one."',
-			},
-			role: { en: 'Head of Analytics' },
+			role: { en: 'Sensei', fr: 'Gaï Sensei' },
 		},
 	],
 	weather: {
-		city: { en: 'Montreal' },
+		city: { en: 'Montreal', fr: 'Montréal' },
 		enabled: true,
-		hook: { en: 'Guess where I am?' },
+		hook: { en: 'Guess where I am?', fr: 'Devine où je suis?' },
 	},
 };

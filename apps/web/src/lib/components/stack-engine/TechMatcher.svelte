@@ -43,6 +43,7 @@
 		composeStackShape,
 		JOURNEY_STEPS,
 		layerArticle,
+		layerGapFr,
 		readShape,
 	} from './stack-shape';
 	import ShapeBlueprint from './ShapeBlueprint.svelte';
@@ -66,7 +67,9 @@
 		})),
 		{
 			key: 'more',
-			label: 'more',
+			// Layer KEYS stay verbatim (they double as printed labels); only the
+			// catch-all 'more' group reads as a word, so it localizes.
+			label: resolveLocale({ en: 'more', fr: 'autres' }, locale),
 			items: techStackItems.filter(
 				(t) => !t.layer || !(STACK_LAYERS as readonly string[]).includes(t.layer),
 			),
@@ -93,14 +96,26 @@
 	const shape = $derived(composeStackShape([...engine.pickedTechs], techStackItems));
 	const shapeHeading = $derived(
 		shape.present.length > 0
-			? `Your build: ${shape.present.join(' + ')} covered`
-			: 'Your build: no layers covered yet',
+			? locale === 'fr'
+				? `Ton build : ${shape.present.join(' + ')} couvert${shape.present.length === 1 ? '' : 's'}`
+				: `Your build: ${shape.present.join(' + ')} covered`
+			: locale === 'fr'
+				? 'Ton build : aucune couche couverte encore'
+				: 'Your build: no layers covered yet',
 	);
-	const shapeReading = $derived(`that's ${readShape(shape.present)}.`);
+	const shapeReading = $derived(
+		locale === 'fr'
+			? `c'est ${resolveLocale(readShape(shape.present), locale)}.`
+			: `that's ${resolveLocale(readShape(shape.present), locale)}.`,
+	);
 	const shapeNext = $derived(
 		shape.missing.length === 0
-			? "nothing missing — this one's ready to build."
-			: `add ${shape.missing.map((l) => `${layerArticle(l)} ${l} layer`).join(' + ')} and this becomes a working product.`,
+			? locale === 'fr'
+				? "rien ne manque, celui-là est prêt à bâtir."
+				: "nothing missing, this one's ready to build."
+			: locale === 'fr'
+				? `ajoute ${shape.missing.map((l) => layerGapFr(l)).join(' + ')} pis ça devient un produit fonctionnel.`
+				: `add ${shape.missing.map((l) => `${layerArticle(l)} ${l} layer`).join(' + ')} and this becomes a working product.`,
 	);
 	/** Picked techs in STACK_LAYERS order (stable within a layer), with enables. */
 	const layerRank = new Map<string, number>(
@@ -172,18 +187,27 @@
 	}
 
 	// ── Teach line (go2/w5 §3) — ONE fixed slot, last trigger wins. ─────────
-	const TEACH_EMPTY = "tap a part — I'll tell you what it does.";
+	const TEACH_EMPTY = resolveLocale(
+		{
+			en: "tap a part, I'll tell you what it does.",
+			fr: 'tape un morceau, je te dis ce qu\'il fait.',
+		},
+		locale,
+	);
 	let teachLine = $state(TEACH_EMPTY);
+
+	// "lives in" connector for the teach line, localized.
+	const livesIn = locale === 'fr' ? 'vit dans' : 'lives in';
 
 	function teach(tech: Tech): void {
 		const enables = tech.enables ? resolveLocale(tech.enables, locale) : '';
-		const layerLine = tech.layer ? LAYER_TEACHING[tech.layer] : null;
+		const layerLine = tech.layer ? resolveLocale(LAYER_TEACHING[tech.layer], locale) : null;
 		if (enables && layerLine) {
-			teachLine = `${tech.name} — ${enables}. lives in ${tech.layer}: ${layerLine}`;
+			teachLine = `${tech.name}, ${enables}. ${livesIn} ${tech.layer}: ${layerLine}`;
 		} else if (layerLine) {
-			teachLine = `${tech.name} lives in ${tech.layer}: ${layerLine}`;
+			teachLine = `${tech.name} ${livesIn} ${tech.layer}: ${layerLine}`;
 		} else if (enables) {
-			teachLine = `${tech.name} — ${enables}.`;
+			teachLine = `${tech.name}, ${enables}.`;
 		} else {
 			teachLine = tech.name;
 		}
@@ -202,6 +226,86 @@
 		const stackSet = new Set(archetype.tech.map((l) => l.id));
 		const conflict = [...engine.pickedTechs].find((id) => !stackSet.has(id));
 		return conflict ? (techById.get(conflict)?.name ?? conflict) : '';
+	}
+
+	// ── Localized UI copy (code-owned, em-dash-free). Counts/names interpolate. ─
+	const isFr = locale === 'fr';
+	const t = {
+		shapeLink: resolveLocale(
+			{ en: 'Take this combo with you →', fr: 'Apporte cette combinaison avec toi →' },
+			locale,
+		),
+		knownBuildsLabel: resolveLocale(
+			{
+				en: "known builds, recipes I've already drawn with these parts",
+				fr: 'builds connus, des recettes que j\'ai déjà dessinées avec ces morceaux',
+			},
+			locale,
+		),
+		railAllOut: resolveLocale(
+			{
+				en: 'no drawn recipe uses all of these yet, the shape above is already yours',
+				fr: 'aucune recette dessinée utilise tout ça encore, la forme en haut est déjà à toi',
+			},
+			locale,
+		),
+		seeAsProduct: resolveLocale(
+			{ en: 'see your build as a product', fr: 'vois ton build comme un produit' },
+			locale,
+		),
+		backToDrawing: resolveLocale(
+			{ en: 'back to the drawing', fr: 'retour au dessin' },
+			locale,
+		),
+		undoLast: resolveLocale({ en: 'undo last pick', fr: 'défaire le dernier choix' }, locale),
+		startOver: resolveLocale({ en: 'start over', fr: 'recommencer' }, locale),
+		closestComplete: resolveLocale(
+			{ en: 'closest to complete', fr: 'le plus proche du complet' },
+			locale,
+		),
+		completeTapToDraw: resolveLocale(
+			{ en: 'complete, tap to draw it', fr: 'complet, tape pour le dessiner' },
+			locale,
+		),
+	};
+
+	/** "{n} known builds on the board, tap parts to narrow" — count interpolated. */
+	const counterIdle = $derived(
+		isFr
+			? `${engine.archetypes.length} builds connus sur le tableau, tape des morceaux pour réduire`
+			: `${engine.archetypes.length} known builds on the board, tap parts to narrow`,
+	);
+	/** Zero-match counter line. */
+	const counterZero = $derived.by(() => {
+		const n = engine.pickedTechs.size;
+		return isFr
+			? `${n} choix → aucun build connu, ta forme est plus bas`
+			: `${n} pick${n === 1 ? '' : 's'} → no known build, your shape's below`;
+	});
+	/** "{n} picks → {m} known builds" + the narrowing suffix. */
+	const counterPicksLead = $derived.by(() => {
+		const n = engine.pickedTechs.size;
+		const m = engine.matches.length;
+		return isFr
+			? `${n} choix → ${m} build${m === 1 ? '' : 's'} connu${m === 1 ? '' : 's'}`
+			: `${n} pick${n === 1 ? '' : 's'} → ${m} known build${m === 1 ? '' : 's'}`;
+	});
+	const counterSuffix = isFr
+		? ' · chaque choix réduit, jamais élargit'
+		: ' · each pick narrows, never widens';
+	const partsWord = isFr ? 'morceaux' : 'parts';
+
+	/** Match-card parts line: "{matched} of {total} parts, {missing} to go". */
+	function matchPartsLine(matched: number, total: number, missing: number): string {
+		return isFr
+			? `${matched} de ${total} morceaux, ${missing} à venir`
+			: `${matched} of ${total} parts, ${missing} to go`;
+	}
+	/** Ruled-out card reason: "ruled out, {name} isn't in this recipe". */
+	function ruledOutLine(name: string): string {
+		return isFr
+			? `écarté, ${name} n'est pas dans cette recette`
+			: `ruled out, ${name} isn't in this recipe`;
 	}
 </script>
 
@@ -263,11 +367,11 @@
 			<span class="counter-prompt" aria-hidden="true">~</span>
 			<StatusDot color="orange" pulse />
 			{#if !hasPicks}
-				<span>{engine.archetypes.length} known builds on the board — tap parts to narrow</span>
+				<span>{counterIdle}</span>
 			{:else if zeroMatch}
-				<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → no known build — your shape's below</span>
+				<span>{counterZero}</span>
 			{:else}
-				<span>{engine.pickedTechs.size} pick{engine.pickedTechs.size === 1 ? '' : 's'} → {engine.matches.length} known build{engine.matches.length === 1 ? '' : 's'}<span class="counter-suffix"> · each pick narrows, never widens</span></span>
+				<span>{counterPicksLead}<span class="counter-suffix">{counterSuffix}</span></span>
 			{/if}
 		</p>
 		{#if hasPicks}
@@ -280,7 +384,7 @@
 					data-testid="pick-undo"
 					onclick={() => engine.undoLastPick()}
 				>
-					<span aria-hidden="true">↶</span> undo last pick
+					<span aria-hidden="true">↶</span> {t.undoLast}
 				</button>
 				<button
 					type="button"
@@ -288,7 +392,7 @@
 					data-testid="pick-clear"
 					onclick={() => engine.clearPicks()}
 				>
-					<span aria-hidden="true">✕</span> start over
+					<span aria-hidden="true">✕</span> {t.startOver}
 				</button>
 			</div>
 		{/if}
@@ -323,9 +427,9 @@
 							onclick={toggleShapeView}
 						>
 							{#if shapeView === 'drawing'}
-								see your build as a product <span class="shape-toggle-arrow" aria-hidden="true">→</span>
+								{t.seeAsProduct} <span class="shape-toggle-arrow" aria-hidden="true">→</span>
 							{:else}
-								<span class="shape-toggle-arrow" aria-hidden="true">←</span> back to the drawing
+								<span class="shape-toggle-arrow" aria-hidden="true">←</span> {t.backToDrawing}
 							{/if}
 						</button>
 					{/if}
@@ -368,12 +472,12 @@
 									<!-- The separator lives in the expression: Svelte trims a text
 									     node's leading whitespace at the element boundary, which
 									     ate the space ("PostgreSQL— stores…"). -->
-									<span class="roster-name">{part.name}</span>{#if part.enables}<span class="roster-enables">{` — ${part.enables}`}</span>{/if}
+									<span class="roster-name">{part.name}</span>{#if part.enables}<span class="roster-enables">{`, ${part.enables}`}</span>{/if}
 								</li>
 							{/each}
 						</ul>
 						<p class="shape-next">{shapeNext}</p>
-						<a class="shape-link" data-testid="shape-link" href={shapeHref}>Take this combo with you →</a>
+						<a class="shape-link" data-testid="shape-link" href={shapeHref}>{t.shapeLink}</a>
 						<!-- Finale (4c): the operator's open door, woven next to the
 						     CTA — warm, small, homey; the whole line is the link. -->
 						<p class="shape-availability">
@@ -390,9 +494,9 @@
 
 			<p class="rail-label" data-testid="known-builds-label">
 				{#if zeroMatch}
-					no drawn recipe uses all of these yet — the shape above is already yours
+					{t.railAllOut}
 				{:else}
-					known builds — recipes I've already drawn with these parts
+					{t.knownBuildsLabel}
 				{/if}
 			</p>
 		{/if}
@@ -415,11 +519,11 @@
 					<span class="match-title">{resolveLocale(archetype.title, locale)}</span>
 					{#if archetype.slug === topMatchSlug}
 						<span class="match-tag">
-							{match.missing.length > 0 ? 'closest to complete' : 'complete — tap to draw it'}
+							{match.missing.length > 0 ? t.closestComplete : t.completeTapToDraw}
 						</span>
 					{/if}
 					<span class="match-parts">
-						{match.matched.length} of {total} parts — {match.missing.length} to go
+						{matchPartsLine(match.matched.length, total, match.missing.length)}
 					</span>
 					<span class="match-hook">{resolveLocale(archetype.hook, locale)}</span>
 				</button>
@@ -433,7 +537,7 @@
 				>
 					<span class="match-title">{resolveLocale(archetype.title, locale)}</span>
 					<span class="match-reason">
-						ruled out — {firstConflictName(archetype.slug)} isn't in this recipe
+						{ruledOutLine(firstConflictName(archetype.slug))}
 					</span>
 					<span class="match-hook">{resolveLocale(archetype.hook, locale)}</span>
 				</button>
@@ -446,7 +550,7 @@
 					onclick={() => engine.selectArchetype(archetype.slug)}
 				>
 					<span class="match-title">{resolveLocale(archetype.title, locale)}</span>
-					<span class="match-parts">{total} parts</span>
+					<span class="match-parts">{total} {partsWord}</span>
 					<span class="match-hook">{resolveLocale(archetype.hook, locale)}</span>
 				</button>
 			{/if}

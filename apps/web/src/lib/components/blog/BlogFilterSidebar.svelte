@@ -10,6 +10,7 @@
 	import type { Locale } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { localizeHref } from '$lib/utils/locale-routing';
 
 	const locale = getLocale();
 	import FilterGroup from '$lib/components/shared/FilterGroup.svelte';
@@ -70,8 +71,9 @@
 		</div>
 	</div>
 
-	<!-- Language filter — only shown when more than one language exists -->
-	{#if languages.length > 1}
+	<!-- Language filter — surfaces the languages present in the active posts, like
+	     Tags (shown whenever ≥1 language exists, even when posts are EN-only). -->
+	{#if languages.length >= 1}
 		<div class="mt-5 divider-dashed pt-3">
 			<FilterGroup
 				label={resolveLocale(labels.language, locale)}
@@ -136,7 +138,7 @@
 	{#if cornerLink}
 		<div class="mt-5 divider-dashed pt-3">
 			<a
-				href={cornerLink.href}
+				href={localizeHref(cornerLink.href, locale)}
 				class="flex w-full items-center gap-1.5 rounded border px-2 py-1.5 text-sm font-semibold no-underline transition-colors"
 				style="border-color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'}; color: {cornerLink.href.includes('personal') ? 'var(--accent)' : 'var(--primary)'};"
 			>

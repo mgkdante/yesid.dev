@@ -10,7 +10,7 @@
 	import { onMount } from 'svelte';
 	import type { AboutWeatherConfig } from '$lib/types';
 	import type { WeatherData } from '$lib/utils/weather';
-	import { resolveLocale } from '$lib/utils/locale';
+	import { resolveLocale, DEFAULT_LOCALE } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
 
 	const locale = getLocale();
@@ -52,7 +52,11 @@
 
 	async function refreshWeather() {
 		try {
-			const res = await fetch('/api/weather');
+			// Pass the active locale so OpenWeather localizes `condition`
+			// (fr/es). EN omits the param — its /api/weather URL (and CDN key)
+			// stays byte-identical to before.
+			const url = locale === DEFAULT_LOCALE ? '/api/weather' : `/api/weather?lang=${locale}`;
+			const res = await fetch(url);
 			if (!res.ok) return;
 			const data = (await res.json()) as WeatherData | null;
 			if (data && typeof data.temp === 'number') freshWeather = data;

@@ -83,8 +83,11 @@ describe('project optional metadata fields', () => {
 		const project = await getProjectBySlug('transit-data-pipeline');
 		expect(project?.impactMetrics).toBeDefined();
 		expect(project!.impactMetrics!.length).toBe(2);
-		expect(project!.impactMetrics![0]).toEqual({ value: '30s', label: { en: 'Real-time refresh cycles' } });
-		expect(project!.impactMetrics![1]).toEqual({ value: '99.9%', label: { en: 'Pipeline uptime' } });
+		// labels are now bilingual (en + Québécois fr from the FR pass); assert en.
+		expect(project!.impactMetrics![0].value).toBe('30s');
+		expect(project!.impactMetrics![0].label.en).toBe('Real-time refresh cycles');
+		expect(project!.impactMetrics![1].value).toBe('99.9%');
+		expect(project!.impactMetrics![1].label.en).toBe('Pipeline uptime');
 	});
 
 	it('projects without new fields still work (optional)', async () => {

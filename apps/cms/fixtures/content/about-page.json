@@ -1,75 +1,66 @@
 {
   "identity": {
-    "name": { "en": "Yesid O." },
-    "title": { "en": "Freelance Digital Infrastructure Engineer" },
-    "valueProp": { "en": "I help teams ship reliable digital infrastructure — from databases to dashboards to the pipelines between them." },
+    "name": { "en": "Yesid O.", "fr": "Yesid O." },
+    "title": { "en": "SQL developer, builder, and patient explainer", "fr": "Développeur SQL, bâtisseur et vulgarisateur patient" },
+    "valueProp": {
+      "en": "I'm Yesid, a Montréal builder who likes clear systems and plain explanations. When clients work with me, I teach them what things mean so nobody can take advantage of them.",
+      "fr": "Je suis Yesid, un gars de Montréal qui aime les systèmes clairs et les explications simples. Quand je travaille avec des clients, je leur explique ce que les choses veulent dire pour que personne ne puisse profiter d'eux."
+    },
     "headshot": "/images/about/headshot.webp",
     "polaroids": [
       { "src": "/images/about/polaroid-1.webp", "alt": { "en": "Walking with my dog in Montreal" }, "caption": { "en": "Off-duty mode" }, "rotate": -3 },
-      { "src": "/images/about/polaroid-2.webp", "alt": { "en": "Yesid smiling" }, "caption": { "en": "The usual suspect" }, "rotate": 4 },
-      { "src": "/images/about/polaroid-3.webp", "alt": { "en": "Portrait — Yesid Otalora" }, "caption": { "en": "Circa 2019" }, "rotate": -2 }
+      { "src": "/images/about/polaroid-dante.webp", "alt": { "en": "Dante, the family dog", "fr": "Dante, le chien de la famille" }, "caption": { "en": "Dante — the family's good boy", "fr": "Dante — le bon chien de la famille" }, "rotate": 3 },
+      { "src": "/images/about/polaroid-poupoune.webp", "alt": { "en": "Poupoune, my dog", "fr": "Poupoune, mon chien" }, "caption": { "en": "Poupoune 🐾", "fr": "Poupoune 🐾" }, "rotate": -2 },
+      { "src": "/images/about/polaroid-yesid.webp", "alt": { "en": "Yesid", "fr": "Yesid" }, "caption": { "en": "That's me", "fr": "C'est moi" }, "rotate": 2 },
+      { "src": "/images/about/polaroid-family.webp", "alt": { "en": "With my family", "fr": "Avec ma famille" }, "caption": { "en": "Family", "fr": "La famille" }, "rotate": -4 },
+      { "src": "/images/about/polaroid-friends.webp", "alt": { "en": "With friends", "fr": "Avec les amis" }, "caption": { "en": "Friends", "fr": "Les amis" }, "rotate": 3 },
+      { "src": "/images/about/polaroid-museum.webp", "alt": { "en": "At the art museum in Ottawa", "fr": "Au musée d'art à Ottawa" }, "caption": { "en": "Museum day, Ottawa", "fr": "Journée musée, Ottawa" }, "rotate": -3 }
     ]
   },
   "metrics": [
-    { "value": "5+", "label": { "en": "years building data systems" } },
-    { "value": "30+", "label": { "en": "databases designed & optimized" } },
-    { "value": "3x", "label": { "en": "avg. query speed improvement" } },
-    { "value": "99.9%", "label": { "en": "pipeline uptime delivered" } }
+    { "value": "5+", "label": { "en": "years building data systems", "fr": "années à bâtir des systèmes de données" } },
+    { "value": "30+", "label": { "en": "databases designed & optimized", "fr": "bases de données conçues et optimisées" } },
+    { "value": "3x", "label": { "en": "avg. query speed improvement", "fr": "amélioration moyenne des requêtes" } },
+    { "value": "99.9%", "label": { "en": "pipeline uptime delivered", "fr": "disponibilité livrée sur les pipelines" } }
   ],
   "methodology": [
-    { "id": "audit", "station": 1, "label": { "en": "AUDIT" }, "description": { "en": "Map your current data landscape — what flows where, what breaks, and where the bottlenecks hide." } },
-    { "id": "optimize", "station": 2, "label": { "en": "OPTIMIZE" }, "description": { "en": "Redesign queries, schemas, and pipelines so your team gets clean data fast, every time." } },
-    { "id": "document", "station": 3, "label": { "en": "DOCUMENT" }, "description": { "en": "Write runbooks and architecture docs your team can actually follow without you in the room." } },
-    { "id": "handoff", "station": 4, "label": { "en": "HANDOFF" }, "description": { "en": "Transfer ownership cleanly. Your infra runs on its own — no vendor lock-in, no mystery code." } }
+    { "id": "curiosity", "station": 1, "label": { "en": "CURIOSITY", "fr": "CURIOSITÉ" }, "description": { "en": "I take things apart to learn how they work, then build better ones.", "fr": "Je démonte les choses pour comprendre comment elles marchent, puis j'en construis de meilleures." } },
+    { "id": "aesthetics", "station": 2, "label": { "en": "AESTHETICS", "fr": "ESTHÉTIQUE" }, "description": { "en": "If it works but it's ugly, it's only half done.", "fr": "Si ça fonctionne mais que c'est laid, ce n'est qu'à moitié fait." } },
+    { "id": "community", "station": 3, "label": { "en": "COMMUNITY", "fr": "COMMUNAUTÉ" }, "description": { "en": "Good tools lift the people around them — that’s the whole point.", "fr": "Les bons outils élèvent les gens autour d'eux — c'est tout l'intérêt." } },
+    { "id": "quality", "station": 4, "label": { "en": "QUALITY", "fr": "QUALITÉ" }, "description": { "en": "I'd rather build it right than build it twice.", "fr": "Je préfère bien le bâtir que le bâtir deux fois." } }
   ],
   "testimonials": [
     {
-      "quote": { "en": "\"Cut our dashboard load time from 45 seconds to under 2. Yesid rebuilt the entire reporting pipeline in three weeks.\"" },
-      "author": "Sarah Chen",
-      "role": { "en": "VP of Engineering" },
-      "company": "Logistics Platform"
-    },
-    {
-      "quote": { "en": "\"First engineer we've hired who actually documents everything. Our team was fully self-sufficient within a week of handoff.\"" },
-      "author": "Marcus Tremblay",
-      "role": { "en": "CTO" },
-      "company": "FinTech Startup"
-    },
-    {
-      "quote": { "en": "\"We went from spreadsheet chaos to a proper data pipeline. The whole analytics team noticed the difference on day one.\"" },
-      "author": "Priya Sharma",
-      "role": { "en": "Head of Analytics" },
-      "company": "E-Commerce Co."
+      "quote": { "en": "You have the gift of perseverance, and that's what makes you a genius too.", "fr": "Tu as le don de la persévérance, et c'est ce qui fait de toi un génie." },
+      "author": "Guy Sensei",
+      "role": { "en": "Sensei", "fr": "Gaï Sensei" },
+      "company": "Personal lore"
     }
   ],
-  "techStack": [
-    { "name": "PostgreSQL", "category": "databases", "relatedServices": ["sql-development", "database-engineering"] },
-    { "name": "SQL Server", "category": "databases", "relatedServices": ["sql-development", "database-engineering"] },
-    { "name": "Python", "category": "languages", "relatedServices": ["data-pipelines", "analytics"] },
-    { "name": "TypeScript", "category": "languages", "relatedServices": ["web-development", "internal-tooling"] },
-    { "name": "SvelteKit", "category": "frameworks", "relatedServices": ["web-development"] },
-    { "name": "Power BI", "category": "tools", "relatedServices": ["analytics"] },
-    { "name": "Retool", "category": "tools", "relatedServices": ["internal-tooling"] },
-    { "name": "Docker", "category": "tools", "relatedServices": ["data-pipelines", "database-engineering"] }
+  "languages": ["Español", "English", "Français"],
+  "education": [
+    {
+      "school": { "en": "Champlain Regional College — Lennoxville", "fr": "Champlain Regional College — Lennoxville" },
+      "program": { "en": "DEC, Accounting & Management Technology", "fr": "DEC, Techniques de comptabilité et de gestion" },
+      "icon": "champlain"
+    },
+    {
+      "school": { "en": "Bishop's University", "fr": "Bishop's University" },
+      "program": { "en": "B.Sc. Computer Science, minor in Business Administration", "fr": "B. Sc. informatique, mineure en administration des affaires" },
+      "icon": "bishops"
+    }
   ],
   "interests": [
-    { "id": "anime", "label": { "en": "Anime" }, "image": "/images/about/interests/anime.webp" },
-    { "id": "dataviz", "label": { "en": "Data Viz" }, "image": "/images/about/interests/dataviz.webp" },
-    { "id": "opensource", "label": { "en": "Open Source" }, "image": "/images/about/interests/opensource.webp" },
-    { "id": "food", "label": { "en": "MTL Food" }, "image": "/images/about/interests/food.webp" }
+    { "id": "anime", "label": { "en": "Anime", "fr": "Anime" }, "image": "/images/about/interests/anime.webp" },
+    { "id": "transit", "label": { "en": "Transit", "fr": "Transport collectif" }, "image": "/images/about/interests/transit.webp" },
+    { "id": "space", "label": { "en": "Space", "fr": "L'espace" }, "image": "/images/about/interests/space.webp" },
+    { "id": "food", "label": { "en": "MTL Food", "fr": "Bouffe MTL" }, "image": "/images/about/interests/food.webp" }
   ],
   "weather": {
-    "city": { "en": "Montreal" },
-    "hook": { "en": "Guess where I am?" },
+    "city": { "en": "Montreal", "fr": "Montréal" },
+    "hook": { "en": "Guess where I am?", "fr": "Devine où je suis?" },
     "enabled": true
   },
-  "clientLogos": [
-    { "name": "Client 1", "src": "/images/about/logo-1.svg" },
-    { "name": "Client 2", "src": "/images/about/logo-2.svg" },
-    { "name": "Client 3", "src": "/images/about/logo-3.svg" },
-    { "name": "Client 4", "src": "/images/about/logo-4.svg" }
-  ],
-  "clientCount": 10,
   "cta": {
     "command": "$ yesid --contact",
     "lines": [
@@ -78,9 +69,9 @@
       { "text": "> GitHub: https://github.com/mgkdante", "color": "muted" },
       { "text": "> LinkedIn: https://www.linkedin.com/in/otaloray/", "color": "muted" }
     ],
-    "buttonLabel": { "en": "Send message →" },
+    "buttonLabel": { "en": "Send message →", "fr": "Envoyer un message →" },
     "buttonHref": "/contact",
-    "availability": { "en": "Booking Q3 2026" },
+    "availability": { "en": "Booking Q3 2026", "fr": "Ouvert pour Q3 2026" },
     "socials": [
       { "label": "Email", "href": "mailto:contact@yesid.dev", "icon": "email" },
       { "label": "GitHub", "href": "https://github.com/mgkdante", "icon": "github" },
@@ -88,28 +79,30 @@
     ]
   },
   "stopLabels": {
-    "identity": { "en": "IDENTITY" },
-    "metrics": { "en": "METRICS" },
-    "testimonials": { "en": "TESTIMONIALS" },
-    "process": { "en": "PROCESS" },
-    "stack": { "en": "STACK" },
-    "clients": { "en": "CLIENTS" },
-    "interests": { "en": "INTERESTS" },
-    "snapshots": { "en": "SNAPSHOTS" },
-    "location": { "en": "LOCATION" },
-    "next": { "en": "NEXT" }
+    "identity": { "en": "IDENTITY", "fr": "IDENTITÉ" },
+    "metrics": { "en": "METRICS", "fr": "MESURES" },
+    "testimonials": { "en": "QUOTE", "fr": "CITATION" },
+    "process": { "en": "CORE BELIEFS", "fr": "CONVICTIONS" },
+    "stack": { "en": "EDUCATION", "fr": "FORMATION" },
+    "clients": { "en": "LANGUAGES", "fr": "LANGUES" },
+    "interests": { "en": "INTERESTS", "fr": "INTÉRÊTS" },
+    "snapshots": { "en": "SNAPSHOTS", "fr": "PHOTOS" },
+    "location": { "en": "LOCATION", "fr": "LOCALISATION" },
+    "next": { "en": "NEXT", "fr": "SUITE" }
   },
   "labels": {
-    "clientsServed": { "en": "clients served" },
-    "polaroidPrevAria": { "en": "Previous photo" },
-    "polaroidNextAria": { "en": "Next photo" },
-    "testimonialsCarouselAria": { "en": "Client testimonials" },
-    "testimonialsTabNavAria": { "en": "Testimonial navigation" },
-    "testimonialSlideAria": { "en": "Testimonial {index} of {total}" },
-    "showTestimonialAria": { "en": "Show testimonial {index}" }
+    "polaroidPrevAria": { "en": "Previous photo", "fr": "Photo précédente" },
+    "polaroidNextAria": { "en": "Next photo", "fr": "Photo suivante" },
+    "testimonialsCarouselAria": { "en": "Personal quote", "fr": "Citation personnelle" },
+    "testimonialsTabNavAria": { "en": "Quote navigation", "fr": "Navigation de citation" },
+    "testimonialSlideAria": { "en": "Testimonial {index} of {total}", "fr": "Témoignage {index} sur {total}" },
+    "showTestimonialAria": { "en": "Show testimonial {index}", "fr": "Afficher le témoignage {index}" }
   },
   "meta": {
-    "title": { "en": "About — yesid." },
-    "description": { "en": "Freelance digital infrastructure engineer based in Montreal. PostgreSQL, SQL Server, Python, Power BI — building reliable infrastructure for teams that ship." }
+    "title": { "en": "About — yesid.", "fr": "À propos — yesid." },
+    "description": {
+      "en": "About Yesid O., a Montréal SQL developer, builder, and patient explainer.",
+      "fr": "À propos de Yesid O., développeur SQL à Montréal, bâtisseur et vulgarisateur patient."
+    }
   }
 }

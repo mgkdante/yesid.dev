@@ -128,17 +128,23 @@ export const mobileLinks: readonly NavLink[] = [
 ];
 
 export const errorPageContent: ErrorPageContent = {
-	description: { en: 'The page you were looking for could not be found.' },
-	heading: { en: 'This station is offline' },
-	label: { en: 'PAGE NOT FOUND' },
+	description: {
+		en: 'The page you were looking for could not be found.',
+		fr: 'La page que tu cherchais est introuvable.',
+	},
+	heading: {
+		en: 'This station is offline',
+		fr: 'Cette station est hors ligne',
+	},
+	label: { en: 'PAGE NOT FOUND', fr: 'PAGE INTROUVABLE' },
 	suggestions: [
 		{
 			href: '/',
-			label: { en: 'Home' },
+			label: { en: 'Home', fr: 'Accueil' },
 		},
 		{
 			href: '/services',
-			label: { en: 'Services' },
+			label: { en: 'Services', fr: 'Services' },
 		},
 	],
 	terminalLine: '$ route --status 0 // generic fallback',

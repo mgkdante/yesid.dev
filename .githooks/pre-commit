@@ -1,47 +1,160 @@
 #!/usr/bin/env bash
-# Pre-commit hook: block staged edits to generated token files unless a
-# legitimate source is also staged in the same commit. Legitimate sources:
-#   - packages/tokens/tokens.json (DTCG data)
-#   - packages/tokens/build.ts (build entry)
-#   - packages/tokens/src/**/*.ts (generators + parity logic)
-# Bypass: git commit --no-verify (last resort; document in PR description).
-
+# Pre-commit hook — two independent generated-file guards:
+#
+#   1. TOKENS  — block staged edits to generated design-token files unless a
+#                legitimate source under packages/tokens/ is also staged.
+#   2. CONTENT — block staged hand-edits to the CMS-generated content modules
+#                under apps/web/src/lib/content/. Those files are an edge cache
+#                regenerated FROM the Directus CMS by `export:fallbacks`; the CMS
+#                is the source of truth. A real regen rewrites the .ts AND its
+#                recorded SHA-256 in generated.manifest.json together, so the
+#                hashes match and the commit passes. A hand-edit changes only the
+#                .ts → hash mismatch → commit blocked.
+#
+# GUARD 2 is the real enforcement layer: it catches edits made by ANY means
+# (Edit tool, Bash `sed`/`echo >`, a script, etc.) because it checks the staged
+# bytes at commit time. The companion Claude PreToolUse hook
+# (.claude/hooks/pretool-block-generated-ts.sh) is only fast edit-time feedback
+# for the Edit tools and does not, by itself, guarantee anything.
+#
+# Bypass (last resort, document in the PR): git commit --no-verify
 set -euo pipefail
 
-GENERATED=(
+staged() { git diff --cached --name-only --diff-filter=ACM; }
+
+# ----------------------------------------------------------------------------
+# sha256 of stdin, lowercase hex — portable across coreutils + macOS/BSD.
+# ----------------------------------------------------------------------------
+sha256_stdin() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum | cut -d' ' -f1
+  else
+    shasum -a 256 | cut -d' ' -f1
+  fi
+}
+
+# ============================================================================
+# GUARD 1 — design tokens
+# ============================================================================
+TOKEN_GENERATED=(
   "apps/web/src/lib/styles/tokens.css"
   "apps/web/src/app.css"
   "apps/web/src/lib/motion/tokens.ts"
   "DESIGN.md"
 )
 # Regex matching any file path that legitimately invalidates generated outputs.
-SOURCE_REGEX='^(packages/tokens/tokens\.json|packages/tokens/build\.ts|packages/tokens/src/.+\.ts)$'
+TOKEN_SOURCE_REGEX='^(packages/tokens/tokens\.json|packages/tokens/build\.ts|packages/tokens/src/.+\.ts)$'
 
-staged() { git diff --cached --name-only --diff-filter=ACM; }
-
-generated_staged=0
-for f in "${GENERATED[@]}"; do
+token_generated_staged=0
+for f in "${TOKEN_GENERATED[@]}"; do
   if staged | grep -qx "$f"; then
-    generated_staged=1
+    token_generated_staged=1
     break
   fi
 done
 
-if [ "$generated_staged" -eq 1 ]; then
-  if ! staged | grep -qE "$SOURCE_REGEX"; then
+if [ "$token_generated_staged" -eq 1 ]; then
+  if ! staged | grep -qE "$TOKEN_SOURCE_REGEX"; then
     echo "ERROR: A generated token file is staged, but no source file under"
     echo "       packages/tokens/ is staged. Either tokens.json, build.ts,"
     echo "       or a generator under src/ must be the cause."
     echo "       Edit the source and run 'bun run --cwd packages/tokens build'."
     echo ""
     echo "Generated files:"
-    for f in "${GENERATED[@]}"; do
+    for f in "${TOKEN_GENERATED[@]}"; do
       if staged | grep -qx "$f"; then echo "  • $f"; fi
     done
     echo ""
     echo "Bypass (last resort): git commit --no-verify"
     exit 1
   fi
+fi
+
+# ============================================================================
+# GUARD 2 — CMS-generated content modules
+# ============================================================================
+CONTENT_DIR="apps/web/src/lib/content"
+MANIFEST_PATH="$CONTENT_DIR/generated.manifest.json"
+GENERATED_MARKER="GENERATED FILE — do not edit by hand."
+
+# Read the manifest as it will be committed (index/stage-0 version — this is the
+# committed blob for an unchanged file, or the staged blob for a regen). If the
+# manifest is missing from the index (deleted or never installed), every
+# generated module that is staged still gets caught below by its GENERATED
+# header, so a missing manifest cannot be used to silently disable the guard.
+if MANIFEST_JSON="$(git show ":$MANIFEST_PATH" 2>/dev/null)"; then :; else
+  MANIFEST_JSON=""
+fi
+
+# Look up the recorded hash for a basename. Prefers jq; falls back to grep/sed
+# so the guard still works on machines without jq.
+manifest_hash_for() {
+  local base="$1"
+  if [ -z "$MANIFEST_JSON" ]; then return 0; fi
+  if command -v jq >/dev/null 2>&1; then
+    printf '%s' "$MANIFEST_JSON" | jq -r --arg f "$base" '.files[$f] // empty' 2>/dev/null
+    return 0
+  fi
+  local bre
+  bre="$(printf '%s' "$base" | sed 's/[.]/\\./g')"
+  printf '%s' "$MANIFEST_JSON" \
+    | grep -oE "\"$bre\"[[:space:]]*:[[:space:]]*\"[0-9a-f]{64}\"" \
+    | grep -oE '[0-9a-f]{64}' \
+    | head -1
+}
+
+violations=()
+missing_from_manifest=()
+
+while IFS= read -r -d '' path; do
+  case "$path" in
+    "$CONTENT_DIR"/*.ts) ;;
+    *) continue ;;
+  esac
+  base="${path##*/}"
+
+  recorded="$(manifest_hash_for "$base")"
+
+  if [ -n "$recorded" ]; then
+    # Generated module (present in manifest) → staged bytes must match.
+    actual="$(git show ":$path" 2>/dev/null | sha256_stdin || true)"
+    if [ -n "$actual" ] && [ "$actual" != "$recorded" ]; then
+      violations+=("$path")
+    fi
+  else
+    # Not in the manifest. If the staged bytes carry the generated header, this
+    # is a hand-created/renamed generated file that bypassed export:fallbacks.
+    if git show ":$path" 2>/dev/null | head -c 400 | grep -q "$GENERATED_MARKER"; then
+      missing_from_manifest+=("$path")
+    fi
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACM -z)
+
+if [ "${#violations[@]}" -gt 0 ] || [ "${#missing_from_manifest[@]}" -gt 0 ]; then
+  echo "ERROR: a CMS-generated content module was hand-edited."
+  echo ""
+  echo "  These files are an edge cache regenerated FROM the Directus CMS."
+  echo "  The CMS is the source of truth — a prod rebuild OVERWRITES any"
+  echo "  hand-edit. To change this content: edit the dev CMS, then run"
+  echo "    op run --env-file=apps/cms/.env -- bun run --cwd apps/cms export:fallbacks"
+  echo "  and commit the regenerated .ts + generated.manifest.json together."
+  echo ""
+  if [ "${#violations[@]}" -gt 0 ]; then
+    echo "Hand-edited (hash no longer matches generated.manifest.json):"
+    for f in "${violations[@]}"; do echo "  • $f"; done
+  fi
+  if [ "${#missing_from_manifest[@]}" -gt 0 ]; then
+    if [ -z "$MANIFEST_JSON" ]; then
+      echo "generated.manifest.json is missing from the index — restore it (or run"
+      echo "export:fallbacks) so these generated modules can be verified:"
+    else
+      echo "Generated header present but not in the manifest (run export:fallbacks):"
+    fi
+    for f in "${missing_from_manifest[@]}"; do echo "  • $f"; done
+  fi
+  echo ""
+  echo "Bypass (last resort): git commit --no-verify"
+  exit 1
 fi
 
 exit 0

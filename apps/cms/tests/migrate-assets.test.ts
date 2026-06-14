@@ -99,7 +99,9 @@ describe('deriveAltText', () => {
 	it('splits on hyphens + sentence-cases each segment', () => {
 		expect(deriveAltText('polaroid-1.webp')).toBe('Polaroid 1');
 		expect(deriveAltText('montreal-metro.svg')).toBe('Montreal Metro');
-		expect(deriveAltText('logo-3.svg')).toBe('Logo 3');
+		// edu-bishops.svg replaces the deleted logo-3.svg (removed in the /about
+		// "real person" pass); keeps a surviving multi-segment .svg example.
+		expect(deriveAltText('edu-bishops.svg')).toBe('Edu Bishops');
 	});
 
 	it('handles names without extensions', () => {
@@ -157,12 +159,17 @@ describe('imageMetadataFromBytes', () => {
 	});
 
 	it('detects SVG dimensions from width and height attributes', () => {
-		const legacyPath = 'images/about/logo-1.svg';
+		// Repointed from the deleted images/about/logo-1.svg (removed in the
+		// /about "real person" pass) to montreal-metro.svg, which carries
+		// explicit width/height attrs and so still exercises the
+		// width/height-attribute branch of parseSvgDimensions (not the viewBox
+		// fallback). It is a manifest + id-map asset and is not slated for removal.
+		const legacyPath = 'images/montreal-metro.svg';
 		const metadata = imageMetadataFromBytes(
 			legacyPath,
 			readFileSync(joinPath(staticRoot, legacyPath)),
 		);
-		expect(metadata).toEqual({ type: 'image/svg+xml', width: 120, height: 40 });
+		expect(metadata).toEqual({ type: 'image/svg+xml', width: 1821, height: 1260 });
 	});
 });
 

@@ -7,6 +7,7 @@
 	import { browser } from '$app/environment';
 	import { resolveLocale } from '$lib/utils/locale';
 	import { getLocale } from '$lib/utils/locale-context';
+	import { localizeHref } from '$lib/utils/locale-routing';
 
 	const locale = getLocale();
 	import { siteLabels } from '$lib/content';
@@ -37,7 +38,7 @@
 
 	const pills = manifestoContent.pills.map((p) => ({
 		label: resolveLocale(p.label, locale),
-		href: `/services/${p.serviceId}`,
+		href: localizeHref(`/services/${p.serviceId}`, locale),
 	}));
 
 	// Edge + transit data (passed to sub-components)

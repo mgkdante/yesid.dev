@@ -28,7 +28,7 @@
 	const description = $derived(resolveLocale(seo.description, locale));
 	const ogImageUrl = $derived(seo.ogImage ? seo.ogImage.url : defaultOgImageFor(locale));
 	const ogImageAlt = $derived(
-		seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : `${SITE_NAME} — ${title}`,
+		seo.ogImage ? resolveLocale(seo.ogImage.alt, locale) : `${SITE_NAME} · ${title}`,
 	);
 	const ogImageAbsolute = $derived(
 		ogImageUrl.startsWith('http') ? ogImageUrl : `${SITE_HOST}${ogImageUrl}`,

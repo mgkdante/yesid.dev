@@ -142,9 +142,9 @@ describe('Engine shell', () => {
 			expect(screen.getByTestId(`legend-${layer}`)).toBeTruthy();
 		}
 		expect(legend.textContent).toContain('the part people see and touch');
-		expect(legend.textContent).toContain('the thinking part — rules and decisions');
-		expect(legend.textContent).toContain('the remembering part — where records live');
-		expect(legend.textContent).toContain('the ground it runs on — servers and deploys');
+		expect(legend.textContent).toContain('the thinking part, rules and decisions');
+		expect(legend.textContent).toContain('the remembering part, where records live');
+		expect(legend.textContent).toContain('the ground it runs on, servers and deploys');
 
 		// Still mounted inside a goal blueprint…
 		await fireEvent.click(screen.getByTestId('archetype-card-data-dashboard'));
