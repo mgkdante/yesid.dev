@@ -58,7 +58,23 @@ export default defineConfig({
 		: process.env.CI
 			? 1
 			: undefined,
-	use: { baseURL: externalBaseURL ?? 'http://localhost:4173' },
+	use: {
+		baseURL: externalBaseURL ?? 'http://localhost:4173',
+		// Vercel preview deployments sit behind Deployment Protection (the SSO 401
+		// wall), so every request must carry the Protection Bypass for Automation
+		// secret or the suite only ever sees the login page. extraHTTPHeaders apply
+		// to ALL context requests (navigations, assets, client fetches); the cookie
+		// hint keeps the bypass sticky across redirects. Only sent when targeting an
+		// external URL with the secret present — local hermetic runs are unaffected.
+		...(externalBaseURL && process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+			? {
+					extraHTTPHeaders: {
+						'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+						'x-vercel-set-bypass-cookie': 'true'
+					}
+				}
+			: {})
+	},
 	...(externalBaseURL
 		? {}
 		: {

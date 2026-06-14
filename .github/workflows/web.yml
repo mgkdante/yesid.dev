@@ -148,6 +148,10 @@ jobs:
         working-directory: apps/web
         env:
           PLAYWRIGHT_BASE_URL: ${{ needs.e2e-preview.outputs.url }}
+          # Preview deployments are behind Vercel Deployment Protection (SSO 401);
+          # this Protection Bypass for Automation secret lets the suite through.
+          # Without it every test times out on the Vercel login wall.
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           # Per-shard parallelism: the preview edge is horizontally scalable, so
           # workers hit it concurrently. 4 × 4 shards = 16 concurrent — plenty,
           # without a serverless thundering herd on /api/weather, og, sitemap.
