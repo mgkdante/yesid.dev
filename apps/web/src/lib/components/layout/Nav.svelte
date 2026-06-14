@@ -271,6 +271,13 @@
 		.nav-divider {
 			margin-inline: 2px;
 		}
+		/* Drop the second (links↔toggles) divider entirely at the tightest tier —
+		   reclaims a few more px so the pill clears 320px with margin to spare
+		   even under CI's slightly wider font metrics. The wordmark↔links divider
+		   stays for wayfinding. */
+		.nav-divider:not(.nav-collapsible) {
+			display: none;
+		}
 		.nav-links {
 			gap: 4px;
 		}
