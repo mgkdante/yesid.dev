@@ -19,5 +19,12 @@
     "note": "Pages + blocks + activity at a glance.",
     "color": "#E07800",
     "_syncId": "_sync_dashboard_content_health"
+  },
+  {
+    "name": "Ops & deploy",
+    "icon": "rocket_launch",
+    "note": "Deploy + build state at a glance. Is a rebuild pending? What changed recently? Force a rebuild: Site Config -> Build refresh flag -> Run Flow -> Force Rebuild.",
+    "color": "#E07800",
+    "_syncId": "_sync_dashboard_ops_deploy"
   }
 ]
