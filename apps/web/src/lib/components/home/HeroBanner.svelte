@@ -37,7 +37,7 @@
 		markHeroIntroCompleted,
 	} from '$lib/motion/utils/heroIntroReplay.js';
 	import { getLenis } from '$lib/motion/utils/lenis.js';
-	import { generateHeroData, localizeHeroData, siteLabels } from '$lib/content';
+	import { generateHeroData, siteLabels } from '$lib/content';
 	import type { HeroData } from '$lib/content';
 	import type { HeroContent, HeroAnimContent } from '$lib/types';
 	import { resolveLocale } from '$lib/utils/locale';
@@ -93,10 +93,10 @@
 	let refreshIcon: HTMLSpanElement;
 
 	let heroData: HeroData = $state(INITIAL_HERO_DATA);
-	// Resolve the dashboard LABEL/SUB strings (VEHICLES TRACKED, AVG DELAY,
-	// COVERAGE…) into the active locale. Numbers, units, query rows and the
-	// "STM" wordmark pass through untouched. Children stay locale-agnostic.
-	const localizedHeroData = $derived(localizeHeroData(heroData, locale));
+	// The dashboard card LABEL/SUB copy is CMS truth (siteLabels.heroDashboard);
+	// HeroMetrics resolves it per-locale by metric key, and the SQL panels carry
+	// no metric labels — so heroData (numbers, units, query rows, the "STM"
+	// wordmark) flows to the children unchanged. No localization pass here.
 	// go2/about: relative-time strings localized. EN "just now"/"30s ago" →
 	// FR "à l'instant"/"il y a 30 s" (NB: French inserts a space before the unit).
 	const updatedAgoInitial = locale === 'fr' ? 'il y a 30 s' : '30s ago';
@@ -470,7 +470,7 @@
 						{subtitleText}
 						{ctaWorkLabel}
 						{ctaContactLabel}
-						heroData={localizedHeroData}
+						heroData={heroData}
 						{introCompleted}
 						beaconSettled={introCompleted && introCollapsed}
 						{replayAriaLabel}
@@ -489,8 +489,8 @@
 					<div class="hero-viewport-sql hidden md:block">
 						<div data-hero-stagger="4">
 							<HeroSqlPanel
-								rows={localizedHeroData.queryRows}
-								queryTime={localizedHeroData.queryTime}
+								rows={heroData.queryRows}
+								queryTime={heroData.queryTime}
 								prompt={sqlPrompt}
 								liveLabel={sqlLiveLabel}
 								columnRoute={sqlColumnRoute}
@@ -530,7 +530,7 @@
 
 	<!-- Mobile SQL section — outside the pin, scrolls naturally after hero text -->
 	<HeroMobileSql
-		heroData={localizedHeroData}
+		heroData={heroData}
 		{sqlPrompt}
 		{sqlLiveLabel}
 		{sqlColumnRoute}

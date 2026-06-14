@@ -4,14 +4,54 @@
 -->
 <script lang="ts">
   import type { HeroMetric } from '$lib/content/hero-data';
+  import { siteLabels } from '$lib/content/site-labels';
   import { MetricDisplay } from '$lib/components/brand';
   import { Card } from '$lib/components/ui/card';
+  import { resolveLocale } from '$lib/utils/locale';
+  import { getLocale } from '$lib/utils/locale-context';
+
+  const locale = getLocale();
 
   interface Props {
     metrics: HeroMetric[];
   }
 
   let { metrics }: Props = $props();
+
+  // CMS truth: the dashboard card LABEL/SUB copy comes from the site_labels
+  // singleton (siteLabels.heroDashboard), keyed by the metric's stable `key`.
+  // Numbers/units stay code-owned dynamic data on the metric; only the words
+  // are localized here. The {coverage}/{total} placeholders are filled from the
+  // metric's own dynamic numbers (per-render coverage, constant route total).
+  const dashboard = siteLabels.heroDashboard;
+
+  function metricLabel(metric: HeroMetric): string {
+    switch (metric.key) {
+      case 'vehicles':
+        return resolveLocale(dashboard.vehiclesLabel, locale);
+      case 'delay':
+        return resolveLocale(dashboard.delayLabel, locale);
+      case 'routes':
+        return resolveLocale(dashboard.routesLabel, locale);
+    }
+  }
+
+  function metricSub(metric: HeroMetric): string {
+    switch (metric.key) {
+      case 'vehicles':
+        return resolveLocale(dashboard.vehiclesSub, locale);
+      case 'delay':
+        return resolveLocale(dashboard.delaySub, locale).replace(
+          '{coverage}',
+          String(metric.coverage ?? ''),
+        );
+      case 'routes':
+        return resolveLocale(dashboard.routesSub, locale).replace(
+          '{total}',
+          String(metric.total ?? ''),
+        );
+    }
+  }
 
   function formatValue(metric: HeroMetric): string {
     if (metric.key === 'vehicles') return metric.value.toLocaleString('en-US');
@@ -41,9 +81,9 @@
         {/if}
         <div class="flex-1 text-center">
           <MetricDisplay
-            label={metric.label}
+            label={metricLabel(metric)}
             value="{formatValue(metric)}{metric.unit ?? ''}"
-            sublabel={metric.sub}
+            sublabel={metricSub(metric)}
             size="sm"
           />
         </div>
@@ -60,9 +100,9 @@
       data-testid="metric-card"
     >
       <MetricDisplay
-        label={metric.label}
+        label={metricLabel(metric)}
         value="{formatValue(metric)}{metric.unit ?? ''}"
-        sublabel={metric.sub}
+        sublabel={metricSub(metric)}
         size="lg"
       />
     </Card>

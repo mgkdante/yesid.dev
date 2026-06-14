@@ -40,6 +40,16 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 			watermarkPersonal: ls('ui_watermark_personal'),
 			watermarkProfessional: ls('ui_watermark_professional'),
 			metroCaption: ls('ui_metro_caption'),
+			stationsOneSystem: ls('ui_stations_one_system'),
+			resultCount: {
+				singular: ls('ui_result_count_singular'),
+				plural: ls('ui_result_count_plural'),
+			},
+			languageNames: {
+				en: ls('ui_language_name_en'),
+				fr: ls('ui_language_name_fr'),
+				es: ls('ui_language_name_es'),
+			},
 		},
 		pages: {
 			blogEdgeTitle: ls('pages_blog_edge_title'),
@@ -152,6 +162,12 @@ export function toSiteLabels(raw: SiteLabelsRow): SiteLabels {
 				heading: ls('services_chrome_listing_heading'),
 				stationLabelTemplate: ls('services_chrome_listing_station_label_template'),
 				deepDiveLabel: ls('services_chrome_listing_deep_dive_label'),
+				stationShortLabels: {
+					'database-engineering': ls('services_chrome_listing_station_short_database_engineering'),
+					'data-pipeline': ls('services_chrome_listing_station_short_data_pipeline'),
+					'analytics-reporting': ls('services_chrome_listing_station_short_analytics_reporting'),
+					'web-development': ls('services_chrome_listing_station_short_web_development'),
+				},
 				projectsStrip: {
 					builtWithService: ls('services_chrome_listing_projects_strip_built_with_service'),
 					builtWithFallback: ls('services_chrome_listing_projects_strip_built_with_fallback'),

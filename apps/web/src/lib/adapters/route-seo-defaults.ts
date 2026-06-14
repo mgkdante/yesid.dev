@@ -167,7 +167,7 @@ export const codeRouteSeoDefaults: Record<string, CodeRouteSeoDefaults> = {
 	'/blog/personal': {
 		ogType: 'website',
 		noIndex: false,
-		fallbackTitle: { en: 'Personal Blog' },
+		fallbackTitle: { en: 'Personal Blog', fr: 'Blogue perso' },
 		composedTitleStrategy: 'append-brand',
 		jsonLdFactory: (_sm, locale) => [
 			buildCollectionPageNode({

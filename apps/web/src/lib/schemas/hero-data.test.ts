@@ -1,27 +1,33 @@
 import { describe, it, expect } from 'vitest';
 import { HeroDataSchema } from './hero-data';
-import { INITIAL_HERO_DATA, localizeHeroData } from '$lib/content/hero-data';
+import { INITIAL_HERO_DATA } from '$lib/content/hero-data';
 
-// Regression guard: the hero metric FR (labelI18n/subI18n) used to be stripped
-// here. The static adapter validates the SSR heroData through HeroDataSchema
-// (parsePort), and Zod drops unknown keys — so when the schema omitted
-// labelI18n/subI18n, the FR never reached the client and localizeHeroData fell
-// back to the EN label. The TS drift detector misses it (both fields optional),
-// so this test is the only guard.
-describe('HeroDataSchema — preserves metric i18n', () => {
-	it('keeps labelI18n/subI18n when parsing the SSR heroData', () => {
+// Regression guard: the dashboard card LABEL/SUB copy is CMS truth now
+// (siteLabels.heroDashboard, resolved in HeroMetrics by metric key). The metric
+// only carries code-owned dynamic data, including the numbers the CMS
+// sub-templates interpolate: {coverage} (delay card) and {total} (routes card).
+// The static adapter validates the SSR heroData through HeroDataSchema
+// (parsePort), and Zod DROPS unknown keys — so if the schema omitted
+// coverage/total, those numbers would never reach the client and the CMS
+// sub-templates would render '{coverage}% COVERAGE' / 'OF {total} TOTAL'
+// literally. The TS drift detector misses it (both fields optional), so this
+// test is the only guard.
+describe('HeroDataSchema — preserves metric interpolation numbers', () => {
+	it('keeps coverage/total when parsing the SSR heroData', () => {
 		const parsed = HeroDataSchema.parse(INITIAL_HERO_DATA);
-		for (const m of parsed.metrics) {
-			expect(m.labelI18n, `metric ${m.key} labelI18n`).toBeDefined();
-			expect(m.subI18n, `metric ${m.key} subI18n`).toBeDefined();
-		}
+		const delay = parsed.metrics.find((m) => m.key === 'delay');
+		const routes = parsed.metrics.find((m) => m.key === 'routes');
+		expect(delay?.coverage, 'delay metric coverage').toBeDefined();
+		expect(routes?.total, 'routes metric total').toBeDefined();
 	});
 
-	it('localizeHeroData resolves FR metric labels off the parsed data', () => {
-		const fr = localizeHeroData(HeroDataSchema.parse(INITIAL_HERO_DATA), 'fr');
-		const labels = fr.metrics.map((m) => m.label);
-		expect(labels).toContain('VÉHICULES SUIVIS');
-		expect(labels).toContain('RETARD MOYEN');
-		expect(labels).toContain('LIGNES EN DIRECT');
+	it('does not carry localized label/sub copy on the metric (CMS truth)', () => {
+		const parsed = HeroDataSchema.parse(INITIAL_HERO_DATA);
+		for (const m of parsed.metrics) {
+			expect(m).not.toHaveProperty('label');
+			expect(m).not.toHaveProperty('sub');
+			expect(m).not.toHaveProperty('labelI18n');
+			expect(m).not.toHaveProperty('subI18n');
+		}
 	});
 });

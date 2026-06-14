@@ -65,6 +65,12 @@
 	const carouselNextAria = resolveLocale(siteLabels.a11y.carouselNext, locale) || 'Next projects';
 	const markerFeaturedTemplate = resolveLocale(siteLabels.ui.markerFeatured, locale) || '{num} / FEATURED';
 
+	// go2-t1c2: the 3+-stations compression caption rides the site_labels
+	// singleton — `{count}` substitutes the resolved station count via
+	// fillTemplate at the {#each} site below (en "{count} stations · one
+	// system" / fr "{count} stations · un seul système").
+	const stationsOneSystemTemplate = resolveLocale(siteLabels.ui.stationsOneSystem, locale);
+
 	// go2/home-cards: quiet exploration line — ORANGE standard action (it's
 	// exploration, not conversion). Code literal per locale pending a
 	// ui_see_the_build site_labels seed in a future CMS pass.
@@ -269,7 +275,8 @@
 												{#if stations.length <= 2}<span>{resolveLocale(station.title, locale)}</span>{/if}
 											</span>
 										{/each}
-										{#if stations.length > 2}<span class="proof-station-caption">{stations.length} stations · one system</span>{/if}
+										<!-- Compression caption from site_labels — {count} = station count. -->
+										{#if stations.length > 2}<span class="proof-station-caption">{fillTemplate(stationsOneSystemTemplate, { count: String(stations.length) })}</span>{/if}
 									</span>
 								{/if}
 

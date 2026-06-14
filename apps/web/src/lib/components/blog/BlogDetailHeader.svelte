@@ -71,14 +71,25 @@
   );
   const editionTemplate = resolveLocale(siteLabels.ui.blogEditionTemplate, locale) || 'VOL. 01 // ISS. {issue}';
 
-  // Format date as "Apr 2026"
+  // Format date as "Apr 2026" (EN) / "avr. 2026" (FR). Month abbrev is
+  // localized natively by Intl from the active UI locale — no hardcoded
+  // 'en-US' (which leaked English month names onto /fr).
+  const dateLocale = $derived(locale === 'fr' ? 'fr-CA' : 'en-US');
   const formattedDate = $derived.by(() => {
     const d = new Date(post.date + 'T00:00:00');
-    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    return d.toLocaleDateString(dateLocale, { month: 'short', year: 'numeric' });
   });
 
   // Format date for edge label: "2026.04.15"
   const edgeDate = $derived(post.date.replace(/-/g, '.'));
+
+  // Post body language as a localized display name (CMS truth:
+  // siteLabels.ui.languageNames), not the raw `en`/`fr` code that leaked into
+  // the meta row. resolveLocale picks the name in the active UI locale (e.g. an
+  // English post reads "English" on /, "Anglais" on /fr).
+  const languageName = $derived(
+    resolveLocale(siteLabels.ui.languageNames[post.lang], locale) || post.lang
+  );
 
   // Highlight first tag keyword in title
   const titleParts = $derived.by(() => {
@@ -174,7 +185,7 @@
         <span class="header__meta-sep" aria-hidden="true"></span>
         <span>{readingTimeText}</span>
         <span class="header__meta-sep" aria-hidden="true"></span>
-        <span>{post.lang}</span>
+        <span>{languageName}</span>
       </div>
     </div>
   </section>
