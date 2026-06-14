@@ -58,6 +58,12 @@ export default defineConfig({
 		: process.env.CI
 			? 1
 			: undefined,
+	// Retry in CI only. The suite runs against a REMOTE Vercel preview, so a few
+	// GSAP/scroll-timing assertions (e.g. the hero-intro replay) occasionally tip
+	// past their wait window under network latency that doesn't exist locally.
+	// Retries absorb that transient variance without masking real failures — a
+	// genuine break fails all attempts. Flaky-on-retry tests surface in the report.
+	retries: process.env.CI ? 2 : 0,
 	use: {
 		baseURL: externalBaseURL ?? 'http://localhost:4173',
 		// Vercel preview deployments sit behind Deployment Protection (the SSO 401
