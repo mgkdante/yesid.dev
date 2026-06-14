@@ -200,6 +200,14 @@
 			<EngineComponent animate={engineAnimate} />
 		{:else}
 			<section class="engine-loading" data-testid="stack-engine-loading" aria-hidden="true">
+				<!-- fr-leak (needs-cms-field): this engine-band loading caption is an
+				     EN-only literal — it ships English on /fr. No CMS field carries it
+				     yet (techStackPageContent has no hero.engineLoading; siteLabels.ui
+				     has no engine/loading caption). READY TO WIRE: once the operator
+				     adds `engineLoading: LocalizedString` to the tech-stack-page schema
+				     (@repo/shared) + CMS singleton + regen, swap this literal for
+				     `{resolveLocale(c.hero.engineLoading, locale)}`. EN must stay
+				     byte-identical: en='~ rolling out the drawing board…'. -->
 				<span class="engine-loading-line">~ rolling out the drawing board…</span>
 			</section>
 		{/if}

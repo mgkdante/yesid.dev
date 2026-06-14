@@ -15,6 +15,7 @@
 	const locale = getLocale();
 	import { isPrefersReducedMotion } from '$lib/motion/stores/reducedMotion.js';
 	import { blogListingContent } from '$lib/content/blog';
+	import { siteLabels } from '$lib/content';
 	import { captureFlipState, animateFlipTransition } from '$lib/motion/utils/flip.js';
 	import { loadDrawSVG, loadFlip, initScrollTriggerConfig } from '$lib/motion/utils/gsap.js';
 	import { createDrawScrub } from '$lib/motion/scrubs/index.js';
@@ -231,7 +232,7 @@
 		/>
 
 		{#if hasActiveFilters}
-			<FilterSummary count={filteredPosts.length} noun={resolveLocale(blogListingContent.resultNoun, locale)} onClear={clearFilters} />
+			<FilterSummary count={filteredPosts.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
 		{/if}
 
 		{#if filteredPosts.length === 0}
