@@ -210,9 +210,13 @@
 	   overflowed below ~450px and let the wordmark wrap. Two tiers: phones
 	   get a visibly smaller pill, sub-480 (where the priority-2 link is
 	   already hidden) tightens further. Interactive hit areas stay 44px. */
+	/* Mobile compaction tiers — squeeze decorative spacing (padding, divider
+	   margins, link gaps), NEVER the 44px tap targets. Retightened in slice-30
+	   after the LanguageToggle became a 3rd pill control (was overflowing the
+	   floating pill at 320–480px). */
 	@media (max-width: 767px) {
 		.nav-pill {
-			padding: 8px 18px;
+			padding: 8px 16px;
 		}
 		.nav-pill-compact {
 			padding: 8px 14px;
@@ -221,7 +225,7 @@
 			font-size: 17px;
 		}
 		.nav-divider {
-			margin-inline: 14px;
+			margin-inline: 10px;
 		}
 		.nav-links {
 			gap: 18px;
@@ -233,42 +237,42 @@
 
 	@media (max-width: 479px) {
 		.nav-pill {
-			padding: 6px 12px;
+			padding: 6px 8px;
 		}
 		.nav-pill-compact {
-			padding: 6px 10px;
+			padding: 6px 8px;
 		}
 		.nav-wordmark {
 			font-size: 16px;
 		}
 		.nav-divider {
-			margin-inline: 9px;
+			margin-inline: 4px;
 		}
 		.nav-links {
-			gap: 13px;
+			gap: 7px;
 		}
 		.nav-pill-link {
 			font-size: 12.5px;
 		}
 	}
 
-	/* Tightest tier (320–359px): the two 44px toggles + two links leave very
+	/* Tightest tier (320–359px): the three 44px toggles + two links leave very
 	   little room — squeeze the decorative spacing, never the hit areas. */
 	@media (max-width: 359px) {
 		.nav-pill {
-			padding: 6px 10px;
+			padding: 6px 6px;
 		}
 		.nav-pill-compact {
-			padding: 6px 8px;
+			padding: 6px 6px;
 		}
 		.nav-wordmark {
 			font-size: 15px;
 		}
 		.nav-divider {
-			margin-inline: 6px;
+			margin-inline: 2px;
 		}
 		.nav-links {
-			gap: 9px;
+			gap: 4px;
 		}
 		.nav-pill-link {
 			font-size: 12px;
