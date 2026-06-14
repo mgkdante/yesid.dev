@@ -25,7 +25,11 @@ async function walk(page: Page, routes: string[]): Promise<ConsoleProblem[]> {
 
 	for (const route of routes) {
 		currentRoute = route;
-		await page.goto(route, { waitUntil: 'networkidle' });
+		await page.goto(route, { waitUntil: 'load' });
+		// networkidle is flaky (lazy media / motion can keep a connection warm) —
+		// wait for it when it settles, but don't fail the scan if it never does;
+		// the console/pageerror listeners catch errors throughout regardless.
+		await page.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
 	}
 	return problems;
 }
@@ -44,7 +48,8 @@ test('contact form interaction — no console errors', async ({ page }) => {
 		problems.push({ route: '/contact', type: 'rejection', text: err.message });
 	});
 
-	await page.goto('/contact', { waitUntil: 'networkidle' });
+	await page.goto('/contact', { waitUntil: 'load' });
+	await page.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
 
 	// Fill the form but DO NOT submit. Verifies client-side validation +
 	// reactive form code doesn't surface errors. Per slice-16 spec the

@@ -25,21 +25,36 @@ export default defineConfig({
 				webServer: {
 					command: 'bun run build && bun run preview',
 					port: 4173,
-					reuseExistingServer: !process.env.CI
+					reuseExistingServer: !process.env.CI,
+					// CI cold-build (vite build + check:sitemap) can exceed the
+					// default 60s before the preview answers on :4173.
+					timeout: 180_000
 				}
 			}),
 	testDir: 'tests',
 	testMatch: '**/*.spec.ts',
+	// Desktop-layout audits assert a desktop composition (e.g. the service hero's
+	// `.svg-desktop` panel is display:none below 768px; the stack-engine shape
+	// grid is a desktop arrangement). They are meaningless on the phone matrix —
+	// run them on desktop-chrome only. Mobile UX has its own coverage under
+	// tests/mobile/, and the viewport-agnostic specs (smoke, pages, console-scan,
+	// reduced-motion, …) still run everywhere.
 	projects: [
 		{ name: 'desktop-chrome', use: { ...devices['Desktop Chrome'] } },
 		{
 			name: 'iphone-12',
-			use: { ...devices['iPhone 12'], defaultBrowserType: 'chromium' }
+			use: { ...devices['iPhone 12'], defaultBrowserType: 'chromium' },
+			testIgnore: ['**/audits/light-mode.spec.ts', '**/stack-engine.spec.ts']
 		},
-		{ name: 'pixel-7', use: { ...devices['Pixel 7'] } },
+		{
+			name: 'pixel-7',
+			use: { ...devices['Pixel 7'] },
+			testIgnore: ['**/audits/light-mode.spec.ts', '**/stack-engine.spec.ts']
+		},
 		{
 			name: 'ipad-mini',
-			use: { ...devices['iPad Mini'], defaultBrowserType: 'chromium' }
+			use: { ...devices['iPad Mini'], defaultBrowserType: 'chromium' },
+			testIgnore: ['**/audits/light-mode.spec.ts', '**/stack-engine.spec.ts']
 		}
 	]
 });
