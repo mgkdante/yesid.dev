@@ -45,10 +45,40 @@ describe('HeroMetrics', () => {
     expect(screen.getAllByText('ROUTES LIVE').length).toBeGreaterThan(0);
   });
 
-  it('renders sub-labels for each metric', () => {
+  it('renders sub-labels for each metric (CMS templates, EN, {coverage}/{total} filled)', () => {
     render(HeroMetrics, { props: { metrics } });
-    expect(screen.getAllByText(/STM/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/COVERAGE/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/OF 203 TOTAL/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText('STM · LIVE').length).toBeGreaterThan(0);
+    // delaySub template '{coverage}% COVERAGE' with coverage=87.6
+    expect(screen.getAllByText('87.6% COVERAGE').length).toBeGreaterThan(0);
+    // routesSub template 'OF {total} TOTAL' with total=203
+    expect(screen.getAllByText('OF 203 TOTAL').length).toBeGreaterThan(0);
+    // No unsubstituted placeholders leak through.
+    expect(screen.queryByText(/\{coverage\}|\{total\}/)).toBeNull();
+  });
+});
+
+// Regression: the dashboard card copy is CMS truth (siteLabels.heroDashboard).
+// Inside a fr locale provider HeroMetrics must render the French labels/subs,
+// with the {coverage}/{total} placeholders still substituted. The locale
+// context keys on Symbol.for('yesid.locale') (see $lib/utils/locale-context).
+describe('HeroMetrics — fr locale (CMS truth)', () => {
+  const metrics = INITIAL_HERO_DATA.metrics;
+  const frContext = new Map([[Symbol.for('yesid.locale'), () => 'fr']]);
+
+  it('renders French labels from siteLabels.heroDashboard', () => {
+    render(HeroMetrics, { props: { metrics }, context: frContext });
+    expect(screen.getAllByText('VÉHICULES SUIVIS').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('RETARD MOYEN').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('LIGNES EN DIRECT').length).toBeGreaterThan(0);
+  });
+
+  it('renders French subs with {coverage}/{total} substituted', () => {
+    render(HeroMetrics, { props: { metrics }, context: frContext });
+    expect(screen.getAllByText('STM · EN DIRECT').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('87.6% DE COUVERTURE').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('SUR 203 AU TOTAL').length).toBeGreaterThan(0);
+    // The EN copy must NOT leak into the French render.
+    expect(screen.queryByText('VEHICLES TRACKED')).toBeNull();
+    expect(screen.queryByText('OF 203 TOTAL')).toBeNull();
   });
 });

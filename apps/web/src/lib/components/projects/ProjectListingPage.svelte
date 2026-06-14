@@ -69,10 +69,6 @@
 			},
 			locale
 		);
-	const filterNoun =
-		resolveLocale(siteLabels.ui.nounProject, locale) ||
-		resolveLocale({ en: 'project', fr: 'projet' }, locale);
-
 	// Filter state — read from URL params
 	let activeService = $derived($page.url.searchParams.get('service'));
 	let activeTag = $derived($page.url.searchParams.get('tag'));
@@ -249,7 +245,7 @@
 
 		<!-- Active filter summary -->
 		{#if hasActiveFilters}
-			<FilterSummary count={filteredProjects.length} noun={filterNoun} onClear={clearFilters} />
+			<FilterSummary count={filteredProjects.length} countLabel={siteLabels.ui.resultCount} onClear={clearFilters} />
 		{/if}
 
 		<!-- Card grid -->

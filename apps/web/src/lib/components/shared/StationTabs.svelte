@@ -14,6 +14,7 @@
 	import { getLocale } from '$lib/utils/locale-context';
 	import { localizeHref } from '$lib/utils/locale-routing';
 	import { servicesDetailContent } from '$lib/content/services';
+	import { siteLabels } from '$lib/content';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { scrollChain } from '$lib/motion/actions/scrollChain.js';
@@ -23,16 +24,6 @@
 	// layout) — an init-time context read is always current.
 	const locale = getLocale();
 	const serviceNavAria = resolveLocale(servicesDetailContent.serviceNavAria, locale);
-
-	// Short labels map — one entry per station. GO-2 consolidation: 4 stations,
-	// labels match the manifesto pills (databases/pipelines/dashboards/websites).
-	// Unknown ids fall back to the first word of the title (getLabel below).
-	const SHORT_LABELS: Record<string, string> = {
-		'database-engineering': 'Databases',
-		'data-pipeline': 'Pipelines',
-		'analytics-reporting': 'Dashboards',
-		'web-development': 'Websites'
-	};
 
 	let {
 		services,
@@ -57,9 +48,20 @@
 		return String(n).padStart(2, '0');
 	}
 
-	/** Get short label for a service — falls back to first word of the locale-resolved title */
+	// Compact tab labels are CMS truth (siteLabels.servicesChrome.listing
+	// .stationShortLabels), keyed by service id. EN values ("Databases",
+	// "Pipelines", "Dashboards", "Websites") match the old hardcoded EN labels,
+	// so EN output is byte-identical; /fr now renders the French CMS value
+	// instead of an English literal.
+	const stationShortLabels = siteLabels.servicesChrome.listing.stationShortLabels;
+
+	/** Compact tab label from the CMS short-label map, keyed by service id.
+	 *  Falls back to the locale-resolved full service title only when a service
+	 *  id is missing from the map. */
 	function getLabel(service: Service): string {
-		return SHORT_LABELS[service.id] ?? resolveLocale(service.title, locale).split(' ')[0];
+		const short = stationShortLabels[service.id as keyof typeof stationShortLabels];
+		if (short) return resolveLocale(short, locale);
+		return resolveLocale(service.title, locale);
 	}
 
 	/** Inactive tabs fade by distance from active: closer tabs stay brighter.
