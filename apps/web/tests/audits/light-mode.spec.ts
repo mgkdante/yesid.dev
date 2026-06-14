@@ -283,7 +283,7 @@ test.describe('light mode — per-page audit', () => {
 		expect(railWidth).toBe(2);
 	});
 
-	test('round 6: detail art on the LEFT + top band matches the listing', async ({ page }) => {
+	test('round 6: detail art on the RIGHT + top band matches the listing', async ({ page }) => {
 		// Resolve a real detail route from the listing (nothing hardcoded
 		// below the collection level — Track 4 may rename service slugs).
 		await page.goto('/services', { waitUntil: 'networkidle' });
@@ -308,21 +308,22 @@ test.describe('light mode — per-page audit', () => {
 		});
 		expect(detailBand).toBe(LIGHT_BG);
 
-		// R6-2 fun art restored on the LEFT: the svg panel renders and sits
-		// left of the hero text column (desktop viewport).
+		// Fun art on the RIGHT (operator pass 2 — commit 2d3f7796 "move service
+		// detail art right"; hero-grid is `1fr auto`, text col then svg col): the
+		// svg panel renders and sits to the RIGHT of the hero text column.
 		const layout = await page.evaluate(() => {
 			const panel = document.querySelector('.svg-desktop [data-testid="service-svg-panel"]');
 			const text = document.querySelector('.hero-text');
 			if (!panel || !text) return null;
 			return {
-				panelRight: panel.getBoundingClientRect().right,
-				textLeft: text.getBoundingClientRect().left,
+				panelLeft: panel.getBoundingClientRect().left,
+				textRight: text.getBoundingClientRect().right,
 				hasArt: !!panel.querySelector('svg'),
 			};
 		});
 		expect(layout, 'detail hero must render the svg panel + text column').toBeTruthy();
 		expect(layout!.hasArt).toBe(true);
-		expect(layout!.panelRight).toBeLessThanOrEqual(layout!.textLeft);
+		expect(layout!.textRight).toBeLessThanOrEqual(layout!.panelLeft);
 	});
 
 	test('go2/home-cards: solid paper cards, signage chip, yellow metric, whitened image band', async ({ page }) => {

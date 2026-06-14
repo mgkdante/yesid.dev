@@ -112,7 +112,7 @@ test('compose path: every combo TEACHES — the operator example (node.js + gith
 	);
 	// …and the operator's door is open right beside it (finale 4c).
 	const door = shape.locator('[data-testid="shape-availability"]');
-	await expect(door).toContainText("I'm online");
+	await expect(door).toContainText('Questions? Ask me anything.');
 	await expect(door).toHaveAttribute('href', '/contact');
 	// The bonus rail says plainly why no known build lit up.
 	await expect(page.locator('[data-testid="known-builds-label"]')).toContainText(
