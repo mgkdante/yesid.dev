@@ -52,8 +52,10 @@ test('home cards surface excerpt + station chip + metric + exploration line (non
 		if (hasMetric) {
 			await expect(metric).toHaveCSS('color', DARK_ACCENT_TEXT);
 		}
-		const chip = card.getByTestId('proof-station-chip');
-		const hasChip = (await chip.count()) > 0;
+		// A card renders one chip per related station (many-to-many post slice-30);
+		// the signage palette is identical across them, so assert the first.
+		const chip = card.getByTestId('proof-station-chip').first();
+		const hasChip = (await card.getByTestId('proof-station-chip').count()) > 0;
 		if (hasChip) {
 			await expect(chip).toHaveCSS('background-color', SIGNAGE_BG);
 			await expect(chip).toHaveCSS('color', SIGNAGE_TEXT);

@@ -203,4 +203,28 @@
 			animation: none;
 		}
 	}
+
+	/* Mobile: the fingerpost is the widest pill control (svg is 46px wide) and,
+	   added in slice-30, it overflowed the floating nav pill at ≤360px. Shrink
+	   the drawing on phones — the tap target stays comfortably ≥24px (AA). */
+	@media (max-width: 479px) {
+		.lang-post {
+			min-width: 38px;
+			padding: 3px;
+		}
+		.lang-post svg {
+			width: 34px;
+			height: 27px;
+		}
+	}
+	@media (max-width: 359px) {
+		.lang-post {
+			min-width: 26px;
+			padding: 2px;
+		}
+		.lang-post svg {
+			width: 22px;
+			height: 17px;
+		}
+	}
 </style>
