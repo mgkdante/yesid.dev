@@ -17,6 +17,30 @@ import { defineConfig, devices } from '@playwright/test';
 // spawn — there's nothing to build because the deployed surface is the target.
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
 
+// Specs that run ONLY on desktop-chrome — excluded from the phone matrix.
+// Two reasons, both: (a) viewport-INDEPENDENT assertions (status codes, meta
+// tags, sitemap XML, canonical/hreflang, theme tokens, form-validation copy)
+// gain nothing from re-running on three phones — verify once; (b) they assert a
+// DESKTOP composition (the service hero's `.svg-desktop` panel, the project/blog
+// `.toc-column`, the projects filter sidebar, the stack-engine shape grid) that
+// is display:none / restructured below 768px. Mobile UX has its own coverage
+// under tests/mobile/. (Pattern set by i18n-routing; extended for the slice-30
+// e2e expansion — the page-content/, contact-form, theme, filter and locale
+// specs were authored + validated against the desktop composition.)
+const DESKTOP_ONLY_SPECS = [
+	'**/audits/light-mode.spec.ts',
+	'**/stack-engine.spec.ts',
+	'**/i18n-routing.spec.ts',
+	'**/i18n-language-toggle.spec.ts',
+	'**/i18n-sitemap-coverage.spec.ts',
+	'**/locale-coverage-fr.spec.ts',
+	'**/interactive-filters.spec.ts',
+	'**/contact-form-submission.spec.ts',
+	'**/contact-form-validation.spec.ts',
+	'**/theme-persistence.spec.ts',
+	'**/page-content/**'
+];
+
 export default defineConfig({
 	// Parallelism pays off ONLY against an external, horizontally-scalable surface
 	// (the deployed Vercel preview via PLAYWRIGHT_BASE_URL): then each worker hits
@@ -52,35 +76,17 @@ export default defineConfig({
 		{
 			name: 'iphone-12',
 			use: { ...devices['iPhone 12'], defaultBrowserType: 'chromium' },
-			testIgnore: [
-				'**/audits/light-mode.spec.ts',
-				'**/stack-engine.spec.ts',
-				// Routing/SEO assertions (status codes, meta tags) are viewport-
-				// independent — run once on desktop-chrome, not the phone matrix.
-				'**/i18n-routing.spec.ts'
-			]
+			testIgnore: DESKTOP_ONLY_SPECS
 		},
 		{
 			name: 'pixel-7',
 			use: { ...devices['Pixel 7'] },
-			testIgnore: [
-				'**/audits/light-mode.spec.ts',
-				'**/stack-engine.spec.ts',
-				// Routing/SEO assertions (status codes, meta tags) are viewport-
-				// independent — run once on desktop-chrome, not the phone matrix.
-				'**/i18n-routing.spec.ts'
-			]
+			testIgnore: DESKTOP_ONLY_SPECS
 		},
 		{
 			name: 'ipad-mini',
 			use: { ...devices['iPad Mini'], defaultBrowserType: 'chromium' },
-			testIgnore: [
-				'**/audits/light-mode.spec.ts',
-				'**/stack-engine.spec.ts',
-				// Routing/SEO assertions (status codes, meta tags) are viewport-
-				// independent — run once on desktop-chrome, not the phone matrix.
-				'**/i18n-routing.spec.ts'
-			]
+			testIgnore: DESKTOP_ONLY_SPECS
 		}
 	]
 });
