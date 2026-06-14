@@ -1,36 +1,20 @@
-import { test, expect, type Locator, type Page } from '@playwright/test';
-
-const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
-
-// The contact page renders the form snippet twice (desktop + mobile terminals);
-// only one is visible per viewport. Scope every interaction to the visible
-// terminal so strict-mode locators resolve to a single element.
-function visibleFormTerminal(page: Page): Locator {
-	return page.getByTestId('contact-form-terminal').filter({ visible: true }).first();
-}
-
-// Mock the Web3Forms endpoint. The submit handler treats `!result.success`
-// (and any thrown/aborted fetch) as a failure, so success === { success:true }.
-async function mockWeb3Forms(page: Page, success: boolean) {
-	await page.route(WEB3FORMS_URL, (route) =>
-		route.fulfill({
-			status: 200,
-			contentType: 'application/json',
-			body: JSON.stringify({ success }),
-		}),
-	);
-}
+import { test, expect } from '@playwright/test';
+import { mockWeb3Forms, visibleContactTerminal } from './_support/helpers';
 
 test.describe('Contact form submission', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/contact');
-		await page.waitForLoadState('networkidle');
+		// Deterministic replacement for the old networkidle wait: the contact
+		// info-terminal fires a one-shot fetch('/api/weather') + a DOM clock
+		// interval, so "network idle" is racy/slow. Wait on the visible form
+		// terminal landmark instead — every test scopes its interactions to it.
+		await expect(visibleContactTerminal(page)).toBeVisible();
 	});
 
 	test('contact form shows success state after valid submit', async ({ page }) => {
-		await mockWeb3Forms(page, true);
+		await mockWeb3Forms(page, { success: true });
 
-		const terminal = visibleFormTerminal(page);
+		const terminal = visibleContactTerminal(page);
 		await terminal.locator('#contact-name').fill('John Doe');
 		await terminal.locator('#contact-email').fill('john@example.com');
 		await terminal.locator('#contact-message').fill('I would like to discuss a project.');
@@ -52,9 +36,9 @@ test.describe('Contact form submission', () => {
 	});
 
 	test('contact form keeps the form (no success) when the API reports failure', async ({ page }) => {
-		await mockWeb3Forms(page, false);
+		await mockWeb3Forms(page, { success: false });
 
-		const terminal = visibleFormTerminal(page);
+		const terminal = visibleContactTerminal(page);
 		await terminal.locator('#contact-name').fill('John Doe');
 		await terminal.locator('#contact-email').fill('john@example.com');
 		await terminal.locator('#contact-message').fill('Test message');
@@ -73,9 +57,9 @@ test.describe('Contact form submission', () => {
 	});
 
 	test('contact form reset button clears the form and returns to input state', async ({ page }) => {
-		await mockWeb3Forms(page, true);
+		await mockWeb3Forms(page, { success: true });
 
-		const terminal = visibleFormTerminal(page);
+		const terminal = visibleContactTerminal(page);
 		const nameInput = terminal.locator('#contact-name');
 		const emailInput = terminal.locator('#contact-email');
 		const messageInput = terminal.locator('#contact-message');

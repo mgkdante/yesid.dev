@@ -61,7 +61,10 @@ export const serviceDetailLinks = (page: Page): Locator => page.locator('a[href^
  * the /blog/personal corner link (sidebar-only) is intrinsically excluded.
  */
 export const blogPostLinks = (page: Page): Locator =>
-	page.locator('[data-testid="blog-row"] a[href^="/blog/"]');
+	// The blog-row anchor IS the link — it carries data-testid="blog-row" AND the
+	// /blog/<slug> href itself (BlogRow.svelte), there is no nested <a>. Match the
+	// anchor directly (a descendant combinator would resolve to zero).
+	page.locator('a[data-testid="blog-row"][href^="/blog/"]');
 
 /**
  * Navigate to the first real detail page under a listing and return its href.

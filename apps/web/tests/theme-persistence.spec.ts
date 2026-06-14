@@ -9,7 +9,6 @@ import { test, expect } from '@playwright/test';
 test.describe('Theme toggle persistence', () => {
 	test('page loads in dark theme by default', async ({ page }) => {
 		await page.goto('/');
-		await page.waitForLoadState('networkidle');
 
 		// The pre-paint inline script in app.html resolves data-theme synchronously
 		// to 'light'/'dark' (never null). With no stored preference it must be dark.
@@ -24,7 +23,6 @@ test.describe('Theme toggle persistence', () => {
 
 	test('theme toggle button changes theme to light', async ({ page }) => {
 		await page.goto('/');
-		await page.waitForLoadState('networkidle');
 
 		const htmlElement = page.locator('html');
 		await expect(htmlElement).toHaveAttribute('data-theme', 'dark');
@@ -45,14 +43,14 @@ test.describe('Theme toggle persistence', () => {
 
 	test('theme preference persists after page reload', async ({ page }) => {
 		await page.goto('/');
-		await page.waitForLoadState('networkidle');
+
+		// Toggle visible == page hydrated; deterministic gate before reading localStorage.
+		const toggle = page.getByTestId('theme-toggle');
+		await expect(toggle).toBeVisible();
 
 		// No stored preference on first load.
 		const storageBefore = await page.evaluate(() => localStorage.getItem('theme'));
 		expect(storageBefore).toBeNull();
-
-		const toggle = page.getByTestId('theme-toggle');
-		await expect(toggle).toBeVisible();
 
 		await toggle.click();
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
@@ -62,8 +60,8 @@ test.describe('Theme toggle persistence', () => {
 		expect(storageAfter).toBe('light');
 
 		// Reload -> pre-paint script restores the stored theme.
+		// The data-theme + aria-checked assertions below auto-wait, so no networkidle needed.
 		await page.reload();
-		await page.waitForLoadState('networkidle');
 
 		await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 		await expect(page.getByTestId('theme-toggle')).toHaveAttribute('aria-checked', 'false');
@@ -74,9 +72,8 @@ test.describe('Theme toggle persistence', () => {
 
 	test('theme-color meta tag updates with theme', async ({ page }) => {
 		await page.goto('/');
-		await page.waitForLoadState('networkidle');
 
-		// SSR'd dark surface.
+		// SSR'd dark surface. The toHaveAttribute assertion below auto-waits, so no networkidle needed.
 		const themeMeta = page.locator('meta[name="theme-color"]');
 		await expect(themeMeta).toHaveAttribute('content', '#141414');
 

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { visibleContactTerminal } from './_support/helpers';
 
 test.describe('French locale coverage', () => {
   test('route /fr/contact renders with French chrome', async ({ page }) => {
@@ -26,10 +27,14 @@ test.describe('French locale coverage', () => {
 
   test('route /fr/contact form validation errors in French', async ({ page }) => {
     await page.goto('/fr/contact');
-    await page.waitForLoadState('networkidle');
 
-    // Get visible form and submit empty
-    const form = page.locator('form').filter({ visible: true }).first();
+    // Wait on the deterministic landmark the networkidle was implicitly guarding:
+    // the visible contact form terminal must be present before we interact with it.
+    const terminal = visibleContactTerminal(page);
+    await expect(terminal).toBeVisible();
+
+    // Get visible form (scoped to the visible terminal) and submit empty
+    const form = terminal.locator('form').filter({ visible: true }).first();
     const submitBtn = form.locator('button[type="submit"]').filter({ visible: true });
 
     await submitBtn.click();
@@ -72,8 +77,9 @@ test.describe('French locale coverage', () => {
 
   test('route /fr/blog language filter shows FR/EN distinction', async ({ page }) => {
     await page.goto('/fr/blog');
-    await page.waitForLoadState('networkidle');
 
+    // (networkidle removed: the very next assertion is a web-first toBeVisible()
+    // that auto-waits for the filter sidebar — the wait was redundant.)
     // The desktop filter sidebar is always present on /fr/blog at desktop width
     // (BlogListingPage .blog-filter-column is display:block ≥1024px).
     const langFilter = page.locator('[data-testid="blog-filter-sidebar"]');

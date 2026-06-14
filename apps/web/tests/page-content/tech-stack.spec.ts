@@ -58,8 +58,10 @@ test.describe('/tech-stack page content', () => {
 
   test('tech-stack engine band renders with engine component or loading state', async ({ page }) => {
     await page.goto('/tech-stack');
-    await page.waitForLoadState('networkidle');
 
+    // engine-band is static SSR markup (the hazard-framed wrapper around either
+    // the live engine or its loading placeholder) — visible at load, no need to
+    // wait on the network. The web-first assertion below auto-waits for it.
     const engineBand = page.locator('[data-testid="engine-band"]');
     await expect(engineBand).toBeVisible();
 
@@ -74,9 +76,11 @@ test.describe('/tech-stack page content', () => {
 
   test('tech-stack engine renders after hydration', async ({ page }) => {
     await page.goto('/tech-stack');
-    // Wait for the async engine chunk to load
-    await page.waitForLoadState('networkidle');
 
+    // The async engine chunk imports in onMount, then {#if EngineComponent}
+    // swaps the loading placeholder for the live engine. The web-first
+    // assertion auto-retries until that swap lands — a deterministic wait on the
+    // engine landmark itself, not a racy network-idle guess.
     const engine = page.locator('[data-testid="stack-engine"]');
     await expect(engine).toBeVisible();
   });
@@ -112,8 +116,11 @@ test.describe('/tech-stack page content', () => {
     await page.goto('/tech-stack');
 
     // Wait for hydration so onMount's reduced-motion branch runs (it flips
-    // every line — content + cursor — to visible:true synchronously).
-    await page.waitForLoadState('networkidle');
+    // every line — content + cursor — to visible:true synchronously). onMount
+    // also kicks off the engine chunk, so the engine landmark becoming visible
+    // is a deterministic proof that onMount executed — wait on it, not network
+    // idle. The toHaveCount assertions below are web-first and auto-retry too.
+    await expect(page.locator('[data-testid="stack-engine"]')).toBeVisible();
 
     const totalLines = page.locator('.hero-terminal-line');
     const visibleLines = page.locator('.hero-terminal-line.hero-line-visible');

@@ -1,15 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { gotoFirstDetail, projectDetailLinks } from '../_support/helpers';
 
-// Helper: from /projects, follow the first real project link and return the slug href.
-async function gotoFirstProject(page: import('@playwright/test').Page): Promise<string> {
-	await page.goto('/projects');
-	const firstProjectLink = page.locator('a[href^="/projects/"]').first();
-	await expect(firstProjectLink).toBeVisible();
-	const href = await firstProjectLink.getAttribute('href');
-	expect(href).toBeTruthy();
-	await page.goto(href!);
-	return href!;
-}
+// Open the first real /projects/[slug] detail page. The shared helper asserts a
+// link exists, navigates, and waits on the project-detail-page landmark (no
+// networkidle) — replacing the hand-rolled open-first-project boilerplate.
+const gotoFirstProject = (page: import('@playwright/test').Page): Promise<string> =>
+	gotoFirstDetail(page, '/projects', projectDetailLinks, 'project-detail-page');
 
 test.describe('/projects/[slug] detail page content', () => {
 	test('project detail page renders with header + sections', async ({ page }) => {
