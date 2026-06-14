@@ -18,6 +18,14 @@ import { defineConfig, devices } from '@playwright/test';
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
 
 export default defineConfig({
+	// Parallelism pays off ONLY against an external, horizontally-scalable surface
+	// (the deployed Vercel preview via PLAYWRIGHT_BASE_URL): then each worker hits
+	// the CDN/edge independently. Against the single local hermetic preview server
+	// fullyParallel + many workers CONTEND and run SLOWER (measured 188s vs 150s,
+	// worst on the screenshot-heavy weather specs) — so keep the hermetic path
+	// lean (1 worker in CI), and crank parallelism only when external.
+	fullyParallel: Boolean(externalBaseURL),
+	workers: externalBaseURL ? undefined : process.env.CI ? 1 : undefined,
 	use: { baseURL: externalBaseURL ?? 'http://localhost:4173' },
 	...(externalBaseURL
 		? {}
@@ -44,17 +52,35 @@ export default defineConfig({
 		{
 			name: 'iphone-12',
 			use: { ...devices['iPhone 12'], defaultBrowserType: 'chromium' },
-			testIgnore: ['**/audits/light-mode.spec.ts', '**/stack-engine.spec.ts']
+			testIgnore: [
+				'**/audits/light-mode.spec.ts',
+				'**/stack-engine.spec.ts',
+				// Routing/SEO assertions (status codes, meta tags) are viewport-
+				// independent — run once on desktop-chrome, not the phone matrix.
+				'**/i18n-routing.spec.ts'
+			]
 		},
 		{
 			name: 'pixel-7',
 			use: { ...devices['Pixel 7'] },
-			testIgnore: ['**/audits/light-mode.spec.ts', '**/stack-engine.spec.ts']
+			testIgnore: [
+				'**/audits/light-mode.spec.ts',
+				'**/stack-engine.spec.ts',
+				// Routing/SEO assertions (status codes, meta tags) are viewport-
+				// independent — run once on desktop-chrome, not the phone matrix.
+				'**/i18n-routing.spec.ts'
+			]
 		},
 		{
 			name: 'ipad-mini',
 			use: { ...devices['iPad Mini'], defaultBrowserType: 'chromium' },
-			testIgnore: ['**/audits/light-mode.spec.ts', '**/stack-engine.spec.ts']
+			testIgnore: [
+				'**/audits/light-mode.spec.ts',
+				'**/stack-engine.spec.ts',
+				// Routing/SEO assertions (status codes, meta tags) are viewport-
+				// independent — run once on desktop-chrome, not the phone matrix.
+				'**/i18n-routing.spec.ts'
+			]
 		}
 	]
 });
