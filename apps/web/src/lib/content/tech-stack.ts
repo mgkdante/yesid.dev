@@ -16,10 +16,7 @@ export const techStackPageContent: TechStackPageContent = {
 		viewServices: { en: 'View Services', fr: 'Voir les services' },
 	},
 	cta: {
-		headingLine1: {
-			en: 'Found your stack',
-			fr: 'T\'as trouvé ton stack',
-		},
+		headingLine1: { en: 'Found your stack', fr: 'T\'as trouvé ton stack' },
 		headingLine2: { en: 'Let\'s build it', fr: 'On le bâtit ensemble' },
 		sub: {
 			en: 'A pipeline, a dashboard, a database, a store, the infrastructure is ready.',

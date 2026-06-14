@@ -1,5 +1,18 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "_project": "yesid.dev — workflow-overlord 3.x via installed plugin (Claude hooks via plugin, session sync via direct REST, interactive Notion via hosted MCP)",
-  "enabledMcpjsonServers": ["notion", "yesid-cms-prod"]
+  "enabledMcpjsonServers": ["notion", "yesid-cms-prod"],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/pretool-block-generated-ts.sh\""
+          }
+        ]
+      }
+    ]
+  }
 }
