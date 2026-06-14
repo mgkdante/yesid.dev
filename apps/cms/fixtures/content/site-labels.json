@@ -120,5 +120,15 @@
 	"hero_dashboard_delay_label": "AVG DELAY",
 	"hero_dashboard_delay_sub": "{coverage}% COVERAGE",
 	"hero_dashboard_routes_label": "ROUTES LIVE",
-	"hero_dashboard_routes_sub": "OF {total} TOTAL"
+	"hero_dashboard_routes_sub": "OF {total} TOTAL",
+	"ui_stations_one_system": "{count} stations · one system",
+	"ui_result_count_singular": "{count} result",
+	"ui_result_count_plural": "{count} results",
+	"ui_language_name_en": "English",
+	"ui_language_name_fr": "French",
+	"ui_language_name_es": "Spanish",
+	"services_chrome_listing_station_short_database_engineering": "Databases",
+	"services_chrome_listing_station_short_data_pipeline": "Pipelines",
+	"services_chrome_listing_station_short_analytics_reporting": "Dashboards",
+	"services_chrome_listing_station_short_web_development": "Websites"
 }

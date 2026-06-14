@@ -7,24 +7,18 @@ import type { HeroMetric, HeroQueryRow, HeroData } from '$lib/content/hero-data'
 
 export const HeroMetricKeySchema = z.enum(['vehicles', 'delay', 'routes']);
 
-// Mirrors LocalizedString { en; fr?; es? }.
-const LocalizedStringSchema = z.object({
-	en: z.string(),
-	fr: z.string().optional(),
-	es: z.string().optional(),
-});
-
 export const HeroMetricSchema = z.object({
-	label: z.string(),
 	value: z.number(),
 	unit: z.string().optional(),
-	sub: z.string(),
 	key: HeroMetricKeySchema,
-	// WITHOUT these, parsePort() strips the metric FR off the SSR heroData
-	// (Zod drops unknown keys) and localizeHeroData falls back to the EN label.
-	// The drift detector below misses it because both are optional on HeroMetric.
-	labelI18n: LocalizedStringSchema.optional(),
-	subI18n: LocalizedStringSchema.optional(),
+	// CMS truth: the dashboard card LABEL/SUB copy lives in
+	// siteLabels.heroDashboard now (resolved in HeroMetrics by key), so the
+	// metric carries only code-owned dynamic data. WITHOUT coverage/total here,
+	// parsePort() (Zod drops unknown keys) would strip the numbers the CMS
+	// sub-templates interpolate off the SSR heroData, and {coverage}/{total}
+	// would render literally on the client.
+	coverage: z.number().optional(),
+	total: z.number().optional(),
 });
 
 export const HeroQueryRowSchema = z.object({

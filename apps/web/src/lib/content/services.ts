@@ -135,7 +135,7 @@ export const services: readonly Service[] = [
 			{
 				content: {
 					en: 'I design pipelines that are boring in the best way, predictable, observable, and easy to debug at 3 AM. Every pipeline gets idempotent loads, schema contracts, and clear logging. I prefer dbt for transformation logic because it makes SQL testable and version-controlled.',
-					fr: 'Je conçois des pipelines plates dans le bon sens du terme : prévisibles, observables et faciles à déboguer à 3 h du matin. Chaque pipeline reçoit des chargements idempotents, des contrats de schéma et une journalisation claire. Je préfère dbt pour la logique de transformation, parce que ça rend le SQL testable et versionné.',
+					fr: 'Je conçois des pipelines plats dans le bon sens du terme : prévisibles, observables et faciles à déboguer à 3 h du matin. Chaque pipeline reçoit des chargements idempotents, des contrats de schéma et une journalisation claire. Je préfère dbt pour la logique de transformation, parce que ça rend le SQL testable et versionné.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -149,7 +149,7 @@ export const services: readonly Service[] = [
 		},
 		valueProposition: {
 			en: 'Data stuck in silos is data nobody can use, and an ops team copying between spreadsheets is the symptom. I build pipelines and workflow automation that move information from source systems to your warehouse reliably, with logging, retry logic, and schema validation. Your analysts get clean, fresh data every morning; your team stops doing data entry.',
-			fr: 'Des données coincées dans des silos, c\'est des données que personne peut utiliser, et une équipe des opérations qui copie d\'un tableur à l\'autre, c\'est le symptôme. Je bâtis des pipelines et de l\'automatisation de flux de travail qui transportent l\'information des systèmes sources vers ton entrepôt de façon fiable, avec journalisation, logique de reprise et validation de schéma. Tes analystes ont des données propres et fraîches chaque matin; ton équipe arrête de faire de la saisie de données.',
+			fr: 'Des données coincées dans des silos, c\'est des données que personne ne peut utiliser, et une équipe des opérations qui copie d\'un tableur à l\'autre, c\'est le symptôme. Je bâtis des pipelines et de l\'automatisation de flux de travail qui transportent l\'information des systèmes sources vers ton entrepôt de façon fiable, avec journalisation, logique de reprise et validation de schéma. Tes analystes ont des données propres et fraîches chaque matin; ton équipe arrête de faire de la saisie de données.',
 		},
 		visible: true,
 	},
@@ -186,7 +186,7 @@ export const services: readonly Service[] = [
 		],
 		description: {
 			en: 'One semantic layer, numbers that match in every report, dashboards your team trusts.',
-			fr: 'Une seule couche sémantique, des chiffres qui concordent dans tous les rapports, des tableaux de bord en qui ton équipe a confiance.',
+			fr: 'Une seule couche sémantique, des chiffres qui concordent dans tous les rapports, des tableaux de bord auxquels ton équipe fait confiance.',
 		},
 		id: 'analytics-reporting',
 		impactMetric: {
@@ -201,7 +201,7 @@ export const services: readonly Service[] = [
 			{
 				content: {
 					en: 'I start by understanding how your team makes decisions, what questions they ask, how often, and what data they trust. Then I build a semantic layer that makes those questions easy to answer. The dashboard is the last step, not the first.',
-					fr: 'Je commence par comprendre comment ton équipe prend ses décisions : quelles questions elle se pose, à quelle fréquence, et à quelles données elle fait confiance. Ensuite, je bâtis une couche sémantique qui rend ces questions faciles à répondre. Le tableau de bord, c\'est la dernière étape, pas la première.',
+					fr: 'Je commence par comprendre comment ton équipe prend ses décisions : quelles questions elle se pose, à quelle fréquence, et à quelles données elle fait confiance. Ensuite, je bâtis une couche sémantique qui rend les réponses à ces questions faciles à trouver. Le tableau de bord, c\'est la dernière étape, pas la première.',
 				},
 				title: { en: 'My Approach', fr: 'Mon approche' },
 			},
@@ -215,7 +215,7 @@ export const services: readonly Service[] = [
 		},
 		valueProposition: {
 			en: 'A dashboard nobody trusts is worse than no dashboard. I build reporting systems grounded in a clean semantic layer, so the numbers match across reports, filters work intuitively, and your team stops second-guessing the data. You get dashboards that drive decisions, not confusion.',
-			fr: 'Un tableau de bord en qui personne n\'a confiance, c\'est pire que pas de tableau de bord pantoute. Je bâtis des systèmes de rapports ancrés dans une couche sémantique propre, pour que les chiffres concordent d\'un rapport à l\'autre, que les filtres marchent de façon intuitive, et que ton équipe arrête de douter des données. Tu obtiens des tableaux de bord qui guident les décisions, pas qui sèment la confusion.',
+			fr: 'Un tableau de bord auquel personne ne fait confiance, c\'est pire que pas de tableau de bord pantoute. Je bâtis des systèmes de rapports ancrés dans une couche sémantique propre, pour que les chiffres concordent d\'un rapport à l\'autre, que les filtres marchent de façon intuitive, et que ton équipe arrête de douter des données. Tu obtiens des tableaux de bord qui guident les décisions, pas qui sèment la confusion.',
 		},
 		visible: true,
 	},

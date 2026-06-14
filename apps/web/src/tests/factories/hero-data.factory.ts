@@ -9,9 +9,9 @@ import type { HeroData } from '$lib/content/hero-data';
 
 export const heroDataFactory = new Factory<HeroData>(() => ({
 	metrics: [
-		{ label: 'vehicles', value: 42, sub: 'live', key: 'vehicles' as const },
-		{ label: 'avg delay', value: 12, unit: 's', sub: 'past 5m', key: 'delay' as const },
-		{ label: 'routes', value: 23, sub: 'active', key: 'routes' as const },
+		{ value: 42, key: 'vehicles' as const },
+		{ value: 12, unit: 's', key: 'delay' as const, coverage: 87.6 },
+		{ value: 23, key: 'routes' as const, total: 203 },
 	],
 	queryRows: [
 		{

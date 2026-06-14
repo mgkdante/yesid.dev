@@ -19,18 +19,18 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(meta.singleton).toBe(true);
 		expect(meta.group).toBe('site_config');
 	});
-	it('emits the 122 label columns as standalone POST /fields steps (not inline in the collection)', () => {
+	it('emits the 132 label columns as standalone POST /fields steps (not inline in the collection)', () => {
 		// The collection-create carries only structural fields (pk + 2 fks); each
 		// label column is a SEPARATE field step so new chrome columns are added to
 		// the ALREADY-EXISTING translations collection (the inline collection POST
 		// is skipped once it exists — that bug is why the chrome never persisted).
-		// slice-30 t1: 25 base + 97 chrome = 122.
+		// slice-30 t1: 25 base + 97 chrome = 122; +10 go2 FR-leak fields = 132.
 		const collFields = (plan[1].payload as { fields: { field: string }[] }).fields.map((f) => f.field);
 		expect(collFields).toEqual(['id', 'site_labels_id', 'languages_code']);
 		const colNames = plan
 			.filter((s) => s.kind === 'field' && s.path === '/fields/site_labels_translations')
 			.map((s) => (s.payload as { field: string }).field);
-		expect(colNames.length).toBe(122);
+		expect(colNames.length).toBe(132);
 		for (const key of Object.keys(SITE_LABEL_SEEDS)) expect(colNames).toContain(key);
 		expect(colNames).toContain('ui_back_to_projects');
 		expect(colNames).toContain('ui_metro_caption');
@@ -67,7 +67,7 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(SITE_LABEL_SEEDS.blog_chrome_listing_mobile_heading).toBe('Blog');
 		expect(SITE_LABEL_SEEDS.footer_chrome_footer_tagline).toBe('// digital infrastructure');
 		expect(SITE_LABEL_SEEDS.hero_dashboard_vehicles_label).toBe('VEHICLES TRACKED');
-		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(122);
+		expect(Object.keys(SITE_LABEL_SEEDS).length).toBe(132);
 	});
 	it('FR translations seed covers every EN column (complete after t1 reconciliation)', () => {
 		// slice-30 t1: FR is a SEPARATE site_labels_translations row. The base
@@ -80,7 +80,7 @@ describe('setup-site-labels-and-chrome plan', () => {
 		expect(SITE_LABEL_FR_SEEDS.footer_chrome_footer_tagline).toBe('// infrastructure numérique');
 		expect(SITE_LABEL_FR_SEEDS.hero_dashboard_vehicles_label).toBe('VÉHICULES SUIVIS');
 		expect(SITE_LABEL_FR_SEEDS.a11y_replay_intro).toBe("Rejouer l'intro");
-		expect(Object.keys(SITE_LABEL_FR_SEEDS).length).toBe(122);
+		expect(Object.keys(SITE_LABEL_FR_SEEDS).length).toBe(132);
 	});
 	it('parseFlags dry-run default', () => {
 		expect(parseFlags([])).toEqual({ apply: false, seed: false });
